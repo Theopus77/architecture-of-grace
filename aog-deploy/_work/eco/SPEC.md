@@ -1,6 +1,6 @@
-# Writing one unit of "Economics, Grades 9–12" — Architecture of Grace
+# Writing one unit of "Economics, K–12" — Architecture of Grace
 
-You are writing the content for ONE unit of a free online Economics course built by a special-education
+You are writing the content for ONE unit of a free online K–12 Economics course built by a special-education
 teacher in Illinois. Many readers are students with IEPs, English learners, or reading below grade level.
 Content goes into JSON files that a build script turns into web pages. Everything you write is ORIGINAL.
 

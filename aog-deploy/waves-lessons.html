@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Oscilloscope Lessons — Worksheets — Architecture of Grace</title>
+<meta name="description" content="Seventeen oscilloscope lesson worksheets. Type here or print. Saves on this computer; turn it in to your teacher when you finish.">
+<link rel="canonical" href="https://architectureofgrace.org/waves-lessons">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<meta name="robots" content="noindex">
+<!-- AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "missions or lessons with worksheets or things to follow."
+     One worksheet per oscilloscope lesson, seventeen in all, on the SEL worksheet skin
+     (modelled on w18-3-two-voices.html). A drop-down shows one at a time. -->
+<style>
+/* ══ TOKENS ══════════════════════════════════════════════════════════
+   Light is the base. Dark redefines tokens only — never components.   */
+:root{
+  --ground:#F5F1E8;         /* chart paper */
+  --field:#FFFFFF;          /* the writing surface */
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#1C5499;              /* per-sheet accent, overridden below */
+  --a-wash:rgba(28,84,153,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#7FB0E8; --a-wash:rgba(127,176,232,.11);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#7FB0E8; --a-wash:rgba(127,176,232,.11);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+/* per-sheet accents — light base, dark overrides */
+.s-ia  {--a:#1C5499; --a-wash:rgba(28,84,153,.07);}
+.s-vup {--a:#155E75; --a-wash:rgba(21,94,117,.07);}
+.s-cam {--a:#2A4E8C; --a-wash:rgba(42,78,140,.07);}
+.s-fut {--a:#7A5C1F; --a-wash:rgba(122,92,31,.09);}
+.s-ps  {--a:#356B25; --a-wash:rgba(53,107,37,.08);}
+.s-rts {--a:#2E6B4F; --a-wash:rgba(46,107,79,.08);}
+.s-icp {--a:#6B4696; --a-wash:rgba(107,70,150,.08);}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .s-ia  {--a:#7FB0E8; --a-wash:rgba(127,176,232,.11);}
+  :root:not([data-theme="light"]) .s-vup {--a:#6FC3D9; --a-wash:rgba(111,195,217,.11);}
+  :root:not([data-theme="light"]) .s-cam {--a:#93AEEA; --a-wash:rgba(147,174,234,.11);}
+  :root:not([data-theme="light"]) .s-fut {--a:#D6A852; --a-wash:rgba(214,168,82,.12);}
+  :root:not([data-theme="light"]) .s-ps  {--a:#8CC97A; --a-wash:rgba(140,201,122,.12);}
+  :root:not([data-theme="light"]) .s-rts {--a:#79C79E; --a-wash:rgba(121,199,158,.12);}
+  :root:not([data-theme="light"]) .s-icp {--a:#B99AD9; --a-wash:rgba(185,154,217,.13);}
+}
+:root[data-theme="dark"] .s-ia  {--a:#7FB0E8; --a-wash:rgba(127,176,232,.11);}
+:root[data-theme="dark"] .s-vup {--a:#6FC3D9; --a-wash:rgba(111,195,217,.11);}
+:root[data-theme="dark"] .s-cam {--a:#93AEEA; --a-wash:rgba(147,174,234,.11);}
+:root[data-theme="dark"] .s-fut {--a:#D6A852; --a-wash:rgba(214,168,82,.12);}
+:root[data-theme="dark"] .s-ps  {--a:#8CC97A; --a-wash:rgba(140,201,122,.12);}
+:root[data-theme="dark"] .s-rts {--a:#79C79E; --a-wash:rgba(121,199,158,.12);}
+:root[data-theme="dark"] .s-icp {--a:#B99AD9; --a-wash:rgba(185,154,217,.13);}
+
+/* ══ BASE ══ */
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px;}
+.wrap{max-width:64rem; margin:0 auto; padding:0 20px;}
+  /* longhand on purpose: `padding:X 0 Y` would reset .wrap's 20px sides and
+     put the masthead, the lock card and the sheet flush against a phone screen. */
+.eyebrow{
+  font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+
+/* ══ MASTHEAD ══ */
+.mast{padding-top:26px; padding-bottom:4px;}
+.mast .row{display:flex; align-items:center; gap:13px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; flex:none;
+  background:var(--navy); color:#E7C77B; display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:25px; font-weight:700; line-height:1;
+}
+:root[data-theme="dark"] .mark{background:#1B3A5F;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mark{background:#1B3A5F;}}
+.mast .name{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:18px; font-weight:700; color:var(--navy); line-height:1.15;}
+.mast .sub{font-size:11.5px; color:var(--ink-faint); letter-spacing:.05em; text-transform:uppercase; font-weight:600;}
+.mast h1{font-size:clamp(30px,5.4vw,44px); line-height:1.04; letter-spacing:-.02em; margin:20px 0 6px;
+  font-weight:700;}
+.mast .deck{font-size:16.5px; color:var(--ink-soft); max-width:38rem;}
+body.solo .mast h1{font-size:clamp(19px,2.6vw,27px); margin:16px 0 4px; letter-spacing:-.01em;}
+body.solo .mast{padding-bottom:0;}
+body.solo .sheets{padding-top:18px;}
+
+/* ══ THE LOCK — the thesis of this page ══ */
+.lock{
+  margin:22px 0 6px; border:2px solid var(--lock); border-radius:18px;
+  background:var(--lock-wash); padding:18px 20px; box-shadow:var(--lift-sm);
+}
+.lock-top{display:flex; align-items:flex-start; gap:14px;}
+.lock-ico{
+  width:38px; height:38px; flex:none; border-radius:11px; border:2px solid var(--lock);
+  display:grid; place-items:center; color:var(--lock);
+}
+.lock-ico svg{width:20px; height:20px;}
+.lock h2{font-size:20px; line-height:1.2; color:var(--ink); font-weight:700;}
+.lock p{font-size:14.5px; color:var(--ink-soft); margin-top:4px; max-width:46rem;}
+.lock-more{
+  margin-top:12px; border-top:1px solid var(--rule-soft); padding-top:12px;
+}
+.lock-more summary{
+  font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--lock); cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:7px;
+}
+.lock-more summary::-webkit-details-marker{display:none;}
+.lock-more summary::after{content:"＋"; font-size:14px; opacity:.75;}
+.lock-more[open] summary::after{content:"−";}
+.lock-more .body{font-size:14px; color:var(--ink-soft); margin-top:10px; display:grid; gap:9px; max-width:46rem;}
+.lock-more .body b{color:var(--ink);}
+.lock-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:14px;}
+
+/* ══ BUTTONS ══ */
+.btn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--ink);
+  display:inline-flex; align-items:center; gap:7px; transition:transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn:hover{border-color:var(--a); transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-accent{background:var(--a); border-color:var(--a); color:#fff;}
+:root[data-theme="dark"] .btn-accent{color:#12161C;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{color:#12161C;}}
+.btn-danger{border-color:var(--caution); color:var(--caution);}
+.btn-danger:hover{border-color:var(--caution); background:var(--caution); color:var(--field);}
+.btn-lock{border-color:var(--lock); color:var(--lock);}
+
+/* ══ SHEET RAIL ══ */
+.rail-shell .wrap{max-width:78rem;}
+.rail-shell{position:sticky; top:0; z-index:20; background:var(--ground); padding-top:14px;
+  border-bottom:1px solid var(--rule-soft); margin-top:22px;}
+.rail{display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin;}
+.tab{
+  flex:none; text-align:left; min-width:158px; max-width:200px;
+  border:1.5px solid var(--rule); border-radius:13px; background:var(--field);
+  padding:10px 12px 11px; position:relative; overflow:hidden;
+  transition:border-color .14s ease, transform .14s ease;
+}
+.tab::before{content:""; position:absolute; inset:0 auto 0 0; width:4px; background:var(--a); opacity:.55;}
+.tab:hover{transform:translateY(-2px); border-color:var(--a);}
+.tab .k{font-size:10px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; color:var(--a); display:block;}
+.tab .t{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:15px; font-weight:600; line-height:1.2; display:block; margin-top:3px;}
+.tab[aria-selected="true"]{border-color:var(--a); background:var(--a-wash); box-shadow:var(--lift-sm);}
+.tab[aria-selected="true"]::before{opacity:1; width:5px;}
+.tab .pill{display:inline-block; margin-top:6px; font-size:9.5px; font-weight:800; letter-spacing:.1em;
+  text-transform:uppercase; border:1px solid var(--a); color:var(--a); border-radius:99px; padding:1px 7px;}
+
+/* ══ SHEET ══ */
+.sheets{padding-top:26px; padding-bottom:70px;}
+.sheet{
+  background:var(--field); border:1.5px solid var(--rule); border-radius:20px;
+  box-shadow:var(--lift); padding:clamp(20px,4vw,38px); max-width:52rem; margin:0 auto 26px;
+}
+.js-on .sheet{display:none; margin-bottom:0;}
+.js-on .sheet.is-active{display:block; animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+@keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){
+  .js-on .sheet.is-active{animation:none;}
+  .btn:hover,.tab:hover{transform:none;}
+  *{scroll-behavior:auto !important;}
+}
+.sheet-head{border-bottom:2px solid var(--a); padding-bottom:14px;}
+.sheet-head .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.sheet-head h2{font-size:clamp(26px,4.4vw,38px); line-height:1.06; letter-spacing:-.018em; margin:6px 0 7px;
+}
+.sheet-head .say{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.4;}
+
+.priv{
+  margin:18px 0 4px; border:1.5px solid var(--lock); border-left-width:5px; border-radius:11px;
+  background:var(--lock-wash); padding:11px 14px;
+}
+.priv .k{font-size:10.5px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; color:var(--lock);}
+.priv .v{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-soft); margin-top:2px;}
+
+.blk{margin-top:26px;}
+.blk > .lab{
+  font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a);
+  display:block; margin-bottom:3px;
+}
+.blk > .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint); margin-bottom:9px; line-height:1.4;}
+
+/* writing fields */
+.fld{
+  width:100%; display:block; border:0; border-bottom:2px solid var(--rule);
+  background:transparent; color:var(--ink); font:inherit; font-size:16.5px; line-height:1.85;
+  padding:6px 2px 5px; resize:none; overflow:hidden; min-height:2.1em;
+  transition:border-color .14s ease;
+}
+.fld::placeholder{color:var(--ink-faint); opacity:.55; font-style:italic;}
+.fld:focus{outline:none; border-bottom-color:var(--a);}
+.fld:focus-visible{outline:none;}
+.pen{position:relative;}
+.pen::after{
+  content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; background:var(--a);
+  transform:scaleX(0); transform-origin:left; transition:transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.pen:focus-within::after{transform:scaleX(1);}
+.blank-lines{display:none;}
+.pcopy{display:none;}
+.blank-lines i{display:block; height:26px; border-bottom:1.5px solid var(--rule); margin-top:2px;}
+
+.two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:640px){.two{grid-template-columns:1fr;}}
+.pane{border:1.5px solid var(--rule); border-radius:13px; padding:13px 14px 15px; background:var(--field);}
+.pane.hi{border-color:var(--a); background:var(--a-wash);}
+.pane .lab{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.pane .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-faint); margin:3px 0 8px; line-height:1.4;}
+
+/* ══ TABLE ══ */
+.tbl-scroll{overflow-x:auto; border:1.5px solid var(--rule); border-radius:13px;}
+table.grid{border-collapse:collapse; width:100%; min-width:660px;}
+table.grid th{
+  text-align:left; font-size:10.5px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--a); background:var(--a-wash); padding:10px 11px; border-bottom:1.5px solid var(--rule);
+  vertical-align:bottom;
+}
+table.grid td{padding:0; border-bottom:1px solid var(--rule-soft); border-right:1px solid var(--rule-soft); vertical-align:top;}
+table.grid td:last-child{border-right:0;}
+table.grid tr:last-child td{border-bottom:0;}
+table.grid .cell{
+  width:100%; border:0; background:transparent; color:var(--ink); font:inherit; font-size:15px; line-height:1.6;
+  padding:10px 11px; resize:none; overflow:hidden; min-height:3.4em;
+}
+table.grid .cell:focus{outline:none; background:var(--a-wash);}
+
+/* ══ RINGS ══ */
+.ring{border:2px solid var(--rule); border-radius:26px; padding:14px 15px 16px;}
+.ring.r1{border-color:var(--ink-faint);}
+.ring.r2{border-color:var(--a); opacity:1; margin-top:14px;}
+.ring.r3{border-color:var(--a); border-width:3px; background:var(--a-wash); margin-top:14px;}
+.ring .rk{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);}
+.ring.r2 .rk,.ring.r3 .rk{color:var(--a);}
+.ring .rh{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-faint); margin:2px 0 10px;}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;}
+.chips:empty{display:none;}
+.chip{
+  display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--rule); border-radius:99px;
+  padding:5px 6px 5px 13px; font-size:14px; background:var(--field); animation:pop .26s cubic-bezier(.2,.8,.3,1) both;
+}
+.ring.r3 .chip{border-color:var(--a); font-weight:600;}
+@keyframes pop{from{opacity:0; transform:scale(.9);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.chip{animation:none;}}
+.chip button{
+  border:0; background:transparent; color:var(--ink-faint); font-size:16px; line-height:1;
+  padding:2px 5px; border-radius:99px;
+}
+.chip button:hover{color:var(--caution);}
+.ring-add{display:flex; gap:8px;}
+.ring-add input{
+  flex:1; min-width:0; border:1.5px solid var(--rule); border-radius:9px; background:transparent;
+  color:var(--ink); font:inherit; font-size:15px; padding:8px 11px;
+}
+.ring-add input:focus{outline:none; border-color:var(--a);}
+.ring-add input::placeholder{color:var(--ink-faint); opacity:.6;}
+
+/* ══ SPECTRUM ══ */
+.spec{margin-top:6px;}
+.spec-ends{display:flex; justify-content:space-between; gap:12px; font-size:11px; font-weight:800;
+  letter-spacing:.11em; text-transform:uppercase;}
+.spec-ends .l{color:var(--a);}
+.spec-ends .r{color:var(--caution); text-align:right;}
+.spec-track{
+  display:none; position:relative; height:14px; margin:12px 0 4px;
+  border:2px solid var(--ink-soft); border-radius:99px;
+}
+.spec-track .tick{position:absolute; top:-6px; bottom:-6px; width:2px; background:var(--rule); left:50%;}
+.spec-row{display:grid; grid-template-columns:1fr; gap:4px; margin-top:16px;}
+.spec-row .rl{font-size:12px; font-weight:700; color:var(--ink-soft); display:flex; justify-content:space-between; gap:10px;}
+.spec-row .rl b{color:var(--a); font-variant-numeric:tabular-nums;}
+input[type=range].slider{
+  -webkit-appearance:none; appearance:none; width:100%; height:26px; background:transparent; margin:0;
+}
+input[type=range].slider::-webkit-slider-runnable-track{height:6px; border-radius:99px; background:var(--field-2);}
+input[type=range].slider::-moz-range-track{height:6px; border-radius:99px; background:var(--field-2);}
+input[type=range].slider::-webkit-slider-thumb{
+  -webkit-appearance:none; width:24px; height:24px; margin-top:-9px; border-radius:50%;
+  background:var(--a); border:3px solid var(--field); box-shadow:var(--lift-sm); cursor:grab;
+}
+input[type=range].slider::-moz-range-thumb{
+  width:24px; height:24px; border-radius:50%; background:var(--a); border:3px solid var(--field);
+  box-shadow:var(--lift-sm); cursor:grab;
+}
+.spec-print{display:none;}
+
+/* ══ NUMBERED STEPS ══ */
+.step{display:grid; grid-template-columns:46px 1fr; gap:15px; margin-top:22px; align-items:start;}
+.step .n{
+  width:46px; height:46px; border-radius:13px; border:2px solid var(--a); color:var(--a);
+  display:grid; place-items:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:22px; font-weight:700;
+}
+.step .lab{font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.step .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint);
+  margin:2px 0 8px; line-height:1.4;}
+@media (max-width:520px){.step{grid-template-columns:36px 1fr; gap:11px;} .step .n{width:36px; height:36px; font-size:17px;}}
+
+/* ══ TACTIC CARDS ══ */
+.tacs{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:4px 0 15px;}
+.tac{border:1.5px solid var(--rule); border-left:4px solid var(--a); border-radius:13px;
+     padding:11px 13px 12px; background:var(--field);}
+.tac .tk{font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.tac .tq{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic;
+     font-size:13.5px; color:var(--ink-soft); line-height:1.4; margin-top:6px;}
+.tac .td{font-size:12.5px; color:var(--ink-faint); line-height:1.4; margin-top:7px;}
+@media (max-width:720px){ .tacs{grid-template-columns:1fr;} }
+
+/* ══ SUPPORT BOX ══ */
+.support{
+  margin-top:28px; border:2px solid var(--caution); border-radius:14px; padding:15px 17px;
+}
+.support .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--caution);}
+.support ul{margin:9px 0 0; padding-left:19px; display:grid; gap:6px;}
+.support li{font-size:15px;}
+.support li b{font-weight:700;}
+.support .cslr{display:grid; gap:8px; margin-top:11px; grid-template-columns:1fr 1fr;}
+@media (max-width:520px){.support .cslr{grid-template-columns:1fr;}}
+.support .cslr input{
+  border:0; border-bottom:2px solid var(--rule); background:transparent; color:var(--ink);
+  font:inherit; font-size:15px; padding:5px 2px;
+}
+.support .cslr input:focus{outline:none; border-bottom-color:var(--caution);}
+.support .tnote{font-size:11.5px; color:var(--ink-faint); margin-top:8px; font-style:italic;}
+
+/* ══ PAPER CARD ══ */
+.paper{
+  border:2px dashed var(--a); border-radius:16px; padding:20px 20px 22px; margin-top:20px;
+  background:var(--a-wash);
+}
+.paper .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.paper h3{font-size:22px; margin:6px 0 8px; line-height:1.2;}
+.paper p{font-size:15px; color:var(--ink-soft); max-width:40rem;}
+.paper p + p{margin-top:9px;}
+.starters{display:grid; gap:8px; margin-top:14px;}
+.starters div{
+  border-left:3px solid var(--a); padding:2px 0 2px 12px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:16px; color:var(--ink);
+}
+
+/* ══ FAMILY NOTE ══ */
+.fam{margin-top:30px; border-top:1.5px solid var(--rule); padding-top:14px;}
+.fam .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);}
+.fam p{font-size:14px; color:var(--ink-soft); margin-top:5px; max-width:44rem;}
+
+/* ══ SHEET FOOTER ══ */
+.sheet-foot{
+  margin-top:30px; border-top:1.5px solid var(--rule); padding-top:15px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+}
+.saved{
+  margin-left:auto; font-size:12px; font-weight:600; color:var(--lock);
+  display:inline-flex; align-items:center; gap:6px; opacity:0; transition:opacity .3s ease;
+}
+.saved.on{opacity:1;}
+.saved .dot{width:7px; height:7px; border-radius:50%; background:var(--lock); flex:none;}
+@media (max-width:520px){.saved{margin-left:0; width:100%;}}
+
+
+.share{margin:22px 0 4px; border:1.5px solid var(--rule); border-radius:16px; background:var(--field);
+  padding:16px 18px 18px; box-shadow:var(--lift-sm);}
+.share h2{font-size:17px; font-weight:700; line-height:1.25;}
+.share > p{font-size:13.5px; color:var(--ink-soft); margin-top:4px; max-width:46rem;}
+.share ol{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:7px;}
+.share li{display:flex; align-items:center; gap:11px; flex-wrap:wrap;
+  border:1.5px solid var(--rule); border-radius:11px; padding:8px 11px;}
+.share .wk{font-size:10px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-faint); flex:none; width:6.6rem;}
+.share .nm{font-family:Georgia,serif; font-size:15px; font-weight:600; flex:1 1 12rem; min-width:0;}
+.share code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px;
+  background:var(--field-2); border-radius:6px; padding:3px 8px; color:var(--ink);}
+.share .cp{border:1.5px solid var(--rule); background:transparent; border-radius:9px;
+  padding:5px 11px; font-size:12.5px; font-weight:600;}
+.share .cp:hover{border-color:var(--a);}
+.share .bm{border-color:var(--a); color:var(--a);}
+#beam{
+  position:fixed; inset:0; z-index:900; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-faint);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-faint);}
+
+/* ══ PAGE FOOT ══ */
+.foot{border-top:1px solid var(--rule-soft); padding-top:22px; padding-bottom:46px; color:var(--ink-faint); font-size:12.5px;}
+.foot p{max-width:46rem;}
+.foot p + p{margin-top:7px;}
+.foot b{color:var(--ink-soft);}
+.foot .foot-home a{color:inherit; text-decoration:underline; text-underline-offset:2px;}
+
+/* ══ PRINT ══════════════════════════════════════════════════════════ */
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .mast,.lock,.rail-shell,.foot,.sheet-foot,.no-print{display:none !important;}
+  .sheets{padding:0;}
+  .wrap{max-width:none; padding:0;}
+  .sheet{
+    display:none !important; box-shadow:none; border:0; border-radius:0; padding:0;
+    max-width:none; margin:0; background:#fff;
+  }
+  .sheet.is-active{display:block !important;}
+  body:not(.js-on) .sheet{display:block !important; page-break-after:always;}
+  .sheet-head{border-bottom:2px solid #000;}
+  .sheet-head h2{font-size:24pt;}
+  .sheet-head .k,.blk > .lab,.pane .lab,.step .lab,table.grid th,
+  .ring .rk,.ring.r2 .rk,.ring.r3 .rk,.fam .k,.spec-ends .l,.spec-ends .r,
+  .paper .k,.step .n,.tac .tk{color:#000;}
+  .pen::after{display:none;}
+  .spec-row{display:none;}
+  body.print-blank .spec-ends{margin-bottom:6px;}
+  /* one worksheet = one sheet of paper */
+  body{font-size:10.5pt; line-height:1.4;}
+  .sheet-head{padding-bottom:9px;}
+  .sheet-head h2{font-size:21pt;}
+  .sheet-head .say{font-size:11.5pt;}
+  .priv{margin:11px 0 0; padding:7px 11px;}
+  .blk{margin-top:14px;}
+  .blk > .hint,.pane .hint,.step .hint,.ring .rh{font-size:9.5pt; margin-bottom:5px;}
+  .fld{font-size:11pt; line-height:1.6; min-height:1.6em;}
+  .pane{padding:9px 11px 10px;}
+  .ring{padding:10px 11px 11px; border-radius:18px;}
+  .ring.r2,.ring.r3{margin-top:10px;}
+  .chip{padding:2px 10px; font-size:10pt;}
+  .step{margin-top:14px; grid-template-columns:34px 1fr; gap:11px; break-inside:avoid; page-break-inside:avoid;}
+  .step .n{width:34px; height:34px; font-size:15pt;}
+  .tacs{grid-template-columns:repeat(3,1fr); gap:7px; margin:3px 0 9px; page-break-inside:avoid;}
+  .tac{padding:6px 8px 7px; border-radius:9px; border-left-width:3px;}
+  .tac .tk{font-size:8pt;}
+  .tac .tq{font-size:8.5pt; line-height:1.3; margin-top:3px;}
+  .tac .td{font-size:8pt; line-height:1.3; margin-top:3px;}
+  .support{margin-top:14px; padding:10px 12px;}
+  .support li{font-size:10.5pt;}
+  .support .cslr{margin-top:7px;}
+  .fam{margin-top:16px; padding-top:9px;}
+  .fam p{font-size:9.5pt;}
+  table.grid .cell{font-size:10.5pt; padding:7px 9px; min-height:2.6em;}
+  /* the ★★ lesson's crisis box must never orphan onto a second page */
+  body.print-blank .s-rts .blank-lines i{height:21px;}
+  body.print-blank .s-rts .step{margin-top:11px;}
+  body.print-blank .s-rts .priv{margin-top:9px;}
+  /* the Internal Critic Profile carries three reference cards AND the crisis box */
+  body.print-blank .s-icp .blank-lines i{height:21px;}
+  .s-icp .blk{margin-top:12px;}
+  .s-icp .fam{margin-top:12px;}
+  .s-icp .support{margin-top:12px;}
+  /* the whole letter must land on one sheet of paper */
+  .s-fut .blank-lines i{height:24px;}
+  .s-fut .paper{padding:12px 16px 14px; margin-top:14px;}
+  .s-fut .paper h3{font-size:15pt; margin:4px 0 6px;}
+  .s-fut .blk{margin-top:16px;}
+  .s-fut .fam{margin-top:16px;}
+  .priv{border-color:#000; background:#fff;}
+  .priv .k{color:#000;}
+  .pane,.ring,.tbl-scroll,.chip,.support,.paper,.step .n,.tac{border-color:#000 !important; background:#fff !important;}
+  .fld,.fld:focus,table.grid .cell,table.grid .cell:focus{border-bottom-color:#000 !important; color:#000; background:transparent !important;}
+  /* textareas keep JS-computed screen heights, which pad the page and can clip long
+     answers — print a plain text copy instead. */
+  textarea{display:none !important;}
+  .pcopy{
+    display:block; white-space:pre-wrap; overflow-wrap:break-word; color:#000;
+    font-size:11pt; line-height:1.55; padding:1px 2px 3px; min-height:2.2em;
+    border-bottom:1.5px solid #000;
+  }
+  table.grid .pcopy{border-bottom:0; min-height:2.6em; font-size:10.5pt; padding:7px 9px;}
+  .tbl-scroll{overflow:visible;}
+  table.grid{min-width:0; width:100%; table-layout:fixed;}
+  body.print-blank .pcopy{display:none !important;}
+  .step,.blk,.ring.r2,.ring.r3{page-break-inside:avoid;}
+  .support{page-break-inside:avoid;}
+  /* blank-print: ruled lines are real elements, never a background gradient */
+  body.print-blank .fld,body.print-blank .ring-add,body.print-blank .chips,
+  body.print-blank .slider,body.print-blank table.grid .cell{display:none !important;}
+  body.print-blank .blank-lines{display:block;}
+  .blank-lines i{border-bottom-color:#000;}
+  body.print-blank table.grid td{height:64px;}
+  body.print-blank .chips-blank{display:block;}
+  .slider{display:none !important;}
+  .spec-track{display:none;}
+  body.print-blank .spec-print{display:none !important;}
+  body.print-blank .spec-track{display:block;}
+  body.print-blank .spec-row .rl b{visibility:hidden;}
+  .spec-print{display:block; position:relative; height:56px; margin-top:10px;}
+  .spec-print .bar{position:absolute; left:0; right:0; top:14px; height:0; border-top:2px solid #000;}
+  .spec-print .m{position:absolute; top:0; transform:translateX(-50%); text-align:center; font-size:8pt;}
+  .spec-print .m::before{
+    content:""; display:block; margin:0 auto 2px; width:0; height:0;
+    border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:9px solid #000;
+  }
+  .spec-track{border-color:#000;}
+}
+</style>
+<style>
+/* ══ AOG-WS-BAND — the few extra pieces the band sheets use (reference tables, sorts, steps, signature) ══ */
+.reft{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+.reft th{text-align:left;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a);padding:0 0 6px}
+.reft td{padding:7px 10px 7px 0;border-top:1px solid var(--rule-soft);vertical-align:top;width:50%}
+.sortrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule-soft)}
+.sortrow span{flex:1;min-width:220px}
+.sel{border:1.5px solid var(--rule);border-radius:9px;background:var(--field);color:var(--ink);padding:7px 10px;font:inherit;font-size:14px}
+.sel:focus{outline:none;border-color:var(--a)}
+.stepgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+@media(max-width:640px){.stepgrid{grid-template-columns:1fr 1fr}}
+.stepgrid .st{border:1.5px solid var(--rule);border-radius:12px;padding:11px 12px;background:var(--field)}
+.stepgrid .st b{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-bottom:4px}
+.stepgrid .st p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.4}
+.signrow{display:flex;gap:24px;flex-wrap:wrap;margin-top:22px;font-size:13px;color:var(--ink-soft)}
+.signrow span{flex:1;min-width:200px;border-bottom:1.5px solid var(--rule);padding:0 4px 4px}
+@media print{.sel{border:1px solid #999;background:#fff}.sortrow{page-break-inside:avoid}}
+/* ══ AOG-WS-DRAWPAD — the K–2 drawing sheets: a finger/stylus pad whose PNG rides the same
+   hidden field as a typed answer, so it autosaves, erases and sends with FINISHED like the rest ══ */
+.padwrap{position:relative;margin-top:8px}
+.pad{display:block;width:100%;height:auto;aspect-ratio:3/2;border:1.5px solid var(--rule);border-radius:14px;background:#fff;touch-action:none;cursor:crosshair}
+.padtools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.padtools button{border:1.5px solid var(--rule);background:var(--field);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;cursor:pointer}
+.padtools button[aria-pressed="true"]{border-color:var(--a);color:var(--a)}
+.padtools .sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--rule);padding:0;cursor:pointer}
+.padtools .sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--field),0 0 0 4px var(--a)}
+.pad-blank{display:none}
+@media print{.pad{border-color:#000;page-break-inside:avoid}.padtools{display:none !important}
+  body.print-blank .pad{display:none}body.print-blank .pad-blank{display:block;width:100%;aspect-ratio:3/2;border:1.5px solid #000;border-radius:14px}}
+</style>
+<style>
+
+/* ══ AOG-SEL-V1 ══ the course chrome, scoped: these tokens live on .aogc only */
+.aogc{ --navy:#0A1E33; --navy-2:#1B3A5F; --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6; --on-navy:#F5F1E8; --field-3:#E7E0D2;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif; --gold-deep:#7A5C1F; --ink-faint:#5F6B78; color:var(--ink) }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D } }
+:root[data-theme="dark"] .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D }
+.aogc h1,.aogc h2{font-family:var(--serif); line-height:1.15; margin:0 0 .3em}
+.aogc p{margin:.4em 0}
+.aogc a{color:var(--navy-2)}
+.aogc .cmast .k{color:var(--gold-deep)}
+.aogc .crail{margin-left:0; margin-right:0}
+.aogc .cjump select{color:var(--ink)}
+@media print{ .aogc{display:none!important} }
+.aogc .cmast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.aogc .cmast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.aogc .cmast h1{font-size:2.1rem; letter-spacing:-.01em}
+.aogc .cmast .row{display:flex; gap:8px}
+.aogc .chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.aogc .cdeck{color:var(--ink-soft); max-width:66ch}
+.aogc .hubline{margin:.2em 0 0; font-size:.95rem}
+.aogc .hubline a{font-weight:700; text-decoration:none}
+.aogc .hubline a:hover{text-decoration:underline}
+.aogc .cjump{margin:14px 0 4px}
+.aogc .cjump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.aogc .cjump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+.aogc .crail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.aogc .crail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.aogc .crail .in::-webkit-scrollbar{display:none}
+.aogc .crail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.aogc .crail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.aogc .crail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.aogc .crail a:hover{border-color:var(--navy-2)}
+.aogc .crail .sp{flex:1 0 8px}
+.aogc .crail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.aogc .crail .drawerbtn svg{width:16px; height:16px}
+.aogc .spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.aogc .spread .scene{position:absolute; inset:0; z-index:0}
+.aogc .spread .scene svg{width:100%; height:100%; display:block}
+.aogc .spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.aogc .spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.aogc .spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.aogc .spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.aogc .spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.aogc .spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.aogc .spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.aogc .teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.aogc .teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.aogc .teach summary::-webkit-details-marker{display:none}
+.aogc .teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.aogc .teach .inner p{margin:0}
+</style>
+<style>
+/* ══ AOG-SCOPE-WS — the few extra pieces these sheets use ══ */
+.numrow{display:grid; gap:4px; align-content:start;}
+.numrow .lab{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a);}
+.numrow .unit{font-size:13px; color:var(--ink-faint);}
+.fld.num{font-variant-numeric:tabular-nums; min-height:44px;}
+.priv .two{margin-top:6px;}
+.priv .fld{min-height:44px;}
+.pad{aspect-ratio:5/4; background:#fff;}
+.pad-blank{aspect-ratio:5/4; background:
+  linear-gradient(to right, rgba(0,0,0,.35) 1px, transparent 1px) 0 0/10% 100%,
+  linear-gradient(to bottom, rgba(0,0,0,.35) 1px, transparent 1px) 0 0/100% 12.5%;}
+.chips-kw{display:flex; flex-wrap:wrap; gap:7px; margin-top:6px;}
+.kw{border:1.5px solid var(--a); color:var(--a); border-radius:99px; padding:4px 12px; font-size:14px; font-weight:600;}
+.tryit{margin-top:26px;}
+.tryit .step{margin-top:14px;}
+.explore{margin:6px 0 0; padding-left:18px; font-size:14.5px;}
+.explore li{margin-top:4px;}
+.explore a{color:var(--a); font-weight:600;}
+.lnav{display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:10px 0 0;}
+.lnav .btn{min-height:44px;}
+.lnav .where{font-size:13.5px; color:var(--ink-soft); margin-left:auto;}
+@media print{ .kw{border-color:#000; color:#000;} .explore a{color:#000; text-decoration:none;} .tryit{border-color:#000; background:#fff;} }
+.hubline{margin-top:16px; font-size:14.5px;}
+.hubline a{font-weight:700; color:var(--a);}
+.aogc .cjump select{font-size:16px; width:100%; min-width:0;}
+.aogc .cjump label{max-width:100%;}
+@media print{
+  .pad{border-color:#000;}
+  body.print-blank .pad{display:none;}
+  body.print-blank .pad-blank{display:block; width:100%; border:1.5px solid #000; border-radius:14px;}
+  .numrow .lab{color:#000;}
+  input.fld{display:block; border:0; border-bottom:1.5px solid #000; color:#000; background:transparent;}
+  body.print-blank input.fld{display:block !important; color:transparent;}
+  .blank-lines{display:none !important;}
+}
+</style>
+<script src="/aog-iep.js"></script>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+
+<script>document.body.className="js-on solo";</script>
+
+<div class="wrap"><div class="aogc">
+<header class="cmast">
+  <div>
+    <div class="k"><span data-en="The Benches — Science · The Oscilloscope ·" data-es="Las Mesas — Ciencias · El osciloscopio ·">The Benches — Science · The Oscilloscope ·</span><span class="k" style="margin-left:6px" data-en="Seventeen lessons · Grades 5–12" data-es="Diecisiete lecciones · Grados 5–12">Seventeen lessons · Grades 5–12</span></div>
+    <h1 data-en="Oscilloscope Lesson Worksheets" data-es="Hojas de trabajo del osciloscopio">Oscilloscope Lesson Worksheets</h1>
+    <p class="cdeck" data-en="One sheet per lesson. Type it here, or print it and use a pen. Both count." data-es="Una hoja por lección. Escríbela aquí o imprímela y usa lápiz. Las dos cuentan.">One sheet per lesson. Type it here, or print it and use a pen. Both count.</p>
+    <p class="hubline no-print"><a href="/science-waves.html#lessons" id="backToScope"><span data-en="← The Oscilloscope, where the lessons run" data-es="← El osciloscopio, donde corren las lecciones">← The Oscilloscope, where the lessons run</span></a></p>
+  </div>
+</header>
+<div class="cjump no-print"><label><span data-en="Which lesson?" data-es="¿Qué lección?">Which lesson?</span><select id="lessonSel">
+<option value="waves-L1">Lesson 1 · Power and a trace</option><option value="waves-L2">Lesson 2 · The grid: divisions</option><option value="waves-L3">Lesson 3 · Volts per division</option><option value="waves-L4">Lesson 4 · Time per division</option><option value="waves-L5">Lesson 5 · Frequency from the period</option><option value="waves-L6">Lesson 6 · Sine, square, triangle, saw</option><option value="waves-L7">Lesson 7 · The trigger</option><option value="waves-L8">Lesson 8 · Two channels</option><option value="waves-L9">Lesson 9 · Phase</option><option value="waves-L10">Lesson 10 · Amplitude and loudness</option><option value="waves-L11">Lesson 11 · Harmonics: a square is many sines</option><option value="waves-L12">Lesson 12 · Measure a pulse</option><option value="waves-L13">Lesson 13 · Noise and averaging</option><option value="waves-L14">Lesson 14 · AC and DC coupling</option><option value="waves-L15">Lesson 15 · The 10× probe</option><option value="waves-L16">Lesson 16 · Design a measurement</option><option value="waves-L17">Lesson 17 · Write it up and hand it in</option>
+</select></label>
+<div class="lnav"><button class="btn" type="button" id="lessonBack" data-en="← Back" data-es="← Atrás">← Back</button><button class="btn btn-accent" type="button" id="lessonNext" data-en="Next →" data-es="Siguiente →">Next →</button><span class="where" id="lessonWhere"></span></div></div>
+</div></div>
+
+<main class="sheets wrap">
+<section class="sheet is-active" id="sh-waves-L1" role="tabpanel" data-id="waves-L1" data-name="Oscilloscope — Lesson 1 · Power and a trace">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 1 of 17</span>
+    <h2>Power and a trace</h2>
+    <p class="say">Turn it on. Pick a signal. Make a line big enough to see.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">oscilloscope</span><span class="kw">trace</span><span class="kw">signal</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">An oscilloscope draws a signal as a line, so you can see it.</p>
+    <label class="lab" for="fld-waves-L1-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L1-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Turn the scope on.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Pick the sine source.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Turn up the height until the wave is at least one box tall.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Look at the line. Find the top and the bottom.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L1-q1">Short answer 1 · How many boxes tall is your wave, top to bottom?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L1-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L1-q2">Short answer 2 · What is the height setting you used?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L1-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">V</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the trace you see.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L1-q3">Short answer 3 · Why is seeing a signal useful when you cannot hear or touch it?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L1-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L1-refl">Reflection</label><p class="hint">What changed on the screen when you turned the power on?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L1-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Oscilloscope" rel="noopener" target="_blank">Oscilloscope · Wikipedia</a></li><li><a href="https://www.tek.com/en/documents/primer/xyzs-oscilloscopes-primer" rel="noopener" target="_blank">XYZs of Oscilloscopes · Tektronix primer</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=1#lessons">← Back to lesson 1 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L2" role="tabpanel" data-id="waves-L2" data-name="Oscilloscope — Lesson 2 · The grid: divisions">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 2 of 17</span>
+    <h2>The grid: divisions</h2>
+    <p class="say">The screen is a grid. Count the boxes. Every reading starts with a count.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">division</span><span class="kw">graticule</span><span class="kw">grid</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">The screen grid is a ruler. Ten boxes across, eight boxes tall.</p>
+    <label class="lab" for="fld-waves-L2-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L2-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Set 1 volt per division.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Set 1 ms per division.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Count the boxes across the screen.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Count the boxes up and down.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L2-q1">Short answer 1 · How many boxes across?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L2-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L2-q2">Short answer 2 · How many boxes up and down?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L2-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the grid lines and one wave on top.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L2-q3">Short answer 3 · Name one other tool that uses a grid to measure.</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L2-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L2-refl">Reflection</label><p class="hint">Why does a scope screen have a grid at all?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L2-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Graticule_(oscilloscope)" rel="noopener" target="_blank">Graticule · Wikipedia</a></li><li><a href="https://www.tek.com/en/documents/primer/xyzs-oscilloscopes-primer" rel="noopener" target="_blank">XYZs of Oscilloscopes · Tektronix primer</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=2#lessons">← Back to lesson 2 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L3" role="tabpanel" data-id="waves-L3" data-name="Oscilloscope — Lesson 3 · Volts per division">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 3 of 17</span>
+    <h2>Volts per division</h2>
+    <p class="say">Height is volts. Boxes tall times volts per box.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">volts per division</span><span class="kw">amplitude</span><span class="kw">peak to peak</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Height on the screen is volts. Boxes tall times volts per box gives the height.</p>
+    <label class="lab" for="fld-waves-L3-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L3-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Sine source. Set the height to 2 V.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Choose volts per division so the wave is 3 to 5 boxes tall.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Count the boxes from the top of the wave to the bottom.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Multiply: boxes × volts per box.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L3-q1">Short answer 1 · Boxes tall, top to bottom?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L3-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L3-q2">Short answer 2 · Height you read: boxes × volts per box</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L3-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">V</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the wave and mark its top and bottom.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L3-q3">Short answer 3 · If you halve the volts per division, what happens to the wave on screen?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L3-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L3-refl">Reflection</label><p class="hint">Did your reading match the height setting? If not, what happened?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L3-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Amplitude" rel="noopener" target="_blank">Amplitude · Wikipedia</a></li><li><a href="https://phet.colorado.edu/en/simulations/waves-intro" rel="noopener" target="_blank">Waves Intro · PhET</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=3#lessons">← Back to lesson 3 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L4" role="tabpanel" data-id="waves-L4" data-name="Oscilloscope — Lesson 4 · Time per division">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 4 of 17</span>
+    <h2>Time per division</h2>
+    <p class="say">Width is time. One cycle across is the period.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">time per division</span><span class="kw">period</span><span class="kw">timebase</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Width on the screen is time. One cycle across is the period.</p>
+    <label class="lab" for="fld-waves-L4-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L4-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Set the frequency between 200 and 300 Hz.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Choose ms per division so about two cycles show.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Count the boxes for one full cycle, crest to crest.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Multiply: boxes × ms per box. That is the period, T.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L4-q1">Short answer 1 · Boxes for one cycle, crest to crest?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L4-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L4-q2">Short answer 2 · Period T you read: boxes × ms per box</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L4-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">ms</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw two cycles and mark one period.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L4-q3">Short answer 3 · Two waves: one takes 2 ms per cycle, one takes 8 ms. Which is faster?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L4-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L4-refl">Reflection</label><p class="hint">What happens to the picture when you make ms per division bigger?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L4-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Frequency#Period_versus_frequency" rel="noopener" target="_blank">Period · Wikipedia</a></li><li><a href="https://phet.colorado.edu/en/simulations/waves-intro" rel="noopener" target="_blank">Waves Intro · PhET</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=4#lessons">← Back to lesson 4 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L5" role="tabpanel" data-id="waves-L5" data-name="Oscilloscope — Lesson 5 · Frequency from the period">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 5 of 17</span>
+    <h2>Frequency from the period</h2>
+    <p class="say">Frequency is one divided by the period. Read T, then compute f.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">frequency</span><span class="kw">hertz</span><span class="kw">period</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Frequency is cycles per second. It is one divided by the period.</p>
+    <label class="lab" for="fld-waves-L5-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L5-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Set any frequency from 100 to 1000 Hz. Do not look at the number yet.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Show one to four cycles.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Read the period T in ms.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Compute f = 1000 ÷ T. Then compare with the real setting.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L5-q1">Short answer 1 · Period T you read</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L5-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">ms</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L5-q2">Short answer 2 · Frequency you computed: 1000 ÷ T</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L5-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">Hz</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the cycles you used to read T.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L5-q3">Short answer 3 · A period of 4 ms: what is the frequency? Show your steps.</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L5-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L5-refl">Reflection</label><p class="hint">How close was your answer to the real frequency? What would make it closer?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L5-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Frequency" rel="noopener" target="_blank">Frequency · Wikipedia</a></li><li><a href="https://www.khanacademy.org/science/physics/mechanical-waves-and-sound" rel="noopener" target="_blank">Mechanical waves and sound · Khan Academy</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=5#lessons">← Back to lesson 5 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L6" role="tabpanel" data-id="waves-L6" data-name="Oscilloscope — Lesson 6 · Sine, square, triangle, saw">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 6 of 17</span>
+    <h2>Sine, square, triangle, saw</h2>
+    <p class="say">Same pitch, different shape. Look at all four.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">sine</span><span class="kw">square</span><span class="kw">triangle</span><span class="kw">sawtooth</span><span class="kw">timbre</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Same pitch, different shape, different colour of sound.</p>
+    <label class="lab" for="fld-waves-L6-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L6-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Keep the same frequency and height.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Look at the square. Then the triangle. Then the saw.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Go back to the sine.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Press Hear it on two shapes if the room allows sound.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L6-q1">Short answer 1 · Which shape has flat tops? Write its name.</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L6-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit"></span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L6-q2">Short answer 2 · How many shapes did you look at?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L6-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">shapes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw two different shapes, one above the other.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L6-q3">Short answer 3 · Which shape would you pick for a soft sound? Why?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L6-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L6-refl">Reflection</label><p class="hint">Same note, different shape. What is different about the sound?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L6-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Waveform" rel="noopener" target="_blank">Waveform · Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Timbre" rel="noopener" target="_blank">Timbre · Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=6#lessons">← Back to lesson 6 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L7" role="tabpanel" data-id="waves-L7" data-name="Oscilloscope — Lesson 7 · The trigger">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 7 of 17</span>
+    <h2>The trigger</h2>
+    <p class="say">Without a trigger the trace runs. A trigger holds it still.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">trigger</span><span class="kw">rising edge</span><span class="kw">falling edge</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">A trigger tells the scope where to start drawing, so the picture holds still.</p>
+    <label class="lab" for="fld-waves-L7-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L7-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Turn the trigger off. Watch the trace run.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Trigger on the rising edge. The trace holds still.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Trigger on the falling edge. Look at the left edge of the screen.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Find the small gold mark at the left edge.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L7-q1">Short answer 1 · With the rising edge, is the wave going up or down at the left edge?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L7-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit"></span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L7-q2">Short answer 2 · How many cycles are on the screen?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L7-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">cycles</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the trace with the trigger on the rising edge.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L7-q3">Short answer 3 · Where on the wave does a rising-edge trigger start the picture?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L7-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L7-refl">Reflection</label><p class="hint">Why would a running trace be hard to measure?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L7-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Oscilloscope#Triggered_sweep" rel="noopener" target="_blank">Trigger · Wikipedia</a></li><li><a href="https://www.tek.com/en/documents/primer/xyzs-oscilloscopes-primer" rel="noopener" target="_blank">XYZs of Oscilloscopes · Tektronix primer</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=7#lessons">← Back to lesson 7 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L8" role="tabpanel" data-id="waves-L8" data-name="Oscilloscope — Lesson 8 · Two channels">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 8 of 17</span>
+    <h2>Two channels</h2>
+    <p class="say">A second trace on the same screen. Make both fit.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">channel</span><span class="kw">compare</span><span class="kw">volts per division</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Two channels put two signals on one screen so you can compare them.</p>
+    <label class="lab" for="fld-waves-L8-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L8-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Turn channel 2 on.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Set channel 2 to half height (50%).</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Choose volts per division so both traces fit: 2 to 7 boxes.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Compare the two heights.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L8-q1">Short answer 1 · Boxes tall for channel 1?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L8-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L8-q2">Short answer 2 · Boxes tall for channel 2?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L8-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw both traces. Use two different lines.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L8-q3">Short answer 3 · Name a pair of signals a scientist might want to compare.</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L8-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L8-refl">Reflection</label><p class="hint">When would you want two signals on one screen?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L8-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Oscilloscope" rel="noopener" target="_blank">Oscilloscope · Wikipedia</a></li><li><a href="https://phet.colorado.edu/en/simulations/waves-intro" rel="noopener" target="_blank">Waves Intro · PhET</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=8#lessons">← Back to lesson 8 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L9" role="tabpanel" data-id="waves-L9" data-name="Oscilloscope — Lesson 9 · Phase">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 9 of 17</span>
+    <h2>Phase</h2>
+    <p class="say">Two waves can be alike but shifted in time. That shift is phase.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">phase</span><span class="kw">degrees</span><span class="kw">shift</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Phase is how far one wave is shifted from another, measured in degrees.</p>
+    <label class="lab" for="fld-waves-L9-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L9-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Channel 2 on, same height as channel 1.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Shift channel 2 by 90°. Look at where its crest lands.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Shift by 180°. It is upside down.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Try 360°. What do you see?</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L9-q1">Short answer 1 · At 90°, how many boxes apart are the two crests?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L9-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L9-q2">Short answer 2 · At 180°, when channel 1 is at its top, where is channel 2?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L9-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit"></span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw both traces shifted by 90°.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L9-q3">Short answer 3 · Two waves 180° apart: what happens if you add them?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L9-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L9-refl">Reflection</label><p class="hint">What does 180° out of phase look like, in your own words?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L9-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Phase_(waves)" rel="noopener" target="_blank">Phase (waves) · Wikipedia</a></li><li><a href="https://phet.colorado.edu/en/simulations/wave-interference" rel="noopener" target="_blank">Wave Interference · PhET</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=9#lessons">← Back to lesson 9 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L10" role="tabpanel" data-id="waves-L10" data-name="Oscilloscope — Lesson 10 · Amplitude and loudness">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 10 of 17</span>
+    <h2>Amplitude and loudness</h2>
+    <p class="say">Double the height and hear it. Twice the volts is about 6 dB more.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">amplitude</span><span class="kw">loudness</span><span class="kw">decibel</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Taller wave, louder sound. Twice the volts is about 6 dB more.</p>
+    <label class="lab" for="fld-waves-L10-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L10-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Set the height to 1 V. Press Hear it.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Set the height to 2 V. Press Hear it.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Write what changed and what stayed the same.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Twice the volts is about 6 dB more. Record it.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L10-q1">Short answer 1 · Height one</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L10-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">V</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L10-q2">Short answer 2 · Height two, and the change in dB</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L10-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">dB</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the 1 V wave and the 2 V wave on the same grid.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L10-q3">Short answer 3 · Why is the decibel a useful unit for loudness?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L10-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L10-refl">Reflection</label><p class="hint">Did the pitch change when you doubled the height? Why or why not?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L10-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Decibel" rel="noopener" target="_blank">Decibel · Wikipedia</a></li><li><a href="http://hyperphysics.phy-astr.gsu.edu/hbase/Sound/loud.html" rel="noopener" target="_blank">Loudness · HyperPhysics</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=10#lessons">← Back to lesson 10 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L11" role="tabpanel" data-id="waves-L11" data-name="Oscilloscope — Lesson 11 · Harmonics: a square is many sines">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 11 of 17</span>
+    <h2>Harmonics: a square is many sines</h2>
+    <p class="say">Build a square wave out of sines, one at a time.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">harmonic</span><span class="kw">fundamental</span><span class="kw">Fourier</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">A square wave is a sine plus smaller, faster sines. Those extras are harmonics.</p>
+    <label class="lab" for="fld-waves-L11-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L11-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Pick the square source.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Set Build from sines to 1. That is just a sine.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Set it to 3. Then 5. Then 9 or more.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Watch the corners get sharper.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L11-q1">Short answer 1 · How many sines did it take to look almost square?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L11-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">sines</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L11-q2">Short answer 2 · Are the harmonics odd numbers, even numbers, or both?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L11-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit"></span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the shape at 3 harmonics.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L11-q3">Short answer 3 · Why do the corners get sharper as you add more harmonics?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L11-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L11-refl">Reflection</label><p class="hint">Why can a flute and a clarinet play the same note and still sound different?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L11-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://phet.colorado.edu/en/simulations/fourier-making-waves" rel="noopener" target="_blank">Fourier: Making Waves · PhET</a></li><li><a href="https://en.wikipedia.org/wiki/Square_wave" rel="noopener" target="_blank">Square wave · Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=11#lessons">← Back to lesson 11 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L12" role="tabpanel" data-id="waves-L12" data-name="Oscilloscope — Lesson 12 · Measure a pulse">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 12 of 17</span>
+    <h2>Measure a pulse</h2>
+    <p class="say">A heartbeat-style pulse repeats slowly. Slow the timebase and count beats.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">pulse</span><span class="kw">beats per minute</span><span class="kw">period</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">A pulse repeats slowly. Count the time between beats to find the rate.</p>
+    <label class="lab" for="fld-waves-L12-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L12-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Pick the pulse source.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Slow the timebase until 2 to 4 beats show.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Count the boxes from one beat to the next. Multiply by ms per box.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Beats per minute = 60 ÷ seconds per beat.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L12-q1">Short answer 1 · Seconds from one beat to the next</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L12-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">s</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L12-q2">Short answer 2 · Beats per minute</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L12-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">bpm</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw two beats.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L12-q3">Short answer 3 · At 60 beats a minute, how many seconds pass between beats?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L12-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L12-refl">Reflection</label><p class="hint">This is a school signal, not a medical one. What would a real heart monitor need that this does not have?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L12-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Pulse" rel="noopener" target="_blank">Pulse · Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Electrocardiography" rel="noopener" target="_blank">Electrocardiography · Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=12#lessons">← Back to lesson 12 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L13" role="tabpanel" data-id="waves-L13" data-name="Oscilloscope — Lesson 13 · Noise and averaging">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 13 of 17</span>
+    <h2>Noise and averaging</h2>
+    <p class="say">Real signals are fuzzy. Averaging cleans them up.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">noise</span><span class="kw">averaging</span><span class="kw">sweep</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">Noise is random fuzz. Averaging many sweeps lets the fuzz cancel out.</p>
+    <label class="lab" for="fld-waves-L13-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L13-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Turn noise on. Look at the fuzz.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Set averaging to 4.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Set averaging to 16.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Compare the fuzz at 1, 4 and 16.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L13-q1">Short answer 1 · At which averaging setting was the line cleanest?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L13-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">sweeps</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L13-q2">Short answer 2 · Roughly how many boxes of fuzz at averaging 1?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L13-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the noisy trace, then the averaged one.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L13-q3">Short answer 3 · What could add noise to a real measurement?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L13-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L13-refl">Reflection</label><p class="hint">Why does averaging many sweeps make noise smaller?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L13-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Signal_averaging" rel="noopener" target="_blank">Signal averaging · Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Noise_(electronics)" rel="noopener" target="_blank">Noise (electronics) · Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=13#lessons">← Back to lesson 13 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L14" role="tabpanel" data-id="waves-L14" data-name="Oscilloscope — Lesson 14 · AC and DC coupling">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 14 of 17</span>
+    <h2>AC and DC coupling</h2>
+    <p class="say">An offset lifts the whole wave. AC coupling drops the lift.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">coupling</span><span class="kw">AC</span><span class="kw">DC</span><span class="kw">offset</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">DC coupling shows everything. AC coupling drops the steady offset.</p>
+    <label class="lab" for="fld-waves-L14-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L14-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Add an offset of 2 V.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">With DC coupling, watch the wave ride up.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Switch to AC coupling. It comes back to the middle.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Switch back and forth twice.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L14-q1">Short answer 1 · With DC coupling, how many boxes above the middle is the wave&#x27;s centre?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L14-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L14-q2">Short answer 2 · With AC coupling, how many boxes?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L14-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">boxes</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the wave with DC coupling and the offset on.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L14-q3">Short answer 3 · Name a signal that has both a steady part and a wiggling part.</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L14-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L14-refl">Reflection</label><p class="hint">When would you want to hide an offset? When would you want to see it?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L14-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Capacitive_coupling" rel="noopener" target="_blank">Capacitive coupling · Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Direct_current" rel="noopener" target="_blank">Direct current · Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=14#lessons">← Back to lesson 14 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L15" role="tabpanel" data-id="waves-L15" data-name="Oscilloscope — Lesson 15 · The 10× probe">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 15 of 17</span>
+    <h2>The 10× probe</h2>
+    <p class="say">A 10× probe shrinks the signal ten times. Tell the scope, or the numbers lie.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">probe</span><span class="kw">10×</span><span class="kw">attenuation</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">A 10× probe divides the signal by ten. The scope must be told, or its numbers are wrong.</p>
+    <label class="lab" for="fld-waves-L15-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L15-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Plug in the 10× probe. The wave gets small.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Read the height off the screen. Write it down.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Set the scope&#x27;s probe setting to 10×.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Read the true height now.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L15-q1">Short answer 1 · Height read before telling the scope</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L15-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">V</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L15-q2">Short answer 2 · True height after the 10× setting</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L15-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">V</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the small wave and the corrected reading.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L15-q3">Short answer 3 · If the scope shows 0.3 V with a 10× probe set to 1×, what is the true height?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L15-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L15-refl">Reflection</label><p class="hint">Why do people use a 10× probe at all?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L15-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Test_probe" rel="noopener" target="_blank">Test probe · Wikipedia</a></li><li><a href="https://www.tek.com/en/documents/primer/xyzs-oscilloscopes-primer" rel="noopener" target="_blank">XYZs of Oscilloscopes · Tektronix primer</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=15#lessons">← Back to lesson 15 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L16" role="tabpanel" data-id="waves-L16" data-name="Oscilloscope — Lesson 16 · Design a measurement">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 16 of 17</span>
+    <h2>Design a measurement</h2>
+    <p class="say">A mystery signal. Find its frequency and its height on your own.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">measurement</span><span class="kw">period</span><span class="kw">peak to peak</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">A good measurement is planned: fit the signal, read the boxes, multiply, check.</p>
+    <label class="lab" for="fld-waves-L16-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L16-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Pick the mystery signal.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Fit it: 1 to 4 cycles, 3 to 7 boxes tall.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Read the period. Compute the frequency.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Read the height: boxes × volts per box.</p></div></div><div class="step"><div class="n">5</div><div><span class="lab">Step 5</span><p class="hint">Type both numbers into the lesson.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L16-q1">Short answer 1 · Frequency you found</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L16-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit">Hz</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L16-q2">Short answer 2 · Height you found</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L16-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">V</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw the mystery signal as you fitted it.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L16-q3">Short answer 3 · Which reading do you trust more, height or frequency? Why?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L16-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L16-refl">Reflection</label><p class="hint">Which settings did you change first, and why?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L16-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Measurement" rel="noopener" target="_blank">Measurement · Wikipedia</a></li><li><a href="https://phet.colorado.edu/en/simulations/waves-intro" rel="noopener" target="_blank">Waves Intro · PhET</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=16#lessons">← Back to lesson 16 on the scope</a></p>
+</section>
+<section class="sheet" id="sh-waves-L17" role="tabpanel" data-id="waves-L17" data-name="Oscilloscope — Lesson 17 · Write it up and hand it in">
+  <div class="sheet-head">
+    <span class="k">The Oscilloscope · Lesson 17 of 17</span>
+    <h2>Write it up and hand it in</h2>
+    <p class="say">Open the worksheet, write your claim, and turn it in.</p>
+  </div>
+  <div class="priv"><span class="k">Name and date</span><div class="two"><input class="fld" type="text" data-f="name" placeholder="Your name" aria-label="Your name"><input class="fld" type="text" data-f="date" placeholder="Today's date" aria-label="Today's date"></div></div>
+  <div class="blk"><span class="lab">Key words</span><div class="chips-kw"><span class="kw">claim</span><span class="kw">evidence</span><span class="kw">reasoning</span></div></div>
+  <div class="blk"><span class="lab">Main idea</span><p class="hint">A write-up says what you found, shows the numbers, and explains why they make sense.</p>
+    <label class="lab" for="fld-waves-L17-idea">In my own words</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L17-idea" data-f="idea" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="paper tryit"><span class="k">Try it · on the scope</span><div class="step"><div class="n">1</div><div><span class="lab">Step 1</span><p class="hint">Write one sentence: what a scope measures.</p></div></div><div class="step"><div class="n">2</div><div><span class="lab">Step 2</span><p class="hint">Write one sentence: how you read a height.</p></div></div><div class="step"><div class="n">3</div><div><span class="lab">Step 3</span><p class="hint">Write one sentence: how you read a frequency.</p></div></div><div class="step"><div class="n">4</div><div><span class="lab">Step 4</span><p class="hint">Add your name and tap FINISHED.</p></div></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L17-q1">Short answer 1 · A scope measures … (one sentence)</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L17-q1" data-f="q1" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n1" aria-label="Number for reading 1"><span class="unit"></span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div><div class="blk"><label class="lab" for="fld-waves-L17-q2">Short answer 2 · How many lessons did you finish?</label>
+<div class="two"><div class="pen"><textarea class="fld" id="fld-waves-L17-q2" data-f="q2" rows="2" placeholder="What you saw"></textarea></div>
+<div class="numrow"><span class="lab">Record the number</span><input class="fld num" type="text" inputmode="decimal" data-f="n2" aria-label="Number for reading 2"><span class="unit">lessons</span></div></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab">Sketch · Draw your favourite trace from the course.</span><p class="hint">Ten boxes across, eight boxes tall, like the screen. Draw with a finger, a mouse or a pen.</p>
+    <div class="padwrap"><canvas class="pad" width="600" height="480" data-pad="1" aria-label="Sketch grid, ten by eight boxes"></canvas><input type="hidden" data-f="sketch"><div class="pad-blank" aria-hidden="true"></div></div>
+    <div class="padtools no-print"><button type="button" data-padclear>Clear the sketch</button></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L17-q3">Short answer 3 · What is one thing you would measure next with a scope?</label>
+    <div class="pen"><textarea class="fld" id="fld-waves-L17-q3" data-f="q3" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><label class="lab" for="fld-waves-L17-refl">Reflection</label><p class="hint">What was the hardest lesson, and what helped?</p>
+    <div class="pen"><textarea class="fld" id="fld-waves-L17-refl" data-f="refl" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="fam"><div class="k">More to explore</div><ul class="explore"><li><a href="https://en.wikipedia.org/wiki/Oscilloscope" rel="noopener" target="_blank">Oscilloscope · Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Scientific_method" rel="noopener" target="_blank">Scientific method · Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+  <p class="hubline no-print"><a href="/science-waves.html?l=17#lessons">← Back to lesson 17 on the scope</a></p>
+</section>
+
+  <div class="lock-acts no-print" aria-label="Page controls">
+    <button class="btn btn-lock" type="button" id="eraseAll" data-en="Erase everything on this computer" data-es="Borrar todo en esta computadora">Erase everything on this computer</button>
+    <button class="btn" type="button" id="themeBtn" aria-live="polite">Switch to dark</button>
+  </div>
+</main>
+
+<footer class="foot wrap no-print">
+  <p><b>Architecture of Grace · The Oscilloscope.</b> <span data-en="Seventeen lessons, one worksheet each." data-es="Diecisiete lecciones, una hoja cada una.">Seventeen lessons, one worksheet each.</span></p>
+  <p>This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your writing is stored in this browser only.</p>
+  <p class="foot-home"><a href="/" rel="noopener">Architecture of Grace</a></p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var hasLS = (function(){ try{ var k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+
+  /* ── storage ─────────────────────────────────────────── */
+  function load(id){
+    if(!hasLS) return {};
+    try{ return JSON.parse(localStorage.getItem(KEY+id) || "{}") || {}; }catch(e){ return {}; }
+  }
+  function save(id, data){
+    if(!hasLS) return false;
+    try{ localStorage.setItem(KEY+id, JSON.stringify(data)); return true; }catch(e){ return false; }
+  }
+  function wipe(id){ if(hasLS){ try{ localStorage.removeItem(KEY+id); }catch(e){} } }
+
+  var sheets = Array.prototype.slice.call(document.querySelectorAll(".sheet"));
+  var tabs   = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var state  = {};
+
+  /* ── helpers ─────────────────────────────────────────── */
+  function grow(el){ el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  var savedTimers = {};
+  function flagSaved(sheet, ok){
+    var pill = sheet.querySelector("[data-saved]");
+    if(!pill) return;
+    var txt = pill.querySelector("[data-savedtext]");
+    if(txt && sheet.dataset.id !== "fut"){
+      txt.textContent = ok ? ("Saved on this computer · " +
+        new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}))
+        : "This computer will not let the page save. Print your copy before you leave.";
+    }
+    pill.classList.add("on");
+    clearTimeout(savedTimers[sheet.dataset.id]);
+    savedTimers[sheet.dataset.id] = setTimeout(function(){ if(ok) pill.classList.remove("on"); }, 4000);
+  }
+
+  /* ── per-sheet wiring ────────────────────────────────── */
+  sheets.forEach(function(sheet){
+    var id = sheet.dataset.id;
+    state[id] = load(id);
+    var d = state[id];
+
+    function persist(){ flagSaved(sheet, save(id, state[id])); }
+    var t = null;
+    function persistSoon(){ clearTimeout(t); t = setTimeout(persist, 500); }
+
+    /* text fields + sliders + inputs */
+    sheet.querySelectorAll("[data-f]").forEach(function(el){
+      var f = el.dataset.f;
+      if(typeof d[f] !== "undefined" && d[f] !== null) el.value = d[f];
+      if(el.tagName === "TEXTAREA") grow(el);
+      el.addEventListener("input", function(){
+        state[id][f] = el.value;
+        if(el.tagName === "TEXTAREA") grow(el);
+        if(el.dataset.slider) paintSlider(el);
+        persistSoon();
+      });
+      if(el.dataset.slider) paintSlider(el);
+    });
+
+    function paintSlider(el){
+      var which = el.dataset.slider;
+      var out = sheet.querySelector('[data-out="' + which + '"]');
+      if(out) out.textContent = el.value;
+      var mark = sheet.querySelector('[data-mark="' + which + '"]');
+      if(mark) mark.style.left = el.value + "%";
+    }
+
+    /* table rows */
+    var table = sheet.querySelector("[data-table]");
+    if(table){
+      var tbody = table.querySelector("tbody");
+      var cols = 4;
+      function addRow(values){
+        var tr = document.createElement("tr");
+        for(var c = 0; c < cols; c++){
+          var td = document.createElement("td");
+          var ta = document.createElement("textarea");
+          ta.className = "cell"; ta.rows = 2;
+          ta.setAttribute("aria-label", table.querySelectorAll("th")[c].textContent + ", row " + (tbody.children.length + 1));
+          ta.value = (values && values[c]) || "";
+          ta.addEventListener("input", function(){ grow(this); collect(); });
+          td.appendChild(ta); tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+        Array.prototype.forEach.call(tr.querySelectorAll("textarea"), grow);
+      }
+      function collect(){
+        var rows = [];
+        Array.prototype.forEach.call(tbody.children, function(tr){
+          rows.push(Array.prototype.map.call(tr.querySelectorAll("textarea"), function(x){ return x.value; }));
+        });
+        state[id].rows = rows;
+        persistSoon();
+      }
+      var saved = d.rows && d.rows.length ? d.rows : [[],[],[],[]];
+      saved.forEach(function(r){ addRow(r); });
+      var addBtn = sheet.querySelector("[data-addrow]");
+      if(addBtn) addBtn.addEventListener("click", function(){
+        addRow(null); collect();
+        var last = tbody.lastElementChild.querySelector("textarea"); if(last) last.focus();
+      });
+    }
+
+    /* rings */
+    var ringInputs = sheet.querySelectorAll("[data-ringadd]");
+    if(ringInputs.length){
+      d.rings = d.rings || {outer:[], middle:[], inner:[]};
+      state[id].rings = d.rings;
+      function drawRing(name){
+        var box = sheet.querySelector('[data-chips="' + name + '"]');
+        if(!box) return;
+        box.innerHTML = "";
+        (state[id].rings[name] || []).forEach(function(text, i){
+          var chip = document.createElement("span");
+          chip.className = "chip";
+          chip.innerHTML = '<span></span><button type="button" class="no-print" aria-label="Remove ' + esc(text) + '">&times;</button>';
+          chip.firstChild.textContent = text;
+          chip.querySelector("button").addEventListener("click", function(){
+            state[id].rings[name].splice(i, 1); drawRing(name); persist();
+          });
+          box.appendChild(chip);
+        });
+      }
+      ["outer","middle","inner"].forEach(drawRing);
+      Array.prototype.forEach.call(ringInputs, function(inp){
+        inp.addEventListener("keydown", function(e){
+          if(e.key !== "Enter") return;
+          e.preventDefault();
+          var v = inp.value.trim();
+          if(!v) return;
+          var name = inp.dataset.ringadd;
+          state[id].rings[name] = state[id].rings[name] || [];
+          state[id].rings[name].push(v);
+          inp.value = "";
+          drawRing(name);
+          persist();
+        });
+      });
+      sheet._redrawRings = function(){ ["outer","middle","inner"].forEach(drawRing); };
+    }
+
+    /* erase this sheet */
+    var eraseBtn = sheet.querySelector("[data-erase]");
+    if(eraseBtn) eraseBtn.addEventListener("click", function(){
+      if(!window.confirm("Erase everything you typed on this sheet? This cannot be undone.")) return;
+      wipe(id);
+      state[id] = {};
+      sheet.querySelectorAll("[data-f]").forEach(function(el){
+        if(el.type === "range"){ el.value = 50; el.dispatchEvent(new Event("input")); }
+        else { el.value = ""; if(el.tagName === "TEXTAREA") grow(el); }
+      });
+      sheet.querySelectorAll("table.grid tbody textarea").forEach(function(el){ el.value = ""; grow(el); });
+      if(sheet._redrawRings){ state[id].rings = {outer:[], middle:[], inner:[]}; sheet._redrawRings(); }
+      var pill = sheet.querySelector("[data-saved]");
+      var txt = pill && pill.querySelector("[data-savedtext]");
+      if(txt) txt.textContent = "Erased. Nothing from this sheet is left on this computer.";
+      if(pill){ pill.classList.add("on"); clearTimeout(savedTimers[id]);
+        savedTimers[id] = setTimeout(function(){ pill.classList.remove("on"); }, 5000); }
+    });
+
+    /* print — synchronous, never behind a timer (iOS blocks deferred print) */
+    sheet.querySelectorAll("[data-print]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var blank = btn.dataset.print === "blank";
+        if(blank) document.body.classList.add("print-blank");
+        else syncPrintCopies();
+        window.print();
+        setTimeout(function(){ document.body.classList.remove("print-blank"); }, 250);
+      });
+    });
+  });
+
+  /* ── print copies ────────────────────────────────────
+     A textarea prints at its JS-set screen height and clips anything taller.
+     Mirror each one into a plain element that print uses instead. */
+  function syncPrintCopies(){
+    document.querySelectorAll("textarea").forEach(function(ta){
+      var host = ta.parentNode;
+      var copy = host.querySelector(":scope > .pcopy");
+      if(!copy){
+        copy = document.createElement("div");
+        copy.className = "pcopy";
+        copy.setAttribute("aria-hidden", "true");
+        host.appendChild(copy);
+      }
+      copy.textContent = ta.value;
+    });
+  }
+  if(window.addEventListener) window.addEventListener("beforeprint", syncPrintCopies);
+  if(window.matchMedia){
+    var pmq = window.matchMedia("print");
+    if(pmq.addEventListener) pmq.addEventListener("change", function(e){ if(e.matches) syncPrintCopies(); });
+  }
+  syncPrintCopies();
+
+  /* ── tabs ────────────────────────────────────────────── */
+  function show(idWanted){
+    sheets.forEach(function(s){ s.classList.toggle("is-active", s.dataset.id === idWanted); });
+    tabs.forEach(function(tb){ tb.setAttribute("aria-selected", String(tb.dataset.sheet === idWanted)); });
+    var active = document.querySelector('.sheet[data-id="' + idWanted + '"]');
+    if(active) active.querySelectorAll("textarea").forEach(grow);
+  }
+  tabs.forEach(function(tb, i){
+    tb.addEventListener("click", function(){ show(tb.dataset.sheet); });
+    tb.addEventListener("keydown", function(e){
+      var n = null;
+      if(e.key === "ArrowRight") n = tabs[(i + 1) % tabs.length];
+      if(e.key === "ArrowLeft")  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if(!n) return;
+      e.preventDefault(); n.focus(); show(n.dataset.sheet);
+    });
+  });
+
+  /* ── erase everything ────────────────────────────────── */
+  var allBtn = document.getElementById("eraseAll");
+  if(allBtn) allBtn.addEventListener("click", function(){
+    if(!window.confirm("Erase every worksheet on this computer? This cannot be undone.")) return;
+    /* Each worksheet is its own page now, so clearing only the sheets present
+       here would leave the other six behind. Sweep the whole prefix. */
+    if(hasLS){
+      try{
+        var dead = [];
+        for(var i = 0; i < localStorage.length; i++){
+          var k = localStorage.key(i);
+          if(k && k.indexOf(KEY) === 0 && k !== KEY + "theme") dead.push(k);
+        }
+        dead.forEach(function(k){ localStorage.removeItem(k); });
+      }catch(e){}
+    }
+    sheets.forEach(function(s){
+      wipe(s.dataset.id);
+      var b = s.querySelector("[data-erase]");
+      state[s.dataset.id] = {};
+      s.querySelectorAll("[data-f]").forEach(function(el){
+        if(el.type === "range"){ el.value = 50; el.dispatchEvent(new Event("input")); }
+        else { el.value = ""; if(el.tagName === "TEXTAREA") grow(el); }
+      });
+      s.querySelectorAll("table.grid tbody textarea").forEach(function(el){ el.value = ""; grow(el); });
+      if(s._redrawRings){ state[s.dataset.id].rings = {outer:[], middle:[], inner:[]}; s._redrawRings(); }
+    });
+    allBtn.textContent = "Erased — nothing is left on this computer";
+    setTimeout(function(){ allBtn.textContent = "Erase everything on this computer"; }, 5000);
+  });
+
+  /* ── theme toggle ────────────────────────────────────── */
+  var tBtn = document.getElementById("themeBtn");
+  function prefersDark(){
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s === "dark" : prefersDark();
+  }
+  function paintThemeBtn(){
+    if(tBtn) tBtn.textContent = currentIsDark() ? "Switch to light" : "Switch to dark";
+  }
+  try{
+    var stored = localStorage.getItem(KEY + "theme");
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  paintThemeBtn();
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintThemeBtn);
+    else if(mq.addListener) mq.addListener(paintThemeBtn);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(KEY + "theme", next); }catch(e){}
+    paintThemeBtn();
+  });
+
+  /* ── no-storage honesty ──────────────────────────────── */
+  if(!hasLS){
+    sheets.forEach(function(s){
+      var txt = s.querySelector("[data-savedtext]");
+      if(txt && s.dataset.id !== "fut"){
+        txt.textContent = "This computer will not let the page save. Print your copy before you leave.";
+        var pill = s.querySelector("[data-saved]");
+        if(pill) pill.classList.add("on");
+      }
+    });
+  }
+})();
+</script>
+
+<script>
+/* ══ AOG-SCOPE-WS — the lesson drop-down and the sketch grid ══ */
+(function(){
+  var sel=document.getElementById("lessonSel"), sheets=[].slice.call(document.querySelectorAll(".sheet"));
+  function show(id){
+    sheets.forEach(function(s){ s.classList.toggle("is-active", s.getAttribute("data-id")===id); });
+    if(sel.value!==id) sel.value=id;
+    var a=document.querySelector('.sheet[data-id="'+id+'"]'); if(a) a.querySelectorAll("textarea").forEach(function(t){ t.style.height="auto"; t.style.height=(t.scrollHeight+2)+"px"; });
+    var n=id.replace("waves-L",""); var back=document.getElementById("backToScope"); if(back) back.href="/science-waves.html?l="+n+"#lessons";
+    try{ history.replaceState(null,"","?l="+n+"#l"+n); }catch(e){}
+    try{ localStorage.setItem("aog.waves.lessons.place", String(n)); }catch(e){}
+    var w=document.getElementById("lessonWhere"); if(w) w.textContent=n+" / 17";
+    var b=document.getElementById("lessonBack"), x=document.getElementById("lessonNext"); if(b) b.disabled=(+n<=1); if(x) x.disabled=(+n>=17);
+    window.scrollTo(0,0);
+  }
+  function cur(){ return +String(sel.value).replace("waves-L",""); }
+  sel.addEventListener("change", function(){ show(sel.value); });
+  document.getElementById("lessonBack").addEventListener("click", function(){ if(cur()>1) show("waves-L"+(cur()-1)); });
+  document.getElementById("lessonNext").addEventListener("click", function(){ if(cur()<17) show("waves-L"+(cur()+1)); });
+  window.addEventListener("hashchange", function(){ var h=/^#l(\d+)$/.exec(location.hash||""); if(h) show("waves-L"+Math.min(17,Math.max(1,+h[1]))); });
+  var n=1; try{ n=+localStorage.getItem("aog.waves.lessons.place")||1; }catch(e){}
+  var m=/[?&]l=(\d+)/.exec(location.search||""); if(m) n=+m[1];
+  var hm=/^#l(\d+)$/.exec(location.hash||""); if(hm) n=+hm[1];
+  show("waves-L"+Math.min(17,Math.max(1,n)));
+
+  /* the sketch: a 10×8 grid drawn on the canvas, strokes on top, PNG saved in a hidden field */
+  var KEY="aog.interior.ws.v1.";
+  document.querySelectorAll(".sheet").forEach(function(sheet){
+    var cv=sheet.querySelector("canvas[data-pad]"), hid=sheet.querySelector('[data-f="sketch"]'); if(!cv) return;
+    var ctx=cv.getContext("2d"), id=sheet.getAttribute("data-id"), drawing=false, last=null;
+    function grid(){ ctx.fillStyle="#fff"; ctx.fillRect(0,0,cv.width,cv.height); ctx.strokeStyle="rgba(20,40,60,.28)"; ctx.lineWidth=1; ctx.beginPath();
+      for(var i=1;i<10;i++){ var x=Math.round(cv.width*i/10)+.5; ctx.moveTo(x,0); ctx.lineTo(x,cv.height); }
+      for(var j=1;j<8;j++){ var y=Math.round(cv.height*j/8)+.5; ctx.moveTo(0,y); ctx.lineTo(cv.width,y); } ctx.stroke();
+      ctx.strokeStyle="rgba(20,40,60,.55)"; ctx.beginPath(); ctx.moveTo(0,cv.height/2+.5); ctx.lineTo(cv.width,cv.height/2+.5); ctx.moveTo(cv.width/2+.5,0); ctx.lineTo(cv.width/2+.5,cv.height); ctx.stroke(); }
+    grid();
+    try{ var d=JSON.parse(localStorage.getItem(KEY+id)||"{}"); if(d&&d.sketch){ var im=new Image(); im.onload=function(){ ctx.drawImage(im,0,0); }; im.src=d.sketch; hid.value=d.sketch; } }catch(e){}
+    function pt(e){ var r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*cv.width/r.width, y:(e.clientY-r.top)*cv.height/r.height}; }
+    function save(){ try{ hid.value=cv.toDataURL("image/png"); hid.dispatchEvent(new Event("input",{bubbles:true})); }catch(e){} }
+    cv.addEventListener("pointerdown", function(e){ drawing=true; last=pt(e); cv.setPointerCapture(e.pointerId); e.preventDefault(); });
+    cv.addEventListener("pointermove", function(e){ if(!drawing) return; var p=pt(e); ctx.strokeStyle="#1C5499"; ctx.lineWidth=3; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; });
+    function up(){ if(!drawing) return; drawing=false; save(); }
+    cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+    var clr=sheet.querySelector("[data-padclear]"); if(clr) clr.addEventListener("click", function(){ grid(); hid.value=""; hid.dispatchEvent(new Event("input",{bubbles:true})); });
+    var er=sheet.querySelector("[data-erase]"); if(er) er.addEventListener("click", function(){ setTimeout(grid,0); });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-WS-SENDBLOCK-V2 — FINISHED, with a preview ══ */
+#wsTurnin{margin:26px 0 8px;border:2px solid var(--lock);border-radius:18px;background:var(--lock-wash);padding:18px 20px}
+#wsTurnin h2{font-size:19px;color:var(--ink);font-weight:700;margin:0}
+#wsTurnin p{font-size:14px;color:var(--ink-soft);margin:6px 0 12px;max-width:46rem}
+#wsTurnin .row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+#wsTurnin input{border:1.5px solid var(--rule,#ccc);border-radius:10px;background:var(--field,#fff);color:var(--ink);padding:10px 12px;font:inherit;min-width:220px}
+#wsTurnin .btn-fin{border:2px solid var(--lock);background:var(--lock);color:#fff;border-radius:10px;padding:11px 20px;font:800 16px/1 inherit;letter-spacing:.06em;cursor:pointer}
+#wsTurnin .st{font-size:13.5px;color:var(--ink-soft)}
+#wsPrev{position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;background:var(--field,#FBFAF7);overflow:auto;-webkit-overflow-scrolling:touch}
+#wsPrev[hidden]{display:none}
+body.wsprev{overflow:hidden}
+#wsPrev .pv-bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:9px;align-items:center;background:var(--lock);color:#fff;padding:12px 18px}
+#wsPrev .pv-bar .t{font-weight:800;font-size:16px;flex:1;min-width:200px}
+#wsPrev .pv-bar .pst{font-size:13px;opacity:.95}
+#wsPrev .pv-bar button{border:1.5px solid #fff;background:transparent;color:#fff;border-radius:9px;padding:8px 14px;font:700 14px/1 inherit;cursor:pointer}
+#wsPrev .pv-bar button.solid{background:#fff;color:var(--lock)}
+#wsPrev .pv-body{max-width:880px;margin:0 auto;padding:20px 18px 60px}
+#wsPrev .pv-lead{font-size:14px;color:var(--ink-soft);margin:4px 0 16px}
+#wsPrev .pv-text{white-space:pre-wrap;border:1.5px solid var(--rule,#ccc);border-radius:10px;background:var(--field,#fff);padding:10px 12px;min-height:2.2em;font:inherit}
+#wsPrev .pv-text.empty{color:var(--ink-soft);font-style:italic}
+@media print{#wsPrev,#wsTurnin{display:none !important}}
+</style>
+<script>
+/* ══ AOG-WS-SENDBLOCK-V2 — the FINISHED station (build .30gf) ═════════════
+   Lineage m3 → b11 → wf → scope → ws. One press: the work goes straight to
+   the teacher AND the student lands on a preview of what they built. No
+   destination resolved → this page adds nothing. Never an automatic retry. */
+(function(){
+  var CFG = {"id": "waves-L1", "name": "Oscilloscope — Lesson 1 · Power and a trace"};
+  function syncCfg(){ var a=document.querySelector(".sheet.is-active"); if(a){ CFG.id=a.getAttribute("data-id"); CFG.name=a.getAttribute("data-name")||CFG.name; } }
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw){
+    try{
+      var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+      while(t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+        return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+    }catch(e){}
+    return null;
+  }
+  var DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+  }catch(e){}
+  if(!DEST){
+    try{
+      var cfg = window.AOG_SYNC_DEFAULTS;
+      if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)
+         && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+        DEST = { url:cfg.url, key:(typeof cfg.key==="string" ? cfg.key : "") };
+    }catch(e){}
+  }
+  if(!DEST) return;
+
+  var KEY = "aog.interior.ws.v1.";
+  var whoKey = KEY + "who";
+
+  /* the WF honesty rule: a destination RESOLVED, so the footer's
+     works-with-the-network-off promise must stop claiming nothing sends */
+  try {
+    [].slice.call(document.querySelectorAll("p")).some(function (fp) {
+      if (fp.textContent.indexOf("sends nothing out") < 0) return false;
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      return true;
+    });
+  } catch (e) {}
+
+  function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+  function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+  function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function gather(){
+    var out = {};
+    [].slice.call(document.querySelectorAll(".sheet.is-active[data-id]")).forEach(function(el){
+      var id = el.getAttribute("data-id");
+      if(!id || out[id]) return;
+      try{
+        var raw = localStorage.getItem(KEY+id);
+        if(raw) out[id] = JSON.parse(raw);
+      }catch(e){}
+      if(!out[id]) out[id] = {};
+      [].slice.call(el.querySelectorAll("[data-f]")).forEach(function(f){
+        if(typeof f.value === "string" && f.value.trim() !== "") out[id][f.getAttribute("data-f")] = f.value;
+      });
+    });
+    return out;
+  }
+
+  /* ── the FINISHED station, at the page foot ── */
+  var main = document.querySelector("main") || document.body;
+  var card = document.createElement("section");
+  card.id = "wsTurnin"; card.className = "no-print";
+  card.innerHTML =
+    '<h2>Finished?</h2>' +
+    '<p>Tap FINISHED and your work goes straight to your teacher \u2014 and you\u2019ll see a preview of what you built. ' +
+    'It stays saved on this computer too.</p>' +
+    '<div class="row">' +
+    '<input type="text" id="wsWho" autocomplete="off" maxlength="60" placeholder="Enter your name" aria-label="Your code or first name">' +
+    '<button class="btn-fin" type="button" id="wsSendBtn">FINISHED</button>' +
+    '<span class="st" id="wsSt" aria-live="polite"></span></div>';
+  var acts = main.querySelector(".lock-acts");
+  if(acts) main.insertBefore(card, acts); else main.appendChild(card);
+
+  /* ── the preview ── */
+  var prev = document.createElement("div");
+  prev.id = "wsPrev"; prev.hidden = true;
+  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label","Preview of what you built");
+  document.body.appendChild(prev);
+
+  function buildPreview(who, statusText){
+    prev.innerHTML = "";
+    var bar = document.createElement("div"); bar.className = "pv-bar";
+    var t = document.createElement("span"); t.className = "t";
+    t.textContent = "\u2713 FINISHED \u2014 " + who + " \u00b7 " + CFG.name;
+    var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wsPvSt";
+    pst.textContent = statusText;
+    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
+    pr.addEventListener("click", function(){
+      var b = document.querySelector('[data-print="filled"]');
+      if(b) b.click(); else window.print();
+    });
+    var bk = document.createElement("button"); bk.type="button"; bk.textContent = "Back to my worksheet";
+    bk.addEventListener("click", function(){ prev.hidden = true; document.body.classList.remove("wsprev"); });
+    bar.appendChild(t); bar.appendChild(pst); bar.appendChild(pr); bar.appendChild(bk);
+    prev.appendChild(bar);
+
+    var body = document.createElement("div"); body.className = "pv-body";
+    var lead = document.createElement("p"); lead.className = "pv-lead";
+    lead.textContent = "This is what you built \u2014 exactly what your teacher receives.";
+    body.appendChild(lead);
+    [].slice.call(document.querySelectorAll(".sheet.is-active[data-id]")).forEach(function(sheet){
+      var clone = sheet.cloneNode(true);
+      clone.removeAttribute("id"); clone.removeAttribute("data-id");
+      clone.classList.add("is-active");
+      [].slice.call(clone.querySelectorAll(".no-print,button,[data-print],[data-saved]")).forEach(function(n){ if(n.parentNode) n.parentNode.removeChild(n); });
+      [].slice.call(clone.querySelectorAll("textarea")).forEach(function(ta){
+        var d = document.createElement("div");
+        var v = ta.value || "";
+        d.className = "pv-text" + (v.trim() ? "" : " empty");
+        d.textContent = v.trim() ? v : "\u2014 left blank \u2014";
+        ta.parentNode.replaceChild(d, ta);
+      });
+      [].slice.call(clone.querySelectorAll("input,select")).forEach(function(inp){ inp.disabled = true; });
+      body.appendChild(clone);
+    });
+    prev.appendChild(body);
+  }
+  function setPvStatus(txt){ var n = document.getElementById("wsPvSt"); if(n) n.textContent = txt; }
+
+  var inp = document.getElementById("wsWho"), btn = document.getElementById("wsSendBtn"), st = document.getElementById("wsSt");
+  inp.value = getWho();
+  /* .30he — autosend, the free-writing translation: &who= boots into a
+     BLANK saved name only, and Enter in the name field sends. */
+  try {
+    var wm = /[?&]who=([^&]+)/.exec(location.search || "");
+    if (wm && !inp.value.trim()) {
+      inp.value = decodeURIComponent(wm[1]).slice(0, 60);
+      if (inp.value.trim()) setWho(inp.value.trim());
+    }
+  } catch (e) {}
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); btn.click(); }
+  });
+  var busy = false;
+  btn.addEventListener("click", function(){
+    if(busy) return;
+    syncCfg();
+    var who = inp.value.trim();
+    if(!who){ st.textContent = "Add your code or first name — the same one you check in with — so this lands with your other work."; inp.focus(); return; }
+    setWho(who);
+    var payload = {
+      action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+      studentId:who, timestamp:new Date().toISOString(), date:today(),
+      activityId:CFG.id, activityName:CFG.name,
+      skill:CFG.name,
+      setNo:"", itemsTotal:"", independent:"", supported:"", hintsUsed:"", confidence:"",
+      source:"link",
+      extra:JSON.stringify({series:"oscilloscope-lesson", build:"ws send v2", worksheet:CFG.id, finished:true, responses:gather()})
+    };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
+    var body = JSON.stringify(payload);
+    busy = true;
+    /* the preview opens NOW — the send reports into its status line */
+    buildPreview(who, "Sending to your teacher\u2026");
+    prev.hidden = false; document.body.classList.add("wsprev");
+    prev.scrollTop = 0;
+    function done(){ busy = false; setPvStatus("Turned in \u2713"); st.textContent = "Turned in \u2713"; btn.textContent = "FINISHED \u2713"; }
+    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
+    fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(function(res){ return res.json(); })
+      .then(function(j){ if(j && j.ok) done(); else fail(); })
+      .catch(function(){
+        /* cors read threw — ONE blind send, honest label, never an auto-retry */
+        fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+            headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+          .then(done).catch(fail);
+      });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
-# Writing one unit of "World Religions, Grades 9–12" — Architecture of Grace
+# Writing one unit of "World Religions, K–12" — Architecture of Grace
 
-You are writing the content for ONE unit of a free online World Religions course built by a
+You are writing the content for ONE unit of a free online K–12 World Religions course built by a
 special-education teacher in Illinois for a public-school setting. Many readers are students with IEPs,
 English learners, or reading below grade level. Content goes into JSON files that a build script turns
 into web pages. Everything you write is ORIGINAL.

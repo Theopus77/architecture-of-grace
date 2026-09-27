@@ -18504,10 +18504,19 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     var dark=document.documentElement.getAttribute('data-theme')==='dark';
     document.documentElement.setAttribute('data-theme',dark?'light':'dark');
     LS.set('aog.interior.ws.v1.theme',dark?'light':'dark'); paintTheme()});
+  /* AOG-DD-ENTER-V2 (2026-09-27) — Jimmy: "As my daughter was working on a daily draft on iPhone
+     keyboard she hit return and all the answers popped up." Return used to run the check. Now it
+     only moves to the next box (or closes the keyboard on the last one). Checking is the button. */
   document.addEventListener('keydown',function(e){
     if(e.key==='Enter'&&e.target&&e.target.classList&&
        (e.target.classList.contains('fld')||e.target.classList.contains('dg')||
-        e.target.classList.contains('tm'))){e.preventDefault();check()}});
+        e.target.classList.contains('tm'))){
+      e.preventDefault();
+      var all=[].slice.call(document.querySelectorAll('.fld,.dg,.tm')).filter(function(x){return !x.disabled&&x.offsetParent!==null;});
+      var i=all.indexOf(e.target);
+      if(i>=0&&i<all.length-1){ all[i+1].focus(); try{ all[i+1].select&&all[i+1].select(); }catch(_e){} }
+      else e.target.blur();
+    }});
 })();
 
 /* ==================== SEND TO TEACHER ====================

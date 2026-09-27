@@ -59,6 +59,11 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .board, .phone-bar { padding:.8rem .9rem; }
 .row { display:flex; justify-content:space-between; align-items:center; gap:.4rem; padding:.28rem 0; border-bottom:1px solid var(--line); }
 .row > span:last-child { display:flex; flex-wrap:wrap; gap:.35rem; justify-content:flex-end; }
+/* AOG-TELE-REALSKY-V2: the target and sky rows are drop-downs (site rule). The menu carries the row's label. */
+.row:has(> .aogdd) > .tiny { display:none; }
+.row > .aogdd { margin:0; flex:1 1 auto; }
+.row > .aogdd .aogdd-sel { flex:1 1 160px; min-width:0; }
+.lookfor { margin:.2rem 0 .3rem; font-size:.9rem; }
 .board .btn, .phone-bar .btn { min-height:40px; padding:0 .7rem; font-size:.85rem; }
 .knobs { display:grid; gap:.4rem; margin-top:.8rem; }
 @media (min-width:640px){ .knobs { grid-template-columns:1fr 1fr; } }
@@ -144,6 +149,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
 <script>
 (function(){
   function add(src){
@@ -222,8 +228,31 @@ const STR = {
   fineHint:{en:"The fine knob is under the circle. Changing the eyepiece throws the focus off.",es:"El micrométrico está debajo del círculo. Cambiar el ocular saca el foco."},
   moon:{en:"Moon",es:"Luna"}, jupiter:{en:"Jupiter",es:"Júpiter"}, saturn:{en:"Saturn",es:"Saturno"},
   orion:{en:"Orion",es:"Orión"}, pleiades:{en:"Pleiades",es:"Pléyades"}, albireo:{en:"Albireo",es:"Albireo"}, pair:{en:"The pair",es:"El par"},
-  sea:{en:"The sea",es:"El mar"}, sunName:{en:"Sun",es:"Sol"}
+  sea:{en:"The sea",es:"El mar"}, sunName:{en:"Sun",es:"Sol"},
+  mars:{en:"Mars",es:"Marte"}, venus:{en:"Venus",es:"Venus"}, andromeda:{en:"Andromeda Galaxy",es:"Galaxia de Andrómeda"},
+  ring:{en:"Ring Nebula",es:"Nebulosa del Anillo"}, m13:{en:"M13 star cluster",es:"Cúmulo M13"}, mizar:{en:"Mizar and Alcor",es:"Mizar y Alcor"},
+  split:{en:"The 2.4″ pair",es:"El par de 2.4″"}
 };
+/* one plain line under the target menu: what to look for */
+const LOOK={
+  moon:["Dark seas, bright highlands, and shadows along the terminator.","Mares oscuros, tierras altas brillantes y sombras en el terminador."],
+  sea:["A dark plain and small craters. No lander.","Una llanura oscura y cráteres pequeños. Sin módulo."],
+  jupiter:["Two brown belts, a red spot, four moons in a line, and one moon's shadow on the disk.","Dos cinturones marrones, una mancha roja, cuatro lunas en fila y la sombra de una luna sobre el disco."],
+  saturn:["The rings, the dark Cassini gap, the ring shadow on the globe. Titan off to the side.","Los anillos, la raya oscura de Cassini, la sombra del anillo en el globo. Titán a un lado."],
+  mars:["A small orange disk. White polar cap on top, a dark wedge in the middle.","Un disco naranja pequeño. Casquete polar blanco arriba, una cuña oscura en el medio."],
+  venus:["A bright crescent. No markings: it is all cloud.","Una luna creciente brillante. Sin marcas: todo es nube."],
+  orion:["A gray-green cloud with four stars in its heart.","Una nube gris verdosa con cuatro estrellas en su corazón."],
+  pleiades:["Seven bright sisters and a faint veil on Merope. Use the 25 mm.","Siete hermanas brillantes y un velo tenue en Mérope. Usa el de 25 mm."],
+  andromeda:["A soft oval glow with a bright middle. A small round smudge below it.","Un óvalo suave de luz con el centro brillante. Una manchita redonda debajo."],
+  m13:["A ball of stars. The edge breaks into single points.","Una bola de estrellas. El borde se deshace en puntos."],
+  ring:["A tiny gray smoke ring. It needs the 10 mm or the 6 mm.","Un anillo de humo gris diminuto. Necesita el de 10 o el de 6 mm."],
+  mizar:["Two white stars close together, and Alcor off to the side.","Dos estrellas blancas muy juntas, y Alcor a un lado."],
+  albireo:["One gold star, one blue. 34″ apart.","Una estrella de oro, una azul. A 34″."],
+  split:["Two stars 2.4″ apart. The 6 mm and the Barlow split them.","Dos estrellas a 2.4″. El de 6 mm con el Barlow las separa."],
+  pair:["Two stars 1.0″ apart. Nothing on this bench splits them.","Dos estrellas a 1.0″. Nada en esta mesa las separa."],
+  sun:["Only with the filter on the front. Dark spots with gray fringes.","Solo con el filtro al frente. Manchas oscuras con flecos grises."]
+};
+function lookFor(){ const l=LOOK[S.lab.target]; return l?(S.lang==="es"?l[1]:l[0]):""; }
 const STAIR = [
   {en:"Make the telescope work",es:"Haz funcionar el telescopio",
     blurb_en:"Cap off. Lock the mount. 25 mm. Coarse focus on the Moon.",
@@ -296,85 +325,142 @@ function stairNow(){
 function btn(on,act,lab){ return `<button class="btn${on?" btn-steel":""}" data-act="${act}">${lab}</button>`; }
 function tfovArcmin(mag){ return (SCOPE.afov/mag)*60; }
 
+/* AOG-TELE-REALSKY-V2 (2026-09-27) — Jimmy: "The microscope and telescope need more realistic
+   slides and planets, objects in the sky." Everything the eyepiece shows is drawn here from
+   where things really are and how a 90 mm lens really shows them. No pictures are loaded.
+   Field units are arcminutes; the eyepiece's zoom turns them into pixels. */
+function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
+function vnoise(x,y){
+  const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
+  const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
+  return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+}
+function fbm(x,y){ return vnoise(x,y)*.5+vnoise(x*2.1+7,y*2.1)*.25+vnoise(x*4.3+3,y*4.3+9)*.125+vnoise(x*8.7,y*8.7+5)*.0625; }
+function bakeCanvas(N,fill){
+  const img=new ImageData(N,N); fill(img.data);
+  const c=document.createElement("canvas"); c.width=c.height=N;
+  c.getContext("2d").putImageData(img,0,0); return c;
+}
+/* the eye sees an eyepiece field far larger than a screen circle can show. The circle shows the
+   middle of the field at the size the eye reads it, so a planet at 150× is a disk, not a dot.
+   Every measurement still uses the true scale.
+   At low power the eye takes in the whole field; at high power it settles on the middle, so the
+   circle closes in a little more as the power goes up (1.4× at 36×, about 2.4× from 150× on). */
+function viewScale(mag){ return 1.4+Math.min(1, Math.max(0,(mag-36)/114)); }
+function viewArcmin(mag){ return tfovArcmin(mag)/viewScale(mag); }
+/* nothing moves on its own for someone who asked for stillness, or on a touch screen */
+const STILL=(function(){ try{ return matchMedia("(prefers-reduced-motion: reduce)").matches || matchMedia("(pointer: coarse)").matches; }catch(e){ return true; } })();
+
 let MOON=null;
-/* AOG-TELE-REALMOON-V1 (2026-09-26) — Jimmy: "Can the images from the telescope be more real?"
-   The Moon is now drawn from where things actually are: the seas by their real outlines in
-   selenographic longitude and latitude, forty named craters at their true places and sizes
-   (Tycho and Copernicus with their rays, Plato with its dark floor, Clavius with the arc of
-   craterlets), the Apennines, Alps and Caucasus as ridges, and a sphere lit by one sun so the
-   terminator is the soft line where the light runs out, with long shadows next to it. */
+/* ── THE MOON ─────────────────────────────────────────────────────────────────────────────
+   The seas are traced by their real outlines in selenographic latitude and longitude; the named
+   craters sit at their true places and sizes (Tycho and Copernicus with rays and terraces, Plato
+   with its dark floor, Clavius with the arc of craterlets); the Apennines, Alps, Caucasus and
+   Carpathians are ridges; and one sun lights a sphere, so the terminator is where the light runs
+   out and the shadows next to it are long. Waxing gibbous: the terminator sits at about −0.2 R. */
 function bakeMoon(){
-  const N=1400, H=new Float32Array(N*N), alb=new Float32Array(N*N), mareM=new Uint8Array(N*N);
-  const cx=N/2, cy=N/2, R=N*0.5-3, RAD=15.5;
+  const N=1800, H=new Float32Array(N*N), alb=new Float32Array(N*N), mareM=new Uint8Array(N*N);
+  const cx=N/2, cy=N/2, R=N*0.5-3;
   const D2R=Math.PI/180;
-  /* selenographic → disk pixels (north up, east right, the naked-eye view) */
   const ll=(lat,lon)=>{ const la=lat*D2R, lo=lon*D2R; return [cx+Math.cos(la)*Math.sin(lo)*R, cy-Math.sin(la)*R, Math.cos(la)*Math.cos(lo)]; };
-  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
-  function vnoise(x,y){
-    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
-    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
-    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
-  }
-  const fbm=(x,y)=>vnoise(x,y)*.5+vnoise(x*2.1+7,y*2.1)*.25+vnoise(x*4.3+3,y*4.3+9)*.125+vnoise(x*8.7,y*8.7+5)*.0625;
-  /* the seas: [lat, lon, half-width°, half-height°, tilt, edge roughness] */
-  const MARIA=[
-    [18,-57,25,15,0.35,1.4],   /* Oceanus Procellarum, the big irregular one */
-    [33,-16,16,13,0,1],        /* Imbrium */
-    [28,17.5,10,9,0,0.8],      /* Serenitatis */
-    [8.5,31,13,10,0.2,1.3],    /* Tranquillitatis */
-    [-8,51,9,11,0.3,1.2],      /* Fecunditatis */
-    [17,59,8,5.5,0.1,0.6],     /* Crisium, the oval near the limb */
-    [-15,35,5,5.5,0,0.7],      /* Nectaris */
-    [-21,-17,11,9,0.2,1.3],    /* Nubium */
-    [-24,-39,6.5,6,0,0.7],     /* Humorum */
-    [56,1,30,5,0,1.2],         /* Frigoris, the long thin one across the north */
-    [13,3,4,3.5,0.4,0.8],      /* Vaporum */
-    [-10,-23,5,4,0,0.8],       /* Cognitum */
-    [3,-2,4,3,0,0.9],          /* Sinus Medii */
-    [45,-32,7,5,0.5,1.0],      /* Sinus Iridum bay, off Imbrium */
-    [-5,-68,4.5,4.5,0,0.5],    /* Grimaldi, dark floor */
-    [24,-44,6,5,0,1.0]         /* Sinus Roris / west Procellarum reach */
+  /* the seas as outlines, [lat, lon] around the shore */
+  const POLY=[
+    {n:"imbrium", a:.64, p:[[18,-5],[24,-1],[30,1],[36,2],[42,0],[46,-3],[48,-8],[49,-14],[48,-22],[46,-28],[42,-33],[38,-36],[32,-38],[26,-38],[20,-34],[15,-26],[14,-18],[15,-10]]},
+    {n:"tranq", a:.60, p:[[0,20],[6,18],[12,19],[17,22],[20,27],[20,33],[17,40],[12,45],[6,45],[1,42],[-3,38],[-6,31],[-5,25],[-2,22]]},
+    {n:"fecund", a:.64, p:[[1,47],[-2,52],[-5,57],[-10,58],[-15,55],[-19,50],[-17,44],[-12,41],[-7,42],[-3,45]]},
+    {n:"nubium", a:.62, p:[[-9,-8],[-12,-13],[-15,-19],[-19,-24],[-24,-24],[-27,-19],[-26,-12],[-23,-8],[-18,-6],[-13,-6]]},
+    {n:"insularum", a:.67, p:[[3,-16],[6,-24],[10,-32],[14,-32],[16,-26],[14,-18],[10,-12],[6,-12]]},
+    {n:"procell", a:.65, p:[[-9,-46],[-6,-56],[-1,-62],[6,-64],[14,-66],[22,-66],[30,-63],[38,-60],[46,-55],[51,-47],[50,-40],[46,-38],[40,-40],[34,-40],[28,-40],[22,-38],[16,-36],[10,-36],[4,-34],[-2,-36],[-6,-40]]},
+    {n:"frigoris", a:.66, p:[[50,-40],[55,-34],[59,-24],[60,-12],[61,-2],[62,6],[61,16],[59,26],[57,36],[54,40],[52,34],[53,24],[54,14],[53,4],[54,-6],[54,-16],[53,-26],[51,-34]]}
   ];
-  function mareW(x,y){
-    /* back from the disk to lat/lon, then test each sea in its own frame */
-    const dx=(x-cx)/R, dy=(cy-y)/R, rr=dx*dx+dy*dy; if(rr>=1) return 0;
-    const lat=Math.asin(dy), lon=Math.atan2(dx, Math.sqrt(1-rr));
-    let w=0;
-    for(const [la,lo,hw,hh,rot,rough] of MARIA){
-      let dlo=(lon/D2R-lo)*Math.cos(la*D2R), dla=lat/D2R-la;
-      const c=Math.cos(rot), s=Math.sin(rot), lx=dlo*c-dla*s, ly=dlo*s+dla*c;
-      const shore=fbm(lx*0.22+la*0.1, ly*0.22+lo*0.1)-0.5;
-      const e=(lx*lx)/((hw*(1+shore*rough*0.5))**2)+(ly*ly)/((hh*(1+shore*rough*0.5))**2);
-      if(e<1){ const u=1-e; w=Math.max(w, u<0.4?(u/0.4)*(u/0.4)*(3-2*u/0.4):1); }
+  /* the round seas: [lat, lon, half-width° in longitude, half-height°, albedo] */
+  const ROUND=[
+    [27,18,11.5,10,.62],     /* Serenitatis */
+    [17,59,8.5,6.5,.60],     /* Crisium */
+    [-15,35,5.5,5.5,.62],    /* Nectaris */
+    [-24,-39,6.4,6,.61],     /* Humorum */
+    [-10,-23,4.5,4,.60],     /* Cognitum */
+    [13.5,3.5,4,3.6,.57],    /* Vaporum */
+    [11,-9,4.2,3.6,.58],     /* Sinus Aestuum */
+    [1,1,3,2.6,.62],         /* Sinus Medii */
+    [44.5,-31.5,5.8,5.2,.63],/* Sinus Iridum */
+    [37,31,4.5,4,.66],       /* Lacus Somniorum */
+    [45,27,3.5,3,.60],       /* Lacus Mortis */
+    [-5.5,-68,3,2.8,.42],    /* Grimaldi */
+    [57,80,5,4,.62],         /* Humboldtianum, at the limb */
+    [1,87,5,4,.62],          /* Smythii, at the limb */
+    [-1,65,1.8,1.5,.62],     /* Spumans */
+    [27,0,3.5,3,.62]         /* Palus Putredinis */
+  ];
+  /* a signed distance to each shore, on a grid in lat/lon, then sampled back on the disk */
+  const G=440, mask=new Float32Array(G*G), maskA=new Float32Array(G*G);
+  function polyDist(px,py,pts,sx){
+    let inside=false, best=1e9;
+    for(let i=0,j=pts.length-1;i<pts.length;j=i++){
+      const yi=pts[i][0], xi=pts[i][1]*sx, yj=pts[j][0], xj=pts[j][1]*sx;
+      if((yi>py)!==(yj>py) && px<(xj-xi)*(py-yi)/(yj-yi)+xi) inside=!inside;
+      const ex=xj-xi, ey=yj-yi, t=Math.max(0,Math.min(1,((px-xi)*ex+(py-yi)*ey)/(ex*ex+ey*ey||1)));
+      const dx=px-(xi+ex*t), dy=py-(yi+ey*t); best=Math.min(best,dx*dx+dy*dy);
     }
-    return w;
+    return (inside?1:-1)*Math.sqrt(best);
+  }
+  for(let gy=0;gy<G;gy++) for(let gx=0;gx<G;gx++){
+    const dx=(gx+.5)/G*2-1, dy=(gy+.5)/G*2-1, rr=dx*dx+dy*dy; if(rr>=1) continue;
+    const lat=Math.asin(-dy)/D2R, lon=Math.atan2(dx, Math.sqrt(1-rr))/D2R;
+    const sx=Math.cos(lat*D2R);
+    let w=0, a=0;
+    for(const P of POLY){
+      const d=polyDist(lon*sx,lat,P.p,sx)+(fbm(lon*.25+lat*.13,lat*.25)-.5)*1.8;
+      const u=Math.max(0,Math.min(1,(d+1.2)/2.4)), s=u*u*(3-2*u);
+      if(s>w){ w=s; a=P.a; }
+    }
+    for(const [la,lo,hw,hh,ab] of ROUND){
+      const ex=(lon-lo)*Math.cos(la*D2R)/hw, ey=(lat-la)/hh, e=Math.sqrt(ex*ex+ey*ey);
+      const d=(1-e)*Math.min(hw,hh)+(fbm(lon*.3+lat*.2+9,lat*.3)-.5)*1.6;
+      const u=Math.max(0,Math.min(1,(d+1)/2)), s=u*u*(3-2*u);
+      if(s>w){ w=s; a=ab; }
+    }
+    mask[gy*G+gx]=w; maskA[gy*G+gx]=a;
+  }
+  function mareAt(x,y){
+    const fx=(x/N)*G-.5, fy=(y/N)*G-.5, x0=Math.max(0,Math.min(G-2,Math.floor(fx))), y0=Math.max(0,Math.min(G-2,Math.floor(fy)));
+    const u=Math.max(0,Math.min(1,fx-x0)), v=Math.max(0,Math.min(1,fy-y0)), i=y0*G+x0;
+    const w=mask[i]*(1-u)*(1-v)+mask[i+1]*u*(1-v)+mask[i+G]*(1-u)*v+mask[i+G+1]*u*v;
+    return [w, maskA[i]||maskA[i+1]||maskA[i+G]||maskA[i+G+1]||.6];
   }
   for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
     const dx=x-cx, dy=y-cy; if(dx*dx+dy*dy>R*R) continue;
-    const m=mareW(x,y), i=y*N+x;
-    const n=fbm(x/90,y/90);
-    mareM[i]=m>0.02?1:0;
+    const [m,ma]=mareAt(x,y), i=y*N+x;
+    const n=fbm(x/115,y/115);
+    mareM[i]=m>0.3?1:0;
     /* highlands are rough and high; the seas are flat lava, a little lower, with gentle wrinkle ridges */
-    H[i]=m?(-1.6*m+(fbm(x/22,y/22)-.5)*.22+Math.sin(x/9+y/23)*.05*m):(n-.5)*1.6+(fbm(x/14,y/14)-.5)*.35;
-    const ab=0.46+0.06*(1-m)+(fbm(x/40,y/40)-.5)*.05, ah=0.80+(n-.5)*.10; alb[i]=ah+(ab-ah)*m;
+    const ridges=Math.sin(x/14+y/37+vnoise(x/77,y/77)*6)*.035;
+    H[i]=m*(-1.6+(fbm(x/28,y/28)-.5)*.18+ridges)+(1-m)*((n-.5)*1.6+(fbm(x/18,y/18)-.5)*.38);
+    const broad=(fbm(x/330+2,y/330)-.5)*.07;
+    const ab=ma+(fbm(x/77,y/77)-.5)*.10+(vnoise(x/12,y/12)-.5)*.02+broad;
+    const ah=0.84+(n-.5)*.10+(vnoise(x/9,y/9)-.5)*.03+broad;
+    alb[i]=ah+(ab-ah)*m;
   }
-  /* mountain ranges as ridges: Apennines (SE rim of Imbrium), Alps, Caucasus, Carpathians */
+  /* the mountain ranges as ridges: Apennines, Alps, Caucasus, Carpathians, Jura, Altai scarp */
   function ridge(pts,height,width){
-    for(let k=1;k<pts.length;k++){
+    const rr=mulberry32(pts.length*77+width);
+    for(let pass=0;pass<4;pass++) for(let k=1;k<pts.length;k++){
       const [ax,ay]=ll(pts[k-1][0],pts[k-1][1]), [bx,by]=ll(pts[k][0],pts[k][1]);
-      const L=Math.hypot(bx-ax,by-ay);
-      for(let s=0;s<=L;s+=1){ const px=ax+(bx-ax)*s/L, py=ay+(by-ay)*s/L;
+      const L=Math.hypot(bx-ax,by-ay), nx=-(by-ay)/L, ny=(bx-ax)/L, off=(rr()-.5)*width*2.4, hh=height*(0.6+0.8*rr())*0.5;
+      for(let s=0;s<=L;s+=1){ const px=ax+(bx-ax)*s/L+nx*off, py=ay+(by-ay)*s/L+ny*off;
         for(let q=-width*2;q<=width*2;q++) for(let r=-width*2;r<=width*2;r++){
           const x=px+q|0, y=py+r|0; if(x<1||y<1||x>=N-1||y>=N-1) continue;
-          const d=Math.hypot(q,r), f=Math.exp(-d*d/(2*width*width))*(0.7+0.6*vnoise(x/7,y/7));
-          H[y*N+x]+=height*f*0.035;
+          const wv=0.5+1.0*vnoise(x/16+3,y/16), d=Math.hypot(q,r)/wv, f=Math.exp(-d*d/(2*width*width*0.5))*(0.5+1.0*vnoise(x/7,y/7))*(0.6+0.8*vnoise(s/40,k+pass));
+          H[y*N+x]+=hh*f*0.035; alb[y*N+x]=Math.min(.95, alb[y*N+x]+f*.02);
         } }
     }
   }
-  ridge([[15,-6],[19,-3],[24,0],[28,2]],18,6);       /* Apennines */
+  ridge([[15,-6],[19,-3],[24,0],[28,2]],11,6);       /* Apennines */
   ridge([[43,-4],[46,0],[49,3]],12,5);               /* Alps */
   ridge([[33,6],[37,9],[41,11]],11,4);               /* Caucasus */
   ridge([[14,-24],[15,-18],[14,-12]],8,4);           /* Carpathians */
+  ridge([[47,-36],[49,-30],[47,-25]],9,4);           /* Jura, round Sinus Iridum */
+  ridge([[-24,22],[-19,24],[-14,27]],6,3);           /* Altai scarp */
   function stamp(px,py,Rr,opt){
     opt=opt||{};
     if(Rr<0.6) return;
@@ -382,60 +468,49 @@ function bakeMoon(){
     const x0=Math.max(1,px-Rr*1.9|0), x1=Math.min(N-2,px+Rr*1.9|0), y0=Math.max(1,py-Rr*1.9|0), y1=Math.min(N-2,py+Rr*1.9|0);
     for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){
       const d=Math.hypot(x-px,y-py), i=y*N+x;
-      if(d<=Rr){ const u=d/Rr; H[i]-=depth*(opt.flat?Math.min(1,(1-u)*4):(1-u*u)); if(opt.floor!=null) alb[i]=opt.floor; }
+      if(d<=Rr){
+        const u=d/Rr;
+        let bowl=opt.flat?Math.min(1,(1-u)*4):(1-u*u);
+        if(opt.terrace && u>0.62){ bowl*=0.75+0.25*Math.abs(Math.sin(u*Math.PI*7)); } /* terraced inner walls */
+        H[i]-=depth*bowl;
+        if(opt.floor!=null) alb[i]=opt.floor;
+      }
       H[i]+=rimH*Math.exp(-((d-Rr)*(d-Rr))/(2*sig*sig));
-      if(d>Rr && d<Rr*1.8){ H[i]+=rimH*.16*(1-(d-Rr)/(Rr*.8)); alb[i]=Math.min(.98, alb[i]+(opt.bright||.03)); }
+      if(d>Rr && d<Rr*1.8){ H[i]+=rimH*.16*(1-(d-Rr)/(Rr*.8))*(0.6+0.8*vnoise(x/5,y/5)); alb[i]=Math.min(.98, alb[i]+(opt.bright||.03)); }
     }
     if(Rr>14 && opt.peak!==false){ const pr=Rr*.13;
       for(let y=py-pr*3|0; y<=py+pr*3; y++) for(let x=px-pr*3|0; x<=px+pr*3; x++){
         if(x<1||y<1||x>=N-1||y>=N-1) continue; const d=Math.hypot(x-px,y-py); H[y*N+x]+=depth*.3*Math.exp(-(d*d)/(2*pr*pr)); } }
   }
-  const kmPx=R/1737;   /* pixels per km at the disk centre */
+  const kmPx=R/1737;
   function crater(lat,lon,km,opt){ const [px,py,fore]=ll(lat,lon); if(fore<=0.05) return; stamp(px,py,km/2*kmPx*Math.sqrt(fore*0.35+0.65),opt); }
-  /* the named craters: [lat, lon, diameter km, options] */
   const CR=[
-    [-43.3,-11.4,86,{bright:.09,depth:1.2}],          /* Tycho */
-    [9.6,-20.1,93,{bright:.06,depth:1.1}],            /* Copernicus */
-    [8.1,-38,32,{bright:.06}],                         /* Kepler */
-    [23.7,-47.4,40,{bright:.12}],                      /* Aristarchus, the brightest spot */
-    [51.6,-9.3,101,{flat:true,floor:.40,rim:.8,peak:false}],   /* Plato, dark floor */
-    [-58.4,-14.4,225,{depth:.7,rim:.7}],               /* Clavius */
-    [-9.2,-1.8,153,{flat:true,floor:.62,rim:.6,peak:false}],   /* Ptolemaeus */
-    [-13.4,-2.8,110,{flat:true,floor:.6,rim:.7}],      /* Alphonsus */
-    [-18.2,-1.9,97,{depth:1}],                         /* Arzachel */
-    [29.7,-4,83,{flat:true,floor:.5,rim:.8,peak:false}],       /* Archimedes */
-    [14.5,-11.3,58,{}],                                /* Eratosthenes */
-    [-11.4,26.4,100,{depth:1.1}],                      /* Theophilus */
-    [-8.9,60.9,132,{}],                                /* Langrenus */
-    [-25.3,60.4,177,{depth:.8}],                       /* Petavius */
-    [31.8,29.9,95,{flat:true,floor:.55,rim:.7,peak:false}],    /* Posidonius */
-    [27.7,55.5,126,{depth:.8}],                        /* Cleomedes */
-    [53.6,56.5,125,{flat:true,floor:.5,rim:.7,peak:false}],    /* Endymion */
-    [-17.5,-39.9,110,{flat:true,floor:.58,rim:.7,peak:false}], /* Gassendi */
-    [-44.4,-55.1,227,{flat:true,floor:.6,rim:.5,peak:false}],  /* Schickard */
-    [-20.7,-22.2,61,{depth:1.1}],                      /* Bullialdus */
-    [-32.4,54.1,75,{}],                                /* Stevinus */
-    [-16.2,-34.1,15,{}],                               /* Mersenius area small */
-    [-14.6,-13.7,29,{}],                               /* Lubiniezky-ish */
-    [-42.4,-1.1,55,{}],                                /* Maginus-ish small */
-    [-50.2,-6.3,163,{depth:.7,rim:.6}],                /* Maginus */
-    [-38.5,-1.4,43,{}],                                /* Walter-ish */
-    [-33.1,-0.8,140,{depth:.7,rim:.6}],                /* Walther */
-    [-2.5,-16.2,45,{}],                                /* Reinhold */
-    [43.5,-18.7,8,{}],                                 /* Sinus Iridum inner */
-    [40.9,-2.6,40,{}],                                 /* Cassini */
-    [37.4,-23.6,26,{}],                                /* Helicon area */
-    [23.7,-12,15,{}],                                  /* Timocharis-ish */
-    [26.7,-13,34,{}],                                  /* Timocharis */
-    [17.7,20.8,9,{}],                                  /* small in Serenitatis */
-    [8.7,24.4,22,{}],                                  /* Sabine */
-    [-3.2,30.4,29,{}],                                 /* Torricelli-ish */
-    [4.5,28.5,18,{}],                                  /* Arago */
-    [26.5,63.5,28,{}],                                 /* Picard region */
-    [-11.5,64.5,56,{}],                                /* Vendelinus small */
-    [-16.3,63.3,147,{depth:.6,rim:.5}],                /* Vendelinus */
-    [16.3,-3.8,9,{}],                                  /* tiny */
-    [64.5,-8,45,{}],                                   /* northern highland */
+    [-43.3,-11.4,86,{bright:.10,depth:1.2,terrace:1}],   /* Tycho */
+    [9.6,-20.1,93,{bright:.07,depth:1.1,terrace:1}],     /* Copernicus */
+    [8.1,-38,32,{bright:.06}],                           /* Kepler */
+    [23.7,-47.4,40,{bright:.14}],                        /* Aristarchus */
+    [16.1,46.8,28,{bright:.12}],                         /* Proclus */
+    [51.6,-9.3,101,{flat:true,floor:.40,rim:.8,peak:false}],  /* Plato */
+    [-58.4,-14.4,225,{depth:.7,rim:.7}],                 /* Clavius */
+    [-60.9,-12.1,48,{}],[-56.1,-10.1,52,{}],[-58.8,-12.6,28,{}],[-57.7,-14.2,21,{}],[-57.5,-16.9,13,{}],[-58.1,-18.1,12,{}], /* Rutherfurd, Porter, and the arc D C N J */
+    [-9.2,-1.8,153,{flat:true,floor:.62,rim:.6,peak:false}],  /* Ptolemaeus */
+    [-13.4,-2.8,110,{flat:true,floor:.6,rim:.7}],        /* Alphonsus */
+    [-18.2,-1.9,97,{depth:1,terrace:1}],                 /* Arzachel */
+    [29.7,-4,83,{flat:true,floor:.5,rim:.8,peak:false}], /* Archimedes */
+    [14.5,-11.3,58,{}],                                  /* Eratosthenes */
+    [-11.4,26.4,100,{depth:1.1,terrace:1}],              /* Theophilus */
+    [-8.9,60.9,132,{terrace:1}],                         /* Langrenus */
+    [-25.3,60.4,177,{depth:.8}],                         /* Petavius */
+    [31.8,29.9,95,{flat:true,floor:.55,rim:.7,peak:false}],   /* Posidonius */
+    [27.7,55.5,126,{depth:.8}],                          /* Cleomedes */
+    [53.6,56.5,125,{flat:true,floor:.5,rim:.7,peak:false}],   /* Endymion */
+    [-17.5,-39.9,110,{flat:true,floor:.58,rim:.7,peak:false}],/* Gassendi */
+    [-44.4,-55.1,227,{flat:true,floor:.6,rim:.5,peak:false}], /* Schickard */
+    [-20.7,-22.2,61,{depth:1.1}],                        /* Bullialdus */
+    [-32.4,54.1,75,{}],[-50.2,-6.3,163,{depth:.7,rim:.6}],[-33.1,-0.8,140,{depth:.7,rim:.6}],[-38.5,-1.4,43,{}],[-42.4,-1.1,55,{}],
+    [-2.5,-16.2,45,{}],[40.9,-2.6,40,{}],[26.7,-13,34,{}],[8.7,24.4,22,{}],[4.5,28.5,18,{}],[-3.2,30.4,29,{}],[26.5,63.5,28,{}],[-16.3,63.3,147,{depth:.6,rim:.5}],
+    [-14.6,-13.7,29,{}],[-16.2,-34.1,15,{}],[23.7,-12,15,{}],[17.7,20.8,9,{}],[43.5,-18.7,8,{}],[16.3,-3.8,9,{}],[64.5,-8,45,{}],[37.4,-23.6,26,{}],
+    [-8.6,-4.9,27,{}],[3.5,-12.6,20,{}],[-3.0,-6.4,23,{}],[21.9,4.0,11,{}],[36.3,-4.9,27,{}],[19.9,-27.6,15,{}],[-27.2,-17.8,60,{depth:.8}],
     [-62,-12,60,{}],[-70,-5,90,{depth:.6}],[-66,20,70,{depth:.6}],[-54,25,80,{depth:.6}],[-48,12,52,{}],[-35,-30,68,{}],[-28,-45,54,{}],
     [-38,40,60,{}],[-45,50,56,{}],[-30,20,48,{}],[-24,10,60,{}],[-20,32,42,{}],[-50,-30,84,{depth:.6}],[-56,-40,70,{depth:.6}],[-64,30,66,{depth:.6}],
     [60,20,58,{}],[64,40,50,{}],[70,10,64,{depth:.6}],[58,-30,52,{}],[62,-45,70,{depth:.6}],[48,50,60,{}],[36,45,44,{}],[12,45,30,{}],[-2,58,40,{}],
@@ -444,12 +519,12 @@ function bakeMoon(){
   CR.forEach(c=>crater(c[0],c[1],c[2],c[3]));
   /* the unnamed thousands: highlands are saturated with them, the seas are nearly clean */
   const rng=mulberry32(0x51a0e1);
-  for(let i=0;i<2600;i++){
+  for(let i=0;i<5200;i++){
     const lat=(rng()*2-1)*88, lon=(rng()*2-1)*88;
     const [px,py,fore]=ll(lat,lon); if(fore<=0.05) continue;
     const sea=mareM[(py|0)*N+(px|0)];
-    if(sea && rng()<0.86) continue;
-    const km=2+Math.pow(rng(),2.4)*(sea?14:38);
+    if(sea && rng()<0.88) continue;
+    const km=2+Math.pow(rng(),2.4)*(sea?12:38);
     stamp(px,py,km/2*kmPx*Math.sqrt(fore*0.35+0.65),{bright:.02});
   }
   /* ray systems: Tycho's reach across the south, Copernicus and Kepler shorter and knotted */
@@ -470,52 +545,54 @@ function bakeMoon(){
       }
     }
   }
-  rayFan(-43.3,-11.4,14,0.95,0.11,11);
-  rayFan(9.6,-20.1,9,0.32,0.09,12);
+  rayFan(-43.3,-11.4,16,0.95,0.13,11);
+  rayFan(9.6,-20.1,10,0.32,0.10,12);
   rayFan(8.1,-38,7,0.2,0.07,13);
   rayFan(23.7,-47.4,5,0.12,0.06,14);
-  /* one sun. A waxing gibbous: the terminator runs down the west (left) at about 0.2 R. */
-  const phase=78.5*D2R, Lx=Math.sin(phase), Lz=Math.cos(phase);   /* sun from the right and in front: terminator at −0.2 R */
-  /* long shadows: march toward the sun and remember the highest thing in the way */
+  rayFan(16.1,46.8,6,0.14,0.08,15);
+  /* one sun. Ten days old, a waxing gibbous: the terminator runs down the west (left) at longitude −22°,
+     so Copernicus, Plato, Clavius and the Apennines all stand in long morning shadow. */
+  const phase=68*D2R, Lx=Math.sin(phase), Lz=Math.cos(phase);
   const gapA=new Float32Array(N*N);
   for(let y=1;y<N-1;y++){
     let cover=-1e9;
     for(let x=N-2;x>=1;x--){
       const dx=(x-cx)/R, dy=(y-cy)/R, rr=dx*dx+dy*dy;
       if(rr>1){ cover=-1e9; continue; }
-      const nz=Math.sqrt(1-rr), sunEl=dx*Lx+nz*Lz;            /* sun elevation on the sphere: 1 at noon, 0 at the terminator */
-      const drop=Math.max(0.02, sunEl)*3.2;                    /* a low sun throws a long shadow */
+      const nz=Math.sqrt(1-rr), sunEl=dx*Lx+nz*Lz;
+      const drop=Math.max(0.04, sunEl)*3.2;
       cover-=drop;
       const h=H[y*N+x];
       gapA[y*N+x]=cover-h;
       if(h>cover) cover=h;
     }
   }
-  const img=new ImageData(N,N), data=img.data;
-  for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
-    const dx=(x-cx)/R, dy=(y-cy)/R, rr=dx*dx+dy*dy;
-    if(rr>1) continue;
-    const idx=y*N+x, nz0=Math.sqrt(1-rr);
-    /* sphere normal plus the terrain's tilt */
-    const hx=(H[idx+1]-H[idx-1])*0.9, hy=(H[idx+N]-H[idx-N])*0.9;
-    let nx=dx*4.6-hx, ny=dy*4.6-hy, nz=nz0*4.6, nl=Math.hypot(nx,ny,nz)||1; nx/=nl; ny/=nl; nz/=nl;
-    let nd=nx*Lx+nz*Lz; if(nd<0) nd=0;
-    const sunEl=dx*Lx+nz0*Lz;
-    let light=Math.pow(nd,0.9);
-    if(gapA[idx]>0.25) light*=Math.exp(-gapA[idx]*.9)*.5;
-    /* near the terminator the light is grazing and everything is relief; past it, night with a breath of earthshine */
-    const night=sunEl<0.015?0.045:0;
-    const a=alb[idx], mare=a<0.6;
-    const k=a*(night+light*1.18);
-    const o=(y*N+x)*4;
-    data[o]=Math.min(255, k*(mare?206:246)+night*10);
-    data[o+1]=Math.min(255, k*(mare?200:238)+night*11);
-    data[o+2]=Math.min(255, k*(mare?190:222)+night*14);
-    data[o+3]=255;
-  }
-  const c=document.createElement("canvas"); c.width=c.height=N;
-  c.getContext("2d").putImageData(img,0,0);
-  return c;
+  return bakeCanvas(N,data=>{
+    for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+      const dx=(x-cx)/R, dy=(y-cy)/R, rr=dx*dx+dy*dy;
+      if(rr>1) continue;
+      const idx=y*N+x, nz0=Math.sqrt(1-rr);
+      const hx=(H[idx+1]-H[idx-1])*2.0, hy=(H[idx+N]-H[idx-N])*2.0;
+      let nx=dx*4.6-hx, ny=dy*4.6-hy, nz=nz0*4.6, nl=Math.hypot(nx,ny,nz)||1; nx/=nl; ny/=nl; nz/=nl;
+      let nd=nx*Lx+nz*Lz; if(nd<0) nd=0;
+      const sunEl=dx*Lx+nz0*Lz;
+      /* the eye adapts: ground near the terminator still reads bright, so the light is compressed
+         (a square root, not a cosine) and the terrain's own tilt carries the relief */
+      const relief=Math.min(2.4, nd/Math.max(sunEl,0.04));        /* the ground's own tilt against the grazing light */
+      let light=Math.pow(Math.max(0,sunEl),0.35)*Math.pow(relief,1.4);
+      const shadowed=gapA[idx]>0.25;
+      if(shadowed) light*=Math.exp(-gapA[idx]*.9)*.45;
+      light=light*(0.7+0.3*Math.min(1,sunEl*1.6))+(shadowed?0:Math.max(0,sunEl)*0.12);
+      const night=sunEl<0.015?0.05:0;
+      const a=alb[idx], mare=Math.max(0,Math.min(1,(0.78-a)/0.18));
+      const k=a*(night+light*1.0);
+      const o=idx*4;
+      data[o]=Math.min(255, k*(240-mare*22)+night*10);
+      data[o+1]=Math.min(255, k*(236-mare*18)+night*11);
+      data[o+2]=Math.min(255, k*(228-mare*10)+night*15);
+      data[o+3]=255;
+    }
+  });
 }
 function drawMoon(ctx){
   if(!MOON) MOON=bakeMoon();
@@ -530,15 +607,14 @@ function skyNow(){
 }
 
 let EYE_NOW=0;
+/* a star as the lens shows it: a bright core, a faint ring, a soft halo that grows with brightness */
 function airy(ctx,x,y,mag,col){
-  const flick=mag<3.4
+  const flick=STILL?1:(mag<3.4
     ? 0.62+0.38*Math.abs(Math.sin(EYE_NOW/130+x*2.7+y*1.9))
-    : 0.86+0.14*Math.sin(EYE_NOW/210+x*4.2+y*3.1);
-  const j=mag<4.5?0.012:0.004;
-  x+=Math.sin(EYE_NOW/180+y*6)*j;
-  y+=Math.cos(EYE_NOW/200+x*6)*j;
+    : 0.86+0.14*Math.sin(EYE_NOW/210+x*4.2+y*3.1));
+  if(!STILL){ const j=mag<4.5?0.012:0.004; x+=Math.sin(EYE_NOW/180+y*6)*j; y+=Math.cos(EYE_NOW/200+x*6)*j; }
   const k=Math.hypot(ctx.getTransform().a, ctx.getTransform().b)||1;
-  const corePx=Math.max(1.15, 1.2+Math.max(0, 5.4-mag)*1.25);
+  const corePx=Math.max(1.1, 0.022*k*(1+Math.max(0,7.5-mag)*0.22), 1.15+Math.max(0, 5.6-mag)*1.15);   /* never smaller than the lens's own 1.3″ disc; bright stars flare wider */
   const wing=(corePx*(mag>6?2.1:3.6))/k;
   const g=ctx.createRadialGradient(x,y,0,x,y,wing);
   g.addColorStop(0,"#fff");
@@ -546,7 +622,7 @@ function airy(ctx,x,y,mag,col){
   g.addColorStop(0.42,`rgba(176,168,214,${(mag<4?0.28:0.1)*flick})`);
   g.addColorStop(1,"rgba(0,0,0,0)");
   ctx.save();
-  ctx.globalAlpha=Math.max(0.45, Math.min(1, flick));
+  ctx.globalAlpha=Math.max(0.45, Math.min(1, flick))*(mag>9?Math.max(.25,1-(mag-9)*.2):1);
   ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,wing,0,6.3); ctx.fill();
   if(mag<4.8){
     ctx.strokeStyle=`rgba(214,224,255,${0.28*flick})`;
@@ -555,130 +631,144 @@ function airy(ctx,x,y,mag,col){
   }
   ctx.restore();
 }
+/* a field of stars with the real spread: a few bright, many faint, most white, some warm, a few blue */
 function fieldStars(seed, n, span){
   const rng=mulberry32(seed), a=[];
-  for(let i=0;i<n;i++) a.push({x:(rng()-.5)*span, y:(rng()-.5)*span, m:6.2+rng()*3.2, c:rng()<.2?"#f0d8c4":"#e4ecff"});
+  for(let i=0;i<n;i++){
+    const u=rng(); const m=5.4+Math.pow(u,0.55)*5.2;
+    const c=rng(); a.push({x:(rng()-.5)*span, y:(rng()-.5)*span, m, c:c<.14?"#f4d6b8":c<.22?"#ffd9a0":c<.34?"#cfe0ff":"#e8eeff"});
+  }
   return a;
 }
-const SKY = fieldStars(99, 140, 90);
-const ORI_FIELD = fieldStars(42, 70, 36);
-const PLE_FIELD = fieldStars(77, 60, 50);
-let JUP=null, SAT=null, ORI=null;
+const SKY = fieldStars(99, 260, 90);
+const ORI_FIELD = fieldStars(42, 90, 36);
+const PLE_FIELD = fieldStars(77, 80, 70);
+const AND_FIELD = fieldStars(31, 120, 90);
+const RING_FIELD = fieldStars(57, 60, 30);
+const M13_FIELD = fieldStars(13, 70, 40);
+let JUP=null, SAT=null, ORI=null, MARS=null, VENUS=null, ANDR=null, RING=null, M13=null;
+/* ── JUPITER ── an oblate disk 42″ wide: two dark equatorial belts, finer belts and zones with ragged
+   edges, festoons, the Great Red Spot in its bay, limb darkening, and one moon's shadow crossing the disk. */
 function bakeJupiter(){
   const N=900, cx=N/2, cy=N/2, SPAN=0.46;
   const eq=42/120, pol=eq*0.935;
-  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
-  function vn(x,y){
-    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
-    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
-    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
-  }
-  const img=new ImageData(N,N), data=img.data;
-  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
-    const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
-    const e=(ax*ax)/(eq*eq)+(ay*ay)/(pol*pol);
-    const o=(y*N+x)*4;
-    if(e>=1){ data[o+3]=0; continue; }
-    const mu=Math.sqrt(1-e), lat=ay/pol;
-    const n=vn(ax*14+3, lat*8)-0.5;
-    const belt=(c,w,d)=>{
-      const wob=n*0.05+Math.sin(ax*8+c*5)*0.015;
-      const u=Math.abs(lat-c)/(w+wob);
-      return u<1 ? d*(1-u*u) : 0;
-    };
-    let dark=0;
-    dark=Math.max(dark, belt(-0.78,0.13,0.26));
-    dark=Math.max(dark, belt(-0.54,0.04,0.42));
-    dark=Math.max(dark, belt(-0.22,0.085,0.78));
-    dark=Math.max(dark, belt(0.015,0.016,0.22));
-    dark=Math.max(dark, belt(0.27,0.105,0.74));
-    dark=Math.max(dark, belt(0.58,0.038,0.38));
-    dark=Math.max(dark, belt(0.84,0.13,0.34));
-    const gx=(ax-0.10)/0.115, gy=(lat-0.30)/0.075, grs=gx*gx+gy*gy;
-    if(grs<1.7) dark*=0.22+0.6*Math.min(1, grs/1.7);
-    if(lat>0.2 && lat<0.4 && ax>0.16 && ax<0.34) dark=Math.max(dark, 0.42*(1-(ax-0.16)/0.18));
-    const fest=Math.sin(ax*18+vn(ax*4,1.2)*4);
-    if(fest>0.45 && lat>-0.16 && lat<-0.02) dark=Math.max(dark, 0.28*(fest-0.45)*1.6);
-    let r=236-dark*118, g=214-dark*128, b=176-dark*118;
-    if(grs<1){
-      const u=1-grs, core=Math.pow(u,1.6);
-      r=168+core*48; g=78+core*46; b=62+core*28;
-      r-=(1-u)*18; g-=(1-u)*10;
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
+      const e=(ax*ax)/(eq*eq)+(ay*ay)/(pol*pol);
+      const o=(y*N+x)*4;
+      if(e>=1){ data[o+3]=0; continue; }
+      const mu=Math.sqrt(1-e), lat=ay/pol;
+      const n=vnoise(ax*14+3, lat*8)-0.5;
+      const belt=(c,w,d,wob2)=>{
+        const wob=n*0.05+Math.sin(ax*8+c*5)*0.015+(wob2||0)*(vnoise(ax*22+c*9,4)-.5);
+        const u=Math.abs(lat-c)/(w+wob);
+        return u<1 ? d*(1-u*u) : 0;
+      };
+      let dark=0;
+      dark=Math.max(dark, belt(-0.80,0.12,0.24,.03));
+      dark=Math.max(dark, belt(-0.56,0.04,0.40,.02));
+      dark=Math.max(dark, belt(-0.22,0.09,0.80,.05));     /* NEB, the broad northern belt */
+      dark=Math.max(dark, belt(0.015,0.014,0.20,.01));
+      dark=Math.max(dark, belt(0.27,0.105,0.74,.05));     /* SEB, the southern belt with the Spot's bay */
+      dark=Math.max(dark, belt(0.58,0.038,0.36,.02));
+      dark=Math.max(dark, belt(0.84,0.13,0.32,.03));
+      const gx=(ax-0.10)/0.115, gy=(lat-0.30)/0.075, grs=gx*gx+gy*gy;
+      if(grs<1.7) dark*=0.22+0.6*Math.min(1, grs/1.7);
+      if(lat>0.2 && lat<0.4 && ax>0.16 && ax<0.34) dark=Math.max(dark, 0.42*(1-(ax-0.16)/0.18));
+      /* festoons: blue-gray wisps hanging from the NEB into the equatorial zone */
+      const fest=Math.sin(ax*18+vnoise(ax*4,1.2)*4);
+      let fz=0;
+      if(fest>0.45 && lat>-0.16 && lat<-0.02){ fz=0.30*(fest-0.45)*1.6*(1-Math.abs(lat+0.09)/0.07); dark=Math.max(dark, fz); }
+      /* barges and white ovals: small dark and pale ovals along the belts */
+      const barge=Math.pow(Math.max(0,1-((ax+0.20)*(ax+0.20)/0.0022+(lat+0.24)*(lat+0.24)/0.0009)),1);
+      dark=Math.max(dark, 0.9*barge);
+      let r=238-dark*120, g=216-dark*130, b=180-dark*122;
+      if(fz>0){ r-=fz*40; g-=fz*10; b+=fz*20; }
+      if(grs<1){
+        const u=1-grs, core=Math.pow(u,1.6);
+        r=178+core*44; g=92+core*46; b=70+core*26;
+        r-=(1-u)*18; g-=(1-u)*10;
+      }
+      const oval=(ax+0.16)*(ax+0.16)/0.0016+(lat-0.60)*(lat-0.60)/0.0011;
+      if(oval<1){ r=230; g=220; b=200; }
+      if(Math.abs(lat)<0.09){ r+=20; g+=16; b+=8; }
+      if(Math.abs(lat)>0.7){ g+=6; r-=8; b+=4; }
+      const limb=0.20+0.80*Math.pow(mu,0.6);
+      const k=limb*(0.96+n*0.06);
+      /* one moon's shadow on the disk: a sharp black dot, the easiest thing to see on Jupiter */
+      const sh=Math.hypot((ax+0.19)*1.0,(lat+0.05)*pol);
+      const shadow=sh<0.011?1:sh<0.0135?(0.0135-sh)/0.0025:0;
+      data[o]=Math.min(255,Math.max(0,r*k*(1-shadow)));
+      data[o+1]=Math.min(255,Math.max(0,g*k*(1-shadow)));
+      data[o+2]=Math.min(255,Math.max(0,b*k*(1-shadow)));
+      data[o+3]=255;
     }
-    const oval=(ax+0.16)*(ax+0.16)/0.0016+(lat-0.60)*(lat-0.60)/0.0011;
-    if(oval<1){ r=228; g=216; b=196; }
-    if(Math.abs(lat)<0.09){ r+=22; g+=16; b+=6; }
-    if(Math.abs(lat)>0.7){ g+=8; r-=6; }
-    const limb=0.22+0.78*Math.pow(mu,0.55);
-    const k=limb*(0.96+n*0.06);
-    data[o]=Math.min(255,Math.max(0,r*k));
-    data[o+1]=Math.min(255,Math.max(0,g*k));
-    data[o+2]=Math.min(255,Math.max(0,b*k));
-    data[o+3]=255;
-  }
-  const c=document.createElement("canvas"); c.width=c.height=N;
-  c.getContext("2d").putImageData(img,0,0);
-  return c;
+  });
 }
-function drawJupiter(ctx, now){
+/* the four Galilean moons in a line along the equator: fixed at a plausible evening, one of them
+   throwing the shadow on the disk. [x arcmin east, y, magnitude] */
+const JUP_MOONS=[[-2.35,-0.06,5.0],[3.6,0.05,5.3],[-6.9,-0.12,4.6],[10.4,0.16,5.7]];
+function drawJupiter(ctx){
   if(!JUP) JUP=bakeJupiter();
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
   ctx.drawImage(JUP,-0.46,-0.46,0.92,0.92);
-  [[2.2,1.77,.4,5.0],[3.5,3.55,1.7,5.3],[5.5,7.15,2.4,4.6],[9.6,16.7,.9,5.7]].forEach(([dist,p,ph,m])=>{
-    const th=(now/1000)/p+ph;
-    airy(ctx, Math.sin(th)*dist, Math.cos(th)*dist*.08, m, "#f6f1e6");
-  });
+  JUP_MOONS.forEach(([x,y,m])=>airy(ctx, x, y, m, "#f6f1e6"));
 }
+/* ── SATURN ── the globe inside the rings: the bright B ring, the Cassini Division, the dusky C ring,
+   the rings' shadow on the globe, the globe's shadow on the rings behind it, subtle belts. */
 function bakeSaturn(){
   const N=820, cx=N/2, cy=N/2, SPAN=0.58, open=0.25;
   const pxPer=(N/2)/SPAN;
-  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
-  function vn(x,y){
-    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
-    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
-    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
-  }
   function ringI(rho){
-    const n=vn(rho*80, 2)-0.5;
+    const n=vnoise(rho*80, 2)-0.5;
     if(rho<0.115||rho>0.435) return 0;
-    if(rho<0.168) return 0.16+0.06*n;
-    if(rho<0.255) return 0.86+0.06*n;
-    if(rho<0.272) return 0.28+0.08*n;
-    if(rho<0.40) return (0.66-(rho-0.272)*0.55)+0.05*n;
+    if(rho<0.168) return 0.16+0.06*n;                 /* C ring, the crepe ring */
+    if(rho<0.255) return 0.86+0.06*n;                 /* B ring, the bright one */
+    if(rho<0.272) return 0.22+0.06*n;                 /* Cassini Division */
+    if(rho<0.40) return (0.66-(rho-0.272)*0.55)+0.05*n;  /* A ring */
     return 0.14;
   }
-  const img=new ImageData(N,N), data=img.data;
-  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
-    const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
-    const rho=Math.hypot(ax, ay/open);
-    const ge=(ax*ax)/(0.158*0.158)+(ay*ay)/(0.142*0.142);
-    const o=(y*N+x)*4;
-    const front=ay>-0.004;
-    let R=0,G=0,B=0,A=0;
-    const paintRing=()=>{
-      let I=ringI(rho);
-      if(!I) return;
-      I*=0.7+0.42*Math.min(1,Math.abs(ax)/0.38);
-      if(front && ax>0.10 && ax<0.24 && Math.abs(ay)<0.07 && rho<0.42) I*=0.32;
-      const edge=Math.min(1, Math.abs(rho-0.115)*pxPer*0.5, Math.abs(0.435-rho)*pxPer*0.5);
-      I*=Math.min(1, edge);
-      R=214*I; G=196*I; B=164*I; A=Math.min(255, 255*Math.min(1,I*1.35));
-    };
-    if(!front && !(ge<1)) paintRing();
-    if(ge<1){
-      const mu=Math.sqrt(1-ge), lat=ay/0.142;
-      let I=0.46+0.54*Math.pow(mu,0.5);
-      if(Math.abs(lat-0.04)<0.07) I*=0.9;
-      if(Math.abs(lat)>0.74) I*=0.8;
-      if(ay>0.01 && ay<0.048 && Math.abs(ax)<0.13) I*=0.48;
-      I*=0.96+0.06*vn(ax*30, lat*8);
-      R=228*I; G=206*I; B=164*I; A=255;
-    } else if(front) paintRing();
-    data[o]=Math.min(255,R); data[o+1]=Math.min(255,G); data[o+2]=Math.min(255,B); data[o+3]=A;
-  }
-  const c=document.createElement("canvas"); c.width=c.height=N;
-  c.getContext("2d").putImageData(img,0,0);
-  return c;
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
+      const rho=Math.hypot(ax, ay/open);
+      const ge=(ax*ax)/(0.158*0.158)+(ay*ay)/(0.142*0.142);
+      const o=(y*N+x)*4;
+      const front=ay>-0.004;
+      let R=0,G=0,B=0,A=0;
+      const ringPx=()=>{
+        let I=ringI(rho);
+        if(!I) return 0;
+        I*=0.72+0.40*Math.min(1,Math.abs(ax)/0.38);
+        /* the globe's shadow falls on the rings behind it, just off the following limb */
+        const gs=((ax-0.03)*(ax-0.03))/(0.158*0.158)+(ay*ay)/(0.142*0.142);
+        if(!front && gs<1 && ax>0) I*=0.12;
+        const edge=Math.min(1, Math.abs(rho-0.115)*pxPer*0.5, Math.abs(0.435-rho)*pxPer*0.5);
+        return I*Math.min(1, edge);
+      };
+      if(ge<1){
+        const mu=Math.sqrt(1-ge), lat=ay/0.142;
+        let I=0.46+0.54*Math.pow(mu,0.5);
+        if(Math.abs(lat-0.04)<0.07) I*=0.9;
+        if(Math.abs(lat+0.36)<0.05) I*=0.92;
+        if(Math.abs(lat)>0.74) I*=0.78;
+        if(lat<-0.62) { I*=0.9; }
+        /* the rings' shadow on the globe: a thin dark arc where the far rings pass behind the globe */
+        const rs=Math.hypot(ax,ay/open);
+        if(ay<0 && rs>0.35 && rs<0.44 && ge<0.97) I*=0.3;
+        I*=0.96+0.06*vnoise(ax*30, lat*8);
+        R=232*I; G=210*I; B=168*I; A=255;
+        if(lat<-0.62){ R*=0.92; G*=0.95; B*=1.05; }
+        /* the near side of the rings crosses in front of the globe */
+        if(front){ const rI=ringPx(); if(rI>0){ const a=Math.min(1,rI*1.35); R=R*(1-a)+222*rI*a; G=G*(1-a)+204*rI*a; B=B*(1-a)+172*rI*a; } }
+      } else {
+        const I=ringPx();
+        if(I>0){ R=222*I; G=204*I; B=172*I; A=Math.min(255, 255*Math.min(1,I*1.35)); }
+      }
+      data[o]=Math.min(255,R); data[o+1]=Math.min(255,G); data[o+2]=Math.min(255,B); data[o+3]=A;
+    }
+  });
 }
 function drawSaturn(ctx){
   if(!SAT) SAT=bakeSaturn();
@@ -686,73 +776,151 @@ function drawSaturn(ctx){
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
   ctx.drawImage(SAT,-0.58,-0.58,1.16,1.16);
   ctx.restore();
-  airy(ctx, 3.15, 0.5, 8.2, "#f0e2c4");
+  airy(ctx, 3.15, 0.5, 8.2, "#f0e2c4");       /* Titan */
+  airy(ctx, -1.35, -0.28, 9.6, "#f4f0e6");    /* Rhea */
+  airy(ctx, 0.95, 0.30, 10.2, "#f4f0e6");     /* Dione */
+  airy(ctx, -0.72, 0.18, 10.4, "#f4f0e6");    /* Tethys */
 }
-/* AOG-TELE-REALORION-V1 — M42 as the eye sees it in a 90 mm: a bright fan around the Trapezium,
-   the dark bay (the "fish's mouth") cutting in from the north-east, two wings sweeping out to the
-   south-west and south-east like a bat, M43 as a separate comma to the north with its own star,
-   and a faint outer loop. Grey-green: the eye has no colour at these light levels. */
+/* ── MARS ── a small orange disk, a little gibbous: the north polar cap, Syrtis Major's dark wedge,
+   the Hellas basin bright below it, Sinus Sabaeus along the equator, Mare Acidalium in the north. */
+function bakeMars(){
+  const N=700, cx=N/2, cy=N/2, SPAN=0.20, Rm=15.5/120;   /* 15.5″ across, a good year */
+  const D2R=Math.PI/180;
+  /* markings as ovals in areographic lat/lon: [lat, lon, half-w°, half-h°, tilt, darkness] */
+  const DARK=[
+    [8,290,11,22,0.3,.55],[-6,292,17,6,0,.5],   /* Syrtis Major, the wedge: narrow north, broad south */
+    [-8,340,40,7,0,.42],       /* Sinus Sabaeus / Meridiani */
+    [-2,315,16,5,0.2,.35],
+    [45,330,20,12,0,.40],      /* Mare Acidalium */
+    [-25,255,22,10,0,.30],     /* Mare Tyrrhenum */
+    [-30,215,20,9,0.2,.28],    /* Mare Cimmerium */
+    [10,275,10,10,0,.20]
+  ];
+  const cm=300*D2R;   /* central meridian: Syrtis Major just past the middle */
+  const phaseA=38*D2R, Lx=-Math.sin(phaseA), Lz=Math.cos(phaseA);
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
+      const dx=ax/Rm, dy=ay/Rm, rr=dx*dx+dy*dy, o=(y*N+x)*4;
+      if(rr>=1){ data[o+3]=0; continue; }
+      const nz=Math.sqrt(1-rr);
+      const tilt=24*D2R, ty=-dy*Math.cos(tilt)+nz*Math.sin(tilt), tz=nz*Math.cos(tilt)+dy*Math.sin(tilt);
+      const lat=Math.asin(Math.max(-1,Math.min(1,ty))), lon=Math.atan2(dx,tz)+cm;
+      let dark=0;
+      for(const [la,lo,hw,hh,rot,d] of DARK){
+        let dlo=((lon/D2R-lo+540)%360-180)*Math.cos(la*D2R), dla=lat/D2R-la;
+        const c=Math.cos(rot), s=Math.sin(rot), lx=dlo*c-dla*s, ly=dlo*s+dla*c;
+        const e=(lx*lx)/(hw*hw)+(ly*ly)/(hh*hh);
+        const wob=(fbm(lon*2+3,lat*2)-.5)*.5;
+        if(e+wob<1) dark=Math.max(dark, d*Math.min(1,(1-e-wob)*3));
+      }
+      dark*=0.8+0.4*vnoise(lon*6,lat*6);
+      const hellas=Math.hypot((lon/D2R-290+540)%360-180,(lat/D2R+42)/0.7)<16;
+      const cap=lat/D2R>66+(vnoise(lon*3,2)-.5)*6;
+      let r=222-dark*120, g=132-dark*70, b=78-dark*36;
+      if(hellas){ r=234; g=176; b=120; }
+      if(cap){ r=255; g=253; b=250; }
+      const nd=Math.max(0, dx*Lx+nz*Lz);
+      const k=Math.pow(nd,0.6)*(0.35+0.65*Math.pow(nz,0.4))*(cap?1.25:1.05);
+      data[o]=Math.min(255,r*k); data[o+1]=Math.min(255,g*k); data[o+2]=Math.min(255,b*k); data[o+3]=255;
+    }
+  });
+}
+function drawMars(ctx){
+  if(!MARS) MARS=bakeMars();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(MARS,-0.20,-0.20,0.40,0.40);
+}
+/* ── VENUS ── a brilliant crescent 45″ across, no markings at all: it is cloud, and it dazzles. */
+function bakeVenus(){
+  const N=700, cx=N/2, cy=N/2, SPAN=0.55, Rv=45/120;
+  const phaseA=112*(Math.PI/180), Lx=-Math.sin(phaseA), Lz=Math.cos(phaseA);
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
+      const dx=ax/Rv, dy=ay/Rv, rr=dx*dx+dy*dy, o=(y*N+x)*4;
+      if(rr>=1.0){ data[o+3]=0; continue; }
+      const nz=Math.sqrt(Math.max(0,1-rr));
+      const nd=dx*Lx+nz*Lz;
+      /* the cusps reach a little past the geometric line: the clouds scatter light round the edge */
+      let k=Math.max(0, nd+0.06)/1.06;
+      k=Math.pow(k,0.45)*(0.75+0.25*nz);
+      const v=Math.min(255, 255*k*1.15);
+      data[o]=v; data[o+1]=Math.min(255,v*0.985); data[o+2]=Math.min(255,v*0.93); data[o+3]=k>0.02?255:Math.min(255,k*255*50);
+    }
+  });
+}
+function drawVenus(ctx){
+  if(!VENUS) VENUS=bakeVenus();
+  const k=Math.hypot(ctx.getTransform().a, ctx.getTransform().b)||1;
+  /* the glare: Venus is far brighter than anything else in the field */
+  const g=ctx.createRadialGradient(-0.16,0,0.2,-0.16,0,0.34+40/k);
+  g.addColorStop(0,"rgba(255,250,236,.55)"); g.addColorStop(0.35,"rgba(255,250,236,.18)"); g.addColorStop(1,"rgba(255,250,236,0)");
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(-0.16,0,0.4+40/k,0,6.3); ctx.fill();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(VENUS,-0.55,-0.55,1.1,1.1);
+}
+/* ── ORION ── M42 as the eye sees it in a 90 mm: a bright fan around the Trapezium, the dark bay
+   (the "fish's mouth") cutting in from the north-east, two wings sweeping out like a bat, M43 as a
+   comma to the north with its own star, and a faint outer loop. Grey-green: the eye has no colour
+   at these light levels. */
 function bakeOrion(){
   const N=760, SPAN=26;
-  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
-  function vn(x,y){
-    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
-    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
-    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
-  }
-  const fbm=(x,y)=>vn(x,y)*.5+vn(x*2.2+3,y*2.2)*.3+vn(x*4.7,y*4.7+2)*.2;
   const blob=(ax,ay,x0,y0,rx,ry,rot)=>{ const c=Math.cos(rot),s=Math.sin(rot),dx=ax-x0,dy=ay-y0,lx=dx*c-dy*s,ly=dx*s+dy*c; return Math.exp(-((lx*lx)/(rx*rx)+(ly*ly)/(ry*ry))); };
-  const img=new ImageData(N,N), data=img.data;
-  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
-    const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
-    /* the Huygens region: a bright fan just south-west of the Trapezium */
-    let v=0.62*blob(ax,ay,-0.6,0.9,2.4,1.7,-0.5);
-    v+=0.55*blob(ax,ay,-1.2,2.2,5.5,3.2,-0.3);              /* the bright inner wings */
-    v+=0.32*blob(ax,ay,-6.5,7.5,7.5,3.4,-0.75);             /* the long south-west wing */
-    v+=0.28*blob(ax,ay,5.8,6.2,6.0,3.2,0.65);               /* the south-east wing */
-    v+=0.12*blob(ax,ay,-10,14,7,4,-0.6);                    /* the wing's faint tail */
-    v+=0.10*blob(ax,ay,10,12,6,4,0.6);
-    v+=0.07*blob(ax,ay,0,6,15,10,0);                        /* the faint outer glow */
-    v+=0.42*blob(ax,ay,1.8,-6.8,2.4,2.9,0.2);               /* M43, the comma to the north */
-    v+=0.16*blob(ax,ay,2.6,-9.5,2.2,3.2,0.4);
-    /* the dark bay biting in from the north-east toward the Trapezium, and the dark lane that isolates M43 */
-    const bay=blob(ax,ay,2.6,-1.4,3.2,1.5,0.55)+0.5*blob(ax,ay,5.5,-2.6,3.6,1.3,0.45);
-    v*=1-0.92*Math.min(1,bay);
-    const lane=blob(ax,ay,1.2,-4.0,5,0.7,0.35);
-    v*=1-0.8*Math.min(1,lane);
-    /* texture: mottling and streaks that run with the wings */
-    v*=0.7+0.5*fbm(ax*0.35+1, ay*0.35);
-    v*=0.86+0.28*vn(ax*0.9+ay*0.5, ay*0.8);
-    v=Math.max(0,v);
-    const o=(y*N+x)*4;
-    const t=Math.min(1,v);
-    data[o]=150+40*t; data[o+1]=170+44*t; data[o+2]=158+40*t; data[o+3]=Math.min(205, v*215);
-  }
-  const c=document.createElement("canvas"); c.width=c.height=N;
-  c.getContext("2d").putImageData(img,0,0);
-  return c;
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
+      let v=0.70*blob(ax,ay,-0.6,0.9,2.4,1.7,-0.5);
+      v+=0.55*blob(ax,ay,-1.2,2.2,5.5,3.2,-0.3);
+      v+=0.32*blob(ax,ay,-6.5,7.5,7.5,3.4,-0.75);
+      v+=0.28*blob(ax,ay,5.8,6.2,6.0,3.2,0.65);
+      v+=0.12*blob(ax,ay,-10,14,7,4,-0.6);
+      v+=0.10*blob(ax,ay,10,12,6,4,0.6);
+      v+=0.07*blob(ax,ay,0,6,15,10,0);
+      v+=0.42*blob(ax,ay,1.8,-6.8,2.4,2.9,0.2);
+      v+=0.16*blob(ax,ay,2.6,-9.5,2.2,3.2,0.4);
+      const bay=blob(ax,ay,2.6,-1.4,3.2,1.5,0.55)+0.5*blob(ax,ay,5.5,-2.6,3.6,1.3,0.45);
+      v*=1-0.92*Math.min(1,bay);
+      const lane=blob(ax,ay,1.2,-4.0,5,0.7,0.35);
+      v*=1-0.8*Math.min(1,lane);
+      v*=0.7+0.5*fbm(ax*0.35+1, ay*0.35);
+      v*=0.86+0.28*vnoise(ax*0.9+ay*0.5, ay*0.8);
+      v*=0.82+0.36*fbm(ax*2.2+5, ay*2.2);
+      v=Math.max(0,v);
+      const o=(y*N+x)*4;
+      const t=Math.min(1,v);
+      data[o]=146+40*t; data[o+1]=168+46*t; data[o+2]=156+40*t; data[o+3]=Math.min(175, v*170);
+    }
+  });
 }
 function drawOrion(ctx){
   ORI_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
   if(!ORI) ORI=bakeOrion();
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
   ctx.drawImage(ORI,-26,-26,52,52);
-  [[0.02,-0.02,5.0,"#f7f9ff"],[0.16,0.04,6.6,"#e8eeff"],[-0.07,0.12,6.9,"#e4ecff"],[0.05,-0.14,7.4,"#f4f7ff"]].forEach(s=>airy(ctx,s[0],s[1],s[2],s[3]));
+  /* the Trapezium: A, B, C, D — the true shape, 9″ to 19″ apart */
+  [[-0.08,0.10,6.7,"#e8eeff"],[0.10,0.14,7.9,"#e4ecff"],[0.13,-0.05,5.1,"#f7f9ff"],[-0.09,-0.17,6.7,"#f4f7ff"]].forEach(s=>airy(ctx,s[0],s[1],s[2],s[3]));
+  airy(ctx, 1.9, -7.0, 6.9, "#dce6ff");     /* NU Ori in M43 */
   airy(ctx, 0.4, -16, 4.5, "#dce6ff");
-  airy(ctx, 1.1, 18, 3.1, "#dbe7ff");
+  airy(ctx, 1.1, 18, 3.1, "#dbe7ff");       /* Iota Orionis */
+  airy(ctx, -2.6, 20.4, 5.0, "#dbe7ff");
 }
+/* ── PLEIADES ── the sisters where they really are, in arcminutes from Alcyone (east right, south down),
+   with the faint veil that hangs from Merope. */
 const PLEIADES = [
-  [0,0,2.86,"#f4f8ff"],
-  [9.2,-5.4,3.6,"#e7e8ff"],
-  [11.4,-3.6,5.05,"#f7f4ff"],
-  [-32,8,3.7,"#d5e6ff"],
-  [-7.2,-9.4,3.85,"#eef3ff"],
-  [-1.6,11.2,4.15,"#dbe7ff"],
-  [-24,-16,4.3,"#d8e4ff"],
-  [-28,-6,5.45,"#cfdcf8"]
+  [0,0,2.86,"#f4f8ff"],        /* Alcyone */
+  [23.0,3.1,3.6,"#e7e8ff"],    /* Atlas */
+  [23.4,-1.9,5.05,"#f7f4ff"],  /* Pleione */
+  [-35.7,-0.5,3.7,"#d5e6ff"],  /* Electra */
+  [-22.7,-15.8,3.85,"#eef3ff"],/* Maia */
+  [-15.9,9.4,4.15,"#dbe7ff"],  /* Merope */
+  [-31.1,-21.7,4.3,"#d8e4ff"], /* Taygeta */
+  [-36.7,-11.1,5.45,"#cfdcf8"],/* Celaeno */
+  [-21.6,-27,5.8,"#dbe7ff"],   /* Asterope */
+  [-4.4,-2.6,6.4,"#e8eeff"],[-8.6,4.4,7.1,"#e8eeff"],[-19.5,-1.6,6.8,"#e8eeff"],[-27.5,-8.2,7.2,"#e8eeff"],[6.2,-8.4,7.4,"#f4d6b8"]
 ];
 function meropeFan(ctx){
-  const x=-1.6, y=11.2;
+  const x=-15.9, y=9.4;
   for(let i=0;i<5;i++){
     const tt=1.2+i*2.1;
     const px=x+Math.sin(0.5)*tt*0.3, py=y+tt, rad=3.2+i*1.5;
@@ -763,7 +931,7 @@ function meropeFan(ctx){
   }
 }
 function drawPleiades(ctx){
-  PLE_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  PLE_FIELD.forEach(s=>airy(ctx,s.x-10,s.y-5,s.m,s.c));
   meropeFan(ctx);
   PLEIADES.forEach(function(s){ airy(ctx,s[0],s[1],s[2],s[3]); });
 }
@@ -771,16 +939,115 @@ function drawAlbireo(ctx){
   airy(ctx, -.28, .04, 3.1, "#ffd27a");
   airy(ctx, .28, -.04, 5.1, "#9ecbff");
 }
+/* ── MIZAR AND ALCOR ── the bend of the Dipper's handle: Mizar itself is two white stars 14″ apart;
+   Alcor stands 12′ off to the east. */
+function drawMizar(ctx){
+  airy(ctx, 0.056, 0.106, 2.2, "#eef2ff");
+  airy(ctx, -0.056, -0.106, 3.9, "#eef2ff");
+  airy(ctx, 11.2, -3.8, 4.0, "#f2f4ff");
+  airy(ctx, 4.6, 1.6, 7.6, "#f0e8d8");   /* Sidus Ludoviciana, the faint one between */
+}
+/* ── THE TWO PAIRS ── the 1.0″ pair the lens cannot split, and a 2.4″ pair that it can. */
+function drawPair(ctx){ airy(ctx, 0, 0, 5.2, "#f7f1e4"); }
+function drawSplit(ctx){ airy(ctx, -0.02, -0.012, 5.6, "#f4f0e6"); airy(ctx, 0.02, 0.012, 6.3, "#f4f0e6"); }
+/* ── ANDROMEDA ── M31: a soft oval glow far wider than the glass, with a bright small core; M32 a
+   round smudge just south, M110 a fainter oval to the north-west. */
+function bakeAndromeda(){
+  const N=800, SPAN=60;
+  const ca=Math.cos(-0.62), sa=Math.sin(-0.62);
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
+      const lx=ax*ca-ay*sa, ly=ax*sa+ay*ca;
+      const r=Math.hypot(lx/1, ly/0.34);
+      let v=0.95*Math.exp(-r/2.4)+0.55*Math.exp(-r/9)+0.22*Math.exp(-r/24);
+      /* a dust lane on the north-west side, faint, where the disk dips into shadow */
+      if(ly<-3.5 && ly>-6 && Math.abs(lx)<40) v*=0.78;
+      v*=0.9+0.2*vnoise(ax*.15,ay*.15);
+      /* M32, small and dense, 24′ south; M110, larger and softer, to the north-west */
+      const m32=Math.hypot(ax-0.4, ay-24)/1.6; v+=0.9*Math.exp(-m32*m32)+0.25*Math.exp(-m32*.7);
+      const m110=Math.hypot((ax+26.7)/2.6,(ay+25)/5.2); v+=0.28*Math.exp(-m110*m110*.6);
+      const o=(y*N+x)*4, t=Math.min(1,v);
+      data[o]=176+30*t; data[o+1]=180+30*t; data[o+2]=190+30*t; data[o+3]=Math.min(235, v*150);
+    }
+  });
+}
+function drawAndromeda(ctx){
+  AND_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  if(!ANDR) ANDR=bakeAndromeda();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(ANDR,-60,-60,120,120);
+  airy(ctx, 0, 0, 7.5, "#fff4dc");   /* the core reads almost like a star */
+  airy(ctx, 0.4, 24, 8.4, "#fff4dc");
+}
+/* ── THE RING NEBULA ── M57: a small smoke ring, 1.4′ by 1′, brighter along the long sides. */
+function bakeRing(){
+  const N=500, SPAN=2.4;
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
+      const c=Math.cos(0.45), s=Math.sin(0.45), lx=ax*c-ay*s, ly=ax*s+ay*c;
+      const r=Math.hypot(lx/0.72, ly/0.52);
+      let v=Math.exp(-((r-0.78)*(r-0.78))/(2*0.17*0.17));
+      v*=0.72+0.5*Math.abs(ly/0.52)/Math.max(0.3,r);       /* brighter along the long sides */
+      v+=0.16*Math.exp(-r*r*2.5);                            /* a faint glow fills the hole */
+      v*=0.85+0.3*vnoise(ax*6,ay*6);
+      const o=(y*N+x)*4, t=Math.min(1,v);
+      data[o]=160+40*t; data[o+1]=180+40*t; data[o+2]=176+36*t; data[o+3]=Math.min(190, v*170);
+    }
+  });
+}
+function drawRing(ctx){
+  RING_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  if(!RING) RING=bakeRing();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(RING,-2.4,-2.4,4.8,4.8);
+  airy(ctx, 1.05, 0.55, 8.9, "#e8eeff");   /* the field star just off the ring */
+}
+/* ── M13 ── the great globular in Hercules: a ball of stars whose middle stays a glow and whose edge
+   breaks into single points. */
+const M13_STARS=(function(){
+  const rng=mulberry32(0x13), a=[];
+  for(let i=0;i<1400;i++){
+    const u=rng(); const r=1.1*Math.sqrt(Math.pow(1-u*0.985,-1.6)-1);
+    if(r>9.5) continue;
+    const th=rng()*6.2832; a.push([Math.cos(th)*r, Math.sin(th)*r*0.92, 8.6+rng()*3.2+(r<1.5?rng()*1.5:0)]);
+  }
+  return a;
+})();
+function bakeM13(){
+  const N=500, SPAN=12;
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
+      const r=Math.hypot(ax,ay/0.92);
+      let v=0.9/(1+(r/0.9)*(r/0.9))*Math.exp(-r/3.2);
+      v*=0.9+0.2*vnoise(ax*2,ay*2);
+      const o=(y*N+x)*4, t=Math.min(1,v);
+      data[o]=204+30*t; data[o+1]=200+30*t; data[o+2]=190+30*t; data[o+3]=Math.min(200, v*200);
+    }
+  });
+}
+function drawM13(ctx){
+  M13_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  if(!M13) M13=bakeM13();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(M13,-12,-12,24,24);
+  const k=Math.hypot(ctx.getTransform().a, ctx.getTransform().b)||1;
+  /* the stars resolve only when the zoom is enough to separate them */
+  const show=Math.min(1, Math.max(0,(k-10)/22));
+  if(show<=0) return;
+  ctx.save(); ctx.globalAlpha=show;
+  M13_STARS.forEach(([x,y,m])=>airy(ctx,x,y,m,"#f4efe2"));
+  ctx.restore();
+  airy(ctx, 6.2, -8.4, 6.9, "#e8eeff"); airy(ctx, -9.6, 7.1, 7.2, "#f4d6b8");
+}
 let SUN=null;
+/* ── THE SUN ── only through the filter on the front: white light, limb darkening, granulation as far
+   as 90 mm can hint at it, spot groups with umbra and penumbra, pores, faculae near the edge. */
 function bakeSun(){
   const N=1400, cx=N/2, cy=N/2, R=N*0.5-2, RAD=16;
   const toP=(ax,ay)=>[cx+(ax/RAD)*R, cy+(ay/RAD)*R];
-  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
-  function vnoise(x,y){
-    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
-    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
-    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
-  }
   const groups=[
     {x:-4.6,y:1.15,ang:.42,a:1.55,b:.92, um:[{dx:-.38,dy:.08,r:.48},{dx:.18,dy:-.06,r:.3},{dx:.55,dy:.14,r:.16}]},
     {x:6.1,y:-3.1,ang:-.55,a:1.05,b:.62, um:[{dx:-.16,dy:.04,r:.34},{dx:.32,dy:-.02,r:.16}]},
@@ -794,66 +1061,64 @@ function bakeSun(){
     g.um.forEach(u=>{ const q=toP(g.x+u.dx,g.y+u.dy); u.px=q[0]; u.py=q[1]; u.pr=u.r/RAD*R; });
   });
   const poreP=pores.map(([x,y,r])=>{ const p=toP(x,y); return {px:p[0],py:p[1],pr:r/RAD*R}; });
-  const img=new ImageData(N,N), data=img.data;
-  for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
-    const dx=x-cx, dy=y-cy, rr=dx*dx+dy*dy, o=(y*N+x)*4;
-    if(rr>R*R) continue;
-    const mu=Math.sqrt(1-rr/(R*R));
-    const cells=(function(){
-      const sc=2.6, gx=x/sc, gy=y/sc, ix=Math.floor(gx), iy=Math.floor(gy);
-      let best=8;
-      for(let oy=-1;oy<=1;oy++) for(let ox=-1;ox<=1;ox++){
-        const cx0=ix+ox, cy0=iy+oy;
-        const jx=cx0+hsh(cx0,cy0), jy=cy0+hsh(cy0,cx0+19);
-        const ddx=gx-jx, ddy=gy-jy, d=ddx*ddx+ddy*ddy;
-        if(d<best) best=d;
+  return bakeCanvas(N,data=>{
+    for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+      const dx=x-cx, dy=y-cy, rr=dx*dx+dy*dy, o=(y*N+x)*4;
+      if(rr>R*R) continue;
+      const mu=Math.sqrt(1-rr/(R*R));
+      const cells=(function(){
+        const sc=2.6, gx=x/sc, gy=y/sc, ix=Math.floor(gx), iy=Math.floor(gy);
+        let best=8;
+        for(let oy=-1;oy<=1;oy++) for(let ox=-1;ox<=1;ox++){
+          const cx0=ix+ox, cy0=iy+oy;
+          const jx=cx0+hsh(cx0,cy0), jy=cy0+hsh(cy0,cx0+19);
+          const ddx=gx-jx, ddy=gy-jy, d=ddx*ddx+ddy*ddy;
+          if(d<best) best=d;
+        }
+        return Math.sqrt(best);
+      })();
+      const grain=1+((0.42-cells)*.07+(vnoise(x/14,y/14)-.5)*.03)*Math.pow(mu,.75);
+      let I=(0.38+0.62*Math.pow(mu,.5))*grain;
+      if(mu<0.45 && vnoise(x/22,y/22)>0.66 && vnoise(x/9,y/9)>0.4) I*=1.14;
+      let kind=0, fil=1;
+      for(const g of groups){
+        const c=Math.cos(-g.ang), s=Math.sin(-g.ang);
+        const lx=((x-g.px)*c-(y-g.py)*s)/g.A, ly=((x-g.px)*s+(y-g.py)*c)/g.B;
+        const e=lx*lx+ly*ly;
+        if(e>1) continue;
+        let best=1e9, bang=0;
+        for(const u of g.um){
+          const d=Math.hypot(x-u.px,y-u.py);
+          const wob=0.82+0.22*vnoise(x/6,y/6);
+          if(d<u.pr*wob) kind=2;
+          if(d<best){ best=d; bang=Math.atan2(y-u.py,x-u.px); }
+        }
+        if(kind<2){
+          kind=1;
+          fil=0.42+0.58*(0.5+0.5*Math.sin(bang*18+e*6));
+          fil*=0.72+0.28*Math.sqrt(e);
+        }
+        break;
       }
-      return Math.sqrt(best);
-    })();
-    const grain=1+((0.42-cells)*.07+(vnoise(x/14,y/14)-.5)*.03)*Math.pow(mu,.75);
-    let I=(0.38+0.62*Math.pow(mu,.5))*grain;
-    if(mu<0.45 && vnoise(x/22,y/22)>0.66 && vnoise(x/9,y/9)>0.4) I*=1.14;
-    let kind=0, fil=1;
-    for(const g of groups){
-      const c=Math.cos(-g.ang), s=Math.sin(-g.ang);
-      const lx=((x-g.px)*c-(y-g.py)*s)/g.A, ly=((x-g.px)*s+(y-g.py)*c)/g.B;
-      const e=lx*lx+ly*ly;
-      if(e>1) continue;
-      let best=1e9, bang=0;
-      for(const u of g.um){
-        const d=Math.hypot(x-u.px,y-u.py);
-        const wob=0.82+0.22*vnoise(x/6,y/6);
-        if(d<u.pr*wob) kind=2;
-        if(d<best){ best=d; bang=Math.atan2(y-u.py,x-u.px); }
+      if(!kind){
+        for(const p of poreP){ if(Math.hypot(x-p.px,y-p.py)<p.pr){ kind=2; break; } }
       }
-      if(kind<2){
-        kind=1;
-        fil=0.42+0.58*(0.5+0.5*Math.sin(bang*18+e*6));
-        fil*=0.72+0.28*Math.sqrt(e);
+      let r,gc,b;
+      if(kind===2){
+        const uI=0.07+0.04*vnoise(x/4,y/4);
+        r=uI*80; gc=uI*62; b=uI*48;
+      } else if(kind===1){
+        const pI=I*(0.22+0.28*fil);
+        r=pI*210; gc=pI*150; b=pI*110;
+      } else {
+        const edge=Math.pow(1-mu,3.2);
+        r=Math.min(255,I*255*(1-edge*.04));
+        gc=Math.min(255,I*250*(1-edge*.1));
+        b=Math.min(255,I*242*(1-edge*.22));
       }
-      break;
+      data[o]=r; data[o+1]=gc; data[o+2]=b; data[o+3]=255;
     }
-    if(!kind){
-      for(const p of poreP){ if(Math.hypot(x-p.px,y-p.py)<p.pr){ kind=2; break; } }
-    }
-    let r,gc,b;
-    if(kind===2){
-      const uI=0.07+0.04*vnoise(x/4,y/4);
-      r=uI*80; gc=uI*62; b=uI*48;
-    } else if(kind===1){
-      const pI=I*(0.22+0.28*fil);
-      r=pI*210; gc=pI*150; b=pI*110;
-    } else {
-      const edge=Math.pow(1-mu,3.2);
-      r=Math.min(255,I*255*(1-edge*.04));
-      gc=Math.min(255,I*250*(1-edge*.1));
-      b=Math.min(255,I*242*(1-edge*.22));
-    }
-    data[o]=r; data[o+1]=gc; data[o+2]=b; data[o+3]=255;
-  }
-  const c=document.createElement("canvas"); c.width=c.height=N;
-  c.getContext("2d").putImageData(img,0,0);
-  return c;
+  });
 }
 function drawSun(ctx){
   if(!SUN) SUN=bakeSun();
@@ -864,8 +1129,9 @@ function drawSun(ctx){
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
   ctx.drawImage(SUN,-16,-16,32,32);
 }
-function drawPair(ctx){ airy(ctx, 0, 0, 5.2, "#f7f1e4"); }
 function drawStars(ctx){ SKY.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c)); }
+const DRAW={moon:drawMoon,sea:drawMoon,jupiter:drawJupiter,saturn:drawSaturn,mars:drawMars,venus:drawVenus,orion:drawOrion,pleiades:drawPleiades,
+  albireo:drawAlbireo,mizar:drawMizar,pair:drawPair,split:drawSplit,andromeda:drawAndromeda,ring:drawRing,m13:drawM13,sun:drawSun};
 function paintSky(ctx,w,h,sky){
   if(!sky || sky==="night"){ ctx.fillStyle="#07080c"; ctx.fillRect(0,0,w,h); return; }
   const g=ctx.createLinearGradient(0,0,0,h);
@@ -936,8 +1202,8 @@ function noteCore(){
     `Part of the Moon at ${m}×. It no longer fits. Along the terminator the shadows are mountains, not ink.`+almost,
     `Una parte de la Luna a ${m}×. Ya no cabe. En el terminador las sombras son montañas, no tinta.`+almost);
   if (L.target==="jupiter" && m>=140) return say(
-    `Jupiter at ${m}×. The disk is about 42″ across. Two brown belts, ragged, with a pale zone between them. A salmon oval sits in a bay of the southern belt — the Great Red Spot. The four points are moons, minutes away from the disk. A poster crops them out.`+almost,
-    `Júpiter a ${m}×. El disco mide unos 42″. Dos cinturones marrones, irregulares, con una zona pálida entre ellos. Un óvalo asalmonado queda en una bahía del cinturón sur — la Gran Mancha Roja. Los cuatro puntos son lunas, a minutos del disco. Un póster las recorta.`+almost);
+    `Jupiter at ${m}×. The disk is about 42″ across. Two brown belts, ragged, with a pale zone between them. A salmon oval sits in a bay of the southern belt — the Great Red Spot. The sharp black dot on the disk is a moon's shadow. The four points are moons, minutes away from the disk. A poster crops them out.`+almost,
+    `Júpiter a ${m}×. El disco mide unos 42″. Dos cinturones marrones, irregulares, con una zona pálida entre ellos. Un óvalo asalmonado queda en una bahía del cinturón sur — la Gran Mancha Roja. El punto negro nítido sobre el disco es la sombra de una luna. Los cuatro puntos son lunas, a minutos del disco. Un póster las recorta.`+almost);
   if (L.target==="jupiter" && m>=80) return say(
     `Jupiter at ${m}×. The stripes and the red spot are on the disk. The points are moons, not part of the planet.`+almost,
     `Júpiter a ${m}×. Las franjas y la mancha roja están en el disco. Los puntos son lunas, no parte del planeta.`+almost);
@@ -959,8 +1225,8 @@ function noteCore(){
       "La espada de Orión. Una nube gris verdosa y una cadena de estrellas que la atraviesa. El cinturón no cabe en este vidrio."+almost);
   }
   if (L.target==="pleiades") return m<50
-    ? say("The Pleiades in one field. Alcyone is the bright one. Electra sits near the edge of the glass. The veil on Merope is a whisper. A poster would have made it a cloud."+almost,
-        "Las Pléyades en un campo. Alcyone es la brillante. Electra queda cerca del borde del vidrio. El velo de Mérope es un susurro. Un póster lo habría vuelto una nube."+almost)
+    ? say("The Pleiades in one field. Alcyone is the bright one. The sisters spread to the edge of the glass; drag a little to bring Atlas in. The veil on Merope is a whisper. A poster would have made it a cloud."+almost,
+        "Las Pléyades en un campo. Alcyone es la brillante. Las hermanas llegan hasta el borde del vidrio; arrastra un poco para traer a Atlas. El velo de Mérope es un susurro. Un póster lo habría vuelto una nube."+almost)
     : say(`The Pleiades at ${m}×. You left most of them outside the glass. A cluster is a low-power object. What remains are a few points and, if you are still on Merope, a faint veil.`+almost,
         `Las Pléyades a ${m}×. Dejaste a la mayoría afuera del vidrio. Un cúmulo es un objeto de bajo aumento. Lo que queda son unos puntos y, si sigues en Mérope, un velo tenue.`+almost);
   if (L.target==="sea") return say(
@@ -978,14 +1244,49 @@ function noteCore(){
   if (L.target==="pair") return say(
     `One smear, not two stars. The pair is 1.0″ apart. A 90 mm lens splits ${SCOPE.dawes.toFixed(1)}″. ${L.barlow?"The Barlow has you near 300×. The useful ceiling is about 180×. You are magnifying the air.":"Making it larger does not split them. Neither will the Barlow."}`+almost,
     `Una mancha, no dos estrellas. El par está a 1.0″. Un lente de 90 mm separa ${SCOPE.dawes.toFixed(1)}″. ${L.barlow?"El Barlow te pone cerca de 300×. El techo útil es unos 180×. Estás aumentando el aire.":"Hacerlo más grande no los separa. El Barlow tampoco."}`+almost);
+  if (L.target==="split") return m>=140
+    ? (L.barlow
+      ? say(`Two points with dark between them at ${m}×. They are 2.4″ apart. This lens splits ${SCOPE.dawes.toFixed(1)}″, so this pair is within reach, and here the Barlow earns its place.`+almost,
+            `Dos puntos con oscuridad entre ellos a ${m}×. Están a 2.4″. Este lente separa ${SCOPE.dawes.toFixed(1)}″, así que este par está a su alcance, y aquí el Barlow sí se gana su lugar.`+almost)
+      : say(`Two points just touching at ${m}×, a notch of dark between them. They are 2.4″ apart. This lens splits ${SCOPE.dawes.toFixed(1)}″. The Barlow puts dark between them.`+almost,
+            `Dos puntos que apenas se tocan a ${m}×, con una muesca entre ellos. Están a 2.4″. Este lente separa ${SCOPE.dawes.toFixed(1)}″. El Barlow pone oscuridad entre ellos.`+almost))
+    : say(`A stretched dot at ${m}×. The pair is 2.4″ apart. The 6 mm is the one that splits it.`+almost,
+          `Un punto estirado a ${m}×. El par está a 2.4″. El de 6 mm es el que lo separa.`+almost);
+  if (L.target==="mizar") return say(
+    `Mizar at ${m}×. Two white stars 14″ apart. Easy. The star off to the side is Alcor. People with sharp eyes see Alcor without a telescope; Mizar's twin needs one.`+almost,
+    `Mizar a ${m}×. Dos estrellas blancas a 14″. Fácil. La estrella a un lado es Alcor. Quien tiene buena vista ve Alcor sin telescopio; la gemela de Mizar lo necesita.`+almost);
+  if (L.target==="mars") return m>=80
+    ? say(`Mars at ${m}×. A small orange disk, ${L.barlow?"soft in the Barlow":"steady"}. The white at the top is the polar cap. The dark wedge is Syrtis Major. One edge is a little flat: Mars is not quite full from here.`+almost,
+          `Marte a ${m}×. Un disco naranja pequeño. Lo blanco de arriba es el casquete polar. La cuña oscura es Syrtis Major. Un borde queda un poco plano: desde aquí Marte no está lleno.`+almost)
+    : say("Mars at low power. An orange dot with an edge. The 10 mm or the 6 mm turns it into a disk with a white cap."+almost,
+          "Marte a bajo aumento. Un punto naranja con borde. El de 10 o el de 6 mm lo vuelve un disco con casquete blanco."+almost);
+  if (L.target==="venus") return say(
+    `Venus at ${m}×. A bright crescent, like a tiny Moon. No markings: you are looking at cloud tops. It is so bright it flares in the glass.`+almost,
+    `Venus a ${m}×. Una luna creciente brillante, como una Luna diminuta. Sin marcas: miras la cima de las nubes. Es tan brillante que deslumbra en el vidrio.`+almost);
+  if (L.target==="andromeda") return m<50
+    ? say("The Andromeda Galaxy. A soft oval glow with a brighter middle, wider than the glass. The small round smudge below it is M32, a second galaxy. The light left it two and a half million years ago."+almost,
+          "La galaxia de Andrómeda. Un óvalo suave de luz con el centro brillante, más ancho que el vidrio. La manchita redonda debajo es M32, otra galaxia. Su luz salió hace dos millones y medio de años."+almost)
+    : say(`Andromeda at ${m}×. Only the bright middle fits now. A galaxy is a low-power object. The 25 mm shows more of it.`+almost,
+          `Andrómeda a ${m}×. Ahora solo cabe el centro brillante. Una galaxia es un objeto de bajo aumento. El de 25 mm muestra más.`+almost);
+  if (L.target==="ring") return m>=80
+    ? say(`The Ring Nebula at ${m}×. A tiny gray smoke ring, 1′ across, with a darker hole in the middle. The star that made it is too faint for this lens.`+almost,
+          `La nebulosa del Anillo a ${m}×. Un anillo de humo gris diminuto, de 1′, con un hueco más oscuro en el centro. La estrella que lo hizo es muy tenue para este lente.`+almost)
+    : say("The Ring Nebula at low power. A fuzzy dot that will not focus to a point. That is the clue. The 10 mm or the 6 mm shows the ring."+almost,
+          "La nebulosa del Anillo a bajo aumento. Un punto borroso que no enfoca a punto. Esa es la pista. El de 10 o el de 6 mm muestra el anillo."+almost);
+  if (L.target==="m13") return m>=80
+    ? say(`M13 at ${m}×. A ball of stars. The middle is still a glow; around the edge the glow breaks into single points. There are a few hundred thousand stars in there.`+almost,
+          `M13 a ${m}×. Una bola de estrellas. El centro sigue siendo un resplandor; en el borde el resplandor se deshace en puntos. Hay unos cientos de miles de estrellas ahí.`+almost)
+    : say("M13 at low power. A round fuzzy patch, brighter in the middle. The 10 mm starts to break the edge into stars."+almost,
+          "M13 a bajo aumento. Una mancha redonda y difusa, más brillante en el centro. El de 10 mm empieza a deshacer el borde en estrellas."+almost);
   return "";
 }
 
+const STEP2_TARGETS=["jupiter","saturn","mars","venus","orion","pleiades","andromeda","m13","ring","mizar"];
 function targetsFor(step){
   const list=[["moon","moon"]];
-  if (step>=2) list.push(["jupiter","jupiter"],["saturn","saturn"],["orion","orion"],["pleiades","pleiades"]);
+  if (step>=2) STEP2_TARGETS.forEach(id=>list.push([id,id]));
   if (step>=4) list.push(["sea","sea"]);
-  if (step>=5) list.push(["albireo","albireo"],["pair","pair"]);
+  if (step>=5) list.push(["albireo","albireo"],["split","split"],["pair","pair"]);
   list.push(["sun","sunName"]);
   return list;
 }
@@ -1003,8 +1304,9 @@ function instrumentHTML(){
     <div class="row"><span class="tiny">${t("cap")}</span><span>${btn(L.cap,"cap1",t("on"))}${btn(!L.cap,"cap0",t("off"))}</span></div>
     <div class="row"><span class="tiny">${t("mount")}</span><span>${btn(L.locked,"lock1",t("locked"))}${btn(!L.locked,"lock0",t("loose"))}</span></div>
     <div class="row"><span class="tiny">${t("eye")}</span><span>${eps.map(e=>btn(L.ep===e&&!L.barlow,"ep"+e,e+" mm")).join("")}</span></div>
-    <div class="row"><span class="tiny">${t("target")}</span><span>${targets.map(([id,k])=>btn(L.target===id,"tg-"+id,t(k))).join("")}</span></div>
-    ${(L.target==="moon"||L.target==="sea")?`<div class="row"><span class="tiny">${t("sky")}</span><span>${["night","dusk","day","dawn"].map(s=>btn((L.sky||"night")===s,"sky-"+s,t(s))).join("")}</span></div>`:""}
+    <div class="row"><span class="tiny">${t("target")}</span><span data-aog-dropdown="${STR.target.en}|${STR.target.es}">${targets.map(([id,k])=>btn(L.target===id,"tg-"+id,t(k))).join("")}</span></div>
+    <p class="note-line lookfor">${lookFor()}</p>
+    ${(L.target==="moon"||L.target==="sea")?`<div class="row"><span class="tiny">${t("sky")}</span><span data-aog-dropdown="${STR.sky.en}|${STR.sky.es}">${["night","dusk","day","dawn"].map(s=>btn((L.sky||"night")===s,"sky-"+s,t(s))).join("")}</span></div>`:""}
     ${L.target==="sun"?`<div class="row"><span class="tiny">${t("filter")}</span><span>${btn(!L.filter,"filt0",t("none"))}${btn(!!L.filter,"filt1",t("front"))}</span></div>`:""}
     ${step>=3?`<div class="row"><span class="tiny">${t("reticle")}</span><span>${btn(L.reticle,"ret1",t("scaleOn"))}${btn(!L.reticle,"ret0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
     ${step>=5?`<div class="row"><span class="tiny">${t("barlow")}</span><span>${btn(L.barlow,"bar1",t("barlowIn"))}${btn(!L.barlow,"bar0",t("barlowOut"))}</span></div>`:""}
@@ -1170,7 +1472,7 @@ function startEye(){
       const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
       moved+=Math.abs(dx)+Math.abs(dy); drag={x:e.clientX,y:e.clientY};
       if(!(S.lab.measure&&moved<10)){
-        const mag=magOf(S.lab), z=(wrap.clientWidth||400)*.92/tfovArcmin(mag);
+        const mag=magOf(S.lab), z=(wrap.clientWidth||400)*.92/viewArcmin(mag);
         S.lab.panX+=dx/z; S.lab.panY+=dy/z;
       }
     });
@@ -1179,7 +1481,7 @@ function startEye(){
         const p=loc(e), w=canvas.width, h=canvas.height, cx=w/2, cy=h/2, r=Math.min(w,h)*.46;
         const sx=p.x*(w/(p.w||1)), sy=p.y*(h/(p.h||1));
         if ((sx-cx)**2+(sy-cy)**2<=r*r){
-          const mag=magOf(S.lab), z=w*.92/tfovArcmin(mag);
+          const mag=magOf(S.lab), z=w*.92/viewArcmin(mag);
           const spec={x:(sx-cx)/z - S.lab.panX, y:(sy-cy)/z - S.lab.panY};
           if (!S.lab.mA || S.lab.mB){ S.lab.mA=spec; S.lab.mB=null; }
           else S.lab.mB=spec;
@@ -1190,19 +1492,24 @@ function startEye(){
     });
     wrap.addEventListener("touchmove", e=>{ if(drag) e.preventDefault(); }, {passive:false});
   }
+  let lastKey="";
   const draw=now=>{
-    EYE_NOW=now||0;
+    EYE_NOW=STILL?0:(now||0);
     resize();
     const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
     const L=S.lab;
     if (!L.locked && !L.cap && !(L.target==="sun" && !L.filter)){ L.panX+=0.012; }
+    /* a still picture is drawn once; it is redrawn only when a knob, a button or a drag changes it */
+    const key=STILL?[w,L.cap,L.locked,L.ep,L.barlow,L.coarse,L.fine,L.eyeTwist,L.target,L.sky,L.filter,L.panX.toFixed(3),L.panY.toFixed(3),L.reticle,L.measure,JSON.stringify(L.mA),JSON.stringify(L.mB)].join("|"):"";
+    if (STILL && key===lastKey){ eyeRaf=requestAnimationFrame(draw); return; }
+    lastKey=key;
     ctx.clearRect(0,0,w,h);
     ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,6.3); ctx.clip();
     const sky=skyNow();
     paintSky(ctx,w,h,sky);
     if (!L.cap && (L.target!=="sun" || L.filter)){
       const mag=magOf(L);
-      const zoom=w*.92/tfovArcmin(mag);
+      const zoom=w*.92/viewArcmin(mag);
       if (!skyOff) skyOff=document.createElement("canvas");
       if (skyOff.width!==w){ skyOff.width=w; skyOff.height=h; }
       const sctx=skyOff.getContext("2d");
@@ -1210,20 +1517,12 @@ function startEye(){
       sctx.save();
       sctx.translate(cx,cy); sctx.scale(zoom,zoom); sctx.translate(L.panX,L.panY);
       if (sky!=="day" && L.target!=="moon" && L.target!=="sea") drawStars(sctx);
-      if (L.target==="moon"||L.target==="sea") drawMoon(sctx);
-      else if (L.target==="jupiter") drawJupiter(sctx, now);
-      else if (L.target==="saturn") drawSaturn(sctx);
-      else if (L.target==="orion") drawOrion(sctx);
-      else if (L.target==="pleiades") drawPleiades(sctx);
-      else if (L.target==="albireo") drawAlbireo(sctx);
-      else if (L.target==="pair") drawPair(sctx);
-      else if (L.target==="sun") drawSun(sctx);
+      if (DRAW[L.target]) DRAW[L.target](sctx);
       sctx.restore();
       achromatFringe(sctx, skyOff, w, h, cx, cy, r, Math.min(1.25, mag/120));
       const err=Math.abs(focusErr(L)), band=focusBand(L);
       const blurArcsec=SCOPE.seeing+(band==="in"?0:band==="near"?err*6:Math.min(900, err*28))+(L.barlow?2:0);
       const blurPx=blurArcsec/60*zoom;
-      EYE_NOW=now||0;
       ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
       if (blurPx<1.1) ctx.drawImage(skyOff,0,0);
       else {
@@ -1240,7 +1539,7 @@ function startEye(){
         ctx.beginPath(); ctx.moveTo(cx-r*.7,cy); ctx.lineTo(cx+r*.7,cy); ctx.moveTo(cx,cy-r*.7); ctx.lineTo(cx,cy+r*.7); ctx.stroke();
       }
       if (L.mA){
-        const mag=magOf(L), zoom=w*.92/tfovArcmin(mag);
+        const mag=magOf(L), zoom=w*.92/viewArcmin(mag);
         const ax=cx+(L.mA.x+L.panX)*zoom, ay=cy+(L.mA.y+L.panY)*zoom;
         ctx.fillStyle="#f2d48a"; ctx.beginPath(); ctx.arc(ax,ay,4,0,6.3); ctx.fill();
         if (L.mB){
@@ -1248,14 +1547,14 @@ function startEye(){
           ctx.strokeStyle="#f2d48a"; ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
           ctx.beginPath(); ctx.arc(bx,by,4,0,6.3); ctx.fill();
           const px=Math.hypot(ax-bx,ay-by);
-          const arcsec=(px/(2*r))*tfovArcmin(mag)*60;
+          const arcsec=(px/(2*r))*viewArcmin(mag)*60;
           const label=arcsec>=120?(arcsec/60).toFixed(1)+"′":Math.round(arcsec)+"″";
           ctx.fillStyle="#f4efe4"; ctx.font="700 13px sans-serif"; ctx.textAlign="center";
           ctx.fillText(label,(ax+bx)/2,(ay+by)/2-8);
         }
       }
       const barMin = mag<50?30:mag<120?10:2;
-      const barPx=(barMin/tfovArcmin(mag))*(2*r);
+      const barPx=(barMin/viewArcmin(mag))*(2*r);
       const ink=sky==="day"?"rgba(18,28,38,.8)":"rgba(255,255,255,.8)";
       ctx.strokeStyle=ink; ctx.lineWidth=1.5;
       ctx.beginPath(); const y=cy+r*.78, x0=cx-barPx/2;
@@ -1293,7 +1592,8 @@ function tick(){
   persist();
 }
 function centerTarget(id){
-  const spots={moon:[0,0],sea:[6.4,0.8],jupiter:[0,0],saturn:[0,0],orion:[0,0],pleiades:[0,0],albireo:[0,0],pair:[0,0],sun:[0,0]};
+  /* the Moon sits a little right of centre, so the 6 mm lands on the terminator with Copernicus in view */
+  const spots={moon:[-3.2,-1.2],sea:[6.4,0.8],pleiades:[-11,-6]};
   const p=spots[id]||[0,0];
   S.lab.panX=-p[0]; S.lab.panY=-p[1]; S.lab.mA=S.lab.mB=null;
 }
@@ -1320,10 +1620,10 @@ function paint(){
     if (a==="teach-lock"){ S.teacher="locked"; persist(); paint(); return; }
     if (a==="teach-open"){ S.teacher="open"; persist(); paint(); return; }
     const locked=(a==="ep10"||a==="ep6")&&step<1
-      || (a==="tg-jupiter"||a==="tg-saturn"||a==="tg-orion"||a==="tg-pleiades")&&step<2
+      || a.startsWith("tg-")&&STEP2_TARGETS.includes(a.slice(3))&&step<2
       || (a==="ret1"||a==="meas1")&&step<3
       || a==="tg-sea"&&step<4
-      || (a==="tg-albireo"||a==="tg-pair"||a==="bar1")&&step<5;
+      || (a==="tg-albireo"||a==="tg-pair"||a==="tg-split"||a==="bar1")&&step<5;
     if (locked) return;
     if (a==="cap1") L.cap=true;
     if (a==="cap0"){ if(!(L.target==="sun" && !L.filter)) L.cap=false; }

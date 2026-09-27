@@ -1,0 +1,161 @@
+/* ══ AOG-UNIT-V1 (2026-09-27) — ONE LESSON AT A TIME, WORKSHEETS, RESOURCES ══
+   Jimmy: "I don't want one long scroll of chapter or unit. I also want
+   worksheets and secondary resources provided for all subjects."
+   Runs on every course unit page (<course>-u<N>.html, all subjects, past and
+   future). It never touches the lesson words: it pages the lessons that are
+   already there, adds a Worksheet built from each lesson's own words, and a
+   short "More to explore" list under it. */
+(function boot() {
+  "use strict";
+  if (window.__aogUnit) return;
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); return; }
+  window.__aogUnit = 1;
+  var D = document, CO = window.AOG_COURSE || {};
+  if (!CO.id) return;
+  var KEY = "aog.interior.ws.v1." + CO.id + CO.unit;
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function isEs() { var s = D.querySelector("[data-en][data-es]"); return !!(s && s.getAttribute("data-es") && s.textContent.trim() === s.getAttribute("data-es").trim() && s.getAttribute("data-es") !== s.getAttribute("data-en")); }
+  function T(en, es) { return isEs() ? es : en; }
+  function sp(en, es) { return '<span data-en="' + esc(en) + '" data-es="' + esc(es) + '">' + esc(T(en, es)) + "</span>"; }
+
+  /* ── 1. the pages come from aog-pages.js (one section per page, Back / Next). A link to
+     #ws-<lesson id> opens that lesson's page and its worksheet. ── */
+  var PAGES = Array.prototype.slice.call(D.querySelectorAll("article.les"));
+  if (!PAGES.length) return;
+  function fromHash() {
+    var m = /^#ws-(.+)$/.exec(location.hash || ""); if (!m) return;
+    var les = D.getElementById(m[1]); if (!les || !les.classList.contains("les")) return;
+    try { var P = window.aogPages; if (P && P.pages) for (var i = 0; i < P.pages.length; i++) if (P.pages[i].els.some(function (e) { return e.contains(les); })) { P.go(i); break; } } catch (e) {}
+    var box = les.querySelector(".aog-ws"); if (!box || box.hidden) openWs(les);
+  }
+  window.addEventListener("hashchange", fromHash);
+  setTimeout(fromHash, 0);
+
+  /* ── 2. a Worksheet for every lesson, built from the lesson's own words ── */
+  var DEST = null, DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  try {
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if (dm) { var t = decodeURIComponent(dm[1]).replace(/-/g, "+").replace(/_/g, "/"); while (t.length % 4) t += "="; var o = JSON.parse(atob(t)); if (o && typeof o.u === "string" && DEST_RE.test(o.u)) DEST = { url: o.u, key: o.k || "" }; }
+  } catch (e) {}
+  if (!DEST) { try { var cfg = window.AOG_SYNC_DEFAULTS; if (cfg && !cfg.destinations && typeof cfg.url === "string" && DEST_RE.test(cfg.url) && Object.prototype.toString.call(cfg.schools) === "[object Array]" && cfg.schools.length) DEST = { url: cfg.url, key: cfg.key || "" }; } catch (e) {} }
+  function saved() { try { return JSON.parse(ls(KEY + "ws") || "{}") || {}; } catch (e) { return {}; } }
+  function txt(el) { return el ? el.textContent.replace(/\s+/g, " ").trim() : ""; }
+  function lessonBits(les) {
+    var mi = les.querySelector(".main-idea"); var miT = mi ? txt(mi).replace(/^(Main idea|Idea principal)\s*/i, "") : "";
+    var words = Array.prototype.map.call(les.querySelectorAll(".words dt"), function (dt) { var dd = dt.nextElementSibling; return { w: txt(dt), d: txt(dd) }; });
+    var qs = Array.prototype.map.call(les.querySelectorAll(".checks .qq"), function (q) { return txt(q).replace(/^\d+\.\s*/, ""); });
+    var look = les.querySelector(".look");
+    return { title: txt(les.querySelector(".lh h4")), n: txt(les.querySelector(".lh .ln")), mi: miT, words: words, qs: qs.slice(0, 3), lookT: look ? txt(look.querySelector("h5")) : "", lookP: look ? txt(look.querySelector(".prompt")) : "", cite: look ? txt(look.querySelector(".cite")) : "" };
+  }
+  function wsHtml(les, b) {
+    var lid = les.getAttribute("data-lid") || les.id, S = saved()[lid] || {}, k = 0;
+    function part(en, es, inner) { k++; return '<div class="part"><h6><span class="n">' + k + "</span>" + sp(en, es) + "</h6>" + inner + "</div>"; }
+    function ta(name, ph) { return '<textarea name="' + name + '" placeholder="' + esc(ph) + '">' + esc(S[name] || "") + "</textarea>"; }
+    var h = '<h5>' + sp("Worksheet", "Hoja de trabajo") + ": " + esc(b.n ? b.n + " " : "") + esc(b.title) + "</h5><p class=\"sub\">" + sp("Write in your own words. Short answers are fine.", "Escribe con tus palabras. Las respuestas cortas están bien.") + "</p>";
+    h += '<div class="row"><div><label>' + sp("Name", "Nombre") + '</label><input name="who" value="' + esc(ls(KEY + "who") || "") + '"></div><div><label>' + sp("Date", "Fecha") + '</label><input name="date" value="' + esc(S.date || "") + '"></div></div>';
+    if (b.words.length) h += part("Words to know", "Palabras clave", b.words.map(function (w, i) { return '<div class="wq"><p class="def">' + esc(w.d) + '</p><input name="w' + i + '" data-word="' + esc(w.w) + '" placeholder="' + esc(T("Which word is this?", "¿Qué palabra es?")) + '" value="' + esc(S["w" + i] || "") + '"><span class="mark"></span></div>'; }).join("") + '<button type="button" class="chkw" style="min-height:44px;margin-top:6px;border-radius:10px;border:1.5px solid var(--rule,#C9C2B2);background:var(--field-2,#F4F0E6);color:inherit;padding:0 14px;font:700 15px system-ui,sans-serif;cursor:pointer">' + sp("Check my words", "Revisar mis palabras") + "</button>");
+    h += part("The main idea, in my own words", "La idea principal, con mis palabras", '<p class="sub">' + esc(b.mi) + "</p>" + ta("mi", T("Say it your way.", "Dilo a tu manera.")));
+    if (b.qs.length) h += part("Answer in a sentence", "Responde con una oración", b.qs.map(function (q, i) { return '<div class="wq"><p>' + (i + 1) + ". " + esc(q) + "</p>" + ta("q" + i, T("Your answer", "Tu respuesta")) + "</div>"; }).join(""));
+    if (b.lookP) h += part("Look again", "Mira otra vez", '<div class="wq"><p>' + esc(b.lookT ? b.lookT + " — " : "") + esc(b.lookP) + "</p>" + ta("look", T("What do you notice?", "¿Qué notas?")) + "</div>");
+    h += part("Show what you learned", "Muestra lo que aprendiste", '<p class="sub">' + sp("Draw it, map it, or list it on paper. Then tell it here in one or two lines.", "Dibújalo, haz un mapa o una lista en papel. Luego cuéntalo aquí en una o dos líneas.") + '</p><div class="pad" aria-hidden="true"></div>' + ta("show", T("What I made", "Lo que hice")));
+    h += '<div class="btns"><button type="button" class="pr">' + sp("Print", "Imprimir") + '</button><button type="button" class="cl">' + sp("Clear", "Borrar") + '</button>' + (DEST ? '<button type="button" class="go">' + sp("FINISHED · send to my teacher", "TERMINÉ · enviar a mi maestro") + "</button>" : "") + '</div><p class="st" aria-live="polite"></p>';
+    return h;
+  }
+  function today() { var x = new Date(); return x.getFullYear() + "-" + ("0" + (x.getMonth() + 1)).slice(-2) + "-" + ("0" + x.getDate()).slice(-2); }
+  function openWs(les) {
+    var box = les.querySelector(".aog-ws");
+    if (box) { box.hidden = !box.hidden; les.querySelector(".aog-wsbtn").setAttribute("aria-pressed", box.hidden ? "false" : "true"); if (!box.hidden) box.scrollIntoView({ block: "start" }); return; }
+    var b = lessonBits(les), lid = les.getAttribute("data-lid") || les.id;
+    box = D.createElement("div"); box.className = "aog-ws"; box.id = "ws-" + lid; box.setAttribute("data-dest", DEST ? "1" : "0");
+    box.innerHTML = wsHtml(les, b);
+    var body = les.querySelector(".body") || les; body.appendChild(box);
+    les.querySelector(".aog-wsbtn").setAttribute("aria-pressed", "true");
+    var st = box.querySelector(".st");
+    function fields() { var o = {}; Array.prototype.forEach.call(box.querySelectorAll("input[name],textarea[name]"), function (f) { o[f.name] = f.value; }); return o; }
+    var sT; box.addEventListener("input", function () {
+      if (sT) clearTimeout(sT);
+      sT = setTimeout(function () { var all = saved(); all[lid] = fields(); ls(KEY + "ws", JSON.stringify(all)); var who = box.querySelector('[name="who"]').value.trim(); if (who) ls(KEY + "who", who); }, 300);
+    });
+    box.querySelector(".chkw").onclick = function () {
+      Array.prototype.forEach.call(box.querySelectorAll("input[data-word]"), function (f) {
+        var m = f.nextElementSibling, ok = f.value.trim().toLowerCase() === f.getAttribute("data-word").toLowerCase();
+        m.className = "mark " + (ok ? "ok" : "no"); m.textContent = f.value.trim() ? (ok ? "✓" : T("try again", "inténtalo otra vez")) : "";
+      });
+    };
+    box.querySelector(".cl").onclick = function () {
+      if (!confirm(T("Clear this worksheet?", "¿Borrar esta hoja?"))) return;
+      Array.prototype.forEach.call(box.querySelectorAll('textarea[name],input[data-word],input[name="date"]'), function (f) { f.value = ""; });
+      var all = saved(); delete all[lid]; ls(KEY + "ws", JSON.stringify(all)); st.textContent = "";
+    };
+    box.querySelector(".pr").onclick = function () { printWs(les, b, fields()); };
+    var go = box.querySelector(".go");
+    if (go) go.onclick = function () {
+      var f = fields(), who = (f.who || "").trim();
+      if (!who) { st.textContent = T("Enter your name first.", "Escribe primero tu nombre."); box.querySelector('[name="who"]').focus(); return; }
+      var ans = [], n = 0, k = 0;
+      b.words.forEach(function (w, i) { n++; var ok = (f["w" + i] || "").trim().toLowerCase() === w.w.toLowerCase(); if (ok) k++; ans.push({ q: T("Word: ", "Palabra: ") + w.d, a: f["w" + i] || "", ok: ok, key: w.w }); });
+      [["mi", b.mi]].concat(b.qs.map(function (q, i) { return ["q" + i, q]; })).concat(b.lookP ? [["look", b.lookP]] : []).concat([["show", T("Show what you learned", "Muestra lo que aprendiste")]]).forEach(function (pr) { n++; if ((f[pr[0]] || "").trim()) k++; ans.push({ q: pr[1], a: f[pr[0]] || "" }); });
+      if (k < n) { st.textContent = T("Fill in every part first.", "Completa primero cada parte."); return; }
+      var payload = { action: "checkin", checkinType: "practice", _backendAuth: DEST.key, studentId: who, timestamp: new Date().toISOString(), date: today(),
+        activityId: "crs-" + CO.id + "-u" + CO.unit + "-ws-" + lid, activityName: T("Worksheet", "Hoja de trabajo") + ": " + (b.n ? b.n + " " : "") + b.title, skill: CO.title || "",
+        setNo: CO.unit, itemsTotal: n, independent: k, supported: 0, hintsUsed: "", confidence: "", source: "link", course: CO.id, unit: CO.unit, assessment: "worksheet",
+        extra: { series: "course", build: "unit ws v1", lang: isEs() ? "es" : "en", review: "ws-" + lid, answers: ans, correct: k, total: n } };
+      st.textContent = T("Sending…", "Enviando…"); go.disabled = true;
+      fetch(DEST.url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
+        .then(function (r) { if (!r.ok) throw 0; st.className = "st done"; st.textContent = T("Sent. Your teacher has it.", "Enviado. Tu maestro ya lo tiene."); })
+        .catch(function () { st.textContent = T("It did not send. Check the connection and try again.", "No se envió. Revisa la conexión e inténtalo otra vez."); go.disabled = false; });
+    };
+    box.scrollIntoView({ block: "start" });
+  }
+  function printWs(les, b, f) {
+    var lines = function (n) { var s = ""; for (var i = 0; i < n; i++) s += '<div class="ln"></div>'; return s; };
+    var h = "<h1>" + esc(T("Worksheet", "Hoja de trabajo")) + ": " + esc((b.n ? b.n + " " : "") + b.title) + "</h1><p class=\"sub\">" + esc(D.title.replace(/ — .*$/, "")) + "</p>";
+    h += '<div class="fields">' + esc(T("Name", "Nombre")) + " <span>" + esc(f.who || "") + "</span> " + esc(T("Date", "Fecha")) + " <span>" + esc(f.date || "") + "</span></div>";
+    var k = 0; function part(t, inner) { k++; return "<h2>" + k + ". " + esc(t) + "</h2>" + inner; }
+    if (b.words.length) h += part(T("Words to know", "Palabras clave"), b.words.map(function (w, i) { return "<p><i>" + esc(w.d) + "</i><br>" + esc(T("Word", "Palabra")) + ": <span class=\"bl\">" + esc(f["w" + i] || "") + "</span></p>"; }).join(""));
+    h += part(T("The main idea, in my own words", "La idea principal, con mis palabras"), "<p><i>" + esc(b.mi) + "</i></p>" + (f.mi ? "<p>" + esc(f.mi) + "</p>" : lines(3)));
+    if (b.qs.length) h += part(T("Answer in a sentence", "Responde con una oración"), b.qs.map(function (q, i) { return "<p>" + (i + 1) + ". " + esc(q) + "</p>" + (f["q" + i] ? "<p>" + esc(f["q" + i]) + "</p>" : lines(2)); }).join(""));
+    if (b.lookP) h += part(T("Look again", "Mira otra vez"), "<p>" + esc(b.lookP) + "</p>" + (f.look ? "<p>" + esc(f.look) + "</p>" : lines(2)));
+    h += part(T("Show what you learned", "Muestra lo que aprendiste"), (f.show ? "<p>" + esc(f.show) + "</p>" : "") + '<div class="pad"></div>');
+    var doc = "<!doctype html><html><head><meta charset=\"utf-8\"><title>" + esc(b.title) + "</title><style>body{font:15px/1.45 Georgia,serif;color:#000;margin:28px}h1{font-size:20px;margin:0 0 4px}h2{font:bold 15px sans-serif;margin:16px 0 6px}.sub{font:13px sans-serif;color:#333;margin:0 0 12px}.fields{display:flex;gap:28px;font:14px sans-serif;margin:0 0 14px}.fields span{border-bottom:1px solid #000;min-width:190px;display:inline-block;padding:0 4px}.bl{border-bottom:1px solid #000;min-width:160px;display:inline-block;padding:0 4px}.ln{border-bottom:1px solid #000;height:26px}.pad{border:1px dashed #000;height:150px;margin-top:6px}p{margin:4px 0}</style></head><body>" + h + "</body></html>";
+    var fr = D.createElement("iframe"); fr.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0"; D.body.appendChild(fr);
+    var w = fr.contentWindow; w.document.open(); w.document.write(doc); w.document.close();
+    setTimeout(function () { try { w.focus(); w.print(); } catch (e) {} setTimeout(function () { fr.remove(); }, 1500); }, 250);
+  }
+
+  /* ── 3. More to explore: the lesson's own source, then places to look further ── */
+  var SITES = {
+    kids: ["Britannica Kids", "https://kids.britannica.com/search?query="],
+    simple: ["Simple English Wikipedia", "https://simple.wikipedia.org/w/index.php?search="],
+    loc: ["Library of Congress", "https://www.loc.gov/search/?q="],
+    khan: ["Khan Academy", "https://www.khanacademy.org/search?page_search_query="],
+    nasa: ["NASA", "https://www.nasa.gov/?search="],
+    pbs: ["PBS LearningMedia", "https://www.pbslearningmedia.org/search/?q="],
+    guten: ["Project Gutenberg (free books)", "https://www.gutenberg.org/ebooks/search/?query="],
+    si: ["Smithsonian", "https://www.si.edu/search/collection-images?edan_q="],
+    sd: ["SpanishDict", "https://www.spanishdict.com/translate/"],
+    sefaria: ["Sefaria (Hebrew texts)", "https://www.sefaria.org/search?q="],
+    bg: ["Bible Gateway", "https://www.biblegateway.com/quicksearch/?quicksearch="],
+    quran: ["Quran.com", "https://quran.com/search?q="],
+    inv: ["Investopedia", "https://www.investopedia.com/search?q="]
+  };
+  var BY = { ela: ["kids", "guten", "khan"], mth: ["khan", "kids", "pbs"], sci: ["nasa", "pbs", "kids"], ush: ["loc", "si", "kids"], ssc: ["loc", "kids", "si"], spa: ["sd", "kids", "khan"], fcs: ["kids", "pbs", "khan"],
+    rel: ["kids", "simple", "sefaria"], eco: ["khan", "inv", "kids"], bib: ["bg", "kids", "simple"], heb: ["sefaria", "bg", "kids"], qur: ["quran", "kids", "simple"], tal: ["sefaria", "kids", "simple"] };
+  var picks = BY[CO.id] || ["kids", "simple", "khan"];
+  PAGES.forEach(function (les) {
+    if (!les.classList.contains("les")) return;
+    var b = lessonBits(les), bt = les.querySelector(".lbtns");
+    if (bt) {
+      var w = D.createElement("button"); w.type = "button"; w.className = "lbtn aog-wsbtn"; w.setAttribute("aria-pressed", "false");
+      w.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>' + sp("Worksheet", "Hoja de trabajo");
+      w.addEventListener("click", function () { openWs(les); });
+      bt.appendChild(w);
+    }
+    var m = D.createElement("aside"); m.className = "aog-more no-print";
+    var q = encodeURIComponent(b.title);
+    m.innerHTML = '<div class="k">' + sp("More to explore", "Para explorar más") + "</div><ul>" + (b.cite ? '<li class="src">' + sp("Source in this lesson: ", "Fuente de esta lección: ") + esc(b.cite) + "</li>" : "") +
+      picks.map(function (id) { var s = SITES[id]; return '<li><a href="' + s[1] + q + '" target="_blank" rel="noopener">' + esc(s[0]) + ": " + esc(b.title) + "</a></li>"; }).join("") + "</ul>";
+    var body = les.querySelector(".body") || les; body.appendChild(m);
+  });
+})();

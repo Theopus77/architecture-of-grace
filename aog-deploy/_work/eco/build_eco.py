@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-AOG-ECO-V1 — Economics, Grades 9–12. The configuration for the shared course builder
-(_work/course/build_course.py): 8 unit JSON files in five bands →
-economics-course.html and eco-u1.html … eco-u8.html.
+AOG-ECO-V1 — Economics, K–12. The configuration for the shared course builder
+(_work/course/build_course.py): 18 unit JSON files in five bands →
+economics-course.html and eco-u1.html … eco-u18.html.
 
 Run from aog-deploy/:  python3 _work/eco/build_eco.py
 Then:                  python3 _work/eco/inject_eco_jump.py   (the Economics jump groups on every page)
@@ -37,21 +37,21 @@ COURSE = dict(
     id="eco", page="eco-u%d.html", short="eco%d",
     unit_files=available_units(),
     builder="_work/eco/build_eco.py", src="_work/eco/u*.json",
-    title="Economics, Grades 9–12",
+    title="Economics, K–12",
     h1=("Economics", "Economía"),
     og_alt="A link card for the Economics course at Architecture of Grace.",
     contents_page="economics-course.html", contents_short="economics-course",
     contents_k=("The Interior — Economics · Every band", "El Interior — Economía · Cada banda"),
     contents_deck=("The whole course on one page, band by band: every unit with its chapters, sections and numbered lessons. Tap a lesson to open it. A tick means you got all three checks right.",
                    "Todo el curso en una página, banda por banda: cada unidad con sus capítulos, secciones y lecciones numeradas. Toca una lección para abrirla. Una marca significa que acertaste las tres comprobaciones."),
-    contents_desc=lambda ch, les: "A free high-school Economics course following the Illinois Learning Standards for Social Science (economics) and the Voluntary National Content Standards in Economics: 8 units across grades 9–12, %d chapters, %d numbered lessons with worked examples, key words, data, checks, chapter reviews and unit tests. Original text, free to use." % (ch, les),
+    contents_desc=lambda ch, les: "A free K–12 Economics course following the Illinois Learning Standards for Social Science (economics) and the Voluntary National Content Standards in Economics: 18 units across five grade bands, %d chapters, %d numbered lessons with worked examples, key words, data, checks, chapter reviews and unit tests. Original text, free to use." % (ch, les),
     contents_back=("← Economics, the whole course", "← Economía, el curso completo"),
     search_ph="Try “scarcity”, “demand” or “GDP”",
     hub="economics-hub.html", hub_back=("← Economics, every band", "← Economía, cada banda"),
     k_line=("The Interior — Economics", "El Interior — Economía"),
     desc_lead=lambda u: "Economics, %s" % BAND_TITLE.get(u.get("band"), "K–12").lower(),
     tl_label=("How the ideas came about", "Cómo surgieron las ideas"),
-    foot=("Architecture of Grace · Economics, Grades 9–12 · original text following the Illinois Learning Standards for Social Science (economics) and the national economics standards · the banner is a drawn scene, not a photograph.",
+    foot=("Architecture of Grace · Economics, K–12 · original text following the Illinois Learning Standards for Social Science (economics) and the national economics standards · the banner is a drawn scene, not a photograph.",
           "Architecture of Grace · Economía · texto original que sigue los estándares de economía de Illinois y los estándares nacionales de economía · el banner es una escena dibujada, no una fotografía."),
     teach=('The course follows the standard high-school economics sequence — microeconomics in grades 9–10, macroeconomics and the world economy in 11–12 — as units, chapters, sections and numbered lessons, in original text written at each band’s reading level. Every lesson starts from a situation a student can picture, walks through a worked example with real numbers, and ends with three checks. Where economists disagree, the lesson says so and gives both sides.',
            'El curso sigue la secuencia estándar de economía de preparatoria — microeconomía en los grados 9–10, macroeconomía y la economía mundial en 11–12 — en unidades, capítulos, secciones y lecciones numeradas, con texto original al nivel de lectura de cada banda. Cada lección parte de una situación que el estudiante puede imaginar, resuelve un ejemplo con números reales y termina con tres comprobaciones. Donde los economistas discrepan, la lección lo dice y presenta ambos lados.'),

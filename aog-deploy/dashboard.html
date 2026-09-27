@@ -121,6 +121,7 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
 </style>
 </head>
 <body>
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
 <script src="/aog-topbar.js"></script>
 <script src="/aog-ieppw-core.js?v=1"></script>
 <div class="app">
@@ -179,6 +180,10 @@ const get=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.pars
 const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const raw=k=>{try{return String(localStorage.getItem(k)||"").trim()}catch(e){return ""}};
 function destParam(){ const u=raw("aog.sync.url"),k=raw("aog.sync.writekey"); if(!u||!k) return "";
+  /* AOG-LINK-SHORT-V1 (2026-09-27) — Jimmy: "the link is super long! Shorten it up." The site's
+     own destination (aog-sync-config.js) is already known to every page, so a link to it carries
+     nothing; only a different Sheet rides in the link. */
+  try{ const d=window.AOG_SYNC_DEFAULTS||{}; if(d.url===u&&d.key===k) return ""; }catch(e){}
   try{ return btoa(unescape(encodeURIComponent(JSON.stringify({u:u,k:k})))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }catch(e){ return ""; } }
 function orgId(){ return raw("aog.org.id"); }
 function withDest(path){ const q=[],d=destParam(),o=orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
@@ -209,13 +214,21 @@ function gradesFor(s){  if(s==="foundry"){ const a=[]; for(let i=1;i<=30;i++) a.
 /* the class link: today's items, packed small, with the teacher's Sheet on it */
 function packTray(tr){ return tr.map(it=>it.t==="dd"?["d",it.s,it.g,it.n]:it.t==="unit"?["u",it.p,it.f]:it.t==="prac"?["p",it.i]:["s",it.i]); }
 function unpack(a){ return (a||[]).map(x=>x[0]==="d"?{t:"dd",s:x[1],g:x[2],n:x[3]}:x[0]==="u"?{t:"unit",p:x[1],f:x[2]}:x[0]==="p"?{t:"prac",i:x[1]}:{t:"slip",i:x[1]}); }
+function packHand(tr){ return packTray(tr).map(x=>x.map(v=>encodeURIComponent(String(v)).replace(/\.html$/,"")).join("~")).join("."); }
+function unpackHand(h){ return unpack(h.split(".").filter(Boolean).map(seg=>{ const p=seg.split("~").map(decodeURIComponent); if(p[0]==="u"&&p[2]&&!/\.html$/.test(p[2])) p[2]+=".html"; return p; })); }
 function classLink(){ const tr=get(K.tray,[]); if(!tr.length) return "";
-  const h=btoa(unescape(encodeURIComponent(JSON.stringify(packTray(tr))))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-  return location.origin+withDest("/dashboard.html?view=student&hand="+h); }
-function readHand(){ const q=new URLSearchParams(location.search), h=q.get("hand"); if(!h) return null;
+  return location.origin+withDest("/today?h="+packHand(tr)); }
+function readHand(){ const q=new URLSearchParams(location.search), h=q.get("hand"), c=q.get("h");
+  if(c){ try{ return unpackHand(c); }catch(e){ return null; } }
+  if(!h) return null;
   try{ let s=h.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return unpack(JSON.parse(decodeURIComponent(escape(atob(s))))); }catch(e){ return null; } }
+/* AOG-LINKS-SAVED-V1 (2026-09-27) — Jimmy: "The only thing that is accessible is the newest link."
+   Every link made here is kept, named, so a link for each child (or each day) stays a tap away. */
+function savedLinks(){ return get("aog.dash2.links",[]); }
+function saveLink(name){ const u=classLink(); if(!u) return; const L=savedLinks().filter(x=>x.u!==u); L.unshift({n:String(name||"").trim().slice(0,40)||new Date().toLocaleDateString(),u:u,at:Date.now()}); put("aog.dash2.links",L.slice(0,12)); }
 /* a student who arrived by the class link keeps today's work and the teacher's Sheet for every page they open */
 const HAND=readHand(), QS=new URLSearchParams(location.search);
+if(HAND && QS.get("view")!=="student"){ try{ QS.set("view","student"); }catch(e){} }
 if(HAND){ put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",at:Date.now()}); }
 function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(it); const q=[];
   const d=(h&&h.dest)||destParam(), o=(h&&h.org)||orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
@@ -889,7 +902,9 @@ function today(){
   +'<section class="card tray"><p class="k" style="color:var(--goldInk)">'+T("tray")+'</p>'
     +'<div class="items">'+(tr.length?tr.map((it,i)=>'<div class="item" style="--ac:'+itemColor(it)+'"><span class="tag" style="display:inline-flex;align-items:center;gap:6px"><span style="display:inline-flex;width:15px;height:15px;color:inherit">'+itemIcon(it)+'</span>'+TAG[it.t][0]+'</span><b>'+esc(itemLabel(it,lang))+'</b><button type="button" data-del="'+i+'" aria-label="Remove">✕</button></div>').join(""):'<p class="empty">'+T("trayE")+'</p>')+'</div>'
     +(tr.length?'<p class="k" style="color:var(--goldInk)">'+T("link")+'</p><div class="linkbox"><code id="lk">'+esc(link)+'</code><button class="btn gold" type="button" id="cp">'+T("copy")+'</button><button class="btn" type="button" id="bg">'+T("show")+'</button><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener">'+T("open")+'</a></div>'
-      +(conn?'':'<p class="warn">'+T("nosheet")+'</p>'):'')
+      +(conn?'':'<p class="warn">'+T("nosheet")+'</p>')
+      +'<div class="row" style="margin-top:10px;align-items:center;flex-wrap:wrap;gap:8px"><input type="text" id="lkName" maxlength="40" placeholder="'+(lang==="es"?"Nombre para este enlace (p. ej. Sofía)":"Name this link (e.g. Sofia)")+'" style="flex:1 1 200px;min-height:44px;font-size:16px;padding:0 12px;border:1px solid var(--line);border-radius:12px"><button class="btn" type="button" id="lkSave">'+(lang==="es"?"Guardar enlace":"Save link")+'</button></div>':'')
+    +(savedLinks().length?'<p class="k" style="color:var(--goldInk);margin-top:14px">'+(lang==="es"?"Enlaces guardados":"Saved links")+'</p><div class="items">'+savedLinks().map((x,i)=>'<div class="item" style="--ac:var(--c1)"><b>'+esc(x.n)+'</b><span style="color:var(--sub);font-size:.85rem">'+esc(new Date(x.at).toLocaleDateString())+'</span><a class="btn" href="'+esc(x.u)+'" target="_blank" rel="noopener">'+(lang==="es"?"Abrir":"Open")+'</a><button class="btn" type="button" data-lkcopy="'+i+'">'+T("copy")+'</button><button type="button" data-lkdel="'+i+'" aria-label="Remove">✕</button></div>').join("")+'</div>':'')
   +'</section>'
   +'<section class="card" style="margin-top:22px" data-aog-after-tray><p class="k" style="color:var(--goldInk)">'+T("tools")+'</p><div class="row">'+TOOLS.map(x=>'<a class="btn" href="/#opentool='+x[0]+'">'+x[lang==="es"?2:1]+'</a>').join("")+'<a class="btn" href="/#tools">'+T("allTools")+' ›</a></div></section>'+teamCard();
 }
@@ -899,8 +914,11 @@ function student(){
   const lang=L(), h=get("aog.dash2.handed",null), items=(h&&h.items)||(QS.get("view")==="student"?[]:get(K.tray,[])), nm=get(K.stu,"");
   const ic={dd:"dd",unit:"as",prac:"as",slip:"sl"}, ac={dd:"var(--c1)",unit:"var(--c3)",prac:"var(--c3)",slip:"var(--c5)"};
   return '<div class="stu"><div class="hello"><div><h1>'+T("sw")+'</h1><p>'+T("swS")+'</p></div></div>'
-   +'<section class="card"><label class="f" for="stN">'+T("name")+'</label><input type="text" id="stN" maxlength="40" autocomplete="off" value="'+esc(nm)+'"><p class="note">'+T("nameS")+'</p></section>'
-   +'<div class="work">'+(items.length?items.map(it=>{ const dn=sentToday(it); return '<a class="go'+(dn?' sent':'')+'" style="--ac:'+itemColor(it)+'" href="'+esc(studentHref(it))+'"><span class="ic">'+itemIcon(it)+'</span><span><b>'+esc(itemLabel(it,lang))+'</b><span>'+(dn?T("sentTick"):TAG[it.t][0])+'</span></span><span class="arr">'+(dn?'✓':'›')+'</span></a>'; }).join(""):'<p class="empty">'+T("nothing")+'</p>')+'</div></div>';
+   +'<section class="card"><label class="f" for="stN">'+T("name")+'</label><input type="text" id="stN" maxlength="40" autocomplete="off" value="'+esc(nm)+'"><p class="note">'+T("nameS")+'</p>'
+   /* AOG-NAMES-V1 (2026-09-27) — Jimmy: "I am going back between myself and my two children. I have to always rewrite the names." Every name used on this device is a chip; tap to switch. */
+   +(get("aog.dash2.names",[]).length>1||(get("aog.dash2.names",[]).length===1&&get("aog.dash2.names",[])[0]!==nm)?'<div class="row" style="gap:8px;flex-wrap:wrap;margin-top:8px">'+get("aog.dash2.names",[]).map(n=>'<button type="button" class="btn'+(n===nm?" gold":"")+'" data-name="'+esc(n)+'" style="min-height:44px">'+esc(n)+'</button>').join("")+'</div>':'')
+   +'</section>'
+   +'<div class="work">'+(items.length?items.map(it=>{ const dn=sentToday(it); return '<a class="go'+(dn?' sent':'')+'" style="--ac:'+ac[it.t]+'" href="'+esc(studentHref(it))+'"><span class="ic">'+svg(ic[it.t])+'</span><span><b>'+esc(itemLabel(it,lang))+'</b><span>'+(dn?T("sentTick"):TAG[it.t][0])+'</span></span><span class="arr">'+(dn?'✓':'›')+'</span></a>'; }).join(""):'<p class="empty">'+T("nothing")+'</p>')+'</div></div>';
 }
 function setup(){
   const conn=!!destParam();
@@ -952,6 +970,9 @@ function wire(){
   });
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ const tr=get(K.tray,[]); tr.splice(+b.dataset.del,1); put(K.tray,tr); render(); });
   on("cp","click",async()=>{ try{ await navigator.clipboard.writeText(classLink()); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("lk")); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand("copy"); } const b=document.getElementById("cp"); b.textContent=T("copied")+" ✓"; setTimeout(()=>{ if(b.isConnected) b.textContent=T("copy"); },1600); });
+  on("lkSave","click",()=>{ saveLink(val("lkName")); render(); });
+  document.querySelectorAll("[data-lkcopy]").forEach(b=>b.onclick=async()=>{ const x=savedLinks()[+b.dataset.lkcopy]; if(!x) return; try{ await navigator.clipboard.writeText(x.u); b.textContent=T("copied"); }catch(e){ prompt("Copy this link:",x.u); } });
+  document.querySelectorAll("[data-lkdel]").forEach(b=>b.onclick=()=>{ const L=savedLinks(); L.splice(+b.dataset.lkdel,1); put("aog.dash2.links",L); render(); });
   on("bg","click",()=>{ const u=classLink(); document.getElementById("bigLead").textContent=T("bigLead"); document.getElementById("bigU").textContent=u.replace(/^https?:\/\//,"").split("?")[0]+"…"; document.getElementById("bigSub").textContent=T("bigSub"); document.getElementById("bigClose").textContent=T("close"); document.getElementById("big").classList.add("on"); });
   on("q","input",()=>{ put("aog.dash2.q",val("q")); const c=document.getElementById("q").selectionStart; render(); const e=document.getElementById("q"); if(e){e.focus();e.setSelectionRange(c,c);} });
   document.querySelectorAll("[data-stu]").forEach(e=>e.addEventListener("click",()=>{ put("aog.dash2.sel",e.dataset.stu); if(PAGE!=="students"){ location.hash="students"; } else render(); window.scrollTo(0,0); }));
@@ -976,6 +997,8 @@ function wire(){
   document.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=()=>{ const [id,i]=b.dataset.pdel.split("|"); pointDrop(id,+i); });
   on("backStu","click",()=>{ put("aog.dash2.sel",""); render(); });
   on("stN","input",()=>{ const v=val("stN"); put(K.stu,v); try{ localStorage.setItem("aog.drops.who",v); }catch(e){} });
+  on("stN","change",()=>{ const v=val("stN").trim(); if(!v) return; const N=get("aog.dash2.names",[]).filter(x=>x!==v); N.unshift(v); put("aog.dash2.names",N.slice(0,8)); setTimeout(render,0); });
+  document.querySelectorAll("[data-name]").forEach(b=>b.onclick=()=>{ const v=b.dataset.name; put(K.stu,v); try{ localStorage.setItem("aog.drops.who",v); }catch(e){} setTimeout(render,0); });
 }
 document.getElementById("bigClose").onclick=()=>document.getElementById("big").classList.remove("on");
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.getElementById("big").classList.remove("on"); });
