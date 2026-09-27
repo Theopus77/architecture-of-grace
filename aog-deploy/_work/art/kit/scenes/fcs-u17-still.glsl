@@ -1,8 +1,8 @@
 /* FCS Unit 17 "Food Science: What Happens When You Cook" — pencil still life: a round loaf of
    risen bread with slashes across its crust, a raw egg beside a cracked one in a small bowl,
    and a probe thermometer standing in a glass beaker. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3265,0.2207,-0.6190)
+#define CAM_TGT vec3(-0.1355,-0.0159,0.0910)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
