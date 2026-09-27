@@ -154,7 +154,7 @@
   } catch (e) {}
   /* AOG-MAST-SKETCH-V1 — the worksheets and the bench guides get their pencil drawing too */
   try {
-    if (/^(AoG-Interior-Worksheets|microscope-guide|microscope-lessons|telescope-guide|telescope-lessons|science-telescope)$/.test((location.pathname.split("/").pop() || "").replace(/\.html$/, "")) && !D.getElementById("aog-sketch-js")) {
+    if (!D.getElementById("aog-sketch-js")) {   /* every page loads the sketch pad: emoji and marks become pencil (Jimmy, 2026-09-27) */
       var skw = D.createElement("script"); skw.id = "aog-sketch-js"; skw.src = "/aog-sketch.js"; skw.defer = true; (D.head || H).appendChild(skw);
     }
   } catch (e) {}
