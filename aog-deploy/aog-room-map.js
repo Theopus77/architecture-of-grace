@@ -1,0 +1,2083 @@
+/* Each practice room mapped to the course unit (book chapter) it practises. Generated 2026-09-27. */
+window.AOG_ROOM_MAP = {
+ "m15-counting-how-many": {
+  "subject": "Math",
+  "band": "K–2",
+  "unit": "mth-u1",
+  "unitTitle": "Unit 1 · Counting and Numbers",
+  "chapter": "Chapter 1 · Counting and Comparing",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m16-add-subtract-within-20": {
+  "subject": "Math",
+  "band": "K–2",
+  "unit": "mth-u2",
+  "unitTitle": "Unit 2 · Adding and Subtracting",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m17-tens-ones-hundreds": {
+  "subject": "Math",
+  "band": "K–2",
+  "unit": "mth-u3",
+  "unitTitle": "Unit 3 · Place Value to 1,000",
+  "chapter": "Chapter 5 · Hundreds, Tens and Ones",
+  "course": "math-course",
+  "confidence": "medium",
+  "note": "Also draws on Unit 1, Chapter \"Tens and Ones\"."
+ },
+ "m18-add-subtract-within-1000": {
+  "subject": "Math",
+  "band": "K–2",
+  "unit": "mth-u3",
+  "unitTitle": "Unit 3 · Place Value to 1,000",
+  "chapter": "Chapter 6 · Adding and Subtracting Bigger Numbers",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m19-length-time-money": {
+  "subject": "Math",
+  "band": "K–2",
+  "unit": "mth-u4",
+  "unitTitle": "Unit 4 · Measuring, Time and Money",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m20-shapes-equal-shares": {
+  "subject": "Math",
+  "band": "K–2",
+  "unit": "mth-u5",
+  "unitTitle": "Unit 5 · Shapes and Equal Shares",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "concepts-and-data": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u8",
+  "unitTitle": "Unit 8 · Fractions",
+  "chapter": "Chapter 15 · What a Fraction Is",
+  "course": "math-course",
+  "confidence": "low",
+  "note": "A hub of grades 3–5 activities (fractions, rounding, place value, data); fractions is the largest share. Also touches Units 7 and 10."
+ },
+ "m21-multiplication-division-meaning": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u6",
+  "unitTitle": "Unit 6 · Multiplication and Division",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m22-multi-digit-multiplication": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u7",
+  "unitTitle": "Unit 7 · Place Value and Multi-Digit Arithmetic",
+  "chapter": "Chapter 14 · Multi-Digit Multiplication and Division",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m23-fractions-add-subtract-multiply": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u8",
+  "unitTitle": "Unit 8 · Fractions",
+  "chapter": "Chapter 16 · Adding, Subtracting and Multiplying Fractions",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m24-decimals": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u9",
+  "unitTitle": "Unit 9 · Decimals",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m25-measurement-area-perimeter-volume": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u10",
+  "unitTitle": "Unit 10 · Measurement and Data",
+  "chapter": "Chapter 20 · Area, Perimeter and Volume",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m26-geometry-coordinate-plane": {
+  "subject": "Math",
+  "band": "3–5",
+  "unit": "mth-u11",
+  "unitTitle": "Unit 11 · Geometry and the Coordinate Plane",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "interior-math": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u14",
+  "unitTitle": "Unit 14 · Expressions, Equations and Inequalities",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "low",
+  "note": "A 7th-grade plan hub (integers, operations, expressions, equations); spans Units 13 and 14."
+ },
+ "b12-sixth-grade-review": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u13",
+  "unitTitle": "Unit 13 · The Number System",
+  "chapter": "Chapter 27 · Operations With Rational Numbers",
+  "course": "math-course",
+  "confidence": "medium",
+  "note": "6th-grade skills review (fractions, decimals, GCF/LCM, plotting); closest to Operations With Rational Numbers."
+ },
+ "b13-sixth-grade-practice": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u13",
+  "unitTitle": "Unit 13 · The Number System",
+  "chapter": "Chapter 27 · Operations With Rational Numbers",
+  "course": "math-course",
+  "confidence": "medium",
+  "note": "Practice set for the 6th-grade review; same topics as b12."
+ },
+ "m27-ratios-rates": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u12",
+  "unitTitle": "Unit 12 · Ratios, Rates and Proportions",
+  "chapter": "Chapter 24 · Ratios and Unit Rates",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m28-proportional-percent": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u12",
+  "unitTitle": "Unit 12 · Ratios, Rates and Proportions",
+  "chapter": "Chapter 25 · Proportional Relationships and Percent",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m29-inequalities": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u14",
+  "unitTitle": "Unit 14 · Expressions, Equations and Inequalities",
+  "chapter": "Chapter 30 · Equations and Inequalities",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m30-area-surface-volume": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u16",
+  "unitTitle": "Unit 16 · Geometry",
+  "chapter": "Chapter 34 · Area, Surface Area and Volume",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m31-angles-triangles-scale": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u16",
+  "unitTitle": "Unit 16 · Geometry",
+  "chapter": "Chapter 35 · Angles, Triangles and Scale",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m32-probability-sampling": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u17",
+  "unitTitle": "Unit 17 · Statistics and Probability",
+  "chapter": "Chapter 38 · Probability and Sampling",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m33-exponents-roots-scinot": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u13",
+  "unitTitle": "Unit 13 · The Number System",
+  "chapter": "Chapter 28 · Exponents, Roots and Scientific Notation",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m34-equations-systems": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u15",
+  "unitTitle": "Unit 15 · Functions and Linear Equations",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": "Linear equations and systems: Unit 15, first and third chapters."
+ },
+ "m35-functions-slope": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u15",
+  "unitTitle": "Unit 15 · Functions and Linear Equations",
+  "chapter": "Chapter 32 · Functions",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m36-transformations": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u16",
+  "unitTitle": "Unit 16 · Geometry",
+  "chapter": "Chapter 36 · Transformations and the Pythagorean Theorem",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m37-pythagorean-theorem": {
+  "subject": "Math",
+  "band": "6–8",
+  "unit": "mth-u16",
+  "unitTitle": "Unit 16 · Geometry",
+  "chapter": "Chapter 36 · Transformations and the Pythagorean Theorem",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m38-alg1-linear-equations-inequalities": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u18",
+  "unitTitle": "Unit 18 · Algebra I: Linear Equations, Functions and Systems",
+  "chapter": "Chapter 40 · Solving Linear Equations and Inequalities",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m39-alg1-functions-linear-models": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u18",
+  "unitTitle": "Unit 18 · Algebra I: Linear Equations, Functions and Systems",
+  "chapter": "Chapter 41 · Functions and Linear Models",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m40-alg1-systems": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u18",
+  "unitTitle": "Unit 18 · Algebra I: Linear Equations, Functions and Systems",
+  "chapter": "Chapter 42 · Systems of Equations and Inequalities",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m41-alg1-exponents-polynomials-factoring": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u19",
+  "unitTitle": "Unit 19 · Algebra I: Exponents, Polynomials and Quadratics",
+  "chapter": "Chapter 44 · Polynomials and Factoring",
+  "course": "math-course",
+  "confidence": "high",
+  "note": "Also covers Chapter \"Exponents and Exponential Functions\"."
+ },
+ "m42-alg1-quadratics": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u19",
+  "unitTitle": "Unit 19 · Algebra I: Exponents, Polynomials and Quadratics",
+  "chapter": "Chapter 45 · Quadratic Functions and Equations",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m43-geo-proof-congruence-triangles": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u20",
+  "unitTitle": "Unit 20 · Geometry: Reasoning, Congruence and Triangles",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m44-geo-similarity-trig": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u21",
+  "unitTitle": "Unit 21 · Geometry: Similarity, Trigonometry and Circles",
+  "chapter": "Chapter 49 · Similarity and Right-Triangle Trigonometry",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m45-geo-circles-area-volume": {
+  "subject": "Math",
+  "band": "9–10",
+  "unit": "mth-u21",
+  "unitTitle": "Unit 21 · Geometry: Similarity, Trigonometry and Circles",
+  "chapter": "Chapter 50 · Circles, Area and Volume",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m46-alg2-polynomial-rational": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u23",
+  "unitTitle": "Unit 23 · Algebra II: Polynomial, Rational and Radical Functions",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m47-alg2-exponential-logarithmic": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u24",
+  "unitTitle": "Unit 24 · Algebra II: Exponential, Logarithmic and Trigonometric Functions",
+  "chapter": "Chapter 55 · Exponentials and Logarithms",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m48-trigonometric-functions": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u24",
+  "unitTitle": "Unit 24 · Algebra II: Exponential, Logarithmic and Trigonometric Functions",
+  "chapter": "Chapter 56 · Trigonometric Functions",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m49-sequences-series": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u25",
+  "unitTitle": "Unit 25 · Sequences, Series and Modeling",
+  "chapter": "Chapter 57 · Sequences and Series",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m50-statistics-sample-to-claim": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u26",
+  "unitTitle": "Unit 26 · Statistics: From a Sample to a Claim",
+  "chapter": "",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m51-financial-math": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u27",
+  "unitTitle": "Unit 27 · Financial Math and Capstone",
+  "chapter": "Chapter 61 · Financial Math",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "m52-capstone-model-it": {
+  "subject": "Math",
+  "band": "11–12",
+  "unit": "mth-u27",
+  "unitTitle": "Unit 27 · Financial Math and Capstone",
+  "chapter": "Chapter 62 · Capstone: Model It",
+  "course": "math-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "science-microscope": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "",
+  "unitTitle": "Whole 6–8 band",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "low",
+  "note": "A tool lab, not one unit. Used across the book wherever cells come up (Unit 13 grades 6–8, Unit 16 grades 9–10)."
+ },
+ "telescope": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "",
+  "unitTitle": "Whole 3–5 band",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "low",
+  "note": "A tool lab, not one unit. Fits the space chapters (Unit 4 K–2, Unit 9 grades 3–5, Unit 15 grades 6–8)."
+ },
+ "science-waves": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u12",
+  "unitTitle": "Unit 12 · Waves and Information",
+  "chapter": "Chapter 26 · Waves, Sound and Light",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "Sound waves (pitch, loudness, wave shape); also fits Unit 2 (K–2) and Unit 6 (3–5)."
+ },
+ "music-drums": {
+  "subject": "Science",
+  "band": "",
+  "unit": null,
+  "unitTitle": "",
+  "chapter": "",
+  "course": "",
+  "confidence": null,
+  "note": "A music beat maker. No science unit teaches rhythm or music."
+ },
+ "music-decks": {
+  "subject": "Science",
+  "band": "",
+  "unit": null,
+  "unitTitle": "",
+  "chapter": "",
+  "course": "",
+  "confidence": null,
+  "note": "A music turntable. No science unit teaches DJ mixing or music."
+ },
+ "b26-pushes-pulls": {
+  "subject": "Science",
+  "band": "K–2",
+  "unit": "sci-u1",
+  "unitTitle": "Unit 1 · Pushes, Pulls and Stuff",
+  "chapter": "Chapter 1 · Pushes and Pulls",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b27-sun-moon-sky": {
+  "subject": "Science",
+  "band": "K–2",
+  "unit": "sci-u4",
+  "unitTitle": "Unit 4 · Earth, Sky and Weather",
+  "chapter": "Chapter 8 · Sun, Moon and Stars",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b28-living-things-need": {
+  "subject": "Science",
+  "band": "K–2",
+  "unit": "sci-u3",
+  "unitTitle": "Unit 3 · Living Things and Where They Live",
+  "chapter": "Chapter 5 · What Plants and Animals Need",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b29-weather-seasons": {
+  "subject": "Science",
+  "band": "K–2",
+  "unit": "sci-u4",
+  "unitTitle": "Unit 4 · Earth, Sky and Weather",
+  "chapter": "Chapter 7 · Weather and Seasons",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b30-light-sound": {
+  "subject": "Science",
+  "band": "K–2",
+  "unit": "sci-u2",
+  "unitTitle": "Unit 2 · Light, Sound and Waves",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b31-materials-change": {
+  "subject": "Science",
+  "band": "K–2",
+  "unit": "sci-u1",
+  "unitTitle": "Unit 1 · Pushes, Pulls and Stuff",
+  "chapter": "Chapter 2 · What Things Are Made Of",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b18-forces-motion": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u5",
+  "unitTitle": "Unit 5 · Forces, Motion and Energy",
+  "chapter": "Chapter 10 · Forces and Motion",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b19-life-cycles-traits": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u7",
+  "unitTitle": "Unit 7 · Life: Cycles, Traits and Survival",
+  "chapter": "Chapter 14 · Life Cycles and Traits",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b20-weather-climate": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u9",
+  "unitTitle": "Unit 9 · Earth, Weather and Space",
+  "chapter": "Chapter 18 · Weather and Climate",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b21-energy": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u5",
+  "unitTitle": "Unit 5 · Forces, Motion and Energy",
+  "chapter": "Chapter 11 · Energy on the Move",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b22-changing-surface": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u9",
+  "unitTitle": "Unit 9 · Earth, Weather and Space",
+  "chapter": "Chapter 19 · Earth's Changing Surface",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b23-matter-properties": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u6",
+  "unitTitle": "Unit 6 · Matter and Waves",
+  "chapter": "Chapter 12 · Particles Too Small to See",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b24-ecosystems": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u8",
+  "unitTitle": "Unit 8 · Ecosystems and the Flow of Energy",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b25-earth-in-space": {
+  "subject": "Science",
+  "band": "3–5",
+  "unit": "sci-u9",
+  "unitTitle": "Unit 9 · Earth, Weather and Space",
+  "chapter": "Chapter 20 · Earth in Space",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b1-living-things": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u13",
+  "unitTitle": "Unit 13 · Cells, Bodies and Reproduction",
+  "chapter": "Chapter 28 · Cells and Body Systems",
+  "course": "science-course",
+  "confidence": "low",
+  "note": "7th-grade exam prep on traits of living things; the book has no chapter just on this, Cells and Body Systems is closest."
+ },
+ "b2-cell-system": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u13",
+  "unitTitle": "Unit 13 · Cells, Bodies and Reproduction",
+  "chapter": "Chapter 28 · Cells and Body Systems",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "7th-grade exam prep."
+ },
+ "b3-body-systems": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u13",
+  "unitTitle": "Unit 13 · Cells, Bodies and Reproduction",
+  "chapter": "Chapter 28 · Cells and Body Systems",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "7th-grade exam prep."
+ },
+ "b4-reproduction": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u13",
+  "unitTitle": "Unit 13 · Cells, Bodies and Reproduction",
+  "chapter": "Chapter 29 · Growth, Reproduction and Behavior",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "7th-grade exam prep."
+ },
+ "b5-ecosystems": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u14",
+  "unitTitle": "Unit 14 · Ecosystems and Heredity",
+  "chapter": "Chapter 30 · Ecosystems and Populations",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "7th-grade exam prep."
+ },
+ "b6-populations": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u14",
+  "unitTitle": "Unit 14 · Ecosystems and Heredity",
+  "chapter": "Chapter 30 · Ecosystems and Populations",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "7th-grade exam prep."
+ },
+ "b7-heredity": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u14",
+  "unitTitle": "Unit 14 · Ecosystems and Heredity",
+  "chapter": "Chapter 31 · Heredity and Genes",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "7th-grade exam prep."
+ },
+ "vocabulary-science": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "",
+  "unitTitle": "Whole 6–8 band",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "low",
+  "note": "Word lists and test prep for the eight 7th-grade exam-prep units; spans Units 13–15."
+ },
+ "b14-matter": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u10",
+  "unitTitle": "Unit 10 · Matter and Its Interactions",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "Exam prep."
+ },
+ "b15-forces-energy-waves": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u11",
+  "unitTitle": "Unit 11 · Forces, Motion and Energy",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "Exam prep; waves part matches Unit 12."
+ },
+ "b16-earth-systems": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u15",
+  "unitTitle": "Unit 15 · Earth and Space Systems",
+  "chapter": "Chapter 33 · Earth's Systems: Rock, Water and Weather",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "Exam prep."
+ },
+ "b17-space-systems": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u15",
+  "unitTitle": "Unit 15 · Earth and Space Systems",
+  "chapter": "Chapter 34 · Space Systems and Earth's History",
+  "course": "science-course",
+  "confidence": "medium",
+  "note": "Exam prep."
+ },
+ "b32-cells-energy": {
+  "subject": "Science",
+  "band": "9–10",
+  "unit": "sci-u16",
+  "unitTitle": "Unit 16 · Biology: Cells and Energy",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b34-ecosystems-human-impact": {
+  "subject": "Science",
+  "band": "9–10",
+  "unit": "sci-u18",
+  "unitTitle": "Unit 18 · Biology: Ecosystems and Human Impact",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b35-matter-reactions": {
+  "subject": "Science",
+  "band": "9–10",
+  "unit": "sci-u19",
+  "unitTitle": "Unit 19 · Physical Science: Matter and Reactions",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b36-forces-energy-waves-hs": {
+  "subject": "Science",
+  "band": "9–10",
+  "unit": "sci-u20",
+  "unitTitle": "Unit 20 · Physical Science: Forces, Energy and Waves",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b37-earth-space-hs": {
+  "subject": "Science",
+  "band": "9–10",
+  "unit": "sci-u21",
+  "unitTitle": "Unit 21 · Earth and Space",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b38-chem-atoms-bonding": {
+  "subject": "Science",
+  "band": "11–12",
+  "unit": "sci-u22",
+  "unitTitle": "Unit 22 · Chemistry: Atoms, Bonding and Reactions",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b39-chem-stoich-solutions": {
+  "subject": "Science",
+  "band": "11–12",
+  "unit": "sci-u23",
+  "unitTitle": "Unit 23 · Chemistry: Stoichiometry, Solutions and Energy",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b40-physics-motion-forces": {
+  "subject": "Science",
+  "band": "11–12",
+  "unit": "sci-u24",
+  "unitTitle": "Unit 24 · Physics: Motion and Forces",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b41-physics-energy-waves-electricity": {
+  "subject": "Science",
+  "band": "11–12",
+  "unit": "sci-u25",
+  "unitTitle": "Unit 25 · Physics: Energy, Waves and Electricity",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b42-environmental-science": {
+  "subject": "Science",
+  "band": "11–12",
+  "unit": "sci-u26",
+  "unitTitle": "Unit 26 · Environmental Science",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "b43-capstone-evidence": {
+  "subject": "Science",
+  "band": "11–12",
+  "unit": "sci-u27",
+  "unitTitle": "Unit 27 · Capstone: Argue From Evidence",
+  "chapter": "",
+  "course": "science-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s7-me-family-class": {
+  "subject": "Social Studies",
+  "band": "K–2",
+  "unit": "ssc-u1",
+  "unitTitle": "Unit 1 · Me, My Family, My School",
+  "chapter": "Chapter 1 · Who I Am and Who I Live With",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s8-rules-fair-choices": {
+  "subject": "Social Studies",
+  "band": "K–2",
+  "unit": "ssc-u1",
+  "unitTitle": "Unit 1 · Me, My Family, My School",
+  "chapter": "Chapter 2 · Rules at School and at Home",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s9-maps-where-things-are": {
+  "subject": "Social Studies",
+  "band": "K–2",
+  "unit": "ssc-u3",
+  "unitTitle": "Unit 3 · Maps and Places",
+  "chapter": "Chapter 5 · Where Things Are",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s10-then-and-now": {
+  "subject": "Social Studies",
+  "band": "K–2",
+  "unit": "ssc-u4",
+  "unitTitle": "Unit 4 · Then and Now, and Our Country",
+  "chapter": "Chapter 7 · Long Ago and Today",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s11-needs-wants-work": {
+  "subject": "Social Studies",
+  "band": "K–2",
+  "unit": "ssc-u2",
+  "unitTitle": "Unit 2 · Our Community",
+  "chapter": "Chapter 4 · Needs, Wants and Money",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s12-symbols-stories": {
+  "subject": "Social Studies",
+  "band": "K–2",
+  "unit": "ssc-u4",
+  "unitTitle": "Unit 4 · Then and Now, and Our Country",
+  "chapter": "Chapter 8 · Symbols, Holidays and Being a Citizen",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s2-communities-illinois": {
+  "subject": "Social Studies",
+  "band": "3–5",
+  "unit": "ssc-u5",
+  "unitTitle": "Unit 5 · Illinois: Land and People",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s3-first-peoples": {
+  "subject": "Social Studies",
+  "band": "3–5",
+  "unit": "ssc-u6",
+  "unitTitle": "Unit 6 · The First Peoples of North America",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s4-explorers-colonies-nation": {
+  "subject": "Social Studies",
+  "band": "3–5",
+  "unit": "ssc-u7",
+  "unitTitle": "Unit 7 · Colonies to a New Nation",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s1-government": {
+  "subject": "Social Studies",
+  "band": "3–5",
+  "unit": "ssc-u8",
+  "unitTitle": "Unit 8 · Government: Local, State, National",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s5-money-markets-choices": {
+  "subject": "Social Studies",
+  "band": "3–5",
+  "unit": "ssc-u9",
+  "unitTitle": "Unit 9 · Money, Markets and Regions",
+  "chapter": "Chapter 18 · Producers, Consumers and Choices",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s6-maps-us-regions": {
+  "subject": "Social Studies",
+  "band": "3–5",
+  "unit": "ssc-u9",
+  "unitTitle": "Unit 9 · Money, Markets and Regions",
+  "chapter": "Chapter 19 · Regions of the United States",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "us-history": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "",
+  "unitTitle": "Whole 6–8 band",
+  "chapter": "",
+  "course": "us-history",
+  "confidence": "high",
+  "note": "The room is the whole U.S. History book (all ten units)."
+ },
+ "b9-new-nation": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ush-u3",
+  "unitTitle": "Unit 3 · A New Nation",
+  "chapter": "Chapter 7 · From Confederation to Constitution",
+  "course": "us-history",
+  "confidence": "medium",
+  "note": "Exam prep on the Constitution."
+ },
+ "h9-the-third-branch": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "Chapter 31 · Rights, Courts and Taking Part",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": "Judicial branch; 7th-grade civics review."
+ },
+ "h10-the-first-branch": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "Chapter 30 · The Constitution and Illinois Government",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": "Congress; 7th-grade civics review."
+ },
+ "h11-the-second-branch": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "Chapter 30 · The Constitution and Illinois Government",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": "The presidency; 7th-grade civics review."
+ },
+ "h12-the-blueprint": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ush-u3",
+  "unitTitle": "Unit 3 · A New Nation",
+  "chapter": "Chapter 7 · From Confederation to Constitution",
+  "course": "us-history",
+  "confidence": "medium",
+  "note": "The U.S. Constitution; also fits Social Studies Unit 14."
+ },
+ "h13-rights-in-writing": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "Chapter 31 · Rights, Courts and Taking Part",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": "Bill of Rights and later amendments."
+ },
+ "h14-how-a-bill-becomes-a-law": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "Chapter 30 · The Constitution and Illinois Government",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": ""
+ },
+ "h15-the-illinois-constitution": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "Chapter 30 · The Constitution and Illinois Government",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "h16-put-it-all-together": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "low",
+  "note": "Whole civics review sheet; covers all of Unit 14 and the Constitution chapter of U.S. History Unit 3."
+ },
+ "social-quiz": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u14",
+  "unitTitle": "Unit 14 · Citizens of Illinois",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "low",
+  "note": "Quiz hub for the civics rooms (h9–h16)."
+ },
+ "s13-world-before-1500": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u10",
+  "unitTitle": "Unit 10 · The First Civilizations",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": "Spans Units 10–12 (first civilizations to 1500)."
+ },
+ "s14-world-regions": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ssc-u13",
+  "unitTitle": "Unit 13 · Geography of the World",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s15-reconstruction-to-present": {
+  "subject": "Social Studies",
+  "band": "6–8",
+  "unit": "ush-u7",
+  "unitTitle": "Unit 7 · America on the Move",
+  "chapter": "",
+  "course": "us-history",
+  "confidence": "low",
+  "note": "Spans U.S. History Units 6 (Reconstruction) through 10."
+ },
+ "s16-empires-and-exchange": {
+  "subject": "Social Studies",
+  "band": "9–10",
+  "unit": "ssc-u15",
+  "unitTitle": "Unit 15 · World History: Empires and Exchange",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s17-revolutions-modern-world": {
+  "subject": "Social Studies",
+  "band": "9–10",
+  "unit": "ssc-u16",
+  "unitTitle": "Unit 16 · Revolutions and the Modern World",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s18-human-geography": {
+  "subject": "Social Studies",
+  "band": "9–10",
+  "unit": "ssc-u18",
+  "unitTitle": "Unit 18 · Human Geography",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s19-civics-rights-power": {
+  "subject": "Social Studies",
+  "band": "9–10",
+  "unit": "ssc-u19",
+  "unitTitle": "Unit 19 · Civics: Rights, Power and Participation",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s20-industry-progressive-era": {
+  "subject": "Social Studies",
+  "band": "11–12",
+  "unit": "ssc-u20",
+  "unitTitle": "Unit 20 · U.S. History: Industry to the Progressive Era",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s21-world-wars-cold-war": {
+  "subject": "Social Studies",
+  "band": "11–12",
+  "unit": "ssc-u21",
+  "unitTitle": "Unit 21 · U.S. History: World Wars and the Cold War",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s22-civil-rights-to-today": {
+  "subject": "Social Studies",
+  "band": "11–12",
+  "unit": "ssc-u22",
+  "unitTitle": "Unit 22 · U.S. History: Civil Rights to Today",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s23-government": {
+  "subject": "Social Studies",
+  "band": "11–12",
+  "unit": "ssc-u23",
+  "unitTitle": "Unit 23 · Government and Economics",
+  "chapter": "Chapter 52 · The Three Branches in Practice",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "s24-economics": {
+  "subject": "Social Studies",
+  "band": "11–12",
+  "unit": "ssc-u23",
+  "unitTitle": "Unit 23 · Government and Economics",
+  "chapter": "Chapter 53 · Markets, Money and Policy",
+  "course": "social-studies-course",
+  "confidence": "medium",
+  "note": "Economics part of Government and Economics."
+ },
+ "s25-capstone-inquiry": {
+  "subject": "Social Studies",
+  "band": "11–12",
+  "unit": "ssc-u24",
+  "unitTitle": "Unit 24 · Capstone: Inquiry from the Sources",
+  "chapter": "",
+  "course": "social-studies-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e1-sounds-and-letters": {
+  "subject": "English",
+  "band": "K–2",
+  "unit": "ela-u1",
+  "unitTitle": "Unit 1 · Sounds and Letters",
+  "chapter": "",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e2-sight-words": {
+  "subject": "English",
+  "band": "K–2",
+  "unit": "ela-u2",
+  "unitTitle": "Unit 2 · Words and Sentences",
+  "chapter": "Chapter 3 · Words You Know by Sight",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e3-a-whole-thought": {
+  "subject": "English",
+  "band": "K–2",
+  "unit": "ela-u2",
+  "unitTitle": "Unit 2 · Words and Sentences",
+  "chapter": "Chapter 4 · A Sentence Is a Whole Thought",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e4-who-where-what": {
+  "subject": "English",
+  "band": "K–2",
+  "unit": "ela-u3",
+  "unitTitle": "Unit 3 · Stories and True Books",
+  "chapter": "Chapter 5 · Who, Where, What Happens",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e5-beginning-middle-end": {
+  "subject": "English",
+  "band": "K–2",
+  "unit": "ela-u4",
+  "unitTitle": "Unit 4 · Writing and Telling",
+  "chapter": "Chapter 7 · Beginning, Middle, End",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e6-true-books-story-books": {
+  "subject": "English",
+  "band": "K–2",
+  "unit": "ela-u3",
+  "unitTitle": "Unit 3 · Stories and True Books",
+  "chapter": "Chapter 6 · Story Books and True Books",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e7-word-parts": {
+  "subject": "English",
+  "band": "3–5",
+  "unit": "ela-u5",
+  "unitTitle": "Unit 5 · Word Power",
+  "chapter": "Chapter 9 · Word Parts",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e8-context-clues": {
+  "subject": "English",
+  "band": "3–5",
+  "unit": "ela-u5",
+  "unitTitle": "Unit 5 · Word Power",
+  "chapter": "Chapter 10 · Context Clues and the Dictionary",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e9-main-idea": {
+  "subject": "English",
+  "band": "3–5",
+  "unit": "ela-u7",
+  "unitTitle": "Unit 7 · Reading to Learn",
+  "chapter": "Chapter 14 · Main Idea and Details",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e10-story-elements": {
+  "subject": "English",
+  "band": "3–5",
+  "unit": "ela-u6",
+  "unitTitle": "Unit 6 · Reading Stories",
+  "chapter": "Chapter 11 · Story Elements",
+  "course": "english-course",
+  "confidence": "high",
+  "note": "Theme part is the next chapter."
+ },
+ "e11-text-structure": {
+  "subject": "English",
+  "band": "3–5",
+  "unit": "ela-u7",
+  "unitTitle": "Unit 7 · Reading to Learn",
+  "chapter": "Chapter 15 · How a Text Is Built",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e12-the-paragraph": {
+  "subject": "English",
+  "band": "3–5",
+  "unit": "ela-u8",
+  "unitTitle": "Unit 8 · Writing",
+  "chapter": "Chapter 17 · The Paragraph: a Claim and Reasons",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "n1-the-outsiders": {
+  "subject": "English",
+  "band": "6–8",
+  "unit": "ela-u10",
+  "unitTitle": "Unit 10 · The Novel",
+  "chapter": "Chapter 24 · Reading a Whole Book",
+  "course": "english-course",
+  "confidence": "medium",
+  "note": "A 7th-grade novel study; the book teaches reading a whole novel but not this title."
+ },
+ "wf-units": {
+  "subject": "English",
+  "band": "6–8",
+  "unit": "ela-u12",
+  "unitTitle": "Unit 12 · Words: Stems and Meaning",
+  "chapter": "Chapter 28 · Greek and Latin Stems",
+  "course": "english-course",
+  "confidence": "medium",
+  "note": "Class stem lists."
+ },
+ "word-foundry": {
+  "subject": "English",
+  "band": "6–8",
+  "unit": "ela-u12",
+  "unitTitle": "Unit 12 · Words: Stems and Meaning",
+  "chapter": "Chapter 28 · Greek and Latin Stems",
+  "course": "english-course",
+  "confidence": "medium",
+  "note": ""
+ },
+ "b11-grammar": {
+  "subject": "English",
+  "band": "6–8",
+  "unit": "ela-u13",
+  "unitTitle": "Unit 13 · Grammar and Style",
+  "chapter": "",
+  "course": "english-course",
+  "confidence": "medium",
+  "note": "Grade 7 grammar test prep."
+ },
+ "e13-clues-and-word-parts": {
+  "subject": "English",
+  "band": "9–10",
+  "unit": "ela-u17",
+  "unitTitle": "Unit 17 · Words and Structure",
+  "chapter": "Chapter 40 · Context Clues and Word Parts",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e14-figurative-language": {
+  "subject": "English",
+  "band": "9–10",
+  "unit": "ela-u17",
+  "unitTitle": "Unit 17 · Words and Structure",
+  "chapter": "Chapter 41 · Figurative Language",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e15-tone-and-voice": {
+  "subject": "English",
+  "band": "9–10",
+  "unit": "ela-u16",
+  "unitTitle": "Unit 16 · The Language of Persuasion",
+  "chapter": "Chapter 38 · Tone and Voice",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e16-rhetoric": {
+  "subject": "English",
+  "band": "9–10",
+  "unit": "ela-u16",
+  "unitTitle": "Unit 16 · The Language of Persuasion",
+  "chapter": "Chapter 37 · Rhetoric: How a Writer Persuades",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e17-punctuation-meaning": {
+  "subject": "English",
+  "band": "9–10",
+  "unit": "ela-u18",
+  "unitTitle": "Unit 18 · Grammar for Writers",
+  "chapter": "Chapter 43 · Punctuation That Changes the Meaning",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e18-clauses-parallel-usage": {
+  "subject": "English",
+  "band": "9–10",
+  "unit": "ela-u18",
+  "unitTitle": "Unit 18 · Grammar for Writers",
+  "chapter": "Chapter 42 · Clauses, Parallel Structure and Usage",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e19-literary-devices": {
+  "subject": "English",
+  "band": "11–12",
+  "unit": "ela-u20",
+  "unitTitle": "Unit 20 · Literary Devices and American Voices",
+  "chapter": "Chapter 46 · Literary Devices in Depth",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e20-diction-and-syntax": {
+  "subject": "English",
+  "band": "11–12",
+  "unit": "ela-u21",
+  "unitTitle": "Unit 21 · Diction, Syntax and Style",
+  "chapter": "Chapter 48 · Diction and Syntax",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e21-reasoning-and-fallacies": {
+  "subject": "English",
+  "band": "11–12",
+  "unit": "ela-u22",
+  "unitTitle": "Unit 22 · Reasoning and Argument",
+  "chapter": "Chapter 50 · Reasoning and Fallacies",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e22-advanced-punctuation": {
+  "subject": "English",
+  "band": "11–12",
+  "unit": "ela-u23",
+  "unitTitle": "Unit 23 · Advanced Grammar and Usage",
+  "chapter": "Chapter 52 · Advanced Punctuation",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e23-concision-and-style": {
+  "subject": "English",
+  "band": "11–12",
+  "unit": "ela-u21",
+  "unitTitle": "Unit 21 · Diction, Syntax and Style",
+  "chapter": "Chapter 49 · Concision and Style",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "e24-capstone": {
+  "subject": "English",
+  "band": "11–12",
+  "unit": "ela-u24",
+  "unitTitle": "Unit 24 · Capstone: Research, Cite, Defend",
+  "chapter": "",
+  "course": "english-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp13-five-vowels": {
+  "subject": "Spanish",
+  "band": "K–2",
+  "unit": "spa-u1",
+  "unitTitle": "Unit 1 · Sounds of Spanish",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp14-colors-numbers": {
+  "subject": "Spanish",
+  "band": "K–2",
+  "unit": "spa-u2",
+  "unitTitle": "Unit 2 · Colors and Numbers",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp15-el-and-la": {
+  "subject": "Spanish",
+  "band": "K–2",
+  "unit": "spa-u3",
+  "unitTitle": "Unit 3 · El and La: Naming Things",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp16-one-and-many": {
+  "subject": "Spanish",
+  "band": "K–2",
+  "unit": "spa-u4",
+  "unitTitle": "Unit 4 · One and Many, Big and Little",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp17-whole-thought": {
+  "subject": "Spanish",
+  "band": "3–5",
+  "unit": "spa-u5",
+  "unitTitle": "Unit 5 · A Whole Thought in Spanish",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp18-soy-estoy": {
+  "subject": "Spanish",
+  "band": "3–5",
+  "unit": "spa-u6",
+  "unitTitle": "Unit 6 · Soy and Estoy",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp19-who-where-when": {
+  "subject": "Spanish",
+  "band": "3–5",
+  "unit": "spa-u7",
+  "unitTitle": "Unit 7 · Who, Where, When, Why",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp20-first-then-last": {
+  "subject": "Spanish",
+  "band": "3–5",
+  "unit": "spa-u8",
+  "unitTitle": "Unit 8 · First, Then, Last: Telling a Day",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp1-greetings": {
+  "subject": "Spanish",
+  "band": "6–8",
+  "unit": "spa-u9",
+  "unitTitle": "Unit 9 · Greetings and Introductions",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp2-numbers-time": {
+  "subject": "Spanish",
+  "band": "6–8",
+  "unit": "spa-u10",
+  "unitTitle": "Unit 10 · Numbers, Time and Dates",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp3-classroom-nouns": {
+  "subject": "Spanish",
+  "band": "6–8",
+  "unit": "spa-u11",
+  "unitTitle": "Unit 11 · The Classroom: Nouns and Articles",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp4-ser-estar": {
+  "subject": "Spanish",
+  "band": "6–8",
+  "unit": "spa-u12",
+  "unitTitle": "Unit 12 · Ser, Estar and Describing People",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp5-present-tense": {
+  "subject": "Spanish",
+  "band": "9–10",
+  "unit": "spa-u13",
+  "unitTitle": "Unit 13 · The Present Tense",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp6-tener-gustar": {
+  "subject": "Spanish",
+  "band": "9–10",
+  "unit": "spa-u14",
+  "unitTitle": "Unit 14 · Tener, Gustar and Stem Changes",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp7-preterite": {
+  "subject": "Spanish",
+  "band": "9–10",
+  "unit": "spa-u15",
+  "unitTitle": "Unit 15 · The Preterite: What Happened",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp8-imperfect": {
+  "subject": "Spanish",
+  "band": "9–10",
+  "unit": "spa-u16",
+  "unitTitle": "Unit 16 · The Imperfect and Telling a Story",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp9-pronouns-commands": {
+  "subject": "Spanish",
+  "band": "11–12",
+  "unit": "spa-u17",
+  "unitTitle": "Unit 17 · Pronouns, Reflexives and Commands",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp10-subjunctive": {
+  "subject": "Spanish",
+  "band": "11–12",
+  "unit": "spa-u18",
+  "unitTitle": "Unit 18 · The Subjunctive",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp11-world-register": {
+  "subject": "Spanish",
+  "band": "11–12",
+  "unit": "spa-u19",
+  "unitTitle": "Unit 19 · The Spanish-Speaking World and Register",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "sp12-capstone": {
+  "subject": "Spanish",
+  "band": "11–12",
+  "unit": "spa-u20",
+  "unitTitle": "Unit 20 · Capstone: Present and Defend",
+  "chapter": "",
+  "course": "spanish-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc13-clean-hands": {
+  "subject": "Family & Consumer Sciences",
+  "band": "K–2",
+  "unit": "fcs-u1",
+  "unitTitle": "Unit 1 · Clean Hands",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc14-hot-cold-sharp": {
+  "subject": "Family & Consumer Sciences",
+  "band": "K–2",
+  "unit": "fcs-u2",
+  "unitTitle": "Unit 2 · Hot, Cold and Sharp",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc15-everyday-sometimes": {
+  "subject": "Family & Consumer Sciences",
+  "band": "K–2",
+  "unit": "fcs-u3",
+  "unitTitle": "Unit 3 · Everyday Food and Sometimes Food",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc16-job-to-the-end": {
+  "subject": "Family & Consumer Sciences",
+  "band": "K–2",
+  "unit": "fcs-u4",
+  "unitTitle": "Unit 4 · A Job Done to the End",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc17-measure-it-right": {
+  "subject": "Family & Consumer Sciences",
+  "band": "3–5",
+  "unit": "fcs-u5",
+  "unitTitle": "Unit 5 · Measure It Right",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc18-needle-and-button": {
+  "subject": "Family & Consumer Sciences",
+  "band": "3–5",
+  "unit": "fcs-u6",
+  "unitTitle": "Unit 6 · The Needle and the Button",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc19-money-and-choices": {
+  "subject": "Family & Consumer Sciences",
+  "band": "3–5",
+  "unit": "fcs-u7",
+  "unitTitle": "Unit 7 · Money and Choices",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc20-plan-cook-clean": {
+  "subject": "Family & Consumer Sciences",
+  "band": "3–5",
+  "unit": "fcs-u8",
+  "unitTitle": "Unit 8 · Plan It, Cook It, Clean It Up",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc1-kitchen-safety": {
+  "subject": "Family & Consumer Sciences",
+  "band": "6–8",
+  "unit": "fcs-u9",
+  "unitTitle": "Unit 9 · Kitchen Safety and Sanitation",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc2-knife-skills": {
+  "subject": "Family & Consumer Sciences",
+  "band": "6–8",
+  "unit": "fcs-u10",
+  "unitTitle": "Unit 10 · Knife Skills",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc3-measuring-recipes": {
+  "subject": "Family & Consumer Sciences",
+  "band": "6–8",
+  "unit": "fcs-u11",
+  "unitTitle": "Unit 11 · Measuring and Reading a Recipe",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc4-hand-sewing": {
+  "subject": "Family & Consumer Sciences",
+  "band": "6–8",
+  "unit": "fcs-u12",
+  "unitTitle": "Unit 12 · Hand Sewing",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc5-sewing-machine": {
+  "subject": "Family & Consumer Sciences",
+  "band": "9–10",
+  "unit": "fcs-u13",
+  "unitTitle": "Unit 13 · The Sewing Machine",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc6-fabric-patterns": {
+  "subject": "Family & Consumer Sciences",
+  "band": "9–10",
+  "unit": "fcs-u14",
+  "unitTitle": "Unit 14 · Fabric, Fibers and Patterns",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc7-cooking-methods": {
+  "subject": "Family & Consumer Sciences",
+  "band": "9–10",
+  "unit": "fcs-u15",
+  "unitTitle": "Unit 15 · Cooking Methods and Heat",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc8-nutrition": {
+  "subject": "Family & Consumer Sciences",
+  "band": "9–10",
+  "unit": "fcs-u16",
+  "unitTitle": "Unit 16 · Nutrition and Meal Planning",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc9-food-science": {
+  "subject": "Family & Consumer Sciences",
+  "band": "11–12",
+  "unit": "fcs-u17",
+  "unitTitle": "Unit 17 · Food Science: What Happens When You Cook",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc10-child-development": {
+  "subject": "Family & Consumer Sciences",
+  "band": "11–12",
+  "unit": "fcs-u18",
+  "unitTitle": "Unit 18 · Child Development and Care",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc11-independent-living": {
+  "subject": "Family & Consumer Sciences",
+  "band": "11–12",
+  "unit": "fcs-u19",
+  "unitTitle": "Unit 19 · Independent Living and Money",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "fc12-capstone": {
+  "subject": "Family & Consumer Sciences",
+  "band": "11–12",
+  "unit": "fcs-u20",
+  "unitTitle": "Unit 20 · Capstone: Plan, Cost, Produce",
+  "chapter": "",
+  "course": "facs-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec1-scarcity-and-choice": {
+  "subject": "Economics",
+  "band": "9–10",
+  "unit": "eco-u11",
+  "unitTitle": "Unit 11 · Scarcity, Choice and Opportunity Cost",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec2-supply-and-demand": {
+  "subject": "Economics",
+  "band": "9–10",
+  "unit": "eco-u12",
+  "unitTitle": "Unit 12 · Supply, Demand and the Market",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec8-trade-taxes-and-the-world": {
+  "subject": "Economics",
+  "band": "11–12",
+  "unit": "eco-u18",
+  "unitTitle": "Unit 18 · Trade, Taxes and the World Economy",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec4-competition-and-firms": {
+  "subject": "Economics",
+  "band": "9–10",
+  "unit": "eco-u14",
+  "unitTitle": "Unit 14 · Competition, Firms and Market Structure",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec7-money-banking-and-the-fed": {
+  "subject": "Economics",
+  "band": "11–12",
+  "unit": "eco-u17",
+  "unitTitle": "Unit 17 · Money, Banking and the Federal Reserve",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec5-measuring-the-economy": {
+  "subject": "Economics",
+  "band": "11–12",
+  "unit": "eco-u15",
+  "unitTitle": "Unit 15 · Measuring the Economy",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec3-prices-and-market-failure": {
+  "subject": "Economics",
+  "band": "9–10",
+  "unit": "eco-u13",
+  "unitTitle": "Unit 13 · Prices, Controls and Market Failure",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "ec6-business-cycle-and-fiscal": {
+  "subject": "Economics",
+  "band": "11–12",
+  "unit": "eco-u16",
+  "unitTitle": "Unit 16 · The Business Cycle and Fiscal Policy",
+  "chapter": "",
+  "course": "economics-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r1-reading-sacred-texts": {
+  "subject": "World Religions",
+  "band": "9–10",
+  "unit": "rel-u13",
+  "unitTitle": "Unit 13 · How to Read a Sacred Text",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r6-hinduism": {
+  "subject": "World Religions",
+  "band": "9–10",
+  "unit": "rel-u18",
+  "unitTitle": "Unit 18 · Hinduism: Dharma, Karma and the Gita",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r7-buddhism": {
+  "subject": "World Religions",
+  "band": "11–12",
+  "unit": "rel-u19",
+  "unitTitle": "Unit 19 · Buddhism: The Four Noble Truths",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r10-religion-and-the-world": {
+  "subject": "World Religions",
+  "band": "11–12",
+  "unit": "rel-u22",
+  "unitTitle": "Unit 22 · Religion and the World",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r5-islam": {
+  "subject": "World Religions",
+  "band": "9–10",
+  "unit": "rel-u17",
+  "unitTitle": "Unit 17 · Islam: The Qur'an and the Five Pillars",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r8-confucianism-daoism": {
+  "subject": "World Religions",
+  "band": "11–12",
+  "unit": "rel-u20",
+  "unitTitle": "Unit 20 · Confucianism and Daoism",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r9-sikhism-jainism-africa-americas": {
+  "subject": "World Religions",
+  "band": "11–12",
+  "unit": "rel-u21",
+  "unitTitle": "Unit 21 · Sikhism, Jainism, and the Traditions of Africa and the Americas",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r2-hebrew-bible": {
+  "subject": "World Religions",
+  "band": "9–10",
+  "unit": "rel-u14",
+  "unitTitle": "Unit 14 · The Biblical Lens I: The Hebrew Bible",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r3-new-testament": {
+  "subject": "World Religions",
+  "band": "9–10",
+  "unit": "rel-u15",
+  "unitTitle": "Unit 15 · The Biblical Lens II: The New Testament",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r4-judaism": {
+  "subject": "World Religions",
+  "band": "9–10",
+  "unit": "rel-u16",
+  "unitTitle": "Unit 16 · Judaism: Torah, Talmud and a People",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r11-one-question-many-lenses": {
+  "subject": "World Religions",
+  "band": "11–12",
+  "unit": "rel-u23",
+  "unitTitle": "Unit 23 · One Question, Many Lenses",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ },
+ "r12-capstone": {
+  "subject": "World Religions",
+  "band": "11–12",
+  "unit": "rel-u24",
+  "unitTitle": "Unit 24 · Capstone: The Sources Speak",
+  "chapter": "",
+  "course": "religions-course",
+  "confidence": "high",
+  "note": ""
+ }
+};
