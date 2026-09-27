@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 AOG-SCI-V1 — Science, K–12. The configuration for the shared course builder
-(_work/course/build_course.py): 27 unit JSON files in five bands →
-science-course.html and sci-u1.html … sci-u27.html.
+(_work/course/build_course.py): 28 unit JSON files in five bands →
+science-course.html and sci-u1.html … sci-u28.html (unit 28, grades 6–8, was added
+after the first 27, so units are ordered band by band, then by number).
 
 Run from aog-deploy/:  python3 _work/sci/build_sci.py
 Then:                  python3 _work/jump/inject_jump.py   (the science groups are
@@ -47,7 +48,7 @@ COURSE = dict(
     contents_k=("The Interior — Science · Every band", "El Interior — Ciencias · Cada banda"),
     contents_deck=("The whole course on one page, band by band: every unit with its chapters, sections and numbered lessons. Tap a lesson to open it. A tick means you got all three checks right.",
                    "Todo el curso en una página, banda por banda: cada unidad con sus capítulos, secciones y lecciones numeradas. Toca una lección para abrirla. Una marca significa que acertaste las tres comprobaciones."),
-    contents_desc=lambda ch, les: "A free K–12 science course following the Illinois (NGSS) storyline: 27 units across five grade bands, %d chapters, %d numbered lessons with readings, key words, sources and data, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners." % (ch, les),
+    contents_desc=lambda ch, les: "A free K–12 science course following the Illinois (NGSS) storyline: %d units across five grade bands, %d chapters, %d numbered lessons with readings, key words, sources and data, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners." % (len(UNITS), ch, les),
     contents_back=("← Science, the whole course", "← Ciencias, el curso completo"),
     search_ph="Try “magnet”, “cell” or “eclipse”",
     hub="science-hub.html", hub_back=("← Science, every band", "← Ciencias, cada banda"),
