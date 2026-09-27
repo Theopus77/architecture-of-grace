@@ -8,7 +8,7 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7065'   // TALMUD: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7064   // MERGE MAIN (aog-cache-2026.09.27.m7060) + HEB/HIN PENCIL. previous: m7063
+const CACHE = 'aog-cache-2026.09.27.m7066'   // CHINESE CLASSICS: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7065   // TALMUD: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7064   // MERGE MAIN (aog-cache-2026.09.27.m7060) + HEB/HIN PENCIL. previous: m7063
 // const CACHE = 'aog-cache-2026.09.27.m7060'   // DAILY DRAFTS: WORLD CULTURES AND MEDICINE & HEALTH (1,000 items, K to Adult). previous: m7059
 // previous: MERGE: 3 TEXTS COURSES + SCIENCE UNIT 28. previous: ec98200 / m7058
 // const CACHE = 'aog-cache-2026.09.27.ec98200'   // SCIENCE UNIT 28 (grades 6–8): Sound, Rhythm and Recorded Music, the Drum Machine, Turntables and Oscilloscope's own unit; every jump menu lists it. previous: 2026.09.27.t94094   // LAB PAGES: STOP paintLang/labPaintAll RECURSION (b10, fc6, fc16 LOADED IN ~25 S). previous: r94093   // ALL SUBJECT PRACTICE ROOMS GET THE STAINED GLASS (aog-practice-rooms.css) AND A FROM-THE-COURSE LINK. previous: aog-cache-2026.09.27.h91361
