@@ -194,7 +194,9 @@
     "AoG-Interior-Worksheets": "page-worksheets",
     "english-hub": "page-english-hub", "math-hub": "page-math-hub", "science-hub": "page-science-hub", "social-studies-hub": "page-social-studies-hub",
     "spanish-hub": "page-spanish-hub", "facs-hub": "page-facs-hub", "dashboard": "page-dashboard", "turn-ins": "page-turn-ins",
-    "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space" };
+    "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space",
+    "music-drums": "music-drums", "drums-lessons": "music-drums", "music-decks": "music-decks", "decks-lessons": "music-decks",
+    "science-waves": "science-waves", "waves-lessons": "science-waves", "word-foundry": "word-foundry" };
   var MCSS = [
     ".aog-mast-host{ position:relative; }", ".aog-mast-sketch{ overflow:hidden; }",
     ".aog-mast-host > :not(.aog-mast-sketch){ position:relative; z-index:1; }",
