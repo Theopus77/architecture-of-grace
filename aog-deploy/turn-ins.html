@@ -1080,7 +1080,7 @@ else document.documentElement.classList.add("aog-embed");</script>
 
   /* ═══════════ every reader, one list ═══════════ */
   /* AOG-SLIP-ENGINE-V1 — the slips from /slip.html: one kind, labelled by which slip, the answers in words */
-  var SLIPNAME={test:"Before a test",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
+  var SLIPNAME={test:"Before a test",posttest:"After a test",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
   function readSlips(){
     var remote=arrOf("aog.checkin.remote").filter(function(r){ return r && /^slip-/.test(String(r.checkinType||"")); });
     var mine=arrOf("aog.slips.mine").filter(function(m){ return !remote.some(function(r){ return String(r.studentId)===String(m.studentId)&&String(r.checkinType)===String(m.checkinType)&&Math.abs(Date.parse(r.timestamp)-Date.parse(m.timestamp))<180000; }); });
