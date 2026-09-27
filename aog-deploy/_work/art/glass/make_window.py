@@ -111,7 +111,8 @@ s = re.sub(r'<section id="aogYourWindow".*?</section>', "", s, flags=re.S)
 s = re.sub(r'<style id="aog-sketch-glass">.*?</style>\n?', "", s, flags=re.S)
 s = re.sub(r'<script id="aog-sketch-glass-js">.*?</script>\n?', "", s, flags=re.S)
 i = s.index('class="ofh-lede"'); j = s.index("\n", i)
-s = s[:j + 1] + row + "\n" + s[j + 1:]
-s = s.replace("</head>", css + "\n" + js + "\n</head>", 1)
+# AOG-YOUR-WINDOW retired 2026-09-27 (Jimmy: remove it). The panes are no longer written.
+css = '<style id="aog-sketch-glass">\n/* AOG-SKETCH-GLASS-V1 — the rose is gone: a pencil-sketched window of jewel glass behind the name. Still. */\n@media screen{ #aogHeroRose.aog-sketch-window{height:auto;aspect-ratio:1} }\n</style>'
+s = s.replace("</head>", css + "\n</head>", 1)
 open(p, "w", encoding="utf-8").write(s)
-print("sketched window and Your window written")
+print("sketched window written")
