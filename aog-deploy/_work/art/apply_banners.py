@@ -18,6 +18,7 @@ Never touches index.html or turn-ins.html.
 "Pencil drawing, not a photograph: …", alt text comes from banners.json "pencil_alt" (then
 "alt", then the old aria-label), and a navy veil is laid over the lower part of the light
 paper so the cream unit title keeps its contrast. Re-running with the other style swaps back.
+--only PREFIX (repeatable) wires just that course, e.g. --only hin --only bud.
 --root DIR runs on a copy of the site (for testing) instead of aog-deploy/.
 """
 import html, json, os, re, sys
@@ -27,6 +28,7 @@ STYLE = 'render'
 for i, a in enumerate(sys.argv):
     if a == '--style' and i + 1 < len(sys.argv): STYLE = sys.argv[i + 1]
     if a == '--root' and i + 1 < len(sys.argv): ROOT = os.path.abspath(sys.argv[i + 1])
+ONLY = [sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == '--only' and i + 1 < len(sys.argv)]   # course prefixes, e.g. --only hin
 if STYLE not in ('render', 'pencil'): sys.exit('--style must be render or pencil')
 SUF = '-pencil' if STYLE == 'pencil' else ''
 CREDIT_LEAD = 'Pencil drawing, not a photograph: ' if STYLE == 'pencil' else 'Rendered scene, not a photograph: '
@@ -51,10 +53,16 @@ def label_of(inner):
     t = html.unescape(m.group(1)) if m else ''
     return re.sub(r'^((Drawn|Rendered) scene|Pencil drawing)(, not a photograph)?:\s*', '', t).strip()
 
-# Pencil drawings are light paper: this veil darkens the lower part (where the cream unit
-# title sits) to navy, on top of the drawing and under the page's own gradient.
-VEIL = ('<span class="pencil-veil" style="position:absolute;inset:0;display:block;pointer-events:none;'
-        'background:linear-gradient(180deg,rgba(10,30,51,.12) 0%,rgba(10,30,51,.30) 20%,rgba(10,30,51,.84) 38%,rgba(10,30,51,.94) 60%,rgba(10,30,51,.97) 100%)"></span>')
+# Pencil drawings are light paper. The veil keeps the cream unit title readable: on wide
+# screens it darkens the left side and the bottom (where the words sit) and leaves the
+# drawing's subject, composed in the right-hand two thirds, clear; on phones, where the
+# title runs the full width, it darkens everything below the top third.
+VEIL = '<span class="pencil-veil" aria-hidden="true"></span>'
+VEIL_CSS = ('<style id="aog-pencil-veil">.spread .scene .pencil-veil{position:absolute;inset:0;display:block;pointer-events:none;'
+            'background:linear-gradient(90deg,rgba(10,30,51,.93) 0%,rgba(10,30,51,.86) 28%,rgba(10,30,51,.6) 42%,rgba(10,30,51,.22) 53%,rgba(10,30,51,0) 61%),'
+            'linear-gradient(180deg,rgba(10,30,51,0) 42%,rgba(10,30,51,.86) 78%,rgba(10,30,51,.95) 100%)}'
+            '@media (max-width:720px){.spread .scene .pencil-veil{background:linear-gradient(180deg,rgba(10,30,51,.06) 0%,'
+            'rgba(10,30,51,.16) 22%,rgba(10,30,51,.76) 35%,rgba(10,30,51,.93) 44%,rgba(10,30,51,.97) 100%)}}</style>')
 
 def credit_of(alt):
     # "A pencil drawing of a garden…" -> "a garden…" after the credit's own lead-in
@@ -67,8 +75,8 @@ def picture(uid, alt, eager):
     return ('<div class="scene" aria-hidden="true" data-aog-render="%s"%s><picture style="display:block;width:100%%;height:100%%">'
             '<source type="image/webp" srcset="%s-900.webp 900w, %s-1600.webp 1600w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)">'
             '<img src="%s-900.jpg" srcset="%s-900.jpg 900w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)" width="1600" height="560" '
-            'alt="%s" decoding="async"%s style="display:block;width:100%%;height:100%%;object-fit:cover;object-position:50%% 45%%"></picture>%s</div>'
-            % (uid, st, b, b, b, b, html.escape(alt, quote=True), load, VEIL if STYLE == 'pencil' else ''))
+            'alt="%s" decoding="async"%s style="display:block;width:100%%;height:100%%;object-fit:cover;object-position:%s"></picture>%s</div>'
+            % (uid, st, b, b, b, b, html.escape(alt, quote=True), load, '85%% 45%%' if STYLE == 'pencil' else '50%% 45%%', VEIL if STYLE == 'pencil' else ''))
 
 def process(path, done):
     name = os.path.basename(path)
@@ -96,12 +104,15 @@ def process(path, done):
         n += 1
     if n:
         out.append(s[pos:]); new = ''.join(out)
+        new = re.sub(r'<style id="aog-pencil-veil">.*?</style>', '', new, flags=re.S)
+        if STYLE == 'pencil': new = new.replace('</head>', VEIL_CSS + '</head>', 1)
         if new != s: open(path, 'w', encoding='utf-8').write(new)
         print('%-28s %d banner(s)' % (name, n))
     return n
 
 def main():
     done = rendered()
+    if ONLY: done = {u for u in done if u.split('-u')[0] in ONLY}
     if not done: print('no %s banners in img/banners' % STYLE); return
     total = 0
     for f in sorted(os.listdir(ROOT)):
