@@ -238,7 +238,19 @@
       f.appendChild(im); d.insertBefore(f, d.firstChild);
     }
   }
-  function mastBoot() { tabsHome(); hubCards();
+  /* any page can ask for a pencil drawing by id: <div data-aog-sketch-id="proj-3"></div> (FACS projects, …) */
+  function sketchSlots() {
+    var n = D.querySelectorAll("[data-aog-sketch-id]:not([data-sk-done])");
+    for (var i = 0; i < n.length; i++) {
+      var el = n[i]; el.setAttribute("data-sk-done", "1");
+      var im = D.createElement("img"); im.alt = ""; im.loading = "lazy"; im.className = "aog-slot-sketch";
+      im.src = "/img/banners/" + el.getAttribute("data-aog-sketch-id") + "-pencil-900.webp";
+      im.onerror = (function (e) { return function () { e.style.display = "none"; }; })(el);
+      el.appendChild(im);
+    }
+  }
+  TCSS += "\n.aog-slot-sketch{ display:block; width:100%; height:150px; object-fit:cover; object-position:75% 42%; border-radius:10px; border:1px solid rgba(42,38,34,.35); }";
+  function mastBoot() { tabsHome(); hubCards(); sketchSlots();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
     if (/^(slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
     if (PAGE[pg]) { mast(PAGE[pg]); return; }
