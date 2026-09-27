@@ -71,3 +71,26 @@ float jig2(vec2 u,float s,vec4 k){ float d=sdBox2(u,vec2(s))-.004; float r=s*.34
   for(int i=0;i<4;i++){ float kk=k[i]; if(kk>.5) d=min(d,length(u-c[i])-r);
     if(kk<-.5) d=max(d,-(length(u-c[i]+(c[i]/length(c[i]))*r*1.1)-r-.002)); }
   return d; }
+/* a hand bell: flared brass bell, mouth down at y=0, with a turned wooden handle */
+float bellE(vec3 q){ vec2 r=vec2(length(q.xz),q.y);
+  float w=min(min(sdSeg2(r,vec2(.05,.004),vec2(.043,.02)),sdSeg2(r,vec2(.043,.02),vec2(.032,.06))),sdSeg2(r,vec2(.032,.06),vec2(.0,.078)))-.0035;
+  float lip=length(r-vec2(.05,.005))-.0055;
+  return min(w,lip); }
+float bellHandle(vec3 q){ vec2 r=vec2(length(q.xz),q.y);
+  float d=sdCapsule(q,vec3(0.,.075,0.),vec3(0.,.14,0.),.009);
+  d=smin(d,length(q-vec3(0.,.145,0.))-.016,.01);
+  d=min(d,sdCylY(q-vec3(0.,.082,0.),.013,.005)-.002);
+  return d; }
+/* a star with n long points in 2D (radius R, inner radius ri) */
+float star2(vec2 u,float n,float R,float ri){ float a=atan(u.y,u.x); float s=PI/n; float m=mod(a+s*.0,2.*s)-s;
+  vec2 v=length(u)*vec2(cos(m),abs(sin(m)));
+  vec2 A=vec2(R,0.), B=vec2(ri*cos(s),ri*sin(s)); vec2 e=B-A; vec2 w=v-A;
+  float h=clamp(dot(w,e)/dot(e,e),0.,1.); float d=length(w-e*h);
+  return (e.x*w.y-e.y*w.x)>0.?-d:d; }
+/* a toy house: floor at y=0, half width w (x), half depth dd (z), wall height h, roof rise k */
+float houseE(vec3 q,float w,float dd,float h,float k){
+  float walls=sdRBox(q-vec3(0.,h*.5,0.),vec3(w,h*.5,dd),.003);
+  vec2 r=vec2(abs(q.x),q.y-h); float roof2=max(dot(r,normalize(vec2(k,w+.012)))-k*(w+.012)/length(vec2(k,w+.012)),-r.y);
+  float roof=max(roof2,abs(q.z)-dd-.01);
+  float chim=sdRBox(q-vec3(w*.45,h+k*.7,dd*.3),vec3(.008,k*.4,.008),.002);
+  return min(min(walls,roof-.002),chim); }
