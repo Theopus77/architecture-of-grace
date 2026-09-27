@@ -2,9 +2,9 @@
    and medparts_a.glsl (it uses place() and sdEll()). Every part takes a local point q in metres. */
 /* more glyphs: ? ! , . plus everything glyph() already knows */
 float glyph2(vec2 p,int g){
-  if(g==63){ float d=arc(p,vec2(0.,.2),.19,-PI*.5,PI*1.05); d=min(d,seg(p,vec2(0.,.01),vec2(0.,-.14))); return min(d,length(p-vec2(0.,-.36))-.02); } /* ? */
-  if(g==33){ return min(seg(p,vec2(0.,.42),vec2(0.,-.14)),length(p-vec2(0.,-.36))-.02); }                                           /* ! */
-  if(g==44){ return min(length(p-vec2(0.,-.3))-.04,arc(p,vec2(-.12,-.3),.14,-PI*.55,0.)); }                                           /* , */
+  if(g==63){ float d=arc(p,vec2(0.,.2),.19,-PI*.5,PI*1.05); d=min(d,seg(p,vec2(0.,.01),vec2(0.,-.14))); return min(d,length(p-vec2(0.,-.36))-.045); } /* ? */
+  if(g==33){ return min(seg(p,vec2(0.,.42),vec2(0.,-.14)),length(p-vec2(0.,-.36))-.045); }                                           /* ! */
+  if(g==44){ return min(length(p-vec2(-.02,.12))-.1,arc(p,vec2(-.25,.1),.33,-1.2,0.)); }                                           /* , */
   if(g==46){ return length(p-vec2(0.,-.32))-.05; }                                                                                /* . */
   return glyph(p,g); }
 /* a lying cylinder / disc helpers */
