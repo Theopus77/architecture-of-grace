@@ -2140,46 +2140,61 @@ function bakeCheek(){
   return {c, w:packW, h:packH};
 }
 function bakeElodea(){
-  const W=2000,H=1500, packW=156, packH=117;
-  const c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xedea);
-  ctx.fillStyle="#d4e0c4"; ctx.fillRect(0,0,W,H);
-  for(let i=0;i<6000;i++){
-    ctx.fillStyle=`rgba(80,110,50,${.012+rng()*.03})`;
-    ctx.fillRect(rng()*W,rng()*H,1+rng()*2,1);
-  }
-  const cols=9, rows=12, cells=[];
-  const mw=W*.9, mh=H*.9, ox=W*.05, oy=H*.05, cw=mw/cols, ch=mh/rows;
-  ctx.lineJoin="round";
-  for(let r=0;r<rows;r++){
-    for(let col=0;col<cols;col++){
-      const midrib = col===4 || col===5;
-      const x=ox+col*cw+(rng()-.5)*5, y=oy+r*ch+(rng()-.5)*5;
-      const w=(midrib?cw*.72:cw)-8, h=ch-6;
-      ctx.beginPath();
-      const j=3.2;
-      ctx.moveTo(x+rng()*j, y+rng()*j);
-      ctx.lineTo(x+w-rng()*j, y+rng()*j);
-      ctx.lineTo(x+w-rng()*j, y+h-rng()*j);
-      ctx.lineTo(x+rng()*j, y+h-rng()*j);
-      ctx.closePath();
-      ctx.fillStyle=midrib?`rgba(186,214,150,.22)`:`rgba(232,236,214,.35)`;
-      ctx.fill();
-      ctx.strokeStyle="rgba(28,62,18,.82)"; ctx.lineWidth=midrib?4.2:3.1; ctx.stroke();
-      ctx.strokeStyle="rgba(210,228,170,.55)"; ctx.lineWidth=1.2; ctx.stroke();
-      const sx=(x+w/2 - W/2) * (packW/W);
-      const sy=(y+h/2 - H/2) * (packH/H);
-      cells.push({
-        x:sx, y:sy,
-        w:w*(packW/W), h:h*(packH/H),
-        n:18+(rng()*14|0), seed:rng()*1000
-      });
-      if(rng()>.7){
-        const nx=x+w*(.15+rng()*.7), ny=y+h*(.15+rng()*.7);
-        ctx.beginPath(); ctx.ellipse(nx,ny, 6, 5, 0,0,Math.PI*2);
-        ctx.fillStyle="rgba(70,90,40,.28)"; ctx.fill();
+  /* AOG-SCOPE-REALISM-V1 — a real Elodea leaf is two cell layers thick. Its cells are long bricks, about
+     60–110 µm by 20–30 µm (6–10 × 2–3 slide units), laid in staggered rows along the leaf, longer by the
+     midrib and shorter toward the toothed edge. Each holds 30–80 lens-shaped chloroplasts (5 µm) pressed
+     against the walls round a big clear vacuole. The lower layer shows through, soft and out of focus. */
+  const packW=156, packH=117, ppu=12.8, W=Math.round(packW*ppu), H=Math.round(packH*ppu);
+  const c=mkCan(W,H), top=c.getContext("2d"), rng=mulberry32(0xedea), cells=[];
+  const lo=mkCan(W,H); let ctx=lo.getContext("2d");
+  top.fillStyle="#dfe6cf"; top.fillRect(0,0,W,H);
+  ctx.setTransform(ppu,0,0,ppu,W/2,H/2);
+  const leafY=y=>Math.abs(y);                           /* distance from the midrib (the leaf runs left–right) */
+  const layer=(deep)=>{
+    const rs=mulberry32(deep?0xedeb:0xedec);
+    let y=-packH/2-2;
+    while(y<packH/2+2){
+      const d=leafY(y), hh=(2.3+rs()*.8)*(deep?1.08:1), len0=d<6?10:d<25?7.5:5.5;
+      let x=-packW/2-rs()*len0;
+      while(x<packW/2+2){
+        const len=len0*(.75+rs()*.5), cw={x:x+len/2+(deep?1.7:0),y:y+hh/2+(deep?.9:0),w:len,h:hh,seed:(rs()*1e9)|0,n:0};
+        const lean=(rs()-.5)*.25;
+        /* cell body: pale green cytoplasm, the vacuole clear */
+        ctx.save(); ctx.translate(cw.x,cw.y);
+        ctx.beginPath(); ctx.moveTo(-len/2,-hh/2+lean*.2); ctx.lineTo(len/2,-hh/2-lean*.2); ctx.lineTo(len/2,hh/2); ctx.lineTo(-len/2,hh/2); ctx.closePath();
+        ctx.fillStyle=deep?"rgba(150,178,110,.25)":"rgba(226,234,206,.55)"; ctx.fill();
+        ctx.lineWidth=deep?.3:.16; ctx.strokeStyle=deep?"rgba(60,96,40,.35)":"rgba(70,98,50,.8)"; ctx.stroke();
+        if(!deep){ ctx.lineWidth=.06; ctx.strokeStyle="rgba(250,255,236,.7)"; ctx.beginPath(); ctx.rect(-len/2+.12,-hh/2+.12,len-.24,hh-.24); ctx.stroke(); }
+        /* chloroplasts: mostly along the walls, a few across the middle, varying size and green */
+        const n=Math.round(len*hh*(1.6+rs()*1.1)); cw.n=n;
+        for(let i=0;i<n;i++){
+          let px,py; const e=rs();
+          if(e<.8){ const t=rs()*2*(len+hh); if(t<len){px=-len/2+t;py=-hh/2+.3;} else if(t<len+hh){px=len/2-.3;py=-hh/2+(t-len);} else if(t<2*len+hh){px=len/2-(t-len-hh);py=hh/2-.3;} else {px=-len/2+.3;py=hh/2-(t-2*len-hh);} px+=(rs()-.5)*.3; py+=(rs()-.5)*.3; }
+          else { px=(rs()-.5)*len*.9; py=(rs()-.5)*hh*.8; }
+          px=Math.max(-len/2+.25,Math.min(len/2-.25,px)); py=Math.max(-hh/2+.25,Math.min(hh/2-.25,py));
+          const r=.2+rs()*.1, gcol=deep?`rgba(60,120,40,.35)`:`rgba(${30+rs()*30|0},${104+rs()*40|0},${30+rs()*20|0},.9)`;
+          ctx.beginPath(); ctx.ellipse(px,py,r,r*.72,rs()*3.14,0,6.3); ctx.fillStyle=gcol; ctx.fill();
+          if(!deep){ ctx.beginPath(); ctx.arc(px-r*.25,py-r*.2,r*.3,0,6.3); ctx.fillStyle="rgba(200,236,120,.45)"; ctx.fill();
+            /* grana: tiny dark specks inside each chloroplast */
+            ctx.fillStyle="rgba(10,50,10,.45)"; for(let k=0;k<3;k++) ctx.fillRect(px+(rs()-.5)*r,py+(rs()-.5)*r*.6,.05,.05); }
+        }
+        if(!deep && rs()<.35){ /* the nucleus: a grey, slightly granular disc half hidden among the chloroplasts */
+          const nx=(rs()-.5)*len*.6, ny=(rs()-.5)*hh*.4; ctx.beginPath(); ctx.ellipse(nx,ny,.55,.45,0,0,6.3); ctx.fillStyle="rgba(160,170,140,.55)"; ctx.fill(); ctx.lineWidth=.05; ctx.strokeStyle="rgba(80,90,60,.6)"; ctx.stroke(); }
+        ctx.restore();
+        if(!deep) cells.push(cw);
+        x+=len;
       }
+      y+=hh;
     }
-  }
+  };
+  layer(true);
+  top.filter=`blur(${(ppu*.35).toFixed(1)}px)`; top.drawImage(lo,0,0); top.filter="none";   /* the lower layer, out of focus */
+  ctx=top; ctx.setTransform(ppu,0,0,ppu,W/2,H/2); layer(false);
+  /* the midrib: long narrow cells, a little yellower */
+  ctx.fillStyle="rgba(214,210,150,.18)"; ctx.fillRect(-packW/2,-3,packW,6);
+  speckle(ctx,packW,packH,0xede9,4000,[60,80,40],.03,.07,.12);
+  airBubble(ctx,40,-36,6); airBubble(ctx,-52,30,3.2);
+  ctx.setTransform(1,0,0,1,0,0);
   return {c, w:packW, h:packH, cells};
 }
 function bakePondBg(){
@@ -3686,7 +3701,7 @@ function ensureSlides(){
   SLIDE.e=bakeLetterE();
   SLIDE.onion=bakeOnion();
   SLIDE.hair=bakeHair();
-  SLIDE.elodea=bakeElodea();
+  /* elodea is baked the first time it is shown (AOG-SCOPE-REALISM-V1) */
   SLIDE.pondBg=bakePondBg();
   SLIDE.virus=bakeVirus();
   SLIDE.bact=bakeBactBg();
@@ -3747,11 +3762,15 @@ function seedBacteria(){
       });
     }
   };
-  clump(46, 0, 0, "rod");
-  clump(22, 1.2, 0.4, "rod");
-  clump(14, -1.5, 1.1, "coccus");
-  clump(8, 2.2, -1.4, "coccus");
-  clump(5, -2.4, -0.6, "spir");
+  /* AOG-SCOPE-REALISM-V1 — true scale: one slide unit is about 10.7 µm, so a rod (2–3 µm) is 0.2–0.3 units
+     long and a coccus (1 µm) is 0.1 across. A smear spreads them thinly over the glass, thicker in a few
+     places, with chains and grape-bunches of cocci among the rods. */
+  const rodC=(n,cx,cy,sp,kind)=>{ for(let i=0;i<n;i++){ const ang=rng()*6.28, rad=Math.sqrt(rng())*sp;
+    o.push({kind,x:cx+Math.cos(ang)*rad,y:cy+Math.sin(ang)*rad,a:rng()*6.28,
+      L:kind==="rod"?.1+rng()*.05:kind==="spir"?.25+rng()*.1:0, W:kind==="rod"?.026+rng()*.008:kind==="spir"?.02:.045+rng()*.008,
+      n:kind==="coccus"?(rng()<.5?2:3+(rng()*6|0)):1, v:.03+rng()*.05, seed:rng()*100}); } };
+  rodC(900,0,0,9,"rod"); rodC(500,6,-4,4,"rod"); rodC(400,-7,5,3.5,"coccus"); rodC(600,(rng()-.5)*6,(rng()-.5)*6,24,"rod");
+  rodC(250,10,8,6,"coccus"); rodC(40,-4,-8,10,"spir");
   return o;
 }
 function paraPath(ctx){
@@ -3986,9 +4005,12 @@ function drawPondLive(ctx, now, reduced){
 }
 function drawBactLive(ctx, now, reduced){
   const stain=S.lab.stain||"none";
-  const tint = stain==="safranin" ? [150,28,48] : stain==="methylene" ? [28,42,130] : [55,62,40];
-  const a = stain==="none" ? 0.62 : 0.92;
+  /* unstained bacteria are nearly clear in bright light; that is why they are stained */
+  const tint = stain==="safranin" ? [196,40,86] : stain==="methylene" ? [34,52,150] : [70,72,64];
+  const a = stain==="none" ? 0.32 : 0.9;
+  const Lb=S.lab;
   bacteria.forEach(b=>{
+    if(Lb&&!inView(Lb,b.x,b.y,.5)) return;
     ctx.save();
     ctx.translate(b.x,b.y); ctx.rotate(b.a);
     ctx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${a})`;
@@ -4026,26 +4048,21 @@ function drawBactLive(ctx, now, reduced){
   });
 }
 function drawElodeaLive(ctx, now, reduced){
-  const pack=SLIDE.elodea; if(!pack||!pack.cells) return;
+  /* AOG-SCOPE-REALISM-V1 — cytoplasmic streaming: at 40× and up a share of each cell's chloroplasts glides
+     round the walls (about 5–10 µm a second, slowed here). The rest are baked still into the leaf. */
+  const pack=SLIDE.elodea, L=S.lab; if(!pack||!pack.cells||!L||L.obj<40) return;
   const tt=reduced?0:now/1000;
   pack.cells.forEach(cell=>{
-    const n=cell.n, w=cell.w-3.4, h=cell.h-3.2;
-    const peri=2*(w+h);
+    if(!inView(L,cell.x,cell.y,cell.w)) return;
+    const n=Math.max(4,Math.round(cell.n*.25)), w=cell.w-.6, h=cell.h-.6, peri=2*(w+h), rs=mulberry32(cell.seed);
     for(let i=0;i<n;i++){
-      let t=((i/n)+tt*(.035+(cell.seed%7)*.004))%1;
-      if(t<0) t+=1;
-      const d=t*peri;
-      let x,y;
-      if(d<w){ x=cell.x-w/2+d; y=cell.y-h/2; }
-      else if(d<w+h){ x=cell.x+w/2; y=cell.y-h/2+(d-w); }
-      else if(d<w+h+w){ x=cell.x+w/2-(d-w-h); y=cell.y+h/2; }
-      else { x=cell.x-w/2; y=cell.y+h/2-(d-w-h-w); }
-      ctx.beginPath(); ctx.ellipse(x,y, 1.15, .78, t*6.2, 0, Math.PI*2);
-      ctx.fillStyle="rgba(18,108,32,.94)"; ctx.fill();
-      ctx.beginPath(); ctx.ellipse(x,y, 1.15, .78, t*6.2, 0, Math.PI*2);
-      ctx.strokeStyle="rgba(8,60,16,.45)"; ctx.lineWidth=.15; ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(x-.28, y-.22, .38, .26, 0, 0, Math.PI*2);
-      ctx.fillStyle="rgba(210,236,90,.62)"; ctx.fill();
+      let t=((i/n)+tt*(.02+(cell.seed%7)*.003))%1; if(t<0) t+=1;
+      const d=t*peri; let x,y;
+      if(d<w){ x=cell.x-w/2+d; y=cell.y-h/2; } else if(d<w+h){ x=cell.x+w/2; y=cell.y-h/2+(d-w); }
+      else if(d<w+h+w){ x=cell.x+w/2-(d-w-h); y=cell.y+h/2; } else { x=cell.x-w/2; y=cell.y+h/2-(d-w-h-w); }
+      const r=.2+rs()*.1;
+      ctx.beginPath(); ctx.ellipse(x,y,r,r*.72,t*6.2,0,6.3); ctx.fillStyle=`rgba(${34+rs()*20|0},${110+rs()*30|0},36,.92)`; ctx.fill();
+      ctx.beginPath(); ctx.arc(x-r*.25,y-r*.2,r*.3,0,6.3); ctx.fillStyle="rgba(200,236,120,.45)"; ctx.fill();
     }
   });
 }
@@ -4225,6 +4242,66 @@ function applyPolar(ctx, w, h, L){
     ctx.drawImage(p,0,0,w,h);
     ctx.restore();
   }
+}
+/* ══ AOG-SCOPE-REALISM-V1 (2026-09-27) — Jimmy: "CAN THE MICROSCOPE GET A REALISM tap on them." One pass over
+   every slide, after the stain and before the eyepiece, that does what a real light path does to a picture:
+   - the objective's limited aperture softens every edge a little (more at 4× and 10×, whose NA is small);
+   - material above and below the focal plane throws a soft haze; the fine knob slides which layer is sharp,
+     so the haze grows as you leave best focus;
+   - a halogen lamp through a condenser never lights the field evenly: a warm hot spot off-centre, falling
+     off toward the edge, and a faint blue cast at the rim from the lens's colour error;
+   - the mounting medium and the glass add a low, mottled unevenness, like a real photo's background;
+   - film/sensor-like contrast: a little flatter and less saturated than a drawing. ══ */
+function realMottle(){
+  if(realMottle.c) return realMottle.c;
+  const N=256, c=mkCan(N,N), g=c.getContext("2d"), img=g.createImageData(N,N), d=img.data, rng=mulberry32(0x3e41);
+  const G=[]; for(let i=0;i<17*17;i++) G.push(rng());
+  const vn=(x,y,f)=>{ x*=f/N*16; y*=f/N*16; const x0=Math.floor(x)%16,y0=Math.floor(y)%16,fx=x-Math.floor(x),fy=y-Math.floor(y),u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);
+    const a=G[y0*17+x0],b=G[y0*17+x0+1],cc=G[(y0+1)*17+x0],dd=G[(y0+1)*17+x0+1]; return a+(b-a)*u+(cc-a)*v+(a-b-cc+dd)*u*v; };
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){ const n=vn(x,y,1)*.5+vn(x,y,2)*.3+vn(x,y,4)*.2, o=(y*N+x)*4, k=Math.round(200+n*55);
+    d[o]=k; d[o+1]=k; d[o+2]=Math.round(k*.985+3); d[o+3]=255; }
+  g.putImageData(img,0,0); return (realMottle.c=c);
+}
+function micrograph(fctx, field, w, h, L, blur){
+  if(!micrograph.buf) micrograph.buf=mkCan(8,8);
+  const B=micrograph.buf; if(B.width!==w||B.height!==h){ B.width=w; B.height=h; }
+  const b=B.getContext("2d"), dark=L.illum==="dark"||L.illum==="slit"||L.illum==="polar";
+  const px=w/560;                                     /* screen scale: the effects are set for a 560 px eyepiece */
+  const na={4:.10,10:.25,40:.65,100:1.25}[L.obj]||.25;
+  const soft=(.55/na*.35+.35)*px;                     /* aperture softness in px */
+  b.setTransform(1,0,0,1,0,0); b.globalCompositeOperation="copy"; b.filter="none"; b.drawImage(field,0,0);
+  fctx.save(); fctx.setTransform(1,0,0,1,0,0);
+  /* 1. optics soften the edges, and the picture reads like a photograph, not ink */
+  fctx.globalCompositeOperation="copy";
+  fctx.filter=`blur(${Math.min(2.2,soft).toFixed(2)}px) contrast(${dark?1.04:.93}) saturate(${dark?1:.88})`;
+  fctx.drawImage(B,0,0);
+  fctx.filter="none";
+  /* keep a little of the sharp image on top so fine detail survives: a real objective's MTF, not a smear */
+  fctx.globalCompositeOperation="source-over"; fctx.globalAlpha=L.obj>=40?.42:.25; fctx.drawImage(B,0,0);
+  /* 2. out-of-plane haze: a wide, faint glow of everything, stronger as you leave best focus */
+  const haze=Math.min(.34,.12+blur*.03)*(L.obj>=40?1:.6);
+  fctx.globalAlpha=haze; fctx.filter=`blur(${(7*px*(L.obj>=40?1.3:1)).toFixed(1)}px)`;
+  fctx.globalCompositeOperation=dark?"lighter":"source-over"; fctx.drawImage(B,0,0);
+  fctx.filter="none"; fctx.globalAlpha=1;
+  if(!dark){
+    /* 3. uneven lamp: warm hot spot up and left of centre, falling to the rim */
+    fctx.globalCompositeOperation="multiply";
+    const cx=w*.44, cy=h*.42, R=Math.max(w,h)*.62;
+    const g=fctx.createRadialGradient(cx,cy,R*.05,w/2,h/2,R);
+    g.addColorStop(0,"rgba(255,252,244,1)"); g.addColorStop(.55,"rgba(246,240,228,1)"); g.addColorStop(.85,"rgba(222,216,206,1)"); g.addColorStop(1,"rgba(200,196,196,1)");
+    fctx.fillStyle=g; fctx.fillRect(0,0,w,h);
+    /* 4. the medium's mottle, fixed to the slide so it moves when you pan */
+    fctx.globalAlpha=L.obj>=40?.55:.4;
+    const m=realMottle(), sc=(L.obj/4)*(w/420)*6, ox=(L.panX*(L.obj/4)*(w/420))%sc, oy=(L.panY*(L.obj/4)*(w/420))%sc;
+    for(let y=-sc*2+oy;y<h+sc;y+=sc) for(let x=-sc*2+ox;x<w+sc;x+=sc) fctx.drawImage(m,x,y,sc,sc);
+    fctx.globalAlpha=1;
+    /* 5. the colour error at the rim: a cool cast outside, a faint warm one inside */
+    fctx.globalCompositeOperation="soft-light";
+    const c2=fctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.min(w,h)*.47);
+    c2.addColorStop(0,"rgba(255,230,190,0)"); c2.addColorStop(1,"rgba(120,150,230,.35)");
+    fctx.fillStyle=c2; fctx.fillRect(0,0,w,h);
+  }
+  fctx.restore();
 }
 function applyOptics(ctx, w, h, L){
   applyStain(ctx, w, h, L);
@@ -4886,7 +4963,7 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="cheek") drawCheek(ctx, L);
   else if(L.spec==="hair") blit(ctx, SLIDE.hair);
   else if(L.spec==="scale") blit(ctx, SLIDE.scale);
-  else if(L.spec==="elodea"){ blit(ctx, SLIDE.elodea); if(live) drawElodeaLive(ctx, now, reduced); else drawElodeaLive(ctx, 0, true); }
+  else if(L.spec==="elodea"){ if(!SLIDE.elodea) SLIDE.elodea=bakeElodea(); blit(ctx, SLIDE.elodea); if(live) drawElodeaLive(ctx, now, reduced); else drawElodeaLive(ctx, 0, true); }
   else if(L.spec==="virus") blit(ctx, SLIDE.virus);
   else if(L.spec==="pollen") drawPollen(ctx, L);
   else if(L.spec==="wing") drawWing(ctx, L);
@@ -5112,6 +5189,7 @@ function startEye(){
       fctx.restore();
       applyOptics(fctx, w, h, L);
       achromatFringe(fctx, field, w, h, w/2, h/2, Math.min(w,h)*.46, (L.obj===4?0.28:L.obj===10?0.5:L.obj===40?0.95:1.2)*(L.quartz!==false?0.12:1));
+      micrograph(fctx, field, w, h, L, blur);   /* AOG-SCOPE-REALISM-V1 */
       if(blur<0.7){
         ctx.drawImage(field, 0, 0);
       } else {
