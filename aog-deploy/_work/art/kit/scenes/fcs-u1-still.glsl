@@ -1,7 +1,7 @@
 /* FCS Unit 1 "Clean Hands" — pencil still life: a pump bottle of hand soap, a bar of soap on a
    ridged dish with a few bubbles, and a folded hand towel. */
-#define CAM_POS vec3(-0.6046,0.4295,-0.9913)
-#define CAM_TGT vec3(-0.2970,0.0112,0.1532)
+#define CAM_POS vec3(-0.6014,0.4315,-0.9981)
+#define CAM_TGT vec3(-0.2924,0.0112,0.1519)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
