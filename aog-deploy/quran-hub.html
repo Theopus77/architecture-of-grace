@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it. The bar writes both
+keys (aog.theme, and the standalone pages' aog.interior.ws.v1.theme) and reconciles them,
+so either one is a valid memory of the choice. */
+(function(){var t="light";try{var a=localStorage.getItem("aog.theme"),b=localStorage.getItem("aog.interior.ws.v1.theme");if(a==="dark"||(a==null&&b==="dark"))t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>The Qur’an — Architecture of Grace</title>
+<meta name="description" content="The Qur’an, K–12 — the Qur’an studied as a text, band by band, for a public-school classroom. Free and private.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/quran">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Qur’an — Architecture of Grace">
+<meta property="og:description" content="The Qur’an, K–12 — the Qur’an studied as a text, band by band, for a public-school classroom. Free and private.">
+<meta property="og:url" content="https://architectureofgrace.org/quran">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Qur’an, grades K–12, from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Qur’an — Architecture of Grace">
+<meta name="twitter:description" content="The Qur’an, K–12 — the Qur’an studied as a text, band by band, for a public-school classroom. Free and private.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- No external requests of any kind. Every byte this page needs is in this file
+     (aog-topbar.js below is same-origin; a 404 changes nothing but the bar). -->
+<!-- AOG-DOORS-V1 — built by _work/course/make_hubs.py (the religions-hub layout). Do not hand-edit; re-run it. -->
+<style>
+/* ══ the Word Foundry's tokens, one accent ══ */
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --acc:#6B3F8C; --acc-soft:#E9E1F0;
+  --good:#2E7D4F; --good-soft:#E4F0E8; --warn:#8A5A00; --warn-soft:#F6EEDC;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --acc:#B995D6; --acc-soft:#2E2340;
+    --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --acc:#B995D6; --acc-soft:#2E2340;
+  --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 64px}
+button{touch-action:manipulation}
+.wrap{max-width:880px;margin:0 auto}
+header{padding:28px 0 10px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a:hover{color:var(--ink)}
+.eyebrow .sw{display:flex;gap:8px;align-items:center}
+#themeBtn,.seg button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer;min-height:32px}
+.seg{display:inline-flex;gap:2px}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5vw,2.9rem);margin:10px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 14px;max-width:60ch}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.82rem}
+.lg{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:600}
+.lg.open{background:var(--acc-soft);color:var(--ink)}
+.lg.shop{background:var(--chip);color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+/* ══ the band strip — the English strip's shape (AOG-ENGLISH-STRIP-V1), five bands, one page ══ */
+.bandstrip{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 6px}
+.bandstrip .k{font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-right:4px}
+.bandstrip button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font:600 .9rem var(--sans);cursor:pointer;min-height:44px}
+.bandstrip button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bandstrip button:hover{border-color:var(--ink)}
+.bandstrip button:focus-visible,.door:focus-visible,.gr:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* ══ one band ══ */
+.band{padding-top:18px}
+.band[hidden]{display:none}
+h2{font-family:var(--serif);font-weight:700;font-size:1.35rem;margin:0 0 4px}
+.hint{color:var(--sub);font-size:.9rem;margin:0 0 10px;max-width:65ch}
+.count{color:var(--sub);font-size:.82rem;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.unit{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.unit.open{border-left:4px solid var(--acc)}
+.unit .t{font-family:var(--serif);font-weight:700;font-size:1.05rem;line-height:1.25}
+.unit .d{font-size:.88rem;color:var(--sub);flex:1 1 auto}
+.doors{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.door{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:600 .85rem var(--sans);text-decoration:none}
+.door:hover{border-color:var(--acc)}
+.shopchip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 10px;border-radius:999px;background:var(--chip);color:var(--sub);font:600 .78rem var(--sans)}
+.beam{border:0;background:none;color:var(--sub);font:600 .8rem var(--sans);cursor:pointer;min-height:44px;padding:8px 6px;text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.beam:hover{color:var(--ink)}
+/* ══ every day — Daily Drafts by grade ══ */
+.daily{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:var(--shadow);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.daily .dk{font-family:var(--serif);font-weight:700;font-size:1rem;margin-right:2px}
+.daily .dd{font-size:.86rem;color:var(--sub);flex:1 1 220px}
+.gr{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:700 .9rem var(--sans);text-decoration:none}
+.gr:hover{border-color:var(--acc)}
+/* ══ the engines ══ */
+.engines{margin-top:36px}
+.eng{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:start}
+.eng:last-child{border-bottom:1px solid var(--line)}
+.eng .n{font-family:var(--serif);font-weight:700;font-size:1rem}
+.eng .d{font-size:.88rem;color:var(--sub);grid-column:1/-1;max-width:65ch}
+.eng .st{font:600 .78rem var(--sans);padding:3px 10px;border-radius:999px;white-space:nowrap}
+/* AOG-SS-ESWRAP-V1 — 2026-09-18. .eng is a grid of `1fr auto` whose status chip is
+   white-space:nowrap, and a grid item's default min-width:auto refuses to shrink below
+   min-content — so a long SPANISH chip pins the auto track and the page grows wider than
+   the phone, sliding sideways under a thumb. Measured at 390px: science-hub and
+   religions-hub were 421px in Spanish, social-studies-hub 410px; math-hub and english-hub
+   happened to fit only because their Spanish strings are shorter, which is luck, not
+   design — they carry the rule so it stays fixed when that text changes. English was
+   never affected. Below 560px the chip wraps and the card stacks; min-width:0 lets the
+   tracks shrink. Nothing changes above 560px. */
+.eng > *{min-width:0}
+@media (max-width:560px){
+  .eng{grid-template-columns:1fr}
+  .eng .st{white-space:normal;justify-self:start}
+}
+.eng.open .st{background:var(--acc-soft);color:var(--ink)}
+.eng.shop .st{background:var(--chip);color:var(--sub)}
+main[data-workshop="off"] .shop{display:none}
+/* ══ for the teacher ══ */
+.teach{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:30px;box-shadow:var(--shadow)}
+.teach summary{cursor:pointer;padding:14px 18px;font-family:var(--serif);font-weight:700;font-size:1.05rem;list-style:none;min-height:44px}
+.teach summary::-webkit-details-marker{display:none}
+.teach summary::before{content:"+";display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--chip);color:var(--sub);font:700 .95rem var(--sans);align-items:center;justify-content:center;margin-right:10px}
+.teach[open] summary::before{content:"–"}
+.teach .inner{padding:0 18px 16px 50px;color:var(--sub);font-size:.94rem;max-width:65ch}
+.teach .inner p{margin:0 0 10px}
+.teach .inner b{color:var(--ink)}
+/* ══ the board beam (ported from /prep) ══ */
+#beam{position:fixed;inset:0;z-index:9500;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;cursor:pointer}
+#beam .x{position:absolute;top:16px;right:20px;font-size:.85rem;color:var(--sub)}
+#beam .wk{font:800 .9rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+#beam .nm{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,4vw,2.4rem);max-width:22ch}
+#beam .url{font:700 clamp(1.6rem,7vw,4.4rem)/1.1 var(--sans);color:var(--acc);word-break:break-all}
+#beam .hint{font-size:1rem;color:var(--sub);margin:0}
+footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var(--line);padding-top:14px;max-width:65ch}
+@media print{.bandstrip,.beam,.eyebrow .sw,#beam{display:none !important}.band[hidden]{display:none}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+
+/* AOG-DOORS-V1 — every band leads with its part of the course */
+.course-lead{margin:6px 0 18px;padding:16px 16px 12px;border:1.5px solid var(--acc);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+.cl-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.cl-k{display:block;font:800 .7rem var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+.cl-head h3{font:800 1.4rem/1.15 var(--serif);margin:.1em 0 .2em}
+.cl-d{margin:0;font-size:.9rem;color:var(--sub);max-width:60ch}
+.cl-btn{display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--bg);text-decoration:none;font:700 .92rem var(--sans);flex:0 0 auto}
+.cl-btn:hover{background:var(--acc);color:#fff}
+.unit.course{position:relative;padding-left:64px}
+.unit.course .un{position:absolute;left:14px;top:14px;width:38px;height:38px;border-radius:9px;background:#A8323A;color:#fff;display:flex;align-items:center;justify-content:center;font:800 1.25rem "Avenir Next Condensed","Arial Narrow",var(--sans);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #5A151B}
+.unit.course .yrs{font:italic 600 .84rem var(--serif);color:var(--sub);margin-top:-2px}
+.more-k{margin:16px 0 -6px;font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">
+    <a href="/">Architecture of Grace</a>
+    <div class="sw">
+      <div class="seg" role="group" aria-label="Language"><button type="button" id="langEn" class="on">EN</button><button type="button" id="langEs">ES</button></div>
+      <button id="themeBtn" type="button" aria-label="Switch between light and dark">Dark mode</button>
+    </div>
+  </div>
+  <h1 data-en="The Qur’an" data-es="El Corán">The Qur’an</h1>
+  <p class="tag" data-en="Learn about the Qur’an as a text people read and recite. See how it is put together, what it teaches and how Muslims study it. We study it; we never preach it." data-es="Aprende sobre el Corán como un texto que la gente lee y recita. Mira cómo está organizado, qué enseña y cómo lo estudian los musulmanes. Lo estudiamos; nunca lo predicamos.">Learn about the Qur’an as a text people read and recite. See how it is put together, what it teaches and how Muslims study it. We study it; we never preach it.</p>
+</header>
+<nav class="bandstrip no-print" aria-label="The Qur’an by grade band" id="bandNav" data-aog-dropdown="Grade band|Grados"><span class="k" data-en="The Qur’an" data-es="El Corán">The Qur’an</span><button type="button" data-band="k-2" aria-current="false">K–2</button><button type="button" data-band="3-5" aria-current="false">3–5</button><button type="button" data-band="6-8" aria-current="false">6–8</button><button type="button" data-band="9-10" aria-current="false">9–10</button><button type="button" data-band="11-12" aria-current="false">11–12</button></nav>
+<main id="content" data-workshop="on">
+<section class="band" id="k-2" aria-labelledby="h-k-2">
+  <h2 id="h-k-2" data-en="Grades K–2" data-es="Grados K–2">Grades K–2</h2>
+<div class="course-lead" id="course-k-2">
+  <div class="cl-head"><div><span class="cl-k" data-en="The course" data-es="El curso">The course</span><h3 data-en="The Qur’an, Grades K–2" data-es="El Corán, Grados K–2">The Qur’an, Grades K–2</h3><p class="cl-d" data-en="3 units, 6 chapters. Each lesson has a reading, key words and three checks." data-es="3 unidades, 6 capítulos. Cada lección tiene una lectura, palabras clave y tres comprobaciones.">3 units, 6 chapters. Each lesson has a reading, key words and three checks.</p></div><a class="cl-btn" href="/quran-course#band-k-2" data-en="Course contents" data-es="Contenido del curso">Course contents</a></div>
+  <div class="grid">
+  <div class="unit open course"><div class="un" aria-hidden="true">1</div><div class="t" data-en="A Book Called the Qur&#x27;an" data-es="A Book Called the Qur&#x27;an">A Book Called the Qur&#x27;an</div><div class="yrs">The Book</div><div class="d" data-en="What the Qur&#x27;an Is; Surahs and Ayahs." data-es="What the Qur&#x27;an Is; Surahs and Ayahs.">What the Qur&#x27;an Is; Surahs and Ayahs.</div><div class="doors"><a class="door" href="/qur1" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur1" data-name="The Qur’an · Unit 1 · A Book Called the Qur&#x27;an" data-name-es="El Corán · Unidad 1 · A Book Called the Qur&#x27;an" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">2</div><div class="t" data-en="Muhammad and the First Words" data-es="Muhammad and the First Words">Muhammad and the First Words</div><div class="yrs">The Prophet&#x27;s Story</div><div class="d" data-en="A Boy in Mecca; The Cave and the Word &quot;Read&quot;." data-es="A Boy in Mecca; The Cave and the Word &quot;Read&quot;.">A Boy in Mecca; The Cave and the Word &quot;Read&quot;.</div><div class="doors"><a class="door" href="/qur2" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur2" data-name="The Qur’an · Unit 2 · Muhammad and the First Words" data-name-es="El Corán · Unidad 2 · Muhammad and the First Words" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">3</div><div class="t" data-en="Words Muslims Say Every Day" data-es="Words Muslims Say Every Day">Words Muslims Say Every Day</div><div class="yrs">Words and Stories</div><div class="d" data-en="Bismillah and Alhamdulillah; Stories the Qur&#x27;an Tells." data-es="Bismillah and Alhamdulillah; Stories the Qur&#x27;an Tells.">Bismillah and Alhamdulillah; Stories the Qur&#x27;an Tells.</div><div class="doors"><a class="door" href="/qur3" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur3" data-name="The Qur’an · Unit 3 · Words Muslims Say Every Day" data-name-es="El Corán · Unidad 3 · Words Muslims Say Every Day" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <p class="more-k" data-en="More rooms on this band" data-es="Más salas de esta banda">More rooms on this band</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades K–2" data-es="Daily Drafts — Qur&#x27;an, grades K–2">Daily Drafts — Qur&#x27;an, grades K–2</div><div class="doors"><a class="door" href="/drops/quran/K" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="The Bible — the course" data-es="The Bible — the course">The Bible — the course</div><div class="doors"><a class="door" href="/bible" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades K–2" data-es="Daily Drafts — Qur&#x27;an, grades K–2">Daily Drafts — Qur&#x27;an, grades K–2</div><div class="doors"><a class="door" href="/drops/quran/1" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="World Religions — the course" data-es="World Religions — the course">World Religions — the course</div><div class="doors"><a class="door" href="/religions-course" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades K–2" data-es="Daily Drafts — Qur&#x27;an, grades K–2">Daily Drafts — Qur&#x27;an, grades K–2</div><div class="doors"><a class="door" href="/drops/quran/2" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="The Hebrew Bible — the course" data-es="The Hebrew Bible — the course">The Hebrew Bible — the course</div><div class="doors"><a class="door" href="/hebrew-bible" data-en="Open" data-es="Abrir">Open</a></div></div>
+  </div>
+</div>
+</section>
+<section class="band" id="3-5" aria-labelledby="h-3-5">
+  <h2 id="h-3-5" data-en="Grades 3–5" data-es="Grados 3–5">Grades 3–5</h2>
+<div class="course-lead" id="course-3-5">
+  <div class="cl-head"><div><span class="cl-k" data-en="The course" data-es="El curso">The course</span><h3 data-en="The Qur’an, Grades 3–5" data-es="El Corán, Grados 3–5">The Qur’an, Grades 3–5</h3><p class="cl-d" data-en="4 units, 8 chapters. Each lesson has a reading, key words and three checks." data-es="4 unidades, 8 capítulos. Cada lección tiene una lectura, palabras clave y tres comprobaciones.">4 units, 8 chapters. Each lesson has a reading, key words and three checks.</p></div><a class="cl-btn" href="/quran-course#band-3-5" data-en="Course contents" data-es="Contenido del curso">Course contents</a></div>
+  <div class="grid">
+  <div class="unit open course"><div class="un" aria-hidden="true">4</div><div class="t" data-en="The Shape of the Qur&#x27;an" data-es="The Shape of the Qur&#x27;an">The Shape of the Qur&#x27;an</div><div class="yrs">Structure</div><div class="d" data-en="114 Surahs, 30 Parts; Reciting, Memorizing and Writing It Beautifully." data-es="114 Surahs, 30 Parts; Reciting, Memorizing and Writing It Beautifully.">114 Surahs, 30 Parts; Reciting, Memorizing and Writing It Beautifully.</div><div class="doors"><a class="door" href="/qur4" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur4" data-name="The Qur’an · Unit 4 · The Shape of the Qur&#x27;an" data-name-es="El Corán · Unidad 4 · The Shape of the Qur&#x27;an" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">5</div><div class="t" data-en="The Life of the Prophet as Context" data-es="The Life of the Prophet as Context">The Life of the Prophet as Context</div><div class="yrs">Seerah</div><div class="d" data-en="Mecca: The Message and the Hard Years; Medina: The Hijra and a Community." data-es="Mecca: The Message and the Hard Years; Medina: The Hijra and a Community.">Mecca: The Message and the Hard Years; Medina: The Hijra and a Community.</div><div class="doors"><a class="door" href="/qur5" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur5" data-name="The Qur’an · Unit 5 · The Life of the Prophet as Context" data-name-es="El Corán · Unidad 5 · The Life of the Prophet as Context" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">6</div><div class="t" data-en="Prophets in the Qur&#x27;an" data-es="Prophets in the Qur&#x27;an">Prophets in the Qur&#x27;an</div><div class="yrs">Stories</div><div class="d" data-en="Adam, Nuh, Ibrahim and Yusuf; Musa, Maryam, Isa and Muhammad." data-es="Adam, Nuh, Ibrahim and Yusuf; Musa, Maryam, Isa and Muhammad.">Adam, Nuh, Ibrahim and Yusuf; Musa, Maryam, Isa and Muhammad.</div><div class="doors"><a class="door" href="/qur6" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur6" data-name="The Qur’an · Unit 6 · Prophets in the Qur&#x27;an" data-name-es="El Corán · Unidad 6 · Prophets in the Qur&#x27;an" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">7</div><div class="t" data-en="What the Qur&#x27;an Teaches" data-es="What the Qur&#x27;an Teaches">What the Qur&#x27;an Teaches</div><div class="yrs">Themes</div><div class="d" data-en="One God, and Being Good; Prayer, Fasting and the Pillars in the Qur&#x27;an." data-es="One God, and Being Good; Prayer, Fasting and the Pillars in the Qur&#x27;an.">One God, and Being Good; Prayer, Fasting and the Pillars in the Qur&#x27;an.</div><div class="doors"><a class="door" href="/qur7" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur7" data-name="The Qur’an · Unit 7 · What the Qur&#x27;an Teaches" data-name-es="El Corán · Unidad 7 · What the Qur&#x27;an Teaches" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <p class="more-k" data-en="More rooms on this band" data-es="Más salas de esta banda">More rooms on this band</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 3–5" data-es="Daily Drafts — Qur&#x27;an, grades 3–5">Daily Drafts — Qur&#x27;an, grades 3–5</div><div class="doors"><a class="door" href="/drops/quran/3" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="World Religions — the course" data-es="World Religions — the course">World Religions — the course</div><div class="doors"><a class="door" href="/religions-course" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 3–5" data-es="Daily Drafts — Qur&#x27;an, grades 3–5">Daily Drafts — Qur&#x27;an, grades 3–5</div><div class="doors"><a class="door" href="/drops/quran/4" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="The Bible — the course" data-es="The Bible — the course">The Bible — the course</div><div class="doors"><a class="door" href="/bible" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="The Hebrew Bible — the course" data-es="The Hebrew Bible — the course">The Hebrew Bible — the course</div><div class="doors"><a class="door" href="/hebrew-bible" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 3–5" data-es="Daily Drafts — Qur&#x27;an, grades 3–5">Daily Drafts — Qur&#x27;an, grades 3–5</div><div class="doors"><a class="door" href="/drops/quran/5" data-en="Open" data-es="Abrir">Open</a></div></div>
+  </div>
+</div>
+</section>
+<section class="band" id="6-8" aria-labelledby="h-6-8">
+  <h2 id="h-6-8" data-en="Grades 6–8" data-es="Grados 6–8">Grades 6–8</h2>
+<div class="course-lead" id="course-6-8">
+  <div class="cl-head"><div><span class="cl-k" data-en="The course" data-es="El curso">The course</span><h3 data-en="The Qur’an, Grades 6–8" data-es="El Corán, Grados 6–8">The Qur’an, Grades 6–8</h3><p class="cl-d" data-en="4 units, 8 chapters. Each lesson has a reading, key words and three checks." data-es="4 unidades, 8 capítulos. Cada lección tiene una lectura, palabras clave y tres comprobaciones.">4 units, 8 chapters. Each lesson has a reading, key words and three checks.</p></div><a class="cl-btn" href="/quran-course#band-6-8" data-en="Course contents" data-es="Contenido del curso">Course contents</a></div>
+  <div class="grid">
+  <div class="unit open course"><div class="un" aria-hidden="true">8</div><div class="t" data-en="Structure, Style and Recitation" data-es="Structure, Style and Recitation">Structure, Style and Recitation</div><div class="yrs">The Text</div><div class="d" data-en="Surah, Ayah, Juz&#x27;: Order, Names and Style; From Voice to Page: Collection, Script and Tajwid." data-es="Surah, Ayah, Juz&#x27;: Order, Names and Style; From Voice to Page: Collection, Script and Tajwid.">Surah, Ayah, Juz&#x27;: Order, Names and Style; From Voice to Page: Collection, Script and Tajwid.</div><div class="doors"><a class="door" href="/qur8" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur8" data-name="The Qur’an · Unit 8 · Structure, Style and Recitation" data-name-es="El Corán · Unidad 8 · Structure, Style and Recitation" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">9</div><div class="t" data-en="Seerah: Mecca, Medina and the Occasions of Revelation" data-es="Seerah: Mecca, Medina and the Occasions of Revelation">Seerah: Mecca, Medina and the Occasions of Revelation</div><div class="yrs">Context</div><div class="d" data-en="Arabia Before Islam and the Meccan Period; Medina, the Community and the Occasions of Revelation." data-es="Arabia Before Islam and the Meccan Period; Medina, the Community and the Occasions of Revelation.">Arabia Before Islam and the Meccan Period; Medina, the Community and the Occasions of Revelation.</div><div class="doors"><a class="door" href="/qur9" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur9" data-name="The Qur’an · Unit 9 · Seerah: Mecca, Medina and the Occasions of Revelation" data-name-es="El Corán · Unidad 9 · Seerah: Mecca, Medina and the Occasions of Revelation" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">10</div><div class="t" data-en="Major Themes" data-es="Major Themes">Major Themes</div><div class="yrs">Themes</div><div class="d" data-en="God, Creation, Signs and the Last Day; Law and Ethics: Justice, Charity, Family, Food, War and Peace." data-es="God, Creation, Signs and the Last Day; Law and Ethics: Justice, Charity, Family, Food, War and Peace.">God, Creation, Signs and the Last Day; Law and Ethics: Justice, Charity, Family, Food, War and Peace.</div><div class="doors"><a class="door" href="/qur10" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur10" data-name="The Qur’an · Unit 10 · Major Themes" data-name-es="El Corán · Unidad 10 · Major Themes" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">11</div><div class="t" data-en="Reading with the Tradition" data-es="Reading with the Tradition">Reading with the Tradition</div><div class="yrs">Interpretation and Civilization</div><div class="d" data-en="Hadith, Sunnah and Tafsir: How Muslims Interpret; The Qur&#x27;an in Islamic Civilization and in America." data-es="Hadith, Sunnah and Tafsir: How Muslims Interpret; The Qur&#x27;an in Islamic Civilization and in America.">Hadith, Sunnah and Tafsir: How Muslims Interpret; The Qur&#x27;an in Islamic Civilization and in America.</div><div class="doors"><a class="door" href="/qur11" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur11" data-name="The Qur’an · Unit 11 · Reading with the Tradition" data-name-es="El Corán · Unidad 11 · Reading with the Tradition" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <p class="more-k" data-en="More rooms on this band" data-es="Más salas de esta banda">More rooms on this band</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 6–8" data-es="Daily Drafts — Qur&#x27;an, grades 6–8">Daily Drafts — Qur&#x27;an, grades 6–8</div><div class="doors"><a class="door" href="/drops/quran/6" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Islam — the room" data-es="Islam — the room">Islam — the room</div><div class="doors"><a class="door" href="/r5" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="How to read a sacred text — the room" data-es="How to read a sacred text — the room">How to read a sacred text — the room</div><div class="doors"><a class="door" href="/r1" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 6–8" data-es="Daily Drafts — Qur&#x27;an, grades 6–8">Daily Drafts — Qur&#x27;an, grades 6–8</div><div class="doors"><a class="door" href="/drops/quran/7" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 6–8" data-es="Daily Drafts — Qur&#x27;an, grades 6–8">Daily Drafts — Qur&#x27;an, grades 6–8</div><div class="doors"><a class="door" href="/drops/quran/8" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Talmud Study — the course" data-es="Talmud Study — the course">Talmud Study — the course</div><div class="doors"><a class="door" href="/talmud" data-en="Open" data-es="Abrir">Open</a></div></div>
+  </div>
+</div>
+</section>
+<section class="band" id="9-10" aria-labelledby="h-9-10">
+  <h2 id="h-9-10" data-en="Grades 9–10" data-es="Grados 9–10">Grades 9–10</h2>
+<div class="course-lead" id="course-9-10">
+  <div class="cl-head"><div><span class="cl-k" data-en="The course" data-es="El curso">The course</span><h3 data-en="The Qur’an, Grades 9–10" data-es="El Corán, Grados 9–10">The Qur’an, Grades 9–10</h3><p class="cl-d" data-en="3 units, 6 chapters. Each lesson has a reading, key words and three checks." data-es="3 unidades, 6 capítulos. Cada lección tiene una lectura, palabras clave y tres comprobaciones.">3 units, 6 chapters. Each lesson has a reading, key words and three checks.</p></div><a class="cl-btn" href="/quran-course#band-9-10" data-en="Course contents" data-es="Contenido del curso">Course contents</a></div>
+  <div class="grid">
+  <div class="unit open course"><div class="un" aria-hidden="true">12</div><div class="t" data-en="Close Reading Meccan Surahs" data-es="Close Reading Meccan Surahs">Close Reading Meccan Surahs</div><div class="yrs">Surahs Close Up</div><div class="d" data-en="The Short Surahs: Al-Fatiha, Al-&#x27;Alaq, Ad-Duha, Al-&#x27;Asr, Al-Ikhlas; Surah Yusuf and Surah Maryam: Narrative in the Qur&#x27;an." data-es="The Short Surahs: Al-Fatiha, Al-&#x27;Alaq, Ad-Duha, Al-&#x27;Asr, Al-Ikhlas; Surah Yusuf and Surah Maryam: Narrative in the Qur&#x27;an.">The Short Surahs: Al-Fatiha, Al-&#x27;Alaq, Ad-Duha, Al-&#x27;Asr, Al-Ikhlas; Surah Yusuf and Surah Maryam: Narrative in the Qur&#x27;an.</div><div class="doors"><a class="door" href="/qur12" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur12" data-name="The Qur’an · Unit 12 · Close Reading Meccan Surahs" data-name-es="El Corán · Unidad 12 · Close Reading Meccan Surahs" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">13</div><div class="t" data-en="Close Reading Medinan Surahs" data-es="Close Reading Medinan Surahs">Close Reading Medinan Surahs</div><div class="yrs">Surahs Close Up</div><div class="d" data-en="Al-Baqarah: Covenant, Law, the Throne Verse and &quot;No Compulsion&quot;; An-Nisa, Al-Ma&#x27;idah and Al-Hujurat: Community, Justice and the Peoples of the Book." data-es="Al-Baqarah: Covenant, Law, the Throne Verse and &quot;No Compulsion&quot;; An-Nisa, Al-Ma&#x27;idah and Al-Hujurat: Community, Justice and the Peoples of the Book.">Al-Baqarah: Covenant, Law, the Throne Verse and &quot;No Compulsion&quot;; An-Nisa, Al-Ma&#x27;idah and Al-Hujurat: Community, Justice and the Peoples of the Book.</div><div class="doors"><a class="door" href="/qur13" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur13" data-name="The Qur’an · Unit 13 · Close Reading Medinan Surahs" data-name-es="El Corán · Unidad 13 · Close Reading Medinan Surahs" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">14</div><div class="t" data-en="The Qur&#x27;an and the Bible" data-es="The Qur&#x27;an and the Bible">The Qur&#x27;an and the Bible</div><div class="yrs">Comparative</div><div class="d" data-en="Shared Figures, Different Tellings; How the Three Read Each Other&#x27;s Books." data-es="Shared Figures, Different Tellings; How the Three Read Each Other&#x27;s Books.">Shared Figures, Different Tellings; How the Three Read Each Other&#x27;s Books.</div><div class="doors"><a class="door" href="/qur14" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur14" data-name="The Qur’an · Unit 14 · The Qur&#x27;an and the Bible" data-name-es="El Corán · Unidad 14 · The Qur&#x27;an and the Bible" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <p class="more-k" data-en="More rooms on this band" data-es="Más salas de esta banda">More rooms on this band</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 9–10" data-es="Daily Drafts — Qur&#x27;an, grades 9–10">Daily Drafts — Qur&#x27;an, grades 9–10</div><div class="doors"><a class="door" href="/drops/quran/9-10" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Islam — the room" data-es="Islam — the room">Islam — the room</div><div class="doors"><a class="door" href="/r5" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="The Bible — the course" data-es="The Bible — the course">The Bible — the course</div><div class="doors"><a class="door" href="/bible" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="The Hebrew Bible — the course" data-es="The Hebrew Bible — the course">The Hebrew Bible — the course</div><div class="doors"><a class="door" href="/hebrew-bible" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="One question, many lenses — the room" data-es="One question, many lenses — the room">One question, many lenses — the room</div><div class="doors"><a class="door" href="/r11" data-en="Open" data-es="Abrir">Open</a></div></div>
+  </div>
+</div>
+</section>
+<section class="band" id="11-12" aria-labelledby="h-11-12">
+  <h2 id="h-11-12" data-en="Grades 11–12" data-es="Grados 11–12">Grades 11–12</h2>
+<div class="course-lead" id="course-11-12">
+  <div class="cl-head"><div><span class="cl-k" data-en="The course" data-es="El curso">The course</span><h3 data-en="The Qur’an, Grades 11–12" data-es="El Corán, Grados 11–12">The Qur’an, Grades 11–12</h3><p class="cl-d" data-en="3 units, 6 chapters. Each lesson has a reading, key words and three checks." data-es="3 unidades, 6 capítulos. Cada lección tiene una lectura, palabras clave y tres comprobaciones.">3 units, 6 chapters. Each lesson has a reading, key words and three checks.</p></div><a class="cl-btn" href="/quran-course#band-11-12" data-en="Course contents" data-es="Contenido del curso">Course contents</a></div>
+  <div class="grid">
+  <div class="unit open course"><div class="un" aria-hidden="true">15</div><div class="t" data-en="Interpretation: Classical and Modern" data-es="Interpretation: Classical and Modern">Interpretation: Classical and Modern</div><div class="yrs">Tafsir</div><div class="d" data-en="The Tafsir Tradition; Modern Readings." data-es="The Tafsir Tradition; Modern Readings.">The Tafsir Tradition; Modern Readings.</div><div class="doors"><a class="door" href="/qur15" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur15" data-name="The Qur’an · Unit 15 · Interpretation: Classical and Modern" data-name-es="El Corán · Unidad 15 · Interpretation: Classical and Modern" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">16</div><div class="t" data-en="Law, Ethics and Society" data-es="Law, Ethics and Society">Law, Ethics and Society</div><div class="yrs">Qur&#x27;an and Law</div><div class="d" data-en="From Text to Law: Usul al-Fiqh, the Schools and Ijtihad; War, Peace, Governance and the Earth: Verses in Context." data-es="From Text to Law: Usul al-Fiqh, the Schools and Ijtihad; War, Peace, Governance and the Earth: Verses in Context.">From Text to Law: Usul al-Fiqh, the Schools and Ijtihad; War, Peace, Governance and the Earth: Verses in Context.</div><div class="doors"><a class="door" href="/qur16" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur16" data-name="The Qur’an · Unit 16 · Law, Ethics and Society" data-name-es="El Corán · Unidad 16 · Law, Ethics and Society" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open course"><div class="un" aria-hidden="true">17</div><div class="t" data-en="Recitation as Art, and Capstone" data-es="Recitation as Art, and Capstone">Recitation as Art, and Capstone</div><div class="yrs">Capstone</div><div class="d" data-en="Sound and Beauty: Recitation, Calligraphy and the Inimitable; Capstone: A Verse, Its Contexts and Its Readers." data-es="Sound and Beauty: Recitation, Calligraphy and the Inimitable; Capstone: A Verse, Its Contexts and Its Readers.">Sound and Beauty: Recitation, Calligraphy and the Inimitable; Capstone: A Verse, Its Contexts and Its Readers.</div><div class="doors"><a class="door" href="/qur17" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/qur17" data-name="The Qur’an · Unit 17 · Recitation as Art, and Capstone" data-name-es="El Corán · Unidad 17 · Recitation as Art, and Capstone" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <p class="more-k" data-en="More rooms on this band" data-es="Más salas de esta banda">More rooms on this band</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Daily Drafts — Qur&#x27;an, grades 11–12" data-es="Daily Drafts — Qur&#x27;an, grades 11–12">Daily Drafts — Qur&#x27;an, grades 11–12</div><div class="doors"><a class="door" href="/drops/quran/11-12" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Islam — the room" data-es="Islam — the room">Islam — the room</div><div class="doors"><a class="door" href="/r5" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Talmud Study — the course" data-es="Talmud Study — the course">Talmud Study — the course</div><div class="doors"><a class="door" href="/talmud" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="Religion and the world — the room" data-es="Religion and the world — the room">Religion and the world — the room</div><div class="doors"><a class="door" href="/r10" data-en="Open" data-es="Abrir">Open</a></div></div>
+  <div class="unit open"><div class="t" data-en="World Religions capstone — the sources speak" data-es="World Religions capstone — the sources speak">World Religions capstone — the sources speak</div><div class="doors"><a class="door" href="/r12" data-en="Open" data-es="Abrir">Open</a></div></div>
+  </div>
+</div>
+</section>
+<details class="teach">
+  <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+  <div class="inner">
+    <p data-en="&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere." data-es="&lt;b&gt;Esta página es un mapa.&lt;/b&gt; No guarda nada sobre un estudiante y no envía nada a ningún lado."><b>This page is a map.</b> It saves nothing about a student and sends nothing anywhere.</p>
+    <p data-en="&lt;b&gt;Share one band.&lt;/b&gt; Add the band to the address: &lt;b&gt;/quran#6-8&lt;/b&gt;. Tap &lt;b&gt;Show on the board&lt;/b&gt; to show a unit’s short address big enough for the back row." data-es="&lt;b&gt;Comparte una banda.&lt;/b&gt; Agrega la banda a la dirección: &lt;b&gt;/quran#6-8&lt;/b&gt;. Toca &lt;b&gt;Mostrar en la pizarra&lt;/b&gt; para mostrar la dirección corta de una unidad en grande."><b>Share one band.</b> Add the band to the address: <b>/quran#6-8</b>. Tap <b>Show on the board</b> to show a unit’s short address big enough for the back row.</p>
+  </div>
+</details>
+</main>
+<footer>
+  <p><span data-en="This page saves nothing about a student and can’t send anything." data-es="Esta página no guarda nada sobre un estudiante y no puede enviar nada.">This page saves nothing about a student and can’t send anything.</span></p>
+  <p><span data-en="Original classroom material. We describe what people believe; we never tell anyone what to believe." data-es="Material original de clase. Describimos lo que la gente cree; nunca le decimos a nadie qué creer.">Original classroom material. We describe what people believe; we never tell anyone what to believe.</span></p>
+</footer>
+</div>
+<script>
+(function(){
+"use strict";
+/* AOG-SUBJECT-HUB-V1 — the hub's own engine: band strip, EN|ES, theme, the board beam.
+   The site bar (aog-topbar.js) owns the visible switches: it CLICKS #langEn /
+   #langEs / #themeBtn below and hides them (never two doors to one place). */
+var SLUG="quran", KEY="aog.hub."+SLUG+".", LEGACY="aog.interior.ws.v1.";
+var H=document.documentElement;
+function $(s){return document.querySelector(s);}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+
+/* ── language: the page owns it; every [data-en] is a leaf ── */
+var lang="en";
+function T(en,es){return lang==="es"?es:en;}
+function paintLang(){
+  H.lang=lang;
+  var n=document.querySelectorAll("[data-en]");
+  for(var i=0;i<n.length;i++){
+    var el=n[i], v=(lang==="es")?el.getAttribute("data-es"):el.getAttribute("data-en");
+    if(v==null) continue;
+    if(v.indexOf("<")!==-1||v.indexOf("&lt;")!==-1) el.innerHTML=v; else el.textContent=v;
+  }
+  var bEn=$("#langEn"),bEs=$("#langEs");
+  if(bEn) bEn.classList.toggle("on",lang!=="es");
+  if(bEs) bEs.classList.toggle("on",lang==="es");
+  var pEn=$("#aogLangEn"),pEs=$("#aogLangEs");
+  if(pEn) pEn.classList.toggle("on",lang!=="es");
+  if(pEs) pEs.classList.toggle("on",lang==="es");
+  paintTheme();
+}
+function pickLang(v){return function(){ if(lang===v) return; lang=v; store("aog.lang",v); store(LEGACY+"lang",v); paintLang(); };}
+$("#langEn").addEventListener("click",pickLang("en"));
+$("#langEs").addEventListener("click",pickLang("es"));
+(function(){ var s=store("aog.lang")||store(LEGACY+"lang"); if(s==="es"||s==="en") lang=s; })();
+
+/* ── theme: same two keys the bar reconciles ── */
+function paintTheme(){ var b=$("#themeBtn"); if(!b) return; var d=H.getAttribute("data-theme")==="dark"; b.textContent=d?T("Light mode","Modo claro"):T("Dark mode","Modo oscuro"); }
+$("#themeBtn").addEventListener("click",function(){
+  var d=H.getAttribute("data-theme")==="dark"?"light":"dark";
+  H.setAttribute("data-theme",d); store("aog.theme",d); store(LEGACY+"theme",d); paintTheme();
+});
+
+/* ── the band strip: ?band=6-8 or #6-8 on the link, last choice remembered on the device ── */
+var BANDS=["k-2","3-5","6-8","9-10","11-12"];
+/* AOG-BAND-HASH-CASE-V1: the hubs do not agree on the case of the first band — five say "k-2"
+   and two say "K-2" — so an exact indexOf sent /spanish#k-2 to the default instead of
+   to K-2, silently. Match without case and return the hub's OWN spelling, so #k-2 and
+   #K-2 both work everywhere and old bookmarks keep working. */
+function bandCanon(v){ v=String(v==null?"":v).toLowerCase();
+  for(var i=0;i<BANDS.length;i++){ if(String(BANDS[i]).toLowerCase()===v) return BANDS[i]; }
+  return null; }
+function bandFrom(){ var c;
+  var m=/[?&]band=([^&#]+)/.exec(location.search||""); if(m&&(c=bandCanon(m[1]))) return c;
+  var h=(location.hash||"").replace(/^#/,""); if((c=bandCanon(h))) return c;
+  var s=store(KEY+"band"); if(s&&(c=bandCanon(s))) return c;
+  return "k-2";
+}
+function showBand(id,push){
+  var secs=document.querySelectorAll(".band");
+  for(var i=0;i<secs.length;i++) secs[i].hidden=(secs[i].id!==id);
+  var btns=document.querySelectorAll("#bandNav button");
+  for(var j=0;j<btns.length;j++){ btns[j].setAttribute("aria-current",String(btns[j].getAttribute("data-band")===id)); btns[j].classList.toggle("on",btns[j].getAttribute("data-band")===id); }
+  store(KEY+"band",id);
+  if(push){ try{ history.replaceState(null,"","#"+id); }catch(e){} }
+}
+$("#bandNav").addEventListener("click",function(e){ var b=e.target.closest("[data-band]"); if(!b) return; showBand(b.getAttribute("data-band"),true); });
+window.addEventListener("hashchange",function(){ var h=(location.hash||"").replace(/^#/,""); if(BANDS.indexOf(h)>-1) showBand(h,false); });
+showBand(bandFrom(),false);
+
+/* ── the board beam (ported from /prep): the short address, big enough for the back row ── */
+document.addEventListener("click",function(e){
+  var btn=e.target.closest("[data-beam]"); if(!btn) return;
+  var host=location.hostname||"architectureofgrace.org";
+  if(host==="localhost"||host==="127.0.0.1"||!host) host="architectureofgrace.org";
+  var url=host.replace(/^www\./,"")+btn.getAttribute("data-beam");
+  var nm=(lang==="es"&&btn.getAttribute("data-name-es"))?btn.getAttribute("data-name-es"):btn.getAttribute("data-name");
+  var el=document.createElement("div"); el.id="beam"; el.setAttribute("role","dialog"); el.setAttribute("aria-label",url);
+  el.innerHTML='<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div><div class="wk"></div><div class="nm"></div><div class="url"></div><p class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</p>';
+  el.querySelector(".wk").textContent=T("The Qur’an","El Corán");
+  el.querySelector(".nm").textContent=nm||""; el.querySelector(".url").textContent=url;
+  el.addEventListener("click",function(){ el.remove(); });
+  document.addEventListener("keydown",function esc(ev){ if(ev.key==="Escape"){ el.remove(); document.removeEventListener("keydown",esc); } });
+  document.body.appendChild(el); el.setAttribute("tabindex","-1"); el.focus();
+});
+
+paintLang();
+})();
+</script>
+</body>
+</html>

@@ -88,6 +88,15 @@
       setTimeout(foldUnits, 1000);
     }
   } catch (e) {}
+  /* AOG-MARKUP-V1 (2026-09-27) — Jimmy: "INTERACTIVE TEXT THROUGHOUT THE ECOSYSTEM." Every
+     reading page gets highlights and notes (aog-markup.js). Tool pages opt out below. */
+  try {
+    var ms = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+    if (!/^(|index|dashboard|turn-ins|today|404|offline|daily-drops|music-drums|music-decks|science-waves|science-microscope|science-telescope|quiet-space)$/.test(ms)) {
+      var mc = D.createElement("link"); mc.rel = "stylesheet"; mc.href = "/aog-markup.css"; (D.head || H).appendChild(mc);
+      var mj = D.createElement("script"); mj.src = "/aog-markup.js"; mj.defer = true; (D.head || H).appendChild(mj);
+    }
+  } catch (e) {}
   /* AOG-UNIT-V1 (2026-09-27) — Jimmy: "I don't want one long scroll of chapter or unit … I also
      want worksheets and secondary resources provided for all subjects." Every course unit page
      (<course>-u<N>.html, every subject, past and future) gets aog-unit.js: one lesson at a time,
