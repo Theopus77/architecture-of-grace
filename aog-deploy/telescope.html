@@ -197,11 +197,12 @@ svg.scope { width:100%; height:auto; }
     <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
   </div>
   </div>
+  <main id="view"></main>
+  <!-- AOG-TOOL-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card sits under the instrument, not above it (as on the Turntables). The Lesson menu stays in the top bar. -->
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
     <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="#print" hidden>Worksheet</a></div>
     <div id="lessonBody"></div>
   </section>
-  <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
     <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every lesson in pictures &#183; prints on 9 pages</span></summary>
@@ -249,15 +250,16 @@ const STR = {
   teachOpen:{en:"Open",es:"Abiertas"},
   teachLocked:{en:"Locked. Each lesson opens the next control.",es:"Cerradas. Cada lección abre el control siguiente."},
   teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
-  hint:{en:"Six lessons. Each one opens the next. The last one is the ceiling: larger is not finer.",es:"Seis lecciones. Cada una abre la siguiente. La última es el techo: más grande no es más fino."},
-  done:{en:"Six lessons done. You read 1.3″. The lander was never in this glass.",es:"Seis lecciones hechas. Leíste 1.3″. El módulo lunar nunca estuvo en este vidrio."},
+  hint:{en:"Seventeen lessons. Each one opens the next. They climb from the cap to magnification, the Moon, planets, faint fuzzies and the limits: larger is not finer.",es:"Diecisiete lecciones. Cada una abre la siguiente. Suben de la tapa al aumento, la Luna, los planetas, las manchas tenues y los límites: más grande no es más fino."},
+  done:{en:"All seventeen lessons done. You can find, focus, measure and log the sky, and you know its limits.",es:"Las diecisiete lecciones hechas. Sabes encontrar, enfocar, medir y registrar el cielo, y conoces sus límites."},
   fineHint:{en:"The fine knob is under the circle. Changing the eyepiece throws the focus off.",es:"El micrométrico está debajo del círculo. Cambiar el ocular saca el foco."},
   moon:{en:"Moon",es:"Luna"}, jupiter:{en:"Jupiter",es:"Júpiter"}, saturn:{en:"Saturn",es:"Saturno"},
   orion:{en:"Orion",es:"Orión"}, pleiades:{en:"Pleiades",es:"Pléyades"}, albireo:{en:"Albireo",es:"Albireo"}, pair:{en:"The pair",es:"El par"},
   sea:{en:"The sea",es:"El mar"}, sunName:{en:"Sun",es:"Sol"},
   mars:{en:"Mars",es:"Marte"}, venus:{en:"Venus",es:"Venus"}, andromeda:{en:"Andromeda Galaxy",es:"Galaxia de Andrómeda"},
   ring:{en:"Ring Nebula",es:"Nebulosa del Anillo"}, m13:{en:"M13 star cluster",es:"Cúmulo M13"}, mizar:{en:"Mizar and Alcor",es:"Mizar y Alcor"},
-  split:{en:"The 2.4″ pair",es:"El par de 2.4″"}
+  split:{en:"The 2.4″ pair",es:"El par de 2.4″"},
+  uranus:{en:"Uranus",es:"Urano"}, dcluster:{en:"Double Cluster",es:"Cúmulo Doble"}, m27:{en:"Dumbbell Nebula",es:"Nebulosa Dumbbell"}
 };
 /* one plain line under the target menu: what to look for */
 const LOOK={
@@ -276,34 +278,83 @@ const LOOK={
   albireo:["One gold star, one blue. 34″ apart.","Una estrella de oro, una azul. A 34″."],
   split:["Two stars 2.4″ apart. The 6 mm and the Barlow split them.","Dos estrellas a 2.4″. El de 6 mm con el Barlow las separa."],
   pair:["Two stars 1.0″ apart. Nothing on this bench splits them.","Dos estrellas a 1.0″. Nada en esta mesa las separa."],
+  uranus:["A tiny pale blue-green disk. No markings. Use the 6 mm.","Un disco diminuto azul verdoso pálido. Sin marcas. Usa el de 6 mm."],
+  dcluster:["Two sprays of stars side by side. Only the 25 mm fits both.","Dos rociadas de estrellas lado a lado. Solo el de 25 mm cabe las dos."],
+  m27:["A faint gray apple core. Look a little to one side of it.","Un corazón de manzana gris y tenue. Mira un poco a un lado."],
   sun:["Only with the filter on the front. Dark spots with gray fringes.","Solo con el filtro al frente. Manchas oscuras con flecos grises."]
 };
 function lookFor(){ const l=LOOK[S.lab.target]; return l?(S.lang==="es"?l[1]:l[0]):""; }
+/* AOG-TELE-LESSONS17-V1 (2026-09-27) — Jimmy: 17 lessons, like the Turntables. Steps keep their names so saved
+   progress stays; each lesson has an id so the controls it opens can be found by name. */
 const STAIR = [
-  {en:"Make the telescope work",es:"Haz funcionar el telescopio",
+  {id:"t1", en:"Make the telescope work",es:"Haz funcionar el telescopio",
     blurb_en:"Cap off. Lock the mount. 25 mm. Coarse focus on the Moon.",
     blurb_es:"Tapa fuera. Fija la montura. 25 mm. Enfoca la Luna con el macrométrico.",
     steps:["cap","lock","low","coarse"]},
-  {en:"See more",es:"Ver más",
+  {id:"t2", en:"See more",es:"Ver más",
     blurb_en:"10 mm, then the 6 mm, then the fine knob. The Moon no longer fits.",
     blurb_es:"10 mm, luego el de 6 mm, luego el micrométrico. La Luna ya no cabe.",
     steps:["mid","short","fine"]},
-  {en:"Change what you see",es:"Cambia lo que ves",
+  {id:"t7", en:"Find it at low power", es:"Encuéntralo con bajo aumento",
+    blurb_en:"Always start wide. The 25 mm shows the most sky. Find the Pleiades, then the Double Cluster, with the 25 mm.",
+    blurb_es:"Empieza siempre ancho. El de 25 mm muestra más cielo. Encuentra las Pléyades y luego el Cúmulo Doble, con el de 25 mm.",
+    steps:["pleiades25","dcluster25"]},
+  {id:"t8", en:"Magnification math", es:"Cálculo del aumento",
+    blurb_en:"Power is 900 ÷ the eyepiece. Look at Saturn with the 10 mm, then the 6 mm. Work out each number.",
+    blurb_es:"El aumento es 900 ÷ el ocular. Mira Saturno con el de 10 mm y luego con el de 6 mm. Calcula cada número.",
+    steps:["saturn90","saturn150"]},
+  {id:"t3", en:"Change what you see",es:"Cambia lo que ves",
     blurb_en:"Jupiter is a striped bead. Orion is a gray cloud and four stars.",
     blurb_es:"Júpiter es una cuenta rayada. Orión es una nube gris y cuatro estrellas.",
     steps:["jupiter","orion"]},
-  {en:"Measure",es:"Medir",
+  {id:"t9", en:"Exit pupil and field", es:"Pupila de salida y campo",
+    blurb_en:"More power makes a dimmer, smaller view. Andromeda looks best in the 25 mm. Try it in the 6 mm and see it fade.",
+    blurb_es:"Más aumento da una vista más oscura y más chica. Andrómeda se ve mejor con el de 25 mm. Pruébala con el de 6 mm y mira cómo se apaga.",
+    steps:["andro25","andro6"]},
+  {id:"t10", en:"The Moon's features", es:"Las formas de la Luna",
+    blurb_en:"Seas, craters, mountains. At 90× the shadows along the line of sunrise show the most. Then find the landing sea.",
+    blurb_es:"Mares, cráteres, montañas. A 90× las sombras en la línea del amanecer muestran más. Luego encuentra el mar del alunizaje.",
+    steps:["moon90","sea90"]},
+  {id:"t4", en:"Measure",es:"Medir",
     blurb_en:"Reticle in. Two taps. Read arcseconds, not a feeling.",
     blurb_es:"Retículo puesto. Dos toques. Lee segundos de arco, no una impresión.",
     steps:["measure"]},
-  {en:"What can't this telescope see?",es:"¿Qué no puede ver este telescopio?",
+  {id:"t11", en:"The planets", es:"Los planetas",
+    blurb_en:"Mars is a small orange disk. Venus is a crescent. Neither looks like a star in focus.",
+    blurb_es:"Marte es un disco naranja pequeño. Venus es una luna creciente. Ninguno parece una estrella en foco.",
+    steps:["mars","venus"]},
+  {id:"t12", en:"Faint fuzzies", es:"Manchas tenues",
+    blurb_en:"A star cluster, a ring and a dumbbell. They are dim and gray. Look a little to one side to see more.",
+    blurb_es:"Un cúmulo de estrellas, un anillo y una pesa. Son tenues y grises. Mira un poco a un lado para ver más.",
+    steps:["m13","ring","m27"]},
+  {id:"t5", en:"What can't this telescope see?",es:"¿Qué no puede ver este telescopio?",
     blurb_en:"The sea where they landed. 6 mm. In focus. The lander is 0.002″.",
     blurb_es:"El mar donde alunizaron. 6 mm. En foco. El módulo mide 0.002″.",
     steps:["ceiling"]},
-  {en:"The research bench",es:"El banco de investigación",
+  {id:"t6", en:"The research bench",es:"El banco de investigación",
     blurb_en:"Albireo splits. The 1.0″ pair does not. The Barlow makes the smear bigger.",
     blurb_es:"Albireo se separa. El par de 1.0″ no. El Barlow agranda la mancha.",
-    steps:["albireo","barlow"]}
+    steps:["albireo","barlow"]},
+  {id:"t13", en:"Double stars", es:"Estrellas dobles",
+    blurb_en:"Mizar splits easily. The 2.4″ pair needs the 6 mm and the Barlow. Both are near the lens's limit of 1.3″.",
+    blurb_es:"Mizar se separa fácil. El par de 2.4″ necesita el de 6 mm y el Barlow. Los dos están cerca del límite del lente, 1.3″.",
+    steps:["mizar","split"]},
+  {id:"t14", en:"Seeing and the limits", es:"El seeing y los límites",
+    blurb_en:"Air moves, so stars shiver. Push Jupiter to 300×: bigger, not sharper. Then look at the Moon by day, through warm, moving air.",
+    blurb_es:"El aire se mueve, así que las estrellas tiemblan. Lleva Júpiter a 300×: más grande, no más nítido. Luego mira la Luna de día, a través de aire tibio que se mueve.",
+    steps:["jup300","moonDay"]},
+  {id:"t15", en:"The Sun, safely", es:"El Sol, con seguridad",
+    blurb_en:"Never look at the Sun without a proper filter on the front of the tube. Filter first. Then the spots.",
+    blurb_es:"Nunca mires el Sol sin un filtro adecuado al frente del tubo. Primero el filtro. Luego las manchas.",
+    steps:["sunFilter","sunSpots"]},
+  {id:"t16", en:"Measure the sky", es:"Mide el cielo",
+    blurb_en:"Use the reticle on two targets. Jupiter's disk is about 40″. Albireo's stars are 34″ apart. Check the numbers.",
+    blurb_es:"Usa el retículo en dos objetos. El disco de Júpiter mide unos 40″. Las estrellas de Albireo están a 34″. Revisa los números.",
+    steps:["measJup","measAlb"]},
+  {id:"t17", en:"Plan an observing night", es:"Planea una noche de observación",
+    blurb_en:"Put it together. The Moon at dusk, then a far planet. Write a log: time, eyepiece, power, what you saw.",
+    blurb_es:"Júntalo todo. La Luna al anochecer, luego un planeta lejano. Escribe un registro: hora, ocular, aumento, lo que viste.",
+    steps:["moonDusk","uranus"]}
 ];
 const STEP = {
   cap:{en:"Take the cap off",es:"Quita la tapa"},
@@ -318,7 +369,30 @@ const STEP = {
   measure:{en:"Measure something at 90× or 150×",es:"Mide algo a 90× o 150×"},
   ceiling:{en:"Center the landing sea at 150×",es:"Centra el mar del alunizaje a 150×"},
   albireo:{en:"Split Albireo",es:"Separa Albireo"},
-  barlow:{en:"Barlow the 1.0″ pair and read 1.3″",es:"Pon el Barlow al par de 1.0″ y lee 1.3″"}
+  barlow:{en:"Barlow the 1.0″ pair and read 1.3″",es:"Pon el Barlow al par de 1.0″ y lee 1.3″"},
+  pleiades25:{en:"The Pleiades in focus in the 25 mm",es:"Las Pléyades en foco con el de 25 mm"},
+  dcluster25:{en:"The Double Cluster in focus in the 25 mm",es:"El Cúmulo Doble en foco con el de 25 mm"},
+  saturn90:{en:"Saturn in focus at 90× (10 mm)",es:"Saturno en foco a 90× (10 mm)"},
+  saturn150:{en:"Saturn in focus at 150× (6 mm)",es:"Saturno en foco a 150× (6 mm)"},
+  andro25:{en:"Andromeda in focus in the 25 mm",es:"Andrómeda en foco con el de 25 mm"},
+  andro6:{en:"Andromeda in the 6 mm",es:"Andrómeda con el de 6 mm"},
+  moon90:{en:"The Moon in focus at 90× (10 mm)",es:"La Luna en foco a 90× (10 mm)"},
+  sea90:{en:"The landing sea in focus at 90×",es:"El mar del alunizaje en foco a 90×"},
+  mars:{en:"Mars in focus with the 10 mm or 6 mm",es:"Marte en foco con el de 10 o 6 mm"},
+  venus:{en:"Venus in focus",es:"Venus en foco"},
+  m13:{en:"M13 in focus with the 10 mm or 6 mm",es:"M13 en foco con el de 10 o 6 mm"},
+  ring:{en:"The Ring Nebula in focus with the 10 mm or 6 mm",es:"La nebulosa del Anillo en foco con el de 10 o 6 mm"},
+  m27:{en:"The Dumbbell Nebula in focus",es:"La nebulosa Dumbbell en foco"},
+  mizar:{en:"Split Mizar",es:"Separa Mizar"},
+  split:{en:"Split the 2.4″ pair: 6 mm and Barlow",es:"Separa el par de 2.4″: 6 mm y Barlow"},
+  jup300:{en:"Jupiter at 300× (6 mm and Barlow)",es:"Júpiter a 300× (6 mm y Barlow)"},
+  moonDay:{en:"The Moon in a daytime sky, in focus",es:"La Luna en un cielo de día, en foco"},
+  sunFilter:{en:"Put the filter on the front",es:"Pon el filtro al frente"},
+  sunSpots:{en:"The Sun in focus through the filter",es:"El Sol en foco a través del filtro"},
+  measJup:{en:"Measure Jupiter with the reticle",es:"Mide Júpiter con el retículo"},
+  measAlb:{en:"Measure Albireo with the reticle",es:"Mide Albireo con el retículo"},
+  moonDusk:{en:"The Moon at dusk or dawn, in focus",es:"La Luna al anochecer o al amanecer, en foco"},
+  uranus:{en:"Uranus in focus with the 6 mm",es:"Urano en foco con el de 6 mm"}
 };
 const S = {
   page:"home", lang:"en", theme:"light", teacher:"open",
@@ -334,6 +408,8 @@ function persist(){ try { localStorage.setItem(KEY, JSON.stringify({lang:S.lang,
 function t(k){ const x=STR[k]; return x ? (S.lang==="es"?x.es:x.en) : k; }
 function missionsOpen(){ return S.teacher!=="locked"; }
 function benchStep(){ return missionsOpen() ? STAIR.length : stairNow(); }
+/* AOG-TELE-LESSONS17-V1: a control opens when a named lesson is reached */
+function LX(id){ const i=STAIR.findIndex(m=>m.id===id); return i<0?0:i; }
 function magOf(L){ return (SCOPE.fl/L.ep) * (L.barlow?2:1); }
 function focusErr(L){
   const ideal = L.ep===25?42 : L.ep===10?58 : 72;
@@ -1155,9 +1231,68 @@ function drawSun(ctx){
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
   ctx.drawImage(SUN,-16,-16,32,32);
 }
+/* ══ AOG-TELE-TARGETS17-V1 (2026-09-27) — Jimmy: new sky targets for the 17 lessons, none repeating one above,
+   as a 90 mm refractor really shows them: grey smudges, not photographs. Units are arcminutes, like the rest. ══ */
+/* ── URANUS ── 3.7″ across: at 150× a small, flat, pale blue-green disk with no markings. Its moons are too faint. */
+function drawUranus(ctx){
+  URA_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  const R=0.031, k=Math.hypot(ctx.getTransform().a, ctx.getTransform().b)||1;
+  if(R*k<1.1){ airy(ctx,0,0,5.7,"#cfeee8"); return; }            /* at low power it is only a star that will not twinkle much */
+  const g=ctx.createRadialGradient(-R*.12,-R*.1,0,0,0,R);
+  g.addColorStop(0,"rgba(206,236,232,1)"); g.addColorStop(.7,"rgba(176,218,214,1)"); g.addColorStop(1,"rgba(120,166,166,.9)");
+  ctx.save(); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,R,0,6.3); ctx.fill();
+  /* the lens's own blur and a faint purple fringe round a bright small disk */
+  ctx.strokeStyle="rgba(170,150,230,.28)"; ctx.lineWidth=R*.18; ctx.beginPath(); ctx.arc(0,0,R*1.08,0,6.3); ctx.stroke();
+  const h=ctx.createRadialGradient(0,0,R,0,0,R*2.6); h.addColorStop(0,"rgba(190,220,220,.22)"); h.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=h; ctx.beginPath(); ctx.arc(0,0,R*2.6,0,6.3); ctx.fill(); ctx.restore();
+}
+/* ── THE DOUBLE CLUSTER ── NGC 869 and NGC 884 in Perseus: two rich clusters about 30′ apart, each a spray of
+   white points with a few orange giants, on the Milky Way's faint haze. Both fit only in the 25 mm. */
+const DC_STARS=(function(){
+  const rng=mulberry32(0xdc), a=[];
+  [[-15,3,1],[16,-4,.9]].forEach(([cx,cy,rich])=>{
+    for(let i=0;i<210*rich;i++){ const u=rng(), r=7.5*Math.sqrt(-Math.log(1-u*.97))*.62, th=rng()*6.2832;
+      const m=6.6+Math.pow(rng(),.5)*4.6, c=rng(); a.push({x:cx+Math.cos(th)*r,y:cy+Math.sin(th)*r,m,c:c<.05?"#ffc98a":c<.2?"#d4e2ff":"#eef2ff"}); }
+    for(let i=0;i<3;i++){ const th=rng()*6.3, r=2+rng()*6; a.push({x:cx+Math.cos(th)*r,y:cy+Math.sin(th)*r,m:6.3+rng()*.8,c:"#ffb877"}); }  /* red supergiants */
+  });
+  return a;
+})();
+function drawDoubleCluster(ctx){
+  DC_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  if(!DCH) DCH=bakeCanvas(400,data=>{ for(let y=0;y<400;y++) for(let x=0;x<400;x++){ const ax=(x-200)/200*60, ay=(y-200)/200*60;
+    const v=.10*fbm(ax*.05+3,ay*.05)+.06*Math.exp(-Math.pow((ay+ax*.3)/40,2)); const o=(y*400+x)*4; data[o]=150; data[o+1]=156; data[o+2]=176; data[o+3]=Math.min(60,v*260); } });
+  ctx.drawImage(DCH,-60,-60,120,120);
+  DC_STARS.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+}
+/* ── THE DUMBBELL NEBULA ── M27 in Vulpecula: about 8′ by 6′. In 90 mm it is a faint grey "apple core" — two
+   brighter lobes with a fainter oval filling the sides. No colour: the eye cannot see colour in light this dim. */
+function bakeM27(){
+  const N=460, SPAN=6;
+  return bakeCanvas(N,data=>{
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
+      const c=Math.cos(.5), sn=Math.sin(.5), lx=ax*c-ay*sn, ly=ax*sn+ay*c;
+      const oval=Math.exp(-Math.pow(Math.hypot(lx/3.9,ly/2.9),4));                  /* the faint outer shell */
+      const bow=Math.exp(-Math.pow(Math.hypot(lx/1.7,ly/3.0),2.2))*(.72+.28*Math.min(1,Math.abs(ly)/1.4)); /* the bright apple core, pinched at the waist */
+      let v=.26*oval+.62*bow; v*=0.8+0.4*fbm(ax*1.3+2,ay*1.3);
+      const o=(y*N+x)*4, t=Math.min(1,v);
+      data[o]=170+30*t; data[o+1]=176+30*t; data[o+2]=178+28*t; data[o+3]=Math.min(118,v*125);
+    }
+  });
+}
+function drawM27(ctx){
+  M27_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  if(!M27) M27=bakeM27();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(M27,-6,-6,12,12);
+  airy(ctx,-1.6,2.9,9.6,"#e8eeff"); airy(ctx,2.2,-3.3,10.1,"#f4d6b8");   /* faint stars laid over the glow */
+}
+let M27=null, DCH=null;
+const URA_FIELD=fieldStars(8, 40, 40), DC_FIELD=fieldStars(869, 160, 100), M27_FIELD=fieldStars(27, 110, 40);
 function drawStars(ctx){ SKY.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c)); }
 const DRAW={moon:drawMoon,sea:drawMoon,jupiter:drawJupiter,saturn:drawSaturn,mars:drawMars,venus:drawVenus,orion:drawOrion,pleiades:drawPleiades,
-  albireo:drawAlbireo,mizar:drawMizar,pair:drawPair,split:drawSplit,andromeda:drawAndromeda,ring:drawRing,m13:drawM13,sun:drawSun};
+  albireo:drawAlbireo,mizar:drawMizar,pair:drawPair,split:drawSplit,andromeda:drawAndromeda,ring:drawRing,m13:drawM13,sun:drawSun,
+  uranus:drawUranus,dcluster:drawDoubleCluster,m27:drawM27};
 function paintSky(ctx,w,h,sky){
   if(!sky || sky==="night"){ ctx.fillStyle="#07080c"; ctx.fillRect(0,0,w,h); return; }
   const g=ctx.createLinearGradient(0,0,0,h);
@@ -1304,15 +1439,28 @@ function noteCore(){
           `M13 a ${m}×. Una bola de estrellas. El centro sigue siendo un resplandor; en el borde el resplandor se deshace en puntos. Hay unos cientos de miles de estrellas ahí.`+almost)
     : say("M13 at low power. A round fuzzy patch, brighter in the middle. The 10 mm starts to break the edge into stars."+almost,
           "M13 a bajo aumento. Una mancha redonda y difusa, más brillante en el centro. El de 10 mm empieza a deshacer el borde en estrellas."+almost);
+  if (L.target==="uranus") return m>=120
+    ? say(`Uranus at ${m}×. A tiny flat disk, pale blue-green, with no markings. A star stays a point; a planet shows an edge. It is 2.9 billion km away.`+almost,
+          `Urano a ${m}×. Un disco plano diminuto, azul verdoso pálido, sin marcas. Una estrella sigue siendo un punto; un planeta muestra un borde. Está a 2,900 millones de km.`+almost)
+    : say("Uranus at low power. It looks like a star with a faint color. The 6 mm shows it is a disk."+almost,
+          "Urano a bajo aumento. Parece una estrella con un color tenue. El de 6 mm muestra que es un disco."+almost);
+  if (L.target==="dcluster") return m<50
+    ? say("The Double Cluster. Two sprays of stars side by side, a few of them orange. Only the 25 mm is wide enough to hold both. Each cluster is about 7,500 light-years away."+almost,
+          "El Cúmulo Doble. Dos rociadas de estrellas lado a lado, algunas naranjas. Solo el de 25 mm es tan ancho que caben las dos. Cada cúmulo está a unos 7,500 años luz."+almost)
+    : say(`The Double Cluster at ${m}×. Now only one cluster fits. More power made the field smaller. For big things, use low power.`+almost,
+          `El Cúmulo Doble a ${m}×. Ahora solo cabe un cúmulo. Más aumento hizo el campo más chico. Para cosas grandes, usa bajo aumento.`+almost);
+  if (L.target==="m27") return say(
+    `The Dumbbell Nebula at ${m}×. A faint gray glow shaped like an apple core. Look a little to one side: the edge of your eye sees dim light better. The color in photos is not visible to the eye here.`+almost,
+    `La nebulosa Dumbbell a ${m}×. Un resplandor gris tenue con forma de corazón de manzana. Mira un poco a un lado: el borde del ojo ve mejor la luz débil. El color de las fotos no se ve aquí a simple vista.`+almost);
   return "";
 }
 
-const STEP2_TARGETS=["jupiter","saturn","mars","venus","orion","pleiades","andromeda","m13","ring","mizar"];
+const STEP2_TARGETS=["jupiter","saturn","mars","venus","uranus","orion","pleiades","dcluster","andromeda","m13","ring","m27","mizar"];
 function targetsFor(step){
   const list=[["moon","moon"]];
-  if (step>=2) STEP2_TARGETS.forEach(id=>list.push([id,id]));
-  if (step>=4) list.push(["sea","sea"]);
-  if (step>=5) list.push(["albireo","albireo"],["split","split"],["pair","pair"]);
+  if (step>=LX("t7")) STEP2_TARGETS.forEach(id=>list.push([id,id]));
+  if (step>=LX("t10")) list.push(["sea","sea"]);
+  if (step>=LX("t6")) list.push(["albireo","albireo"],["split","split"],["pair","pair"]);
   list.push(["sun","sunName"]);
   return list;
 }
@@ -1323,7 +1471,7 @@ function teacherRow(){
 }
 function instrumentHTML(){
   const L=S.lab, step=benchStep();
-  const eps=step>=1?[25,10,6]:[25];
+  const eps=step>=LX("t2")?[25,10,6]:[25];
   const targets=targetsFor(step);
   return `
     ${teacherRow()}
@@ -1334,11 +1482,32 @@ function instrumentHTML(){
     <p class="note-line lookfor">${lookFor()}</p>
     ${(L.target==="moon"||L.target==="sea")?`<div class="row"><span class="tiny">${t("sky")}</span><span data-aog-dropdown="${STR.sky.en}|${STR.sky.es}">${["night","dusk","day","dawn"].map(s=>btn((L.sky||"night")===s,"sky-"+s,t(s))).join("")}</span></div>`:""}
     ${L.target==="sun"?`<div class="row"><span class="tiny">${t("filter")}</span><span>${btn(!L.filter,"filt0",t("none"))}${btn(!!L.filter,"filt1",t("front"))}</span></div>`:""}
-    ${step>=3?`<div class="row"><span class="tiny">${t("reticle")}</span><span>${btn(L.reticle,"ret1",t("scaleOn"))}${btn(!L.reticle,"ret0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
-    ${step>=5?`<div class="row"><span class="tiny">${t("barlow")}</span><span>${btn(L.barlow,"bar1",t("barlowIn"))}${btn(!L.barlow,"bar0",t("barlowOut"))}</span></div>`:""}
+    ${step>=LX("t4")?`<div class="row"><span class="tiny">${t("reticle")}</span><span>${btn(L.reticle,"ret1",t("scaleOn"))}${btn(!L.reticle,"ret0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
+    ${step>=LX("t6")?`<div class="row"><span class="tiny">${t("barlow")}</span><span>${btn(L.barlow,"bar1",t("barlowIn"))}${btn(!L.barlow,"bar0",t("barlowOut"))}</span></div>`:""}
     <p class="note-line fieldnote">${fieldNote()}</p>`;
 }
-function missionActs(i){
+function missionActs(p){
+  /* AOG-TELE-LESSONS17-V1: each lesson's buttons, found by its id */
+  const id=STAIR[p]&&STAIR[p].id, L=S.lab, es=S.lang==="es";
+  const OLD={t1:0,t2:1,t3:2,t4:3,t5:4,t6:5};
+  if (id in OLD) return missionActsOld(OLD[id]);
+  const tg=x=>btn(L.target===x,"tg-"+x,t(x==="sun"?"sunName":x)), ep=n=>btn(L.ep===n&&!L.barlow,"ep"+n,n+" mm"), bar=btn(L.barlow,"bar1",t("barlowIn"));
+  const ret=btn(L.reticle,"ret1",t("scaleOn"))+btn(L.measure,"meas1",t("measure")), sky=x=>btn((L.sky||"night")===x,"sky-"+x,t(x));
+  const note=(en,sp)=>`<p class="note-line">${es?sp:en}</p>`;
+  if (id==="t7") return ep(25)+tg("pleiades")+tg("dcluster");
+  if (id==="t8") return tg("saturn")+ep(10)+ep(6)+note("900 ÷ 10 = 90×. 900 ÷ 6 = 150×.","900 ÷ 10 = 90×. 900 ÷ 6 = 150×.");
+  if (id==="t9") return tg("andromeda")+ep(25)+ep(6)+note("Exit pupil = 90 mm ÷ power. 25 mm: 2.5 mm. 6 mm: 0.6 mm.","Pupila de salida = 90 mm ÷ aumento. 25 mm: 2.5 mm. 6 mm: 0.6 mm.");
+  if (id==="t10") return tg("moon")+ep(10)+tg("sea");
+  if (id==="t11") return tg("mars")+tg("venus")+ep(10)+ep(6);
+  if (id==="t12") return tg("m13")+tg("ring")+tg("m27")+ep(10)+ep(25);
+  if (id==="t13") return tg("mizar")+tg("split")+ep(6)+bar;
+  if (id==="t14") return tg("jupiter")+ep(6)+bar+tg("moon")+sky("day");
+  if (id==="t15") return tg("sun")+btn(!!L.filter,"filt1",t("front"))+note("Filter first, always. The cap stays on until it is there.","Primero el filtro, siempre. La tapa se queda puesta hasta que esté.");
+  if (id==="t16") return tg("jupiter")+tg("albireo")+ep(10)+ret+`<p class="note-line">${t("tap")}</p>`;
+  if (id==="t17") return tg("moon")+sky("dusk")+tg("uranus")+ep(6);
+  return "";
+}
+function missionActsOld(i){
   const L=S.lab, es=S.lang==="es";
   if (i===0) return btn(!L.cap,"cap0",es?"Tapa fuera":"Cap off")+btn(L.locked,"lock1",t("locked"))+btn(L.ep===25,"ep25","25 mm")+btn(L.target==="moon","tg-moon",t("moon"));
   if (i===1) return btn(L.ep===10,"ep10","10 mm")+btn(L.ep===6,"ep6","6 mm")+`<p class="note-line">${t("fineHint")}</p>`;
@@ -1367,15 +1536,15 @@ const LSTR={
   printOne:{en:"Print my copy",es:"Imprimir mi copia"},
   printBlank:{en:"Print it blank",es:"Imprimir en blanco"},
   printAllK:{en:"Every lesson",es:"Todas las lecciones"},
-  printAllSay:{en:"All 6 worksheets, one lesson per page.",es:"Las 6 hojas, una lección por página."},
-  printAll:{en:"Print all 6 worksheets",es:"Imprimir las 6 hojas"},
+  printAllSay:{en:"All 17 worksheets, one lesson per page.",es:"Las 17 hojas, una lección por página."},
+  printAll:{en:"Print all 17 worksheets",es:"Imprimir las 17 hojas"},
   printGuideK:{en:"The picture guide",es:"La guía en imágenes"},
   printGuideSay:{en:"The telescope drawn and labeled, with each lesson in pictures.",es:"El telescopio dibujado y rotulado, con cada lección en imágenes."},
   printGuide:{en:"Print the picture guide",es:"Imprimir la guía en imágenes"},
-  lessonsLead:{en:"Six lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Seis lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
+  lessonsLead:{en:"Seventeen lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Diecisiete lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
   lessonK:{en:"Lesson",es:"Lección"},
-  lessonsAll:{en:"All 6 lessons",es:"Las seis lecciones"},
+  lessonsAll:{en:"All 17 lessons",es:"Las diecisiete lecciones"},
   doneMark:{en:"done",es:"lista"},
   next:{en:"Next lesson",es:"Siguiente lección"},
   toLab:{en:"Try it at the eyepiece",es:"Pruébala en el ocular"},
@@ -1409,6 +1578,11 @@ function lessonCard(inLab){
     <div class="lacts${inLab?" do":""}">${acts}</div>
     ${done?`<p class="lok">${allDone?t("done"):(es?"Lección hecha.":"Lesson done.")} ${next}</p>`:""}`;
 }
+/* AOG-TOOL-LESSONS-BELOW-V1 — the Lessons card sits under the instrument. On the bench page it moves in
+   right under the instrument; a re-render first puts it back under <main>, so it is never wiped. */
+function lessonsHome(){ const box=document.getElementById("lessons"), v=document.getElementById("view"); if(box&&v&&v.contains(box)) v.after(box); }
+function lessonsBelow(){ const box=document.getElementById("lessons"), v=document.getElementById("view"); if(!box||!v) return;
+  const at=v.querySelector(".lab-stack"); if(at) at.after(box); else if(box.previousElementSibling!==v) v.after(box); }
 function paintLessonsTop(){
   const top=["home","lab","lessons"].includes(S.page);
   const sw=document.getElementById("benchSwitch"), box=document.getElementById("lessons");
@@ -1502,7 +1676,7 @@ function pageHome(){
         <p style="margin:.4rem 0 .6rem">${c[2]}</p>
         <p class="muted" style="font-size:.9rem">${c[3]} ›</p>
       </a>`).join("")}
-      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las seis lecciones":"The six lessons"}</p>
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las diecisiete lecciones":"The seventeen lessons"}</p>
         <ol class="ladder" style="margin-top:.6rem">${ladderHtml().replace(/data-pick=/g,"data-open data-pick=")}</ol>
       </div></div>
     </div>`;
@@ -1724,11 +1898,36 @@ function tick(){
   if (L.target==="sea"&&L.ep===6&&band==="in"&&!L.cap&&!L.barlow) S.missions.ceiling=true;
   if (L.target==="albireo"&&band==="in"&&!L.cap&&L.ep!==25&&!L.barlow) S.missions.albireo=true;
   if (L.barlow&&L.target==="pair"&&L.ep===6&&band==="in"&&!L.cap) S.missions.barlow=true;
+  /* AOG-TELE-LESSONS17-V1 — lessons 7–17 */
+  const sharp=band==="in"&&!L.cap, T=L.target, meas=L.reticle&&L.mA&&L.mB&&!L.cap;
+  if (T==="pleiades"&&L.ep===25&&!L.barlow&&sharp) S.missions.pleiades25=true;
+  if (T==="dcluster"&&L.ep===25&&!L.barlow&&sharp) S.missions.dcluster25=true;
+  if (T==="saturn"&&L.ep===10&&!L.barlow&&sharp) S.missions.saturn90=true;
+  if (T==="saturn"&&L.ep===6&&!L.barlow&&sharp) S.missions.saturn150=true;
+  if (T==="andromeda"&&L.ep===25&&!L.barlow&&sharp) S.missions.andro25=true;
+  if (T==="andromeda"&&L.ep===6&&!L.cap) S.missions.andro6=true;
+  if (T==="moon"&&L.ep===10&&!L.barlow&&sharp) S.missions.moon90=true;
+  if (T==="sea"&&L.ep===10&&!L.barlow&&sharp) S.missions.sea90=true;
+  if (T==="mars"&&L.ep!==25&&sharp) S.missions.mars=true;
+  if (T==="venus"&&sharp) S.missions.venus=true;
+  if (T==="m13"&&L.ep!==25&&sharp) S.missions.m13=true;
+  if (T==="ring"&&L.ep!==25&&sharp) S.missions.ring=true;
+  if (T==="m27"&&sharp) S.missions.m27=true;
+  if (T==="mizar"&&sharp) S.missions.mizar=true;
+  if (T==="split"&&L.ep===6&&L.barlow&&sharp) S.missions.split=true;
+  if (T==="jupiter"&&L.ep===6&&L.barlow&&sharp) S.missions.jup300=true;
+  if (T==="moon"&&L.sky==="day"&&sharp) S.missions.moonDay=true;
+  if (T==="sun"&&L.filter) S.missions.sunFilter=true;
+  if (T==="sun"&&L.filter&&sharp) S.missions.sunSpots=true;
+  if (T==="jupiter"&&meas) S.missions.measJup=true;
+  if (T==="albireo"&&meas) S.missions.measAlb=true;
+  if (T==="moon"&&(L.sky==="dusk"||L.sky==="dawn")&&sharp) S.missions.moonDusk=true;
+  if (T==="uranus"&&L.ep===6&&sharp) S.missions.uranus=true;
   persist();
 }
 function centerTarget(id){
   /* the Moon sits a little right of centre, so the 6 mm lands on the terminator with Copernicus in view */
-  const spots={moon:[-3.2,-1.2],sea:[6.4,0.8],pleiades:[-11,-6]};
+  const spots={moon:[-3.2,-1.2],sea:[6.4,0.8],pleiades:[-11,-6],dcluster:[-14,3]};
   const p=spots[id]||[0,0];
   S.lab.panX=-p[0]; S.lab.panY=-p[1]; S.lab.mA=S.lab.mB=null;
 }
@@ -1746,21 +1945,23 @@ function paint(){
   document.getElementById("foot").textContent=t("foot");
   document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+[["home","home"],["lab","lab"],["lessons","lessons"],["print","print"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${k==="lessons"?lt("lessonsNav"):k==="print"?lt("printNav"):t(k)}</a>`).join("")+`</span>`   /* AOG-BENCH-BAR-V1 */
     +`<a class="sep" href="/telescope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
+  lessonsHome();
   const view=document.getElementById("view");
   view.innerHTML=S.page==="lab"?pageLab():S.page==="lessons"?lessonsView():S.page==="print"?printView():pageHome();
   bindLessonBox(view);
   paintLessonsTop();   /* AOG-BENCH-TOP-V1 */
+  lessonsBelow();
   if (S.page!=="lab") return;
   startEye(); tick();
   document.querySelectorAll("#view [data-act], #lessons [data-act]").forEach(b=>b.onclick=()=>{
     const a=b.getAttribute("data-act"), L=S.lab, step=benchStep();
     if (a==="teach-lock"){ S.teacher="locked"; persist(); paint(); return; }
     if (a==="teach-open"){ S.teacher="open"; persist(); paint(); return; }
-    const locked=(a==="ep10"||a==="ep6")&&step<1
-      || a.startsWith("tg-")&&STEP2_TARGETS.includes(a.slice(3))&&step<2
-      || (a==="ret1"||a==="meas1")&&step<3
-      || a==="tg-sea"&&step<4
-      || (a==="tg-albireo"||a==="tg-pair"||a==="tg-split"||a==="bar1")&&step<5;
+    const locked=(a==="ep10"||a==="ep6")&&step<LX("t2")
+      || a.startsWith("tg-")&&STEP2_TARGETS.includes(a.slice(3))&&step<LX("t7")
+      || (a==="ret1"||a==="meas1")&&step<LX("t4")
+      || a==="tg-sea"&&step<LX("t10")
+      || (a==="tg-albireo"||a==="tg-pair"||a==="tg-split"||a==="bar1")&&step<LX("t6");
     if (locked) return;
     if (a==="cap1") L.cap=true;
     if (a==="cap0"){ if(!(L.target==="sun" && !L.filter)) L.cap=false; }
