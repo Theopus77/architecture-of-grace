@@ -374,3 +374,43 @@ float suitcase(vec3 q,vec3 s){
 /* a pair of shoes, side by side */
 float shoe(vec3 q){ float d=sdEll(q-vec3(0,.035,0),vec3(.045,.035,.12)); d=max(d,-q.y);
   float op=sdEll(q-vec3(0,.075,.04),vec3(.03,.03,.05)); return max(d,-op); }
+
+/* ---- a real shoe (sneaker) pointing along +z: sole, upper, toe cap, opening, laces ---- */
+float sneaker(vec3 q){
+  float sole=sdRBox(q-vec3(0,.008,0),vec3(.036,.008,.11),.007);
+  vec3 u=q-vec3(0,.03,-.01); float up=sdEll(u,vec3(.034,.032,.1));
+  up=max(up,-q.y+.01); up=smin(up,sdEll(q-vec3(0,.05,-.07),vec3(.032,.04,.035)),.02);   /* heel */
+  float op=sdEll(q-vec3(0,.085,-.05),vec3(.022,.03,.035));
+  return min(sole,max(up,-op)); }
+float sneakerInk(vec3 q){
+  if(q.y<.017) return .3;                                              /* sole band */
+  if(q.z>-.02&&q.z<.05&&q.y>.05&&abs(fract(q.z/.016)-.5)<.12&&abs(q.x)<.018) return .2;   /* laces */
+  if(q.z>.075&&q.y>.02) return .75;                                    /* toe cap */
+  return -1.; }
+/* ---- a fruit tree: split trunk, several leafy clumps; fruit painted in the tone pass ---- */
+float fruitTree(vec3 q,float h,float r){
+  float tr=sdCone(q-vec3(0,h*.25,0),.02*h/.5,.013*h/.5,h*.25);
+  float br=min(sdCapsule(q,vec3(0,h*.45,0),vec3(-r*.6,h*.72,0),.008*h/.5),sdCapsule(q,vec3(0,h*.45,0),vec3(r*.55,h*.75,.02),.008*h/.5));
+  br=min(br,sdCapsule(q,vec3(0,h*.45,0),vec3(0,h*.85,-.02),.007*h/.5));
+  float cr=1e3;
+  for(int i=0;i<6;i++){ float a=float(i)*1.9; vec3 c=vec3(cos(a)*r*.6,h*(.72+.12*sin(a*1.7)),sin(a)*r*.5);
+    cr=smin(cr,length(q-c)-r*(.42+.08*sin(a*3.)),.02); }
+  cr+=(fbm3(q*30.)-.5)*.035*r/.12;
+  return min(min(tr,br),cr); }
+float fruitInk(vec3 q,float h){ if(q.y<h*.55) return -1.; vec3 v=voro(q.xy*26.+q.z*9.); if(v.x<.09) return .2; return -1.; }
+/* ---- a leafy house plant: stems rising out of the pot, broad leaves at their tips ---- */
+float housePlant(vec3 q,float s){ q/=s; float d=1e3;
+  for(int i=0;i<7;i++){ float fi=float(i); float a=fi*2.39; float t=.35+.12*fract(fi*.618);
+    vec3 dir=normalize(vec3(cos(a)*.55,1.,sin(a)*.55)); vec3 b=vec3(0,.13,0), e=b+dir*(.12+.06*fract(fi*.37));
+    d=min(d,sdCapsule(q,b,e,.0035));
+    vec3 l=q-e-dir*.045; l.xz=rot(-a)*l.xz; l.xy=rot(-.5)*l.xy;
+    d=min(d,sdEll(l,vec3(.028,.05,.006))); }
+  return d*s; }
+float plantInk(vec3 q,float s){ return -1.; }
+/* ---- an arched stone bridge along x, standing in water (y=0) ---- */
+float archBridge(vec3 q,float L,float w){
+  float top=.2-.08*(q.x*q.x)/(L*L);
+  float body=max(sdBox(q-vec3(0,.12,0),vec3(L,.14,w)),q.y-top);
+  body=max(body,-(length(q.xy-vec2(0,-.02))-.15));
+  float par=max(sdBox(vec3(q.x,q.y-top-.02,abs(q.z)-w+.012),vec3(L,.03,.012)),q.y-top-.045);
+  return min(body,par)-.003; }

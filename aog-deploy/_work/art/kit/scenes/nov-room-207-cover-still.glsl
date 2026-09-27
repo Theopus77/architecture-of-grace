@@ -1,8 +1,8 @@
 /* Novel cover, Book Five "The Year We Walked Out" (Room 207): an open door in a dark wall,
    morning light pouring through onto the floor; a suitcase, a backpack and a pair of shoes
    wait by the door. */
-#define CAM_POS vec3(-0.0626,0.5001,-1.5728)
-#define CAM_TGT vec3(0.1943,0.3460,0.2769)
+#define CAM_POS vec3(-0.1315,0.5131,-1.7705)
+#define CAM_TGT vec3(0.1536,0.3422,0.2821)
 #define SUN_DIR vec3(.25,.55,1.)
 #define KEYSOFT 24.
 #define CAM_FOV 30.
@@ -23,12 +23,13 @@ vec2 map(vec3 p){
   r=U(r,doorD(p),4.);
   r=U(r,suitcase(pl(p,vec3(.3,0,.25),.3),vec3(.1,.13,.045)),5.);
   r=U(r,backpack(pl(p,vec3(.35,0,.0),-.4)*1.1)/1.1,6.);
-  r=U(r,min(shoe(pl(p,vec3(-.06,0,.1),1.2)*1.3),shoe(pl(p,vec3(-.02,0,.18),1.35)*1.3))/1.3,7.);
+  r=U(r,min(sneaker(pl(p,vec3(-.12,0,.05),.9)*.8),sneaker(pl(p,vec3(-.05,0,.1),1.05)*.8))/.8,7.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
-  if(id==1.) return .75; if(id==2.) return .6;
+  if(id==1.){ float t=p.z<.44?(.44-p.z):0.; float hw=.15+t*.35; if(p.z<.44&&abs(p.x+t*.25)<hw&&t<.7) return .98; return .42; }
+  if(id==2.) return .38;
   if(id==3.) return .5; if(id==4.) return .55;
   if(id==5.){ vec3 q=pl(p,vec3(.3,0,.25),.3); if(abs(q.x)>.085||abs(q.y-.13)<.004) return .3; return .45; }
   if(id==6.){ float k=backpackInk(pl(p,vec3(.35,0,.0),-.4)*1.1); return k>0.?k:.5; }
-  if(id==7.) return .4;
+  if(id==7.){ float k=sneakerInk(pl(p,vec3(-.12,0,.05),.9)*.8); if(p.x>-.09) k=sneakerInk(pl(p,vec3(-.05,0,.1),1.05)*.8); return k>0.?k:.6; }
   return .7; }

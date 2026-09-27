@@ -1,6 +1,6 @@
 /* Novel scene room-36-u1: a quiet dresser at dusk with an oval mirror and a plain mask resting beside it */
-#define CAM_POS vec3(-0.2260,0.3624,-1.5064)
-#define CAM_TGT vec3(0.0035,0.2477,0.0993)
+#define CAM_POS vec3(-0.2278,0.3633,-1.4985)
+#define CAM_TGT vec3(0.0004,0.2493,0.0999)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.6,.7,-.4)
 #define MAXT 8.
@@ -18,7 +18,7 @@ vec2 map(vec3 p){
   vec3 m=p-vec3(-.02,.04,.28); vec2 u=m.xy-vec2(0,.25); float e=sdE2(u,vec2(.16,.22));
   r=U(r,min(max(abs(e+.012)-.014,abs(m.z)-.016)-.003,sdRBox(m-vec3(0,.015,0),vec3(.12,.015,.05),.006)),4.);
   r=U(r,max(e+.02,abs(m.z+.002)-.004),5.);
-  vec3 k=pl(p-vec3(.25,.07,.05),vec3(0),.3); k.yz=rot(-1.25)*k.yz; r=U(r,mask(k),6.);
+  vec3 k=pl(p-vec3(.24,.13,.06),vec3(0),.35); k.yz=rot(.3)*k.yz; r=U(r,mask(k),6.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72; if(id==2.) return .9;
