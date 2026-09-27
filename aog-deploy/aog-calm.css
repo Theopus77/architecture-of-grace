@@ -112,3 +112,7 @@ html body .daily:has(> a.gr:nth-of-type(13)):not(:has(> a.gr:nth-of-type(14))) {
 html body .daily:has(> a.gr:nth-of-type(14)):not(:has(> a.gr:nth-of-type(15))) { grid-template-columns:repeat(14,minmax(0,1fr)); }
 html body .daily:has(> a.gr:nth-of-type(15)):not(:has(> a.gr:nth-of-type(16))) { grid-template-columns:repeat(15,minmax(0,1fr)); }
 @media (max-width:699px) { html body .daily, html body .daily[class] { grid-template-columns:repeat(6,minmax(0,1fr)) !important; } }
+
+/* AOG-PRINT-STILL-V1 (2026-09-27) — Jimmy's Safari print of a unit came out pale at the top: Safari prints the
+   page mid fade-in. Nothing animates or fades on paper; everything prints at full strength. */
+@media print { *, *::before, *::after { animation:none !important; transition:none !important; } .aog-fade { opacity:1 !important; } }
