@@ -1,6 +1,6 @@
 /* Hebrew Bible Unit 17 "The Tanakh in Jewish Life" - a mezuzah case with its small scroll, a kiddush cup and a prayer book. */
-#define CAM_POS vec3(-0.5033,0.5726,-1.0449)
-#define CAM_TGT vec3(-0.3246,0.0110,0.1422)
+#define CAM_POS vec3(-0.4889,0.5075,-0.9491)
+#define CAM_TGT vec3(-0.3258,-0.0053,0.1347)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.3)
 #define MAXT 8.
@@ -368,11 +368,14 @@ float t_torch2(vec3 q){ if(q.y>.238) return fract(q.y/.008)<.4?.2:.4; if(q.y<.03
 float o_bigflame(vec3 q){ return o_flame(q/2.2)*2.2; }
 float t_bigflame(vec3 q){ return .97; }
 /* ---- round 3 ---- */
-float o_doorpost(vec3 q){ float d=sdRBox(q-vec3(0,.18,0),vec3(.05,.18,.04),.004); d=min(d,sdRBox(q-vec3(0,.012,0),vec3(.07,.012,.06),.004)); return d; }
+float o_doorpost(vec3 q){ float d=sdRBox(q-vec3(0,.12,0),vec3(.05,.12,.04),.004); d=min(d,sdRBox(q-vec3(0,.012,0),vec3(.07,.012,.06),.004)); return d; }
 float t_doorpost(vec3 q){ return .5+.15*step(.5,fract(q.y*70.+sin(q.x*60.)*1.5)); }
-vec3 mzQ(vec3 q){ vec3 c=q-vec3(0,.2,-.052); c.xy=rot(.35)*c.xy; return c; }
+vec3 mzQ(vec3 q){ vec3 c=q-vec3(0,.13,-.052); c.xy=rot(.35)*c.xy; return c; }
 float o_mezuzah2(vec3 q){ vec3 c=mzQ(q); float d=sdRBox(c,vec3(.014,.075,.012),.009); d=min(d,length(c-vec3(0,.06,-.009))-.007); return d; }
 float t_mezuzah2(vec3 q){ vec3 c=mzQ(q); if(abs(c.x)<.01&&c.y<.045&&c.y>-.06&&fract(c.y/.014)<.25) return .3; return .45; }
+float o_gavel2(vec3 q){ vec3 c=q-vec3(0,.03,0); float r=.028-.004*smoothstep(.02,.04,abs(c.z)); float head=sdCylZ(c,r,.042)-.002;
+  head=min(head,sdCylZ(c,.031,.006)); float h=sdCapsule(q,vec3(.02,.03,0),vec3(.19,.012,.0),.008-.002*clamp(q.x/.19,0.,1.)); return min(head,h); }
+float t_gavel2(vec3 q){ vec3 c=q-vec3(0,.03,0); if(abs(c.x)<.035&&abs(c.z)<.006) return .25; if(abs(c.x)<.035&&abs(abs(c.z)-.042)<.004) return .3; return .45+.12*sin(q.x*300.+sin(q.z*90.)*3.); }
 
 vec3 Q3(vec3 p){  vec3 q=p-vec3(0.02,0.,0.08); q/=1.1; return q; }
 vec3 Q4(vec3 p){  vec3 q=p-vec3(0.02,0.,0.08); q/=1.1; return q; }
