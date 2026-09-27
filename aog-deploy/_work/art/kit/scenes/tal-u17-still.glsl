@@ -1,7 +1,7 @@
 /* Talmud Unit 17 "Great Debates and Capstone" — pencil still life: two small wooden lecterns turned to face each other, each holding a book lying open: two sides of a debate.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.6471,0.4055,-0.9037)
-#define CAM_TGT vec3(-0.2803,0.0387,0.0918)
+#define CAM_POS vec3(-0.6832,0.4118,-0.9034)
+#define CAM_TGT vec3(-0.3120,0.0406,0.1041)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -197,8 +197,8 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
   return (d+.018*fbm3(q*45.)-.006)*.7; }
 
 
-vec3 l1(vec3 p){ return place(p,vec3(-.16,0.,.02),.75); }
-vec3 l2(vec3 p){ return place(p,vec3(.2,0.,.0),-.75); }
+vec3 l1(vec3 p){ return place(p,vec3(-.16,0.,.02),-.75); }
+vec3 l2(vec3 p){ return place(p,vec3(.2,0.,.0),.75); }
 vec3 b1(vec3 p){ return lecB(l1(p))-vec3(0,.0,.005); }
 vec3 b2(vec3 p){ return lecB(l2(p))-vec3(0,.0,.005); }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
