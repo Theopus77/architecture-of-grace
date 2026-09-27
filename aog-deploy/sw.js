@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7080'   // MAKE IT: ONE IDEA PER STEP IN THE NEW RECIPES. previous: m7079
+const CACHE = 'aog-cache-2026.09.27.m7081'   // MAKE IT: 21 PROJECT PENCIL DRAWINGS, FIXED PILLOW, EGGS AND HOAGIE. previous: m7080
+// const CACHE = 'aog-cache-2026.09.27.m7080'   // MAKE IT: ONE IDEA PER STEP IN THE NEW RECIPES. previous: m7079
 // const CACHE = 'aog-cache-2026.09.27.m7079'   // MAKE IT: PROJECT 9 IS NOW HOMEMADE PIZZA FROM FRESH DOUGH. previous: m7078
 // const CACHE = 'aog-cache-2026.09.27.m7078'   // MAKE IT: LASAGNA AND HONEY BREAD (projects 20, 21). previous: m7077
 // const CACHE = 'aog-cache-2026.09.27.m7077'   // MAKE IT: HOAGIE AND SOFT PRETZELS (projects 18, 19) AND PENCIL DRAWINGS. previous: m7076

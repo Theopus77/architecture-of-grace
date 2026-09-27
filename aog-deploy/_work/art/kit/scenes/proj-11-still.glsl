@@ -1,8 +1,8 @@
 /* FACS project 11 "Scrambled eggs, cooked to 160°F" — pencil still life: a nonstick pan of soft,
    fluffy scrambled-egg curds with a dial food thermometer standing in them, a spatula resting
    across the rim, and two whole eggs in front, one standing on end and one lying on its side. */
-#define CAM_POS vec3(-0.4723,0.4923,-0.7871)
-#define CAM_TGT vec3(-0.2249,-0.0037,0.1337)
+#define CAM_POS vec3(-0.4903,0.5033,-0.8209)
+#define CAM_TGT vec3(-0.2341,-0.0103,0.1326)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -38,10 +38,10 @@ float spat(vec3 p){ vec3 q=p-FP-vec3(.03,.05,-.07); q.xz=rot(-.9)*q.xz; q.xy=rot
   return min(blade,hdl); }
 /* an egg lying on its side, long axis along x, blunt end at +x */
 float wholeEgg(vec3 p,vec3 c,float a){ vec3 q=p-c; q.xz=rot(a)*q.xz;
-  float k=q.x>0.?.031:.025; return sdEll(q,vec3(k,.021,.021)); }
+  float k=q.x>0.?.037:.029; return sdEll(q,vec3(k,.024,.024)); }
 /* an egg standing on its blunt end */
-float standEgg(vec3 p,vec3 c){ vec3 q=p-c-vec3(0.,.027,0.);
-  float k=q.y>0.?.034:.027; return sdEll(q,vec3(.022,k,.022)); }
+float standEgg(vec3 p,vec3 c){ vec3 q=p-c-vec3(0.,.031,0.);
+  float k=q.y>0.?.04:.031; return sdEll(q,vec3(.025,k,.025)); }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
@@ -49,7 +49,7 @@ vec2 map(vec3 p){
   r=U(r,eggs(p),4.);
   r=U(r,thermo(p),5.);
   r=U(r,spat(p),6.);
-  r=U(r,min(standEgg(p,vec3(-.125,0.,-.115)),wholeEgg(p,vec3(-.035,.021,-.145),.15)),7.);
+  r=U(r,min(standEgg(p,vec3(-.125,0.,-.115)),wholeEgg(p,vec3(-.03,.024,-.15),.15)),7.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
