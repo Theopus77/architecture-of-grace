@@ -3318,8 +3318,12 @@ function hairDraw(ctx,h,det,polar){
     ctx.rotate(h.a);
     const L=h.L, b=.36;
     if(!polar){
-      ctx.beginPath(); ctx.moveTo(0,-b); ctx.quadraticCurveTo(L*.55,-b*.8,L,-b*.1-.15*h.c); ctx.quadraticCurveTo(L*.5,b*.5,0,b); ctx.closePath();
-      ctx.fillStyle="rgba(236,242,226,.72)"; ctx.fill();
+      /* AOG-SCOPE-REALISM-V1 — a real hook hair tapers and curves, stands up off the leaf so its tip is softer,
+         and its wall is warty and bright-edged */
+      ctx.beginPath(); ctx.moveTo(0,-b); ctx.bezierCurveTo(L*.35,-b*1.05,L*.7,-b*.6-.2*h.c,L,-b*.1-.35*h.c); ctx.quadraticCurveTo(L*.55,b*.35,0,b); ctx.closePath();
+      const hg=ctx.createLinearGradient(0,0,L,0); hg.addColorStop(0,"rgba(236,242,226,.85)"); hg.addColorStop(.7,"rgba(240,246,232,.6)"); hg.addColorStop(1,"rgba(240,246,232,.25)");
+      ctx.fillStyle=hg; ctx.fill();
+      if(det){ const wr=mulberry32((h.x*977+h.y*131)|0); ctx.fillStyle="rgba(90,110,70,.35)"; for(let i=0;i<14;i++){ const tx=wr()*L*.85, ty=(wr()-.5)*b*(1-tx/L)*1.4; ctx.beginPath(); ctx.arc(tx,ty,.03+wr()*.03,0,Math.PI*2); ctx.fill(); } }
       if(det){ ctx.strokeStyle="rgba(50,70,40,.65)"; ctx.lineWidth=.05; ctx.stroke(); ctx.beginPath(); ctx.moveTo(.2,-b*.35); ctx.quadraticCurveTo(L*.5,-b*.45,L*.9,-.12); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.05; ctx.stroke(); }
       ctx.beginPath(); ctx.ellipse(.05,0,b*1.05,b*.95,0,0,Math.PI*2); ctx.fillStyle="rgba(214,226,196,.8)"; ctx.fill();
       if(det){ ctx.strokeStyle="rgba(50,70,40,.5)"; ctx.lineWidth=.04; ctx.stroke(); }
@@ -3695,6 +3699,15 @@ function drawTick(ctx,det,ob,pose){
     ctx.beginPath();
     for(let i=0;i<34;i++){ const x=6+rng()*26, y=-4+rng()*56; if((x*x)/(34*34)+((y-10)*(y-10))/(48*48)>1) continue; [1,-1].forEach(s=>{ ctx.moveTo(s*x,y); ctx.lineTo(s*(x+1.6),y+2.2); }); }
     ctx.strokeStyle="rgba(70,34,12,.7)"; ctx.lineWidth=.3; ctx.stroke();
+    if(ob>=40){ /* AOG-SCOPE-REALISM-V1 — at 400–1000× the cuticle is not smooth: mottled tone, shallow pits
+       with a bright rim, and setal sockets scattered over it */
+      const pr=mulberry32(0x71c9);
+      for(let i=0;i<500;i++){ const x=(pr()-.5)*72, y=10+(pr()-.5)*100, R=1+pr()*4; const gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,pr()<.5?"rgba(60,28,8,.12)":"rgba(230,190,140,.1)"); gg.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
+      for(let i=0;i<1400;i++){ const x=(pr()-.5)*72, y=10+(pr()-.5)*100, q=.08+pr()*.16;
+        ctx.beginPath(); ctx.arc(x,y,q,0,Math.PI*2); ctx.fillStyle="rgba(50,22,6,.45)"; ctx.fill();
+        ctx.beginPath(); ctx.arc(x-q*.3,y-q*.3,q*.9,Math.PI,Math.PI*1.6); ctx.strokeStyle="rgba(255,226,180,.35)"; ctx.lineWidth=q*.3; ctx.stroke(); }
+      for(let i=0;i<120;i++){ const x=(pr()-.5)*70, y=10+(pr()-.5)*96, q=.35+pr()*.25; ctx.beginPath(); ctx.arc(x,y,q,0,Math.PI*2); ctx.strokeStyle="rgba(60,28,8,.5)"; ctx.lineWidth=.12; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,q*.4,0,Math.PI*2); ctx.fillStyle="rgba(240,210,160,.4)"; ctx.fill(); }
+    }
   }
   /* marginal groove, and the festoon seams */
   ctx.beginPath(); ctx.ellipse(0,10,32,45.5,0,Math.PI*.18,Math.PI*.82); ctx.strokeStyle="rgba(90,46,16,.5)"; ctx.lineWidth=.6; ctx.stroke();
@@ -4566,6 +4579,12 @@ function secBg(ctx,stain){
   for(let x=86;x>-86;x-=2){ const b=Math.abs(x)<24?22*(1-Math.pow(x/24,2)):0; ctx.lineTo(x,9.4+b); }
   ctx.closePath();
   ctx.fillStyle=red?"rgba(230,190,198,.55)":"rgba(212,224,176,.6)"; ctx.fill();
+  /* AOG-SCOPE-REALISM-V1 — air between the spongy cells looks grey-dark in a section; the knife leaves the
+     section a little thicker in places, so tone drifts across it */
+  { const ar=mulberry32(0x5ec9); ctx.save(); ctx.clip();
+    for(let i=0;i<500;i++){ const x=(ar()-.5)*172, y=-2+ar()*12, R=.3+ar()*.9; ctx.beginPath(); ctx.ellipse(x,y,R,R*(.5+ar()*.5),ar()*3,0,Math.PI*2); ctx.fillStyle=`rgba(80,86,70,${.18+ar()*.2})`; ctx.fill(); }
+    for(let i=0;i<30;i++){ const x=(ar()-.5)*172, y=(ar()-.5)*40, R=10+ar()*20, gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,`rgba(${red?120:80},${red?60:100},60,.1)`); gg.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
+    ctx.restore(); }
   ctx.strokeStyle=red?"rgba(150,30,50,.5)":"rgba(90,100,60,.5)"; ctx.lineWidth=.2; ctx.stroke();
   /* a fold where the razor tore the section, and a bubble */
   ctx.strokeStyle="rgba(60,50,30,.25)"; ctx.lineWidth=.5; ctx.beginPath(); ctx.moveTo(60,-9); ctx.quadraticCurveTo(66,2,58,12); ctx.stroke();
@@ -4708,8 +4727,11 @@ function fernItem(ctx,c,det){
     const g=ctx.createRadialGradient(-4,-3,2,0,0,rx); g.addColorStop(0,"rgba(236,214,160,.9)"); g.addColorStop(1,"rgba(196,160,96,.9)");
     ctx.fillStyle=g; ctx.fill();
     ctx.save(); ctx.clip();
-    ctx.strokeStyle="rgba(120,86,40,.5)"; ctx.lineWidth=det?.1:.2;
-    for(let y=-9;y<9;y+=2.2) for(let x=-13;x<13;x+=2.6){ blobPath(ctx,x+(rng()-.5)*.6,y+(rng()-.5)*.6,1.4,rng,6,.25); ctx.stroke(); }
+    /* AOG-SCOPE-REALISM-V1 — the capsule wall is one layer of thin cells, seen through: faint walls, each cell a
+       slightly different tone, spores showing through as soft dark shapes */
+    for(let y=-9;y<9;y+=2.2) for(let x=-13;x<13;x+=2.6){ blobPath(ctx,x+(rng()-.5)*.8,y+(rng()-.5)*.8,1.3+rng()*.4,rng,7,.3);
+      ctx.fillStyle=`rgba(${190+rng()*40|0},${150+rng()*40|0},${90+rng()*40|0},${.08+rng()*.14})`; ctx.fill();
+      ctx.strokeStyle=`rgba(120,86,40,${.18+rng()*.2})`; ctx.lineWidth=det?.07:.14; ctx.stroke(); }
     if(!c.open){ ctx.fillStyle="rgba(70,40,12,.35)"; for(let i=0;i<60;i++){ ctx.beginPath(); ctx.arc((rng()-.5)*20,(rng()-.5)*14,1.2,0,Math.PI*2); ctx.fill(); } }
     ctx.restore();
     /* annulus: the row of thick-walled cells over the top — it dries, bends back, and flings the spores */
@@ -4772,11 +4794,11 @@ function fabThread(ctx,t,det,L,clipTo){
     const y0=(k/(nf-1)-.5)*t.w*.92, ph=rng()*6.3, wid=cot?(det?1.05+rng()*.5:1.2):(det?1.4:1.5);
     /* AOG-SCOPE-REALISM-V1 — fibres in a yarn are never ruler-parallel: each leans a little, and some lie
        deeper in the yarn, fainter and softer */
-    ctx.save(); const tilt=(rng()-.5)*(cot?.02:.035), depth=rng();
+    ctx.save(); const tilt=(rng()-.5)*(cot?.02:.07), depth=rng();
     ctx.translate((a+b)/2,y0); ctx.rotate(tilt); ctx.translate(-(a+b)/2,-y0);
     ctx.globalAlpha=depth<.3?.55:1;
     ctx.beginPath();
-    for(let x=a;x<=b;x+=det?1.2:3){ const y=y0+Math.sin(x*tw+ph)*t.w*(cot?.12:.02)*(1-Math.abs(y0)/(t.w*.6)); x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    for(let x=a;x<=b;x+=det?1.2:3){ const y=y0+Math.sin(x*tw+ph)*t.w*(cot?.12:.02)*(1-Math.abs(y0)/(t.w*.6))+(cot?0:Math.sin(x*.045+ph)*.5+Math.sin(x*.013+ph*2)*.8); x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
     ctx.strokeStyle=cot?`rgba(${226+rng()*20|0},${214+rng()*16|0},${180+rng()*20|0},.95)`:`rgba(${206+rng()*16|0},${216+rng()*12|0},${236},.94)`;
     ctx.lineWidth=wid; ctx.lineCap="round"; ctx.stroke();
     if(det){
@@ -4786,8 +4808,10 @@ function fabThread(ctx,t,det,L,clipTo){
         ctx.beginPath(); for(let x=a;x<=b;x+=.6){ const p=Math.sin(x*.9+ph*2), y=y0+Math.sin(x*tw+ph)*t.w*.12*(1-Math.abs(y0)/(t.w*.6))+p*wid*.35; x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
         ctx.strokeStyle="rgba(100,80,50,.55)"; ctx.lineWidth=.07; ctx.stroke();
       } else { /* polyester: a smooth glass rod, bright down the middle, the odd matting speck inside */
-        ctx.beginPath(); ctx.moveTo(a,y0-wid*.12); ctx.lineTo(b,y0-wid*.12); ctx.strokeStyle="rgba(255,255,255,.75)"; ctx.lineWidth=wid*.28; ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(a,y0-wid*.48); ctx.lineTo(b,y0-wid*.48); ctx.moveTo(a,y0+wid*.48); ctx.lineTo(b,y0+wid*.48); ctx.strokeStyle="rgba(60,70,90,.55)"; ctx.lineWidth=.08; ctx.stroke();
+        /* the bright core and dark edges follow the fibre's own wander (the same curve as its body) */
+        const yy=x=>y0+Math.sin(x*tw+ph)*t.w*.02*(1-Math.abs(y0)/(t.w*.6))+Math.sin(x*.045+ph)*.5+Math.sin(x*.013+ph*2)*.8;
+        const line=(off,col,lw)=>{ ctx.beginPath(); for(let x=a;x<=b;x+=1.2){ const y=yy(x)+off; x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.stroke(); };
+        line(-wid*.12,`rgba(255,255,255,${.45+rng()*.35})`,wid*.24); line(-wid*.48,"rgba(60,70,90,.45)",.08); line(wid*.48,"rgba(60,70,90,.45)",.08);
         ctx.fillStyle="rgba(40,50,70,.5)"; for(let i=0;i<40;i++){ ctx.fillRect(a+rng()*(b-a),y0+(rng()-.5)*wid*.6,.06,.06); }
       }
     }
