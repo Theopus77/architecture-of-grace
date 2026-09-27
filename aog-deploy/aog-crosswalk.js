@@ -28,12 +28,21 @@
     "@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .xw-desk{background:#1b2230;color:#f3efe4;border-color:#8fc9a8}" +
     ":root:not([data-theme=light]) .xw-desk .xw-dk{color:#8fc9a8}" +
     ":root:not([data-theme=light]) .xw-desk .xw-dt,:root:not([data-theme=light]) .xw-desk .xw-dw,:root:not([data-theme=light]) .xw-desk .xw-btn,:root:not([data-theme=light]) .xw-said{color:#f3efe4}}" +
-    "@media print{.xw-acts{display:none!important}.xw-desk{display:none!important}" +
-    "html.xw-print-one body *{visibility:hidden!important}" +
-    "html.xw-print-one .xw-print-me,html.xw-print-one .xw-print-me *{visibility:visible!important}" +
-    "html.xw-print-one .xw-print-me{display:block!important;position:absolute;left:0;top:0;width:100%;background:#fff!important;color:#000!important;border:2px solid #000}" +
-    "html.xw-print-one .xw-print-me *{color:#000!important}" +
-    "html.xw-print-one .xw-print-me .xw-acts,html.xw-print-one .xw-print-me .xw-said{display:none!important}}";
+    ".xw-sheet{display:none}" +
+    "@media print{.xw-acts,.xw-desk{display:none!important}" +
+    "html.xw-print-one body>*:not(.xw-sheet),html.xw-print-one .aog-cwm{display:none!important}" +
+    "html.xw-print-one,html.xw-print-one body{background:#fff!important;margin:0!important;padding:0!important;zoom:1!important}" +
+    "html.xw-print-one .xw-sheet{display:block!important;color:#111;font:12pt/1.45 Georgia,'Times New Roman',serif}" +
+    "@page{size:letter;margin:0.4in 0.5in}" +
+    ".xw-half{position:relative;height:4.6in;box-sizing:border-box;padding:0.3in 0.4in;break-inside:avoid}" +
+    ".xw-half svg.xw-frame{position:absolute;inset:0;width:100%;height:100%;overflow:visible}" +
+    ".xw-ph{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1pt solid #111;padding:0 0 4pt;margin:0 0 8pt;font-size:9pt;letter-spacing:.08em;text-transform:uppercase}" +
+    ".xw-ph b{font-weight:700}" +
+    ".xw-pk{font-size:9pt;letter-spacing:.1em;text-transform:uppercase;color:#444;margin:0}" +
+    ".xw-pt{font-size:13pt;font-weight:700;margin:3pt 0 0}" +
+    ".xw-pw{font-size:15pt;line-height:1.5;margin:10pt 0 0}" +
+    ".xw-cut{height:0.3in;display:flex;align-items:center;gap:8pt;font:8pt Georgia,serif;color:#555;letter-spacing:.1em;text-transform:uppercase}" +
+    ".xw-cut:before,.xw-cut:after{content:'';flex:1;border-top:1pt dashed #777}}";
   var st = D.createElement("style"); st.id = "aog-crosswalk-css"; st.textContent = css;
   D.head.appendChild(st);
 
@@ -77,6 +86,34 @@
     fallback();
   }
 
+  /* a hand-drawn pencil frame: a slightly wobbly double line, grey ink */
+  var FRAME = '<svg class="xw-frame" viewBox="0 0 700 460" preserveAspectRatio="none" aria-hidden="true">' +
+    '<path d="M6 8 C180 4 520 11 694 6 C697 150 692 310 695 452 C520 456 190 450 7 454 C3 300 9 160 6 8 Z" fill="none" stroke="#555" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<path d="M12 13 C200 10 500 16 689 12 C691 160 687 300 690 447 C500 450 210 446 12 449 C9 290 14 150 12 13 Z" fill="none" stroke="#999" stroke-width="0.8"/></svg>';
+  function half(t, words) {
+    var h = D.createElement("div"); h.className = "xw-half";
+    h.innerHTML = FRAME;
+    var ph = D.createElement("div"); ph.className = "xw-ph";
+    var l = D.createElement("b"); l.textContent = "Architecture of Grace";
+    var r = D.createElement("span"); r.textContent = say("Desk card", "Tarjeta de mesa");
+    ph.appendChild(l); ph.appendChild(r); h.appendChild(ph);
+    var k = D.createElement("p"); k.className = "xw-pk"; k.textContent = say("Neuro-affirming adjustment", "Ajuste neuroafirmativo"); h.appendChild(k);
+    if (t) { var tt = D.createElement("p"); tt.className = "xw-pt"; tt.textContent = t; h.appendChild(tt); }
+    var w = D.createElement("p"); w.className = "xw-pw"; w.textContent = words; h.appendChild(w);
+    return h;
+  }
+  function sheet(t, words) {
+    var old = D.querySelector(".xw-sheet"); if (old) old.remove();
+    var sh = D.createElement("div"); sh.className = "xw-sheet"; sh.setAttribute("aria-hidden", "true");
+    sh.appendChild(half(t, words));
+    var cut = D.createElement("div"); cut.className = "xw-cut"; cut.textContent = say("Cut here", "Corta aquí");
+    sh.appendChild(cut);
+    sh.appendChild(half(t, words));
+    D.body.appendChild(sh);
+    return sh;
+  }
+  window.aogCrosswalkSheet = sheet;
+
   var n = 0;
   function build(host, textEl) {
     var words = (textEl.textContent || "").trim();
@@ -118,14 +155,13 @@
       said.textContent = "";
     });
     pr.addEventListener("click", function () {
-      card.classList.add("xw-print-me"); H.classList.add("xw-print-one");
+      var sh = sheet(t, words); H.classList.add("xw-print-one");
       var undo = function () {
-        card.classList.remove("xw-print-me"); H.classList.remove("xw-print-one");
+        H.classList.remove("xw-print-one"); if (sh.parentNode) sh.remove();
         window.removeEventListener("afterprint", undo);
       };
       window.addEventListener("afterprint", undo);
       window.print();
-      setTimeout(undo, 1000);
     });
     cp.addEventListener("click", function () {
       copy((t ? t + "\n" : "") + words, function (ok) {
