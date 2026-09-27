@@ -14,6 +14,7 @@ HERE = Path(__file__).resolve().parent
 DEPLOY = HERE.parent.parent
 sys.path.insert(0, str(HERE))
 from outline import UNITS, BANDS
+BUILT = [u for u in UNITS if (DEPLOY / ("eco-u%d.html" % u["n"])).exists()]   # only units whose page is built (K–8 units are still unwritten)
 E = lambda s: html.escape(s, quote=True)
 TODAY = datetime.date.today().isoformat()
 HUB_ID = {"k-2": "K-2"}   # economics-hub.html spells the first band upper-case
@@ -68,7 +69,7 @@ def redirects():
     p = DEPLOY / "_redirects"; s = p.read_text(encoding="utf-8")
     add = []
     if "/economics-course " not in s: add.append("/economics-course             /economics-course.html                      200")
-    for u in UNITS:
+    for u in BUILT:
         n = u["n"]
         if "/eco%d " % n not in s: add.append(("/eco%d" % n).ljust(28) + ("/eco-u%d.html" % n).ljust(42) + "200")
     if add:
@@ -79,7 +80,7 @@ def redirects():
 
 def sw():
     p = DEPLOY / "sw.js"; s = p.read_text(encoding="utf-8")
-    if "eco-u1.html" in s:
+    if "'./economics-course.html'" in s:
         print("sw: already precaches the course"); return
     m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
     old = m.group(1)
@@ -88,19 +89,19 @@ def sw():
     line = ("const CACHE = '%s'   // ECONOMICS AS A COURSE. /economics-course and /eco1–/eco18: an Economics course following the Illinois Learning Standards for Social Science (economics) and the national economics standards — K–12, five bands, 18 units, 36 chapters, numbered lessons — built by _work/eco/build_eco.py. Every band on the hub leads with its part of the course; every page's Economics jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
             "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
     s = s[:m.start()] + line + s[m.end():]
-    add = "  './economics-course.html', " + ", ".join("'./eco-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-ECO-V1 — the Economics course\n"
+    add = "  './economics-course.html', " + ", ".join("'./eco-u%d.html'" % u["n"] for u in BUILT) + ",   // AOG-ECO-V1 — the Economics course\n"
     n = re.search(r"const PRECACHE_LESSONS = \[\n", s).end()
     s = s[:n] + add + s[n:]
-    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d files precached" % (new, len(UNITS) + 1))
+    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d files precached" % (new, len(BUILT) + 1))
 
 def sitemap():
     p = DEPLOY / "sitemap.xml"; s = p.read_text(encoding="utf-8")
     if "/economics-course<" in s:
         print("sitemap: already listed"); return
     rows = ['  <url><loc>https://architectureofgrace.org/economics-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
-    rows += ['  <url><loc>https://architectureofgrace.org/eco%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in UNITS]
+    rows += ['  <url><loc>https://architectureofgrace.org/eco%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in BUILT]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
-    p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(UNITS) + 1))
+    p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(BUILT) + 1))
 
 if __name__ == "__main__":
     hub(); redirects(); sw(); sitemap()
