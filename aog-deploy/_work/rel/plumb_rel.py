@@ -3,9 +3,9 @@
 AOG-REL-V1 · site plumbing for the World Religions course. Idempotent.
   · religions-hub.html — every band leads with its part of the course (unit
     cards), every existing card stays below under "More rooms"
-  · _redirects — /religions-course and /rel1 … /rel12
+  · _redirects — /religions-course and /rel1 … /rel24
   · sw.js — CACHE bump + the course pages precached
-  · sitemap.xml — the 13 pages
+  · sitemap.xml — the 25 pages
 Run from aog-deploy/:  python3 _work/rel/plumb_rel.py
 """
 import re, html, datetime, sys, os
@@ -44,7 +44,8 @@ def hub():
         anchor = re.search(r'(<section class="band" id="%s"[^>]*>.*?<p class="count"[^>]*>[^<]*</p>\n)' % re.escape(HUB_ID.get(b["id"], b["id"])), s, re.S)
         if not anchor:
             anchor = re.search(r'(<section class="band" id="%s"[^>]*>.*?</h2>\n(?:\s*<p class="hint"[^>]*>.*?</p>\n)?)' % re.escape(HUB_ID.get(b["id"], b["id"])), s, re.S)
-        assert anchor, "band %s not found" % b["id"]
+        if not anchor:
+            print("hub: no band section for %s — add <section class=\"band\" id=\"%s\"> to the hub first (see RELIGION_PLAN.md)" % (b["id"], b["id"])); continue
         s = s[:anchor.end()] + lead + s[anchor.end():]
     css = """
 /* AOG-REL-V1 — every band leads with its part of the course */
@@ -72,7 +73,7 @@ def redirects():
         if "/rel%d " % n not in s: add.append(("/rel%d" % n).ljust(28) + ("/rel-u%d.html" % n).ljust(42) + "200")
     if add:
         if not s.endswith("\n"): s += "\n"
-        s += "\n# AOG-REL-V1 — World Religions, Grades 9–12: the course contents and the 12 units\n" + "\n".join(add) + "\n"
+        s += "\n# AOG-REL-V1 — World Religions, K–12: the course contents and the units\n" + "\n".join(add) + "\n"
         p.write_text(s, encoding="utf-8")
     print("redirects: %d added" % len(add))
 
@@ -84,13 +85,13 @@ def sw():
     old = m.group(1)
     pre, num = old.rsplit(".", 1)
     new = "%s.%d" % (pre, int(num) + 1)   # always one past whatever is live, never a fixed number
-    line = ("const CACHE = '%s'   // WORLD RELIGIONS AS A COURSE. /religions-course and /rel1–/rel12: a high-school World Religions course, the academic and comparative study of religion — grades 9–12, 12 units, 24 chapters, numbered lessons — built by _work/rel/build_rel.py. Every band on the hub leads with its part of the course; every page's World Religions jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
+    line = ("const CACHE = '%s'   // WORLD RELIGIONS AS A COURSE. /religions-course and /rel1–/rel24: a K–12 World Religions course, the academic and comparative study of religion — five bands, 24 units, 48 chapters, numbered lessons — built by _work/rel/build_rel.py. Every band on the hub leads with its part of the course; every page's World Religions jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
             "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
     s = s[:m.start()] + line + s[m.end():]
     add = "  './religions-course.html', " + ", ".join("'./rel-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-REL-V1 — the World Religions course\n"
     n = re.search(r"const PRECACHE_LESSONS = \[\n", s).end()
     s = s[:n] + add + s[n:]
-    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, 13 files precached" % new)
+    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d files precached" % (new, len(UNITS) + 1))
 
 def sitemap():
     p = DEPLOY / "sitemap.xml"; s = p.read_text(encoding="utf-8")
@@ -99,7 +100,7 @@ def sitemap():
     rows = ['  <url><loc>https://architectureofgrace.org/religions-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
     rows += ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in UNITS]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
-    p.write_text(s, encoding="utf-8"); print("sitemap: 13 added")
+    p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(UNITS) + 1))
 
 if __name__ == "__main__":
     hub(); redirects(); sw(); sitemap()

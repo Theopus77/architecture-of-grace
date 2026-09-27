@@ -1,36 +1,43 @@
-# Writing one unit of "World Religions, K–12" — Architecture of Grace
+# Writing one unit of "The Hebrew Bible (Tanakh), K–12" — Architecture of Grace
 
-You are writing the content for ONE unit of a free online K–12 World Religions course built by a
+You are writing the content for ONE unit of a free online K–12 course on The Hebrew Bible built by a
 special-education teacher in Illinois for a public-school setting. Many readers are students with IEPs,
 English learners, or reading below grade level. Content goes into JSON files that a build script turns
 into web pages. Everything you write is ORIGINAL.
 
 Your unit's chapters, strands, topics and chapter story hooks are in `outline.py` (the `UNITS` list;
-find your unit by `n`). Its `band` tells you which LEVEL rules below apply. Follow the academic,
-comparative sequence the outline lays out; do not copy any textbook's wording, feature names or titles.
+find your unit by `n`). Its `band` tells you which LEVEL rules below apply. Follow the sequence the
+outline lays out; do not copy any textbook's wording, feature names or titles.
 Invent your own section and lesson titles (short, 2–6 words, clear, not cute).
 
 ## Voice, across every level
-- This is the academic STUDY of religion, not the practice of it, in a public school. The tone is
-  neutral, descriptive and respectful toward every tradition and toward students of no religion:
-  "Muslims believe…", "the Torah teaches…", "many Buddhists practice…", "adherents hold…". Never assert
-  or deny that any religious claim is true; never rank traditions; never use "we" for any faith.
-- Concrete first, then the idea. Start every lesson from a text, a practice, a place or a person
-  (a Sabbath table, a line of the Gita, a pilgrim at Mecca, a monastery bell), show what it means to
-  adherents, then state the concept. Explain every term the first time. Active voice. No filler.
-- Use the traditions' own terms, with a plain gloss the first time (*Torah* — the first five books of the
-  Hebrew Bible; *dharma* — duty, the right way to live). Show diversity WITHIN traditions (Sunni and Shia;
-  Orthodox, Conservative and Reform; Theravada and Mahayana; many Hindu paths).
-- `words` are the key terms: {"w": "covenant", "d": "…"}.
+- This is the STUDY of the Tanakh in a public school, as Jewish tradition reads it and as historians and
+  literary readers read it — not religious instruction. Neutral, descriptive and respectful: "the Torah
+  says…", "Jewish tradition teaches…", "Rashi reads this as…", "the rabbis of the Talmud…", "scholars
+  date…". Never assert or deny that the text is true, revealed or historical. Christian readings are
+  described where they differ, without ranking (Isaiah 7:14, Isaiah 53, Psalm 22), and the order and count
+  of books are the Tanakh's (24 books; Torah, Nevi'im, Ketuvim).
+- Use Hebrew names and terms with a plain gloss the first time (*Bereshit*, *parashah*, *haftarah*,
+  *midrash*, *peshat*, *chesed*, *teshuvah*), and give the common English name too (Genesis). Write the
+  divine name as "God" or "the LORD" as JPS 1917 does; never spell out the four-letter name.
+- K–2 and 3–5 retell the stories plainly in the text's order and connect them to the Jewish year (Shabbat,
+  Passover, Shavuot, Purim) as practices Jewish families keep; 6–8 adds the shape of the book and the ways
+  of reading; 9–12 reads closely with the commentators, the text's transmission and its modern readers.
+- Concrete first, then the idea. Start every lesson from a passage, a practice, a place or a person, show
+  what it says and what it has meant to its readers, then state the concept. Explain every term the first
+  time. Active voice. No filler.
+- `words` are the key terms: {"w": "…", "d": "…"}.
 - Plain text only. No HTML, no markdown except: in `reading` paragraphs you MAY mark a key word with
   *asterisks* the first time it appears (only words that are also in that lesson's `words`, spelled the same).
-- Connect to Illinois and Chicago (the 1893 World's Parliament of Religions in Chicago, the city's
-  houses of worship, the Bahá'í House of Worship in Wilmette) and the site's own rooms only with facts
-  you are sure of. American spelling.
-- Questions test understanding: what a term means, what a text says, which practice belongs to which
-  tradition, how two traditions answer the same question differently, what a source's author is doing.
-  Wrong choices come from real confusions (mixing up traditions, terms or texts) — never from mocking
-  any belief.
+- Connect to Illinois and Chicago (the city's houses of worship and schools, the 1893 World's Parliament of
+  Religions) only with facts you are sure of. American spelling.
+- Questions test understanding: what a term means, what a passage says, who is speaking to whom, which
+  book or tradition a thing belongs to, how two readers read the same text differently, what a passage's
+  author is doing. Wrong choices come from real confusions (mixing up books, figures, terms or readings) —
+  never from mocking any belief.
+- Every lesson's `source` and `data` looks feed a resources list that a shared page script builds from them,
+  so each one must be real and citable: the book, chapter and verse (or surah:ayah, tractate and page),
+  the translation and its year. Prefer public-domain sources; never invent a citation.
 
 ## LEVEL rules (from your unit's band)
 | level | band  | reading paragraphs | chars per paragraph | avg sentence | words per lesson | choices per question |
@@ -51,25 +58,26 @@ Invent your own section and lesson titles (short, 2–6 words, clear, not cute).
   test 15, wrap words 12.
 
 ## Accuracy — the most important rule
-- Every fact about a tradition must be well established and stated the way its scholars and adherents
-  would recognize: names, dates (use "c." freely), texts, practices, holidays, founders, numbers of
-  adherents (rounded, "about", "estimates vary"). If unsure, leave it out or say it generally.
-- Attribute beliefs, always: "Christians believe", "according to the Qur'an", "in Jewish tradition".
-  Describe disagreements between and within traditions without taking a side. Avoid loaded words
-  (cult, myth used to mean false, primitive, pagan as a slur, heathen, sect used dismissively).
-- Sensitive topics (violence, conversion, persecution, gender roles) are described factually and with
-  care, with dates and places, not judgments.
-- `source` looks are central to this course. `"paraphrase": false` requires a public-domain translation
-  AND an exact quotation: the King James Bible (1611), the Jewish Publication Society Tanakh (1917),
-  Rodwell's or Palmer's Qur'an (1861/1880), Max Müller's Sacred Books of the East (1879–1910, e.g. the
-  Dhammapada, the Upanishads, the Daodejing translations), Legge's Analects (1861), Edwin Arnold's Gita
-  (1885), Macauliffe's Sikh Religion (1909). Anything else, or any quote you are not certain is exact,
-  is `"paraphrase": true` with the text in your own words. Cite the text, chapter and verse or section.
-  Aim for 3–6 sources per chapter; every chapter has at least one.
-- `data` looks: rounded, generally cited figures (adherents by tradition, calendar facts, dates in a
-  sequence, the Five Pillars as a numbered list is NOT data — use think). Cite plainly ("common estimates").
-- `think` looks: a passage to interpret, two texts side by side, a practice to explain, a case to reason
-  about ("A hospital serves patients of every faith. What would each tradition ask about the food?").
+- Attribute beliefs, always. Never assert or deny that any religious claim is true; never use "we" for any
+  faith; never tell the reader what to believe or that the text is (or is not) true. Describe disagreements
+  between and within traditions without taking a side. Avoid loaded words (myth used to mean false, cult,
+  primitive, pagan or sect used as slurs, "the Jews" as a blanket subject of blame, "Mohammedan").
+- Sensitive passages (violence, conquest, slavery, gender, punishment, other peoples) are described
+  factually, with their context and with how readers have handled them, never as a verdict on a tradition.
+- Every fact about the text — book, chapter, verse, author as tradition names them, date (use "c." freely),
+  language, manuscript — must be well established. If unsure, leave it out or say it generally.
+- `data` looks: rounded, generally cited figures (numbers of books or chapters, dates in a sequence,
+  manuscript ages, counts of adherents "estimates vary"). Cite plainly.
+- `think` looks: a passage to interpret, two translations or two readings side by side, a practice to
+  explain, a case to reason about.
+- Aim for 3–6 `source` looks per chapter; every chapter has at least one; every `source` names its
+  translation. `"paraphrase": false` requires a public-domain translation AND an exact quotation you are
+  certain of; anything else is `"paraphrase": true` in your own words.
+- Quote only public-domain translations, and name them: the Jewish Publication Society Tanakh (1917) is
+  the course's text; the King James Version (1611) or ASV (1901) for comparison; Charles Taylor's Sayings of
+  the Jewish Fathers (1877) for Pirkei Avot; Rodkinson's Talmud (1896–1903) for Talmudic passages. Rashi,
+  Ibn Ezra, Ramban, midrash and the NJPS (1985), Alter and Fox translations are paraphrased
+  (`"paraphrase": true`) with the commentator and the verse named — never quoted from modern translations.
 
 ## Files you write
 1. `ch<N>.json` — one file per chapter of your unit (N = chapter number from outline.py). Write each with
@@ -81,7 +89,7 @@ Invent your own section and lesson titles (short, 2–6 words, clear, not cute).
 ### ch<N>.json
 ```
 {
- "n": 24, "title": "Torah, Talmud and a People", "years": "Judaism",     // "years" = the strand label
+ "n": 24, "title": "…", "years": "…",     // "years" = the strand label
  "bigQuestion": "One open question the whole chapter helps answer (ends with ?)",
  "story": {                              // a narrative opener — a real-feeling scene — a text being read, a practice observed, a moment in the tradition's history
    "title": "…", "kicker": "one-sentence teaser",
@@ -125,8 +133,8 @@ trick wording. Spread the right answer evenly over the positions (the validator 
  "wrap": {
    "words": [ 8 (K–2) or 12 key terms across the unit, {"w","d"} ],
    "test": [ 10 (K–2) or 15 multiple-choice questions across the whole unit ],
-   "write": {"prompt": "an argue-from-the-sources task: pose a question, cite two or three texts from the unit, and explain what each tradition would say and why",
-             "tips": ["3–5 short tips: e.g. name the text you cite, attribute every belief to its tradition, compare rather than judge, use the unit's terms"]}
+   "write": {"prompt": "an argue-from-the-text task: pose a question, cite two or three passages from the unit (book, chapter, verse or tractate and page), and explain what the text says and how its readers have read it",
+             "tips": ["3–5 short tips: e.g. name the text you cite, attribute every belief to its tradition or reader, compare rather than judge, use the unit's terms"]}
  }
 }
 ```
