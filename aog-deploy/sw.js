@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7076'   // THIS DEVICE'S SHEET: with no class link, work goes to the Sheet this device is connected to, before the site default. previous: m7075
+const CACHE = 'aog-cache-2026.09.27.m7077'   // MAKE IT: HOAGIE AND SOFT PRETZELS (projects 18, 19) AND PENCIL DRAWINGS. previous: m7076
+// const CACHE = 'aog-cache-2026.09.27.m7076'   // THIS DEVICE'S SHEET: with no class link, work goes to the Sheet this device is connected to, before the site default. previous: m7075
 // previous: SKETCHBOOK PAGES: lessons, reviews, unit tests, writing tasks and room quizzes get a spiral binding and a pencil margin; the words stay on plain paper. previous: m7074
 // previous: HOME: A BLUEPRINT OF A SCHOOL HALL BEING BUILT behind the name. previous: m7073
 // previous: BLUEPRINT HOME + INDEX-CARD TABS + HUB AND PAGE HEADER DRAWINGS (as they arrive). previous: m7072
