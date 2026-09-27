@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7106'   // MICROSCOPE: A LESSON FOR EACH SLIDE (18-44), WORKSHEETS AND GUIDE; LESSON-DONE FIX. previous: m7105
+const CACHE = 'aog-cache-2026.09.27.m7107'   // MERGE: MICROSCOPE SLIDE LESSONS (m7106) + MAKE IT 21 PROJECTS (m7081). previous: m7106
+// const CACHE = 'aog-cache-2026.09.27.m7106'   // MICROSCOPE: A LESSON FOR EACH SLIDE (18-44), WORKSHEETS AND GUIDE; LESSON-DONE FIX. previous: m7105
 // const CACHE = 'aog-cache-2026.09.27.m7105'   // MICROSCOPE PICTURE GUIDE: ALL 17 LESSONS, EN+ES STEPS, SLIDE MENU AND LENSES, EVERY PICTURE RE-SHOT. previous: m7104
 // const CACHE = 'aog-cache-2026.09.27.m7104'   // TELESCOPE: A LESSON FOR EACH TARGET (LESSONS 18–36) AND 19 NEW WORKSHEETS. previous: m7102
 // const CACHE = 'aog-cache-2026.09.27.m7102'   // TURNTABLES: A STARTER CRATE OF ELEVEN ORIGINAL TRACKS (80-128 BPM, one press to load) + /tracks, SONGS TO GATHER FOR EACH LESSON.
@@ -20,6 +21,11 @@ const CACHE = 'aog-cache-2026.09.27.m7106'   // MICROSCOPE: A LESSON FOR EACH SL
 // const CACHE = 'aog-cache-2026.09.27.m7073'   // SPANISH AND FACS: PENCIL DRAWINGS; BIBLE/HEBREW REDRAWS. previous: m7072   // NOVELS: REDRAW FIVE PENCIL DRAWINGS. previous: m7071   // MATH REDRAWS (u13, u18, u26). previous: m7070   // NOVELS: PENCIL COVERS AND 20 PENCIL SCENES. previous: m7069   // MATH: PENCIL DRAWINGS ON ALL 27 UNITS. previous: m7068   // SEL ROOMS: PENCIL DRAWINGS ON ALL 20 UNITS (LESSONS, CARDS, WORKSHEETS). previous: m7067   // THE BIBLE: PENCIL DRAWINGS ON ALL 18 UNITS. previous: m7066   // CHINESE CLASSICS: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7065   // TALMUD: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7064   // MERGE MAIN (aog-cache-2026.09.27.m7060) + HEB/HIN PENCIL. previous: m7063
 // const CACHE = 'aog-cache-2026.09.27.m7060'   // DAILY DRAFTS: WORLD CULTURES AND MEDICINE & HEALTH (1,000 items, K to Adult). previous: m7059
 // const CACHE = 'aog-cache-2026.09.27.m7067'   // THE SKETCH PAD: pencil drawings replace card and slip emoji (721 drawings), spiral-bound study cards, Foundry cards and Daily Drafts sheets, pencil drawings in room, microscope, telescope and worksheet mastheads. previous: m7066
+// const CACHE = 'aog-cache-2026.09.27.m7081'   // MAKE IT: 21 PROJECT PENCIL DRAWINGS, FIXED PILLOW, EGGS AND HOAGIE. previous: m7080
+// const CACHE = 'aog-cache-2026.09.27.m7080'   // MAKE IT: ONE IDEA PER STEP IN THE NEW RECIPES. previous: m7079
+// const CACHE = 'aog-cache-2026.09.27.m7079'   // MAKE IT: PROJECT 9 IS NOW HOMEMADE PIZZA FROM FRESH DOUGH. previous: m7078
+// const CACHE = 'aog-cache-2026.09.27.m7078'   // MAKE IT: LASAGNA AND HONEY BREAD (projects 20, 21). previous: m7077
+// const CACHE = 'aog-cache-2026.09.27.m7077'   // MAKE IT: HOAGIE AND SOFT PRETZELS (projects 18, 19) AND PENCIL DRAWINGS. previous: m7076
 // const CACHE = 'aog-cache-2026.09.27.m7076'   // THIS DEVICE'S SHEET: with no class link, work goes to the Sheet this device is connected to, before the site default. previous: m7075
 // previous: SKETCHBOOK PAGES: lessons, reviews, unit tests, writing tasks and room quizzes get a spiral binding and a pencil margin; the words stay on plain paper. previous: m7074
 // previous: HOME: A BLUEPRINT OF A SCHOOL HALL BEING BUILT behind the name. previous: m7073
