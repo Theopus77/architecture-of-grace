@@ -1,8 +1,8 @@
 /* Chinese Classics Unit 10 "The Daoist Texts" — pencil still life: a bronze "hill censer"
    (boshan lu), its lid shaped as layered mountain peaks, on a stem in a round dish; beside it
    a rolled bundle and a short unrolled run of bamboo slips like the Guodian texts. */
-#define CAM_POS vec3(-0.3603,0.2474,-0.9684)
-#define CAM_TGT vec3(-0.1260,0.0131,0.0853)
+#define CAM_POS vec3(-0.3657,0.2485,-0.9725)
+#define CAM_TGT vec3(-0.1302,0.0131,0.0862)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -24,13 +24,15 @@ float censer(vec3 p){ vec3 q=p-CC;
   float cup=(length(c/vec3(.075,.05,.075))-1.)*.05; cup=max(cup,c.y);
   float band=sdTorus(c,.075,.004);
   /* lid: layered peaks rising to a point */
-  float a=atan(c.z,c.x); float lid=1e5;
-  for(int k=0;k<4;k++){ float fk=float(k); float y0=fk*.02; float r0=.076-fk*.016;
-    float wav=.022*pow(abs(sin(a*(2.+fk)+fk*1.7)),2.);        /* each tier is a ring of hill-tops */
-    vec3 t=c-vec3(0.,y0,0.); float hgt=.03+wav;
-    float cone=max(length(t.xz)-(r0*(1.-clamp(t.y/hgt,0.,1.)*.55)),max(-t.y,t.y-hgt));
-    lid=min(lid,cone*.8); }
-  lid=min(lid,length(c-vec3(0.,.115,0.))-.012);
+  /* lid: a heap of rounded hills in three rings, rising to one summit */
+  float lid=(length(c/vec3(.072,.03,.072))-1.)*.03; lid=max(lid,-c.y);
+  for(int k=0;k<3;k++){ float fk=float(k); float n=7.-fk*2.; float R=.058-fk*.024; float y=.012+fk*.03; float r=.024-fk*.004;
+    float a=atan(c.z,c.x)+fk*.6; float sa=floor(a/(6.2832/n)+.5)*(6.2832/n)-fk*.6;
+    vec3 h=c-vec3(R*cos(sa),y,R*sin(sa));
+    lid=smin(lid,(length(h/vec3(1.,1.5,1.))-r)*.8,.01); }
+  lid=smin(lid,(length((c-vec3(0.,.1,0.))/vec3(1.,1.6,1.))-.016)*.8,.01);
+  lid=max(lid,-c.y);
+  lid+=.0015*(fbm(c.xz*120.+c.y*60.)-.5);
   float d=min(dish,smin(stem,cup,.01)); d=min(d,min(band,lid));
   return d; }
 #define SC vec3(.22,0.,-.06)
@@ -54,7 +56,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
   if(id==2.) return .9;
   if(id==3.){ vec3 q=p-CC; vec3 c=q-vec3(0.,.14,0.); if(abs(c.y)<.005) return .3;
-    if(c.y>0.){ return .5+.12*fbm(q.xy*90.); }
+    if(c.y>0.){ return .48+.14*fbm(q.xy*70.+q.z*40.); }
     return .45; }
   if(id==4.){ vec3 q=sQ((p-SC)/1.5+SC); if(q.x<-SW*.5) return .62+.12*step(.5,fract(length(q.xy-vec2(-SW*.5-.022,.022))/.004));
     float i=floor(q.x/SW+.5); float u=q.x-i*SW; if(abs(u)>SW*.4) return .4;
