@@ -1,8 +1,8 @@
 /* FCS Unit 16 "Nutrition and Meal Planning" — pencil still life: a divided plate with a portion
    of rice, broccoli florets, a piece of chicken and slices of orange, a glass of milk, and a
    fork laid beside the plate. */
-#define CAM_POS vec3(-0.30,0.40,-0.84)
-#define CAM_TGT vec3(-0.05,0.02,0.09)
+#define CAM_POS vec3(-0.3481,0.2518,-0.5866)
+#define CAM_TGT vec3(-0.1634,-0.0289,0.1004)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

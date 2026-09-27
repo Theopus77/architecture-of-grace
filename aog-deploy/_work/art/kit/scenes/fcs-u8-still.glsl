@@ -1,8 +1,8 @@
 /* FCS Unit 8 "Plan It, Cook It, Clean It Up" — pencil still life: a recipe card on a small
    wooden stand (plan), a saucepan with its lid and a wooden spoon (cook), and a dish brush
    resting on a folded dishcloth (clean). */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3917,0.2520,-0.7369)
+#define CAM_TGT vec3(-0.1677,-0.0258,0.0964)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

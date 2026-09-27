@@ -1,8 +1,8 @@
 /* Spanish Unit 20 "Capstone: Present and Defend" — pencil still life: a wooden speaker's lectern
    with a microphone on a gooseneck, a stack of note cards on its slanted top, and a small
    trophy cup on the table beside it. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.08,0.09)
+#define CAM_POS vec3(-0.6685,0.4041,-1.0270)
+#define CAM_TGT vec3(-0.3495,0.0465,0.1604)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -24,8 +24,8 @@ float lectern(vec3 q){
 vec3 cardQ(vec3 q){ vec3 t=q-vec3(-.01,.25,0.); t.yz=rot(.3)*t.yz; t.xz=rot(.1)*t.xz; return t-vec3(0.,.013,0.); }
 float cards(vec3 q){ vec3 t=cardQ(q); return sdRBox(t,vec3(.06,.004,.04),.001); }
 float mic(vec3 q){ vec3 a=vec3(.06,.265,.03); float neck=1e5; vec3 prev=a;
-  for(int i=1;i<=6;i++){ float t=float(i)/6.; vec3 b=a+vec3(-.03*t,.06*sin(t*1.6),-.07*t); neck=min(neck,sdCapsule(q,prev,b,.0035)); prev=b; }
-  vec3 h=q-prev; float head=(length(h/vec3(.012,.012,.022))-1.)*.012; return min(neck,head); }
+  for(int i=1;i<=6;i++){ float t=float(i)/6.; vec3 b=a+vec3(-.03*t,.06*sin(t*1.6),-.07*t); neck=min(neck,sdCapsule(q,prev,b,.005)); prev=b; }
+  vec3 h=q-prev; float head=(length(h/vec3(.017,.017,.03))-1.)*.017; return min(neck,head); }
 #define TR vec3(-.17,0.,.0)
 float trophy(vec3 p){ vec3 q=p-TR;
   float base=sdRBox(q-vec3(0.,.015,0.),vec3(.035,.015,.035),.003);
@@ -46,7 +46,7 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
-  if(id==3.){ vec3 q=lq(p); if(q.z<-.046&&abs(q.x)<.045&&abs(q.y-.12)<.09){ if(abs(abs(q.x)-.04)<.003||abs(abs(q.y-.12)-.085)<.003) return .3; } return .45+.08*grain(q,50.); }
+  if(id==3.){ vec3 q=lq(p); if(q.z<-.046&&abs(q.x)<.045&&abs(q.y-.12)<.09){ if(abs(q.y-.17)<.003) return .3; } return .45+.08*grain(q,50.); }
   if(id==4.){ vec3 t=cardQ(lq(p)); if(t.y>.003){ for(int i=0;i<4;i++){ float z=.025-float(i)*.015; if(abs(t.z-z)<.002&&abs(t.x+.005*float(i%2))<.045) return .4; } } return .93; }
   if(id==5.) return .25;
   if(id==6.){ vec3 q=p-TR; if(q.y<.03) return .35; return .8; }

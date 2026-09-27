@@ -1,7 +1,7 @@
 /* FCS Unit 18 "Child Development and Care" — pencil still life of a young child's toys: a
    stacking-ring tower on its post, a baby rattle, and two soft picture-cube blocks. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4432,0.2950,-0.8001)
+#define CAM_TGT vec3(-0.1982,0.0012,0.1108)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -19,7 +19,7 @@ float stacker(vec3 p){ vec3 q=p-ST;
   return min(min(base,post),cap); }
 float ringR(int i){ return .058-float(i)*.0095; }
 float ringY(int i){ float y=.027; for(int k=0;k<5;k++){ if(k>=i) break; y+=2.*(.012-float(k)*.0012)+.0005; } return y+(.012-float(i)*.0012); }
-float rings(vec3 p){ vec3 q=p-ST; float d=1e5; for(int i=0;i<5;i++){ float h=.012-float(i)*.0012; d=min(d,(length(vec2(length(q.xz)-ringR(i)*.62,(q.y-ringY(i))*1.))-h*1.)); } return d; }
+float rings(vec3 p){ vec3 q=p-ST; float d=1e5; for(int i=0;i<5;i++){ float h=.012-float(i)*.0012; d=min(d,length(vec2(length(q.xz)-ringR(i)*.72,q.y-ringY(i)))-h*1.05); } return d; }
 float rattle(vec3 p){ vec3 q=p-vec3(-.15,.02,-.05); q.xz=rot(.5)*q.xz; q.xy=rot(.05)*q.xy;
   float ball=length(q-vec3(.07,.005,0.))-.024; float hdl=sdCapsule(q,vec3(-.05,0.,0.),vec3(.05,.003,0.),.0075);
   float ringe=sdTorus((q-vec3(-.065,0.,0.)).xzy*vec3(1.,1.,1.),.018,.005);

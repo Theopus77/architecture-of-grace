@@ -1,8 +1,8 @@
 /* Spanish Unit 9 "Greetings and Introductions" — pencil still life: a small round-topped mailbox
    with its flag up and its door open, a letter in an envelope leaning against it, and a
    postcard lying in front. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4236,0.2572,-0.7366)
+#define CAM_TGT vec3(-0.1972,-0.0145,0.1056)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

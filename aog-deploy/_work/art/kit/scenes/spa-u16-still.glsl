@@ -1,8 +1,8 @@
 /* Spanish Unit 16 "The Imperfect and Telling a Story" — pencil still life: an old storybook lying
    open with a ribbon marker, an oil lantern with a glass chimney behind it, and a small wooden
    toy horse on wheels. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.5057,0.2743,-0.7237)
+#define CAM_TGT vec3(-0.2761,-0.0014,0.1310)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

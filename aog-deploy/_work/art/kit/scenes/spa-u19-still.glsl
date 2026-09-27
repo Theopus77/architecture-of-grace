@@ -1,7 +1,7 @@
 /* Spanish Unit 19 "The Spanish-Speaking World and Register" — pencil still life: a large desk
    globe on a turned wooden stand, a passport-sized travel book, and two postcards fanned out. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.5783,0.3991,-1.0477)
+#define CAM_TGT vec3(-0.2608,0.0181,0.1332)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

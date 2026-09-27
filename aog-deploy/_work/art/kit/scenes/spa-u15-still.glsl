@@ -1,8 +1,8 @@
 /* Spanish Unit 15 "The Preterite: What Happened" — pencil still life of things that are done:
    an hourglass whose sand has all run to the bottom, a candle burned low in its holder, and a
    spent match lying beside it. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4917,0.2876,-0.7629)
+#define CAM_TGT vec3(-0.2528,0.0010,0.1255)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -14,7 +14,7 @@
 #include "spafcs.glsl"
 #define HG vec3(.04,0.,.06)
 float bulbR(float y){ float t=abs(y-.11)/.085; return .006+.052*sin(clamp(t,0.,1.)*2.3)*smoothstep(0.,.3,t)+.0*t; }
-float glassH(vec3 q){ float r=length(q.xz); float R=bulbR(q.y); return max(abs(r-R)-.002,abs(q.y-.11)-.088); }
+float glassH(vec3 q){ float r=length(q.xz); float R=bulbR(q.y); return max(max(abs(r-R)-.002,abs(q.y-.11)-.088),-(q.z+q.x*.3)); }   /* the near half is left open so the sand shows */
 float frame(vec3 q){ float top=sdRBox(q-vec3(0.,.207,0.),vec3(.075,.009,.075),.006), bot=sdRBox(q-vec3(0.,.009,0.),vec3(.075,.009,.075),.006);
   float posts=1e5; for(int i=0;i<3;i++){ float a=float(i)*2.094+.4; vec3 c=q-vec3(.062*cos(a),.108,.062*sin(a));
     posts=min(posts,sdCylY(c,.0055+.0015*sin(c.y*90.),.1)); } return min(min(top,bot),posts); }

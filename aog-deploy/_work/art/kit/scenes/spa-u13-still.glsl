@@ -1,7 +1,7 @@
 /* Spanish Unit 13 "The Present Tense" — pencil still life of things people use while they do
    something now: a soccer ball, a coach's whistle on its cord, and a sports water bottle. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.5717,0.3138,-0.8633)
+#define CAM_TGT vec3(-0.3033,-0.0191,0.1352)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -27,7 +27,7 @@ float bottle(vec3 p){ vec3 q=p-WB; float r=.036-.004*smoothstep(.06,.1,q.y)*smoo
 float whistle(vec3 p){ vec3 q=p-vec3(-.11,.016,-.08); q.xz=rot(.5)*q.xz;
   float drum=sdCylZ(q,.016,.011)-.002; float mouth=sdRBox(q-vec3(.03,.006,0.),vec3(.022,.008,.009),.003);
   float ring=sdTorus((q-vec3(-.02,.0,0.)).yxz,.007,.0018);
-  float cord=1e5; for(int i=0;i<10;i++){ float a=float(i)*.55; vec3 c=q-vec3(-.07+.05*cos(a),-.013,.05*sin(a)-.01); cord=min(cord,length(c)-.0028); }
+  float cord=1e5; for(int i=0;i<26;i++){ float a=float(i)*.24; vec3 c=q-vec3(-.07+.05*cos(a),-.013,.05*sin(a)-.01); cord=min(cord,length(c)-.0032); }
   cord=min(cord,sdCapsule(q,vec3(-.027,0.,0.),vec3(-.05,-.013,-.02),.0022));
   return min(min(drum,mouth),min(ring,cord)); }
 vec2 map(vec3 p){
@@ -40,7 +40,7 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
-  if(id==3.){ float c=pent(bn(p)); if(c>.94) return .15; if(abs(c-.94)<.012||abs(c-.81)<.008) return .3; return .9; }
+  if(id==3.){ float c=pent(bn(p)); if(c>.915) return .15; if(abs(c-.915)<.01) return .3; return .9; }
   if(id==4.){ vec3 q=p-WB; if(q.y>.17) return .3; if(q.y>.06&&q.y<.11) return abs(q.y-.085)<.003?.3:.55; return .8; }
   if(id==5.) return .4;
   return .7; }

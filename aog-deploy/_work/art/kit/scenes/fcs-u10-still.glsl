@@ -1,7 +1,7 @@
 /* FCS Unit 10 "Knife Skills" — pencil still life: a chef's knife lying on a thick wooden cutting
    board beside a carrot cut into even round slices, with half an onion and its rings. */
-#define CAM_POS vec3(-0.30,0.40,-0.84)
-#define CAM_TGT vec3(-0.05,0.02,0.09)
+#define CAM_POS vec3(-0.3468,0.2423,-0.6410)
+#define CAM_TGT vec3(-0.1512,-0.0550,0.0866)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

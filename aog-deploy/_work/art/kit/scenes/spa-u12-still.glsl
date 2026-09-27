@@ -1,7 +1,7 @@
 /* Spanish Unit 12 "Ser, Estar and Describing People" — pencil still life: a brimmed sun hat
    with a band, a pair of folded eyeglasses in front of it, and a striped scarf coiled beside. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3438,0.1758,-0.5180)
+#define CAM_TGT vec3(-0.1782,-0.0296,0.0979)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

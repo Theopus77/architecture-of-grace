@@ -1,7 +1,7 @@
 /* FCS Unit 9 "Kitchen Safety and Sanitation" — pencil still life: a trigger spray bottle of
    cleaner, a clean cutting board standing on its edge, and a dial food thermometer lying in front. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4831,0.3416,-0.9051)
+#define CAM_TGT vec3(-0.2084,0.0119,0.1171)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.

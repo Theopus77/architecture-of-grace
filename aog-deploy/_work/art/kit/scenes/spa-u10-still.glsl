@@ -1,7 +1,7 @@
 /* Spanish Unit 10 "Numbers, Time and Dates" — pencil still life: a flip desk calendar on a
    wire loop showing a grid of days, an open pocket watch on its chain, and number blocks 4 and 5. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.3075,0.2253,-0.6363)
+#define CAM_TGT vec3(-0.1136,-0.0074,0.0854)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -43,8 +43,8 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
-  if(id==3.) return .4;
-  if(id==4.){ vec3 r=pq(cq(p)); vec2 u=vec2(r.x,-r.y-.083);
+  if(id==3.&&cq(p).z>.004) return .4;
+  if(id==3.||id==4.){ vec3 r=pq(cq(p)); vec2 u=vec2(r.x,-r.y-.083);
     if(u.y<-.05){ return abs(u.y+.065)<.004&&abs(u.x)<.04?.2:.5; }                   /* month band */
     vec2 g=vec2((u.x+.09)/.0257,(u.y+.045)/.025); if(g.x>0.&&g.x<7.&&g.y>0.&&g.y<5.){ vec2 f=fract(g);
       if(f.x<.07||f.y<.08) return .45; if(floor(g.x)==3.&&floor(g.y)==2.){ if(abs(length(f-.5)-.36)<.07) return .15; }  /* one day circled */
