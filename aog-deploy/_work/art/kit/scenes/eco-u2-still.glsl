@@ -1,8 +1,8 @@
 /* Economics Unit 2 "Money, Saving and Spending" — pencil still life: a piggy bank with a
    coin slot and a curly tail, a coin going in, stacks of coins and a small glass jar with
    coins saved inside. */
-#define CAM_POS vec3(-0.3343,0.2043,-0.6928)
-#define CAM_TGT vec3(-0.2312,0.0232,0.0837)
+#define CAM_POS vec3(-0.3335,0.2045,-0.6865)
+#define CAM_TGT vec3(-0.2312,0.0247,0.0840)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -13,7 +13,7 @@
 #include "studio.glsl"
 #include "ssceco.glsl"
 #define PC vec3(.06,0.,.12)
-vec3 pq(vec3 p){ vec3 q=p-PC; q.xz=rot(.15)*q.xz; return q; }   /* pig faces +x */
+vec3 pq(vec3 p){ vec3 q=p-PC; q.xz=rot(.45)*q.xz; return q; }   /* pig faces +x */
 vec2 pig(vec3 p){
   vec3 q=pq(p);
   float body=length((q-vec3(0.,.095,0.))*vec3(.8,1.,1.05))-.075; body*=.8;
@@ -51,7 +51,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==2.) return .9;
   if(id==3.){ vec3 q=pq(p);
     if(q.x>.114){ vec2 u=vec2(q.z,q.y-.095); if(length(u-vec2(.009,0.))<.005||length(u-vec2(-.009,0.))<.005) return .2; }   /* nostrils */
-    if(length(vec2(q.z,q.y-.125)-vec2(.03,0.))<.006&&q.x>.04||length(vec2(q.z,q.y-.125)-vec2(-.03,0.))<.006&&q.x>.04) return .12;   /* eyes */
+    if(length(vec2(q.z,q.y-.125)-vec2(.03,0.))<.008&&q.x>.04||length(vec2(q.z,q.y-.125)-vec2(-.03,0.))<.008&&q.x>.04) return .12;   /* eyes */
     return .8; }
   if(id==4.) return .55;
   if(id==5.){ if(abs(n.y)>.7) return .72; return fract(p.y/.0012)<.4?.42:.6; }
