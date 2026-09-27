@@ -68,9 +68,7 @@
     var text = p1.textContent.slice(s0, s1); if (s0 < 0 || !text.trim()) { hideTip(); return; }
     pending = { p: p1, s: s0, t: text };
     tip.textContent = ""; tip.innerHTML = '<button type="button" data-a="hl">' + T("Highlight", "Resaltar") + '</button><button type="button" data-a="note">' + T("Add a note", "Agregar nota") + "</button>";
-    var b = r.getBoundingClientRect(); tip.hidden = false;
-    tip.style.top = (window.pageYOffset + b.bottom + 8) + "px";
-    tip.style.left = Math.max(8, Math.min(window.innerWidth - tip.offsetWidth - 8, window.pageXOffset + b.left + b.width / 2 - tip.offsetWidth / 2)) + "px";
+    tip.hidden = false; /* fixed just above My notes (aog-markup.css) */
   });
   tip.addEventListener("mousedown", function (e) { e.preventDefault(); });
   tip.addEventListener("click", function (e) {

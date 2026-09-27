@@ -465,3 +465,43 @@
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", mount);
   else mount();
 })();
+
+/* AOG-PRINT-INK-V1 (2026-09-27) — Jimmy: "YUCK. that needs fixing. I have seen this on a few pages."
+   Navy story panels and banners printed as solid black blocks. Just before any print, every dark
+   panel turns white with dark ink (a thin rule keeps its edge); after printing the page goes back. */
+(function () {
+  var done = [];
+  function lum(c) {
+    var m = String(c).match(/[\d.]+/g); if (!m || m.length < 3) return 1;
+    if (m.length > 3 && +m[3] < 0.5) return 1;
+    function f(v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+    return 0.2126 * f(+m[0]) + 0.7152 * f(+m[1]) + 0.0722 * f(+m[2]);
+  }
+  function set(el, k, v) { done.push([el, k, el.style.getPropertyValue(k), el.style.getPropertyPriority(k)]); el.style.setProperty(k, v, "important"); }
+  function light() {
+    if (done.length) return;
+    /* a panel that is mostly a picture (a drawn cover, a photo) prints as the picture, untouched */
+    function pictured(el) { var r = el.getBoundingClientRect(), A = r.width * r.height; if (!A) return false;
+      var ps = el.querySelectorAll("svg,img,canvas,picture,video"); for (var j = 0; j < ps.length; j++) { var q = ps[j].getBoundingClientRect(); if (q.width * q.height >= A * 0.4) return true; } return false; }
+    var all = document.body ? document.body.getElementsByTagName("*") : [], keep = [], lit = [];
+    function inside(el, list) { for (var j = 0; j < list.length; j++) if (list[j].contains(el)) return true; return false; }
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i], cs = getComputedStyle(el);
+      if (cs.display === "none" || /^(IMG|SVG|VIDEO|CANVAS|PICTURE|IFRAME)$/i.test(el.tagName) || el.closest("svg")) continue;
+      if (inside(el, keep)) continue;
+      var dark = lum(cs.backgroundColor) < 0.2, img = cs.backgroundImage && cs.backgroundImage !== "none";
+      if (dark || (img && /gradient/.test(cs.backgroundImage) && !/url\(/.test(cs.backgroundImage) && lum(cs.color) > 0.6)) {
+        if (pictured(el)) { keep.push(el); continue; }
+        set(el, "background", "#fff"); set(el, "border-color", "#999");
+        if (dark) set(el, "box-shadow", "none");
+        lit.push(el);
+      }
+      /* light words turn dark only where their panel was just made white */
+      if (lum(cs.color) > 0.5 && inside(el, lit)) set(el, "color", "#15202E");
+    }
+  }
+  function back() { while (done.length) { var d = done.pop(); if (d[2]) d[0].style.setProperty(d[1], d[2], d[3]); else d[0].style.removeProperty(d[1]); } }
+  window.addEventListener("beforeprint", light);
+  window.addEventListener("afterprint", back);
+  if (window.matchMedia) { var mq = window.matchMedia("print"); var fn = function (e) { if (e.matches) light(); else back(); }; if (mq.addEventListener) mq.addEventListener("change", fn); else if (mq.addListener) mq.addListener(fn); }
+})();

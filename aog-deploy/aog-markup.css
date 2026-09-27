@@ -4,7 +4,7 @@ mark.aog-hl.has-note{border-bottom:2px dotted #8A5A00}
 mark.aog-hl.flash{outline:3px solid #C9A24B}
 :root[data-theme="dark"] mark.aog-hl{background:#6B5A1E;color:#FFF6E4}
 :root[data-theme="dark"] mark.aog-hl.has-note{border-bottom-color:#E9C46A}
-.aog-mktip{position:absolute;z-index:2147483500;display:flex;gap:6px;background:#1B2430;padding:6px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.aog-mktip{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(max(12px,env(safe-area-inset-bottom)) + 56px);z-index:2147483500;display:flex;gap:6px;background:#1B2430;padding:6px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .aog-mktip button{min-height:44px;border:0;border-radius:9px;background:#FFF6E4;color:#1B2430;font:700 15px system-ui,sans-serif;padding:0 14px;cursor:pointer}
 .aog-mkbtn{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:65;min-height:44px;border-radius:999px;border:1.5px solid #C9A24B;background:#FFF6E4;color:#1B2430;font:700 15px system-ui,sans-serif;padding:0 16px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.15)}
 .aog-mkbtn .n{display:inline-block;min-width:22px;border-radius:11px;background:#1B3A5F;color:#FFF6E4;font-size:12px;line-height:22px;margin-left:4px}
@@ -26,3 +26,8 @@ mark.aog-hl.flash{outline:3px solid #C9A24B}
 :root[data-theme="dark"] .aog-mkdrawer .go .ln{color:#B8BFC9}
 :root[data-theme="dark"] .aog-mkdrawer .nt,:root[data-theme="dark"] .aog-mkdrawer .empty{color:#D6CFC1}
 @media print{mark.aog-hl{background:#eee}}
+
+/* AOG-MARKUP-FIX-V1 (2026-09-27) — Jimmy: the Highlight / Add a note bar got stuck mid-page and printed.
+   display:flex was beating [hidden]; now it only shows while words are selected, just above My notes, and never prints. */
+.aog-mktip[hidden],.aog-mkdrawer[hidden]{display:none!important}
+@media print{.aog-mktip,.aog-mkbtn,.aog-mkdrawer{display:none!important}}
