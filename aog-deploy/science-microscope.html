@@ -237,7 +237,7 @@ footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
    Wide and short screens: the eyepiece is sized to the screen's height so it, the
    four knobs and the controls panel all fit without scrolling; the page's navy
    ground runs to the bottom (no white band). */
-html{background:#081828}
+html[data-theme="dark"]{background:#081828}
 @media (orientation:landscape) and (min-width:900px){
   .lab-grid{grid-template-columns:minmax(0,1fr) minmax(300px,420px)!important;align-items:start}
   .eye-wrap{width:min(100%, calc(100vh - 360px))!important;height:auto!important;aspect-ratio:1;margin:0 auto}
@@ -1469,7 +1469,7 @@ function paintLessonsTop(){
     row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ setLessonPick(b.getAttribute("data-lesson")); paint(); }); }
   document.getElementById("lKick").textContent=lt("lessonsNav")+" · "+STAIR.filter(lessonDone).length+"/"+STAIR.length;
   const sh=document.getElementById("lSheet");
-  sh.hidden=false; sh.href="#print"; sh.textContent=es?"Hoja de trabajo":"Worksheet";   /* the Print view prints the worksheet + key */
+  sh.hidden=false; sh.href=WS_PAGE+"#l"+(p+1); sh.textContent=(es?"Hoja de trabajo":"Worksheet")+" "+(p+1);   /* this lesson's own worksheet (Jimmy: it opened the parts sheet) */
   document.getElementById("lessonBody").innerHTML=lessonCard(S.page==="lab");
   bindLessonBox(box);
 }

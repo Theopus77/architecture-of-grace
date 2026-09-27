@@ -1595,7 +1595,7 @@ function paintLessonsTop(){
     row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ setLessonPick(b.getAttribute("data-lesson")); paint(); }); }
   document.getElementById("lKick").textContent=lt("lessonsNav")+" · "+STAIR.filter(lessonDone).length+"/"+STAIR.length;
   const sh=document.getElementById("lSheet");
-  sh.hidden=true;   /* the telescope has no worksheet yet; the slot stays */
+  { const es=S.lang==="es", p=lessonPicked(); sh.hidden=false; sh.href="telescope-lessons.html#l"+(p+1); sh.textContent=(es?"Hoja de trabajo":"Worksheet")+" "+(p+1); }
   document.getElementById("lessonBody").innerHTML=lessonCard(S.page==="lab");
   bindLessonBox(box);
 }
