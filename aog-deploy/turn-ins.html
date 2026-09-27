@@ -1966,5 +1966,24 @@ else document.documentElement.classList.add("aog-embed");</script>
   var last=0; function post(){ var h=document.documentElement.scrollHeight; if(Math.abs(h-last)>4){ last=h; try{ parent.postMessage({aogFrameH:h, src:location.search}, location.origin); }catch(e){} } }
   setInterval(post,600); window.addEventListener("load",post); })();</script>
 <script src="/aog-dropdowns.js?v=4920" defer></script>
+<script>/* AOG-INBOX-ONE-STUDENT (2026-09-27) — Jimmy: "Since this is personalized, it should be worded for an
+   individual, not a group." Opened for one student (?student= or ?blueprint=, e.g. from their Blueprint), the
+   page speaks about that student and drops the "By student" choice. */
+(function(){
+  var q=new URLSearchParams(location.search), who=(q.get("student")||q.get("blueprint")||"").replace(/\s+/g," ").trim();
+  if(!who) return;
+  function es(){ return (document.documentElement.lang||"").slice(0,2)==="es"; }
+  function paint(){
+    var h=document.querySelector("header h1"), tg=document.querySelector("header .tag"), vs=document.getElementById("viewStu");
+    if(h) h.textContent = es() ? ("Lo entregado por "+who) : (who+"\u2019s work");
+    if(tg) tg.textContent = es() ? ("Todo lo que "+who+" entreg\u00f3. Elige un tipo, una materia y c\u00f3mo verlo.")
+                                  : ("Everything "+who+" turned in. Pick a kind, a subject, and how to show it.");
+    if(vs) vs.hidden=true;
+    document.title = (es()?"Lo entregado por "+who:who+"\u2019s work")+" \u2014 Architecture of Grace";
+  }
+  function go(){ paint(); new MutationObserver(function(m){ if(m.some(function(r){return r.attributeName==="lang"}))paint(); }).observe(document.documentElement,{attributes:true}); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go();
+  setTimeout(paint,600);
+})();</script>
 </body>
 </html>
