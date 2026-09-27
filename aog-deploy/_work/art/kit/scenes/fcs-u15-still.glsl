@@ -1,7 +1,7 @@
 /* FCS Unit 15 "Cooking Methods and Heat" — pencil still life: a cast-iron frying pan with an egg
    frying in it, a tall stockpot with its lid, and a wooden spatula lying in front. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4130,0.2656,-0.7098)
+#define CAM_TGT vec3(-0.1928,0.0013,0.1095)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
