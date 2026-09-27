@@ -83,7 +83,7 @@ Invent your own section and lesson titles (short, 2–6 words, clear, not cute).
   translation. `"paraphrase": false` requires a public-domain translation AND an exact quotation you are
   certain of; anything else is `"paraphrase": true` in your own words.
 - Quote only U.S.-public-domain translations, and name them: Edwin Arnold's Bhagavad Gita, *The Song Celestial*
-  (1885); F. Max Müller's *The Upanishads* (Sacred Books of the East 1 and 15, 1879/1884); Ralph T.H. Griffith's
+  (1885); Kashinath Trimbak Telang's prose *Bhagavadgita* (Sacred Books of the East 8, 1882; cleared by the owner 2026-09-27, preferred for close reading in grades 9–12); F. Max Müller's *The Upanishads* (Sacred Books of the East 1 and 15, 1879/1884); Ralph T.H. Griffith's
   *Hymns of the Rigveda* (1896) and *The Ramayan of Valmiki* (1870–74); Kisari Mohan Ganguli's *The Mahabharata*
   (1883–96). Check every quotation word for word against the named edition; Arnold is verse and free, so cite
   the Gita chapter and verse it renders and say "Arnold's verse translation". Every other translation (Easwaran,
