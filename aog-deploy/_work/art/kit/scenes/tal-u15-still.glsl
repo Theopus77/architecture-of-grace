@@ -1,7 +1,7 @@
 /* Talmud Unit 15 "Talmudic Reasoning and Halakhah" — pencil still life: a wooden signpost with two arrow boards pointing different ways, set in a stone base, beside a small stack of books: halakhah means 'the way to walk'.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.6727,0.5115,-1.1256)
-#define CAM_TGT vec3(-0.2276,0.0665,0.0825)
+#define CAM_POS vec3(-0.7141,0.5115,-1.1103)
+#define CAM_TGT vec3(-0.2690,0.0665,0.0978)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -199,12 +199,12 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
 
 #define SP vec3(-.02,0.,.08)
 float arrow(vec3 q){ vec2 u=q.xy; float b=sdBox2(u-vec2(.0,0.),vec2(.075,.018)); vec2 t=u-vec2(.075,0.);
-  float tri=max(abs(t.y)-(.03-t.x*1.),-t.x); tri=max(tri,t.x-.03); b=min(b,tri); b=max(b,-max(abs(u.y)-.3,-(u.x+.06))*1.);
+  float tri=max(abs(t.y)-(.03-t.x*1.),-t.x); tri=max(tri,t.x-.03); b=min(b,tri);
   float tail=max(sdBox2(u-vec2(-.075,0.),vec2(.008,.018)),-(length(u-vec2(-.088,0.))-.012));
   return max(min(b,tail),abs(q.z)-.006)-.0015; }
 float post(vec3 p){ vec3 q=p-SP; return min(sdCylY(q-vec3(0,.19,0),.011,.17),sdCone(q-vec3(0,.365,0),.014,.004,.008)); }
 float base(vec3 p){ vec3 q=p-SP; return (sdEll(q-vec3(0,.0,0),vec3(.09,.045,.08))+.008*fbm3(q*30.))*.8; }
-vec3 a1(vec3 p){ vec3 q=p-SP-vec3(.07,.31,0); q.xz=rot(.35)*(q.xz+vec2(.07,0.))-vec2(-.0,0.); q.x-=.07; return q; }
+vec3 a1(vec3 p){ vec3 q=p-SP-vec3(0,.31,0); q.xz=rot(.35)*q.xz; q.x-=.075; return q; }
 vec3 a2(vec3 p){ vec3 q=p-SP-vec3(0,.25,0); q.xz=rot(2.6)*q.xz; q.x-=.075; return q; }
 vec3 k1(vec3 p){ return place(p,vec3(.27,0.,-.1),.25); }
 vec3 k2(vec3 p){ return place(p,vec3(.275,.036,-.1),.05); }
