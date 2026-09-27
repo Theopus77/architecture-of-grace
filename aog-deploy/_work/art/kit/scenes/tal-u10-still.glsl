@@ -1,7 +1,7 @@
 /* Talmud Unit 10 "Sugyot in Paraphrase I: Time and Damages" — pencil still life: an hourglass in a wooden frame, with sand run into its lower bulb, and a clay jar with a broken rim and its fallen shards.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.4333,0.3438,-0.7527)
-#define CAM_TGT vec3(-0.1396,0.0502,0.0442)
+#define CAM_POS vec3(-0.4601,0.3673,-0.7963)
+#define CAM_TGT vec3(-0.1486,0.0556,0.0494)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -101,8 +101,7 @@ float jugD(vec3 q,float H){ if(length(q-vec3(0,H*.5,0))>H*.8) return length(q-ve
   float y=q.y/H; float body=.16+.24*sin(3.1416*clamp(y/.8,0.,1.)); float r=mix(body,.12,smoothstep(.62,.82,y))+.03*smoothstep(.93,1.,y);
   r*=H; float d=(length(q.xz)-r)*.7; d=max(d,max(-q.y,q.y-H));
   d=max(d,-max(length(q.xz)-r+.004,H*.9-q.y));
-  float hd=sdTorus((q-vec3(-.13*H,.72*H,0)).xzy*vec3(1.,1.,1.),.13*H,.018*H);
-  hd=max(hd,-q.x-.1*H); hd=max(hd,q.x+.0*H);
+  float hd=sdTorus((q-vec3(-.25*H,.66*H,0)).xzy,.12*H,.02*H);
   return min(d,hd); }
 /* a potted plant pot; base at y=0, height h */
 float potD(vec3 q,float r,float h){ float y=q.y; float rr=r*(.78+.22*y/h); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-h));
@@ -210,7 +209,7 @@ vec3 jQ(vec3 p){ return place(p,vec3(.18,0.,.09),.3); }
 float jar(vec3 q){ if(length(q-vec3(0,.12,0))>.22) return length(q-vec3(0,.12,0))-.18;
   float y=q.y/.26; float r=(.2+.26*sin(3.1416*clamp(y/.85,0.,1.)))*.26; r=mix(r,.036,smoothstep(.72,.92,y));
   float d=(length(q.xz)-r)*.7; d=max(d,-q.y); d=max(d,-max(length(q.xz)-r+.005,.03-q.y));
-  float a=atan(q.z,q.x); float cut=.19+.035*sin(a*3.)+.02*sin(a*7.+1.)+.012*sin(a*13.);
+  float a=atan(q.z,q.x); float cut=.25-.075*smoothstep(.3,1.,cos(a-1.))*(.75+.25*sin(a*11.))-.01*sin(a*23.);
   return max(d,q.y-cut); }
 float shards(vec3 p){ float d=1e5; for(int i=0;i<3;i++){ vec3 c=place(p,vec3(.33+float(i)*.04,0.,-.1+float(i)*.07-float(i*i)*.02),float(i)*1.9);
   vec3 s=c-vec3(0,-.07,0); float sh=abs(length(s)-.08)-.0035; float ang=float(i)*.4;
