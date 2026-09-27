@@ -1,7 +1,7 @@
 /* Talmud Unit 3 "Learning Together" — pencil still life: two books lying open on one table and turned toward each other, as two study partners would sit, with a clay oil lamp between them.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.6182,0.2942,-0.8835)
-#define CAM_TGT vec3(-0.2722,-0.0518,0.0554)
+#define CAM_POS vec3(-0.7572,0.3419,-1.0615)
+#define CAM_TGT vec3(-0.3398,-0.0756,0.0716)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -197,15 +197,15 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
   return (d+.018*fbm3(q*45.)-.006)*.7; }
 
 
-vec3 aQ0(vec3 p){ return place(p,vec3(-.17,0.,-.02),0.45); }
+vec3 aQ0(vec3 p){ return place(p,vec3(-.26,0.,-.02),0.45); }
 vec3 aQ(vec3 p){ vec3 q=aQ0(p); q.y-=0.028; q.yz=rot(-0.28)*q.yz; return q; }
 float aProp(vec3 p){ vec3 q=aQ0(p); return sdRBox(q-vec3(0,0.028*.6,.07),vec3(.18,0.028*.6,.05),.006); }
 
-vec3 bQ0(vec3 p){ return place(p,vec3(.21,0.,.0),-0.45); }
+vec3 bQ0(vec3 p){ return place(p,vec3(.3,0.,.0),-0.45); }
 vec3 bQ(vec3 p){ vec3 q=bQ0(p); q.y-=0.028; q.yz=rot(-0.28)*q.yz; return q; }
 float bProp(vec3 p){ vec3 q=bQ0(p); return sdRBox(q-vec3(0,0.028*.6,.07),vec3(.18,0.028*.6,.05),.006); }
 
-#define LP vec3(.02,0.,.17)
+#define LP vec3(.02,0.,-.14)
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
   vec2 a=bookO(aQ(p),1.2); r=U(r,a.x,3.); r=U(r,min(a.y,aProp(p)),4.);
   vec2 b=bookO(bQ(p),1.2); r=U(r,b.x,5.); r=U(r,min(b.y,bProp(p)),6.);
