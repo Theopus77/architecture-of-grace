@@ -53,8 +53,8 @@ float leafTone(vec3 q,float L,float W){ float a=.9;
 /* ---- a closed book lying flat (hardback, page block visible on three sides) ---- */
 float bookD(vec3 q,vec3 b){
   float cov=sdRBox(q-vec3(0.,b.y,0.),vec3(b.x,b.y,b.z),.003);
-  float pg=sdBox(q-vec3(.004,b.y,0.),vec3(b.x-.002,b.y-.0045,b.z-.004));
-  float cut=sdBox(q-vec3(.006,b.y,0.),vec3(b.x,b.y-.0045,b.z-.004));
+  float pg=sdBox(q-vec3(.002,b.y,0.),vec3(b.x-.004,b.y-.0045,b.z-.003));
+  float cut=sdBox(q-vec3(.006,b.y,0.),vec3(b.x,b.y-.0045,b.z+.01));
   return min(max(cov,-cut),pg); }
 float bookTone(vec3 q,vec3 b,float c){
   if(abs(q.y-b.y)<b.y-.0048&&(q.x>-b.x+.006)) return fract(q.y*1500.)<.4?.72:.9;   /* page edges */
