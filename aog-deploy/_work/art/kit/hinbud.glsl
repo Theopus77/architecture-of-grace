@@ -7,7 +7,7 @@ float sdEll(vec3 p,vec3 r){ float k0=length(p/r),k1=length(p/(r*r)); return k0*(
 float sdB2(vec2 p,vec2 b){ vec2 d=abs(p)-b; return length(max(d,0.))+min(max(d.x,d.y),0.); }
 vec3 ry(vec3 q,float a){ q.xz=rot(a)*q.xz; return q; }
 /* polar repeat around y: returns angle-folded point for n sectors */
-vec3 prep(vec3 q,float n){ float a=atan(q.z,q.x); float s=6.2832/n; float k=floor(a/s+.5); q.xz=rot(-k*s)*q.xz; return q; }
+vec3 prep(vec3 q,float n){ float a=atan(q.z,q.x); float s=6.2832/n; float k=floor(a/s+.5); q.xz=rot(k*s)*q.xz; return q; }
 
 /* ---- a clay oil lamp (diya): a pinched almond bowl with a spout; flame sits at SPOUT ---- */
 float diya(vec3 q,float s){ q/=s;
@@ -69,11 +69,15 @@ float conch(vec3 q,float s){ q/=s;
   float spire=length(a.yz)-(.03*(1.-t))-.002; spire=max(spire,max(a.x+.02,-a.x-.1));
   float canal=sdCapsule(a,vec3(.05,-.003,0.),vec3(.12,-.012,.002),.009);
   float d=smin(smin(body,spire,.012),canal,.012);
+  /* a ring of blunt knobs on the shoulder, and stepped whorls up the spire */
+  vec3 k=a-vec3(-.035,0.,0.); float ka=atan(k.z,k.y); float ks=6.2832/9.; float kk=floor(ka/ks+.5);
+  vec2 kr=rot(kk*ks)*k.yz; d=smin(d,length(vec3(k.x,kr.x-.036,kr.y))-.008,.006);
+  for(int i=0;i<3;i++){ float x=-.06-float(i)*.016; d=smin(d,sdTorus((a-vec3(x,0.,0.)).yxz,.026-float(i)*.007,.0035),.004); }
   /* spiral ridges round the spire and the body */
   float ang=atan(a.z,a.y); float sp=fract((a.x*38.)+ang/6.2832);
   d+=.0022*smoothstep(.0,.2,abs(sp-.5)-.3)*(1.-smoothstep(.02,.06,a.x));
   /* the long opening on the near side */
-  float mouth=sdEll(a-vec3(.035,-.004,-.033),vec3(.06,.014,.012));
+  float mouth=sdEll(a-vec3(.03,-.002,-.036),vec3(.065,.016,.014));
   d=max(d,-mouth);
   return d*s*.8; }
 
@@ -129,7 +133,7 @@ float wheelD(vec3 q,float R,float n,float w){
   float rim=sdTorus(c.xzy,R-.012,.0) ; rim=length(vec2(length(c.xy)-R+.009,c.z))-.0;
   rim=sdB2(vec2(length(c.xy)-R+.01,c.z),vec2(.01,w))-.002;
   float hub=sdCylZ(c,.028,w+.012)-.002;
-  float a=atan(c.y,c.x); float sct=6.2832/n; float k=floor(a/sct+.5); vec2 r2=rot(-k*sct)*c.xy;
+  float a=atan(c.y,c.x); float sct=6.2832/n; float k=floor(a/sct+.5); vec2 r2=rot(k*sct)*c.xy;
   float spoke=length(vec2(r2.y,c.z))-.0055-.002*smoothstep(R*.9,.03,r2.x); spoke=max(spoke,max(-r2.x,r2.x-R+.01));
   float axle=sdCylZ(c,.009,w+.03);
   return min(min(rim,hub),min(spoke,axle)); }
@@ -176,7 +180,7 @@ float dharmaWheel(vec3 q,float R){
   float rim=sdB2(vec2(length(c.xy)-R+.008,c.z),vec2(.008,.008))-.002;
   float inner=sdB2(vec2(length(c.xy)-R*.34,c.z),vec2(.006,.009))-.001;
   float hub=sdCylZ(c,.012,.012)-.002;
-  float a=atan(c.y,c.x); float sct=6.2832/8.; float k=floor(a/sct+.5); vec2 r2=rot(-k*sct)*c.xy;
+  float a=atan(c.y,c.x); float sct=6.2832/8.; float k=floor(a/sct+.5); vec2 r2=rot(k*sct)*c.xy;
   float spoke=max(length(vec2(r2.y*(1.+1.2*smoothstep(R*.5,R,r2.x)),c.z))-.005,max(-r2.x,r2.x-R+.012));
   float knob=length(vec2(length(c.xy)-R-.008,c.z))-.0; knob=1e5;
   vec2 kk=vec2(r2.x-R-.008,r2.y); knob=length(vec3(kk,c.z))-.007;
