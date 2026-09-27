@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Make It: FACS Projects — Architecture of Grace</title>
+<meta name="description" content="Seventeen hands-on cooking and sewing projects a class really makes, from kindergarten to grade 12, in English and Spanish. Each one lists what you need, short steps, how to stay safe, and a print button.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/aog-calm.css">
+<style>
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F;
+  --navy:#1B3A5F; --gold-deep:#7A5C1F; --focus:#B8893A;
+  --rule:rgba(29,39,51,.16);
+  --caution:#9A3412; --caution-wash:#FBEDE6;
+  --good:#2E6B4F; --good-wash:#E7F1EC;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC;
+    --navy:#9CC2E8; --gold-deep:#D6A852; --focus:#D6A852;
+    --rule:rgba(233,238,244,.18);
+    --caution:#F0A07C; --caution-wash:#2A1E18;
+    --good:#79C79E; --good-wash:#18261F;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC;
+  --navy:#9CC2E8; --gold-deep:#D6A852; --focus:#D6A852;
+  --rule:rgba(233,238,244,.18);
+  --caution:#F0A07C; --caution-wash:#2A1E18;
+  --good:#79C79E; --good-wash:#18261F;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground); color:var(--ink);
+  font:17px/1.55 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; -webkit-text-size-adjust:100%}
+.wrap{max-width:900px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3{line-height:1.15; margin:0 0 .3em}
+h1{font-size:1.9rem} h2{font-size:1.28rem} h3{font-size:1.05rem}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); font-weight:700}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); color:var(--ink); cursor:pointer; font-weight:700; font-size:.92rem}
+.deck{color:var(--ink-soft); max-width:64ch}
+.hubline a{color:inherit; font-weight:600}
+.bands{display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 6px}
+.bands button{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:10px; background:var(--field); color:var(--ink); font-weight:700; cursor:pointer}
+.bands button[aria-pressed="true"]{border:2px solid var(--navy)}
+.bandnote{color:var(--ink-soft); margin:4px 0 14px}
+.proj{background:var(--field); color:var(--ink); border:1px solid var(--rule); border-radius:14px; margin:0 0 14px; overflow:hidden}
+.proj > summary{list-style:none; cursor:pointer; padding:16px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between; min-height:56px}
+.proj > summary::-webkit-details-marker{display:none}
+.proj > summary .num{font-weight:800; color:var(--gold-deep); margin-right:6px}
+.proj > summary h2{font-size:1.12rem; margin:0; display:inline}
+.proj > summary .meta{display:block; font-size:.9rem; color:var(--ink-soft); margin-top:4px}
+.proj > summary .chev{font-weight:800; color:var(--ink-soft)}
+.proj[open] > summary .chev{transform:rotate(90deg)}
+.proj .done-tag{font-size:.8rem; font-weight:700; color:var(--good); background:var(--good-wash); padding:2px 8px; border-radius:999px; margin-left:6px; white-space:nowrap}
+.pbody{padding:0 18px 18px}
+.proj-pic{min-height:0}
+.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin:6px 0 12px}
+.facts div{background:var(--field-2); color:var(--ink); border-radius:10px; padding:8px 12px; font-size:.95rem}
+.facts b{display:block; font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft)}
+.pbody h3{margin:14px 0 6px}
+.pbody ul,.pbody ol{margin:0; padding-left:1.4em}
+.pbody li{margin:3px 0}
+.allergy{font-size:.95rem; margin-top:8px}
+.safe{background:var(--caution-wash); color:var(--ink); border-left:5px solid var(--caution); border-radius:10px; padding:10px 14px; margin-top:14px}
+.safe h3{color:var(--caution); margin-top:0}
+.madeit{background:var(--good-wash); color:var(--ink); border-left:5px solid var(--good); border-radius:10px; padding:10px 14px; margin-top:12px}
+.madeit h3{color:var(--good); margin-top:0}
+.actions{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:14px}
+.check{display:flex; align-items:center; gap:10px; min-height:48px; font-weight:700; cursor:pointer}
+.check input{width:26px; height:26px; font-size:16px; accent-color:var(--good)}
+.btn{min-height:48px; padding:8px 18px; border:1px solid var(--rule); border-radius:10px; background:var(--field-2); color:var(--ink); font-weight:700; cursor:pointer}
+.tally{color:var(--ink-soft); font-weight:600}
+.foot{margin-top:40px; color:var(--ink-soft); font-size:.9rem}
+@media print{
+  .no-print,.aogdd,.bands,.actions,.aogtop{display:none!important}
+  body{background:#fff; color:#000}
+  body.print-one .wrap > *:not(main){display:none!important}
+  body.print-one main > *:not(#list){display:none!important}
+  body.print-one .proj{display:none!important}
+  body.print-one .proj.printme{display:block!important; border:0}
+  .proj{break-inside:auto; background:#fff; color:#000}
+  .proj > summary .chev{display:none}
+  .safe,.madeit,.facts div{background:#fff!important; color:#000!important}
+  .safe h3,.madeit h3{color:#000!important}
+  li{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+
+<div class="wrap">
+
+<header class="mast">
+  <div>
+    <div class="k" data-en="The Interior — Family and Consumer Sciences" data-es="El Interior — Ciencias de la Familia y del Consumidor">The Interior — Family and Consumer Sciences</div>
+    <h1 data-en="Make It: FACS Projects" data-es="¡A hacerlo! Proyectos de FACS">Make It: FACS Projects</h1>
+    <p class="deck" data-en="Seventeen real things to cook and sew with your class. Pick a grade band, open a project, and make it together." data-es="Diecisiete cosas reales para cocinar y coser con tu clase. Elige un grupo de grados, abre un proyecto y háganlo juntos.">Seventeen real things to cook and sew with your class. Pick a grade band, open a project, and make it together.</p>
+    <p class="hubline no-print"><a href="facs-hub.html" data-en="← Family and Consumer Sciences" data-es="← Ciencias de la Familia y del Consumidor">← Family and Consumer Sciences</a></p>
+  </div>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
+  </div>
+</header>
+
+<main id="main">
+  <div class="bands no-print" id="bands" data-aog-dropdown="Grade band|Grados">
+    <button type="button" data-band="k2">K–2</button>
+    <button type="button" data-band="35">3–5</button>
+    <button type="button" data-band="68">6–8</button>
+    <button type="button" data-band="910">9–10</button>
+    <button type="button" data-band="1112">11–12</button>
+  </div>
+  <p class="bandnote" id="bandNote"></p>
+  <p class="tally no-print" id="tally"></p>
+  <div id="list"></div>
+</main>
+
+<footer class="foot">
+<p data-en="Architecture of Grace · Family and Consumer Sciences. Your “We made it” checks stay on this device." data-es="Architecture of Grace · Ciencias de la Familia y del Consumidor. Tus marcas de “¡Lo hicimos!” se quedan en este aparato.">Architecture of Grace · Family and Consumer Sciences. Your “We made it” checks stay on this device.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* Every text is [English, Spanish]. */
+var ALLERGY = ["Allergy check: ask every family about food allergies first. Read every label. Swap any food a learner cannot eat, and wash hands and tables before you start.",
+               "Alergias: primero pregunta a cada familia por alergias a alimentos. Lee cada etiqueta. Cambia cualquier alimento que un alumno no pueda comer, y lávense las manos y las mesas antes de empezar."];
+var WASH = ["Wash hands with soap for 20 seconds before you touch food.","Lávate las manos con jabón por 20 segundos antes de tocar la comida."];
+var BANDS = {
+  k2:["No stove, no knife. Little hands measure, sort and stitch.","Sin estufa ni cuchillo. Las manos pequeñas miden, ordenan y cosen."],
+  "35":["No stove. Learners measure, layer, mix and sew simple stitches.","Sin estufa. Los alumnos miden, ponen capas, mezclan y cosen puntadas sencillas."],
+  "68":["First time at the oven and stove, with an adult right there.","Primera vez con el horno y la estufa, con un adulto al lado."],
+  "910":["Knife skills, the sewing machine and cooking from scratch.","Uso del cuchillo, la máquina de coser y cocinar desde cero."],
+  "1112":["Plan, budget, cook and mend like an adult living on your own.","Planea, haz un presupuesto, cocina y remienda como un adulto que vive solo."]
+};
+var P = [
+ {n:1,band:"k2",food:1,t:["Trail mix by measuring cups","Mezcla de frutos secos con tazas medidoras"],time:["20 minutes","20 minutos"],makes:["8 small cups","8 vasitos"],
+  tools:[["Measuring cups: 1 cup, 1/2 cup, 1/4 cup","Tazas medidoras: 1 taza, 1/2 taza, 1/4 taza"],["A big bowl and a big spoon","Un tazón grande y una cuchara grande"],["Small paper cups","Vasitos de papel"]],
+  mats:[["1 cup round oat cereal","1 taza de cereal de avena en aritos"],["1 cup small pretzels","1 taza de pretzels pequeños"],["1/2 cup raisins","1/2 taza de pasas"],["1/4 cup sunflower seeds or more cereal","1/4 taza de semillas de girasol o más cereal"]],
+  steps:[["Wash your hands.","Lávate las manos."],["Fill the 1 cup with cereal. Level the top with a flat hand. Pour it in the bowl.","Llena la taza con cereal. Empareja la parte de arriba con la mano plana. Échalo al tazón."],["Do the same with the pretzels.","Haz lo mismo con los pretzels."],["Fill the 1/2 cup with raisins. Pour them in.","Llena la 1/2 taza con pasas. Échalas."],["Fill the 1/4 cup with seeds. Pour them in.","Llena la 1/4 taza con semillas. Échalas."],["Stir slowly with the big spoon.","Revuelve despacio con la cuchara grande."],["Scoop some into each cup. Share.","Pon un poco en cada vasito. Compartan."]],
+  safe:[WASH,["Use the spoon to serve, not your hands.","Usa la cuchara para servir, no las manos."],["Small nuts and seeds can be a choking risk for young children. Leave them out if unsure.","Las nueces y semillas pequeñas pueden atorar a los niños pequeños. Si dudas, no las uses."]],
+  done:["Every cup was level, everything is in the bowl, and everyone has a cup of mix.","Cada taza quedó pareja, todo está en el tazón y todos tienen un vasito de mezcla."]},
+ {n:2,band:"k2",t:["Sew a button onto a felt card","Cose un botón en una tarjeta de fieltro"],time:["30 minutes","30 minutos"],makes:["1 card each","1 tarjeta por alumno"],
+  tools:[["Large plastic needle with a big eye","Aguja grande de plástico con ojo grande"],["Scissors for the adult","Tijeras para el adulto"]],
+  mats:[["A square of stiff felt or plastic canvas with two holes marked","Un cuadro de fieltro duro o lona plástica con dos agujeros marcados"],["A large button with 2 big holes","Un botón grande con 2 agujeros grandes"],["Thick yarn, about an arm long, knotted at one end","Estambre grueso, del largo de un brazo, con un nudo en una punta"]],
+  steps:[["An adult threads the needle and ties a knot.","Un adulto enhebra la aguja y hace un nudo."],["Push the needle up from the back through one mark.","Empuja la aguja desde atrás por una marca."],["Slide the button down the yarn onto the felt.","Baja el botón por el estambre hasta el fieltro."],["Go down through the other button hole and the felt.","Baja por el otro agujero del botón y el fieltro."],["Go up and down 4 more times.","Sube y baja 4 veces más."],["An adult ties the end on the back and cuts the yarn.","Un adulto amarra la punta atrás y corta el estambre."]],
+  safe:[["Hold the needle by its middle. Point it away from faces.","Toma la aguja por el medio. Apúntala lejos de las caras."],["Put the needle back in its cup when you stop.","Regresa la aguja a su vaso cuando pares."],["Buttons stay on the table, never in mouths.","Los botones se quedan en la mesa, nunca en la boca."]],
+  done:["The button stays on when you tug it gently.","El botón no se sale cuando lo jalas con cuidado."]},
+ {n:3,band:"k2",food:1,t:["Fruit kabobs","Brochetas de fruta"],time:["25 minutes","25 minutos"],makes:["1 kabob each","1 brocheta por alumno"],
+  tools:[["Paper straws or blunt wooden coffee stirrers (no sharp skewers)","Popotes de papel o palitos de madera sin punta (nada de pinchos filosos)"],["Plates and napkins","Platos y servilletas"]],
+  mats:[["Fruit an adult cut ahead: melon cubes, grapes cut in half lengthwise, banana rounds, strawberries","Fruta que un adulto cortó antes: cubos de melón, uvas cortadas a lo largo, rodajas de plátano, fresas"]],
+  steps:[["Wash your hands.","Lávate las manos."],["Take a straw and a plate.","Toma un popote y un plato."],["Slide on one piece of fruit. Push gently.","Mete un trozo de fruta. Empuja con cuidado."],["Add more. Try a pattern: red, green, yellow.","Pon más. Prueba un patrón: rojo, verde, amarillo."],["Stop 2 fingers from the end so you can hold it.","Para a dos dedos del final para poder agarrarlo."],["Eat it sitting down.","Cómelo sentado."]],
+  safe:[WASH,["Adults cut the fruit before class. Grapes are cut in half lengthwise for young children.","Los adultos cortan la fruta antes de clase. Las uvas se cortan a lo largo para los niños pequeños."],["Sit down to eat. No running with a kabob.","Siéntate para comer. No corras con la brocheta."]],
+  done:["Your straw is full, it has a pattern, and it is safe to hold.","Tu popote está lleno, tiene un patrón y es seguro agarrarlo."]},
+ {n:4,band:"35",food:1,t:["Yogurt parfait with measured layers","Parfait de yogur en capas medidas"],time:["25 minutes","25 minutos"],makes:["1 cup each","1 vaso por alumno"],
+  tools:[["Clear cups","Vasos transparentes"],["Measuring cups (1/2, 1/4) and spoons","Tazas medidoras (1/2, 1/4) y cucharas"]],
+  mats:[["1/2 cup plain or vanilla yogurt per person","1/2 taza de yogur natural o de vainilla por persona"],["1/4 cup granola or oat cereal","1/4 taza de granola o cereal de avena"],["1/4 cup soft berries or pre-cut fruit","1/4 taza de moras o fruta ya cortada"]],
+  steps:[["Wash your hands.","Lávate las manos."],["Put 1/4 cup yogurt in the cup.","Pon 1/4 taza de yogur en el vaso."],["Add 2 spoonfuls of fruit.","Añade 2 cucharadas de fruta."],["Add 2 spoonfuls of granola.","Añade 2 cucharadas de granola."],["Repeat: yogurt, fruit, granola.","Repite: yogur, fruta, granola."],["Look through the side. Count your layers.","Mira por el lado. Cuenta tus capas."]],
+  safe:[WASH,["Keep yogurt cold until you use it. Put it back in the fridge within 2 hours.","Mantén el yogur frío hasta usarlo. Regrésalo al refrigerador antes de 2 horas."],["Granola often has nuts or wheat. Check the label.","La granola a menudo tiene nueces o trigo. Revisa la etiqueta."]],
+  done:["You can see 6 clear layers through the cup.","Puedes ver 6 capas claras por el vaso."]},
+ {n:5,band:"35",t:["Felt bookmark with a running stitch","Separador de fieltro con puntada corrida"],time:["40 minutes","40 minutos"],makes:["1 bookmark each","1 separador por alumno"],
+  tools:[["Blunt-tip embroidery (tapestry) needle","Aguja de tapicería de punta roma"],["Ruler and chalk","Regla y tiza"],["Scissors","Tijeras"]],
+  mats:[["A strip of felt, 2 by 7 inches","Una tira de fieltro de 2 por 7 pulgadas"],["Embroidery floss, about 24 inches","Hilo de bordar, unas 24 pulgadas"]],
+  steps:[["Draw a chalk line 1/2 inch in from each edge.","Dibuja con tiza una línea a 1/2 pulgada de cada borde."],["Thread the needle. Tie a knot at the long end.","Enhebra la aguja. Haz un nudo en la punta larga."],["Come up from the back on the line.","Sube desde atrás sobre la línea."],["Go down 1/4 inch along the line. Come up 1/4 inch later.","Baja 1/4 de pulgada más allá. Sube 1/4 de pulgada después."],["Keep going: up, down, even steps, all the way around.","Sigue: arriba, abajo, pasos iguales, por toda la orilla."],["On the back, loop the thread twice and knot it. Trim.","Atrás, da dos vueltas al hilo y haz un nudo. Corta."]],
+  safe:[["Hold needles by the middle. Keep them in the pincushion when you stop.","Toma las agujas por el medio. Déjalas en el alfiletero cuando pares."],["Pass scissors handle first, blades closed.","Pasa las tijeras por el mango, con las hojas cerradas."],["Count the needles at the end of class.","Cuenten las agujas al final de la clase."]],
+  done:["The stitches are even, they follow the line, and the knot is hidden on the back.","Las puntadas son iguales, siguen la línea y el nudo está escondido atrás."]},
+ {n:6,band:"35",food:1,t:["No-bake energy bites","Bolitas de energía sin horno"],time:["30 minutes plus 20 to chill","30 minutos más 20 para enfriar"],makes:["about 16 bites","unas 16 bolitas"],
+  tools:[["Bowl, spoon, measuring cups","Tazón, cuchara, tazas medidoras"],["Tray and wax paper","Charola y papel encerado"]],
+  mats:[["1 cup quick oats","1 taza de avena rápida"],["1/2 cup sunflower seed butter (or nut butter if no one is allergic)","1/2 taza de mantequilla de girasol (o de maní si nadie es alérgico)"],["1/3 cup honey (only for ages 1 and up)","1/3 taza de miel (solo para mayores de 1 año)"],["1/4 cup mini chocolate chips or raisins","1/4 taza de chispas de chocolate o pasas"]],
+  steps:[["Wash your hands.","Lávate las manos."],["Measure everything into the bowl.","Mide todo y ponlo en el tazón."],["Stir until it all sticks together.","Revuelve hasta que todo se pegue."],["Take one spoonful. Roll it into a ball in your palms.","Toma una cucharada. Hazla bolita con las palmas."],["Set the balls on the tray.","Pon las bolitas en la charola."],["Chill 20 minutes. Then enjoy.","Enfría 20 minutos. Luego disfruta."]],
+  safe:[WASH,["Many schools are nut-free. Sunflower seed butter is a safe swap; check with families first.","Muchas escuelas no permiten nueces. La mantequilla de girasol es un buen cambio; pregunta a las familias primero."],["Store in the fridge. Eat within 5 days.","Guárdalas en el refrigerador. Cómelas antes de 5 días."]],
+  done:["Each bite holds its shape and is about the same size.","Cada bolita mantiene su forma y todas son más o menos del mismo tamaño."]},
+ {n:7,band:"35",t:["Sew a small felt pouch","Cose una bolsita de fieltro"],time:["2 sessions of 45 minutes","2 sesiones de 45 minutos"],makes:["1 pouch each","1 bolsita por alumno"],
+  tools:[["Blunt-tip embroidery needle","Aguja de bordar de punta roma"],["Pins, scissors, chalk","Alfileres, tijeras, tiza"]],
+  mats:[["Felt, 4 by 10 inches","Fieltro de 4 por 10 pulgadas"],["Embroidery floss","Hilo de bordar"],["1 button and a small elastic loop","1 botón y una tirita de elástico"]],
+  steps:[["Fold the felt up 4 inches. The top 2 inches make the flap.","Dobla el fieltro 4 pulgadas hacia arriba. Las 2 de arriba son la solapa."],["Pin both sides.","Pon alfileres en los dos lados."],["Running stitch up each side, 1/4 inch from the edge.","Cose con puntada corrida cada lado, a 1/4 de pulgada del borde."],["Knot and trim. Take out the pins.","Haz nudo y corta. Quita los alfileres."],["Sew the elastic loop under the flap edge.","Cose la tirita de elástico bajo la orilla de la solapa."],["Close the flap. Mark where the loop lands. Sew the button there.","Cierra la solapa. Marca dónde cae la tirita. Cose ahí el botón."]],
+  safe:[["Pins go back in the pincushion, not in your mouth.","Los alfileres regresan al alfiletero, nunca a la boca."],["Hold needles by the middle; point away from people.","Toma las agujas por el medio; apunta lejos de la gente."],["Count needles and pins at the end.","Cuenten agujas y alfileres al final."]],
+  done:["Both sides are closed, the flap folds over, and the button holds it shut.","Los dos lados están cerrados, la solapa dobla y el botón la mantiene cerrada."]},
+ {n:8,band:"35",food:1,t:["Garden salad with a simple vinaigrette","Ensalada de huerta con vinagreta sencilla"],time:["30 minutes","30 minutos"],makes:["serves 6","para 6"],
+  tools:[["Big bowl and salad spinner or clean towel","Tazón grande y centrifugadora o trapo limpio"],["Clean jar with a tight lid","Frasco limpio con tapa firme"],["Measuring spoons","Cucharas medidoras"]],
+  mats:[["1 head of lettuce","1 lechuga"],["Cherry tomatoes and cucumber an adult has sliced","Tomates cherry y pepino que un adulto rebanó"],["3 tablespoons oil","3 cucharadas de aceite"],["1 tablespoon vinegar or lemon juice","1 cucharada de vinagre o jugo de limón"],["1 pinch of salt","1 pizca de sal"]],
+  steps:[["Wash your hands.","Lávate las manos."],["Rinse the lettuce under cold running water.","Enjuaga la lechuga con agua fría del grifo."],["Dry it in the spinner or pat it with a towel.","Sécala en la centrifugadora o con un trapo."],["Tear the leaves into bite-size pieces. No knife needed.","Arranca las hojas en trozos pequeños. No se necesita cuchillo."],["Add the tomatoes and cucumber.","Añade los tomates y el pepino."],["Put oil, vinegar and salt in the jar. Close it. Shake 10 times.","Pon aceite, vinagre y sal en el frasco. Ciérralo. Agita 10 veces."],["Pour on just before you eat. Toss.","Échala justo antes de comer. Revuelve."]],
+  safe:[WASH,["Rinse all produce, even if you will tear it.","Enjuaga todos los vegetales, aunque los vayas a arrancar."],["Make sure the jar lid is tight before you shake.","Revisa que la tapa esté bien cerrada antes de agitar."]],
+  done:["The leaves are dry and bite-size, and the dressing is mixed and cloudy.","Las hojas están secas y en trozos pequeños, y la vinagreta está mezclada y turbia."]},
+ {n:9,band:"68",food:1,t:["English-muffin pizzas","Pizzas en pan inglés"],time:["40 minutes","40 minutos"],makes:["serves 8","para 8"],
+  tools:[["Oven set to 400°F","Horno a 400°F"],["Baking sheet","Charola para hornear"],["Oven mitts","Guantes de cocina"],["Spoons","Cucharas"]],
+  mats:[["4 English muffins, split","4 panes ingleses, abiertos"],["1 cup pizza sauce","1 taza de salsa para pizza"],["1 cup shredded mozzarella","1 taza de mozzarella rallada"],["Toppings: sliced peppers, olives, cooked ham or turkey","Ingredientes: pimientos rebanados, aceitunas, jamón o pavo cocido"]],
+  steps:[["Wash your hands. An adult heats the oven to 400°F.","Lávate las manos. Un adulto calienta el horno a 400°F."],["Put the muffin halves on the sheet, cut side up.","Pon las mitades en la charola, con el lado cortado hacia arriba."],["Spread 2 spoonfuls of sauce on each.","Unta 2 cucharadas de salsa en cada una."],["Add cheese, then toppings.","Pon queso y luego los ingredientes."],["An adult puts the sheet in. Bake 8 to 10 minutes until the cheese bubbles.","Un adulto mete la charola. Hornea de 8 a 10 minutos hasta que el queso burbujee."],["An adult takes it out with mitts. Wait 3 minutes before eating.","Un adulto la saca con guantes. Espera 3 minutos antes de comer."]],
+  safe:[WASH,["An adult works the oven. Always use dry oven mitts.","Un adulto maneja el horno. Usa siempre guantes secos."],["Hot cheese burns. Let it cool 3 minutes.","El queso caliente quema. Déjalo enfriar 3 minutos."],["Any meat you add must be fully cooked already.","Cualquier carne que agregues debe estar ya bien cocida."]],
+  done:["The cheese is melted and bubbling and the edges are golden.","El queso está derretido y burbujeando y las orillas están doradas."]},
+ {n:10,band:"68",t:["Drawstring bag by hand","Bolsa con cordón cosida a mano"],time:["3 sessions of 45 minutes","3 sesiones de 45 minutos"],makes:["1 bag each","1 bolsa por alumno"],
+  tools:[["Sharp hand-sewing needle and thimble","Aguja de coser a mano y dedal"],["Pins, fabric shears, ruler, chalk","Alfileres, tijeras de tela, regla, tiza"],["Safety pin","Imperdible"]],
+  mats:[["Cotton fabric, 10 by 24 inches","Tela de algodón de 10 por 24 pulgadas"],["Thread to match","Hilo del mismo color"],["Cord or ribbon, 30 inches","Cordón o listón de 30 pulgadas"]],
+  steps:[["Fold the fabric in half, right sides together, so it is 10 by 12.","Dobla la tela a la mitad, derecho con derecho, para que quede de 10 por 12."],["Pin the two sides. Stop 2 inches below the top.","Pon alfileres en los dos lados. Para 2 pulgadas antes de arriba."],["Backstitch each side with a 1/2 inch seam.","Cose cada lado con pespunte a 1/2 pulgada."],["At the top, fold the edge down 1/4 inch, then 1 inch. Pin. This is the casing.","Arriba, dobla la orilla 1/4 de pulgada y luego 1 pulgada. Pon alfileres. Este es el jaretón."],["Sew along the bottom of the casing. Leave both ends open.","Cose por la parte baja del jaretón. Deja abiertos los dos extremos."],["Turn the bag right side out.","Voltea la bolsa al derecho."],["Pin the safety pin to the cord. Feed it through the casing. Knot the ends.","Prende el imperdible al cordón. Pásalo por el jaretón. Amarra las puntas."]],
+  safe:[["Use a thimble to push the needle.","Usa el dedal para empujar la aguja."],["Shears stay on the table, closed, when you are not cutting.","Las tijeras quedan en la mesa, cerradas, cuando no cortas."],["Count needles and pins at the end.","Cuenten agujas y alfileres al final."]],
+  done:["You pull the cord and the bag closes. The seams do not open when you tug.","Jalas el cordón y la bolsa se cierra. Las costuras no se abren al jalar."]},
+ {n:11,band:"68",food:1,t:["Scrambled eggs, cooked to 160°F","Huevos revueltos, cocidos a 160°F"],time:["20 minutes","20 minutos"],makes:["serves 2","para 2"],
+  tools:[["Stove and nonstick pan","Estufa y sartén antiadherente"],["Bowl, fork, heat-safe spatula","Tazón, tenedor, espátula resistente al calor"],["Food thermometer","Termómetro de cocina"]],
+  mats:[["4 eggs","4 huevos"],["2 tablespoons milk","2 cucharadas de leche"],["1 teaspoon butter or oil","1 cucharadita de mantequilla o aceite"],["Pinch of salt","Pizca de sal"]],
+  steps:[["Wash your hands.","Lávate las manos."],["Crack eggs into the bowl. Wash your hands again after raw egg.","Rompe los huevos en el tazón. Lávate las manos otra vez después del huevo crudo."],["Add milk and salt. Beat with a fork until one color.","Añade leche y sal. Bate con el tenedor hasta que sea de un solo color."],["With an adult, heat the pan on medium-low. Melt the butter.","Con un adulto, calienta la sartén a fuego medio-bajo. Derrite la mantequilla."],["Pour in the eggs. Push slowly from the edge to the middle.","Echa los huevos. Empuja despacio de la orilla al centro."],["Cook until no liquid egg is left. Check: 160°F.","Cocina hasta que no quede huevo líquido. Revisa: 160°F."],["Turn off the stove. Serve right away.","Apaga la estufa. Sirve de inmediato."]],
+  safe:[WASH,["USDA safe temperature for egg dishes: 160°F. Cook until firm, with no runny egg.","Temperatura segura del USDA para platillos de huevo: 160°F. Cocina hasta que estén firmes, sin huevo líquido."],["An adult stays at the stove. Turn pan handles in, away from the edge.","Un adulto se queda en la estufa. Voltea los mangos hacia adentro, lejos de la orilla."],["Eggs and milk are common allergens.","El huevo y la leche son alérgenos comunes."]],
+  done:["The eggs are firm and fluffy with no shiny wet spots, and read 160°F.","Los huevos están firmes y esponjosos, sin partes brillantes y mojadas, y marcan 160°F."]},
+ {n:12,band:"68",t:["Pillow cover with an envelope back","Funda de cojín con espalda de sobre"],time:["3 sessions of 45 minutes","3 sesiones de 45 minutos"],makes:["1 cover for a 14-inch pillow","1 funda para un cojín de 14 pulgadas"],
+  tools:[["Hand needle and thimble, or a sewing machine with an adult","Aguja y dedal, o máquina de coser con un adulto"],["Pins, shears, ruler, chalk, iron (adult)","Alfileres, tijeras, regla, tiza, plancha (adulto)"]],
+  mats:[["Front: 15 by 15 inches","Frente: 15 por 15 pulgadas"],["Back: two pieces, 15 by 11 inches","Espalda: dos piezas de 15 por 11 pulgadas"],["Thread; a 14-inch pillow form","Hilo; un relleno de cojín de 14 pulgadas"]],
+  steps:[["On one long edge of each back piece, fold 1/2 inch twice. Sew it down. This is the hem.","En una orilla larga de cada pieza de la espalda, dobla 1/2 pulgada dos veces. Cóselo. Este es el dobladillo."],["Lay the front right side up.","Pon el frente con el derecho hacia arriba."],["Lay both back pieces on top, right side down, hems in the middle. They overlap.","Pon encima las dos piezas de la espalda, con el derecho hacia abajo y los dobladillos al centro. Se enciman."],["Pin all around.","Pon alfileres por toda la orilla."],["Sew all 4 sides with a 1/2 inch seam (backstitch by hand).","Cose los 4 lados a 1/2 pulgada (pespunte si es a mano)."],["Clip the corners. Turn right side out. Push corners out gently.","Corta las esquinas. Voltea al derecho. Saca las esquinas con cuidado."],["Slide the pillow in through the envelope.","Mete el cojín por el sobre."]],
+  safe:[["At the machine: fingers stay beside the presser foot, never in front of the needle.","En la máquina: los dedos van a los lados del prensatelas, nunca frente a la aguja."],["Take pins out before they reach the needle.","Quita los alfileres antes de que lleguen a la aguja."],["An adult handles the iron. Set it down on its heel.","Un adulto usa la plancha. Déjala parada sobre su base."]],
+  done:["The pillow fits snugly, the corners are square, and the back overlaps with no gap.","El cojín queda justo, las esquinas son cuadradas y la espalda se encima sin hueco."]},
+ {n:13,band:"910",food:1,t:["Vegetable stir-fry","Salteado de verduras"],time:["45 minutes","45 minutos"],makes:["serves 4","para 4"],
+  tools:[["Chef's knife and cutting board on a damp towel","Cuchillo de chef y tabla sobre un trapo húmedo"],["Wok or large skillet, stove","Wok o sartén grande, estufa"],["Spatula; small bowl","Espátula; tazón pequeño"]],
+  mats:[["4 cups mixed vegetables: carrot, bell pepper, broccoli, onion","4 tazas de verduras: zanahoria, pimiento, brócoli, cebolla"],["1 tablespoon oil","1 cucharada de aceite"],["Sauce: 3 tablespoons soy sauce, 1 teaspoon cornstarch, 1/4 cup water","Salsa: 3 cucharadas de salsa de soya, 1 cucharadita de maicena, 1/4 taza de agua"],["Cooked rice","Arroz cocido"]],
+  steps:[["Wash your hands and the vegetables.","Lávate las manos y lava las verduras."],["Hold food with the claw: fingertips curled under, knuckles guide the blade.","Sujeta con la garra: puntas de los dedos dobladas, los nudillos guían la hoja."],["Cut a flat side first so food does not roll. Slice into even, thin pieces.","Corta primero un lado plano para que no ruede. Rebana en trozos parejos y delgados."],["Mix the sauce in the small bowl.","Mezcla la salsa en el tazón pequeño."],["Heat oil on medium-high. Add hard vegetables first (carrot), then softer ones.","Calienta el aceite a fuego medio-alto. Pon primero las verduras duras (zanahoria), luego las suaves."],["Stir often for 5 to 7 minutes until bright and tender-crisp.","Revuelve seguido de 5 a 7 minutos hasta que estén brillantes y tiernas pero crujientes."],["Stir the sauce, pour it in, cook 1 minute until glossy. Serve over rice.","Revuelve la salsa, échala, cocina 1 minuto hasta que brille. Sirve sobre arroz."]],
+  safe:[WASH,["Use the claw grip. Cut away from your body. Never try to catch a falling knife.","Usa la garra. Corta lejos de tu cuerpo. Nunca atrapes un cuchillo que se cae."],["Carry a knife point down at your side. Wash it yourself; never leave it in a sink of water.","Lleva el cuchillo con la punta hacia abajo a tu lado. Lávalo tú; nunca lo dejes en el agua del fregadero."],["Hot oil: add food gently, away from you. An adult is in the room at the stove.","Aceite caliente: pon la comida con cuidado, alejándola de ti. Un adulto está en el salón en la estufa."],["Soy sauce has wheat and soy. Use a gluten-free tamari if needed.","La salsa de soya tiene trigo y soya. Usa tamari sin gluten si hace falta."]],
+  done:["The pieces are even, the colors are bright, and the sauce coats every piece.","Los trozos son parejos, los colores brillan y la salsa cubre cada trozo."]},
+ {n:14,band:"910",t:["Tote bag on the sewing machine","Bolsa de mano en la máquina de coser"],time:["3 sessions of 50 minutes","3 sesiones de 50 minutos"],makes:["1 tote each","1 bolsa por alumno"],
+  tools:[["Sewing machine","Máquina de coser"],["Pins, shears, ruler, chalk, iron (with care)","Alfileres, tijeras, regla, tiza, plancha (con cuidado)"]],
+  mats:[["Canvas or denim, 2 pieces 15 by 17 inches","Lona o mezclilla, 2 piezas de 15 por 17 pulgadas"],["2 straps, 4 by 24 inches each","2 asas de 4 por 24 pulgadas cada una"],["Strong thread","Hilo fuerte"]],
+  steps:[["Straps: fold each in half long-ways, press, open, fold edges to the middle, fold again. Stitch both long edges.","Asas: dobla cada una a lo largo, plancha, abre, dobla las orillas al centro, dobla otra vez. Cose las dos orillas largas."],["Pin the bag pieces right sides together. Sew sides and bottom with a 1/2 inch seam. Backstitch at start and end.","Une las piezas derecho con derecho. Cose los lados y el fondo a 1/2 pulgada. Remata al inicio y al final."],["Fold the top down 1 inch, then 1 more. Press.","Dobla la orilla de arriba 1 pulgada y luego otra. Plancha."],["Tuck strap ends under the hem, 4 inches from each side seam. Pin.","Mete las puntas de las asas bajo el dobladillo, a 4 pulgadas de cada costura lateral. Pon alfileres."],["Stitch around the top hem.","Cose alrededor del dobladillo de arriba."],["Flip the straps up. Sew a box with an X over each strap end.","Levanta las asas. Cose un cuadro con una X sobre cada punta."],["Turn right side out. Press.","Voltea al derecho. Plancha."]],
+  safe:[["Fingers stay beside the presser foot. Go slow; the pedal is not a race.","Los dedos van a los lados del prensatelas. Ve despacio; el pedal no es una carrera."],["Lower the presser foot before you sew. Pull pins out before they reach the needle.","Baja el prensatelas antes de coser. Quita los alfileres antes de que lleguen a la aguja."],["Turn the machine off to thread it or change the needle.","Apaga la máquina para enhebrarla o cambiar la aguja."],["Tie back long hair and loose sleeves.","Recoge el pelo largo y las mangas sueltas."]],
+  done:["The bag holds three books, the straps do not pull loose, and the seams are straight.","La bolsa aguanta tres libros, las asas no se sueltan y las costuras son rectas."]},
+ {n:15,band:"910",food:1,t:["Soup from scratch","Sopa desde cero"],time:["75 minutes","75 minutos"],makes:["serves 6","para 6"],
+  tools:[["Knife, cutting board, large pot, stove","Cuchillo, tabla, olla grande, estufa"],["Ladle, wooden spoon, measuring cups","Cucharón, cuchara de madera, tazas medidoras"]],
+  mats:[["Mirepoix: 1 onion, 2 carrots, 2 celery stalks, diced","Mirepoix: 1 cebolla, 2 zanahorias, 2 tallos de apio, en cubitos"],["1 tablespoon oil; 2 cloves garlic","1 cucharada de aceite; 2 dientes de ajo"],["6 cups low-salt broth","6 tazas de caldo bajo en sal"],["1 can diced tomatoes; 1 cup small pasta or beans","1 lata de tomates en cubos; 1 taza de pasta pequeña o frijoles"],["Salt, pepper, thyme","Sal, pimienta, tomillo"]],
+  steps:[["Wash your hands and vegetables. Dice the mirepoix with the claw grip: small, even cubes.","Lávate las manos y las verduras. Corta el mirepoix con la garra: cubos pequeños y parejos."],["Heat oil in the pot on medium. Cook the mirepoix 8 minutes, stirring, until soft.","Calienta el aceite en la olla a fuego medio. Cocina el mirepoix 8 minutos, revolviendo, hasta que se ablande."],["Add garlic for 1 minute.","Añade el ajo por 1 minuto."],["Add broth and tomatoes. Bring to a boil.","Añade el caldo y los tomates. Deja que hierva."],["Turn down to a simmer: small, lazy bubbles. Add pasta or beans.","Baja a fuego lento: burbujas pequeñas y lentas. Añade la pasta o los frijoles."],["Simmer 15 to 20 minutes until tender. Taste. Season.","Cocina a fuego lento de 15 a 20 minutos hasta que esté suave. Prueba. Sazona."],["Ladle into bowls. Cool leftovers fast and refrigerate within 2 hours.","Sirve con el cucharón. Enfría lo que sobre rápido y refrigéralo antes de 2 horas."]],
+  safe:[WASH,["Knife: claw grip, flat side down, cut away from you.","Cuchillo: garra, lado plano abajo, corta lejos de ti."],["Steam burns. Lift lids away from your face. Pot handles turned in.","El vapor quema. Levanta las tapas lejos de la cara. Mangos hacia adentro."],["Reheat leftovers to 165°F (USDA). An adult supervises the stove.","Recalienta las sobras a 165°F (USDA). Un adulto supervisa la estufa."],["Check broth labels for wheat, celery or soy.","Revisa en el caldo si tiene trigo, apio o soya."]],
+  done:["The vegetables are tender, the cubes are even, and the soup tastes seasoned, not flat.","Las verduras están suaves, los cubos son parejos y la sopa tiene sabor, no está sosa."]},
+ {n:16,band:"1112",food:1,t:["Plan and cook a budget meal for four","Planea y cocina una comida económica para cuatro"],time:["2 class periods","2 clases"],makes:["serves 4","para 4"],
+  tools:[["Paper for a cost sheet, and a store flyer or website","Papel para la hoja de costos, y un folleto o sitio de tienda"],["Calculator","Calculadora"],["Kitchen tools your recipe needs; food thermometer","Utensilios que pida tu receta; termómetro de cocina"]],
+  mats:[["A target budget, for example $15 for four people","Un presupuesto meta, por ejemplo $15 para cuatro personas"],["A balanced plate: protein, grain, vegetable or fruit, and a drink","Un plato balanceado: proteína, cereal, verdura o fruta, y una bebida"]],
+  steps:[["Pick a recipe that serves four.","Elige una receta para cuatro."],["Cost sheet: list each ingredient, the package price, the amount you use, and the cost of that amount.","Hoja de costos: anota cada ingrediente, el precio del paquete, la cantidad que usas y el costo de esa cantidad."],["Add it up. Divide by 4 for cost per serving.","Suma. Divide entre 4 para el costo por porción."],["Over budget? Swap: store brand, dry beans, seasonal produce.","¿Te pasaste? Cambia: marca de la tienda, frijoles secos, frutas y verduras de temporada."],["Write a time plan: what starts first so it all finishes together.","Escribe un plan de tiempo: qué empieza primero para que todo termine junto."],["Cook with your team. Check meat temperatures with the thermometer.","Cocina con tu equipo. Revisa la temperatura de la carne con el termómetro."],["Serve, eat together, and write one thing you would change.","Sirvan, coman juntos y escribe una cosa que cambiarías."]],
+  safe:[WASH,["USDA safe temperatures: poultry 165°F; ground beef or pork 160°F; whole cuts of beef or pork 145°F with a 3-minute rest; fish 145°F; eggs 160°F.","Temperaturas seguras del USDA: aves 165°F; carne molida de res o cerdo 160°F; cortes enteros de res o cerdo 145°F con 3 minutos de reposo; pescado 145°F; huevos 160°F."],["Use separate boards for raw meat and ready-to-eat food.","Usa tablas separadas para carne cruda y comida lista para comer."],["An adult supervises the stove, oven and knives.","Un adulto supervisa la estufa, el horno y los cuchillos."]],
+  done:["The meal is on the table for four, the cost sheet shows you stayed on budget, and the meat reached a safe temperature.","La comida está en la mesa para cuatro, la hoja de costos muestra que no te pasaste y la carne llegó a una temperatura segura."]},
+ {n:17,band:"1112",t:["Mend and upcycle a garment","Remienda y renueva una prenda"],time:["2 to 3 class periods","2 a 3 clases"],makes:["1 garment each","1 prenda por alumno"],
+  tools:[["Hand needles, thimble, pins, seam ripper, shears","Agujas, dedal, alfileres, descosedor, tijeras"],["Iron (with care); sewing machine optional","Plancha (con cuidado); máquina de coser opcional"]],
+  mats:[["A garment from home that needs care: a fallen hem, a hole, a lost button","Una prenda de casa que necesite arreglo: un dobladillo caído, un agujero, un botón perdido"],["Matching thread, a patch fabric, a spare button","Hilo del mismo color, tela para parche, un botón de repuesto"]],
+  steps:[["Look the garment over. List what needs fixing.","Revisa la prenda. Anota lo que hay que arreglar."],["Hem: pin it back up at the old fold. Slip-stitch it with small stitches that barely show.","Dobladillo: sujétalo con alfileres en el doblez anterior. Cóselo con puntada invisible, pequeña."],["Patch: cut a patch 1 inch bigger than the hole on every side. Pin it on. Whipstitch or blanket-stitch around it.","Parche: corta un parche 1 pulgada más grande que el agujero por cada lado. Sujétalo. Cose alrededor con punto de festón o sobrehilado."],["Button: sew it on with a shank: put a pin on top of the button, sew over it, remove it, wrap the thread 3 times under the button.","Botón: cóselo con pie: pon un alfiler sobre el botón, cose encima, quítalo y enrolla el hilo 3 veces bajo el botón."],["Upcycle: add one change that makes it yours, like a visible stitched patch or new buttons.","Renueva: haz un cambio que lo haga tuyo, como un parche con puntadas visibles o botones nuevos."],["Press it. Try it on.","Plánchala. Pruébatela."]],
+  safe:[["Rip seams away from your body with the seam ripper.","Usa el descosedor en dirección contraria a tu cuerpo."],["Pins and needles back in the pincushion; count them at the end.","Alfileres y agujas regresan al alfiletero; cuéntenlos al final."],["Iron: set it on its heel, unplug it when done, keep the cord out of the walkway.","Plancha: déjala parada, desconéctala al terminar y aleja el cable del paso."]],
+  done:["The garment can be worn again: the hem stays up, the hole is covered, and the button buttons.","La prenda se puede usar otra vez: el dobladillo no cae, el agujero está cubierto y el botón abrocha."]}
+];
+
+var KEY_DONE = "aog.fcsprojects.done";
+var done = {};
+try{ done = JSON.parse(localStorage.getItem(KEY_DONE) || "{}") || {}; }catch(e){ done = {}; }
+function save(){ try{ localStorage.setItem(KEY_DONE, JSON.stringify(done)); }catch(e){} }
+
+var lang = "en", band = "k2";
+try{ var sb = localStorage.getItem("aog.fcsprojects.band"); if(sb && BANDS[sb]) band = sb; }catch(e){}
+function L(p){ return lang === "es" ? p[1] : p[0]; }
+function T(en, es){ return lang === "es" ? es : en; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function lis(a){ return a.map(function(x){ return "<li>" + esc(L(x)) + "</li>"; }).join(""); }
+
+var openSet = {};
+function render(){
+  var list = document.getElementById("list");
+  Array.prototype.forEach.call(list.querySelectorAll("details.proj"), function(d){ openSet[d.getAttribute("data-n")] = d.open; });
+  var html = "";
+  P.filter(function(p){ return p.band === band; }).forEach(function(p){
+    var bl = document.querySelector('#bands [data-band="' + p.band + '"]').textContent;
+    html += '<details class="proj" data-n="' + p.n + '"' + (openSet[p.n] ? " open" : "") + '>' +
+      '<summary><span><span class="num">' + p.n + '.</span><h2>' + esc(L(p.t)) + '</h2>' +
+      (done[p.n] ? '<span class="done-tag">' + T("We made it","¡Lo hicimos!") + '</span>' : "") +
+      '<span class="meta">' + T("Grades ","Grados ") + bl + " · " + esc(L(p.time)) + " · " + esc(L(p.makes)) + '</span></span>' +
+      '<span class="chev" aria-hidden="true">›</span></summary><div class="pbody">' +
+      '<div class="proj-pic" data-aog-sketch-id="proj-' + p.n + '"></div>' +
+      '<div class="facts"><div><b>' + T("Grades","Grados") + '</b>' + bl + '</div><div><b>' + T("Time","Tiempo") + '</b>' + esc(L(p.time)) + '</div><div><b>' + T("Makes","Rinde") + '</b>' + esc(L(p.makes)) + '</div></div>' +
+      '<h3>' + T("What you need","Lo que necesitas") + '</h3>' +
+      '<p><b>' + T("Tools","Herramientas") + '</b></p><ul>' + lis(p.tools) + '</ul>' +
+      '<p><b>' + (p.food ? T("Ingredients","Ingredientes") : T("Materials","Materiales")) + '</b></p><ul>' + lis(p.mats) + '</ul>' +
+      (p.food ? '<p class="allergy"><b>' + esc(L(ALLERGY)) + '</b></p>' : "") +
+      '<h3>' + T("Steps","Pasos") + '</h3><ol>' + lis(p.steps) + '</ol>' +
+      '<div class="safe"><h3>' + T("Stay safe","Cuídate") + '</h3><ul>' + lis(p.safe) + '</ul></div>' +
+      '<div class="madeit"><h3>' + T("You made it when…","Lo lograste cuando…") + '</h3><p>' + esc(L(p.done)) + '</p></div>' +
+      '<div class="actions"><label class="check"><input type="checkbox" data-done="' + p.n + '"' + (done[p.n] ? " checked" : "") + '> ' + T("We made it","¡Lo hicimos!") + '</label>' +
+      '<button class="btn" type="button" data-print="' + p.n + '">' + T("Print this project","Imprimir este proyecto") + '</button></div>' +
+      '</div></details>';
+  });
+  list.innerHTML = html;
+  Array.prototype.forEach.call(document.querySelectorAll("#bands button"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-band") === band ? "true" : "false");
+  });
+  document.getElementById("bandNote").textContent = L(BANDS[band]);
+  var n = Object.keys(done).filter(function(k){ return done[k]; }).length;
+  document.getElementById("tally").textContent = T("Your class has made " + n + " of 17 projects.", "Tu clase ha hecho " + n + " de 17 proyectos.");
+}
+
+document.getElementById("bands").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-band]"); if(!b) return;
+  band = b.getAttribute("data-band");
+  try{ localStorage.setItem("aog.fcsprojects.band", band); }catch(err){}
+  render();
+});
+document.getElementById("list").addEventListener("change", function(e){
+  var c = e.target.closest("input[data-done]"); if(!c) return;
+  var n = c.getAttribute("data-done");
+  if(c.checked) done[n] = 1; else delete done[n];
+  save(); render();
+});
+document.getElementById("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-print]"); if(!b) return;
+  var card = b.closest("details.proj");
+  card.open = true; card.classList.add("printme");
+  document.body.classList.add("print-one");
+  window.print();
+});
+window.addEventListener("afterprint", function(){
+  document.body.classList.remove("print-one");
+  Array.prototype.forEach.call(document.querySelectorAll(".printme"), function(c){ c.classList.remove("printme"); });
+});
+
+function paintLang(){
+  document.documentElement.setAttribute("lang", lang);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+    var v = el.getAttribute(lang === "es" ? "data-es" : "data-en"); if(v != null) el.textContent = v;
+  });
+  document.getElementById("langBtn").textContent = lang === "es" ? "English" : "Español";
+  render();
+}
+document.getElementById("langBtn").addEventListener("click", function(){ lang = lang === "es" ? "en" : "es"; paintLang(); });
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", cur);
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", cur); }catch(e){}
+});
+render();
+})();
+</script>
+</body>
+</html>
