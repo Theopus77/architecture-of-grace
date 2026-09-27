@@ -8,7 +8,7 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7090'   // MERGE: ONE PAINT (no choppy jumps) + ROOM, PAGE AND FACS PROJECT DRAWINGS + THE SKETCHBOOK SITE. previous: m7080 / m7077
+const CACHE = 'aog-cache-2026.09.27.m7091'   // MERGE: ONE PAINT (no choppy jumps) + ROOM, PAGE AND FACS PROJECT DRAWINGS + THE SKETCHBOOK SITE. previous: m7080 / m7077
 // previous: 'aog-cache-2026.09.27.m7077'   // ONE PAINT: every page shows once, fully built (no jumps between units). previous: m7076
 // previous CACHE = 'aog-cache-2026.09.27.m7080'   // FINAL MERGE: PENCIL EVERYWHERE, NO EMOJI; ALL COURSES, SEL, NOVELS, CROSSWALK LINKS. previous: m7078
 // const CACHE = 'aog-cache-2026.09.27.m7079'   // CROSSWALK DESK CARD PRINTS AS A PENCIL-FRAMED HALF-LETTER CARD, TWO TO A PAGE WITH A CUT LINE. previous: m7078 / CROSSWALK: ANCHOR CHART TRIGGERS LINK TO THEIR CHARTS; DESK CARD FOR EACH NEURO-AFFIRMING ADJUSTMENT. previous: m7077 / LAST MARKS DRAWN: FIRE, TICKS, CROSSES, STAR, PRINTER, MY NOTES PENCIL. previous: m7076 / TYPED MARKS (STARS, TICKS, BOXES) DRAWN IN PENCIL SITE-WIDE. previous: m7075 / SEL PAGES: PENCIL DRAWINGS FOR EVERY EMOJI, ALT TEXT KEPT. previous: m7074 / MERGE THE SKETCH PAD (magical-cerf) WITH THE PENCIL BANNERS. previous: m7073 / m7067
