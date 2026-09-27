@@ -262,4 +262,11 @@
     })();
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", mastBoot); else mastBoot();
+  /* AOG-ONE-PAINT-V1 — show the page once, when it is built: after the fonts (or 0.8 s), two frames later */
+  (function () {
+    var done = false; function show() { if (done) return; done = true; D.documentElement.classList.add("aog-ready"); }
+    var go = function () { requestAnimationFrame(function () { requestAnimationFrame(show); }); };
+    try { Promise.race([D.fonts && D.fonts.ready ? D.fonts.ready : Promise.resolve(), new Promise(function (r) { setTimeout(r, 800); })]).then(go, go); } catch (e) { show(); }
+    setTimeout(show, 1000);
+  })();
 })();
