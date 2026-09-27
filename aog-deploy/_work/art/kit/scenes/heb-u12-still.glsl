@@ -1,6 +1,6 @@
 /* Hebrew Bible Unit 12 "Close Reading Genesis" - a ram's horn and a bundle of firewood, with an oil lamp. */
-#define CAM_POS vec3(-0.4473,0.4056,-0.8684)
-#define CAM_TGT vec3(-0.3004,-0.0559,0.1068)
+#define CAM_POS vec3(-0.4489,0.4105,-0.8789)
+#define CAM_TGT vec3(-0.3004,-0.0559,0.1069)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.3)
 #define MAXT 8.
@@ -172,13 +172,16 @@ float t_fish(vec3 q){ vec3 c=q-vec3(0,.016,0); if(length(c.xz-vec2(.048,.007))<.
 float o_coin(vec3 q){ float d=sdCylY(q-vec3(0,.003,0),.022,.003)-.0006; d=min(d,max(abs(length(q.xz)-.021)-.0015,abs(q.y-.004)-.0028)); return d; }
 float t_coin(vec3 q){ float r=length(q.xz); float a=atan(q.z,q.x); if(r>.012&&r<.017&&fract(a*14./6.2832)<.45) return .3; if(r<.006) return .35; return .55; }
 /* leather purse: a pinched sack with a drawstring */
-float o_purse(vec3 q){ float y=q.y; float r=.055*sin(3.1416*clamp(y/.1,0.,1.)*.75)+.01; r=y>.075?.018+.03*smoothstep(.09,.12,y):r;
-  float d=(length(q.xz*vec2(1.,1.2))-r)*.6; d=max(d,max(-y,y-.12)); d=min(d,sdTorus(q-vec3(0,.078,0),.02,.004)); return d+.002*fbm3(q*90.); }
+float o_purse(vec3 q){ float body=sdEll(q-vec3(0,.045,0),vec3(.062,.047,.056));
+  float neck=sdCylY(q-vec3(0,.095,0),.016,.012); float a=atan(q.z,q.x);
+  float ruff=sdCone(q-vec3(0,.12,0),.016,.03+.006*sin(a*9.),.014); ruff=max(ruff,-sdCone(q-vec3(0,.125,0),.01,.025,.014));
+  float d=smin(smin(body,neck,.02),ruff,.006); d=min(d,sdTorus(q-vec3(0,.097,0),.018,.004));
+  d=min(d,sdCapsule(q,vec3(.018,.097,0),vec3(.05,.06,-.03),.0025)); return d+.0015*fbm3(q*90.); }
 float t_purse(vec3 q){ return abs(q.y-.078)<.006?.25:.45; }
 /* ------------ broken stone stele with rounded top, standing, face toward -z ------------ */
 float o_stele(vec3 q){ vec3 c=q-vec3(0,.13,0); float d=sdRBox(c,vec3(.085,.13,.02),.006);
   d=min(d,max(sdCylZ(c-vec3(0,.13,0),.085,.02)-.004,-c.y+.13));
-  float brk=dot(c,normalize(vec3(.8,.6,0)))-.06+.012*fbm(c.xy*60.); d=max(d,brk);
+  float brk=dot(c,normalize(vec3(.75,.66,0)))-.135+.012*fbm(c.xy*60.); d=max(d,brk);
   d=max(d,-(abs(c.z+.02)-.002)*0.-1e5); d+=.0015*fbm3(q*80.);
   return d; }
 float t_stele(vec3 q){ vec3 c=q-vec3(0,.13,0); if(c.z<-.017&&abs(c.x)<.07&&c.y<.12&&c.y>-.1&&fract(c.y/.017)<.22) return .35; return .55; }
@@ -235,11 +238,11 @@ float o_yad(vec3 q){ float t=clamp((q.x+.1)/.2,0.,1.); float r=.006-.003*t+.001*
   d=min(d,length(q-vec3(-.105,.009,0))-.009); d=min(d,length(q-vec3(.108,.005,0))-.005); return d; }
 float t_yad(vec3 q){ return fract(q.x/.012)<.25?.3:.55; }
 /* ------------ shofar: tapering curved horn on the table ------------ */
-vec3 shP(float t){ return vec3(-.13+.28*t, .02+.07*t*t, .05*sin(t*3.1416)); }
+vec3 shP(float t){ float a=t*2.6; return vec3(-.02-.1*cos(a)+.06*t, .012+.02*t+.06*t*t*t, -.1*sin(a)*.9+.02); }
 float o_shofar(vec3 q){ float d=1e5;
-  for(int i=0;i<10;i++){ float t0=float(i)/10.,t1=float(i+1)/10.; float r=.006+.028*t0*t0; d=smin(d,sdCapsule(q,shP(t0),shP(t1),r),.004); }
-  vec3 e=shP(1.); d=max(d,-(length(q-e-vec3(.012,.006,0))-.028)); return d; }
-float t_shofar(vec3 q){ float t=clamp((q.x+.13)/.28,0.,1.); return fract(t*18.)<.18?.35:.55-.15*t; }
+  for(int i=0;i<10;i++){ float t0=float(i)/10.,t1=float(i+1)/10.; float r=.005+.03*pow(t0+.1,2.2); d=smin(d,sdCapsule(q,shP(t0),shP(t1),r),.004); }
+  vec3 e=shP(1.); vec3 dir=normalize(shP(1.)-shP(.9)); d=max(d,-(length(q-e-dir*.018)-.03)); return d; }
+float t_shofar(vec3 q){ float a=atan(q.z-.02,q.x+.02); return fract(a*9.)<.15?.35:.55; }
 /* ------------ firewood bundle along x, tied twice ------------ */
 float o_wood(vec3 q){ float d=1e5; for(int i=0;i<7;i++){ float fi=float(i); vec2 o=vec2(sin(fi*2.4),cos(fi*2.4))*(i==0?0.:.026); float r=.012+.003*sin(fi*3.);
     d=min(d,sdCylX(q-vec3(.01*sin(fi*5.),.034+o.y,o.x),r,.14+.015*sin(fi*7.))+.001*fbm3(q*vec3(20.,200.,200.))); }
