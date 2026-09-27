@@ -1280,6 +1280,16 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 @media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
 #subjSeg .bs button[aria-pressed="true"]::before{background:var(--gl,#5E6B7A) !important}
 </style>
+<style id="aog-dd-sendbyname">
+/* the send box beside the name line: one row, no repeated heading */
+.sig + #sendBox{margin:10px 0 4px !important;padding:10px 14px !important;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;max-width:none !important}
+.sig + #sendBox .sk{display:none !important}
+.sig + #sendBox .snote{flex:1 1 260px;margin:0 !important;font-size:14px !important}
+.sig + #sendBox .srow{margin:0 !important;order:-1}
+.sig + #sendBox .sst{flex-basis:100%;margin:0 !important}
+.sig + #sendBox .sst:empty{display:none}
+@media print{ #sendBox{display:none !important} }
+</style>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -19155,6 +19165,11 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
             || document.querySelector("main > .acts")
             || document.querySelector(".sheet-foot");
     anchor.parentNode.insertBefore(box,anchor);
+    /* AOG-DD-SEND-BY-NAME (2026-09-27) — Jimmy: "Should the send to my teacher box be right next to the write
+       your name line? Just when it prints remove it." The box settles right under the name line each time the
+       sheet redraws (the sheet is rebuilt, so it cannot live inside it); off the printout as before. */
+    function byName(){ var sg=document.querySelector(".sig"); if(sg&&sg.nextElementSibling!==box) sg.parentNode.insertBefore(box,sg.nextSibling); }
+    byName(); new MutationObserver(byName).observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
     ui={box:box,go:box.querySelector("button"),st:box.querySelector(".sst")};
     ui.go.addEventListener("click",function(){
       if(sendBusy)return;
