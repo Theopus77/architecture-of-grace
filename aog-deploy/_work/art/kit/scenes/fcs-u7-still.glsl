@@ -1,7 +1,7 @@
 /* FCS Unit 7 "Money and Choices" — pencil still life: a round piggy bank with a coin slot, two
    stacks of coins of different heights, and a single coin standing on its edge. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3319,0.2308,-0.6216)
+#define CAM_TGT vec3(-0.1393,-0.0080,0.0946)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
