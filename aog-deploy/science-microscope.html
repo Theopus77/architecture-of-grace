@@ -1118,10 +1118,17 @@ function scopeSVG(opts){
   }).join("") : "";
   return `<svg viewBox="0 0 430 560" class="scope${o.lit?" lit":""}${o.cls?" "+o.cls:""}" role="img" aria-label="A compound light microscope">
   <defs>
-    <linearGradient id="gst" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--steel)" stop-opacity=".92"/><stop offset="100%" stop-color="var(--metal)" stop-opacity=".95"/></linearGradient>
-    <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c878"/><stop offset="42%" stop-color="var(--brass)"/><stop offset="100%" stop-color="#5c3a0e"/></linearGradient>
-    <linearGradient id="gbase" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3e3220"/><stop offset="100%" stop-color="#1a1610"/></linearGradient>
+    <!-- AOG-SCOPE-REALISM-V1 (2026-09-27): the same shapes, lit like the real thing — enamel with a gloss band,
+         brass with bright and dark reflections, knurled knobs, glass that shows the room, a shadow on the bench -->
+    <linearGradient id="gst" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="var(--metal)"/><stop offset="18%" stop-color="var(--steel)"/><stop offset="30%" stop-color="#f2f5f8" stop-opacity=".9"/><stop offset="40%" stop-color="var(--steel)"/><stop offset="85%" stop-color="var(--metal)"/><stop offset="100%" stop-color="#11161b"/></linearGradient>
+    <linearGradient id="gbr" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5c3a0e"/><stop offset="16%" stop-color="#b98a2e"/><stop offset="30%" stop-color="#fff0c0"/><stop offset="42%" stop-color="#d9ac4c"/><stop offset="70%" stop-color="#8a6116"/><stop offset="88%" stop-color="#c79a3c"/><stop offset="100%" stop-color="#3e2708"/></linearGradient>
+    <linearGradient id="gbase" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5a4a30"/><stop offset="12%" stop-color="#3e3220"/><stop offset="70%" stop-color="#231c12"/><stop offset="100%" stop-color="#120e08"/></linearGradient>
+    <radialGradient id="gknob" cx=".38" cy=".34" r=".7"><stop offset="0%" stop-color="#fff2c4"/><stop offset="30%" stop-color="#d9ac4c"/><stop offset="75%" stop-color="#7a5212"/><stop offset="100%" stop-color="#3a2406"/></radialGradient>
+    <radialGradient id="gglass" cx=".35" cy=".3" r=".75"><stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/><stop offset="25%" stop-color="#bcd6ea" stop-opacity=".7"/><stop offset="70%" stop-color="#2c4a66" stop-opacity=".85"/><stop offset="100%" stop-color="#0c1824"/></radialGradient>
+    <radialGradient id="gshadow" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#000" stop-opacity=".38"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <pattern id="knurl" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><rect width="3" height="3" fill="none"/><line x1="0" y1="0" x2="0" y2="3" stroke="#2a1a04" stroke-opacity=".45" stroke-width="1"/></pattern>
   </defs>
+  <ellipse cx="218" cy="552" rx="170" ry="9" fill="url(#gshadow)" pointer-events="none"/>
   <g class="${mark("base")}" data-p="base"><rect class="hit" x="60" y="490" width="310" height="60"/><path class="shape" d="M75 540 L110 495 H320 L355 540 Q360 550 348 550 H82 Q70 550 75 540 Z" fill="url(#gbase)" stroke="var(--brass)" stroke-width="1.6"/><text class="royal-plate" x="215" y="536" text-anchor="middle">UNIVERSAL</text></g>
   <g class="${mark("light")}" data-p="light"><circle class="hit" cx="215" cy="470" r="34"/><g class="shape"><circle cx="215" cy="470" r="22" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="2"/><circle cx="215" cy="470" r="11" fill="var(--lamp)" opacity=".85"/><g stroke="var(--warn)" stroke-width="1.6" stroke-linecap="round"><line x1="215" y1="438" x2="215" y2="426"/><line x1="194" y1="446" x2="186" y2="437"/><line x1="236" y1="446" x2="244" y2="437"/></g></g></g>
   <g class="${mark("arm")}" data-p="arm"><path class="hit" d="M295 150 q60 60 45 190 l-40 60 h-30 l30 -55 q18 -120 -35 -170 Z"/><path class="shape" d="M285 140 q75 70 55 210 l-35 55 q-8 12 -20 4 t-4 -20 l30 -48 q16 -118 -46 -172 Z" fill="url(#gst)" stroke="var(--line)" stroke-width="1.5" opacity=".92"/></g>
@@ -1138,6 +1145,17 @@ function scopeSVG(opts){
   <g class="${mark("eyepiece")}" data-p="eyepiece"><rect class="hit" x="180" y="52" width="72" height="66"/><g class="shape"><rect x="196" y="64" width="40" height="56" rx="5" fill="url(#gbr)" stroke="var(--line)" stroke-width="1.5"/><rect x="190" y="54" width="52" height="14" rx="6" fill="var(--ink)" opacity=".85"/></g></g>
   <g class="${mark("nosepiece")}" data-p="nosepiece"><rect class="hit" x="170" y="208" width="94" height="30"/><path class="shape" d="M175 212 H257 L247 234 H185 Z" fill="var(--ink)" opacity=".85" stroke="var(--line)" stroke-width="1.2"/></g>
   <g class="${mark("objectives")}" data-p="objectives"><rect class="hit" x="148" y="228" width="140" height="78"/><g class="shape" stroke="var(--line)" stroke-width="1.3"><rect x="152" y="242" width="20" height="30" rx="4" fill="url(#gbr)" transform="rotate(22 162 257)"/><rect x="178" y="238" width="22" height="40" rx="4" fill="url(#gbr)" transform="rotate(10 189 258)"/><rect x="208" y="236" width="24" height="56" rx="4" fill="url(#gbr)"/><rect x="242" y="228" width="22" height="66" rx="4" fill="#6a4a14" stroke="var(--brass)" transform="rotate(-12 253 261)"/></g></g>
+  <g class="scope-gloss" pointer-events="none" aria-hidden="true">
+    <path d="M92 500 H300" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>
+    <path d="M300 160 q52 58 40 170" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="3" stroke-linecap="round"/>
+    <path d="M90 338 H298" stroke="#fff" stroke-opacity=".18" stroke-width="1.5"/>
+    <rect x="199" y="126" width="5" height="80" rx="2.5" fill="#fff" fill-opacity=".22"/>
+    <rect x="200" y="66" width="4" height="50" rx="2" fill="#fff" fill-opacity=".35"/>
+    <circle cx="345" cy="360" r="26" fill="url(#knurl)" opacity=".6"/>
+    <circle cx="338" cy="352" r="7" fill="#fff" fill-opacity=".28"/>
+    <ellipse cx="216" cy="58" rx="14" ry="3.2" fill="url(#gglass)"/>
+    <circle cx="215" cy="470" r="9" fill="url(#gglass)" opacity=".55"/>
+  </g>
   <polyline class="scope-beam" points="${beam}"/>
   ${o.labeled?`<g class="plets">${labels}</g>`:""}
 </svg>`;
@@ -1767,14 +1785,16 @@ function bakeOnion(){
     const nr=7.5+rng()*5.5;
     const cxn=nx+vx/vlen*(nr*1.15), cyn=ny+vy/vlen*(nr*1.15);
     const g=ctx.createRadialGradient(cxn-nr*.2,cyn-nr*.2,nr*.12,cxn,cyn,nr);
-    g.addColorStop(0,"#d09248"); g.addColorStop(.45,"#9a5a22"); g.addColorStop(1,"rgba(90,42,12,.12)");
+    /* AOG-SCOPE-REALISM-V1 — an unstained onion nucleus is pale and grey, seen mostly by its refractile rim,
+       with a fine granular inside and one to three darker nucleoli; iodine later turns it brown */
+    g.addColorStop(0,"rgba(214,204,176,.75)"); g.addColorStop(.7,"rgba(184,172,140,.8)"); g.addColorStop(1,"rgba(120,104,72,.55)");
     ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,rng(),0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    for(let k=0;k<30;k++){ ctx.fillStyle=`rgba(90,78,52,${.12+rng()*.18})`; ctx.fillRect(cxn+(rng()-.5)*nr*1.4,cyn+(rng()-.5)*nr*1.2,.9,.9); }
     ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,0,0,Math.PI*2);
-    ctx.strokeStyle="rgba(70,36,10,.28)"; ctx.lineWidth=.8; ctx.stroke();
-    if(rng()>.28){
-      ctx.beginPath(); ctx.arc(cxn+nr*.18,cyn-nr*.12,nr*.2,0,Math.PI*2);
-      ctx.fillStyle="rgba(48,22,8,.75)"; ctx.fill();
-    }
+    ctx.strokeStyle="rgba(70,58,36,.6)"; ctx.lineWidth=1.3; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr*.9,nr*.78,0,0,Math.PI*2); ctx.strokeStyle="rgba(250,244,220,.5)"; ctx.lineWidth=.7; ctx.stroke();
+    const nn=1+(rng()*2.2|0);
+    for(let k=0;k<nn;k++){ ctx.beginPath(); ctx.arc(cxn+(rng()-.5)*nr*.7,cyn+(rng()-.5)*nr*.6,nr*(.13+rng()*.08),0,Math.PI*2); ctx.fillStyle="rgba(70,56,34,.7)"; ctx.fill(); }
     if(rng()>.6){
       ctx.strokeStyle="rgba(110,72,24,.28)"; ctx.lineWidth=.9;
       for(let s=0;s<3;s++){
@@ -1973,7 +1993,7 @@ function bakeHair(){
       g.addColorStop(.07,"rgba(168,112,58,.95)");
       g.addColorStop(.2,"rgba(110,62,28,.94)");
       g.addColorStop(.38,"rgba(88,48,22,.9)");
-      g.addColorStop(.5, medOn?"rgba(210,190,150,.22)":"rgba(78,42,18,.9)");
+      g.addColorStop(.5, medOn?"rgba(36,22,12,.85)":"rgba(78,42,18,.9)");   /* AOG-SCOPE-REALISM-V1: an air-filled medulla looks dark in transmitted light */
       g.addColorStop(.62,"rgba(88,48,22,.9)");
       g.addColorStop(.8,"rgba(110,62,28,.94)");
       g.addColorStop(.93,"rgba(168,112,58,.95)");
@@ -2001,7 +2021,14 @@ function bakeHair(){
     const off=(rng()-.5)*r*1.55;
     if(Math.abs(off)<r*.22) continue;
     ctx.fillStyle=`rgba(${40+rng()*30|0},${18+rng()*16|0},${8+rng()*10|0},${.25+rng()*.5})`;
-    ctx.beginPath(); ctx.ellipse(p.x+nx*off, p.y+ny*off, .7+rng()*1.1, .4+rng()*.6, Math.atan2(dy,dx),0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(p.x+nx*off, p.y+ny*off, 2+rng()*5, .4+rng()*.5, Math.atan2(dy,dx),0,Math.PI*2); ctx.fill();   /* granules sit in streaks along the fibre */
+  }
+  /* AOG-SCOPE-REALISM-V1 — the cuticle's scale margins show across the whole face of the shaft as fine wavy lines */
+  for(let i=0;i<260;i++){
+    const t=0.03+i/260*0.86, p=pt(t), q=pt(Math.min(1,t+0.002));
+    const dx=q.x-p.x, dy=q.y-p.y, len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len, tx=dx/len, ty=dy/len, r=44*(1.08-t*.24);
+    ctx.beginPath(); for(let k=-1;k<=1.001;k+=.1){ const w=Math.sin(k*9+i)*2.2+(rng()-.5)*1.2; const x=p.x+nx*k*r+tx*w, y=p.y+ny*k*r+ty*w; k<-.99?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    ctx.strokeStyle=`rgba(40,22,8,${.12+rng()*.12})`; ctx.lineWidth=.8; ctx.stroke();
   }
   /* cuticle scales — imbricate, free edge toward the tip */
   for(let s=-1;s<=1;s+=2){
@@ -2140,46 +2167,61 @@ function bakeCheek(){
   return {c, w:packW, h:packH};
 }
 function bakeElodea(){
-  const W=2000,H=1500, packW=156, packH=117;
-  const c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xedea);
-  ctx.fillStyle="#d4e0c4"; ctx.fillRect(0,0,W,H);
-  for(let i=0;i<6000;i++){
-    ctx.fillStyle=`rgba(80,110,50,${.012+rng()*.03})`;
-    ctx.fillRect(rng()*W,rng()*H,1+rng()*2,1);
-  }
-  const cols=9, rows=12, cells=[];
-  const mw=W*.9, mh=H*.9, ox=W*.05, oy=H*.05, cw=mw/cols, ch=mh/rows;
-  ctx.lineJoin="round";
-  for(let r=0;r<rows;r++){
-    for(let col=0;col<cols;col++){
-      const midrib = col===4 || col===5;
-      const x=ox+col*cw+(rng()-.5)*5, y=oy+r*ch+(rng()-.5)*5;
-      const w=(midrib?cw*.72:cw)-8, h=ch-6;
-      ctx.beginPath();
-      const j=3.2;
-      ctx.moveTo(x+rng()*j, y+rng()*j);
-      ctx.lineTo(x+w-rng()*j, y+rng()*j);
-      ctx.lineTo(x+w-rng()*j, y+h-rng()*j);
-      ctx.lineTo(x+rng()*j, y+h-rng()*j);
-      ctx.closePath();
-      ctx.fillStyle=midrib?`rgba(186,214,150,.22)`:`rgba(232,236,214,.35)`;
-      ctx.fill();
-      ctx.strokeStyle="rgba(28,62,18,.82)"; ctx.lineWidth=midrib?4.2:3.1; ctx.stroke();
-      ctx.strokeStyle="rgba(210,228,170,.55)"; ctx.lineWidth=1.2; ctx.stroke();
-      const sx=(x+w/2 - W/2) * (packW/W);
-      const sy=(y+h/2 - H/2) * (packH/H);
-      cells.push({
-        x:sx, y:sy,
-        w:w*(packW/W), h:h*(packH/H),
-        n:18+(rng()*14|0), seed:rng()*1000
-      });
-      if(rng()>.7){
-        const nx=x+w*(.15+rng()*.7), ny=y+h*(.15+rng()*.7);
-        ctx.beginPath(); ctx.ellipse(nx,ny, 6, 5, 0,0,Math.PI*2);
-        ctx.fillStyle="rgba(70,90,40,.28)"; ctx.fill();
+  /* AOG-SCOPE-REALISM-V1 — a real Elodea leaf is two cell layers thick. Its cells are long bricks, about
+     60–110 µm by 20–30 µm (6–10 × 2–3 slide units), laid in staggered rows along the leaf, longer by the
+     midrib and shorter toward the toothed edge. Each holds 30–80 lens-shaped chloroplasts (5 µm) pressed
+     against the walls round a big clear vacuole. The lower layer shows through, soft and out of focus. */
+  const packW=156, packH=117, ppu=12.8, W=Math.round(packW*ppu), H=Math.round(packH*ppu);
+  const c=mkCan(W,H), top=c.getContext("2d"), rng=mulberry32(0xedea), cells=[];
+  const lo=mkCan(W,H); let ctx=lo.getContext("2d");
+  top.fillStyle="#dfe6cf"; top.fillRect(0,0,W,H);
+  ctx.setTransform(ppu,0,0,ppu,W/2,H/2);
+  const leafY=y=>Math.abs(y);                           /* distance from the midrib (the leaf runs left–right) */
+  const layer=(deep)=>{
+    const rs=mulberry32(deep?0xedeb:0xedec);
+    let y=-packH/2-2;
+    while(y<packH/2+2){
+      const d=leafY(y), hh=(2.3+rs()*.8)*(deep?1.08:1), len0=d<6?10:d<25?7.5:5.5;
+      let x=-packW/2-rs()*len0;
+      while(x<packW/2+2){
+        const len=len0*(.75+rs()*.5), cw={x:x+len/2+(deep?1.7:0),y:y+hh/2+(deep?.9:0),w:len,h:hh,seed:(rs()*1e9)|0,n:0};
+        const lean=(rs()-.5)*.25;
+        /* cell body: pale green cytoplasm, the vacuole clear */
+        ctx.save(); ctx.translate(cw.x,cw.y);
+        ctx.beginPath(); ctx.moveTo(-len/2,-hh/2+lean*.2); ctx.lineTo(len/2,-hh/2-lean*.2); ctx.lineTo(len/2,hh/2); ctx.lineTo(-len/2,hh/2); ctx.closePath();
+        ctx.fillStyle=deep?"rgba(150,178,110,.25)":"rgba(226,234,206,.55)"; ctx.fill();
+        ctx.lineWidth=deep?.3:.16; ctx.strokeStyle=deep?"rgba(60,96,40,.35)":"rgba(70,98,50,.8)"; ctx.stroke();
+        if(!deep){ ctx.lineWidth=.06; ctx.strokeStyle="rgba(250,255,236,.7)"; ctx.beginPath(); ctx.rect(-len/2+.12,-hh/2+.12,len-.24,hh-.24); ctx.stroke(); }
+        /* chloroplasts: mostly along the walls, a few across the middle, varying size and green */
+        const n=Math.round(len*hh*(1.6+rs()*1.1)); cw.n=n;
+        for(let i=0;i<n;i++){
+          let px,py; const e=rs();
+          if(e<.8){ const t=rs()*2*(len+hh); if(t<len){px=-len/2+t;py=-hh/2+.3;} else if(t<len+hh){px=len/2-.3;py=-hh/2+(t-len);} else if(t<2*len+hh){px=len/2-(t-len-hh);py=hh/2-.3;} else {px=-len/2+.3;py=hh/2-(t-2*len-hh);} px+=(rs()-.5)*.3; py+=(rs()-.5)*.3; }
+          else { px=(rs()-.5)*len*.9; py=(rs()-.5)*hh*.8; }
+          px=Math.max(-len/2+.25,Math.min(len/2-.25,px)); py=Math.max(-hh/2+.25,Math.min(hh/2-.25,py));
+          const r=.2+rs()*.1, gcol=deep?`rgba(60,120,40,.35)`:`rgba(${30+rs()*30|0},${104+rs()*40|0},${30+rs()*20|0},.9)`;
+          ctx.beginPath(); ctx.ellipse(px,py,r,r*.72,rs()*3.14,0,6.3); ctx.fillStyle=gcol; ctx.fill();
+          if(!deep){ ctx.beginPath(); ctx.arc(px-r*.25,py-r*.2,r*.3,0,6.3); ctx.fillStyle="rgba(200,236,120,.45)"; ctx.fill();
+            /* grana: tiny dark specks inside each chloroplast */
+            ctx.fillStyle="rgba(10,50,10,.45)"; for(let k=0;k<3;k++) ctx.fillRect(px+(rs()-.5)*r,py+(rs()-.5)*r*.6,.05,.05); }
+        }
+        if(!deep && rs()<.35){ /* the nucleus: a grey, slightly granular disc half hidden among the chloroplasts */
+          const nx=(rs()-.5)*len*.6, ny=(rs()-.5)*hh*.4; ctx.beginPath(); ctx.ellipse(nx,ny,.55,.45,0,0,6.3); ctx.fillStyle="rgba(160,170,140,.55)"; ctx.fill(); ctx.lineWidth=.05; ctx.strokeStyle="rgba(80,90,60,.6)"; ctx.stroke(); }
+        ctx.restore();
+        if(!deep) cells.push(cw);
+        x+=len;
       }
+      y+=hh;
     }
-  }
+  };
+  layer(true);
+  top.filter=`blur(${(ppu*.35).toFixed(1)}px)`; top.drawImage(lo,0,0); top.filter="none";   /* the lower layer, out of focus */
+  ctx=top; ctx.setTransform(ppu,0,0,ppu,W/2,H/2); layer(false);
+  /* the midrib: long narrow cells, a little yellower */
+  ctx.fillStyle="rgba(214,210,150,.18)"; ctx.fillRect(-packW/2,-3,packW,6);
+  speckle(ctx,packW,packH,0xede9,4000,[60,80,40],.03,.07,.12);
+  airBubble(ctx,40,-36,6); airBubble(ctx,-52,30,3.2);
+  ctx.setTransform(1,0,0,1,0,0);
   return {c, w:packW, h:packH, cells};
 }
 function bakePondBg(){
@@ -2228,7 +2270,7 @@ function bakeVirus(){
     ctx.fillRect(rng()*W,rng()*H,1,1);
   }
   function cell(x,y,rx,ry,cpe){
-    ctx.save(); ctx.translate(x,y); ctx.rotate(rng()*Math.PI);
+    ctx.save(); ctx.translate(x,y); ctx.rotate(cpe||bakeVirus.rot==null?rng()*Math.PI:bakeVirus.rot);
     const g=ctx.createRadialGradient(-rx*.15,-ry*.2, rx*.08, 0,0, Math.max(rx,ry));
     if(cpe){
       g.addColorStop(0,"rgba(255,250,236,.96)");
@@ -2267,14 +2309,21 @@ function bakeVirus(){
     ctx.fillStyle="rgba(70,42,24,.5)"; ctx.fill();
     ctx.restore();
   }
-  for(let row=0;row<5;row++){
-    for(let col=0;col<6;col++){
-      const cpe=rng()>0.84;
-      const rx=cpe?42+rng()*14:78+rng()*36;
-      const ry=cpe?38+rng()*12:52+rng()*26;
-      cell(150+col*270+(rng()-.5)*50, 130+row*250+(rng()-.5)*40, rx, ry, cpe);
-    }
+  /* AOG-SCOPE-REALISM-V1 — a real culture flask: a packed sheet of long, spindle-shaped cells that stream in
+     swirls, and one plaque where the virus has worked — cells rounded up, bright and shrunken, with bare
+     glass and debris between them. No grid. */
+  const placed=[], PX=1150, PY=820, PR=300;
+  for(let tries=0;tries<9000&&placed.length<520;tries++){
+    const x=rng()*W, y=rng()*H, inP=Math.hypot(x-PX,y-PY)<PR*(0.9+rng()*.2);
+    const md=inP?46:52;
+    if(placed.some(p=>Math.hypot(p[0]-x,p[1]-y)<md)) continue;
+    placed.push([x,y]);
+    if(inP){ if(rng()<.35) continue; const r=22+rng()*14; ctx.save(); cell(x,y,r,r*(.85+rng()*.2),true); ctx.restore(); continue; }
+    const flow=Math.sin(x*.0024)+Math.cos(y*.003)*.8;
+    bakeVirus.rot=flow+(rng()-.5)*.4; cell(x,y,70+rng()*50,20+rng()*16,false);
   }
+  /* debris in the plaque */
+  for(let i=0;i<160;i++){ const a=rng()*6.3, d=Math.sqrt(rng())*PR; ctx.fillStyle=`rgba(90,70,40,${.15+rng()*.25})`; ctx.beginPath(); ctx.arc(PX+Math.cos(a)*d,PY+Math.sin(a)*d,1.5+rng()*4,0,Math.PI*2); ctx.fill(); }
   airBubble(ctx, 260, 160, 36);
   return {c, w:168, h:130};
 }
@@ -2383,7 +2432,7 @@ function pollenGrain(ctx,g,det){
       ctx.lineTo(Math.cos(a+w)*r*.97,Math.sin(a+w)*r*.97); ctx.fill();
     }
     if(big) body("rgba(252,244,206,.95)","rgba(236,214,140,.88)","rgba(170,132,50,.9)",r,r);
-    else body("#f7dc8a","#dca63c","#9c6a18",r,r);
+    else body("rgba(250,238,196,.8)","rgba(232,204,130,.8)","rgba(150,110,40,.9)",r,r);
     ctx.strokeStyle=big?"rgba(120,92,30,.75)":"rgba(90,56,10,.8)"; ctx.lineWidth=r*.045; ctx.stroke();
     if(det) granules(ctx,r,r,rng,big?120:40,big?"rgba(150,120,50,.18)":"rgba(120,70,10,.2)");
     if(det){
@@ -2412,13 +2461,14 @@ function pollenGrain(ctx,g,det){
         ctx.restore();
       }
     });
-    body("#f0cf80","#d4a24a","#9a6a20",r*.95,r*.8);
+    body("rgba(246,230,180,.82)","rgba(222,190,120,.82)","rgba(140,100,40,.9)",r*.95,r*.8);
     ctx.strokeStyle="rgba(96,62,16,.8)"; ctx.lineWidth=r*.05; ctx.stroke();
     ctx.beginPath(); ctx.ellipse(0,-r*.18,r*.8,r*.5,0,Math.PI*1.05,Math.PI*1.95); ctx.strokeStyle="rgba(110,70,20,.5)"; ctx.lineWidth=r*.07; ctx.stroke();
   } else if(g.k==="lily"){
     const rx=r*1.9, ry=r*1.15;
-    body("#ffd48a","#eaa048","#a8601c",rx,ry);
-    ctx.strokeStyle="rgba(110,56,10,.8)"; ctx.lineWidth=r*.05; ctx.stroke();
+    body("rgba(252,232,176,.82)","rgba(236,196,120,.82)","rgba(160,100,40,.9)",rx,ry);
+    ctx.strokeStyle="rgba(90,56,20,.75)"; ctx.lineWidth=r*.12; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0,0,rx*.93,ry*.9,0,0,Math.PI*2); ctx.strokeStyle="rgba(255,250,230,.5)"; ctx.lineWidth=r*.03; ctx.stroke();
     if(det){
       /* the net (reticulum): pits and ridges */
       ctx.save(); ctx.beginPath(); ctx.ellipse(0,0,rx*.97,ry*.97,0,0,Math.PI*2); ctx.clip();
@@ -2488,9 +2538,13 @@ function wingList(){
       const x=cx+(rng()-.5)*.35, yy=y+off+(rng()-.5)*.3;
       const bare=Math.hypot((x+42)/1.3,(yy-36))<11+Math.sin(yy)*1.5;
       if(bare && rng()<.93) continue;
-      const c=wingColor(x+Ls/2,yy), j=.9+rng()*.2;
+      /* AOG-SCOPE-REALISM-V1 — each scale is one colour, but the pattern's edges are ragged at scale level
+         (sampled with a jitter), tones wander scale to scale, a few scales are rubbed off, tilted or lifted */
+      if(rng()<.035) continue;
+      const c=wingColor(x+Ls/2+(rng()-.5)*5,yy+(rng()-.5)*4), j=.74+rng()*.4, hue=(rng()-.5)*18;
       const blue=(c[0]<40 && rng()<.16);
-      o.push({x,y:yy,a:(rng()-.5)*.1,L:Ls*(.92+rng()*.14),W:2.2+rng()*.4,c:blue?[70,130,235]:c.map(v=>Math.min(255,v*j|0)),blue,teeth:3+(rng()*3|0)});
+      const col=blue?[60+rng()*40|0,120+rng()*40|0,215+rng()*35|0]:[c[0]*j+hue,c[1]*j,c[2]*j-hue*.5].map(v=>Math.max(0,Math.min(255,v|0)));
+      o.push({x,y:yy,a:(rng()-.5)*.26,L:Ls*(.86+rng()*.24),W:2.0+rng()*.6,c:col,blue,teeth:3+(rng()*3|0),lift:rng()<.06});
     }
   }
   return (wingList.v=o);
@@ -2510,14 +2564,15 @@ function wingScale(ctx,s,det,ob){
   ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);
   const [r,g,b]=s.c;
   /* each tile throws a soft shadow on the row beneath it */
-  ctx.save(); ctx.translate(.18,.14); scalePath(ctx,s); ctx.fillStyle="rgba(10,6,2,.28)"; ctx.fill(); ctx.restore();
+  ctx.save(); ctx.translate(s.lift?.45:.18,s.lift?.35:.14); scalePath(ctx,s); ctx.fillStyle=`rgba(10,6,2,${s.lift?.4:.28})`; ctx.fill(); ctx.restore();
   scalePath(ctx,s);
   const gr=ctx.createLinearGradient(0,0,s.L,0);
   gr.addColorStop(0,`rgba(${r*.72|0},${g*.72|0},${b*.72|0},.97)`);
   gr.addColorStop(.7,`rgba(${r},${g},${b},.97)`);
   gr.addColorStop(1,`rgba(${Math.min(255,r*1.08)|0},${Math.min(255,g*1.08)|0},${Math.min(255,b*1.08)|0},.92)`);
   ctx.fillStyle=gr; ctx.fill();
-  ctx.strokeStyle="rgba(20,12,6,.55)"; ctx.lineWidth=det?.06:.1; ctx.stroke();
+  if(s.lift){ ctx.fillStyle="rgba(255,250,235,.22)"; ctx.fill(); }   /* a lifted scale catches more light */
+  ctx.strokeStyle="rgba(20,12,6,.4)"; ctx.lineWidth=det?.05:.08; ctx.stroke();
   if(det){
     ctx.save(); ctx.clip();
     /* ridges run the length of the scale; cross-ribs only show under oil */
@@ -2605,7 +2660,9 @@ function leafCell(ctx,s,det,iodine){
   for(let i=0;i<P.length;i++) wavyEdge(ctx,P[i],P[(i+1)%P.length],i===0);
   ctx.closePath();
   const t=s.tint;
-  ctx.fillStyle=s.st?`rgba(226,222,236,.55)`:`rgba(${196+t*30|0},${160+t*40|0},${206+t*20|0},${.25+t*.35})`;
+  /* AOG-SCOPE-REALISM-V1 — anthocyanin fills some cells deep magenta and leaves others almost clear */
+  const deep=Math.pow(t,1.6);
+  ctx.fillStyle=s.st?`rgba(226,222,236,.55)`:`rgba(${176+deep*40|0},${150-deep*90|0},${200-deep*40|0},${.08+deep*.7})`;
   ctx.fill();
   ctx.strokeStyle="rgba(58,48,62,.78)"; ctx.lineWidth=det?.13:.2; ctx.stroke();
   if(det){ ctx.strokeStyle="rgba(250,244,255,.55)"; ctx.lineWidth=.035; ctx.stroke(); }
@@ -2693,8 +2750,16 @@ function diatom(ctx,d,det,glow,ob){
   diaShape(ctx,d);
   ctx.fillStyle=glow?"rgba(120,150,190,.08)":"rgba(206,214,190,.4)"; ctx.fill();
   if(glow){ ctx.strokeStyle=tint+".35)"; ctx.lineWidth=.3; ctx.stroke(); ctx.strokeStyle="rgba(245,248,255,.95)"; ctx.lineWidth=.08; ctx.stroke(); }
-  else { ctx.strokeStyle="rgba(40,48,36,.75)"; ctx.lineWidth=.12; ctx.stroke(); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.04; ctx.stroke(); }
+  else { ctx.strokeStyle="rgba(40,48,36,.75)"; ctx.lineWidth=.2; ctx.stroke(); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.05; ctx.stroke(); }
   ctx.save(); diaShape(ctx,d); ctx.clip();
+  /* AOG-SCOPE-REALISM-V1 — most diatoms in a pond drop are alive: two golden-brown plate chloroplasts lie
+     along the glass box, with a few shining oil drops; empty boxes are clear glass */
+  if(!glow && (d.seed%5)<3){
+    const L2=d.L||d.r||3, W2=d.W||d.r||1.5, pr=mulberry32(d.seed^0x9d);
+    [-1,1].forEach(sd=>{ const gg=ctx.createLinearGradient(0,sd*W2*.1,0,sd*W2*.8); gg.addColorStop(0,"rgba(176,128,40,.7)"); gg.addColorStop(1,"rgba(130,92,24,.35)");
+      ctx.beginPath(); ctx.ellipse(0,sd*W2*.42,L2*.78,W2*.33,0,0,Math.PI*2); ctx.fillStyle=gg; ctx.fill(); });
+    for(let i=0;i<4;i++){ const x=(pr()-.5)*L2*1.2, y=(pr()-.5)*W2*.6, r=Math.min(W2,L2)*(.06+pr()*.06); ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle="rgba(255,250,220,.8)"; ctx.fill(); ctx.strokeStyle="rgba(90,70,20,.6)"; ctx.lineWidth=r*.3; ctx.stroke(); }
+  }
   const ink=glow?tint+(det?".55)":".35)"):(det?"rgba(50,60,40,.42)":"rgba(50,60,40,.25)");
   const fine=det?(ob>=100?1:1.6):3.2;
   ctx.strokeStyle=ink; ctx.fillStyle=ink;
@@ -2772,25 +2837,26 @@ function crystal(ctx,c,L){
   ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.a);
   if(c.salt){
     if(polar){ ctx.restore(); return; } /* salt is a cube: the same in every direction, so crossed filters stay black */
-    const s=c.s, o=s*.13;
-    /* a cube seen a little off square: the top face, and two side faces falling away, darker */
-    ctx.beginPath(); ctx.moveTo(-s/2,-s/2); ctx.lineTo(s/2,-s/2); ctx.lineTo(s/2+o,-s/2+o); ctx.lineTo(-s/2+o,-s/2+o); ctx.closePath();
-    ctx.fillStyle="rgba(214,216,212,.7)"; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(s/2,-s/2); ctx.lineTo(s/2,s/2); ctx.lineTo(s/2+o,s/2+o); ctx.lineTo(s/2+o,-s/2+o); ctx.closePath();
-    ctx.fillStyle="rgba(190,192,190,.7)"; ctx.fill();
-    ctx.beginPath(); ctx.rect(-s/2,-s/2,s,s);
-    const fg=ctx.createLinearGradient(-s/2,-s/2,s/2,s/2); fg.addColorStop(0,"rgba(252,252,248,.7)"); fg.addColorStop(1,"rgba(232,232,226,.7)");
-    ctx.fillStyle=fg; ctx.fill();
-    ctx.lineWidth=Math.max(.12,s*.07); ctx.strokeStyle="rgba(30,34,40,.85)"; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(s/2,-s/2); ctx.lineTo(s/2+o,-s/2+o); ctx.lineTo(-s/2+o,-s/2+o); ctx.moveTo(s/2+o,-s/2+o); ctx.lineTo(s/2+o,s/2+o); ctx.lineTo(s/2,s/2);
-    ctx.lineWidth=Math.max(.08,s*.04); ctx.strokeStyle="rgba(30,34,40,.6)"; ctx.stroke();
-    ctx.lineWidth=Math.max(.05,s*.02); ctx.strokeStyle="rgba(255,255,255,.9)";
-    ctx.beginPath(); ctx.rect(-s*.43,-s*.43,s*.86,s*.86); ctx.stroke();
-    if(c.hop){
-      for(let k=1;k<5;k++){ const q=s*(.5-k*.09); ctx.beginPath(); ctx.rect(-q,-q,q*2,q*2); ctx.strokeStyle=`rgba(40,46,56,${.5-k*.07})`; ctx.lineWidth=s*.025; ctx.stroke(); }
-      ctx.beginPath(); ctx.moveTo(-s/2,-s/2); ctx.lineTo(s/2,s/2); ctx.moveTo(s/2,-s/2); ctx.lineTo(-s/2,s/2); ctx.strokeStyle="rgba(40,46,56,.18)"; ctx.lineWidth=s*.015; ctx.stroke();
-    }
-    ctx.fillStyle="rgba(255,255,255,.5)"; ctx.fillRect(-s*.32,-s*.34,s*.2,s*.08);
+    /* AOG-SCOPE-REALISM-V1 — a dried salt cube in bright light is not a line drawing. Its sides bend the light
+       away, so the edge is a thick dark band that fades inward; the flat top passes light and glows; a hopper
+       crystal steps down in squares toward a hollow; corners are a little rounded and chipped from drying. */
+    const s=c.s, rng=mulberry32(c.seed), rr=s*.06;
+    const sq=(q,jit)=>{ ctx.beginPath(); const p=[[-q,-q],[q,-q],[q,q],[-q,q]].map(([x,y])=>[x+(rng()-.5)*jit,y+(rng()-.5)*jit]);
+      p.forEach((v,i)=>{ const n=p[(i+1)%4]; const mx=(v[0]+n[0])/2, my=(v[1]+n[1])/2; if(!i) ctx.moveTo(mx,my); ctx.arcTo(n[0],n[1],(n[0]+p[(i+2)%4][0])/2,(n[1]+p[(i+2)%4][1])/2,rr); }); ctx.closePath(); };
+    sq(s/2,s*.03);
+    const g=ctx.createRadialGradient(-s*.08,-s*.1,s*.05,0,0,s*.72);
+    g.addColorStop(0,"rgba(255,255,252,.95)"); g.addColorStop(.3,"rgba(238,240,238,.9)"); g.addColorStop(.5,"rgba(150,154,160,.9)"); g.addColorStop(.68,"rgba(60,62,70,.92)"); g.addColorStop(1,"rgba(24,26,30,.96)");
+    ctx.fillStyle=g; ctx.fill();
+    /* the dark relief band, soft on the inside */
+    ctx.save(); ctx.clip();
+    ctx.lineWidth=s*.34; ctx.strokeStyle="rgba(28,30,36,.5)"; sq(s/2,0); ctx.stroke();
+    ctx.lineWidth=s*.05; ctx.strokeStyle="rgba(250,250,246,.55)"; sq(s*.37,0); ctx.stroke();
+    if(c.hop){ for(let k=1;k<6;k++){ const q=s*(.4-k*.065); sq(q,s*.01); ctx.lineWidth=s*.022; ctx.strokeStyle=`rgba(40,44,52,${.42-k*.05})`; ctx.stroke(); sq(q-s*.015,0); ctx.lineWidth=s*.01; ctx.strokeStyle="rgba(255,255,255,.4)"; ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(0,0,s*.06,0,6.3); ctx.fillStyle="rgba(60,64,70,.45)"; ctx.fill(); }
+    /* inclusions and growth lines */
+    ctx.fillStyle="rgba(40,44,50,.4)"; for(let i=0;i<Math.round(s*2);i++){ ctx.beginPath(); ctx.arc((rng()-.5)*s*.7,(rng()-.5)*s*.7,s*(.006+rng()*.012),0,6.3); ctx.fill(); }
+    ctx.restore();
+    sq(s/2,0); ctx.lineWidth=Math.max(.05,s*.025); ctx.strokeStyle="rgba(18,20,24,.8)"; ctx.stroke();
   } else {
     const P=sugarPoly(c), path=()=>{ ctx.beginPath(); P.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); };
     if(polar){
@@ -2800,8 +2866,9 @@ function crystal(ctx,c,L){
       ctx.beginPath(); ctx.moveTo(-c.L*.55,-c.W*.55); ctx.lineTo(c.L*.5,-c.W*.55); ctx.lineTo(c.L*.62,c.W*.45); ctx.lineTo(-c.L*.6,c.W*.45); ctx.closePath(); face(1,c.th*560);
       path(); ctx.strokeStyle=`rgba(255,255,255,${.25*I})`; ctx.lineWidth=.06; ctx.stroke();
     } else {
-      path(); ctx.fillStyle="rgba(248,248,240,.5)"; ctx.fill();
-      ctx.strokeStyle="rgba(30,34,40,.8)"; ctx.lineWidth=.14; ctx.stroke();
+      path(); const sg=ctx.createRadialGradient(-c.L*.1,-c.W*.1,c.W*.1,0,0,c.L); sg.addColorStop(0,"rgba(252,252,246,.8)"); sg.addColorStop(.6,"rgba(226,228,222,.7)"); sg.addColorStop(1,"rgba(90,94,100,.8)"); ctx.fillStyle=sg; ctx.fill();
+      ctx.save(); ctx.clip(); ctx.lineWidth=c.W*.35; ctx.strokeStyle="rgba(30,34,40,.4)"; path(); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle="rgba(30,34,40,.8)"; ctx.lineWidth=.1; path(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(-c.L*.7,-c.W); ctx.lineTo(-c.L*.55,-c.W*.55); ctx.lineTo(c.L*.5,-c.W*.55); ctx.lineTo(c.L*.78,-c.W);
       ctx.moveTo(-c.L*.55,-c.W*.55); ctx.lineTo(-c.L*.6,c.W*.45); ctx.lineTo(c.L*.62,c.W*.45); ctx.lineTo(c.L*.5,-c.W*.55);
       ctx.strokeStyle="rgba(40,46,56,.4)"; ctx.lineWidth=.06; ctx.stroke();
@@ -2814,7 +2881,12 @@ function drawCrystals(ctx,L){
   const polar=L&&L.illum==="polar";
   if(polar){ ctx.fillStyle="#010104"; ctx.fillRect(-900,-900,1800,1800); }
   else {
-    if(!SLIDE.cryBg) SLIDE.cryBg=bakeUnits(CRY_W,CRY_H,6,c=>{ c.fillStyle="#efece2"; c.fillRect(-CRY_W/2,-CRY_H/2,CRY_W,CRY_H); speckle(c,CRY_W,CRY_H,0xc2a1,2500,[110,110,100],.02,.05,.3); });
+    if(!SLIDE.cryBg) SLIDE.cryBg=bakeUnits(CRY_W,CRY_H,6,c=>{ c.fillStyle="#efece2"; c.fillRect(-CRY_W/2,-CRY_H/2,CRY_W,CRY_H); speckle(c,CRY_W,CRY_H,0xc2a1,2500,[110,110,100],.02,.05,.3);
+      /* AOG-SCOPE-REALISM-V1: where a drop dries it leaves a ring of crust and fern-like fronds of tiny crystals */
+      const rng=mulberry32(0xc2a9);
+      [[-40,-20,38],[35,25,32]].forEach(([x,y,R])=>{ c.lineWidth=1.4; c.strokeStyle="rgba(120,118,110,.22)"; c.beginPath(); for(let i=0;i<=80;i++){ const a=i/80*6.3, q=R*(1+(rng()-.5)*.06); i?c.lineTo(x+Math.cos(a)*q,y+Math.sin(a)*q):c.moveTo(x+Math.cos(a)*q,y+Math.sin(a)*q); } c.stroke();
+        for(let f=0;f<26;f++){ const a=rng()*6.3; let px=x+Math.cos(a)*R, py=y+Math.sin(a)*R, d=a+Math.PI+(rng()-.5)*.6; c.strokeStyle="rgba(90,92,96,.3)"; c.lineWidth=.15;
+          for(let k=0;k<14;k++){ const nx=px+Math.cos(d)*.9, ny=py+Math.sin(d)*.9; c.beginPath(); c.moveTo(px,py); c.lineTo(nx,ny); c.moveTo(nx,ny); c.lineTo(nx+Math.cos(d+.8)*.5,ny+Math.sin(d+.8)*.5); c.moveTo(nx,ny); c.lineTo(nx+Math.cos(d-.8)*.5,ny+Math.sin(d-.8)*.5); c.stroke(); px=nx; py=ny; d+=(rng()-.5)*.3; } } }); });
     blit(ctx,SLIDE.cryBg);
   }
   cryList().forEach(c=>{ if(inView(L,c.x,c.y,(c.s||c.L)*1.2)) crystal(ctx,c,L); });
@@ -3125,16 +3197,30 @@ function drawScroll(ctx,L){
 }
 /* cuneiform: every sign is a few wedges, each a deep triangular head and a tapering tail */
 function wedge(ctx,x,y,len,ang,det,rng){
+  /* AOG-SCOPE-REALISM-V1 — a stylus mark pressed into damp clay, lit from the upper left as a lamp on a
+     stereo bench lights it: a deep three-faced head, a narrowing groove for the tail, a low raised lip
+     of pushed-up clay round it, and crumbly, uneven edges. Each facet takes its own light. */
+  const r=rng||mulberry32(((x*131+y*977)|0)^0x77);
   ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
-  const hw=len*.22;
-  ctx.beginPath(); ctx.moveTo(0,-hw); ctx.lineTo(len,0); ctx.lineTo(0,hw); ctx.closePath();
-  const g=ctx.createLinearGradient(0,-hw,0,hw); g.addColorStop(0,"rgba(255,240,215,.55)"); g.addColorStop(.45,"rgba(60,45,30,.55)"); g.addColorStop(1,"rgba(30,22,15,.75)");
-  ctx.fillStyle=g; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(0,-hw); ctx.lineTo(len,0); ctx.strokeStyle="rgba(255,245,225,.7)"; ctx.lineWidth=det?.06:.12; ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(0,hw); ctx.lineTo(len,0); ctx.strokeStyle="rgba(20,14,8,.7)"; ctx.lineWidth=det?.08:.14; ctx.stroke();
-  /* the head is the deepest point: a soft pit that fades along the tail */
-  const hg=ctx.createLinearGradient(0,0,len*.6,0); hg.addColorStop(0,"rgba(15,10,6,.55)"); hg.addColorStop(1,"rgba(15,10,6,0)");
-  ctx.beginPath(); ctx.moveTo(0,-hw); ctx.lineTo(len,0); ctx.lineTo(0,hw); ctx.closePath(); ctx.fillStyle=hg; ctx.fill();
+  const hw=len*.24, hl=len*.36, j=()=>(r()-.5)*len*.035;
+  const H=[[j(),-hw+j()],[hl+j(),j()],[j(),hw+j()]], T=[len+j(),j()];
+  const lit=Math.cos(ang+2.35);                        /* how much each face turns to the lamp */
+  /* raised lip */
+  { const lg=ctx.createRadialGradient(hl*.3,0,hw*.8,hl*.3,0,hw*1.9); lg.addColorStop(0,"rgba(236,218,188,.32)"); lg.addColorStop(1,"rgba(236,218,188,0)");
+    ctx.fillStyle=lg; ctx.beginPath(); ctx.ellipse(hl*.3,0,hw*1.9,hw*1.9,0,0,6.3); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(hl,-hw*.5); ctx.lineTo(len*1.02,-len*.02); ctx.strokeStyle="rgba(244,228,200,.3)"; ctx.lineWidth=len*.03; ctx.lineCap="round"; ctx.stroke(); }
+  /* tail groove: two walls meeting in a line */
+  ctx.beginPath(); ctx.moveTo(H[1][0]*.8,-hw*.38); ctx.lineTo(T[0],T[1]); ctx.lineTo(H[1][0]*.8,0); ctx.closePath(); ctx.fillStyle=`rgba(${120+lit*60|0},${100+lit*50|0},${76+lit*40|0},.85)`; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(H[1][0]*.8,hw*.38); ctx.lineTo(T[0],T[1]); ctx.lineTo(H[1][0]*.8,0); ctx.closePath(); ctx.fillStyle=`rgba(${60-lit*20|0},${46-lit*15|0},${32-lit*10|0},.85)`; ctx.fill();
+  /* head: three facets down to the deepest point */
+  const D=[hl*.42,0];
+  const face=(p,q,k)=>{ ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(q[0],q[1]); ctx.lineTo(D[0],D[1]); ctx.closePath(); ctx.fillStyle=`rgba(${Math.max(20,Math.min(240,150+k*90))|0},${Math.max(14,Math.min(222,126+k*80))|0},${Math.max(10,Math.min(196,96+k*66))|0},.92)`; ctx.fill(); };
+  face(H[0],H[1],lit*.9); face(H[1],H[2],-lit*.8-.2); face(H[2],H[0],-.55);
+  if(det){ /* grain and crumbs inside the mark */
+    for(let i=0;i<Math.round(len*len*.8);i++){ const px=r()*len*.9, py=(r()-.5)*hw*1.6*(1-px/len); ctx.fillStyle=r()<.5?"rgba(30,22,14,.35)":"rgba(240,226,200,.3)"; ctx.fillRect(px,py,.08+r()*.1,.08+r()*.1); }
+  }
+  ctx.beginPath(); ctx.moveTo(H[0][0],H[0][1]); ctx.lineTo(H[1][0],H[1][1]); ctx.lineTo(T[0],T[1]); ctx.lineTo(H[1][0],H[1][1]); ctx.lineTo(H[2][0],H[2][1]); ctx.lineTo(H[0][0],H[0][1]);
+  ctx.strokeStyle="rgba(24,18,12,.35)"; ctx.lineWidth=det?.05:.1; ctx.stroke();
   ctx.restore();
 }
 function tabletSigns(){
@@ -3211,6 +3297,12 @@ function hairsBg(ctx,polar){
     for(let y=-48;y<48;y+=1.3) for(let x=-HAIR_W/2;x<HAIR_W/2;x+=1.7){ const px=x+(Math.round(y/1.3)&1?.85:0)+(rng()-.5)*.3; ctx.moveTo(px,y); ctx.lineTo(px+1.7,y+(rng()-.5)*.2); ctx.moveTo(px,y); ctx.lineTo(px+(rng()-.5)*.3,y+1.3); }
     ctx.stroke();
     speckle(ctx,HAIR_W,HAIR_H,0x7a1e,5000,[30,60,15],.03,.07,.3);
+    /* AOG-SCOPE-REALISM-V1 — a whole leaf is many cells thick: under the in-focus skin the green tissue shows
+       as soft, out-of-focus clusters of chloroplasts, darker over the thick parts, paler over air spaces */
+    const mr=mulberry32(0x7a1f);
+    for(let i=0;i<2600;i++){ const x=(mr()-.5)*HAIR_W, y=(mr()-.5)*HAIR_H, R=.6+mr()*1.6, dk=mr();
+      const gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,dk<.6?`rgba(30,70,20,${.12+mr()*.14})`:`rgba(200,230,150,${.08+mr()*.1})`); gg.addColorStop(1,"rgba(40,80,20,0)");
+      ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
   }
   /* midrib and side veins that each run out to a tooth */
   const vc=polar?"rgba(40,60,40,.5)":"rgba(170,200,120,.75)", vd=polar?"rgba(0,0,0,0)":"rgba(40,64,20,.45)";
@@ -3226,8 +3318,12 @@ function hairDraw(ctx,h,det,polar){
     ctx.rotate(h.a);
     const L=h.L, b=.36;
     if(!polar){
-      ctx.beginPath(); ctx.moveTo(0,-b); ctx.quadraticCurveTo(L*.55,-b*.8,L,-b*.1-.15*h.c); ctx.quadraticCurveTo(L*.5,b*.5,0,b); ctx.closePath();
-      ctx.fillStyle="rgba(236,242,226,.72)"; ctx.fill();
+      /* AOG-SCOPE-REALISM-V1 — a real hook hair tapers and curves, stands up off the leaf so its tip is softer,
+         and its wall is warty and bright-edged */
+      ctx.beginPath(); ctx.moveTo(0,-b); ctx.bezierCurveTo(L*.35,-b*1.05,L*.7,-b*.6-.2*h.c,L,-b*.1-.35*h.c); ctx.quadraticCurveTo(L*.55,b*.35,0,b); ctx.closePath();
+      const hg=ctx.createLinearGradient(0,0,L,0); hg.addColorStop(0,"rgba(236,242,226,.85)"); hg.addColorStop(.7,"rgba(240,246,232,.6)"); hg.addColorStop(1,"rgba(240,246,232,.25)");
+      ctx.fillStyle=hg; ctx.fill();
+      if(det){ const wr=mulberry32((h.x*977+h.y*131)|0); ctx.fillStyle="rgba(90,110,70,.35)"; for(let i=0;i<14;i++){ const tx=wr()*L*.85, ty=(wr()-.5)*b*(1-tx/L)*1.4; ctx.beginPath(); ctx.arc(tx,ty,.03+wr()*.03,0,Math.PI*2); ctx.fill(); } }
       if(det){ ctx.strokeStyle="rgba(50,70,40,.65)"; ctx.lineWidth=.05; ctx.stroke(); ctx.beginPath(); ctx.moveTo(.2,-b*.35); ctx.quadraticCurveTo(L*.5,-b*.45,L*.9,-.12); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.05; ctx.stroke(); }
       ctx.beginPath(); ctx.ellipse(.05,0,b*1.05,b*.95,0,0,Math.PI*2); ctx.fillStyle="rgba(214,226,196,.8)"; ctx.fill();
       if(det){ ctx.strokeStyle="rgba(50,70,40,.5)"; ctx.lineWidth=.04; ctx.stroke(); }
@@ -3280,7 +3376,7 @@ function bloodList(){
     /* the feathered edge thins out; the thick end crowds */
     const dens=.55+.4*((x+BLOOD_W/2)/BLOOD_W);
     if(rng()>dens) continue;
-    const px=x+(rng()-.5)*sp*.5+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*.4;
+    const px=x+(rng()-.5)*sp*1.1+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*1.0;   /* AOG-SCOPE-REALISM-V1: a smear has no rows */
     const r=rng();
     if(r<.006) o.push({k:"neut",x:px,y:py,r:.6+rng()*.08,a:rng()*6,seed:(rng()*1e9)|0});
     else if(r<.009) o.push({k:"lymph",x:px,y:py,r:.42+rng()*.06,a:rng()*6,seed:(rng()*1e9)|0});
@@ -3603,6 +3699,15 @@ function drawTick(ctx,det,ob,pose){
     ctx.beginPath();
     for(let i=0;i<34;i++){ const x=6+rng()*26, y=-4+rng()*56; if((x*x)/(34*34)+((y-10)*(y-10))/(48*48)>1) continue; [1,-1].forEach(s=>{ ctx.moveTo(s*x,y); ctx.lineTo(s*(x+1.6),y+2.2); }); }
     ctx.strokeStyle="rgba(70,34,12,.7)"; ctx.lineWidth=.3; ctx.stroke();
+    if(ob>=40){ /* AOG-SCOPE-REALISM-V1 — at 400–1000× the cuticle is not smooth: mottled tone, shallow pits
+       with a bright rim, and setal sockets scattered over it */
+      const pr=mulberry32(0x71c9);
+      for(let i=0;i<500;i++){ const x=(pr()-.5)*72, y=10+(pr()-.5)*100, R=1+pr()*4; const gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,pr()<.5?"rgba(60,28,8,.12)":"rgba(230,190,140,.1)"); gg.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
+      for(let i=0;i<1400;i++){ const x=(pr()-.5)*72, y=10+(pr()-.5)*100, q=.08+pr()*.16;
+        ctx.beginPath(); ctx.arc(x,y,q,0,Math.PI*2); ctx.fillStyle="rgba(50,22,6,.45)"; ctx.fill();
+        ctx.beginPath(); ctx.arc(x-q*.3,y-q*.3,q*.9,Math.PI,Math.PI*1.6); ctx.strokeStyle="rgba(255,226,180,.35)"; ctx.lineWidth=q*.3; ctx.stroke(); }
+      for(let i=0;i<120;i++){ const x=(pr()-.5)*70, y=10+(pr()-.5)*96, q=.35+pr()*.25; ctx.beginPath(); ctx.arc(x,y,q,0,Math.PI*2); ctx.strokeStyle="rgba(60,28,8,.5)"; ctx.lineWidth=.12; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,q*.4,0,Math.PI*2); ctx.fillStyle="rgba(240,210,160,.4)"; ctx.fill(); }
+    }
   }
   /* marginal groove, and the festoon seams */
   ctx.beginPath(); ctx.ellipse(0,10,32,45.5,0,Math.PI*.18,Math.PI*.82); ctx.strokeStyle="rgba(90,46,16,.5)"; ctx.lineWidth=.6; ctx.stroke();
@@ -3686,7 +3791,7 @@ function ensureSlides(){
   SLIDE.e=bakeLetterE();
   SLIDE.onion=bakeOnion();
   SLIDE.hair=bakeHair();
-  SLIDE.elodea=bakeElodea();
+  /* elodea is baked the first time it is shown (AOG-SCOPE-REALISM-V1) */
   SLIDE.pondBg=bakePondBg();
   SLIDE.virus=bakeVirus();
   SLIDE.bact=bakeBactBg();
@@ -3747,11 +3852,15 @@ function seedBacteria(){
       });
     }
   };
-  clump(46, 0, 0, "rod");
-  clump(22, 1.2, 0.4, "rod");
-  clump(14, -1.5, 1.1, "coccus");
-  clump(8, 2.2, -1.4, "coccus");
-  clump(5, -2.4, -0.6, "spir");
+  /* AOG-SCOPE-REALISM-V1 — true scale: one slide unit is about 10.7 µm, so a rod (2–3 µm) is 0.2–0.3 units
+     long and a coccus (1 µm) is 0.1 across. A smear spreads them thinly over the glass, thicker in a few
+     places, with chains and grape-bunches of cocci among the rods. */
+  const rodC=(n,cx,cy,sp,kind)=>{ for(let i=0;i<n;i++){ const ang=rng()*6.28, rad=Math.sqrt(rng())*sp;
+    o.push({kind,x:cx+Math.cos(ang)*rad,y:cy+Math.sin(ang)*rad,a:rng()*6.28,
+      L:kind==="rod"?.1+rng()*.05:kind==="spir"?.25+rng()*.1:0, W:kind==="rod"?.026+rng()*.008:kind==="spir"?.02:.045+rng()*.008,
+      n:kind==="coccus"?(rng()<.5?2:3+(rng()*6|0)):1, v:.03+rng()*.05, seed:rng()*100}); } };
+  rodC(900,0,0,9,"rod"); rodC(500,6,-4,4,"rod"); rodC(400,-7,5,3.5,"coccus"); rodC(600,(rng()-.5)*6,(rng()-.5)*6,24,"rod");
+  rodC(250,10,8,6,"coccus"); rodC(40,-4,-8,10,"spir");
   return o;
 }
 function paraPath(ctx){
@@ -3856,51 +3965,48 @@ function drawPondLive(ctx, now, reduced){
       ctx.restore(); return;
     }
     if(c.kind==="para"){
+      /* AOG-SCOPE-REALISM-V1 — Paramecium caudatum is 180–300 µm (about 17–28 units): drawn at 0.66 so it keeps
+         real size. A clear pellicle with a fine grid of ridges, a band of trichocysts under it, a hazy fringe of
+         thousands of beating cilia rather than a comb, food vacuoles of different fullness, a grey grainy
+         macronucleus, the oral groove, and two star-shaped contractile vacuoles that fill and empty. */
+      ctx.scale(.66,.66);
+      const rs=mulberry32((c.seed*1000)|0);
+      /* cilia: a soft beating halo, drawn as many faint short strokes in a travelling wave */
+      ctx.save(); ctx.strokeStyle=dark?"rgba(255,240,210,.35)":"rgba(70,62,44,.22)"; ctx.lineWidth=.16; ctx.beginPath();
+      for(let i=0;i<160;i++){ const t=i/160*Math.PI*2, ex=Math.cos(t), ey=Math.sin(t), px=(ex>0?16.8:18.2)*ex, py=(ey>0?7.6:8.4)*ey;
+        const w=reduced?0:Math.sin(tt*14-i*.35)*.5, n=Math.hypot(ex*.45,ey)||1; ctx.moveTo(px,py); ctx.lineTo(px+ex*.45/n*1.4+w*.3,py+ey/n*1.4); }
+      ctx.stroke(); ctx.restore();
       paraPath(ctx);
-      ctx.fillStyle=dark?"rgba(255,228,170,.82)":"rgba(214,202,168,.62)"; ctx.fill();
-      paraPath(ctx);
-      ctx.strokeStyle=dark?"rgba(255,248,220,.98)":"rgba(72,58,32,.72)";
-      ctx.lineWidth=dark?0.85:0.55; ctx.stroke();
-      ctx.save(); ctx.clip();
-      ctx.globalAlpha=soft?0.4:0.85;
-      for(let i=0;i<18;i++){
-        const gx=-12+ (i%6)*4.2, gy=-4+(i%3)*2.6;
-        ctx.fillStyle=dark?"rgba(255,220,150,.18)":"rgba(120,100,60,.13)";
-        ctx.beginPath(); ctx.ellipse(gx,gy,0.7,0.45,i,0,Math.PI*2); ctx.fill();
-      }
-      ctx.beginPath(); ctx.ellipse(-3.2,0.2,4.6,2.4,.35,0,Math.PI*2);
-      ctx.fillStyle=dark?"rgba(255,196,120,.55)":"rgba(110,78,48,.4)"; ctx.fill();
-      ctx.beginPath(); ctx.ellipse(-2.2,0.5,1.1,0.7,0,0,Math.PI*2);
-      ctx.fillStyle=dark?"rgba(255,230,180,.7)":"rgba(70,48,30,.45)"; ctx.fill();
-      ctx.fillStyle=dark?"rgba(255,210,140,.4)":"rgba(90,80,50,.3)";
-      [[7,2.2,1.5],[2,-2.4,1.1],[-10,2.1,1.3],[10,-1.2,0.9]].forEach(([x,y,r])=>{
-        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
-      });
-      const pulse=.55+.45*Math.sin(tt*3.2+c.seed);
-      ctx.beginPath(); ctx.arc(11.5,-1.6,1.7*pulse,0,Math.PI*2);
-      ctx.fillStyle=dark?"rgba(220,240,255,.85)":"rgba(210,220,230,.7)"; ctx.fill();
-      ctx.strokeStyle=dark?"rgba(255,240,200,.35)":"rgba(80,80,70,.25)"; ctx.lineWidth=.3;
-      for(let i=0;i<5;i++){
-        const a=-0.6+i*0.35;
-        ctx.beginPath(); ctx.moveTo(11.5,-1.6); ctx.lineTo(11.5+Math.cos(a)*3.2, -1.6+Math.sin(a)*2.2); ctx.stroke();
-      }
+      const bg=ctx.createRadialGradient(-2,-2,2,0,0,18); bg.addColorStop(0,dark?"rgba(255,232,180,.7)":"rgba(226,218,190,.55)"); bg.addColorStop(1,dark?"rgba(255,220,160,.85)":"rgba(196,184,150,.65)");
+      ctx.fillStyle=bg; ctx.fill();
+      paraPath(ctx); ctx.strokeStyle=dark?"rgba(255,248,220,.95)":"rgba(60,50,30,.6)"; ctx.lineWidth=dark?.6:.35; ctx.stroke();
+      ctx.save(); paraPath(ctx); ctx.clip();
+      ctx.globalAlpha=soft?0.4:1;
+      /* pellicle ridges */
+      ctx.strokeStyle=dark?"rgba(255,240,200,.12)":"rgba(90,80,50,.1)"; ctx.lineWidth=.12;
+      for(let k=-18;k<18;k+=.9){ ctx.beginPath(); ctx.moveTo(k,-9); ctx.quadraticCurveTo(k+2,0,k,9); ctx.stroke(); }
+      /* trichocyst band just under the edge */
+      paraPath(ctx); ctx.strokeStyle=dark?"rgba(255,230,190,.25)":"rgba(120,100,60,.18)"; ctx.lineWidth=1.1; ctx.stroke();
+      /* cytoplasm granules */
+      for(let i=0;i<220;i++){ const x=(rs()-.5)*32, y=(rs()-.5)*14; ctx.fillStyle=dark?`rgba(255,220,160,${.1+rs()*.2})`:`rgba(90,74,44,${.08+rs()*.16})`; ctx.fillRect(x,y,.22,.22); }
+      /* food vacuoles: fullness and colour vary (green algae, brown bacteria) */
+      for(let i=0;i<9;i++){ const x=-11+rs()*20, y=(rs()-.5)*8, r=.7+rs()*1.1, k=rs();
+        ctx.beginPath(); ctx.arc(x,y,r,0,6.3); ctx.fillStyle=dark?"rgba(255,210,140,.35)":k<.35?"rgba(110,140,70,.45)":k<.7?"rgba(130,100,60,.4)":"rgba(210,200,170,.35)"; ctx.fill();
+        ctx.strokeStyle=dark?"rgba(255,230,190,.4)":"rgba(70,58,36,.35)"; ctx.lineWidth=.12; ctx.stroke(); }
+      /* macronucleus: grey, bean-shaped, grainy; micronucleus beside it */
+      ctx.beginPath(); ctx.ellipse(-2.6,0.3,4.2,2.2,.3,0,Math.PI*2); ctx.fillStyle=dark?"rgba(255,200,130,.45)":"rgba(140,128,104,.5)"; ctx.fill();
+      for(let i=0;i<60;i++){ const t=rs()*6.3, d=Math.sqrt(rs()); ctx.fillStyle=dark?"rgba(255,220,170,.3)":"rgba(80,70,50,.35)"; ctx.fillRect(-2.6+Math.cos(t)*d*3.8,.3+Math.sin(t)*d*1.9,.18,.18); }
+      ctx.beginPath(); ctx.arc(.9,1.8,.55,0,6.3); ctx.fillStyle=dark?"rgba(255,230,180,.55)":"rgba(90,76,52,.5)"; ctx.fill();
+      /* contractile vacuoles with their radiating canals, filling and emptying out of step */
+      [[11,-1.6,0],[-12,-1.4,Math.PI]].forEach(([x,y,ph])=>{ const pulse=.35+.65*Math.max(0,Math.sin(tt*2.2+c.seed+ph));
+        ctx.strokeStyle=dark?"rgba(220,240,255,.35)":"rgba(120,130,130,.3)"; ctx.lineWidth=.3;
+        for(let i=0;i<7;i++){ const a2=i/7*6.3; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(a2)*3.4,y+Math.sin(a2)*2); ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(x,y,1.5*pulse,0,6.3); ctx.fillStyle=dark?"rgba(220,240,255,.75)":"rgba(236,240,240,.8)"; ctx.fill();
+        ctx.strokeStyle=dark?"rgba(255,255,255,.5)":"rgba(80,86,86,.4)"; ctx.lineWidth=.15; ctx.stroke(); });
       ctx.restore();
-      ctx.beginPath(); ctx.moveTo(6,1.6); ctx.quadraticCurveTo(-1,5.2,-9,1.2);
-      ctx.strokeStyle=dark?"rgba(255,210,140,.55)":"rgba(60,50,30,.4)"; ctx.lineWidth=.7; ctx.stroke();
-      ctx.strokeStyle=dark?"rgba(255,250,220,.98)":"rgba(60,52,32,.62)";
-      ctx.lineWidth=dark?0.7:0.42;
-      const nC=32;
-      for(let i=0;i<nC;i++){
-        const u=i/(nC-1);
-        const wob=reduced?0:Math.sin(tt*16+i*0.7)*0.85;
-        const side=i%2?1:-1;
-        const px=-16+u*32, py=(side>0?6.6:-6.8)*(1-Math.pow((u-.5)*1.7,2));
-        const nx=side>0?0.15:-0.15, ny=side;
-        ctx.beginPath();
-        ctx.moveTo(px, py*0.92);
-        ctx.lineTo(px+nx*wob, py + ny*(1.15+wob*0.25));
-        ctx.stroke();
-      }
+      /* oral groove */
+      ctx.beginPath(); ctx.moveTo(8,2); ctx.quadraticCurveTo(1,5.6,-4,2.4);
+      ctx.strokeStyle=dark?"rgba(255,210,140,.5)":"rgba(60,50,30,.35)"; ctx.lineWidth=.6; ctx.stroke();
       ctx.restore(); return;
     }
     if(c.kind==="eug"){
@@ -3986,9 +4092,12 @@ function drawPondLive(ctx, now, reduced){
 }
 function drawBactLive(ctx, now, reduced){
   const stain=S.lab.stain||"none";
-  const tint = stain==="safranin" ? [150,28,48] : stain==="methylene" ? [28,42,130] : [55,62,40];
-  const a = stain==="none" ? 0.62 : 0.92;
+  /* unstained bacteria are nearly clear in bright light; that is why they are stained */
+  const tint = stain==="safranin" ? [196,40,86] : stain==="methylene" ? [34,52,150] : [70,72,64];
+  const a = stain==="none" ? 0.32 : 0.9;
+  const Lb=S.lab;
   bacteria.forEach(b=>{
+    if(Lb&&!inView(Lb,b.x,b.y,.5)) return;
     ctx.save();
     ctx.translate(b.x,b.y); ctx.rotate(b.a);
     ctx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${a})`;
@@ -4026,26 +4135,21 @@ function drawBactLive(ctx, now, reduced){
   });
 }
 function drawElodeaLive(ctx, now, reduced){
-  const pack=SLIDE.elodea; if(!pack||!pack.cells) return;
+  /* AOG-SCOPE-REALISM-V1 — cytoplasmic streaming: at 40× and up a share of each cell's chloroplasts glides
+     round the walls (about 5–10 µm a second, slowed here). The rest are baked still into the leaf. */
+  const pack=SLIDE.elodea, L=S.lab; if(!pack||!pack.cells||!L||L.obj<40) return;
   const tt=reduced?0:now/1000;
   pack.cells.forEach(cell=>{
-    const n=cell.n, w=cell.w-3.4, h=cell.h-3.2;
-    const peri=2*(w+h);
+    if(!inView(L,cell.x,cell.y,cell.w)) return;
+    const n=Math.max(4,Math.round(cell.n*.25)), w=cell.w-.6, h=cell.h-.6, peri=2*(w+h), rs=mulberry32(cell.seed);
     for(let i=0;i<n;i++){
-      let t=((i/n)+tt*(.035+(cell.seed%7)*.004))%1;
-      if(t<0) t+=1;
-      const d=t*peri;
-      let x,y;
-      if(d<w){ x=cell.x-w/2+d; y=cell.y-h/2; }
-      else if(d<w+h){ x=cell.x+w/2; y=cell.y-h/2+(d-w); }
-      else if(d<w+h+w){ x=cell.x+w/2-(d-w-h); y=cell.y+h/2; }
-      else { x=cell.x-w/2; y=cell.y+h/2-(d-w-h-w); }
-      ctx.beginPath(); ctx.ellipse(x,y, 1.15, .78, t*6.2, 0, Math.PI*2);
-      ctx.fillStyle="rgba(18,108,32,.94)"; ctx.fill();
-      ctx.beginPath(); ctx.ellipse(x,y, 1.15, .78, t*6.2, 0, Math.PI*2);
-      ctx.strokeStyle="rgba(8,60,16,.45)"; ctx.lineWidth=.15; ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(x-.28, y-.22, .38, .26, 0, 0, Math.PI*2);
-      ctx.fillStyle="rgba(210,236,90,.62)"; ctx.fill();
+      let t=((i/n)+tt*(.02+(cell.seed%7)*.003))%1; if(t<0) t+=1;
+      const d=t*peri; let x,y;
+      if(d<w){ x=cell.x-w/2+d; y=cell.y-h/2; } else if(d<w+h){ x=cell.x+w/2; y=cell.y-h/2+(d-w); }
+      else if(d<w+h+w){ x=cell.x+w/2-(d-w-h); y=cell.y+h/2; } else { x=cell.x-w/2; y=cell.y+h/2-(d-w-h-w); }
+      const r=.2+rs()*.1;
+      ctx.beginPath(); ctx.ellipse(x,y,r,r*.72,t*6.2,0,6.3); ctx.fillStyle=`rgba(${34+rs()*20|0},${110+rs()*30|0},36,.92)`; ctx.fill();
+      ctx.beginPath(); ctx.arc(x-r*.25,y-r*.2,r*.3,0,6.3); ctx.fillStyle="rgba(200,236,120,.45)"; ctx.fill();
     }
   });
 }
@@ -4226,6 +4330,66 @@ function applyPolar(ctx, w, h, L){
     ctx.restore();
   }
 }
+/* ══ AOG-SCOPE-REALISM-V1 (2026-09-27) — Jimmy: "CAN THE MICROSCOPE GET A REALISM tap on them." One pass over
+   every slide, after the stain and before the eyepiece, that does what a real light path does to a picture:
+   - the objective's limited aperture softens every edge a little (more at 4× and 10×, whose NA is small);
+   - material above and below the focal plane throws a soft haze; the fine knob slides which layer is sharp,
+     so the haze grows as you leave best focus;
+   - a halogen lamp through a condenser never lights the field evenly: a warm hot spot off-centre, falling
+     off toward the edge, and a faint blue cast at the rim from the lens's colour error;
+   - the mounting medium and the glass add a low, mottled unevenness, like a real photo's background;
+   - film/sensor-like contrast: a little flatter and less saturated than a drawing. ══ */
+function realMottle(){
+  if(realMottle.c) return realMottle.c;
+  const N=256, c=mkCan(N,N), g=c.getContext("2d"), img=g.createImageData(N,N), d=img.data, rng=mulberry32(0x3e41);
+  const G=[]; for(let i=0;i<17*17;i++) G.push(rng());
+  const vn=(x,y,f)=>{ x*=f/N*16; y*=f/N*16; const x0=Math.floor(x)%16,y0=Math.floor(y)%16,fx=x-Math.floor(x),fy=y-Math.floor(y),u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);
+    const a=G[y0*17+x0],b=G[y0*17+x0+1],cc=G[(y0+1)*17+x0],dd=G[(y0+1)*17+x0+1]; return a+(b-a)*u+(cc-a)*v+(a-b-cc+dd)*u*v; };
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){ const n=vn(x,y,1)*.5+vn(x,y,2)*.3+vn(x,y,4)*.2, o=(y*N+x)*4, k=Math.round(200+n*55);
+    d[o]=k; d[o+1]=k; d[o+2]=Math.round(k*.985+3); d[o+3]=255; }
+  g.putImageData(img,0,0); return (realMottle.c=c);
+}
+function micrograph(fctx, field, w, h, L, blur){
+  if(!micrograph.buf) micrograph.buf=mkCan(8,8);
+  const B=micrograph.buf; if(B.width!==w||B.height!==h){ B.width=w; B.height=h; }
+  const b=B.getContext("2d"), dark=L.illum==="dark"||L.illum==="slit"||L.illum==="polar";
+  const px=w/560;                                     /* screen scale: the effects are set for a 560 px eyepiece */
+  const na={4:.10,10:.25,40:.65,100:1.25}[L.obj]||.25;
+  const soft=(.55/na*.35+.35)*px;                     /* aperture softness in px */
+  b.setTransform(1,0,0,1,0,0); b.globalCompositeOperation="copy"; b.filter="none"; b.drawImage(field,0,0);
+  fctx.save(); fctx.setTransform(1,0,0,1,0,0);
+  /* 1. optics soften the edges, and the picture reads like a photograph, not ink */
+  fctx.globalCompositeOperation="copy";
+  fctx.filter=`blur(${Math.min(2.2,soft).toFixed(2)}px) contrast(${dark?1.04:.93}) saturate(${dark?1:.88})`;
+  fctx.drawImage(B,0,0);
+  fctx.filter="none";
+  /* keep a little of the sharp image on top so fine detail survives: a real objective's MTF, not a smear */
+  fctx.globalCompositeOperation="source-over"; fctx.globalAlpha=L.obj>=40?.42:.25; fctx.drawImage(B,0,0);
+  /* 2. out-of-plane haze: a wide, faint glow of everything, stronger as you leave best focus */
+  const haze=Math.min(.34,.12+blur*.03)*(L.obj>=40?1:.6);
+  fctx.globalAlpha=haze; fctx.filter=`blur(${(7*px*(L.obj>=40?1.3:1)).toFixed(1)}px)`;
+  fctx.globalCompositeOperation=dark?"lighter":"source-over"; fctx.drawImage(B,0,0);
+  fctx.filter="none"; fctx.globalAlpha=1;
+  if(!dark){
+    /* 3. uneven lamp: warm hot spot up and left of centre, falling to the rim */
+    fctx.globalCompositeOperation="multiply";
+    const cx=w*.44, cy=h*.42, R=Math.max(w,h)*.62;
+    const g=fctx.createRadialGradient(cx,cy,R*.05,w/2,h/2,R);
+    g.addColorStop(0,"rgba(255,252,244,1)"); g.addColorStop(.55,"rgba(246,240,228,1)"); g.addColorStop(.85,"rgba(222,216,206,1)"); g.addColorStop(1,"rgba(200,196,196,1)");
+    fctx.fillStyle=g; fctx.fillRect(0,0,w,h);
+    /* 4. the medium's mottle, fixed to the slide so it moves when you pan */
+    fctx.globalAlpha=L.obj>=40?.55:.4;
+    const m=realMottle(), sc=(L.obj/4)*(w/420)*6, ox=(L.panX*(L.obj/4)*(w/420))%sc, oy=(L.panY*(L.obj/4)*(w/420))%sc;
+    for(let y=-sc*2+oy;y<h+sc;y+=sc) for(let x=-sc*2+ox;x<w+sc;x+=sc) fctx.drawImage(m,x,y,sc,sc);
+    fctx.globalAlpha=1;
+    /* 5. the colour error at the rim: a cool cast outside, a faint warm one inside */
+    fctx.globalCompositeOperation="soft-light";
+    const c2=fctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.min(w,h)*.47);
+    c2.addColorStop(0,"rgba(255,230,190,0)"); c2.addColorStop(1,"rgba(120,150,230,.35)");
+    fctx.fillStyle=c2; fctx.fillRect(0,0,w,h);
+  }
+  fctx.restore();
+}
 function applyOptics(ctx, w, h, L){
   applyStain(ctx, w, h, L);
   applyFilterTint(ctx, w, h, L);
@@ -4356,7 +4520,9 @@ function secCell(ctx,c,det,stain){
   const wall=red?"rgba(150,30,50,.85)":"rgba(90,100,60,.75)", wallLite=red?"rgba(255,220,225,.55)":"rgba(255,255,240,.5)";
   const sap=red?"rgba(236,200,205,.55)":"rgba(226,232,196,.62)";
   ctx.save(); ctx.translate(c.x,c.y);
-  const rect=(w,h,r)=>{ ctx.beginPath(); ctx.roundRect?ctx.roundRect(-w/2,-h/2,w,h,r):ctx.rect(-w/2,-h/2,w,h); };
+  /* AOG-SCOPE-REALISM-V1 — living tissue is never a grid: every cell leans and swells a little */
+  if(c.k!=="bundle"){ const jr=mulberry32(c.seed^0x5151); ctx.rotate((jr()-.5)*.12); ctx.scale(1+(jr()-.5)*.14,1+(jr()-.5)*.14); }
+  const rect=(w,h,r)=>{ ctx.beginPath(); ctx.roundRect?ctx.roundRect(-w/2,-h/2,w,h,Math.max(r,Math.min(w,h)*.22)):ctx.rect(-w/2,-h/2,w,h); };
   if(c.k==="epi"){
     rect(c.w,c.h,.35); ctx.fillStyle=red?"rgba(240,210,215,.7)":"rgba(232,230,200,.72)"; ctx.fill();
     ctx.strokeStyle=wall; ctx.lineWidth=det?.11:.18; ctx.stroke();
@@ -4413,6 +4579,12 @@ function secBg(ctx,stain){
   for(let x=86;x>-86;x-=2){ const b=Math.abs(x)<24?22*(1-Math.pow(x/24,2)):0; ctx.lineTo(x,9.4+b); }
   ctx.closePath();
   ctx.fillStyle=red?"rgba(230,190,198,.55)":"rgba(212,224,176,.6)"; ctx.fill();
+  /* AOG-SCOPE-REALISM-V1 — air between the spongy cells looks grey-dark in a section; the knife leaves the
+     section a little thicker in places, so tone drifts across it */
+  { const ar=mulberry32(0x5ec9); ctx.save(); ctx.clip();
+    for(let i=0;i<500;i++){ const x=(ar()-.5)*172, y=-2+ar()*12, R=.3+ar()*.9; ctx.beginPath(); ctx.ellipse(x,y,R,R*(.5+ar()*.5),ar()*3,0,Math.PI*2); ctx.fillStyle=`rgba(80,86,70,${.18+ar()*.2})`; ctx.fill(); }
+    for(let i=0;i<30;i++){ const x=(ar()-.5)*172, y=(ar()-.5)*40, R=10+ar()*20, gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,`rgba(${red?120:80},${red?60:100},60,.1)`); gg.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
+    ctx.restore(); }
   ctx.strokeStyle=red?"rgba(150,30,50,.5)":"rgba(90,100,60,.5)"; ctx.lineWidth=.2; ctx.stroke();
   /* a fold where the razor tore the section, and a bubble */
   ctx.strokeStyle="rgba(60,50,30,.25)"; ctx.lineWidth=.5; ctx.beginPath(); ctx.moveTo(60,-9); ctx.quadraticCurveTo(66,2,58,12); ctx.stroke();
@@ -4462,6 +4634,11 @@ function flyBg(ctx,det,L){
   const rng=mulberry32(0xf1a);
   ctx.strokeStyle="rgba(120,90,40,.07)"; ctx.lineWidth=1.2;
   for(let x=-150;x<150;x+=6){ ctx.beginPath(); ctx.moveTo(x,-70); ctx.quadraticCurveTo(x+8+rng()*4,0,x+2,70); ctx.stroke(); }
+  /* thin-film colour: the two thin membranes make faint rainbow patches in transmitted light, as on a soap film */
+  ctx.globalCompositeOperation="soft-light";
+  const hues=[[255,120,180],[120,220,160],[140,160,255],[255,220,120]];
+  for(let i=0;i<14;i++){ const x=(rng()-.5)*280, y=(rng()-.5)*100, R=18+rng()*40, h=hues[i%4], gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,`rgba(${h[0]},${h[1]},${h[2]},.35)`); gg.addColorStop(1,`rgba(${h[0]},${h[1]},${h[2]},0)`); ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
+  ctx.globalCompositeOperation="source-over";
   if(det){
     /* microtrichia: a carpet of tiny hairs all leaning toward the tip, on every bit of membrane */
     const r=viewRect(L,1), step=.9; ctx.beginPath();
@@ -4478,9 +4655,16 @@ function flyBg(ctx,det,L){
 function flyVeins(ctx,det){
   const rng=mulberry32(0xf1b);
   FLY_VEINS.forEach(v=>{
-    veinPath(ctx,v); ctx.strokeStyle="rgba(200,180,140,.45)"; ctx.lineWidth=v.w*1.8; ctx.lineCap="round"; ctx.stroke();
-    veinPath(ctx,v); ctx.strokeStyle="rgba(96,66,26,.9)"; ctx.lineWidth=v.w; ctx.stroke();
-    veinPath(ctx,v); ctx.strokeStyle="rgba(214,180,120,.55)"; ctx.lineWidth=v.w*.34; ctx.stroke();   /* the hollow: a vein is a tube */
+    /* AOG-SCOPE-REALISM-V1 — a real vein is thick and dark at the wing base and thins and pales toward the
+       tip; its tube wall is uneven. Drawn in short pieces so width and tone can change along it. */
+    const p=v.p, N=40, pt=t=>{ const mt=1-t; return [mt*mt*mt*p[0]+3*mt*mt*t*p[2]+3*mt*t*t*p[4]+t*t*t*p[6], mt*mt*mt*p[1]+3*mt*mt*t*p[3]+3*mt*t*t*p[5]+t*t*t*p[7]]; };
+    ctx.lineCap="round";
+    for(let pass=0;pass<3;pass++) for(let i=0;i<N;i++){ const t0=i/N, t1=(i+1)/N, a=pt(t0), b=pt(t1), taper=1.25-.55*t0, wob=.9+rng()*.2;
+      ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]);
+      if(pass===0){ ctx.strokeStyle="rgba(200,180,140,.35)"; ctx.lineWidth=v.w*1.9*taper; }
+      else if(pass===1){ const k=.95-.35*t0; ctx.strokeStyle=`rgba(${96/k|0},${66/k|0},${26/k|0},${.92-.25*t0})`; ctx.lineWidth=v.w*taper*wob; }
+      else { ctx.strokeStyle="rgba(214,184,126,.5)"; ctx.lineWidth=v.w*.32*taper; }
+      ctx.stroke(); }
     if(det){
       /* bristles (macrotrichia) stand in rows along the big veins; the costa has the thickest */
       const p=v.p, n=v.cost?90:40; ctx.beginPath();
@@ -4543,16 +4727,19 @@ function fernItem(ctx,c,det){
     const g=ctx.createRadialGradient(-4,-3,2,0,0,rx); g.addColorStop(0,"rgba(236,214,160,.9)"); g.addColorStop(1,"rgba(196,160,96,.9)");
     ctx.fillStyle=g; ctx.fill();
     ctx.save(); ctx.clip();
-    ctx.strokeStyle="rgba(120,86,40,.5)"; ctx.lineWidth=det?.1:.2;
-    for(let y=-9;y<9;y+=2.2) for(let x=-13;x<13;x+=2.6){ blobPath(ctx,x+(rng()-.5)*.6,y+(rng()-.5)*.6,1.4,rng,6,.25); ctx.stroke(); }
+    /* AOG-SCOPE-REALISM-V1 — the capsule wall is one layer of thin cells, seen through: faint walls, each cell a
+       slightly different tone, spores showing through as soft dark shapes */
+    for(let y=-9;y<9;y+=2.2) for(let x=-13;x<13;x+=2.6){ blobPath(ctx,x+(rng()-.5)*.8,y+(rng()-.5)*.8,1.3+rng()*.4,rng,7,.3);
+      ctx.fillStyle=`rgba(${190+rng()*40|0},${150+rng()*40|0},${90+rng()*40|0},${.08+rng()*.14})`; ctx.fill();
+      ctx.strokeStyle=`rgba(120,86,40,${.18+rng()*.2})`; ctx.lineWidth=det?.07:.14; ctx.stroke(); }
     if(!c.open){ ctx.fillStyle="rgba(70,40,12,.35)"; for(let i=0;i<60;i++){ ctx.beginPath(); ctx.arc((rng()-.5)*20,(rng()-.5)*14,1.2,0,Math.PI*2); ctx.fill(); } }
     ctx.restore();
     /* annulus: the row of thick-walled cells over the top — it dries, bends back, and flings the spores */
     const n=17; ctx.lineCap="butt";
     for(let i=0;i<n;i++){
-      const a=Math.PI*1.05+i/(n-1)*Math.PI*1.15, a2=a+Math.PI*1.15/(n-1);
+      const jj=mulberry32(c.seed+i*7), a=Math.PI*1.05+i/(n-1)*Math.PI*1.15+(jj()-.5)*.03, a2=a+Math.PI*1.15/(n-1)*(.85+jj()*.25);   /* AOG-SCOPE-REALISM-V1: uneven annulus cells */
       ctx.beginPath(); ctx.moveTo(Math.cos(a)*rx*.86,Math.sin(a)*ry*.86); ctx.lineTo(Math.cos(a)*rx*1.08,Math.sin(a)*ry*1.08); ctx.lineTo(Math.cos(a2)*rx*1.08,Math.sin(a2)*ry*1.08); ctx.lineTo(Math.cos(a2)*rx*.86,Math.sin(a2)*ry*.86); ctx.closePath();
-      ctx.fillStyle="rgba(232,214,168,.9)"; ctx.fill(); ctx.strokeStyle="rgba(90,50,10,.95)"; ctx.lineWidth=det?.3:.4; ctx.stroke();
+      ctx.fillStyle=`rgba(${214+jj()*30|0},${188+jj()*30|0},${130+jj()*40|0},.88)`; ctx.fill(); ctx.strokeStyle="rgba(90,50,10,.8)"; ctx.lineWidth=det?.26:.4; ctx.stroke();
       ctx.beginPath(); ctx.moveTo(Math.cos(a)*rx*.86,Math.sin(a)*ry*.86); ctx.lineTo(Math.cos(a)*rx*1.08,Math.sin(a)*ry*1.08); ctx.strokeStyle="rgba(60,30,4,.95)"; ctx.lineWidth=det?.5:.55; ctx.stroke();
     }
     if(c.open){ /* the stomium tore: a dark slit, spores spilling from the mouth */
@@ -4605,8 +4792,13 @@ function fabThread(ctx,t,det,L,clipTo){
   const nf=cot?(det?16:11):(det?14:9), tw=cot?.32:.06;
   for(let k=0;k<nf;k++){
     const y0=(k/(nf-1)-.5)*t.w*.92, ph=rng()*6.3, wid=cot?(det?1.05+rng()*.5:1.2):(det?1.4:1.5);
+    /* AOG-SCOPE-REALISM-V1 — fibres in a yarn are never ruler-parallel: each leans a little, and some lie
+       deeper in the yarn, fainter and softer */
+    ctx.save(); const tilt=(rng()-.5)*(cot?.02:.07), depth=rng();
+    ctx.translate((a+b)/2,y0); ctx.rotate(tilt); ctx.translate(-(a+b)/2,-y0);
+    ctx.globalAlpha=depth<.3?.55:1;
     ctx.beginPath();
-    for(let x=a;x<=b;x+=det?1.2:3){ const y=y0+Math.sin(x*tw+ph)*t.w*(cot?.12:.02)*(1-Math.abs(y0)/(t.w*.6)); x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    for(let x=a;x<=b;x+=det?1.2:3){ const y=y0+Math.sin(x*tw+ph)*t.w*(cot?.12:.02)*(1-Math.abs(y0)/(t.w*.6))+(cot?0:Math.sin(x*.045+ph)*.5+Math.sin(x*.013+ph*2)*.8); x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
     ctx.strokeStyle=cot?`rgba(${226+rng()*20|0},${214+rng()*16|0},${180+rng()*20|0},.95)`:`rgba(${206+rng()*16|0},${216+rng()*12|0},${236},.94)`;
     ctx.lineWidth=wid; ctx.lineCap="round"; ctx.stroke();
     if(det){
@@ -4616,11 +4808,14 @@ function fabThread(ctx,t,det,L,clipTo){
         ctx.beginPath(); for(let x=a;x<=b;x+=.6){ const p=Math.sin(x*.9+ph*2), y=y0+Math.sin(x*tw+ph)*t.w*.12*(1-Math.abs(y0)/(t.w*.6))+p*wid*.35; x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
         ctx.strokeStyle="rgba(100,80,50,.55)"; ctx.lineWidth=.07; ctx.stroke();
       } else { /* polyester: a smooth glass rod, bright down the middle, the odd matting speck inside */
-        ctx.beginPath(); ctx.moveTo(a,y0-wid*.12); ctx.lineTo(b,y0-wid*.12); ctx.strokeStyle="rgba(255,255,255,.75)"; ctx.lineWidth=wid*.28; ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(a,y0-wid*.48); ctx.lineTo(b,y0-wid*.48); ctx.moveTo(a,y0+wid*.48); ctx.lineTo(b,y0+wid*.48); ctx.strokeStyle="rgba(60,70,90,.55)"; ctx.lineWidth=.08; ctx.stroke();
+        /* the bright core and dark edges follow the fibre's own wander (the same curve as its body) */
+        const yy=x=>y0+Math.sin(x*tw+ph)*t.w*.02*(1-Math.abs(y0)/(t.w*.6))+Math.sin(x*.045+ph)*.5+Math.sin(x*.013+ph*2)*.8;
+        const line=(off,col,lw)=>{ ctx.beginPath(); for(let x=a;x<=b;x+=1.2){ const y=yy(x)+off; x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.stroke(); };
+        line(-wid*.12,`rgba(255,255,255,${.45+rng()*.35})`,wid*.24); line(-wid*.48,"rgba(60,70,90,.45)",.08); line(wid*.48,"rgba(60,70,90,.45)",.08);
         ctx.fillStyle="rgba(40,50,70,.5)"; for(let i=0;i<40;i++){ ctx.fillRect(a+rng()*(b-a),y0+(rng()-.5)*wid*.6,.06,.06); }
       }
     }
+    ctx.restore();
   }
   if(cot&&det){ /* loose fibre ends sticking out of the yarn */
     ctx.strokeStyle="rgba(200,186,150,.8)"; ctx.lineWidth=.6;
@@ -4681,8 +4876,12 @@ function dnaItem(ctx,c,det){
     for(let i=0;i<(det?40:14);i++){ const a=rng()*6.3, x=c.x+(rng()-.5)*c.r, y=c.y+(rng()-.5)*c.r; ctx.beginPath(); ctx.moveTo(x,y); ctx.quadraticCurveTo(x+Math.cos(a)*c.r,y+Math.sin(a)*c.r*.5,x+Math.cos(a+1)*c.r*1.4,y+Math.sin(a+1)*c.r); ctx.stroke(); }
     ctx.restore();
   } else {
-    ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fillStyle=`rgba(${120+rng()*60|0},${110+rng()*50|0},${90+rng()*40|0},${.2+rng()*.3})`; ctx.fill();
-    if(det){ ctx.strokeStyle="rgba(60,55,45,.4)"; ctx.lineWidth=.06; ctx.stroke(); }
+    /* AOG-SCOPE-REALISM-V1 — cell rubbish and fat droplets: droplets are clear lenses (bright middle, dark rim);
+       rubbish is irregular, grainy and grey */
+    if(rng()<.45){ const g=ctx.createRadialGradient(c.x-c.r*.2,c.y-c.r*.25,c.r*.05,c.x,c.y,c.r); g.addColorStop(0,"rgba(255,255,250,.85)"); g.addColorStop(.6,"rgba(230,228,220,.4)"); g.addColorStop(.85,"rgba(90,88,80,.5)"); g.addColorStop(1,"rgba(40,38,34,.7)");
+      ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fillStyle=g; ctx.fill(); }
+    else { blobPath(ctx,c.x,c.y,c.r,rng,9,.55); ctx.fillStyle=`rgba(${120+rng()*40|0},${116+rng()*36|0},${104+rng()*30|0},${.25+rng()*.25})`; ctx.fill();
+      if(det){ ctx.strokeStyle="rgba(60,55,45,.35)"; ctx.lineWidth=.05; ctx.stroke(); ctx.fillStyle="rgba(50,46,40,.35)"; for(let k=0;k<12;k++) ctx.fillRect(c.x+(rng()-.5)*c.r*1.4,c.y+(rng()-.5)*c.r*1.4,.08,.08); } }
   }
 }
 function dnaBg(ctx){
@@ -4759,7 +4958,7 @@ function bloodList2(){
     const feather=fx<.16?Math.pow(fx/.16,2)*.45:.45+.55*Math.min(1,(fx-.16)/.7);
     const dens=Math.max(0,feather*ey*.86);
     if(rng()>dens) continue;
-    const px=x+(rng()-.5)*sp*.5+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*.4;
+    const px=x+(rng()-.5)*sp*1.1+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*1.0;   /* AOG-SCOPE-REALISM-V1: a smear has no rows */
     const r=rng();
     if(fx>.6&&r<.03){ o.push({k:"roul",x:px,y:py,r:.36,n:4+(rng()*5|0),a:rng()*6,seed:(rng()*1e9)|0}); continue; }
     if(r<.005) o.push({k:"neut",x:px,y:py,r:.6+rng()*.08,a:rng()*6,seed:(rng()*1e9)|0});
@@ -4886,7 +5085,7 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="cheek") drawCheek(ctx, L);
   else if(L.spec==="hair") blit(ctx, SLIDE.hair);
   else if(L.spec==="scale") blit(ctx, SLIDE.scale);
-  else if(L.spec==="elodea"){ blit(ctx, SLIDE.elodea); if(live) drawElodeaLive(ctx, now, reduced); else drawElodeaLive(ctx, 0, true); }
+  else if(L.spec==="elodea"){ if(!SLIDE.elodea) SLIDE.elodea=bakeElodea(); blit(ctx, SLIDE.elodea); if(live) drawElodeaLive(ctx, now, reduced); else drawElodeaLive(ctx, 0, true); }
   else if(L.spec==="virus") blit(ctx, SLIDE.virus);
   else if(L.spec==="pollen") drawPollen(ctx, L);
   else if(L.spec==="wing") drawWing(ctx, L);
@@ -5112,6 +5311,7 @@ function startEye(){
       fctx.restore();
       applyOptics(fctx, w, h, L);
       achromatFringe(fctx, field, w, h, w/2, h/2, Math.min(w,h)*.46, (L.obj===4?0.28:L.obj===10?0.5:L.obj===40?0.95:1.2)*(L.quartz!==false?0.12:1));
+      micrograph(fctx, field, w, h, L, blur);   /* AOG-SCOPE-REALISM-V1 */
       if(blur<0.7){
         ctx.drawImage(field, 0, 0);
       } else {
