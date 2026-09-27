@@ -110,6 +110,8 @@
     }
   }
   CSS += "\n.aog-sk-in{ width:2em; height:2em; margin:0 .15em .1em 0; }";
+  /* the fire mark the books put before a hard question (CSS content, so it is drawn here) */
+  CSS += "\n.bc .bang::before{ content:\"\" / \"🔥\" !important; display:inline-block; width:1.15em; height:1.15em; margin-right:.3em; vertical-align:-.2em; background:url(/img/sketch/1f525.webp) center/contain no-repeat; }";
   CSS += "\n.aog-sk-in.aog-sk-mark{ width:1.05em; height:1.05em; margin:0 .08em .12em; vertical-align:middle; }";
   /* a mark on dark ground (the navy masthead, the dark theme) is drawn in light pencil so it stays readable */
   function lum(c) { var m = (c || "").match(/\d+(\.\d+)?/g); if (!m) return 0; return (0.3 * m[0] + 0.59 * m[1] + 0.11 * m[2]) / 255; }

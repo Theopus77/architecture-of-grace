@@ -101,7 +101,7 @@
   D.body.appendChild(dbtn); D.body.appendChild(drawer);
   function drawList() {
     var all = marks();
-    dbtn.innerHTML = "✎ " + T("My notes", "Mis notas") + (all.length ? ' <span class="n">' + all.length + "</span>" : "");
+    dbtn.innerHTML = '<img class="aog-sk aog-sk-mark" src="/img/sketch/270e.webp" alt="" width="18" height="18" style="width:1.05em;height:1.05em;vertical-align:-.15em;margin-right:.1em"> ' + T("My notes", "Mis notas") + (all.length ? ' <span class="n">' + all.length + "</span>" : "");
     var h = '<div class="hd"><b>' + T("My highlights and notes", "Mis resaltados y notas") + '</b><button type="button" class="x" aria-label="' + T("Close", "Cerrar") + '">✕</button></div>';
     h += all.length ? "" : '<p class="empty">' + T("Select words in a reading, then tap Highlight or Add a note. They stay on this device.", "Selecciona palabras en una lectura y toca Resaltar o Agregar nota. Se guardan en este dispositivo.") + "</p>";
     h += "<ol>" + all.map(function (m) {
