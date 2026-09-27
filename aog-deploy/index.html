@@ -366,6 +366,24 @@ function toggleTheme() {
 @media (prefers-reduced-motion:reduce){ #aogHeroRose, #one-framework .aog-of-head, #aog-thresholds{animation:none} }
 @media print{ #aogHeroRose{display:none} }
 </style>
+<style id="aog-doors-fit">
+/* AOG-DOORS-FIT-V1 (2026-09-27) — Jimmy: "Can everything be refitted so it fits on the whole page without scrolling."
+   On a computer the three doors use the width they have: the Atrium lists its rows in two columns, the faith
+   courses are one row each (the name opens every grade; "contents" beside it), and rows and words are tighter. */
+#aog-thresholds .aogdr-pair{ display:flex; align-items:center; gap:10px; }
+#aog-thresholds .aogdr-pair > a:first-child{ flex:1 1 auto; }
+#aog-thresholds .aogdr-pair > a.aogdr-sub{ flex:none; font-size:12.5px; opacity:.85; text-decoration:underline; text-underline-offset:3px; }
+#aog-thresholds .aogdr-pair > a.aogdr-sub::after{ content:none; }
+@media screen and (min-width:1000px){
+  #aog-thresholds .aogdr-grid{ max-width:min(1500px,96vw) !important; grid-template-columns:1.6fr 1fr 1fr !important; gap:18px !important; }
+  #aog-thresholds .aogdr-d2 .aogdr-rooms{ display:grid; grid-template-columns:1fr 1fr; column-gap:22px; align-items:start; }
+  #aog-thresholds .aogdr-d2 .aogdr-rooms > li.aogdr-bfold:not([hidden]){ grid-column:1 / -1; }
+  #aog-thresholds .aogdr-rooms a, #aog-thresholds .aogdr-blab{ padding-top:7px !important; padding-bottom:7px !important; }
+  #aog-thresholds .aogdr-say{ font-size:13.5px !important; line-height:1.5 !important; margin-bottom:10px !important; }
+  #aog-thresholds .aogdr-name{ margin-bottom:6px !important; }
+  #aog-thresholds .aogdr-door{ padding-top:16px !important; padding-bottom:12px !important; }
+}
+</style>
 </head>
 <body>
 <!-- AOG-BAR-ONEBAR-V1: the home page runs the same site bar as every other page.
@@ -1597,16 +1615,11 @@ function aogToggleBand(e, b){
         <h2 class="aogdr-name" data-en="World Religions" data-es="Religiones del mundo">World Religions</h2>
         <p class="aogdr-say" data-en="The great traditions and their books, read as literature and history. Pick a course, then a grade." data-es="Las grandes tradiciones y sus libros, le&iacute;dos como literatura e historia. Elige un curso y luego un grado.">The great traditions and their books, read as literature and history. Pick a course, then a grade.</p>
         <ul class="aogdr-rooms">
-          <li class="aogdr-keep"><a href="/religions"><span data-en="World Religions &middot; every grade" data-es="Religiones del mundo &middot; cada grado">World Religions &middot; every grade</span></a></li>
-          <li class="aogdr-keep"><a href="/religions-course"><span data-en="World Religions &middot; course contents" data-es="Religiones del mundo &middot; contenido del curso">World Religions &middot; course contents</span></a></li>
-          <li class="aogdr-keep"><a href="/bible"><span data-en="The Bible &middot; every grade" data-es="La Biblia &middot; cada grado">The Bible &middot; every grade</span></a></li>
-          <li class="aogdr-keep"><a href="/bible-course"><span data-en="The Bible &middot; course contents" data-es="La Biblia &middot; contenido del curso">The Bible &middot; course contents</span></a></li>
-          <li class="aogdr-keep"><a href="/hebrew-bible"><span data-en="The Hebrew Bible &middot; every grade" data-es="La Biblia hebrea &middot; cada grado">The Hebrew Bible &middot; every grade</span></a></li>
-          <li class="aogdr-keep"><a href="/hebrew-bible-course"><span data-en="The Hebrew Bible &middot; course contents" data-es="La Biblia hebrea &middot; contenido del curso">The Hebrew Bible &middot; course contents</span></a></li>
-          <li class="aogdr-keep"><a href="/talmud"><span data-en="Talmud Study &middot; every grade" data-es="Estudio del Talmud &middot; cada grado">Talmud Study &middot; every grade</span></a></li>
-          <li class="aogdr-keep"><a href="/talmud-course"><span data-en="Talmud Study &middot; course contents" data-es="Estudio del Talmud &middot; contenido del curso">Talmud Study &middot; course contents</span></a></li>
-          <li class="aogdr-keep"><a href="/quran"><span data-en="The Qur&rsquo;an &middot; every grade" data-es="El Cor&aacute;n &middot; cada grado">The Qur&rsquo;an &middot; every grade</span></a></li>
-          <li class="aogdr-keep"><a href="/quran-course"><span data-en="The Qur&rsquo;an &middot; course contents" data-es="El Cor&aacute;n &middot; contenido del curso">The Qur&rsquo;an &middot; course contents</span></a></li>
+          <li class="aogdr-keep aogdr-pair"><a href="/religions"><span data-en="World Religions" data-es="Religiones del mundo">World Religions</span></a><a class="aogdr-sub" href="/religions-course"><span data-en="contents" data-es="contenido">contents</span></a></li>
+          <li class="aogdr-keep aogdr-pair"><a href="/bible"><span data-en="Bible Study" data-es="Estudio b&iacute;blico">Bible Study</span></a><a class="aogdr-sub" href="/bible-course"><span data-en="contents" data-es="contenido">contents</span></a></li>
+          <li class="aogdr-keep aogdr-pair"><a href="/hebrew-bible"><span data-en="The Hebrew Bible" data-es="La Biblia hebrea">The Hebrew Bible</span></a><a class="aogdr-sub" href="/hebrew-bible-course"><span data-en="contents" data-es="contenido">contents</span></a></li>
+          <li class="aogdr-keep aogdr-pair"><a href="/talmud"><span data-en="Talmud Study" data-es="Estudio del Talmud">Talmud Study</span></a><a class="aogdr-sub" href="/talmud-course"><span data-en="contents" data-es="contenido">contents</span></a></li>
+          <li class="aogdr-keep aogdr-pair"><a href="/quran"><span data-en="Qur&rsquo;an Study" data-es="Estudio del Cor&aacute;n">Qur&rsquo;an Study</span></a><a class="aogdr-sub" href="/quran-course"><span data-en="contents" data-es="contenido">contents</span></a></li>
         </ul>
       </article>
 
