@@ -91,6 +91,65 @@
       setTimeout(foldUnits, 1000);
     }
   } catch (e) {}
+  /* AOG-PRACTICE-ROOMS-V1 (2026-09-27) — Jimmy: "May all the ROOMS get a facelift." Every
+     subject practice room (the lists on the Educator Dashboard, and every room added later
+     with the same file-name pattern) gets the hubs' stained glass: aog-practice-rooms.css,
+     html.aog-practice-room and --room in the subject's colour. Then, if /aog-room-map.js
+     knows which course unit the room practises, a small "From the course" card links to it. */
+  try {
+    var PR = { math:"#2F63B8", sci:"#2E8B57", ss:"#A8323E", ela:"#B87A12", spa:"#B8457A", facs:"#7B4FA0", eco:"#6E7C22", rel:"#3F4AA6" };
+    var PR_FILES = { "concepts-and-data":"math", "interior-math":"math", "b10-interior-math":"math", "b12-sixth-grade-review":"math",
+      "b13-sixth-grade-practice":"math", "science-microscope":"sci", "telescope":"sci", "science-waves":"sci", "music-drums":"sci",
+      "music-decks":"sci", "vocabulary-science":"sci", "us-history":"ss", "b9-new-nation":"ss", "social-quiz":"ss",
+      "n1-the-outsiders":"ela", "wf-units":"ela", "word-foundry":"ela", "b11-grammar":"ela" };
+    var prs = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+    var prSub = PR_FILES[prs] || (
+      /^sp\d+-/.test(prs) ? "spa" : /^fc\d+-/.test(prs) ? "facs" : /^ec\d+-/.test(prs) ? "eco" :
+      /^m\d+-/.test(prs) ? "math" : /^[sh]\d+-/.test(prs) ? "ss" : /^[en]\d+-/.test(prs) ? "ela" :
+      /^r\d+-/.test(prs) ? "rel" : /^b\d+-/.test(prs) ? "sci" : "");
+    if (prSub) {
+      H.classList.add("aog-practice-room"); H.style.setProperty("--room", PR[prSub]);
+      var prl = D.createElement("link"); prl.rel = "stylesheet"; prl.href = "/aog-practice-rooms.css"; (D.head || H).appendChild(prl);
+      var prj = D.createElement("script"); prj.src = "/aog-rooms.js"; prj.defer = true; (D.head || H).appendChild(prj);
+      var prReady = function (fn) { if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", fn); else fn(); };
+      /* a new b… room says its subject in its kicker ("The Interior — Mathematics") */
+      prReady(function () {
+        try {
+          if (PR_FILES[prs] || !/^b\d+-/.test(prs)) return;
+          var k = D.querySelector(".mast .k"), kt = k ? k.textContent : "";
+          var hit = /Mathemat/i.test(kt) ? "math" : /Social Studies/i.test(kt) ? "ss" : /English/i.test(kt) ? "ela" :
+            /Spanish/i.test(kt) ? "spa" : /Consumer/i.test(kt) ? "facs" : /Economics/i.test(kt) ? "eco" : /Religion/i.test(kt) ? "rel" : "";
+          if (hit) H.style.setProperty("--room", PR[hit]);
+        } catch (e) {}
+      });
+      var prBand = function () {
+        try {
+          var m = window.AOG_ROOM_MAP, it = m && m[prs];
+          if (!it || !it.unit || D.querySelector(".aog-course-band")) return;
+          var unit = String(it.unit).replace(/[^a-z0-9-]/gi, "");
+          if (!unit) return;
+          var what = String(it.unitTitle || unit) + (it.chapter ? ", " + it.chapter : "");
+          var es = /^es/i.test(H.lang || "");
+          var p = D.createElement("p"); p.className = "aog-course-band no-print";
+          var k = D.createElement("span"); k.className = "aog-cb-k"; k.setAttribute("data-en", "Practises:"); k.setAttribute("data-es", "Practica:");
+          k.textContent = es ? "Practica:" : "Practises:";
+          var a = D.createElement("a"); a.href = "/" + unit + ".html";
+          a.setAttribute("data-en", "Open the unit ›"); a.setAttribute("data-es", "Abrir la unidad ›");
+          a.textContent = es ? "Abrir la unidad ›" : "Open the unit ›";
+          p.appendChild(k); p.appendChild(D.createTextNode(" " + what + " — ")); p.appendChild(a);
+          var mast = D.querySelector("header.mast"), main = D.querySelector("main");
+          if (mast && mast.parentNode) mast.parentNode.insertBefore(p, mast.nextSibling);
+          else if (main) main.insertBefore(p, main.firstChild);
+        } catch (e) {}
+      };
+      prReady(function () {
+        if (window.AOG_ROOM_MAP) { prBand(); return; }
+        var ms2 = D.createElement("script"); ms2.src = "/aog-room-map.js"; ms2.async = true;
+        ms2.onload = prBand; ms2.onerror = function () {};
+        (D.head || H).appendChild(ms2);
+      });
+    }
+  } catch (e) {}
   /* AOG-MARKUP-V1 (2026-09-27) — Jimmy: "INTERACTIVE TEXT THROUGHOUT THE ECOSYSTEM." Every
      reading page gets highlights and notes (aog-markup.js). Tool pages opt out below. */
   try {

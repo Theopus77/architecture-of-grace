@@ -1,0 +1,173 @@
+/* ══ AOG-PRACTICE-ROOMS-V1 (2026-09-27) — the subject practice rooms ══════════
+   Jimmy: "May all the ROOMS get a facelift." The practice rooms (m15…, s7…,
+   b43…, e1…, sp13…, fc13…, ec1…, r1… and the ones still to come) wear the
+   same stained glass as the subject hubs: leaded panes, a band of the
+   subject's own glass on top of each card, and glass tiles for every choice.
+   aog-grace.js loads this file on room pages and sets --room on <html>.
+   Only the look changes: no words, questions, answers or behaviour.
+   Screen only; print is left as it was. Phone first; nothing here adds a
+   fixed width, and nothing moves on its own. */
+@media screen {
+  html.aog-practice-room {
+    --lead:#1E1F22; --hair:rgba(242,201,100,.38);
+    --room-tint:color-mix(in srgb, var(--room) 12%, transparent);
+    --room-edge:color-mix(in srgb, var(--room) 70%, var(--lead));
+  }
+
+  /* ── tidy spacing ─────────────────────────────────────────────────────── */
+  html.aog-practice-room .wrap { padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); }
+  html.aog-practice-room .pane > * + *, html.aog-practice-room .cards { margin-top:14px; }
+
+  /* ── leaded cards with a band of the subject's glass ──────────────────── */
+  html.aog-practice-room .bc,
+  html.aog-practice-room .hx,
+  html.aog-practice-room .lab,
+  html.aog-practice-room .qstage,
+  html.aog-practice-room .ground,
+  html.aog-practice-room .trap,
+  html.aog-practice-room .teach,
+  html.aog-practice-room .rung,
+  html.aog-practice-room .why,
+  html.aog-practice-room .spine,
+  html.aog-practice-room .bridge {
+    box-sizing:border-box; max-width:100%;
+    border:3px solid var(--lead) !important; border-radius:14px !important;
+    box-shadow:0 0 0 1px var(--hair), inset 0 6px 0 var(--gl, var(--room)), 0 14px 30px -22px rgba(0,0,0,.75) !important;
+    padding-top:18px !important;
+  }
+  /* study cards keep their level colour as the glass */
+  html.aog-practice-room .bc { border-top-width:3px !important; }
+  html.aog-practice-room .bc[data-t="1"] { --gl:var(--t1); }
+  html.aog-practice-room .bc[data-t="2"] { --gl:var(--t2); }
+  html.aog-practice-room .bc[data-t="3"] { --gl:var(--t3); }
+  html.aog-practice-room .hx.warn, html.aog-practice-room .trap { --gl:var(--caution); }
+  html.aog-practice-room .why { --gl:var(--a); }
+  html.aog-practice-room .spine { --gl:var(--gold); }
+  html.aog-practice-room .rung[data-tier="1"] { --gl:var(--t1); }
+  html.aog-practice-room .rung[data-tier="2"] { --gl:var(--t2); }
+  html.aog-practice-room .rung[data-tier="3"] { --gl:var(--t3); }
+  html.aog-practice-room .bc .fr { border-left:4px solid color-mix(in srgb, var(--gl, var(--room)) 60%, transparent); }
+
+  /* ── section tabs: glass tiles, the open one lit ──────────────────────── */
+  html.aog-practice-room .tabs { border-bottom:3px solid var(--lead) !important; box-shadow:0 1px 0 var(--hair); gap:8px; }
+  html.aog-practice-room .tab,
+  html.aog-practice-room .tier {
+    border:2px solid var(--room-edge) !important; border-radius:12px !important;
+    background-image:linear-gradient(var(--room-tint),var(--room-tint)) !important; min-height:48px;
+  }
+  html.aog-practice-room .tab[aria-pressed="true"] {
+    background-color:var(--room) !important; color:#fff !important; border-color:var(--lead) !important;
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.34),rgba(255,255,255,0) 60%) !important;
+    box-shadow:0 0 0 2px var(--room) !important;
+  }
+  html.aog-practice-room .tier[aria-pressed="true"] { box-shadow:inset 0 -4px 0 var(--room); }
+
+  /* ── the three quiz doors ─────────────────────────────────────────────── */
+  html.aog-practice-room .door {
+    border:3px solid var(--lead) !important; border-radius:14px !important;
+    box-shadow:0 0 0 1px var(--hair), inset 0 6px 0 var(--gl, var(--room)), 0 12px 26px -20px rgba(0,0,0,.7) !important;
+    padding-top:18px !important;
+  }
+  html.aog-practice-room .door[data-t="1"] { --gl:var(--t1); }
+  html.aog-practice-room .door[data-t="2"] { --gl:var(--t2); }
+  html.aog-practice-room .door[data-t="3"] { --gl:var(--t3); }
+  html.aog-practice-room .door:hover, html.aog-practice-room .door:focus-visible {
+    box-shadow:0 0 0 2px var(--gl, var(--room)), inset 0 6px 0 var(--gl, var(--room)) !important;
+  }
+
+  /* ── answer choices and confidence: glass tiles in the room's colour ──── */
+  html.aog-practice-room .opt {
+    --pg:var(--room);
+    border:2px solid var(--room-edge) !important; border-radius:12px !important;
+    background-image:linear-gradient(var(--room-tint),var(--room-tint)) !important;
+    box-shadow:0 0 0 1px var(--hair), inset 4px 0 0 var(--room) !important;
+  }
+  html.aog-practice-room .opt[data-st="right"] {
+    border-color:var(--good) !important; background:var(--good-wash) !important;
+    box-shadow:0 0 0 1px var(--hair), inset 6px 0 0 var(--good) !important;
+  }
+  html.aog-practice-room .confb { border:2px solid var(--room-edge) !important; border-radius:12px !important; min-height:44px; }
+  html.aog-practice-room .confb[aria-pressed="true"] { background-image:linear-gradient(var(--room-tint),var(--room-tint)) !important; box-shadow:inset 0 -4px 0 var(--room) !important; }
+
+  /* ── buttons ──────────────────────────────────────────────────────────── */
+  html.aog-practice-room .btn { border:2px solid var(--room-edge) !important; border-radius:12px !important; }
+  html.aog-practice-room .btn-a, html.aog-practice-room .btn.btn-a {
+    background-color:var(--room) !important; color:#fff !important; border-color:var(--lead) !important;
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.3),rgba(255,255,255,0) 60%) !important;
+  }
+  html.aog-practice-room .bc .reveal { border:2px dashed var(--room-edge) !important; }
+  html.aog-practice-room .jump select { border:2px solid var(--room-edge) !important; }
+
+  /* ── "From the course" band ───────────────────────────────────────────── */
+  html.aog-practice-room .aog-course-band {
+    box-sizing:border-box; max-width:100%; margin:14px 0 4px; padding:12px 14px 12px 18px;
+    background:#FFFFFF; color:#1D2733;
+    border:3px solid var(--lead); border-radius:14px;
+    box-shadow:0 0 0 1px var(--hair), inset 6px 0 0 var(--room);
+    font-size:1rem; line-height:1.4; overflow-wrap:anywhere;
+  }
+  html.aog-practice-room .aog-course-band .aog-cb-k { font-weight:700; color:#1D2733; }
+  html.aog-practice-room .aog-course-band a {
+    display:inline-flex; align-items:center; min-height:44px; padding:0 4px;
+    color:#1B3A5F; font-weight:700; text-decoration:underline; text-underline-offset:3px;
+  }
+  html.aog-practice-room[data-theme="dark"] .aog-course-band { background:#1A2029; color:#E9EEF4; }
+  html.aog-practice-room[data-theme="dark"] .aog-course-band .aog-cb-k { color:#E9EEF4; }
+  html.aog-practice-room[data-theme="dark"] .aog-course-band a { color:#9CC2E8; }
+
+  /* phones: slimmer lead so a narrow card keeps its room */
+  @media (max-width:560px) {
+    html.aog-practice-room .bc, html.aog-practice-room .hx, html.aog-practice-room .lab,
+    html.aog-practice-room .qstage, html.aog-practice-room .ground, html.aog-practice-room .trap,
+    html.aog-practice-room .teach, html.aog-practice-room .door, html.aog-practice-room .rung,
+    html.aog-practice-room .why, html.aog-practice-room .spine, html.aog-practice-room .bridge, html.aog-practice-room .aog-course-band {
+      border-width:2px !important; border-radius:12px !important;
+    }
+  }
+  /* ── Start Here, one part at a time (aog-rooms.js) ───────────────────── */
+  html.aog-practice-room .aog-rstep[hidden] { display:none !important; }
+  html.aog-practice-room .aog-rstep > * + * { margin-top:14px; }
+  html.aog-practice-room .aog-rstepnav {
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    margin-top:18px !important; padding-top:12px; border-top:3px solid var(--lead); box-shadow:inset 0 1px 0 var(--hair);
+  }
+  html.aog-practice-room .aog-rstepnav button {
+    min-height:48px; min-width:96px; padding:8px 18px; font:inherit; font-weight:700; font-size:1rem; cursor:pointer;
+    border:2px solid var(--room-edge); border-radius:12px; color:var(--ink, #1D2733); background-color:var(--field, #fff);
+    background-image:linear-gradient(var(--room-tint),var(--room-tint));
+  }
+  html.aog-practice-room .aog-rstepnav .aog-rstep-next {
+    background-color:var(--room); color:#fff; border-color:var(--lead);
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.3),rgba(255,255,255,0) 60%);
+  }
+  html.aog-practice-room .aog-rstepnav .aog-rstep-back[hidden] { display:inline-block !important; visibility:hidden; }
+  html.aog-practice-room .aog-rstep-where { font-weight:700; color:var(--ink-soft, #57626F); }
+  html.aog-practice-room .aog-trapgrid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
+  html.aog-practice-room .aog-trapgrid > .trap { margin:0 !important; }
+
+  /* ── computers: use the width (Jimmy zoomed out and saw one thin column) ── */
+  @media (min-width:1000px) {
+    html.aog-practice-room .wrap { max-width:min(1400px, 94vw) !important; }
+    html.aog-practice-room .pane p, html.aog-practice-room .pane li { max-width:70ch; }
+    /* the misconception cards two to a row, the look-alike words beside them */
+    html.aog-practice-room .aog-trapgrid { grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); align-items:start; }
+    html.aog-practice-room .aog-rstep-pair { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:14px; align-items:start; }
+    html.aog-practice-room .aog-rstep-pair > * { grid-column:1 / -1; margin-top:0 !important; }
+    html.aog-practice-room .aog-rstep-pair > .aog-trapgrid { grid-column:1; }
+    html.aog-practice-room .aog-rstep-pair > .spine { grid-column:2; }
+    /* "Watch one" beside "One sentence": the climb in two columns */
+    html.aog-practice-room .climb { display:grid !important; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; align-items:start; }
+    html.aog-practice-room .climb > * { margin:0 !important; }
+    /* hints three across (study cards stay one at a time) */
+    html.aog-practice-room .hintgrid { grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)) !important; }
+    html.aog-practice-room .qstage, html.aog-practice-room .tiers + p { max-width:980px; }
+    html.aog-practice-room .bridge-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  }
+}
+@media print {
+  .aog-course-band, .aog-rstepnav { display:none !important; }
+  html body .aog-rstep[hidden], html body #paneTeach .aog-rstep[hidden] { display:block !important; }
+}
+
+/* the step buttons never sit under the floating "My notes" button: leave room below them on phones and iPads */
+@media screen and (max-width:999px){ html.aog-practice-room .aog-rstepnav{ margin-bottom:72px !important; } }
