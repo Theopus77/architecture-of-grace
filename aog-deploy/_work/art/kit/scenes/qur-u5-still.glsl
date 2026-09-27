@@ -1,7 +1,7 @@
 /* Qur'an Unit 5 "The Life of the Prophet as Context" — pencil still life: a tall clay water jug, a bowl heaped with dates and a small clay oil lamp: things of daily life in seventh-century Arabia. No people.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.6443,0.4146,-0.8582)
-#define CAM_TGT vec3(-0.2901,0.0602,0.1034)
+#define CAM_POS vec3(-0.5479,0.4146,-0.8939)
+#define CAM_TGT vec3(-0.1937,0.0602,0.0676)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -101,8 +101,7 @@ float jugD(vec3 q,float H){ if(length(q-vec3(0,H*.5,0))>H*.8) return length(q-ve
   float y=q.y/H; float body=.16+.24*sin(3.1416*clamp(y/.8,0.,1.)); float r=mix(body,.12,smoothstep(.62,.82,y))+.03*smoothstep(.93,1.,y);
   r*=H; float d=(length(q.xz)-r)*.7; d=max(d,max(-q.y,q.y-H));
   d=max(d,-max(length(q.xz)-r+.004,H*.9-q.y));
-  float hd=sdTorus((q-vec3(-.13*H,.72*H,0)).xzy*vec3(1.,1.,1.),.13*H,.018*H);
-  hd=max(hd,-q.x-.1*H); hd=max(hd,q.x+.0*H);
+  float hd=sdTorus((q-vec3(-.25*H,.66*H,0)).xzy,.12*H,.02*H);
   return min(d,hd); }
 /* a potted plant pot; base at y=0, height h */
 float potD(vec3 q,float r,float h){ float y=q.y; float rr=r*(.78+.22*y/h); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-h));
@@ -200,7 +199,7 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
 
 #define JP vec3(-.1,0.,.1)
 #define BP vec3(.1,0.,-.06)
-#define LP vec3(.3,0.,.06)
+#define LP vec3(.33,0.,-.16)
 float bowl(vec3 p){ vec3 q=p-BP; float d=bowlD(q-vec3(0,.012,0),.1,.055); d=min(d,sdCylY(q-vec3(0,.007,0),.04,.007)-.002);
   d=min(d,sdTorus(q-vec3(0,.067,0),sqrt(.1*.1-.045*.045),.0035)); return d; }
 float dates(vec3 p){ vec3 q=p-BP; if(length(q-vec3(0,.07,0))>.12) return length(q-vec3(0,.07,0))-.09; float d=1e5;

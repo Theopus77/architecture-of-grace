@@ -83,6 +83,7 @@
     D.title = T("Contents", "Índice") + " · " + book.title + " · Architecture of Grace";
     if (push) window.scrollTo(0, Math.max(0, page.getBoundingClientRect().top + window.pageYOffset - 120));
   };
+  var SCENE_ALT = { "12-1": "A pencil drawing of a standing mirror reflecting a window, a small backpack beside it and a leafy plant in a clay pot", "12-2": "A pencil drawing of a watering can, a young sprout in a clay pot and a small garden trowel", "12-3": "A pencil drawing of two small chairs facing each other on a round rug, with a ball between them", "12-4": "A pencil drawing of a picnic blanket with a woven basket of apples and more apples on the cloth", "18-1": "A pencil drawing of a trail stop: a backpack, a compass lying on a rock and a small wooden signpost", "18-2": "A pencil drawing of a lighthouse and a small cottage on a rocky headland above a calm sea", "18-3": "A pencil drawing of a wooden footbridge over a stream, with a lantern post at either end", "18-4": "A pencil drawing of an orchard at harvest: a ladder against an apple tree, a wheelbarrow and a basket of apples", "36-1": "A pencil drawing of a quiet dresser with an oval mirror and a plain calm mask with small eye slits propped up beside it", "36-2": "A pencil drawing of a desk under a window, with a desk lamp, an open notebook and a pencil", "36-3": "A pencil drawing of two chairs facing each other by a tall window, a small lantern on a table between them", "36-4": "A pencil drawing of a garden path between lantern posts, leading to an open gate among trees", "104-1": "A pencil drawing of a dressing-table mirror reflecting a window, a plain half mask resting beside it", "104-2": "A pencil drawing of a backpack set down on a park bench, puddles on the path and a tree behind", "104-3": "A pencil drawing of two empty classroom chairs turned to face each other beside a tall window", "104-4": "A pencil drawing of an arched stone bridge over calm water, with a lantern at each end", "207-1": "A pencil drawing of a brass compass resting on an unrolled map, with a pencil and a star marked in the corner", "207-2": "A pencil drawing of a workbench lamp shining on a mended bowl with seams, tools hung neatly on the wall", "207-3": "A pencil drawing of a lighthouse on a rocky headland above a calm sea, its lamp lit", "207-4": "A pencil drawing of a path between rows of leafy fruit trees hung with fruit, leading toward a low hill" };
   var render = function (i, push) {
     if (!book) return;
     if (i < 0) return renderToc(push);
@@ -96,7 +97,9 @@
        scene for each unit opens the novel's matching part and heads its chapters. */
     var rm = (KEY.match(/^room-(\d+)$/) || [])[1];
     if (rm && s.part >= 1 && s.part <= 4 && s.kind !== "note") {
-      h += '<img class="nv-scene' + (s.kind === "part" ? " big" : "") + '" src="/novels/scenes/room-' + rm + "-u" + s.part + '.svg" alt="" width="1200" height="420" loading="eager" decoding="async">';
+      /* AOG-NOVEL-PENCIL-V1 — the pencil drawing (webp, jpg fallback); _work/art/pencil/novel.py */
+      var sn = "/novels/scenes/room-" + rm + "-u" + s.part + "-pencil";
+      h += '<picture><source srcset="' + sn + '.webp" type="image/webp"><img class="nv-scene' + (s.kind === "part" ? " big" : "") + '" src="' + sn + '.jpg" alt="' + esc(SCENE_ALT[rm + "-" + s.part] || "") + '" width="1200" height="420" loading="eager" decoding="async"></picture>';
     }
     if (s.kicker) h += '<p class="kicker">' + esc(pretty(s.kicker)) + "</p>";
     else if (s.kind === "note") h += '<p class="kicker">' + esc(book.room) + "</p>";

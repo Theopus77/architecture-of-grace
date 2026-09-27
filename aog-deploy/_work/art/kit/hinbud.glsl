@@ -53,8 +53,8 @@ float leafTone(vec3 q,float L,float W){ float a=.9;
 /* ---- a closed book lying flat (hardback, page block visible on three sides) ---- */
 float bookD(vec3 q,vec3 b){
   float cov=sdRBox(q-vec3(0.,b.y,0.),vec3(b.x,b.y,b.z),.003);
-  float pg=sdBox(q-vec3(.004,b.y,0.),vec3(b.x-.002,b.y-.0045,b.z-.004));
-  float cut=sdBox(q-vec3(.006,b.y,0.),vec3(b.x,b.y-.0045,b.z-.004));
+  float pg=sdBox(q-vec3(.002,b.y,0.),vec3(b.x-.004,b.y-.0045,b.z-.003));
+  float cut=sdBox(q-vec3(.006,b.y,0.),vec3(b.x,b.y-.0045,b.z+.01));
   return min(max(cov,-cut),pg); }
 float bookTone(vec3 q,vec3 b,float c){
   if(abs(q.y-b.y)<b.y-.0048&&(q.x>-b.x+.006)) return fract(q.y*1500.)<.4?.72:.9;   /* page edges */
@@ -94,28 +94,26 @@ float bellD(vec3 q,float s){ q/=s;
   return min(min(min(shell,top),min(lip,knop)),min(min(stem,cap),clap))*s; }
 
 /* ---- a lotus flower: two rings of pointed petals round a seed pod ---- */
-float petal(vec3 q,float L,float W,float tilt){   /* one petal along +x, tilted up by tilt */
-  q.xy=rot(-tilt)*q.xy; float t=clamp(q.x/L,0.,1.);
-  float w=W*sin(3.1416*pow(t,.7))*(1.-.3*t);
-  float cup=q.y-.35*W*(q.z*q.z)/(W*W+1e-4)*.8;
-  float d=max(abs(cup)-.0018,max(abs(q.z)-w,max(-q.x,q.x-L)));
+float petal(vec3 q,float L,float W,float tilt){   /* one petal: a pointed, cupped oval along +x, tilted up by tilt */
+  q.xy=rot(tilt)*q.xy; vec3 c=q-vec3(L*.5,0.,0.);
+  c.y-=.9*c.z*c.z/L;                                     /* cupped */
+  float t=clamp(q.x/L,0.,1.); float w=W*pow(sin(3.1416*pow(t,.8)),.7);
+  float d=max(sdEll(c,vec3(L*.5,.006,W)),abs(c.z)-w);
   return d; }
 float lotus(vec3 q,float s){ q/=s;
-  vec3 a=q-vec3(0.,.012,0.);
+  vec3 a=q-vec3(0.,.006,0.);
   float d=1e5;
-  vec3 p1=prep(a,8.); d=min(d,petal(p1,.06,.022,.35));
-  vec3 p2=prep(ry(a,.39),8.); d=min(d,petal(p2-vec3(0.,.006,0.),.05,.02,.85));
-  vec3 p3=prep(ry(a,.2),6.); d=min(d,petal(p3-vec3(0.,.014,0.),.036,.016,1.25));
-  float pod=sdCylY(a-vec3(0.,.02,0.),.013,.008)-.002;
-  return min(d,pod)*s*.8; }
-
+  vec3 p1=prep(a,8.); d=min(d,petal(p1-vec3(.006,0.,0.),.06,.02,.28));
+  vec3 p2=prep(ry(a,.39),8.); d=min(d,petal(p2-vec3(.004,.006,0.),.052,.018,.75));
+  vec3 p3=prep(ry(a,.2),6.); d=min(d,petal(p3-vec3(.002,.012,0.),.04,.015,1.15));
+  float pod=sdCylY(a-vec3(0.,.018,0.),.008,.007)-.002;
+  return min(d,pod)*s*.6; }
 /* ---- a round-bellied metal or clay pot (kalash) with a narrow neck and a lip ---- */
 float potD(vec3 q,float s){ q/=s;
   float y=q.y; float r=.05*sin(clamp(y/.1,0.,1.)*2.6+.35)+.002;
   r=max(r,.022+.01*smoothstep(.1,.125,y));
   float body=(length(q.xz)-r)*.8; body=max(body,max(-y,y-.13));
-  body=max(body,-(length(q.xz)-(r-.004)));      /* a hollow neck */
-  body=max(body,-max(-(y-.1),length(q.xz)-.03));
+  body=max(body,-max(length(q.xz)-.018,.09-y));      /* a hollow mouth */
   float lip=sdTorus(q-vec3(0.,.13,0.),.03,.0045);
   float foot=sdCylY(q-vec3(0.,.003,0.),.03,.003)-.001;
   return min(min(body,lip),foot)*s; }
@@ -177,13 +175,14 @@ float stupaD(vec3 q,float s){ q/=s;
 /* ---- an eight-spoked Dharma wheel on a small stand (face along z) ---- */
 float dharmaWheel(vec3 q,float R){
   vec3 c=q-vec3(0.,R+.035,0.);
-  float rim=sdB2(vec2(length(c.xy)-R+.008,c.z),vec2(.008,.008))-.002;
+  float rim=sdB2(vec2(length(c.xy)-R+.011,c.z),vec2(.012,.009))-.002;
+  rim=min(rim,sdB2(vec2(length(c.xy)-R+.011,c.z),vec2(.004,.012))-.001);
   float inner=sdB2(vec2(length(c.xy)-R*.34,c.z),vec2(.006,.009))-.001;
   float hub=sdCylZ(c,.012,.012)-.002;
   float a=atan(c.y,c.x); float sct=6.2832/8.; float k=floor(a/sct+.5); vec2 r2=rot(k*sct)*c.xy;
   float spoke=max(length(vec2(r2.y*(1.+1.2*smoothstep(R*.5,R,r2.x)),c.z))-.005,max(-r2.x,r2.x-R+.012));
   float knob=length(vec2(length(c.xy)-R-.008,c.z))-.0; knob=1e5;
-  vec2 kk=vec2(r2.x-R-.008,r2.y); knob=length(vec3(kk,c.z))-.007;
+  knob=1e5;
   float stand=sdRBox(q-vec3(0.,.012,0.),vec3(.06,.012,.035),.003);
   float post=sdRBox(q-vec3(0.,.03,0.),vec3(.012,.012,.01),.002);
   return min(min(min(rim,inner),min(hub,spoke)),min(min(knob,stand),post)); }
@@ -235,11 +234,11 @@ float malaD(vec3 q,float R,float n){ float a=atan(q.z,q.x); float k=floor(a/(6.2
 
 /* ---- a small pagoda: stacked tiers with upturned eaves and a finial ---- */
 float pagodaD(vec3 q,float s){ q/=s; float d=sdRBox(q-vec3(0.,.012,0.),vec3(.05,.012,.05),.002);
-  for(int i=0;i<4;i++){ float fi=float(i); float y0=.024+fi*.045; float w=.04-fi*.006;
-    d=min(d,sdRBox(q-vec3(0.,y0+.016,0.),vec3(w*.75,.016,w*.75),.002));
-    vec3 e=q-vec3(0.,y0+.034,0.); float ew=w+.02; vec2 m=abs(e.xz); float c=max(m.x,m.y);
-    float roof=e.y-(-.012*(c/ew)+.006*pow(c/ew,6.)); roof=max(abs(roof)-.003,c-ew);
+  for(int i=0;i<4;i++){ float fi=float(i); float y0=.024+fi*.052; float w=.036-fi*.005;
+    d=min(d,sdRBox(q-vec3(0.,y0+.016,0.),vec3(w*.7,.018,w*.7),.002));
+    vec3 e=q-vec3(0.,y0+.04,0.); float ew=w+.024; vec2 m=abs(e.xz); float c=max(m.x,m.y);
+    float cc=min(c/ew,1.); float roof=e.y-(.012-.04*cc+.014*pow(cc,8.)); roof=max(abs(roof)*.7-.003,c-ew);
     d=min(d,roof); }
-  d=min(d,sdCylY(q-vec3(0.,.23,0.),.003,.035));
-  for(int i=0;i<3;i++) d=min(d,sdTorus(q-vec3(0.,.22+float(i)*.012,0.),.006,.002));
+  d=min(d,sdCylY(q-vec3(0.,.26,0.),.003,.035));
+  for(int i=0;i<3;i++) d=min(d,sdTorus(q-vec3(0.,.25+float(i)*.012,0.),.006,.002));
   return d*s; }

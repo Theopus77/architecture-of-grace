@@ -1,7 +1,7 @@
 /* Talmud Unit 2 "Rabbis Who Told Stories" — pencil still life: a book lying open with lines of text, a clay oil lamp with a small flame and a clay drinking cup: an evening of stories.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.5282,0.2993,-0.8053)
-#define CAM_TGT vec3(-0.2141,-0.0148,0.0475)
+#define CAM_POS vec3(-0.5390,0.3054,-0.8441)
+#define CAM_TGT vec3(-0.2118,-0.0219,0.0442)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -201,8 +201,8 @@ vec3 oQ0(vec3 p){ return place(p,vec3(-.06,0.,.05),-0.1); }
 vec3 oQ(vec3 p){ vec3 q=oQ0(p); q.y-=0.03; q.yz=rot(-0.3)*q.yz; return q; }
 float oProp(vec3 p){ vec3 q=oQ0(p); return sdRBox(q-vec3(0,0.03*.6,.07),vec3(.18,0.03*.6,.05),.006); }
 
-#define LP vec3(.26,0.,.1)
-float cup(vec3 p){ vec3 q=p-vec3(.3,0.,-.12); float y=q.y; float rr=.03+.008*y/.07+.004*sin(y*60.); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-.07));
+#define LP vec3(.36,0.,-.03)
+float cup(vec3 p){ vec3 q=p-vec3(.24,0.,-.2); float y=q.y; float rr=.03+.008*y/.07+.004*sin(y*60.); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-.07));
   d=max(d,-max(length(q.xz)-rr+.004,.006-y)); d=min(d,sdTorus(q-vec3(0,.07,0),rr,.002)); return d; }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
   vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);

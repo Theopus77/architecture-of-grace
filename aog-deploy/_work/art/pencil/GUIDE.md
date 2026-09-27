@@ -139,3 +139,36 @@ The credit line under the banner becomes "Pencil drawing, not a photograph: <the
 The script swaps the unit page's banner and its contents-page banner, and adds the navy
 cover. It then needs `node tools/check-contrast.js` and `node tools/check-calm.js` on the
 changed pages, and a bump of `const CACHE` in `sw.js`.
+
+## 8. Novel covers and scene drawings (portrait variant)
+
+The six novel covers and the twenty drawings inside the novels use the same kit, through
+`pencil/novel.py` (it loads `pencil.py` unchanged and swaps the frame size). Scenes are
+`kit/scenes/nov-<id>-still.glsl`; shared objects live in `kit/novlib.glsl`; params in
+`pencil/params-novels.json` (`m`: `{"id": value or [value, contrast, form]}`, `tex`: ids with marks).
+
+    python3 pencil/novel.py frame  nov-room-12-cover
+    python3 pencil/novel.py render nov-room-12-cover OUT
+    python3 pencil/novel.py preview nov-room-12-cover OUT     # cover layout only
+    python3 pencil/novel.py export nov-room-12-cover OUT      # writes novels/cover-room-12.jpg
+
+**Portrait framing rule (covers, 900 x 1350).** The drawing is 900 x 960 at the top of the
+sheet; the title is typeset below it on the same paper. So:
+
+- **Where:** the group sits inside **x 10% to 90%** and **y 16% to 93%** of the 900 x 960
+  drawing (the top 13% stays clear for the series line and the book number).
+- **Focal point:** the focal object's centre is near **(50%, 45%)** of the drawing, on the
+  vertical centre line. Portrait covers are symmetrical, not on the thirds.
+- **Keep clear:** nothing but paper below 93%: the drawing fades into the sheet there and the
+  title starts at 72% of the sheet height.
+- **Title:** baked into the jpg, as the painted covers were: "THE ARCHITECTURE OF GRACE", the
+  book number in italics, the room in large bold serif, the subtitle in italics (second line in
+  the book's accent colour, dark enough to read on paper), and the author. Graphite ink on paper.
+- **No faces, no people.** Tell the story with its objects (the frog puppet, the masks, the
+  open door). A puppet's stitched eyes are fine; a mask is plain, with small almond eye slits
+  (round holes read as a skull; never).
+
+**Scenes (1200 x 420, shown cropped to 1200 x 220 above chapters).** The group is centred in
+**x 24% to 76%, y 20% to 84%**, so the middle band still reads when the top and bottom are cut.
+Export: `novels/scenes/<room>-u<k>-pencil.webp` and `.jpg`; `aog-novel.js` shows the webp with
+the jpg as fallback, with an alt text per scene in `SCENE_ALT`.

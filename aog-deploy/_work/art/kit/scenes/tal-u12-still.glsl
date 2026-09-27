@@ -101,8 +101,7 @@ float jugD(vec3 q,float H){ if(length(q-vec3(0,H*.5,0))>H*.8) return length(q-ve
   float y=q.y/H; float body=.16+.24*sin(3.1416*clamp(y/.8,0.,1.)); float r=mix(body,.12,smoothstep(.62,.82,y))+.03*smoothstep(.93,1.,y);
   r*=H; float d=(length(q.xz)-r)*.7; d=max(d,max(-q.y,q.y-H));
   d=max(d,-max(length(q.xz)-r+.004,H*.9-q.y));
-  float hd=sdTorus((q-vec3(-.13*H,.72*H,0)).xzy*vec3(1.,1.,1.),.13*H,.018*H);
-  hd=max(hd,-q.x-.1*H); hd=max(hd,q.x+.0*H);
+  float hd=sdTorus((q-vec3(-.25*H,.66*H,0)).xzy,.12*H,.02*H);
   return min(d,hd); }
 /* a potted plant pot; base at y=0, height h */
 float potD(vec3 q,float r,float h){ float y=q.y; float rr=r*(.78+.22*y/h); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-h));
@@ -204,17 +203,17 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
 vec3 brQ(vec3 p){ return place(p,BR,.08); }
 float board(vec3 p){ vec3 q=brQ(p); return sdRBox(q-vec3(0,.009,0),vec3(.19,.009,.085),.004); }
 float challah(vec3 p){ vec3 q=brQ(p)-vec3(0,.018,0); if(length(q)>.25) return length(q)-.2; float d=1e5;
-  for(int i=0;i<7;i++){ float x=-.105+float(i)*.035; float s=mod(float(i),2.)<.5?1.:-1.; float taper=1.-.35*pow(abs(x)/.12,2.);
+  for(int i=0;i<7;i++){ float x=-.1+float(i)*.033; float s=mod(float(i),2.)<.5?1.:-1.; float taper=1.-.35*pow(abs(x)/.12,2.);
     vec3 c=q-vec3(x,.026*taper,s*.013*taper); c.xz=rot(s*.6)*c.xz; c.xy=rot(-s*.1)*c.xy;
-    d=smin(d,sdEll(c,vec3(.026,.026,.021)*taper),.006); }
+    d=smin(d,sdEll(c,vec3(.032,.025,.02)*taper),.012); }
   for(int i=0;i<5;i++){ float x=-.07+float(i)*.035; float s=mod(float(i),2.)<.5?1.:-1.;
-    vec3 c=q-vec3(x,.05,0.); c.xz=rot(s*.7)*c.xz; d=smin(d,sdEll(c,vec3(.02,.014,.013)),.006); }
+    vec3 c=q-vec3(x,.05,0.); c.xz=rot(s*.7)*c.xz; d=smin(d,sdEll(c,vec3(.024,.014,.012)),.01); }
   return max(d,-q.y); }
 float cupD(vec3 p){ vec3 q=p-vec3(.2,0.,-.02); if(length(q-vec3(0,.07,0))>.12) return length(q-vec3(0,.07,0))-.1;
   float d=sdCone(q-vec3(0,.006,0),.036,.03,.006)-.001; d=min(d,sdCylY(q-vec3(0,.035,0),.006,.03)); d=min(d,length(q-vec3(0,.04,0))-.011);
   float bo=sdCone(q-vec3(0,.1,0),.014,.038,.04); bo=max(bo,-sdCone(q-vec3(0,.105,0),.011,.035,.04));
   d=min(d,bo); d=min(d,sdTorus(q-vec3(0,.139,0),.0365,.002)); return d; }
-vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,.9-p.z,2.);
+vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.6-p.z,2.);
   r=U(r,stickD(p-C1),3.); r=U(r,stickD(p-C2),4.);
   r=U(r,min(candleD(p-C1),candleD(p-C2)),5.); r=U(r,min(candleFlame(p-C1),candleFlame(p-C2)),6.);
   r=U(r,challah(p),7.); r=U(r,board(p),8.); r=U(r,cupD(p),9.); return r; }

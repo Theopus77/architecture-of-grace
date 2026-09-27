@@ -1,7 +1,7 @@
 /* Qur'an Unit 7 "What the Qur'an Teaches" — pencil still life: a book lying open with framed pages, a clay oil lamp with a small flame, and a bowl of round loaves to share.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.4828,0.2982,-0.8057)
-#define CAM_TGT vec3(-0.1734,-0.0111,0.0341)
+#define CAM_POS vec3(-0.4850,0.2997,-0.8139)
+#define CAM_TGT vec3(-0.1729,-0.0124,0.0334)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -101,8 +101,7 @@ float jugD(vec3 q,float H){ if(length(q-vec3(0,H*.5,0))>H*.8) return length(q-ve
   float y=q.y/H; float body=.16+.24*sin(3.1416*clamp(y/.8,0.,1.)); float r=mix(body,.12,smoothstep(.62,.82,y))+.03*smoothstep(.93,1.,y);
   r*=H; float d=(length(q.xz)-r)*.7; d=max(d,max(-q.y,q.y-H));
   d=max(d,-max(length(q.xz)-r+.004,H*.9-q.y));
-  float hd=sdTorus((q-vec3(-.13*H,.72*H,0)).xzy*vec3(1.,1.,1.),.13*H,.018*H);
-  hd=max(hd,-q.x-.1*H); hd=max(hd,q.x+.0*H);
+  float hd=sdTorus((q-vec3(-.25*H,.66*H,0)).xzy,.12*H,.02*H);
   return min(d,hd); }
 /* a potted plant pot; base at y=0, height h */
 float potD(vec3 q,float r,float h){ float y=q.y; float rr=r*(.78+.22*y/h); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-h));
@@ -200,7 +199,7 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
 
 vec3 oQ(vec3 p){ vec3 q=place(p,vec3(-.02,0.,.06),-.12); q.y-=.03; q.yz=rot(-.3)*q.yz; return q; }
 float prop(vec3 p){ vec3 q=place(p,vec3(-.02,0.,.06),-.12); return sdRBox(q-vec3(0,.018,.07),vec3(.19,.018,.05),.006); }
-#define LP vec3(.3,0.,.12)
+#define LP vec3(.42,0.,-.04)
 #define BP vec3(.26,0.,-.12)
 float bowl(vec3 p){ vec3 q=p-BP; float d=bowlD(q-vec3(0,.01,0),.11,.05); d=min(d,sdCylY(q-vec3(0,.006,0),.045,.006)-.002);
   d=min(d,sdTorus(q-vec3(0,.06,0),sqrt(.11*.11-.06*.06),.0035)); return d; }

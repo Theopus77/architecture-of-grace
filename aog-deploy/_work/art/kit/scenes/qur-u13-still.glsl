@@ -1,7 +1,7 @@
-/* Qur'an Unit 13 "Close Reading Medinan Surahs" — pencil still life: a book lying open with a pair of reading glasses resting on its pages, and a young date palm in a clay pot behind it.
+/* Qur'an Unit 13 "Close Reading Medinan Surahs" — pencil still life: a book lying open with framed pages, and a young date palm growing in a clay pot behind it: Medina, the city of palms.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.7238,0.4403,-1.0225)
-#define CAM_TGT vec3(-0.3106,0.0273,0.0987)
+#define CAM_POS vec3(-0.6234,0.3731,-0.8925)
+#define CAM_TGT vec3(-0.2660,0.0155,0.0779)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -202,14 +202,14 @@ vec3 oQ(vec3 p){ vec3 q=oQ0(p); q.y-=0.03; q.yz=rot(-0.3)*q.yz; return q; }
 float oProp(vec3 p){ vec3 q=oQ0(p); return sdRBox(q-vec3(0,0.03*.6,.07),vec3(.18,0.03*.6,.05),.006); }
 
 #define PP vec3(.3,0.,.16)
-float spec(vec3 p){ vec3 q=oQ(p)/1.5; q-=vec3(.07,.022,-.02); q.xz=rot(-.4)*q.xz; return specD(q)*1.5; }
+float spec(vec3 p){ vec3 q=oQ(p)/2.; q-=vec3(.055,.017,-.02); q.xz=rot(-.4)*q.xz; return specD(q)*2.; }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
-  vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.); r=U(r,spec(p),5.);
-  r=U(r,potD(p-PP,.06,.08),6.); r=U(r,palmD(p-PP-vec3(0,.07,0),.21),7.); return r; }
+  vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);
+  r=U(r,potD(p-PP,.06,.08),6.); r=U(r,palmD(p-PP-vec3(0,.07,0),.16),7.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
   if(id==3.) return pageT(oQ(p),1.5); if(id==4.) return .35;
-  if(id==5.){ vec3 q=oQ(p)/1.5; q-=vec3(.07,.022,-.02); q.xz=rot(-.4)*q.xz; if(min(length(q.xz-vec2(-.027,0.)),length(q.xz-vec2(.027,0.)))<.018) return .9; return .3; }
+  if(id==5.){ vec3 q=oQ(p)/2.; q-=vec3(.055,.017,-.02); q.xz=rot(-.4)*q.xz; if(min(length(q.xz-vec2(-.027,0.)),length(q.xz-vec2(.027,0.)))<.018) return .9; return .3; }
   if(id==6.){ vec3 c=p-PP; if(abs(c.y-.06)<.002) return .35; return .5; }
   if(id==7.){ vec3 c=p-PP; if(c.y<.27) return fract(c.y/.014)<.3?.3:.5; return .45; } return .6; }
 
