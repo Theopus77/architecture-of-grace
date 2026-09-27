@@ -7,7 +7,8 @@ AOG-DOORS-V2 (2026-09-27) — the six course doors, one design.
                                                religions-hub and economics-hub (all six, one layout)
   python3 _work/course/make_hubs.py check    → every link on the doors resolves (file or _redirects)
 
-(`hubs` and `k8`, the V1 commands, now both rebuild all six doors.)
+(`hubs` and `k8`, the V1 commands, now both rebuild all six doors. Name ids or files after the verb
+ to build only those: `make_hubs.py doors chn`.)
 
 Each door: a hero with three of the course's own unit banners, "Course contents" and "Start at
 the beginning"; one grade band at a time from a drop-down (#k-2 … on the link, last choice
@@ -621,17 +622,26 @@ paintLang();
 })();
 """
 
-def head_of(file):
-    """the page's own head up to and including the managed icons block (kept verbatim)"""
-    s = (DEPLOY / file).read_text(encoding="utf-8")
+def head_of(file, h=None):
+    """the page's own head up to and including the managed icons block (kept verbatim).
+    A new door has no page yet: it borrows talmud-hub.html's head with its own name, words and address."""
     end = "<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->"
+    if not (DEPLOY / file).exists() and h:
+        s = (DEPLOY / "talmud-hub.html").read_text(encoding="utf-8")
+        s = s[:s.index(end) + len(end)]
+        en = h["name"][0]
+        desc = "%s, K–12 — studied band by band, for a public-school classroom. Free and private." % en
+        s = re.sub(r"Talmud Study, K–12 — [^\"]*Free and private\.", lambda m: E(desc), s)
+        s = s.replace("Talmud Study", en).replace("/talmud\"", "/%s\"" % h["slug"])
+        return s
+    s = (DEPLOY / file).read_text(encoding="utf-8")
     return s[:s.index(end) + len(end)]
 
 def make_door(h):
     o = load(h["cid"]); en, es = h["name"]
     art = course_art(h["contents"])
     bands = [b["id"] for b in o.BANDS]
-    head = head_of(h["file"])
+    head = head_of(h["file"], h)
     body = "\n".join(band_section(h, o, b, art) for b in bands)
     foot = FOOT2[h["cid"] != "eco"]
     js = JS.replace("__SLUG__", h["slug"]).replace("__BANDS__", str(bands).replace("'", '"').replace(" ", "")) \
@@ -686,6 +696,9 @@ def check(files):
 if __name__ == "__main__":
     what = sys.argv[1] if len(sys.argv) > 1 else "check"
     if what in ("doors", "hubs", "k8"):
-        for h in COURSES: make_door(h)
+        # optional names after the verb build only those hubs: `make_hubs.py hubs chn` (cid or file)
+        only = set(sys.argv[2:])
+        for h in COURSES:
+            if not only or h["cid"] in only or h["file"] in only: make_door(h)
     else:
         sys.exit(1 if check(sys.argv[2:] or [h["file"] for h in COURSES]) else 0)

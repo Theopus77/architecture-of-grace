@@ -41,12 +41,10 @@ def sw():
     p = DEPLOY / "sw.js"; s = p.read_text(encoding="utf-8")
     if "chn-u1.html" in s:
         print("sw: already precaches the course"); return
-    m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
-    old = m.group(1)
-    pre, num = old.rsplit(".", 1)
-    new = "%s.%d" % (pre, int(num) + 1)   # always one past whatever is live, never a fixed number
-    line = ("const CACHE = '%s'   // CHINESE CLASSICS AS A COURSE. /chinese-classics-course, /chinese-classics and /chn1…: a K–12 course built by _work/chn/build_chn.py; every page's Chinese Classics jump groups list the course first.\n"
-            "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
+    m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+\.)([a-z]*)(\d+)'(.*)$", s, re.M)
+    oldtag = m.group(2) + m.group(3)
+    new = "%s%s%d" % (m.group(1), m.group(2), int(m.group(3)) + 1)   # always one past whatever is live
+    line = ("const CACHE = '%s'   // CHINESE CLASSICS AS A COURSE. /chinese-classics-course, /chinese-classics and /chn1…: a K–12 course built by _work/chn/build_chn.py; every page's Chinese Classics jump groups list the course first. previous: %s%s" % (new, oldtag, m.group(4)))
     s = s[:m.start()] + line + s[m.end():]
     add = "  './chinese-classics-course.html', " + ", ".join("'./chn-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-CHN-V1 — the Chinese Classics course\n"
     n = re.search(r"const PRECACHE_LESSONS = \[\n", s).end()
