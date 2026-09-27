@@ -1223,6 +1223,7 @@ function aogToggleBand(e, b){
         }
       </style>
       <div class="aog-of-in">
+<picture id="aogHeroRose" role="none"><source type="image/webp" srcset="img/rose-window-640.webp 640w, img/rose-window-1000.webp 1000w, img/rose-window-1600.webp 1600w" sizes="(max-width:720px) 92vw, 660px"><img src="img/rose-window-1000.jpg" width="1000" height="1000" alt="" decoding="async" fetchpriority="low"></picture>
 <div class="aog-of-head">
           <h1 class="ofh-mark"><span class="ofh-l1">Architecture of</span><span class="ofh-l2">Grace</span></h1>
           <!-- .30k3 &mdash; Jimmy: "'designed to influence the other 167 hours' is the single best sentence on the site. It's nowhere near your hero." The sentence is quoted verbatim from the ecosystem screen (#screen-ecosystem .ex-hours), which keeps its own copy. RETIRED, NOT DELETED &mdash; the premise line this replaced read: "Architecture of Grace is a relationship-centered framework, built on the premise that students need more than emotional regulation &mdash; they need a framework for navigating imperfection:" (ES: "Architecture of Grace es un marco centrado en las relaciones, construido sobre la premisa de que los estudiantes necesitan m&aacute;s que regulaci&oacute;n emocional &mdash; necesitan un marco para navegar la imperfecci&oacute;n:"). Restoring it means also reverting the moves line below to "how they understand themselves" / "c&oacute;mo se entienden a s&iacute; mismos", which was only reworded because the colon above it went away. -->
@@ -92117,82 +92118,22 @@ html.js-reveal .reveal,
   #panel-align .xa-lock, #panel-align a.xa-ghost[href*="request" i], #panel-align a.xa-ghost[onclick*="equest" i]{display:none!important}
 }
 </style>
-<script id="aog-hero-rose">
-/* ══ AOG-HERO-ROSE-V1 (2026-09-25) — Jimmy: "Can the MAIN HERO get some sort of
-   facelift as well?" Behind the name, a rose window lit from behind: a centre
-   medallion, three rings of pointed petals and lancets, and a border of small
-   roundels, all in jewel glass set in lead, the same glass as the ecosystem
-   flower. Decorative only (aria-hidden), drawn once, fades at its edges. */
-(function(){
-  var host = document.querySelector('#one-framework .aog-of-in'); if (!host || document.getElementById('aogHeroRose')) return;
-  var NS='http://www.w3.org/2000/svg', C=300, J=['#2F63B8','#B8457A','#2E8B57','#B87A12','#7B4FA0','#A8323E','#1F8080','#3F4AA6'];
-  function P(r,a){ return (C+r*Math.cos(a)).toFixed(1)+' '+(C+r*Math.sin(a)).toFixed(1); }
-  var g='';
-  function pane(d,col,op){ g+='<path d="'+d+'" fill="'+col+'" fill-opacity="'+(op||.92)+'" filter="url(#hrGlass)"/>'; }
-  /* centre medallion: 8 wedges */
-  for (var i=0;i<8;i++){ var a0=i*Math.PI/4-Math.PI/2, a1=a0+Math.PI/4;
-    pane('M'+C+' '+C+' L'+P(46,a0)+' A46 46 0 0 1 '+P(46,a1)+' Z', i%2?'#F2C964':'#D9A33B'); }
-  /* AOG-HERO-CYCLE-V1 (2026-09-26) — Jimmy: "have the stained glass go through a
-     cycle of the different ones … including a new one that is a ROSE or flower with
-     a stem." A different window each visit, never moving while the page is open
-     (the calm rule): 0 classic rose · 1 star · 2 lancet · 3 kaleidoscope · 4 the
-     rose on a stem. The choice advances by one on each visit, on this device. */
-  var V=0; try{ V=(+(localStorage.getItem("aog.hero.win")||0)+1)%5; localStorage.setItem("aog.hero.win",V); }catch(eV){}
-  if(V===4){
-    /* the rose with a stem: layered petals, a gold heart, a green stem with two leaves */
-    for (var rr=0; rr<3; rr++){ var n2=[6,8,10][rr], R0=[20,70,120][rr], R1=[80,130,178][rr];
-      for (var k2=0;k2<n2;k2++){ var b0=(k2+rr*.5)*2*Math.PI/n2-Math.PI/2, b1=b0+2*Math.PI/n2, bm=(b0+b1)/2;
-        pane('M'+P(R0,b0)+' Q'+P(R1+30,bm)+' '+P(R0,b1)+' Z', ['#A8323E','#B8457A','#C9577D'][rr]); } }
-    pane('M'+C+' '+C+' m-24 0 a24 24 0 1 0 48 0 a24 24 0 1 0 -48 0', '#F2C964');
-    pane('M292 470 L308 470 L312 596 L288 596 Z', '#2E8B57');
-    pane('M300 520 Q220 470 196 520 Q250 548 300 530 Z', '#3E9E62');
-    pane('M300 556 Q380 506 404 556 Q350 584 300 566 Z', '#3E9E62');
-  } else if(V===1){
-    for (var s2=0;s2<16;s2++){ var c0=s2*Math.PI/8-Math.PI/2, cm=c0+Math.PI/16, c1=c0+Math.PI/8;
-      pane('M'+C+' '+C+' L'+P(90,c0)+' L'+P(250,cm)+' L'+P(90,c1)+' Z', J[s2%J.length]); }
-  } else if(V===2){
-    for (var l=0;l<5;l++){ var x0=120+l*72; pane('M'+x0+' 540 L'+x0+' 200 Q'+(x0+30)+' 110 '+(x0+60)+' 200 L'+(x0+60)+' 540 Z', J[(l*2)%J.length]); }
-  } else if(V===3){
-    for (var h=0;h<3;h++) for (var k3=0;k3<12;k3++){ var d0=k3*Math.PI/6+h*.26-Math.PI/2, d1=d0+Math.PI/6, r0=40+h*70, r1=r0+70;
-      pane('M'+P(r0,d0)+' L'+P(r1,(d0+d1)/2)+' L'+P(r0,d1)+' Z', J[(k3+h*3)%J.length]); }
-  }
-  /* rings of pointed petals: [inner, outer, count, rotation] */
-  if(V===0) [[50,112,8,0],[116,188,16,.5],[192,252,24,0]].forEach(function(R,ri){
-    var n=R[2];
-    for (var k=0;k<n;k++){
-      var a0=(k+R[3])*2*Math.PI/n-Math.PI/2, a1=a0+2*Math.PI/n, am=(a0+a1)/2, pk=R[1]+ (ri===2?4:14);
-      pane('M'+P(R[0],a0)+' A'+R[0]+' '+R[0]+' 0 0 1 '+P(R[0],a1)+' L'+P(R[1],a1)+' Q'+P(pk,am)+' '+P(R[1],a0)+' Z', J[(k+ri*3)%J.length]);
-    }
-  });
-  /* border of small roundels */
-  for (var q=0;q<24;q++){ var a=q*2*Math.PI/24-Math.PI/2; var x=C+272*Math.cos(a), y=C+272*Math.sin(a);
-    g+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="15" fill="'+J[(q*3)%J.length]+'" fill-opacity=".92" filter="url(#hrGlass)"/>'; }
-  var svg='<svg id="aogHeroRose" viewBox="0 0 600 600" aria-hidden="true" focusable="false">'
-    +'<defs><filter id="hrGlass" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="21" result="n"/>'
-    +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.33" result="sh"/>'
-    +'<feComposite in="sh" in2="SourceAlpha" operator="in" result="s2"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="s2"/></feMerge></filter>'
-    +'<radialGradient id="hrLight" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#FFF6DA" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs>'
-    +'<circle cx="300" cy="300" r="292" fill="#15171B"/>'
-    +'<g stroke="#15171B" stroke-width="3.2" stroke-linejoin="round">'+g+'</g>'
-    +'<circle cx="300" cy="300" r="290" fill="url(#hrLight)" style="mix-blend-mode:screen"/>'
-    +'<circle cx="300" cy="300" r="293" fill="none" stroke="#B89A5E" stroke-width="7"/>'
-    +'</svg>';
-  host.insertAdjacentHTML('afterbegin', svg);
-})();
-</script>
 <style id="aog-hero-glass">
 @media screen{
   #one-framework .aog-of-in{position:relative}
-  #aogHeroRose{position:absolute;left:50%;top:-34px;width:min(660px,92vw);height:auto;transform:translateX(-50%);z-index:0;pointer-events:none;
-    opacity:.24;filter:drop-shadow(0 0 40px rgba(242,201,100,.25));
-    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%)}
+  /* AOG-HERO-ROSE-PHOTO (2026-09-27) — Jimmy: the drawn windows "look fake". The rose is now
+     a rendered photograph (_work/art/rose/render.html): cathedral glass lit from behind, lead
+     came, a limestone frame. Still, decorative, dimmed so the name reads on top. */
+  #aogHeroRose{position:absolute;left:50%;top:-34px;width:min(660px,92vw);transform:translateX(-50%);z-index:0;pointer-events:none;
+    opacity:.5;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%)}
+  #aogHeroRose img{display:block;width:100%;height:auto;aspect-ratio:1}
+  #aogHeroRose::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 46% 40% at 50% 40%,rgba(10,30,51,.72),rgba(10,30,51,.35) 70%,transparent 100%)}
   #one-framework .aog-of-head{position:relative;z-index:1}
   #one-framework .aog-of-head .ofh-mark{filter:drop-shadow(0 4px 18px rgba(8,20,36,.95)) drop-shadow(0 0 2px rgba(8,20,36,.9))}
   /* the three doors: leaded, each with a band of its own glass */
   #aog-thresholds .aogdr-door{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.4),inset 0 7px 0 var(--gl),0 18px 40px -26px rgba(0,0,0,.8)!important}
   #aog-thresholds .aogdr-d2{--gl:#2F63B8} #aog-thresholds .aogdr-d1{--gl:#B8457A} #aog-thresholds .aogdr-d3{--gl:#2E8B57}
 }
-@media (prefers-reduced-motion:no-preference){ #aogHeroRose{animation:aogRoseIn 1.4s ease-out both} @keyframes aogRoseIn{from{opacity:0;transform:translateX(-50%) scale(.96)}to{opacity:.24;transform:translateX(-50%) scale(1)}} }
 @media print{ #aogHeroRose{display:none} }
 </style>
 <style id="aog-xwalk-solo-css">
