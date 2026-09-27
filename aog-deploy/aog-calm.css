@@ -85,6 +85,10 @@ canvas, img, video, svg:not([width]) { max-width: 100%; }
    falls out of proportion. Phones are untouched (16px fields keep iOS from zooming); print is untouched. */
 @media screen and (min-width: 700px) { body { zoom: .94; } }
 @media screen and (min-width: 1000px) { body { zoom: .85; } } /* Jimmy 2026-09-27: 85% on a computer */
+/* AOG-CANVAS-TRUE-V1 (2026-09-27) — Jimmy: "THE Calibration is WAY WAY off" on the drawing boards. Safari measures a
+   canvas without the zoom but the pen with it, so strokes land away from the finger. Any page with a canvas draws at
+   full size, so every pen, pad and scope lands exactly under the finger or mouse. */
+@media screen { body:has(canvas) { zoom: 1 !important; } }
 
 /* AOG-DAILY-ROW-V1 (2026-09-27) — Jimmy: "Fix it so all the grades / numbers are in one row and apply that to all
    current and future builds." Every "Every day" strip: the name, then one line of words, then the grade buttons in
