@@ -234,11 +234,11 @@ float malaD(vec3 q,float R,float n){ float a=atan(q.z,q.x); float k=floor(a/(6.2
 
 /* ---- a small pagoda: stacked tiers with upturned eaves and a finial ---- */
 float pagodaD(vec3 q,float s){ q/=s; float d=sdRBox(q-vec3(0.,.012,0.),vec3(.05,.012,.05),.002);
-  for(int i=0;i<4;i++){ float fi=float(i); float y0=.024+fi*.045; float w=.04-fi*.006;
-    d=min(d,sdRBox(q-vec3(0.,y0+.016,0.),vec3(w*.75,.016,w*.75),.002));
-    vec3 e=q-vec3(0.,y0+.034,0.); float ew=w+.02; vec2 m=abs(e.xz); float c=max(m.x,m.y);
-    float roof=e.y-(-.012*(c/ew)+.006*pow(c/ew,6.)); roof=max(abs(roof)-.003,c-ew);
+  for(int i=0;i<4;i++){ float fi=float(i); float y0=.024+fi*.052; float w=.036-fi*.005;
+    d=min(d,sdRBox(q-vec3(0.,y0+.016,0.),vec3(w*.7,.018,w*.7),.002));
+    vec3 e=q-vec3(0.,y0+.04,0.); float ew=w+.024; vec2 m=abs(e.xz); float c=max(m.x,m.y);
+    float cc=min(c/ew,1.); float roof=e.y-(.012-.04*cc+.014*pow(cc,8.)); roof=max(abs(roof)*.7-.003,c-ew);
     d=min(d,roof); }
-  d=min(d,sdCylY(q-vec3(0.,.23,0.),.003,.035));
-  for(int i=0;i<3;i++) d=min(d,sdTorus(q-vec3(0.,.22+float(i)*.012,0.),.006,.002));
+  d=min(d,sdCylY(q-vec3(0.,.26,0.),.003,.035));
+  for(int i=0;i<3;i++) d=min(d,sdTorus(q-vec3(0.,.25+float(i)*.012,0.),.006,.002));
   return d*s; }
