@@ -1,6 +1,6 @@
 /* Hebrew Bible Unit 12 "Close Reading Genesis" - a ram's horn and a bundle of firewood, with an oil lamp. */
-#define CAM_POS vec3(-0.4489,0.4105,-0.8789)
-#define CAM_TGT vec3(-0.3004,-0.0559,0.1069)
+#define CAM_POS vec3(-0.5124,0.4609,-1.0310)
+#define CAM_TGT vec3(-0.3417,-0.0760,0.1036)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.3)
 #define MAXT 8.
@@ -346,15 +346,42 @@ float t_bookpages(vec3 q,int kind){ q=obQ(q); float x=abs(q.x); float a=.94; flo
     if(core&&l<.32) a=.5; else if(!core&&abs(u)<.066&&abs(q.z)<.095&&l2<.3) a=.72; }
   if(x<.006) a=.7; return a; }
 float t_reeds(vec3 q){ return q.y>.19?.35:.6; }
+/* ---- round 2 models ---- */
+float o_basket2(vec3 q){ vec3 c=q; float y=clamp(c.y/.085,0.,1.); float sx=.13+.02*sin(y*1.6), sz=.075+.015*sin(y*1.6);
+  float side=(length(c.xz/vec2(sx,sz))-1.)*min(sx,sz); float d=max(side,max(-c.y,c.y-.085));
+  d=max(d,-max(side+.007,.008-c.y)); d=min(d,sdTorus(vec3(c.x*.075/.15,c.y-.085,c.z),.0725,.0065));
+  float cl=sdEll(q-vec3(.0,.07,.0),vec3(.12,.02,.065))+.003*sin(q.x*90.)*sin(q.z*70.); d=min(d,max(cl,side));
+  return d*.8; }
+float t_basket2(vec3 q){ if(q.y>.078) return .4; float a=atan(q.z/.085,q.x/.15); float row=floor(q.y/.012);
+  if(q.y>.02&&length(q.xz/vec2(.14,.08))<.93) return .88;
+  float w=fract(a*36./6.2832+row*.5); float r=fract(q.y/.012); return (w<.12||r<.15)?.25:(w<.55?.5:.66); }
+float sheafR(float y){ float w=.035; float lo=.075-.04*smoothstep(0.,.12,y); float hi=.035+.05*smoothstep(.12,.26,y); return y<.12?max(lo,w):max(hi*(1.-smoothstep(.3,.36,y)*.9),w*(1.-smoothstep(.3,.36,y))); }
+float o_sheaf2(vec3 q){ float r=sheafR(q.y); float a=atan(q.z,q.x); float d=(length(q.xz)-r-.002*sin(a*40.))*.6; d=max(d,max(-q.y,q.y-.37));
+  float ears=q.y>.24?fbm3(q*140.)*.01:0.; d+=ears; d=min(d,sdTorus(q-vec3(0,.12,0),.037,.006)); return d; }
+float t_sheaf2(vec3 q){ if(abs(q.y-.12)<.008) return .28; if(q.y>.25) return fract(q.y/.01+atan(q.z,q.x)*2.)<.4?.35:.55; return fract(atan(q.z,q.x)*24./6.2832)<.35?.45:.72; }
+float o_sickle2(vec3 q){ vec2 u=q.xz; float cres=max(length(u)-.085,-(length(u-vec2(-.022,.012))-.078)); cres=max(cres,-u.x-.03);
+  float blade=max(cres,abs(q.y-.003)-.0025); float h=sdCapsule(q,vec3(-.02,.009,-.083),vec3(-.035,.012,-.2),.01); return min(blade,h); }
+float t_sickle2(vec3 q){ return q.z<-.075?.35:.55; }
+float o_torch2(vec3 q){ float base=sdCylY(q-vec3(0,.015,0),.045,.015)-.004; float s=sdCapsule(q,vec3(0,.02,0),vec3(0,.24,0),.009);
+  float h=sdCone(q-vec3(0,.27,0),.016,.024,.03)-.002+.002*sin(q.y*500.); return min(min(base,s),h); }
+float t_torch2(vec3 q){ if(q.y>.238) return fract(q.y/.008)<.4?.2:.4; if(q.y<.034) return .5; return .55; }
+float o_bigflame(vec3 q){ return o_flame(q/2.2)*2.2; }
+float t_bigflame(vec3 q){ return .97; }
+/* ---- round 3 ---- */
+float o_doorpost(vec3 q){ float d=sdRBox(q-vec3(0,.18,0),vec3(.05,.18,.04),.004); d=min(d,sdRBox(q-vec3(0,.012,0),vec3(.07,.012,.06),.004)); return d; }
+float t_doorpost(vec3 q){ return .5+.15*step(.5,fract(q.y*70.+sin(q.x*60.)*1.5)); }
+vec3 mzQ(vec3 q){ vec3 c=q-vec3(0,.2,-.052); c.xy=rot(.35)*c.xy; return c; }
+float o_mezuzah2(vec3 q){ vec3 c=mzQ(q); float d=sdRBox(c,vec3(.014,.075,.012),.009); d=min(d,length(c-vec3(0,.06,-.009))-.007); return d; }
+float t_mezuzah2(vec3 q){ vec3 c=mzQ(q); if(abs(c.x)<.01&&c.y<.045&&c.y>-.06&&fract(c.y/.014)<.25) return .3; return .45; }
 
-vec3 Q3(vec3 p){  vec3 q=p-vec3(0.03,0.,0.04); q.xz=rot(-0.2)*q.xz; q/=1.5; return q; }
-vec3 Q4(vec3 p){  vec3 q=p-vec3(-0.25,0.,-0.06); q.xz=rot(0.25)*q.xz; q/=1.; return q; }
-vec3 Q5(vec3 p){  vec3 q=p-vec3(0.32,0.,0.12); q.xz=rot(2.6)*q.xz; q/=1.; return q; }
-vec3 Q6(vec3 p){  vec3 q=p-vec3(0.32,0.,0.12); q.xz=rot(2.6)*q.xz; q/=1.; q-=vec3(0.088,0.064,0.); return q; }
+vec3 Q3(vec3 p){  vec3 q=p-vec3(0.14,0.,0.06); q.xz=rot(-0.2)*q.xz; q/=1.4; return q; }
+vec3 Q4(vec3 p){  vec3 q=p-vec3(-0.3,0.,0.02); q.xz=rot(0.25)*q.xz; q/=1.; return q; }
+vec3 Q5(vec3 p){  vec3 q=p-vec3(-0.08,0.,-0.16); q.xz=rot(2.9)*q.xz; q/=1.; return q; }
+vec3 Q6(vec3 p){  vec3 q=p-vec3(-0.08,0.,-0.16); q.xz=rot(2.9)*q.xz; q/=1.; q-=vec3(0.088,0.064,0.); return q; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
-  { r=U(r,o_shofar(Q3(p))*1.5,3.); }
+  { r=U(r,o_shofar(Q3(p))*1.4,3.); }
   { r=U(r,o_wood(Q4(p))*1.,4.); }
   { r=U(r,o_lamp(Q5(p))*1.,5.); }
   { r=U(r,o_flame(Q6(p))*1.,6.); }
