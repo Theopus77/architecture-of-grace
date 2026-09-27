@@ -1,7 +1,7 @@
 /* FCS Unit 18 "Child Development and Care" — pencil still life of a young child's toys: a
    stacking-ring tower on its post, a baby rattle, and two soft picture-cube blocks. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4432,0.2950,-0.8001)
+#define CAM_TGT vec3(-0.1982,0.0012,0.1108)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
