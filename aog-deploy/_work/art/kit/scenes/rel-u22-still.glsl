@@ -37,17 +37,28 @@ float jar(vec3 q){ float sh=max(abs(length(q.xz)-.045)-.002,max(-q.y,q.y-.11));
   float coins=coinsD(q-vec3(0,.002,0),.04,18.,.002);
   float c2=max(length(q.xz)-.043,max(q.y-.055,-q.y));
   return min(min(sh,max(lidd,-slot)),c2); }
+/* coins spilled beside the jar: a short stack and three lying flat, one leaning on the jar */
+float spill(vec3 q){ float d=coinsD(q-vec3(-.07,0.,-.05),.02,6.,.0015);
+  d=min(d,sdCylY(q-vec3(-.03,.0014,-.08),.02,.0012)-.0004);
+  d=min(d,sdCylY(q-vec3(.0,.0014,-.1),.02,.0012)-.0004);
+  vec3 k=q-vec3(-.035,.019,-.05); k.yz=rot(1.2)*k.yz; d=min(d,sdCylY(k,.02,.0012)-.0004);
+  return d; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
   r=U(r,scope(p),3.);
   r=U(r,gavel(L(p,GV,-.4)),4.);
   r=U(r,jar(L(p,JR,0.)),5.);
+  r=U(r,spill(L(p,JR,0.)),6.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .7;
   if(id==2.) return .9;
   if(id==3.){ vec3 t=tq(p); if(abs(t.x-.07)<.004||abs(t.x+.03)<.004) return .3; if(t.x>.115) return .3; return .52; }
   if(id==4.){ vec3 q=L(p,GV,-.4); if(q.y<.022) return .38; return .5+.1*grain(q.zyx,30.); }
-  if(id==5.){ vec3 q=L(p,JR,0.); if(q.y>.108) return .4; if(q.y<.055){ return fract(q.y/.0028)<.3?.4:.62; } return .92; }
+  if(id==5.){ vec3 q=L(p,JR,0.); if(q.y>.108) return .4; if(abs(q.y-.058)<.0015) return .35;
+    if(q.y<.058){ vec2 u=vec2(atan(q.z,q.x)*.045,q.y); vec2 c=u/vec2(.022,.012); vec2 f=fract(c+vec2(floor(c.y)*.5,0.))-.5;
+      float e=abs(length(f*vec2(1.,1.8))-.42); if(e<.06) return .25; return .72-.12*step(.3,length(f*vec2(1.,1.8))); }
+    return .94; }
+  if(id==6.){ return fract(p.y/.0028)<.3?.35:(abs(length(fract(p.xz/.04)-.5)-.35)<.04?.4:.62); }
   return .7; }
