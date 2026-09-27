@@ -483,6 +483,10 @@
   function set(el, k, v) { done.push([el, k, el.style.getPropertyValue(k), el.style.getPropertyPriority(k)]); el.style.setProperty(k, v, "important"); }
   function light() {
     if (done.length) return;
+    /* AOG-PRINT-FIRST-CHAP-V1 — Jimmy: the unit title printed alone on page 1. The first chapter shown shares the
+       title's page; every later chapter still starts a new sheet. */
+    var ch = document.querySelectorAll(".chap");
+    for (var c = 0; c < ch.length; c++) { if (ch[c].getClientRects().length) { set(ch[c], "break-before", "auto"); set(ch[c], "page-break-before", "auto"); break; } }
     /* a panel that is mostly a picture (a drawn cover, a photo) prints as the picture, untouched */
     function pictured(el) { var r = el.getBoundingClientRect(), A = r.width * r.height; if (!A) return false;
       var ps = el.querySelectorAll("svg,img,canvas,picture,video"); for (var j = 0; j < ps.length; j++) { var q = ps[j].getBoundingClientRect(); if (q.width * q.height >= A * 0.4) return true; } return false; }
