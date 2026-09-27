@@ -160,7 +160,10 @@
      course unit it practises (aog-room-map.js); if that drawing is not made yet, nothing shows. ── */
   var PAGE = { "science-microscope": "page-microscope", "microscope-guide": "page-microscope", "microscope-lessons": "page-microscope",
     "telescope": "page-telescope", "science-telescope": "page-telescope", "telescope-guide": "page-telescope", "telescope-lessons": "page-telescope",
-    "AoG-Interior-Worksheets": "page-worksheets" };
+    "AoG-Interior-Worksheets": "page-worksheets",
+    "english-hub": "page-english-hub", "math-hub": "page-math-hub", "science-hub": "page-science-hub", "social-studies-hub": "page-social-studies-hub",
+    "spanish-hub": "page-spanish-hub", "facs-hub": "page-facs-hub", "dashboard": "page-dashboard", "turn-ins": "page-turn-ins",
+    "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space" };
   var MCSS = [
     ".aog-mast-host{ position:relative; }", ".aog-mast-sketch{ overflow:hidden; }",
     ".aog-mast-host > :not(.aog-mast-sketch){ position:relative; z-index:1; }",
@@ -205,9 +208,29 @@
     + "\n.aog-card-sketch{ display:block; align-self:stretch; margin:0 0 6px; height:92px; overflow:hidden; border-radius:8px; border:1px solid rgba(42,38,34,.4); }"
     + "\n.aog-card-sketch img{ display:block; width:100%; height:100%; object-fit:cover; object-position:78% 42%; transform:scale(1.75); transform-origin:68% 38%; }"
     + "\n@media print{ .aog-card-sketch{ display:none; } }";
-  function mastBoot() { hubCards();
+  /* AOG-DRAFTING-TABS + AOG-BLUEPRINT-HOME (2026-09-27) — the "Every day" grade buttons are index-card tabs; the
+     home page's navy is a real blueprint (a faint white drafting grid) and each door carries a pencil drawing. */
+  var TCSS = "html:not([data-theme=\"dark\"]) .daily a.gr{ background:#FBF8F0 !important; border:1.4px solid rgba(42,38,34,.72) !important; border-bottom-width:3px !important; border-radius:12px 12px 3px 3px !important; box-shadow:1.5px 1.5px 0 -0.4px rgba(42,38,34,.3) !important; color:#1D2733 !important; }"
+    + "\nhtml body section#one-framework.aog-of, html body #aog-thresholds#aog-thresholds{ background-image:linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px) !important; background-size:88px 88px, 88px 88px, 22px 22px, 22px 22px !important; }"
+    + "\n.aog-door-sketch{ display:block; height:120px; margin:0 0 12px; border-radius:10px; overflow:hidden; border:1px solid rgba(242,201,100,.35); }"
+    + "\n.aog-door-sketch img{ display:block; width:100%; height:100%; object-fit:cover; object-position:75% 42%; transform:scale(1.6); transform-origin:68% 40%; }"
+    + "\n@media print{ .aog-door-sketch{ display:none; } }";
+  function tabsHome() {
+    if (!D.getElementById("aog-tabs-css")) { var ts = D.createElement("style"); ts.id = "aog-tabs-css"; ts.appendChild(D.createTextNode(TCSS)); (D.head || D.documentElement).appendChild(ts); }
+    var doors = D.querySelectorAll(".aogdr-door");
+    for (var i = 0; i < doors.length; i++) {
+      var d = doors[i]; if (d.querySelector(".aog-door-sketch")) continue;
+      var t = d.textContent || "", id = /Atrium/.test(t) ? "page-door-atrium" : /Front Porch|Porche/.test(t) ? "page-door-porch" : /Religions|Religiones/.test(t) ? "page-door-faith" : "";
+      if (!id) continue;
+      var f = D.createElement("span"); f.className = "aog-door-sketch"; f.setAttribute("aria-hidden", "true");
+      var im = D.createElement("img"); im.alt = ""; im.loading = "lazy"; im.src = "/img/banners/" + id + "-pencil-900.webp";
+      im.onerror = (function (fr) { return function () { if (fr.parentNode) fr.parentNode.removeChild(fr); }; })(f);
+      f.appendChild(im); d.insertBefore(f, d.firstChild);
+    }
+  }
+  function mastBoot() { tabsHome(); hubCards();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
-    if (/^(music-drums|music-decks|science-waves|daily-drops|slip|word-foundry)$/.test(pg)) return;   /* instruments and tools keep their own faces */
+    if (/^(music-drums|music-decks|science-waves|slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
     if (PAGE[pg]) { mast(PAGE[pg]); return; }
     var tries = 0;
     (function wait() {
