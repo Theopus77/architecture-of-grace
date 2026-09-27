@@ -228,6 +228,8 @@ footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
 .pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);margin:0}
 .pg .pgfoot a{color:inherit;font-weight:700}
 @media print{ .pg{display:none !important} }
+.print-pick .paper{padding:1.1rem 1.2rem}
+.print-pick .paper .muted{margin:.2rem 0 0}
 
 /* AOG-MIC-WIDE-V1 (2026-09-26) — Jimmy: sweet when the iPad is tall, yucky when wide.
    Wide and short screens: the eyepiece is sized to the screen's height so it, the
@@ -1266,6 +1268,20 @@ let LPICK=null;
 try{ const v=localStorage.getItem(LPICK_KEY); if(v!=null&&v!==""&&!isNaN(+v)) LPICK=+v; }catch(e){}
 const LSTR={
   lessonsNav:{en:"Lessons",es:"Lecciones"},
+  worksheet:{en:"Open the worksheet",es:"Abrir la hoja"},
+  printNav:{en:"Print",es:"Imprimir"},
+  printLead:{en:"What would you like to print?",es:"¿Qué quieres imprimir?"},
+  printSay:{en:"Each choice opens the sheet and your printer box. White paper, dark ink, one sheet per page.",es:"Cada opción abre la hoja y la ventana de impresión. Papel blanco, tinta oscura, una hoja por página."},
+  printOneK:{en:"This lesson's worksheet",es:"La hoja de esta lección"},
+  printOne:{en:"Print my copy",es:"Imprimir mi copia"},
+  printBlank:{en:"Print it blank",es:"Imprimir en blanco"},
+  printAllK:{en:"Every lesson",es:"Todas las lecciones"},
+  printAllSay:{en:"All 7 worksheets, one lesson per page.",es:"Las 7 hojas, una lección por página."},
+  printAll:{en:"Print all 7 worksheets",es:"Imprimir las 7 hojas"},
+  printGuideK:{en:"The picture guide",es:"La guía en imágenes"},
+  printGuideSay:{en:"The microscope drawn and labeled, with each lesson in pictures.",es:"El microscopio dibujado y rotulado, con cada lección en imágenes."},
+  printGuide:{en:"Print the picture guide",es:"Imprimir la guía en imágenes"},
+  printPartsK:{en:"The parts sheet",es:"La hoja de las partes"},
   lessonsLead:{en:"Seven lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Siete lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
   lessonK:{en:"Lesson",es:"Lección"},
@@ -1293,8 +1309,8 @@ function lessonCard(inLab){
     return `<li class="${ok?"ok":""}"><span class="tick" aria-hidden="true">${ok?"✓":""}</span><span>${ok?`<s>${w}</s>`:w}</span></li>`; }).join("")}</ol>`;
   const waiting=(typeof missionsOpen==="function" && !missionsOpen() && p>now)?`<p class="note-line">${lt("wait").replace("{n}",now+1)}</p>`:"";
   const acts=inLab
-    ? `${(typeof missionActs==="function"?missionActs(p):"")}${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`
-    : `<a class="pill btn-steel" href="#lab">${lt("toLab")} →</a>${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`;
+    ? `${(typeof missionActs==="function"?missionActs(p):"")}<a class="pill" data-ws="${p+1}" href="${WS_PAGE}#l${p+1}">${lt("worksheet")}</a>${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`
+    : `<a class="pill btn-steel" href="#lab">${lt("toLab")} →</a><a class="pill" data-ws="${p+1}" href="${WS_PAGE}#l${p+1}">${lt("worksheet")}</a>${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`;
   return `<p class="kicker">${lt("lessonK")} ${p+1}${done?` · ✓ ${lt("doneMark")}`:""}</p>
     <h3>${es?m.es:m.en}</h3>
     <p class="muted" style="margin:.1rem 0 .4rem">${es?m.blurb_es:m.blurb_en}</p>
@@ -1309,6 +1325,22 @@ function ladderHtml(){
     const done=lessonDone(m), cls=done?"done":(i===now?"now":"later");
     return `<li class="${cls}${i===p?" picked":""}" data-pick="${i}" role="button" tabindex="0"${i===p?' aria-current="true"':""}><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${S.lang==="es"?m.es:m.en}</span></li>`;
   }).join("");
+}
+
+/* ══ AOG-SCOPE-PRINT-V1 (2026-09-27) — Jimmy: the scopes must "MATCH THE SAME WORKSHEET ENGINE, LESSON ENGINE
+   AND PRINTABLE ENGINES" as the drum machine. The drum machine's Print view: a choice of what to print, on
+   paper cards. Each choice opens the sheet with ?print=… and that page prints itself once it has drawn. ══ */
+const WS_PAGE="microscope-lessons.html";
+function printChoices(){
+  const p=lessonPicked(), n=STAIR.length;
+  return `<div class="lessons-wrap print-pick">
+      <article class="card paper psheet"><p class="tiny">${lt("printOneK")}</p>${lessonSelect()}
+        <div class="lesson-acts"><a class="pill btn-steel" href="${WS_PAGE}?print=one#l${p+1}">${lt("printOne")}</a><a class="pill" href="${WS_PAGE}?print=blank#l${p+1}">${lt("printBlank")}</a><a class="pill" data-ws="${p+1}" href="${WS_PAGE}#l${p+1}">${lt("worksheet")}</a></div></article>
+      <article class="card paper psheet"><p class="tiny">${lt("printAllK")}</p><p class="muted">${lt("printAllSay")}</p>
+        <div class="lesson-acts"><a class="pill btn-steel" href="${WS_PAGE}?print=all">${lt("printAll")}</a></div></article>
+      <article class="card paper psheet"><p class="tiny">${lt("printGuideK")}</p><p class="muted">${lt("printGuideSay")}</p>
+        <div class="lesson-acts"><a class="pill btn-steel" href="microscope-guide.html?print=1">${lt("printGuide")}</a></div></article>
+    </div>`;
 }
 function lessonsView(){
   return `<p class="kicker">${lt("lessonsNav")}</p>
@@ -1413,7 +1445,11 @@ function pageJob(){
 function pagePrint(){
   const rows=PARTS.map((d,i)=>`<div style="display:grid;grid-template-columns:1.6rem 1fr;gap:.4rem;padding:.55rem 0;border-bottom:1px dashed var(--line)"><b>${LETTERS[i]}.</b><span style="border-bottom:1px solid var(--line)">&nbsp;</span></div>`).join("");
   const key=PARTS.map((d,i)=>`<tr><td>${LETTERS[i]}</td><td>${nm(d)}</td><td>${what(d)}</td></tr>`).join("");
-  return `<h1 class="no-print">${t("print")}</h1>
+  return `<p class="kicker no-print">${lt("printNav")}</p>
+    <h1 class="no-print">${lt("printLead")}</h1>
+    <p class="lead no-print">${lt("printSay")}</p>
+    <div class="no-print">${printChoices()}</div>
+    <h2 class="no-print" style="margin-top:1.4rem">${lt("printPartsK")}</h2>
     <p class="lead no-print">${t("printHint")}</p>
     <p class="no-print"><button class="btn btn-steel" data-act="doprint">${t("printBtn")}</button></p>
     <p class="muted no-print" style="font-size:.9rem">${t("printNote")}</p>
@@ -5024,6 +5060,7 @@ function paint(){
     view.querySelectorAll("[data-act=jobagain]").forEach(b=>b.onclick=()=>{ S.job=null; paint(); });
   }
   if(S.page==="print"){
+    if(typeof bindLessonBox==="function") bindLessonBox(view);
     view.querySelectorAll("[data-act=doprint]").forEach(b=>b.onclick=()=>window.print());
   }
 }

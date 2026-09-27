@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();</script>
+<title>Telescope Worksheets — Architecture of Grace</title>
+<meta name="description" content="Six worksheets for the telescope, one per lesson. Type it here or print it. Saves on this computer; turn it in to your teacher when you finish.">
+<link rel="canonical" href="https://architectureofgrace.org/telescope-lessons">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="Telescope Worksheets — Architecture of Grace">
+<meta property="og:description" content="Six worksheets for the telescope, one per lesson.">
+<meta property="og:url" content="https://architectureofgrace.org/telescope-lessons">
+<meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<meta name="robots" content="noindex">
+<!-- AOG-SCOPE-WORKSHEETS-V1 (2026-09-27) — Jimmy: the telescope and microscope lessons must "MATCH THE SAME
+     WORKSHEET ENGINE, LESSON ENGINE AND PRINTABLE ENGINES" as the drum machine. This page is drums-lessons.html
+     with only the content changed: one sheet per lesson on telescope.html, read from its STAIR and STEP.
+     Deep links: ?l=N or #lN. ?print=one|all|blank prints on arrival (the instrument's Print view uses it). -->
+<style>
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#8A4A1E; --a-wash:rgba(138,74,30,.08);
+  --lock:#2E6B4F; --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412; --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#E8A86A; --a-wash:rgba(232,168,106,.11);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C; --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#E8A86A; --a-wash:rgba(232,168,106,.11);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C; --focus:#D6A852;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.55;}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px;}
+.wrap{max-width:64rem; margin:0 auto; padding:0 20px;}
+/* masthead — the course chrome, as on the SEL sheets */
+.cmast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; padding-top:22px;}
+.cmast .k{font:700 .78rem/1.3 inherit; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);}
+.cmast h1{font-size:2.1rem; letter-spacing:-.01em; line-height:1.15; margin:0 0 .3em;}
+.cdeck{color:var(--ink-soft); max-width:66ch; margin:.4em 0;}
+.hubline{margin:.2em 0 0; font-size:.95rem;}
+.hubline a{font-weight:700; text-decoration:none; color:var(--navy);}
+.hubline a:hover{text-decoration:underline;}
+.cjump{margin:14px 0 4px;}
+.cjump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft);}
+.cjump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; font-size:16px; color:var(--ink); max-width:100%;}
+/* buttons */
+.btn{border:1.5px solid var(--rule); background:var(--field); border-radius:10px; padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--ink);
+  display:inline-flex; align-items:center; gap:7px; min-height:44px;}
+.btn:hover{border-color:var(--a);}
+.btn-accent{background:var(--a); border-color:var(--a); color:#fff;}
+:root[data-theme="dark"] .btn-accent{color:#12161C;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{color:#12161C;}}
+.btn-danger{border-color:var(--caution); color:var(--caution);}
+.btn-lock{border-color:var(--lock); color:var(--lock);}
+/* sheet */
+.sheets{padding-top:22px; padding-bottom:70px;}
+.sheet{background:var(--field); border:1.5px solid var(--rule); border-radius:20px; box-shadow:var(--lift); padding:clamp(20px,4vw,38px); max-width:52rem; margin:0 auto 26px;}
+.js-on .sheet{display:none; margin-bottom:0;}
+.js-on .sheet.is-active{display:block;}
+.sheet-head{border-bottom:2px solid var(--a); padding-bottom:14px;}
+.sheet-head .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.sheet-head h2{font-size:clamp(26px,4.4vw,38px); line-height:1.06; letter-spacing:-.018em; margin:6px 0 7px;}
+.sheet-head .say{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.4;}
+.blk{margin-top:26px;}
+.blk > .lab{font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a); display:block; margin-bottom:3px;}
+.blk > .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint); margin-bottom:9px; line-height:1.4;}
+.blk .hint a{color:var(--navy); font-weight:700;}
+.dosteps{margin:6px 0 0; padding-left:0; list-style:none; counter-reset:st; display:grid; gap:7px;}
+.dosteps li{display:grid; grid-template-columns:34px 1fr; gap:10px; align-items:start; font-size:16px;}
+.dosteps li::before{counter-increment:st; content:counter(st); width:34px; height:34px; border-radius:10px; border:2px solid var(--a); color:var(--a);
+  display:grid; place-items:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:17px; font-weight:700;}
+.fld{width:100%; display:block; border:0; border-bottom:2px solid var(--rule); background:transparent; color:var(--ink); font:inherit; font-size:16.5px; line-height:1.85;
+  padding:6px 2px 5px; resize:none; overflow:hidden; min-height:2.1em;}
+.fld:focus{outline:none; border-bottom-color:var(--a);}
+.pen{position:relative;}
+.blank-lines{display:none;}
+.pcopy{display:none;}
+.blank-lines i{display:block; height:26px; border-bottom:1.5px solid var(--rule); margin-top:2px;}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:640px){.two{grid-template-columns:1fr;}}
+.pane{border:1.5px solid var(--rule); border-radius:13px; padding:13px 14px 15px; background:var(--field);}
+.pane .lab{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.pane .hint{font-size:15px; color:var(--ink); margin:3px 0 8px; line-height:1.4;}
+/* the pattern grid: 16 boxes × kick, snare, hat */
+.tbl-scroll{overflow-x:auto; border:1.5px solid var(--rule); border-radius:13px; -webkit-overflow-scrolling:touch;}
+table.pat{border-collapse:collapse; min-width:100%;}
+table.pat th{font-size:11px; font-weight:800; letter-spacing:.06em; color:var(--ink-soft); padding:6px 2px; text-align:center; border-bottom:1.5px solid var(--rule); background:var(--a-wash);}
+table.pat th.beat{color:var(--a); font-size:12px;}
+table.pat tbody th{text-align:left; padding:4px 8px; background:transparent; border-bottom:1px solid var(--rule-soft); border-right:1.5px solid var(--rule); white-space:nowrap; position:sticky; left:0; background:var(--field); text-transform:uppercase;}
+table.pat td{padding:0; border-bottom:1px solid var(--rule-soft); border-right:1px solid var(--rule-soft);}
+table.pat td:nth-child(4n+2){border-left:1.5px solid var(--rule);}
+table.pat tr:last-child td,table.pat tr:last-child th{border-bottom:0;}
+.gc{width:2.35rem; min-width:2.35rem; height:44px; border:0; background:transparent; color:var(--ink); font:inherit; font-size:18px; font-weight:700; text-align:center; text-transform:uppercase; display:block;}
+.gc:focus{outline:none; background:var(--a-wash);}
+.fld.line{line-height:1.5; min-height:44px; padding:8px 2px;}
+.kws{display:flex; flex-wrap:wrap; gap:7px; margin:6px 0 10px;}
+.kw{display:inline-flex; align-items:center; border:1.5px solid var(--a); color:var(--a); border-radius:99px; padding:4px 12px; font-size:14px; font-weight:700;}
+.blk label.hint{display:block;}
+.morelist{margin:6px 0 0; padding-left:20px; display:grid; gap:5px; font-size:15px;}
+.morelist a{color:var(--navy); text-underline-offset:2px;}
+.lnav{display:flex; align-items:center; gap:10px; margin-top:10px;}
+.lnav .lpos{font-weight:700; color:var(--ink-soft); font-size:.95rem; min-width:4.5rem; text-align:center;}
+.lnav .btn:disabled{opacity:.45; cursor:default;}
+.sheet-foot{margin-top:30px; border-top:1.5px solid var(--rule); padding-top:15px; display:flex; flex-wrap:wrap; align-items:center; gap:9px;}
+.saved{margin-left:auto; font-size:12px; font-weight:600; color:var(--lock); display:inline-flex; align-items:center; gap:6px; opacity:0;}
+.saved.on{opacity:1;}
+.saved .dot{width:7px; height:7px; border-radius:50%; background:var(--lock); flex:none;}
+@media (max-width:520px){.saved{margin-left:0; width:100%;}}
+.lock-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; max-width:52rem; margin-left:auto; margin-right:auto;}
+.foot{border-top:1px solid var(--rule-soft); padding-top:22px; padding-bottom:46px; color:var(--ink-faint); font-size:12.5px;}
+.foot p{max-width:46rem;}
+.foot p + p{margin-top:7px;}
+.foot b{color:var(--ink-soft);}
+.foot a{color:inherit; text-decoration:underline; text-underline-offset:2px;}
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:10.5pt; line-height:1.4;}
+  .cmast,.cjump,.foot,.sheet-foot,.no-print,.lock-acts{display:none !important;}
+  .sheets{padding:0;} .wrap{max-width:none; padding:0;}
+  .sheet{display:none !important; box-shadow:none; border:0; border-radius:0; padding:0; max-width:none; margin:0; background:#fff;}
+  .sheet.is-active{display:block !important;}
+  body:not(.js-on) .sheet{display:block !important; page-break-after:always;}
+  .sheet-head{border-bottom:2px solid #000; padding-bottom:9px;}
+  .sheet-head h2{font-size:21pt;} .sheet-head .say{font-size:11.5pt;}
+  .sheet-head .k,.blk > .lab,.pane .lab,.dosteps li::before,table.pat th{color:#000; border-color:#000;}
+  .blk{margin-top:12px;}
+  .fld{font-size:11pt; line-height:1.6; min-height:1.6em; border-bottom-color:#000 !important; color:#000; background:transparent !important;}
+  .pane{padding:9px 11px 10px;}
+  .tbl-scroll{overflow:visible; border-color:#000;}
+  table.pat{width:100%;} table.pat td,table.pat th{border-color:#000 !important;} .gc{height:30px; font-size:12pt; color:#000; width:auto; min-width:0;}
+  .kw{border-color:#000; color:#000;} .morelist a{color:#000; text-decoration:none;}
+  .fld:not(.line){display:none;} .fld.line{border-bottom-color:#000 !important;} .pcopy{display:block; border-bottom:1.5px solid #000; min-height:1.6em; font-size:11pt; line-height:1.6; white-space:pre-wrap;}
+  body.print-blank .pcopy{display:none !important;}
+  body.print-blank .blank-lines{display:block;}
+  body.print-blank .gc{visibility:hidden;}
+  body.print-all .sheet{display:block !important;}
+  body.print-all .sheet + .sheet{break-before:page; page-break-before:always;}
+  .sheet{break-before:auto;}
+}
+</style>
+<script src="/aog-iep.js"></script>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<script>document.body.className="js-on solo";</script>
+
+<div class="wrap">
+<header class="cmast">
+  <div>
+    <div class="k"><span data-en="The Telescope · Lessons" data-es="El telescopio · Lecciones">The Telescope · Lessons</span></div>
+    <h1><span data-en="Telescope Worksheets" data-es="Hojas del telescopio">Telescope Worksheets</span></h1>
+    <p class="cdeck"><span data-en="One sheet for each of the 6 lessons. Do the lesson at the eyepiece first. Then type here, or print it and use a pen. Both count." data-es="Una hoja por cada una de las 6 lecciones. Haz primero la lección en el ocular. Luego escribe aquí, o imprímela y usa un lápiz. Las dos valen.">One sheet for each of the 6 lessons. Do the lesson at the eyepiece first. Then type here, or print it and use a pen. Both count.</span></p>
+    <p class="hubline no-print"><a href="telescope.html#lessons"><span data-en="← The telescope, where the lessons are" data-es="← El telescopio, donde están las lecciones">← The telescope, where the lessons are</span></a></p>
+  </div>
+</header>
+<div class="cjump no-print"><label><span data-en="Which lesson?" data-es="¿Qué lección?">Which lesson?</span><select id="lessonSel">
+<option value="1" data-en="1 · Make the telescope work" data-es="1 · Haz funcionar el telescopio">1 · Make the telescope work</option>
+<option value="2" data-en="2 · See more" data-es="2 · Ver más">2 · See more</option>
+<option value="3" data-en="3 · Change what you see" data-es="3 · Cambia lo que ves">3 · Change what you see</option>
+<option value="4" data-en="4 · Measure" data-es="4 · Medir">4 · Measure</option>
+<option value="5" data-en="5 · What can't this telescope see?" data-es="5 · ¿Qué no puede ver este telescopio?">5 · What can't this telescope see?</option>
+<option value="6" data-en="6 · The research bench" data-es="6 · El banco de investigación">6 · The research bench</option>
+</select></label>
+<div class="lnav"><button class="btn" type="button" id="lessonBack"><span data-en="← Back" data-es="← Atrás">← Back</span></button><span class="lpos" id="lessonPos" aria-live="polite">1 / 6</span><button class="btn" type="button" id="lessonNext"><span data-en="Next →" data-es="Siguiente →">Next →</span></button></div>
+</div>
+</div>
+
+<main class="sheets wrap">
+<section class="sheet is-active" id="sh-tele-L1" data-id="tele-L1" data-name="The Telescope — Lesson 1 · Make the telescope work" role="tabpanel">
+  <div class="sheet-head">
+    <span class="k"><span data-en="Lesson 1 of 6" data-es="Lección 1 de 6">Lesson 1 of 6</span></span>
+    <h2><span data-en="Make the telescope work" data-es="Haz funcionar el telescopio">Make the telescope work</span></h2>
+    <p class="say"><span data-en="Cap off. Lock the mount. 25 mm. Coarse focus on the Moon." data-es="Tapa fuera. Fija la montura. 25 mm. Enfoca la Luna con el macrométrico.">Cap off. Lock the mount. 25 mm. Coarse focus on the Moon.</span></p>
+  </div>
+  <div class="blk who"><div class="two">
+    <div><label class="lab" for="fld-tele-L1-name"><span data-en="Name" data-es="Nombre">Name</span></label><input class="fld line" id="fld-tele-L1-name" type="text" data-f="name" autocomplete="off"></div>
+    <div><label class="lab" for="fld-tele-L1-date"><span data-en="Date" data-es="Fecha">Date</span></label><input class="fld line" id="fld-tele-L1-date" type="text" data-f="date" autocomplete="off"></div>
+  </div></div>
+  <div class="blk"><span class="lab"><span data-en="At the eyepiece" data-es="En el ocular">At the eyepiece</span></span>
+    <ol class="dosteps"><li><span data-en="Take the cap off." data-es="Quita la tapa.">Take the cap off.</span></li><li><span data-en="Lock the mount." data-es="Fija la montura.">Lock the mount.</span></li><li><span data-en="Start on the 25 mm." data-es="Empieza con el de 25 mm.">Start on the 25 mm.</span></li><li><span data-en="Coarse-focus the Moon." data-es="Enfoca la Luna con el macrométrico.">Coarse-focus the Moon.</span></li></ol>
+    <p class="hint no-print"><a href="telescope.html#lab"><span data-en="Open the telescope" data-es="Abrir el telescopio">Open the telescope</span></a></p></div>
+  <div class="blk"><span class="lab"><span data-en="Key words" data-es="Palabras clave">Key words</span></span>
+    <p class="kws"><span class="kw" data-en="eyepiece" data-es="ocular">eyepiece</span><span class="kw" data-en="mount" data-es="montura">mount</span><span class="kw" data-en="coarse focus" data-es="enfoque macrométrico">coarse focus</span></p>
+    <label class="hint" for="fld-tele-L1-kw"><span data-en="Pick one key word. What does it mean at the eyepiece?" data-es="Elige una palabra clave. ¿Qué significa en el ocular?">Pick one key word. What does it mean at the eyepiece?</span></label>
+    <div class="pen"><textarea class="fld" id="fld-tele-L1-kw" data-f="kw" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab"><span data-en="After the lesson" data-es="Después de la lección">After the lesson</span></span>
+    <div class="two">
+      <div class="pane"><label class="lab" for="fld-tele-L1-q1">1 · <span data-en="What I saw" data-es="Lo que vi">What I saw</span></label><p class="hint"><span data-en="What did you see first on the Moon? Describe it in a few words." data-es="¿Qué viste primero en la Luna? Descríbelo en pocas palabras.">What did you see first on the Moon? Describe it in a few words.</span></p><div class="pen"><textarea class="fld" id="fld-tele-L1-q1" data-f="q1" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L1-q2">2 · <span data-en="My numbers" data-es="Mis números">My numbers</span></label><p class="hint"><span data-en="Power is focal length ÷ eyepiece. Work it out: 900 ÷ 25 = ___×." data-es="El aumento es distancia focal ÷ ocular. Calcúlalo: 900 ÷ 25 = ___×.">Power is focal length ÷ eyepiece. Work it out: 900 ÷ 25 = ___×.</span></p><div class="pen"><textarea class="fld" id="fld-tele-L1-q2" data-f="q2" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L1-q3">3 · <span data-en="Why?" data-es="¿Por qué?">Why?</span></label><p class="hint"><span data-en="Why start on the 25 mm, the lowest power?" data-es="¿Por qué empezar con el de 25 mm, el de menor aumento?">Why start on the 25 mm, the lowest power?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L1-q3" data-f="q3" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L1-q4">4 · <span data-en="Next time" data-es="La próxima vez">Next time</span></label><p class="hint"><span data-en="What would you try next at the eyepiece?" data-es="¿Qué probarías después en el ocular?">What would you try next at the eyepiece?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L1-q4" data-f="q4" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    </div></div>
+  <div class="blk more"><span class="lab"><span data-en="More to explore" data-es="Para explorar más">More to explore</span></span>
+    <ul class="morelist"><li><a href="https://en.wikipedia.org/wiki/Refracting_telescope" target="_blank" rel="noopener">Refracting telescope — Wikipedia</a></li><li><a href="https://moon.nasa.gov/" target="_blank" rel="noopener">The Moon — NASA</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled"><span data-en="Print my copy" data-es="Imprimir mi copia">Print my copy</span></button>
+    <button class="btn" type="button" data-print="blank"><span data-en="Print it blank" data-es="Imprimir en blanco">Print it blank</span></button>
+    <button class="btn btn-danger" type="button" data-erase><span data-en="Erase this sheet" data-es="Borrar esta hoja">Erase this sheet</span></button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+<section class="sheet" id="sh-tele-L2" data-id="tele-L2" data-name="The Telescope — Lesson 2 · See more" role="tabpanel">
+  <div class="sheet-head">
+    <span class="k"><span data-en="Lesson 2 of 6" data-es="Lección 2 de 6">Lesson 2 of 6</span></span>
+    <h2><span data-en="See more" data-es="Ver más">See more</span></h2>
+    <p class="say"><span data-en="10 mm, then the 6 mm, then the fine knob. The Moon no longer fits." data-es="10 mm, luego el de 6 mm, luego el micrométrico. La Luna ya no cabe.">10 mm, then the 6 mm, then the fine knob. The Moon no longer fits.</span></p>
+  </div>
+  <div class="blk who"><div class="two">
+    <div><label class="lab" for="fld-tele-L2-name"><span data-en="Name" data-es="Nombre">Name</span></label><input class="fld line" id="fld-tele-L2-name" type="text" data-f="name" autocomplete="off"></div>
+    <div><label class="lab" for="fld-tele-L2-date"><span data-en="Date" data-es="Fecha">Date</span></label><input class="fld line" id="fld-tele-L2-date" type="text" data-f="date" autocomplete="off"></div>
+  </div></div>
+  <div class="blk"><span class="lab"><span data-en="At the eyepiece" data-es="En el ocular">At the eyepiece</span></span>
+    <ol class="dosteps"><li><span data-en="Go to the 10 mm." data-es="Pasa al de 10 mm.">Go to the 10 mm.</span></li><li><span data-en="Go to the 6 mm." data-es="Pasa al de 6 mm.">Go to the 6 mm.</span></li><li><span data-en="Sharpen the Moon with the fine knob." data-es="Afina la Luna con el micrométrico.">Sharpen the Moon with the fine knob.</span></li></ol>
+    <p class="hint no-print"><a href="telescope.html#lab"><span data-en="Open the telescope" data-es="Abrir el telescopio">Open the telescope</span></a></p></div>
+  <div class="blk"><span class="lab"><span data-en="Key words" data-es="Palabras clave">Key words</span></span>
+    <p class="kws"><span class="kw" data-en="magnification" data-es="aumento">magnification</span><span class="kw" data-en="fine focus" data-es="enfoque micrométrico">fine focus</span><span class="kw" data-en="field of view" data-es="campo de visión">field of view</span></p>
+    <label class="hint" for="fld-tele-L2-kw"><span data-en="Pick one key word. What does it mean at the eyepiece?" data-es="Elige una palabra clave. ¿Qué significa en el ocular?">Pick one key word. What does it mean at the eyepiece?</span></label>
+    <div class="pen"><textarea class="fld" id="fld-tele-L2-kw" data-f="kw" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab"><span data-en="After the lesson" data-es="Después de la lección">After the lesson</span></span>
+    <div class="two">
+      <div class="pane"><label class="lab" for="fld-tele-L2-q1">1 · <span data-en="What I saw" data-es="Lo que vi">What I saw</span></label><p class="hint"><span data-en="What could you see at 150× that you could not see at 36×?" data-es="¿Qué pudiste ver a 150× que no veías a 36×?">What could you see at 150× that you could not see at 36×?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L2-q1" data-f="q1" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L2-q2">2 · <span data-en="My numbers" data-es="Mis números">My numbers</span></label><p class="hint"><span data-en="Work out each power: 900 ÷ 10 = ___×. 900 ÷ 6 = ___×." data-es="Calcula cada aumento: 900 ÷ 10 = ___×. 900 ÷ 6 = ___×.">Work out each power: 900 ÷ 10 = ___×. 900 ÷ 6 = ___×.</span></p><div class="pen"><textarea class="fld" id="fld-tele-L2-q2" data-f="q2" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L2-q3">3 · <span data-en="Why?" data-es="¿Por qué?">Why?</span></label><p class="hint"><span data-en="Why does the whole Moon stop fitting in the view?" data-es="¿Por qué la Luna entera ya no cabe en la vista?">Why does the whole Moon stop fitting in the view?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L2-q3" data-f="q3" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L2-q4">4 · <span data-en="Next time" data-es="La próxima vez">Next time</span></label><p class="hint"><span data-en="What would you try next at the eyepiece?" data-es="¿Qué probarías después en el ocular?">What would you try next at the eyepiece?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L2-q4" data-f="q4" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    </div></div>
+  <div class="blk more"><span class="lab"><span data-en="More to explore" data-es="Para explorar más">More to explore</span></span>
+    <ul class="morelist"><li><a href="https://en.wikipedia.org/wiki/Eyepiece" target="_blank" rel="noopener">Eyepiece — Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Magnification" target="_blank" rel="noopener">Magnification — Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled"><span data-en="Print my copy" data-es="Imprimir mi copia">Print my copy</span></button>
+    <button class="btn" type="button" data-print="blank"><span data-en="Print it blank" data-es="Imprimir en blanco">Print it blank</span></button>
+    <button class="btn btn-danger" type="button" data-erase><span data-en="Erase this sheet" data-es="Borrar esta hoja">Erase this sheet</span></button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+<section class="sheet" id="sh-tele-L3" data-id="tele-L3" data-name="The Telescope — Lesson 3 · Change what you see" role="tabpanel">
+  <div class="sheet-head">
+    <span class="k"><span data-en="Lesson 3 of 6" data-es="Lección 3 de 6">Lesson 3 of 6</span></span>
+    <h2><span data-en="Change what you see" data-es="Cambia lo que ves">Change what you see</span></h2>
+    <p class="say"><span data-en="Jupiter is a striped bead. Orion is a gray cloud and four stars." data-es="Júpiter es una cuenta rayada. Orión es una nube gris y cuatro estrellas.">Jupiter is a striped bead. Orion is a gray cloud and four stars.</span></p>
+  </div>
+  <div class="blk who"><div class="two">
+    <div><label class="lab" for="fld-tele-L3-name"><span data-en="Name" data-es="Nombre">Name</span></label><input class="fld line" id="fld-tele-L3-name" type="text" data-f="name" autocomplete="off"></div>
+    <div><label class="lab" for="fld-tele-L3-date"><span data-en="Date" data-es="Fecha">Date</span></label><input class="fld line" id="fld-tele-L3-date" type="text" data-f="date" autocomplete="off"></div>
+  </div></div>
+  <div class="blk"><span class="lab"><span data-en="At the eyepiece" data-es="En el ocular">At the eyepiece</span></span>
+    <ol class="dosteps"><li><span data-en="Find Jupiter in focus." data-es="Encuentra Júpiter en foco.">Find Jupiter in focus.</span></li><li><span data-en="Find Orion's cloud with the 10 mm or the 6 mm." data-es="Encuentra la nube de Orión con el de 10 o el de 6 mm.">Find Orion's cloud with the 10 mm or the 6 mm.</span></li></ol>
+    <p class="hint no-print"><a href="telescope.html#lab"><span data-en="Open the telescope" data-es="Abrir el telescopio">Open the telescope</span></a></p></div>
+  <div class="blk"><span class="lab"><span data-en="Key words" data-es="Palabras clave">Key words</span></span>
+    <p class="kws"><span class="kw" data-en="planet" data-es="planeta">planet</span><span class="kw" data-en="nebula" data-es="nebulosa">nebula</span><span class="kw" data-en="moons of Jupiter" data-es="lunas de Júpiter">moons of Jupiter</span></p>
+    <label class="hint" for="fld-tele-L3-kw"><span data-en="Pick one key word. What does it mean at the eyepiece?" data-es="Elige una palabra clave. ¿Qué significa en el ocular?">Pick one key word. What does it mean at the eyepiece?</span></label>
+    <div class="pen"><textarea class="fld" id="fld-tele-L3-kw" data-f="kw" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab"><span data-en="After the lesson" data-es="Después de la lección">After the lesson</span></span>
+    <div class="two">
+      <div class="pane"><label class="lab" for="fld-tele-L3-q1">1 · <span data-en="What I saw" data-es="Lo que vi">What I saw</span></label><p class="hint"><span data-en="Describe Jupiter: its stripes, and the dots beside it." data-es="Describe Júpiter: sus franjas y los puntos a su lado.">Describe Jupiter: its stripes, and the dots beside it.</span></p><div class="pen"><textarea class="fld" id="fld-tele-L3-q1" data-f="q1" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L3-q2">2 · <span data-en="My numbers" data-es="Mis números">My numbers</span></label><p class="hint"><span data-en="How many of Jupiter's moons did you count? Which eyepiece did you use?" data-es="¿Cuántas lunas de Júpiter contaste? ¿Qué ocular usaste?">How many of Jupiter's moons did you count? Which eyepiece did you use?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L3-q2" data-f="q2" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L3-q3">3 · <span data-en="Why?" data-es="¿Por qué?">Why?</span></label><p class="hint"><span data-en="Why does Orion's cloud look gray to your eye, not pink like in photos?" data-es="¿Por qué la nube de Orión se ve gris a tu ojo y no rosada como en las fotos?">Why does Orion's cloud look gray to your eye, not pink like in photos?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L3-q3" data-f="q3" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L3-q4">4 · <span data-en="Next time" data-es="La próxima vez">Next time</span></label><p class="hint"><span data-en="What would you try next at the eyepiece?" data-es="¿Qué probarías después en el ocular?">What would you try next at the eyepiece?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L3-q4" data-f="q4" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    </div></div>
+  <div class="blk more"><span class="lab"><span data-en="More to explore" data-es="Para explorar más">More to explore</span></span>
+    <ul class="morelist"><li><a href="https://science.nasa.gov/jupiter/" target="_blank" rel="noopener">Jupiter — NASA</a></li><li><a href="https://en.wikipedia.org/wiki/Orion_Nebula" target="_blank" rel="noopener">Orion Nebula — Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled"><span data-en="Print my copy" data-es="Imprimir mi copia">Print my copy</span></button>
+    <button class="btn" type="button" data-print="blank"><span data-en="Print it blank" data-es="Imprimir en blanco">Print it blank</span></button>
+    <button class="btn btn-danger" type="button" data-erase><span data-en="Erase this sheet" data-es="Borrar esta hoja">Erase this sheet</span></button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+<section class="sheet" id="sh-tele-L4" data-id="tele-L4" data-name="The Telescope — Lesson 4 · Measure" role="tabpanel">
+  <div class="sheet-head">
+    <span class="k"><span data-en="Lesson 4 of 6" data-es="Lección 4 de 6">Lesson 4 of 6</span></span>
+    <h2><span data-en="Measure" data-es="Medir">Measure</span></h2>
+    <p class="say"><span data-en="Reticle in. Two taps. Read arcseconds, not a feeling." data-es="Retículo puesto. Dos toques. Lee segundos de arco, no una impresión.">Reticle in. Two taps. Read arcseconds, not a feeling.</span></p>
+  </div>
+  <div class="blk who"><div class="two">
+    <div><label class="lab" for="fld-tele-L4-name"><span data-en="Name" data-es="Nombre">Name</span></label><input class="fld line" id="fld-tele-L4-name" type="text" data-f="name" autocomplete="off"></div>
+    <div><label class="lab" for="fld-tele-L4-date"><span data-en="Date" data-es="Fecha">Date</span></label><input class="fld line" id="fld-tele-L4-date" type="text" data-f="date" autocomplete="off"></div>
+  </div></div>
+  <div class="blk"><span class="lab"><span data-en="At the eyepiece" data-es="En el ocular">At the eyepiece</span></span>
+    <ol class="dosteps"><li><span data-en="Measure something at 90× or 150×." data-es="Mide algo a 90× o 150×.">Measure something at 90× or 150×.</span></li></ol>
+    <p class="hint no-print"><a href="telescope.html#lab"><span data-en="Open the telescope" data-es="Abrir el telescopio">Open the telescope</span></a></p></div>
+  <div class="blk"><span class="lab"><span data-en="Key words" data-es="Palabras clave">Key words</span></span>
+    <p class="kws"><span class="kw" data-en="reticle" data-es="retículo">reticle</span><span class="kw" data-en="arcsecond (″)" data-es="segundo de arco (″)">arcsecond (″)</span><span class="kw" data-en="measure" data-es="medir">measure</span></p>
+    <label class="hint" for="fld-tele-L4-kw"><span data-en="Pick one key word. What does it mean at the eyepiece?" data-es="Elige una palabra clave. ¿Qué significa en el ocular?">Pick one key word. What does it mean at the eyepiece?</span></label>
+    <div class="pen"><textarea class="fld" id="fld-tele-L4-kw" data-f="kw" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab"><span data-en="After the lesson" data-es="Después de la lección">After the lesson</span></span>
+    <div class="two">
+      <div class="pane"><label class="lab" for="fld-tele-L4-q1">1 · <span data-en="What I saw" data-es="Lo que vi">What I saw</span></label><p class="hint"><span data-en="What did you measure, and at what power (90× or 150×)?" data-es="¿Qué mediste, y a qué aumento (90× o 150×)?">What did you measure, and at what power (90× or 150×)?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L4-q1" data-f="q1" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L4-q2">2 · <span data-en="My numbers" data-es="Mis números">My numbers</span></label><p class="hint"><span data-en="Write your reading: ___″ (arcseconds)." data-es="Escribe tu lectura: ___″ (segundos de arco).">Write your reading: ___″ (arcseconds).</span></p><div class="pen"><textarea class="fld" id="fld-tele-L4-q2" data-f="q2" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L4-q3">3 · <span data-en="Why?" data-es="¿Por qué?">Why?</span></label><p class="hint"><span data-en="Why read a number instead of saying &quot;big&quot; or &quot;small&quot;?" data-es="¿Por qué leer un número en vez de decir &quot;grande&quot; o &quot;pequeño&quot;?">Why read a number instead of saying &quot;big&quot; or &quot;small&quot;?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L4-q3" data-f="q3" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L4-q4">4 · <span data-en="Next time" data-es="La próxima vez">Next time</span></label><p class="hint"><span data-en="What else would you like to measure next?" data-es="¿Qué más te gustaría medir después?">What else would you like to measure next?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L4-q4" data-f="q4" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    </div></div>
+  <div class="blk more"><span class="lab"><span data-en="More to explore" data-es="Para explorar más">More to explore</span></span>
+    <ul class="morelist"><li><a href="https://en.wikipedia.org/wiki/Minute_and_second_of_arc" target="_blank" rel="noopener">Minute and second of arc — Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Angular_diameter" target="_blank" rel="noopener">Angular diameter — Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled"><span data-en="Print my copy" data-es="Imprimir mi copia">Print my copy</span></button>
+    <button class="btn" type="button" data-print="blank"><span data-en="Print it blank" data-es="Imprimir en blanco">Print it blank</span></button>
+    <button class="btn btn-danger" type="button" data-erase><span data-en="Erase this sheet" data-es="Borrar esta hoja">Erase this sheet</span></button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+<section class="sheet" id="sh-tele-L5" data-id="tele-L5" data-name="The Telescope — Lesson 5 · What can't this telescope see?" role="tabpanel">
+  <div class="sheet-head">
+    <span class="k"><span data-en="Lesson 5 of 6" data-es="Lección 5 de 6">Lesson 5 of 6</span></span>
+    <h2><span data-en="What can't this telescope see?" data-es="¿Qué no puede ver este telescopio?">What can't this telescope see?</span></h2>
+    <p class="say"><span data-en="The sea where they landed. 6 mm. In focus. The lander is 0.002″." data-es="El mar donde alunizaron. 6 mm. En foco. El módulo mide 0.002″.">The sea where they landed. 6 mm. In focus. The lander is 0.002″.</span></p>
+  </div>
+  <div class="blk who"><div class="two">
+    <div><label class="lab" for="fld-tele-L5-name"><span data-en="Name" data-es="Nombre">Name</span></label><input class="fld line" id="fld-tele-L5-name" type="text" data-f="name" autocomplete="off"></div>
+    <div><label class="lab" for="fld-tele-L5-date"><span data-en="Date" data-es="Fecha">Date</span></label><input class="fld line" id="fld-tele-L5-date" type="text" data-f="date" autocomplete="off"></div>
+  </div></div>
+  <div class="blk"><span class="lab"><span data-en="At the eyepiece" data-es="En el ocular">At the eyepiece</span></span>
+    <ol class="dosteps"><li><span data-en="Center the landing sea at 150×." data-es="Centra el mar del alunizaje a 150×.">Center the landing sea at 150×.</span></li></ol>
+    <p class="hint no-print"><a href="telescope.html#lab"><span data-en="Open the telescope" data-es="Abrir el telescopio">Open the telescope</span></a></p></div>
+  <div class="blk"><span class="lab"><span data-en="Key words" data-es="Palabras clave">Key words</span></span>
+    <p class="kws"><span class="kw" data-en="resolution" data-es="resolución">resolution</span><span class="kw" data-en="limit" data-es="límite">limit</span><span class="kw" data-en="landing site" data-es="lugar del alunizaje">landing site</span></p>
+    <label class="hint" for="fld-tele-L5-kw"><span data-en="Pick one key word. What does it mean at the eyepiece?" data-es="Elige una palabra clave. ¿Qué significa en el ocular?">Pick one key word. What does it mean at the eyepiece?</span></label>
+    <div class="pen"><textarea class="fld" id="fld-tele-L5-kw" data-f="kw" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab"><span data-en="After the lesson" data-es="Después de la lección">After the lesson</span></span>
+    <div class="two">
+      <div class="pane"><label class="lab" for="fld-tele-L5-q1">1 · <span data-en="What I saw" data-es="Lo que vi">What I saw</span></label><p class="hint"><span data-en="What did you see in the landing sea at 150×? Did you see the lander?" data-es="¿Qué viste en el mar del alunizaje a 150×? ¿Viste el módulo?">What did you see in the landing sea at 150×? Did you see the lander?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L5-q1" data-f="q1" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L5-q2">2 · <span data-en="My numbers" data-es="Mis números">My numbers</span></label><p class="hint"><span data-en="This lens splits 1.3″. The lander is 0.002″. About how many times too small is it? 1.3 ÷ 0.002 = ___" data-es="Este lente separa 1.3″. El módulo mide 0.002″. ¿Cuántas veces más pequeño es, más o menos? 1.3 ÷ 0.002 = ___">This lens splits 1.3″. The lander is 0.002″. About how many times too small is it? 1.3 ÷ 0.002 = ___</span></p><div class="pen"><textarea class="fld" id="fld-tele-L5-q2" data-f="q2" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L5-q3">3 · <span data-en="Why?" data-es="¿Por qué?">Why?</span></label><p class="hint"><span data-en="Why can't more power make the lander show up?" data-es="¿Por qué más aumento no hace aparecer el módulo?">Why can't more power make the lander show up?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L5-q3" data-f="q3" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L5-q4">4 · <span data-en="Next time" data-es="La próxima vez">Next time</span></label><p class="hint"><span data-en="What kind of telescope could see it? What would you try next?" data-es="¿Qué tipo de telescopio podría verlo? ¿Qué probarías después?">What kind of telescope could see it? What would you try next?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L5-q4" data-f="q4" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    </div></div>
+  <div class="blk more"><span class="lab"><span data-en="More to explore" data-es="Para explorar más">More to explore</span></span>
+    <ul class="morelist"><li><a href="https://en.wikipedia.org/wiki/Angular_resolution" target="_blank" rel="noopener">Angular resolution — Wikipedia</a></li><li><a href="https://www.lroc.asu.edu/" target="_blank" rel="noopener">Lunar Reconnaissance Orbiter Camera</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled"><span data-en="Print my copy" data-es="Imprimir mi copia">Print my copy</span></button>
+    <button class="btn" type="button" data-print="blank"><span data-en="Print it blank" data-es="Imprimir en blanco">Print it blank</span></button>
+    <button class="btn btn-danger" type="button" data-erase><span data-en="Erase this sheet" data-es="Borrar esta hoja">Erase this sheet</span></button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+<section class="sheet" id="sh-tele-L6" data-id="tele-L6" data-name="The Telescope — Lesson 6 · The research bench" role="tabpanel">
+  <div class="sheet-head">
+    <span class="k"><span data-en="Lesson 6 of 6" data-es="Lección 6 de 6">Lesson 6 of 6</span></span>
+    <h2><span data-en="The research bench" data-es="El banco de investigación">The research bench</span></h2>
+    <p class="say"><span data-en="Albireo splits. The 1.0″ pair does not. The Barlow makes the smear bigger." data-es="Albireo se separa. El par de 1.0″ no. El Barlow agranda la mancha.">Albireo splits. The 1.0″ pair does not. The Barlow makes the smear bigger.</span></p>
+  </div>
+  <div class="blk who"><div class="two">
+    <div><label class="lab" for="fld-tele-L6-name"><span data-en="Name" data-es="Nombre">Name</span></label><input class="fld line" id="fld-tele-L6-name" type="text" data-f="name" autocomplete="off"></div>
+    <div><label class="lab" for="fld-tele-L6-date"><span data-en="Date" data-es="Fecha">Date</span></label><input class="fld line" id="fld-tele-L6-date" type="text" data-f="date" autocomplete="off"></div>
+  </div></div>
+  <div class="blk"><span class="lab"><span data-en="At the eyepiece" data-es="En el ocular">At the eyepiece</span></span>
+    <ol class="dosteps"><li><span data-en="Split Albireo." data-es="Separa Albireo.">Split Albireo.</span></li><li><span data-en="Barlow the 1.0″ pair and read 1.3″." data-es="Pon el Barlow al par de 1.0″ y lee 1.3″.">Barlow the 1.0″ pair and read 1.3″.</span></li></ol>
+    <p class="hint no-print"><a href="telescope.html#lab"><span data-en="Open the telescope" data-es="Abrir el telescopio">Open the telescope</span></a></p></div>
+  <div class="blk"><span class="lab"><span data-en="Key words" data-es="Palabras clave">Key words</span></span>
+    <p class="kws"><span class="kw" data-en="double star" data-es="estrella doble">double star</span><span class="kw" data-en="Barlow lens" data-es="lente Barlow">Barlow lens</span><span class="kw" data-en="Dawes limit" data-es="límite de Dawes">Dawes limit</span></p>
+    <label class="hint" for="fld-tele-L6-kw"><span data-en="Pick one key word. What does it mean at the eyepiece?" data-es="Elige una palabra clave. ¿Qué significa en el ocular?">Pick one key word. What does it mean at the eyepiece?</span></label>
+    <div class="pen"><textarea class="fld" id="fld-tele-L6-kw" data-f="kw" rows="2"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i></div></div>
+  <div class="blk"><span class="lab"><span data-en="After the lesson" data-es="Después de la lección">After the lesson</span></span>
+    <div class="two">
+      <div class="pane"><label class="lab" for="fld-tele-L6-q1">1 · <span data-en="What I saw" data-es="Lo que vi">What I saw</span></label><p class="hint"><span data-en="What colors were the two stars of Albireo?" data-es="¿De qué colores eran las dos estrellas de Albireo?">What colors were the two stars of Albireo?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L6-q1" data-f="q1" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L6-q2">2 · <span data-en="My numbers" data-es="Mis números">My numbers</span></label><p class="hint"><span data-en="Albireo is 34″ apart. The close pair is 1.0″. This lens splits 1.3″. Which one split? What did you read with the Barlow?" data-es="Albireo está a 34″. El par cercano está a 1.0″. Este lente separa 1.3″. ¿Cuál se separó? ¿Qué leíste con el Barlow?">Albireo is 34″ apart. The close pair is 1.0″. This lens splits 1.3″. Which one split? What did you read with the Barlow?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L6-q2" data-f="q2" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L6-q3">3 · <span data-en="Why?" data-es="¿Por qué?">Why?</span></label><p class="hint"><span data-en="The useful ceiling is about 180×. Why does the Barlow make the smear bigger, not sharper?" data-es="El techo útil es unos 180×. ¿Por qué el Barlow agranda la mancha en vez de afinarla?">The useful ceiling is about 180×. Why does the Barlow make the smear bigger, not sharper?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L6-q3" data-f="q3" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="pane"><label class="lab" for="fld-tele-L6-q4">4 · <span data-en="Next time" data-es="La próxima vez">Next time</span></label><p class="hint"><span data-en="What would you try next? What would a bigger lens let you split?" data-es="¿Qué probarías después? ¿Qué te dejaría separar un lente más grande?">What would you try next? What would a bigger lens let you split?</span></p><div class="pen"><textarea class="fld" id="fld-tele-L6-q4" data-f="q4" rows="3"></textarea></div><div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    </div></div>
+  <div class="blk more"><span class="lab"><span data-en="More to explore" data-es="Para explorar más">More to explore</span></span>
+    <ul class="morelist"><li><a href="https://en.wikipedia.org/wiki/Albireo" target="_blank" rel="noopener">Albireo — Wikipedia</a></li><li><a href="https://en.wikipedia.org/wiki/Dawes%27_limit" target="_blank" rel="noopener">Dawes' limit — Wikipedia</a></li></ul></div>
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled"><span data-en="Print my copy" data-es="Imprimir mi copia">Print my copy</span></button>
+    <button class="btn" type="button" data-print="blank"><span data-en="Print it blank" data-es="Imprimir en blanco">Print it blank</span></button>
+    <button class="btn btn-danger" type="button" data-erase><span data-en="Erase this sheet" data-es="Borrar esta hoja">Erase this sheet</span></button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+  <div class="lock-acts no-print" aria-label="Page controls">
+    <button class="btn" type="button" id="printAll"><span data-en="Print all 6 sheets" data-es="Imprimir las 6 hojas">Print all 6 sheets</span></button>
+    <button class="btn btn-lock" type="button" id="eraseAll"><span data-en="Erase everything on this computer" data-es="Borrar todo en esta computadora">Erase everything on this computer</span></button>
+    <button class="btn" type="button" id="themeBtn" aria-live="polite">Switch to dark</button>
+  </div>
+</main>
+
+<footer class="foot wrap no-print">
+  <p><b>Architecture of Grace · The Telescope.</b> <span data-en="Six lessons, six sheets." data-es="Seis lecciones, seis hojas.">Six lessons, six sheets.</span></p>
+  <p>This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your writing is stored in this browser only.</p>
+  <p class="foot-home"><a href="telescope.html"><span data-en="Back to the telescope" data-es="Volver al telescopio">Back to the telescope</span></a> · <a href="/" rel="noopener">Architecture of Grace</a></p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var hasLS = (function(){ try{ var k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+  function load(id){ if(!hasLS) return {}; try{ return JSON.parse(localStorage.getItem(KEY+id) || "{}") || {}; }catch(e){ return {}; } }
+  function save(id, data){ if(!hasLS) return false; try{ localStorage.setItem(KEY+id, JSON.stringify(data)); return true; }catch(e){ return false; } }
+  function wipe(id){ if(hasLS){ try{ localStorage.removeItem(KEY+id); }catch(e){} } }
+  var sheets = Array.prototype.slice.call(document.querySelectorAll(".sheet"));
+  var state = {};
+  function grow(el){ el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+  var savedTimers = {};
+  function flagSaved(sheet, ok){
+    var pill = sheet.querySelector("[data-saved]"); if(!pill) return;
+    var txt = pill.querySelector("[data-savedtext]");
+    if(txt) txt.textContent = ok ? ("Saved on this computer · " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}))
+      : "This computer will not let the page save. Print your copy before you leave.";
+    pill.classList.add("on");
+    clearTimeout(savedTimers[sheet.dataset.id]);
+    savedTimers[sheet.dataset.id] = setTimeout(function(){ if(ok) pill.classList.remove("on"); }, 4000);
+  }
+  sheets.forEach(function(sheet){
+    var id = sheet.dataset.id;
+    state[id] = load(id);
+    var d = state[id];
+    function persist(){ flagSaved(sheet, save(id, state[id])); }
+    var t = null;
+    function persistSoon(){ clearTimeout(t); t = setTimeout(persist, 500); }
+    sheet.querySelectorAll("[data-f]").forEach(function(el){
+      var f = el.dataset.f;
+      if(typeof d[f] !== "undefined" && d[f] !== null) el.value = d[f];
+      if(el.tagName === "TEXTAREA") grow(el);
+      el.addEventListener("input", function(){
+        state[id][f] = el.value;
+        if(el.tagName === "TEXTAREA") grow(el);
+        persistSoon();
+      });
+    });
+    /* the pattern grid: typing a letter jumps to the next box, so a bar is 16 taps */
+    var cells = Array.prototype.slice.call(sheet.querySelectorAll(".gc"));
+    cells.forEach(function(c, i){
+      c.addEventListener("input", function(){ if(c.value.length >= 1 && cells[i+1] && (i+1) % 16 !== 0) cells[i+1].focus(); });
+    });
+    var eraseBtn = sheet.querySelector("[data-erase]");
+    if(eraseBtn) eraseBtn.addEventListener("click", function(){
+      if(!window.confirm("Erase everything you typed on this sheet? This cannot be undone.")) return;
+      wipe(id); state[id] = {};
+      sheet.querySelectorAll("[data-f]").forEach(function(el){ el.value = ""; if(el.tagName === "TEXTAREA") grow(el); });
+      var pill = sheet.querySelector("[data-saved]"); var txt = pill && pill.querySelector("[data-savedtext]");
+      if(txt) txt.textContent = "Erased. Nothing from this sheet is left on this computer.";
+      if(pill){ pill.classList.add("on"); clearTimeout(savedTimers[id]); savedTimers[id] = setTimeout(function(){ pill.classList.remove("on"); }, 5000); }
+    });
+    /* print — synchronous, never behind a timer (iOS blocks deferred print) */
+    sheet.querySelectorAll("[data-print]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var blank = btn.dataset.print === "blank";
+        if(blank) document.body.classList.add("print-blank"); else syncPrintCopies();
+        window.print();
+        setTimeout(function(){ document.body.classList.remove("print-blank"); }, 250);
+      });
+    });
+  });
+  function syncPrintCopies(){
+    document.querySelectorAll("textarea").forEach(function(ta){
+      var host = ta.parentNode; var copy = host.querySelector(":scope > .pcopy");
+      if(!copy){ copy = document.createElement("div"); copy.className = "pcopy"; copy.setAttribute("aria-hidden","true"); host.appendChild(copy); }
+      copy.textContent = ta.value;
+    });
+  }
+  window.addEventListener("beforeprint", syncPrintCopies);
+  syncPrintCopies();
+
+  /* ── one sheet at a time, picked from the drop-down (site rule: 4+ choices is a menu) ── */
+  var sel = document.getElementById("lessonSel");
+  function show(n){
+    n = Math.max(1, Math.min(sheets.length, n|0)) || 1;
+    sheets.forEach(function(s){ s.classList.toggle("is-active", s.dataset.id === "tele-L"+n); });
+    if(sel) sel.value = String(n);
+    var active = document.querySelector('.sheet[data-id="tele-L'+n+'"]');
+    if(active) active.querySelectorAll("textarea").forEach(grow);
+    try{ localStorage.setItem(KEY+"tele-lesson", String(n)); }catch(e){}
+    try{ history.replaceState(null, "", location.pathname + "#l" + n); }catch(e){}
+    var pos = document.getElementById("lessonPos"); if(pos) pos.textContent = n + " / " + sheets.length;
+    var bk = document.getElementById("lessonBack"), nx = document.getElementById("lessonNext");
+    if(bk) bk.disabled = n <= 1; if(nx) nx.disabled = n >= sheets.length;
+    if(sheets.length && window.scrollY > 300) window.scrollTo(0, 0);
+    window.AOG_WS_LESSON = n;
+    document.dispatchEvent(new CustomEvent("aog:lesson", {detail:n}));
+  }
+  var PM = (/[?&]print=(one|all|blank)/.exec(location.search || "") || [])[1] || "";
+  var want = 1;
+  function fromUrl(){ var h = /^#l(\d+)$/.exec(location.hash || ""); if(h) return +h[1]; var m = /[?&]l=(\d+)/.exec(location.search || ""); if(m) return +m[1]; return 0; }
+  try{ want = fromUrl() || +(localStorage.getItem(KEY+"tele-lesson") || 1); }catch(e){}
+  if(sel) sel.addEventListener("change", function(){ show(+sel.value); });
+  var bkb = document.getElementById("lessonBack"), nxb = document.getElementById("lessonNext");
+  if(bkb) bkb.addEventListener("click", function(){ show((window.AOG_WS_LESSON||1) - 1); });
+  if(nxb) nxb.addEventListener("click", function(){ show((window.AOG_WS_LESSON||1) + 1); });
+  window.addEventListener("hashchange", function(){ var n = fromUrl(); if(n && n !== window.AOG_WS_LESSON) show(n); });
+  show(want);
+
+  /* AOG-SCOPE-WORKSHEETS-V1 — print all sheets, one per page; the first sheet starts page one */
+  function printAll(){
+    syncPrintCopies(); document.body.classList.add("print-all");
+    window.print();
+    setTimeout(function(){ document.body.classList.remove("print-all"); }, 250);
+  }
+  var pab = document.getElementById("printAll");
+  if(pab) pab.addEventListener("click", printAll);
+  window.addEventListener("afterprint", function(){ document.body.classList.remove("print-all","print-blank"); });
+  if(PM){
+    /* sent from the instrument's Print view: print once the page has drawn */
+    var go = function(){ setTimeout(function(){
+      if(PM === "all") printAll();
+      else { if(PM === "blank") document.body.classList.add("print-blank"); else syncPrintCopies(); window.print(); }
+    }, 350); };
+    if(document.readyState === "complete") go(); else window.addEventListener("load", go);
+  }
+
+  var allBtn = document.getElementById("eraseAll");
+  if(allBtn) allBtn.addEventListener("click", function(){
+    if(!window.confirm("Erase every telescope lesson sheet on this computer? This cannot be undone.")) return;
+    sheets.forEach(function(s){
+      wipe(s.dataset.id); state[s.dataset.id] = {};
+      s.querySelectorAll("[data-f]").forEach(function(el){ el.value = ""; if(el.tagName === "TEXTAREA") grow(el); });
+    });
+    allBtn.textContent = "Erased — nothing is left on this computer";
+    setTimeout(function(){ allBtn.textContent = "Erase everything on this computer"; }, 5000);
+  });
+
+  /* theme */
+  var tBtn = document.getElementById("themeBtn");
+  function currentIsDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+  function paintThemeBtn(){ if(tBtn) tBtn.textContent = currentIsDark() ? "Switch to light" : "Switch to dark"; }
+  paintThemeBtn();
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+    try{ localStorage.setItem(KEY + "theme", next); }catch(e){}
+    paintThemeBtn();
+  });
+  if(!hasLS){
+    sheets.forEach(function(s){
+      var txt = s.querySelector("[data-savedtext]");
+      if(txt){ txt.textContent = "This computer will not let the page save. Print your copy before you leave."; var pill = s.querySelector("[data-saved]"); if(pill) pill.classList.add("on"); }
+    });
+  }
+})();
+</script>
+
+<style>
+/* ══ AOG-WS-SENDBLOCK-V2 — FINISHED, with a preview ══ */
+#wsTurnin{margin:26px auto 8px;max-width:52rem;border:2px solid var(--lock);border-radius:18px;background:var(--lock-wash);padding:18px 20px}
+#wsTurnin h2{font-size:19px;color:var(--ink);font-weight:700;margin:0}
+#wsTurnin p{font-size:14px;color:var(--ink-soft);margin:6px 0 12px;max-width:46rem}
+#wsTurnin .row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+#wsTurnin input{border:1.5px solid var(--rule,#ccc);border-radius:10px;background:var(--field,#fff);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px;min-width:220px}
+#wsTurnin .btn-fin{border:2px solid var(--lock);background:var(--lock);color:#fff;border-radius:10px;padding:11px 20px;font:800 16px/1 inherit;letter-spacing:.06em;cursor:pointer}
+:root[data-theme="dark"] #wsTurnin .btn-fin{color:#12161C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #wsTurnin .btn-fin{color:#12161C}}
+#wsTurnin .st{font-size:13.5px;color:var(--ink-soft)}
+#wsPrev{position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;background:var(--field,#FBFAF7);overflow:auto;-webkit-overflow-scrolling:touch}
+#wsPrev[hidden]{display:none}
+body.wsprev{overflow:hidden}
+#wsPrev .pv-bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:9px;align-items:center;background:var(--lock);color:#fff;padding:12px 18px}
+:root[data-theme="dark"] #wsPrev .pv-bar{color:#12161C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #wsPrev .pv-bar{color:#12161C}}
+#wsPrev .pv-bar .t{font-weight:800;font-size:16px;flex:1;min-width:200px}
+#wsPrev .pv-bar .pst{font-size:13px;opacity:.95}
+#wsPrev .pv-bar button{border:1.5px solid currentColor;background:transparent;color:inherit;border-radius:9px;padding:8px 14px;font:700 14px/1 inherit;cursor:pointer}
+#wsPrev .pv-bar button.solid{background:var(--field);color:var(--lock)}
+#wsPrev .pv-body{max-width:880px;margin:0 auto;padding:20px 18px 60px}
+#wsPrev .pv-lead{font-size:14px;color:var(--ink-soft);margin:4px 0 16px}
+#wsPrev .pv-text{white-space:pre-wrap;border:1.5px solid var(--rule,#ccc);border-radius:10px;background:var(--field,#fff);padding:10px 12px;min-height:2.2em;font:inherit}
+#wsPrev .pv-text.empty{color:var(--ink-soft);font-style:italic}
+@media print{#wsPrev,#wsTurnin{display:none !important}}
+</style>
+<script>
+/* ══ AOG-WS-SENDBLOCK-V2 — the FINISHED station (build .30gf) ═════════════
+   Lineage m3 → b11 → wf → scope → ws. One press: the work goes straight to
+   the teacher AND the student lands on a preview of what they built. No
+   destination resolved → this page adds nothing. Never an automatic retry.
+   AOG-SCOPE-WORKSHEETS-V1: the lesson sheets share one station, so CFG is read
+   from the sheet that is open. */
+(function(){
+  function activeSheet(){ return document.querySelector(".sheet.is-active") || document.querySelector(".sheet"); }
+  function cfg(){ var s = activeSheet(); return {id: s ? s.getAttribute("data-id") : "tele-L1", name: s ? s.getAttribute("data-name") : "The Telescope — Lesson 1"}; }
+  var CFG = cfg();
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw){
+    try{
+      var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+      while(t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+        return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+    }catch(e){}
+    return null;
+  }
+  var DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+  }catch(e){}
+  if(!DEST){
+    try{
+      var cfg2 = window.AOG_SYNC_DEFAULTS;
+      if(cfg2 && !cfg2.destinations && typeof cfg2.url==="string" && DEST_RE.test(cfg2.url)
+         && Object.prototype.toString.call(cfg2.schools)==="[object Array]" && cfg2.schools.length)
+        DEST = { url:cfg2.url, key:(typeof cfg2.key==="string" ? cfg2.key : "") };
+    }catch(e){}
+  }
+  if(!DEST) return;
+
+  var KEY = "aog.interior.ws.v1.";
+  var whoKey = KEY + "who";
+
+  /* the WF honesty rule: a destination RESOLVED, so the footer's
+     works-with-the-network-off promise must stop claiming nothing sends */
+  try {
+    [].slice.call(document.querySelectorAll("p")).some(function (fp) {
+      if (fp.textContent.indexOf("sends nothing out") < 0) return false;
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      return true;
+    });
+  } catch (e) {}
+
+  function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+  function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+  function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function gather(){
+    var out = {};
+    [activeSheet()].forEach(function(el){
+      if(!el) return;
+      var id = el.getAttribute("data-id");
+      if(!id || out[id]) return;
+      try{
+        var raw = localStorage.getItem(KEY+id);
+        if(raw) out[id] = JSON.parse(raw);
+      }catch(e){}
+      if(!out[id]) out[id] = {};
+      [].slice.call(el.querySelectorAll("[data-f]")).forEach(function(f){
+        if(typeof f.value === "string" && f.value.trim() !== "") out[id][f.getAttribute("data-f")] = f.value;
+      });
+    });
+    return out;
+  }
+
+  /* ── the FINISHED station, at the page foot ── */
+  var main = document.querySelector("main") || document.body;
+  var card = document.createElement("section");
+  card.id = "wsTurnin"; card.className = "no-print";
+  card.innerHTML =
+    '<h2>Finished?</h2>' +
+    '<p>Tap FINISHED and your work goes straight to your teacher \u2014 and you\u2019ll see a preview of what you built. ' +
+    'It stays saved on this computer too.</p>' +
+    '<div class="row">' +
+    '<input type="text" id="wsWho" autocomplete="off" maxlength="60" placeholder="Enter your name" aria-label="Your code or first name">' +
+    '<button class="btn-fin" type="button" id="wsSendBtn">FINISHED</button>' +
+    '<span class="st" id="wsSt" aria-live="polite"></span></div>';
+  var acts = main.querySelector(".lock-acts");
+  if(acts) main.insertBefore(card, acts); else main.appendChild(card);
+
+  /* ── the preview ── */
+  var prev = document.createElement("div");
+  prev.id = "wsPrev"; prev.hidden = true;
+  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label","Preview of what you built");
+  document.body.appendChild(prev);
+
+  function buildPreview(who, statusText){
+    prev.innerHTML = "";
+    var bar = document.createElement("div"); bar.className = "pv-bar";
+    var t = document.createElement("span"); t.className = "t";
+    t.textContent = "\u2713 FINISHED \u2014 " + who + " \u00b7 " + CFG.name;
+    var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wsPvSt";
+    pst.textContent = statusText;
+    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
+    pr.addEventListener("click", function(){
+      var b = activeSheet() && activeSheet().querySelector('[data-print="filled"]');
+      if(b) b.click(); else window.print();
+    });
+    var bk = document.createElement("button"); bk.type="button"; bk.textContent = "Back to my worksheet";
+    bk.addEventListener("click", function(){ prev.hidden = true; document.body.classList.remove("wsprev"); });
+    bar.appendChild(t); bar.appendChild(pst); bar.appendChild(pr); bar.appendChild(bk);
+    prev.appendChild(bar);
+
+    var body = document.createElement("div"); body.className = "pv-body";
+    var lead = document.createElement("p"); lead.className = "pv-lead";
+    lead.textContent = "This is what you built \u2014 exactly what your teacher receives.";
+    body.appendChild(lead);
+    [activeSheet()].forEach(function(sheet){
+      if(!sheet) return;
+      var clone = sheet.cloneNode(true);
+      clone.removeAttribute("id"); clone.removeAttribute("data-id");
+      clone.classList.add("is-active");
+      [].slice.call(clone.querySelectorAll(".no-print,button,[data-print],[data-saved]")).forEach(function(n){ if(n.parentNode) n.parentNode.removeChild(n); });
+      [].slice.call(clone.querySelectorAll("textarea")).forEach(function(ta){
+        var d = document.createElement("div");
+        var v = ta.value || "";
+        d.className = "pv-text" + (v.trim() ? "" : " empty");
+        d.textContent = v.trim() ? v : "\u2014 left blank \u2014";
+        ta.parentNode.replaceChild(d, ta);
+      });
+      [].slice.call(clone.querySelectorAll("input,select")).forEach(function(inp){ inp.disabled = true; });
+      body.appendChild(clone);
+    });
+    prev.appendChild(body);
+  }
+  function setPvStatus(txt){ var n = document.getElementById("wsPvSt"); if(n) n.textContent = txt; }
+
+  var inp = document.getElementById("wsWho"), btn = document.getElementById("wsSendBtn"), st = document.getElementById("wsSt");
+  inp.value = getWho();
+  /* .30he — autosend, the free-writing translation: &who= boots into a
+     BLANK saved name only, and Enter in the name field sends. */
+  try {
+    var wm = /[?&]who=([^&]+)/.exec(location.search || "");
+    if (wm && !inp.value.trim()) {
+      inp.value = decodeURIComponent(wm[1]).slice(0, 60);
+      if (inp.value.trim()) setWho(inp.value.trim());
+    }
+  } catch (e) {}
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); btn.click(); }
+  });
+  document.addEventListener("aog:lesson", function(){ CFG = cfg(); btn.textContent = "FINISHED"; st.textContent = ""; });
+  var busy = false;
+  btn.addEventListener("click", function(){
+    if(busy) return;
+    CFG = cfg();
+    var who = inp.value.trim();
+    if(!who){ st.textContent = "Add your code or first name — the same one you check in with — so this lands with your other work."; inp.focus(); return; }
+    setWho(who);
+    var payload = {
+      action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+      studentId:who, timestamp:new Date().toISOString(), date:today(),
+      activityId:CFG.id, activityName:"SEL Worksheet \u2014 "+CFG.name,
+      skill:"SEL Worksheet \u2014 "+CFG.name,
+      setNo:"", itemsTotal:"", independent:"", supported:"", hintsUsed:"", confidence:"",
+      source:"link",
+      extra:JSON.stringify({series:"sel-worksheet", build:"ws send v2", worksheet:CFG.id, finished:true, responses:gather()})
+    };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
+    var body = JSON.stringify(payload);
+    busy = true;
+    /* the preview opens NOW — the send reports into its status line */
+    buildPreview(who, "Sending to your teacher\u2026");
+    prev.hidden = false; document.body.classList.add("wsprev");
+    prev.scrollTop = 0;
+    function done(){ busy = false; setPvStatus("Turned in \u2713"); st.textContent = "Turned in \u2713"; btn.textContent = "FINISHED \u2713"; }
+    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
+    fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(function(res){ return res.json(); })
+      .then(function(j){ if(j && j.ok) done(); else fail(); })
+      .catch(function(){
+        /* cors read threw — ONE blind send, honest label, never an auto-retry */
+        fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+            headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+          .then(done).catch(fail);
+      });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%} .aog-printwm span:nth-child(2){top:52%} .aog-printwm span:nth-child(3){top:82%}
+  table{break-inside:auto} tr{break-inside:avoid} li{break-inside:avoid} h1,h2,h3{break-after:avoid} p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+</body>
+</html>
