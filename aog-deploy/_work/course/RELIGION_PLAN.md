@@ -28,8 +28,8 @@ Pages and short links (checked against `_redirects` and the deploy folder — no
 
 | course | unit pages | contents page | short links |
 |---|---|---|---|
-| rel | `rel-u1.html` … `rel-u24.html` | `religions-course.html` | `/religions-course`, `/rel1` … `/rel24` (1–12 exist) |
-| eco | `eco-u1.html` … `eco-u18.html` | `economics-course.html` | `/economics-course`, `/eco1` … `/eco18` (1–8 exist) |
+| rel | `rel-u1.html` … `rel-u24.html` | `religions-course.html` | `/religions-course`, `/rel1` … `/rel24` (13–24 exist) |
+| eco | `eco-u1.html` … `eco-u18.html` | `economics-course.html` | `/economics-course`, `/eco1` … `/eco18` (11–18 exist) |
 | bib | `bib-u1.html` … `bib-u18.html` | `bible-course.html` | `/bible`, `/bible-course`, `/bib1` … `/bib18` |
 | heb | `heb-u1.html` … `heb-u17.html` | `hebrew-bible-course.html` | `/hebrew-bible`, `/hebrew-bible-course`, `/heb1` … `/heb17` |
 | qur | `qur-u1.html` … `qur-u17.html` | `quran-course.html` | `/quran`, `/quran-course`, `/qur1` … `/qur17` |
@@ -40,33 +40,34 @@ the World Religions room, not a collision.)
 
 ## Files created or changed in this wave
 
-- `_work/rel/outline.py` — BANDS now K–2 … 11–12; units 13–24 (chapters 25–48) added for K–2, 3–5, 6–8; LINKS for them.
-- `_work/eco/outline.py` — BANDS now K–2 … 11–12; units 9–18 (chapters 17–36) added; LINKS for them.
+- `_work/rel/outline.py` — BANDS now K–2 … 11–12; K–2, 3–5, 6–8 units added; after the 2026-09-27 renumbering they are units 1–12 (chapters 1–24) and the high-school units are 13–24.
+- `_work/eco/outline.py` — BANDS now K–2 … 11–12; K–8 units added; after the 2026-09-27 renumbering they are units 1–10 (chapters 1–20) and the high-school units are 11–18.
 - `_work/rel/{build_rel,plumb_rel}.py`, `_work/eco/{build_eco,plumb_eco}.py`, `_work/rel/SPEC.md`, `_work/eco/SPEC.md` —
   strings say K–12 instead of 9–12; the plumb `hub()` now skips (and names) a band the hub page lacks instead of asserting.
 - `_work/bib`, `_work/heb`, `_work/qur`, `_work/tal` — each: `outline.py`, `SPEC.md`, `build_<id>.py`, `inject_<id>_jump.py`,
   `plumb_<id>.py`, `banners_<id>.py` (stub), `validate.py`, `assemble.py` (copied from rel unchanged). All compile; every
   `build_<id>.py` imports and reports its five jump groups.
 - `_work/course/build_course.py` — the `jump_block()` strip regex now knows `bible-course|bib-u|hebrew-bible-course|heb-u|quran-course|qur-u|talmud-course|tal-u`.
-- `_work/course/renumber.py` — OPTIONAL, NOT RUN: the straight-through renumbering script (see Decision 1).
+- `_work/course/renumber.py` — the straight-through renumbering script; run on rel and eco 2026-09-27 (see Decision 1).
 - this file.
 
 Verified: `python3 -c "import outline"` in all six folders; units and chapters contiguous 1…N in every course; every unit has
-exactly two chapters; LINKS keys match the units; `python3 assemble.py 1` and `7` (rel) and `5` (eco) still print OK.
+exactly two chapters; LINKS keys match the units; `python3 assemble.py 1` and `7` (rel) and `5` (eco) still print OK (before renumbering; now rel 13–24 and eco 11–18 print OK).
 
 ## Decisions for Jimmy
 
-1. **Numbering of the K–8 bands in World Religions and Economics — APPENDED, not renumbered (my call; reversible).**
-   The 9–12 units keep units 1–12 / 1–8 and chapters 1–24 / 1–16. The new bands carry the next numbers
-   (rel: units 13–24, chapters 25–48; eco: units 9–18, chapters 17–36). The UNITS list is ordered by band, and the
-   builder groups the contents page in list order, so K–2 prints first; the only visible oddity is that the K–2 unit
-   badge says "13" (rel) or "9" (eco). Why not renumber: `rel-u1…12.html` and `eco-u1…8.html` are already built and
-   precached in `sw.js`, `/rel1…` and `/eco1…` are live redirects, the banners in `banners_*_a.py` are keyed by unit
-   number, per-course progress in localStorage is keyed by unit, and 18 rel chapter files cross-reference "chapter 11",
-   "unit 6" etc. in their prose. Renumbering would silently point every old link at a different unit and would need a
-   prose sweep. If Jimmy wants "unit 1 = kindergarten" anyway: run `python3 ../course/renumber.py --dry-run` in
-   `_work/rel` (and `_work/eco`), then for real, then grep the chapter JSON for "unit N"/"chapter N" and fix by hand,
-   rebuild, re-plumb, and accept that the old short links change meaning. Do it BEFORE the writer wave, never after.
+1. **Numbering of the K–8 bands in World Religions and Economics — Renumbered on Jimmy's instruction (2026-09-27): K–2 is unit 1.**
+   Jimmy: "Fix the numbers. Kindergarten should be K, not 13." `renumber.py` was run in `_work/rel` and `_work/eco`, so units
+   and chapters now run straight through in band order, kindergarten first, high school last.
+   - rel: K–2 units 1–3, 3–5 units 4–7, 6–8 units 8–12 (chapters 1–24, still to write); the high-school units that were 1–12
+     are now **units 13–24** (chapters 25–48): old unit N → N+12, old chapter N → N+24. Built pages `rel-u13…24.html`, `/rel13…/rel24`.
+   - eco: K–2 units 1–3, 3–5 units 4–6, 6–8 units 7–10 (chapters 1–20, still to write); the high-school units that were 1–8
+     are now **units 11–18** (chapters 21–36): old unit N → N+10, old chapter N → N+20. Built pages `eco-u11…18.html`, `/eco11…/eco18`.
+   - Done with it: the prose cross-references ("unit 1", "Chapter 4" …) were updated, the old `rel-u1…12.html` / `eco-u1…8.html`
+     pages removed, `_redirects`, `sitemap.xml`, `sw.js`, the hubs, the dashboard catalogue and the standards crosswalk
+     (`_work/standards/{rel,eco,outlines}.json`) moved to the new numbers. `plumb_<id>.py` now lists only units whose page is built.
+   - The cost Jimmy accepted: the old short links `/rel1…/rel12` and `/eco1…/eco8` no longer open the high-school units (they
+     stay unused until the K–8 units are built), and per-unit progress saved in a browser under the old numbers does not carry over.
 
 2. **Public-domain sources — two translations Jimmy named are not clear for quotation.** Yusuf Ali's Qur'an (1934)
    and the Soncino Talmud (1935–52) are not public domain in the U.S. (nor is Danby's Mishnah, 1933, or Sefaria's

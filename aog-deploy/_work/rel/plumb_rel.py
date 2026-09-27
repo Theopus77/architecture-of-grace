@@ -14,6 +14,7 @@ HERE = Path(__file__).resolve().parent
 DEPLOY = HERE.parent.parent
 sys.path.insert(0, str(HERE))
 from outline import UNITS, BANDS
+BUILT = [u for u in UNITS if (DEPLOY / ("rel-u%d.html" % u["n"])).exists()]   # only units whose page is built (K–8 units are still unwritten)
 E = lambda s: html.escape(s, quote=True)
 TODAY = datetime.date.today().isoformat()
 HUB_ID = {"k-2": "K-2"}   # religions-hub.html spells the first band upper-case
@@ -68,7 +69,7 @@ def redirects():
     p = DEPLOY / "_redirects"; s = p.read_text(encoding="utf-8")
     add = []
     if "/religions-course " not in s: add.append("/religions-course             /religions-course.html                      200")
-    for u in UNITS:
+    for u in BUILT:
         n = u["n"]
         if "/rel%d " % n not in s: add.append(("/rel%d" % n).ljust(28) + ("/rel-u%d.html" % n).ljust(42) + "200")
     if add:
@@ -79,7 +80,7 @@ def redirects():
 
 def sw():
     p = DEPLOY / "sw.js"; s = p.read_text(encoding="utf-8")
-    if "rel-u1.html" in s:
+    if "'./religions-course.html'" in s:
         print("sw: already precaches the course"); return
     m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
     old = m.group(1)
@@ -88,19 +89,19 @@ def sw():
     line = ("const CACHE = '%s'   // WORLD RELIGIONS AS A COURSE. /religions-course and /rel1–/rel24: a K–12 World Religions course, the academic and comparative study of religion — five bands, 24 units, 48 chapters, numbered lessons — built by _work/rel/build_rel.py. Every band on the hub leads with its part of the course; every page's World Religions jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
             "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
     s = s[:m.start()] + line + s[m.end():]
-    add = "  './religions-course.html', " + ", ".join("'./rel-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-REL-V1 — the World Religions course\n"
+    add = "  './religions-course.html', " + ", ".join("'./rel-u%d.html'" % u["n"] for u in BUILT) + ",   // AOG-REL-V1 — the World Religions course\n"
     n = re.search(r"const PRECACHE_LESSONS = \[\n", s).end()
     s = s[:n] + add + s[n:]
-    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d files precached" % (new, len(UNITS) + 1))
+    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d files precached" % (new, len(BUILT) + 1))
 
 def sitemap():
     p = DEPLOY / "sitemap.xml"; s = p.read_text(encoding="utf-8")
     if "/religions-course<" in s:
         print("sitemap: already listed"); return
     rows = ['  <url><loc>https://architectureofgrace.org/religions-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
-    rows += ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in UNITS]
+    rows += ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in BUILT]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
-    p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(UNITS) + 1))
+    p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(BUILT) + 1))
 
 if __name__ == "__main__":
     hub(); redirects(); sw(); sitemap()
