@@ -26,3 +26,31 @@ float candlestickD(vec3 q,float H){
   float cup=sdCylY(q-vec3(0.,H,0.),.02,.004)-.002;
   return min(min(foot,stem),cup); }
 float candleD(vec3 q,float H,float L){ return sdCylY(q-vec3(0.,H+L*.5,0.),.0085,L*.5)-.0008; }
+/* a brass weight with a knob, base at y=0, body radius R */
+float weightD(vec3 q,float R){
+  float b=sdCylY(q-vec3(0.,R*.7,0.),R,R*.7)-.0015;
+  float n=sdCylY(q-vec3(0.,R*1.5,0.),R*.38,R*.16)-.001;
+  float k=length(q-vec3(0.,R*1.95,0.))-R*.42;
+  return min(b,smin(n,k,.003)); }
+/* a hanging-pan balance: base at y=0, beam at height H, arms of half-length A, tilt t (radians,
+   + drops the right pan). Returns (distance to frame, distance to pans). Pan tops: panTop(). */
+vec3 balEnd(float H,float A,float t,float s){ return vec3(s*A*cos(t),H-s*A*sin(t),0.); }
+vec2 balanceD(vec3 q,float H,float A,float t,float L){
+  float base=sdRBox(q-vec3(0.,.008,0.),vec3(.07,.008,.045),.004);
+  base=smin(base,sdCylY(q-vec3(0.,.02,0.),.022,.006)-.003,.006);
+  float post=sdCylY(q-vec3(0.,H*.5,0.),.007,H*.5);
+  post=min(post,length(q-vec3(0.,H+.008,0.))-.01);
+  vec3 b=q-vec3(0.,H,0.); b.xy=rot(-t)*b.xy;
+  float beam=sdRBox(b,vec3(A,.005,.004),.002);
+  beam=min(beam,sdRBox(b-vec3(0.,.012,0.),vec3(.022,.012,.003),.002));
+  float ptr=sdCapsule(b,vec3(0.,0.,-.006),vec3(0.,.07,-.006),.0022);
+  float d=min(min(base,post),min(beam,ptr));
+  float pans=1e5;
+  for(int i=0;i<2;i++){ float s=i==0?-1.:1.; vec3 e=balEnd(H,A,t,s);
+    vec3 pc=vec3(e.x,e.y-L,0.); vec3 r=q-pc;
+    d=min(d,length(q-e-vec3(0.,-.004,0.))-.006);
+    for(int k=0;k<3;k++){ float a=float(k)*2.094+.5; vec3 rim=pc+vec3(.052*cos(a),.004,.052*sin(a));
+      d=min(d,sdCapsule(q,e-vec3(0.,.006,0.),rim,.0011)); }
+    float pan=length(r*vec3(1.,2.2,1.)-vec3(0.,.07,0.))-.075; pan=max(abs(pan)-.002,r.y-.005); pan=max(pan,-r.y-.02);
+    pans=min(pans,pan*.6); }
+  return vec2(d,pans); }

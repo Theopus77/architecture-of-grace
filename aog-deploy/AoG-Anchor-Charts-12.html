@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>/* .30eg: begin in light; honor a dark choice made with this page's own toggle (saved in the aog.anchor.v1 blob). The OS setting no longer decides. */
@@ -1446,6 +1447,8 @@ function isWall(id){ return id.indexOf("wall") === 0; }
 function go(id){
   current = id;
   if(isWall(id)) renderWall(id); else renderChart(id);
+  /* crosswalk links (#id) land on an element with that id */
+  try{ var st = document.getElementById("stage"), rt = st && st.firstElementChild; if(rt && !document.getElementById(id)) rt.id = id; }catch(e){}
   paintRail();
   paintBar();
   document.body.classList.remove("rail-open");

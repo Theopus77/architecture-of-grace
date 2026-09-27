@@ -1,7 +1,7 @@
 /* FCS Unit 2 "Hot, Cold and Sharp" — pencil still life: a stovetop kettle with a curled handle
    and a wisp of steam, a quilted oven mitt, a glass of ice cubes and a paring knife in its sheath. */
-#define CAM_POS vec3(-0.5306,0.3912,-0.9477)
-#define CAM_TGT vec3(-0.2401,0.0078,0.1332)
+#define CAM_POS vec3(-0.5321,0.3931,-0.9529)
+#define CAM_TGT vec3(-0.2401,0.0077,0.1332)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -25,7 +25,7 @@ float steam(vec3 p){ vec3 q=p-KB-vec3(-.145,.15,0.); float w=.012*sin(q.y*55.);
   return max(sdCapsule(q-vec3(w,0.,0.),vec3(0.,0.,0.),vec3(0.,.07,0.),.004),-q.y); }
 #define GB vec3(-.2,0.,-.05)
 float glassD(vec3 p){ vec3 q=p-GB; float r=.036+q.y*.08;
-  float wall=max(abs(length(q.xz)-r)-.0025,abs(q.y-.055)-.055);
+  float wall=max(max(abs(length(q.xz)-r)-.0025,abs(q.y-.055)-.055),-(q.z+.2*q.x-.004));
   float bot=sdCylY(q-vec3(0.,.005,0.),r,.005); return min(wall,bot); }
 float ice(vec3 p){ vec3 q=p-GB; float d=1e5;
   for(int i=0;i<4;i++){ float fi=float(i); vec3 c=vec3(.012*sin(fi*2.3),.03+fi*.024,.01*cos(fi*1.7)); vec3 r=q-c; r.xz=rot(fi*.9)*r.xz; r.xy=rot(fi*.5)*r.xy;
@@ -52,6 +52,6 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==3.){ vec3 q=p-KB; if(q.y>.15) return .3; if(abs(q.y-.1)<.004) return .35; return .72; }
   if(id==4.) return .92;
   if(id==5.) return .9;
-  if(id==6.) return .82;
+  if(id==6.) return .6;
   if(id==7.){ vec3 q=p-vec3(.15,.01,-.08); q.xz=rot(-.35)*q.xz; if(q.x<-.006) return abs(q.x+.03)<.003||abs(q.x+.07)<.003?.7:.25; if(q.x<.006) return .5; return abs(q.z+.011)<.002?.95:.78; }
   return .7; }

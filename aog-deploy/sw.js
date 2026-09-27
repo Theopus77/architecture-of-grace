@@ -8,7 +8,12 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7076'   // THIS DEVICE'S SHEET: with no class link, work goes to the Sheet this device is connected to, before the site default. previous: m7075
+const CACHE = 'aog-cache-2026.09.27.m7080'   // FINAL MERGE: PENCIL EVERYWHERE, NO EMOJI; ALL COURSES, SEL, NOVELS, CROSSWALK LINKS. previous: m7078
+// const CACHE = 'aog-cache-2026.09.27.m7079'   // CROSSWALK DESK CARD PRINTS AS A PENCIL-FRAMED HALF-LETTER CARD, TWO TO A PAGE WITH A CUT LINE. previous: m7078 / CROSSWALK: ANCHOR CHART TRIGGERS LINK TO THEIR CHARTS; DESK CARD FOR EACH NEURO-AFFIRMING ADJUSTMENT. previous: m7077 / LAST MARKS DRAWN: FIRE, TICKS, CROSSES, STAR, PRINTER, MY NOTES PENCIL. previous: m7076 / TYPED MARKS (STARS, TICKS, BOXES) DRAWN IN PENCIL SITE-WIDE. previous: m7075 / SEL PAGES: PENCIL DRAWINGS FOR EVERY EMOJI, ALT TEXT KEPT. previous: m7074 / MERGE THE SKETCH PAD (magical-cerf) WITH THE PENCIL BANNERS. previous: m7073 / m7067
+// const CACHE = 'aog-cache-2026.09.27.m7073'   // SPANISH AND FACS: PENCIL DRAWINGS; BIBLE/HEBREW REDRAWS. previous: m7072   // NOVELS: REDRAW FIVE PENCIL DRAWINGS. previous: m7071   // MATH REDRAWS (u13, u18, u26). previous: m7070   // NOVELS: PENCIL COVERS AND 20 PENCIL SCENES. previous: m7069   // MATH: PENCIL DRAWINGS ON ALL 27 UNITS. previous: m7068   // SEL ROOMS: PENCIL DRAWINGS ON ALL 20 UNITS (LESSONS, CARDS, WORKSHEETS). previous: m7067   // THE BIBLE: PENCIL DRAWINGS ON ALL 18 UNITS. previous: m7066   // CHINESE CLASSICS: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7065   // TALMUD: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7064   // MERGE MAIN (aog-cache-2026.09.27.m7060) + HEB/HIN PENCIL. previous: m7063
+// const CACHE = 'aog-cache-2026.09.27.m7060'   // DAILY DRAFTS: WORLD CULTURES AND MEDICINE & HEALTH (1,000 items, K to Adult). previous: m7059
+// const CACHE = 'aog-cache-2026.09.27.m7067'   // THE SKETCH PAD: pencil drawings replace card and slip emoji (721 drawings), spiral-bound study cards, Foundry cards and Daily Drafts sheets, pencil drawings in room, microscope, telescope and worksheet mastheads. previous: m7066
+// const CACHE = 'aog-cache-2026.09.27.m7076'   // THIS DEVICE'S SHEET: with no class link, work goes to the Sheet this device is connected to, before the site default. previous: m7075
 // previous: SKETCHBOOK PAGES: lessons, reviews, unit tests, writing tasks and room quizzes get a spiral binding and a pencil margin; the words stay on plain paper. previous: m7074
 // previous: HOME: A BLUEPRINT OF A SCHOOL HALL BEING BUILT behind the name. previous: m7073
 // previous: BLUEPRINT HOME + INDEX-CARD TABS + HUB AND PAGE HEADER DRAWINGS (as they arrive). previous: m7072
@@ -329,7 +334,7 @@ const PRECACHE_LESSONS = [
 // Cached best-effort — a failure here must NEVER block install of the core.
 const PRECACHE_OPTIONAL = [
   './aog-glass.js',   // AOG-GLASS-V1 — the Blueprint windows painted as real glass
-  './aog-resources.json', './aog-resources.js', './aog-resources.css',   // AOG-RESOURCES-V1 — the resource library
+  './aog-resources.json', './aog-resources.js', './aog-resources.css', './aog-crosswalk.js',   // AOG-RESOURCES-V1 — the resource library
   'https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-400-normal.woff2',
   'https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-700-normal.woff2'
 ];
