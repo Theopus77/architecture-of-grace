@@ -238,6 +238,8 @@
 "}"
   ].join("\n");
 
+  /* AOG-SKETCH-PAD-V1 — the pencil look for the cards lives in aog-sketch.js */
+  if (!D.getElementById("aog-sketch-js")) { var sk = D.createElement("script"); sk.id = "aog-sketch-js"; sk.src = "/aog-sketch.js"; sk.defer = true; (D.head || D.documentElement).appendChild(sk); }
   var st = D.createElement("style");
   st.id = "aog-cards-css";
   st.appendChild(D.createTextNode(CSS));
