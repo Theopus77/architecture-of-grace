@@ -46,7 +46,7 @@ float palmBundleTone(vec3 q,float L,float W,float T){
 /* one loose leaf lying flat, with hint lines and two string holes */
 float leafD(vec3 q,float L,float W){ return sdRBox(q-vec3(0.,.0015,0.),vec3(L,.0015,W),.001)-.0003*sin(q.x*40.); }
 float leafTone(vec3 q,float L,float W){ float a=.9;
-  if(abs(q.z)<W-.007&&abs(q.x)<L-.012&&fract((q.z+W)/.0075)<.24&&length(vec2(abs(q.x)-L*.34,q.z))>.01) a=.6;
+  if(abs(q.z)<W-.006&&abs(q.x)<L-.012&&fract((q.z+W)/.0085)<.32&&length(vec2(abs(q.x)-L*.34,q.z))>.011) a=.45;
   if(abs(length(vec2(abs(q.x)-L*.34,q.z))-.0045)<.0012) a=.35;
   return a; }
 
