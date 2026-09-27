@@ -3372,7 +3372,7 @@ function bloodList(){
     /* the feathered edge thins out; the thick end crowds */
     const dens=.55+.4*((x+BLOOD_W/2)/BLOOD_W);
     if(rng()>dens) continue;
-    const px=x+(rng()-.5)*sp*.5+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*.4;
+    const px=x+(rng()-.5)*sp*1.1+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*1.0;   /* AOG-SCOPE-REALISM-V1: a smear has no rows */
     const r=rng();
     if(r<.006) o.push({k:"neut",x:px,y:py,r:.6+rng()*.08,a:rng()*6,seed:(rng()*1e9)|0});
     else if(r<.009) o.push({k:"lymph",x:px,y:py,r:.42+rng()*.06,a:rng()*6,seed:(rng()*1e9)|0});
@@ -4715,9 +4715,9 @@ function fernItem(ctx,c,det){
     /* annulus: the row of thick-walled cells over the top — it dries, bends back, and flings the spores */
     const n=17; ctx.lineCap="butt";
     for(let i=0;i<n;i++){
-      const a=Math.PI*1.05+i/(n-1)*Math.PI*1.15, a2=a+Math.PI*1.15/(n-1);
+      const jj=mulberry32(c.seed+i*7), a=Math.PI*1.05+i/(n-1)*Math.PI*1.15+(jj()-.5)*.03, a2=a+Math.PI*1.15/(n-1)*(.85+jj()*.25);   /* AOG-SCOPE-REALISM-V1: uneven annulus cells */
       ctx.beginPath(); ctx.moveTo(Math.cos(a)*rx*.86,Math.sin(a)*ry*.86); ctx.lineTo(Math.cos(a)*rx*1.08,Math.sin(a)*ry*1.08); ctx.lineTo(Math.cos(a2)*rx*1.08,Math.sin(a2)*ry*1.08); ctx.lineTo(Math.cos(a2)*rx*.86,Math.sin(a2)*ry*.86); ctx.closePath();
-      ctx.fillStyle="rgba(232,214,168,.9)"; ctx.fill(); ctx.strokeStyle="rgba(90,50,10,.95)"; ctx.lineWidth=det?.3:.4; ctx.stroke();
+      ctx.fillStyle=`rgba(${214+jj()*30|0},${188+jj()*30|0},${130+jj()*40|0},.88)`; ctx.fill(); ctx.strokeStyle="rgba(90,50,10,.8)"; ctx.lineWidth=det?.26:.4; ctx.stroke();
       ctx.beginPath(); ctx.moveTo(Math.cos(a)*rx*.86,Math.sin(a)*ry*.86); ctx.lineTo(Math.cos(a)*rx*1.08,Math.sin(a)*ry*1.08); ctx.strokeStyle="rgba(60,30,4,.95)"; ctx.lineWidth=det?.5:.55; ctx.stroke();
     }
     if(c.open){ /* the stomium tore: a dark slit, spores spilling from the mouth */
@@ -4934,7 +4934,7 @@ function bloodList2(){
     const feather=fx<.16?Math.pow(fx/.16,2)*.45:.45+.55*Math.min(1,(fx-.16)/.7);
     const dens=Math.max(0,feather*ey*.86);
     if(rng()>dens) continue;
-    const px=x+(rng()-.5)*sp*.5+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*.4;
+    const px=x+(rng()-.5)*sp*1.1+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*1.0;   /* AOG-SCOPE-REALISM-V1: a smear has no rows */
     const r=rng();
     if(fx>.6&&r<.03){ o.push({k:"roul",x:px,y:py,r:.36,n:4+(rng()*5|0),a:rng()*6,seed:(rng()*1e9)|0}); continue; }
     if(r<.005) o.push({k:"neut",x:px,y:py,r:.6+rng()*.08,a:rng()*6,seed:(rng()*1e9)|0});
