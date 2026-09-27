@@ -41,6 +41,8 @@ h1{font-family:Fraunces,Georgia,"Times New Roman",serif;font-weight:600;font-siz
 .opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 textarea,input[type=text]{width:100%;min-height:48px;font:16px/1.4 inherit;font-family:inherit;padding:10px 12px;border:1px solid #1B2A3D;border-radius:10px;background:var(--card);color:var(--ink)}
 textarea{min-height:84px;resize:vertical}
+.more{margin-top:10px}.more summary{display:inline-flex;align-items:center;min-height:44px;cursor:pointer;font-weight:700;color:var(--soft)}
+.talk{display:flex;align-items:center;gap:10px;min-height:48px;font-weight:600}.talk input{width:22px;height:22px}
 .names{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
 .names button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #B9B2A3;background:var(--card);color:var(--ink);font:600 15px inherit;font-family:inherit;cursor:pointer}
 .names button[aria-pressed="true"]{background:var(--pick);color:var(--pickInk);border-color:var(--pick)}
@@ -115,7 +117,33 @@ var SLIPS={
         {id:"how",kind:"one",q:["I learned best this unit by…","Aprendí mejor esta unidad con…"],o:[["Examples","Ejemplos"],["Practice","Práctica"],["Talking it out","Conversando"],["Reading","Leyendo"],["Pictures and videos","Imágenes y videos"]]}] }
 };
 
-var id=String(Q.get("s")||"").toLowerCase(), S=SLIPS[id], app=document.getElementById("app");
+/* ══ AOG-SLIP-WEEKLY — the Monday, midweek and Friday slips moved here from weekly.html (2026-09-27).
+   They still send the SAME row weekly.html sent (checkinType "weekly", weekly, tellAdult, extra.answers {q,a,more}),
+   so the Inbox and anything reading those rows keep working. more:true adds a "write more" box; talk:true adds the talk-to-an-adult box. ══ */
+var WX=[["⛈️ Rough","⛈️ Difícil"],["🌧️ Heavy","🌧️ Pesado"],["⛅ Okay","⛅ Más o menos"],["🌤️ Pretty good","🌤️ Bastante bien"],["☀️ Great","☀️ Genial"]];
+function wk(w,k,h,lead,qs){ return { k:k, h:h, lead:lead, qs:qs, weekly:w, talk:true }; }
+SLIPS.mon=wk("mon",["Monday check-in","Registro del lunes"],["How was your weekend?","¿Cómo estuvo tu fin de semana?"],
+  ["A few taps about the weekend and the week ahead. Write more on any question if you want to.","Unos toques sobre el fin de semana y la semana. Escribe más en cualquier pregunta si quieres."],
+  [{id:"weekend",kind:"scale",more:true,q:["How was your weekend?","¿Cómo estuvo tu fin de semana?"],o:WX},
+   {id:"did",kind:"pick",max:99,more:true,q:["What did you do?","¿Qué hiciste?"],o:[["😴 Rested","😴 Descansé"],["👨‍👩‍👧 Family time","👨‍👩‍👧 Tiempo en familia"],["🧑‍🤝‍🧑 Friends","🧑‍🤝‍🧑 Amigos"],["🌳 Outside","🌳 Afuera"],["⚽ Sports","⚽ Deportes"],["🎮 Games or screens","🎮 Juegos o pantallas"],["🎨 Made something","🎨 Hice algo"],["🧹 Helped at home","🧹 Ayudé en casa"],["🙏 Faith or community","🙏 Fe o comunidad"],["🤷 Not much","🤷 No mucho"]]},
+   {id:"start",kind:"scale",more:true,q:["How are you starting the week?","¿Cómo empiezas la semana?"],o:WX},
+   {id:"best",kind:"note",q:["One good moment from the weekend (optional)","Un buen momento del fin de semana (opcional)"]}]);
+SLIPS.mid=wk("mid",["Midweek check-in","Registro de mitad de semana"],["How is your week going?","¿Cómo va tu semana?"],
+  ["Halfway there. Tap what fits, and write more if you want to.","Vas a la mitad. Toca lo que encaje y escribe más si quieres."],
+  [{id:"sofar",kind:"scale",more:true,q:["How is the week going so far?","¿Cómo va la semana hasta ahora?"],o:WX},
+   {id:"hard",kind:"pick",max:99,more:true,q:["What has been hard?","¿Qué ha sido difícil?"],o:[["📚 Schoolwork","📚 Tareas escolares"],["🧑‍🤝‍🧑 Friends","🧑‍🤝‍🧑 Amigos"],["😴 Tired","😴 Cansancio"],["🏠 Home","🏠 Casa"],["😟 Worried","😟 Preocupación"],["⏳ Not enough time","⏳ Poco tiempo"],["👍 Nothing much","👍 Nada en especial"]]},
+   {id:"help",kind:"pick",max:99,more:true,q:["What has been helping?","¿Qué te ha ayudado?"],o:[["🫁 Breathing","🫁 Respirar"],["🚶 Moving","🚶 Moverme"],["💬 Talking to someone","💬 Hablar con alguien"],["🎧 Music","🎧 Música"],["☕ A break","☕ Un descanso"],["🙋 Asking for help","🙋 Pedir ayuda"],["🤔 Not sure","🤔 No sé"]]},
+   {id:"energy",kind:"one",more:true,q:["Your energy right now","Tu energía ahora"],o:[["🔋 Low","🔋 Baja"],["🔋🔋 Medium","🔋🔋 Media"],["🔋🔋🔋 High","🔋🔋🔋 Alta"]]},
+   {id:"note",kind:"note",q:["Anything else about your week? (optional)","¿Algo más sobre tu semana? (opcional)"]}]);
+SLIPS.fri=wk("fri",["Friday check-in","Registro del viernes"],["How was your week?","¿Cómo estuvo tu semana?"],
+  ["Look back at the week and ahead to the weekend. Tap, or write as much as you like.","Mira la semana que pasó y el fin de semana que viene. Toca o escribe todo lo que quieras."],
+  [{id:"week",kind:"scale",more:true,q:["How was your week?","¿Cómo estuvo tu semana?"],o:WX},
+   {id:"proud",kind:"pick",max:99,more:true,q:["Something you are proud of","Algo de lo que estás orgulloso/a"],o:[["⭐ I tried hard","⭐ Me esforcé"],["📖 I learned something","📖 Aprendí algo"],["🤝 I helped someone","🤝 Ayudé a alguien"],["🧘 I stayed calm","🧘 Me mantuve en calma"],["🔄 I made it right","🔄 Lo arreglé"],["🙋 I asked for help","🙋 Pedí ayuda"]]},
+   {id:"again",kind:"note",q:["Something you would do differently next week (optional)","Algo que harías diferente la próxima semana (opcional)"]},
+   {id:"plans",kind:"pick",max:99,more:true,q:["Weekend plans","Planes para el fin de semana"],o:[["😴 Rest","😴 Descansar"],["👨‍👩‍👧 Family","👨‍👩‍👧 Familia"],["🧑‍🤝‍🧑 Friends","🧑‍🤝‍🧑 Amigos"],["🌳 Outside","🌳 Afuera"],["⚽ Sports","⚽ Deportes"],["🚗 A trip","🚗 Un viaje"],["🎮 Games","🎮 Juegos"],["🙏 Faith or community","🙏 Fe o comunidad"],["🤷 Not sure yet","🤷 Todavía no sé"]]},
+   {id:"tell",kind:"note",q:["Anything you want your teacher to know before the weekend? (optional)","¿Algo que quieras que sepa tu maestro/a antes del fin de semana? (opcional)"]}]);
+
+var id=String(Q.get("s")||"").toLowerCase(); if(id==="weekly"){ var dw=new Date().getDay(); id=dw===1?"mon":(dw>=4||dw===0||dw===6)?"fri":"mid"; } var S=SLIPS[id], app=document.getElementById("app");
 if(!S){ app.innerHTML='<div class="card"><p class="k">'+t("Slips","Boletos")+'</p><h1>'+t("Which slip?","¿Qué boleto?")+'</h1><p class="lead">'+t("This link is missing its slip. Open the class link your teacher shared.","A este enlace le falta el boleto. Abre el enlace que compartió tu maestro.")+'</p><a class="back" href="/today">'+t("Your work today","Tu trabajo de hoy")+' ›</a></div>'; return; }
 document.title=t(S.k[0],S.k[1])+" — Architecture of Grace";
 
@@ -134,7 +162,7 @@ var DEST=destFrom();
 function names(){ var a=(jGet("aog.dash2.names",[])||[]).concat(jGet("aog.dash2.kids",[])||[]), seen={}, out=[]; a.forEach(function(n){ n=String(n||"").trim(); var k=n.toLowerCase(); if(n&&!seen[k]){ seen[k]=1; out.push(n); } }); return out.slice(0,8); }
 function remember(n){ n=String(n||"").trim(); if(!n) return; var a=(jGet("aog.dash2.names",[])||[]).filter(function(x){ return String(x).toLowerCase()!==n.toLowerCase(); }); a.unshift(n); jSet("aog.dash2.names",a.slice(0,8)); jSet("aog.dash2.student",n); lsSet("aog.drops.who",n); }
 var who=(Q.get("sid")||"").trim()||String(jGet("aog.dash2.student","")||"").trim()||lsGet("aog.drops.who","");
-var A={}, sent=false, busy=false, err="";
+var A={}, MORE={}, TALK=false, sent=false, busy=false, err="";
 
 function paint(){
   var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
@@ -149,14 +177,18 @@ function paint(){
     h+='<div class="card"><p class="q">'+esc(t(q.q[0],q.q[1]))+'</p>'+(q.hint?'<p class="hint">'+esc(t(q.hint[0],q.hint[1]))+'</p>':'<p class="hint"></p>');
     if(q.kind==="note"){ h+='<textarea data-note="'+q.id+'" maxlength="400">'+esc(A[q.id]||"")+'</textarea>'; }
     else{ var multi=q.kind==="pick", cur=A[q.id]; h+='<div class="opts'+(q.kind==="scale"?"":" chips")+'" role="group">'+q.o.map(function(o,i){ var on=multi?((cur||[]).indexOf(i)>=0):(cur===i); return '<button type="button" class="opt" data-q="'+q.id+'" data-i="'+i+'" aria-pressed="'+on+'">'+(q.kind==="scale"?'<span class="n">'+(i+1)+'</span>':'')+esc(t(o[0],o[1]))+'</button>'; }).join("")+'</div>'; }
+    if(q.more) h+='<details class="more"'+(MORE[q.id]?' open':'')+'><summary>✎ '+t("Write more (optional)","Escribe más (opcional)")+'</summary><textarea data-more="'+q.id+'" maxlength="400" aria-label="'+esc(t("Write more","Escribe más"))+'">'+esc(MORE[q.id]||"")+'</textarea></details>';
     h+='</div>';
   });
+  if(S.talk) h+='<div class="card"><label class="talk"><input type="checkbox" id="talk"'+(TALK?' checked':'')+'> '+t("I would like to talk to an adult","Me gustaría hablar con un adulto")+'</label></div>';
   h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):t("Send to my teacher","Enviar a mi maestro"))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
   app.innerHTML=h; wire();
 }
 function wire(){
   var w=document.getElementById("who"); if(w) w.addEventListener("input",function(){ who=w.value; });
   app.querySelectorAll("[data-who]").forEach(function(b){ b.onclick=function(){ who=b.getAttribute("data-who"); paint(); }; });
+  app.querySelectorAll("[data-more]").forEach(function(tx){ tx.addEventListener("input",function(){ MORE[tx.getAttribute("data-more")]=tx.value; }); });
+  var tk=document.getElementById("talk"); if(tk) tk.onchange=function(){ TALK=tk.checked; };
   app.querySelectorAll("[data-note]").forEach(function(tx){ tx.addEventListener("input",function(){ A[tx.getAttribute("data-note")]=tx.value; }); });
   app.querySelectorAll(".opt").forEach(function(b){ b.onclick=function(){ var qid=b.getAttribute("data-q"), i=+b.getAttribute("data-i"), q=S.qs.filter(function(x){ return x.id===qid; })[0];
     if(q.kind==="pick"){ var a=(A[qid]||[]).slice(), p=a.indexOf(i); if(p>=0) a.splice(p,1); else { if(a.length>=(q.max||3)) a.shift(); a.push(i); } A[qid]=a; }
@@ -169,16 +201,25 @@ function readable(){ var out={}, nums={}; S.qs.forEach(function(q){ var v=A[q.id
   if(q.kind==="note") out[q.id]=String(v).trim().slice(0,400);
   else if(q.kind==="pick") out[q.id]=v.map(function(i){ return q.o[i][0]; }).join("; ");
   else { out[q.id]=q.o[v][0]; if(q.kind==="scale") nums[q.id]=v+1; } }); return {words:out,nums:nums}; }
+/* the weekly row, exactly the shape weekly.html sent */
+function weeklyRow(now,d){ var ans={}; S.qs.forEach(function(q){ var v=A[q.id], a="";
+    if(q.kind==="note") a=String(v||"").trim().slice(0,400);
+    else if(q.kind==="pick") a=(v||[]).map(function(i){ return t(q.o[i][0],q.o[i][1]); }).join(", ");
+    else if(v!=null) a=t(q.o[v][0],q.o[v][1]);
+    ans[q.id]={q:t(q.q[0],q.q[1]),a:a,more:String(MORE[q.id]||"").trim().slice(0,400)}; });
+  return { action:"checkin", checkinType:"weekly", studentId:who, timestamp:now.toISOString(), date:d, weekly:S.weekly, tellAdult:TALK, source:"link",
+    extra:JSON.stringify({kind:"weekly",w:S.weekly,lang:ES?"es":"en",answers:ans}) }; }
 function send(){
   who=String((document.getElementById("who")||{}).value||who||"").trim().slice(0,40);
   if(!who){ err=t("Put a name at the top first.","Primero pon un nombre arriba."); paint(); var w=document.getElementById("who"); if(w) w.scrollIntoView({block:"center"}); return; }
   remember(who);
   var r=readable(), now=new Date(), d=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
   var follow=!!(S.follow&&S.follow(Object.keys(r.nums).reduce(function(o,k){ o[k]=r.nums[k]-1; return o; },{ today:r.words.today })));
-  var row={ action:"checkin", checkinType:"slip-"+id, slipType:id, studentId:who, respondentId:S.parent?"parent":who, respondentRole:S.parent?"parent":"student",
+  var row=S.weekly?weeklyRow(now,d):{ action:"checkin", checkinType:"slip-"+id, slipType:id, studentId:who, respondentId:S.parent?"parent":who, respondentRole:S.parent?"parent":"student",
     timestamp:now.toISOString(), date:d, period:Q.get("period")||"", classId:Q.get("classId")||"", grade:Q.get("grade")||"",
     note:[r.words.words,r.words.topic].filter(Boolean).join(" · "), followUp:follow, source:"link",
     extra:JSON.stringify({ series:"slip", slip:id, v:1, lang:ES?"es":"en", answers:r.words, scale:r.nums, goalId:Q.get("goal")||"", goalTitle:Q.get("gt")||"", unit:Q.get("u")||"" }) };
+  if(S.weekly) jSet("aog.weekly.mine",(jGet("aog.weekly.mine",[])||[]).concat([{w:S.weekly,who:who,ts:now.toISOString(),answers:JSON.parse(row.extra).answers,talk:TALK}]).slice(-60));
   var mine=jGet("aog.slips.mine",[])||[]; mine.push(Object.assign({},row,{mine:true})); jSet("aog.slips.mine",mine.slice(-300));
   if(!DEST){ sent=true; paint(); return; }
   busy=true; err=""; paint();
