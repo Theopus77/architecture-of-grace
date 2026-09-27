@@ -157,7 +157,7 @@
     "@media (max-width:720px){ .aog-mast-sketch{ width:100%; opacity:.28; -webkit-mask-image:none; mask-image:none; } }",
     "@media print{ .aog-mast-sketch{ display:none; } }"
   ].join("\n");
-  function mast(id) {
+  function mast(id, fallback) {
     var h1 = D.querySelector("main h1") || D.querySelector("h1");
     var h = D.querySelector("header.mast, .mast") || (h1 && h1.closest("header"));
     if (!h || h.querySelector(".aog-mast-sketch")) return;
@@ -165,7 +165,7 @@
     var b = "/img/banners/" + id + "-pencil";
     box.innerHTML = '<picture><source type="image/webp" srcset="' + b + '-900.webp 900w, ' + b + '-1600.webp 1600w" sizes="(max-width:720px) 100vw, 54vw">'
       + '<img src="' + b + '-900.jpg" alt="" width="900" height="315" decoding="async" loading="lazy"></picture>';
-    box.querySelector("img").onerror = function () { if (box.parentNode) box.parentNode.removeChild(box); h.classList.remove("aog-mast-host"); };
+    box.querySelector("img").onerror = function () { if (box.parentNode) box.parentNode.removeChild(box); h.classList.remove("aog-mast-host"); if (fallback) mast(fallback); };
     h.classList.add("aog-mast-host"); h.insertBefore(box, h.firstChild);
     if (!D.getElementById("aog-mast-sketch-css")) { var st = D.createElement("style"); st.id = "aog-mast-sketch-css"; st.appendChild(D.createTextNode(MCSS)); (D.head || D.documentElement).appendChild(st); }
   }
@@ -176,7 +176,7 @@
     var tries = 0;
     (function wait() {
       var m = window.AOG_ROOM_MAP, it = m && m[pg];
-      if (it && it.unit && /^[a-z]{2,5}-u\d+$/.test(it.unit)) { mast(it.unit); return; }
+      if (it) { mast(pg, it.unit && /^[a-z]{2,5}-u\d+$/.test(it.unit) ? it.unit : null); return; }   /* the room's own drawing, else its unit's */
       if (!m && ++tries < 20) setTimeout(wait, 300);
     })();
   }
