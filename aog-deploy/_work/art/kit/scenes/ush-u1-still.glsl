@@ -2,8 +2,8 @@
    great mound, framed close: a terraced, flat-topped earthen mound with a long stair up its
    face, a thatched temple on the summit, a timber palisade and two houses at its foot.
    No people. */
-#define CAM_POS vec3(-0.767,0.221,-1.174)
-#define CAM_TGT vec3(-0.378,0.085,0.100)
+#define CAM_POS vec3(-0.7892,0.1459,-1.2503)
+#define CAM_TGT vec3(-0.3795,0.0027,0.0916)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.9,.75,.05)
 #define MAXT 8.
@@ -16,19 +16,24 @@ float frustum(vec3 q,vec2 b,float h,float s,float r){
   float d=max(max(abs(q.x)-(b.x-s*q.y),abs(q.z)-(b.y-s*q.y)),max(-q.y,q.y-h));
   return d*.75-r; }
 float mound(vec3 p){
-  vec3 q=p; float e=0.;
-  float t1=frustum(q-vec3(0.,0.,0.),vec2(.34,.2),.07,.55,.01);          /* lower terrace, wide */
-  float t2=frustum(q-vec3(.05,0.,.05),vec2(.25,.15),.14,.5,.01);         /* main block */
-  float t3=frustum(q-vec3(.08,0.,.08),vec2(.17,.1),.19,.55,.01);         /* summit platform */
-  float side=frustum(q-vec3(-.25,0.,-.06),vec2(.08,.1),.1,.55,.003);      /* side terrace */
-  float d=min(min(t1,t2),min(t3,side))+e;
+  /* hand-built earth: soft-shouldered terraces, slumped slopes and rain-cut gullies */
+  vec3 q=p;
+  float t1=frustum(q,vec2(.34,.2),.07,.8,.022);
+  float t2=frustum(q-vec3(.05,0.,.05),vec2(.25,.15),.14,.75,.022);
+  float t3=frustum(q-vec3(.08,0.,.08),vec2(.17,.1),.19,.8,.02);
+  float side=frustum(q-vec3(-.25,0.,-.06),vec2(.08,.1),.1,.8,.02);
+  float d=smin(smin(t1,t2,.03),smin(t3,side,.025),.03);
+  float ang=atan(q.z-.05,q.x-.05);
+  float gully=pow(abs(sin(ang*17.+fbm(q.xz*6.)*9.)),8.)*.007*smoothstep(.35,.7,fbm(q.xz*11.+3.))*smoothstep(.0,.05,q.y)*smoothstep(.2,.1,q.y);
+  float e=(fbm(q.xz*14.+q.y*6.)-.5)*.016+(vn(q.xz*70.)-.5)*.0025;
+  d=(d+e+gully)*.7;
   /* the long stair up the front: a raised ramp on the face with cut steps */
   vec3 s=q-vec3(.05,0.,-.235);
   float ramp=max(abs(s.x)-.032,max(-s.z,s.z-.15));
   float top=(s.z)*1.05;                           /* slope of the ramp */
   float stepTop=floor(top/.011)*.011+.011;
   float stairs=max(ramp,max(s.y-min(stepTop,.14),-s.y));
-  return min(d,stairs); }
+  return min(d,stairs*.9); }
 float house(vec3 p,vec3 c,float r,float h){
   vec3 q=p-c; float wall=sdCylY(q-vec3(0,h*.3,0),r,h*.3)-.001;
   float roof=sdCone(q-vec3(0,h*.85,0),r*1.3,.002,h*.28)-.001;
@@ -51,7 +56,7 @@ vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,mound(p),3.);
   r=U(r,temple(p),4.);
-  r=U(r,min(house(p,vec3(-.42,0.,.05),.028,.07),house(p,vec3(.44,0.,.15),.026,.065)),5.);
+  r=U(r,min(min(house(p,vec3(-.44,0.,.02),.045,.105),house(p,vec3(-.36,0.,.2),.04,.095)),house(p,vec3(.45,0.,.12),.042,.1)),5.);
   r=U(r,palisade(p),6.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){

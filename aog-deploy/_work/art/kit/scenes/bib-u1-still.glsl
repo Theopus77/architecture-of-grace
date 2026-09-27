@@ -1,8 +1,8 @@
 /* Bible Unit 1 "Beginnings" — pencil still life: a great old book open on a wooden
    lectern (the biggest book in the house), a rolled scroll tied with a cord, and a clay
    oil lamp with a small flame. Pages carry only hint-lines of text. No figures. */
-#define CAM_POS vec3(-0.369,0.287,-0.753)
-#define CAM_TGT vec3(-0.310,0.045,0.120)
+#define CAM_POS vec3(-0.4292,0.3027,-1.0062)
+#define CAM_TGT vec3(-0.3537,-0.0063,0.1088)
 #define CAM_FOV 33.
 #define SUN_DIR vec3(-.7,.8,-.25)
 #define MAXT 8.
@@ -15,9 +15,16 @@
 #define TILT -.55
 /* lectern frame: local x across, y up off the slanted board, z up the slope */
 vec3 lecQ(vec3 p){ vec3 q=p-(LC+vec3(0.,.115,0.)); q.yz=rot(TILT)*q.yz; return q; }
+float sdBox2(vec2 p,vec2 b){ vec2 d=abs(p)-b; return length(max(d,0.))+min(max(d.x,d.y),0.); }
 float lectern(vec3 p){
   vec3 q=p-LC;
   float base=sdRBox(q-vec3(0.,.035,.03),vec3(.15,.035,.1),.006);
+  /* carved front: a sunk panel with a rounded arch, and a bead moulding along the top */
+  vec2 f=q.xy-vec2(0.,.035); float zf=q.z+.07;
+  float panel=max(sdBox2(f,vec2(.12,.024))-.004,abs(zf)-.004); base=max(base,-panel);
+  float archS=min(sdBox2(f-vec2(0.,-.006),vec2(.026,.014)),length(f-vec2(0.,.008))-.026);   /* a raised arch in the panel */
+  base=min(base,max(archS,abs(zf-.001)-.003));
+  float bead=sdCylX(q-vec3(0.,.07,-.07),.004,.15); base=min(base,bead);
   /* the wedge body under the board */
   vec3 b=lecQ(p); float board=sdRBox(b-vec3(0.,-.008,0.),vec3(.17,.009,.125),.003);
   float lip=sdRBox(b-vec3(0.,.008,-.122),vec3(.17,.012,.006),.002);
@@ -53,8 +60,10 @@ float lamp0(vec3 p){
   float foot=sdCylY(q-vec3(0,.004,0),.03,.004);
   return min(min(body2,handle),foot); }
 float lamp(vec3 p){ return lamp0((p-LP)/1.45+LP)*1.45; }
-float flame(vec3 p){ p=(p-LP)/1.45+LP; vec3 q=p-LP; q.xz=rot(3.3)*q.xz; q-=vec3(.088,.078,0.);
-  float r=.011*(1.-smoothstep(-.014,.036,q.y))+.0015; return (length(vec3(q.x,q.y*.5+.004,q.z))-r)*1.45; }
+float flame(vec3 p){ p=(p-LP)/1.45+LP; vec3 q=p-LP; q.xz=rot(3.3)*q.xz; q-=vec3(.088,.07,0.);
+  /* a teardrop: round at the wick, drawn up to a fine point */
+  float t=clamp((q.y+.006)/.05,0.,1.); float r=.0105*pow(sin(3.1416*pow(t,.62)),.8)*(1.-.15*t);
+  float d=length(q.xz)-r; d=max(d,max(-q.y-.006,q.y-.044)); return d*.7*1.45; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
@@ -67,7 +76,7 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
   if(id==2.) return .9;
-  if(id==3.) return .45;
+  if(id==3.){ vec3 q=p-LC; if(q.z<-.066&&abs(q.x)<.125&&abs(q.y-.035)<.03) return .3; return .45; }
   if(id==4.){ vec3 q=lecQ(p); float x=abs(q.x); float a=.94;
     /* two columns of hint-lines on each page, a square initial at the top left */
     float col=abs(abs(x-.078)-.034); float l=fract((q.z+.2)/.0105);
@@ -78,5 +87,5 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==5.) return .3;
   if(id==6.){ vec3 q=p-vec3(-.33,0.,.1); q.xz=rot(-.3)*q.xz; if(abs(q.x)>.087) return .35; if(q.y<.004&&fract(q.x/.01)<.3&&abs(q.x)<.07) return .6; return .88; }
   if(id==7.) return .55;
-  if(id==8.) return 1.;
+  if(id==8.){ vec3 q=p-LP; return .97; }
   return .7; }
