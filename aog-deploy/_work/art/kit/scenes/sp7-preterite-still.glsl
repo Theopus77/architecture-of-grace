@@ -1,8 +1,8 @@
 /* Practice room "The Preterite — Telling What Happened" — pencil still life of things that are
    finished: a desk calendar on a stand with past days crossed off, a torn ticket stub, and a
    burnt-out match lying beside its matchbox. */
-#define CAM_POS vec3(-0.3130,0.3539,-0.7538)
-#define CAM_TGT vec3(-0.1864,-0.0536,0.0958)
+#define CAM_POS vec3(-0.3225,0.3593,-0.7682)
+#define CAM_TGT vec3(-0.1938,-0.0553,0.0961)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -27,6 +27,13 @@ float pagesD(vec3 q){ vec3 f=q; f.yz=rot(-.3)*f.yz; return sdBox(f-vec3(0.,.07,-
 float tkD(vec3 q){ q.xz=rot(.4)*q.xz; float d=sdBox(q,vec3(.04,.0006,.022)); float tear=q.x-.034-.003*sin(q.z*300.); d=max(d,tear); return d-.0004; }
 float boxD(vec3 q){ return sdRBox(q-vec3(0.,.009,0.),vec3(.03,.009,.02),.0015); }
 float matchD(vec3 p){ vec3 q=p-MB-vec3(-.06,.0025,-.04); q.xz=rot(.5)*q.xz; float d=sdBox(q,vec3(.028,.0022,.0022)); d=min(d,sdEll(q-vec3(.03,0.,0.),vec3(.005,.0035,.0035))); return d; }
+/* a big burnt-out match lying clear of the box: plain stick, a charred curled end and a black head */
+#define MT vec3(.05,.0058,-.16)
+vec3 mtQ(vec3 p){ vec3 q=p-MT; q.xz=rot(.25)*q.xz; return q/1.3; }
+float matchD2(vec3 p){ vec3 q=mtQ(p); float bend=max(q.x-.02,0.); q.y-=bend*bend*2.;
+  float d=sdRBox(q,vec3(.045,.0035,.0035),.0008);
+  d=min(d,sdEll(q-vec3(.05,.0005,0.),vec3(.009,.006,.006)));
+  return d*.9*1.3; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
@@ -36,7 +43,7 @@ vec2 map(vec3 p){
   r=U(r,tkD((p-TK)/1.5)*1.5,5.);
   vec3 m=place(p,MB,.3);
   r=U(r,boxD(m/1.5)*1.5,6.);
-  r=U(r,matchD(MB+(p-MB)/1.5)*1.5,7.);
+  r=U(r,matchD2(p),7.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
@@ -52,5 +59,5 @@ float toneAlb(float id,vec3 p,vec3 n){
     return .93; }
   if(id==5.){ vec3 q=(p-TK)/1.5; q.xz=rot(.4)*q.xz; if(abs(q.x-.012)<.001&&fract(q.z/.004)<.5) return .4; if(q.x<.0&&abs(q.z)<.012&&fract(q.z/.006)<.25&&q.x>-.03) return .45; return .88; }
   if(id==6.){ vec3 m=place(p,MB,.3)/1.5; if(abs(m.x)<.028&&abs(m.y-.009)<.007&&m.z<-.019) return .4; if(m.y>.017&&abs(m.x)<.02&&abs(m.z)<.012) return .55; return .8; }
-  if(id==7.){ vec3 q=(p-MB)/1.5-vec3(-.06,.0025,-.04); q.xz=rot(.5)*q.xz; return q.x>.015?.15:.75; }
+  if(id==7.){ vec3 q=mtQ(p); if(q.x>.041) return .1; if(q.x>.018) return .25+.2*smoothstep(.041,.018,q.x); return .82; }
   return .7; }
