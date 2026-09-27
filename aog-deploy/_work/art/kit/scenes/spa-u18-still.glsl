@@ -1,7 +1,7 @@
 /* Spanish Unit 18 "The Subjunctive" — pencil still life of hopes and wishes (espero que...): a
    round cake with three unlit candles, a wrapped gift box with a ribbon bow, and a paper star. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3402,0.2267,-0.6300)
+#define CAM_TGT vec3(-0.1455,-0.0146,0.0941)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
