@@ -47,7 +47,7 @@ COURSE = dict(
     contents_desc=lambda ch, les: "A free K–12 course on the Qur'an — its structure, surahs, themes and recitation tradition, with the Prophet's life as context, read from public-domain translations and described (“Muslims believe…”) for a public-school classroom: %d chapters, %d numbered lessons with readings, key words, sources, checks, chapter reviews and unit tests. Original text, free to use." % (ch, les),
     contents_back=("← The Qur’an, the whole course", "← El Corán, el curso completo"),
     search_ph="Try “surah”, “tajwid” or “tafsir”",
-    hub="daily-drops.html?subject=quran", hub_back=("← Daily Drafts — The Qur’an", "← Borradores diarios — El Corán"),
+    hub="quran-hub.html", hub_back=("← The Qur’an, every band", "← El Corán, cada banda"),
     k_line=("The Interior — The Qur’an", "El Interior — El Corán"),
     desc_lead=lambda u: "The Qur’an, %s" % BAND_TITLE.get(u.get("band"), "K–12").lower(),
     tl_label=("When it happened", "Cuándo ocurrió"),

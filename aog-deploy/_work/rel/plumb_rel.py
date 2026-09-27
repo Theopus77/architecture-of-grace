@@ -81,7 +81,15 @@ def redirects():
 def sw():
     p = DEPLOY / "sw.js"; s = p.read_text(encoding="utf-8")
     if "'./religions-course.html'" in s:
-        print("sw: already precaches the course"); return
+        # AOG-DOORS (2026-09-27): later bands built — precache the units not yet listed, and bump CACHE
+        miss = [u for u in BUILT if "'./rel-u%d.html'" % u["n"] not in s]
+        if not miss:
+            print("sw: already precaches the course"); return
+        m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
+        old = m.group(1); pre, num = old.rsplit(".", 1); new = "%s.%d" % (pre, int(num) + 1)
+        s = s[:m.start()] + ("const CACHE = '%s'   // WORLD RELIGIONS K–8: units %s built into pages and precached.\n// previous: const CACHE = '%s'%s" % (new, ", ".join(str(u["n"]) for u in miss), old, m.group(2))) + s[m.end():]
+        s = s.replace("'./religions-course.html', ", "'./religions-course.html', " + "".join("'./rel-u%d.html', " % u["n"] for u in miss), 1)
+        p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d unit pages added" % (new, len(miss))); return
     m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
     old = m.group(1)
     pre, num = old.rsplit(".", 1)
@@ -97,7 +105,12 @@ def sw():
 def sitemap():
     p = DEPLOY / "sitemap.xml"; s = p.read_text(encoding="utf-8")
     if "/religions-course<" in s:
-        print("sitemap: already listed"); return
+        miss = [u for u in BUILT if "/rel%d<" % u["n"] not in s]
+        if not miss:
+            print("sitemap: already listed"); return
+        rows = ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in miss]
+        s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
+        p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % len(miss)); return
     rows = ['  <url><loc>https://architectureofgrace.org/religions-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
     rows += ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in BUILT]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
