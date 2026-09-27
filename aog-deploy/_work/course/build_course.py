@@ -748,7 +748,7 @@ def unit_page(u, all_units):
   <div>
     <div class="k">{span(*C["k_line"])}{band_line}</div>
     <h1 data-en="{E(title)}" data-es="{E("Unidad %d · %s" % (n, u["title"]))}">{E(title)}</h1>
-    <p class="deck">{span("A unit of the course: the story, then chapter by chapter — sections, numbered lessons, a source or the numbers to read, three checks each — a review per chapter, and the wrap-up at the end.","Una unidad del curso: la historia, y luego capítulo por capítulo — secciones, lecciones numeradas, una fuente o los números, tres comprobaciones cada una — un repaso por capítulo y el cierre al final.")}</p>
+    <p class="deck">{span("Start with the story. Then go through each chapter, one lesson at a time. Each lesson has three short checks. Each chapter ends with a review. The unit ends with a wrap-up.","Empieza con la historia. Luego sigue cada capítulo, una lección a la vez. Cada lección tiene tres preguntas cortas. Cada capítulo termina con un repaso. La unidad termina con un cierre.")}</p>
     <p class="hubline no-print"><a id="hubLink" href="{C["contents_page"]}">{span(*C["contents_back"])}</a></p>
   </div>
   <div class="row no-print">

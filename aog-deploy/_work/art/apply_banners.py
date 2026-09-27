@@ -12,10 +12,24 @@ page (the spread whose "Open the unit" link points at <id>.html: loads lazily) w
 The SVG is dropped. Alt text comes from _work/art/banners.json, else from the old SVG's
 aria-label. Idempotent: a scene already swapped (data-aog-render) is regenerated in place.
 Never touches index.html or turn-ins.html.
+
+--style pencil (AOG-PENCIL-BANNERS-V1): use the graphite drawings from _work/art/pencil
+(img/banners/<id>-pencil-1600.webp, -900.webp, -900.jpg) instead. The credit line reads
+"Pencil drawing, not a photograph: …", alt text comes from banners.json "pencil_alt" (then
+"alt", then the old aria-label), and a navy veil is laid over the lower part of the light
+paper so the cream unit title keeps its contrast. Re-running with the other style swaps back.
+--root DIR runs on a copy of the site (for testing) instead of aog-deploy/.
 """
 import html, json, os, re, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+STYLE = 'render'
+for i, a in enumerate(sys.argv):
+    if a == '--style' and i + 1 < len(sys.argv): STYLE = sys.argv[i + 1]
+    if a == '--root' and i + 1 < len(sys.argv): ROOT = os.path.abspath(sys.argv[i + 1])
+if STYLE not in ('render', 'pencil'): sys.exit('--style must be render or pencil')
+SUF = '-pencil' if STYLE == 'pencil' else ''
+CREDIT_LEAD = 'Pencil drawing, not a photograph: ' if STYLE == 'pencil' else 'Rendered scene, not a photograph: '
 SKIP = {'index.html', 'turn-ins.html'}
 MAN = json.load(open(os.path.join(os.path.dirname(__file__), 'banners.json')))
 
@@ -23,28 +37,38 @@ def rendered():
     d = os.path.join(ROOT, 'img', 'banners'); out = set()
     if not os.path.isdir(d): return out
     for f in os.listdir(d):
-        m = re.fullmatch(r'([a-z]+-u\d+)-1600\.webp', f)
-        if m and all(os.path.exists(os.path.join(d, m.group(1) + s)) for s in ('-900.webp', '-900.jpg')):
+        m = re.fullmatch(r'([a-z]+-u\d+)' + SUF + r'-1600\.webp', f)
+        if m and all(os.path.exists(os.path.join(d, m.group(1) + SUF + s)) for s in ('-900.webp', '-900.jpg')):
             out.add(m.group(1))
     return out
 
-SCENE = re.compile(r'<div class="scene" aria-hidden="true"(?: data-aog-render="([a-z]+-u\d+)")?>(.*?)</div>', re.S)
+SCENE = re.compile(r'<div class="scene" aria-hidden="true"(?: data-aog-render="([a-z]+-u\d+)")?(?: data-aog-style="[a-z]+")?>(.*?)</div>', re.S)
 CREDIT = re.compile(r'<div class="credit">(.*?)</div>', re.S)
 
 def label_of(inner):
     m = re.search(r'aria-label="([^"]*)"', inner) or re.search(r'<title>(.*?)</title>', inner, re.S)
     if not m: m = re.search(r'\balt="([^"]*)"', inner)
     t = html.unescape(m.group(1)) if m else ''
-    return re.sub(r'^(Drawn|Rendered) scene(, not a photograph)?:\s*', '', t).strip()
+    return re.sub(r'^((Drawn|Rendered) scene|Pencil drawing)(, not a photograph)?:\s*', '', t).strip()
+
+# Pencil drawings are light paper: this veil darkens the lower part (where the cream unit
+# title sits) to navy, on top of the drawing and under the page's own gradient.
+VEIL = ('<span class="pencil-veil" style="position:absolute;inset:0;display:block;pointer-events:none;'
+        'background:linear-gradient(180deg,rgba(10,30,51,.12) 0%,rgba(10,30,51,.30) 20%,rgba(10,30,51,.84) 38%,rgba(10,30,51,.94) 60%,rgba(10,30,51,.97) 100%)"></span>')
+
+def credit_of(alt):
+    # "A pencil drawing of a garden…" -> "a garden…" after the credit's own lead-in
+    return re.sub(r'^A (pencil drawing|rendered scene) of ', '', alt)
 
 def picture(uid, alt, eager):
-    b = 'img/banners/' + uid
+    b = 'img/banners/' + uid + SUF
     load = ' fetchpriority="high"' if eager else ' loading="lazy"'
-    return ('<div class="scene" aria-hidden="true" data-aog-render="%s"><picture style="display:block;width:100%%;height:100%%">'
+    st = ' data-aog-style="pencil"' if STYLE == 'pencil' else ''
+    return ('<div class="scene" aria-hidden="true" data-aog-render="%s"%s><picture style="display:block;width:100%%;height:100%%">'
             '<source type="image/webp" srcset="%s-900.webp 900w, %s-1600.webp 1600w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)">'
             '<img src="%s-900.jpg" srcset="%s-900.jpg 900w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)" width="1600" height="560" '
-            'alt="%s" decoding="async"%s style="display:block;width:100%%;height:100%%;object-fit:cover;object-position:50%% 45%%"></picture></div>'
-            % (uid, b, b, b, b, html.escape(alt, quote=True), load))
+            'alt="%s" decoding="async"%s style="display:block;width:100%%;height:100%%;object-fit:cover;object-position:50%% 45%%"></picture>%s</div>'
+            % (uid, st, b, b, b, b, html.escape(alt, quote=True), load, VEIL if STYLE == 'pencil' else ''))
 
 def process(path, done):
     name = os.path.basename(path)
@@ -59,14 +83,15 @@ def process(path, done):
         else: uid = link.group(1) if link else None
         if uid is None or uid not in done: continue
         old = label_of(inner)
-        alt = MAN.get(uid, {}).get('alt') or old
+        ent = MAN.get(uid, {})
+        alt = (ent.get('pencil_alt') if STYLE == 'pencil' else None) or ent.get('alt') or old
         unit_page = (name == uid + '.html')
         out.append(s[pos:m.start()]); out.append(picture(uid, alt, eager=unit_page)); pos = m.end()
         # credit line in this spread (first credit before the next scene)
         c = CREDIT.search(s, m.end(), stop)
         if c:
             out.append(s[pos:c.start()])
-            out.append('<div class="credit">%s</div>' % html.escape('Rendered scene, not a photograph: ' + alt, quote=False))
+            out.append('<div class="credit">%s</div>' % html.escape(CREDIT_LEAD + credit_of(alt), quote=False))
             pos = c.end()
         n += 1
     if n:
@@ -77,12 +102,12 @@ def process(path, done):
 
 def main():
     done = rendered()
-    if not done: print('no rendered banners in img/banners'); return
+    if not done: print('no %s banners in img/banners' % STYLE); return
     total = 0
     for f in sorted(os.listdir(ROOT)):
         if f.endswith('.html') and f not in SKIP:
             total += process(os.path.join(ROOT, f), done)
-    print('rendered units:', ' '.join(sorted(done)), '| scenes swapped:', total)
+    print(STYLE, 'units:', ' '.join(sorted(done)), '| scenes swapped:', total)
 
 if __name__ == '__main__':
     main()
