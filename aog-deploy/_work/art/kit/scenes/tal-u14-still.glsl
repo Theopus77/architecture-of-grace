@@ -1,7 +1,7 @@
-/* Talmud Unit 14 "Law and Story Together" — pencil still life: a book lying open with lines of text, a rolled scroll lying beside it and a pair of reading glasses resting on the pages.
+/* Talmud Unit 14 "Law and Story Together" — pencil still life: a book lying open with lines of text and a rolled scroll lying beside it: law and story side by side.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.5848,0.3442,-0.9512)
-#define CAM_TGT vec3(-0.2173,-0.0232,0.0457)
+#define CAM_POS vec3(-0.5455,0.3321,-0.9214)
+#define CAM_TGT vec3(-0.1923,-0.0211,0.0373)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -205,7 +205,7 @@ vec3 sQ(vec3 p){ return place(p,vec3(.26,0.,-.14),-.55); }
 float spec(vec3 p){ vec3 q=oQ(p)/2.; q-=vec3(-.055,.017,-.02); q.xz=rot(.35)*q.xz; return specD(q)*2.; }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
   vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);
-  r=U(r,scrollD(sQ(p)),5.); r=U(r,spec(p),6.); return r; }
+  r=U(r,scrollD(sQ(p)),5.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
   if(id==3.) return pageT(oQ(p),1.5); if(id==4.) return .35;
