@@ -179,7 +179,7 @@
         <div class=\"aogtop-col\">\n\
           <div class=\"aogtop-door\" data-fold=\"aogbarDoor3\">\n\
             <span class=\"aogtop-dnum\" aria-hidden=\"true\">03</span>\n\
-            <span class=\"aogtop-dtx\"><span class=\"aogtop-dname\" data-en=\"Beyond the Room\" data-es=\"M\u00e1s all\u00e1 del aula\">Beyond the Room</span><span class=\"aogtop-dband\" data-en=\"K\u201312 \u00b7 families \u00b7 standards\" data-es=\"K\u201312 \u00b7 familias \u00b7 est\u00e1ndares\">K\u201312 \u00b7 families \u00b7 standards</span></span>\n\
+            <span class=\"aogtop-dtx\"><span class=\"aogtop-dname\" data-en=\"The Front Porch\" data-es=\"El Porche\">The Front Porch</span><span class=\"aogtop-dband\" data-en=\"K\u201312 \u00b7 families \u00b7 standards\" data-es=\"K\u201312 \u00b7 familias \u00b7 est\u00e1ndares\">K\u201312 \u00b7 families \u00b7 standards</span></span>\n\
             <svg class=\"aogtop-chev\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg>\n\
           </div>\n\
           <div class=\"aogtop-fold\" id=\"aogbarDoor3\">\n\
