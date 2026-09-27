@@ -48,7 +48,7 @@ window.AOG_SYNC_DEFAULTS = {
   /* 2. The value of BACKEND_AUTH_KEY in Apps Script ▸ Project Settings ▸
         Script properties. Write-only: see the note above. */
   key: "Grace-D61-Sync-2026",
-  label: "Architecture of Grace — District 61 (site default)",
+  label: "Architecture of Grace — site default Sheet (the owner's own Google account)",
 
   /* 3. Which classroom links may use this destination.
 
@@ -207,3 +207,22 @@ window.AOG_SYNC_DEFAULTS = {
      ───────────────────────────────────────────────────────────────────────── */
   // destinations: { }
 };
+
+/* AOG-DEVICE-SHEET-V1 (2026-09-27) — Jimmy: "If I don't send my children a direct link and they or I use my iPad /
+   phone, I want the data to go to the Google Sheet that the device is connected to."
+   Order, on every page that sends work:
+     1. a classroom link's own destination (?dest= / ?org=)   — unchanged, it still wins
+     2. THIS DEVICE's saved Sheet connection (Dashboard ▸ Set up ▸ Connect your school's Sheet:
+        aog.sync.url + aog.sync.writekey)                        — NEW
+     3. the site default above                                   — only when 1 and 2 are absent
+   Read-only here: nothing is ever written to or erased from the saved connection. */
+(function () {
+  try {
+    var u = localStorage.getItem("aog.sync.url") || "", k = localStorage.getItem("aog.sync.writekey") || "";
+    var cfg = window.AOG_SYNC_DEFAULTS;
+    if (cfg && !cfg.destinations && /^https:\/\/script\.google\.com\/[^\s]*\/exec$/.test(u) && k) {
+      cfg.url = u; cfg.key = k; cfg.label = "This device's Sheet";
+      if (!cfg.schools || !cfg.schools.length) cfg.schools = ["*"];
+    }
+  } catch (e) {}
+})();

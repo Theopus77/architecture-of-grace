@@ -8,10 +8,21 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7079'   // CROSSWALK DESK CARD PRINTS AS A PENCIL-FRAMED HALF-LETTER CARD, TWO TO A PAGE WITH A CUT LINE. previous: m7078 / CROSSWALK: ANCHOR CHART TRIGGERS LINK TO THEIR CHARTS; DESK CARD FOR EACH NEURO-AFFIRMING ADJUSTMENT. previous: m7077 / LAST MARKS DRAWN: FIRE, TICKS, CROSSES, STAR, PRINTER, MY NOTES PENCIL. previous: m7076 / TYPED MARKS (STARS, TICKS, BOXES) DRAWN IN PENCIL SITE-WIDE. previous: m7075 / SEL PAGES: PENCIL DRAWINGS FOR EVERY EMOJI, ALT TEXT KEPT. previous: m7074 / MERGE THE SKETCH PAD (magical-cerf) WITH THE PENCIL BANNERS. previous: m7073 / m7067
+const CACHE = 'aog-cache-2026.09.27.m7080'   // FINAL MERGE: PENCIL EVERYWHERE, NO EMOJI; ALL COURSES, SEL, NOVELS, CROSSWALK LINKS. previous: m7078
+// const CACHE = 'aog-cache-2026.09.27.m7079'   // CROSSWALK DESK CARD PRINTS AS A PENCIL-FRAMED HALF-LETTER CARD, TWO TO A PAGE WITH A CUT LINE. previous: m7078 / CROSSWALK: ANCHOR CHART TRIGGERS LINK TO THEIR CHARTS; DESK CARD FOR EACH NEURO-AFFIRMING ADJUSTMENT. previous: m7077 / LAST MARKS DRAWN: FIRE, TICKS, CROSSES, STAR, PRINTER, MY NOTES PENCIL. previous: m7076 / TYPED MARKS (STARS, TICKS, BOXES) DRAWN IN PENCIL SITE-WIDE. previous: m7075 / SEL PAGES: PENCIL DRAWINGS FOR EVERY EMOJI, ALT TEXT KEPT. previous: m7074 / MERGE THE SKETCH PAD (magical-cerf) WITH THE PENCIL BANNERS. previous: m7073 / m7067
 // const CACHE = 'aog-cache-2026.09.27.m7073'   // SPANISH AND FACS: PENCIL DRAWINGS; BIBLE/HEBREW REDRAWS. previous: m7072   // NOVELS: REDRAW FIVE PENCIL DRAWINGS. previous: m7071   // MATH REDRAWS (u13, u18, u26). previous: m7070   // NOVELS: PENCIL COVERS AND 20 PENCIL SCENES. previous: m7069   // MATH: PENCIL DRAWINGS ON ALL 27 UNITS. previous: m7068   // SEL ROOMS: PENCIL DRAWINGS ON ALL 20 UNITS (LESSONS, CARDS, WORKSHEETS). previous: m7067   // THE BIBLE: PENCIL DRAWINGS ON ALL 18 UNITS. previous: m7066   // CHINESE CLASSICS: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7065   // TALMUD: PENCIL DRAWINGS ON ALL 17 UNITS. previous: m7064   // MERGE MAIN (aog-cache-2026.09.27.m7060) + HEB/HIN PENCIL. previous: m7063
 // const CACHE = 'aog-cache-2026.09.27.m7060'   // DAILY DRAFTS: WORLD CULTURES AND MEDICINE & HEALTH (1,000 items, K to Adult). previous: m7059
 // const CACHE = 'aog-cache-2026.09.27.m7067'   // THE SKETCH PAD: pencil drawings replace card and slip emoji (721 drawings), spiral-bound study cards, Foundry cards and Daily Drafts sheets, pencil drawings in room, microscope, telescope and worksheet mastheads. previous: m7066
+// const CACHE = 'aog-cache-2026.09.27.m7076'   // THIS DEVICE'S SHEET: with no class link, work goes to the Sheet this device is connected to, before the site default. previous: m7075
+// previous: SKETCHBOOK PAGES: lessons, reviews, unit tests, writing tasks and room quizzes get a spiral binding and a pencil margin; the words stay on plain paper. previous: m7074
+// previous: HOME: A BLUEPRINT OF A SCHOOL HALL BEING BUILT behind the name. previous: m7073
+// previous: BLUEPRINT HOME + INDEX-CARD TABS + HUB AND PAGE HEADER DRAWINGS (as they arrive). previous: m7072
+// previous: THE DRAFTING TABLE: graph-paper page, pencil-edged sheets, pencil drawings on hub cards; navy headers unchanged. previous: m7071
+// previous: HIGHLIGHTS: tap one for Remove / Add a note / Close; My notes removes any one, or clears all. previous: m7070
+// previous: HOME: YOUR WINDOW REMOVED (Jimmy). The sketched glass window stays. previous: m7069
+// previous: DAILY DRAFTS BOOKSHELF: each subject a pencil-lined book on a wooden shelf; the chosen one is lifted off. previous: m7068
+// previous: SKETCH EVERYWHERE: every page swaps emoji for pencil drawings (770), old colour banners and bench icons wear the pencil, Start Here scenes hatched. previous: m7067
+// previous: THE SKETCH PAD: pencil drawings replace card and slip emoji (721 drawings), spiral-bound study cards, Foundry cards and Daily Drafts sheets, pencil drawings in room, microscope, telescope and worksheet mastheads. previous: m7066
 // previous: WORLD CULTURES: PENCIL DRAWINGS ON UNITS 10-17. previous: m7065
 // previous: THE ROSE IS GONE: A PENCIL-SKETCHED GLASS WINDOW, AND YOUR WINDOW (six glass panes of a student's own progress, this device only). previous: m7064
 // previous: PENCIL DRAWINGS FOR ALL 17 MEDICINE AND HEALTH UNITS. previous: m7063
