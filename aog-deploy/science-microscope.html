@@ -1767,14 +1767,16 @@ function bakeOnion(){
     const nr=7.5+rng()*5.5;
     const cxn=nx+vx/vlen*(nr*1.15), cyn=ny+vy/vlen*(nr*1.15);
     const g=ctx.createRadialGradient(cxn-nr*.2,cyn-nr*.2,nr*.12,cxn,cyn,nr);
-    g.addColorStop(0,"#d09248"); g.addColorStop(.45,"#9a5a22"); g.addColorStop(1,"rgba(90,42,12,.12)");
+    /* AOG-SCOPE-REALISM-V1 — an unstained onion nucleus is pale and grey, seen mostly by its refractile rim,
+       with a fine granular inside and one to three darker nucleoli; iodine later turns it brown */
+    g.addColorStop(0,"rgba(214,204,176,.75)"); g.addColorStop(.7,"rgba(184,172,140,.8)"); g.addColorStop(1,"rgba(120,104,72,.55)");
     ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,rng(),0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    for(let k=0;k<30;k++){ ctx.fillStyle=`rgba(90,78,52,${.12+rng()*.18})`; ctx.fillRect(cxn+(rng()-.5)*nr*1.4,cyn+(rng()-.5)*nr*1.2,.9,.9); }
     ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,0,0,Math.PI*2);
-    ctx.strokeStyle="rgba(70,36,10,.28)"; ctx.lineWidth=.8; ctx.stroke();
-    if(rng()>.28){
-      ctx.beginPath(); ctx.arc(cxn+nr*.18,cyn-nr*.12,nr*.2,0,Math.PI*2);
-      ctx.fillStyle="rgba(48,22,8,.75)"; ctx.fill();
-    }
+    ctx.strokeStyle="rgba(70,58,36,.6)"; ctx.lineWidth=1.3; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr*.9,nr*.78,0,0,Math.PI*2); ctx.strokeStyle="rgba(250,244,220,.5)"; ctx.lineWidth=.7; ctx.stroke();
+    const nn=1+(rng()*2.2|0);
+    for(let k=0;k<nn;k++){ ctx.beginPath(); ctx.arc(cxn+(rng()-.5)*nr*.7,cyn+(rng()-.5)*nr*.6,nr*(.13+rng()*.08),0,Math.PI*2); ctx.fillStyle="rgba(70,56,34,.7)"; ctx.fill(); }
     if(rng()>.6){
       ctx.strokeStyle="rgba(110,72,24,.28)"; ctx.lineWidth=.9;
       for(let s=0;s<3;s++){
@@ -2787,25 +2789,26 @@ function crystal(ctx,c,L){
   ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.a);
   if(c.salt){
     if(polar){ ctx.restore(); return; } /* salt is a cube: the same in every direction, so crossed filters stay black */
-    const s=c.s, o=s*.13;
-    /* a cube seen a little off square: the top face, and two side faces falling away, darker */
-    ctx.beginPath(); ctx.moveTo(-s/2,-s/2); ctx.lineTo(s/2,-s/2); ctx.lineTo(s/2+o,-s/2+o); ctx.lineTo(-s/2+o,-s/2+o); ctx.closePath();
-    ctx.fillStyle="rgba(214,216,212,.7)"; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(s/2,-s/2); ctx.lineTo(s/2,s/2); ctx.lineTo(s/2+o,s/2+o); ctx.lineTo(s/2+o,-s/2+o); ctx.closePath();
-    ctx.fillStyle="rgba(190,192,190,.7)"; ctx.fill();
-    ctx.beginPath(); ctx.rect(-s/2,-s/2,s,s);
-    const fg=ctx.createLinearGradient(-s/2,-s/2,s/2,s/2); fg.addColorStop(0,"rgba(252,252,248,.7)"); fg.addColorStop(1,"rgba(232,232,226,.7)");
-    ctx.fillStyle=fg; ctx.fill();
-    ctx.lineWidth=Math.max(.12,s*.07); ctx.strokeStyle="rgba(30,34,40,.85)"; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(s/2,-s/2); ctx.lineTo(s/2+o,-s/2+o); ctx.lineTo(-s/2+o,-s/2+o); ctx.moveTo(s/2+o,-s/2+o); ctx.lineTo(s/2+o,s/2+o); ctx.lineTo(s/2,s/2);
-    ctx.lineWidth=Math.max(.08,s*.04); ctx.strokeStyle="rgba(30,34,40,.6)"; ctx.stroke();
-    ctx.lineWidth=Math.max(.05,s*.02); ctx.strokeStyle="rgba(255,255,255,.9)";
-    ctx.beginPath(); ctx.rect(-s*.43,-s*.43,s*.86,s*.86); ctx.stroke();
-    if(c.hop){
-      for(let k=1;k<5;k++){ const q=s*(.5-k*.09); ctx.beginPath(); ctx.rect(-q,-q,q*2,q*2); ctx.strokeStyle=`rgba(40,46,56,${.5-k*.07})`; ctx.lineWidth=s*.025; ctx.stroke(); }
-      ctx.beginPath(); ctx.moveTo(-s/2,-s/2); ctx.lineTo(s/2,s/2); ctx.moveTo(s/2,-s/2); ctx.lineTo(-s/2,s/2); ctx.strokeStyle="rgba(40,46,56,.18)"; ctx.lineWidth=s*.015; ctx.stroke();
-    }
-    ctx.fillStyle="rgba(255,255,255,.5)"; ctx.fillRect(-s*.32,-s*.34,s*.2,s*.08);
+    /* AOG-SCOPE-REALISM-V1 — a dried salt cube in bright light is not a line drawing. Its sides bend the light
+       away, so the edge is a thick dark band that fades inward; the flat top passes light and glows; a hopper
+       crystal steps down in squares toward a hollow; corners are a little rounded and chipped from drying. */
+    const s=c.s, rng=mulberry32(c.seed), rr=s*.06;
+    const sq=(q,jit)=>{ ctx.beginPath(); const p=[[-q,-q],[q,-q],[q,q],[-q,q]].map(([x,y])=>[x+(rng()-.5)*jit,y+(rng()-.5)*jit]);
+      p.forEach((v,i)=>{ const n=p[(i+1)%4]; const mx=(v[0]+n[0])/2, my=(v[1]+n[1])/2; if(!i) ctx.moveTo(mx,my); ctx.arcTo(n[0],n[1],(n[0]+p[(i+2)%4][0])/2,(n[1]+p[(i+2)%4][1])/2,rr); }); ctx.closePath(); };
+    sq(s/2,s*.03);
+    const g=ctx.createRadialGradient(-s*.08,-s*.1,s*.05,0,0,s*.72);
+    g.addColorStop(0,"rgba(255,255,252,.95)"); g.addColorStop(.3,"rgba(238,240,238,.9)"); g.addColorStop(.5,"rgba(150,154,160,.9)"); g.addColorStop(.68,"rgba(60,62,70,.92)"); g.addColorStop(1,"rgba(24,26,30,.96)");
+    ctx.fillStyle=g; ctx.fill();
+    /* the dark relief band, soft on the inside */
+    ctx.save(); ctx.clip();
+    ctx.lineWidth=s*.34; ctx.strokeStyle="rgba(28,30,36,.5)"; sq(s/2,0); ctx.stroke();
+    ctx.lineWidth=s*.05; ctx.strokeStyle="rgba(250,250,246,.55)"; sq(s*.37,0); ctx.stroke();
+    if(c.hop){ for(let k=1;k<6;k++){ const q=s*(.4-k*.065); sq(q,s*.01); ctx.lineWidth=s*.022; ctx.strokeStyle=`rgba(40,44,52,${.42-k*.05})`; ctx.stroke(); sq(q-s*.015,0); ctx.lineWidth=s*.01; ctx.strokeStyle="rgba(255,255,255,.4)"; ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(0,0,s*.06,0,6.3); ctx.fillStyle="rgba(60,64,70,.45)"; ctx.fill(); }
+    /* inclusions and growth lines */
+    ctx.fillStyle="rgba(40,44,50,.4)"; for(let i=0;i<Math.round(s*2);i++){ ctx.beginPath(); ctx.arc((rng()-.5)*s*.7,(rng()-.5)*s*.7,s*(.006+rng()*.012),0,6.3); ctx.fill(); }
+    ctx.restore();
+    sq(s/2,0); ctx.lineWidth=Math.max(.05,s*.025); ctx.strokeStyle="rgba(18,20,24,.8)"; ctx.stroke();
   } else {
     const P=sugarPoly(c), path=()=>{ ctx.beginPath(); P.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); };
     if(polar){
@@ -2815,8 +2818,9 @@ function crystal(ctx,c,L){
       ctx.beginPath(); ctx.moveTo(-c.L*.55,-c.W*.55); ctx.lineTo(c.L*.5,-c.W*.55); ctx.lineTo(c.L*.62,c.W*.45); ctx.lineTo(-c.L*.6,c.W*.45); ctx.closePath(); face(1,c.th*560);
       path(); ctx.strokeStyle=`rgba(255,255,255,${.25*I})`; ctx.lineWidth=.06; ctx.stroke();
     } else {
-      path(); ctx.fillStyle="rgba(248,248,240,.5)"; ctx.fill();
-      ctx.strokeStyle="rgba(30,34,40,.8)"; ctx.lineWidth=.14; ctx.stroke();
+      path(); const sg=ctx.createRadialGradient(-c.L*.1,-c.W*.1,c.W*.1,0,0,c.L); sg.addColorStop(0,"rgba(252,252,246,.8)"); sg.addColorStop(.6,"rgba(226,228,222,.7)"); sg.addColorStop(1,"rgba(90,94,100,.8)"); ctx.fillStyle=sg; ctx.fill();
+      ctx.save(); ctx.clip(); ctx.lineWidth=c.W*.35; ctx.strokeStyle="rgba(30,34,40,.4)"; path(); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle="rgba(30,34,40,.8)"; ctx.lineWidth=.1; path(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(-c.L*.7,-c.W); ctx.lineTo(-c.L*.55,-c.W*.55); ctx.lineTo(c.L*.5,-c.W*.55); ctx.lineTo(c.L*.78,-c.W);
       ctx.moveTo(-c.L*.55,-c.W*.55); ctx.lineTo(-c.L*.6,c.W*.45); ctx.lineTo(c.L*.62,c.W*.45); ctx.lineTo(c.L*.5,-c.W*.55);
       ctx.strokeStyle="rgba(40,46,56,.4)"; ctx.lineWidth=.06; ctx.stroke();
@@ -2829,7 +2833,12 @@ function drawCrystals(ctx,L){
   const polar=L&&L.illum==="polar";
   if(polar){ ctx.fillStyle="#010104"; ctx.fillRect(-900,-900,1800,1800); }
   else {
-    if(!SLIDE.cryBg) SLIDE.cryBg=bakeUnits(CRY_W,CRY_H,6,c=>{ c.fillStyle="#efece2"; c.fillRect(-CRY_W/2,-CRY_H/2,CRY_W,CRY_H); speckle(c,CRY_W,CRY_H,0xc2a1,2500,[110,110,100],.02,.05,.3); });
+    if(!SLIDE.cryBg) SLIDE.cryBg=bakeUnits(CRY_W,CRY_H,6,c=>{ c.fillStyle="#efece2"; c.fillRect(-CRY_W/2,-CRY_H/2,CRY_W,CRY_H); speckle(c,CRY_W,CRY_H,0xc2a1,2500,[110,110,100],.02,.05,.3);
+      /* AOG-SCOPE-REALISM-V1: where a drop dries it leaves a ring of crust and fern-like fronds of tiny crystals */
+      const rng=mulberry32(0xc2a9);
+      [[-40,-20,38],[35,25,32]].forEach(([x,y,R])=>{ c.lineWidth=1.4; c.strokeStyle="rgba(120,118,110,.22)"; c.beginPath(); for(let i=0;i<=80;i++){ const a=i/80*6.3, q=R*(1+(rng()-.5)*.06); i?c.lineTo(x+Math.cos(a)*q,y+Math.sin(a)*q):c.moveTo(x+Math.cos(a)*q,y+Math.sin(a)*q); } c.stroke();
+        for(let f=0;f<26;f++){ const a=rng()*6.3; let px=x+Math.cos(a)*R, py=y+Math.sin(a)*R, d=a+Math.PI+(rng()-.5)*.6; c.strokeStyle="rgba(90,92,96,.3)"; c.lineWidth=.15;
+          for(let k=0;k<14;k++){ const nx=px+Math.cos(d)*.9, ny=py+Math.sin(d)*.9; c.beginPath(); c.moveTo(px,py); c.lineTo(nx,ny); c.moveTo(nx,ny); c.lineTo(nx+Math.cos(d+.8)*.5,ny+Math.sin(d+.8)*.5); c.moveTo(nx,ny); c.lineTo(nx+Math.cos(d-.8)*.5,ny+Math.sin(d-.8)*.5); c.stroke(); px=nx; py=ny; d+=(rng()-.5)*.3; } } }); });
     blit(ctx,SLIDE.cryBg);
   }
   cryList().forEach(c=>{ if(inView(L,c.x,c.y,(c.s||c.L)*1.2)) crystal(ctx,c,L); });
