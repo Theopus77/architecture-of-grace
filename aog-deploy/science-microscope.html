@@ -3297,6 +3297,12 @@ function hairsBg(ctx,polar){
     for(let y=-48;y<48;y+=1.3) for(let x=-HAIR_W/2;x<HAIR_W/2;x+=1.7){ const px=x+(Math.round(y/1.3)&1?.85:0)+(rng()-.5)*.3; ctx.moveTo(px,y); ctx.lineTo(px+1.7,y+(rng()-.5)*.2); ctx.moveTo(px,y); ctx.lineTo(px+(rng()-.5)*.3,y+1.3); }
     ctx.stroke();
     speckle(ctx,HAIR_W,HAIR_H,0x7a1e,5000,[30,60,15],.03,.07,.3);
+    /* AOG-SCOPE-REALISM-V1 — a whole leaf is many cells thick: under the in-focus skin the green tissue shows
+       as soft, out-of-focus clusters of chloroplasts, darker over the thick parts, paler over air spaces */
+    const mr=mulberry32(0x7a1f);
+    for(let i=0;i<2600;i++){ const x=(mr()-.5)*HAIR_W, y=(mr()-.5)*HAIR_H, R=.6+mr()*1.6, dk=mr();
+      const gg=ctx.createRadialGradient(x,y,0,x,y,R); gg.addColorStop(0,dk<.6?`rgba(30,70,20,${.12+mr()*.14})`:`rgba(200,230,150,${.08+mr()*.1})`); gg.addColorStop(1,"rgba(40,80,20,0)");
+      ctx.fillStyle=gg; ctx.fillRect(x-R,y-R,R*2,R*2); }
   }
   /* midrib and side veins that each run out to a tooth */
   const vc=polar?"rgba(40,60,40,.5)":"rgba(170,200,120,.75)", vd=polar?"rgba(0,0,0,0)":"rgba(40,64,20,.45)";
@@ -4501,7 +4507,9 @@ function secCell(ctx,c,det,stain){
   const wall=red?"rgba(150,30,50,.85)":"rgba(90,100,60,.75)", wallLite=red?"rgba(255,220,225,.55)":"rgba(255,255,240,.5)";
   const sap=red?"rgba(236,200,205,.55)":"rgba(226,232,196,.62)";
   ctx.save(); ctx.translate(c.x,c.y);
-  const rect=(w,h,r)=>{ ctx.beginPath(); ctx.roundRect?ctx.roundRect(-w/2,-h/2,w,h,r):ctx.rect(-w/2,-h/2,w,h); };
+  /* AOG-SCOPE-REALISM-V1 — living tissue is never a grid: every cell leans and swells a little */
+  if(c.k!=="bundle"){ const jr=mulberry32(c.seed^0x5151); ctx.rotate((jr()-.5)*.12); ctx.scale(1+(jr()-.5)*.14,1+(jr()-.5)*.14); }
+  const rect=(w,h,r)=>{ ctx.beginPath(); ctx.roundRect?ctx.roundRect(-w/2,-h/2,w,h,Math.max(r,Math.min(w,h)*.22)):ctx.rect(-w/2,-h/2,w,h); };
   if(c.k==="epi"){
     rect(c.w,c.h,.35); ctx.fillStyle=red?"rgba(240,210,215,.7)":"rgba(232,230,200,.72)"; ctx.fill();
     ctx.strokeStyle=wall; ctx.lineWidth=det?.11:.18; ctx.stroke();
@@ -4762,6 +4770,11 @@ function fabThread(ctx,t,det,L,clipTo){
   const nf=cot?(det?16:11):(det?14:9), tw=cot?.32:.06;
   for(let k=0;k<nf;k++){
     const y0=(k/(nf-1)-.5)*t.w*.92, ph=rng()*6.3, wid=cot?(det?1.05+rng()*.5:1.2):(det?1.4:1.5);
+    /* AOG-SCOPE-REALISM-V1 — fibres in a yarn are never ruler-parallel: each leans a little, and some lie
+       deeper in the yarn, fainter and softer */
+    ctx.save(); const tilt=(rng()-.5)*(cot?.02:.035), depth=rng();
+    ctx.translate((a+b)/2,y0); ctx.rotate(tilt); ctx.translate(-(a+b)/2,-y0);
+    ctx.globalAlpha=depth<.3?.55:1;
     ctx.beginPath();
     for(let x=a;x<=b;x+=det?1.2:3){ const y=y0+Math.sin(x*tw+ph)*t.w*(cot?.12:.02)*(1-Math.abs(y0)/(t.w*.6)); x===a?ctx.moveTo(x,y):ctx.lineTo(x,y); }
     ctx.strokeStyle=cot?`rgba(${226+rng()*20|0},${214+rng()*16|0},${180+rng()*20|0},.95)`:`rgba(${206+rng()*16|0},${216+rng()*12|0},${236},.94)`;
@@ -4778,6 +4791,7 @@ function fabThread(ctx,t,det,L,clipTo){
         ctx.fillStyle="rgba(40,50,70,.5)"; for(let i=0;i<40;i++){ ctx.fillRect(a+rng()*(b-a),y0+(rng()-.5)*wid*.6,.06,.06); }
       }
     }
+    ctx.restore();
   }
   if(cot&&det){ /* loose fibre ends sticking out of the yarn */
     ctx.strokeStyle="rgba(200,186,150,.8)"; ctx.lineWidth=.6;
