@@ -1,7 +1,7 @@
 /* Spanish Unit 14 "Tener, Gustar and Stem Changes" — pencil still life of favourite things: a
    round fruit bowl holding oranges with a banana laid over them, and a glass of juice beside it. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.4330,0.3059,-0.7317)
+#define CAM_TGT vec3(-0.2034,0.0213,0.1217)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
