@@ -18,6 +18,7 @@ Never touches index.html or turn-ins.html.
 "Pencil drawing, not a photograph: …", alt text comes from banners.json "pencil_alt" (then
 "alt", then the old aria-label), and a navy veil is laid over the lower part of the light
 paper so the cream unit title keeps its contrast. Re-running with the other style swaps back.
+--only PREFIX (repeatable) wires just that course, e.g. --only hin --only bud.
 --root DIR runs on a copy of the site (for testing) instead of aog-deploy/.
 """
 import html, json, os, re, sys
@@ -27,6 +28,7 @@ STYLE = 'render'
 for i, a in enumerate(sys.argv):
     if a == '--style' and i + 1 < len(sys.argv): STYLE = sys.argv[i + 1]
     if a == '--root' and i + 1 < len(sys.argv): ROOT = os.path.abspath(sys.argv[i + 1])
+ONLY = [sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == '--only' and i + 1 < len(sys.argv)]   # course prefixes, e.g. --only hin
 if STYLE not in ('render', 'pencil'): sys.exit('--style must be render or pencil')
 SUF = '-pencil' if STYLE == 'pencil' else ''
 CREDIT_LEAD = 'Pencil drawing, not a photograph: ' if STYLE == 'pencil' else 'Rendered scene, not a photograph: '
@@ -57,7 +59,7 @@ def label_of(inner):
 # title runs the full width, it darkens everything below the top third.
 VEIL = '<span class="pencil-veil" aria-hidden="true"></span>'
 VEIL_CSS = ('<style id="aog-pencil-veil">.spread .scene .pencil-veil{position:absolute;inset:0;display:block;pointer-events:none;'
-            'background:linear-gradient(90deg,rgba(10,30,51,.94) 0%,rgba(10,30,51,.9) 38%,rgba(10,30,51,.62) 52%,rgba(10,30,51,.16) 62%,rgba(10,30,51,0) 68%),'
+            'background:linear-gradient(90deg,rgba(10,30,51,.93) 0%,rgba(10,30,51,.86) 28%,rgba(10,30,51,.6) 42%,rgba(10,30,51,.22) 53%,rgba(10,30,51,0) 61%),'
             'linear-gradient(180deg,rgba(10,30,51,0) 42%,rgba(10,30,51,.86) 78%,rgba(10,30,51,.95) 100%)}'
             '@media (max-width:720px){.spread .scene .pencil-veil{background:linear-gradient(180deg,rgba(10,30,51,.06) 0%,'
             'rgba(10,30,51,.16) 22%,rgba(10,30,51,.76) 35%,rgba(10,30,51,.93) 44%,rgba(10,30,51,.97) 100%)}}</style>')
@@ -110,6 +112,7 @@ def process(path, done):
 
 def main():
     done = rendered()
+    if ONLY: done = {u for u in done if u.split('-u')[0] in ONLY}
     if not done: print('no %s banners in img/banners' % STYLE); return
     total = 0
     for f in sorted(os.listdir(ROOT)):
