@@ -1,0 +1,2430 @@
+{
+ "intro": [
+  "Every month, on a set schedule, the government releases two numbers that move markets and make headlines: how fast prices are rising and how many people cannot find work. Every three months it releases a third, the total value of everything the country produced. Presidents quote them, and the Federal Reserve sets interest rates with them in mind. A worker in Peoria, a farmer near Champaign and a trader in Chicago all feel what these numbers measure, even if they never read the reports.",
+  "This unit teaches you to build those numbers yourself and to read them with care. You will add up a country's output with the formula C + I + G + NX and separate real growth from rising prices. You will build a price index from a market basket, compute inflation and real wages, and sort adults into the employed, the unemployed and those outside the labor force. Each chapter also asks what a number leaves out: unpaid work, pollution, discouraged workers, the family whose costs rise faster than the average.",
+  "By the end you will be able to take a headline such as GDP grew 3% or unemployment fell to 4% and explain how it was measured. You will check the arithmetic and say what the number does and does not tell you about how people are living. That is the foundation for the rest of macroeconomics, because the business cycle, fiscal policy and the Federal Reserve all start from these measurements."
+ ],
+ "bigQuestion": "How do we measure how well a whole economy is doing, and what can those numbers hide?",
+ "timeline": [
+  {
+   "y": "1776",
+   "t": "Adam Smith's Wealth of Nations treats a nation's yearly produce as the measure of its wealth"
+  },
+  {
+   "y": "1919",
+   "t": "The Bureau of Labor Statistics begins publishing cost-of-living indexes for cities, the roots of today's CPI"
+  },
+  {
+   "y": "1933",
+   "t": "Unemployment reaches about 25% at the depth of the Great Depression"
+  },
+  {
+   "y": "1934",
+   "t": "Simon Kuznets gives the U.S. Senate the first official estimates of national income"
+  },
+  {
+   "y": "1940",
+   "t": "A monthly household survey of jobs begins; it grows into today's Current Population Survey"
+  },
+  {
+   "y": "1946",
+   "t": "The Employment Act makes maximum employment a goal of the federal government"
+  },
+  {
+   "y": "1977",
+   "t": "Congress directs the Federal Reserve to promote maximum employment and stable prices"
+  },
+  {
+   "y": "1980",
+   "t": "Consumer price inflation reaches about 13.5% for the year"
+  },
+  {
+   "y": "1991",
+   "t": "The Bureau of Economic Analysis switches its headline measure of output from GNP to GDP"
+  },
+  {
+   "y": "2009",
+   "t": "Unemployment climbs to about 10% after the financial crisis"
+  },
+  {
+   "y": "2020",
+   "t": "Unemployment jumps to 14.7% in April as the pandemic closes businesses"
+  },
+  {
+   "y": "2022",
+   "t": "The 12-month inflation rate peaks near 9%, the highest in about four decades"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "gross domestic product",
+    "d": "the market value of all final goods and services produced within a country's borders in a period, usually a year"
+   },
+   {
+    "w": "final good",
+    "d": "a good or service sold to the person or business that will use it, not resell it or make it into something else"
+   },
+   {
+    "w": "real GDP",
+    "d": "GDP measured in the prices of a fixed base year, so it changes only when actual output changes"
+   },
+   {
+    "w": "GDP per capita",
+    "d": "GDP divided by population; output per person"
+   },
+   {
+    "w": "Consumer Price Index",
+    "d": "the CPI; the Bureau of Labor Statistics' monthly measure of the prices city households pay for a market basket"
+   },
+   {
+    "w": "market basket",
+    "d": "a fixed list of goods and services in fixed amounts that stands for what a typical buyer purchases"
+   },
+   {
+    "w": "inflation rate",
+    "d": "the percent change in a price index over a period, usually a year"
+   },
+   {
+    "w": "real wage",
+    "d": "pay adjusted for inflation, which shows what the pay can actually buy"
+   },
+   {
+    "w": "labor force",
+    "d": "all people 16 and older who are employed or unemployed; everyone working or looking for work"
+   },
+   {
+    "w": "unemployment rate",
+    "d": "the number unemployed divided by the labor force, times 100"
+   },
+   {
+    "w": "labor force participation rate",
+    "d": "the labor force divided by the adult population, times 100; the share of adults working or looking"
+   },
+   {
+    "w": "natural rate of unemployment",
+    "d": "the unemployment rate at full employment, made up of frictional and structural unemployment"
+   }
+  ],
+  "test": [
+   {
+    "q": "A mill sells $300 of flour to a bakery, which sells $1,000 of bread to shoppers. The contribution to GDP is:",
+    "choices": [
+     "$1,000",
+     "$1,300",
+     "$700",
+     "$300"
+    ],
+    "a": 0,
+    "why": "Only the final sale counts. The flour is an intermediate good already inside the $1,000 of bread."
+   },
+   {
+    "q": "C = $600 billion, I = $100 billion, G = $150 billion, X = $50 billion and M = $80 billion. GDP is:",
+    "choices": [
+     "$980 billion",
+     "$820 billion",
+     "$850 billion",
+     "$880 billion"
+    ],
+    "a": 1,
+    "why": "NX = 50 - 80 = -30. GDP = 600 + 100 + 150 - 30 = 820 billion."
+   },
+   {
+    "q": "Which of these is counted in this year's U.S. GDP?",
+    "choices": [
+     "A share of stock bought for $2,000",
+     "An unemployment insurance check",
+     "A new combine built this year at a plant in Illinois",
+     "A used couch sold online"
+    ],
+    "a": 2,
+    "why": "The combine is a new good produced inside the country. Stock is a financial trade, the check is a transfer and the couch is used."
+   },
+   {
+    "q": "Nominal GDP is $26 trillion and the GDP deflator is 130. Real GDP is:",
+    "choices": [
+     "$33.8 trillion",
+     "$26 trillion",
+     "$13 trillion",
+     "$20 trillion"
+    ],
+    "a": 3,
+    "why": "Real GDP = nominal / deflator x 100 = 26 / 130 x 100 = 20 trillion."
+   },
+   {
+    "q": "Why is real GDP per capita a better rough measure of living standards than nominal GDP?",
+    "choices": [
+     "It removes the effects of rising prices and a growing population",
+     "It includes unpaid work at home",
+     "It subtracts the cost of pollution",
+     "It counts only exports"
+    ],
+    "a": 0,
+    "why": "Real GDP holds prices fixed, and dividing by population gives output per person."
+   },
+   {
+    "q": "A parent quits a paid job to care for a child at home. Measured GDP:",
+    "choices": [
+     "Rises, because child care is valuable",
+     "Falls, even though the care is still being given",
+     "Stays exactly the same",
+     "Rises by the cost of day care"
+    ],
+    "a": 1,
+    "why": "The lost wages leave GDP, and the unpaid care is not counted because no one pays for it."
+   },
+   {
+    "q": "A market basket costs $150 in the base year and $162 this year. The price index is:",
+    "choices": [
+     "12",
+     "162",
+     "108",
+     "92.6"
+    ],
+    "a": 2,
+    "why": "Index = 162 / 150 x 100 = 108. Prices are 8% above the base year."
+   },
+   {
+    "q": "The CPI goes from 250 to 265. The inflation rate is:",
+    "choices": [
+     "15%",
+     "2.65%",
+     "5.7%",
+     "6%"
+    ],
+    "a": 3,
+    "why": "(265 - 250) / 250 x 100 = 15 / 250 x 100 = 6%. Dividing by 265 instead gives the wrong 5.7%."
+   },
+   {
+    "q": "Your wage rises 2% while prices rise 5%. Your real wage:",
+    "choices": [
+     "Falls about 3%",
+     "Rises about 7%",
+     "Rises about 3%",
+     "Stays the same"
+    ],
+    "a": 0,
+    "why": "Real wage growth is about nominal growth minus inflation: 2 - 5 = -3%."
+   },
+   {
+    "q": "Which group is usually hurt by unexpectedly high inflation?",
+    "choices": [
+     "Borrowers with fixed-rate loans",
+     "Savers and lenders who are repaid in fixed dollars",
+     "Workers whose pay rises with the CPI",
+     "Homeowners with fixed-rate mortgages"
+    ],
+    "a": 1,
+    "why": "Lenders and savers get back fixed dollars that now buy less. Borrowers gain, and CPI-linked pay keeps up."
+   },
+   {
+    "q": "A town has 18,000 people employed and 2,000 unemployed. The unemployment rate is:",
+    "choices": [
+     "11.1%",
+     "2%",
+     "10%",
+     "20%"
+    ],
+    "a": 2,
+    "why": "Labor force = 20,000. Rate = 2,000 / 20,000 x 100 = 10%. Dividing by the employed gives the wrong 11.1%."
+   },
+   {
+    "q": "Which person is NOT in the labor force?",
+    "choices": [
+     "A part-time cashier",
+     "A laid-off worker who is sending out applications",
+     "A worker on vacation from a full-time job",
+     "A retiree who is not looking for work"
+    ],
+    "a": 3,
+    "why": "The labor force is the employed plus people actively looking. A retiree who is not looking is in neither group."
+   },
+   {
+    "q": "A newly certified teacher spends the summer looking for a first job. This is:",
+    "choices": [
+     "Frictional unemployment",
+     "Structural unemployment",
+     "Cyclical unemployment",
+     "Not unemployment at all"
+    ],
+    "a": 0,
+    "why": "Time spent searching for a job while entering the workforce is frictional unemployment."
+   },
+   {
+    "q": "Actual unemployment is 8% and the natural rate is 5%. Cyclical unemployment is about:",
+    "choices": [
+     "13 percentage points",
+     "3 percentage points",
+     "5 percentage points",
+     "8 percentage points"
+    ],
+    "a": 1,
+    "why": "Cyclical = actual - natural = 8 - 5 = 3 percentage points."
+   },
+   {
+    "q": "A mayor says local nominal GDP rose 5% last year, so every family is better off. What is the best reply?",
+    "choices": [
+     "GDP always overstates growth by 5%",
+     "GDP rises only when prices fall",
+     "GDP counts only government spending",
+     "Check real growth after inflation and median income, since GDP ignores who gets the gains"
+    ],
+    "a": 3,
+    "why": "Nominal growth may be mostly price increases, and GDP says nothing about distribution. Real GDP and median income answer the question better."
+   }
+  ],
+  "write": {
+   "prompt": "A candidate for mayor says your city is booming: nominal GDP rose 6% last year and unemployment fell from 5.5% to 4.8%. Prices rose 4%, and the labor force participation rate fell from 64% to 62%. Use this unit's measures to decide whether the city really boomed. Show the numbers, and say what else you would want to know.",
+   "tips": [
+    "Turn nominal growth into real growth: about 6% minus 4%.",
+    "Ask why unemployment fell: did people find jobs, or did they stop looking?",
+    "Name one thing GDP leaves out that matters to the city's families.",
+    "Take a clear position, then name the strongest point against it."
+   ]
+  }
+ },
+ "n": 15,
+ "title": "Measuring the Economy",
+ "years": "Macroeconomics",
+ "band": "11-12",
+ "chapters": [
+  {
+   "n": 29,
+   "title": "GDP: What It Counts and What It Misses",
+   "years": "Output",
+   "bigQuestion": "How do you add up everything a whole country makes in a year, and what does that one number leave out?",
+   "story": {
+    "title": "Counting a Town for One Year",
+    "kicker": "A class in a small Illinois town tries to total up everything the town produced in twelve months, and discovers that counting is harder than it sounds.",
+    "paragraphs": [
+     "Imagine a town of 8,000 people somewhere between Peoria and Bloomington. Call it Millbrook. It has a grain elevator, a small factory that makes truck parts, two grocery stores, a hospital, a high school, a diner, a hair salon and a few hundred farms in the fields around it. One fall an economics class took on a project: add up the value of everything Millbrook produced in one year, in dollars.",
+     "The first week went fast. The factory sold $30 million of parts. The farms sold $25 million of corn and soybeans. The grocery stores rang up $12 million. The class wrote the numbers on the board and started adding. Then a student named Rosa asked a question that stopped the whole thing. The grain elevator bought corn from the farms and sold it to an ethanol plant. If the class counted the corn when the farmer sold it, and again when the elevator sold it, was the same corn being counted twice?",
+     "It was. The class went back through every number and kept only sales to the final user, the last person or business that would use the thing rather than resell it or turn it into something else. Flour sold to the diner did not count; the diner's pancakes did. Steel sold to the parts factory did not count; the finished parts sold to a truck maker did. The total shrank, but now it was honest.",
+     "Then came the arguments about what belonged at all. Mr. Alvarez fixed his own roof and saved $4,000; nothing was sold, so should it count? A neighbor sold her used pickup for $9,000; the truck had been counted the year it was built, so should it count again? Grandparents watched grandchildren all summer for free. A kid mowed lawns for cash and never wrote anything down. The hospital cured people, but how much was a cure worth?",
+     "By the end of the semester the class had a number, close to $90 million, and a long list of things that number did not include. They had built, on a small scale, exactly what the U.S. Bureau of Economic Analysis builds for the whole country every three months. It is called gross domestic product, and it is the most quoted number in economics. It is also, as Rosa's class learned, only part of the story."
+    ],
+    "think": "The class decided not to count Mr. Alvarez's roof repair because nothing was sold. Was that the right call? What would happen to the town's total if every family started hiring out work they used to do themselves?"
+   },
+   "sections": [
+    {
+     "title": "What GDP Measures",
+     "lessons": [
+      {
+       "title": "Final Goods, Not Every Sale",
+       "mainIdea": "GDP is the market value of all final goods and services produced within a country in a year, and it counts each thing only once.",
+       "reading": [
+        "A bakery in Springfield buys $2 of flour, turns it into a loaf of bread and sells the loaf for $5. How much production happened? The tempting answer is $2 + $5 = $7. But the flour is inside the bread. If you count the flour and then the bread, you count the flour twice. Economists call the flour an *intermediate good*, something bought to be used up in making something else. The loaf is a *final good*, sold to the person who will actually eat it. Only the $5 counts.",
+        "*Gross domestic product*, or *GDP*, is the total market value of all final goods and services produced within a country's borders in a given period, usually a year or a quarter. Every word in that sentence does a job. Market value means each item is measured by its price, so a $40,000 car and 40,000 one-dollar sandwiches add the same amount. Final means intermediate goods are left out to avoid *double counting*. Produced means the item was made during that period, not just sold. Within the borders means the location of production is what matters, not who owns the business.",
+        "The market-value rule is what lets us add cars to haircuts to soybeans. You cannot add 3 cars and 500 haircuts and get a meaningful total. You can add $90,000 of cars and $15,000 of haircuts and get $105,000. Prices do the work of turning different things into one number. That is also GDP's first weakness: anything without a price is invisible to it, as the next lessons show.",
+        "One more example to test the rule. A farmer sells $1,000 of corn to a feed mill, the mill sells $1,500 of feed to a hog farm, and the hog farm sells $4,000 of pork to a grocery store, which sells it to shoppers for $6,000. GDP counts only the $6,000, the final sale to the people who will eat it. Notice that $6,000 also equals the value each business added along the way: $1,000 + $500 + $2,500 + $2,000. Counting only final sales and adding up value added give the same answer."
+       ],
+       "words": [
+        {
+         "w": "gross domestic product",
+         "d": "the market value of all final goods and services produced within a country's borders in a period, usually a year"
+        },
+        {
+         "w": "GDP",
+         "d": "the short name for gross domestic product"
+        },
+        {
+         "w": "final good",
+         "d": "a good or service sold to the person or business that will use it, not resell it or make it into something else"
+        },
+        {
+         "w": "intermediate good",
+         "d": "something bought to be used up in producing another good, such as flour for bread"
+        },
+        {
+         "w": "double counting",
+         "d": "the mistake of counting an intermediate good and then counting it again inside the final good"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Pizza Chain",
+        "text": "A tomato farm sells $300 of tomatoes to a sauce maker. The sauce maker sells $700 of sauce to a pizza shop. The pizza shop sells $2,400 of pizzas to customers who eat them at home. A student adds all three sales and says the pizza business created $3,400 of GDP.",
+        "prompt": "What did the student count twice? What is the correct contribution to GDP, and how much value did each of the three businesses add?"
+       },
+       "check": [
+        {
+         "q": "A lumber mill sells $200 of boards to a furniture maker, who sells a finished table for $650 to a family. How much does this add to GDP?",
+         "choices": [
+          "$650",
+          "$850",
+          "$450",
+          "$200"
+         ],
+         "a": 0,
+         "why": "Only the final sale counts. The $200 of boards is an intermediate good already inside the $650 table."
+        },
+        {
+         "q": "Which of these is an intermediate good?",
+         "choices": [
+          "A haircut a student pays for",
+          "Steel bought by a factory to make truck parts",
+          "A new pickup sold to a farmer",
+          "A movie ticket"
+         ],
+         "a": 1,
+         "why": "The steel is used up in making the parts. The haircut, pickup and ticket are all sold to their final users."
+        },
+        {
+         "q": "Why does GDP use market prices to add up cars, haircuts and soybeans?",
+         "choices": [
+          "Because prices never change",
+          "Because the government sets every price",
+          "Because prices turn different goods into one comparable dollar total",
+          "Because only expensive goods matter"
+         ],
+         "a": 2,
+         "why": "You cannot add 3 cars to 500 haircuts, but you can add their dollar values. Prices make a single total possible."
+        }
+       ]
+      },
+      {
+       "title": "Inside the Borders, In This Year",
+       "mainIdea": "GDP counts production that happens inside the country during the period, and it leaves out used goods, pure financial trades and transfer payments.",
+       "reading": [
+        "A Japanese company builds cars at a plant in Indiana. A Chicago company owns a factory in Mexico. Which cars count in U.S. GDP? The Indiana cars do, and the Mexico cars do not. The D in GDP stands for domestic, meaning inside the borders. It does not matter who owns the plant. What matters is where the work happened. The Indiana plant hires Indiana workers, buys from Indiana suppliers and pays Indiana taxes, so its output is U.S. production.",
+        "The period matters too. A house built in 2015 and sold again in 2026 is not part of 2026 GDP, because nothing new was produced this year. The house was already counted the year it was built. The same rule applies to a used car, a secondhand bicycle or a vintage guitar. However, the real estate agent's fee for selling that house does count, because the agent performed a new service this year. Used goods are out; new services attached to them are in.",
+        "Some dollar flows look like production but are not. When you buy 10 shares of a company's stock for $1,500, nothing has been produced. Ownership of an existing asset simply changed hands, so the $1,500 is not in GDP. The broker's $10 fee is, since that is a service. When the government sends a retiree a Social Security payment or a family an unemployment check, that is a *transfer payment*: money moved from one group to another with no good or service produced in return. Transfers are not in GDP either, though what the retiree buys with the money will be.",
+        "Put the rules together on one case. In one year, a Peoria factory makes $50 million of engines, a local family sells its old boat for $8,000, a worker receives $20,000 in disability payments, and a Peoria firm's plant in Canada makes $30 million of parts. Only the $50 million of engines counts in U.S. GDP. The boat is used, the disability payment is a transfer, and the Canadian plant is outside the borders."
+       ],
+       "words": [
+        {
+         "w": "domestic",
+         "d": "inside a country's borders; GDP counts production by location, not by who owns the business"
+        },
+        {
+         "w": "transfer payment",
+         "d": "money the government pays a person with no good or service produced in return, such as Social Security or unemployment benefits"
+        },
+        {
+         "w": "used good",
+         "d": "a good produced in an earlier period; its resale is not counted in this year's GDP"
+        },
+        {
+         "w": "financial asset",
+         "d": "something like a stock or bond that represents ownership or a loan; trading one is not production"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Four Transactions in Rockford",
+        "text": "In one week in Rockford: a machine shop ships $400,000 of new aerospace parts; a retired teacher receives a $2,200 pension check from the state; a family sells a 2012 minivan for $6,000; and a college student pays a mechanic $300 to fix that minivan's brakes.",
+        "prompt": "Which of the four amounts belong in this year's GDP? For each one you leave out, name the rule that excludes it."
+       },
+       "check": [
+        {
+         "q": "A German company's factory in South Carolina builds $2 billion of cars. Where does that production count?",
+         "choices": [
+          "Half in each country",
+          "In Germany's GDP, because the owner is German",
+          "Nowhere, because it crosses a border",
+          "In U.S. GDP, because the cars were made inside the United States"
+         ],
+         "a": 3,
+         "why": "GDP counts by location of production. The plant is in the United States, so its output is U.S. GDP."
+        },
+        {
+         "q": "A family sells a house built in 2010 for $250,000 and pays an agent a $12,000 fee. What counts in this year's GDP?",
+         "choices": [
+          "Only the $12,000 fee",
+          "The full $262,000",
+          "Only the $250,000 house",
+          "Nothing, because it is real estate"
+         ],
+         "a": 0,
+         "why": "The house was counted when it was built. The agent's service was performed this year, so only the fee counts."
+        },
+        {
+         "q": "Why is a Social Security payment not counted in GDP?",
+         "choices": [
+          "Because retirees do not spend it",
+          "Because it is a transfer with no good or service produced in return",
+          "Because it is paid by the state, not the federal government",
+          "Because it is too small to matter"
+         ],
+         "a": 1,
+         "why": "A transfer payment moves money from one group to another. Nothing new is produced, so it is not production."
+        }
+       ]
+      },
+      {
+       "title": "Spending Equals Income",
+       "mainIdea": "Every dollar spent on final goods is a dollar of income to someone, so GDP can be measured by adding up spending or by adding up income.",
+       "reading": [
+        "When you pay $5 for that loaf of bread, where does the money go? Part pays the baker's wages, part pays rent on the shop, part pays interest on the oven loan, part pays the flour mill, and whatever is left is the owner's profit. Trace the flour mill's $2 the same way and it splits into wages, rent, interest and profit too. Every dollar of spending on a final good ends up as somebody's income. That is not a coincidence; it is accounting. One person's spending is another person's earnings.",
+        "This gives economists two independent ways to measure the same GDP. The *expenditure approach* adds up everything spent on final goods and services. The *income approach* adds up everything earned in producing them: wages, rent, interest and profit. In a perfect set of books the two totals match exactly. In practice the government's two estimates differ by a small amount, and the gap is reported honestly as a statistical discrepancy. The next section walks through the expenditure approach, which is the one most textbooks and news reports use.",
+        "Economists picture this as a *circular flow*. Households own the labor and the savings that businesses use. Businesses pay households wages, rent, interest and profit. Households spend that income buying goods and services from businesses, and the money flows around again. In a year, the total flow of spending on final goods equals the total flow of income, and both equal GDP. When a news report says GDP grew 3%, it also means total income earned in the country grew about 3%."
+       ],
+       "words": [
+        {
+         "w": "expenditure approach",
+         "d": "measuring GDP by adding up all spending on final goods and services"
+        },
+        {
+         "w": "income approach",
+         "d": "measuring GDP by adding up all income earned from producing goods and services: wages, rent, interest and profit"
+        },
+        {
+         "w": "circular flow",
+         "d": "the picture of money moving from households to businesses as spending and back to households as income"
+        }
+       ],
+       "look": {
+        "type": "source",
+        "title": "The Oldest Definition",
+        "text": "The annual labour of every nation is the fund which originally supplies it with all the necessaries and conveniencies of life which it annually consumes, and which consist always either in the immediate produce of that labour, or in what is purchased with that produce from other nations.",
+        "cite": "Adam Smith, The Wealth of Nations, opening sentence of the Introduction, 1776",
+        "paraphrase": false,
+        "prompt": "Smith says a nation's yearly output is what supplies what it consumes. How is that idea like GDP? Which of GDP's rules (final goods, within the borders, in one year) can you find hints of in his sentence?"
+       },
+       "check": [
+        {
+         "q": "A customer pays $40 for an oil change. Which statement is true?",
+         "choices": [
+          "The $40 is spending but not income",
+          "The $40 is income but not spending",
+          "The $40 is both spending by the customer and income to the shop's workers, owner and suppliers",
+          "The $40 counts twice in GDP"
+         ],
+         "a": 2,
+         "why": "Every dollar spent on a final service becomes someone's wages, rent, interest or profit. It is one dollar of GDP seen from two sides."
+        },
+        {
+         "q": "The income approach to GDP adds up which of these?",
+         "choices": [
+          "Consumer purchases only",
+          "Exports minus imports",
+          "Government spending and taxes",
+          "Wages, rent, interest and profit"
+         ],
+         "a": 3,
+         "why": "The income approach totals what people earn from production. Wages, rent, interest and profit are the four kinds of income."
+        },
+        {
+         "q": "If total spending on final goods in a country was $90 million, roughly what was total income earned from producing them?",
+         "choices": [
+          "About $90 million",
+          "About $45 million",
+          "About $180 million",
+          "It cannot be known from spending"
+         ],
+         "a": 0,
+         "why": "Spending on final goods equals income earned producing them. Both measure the same GDP."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Adding Up the Spending",
+     "lessons": [
+      {
+       "title": "Consumption, Investment, Government",
+       "mainIdea": "The expenditure approach sorts spending by who does it: households (C), businesses building capacity (I), government buying goods and services (G), and foreigners (net exports).",
+       "reading": [
+        "Think about who buys final goods in Millbrook. Families buy groceries, haircuts, gas and phones. The parts factory buys a new stamping machine and builds a warehouse. The school district buys buses and pays teachers. And a truck maker in Texas buys the factory's parts. Economists group all spending into four categories named after these buyers. The formula is GDP = C + I + G + NX. This lesson covers the first three.",
+        "*Consumption*, written C, is household spending on goods and services: food, rent, clothing, health care, streaming subscriptions, restaurant meals, new cars. It is by far the largest piece of U.S. GDP, roughly two-thirds of the total. *Investment*, written I, does not mean buying stocks. In GDP it means business spending on new capital: machines, tools, buildings, software, plus new houses and changes in inventories. When a farmer buys a new combine or a company builds a data center, that is investment. When you buy shares of that company, that is not.",
+        "*Government purchases*, written G, are what federal, state and local governments spend on goods and services: teachers' and soldiers' pay, highways, fighter jets, school lunches, police cars. Transfer payments are left out here because nothing is produced in exchange. So Social Security and unemployment benefits are not in G, even though they are a large part of the federal budget. When the retiree spends the check on groceries, that shows up in C instead.",
+        "A quick sort. A family buys a $30,000 car: C. A delivery company buys the same model for its fleet: I, because it is business capital. The city buys it for the police: G. The distinction is not about the car but about who bought it and why. Common mistake: counting a company's purchase of another company's stock as investment. It is a change of ownership, not new capital, and it is not in GDP at all."
+       ],
+       "words": [
+        {
+         "w": "consumption",
+         "d": "household spending on goods and services, written C; the largest part of U.S. GDP"
+        },
+        {
+         "w": "investment",
+         "d": "business spending on new capital such as machines, buildings and software, plus new housing and inventory changes, written I"
+        },
+        {
+         "w": "government purchases",
+         "d": "spending by all levels of government on goods and services, written G; transfer payments are not included"
+        },
+        {
+         "w": "capital",
+         "d": "the tools, machines, buildings and software used to produce other goods"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sort the Shopping List",
+        "text": "In one month: a nurse buys a $900 laptop for home; a hospital buys 40 laptops for its staff; a public school district buys 200 laptops for students; a retiree spends her $1,800 Social Security check on rent and food; a bank buys $5 million of another company's stock.",
+        "prompt": "Put each item in C, I, G or leave it out of GDP entirely. Explain the two you leave out or move."
+       },
+       "check": [
+        {
+         "q": "A trucking company buys 10 new trucks for $1.5 million. In the expenditure approach this is:",
+         "choices": [
+          "Government purchases, because trucks use public roads",
+          "Investment, because it is business spending on new capital",
+          "Consumption, because trucks are goods",
+          "Not in GDP, because it is a business expense"
+         ],
+         "a": 1,
+         "why": "Investment (I) is business spending on new capital goods. New trucks for a fleet are capital."
+        },
+        {
+         "q": "Which item is NOT part of G, government purchases?",
+         "choices": [
+          "A new highway",
+          "A teacher's salary",
+          "An unemployment benefit check",
+          "A police car"
+         ],
+         "a": 2,
+         "why": "The unemployment check is a transfer payment. No good or service is produced for it, so it is left out of G."
+        },
+        {
+         "q": "About what share of U.S. GDP is consumption?",
+         "choices": [
+          "About one-tenth",
+          "About one-quarter",
+          "About half",
+          "About two-thirds"
+         ],
+         "a": 3,
+         "why": "Household consumption is the largest component, roughly two-thirds of U.S. GDP."
+        }
+       ]
+      },
+      {
+       "title": "Net Exports and the Full Formula",
+       "mainIdea": "Net exports (exports minus imports) complete the formula, and a worked example shows why imports are subtracted rather than ignored.",
+       "reading": [
+        "Millbrook's parts go to a truck maker in Texas, and if that truck maker were in Canada instead, the sale would be an export. *Exports*, written X, are goods and services made here and sold to buyers in other countries. They are U.S. production, so they belong in U.S. GDP. *Imports*, written M, are goods and services made abroad and bought here. They are not U.S. production, but they are hiding inside C, I and G. When a family buys a phone made in Vietnam, that $800 went into C. To get an honest total of what was made here, we must take it back out. *Net exports*, NX, equals X minus M.",
+        "Now the whole formula: GDP = C + I + G + (X - M). Try it on Millbrook for a year, with invented numbers. Households spend $60 million (C). Businesses spend $15 million on new machines, buildings and inventory (I). Government buys $20 million of goods and services (G). Firms sell $12 million to buyers outside the country (X) and residents buy $17 million of foreign-made goods (M). NX = 12 - 17 = -5. GDP = 60 + 15 + 20 - 5 = $90 million.",
+        "Check the logic on the -5. If the class had just added C, I and G, it would have gotten $95 million. But $17 million of that spending bought things made somewhere else. Subtracting imports removes them. Adding exports puts back the $12 million of local production that local people never bought. The result, $90 million, is what Millbrook actually produced. When imports exceed exports, as they have for the United States for decades, net exports are negative and pull the total down slightly.",
+        "A common mistake is to say imports hurt GDP. Subtracting M does not punish imports; it just corrects for the fact that they were already counted in C, I and G. If a family spends $800 on an imported phone instead of an $800 domestic one, C is the same, and M goes up by $800, so GDP is $800 lower. But that $800 was never U.S. production in the first place. The subtraction is bookkeeping, not a judgment."
+       ],
+       "words": [
+        {
+         "w": "exports",
+         "d": "goods and services produced in a country and sold to buyers in other countries, written X"
+        },
+        {
+         "w": "imports",
+         "d": "goods and services produced abroad and bought by people in this country, written M"
+        },
+        {
+         "w": "net exports",
+         "d": "exports minus imports, written NX; negative when a country imports more than it exports"
+        },
+        {
+         "w": "trade deficit",
+         "d": "the situation when imports are larger than exports, so net exports are negative"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "One Year in Millbrook (invented)",
+        "rows": [
+         [
+          "Consumption (C)",
+          60
+         ],
+         [
+          "Investment (I)",
+          15
+         ],
+         [
+          "Government purchases (G)",
+          20
+         ],
+         [
+          "Exports (X)",
+          12
+         ],
+         [
+          "Imports (M)",
+          17
+         ]
+        ],
+        "unit": "millions of dollars (example)",
+        "cite": "Invented figures for a town of 8,000, used only to practice the formula",
+        "prompt": "Compute net exports and GDP. Then suppose exports rise to $20 million while everything else stays the same. What is the new GDP?"
+       },
+       "check": [
+        {
+         "q": "C = $500 billion, I = $120 billion, G = $150 billion, X = $80 billion, M = $110 billion. GDP is:",
+         "choices": [
+          "$740 billion",
+          "$770 billion",
+          "$800 billion",
+          "$960 billion"
+         ],
+         "a": 0,
+         "why": "NX = 80 - 110 = -30. GDP = 500 + 120 + 150 - 30 = 740 billion. Adding imports instead of subtracting gives the wrong $800 billion."
+        },
+        {
+         "q": "Why are imports subtracted in the GDP formula?",
+         "choices": [
+          "To punish countries that sell to us",
+          "Because imports were already counted inside C, I and G but were not produced here",
+          "Because imports are transfer payments",
+          "Because exports are always larger"
+         ],
+         "a": 1,
+         "why": "An imported phone bought by a family is already inside C. Subtracting M removes foreign production so only domestic output remains."
+        },
+        {
+         "q": "A country exports $50 billion and imports $65 billion. Its net exports are:",
+         "choices": [
+          "$115 billion",
+          "$65 billion",
+          "-$15 billion",
+          "$15 billion"
+         ],
+         "a": 2,
+         "why": "NX = X - M = 50 - 65 = -15 billion. Net exports are negative when imports exceed exports."
+        }
+       ]
+      },
+      {
+       "title": "The U.S. Numbers, Rounded",
+       "mainIdea": "U.S. GDP is measured in trillions of dollars, and its rounded shares show a consumer-driven economy with a small trade deficit.",
+       "reading": [
+        "Scale Millbrook up to the whole country and the numbers get very large. U.S. GDP in the mid-2020s is roughly $28 trillion a year. A trillion is a thousand billion, or a million million. Written out, $28 trillion is $28,000,000,000,000. Divided among about 340 million people, that is roughly $80,000 of production per person per year. No other country produces more in total, though a few smaller countries produce more per person.",
+        "The shares of that total are steadier than the total itself. In a typical recent year, consumption is about 68% of GDP, investment about 18%, government purchases about 17%, and net exports about -3%. Check that they sum to 100: 68 + 18 + 17 - 3 = 100. The negative net exports reflect a trade deficit that the United States has run since the 1970s. The exact shares move a point or two from year to year and shift more during recessions, when investment usually falls hardest.",
+        "The Bureau of Economic Analysis, part of the U.S. Department of Commerce, publishes GDP every quarter. The first estimate for a quarter comes out about a month after the quarter ends and is revised twice as more data arrive. Quarterly figures are usually reported as an annualized growth rate, meaning the rate the economy would grow in a full year if the quarter's pace continued. A headline like GDP grew at a 2.4% annual rate means the quarter's growth, stretched out to a year, would be 2.4%.",
+        "Illinois is a large piece of the national total. State-level GDP, also published by the BEA, puts Illinois among the top five or six states, with a state economy of roughly a trillion dollars. Its biggest pieces are services such as finance, health care and professional work centered in the Chicago area, along with manufacturing and agriculture across the state."
+       ],
+       "words": [
+        {
+         "w": "trillion",
+         "d": "one thousand billion, written 1,000,000,000,000; U.S. GDP is measured in trillions of dollars"
+        },
+        {
+         "w": "Bureau of Economic Analysis",
+         "d": "the federal agency in the Department of Commerce that measures GDP for the nation and each state"
+        },
+        {
+         "w": "annualized rate",
+         "d": "a quarter's growth rate stretched out to show what a full year at that pace would be"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Shares of U.S. GDP, a Typical Recent Year",
+        "rows": [
+         [
+          "Consumption",
+          68
+         ],
+         [
+          "Investment",
+          18
+         ],
+         [
+          "Government purchases",
+          17
+         ],
+         [
+          "Net exports",
+          -3
+         ]
+        ],
+        "unit": "percent of GDP (rounded)",
+        "cite": "Rounded from Bureau of Economic Analysis national accounts; exact shares vary by a point or two each year",
+        "prompt": "If GDP is $28 trillion, about how many dollars is each component? Why is the net exports row negative, and what would have to change for it to become positive?"
+       },
+       "check": [
+        {
+         "q": "If U.S. GDP is about $28 trillion and consumption is about 68% of it, consumption is roughly:",
+         "choices": [
+          "$1.9 trillion",
+          "$5 trillion",
+          "$9 trillion",
+          "$19 trillion"
+         ],
+         "a": 3,
+         "why": "0.68 x 28 = 19.04, so about $19 trillion."
+        },
+        {
+         "q": "Which agency publishes U.S. GDP?",
+         "choices": [
+          "The Bureau of Economic Analysis",
+          "The Federal Reserve Bank of Chicago",
+          "The Bureau of Labor Statistics",
+          "The Internal Revenue Service"
+         ],
+         "a": 0,
+         "why": "The BEA, in the Department of Commerce, produces the national income accounts. The BLS handles prices and jobs."
+        },
+        {
+         "q": "Net exports have been negative for the United States since the 1970s. That means:",
+         "choices": [
+          "Exports have been zero",
+          "The United States imports more than it exports",
+          "Government purchases exceed consumption",
+          "GDP has been shrinking"
+         ],
+         "a": 1,
+         "why": "NX = X - M. A negative value means imports are larger than exports, which is a trade deficit."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Real Versus Nominal",
+     "lessons": [
+      {
+       "title": "When Prices Rise but Output Does Not",
+       "mainIdea": "Nominal GDP can grow just because prices rose, so economists compute real GDP using one fixed set of prices.",
+       "reading": [
+        "Picture a tiny economy that makes only two things: lemonade and sandwiches. In Year 1 it makes 100 cups of lemonade at $2 each and 50 sandwiches at $4 each. Total value: 100 x 2 + 50 x 4 = $200 + $200 = $400. In Year 2 it makes exactly the same amounts, 100 cups and 50 sandwiches, but lemonade now costs $2.50 and sandwiches $5. Total value: 100 x 2.50 + 50 x 5 = $250 + $250 = $500. The dollar total rose 25%. Did the economy produce 25% more? No. It produced exactly the same things. Only the prices changed.",
+        "GDP measured in the prices of the year it happened is called *nominal GDP*. It mixes two things: how much was made and what prices were. To see production alone, economists compute *real GDP*: output valued at the prices of one fixed *base year*. Using Year 1 as the base, Year 2 real GDP is 100 x $2 + 50 x $4 = $400, the same as Year 1. Real GDP did not grow at all, which is the truth about this economy.",
+        "Now change the story. Suppose in Year 2 the economy made 110 cups and 55 sandwiches at the higher prices. Nominal GDP = 110 x 2.50 + 55 x 5 = 275 + 275 = $550. Real GDP in Year 1 prices = 110 x 2 + 55 x 4 = 220 + 220 = $440. Real GDP grew from 400 to 440, a 10% gain in actual output. Nominal grew 37.5%, but most of that was price. Whenever you see a GDP figure, ask which one it is. Growth over time is almost always reported in real terms.",
+        "The common mistake is to compare nominal figures from different years and call the difference growth. If nominal GDP rose from $20 trillion to $22 trillion while prices rose 10%, real output did not grow at all, because 22 divided by 1.10 is 20. Real GDP is the number that tells you whether people actually have more goods and services than before."
+       ],
+       "words": [
+        {
+         "w": "nominal GDP",
+         "d": "GDP measured in the prices of the year the goods were made; it rises when either output or prices rise"
+        },
+        {
+         "w": "real GDP",
+         "d": "GDP measured in the prices of a fixed base year, so it changes only when actual output changes"
+        },
+        {
+         "w": "base year",
+         "d": "the year whose prices are used to value output in every year when computing real GDP"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Lemonade and Sandwiches, Year 2 (example)",
+        "rows": [
+         [
+          "Lemonade, cups made",
+          110
+         ],
+         [
+          "Lemonade, price this year ($)",
+          2.5
+         ],
+         [
+          "Sandwiches made",
+          55
+         ],
+         [
+          "Sandwich price this year ($)",
+          5
+         ],
+         [
+          "Lemonade base-year price ($)",
+          2
+         ],
+         [
+          "Sandwich base-year price ($)",
+          4
+         ]
+        ],
+        "unit": "quantities and prices (example)",
+        "cite": "Invented two-good economy; base year is Year 1",
+        "prompt": "Compute nominal GDP for Year 2 and real GDP in base-year prices. Which number tells you how much more the economy actually produced?"
+       },
+       "check": [
+        {
+         "q": "An economy makes 200 shirts at $10 in Year 1. In Year 2 it makes 200 shirts at $12. What happened to real GDP (base Year 1)?",
+         "choices": [
+          "It rose 20%",
+          "It fell 20%",
+          "It stayed at $2,000",
+          "It rose to $2,400"
+         ],
+         "a": 2,
+         "why": "Real GDP uses base-year prices: 200 x $10 = $2,000 in both years. Only nominal GDP rose to $2,400."
+        },
+        {
+         "q": "Nominal GDP is best described as:",
+         "choices": [
+          "GDP adjusted for inflation",
+          "GDP per person",
+          "GDP in base-year prices",
+          "GDP in the prices of the year the goods were produced"
+         ],
+         "a": 3,
+         "why": "Nominal means current prices. It changes when either output or prices change."
+        },
+        {
+         "q": "Nominal GDP rose from $500 to $550 while prices rose 10%. Real output:",
+         "choices": [
+          "Did not change",
+          "Rose 10%",
+          "Rose 20%",
+          "Fell 10%"
+         ],
+         "a": 0,
+         "why": "550 divided by 1.10 = 500. All of the nominal increase was price, so real GDP was unchanged."
+        }
+       ]
+      },
+      {
+       "title": "The Price Index and the Deflator",
+       "mainIdea": "A price index turns nominal GDP into real GDP with one division: real GDP = nominal GDP divided by the index, times 100.",
+       "reading": [
+        "Doing the two-price calculation for every good in a country is impossible by hand, so economists build a shortcut called a *price index*. A price index compares the overall price level in one year to the price level in a base year, with the base year set to 100. If the index is 110, prices overall are 10% higher than in the base year. If it is 95, they are 5% lower. The index used for GDP is called the *GDP deflator*, and it covers everything in GDP: consumer goods, machines, government purchases and exports.",
+        "With an index in hand, the conversion is one step: real GDP = nominal GDP divided by the price index, times 100. Try it. Nominal GDP is $22 trillion and the deflator is 110. Real GDP = 22 divided by 110, times 100 = $20 trillion. The economy produced $20 trillion of goods measured in base-year prices, and the other $2 trillion of the nominal figure was price increase. Do it again with a deflator of 125 and nominal GDP of $25 trillion: 25 divided by 125, times 100 = $20 trillion. Same real output, higher prices.",
+        "You can also run the formula backward to find the deflator. Go back to the lemonade economy. Year 2 nominal GDP was $550 and real GDP in Year 1 prices was $440. The deflator = nominal divided by real, times 100 = 550 divided by 440, times 100 = 125. Prices in Year 2 averaged 25% above Year 1. Notice that the base year always has an index of exactly 100, because nominal and real are the same number in that year.",
+        "A handy rough rule follows from all this. The growth rate of real GDP is close to the growth rate of nominal GDP minus the inflation rate. If nominal GDP grew 6% and prices rose 4%, real GDP grew about 2%. The rule is approximate, and the exact answer uses division, but for quick reading of the news it works well."
+       ],
+       "words": [
+        {
+         "w": "price index",
+         "d": "a number comparing the overall price level in a year to a base year, where the base year equals 100"
+        },
+        {
+         "w": "GDP deflator",
+         "d": "the price index covering everything in GDP, used to convert nominal GDP to real GDP"
+        },
+        {
+         "w": "inflation rate",
+         "d": "the percent change in a price index from one year to the next"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Reading a Headline",
+        "text": "A news story says: Nominal GDP grew 7% last year, the fastest in decades. A second story the same day says: Prices rose 6% last year. A friend reads the first story and says the economy boomed.",
+        "prompt": "Using the rough rule, about how fast did real GDP grow? Was it a boom? What would the friend need to know before deciding?"
+       },
+       "check": [
+        {
+         "q": "Nominal GDP is $24 trillion and the GDP deflator is 120. Real GDP is:",
+         "choices": [
+          "$28.8 trillion",
+          "$20 trillion",
+          "$2 trillion",
+          "$24 trillion"
+         ],
+         "a": 1,
+         "why": "Real = nominal divided by index x 100 = 24 / 120 x 100 = 20 trillion. Multiplying by 1.20 instead gives the wrong $28.8 trillion."
+        },
+        {
+         "q": "A price index of 108 means that, compared with the base year, prices overall are:",
+         "choices": [
+          "8% lower",
+          "108% higher",
+          "8% higher",
+          "Unchanged"
+         ],
+         "a": 2,
+         "why": "The base year is 100. An index of 108 means prices are 8% above base-year prices."
+        },
+        {
+         "q": "Nominal GDP grew 5% and prices rose 3%. Real GDP grew approximately:",
+         "choices": [
+          "8%",
+          "15%",
+          "5%",
+          "2%"
+         ],
+         "a": 3,
+         "why": "Real growth is about nominal growth minus inflation: 5 - 3 = 2%."
+        }
+       ]
+      },
+      {
+       "title": "Growth Rates and the Long Run",
+       "mainIdea": "Economic growth is the percent change in real GDP, and small yearly rates add up to large differences over decades.",
+       "reading": [
+        "Suppose real GDP was $20.0 trillion last year and $20.5 trillion this year. The *growth rate* is the percent change: (20.5 - 20.0) divided by 20.0, times 100 = 0.5 divided by 20, times 100 = 2.5%. That is a fairly normal year for the United States. Over the long run, U.S. real GDP has grown around 2% to 3% per year on average, with faster years in booms and shrinking years in recessions. A year when real GDP falls is a serious event; two quarters of falling real GDP is a common rough sign of a *recession*.",
+        "Small rates matter because they compound. An economy growing 2% a year doubles in about 35 years. One growing 3% a year doubles in about 24 years. The quick tool for this is the *rule of 70*: divide 70 by the growth rate to get the approximate doubling time. 70 divided by 2 is 35; 70 divided by 3 is about 23. Over a working lifetime of 45 years, the difference between 2% and 3% growth is the difference between an economy that is 2.4 times bigger and one that is 3.8 times bigger.",
+        "Where does long-run growth come from? Economists point to *productivity*, output per hour of work. Productivity rises when workers have more and better capital, when they have more education and skill, and when new technology lets the same hour produce more. A farmer in central Illinois today, with a GPS-guided combine, harvests more corn in a day than a crew with horses harvested in a season a century ago. Nearly all of the rise in living standards since then comes from that kind of gain.",
+        "One caution when computing. Always divide the change by the starting value, not the ending one. Going from 20.0 to 20.5 is a 2.5% increase. Going from 20.5 back to 20.0 is a 2.4% decrease, because the base is now 20.5. And a 10% fall followed by a 10% rise does not get you back to the start: 100 falls to 90, then rises 10% of 90, which is 9, to 99."
+       ],
+       "words": [
+        {
+         "w": "growth rate",
+         "d": "the percent change in real GDP from one period to the next"
+        },
+        {
+         "w": "recession",
+         "d": "a period when the economy shrinks; two quarters of falling real GDP is a common rough sign"
+        },
+        {
+         "w": "rule of 70",
+         "d": "divide 70 by a yearly growth rate to estimate how many years it takes something to double"
+        },
+        {
+         "w": "productivity",
+         "d": "output produced per hour of work; the main source of long-run growth"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Countries, Forty Years",
+        "text": "Country A and Country B both start with real GDP of $1,000 billion. Country A grows 2% a year; Country B grows 3.5% a year. Nobody in either country notices a difference in any single year.",
+        "prompt": "Use the rule of 70 to estimate how long each economy takes to double. Roughly how many times larger is each one after 40 years? Why do economists care so much about a difference of 1.5 points?"
+       },
+       "check": [
+        {
+         "q": "Real GDP goes from $18.0 trillion to $18.9 trillion. The growth rate is:",
+         "choices": [
+          "5%",
+          "0.9%",
+          "4.8%",
+          "9%"
+         ],
+         "a": 0,
+         "why": "(18.9 - 18.0) / 18.0 x 100 = 0.9 / 18 x 100 = 5%."
+        },
+        {
+         "q": "Using the rule of 70, an economy growing 3.5% a year doubles in about:",
+         "choices": [
+          "35 years",
+          "20 years",
+          "70 years",
+          "7 years"
+         ],
+         "a": 1,
+         "why": "70 divided by 3.5 = 20 years."
+        },
+        {
+         "q": "Which of these is the main source of long-run growth in output per person?",
+         "choices": [
+          "Higher prices",
+          "Larger trade deficits",
+          "Rising productivity from capital, skills and technology",
+          "Printing more money"
+         ],
+         "a": 2,
+         "why": "Growth in output per hour, from better tools, education and technology, is what raises living standards over decades."
+        }
+       ]
+      },
+      {
+       "title": "GDP per Person and Comparing Countries",
+       "mainIdea": "GDP per capita divides output by population, which is the fair way to compare living standards between countries or across time.",
+       "reading": [
+        "Country A has a GDP of $2,000 billion and 50 million people. Country B has a GDP of $3,000 billion and 300 million people. Which country is richer? In total output, B, by a lot. But B's output is spread over six times as many people. *GDP per capita* means GDP per person: divide GDP by population. Country A: 2,000 billion divided by 50 million = $40,000 per person. Country B: 3,000 billion divided by 300 million = $10,000 per person. The average person in A produces, and on average earns, four times as much.",
+        "Per capita figures also fix a problem with growth over time. If real GDP grows 1% but population grows 2%, output per person actually fell. Economists therefore track real GDP per capita, which combines both adjustments: fixed prices and per-person division. That is the closest thing GDP offers to a measure of the average standard of living. U.S. real GDP per capita has roughly doubled since the early 1980s.",
+        "Comparing across countries adds one more wrinkle. A dollar buys different amounts in different places. A haircut might cost $30 in Chicago and the equivalent of $4 in a low-income country. Converting at market exchange rates would make that country look poorer than it really is. So economists adjust for *purchasing power parity*, or PPP, which values each country's output at a common set of prices. PPP comparisons narrow the gap between rich and poor countries but do not close it.",
+        "Even per capita GDP is an average, and averages hide spread. Two countries with the same GDP per capita can look very different if one spreads income widely and the other concentrates it in a few hands. The last section of this chapter takes up that limit and the others."
+       ],
+       "words": [
+        {
+         "w": "GDP per capita",
+         "d": "GDP divided by population; output per person"
+        },
+        {
+         "w": "standard of living",
+         "d": "the amount of goods and services the average person can enjoy; real GDP per capita is the usual rough measure"
+        },
+        {
+         "w": "purchasing power parity",
+         "d": "an adjustment that compares countries using a common set of prices instead of market exchange rates"
+        },
+        {
+         "w": "average",
+         "d": "a total divided by a count; it can hide large differences between the people being averaged"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Three Invented Countries",
+        "rows": [
+         [
+          "Country A: GDP, billions of $",
+          2000
+         ],
+         [
+          "Country A: population, millions",
+          50
+         ],
+         [
+          "Country B: GDP, billions of $",
+          3000
+         ],
+         [
+          "Country B: population, millions",
+          300
+         ],
+         [
+          "Country C: GDP, billions of $",
+          600
+         ],
+         [
+          "Country C: population, millions",
+          10
+         ]
+        ],
+        "unit": "example values",
+        "cite": "Invented figures for practice",
+        "prompt": "Compute GDP per capita for each country and rank them from richest to poorest per person. Which country has the largest economy in total? Why are the two rankings different?"
+       },
+       "check": [
+        {
+         "q": "A country has GDP of $800 billion and 40 million people. GDP per capita is:",
+         "choices": [
+          "$2,000",
+          "$32,000",
+          "$200,000",
+          "$20,000"
+         ],
+         "a": 3,
+         "why": "800,000 million divided by 40 million = $20,000 per person."
+        },
+        {
+         "q": "Real GDP grows 1% while population grows 2%. Real GDP per capita:",
+         "choices": [
+          "Falls by about 1%",
+          "Rises by about 3%",
+          "Rises by about 1%",
+          "Stays the same"
+         ],
+         "a": 0,
+         "why": "Output grew more slowly than the number of people, so output per person fell by roughly 1 percentage point."
+        },
+        {
+         "q": "Why do economists adjust for purchasing power parity when comparing countries?",
+         "choices": [
+          "Because populations differ",
+          "Because a dollar buys different amounts of goods in different countries",
+          "Because some countries do not report GDP",
+          "Because exchange rates never change"
+         ],
+         "a": 1,
+         "why": "Prices differ across countries. PPP values output at common prices so the comparison reflects what people can actually buy."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "What GDP Leaves Out",
+     "lessons": [
+      {
+       "title": "The Invisible Economy",
+       "mainIdea": "GDP misses unpaid work, the underground economy and leisure, so it can rise or fall for reasons that have nothing to do with how well people live.",
+       "reading": [
+        "Back in Millbrook, Mr. Alvarez fixed his own roof and saved $4,000. Nothing was sold, so GDP did not move. If he had hired a roofer, GDP would have risen by $4,000, and the roof would be exactly the same. This is GDP's largest blind spot: *unpaid work*. Cooking, cleaning, child care, elder care, repairs and volunteering produce real value every day, but with no market price they do not count. When a parent leaves a job to care for children, measured GDP falls, though the same care is still being given.",
+        "The lawn-mowing kid who never wrote anything down is part of a second gap, the *underground economy*: cash work that goes unreported, along with illegal trade. It is real production, but the government cannot count what it cannot see. Estimates for the United States put the underground economy at perhaps a tenth of GDP or less; in some countries it is far larger. When a country's rules push more work off the books, its measured GDP shrinks even if actual output does not.",
+        "GDP also ignores *leisure*. Suppose everyone in the country worked ten more hours a week. GDP would jump. Would people be better off? They would have more goods and far less time. Two countries can have the same GDP per person, one working 30 hours a week and the other 50, and GDP will call them equal. Time off is something people value enormously, and GDP places its value at zero.",
+        "These gaps make comparisons across time tricky. Over the past century a great deal of work moved from homes into markets: meals from kitchens to restaurants, child care from relatives to day-care centers. Part of the measured growth in GDP is that shift, not new production. None of this makes GDP useless. It means GDP measures market production, exactly as defined, and nothing more."
+       ],
+       "words": [
+        {
+         "w": "unpaid work",
+         "d": "valuable work done without pay, such as child care, cooking and home repair; not counted in GDP"
+        },
+        {
+         "w": "underground economy",
+         "d": "unreported cash work and illegal trade that the government cannot count"
+        },
+        {
+         "w": "leisure",
+         "d": "time not spent working; valued by people but given no value in GDP"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Families, One GDP",
+        "text": "The Nguyens both work full time, earn $110,000 together, pay $18,000 a year for child care, eat out often and hire a cleaner. The Okafors have one earner making $70,000; the other parent cares for the children, cooks and keeps the house. Both families are healthy and say they are happy.",
+        "prompt": "Which family adds more to GDP, and by roughly how much? Is that family better off by the same amount? What is GDP measuring, and what is it not?"
+       },
+       "check": [
+        {
+         "q": "A grandmother provides 30 hours a week of free child care so her daughter can work. How does the child care itself affect GDP?",
+         "choices": [
+          "It raises GDP by the value of the daughter's wages",
+          "It raises GDP by what a day-care center would charge",
+          "It does not count, because no one paid for it",
+          "It lowers GDP, because the grandmother is not employed"
+         ],
+         "a": 2,
+         "why": "GDP counts market transactions. Unpaid care has no price, so it is invisible, even though the daughter's wages do count."
+        },
+        {
+         "q": "A country passes a law that pushes many small businesses to stop reporting their sales. Measured GDP falls. What most likely happened to actual production?",
+         "choices": [
+          "It fell by the same amount",
+          "It rose",
+          "It fell by twice the amount",
+          "It changed much less than measured GDP did"
+         ],
+         "a": 3,
+         "why": "The work moved into the underground economy. It still happened, but the government can no longer count it."
+        },
+        {
+         "q": "If every worker in a country added 10 hours to the work week, GDP would rise. What does GDP fail to record about this change?",
+         "choices": [
+          "The loss of leisure time",
+          "The extra wages earned",
+          "The extra goods produced",
+          "The higher tax revenue"
+         ],
+         "a": 0,
+         "why": "GDP counts the extra output but gives no value to the time people gave up. Leisure is not in GDP."
+        }
+       ]
+      },
+      {
+       "title": "The Environment and Who Gets What",
+       "mainIdea": "GDP does not subtract environmental damage and says nothing about how output is distributed, so a rising GDP does not guarantee a better life for most people.",
+       "reading": [
+        "Suppose a factory produces $10 million of chemicals and, in doing so, pollutes a river that the town then spends $3 million to clean up. GDP records $10 million of chemicals plus $3 million of cleanup services: $13 million. The pollution made GDP larger, not smaller. GDP counts production and never subtracts the damage that production causes to air, water, forests or climate. A country can log every forest, empty every fishery and post record GDP while doing it. Economists call this using up *natural capital* without recording the loss.",
+        "The same blind spot appears after disasters. A tornado that destroys 200 homes in a town does not lower GDP. The rebuilding raises it. People are clearly worse off, since they had homes and now must spend to get them back, but the accounts see only the new construction. GDP measures the flow of new production, not the stock of things people own or the state of the world they live in.",
+        "GDP also says nothing about *distribution*: who gets the output. A country's GDP per capita can rise 20% while most families see no change. That happens if all the gains go to a small group at the top. An average of $80,000 per person fits two very different countries. In one, almost everyone earns near $80,000. In the other, a few earn millions while many earn much less. To see how a typical person is doing, economists look at *median income*. That is the income of the household right in the middle, and it rises only when the middle rises.",
+        "Put these limits next to the ones from the last lesson and you have the standard list of what GDP misses. Unpaid work, the underground economy, leisure, the environment and distribution. Add quality of life itself: health, safety and education. GDP touches those only through what is spent on them. The measure was never designed to capture them, as its own inventor pointed out from the very beginning."
+       ],
+       "words": [
+        {
+         "w": "natural capital",
+         "d": "resources such as clean water, forests, fish and fertile soil; GDP does not subtract their loss"
+        },
+        {
+         "w": "distribution",
+         "d": "how a country's income or output is divided among its people"
+        },
+        {
+         "w": "median income",
+         "d": "the income of the household exactly in the middle, with half of households above and half below"
+        }
+       ],
+       "look": {
+        "type": "source",
+        "title": "A Warning From the Inventor",
+        "text": "Simon Kuznets, the economist who built the first U.S. national income estimates, warned Congress in 1934 that the welfare of a nation can scarcely be inferred from a measurement of national income. The figure, he said, measured market output, not well-being.",
+        "cite": "Simon Kuznets, report on National Income, 1929-1932, to the U.S. Senate, 1934 (paraphrased)",
+        "paraphrase": true,
+        "prompt": "Kuznets built the measure and then warned against reading too much into it. Why might the person who designed a measure be the most careful about what it means? Give one example from this chapter that shows his point."
+       },
+       "check": [
+        {
+         "q": "A flood destroys a neighborhood and rebuilding costs $50 million. The effect on this year's GDP is:",
+         "choices": [
+          "GDP falls by $50 million",
+          "GDP rises by the $50 million of rebuilding",
+          "GDP does not change",
+          "GDP falls by the value of the homes lost"
+         ],
+         "a": 1,
+         "why": "GDP counts new production. The lost homes are not subtracted; the rebuilding is added. People are worse off, but GDP rises."
+        },
+        {
+         "q": "GDP per capita rises 15% but median household income does not change. What does this most likely mean?",
+         "choices": [
+          "Prices fell",
+          "The population shrank",
+          "The gains went mostly to households above the middle",
+          "The measurement was wrong"
+         ],
+         "a": 2,
+         "why": "The average rose while the middle stayed put, so the added income went to the upper part of the distribution."
+        },
+        {
+         "q": "A factory's pollution forces a city to spend $2 million on water treatment. In GDP, that $2 million:",
+         "choices": [
+          "Is subtracted as damage",
+          "Is left out because it is a transfer",
+          "Is counted as an import",
+          "Is added as production of a service"
+         ],
+         "a": 3,
+         "why": "GDP never subtracts environmental damage. The treatment is a service, so it adds to GDP even though it only repairs harm."
+        }
+       ]
+      },
+      {
+       "title": "Beyond GDP: Other Yardsticks",
+       "mainIdea": "Economists supplement GDP with measures of health, education, income spread and environmental cost, using each number for the question it actually answers.",
+       "reading": [
+        "Because GDP leaves so much out, economists and statistical agencies have built other yardsticks. None replaces GDP; each answers a different question. The best known is the *Human Development Index*, published by the United Nations since 1990. It combines three things for each country: life expectancy, years of schooling, and income per person. A country with high income but short lives and little schooling scores lower than its GDP alone would suggest. The index reminds readers that money is a means, and health and knowledge are part of the end.",
+        "To see distribution, statisticians report median income alongside the average, and they compute the *Gini coefficient*, a number from 0 to 1 that summarizes how unequal incomes are. A Gini of 0 would mean everyone has the same income; a Gini of 1 would mean one person has everything. Real countries fall in between, with more equal countries around 0.25 to 0.30 and less equal ones above 0.45. The United States sits in the upper part of the range among wealthy countries.",
+        "Other efforts try to correct GDP itself. So-called green accounting subtracts the estimated cost of pollution and the depletion of natural resources. Some researchers add estimates of the value of unpaid household work, which can be a large fraction of measured GDP. Surveys of well-being ask people directly how satisfied they are with their lives and compare the answers across countries and over time. Each of these involves judgment calls that GDP avoids, which is why GDP remains the common starting point.",
+        "The practical lesson for a reader of the news is to match the number to the question. Asking whether the economy grew last quarter? Real GDP. Asking whether the typical family is better off than ten years ago? Real median income. Asking whether a country's people are healthy and educated? HDI. Asking who gained from growth? Median income and the Gini. GDP is the wrong answer to a lot of questions only when it is the only number anyone looks at."
+       ],
+       "words": [
+        {
+         "w": "Human Development Index",
+         "d": "a United Nations measure combining life expectancy, schooling and income per person"
+        },
+        {
+         "w": "Gini coefficient",
+         "d": "a number from 0 (everyone equal) to 1 (one person has everything) that summarizes income inequality"
+        },
+        {
+         "w": "green accounting",
+         "d": "adjusting GDP by subtracting estimated environmental damage and resource depletion"
+        },
+        {
+         "w": "well-being",
+         "d": "how good people's lives actually are, including health, safety, time and satisfaction"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Choose the Right Number",
+        "text": "A mayor claims the city is thriving because local GDP rose 4% last year. A council member replies that median household income fell 1%, the river is more polluted than a decade ago, and life expectancy in the poorest neighborhoods is dropping.",
+        "prompt": "Can both be telling the truth? Which measure fits each claim? What would you want to see before agreeing the city is thriving?"
+       },
+       "check": [
+        {
+         "q": "The Human Development Index combines income per person with:",
+         "choices": [
+          "Life expectancy and years of schooling",
+          "Exports and imports",
+          "Population and land area",
+          "Inflation and unemployment"
+         ],
+         "a": 0,
+         "why": "HDI has three parts: health (life expectancy), education (schooling) and income."
+        },
+        {
+         "q": "A country's Gini coefficient falls from 0.45 to 0.35. This means income became:",
+         "choices": [
+          "Higher on average",
+          "More equally distributed",
+          "Less equally distributed",
+          "Lower on average"
+         ],
+         "a": 1,
+         "why": "Lower Gini means less inequality. The coefficient says nothing about the level of income, only its spread."
+        },
+        {
+         "q": "Which measure best answers whether a typical household is better off than ten years ago?",
+         "choices": [
+          "Nominal GDP",
+          "Total exports",
+          "Real median household income",
+          "The GDP deflator"
+         ],
+         "a": 2,
+         "why": "Median income tracks the household in the middle and, adjusted for prices, shows whether typical buying power rose."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A farmer sells $500 of wheat to a mill, the mill sells $900 of flour to a bakery, and the bakery sells $2,000 of bread to shoppers. The contribution to GDP is:",
+     "choices": [
+      "$2,000",
+      "$3,400",
+      "$1,400",
+      "$500"
+     ],
+     "a": 0,
+     "why": "Only the final sale counts. The wheat and flour are intermediate goods already inside the bread."
+    },
+    {
+     "q": "Which of these is counted in this year's U.S. GDP?",
+     "choices": [
+      "A used car sold between neighbors",
+      "A haircut performed in Chicago",
+      "A Social Security check",
+      "A car built at a U.S. company's plant in Mexico"
+     ],
+     "a": 1,
+     "why": "The haircut is a new service produced inside the country. The others are a used good, a transfer and foreign production."
+    },
+    {
+     "q": "C = $700 billion, I = $150 billion, G = $200 billion, X = $100 billion, M = $130 billion. GDP equals:",
+     "choices": [
+      "$1,280 billion",
+      "$1,050 billion",
+      "$1,020 billion",
+      "$1,080 billion"
+     ],
+     "a": 2,
+     "why": "NX = 100 - 130 = -30. GDP = 700 + 150 + 200 - 30 = 1,020 billion."
+    },
+    {
+     "q": "A school district buys new buses. In the expenditure approach that spending is:",
+     "choices": [
+      "Consumption",
+      "Investment",
+      "Net exports",
+      "Government purchases"
+     ],
+     "a": 3,
+     "why": "Buses bought by a public school district are government spending on goods, which is G."
+    },
+    {
+     "q": "Nominal GDP is $30 trillion and the GDP deflator is 150. Real GDP is:",
+     "choices": [
+      "$20 trillion",
+      "$45 trillion",
+      "$15 trillion",
+      "$30 trillion"
+     ],
+     "a": 0,
+     "why": "Real GDP = 30 / 150 x 100 = 20 trillion."
+    },
+    {
+     "q": "Real GDP grows from $21.0 trillion to $21.63 trillion. The growth rate is:",
+     "choices": [
+      "0.63%",
+      "3%",
+      "6.3%",
+      "1.03%"
+     ],
+     "a": 1,
+     "why": "(21.63 - 21.0) / 21.0 x 100 = 0.63 / 21 x 100 = 3%."
+    },
+    {
+     "q": "Country X has GDP of $1,200 billion and 30 million people; Country Y has GDP of $2,400 billion and 120 million people. Which is true?",
+     "choices": [
+      "Y has higher GDP per capita",
+      "Both have the same GDP per capita",
+      "X has higher GDP per capita ($40,000 versus $20,000)",
+      "X has the larger total GDP"
+     ],
+     "a": 2,
+     "why": "X: 1,200 billion / 30 million = $40,000. Y: 2,400 billion / 120 million = $20,000. Y is larger in total, X per person."
+    },
+    {
+     "q": "Which of these would raise measured GDP without making anyone better off?",
+     "choices": [
+      "A new vaccine that prevents illness",
+      "A rise in workers' productivity",
+      "A parent caring for a child at home",
+      "Cleanup spending after an oil spill"
+     ],
+     "a": 3,
+     "why": "Cleanup is counted as production, but it only repairs damage. GDP never subtracts the harm, so the spill makes GDP rise."
+    }
+   ]
+  },
+  {
+   "n": 30,
+   "title": "Prices and Jobs: The CPI and Unemployment",
+   "years": "Inflation and Employment",
+   "bigQuestion": "How do we know whether prices are really rising and whether people can really find work, and what do those two numbers miss?",
+   "story": {
+    "title": "Grandpa's Dollar Sixty",
+    "kicker": "A grandfather remembers his first paycheck, and his granddaughter sets out to learn whether $1.60 an hour was a good wage.",
+    "paragraphs": [
+     "Maya sat at her grandfather's kitchen table in Joliet with a notebook, interviewing him for a school project. He told her about his first job, in 1968, stocking shelves at a grocery store after school. It paid $1.60 an hour, the federal minimum wage that year. Maya laughed. She makes $15 an hour at a sandwich shop, the Illinois minimum wage. You made about a tenth of what I make, she said.",
+     "Her grandfather was not bothered. He remembered filling his car with gas for well under half a dollar a gallon and seeing a movie for a dollar or two. A hamburger at the drive-in cost less than a quarter, as he recalled it. His paycheck was small, he said, but so was everything else. Maya started to suspect that comparing his dollars with hers was like comparing two different currencies.",
+     "So she looked up the Consumer Price Index, the number the Bureau of Labor Statistics uses to track prices. It averaged about 35 in 1968 and about 313 in 2024. Prices had risen almost nine times. Multiply $1.60 by about 8.9 and you get roughly $14 in 2024 dollars. Her grandfather's wage bought close to what her $15 buys. It bought about twice what today's federal minimum of $7.25 buys.",
+     "Then Maya asked a second question: was it easy to find that job? Her grandfather said help-wanted signs were everywhere in 1968. He was right; the national unemployment rate that year was under 4%. Maya's father had a different story. He finished college in 2009, when unemployment was near 10%, and spent eight months sending out applications before anyone called him back.",
+     "Maya's project had turned into the two questions this chapter answers. How do we measure what money is worth from year to year? And how do we count the people who want work and cannot find it? The government reports both numbers every month, and millions of decisions, from raises to interest rates, depend on them."
+    ],
+    "think": "Maya's $15 and her grandfather's $1.60 were both minimum wages. Besides prices, what else would you want to know to decide which of them had the better deal?"
+   },
+   "sections": [
+    {
+     "title": "Measuring Prices",
+     "lessons": [
+      {
+       "title": "Building a Price Index",
+       "mainIdea": "The CPI tracks the cost of a fixed market basket of goods and services, compared with a base year set equal to 100.",
+       "reading": [
+        "Suppose a student named Jordan buys the same things every month: 10 gallons of gas, 4 pizzas and 2 movie tickets. In the base year, gas is $3 a gallon, pizza $10 and a ticket $15. The basket costs 10 x $3 + 4 x $10 + 2 x $15 = $30 + $40 + $30 = $100. A year later gas is $3.60, pizza $10.50 and a ticket $16. The same basket now costs $36 + $42 + $32 = $110. Jordan buys exactly the same things and pays $10 more.",
+        "A *market basket* is a fixed list of goods and services in fixed amounts, chosen to stand for what a typical buyer purchases. A *price index* turns the basket's cost into one simple number. The rule: index = cost of the basket this year divided by its cost in the *base year*, times 100. For Jordan, 110 divided by 100, times 100 = 110. The base year always equals 100, so an index of 110 means prices are 10% above the base year.",
+        "The *Consumer Price Index*, or CPI, uses the same method for the whole country. The Bureau of Labor Statistics, part of the U.S. Department of Labor, collects tens of thousands of prices each month in cities across the country. It prices food, rent, gas, clothing, doctor visits, car insurance and much more. Each item is weighted by the share of household budgets spent on it. So a rise in rent moves the index far more than a rise in the price of salt. The BLS publishes the CPI every month.",
+        "The official CPI uses the years 1982 to 1984 as its base, set to 100. In 2024 the index stood a little above 310. That means a basket that cost $100 in the early 1980s cost a little over $310 in 2024. A common mistake is to read an index number as a price. A CPI of 310 does not mean anything costs $310. It means prices are about 3.1 times their base-period level."
+       ],
+       "words": [
+        {
+         "w": "market basket",
+         "d": "a fixed list of goods and services in fixed amounts that stands for what a typical buyer purchases"
+        },
+        {
+         "w": "price index",
+         "d": "a number comparing the cost of a basket in one year with its cost in a base year, where the base year equals 100"
+        },
+        {
+         "w": "base year",
+         "d": "the year (or years) whose prices a price index is compared against; the index equals 100 then"
+        },
+        {
+         "w": "Consumer Price Index",
+         "d": "the CPI; the Bureau of Labor Statistics' monthly measure of the prices city households pay for a market basket"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "One Basket, Four Years (example)",
+        "rows": [
+         [
+          "Year 1 (base year)",
+          200
+         ],
+         [
+          "Year 2",
+          206
+         ],
+         [
+          "Year 3",
+          214
+         ],
+         [
+          "Year 4",
+          220
+         ]
+        ],
+        "unit": "dollars per basket (example)",
+        "cite": "Invented basket costs, used only to practice building an index",
+        "prompt": "Compute the price index for each year, with Year 1 as the base. By what percent did prices rise from Year 1 to Year 4?"
+       },
+       "check": [
+        {
+         "q": "A basket costs $80 in the base year and $92 this year. The price index this year is:",
+         "choices": [
+          "115",
+          "112",
+          "92",
+          "12"
+         ],
+         "a": 0,
+         "why": "Index = 92 / 80 x 100 = 115. Prices are 15% above the base year."
+        },
+        {
+         "q": "Which agency publishes the Consumer Price Index?",
+         "choices": [
+          "The Bureau of Economic Analysis",
+          "The Bureau of Labor Statistics",
+          "The Federal Reserve Bank of Chicago",
+          "The Internal Revenue Service"
+         ],
+         "a": 1,
+         "why": "The BLS, in the Department of Labor, collects prices and publishes the CPI each month. The BEA publishes GDP."
+        },
+        {
+         "q": "The CPI is 250. What does that tell you?",
+         "choices": [
+          "The average item costs $250",
+          "Prices are 250% lower than in the base period",
+          "The basket costs 2.5 times what it cost in the base period",
+          "Inflation this year was 250%"
+         ],
+         "a": 2,
+         "why": "An index compares with a base of 100. At 250, the basket costs 250 / 100 = 2.5 times its base-period cost."
+        }
+       ]
+      },
+      {
+       "title": "The Inflation Rate",
+       "mainIdea": "The inflation rate is the percent change in the price index from one period to the next, not the difference in index points.",
+       "reading": [
+        "Jordan's basket index went from 100 to 110 in one year. The *inflation rate* is the percent change in the price level: (110 - 100) divided by 100, times 100 = 10%. Now go one more year. The index rises from 110 to 121. The change is 11 points, but the inflation rate is 11 divided by 110, times 100 = 10%, not 11%. Always divide the change by the starting index. Subtracting index points works only when the starting index is exactly 100.",
+        "Real figures work the same way. If the CPI was 300 last June and 312 this June, inflation over those twelve months was 12 divided by 300, times 100 = 4%. News reports usually give this 12-month rate. They also report *core inflation*, which leaves out food and energy. Those two prices jump around with weather, wars and oil supplies. Leaving them out shows the steadier trend underneath.",
+        "In economics, *inflation* is a rise in the general level of prices, not a rise in one price. Suppose avocados jump after a bad harvest while most other prices hold still. That is a change in a *relative price*, not inflation. Inflation means the whole basket costs more, so each dollar buys less. The Federal Reserve aims for inflation of 2% a year over time. It treats a small, steady rate as healthier than either high inflation or falling prices.",
+        "U.S. inflation has swung widely. It reached about 13.5% for the year 1980, then fell during the 1980s. From the mid-1990s through 2020 it mostly stayed between about 1% and 4%. It jumped again in 2021 and 2022, and the 12-month rate peaked near 9% in mid-2022 before coming down. Knowing these rough figures helps you judge whether a year's number is ordinary or alarming."
+       ],
+       "words": [
+        {
+         "w": "inflation",
+         "d": "a rise in the general level of prices, so each dollar buys less"
+        },
+        {
+         "w": "inflation rate",
+         "d": "the percent change in a price index over a period, usually a year"
+        },
+        {
+         "w": "core inflation",
+         "d": "inflation measured without food and energy prices, which swing a lot from month to month"
+        },
+        {
+         "w": "relative price",
+         "d": "the price of one good compared with other goods; one price rising alone is not inflation"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "U.S. Inflation, Selected Years",
+        "rows": [
+         [
+          "1980",
+          13.5
+         ],
+         [
+          "1990",
+          5.4
+         ],
+         [
+          "2000",
+          3.4
+         ],
+         [
+          "2010",
+          1.6
+         ],
+         [
+          "2020",
+          1.2
+         ],
+         [
+          "2022",
+          8.0
+         ]
+        ],
+        "unit": "percent change in the CPI",
+        "cite": "Rounded yearly-average changes in the CPI for all urban consumers, Bureau of Labor Statistics",
+        "prompt": "Which years were close to the Fed's 2% goal? In which year did a dollar lose the most buying power, and about how much?"
+       },
+       "check": [
+        {
+         "q": "The CPI rises from 200 to 210. The inflation rate is:",
+         "choices": [
+          "10%",
+          "2.1%",
+          "210%",
+          "5%"
+         ],
+         "a": 3,
+         "why": "(210 - 200) / 200 x 100 = 5%. The 10-point rise is not 10% because the starting index is 200, not 100."
+        },
+        {
+         "q": "The CPI goes from 120 to 126. The inflation rate is:",
+         "choices": [
+          "5%",
+          "6%",
+          "126%",
+          "4.8%"
+         ],
+         "a": 0,
+         "why": "6 / 120 x 100 = 5%. Dividing by the ending index, 126, gives the wrong 4.8%."
+        },
+        {
+         "q": "Beef prices rise 20% after a drought while most other prices stay flat. This is best described as:",
+         "choices": [
+          "Inflation of 20%",
+          "A change in relative prices",
+          "Deflation",
+          "Core inflation"
+         ],
+         "a": 1,
+         "why": "Inflation is a rise in the general price level. One good rising alone is a change in relative prices."
+        }
+       ]
+      },
+      {
+       "title": "Where the CPI Misses",
+       "mainIdea": "Because the basket is fixed and quality keeps changing, the CPI can overstate the true rise in living costs, and no family's own inflation matches it exactly.",
+       "reading": [
+        "Suppose beef jumps from $6 to $9 a pound while chicken stays at $4. Many families switch from beef to chicken. A fixed basket still assumes they buy the old amount of beef. So it shows their costs rising more than they really did. This is *substitution bias*. The BLS reduces it by updating the basket's weights regularly and by allowing for some switching within categories, such as from one kind of apple to another. It cannot remove the problem completely.",
+        "Quality is the second problem. A new phone may cost $800, the same as a phone five years ago, but it has a better camera, more storage and a faster chip. If the price is the same and the phone is better, the true price of what you get has fallen. The BLS makes a *quality adjustment* for some goods, but valuing an improvement is hard. New goods raise a third problem. When a new kind of product appears, it takes time to enter the basket, so its arrival does not register as a gain.",
+        "Economists have long argued that together these effects make the CPI overstate the true rise in the *cost of living*, by a fraction of a percentage point a year. That matters because the CPI adjusts real payments. Social Security benefits rise each year with a version of the CPI. Federal income tax brackets are adjusted with a version of it too. A CPI that runs a little high raises those payments a little faster than living costs.",
+        "Finally, the CPI is an average, and no family is average. A renter in Chicago whose rent jumps 8% faces higher inflation than a homeowner with a paid-off house. A long commute makes gas prices matter more. An older person spends more on health care. When your own costs rise faster or slower than the CPI, the index is not wrong. Your basket is simply different from the national one."
+       ],
+       "words": [
+        {
+         "w": "substitution bias",
+         "d": "the tendency of a fixed basket to overstate rising costs because people switch away from goods whose prices jump"
+        },
+        {
+         "w": "quality adjustment",
+         "d": "a change the BLS makes to a price to account for a product getting better or worse"
+        },
+        {
+         "w": "cost of living",
+         "d": "the amount of money needed to buy the goods and services a household uses"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Phone That Cost the Same",
+        "text": "In Year 1 a phone costs $600 and holds 64 gigabytes. In Year 3 a phone costs $600 and holds 256 gigabytes, with a much better camera and a battery that lasts twice as long. The person building the price index has to decide what happened to the price of phones.",
+        "prompt": "Did the price of a phone rise, fall or stay the same? Explain why counting it as unchanged would make the CPI overstate inflation."
+       },
+       "check": [
+        {
+         "q": "Beef prices double while chicken prices stay flat, and families switch to chicken. A fixed basket will:",
+         "choices": [
+          "Understate the rise in their costs",
+          "Measure the rise exactly",
+          "Overstate the rise in their costs",
+          "Show that prices fell"
+         ],
+         "a": 2,
+         "why": "The fixed basket assumes families still buy the old amount of beef, so it shows costs rising more than they did. This is substitution bias."
+        },
+        {
+         "q": "A laptop's price stays at $900 but it becomes twice as fast. With no quality adjustment, the CPI would:",
+         "choices": [
+          "Show the laptop's price falling",
+          "Remove the laptop from the basket",
+          "Count the laptop as a transfer payment",
+          "Miss a real fall in the price per unit of quality"
+         ],
+         "a": 3,
+         "why": "The buyer gets more for the same $900, so the true price fell. A CPI that records no change misses that fall."
+        },
+        {
+         "q": "Which government payment rises each year with a version of the CPI?",
+         "choices": [
+          "Social Security benefits",
+          "The federal minimum wage",
+          "Every state's teacher salaries",
+          "Grain prices at the Chicago Board of Trade"
+         ],
+         "a": 0,
+         "why": "Social Security has a yearly cost-of-living adjustment tied to a CPI. The federal minimum wage changes only when Congress passes a law."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "What Inflation Does",
+     "lessons": [
+      {
+       "title": "Purchasing Power and Real Wages",
+       "mainIdea": "To compare dollars from different years, adjust with the CPI; a real wage rises only when pay grows faster than prices.",
+       "reading": [
+        "A dollar's *purchasing power* is how much a dollar can buy. When prices rise 25%, a dollar buys only about four-fifths of what it used to, because 1 divided by 1.25 = 0.80. Inflation does not take dollars out of your wallet. It shrinks what each dollar will get you. That is why comparing a wage from 1968 with a wage today is like comparing two different currencies. You have to convert first.",
+        "The conversion uses the CPI: value in today's dollars = old amount x (CPI today divided by CPI then). The CPI averaged about 35 in 1968 and about 313 in 2024. So prices rose about 313 divided by 35, or roughly 8.9 times. Grandpa's $1.60 an hour x 8.9 = about $14.24 in 2024 dollars. The federal minimum wage of $7.25, unchanged since 2009, buys only about half of what the 1968 minimum bought. Illinois set its own minimum at $15 an hour in 2025.",
+        "A *nominal wage* is pay in the dollars of the day. A *real wage* is pay adjusted for prices, which shows what the pay can buy. Suppose Ana's wage rises from $15.00 to $15.60 an hour, a 4% raise, while prices rise 6%. Her nominal wage went up, but her real wage fell about 2%. In last year's dollars, $15.60 divided by 1.06 is about $14.72, less than the $15.00 she earned before. The quick rule: real wage growth is about nominal wage growth minus inflation.",
+        "The common mistake is to call any raise a gain. A raise smaller than inflation is a pay cut in what matters: goods and services. That is why many workers push for a *cost-of-living adjustment*, a raise tied to the CPI. It is also why economists compare wages over time only in real terms. In 2021 and 2022 many workers got their biggest raises in years. Yet for much of that time prices rose even faster, so real wages fell for many of them."
+       ],
+       "words": [
+        {
+         "w": "purchasing power",
+         "d": "the amount of goods and services a sum of money can buy"
+        },
+        {
+         "w": "nominal wage",
+         "d": "pay measured in the dollars of the day, not adjusted for prices"
+        },
+        {
+         "w": "real wage",
+         "d": "pay adjusted for inflation, which shows what the pay can actually buy"
+        },
+        {
+         "w": "cost-of-living adjustment",
+         "d": "an automatic raise in pay or benefits tied to the rise in a price index such as the CPI"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Adjusting Grandpa's Wage",
+        "rows": [
+         [
+          "CPI, 1968 (about)",
+          35
+         ],
+         [
+          "CPI, 2024 (about)",
+          313
+         ],
+         [
+          "Wage in 1968, $ per hour",
+          1.6
+         ]
+        ],
+        "unit": "index points and dollars",
+        "cite": "CPI values rounded from Bureau of Labor Statistics data; $1.60 was the federal minimum wage in 1968",
+        "prompt": "Divide the 2024 CPI by the 1968 CPI, then multiply by the wage. What is $1.60 worth in 2024 dollars? How does it compare with $7.25 and with $15?"
+       },
+       "check": [
+        {
+         "q": "Your wage rises 3% and prices rise 5%. Your real wage:",
+         "choices": [
+          "Rises about 8%",
+          "Falls about 2%",
+          "Rises about 2%",
+          "Stays the same"
+         ],
+         "a": 1,
+         "why": "Real wage growth is about nominal growth minus inflation: 3 - 5 = -2%. Your pay buys less than before."
+        },
+        {
+         "q": "A movie ticket cost $2 when the CPI was 50. The CPI is now 300. In today's dollars, that ticket cost:",
+         "choices": [
+          "$6",
+          "$300",
+          "$12",
+          "$150"
+         ],
+         "a": 2,
+         "why": "$2 x (300 / 50) = $2 x 6 = $12. Prices are six times higher, so the old $2 equals $12 today."
+        },
+        {
+         "q": "After all prices double, a $100 bill buys about as much as how many dollars bought before?",
+         "choices": [
+          "$200",
+          "$100",
+          "$75",
+          "$50"
+         ],
+         "a": 3,
+         "why": "When prices double, each dollar buys half as much: 100 / 2 = $50 of old buying power."
+        }
+       ]
+      },
+      {
+       "title": "Winners and Losers From Inflation",
+       "mainIdea": "Unexpected inflation moves buying power from lenders to borrowers and from people on fixed incomes to people whose pay keeps up.",
+       "reading": [
+        "Suppose you lend a friend $1,000 for one year at 5% interest. You expect to get back $1,050. If prices rise 2% that year, your gain in buying power is about 3%. If prices unexpectedly rise 7%, the $1,050 you get back buys less than the $1,000 did when you lent it. The *nominal interest rate* was 5%. The *real interest rate*, the nominal rate minus inflation, was about 5 - 7 = -2%. The borrower won and the lender lost.",
+        "That is the core pattern: unexpected inflation helps people who owe fixed dollar amounts and hurts people who are owed them. A family with a 30-year fixed-rate mortgage repays with dollars that are worth less each year, which helps them. The bank that made the loan loses. Savers lose too. Put $10,000 in an account paying 1% while inflation runs 4%. It earns $100 in interest while prices rise about $400 worth, a real loss of about $300.",
+        "People on a *fixed income* also lose, such as a retiree whose pension pays the same $2,000 a month every year. Some incomes are protected. Social Security has a yearly cost-of-living adjustment tied to the CPI, and some union contracts include one. Workers whose raises keep pace with prices come out about even. The key word is unexpected. If everyone expects 7% inflation, lenders charge higher rates in advance, and the transfer mostly disappears.",
+        "Inflation also has costs that fall on everyone. Stores must reprint prices and menus, called *menu costs*. People spend time and effort guarding their cash. Businesses and families find it harder to plan when they cannot tell what a dollar will buy next year. High and changeable inflation makes long-term contracts risky. That is one reason central banks aim for low, steady inflation."
+       ],
+       "words": [
+        {
+         "w": "nominal interest rate",
+         "d": "the interest rate stated on a loan or account, not adjusted for inflation"
+        },
+        {
+         "w": "real interest rate",
+         "d": "the nominal interest rate minus the inflation rate; the gain in buying power a lender actually gets"
+        },
+        {
+         "w": "fixed income",
+         "d": "income that stays the same number of dollars each year, such as some pensions"
+        },
+        {
+         "w": "menu costs",
+         "d": "the costs businesses pay to change prices, such as reprinting menus and price tags"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Three People, One Surprise",
+        "text": "Inflation was expected to be 2% but turns out to be 6%. Keisha owes $200,000 on a fixed-rate mortgage at 4%. Mr. Patel, retired, lives on a pension of $2,500 a month that never changes. Luis is a nurse whose union contract raises his pay each year by the CPI inflation rate.",
+        "prompt": "Who gains, who loses and who breaks about even? Name the rule that explains each case."
+       },
+       "check": [
+        {
+         "q": "A bank lends at 6% and inflation turns out to be 8%. The real interest rate is about:",
+         "choices": [
+          "-2%",
+          "14%",
+          "2%",
+          "6%"
+         ],
+         "a": 0,
+         "why": "Real rate = nominal rate - inflation = 6 - 8 = -2%. The bank is repaid in dollars that buy less than the ones it lent."
+        },
+        {
+         "q": "Unexpectedly high inflation usually helps which group?",
+         "choices": [
+          "Savers keeping cash at home",
+          "Borrowers with fixed-rate loans",
+          "Retirees with fixed pensions",
+          "Banks holding fixed-rate loans"
+         ],
+         "a": 1,
+         "why": "Borrowers repay a fixed number of dollars, and those dollars are worth less. The other three are owed or hold fixed dollars."
+        },
+        {
+         "q": "Why does fully expected inflation shift little buying power from lenders to borrowers?",
+         "choices": [
+          "Because expected inflation is always zero",
+          "Because the government repays lenders",
+          "Because lenders build the expected inflation into the interest rate",
+          "Because borrowers refuse to repay"
+         ],
+         "a": 2,
+         "why": "If lenders expect 7% inflation, they raise the nominal rate to cover it, so the real rate they earn is protected."
+        }
+       ]
+      },
+      {
+       "title": "Deflation and Runaway Inflation",
+       "mainIdea": "Falling prices sound good but can deepen a slump, and very rapid inflation, usually caused by printing money, can wreck an economy.",
+       "reading": [
+        "A fall in the general price level is called *deflation*, a negative inflation rate. At first it sounds like a gift: the same $100 buys more. But look at a family that owes $100,000 on a house. If prices and wages both fall 10%, the family's income drops from, say, $50,000 to $45,000, while the debt stays at $100,000. The debt is now harder to carry. Across a whole economy, falling prices make debts heavier, and more people fall behind on loans.",
+        "Deflation also changes behavior. If you expect a $1,000 refrigerator to cost $950 next year, you may wait. When millions of people wait, stores sell less, cut jobs and cut prices again. Economists call this a deflationary spiral. It happened in the Great Depression, when U.S. consumer prices fell by roughly a quarter between 1929 and 1933. Do not confuse deflation with *disinflation*, which means inflation is slowing, say from 6% to 3%. Prices are still rising, only more slowly.",
+        "At the other extreme is *hyperinflation*, inflation so fast that prices climb by huge amounts each month or even each day. Germany in 1923 and Zimbabwe in the late 2000s are standard examples. In both cases the government paid its bills by printing money far faster than the economy grew. Workers rushed to spend their pay before it lost value. People turned to barter or foreign currency, and saving became pointless.",
+        "These two dangers help explain the Federal Reserve's 2% target. A small positive rate leaves some room above zero, so a slump is less likely to tip into deflation. It is also low enough that people can plan without constantly thinking about prices. The lesson from both extremes is the same. A stable, predictable price level is part of what lets a market economy work."
+       ],
+       "words": [
+        {
+         "w": "deflation",
+         "d": "a fall in the general level of prices; a negative inflation rate"
+        },
+        {
+         "w": "disinflation",
+         "d": "a slowdown in the inflation rate; prices still rise, but more slowly"
+        },
+        {
+         "w": "hyperinflation",
+         "d": "extremely rapid inflation, usually caused by a government printing money to pay its bills"
+        },
+        {
+         "w": "deflationary spiral",
+         "d": "a cycle in which falling prices lead people to delay buying, which cuts sales, jobs and prices further"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Buy the Car Now or Wait?",
+        "text": "Prices in a country have fallen 3% a year for four years. You need a car that costs $20,000 today, and you expect it to cost about $19,400 next year. Your pay has been cut twice, and you still owe $8,000 on a student loan.",
+        "prompt": "Would you buy now or wait? What happens to the whole economy if everyone makes the same choice? What is happening to the real burden of your loan?"
+       },
+       "check": [
+        {
+         "q": "Inflation falls from 5% to 2%. This is:",
+         "choices": [
+          "Deflation",
+          "Hyperinflation",
+          "A falling price level",
+          "Disinflation"
+         ],
+         "a": 3,
+         "why": "Prices are still rising, just more slowly. That is disinflation. Deflation would mean prices actually fall."
+        },
+        {
+         "q": "During deflation, a family with a fixed $50,000 debt finds that:",
+         "choices": [
+          "The debt is harder to repay, because incomes and prices fall while the debt does not",
+          "The debt shrinks automatically",
+          "The debt is easier to repay",
+          "Nothing changes"
+         ],
+         "a": 0,
+         "why": "The dollar amount owed stays the same while wages fall, so each payment takes a bigger share of income."
+        },
+        {
+         "q": "The most common cause of hyperinflation is:",
+         "choices": [
+          "A drought that raises food prices",
+          "A government printing money far faster than output grows",
+          "A rise in the minimum wage",
+          "Too much saving by households"
+         ],
+         "a": 1,
+         "why": "Germany in 1923 and Zimbabwe in the 2000s both printed money to pay government bills, so money lost value very fast."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Counting the Jobless",
+     "lessons": [
+      {
+       "title": "Who Is in the Labor Force",
+       "mainIdea": "Each month the government sorts adults into employed, unemployed and not in the labor force; only people without work who are looking count as unemployed.",
+       "reading": [
+        "Picture four people on one block in Aurora. Dana works 20 hours a week at a hardware store. Marcus lost his warehouse job and has sent out ten applications this month. Priya is a full-time college student who is not looking for work. Mr. Lopez retired last year. Only Marcus is unemployed in the official sense. Dana has a job, even though it is part-time. Priya and Mr. Lopez have no job, but they are not looking, so they are not in the labor force at all.",
+        "The rules come from the *Current Population Survey*, which the Census Bureau conducts for the Bureau of Labor Statistics. Each month it interviews about 60,000 households. People 16 and older, not in the military or in places such as prisons, are sorted into three groups. The *employed* did any work for pay in the survey week, or had a job but were out sick or on vacation. The *unemployed* had no job, were available to work, and actively looked in the past four weeks, or were waiting to be called back from a layoff.",
+        "The *labor force* is the employed plus the unemployed: everyone who has a job or is looking for one. Try the numbers for a town with 10,000 adults. If 6,000 are employed and 400 are unemployed, the labor force is 6,000 + 400 = 6,400. The other 3,600 are *not in the labor force*. They include students, retirees, stay-at-home parents, people too ill to work, and people who want a job but have stopped looking.",
+        "A common mistake is to think unemployed means anyone without a job. By that count Priya, Mr. Lopez and a stay-at-home father would all be unemployed, and the number would be huge and meaningless. The official definition asks two questions. Do you have a job? If not, are you looking? The survey counts actions, such as sending applications or contacting employers. Wishing for work is not enough."
+       ],
+       "words": [
+        {
+         "w": "labor force",
+         "d": "all people 16 and older who are employed or unemployed; everyone working or looking for work"
+        },
+        {
+         "w": "employed",
+         "d": "did any work for pay in the survey week, or had a job but was temporarily away from it"
+        },
+        {
+         "w": "unemployed",
+         "d": "had no job, was available to work, and actively looked for work in the past four weeks"
+        },
+        {
+         "w": "not in the labor force",
+         "d": "adults who neither have a job nor are looking, such as students, retirees and stay-at-home parents"
+        },
+        {
+         "w": "Current Population Survey",
+         "d": "the monthly survey of about 60,000 households that the government uses to measure employment and unemployment"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sort the Neighbors",
+        "text": "Six people in Rockford: a high school junior who works 10 hours a week at a grocery store; a laid-off machinist who interviewed for two jobs this month; a mother caring for a newborn who plans to go back to work next year; a retired teacher, age 70; a college graduate who applied for jobs until six weeks ago and then gave up; a nurse home sick this week from her full-time job.",
+        "prompt": "Place each person in employed, unemployed or not in the labor force. Which placement might surprise a reader, and why?"
+       },
+       "check": [
+        {
+         "q": "A 17-year-old works 6 hours a week for pay at a pet store. Officially, she is:",
+         "choices": [
+          "Unemployed, because she works part-time",
+          "Not in the labor force, because she is a student",
+          "Employed",
+          "Not counted, because she is under 18"
+         ],
+         "a": 2,
+         "why": "Anyone 16 or older who did any work for pay in the survey week counts as employed, even part-time."
+        },
+        {
+         "q": "Which person is counted as unemployed?",
+         "choices": [
+          "A retiree who does not want a job",
+          "A student who is not looking for work",
+          "A worker who stopped looking three months ago",
+          "A laid-off worker who applied for jobs last week"
+         ],
+         "a": 3,
+         "why": "Unemployed means no job, available, and actively looking in the past four weeks. Only the laid-off worker meets all three."
+        },
+        {
+         "q": "A town has 8,000 employed, 500 unemployed and 3,500 adults not in the labor force. The labor force is:",
+         "choices": [
+          "8,500",
+          "12,000",
+          "8,000",
+          "11,500"
+         ],
+         "a": 0,
+         "why": "Labor force = employed + unemployed = 8,000 + 500 = 8,500. People not in the labor force are left out."
+        }
+       ]
+      },
+      {
+       "title": "The Unemployment Rate",
+       "mainIdea": "The unemployment rate is the number unemployed divided by the labor force, times 100, not divided by the whole adult population.",
+       "reading": [
+        "Use the town from the last lesson: 6,000 employed, 400 unemployed, a labor force of 6,400. The *unemployment rate* = unemployed divided by labor force, times 100 = 400 divided by 6,400, times 100 = 6.25%. About 6 of every 100 people who want work and are looking cannot find it. The most common mistake is dividing by all 10,000 adults, which gives 4%. That understates the problem, because it treats retirees and students who are not looking as if they had jobs.",
+        "The BLS reports the national rate early each month, usually on the first Friday, in a release called the Employment Situation. The survey is a sample, so small moves of 0.1 or 0.2 points may be noise. Illinois and its counties and cities have their own rates, estimated each month by the Illinois Department of Employment Security working with the BLS. Local rates can differ a lot from the national one. A factory closing hits one county much harder than the whole country.",
+        "History gives a sense of scale. Unemployment reached about 25% in 1933, the worst of the Great Depression. It rose to nearly 11% in late 1982, and to about 10% in late 2009 after the financial crisis. In April 2020, as businesses shut down in the pandemic, it jumped to 14.7% in a single month. Then it fell faster than almost anyone expected. In strong years such as 2019 and 2023 the rate stayed below 4%.",
+        "Always check what a change is measuring. Suppose the number unemployed rises from 400 to 480 while the labor force stays at 6,400. The rate goes from 6.25% to 7.5%. That is a rise of 1.25 percentage points, but a 20% increase in the number of unemployed people. News stories sometimes mix those up. A *percentage point* is the difference between two rates. A percent change compares a new number with the old one."
+       ],
+       "words": [
+        {
+         "w": "unemployment rate",
+         "d": "the number unemployed divided by the labor force, times 100"
+        },
+        {
+         "w": "percentage point",
+         "d": "the plain difference between two percentages; going from 4% to 5% is a rise of 1 percentage point"
+        },
+        {
+         "w": "sample",
+         "d": "a smaller group surveyed to estimate facts about a whole population"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "U.S. Unemployment, Selected Moments",
+        "rows": [
+         [
+          "1933 (year)",
+          25
+         ],
+         [
+          "Late 1982",
+          10.8
+         ],
+         [
+          "2000 (year)",
+          4.0
+         ],
+         [
+          "Late 2009",
+          10.0
+         ],
+         [
+          "April 2020",
+          14.7
+         ],
+         [
+          "2023 (year)",
+          3.6
+         ]
+        ],
+        "unit": "percent of the labor force",
+        "cite": "Rounded from Bureau of Labor Statistics data; the 1933 figure is a later estimate",
+        "prompt": "Which moment was the worst? About how many times higher was the rate in April 2020 than in 2023? What was happening in the economy at the two moments near 10%?"
+       },
+       "check": [
+        {
+         "q": "A city has 45,000 people employed and 5,000 unemployed. The unemployment rate is:",
+         "choices": [
+          "11.1%",
+          "10%",
+          "5%",
+          "50%"
+         ],
+         "a": 1,
+         "why": "Labor force = 45,000 + 5,000 = 50,000. Rate = 5,000 / 50,000 x 100 = 10%. Dividing by the employed gives the wrong 11.1%."
+        },
+        {
+         "q": "A country has 200 million adults, a labor force of 150 million and 9 million unemployed. The unemployment rate is:",
+         "choices": [
+          "4.5%",
+          "9%",
+          "6%",
+          "3%"
+         ],
+         "a": 2,
+         "why": "9 / 150 x 100 = 6%. Dividing by all 200 million adults gives the wrong 4.5%."
+        },
+        {
+         "q": "The unemployment rate rises from 4% to 5%. Which statement is correct?",
+         "choices": [
+          "It rose 1%",
+          "It rose 5 percentage points",
+          "It rose 20 percentage points",
+          "It rose 1 percentage point, a 25% increase in the rate"
+         ],
+         "a": 3,
+         "why": "5 - 4 = 1 percentage point. As a percent change, 1 / 4 x 100 = 25%."
+        }
+       ]
+      },
+      {
+       "title": "Discouraged Workers and Participation",
+       "mainIdea": "The participation rate shows what share of adults are working or looking, and discouraged workers can make unemployment look lower than it feels.",
+       "reading": [
+        "Back in the town of 10,000 adults, 6,400 are in the labor force. The *labor force participation rate* = labor force divided by adult population, times 100 = 6,400 divided by 10,000, times 100 = 64%. It answers a different question from the unemployment rate: how many adults are taking part in the job market at all? In the United States the participation rate peaked a little above 67% around 2000. In recent years it has been near 62% to 63%.",
+        "Now suppose 100 of the 400 unemployed people give up. They have looked for months and believe no jobs are out there, so they stop searching. They are now *discouraged workers*, and they leave the labor force. The number unemployed falls to 300 and the labor force to 6,300. The unemployment rate drops to 300 divided by 6,300, times 100 = about 4.8%. Nobody found a job, yet the headline rate fell from 6.25% to 4.8%. The participation rate fell to 63%, and that is the clue.",
+        "The unemployment rate also misses *underemployment*. A worker who wants full-time hours but can find only 15 hours a week counts as employed. So does a college graduate in a job that needs no degree. The BLS publishes a broader measure, called U-6. It adds discouraged workers, others loosely attached to the job market, and people working part-time who want full-time work. U-6 always runs well above the official rate.",
+        "Why has participation fallen since 2000? The biggest single reason is age. The large baby boom generation has been retiring, and retirees leave the labor force. Young people staying in school longer also play a part. Economists debate how much of the rest reflects weak job prospects, health problems or other causes. The lesson for reading the news: look at unemployment and participation together, because either one alone can mislead."
+       ],
+       "words": [
+        {
+         "w": "labor force participation rate",
+         "d": "the labor force divided by the adult population, times 100; the share of adults working or looking"
+        },
+        {
+         "w": "discouraged workers",
+         "d": "people who want a job but have stopped looking because they believe none is available; they are not counted as unemployed"
+        },
+        {
+         "w": "underemployment",
+         "d": "working fewer hours than wanted, or in a job that does not use one's skills"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Good News or Bad?",
+        "text": "A headline says: Unemployment falls from 7.0% to 6.6%. Deep in the report, the number of employed people did not change at all. The labor force shrank by 400,000 as people stopped looking for work.",
+        "prompt": "Is the drop in unemployment good news? Explain what happened using the terms discouraged workers and participation rate."
+       },
+       "check": [
+        {
+         "q": "A state has 5 million adults, and 3.2 million are in the labor force. The participation rate is:",
+         "choices": [
+          "64%",
+          "3.2%",
+          "56%",
+          "156%"
+         ],
+         "a": 0,
+         "why": "3.2 / 5 x 100 = 64%. The participation rate divides the labor force by the adult population."
+        },
+        {
+         "q": "When discouraged workers stop looking, the official unemployment rate:",
+         "choices": [
+          "Rises, because more people are jobless",
+          "Falls, even though no one found a job",
+          "Stays the same, because they are still counted",
+          "Drops to zero"
+         ],
+         "a": 1,
+         "why": "They leave both the unemployed count and the labor force, so the rate falls without anyone getting hired."
+        },
+        {
+         "q": "A worker wants 40 hours a week but can get only 12. Officially, the worker is counted as:",
+         "choices": [
+          "Unemployed",
+          "Not in the labor force",
+          "Employed, though underemployed",
+          "A discouraged worker"
+         ],
+         "a": 2,
+         "why": "Any paid work in the survey week counts as employed. The shortfall in hours is underemployment, which the headline rate misses."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Kinds of Unemployment",
+     "lessons": [
+      {
+       "title": "Between Jobs and Out of Season",
+       "mainIdea": "Some unemployment is normal: people between jobs (frictional) and people whose work follows the calendar (seasonal).",
+       "reading": [
+        "Tanya finishes a nursing degree at Northern Illinois University in May. She applies to four hospitals and starts her first job in August. For those months she is unemployed, but nothing is wrong with the economy. She is searching for a good match, and hospitals are checking whether she fits. This is *frictional unemployment*: the time people spend moving between jobs or entering the workforce. It includes a worker who quits to find a better position and a parent returning to work after years at home.",
+        "Frictional unemployment is not all bad. A worker who takes the first offer may end up in a job that wastes her skills. Searching a few extra weeks can raise both her pay and her productivity. Job websites have made searching faster. Payments called *unemployment insurance*, made weekly to workers who lose a job through no fault of their own, give a laid-off worker time to find a better fit. Economists note that the same payments can also stretch out a search, and they disagree about how large that effect is.",
+        "Some joblessness follows the calendar; this is *seasonal unemployment*. Lifeguards at Lake Michigan beaches have no work in January. Construction slows in an Illinois winter. Farm workers are busiest at planting and harvest. Stores hire extra help for the holidays and let much of it go in January. The pattern repeats every year, so by itself it says little about the health of the economy.",
+        "That is why the BLS publishes a *seasonally adjusted* unemployment rate. Suppose, in an example, the raw rate usually rises from 3.8% in December to 4.4% in January as holiday jobs end. If this January's raw rate is 4.4%, the adjusted rate shows no change, because the rise was the normal seasonal one. If the raw rate jumped to 5.0%, the extra 0.6 points would show up as real weakness. Headline numbers are almost always seasonally adjusted."
+       ],
+       "words": [
+        {
+         "w": "frictional unemployment",
+         "d": "unemployment while people search for jobs, move between jobs or enter the workforce"
+        },
+        {
+         "w": "seasonal unemployment",
+         "d": "unemployment that rises and falls with the seasons, such as winter construction or summer lifeguard work"
+        },
+        {
+         "w": "seasonally adjusted",
+         "d": "changed to remove the normal yearly pattern so that real changes stand out"
+        },
+        {
+         "w": "unemployment insurance",
+         "d": "weekly payments for a limited time to workers who lose a job through no fault of their own"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Why Is This Person Unemployed?",
+        "text": "A software developer quit last month to look for a job closer to her family. A snowplow driver in Springfield has no work in June. A lifeguard at a Chicago beach is jobless every winter. A teenager just finished high school and is applying for jobs.",
+        "prompt": "Which kind of unemployment fits each case? Does any of them signal a problem in the economy? Explain."
+       },
+       "check": [
+        {
+         "q": "A new graduate spends two months searching for her first job. This is:",
+         "choices": [
+          "Cyclical unemployment",
+          "Structural unemployment",
+          "Hidden unemployment",
+          "Frictional unemployment"
+         ],
+         "a": 3,
+         "why": "Time spent entering the workforce and searching for a match is frictional unemployment."
+        },
+        {
+         "q": "Why does the BLS seasonally adjust the unemployment rate?",
+         "choices": [
+          "To remove the normal yearly pattern so real changes stand out",
+          "To make unemployment look lower",
+          "To leave teenagers out of the count",
+          "To count discouraged workers"
+         ],
+         "a": 0,
+         "why": "Rates rise and fall with the seasons every year. Adjusting removes that pattern so a real change is visible."
+        },
+        {
+         "q": "A ski instructor in Wisconsin is out of work every summer. This is:",
+         "choices": [
+          "Frictional unemployment",
+          "Seasonal unemployment",
+          "Cyclical unemployment",
+          "Structural unemployment"
+         ],
+         "a": 1,
+         "why": "The job loss follows the calendar and repeats each year, which is seasonal unemployment."
+        }
+       ]
+      },
+      {
+       "title": "Mismatch and Recession",
+       "mainIdea": "Structural unemployment comes from a mismatch between workers and the jobs available; cyclical unemployment comes from a weak economy.",
+       "reading": [
+        "A steel mill closes and 800 workers lose their jobs. Across town, hospitals cannot fill openings for medical technicians, and software firms are hiring. There are jobs, just not jobs these workers are trained for or live near. This is *structural unemployment*: a lasting mismatch between the skills or locations of workers and the jobs available. It comes from changes in technology, in what consumers buy, and in where production happens. It can last for years, because retraining and moving take time and money.",
+        "Structural unemployment can be painful even when the overall economy is healthy. When many factories in the Midwest, including in Illinois, cut jobs in the 1980s, workers in their forties and fifties faced whole new careers. Responses include job-training programs, community college courses and help moving to where the jobs are. Economists debate how well such programs work. Some studies show solid gains in pay; others show little.",
+        "Another kind, *cyclical unemployment*, is different. It rises when the whole economy slows in a *recession* and falls when it recovers. Businesses sell less, so they need fewer workers in almost every industry at once. In 2008 and 2009, home building collapsed and then the slowdown spread. Carpenters, factory workers, salespeople and office staff lost jobs whose skills were still useful. The problem was not a mismatch but too little spending in the economy overall.",
+        "Telling the two apart matters for policy. If unemployment is cyclical, the fix is a stronger economy, through more spending, lower interest rates or simply time. Those tools of fiscal and monetary policy come in later units. If it is structural, a stronger economy helps less, and training or moving matters more. A common mistake is to blame every job loss on technology, or every one on recession. The same laid-off worker can face both at once."
+       ],
+       "words": [
+        {
+         "w": "structural unemployment",
+         "d": "unemployment caused by a lasting mismatch between workers' skills or locations and the jobs available"
+        },
+        {
+         "w": "cyclical unemployment",
+         "d": "unemployment caused by a slowdown in the whole economy; it rises in recessions and falls in recoveries"
+        },
+        {
+         "w": "recession",
+         "d": "a broad decline in economic activity across the economy, lasting more than a few months"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Diagnose the Job Loss",
+        "text": "Case 1: A printing plant closes because newspapers have moved online, and its press operators find few printing jobs anywhere. Case 2: During a recession, a car dealer lays off three salespeople because fewer people are buying cars; the dealer plans to rehire when sales recover. Case 3: A bank replaces most of its tellers with apps and cash machines.",
+        "prompt": "Label each case structural or cyclical. For each, name one policy that would help those workers most."
+       },
+       "check": [
+        {
+         "q": "Coal mining jobs disappear as power plants switch to natural gas, and the miners lack skills for nearby openings. This is:",
+         "choices": [
+          "Frictional unemployment",
+          "Seasonal unemployment",
+          "Structural unemployment",
+          "Cyclical unemployment"
+         ],
+         "a": 2,
+         "why": "A lasting shift in the economy left the miners' skills mismatched with the jobs available. That is structural."
+        },
+        {
+         "q": "During a recession, unemployment rises in almost every industry at once. This rise is mainly:",
+         "choices": [
+          "Frictional",
+          "Structural",
+          "Seasonal",
+          "Cyclical"
+         ],
+         "a": 3,
+         "why": "Job losses across the whole economy caused by weak spending are cyclical unemployment."
+        },
+        {
+         "q": "Which policy fits structural unemployment best?",
+         "choices": [
+          "Job training in skills employers are hiring for",
+          "Waiting for the next economic boom",
+          "Seasonally adjusting the data",
+          "Counting discouraged workers as employed"
+         ],
+         "a": 0,
+         "why": "Structural unemployment is a skills or location mismatch, so training fixes the cause. A boom helps cyclical unemployment more."
+        }
+       ]
+      },
+      {
+       "title": "Full Employment and the Natural Rate",
+       "mainIdea": "Full employment does not mean zero unemployment; it means only frictional and structural unemployment remain, at the natural rate.",
+       "reading": [
+        "If unemployment could fall to zero, every graduate would start work the day after graduation. No one would ever quit to look for something better, and no factory would ever close. That is not how a changing economy works. So economists define *full employment* as the level at which there is no cyclical unemployment. Frictional and structural unemployment still remain. The unemployment rate at full employment is called the *natural rate of unemployment*.",
+        "The natural rate cannot be measured directly; it has to be estimated. Many estimates for the United States in recent years fall roughly between 4% and 5%. If the actual rate is 7% and the natural rate is 4.5%, cyclical unemployment is about 7 - 4.5 = 2.5 percentage points. If the actual rate falls well below the natural rate, say to 3%, employers compete hard for scarce workers. They raise wages, and prices can start rising faster. That is one link between jobs and inflation.",
+        "Congress has made high employment a national goal. The Employment Act of 1946 committed the federal government to promote maximum employment. A 1977 amendment to the Federal Reserve Act directs the Fed to promote maximum employment and stable prices. This pair of goals is known as the Fed's *dual mandate*. The two halves of this chapter, prices and jobs, are exactly the two things the Fed is told to watch.",
+        "The natural rate can change over time. Better job-matching websites may shorten frictional searches and lower it. A wave of factory closings may raise structural unemployment and push it up for a while. Economists disagree about how low unemployment can go before inflation speeds up. The late 2010s surprised many of them, when unemployment fell below 4% without much rise in inflation. Estimates of the natural rate are best read as ranges, not exact targets."
+       ],
+       "words": [
+        {
+         "w": "full employment",
+         "d": "the level of employment at which there is no cyclical unemployment; frictional and structural unemployment remain"
+        },
+        {
+         "w": "natural rate of unemployment",
+         "d": "the unemployment rate at full employment, made up of frictional and structural unemployment"
+        },
+        {
+         "w": "dual mandate",
+         "d": "the Federal Reserve's two goals set by Congress: maximum employment and stable prices"
+        }
+       ],
+       "look": {
+        "type": "source",
+        "title": "The Law Behind the Mandate",
+        "text": "The Board of Governors of the Federal Reserve System and the Federal Open Market Committee shall maintain long run growth of the monetary and credit aggregates commensurate with the economy's long run potential to increase production, so as to promote effectively the goals of maximum employment, stable prices, and moderate long-term interest rates.",
+        "cite": "Federal Reserve Act, Section 2A, as amended in 1977",
+        "paraphrase": false,
+        "prompt": "Which two goals in this sentence match the two halves of this chapter? Why might those two goals sometimes pull against each other?"
+       },
+       "check": [
+        {
+         "q": "Actual unemployment is 6.5% and the natural rate is 4.5%. Cyclical unemployment is:",
+         "choices": [
+          "11 percentage points",
+          "2 percentage points",
+          "4.5 percentage points",
+          "6.5 percentage points"
+         ],
+         "a": 1,
+         "why": "Cyclical = actual - natural = 6.5 - 4.5 = 2 percentage points."
+        },
+        {
+         "q": "Full employment means:",
+         "choices": [
+          "Every adult has a job",
+          "Unemployment is zero",
+          "There is no cyclical unemployment, though frictional and structural remain",
+          "The participation rate is 100%"
+         ],
+         "a": 2,
+         "why": "Some people are always between jobs or retraining. Full employment means only that the cyclical part is gone."
+        },
+        {
+         "q": "The Federal Reserve's dual mandate is:",
+         "choices": [
+          "Low taxes and a balanced budget",
+          "Free trade and a strong dollar",
+          "Full employment and zero inflation",
+          "Maximum employment and stable prices"
+         ],
+         "a": 3,
+         "why": "Congress directs the Fed to promote maximum employment and stable prices. The Fed treats 2% inflation, not zero, as stable."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A market basket costs $400 in the base year and $436 this year. The price index this year is:",
+     "choices": [
+      "109",
+      "436",
+      "36",
+      "104"
+     ],
+     "a": 0,
+     "why": "Index = 436 / 400 x 100 = 109. Prices are 9% above the base year."
+    },
+    {
+     "q": "The CPI rises from 280 to 294. The inflation rate is:",
+     "choices": [
+      "14%",
+      "5%",
+      "4.8%",
+      "2.94%"
+     ],
+     "a": 1,
+     "why": "(294 - 280) / 280 x 100 = 14 / 280 x 100 = 5%. The 14-point rise is not 14%."
+    },
+    {
+     "q": "Carlos earned $20 an hour last year and $21 this year, while prices rose 8%. His real wage:",
+     "choices": [
+      "Rose 5%",
+      "Rose 13%",
+      "Fell about 3%",
+      "Did not change"
+     ],
+     "a": 2,
+     "why": "His raise was 1 / 20 = 5%. Real wage growth is about 5 - 8 = -3%, so his pay buys less."
+    },
+    {
+     "q": "Which person gains from unexpectedly high inflation?",
+     "choices": [
+      "A retiree on a fixed pension",
+      "A saver with cash in a jar",
+      "A bank holding fixed-rate loans",
+      "A homeowner with a fixed-rate mortgage"
+     ],
+     "a": 3,
+     "why": "The homeowner repays a fixed number of dollars that are now worth less. The others hold or receive fixed dollars."
+    },
+    {
+     "q": "A county has 90,000 employed, 10,000 unemployed and 60,000 adults not in the labor force. The unemployment rate is:",
+     "choices": [
+      "10%",
+      "6.25%",
+      "11.1%",
+      "37.5%"
+     ],
+     "a": 0,
+     "why": "Labor force = 100,000. Rate = 10,000 / 100,000 x 100 = 10%. Dividing by all 160,000 adults gives the wrong 6.25%."
+    },
+    {
+     "q": "A county has 160,000 adults. Of them, 90,000 are employed and 10,000 are unemployed. The labor force participation rate is:",
+     "choices": [
+      "56.25%",
+      "62.5%",
+      "100%",
+      "37.5%"
+     ],
+     "a": 1,
+     "why": "Labor force = 90,000 + 10,000 = 100,000. Participation = 100,000 / 160,000 x 100 = 62.5%."
+    },
+    {
+     "q": "A factory worker loses her job when her plant is automated, and nearby openings need computer skills she lacks. This is:",
+     "choices": [
+      "Frictional unemployment",
+      "Seasonal unemployment",
+      "Structural unemployment",
+      "Cyclical unemployment"
+     ],
+     "a": 2,
+     "why": "A lasting change in technology left her skills mismatched with the jobs available, which is structural unemployment."
+    },
+    {
+     "q": "The unemployment rate falls because thousands of discouraged workers stop looking for jobs. What else would you expect to see?",
+     "choices": [
+      "A rise in the participation rate",
+      "A rise in the number employed",
+      "A jump in the CPI",
+      "A fall in the labor force participation rate"
+     ],
+     "a": 3,
+     "why": "Discouraged workers leave the labor force, so participation falls. No one was hired, so employment does not rise."
+    }
+   ]
+  }
+ ]
+}

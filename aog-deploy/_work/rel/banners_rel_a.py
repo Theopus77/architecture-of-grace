@@ -74,7 +74,7 @@ def _windows(seed, x0, x1, y0, y1, step=16, p=0.6, col='#F6D98C', op=0.8):
 BANNERS, CREDITS = {}, {}
 
 # ───────────────────────── 1 · How to Read a Sacred Text ─────────────────────────
-CREDITS[1] = ('Drawn scene: a lamplit reading room at night, a long table holding a stack of closed '
+CREDITS[13] = ('Drawn scene: a lamplit reading room at night, a long table holding a stack of closed '
               'books, a rolled scroll, an open codex under a magnifying lens and a bound palm-leaf '
               'manuscript, with stars in the arched window behind')
 _d = [_lg('rlb1-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
@@ -83,7 +83,7 @@ _d = [_lg('rlb1-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
       _lg('rlb1-roll', [(0, '#FFF2C4'), (0.5, '#E4D2AC'), (1, '#9A7446')]),
       _glow('rlb1-lamp'),
       _glow('rlb1-lens', '#FFF2C4', 0.5)]
-BANNERS[1] = _svg(CREDITS[1], _d, '''
+BANNERS[13] = _svg(CREDITS[13], _d, '''
 <rect width="1200" height="420" fill="url(#rlb1-wall)"/>
 <path d="M470 236 V120 A130 130 0 0 1 730 120 V236z" fill="url(#rlb1-sky)"/>
 ''' + _stars(101, 18, 492, 708, 60, 226, 0.7) + '''
@@ -114,7 +114,7 @@ BANNERS[1] = _svg(CREDITS[1], _d, '''
 ''')
 
 # ───────────────────────── 2 · The Hebrew Bible ─────────────────────────
-CREDITS[2] = ('Drawn scene: a desert at dusk with a distant mountain under the first stars, dark tents '
+CREDITS[14] = ('Drawn scene: a desert at dusk with a distant mountain under the first stars, dark tents '
               'lit from within across the sand, and the two wooden rollers of a Torah scroll in the '
               'foreground with the parchment shown as plain columns')
 _d = [_lg('rlb2-sky', [(0, '#0A1E33'), (0.45, '#1C3A62'), (0.72, '#2A4C78'), (0.9, '#C99A5E'), (1, '#F2C273')]),
@@ -124,7 +124,7 @@ _d = [_lg('rlb2-sky', [(0, '#0A1E33'), (0.45, '#1C3A62'), (0.72, '#2A4C78'), (0.
       _lg('rlb2-wood', [(0, '#3A2A18'), (0.45, '#9A7446'), (1, '#3A2A18')], 1, 0),
       _glow('rlb2-dusk', '#FFF2C4', 0.8),
       _glow('rlb2-lamp', '#F2C964', 0.8)]
-BANNERS[2] = _svg(CREDITS[2], _d, '''
+BANNERS[14] = _svg(CREDITS[14], _d, '''
 <rect width="1200" height="420" fill="url(#rlb2-sky)"/>
 ''' + _stars(201, 60, 60, 1140, 8, 150, 0.7) + '''
 <circle cx="760" cy="58" r="2.4" fill="#FFF2C4"/><circle cx="760" cy="58" r="10" fill="url(#rlb2-dusk)"/>
@@ -157,7 +157,7 @@ BANNERS[2] = _svg(CREDITS[2], _d, '''
 ''')
 
 # ───────────────────────── 3 · The New Testament ─────────────────────────
-CREDITS[3] = ('Drawn scene: a lakeshore in Galilee at evening, two wooden fishing boats drawn up on '
+CREDITS[15] = ('Drawn scene: a lakeshore in Galilee at evening, two wooden fishing boats drawn up on '
               'the stones with nets drying, and a road winding up to a small hill town with lit windows')
 _d = [_lg('rlb3-sky', [(0, '#0A1E33'), (0.5, '#1C3A62'), (0.85, '#C99A5E'), (1, '#F2C273')]),
       _lg('rlb3-lake', [(0, '#C99A5E'), (0.12, '#2A4C78'), (1, '#0F2444')]),
@@ -169,7 +169,7 @@ _town = ''.join('<rect x="%d" y="%d" width="%d" height="%d" fill="%s"/>' % (x, y
     (736, 170, 30, 22, '#C9B48A'), (768, 162, 26, 30, '#E4D2AC'), (796, 168, 34, 24, '#B8A27A'),
     (752, 150, 22, 20, '#E4D2AC'), (778, 142, 30, 22, '#C9B48A'), (810, 150, 24, 20, '#B8A27A'),
     (790, 126, 20, 18, '#E4D2AC'), (834, 176, 28, 20, '#C9B48A'), (714, 182, 24, 16, '#B8A27A')])
-BANNERS[3] = _svg(CREDITS[3], _d, '''
+BANNERS[15] = _svg(CREDITS[15], _d, '''
 <rect width="1200" height="240" fill="url(#rlb3-sky)"/>
 ''' + _stars(301, 30, 40, 1160, 6, 110, 0.55) + '''
 <circle cx="420" cy="228" r="80" fill="url(#rlb3-sun)" opacity=".8"/>
@@ -200,7 +200,7 @@ BANNERS[3] = _svg(CREDITS[3], _d, '''
 ''')
 
 # ───────────────────────── 4 · Judaism ─────────────────────────
-CREDITS[4] = ('Drawn scene: a Sabbath table at dusk with two lit candles, a loaf of challah under an '
+CREDITS[16] = ('Drawn scene: a Sabbath table at dusk with two lit candles, a loaf of challah under an '
               'embroidered cover and a cup, and through the window the rooftops of a city at sunset')
 _d = [_lg('rlb4-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
       _lg('rlb4-sky', [(0, '#1C3A62'), (0.45, '#2A4C78'), (0.8, '#C99A5E'), (1, '#F2C273')]),
@@ -210,7 +210,7 @@ _d = [_lg('rlb4-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
       _glow('rlb4-flame', '#FFF2C4', 0.95)]
 _roofs = ('<path d="M420 236 V190 h40 v-14 h30 v14 h24 v-26 l20 -14 l20 14 v26 h36 v-20 h44 v20 h30 v-34 h40 v34 h28 v-12 h34 V236z" fill="#142B4C"/>'
           '<path d="M540 156 v-14 M704 156 v-16 h6 v16" stroke="#142B4C" stroke-width="3"/>')
-BANNERS[4] = _svg(CREDITS[4], _d, '''
+BANNERS[16] = _svg(CREDITS[16], _d, '''
 <rect width="1200" height="420" fill="url(#rlb4-wall)"/>
 <g stroke="#0A1E33" stroke-width="1" opacity=".35"><path d="M0 60 H1200 M0 140 H1200 M0 220 H1200"/></g>
 <rect x="420" y="40" width="360" height="196" fill="url(#rlb4-sky)"/>
@@ -242,7 +242,7 @@ BANNERS[4] = _svg(CREDITS[4], _d, '''
 ''')
 
 # ───────────────────────── 5 · Islam ─────────────────────────
-CREDITS[5] = ('Drawn scene: an empty mosque courtyard at dusk, a row of pointed arches lit from within, '
+CREDITS[17] = ('Drawn scene: an empty mosque courtyard at dusk, a row of pointed arches lit from within, '
               'a fountain for washing at the center, a dome and a minaret against the gold sky and a '
               'crescent moon high above')
 _d = [_lg('rlb5-sky', [(0, '#0A1E33'), (0.35, '#1C3A62'), (0.7, '#C99A5E'), (1, '#F2C273')]),
@@ -257,7 +257,7 @@ for _x in range(222, 980, 76):
                 '<path d="M%d 318 V266 Q%d 236 %d 226 Q%d 236 %d 266 V318z" fill="#F2C964" opacity=".45"/>'
                 '<path d="M%d 214 v18" stroke="#8A6A3A" stroke-width="1.2"/><path d="M%d 232 h8 l-2 10 h-4z" fill="#FFF2C4"/>'
                 % (_x, _x, _x + 26, _x + 52, _x + 52, _x + 6, _x + 6, _x + 26, _x + 46, _x + 46, _x + 26, _x + 22))
-BANNERS[5] = _svg(CREDITS[5], _d, '''
+BANNERS[17] = _svg(CREDITS[17], _d, '''
 <rect width="1200" height="420" fill="url(#rlb5-sky)"/>
 ''' + _stars(501, 22, 40, 1160, 6, 90, 0.55) + '''
 <path d="M394 38 A32 32 0 1 0 394 102 A40 40 0 0 1 394 38z" fill="#FFF2C4"/><circle cx="380" cy="70" r="60" fill="url(#rlb5-lit)" opacity=".35"/>
@@ -283,7 +283,7 @@ BANNERS[5] = _svg(CREDITS[5], _d, '''
 ''')
 
 # ───────────────────────── 6 · Hinduism ─────────────────────────
-CREDITS[6] = ('Drawn scene: stone river steps at dawn with small oil lamps floating on the water, '
+CREDITS[18] = ('Drawn scene: stone river steps at dawn with small oil lamps floating on the water, '
               'shade umbrellas on the ghats and a curved temple tower rising behind')
 _d = [_lg('rlb6-sky', [(0, '#0F2444'), (0.45, '#2A4C78'), (0.8, '#C99A5E'), (1, '#F2C273')]),
       _lg('rlb6-steps', [(0, '#C9B48A'), (1, '#6A5A40')]),
@@ -300,7 +300,7 @@ for _x, _y, _s in [(300, 344, 1), (540, 378, 1.2), (620, 352, 1), (700, 370, 1.1
                '<path d="M-7 -1 q7 4 14 0" stroke="#2E5A4C" stroke-width="2" fill="none"/>'
                '<path d="M0 -2 q-4 -6 0 -12 q4 6 0 12z" fill="#F2C964"/><circle cx="0" cy="-7" r="16" fill="url(#rlb6-lamp)"/>'
                '<path d="M-2 4 v14 M2 6 v10" stroke="#F2C964" stroke-width="1.5" opacity=".45"/></g>' % (_x, _y, _s))
-BANNERS[6] = _svg(CREDITS[6], _d, '''
+BANNERS[18] = _svg(CREDITS[18], _d, '''
 <rect width="1200" height="420" fill="url(#rlb6-sky)"/>
 ''' + _stars(601, 8, 40, 1160, 6, 70, 0.45) + '''
 <ellipse cx="600" cy="240" rx="560" ry="120" fill="url(#rlb6-dawn)" opacity=".6"/>
@@ -328,7 +328,7 @@ BANNERS[6] = _svg(CREDITS[6], _d, '''
 ''')
 
 # ───────────────────────── 7 · Buddhism ─────────────────────────
-CREDITS[7] = ('Drawn scene: a quiet monastery on a hillside at evening with lamplit windows, a bronze '
+CREDITS[19] = ('Drawn scene: a quiet monastery on a hillside at evening with lamplit windows, a bronze '
               'bell hanging under a small roofed frame and a broad bodhi tree with heart-shaped leaves')
 _d = [_lg('rlb7-sky', [(0, '#0A1E33'), (0.5, '#1C3A62'), (0.85, '#C99A5E'), (1, '#F2C273')]),
       _lg('rlb7-hill', [(0, '#1C3A62'), (1, '#0A1E33')]),
@@ -346,7 +346,7 @@ for _k in range(80):
                     'c-5 -10 -13 6 -3 18l-2 6l2 -6c15 -8 13 -24 3 -18z'])
     _lv[_c] = _lv.get(_c, '') + 'M%d %d%s' % (_x, _y, _t)
 _leaves = ''.join('<path d="%s" fill="%s"/>' % (v, c) for c, v in sorted(_lv.items()))
-BANNERS[7] = _svg(CREDITS[7], _d, '''
+BANNERS[19] = _svg(CREDITS[19], _d, '''
 <rect width="1200" height="420" fill="url(#rlb7-sky)"/>
 ''' + _stars(701, 26, 40, 1160, 6, 120, 0.6) + '''
 <ellipse cx="520" cy="250" rx="500" ry="110" fill="url(#rlb7-lit)" opacity=".4"/>
@@ -372,7 +372,7 @@ BANNERS[7] = _svg(CREDITS[7], _d, '''
 ''')
 
 # ───────────────────────── 8 · Confucianism and Daoism ─────────────────────────
-CREDITS[8] = ('Drawn scene: a scholar garden at evening, a pavilion with upturned eaves beside flowing '
+CREDITS[20] = ('Drawn scene: a scholar garden at evening, a pavilion with upturned eaves beside flowing '
               'water, a writing table with a brush, an ink stone and a blank sheet of paper, and misty '
               'mountains under a full moon beyond')
 _d = [_lg('rlb8-sky', [(0, '#0A1E33'), (0.5, '#1C3A62'), (0.85, '#2A4C78'), (1, '#C99A5E')]),
@@ -381,7 +381,7 @@ _d = [_lg('rlb8-sky', [(0, '#0A1E33'), (0.5, '#1C3A62'), (0.85, '#2A4C78'), (1, 
       _lg('rlb8-mist', [(0, '#F7EBD0', 0), (0.5, '#F7EBD0', 0.28), (1, '#F7EBD0', 0)], 1, 0),
       _glow('rlb8-moon', '#FFF2C4', 0.9),
       _glow('rlb8-lamp', '#F2C964', 0.8)]
-BANNERS[8] = _svg(CREDITS[8], _d, '''
+BANNERS[20] = _svg(CREDITS[20], _d, '''
 <rect width="1200" height="420" fill="url(#rlb8-sky)"/>
 ''' + _stars(801, 26, 40, 1160, 6, 110, 0.5) + '''
 <circle cx="720" cy="74" r="80" fill="url(#rlb8-moon)" opacity=".6"/><circle cx="720" cy="74" r="26" fill="#FFF2C4"/>
@@ -411,7 +411,7 @@ BANNERS[8] = _svg(CREDITS[8], _d, '''
 ''')
 
 # ───────────────────────── 9 · Sikhism, Jainism, Africa and the Americas ─────────────────────────
-CREDITS[9] = ('Drawn scene: a golden-domed temple reflected in a still pool on one side and a baobab '
+CREDITS[21] = ('Drawn scene: a golden-domed temple reflected in a still pool on one side and a baobab '
               'tree under a sky full of stars on the other, joined by a single horizon line at dusk')
 _d = [_lg('rlb9-sky', [(0, '#0A1E33'), (0.55, '#1C3A62'), (0.88, '#C99A5E'), (1, '#F2C273')]),
       _lg('rlb9-gold', [(0, '#FFF2C4'), (0.4, '#F2C964'), (1, '#9A7446')]),
@@ -430,7 +430,7 @@ _temple = ('<rect x="376" y="212" width="148" height="58" fill="url(#rlb9-gold)"
            '<path d="M450 102 v-14" stroke="#F2C273" stroke-width="2"/><circle cx="450" cy="86" r="3" fill="#FFF2C4"/>'
            '<g><rect x="378" y="160" width="20" height="14" fill="url(#rlb9-gold)"/><path d="M376 162 q12 -22 24 0z" fill="url(#rlb9-dome)"/><path d="M388 146 v-6" stroke="#F2C273" stroke-width="1.5"/>'
            '<rect x="502" y="160" width="20" height="14" fill="url(#rlb9-gold)"/><path d="M500 162 q12 -22 24 0z" fill="url(#rlb9-dome)"/><path d="M512 146 v-6" stroke="#F2C273" stroke-width="1.5"/></g>')
-BANNERS[9] = _svg(CREDITS[9], _d, '''
+BANNERS[21] = _svg(CREDITS[21], _d, '''
 <rect width="1200" height="420" fill="url(#rlb9-sky)"/>
 ''' + _stars(901, 20, 40, 600, 6, 110, 0.5) + _stars(902, 36, 600, 1160, 6, 200, 0.75) + '''
 <ellipse cx="450" cy="200" rx="200" ry="110" fill="url(#rlb9-lit)" opacity=".55"/>
@@ -454,7 +454,7 @@ BANNERS[9] = _svg(CREDITS[9], _d, '''
 ''')
 
 # ───────────────────────── 10 · Religion and the World ─────────────────────────
-CREDITS[10] = ('Drawn scene: a city skyline at night where a dome, a church steeple, a pagoda roof, the '
+CREDITS[22] = ('Drawn scene: a city skyline at night where a dome, a church steeple, a pagoda roof, the '
                'rounded front of a synagogue and a gurdwara dome stand side by side among apartment '
                'blocks, lit windows everywhere')
 _d = [_lg('rlb10-sky', [(0, '#0A1E33'), (0.6, '#0F2444'), (0.9, '#2A4C78'), (1, '#C99A5E')]),
@@ -462,7 +462,7 @@ _d = [_lg('rlb10-sky', [(0, '#0A1E33'), (0.6, '#0F2444'), (0.9, '#2A4C78'), (1, 
       _lg('rlb10-gold', [(0, '#9A7446'), (0.4, '#FFF2C4'), (1, '#9A7446')], 1, 0),
       _lg('rlb10-street', [(0, '#142B4C'), (1, '#0A1428')]),
       _glow('rlb10-lit', '#FFF2C4', 0.85)]
-BANNERS[10] = _svg(CREDITS[10], _d, '''
+BANNERS[22] = _svg(CREDITS[22], _d, '''
 <rect width="1200" height="420" fill="url(#rlb10-sky)"/>
 ''' + _stars(1001, 26, 20, 1180, 6, 130, 0.6) + '''
 <circle cx="1000" cy="60" r="16" fill="#F7EBD0" opacity=".85"/>
@@ -492,7 +492,7 @@ BANNERS[10] = _svg(CREDITS[10], _d, '''
 ''')
 
 # ───────────────────────── 11 · One Question, Many Lenses ─────────────────────────
-CREDITS[11] = ('Drawn scene: a single path leading to a crossroads under a starry sky, where it divides '
+CREDITS[23] = ('Drawn scene: a single path leading to a crossroads under a starry sky, where it divides '
                'into several branches toward the hills, each lined with small glowing lanterns')
 _d = [_lg('rlb11-sky', [(0, '#0A1E33'), (0.6, '#0F2444'), (0.9, '#2A4C78'), (1, '#C99A5E')]),
       _lg('rlb11-land', [(0, '#1C3A62'), (1, '#0A1428')]),
@@ -504,7 +504,7 @@ for _x, _y, _s in [(560, 360, 1.3), (644, 360, 1.3), (470, 290, .8), (330, 272, 
     _lan += ('<g transform="translate(%d %d) scale(%s)"><path d="M0 0 v-46" stroke="#3A2A18" stroke-width="4"/>'
              '<path d="M0 -46 h10 v6" stroke="#3A2A18" stroke-width="3" fill="none"/><rect x="4" y="-40" width="12" height="16" rx="2" fill="#F2C964"/>'
              '<path d="M3 -40 h14 l-3 -4 h-8z" fill="#3A2A18"/><circle cx="10" cy="-32" r="26" fill="url(#rlb11-lit)"/></g>' % (_x, _y, _s))
-BANNERS[11] = _svg(CREDITS[11], _d, '''
+BANNERS[23] = _svg(CREDITS[23], _d, '''
 <rect width="1200" height="420" fill="url(#rlb11-sky)"/>
 <path d="M160 20 q440 60 900 200" stroke="#F7EBD0" stroke-width="50" fill="none" opacity=".035"/>
 ''' + _stars(1101, 48, 10, 1190, 6, 220, 0.7) + _stars(1102, 16, 200, 1000, 20, 180, 0.95) + '''
@@ -524,7 +524,7 @@ BANNERS[11] = _svg(CREDITS[11], _d, '''
 ''')
 
 # ───────────────────────── 12 · Capstone: The Sources Speak ─────────────────────────
-CREDITS[12] = ('Drawn scene: a long library table at night covered in open books and scrolls, a student '
+CREDITS[24] = ('Drawn scene: a long library table at night covered in open books and scrolls, a student '
                'seen from behind writing in a notebook, and a tall window full of stars')
 _d = [_lg('rlb12-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
       _lg('rlb12-sky', [(0, '#0A1E33'), (0.6, '#1C3A62'), (1, '#2A4C78')]),
@@ -532,7 +532,7 @@ _d = [_lg('rlb12-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
       _lg('rlb12-roll', [(0, '#FFF2C4'), (0.5, '#E4D2AC'), (1, '#9A7446')]),
       _glow('rlb12-lamp')]
 _win = '<g fill="none" stroke="#2A4C78" stroke-width="6"><path d="M440 236 V100 A160 90 0 0 1 760 100 V236z"/></g><g fill="#2A4C78"><rect x="518" y="10" width="5" height="226"/><rect x="598" y="0" width="5" height="236"/><rect x="678" y="10" width="5" height="226"/><rect x="440" y="120" width="320" height="4"/><rect x="430" y="232" width="340" height="12"/></g>'
-BANNERS[12] = _svg(CREDITS[12], _d, '''
+BANNERS[24] = _svg(CREDITS[24], _d, '''
 <rect width="1200" height="420" fill="url(#rlb12-wall)"/>
 <path d="M440 236 V100 A160 90 0 0 1 760 100 V236z" fill="url(#rlb12-sky)"/>
 ''' + _stars(1201, 30, 452, 748, 40, 228, 0.8) + _stars(1202, 10, 470, 730, 50, 220, 1) + '''
