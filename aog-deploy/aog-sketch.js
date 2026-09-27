@@ -307,8 +307,10 @@
    doors), small flat numbers, and a readable "Course contents" button. */
 (function(){
   var PAL=["#2F63B8","#B8457A","#2E8B57","#B87A12","#7B4FA0","#A8323E","#1F8080","#3F4AA6"];
-  var css=".unit-spread .badge{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
-   +".unit-spread .unum b{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;min-width:36px!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+  var SK="background:linear-gradient(#FBF8F0,#FBF8F0) padding-box, repeating-linear-gradient(38deg, var(--aog-uc,var(--gl,#2F63B8)) 0 2.8px, #FBF8F0 2.8px 5.6px) border-box!important;border:5px solid transparent!important;outline:1.5px solid #2A2622;outline-offset:-1px;color:#1F2630!important;font-family:Georgia,\"Times New Roman\",serif!important;";
+  var css=".unit-spread .badge{"+SK+"width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+   +".unit .un{"+SK+"}"
+   +".unit-spread .unum b{"+SK+"min-width:36px!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
    +".cl-btn,.cl-btn:visited{background:#0A1E33!important;color:#F7F2E6!important;opacity:1!important;filter:none!important}"
    +".cl-btn:hover{background:#1D3A5C!important;color:#fff!important}";
   function go(){
