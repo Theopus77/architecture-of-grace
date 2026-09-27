@@ -23,7 +23,8 @@ float pot(vec3 q){ float y=q.y; float r=.1+.018*sin(clamp(y/.14,0.,1.)*2.6)-.02*
   return min(min(d,lip),ladle); }
 float thali(vec3 q){ float r=length(q.xz);
   float plate=max(abs(q.y-.004-.008*smoothstep(.07,.1,r))-.002,r-.1); plate=min(plate*.8,sdTorus(q-vec3(0,.012,0),.1,.0025));
-  float b1=bowlD(q-vec3(-.035,.0,.03),.035,.028), b2=bowlD(q-vec3(.04,.0,.03),.035,.028);
+  float b1=bowlD(q-vec3(-.04,.006,.025),.045,.03), b2=bowlD(q-vec3(.045,.006,.02),.045,.03);
+  float f1=sdCylY(q-vec3(-.04,.028,.025),.034,.002), f2=sdCylY(q-vec3(.045,.028,.02),.034,.002); b1=min(b1,f1); b2=min(b2,f2);
   return min(plate,min(b1,b2)); }
 float rotis(vec3 q){ float d=1e5;
   for(int i=0;i<5;i++){ float f=float(i); vec3 c=q-vec3(.004*sin(f*2.),.003+f*.0045,.004*cos(f*1.3));
@@ -40,6 +41,10 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .7;
   if(id==2.) return .9;
   if(id==3.){ vec3 q=L(p,PT,.3); if(q.y>.155) return .3; if(abs(q.y-.04)<.002) return .35; if(q.y>.12&&length(q.xz)<.085) return .35; return .5; }
-  if(id==4.){ vec3 q=L(p,TH,.2); if(q.y<.014&&length(q.xz)>.09) return .45; if(q.y>.005&&n.y>.8&&q.y<.03) return .8; return .62; }
+  if(id==4.){ vec3 q=L(p,TH,.2); float r1=length(q.xz-vec2(-.04,.025)), r2=length(q.xz-vec2(.045,.02)); float rb=min(r1,r2);
+    if(q.y>.026&&q.y<.031&&rb<.035) return r1<r2?.5+.15*fbm(q.xz*120.):.78;   /* dal and rice */
+    if(q.y>.033&&rb<.05) return .3;                                           /* bowl rims */
+    if(rb<.047&&q.y>.012) return .72;                                         /* bowl sides */
+    if(q.y<.014&&length(q.xz)>.09) return .45; return .6; }
   if(id==5.){ vec3 q=L(p,RT,0.); float a=.72; if(n.y>.8&&fbm(q.xz*90.)>.6) a=.45; return a; }
   return .7; }
