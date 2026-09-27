@@ -1,7 +1,7 @@
 /* FCS Unit 13 "The Sewing Machine" — pencil still life: a classic sewing machine with its arm,
    handwheel, spool of thread on top and needle down into a piece of cloth on the bed. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.08,0.09)
+#define CAM_POS vec3(-0.4383,0.3032,-0.7179)
+#define CAM_TGT vec3(-0.2119,0.0496,0.1245)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
