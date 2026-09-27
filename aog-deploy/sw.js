@@ -8,7 +8,7 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7062'   // ENGLISH: PENCIL DRAWINGS ON ALL 24 UNITS. previous: m7061   // MERGE MAIN (aog-cache-2026.09.27.c99966) + QUR'AN PENCIL. previous: m7060
+const CACHE = 'aog-cache-2026.09.27.m7063'   // HEBREW BIBLE AND HINDU TEXTS: PENCIL DRAWINGS. previous: m7062   // ENGLISH: PENCIL DRAWINGS ON ALL 24 UNITS. previous: m7061   // MERGE MAIN (aog-cache-2026.09.27.c99966) + QUR'AN PENCIL. previous: m7060
 // const CACHE = 'aog-cache-2026.09.27.c99966'   // SCIENCE UNIT 28 (grades 6–8): Sound, Rhythm and Recorded Music, the Drum Machine, Turntables and Oscilloscope's own unit; every jump menu lists it. previous: 2026.09.27.t94094   // LAB PAGES: STOP paintLang/labPaintAll RECURSION (b10, fc6, fc16 LOADED IN ~25 S). previous: r94093   // ALL SUBJECT PRACTICE ROOMS GET THE STAINED GLASS (aog-practice-rooms.css) AND A FROM-THE-COURSE LINK. previous: aog-cache-2026.09.27.h91361
 // const CACHE = 'aog-cache-2026.09.27.m7059'   // MERGE: 3 TEXTS COURSES + SCIENCE UNIT 28. previous: ec98200 / m7058
 // const CACHE = 'aog-cache-2026.09.27.ec98200'   // SCIENCE UNIT 28 (grades 6–8): Sound, Rhythm and Recorded Music, the Drum Machine, Turntables and Oscilloscope's own unit; every jump menu lists it. previous: 2026.09.27.t94094   // LAB PAGES: STOP paintLang/labPaintAll RECURSION (b10, fc6, fc16 LOADED IN ~25 S). previous: r94093   // ALL SUBJECT PRACTICE ROOMS GET THE STAINED GLASS (aog-practice-rooms.css) AND A FROM-THE-COURSE LINK. previous: aog-cache-2026.09.27.h91361
