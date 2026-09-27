@@ -331,7 +331,11 @@
   }
   function measure() {
     try {
-      H.style.setProperty("--aog-vw", H.clientWidth + "px");
+      /* AOG-CALM §7 sets body{zoom:.94/.92} on an iPad and a computer. Lengths inside the body are scaled, so the
+         viewport width has to be handed in at the same scale, or every full-bleed masthead comes up short and the
+         page jumps on each change (Jimmy: "It makes me think I am having a seizure"). */
+      var z = 1; try { z = parseFloat(getComputedStyle(D.body).zoom) || 1; } catch (e0) {}
+      H.style.setProperty("--aog-vw", (H.clientWidth / z) + "px");
       if (!hero) return;
       /* AOG-GRACE-STILL-V1 (2026-09-26) — Jimmy: pages "look all jittery" on load.
          The pull was measured AFTER the last pull had moved the masthead, so

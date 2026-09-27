@@ -306,6 +306,7 @@ footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
   .no-print { display:none !important; }
   body { background:#fff; color:#111; }
   .psheet + .psheet { break-before:page; }
+  body[data-print="pat"] .psheet.vox, body[data-print="vox"] .psheet.pat { display:none !important; }
   .paper { break-inside:avoid; }
 }
 
@@ -1598,14 +1599,16 @@ function printView(){
   }).join("");
   return `<p class="kicker">${t("print")}</p>
     <h1>${t("printLead")}</h1>
-    <p class="no-print"><button type="button" class="btn btn-steel" id="printBtn">${t("printNow")}</button></p>
-    <article class="card paper psheet">
+    <!-- AOG-DRUMS-PRINT-CHOICE-V1 (2026-09-26) — Jimmy: "Give it an option to print separately or together. I don't
+         want a Q&A when I am printing out my beats." Three buttons: the pattern alone, the voices alone, or both. -->
+    <p class="no-print" style="display:flex;gap:.5rem;flex-wrap:wrap"><button type="button" class="btn btn-steel" data-print="pat">${S.lang==="es"?"Imprimir mi patrón":"Print my pattern"}</button><button type="button" class="btn" data-print="vox">${S.lang==="es"?"Imprimir Conoce las voces":"Print Meet the voices"}</button><button type="button" class="btn" data-print="both">${S.lang==="es"?"Imprimir las dos":"Print both"}</button></p>
+    <article class="card paper psheet pat">
       <div class="tiny">${t("sheet1")}</div>
       <p>${t("nameLine")} <span class="blank"></span> &nbsp; ${t("dateLine")} <span class="blank"></span></p>
       <p class="muted">${S.bpm} ${t("bpm")} · SW ${swingPct()}% · ${S.bit?"12-bit · 26,040 Hz":"smoothed"}</p>
       <div class="steps-print">${rows}</div>
     </article>
-    <article class="card paper psheet">
+    <article class="card paper psheet vox">
       <div class="tiny">${t("sheet2")}</div>
       <p>1. ${t("q1")}</p>
       <p>2. ${t("q2")}</p>
@@ -2554,6 +2557,7 @@ function bind(){
   if(again) again.onclick=()=>{ S.jobI=((S.jobI||0)+1)%JOBS.length; paint(); };
   const pr=document.getElementById("printBtn");
   if(pr) pr.onclick=()=>window.print();
+  document.querySelectorAll("[data-print]").forEach(b=>b.onclick=()=>{ document.body.setAttribute("data-print",b.dataset.print); window.print(); });
   ensureScope();
 }
 

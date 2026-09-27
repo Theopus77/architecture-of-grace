@@ -66996,7 +66996,7 @@ html.js-reveal .reveal,
     { v:"economics",      en:"Economics",                  es:"Economía" },
     { v:"foundry",        en:"Word Foundry (by unit)",     es:"Word Foundry (por unidad)" }
   ];
-  var DDGRADE = ["K","1","2","3","4","5","6","7","8","9-10","11-12"];   /* AOG-DD-HS-V1: two high-school bands */
+  var DDGRADE = ["K","1","2","3","4","5","6","7","8","9-10","11-12","adult"];   /* AOG-DD-ADULT-V1: an Adult level for every subject */   /* AOG-DD-HS-V1: two high-school bands */
   /* AOG-DD-LINK-TEN-V1 - the Grade menu is the SUBJECT's grades, as on the page itself
      (hasGrade there). Religions and Economics exist only in the two high-school bands;
      the Word Foundry goes by class unit. A link to a grade a subject lacks draws nothing. */
@@ -67006,6 +67006,7 @@ html.js-reveal .reveal,
     return DDGRADE;
   }
   function ddGradeLabel(g, es) {
+    if (g === "adult") return es ? "Adulto" : "Adult";
     if (g === "K") return es ? "Kínder" : "Kindergarten";
     if (/^u\d+$/.test(g)) return (es ? "Unidad " : "Unit ") + g.slice(1);
     if (g.indexOf("-") > 0) return (es ? "Grados " : "Grades ") + g.replace("-", "–");
