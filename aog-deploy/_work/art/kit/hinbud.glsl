@@ -175,13 +175,14 @@ float stupaD(vec3 q,float s){ q/=s;
 /* ---- an eight-spoked Dharma wheel on a small stand (face along z) ---- */
 float dharmaWheel(vec3 q,float R){
   vec3 c=q-vec3(0.,R+.035,0.);
-  float rim=sdB2(vec2(length(c.xy)-R+.008,c.z),vec2(.008,.008))-.002;
+  float rim=sdB2(vec2(length(c.xy)-R+.011,c.z),vec2(.012,.009))-.002;
+  rim=min(rim,sdB2(vec2(length(c.xy)-R+.011,c.z),vec2(.004,.012))-.001);
   float inner=sdB2(vec2(length(c.xy)-R*.34,c.z),vec2(.006,.009))-.001;
   float hub=sdCylZ(c,.012,.012)-.002;
   float a=atan(c.y,c.x); float sct=6.2832/8.; float k=floor(a/sct+.5); vec2 r2=rot(k*sct)*c.xy;
   float spoke=max(length(vec2(r2.y*(1.+1.2*smoothstep(R*.5,R,r2.x)),c.z))-.005,max(-r2.x,r2.x-R+.012));
   float knob=length(vec2(length(c.xy)-R-.008,c.z))-.0; knob=1e5;
-  vec2 kk=vec2(r2.x-R-.008,r2.y); knob=length(vec3(kk,c.z))-.007;
+  knob=1e5;
   float stand=sdRBox(q-vec3(0.,.012,0.),vec3(.06,.012,.035),.003);
   float post=sdRBox(q-vec3(0.,.03,0.),vec3(.012,.012,.01),.002);
   return min(min(min(rim,inner),min(hub,spoke)),min(min(knob,stand),post)); }
