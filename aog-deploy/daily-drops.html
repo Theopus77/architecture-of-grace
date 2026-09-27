@@ -1291,6 +1291,50 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 #checkRow{margin:14px 0 10px !important;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 @media print{ #sendBox,#checkRow{display:none !important} }
 </style>
+<style id="aog-dd-sketch-nums">
+/* AOG-DD-SKETCH-NUMS (2026-09-27) — Jimmy: "the numbers should look sketched, not coloured in." Each box's
+   number tab is paper with a pencil hatch in its colour, a graphite number and a pencil edge; the 1–10 row too.
+   Result colours (right / part / missed) stay, because they mean something. Screen only; print keeps its own look. */
+@media screen{
+html body .boxes>.bw:nth-child(1) .bnum{--bnc:#2F63B8}
+html body .pips>.pip:nth-child(1){--bnc:#2F63B8}
+html body .boxes>.bw:nth-child(2) .bnum{--bnc:#B87A12}
+html body .pips>.pip:nth-child(2){--bnc:#B87A12}
+html body .boxes>.bw:nth-child(3) .bnum{--bnc:#2E8B57}
+html body .pips>.pip:nth-child(3){--bnc:#2E8B57}
+html body .boxes>.bw:nth-child(4) .bnum{--bnc:#A8323E}
+html body .pips>.pip:nth-child(4){--bnc:#A8323E}
+html body .boxes>.bw:nth-child(5) .bnum{--bnc:#7B4FA0}
+html body .pips>.pip:nth-child(5){--bnc:#7B4FA0}
+html body .boxes>.bw:nth-child(6) .bnum{--bnc:#1F8080}
+html body .pips>.pip:nth-child(6){--bnc:#1F8080}
+html body .boxes>.bw:nth-child(7) .bnum{--bnc:#B8457A}
+html body .pips>.pip:nth-child(7){--bnc:#B8457A}
+html body .boxes>.bw:nth-child(8) .bnum{--bnc:#A85A24}
+html body .pips>.pip:nth-child(8){--bnc:#A85A24}
+html body .boxes>.bw:nth-child(9) .bnum{--bnc:#3F4AA6}
+html body .pips>.pip:nth-child(9){--bnc:#3F4AA6}
+html body .boxes>.bw:nth-child(10) .bnum{--bnc:#6E7C22}
+html body .pips>.pip:nth-child(10){--bnc:#6E7C22}
+html body .boxes>.bw .bnum{background:repeating-linear-gradient(38deg, var(--bnc,#5E6B7A) 0 3.2px, #FBF8F0 3.2px 7px) !important;
+  border-right:1.6px solid #2A2622 !important;box-shadow:none !important}
+html body .boxes>.bw .bnum, html body .boxes>.bw .bnum *{color:#1F2630 !important}
+html body .boxes>.bw .bnum .bn, html body .boxes>.bw .bnum .bs{background:#FBF8F0 !important;border:1.3px solid #2A2622;border-radius:4px;padding:1px 6px}
+html body .boxes>.bw .bnum .bn{font-family:Georgia,"Times New Roman",serif !important;font-weight:700;padding:0 8px;margin-bottom:4px}
+html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !important;background-image:none !important;
+  border:4px solid var(--bnc,#5E6B7A) !important;border-image:repeating-linear-gradient(38deg, var(--bnc,#5E6B7A) 0 2.4px, #FBF8F0 2.4px 4.8px) 4 !important;
+  outline:1.4px solid #2A2622;outline-offset:0;color:#1F2630 !important;opacity:1 !important;box-shadow:none !important}
+}
+</style>
+<style id="aog-dd-crumple">
+/* AOG-DD-CRUMPLE (2026-09-27) — Jimmy: "A kid, in frustration, wads it up, then unwads it and works on it."
+   The sheet and its boxes carry a faint crumpled-then-smoothed paper (img/paper-crumple.webp, made by
+   _work/paper/make_crumple.py; +-5% light, so text stays easy to read). Screen only; paper prints clean. */
+@media screen{
+  #sheet.sheet{background-image:url(/img/paper-crumple.webp), repeating-linear-gradient(0deg, rgba(29,39,51,.035) 0 1px, transparent 1px 28px) !important;background-size:620px, auto !important;background-blend-mode:multiply !important}
+  html body .boxes>.bw .box{background:url(/img/paper-crumple.webp) 0 0/620px #FFFDF8 !important;background-blend-mode:multiply !important}
+}
+</style>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
