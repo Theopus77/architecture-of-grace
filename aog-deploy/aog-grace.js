@@ -88,6 +88,17 @@
       setTimeout(foldUnits, 1000);
     }
   } catch (e) {}
+  /* AOG-UNIT-V1 (2026-09-27) — Jimmy: "I don't want one long scroll of chapter or unit … I also
+     want worksheets and secondary resources provided for all subjects." Every course unit page
+     (<course>-u<N>.html, every subject, past and future) gets aog-unit.js: one lesson at a time,
+     a worksheet under each lesson and a short More-to-explore list. */
+  try {
+    var us = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+    if (/^[a-z]{2,5}-u\d+$/.test(us)) {
+      var uc = D.createElement("link"); uc.rel = "stylesheet"; uc.href = "/aog-unit.css"; (D.head || H).appendChild(uc);
+      var uj = D.createElement("script"); uj.src = "/aog-unit.js"; uj.defer = true; (D.head || H).appendChild(uj);
+    }
+  } catch (e) {}
   /* AOG-SEL-V1 (2026-09-26) — Jimmy: the SEL curriculum, "including the NOVELS … anchor
      charts, scenario cards, worksheets", should "all fit on the same thing". Every SEL page
      gets one skin (aog-sel.css) and one small engine (aog-sel.js): the rooms' curriculum,
