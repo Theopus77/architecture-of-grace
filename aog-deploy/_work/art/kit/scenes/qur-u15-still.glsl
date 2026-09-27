@@ -1,7 +1,7 @@
 /* Qur'an Unit 15 "Interpretation: Classical and Modern" — pencil still life: an old book lying open with framed pages, a reed pen beside it, and a modern tablet computer showing lines of text: old and new ways of reading.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.5819,0.3157,-0.9122)
-#define CAM_TGT vec3(-0.2292,-0.0369,0.0451)
+#define CAM_POS vec3(-0.6601,0.3374,-0.9703)
+#define CAM_TGT vec3(-0.2798,-0.0427,0.0616)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -205,7 +205,7 @@ vec3 tQ(vec3 p){ return place(p,vec3(.28,0.,-.1),-.4); }
 float tabD(vec3 q){ return sdRBox(q-vec3(0,.006,0),vec3(.085,.006,.12),.006); }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
   vec2 b=bookO(oQ(p),1.45); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);
-  r=U(r,tabD(tQ(p)),5.); r=U(r,reedD(place(p,vec3(.08,.0056,-.17),.25),.13),6.); return r; }
+  r=U(r,tabD(tQ(p)),5.); r=U(r,reedD(place(p,vec3(-.3,.0056,-.12),-.4),.13),6.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
   if(id==3.) return pageT(oQ(p),1.45); if(id==4.) return .35;
