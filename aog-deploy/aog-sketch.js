@@ -203,7 +203,7 @@
   }
   var HCSS = "\nhtml:not([data-theme=\"dark\"]).aog-hub-sketch .unit.open{ background:repeating-linear-gradient(0deg, rgba(29,39,51,.03) 0 1px, transparent 1px 5px), #FBF8F0 !important; box-shadow:0 0 0 1px rgba(42,38,34,.55), 1px 2px 0 -0.5px rgba(42,38,34,.35), 0 10px 22px -16px rgba(0,0,0,.4) !important; }"
     + "\n.aog-card-sketch{ display:block; align-self:stretch; margin:0 0 6px; height:92px; overflow:hidden; border-radius:8px; border:1px solid rgba(42,38,34,.4); }"
-    + "\n.aog-card-sketch img{ display:block; width:100%; height:100%; object-fit:cover; object-position:78% 42%; }"
+    + "\n.aog-card-sketch img{ display:block; width:100%; height:100%; object-fit:cover; object-position:78% 42%; transform:scale(1.75); transform-origin:68% 38%; }"
     + "\n@media print{ .aog-card-sketch{ display:none; } }";
   function mastBoot() { hubCards();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
