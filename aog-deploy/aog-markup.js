@@ -67,14 +67,33 @@
     if (!p1 || p1 !== p2) { hideTip(); return; }
     var s0 = offsetIn(p1, r.startContainer, r.startOffset), s1 = offsetIn(p1, r.endContainer, r.endOffset);
     var text = p1.textContent.slice(s0, s1); if (s0 < 0 || !text.trim()) { hideTip(); return; }
-    pending = { p: p1, s: s0, t: text };
-    tip.textContent = ""; tip.innerHTML = '<button type="button" data-a="hl">' + T("Highlight", "Resaltar") + '</button><button type="button" data-a="note">' + T("Add a note", "Agregar nota") + "</button>";
+    var over = []; Array.prototype.forEach.call(p1.querySelectorAll("mark.aog-hl"), function (x) { var id = x.getAttribute("data-mk"); if (r.intersectsNode(x) && over.indexOf(id) < 0) over.push(id); });
+    pending = { p: p1, s: s0, e: s1, t: text, over: over };
+    tip.textContent = ""; tip.innerHTML = (over.length ? '<button type="button" data-a="unhl">' + T("Remove highlight", "Quitar resaltado") + "</button>" : "") + '<button type="button" data-a="hl">' + T("Highlight", "Resaltar") + '</button><button type="button" data-a="note">' + T("Add a note", "Agregar nota") + "</button>";
     tip.hidden = false; /* fixed just above My notes (aog-markup.css) */
   });
   tip.addEventListener("mousedown", function (e) { e.preventDefault(); });
   tip.addEventListener("click", function (e) {
     var btn = e.target.closest("button"); if (!btn || !pending) return;
     var note = "";
+    /* AOG-MARKUP-PART-REMOVE: take the highlight off only the selected words; the rest stays. */
+    if (btn.getAttribute("data-a") === "unhl") {
+      var P = pending.p, a0 = pending.s, a1 = pending.e, all0 = marks(), keep = [], add = [];
+      all0.forEach(function (m) {
+        if (pending.over.indexOf(m.id) < 0) { keep.push(m); return; }
+        unwrap(m.id);
+        var e = m.s + m.t.length, txt = P.textContent, h = hash(txt), first = true;
+        [[m.s, Math.min(e, a0)], [Math.max(m.s, a1), e]].forEach(function (g, i) {
+          if (g[1] - g[0] < 1 || !txt.slice(g[0], g[1]).trim()) return;
+          var nm = { id: m.id + (i ? "b" : "a") + Date.now().toString(36), h: h, s: g[0], t: txt.slice(g[0], g[1]), n: first ? m.n : "", w: m.w };
+          first = false; add.push(nm);
+        });
+      });
+      saveMarks(keep.concat(add));
+      add.forEach(function (m) { wrapRange(P, m.s, m.t.length, m.id, m.n); });
+      try { window.getSelection().removeAllRanges(); } catch (err) {}
+      hideTip(); return;
+    }
     if (btn.getAttribute("data-a") === "note") { note = prompt(T("Your note", "Tu nota"), "") || ""; if (!note.trim()) { hideTip(); return; } }
     var m = { id: "m" + Date.now().toString(36), h: hash(pending.p.textContent), s: pending.s, t: pending.t, n: note.trim(), w: headingFor(pending.p) };
     var all = marks(); all.push(m); saveMarks(all);
@@ -83,7 +102,7 @@
     hideTip();
   });
   /* AOG-MARKUP-EASY-REMOVE (2026-09-27) — Jimmy: "you can only delete one at a time. Even typing delete is a
-     lot of work." Tap a highlight: a small bar offers Remove, Edit note and Close. My notes can remove any
+     lot of work." Tap a highlight: a small bar offers Remove (or select part of one and tap Remove highlight), Edit note and Close. My notes can remove any
      one with a tap, or clear every highlight on the page at once. Nothing to type. */
   function unwrap(id) { Array.prototype.forEach.call(D.querySelectorAll('mark[data-mk="' + id + '"]'), function (x) { var p = x.parentNode; while (x.firstChild) p.insertBefore(x.firstChild, x); p.removeChild(x); p.normalize(); }); }
   function removeMark(id) { unwrap(id); saveMarks(marks().filter(function (x) { return x.id !== id; })); }

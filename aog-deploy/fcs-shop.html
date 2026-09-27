@@ -1,725 +1,560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}@media (prefers-color-scheme:dark){html:not([data-theme="light"]){background:#0A1E33}}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
 </script>
-<title>The Kitchen & the Machine — Architecture of Grace</title>
-<!-- AOG-FCS-BENCH-V2 pan in the fire, claw grip, cloth that feeds, foot-up refuse. -->
-<meta name="description" content="A real FCS bench: light the burner, run the water, lower the presser foot. Objects, not icons.">
-<link rel="canonical" href="https://architectureofgrace.org/fcs">
+<title>The Kitchen &amp; the Sewing Table — Architecture of Grace</title>
+<!-- AOG-FCS-BENCH-V3 (2026-09-27) — Jimmy: "It's ugly and it gets a facelift — just redo it and the engine."
+     The FCS hands-on bench, rebuilt on the telescope/microscope bench chrome (aog-bench.css): navy masthead,
+     one bar with the Bench and Lesson menus, 17 lessons with steps and a check, progress saved on this device.
+     The pictures are pencil drawings from the site's pencil pipeline (_work/art/pencil/bench.py, scenes
+     kit/scenes/bench-kitchen-still.glsl and bench-sewing-still.glsl). The tap spots (HOT) come from the
+     drawing's id buffer, so each one sits exactly over its object. Nothing moves on its own. -->
+<meta name="description" content="A drawn classroom kitchen and sewing table. Tap real tools and learn to use them safely, in 17 short lessons. English and Spanish.">
+<link rel="canonical" href="https://architectureofgrace.org/kitchen">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="The Kitchen &amp; the Sewing Table — Architecture of Grace">
+<meta property="og:description" content="Tap real tools in a drawn kitchen and at a sewing table. 17 short lessons.">
+<meta property="og:url" content="https://architectureofgrace.org/kitchen">
+<meta property="og:image" content="https://architectureofgrace.org/img/banners/bench-kitchen-pencil-1600.webp">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#2F5C6B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=optional" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600;700&display=optional" rel="stylesheet">
 <style>
 :root {
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
   --steel:#2f5c6b; --steel-fg:#f4f8f9; --steel-soft:#e3eef2;
   --good:#2c7a4e; --good-fg:#f3faf5; --good-soft:#e3f0e8;
-  --warn:#8a5a00; --warn-soft:#f4ead6; --bad:#9c3a2e; --bad-fg:#fdf6f4; --bad-soft:#f6e5e2;
-  --chip:#efebe3; --lamp:#d9a84e; --metal:#3d4a55; --brass:#8a6116;
+  --warn:#7a4e00; --warn-soft:#f6ecd6;
   --shadow:0 1px 3px rgb(26 35 44 / .08);
   --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
-  --display:"Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
+  --display:"Fraunces", Georgia, serif;
 }
 .dark, [data-theme="dark"] {
   --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
   --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
   --good:#6fbf8b; --good-fg:#14181e; --good-soft:#1f3327;
-  --warn:#d9a84e; --warn-soft:#332a18; --bad:#e08573; --bad-fg:#14181e; --bad-soft:#3a2622;
-  --chip:#2a313c; --metal:#9aa3b0; --brass:#c4a056;
+  --warn:#e8c27a; --warn-soft:#332a18;
   --shadow:0 1px 3px rgb(0 0 0 / .35);
 }
-* { box-sizing: border-box; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+    --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+    --good:#6fbf8b; --good-fg:#14181e; --good-soft:#1f3327;
+    --warn:#e8c27a; --warn-soft:#332a18;
+  }
+}
+* { box-sizing:border-box; }
 html { -webkit-text-size-adjust:100%; }
 body { margin:0; background:var(--bg); color:var(--ink); font:400 16px/1.55 var(--sans); overflow-x:hidden; }
 h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
-h1 { font-size:clamp(1.5rem,4vw,2.4rem); margin:.2rem 0 .4rem; }
+h1 { font-size:clamp(1.5rem,4vw,2.3rem); margin:.2rem 0 .4rem; }
 p { text-wrap:pretty; }
 button { font:inherit; cursor:pointer; }
-button, a, [role=button] { touch-action:manipulation; }
-.wrap { max-width:1120px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(4rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+button, a { touch-action:manipulation; }
 header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1rem; }
+body:has(.aogtop) header .tools { display:none; }
 .brand { font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
 .tools { display:flex; gap:.5rem; }
-.pill, .btn {
-  min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
-  padding:0 .9rem; font-weight:600; font-size:.9rem; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
-}
+.pill, .btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .9rem; font-weight:600; font-size:1rem; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
 .btn-steel { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
-.btn-good { background:var(--good); color:var(--good-fg); border-color:transparent; }
-.nav { display:flex; gap:4px; overflow-x:auto; border-bottom:2px solid var(--line); margin-bottom:1.25rem; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-.nav::-webkit-scrollbar { display:none; }
-.nav a { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 .75rem; text-decoration:none; color:var(--muted); font-weight:600; font-size:.9rem; border-bottom:2px solid transparent; margin-bottom:-2px; }
-.nav a.on { color:var(--ink); border-color:var(--steel); }
+.kicker, .tiny { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); margin:0; }
+.lead { max-width:62ch; color:var(--muted); }
 .muted { color:var(--muted); }
-.lead { max-width:66ch; color:var(--muted); }
 .card { background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
-.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
-.tiny { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
-.stage { position:relative; overflow:hidden; border-radius:14px; border:1px solid var(--line); background:#c9c2b0; }
-.stage svg { width:100%; height:auto; display:block; }
-.hit { fill:transparent; stroke:transparent; stroke-width:14; pointer-events:all; cursor:pointer; }
-.part.sel .glow-ring { stroke:var(--steel); stroke-width:3; opacity:1; }
-.glow-ring { fill:none; stroke:transparent; stroke-width:2; opacity:0; }
-.caption { padding:1rem 1.15rem; }
-.caption h2 { margin:.15rem 0 .25rem; font-size:1.45rem; }
-.job { margin:0; color:var(--muted); }
-.board { padding:.85rem 1rem; }
-.board .row { display:flex; justify-content:space-between; align-items:center; gap:.4rem; padding:.2rem 0; border-bottom:1px solid var(--line); }
-.board .row:last-child { border-bottom:0; }
-.board .row > span:last-child { display:flex; flex-wrap:wrap; gap:.35rem; justify-content:flex-end; }
-.split { display:grid; gap:1.25rem; margin-top:1.25rem; }
-@media (min-width:768px){
-  .split { grid-template-columns: minmax(0,1fr) minmax(280px,360px); align-items:start; }
-  .sticky { position:sticky; top:.75rem; }
-}
-.missions { list-style:none; margin:.5rem 0 0; padding:0; }
-.missions li { display:flex; gap:.6rem; align-items:flex-start; padding:.4rem 0; border-bottom:1px solid var(--line); font-size:.92rem; }
-.missions li:last-child { border-bottom:0; }
-.dot { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex:0 0 auto; margin-top:.15rem; }
-.missions li.done .dot { background:var(--good); border-color:var(--good); }
-footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
-.note { font-size:.82rem; color:var(--muted); margin:.5rem 0 0; }
-.warn { margin:.55rem 0 0; padding:.55rem .7rem; border-radius:8px; background:var(--warn-soft); color:var(--warn); font-size:.88rem; font-weight:600; }
-.wd { height:8px; background:var(--chip); border-radius:999px; overflow:hidden; margin-top:.45rem; }
-.wd > i { display:block; height:100%; background:var(--steel); border-radius:999px; width:0; }
 
-/* flame */
-.fl-outer, .fl-inner { transform-box:fill-box; transform-origin:50% 100%; }
-.lit .fl-outer { animation:flick 0.16s ease-in-out infinite; }
-.lit .fl-inner { animation:flick 0.12s ease-in-out infinite reverse; }
-@keyframes flick {
-  0%,100% { transform:scaleY(1) scaleX(1); }
-  40% { transform:scaleY(1.14) scaleX(.9); }
-  70% { transform:scaleY(.92) scaleX(1.08); }
-}
-.water-stream { transform-box:fill-box; transform-origin:50% 0%; }
-.on-water .water-stream { animation:pour .35s ease-out both; }
-@keyframes pour { from { transform:scaleY(.05); opacity:.2; } to { transform:scaleY(1); opacity:.9; } }
-.ripple { opacity:0; }
-.on-water .ripple { animation:rip 1.4s ease-out infinite; }
-@keyframes rip { 0%{opacity:.5;transform:scale(.4)} 100%{opacity:0;transform:scale(1.6)} }
-.needle-bar { transform-box:fill-box; transform-origin:50% 0%; }
-.sewing .needle-bar { animation:needle .28s ease-in-out infinite; }
-@keyframes needle { 0%,100%{transform:translateY(0)} 50%{transform:translateY(11px)} }
-.handwheel { transform-box:fill-box; transform-origin:50% 50%; }
-.sewing .handwheel { animation:spin 1.1s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.stitch { stroke-dasharray:6 5; }
-.sewing .stitch { animation:dash 1.1s linear infinite; }
-@keyframes dash { to { stroke-dashoffset:-22; } }
-.feed { transform-box:fill-box; }
-.sewing .feed { animation:feed 3.2s linear infinite; }
-@keyframes feed { to { transform:translateX(-28px); } }
-.steam path { fill:none; stroke:#f4efe4; stroke-width:2.4; stroke-linecap:round; opacity:0; transform-box:fill-box; transform-origin:50% 100%; }
-.lit .steam path { animation:steam 2.1s ease-in-out infinite; }
-.lit .steam path:nth-child(2) { animation-delay:.4s; }
-.lit .steam path:nth-child(3) { animation-delay:.9s; }
-@keyframes steam {
-  0% { opacity:0; transform:translateY(6px); }
-  30% { opacity:.7; }
-  100% { opacity:0; transform:translateY(-28px); }
-}
-.claw { opacity:.92; }
-@media (prefers-reduced-motion: reduce){
-  .fl-outer,.fl-inner,.water-stream,.needle-bar,.handwheel,.stitch,.ripple,.feed,.steam path { animation:none !important; }
-}
-.hot-glow { opacity:0; }
-.lit .hot-glow { opacity:1; }
-.oil-sheen { opacity:.35; }
-.lit .oil-sheen { animation:sheen 2.4s ease-in-out infinite; }
-@keyframes sheen { 0%,100%{opacity:.25} 50%{opacity:.55} }
-@media print {
-  .no-print { display:none !important; }
-  body { background:#fff; color:#111; }
-}
+/* the scene: a pencil drawing with tap spots laid over each object */
+.bench { display:grid; gap:1rem; }
+@media (min-width:900px){ .bench { grid-template-columns:minmax(0,1fr) 320px; align-items:start; } .side { position:sticky; top:.75rem; } }
+.scene { position:relative; margin:0; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#eee9de; line-height:0; }
+.scene img { width:100%; height:auto; display:block; aspect-ratio:1600/1000; }
+.hot { position:absolute; margin:0; padding:0; border:2px solid transparent; border-radius:10px; background:transparent; cursor:pointer; }
+.hot:hover { border-color:rgb(184 134 43 / .55); }
+.hot.on { border:3px solid #b8862b; box-shadow:0 0 0 2px rgb(255 246 222 / .9); }
+.tag { position:absolute; z-index:40; font:700 .9rem/1.2 var(--sans); background:#fff6de; color:#2a1a08; border:1px solid #b8862b; border-radius:8px; padding:.3rem .55rem; pointer-events:none; white-space:nowrap; transform:translate(-50%,-100%); }
+.mark { position:absolute; pointer-events:none; z-index:30; }
+.mark svg { display:block; width:100%; height:100%; }
+.chip { position:absolute; z-index:35; font:700 .85rem/1.2 var(--sans); background:#1a232c; color:#f4f0e6; border-radius:999px; padding:.25rem .6rem; pointer-events:none; white-space:nowrap; }
+.scene-note { margin:.5rem 0 0; font-size:.95rem; color:var(--muted); }
+
+.side .card { padding:1rem 1.1rem; }
+.side .card + .card { margin-top:.85rem; }
+.cap h2 { margin:.15rem 0 .3rem; font-size:1.4rem; }
+.cap p { margin:0; }
+.warn { margin:.6rem 0 0 !important; padding:.55rem .7rem; border-radius:8px; background:var(--warn-soft); color:var(--warn); font-weight:600; }
+.acts { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.5rem; }
+.acts .btn.on { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.tries { list-style:none; margin:.4rem 0 0; padding:0; }
+.tries li { display:flex; gap:.55rem; align-items:flex-start; padding:.3rem 0; border-bottom:1px solid var(--line); font-size:.95rem; }
+.tries li:last-child { border-bottom:0; }
+.tries .dot { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex:0 0 auto; margin-top:.2rem; }
+.tries li.done .dot { background:var(--good); border-color:var(--good); }
+
+/* the lesson card (the rest of its look comes from aog-bench.css) */
+.lessons .lq { margin:.7rem 0 0; padding:.75rem .85rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); }
+.lessons .lq p { margin:0 0 .5rem; font-weight:700; }
+.lessons .lq .acts { margin-top:0; }
+.lessons .lq p.lfeed { margin:.55rem 0 0; font-weight:600; }
+.lessons .lq p.lfeed.ok { color:var(--good); }
+.lessons .lstep.now > span:last-child { font-weight:700; }
+.lessons .lstep .pill { margin-left:.4rem; vertical-align:middle; }
+.lessons .lnote { margin:.5rem 0 0; font-size:.92rem; color:var(--muted); }
+
+/* under the drawing the card keeps the aog-bench.css look */
+.wrap>.bench-bar,#benchMain>.lessons{font-family:var(--bench-sans)}
+/* 4 · the Lessons card */
+#benchMain>.lessons{margin:.9rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem 1rem;color:var(--ink)}
+#benchMain>.lessons[hidden]{display:none}
+#benchMain>.lessons .lhead{min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+#benchMain>.lessons .lhead .kicker{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+#benchMain>.lessons .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;
+  font:600 .9rem/1.2 var(--bench-sans);display:inline-flex;align-items:center;text-decoration:none;cursor:pointer;box-shadow:none}
+#benchMain>.lessons .pill[hidden]{display:none}
+#benchMain>.lessons .mk{margin:.5rem 0 0;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+#benchMain>.lessons h3{margin:.1rem 0 .15rem;font-size:1.08rem;font-family:var(--bench-display);color:var(--ink)}
+#benchMain>.lessons .lblurb{margin:0;color:var(--muted);font-size:.92rem}
+#benchMain>.lessons .lsteps{list-style:none;margin:.45rem 0 0;padding:0}
+#benchMain>.lessons .lstep{display:flex;gap:.5rem;align-items:flex-start;padding:.2rem 0;font-size:.95rem}
+#benchMain>.lessons .lstep .lck{flex:0 0 auto;width:1.2rem;height:1.2rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.1rem;font-size:.75rem;color:var(--steel);margin-top:.1rem}
+#benchMain>.lessons .lstep.ok .lck{border-color:var(--steel);background:var(--steel);color:var(--steel-fg)}
+#benchMain>.lessons .lstep.ok>span:last-child{text-decoration:line-through;color:var(--muted)}
+#benchMain>.lessons .lstep.ok input{text-decoration:none}
+#benchMain>.lessons .lok{margin:.55rem 0 0;font-weight:700;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+#benchMain>.lessons .lacts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 0}
+#benchMain>.lessons .lacts:empty{display:none}
+/* 5 · the tool starts one even gap below the Lessons card */
+#benchMain>.lessons+*{margin-top:1rem}
+#benchMain>.lessons{margin-top:1rem;font-family:var(--bench-sans)}
+/* all lessons */
+.ladder { list-style:none; margin:.4rem 0 0; padding:0; display:flex; flex-direction:column; gap:.35rem; }
+.ladder a { border:1px solid var(--line); border-radius:10px; padding:.45rem .75rem; display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; min-height:44px; text-decoration:none; color:var(--ink); }
+.ladder a.picked { border-color:var(--steel); background:var(--steel-soft); }
+.ladder .mk { font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--steel); min-width:6.4rem; }
+.ladder .lt { font-weight:600; }
+.ladder .ok { color:var(--good); font-weight:700; }
+.lgroup { margin:1rem 0 .2rem !important; }
+footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch; }
+@media print { .no-print { display:none !important; } }
 </style>
+<link rel="stylesheet" href="/aog-bench.css">
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
 <div class="wrap">
-  <header>
-    <a class="brand" href="/science-microscope.html">Architecture of Grace</a>
-    <div class="tools no-print">
-      <button class="pill" id="langBtn" type="button">Español</button>
-      <button class="pill" id="themeBtn" type="button">Dark</button>
+  <header class="no-print">
+    <a class="brand" href="/facs" id="brand">The Kitchen &amp; the Sewing Table</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
   </header>
-  <nav class="nav no-print" id="nav">
-    <a href="#kitchen" data-room="kitchen" class="on">Kitchen</a>
-    <a href="#sew" data-room="sew">Sewing</a>
-    <a href="/science-microscope.html">Microscope</a>
-  </nav>
-  <p class="kicker" id="kicker">Family & Consumer Sciences</p>
-  <h1 id="title">Meet the kitchen</h1>
-  <p class="lead" id="lead">Tap a real object. The name comes after the shape — same rule as the microscope.</p>
-
-  <div class="split">
-    <div>
-      <div class="stage" id="stage"></div>
-      <p class="note" id="hint">Tap the sink, the flame, or the knife.</p>
-    </div>
-    <div class="sticky">
-      <div class="card caption" id="cap">
-        <p class="tiny" id="capK">The object</p>
-        <h2 id="capN">The bench</h2>
-        <p class="job" id="capJ">Tap a part. The form first.</p>
-        <p class="warn" id="capW" hidden></p>
-        <div class="wd" id="washBar" hidden><i id="washFill"></i></div>
-      </div>
-      <div class="card board" style="margin-top:.85rem" id="acts"></div>
-      <div class="card" style="padding:1rem 1.15rem;margin-top:.85rem">
-        <p class="tiny">Stations</p>
-        <ul class="missions" id="missions"></ul>
-      </div>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar">
+    <nav class="nav no-print" id="nav" aria-label="Bench"></nav>
+    <div class="bench-switch no-print" role="group" aria-label="Lesson" id="benchSwitch">
+      <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
     </div>
   </div>
-  <footer>
-    <p>Built for a classroom kitchen and a sewing table — not a clip-art drawer. Fire stays in the pan. The needle goes up and down. Hands stay clear.</p>
-  </footer>
+  <main id="view"></main>
+  <section class="lessons no-print" id="lessons" aria-label="Lessons">
+    <div class="lhead"><p class="kicker" id="lKick">Lessons</p></div>
+    <div id="lessonBody"></div>
+  </section>
+  <footer><p id="foot"></p></footer>
 </div>
 <script>
 (function(){
+"use strict";
+/* the tap spots: [left, top, width, height] in % of the drawing, per material id (_work/art/pencil/bench_hotspots.json) */
+const HOT=/*HOT*/{"bench-kitchen":{"3":[0.5,36.5,22.8,16.6],"4":[8.7,14.0,9.8,21.5],"5":[25.0,18.5,5.1,15.1],"6":[0.0,57.9,13.1,14.7],"7":[24.0,32.5,24.8,23.2],"8":[24.0,35.6,13.8,16.2],"9":[23.5,29.5,5.2,9.8],"10":[48.9,38.2,20.9,16.5],"11":[51.4,41.3,18.2,6.9],"12":[37.1,58.1,21.3,13.0],"13":[61.9,74.7,8.9,14.2],"14":[70.6,28.7,10.4,15.9],"15":[67.4,46.3,19.1,21.6],"16":[61.8,17.1,8.4,19.2],"17":[47.1,18.9,9.0,15.2],"18":[22.9,76.2,18.8,7.2],"19":[81.3,0.3,18.6,58.8],"20":[28.9,50.0,15.6,4.7],"21":[11.8,62.9,15.8,13.2]},"bench-sewing":{"3":[25.8,9.5,43.2,45.8],"4":[69.3,14.7,5.1,22.1],"5":[30.2,35.7,1.1,2.5],"6":[48.4,2.3,4.9,12.2],"7":[13.1,34.7,21.2,13.6],"8":[5.6,31.3,11.1,14.0],"9":[7.9,62.8,6.4,12.0],"10":[61.4,74.7,22.4,17.5],"11":[50.6,73.6,7.7,12.9],"12":[10.5,75.7,19.2,7.2],"13":[79.9,57.1,17.7,19.1],"14":[24.3,17.9,4.1,2.5],"15":[29.4,35.9,3.3,4.7],"16":[34.2,37.1,6.1,9.4],"17":[58.6,30.1,6.4,9.1],"18":[73.9,33.0,19.8,13.4],"19":[27.6,23.6,3.6,5.3],"22":[25.0,8.9,23.7,15.8]}}/*/HOT*/;
+/* the machine needle sits right above the presser foot: its tap spot moves up, the foot's down */
+const NUDGE={needle:[0,-4],foot:[0,2]};
+const ROOMS={
+  kitchen:{uid:"bench-kitchen", ids:{3:"sink",4:"faucet",5:"soap",6:"towel",7:"cooktop",8:"pan",9:"handle",10:"board",11:"knife",12:"cups",13:"spoons",14:"liquid",15:"bowl",16:"flour",17:"recipe",18:"thermo",19:"fridge",20:"knob",21:"meat"}},
+  sewing:{uid:"bench-sewing", ids:{3:"machine",4:"wheel",5:"needle",6:"spool",7:"cloth",8:"pincushion",9:"thread",10:"scissors",11:"buttons",12:"handneedle",13:"hoop",14:"takeup",15:"foot",16:"plate",17:"dial",18:"pedal",19:"tension"}}
+};
 const STR={
-  kitchen:{en:"Kitchen",es:"Cocina"},
-  sew:{en:"Sewing",es:"Costura"},
-  microscope:{en:"Microscope",es:"Microscopio"},
-  kicker:{en:"Family & Consumer Sciences",es:"Ciencias de la familia y el consumidor"},
-  titleK:{en:"Meet the kitchen",es:"Conoce la cocina"},
-  titleS:{en:"Meet the machine",es:"Conoce la máquina"},
-  leadK:{en:"Tap a real object. The name comes after the shape — same rule as the microscope.",es:"Toca un objeto de verdad. El nombre llega después de la forma — la misma regla que el microscopio."},
-  leadS:{en:"A domestic machine on a wood table. Thread path, presser foot, a needle that only moves when you say so.",es:"Una máquina doméstica sobre madera. Recorrido del hilo, prensatelas, una aguja que solo se mueve cuando tú lo dices."},
-  hintK:{en:"Tap the sink, the flame, or the knife. Then light the burner.",es:"Toca el fregadero, la llama o el cuchillo. Luego enciende el quemador."},
-  hintS:{en:"Tap the needle, the foot, the pedal. Then sew — slow is still sewing.",es:"Toca la aguja, el prensatelas, el pedal. Luego cose — lento sigue siendo coser."},
-  object:{en:"The object",es:"El objeto"},
-  benchN:{en:"The bench",es:"El banco"},
-  benchJ:{en:"Tap a part. The form first.",es:"Toca una parte. La forma primero."},
-  lampOn:{en:"Burner on",es:"Quemador encendido"},
-  lampOff:{en:"Burner off",es:"Quemador apagado"},
-  waterOn:{en:"Water on",es:"Agua abierta"},
-  waterOff:{en:"Water off",es:"Agua cerrada"},
-  sewOn:{en:"Sew",es:"Coser"},
-  sewOff:{en:"Needle still",es:"Aguja quieta"},
-  footDown:{en:"Foot down",es:"Prensatelas abajo"},
-  footUp:{en:"Foot up",es:"Prensatelas arriba"},
-  lamp:{en:"Work light",es:"Luz de trabajo"},
-  lampLit:{en:"Light on",es:"Luz encendida"},
-  lampDim:{en:"Light off",es:"Luz apagada"},
-  warnFoot:{en:"Foot is up. The machine will not sew. Lower it first — that is the rule.",es:"El prensatelas está arriba. La máquina no cose. Bájalo primero — esa es la regla."},
-  warnHot:{en:"The handle took the heat. Dry towel — not a wet hand.",es:"El mango se llevó el calor. Toalla seca — no una mano mojada."},
-  warnWet:{en:"Wet hands, then the stove: no. Dry first.",es:"Manos mojadas, luego la estufa: no. Primero seca."},
-  washNote:{en:"Twenty seconds. A whole chorus.",es:"Veinte segundos. Todo el estribillo."}
+  app:{en:"The Kitchen & the Sewing Table",es:"La cocina y la mesa de costura"},
+  eyebrow:{en:"Family & Consumer Sciences · hands-on",es:"Ciencias de la familia y el consumidor · práctica"},
+  tag:{en:"Tap a real tool to learn its name and how to use it safely. Then try a lesson.",es:"Toca una herramienta de verdad para saber su nombre y cómo usarla con cuidado. Luego prueba una lección."},
+  kitchen:{en:"Kitchen",es:"Cocina"}, sewing:{en:"Sewing table",es:"Mesa de costura"}, all:{en:"All lessons",es:"Todas las lecciones"},
+  facs:{en:"FACS home",es:"Inicio de FACS"}, micro:{en:"The microscope",es:"El microscopio"},
+  pick:{en:"Tap any object in the drawing.",es:"Toca cualquier objeto del dibujo."},
+  pickN:{en:"The bench",es:"La mesa"},
+  pickJ:{en:"Tap a tool to see its name and what it is for.",es:"Toca una herramienta para ver su nombre y para qué sirve."},
+  controls:{en:"Controls",es:"Controles"},
+  tries:{en:"Free tries",es:"Pruebas libres"},
+  burnerOn:{en:"Burner on",es:"Quemador encendido"}, burnerOff:{en:"Burner off",es:"Quemador apagado"},
+  waterOn:{en:"Water on",es:"Agua abierta"}, waterOff:{en:"Water off",es:"Agua cerrada"},
+  scrub:{en:"Scrub 20 seconds",es:"Frotar 20 segundos"}, scrubbing:{en:"Scrubbing… {n} s",es:"Frotando… {n} s"},
+  footDown:{en:"Presser foot down",es:"Prensatelas abajo"}, footUp:{en:"Presser foot up",es:"Prensatelas arriba"},
+  sew:{en:"Sew",es:"Coser"}, stop:{en:"Stop",es:"Parar"}, sewing2:{en:"Sewing",es:"Cosiendo"},
+  warnFoot:{en:"Lower the presser foot first. With it up, the thread tangles.",es:"Primero baja el prensatelas. Si está arriba, el hilo se enreda."},
+  warnHot:{en:"The handle can be hot. Use a dry pot holder.",es:"El mango puede estar caliente. Usa un agarrador seco."},
+  warnWater:{en:"Turn on the water first. Soap works on wet hands.",es:"Primero abre el agua. El jabón funciona con las manos mojadas."},
+  lessons:{en:"Lessons",es:"Lecciones"}, lessonK:{en:"Lesson",es:"Lección"},
+  progress:{en:"{d} of {t} steps done · lesson {n} of 17",es:"{d} de {t} pasos hechos · lección {n} de 17"},
+  check:{en:"Check",es:"Comprueba"},
+  checkWait:{en:"Do the steps above first. Each one ticks itself when you do it in the drawing.",es:"Primero haz los pasos de arriba. Cada uno se marca solo cuando lo haces en el dibujo."},
+  right:{en:"Yes. Lesson done.",es:"Sí. Lección hecha."},
+  again:{en:"Not quite. Look at the steps again and pick another answer.",es:"Todavía no. Mira los pasos otra vez y elige otra respuesta."},
+  next:{en:"Next lesson",es:"Siguiente lección"}, redo:{en:"Start this lesson again",es:"Empezar otra vez esta lección"},
+  goRoom:{en:"This lesson is at the {r}.",es:"Esta lección está en: {r}."}, go:{en:"Go there",es:"Ir allí"},
+  allLead:{en:"Seventeen short lessons. Pick one. Each step ticks itself when you do it. Your progress stays on this device.",es:"Diecisiete lecciones cortas. Elige una. Cada paso se marca solo cuando lo haces. Tu avance se guarda en este dispositivo."},
+  kitchenG:{en:"In the kitchen",es:"En la cocina"}, sewingG:{en:"At the sewing table",es:"En la mesa de costura"},
+  doneMark:{en:"done",es:"hecha"},
+  light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
+  alt_kitchen:{en:"A pencil drawing of a classroom kitchen counter: a sink and faucet, soap, a towel, a stove top with a skillet, a cutting board with a chef's knife, measuring cups and spoons, a glass measuring cup, a mixing bowl, a flour canister, a recipe card, a thermometer, raw chicken on its own board, and the refrigerator.",es:"Un dibujo a lápiz de la encimera de una cocina escolar: fregadero y grifo, jabón, una toalla, una estufa con un sartén, una tabla con un cuchillo de chef, tazas y cucharas medidoras, una taza medidora de vidrio, un tazón, un bote de harina, una receta, un termómetro, pollo crudo en su propia tabla y el refrigerador."},
+  alt_sewing:{en:"A pencil drawing of a sewing table: a sewing machine with a spool of thread and cloth under the needle, a foot pedal, a pincushion, a spool of thread with a threaded needle, three buttons, scissors, and an embroidery hoop.",es:"Un dibujo a lápiz de una mesa de costura: una máquina de coser con un carrete de hilo y tela bajo la aguja, un pedal, un alfiletero, un carrete de hilo con una aguja enhebrada, tres botones, tijeras y un bastidor."},
+  foot:{en:"Pencil drawings, not photographs. Nothing here moves on its own. Your lessons stay on this device.",es:"Dibujos a lápiz, no fotografías. Aquí nada se mueve solo. Tus lecciones se guardan en este dispositivo."}
 };
-const PARTS={
-  kitchen:{
-    sink:{en:"Sink",es:"Fregadero", job_en:"Water. Spills. Hands. The wet place — wash here, not at the stove.", job_es:"Agua. Derrames. Manos. El lugar mojado — lava aquí, no en la estufa.", k:"The wet place", ks:"El lugar mojado"},
-    faucet:{en:"Faucet",es:"Grifo", job_en:"Chrome gooseneck. Water lives here until you ask.", job_es:"Cuello de cisne de cromo. El agua vive aquí hasta que pides.", k:"The tap", ks:"La llave"},
-    flame:{en:"Gas flame",es:"Llama de gas", job_en:"Blue inner cone, yellow edge. Fire stays in the pan.", job_es:"Cono interior azul, borde amarillo. El fuego se queda en el sartén.", k:"The hot place", ks:"El lugar caliente"},
-    pan:{en:"Skillet",es:"Sartén", job_en:"Cast iron. The handle is a warning — it takes the heat with it.", job_es:"Hierro fundido. El mango es un aviso — se lleva el calor.", k:"The pan", ks:"El sartén"},
-    knife:{en:"Chef's knife",es:"Cuchillo de chef", job_en:"The sharp edge cuts toward the board, never toward you.", job_es:"El filo corta hacia la tabla, nunca hacia ti.", k:"The sharp edge", ks:"El filo"},
-    board:{en:"Cutting board",es:"Tabla de cortar", job_en:"End-grain wood. The work stays here.", job_es:"Madera de testa. El trabajo se queda aquí.", k:"The board", ks:"La tabla"},
-    soap:{en:"Soap",es:"Jabón", job_en:"Wash, then cook. Not the other way.", job_es:"Lava, luego cocina. No al revés.", k:"The clean habit", ks:"El hábito limpio"},
-    grate:{en:"Grate",es:"Parrilla", job_en:"Cast iron ring. The pan sits on this, not in the flame.", job_es:"Anillo de hierro. El sartén se sienta aquí, no en la llama.", k:"The grate", ks:"La parrilla"},
-    handle:{en:"Pan handle",es:"Mango del sartén", job_en:"It takes the heat with it. Assume it is hot until a dry towel says otherwise.", job_es:"Se lleva el calor. Supón que está caliente hasta que una toalla seca diga lo contrario.", k:"The handle", ks:"El mango"}
-  },
-  sew:{
-    needle:{en:"Needle",es:"Aguja", job_en:"Up and down. Point away from the other hand. Hands stay clear.", job_es:"Arriba y abajo. La punta lejos de la otra mano. Las manos se quedan fuera.", k:"The needle bar", ks:"La barra de la aguja"},
-    foot:{en:"Presser foot",es:"Prensatelas", job_en:"It pins the cloth so the stitch is even.", job_es:"Fija la tela para que la puntada quede pareja.", k:"The foot that holds", ks:"El pie que sujeta"},
-    plate:{en:"Needle plate",es:"Placa de aguja", job_en:"The slot is where the needle goes. Feed dogs live under it.", job_es:"La ranura es por donde pasa la aguja. Los dientes viven debajo.", k:"The plate", ks:"La placa"},
-    spool:{en:"Spool",es:"Carrete", job_en:"Thread path: spool, take-up, needle. Knot it once.", job_es:"Recorrido: carrete, tirahilo, aguja. Un nudo.", k:"The thread", ks:"El hilo"},
-    fabric:{en:"Fabric",es:"Tela", job_en:"The work you are joining. Denim does not rush.", job_es:"El trabajo que estás uniendo. El mezclilla no tiene prisa.", k:"The cloth", ks:"La tela"},
-    pedal:{en:"Foot pedal",es:"Pedal", job_en:"You are the speed. Slow is still sewing.", job_es:"Tú eres la velocidad. Lento sigue siendo coser.", k:"The pedal", ks:"El pedal"},
-    wheel:{en:"Handwheel",es:"Volante", job_en:"Turn toward you to raise the needle. Never the other way while it is in cloth.", job_es:"Gira hacia ti para subir la aguja. Nunca al revés si está en la tela.", k:"The wheel", ks:"El volante"},
-    bobbin:{en:"Bobbin",es:"Bobina", job_en:"The underside thread. If the stitch looks wrong, look here first.", job_es:"El hilo de abajo. Si la puntada se ve mal, mira aquí primero.", k:"The bobbin", ks:"La bobina"}
-  }
+/* what each object is and what it is for: [en name, es name, en job, es job] */
+const OBJ={
+  sink:["Sink","Fregadero","The wet place. Wash hands and tools here.","El lugar mojado. Aquí se lavan las manos y las herramientas."],
+  faucet:["Faucet","Grifo","Turns the water on and off. Tap it to try.","Abre y cierra el agua. Tócalo para probar."],
+  soap:["Soap","Jabón","Soap on wet hands, then scrub for 20 seconds.","Jabón en las manos mojadas y luego frota 20 segundos."],
+  towel:["Clean towel","Toalla limpia","Dry your hands, and wipe up spills right away.","Sécate las manos y limpia lo que se derrame enseguida."],
+  cooktop:["Stove top","Estufa","The hot place. The pan sits on the grate over the burner.","El lugar caliente. El sartén va sobre la parrilla, encima del quemador."],
+  pan:["Skillet","Sartén","A heavy pan. The flame stays under it, never up its sides.","Un sartén pesado. La llama se queda debajo, nunca por los lados."],
+  handle:["Pan handle","Mango del sartén","Turned in, over the counter, so no one bumps it.","Girado hacia adentro, sobre la encimera, para que nadie lo golpee."],
+  knob:["Burner knob","Perilla del quemador","Turns the burner on and off. Tap it to try.","Enciende y apaga el quemador. Tócala para probar."],
+  board:["Cutting board","Tabla de cortar","Cut here, never in your hand. A damp towel under it stops sliding.","Corta aquí, nunca en la mano. Un paño húmedo debajo evita que se deslice."],
+  knife:["Chef's knife","Cuchillo de chef","Pinch grip on the blade. The other hand makes a claw.","Agarre de pinza en la hoja. La otra mano hace una garra."],
+  cups:["Dry measuring cups","Tazas medidoras para secos","Spoon dry food in, then level it with a straight edge.","Echa lo seco con una cuchara y luego nivélalo con un borde recto."],
+  spoons:["Measuring spoons","Cucharas medidoras","For small amounts: a teaspoon, a tablespoon. Level them too.","Para poca cantidad: una cucharadita, una cucharada. También se nivelan."],
+  liquid:["Liquid measuring cup","Taza medidora para líquidos","Clear, with lines and a spout. Read it at eye level.","Transparente, con rayas y pico. Se lee a la altura de los ojos."],
+  bowl:["Mixing bowl","Tazón para mezclar","Mix here. A bigger bowl means fewer spills.","Mezcla aquí. Un tazón grande derrama menos."],
+  flour:["Flour canister","Bote de harina","Stir the flour first, then spoon it into the cup.","Primero remueve la harina y luego échala a la taza con una cuchara."],
+  recipe:["Recipe card","Receta","Read it all the way through before you start.","Léela completa antes de empezar."],
+  thermo:["Food thermometer","Termómetro de cocina","The only way to know meat is cooked. Ground meat 160°F, chicken 165°F.","La única forma de saber si la carne está cocida. Carne molida 160°F, pollo 165°F."],
+  fridge:["Refrigerator","Refrigerador","Keep it at 40°F or colder. Leftovers go in within 2 hours.","Mantenlo a 40°F o menos. Las sobras entran antes de 2 horas."],
+  meat:["Raw chicken, own board","Pollo crudo, su propia tabla","Raw meat stays apart from food that will not be cooked.","La carne cruda se separa de la comida que no se va a cocinar."],
+  machine:["Sewing machine","Máquina de coser","A top thread and a bobbin thread lock together in the cloth.","El hilo de arriba y el de la bobina se unen dentro de la tela."],
+  wheel:["Handwheel","Volante","Turn it toward you to move the needle by hand.","Gíralo hacia ti para mover la aguja con la mano."],
+  needle:["Machine needle","Aguja de la máquina","Goes up and down through the cloth. Keep fingers clear.","Sube y baja por la tela. Mantén los dedos lejos."],
+  spool:["Spool and spool pin","Carrete y portacarrete","The top thread starts here.","Aquí empieza el hilo de arriba."],
+  cloth:["Cloth","Tela","The work you are sewing, under the presser foot.","El trabajo que coses, debajo del prensatelas."],
+  pincushion:["Pincushion","Alfiletero","Pins live here, never in your mouth.","Los alfileres viven aquí, nunca en la boca."],
+  thread:["Spool of thread","Carrete de hilo","For hand sewing. Cut a piece about as long as your arm.","Para coser a mano. Corta un trozo del largo de tu brazo."],
+  scissors:["Fabric scissors","Tijeras de tela","Cut only fabric with them, so they stay sharp. Pass them handles first.","Úsalas solo para tela, así siguen afiladas. Pásalas con los mangos primero."],
+  buttons:["Buttons","Botones","Two or four holes. Sew through the holes to the back.","Dos o cuatro agujeros. Cose por los agujeros hasta el revés."],
+  handneedle:["Hand needle and thread","Aguja de mano e hilo","The thread goes through the eye. Knot the long end.","El hilo pasa por el ojo. Haz un nudo en la punta larga."],
+  hoop:["Embroidery hoop","Bastidor","Holds the cloth tight while you stitch by hand.","Mantiene la tela tensa mientras coses a mano."],
+  takeup:["Take-up lever","Tirahilo","Moves up and down and pulls up the top thread.","Sube y baja y tira del hilo de arriba."],
+  foot:["Presser foot","Prensatelas","Holds the cloth flat while the needle sews.","Sujeta la tela plana mientras la aguja cose."],
+  plate:["Needle plate","Placa de aguja","Has seam guide lines. The 5/8 inch line sets the seam allowance.","Tiene líneas guía. La línea de 5/8 de pulgada marca el margen de costura."],
+  dial:["Stitch dial","Selector de puntada","Picks the stitch: straight or zigzag, long or short.","Elige la puntada: recta o zigzag, larga o corta."],
+  pedal:["Foot pedal","Pedal","Press gently to go slowly. Lift your foot to stop.","Pisa suave para ir despacio. Levanta el pie para parar."],
+  tension:["Tension dial","Tensión del hilo","Sets how tight the top thread pulls.","Ajusta qué tan fuerte tira el hilo de arriba."]
 };
-const MISSIONS={
-  kitchen:[
-    {id:"wet",en:"Find the wet place",es:"Encuentra el lugar mojado"},
-    {id:"hot",en:"Light the burner. Watch the blue cone.",es:"Enciende el quemador. Mira el cono azul."},
-    {id:"sharp",en:"Find the sharp edge. It faces the board.",es:"Encuentra el filo. Mira hacia la tabla."},
-    {id:"clean",en:"Find the soap. Wash twenty seconds.",es:"Encuentra el jabón. Lava veinte segundos."},
-    {id:"handle",en:"Tap the pan handle after the flame. It took the heat.",es:"Toca el mango después de la llama. Se llevó el calor."}
-  ],
-  sew:[
-    {id:"need",en:"Find the needle",es:"Encuentra la aguja"},
-    {id:"foot",en:"Lower the presser foot",es:"Baja el prensatelas"},
-    {id:"sew",en:"Foot down, then Sew. Watch the cloth feed.",es:"Prensatelas abajo, luego Coser. Mira avanzar la tela."},
-    {id:"ped",en:"Find the pedal. You are the speed.",es:"Encuentra el pedal. Tú eres la velocidad."},
-    {id:"refuse",en:"Raise the foot and try Sew. The machine should refuse.",es:"Sube el prensatelas e intenta Coser. La máquina debe negarse."}
-  ]
+/* the 17 lessons. A step ticks when its event happens (ev), in order. act = a button the step shows. */
+const L=[
+ {room:"kitchen",en:"Meet the kitchen",es:"Conoce la cocina",
+  steps:[{ev:["tap:sink"],en:"Tap the sink. This is the wet place, for washing.",es:"Toca el fregadero. Es el lugar mojado, para lavar."},
+         {ev:["tap:cooktop","tap:pan","tap:knob"],en:"Tap the stove. This is the hot place.",es:"Toca la estufa. Es el lugar caliente."},
+         {ev:["tap:knife"],en:"Tap the knife. This is the sharp place.",es:"Toca el cuchillo. Es el lugar filoso."}],
+  q:{en:"Where do you wash your hands?",es:"¿Dónde te lavas las manos?",a:[["At the sink","En el fregadero",1],["At the stove","En la estufa"],["On the cutting board","En la tabla de cortar"]]}},
+ {room:"kitchen",en:"Wash your hands",es:"Lávate las manos",
+  steps:[{ev:["act:water-on"],en:"Wet your hands. Tap the faucet to turn on the water.",es:"Mójate las manos. Toca el grifo para abrir el agua."},
+         {ev:["tap:soap"],en:"Tap the soap. Put soap on your wet hands.",es:"Toca el jabón. Pon jabón en tus manos mojadas."},
+         {ev:["scrub-done"],act:["Scrub 20 seconds","Frotar 20 segundos"],en:"Scrub for 20 seconds: palms, backs, between fingers, under nails.",es:"Frota 20 segundos: palmas, dorso, entre los dedos, bajo las uñas."},
+         {ev:["act:rinse"],act:["Rinse","Enjuagar"],en:"Rinse under the running water.",es:"Enjuágate bajo el agua."},
+         {ev:["tap:towel"],en:"Dry with a clean towel. Tap the towel.",es:"Sécate con una toalla limpia. Toca la toalla."}],
+  q:{en:"How long do you scrub?",es:"¿Cuánto tiempo frotas?",a:[["At least 20 seconds","Por lo menos 20 segundos",1],["3 seconds","3 segundos"],["Until the water feels warm","Hasta que el agua esté tibia"]]}},
+ {room:"kitchen",en:"The burner and the flame",es:"El quemador y la llama",
+  steps:[{ev:["tap:pan"],en:"Tap the skillet. It sits on the grate, right over the burner.",es:"Toca el sartén. Va sobre la parrilla, justo encima del quemador."},
+         {ev:["act:burner-on"],en:"Tap the knob to light the burner. Keep the flame under the pan, not up its sides.",es:"Toca la perilla para encender el quemador. La llama se queda debajo del sartén, no por los lados."},
+         {ev:["tap:handle"],en:"Tap the handle. It is turned in, over the counter, so no one bumps it.",es:"Toca el mango. Está girado hacia adentro, sobre la encimera, para que nadie lo golpee."}],
+  note:{en:"Keep towels, paper and sleeves away from the flame.",es:"Aleja las toallas, el papel y las mangas de la llama."},
+  q:{en:"Where should a pan handle point?",es:"¿Hacia dónde apunta el mango del sartén?",a:[["In, over the counter","Hacia adentro, sobre la encimera",1],["Out, over the edge","Hacia afuera, sobre el borde"],["Toward you","Hacia ti"]]}},
+ {room:"kitchen",en:"The knife: grip and the claw",es:"El cuchillo: agarre y garra",
+  steps:[{ev:["tap:knife"],en:"Tap the knife. Pinch the blade just in front of the handle with your thumb and first finger.",es:"Toca el cuchillo. Pellizca la hoja justo delante del mango con el pulgar y el índice."},
+         {ev:["act:claw"],act:["Make the claw","Haz la garra"],en:"Curl the fingertips of your other hand under. Your knuckles guide the blade.",es:"Dobla hacia adentro las yemas de la otra mano. Tus nudillos guían la hoja."},
+         {ev:["act:carry"],act:["Carry it","Llévalo"],en:"Carry it point down, blade at your side. Say “knife behind” as you pass someone.",es:"Llévalo con la punta hacia abajo, junto a tu costado. Di “cuchillo atrás” al pasar junto a alguien."}],
+  q:{en:"How do you carry a knife?",es:"¿Cómo llevas un cuchillo?",a:[["Point down, at your side","Punta hacia abajo, a tu costado",1],["Point up, in front of you","Punta hacia arriba, delante de ti"],["Point forward","Punta hacia adelante"]]}},
+ {room:"kitchen",en:"Measuring dry",es:"Medir secos",
+  steps:[{ev:["tap:flour"],en:"Tap the flour. Stir it, then spoon it into the cup. Do not scoop or pack it.",es:"Toca la harina. Remuévela y échala a la taza con una cuchara. No la saques con la taza ni la aprietes."},
+         {ev:["tap:cups"],en:"Tap the dry measuring cups. Fill the cup until it heaps over the top.",es:"Toca las tazas medidoras para secos. Llena la taza hasta que sobresalga."},
+         {ev:["act:level"],act:["Level it","Nivélalo"],en:"Level it with a straight edge, like the back of a knife.",es:"Nivélala con un borde recto, como el lomo de un cuchillo."}],
+  q:{en:"How do you measure a cup of flour?",es:"¿Cómo mides una taza de harina?",a:[["Spoon it in, then level it","Échala con cuchara y luego nivélala",1],["Pack it down hard","Apriétala fuerte"],["Scoop it and shake it","Sácala con la taza y agítala"]]}},
+ {room:"kitchen",en:"Measuring wet",es:"Medir líquidos",
+  steps:[{ev:["tap:liquid"],en:"Tap the liquid measuring cup. It is clear, with lines and a spout.",es:"Toca la taza medidora para líquidos. Es transparente, con rayas y pico."},
+         {ev:["act:pour"],act:["Set it flat and pour","Ponla plana y vierte"],en:"Set it on the flat counter. Pour to the line.",es:"Ponla sobre la encimera plana. Vierte hasta la raya."},
+         {ev:["act:eye"],act:["Bend to eye level","Agáchate a la altura"],en:"Bend down so your eyes are level with the line. Read it there.",es:"Agáchate para que tus ojos queden a la altura de la raya. Léela ahí."}],
+  q:{en:"Where are your eyes when you read the line?",es:"¿Dónde están tus ojos cuando lees la raya?",a:[["Level with the line","A la altura de la raya",1],["Above the cup, looking down","Arriba de la taza, mirando hacia abajo"],["It does not matter","No importa"]]}},
+ {room:"kitchen",en:"Reading a recipe",es:"Leer una receta",
+  steps:[{ev:["tap:recipe"],en:"Tap the recipe. Read it all the way through first.",es:"Toca la receta. Léela completa primero."},
+         {ev:["tap:bowl","tap:cups","tap:flour","tap:spoons","tap:liquid"],en:"Gather what you need. Tap a tool or an ingredient.",es:"Junta lo que necesitas. Toca una herramienta o un ingrediente."},
+         {ev:["act:mise"],act:["Set it all out","Ponlo todo listo"],en:"Measure and set everything out before you start. Cooks call this mise en place: everything in its place.",es:"Mide y pon todo listo antes de empezar. Los cocineros lo llaman mise en place: todo en su lugar."}],
+  q:{en:"What do you do first?",es:"¿Qué haces primero?",a:[["Read the whole recipe","Leer toda la receta",1],["Turn on the stove","Encender la estufa"],["Start mixing","Empezar a mezclar"]]}},
+ {room:"kitchen",en:"Food safety: clean, separate, cook, chill",es:"Alimentos seguros: limpiar, separar, cocinar, enfriar",
+  steps:[{ev:["tap:soap","tap:sink"],en:"Clean. Wash hands, tools and counters. Tap the soap.",es:"Limpiar. Lava las manos, las herramientas y la encimera. Toca el jabón."},
+         {ev:["tap:meat"],en:"Separate. Raw meat gets its own board and plate. Tap the raw chicken.",es:"Separar. La carne cruda tiene su propia tabla y plato. Toca el pollo crudo."},
+         {ev:["tap:thermo"],en:"Cook. Use a thermometer: ground meat to 160°F, chicken and turkey to 165°F.",es:"Cocinar. Usa un termómetro: carne molida a 160°F, pollo y pavo a 165°F."},
+         {ev:["tap:fridge"],en:"Chill. Leftovers go in the fridge within 2 hours. The fridge stays at 40°F or colder.",es:"Enfriar. Las sobras van al refrigerador antes de 2 horas. El refrigerador está a 40°F o menos."}],
+  note:{en:"Safe temperatures from the USDA.",es:"Temperaturas seguras según el USDA."},
+  q:{en:"Chicken is safe to eat at…",es:"El pollo se puede comer sin peligro a…",a:[["165°F","165°F",1],["140°F","140°F"],["100°F","100°F"]]}},
+ {room:"kitchen",en:"Clean up as you go",es:"Limpia sobre la marcha",
+  steps:[{ev:["act:burner-off","tap:knob"],need:"burnerOff",en:"Turn off the burner when you finish. Tap the knob until it says off.",es:"Apaga el quemador al terminar. Toca la perilla hasta que diga apagado."},
+         {ev:["tap:sink"],en:"Wash tools in hot, soapy water. Tap the sink.",es:"Lava las herramientas en agua caliente con jabón. Toca el fregadero."},
+         {ev:["tap:knife"],en:"Never leave a knife in the soapy water. Wash it, dry it and put it away.",es:"Nunca dejes un cuchillo en el agua con jabón. Lávalo, sécalo y guárdalo."},
+         {ev:["tap:towel"],en:"Wipe the counter and dry your tools. Tap the towel.",es:"Limpia la encimera y seca tus herramientas. Toca la toalla."}],
+  q:{en:"When is the best time to clean up?",es:"¿Cuándo es mejor limpiar?",a:[["As you go","Sobre la marcha",1],["Only at the very end","Solo al final"],["The next day","Al día siguiente"]]}},
+ {room:"sewing",en:"Meet the sewing table",es:"Conoce la mesa de costura",
+  steps:[{ev:["tap:machine"],en:"Tap the sewing machine.",es:"Toca la máquina de coser."},
+         {ev:["tap:pincushion"],en:"Tap the pincushion. Pins go here, never in your mouth.",es:"Toca el alfiletero. Los alfileres van aquí, nunca en la boca."},
+         {ev:["tap:scissors"],en:"Tap the scissors. Fabric scissors cut only fabric.",es:"Toca las tijeras. Las tijeras de tela cortan solo tela."}],
+  q:{en:"Where do pins go when you are not using them?",es:"¿Dónde van los alfileres cuando no los usas?",a:[["In the pincushion","En el alfiletero",1],["In your mouth","En la boca"],["On the table","Sobre la mesa"]]}},
+ {room:"sewing",en:"Thread a needle and tie a knot",es:"Enhebra una aguja y haz un nudo",
+  steps:[{ev:["tap:thread"],en:"Tap the spool. Cut a piece of thread about as long as your arm.",es:"Toca el carrete. Corta un trozo de hilo del largo de tu brazo."},
+         {ev:["tap:handneedle"],en:"Tap the needle. Push the thread end through the eye.",es:"Toca la aguja. Pasa la punta del hilo por el ojo."},
+         {ev:["act:knot"],act:["Tie a knot","Haz un nudo"],en:"Tie a knot at the end of the long tail.",es:"Haz un nudo en la punta del hilo largo."}],
+  q:{en:"Where does the thread go?",es:"¿Por dónde pasa el hilo?",a:[["Through the eye of the needle","Por el ojo de la aguja",1],["Around the point","Alrededor de la punta"],["Into the pincushion","Dentro del alfiletero"]]}},
+ {room:"sewing",en:"The running stitch",es:"La puntada corrida",
+  steps:[{ev:["tap:hoop"],en:"Tap the hoop. Bring the needle up from the back of the cloth.",es:"Toca el bastidor. Saca la aguja desde el revés de la tela."},
+         {ev:["act:down"],act:["Go down","Baja"],en:"Go down a short step ahead.",es:"Baja un paso corto más adelante."},
+         {ev:["act:up"],act:["Come up","Sube"],en:"Come up a short step ahead. Keep the stitches and gaps even.",es:"Sube un paso corto más adelante. Deja las puntadas y los espacios iguales."}],
+  q:{en:"A running stitch looks like…",es:"Una puntada corrida se ve como…",a:[["Even dashes with gaps","Rayas iguales con espacios",1],["One solid line","Una línea continua"],["Loops over the edge","Lazos sobre el borde"]]}},
+ {room:"sewing",en:"Sew on a button",es:"Cose un botón",
+  steps:[{ev:["tap:buttons"],en:"Tap the buttons. Pick one and set it on the cloth.",es:"Toca los botones. Elige uno y ponlo sobre la tela."},
+         {ev:["tap:hoop"],en:"Tap the hoop. Come up from the back through one hole.",es:"Toca el bastidor. Sube desde el revés por un agujero."},
+         {ev:["act:holes"],act:["Down and up again","Baja y sube otra vez"],en:"Go down through the next hole. Do this 4 to 6 times.",es:"Baja por el siguiente agujero. Hazlo de 4 a 6 veces."},
+         {ev:["act:knotback"],act:["Knot on the back","Nudo en el revés"],en:"Knot the thread on the back of the cloth.",es:"Haz el nudo en el revés de la tela."}],
+  q:{en:"Where do you tie the last knot?",es:"¿Dónde haces el último nudo?",a:[["On the back of the cloth","En el revés de la tela",1],["On top of the button","Encima del botón"],["No knot is needed","No hace falta nudo"]]}},
+ {room:"sewing",en:"The backstitch",es:"El pespunte",
+  steps:[{ev:["tap:hoop"],en:"Tap the hoop. Make one stitch forward.",es:"Toca el bastidor. Haz una puntada hacia adelante."},
+         {ev:["act:ahead"],act:["Up one ahead","Sube una más adelante"],en:"Come up one stitch-length ahead.",es:"Sube un largo de puntada más adelante."},
+         {ev:["act:back"],act:["Back down","Baja hacia atrás"],en:"Go back down at the end of the last stitch. The stitches touch.",es:"Baja hacia atrás al final de la última puntada. Las puntadas se tocan."}],
+  q:{en:"Why use a backstitch?",es:"¿Para qué sirve el pespunte?",a:[["It is strong, with no gaps","Es fuerte y no deja espacios",1],["It is the fastest","Es el más rápido"],["It pulls out easily","Se deshace fácil"]]}},
+ {room:"sewing",en:"Meet the sewing machine",es:"Conoce la máquina de coser",
+  steps:[{ev:["tap:spool"],en:"Tap the spool on its spool pin. The top thread starts here.",es:"Toca el carrete en su portacarrete. Aquí empieza el hilo de arriba."},
+         {ev:["tap:takeup"],en:"Tap the take-up lever. It pulls up the thread.",es:"Toca el tirahilo. Tira del hilo hacia arriba."},
+         {ev:["tap:foot"],en:"Tap the presser foot. It holds the cloth flat.",es:"Toca el prensatelas. Sujeta la tela plana."},
+         {ev:["tap:wheel"],en:"Tap the handwheel. Turn it toward you to move the needle by hand.",es:"Toca el volante. Gíralo hacia ti para mover la aguja con la mano."}],
+  q:{en:"What holds the cloth flat under the needle?",es:"¿Qué sujeta la tela plana bajo la aguja?",a:[["The presser foot","El prensatelas",1],["The handwheel","El volante"],["The spool","El carrete"]]}},
+ {room:"sewing",en:"Thread the machine",es:"Enhebra la máquina",
+  steps:[{ev:["act:foot-up"],act:["Raise the presser foot","Sube el prensatelas"],actKey:"foot",en:"Raise the presser foot. This opens the tension discs so the thread slips in.",es:"Sube el prensatelas. Así se abren los discos de tensión y el hilo entra."},
+         {ev:["tap:wheel"],en:"Turn the handwheel toward you until the needle is at its highest. Tap the handwheel.",es:"Gira el volante hacia ti hasta que la aguja esté en lo más alto. Toca el volante."},
+         {ev:["tap:spool","tap:tension","tap:takeup"],en:"Follow the thread path: spool, guide, tension, take-up lever, down to the needle.",es:"Sigue el camino del hilo: carrete, guía, tensión, tirahilo y baja hasta la aguja."},
+         {ev:["tap:needle"],en:"Tap the needle. Thread it from front to back.",es:"Toca la aguja. Enhébrala de adelante hacia atrás."}],
+  q:{en:"When you thread the machine, the presser foot is…",es:"Cuando enhebras la máquina, el prensatelas está…",a:[["Up","Arriba",1],["Down","Abajo"],["Taken off","Quitado"]]}},
+ {room:"sewing",en:"A first straight seam",es:"Una primera costura recta",
+  steps:[{ev:["tap:plate"],en:"Tap the needle plate. Line the cloth edge up with the 5/8 inch line. That space is the seam allowance.",es:"Toca la placa de aguja. Pon el borde de la tela en la línea de 5/8 de pulgada. Ese espacio es el margen de costura."},
+         {ev:["act:foot-down"],act:["Lower the presser foot","Baja el prensatelas"],actKey:"foot",en:"Lower the presser foot.",es:"Baja el prensatelas."},
+         {ev:["act:sew"],act:["Sew","Coser"],actKey:"sew",en:"Sew slowly. Guide the cloth with flat hands, out to the sides of the needle.",es:"Cose despacio. Guía la tela con las manos planas, a los lados de la aguja."},
+         {ev:["act:stop"],act:["Stop","Parar"],actKey:"sew",en:"Stop at the end of the seam.",es:"Para al final de la costura."}],
+  q:{en:"Where are your hands while you sew?",es:"¿Dónde van tus manos mientras coses?",a:[["Flat, out to the sides of the needle","Planas, a los lados de la aguja",1],["Right in front of the needle","Justo delante de la aguja"],["Under the presser foot","Debajo del prensatelas"]]}}
+];
+const TRIES={
+  kitchen:[["wet",["tap:sink","tap:faucet"],"Find the wet place","Encuentra el lugar mojado"],["hot",["act:burner-on"],"Light the burner","Enciende el quemador"],["sharp",["tap:knife"],"Find the sharp edge","Encuentra el filo"],["clean",["scrub-done"],"Scrub your hands for 20 seconds","Frota tus manos 20 segundos"],["handle",["tap:handle"],"Find the pan handle","Encuentra el mango del sartén"]],
+  sewing:[["need",["tap:needle"],"Find the machine needle","Encuentra la aguja de la máquina"],["foot",["act:foot-down"],"Lower the presser foot","Baja el prensatelas"],["sew",["act:sew"],"Foot down, then Sew","Prensatelas abajo, luego Coser"],["ped",["tap:pedal"],"Find the pedal","Encuentra el pedal"],["refuse",["refuse"],"Try Sew with the foot up","Prueba Coser con el prensatelas arriba"]]
 };
-
-const S={
-  room:"kitchen", lang:"en", sel:null,
-  burner:false, water:false, sewing:false, foot:true, light:true,
-  warn:null, washStart:0,
-  missions:{kitchen:{}, sew:{}}
-};
-try{
-  const raw=localStorage.getItem("aog.fcs.shop.v1");
-  if(raw){ const o=JSON.parse(raw); if(o&&typeof o==="object"){
-    S.room=o.room||S.room; S.lang=o.lang||S.lang; S.missions=o.missions||S.missions;
-    S.burner=!!o.burner; S.water=!!o.water; S.foot=o.foot!==false; S.light=o.light!==false;
-  } }
-}catch(e){}
-function save(){ try{ localStorage.setItem("aog.fcs.shop.v1", JSON.stringify({room:S.room,lang:S.lang,missions:S.missions,burner:S.burner,water:S.water,foot:S.foot,light:S.light})); }catch(e){} }
-function t(k){ const s=STR[k]; return s? (S.lang==="es"?s.es:s.en) : k; }
-function pt(id){ const p=PARTS[S.room][id]; if(!p) return null; return S.lang==="es"?{n:p.es,j:p.job_es,k:p.ks}:{n:p.en,j:p.job_en,k:p.k}; }
-
-function defs(){
-  return `<defs>
-    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8d0be"/><stop offset="1" stop-color="#c4bba8"/></linearGradient>
-    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c4a06a"/><stop offset=".4" stop-color="#a07038"/><stop offset="1" stop-color="#6e4820"/></linearGradient>
-    <linearGradient id="wood2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a5a28"/><stop offset=".5" stop-color="#c49654"/><stop offset="1" stop-color="#7a4a1c"/></linearGradient>
-    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f4f6"/><stop offset=".45" stop-color="#c5ccd4"/><stop offset="1" stop-color="#8b949e"/></linearGradient>
-    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#cfd6de"/><stop offset=".7" stop-color="#9aa4ae"/><stop offset="1" stop-color="#eceff2"/></linearGradient>
-    <linearGradient id="iron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d44"/><stop offset="1" stop-color="#16181c"/></linearGradient>
-    <linearGradient id="ironhot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3a28"/><stop offset=".6" stop-color="#2a1810"/><stop offset="1" stop-color="#120c0a"/></linearGradient>
-    <radialGradient id="flout" cx=".45" cy=".8" r=".8"><stop offset="0" stop-color="#fff3c0"/><stop offset=".35" stop-color="#f0a030"/><stop offset=".75" stop-color="#e05010"/><stop offset="1" stop-color="rgba(180,40,0,0)"/></radialGradient>
-    <linearGradient id="flin" x1=".5" y1="1" x2=".5" y2="0"><stop offset="0" stop-color="#dceeff"/><stop offset=".45" stop-color="#7ec8ff"/><stop offset="1" stop-color="#3a7ad4"/></linearGradient>
-    <radialGradient id="heat" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffb060"/><stop offset="1" stop-color="rgba(255,80,0,0)"/></radialGradient>
-    <linearGradient id="blade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f8"/><stop offset=".5" stop-color="#c5ccd4"/><stop offset="1" stop-color="#7e8790"/></linearGradient>
-    <linearGradient id="handle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2414"/><stop offset="1" stop-color="#1a1008"/></linearGradient>
-    <linearGradient id="denim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a6a92"/><stop offset="1" stop-color="#2a4060"/></linearGradient>
-    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f1e6"/><stop offset="1" stop-color="#d9d0c0"/></linearGradient>
-    <linearGradient id="bodyblk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3e46"/><stop offset="1" stop-color="#16181c"/></linearGradient>
-    <filter id="grain" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.85 0.045" numOctaves="3" seed="4"/>
-      <feColorMatrix type="saturate" values="0"/>
-    </filter>
-    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6"/>
-    </filter>
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="4" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>`;
+const TOTAL=L.reduce((n,l)=>n+l.steps.length,0);
+const KEY="aog.fcs.bench.v3";
+const S={lang:"en",room:"kitchen",page:"kitchen",sel:null,warn:null,lesson:0,prog:{},tries:{},burner:false,water:false,foot:true,sewing:false,scrub:0,answer:null};
+let stored=null;
+try{ stored=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){}
+if(stored&&typeof stored==="object"){
+  if(stored.lang==="es") S.lang="es"; if(stored.room==="sewing") S.room="sewing";
+  if(stored.prog&&typeof stored.prog==="object") S.prog=stored.prog; if(stored.tries&&typeof stored.tries==="object") S.tries=stored.tries;
+  if(Number.isInteger(stored.lesson)&&stored.lesson>=0&&stored.lesson<17) S.lesson=stored.lesson;
 }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({lang:S.lang,room:S.room,prog:S.prog,tries:S.tries,lesson:S.lesson})); }catch(e){} }
+const es=()=>S.lang==="es";
+function t(k,v){ const x=STR[k]; let s=x?(es()?x.es:x.en):k; if(v) Object.keys(v).forEach(n=>{ s=s.replace("{"+n+"}",v[n]); }); return s; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function P(i){ const p=S.prog[i]; return p&&typeof p==="object"?p:{s:0,q:false}; }
+function done(i){ const p=P(i); return p.s>=L[i].steps.length&&!!p.q; }
+function stepsDone(){ return L.reduce((n,l,i)=>n+Math.min(P(i).s,l.steps.length),0); }
+function firstOpen(){ for(let i=0;i<L.length;i++) if(!done(i)) return i; return L.length-1; }
 
-function kitchenSVG(){
-  const lit=S.burner, wet=S.water;
-  const cls=(lit?" lit":"")+(wet?" on-water":"");
-  let s=`<svg viewBox="0 0 920 500" class="scene${cls}" role="img" aria-label="Classroom kitchen bench">`;
-  s+=defs();
-  s+=`<rect width="920" height="500" fill="url(#wall)"/>`;
-  /* subway tile */
-  s+=`<g opacity=".95">`;
-  for(let y=36;y<236;y+=22){
-    const off=(Math.floor(y/22)%2)?20:0;
-    for(let x=-20+off;x<920;x+=40){
-      s+=`<rect x="${x}" y="${y}" width="38" height="20" rx="1.5" fill="${(x+y)%80<40?"#f4efe6":"#efe8dc"}" stroke="#c8c0b2" stroke-width=".7"/>`;
-    }
+/* events: a tap or a control. Each ticks the current lesson step (in order) and the free tries. */
+function fire(ev){
+  const i=S.lesson, l=L[i], p=P(i);
+  if(l.room===S.room && p.s<l.steps.length){
+    const st=l.steps[p.s];
+    if(st.ev.indexOf(ev)>=0 && (!st.need || (st.need==="burnerOff" && !S.burner))){ p.s++; S.prog[i]=p; }
   }
-  s+=`</g>`;
-  /* wood counter */
-  s+=`<rect x="0" y="292" width="920" height="208" fill="url(#wood)"/>`;
-  s+=`<rect x="0" y="292" width="920" height="208" filter="url(#grain)" opacity=".28"/>`;
-  s+=`<rect x="0" y="284" width="920" height="12" fill="url(#wood2)"/>`;
-  s+=`<rect x="0" y="284" width="920" height="4" fill="#5a3818" opacity=".35"/>`;
-  /* cabinet face under */
-  s+=`<rect x="0" y="430" width="920" height="70" fill="#5e3e22"/>`;
-  s+=`<rect x="30" y="442" width="200" height="48" rx="3" fill="#4a3018" stroke="#2a1a0c"/>`;
-  s+=`<rect x="250" y="442" width="200" height="48" rx="3" fill="#4a3018" stroke="#2a1a0c"/>`;
-  s+=`<circle cx="220" cy="466" r="4" fill="#c4a06a"/><circle cx="440" cy="466" r="4" fill="#c4a06a"/>`;
-
-  /* SINK */
-  s+=`<g class="part" data-k="sink">`;
-  s+=`<rect class="glow-ring" x="28" y="248" width="250" height="128" rx="14"/>`;
-  s+=`<rect x="36" y="256" width="234" height="112" rx="10" fill="url(#steel)" stroke="#6a7380" stroke-width="1.4"/>`;
-  s+=`<rect x="52" y="272" width="202" height="80" rx="8" fill="#9aa6b2"/>`;
-  s+=`<rect x="58" y="278" width="190" height="68" rx="6" fill="#7d8a96"/>`;
-  s+=`<ellipse cx="130" cy="300" rx="50" ry="14" fill="#c5d0da" opacity=".45"/>`;
-  s+=`<circle cx="153" cy="338" r="6" fill="#5a6570" stroke="#3a444c"/>`;
-  s+=`<circle cx="153" cy="338" r="2.4" fill="#2a3238"/>`;
-  if(wet){
-    s+=`<ellipse class="ripple" cx="153" cy="330" rx="36" ry="10" fill="none" stroke="#d8e8f4" stroke-width="2"/>`;
-    s+=`<ellipse class="ripple" cx="153" cy="330" rx="24" ry="7" fill="none" stroke="#eef6fb" stroke-width="1.4" style="animation-delay:.4s"/>`;
-  }
-  s+=`<rect class="hit" x="28" y="248" width="250" height="128"/>`;
-  s+=`</g>`;
-
-  /* FAUCET */
-  s+=`<g class="part" data-k="faucet">`;
-  s+=`<rect x="142" y="214" width="22" height="48" rx="4" fill="url(#chrome)" stroke="#8a949e"/>`;
-  s+=`<path d="M153 214 C153 180 210 176 210 214" fill="none" stroke="url(#chrome)" stroke-width="14" stroke-linecap="round"/>`;
-  s+=`<path d="M153 214 C153 180 210 176 210 214" fill="none" stroke="#9aa4ae" stroke-width="4"/>`;
-  s+=`<rect x="202" y="214" width="16" height="18" rx="3" fill="url(#chrome)" stroke="#8a949e"/>`;
-  s+=`<circle cx="153" cy="206" r="9" fill="url(#chrome)" stroke="#8a949e"/>`;
-  if(wet){
-    s+=`<rect class="water-stream" x="206" y="232" width="8" height="88" rx="3" fill="#9ec8e6" opacity=".82"/>`;
-    s+=`<rect class="water-stream" x="208" y="232" width="3" height="88" rx="1" fill="#e8f4fc" opacity=".55"/>`;
-  }
-  s+=`<rect class="hit" x="130" y="168" width="100" height="90"/>`;
-  s+=`</g>`;
-
-  /* SOAP */
-  s+=`<g class="part" data-k="soap">`;
-  s+=`<rect class="glow-ring" x="268" y="248" width="44" height="70" rx="8"/>`;
-  s+=`<rect x="276" y="268" width="28" height="44" rx="6" fill="#2c7a4e" stroke="#1a4a30"/>`;
-  s+=`<rect x="282" y="256" width="16" height="16" rx="3" fill="#3d9a64" stroke="#1a4a30"/>`;
-  s+=`<rect x="286" y="250" width="8" height="10" rx="2" fill="#cfe4d8"/>`;
-  s+=`<ellipse cx="290" cy="278" rx="8" ry="3" fill="#8fd0a8" opacity=".5"/>`;
-  s+=`<rect class="hit" x="268" y="248" width="44" height="70"/>`;
-  s+=`</g>`;
-
-  /* RANGE */
-  s+=`<g class="part" data-k="grate">`;
-  s+=`<rect x="330" y="228" width="360" height="168" rx="8" fill="url(#iron)" stroke="#0c0e12" stroke-width="2"/>`;
-  s+=`<rect x="342" y="238" width="336" height="118" rx="4" fill="#1c1e24"/>`;
-  /* four burners */
-  const burners=[[410,290],[510,290],[410,345],[510,345]];
-  burners.forEach((b,i)=>{
-    const [bx,by]=b;
-    s+=`<circle cx="${bx}" cy="${by}" r="32" fill="#121418" stroke="#2a2e36"/>`;
-    s+=`<circle cx="${bx}" cy="${by}" r="22" fill="none" stroke="#3a4048" stroke-width="3"/>`;
-    s+=`<path d="M${bx-26} ${by} h52 M${bx} ${by-26} v52 M${bx-18} ${by-18} l36 36 M${bx-18} ${by+18} l36 -36" stroke="#4a5058" stroke-width="2.4" fill="none"/>`;
-    if(i===0 && lit){
-      s+=`<ellipse class="hot-glow" cx="${bx}" cy="${by}" rx="40" ry="22" fill="url(#heat)" filter="url(#soft)"/>`;
-    }
-  });
-  /* knobs */
-  [[370,368],[410,368],[450,368],[490,368]].forEach((k,i)=>{
-    s+=`<circle cx="${k[0]}" cy="${k[1]}" r="9" fill="#2a2e34" stroke="#0c0e12"/>`;
-    s+=`<rect x="${k[0]-2}" y="${k[1]-8}" width="4" height="8" rx="1" fill="#d9a84e" transform="${i===0&&lit?`rotate(40 ${k[0]} ${k[1]})`:''}"/>`;
-  });
-  s+=`<rect class="hit" x="330" y="228" width="360" height="168"/>`;
-  s+=`</g>`;
-
-  /* FLAME under the pan, then the skillet, then licks in front — fire stays in the pan */
-  s+=`<g class="part" data-k="flame">`;
-  if(lit){
-    s+=`<g transform="translate(410,236)">`;
-    s+=`<ellipse class="hot-glow" cx="0" cy="52" rx="48" ry="22" fill="url(#heat)" filter="url(#soft)"/>`;
-    s+=`<path class="fl-outer" d="M0 48 C-22 44 -26 8 -12 -26 C-2 -2 4 -8 2 -42 C26 -6 30 18 14 48z" fill="url(#flout)" filter="url(#glow)"/>`;
-    s+=`<path class="fl-inner" d="M0 40 C-10 40 -11 10 -4 -8 C0 8 2 2 1 -22 C14 10 15 24 6 40z" fill="url(#flin)"/>`;
-    s+=`</g>`;
-  } else {
-    s+=`<circle cx="410" cy="290" r="10" fill="#1a1c20"/>`;
-  }
-  s+=`<rect class="hit" x="372" y="220" width="80" height="70"/>`;
-  s+=`</g>`;
-
-  s+=`<g class="part" data-k="pan">`;
-  s+=`<ellipse cx="412" cy="286" rx="62" ry="18" fill="${lit?"url(#ironhot)":"#1a1c20"}" stroke="#0a0c10" stroke-width="2.2"/>`;
-  s+=`<ellipse cx="412" cy="280" rx="52" ry="13" fill="${lit?"#4a2818":"#2a2e34"}"/>`;
-  s+=`<ellipse class="oil-sheen" cx="400" cy="278" rx="24" ry="6" fill="#d9a84e"/>`;
-  if(lit){
-    s+=`<g class="steam" transform="translate(412,252)">`;
-    s+=`<path d="M-14 0 q-6 -16 -2 -28"/><path d="M0 0 q4 -18 0 -32"/><path d="M14 0 q6 -14 2 -26"/>`;
-    s+=`</g>`;
-    s+=`<path d="M380 300 q8 10 0 14 q-10 6 4 10" fill="url(#flout)" class="fl-outer" opacity=".85"/>`;
-    s+=`<path d="M442 298 q-6 12 4 16 q8 4 -2 10" fill="url(#flout)" class="fl-outer" opacity=".8"/>`;
-  }
-  s+=`<rect class="hit" x="350" y="258" width="124" height="48"/>`;
-  s+=`</g>`;
-
-  s+=`<g class="part" data-k="handle">`;
-  s+=`<rect x="468" y="274" width="86" height="12" rx="5" fill="${lit?"#5a3020":"#2a2e34"}" stroke="#0a0c10" transform="rotate(-8 468 280)"/>`;
-  if(lit) s+=`<rect x="520" y="268" width="28" height="10" rx="3" fill="#c9784a" opacity=".55" transform="rotate(-8 520 273)"/>`;
-  s+=`<rect class="hit" x="468" y="258" width="100" height="36"/>`;
-  s+=`</g>`;
-
-  /* BOARD + KNIFE + ONION */
-  s+=`<g class="part" data-k="board">`;
-  s+=`<rect class="glow-ring" x="690" y="268" width="210" height="130" rx="10"/>`;
-  s+=`<rect x="700" y="278" width="190" height="110" rx="8" fill="url(#wood2)" stroke="#5a3818"/>`;
-  s+=`<rect x="700" y="278" width="190" height="110" rx="8" filter="url(#grain)" opacity=".35"/>`;
-  /* end-grain squares */
-  for(let y=286;y<380;y+=14){
-    for(let x=710;x<880;x+=14){
-      s+=`<rect x="${x}" y="${y}" width="12" height="12" fill="${(x+y)%28?"#c4a06a":"#8a5a28"}" opacity=".28"/>`;
-    }
-  }
-  s+=`<rect class="hit" x="690" y="268" width="210" height="130"/>`;
-  s+=`</g>`;
-
-  s+=`<g class="part" data-k="knife">`;
-  s+=`<g transform="translate(780,320) rotate(-28)">`;
-  s+=`<path d="M-70 -8 L70 -4 L76 2 L70 8 L-70 6 Z" fill="url(#blade)" stroke="#5a6270" stroke-width="1"/>`;
-  s+=`<path d="M-70 -8 L70 -4 L70 -1 L-70 0 Z" fill="#f6f8fa" opacity=".55"/>`;
-  s+=`<rect x="70" y="-9" width="18" height="16" fill="#8a929c" stroke="#4a525c"/>`;
-  s+=`<rect x="86" y="-11" width="64" height="20" rx="4" fill="url(#handle)" stroke="#120c08"/>`;
-  s+=`<circle cx="102" cy="0" r="2.4" fill="#c5ccd4"/><circle cx="118" cy="0" r="2.4" fill="#c5ccd4"/><circle cx="134" cy="0" r="2.4" fill="#c5ccd4"/>`;
-  s+=`</g>`;
-  /* onion half */
-  s+=`<g transform="translate(820,350)">`;
-  s+=`<ellipse rx="28" ry="22" fill="#f0d8a0" stroke="#c4a06a"/>`;
-  s+=`<ellipse rx="20" ry="15" fill="none" stroke="#e8c878" stroke-width="2"/>`;
-  s+=`<ellipse rx="12" ry="9" fill="none" stroke="#d4a85a" stroke-width="1.6"/>`;
-  s+=`<ellipse rx="5" ry="4" fill="#f4ead0" stroke="#c49654"/>`;
-  s+=`<path d="M0 -22 q6 -10 12 -8" fill="none" stroke="#6f9a4a" stroke-width="2"/>`;
-  s+=`</g>`;
-  s+=`<rect class="hit" x="700" y="288" width="200" height="90"/>`;
-  s+=`</g>`;
-  if(S.sel==="knife"){
-    s+=`<g class="claw" transform="translate(748,358)" pointer-events="none">`;
-    s+=`<path d="M0 8 q8 -18 4 -28" fill="none" stroke="#c9784a" stroke-width="7" stroke-linecap="round"/>`;
-    s+=`<path d="M12 10 q6 -20 0 -30" fill="none" stroke="#c9784a" stroke-width="7" stroke-linecap="round"/>`;
-    s+=`<path d="M24 8 q4 -16 -2 -26" fill="none" stroke="#c9784a" stroke-width="6.5" stroke-linecap="round"/>`;
-    s+=`<path d="M-16 4 q-2 -12 10 -8" fill="none" stroke="#8a5a2a" stroke-width="7" stroke-linecap="round"/>`;
-    s+=`<circle cx="6" cy="16" r="9" fill="#e8d2b0" stroke="#8a5a2a"/>`;
-    s+=`</g>`;
-  }
-
-  /* towel */
-  s+=`<path d="M40 292 l18 8 v90 l-18 -6 z" fill="#e8e0d0" stroke="#c4bba8"/>`;
-  s+=`<path d="M44 300 l10 4" stroke="#c9784a" stroke-width="3"/>`;
-
-  s+=`</svg>`;
-  return s;
+  (TRIES[S.room]||[]).forEach(tr=>{ if(tr[1].indexOf(ev)>=0){ S.tries[S.room]=S.tries[S.room]||{}; S.tries[S.room][tr[0]]=true; } });
+  save();
 }
-
-function sewSVG(){
-  const sew=S.sewing, foot=S.foot, lamp=S.light;
-  const cls=(sew?" sewing":"")+(lamp?" lamp":"");
-  let s=`<svg viewBox="0 0 920 500" class="scene${cls}" role="img" aria-label="Classroom sewing machine">`;
-  s+=defs();
-  s+=`<rect width="920" height="500" fill="url(#wall)"/>`;
-  /* window light */
-  s+=`<rect x="620" y="20" width="260" height="180" rx="4" fill="#dce8f0" stroke="#b8c4ce"/>`;
-  s+=`<rect x="750" y="20" width="8" height="180" fill="#c5ccd4"/>`;
-  s+=`<rect x="620" y="104" width="260" height="8" fill="#c5ccd4"/>`;
-  /* table */
-  s+=`<rect x="0" y="310" width="920" height="190" fill="url(#wood)"/>`;
-  s+=`<rect x="0" y="310" width="920" height="190" filter="url(#grain)" opacity=".3"/>`;
-  s+=`<rect x="0" y="300" width="920" height="14" fill="url(#wood2)"/>`;
-  s+=`<rect x="40" y="430" width="22" height="70" fill="#5a3818"/><rect x="820" y="430" width="22" height="70" fill="#5a3818"/>`;
-
-  /* fabric under machine — feeds toward the needle when sewing */
-  s+=`<g class="part" data-k="fabric">`;
-  s+=`<g class="feed">`;
-  s+=`<path d="M80 318 C200 300 340 328 520 322 L700 328 C760 340 800 360 820 390 L40 390 C50 350 60 330 80 318z" fill="url(#denim)" stroke="#1a3048"/>`;
-  s+=`<path d="M100 340 C240 328 400 348 620 342" fill="none" stroke="#3a5878" stroke-width="1.2"/>`;
-  s+=`<path class="stitch" d="M200 336 C320 330 420 338 560 334" fill="none" stroke="#d9a84e" stroke-width="1.8" stroke-linecap="round"/>`;
-  if(sew) s+=`<path class="stitch" d="M210 342 C330 336 430 344 570 340" fill="none" stroke="#f4efe4" stroke-width="1.1" opacity=".7"/>`;
-  s+=`</g>`;
-  s+=`<rect class="hit" x="80" y="300" width="740" height="90"/>`;
-  s+=`</g>`;
-
-  /* MACHINE body */
-  const fy = foot? 0 : -14;
-  /* base */
-  s+=`<rect x="250" y="268" width="420" height="58" rx="6" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
-  s+=`<rect x="258" y="276" width="404" height="14" fill="#e8e0d2"/>`;
-  /* free arm */
-  s+=`<rect x="268" y="250" width="210" height="28" rx="4" fill="url(#cream)" stroke="#8a8274"/>`;
-
-  /* column + arm */
-  s+=`<rect x="478" y="110" width="92" height="170" rx="6" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
-  s+=`<rect x="570" y="118" width="230" height="78" rx="8" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
-  /* black face plate */
-  s+=`<rect x="488" y="128" width="72" height="110" rx="4" fill="url(#bodyblk)"/>`;
-  s+=`<circle cx="524" cy="158" r="16" fill="#2a2e34" stroke="#d9a84e" stroke-width="2"/>`;
-  s+=`<circle cx="524" cy="158" r="4" fill="#d9a84e"/>`;
-  s+=`<text x="524" y="208" text-anchor="middle" font-size="9" fill="#c5ccd4" font-family="ui-sans-serif,system-ui">STITCH</text>`;
-
-  /* HEAD */
-  s+=`<rect x="720" y="150" width="88" height="70" rx="6" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
-  s+=`<rect x="728" y="162" width="72" height="36" rx="3" fill="url(#bodyblk)"/>`;
-  s+=`<circle cx="764" cy="180" r="5" fill="#d9a84e"/>`;
-
-  /* HANDWHEEL */
-  s+=`<g class="part" data-k="wheel">`;
-  s+=`<g class="handwheel" transform="translate(818,158)">`;
-  s+=`<circle r="34" fill="url(#chrome)" stroke="#6a7380" stroke-width="2"/>`;
-  s+=`<circle r="22" fill="none" stroke="#8a929c" stroke-width="3"/>`;
-  s+=`<circle r="6" fill="#2a2e34"/>`;
-  s+=`<path d="M0 -22 v44 M-22 0 h44" stroke="#5a6270" stroke-width="2"/>`;
-  s+=`</g>`;
-  s+=`<circle class="hit" cx="818" cy="158" r="44"/>`;
-  s+=`</g>`;
-
-  /* SPOOL + thread path */
-  s+=`<g class="part" data-k="spool">`;
-  s+=`<rect x="612" y="88" width="8" height="30" fill="url(#chrome)"/>`;
-  s+=`<rect x="598" y="70" width="36" height="28" rx="4" fill="#9c3a2e" stroke="#5a1810"/>`;
-  s+=`<rect x="598" y="78" width="36" height="4" fill="#c45a48" opacity=".5"/>`;
-  s+=`<rect x="598" y="88" width="36" height="4" fill="#c45a48" opacity=".5"/>`;
-  s+=`<path d="M634 84 C680 70 740 90 764 168" fill="none" stroke="#9c3a2e" stroke-width="1.6"/>`;
-  s+=`<rect class="hit" x="588" y="64" width="56" height="56"/>`;
-  s+=`</g>`;
-
-  /* NEEDLE BAR + NEEDLE — in front of the head, hit box does not cover the foot */
-  s+=`<g class="part" data-k="needle">`;
-  s+=`<g class="needle-bar">`;
-  s+=`<rect x="752" y="196" width="14" height="62" rx="2" fill="url(#chrome)" stroke="#6a7380"/>`;
-  s+=`<rect x="754" y="198" width="4" height="58" fill="#f4f6f8" opacity=".55"/>`;
-  s+=`<path d="M759 256 l3.5 20 l-3.5 12 l-3.5 -12 z" fill="#dfe4ea" stroke="#4a525c" stroke-width=".9"/>`;
-  s+=`<circle cx="759" cy="262" r="1.4" fill="none" stroke="#1a232c" stroke-width=".9"/>`;
-  s+=`<path d="M759 256 v32" stroke="#9c3a2e" stroke-width="1.1"/>`;
-  s+=`</g>`;
-  s+=`<rect class="hit" x="746" y="188" width="28" height="72"/>`;
-  s+=`</g>`;
-
-  /* PRESSER FOOT */
-  s+=`<g class="part" data-k="foot" transform="translate(0,${fy})">`;
-  s+=`<rect x="738" y="214" width="8" height="50" fill="url(#chrome)" stroke="#6a7380"/>`;
-  s+=`<path d="M730 262 h32 l3 9 h-12 v5 h-14 v-5 h-12 z" fill="url(#chrome)" stroke="#5a6270"/>`;
-  s+=`<rect class="hit" x="726" y="248" width="40" height="32"/>`;
-  s+=`</g>`;
-
-  /* NEEDLE PLATE */
-  s+=`<g class="part" data-k="plate">`;
-  s+=`<rect x="700" y="268" width="120" height="36" rx="3" fill="url(#steel)" stroke="#6a7380"/>`;
-  s+=`<rect x="748" y="278" width="22" height="8" rx="1" fill="#1a232c"/>`;
-  s+=`<path d="M710 280 h26 M710 286 h20 M710 292 h16" stroke="#2f5c6b" stroke-width="1"/>`;
-  s+=`<rect class="hit" x="698" y="264" width="124" height="42"/>`;
-  s+=`</g>`;
-
-  /* BOBBIN door */
-  s+=`<g class="part" data-k="bobbin">`;
-  s+=`<circle cx="330" cy="292" r="16" fill="url(#chrome)" stroke="#6a7380"/>`;
-  s+=`<circle cx="330" cy="292" r="8" fill="none" stroke="#9c3a2e" stroke-width="3"/>`;
-  s+=`<circle cx="330" cy="292" r="3" fill="#2a2e34"/>`;
-  s+=`<rect class="hit" x="308" y="270" width="44" height="44"/>`;
-  s+=`</g>`;
-
-  /* light under arm */
-  s+=`<ellipse cx="680" cy="268" rx="${lamp?70:40}" ry="${lamp?14:8}" fill="#fff6d0" opacity="${lamp?.55:.18}"/>`;
-  if(lamp) s+=`<ellipse cx="759" cy="290" rx="36" ry="16" fill="#fff8d8" opacity=".28"/>`;
-
-  /* PEDAL */
-  s+=`<g class="part" data-k="pedal">`;
-  s+=`<path d="M140 448 L230 430 L248 456 L150 478 Z" fill="#2a2e34" stroke="#0c0e12" stroke-width="2"/>`;
-  s+=`<path d="M150 452 L228 436 L236 450 L156 468 Z" fill="#3a4048"/>`;
-  s+=`<rect x="228" y="400" width="8" height="36" fill="#4a525c"/>`;
-  s+=`<rect class="hit" x="130" y="420" width="130" height="64"/>`;
-  s+=`</g>`;
-
-  /* pincushion + scissors */
-  s+=`<ellipse cx="180" cy="340" rx="28" ry="16" fill="#9c3a2e" stroke="#5a1810"/>`;
-  s+=`<path d="M168 328 l4 -18 M180 326 l-2 -16 M192 330 l6 -14" stroke="#c5ccd4" stroke-width="1.4"/>`;
-  s+=`<g transform="translate(860,360) rotate(20)">`;
-  s+=`<path d="M0 0 l40 8 M0 8 l40 -8" stroke="#8a929c" stroke-width="2"/>`;
-  s+=`<circle cx="0" cy="0" r="6" fill="none" stroke="#8a929c" stroke-width="2"/>`;
-  s+=`<circle cx="0" cy="8" r="6" fill="none" stroke="#8a929c" stroke-width="2"/>`;
-  s+=`</g>`;
-
-  s+=`</svg>`;
-  return s;
-}
-
-function paintCap(){
-  const p=pt(S.sel);
-  document.getElementById("capK").textContent = p? p.k : t("object");
-  document.getElementById("capN").textContent = p? p.n : t("benchN");
-  document.getElementById("capJ").textContent = p? p.j : t("benchJ");
-  const w=document.getElementById("capW");
-  const bar=document.getElementById("washBar"), fill=document.getElementById("washFill");
-  let warn=S.warn;
-  if(!warn && S.room==="kitchen" && S.burner && S.water && (S.sel==="flame"||S.sel==="pan"||S.sel==="handle")) warn="warnWet";
-  if(!warn && S.room==="kitchen" && S.sel==="handle" && S.burner) warn="warnHot";
-  if(warn){ w.hidden=false; w.textContent=t(warn); } else w.hidden=true;
-  const washOn = S.room==="kitchen" && S.sel==="soap" && S.water && S.washStart;
-  if(washOn){
-    const tleft=Math.max(0, 20000-(Date.now()-S.washStart));
-    bar.hidden=false;
-    fill.style.width=((1-tleft/20000)*100)+"%";
-    if(tleft<=0){ tick("clean"); S.washStart=0; }
-  } else bar.hidden=true;
-}
-function paintActs(){
-  const el=document.getElementById("acts");
-  if(S.room==="kitchen"){
-    el.innerHTML=`<div class="row"><span class="tiny">${S.lang==="es"?"Fuego":"Fire"}</span><span>
-      <button class="btn${S.burner?" btn-steel":""}" data-act="burner">${S.burner?t("lampOn"):t("lampOff")}</button>
-      <button class="btn${S.water?" btn-steel":""}" data-act="water">${S.water?t("waterOn"):t("waterOff")}</button>
-    </span></div>`;
-  } else {
-    el.innerHTML=`<div class="row"><span class="tiny">${S.lang==="es"?"Máquina":"Machine"}</span><span>
-      <button class="btn${S.foot?" btn-steel":""}" data-act="foot">${S.foot?t("footDown"):t("footUp")}</button>
-      <button class="btn${S.sewing?" btn-steel":""}" data-act="sew">${S.sewing?t("sewOn"):t("sewOff")}</button>
-      <button class="btn${S.light?" btn-steel":""}" data-act="light">${S.light?t("lampLit"):t("lampDim")}</button>
-    </span></div>`;
-  }
-}
-function paintMissions(){
-  const list=MISSIONS[S.room];
-  const done=S.missions[S.room]||{};
-  document.getElementById("missions").innerHTML = list.map(m=>`<li class="${done[m.id]?"done":""}"><i class="dot"></i><span>${S.lang==="es"?m.es:m.en}</span></li>`).join("");
-}
-function tick(id){
-  S.missions[S.room]=S.missions[S.room]||{};
-  S.missions[S.room][id]=true;
-}
-let washRaf=0;
-function washLoop(){
-  if(S.room==="kitchen" && S.sel==="soap" && S.water && S.washStart){
-    paintCap(); paintMissions();
-    washRaf=requestAnimationFrame(washLoop);
-  }
-}
-function onSel(k){
+function tapObj(k){
   S.sel=k; S.warn=null;
-  if(S.room==="kitchen"){
-    if(k==="sink"||k==="faucet") tick("wet");
-    if(k==="knife") tick("sharp");
-    if(k==="soap"){ tick("clean"); if(S.water && !S.washStart) S.washStart=Date.now(); }
-    if(k==="flame"||k==="pan") { if(S.burner) tick("hot"); }
-    if(k==="handle"){ if(S.burner){ tick("handle"); S.warn="warnHot"; } }
-  } else {
-    if(k==="needle") tick("need");
-    if(k==="foot") tick("foot");
-    if(k==="pedal") tick("ped");
+  if(k==="faucet"){ S.water=!S.water; fire(S.water?"act:water-on":"act:water-off"); }
+  if(k==="knob"){ S.burner=!S.burner; fire(S.burner?"act:burner-on":"act:burner-off"); }
+  if(k==="soap" && !S.water) S.warn="warnWater";
+  if(k==="handle" && S.burner) S.warn="warnHot";
+  fire("tap:"+k);
+  paint();
+}
+function act(a){
+  S.warn=null;
+  if(a==="burner"){ S.burner=!S.burner; fire(S.burner?"act:burner-on":"act:burner-off"); }
+  else if(a==="water"){ S.water=!S.water; fire(S.water?"act:water-on":"act:water-off"); }
+  else if(a==="scrub"){ if(!S.water) S.warn="warnWater"; else if(!S.scrub) startScrub(); }
+  else if(a==="foot"){ S.foot=!S.foot; if(!S.foot) S.sewing=false; fire(S.foot?"act:foot-down":"act:foot-up"); }
+  else if(a==="sew"){
+    if(S.sewing){ S.sewing=false; fire("act:stop"); }
+    else if(!S.foot){ S.warn="warnFoot"; fire("refuse"); }
+    else { S.sewing=true; fire("act:sew"); }
   }
-  save(); paint();
+  else fire("act:"+a);
+  paint();
 }
+let scrubTimer=0;
+function startScrub(){
+  S.scrub=20; clearInterval(scrubTimer);
+  scrubTimer=setInterval(()=>{
+    S.scrub--;
+    if(S.scrub<=0){ clearInterval(scrubTimer); S.scrub=0; fire("scrub-done"); paint(); return; }
+    document.querySelectorAll('[data-act="scrub"]').forEach(b=>{ b.textContent=t("scrubbing",{n:S.scrub}); });
+  },1000);
+}
+
+/* drawing */
+function objName(k){ const o=OBJ[k]; return o?(es()?o[1]:o[0]):""; }
+function hotBoxes(){
+  const R=ROOMS[S.room], H=HOT[R.uid]||{};
+  return Object.keys(R.ids).filter(id=>H[id]).map(id=>{ let [x,y,w,h]=H[id];
+    /* a small part gets a bigger tap area (at least 6% by 7%), centred on it */
+    if(w<6){ x-=(6-w)/2; w=6; } if(h<7){ y-=(7-h)/2; h=7; }
+    const nd=NUDGE[R.ids[id]]; if(nd){ x+=nd[0]; y+=nd[1]; }
+    x=Math.max(0,Math.min(100-w,x)); y=Math.max(0,Math.min(100-h,y));
+    return {id, k:R.ids[id], x, y, w, h, a:w*h}; }).sort((a,b)=>b.a-a.a);
+}
+function sceneHtml(){
+  const R=ROOMS[S.room], b=hotBoxes(), box=k=>b.find(o=>o.k===k);
+  let marks="";
+  if(S.room==="kitchen"){
+    const pan=box("pan"), f=box("faucet"), s=box("sink");
+    if(S.burner&&pan) marks+=`<div class="mark" style="left:${pan.x+pan.w*.3}%;top:${pan.y+pan.h*.7}%;width:${pan.w*.4}%;height:${pan.h*.45}%"><svg viewBox="0 0 40 30" aria-hidden="true"><path d="M8 28 C4 20 10 14 12 8 C14 16 17 14 18 4 C22 14 26 12 26 6 C30 14 36 20 32 28Z" fill="#fff3c0" fill-opacity=".6" stroke="#c0661a" stroke-width="1.6"/><path d="M14 28 C12 22 17 19 20 12 C23 19 28 22 26 28Z" fill="#9fcdf2" stroke="#2f6fb0" stroke-width="1.4"/></svg></div>`
+      +`<span class="chip" style="left:${pan.x}%;top:${Math.min(92,pan.y+pan.h+2)}%">${esc(t("burnerOn"))}</span>`;
+    if(S.water&&f&&s) marks+=`<div class="mark" style="left:${f.x+f.w*.25}%;top:${f.y+f.h*.4}%;width:2%;height:${Math.max(4,(s.y+s.h*.45)-(f.y+f.h*.4))}%"><svg viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M5 0 V100" stroke="#2f6fb0" stroke-width="3" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/></svg></div>`
+      +`<span class="chip" style="left:${s.x+2}%;top:${s.y+s.h-9}%">${esc(t("waterOn"))}</span>`;
+  } else {
+    const ft=box("foot"), n=box("needle");
+    if(ft) marks+=`<span class="chip" style="left:${Math.max(0,ft.x-6)}%;top:${Math.min(92,ft.y+ft.h+6)}%">${esc(S.foot?t("footDown"):t("footUp"))}</span>`;
+    if(S.sewing&&n) marks+=`<span class="chip" style="left:${Math.max(0,n.x-12)}%;top:${Math.max(0,n.y-6)}%">${esc(t("sewing2"))}</span>`;
+  }
+  const on=b.find(o=>o.k===S.sel);
+  const cx=on?on.x+on.w/2:0, tx=cx<35?"0":cx>65?"-100%":"-50%";
+  const tag=on?`<span class="tag" style="left:${cx<35?on.x:cx>65?on.x+on.w:cx}%;top:${Math.max(8,on.y)}%;transform:translate(${tx},-100%)">${esc(objName(on.k))}</span>`:"";
+  return `<figure class="scene" id="scene"><picture>
+      <source type="image/webp" srcset="/img/banners/${R.uid}-pencil-900.webp 900w, /img/banners/${R.uid}-pencil-1600.webp 1600w" sizes="(min-width:900px) 760px, 100vw">
+      <img src="/img/banners/${R.uid}-pencil-900.jpg" width="1600" height="1000" alt="${esc(t("alt_"+S.room))}" decoding="async">
+    </picture>
+    ${b.map((o,i)=>`<button type="button" class="hot${o.k===S.sel?" on":""}" data-k="${o.k}" style="left:${o.x}%;top:${o.y}%;width:${o.w}%;height:${o.h}%;z-index:${i+1}" aria-label="${esc(objName(o.k))}" aria-pressed="${o.k===S.sel}"></button>`).join("")}
+    ${marks}${tag}</figure><p class="scene-note">${esc(t("pick"))}</p>`;
+}
+function sideHtml(){
+  const o=OBJ[S.sel];
+  const cap=`<div class="card cap"><p class="tiny">${esc(o?t(S.room):t("pickN"))}</p><h2>${esc(o?(es()?o[1]:o[0]):t(S.room))}</h2><p class="muted">${esc(o?(es()?o[3]:o[2]):t("pickJ"))}</p>${S.warn?`<p class="warn" role="status">${esc(t(S.warn))}</p>`:""}</div>`;
+  const B=(a,on,label)=>`<button type="button" class="btn${on?" on":""}" data-act="${a}" aria-pressed="${!!on}">${esc(label)}</button>`;
+  const acts=S.room==="kitchen"
+    ? B("burner",S.burner,S.burner?t("burnerOn"):t("burnerOff"))+B("water",S.water,S.water?t("waterOn"):t("waterOff"))+`<button type="button" class="btn" data-act="scrub">${esc(S.scrub?t("scrubbing",{n:S.scrub}):t("scrub"))}</button>`
+    : B("foot",S.foot,S.foot?t("footDown"):t("footUp"))+B("sew",S.sewing,S.sewing?t("stop"):t("sew"));
+  const tr=TRIES[S.room], got=S.tries[S.room]||{};
+  return `<div class="side">${cap}
+    <div class="card"><p class="tiny">${esc(t("controls"))}</p><div class="acts">${acts}</div></div>
+    <div class="card"><p class="tiny">${esc(t("tries"))}</p><ul class="tries">${tr.map(x=>`<li class="${got[x[0]]?"done":""}"><i class="dot" aria-hidden="true"></i><span>${esc(es()?x[3]:x[2])}</span></li>`).join("")}</ul></div></div>`;
+}
+function allHtml(){
+  const row=i=>{ const l=L[i], d=done(i), p=P(i);
+    return `<li><a href="#${l.room}" data-pick="${i}" class="${i===S.lesson?"picked":""}"><span class="mk">${esc(t("lessonK"))} ${i+1}</span><span class="lt">${esc(es()?l.es:l.en)}</span>${d?`<span class="ok">✓ ${esc(t("doneMark"))}</span>`:p.s?`<span class="muted">${Math.min(p.s,l.steps.length)}/${l.steps.length}</span>`:""}</a></li>`; };
+  const ids=[...L.keys()];
+  return `<div class="card" style="padding:1rem 1.1rem"><p class="kicker">${esc(t("all"))}</p>
+    <p class="lead" style="margin:.3rem 0 0">${esc(t("allLead"))}</p>
+    <p style="margin:.5rem 0 0;font-weight:700">${esc(t("progress",{d:stepsDone(),t:TOTAL,n:firstOpen()+1}))}</p>
+    <p class="tiny lgroup">${esc(t("kitchenG"))}</p><ol class="ladder">${ids.filter(i=>L[i].room==="kitchen").map(row).join("")}</ol>
+    <p class="tiny lgroup">${esc(t("sewingG"))}</p><ol class="ladder">${ids.filter(i=>L[i].room==="sewing").map(row).join("")}</ol></div>`;
+}
+function lessonHtml(){
+  const i=S.lesson, l=L[i], p=P(i), n=l.steps.length, all=p.s>=n, here=l.room===S.room&&S.page!=="lessons";
+  const steps=l.steps.map((st,k)=>{ const ok=k<p.s, now=k===p.s;
+    const key=st.actKey||(st.ev[0]==="scrub-done"?"scrub":st.ev[0].slice(4));
+    const btn=(now&&st.act&&here)?` <button type="button" class="pill" data-act="${key}">${esc(es()?st.act[1]:st.act[0])}</button>`:"";
+    return `<li class="lstep${ok?" ok":""}${now?" now":""}"><span class="lck" aria-hidden="true">${ok?"✓":k+1}</span><span>${esc(es()?st.es:st.en)}${btn}</span></li>`; }).join("");
+  const away=!here?`<p class="lnote">${esc(t("goRoom",{r:t(l.room).toLowerCase()}))} <a class="pill" href="#${l.room}">${esc(t("go"))}</a></p>`:"";
+  let check;
+  if(!all) check=`<div class="lq"><p>${esc(t("check"))}</p><span class="muted">${esc(t("checkWait"))}</span></div>`;
+  else { const q=l.q;
+    check=`<div class="lq"><p>${esc(es()?q.es:q.en)}</p><div class="acts">${q.a.map((a,k)=>`<button type="button" class="btn${p.q&&a[2]?" on":""}" data-ans="${k}">${esc(es()?a[1]:a[0])}</button>`).join("")}</div>
+      ${p.q?`<p class="lfeed ok" role="status">${esc(t("right"))}</p>`:S.answer===false?`<p class="lfeed" role="status">${esc(t("again"))}</p>`:""}</div>`; }
+  const acts=`<div class="lacts">${p.q&&i<L.length-1?`<button type="button" class="pill btn-steel" data-next="1">${esc(t("next"))} →</button>`:""}${p.s?`<button type="button" class="pill" data-redo="1">${esc(t("redo"))}</button>`:""}</div>`;
+  return `<p class="mk">${esc(t("lessonK"))} ${i+1} · ${esc(t(l.room))}${done(i)?` · ✓ ${esc(t("doneMark"))}`:""}</p>
+    <h3>${esc(es()?l.es:l.en)}</h3>
+    <p class="lblurb">${esc(t("progress",{d:stepsDone(),t:TOTAL,n:firstOpen()+1}))}</p>
+    ${away}<ol class="lsteps">${steps}</ol>${l.note?`<p class="lnote">${esc(es()?l.note.es:l.note.en)}</p>`:""}${check}${acts}`;
+}
+function pickLesson(i){ S.lesson=Math.max(0,Math.min(L.length-1,+i||0)); S.answer=null; save(); }
+function goLessonRoom(){ const r=L[S.lesson].room; if(S.page!=="lessons" && r!==S.room) location.hash=r; else paint(); }
 function paint(){
-  document.documentElement.lang = S.lang==="es"?"es":"en";
-  document.getElementById("langBtn").textContent = S.lang==="es"?"English":"Español";
-  document.getElementById("themeBtn").textContent = document.documentElement.getAttribute("data-theme")==="dark"?"Light":"Dark";
-  document.getElementById("kicker").textContent = t("kicker");
-  document.getElementById("title").textContent = S.room==="kitchen"?t("titleK"):t("titleS");
-  document.getElementById("lead").textContent = S.room==="kitchen"?t("leadK"):t("leadS");
-  document.getElementById("hint").textContent = S.room==="kitchen"?t("hintK"):t("hintS");
-  document.querySelectorAll("#nav a[data-room]").forEach(a=>{
-    a.classList.toggle("on", a.getAttribute("data-room")===S.room);
-    a.textContent = t(a.getAttribute("data-room"));
-  });
-  const navMic=document.querySelector('#nav a[href*="microscope"]');
-  if(navMic) navMic.textContent=t("microscope");
-  document.getElementById("stage").innerHTML = S.room==="kitchen"?kitchenSVG():sewSVG();
-  document.getElementById("stage").querySelectorAll(".part").forEach(g=>{
-    if(g.getAttribute("data-k")===S.sel) g.classList.add("sel");
-    g.addEventListener("click", ()=> onSel(g.getAttribute("data-k")));
-  });
-  paintCap(); paintActs(); paintMissions();
-  document.getElementById("acts").querySelectorAll("[data-act]").forEach(b=>{
-    b.addEventListener("click", ()=>{
-      const a=b.getAttribute("data-act");
-      if(a==="burner"){ S.burner=!S.burner; S.warn=null; if(S.burner) tick("hot"); if(S.burner && S.water) S.warn="warnWet"; }
-      if(a==="water"){ S.water=!S.water; S.warn=null; if(S.water) tick("wet"); if(S.sel==="soap" && S.water) S.washStart=Date.now(); }
-      if(a==="sew"){
-        if(!S.foot){ S.sewing=false; S.warn="warnFoot"; tick("refuse"); }
-        else { S.sewing=!S.sewing; S.warn=null; if(S.sewing){ tick("sew"); tick("foot"); } }
-      }
-      if(a==="foot"){ S.foot=!S.foot; S.warn=null; if(S.foot) tick("foot"); if(!S.foot) S.sewing=false; }
-      if(a==="light"){ S.light=!S.light; }
-      save(); paint();
-    });
-  });
-  cancelAnimationFrame(washRaf);
-  if(S.sel==="soap" && S.water && S.washStart) washLoop();
+  const h=(location.hash||"").replace("#","");
+  S.page=h==="lessons"?"lessons":(h==="sewing"||h==="sew")?"sewing":h==="kitchen"?"kitchen":S.room;
+  if(S.page!=="lessons" && S.page!==S.room){ S.room=S.page; S.sel=null; S.warn=null; S.sewing=false; save(); }
+  document.documentElement.lang=S.lang;
+  document.title=t("app")+" — Architecture of Grace";
+  document.getElementById("brand").textContent=t("app");
+  document.getElementById("mastK").textContent=t("eyebrow");
+  document.getElementById("mastH").textContent=t("app");
+  document.getElementById("mastL").textContent=t("tag");
+  document.getElementById("langBtn").textContent=es()?"EN":"ES";
+  document.getElementById("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
+  document.getElementById("foot").textContent=t("foot");
+  document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Bench|Mesa">`
+    +[["kitchen","kitchen"],["sewing","sewing"],["lessons","all"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${esc(t(k))}</a>`).join("")+`</span>`
+    +`<a class="sep" href="/facs">${esc(t("facs"))}</a><a class="sep" href="/microscope">${esc(t("micro"))}</a>`;
+  const row=document.getElementById("lessonRow");
+  const rowHtml=L.map((l,i)=>`<button type="button" class="${i===S.lesson?"on":""}" data-lesson="${i}" aria-pressed="${i===S.lesson}">${i+1}${done(i)?" ✓":""} · ${esc(es()?l.es:l.en)}</button>`).join("");
+  if(row.__html!==rowHtml){ row.innerHTML=rowHtml; row.__html=rowHtml;
+    row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ pickLesson(b.getAttribute("data-lesson")); goLessonRoom(); }); }
+  document.getElementById("lKick").textContent=t("lessons")+" · "+L.filter((l,i)=>done(i)).length+"/"+L.length;
+  document.getElementById("lessonBody").innerHTML=lessonHtml();
+  /* the Lessons card sits right under the drawing (as on the telescope); put it back before the view is redrawn */
+  const box=document.getElementById("lessons"), view=document.getElementById("view");
+  if(view.contains(box)) view.after(box);
+  view.innerHTML=S.page==="lessons"?allHtml():`<div class="bench"><div id="benchMain">${sceneHtml()}</div>${sideHtml()}</div>`;
+  const main=document.getElementById("benchMain"); if(main) main.appendChild(box);
+  bind();
 }
-document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; save(); paint(); };
+function bind(){
+  document.querySelectorAll("#view .hot").forEach(b=>b.onclick=()=>tapObj(b.getAttribute("data-k")));
+  document.querySelectorAll("#view [data-act], #lessons [data-act]").forEach(b=>b.onclick=()=>act(b.getAttribute("data-act")));
+  document.querySelectorAll("#view [data-pick]").forEach(a=>a.onclick=()=>{ pickLesson(a.getAttribute("data-pick")); });
+  const lb=document.getElementById("lessons");
+  lb.querySelectorAll("[data-ans]").forEach(b=>b.onclick=()=>{ const i=S.lesson, p=P(i), a=L[i].q.a[+b.getAttribute("data-ans")];
+    if(a[2]){ p.q=true; S.prog[i]=p; S.answer=true; } else S.answer=false; save(); paint(); });
+  lb.querySelectorAll("[data-next]").forEach(b=>b.onclick=()=>{ pickLesson(S.lesson+1); goLessonRoom(); });
+  lb.querySelectorAll("[data-redo]").forEach(b=>b.onclick=()=>{ S.prog[S.lesson]={s:0,q:false}; S.answer=null; save(); paint(); });
+}
+document.getElementById("langBtn").onclick=()=>{ S.lang=es()?"en":"es"; save(); paint(); };
 document.getElementById("themeBtn").onclick=()=>{
-  const dark=document.documentElement.getAttribute("data-theme")==="dark";
-  const next=dark?"light":"dark";
-  document.documentElement.setAttribute("data-theme",next);
-  document.documentElement.classList.toggle("dark", next==="dark");
-  try{ localStorage.setItem("aog.interior.ws.v1.theme", next); }catch(e){}
+  const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next); document.documentElement.classList.toggle("dark",next==="dark");
+  try{ localStorage.setItem("aog.interior.ws.v1.theme",next); }catch(e){}
   paint();
 };
-document.querySelectorAll("#nav a[data-room]").forEach(a=>{
-  a.addEventListener("click", e=>{ e.preventDefault(); S.room=a.getAttribute("data-room"); S.sel=null; S.warn=null; S.sewing=false; save(); paint(); });
-});
-if(location.hash==="#sew") S.room="sew";
+window.addEventListener("hashchange",()=>{ S.answer=null; paint(); });
 paint();
 })();
 </script>
