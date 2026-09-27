@@ -1,4 +1,4 @@
-/* Talmud Unit 17 "Great Debates and Capstone" — pencil still life: two small wooden lecterns turned to face each other, each holding a book lying open: two sides of a debate.
+/* Talmud Unit 17 "Great Debates and Capstone" — pencil still life: two small wooden lecterns standing side by side, each holding a book lying open: two sides of a debate.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
 #define CAM_POS vec3(-0.6832,0.4118,-0.9034)
 #define CAM_TGT vec3(-0.3120,0.0406,0.1041)
