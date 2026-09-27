@@ -1,4 +1,4 @@
-/* Qur'an Unit 13 "Close Reading Medinan Surahs" — pencil still life: a book lying open with a pair of reading glasses resting on its pages, and a young date palm in a clay pot behind it.
+/* Qur'an Unit 13 "Close Reading Medinan Surahs" — pencil still life: a book lying open with framed pages, and a young date palm growing in a clay pot behind it: Medina, the city of palms.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
 #define CAM_POS vec3(-0.6234,0.3731,-0.8925)
 #define CAM_TGT vec3(-0.2660,0.0155,0.0779)
@@ -204,7 +204,7 @@ float oProp(vec3 p){ vec3 q=oQ0(p); return sdRBox(q-vec3(0,0.03*.6,.07),vec3(.18
 #define PP vec3(.3,0.,.16)
 float spec(vec3 p){ vec3 q=oQ(p)/2.; q-=vec3(.055,.017,-.02); q.xz=rot(-.4)*q.xz; return specD(q)*2.; }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
-  vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.); r=U(r,spec(p),5.);
+  vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);
   r=U(r,potD(p-PP,.06,.08),6.); r=U(r,palmD(p-PP-vec3(0,.07,0),.16),7.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
