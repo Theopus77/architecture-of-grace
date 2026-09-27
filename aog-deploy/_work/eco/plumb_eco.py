@@ -3,9 +3,9 @@
 AOG-ECO-V1 · site plumbing for the Economics course. Idempotent.
   · economics-hub.html — every band leads with its part of the course (unit
     cards), every existing card stays below under "More rooms"
-  · _redirects — /economics-course and /eco1 … /eco8
+  · _redirects — /economics-course and /eco1 … /eco18
   · sw.js — CACHE bump + the course pages precached
-  · sitemap.xml — the 9 pages
+  · sitemap.xml — the 19 pages
 Run from aog-deploy/:  python3 _work/eco/plumb_eco.py
 """
 import re, html, datetime, sys, os
@@ -44,7 +44,8 @@ def hub():
         anchor = re.search(r'(<section class="band" id="%s"[^>]*>.*?<p class="count"[^>]*>[^<]*</p>\n)' % re.escape(HUB_ID.get(b["id"], b["id"])), s, re.S)
         if not anchor:
             anchor = re.search(r'(<section class="band" id="%s"[^>]*>.*?</h2>\n(?:\s*<p class="hint"[^>]*>.*?</p>\n)?)' % re.escape(HUB_ID.get(b["id"], b["id"])), s, re.S)
-        assert anchor, "band %s not found" % b["id"]
+        if not anchor:
+            print("hub: no band section for %s — add <section class=\"band\" id=\"%s\"> to the hub first (see RELIGION_PLAN.md)" % (b["id"], b["id"])); continue
         s = s[:anchor.end()] + lead + s[anchor.end():]
     css = """
 /* AOG-ECO-V1 — every band leads with its part of the course */
@@ -72,7 +73,7 @@ def redirects():
         if "/eco%d " % n not in s: add.append(("/eco%d" % n).ljust(28) + ("/eco-u%d.html" % n).ljust(42) + "200")
     if add:
         if not s.endswith("\n"): s += "\n"
-        s += "\n# AOG-ECO-V1 — Economics, Grades 9–12: the course contents and the 8 units\n" + "\n".join(add) + "\n"
+        s += "\n# AOG-ECO-V1 — Economics, K–12: the course contents and the units\n" + "\n".join(add) + "\n"
         p.write_text(s, encoding="utf-8")
     print("redirects: %d added" % len(add))
 
@@ -84,13 +85,13 @@ def sw():
     old = m.group(1)
     pre, num = old.rsplit(".", 1)
     new = "%s.%d" % (pre, int(num) + 1)   # always one past whatever is live, never a fixed number
-    line = ("const CACHE = '%s'   // ECONOMICS AS A COURSE. /economics-course and /eco1–/eco8: a high-school Economics course following the Illinois Learning Standards for Social Science (economics) and the national economics standards — grades 9–12, 8 units, 16 chapters, numbered lessons — built by _work/eco/build_eco.py. Every band on the hub leads with its part of the course; every page's Economics jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
+    line = ("const CACHE = '%s'   // ECONOMICS AS A COURSE. /economics-course and /eco1–/eco18: an Economics course following the Illinois Learning Standards for Social Science (economics) and the national economics standards — K–12, five bands, 18 units, 36 chapters, numbered lessons — built by _work/eco/build_eco.py. Every band on the hub leads with its part of the course; every page's Economics jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
             "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
     s = s[:m.start()] + line + s[m.end():]
     add = "  './economics-course.html', " + ", ".join("'./eco-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-ECO-V1 — the Economics course\n"
     n = re.search(r"const PRECACHE_LESSONS = \[\n", s).end()
     s = s[:n] + add + s[n:]
-    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, 9 files precached" % new)
+    p.write_text(s, encoding="utf-8"); print("sw: CACHE → %s, %d files precached" % (new, len(UNITS) + 1))
 
 def sitemap():
     p = DEPLOY / "sitemap.xml"; s = p.read_text(encoding="utf-8")
@@ -99,7 +100,7 @@ def sitemap():
     rows = ['  <url><loc>https://architectureofgrace.org/economics-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
     rows += ['  <url><loc>https://architectureofgrace.org/eco%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in UNITS]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
-    p.write_text(s, encoding="utf-8"); print("sitemap: 9 added")
+    p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(UNITS) + 1))
 
 if __name__ == "__main__":
     hub(); redirects(); sw(); sitemap()
