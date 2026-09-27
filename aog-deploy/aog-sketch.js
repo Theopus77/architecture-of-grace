@@ -318,3 +318,16 @@
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();
 })();
+
+/* AOG-CALM-SCROLL-V1 — Jimmy: "make sure everything in the site is neurodivergent for scrolling".
+   aog-calm.css stops CSS smooth scrolling on touch screens and with "reduce motion", but a page
+   script can still ask for a smooth glide. Here every such request becomes an instant jump. */
+(function(){
+  try{
+    var calm = matchMedia("(hover: none), (pointer: coarse), (prefers-reduced-motion: reduce)");
+    function fix(o){ if(calm.matches && o && typeof o === "object" && o.behavior === "smooth"){ var c = {}; for(var k in o) c[k] = o[k]; c.behavior = "auto"; return c; } return o; }
+    function wrap(obj, name){ var f = obj[name]; if(!f || f.__aogCalm) return; var g = function(a){ var args = [].slice.call(arguments); args[0] = fix(a); return f.apply(this, args); }; g.__aogCalm = 1; obj[name] = g; }
+    wrap(Element.prototype, "scrollIntoView"); wrap(Element.prototype, "scrollTo"); wrap(Element.prototype, "scrollBy");
+    wrap(window, "scrollTo"); wrap(window, "scroll"); wrap(window, "scrollBy");
+  }catch(e){}
+})();
