@@ -19,7 +19,7 @@
 float wheel(vec3 q){  /* upright wheel in the xy plane */
   float rim=sdTorus(q.xzy,.034,.0045);
   float hub=sdCylZ(q,.008,.006);
-  float a=atan(q.y,q.x); float k=floor(a/(6.2832/12.)+.5)*(6.2832/12.); vec2 d2=rot(-k)*q.xy;
+  float a=atan(q.y,q.x); float k=floor(a/(6.2832/12.)+.5)*(6.2832/12.); vec2 d2=rot(k)*q.xy;
   float sp=max(max(abs(d2.y)-.0018,abs(q.z)-.0025),max(-d2.x,d2.x-.034));
   return min(min(rim,hub),sp); }
 float pillar(vec3 q){
