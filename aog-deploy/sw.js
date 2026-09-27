@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7073'   // BLUEPRINT HOME + INDEX-CARD TABS + HUB AND PAGE HEADER DRAWINGS (as they arrive). previous: m7072
+const CACHE = 'aog-cache-2026.09.27.m7074'   // HOME: A BLUEPRINT OF A SCHOOL HALL BEING BUILT behind the name. previous: m7073
+// previous: BLUEPRINT HOME + INDEX-CARD TABS + HUB AND PAGE HEADER DRAWINGS (as they arrive). previous: m7072
 // previous: THE DRAFTING TABLE: graph-paper page, pencil-edged sheets, pencil drawings on hub cards; navy headers unchanged. previous: m7071
 // previous: HIGHLIGHTS: tap one for Remove / Add a note / Close; My notes removes any one, or clears all. previous: m7070
 // previous: HOME: YOUR WINDOW REMOVED (Jimmy). The sketched glass window stays. previous: m7069
