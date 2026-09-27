@@ -30,7 +30,7 @@ vec2 map(vec3 p){
   r=U(r,.9-p.z,2.);
   r=U(r,jar(L(p,JR,0.)),3.);
   r=U(r,rollD(L(p,RL,-.3),.024,.12),4.);
-  vec3 lq=L(p,LP,2.9);
+  vec3 lq=L(p,LP,2.2);
   r=U(r,lampD(lq,1.3),5.);
   r=U(r,lampFlameD(lq,1.3),6.);
   return r; }
