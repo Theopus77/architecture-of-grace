@@ -180,3 +180,22 @@ float lanternFrame(vec3 q){
   d=min(d,bail);
   return d; }
 float lanternGlobe(vec3 q){ return ellD(q-vec3(0.,.058,0.),vec3(.03,.04,.03)); }
+/* a wooden thread spool standing on end, base at y=0: flanges and wound thread */
+float spoolWood(vec3 q,float R,float H){
+  float f1=sdCylY(q-vec3(0.,.005,0.),R,.005)-.0015; float f2=sdCylY(q-vec3(0.,H-.005,0.),R,.005)-.0015;
+  float core=sdCylY(q-vec3(0.,H*.5,0.),R*.45,H*.5);
+  return max(min(min(f1,f2),core),-sdCylY(q-vec3(0.,H*.5,0.),R*.15,H)); }
+float spoolThread(vec3 q,float R,float H){ return sdCylY(q-vec3(0.,H*.5,0.),R*.82,H*.5-.009)-.001; }
+/* a pocket watch lying face up, centre at q=0 on the table, crown toward +x */
+float watchCase(vec3 q){ float d=sdCylY(q-vec3(0.,.005,0.),.033,.003)-.002;
+  d=min(d,sdTorus(q-vec3(0.,.0105,0.),.0315,.0032));
+  d=min(d,sdCylX(q-vec3(.04,.007,0.),.005,.004)-.001);
+  d=min(d,sdTorus((q-vec3(.051,.007,0.)).yxz,.007,.0018));
+  return d; }
+float watchFace(vec3 q){ return sdCylY(q-vec3(0.,.0095,0.),.03,.0012); }
+float watchHands(vec3 q){ vec3 h=q-vec3(0.,.0112,0.);
+  return min(sdCapsule(h,vec3(0.),vec3(-.006,0.,.018),.0012),sdCapsule(h,vec3(0.),vec3(.015,0.,.01),.0012))-.0002; }
+float watchChain(vec3 q){ float d=1e5;
+  for(int i=0;i<6;i++){ float fi=float(i); vec3 c=q-vec3(.062+.011*fi,.0015,-.006*fi-.0012*fi*fi);
+    vec3 cc=c; if(i%2==1) cc=cc.xzy; d=min(d,sdTorus(cc,.004,.0012)); }
+  return d; }
