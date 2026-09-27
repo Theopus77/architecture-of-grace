@@ -252,6 +252,23 @@ UNITS = [
        topics="Asking a testable question; designing an investigation with variables and controls; collecting and analyzing data; models and their limits; engineering design cycle with criteria and constraints; writing a scientific explanation; presenting and defending a claim; a capstone project plan.",
        story="Barbara McClintock and the jumping genes nobody believed"),
  ]),
+ # ═════════════ 6–8, added 2026-09-27: the music benches' own unit ═════════════
+ # Numbered 28 because 1–27 were taken; it sits in the 6–8 band beside Unit 12
+ # (Waves and Information), where sound and waves already live.
+ dict(n=28, band="6-8", title="Sound, Rhythm and Recorded Music", strand="Physical Science", chapters=[
+  dict(n=61, title="What Sound Is", strand="Sound Waves",
+       topics="Vibration; sound as a chain of pushes through a medium; no sound in a vacuum; frequency and pitch; amplitude and loudness; wavelength and the speed of sound; the ear; the range of hearing; decibels and hearing safety; seeing sound on the oscilloscope.",
+       story="A block party where the bass shakes a soda can"),
+  dict(n=62, title="Rhythm and Time", strand="Patterns in Time",
+       topics="A beat as a repeating event; tempo in beats per minute; measuring tempo; bars and counting; a bar cut into 16 steps; kick, snare and hi-hat patterns; swing; why a steady pulse helps us move and focus; rhythms in nature; when a fast rhythm becomes a pitch.",
+       story="Chicago house music and a steady kick drum"),
+  dict(n=63, title="Recording and Playing Back", strand="Storing Sound",
+       topics="The phonautograph and the phonograph; a record groove as a wave; turntable speed and pitch; scratching; pitch control and blending records; sampling rate; bit depth; the 1987 12-bit 26.04 kHz sampler; analog and digital.",
+       story="Edison shouts a nursery rhyme into a tinfoil cylinder, 1877"),
+  dict(n=64, title="Making It Your Own", strand="Design and Test",
+       topics="Designing a beat for a purpose; building in layers; changing one variable at a time; reading a waveform; kick and hi-hat on the oscilloscope; timing a beat with numbers; protecting hearing; giving credit for samples; explaining a design with claim, evidence and reasoning.",
+       story="A first beat, built and then measured"),
+ ]),
 ]
 
 # Rooms already on the site that belong to each unit — nothing gets deleted.
@@ -282,5 +299,6 @@ LINKS = {
  24: [("/b40", "Physics: motion and forces — cards, quiz and lab")],
  25: [("/b41", "Physics: energy, waves, electricity — cards, quiz and lab"), ("/waves", "The wave bench"), ("/decks", "The turntables"), ("/drums", "The drum bench")],
  26: [("/b42", "Environmental science — cards, quiz and lab")],
+ 28: [("/drums", "The Drum Machine"), ("/decks", "The turntables"), ("/waves", "The oscilloscope"), ("/b15", "Forces, energy and waves — cards, quiz and lab")],
  27: [("/b43", "Capstone: argue from evidence — cards, quiz and lab"), ("/microscope", "The microscope"), ("/telescope", "The telescope")],
 }

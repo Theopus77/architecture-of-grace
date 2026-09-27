@@ -148,7 +148,7 @@ def head(title, desc, path, extra_css=""):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>/* .30eg: begin in light. Dark only when this device chose it - the stored choice, never the OS setting, decides. Same key as every Interior page. */
-(function(){{var t="light";try{{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}}catch(e){{}}document.documentElement.setAttribute("data-theme",t);}})();</script>
+(function(){{var t="light";try{{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}}catch(e){{}}document.documentElement.setAttribute("data-theme",t);}})();</script>
 <title>{E(title)} — Architecture of Grace</title>
 <meta name="description" content="{E(desc)}">
 <!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
@@ -360,6 +360,7 @@ a{color:var(--navy-2)}
 .lbtn{min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700; font-size:.88rem; display:inline-flex; align-items:center; gap:8px}
 .lbtn svg{width:16px; height:16px}
 .lbtn[aria-pressed="true"]{background:var(--navy); color:var(--on-navy); border-color:var(--navy)}
+.lbtn.try{color:inherit; text-decoration:none}
 :root[data-theme="dark"] .lbtn[aria-pressed="true"]{background:var(--gold); color:#12161C; border-color:var(--gold)}
 
 /* the look panel: a source on parchment, a bar chart, a scenario */
@@ -614,6 +615,12 @@ def question(q, qid, i, wide=False):
             '<p class="say" aria-live="polite"></p><div class="why" hidden><b>%s</b> %s</div></div>'
             % (" wide" if wide else "", qid, int(q["a"]), i+1, E(q["q"]), opts, span("Why:","Por qué:"), E(q.get("why",""))))
 
+def try_link(l):
+    """An optional bench-tool link under the reading: "try": {"href","en","es"}."""
+    t = l.get("try")
+    if not t: return ""
+    return '<a class="lbtn try" href="%s">%s ›</a>' % (E(t["href"]), span(t["en"], t["es"]))
+
 def lesson_html(u, c, li, sec_i, l, num):
     lid = "l%d-%d" % (c["n"], num)
     words = l.get("words", [])
@@ -628,7 +635,7 @@ def lesson_html(u, c, li, sec_i, l, num):
       <div class="main-idea"><span class="k">{span("Main idea","Idea principal")}</span>{E(l["mainIdea"])}</div>
       <div class="reading">{reading}</div>
       <div class="lbtns no-print">
-        <button type="button" class="lbtn listen" data-for="{lid}" aria-pressed="false">{ICO["speak"]}{span("Listen","Escuchar")}</button>
+        <button type="button" class="lbtn listen" data-for="{lid}" aria-pressed="false">{ICO["speak"]}{span("Listen","Escuchar")}</button>{try_link(l)}
       </div>
     </div>
     <div>
@@ -1301,6 +1308,9 @@ def build(course):
     C = course
     units = [json.load(open(p, encoding="utf-8")) for p in course["unit_files"]]
     units.sort(key=lambda u: u["n"])
+    if course.get("bands"):   # a unit added later to an earlier band sits with its band (science Unit 28, grades 6–8)
+        order = [b["id"] for b in course["bands"]]
+        units.sort(key=lambda u: (order.index(u["band"]) if u.get("band") in order else len(order), u["n"]))
     UNIT_SHORT = {u["n"]: u["title"] for u in units}
     LINKS = course.get("links", {})
     CREDITS = course.get("credits", {})

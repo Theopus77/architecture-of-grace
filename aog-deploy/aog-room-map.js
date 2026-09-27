@@ -443,32 +443,32 @@ window.AOG_ROOM_MAP = {
  "science-waves": {
   "subject": "Science",
   "band": "6–8",
-  "unit": "sci-u12",
-  "unitTitle": "Unit 12 · Waves and Information",
-  "chapter": "Chapter 26 · Waves, Sound and Light",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 61 · What Sound Is",
   "course": "science-course",
-  "confidence": "medium",
-  "note": "Sound waves (pitch, loudness, wave shape); also fits Unit 2 (K–2) and Unit 6 (3–5)."
+  "confidence": "high",
+  "note": "Seeing pitch, loudness and wave shape; also used in Chapter 64 to measure a beat. Unit 12 (Waves and Information) covers waves more widely."
  },
  "music-drums": {
   "subject": "Science",
-  "band": "",
-  "unit": null,
-  "unitTitle": "",
-  "chapter": "",
-  "course": "",
-  "confidence": null,
-  "note": "A music beat maker. No science unit teaches rhythm or music."
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 62 · Rhythm and Time",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "Tempo, 16 steps, swing; Chapter 63 explains its 12-bit, 26.04 kHz sampling."
  },
  "music-decks": {
   "subject": "Science",
-  "band": "",
-  "unit": null,
-  "unitTitle": "",
-  "chapter": "",
-  "course": "",
-  "confidence": null,
-  "note": "A music turntable. No science unit teaches DJ mixing or music."
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 63 · Recording and Playing Back",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "Grooves, record speed and pitch, scratching and beatmatching."
  },
  "b26-pushes-pulls": {
   "subject": "Science",
