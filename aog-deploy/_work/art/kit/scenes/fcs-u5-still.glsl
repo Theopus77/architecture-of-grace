@@ -1,7 +1,7 @@
 /* FCS Unit 5 "Measure It Right" — pencil still life: a set of nested measuring cups with long
    handles, one cup filled level with flour, and a ring of measuring spoons fanned out in front. */
-#define CAM_POS vec3(-0.30,0.40,-0.84)
-#define CAM_TGT vec3(-0.05,0.02,0.09)
+#define CAM_POS vec3(-0.4278,0.2614,-0.6621)
+#define CAM_TGT vec3(-0.2213,-0.0525,0.1064)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
