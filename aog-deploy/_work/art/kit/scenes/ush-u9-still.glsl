@@ -1,8 +1,8 @@
 /* U.S. History Unit 9 "Postwar America" (The Box in the Living Room) — pencil still life: a
    1950s television set on four splayed legs, with a rounded screen, two knobs and a
    rabbit-ear antenna, and a small model of a new suburban house. No figures. */
-#define CAM_POS vec3(-0.3296,0.5256,-0.9381)
-#define CAM_TGT vec3(-0.1711,0.0148,0.1263)
+#define CAM_POS vec3(-0.6142,0.8010,-1.4103)
+#define CAM_TGT vec3(-0.3789,0.0425,0.1705)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
