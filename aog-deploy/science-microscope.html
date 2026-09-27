@@ -241,26 +241,7 @@ html{background:#081828}
   .eye-box{padding:12px!important}
 }
 
-/* AOG-TOOL-THIN-V1 (2026-09-26) — Jimmy: "They all don't need the two bars stating the name. Just keep the
-   blue bar. However the blue bar is to be thinner." One masthead, half the height; the brand row above it goes. */
-html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
-html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
-html.aog-grace #toolMast[data-aog-hero] .lead{font-size:.95rem;margin:0}
-html.aog-grace #toolMast[data-aog-hero] .kicker{font-size:.66rem}
-html.aog-grace #toolMast[data-aog-hero]{min-height:158px;box-sizing:border-box}
-html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:62ch}
-html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
-html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
-
-/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
-   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
-.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.nav::-webkit-scrollbar{display:none}
-.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
-.nav a.sep{margin-left:auto;padding-left:.5rem}
-.nav a.sep+a.sep{margin-left:0}
+/* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
 /* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The missions should be called the lessons and mimic the
    beautiful set up that THE DRUM MACHINE LESSON HAS." Same cards as the drum machine's Lessons view. ══ */
 .lesson-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
@@ -278,6 +259,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .lesson-acts .note-line{flex-basis:100%;margin:.2rem 0 0}
 .ok-line{color:var(--good);font-weight:700;margin:.7rem 0 0}
 .lessons-wrap{display:grid;gap:1rem;grid-template-columns:1fr}
+.lessons-wrap.lessons-one{grid-template-columns:1fr!important}
 @media (min-width:820px){.lessons-wrap{grid-template-columns:1fr 1fr;align-items:start}}
 .ladder-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
 .ladder{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.3rem}
@@ -290,9 +272,11 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .ladder .lt{font-weight:600}
 .lab-lesson{margin-top:1rem}
 </style>
+<link rel="stylesheet" href="/aog-bench.css">
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
 <script>
 (function(){
   function add(src){
@@ -315,7 +299,18 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
   </header>
   <!-- AOG-TOOL-MAST-V1 — the same navy masthead as the turntables; static, so a view re-render never wipes it -->
   <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
   <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
+  <!-- AOG-BENCH-TOP-V1 (2026-09-27): the same control row and Lessons card as the Turntables.
+       This bench has one set of controls, so the Simple/Full switch is left out; the lesson menu keeps its slot. -->
+  <div class="bench-switch no-print" role="group" aria-label="Lesson" id="benchSwitch">
+    <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
+  </div>
+  </div>
+  <section class="lessons no-print" id="lessons" aria-label="Lessons">
+    <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="#print" hidden>Worksheet</a></div>
+    <div id="lessonBody"></div>
+  </section>
   <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
@@ -1072,7 +1067,8 @@ function paintChrome(){
   document.getElementById("foot").textContent=t("foot");
   document.documentElement.lang=S.lang;
   const NAV=[["home","home","home"],["meet","meet","meetNav"],["lab","lab","labNav"],["lessons","lessons","lessons"],["find","find","findNav"],["job","job","jobNav"],["print","print","printNav"]];
-  document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(full)}</a>`).join("")
+  /* AOG-BENCH-TOP-V1: seven places to look, so one menu (aog-dropdowns.js reads the span) */
+  document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(full)}</a>`).join("")+`</span>`
     +`<a class="sep" href="/microscope-guide">${t("guideNav")}</a><a class="sep" href="/telescope">${t("partnerNav")}</a>`;
 }
 
@@ -1257,7 +1253,7 @@ function missionActs(i){
     +(L.prism?`<div style="flex-basis:100%">${knob("band", t("risley"), L.band, false, bandNm(L.band)+" nm")}</div><p class="note-line abbe">${abbeSentence()}</p>`:"");
   return "";
 }
-function practicalCard(){ return lessonBoxHtml(true); }
+function practicalCard(){ return ""; }   /* AOG-BENCH-TOP-V1: the lesson and its buttons sit in the Lessons card at the top */
 /* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The missions should be called the lessons and mimic the
    beautiful set up that THE DRUM MACHINE LESSON HAS." The drum machine's Lessons view, built on this page's
    own STAIR, STEP and S.missions (names kept so saved progress stays). The picked lesson is the shaded one. ══ */
@@ -1287,20 +1283,36 @@ function lessonSelect(){
     `<option value="${i}"${i===p?" selected":""}>${i+1} · ${S.lang==="es"?m.es:m.en}${lessonDone(m)?" ✓":""}</option>`).join("")}</select></label>`;
 }
 function lessonCard(inLab){
+  /* AOG-BENCH-TOP-V1 (2026-09-27): the Lessons card at the top, the same markup as the Turntables (aog-bench.css) */
   const p=lessonPicked(), m=STAIR[p], now=lessonNow(), es=S.lang==="es";
   const done=lessonDone(m), allDone=now>=STAIR.length;
   const steps=`<ol class="lsteps">${m.steps.map(id=>{ const ok=!!S.missions[id], w=es?STEP[id].es:STEP[id].en;
-    return `<li class="${ok?"ok":""}"><span class="tick" aria-hidden="true">${ok?"✓":""}</span><span>${ok?`<s>${w}</s>`:w}</span></li>`; }).join("")}</ol>`;
+    return `<li class="lstep${ok?" ok":""}"><span class="lck" aria-hidden="true">${ok?"✓":""}</span><span>${w}</span></li>`; }).join("")}</ol>`;
   const waiting=(typeof missionsOpen==="function" && !missionsOpen() && p>now)?`<p class="note-line">${lt("wait").replace("{n}",now+1)}</p>`:"";
-  const acts=inLab
-    ? `${(typeof missionActs==="function"?missionActs(p):"")}${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`
-    : `<a class="pill btn-steel" href="#lab">${lt("toLab")} →</a>${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`;
-  return `<p class="kicker">${lt("lessonK")} ${p+1}${done?` · ✓ ${lt("doneMark")}`:""}</p>
+  const next=p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:"";
+  const acts=inLab ? (typeof missionActs==="function"?missionActs(p):"") : `<a class="pill" href="#lab">${lt("toLab")} →</a>`;
+  return `<p class="mk">${lt("lessonK")} ${p+1} ${es?"de":"of"} ${STAIR.length}${done?" · ✓":""}</p>
     <h3>${es?m.es:m.en}</h3>
-    <p class="muted" style="margin:.1rem 0 .4rem">${es?m.blurb_es:m.blurb_en}</p>
+    <p class="lblurb">${es?m.blurb_es:m.blurb_en}</p>
     ${steps}${waiting}
-    <div class="lesson-acts${inLab?" do":""}">${acts}</div>
-    ${allDone?`<p class="ok-line">${t("practicalDone")}</p>`:""}`;
+    <div class="lacts${inLab?" do":""}">${acts}</div>
+    ${done?`<p class="lok">${allDone?t("practicalDone"):(es?"Lección hecha.":"Lesson done.")} ${next}</p>`:""}`;
+}
+function paintLessonsTop(){
+  const top=["home","lab","lessons"].includes(S.page);
+  const sw=document.getElementById("benchSwitch"), box=document.getElementById("lessons");
+  if(!sw||!box) return;
+  sw.hidden=!top; box.hidden=!top; if(!top) return;
+  const es=S.lang==="es", p=lessonPicked();
+  const row=document.getElementById("lessonRow");
+  const rowHtml=STAIR.map((m,i)=>`<button type="button" class="ghost sm${i===p?" on":""}" data-lesson="${i}" aria-pressed="${i===p}">${i+1}${lessonDone(m)?" ✓":""} · ${es?m.es:m.en}</button>`).join("");
+  if(row.__html!==rowHtml){ row.innerHTML=rowHtml; row.__html=rowHtml;
+    row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ setLessonPick(b.getAttribute("data-lesson")); paint(); }); }
+  document.getElementById("lKick").textContent=lt("lessonsNav")+" · "+STAIR.filter(lessonDone).length+"/"+STAIR.length;
+  const sh=document.getElementById("lSheet");
+  sh.hidden=false; sh.href="#print"; sh.textContent=es?"Hoja de trabajo":"Worksheet";   /* the Print view prints the worksheet + key */
+  document.getElementById("lessonBody").innerHTML=lessonCard(S.page==="lab");
+  bindLessonBox(box);
 }
 function lessonBoxHtml(inLab){ return `<div class="card lesson-box${inLab?" lab-lesson practical-box":""}" id="lessonBox">${lessonSelect()}${lessonCard(inLab)}</div>`; }
 function ladderHtml(){
@@ -1314,8 +1326,7 @@ function lessonsView(){
   return `<p class="kicker">${lt("lessonsNav")}</p>
     <h1>${lt("lessonsNav")}</h1>
     <p class="lead">${lt("lessonsLead")}</p>
-    <div class="lessons-wrap">
-      ${lessonBoxHtml(false)}
+    <div class="lessons-wrap lessons-one">
       <div class="card ladder-box"><p class="tiny">${lt("lessonsAll")}</p><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol>
         <div class="lesson-acts"><a class="pill" href="#home">${lt("toHome")}</a></div></div>
     </div>`;
@@ -4882,6 +4893,7 @@ function paint(){
   const view=document.getElementById("view");
   view.innerHTML = S.page==="meet"?pageMeet(): S.page==="lab"?pageLab(): S.page==="lessons"?lessonsView(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
   bindLessonBox(view);
+  paintLessonsTop();   /* AOG-BENCH-TOP-V1 */
   if(S.page==="meet"){
     bindScope(document.getElementById("meetScope"), id=>{ S.sel=id; S.met[id]=true; persist(); paint(); });
     view.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>{ S.sel=b.getAttribute("data-part"); S.met[S.sel]=true; persist(); paint(); });
@@ -4901,7 +4913,7 @@ function paint(){
     view.querySelectorAll("[data-slidemenu]").forEach(m=>m.onchange=()=>{
       const b=m.parentNode.querySelector(`[data-act="spec-${m.value}"]`); if(b) b.click();
     });
-    view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll("#view [data-act], #lessons [data-act]").forEach(b=>b.onclick=()=>{
       const a=b.getAttribute("data-act"); const L=S.lab;
       if(a==="teach-lock"){ S.teacher="locked"; persist(); paint(); return; }
       if(a==="teach-open"){ S.teacher="open"; persist(); paint(); return; }
@@ -4965,7 +4977,7 @@ function paint(){
     view.querySelectorAll("details.more-light").forEach(d=>{
       d.addEventListener("toggle", ()=>{ S.moreOpen=d.open; });
     });
-    view.querySelectorAll("[data-knob]").forEach(inp=>{
+    document.querySelectorAll("#view [data-knob], #lessons [data-knob]").forEach(inp=>{
       inp.oninput=()=>{
         const v=+inp.value, L=S.lab, k=inp.getAttribute("data-knob");
         if(k==="coarse"){ if(!L.cracked && wouldCrack(L.obj,v,L.fine) && v>L.coarse){ L.cracked=true; S.cracked++; persist(); paint(); return; } L.coarse=v; }

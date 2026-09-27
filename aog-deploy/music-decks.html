@@ -54,9 +54,6 @@ button,label.file{font:inherit;cursor:pointer;touch-action:none}
    a Deck A / Deck B / Mix row shows one thing at a time so a platter and its controls share
    one screen. Sliders are colour-coded by job: gold speed, white volume, green EQ, blue
    filter and echo. ═══════════════════════════════════════════════════════════════════ */
-.bench-switch{display:flex;gap:.5rem;align-items:center;margin:.9rem 0 0;flex-wrap:wrap}
-.bench-switch b{font-size:.72rem;letter-spacing:.14em;color:var(--muted);font-weight:800;text-transform:uppercase;margin-right:.2rem}
-.bench-switch .pill.on{background:#f0c26e;color:#2a1a08;border-color:#f0c26e}
 .decktabs{display:none;gap:.4rem;margin:.7rem 0 0}
 .decktabs .pill{flex:1;justify-content:center;font-weight:800}
 .decktabs .pill.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
@@ -248,44 +245,11 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
 .platter,canvas.wave,canvas.zoom{touch-action:none}
 
-/* AOG-TOOL-THIN-V1 (2026-09-26) — Jimmy: "They all don't need the two bars stating the name. Just keep the
-   blue bar. However the blue bar is to be thinner." One masthead, half the height; the brand row above it goes. */
-html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
-html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
-html.aog-grace [data-aog-hero] .lead{font-size:.95rem;margin:0}
-html.aog-grace [data-aog-hero] .kicker{font-size:.66rem}
-html.aog-grace #toolMast[data-aog-hero]{min-height:158px;box-sizing:border-box}
-html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:62ch}
-html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
-html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
-/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
-   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
-.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.nav::-webkit-scrollbar{display:none}
-.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
-.nav a.sep{margin-left:auto;padding-left:.5rem}
-.nav a.sep+a.sep{margin-left:0}
-/* AOG-DECKS-LESSONS-V1 — the lesson ladder, one lesson at a time */
-.lessons{margin:.9rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem 1rem}
-.lessons .lhead{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
-.lessons .lhead .kicker{margin:0}
-.lessons a.pill{text-decoration:none;font-size:.9rem}
-.lessons .mk{margin:.5rem 0 0;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
-.lessons h3{margin:.1rem 0 .15rem;font-size:1.08rem;font-family:var(--display)}
-.lessons .lblurb{margin:0;color:var(--muted);font-size:.92rem}
-.lsteps{list-style:none;margin:.45rem 0 0;padding:0}
-.lstep{display:flex;gap:.5rem;align-items:flex-start;padding:.2rem 0;font-size:.95rem}
-.lstep .lck{flex:0 0 auto;width:1.2rem;height:1.2rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.1rem;font-size:.75rem;color:var(--steel);margin-top:.1rem}
-.lstep.ok .lck{border-color:var(--steel);background:var(--steel);color:var(--steel-fg)}
-.lstep.ok span:last-child{text-decoration:line-through;color:var(--muted)}
-.lessons .lok{margin:.55rem 0 0;font-weight:700;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
-#lessonRow{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:0}
-.bench-lesson{display:inline-flex;align-items:center;margin-left:.75rem}
+/* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
 #lessonRow .ghost{background:var(--chip);color:var(--ink);border:1px solid var(--line)}
 #lessonRow .ghost.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 </style>
+<link rel="stylesheet" href="/aog-bench.css">
 </head>
 <body>
 <script src="/aog-sound-handoff.js"></script>
@@ -312,6 +276,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
   </header>
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
+  <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
   <nav class="nav no-print" aria-label="Activity"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a class="sep" href="/decks-guide" id="navGuide">Picture guide</a><a class="sep" href="music-drums.html" id="navDrums">The drum machine</a></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
@@ -319,6 +284,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
     <span class="bench-lesson"><!-- AOG-DECKS-LESSONPICK-V1: the lesson menu sits beside the bench choice (Jimmy, 2026-09-27) -->
       <div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div>
     </span>
+  </div>
   </div>
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
     <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="decks-lessons.html#l1">Worksheet 1</a></div>
