@@ -1,62 +1,49 @@
-/* Room m47 "Algebra II: Exponential and Logarithmic Functions" — pencil still life: a
-   nautilus shell standing on its edge (its spiral grows by the same factor every turn:
-   exponential growth you can hold), and a wooden slide rule lying in front, its scales
-   spaced by logarithms, with the clear cursor on it. */
-#define CAM_POS vec3(-0.2795,0.3460,-0.7123)
-#define CAM_TGT vec3(-0.1589,-0.0423,0.0969)
+/* Room m47 "Algebra II: Exponential and Logarithmic Functions" — pencil still life: the
+   doubling-on-a-chessboard story: a wooden chessboard with towers of small wooden cubes on the
+   first four squares of its front row, one, two, four and eight cubes tall. */
+#define CAM_POS vec3(-0.4108,0.3717,-0.6809)
+#define CAM_TGT vec3(-0.1790,0.0002,0.1087)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
 #define EXPOSURE 1.
-#define STEPS 240
+#define STEPS 220
 #define SHADOW_MAXSTEP .02
 #include "lib.glsl"
 #include "studio.glsl"
 #include "medparts_a.glsl"
-#include "roomparts_c.glsl"
-#define NC vec3(.02,.118,.08)
-#define SB .175
-#define SA .0049
-#define PHM 18.3
-vec3 nQ(vec3 p){ vec3 q=p-NC; q.xz=rot(-.2)*q.xz; q.xy=rot(.9)*q.xy; return q; }
-float shellD(vec3 q,out float phi){ float r=max(length(q.xy),1e-4); float th=atan(q.y,q.x); float d=1e5; phi=0.;
-  float n0=floor((log(r/(SA*.667))/SB-th)/6.2832+.5);
-  for(int k=-1;k<=1;k++){ float ph=th+6.2832*(n0+float(k)); if(ph>PHM||ph<0.) continue;
-    float Ro=SA*exp(SB*ph); float Rc=Ro*.667, rho=Ro*.333;
-    float t=(length(vec2(r-Rc,q.z*1.55))-rho)*.62; if(t<d){ d=t; phi=ph; } }
+#define SQ .034
+#define BT .014
+vec3 cbQ(vec3 p){ return place(p,vec3(.04,0.,.06),-.3); }
+float boardD(vec3 q){
+  float d=sdRBox(q-vec3(0.,BT*.5,0.),vec3(4.*SQ+.016,BT*.5,4.*SQ+.016),.003);
+  return max(d,-sdBox(q-vec3(0.,BT+.0006,0.),vec3(4.*SQ,.0012,4.*SQ))); }
+/* square k of the front row (k=0 at the left), centre on the board top */
+vec3 sqC(float k){ return vec3((k-3.5)*SQ,BT,-3.5*SQ); }
+/* towers of cubes that double: 1, 2, 4 and 8 cubes on the first four squares of the front row */
+#define CB .0135
+float cube1(vec3 c,float i,float k){ float j=h1(vec2(i,k))-.5;
+  vec3 b=c-vec3(.0015*j,(i+.5)*2.*CB,.0015*sin(i*2.1+k)); b.xz=rot(.08*j)*b.xz;
+  return sdRBox(b,vec3(CB-.0004),.0022); }
+float towersD(vec3 q){ float d=1e5;
+  for(int kk=0;kk<4;kk++){ float k=float(kk); vec3 c=q-sqC(k); float n=pow(2.,k);
+    float i=clamp(floor(c.y/(2.*CB)),0.,n-1.);
+    d=min(d,cube1(c,i,k));
+    if(i>0.) d=min(d,cube1(c,i-1.,k));
+    if(i<n-1.) d=min(d,cube1(c,i+1.,k)); }
   return d; }
-float shell(vec3 p){ float ph; return shellD(nQ(p),ph); }
-vec3 srQ(vec3 p){ vec3 q=p-vec3(.0,.0,-.1); q.xz=rot(-.1)*q.xz; return q; }
-float srD(vec3 q){ float st=sdRBox(q-vec3(0.,.005,0.),vec3(.14,.005,.03),.0015);
-  st=max(st,-sdBox(q-vec3(0.,.009,0.),vec3(.15,.003,.012)));
-  float slide=sdRBox(q-vec3(.035,.0065,0.),vec3(.14,.0028,.0115),.001);
-  return min(st,slide); }
-float cursorD(vec3 q){ vec3 c=q-vec3(-.04,.0115,0.); float f=sdRBox(c,vec3(.018,.0016,.034),.001);
-  f=max(f,-sdBox(c,vec3(.014,.01,.028)));
-  float glass=sdBox(c-vec3(0.,.0,0.),vec3(.015,.0006,.03));
-  return min(f,glass); }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
-  r=U(r,.9-p.z,2.);
-  r=U(r,shell(p),3.);
-  vec3 s=srQ(p);
-  r=U(r,srD(s),4.);
-  r=U(r,cursorD(s),5.);
+  r=U(r,.6-dot(p.xz-CAM_TGT.xz,normalize(CAM_TGT.xz-CAM_POS.xz)),2.);
+  vec3 b=cbQ(p);
+  r=U(r,boardD(b),3.);
+  r=U(r,towersD(b),4.);
   return r; }
-float logTicks(float x,float L){ float u=(x+L)/(2.*L); if(u<0.||u>1.) return 0.; float v=pow(10.,u);
-  float f=abs(v-floor(v+.5)); float dv=v*log(10.)/(2.*L)*.0009; if(f<dv*1.2) return 1.;
-  float f2=abs(v*2.-floor(v*2.+.5)); if(v<5.&&f2<dv*2.) return .5; return 0.; }
 float toneAlb(float id,vec3 p,vec3 n){
-  if(id==1.) return .72;
+  if(id==1.) return .7;
   if(id==2.) return .9;
-  if(id==3.){ vec3 q=nQ(p); float ph; float d=shellD(q,ph); float Ro=SA*exp(SB*ph); float r=length(q.xy);
-    float rel=(r-Ro*.334)/(Ro*.667);
-    float stripe=sin(ph*7.+rel*5.)*.5+.5; if(ph>PHM-3.5) stripe=1.;
-    if(abs(q.z)<.004&&rel<.06) return .3;
-    return (stripe<.35&&rel>.35)?.45:.86; }
-  if(id==4.){ vec3 q=srQ(p); if(q.y>.0085){ float t;
-      if(q.z>.012&&q.z<.03){ t=logTicks(q.x,.125); if(t>0.&&q.z<(t>.9?.024:.018)) return .25; }
-      if(q.z>-.0115&&q.z<.0115&&q.y>.0088){ t=logTicks(q.x-.035,.125); if(t>0.&&q.z>(t>.9?-.004:.002)) return .25; }
-    } return .85; }
-  if(id==5.){ vec3 q=srQ(p)-vec3(-.04,.0115,0.); if(abs(q.x)<.0008) return .2; if(abs(q.x)<.014&&abs(q.z)<.028) return .95; return .55; }
+  if(id==3.){ vec3 q=cbQ(p); if(q.y<BT-.0005||max(abs(q.x),abs(q.z))>4.*SQ) return .45+.08*grain(q,30.);
+    vec2 g=floor(q.xz/SQ); return mod(g.x+g.y,2.)<.5?.3:.86; }
+  if(id==4.){ vec3 q=cbQ(p); float k=clamp(floor(q.x/SQ+4.),0.,3.); float i=floor((q.y-BT)/(2.*CB));
+    return mod(i+k,2.)<.5?.82:.62; }
   return .7; }
