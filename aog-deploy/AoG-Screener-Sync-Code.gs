@@ -1,8 +1,17 @@
-/* Architecture of Grace — Sheet sync · Apps Script · v17
+/* Architecture of Grace — Sheet sync · Apps Script · v18
    Trimmed 2026-09-20: comments stripped, and five functions nothing ever
    called were removed (runWriteTest, checkKeys, checkinSelfTest — editor-only
    tools — plus safe_ and getPracticeSheet). What runs is unchanged. The fully
    annotated original: _not-deployed/AoG-Screener-Sync-Code.annotated.gs
+
+   v18 (2026-09-26): every Daily Drafts subject gets its own tab. Jimmy:
+   "There is no Daily Drafts for the Bible on the Google Sheets, or any of
+   the new stuff." A v17 script still took those rows — they landed in the
+   plain Practice tab. Now The Bible, Qur'an, Talmud, FACS, World Religions
+   and Economics each get "Practice · Daily Drafts · <subject>", and any
+   subject added later lands in "Practice · Daily Drafts · Other" instead of
+   disappearing into Practice. Paste this over the old script and deploy a
+   new version (Deploy ▸ Manage deployments ▸ Edit ▸ New version).
 
    v17 (2026-09-21): Word Foundry test rehearsals get their own tab,
    "Practice · Word Foundry". A v16 script still takes those rows — they
@@ -262,6 +271,14 @@ var PRACTICE_TABS = {
   'drops-social':  'Practice · Daily Drafts · Social Studies',
   'drops-write':   'Practice · Daily Drafts · Writing',
   'drops-spanish': 'Practice · Daily Drafts · Spanish',
+  // v18 — the newer subjects, and a catch-all so nothing new is ever lost
+  'drops-facs':      'Practice · Daily Drafts · FACS',
+  'drops-religion':  'Practice · Daily Drafts · World Religions',
+  'drops-bible':     'Practice · Daily Drafts · The Bible',
+  'drops-quran':     'Practice · Daily Drafts · Qur\'an',
+  'drops-talmud':    'Practice · Daily Drafts · Talmud',
+  'drops-economics': 'Practice · Daily Drafts · Economics',
+  'drops-other':     'Practice · Daily Drafts · Other',
   'reading':       'Practice · Reading',
   'writing':       'Practice · Writing',
   'grammar':       'Practice · English Grammar',
@@ -310,8 +327,15 @@ var PRACTICE_PATTERNS = [
   [/^dd-social-studies\b/i, 'drops-social'],
   [/^dd-write\b/i,          'drops-write'],
   [/^dd-spanish\b/i,        'drops-spanish'],
+  [/^dd-facs\b/i,           'drops-facs'],
+  [/^dd-religion\b/i,       'drops-religion'],
+  [/^dd-bible\b/i,          'drops-bible'],
+  [/^dd-quran\b/i,          'drops-quran'],
+  [/^dd-talmud\b/i,         'drops-talmud'],
+  [/^dd-economics\b/i,      'drops-economics'],
   [/^wf-u\d+/i,             'wordfoundry'],
   [/^dd-foundry\b/i,        'wordfoundry'],  // AOG-DD-FOUNDRY-V1: the Foundry's Daily Drafts land with its test rehearsals
+  [/^dd-/i,                 'drops-other'],  // v18: a Daily Drafts subject this script has not met yet
   [/^crs-(sci|mth|ela|ss|ush|eco|rel|spa|fcs)-/i, function (m) { return 'course-' + m[1].toLowerCase(); }]
 ];
 
@@ -594,7 +618,20 @@ function doPost(e) {
         if (!col) { return ''; }
         return cellValue_(body[col]);
       });
-      aogAppend_(ciSheet, ciRow);
+      try {
+        aogAppend_(ciSheet, ciRow);
+      } catch (errRow) {
+        // v18 — never lose a send. A cell over Sheets' 50,000-character limit (almost always `extra`) throws;
+        // the row goes in again with extra shortened, and the log says which student and activity it was.
+        console.log('ROW WRITE FAILED (' + String(errRow && errRow.message) + ') · retrying without extra · ' +
+                    body.checkinType + ' · ' + body.studentId + ' · ' + String(body.activityId || ''));
+        var ciRow2 = ciHeader.map(function (col) {
+          if (!col) { return ''; }
+          if (col === 'extra') { return String(cellValue_(body[col]) || '').slice(0, 2000) + ' …[shortened: the full record was over the cell limit]'; }
+          return cellValue_(body[col]);
+        });
+        aogAppend_(ciSheet, ciRow2);
+      }
       console.log(
         'CHECKIN SAVED · ' +
         body.checkinType + ' · student ' + body.studentId +
@@ -655,12 +692,21 @@ function doPost(e) {
       }
       var checkins = readCheckins_();
       var practice = readAllPractice_();
+      // v18 — which tabs hold rows, and how many: the Inbox shows this after a refresh
+      var tabs = {};
+      try {
+        var ssT = SpreadsheetApp.getActiveSpreadsheet();
+        var names = [PRACTICE_SHEET_NAME].concat(Object.keys(PRACTICE_TABS).map(function (g) { return PRACTICE_TABS[g]; }));
+        names.forEach(function (nm) { var sh = ssT.getSheetByName(nm); if (sh && sh.getLastRow() > 1) { tabs[nm] = sh.getLastRow() - 1; } });
+      } catch (errTabs) {}
       console.log('CHECKIN PULL OK · returning ' + checkins.length +
                   ' rows and ' + practice.length + ' practice rows');
       return json_({
         ok: true,
         checkins: checkins,
-        practice: practice
+        practice: practice,
+        tabs: tabs,
+        script: 'v18'
       });
     }
     if (body.action === 'home') {
@@ -1542,4 +1588,48 @@ function readTeamEvidence_() {
     if (rec.studentId) { out.push(rec); }
   }
   return out;
+}
+
+/* ═══ v18 · SET THE KEYS FROM INSIDE THE SHEET ═════════════════════════════
+   Jimmy, on an iPad: "Add script property … that is not there." The Apps
+   Script settings page does not always draw that button on a tablet. So the
+   Sheet gets a menu of its own: reload the spreadsheet, open
+   "Architecture of Grace" in the menu bar, and choose "Set the keys". Two
+   prompts, two passphrases you make up, saved as the script properties the
+   script already reads. "Check the keys" says whether they are set, never
+   what they are. Nothing else about the script changes. */
+function onOpen() {
+  try {
+    SpreadsheetApp.getUi()
+      .createMenu('Architecture of Grace')
+      .addItem('Set the keys', 'aogSetKeys')
+      .addItem('Check the keys', 'aogCheckKeys')
+      .addToUi();
+  } catch (e) {}
+}
+function aogSetKeys() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var w = ui.prompt('BACKEND_AUTH_KEY',
+    'The write key. Students\' pages send with it. Type the same one into Dashboard ▸ Set up ▸ BACKEND_AUTH_KEY.',
+    ui.ButtonSet.OK_CANCEL);
+  if (w.getSelectedButton() !== ui.Button.OK) { return; }
+  var wv = String(w.getResponseText() || '').trim();
+  var r = ui.prompt('ADMIN_PULL_KEY',
+    'The read key. Only your dashboard uses it, to pull answers back. Type the same one into Dashboard ▸ Set up ▸ ADMIN_PULL_KEY.',
+    ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) { return; }
+  var rv = String(r.getResponseText() || '').trim();
+  if (wv.length < 6 || rv.length < 6) { ui.alert('Each key needs at least 6 characters. Nothing was changed.'); return; }
+  if (wv === rv) { ui.alert('The two keys must be different. Nothing was changed.'); return; }
+  props.setProperty('BACKEND_AUTH_KEY', wv);
+  props.setProperty('ADMIN_PULL_KEY', rv);
+  ui.alert('Saved. Now Deploy ▸ Manage deployments ▸ Edit ▸ New version ▸ Deploy, then put the same two keys into the dashboard\'s Set up.');
+}
+function aogCheckKeys() {
+  var props = PropertiesService.getScriptProperties();
+  var w = props.getProperty('BACKEND_AUTH_KEY'), r = props.getProperty('ADMIN_PULL_KEY');
+  SpreadsheetApp.getUi().alert(
+    'BACKEND_AUTH_KEY (write): ' + (w ? 'set (' + w.length + ' characters)' : 'NOT SET — sends are refused') + '\n' +
+    'ADMIN_PULL_KEY (read): ' + (r ? 'set (' + r.length + ' characters)' : 'NOT SET — the dashboard cannot pull'));
 }

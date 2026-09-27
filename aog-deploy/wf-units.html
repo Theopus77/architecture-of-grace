@@ -124,12 +124,19 @@ footer{margin-top:44px;color:var(--sub);font-size:.8rem;border-top:1px solid var
   h2,h3,h4{break-after:avoid; page-break-after:avoid}
   img,svg,figure{break-inside:avoid; page-break-inside:avoid}
 }
+
+/* ══ AOG-UNITS-MENU-V1 (2026-09-26) — Jimmy: "CLASS UNITS NEEDS IT AS WELL, just as Word Study has it." The thirty unit
+   pills and the activity tabs are two drop-downs; the side rail that mirrored the tabs is gone; and on a computer the
+   type sits at a reading size ("everything is SO LARGE at 100%"). */
+#aogSubRail{display:none !important}
+@media (min-width:1000px){ body{font-size:15.5px} .tag,.mast .tag,header .tag{font-size:17px} h1{font-size:clamp(30px,3.4vw,44px)} }
 </style>
 <script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js?v=4920" defer></script>
 <script src="aog-sync-config.js"></script>
 <div class="wrap">
 <header>
@@ -139,8 +146,8 @@ footer{margin-top:44px;color:var(--sub);font-size:.8rem;border-top:1px solid var
  <div class="legend"><span class="lg new"><span class="dot"></span>New stem — definition, word, sentence</span><span class="lg hlp"><span class="dot"></span>Helper stem — definition only</span></div>
 </header>
 <nav class="engstrip no-print" aria-label="English"><span class="eng-k">English</span><a href="/english" data-en="All of English" data-es="Todo Ingl&eacute;s">All of English</a><a href="/words" data-en="Word Study" data-es="Estudio de palabras">Word Study</a><a href="/units" aria-current="page" data-en="Class Units" data-es="Unidades de clase">Class Units</a><a href="/b11" data-en="Grammar" data-es="Gram&aacute;tica">Grammar</a></nav>
-<div class="row no-print" id="unitNav" style="margin:16px 0 0" aria-label="Units"></div>
-<nav class="tabs" id="tabNav" aria-label="Activities"></nav>
+<div class="row no-print" id="unitNav" style="margin:16px 0 0" aria-label="Units" data-aog-dropdown="Unit|Unidad"></div>
+<nav class="tabs" id="tabNav" aria-label="Activities" data-aog-dropdown="Activity|Actividad"></nav>
 <main id="content"></main>
 <footer>
  <p>This page loads no fonts, scripts, or images from the internet and works with the network off. Your work is saved in this browser only, and this page has no way to send anything.</p>
