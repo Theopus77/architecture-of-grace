@@ -61,7 +61,8 @@
   var pending = null;
   function hideTip() { tip.hidden = true; pending = null; }
   D.addEventListener("selectionchange", function () {
-    var sel = window.getSelection(); if (!sel || sel.isCollapsed || !sel.rangeCount) { if (!tip.matches(":hover")) hideTip(); return; }
+    var sel = window.getSelection(); if (!sel || sel.isCollapsed || !sel.rangeCount) { if (!tip.matches(":hover") && !tip.hasAttribute("data-hl")) hideTip(); return; }
+    if (tip.hasAttribute("data-hl")) { tip.removeAttribute("data-hl"); hlTip = null; }
     var r = sel.getRangeAt(0), p1 = blockOf(r.startContainer), p2 = blockOf(r.endContainer);
     if (!p1 || p1 !== p2) { hideTip(); return; }
     var s0 = offsetIn(p1, r.startContainer, r.startOffset), s1 = offsetIn(p1, r.endContainer, r.endOffset);
@@ -81,20 +82,33 @@
     try { window.getSelection().removeAllRanges(); } catch (err) {}
     hideTip();
   });
+  /* AOG-MARKUP-EASY-REMOVE (2026-09-27) — Jimmy: "you can only delete one at a time. Even typing delete is a
+     lot of work." Tap a highlight: a small bar offers Remove, Edit note and Close. My notes can remove any
+     one with a tap, or clear every highlight on the page at once. Nothing to type. */
+  function unwrap(id) { Array.prototype.forEach.call(D.querySelectorAll('mark[data-mk="' + id + '"]'), function (x) { var p = x.parentNode; while (x.firstChild) p.insertBefore(x.firstChild, x); p.removeChild(x); p.normalize(); }); }
+  function removeMark(id) { unwrap(id); saveMarks(marks().filter(function (x) { return x.id !== id; })); }
+  var hlTip = null;
   D.addEventListener("click", function (e) {
-    var mk = e.target.closest && e.target.closest("mark.aog-hl"); if (!mk) return;
+    if (hlTip && e.target.closest && e.target.closest(".aog-mktip[data-hl]")) return;
+    var mk = e.target.closest && e.target.closest("mark.aog-hl"); if (!mk) { if (hlTip) { hlTip = null; hideTip(); tip.removeAttribute("data-hl"); } return; }
     var id = mk.getAttribute("data-mk"), m = marks().filter(function (x) { return x.id === id; })[0]; if (!m) return;
-    var act = prompt((m.n ? T("Note: ", "Nota: ") + m.n + "\n\n" : "") + T("Type a new note, or type DELETE to remove this highlight.", "Escribe una nota nueva, o escribe BORRAR para quitar este resaltado."), m.n || "");
-    if (act === null) return;
-    var all = marks();
-    if (/^(delete|borrar)$/i.test(act.trim())) {
-      all = all.filter(function (x) { return x.id !== id; });
-      Array.prototype.forEach.call(D.querySelectorAll('mark[data-mk="' + id + '"]'), function (x) { var p = x.parentNode; while (x.firstChild) p.insertBefore(x.firstChild, x); p.removeChild(x); p.normalize(); });
-    } else {
-      all.forEach(function (x) { if (x.id === id) x.n = act.trim(); });
-      Array.prototype.forEach.call(D.querySelectorAll('mark[data-mk="' + id + '"]'), function (x) { x.classList.toggle("has-note", !!act.trim()); x.title = act.trim(); });
+    hlTip = id; pending = null; tip.setAttribute("data-hl", id);
+    tip.innerHTML = (m.n ? '<span class="nt">' + esc(m.n) + "</span>" : "")
+      + '<button type="button" data-h="rm">' + T("Remove", "Quitar") + '</button><button type="button" data-h="note">' + (m.n ? T("Edit note", "Cambiar nota") : T("Add a note", "Agregar nota")) + '</button><button type="button" data-h="x">' + T("Close", "Cerrar") + "</button>";
+    tip.hidden = false;
+  });
+  tip.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-h]"), id = tip.getAttribute("data-hl"); if (!b || !id) return;
+    var a = b.getAttribute("data-h");
+    if (a === "rm") removeMark(id);
+    else if (a === "note") {
+      var cur = (marks().filter(function (x) { return x.id === id; })[0] || {}).n || "";
+      var nt = prompt(T("Your note", "Tu nota"), cur); if (nt !== null) {
+        var all = marks(); all.forEach(function (x) { if (x.id === id) x.n = nt.trim(); }); saveMarks(all);
+        Array.prototype.forEach.call(D.querySelectorAll('mark[data-mk="' + id + '"]'), function (x) { x.classList.toggle("has-note", !!nt.trim()); x.title = nt.trim(); });
+      }
     }
-    saveMarks(all);
+    hlTip = null; tip.removeAttribute("data-hl"); hideTip();
   });
   var dbtn = D.createElement("button"); dbtn.type = "button"; dbtn.className = "aog-mkbtn no-print"; dbtn.setAttribute("aria-expanded", "false");
   var drawer = D.createElement("aside"); drawer.className = "aog-mkdrawer no-print"; drawer.hidden = true; drawer.setAttribute("aria-label", T("My highlights and notes", "Mis resaltados y notas"));
@@ -105,14 +119,20 @@
     var h = '<div class="hd"><b>' + T("My highlights and notes", "Mis resaltados y notas") + '</b><button type="button" class="x" aria-label="' + T("Close", "Cerrar") + '">✕</button></div>';
     h += all.length ? "" : '<p class="empty">' + T("Select words in a reading, then tap Highlight or Add a note. They stay on this device.", "Selecciona palabras en una lectura y toca Resaltar o Agregar nota. Se guardan en este dispositivo.") + "</p>";
     h += "<ol>" + all.map(function (m) {
-      return '<li><button type="button" class="go" data-go="' + esc(m.id) + '">' + (m.w ? '<span class="ln">' + esc(m.w) + "</span> " : "") + "“" + esc(m.t.length > 90 ? m.t.slice(0, 88) + "…" : m.t) + "”</button>" + (m.n ? '<p class="nt">' + esc(m.n) + "</p>" : "") + "</li>";
+      return '<li><button type="button" class="go" data-go="' + esc(m.id) + '">' + (m.w ? '<span class="ln">' + esc(m.w) + "</span> " : "") + "“" + esc(m.t.length > 90 ? m.t.slice(0, 88) + "…" : m.t) + "”</button>" + (m.n ? '<p class="nt">' + esc(m.n) + "</p>" : "") + '<button type="button" class="rm" data-rm="' + esc(m.id) + '" aria-label="' + T("Remove this highlight", "Quitar este resaltado") + '">' + T("Remove", "Quitar") + "</button></li>";
     }).join("") + "</ol>";
     if (all.length) h += '<button type="button" class="pr">' + T("Print my notes", "Imprimir mis notas") + "</button>";
+    if (all.length > 1) h += '<button type="button" class="clr">' + T("Clear all highlights", "Quitar todos los resaltados") + "</button>";
     drawer.innerHTML = h;
   }
   dbtn.addEventListener("click", function () { drawList(); drawer.hidden = !drawer.hidden; dbtn.setAttribute("aria-expanded", drawer.hidden ? "false" : "true"); });
   drawer.addEventListener("click", function (e) {
     if (e.target.closest(".x")) { drawer.hidden = true; dbtn.setAttribute("aria-expanded", "false"); return; }
+    var rm = e.target.closest(".rm"); if (rm) { removeMark(rm.getAttribute("data-rm")); return; }
+    if (e.target.closest(".clr")) {
+      if (confirm(T("Remove all your highlights and notes? This cannot be undone.", "¿Quitar todos tus resaltados y notas? No se puede deshacer."))) { marks().forEach(function (x) { unwrap(x.id); }); saveMarks([]); }
+      return;
+    }
     var go = e.target.closest(".go");
     if (go) {
       var el = D.querySelector('mark[data-mk="' + go.getAttribute("data-go") + '"]');
