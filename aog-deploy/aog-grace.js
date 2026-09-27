@@ -152,9 +152,10 @@
       });
     }
   } catch (e) {}
-  /* AOG-MAST-SKETCH-V1 — the worksheets and the bench guides get their pencil drawing too */
+  /* AOG-MAST-SKETCH-V1 + AOG-SKETCH-EVERYWHERE (2026-09-27) — Jimmy: "Everything sketched." Every page loads the
+     sketch pad: emoji become pencil drawings, pictures get the pencil, mastheads get their drawing. */
   try {
-    if (/^(AoG-Interior-Worksheets|microscope-guide|microscope-lessons|telescope-guide|telescope-lessons|science-telescope)$/.test((location.pathname.split("/").pop() || "").replace(/\.html$/, "")) && !D.getElementById("aog-sketch-js")) {
+    if (!D.getElementById("aog-sketch-js")) {
       var skw = D.createElement("script"); skw.id = "aog-sketch-js"; skw.src = "/aog-sketch.js"; skw.defer = true; (D.head || H).appendChild(skw);
     }
   } catch (e) {}
