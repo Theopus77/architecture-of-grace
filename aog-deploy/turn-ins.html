@@ -251,6 +251,14 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 .glass .pane.empty{cursor:default}
 .glass .pane.key{stroke:#F2C964;stroke-width:2.2}
 .glass{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+/* AOG-GLASS-REAL-V1 — the painted glass sits under the SVG; the SVG keeps the titles and taps */
+.bp-gw{position:relative;width:min(100%,480px);filter:drop-shadow(0 10px 22px rgba(0,0,0,.3));print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.bp-gw .glass{display:block;width:100%;filter:none}
+.bp-gw canvas.bp-real{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.bp-gw.real .glass .deco{display:none}
+.bp-gw.real .glass .panes{filter:none}
+.bp-gw.real .glass .pane{fill-opacity:0 !important;stroke:none}
+.bp-gw.real .glass .pane:hover,.bp-gw.real .glass .pane.sel{fill:#FFF6DA;fill-opacity:.22 !important;stroke:#F2C964;stroke-width:2.5}
 .bp-legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:12px 0 0;font-size:.8rem;color:var(--sub)}
 .bp-lg{display:inline-flex;align-items:center;gap:6px}
 .bp-lg i{width:18px;height:10px;border-radius:2px;display:inline-block}
@@ -280,6 +288,8 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   body.bpprint .bp-stats span{font-size:.68rem}
   body.bpprint .bp-wall{padding:0}
   body.bpprint .glass{width:auto;max-width:100%;height:auto;max-height:158mm;filter:none}
+  body.bpprint .bp-gw{width:140mm;max-width:100%;filter:none}
+  body.bpprint .bp-gw .glass{width:100%;max-height:none}
   body.bpprint .bp-legend{margin:4px 0 0;gap:4px 10px;font-size:.7rem}
   body.bpprint .bp-legend .bp-lg i{width:12px;height:8px}
 }
@@ -302,6 +312,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 }
 </style>
 <script src="aog-sync-config.js"></script>
+<script src="/aog-glass.js?v=5167"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
      This page shows the same student records the dashboard does, and it used
      to open to anyone who typed its address on this computer. It now asks for
@@ -1660,7 +1671,7 @@ else document.documentElement.classList.add("aog-embed");</script>
           out.push("M"+P(c+a0*Math.cos(t0),c+a0*Math.sin(t0))+" A"+f1(a0)+" "+f1(a0)+" 0 0 1 "+P(c+a0*Math.cos(t1),c+a0*Math.sin(t1))
             +" L"+P(c+bo*Math.cos(t1),c+bo*Math.sin(t1))+" Q"+P(c+(a1+6)*Math.cos(tm),c+(a1+6)*Math.sin(tm))+" "+P(c+bo*Math.cos(t0),c+bo*Math.sin(t0))+" Z"); } }
       var ribsSvg=""; for(var r=0;r<ribs;r++){ var t=-Math.PI/2+r*2*Math.PI/ribs; ribsSvg+='<line x1="'+f1(c+r0*Math.cos(t))+'" y1="'+f1(c+r0*Math.sin(t))+'" x2="'+f1(c+184*Math.cos(t))+'" y2="'+f1(c+184*Math.sin(t))+'" stroke="url(#bpBronze)" stroke-width="5" stroke-linecap="round"/>'; }
-      return {w:400,h:400,panes:out,clip:null,
+      return {w:400,h:400,panes:out,clip:null,r0:r0,ribs:ribs,
         frame:ribsSvg+'<circle cx="200" cy="200" r="186" fill="none" stroke="url(#bpBronze)" stroke-width="12"/><circle cx="200" cy="200" r="'+(r0)+'" fill="none" stroke="url(#bpBronze)" stroke-width="6"/>'};
     },
     star:function(need){
@@ -1705,23 +1716,27 @@ else document.documentElement.classList.add("aog-embed");</script>
       +(sh.clip?'<clipPath id="'+id+'"><path d="'+sh.clip+'"/></clipPath>':"")
       +'</defs>';
     var emptyFill=sh.byz?"#D4AA48":"#3A4252", g="";
+    /* AOG-GLASS-REAL-V1 — the same panes, handed to aog-glass.js to paint as real glass */
+    var spec={style:style,w:W,h:H,clip:sh.clip,r0:sh.r0,ribs:sh.ribs,panes:[]}, sig=[];
     sh.panes.forEach(function(d,k){
-      var it=list[k], attrs;
+      var it=list[k], attrs, pd=d.split('" transform="'), tfm=pd[1]?/translate\(([-\d.]+) ([-\d.]+)\) rotate\(([-\d.]+)\)/.exec(pd[1]):null;
+      var sp={d:pd[0],tf:tfm?[+tfm[1],+tfm[2],+tfm[3]]:null,color:emptyFill,op:1,empty:!it,key:!!it&&(k+1)%25===0}; spec.panes.push(sp);
       if(!it) attrs=' class="pane empty" fill="'+emptyFill+'" fill-opacity="1"';
-      else { var st=bpStrength(it), op=st==null?0.86:(0.42+st*0.58);
+      else { var st=bpStrength(it), op=st==null?0.86:(0.42+st*0.58); sp.color=bpGlass(it); sp.op=+op.toFixed(2); sig.push(sp.color+op.toFixed(2));
         attrs=' class="pane'+((k+1)%25===0?" key":"")+'" data-bpi="'+k+'" fill="'+bpGlass(it)+'" fill-opacity="'+op.toFixed(2)+'"'; }
       var title=it?'<title>'+esc((it.title||"")+" · "+when(it.ts)+(it.sum?" · "+it.sum:""))+'</title>':"";
       g+='<path d="'+d+'"'+attrs+'>'+title+'</path>';
     });
+    spec.key=style+"|"+sh.panes.length+"|"+sig.join(","); bpSpec=spec;
     var cp=sh.clip?' clip-path="url(#'+id+')"':"";
-    return '<svg class="glass" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(style)+' window, '+list.length+' panes filled">'+defs
-      +'<g'+cp+'>'+(sh.clip?'<rect width="'+W+'" height="'+H+'" fill="#20242C"/>':'<circle cx="200" cy="200" r="190" fill="'+(sh.byz?"#7A5A1E":"#20242C")+'"/>')
+    return '<div class="bp-gw"><canvas class="bp-real" aria-hidden="true"></canvas><svg class="glass" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(style)+' window, '+list.length+' panes filled">'+defs
+      +'<g'+cp+'>'+(sh.clip?'<rect class="deco" width="'+W+'" height="'+H+'" fill="#20242C"/>':'<circle class="deco" cx="200" cy="200" r="190" fill="'+(sh.byz?"#7A5A1E":"#20242C")+'"/>')
       +'<g class="panes" filter="url(#bpGlass)" stroke="#1E1F22" stroke-width="'+(sh.byz?1.4:2.4)+'" stroke-linejoin="round">'+g+'</g>'
-      +(sh.clip?'<rect width="'+W+'" height="'+H+'" fill="url(#bpLight)" style="mix-blend-mode:screen;pointer-events:none"/>':'<circle cx="200" cy="200" r="190" fill="url(#bpLight)" style="mix-blend-mode:screen;pointer-events:none"/>')+'</g>'
-      +(sh.clip?'<path d="'+sh.clip+'" fill="none" stroke="url(#bpStone)" stroke-width="14" stroke-linejoin="round"/>':"")
-      +(sh.frame||"")+'</svg>';
+      +(sh.clip?'<rect class="deco" width="'+W+'" height="'+H+'" fill="url(#bpLight)" style="mix-blend-mode:screen;pointer-events:none"/>':'<circle class="deco" cx="200" cy="200" r="190" fill="url(#bpLight)" style="mix-blend-mode:screen;pointer-events:none"/>')+'</g>'
+      +(sh.clip?'<path class="deco" d="'+sh.clip+'" fill="none" stroke="url(#bpStone)" stroke-width="14" stroke-linejoin="round"/>':"")
+      +'<g class="deco">'+(sh.frame||"")+'</g></svg></div>';
   }
-  var bpWho=null;
+  var bpWho=null, bpSpec=null;
   var SOLO=/[?&]solo=1/.test(location.search);
   if(SOLO){ document.documentElement.classList.add("bp-solo"); try{ localStorage.setItem("aog.learner","1"); }catch(e){} curView="bp"; }
   (function(){ var m=/[?&]blueprint=([^&]*)/.exec(location.search); if(m && m[1]){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
@@ -1765,6 +1780,10 @@ else document.documentElement.classList.add("aog-embed");</script>
       +'<div class="bp-say" id="bpSay">'+(list.length?"Tap a pane to see what it was.":"")+'</div>'
       +'</div>';
     box.appendChild(wrap);
+    /* AOG-GLASS-REAL-V1 — paint the real glass once; if it cannot, the SVG window stays as it was */
+    (function(){ var cv=wrap.querySelector("canvas.bp-real"); if(!cv) return;
+      var ok=false; try{ bpSpec.scale=Math.max(1.5,Math.min(2,(window.devicePixelRatio||1)*(cv.parentNode.clientWidth||400)/bpSpec.w)); ok=!!(window.AOGGlass && bpSpec && window.AOGGlass.render(cv,bpSpec)); }catch(e){ ok=false; }
+      if(ok) cv.parentNode.classList.add("real"); else cv.parentNode.removeChild(cv); })();
     wrap.querySelectorAll("[data-bpsty]").forEach(function(b){ b.addEventListener("click",function(){ try{ localStorage.setItem("aog.bp.style."+bpWho,b.getAttribute("data-bpsty")); }catch(e){} paint(); }); });
     wrap.querySelectorAll("[data-bpwho]").forEach(function(b){ b.addEventListener("click",function(){ bpWho=b.getAttribute("data-bpwho"); paint(); }); });
     wrap.querySelectorAll("[data-bpi]").forEach(function(b){ b.addEventListener("click",function(){
