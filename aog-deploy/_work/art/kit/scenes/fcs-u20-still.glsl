@@ -1,7 +1,7 @@
 /* FCS Unit 20 "Capstone: Plan, Cost, Produce" — pencil still life: a pleated chef's hat, a
    clipboard with a costed plan and a column of figures, and a small covered serving dish. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4072,0.2942,-0.7303)
+#define CAM_TGT vec3(-0.1806,0.0222,0.1128)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
