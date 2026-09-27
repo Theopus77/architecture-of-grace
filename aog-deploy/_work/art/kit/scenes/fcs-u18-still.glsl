@@ -19,7 +19,7 @@ float stacker(vec3 p){ vec3 q=p-ST;
   return min(min(base,post),cap); }
 float ringR(int i){ return .058-float(i)*.0095; }
 float ringY(int i){ float y=.027; for(int k=0;k<5;k++){ if(k>=i) break; y+=2.*(.012-float(k)*.0012)+.0005; } return y+(.012-float(i)*.0012); }
-float rings(vec3 p){ vec3 q=p-ST; float d=1e5; for(int i=0;i<5;i++){ float h=.012-float(i)*.0012; d=min(d,(length(vec2(length(q.xz)-ringR(i)*.62,(q.y-ringY(i))*1.))-h*1.)); } return d; }
+float rings(vec3 p){ vec3 q=p-ST; float d=1e5; for(int i=0;i<5;i++){ float h=.012-float(i)*.0012; d=min(d,length(vec2(length(q.xz)-ringR(i)*.72,q.y-ringY(i)))-h*1.05); } return d; }
 float rattle(vec3 p){ vec3 q=p-vec3(-.15,.02,-.05); q.xz=rot(.5)*q.xz; q.xy=rot(.05)*q.xy;
   float ball=length(q-vec3(.07,.005,0.))-.024; float hdl=sdCapsule(q,vec3(-.05,0.,0.),vec3(.05,.003,0.),.0075);
   float ringe=sdTorus((q-vec3(-.065,0.,0.)).xzy*vec3(1.,1.,1.),.018,.005);
