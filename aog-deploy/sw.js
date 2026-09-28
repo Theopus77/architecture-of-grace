@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.28.m7083'   // MERGE MAIN + GRACE AT HOME DAY BUTTONS. previous: m7082
+const CACHE = 'aog-cache-2026.09.28.m7217'   // MERGE: STANDARDS FOLDS (m7216) + GRACE AT HOME DAY BUTTONS (main m7083). previous: m7216
+// const CACHE = 'aog-cache-2026.09.28.m7216'   // STANDARDS: BOOK CARDS + FOLDED TABLES, ONE SUBJECT AT A TIME. previous: m7215
 // const CACHE = 'aog-cache-2026.09.27.m7082'   // GRACE AT HOME: DAY BUTTONS EVEN. previous: aog-cache-2026.09.27.m7081   // UNIT WRAP-UP LINK OPENS THE WRAP-UP. previous: m7080   // FINAL MERGE: PENCIL EVERYWHERE, NO EMOJI; ALL COURSES, SEL, NOVELS, CROSSWALK LINKS. previous: m7078
 // const CACHE = 'aog-cache-2026.09.28.m7215'   // WRITE KEY MATCHES THE SHEET AGAIN. previous: m7214
 // const CACHE = 'aog-cache-2026.09.28.m7211'   // STUDENT "SEE YOUR RESULTS" ON PAPER: PENCIL CARDS, STRIPED AREA NUMBERS, HATCHED BARS, SCORES IN A FOR-ADULTS FOLD. previous: m7210

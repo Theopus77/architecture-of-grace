@@ -221,10 +221,10 @@ def course_section(c):
     <p class="note">%(fwnote)s</p></div>
     <div class="c-acts">%(hub)s<a class="btn ghost" href="#top">%(top)s</a></div>
   </div>
-  <table><thead><tr><th>%(th1)s</th><th>%(th2)s</th></tr></thead><tbody>%(rows)s</tbody></table>
+  <details class="ufold"><summary>%(unitsbtn)s</summary><table><thead><tr><th>%(th1)s</th><th>%(th2)s</th></tr></thead><tbody>%(rows)s</tbody></table></details>
 </section>''' % dict(key=c["key"], subject=bi(c["subject"], c["subjectEs"]), name=bi(c["name"], c["nameEs"]), fwname=esc(fw.get("name", "")),
                      fwshort=(" (" + esc(fw.get("short")) + ")") if fw.get("short") else "", fwnote=esc(fw.get("note", "")), hub=hub,
-                     top=bi("Top", "Arriba"), th1=bi("Unit", "Unidad"), th2=bi("Standards this unit addresses", "Estándares que aborda esta unidad"), rows="".join(rows))
+                     unitsbtn=bi("Show every unit and standard", "Mostrar cada unidad y estándar"), top=bi("Top", "Arriba"), th1=bi("Unit", "Unidad"), th2=bi("Standards this unit addresses", "Estándares que aborda esta unidad"), rows="".join(rows))
 
 
 def bench_rows(b, anchor=True):
@@ -246,10 +246,10 @@ def bench_section(b):
     <p class="note">%(fwnote)s</p></div>
     <div class="c-acts"><a class="btn" href="%(page)s">%(open)s</a><a class="btn ghost" href="#top">%(top)s</a></div>
   </div>
-  <table><thead><tr><th>%(th1)s</th><th>%(th2)s</th></tr></thead><tbody>%(rows)s</tbody></table>
+  <details class="ufold"><summary>%(unitsbtn)s</summary><table><thead><tr><th>%(th1)s</th><th>%(th2)s</th></tr></thead><tbody>%(rows)s</tbody></table></details>
 </section>''' % dict(key=b["key"], eyebrow=bi("Hands-on bench · %d lessons" % b["lessonCount"], "Mesa práctica · %d lecciones" % b["lessonCount"]),
                      name=esc(b["name"]), fwname=esc(fw["name"]), fwshort=esc(fw["short"]), fwnote=esc(fw["note"]), page=esc(b["page"]),
-                     open=bi("Open the bench", "Abrir la mesa"), top=bi("Top", "Arriba"), th1=bi("Lessons", "Lecciones"),
+                     open=bi("Open the bench", "Abrir la mesa"), unitsbtn=bi("Show every unit and standard", "Mostrar cada unidad y estándar"), top=bi("Top", "Arriba"), th1=bi("Lessons", "Lecciones"),
                      th2=bi("Standards these lessons address", "Estándares que abordan estas lecciones"), rows=bench_rows(b))
 
 
@@ -293,6 +293,10 @@ html[data-theme="dark"]{--ground:#0A1E33;--field:#13314F;--field-2:#0F2A45;--ink
 *{box-sizing:border-box}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);line-height:1.5}
 a{color:inherit}
+.ufold{margin-top:10px;border:1.5px solid var(--rule);border-radius:14px;background:var(--field);color:var(--ink)}
+.ufold>summary{cursor:pointer;min-height:44px;padding:11px 16px;font-weight:700;font-size:16px;color:var(--ink)}
+.ufold[open]>summary{border-bottom:1.5px solid var(--rule)}
+@media print{.ufold>summary{display:none}.ufold{border:0}}
 header.page{background:var(--navy);color:#F4EEE2;padding:56px 16px 44px}
 header.page .in{max-width:1040px;margin:0 auto}
 header.page .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#F2C964;font-weight:700}
@@ -351,6 +355,10 @@ footer.foot{max-width:1040px;margin:0 auto;padding:0 16px 40px;font-size:12px;co
 <footer class="foot">Architecture of Grace · Standards crosswalk · NGSS is a registered trademark of WestEd; Common Core State Standards © NGA Center and CCSSO; C3 Framework © NCSS; NHES © SHAPE America / American Cancer Society; National Core Arts Standards © SEADAE; ACTFL World-Readiness Standards © ACTFL; CEE standards © Council for Economic Education; National Standards for FCS Education © NASAFACS. Codes are cited for alignment; the wording beside each code is this site's own summary. None of these bodies has reviewed or endorsed this curriculum.</footer>
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
+<script>/* One subject at a time (Jimmy: "I don't like the one major scroll"): each table folds away; a link to a subject or unit opens it. */
+(function(){function op(){var id=location.hash.slice(1);if(!id)return;var el=document.getElementById(id);if(!el)return;var d=el.matches("section.course")?el.querySelector("details.ufold"):el.closest("details.ufold");if(d&&!d.open){d.open=true;el.scrollIntoView();}}
+op();window.addEventListener("hashchange",op);
+window.addEventListener("beforeprint",function(){document.querySelectorAll("details.ufold").forEach(function(d){d.open=true;});});})();</script>
 </body>
 </html>
 '''
