@@ -47,7 +47,7 @@ window.AOG_SYNC_DEFAULTS = {
 
   /* 2. The value of BACKEND_AUTH_KEY in Apps Script ▸ Project Settings ▸
         Script properties. Write-only: see the note above. */
-  key: "Grace-D61-Sync-2026",  /* must match BACKEND_AUTH_KEY in Apps Script; change both together */
+  key: "NOT",  /* must match BACKEND_AUTH_KEY in Apps Script; change both together */
   label: "Architecture of Grace — site default Sheet (the owner's own Google account)",
 
   /* 3. Which classroom links may use this destination.
