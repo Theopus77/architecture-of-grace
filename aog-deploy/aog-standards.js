@@ -78,7 +78,7 @@
       if (open) { box.hidden = true; return; }
       box.innerHTML = tableHtml(courses[i]); box.hidden = false;
       b.setAttribute("aria-expanded", "true"); b.textContent = T("Hide the units", "Ocultar las unidades");
-      try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e2) {}
+      try { box.scrollIntoView({ block: "nearest", behavior: "auto" }); } catch (e2) {}
     });
   }
 
