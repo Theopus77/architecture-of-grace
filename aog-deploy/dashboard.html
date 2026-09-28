@@ -48,6 +48,7 @@ html[data-theme="dark"] .linkbox code{color:#E8EEF4!important}
 .btn.danger{border-color:#8B2A2A;color:#8B2A2A}
 #connCard>summary::-webkit-details-marker{display:none}#connCard>summary::marker{content:""}
 .pw pre{white-space:pre-wrap;font:15px/1.55 inherit;font-family:inherit;margin:0;color:var(--ink)}.pw .doc h3{font:700 12.5px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--goldInk);margin:18px 0 6px}.pw .doc h3:first-child{margin-top:0}.pw .chart svg{width:100%;height:auto;max-width:640px}.pw .dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:2px solid var(--goldInk);margin-right:6px;vertical-align:middle}.pw .dot.on{background:var(--goldInk)}.pw .fld{margin-bottom:14px}.pw .sub{font:700 15px inherit;color:var(--ink);margin:16px 0 6px}
+.pw .fld.eng textarea{border-left:4px solid #8A9199}.pw .engnote{font-size:14px;color:var(--soft);margin:2px 0 0}.pw .engnew{margin:6px 0 0;font-size:14px;color:var(--soft)}.pw .engnew summary{cursor:pointer;min-height:32px;padding:4px 0}.pw .engnew textarea{width:100%;margin-top:6px}.pw .linkbtn{background:none;border:0;padding:6px 0;min-height:32px;font:inherit;font-size:14px;color:var(--ink);text-decoration:underline;cursor:pointer}.pw .chart .cap{font-size:14px;color:var(--soft);margin:0 0 4px}.pw .engflag{font-weight:700;color:var(--ink)}
 @media print{.pw .no-print,.pw .fld{display:none!important}.pw .doc{display:block!important}}
 .view{display:flex;background:rgba(255,255,255,.08);border-radius:12px;padding:4px;margin:0 4px 16px}
 .view button{flex:1 1 0;min-width:0;padding:0 4px;min-height:40px;border:0;border-radius:9px;background:transparent;color:#DCE5EE;font:700 12.5px/1.15 inherit;font-family:inherit;cursor:pointer;white-space:normal;overflow-wrap:anywhere;text-align:center}
@@ -76,6 +77,18 @@ html[data-theme="dark"] .linkbox code{color:#E8EEF4!important}
 .tbl{width:100%;border-collapse:separate;border-spacing:0}
 .tbl th{text-align:left;font:800 11.5px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:10px 12px;border-bottom:1px solid var(--line)}
 .tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+/* AOG-DASH-STU-OPEN-V1 (2026-09-28) — every row and card on a student's page opens the work itself in the Inbox */
+.wrows{display:grid;gap:0}
+a.wrow{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none;border-radius:8px}
+a.wrow:hover{background:rgba(201,162,74,.10)}
+a.wrow:focus-visible,a.stat:focus-visible{outline:3px solid var(--gold,#C9A24A);outline-offset:2px}
+a.wrow .d{flex:0 0 auto;color:var(--soft);font-size:14px;min-width:52px}
+a.wrow .w{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+a.wrow .n{flex:0 0 auto;font-weight:700}
+a.wrow .chev{flex:0 0 auto;font-size:20px;color:var(--soft)}
+a.stat{display:block;color:var(--ink);text-decoration:none;position:relative}
+a.stat::after{content:"›";position:absolute;right:14px;top:12px;font-size:20px;color:var(--soft)}
+a.stat:hover{border-color:var(--gold,#C9A24A)}
 .tbl tr.pick{cursor:pointer}.tbl tr.pick:hover td{background:rgba(201,162,74,.08)}
 /* AOG-NO-BOX-SCROLL: on phones each row becomes a small card, no sideways scrolling */
 @media (max-width:700px){section.card,div[style*="overflow-x:auto"]{overflow-x:visible!important}
@@ -140,11 +153,27 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
  .hello .pullwrap{display:none}}
 @media (min-width:761px){.railsel{display:none}}
 </style>
+<style id="aog-link-door">
+/* AOG-LINK-DOOR-V1 (2026-09-27) — Jimmy: "The link looks ugly. They are all so long. Can't we make it into a
+   copyable door the person clicks on?" A link box is a paper door now: a link icon, the short start of the
+   address on one line (the rest is hidden, never broken across lines), and one big "Copy link" button.
+   Tapping the address copies it too. The whole address is still what gets copied and opened. */
+.linkbox{width:fit-content;max-width:100%;box-sizing:border-box;background:#FBF8F0 !important;color:#1F2630 !important;border:1.6px solid #2A2622 !important;border-radius:14px !important;
+  padding:12px 14px !important;box-shadow:2px 3px 0 rgba(42,38,34,.18) !important;flex-wrap:nowrap !important;gap:10px !important}
+.linkbox::before{content:"";flex:0 0 26px;height:26px;background:no-repeat center/22px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A2622' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/%3E%3C/svg%3E")}
+.linkbox code{flex:1 1 auto !important;min-width:0;white-space:nowrap !important;overflow:hidden;text-overflow:ellipsis;word-break:normal !important;
+  color:#4A5563 !important;font:14px Inter,system-ui,sans-serif !important;cursor:copy;max-width:28ch}
+.linkbox .btn{flex:0 0 auto;min-height:44px}
+html[data-theme="dark"] .linkbox{width:fit-content;max-width:100%;box-sizing:border-box;background:#FBF8F0 !important;color:#1F2630 !important;border-color:#2A2622 !important}
+html[data-theme="dark"] .linkbox code{color:#4A5563 !important}
+@media (max-width:560px){ .linkbox{display:grid !important;grid-template-columns:26px minmax(0,1fr);align-items:center} .linkbox code{max-width:none} .linkbox .btn{grid-column:span 1} .linkbox > :nth-child(n+2){grid-column:1 / -1} .linkbox > code{grid-column:2} }
+</style>
 </head>
 <body>
 <script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
 <script src="/aog-topbar.js"></script>
 <script src="/aog-ieppw-core.js?v=1"></script>
+<script src="/aog-iep-fill.js?v=1"></script>
 <div class="app">
   <aside class="rail no-print" aria-label="Dashboard">
     <div class="brand">Dashboard</div>
@@ -323,13 +352,16 @@ function students(){
 function oneStudent(s){
   const last10=s.ci.slice(0,10), feels={}; s.ci.forEach(r=>feel(r).forEach(f=>feels[f]=(feels[f]||0)+1));
   const top=Object.entries(feels).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const prRows=s.pr.slice(0,12).map(r=>'<tr><td>'+nice(day(r))+'</td><td>'+esc(String(r.activityName||r.activityId||"").replace(/^Daily D(rafts|rops) — /,"Daily Drafts · "))+'</td><td>'+(+r.itemsTotal?(r.independent||0)+" / "+r.itemsTotal:"—")+'</td></tr>').join("");
-  const ciRows=last10.map(r=>'<tr><td>'+nice(day(r))+'</td><td>'+esc(r.slipType||r.checkinType||"")+'</td><td>'+feel(r).map(f=>'<span class="chip">'+esc(f)+'</span>').join("")+'</td><td>'+(flagged(r)?'<span class="chip warn">'+T("follow")+'</span>':'')+'</td></tr>').join("");
+  /* AOG-DASH-STU-OPEN-V1 — a row opens that very paper (/turn-ins.html?student=&open=<its time>&what=<its id>) */
+  const inbox=(r,extra)=>'/turn-ins.html?student='+encodeURIComponent(who(r))+'&open='+encodeURIComponent(String(r.timestamp||r.date||""))+'&what='+encodeURIComponent(String(r.activityId||r.checkinType||""))+(extra||"");
+  const inboxFor=q=>'/turn-ins.html?student='+encodeURIComponent(s.name)+q;
+  const prRows=s.pr.slice(0,12).map(r=>'<a class="wrow" href="'+esc(inbox(r))+'"><span class="d">'+nice(day(r))+'</span><span class="w">'+esc(String(r.activityName||r.activityId||"").replace(/^Daily D(rafts|rops) — /,"Daily Drafts · "))+'</span><span class="n">'+(+r.itemsTotal?(r.independent||0)+" / "+r.itemsTotal:"—")+'</span><span class="chev" aria-hidden="true">›</span></a>').join("");
+  const ciRows=last10.map(r=>'<a class="wrow" href="'+esc(inbox(r))+'"><span class="d">'+nice(day(r))+'</span><span class="w">'+esc(r.slipType||r.checkinType||"")+' '+feel(r).map(f=>'<span class="chip">'+esc(f)+'</span>').join("")+'</span>'+(flagged(r)?'<span class="chip warn">'+T("follow")+'</span>':'')+'<span class="chev" aria-hidden="true">›</span></a>').join("");
   return '<div class="hello"><div><button class="btn" type="button" id="backStu">‹ '+T("students")+'</button><h1 style="margin-top:12px">'+esc(s.name)+'</h1><p>'+T("lastSeen")+': '+nice(s.last)+'</p></div><a class="btn solid" href="/turn-ins.html?blueprint='+encodeURIComponent(s.name)+'">'+T("blueprint")+' ›</a></div>'
-   +'<div class="stats"><div class="stat"><b>'+s.ci.length+'</b><span>'+T("checkins")+'</span></div><div class="stat"><b>'+s.pr.length+'</b><span>'+T("practice")+'</span></div><div class="stat"><b>'+(s.acc==null?"—":s.acc+"%")+'</b><span>'+T("indep")+'</span></div><div class="stat'+(s.flags?" flag":"")+'"><b>'+s.flags+'</b><span>'+T("follow")+'</span></div></div>'
+   +'<div class="stats"><a class="stat" href="'+esc(inboxFor("&kind=checkin"))+'"><b>'+s.ci.length+'</b><span>'+T("checkins")+'</span></a><a class="stat" href="'+esc(inboxFor("&kind=turnin"))+'"><b>'+s.pr.length+'</b><span>'+T("practice")+'</span></a><a class="stat" href="'+esc(inboxFor("&kind=turnin"))+'"><b>'+(s.acc==null?"—":s.acc+"%")+'</b><span>'+T("indep")+'</span></a><a class="stat'+(s.flags?" flag":"")+'" href="'+esc(inboxFor("&kind=all&follow=1"))+'"><b>'+s.flags+'</b><span>'+T("follow")+'</span></a></div>'
    +(top.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+top.map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join("")+'</section>':'')
-   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))"><section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("checkins")+'</p>'+(ciRows?'<table class="tbl"><tbody>'+ciRows+'</tbody></table>':'<p class="empty">—</p>')+'</section>'
-   +'<section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("practice")+'</p>'+(prRows?'<table class="tbl"><tbody>'+prRows+'</tbody></table>':'<p class="empty">—</p>')+'</section></div>';
+   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))"><section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("checkins")+'</p>'+(ciRows?'<div class="wrows">'+ciRows+'</div>':'<p class="empty">—</p>')+'</section>'
+   +'<section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("practice")+'</p>'+(prRows?'<div class="wrows">'+prRows+'</div>':'<p class="empty">—</p>')+'</section></div>';
 }
 function checkins(){
   const D=data(); if(!D.ci.length) return '<div class="hello"><div><h1>'+T("checkins")+'</h1></div></div>'+noData();
@@ -720,18 +752,20 @@ function pwNew(student,type,form){
   let fields={formProfile:form,grade:P.studentGrade(I,student)};
   const prev=Object.values(st.docs).filter(d=>d&&String(d.student||"").trim()===student).sort((a,b)=>(b.updated||0)-(a.updated||0))[0];
   if(prev&&prev.fields) fields=P.copyForward(prev.fields,type,fields);
+  if(prev&&ENG){ pwEngKeys(prev).forEach(k=>{ if(!(prev.own||{})[k]) delete fields[k]; }); }
   st.docs[id]={id:id,student:student,type:type,date:todayISO(),fields:fields,goalRows:pwAutoGoals(student),created:Date.now(),updated:Date.now()};
+  if(ENG){ const nd=st.docs[id], ks=pwEngKeys(nd); ENG.apply(nd,ENG.build(engInput(student,type,ks)).texts,ks,todayISO()); }
   pwSave(st); put("aog.dash2.pwDoc",id); put("aog.dash2.pwSec",type==="goalpages"?"gp":"purpose"); render();
 }
 function pwSections(d){ if(d.type==="goalpages") return ["gp","doc"]; return P.sections(d.type).map(x=>x.id).concat(["doc"]); }
 function pwFilled(d,sec){ const f=d.fields||{}, ks=(P.sections(d.type).find(x=>x.id===sec)||{}).f||[]; if(sec==="goals") return (d.goalRows||[]).some(r=>r.rating); if(sec==="gp") return true; return ks.some(k=>k==="svcRows"?(f.svcRows||[]).length:(f[k]!=null&&String(f[k]).trim()&&f[k]!=="0")); }
 const pwL=(en,es)=>t2(en,es);
-function pwTa(k,en,es,d,help){ return '<div class="fld"><label for="pw_'+k+'">'+pwL(en,es)+'</label><textarea id="pw_'+k+'" data-k="'+k+'" maxlength="4000">'+esc((d.fields||{})[k]||"")+'</textarea>'+(help?'<p class="note" style="margin:4px 0 0">'+pwL(help[0],help[1])+'</p>':'')+'</div>'; }
+function pwTa(k,en,es,d,help){ const E=pwEngBits(k,d); return '<div class="fld'+E.cls+'"><label for="pw_'+k+'">'+pwL(en,es)+'</label><textarea id="pw_'+k+'" data-k="'+k+'" maxlength="4000">'+esc((d.fields||{})[k]||"")+'</textarea>'+(help?'<p class="note" style="margin:4px 0 0">'+pwL(help[0],help[1])+'</p>':'')+E.html+'</div>'; }
 function pwIn(k,en,es,d,type){ return '<div class="fld"><label for="pw_'+k+'">'+pwL(en,es)+'</label><input type="'+(type||"text")+'" id="pw_'+k+'" data-k="'+k+'" value="'+esc((d.fields||{})[k]||"")+'" maxlength="200"></div>'; }
 function pwSel(k,en,es,d,opts){ const v=(d.fields||{})[k]||""; return '<div class="fld"><label for="pw_'+k+'">'+pwL(en,es)+'</label><select id="pw_'+k+'" data-k="'+k+'"><option value="">—</option>'+opts.map(o=>opt(o[0],o[1],o[0]===v)).join("")+'</select></div>'; }
 function pwChk(k,en,es,d){ const v=(d.fields||{})[k]; return '<label class="fld" style="display:flex;gap:10px;align-items:center;min-height:44px;margin-bottom:6px"><input type="checkbox" data-k="'+k+'"'+((v==="1"||v===true)?' checked':'')+' style="min-height:0;width:22px;height:22px"> <span>'+pwL(en,es)+'</span></label>'; }
 function pwRate(base,en,es,d){ const es_={consistent:"Consistente",developing:"En desarrollo",concern:"Área de preocupación"}; return '<p class="sub">'+pwL(en,es)+'</p><div class="f2">'+pwSel(base+"_r","How it is going","Cómo va",d,Object.keys(P.CRATE).map(k=>[k,t2(P.CRATE[k],es_[k])]))+pwTa(base+"_t","What you see (brief, objective)","Lo que observas (breve y objetivo)",d)+'</div>'; }
-function pwSubj(px,en,es,d){ return '<p class="sub">'+pwL(en,es)+'</p>'+pwTa("d_"+px+"_bench","Benchmarks (MAP, FB scores…)","Evaluaciones de referencia (MAP, FB…)",d)
+function pwSubj(px,en,es,d){ return '<p class="sub">'+pwL(en,es)+'</p>'+pwTa("d_"+px+"_data","What the classroom data shows","Lo que muestran los datos de clase",d)+pwTa("d_"+px+"_bench","Benchmarks (MAP, FB scores…)","Evaluaciones de referencia (MAP, FB…)",d)
   +'<div class="f2">'+pwIn("d_"+px+"_mtss_date","Intervention start date","Inicio de la intervención",d,"date")+pwSel("d_"+px+"_mtss_tier","Tier","Nivel",d,[["1","1"],["2","2"],["3","3"]])+'</div>'
   +pwIn("d_"+px+"_mtss_target","What the intervention targets","Qué aborda la intervención",d)+pwTa("d_"+px+"_strength","Strengths","Fortalezas",d)+pwTa("d_"+px+"_diff","Areas of difficulty","Áreas de dificultad",d)+pwTa("d_"+px+"_supports","Supports that are working","Apoyos que funcionan",d); }
 function pwSection(d,sec){
@@ -745,16 +779,16 @@ function pwSection(d,sec){
     +'<div class="row" style="margin:8px 0 14px"><button class="btn" type="button" id="pwSrAdd">+ '+pwL("Add a row","Agregar fila")+'</button></div>'
     +pwTa("svcSdi","Program used and how it is going","Programa usado y cómo va",d)+pwTa("svcRelated","Related services","Servicios relacionados",d)+pwTa("svcAccom","Accommodations and supports in use","Acomodaciones y apoyos en uso",d,["List the ones in use so the team can drop any no longer needed.","Enumera los que se usan para que el equipo quite los que ya no hacen falta."]); }
   if(sec==="goals"){ const rows=d.goalRows||[], esR={adequate:"Progreso adecuado",variable:"Progreso variable",limited:"Progreso limitado",met:"Meta lograda",exceeded:"Meta superada"};
-    return '<div class="row" style="margin-bottom:12px"><button class="btn" type="button" id="pwGoalsRefresh">⟳ '+pwL("Refresh from Brick by brick","Actualizar desde Ladrillo a ladrillo")+'</button><button class="btn" type="button" id="pwGoalAdd">+ '+pwL("Add a row","Agregar fila")+'</button></div>'
+    return pwTa("goals_data","What the classroom data shows about goals","Lo que muestran los datos sobre las metas",d)+'<div class="row" style="margin-bottom:12px"><button class="btn" type="button" id="pwGoalsRefresh">⟳ '+pwL("Refresh from Brick by brick","Actualizar desde Ladrillo a ladrillo")+'</button><button class="btn" type="button" id="pwGoalAdd">+ '+pwL("Add a row","Agregar fila")+'</button></div>'
     +(rows.length?rows.map((r,i)=>'<section class="card" data-gi="'+i+'" style="margin-bottom:12px"><div class="fld"><label>'+pwL("Goal","Meta")+'</label><input type="text" data-gk="title" value="'+esc(r.title||"")+'" maxlength="200"></div><div class="f2"><div class="fld"><label>'+pwL("Progress rating","Nivel de progreso")+'</label><select data-gk="rating"><option value="">—</option>'+Object.keys(P.RATE).map(k=>opt(k,t2(P.RATE[k],esR[k]),k===r.rating)).join("")+'</select></div><label class="fld" style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" data-gk="chart"'+(r.chart?' checked':'')+' style="min-height:0;width:22px;height:22px"> <span>'+pwL("Put its chart in the document","Poner su gráfica en el documento")+'</span></label></div>'+(r.ref?'<p class="s" style="margin:0 0 8px">'+esc(r.ref)+'</p>':'')+'<button class="btn" type="button" data-gdel="'+i+'" style="min-height:36px">'+pwL("Remove","Quitar")+'</button></section>').join(""):'<p class="s">'+pwL("No goals for this student yet. Add them in Brick by brick, or add a row here.","Aún no hay metas para este estudiante. Agrégalas en Ladrillo a ladrillo, o agrega una fila aquí.")+'</p>'); }
   if(sec==="str") return pwTa("a_strengths","Student strengths","Fortalezas del estudiante",d)+pwTa("a_parent","What the family has shared","Lo que la familia ha compartido",d)+pwTa("a_health","Health information","Información de salud",d);
-  if(sec==="pl") return pwSubj("ela","Reading and writing","Lectura y escritura",d)+pwSubj("math","Math","Matemáticas",d)+(d.type==="initial"?pwTa("d_el","EL services (most recent ACCESS scores)","Servicios EL (puntajes ACCESS recientes)",d):"")+pwTa("d_other","Other areas the team looked at","Otras áreas que revisó el equipo",d);
+  if(sec==="pl") return pwSubj("ela","Reading and writing","Lectura y escritura",d)+pwSubj("math","Math","Matemáticas",d)+pwTa("d_selfview","How they see their own learning (from slips)","Cómo ven su propio aprendizaje (de los boletos)",d)+(d.type==="initial"?pwTa("d_el","EL services (most recent ACCESS scores)","Servicios EL (puntajes ACCESS recientes)",d):"")+pwTa("d_other","Other areas the team looked at","Otras áreas que revisó el equipo",d);
   if(sec==="cls"){ const esF={period:"Cada período",daily:"Diario",weekly:"Semanal",occasional:"Ocasional"};
     return pwRate("e_particip","Participation and engagement","Participación y compromiso",d)+pwRate("e_org","Organization and finishing work","Organización y terminar el trabajo",d)+pwRate("e_hw","Homework","Tareas",d)
     +'<p class="sub">'+pwL("Report card","Boleta de calificaciones")+'</p><div class="f2">'+pwIn("e_report_date","Grades date","Fecha de calificaciones",d,"date")+pwTa("e_report_txt","Summary","Resumen",d)+'</div>'
     +pwRate("e_routines","Following classroom routines","Seguir las rutinas del aula",d)+pwRate("e_peers","Getting along with classmates","Relación con compañeros",d)
     +'<p class="sub">'+pwL("Adult support","Apoyo adulto")+'</p><div class="f2">'+pwSel("e_adult_freq","How often","Con qué frecuencia",d,Object.keys(P.FREQ).map(k=>[k,t2(P.FREQ[k],esF[k])]))+pwTa("e_adult_t","What kind","De qué tipo",d)+'</div>'
-    +pwTa("e_supports","Supports that are working","Apoyos que funcionan",d)+(d.type==="annual"?pwTa("e_adultlevel","Level of adult support needed","Nivel de apoyo adulto necesario",d):""); }
+    +pwTa("e_supports","Supports that are working","Apoyos que funcionan",d)+pwTa("e_sel","Social-emotional (check-ins, slips, self-reflection)","Socioemocional (registros, boletos, autorreflexión)",d)+pwTa("e_indep","Independence and speaking up for themselves","Independencia y pedir lo que necesitan",d)+(d.type==="annual"?pwTa("e_adultlevel","Level of adult support needed","Nivel de apoyo adulto necesario",d):""); }
   if(sec==="data") return pwTa("f_data","Data collected","Datos recopilados",d,[d.type==="initial"?"Evaluation results and what they show.":"New data only, not what was already on file.",d.type==="initial"?"Resultados de la evaluación y qué muestran.":"Solo datos nuevos, no lo que ya estaba archivado."]);
   if(sec==="adverse"||sec==="impact"){ const esI={imp_academic:"Desempeño académico",imp_social:"Estado social/emocional",imp_indep:"Funcionamiento independiente",imp_voc:"Vocacional",imp_motor:"Motor",imp_speech:"Habla/lenguaje"};
     return (sec==="impact"?pwTa("g_impact","How the disability affects school","Cómo la discapacidad afecta la escuela",d):"")+'<p class="sub">'+pwL("Areas affected","Áreas afectadas")+'</p>'+P.IMPACT.map(pr=>pwChk(pr[0],pr[1],esI[pr[0]]||pr[1],d)).join(""); }
@@ -764,10 +798,11 @@ function pwSection(d,sec){
       +'<div class="fld"><label>'+pwL("Present level for this goal","Nivel actual para esta meta")+'</label><textarea data-gm="presentLevelForGoal" maxlength="2000">'+esc(m.presentLevelForGoal)+'</textarea></div>'
       +'<p class="sub">'+pwL("Who carries it out","Quién la lleva a cabo")+'</p>'+P.IMPL.map(t=>'<label style="display:flex;gap:10px;align-items:center;min-height:40px"><input type="checkbox" data-gmi="'+esc(t)+'"'+(m.implementors.indexOf(t)>=0?' checked':'')+' style="min-height:0;width:22px;height:22px"> <span>'+esc(t)+'</span></label>').join("")
       +'<div class="f2" style="margin-top:10px"><div class="fld"><label>'+pwL("Evaluated by","Evaluado por")+'</label><input type="text" data-gm="evaluatedBy" value="'+esc(m.evaluatedBy)+'" maxlength="80"></div><label class="fld" style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" data-gm="includeChart"'+(m.includeChart?' checked':'')+' style="min-height:0;width:22px;height:22px"> <span>'+pwL("Put its chart in the document","Poner su gráfica en el documento")+'</span></label></div></section>'; }).join(""); }
-  if(sec==="doc"){ const ctx={goals:I.goals,data:I.data,goalMeta:st.goalMeta,formId:(d.fields||{}).formProfile||"isbe"}, secs=P.sectionTexts(d,ctx);
+  if(sec==="doc"){ const ctx={goals:I.goals,data:I.data,goalMeta:st.goalMeta,formId:(d.fields||{}).formProfile||"isbe"}, secs=pwSecs(d,ctx), ech=pwEngCharts(d).filter(c=>!pwChartHid(d.student)[c.id]), used={};
+    const chFor=id=>ech.filter(c=>PW_CHSEC[c.sec]===id&&(used[c.id]=1)).map(pwChartHtml).join("");
     const charts=(d.type==="goalpages"?P.activeGoals({goals:I.goals},d.student).filter(it=>P.goalMeta(st,it.gid).includeChart).map(it=>it.gid):(d.goalRows||[]).filter(r=>r.chart&&r.gid&&I.goals[r.gid]).map(r=>r.gid)).map(gid=>'<div class="chart"><p class="k" style="color:var(--goldInk)">'+esc(I.goals[gid].title||"")+'</p>'+P.chartSVG(I.goals[gid],I.data[gid]||[])+'</div>').join("");
-    return '<div class="row no-print" style="margin-bottom:14px"><button class="btn solid" type="button" id="pwPrint">🖨 '+pwL("Print / save PDF","Imprimir / guardar PDF")+'</button><button class="btn" type="button" id="pwCopy">'+pwL("Copy as text","Copiar como texto")+'</button><button class="btn" type="button" id="pwDown">⬇ '+pwL("Download .txt","Descargar .txt")+'</button></div><p class="s no-print">'+pwL("The document is always in English, in the official wording. Read it through before the meeting.","El documento siempre está en inglés, con la redacción oficial. Léelo antes de la reunión.")+'</p>'
-    +'<section class="card doc" id="pwDoc"><p class="k" style="color:var(--goldInk)">'+esc(P.TYPES[d.type]||"")+' — IEP Meeting Paperwork</p><p class="s"><b>Student:</b> '+esc(d.student)+((d.fields||{}).grade?' &nbsp; <b>Grade:</b> '+esc(d.fields.grade):'')+' &nbsp; <b>Date:</b> '+esc(d.date||"")+'</p>'+(secs.length?secs.map(x=>'<h3>'+esc(x.title)+'</h3><pre>'+esc(x.text)+'</pre>').join(""):'<p class="s">'+pwL("Nothing written yet. Fill a section and come back.","Aún no hay nada escrito. Llena una sección y vuelve.")+'</p>')+charts+'<p class="s" style="margin-top:16px">'+esc(P.footer())+'</p></section>'; }
+    return '<div class="row no-print" style="margin-bottom:14px"><button class="btn solid" type="button" id="pwPrint">🖨 '+pwL("Print / save PDF","Imprimir / guardar PDF")+'</button><button class="btn" type="button" id="pwCopy">'+pwL("Copy as text","Copiar como texto")+'</button><button class="btn" type="button" id="pwDown">⬇ '+pwL("Download .txt","Descargar .txt")+'</button></div><p class="s no-print">'+pwL("The document is always in English, in the official wording. Read it through before the meeting.","El documento siempre está en inglés, con la redacción oficial. Léelo antes de la reunión.")+'</p>'+(pwEngUsed(d)||ech.length?'<p class="s no-print engflag">'+pwL("Parts of this draft were written from classroom data. Check every line before the meeting.","Partes de este borrador se escribieron con los datos de clase. Revisa cada línea antes de la reunión.")+'</p>':'')
+    +'<section class="card doc" id="pwDoc"><p class="k" style="color:var(--goldInk)">'+esc(P.TYPES[d.type]||"")+' — IEP Meeting Paperwork</p><p class="s"><b>Student:</b> '+esc(d.student)+((d.fields||{}).grade?' &nbsp; <b>Grade:</b> '+esc(d.fields.grade):'')+' &nbsp; <b>Date:</b> '+esc(d.date||"")+'</p>'+(secs.length?secs.map(x=>'<h3>'+esc(x.title)+'</h3><pre>'+esc(x.text)+'</pre>'+chFor(x.id)).join("")+ech.filter(c=>!used[c.id]).map(pwChartHtml).join(""):'<p class="s">'+pwL("Nothing written yet. Fill a section and come back.","Aún no hay nada escrito. Llena una sección y vuelve.")+'</p>')+charts+'<p class="s" style="margin-top:16px">'+esc(P.footer())+'</p></section>'; }
   return "";
 }
 function papers(){
@@ -785,15 +820,15 @@ function papers(){
   }
   const secs=pwSections(d); let sec=get("aog.dash2.pwSec","purpose"); if(secs.indexOf(sec)<0) sec=secs[0];
   const i=secs.indexOf(sec);
-  return '<div class="hello"><div><h1>'+esc(d.student)+' · '+esc(PW_KIND[d.type][lang?1:0])+'</h1><p>'+pwL("Saved as you type. Pick a section, then read the document at the end.","Se guarda mientras escribes. Elige una sección y al final lee el documento.")+'</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="pwClose">‹ '+pwL("All drafts","Todos los borradores")+'</button><button class="btn danger" type="button" id="pwDelete">'+pwL("Delete draft","Eliminar borrador")+'</button></div></div>'
+  return '<div class="hello"><div><h1>'+esc(d.student)+' · '+esc(PW_KIND[d.type][lang?1:0])+'</h1><p>'+pwL("Saved as you type. Boxes fill themselves from classroom data until you edit them.","Se guarda mientras escribes. Las casillas se llenan con los datos de clase hasta que las editas.")+'</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="pwEngNow">⟳ '+pwL("Update now","Actualizar ahora")+'</button><button class="btn" type="button" id="pwClose">‹ '+pwL("All drafts","Todos los borradores")+'</button><button class="btn danger" type="button" id="pwDelete">'+pwL("Delete draft","Eliminar borrador")+'</button></div></div>'
    +'<div class="pw"><div class="fld no-print" style="max-width:420px"><label for="pwSec">'+pwL("Section","Sección")+'</label><select id="pwSec">'+secs.map(k=>opt(k,(pwFilled(d,k)||k==="doc"?"● ":"○ ")+PW_SEC[k][lang?1:0],k===sec)).join("")+'</select></div>'
-   +'<section class="card" id="pwRoot" data-doc-id="'+esc(d.id)+'"><p class="k" style="color:var(--goldInk)">'+PW_SEC[sec][lang?1:0]+' · '+(i+1)+' / '+secs.length+'</p>'+pwSection(d,sec)+'</section>'
+   +'<section class="card" id="pwRoot" data-doc-id="'+esc(d.id)+'"><p class="k" style="color:var(--goldInk)">'+PW_SEC[sec][lang?1:0]+' · '+(i+1)+' / '+secs.length+'</p>'+pwSection(d,sec)+(sec!=="doc"?pwSecCharts(d,sec):"")+'</section>'
    +'<div class="row no-print" style="margin-top:14px">'+(i>0?'<button class="btn" type="button" data-pwgo="'+secs[i-1]+'">‹ '+PW_SEC[secs[i-1]][lang?1:0]+'</button>':'')+(i<secs.length-1?'<button class="btn solid" type="button" data-pwgo="'+secs[i+1]+'">'+PW_SEC[secs[i+1]][lang?1:0]+' ›</button>':'')+'</div></div>';
 }
 let pwTimer=null;
 function pwPersist(){
   pwTimer=null; const root=document.getElementById("pwRoot"); if(!root) return; const st=pwLoad(), d=st.docs[root.dataset.docId]; if(!d) return; d.fields=d.fields||{};
-  root.querySelectorAll("[data-k]").forEach(e=>{ d.fields[e.dataset.k]=e.type==="checkbox"?(e.checked?"1":""):e.value; });
+  const ek=pwEngKeys(d); root.querySelectorAll("[data-k]").forEach(e=>{ const k=e.dataset.k, v=e.type==="checkbox"?(e.checked?"1":""):e.value; if(ENG&&ek.indexOf(k)>=0){ ENG.noteEdit(d,k,v); if(!(d.own||{})[k]) return; } d.fields[k]=v; });
   const dt=root.querySelector("[data-doc=date]"); if(dt&&dt.value) d.date=dt.value;
   const srs=root.querySelectorAll("[data-sri]"); if(srs.length||root.querySelector("#pwSrAdd")){ d.fields.svcRows=[...srs].map(tr=>({area:tr.querySelector("[data-sr=area]").value,setting:tr.querySelector("[data-sr=setting]").value,min:tr.querySelector("[data-sr=min]").value})); }
   root.querySelectorAll("[data-gi]").forEach(c=>{ const r=(d.goalRows||[])[+c.dataset.gi]; if(!r) return; r.title=c.querySelector("[data-gk=title]").value; r.rating=c.querySelector("[data-gk=rating]").value; r.chart=c.querySelector("[data-gk=chart]").checked; });
@@ -812,12 +847,15 @@ function pwWire(){
   on("pwDelete",()=>{ if(!confirm(pwL("Delete this draft? This cannot be undone.","¿Eliminar este borrador? No se puede deshacer."))) return; const st=pwLoad(); delete st.docs[get("aog.dash2.pwDoc","")]; pwSave(st); put("aog.dash2.pwDoc",""); render(); });
   const sel=document.getElementById("pwSec"); if(sel) sel.addEventListener("change",()=>{ if(pwTimer){ clearTimeout(pwTimer); pwPersist(); } put("aog.dash2.pwSec",sel.value); render(); window.scrollTo(0,0); });
   document.querySelectorAll("[data-pwgo]").forEach(b=>b.onclick=()=>{ if(pwTimer){ clearTimeout(pwTimer); pwPersist(); } put("aog.dash2.pwSec",b.dataset.pwgo); render(); window.scrollTo(0,0); });
+  on("pwEngNow",()=>{ if(pwTimer){ clearTimeout(pwTimer); pwPersist(); } engRun(true); render(); });
+  document.querySelectorAll("[data-engback]").forEach(b=>b.onclick=()=>withDoc((st,d)=>{ ENG.restore(d,b.dataset.engback); }));
+  document.querySelectorAll("[data-chhide]").forEach(b=>b.onclick=()=>{ const st=pwLoad(), d=st.docs[get("aog.dash2.pwDoc","")]; if(!d) return; const all=get("aog.dash2.iepChartHide",{})||{}, k=fold(d.student), h=all[k]||(all[k]={}); if(h[b.dataset.chhide]) delete h[b.dataset.chhide]; else h[b.dataset.chhide]=1; put("aog.dash2.iepChartHide",all); render(); });
   on("pwSrAdd",()=>withDoc((st,d)=>{ d.fields.svcRows=(d.fields.svcRows||[]).concat([{area:"",setting:"",min:""}]); }));
   document.querySelectorAll("[data-srdel]").forEach(b=>b.onclick=()=>withDoc((st,d)=>{ (d.fields.svcRows||[]).splice(+b.dataset.srdel,1); }));
   on("pwGoalsRefresh",()=>withDoc((st,d)=>{ const old={}; (d.goalRows||[]).forEach(r=>{ if(r.gid) old[r.gid]=r; }); d.goalRows=pwAutoGoals(d.student).map(r=>old[r.gid]?Object.assign(r,{rating:old[r.gid].rating,chart:old[r.gid].chart}):r); }));
   on("pwGoalAdd",()=>withDoc((st,d)=>{ d.goalRows=(d.goalRows||[]).concat([{gid:"",title:"",rating:"",ref:"",chart:false,grp:"A"}]); }));
   document.querySelectorAll("[data-gdel]").forEach(b=>b.onclick=()=>withDoc((st,d)=>{ (d.goalRows||[]).splice(+b.dataset.gdel,1); }));
-  const text=()=>{ const st=pwLoad(), d=st.docs[get("aog.dash2.pwDoc","")], I=iep(); return d?P.plainText(d,{goals:I.goals,data:I.data,goalMeta:st.goalMeta,formId:(d.fields||{}).formProfile||"isbe"}):""; };
+  const text=()=>{ const st=pwLoad(), d=st.docs[get("aog.dash2.pwDoc","")], I=iep(); return d?pwPlain(d,{goals:I.goals,data:I.data,goalMeta:st.goalMeta,formId:(d.fields||{}).formProfile||"isbe"}):""; };
   on("pwCopy",async()=>{ try{ await navigator.clipboard.writeText(text()); document.getElementById("pwCopy").textContent="✓ "+pwL("Copied","Copiado"); }catch(e){} });
   on("pwDown",()=>{ const st=pwLoad(), d=st.docs[get("aog.dash2.pwDoc","")]; const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text()],{type:"text/plain"})); a.download="IEP-"+(d?d.student:"")+"-"+(d?d.type:"")+"-"+(d?d.date:"")+".txt"; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500); });
   on("pwPrint",()=>{ const doc=document.getElementById("pwDoc"); if(!doc) return; const w=window.open("","_blank"); if(!w){ window.print(); return; }
@@ -826,12 +864,66 @@ function pwWire(){
 }
 
 
+/* ══ AOG-IEP-ENGINE-V1 (2026-09-27) — THE IEP DRAFT BUILDS ITSELF ═══════════════════════════════════════
+   Jimmy: "the IEP draft should BUILD ITSELF AUTOMATICALLY as the student's data grows — a built-in engine,
+   not a button the teacher has to remember." aog-iep-fill.js writes the text; this part feeds it the rows
+   this device already holds for the student and keeps every draft current: on load, after a pull, when demo
+   data turns on or off, when another tab brings new rows. Quiet: no motion, no pop-ups. A box the teacher
+   has edited is theirs and is never changed again; new data for it waits behind a small "Show". Nothing
+   here leaves the device. The routing table (which slip question feeds which IEP area) is ROUTES in
+   aog-iep-fill.js. */
+const ENG=window.AOG_IEPFILL||null;
+const ENG_SRC=["aog.checkin.remote","aog.slips.mine","aog.practice.remote","aog.practice.mine","aog.reflect.remote","aogScreener.v2.results","aog.iep.v1","aog.thisisme.v1","aog.mtss.pm.v1"];
+const PW_CHSEC={pl:"pl",cls:"func",goals:"goals",str:"strengths",impact:"adverse",data:"eval"};
+function engSig(){ return ENG_SRC.map(k=>{ try{ const v=localStorage.getItem(k)||""; return v.length+":"+v.slice(-60); }catch(e){ return ""; } }).join("|"); }
+function pwEngKeys(d){ return (ENG&&P&&d&&d.type!=="goalpages")?ENG.fieldsFor(pwSections(d)):[]; }
+function engVoice(k){ const st=get("aog.thisisme.v1",{})||{}, s=st.students||{}; const key=Object.keys(s).find(x=>fold(x)===k); if(key) return s[key];
+  const r=rows("aog.checkin.remote").filter(r=>String(r.checkinType||r.slipType||"")==="thisisme"&&fold(r.studentId)===k).sort((a,b)=>String(a.timestamp)<String(b.timestamp)?1:-1)[0];
+  if(!r) return null; let x={}; try{ x=typeof r.extra==="string"?JSON.parse(r.extra):(r.extra||{}); }catch(e){} return Array.isArray(x.lines)?{soma:x.soma||"",somaAt:r.timestamp||"",entries:x.lines.map(l=>({text:l.text,day:l.day||day(r),st:"kept"}))}:null; }
+function engInput(student,type,fields){
+  const k=fold(student), D=data(), s=findS(D,student)||{ci:[],pr:[]}, all=rows("aog.checkin.remote");
+  const adult=all.filter(r=>isAdultRow(r)&&fold(who(r))===k);
+  const seen={}, slips=[]; all.concat(rows("aog.slips.mine")).forEach(r=>{ const ty=String(r.checkinType||""); if(!/^slip-/.test(ty)||ty==="slip-home"||String(r.respondentRole||"")==="parent") return; if(fold(r.studentId||who(r))!==k) return; const key=ty+"|"+String(r.timestamp||day(r)); if(seen[key]) return; seen[key]=1; slips.push(r); });
+  const I=iep(), goals=Object.keys(I.goals).filter(id=>fold(I.goals[id].student)===k).map(id=>({id:id,g:I.goals[id],pts:I.data[id]||[]}));
+  const pa=pmAll(), pk=Object.keys(pa).find(x=>fold(x)===k);
+  return {student:student,type:type,fields:fields,pr:s.pr,ci:s.ci,slips:slips,adult:adult,reflect:mtssRows().filter(r=>fold(r.studentId)===k),goals:goals,voice:engVoice(k),pm:pk?pa[pk]:null};
+}
+let engTimer=null, engLastSig="", engCache={sig:"",m:{}};
+function engRun(force){ if(!ENG||!P) return false; const sig=engSig(), st=pwLoad(), today=todayISO(); let changed=false;
+  Object.values(st.docs).forEach(d=>{ if(!d||d.type==="goalpages") return; if(!force&&sig===engLastSig&&d.engV) return; const keys=pwEngKeys(d); if(ENG.apply(d,ENG.build(engInput(d.student,d.type,keys)).texts,keys,today)) changed=true; });
+  engLastSig=sig; if(changed) pwSave(st); return changed; }
+function engSchedule(force){ if(!ENG||VIEW!=="teacher") return; if(engTimer) clearTimeout(engTimer); engTimer=setTimeout(()=>{ engTimer=null;
+  if(!force&&engSig()===engLastSig&&!Object.values(pwLoad().docs).some(d=>d&&d.type!=="goalpages"&&!d.engV)) return;
+  if(pwTimer){ clearTimeout(pwTimer); pwPersist(); }
+  if(!engRun(force)||PAGE!=="papers") return;
+  /* someone is typing: change only the untouched boxes in place, never the one in their hands */
+  const root=document.getElementById("pwRoot"), a=document.activeElement;
+  if(root&&a&&root.contains(a)){ const d=pwLoad().docs[root.dataset.docId]; if(!d) return; root.querySelectorAll("textarea[data-k]").forEach(e=>{ const k=e.dataset.k; if(e!==a&&!(d.own||{})[k]&&d.fields[k]!=null) e.value=d.fields[k]; }); return; }
+  render(); },250); }
+window.addEventListener("storage",e=>{ if(!e.key||ENG_SRC.indexOf(e.key)>=0) engSchedule(false); });
+function pwEngBits(k,d){ if(!ENG||pwEngKeys(d).indexOf(k)<0) return {cls:"",html:""};
+  const own=(d.own||{})[k], e=(d.eng||{})[k]||{};
+  if(!own&&e.text) return {cls:" eng",html:'<p class="engnote">'+pwL("From classroom data · updated ","De los datos de clase · actualizado ")+nice(e.at)+'</p>'};
+  if(!own) return {cls:"",html:'<p class="engnote">'+pwL("No classroom data for this yet.","Aún no hay datos de clase para esto.")+'</p>'};
+  const back='<button type="button" class="linkbtn" data-engback="'+esc(k)+'">'+pwL("Let the engine write this again","Que el motor lo vuelva a escribir")+'</button>';
+  if(ENG.hasNews(d,k)) return {cls:"",html:'<details class="engnew"><summary>'+pwL("New classroom data since you edited this · Show","Hay datos de clase nuevos desde que lo editaste · Mostrar")+'</summary><textarea readonly aria-label="'+esc(pwL("What the classroom data says now","Lo que dicen ahora los datos de clase"))+'">'+esc(e.text)+'</textarea>'+back+'</details>'};
+  return {cls:"",html:e.text?back:""}; }
+function pwEngUsed(d){ return pwEngKeys(d).some(k=>{ const e=(d.eng||{})[k]; return e&&e.text&&!(d.own||{})[k]; }); }
+function pwEngCharts(d){ if(!ENG||!d||d.type==="goalpages") return []; const sig=engSig()+"|"+d.student+"|"+d.type; if(engCache.sig!==sig) engCache={sig:sig,m:ENG.build(engInput(d.student,d.type,pwEngKeys(d)))}; return engCache.m.charts||[]; }
+function pwChartHid(stu){ return (get("aog.dash2.iepChartHide",{})||{})[fold(stu)]||{}; }
+function pwChartSvg(c){ return lineSvg(c.pts.map(p=>({l:nice(p.d),v:p.v})),{min:c.min,max:c.max,c:"#2F63B8"}); }
+function pwChartHtml(c){ return '<div class="chart"><p class="k" style="color:var(--goldInk)">'+esc(c.caption)+'</p>'+pwChartSvg(c)+'</div>'; }
+function pwSecCharts(d,sec){ const cs=pwEngCharts(d).filter(c=>c.sec===sec); if(!cs.length) return ""; const h=pwChartHid(d.student);
+  return '<p class="sub">'+pwL("Charts from classroom data","Gráficas de los datos de clase")+'</p>'+cs.map(c=>'<div class="chart" style="margin:0 0 16px"><p class="cap">'+esc(c.caption)+'</p>'+(h[c.id]?'':pwChartSvg(c))+'<button type="button" class="linkbtn" data-chhide="'+esc(c.id)+'">'+(h[c.id]?pwL("Show it in the document","Mostrarla en el documento"):pwL("Hide it from the document","Quitarla del documento"))+'</button></div>').join(""); }
+function pwSecs(d,ctx){ const secs=P.sectionTexts(d,ctx); return ENG?ENG.augment(secs,d):secs; }
+function pwPlain(d,ctx){ const head=P.plainText(d,ctx).split("\n").slice(0,2), T=head.slice(); pwSecs(d,ctx).forEach(sc=>{ T.push(""); T.push(sc.title); T.push(sc.text); }); T.push(""); T.push(P.footer()); return T.join("\n"); }
+
 /* ══ AOG-DASH-DEMO-V1 (2026-09-26) — Jimmy: "There needs to be a button on the left to turn on and off demo
    data." One button in the sidebar. On: everything real on this device is put aside (aog.dash2.demoStash)
    and a made-up class fills the stores every page reads — check-ins, adult observations, practice and
    Daily Drafts sends, self-reflections, IEP goals. Off: the real data comes back exactly as it was.
    The Sheet connection is never touched. Names are made up; dates are the last six school weeks. */
-const DEMO_KEYS=["aog.checkin.remote","aog.practice.remote","aog.reflect.remote","aogScreener.v2.results","aog.iep.v1","aog.iepdocs.v1","aog.dash2.pulledAt","aog.mtss.pm.v1","aog.mtss.meta"];
+const DEMO_KEYS=["aog.thisisme.v1","aog.checkin.remote","aog.practice.remote","aog.reflect.remote","aogScreener.v2.results","aog.iep.v1","aog.iepdocs.v1","aog.dash2.pulledAt","aog.mtss.pm.v1","aog.mtss.meta"];
 function demoOn(){ return raw("aog.dash2.demo")==="1"; }
 function demoRand(seed){ let t=seed>>>0; return ()=>{ t+=0x6D2B79F5; let r=Math.imul(t^(t>>>15),1|t); r^=r+Math.imul(r^(r>>>7),61|r); return ((r^(r>>>14))>>>0)/4294967296; }; }
 function demoBuild(){
@@ -860,7 +952,30 @@ function demoBuild(){
   mk("demo-g1","Carmen L.","7","reading","Read a grade-level passage at 90 words correct per minute","wcpm","",52,90,[54,58,61,63,68,70]);
   mk("demo-g2","Farah S.","8","exec","Start independent work within 2 minutes of directions, 4 of 5 days","percent","%",40,80,[40,45,55,50,60,65]);
   mk("demo-g3","Isaiah B.","7","math","Solve two-step equations with 80% accuracy","percent","%",35,80,[38,42,50,55,58]);
-  return {ci,pr,rf,iep:{goals,data}};
+  /* AOG-IEP-ENGINE-V1 — the rest of what a real class sends, so the IEP engine has something to read: the
+     per-box results and support on each Daily Drafts sheet, the sentences adults ticked, a few slips, and
+     three students' My Voice lines. Its own random stream, so every number above stays as it was. */
+  const R2=demoRand(4242), pk2=a=>a[Math.floor(R2()*a.length)];
+  const STR={math:["Place value","Adding and subtracting","Multiplying","Dividing","Fractions","Decimals","Word problems","Measurement","Geometry","Data and graphs"],
+    ela:["Main idea","Vocabulary in context","Making inferences","Text evidence","Grammar","Spelling patterns","Figurative language","Text structure","Punctuation","Summarizing"],
+    science:["Scientific method","Matter","Energy","Forces","Living things","Ecosystems","Earth and space","Weather","Reading a graph","Vocabulary"]};
+  const skill={}; STU.forEach(([n])=>{ skill[n]={}; Object.keys(STR).forEach(sb=>{ skill[n][sb]=STR[sb].map(()=>R2()); }); });
+  pr.forEach(r=>{ let x={}; try{ x=JSON.parse(r.extra); }catch(e){} if(x.series!=="daily-drops") return;
+    const sk=skill[r.studentId][x.subject], order=sk.map((v,i)=>[v+R2()*0.8,i]).sort((a,b)=>b[0]-a[0]), got={}; order.slice(0,r.independent).forEach(o=>got[o[1]]=1);
+    r.byStrand=STR[x.subject].map((nm,i)=>nm+" "+(got[i]?1:0)+"/1").join("; ");
+    const miss=r.itemsTotal-r.independent; if(R2()<0.7){ r.supported=Math.round(miss*R2()*0.8); r.hintsUsed=Math.floor(R2()*3); x.checked=true; x.hints=r.hintsUsed; x.finalCorrect=r.independent+r.supported; r.extra=JSON.stringify(x); } });
+  const OBSK={engaged:["e_stayed","e_asked","e_own","e_joined"],regulated:["r_back","r_change","r_tool"],usedStrategy:["e_kept","r_fair"],connected:["c_worked","c_kind","c_built"]};
+  ci.forEach(r=>{ if(r.respondentRole!=="staff") return; const o=[]; Object.keys(OBSK).forEach(k=>{ if(r[k]) { o.push(pk2(OBSK[k])); if(R2()<0.35) o.push(pk2(OBSK[k])); } }); r.obs=[...new Set(o)]; r.obsSchema="v2"; });
+  const RD=["Not yet","A little","Getting there","Ready","Very ready"], GOT=["Not yet","A little","Mostly","Well","I could teach it"], WK=["Focused the whole time","Focused most of the time","On and off","It was hard to focus"];
+  const HLP=["A review sheet","One more example together","Studying with a partner","Quiet time to practice","Asking my teacher a question"], LH=["The examples","Working with a partner","The pictures","Asking a question","Quiet time","Moving around"];
+  const LEARN=["How to find the main idea","Dividing fractions by flipping the second one","That plants make their own food","How to use a number line for negatives","Why commas matter in a list"];
+  STU.forEach(([name,mean,grade],si)=>{ days.forEach((d,di)=>{
+    if(di%7===3&&R2()<0.8){ const v=Math.max(1,Math.min(5,Math.round(mean+(R2()-0.5)*2))); ci.push({timestamp:iso(d)+"T09:40:00.000Z",date:iso(d),checkinType:"slip-test",slipType:"test",studentId:name,respondentId:name,respondentRole:"student",source:"link",extra:JSON.stringify({series:"slip",slip:"test",v:1,lang:"en",answers:{ready:RD[v-1],help:pk2(HLP)+(R2()<0.4?"; "+pk2(HLP):"")},scale:{ready:v}})}); }
+    if(di%3===1&&R2()<0.7){ const v=Math.max(1,Math.min(5,Math.round(mean+(R2()-0.4)*2))), a={got:GOT[v-1],work:WK[Math.max(0,Math.min(3,4-v))],help:pk2(LH)}; if(R2()<0.3) a.learned=pk2(LEARN); ci.push({timestamp:iso(d)+"T14:50:00.000Z",date:iso(d),checkinType:"slip-endclass",slipType:"endclass",studentId:name,respondentId:name,respondentRole:"student",source:"link",extra:JSON.stringify({series:"slip",slip:"endclass",v:1,lang:"en",answers:a,scale:{got:v}})}); }
+  }); });
+  const voice={students:{}}, VL={"Carmen L.":["I like stories where the hero figures it out alone.","Reading out loud is easier when I can practice the page first.","I am good at drawing maps of what I read."],"Farah S.":["I work best when I know what comes next.","Headphones help me start.","I want to be a vet."],"Isaiah B.":["I am good at building things and fixing them.","Math makes sense when I can see it on paper.","I help my little brother with homework."]};
+  Object.keys(VL).forEach((n,i)=>{ const dd=iso(days[10+i*4]); voice.students[n]={soma:"",somaAt:"",no:{},sentTs:dd+"T12:00:00.000Z",sentFrom:"link",fam:"",entries:VL[n].map((t,j)=>({id:"demo_"+i+"_"+j,ts:dd,day:dd,sy:"",sec:"",pillar:"",text:t,st:"kept",src:{kind:"sent"}})).concat([{id:"demo_p"+i,ts:dd,day:dd,text:"(kept private)",st:"private"}])}; });
+  return {ci,pr,rf,iep:{goals,data},voice};
 }
 function demoToggle(){
   if(demoOn()){
@@ -868,7 +983,7 @@ function demoToggle(){
     try{ localStorage.removeItem("aog.dash2.demoStash"); localStorage.removeItem("aog.dash2.demo"); }catch(e){}
   } else {
     const st={}; DEMO_KEYS.forEach(k=>{ try{ st[k]=localStorage.getItem(k); }catch(e){ st[k]=null; } }); put("aog.dash2.demoStash",st);
-    const D=demoBuild(); put("aog.checkin.remote",D.ci); put("aog.practice.remote",D.pr); put("aog.reflect.remote",D.rf); put("aog.iep.v1",D.iep);
+    const D=demoBuild(); put("aog.checkin.remote",D.ci); put("aog.practice.remote",D.pr); put("aog.reflect.remote",D.rf); put("aog.iep.v1",D.iep); put("aog.thisisme.v1",D.voice);
     ["aogScreener.v2.results","aog.iepdocs.v1","aog.mtss.pm.v1","aog.mtss.meta","aog.dash2.pulledAt"].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
     try{ localStorage.setItem("aog.dash2.demo","1"); }catch(e){}
   }
@@ -997,7 +1112,12 @@ function earlierHandouts(cur){ const all=get("aog.dash2.handedAll",[]), seen={};
   all.forEach(h=>{ (h.items||[]).forEach(it=>{ const k=JSON.stringify(it); if(seen[k]) return; seen[k]=1; rows.push({it,at:h.at}); }); });
   if(!rows.length) return "";
   return '<details class="card" style="margin-top:16px"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700">'+t2("Earlier handouts","Repartos anteriores")+' ('+rows.length+')</summary><div class="work" style="margin-top:12px">'+rows.map(r=>'<a class="go" style="--ac:'+itemColor(r.it)+'" href="'+esc(studentHref(r.it))+'"><span class="ic">'+itemIcon(r.it)+'</span><span><b>'+esc(itemLabel(r.it,lang))+'</b><span>'+new Date(r.at||Date.now()).toLocaleDateString()+'</span></span><span class="arr">›</span></a>').join("")+'</div></details>'; }
+/* AOG-STU-FRESH-NAME (2026-09-27) — Jimmy: "I don't want it to save the last person every time." On a shared
+   device the Student page opens with an empty name and nothing picked; the name still carries through this
+   one visit (into the work the student opens), and is cleared again the next time the page is opened. */
+let __stuFresh=false;
 function student(){
+  if(!__stuFresh){ __stuFresh=true; put(K.stu,""); }
   const lang=L(), h=get("aog.dash2.handed",null), items=(h&&h.items)||(QS.get("view")==="student"?[]:get(K.tray,[])), nm=get(K.stu,"");
   const ic={dd:"dd",unit:"as",prac:"as",slip:"sl"}, ac={dd:"var(--c1)",unit:"var(--c3)",prac:"var(--c3)",slip:"var(--c5)"};
   return '<div class="stu"><div class="hello"><div><h1>'+T("sw")+'</h1><p>'+T("swS")+'</p></div></div>'
@@ -1032,6 +1152,7 @@ function render(){
   nav(); const app=document.getElementById("app");
   app.innerHTML = VIEW==="student"? student() : VIEW==="family"? family() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : PAGE==="trends"? trends() : PAGE==="brick"? brick() : PAGE==="reports"? reports() : PAGE==="mtss"? mtss() : PAGE==="papers"? papers() : PAGE==="inbox"? inbox() : PAGE==="blueprint"? blueprint() : soon();
   wire();
+  engSchedule(false);
 }
 function asGet(){ return Object.assign({k:"unit",p:"mth",f:"mth-u1.html",i:"m1"},get(K.as,{})); }
 function saveDD(){ put(K.dd,{s:val("ddS"),g:val("ddG"),n:+val("ddN")}); }
@@ -1102,5 +1223,7 @@ render();
 </script>
 <script src="/aog-grace.js" defer></script>
 <script>/* AOG-NO-BOX-SCROLL labels */(function(){function L(){document.querySelectorAll("table.tbl").forEach(function(t){var h=[].map.call(t.querySelectorAll("thead th"),function(x){return x.textContent.trim()});if(!h.length)return;t.querySelectorAll("tbody tr").forEach(function(r){[].forEach.call(r.children,function(c,i){if(!c.hasAttribute("data-label"))c.setAttribute("data-label",h[i]||"")})})})}new MutationObserver(L).observe(document.body,{childList:true,subtree:true});L()})();</script>
+<script>/* AOG-LINK-DOOR-V1: tapping the address presses its own Copy button */
+document.addEventListener("click",function(e){var c=e.target.closest&&e.target.closest(".linkbox code");if(!c)return;var b=c.parentNode.querySelector("button");if(b)b.click();});</script>
 </body>
 </html>

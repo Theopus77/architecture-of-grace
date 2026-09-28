@@ -1335,6 +1335,21 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
   html body .boxes>.bw .box{background:url(/img/paper-crumple.webp) 0 0/620px #FFFDF8 !important;background-blend-mode:multiply !important}
 }
 </style>
+<style id="aog-dd-clean">
+/* AOG-DD-CLEAN-V1 — long division: the bar and the bracket are ONE line, drawn along the top and the
+   left of the dividend itself, with a rounded corner like a hand-drawn ). No dashed spare line. */
+.divg{column-gap:0 !important;row-gap:0 !important}
+.divg .bar{border-bottom:0 !important}
+.divg .bar::after{content:none !important}
+.divg .dvc{border-top:2.5px solid var(--ink,#111827) !important;border-bottom:0 !important;padding-top:6px}
+.divg .dvc.spare{border-bottom:0 !important;background:none !important}
+.divg .dvc.spare::before,.divg .dvc.spare::after{content:none !important}
+.divg .brk{border-left:2.5px solid var(--ink,#111827) !important;border-top-left-radius:12px;padding-left:4px}
+.colp .pencilroom{display:block;justify-self:stretch !important;align-self:stretch;width:auto !important;min-width:0;background:linear-gradient(#111827,#111827) left bottom/100% 2px no-repeat !important}
+.divg .dvc{align-self:stretch !important;margin:0 !important;display:flex !important;align-items:flex-end;justify-content:center;min-height:38px}
+.divg .pencilroom{background:none !important}
+@media print{ .pencilroom{height:auto !important;min-height:40px} }
+</style>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -1931,13 +1946,12 @@ function colGrid(b,top,op,bot,ans,unit){
   var h='<span class="colp" data-i="'+i+'" data-sel="" data-rtl="1" data-fw="'+fwc+'">'+
     '<span class="oplab">'+opWord(op)+'</span>'+
     '<span class="cg" style="grid-template-columns:'+cols+'">'+
-    carryRows()+ue0;
+    '';  /* AOG-DD-CLEAN-V1 (2026-09-27) — Jimmy: "Get rid of all that work area with the lines… just have the math set up like a normal multiplication or division problem… get rid of the THEN ADD, carry, regroup language." No carry/borrow/partial rows: the problem, the rule, the answer. The page around it is pencil room. */
   h+='<span class="pre">'+pre+'</span>'+digits(topd,false)+uc;
   /* the sign stands beside the line, not on it — a × sitting on the rule was read as a minus */
   h+='<span class="opx">'+op+'</span>'+digits(bo,true)+ucr;
-  for(var pi=0;pi<parts;pi++){var last=pi===parts-1;
-    h+='<span class="opx mstep'+(last?' ruled':'')+'">'+(last?t('then add','luego suma'):'')+'</span>'+blanks('rg wk','partial product',last)+ue}
-  if(parts>1) h+='<span class="rglab">carry</span>'+blanks('rg','carry for the addition',false)+ue;
+  /* a multi-digit multiplication keeps open room for its partial products, then a rule above the answer */
+  if(parts>1) h+='<span class="pencilroom" style="grid-column:1/-1;height:'+(parts*40)+'px;margin-left:var(--cw,34px);border-bottom:2px solid var(--ink,#111827)"></span>';
   h+='<span class="pre">'+pre+'</span>';
   /* ── AOG-DD-NOSPARE-V1 (2026-09-24) ─────────────────────────────────────────────
      Jimmy: "The boxes are really fucking with me. I could only imagine it will mess
@@ -1960,8 +1974,7 @@ function colGrid(b,top,op,bot,ans,unit){
     else h+='<input class="dg" data-c="'+i+'" data-k="'+(kk++)+'" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="answer digit">'}
   h+=uc;
   /* start in the ones place and work left */
-  h+='<span></span>';for(k=0;k<W-1;k++)h+='<span></span>';
-  h+='<span class="startlab">&#8593; start</span>'+ue;
+
   return h+'</span></span>'}
 function divGrid(b,dvr,dvd,ans){
   var d=String(dvd),q=String(ans),i=b.fields.length,k;
@@ -2036,45 +2049,13 @@ function divGrid(b,dvr,dvd,ans){
     h+=spec[k]==='.'?'<span class="bar dot bx"><i>.</i></span>':'<span class="bar"><input class="dg" data-c="'+i+'" data-k="'+(kk++)+
       '" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="quotient digit"></span>';}
   /* AOG-DD-WORKROOM-V1 — room to rename the dividend before the first subtraction */
-  h+='<span class="rglab">'+t('regroup','reagrupa')+'</span>'+regroup('regrouping');
   /* divisor ) dividend */
   h+='<span class="dv">'+dvr+'</span>';
   for(k=0;k<W;k++){var dch=(k<dlen?d.charAt(k):'');
-    h+='<span class="'+(spec[k]==='.'?'dot':'cell')+(k===0?' brk':'')+(k>=dlen?' spare':'')+'">'+
+    h+='<span class="'+(spec[k]==='.'?'dot':'cell')+' dvc'+(k===0?' brk':'')+(k>=dlen?' spare':'')+'">'+
        (spec[k]==='.'?(dch?'<i>'+dch+'</i>':''):dch)+'</span>';}
-  /* the work: multiply, subtract, bring down */
-  for(var p=0;p<passes;p++){
-    /* AOG-DD-MINUSBOX-V1 (2026-09-23) — Jimmy: "There should be an area to insert the
-       minus sign in the long division problems." There should: on paper the sign goes
-       to the LEFT of the number you are taking away, and naming the operation is part
-       of doing it — a student who never writes the minus is the one who ends up adding
-       the line instead of subtracting it. A small box now sits at the head of every
-       multiply row, which is the row that gets subtracted. It is not scored. */
-    /* ══ AOG-DD-REGROUP-V2 (2026-09-23) ═══════════════════════════════════════
-       Jimmy: "Do the regroup boxes in the long division make sense?" Half of them
-       did. The strip above the DIVIDEND is right — borrowing for the first
-       subtraction renames the dividend's digits, and they are written above it.
-       The strips inside the passes were not: they sat under the number being
-       taken away and above the subtraction rule, which is a place nobody writes
-       anything.
-
-       What a student actually renames, second subtraction onward, is the
-       DIFFERENCE they have just written — and the marks go above THAT. So the
-       rule moves: it now hangs under the multiply row, where a subtraction line
-       belongs, and the strip falls between the rule and the difference row, which
-       is exactly the gap a pencil squeezes into on paper. Each strip now serves
-       the subtraction on the line below it. ══════════════════════════════════ */
-    /* AOG-DD-MINUSBOX-V2 (2026-09-23) — Jimmy, having used it: the box was wrong.
-       In long division the operation is NEVER anything but subtraction, so an empty
-       box asks a student to type the same character ten times a sheet and offers a
-       choice that does not exist. The sign is printed now, on every multiply row,
-       hard against the digits it belongs to — the operation is still named on every
-       step, which was the point of asking for it, without the busywork. */
-    var xc=(p>=need)?' xpass':'';
-    h+='<span class="worklab'+xc+'">'+(p===0?t('work','trabajo'):'')+
-       '<span class="minus" aria-hidden="true">\u2212</span></span>'+blanks('multiply','mline',xc);
-    h+='<span class="rglab rgsm'+xc+'">'+t('regroup','reagrupa')+'</span>'+regroup('regrouping',xc);
-    h+='<span class="cell'+xc+'"></span>'+blanks('subtract and bring down','',xc)}
+  /* AOG-DD-CLEAN-V1 — no work rows: open pencil room under the problem */
+  h+='<span class="pencilroom" style="grid-column:1/-1;height:'+(need*56)+'px"></span>';
   return h+'</span></span>'}
 function divBox(b,dvr,dvd,ans){
   return '<span class="inl"><span style="font-weight:800">'+dvr+'</span>'+

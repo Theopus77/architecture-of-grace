@@ -222,6 +222,41 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   body.pone .ti.ponly{display:block}
   body.pone .stuh,body.pone header.page h1,body.pone .tag{display:none}
 }
+/* ══ AOG-INBOX-PAPERS-V1 (2026-09-28) — Jimmy: "I tried to print from the Inbox and once again it is giving
+   me a list. I don't see my work that I produced." The papers view: each item as the paper the student
+   handed in, one per printed page. The paper is always white with dark ink, in either theme. */
+.stk-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0 14px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.stk-bar b{font-family:var(--serif);font-size:1.15rem;color:var(--ink)}
+.stk-bar .pst{font-size:.9rem;color:var(--sub);flex:1 1 200px}
+.stk-bar button{min-height:40px;border-radius:10px;padding:8px 14px;font:700 .9rem var(--sans);cursor:pointer;border:2px solid var(--navy);background:var(--card);color:var(--navy)}
+.stk-bar button.go{background:var(--navy);color:#fff}
+:root[data-theme="dark"] .stk-bar button.go{color:#10151c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stk-bar button.go{color:#10151c}}
+.stk-bar button[disabled]{opacity:.55;cursor:default}
+body.stackon .wrap>*:not(#paperStack){display:none !important}
+.paper{--ink:#1d232c;--sub:#4a5260;--line:#d6d2c8;--card:#fff;--bg:#fff;--navy:#1B3A5F;--good:#1c7a3c;--u3:#A63A2B;
+  background:#fff;color:#1d232c;border:1px solid #d6d2c8;border-radius:10px;padding:18px 20px 20px;margin:0 0 18px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.paper .ph{display:flex;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;align-items:baseline;border-bottom:2px solid #1d232c;padding-bottom:8px;margin-bottom:12px}
+.paper .ph .nm{font:900 1.35rem var(--serif);color:#1d232c}
+.paper .ph .mt{font-size:.9rem;color:#3d4450}
+.paper .ph .mt b{color:#1d232c}
+.paper .pt{font:800 1.05rem var(--sans);margin:0 0 10px;color:#1d232c}
+.paper .honest{border:1.5px dashed #6b7280;border-radius:8px;padding:8px 12px;margin:0 0 12px;font-size:.92rem;color:#1d232c;background:#fff}
+.paper .pq{break-inside:avoid;page-break-inside:avoid;padding:8px 0;border-bottom:1px solid #e5e1d8}
+.paper .pq .q{font-weight:700;color:#1d232c}
+.paper .pq .a{margin-top:3px;color:#1d232c}
+.paper .pq .a .mk{display:inline-block;width:1.3em;font-weight:900}
+.paper .pq.ok .mk{color:#1c7a3c} .paper .pq.no .mk{color:#A63A2B}
+.paper .pq .key{color:#3d4450;font-size:.9rem;margin-top:2px}
+.paper .qa .ql{color:#4a5260} .paper .qa .av{color:#1d232c}
+.paper .ddsheet{display:block}
+.paper .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media print{
+  body.stackon{padding:0;background:#fff}
+  body.stackon .stk-bar,body.stackon .aogtop,body.stackon .aogtop-spacer,body.stackon #aogTopbar,body.stackon footer{display:none !important}
+  body.stackon .paper{border:0;border-radius:0;box-shadow:none;padding:0;margin:0;break-after:page;page-break-after:always}
+  body.stackon .paper:last-child{break-after:auto;page-break-after:auto}
+}
 .ddans{display:grid;gap:10px;margin:10px 0 8px}
 .ddbox .ql{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
 .ddbox ol{margin:4px 0 0;padding-left:1.4em;display:grid;gap:3px}
@@ -494,7 +529,8 @@ else document.documentElement.classList.add("aog-embed");</script>
     <span class="crumb">For the teacher &middot; every subject</span>
     <div class="tools">
       <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
-      <button type="button" onclick="window.print()">Print all shown</button>
+      <button type="button" id="printWorkBtn" title="Every paper shown, one to a page">Print the work shown</button>
+      <button type="button" onclick="window.print()">Print the list</button>
     </div>
   </div>
   <h1>The Inbox</h1>
@@ -1088,8 +1124,25 @@ else document.documentElement.classList.add("aog-embed");</script>
       var x=xparse(r), sid=String(r.checkinType||"").slice(5), a=x.answers||{};
       var sum=Object.keys(a).map(function(k){ return a[k]; }).filter(Boolean).join(" · ");
       return { kind:"slip", kindLab:SLIPNAME[sid]||"Slip", cls:"k-ci", subj:"", student:r.studentId||"", ts:r.timestamp||r.date||"",
-               title:(SLIPNAME[sid]||"Slip")+(x.goalTitle?" — "+x.goalTitle:"")+(x.unit?" — "+x.unit:""), sum:sum+(r.followUp?" · FOLLOW-UP":""), sheet:!!r.__sheet, raw:r };
+               title:(SLIPNAME[sid]||"Slip")+(x.goalTitle?" — "+x.goalTitle:"")+(x.unit?" — "+x.unit:""), sum:sum+(r.followUp?" · FOLLOW-UP":""), sheet:!!r.__sheet, raw:r,
+               detail:slipDetail, evidence:slipEvidence };
     });
+  }
+  /* AOG-INBOX-PAPERS-V1 — a slip had no reader of its own, so its card said "could not be read". It shows what was chosen and written. */
+  function slipDetail(it){
+    var r=it.raw, x=xparse(r), a=x.answers||{}, out="";
+    if(Array.isArray(a)) a.forEach(function(p){ if(p) out+=qa(p.q||"Answer", [p.a,p.more].filter(nz).join(" — ")); });
+    else Object.keys(a).forEach(function(k){ var v=a[k]; out+=qa(human(k), typeof v==="object"?JSON.stringify(v):v); });
+    var sc=x.scale||{}; Object.keys(sc).forEach(function(k){ out+=qa(human(k), String(sc[k])); });
+    if(nz(x.goalTitle)) out+=qa("Goal", x.goalTitle);
+    if(!out) out+=qa("Note", r.note);
+    if(!out) out='<div class="qa"><div class="av empty">This slip was sent with nothing written on it.</div></div>';
+    return out;
+  }
+  function slipEvidence(it){
+    var r=it.raw, x=xparse(r), a=x.answers||{}, L=[(r.date||"")+" — "+(r.studentId||"")+" — "+it.kindLab];
+    if(!Array.isArray(a)) Object.keys(a).forEach(function(k){ if(nz(a[k])) L.push(human(k)+" → "+a[k]); });
+    return L;
   }
   var READERS=[readTurnins, readCheckins, readSlips, readExit, readHomeCi, readReflect, readVoice];
   function allItems(){
@@ -1121,6 +1174,13 @@ else document.documentElement.classList.add("aog-embed");</script>
      tests | course), the way the MTSS page's academics rows do. A note at the top says so, with a way out. */
   var URL_STU="", URL_STU_RAW="", URL_WORK="";
   (function(){ try{ var q=new URLSearchParams(location.search); URL_STU_RAW=String(q.get("student")||"").replace(/\s+/g," ").trim(); URL_STU=URL_STU_RAW.toLowerCase(); URL_WORK=String(q.get("work")||"").trim(); if(URL_WORK) curK="turnin"; }catch(e){} })();
+  /* AOG-INBOX-DEEPLINK-V1 (2026-09-28) — the dashboard's student page links straight in: ?kind= picks the kind,
+     ?follow=1 keeps the items marked for follow-up, and ?open=<timestamp>&what=<activity or check-in type>
+     opens that one item's paper (see the end of this script). */
+  var URL_FOLLOW=false;
+  (function(){ try{ var q=new URLSearchParams(location.search), k=q.get("kind")||""; URL_FOLLOW=q.get("follow")==="1";
+    if(k && KINDS.some(function(x){ return x[0]===k; })) curK=k; if(URL_FOLLOW||q.get("open")) curK=k||"all"; }catch(e){} })();
+  function isFollow(it){ var r=it.raw||{}; return !!(r.followUp===true||r.followUp==="TRUE"||r.followUp==="true"||String(r.unsafeFlag)==="true"||r.unsafeFlag===true||String(r.trustedAdultFlag)==="true"||r.trustedAdultFlag===true||/yes|now|soon/i.test(String(r.tellAdult||""))); }
   function workMatch(it,w){ if(it.kind!=="turnin") return false; var x=xparse(it.raw||{}), id=String((it.raw||{}).activityId||"");
     if(w==="dd") return x.series==="daily-drops"; if(w==="course") return x.series==="course";
     if(w==="checks") return x.series==="course" && /-chk-/.test(id); if(w==="tests") return x.series==="course" && ((it.raw||{}).assessment==="unit-test" || /-t\d+$/.test(id)); return true; }
@@ -1446,6 +1506,155 @@ else document.documentElement.classList.add("aog-embed");</script>
     var u=worksheetLink(it,false); if(!u) return "";
     return '<a class="ws" href="'+esc(u)+'" target="_blank" rel="noopener">See the worksheet</a><a class="ws" href="'+esc(worksheetLink(it,true))+'" target="_blank" rel="noopener">Print the worksheet</a>';
   }
+  /* ══ AOG-INBOX-PAPERS-V1 (2026-09-28) — Jimmy: "I tried to print from the Inbox and once again it is giving
+     me a list. I don't see my work that I produced and was saved." Print now makes a stack of papers: each
+     item as the student did it, one to a page, with name, date, subject and score on top.
+       · Daily Drafts: the very sheet, rebuilt by daily-drops.html itself (same subject + grade + draft number
+         = same questions) in a hidden frame, with the student's answers laid in and marked by its own review
+         mode (?review=). Its finished markup and styles are copied into a sealed box (shadow DOM) here, so
+         the sheet looks the way it does there and the Inbox styles never touch it.
+       · A sheet that sent a score only still gets its questions, with a plain line that the answers were
+         not sent. Nothing is invented.
+       · Unit worksheets and course reviews: each question, the student's answer, ✓ or ✗, and the key.
+       · Check-ins, slips, exit slips, reflections: the slip, with what they chose and wrote.
+     Nothing leaves the device: every paper is made from what is already saved here. ══ */
+  function ddInfo(it){
+    var r=it.raw||{}, x=xparse(r), m=/^dd-(.+)-g([^-]+(?:-\d+)?)-s(\d+)$/.exec(String(r.activityId||""));
+    var subj=x.subject||(m&&m[1])||"", grade=x.grade||(m&&m[2])||"", sheet=x.sheet||r.setNo||(m&&m[3])||"";
+    if(x.series!=="daily-drops" && !m) return null;
+    return {subj:String(subj), grade:String(grade), sheet:String(sheet), lang:x.lang==="es"?"es":"en", writing:(x.kind==="writing"||subj==="write")};
+  }
+  function scoreLine(it){
+    var r=it.raw||{}, x=xparse(r), L=[];
+    if(it.kind!=="turnin") return it.sum||"";
+    if(nz(r.itemsTotal)&&nz(r.independent)) L.push(r.independent+" of "+r.itemsTotal+" right on the first try");
+    if(nz(x.finalCorrect)&&nz(x.total)&&String(x.finalCorrect)!==String(r.independent)) L.push(x.finalCorrect+" of "+x.total+" at the end");
+    else if(!L.length&&nz(x.correct)&&nz(x.total)) L.push(x.correct+" of "+x.total+" right");
+    if(nz(r.hintsUsed)&&String(r.hintsUsed)!=="0") L.push(r.hintsUsed+" hints");
+    return L.join(" · ");
+  }
+  var DD_FRAME=null, DD_CSS=null, DD_Q=Promise.resolve();
+  function ddCss(doc){
+    var t=[];
+    Array.prototype.forEach.call(doc.styleSheets,function(s){ try{ Array.prototype.forEach.call(s.cssRules,function(r){ t.push(r.cssText); }); }catch(e){} });
+    var BODY=/(^|[\s,>}(~+])(body|html)(?=[\s.#:\[,{>~+)]|$)/g;
+    return t.join("\n").replace(/:root/g,":host").replace(BODY,function(a,p,w){ return p+(w==="body"?".ddb":".ddh"); })
+      +"\n.ddh,.ddb{visibility:visible !important;animation:none !important;background:#fff !important;color:#1d232c}"
+      +"\n.ddb{margin:0;padding:0;min-height:0;font-size:16px}"
+      +"\n.ddb .rvbanner{background:#fff;color:#1d232c;border-color:#1d232c}"
+      +"\n.ddb canvas,.ddb .aog-printbrand,.ddb .aog-printwm{display:none !important}";
+  }
+  /* One frame, one sheet at a time, in order. Daily Drafts keeps its last subject and grade on this device;
+     those few keys are put back after each load, so opening papers here never changes the student's page. */
+  function ddLoad(url, reviewed){
+    var job=DD_Q.then(function(){ return new Promise(function(done){
+      var keep={}; try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(/^aog\.drops\./.test(k)) keep[k]=localStorage.getItem(k); } }catch(e){}
+      function restore(){ try{ var gone=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(/^aog\.drops\./.test(k)&&!(k in keep)) gone.push(k); } gone.forEach(function(k){ localStorage.removeItem(k); }); Object.keys(keep).forEach(function(k){ localStorage.setItem(k,keep[k]); }); }catch(e){} }
+      if(!DD_FRAME){ DD_FRAME=document.createElement("iframe"); DD_FRAME.setAttribute("aria-hidden","true"); DD_FRAME.tabIndex=-1;
+        DD_FRAME.style.cssText="position:absolute;left:-10000px;top:0;width:820px;height:1200px;border:0;visibility:hidden"; document.body.appendChild(DD_FRAME); }
+      var t0=Date.now(), fin=false;
+      function finish(v){ if(fin) return; fin=true; restore(); done(v); }
+      function poll(){
+        var d=null; try{ d=DD_FRAME.contentDocument; }catch(e){}
+        var sh=d&&d.getElementById("sheet"), ready=sh&&sh.querySelector(".box")&&(!reviewed||d.querySelector(".rvbanner"));
+        if(ready){
+          try{
+            Array.prototype.forEach.call(d.querySelectorAll("#sheet input"),function(i){ if(i.type==="checkbox"||i.type==="radio"){ if(i.checked) i.setAttribute("checked",""); } else i.setAttribute("value",i.value); });
+            Array.prototype.forEach.call(d.querySelectorAll("#sheet textarea"),function(a){ a.textContent=a.value; });
+            if(!DD_CSS) DD_CSS=ddCss(d);
+            var bn=d.querySelector(".rvbanner");
+            finish({ html:(bn?bn.outerHTML:"")+sh.outerHTML, bodyCls:d.body.className, htmlCls:d.documentElement.className });
+          }catch(e){ finish(null); }
+          return;
+        }
+        if(Date.now()-t0>9000){ finish(null); return; }
+        setTimeout(poll,120);
+      }
+      DD_FRAME.onload=function(){ setTimeout(poll,60); };
+      DD_FRAME.src=url+(url.indexOf("?")<0?"?":"&")+"embed=1&_p="+(Date.now()%100000);
+      setTimeout(poll,400);
+    }); });
+    DD_Q=job.catch(function(){});
+    return job;
+  }
+  function ddSheetUrl(it, info){
+    var u=worksheetLink(it,false);
+    if(u) return {url:u, reviewed:true};
+    return {url:"/daily-drops.html?subject="+encodeURIComponent(info.subj)+"&grade="+encodeURIComponent(info.grade)+"&sheet="+encodeURIComponent(info.sheet)+(info.lang==="es"?"&lang=es":""), reviewed:false};
+  }
+  function qList(ans){
+    var h="";
+    ans.forEach(function(p,i){
+      if(!p) return;
+      var one=Array.isArray(p.a)?(p.a[0]||{}):{g:p.a, ok:p.ok, c:p.key};
+      var open=!("ok" in one)||one.ok==null, g=nz(one.g)?String(one.g):"(left blank)";
+      h+='<div class="pq '+(open?"op":(one.ok?"ok":"no"))+'"><div class="q">'+(i+1)+". "+esc(p.q||p.s||"Question")+'</div>'
+        +'<div class="a"><span class="mk" aria-hidden="true">'+(open?"✎":(one.ok?"✓":"✗"))+'</span>'+esc(g)+(open?"":(one.ok?' <span class="sr">(right)</span>':' <span class="sr">(missed)</span>'))+'</div>'
+        +(!open&&!one.ok&&nz(one.c)?'<div class="key">Answer: '+esc(one.c)+'</div>':"")+'</div>';
+    });
+    return h;
+  }
+  function paperHead(it){
+    var sc=scoreLine(it);
+    return '<div class="ph"><span class="nm">'+esc(it.student||"(no name)")+'</span>'
+      +'<span class="mt"><b>'+esc(when(it.ts))+'</b> · '+esc(it.subj||it.kindLab||"")+(sc?' · '+(it.kind==="turnin"?"Score: ":"")+'<b>'+esc(sc)+'</b>':"")+'</span></div>'
+      +'<div class="pt">'+esc(it.title||"")+'</div>';
+  }
+  function makePaper(it){
+    var p=document.createElement("section"); p.className="paper";
+    var r=it.raw||{}, x=xparse(r), info=(it.kind==="turnin")?ddInfo(it):null;
+    var hasAns=Array.isArray(x.answers)&&x.answers.length;
+    p.innerHTML=paperHead(it);
+    function add(h){ var d=document.createElement("div"); d.innerHTML=h; p.appendChild(d); }
+    if(info && !info.writing && info.subj && info.grade && info.sheet){
+      var src=ddSheetUrl(it, info);
+      if(!hasAns) add('<p class="honest">This sheet sent a score, not the written answers. The questions are below, without the student’s answers.</p>');
+      var host=document.createElement("div"); host.className="ddsheet"; host.setAttribute("data-theme","light"); p.appendChild(host);
+      return ddLoad(src.url, src.reviewed).then(function(res){
+        if(!res || !host.attachShadow){
+          host.innerHTML=hasAns?ddAnswers(x):'<p class="honest">The sheet could not be rebuilt here. Open it from Daily Drafts: '+esc(info.subj)+', grade '+esc(info.grade)+', draft '+esc(info.sheet)+'.</p>';
+          return p;
+        }
+        var root=host.attachShadow({mode:"open"});
+        root.innerHTML='<style>'+DD_CSS+'</style><div class="ddh '+esc(res.htmlCls)+'"><div class="ddb '+esc(res.bodyCls)+(src.reviewed?" review":"")+'">'+res.html+'</div></div>';
+        /* the sheet's own date line shows today; the paper shows the day it was done */
+        var dv=root.querySelector(".dval"), dd=new Date(it.ts); if(dv && !isNaN(dd)) dv.textContent=dd.toLocaleDateString();
+        return p;
+      });
+    }
+    if(it.kind==="turnin" && hasAns && x.answers.some(function(a){ return a && nz(a.q); })){
+      add(qList(x.answers));
+    } else {
+      var body=""; try{ body=(it.detail?it.detail(it):"")||""; }catch(e){ body=""; }
+      if(it.kind==="turnin" && /Counts only/.test(body)) body='<p class="honest">This activity sent a score, not the written answers. The score is above.</p>'+(nz(r.note)?qa("Note", r.note):"");
+      add(body||'<p class="honest">Nothing was written on this one.</p>');
+    }
+    return Promise.resolve(p);
+  }
+  var STACK_ON=false;
+  function closeStack(){ STACK_ON=false; document.body.classList.remove("stackon"); var s=document.getElementById("paperStack"); if(s) s.remove(); }
+  function openStack(items, label){
+    closeStack(); STACK_ON=true;
+    var s=document.createElement("div"); s.id="paperStack";
+    var n=items.length;
+    s.innerHTML='<div class="stk-bar no-print"><b>'+esc(label||(n===1?"The work":n+" papers"))+'</b>'
+      +'<span class="pst" aria-live="polite">Getting '+(n===1?"the paper":"the papers")+' ready…</span>'
+      +'<button type="button" class="go" data-s="print" disabled>'+(n===1?"Print this paper":"Print these "+n+" papers")+'</button>'
+      +'<button type="button" data-s="back">Back to the Inbox</button></div><div class="papers"></div>';
+    document.querySelector(".wrap").insertBefore(s, document.getElementById("inbox"));
+    document.body.classList.add("stackon");
+    var box=s.querySelector(".papers"), st=s.querySelector(".pst"), pb=s.querySelector('[data-s="print"]');
+    s.querySelector('[data-s="back"]').addEventListener("click",function(){ closeStack(); try{ window.scrollTo(0,0); }catch(e){} });
+    pb.addEventListener("click",function(){ window.print(); });
+    try{ window.scrollTo(0,0); }catch(e){}
+    var chain=Promise.resolve(), made=0;
+    items.forEach(function(it){
+      var slot=document.createElement("div"); box.appendChild(slot);
+      chain=chain.then(function(){ if(!STACK_ON) return; return makePaper(it).then(function(p){ slot.replaceWith(p); made++; st.textContent="Ready: "+made+" of "+n+"."; }); });
+    });
+    return chain.then(function(){ if(!STACK_ON) return; st.textContent=n===1?"Here is the paper, as the student did it.":"Here are the "+n+" papers, one to a page when printed."; pb.disabled=false; document.body.setAttribute("data-papers-ready","1"); });
+  }
+  var SHOWN=[];
   /* ═══════════ the card ═══════════ */
   function card(it){
     var d=document.createElement("details"); d.className="ti "+(it.cls||"");
@@ -1464,35 +1673,14 @@ else document.documentElement.classList.add("aog-embed");</script>
           var wb=/^wb/.test(String(it.raw.activityId||""));
           return '<a class="open" href="/'+esc(sp.page)+'">'+(wb?"Open the workbook":"Open the worksheet")+'</a>'
                + (sp.lesson?'<a class="open" href="/'+esc(sp.lesson)+'">Open the lesson</a>':""); })()
-      + '<button type="button" data-a="print">Print this one</button>'
+      + '<button type="button" data-a="print">See and print the work</button>'
       + '<button type="button" data-a="lay" class="iep-only lay" title="Adds this result to the student\'s IEP goal as evidence">Lay the brick down</button>'
       + '<button type="button" data-a="iep" class="iep-only" title="Copies this result as IEP evidence">Copy this brick</button>'
       + '<button type="button" class="del" data-a="del">Remove</button>'
       + '<span class="pst" aria-live="polite"></span></div></div>';
-    d.querySelector('[data-a="print"]').addEventListener("click",function(){
-      /* ══ AOG-INBOX-PRINTONE-V2 (2026-09-19) — WHY "PRINT THIS ONE" PRINTED
-         EVERYTHING. The single-item CSS went on, window.print() was called,
-         and a 300ms TIMER took the CSS back off again. On a desktop that is
-         survivable: window.print() blocks until the dialog closes, so the
-         timer only runs afterwards. ON AN IPAD IT DOES NOT BLOCK — the share
-         sheet opens asynchronously, print() returns at once, and 300ms later
-         the page is back to showing every item WHILE THE PREVIEW IS STILL
-         BEING BUILT. Jimmy printed one draft and got all twenty-two.
-         There is no timer now. The page stays in single-item mode until the
-         print is actually over, which we learn from whichever of these the
-         browser gives us — iOS Safari has historically fired none of the
-         print events, so `focus` (the user coming back to the page) is the
-         one that always lands. */
-      d.setAttribute("open",""); d.classList.add("ponly"); document.body.classList.add("pone");
-      var EV=["afterprint","focus","pointerdown","visibilitychange"], done=false;
-      function restore(){
-        if(done) return; done=true;
-        EV.forEach(function(e){ window.removeEventListener(e,restore,true); });
-        d.classList.remove("ponly"); document.body.classList.remove("pone");
-      }
-      EV.forEach(function(e){ window.addEventListener(e,restore,true); });
-      window.print();
-    });
+    /* AOG-INBOX-PAPERS-V1 — the button opens the paper itself (the sheet as the student did it), with a Print
+       button on it. The old "print this card" path printed the summary line, which is not the work. */
+    d.querySelector('[data-a="print"]').addEventListener("click",function(){ openStack([it], "The work"); });
     /* AOG-LAY-BRICK-V1 (2026-09-26) — Jimmy: "a button that says lay the brick
        down, which is YOU building the IEP from the bricks (data) we are sending."
        One press writes this result into the evidence notes of the student's IEP
@@ -1565,11 +1753,13 @@ else document.documentElement.classList.add("aog-embed");</script>
       if(sheetOnly && !it.sheet) return false;
       if(URL_STU && String(it.student||"").replace(/\s+/g," ").trim().toLowerCase()!==URL_STU) return false;
       if(URL_WORK && !workMatch(it,URL_WORK)) return false;
+      if(URL_FOLLOW && !isFollow(it)) return false;
       if(curK!=="all" && it.kind!==curK) return false;
       if(it.kind==="turnin" && curF!=="All" && !(curF==="SEL" ? /^SEL/.test(String(it.subj||"")) : it.subj===curF)) return false;
       return true;
     });
     all.sort(function(a,b){ return String(b.ts||"").localeCompare(String(a.ts||"")); });
+    SHOWN=all.slice();
     if(!all.length){ box.appendChild(SOLO?soloEmpty():emptyState()); return; }
     if(curView==="new"){ all.forEach(function(it){ box.appendChild(card(it)); }); return; }
     if(curView==="bp"){ blueprint(box, all); return; }
@@ -1584,6 +1774,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       var k=String(it.student||"—").replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim().toLowerCase();   /* AOG-DASH-ONEWHO-V2: a curly and a straight apostrophe are one name */
       (by[k]=by[k]||[]).push(it); shown[k]=it.student;
     });
+    SHOWN=[]; Object.keys(by).sort().forEach(function(k){ SHOWN=SHOWN.concat(by[k]); });
     Object.keys(by).sort().forEach(function(k){
       var list=by[k];
       var h=document.createElement("div"); h.className="stuh";
@@ -1959,6 +2150,24 @@ else document.documentElement.classList.add("aog-embed");</script>
   });
 
   vsync(); stampSt(); paint();
+  document.getElementById("printWorkBtn").addEventListener("click",function(){
+    if(!SHOWN.length){ window.print(); return; }
+    openStack(SHOWN.slice(), SHOWN.length===1?"The work":SHOWN.length+" papers");
+  });
+  /* AOG-INBOX-DEEPLINK-V1 — ?open=<timestamp>[&what=<activityId or checkinType>] opens that item's paper. The
+     Sheet can hand a time back a minute off from the device's copy, so the nearest one within three minutes wins. */
+  (function(){
+    var q=new URLSearchParams(location.search), op=q.get("open"); if(!op) return;
+    var what=String(q.get("what")||""), t=Date.parse(op), best=null, bd=Infinity;
+    SHOWN.forEach(function(it){
+      var r=it.raw||{}, id=String(r.activityId||r.checkinType||"");
+      if(what && id && id!==what) return;
+      var d=Math.abs(Date.parse(it.ts)-t); if(isNaN(d)) d=(String(it.ts)===op)?0:Infinity;
+      if(d<bd){ bd=d; best=it; }
+    });
+    if(best && bd<=3*60*1000) openStack([best], "The work");
+    else { var n=document.createElement("p"); n.className="pst no-print"; n.style.margin="0 0 12px"; n.textContent="That item is not on this device yet. Tap Refresh everything from your Sheet, then open it again."; var ib=document.getElementById("inbox"); ib.insertBefore(n, ib.firstChild); }
+  })();
 })();
 </script>
 <script>/* AOG-INBOX-EMBED-V1 — tell the dashboard how tall the page is, so its panel grows with it */
@@ -1966,5 +2175,24 @@ else document.documentElement.classList.add("aog-embed");</script>
   var last=0; function post(){ var h=document.documentElement.scrollHeight; if(Math.abs(h-last)>4){ last=h; try{ parent.postMessage({aogFrameH:h, src:location.search}, location.origin); }catch(e){} } }
   setInterval(post,600); window.addEventListener("load",post); })();</script>
 <script src="/aog-dropdowns.js?v=4920" defer></script>
+<script>/* AOG-INBOX-ONE-STUDENT (2026-09-27) — Jimmy: "Since this is personalized, it should be worded for an
+   individual, not a group." Opened for one student (?student= or ?blueprint=, e.g. from their Blueprint), the
+   page speaks about that student and drops the "By student" choice. */
+(function(){
+  var q=new URLSearchParams(location.search), who=(q.get("student")||q.get("blueprint")||"").replace(/\s+/g," ").trim();
+  if(!who) return;
+  function es(){ return (document.documentElement.lang||"").slice(0,2)==="es"; }
+  function paint(){
+    var h=document.querySelector("header h1"), tg=document.querySelector("header .tag"), vs=document.getElementById("viewStu");
+    if(h) h.textContent = es() ? ("Lo entregado por "+who) : (who+"\u2019s work");
+    if(tg) tg.textContent = es() ? ("Todo lo que "+who+" entreg\u00f3. Elige un tipo, una materia y c\u00f3mo verlo.")
+                                  : ("Everything "+who+" turned in. Pick a kind, a subject, and how to show it.");
+    if(vs) vs.hidden=true;
+    document.title = (es()?"Lo entregado por "+who:who+"\u2019s work")+" \u2014 Architecture of Grace";
+  }
+  function go(){ paint(); new MutationObserver(function(m){ if(m.some(function(r){return r.attributeName==="lang"}))paint(); }).observe(document.documentElement,{attributes:true}); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go();
+  setTimeout(paint,600);
+})();</script>
 </body>
 </html>
