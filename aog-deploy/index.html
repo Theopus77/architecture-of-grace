@@ -4710,6 +4710,130 @@ html[data-sr-paper]:root body .screen:is(#screen-survey,#screen-reflection,#scre
 })();
 </script>
 
+<style id="aog-sr-results-paper">
+/* AOG-SR-RESULTS-PAPER-V1 (2026-09-28) — Jimmy: "See your results" gets the same sketchbook facelift as the
+   self-reflection. Only while a student/child's own results show (html[data-sr-results], set below); adult and
+   workplace results keep their look. A navy masthead at the top, then paper cards with a pencil outline, striped
+   pencil numbers 1-3 for the three areas, hatched pencil bars in each area's colour. Scores, the colour band and
+   the Closed loop note move into a small "For adults" fold (nothing is removed). Styles and layout only: ids,
+   what is saved, sent and printed are untouched. Nothing moves on its own. */
+html[data-sr-results]:root body #screen-myresults#screen-myresults{--sp-page:#F7F2E6;--sp-card:#FBF8F0;--sp-ink:#1F2630;--sp-soft:#4A5260;--sp-line:#2A2622;--sp-ring:#7E5B18;--sp-sel:#F0E6CC;--sp-btn:#0A1E33;--sp-btnink:#F7F2E6;
+  background:var(--sp-page)!important;color:var(--sp-ink)!important;position:relative;z-index:1;min-height:100vh}
+html[data-theme="dark"][data-sr-results]:root body #screen-myresults#screen-myresults{--sp-page:#10161E;--sp-card:#1D232B;--sp-ink:#F3EEE2;--sp-soft:#CBC4B5;--sp-line:#CFC6B4;--sp-ring:#F2C964;--sp-sel:#2C3440;--sp-btn:#F2C964;--sp-btnink:#0A1E33}
+html[data-sr-results]:root body #screen-myresults#screen-myresults *{transition:none!important;animation:none!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults > .container{max-width:760px!important;padding-top:14px!important;background:transparent!important}
+/* flat paper underneath everything; the cards below get their paper back */
+html[data-sr-results]:root body #screen-myresults#screen-myresults *:not(svg):not(svg *):not(img):not(input):not(textarea):not(select):not(.hero):not(.hero *){background-color:transparent!important;background-image:none!important;box-shadow:none!important;text-shadow:none!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults *::before,html[data-sr-results]:root body #screen-myresults#screen-myresults *::after{box-shadow:none!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :not(.hero):not(.hero *):is(div,p,li,span,small,em,strong,b,i,h1,h2,h3,h4,h5,h6,label,summary,a,td,th,dt,dd,figcaption,blockquote,button,ol,ul){color:var(--sp-ink)!important;-webkit-text-fill-color:currentColor!important;opacity:1!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.small,.gc-res-v,.aog-lp-sub,.aog-srt-sub,.sj-p,.tool-card p,.aog-lp-card p,.srr-note){color:var(--sp-soft)!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :not(.hero *):is(a:not([class*=btn]):not(.gc-tool):not(.sj-btn),.home-cl-link){color:var(--sp-ring)!important;text-decoration:underline}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is([class*=eyebrow],.gc-next-step,.nw-head,.tools-row-header,.aog-lp-here,.home-reflection .label,.ages-panel-h,.home-detail-head){color:var(--sp-ring)!important;letter-spacing:.06em}
+/* the navy masthead, top only */
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero{position:relative;overflow:hidden;text-align:left!important;background:linear-gradient(180deg,#12314F,#0A1E33)!important;border-radius:18px!important;padding:26px 22px 24px!important;margin:0 0 16px!important;border:0!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero::before{content:"";position:absolute;inset:0 0 0 auto;width:62%;background:url(/img/banners/page-selfreflect-pencil-1600.webp) 78% 42%/cover no-repeat;opacity:.95}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0B2239 0%,rgba(11,34,57,.9) 42%,rgba(11,34,57,.3) 80%,rgba(11,34,57,.12) 100%)}
+@media (max-width:640px){html[data-sr-results]:root body #screen-myresults#screen-myresults .hero::before{width:100%;opacity:.3}html[data-sr-results]:root body #screen-myresults#screen-myresults .hero::after{background:rgba(11,34,57,.72)}}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero > *{position:relative;z-index:1;text-align:left!important;margin-left:0!important;max-width:560px}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero .eyebrow{color:#F2C964!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero h1{color:#F4EEE2!important;-webkit-text-fill-color:currentColor!important;font-size:clamp(30px,6.4vw,42px)!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero :is(p,p *,span,strong,details,summary){color:#E2E8EF!important;font-style:normal!important;opacity:1!important;font-size:17px!important;background:transparent!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .hero summary{border-color:rgba(242,201,100,.8)!important;color:#F4EEE2!important}
+/* paper cards with a pencil outline */
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.sj,#aogAgesPanel,.aog-gc,.home-header,.aog-srt,.aog-coll,.home-domain-section,.home-reflection,.aog-lp,.fw-note,.share-card,.srr-adults){
+  background:var(--sp-card)!important;background-image:radial-gradient(120% 80% at 10% 0%,rgba(42,38,34,.035),transparent 60%)!important;color:var(--sp-ink)!important;
+  border:1.5px solid var(--sp-line)!important;border-radius:12px 14px 11px 13px!important;box-shadow:1.5px 2px 0 -.5px rgba(42,38,34,.28)!important;margin-left:0!important;margin-right:0!important}
+/* cards inside cards: a lighter dashed pencil line */
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.tool-card,.gc-res,.aog-bridge,.now-what,.aog-lp-card,.home-domain-head,.home-cl,.gc-tool){background:var(--sp-card)!important;border:1.5px dashed var(--sp-line)!important;border-radius:11px!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .home-domain-head{border:0!important;background:transparent!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.sj,.aog-gc,.home-header,.aog-srt,.home-domain-section,.aog-lp,.fw-note,.share-card,.aog-coll,#aogAgesPanel,.tool-card,.aog-lp-card,.now-what,.gc-res)::before,
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.sj,.aog-gc,.home-header,.aog-srt,.home-domain-section,.aog-lp,.fw-note,.share-card,.aog-coll,#aogAgesPanel,.tool-card,.aog-lp-card,.now-what,.gc-res)::after{display:none!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(h1,h2,h3,.sj-h,.aog-srt-h,.aog-lp-h,.home-domain-name,.home-name,.srr-h){font-family:Georgia,"Times New Roman",serif!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(p,li,.gc-lead,.ages-panel-p){font-size:max(16px,1em)!important;line-height:1.55}
+/* buttons: the site's pill buttons, on paper */
+html[data-sr-results]:root body #screen-myresults#screen-myresults :not(.hero *):is(.btn,.sj-btn,.ages-btn,.hd-allbtn,.aog-coll-head,.aog-readmore>summary,button:not(.home-domain-head *)){background:var(--sp-card)!important;color:var(--sp-ink)!important;border:1.5px solid var(--sp-line)!important;border-radius:999px!important;min-height:48px;font-size:16px!important;-webkit-text-fill-color:currentColor!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-coll-head{border-radius:11px!important;width:100%}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(#btnPrintMyResultsTop,#btnPrintMyResults,.sj-btn,.ages-btn.active){background:var(--sp-btn)!important;color:var(--sp-btnink)!important;border-color:var(--sp-btn)!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(#btnPrintMyResultsTop,#btnPrintMyResults,.sj-btn,.ages-btn.active) *{color:inherit!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.btn,button,summary,a):focus-visible{outline:3px solid var(--sp-ring)!important;outline-offset:3px}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .ages-toggle{border:1.5px solid var(--sp-line)!important;border-radius:999px!important;background:var(--sp-card)!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .ages-btn:not(.active){border-color:transparent!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(input,textarea){font-size:17px!important;background:#FFFFFF!important;color:#1F2630!important;border:1.5px solid #2A2622!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.aog-wisdom button,.aog-wisdom [role=button],.aog-wisdom label){background:var(--sp-card)!important}
+/* the three areas: a striped pencil number and a hatched bar in the area's colour */
+html[data-sr-results]:root body #screen-myresults#screen-myresults .home-domain-head{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:12px}html[data-sr-results]:root body #screen-myresults#screen-myresults .home-domain-headL{flex:1 1 auto;min-width:0}
+html[data-sr-results]:root body #screen-myresults#screen-myresults:not(#srr1):not(#srr2):not(#srr3) .srr-num{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;border-radius:9px;font:700 19px/1 Georgia,"Times New Roman",serif;color:#1F2630!important;-webkit-text-fill-color:#1F2630!important;
+  background:linear-gradient(#FBF8F0,#FBF8F0) padding-box,repeating-linear-gradient(38deg,var(--nc) 0 2.8px,#FBF8F0 2.8px 5.6px) border-box!important;border:5px solid transparent;outline:1.5px solid #2A2622;outline-offset:-1px}
+html[data-sr-results]:root body #screen-myresults#screen-myresults:not(#srr1):not(#srr2):not(#srr3) .home-domain-bar{height:16px!important;background:var(--sp-card)!important;border:1.5px solid var(--sp-line)!important;border-radius:8px!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults:not(#srr1):not(#srr2):not(#srr3) .home-domain-bar i{border-radius:0!important;background:repeating-linear-gradient(38deg,var(--nc,#2F63B8) 0 2.4px,transparent 2.4px 5px)!important;border-right:1.5px solid var(--sp-line)}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-tag{display:block;font:600 16px/1.4 Inter,system-ui,sans-serif;color:var(--sp-ink)!important;margin-top:4px}
+html[data-sr-results]:root body #screen-myresults#screen-myresults :is(.home-domain-score,.gc-score-pill,.home-header .pill){display:none!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-adults .home-domain-score{display:inline!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .heat-cell{border:1.5px solid var(--sp-line)!important;border-radius:999px!important;font-size:15px!important}
+/* the path steps */
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-lp-num{background:var(--sp-card)!important;border:1.5px solid var(--sp-line)!important;color:var(--sp-ink)!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-lp-step:not(:last-child)::after{background:var(--sp-line)!important;height:1.5px}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-lp-step.current .aog-lp-num{border-width:3px!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-lp-ic{border:1.5px solid var(--sp-line)!important}
+/* plain headings and the small "For adults" fold */
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-h{font-size:clamp(22px,4.8vw,26px)!important;margin:26px 0 10px!important;color:var(--sp-ink)!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-adults{padding:4px 16px!important;margin:12px 0 0!important;font-size:15px;display:block;width:100%}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-adults > summary{border:0!important;background:transparent!important;cursor:pointer;min-height:44px;display:flex!important;align-items:center;color:var(--sp-ring)!important;text-decoration:underline;padding:0!important;list-style:revert}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-adults .home-cl{margin:10px 0 12px!important;padding:12px!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .srr-adults .pill{display:inline-block!important;border:1.5px solid var(--sp-line)!important;border-radius:999px;padding:2px 10px}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .home-header{flex-wrap:wrap!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-srt-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,132px),1fr))!important;gap:10px!important;width:100%!important;max-width:100%!important;margin:0!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-srt-grid > *{min-width:0!important;max-width:100%!important;margin:0!important;box-sizing:border-box!important}
+html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-srt-grid .tools-row-header{grid-column:1/-1}
+@media print{html[data-sr-results]:root body #screen-myresults#screen-myresults{background:#fff!important}}
+</style>
+<script>
+/* AOG-SR-RESULTS-PAPER-V1: turns the paper look on for a student's or child's own results (not adult or
+   workplace), gives each area a striped number and a plain line, and moves the scores, colour band and the
+   Closed loop note into a "For adults" fold. It only moves nodes that are already there; it reads the record,
+   never writes it, and never touches what is saved, sent or printed. */
+(function(){
+  var COL={A:"#2F63B8",B:"#B8457A",C:"#2E8B57"};
+  function rec(){ return window._lastResult||window._pendingRecord||null; }
+  function kid(r){ return !!r && r.population!=="adult" && String(r.grade)!=="Adult"; }
+  function es(){ try{ return lang==="es"; }catch(e){ return false; } }
+  function T(en,sp){ return es()?sp:en; }
+  function decorate(){ try{
+    var box=document.getElementById("myResultsReport"), r=rec(); if(!box||!kid(r)) return;
+    var hd=box.querySelector(".home-header");
+    if(hd && !hd.querySelector(".srr-adults")){
+      var d=document.createElement("details"); d.className="srr-adults";
+      d.innerHTML='<summary>'+T("For adults: scores and details","Para adultos: puntajes y detalles")+'</summary><p class="srr-note">'+T("These numbers help your teacher or family know how to help. They are not a grade.","Estos números ayudan a tu maestro o tu familia a saber cómo ayudarte. No son una calificación.")+'</p>';
+      var pill=hd.querySelector(".pill"); if(pill){ var ps=pill.previousSibling; if(ps&&ps.nodeType===3) ps.textContent=ps.textContent.replace(/\s*·\s*$/," "); var pp=document.createElement("p"); pp.appendChild(pill); d.appendChild(pp); }
+      var sc=hd.querySelector(".home-header-scores"); if(sc) d.appendChild(sc);
+      var cl=box.querySelector(".home-cl"); if(cl) d.appendChild(cl);
+      hd.appendChild(d);
+    }
+    var gc=document.getElementById("grace-compass-report");
+    if(gc && !box.querySelector(".srr-h-help")){ var h=document.createElement("h2"); h.className="srr-h srr-h-help"; h.textContent=T("What might help","Lo que te puede ayudar"); box.insertBefore(h,gc); }
+    var secs=box.querySelectorAll(".home-domain-section"), keys=["A","B","C"], vals=[r.normA,r.normB,r.normC];
+    var hi=-1,lo=-1; vals.forEach(function(v,i){ if(v==null) return; if(hi<0||v>vals[hi]) hi=i; if(lo<0||v<vals[lo]) lo=i; });
+    Array.prototype.forEach.call(secs,function(s,i){
+      if(i>2||s.querySelector(".srr-num")) return;
+      s.style.setProperty("--nc",COL[keys[i]]);
+      var head=s.querySelector(".home-domain-head"), L=s.querySelector(".home-domain-headL"); if(!head||!L) return;
+      var n=document.createElement("span"); n.className="srr-num"; n.setAttribute("aria-hidden","true"); n.textContent=String(i+1); head.insertBefore(n,head.firstChild);
+      if(hi!==lo && (i===hi||i===lo)){ var t=document.createElement("span"); t.className="srr-tag"; t.textContent=i===hi?T("Where you feel strongest right now","Donde te sientes más fuerte ahora"):T("A place to grow, gently","Un lugar para crecer, con calma"); L.appendChild(t); }
+    });
+  }catch(e){} }
+  function sync(){ try{
+    var s=document.getElementById("screen-myresults"), on=!!s&&s.classList.contains("active")&&kid(rec());
+    if(on){ document.documentElement.setAttribute("data-sr-results",""); decorate(); } else document.documentElement.removeAttribute("data-sr-results");
+  }catch(e){} }
+  function boot(){ try{
+    var s=document.getElementById("screen-myresults"); if(s) new MutationObserver(sync).observe(s,{attributes:true,attributeFilter:["class"]});
+    var b=document.getElementById("myResultsReport"); if(b) new MutationObserver(function(){ if(document.documentElement.hasAttribute("data-sr-results")) decorate(); }).observe(b,{childList:true});
+    sync();
+  }catch(e){} }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
+})();
+</script>
+
 
 <section id="screen-adult" class="screen">
 
