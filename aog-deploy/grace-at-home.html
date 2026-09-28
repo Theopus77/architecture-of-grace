@@ -48,8 +48,8 @@ button.b.solid{background:var(--pc);color:#fff}
 .act[aria-pressed="true"]{border-color:var(--pc);background:color-mix(in srgb,var(--pc) 8%,transparent)}
 .act .tick{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--pc);display:grid;place-items:center;color:#fff;font-weight:900}
 .act[aria-pressed="true"] .tick{background:var(--pc)}
-.week{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
-.week span{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;border:1.5px solid var(--line);font:700 12px Inter,sans-serif;color:var(--soft)}
+.week{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px!important;margin:8px 0 0;max-width:420px}  /* AOG-WEEK-GRID-V1: seven even day buttons, never bunched */
+.week span{box-sizing:border-box!important;width:auto!important;min-width:0!important;height:44px!important;margin:0!important;padding:0!important;cursor:pointer;border-radius:9px;display:grid;place-items:center;border:1.5px solid var(--line);font:700 12px Inter,sans-serif;color:var(--soft)}
 .week span.on{background:var(--pc);border-color:var(--pc);color:#fff}
 details{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
 summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center}
