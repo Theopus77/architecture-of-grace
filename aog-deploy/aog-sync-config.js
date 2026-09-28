@@ -43,11 +43,11 @@
 window.AOG_SYNC_DEFAULTS = {
 
   /* 1. Your Apps Script Web App URL — the deployment link ending in /exec */
-  url: "https://script.google.com/macros/s/AKfycbxqHWGZNbc4uZTo4bxsP6bEkChj_3L_BLCvvmmKm_eX6dqdbeATi8Ktln5XIW9_iV2x/exec",
+  url: "https://script.google.com/macros/s/AKfycbxqHWGZNbc4uZTo4bxsP6bEkChj_3L_BLCvvmmKm_eX6dqdbeATi8Ktln5XIW9_iV2x/exec",  /* restored 2026-09-28 (Jimmy: "I want the Google Sheet back up. It just has no Sheet references.") */
 
   /* 2. The value of BACKEND_AUTH_KEY in Apps Script ▸ Project Settings ▸
         Script properties. Write-only: see the note above. */
-  key: "Grace-D61-Sync-2026",
+  key: "NOT",  /* must match BACKEND_AUTH_KEY in Apps Script; change both together */
   label: "Architecture of Grace — site default Sheet (the owner's own Google account)",
 
   /* 3. Which classroom links may use this destination.
@@ -162,7 +162,7 @@ window.AOG_SYNC_DEFAULTS = {
 
      TO UNDO: put [] back and redeploy. Ten seconds, no data migration.
      Backup of the pre-fix file: aog-sync-config.js.bak-sendfix1 */
-  schools: ["AOG-D61-SITE"],
+  schools: ["AOG-SITE"],
 
   /* ─────────────────────────────────────────────────────────────────────────
      4. OPTIONAL — MORE THAN ONE SCHOOL ON ONE SITE.

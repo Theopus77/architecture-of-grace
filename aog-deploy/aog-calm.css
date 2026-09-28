@@ -128,3 +128,39 @@ html body .daily:has(> a.gr:nth-of-type(15)):not(:has(> a.gr:nth-of-type(16))) {
   .tl .pin .t { border-top: 0 !important; padding-top: 0 !important; }
   .rail .in { flex-wrap: wrap !important; overflow: visible !important; }
 }
+
+/* AOG-PRINT-WHITE-V1 (2026-09-28) — every page prints on white paper with dark ink: no graph paper,
+   no cream, no crumple, no shadows. The id-weighted selectors outrank the drafting-table grid that
+   aog-sketch.js paints on light pages. Colours that carry meaning (graphs, subject strips, answer
+   marks) still print; aog-sketch.js (AOG-PRINT-WHITE-JS) turns only the big paper surfaces white.
+   Site chrome stays off the paper: the page bar, hub footers, the top bar and My notes. */
+@media print {
+  html:root:not(#aog-x), html:root:not(#aog-x) body, html:root:not(#aog-x)[data-theme] body,
+  html:root:not(#aog-x):not([data-theme="dark"]) body {
+    background: #fff !important; background-color: #fff !important; background-image: none !important;
+  }
+  *, *::before, *::after { box-shadow: none !important; text-shadow: none !important; }
+  html body .pager2, html body .aogpg-bar, html body > footer, html body .xw-foot,
+  html body .aog-mkbtn, html body .aogtop, html body .aogtop-spacer { display: none !important; }
+  /* unit banners: white paper, dark ink, the drawing and the shading left off */
+  html body .spread { background: #fff !important; background-image: none !important; color: #111 !important; border-bottom: 1.5pt solid #111; }
+  html body .spread :not(.unum b):not(#unum) { color: #111 !important; }
+  html body .spread::before, html body .spread::after, html body .spread .shade,
+  html body .spread img, html body .spread .aog-mast-sketch { display: none !important; }
+  html body .app { background-image: none !important; }
+  /* the navy masthead prints as white paper, so all of its words turn dark ink */
+  html body [data-aog-hero], html body [data-aog-hero] *:not(svg *) { color: #111 !important; -webkit-text-fill-color: #111 !important; }
+}
+
+/* AOG-PAGER-WRAP-V1 (2026-09-28) — on a phone the "Next" button at the end of a course carried a long
+   chapter title and ran off the right edge. It now wraps inside the screen. */
+html body .pager2 a { max-width: 100%; min-width: 0; box-sizing: border-box; white-space: normal; }
+html body .pager2 a > span { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) { html body .pager2 a { padding-top: 8px; padding-bottom: 8px; } }
+/* the page bar's Next button (aog-pages.js) does the same: it shrinks to the screen, and the chapter
+   title under it wraps instead of pushing the button past the edge */
+html body .aogpg-bar button { min-width: 0; max-width: 100%; box-sizing: border-box; }
+html body .aogpg-bar button small { white-space: normal; overflow-wrap: anywhere; text-overflow: clip; }
+@media (max-width: 600px) { html body .aogpg-bar button[disabled] { display: none; } }
+/* music-decks: the Pitch and Volume sliders sat 2px past their box on a phone (browser margin + 100% width) */
+html body label.knob input[type="range"] { max-width: 100%; margin-left: 0; margin-right: 0; box-sizing: border-box; }

@@ -54,7 +54,9 @@ textarea{min-height:84px;resize:vertical}
 .done h2{font-family:Fraunces,Georgia,serif;font-size:26px;margin:0 0 8px}
 .back{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid #1B2A3D;color:var(--ink);text-decoration:none;font-weight:600;margin-top:12px}
 .goalbox{border-left:4px solid var(--gold);padding:8px 12px;background:rgba(201,162,74,.10);border-radius:8px;margin:0 0 14px;font-weight:600}
-@media print{.send,.st,.names{display:none}}
+.prt{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:12px 0 0;padding:0 20px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:700 16px inherit;font-family:inherit;cursor:pointer}
+.prt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media print{.send,.st,.names,.prt{display:none}}
 </style>
 </head>
 <body>
@@ -198,6 +200,8 @@ function paint(){
   });
   if(S.talk) h+='<div class="card"><label class="talk"><input type="checkbox" id="talk"'+(TALK?' checked':'')+'> '+t("I would like to talk to an adult","Me gustaría hablar con un adulto")+'</label></div>';
   h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):t("Send to my teacher","Enviar a mi maestro"))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
+  /* AOG-SLIP-PRINT-V1 — a Print button for a paper copy (screen only) */
+  h+='<button type="button" class="prt" id="prt">'+t("Print this slip","Imprimir esta hoja")+'</button>';
   app.innerHTML=h; wire();
 }
 function wire(){
@@ -211,6 +215,7 @@ function wire(){
     else A[qid]=(A[qid]===i?null:i);
     b.closest(".opts").querySelectorAll(".opt").forEach(function(x){ var j=+x.getAttribute("data-i"); x.setAttribute("aria-pressed", String(q.kind==="pick"?(A[qid]||[]).indexOf(j)>=0:A[qid]===j)); }); }; });
   var s=document.getElementById("send"); if(s) s.onclick=send;
+  var pr=document.getElementById("prt"); if(pr) pr.onclick=function(){ window.print(); };
 }
 /* the answers as words (what a teacher reads) and as numbers (what a chart plots) */
 function readable(){ var out={}, nums={}; S.qs.forEach(function(q){ var v=A[q.id]; if(v==null||v===""||(Array.isArray(v)&&!v.length)) return;

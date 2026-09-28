@@ -1246,6 +1246,124 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 @media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button{transition:none} }
 @media (max-width:720px){ #subjSeg .bs{gap:14px 4px !important;padding:12px 6px 0 !important;background:repeating-linear-gradient(180deg, transparent 0 64px, #7A4E2B 64px 66px, #9A6A40 66px 71px, #5E3A1E 71px 73px, transparent 73px 87px) 0 0/100% 87px content-box !important;background-clip:content-box !important} #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:64px;min-height:64px !important;margin:0 0 9px !important;padding:0 9px !important;font-size:14px} }
 @media print{ #subjSeg .bs{background:none !important} }
+
+/* AOG-DD-SHELF-V2 (2026-09-27) — Jimmy: "Can the subjects get the sketch feel? They don't look like a book on a
+   shelf. I figure the subjects would be written vertical." Each subject is a tall pencil-drawn spine, title running
+   down it, a hatched band of its colour top and bottom; the shelf is a pencil-drawn plank. */
+#subjSeg .bs{gap:18px 6px !important;padding:14px 10px 0 !important;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 172px, #2A2622 172px 173.5px, #EFE6D2 173.5px 180px, #2A2622 180px 181.5px, transparent 181.5px 200px) 0 0/100% 200px content-box,
+    repeating-linear-gradient(180deg, transparent 0 151.5px, transparent 151.5px 158px, transparent 158px 178px) !important;
+  background-clip:content-box !important}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){writing-mode:vertical-rl;text-orientation:mixed;
+  height:172px;min-height:172px !important;width:44px;min-width:44px !important;margin:0 0 28px !important;padding:10px 0 !important;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font:700 14px/1 var(--sans, system-ui, sans-serif) !important;letter-spacing:.02em;
+  color:#1D2733 !important;border:1.5px solid #2A2622 !important;border-radius:3px 3px 1px 1px !important;
+  background:
+    repeating-linear-gradient(40deg, rgba(42,38,34,.10) 0 1px, transparent 1px 6px),
+    #FBF8F0 !important;
+  box-shadow:1.5px 0 0 -0.3px rgba(42,38,34,.45), -1px 1px 0 -0.4px rgba(42,38,34,.3) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after{content:"" !important;position:absolute;left:0;right:0;height:14px;background:var(--gl,#5E6B7A);z-index:0;pointer-events:none;transform:none !important;top:auto;bottom:auto;border:0;box-shadow:none;border-radius:0}
+#subjSeg .bs button::before{top:0 !important;border-bottom:1.2px solid #2A2622 !important}
+#subjSeg .bs button::after{bottom:0 !important;border-top:1.2px solid #2A2622 !important}
+#subjSeg .bs button:nth-child(3n+2){height:162px;min-height:162px !important;margin-top:10px !important;width:40px;min-width:40px !important}
+#subjSeg .bs button:nth-child(4n+3){height:168px;min-height:168px !important;margin-top:4px !important;width:48px;min-width:48px !important}
+#subjSeg .bs button:nth-child(5n+4){transform:rotate(1.2deg)}
+#subjSeg .bs button[aria-pressed="true"]{background:
+    #FFF3CC !important;border-width:2.5px !important;transform:translateY(-12px) !important}
+@media (max-width:720px){
+  #subjSeg .bs{gap:14px 4px !important;padding:10px 4px 0 !important;
+    background:repeating-linear-gradient(180deg, transparent 0 160px, #2A2622 160px 161.5px, #EFE6D2 161.5px 167px, #2A2622 167px 168.5px, transparent 168.5px 184px) 0 0/100% 184px content-box !important;background-clip:content-box !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:160px;min-height:160px !important;width:38px;min-width:38px !important;margin:0 0 24px !important;font-size:12.5px !important;transform:none}
+  #subjSeg .bs button[aria-pressed="true"]{transform:translateY(-8px) !important}
+}
+@media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
+#subjSeg .bs button[aria-pressed="true"]::before{background:var(--gl,#5E6B7A) !important}
+</style>
+<style id="aog-dd-sendbyname">
+/* the send box beside the name line: one row, no repeated heading */
+.sig + #sendBox{margin:10px 0 4px !important;padding:10px 14px !important;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;max-width:none !important}
+.sig + #sendBox .sk{display:none !important}
+.sig + #sendBox .snote{flex:1 1 260px;margin:0 !important;font-size:14px !important}
+.sig + #sendBox .srow{margin:0 !important;order:-1}
+.sig + #sendBox .sst{flex-basis:100%;margin:0 !important}
+.sig + #sendBox .sst:empty{display:none}
+#checkRow{margin:14px 0 10px !important;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+@media print{ #sendBox,#checkRow{display:none !important} }
+</style>
+<style id="aog-dd-sketch-nums">
+/* AOG-DD-SKETCH-NUMS (2026-09-27) — Jimmy: "the numbers should look sketched, not coloured in." Each box's
+   number tab is paper with a pencil hatch in its colour, a graphite number and a pencil edge; the 1–10 row too.
+   Result colours (right / part / missed) stay, because they mean something. Screen only; print keeps its own look. */
+@media screen{
+html body .boxes>.bw:nth-child(1) .bnum{--bnc:#2F63B8}
+html body .pips>.pip:nth-child(1){--bnc:#2F63B8}
+html body .boxes>.bw:nth-child(2) .bnum{--bnc:#B87A12}
+html body .pips>.pip:nth-child(2){--bnc:#B87A12}
+html body .boxes>.bw:nth-child(3) .bnum{--bnc:#2E8B57}
+html body .pips>.pip:nth-child(3){--bnc:#2E8B57}
+html body .boxes>.bw:nth-child(4) .bnum{--bnc:#A8323E}
+html body .pips>.pip:nth-child(4){--bnc:#A8323E}
+html body .boxes>.bw:nth-child(5) .bnum{--bnc:#7B4FA0}
+html body .pips>.pip:nth-child(5){--bnc:#7B4FA0}
+html body .boxes>.bw:nth-child(6) .bnum{--bnc:#1F8080}
+html body .pips>.pip:nth-child(6){--bnc:#1F8080}
+html body .boxes>.bw:nth-child(7) .bnum{--bnc:#B8457A}
+html body .pips>.pip:nth-child(7){--bnc:#B8457A}
+html body .boxes>.bw:nth-child(8) .bnum{--bnc:#A85A24}
+html body .pips>.pip:nth-child(8){--bnc:#A85A24}
+html body .boxes>.bw:nth-child(9) .bnum{--bnc:#3F4AA6}
+html body .pips>.pip:nth-child(9){--bnc:#3F4AA6}
+html body .boxes>.bw:nth-child(10) .bnum{--bnc:#6E7C22}
+html body .pips>.pip:nth-child(10){--bnc:#6E7C22}
+html body .boxes>.bw .bnum{background:repeating-linear-gradient(38deg, var(--bnc,#5E6B7A) 0 3.2px, #FBF8F0 3.2px 7px) !important;
+  border-right:1.6px solid #2A2622 !important;box-shadow:none !important}
+html body .boxes>.bw .bnum, html body .boxes>.bw .bnum *{color:#1F2630 !important}
+html body .boxes>.bw .bnum .bn, html body .boxes>.bw .bnum .bs{background:#FBF8F0 !important;border:1.3px solid #2A2622;border-radius:4px;padding:1px 6px}
+html body .boxes>.bw .bnum .bn{font-family:Georgia,"Times New Roman",serif !important;font-weight:700;padding:0 8px;margin-bottom:4px}
+html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !important;background-image:none !important;
+  border:4px solid var(--bnc,#5E6B7A) !important;border-image:repeating-linear-gradient(38deg, var(--bnc,#5E6B7A) 0 2.4px, #FBF8F0 2.4px 4.8px) 4 !important;
+  outline:1.4px solid #2A2622;outline-offset:0;color:#1F2630 !important;opacity:1 !important;box-shadow:none !important}
+}
+@media screen and (max-width:700px){
+  html body .boxes>.bw .bnum{min-width:74px !important;width:74px !important;flex:0 0 74px !important;padding:10px 5px !important;align-items:center !important;justify-content:center !important;text-align:center !important}
+  html body .boxes>.bw .bnum .bn{font-size:1.5rem !important;margin:0 auto 5px !important}
+  html body .boxes>.bw .box{grid-template-columns:74px minmax(0,1fr) !important}
+  html body .boxes>.bw .bbody{padding-left:14px !important;padding-right:10px !important;min-width:0;overflow-wrap:anywhere}
+  html body .boxes>.bw .bbody .fld, html body .boxes>.bw .bbody input.www, html body .boxes>.bw .bbody .www{max-width:100% !important;box-sizing:border-box !important;min-width:0 !important}
+  html body .boxes>.bw .bnum .bs{font-size:9.5px !important;line-height:1.2 !important;max-width:100% !important;box-sizing:border-box;white-space:normal !important;overflow-wrap:anywhere;word-break:normal;hyphens:auto;padding:2px 4px !important;margin:0 auto !important;letter-spacing:.02em !important}
+}
+</style>
+<style id="aog-dd-crumple">
+/* AOG-DD-CRUMPLE (2026-09-27) — Jimmy: "A kid, in frustration, wads it up, then unwads it and works on it."
+   The sheet and its boxes carry a faint crumpled-then-smoothed paper (img/paper-crumple.webp, made by
+   _work/paper/make_crumple.py; +-5% light, so text stays easy to read). Screen only; paper prints clean. */
+@media screen{
+  #sheet.sheet{background-image:url(/img/paper-crumple.webp), repeating-linear-gradient(0deg, rgba(29,39,51,.035) 0 1px, transparent 1px 28px) !important;background-size:620px, auto !important;background-blend-mode:multiply !important}
+  html body .boxes>.bw .box{background:url(/img/paper-crumple.webp) 0 0/620px #FFFDF8 !important;background-blend-mode:multiply !important}
+}
+</style>
+<style id="aog-dd-clean">
+/* AOG-DD-CLEAN-V1 — long division: the bar and the bracket are ONE line, drawn along the top and the
+   left of the dividend itself, with a rounded corner like a hand-drawn ). No dashed spare line. */
+.divg{column-gap:0 !important;row-gap:0 !important}
+.divg .bar{border-bottom:0 !important}
+.divg .bar::after{content:none !important}
+.divg .dvc{border-top:2.5px solid var(--ink,#111827) !important;border-bottom:0 !important;padding-top:6px}
+.divg .dvc.spare{border-bottom:0 !important;background:none !important}
+.divg .dvc.spare::before,.divg .dvc.spare::after{content:none !important}
+.divg .brk{border-left:2.5px solid var(--ink,#111827) !important;border-top-left-radius:12px;padding-left:4px}
+.colp .pencilroom{display:block;justify-self:stretch !important;align-self:stretch;width:auto !important;min-width:0;background:linear-gradient(#111827,#111827) left bottom/100% 2px no-repeat !important}
+.divg .dvc{align-self:stretch !important;margin:0 !important;display:flex !important;align-items:flex-end;justify-content:center;min-height:38px}
+.divg .pencilroom{background:none !important}
+@media print{ .pencilroom{height:auto !important;min-height:40px} }
+</style>
+<style id="aog-dd-onesize">
+/* AOG-DD-ONE-SIZE (2026-09-27) — Jimmy: "Grade 7 zooms in compared to the other grades." Pages show at 85% on a
+   computer, but a page with a pencil canvas draws at full size (aog-calm.css), and only some grades' sheets have
+   the pencil work space — so switching grade changed the size. Daily Drafts now always draws at full size, the
+   same for every subject and grade, and the pencil still lands exactly under the finger. */
+@media screen { html body { zoom: 1 !important; } }
 </style>
 </head>
 <body>
@@ -1304,13 +1422,13 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
       <button data-s="health" aria-pressed="false" title="Medicine and Health" data-en="Medicine &amp; Health" data-es="Medicina y salud">Medicine &amp; Health</button>
       </div></div>
       <div class="sgrp"><span class="sg-k" data-en="Faith &amp; texts" data-es="Fe y textos">Faith &amp; texts</span><div class="bs">
-      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       <button data-s="bible" aria-pressed="false" title="The Bible" data-en="The Bible" data-es="La Biblia">The Bible</button>
       <button data-s="quran" aria-pressed="false" title="The Qur’an" data-en="The Qur’an" data-es="El Corán">The Qur’an</button>
       <button data-s="talmud" aria-pressed="false" title="The Talmud" data-en="The Talmud" data-es="El Talmud">The Talmud</button>
       <button data-s="hindu" aria-pressed="false" title="Hindu Texts" data-en="Hindu Texts" data-es="Textos hindúes">Hindu Texts</button>
       <button data-s="buddhist" aria-pressed="false" title="Buddhist Texts" data-en="Buddhist Texts" data-es="Textos budistas">Buddhist Texts</button>
       <button data-s="chinese" aria-pressed="false" title="Chinese Classics: the Analects and the Daodejing" data-en="Chinese Classics" data-es="Clásicos chinos">Chinese Classics</button>
+      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       </div></div>
     </div>
   </div>
@@ -1843,13 +1961,12 @@ function colGrid(b,top,op,bot,ans,unit){
   var h='<span class="colp" data-i="'+i+'" data-sel="" data-rtl="1" data-fw="'+fwc+'">'+
     '<span class="oplab">'+opWord(op)+'</span>'+
     '<span class="cg" style="grid-template-columns:'+cols+'">'+
-    carryRows()+ue0;
+    '';  /* AOG-DD-CLEAN-V1 (2026-09-27) — Jimmy: "Get rid of all that work area with the lines… just have the math set up like a normal multiplication or division problem… get rid of the THEN ADD, carry, regroup language." No carry/borrow/partial rows: the problem, the rule, the answer. The page around it is pencil room. */
   h+='<span class="pre">'+pre+'</span>'+digits(topd,false)+uc;
   /* the sign stands beside the line, not on it — a × sitting on the rule was read as a minus */
   h+='<span class="opx">'+op+'</span>'+digits(bo,true)+ucr;
-  for(var pi=0;pi<parts;pi++){var last=pi===parts-1;
-    h+='<span class="opx mstep'+(last?' ruled':'')+'">'+(last?t('then add','luego suma'):'')+'</span>'+blanks('rg wk','partial product',last)+ue}
-  if(parts>1) h+='<span class="rglab">carry</span>'+blanks('rg','carry for the addition',false)+ue;
+  /* a multi-digit multiplication keeps open room for its partial products, then a rule above the answer */
+  if(parts>1) h+='<span class="pencilroom" style="grid-column:1/-1;height:'+(parts*40)+'px;margin-left:var(--cw,34px);border-bottom:2px solid var(--ink,#111827)"></span>';
   h+='<span class="pre">'+pre+'</span>';
   /* ── AOG-DD-NOSPARE-V1 (2026-09-24) ─────────────────────────────────────────────
      Jimmy: "The boxes are really fucking with me. I could only imagine it will mess
@@ -1872,8 +1989,7 @@ function colGrid(b,top,op,bot,ans,unit){
     else h+='<input class="dg" data-c="'+i+'" data-k="'+(kk++)+'" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="answer digit">'}
   h+=uc;
   /* start in the ones place and work left */
-  h+='<span></span>';for(k=0;k<W-1;k++)h+='<span></span>';
-  h+='<span class="startlab">&#8593; start</span>'+ue;
+
   return h+'</span></span>'}
 function divGrid(b,dvr,dvd,ans){
   var d=String(dvd),q=String(ans),i=b.fields.length,k;
@@ -1948,45 +2064,13 @@ function divGrid(b,dvr,dvd,ans){
     h+=spec[k]==='.'?'<span class="bar dot bx"><i>.</i></span>':'<span class="bar"><input class="dg" data-c="'+i+'" data-k="'+(kk++)+
       '" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="quotient digit"></span>';}
   /* AOG-DD-WORKROOM-V1 — room to rename the dividend before the first subtraction */
-  h+='<span class="rglab">'+t('regroup','reagrupa')+'</span>'+regroup('regrouping');
   /* divisor ) dividend */
   h+='<span class="dv">'+dvr+'</span>';
   for(k=0;k<W;k++){var dch=(k<dlen?d.charAt(k):'');
-    h+='<span class="'+(spec[k]==='.'?'dot':'cell')+(k===0?' brk':'')+(k>=dlen?' spare':'')+'">'+
+    h+='<span class="'+(spec[k]==='.'?'dot':'cell')+' dvc'+(k===0?' brk':'')+(k>=dlen?' spare':'')+'">'+
        (spec[k]==='.'?(dch?'<i>'+dch+'</i>':''):dch)+'</span>';}
-  /* the work: multiply, subtract, bring down */
-  for(var p=0;p<passes;p++){
-    /* AOG-DD-MINUSBOX-V1 (2026-09-23) — Jimmy: "There should be an area to insert the
-       minus sign in the long division problems." There should: on paper the sign goes
-       to the LEFT of the number you are taking away, and naming the operation is part
-       of doing it — a student who never writes the minus is the one who ends up adding
-       the line instead of subtracting it. A small box now sits at the head of every
-       multiply row, which is the row that gets subtracted. It is not scored. */
-    /* ══ AOG-DD-REGROUP-V2 (2026-09-23) ═══════════════════════════════════════
-       Jimmy: "Do the regroup boxes in the long division make sense?" Half of them
-       did. The strip above the DIVIDEND is right — borrowing for the first
-       subtraction renames the dividend's digits, and they are written above it.
-       The strips inside the passes were not: they sat under the number being
-       taken away and above the subtraction rule, which is a place nobody writes
-       anything.
-
-       What a student actually renames, second subtraction onward, is the
-       DIFFERENCE they have just written — and the marks go above THAT. So the
-       rule moves: it now hangs under the multiply row, where a subtraction line
-       belongs, and the strip falls between the rule and the difference row, which
-       is exactly the gap a pencil squeezes into on paper. Each strip now serves
-       the subtraction on the line below it. ══════════════════════════════════ */
-    /* AOG-DD-MINUSBOX-V2 (2026-09-23) — Jimmy, having used it: the box was wrong.
-       In long division the operation is NEVER anything but subtraction, so an empty
-       box asks a student to type the same character ten times a sheet and offers a
-       choice that does not exist. The sign is printed now, on every multiply row,
-       hard against the digits it belongs to — the operation is still named on every
-       step, which was the point of asking for it, without the busywork. */
-    var xc=(p>=need)?' xpass':'';
-    h+='<span class="worklab'+xc+'">'+(p===0?t('work','trabajo'):'')+
-       '<span class="minus" aria-hidden="true">\u2212</span></span>'+blanks('multiply','mline',xc);
-    h+='<span class="rglab rgsm'+xc+'">'+t('regroup','reagrupa')+'</span>'+regroup('regrouping',xc);
-    h+='<span class="cell'+xc+'"></span>'+blanks('subtract and bring down','',xc)}
+  /* AOG-DD-CLEAN-V1 — no work rows: open pencil room under the problem */
+  h+='<span class="pencilroom" style="grid-column:1/-1;height:'+(need*56)+'px"></span>';
   return h+'</span></span>'}
 function divBox(b,dvr,dvd,ans){
   return '<span class="inl"><span style="font-weight:800">'+dvr+'</span>'+
@@ -15654,7 +15738,7 @@ var WFU=[
  {s:"pater",tw:"PATERnal",o:"L",m:"father",ol:"Greek and Latin",w:[["paternal", "having to do with a father"], ["paternity", "fatherhood"], ["patriarch", "a father who leads the family"]],ex:"His *paternal* grandmother lives nearby."},
  {s:"phobia",tw:"claustroPHOBIA",o:"G",m:"fear",w:[["claustrophobia", "fear of closed spaces"], ["arachnophobia", "fear of spiders"], ["hydrophobia", "fear of water"]],ex:"The elevator triggered his *claustrophobia*."},
  {s:"pond",tw:"PONDerous",o:"L",m:"weight",w:[["ponderous", "heavy and slow"], ["ponder", "to weigh an idea in your mind"], ["preponderance", "the greater weight of the evidence"]],ex:"She stopped to *ponder* the question."},
- {s:"pop",tw:"POPular",o:"L",m:"people",core:true,w:[["popular", "liked by the people"], ["population", "all the people in a place"], ["populace", "the common people"]],ex:"The *population* of Darien is about 22,000."},
+ {s:"pop",tw:"POPular",o:"L",m:"people",core:true,w:[["popular", "liked by the people"], ["population", "all the people in a place"], ["populace", "the common people"]],ex:"The *population* of Lisle is about 24,000."},
  {s:"punct",tw:"PUNCTuate",o:"L",m:"point",core:true,w:[["punctuate", "to add the points and marks to writing"], ["puncture", "a hole made by a point"], ["punctual", "arriving right on the point of time"]],ex:"A nail caused the *puncture*."},
  {s:"put",tw:"comPUTe",o:"L",m:"think",w:[["compute", "to think a number out"], ["reputation", "what people think of you"], ["dispute", "to think against someone"]],ex:"His *reputation* for honesty is spotless."},
  {s:"sangui",tw:"SANGUIne",o:"L",m:"blood",w:[["sanguine", "cheerful, once thought to come from good blood"], ["sanguinary", "bloody"], ["consanguinity", "being of the same blood"]],ex:"She stayed *sanguine* even when they fell behind."},
@@ -17825,8 +17909,8 @@ function sigRow(){
   return '<div class="sig"><label for="nameIn">'+t('Name','Nombre')+'</label>'+
     '<input id="nameIn" autocomplete="off" placeholder="'+t('Enter your name','Escribe tu nombre')+'">'+
     '<span class="signote">'+t(
-      'Sign it when you are done. Use your name or the code your teacher gave you — and use the <b>same one every time</b>, or your teacher will see you as two different students.',
-      'Fírmala cuando termines. Usa tu nombre o el código que te dio tu maestro — y usa <b>siempre el mismo</b>, o tu maestro te verá como dos estudiantes distintos.')+'</span></div>'}
+      'Sign with your name or class code. Use the <b>same one every time</b>.',
+      'Firma con tu nombre o tu código de clase. Usa <b>siempre el mismo</b>.')+'</span></div>'}
 
 /* AOG-DD-PACK-V1 — the sheet's own markup, built from ST as it stands. render()
    puts it on the page; the print pack asks for it once per draft with pack=true,
@@ -19109,7 +19193,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     box.className="sendbox no-print"; box.id="sendBox";
     box.innerHTML=
       '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
-      +'<p class="snote" data-en="It sends your work for this sheet — your answers, your score, and the name you sign. It goes the moment you sign your name; tap the button to send it again." data-es="Env&iacute;a tu trabajo de esta hoja — tus respuestas, tu puntaje y el nombre que firmas. No se env&iacute;a nada hasta que tocas el bot&oacute;n.">It sends your work for this sheet — your answers, your score, and the name you sign. It goes the moment you sign your name; tap the button to send it again.</p>'
+      +'<p class="snote" data-en="Your answers and score go to your teacher when you sign. Tap to send again." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.">Your answers and score go to your teacher when you sign. Tap to send again.</p>'
       +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button></div>'
       +'<p class="sst" aria-live="polite"></p>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
@@ -19122,6 +19206,18 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
             || document.querySelector("main > .acts")
             || document.querySelector(".sheet-foot");
     anchor.parentNode.insertBefore(box,anchor);
+    /* AOG-DD-SEND-BY-NAME (2026-09-27) — Jimmy: "Should the send to my teacher box be right next to the write
+       your name line? Just when it prints remove it." The box settles right under the name line each time the
+       sheet redraws (the sheet is rebuilt, so it cannot live inside it); off the printout as before. */
+    /* Jimmy: "Should Inspect my build and Repair the cracks also be inside the draft? Not if a teacher is
+       printing." They sit just above the name line (answer, check, fix, sign, send); Clear and Print stay below.
+       Off the printout. */
+    var chk=document.createElement("div"); chk.className="acts no-print"; chk.id="checkRow";
+    ["checkBtn2","tryBtn","resLine"].forEach(function(id){ var e=document.getElementById(id); if(e) chk.appendChild(e); });
+    function byName(){ var sg=document.querySelector(".sig"); if(!sg){ var sa=document.getElementById("sheetActs"); if(sa&&sa.previousElementSibling!==chk) sa.parentNode.insertBefore(chk,sa); return; }
+      if(sg.previousElementSibling!==chk) sg.parentNode.insertBefore(chk,sg);
+      if(sg.nextElementSibling!==box) sg.parentNode.insertBefore(box,sg.nextSibling); }
+    byName(); new MutationObserver(byName).observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
     ui={box:box,go:box.querySelector("button"),st:box.querySelector(".sst")};
     ui.go.addEventListener("click",function(){
       if(sendBusy)return;
@@ -19138,10 +19234,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     if(!ui)return;
     var note=ui.box.querySelector('.snote');
     if(note){note.textContent=(ST.subj==='write')
-      ? T("It sends what you wrote, your plan, how many words, and the six rubric numbers if they are filled in — under the name you sign. It goes the moment you sign your name; tap the button to send it again.",
-          "Env&iacute;a lo que escribiste, tu plan, cu&aacute;ntas palabras y los seis n&uacute;meros de la r&uacute;brica si est&aacute;n puestos — con el nombre que firmas. No se env&iacute;a nada hasta tocar el bot&oacute;n.")
-      : T("It sends your answers for this sheet, your score, how you did on each of the ten boxes, and the name you sign. It goes the moment you sign your name; tap the button to send it again.",
-          "Env\u00eda tus respuestas de esta hoja, tu puntaje, c\u00f3mo te fue en cada una de las diez casillas, y el nombre que firmas. No se env\u00eda nada hasta que tocas el bot\u00f3n.")}
+      ? T("Your writing, plan and rubric go to your teacher when you sign. Tap to send again.",
+          "Tu escrito, tu plan y la rúbrica le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")
+      : T("Your answers and score go to your teacher when you sign. Tap to send again.",
+          "Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")}
     /* a new sheet is a new row waiting to be earned */
     var k=sheetKey(); if(k!==lastKey){lastKey=k;sentAt=null;sentHow="";sendErr=false}
     /* THE DOOR IS ALWAYS HERE. It does not appear when the work is done —

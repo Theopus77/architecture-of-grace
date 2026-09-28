@@ -53,13 +53,19 @@
     function part(en, es, inner) { k++; return '<div class="part"><h6><span class="n">' + k + "</span>" + sp(en, es) + "</h6>" + inner + "</div>"; }
     function ta(name, ph) { return '<textarea name="' + name + '" placeholder="' + esc(ph) + '">' + esc(S[name] || "") + "</textarea>"; }
     var h = '<h5>' + sp("Worksheet", "Hoja de trabajo") + ": " + esc(b.n ? b.n + " " : "") + esc(b.title) + "</h5><p class=\"sub\">" + sp("Write in your own words. Short answers are fine.", "Escribe con tus palabras. Las respuestas cortas están bien.") + "</p>";
-    h += '<div class="row"><div><label>' + sp("Name", "Nombre") + '</label><input name="who" value="' + esc(ls(KEY + "who") || "") + '"></div><div><label>' + sp("Date", "Fecha") + '</label><input name="date" value="' + esc(S.date || "") + '"></div></div>';
+    h += '<div class="row"><div><label>' + sp("Date", "Fecha") + '</label><input name="date" value="' + esc(S.date || "") + '"></div></div>';
     if (b.words.length) h += part("Words to know", "Palabras clave", b.words.map(function (w, i) { return '<div class="wq"><p class="def">' + esc(w.d) + '</p><input name="w' + i + '" data-word="' + esc(w.w) + '" placeholder="' + esc(T("Which word is this?", "¿Qué palabra es?")) + '" value="' + esc(S["w" + i] || "") + '"><span class="mark"></span></div>'; }).join("") + '<button type="button" class="chkw" style="min-height:44px;margin-top:6px;border-radius:10px;border:1.5px solid var(--rule,#C9C2B2);background:var(--field-2,#F4F0E6);color:inherit;padding:0 14px;font:700 15px system-ui,sans-serif;cursor:pointer">' + sp("Check my words", "Revisar mis palabras") + "</button>");
     h += part("The main idea, in my own words", "La idea principal, con mis palabras", '<p class="sub">' + esc(b.mi) + "</p>" + ta("mi", T("Say it your way.", "Dilo a tu manera.")));
     if (b.qs.length) h += part("Answer in a sentence", "Responde con una oración", b.qs.map(function (q, i) { return '<div class="wq"><p>' + (i + 1) + ". " + esc(q) + "</p>" + ta("q" + i, T("Your answer", "Tu respuesta")) + "</div>"; }).join(""));
     if (b.lookP) h += part("Look again", "Mira otra vez", '<div class="wq"><p>' + esc(b.lookT ? b.lookT + " — " : "") + esc(b.lookP) + "</p>" + ta("look", T("What do you notice?", "¿Qué notas?")) + "</div>");
     h += part("Show what you learned", "Muestra lo que aprendiste", '<p class="sub">' + sp("Draw it, map it, or list it on paper. Then tell it here in one or two lines.", "Dibújalo, haz un mapa o una lista en papel. Luego cuéntalo aquí en una o dos líneas.") + '</p><div class="pad" aria-hidden="true"></div>' + ta("show", T("What I made", "Lo que hice")));
-    h += '<div class="btns"><button type="button" class="pr">' + sp("Print", "Imprimir") + '</button><button type="button" class="cl">' + sp("Clear", "Borrar") + '</button>' + (DEST ? '<button type="button" class="go">' + sp("FINISHED · send to my teacher", "TERMINÉ · enviar a mi maestro") + "</button>" : "") + '</div><p class="st" aria-live="polite"></p>';
+    /* AOG-WS-MODEL-V1 (2026-09-28) — the Daily Drafts order at the end of the sheet: check my work, the name
+       line, then a small Send box right under it. Screen only; the printed copy has its own Name / Date line. */
+    h += '<div class="aog-ws-check no-print"><span class="aog-ws-k">' + sp("Check my work", "Revisa mi trabajo") + '</span><button type="button" class="chkall">' + sp("Check my work", "Revisar mi trabajo") + '</button><span class="chkres" aria-live="polite"></span></div>';
+    h += '<div class="aog-ws-sig no-print"><label for="who-' + esc(lid) + '">' + sp("Name", "Nombre") + '</label><input id="who-' + esc(lid) + '" name="who" placeholder="' + esc(T("Enter your name", "Escribe tu nombre")) + '" value="' + esc(ls(KEY + "who") || "") + '"><p class="aog-ws-note">' + sp("Sign with your name or class code. Use the same one every time.", "Firma con tu nombre o tu código de clase. Usa siempre el mismo.") + '</p></div>';
+    if (DEST) h += '<div class="aog-ws-send no-print"><p class="aog-ws-snote">' + sp("Your answers go to your teacher when you tap Send. Tap to send again.", "Tus respuestas le llegan a tu maestro cuando tocas Enviar. Toca para enviarlo otra vez.") + '</p><button type="button" class="go">' + sp("Send to my teacher", "Enviar a mi maestro") + '</button><p class="st" aria-live="polite"></p></div>';
+    else h += '<p class="st" aria-live="polite"></p>';
+    h += '<div class="btns no-print"><button type="button" class="pr">' + sp("Print", "Imprimir") + '</button><button type="button" class="cl">' + sp("Clear", "Borrar") + '</button></div>';
     return h;
   }
   function today() { var x = new Date(); return x.getFullYear() + "-" + ("0" + (x.getMonth() + 1)).slice(-2) + "-" + ("0" + x.getDate()).slice(-2); }
@@ -77,7 +83,18 @@
       if (sT) clearTimeout(sT);
       sT = setTimeout(function () { var all = saved(); all[lid] = fields(); ls(KEY + "ws", JSON.stringify(all)); var who = box.querySelector('[name="who"]').value.trim(); if (who) ls(KEY + "who", who); }, 300);
     });
-    box.querySelector(".chkw").onclick = function () {
+    /* Check my work: marks the words (as "Check my words" does) and says which parts are still empty */
+    box.querySelector(".chkall").onclick = function () {
+      var cw = box.querySelector(".chkw"); if (cw) cw.onclick();
+      var right = 0, words = 0, empty = 0;
+      Array.prototype.forEach.call(box.querySelectorAll("input[data-word]"), function (f) { words++; if (f.value.trim().toLowerCase() === f.getAttribute("data-word").toLowerCase()) right++; });
+      Array.prototype.forEach.call(box.querySelectorAll("textarea[name]"), function (f) { if (!f.value.trim()) empty++; });
+      var m = (words ? T("Words: ", "Palabras: ") + right + " / " + words + ". " : "") + (empty ? T("Parts still empty: ", "Partes vacías: ") + empty + "." : T("Every part has an answer.", "Cada parte tiene respuesta."));
+      box.querySelector(".chkres").textContent = m;
+      var first = box.querySelector(".mark.no") || Array.prototype.filter.call(box.querySelectorAll("textarea[name]"), function (f) { return !f.value.trim(); })[0];
+      if (first) { var t = first.previousElementSibling && first.classList.contains("mark") ? first.previousElementSibling : first; try { t.focus({ preventScroll: true }); t.scrollIntoView({ block: "center" }); } catch (e) {} }
+    };
+    var cwb = box.querySelector(".chkw"); if (cwb) cwb.onclick = function () {
       Array.prototype.forEach.call(box.querySelectorAll("input[data-word]"), function (f) {
         var m = f.nextElementSibling, ok = f.value.trim().toLowerCase() === f.getAttribute("data-word").toLowerCase();
         m.className = "mark " + (ok ? "ok" : "no"); m.textContent = f.value.trim() ? (ok ? "✓" : T("try again", "inténtalo otra vez")) : "";

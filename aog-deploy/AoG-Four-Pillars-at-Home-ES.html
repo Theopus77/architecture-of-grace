@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>Los cuatro pilares en casa — Architecture of Grace</title>
 <meta name="description" content="Los cuatro pilares, para la mesa de la cocina — qué son y qué puede decir una familia en una noche cualquiera.">
 <!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
@@ -34,32 +35,65 @@
 <meta name="application-name" content="Architecture of Grace">
 <!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
 <style>
-  @page { size: Letter; margin: 0; }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body { font-family: Georgia, "Times New Roman", serif; color: #2C3A47; background: #FBF3DF; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page { width: 8.5in; min-height: 11in; margin: 0 auto; padding: 0.55in 0.6in 0.5in;
-    background: radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%), radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%), #FBF3DF; }
-  .brandrow { display: flex; align-items: center; gap: 12px; }
-  .mark { width: 46px; height: 46px; border-radius: 11px; background: #1B3A5F; color: #E7C77B; display: flex; align-items: center; justify-content: center; font-size: 27px; font-weight: 700; }
-  .brand { font-size: 19px; font-weight: 700; color: #1B3A5F; letter-spacing: .2px; }
-  .brand small { display: block; font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: 400; color: #5A6B7B; letter-spacing: .04em; margin-top: 2px; }
-  h1 { font-size: 31px; color: #1B3A5F; margin: 18px 0 4px; letter-spacing: -.4px; }
-  .tagline { font-style: italic; font-size: 15px; color: #46506E; margin: 0 0 4px; }
-  .rule { height: 2px; background: #B8893A; border: 0; margin: 12px 0 16px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .card { background: #fff; border: 1.5px solid #E7D9B6; border-left: 5px solid #B8893A; border-radius: 12px; padding: 14px 16px; }
-  .pnum { font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #8f6720; }
-  .pname { font-size: 21px; color: #1B3A5F; margin: 1px 0 3px; }
-  .pmean { font-size: 13.5px; line-height: 1.45; color: #46506E; margin: 0 0 10px; }
-  .ritual-h { font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #2E6B3A; margin-bottom: 3px; }
-  .ritual { font-size: 13.5px; line-height: 1.5; color: #2C3A47; margin: 0 0 8px; }
-  .ritual b { color: #1B3A5F; }
-  .say { font-size: 13px; line-height: 1.45; color: #46506E; background: #FBF3DF; border-radius: 8px; padding: 8px 10px; }
-  .say em { font-style: italic; color: #1B3A5F; }
-  .foot { margin-top: 16px; display: flex; justify-content: space-between; align-items: baseline; font-family: Arial, Helvetica, sans-serif; font-size: 10.5px; color: #8a96a3; }
-  .foot b { color: #1B3A5F; }
-  .stick { font-style: italic; font-family: Georgia, serif; font-size: 12px; color: #8f6720; }
+/* AOG-PILLARS-REFRESH-V1 (2026-09-28) — Jimmy: "You can't print this, and if you did it needs to be in
+   white, not the cream background." On screen: the site's paper, pencil-edged cards, light and dark.
+   On paper: plain white, dark ink, no shadows, the four cards whole, one Letter sheet. */
+:root{--paper:#F7F2E6;--card:#FBF8F0;--ink:#1D2733;--soft:#46515F;--navy:#1B3A5F;--gold:#B8893A;--gold-ink:#7A5716;--green:#2E6B3A;--say:#F3EBD8;--pencil:rgba(42,38,34,.55);--pencil2:rgba(42,38,34,.32)}
+[data-theme="dark"]{--paper:#0F1924;--card:#18222E;--ink:#EDEAE2;--soft:#BFC8D2;--navy:#DCE6F2;--gold:#D9A33B;--gold-ink:#F2C964;--green:#9BD58A;--say:#22303F;--pencil:rgba(237,234,226,.45);--pencil2:rgba(237,234,226,.2)}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper)}
+body{color:var(--ink);font:17px/1.55 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif}
+.page{max-width:860px;margin:0 auto;padding:22px 16px 60px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 14px}
+.printbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border-radius:12px;border:2px solid var(--navy);background:var(--navy);color:var(--paper);font-family:inherit;font-size:16px;font-weight:700;line-height:1;cursor:pointer}
+[data-theme="dark"] .printbtn{background:#F2C964;border-color:#F2C964;color:#0A1E33}
+.printbtn:focus-visible,.tools a:focus-visible,.more a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.tools a{color:var(--gold-ink);font-weight:700;min-height:44px;display:inline-flex;align-items:center}
+.brandrow{display:flex;align-items:center;gap:10px}
+.mark{width:40px;height:40px;border-radius:10px;background:#1B3A5F;color:#F2C964;display:grid;place-items:center;font:700 22px Georgia,serif}
+.brand{font:700 17px Georgia,serif;color:var(--navy)}
+h1{font:600 clamp(28px,6vw,36px)/1.15 Fraunces,Georgia,serif;color:var(--navy);margin:14px 0 6px}
+.tagline{font-size:16px;color:var(--soft);margin:0}
+.rule{height:0;border:0;border-top:2px solid var(--gold);margin:14px 0 18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.grid{grid-template-columns:1fr}}
+/* pencil edge, the way the site's cards are drawn */
+.pcard{background:var(--card);border-radius:14px;padding:16px 18px;border-left:5px solid var(--gold);
+  box-shadow:0 0 0 1px var(--pencil),1px 2px 0 -.5px var(--pencil2)}
+.pnum{font:800 12px/1.3 Inter,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink)}
+.pname{font:600 22px/1.2 Georgia,serif;color:var(--navy);margin:2px 0 4px}
+.pmean{font-size:15.5px;line-height:1.45;color:var(--soft);margin:0 0 10px}
+.ritual-h{font:800 12px/1.35 Inter,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+.ritual{font-size:15.5px;line-height:1.5;margin:0 0 10px}
+.ritual b{color:var(--navy)}
+.say{font-size:15px;line-height:1.45;color:var(--ink);background:var(--say);border-radius:10px;padding:9px 12px}
+.say em{color:var(--navy)}
+.foot{margin-top:18px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--soft)}
+.stick{font:italic 15px Georgia,serif;color:var(--gold-ink)}
+.more{margin:26px 0 0;padding-top:14px;border-top:1.5px dashed var(--pencil);font-size:16px;color:var(--soft)}
+.more a{color:var(--gold-ink);font-weight:700;display:inline-block;padding:10px 0;min-height:44px}
+@media print{
+  @page{size:Letter;margin:0.5in 0.55in}
+  html,body,.page{background:#fff !important;background-image:none !important;color:#111 !important}
+  body{font-size:12pt}
+  .page{max-width:none;margin:0;padding:0}
+  .no-print,.aogtop,.aogtop-spacer,.aog-cwm,.aog-printbrand{display:none !important}
+  .mark{background:#fff !important;color:#1B3A5F !important;border:2px solid #1B3A5F;width:34px;height:34px;font-size:19px}
+  .brand,h1,.pname,.ritual b,.say em{color:#1B3A5F !important}
+  h1{font-size:26pt;margin:10px 0 4px}
+  .tagline,.pmean,.foot{color:#333 !important}
+  .tagline{font-size:11.5pt}
+  .rule{border-top-color:#8f6720;margin:10px 0 14px}
+  .grid{grid-template-columns:1fr 1fr !important;gap:12px}
+  .pcard{background:#fff !important;box-shadow:none !important;border:1.2px solid #555;border-left:5px solid #8f6720;border-radius:10px;padding:11px 13px;break-inside:avoid;page-break-inside:avoid}
+  .pnum,.stick{color:#6b4d12 !important}
+  .ritual-h{color:#245a2f !important;font-size:9.5pt}
+  .pnum{font-size:9pt}
+  .pname{font-size:18pt}
+  .pmean,.ritual{font-size:11.5pt;color:#222 !important}
+  .say{background:#fff !important;border:1px dashed #777;color:#222 !important;font-size:11.5pt}
+  .foot{font-size:9.5pt;margin-top:12px}
+}
 </style>
 <style id="aog-print-page-responsive">
 /* ⚠ SCREEN ONLY — @media print must keep the 8.5in sheet exactly as it was.
@@ -102,9 +136,13 @@
 <script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
 
-  <div class="page">
+  <main class="page">
+    <div class="tools no-print">
+      <button class="printbtn" type="button" onclick="window.print()">Imprimir</button>
+      <a href="AoG-Four-Pillars-at-Home.html" lang="en">In English</a>
+    </div>
     <div class="brandrow">
-      <div class="mark">A</div>
+      <div class="mark" aria-hidden="true">A</div>
       <div class="brand">Architecture of Grace</div>
     </div>
 
@@ -113,39 +151,39 @@
     <hr class="rule">
 
     <div class="grid">
-      <div class="card">
+      <div class="pcard">
         <div class="pnum">Pilar Uno</div>
         <div class="pname">Identidad</div>
-        <p class="pmean">Quién llega a creer un niño/a que es — moldeado por lo que notamos en voz alta.</p>
-        <div class="ritual-h">Prueba esto en casa — “Sorpréndelo siendo”</div>
+        <p class="pmean">Quién llega a creer su hijo o hija que es — moldeado por lo que notamos en voz alta.</p>
+        <div class="ritual-h">Prueba esto en casa: “Sorpréndele siendo”</div>
         <p class="ritual">Una vez al día, nombra una <b>cosa verdadera que viste que es</b>, no solo lo que logró. Elogia a la persona, no solo la nota.</p>
         <div class="say">Di: <em>“Noté lo paciente que fuiste con tu hermano hoy.”</em></div>
       </div>
 
-      <div class="card">
+      <div class="pcard">
         <div class="pnum">Pilar Dos</div>
         <div class="pname">Autocompasión</div>
-        <p class="pmean">Cómo aprende un niño/a a hablarse a sí mismo cuando algo sale mal.</p>
-        <div class="ritual-h">Prueba esto en casa — “Dale la vuelta al crítico”</div>
+        <p class="pmean">Cómo aprende su hijo o hija a hablarse cuando algo sale mal.</p>
+        <div class="ritual-h">Prueba esto en casa: “Dale la vuelta al crítico”</div>
         <p class="ritual">Cuando aparezca la voz dura, ayúdale a <b>hablarse como a un amigo</b>. Modélalo con tus propios errores, en voz alta.</p>
         <div class="say">Dice “soy tonto/a.” → <em>“Cometiste un error — eso es ser humano. ¿Qué puedes aprender?”</em></div>
       </div>
 
-      <div class="card">
+      <div class="pcard">
         <div class="pnum">Pilar Tres</div>
         <div class="pname">Perdón</div>
         <p class="pmean">Superar los errores para dar espacio al crecimiento — el suyo y el tuyo.</p>
-        <div class="ritual-h">Prueba esto en casa — “El reintento”</div>
+        <div class="ritual-h">Prueba esto en casa: “El reintento”</div>
         <p class="ritual">Recorran juntos los cuatro pasos: <b>reconócelo · nombra el impacto · repáralo · reinicia.</b> Comparte un error tuyo primero.</p>
-        <div class="say">Prueben un “error de la semana” en la cena — empieza tú. <em>Hace que reparar sea normal, no aterrador.</em></div>
+        <div class="say">Prueben un “error de la semana” en la cena. Empieza tú. <em>Hace que reparar sea normal, no aterrador.</em></div>
       </div>
 
-      <div class="card">
+      <div class="pcard">
         <div class="pnum">Pilar Cuatro</div>
         <div class="pname">Gracia</div>
-        <p class="pmean">Recibir a un niño/a con comprensión y no solo con juicio.</p>
-        <div class="ritual-h">Prueba esto en casa — “Conexión antes que corrección”</div>
-        <p class="ritual">Antes del sermón, toma <b>una respiración tranquila</b> y haz <b>una pregunta amable</b>. Tu calma es la intervención.</p>
+        <p class="pmean">Recibir a su hijo o hija con comprensión y no solo con juicio.</p>
+        <div class="ritual-h">Prueba esto en casa: “Conexión antes que corrección”</div>
+        <p class="ritual">Antes de corregir, toma <b>una respiración tranquila</b> y haz <b>una pregunta amable</b>. Tu calma es la intervención.</p>
         <div class="say">Di: <em>“Parece que fue un día difícil. Cuéntame qué pasó.”</em></div>
       </div>
     </div>
@@ -154,6 +192,7 @@
       <span>architectureofgrace.org</span>
       <span class="stick">Pégalo en el refrigerador.</span>
     </div>
-  </div>
+    <p class="more no-print">Más para casa: <a href="/#family">Familias</a> · <a href="/family-plan">El plan de nuestro hijo o hija</a> · <a href="/grace-at-home.html">Para empezar a conversar</a></p>
+  </main>
 </body>
 </html>

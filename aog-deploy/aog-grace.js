@@ -158,6 +158,11 @@
       var skw = D.createElement("script"); skw.id = "aog-sketch-js"; skw.src = "/aog-sketch.js"; skw.defer = true; (D.head || H).appendChild(skw);
     }
   } catch (e) {}
+  /* AOG-WS-MODEL-V1 (2026-09-28) — every test and worksheet ends the Daily Drafts way: check my work,
+     name line, send to my teacher; on sketch-pad paper (aog-worksheet.js). */
+  try {
+    if (!D.getElementById("aog-ws-js")) { var wsj = D.createElement("script"); wsj.id = "aog-ws-js"; wsj.src = "/aog-worksheet.js"; wsj.defer = true; (D.head || H).appendChild(wsj); }
+  } catch (e) {}
   /* AOG-MARKUP-V1 (2026-09-27) — Jimmy: "INTERACTIVE TEXT THROUGHOUT THE ECOSYSTEM." Every
      reading page gets highlights and notes (aog-markup.js). Tool pages opt out below. */
   try {
@@ -232,7 +237,7 @@
   try { var sl = D.createElement("script"); sl.src = "/aog-slides.js?v=1"; (D.head || H).appendChild(sl); } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
   try { var mn = D.createElement("script"); mn.src = "/aog-mine.js"; (D.head || H).appendChild(mn); } catch (e) {}
-  var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=optional";
+  var FONTS = "/fonts/aog-fonts.css";   /* AOG-SELF-HOSTED-FONTS (2026-09-28) — Jimmy: the fonts live on the site; no page reaches Google Fonts */
 
   /* ── 0 ── navy, the whole page ─────────────────────────────────────────
      Jimmy: "I wanted the whole page like this, not just the top." The home
@@ -256,10 +261,10 @@
     return l;
   }
   var hasFonts = false;
-  try { hasFonts = !!D.querySelector('link[href*="family=Fraunces"]'); } catch (e) {}
+  try { hasFonts = !!D.querySelector('link[href*="aog-fonts.css"]'); } catch (e) {}
   if (!hasFonts) {
-    link("preconnect", "https://fonts.googleapis.com");
-    link("preconnect", "https://fonts.gstatic.com", { crossorigin: "" });
+    link("preload", "/fonts/inter-normal-latin.woff2", { as: "font", type: "font/woff2", crossorigin: "" });
+    link("preload", "/fonts/fraunces-normal-latin.woff2", { as: "font", type: "font/woff2", crossorigin: "" });
     link("stylesheet", FONTS);
   }
   var sheet = link("stylesheet", "/aog-grace.css", { "data-aog-grace": "1" });

@@ -196,7 +196,11 @@
     "spanish-hub": "page-spanish-hub", "facs-hub": "page-facs-hub", "dashboard": "page-dashboard", "turn-ins": "page-turn-ins",
     "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space",
     "music-drums": "music-drums", "drums-lessons": "music-drums", "music-decks": "music-decks", "decks-lessons": "music-decks",
-    "science-waves": "science-waves", "waves-lessons": "science-waves", "word-foundry": "word-foundry" };
+    "science-waves": "science-waves", "waves-lessons": "science-waves", "word-foundry": "word-foundry",
+    /* the ten crosswalks, each with its own drawing (2026-09-28) */
+    "xw-casel": "page-xw-casel", "xw-danielson": "page-xw-danielson", "xw-divine-master": "page-xw-divine-master", "xw-idea-legal": "page-xw-idea-legal",
+    "xw-idea": "page-xw-idea", "xw-illinois-sel": "page-xw-illinois-sel", "xw-matrix-divine": "page-xw-matrix-divine", "xw-matrix-universal": "page-xw-matrix-universal",
+    "xw-mtss": "page-xw-mtss", "xw-restorative": "page-xw-restorative" };
   var MCSS = [
     ".aog-mast-host{ position:relative; }", ".aog-mast-sketch{ overflow:hidden; }",
     ".aog-mast-host > :not(.aog-mast-sketch){ position:relative; z-index:1; }",
@@ -230,12 +234,27 @@
       var c = cards[i]; if (c.querySelector(".aog-card-sketch")) continue;
       var a = c.querySelector("a.door"); if (!a) continue;
       var h = (a.getAttribute("href") || "").replace(/[?#].*$/, "");
-      var id = SHORT[h] || (h.match(/^\/?([A-Za-z0-9-]+)\.html$/) || [])[1]; if (!id) continue;
+      var id = SHORT[h] || (h.match(/^\/?([A-Za-z0-9-]+)\.html$/) || [])[1] || (/^\/(microscope|telescope)$/.test(h) ? h.slice(1) : ""); if (!id) continue;
+      if (typeof PAGE !== "undefined" && PAGE[id] && PAGE[id].indexOf("page-") === 0 && /microscope|telescope/.test(id)) id = PAGE[id];
       var f = D.createElement("span"); f.className = "aog-card-sketch"; f.setAttribute("aria-hidden", "true");
       var im = D.createElement("img"); im.alt = ""; im.loading = "lazy"; im.decoding = "async"; im.src = "/img/banners/" + id + "-pencil-900.webp";
       im.onerror = (function (fr) { return function () { if (fr.parentNode) fr.parentNode.removeChild(fr); }; })(f);
       f.appendChild(im); c.insertBefore(f, c.firstChild);
     }
+  }
+  /* AOG-XW-CARD-SKETCH-V1 — each crosswalk card (.xa-card) shows the drawing of the crosswalk it opens */
+  function xwCards() {
+    var cards = D.querySelectorAll(".xa-card");
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i]; if (c.querySelector(".aog-card-sketch")) continue;
+      var a = c.querySelector('a[href^="/xw-"]'); if (!a) continue;
+      var id = PAGE[(a.getAttribute("href") || "").replace(/^\//, "").replace(/(\.html)?([?#].*)?$/, "")]; if (!id) continue;
+      var f = D.createElement("span"); f.className = "aog-card-sketch aog-xw-sketch"; f.setAttribute("aria-hidden", "true");
+      var im = D.createElement("img"); im.alt = ""; im.loading = "lazy"; im.decoding = "async"; im.src = "/img/banners/" + id + "-pencil-900.webp";
+      im.onerror = (function (fr) { return function () { if (fr.parentNode) fr.parentNode.removeChild(fr); }; })(f);
+      f.appendChild(im); c.insertBefore(f, c.firstChild);
+    }
+    if (cards.length && !D.getElementById("aog-hub-sketch-css")) { var hs = D.createElement("style"); hs.id = "aog-hub-sketch-css"; hs.appendChild(D.createTextNode(HCSS)); (D.head || D.documentElement).appendChild(hs); }
   }
   var HCSS = "\nhtml:not([data-theme=\"dark\"]).aog-hub-sketch .unit.open{ background:repeating-linear-gradient(0deg, rgba(29,39,51,.03) 0 1px, transparent 1px 5px), #FBF8F0 !important; box-shadow:0 0 0 1px rgba(42,38,34,.55), 1px 2px 0 -0.5px rgba(42,38,34,.35), 0 10px 22px -16px rgba(0,0,0,.4) !important; }"
     + "\n.aog-card-sketch{ display:block; align-self:stretch; margin:0 0 6px; height:92px; overflow:hidden; border-radius:8px; border:1px solid rgba(42,38,34,.4); }"
@@ -283,7 +302,7 @@
     }
   }
   TCSS += "\n.aog-slot-sketch{ display:block; width:100%; height:150px; object-fit:cover; object-position:75% 42%; border-radius:10px; border:1px solid rgba(42,38,34,.35); }";
-  function mastBoot() { tabsHome(); hubCards(); sketchSlots();
+  function mastBoot() { tabsHome(); hubCards(); xwCards(); sketchSlots();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
     if (/^(slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
     if (PAGE[pg]) { mast(PAGE[pg]); return; }
@@ -307,8 +326,10 @@
    doors), small flat numbers, and a readable "Course contents" button. */
 (function(){
   var PAL=["#2F63B8","#B8457A","#2E8B57","#B87A12","#7B4FA0","#A8323E","#1F8080","#3F4AA6"];
-  var css=".unit-spread .badge{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
-   +".unit-spread .unum b{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;min-width:36px!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+  var SK="background:linear-gradient(#FBF8F0,#FBF8F0) padding-box, repeating-linear-gradient(38deg, var(--aog-uc,var(--gl,#2F63B8)) 0 2.8px, #FBF8F0 2.8px 5.6px) border-box!important;border:5px solid transparent!important;outline:1.5px solid #2A2622;outline-offset:-1px;color:#1F2630!important;font-family:Georgia,\"Times New Roman\",serif!important;";
+  var css=".unit-spread .badge{"+SK+"width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+   +"html:root body .unit .un{"+SK+"box-shadow:none!important;}"
+   +".unit-spread .unum b{"+SK+"min-width:36px!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
    +".cl-btn,.cl-btn:visited{background:#0A1E33!important;color:#F7F2E6!important;opacity:1!important;filter:none!important}"
    +".cl-btn:hover{background:#1D3A5C!important;color:#fff!important}";
   function go(){
@@ -332,4 +353,111 @@
     wrap(Element.prototype, "scrollIntoView"); wrap(Element.prototype, "scrollTo"); wrap(Element.prototype, "scrollBy");
     wrap(window, "scrollTo"); wrap(window, "scroll"); wrap(window, "scrollBy");
   }catch(e){}
+})();
+
+/* AOG-NUM-SKETCH-V1 (2026-09-28) — the unit number on every banner (.unum b), the question numbers
+   (.qn) and the lesson numbers (.ln) in the rooms' books and the SEL pages take the same striped
+   pencil box as the course pages (AOG-UNIT-COLORS-V1): each keeps its own colour as the stripe, the
+   number itself is dark ink on paper, so it reads at every size and in both themes. */
+(function(){
+  function sk(w, s){ return "background:linear-gradient(#FBF8F0,#FBF8F0) padding-box, repeating-linear-gradient(38deg, var(--aog-nc) 0 "+s+"px, #FBF8F0 "+s+"px "+(2*s)+"px) border-box!important;border:"+w+"px solid transparent!important;outline:1.5px solid #2A2622;outline-offset:-1px;color:#1F2630!important;box-shadow:none!important;text-shadow:none!important;-webkit-text-fill-color:#1F2630!important;"; }
+  var css =
+      ".unum b,b#unum{--aog-nc:var(--aog-uc,var(--red,#A8323E));"+sk(5,2.8)+"font-family:Georgia,\"Times New Roman\",serif!important;border-radius:9px!important;}"
+    + ".ln{--aog-nc:var(--aog-uc,var(--navy,#1B3A5F));"+sk(4,2.4)+"font-family:Georgia,\"Times New Roman\",serif!important;border-radius:8px!important;}"
+    + ".qn{--aog-nc:var(--aog-uc,var(--uc,var(--red,#A8323E)));"+sk(3,2)+"display:inline-block;min-width:1.7em;padding:1px 5px!important;border-radius:6px!important;text-align:center;font-weight:800!important;line-height:1.35;box-sizing:border-box;}";
+  var SEL = ".unum b, b#unum, .ln, .qn";
+  function own(el){ /* the item's own colour before the pencil box paints over it */
+    if(el.hasAttribute("data-aog-nc")) return;
+    var s = getComputedStyle(el), bg = s.backgroundColor, c = bg && !/rgba\(0, 0, 0, 0\)|transparent/.test(bg) ? bg : s.color;
+    var m = (c||"").match(/\d+(\.\d+)?/g); if(!m) return;
+    var r=+m[0], g=+m[1], b=+m[2]; if(r>215 && g>215 && b>215) return; /* too pale to show as a stripe */
+    el.style.setProperty("--aog-uc", c); el.setAttribute("data-aog-nc","");
+  }
+  function go(){
+    if(document.getElementById("aog-num-sketch")) return;
+    [].forEach.call(document.querySelectorAll(SEL), own);
+    var st = document.createElement("style"); st.id = "aog-num-sketch"; st.textContent = css; document.head.appendChild(st);
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+})();
+
+/* AOG-PRINT-WHITE-JS (2026-09-28) — paper stays white. On print, any large surface that is cream or
+   carries a paper texture, grid or wash prints plain white; small designed marks (number boxes,
+   graph bars, subject strips, answer marks) keep their colours. aog-calm.css (AOG-PRINT-WHITE-V1)
+   does the page itself; this catches the cards and panels in between. */
+(function(){
+  var done = 0;
+  function light(c){ var m = (c||"").match(/[\d.]+/g); if(!m) return false; if(m.length>3 && +m[3] < .05) return false; return +m[0]>=215 && +m[1]>=215 && +m[2]>=205 && !(+m[0]===255 && +m[1]===255 && +m[2]===255); }
+  function wash(img){ return img && img !== "none" && /url\(|linear-gradient/.test(img); }
+  function mark(){
+    if(document.documentElement.getAttribute("data-theme") === "dark") return;
+    if(!done){ var st = document.createElement("style"); st.id = "aog-print-white";
+      var P = "html:root:not(#aog-x):not(#aog-y) body:not(#aog-z) "; st.textContent = "@media print{"+P+"[data-aog-pw~=c]:not(#aog-w){background-color:#fff!important}"+P+"[data-aog-pw~=i]:not(#aog-w){background-image:none!important}"+P+"[data-aog-pw~=b]:not(#aog-w)::before,"+P+"[data-aog-pw~=a]:not(#aog-w)::after{background-image:none!important}}";
+      CSS_TXT = st.textContent; document.head.appendChild(st); done = 1; }
+    walk(document.body, null);
+  }
+  var CSS_TXT = "";
+  function walk(root, sr){ /* sr: a shadow root (turn-ins shows each paper in one); it gets its own copy of the rule */
+    if(!root) return;
+    if(sr && !sr.querySelector("style.aog-print-white")){ var c = document.createElement("style"); c.className = "aog-print-white"; c.textContent = CSS_TXT.replace(/html:root:not\(#aog-x\):not\(#aog-y\) body:not\(#aog-z\) /g, ":host :not(#aog-x):not(#aog-y)"); sr.appendChild(c); }
+    var all = root.querySelectorAll ? root.querySelectorAll("*") : [];
+    for(var i=0;i<all.length;i++){ var el = all[i], t = el.tagName;
+      if(el.shadowRoot) walk(el.shadowRoot, el.shadowRoot);
+      if(t==="IMG"||t==="SVG"||t==="svg"||t==="CANVAS"||t==="VIDEO"||t==="SCRIPT"||t==="STYLE") continue;
+      var s = getComputedStyle(el), f = [];
+      if(light(s.backgroundColor)) f.push("c");
+      var r = el.getBoundingClientRect(), big = r.width > 60 && r.height > 60 && r.width*r.height > 40000;
+      if(big && wash(s.backgroundImage)) f.push("i");
+      if(big){ if(wash(getComputedStyle(el,"::before").backgroundImage)) f.push("b"); if(wash(getComputedStyle(el,"::after").backgroundImage)) f.push("a"); }
+      /* flags only add up: once white in print, the same box must not read as "already white" and lose its flag */
+      if(f.length){ var o = (el.getAttribute("data-aog-pw")||"").split(" "); f.forEach(function(x){ if(o.indexOf(x)<0) o.push(x); }); el.setAttribute("data-aog-pw", o.join(" ").trim()); }
+    }
+  }
+  try{
+    window.addEventListener("beforeprint", mark);
+    var mq = matchMedia("print"), h = function(e){ if(e.matches) mark(); };
+    if(mq.addEventListener) mq.addEventListener("change", h); else if(mq.addListener) mq.addListener(h);
+  }catch(e){}
+})();
+
+/* AOG-MAST-DRAWING-V1 (2026-09-28) — the SEL worksheets (w*) are mapped in aog-room-map.js to their
+   room's lessons page, with "drawing" naming the pencil drawing of their unit (sel12-u1 …). The
+   masthead shows that drawing the same way AOG-MAST-SKETCH shows a course unit's. */
+(function(){
+  var D = document;
+  var MCSS = [
+    ".aog-mast-host{ position:relative; }", ".aog-mast-sketch{ overflow:hidden; }",
+    ".aog-mast-host > :not(.aog-mast-sketch){ position:relative; z-index:1; }",
+    ".aog-mast-sketch{ position:absolute; top:0; right:0; bottom:0; width:min(54%,700px); z-index:0; pointer-events:none; }",
+    ".aog-mast-sketch img{ display:block; width:100%; height:100%; object-fit:cover; object-position:80% 42%; filter:brightness(.78) contrast(1.05); }",
+    ".aog-mast-sketch{ -webkit-mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 30%, #000 62%, #000 86%, transparent 100%); mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 30%, #000 62%, #000 86%, transparent 100%); }",
+    "@media (max-width:720px){ .aog-mast-sketch{ width:100%; opacity:.28; -webkit-mask-image:none; mask-image:none; } }",
+    "@media print{ .aog-mast-sketch{ display:none; } }"
+  ].join("\n");
+  function put(id){
+    var h1 = D.querySelector("main h1") || D.querySelector("h1");
+    var h = (h1 && h1.closest("header.mast, .mast, header")) || D.querySelector("header.mast, .mast");
+    if (!h || h.querySelector(".aog-mast-sketch")) return;
+    var box = D.createElement("span"); box.className = "aog-mast-sketch"; box.setAttribute("aria-hidden", "true");
+    var b = "/img/banners/" + id + "-pencil";
+    box.innerHTML = '<picture><source type="image/webp" srcset="' + b + '-900.webp 900w, ' + b + '-1600.webp 1600w" sizes="(max-width:720px) 100vw, 54vw">'
+      + '<img src="' + b + '-900.jpg" alt="" width="900" height="315" decoding="async" loading="lazy"></picture>';
+    box.querySelector("img").onerror = function(){ if (box.parentNode) box.parentNode.removeChild(box); h.classList.remove("aog-mast-host"); };
+    h.classList.add("aog-mast-host"); h.insertBefore(box, h.firstChild);
+    if (!D.getElementById("aog-mast-sketch-css")) { var st = D.createElement("style"); st.id = "aog-mast-sketch-css"; st.appendChild(D.createTextNode(MCSS)); (D.head || D.documentElement).appendChild(st); }
+  }
+  function boot(){
+    var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, ""), tries = 0;
+    /* aog-grace.js loads the map only for the subject practice rooms; the concepts (c*), vocabulary (v*)
+       and SEL worksheet (w*) rooms load it here, so the course drawing (and this one) can find them */
+    if (!window.AOG_ROOM_MAP && /^[cvw]\d+-/.test(pg) && !D.querySelector('script[src="/aog-room-map.js"]')) {
+      var ms = D.createElement("script"); ms.src = "/aog-room-map.js"; ms.async = true; (D.head || D.documentElement).appendChild(ms);
+    }
+    (function wait(){
+      var m = window.AOG_ROOM_MAP, it = m && m[pg];
+      if (it && it.drawing && /^[a-z0-9]{2,8}-u\d+$/.test(it.drawing)) { put(it.drawing); return; }
+      if (!m && ++tries < 20) setTimeout(wait, 300);
+    })();
+  }
+  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", boot); else boot();
 })();

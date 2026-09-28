@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}/* AOG-LESSONS-FOLD-V1 (2026-09-28) — Jimmy: "the lessons should collapse." The lesson you are on comes first; the full list folds away. */
+details.all-lessons{padding:.2rem 1rem .6rem;margin:1rem 0 .4rem}
+details.all-lessons>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:.5rem;font-weight:700;list-style:none}
+details.all-lessons>summary::-webkit-details-marker{display:none}
+details.all-lessons>summary::before{content:"\25B8";color:var(--steel)}
+details.all-lessons[open]>summary::before{content:"\25BE"}
+details.all-lessons .ladder-group,details.all-lessons .lgroup{font-weight:700;margin:1rem 0 .3rem}
+</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Telescope — Architecture of Grace</title>
 <meta name="description" content="A 90 mm brass refractor with a working eyepiece. The Moon, Jupiter, a double star — and the landing sea, where the lander is smaller than the air.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600;700&display=optional" rel="stylesheet">
+<link href="/fonts/aog-fonts.css" rel="stylesheet">
 <style>
 :root {
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
@@ -205,7 +210,7 @@ svg.scope { width:100%; height:auto; }
   </section>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
-    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every lesson in pictures &#183; prints on 9 pages</span></summary>
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every lesson in pictures &#183; prints on 16 pages</span></summary>
     <div class="pgbody">
       <iframe id="pgFrame" data-src="/telescope-guide?embed=1" title="The Telescope, in pictures" loading="lazy"></iframe>
     </div>
@@ -250,8 +255,8 @@ const STR = {
   teachOpen:{en:"Open",es:"Abiertas"},
   teachLocked:{en:"Locked. Each lesson opens the next control.",es:"Cerradas. Cada lección abre el control siguiente."},
   teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
-  hint:{en:"Seventeen lessons. Each one opens the next. They climb from the cap to magnification, the Moon, planets, faint fuzzies and the limits: larger is not finer.",es:"Diecisiete lecciones. Cada una abre la siguiente. Suben de la tapa al aumento, la Luna, los planetas, las manchas tenues y los límites: más grande no es más fino."},
-  done:{en:"All seventeen lessons done. You can find, focus, measure and log the sky, and you know its limits.",es:"Las diecisiete lecciones hechas. Sabes encontrar, enfocar, medir y registrar el cielo, y conoces sus límites."},
+  hint:{en:"{N} lessons. Each one opens the next. They climb from the cap to magnification, the Moon, planets, faint fuzzies and the limits: larger is not finer. Then one lesson for each target.",es:"{N} lecciones. Cada una abre la siguiente. Suben de la tapa al aumento, la Luna, los planetas, las manchas tenues y los límites: más grande no es más fino. Luego, una lección por cada objeto."},
+  done:{en:"All {N} lessons done. You can find, focus, measure and log the sky, and you know its limits.",es:"Las {N} lecciones hechas. Sabes encontrar, enfocar, medir y registrar el cielo, y conoces sus límites."},
   fineHint:{en:"The fine knob is under the circle. Changing the eyepiece throws the focus off.",es:"El micrométrico está debajo del círculo. Cambiar el ocular saca el foco."},
   moon:{en:"Moon",es:"Luna"}, jupiter:{en:"Jupiter",es:"Júpiter"}, saturn:{en:"Saturn",es:"Saturno"},
   orion:{en:"Orion",es:"Orión"}, pleiades:{en:"Pleiades",es:"Pléyades"}, albireo:{en:"Albireo",es:"Albireo"}, pair:{en:"The pair",es:"El par"},
@@ -354,7 +359,85 @@ const STAIR = [
   {id:"t17", en:"Plan an observing night", es:"Planea una noche de observación",
     blurb_en:"Put it together. The Moon at dusk, then a far planet. Write a log: time, eyepiece, power, what you saw.",
     blurb_es:"Júntalo todo. La Luna al anochecer, luego un planeta lejano. Escribe un registro: hora, ocular, aumento, lo que viste.",
-    steps:["moonDusk","uranus"]}
+    steps:["moonDusk","uranus"]},
+  /* AOG-TELE-TARGET-LESSONS-V1 (2026-09-27) — Jimmy: a lesson for every target on the telescope. Lessons 18–36,
+     one per target in the Target menu's order. Appended, so saved progress on 1–17 stays where it is. */
+  {id:"t18", group:"target", tgt:"moon", acts:"ep25 ep6 ret", en:"Moon", es:"Luna",
+    blurb_en:"Dark seas, bright highlands, and shadows along the terminator.",
+    blurb_es:"Mares oscuros, tierras altas brillantes y sombras en el terminador.",
+    steps:["gMoon25", "gMoon150", "gMoonMeas"]},
+  {id:"t19", group:"target", tgt:"jupiter", acts:"ep25 ep6 bar0 ret", en:"Jupiter", es:"Júpiter",
+    blurb_en:"Two brown belts, a red spot, four moons in a line, and one moon's shadow on the disk.",
+    blurb_es:"Dos cinturones marrones, una mancha roja, cuatro lunas en fila y la sombra de una luna sobre el disco.",
+    steps:["gJup25", "gJup150", "gJupMeas"]},
+  {id:"t20", group:"target", tgt:"saturn", acts:"ep25 ep6 bar", en:"Saturn", es:"Saturno",
+    blurb_en:"The rings, the dark Cassini gap, the ring shadow on the globe. Titan off to the side.",
+    blurb_es:"Los anillos, la raya oscura de Cassini, la sombra del anillo en el globo. Titán a un lado.",
+    steps:["gSat25", "gSat150", "gSat300"]},
+  {id:"t21", group:"target", tgt:"mars", acts:"ep25 ep10 ret", en:"Mars", es:"Marte",
+    blurb_en:"A small orange disk. White polar cap on top, a dark wedge in the middle.",
+    blurb_es:"Un disco naranja pequeño. Casquete polar blanco arriba, una cuña oscura en el medio.",
+    steps:["gMars25", "gMars90", "gMarsMeas"]},
+  {id:"t22", group:"target", tgt:"venus", acts:"ep25 ep6 bar0 ret", en:"Venus", es:"Venus",
+    blurb_en:"A bright crescent. No markings: it is all cloud.",
+    blurb_es:"Una luna creciente brillante. Sin marcas: todo es nube.",
+    steps:["gVen25", "gVen150", "gVenMeas"]},
+  {id:"t23", group:"target", tgt:"uranus", acts:"ep25 ep6 bar", en:"Uranus", es:"Urano",
+    blurb_en:"A tiny pale blue-green disk. No markings. Use the 6 mm.",
+    blurb_es:"Un disco diminuto azul verdoso pálido. Sin marcas. Usa el de 6 mm.",
+    steps:["gUra25", "gUra150", "gUra300"]},
+  {id:"t24", group:"target", tgt:"orion", acts:"ep25 ep10 ep6", en:"Orion", es:"Orión",
+    blurb_en:"A gray-green cloud with four stars in its heart.",
+    blurb_es:"Una nube gris verdosa con cuatro estrellas en su corazón.",
+    steps:["gOri25", "gOri90", "gOri150"]},
+  {id:"t25", group:"target", tgt:"pleiades", acts:"ep25 ep10 ret", en:"Pleiades", es:"Pléyades",
+    blurb_en:"Seven bright sisters and a faint veil on Merope. Use the 25 mm.",
+    blurb_es:"Siete hermanas brillantes y un velo tenue en Mérope. Usa el de 25 mm.",
+    steps:["gPle25", "gPle90", "gPleMeas"]},
+  {id:"t26", group:"target", tgt:"dcluster", acts:"ep25 ep10 ret", en:"Double Cluster", es:"Cúmulo Doble",
+    blurb_en:"Two sprays of stars side by side. Only the 25 mm fits both.",
+    blurb_es:"Dos rociadas de estrellas lado a lado. Solo el de 25 mm cabe las dos.",
+    steps:["gDc25", "gDc90", "gDcMeas"]},
+  {id:"t27", group:"target", tgt:"andromeda", acts:"ep25 ep6 ret", en:"Andromeda Galaxy", es:"Galaxia de Andrómeda",
+    blurb_en:"A soft oval glow with a bright middle. A small round smudge below it.",
+    blurb_es:"Un óvalo suave de luz con el centro brillante. Una manchita redonda debajo.",
+    steps:["gAnd25", "gAnd6", "gAndMeas"]},
+  {id:"t28", group:"target", tgt:"m13", acts:"ep25 ep6 ret", en:"M13 star cluster", es:"Cúmulo M13",
+    blurb_en:"A ball of stars. The edge breaks into single points.",
+    blurb_es:"Una bola de estrellas. El borde se deshace en puntos.",
+    steps:["gM13a", "gM13b", "gM13Meas"]},
+  {id:"t29", group:"target", tgt:"ring", acts:"ep25 ep6 ret", en:"Ring Nebula", es:"Nebulosa del Anillo",
+    blurb_en:"A tiny gray smoke ring. It needs the 10 mm or the 6 mm.",
+    blurb_es:"Un anillo de humo gris diminuto. Necesita el de 10 o el de 6 mm.",
+    steps:["gRing25", "gRing150", "gRingMeas"]},
+  {id:"t30", group:"target", tgt:"m27", acts:"ep25 ep10 ret", en:"Dumbbell Nebula", es:"Nebulosa Dumbbell",
+    blurb_en:"A faint gray apple core. Look a little to one side of it.",
+    blurb_es:"Un corazón de manzana gris y tenue. Mira un poco a un lado.",
+    steps:["gM27a", "gM27b", "gM27Meas"]},
+  {id:"t31", group:"target", tgt:"mizar", acts:"ep25 ep10 ret", en:"Mizar and Alcor", es:"Mizar y Alcor",
+    blurb_en:"Two white stars close together, and Alcor off to the side.",
+    blurb_es:"Dos estrellas blancas muy juntas, y Alcor a un lado.",
+    steps:["gMiz25", "gMiz90", "gMizMeas"]},
+  {id:"t32", group:"target", tgt:"sea", acts:"ep25 ep6 bar", en:"The sea", es:"El mar",
+    blurb_en:"A dark plain and small craters. No lander.",
+    blurb_es:"Una llanura oscura y cráteres pequeños. Sin módulo.",
+    steps:["gSea25", "gSea150", "gSea300"]},
+  {id:"t33", group:"target", tgt:"albireo", acts:"ep25 ep10 ret", en:"Albireo", es:"Albireo",
+    blurb_en:"One gold star, one blue. 34″ apart.",
+    blurb_es:"Una estrella de oro, una azul. A 34″.",
+    steps:["gAlb25", "gAlb90", "gAlbMeas"]},
+  {id:"t34", group:"target", tgt:"split", acts:"ep10 ep6 bar0 bar", en:"The 2.4″ pair", es:"El par de 2.4″",
+    blurb_en:"Two stars 2.4″ apart. The 6 mm and the Barlow split them.",
+    blurb_es:"Dos estrellas a 2.4″. El de 6 mm con el Barlow las separa.",
+    steps:["gSpl90", "gSpl150", "gSpl300"]},
+  {id:"t35", group:"target", tgt:"pair", acts:"ep25 ep6 bar", en:"The pair", es:"El par",
+    blurb_en:"Two stars 1.0″ apart. Nothing on this bench splits them.",
+    blurb_es:"Dos estrellas a 1.0″. Nada en esta mesa las separa.",
+    steps:["gPair25", "gPair150", "gPair300"]},
+  {id:"t36", group:"target", tgt:"sun", acts:"filt ep25 ep10", en:"Sun", es:"Sol",
+    blurb_en:"Solar filter on the front first. Never look without it. Then dark spots with gray fringes.",
+    blurb_es:"Primero el filtro solar al frente. Nunca mires sin él. Luego, manchas oscuras con flecos grises.",
+    steps:["gSunFilt", "gSun25", "gSun90"]}
 ];
 const STEP = {
   cap:{en:"Take the cap off",es:"Quita la tapa"},
@@ -392,7 +475,65 @@ const STEP = {
   measJup:{en:"Measure Jupiter with the reticle",es:"Mide Júpiter con el retículo"},
   measAlb:{en:"Measure Albireo with the reticle",es:"Mide Albireo con el retículo"},
   moonDusk:{en:"The Moon at dusk or dawn, in focus",es:"La Luna al anochecer o al amanecer, en foco"},
-  uranus:{en:"Uranus in focus with the 6 mm",es:"Urano en foco con el de 6 mm"}
+  uranus:{en:"Uranus in focus with the 6 mm",es:"Urano en foco con el de 6 mm"},
+  /* AOG-TELE-TARGET-LESSONS-V1 — lessons 18–36 */
+  gMoon25:{en:"The whole Moon in focus in the 25 mm",es:"La Luna entera en foco con el de 25 mm"},
+  gMoon150:{en:"The terminator in focus at 150× (6 mm)",es:"El terminador en foco a 150× (6 mm)"},
+  gMoonMeas:{en:"Measure a crater with the reticle",es:"Mide un cráter con el retículo"},
+  gJup25:{en:"Jupiter in focus in the 25 mm",es:"Júpiter en foco con el de 25 mm"},
+  gJup150:{en:"The belts in focus at 150× (6 mm)",es:"Los cinturones en foco a 150× (6 mm)"},
+  gJupMeas:{en:"Measure Jupiter's disk",es:"Mide el disco de Júpiter"},
+  gSat25:{en:"Saturn in focus in the 25 mm",es:"Saturno en foco con el de 25 mm"},
+  gSat150:{en:"The rings in focus at 150× (6 mm)",es:"Los anillos en foco a 150× (6 mm)"},
+  gSat300:{en:"Saturn at 300× (6 mm and Barlow): bigger, not sharper",es:"Saturno a 300× (6 mm y Barlow): más grande, no más nítido"},
+  gMars25:{en:"Mars in focus in the 25 mm: an orange dot",es:"Marte en foco con el de 25 mm: un punto naranja"},
+  gMars90:{en:"The polar cap in focus at 90× (10 mm)",es:"El casquete polar en foco a 90× (10 mm)"},
+  gMarsMeas:{en:"Measure the disk of Mars",es:"Mide el disco de Marte"},
+  gVen25:{en:"Venus in focus in the 25 mm",es:"Venus en foco con el de 25 mm"},
+  gVen150:{en:"The crescent in focus at 150× (6 mm)",es:"La creciente en foco a 150× (6 mm)"},
+  gVenMeas:{en:"Measure the crescent, tip to tip",es:"Mide la creciente, de punta a punta"},
+  gUra25:{en:"Uranus in the 25 mm: it looks like a star",es:"Urano con el de 25 mm: parece una estrella"},
+  gUra150:{en:"The disk in focus at 150× (6 mm)",es:"El disco en foco a 150× (6 mm)"},
+  gUra300:{en:"300× with the Barlow: bigger, still no markings",es:"300× con el Barlow: más grande, aún sin marcas"},
+  gOri25:{en:"Orion's sword in focus in the 25 mm",es:"La espada de Orión en foco con el de 25 mm"},
+  gOri90:{en:"The cloud in focus at 90× (10 mm)",es:"La nube en foco a 90× (10 mm)"},
+  gOri150:{en:"Split the four stars at 150× (6 mm)",es:"Separa las cuatro estrellas a 150× (6 mm)"},
+  gPle25:{en:"The Pleiades in focus in the 25 mm",es:"Las Pléyades en foco con el de 25 mm"},
+  gPle90:{en:"Try the 10 mm: most sisters leave the glass",es:"Prueba el de 10 mm: casi todas las hermanas salen del vidrio"},
+  gPleMeas:{en:"Measure the gap between two sisters",es:"Mide la distancia entre dos hermanas"},
+  gDc25:{en:"Both clusters in focus in the 25 mm",es:"Los dos cúmulos en foco con el de 25 mm"},
+  gDc90:{en:"Try the 10 mm: only one cluster fits",es:"Prueba el de 10 mm: solo cabe un cúmulo"},
+  gDcMeas:{en:"Measure from one cluster to the other",es:"Mide de un cúmulo al otro"},
+  gAnd25:{en:"Andromeda in focus in the 25 mm",es:"Andrómeda en foco con el de 25 mm"},
+  gAnd6:{en:"Try the 6 mm and watch it fade",es:"Prueba el de 6 mm y mira cómo se apaga"},
+  gAndMeas:{en:"Measure from the middle to M32 in the 25 mm",es:"Mide del centro a M32 con el de 25 mm"},
+  gM13a:{en:"M13 in the 25 mm: a round fuzzy patch",es:"M13 con el de 25 mm: una mancha redonda y difusa"},
+  gM13b:{en:"The edge breaks into stars at 150× (6 mm)",es:"El borde se deshace en estrellas a 150× (6 mm)"},
+  gM13Meas:{en:"Measure across the ball",es:"Mide la bola de lado a lado"},
+  gRing25:{en:"The Ring in the 25 mm: a dot that will not sharpen",es:"El Anillo con el de 25 mm: un punto que no se afina"},
+  gRing150:{en:"The ring in focus at 150× (6 mm)",es:"El anillo en foco a 150× (6 mm)"},
+  gRingMeas:{en:"Measure the ring",es:"Mide el anillo"},
+  gM27a:{en:"The Dumbbell in focus in the 25 mm",es:"La Dumbbell en foco con el de 25 mm"},
+  gM27b:{en:"The apple core in focus at 90× (10 mm)",es:"El corazón de manzana en foco a 90× (10 mm)"},
+  gM27Meas:{en:"Measure the glow, end to end",es:"Mide el resplandor, de punta a punta"},
+  gMiz25:{en:"Mizar and Alcor in focus in the 25 mm",es:"Mizar y Alcor en foco con el de 25 mm"},
+  gMiz90:{en:"Split Mizar at 90× (10 mm)",es:"Separa Mizar a 90× (10 mm)"},
+  gMizMeas:{en:"Measure Mizar's two stars",es:"Mide las dos estrellas de Mizar"},
+  gSea25:{en:"The landing sea in focus in the 25 mm",es:"El mar del alunizaje en foco con el de 25 mm"},
+  gSea150:{en:"The sea in focus at 150× (6 mm)",es:"El mar en foco a 150× (6 mm)"},
+  gSea300:{en:"300× with the Barlow: still no lander",es:"300× con el Barlow: sigue sin módulo"},
+  gAlb25:{en:"Albireo in focus in the 25 mm",es:"Albireo en foco con el de 25 mm"},
+  gAlb90:{en:"The gold and the blue at 90× (10 mm)",es:"El oro y el azul a 90× (10 mm)"},
+  gAlbMeas:{en:"Measure the gap between them",es:"Mide la distancia entre ellas"},
+  gSpl90:{en:"At 90× (10 mm): a stretched dot",es:"A 90× (10 mm): un punto estirado"},
+  gSpl150:{en:"At 150× (6 mm): two points just touching",es:"A 150× (6 mm): dos puntos que apenas se tocan"},
+  gSpl300:{en:"6 mm and Barlow: dark between them",es:"6 mm y Barlow: oscuridad entre ellos"},
+  gPair25:{en:"The pair in focus in the 25 mm",es:"El par en foco con el de 25 mm"},
+  gPair150:{en:"At 150× (6 mm): one smear, not two",es:"A 150× (6 mm): una mancha, no dos"},
+  gPair300:{en:"6 mm and Barlow: still one smear",es:"6 mm y Barlow: sigue una mancha"},
+  gSunFilt:{en:"Put the filter on the front first",es:"Primero pon el filtro al frente"},
+  gSun25:{en:"The whole Sun in focus in the 25 mm, filter on",es:"El Sol entero en foco con el de 25 mm, con filtro"},
+  gSun90:{en:"The spots in focus at 90× (10 mm), filter on",es:"Las manchas en foco a 90× (10 mm), con filtro"}
 };
 const S = {
   page:"home", lang:"en", theme:"light", teacher:"open",
@@ -405,7 +546,7 @@ try {
 } catch(e){}
 if (!S.missions) S.missions = {};
 function persist(){ try { localStorage.setItem(KEY, JSON.stringify({lang:S.lang,missions:S.missions,teacher:S.teacher})); localStorage.setItem(THEME_KEY,S.theme);} catch(e){} }
-function t(k){ const x=STR[k]; return x ? (S.lang==="es"?x.es:x.en) : k; }
+function t(k){ const x=STR[k]; return x ? String(S.lang==="es"?x.es:x.en).replace(/\{N\}/g,STAIR.length) : k; }
 function missionsOpen(){ return S.teacher!=="locked"; }
 function benchStep(){ return missionsOpen() ? STAIR.length : stairNow(); }
 /* AOG-TELE-LESSONS17-V1: a control opens when a named lesson is reached */
@@ -1505,6 +1646,12 @@ function missionActs(p){
   if (id==="t15") return tg("sun")+btn(!!L.filter,"filt1",t("front"))+note("Filter first, always. The cap stays on until it is there.","Primero el filtro, siempre. La tapa se queda puesta hasta que esté.");
   if (id==="t16") return tg("jupiter")+tg("albireo")+ep(10)+ret+`<p class="note-line">${t("tap")}</p>`;
   if (id==="t17") return tg("moon")+sky("dusk")+tg("uranus")+ep(6);
+  /* AOG-TELE-TARGET-LESSONS-V1: a target lesson lists its own buttons in acts */
+  const m=STAIR[p];
+  if (m&&m.tgt){ const A={ep25:ep(25),ep10:ep(10),ep6:ep(6),bar:btn(L.barlow,"bar1",t("barlowIn")),bar0:btn(!L.barlow,"bar0",t("barlowOut")),
+      ret:ret+`<p class="note-line">${t("tap")}</p>`,filt:btn(!!L.filter,"filt1",t("filter")+": "+t("front"))};
+    return tg(m.tgt)+m.acts.split(" ").map(k=>A[k]||"").join("")
+      +(m.tgt==="sun"?note("Filter first, always. The cap stays on until it is there.","Primero el filtro, siempre. La tapa se queda puesta hasta que esté."):""); }
   return "";
 }
 function missionActsOld(i){
@@ -1536,30 +1683,33 @@ const LSTR={
   printOne:{en:"Print my copy",es:"Imprimir mi copia"},
   printBlank:{en:"Print it blank",es:"Imprimir en blanco"},
   printAllK:{en:"Every lesson",es:"Todas las lecciones"},
-  printAllSay:{en:"All 17 worksheets, one lesson per page.",es:"Las 17 hojas, una lección por página."},
-  printAll:{en:"Print all 17 worksheets",es:"Imprimir las 17 hojas"},
+  printAllSay:{en:"All {N} worksheets, one lesson per page.",es:"Las {N} hojas, una lección por página."},
+  printAll:{en:"Print all {N} worksheets",es:"Imprimir las {N} hojas"},
   printGuideK:{en:"The picture guide",es:"La guía en imágenes"},
   printGuideSay:{en:"The telescope drawn and labeled, with each lesson in pictures.",es:"El telescopio dibujado y rotulado, con cada lección en imágenes."},
   printGuide:{en:"Print the picture guide",es:"Imprimir la guía en imágenes"},
-  lessonsLead:{en:"Seventeen lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Diecisiete lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
+  lessonsLead:{en:"{N} lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"{N} lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
   lessonK:{en:"Lesson",es:"Lección"},
-  lessonsAll:{en:"All 17 lessons",es:"Las diecisiete lecciones"},
+  lessonsAll:{en:"All {N} lessons",es:"Las {N} lecciones"},
+  groupSkill:{en:"Skill by skill",es:"Habilidad por habilidad"},
+  groupTarget:{en:"Target by target",es:"Objetivo por objetivo"},
   doneMark:{en:"done",es:"lista"},
   next:{en:"Next lesson",es:"Siguiente lección"},
   toLab:{en:"Try it at the eyepiece",es:"Pruébala en el ocular"},
   toHome:{en:"Back to the bench",es:"Volver a la mesa"},
   wait:{en:"Finish lesson {n} first. Each lesson opens the next.",es:"Termina primero la lección {n}. Cada lección abre la siguiente."}
 };
-function lt(k){ const o=LSTR[k]; return o?o[S.lang==="es"?"es":"en"]:k; }
+function lt(k){ const o=LSTR[k]; return o?String(o[S.lang==="es"?"es":"en"]).replace(/\{N\}/g,STAIR.length):k; }
 function lessonDone(m){ return m.steps.every(id=>S.missions[id]); }
 function lessonNow(){ return stairNow(); }
 function lessonPicked(){ const n=lessonNow(); if(LPICK==null||LPICK<0||LPICK>=STAIR.length) return Math.min(n,STAIR.length-1); return LPICK; }
 function setLessonPick(i){ LPICK=Math.max(0,Math.min(STAIR.length-1,+i||0)); try{ localStorage.setItem(LPICK_KEY,String(LPICK)); }catch(e){} }
 function lessonSelect(){
   const p=lessonPicked();
+  const g0=STAIR.findIndex(m=>m.group==="target");   /* AOG-TELE-TARGET-LESSONS-V1: two labelled groups */
   return `<label class="lesson-pick"><span>${lt("lessonPick")}</span><select id="lessonPick">${STAIR.map((m,i)=>
-    `<option value="${i}"${i===p?" selected":""}>${i+1} · ${S.lang==="es"?m.es:m.en}${lessonDone(m)?" ✓":""}</option>`).join("")}</select></label>`;
+    `${i===0?`<optgroup label="${lt("groupSkill")}">`:""}${i===g0?`</optgroup><optgroup label="${lt("groupTarget")}">`:""}<option value="${i}"${i===p?" selected":""}>${i+1} · ${S.lang==="es"?m.es:m.en}${lessonDone(m)?" ✓":""}</option>`).join("")}</optgroup></select></label>`;
 }
 function lessonCard(inLab){
   /* AOG-BENCH-TOP-V1 (2026-09-27): the Lessons card at the top, the same markup as the Turntables (aog-bench.css) */
@@ -1576,12 +1726,13 @@ function lessonCard(inLab){
     <p class="lblurb">${es?m.blurb_es:m.blurb_en}</p>
     ${steps}${waiting}
     <div class="lacts${inLab?" do":""}">${acts}</div>
-    ${done?`<p class="lok">${allDone?t("done"):(es?"Lección hecha.":"Lesson done.")} ${next}</p>`:""}`;
+    ${done?`<p class="lok">${allDone?t("done"):(es?"Lección hecha.":"Lesson done.")}</p>`:""}`;
 }
 /* AOG-TOOL-LESSONS-BELOW-V1 — the Lessons card sits under the instrument. On the bench page it moves in
    right under the instrument; a re-render first puts it back under <main>, so it is never wiped. */
 function lessonsHome(){ const box=document.getElementById("lessons"), v=document.getElementById("view"); if(box&&v&&v.contains(box)) v.after(box); }
 function lessonsBelow(){ const box=document.getElementById("lessons"), v=document.getElementById("view"); if(!box||!v) return;
+  const slot=v.querySelector("#lessonsSlot"); if(slot){ slot.appendChild(box); return; }   /* AOG-LESSONS-FOLD-V1: on Lessons, the card comes first */
   const at=v.querySelector(".lab-stack"); if(at) at.after(box); else if(box.previousElementSibling!==v) v.after(box); }
 function paintLessonsTop(){
   const top=["home","lab","lessons"].includes(S.page);
@@ -1599,12 +1750,25 @@ function paintLessonsTop(){
   document.getElementById("lessonBody").innerHTML=lessonCard(S.page==="lab");
   bindLessonBox(box);
 }
+/* AOG-TELE-TARGET-LESSONS-V1: the shared menu lists every lesson in one run; this wraps them in two labelled
+   groups. Option order and indexes stay the same, so the menu still presses the right lesson. */
+function groupLessonMenu(){
+  const row=document.getElementById("lessonRow"), box=row&&row.__aogdd, sel=box&&box.querySelector("select");
+  if(!sel) return;
+  const g0=STAIR.findIndex(m=>m.group==="target"), opts=[...sel.children].filter(o=>o.tagName==="OPTION");
+  if(g0<0 || opts.length!==STAIR.length) { const gs=sel.querySelectorAll("optgroup"); if(gs.length===2){ gs[0].label=lt("groupSkill"); gs[1].label=lt("groupTarget"); } return; }
+  const idx=sel.selectedIndex, a=document.createElement("optgroup"), b=document.createElement("optgroup");
+  a.label=lt("groupSkill"); b.label=lt("groupTarget");
+  opts.forEach((o,i)=>(i<g0?a:b).appendChild(o)); sel.append(a,b); sel.selectedIndex=idx;
+}
+new MutationObserver(groupLessonMenu).observe(document.getElementById("benchSwitch"),{childList:true,subtree:true});
 function lessonBoxHtml(inLab){ return `<div class="card lesson-box${inLab?" lab-lesson practical-box":""}" id="lessonBox">${lessonSelect()}${lessonCard(inLab)}</div>`; }
 function ladderHtml(){
   const now=lessonNow(), p=lessonPicked();
   return STAIR.map((m,i)=>{
     const done=lessonDone(m), cls=done?"done":(i===now?"now":"later");
-    return `<li class="${cls}${i===p?" picked":""}" data-pick="${i}" role="button" tabindex="0"${i===p?' aria-current="true"':""}><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${S.lang==="es"?m.es:m.en}</span></li>`;
+    const g=m.group==="target"&&!(STAIR[i-1]&&STAIR[i-1].group==="target")?`</ol><p class="tiny lgroup" style="margin:1rem 0 .4rem">${lt("groupTarget")}</p><ol class="ladder" start="${i+1}">`:"";
+    return `${g}<li class="${cls}${i===p?" picked":""}" data-pick="${i}" role="button" tabindex="0"${i===p?' aria-current="true"':""}><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${S.lang==="es"?m.es:m.en}</span></li>`;
   }).join("");
 }
 
@@ -1629,12 +1793,12 @@ function printView(){
     <p class="lead">${lt("printSay")}</p>
     ${printChoices()}`;
 }function lessonsView(){
-  return `<p class="kicker">${lt("lessonsNav")}</p>
+  return `<div id="lessonsSlot" class="lessons-slot"></div><p class="kicker">${lt("lessonsNav")}</p>
     <h1>${lt("lessonsNav")}</h1>
     <p class="lead">${lt("lessonsLead")}</p>
     <div class="lessons-wrap lessons-one">
-      <div class="card ladder-box"><p class="tiny">${lt("lessonsAll")}</p><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol>
-        <div class="lesson-acts"><a class="pill" href="#home">${lt("toHome")}</a></div></div>
+      <details class="card all-lessons"><summary>${S.lang==="es"?"Las "+STAIR.length+" lecciones · elige una":"All "+STAIR.length+" lessons · pick one"}</summary><p class="tiny lgroup">${lt("groupSkill")}</p><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol></details>
+      <div class="lesson-acts"><a class="pill" href="#home">${lt("toHome")}</a></div>
     </div>`;
 }
 function bindLessonBox(root){
@@ -1643,7 +1807,7 @@ function bindLessonBox(root){
   if(sel) sel.onchange=()=>{ setLessonPick(sel.value); paint(); const s=document.getElementById("lessonPick"); if(s) s.focus(); };
   root.querySelectorAll("[data-lesson-next]").forEach(b=>b.onclick=()=>{ setLessonPick(lessonPicked()+1); paint(); });
   root.querySelectorAll("[data-pick]").forEach(li=>{
-    const go=()=>{ setLessonPick(li.getAttribute("data-pick")); if(li.hasAttribute("data-open")) location.hash="lessons"; else paint(); };
+    const go=()=>{ setLessonPick(li.getAttribute("data-pick")); if(li.hasAttribute("data-open")) location.hash="lessons"; else { paint(); const b=document.getElementById("lessons"); if(b&&S.page==="lessons") b.scrollIntoView({block:"start"}); } };
     li.onclick=go;
     li.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
   });
@@ -1672,7 +1836,7 @@ function pageHome(){
         <p style="margin:.4rem 0 .6rem">${c[2]}</p>
         <p class="muted" style="font-size:.9rem">${c[3]} ›</p>
       </a>`).join("")}
-      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las diecisiete lecciones":"The seventeen lessons"}</p>
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?`Las ${STAIR.length} lecciones`:`The ${STAIR.length} lessons`}</p>
         <ol class="ladder" style="margin-top:.6rem">${ladderHtml().replace(/data-pick=/g,"data-open data-pick=")}</ol>
       </div></div>
     </div>`;
@@ -1790,7 +1954,7 @@ function startEye(){
           const spec={x:(sx-cx)/z - S.lab.panX, y:(sy-cy)/z - S.lab.panY};
           if (!S.lab.mA || S.lab.mB){ S.lab.mA=spec; S.lab.mB=null; }
           else S.lab.mB=spec;
-          const before=stairNow(); tick(); if (stairNow()!==before) paint();
+          const before=stairNow(), sig=JSON.stringify(S.missions); tick(); if (stairNow()!==before || JSON.stringify(S.missions)!==sig) paint();
         }
       }
       drag=null;
@@ -1919,6 +2083,64 @@ function tick(){
   if (T==="albireo"&&meas) S.missions.measAlb=true;
   if (T==="moon"&&(L.sky==="dusk"||L.sky==="dawn")&&sharp) S.missions.moonDusk=true;
   if (T==="uranus"&&L.ep===6&&sharp) S.missions.uranus=true;
+  /* AOG-TELE-TARGET-LESSONS-V1 — lessons 18–36: the same checks (target, eyepiece, Barlow, focus, filter, reticle) */
+  if (T==="moon"&&L.ep===25&&!L.barlow&&sharp) S.missions.gMoon25=true;
+  if (T==="moon"&&L.ep===6&&!L.barlow&&sharp) S.missions.gMoon150=true;
+  if (T==="moon"&&meas) S.missions.gMoonMeas=true;
+  if (T==="jupiter"&&L.ep===25&&!L.barlow&&sharp) S.missions.gJup25=true;
+  if (T==="jupiter"&&L.ep===6&&!L.barlow&&sharp) S.missions.gJup150=true;
+  if (T==="jupiter"&&meas) S.missions.gJupMeas=true;
+  if (T==="saturn"&&L.ep===25&&!L.barlow&&sharp) S.missions.gSat25=true;
+  if (T==="saturn"&&L.ep===6&&!L.barlow&&sharp) S.missions.gSat150=true;
+  if (T==="saturn"&&L.ep===6&&L.barlow&&sharp) S.missions.gSat300=true;
+  if (T==="mars"&&L.ep===25&&!L.barlow&&sharp) S.missions.gMars25=true;
+  if (T==="mars"&&L.ep===10&&!L.barlow&&sharp) S.missions.gMars90=true;
+  if (T==="mars"&&meas) S.missions.gMarsMeas=true;
+  if (T==="venus"&&L.ep===25&&!L.barlow&&sharp) S.missions.gVen25=true;
+  if (T==="venus"&&L.ep===6&&!L.barlow&&sharp) S.missions.gVen150=true;
+  if (T==="venus"&&meas) S.missions.gVenMeas=true;
+  if (T==="uranus"&&L.ep===25&&!L.barlow&&sharp) S.missions.gUra25=true;
+  if (T==="uranus"&&L.ep===6&&!L.barlow&&sharp) S.missions.gUra150=true;
+  if (T==="uranus"&&L.ep===6&&L.barlow&&sharp) S.missions.gUra300=true;
+  if (T==="orion"&&L.ep===25&&!L.barlow&&sharp) S.missions.gOri25=true;
+  if (T==="orion"&&L.ep===10&&!L.barlow&&sharp) S.missions.gOri90=true;
+  if (T==="orion"&&L.ep===6&&!L.barlow&&sharp) S.missions.gOri150=true;
+  if (T==="pleiades"&&L.ep===25&&!L.barlow&&sharp) S.missions.gPle25=true;
+  if (T==="pleiades"&&L.ep===10&&!L.cap) S.missions.gPle90=true;
+  if (T==="pleiades"&&meas) S.missions.gPleMeas=true;
+  if (T==="dcluster"&&L.ep===25&&!L.barlow&&sharp) S.missions.gDc25=true;
+  if (T==="dcluster"&&L.ep===10&&!L.cap) S.missions.gDc90=true;
+  if (T==="dcluster"&&meas) S.missions.gDcMeas=true;
+  if (T==="andromeda"&&L.ep===25&&!L.barlow&&sharp) S.missions.gAnd25=true;
+  if (T==="andromeda"&&L.ep===6&&!L.cap) S.missions.gAnd6=true;
+  if (T==="andromeda"&&L.ep===25&&meas) S.missions.gAndMeas=true;
+  if (T==="m13"&&L.ep===25&&!L.barlow&&sharp) S.missions.gM13a=true;
+  if (T==="m13"&&L.ep===6&&!L.barlow&&sharp) S.missions.gM13b=true;
+  if (T==="m13"&&meas) S.missions.gM13Meas=true;
+  if (T==="ring"&&L.ep===25&&!L.barlow&&sharp) S.missions.gRing25=true;
+  if (T==="ring"&&L.ep===6&&!L.barlow&&sharp) S.missions.gRing150=true;
+  if (T==="ring"&&meas) S.missions.gRingMeas=true;
+  if (T==="m27"&&L.ep===25&&!L.barlow&&sharp) S.missions.gM27a=true;
+  if (T==="m27"&&L.ep===10&&!L.barlow&&sharp) S.missions.gM27b=true;
+  if (T==="m27"&&meas) S.missions.gM27Meas=true;
+  if (T==="mizar"&&L.ep===25&&!L.barlow&&sharp) S.missions.gMiz25=true;
+  if (T==="mizar"&&L.ep===10&&!L.barlow&&sharp) S.missions.gMiz90=true;
+  if (T==="mizar"&&meas) S.missions.gMizMeas=true;
+  if (T==="sea"&&L.ep===25&&!L.barlow&&sharp) S.missions.gSea25=true;
+  if (T==="sea"&&L.ep===6&&!L.barlow&&sharp) S.missions.gSea150=true;
+  if (T==="sea"&&L.ep===6&&L.barlow&&sharp) S.missions.gSea300=true;
+  if (T==="albireo"&&L.ep===25&&!L.barlow&&sharp) S.missions.gAlb25=true;
+  if (T==="albireo"&&L.ep===10&&!L.barlow&&sharp) S.missions.gAlb90=true;
+  if (T==="albireo"&&meas) S.missions.gAlbMeas=true;
+  if (T==="split"&&L.ep===10&&!L.barlow&&sharp) S.missions.gSpl90=true;
+  if (T==="split"&&L.ep===6&&!L.barlow&&sharp) S.missions.gSpl150=true;
+  if (T==="split"&&L.ep===6&&L.barlow&&sharp) S.missions.gSpl300=true;
+  if (T==="pair"&&L.ep===25&&!L.barlow&&sharp) S.missions.gPair25=true;
+  if (T==="pair"&&L.ep===6&&!L.barlow&&sharp) S.missions.gPair150=true;
+  if (T==="pair"&&L.ep===6&&L.barlow&&sharp) S.missions.gPair300=true;
+  if (T==="sun"&&L.filter) S.missions.gSunFilt=true;
+  if (T==="sun"&&L.filter&&L.ep===25&&!L.barlow&&sharp) S.missions.gSun25=true;
+  if (T==="sun"&&L.filter&&L.ep===10&&!L.barlow&&sharp) S.missions.gSun90=true;
   persist();
 }
 function centerTarget(id){

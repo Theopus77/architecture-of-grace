@@ -71,12 +71,17 @@
       });
     }
     var list = items(row); row.__aogddItems = list;
-    var sel = box.querySelector("select"), html = "", on = -1;
+    var sel = box.querySelector("select"), html = "", on = -1, grp = null;
     list.forEach(function (b, i) {
-      var t = (b.childNodes.length && b.firstChild.nodeType === 3 ? b.firstChild.nodeValue : b.textContent).replace(/[▾▼]/g, "").replace(/\s+/g, " ").trim();
+      /* a button may carry its own menu words (data-aog-label); a leading blank text node falls back to the whole text */
+      var t = (b.getAttribute("data-aog-label") || (b.childNodes.length && b.firstChild.nodeType === 3 && b.firstChild.nodeValue.trim() ? b.firstChild.nodeValue : b.textContent)).replace(/[▾▼]/g, "").replace(/\s+/g, " ").trim();
+      /* a button may name its group (data-aog-group); the menu then shows the groups as headings */
+      var g = b.getAttribute("data-aog-group");
+      if (g && g !== grp) { html += (grp ? "</optgroup>" : "") + '<optgroup label="' + g.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;") + '">'; grp = g; }
       html += "<option>" + t.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</option>";
       if (on < 0 && isOn(b)) on = i;
     });
+    if (grp) html += "</optgroup>";
     if (sel.__html !== html) { sel.innerHTML = html; sel.__html = html; }
     if (on >= 0) sel.selectedIndex = on;
     var lab = es() ? cfg.es : cfg.en;
