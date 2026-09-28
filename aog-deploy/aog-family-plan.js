@@ -6,16 +6,16 @@
 (function(root){
   "use strict";
   var FEEL = {
-    calm:["calm","tranquilo"], happy:["happy","feliz"], proud:["proud","orgulloso"], curious:["curious","curioso"],
-    loved:["close to us","cerca de nosotros"], energetic:["full of energy","con mucha energía"],
-    worried:["worried","preocupado"], frustrated:["frustrated","frustrado"], tired:["tired","cansado"],
-    sad:["sad","triste"], overwhelmed:["overwhelmed","abrumado"]
+    calm:["calm","calma"], happy:["happy","alegría"], proud:["proud","orgullo"], curious:["curious","curiosidad"],
+    loved:["close to us","cercanía con la familia"], energetic:["full of energy","mucha energía"],
+    worried:["worried","preocupación"], frustrated:["frustrated","frustración"], tired:["tired","cansancio"],
+    sad:["sad","tristeza"], overwhelmed:["overwhelmed","agobio"]
   };
   var BRIGHT = ["calm","happy","proud","curious","loved","energetic"];
   var HELP = {
-    move:["a movement break","una pausa para moverse"], quiet:["a quiet space","un lugar tranquilo"],
+    move:["a movement break","una pausa para moverse"], quiet:["a quiet space","un lugar en calma"],
     snack:["a snack or water","algo de comer o agua"], list:["a picture list or schedule","una lista o horario con dibujos"],
-    time:["extra time","más tiempo"], together:["doing it together","hacerlo juntos"], music:["music","música"],
+    time:["extra time","más tiempo"], together:["doing it together","hacerlo en compañía"], music:["music","música"],
     outside:["time outside","tiempo afuera"], firstthen:["first–then","primero–después"], choice:["a choice","poder elegir"],
     hug:["a hug or close time","un abrazo o tiempo juntos"]
   };
@@ -44,10 +44,10 @@
   function joinAnd(a, es){ if(a.length<2) return a.join(""); return a.slice(0,-1).join(", ")+(es?" y ":" and ")+a[a.length-1]; }
 
   /* build(log, goals, lang) → the engine layer of the plan */
-  function build(log, goals, lang, routines){
+  function build(log, goals, lang, routines, therapies){
     var es = lang==="es", ds = dates(log), E = ds.map(function(d){ var e=log[d]||{}; e._d=d; return e; });
     var out = { es:es, n:E.length, first:ds[0]||"", last:ds[ds.length-1]||"",
-      strengths:[], hard:[], helps:[], sleepmood:[], goals:[], routines:[], sleep:[], mood:[], summary:{} };
+      strengths:[], hard:[], helps:[], sleepmood:[], goals:[], routines:[], therapies:[], sleep:[], mood:[], summary:{} };
     var SRC = E.length ? src(es?"Registro en casa":"Home log", E.length, out.first, out.last, es) : "";
     if(E.length){
       var moodE = E.filter(function(e){ return e.mood>=1 && e.mood<=5; });
@@ -56,7 +56,7 @@
       if(good) out.strengths.push((es?"Tuvo "+days(good,true)+" buenos o muy buenos de "+moodE.length+" registrados."
                                      :"Had "+good+" good or great "+(good===1?"day":"days")+" out of "+moodE.length+" logged.")+SRC);
       var ft = tally(E,"feel"), bright = ft.filter(function(x){ return BRIGHT.indexOf(x.k)>=0; }).slice(0,3);
-      if(bright.length) out.strengths.push((es?"Se sintió ":"Felt ")+joinAnd(bright.map(function(x){ return L(es,FEEL[x.k])+" "+(es?"en ":"on ")+days(x.n,es); }),es)+"."+SRC);
+      if(bright.length) out.strengths.push((es?"Sintió ":"Felt ")+joinAnd(bright.map(function(x){ return L(es,FEEL[x.k])+" "+(es?"en ":"on ")+days(x.n,es); }),es)+"."+SRC);
       var hwE = E.filter(function(e){ return e.hw && e.hw!=="none"; }), hwDone = count(hwE,function(e){ return e.hw==="done"; }),
           hwSome = count(hwE,function(e){ return e.hw==="some"; });
       if(hwDone) out.strengths.push((es?"Terminó la tarea o la lectura en "+hwDone+" de "+days(hwE.length,true)+" con tarea."
@@ -65,13 +65,13 @@
       if(easy) out.strengths.push((es?"La tarea se sintió fácil en "+days(easy,true)+"." : "Homework felt easy on "+days(easy,false)+".")+SRC);
       var proud = E.filter(function(e){ return e.proud && String(e.proud).trim(); });
       if(proud.length){ var lp = proud[proud.length-1];
-        out.strengths.push((es?"Nombró algo de lo que está orgulloso en "+days(proud.length,true)+". Lo más reciente: “"
+        out.strengths.push((es?"Nombró algo que le da orgullo en "+days(proud.length,true)+". Lo más reciente: “"
                               :"Named something they are proud of on "+days(proud.length,false)+". Most recent: “")+String(lp.proud).trim().slice(0,140)+"”"+SRC); }
       /* ── what is hard right now (plain counts) ── */
       if(low) out.hard.push((es?"Días más difíciles (cara 1 o 2): "+low+" de "+moodE.length+"."
                                 :"Harder days (face 1 or 2): "+low+" of "+moodE.length+".")+SRC);
       var tough = ft.filter(function(x){ return BRIGHT.indexOf(x.k)<0 && FEEL[x.k]; }).slice(0,3);
-      if(tough.length) out.hard.push((es?"También se sintió ":"Also felt ")+joinAnd(tough.map(function(x){ return L(es,FEEL[x.k])+" "+(es?"en ":"on ")+days(x.n,es); }),es)+"."+SRC);
+      if(tough.length) out.hard.push((es?"También sintió ":"Also felt ")+joinAnd(tough.map(function(x){ return L(es,FEEL[x.k])+" "+(es?"en ":"on ")+days(x.n,es); }),es)+"."+SRC);
       var hwHard = count(hwE,function(e){ return e.hwHow==="hard" || e.hwHow==="help"; }), hwNot = count(hwE,function(e){ return e.hw==="not"; });
       if(hwHard) out.hard.push((es?"La tarea necesitó ayuda o fue difícil en "+hwHard+" de "+days(hwE.length,true)+" con tarea."
                                   :"Homework needed help or felt hard on "+hwHard+" of "+hwE.length+" homework "+(hwE.length===1?"day":"days")+".")+SRC);
@@ -119,23 +119,64 @@
         series: md.map(function(d){ var m=log[d].rt[r.id]; return {d:d, v:m==="done"?2:m==="help"?1:0}; }), line:"", trend:"" };
       if(md.length){
         var S = src(es?"Rutinas en casa":"Home routines", md.length, md[0], md[md.length-1], es), nm = String(r.name||"").trim();
-        var lead = own*2>md.length ? (es?"Lo hace solo la mayoría de los días":"Does it on their own most days")
+        var lead = own*2>md.length ? (es?"Lo hace sin ayuda la mayoría de los días":"Does it on their own most days")
                  : (own+help)*2>md.length ? (es?"Lo hace la mayoría de los días, a veces con ayuda":"Does it most days, sometimes with help")
                  : own+help ? (es?"Lo está practicando":"Is practicing this") : (es?"Aún no ha pasado en los días registrados":"Has not happened yet on the days logged");
-        R.line = nm+": "+lead+" — "+(es?"solo "+own+", con ayuda "+help+", hoy no "+not+" de "+days(md.length,true)+"."
+        R.line = nm+": "+lead+" — "+(es?"sin ayuda "+own+", con ayuda "+help+", hoy no "+not+" de "+days(md.length,true)+"."
                                          :"on their own "+own+", with help "+help+", not today "+not+" of "+days(md.length,false)+".");
         if(md.length>=6){ var h=Math.floor(md.length/2), sc=function(a){ return avg(a.map(function(p){ return p.v; })); },
             a1=sc(R.series.slice(0,h)), a2=sc(R.series.slice(h));
           R.trend = a2-a1>=0.34 ? (es?" Va en aumento.":" Growing.") : a1-a2>=0.34 ? (es?" Menos en los últimos días.":" Less in recent days.") : (es?" Estable.":" Steady."); }
         R.line += R.trend+S;
-        if(help) out.helps.push((es?"Hacerlo juntos ayudó con “"+nm+"” en "+days(help,true)+"." : "Doing it together helped with “"+nm+"” on "+days(help,false)+".")+S);
-        if(own*2>md.length) out.strengths.unshift((es?nm+": lo hace solo la mayoría de los días — "+own+" de "+days(md.length,true)+"."
+        if(help) out.helps.push((es?"Hacerlo en compañía ayudó con “"+nm+"” en "+days(help,true)+"." : "Doing it together helped with “"+nm+"” on "+days(help,false)+".")+S);
+        if(own*2>md.length) out.strengths.unshift((es?nm+": lo hace sin ayuda la mayoría de los días — "+own+" de "+days(md.length,true)+"."
                                                        :nm+": does it on their own most days — "+own+" of "+days(md.length,false)+".")+S);
       } else R.line = (String(r.name||"").trim())+": "+(es?"Aún no hay datos para esta rutina.":"No data for this yet.");
       out.routines.push(R);
       rsum.push({routine:r.name, onTheirOwn:own, withHelp:help, notToday:not, days:md.length, homework:/homework|tarea|reading|lectura/i.test(String(r.name||""))});
     });
     out.summary.routines = rsum;
+    /* ── therapies (AOG-FAMILY-THERAPIES-V1): what the family wrote, in their words, plus their session notes ── */
+    var tsum = [];
+    (therapies||[]).forEach(function(t){
+      var nm = String(t.name||"").trim(); if(!nm) return;
+      var W = {school:["at school","en la escuela"], home:["at home","en casa"], outside:["outside school","fuera de la escuela"], both:["at school and outside school","en la escuela y fuera de ella"]}[t.where];
+      var F = {w1:["1×/week","1 vez por semana"], w2:["2×/week","2 veces por semana"], w3:["3 or more times a week","3 o más veces por semana"],
+               biweekly:["every other week","cada dos semanas"], monthly:["monthly","una vez al mes"]}[t.freq];
+      var bits = [];
+      if(W) bits.push(L(es,W));
+      if(F) bits.push(L(es,F)); else if(t.freq==="other" && String(t.freqOther||"").trim()) bits.push(String(t.freqOther).trim().slice(0,40));
+      if(String(t.who||"").trim()) bits.push((es?"con ":"with ")+String(t.who).trim().slice(0,60));
+      var line = nm+(bits.length?" — "+bits.join(", "):"")+".";
+      var work = String(t.work||"").trim();
+      if(work) line += (t.kind==="homebound"?(es?" Materias o trabajos: “":" Subjects or work: “"):(es?" Trabaja en: “":" Working on: “"))+work.replace(/\s*\n\s*/g,"; ").slice(0,300)+"”.";
+      if(/^\d{4}-\d\d$/.test(t.started||"")){ var sp=t.started.split("-"), SD=new Date(+sp[0],+sp[1]-1,1);
+        line += (es?" Desde ":" Since ")+SD.toLocaleDateString(es?"es":"en-US",{month:"long",year:"numeric"})+"."; }
+      if(t.status==="ended") line += es?" En pausa o terminada por ahora.":" Paused or ended for now.";
+      line += " ("+(es?"Notas de la familia":"Family notes")+")";
+      var sd = Object.keys(t.sessions||{}).filter(function(d){ return /^\d{4}-\d\d-\d\d$/.test(d); }).sort();
+      var rated = sd.filter(function(d){ var r=t.sessions[d].r; return r>=1&&r<=5; }), well = count(rated,function(d){ return t.sessions[d].r>=4; });
+      var slog = "";
+      if(sd.length){
+        var since = fmtRange(sd[0],sd[0],es);
+        slog = es ? sd.length+" "+(sd.length===1?"sesión anotada":"sesiones anotadas")+" desde el "+since
+                  : sd.length+" "+(sd.length===1?"session":"sessions")+" logged since "+since;
+        if(rated.length) slog += well*2>rated.length ? (es?"; fue bien la mayoría de las veces — "+well+" de "+rated.length:"; went well most times — "+well+" of "+rated.length)
+                              : well ? (es?"; fue bien algunas veces — "+well+" de "+rated.length:"; went well some times — "+well+" of "+rated.length)
+                              : (es?"; seguimos viendo qué ayuda":"; we are still learning what helps");
+        slog += ".";
+        var notes = sd.filter(function(d){ return String(t.sessions[d].note||"").trim(); });
+        if(notes.length) slog += (es?" Lo más reciente: “":" Most recent: “")+String(t.sessions[notes[notes.length-1]].note).trim().slice(0,140)+"”";
+        slog += " ("+(es?"Notas de sesiones":"Session notes")+" · "+sd.length+" "+(es?(sd.length===1?"sesión":"sesiones"):(sd.length===1?"session":"sessions"))+" · "+fmtRange(sd[0],sd[sd.length-1],es)+")";
+      }
+      var pr = String(t.practice||"").trim();
+      var R = { id:t.id, name:nm, status:t.status||"active", line:line, sessions:slog, practice:pr, n:sd.length, well:well, rated:rated.length };
+      out.therapies.push(R);
+      if(pr && t.status!=="ended") out.helps.push((es?"Práctica en casa de "+nm+": “":"Home practice from "+nm+": “")+pr.slice(0,200)+"” ("+(es?"Notas de la familia":"Family notes")+")");
+      tsum.push({therapy:nm, where:t.where||"", howOften:F?F[0]:(t.freqOther||t.freq||""), who:t.who||"", workingOn:work, homePractice:pr,
+        started:t.started||"", status:t.status||"active", sessionsLogged:sd.length, wentWell:well, rated:rated.length});
+    });
+    out.summary.therapies = tsum;
     /* ── goals ── */
     (goals||[]).forEach(function(g){
       var md = Object.keys(g.marks||{}).filter(function(d){ return /^\d{4}-\d\d-\d\d$/.test(d); }).sort();
