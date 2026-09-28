@@ -77,6 +77,18 @@ html[data-theme="dark"] .linkbox code{color:#E8EEF4!important}
 .tbl{width:100%;border-collapse:separate;border-spacing:0}
 .tbl th{text-align:left;font:800 11.5px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:10px 12px;border-bottom:1px solid var(--line)}
 .tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+/* AOG-DASH-STU-OPEN-V1 (2026-09-28) — every row and card on a student's page opens the work itself in the Inbox */
+.wrows{display:grid;gap:0}
+a.wrow{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none;border-radius:8px}
+a.wrow:hover{background:rgba(201,162,74,.10)}
+a.wrow:focus-visible,a.stat:focus-visible{outline:3px solid var(--gold,#C9A24A);outline-offset:2px}
+a.wrow .d{flex:0 0 auto;color:var(--soft);font-size:14px;min-width:52px}
+a.wrow .w{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+a.wrow .n{flex:0 0 auto;font-weight:700}
+a.wrow .chev{flex:0 0 auto;font-size:20px;color:var(--soft)}
+a.stat{display:block;color:var(--ink);text-decoration:none;position:relative}
+a.stat::after{content:"›";position:absolute;right:14px;top:12px;font-size:20px;color:var(--soft)}
+a.stat:hover{border-color:var(--gold,#C9A24A)}
 .tbl tr.pick{cursor:pointer}.tbl tr.pick:hover td{background:rgba(201,162,74,.08)}
 /* AOG-NO-BOX-SCROLL: on phones each row becomes a small card, no sideways scrolling */
 @media (max-width:700px){section.card,div[style*="overflow-x:auto"]{overflow-x:visible!important}
@@ -340,13 +352,16 @@ function students(){
 function oneStudent(s){
   const last10=s.ci.slice(0,10), feels={}; s.ci.forEach(r=>feel(r).forEach(f=>feels[f]=(feels[f]||0)+1));
   const top=Object.entries(feels).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const prRows=s.pr.slice(0,12).map(r=>'<tr><td>'+nice(day(r))+'</td><td>'+esc(String(r.activityName||r.activityId||"").replace(/^Daily D(rafts|rops) — /,"Daily Drafts · "))+'</td><td>'+(+r.itemsTotal?(r.independent||0)+" / "+r.itemsTotal:"—")+'</td></tr>').join("");
-  const ciRows=last10.map(r=>'<tr><td>'+nice(day(r))+'</td><td>'+esc(r.slipType||r.checkinType||"")+'</td><td>'+feel(r).map(f=>'<span class="chip">'+esc(f)+'</span>').join("")+'</td><td>'+(flagged(r)?'<span class="chip warn">'+T("follow")+'</span>':'')+'</td></tr>').join("");
+  /* AOG-DASH-STU-OPEN-V1 — a row opens that very paper (/turn-ins.html?student=&open=<its time>&what=<its id>) */
+  const inbox=(r,extra)=>'/turn-ins.html?student='+encodeURIComponent(who(r))+'&open='+encodeURIComponent(String(r.timestamp||r.date||""))+'&what='+encodeURIComponent(String(r.activityId||r.checkinType||""))+(extra||"");
+  const inboxFor=q=>'/turn-ins.html?student='+encodeURIComponent(s.name)+q;
+  const prRows=s.pr.slice(0,12).map(r=>'<a class="wrow" href="'+esc(inbox(r))+'"><span class="d">'+nice(day(r))+'</span><span class="w">'+esc(String(r.activityName||r.activityId||"").replace(/^Daily D(rafts|rops) — /,"Daily Drafts · "))+'</span><span class="n">'+(+r.itemsTotal?(r.independent||0)+" / "+r.itemsTotal:"—")+'</span><span class="chev" aria-hidden="true">›</span></a>').join("");
+  const ciRows=last10.map(r=>'<a class="wrow" href="'+esc(inbox(r))+'"><span class="d">'+nice(day(r))+'</span><span class="w">'+esc(r.slipType||r.checkinType||"")+' '+feel(r).map(f=>'<span class="chip">'+esc(f)+'</span>').join("")+'</span>'+(flagged(r)?'<span class="chip warn">'+T("follow")+'</span>':'')+'<span class="chev" aria-hidden="true">›</span></a>').join("");
   return '<div class="hello"><div><button class="btn" type="button" id="backStu">‹ '+T("students")+'</button><h1 style="margin-top:12px">'+esc(s.name)+'</h1><p>'+T("lastSeen")+': '+nice(s.last)+'</p></div><a class="btn solid" href="/turn-ins.html?blueprint='+encodeURIComponent(s.name)+'">'+T("blueprint")+' ›</a></div>'
-   +'<div class="stats"><div class="stat"><b>'+s.ci.length+'</b><span>'+T("checkins")+'</span></div><div class="stat"><b>'+s.pr.length+'</b><span>'+T("practice")+'</span></div><div class="stat"><b>'+(s.acc==null?"—":s.acc+"%")+'</b><span>'+T("indep")+'</span></div><div class="stat'+(s.flags?" flag":"")+'"><b>'+s.flags+'</b><span>'+T("follow")+'</span></div></div>'
+   +'<div class="stats"><a class="stat" href="'+esc(inboxFor("&kind=checkin"))+'"><b>'+s.ci.length+'</b><span>'+T("checkins")+'</span></a><a class="stat" href="'+esc(inboxFor("&kind=turnin"))+'"><b>'+s.pr.length+'</b><span>'+T("practice")+'</span></a><a class="stat" href="'+esc(inboxFor("&kind=turnin"))+'"><b>'+(s.acc==null?"—":s.acc+"%")+'</b><span>'+T("indep")+'</span></a><a class="stat'+(s.flags?" flag":"")+'" href="'+esc(inboxFor("&kind=all&follow=1"))+'"><b>'+s.flags+'</b><span>'+T("follow")+'</span></a></div>'
    +(top.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+top.map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join("")+'</section>':'')
-   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))"><section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("checkins")+'</p>'+(ciRows?'<table class="tbl"><tbody>'+ciRows+'</tbody></table>':'<p class="empty">—</p>')+'</section>'
-   +'<section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("practice")+'</p>'+(prRows?'<table class="tbl"><tbody>'+prRows+'</tbody></table>':'<p class="empty">—</p>')+'</section></div>';
+   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))"><section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("checkins")+'</p>'+(ciRows?'<div class="wrows">'+ciRows+'</div>':'<p class="empty">—</p>')+'</section>'
+   +'<section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("practice")+'</p>'+(prRows?'<div class="wrows">'+prRows+'</div>':'<p class="empty">—</p>')+'</section></div>';
 }
 function checkins(){
   const D=data(); if(!D.ci.length) return '<div class="hello"><div><h1>'+T("checkins")+'</h1></div></div>'+noData();
@@ -1097,7 +1112,12 @@ function earlierHandouts(cur){ const all=get("aog.dash2.handedAll",[]), seen={};
   all.forEach(h=>{ (h.items||[]).forEach(it=>{ const k=JSON.stringify(it); if(seen[k]) return; seen[k]=1; rows.push({it,at:h.at}); }); });
   if(!rows.length) return "";
   return '<details class="card" style="margin-top:16px"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700">'+t2("Earlier handouts","Repartos anteriores")+' ('+rows.length+')</summary><div class="work" style="margin-top:12px">'+rows.map(r=>'<a class="go" style="--ac:'+itemColor(r.it)+'" href="'+esc(studentHref(r.it))+'"><span class="ic">'+itemIcon(r.it)+'</span><span><b>'+esc(itemLabel(r.it,lang))+'</b><span>'+new Date(r.at||Date.now()).toLocaleDateString()+'</span></span><span class="arr">›</span></a>').join("")+'</div></details>'; }
+/* AOG-STU-FRESH-NAME (2026-09-27) — Jimmy: "I don't want it to save the last person every time." On a shared
+   device the Student page opens with an empty name and nothing picked; the name still carries through this
+   one visit (into the work the student opens), and is cleared again the next time the page is opened. */
+let __stuFresh=false;
 function student(){
+  if(!__stuFresh){ __stuFresh=true; put(K.stu,""); }
   const lang=L(), h=get("aog.dash2.handed",null), items=(h&&h.items)||(QS.get("view")==="student"?[]:get(K.tray,[])), nm=get(K.stu,"");
   const ic={dd:"dd",unit:"as",prac:"as",slip:"sl"}, ac={dd:"var(--c1)",unit:"var(--c3)",prac:"var(--c3)",slip:"var(--c5)"};
   return '<div class="stu"><div class="hello"><div><h1>'+T("sw")+'</h1><p>'+T("swS")+'</p></div></div>'
