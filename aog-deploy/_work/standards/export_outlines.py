@@ -7,7 +7,11 @@ def load(path):
     spec = importlib.util.spec_from_file_location("m", path); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
 META = {"sci": "Science, K–12", "ss": "Social Studies, K–12", "ela": "English Language Arts, K–12", "mth": "Mathematics, K–12",
         "spa": "Spanish, K–12", "ush": "U.S. History, Grades 6–8", "eco": "Economics, Grades 9–12", "rel": "World Religions, Grades 9–12",
-        "fcs": "Family & Consumer Sciences, K–12"}
+        "fcs": "Family & Consumer Sciences, K–12",
+        # AOG-STANDARDS-V2 (2026-09-28): every course on the site, not only the first nine
+        "wcs": "World Cultures & Societies, K–12", "med": "Medicine & Health, K–12", "bib": "The Bible, K–12",
+        "heb": "The Hebrew Bible, K–12", "qur": "The Qur'an, K–12", "tal": "The Talmud, K–12", "hin": "Hindu Texts, K–12",
+        "bud": "Buddhist Texts, K–12", "chn": "Chinese Classics, K–12"}
 out = {}
 for k, name in META.items():
     p = os.path.join(ROOT, "_work", k, "outline.py")
