@@ -1099,7 +1099,7 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("p")).some(function (fp) {
       if (fp.textContent.indexOf("sends nothing out") < 0) return false;
-      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap Send to my teacher.";
       return true;
     });
   } catch (e) {}
@@ -1149,7 +1149,7 @@ body.wsprev{overflow:hidden}
     prev.innerHTML = "";
     var bar = document.createElement("div"); bar.className = "pv-bar";
     var t = document.createElement("span"); t.className = "t";
-    t.textContent = "\u2713 FINISHED \u2014 " + who + " \u00b7 " + CFG.name;
+    t.textContent = "\u2713 Sent \u2014 " + who + " \u00b7 " + CFG.name;
     var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wsPvSt";
     pst.textContent = statusText;
     var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
@@ -1222,7 +1222,7 @@ body.wsprev{overflow:hidden}
     prev.hidden = false; document.body.classList.add("wsprev");
     prev.scrollTop = 0;
     function done(){ busy = false; setPvStatus("Turned in \u2713"); st.textContent = "Turned in \u2713"; btn.textContent = "FINISHED \u2713"; }
-    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
+    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap Send to my teacher again."); }
     fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
         headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
       .then(function(res){ return res.json(); })

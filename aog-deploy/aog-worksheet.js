@@ -60,6 +60,10 @@
     + "\nhtml[data-theme=\"dark\"] .aog-ws-check button{background:#252B35 !important;color:#EDE7DA !important;border-color:#8C939B !important}"
     /* phone: five confidence cards wrap 3 + 2 so the words never break */
     + "\n@media (max-width:520px){ :is(.conf-row, .confrow){display:flex !important;flex-wrap:wrap !important;gap:8px !important} :is(.conf-row .conf-b, .confrow .confb){flex:1 1 calc(33.333% - 8px) !important;min-width:0 !important;word-break:normal !important;overflow-wrap:normal !important;hyphens:none !important} .confrow .confb{white-space:nowrap !important;font-size:15px !important;padding-right:6px !important} }"
+    + "\n.aog-ws-block{margin:18px 0 10px}#wsPrev .aog-ws-block,#wbPrev .aog-ws-block{display:none !important}"
+    + "\n.aog-ws-send button.go.btn-fin{letter-spacing:0 !important;text-transform:none !important}"
+    + "\n@media screen{ .aog-ws-topname{display:none !important} }"
+    + "\n.layout:has(> .aogdd){display:block !important}.layout > .aogdd{margin:0 0 14px}"
     + "\n.aog-ws-signprint{display:none}"
     + "\n@media print{ .aog-ws-check,.aog-ws-sig,.aog-ws-send{display:none !important}"
     + " .aog-ws-signprint{display:flex !important;gap:28px;font:14px sans-serif;margin:14px 0}"
@@ -122,6 +126,8 @@
       box.parentNode.insertBefore(sig, box);
       box.parentNode.insertBefore(signPrint(), sig);
       box.classList.add("aog-ws-send");
+      var sn = box.querySelector(".snote");
+      if (sn && /Nothing is sent until|only when you tap/i.test(sn.getAttribute("data-en") || sn.textContent)) { sn.setAttribute("data-en", SEND_EN); sn.setAttribute("data-es", SEND_ES); sn.textContent = T(SEND_EN, SEND_ES); }
     });
   }
 
@@ -139,9 +145,11 @@
         if (v) chk.appendChild(v);
         if (again) chk.appendChild(again);
       }
+      /* Jimmy, 2026-09-26: "Those mid chapter reviews don't need a teacher check." — aog-pages.js keeps their
+         Send box off, so a chapter review gets the check row only: no name line, nothing to send. */
+      if (r.getAttribute("data-kind") === "chapter-review") { r.insertBefore(chk, cs); if (foot) r.insertBefore(foot, cs.nextSibling); return; }
       var sig = sigRow(inp);
-      var note = bi(mk("p", "aog-ws-snote"), "Your answers and score go to your teacher when you tap Send.",
-        "Tus respuestas y tu puntaje le llegan a tu maestro cuando tocas Enviar.");
+      var note = bi(mk("p", "aog-ws-snote"), SEND_EN, SEND_ES);
       cs.insertBefore(note, cs.firstChild.nextSibling);
       cs.classList.add("aog-ws-send");
       r.insertBefore(chk, cs); r.insertBefore(signPrint(), cs); r.insertBefore(sig, cs);
@@ -150,28 +158,113 @@
   }
 
   /* 3. SEL worksheets, room workbooks, bench worksheets: the "Finished?" card */
+  /* the one short line under Send, as on Daily Drafts */
+  var SEND_EN = "Your answers go to your teacher when you tap Send. Tap to send again.",
+      SEND_ES = "Tus respuestas le llegan a tu maestro/a cuando tocas Enviar. Toca para enviarlo otra vez.";
+
+  /* Check my work for a writing sheet: count the parts still empty and move to the first one */
+  function checkRow(scope) {
+    var chk = mk("div", "aog-ws-check no-print");
+    chk.appendChild(bi(mk("span", "aog-ws-k"), "Check my work", "Revisa mi trabajo"));
+    var b = bi(mk("button", "aog-ws-chkbtn"), "Check my work", "Revisar mi trabajo"); b.type = "button";
+    var res = mk("span", "aog-ws-res"); res.setAttribute("aria-live", "polite");
+    b.addEventListener("click", function () {
+      var root = scope(); if (!root) return;
+      var f = Array.prototype.filter.call(root.querySelectorAll("textarea, input[type=text]:not([data-aog-ws]), input:not([type])"), function (x) {
+        return !x.closest(".aog-ws-block, .no-print, [hidden]") && !x.disabled && x.offsetParent !== null; });
+      var empty = f.filter(function (x) { return !x.value.trim(); });
+      res.textContent = empty.length ? T("Parts still empty: ", "Partes vacías: ") + empty.length + "." : T("Every part has an answer.", "Cada parte tiene respuesta.");
+      if (empty[0]) { try { empty[0].scrollIntoView({ block: "center" }); empty[0].focus({ preventScroll: true }); } catch (e) {} }
+    });
+    chk.appendChild(b); chk.appendChild(res);
+    return chk;
+  }
+
+  /* 3. SEL worksheets, room workbooks, bench worksheets: the page's "Finished?" card becomes the Daily Drafts
+     block (check row, name line, compact Send) INSIDE the sheet the student is on, above that sheet's own
+     Print / Erase row. The same input, button and status line are moved, so the page's send code is untouched. */
   function finished() {
-    ["wsWho", "wbWho"].forEach(function (id) {
-      var inp = D.getElementById(id); if (!inp || inp.getAttribute("data-aog-ws")) return;
-      var card = inp.closest("section, div[id]"); var row = inp.parentNode; if (!card || !row) return;
+    [["wsWho", "wsSendBtn", "wsSt"], ["wbWho", "wbSendBtn", "wbSt"]].forEach(function (ids) {
+      var inp = D.getElementById(ids[0]), btn = D.getElementById(ids[1]), st = D.getElementById(ids[2]);
+      if (!inp || !btn || inp.getAttribute("data-aog-ws")) return;
+      var card = inp.closest("#wsTurnin, #wbFin, section, div[id]");
       inp.setAttribute("data-aog-ws", "1");
-      var sig = sigRow(inp);
-      row.classList.add("aog-ws-send");
-      row.parentNode.insertBefore(signPrint(), row);
-      row.parentNode.insertBefore(sig, row);
-      /* a check row where the page has one of its own (the workbooks' "Check my answers") */
-      var ck = card.parentNode && card.parentNode.querySelector("#wbCheck, #wsCheck, [data-aog-check]");
-      if (ck && !ck.closest(".aog-ws-check")) { var chk = mk("div", "aog-ws-check no-print"); chk.appendChild(ck); row.parentNode.insertBefore(chk, sig); }
+      function current() {
+        return D.querySelector("main .sheet.is-active, .sheets .sheet.is-active") || D.querySelector(".wrap section.unit:not([hidden])") ||
+               D.querySelector("main .sheet, .sheets .sheet");
+      }
+      var block = mk("div", "aog-ws-block no-print");
+      block.appendChild(checkRow(current));
+      block.appendChild(sigRow(inp));
+      var send = mk("div", "aog-ws-send");
+      send.appendChild(bi(mk("p", "aog-ws-snote"), SEND_EN, SEND_ES));
+      btn.classList.add("go"); send.appendChild(btn);
+      if (st) send.appendChild(st);
+      block.appendChild(send);
+      /* the button keeps its element and listener; only its words follow the model */
+      function label() {
+        var t = btn.textContent || "", w = T("Send to my teacher", "Enviar a mi maestro/a");
+        if (/FINISHED/.test(t) && t !== w) btn.textContent = w;
+        if (st && /FINISHED/.test(st.textContent)) st.textContent = st.textContent.replace(/FINISHED/g, T("Send", "Enviar"));
+      }
+      label();
+      Array.prototype.forEach.call(D.querySelectorAll("textarea[placeholder*=FINISHED], input[placeholder*=FINISHED]"), function (x) {
+        x.placeholder = x.placeholder.replace(/tap FINISHED/g, "tap Send to my teacher").replace(/FINISHED/g, "Send to my teacher"); });
+      new MutationObserver(label).observe(btn, { childList: true, characterData: true, subtree: true });
+      if (st) new MutationObserver(label).observe(st, { childList: true, characterData: true, subtree: true });
+      if (card) card.style.display = "none";
+      /* the name moves to the end: the top Name box (bench sheets) and the workbook's Name rule stay for paper
+         only, and the name signed at the end fills them, so a printed copy still carries it */
+      function syncName() {
+        Array.prototype.forEach.call(D.querySelectorAll('input[data-f="name"]'), function (f) {
+          if (f.value !== inp.value) { f.value = inp.value; try { f.dispatchEvent(new Event("input", { bubbles: true })); } catch (e) {} } });
+      }
+      Array.prototype.forEach.call(D.querySelectorAll('input[data-f="name"]'), function (f) {
+        var box = f.parentNode; if (box) box.classList.add("aog-ws-topname");
+        if (!inp.value && f.value) inp.value = f.value; });
+      inp.addEventListener("input", syncName);
+      var nl = D.querySelector(".nameline > span:first-child"); if (nl && /^\s*Name\s*$/.test(nl.textContent)) nl.classList.add("aog-ws-topname");
+      function seat() {
+        var sh = current(); if (!sh) { if (card && card.parentNode && block.parentNode !== card.parentNode) card.parentNode.insertBefore(block, card); return; }
+        var feet = sh.querySelectorAll(".sheet-foot"), foot = sh.querySelector(":scope > .sheet-foot") || feet[feet.length - 1] || null;
+        if (foot) { if (foot.previousElementSibling !== block) foot.parentNode.insertBefore(block, foot); }
+        else if (block.parentNode !== sh || sh.lastElementChild !== block) sh.appendChild(block);
+      }
+      seat();
+      var main = D.querySelector("main") || D.body;
+      new MutationObserver(seat).observe(main, { attributes: true, attributeFilter: ["class", "hidden"], subtree: true });
+      D.addEventListener("aog:lesson", function () { setTimeout(seat, 0); });
+      window.addEventListener("hashchange", function () { setTimeout(seat, 50); });
     });
   }
 
-  function run() { addCss();
+  /* AOG-WS-DROPDOWN-V1 — the drop-down rule (CLAUDE.md): the room workbooks' unit rail and the scenario cards'
+     unit row are choices of where to look, so each becomes one menu (aog-dropdowns.js presses the old buttons). */
+  function roomMenus() {
+    if (!/^room-\d+-(workbook|cards)$/.test((location.pathname.split("/").pop() || "").replace(/\.html$/, ""))) return;
+    var rail = D.getElementById("rail"), lb = D.querySelector(".lbtns");
+    var did = 0;
+    if (rail && !rail.hasAttribute("data-aog-dropdown") && rail.querySelectorAll(".ritem").length >= 4) {
+      rail.setAttribute("data-aog-dropdown", "Unit|Unidad"); did = 1;
+      Array.prototype.forEach.call(rail.querySelectorAll(".ritem"), function (b) {
+        var a = b.querySelector(".rl"), n = b.querySelector(".rn");
+        if (a && n) b.setAttribute("data-aog-label", a.textContent.trim() + " · " + n.textContent.trim()); });
+    }
+    if (lb && !lb.hasAttribute("data-aog-dropdown") && lb.children.length >= 4) { lb.setAttribute("data-aog-dropdown", "Unit|Unidad"); did = 1; }
+    if (did && !D.querySelector('script[src*="aog-dropdowns.js"]')) {
+      var sc = D.createElement("script"); sc.src = "/aog-dropdowns.js"; sc.defer = true; (D.head || H).appendChild(sc);
+    }
+  }
+
+  function run() { addCss(); try { roomMenus(); } catch (e) {}
     if (D.querySelector(".sendbox, .conf-row, .confrow")) H.classList.add("aog-ws-pad"); try { rooms(); } catch (e) {} try { reviews(); } catch (e) {} try { finished(); } catch (e) {} }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", run); else run();
   /* the send boxes are built by page scripts after load — look again a few times, then stop */
   [300, 900, 2000, 4000].forEach(function (t) { setTimeout(run, t); });
   new MutationObserver(function () {
-    Array.prototype.forEach.call(D.querySelectorAll(".aog-ws-sig label[data-en], .aog-ws-note, .aog-ws-snote, .aog-ws-k"), function (e) {
+    Array.prototype.forEach.call(D.querySelectorAll(".aog-ws-sig label[data-en], .aog-ws-note, .aog-ws-snote, .aog-ws-k, .aog-ws-chkbtn"), function (e) {
       var w = T(e.getAttribute("data-en"), e.getAttribute("data-es")); if (e.textContent !== w) e.textContent = w; });
+    Array.prototype.forEach.call(D.querySelectorAll(".aog-ws-block .aog-ws-send .go"), function (b) {
+      if (/^(Send to my teacher|Enviar a mi maestro\/a)$/.test(b.textContent)) b.textContent = T("Send to my teacher", "Enviar a mi maestro/a"); });
   }).observe(H, { attributes: true, attributeFilter: ["lang"] });
 })();

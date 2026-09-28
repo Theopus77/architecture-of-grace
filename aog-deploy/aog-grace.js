@@ -237,7 +237,7 @@
   try { var sl = D.createElement("script"); sl.src = "/aog-slides.js?v=1"; (D.head || H).appendChild(sl); } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
   try { var mn = D.createElement("script"); mn.src = "/aog-mine.js"; (D.head || H).appendChild(mn); } catch (e) {}
-  var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=optional";
+  var FONTS = "/fonts/aog-fonts.css";   /* AOG-SELF-HOSTED-FONTS (2026-09-28) — Jimmy: the fonts live on the site; no page reaches Google Fonts */
 
   /* ── 0 ── navy, the whole page ─────────────────────────────────────────
      Jimmy: "I wanted the whole page like this, not just the top." The home
@@ -261,10 +261,10 @@
     return l;
   }
   var hasFonts = false;
-  try { hasFonts = !!D.querySelector('link[href*="family=Fraunces"]'); } catch (e) {}
+  try { hasFonts = !!D.querySelector('link[href*="aog-fonts.css"]'); } catch (e) {}
   if (!hasFonts) {
-    link("preconnect", "https://fonts.googleapis.com");
-    link("preconnect", "https://fonts.gstatic.com", { crossorigin: "" });
+    link("preload", "/fonts/inter-normal-latin.woff2", { as: "font", type: "font/woff2", crossorigin: "" });
+    link("preload", "/fonts/fraunces-normal-latin.woff2", { as: "font", type: "font/woff2", crossorigin: "" });
     link("stylesheet", FONTS);
   }
   var sheet = link("stylesheet", "/aog-grace.css", { "data-aog-grace": "1" });
