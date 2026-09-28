@@ -11,7 +11,7 @@
 
 /* one type family for the top of every bench (the Turntables' stack) */
 :root{--bench-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--bench-display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
-.wrap>.bench-bar,.wrap>.lessons{font-family:var(--bench-sans)}
+.wrap>.bench-bar,.wrap>.lessons,.lessons-slot>.lessons{font-family:var(--bench-sans)}
 
 /* the page column: one width on every bench */
 body>.wrap{max-width:1100px;margin:0 auto;box-sizing:border-box;
@@ -65,30 +65,52 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 }
 
 /* 4 · the Lessons card */
-.wrap>.lessons{margin:.9rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem 1rem;color:var(--ink)}
-.wrap>.lessons[hidden]{display:none}
-.wrap>.lessons .lhead{min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
-.wrap>.lessons .lhead .kicker{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
-.wrap>.lessons .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;
+
+/* 4 · the Lessons card (on a Lessons view it sits in .lessons-slot, first on the page — AOG-LESSONS-FOLD-V1) */
+.wrap>.lessons,.lessons-slot>.lessons{margin:.9rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem 1rem;color:var(--ink)}
+.wrap>.lessons[hidden],
+.lessons-slot>.lessons[hidden]{display:none}
+.wrap>.lessons .lhead,
+.lessons-slot>.lessons .lhead{min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.wrap>.lessons .lhead .kicker,
+.lessons-slot>.lessons .lhead .kicker{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.wrap>.lessons .pill,
+.lessons-slot>.lessons .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;
   font:600 .9rem/1.2 var(--bench-sans);display:inline-flex;align-items:center;text-decoration:none;cursor:pointer;box-shadow:none}
-.wrap>.lessons .pill[hidden]{display:none}
-.wrap>.lessons .mk{margin:.5rem 0 0;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
-.wrap>.lessons h3{margin:.1rem 0 .15rem;font-size:1.08rem;font-family:var(--bench-display);color:var(--ink)}
-.wrap>.lessons .lblurb{margin:0;color:var(--muted);font-size:.92rem}
-.wrap>.lessons .lsteps{list-style:none;margin:.45rem 0 0;padding:0}
-.wrap>.lessons .lstep{display:flex;gap:.5rem;align-items:flex-start;padding:.2rem 0;font-size:.95rem}
-.wrap>.lessons .lstep .lck{flex:0 0 auto;width:1.2rem;height:1.2rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.1rem;font-size:.75rem;color:var(--steel);margin-top:.1rem}
-.wrap>.lessons .lstep.ok .lck{border-color:var(--steel);background:var(--steel);color:var(--steel-fg)}
-.wrap>.lessons .lstep.ok>span:last-child{text-decoration:line-through;color:var(--muted)}
-.wrap>.lessons .lstep.ok input{text-decoration:none}
-.wrap>.lessons .lok{margin:.55rem 0 0;font-weight:700;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
-.wrap>.lessons .lacts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 0}
-.wrap>.lessons .lacts:empty{display:none}
+.wrap>.lessons .pill[hidden],
+.lessons-slot>.lessons .pill[hidden]{display:none}
+.wrap>.lessons .mk,
+.lessons-slot>.lessons .mk{margin:.5rem 0 0;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.wrap>.lessons h3,
+.lessons-slot>.lessons h3{margin:.1rem 0 .15rem;font-size:1.08rem;font-family:var(--bench-display);color:var(--ink)}
+.wrap>.lessons .lblurb,
+.lessons-slot>.lessons .lblurb{margin:0;color:var(--muted);font-size:.92rem}
+.wrap>.lessons .lsteps,
+.lessons-slot>.lessons .lsteps{list-style:none;margin:.45rem 0 0;padding:0}
+.wrap>.lessons .lstep,
+.lessons-slot>.lessons .lstep{display:flex;gap:.5rem;align-items:flex-start;padding:.2rem 0;font-size:.95rem}
+.wrap>.lessons .lstep .lck,
+.lessons-slot>.lessons .lstep .lck{flex:0 0 auto;width:1.2rem;height:1.2rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.1rem;font-size:.75rem;color:var(--steel);margin-top:.1rem}
+.wrap>.lessons .lstep.ok .lck,
+.lessons-slot>.lessons .lstep.ok .lck{border-color:var(--steel);background:var(--steel);color:var(--steel-fg)}
+.wrap>.lessons .lstep.ok>span:last-child,
+.lessons-slot>.lessons .lstep.ok>span:last-child{text-decoration:line-through;color:var(--muted)}
+.wrap>.lessons .lstep.ok input,
+.lessons-slot>.lessons .lstep.ok input{text-decoration:none}
+.wrap>.lessons .lok,
+.lessons-slot>.lessons .lok{margin:.55rem 0 0;font-weight:700;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.wrap>.lessons .lacts,
+.lessons-slot>.lessons .lacts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 0}
+.wrap>.lessons .lacts:empty,
+.lessons-slot>.lessons .lacts:empty{display:none}
 
 /* 5 · the tool starts one even gap below the Lessons card */
-.wrap>.lessons+*{margin-top:1rem}
+.wrap>.lessons+*,
 
-@media print{ .wrap>.bench-bar .bench-switch,.wrap>.lessons{display:none!important} }
+/* 5 · the tool starts one even gap below the Lessons card */
+.lessons-slot>.lessons+*{margin-top:1rem}
+
+@media print{ .wrap>.bench-bar .bench-switch,.wrap>.lessons,.lessons-slot>.lessons{display:none!important} }
 /* phones: the links fit one line */
 @media (max-width:700px){
   .bench-bar .nav a{padding:0 .3rem;font-size:.82rem}
