@@ -114,6 +114,12 @@ en:{ey:"For families",h1:"Our Child's Plan",lede:"Log a day at home in about 30 
   who:"Who (optional)",whoPh:"A first name, or \"the speech therapist\"",work:"What they are working on",workPh:"Short notes, up to 3 lines",workHb:"Which subjects or work?",practice:"Home practice they gave (optional)",started:"Started (optional)",
   ended:"Paused or ended",active:"Going now",details:"Details",session:"How did today's session go?",sNote:"A note after the session (optional)"},
  questions:"Questions for the school",qPh:"What would you like to ask the teacher?",school:"From school",schoolLine:"Class links opened on this device",
+ schoolIntro:"What your child did for school on this device.",schoolNone:"Nothing from school on this device yet.",
+ srcHome:"Home log",srcRt:"Home routines",srcGoals:"Home goals",srcTh:"Session notes",srcMine:"Work saved on this device",srcSheet:"Class Sheet copy on this device",
+ ddChart:s=>"Daily Drafts · "+s+" · % right on the first try",readyChart:"Ready to learn at the start of class (1–5)",gotChart:"Understood the lesson (1–5)",testChart:"Ready for a test (1–5)",
+ sheets:"sheets",answers:"answers",sessions:"sessions",thChart:"how the session went (1–5)",
+ ddLine:(s,n,p)=>s+": "+n+" Daily Drafts "+(n===1?"sheet":"sheets")+", "+p+"% right on the first try.",
+ workLine:(n,p)=>"Other work: "+n+" "+(n===1?"piece":"pieces")+(p==null?".":", "+p+"% right on the first try."),
  nodata:"No data for this yet.",edit:"Edit",editDone:"Done",yours:"Written by you",newData:"New home data since you edited this",show:"Show",useNew:"Use the new version",
  print:"Print / Save as PDF",send:"Send to the teacher",sendNote:"Print it or save it as a PDF to share it.",sending:"Sending…",sent:"Sent to the teacher.",sendErr:"It did not send. Please try again, or print it.",
  sendAsk:"Send this plan to your child's teacher now?",yesSend:"Yes, send",keep:"Not now",
@@ -140,6 +146,12 @@ es:{ey:"Para familias",h1:"El plan de nuestro hijo",lede:"Anote un día en casa 
   who:"Quién (opcional)",whoPh:"Un nombre, o \"la terapeuta del habla\"",work:"En qué trabajan",workPh:"Notas cortas, hasta 3 líneas",workHb:"¿Qué materias o trabajos?",practice:"Práctica en casa que dieron (opcional)",started:"Empezó (opcional)",
   ended:"En pausa o terminada",active:"Sigue ahora",details:"Detalles",session:"¿Cómo fue la sesión de hoy?",sNote:"Una nota después de la sesión (opcional)"},
  questions:"Preguntas para la escuela",qPh:"¿Qué le gustaría preguntar a la maestra?",school:"De la escuela",schoolLine:"Enlaces de la clase abiertos en este dispositivo",
+ schoolIntro:"Lo que su hijo hizo para la escuela en este dispositivo.",schoolNone:"Aún no hay nada de la escuela en este dispositivo.",
+ srcHome:"Registro en casa",srcRt:"Rutinas en casa",srcGoals:"Metas en casa",srcTh:"Notas de sesiones",srcMine:"Trabajo guardado en este dispositivo",srcSheet:"Copia de la Hoja de la clase en este dispositivo",
+ ddChart:s=>"Daily Drafts · "+s+" · % correcto al primer intento",readyChart:"Listo para aprender al empezar la clase (1–5)",gotChart:"Entendió la lección (1–5)",testChart:"Listo para un examen (1–5)",
+ sheets:"hojas",answers:"respuestas",sessions:"sesiones",thChart:"cómo fue la sesión (1–5)",
+ ddLine:(s,n,p)=>s+": "+n+" "+(n===1?"hoja":"hojas")+" de Daily Drafts, "+p+"% correcto al primer intento.",
+ workLine:(n,p)=>"Otros trabajos: "+n+(p==null?".":", "+p+"% correcto al primer intento."),
  nodata:"Aún no hay datos para esto.",edit:"Editar",editDone:"Listo",yours:"Escrito por usted",newData:"Hay datos nuevos de casa desde que usted editó esto",show:"Ver",useNew:"Usar la versión nueva",
  print:"Imprimir / Guardar como PDF",send:"Enviar a la maestra",sendNote:"Imprímalo o guárdelo como PDF para compartirlo.",sending:"Enviando…",sent:"Enviado a la maestra.",sendErr:"No se envió. Intente de nuevo o imprímalo.",
  sendAsk:"¿Enviar este plan a la maestra de su hijo ahora?",yesSend:"Sí, enviar",keep:"Ahora no",
@@ -179,19 +191,37 @@ function face(n){ const m={1:"M13 31 Q20 22 27 31",2:"M13 30 Q20 25 27 30",3:"M1
    '<path d="M19.6 5c8.6.2 15 6.8 14.8 15.2" stroke-width="1" stroke-opacity=".45"/>'+
    '<path d="M14 15.5v1.6M26 15.5v1.6" stroke-width="3"/>'+'<path d="'+m+'" stroke-width="2.4"/></svg>'; }
 
-/* chart (same shape as the dashboard's lineSvg, copied here) */
-function lineSvg(pts,opt){ opt=opt||{}; const W=opt.w||560,H=opt.h||170,P=28; if(!pts.length) return "";
-  const lo=opt.min, hi=opt.max;
-  const X=i=>P+(W-2*P)*(pts.length<2?0.5:i/(pts.length-1)), Y=v=>H-P-(H-2*P)*((v-lo)/(hi-lo||1));
-  const path=pts.map((p,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(p.v).toFixed(1)).join(" ");
-  let g='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="'+esc(opt.label||"")+'">';
-  [0,.5,1].forEach(t=>{ const y=P+(H-2*P)*t; g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="currentColor" stroke-opacity=".15"/><text x="2" y="'+(y+4)+'" font-size="12" fill="currentColor">'+(Math.round((hi-(hi-lo)*t)*10)/10)+'</text>'; });
-  g+='<path d="'+path+'" fill="none" stroke="'+(opt.c||"#2F63B8")+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
-  pts.forEach((p,i)=>{ g+='<circle cx="'+X(i)+'" cy="'+Y(p.v)+'" r="4.5" fill="'+(opt.c||"#2F63B8")+'"><title>'+esc(p.l||"")+' · '+p.v+'</title></circle>'; });
-  const n=pts.length; [0,Math.floor((n-1)/2),n-1].filter((v,i,a)=>a.indexOf(v)===i).forEach(i=>{ g+='<text x="'+X(i)+'" y="'+(H-6)+'" font-size="12" text-anchor="middle" fill="currentColor">'+esc(pts[i].l||"")+'</text>'; });
-  return g+'</svg>'; }
+const goalWord=()=>"";
+/* AOG-CHART-LOOK-V1 (2026-09-28) — Jimmy: one chart look across Trends, the IEP document and Our Child's Plan.
+   A pencil line (3px, round ends), round dots, faint rules, three dates along the bottom, and a caption under it
+   that names the source and the dates. Black-and-white safe: a second line is dashed with open dots. The same
+   function lives in dashboard.html and family-plan.html; change both together.
+   pts: [{l,v}] (v null = nothing that day). opt: min, max, c, target, base, label, more:[{pts,c}] (same length as pts). */
+function lineSvg(pts,opt){ opt=opt||{}; const W=opt.w||560,H=opt.h||180,P=28; if(!pts.length) return "";
+  const ok=p=>p&&p.v!=null&&p.v!==""&&!isNaN(p.v), more=opt.more||[], vals=[];
+  [pts].concat(more.map(m=>m.pts||[])).forEach(a=>a.forEach(p=>{ if(ok(p)) vals.push(+p.v); })); if(!vals.length) return "";
+  const ys=vals.concat([opt.target,opt.base].filter(v=>v!=null&&!isNaN(v))), lo0=Math.min(opt.min!=null?opt.min:Math.min(...ys),...ys), hi0=Math.max(opt.max!=null?opt.max:Math.max(...ys),...ys,lo0+1), pad=(opt.min==null&&opt.max==null)?(hi0-lo0)*.08:0, lo=lo0-pad, hi=hi0+pad;
+  const X=i=>P+(W-2*P)*(pts.length<2?0.5:i/(pts.length-1)), Y=v=>H-P-(H-2*P)*((v-lo)/(hi-lo));
+  let g='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img"'+(opt.label?' aria-label="'+esc(opt.label)+'"':'')+'>';
+  [0,.5,1].forEach(t=>{ const y=P+(H-2*P)*t, n=hi-(hi-lo)*t; g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="currentColor" stroke-opacity=".12"/>'; g+='<text x="2" y="'+(y+4)+'" font-size="11" fill="currentColor" fill-opacity=".6">'+(Math.abs(hi-lo)<=10?Math.round(n*10)/10:Math.round(n))+'</text>'; });
+  if(opt.target!=null){ const y=Y(opt.target); g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="#2E7D4F" stroke-dasharray="6 5" stroke-width="2"/><text x="'+(W-P)+'" y="'+(y-5)+'" font-size="11" text-anchor="end" fill="#2E7D4F" font-weight="700">'+goalWord()+' '+opt.target+'</text>'; }
+  if(opt.base!=null){ const y=Y(opt.base); g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="#B8893A" stroke-dasharray="3 5" stroke-width="1.5"/>'; }
+  const draw=(ps,c,open)=>{ let d="", pen=false, s=""; ps.forEach((p,i)=>{ if(!ok(p)){ pen=false; return; } d+=(pen?"L":"M")+X(i).toFixed(1)+" "+Y(+p.v).toFixed(1)+" "; pen=true; });
+    s+='<path d="'+d.trim()+'" fill="none" stroke="'+c+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"'+(open?' stroke-dasharray="7 6"':'')+'/>';
+    ps.forEach((p,i)=>{ if(ok(p)) s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(+p.v).toFixed(1)+'" r="4.5" fill="'+(open?"none":c)+'" stroke="'+c+'" stroke-width="'+(open?2.5:0)+'"><title>'+esc(p.l||"")+' · '+p.v+'</title></circle>'; });
+    return s; };
+  more.forEach(m=>{ g+=draw(m.pts||[],m.c||"#B8893A",true); });
+  g+=draw(pts,opt.c||"#2F63B8",false);
+  const n=pts.length; [0,Math.floor((n-1)/2),n-1].filter((v,i,a)=>a.indexOf(v)===i).forEach(i=>{ g+='<text x="'+X(i)+'" y="'+(H-6)+'" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".6">'+esc(pts[i].l||"")+'</text>'; });
+  return g+'</svg>';
+}
+/* a key for a chart with two lines: solid = the first, dashed = the second */
+function chartKey(items){ return '<p class="cap">'+items.map(it=>'<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><svg width="30" height="10" aria-hidden="true"><line x1="2" x2="28" y1="5" y2="5" stroke="'+it.c+'" stroke-width="3" stroke-linecap="round"'+(it.dash?' stroke-dasharray="7 6"':'')+'/></svg>'+esc(it.t)+'</span>').join("")+'</p>'; }
 function shortD(d){ const p=d.split("-"); return (+p[1])+"/"+(+p[2]); }
-function chart(series,min,max,cap,color){ if(!series.length) return ""; return '<div class="chart">'+lineSvg(series.map(s=>({v:s.v,l:shortD(s.d)})),{min:min,max:max,c:color,label:cap})+'<p class="cap">'+esc(cap)+'</p></div>'; }
+/* every chart caption names its source and dates, like the dashboard and the IEP document */
+function srcCap(label,series,unit){ const ds=series.map(s=>s.d).filter(Boolean).sort(), es=lang()==="es"; if(!ds.length) return "";
+  return " ("+label+" · "+ds.length+" "+(unit||(es?(ds.length===1?"día":"días"):(ds.length===1?"day":"days")))+" · "+E.fmtRange(ds[0],ds[ds.length-1],es)+")"; }
+function chart(series,min,max,cap,color,src,unit){ if(!series.length) return ""; return '<div class="chart">'+lineSvg(series.map(s=>({v:s.v,l:shortD(s.d)})),{min:min,max:max,c:color,label:cap})+'<p class="cap">'+esc(cap+srcCap(src||T().srcHome,series,unit))+'</p></div>'; }
 
 const app=document.getElementById("app");
 function chips(name,opts,sel,multi){ return '<div class="row" role="group">'+Object.keys(opts).map(k=>'<button type="button" class="chip" data-'+name+'="'+esc(k)+'" aria-pressed="'+(multi?(sel||[]).indexOf(k)>=0:sel===k)+'">'+esc(opts[k])+'</button>').join("")+'</div>'; }
@@ -295,26 +325,68 @@ function vPlan(){ const t=T(), eng=build(), pl=P(), es=lang()==="es";
     if(ed) h+='<textarea data-sec="'+k+'" style="min-height:140px" aria-label="'+esc(t.S[k])+'">'+esc(own?own.text:et)+'</textarea>';
     else { const txt=own?own.text:et; h+=txt?'<ul>'+txt.split("\n").filter(Boolean).map(x=>'<li>'+esc(x.replace(/^•\s*/,""))+'</li>').join("")+'</ul>':'<p class="muted">'+t.nodata+'</p>'; }
     if(own&&own.base!==et) h+='<details class="newdata noprint"><summary>'+t.newData+' · '+t.show+'</summary><ul>'+(et?et.split("\n").map(x=>'<li>'+esc(x.replace(/^•\s*/,""))+'</li>').join(""):'<li>'+t.nodata+'</li>')+'</ul><button type="button" class="b small" data-usenew="'+k+'">'+t.useNew+'</button></details>';
-    if(k==="routines") eng.routines.forEach(r=>{ h+=chart(r.series.map(p=>({d:p.d,v:p.v})),0,2,r.name+" — "+t.rtChart,"#2F63B8"); });
-    if(k==="goals") eng.goals.forEach(g=>{ h+=chart(g.series,0,2,g.text+" — "+t.gChart,"#2E7D4F"); });
+    if(k==="routines") eng.routines.forEach(r=>{ h+=chart(r.series.map(p=>({d:p.d,v:p.v})),0,2,r.name+" — "+t.rtChart,"#2F63B8",t.srcRt); });
+    if(k==="goals") eng.goals.forEach(g=>{ h+=chart(g.series,0,2,g.text+" — "+t.gChart,"#2E7D4F",t.srcGoals); });
+    if(k==="therapies") thSeries().forEach(x=>{ h+=chart(x.pts,1,5,x.name+" — "+t.thChart,"#8A6516",t.srcTh,t.sessions); });
     if(k==="sleepmood"){ h+=chart(eng.sleep,4,12,t.sleepChart,"#523C9E"); h+=chart(eng.mood,1,5,t.moodChart,"#B8893A"); }
     h+='<div class="row noprint" style="margin-top:8px"><button type="button" class="b small" data-edit="'+k+'">'+(ed?t.editDone:t.edit)+'</button></div></div>'; });
   h+='<div class="card sec"><h3>'+t.questions+'</h3><textarea data-fam="q" aria-label="'+esc(t.questions)+'" placeholder="'+esc(t.qPh)+'">'+esc(pl.q||"")+'</textarea></div>';
-  const handed=get("aog.dash2.handedAll",[]);
-  if(Array.isArray(handed)&&handed.length){ h+='<div class="card sec"><h3>'+t.school+'</h3><p class="sub">'+t.schoolLine+'</p><ul>'+handed.slice(0,6).map(x=>{ const it=(x&&x.items)||[], names=(Array.isArray(it)?it:[]).map(i=>typeof i==="string"?i:(i&&(i.t||i.title||i.name||i.id))||"").filter(Boolean);
-      return '<li>'+(x.at?esc(new Date(x.at).toLocaleDateString(es?"es":"en-US"))+" — ":"")+esc(names.slice(0,4).join(", ")||"—")+'</li>'; }).join("")+'</ul></div>'; }
+  h+=vSchool();
   h+='<div class="card noprint"><div class="row"><button type="button" class="b solid" id="print">'+t.print+'</button>';
   if(canSend()) h+='<button type="button" class="b" id="send">'+t.send+'</button>';
   h+='</div>'+(canSend()?'<div id="sendBox" aria-live="polite"></div>':'<p class="sub">'+t.sendNote+'</p>')+'</div>';
   return h+'</section>'; }
+/* AOG-FAMILY-FROMSCHOOL-V1 (2026-09-28) — Jimmy: the plan is tied to the school's graphs both ways. On this device only:
+   the child's own work saved here (aog.practice.mine: Daily Drafts and worksheets sent from this device), the slips
+   they filled here (aog.slips.mine), a copy of the class Sheet if this device pulled one (aog.practice.remote,
+   aog.checkin.remote), and class links opened here (aog.dash2.handedAll). Nothing is fetched. Same chart look. */
+function fold(n){ return String(n==null?"":n).replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim().toLowerCase(); }
+function isKid(r){ const a=fold(r&&(r.studentId||r.student||r.respondentId)), c=fold(child); return !!c&&(a===c||a.indexOf(c+" ")===0); }
+function xp(r){ try{ const x=typeof r.extra==="string"?JSON.parse(r.extra):(r.extra||{}); return x&&typeof x==="object"?x:{}; }catch(e){ return {}; } }
+function dayOf(r){ return String(r.date||r.timestamp||"").slice(0,10); }
+const SUBJ={math:["Math","Matemáticas"],ela:["Language Arts","Lenguaje"],science:["Science","Ciencias"],write:["Writing","Escritura"]};
+function schoolData(){ const mine=get("aog.practice.mine",[])||[], rem=get("aog.practice.remote",[])||[], seen={}, pr=[];
+  [[mine,"mine"],[rem,"sheet"]].forEach(([a,src])=>{ (Array.isArray(a)?a:[]).forEach(r=>{ if(!r||!isKid(r)||!/^\d{4}-\d\d-\d\d$/.test(dayOf(r))) return; const k=fold(r.studentId)+"|"+String(r.activityId||"")+"|"+String(r.timestamp||"").slice(0,16); if(seen[k]) return; seen[k]=1; pr.push(Object.assign({_src:src},r)); }); });
+  const slips=(get("aog.slips.mine",[])||[]).concat(get("aog.checkin.remote",[])||[]).filter(r=>r&&isKid(r)&&String(r.respondentRole||"student")!=="parent");
+  return {pr, slips}; }
+function thSeries(){ return TH().map(t=>({name:t.name,pts:Object.keys(t.sessions||{}).filter(d=>/^\d{4}-\d\d-\d\d$/.test(d)&&t.sessions[d].r>=1).sort().map(d=>({d,v:t.sessions[d].r}))})).filter(x=>x.pts.length); }
+function byDay(rows,val){ const m={}; rows.forEach(r=>{ const v=val(r); if(v==null||isNaN(v)) return; (m[dayOf(r)]=m[dayOf(r)]||[]).push(v); });
+  return Object.keys(m).sort().slice(-40).map(d=>({d,v:Math.round(10*m[d].reduce((a,b)=>a+b,0)/m[d].length)/10})); }
+function vSchool(){ const t=T(), es=lang()==="es", S=schoolData(), handed=get("aog.dash2.handedAll",[]);
+  let body="", lines=[];
+  const scored=S.pr.filter(r=>+r.itemsTotal>0&&r.independent!=null&&!isNaN(r.independent)), pc=r=>Math.round(100*Math.min(+r.independent,+r.itemsTotal)/+r.itemsTotal);
+  const srcOf=rs=>rs.every(r=>r._src==="mine")?t.srcMine:rs.every(r=>r._src==="sheet")?t.srcSheet:t.srcMine+" + "+t.srcSheet;
+  const dd={}, other=[]; scored.forEach(r=>{ const x=xp(r), id=String(r.activityId||""); if(x.series==="daily-drops"||/^dd-/.test(id)){ const m=/^dd-([a-z]+)/.exec(id), sb=String(x.subject||(m&&m[1])||"other"); (dd[sb]=dd[sb]||[]).push(r); } else other.push(r); });
+  Object.keys(dd).forEach(sb=>{ const rs=dd[sb], nm=(SUBJ[sb]||[sb.charAt(0).toUpperCase()+sb.slice(1),sb])[es?1:0], it=rs.reduce((a,r)=>a+(+r.itemsTotal),0), ok=rs.reduce((a,r)=>a+Math.min(+r.independent,+r.itemsTotal),0);
+    lines.push(t.ddLine(nm,rs.length,Math.round(100*ok/it))+srcCap(srcOf(rs),rs.map(r=>({d:dayOf(r)})),t.sheets));
+    body+=chart(byDay(rs,pc),0,100,t.ddChart(nm),"#2E7D4F",srcOf(rs),t.sheets); });
+  if(other.length){ const it=other.reduce((a,r)=>a+(+r.itemsTotal),0), ok=other.reduce((a,r)=>a+Math.min(+r.independent,+r.itemsTotal),0); lines.push(t.workLine(other.length,Math.round(100*ok/it))+srcCap(srcOf(other),other.map(r=>({d:dayOf(r)})),es?"trabajos":"pieces")); }
+  const ck=S.slips.filter(r=>/^(daily|checkin)$/.test(String(r.checkinType||r.slipType||""))&&+r.readiness>=1);
+  if(ck.length) body+=chart(byDay(ck,r=>+r.readiness),1,5,t.readyChart,"#2F63B8",ck.some(r=>r.mine)?t.srcMine:t.srcSheet,t.answers);
+  [["slip-endclass","got",t.gotChart],["slip-test","ready",t.testChart]].forEach(([ty,q,cap])=>{ const rs=S.slips.filter(r=>String(r.checkinType||"")===ty&&+((xp(r).scale||{})[q])>=1);
+    if(rs.length) body+=chart(byDay(rs,r=>+xp(r).scale[q]),1,5,cap,"#B8893A",rs.every(r=>r.mine)?t.srcMine:t.srcSheet,t.answers); });
+  let links="";
+  if(Array.isArray(handed)&&handed.length) links='<p class="k" style="margin-top:12px">'+t.schoolLine+'</p><ul>'+handed.slice(0,6).map(x=>{ const it=(x&&x.items)||[], names=(Array.isArray(it)?it:[]).map(i=>typeof i==="string"?i:(i&&(i.t||i.title||i.name||i.id))||"").filter(Boolean);
+      return '<li>'+(x.at?esc(new Date(x.at).toLocaleDateString(es?"es":"en-US"))+" — ":"")+esc(names.slice(0,4).join(", ")||"—")+'</li>'; }).join("")+'</ul>';
+  const any=lines.length||body||links;
+  return '<div class="card sec" id="fromSchool"><h3>'+t.school+'</h3>'+(any?'<p class="sub" style="margin:0 0 6px">'+t.schoolIntro+'</p>'+(lines.length?'<ul>'+lines.map(l=>'<li>'+esc(l)+'</li>').join("")+'</ul>':'')+body+links:'<p class="muted" style="margin:0">'+t.schoolNone+'</p>')+'</div>'; }
 function canSend(){ return /^https:\/\//.test(raw("aog.sync.url")) && !!(raw("aog.sync.writekey")||raw("aog.sync.key")); }
 function planText(){ const t=T(), eng=build(), pl=P(); let s=t.h1+" — "+child+"\n"+t.planTop+"\n\n";
   s+=t.who+"\n"+(pl.who||"—")+"\n\n";
   ["strengths","hard","helps","routines","goals","therapies","sleepmood"].forEach(k=>{ const own=pl.sec&&pl.sec[k]; s+=t.S[k]+"\n"+((own?own.text:engineText(eng,k))||t.nodata)+"\n\n"; });
   return s+t.questions+"\n"+(pl.q||"—")+"\n"; }
+/* AOG-FAMILY-PLAN-SEND-V2 (2026-09-28) — so the teacher's dashboard can draw the same charts: the day-by-day numbers
+   (last 90 days each), the family's own words, and every section as the family sees it (their edits win). */
+function sendExtra(eng){ const pl=P(), last=a=>(a||[]).slice(-90), sec={};
+  ["strengths","hard","helps","routines","goals","therapies","sleepmood"].forEach(k=>{ const own=pl.sec&&pl.sec[k]; sec[k]=((own?own.text:engineText(eng,k))||"").split("\n").map(x=>x.replace(/^•\s*/,"").trim()).filter(Boolean).slice(0,12); });
+  return {v:2,lang:lang(),plan:planText(),summary:eng.summary,therapies:engineText(eng,"therapies"),
+    words:{who:String(pl.who||"").slice(0,1000),questions:String(pl.q||"").slice(0,1000)},sections:sec,
+    series:{sleep:last(eng.sleep),mood:last(eng.mood),routines:eng.routines.map(r=>({name:r.name,pts:last(r.series)})),
+      goals:eng.goals.map(g=>({text:g.text,status:g.status,pts:last(g.series)})),therapies:thSeries().map(x=>({name:x.name,pts:last(x.pts)}))}}; }
+window.__aogFamilyPayload=()=>{ const eng=build(); return {action:"checkin",checkinType:"family-plan",studentId:child,timestamp:new Date().toISOString(),date:today(),source:"family",extra:JSON.stringify(sendExtra(eng))}; };
 function doSend(){ const box=document.getElementById("sendBox"), t=T(), eng=build();
   const payload={action:"checkin",checkinType:"family-plan",_backendAuth:raw("aog.sync.writekey")||raw("aog.sync.key"),studentId:child,
-    timestamp:new Date().toISOString(),date:today(),source:"family",extra:JSON.stringify({lang:lang(),plan:planText(),summary:eng.summary,therapies:engineText(eng,"therapies")})};
+    timestamp:new Date().toISOString(),date:today(),source:"family",extra:JSON.stringify(sendExtra(eng))};
   const body=JSON.stringify(payload), url=raw("aog.sync.url"); box.innerHTML='<p class="sub">'+t.sending+'</p>';
   fetch(url,{method:"POST",mode:"cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body})
    .then(r=>r.json()).then(j=>{ box.innerHTML='<p class="'+(j&&j.ok?"saved":"sub")+'">'+(j&&j.ok?t.sent:t.sendErr)+'</p>'; })

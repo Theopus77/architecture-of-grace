@@ -14,7 +14,9 @@
    3. Never a diagnosis, never a deficit label. Strengths first; "room to grow", not "weakness".
    4. Private things stay out: follow-up flags, "tell an adult", free-text notes on exit, repair and
       home slips, anything a student marked private in My Voice, and everything from home (family and
-      health belong to the family and the teacher).
+      health belong to the family and the teacher) — EXCEPT a plan the family chose to send
+      (AOG-IEP-FAMILY-V1 below): that is theirs to share, so it is routed, and every line says
+      "reported by family".
 
    ROUTES (below) is the one table that says which slip question feeds which IEP area and field.
    Jimmy can change a line there and both the text and the charts follow. */
@@ -87,6 +89,22 @@ var ROUTES=[
   /* the eighteen-question self-reflection (MTSS) */
   {src:"reflect", q:"composite",  kind:"num",   area:"sel",   field:"e_sel",        label:"Self-reflection", chart:true}
 ];
+/* AOG-IEP-FAMILY-V1 (2026-09-28) — Jimmy: "Our Child's Plan … TIED TO ALL THE GRAPHS". When a family presses
+   Send on /family-plan, one row (checkinType "family-plan") reaches the Sheet. Only the latest one is read.
+   Every line and chart says "reported by family"; a box the teacher edited is never changed (apply).
+     family's own words (who, hard, helps, questions) → a_parent  "What the family has shared"
+     therapies, homebound tutor                       → svc_family "Reported by the family" under Services now
+                                                        (a_parent when the form has no Services section)
+     sleep, how the day went                          → e_sel       Social-emotional, with charts
+     routines at home                                 → e_indep     Independence, with charts
+     goals at home                                    → e_indep     with charts */
+var FAMILY_ROUTES=[
+  {what:"words",     field:"a_parent"},
+  {what:"therapies", field:"svc_family", fallback:"a_parent"},
+  {what:"sleepmood", field:"e_sel",   chart:true},
+  {what:"routines",  field:"e_indep", chart:true},
+  {what:"goals",     field:"e_indep", chart:true}
+];
 /* never routed, on purpose: slip-home (from the family: sleep, mood, medicine — the family's to share),
    repair "what happened", exit "roughMoment" and "written", weekly "tell"/"note"/"again", every
    followUp / tellAdult / trustedAdultFlag / unsafeFlag, and adult "flags". */
@@ -100,7 +118,7 @@ var DOMFIELD={}; ROUTES.forEach(function(r){ if(r.src==="adult") DOMFIELD[r.q]=r
 var REFL={A:"Emotional Regulation & Well-Being",B:"Self-Compassion & Growth Mindset",C:"Social Competency & Repair"};
 
 /* the fields the engine may write, by section of the draft */
-var FIELDS={goals:["goals_data"],str:["a_strengths"],
+var FIELDS={svc:["svc_family"],goals:["goals_data"],str:["a_strengths","a_parent"],
   pl:["d_ela_data","d_ela_strength","d_ela_diff","d_ela_supports","d_math_data","d_math_strength","d_math_diff","d_math_supports","d_selfview","d_other"],
   cls:["e_particip_t","e_org_t","e_routines_t","e_peers_t","e_supports","e_sel","e_indep"],data:["f_data"],impact:["g_impact"]};
 
@@ -292,6 +310,49 @@ function goals(input,T,C,acad){ var gs=(input.goals||[]).filter(function(x){ ret
   if(!gs.length&&acad.suggest.length) T.goals_data=add(T.goals_data,"Suggestions from the data, not goals — measurable skills with room to grow:\n"+acad.suggest.map(function(s){ return "- "+s; }).join("\n"));
 }
 
+/* the family's plan (AOG-IEP-FAMILY-V1). input.family = {at, x} where x is the parsed "extra" of the latest
+   family-plan row. Every line: "(Home log · reported by family · N days · dates)". */
+function famSrc(label,pts){ var ds=(pts||[]).map(function(p){ return p.d; }).filter(okDay).sort();
+  return "("+label+" · reported by family"+(ds.length?" · "+ds.length+" day"+(ds.length===1?"":"s")+" · "+fmtRange(ds[0],ds[ds.length-1]):"")+")"; }
+function family(input,T,C){ var f=input.family; if(!f||!f.x) return; var x=f.x, se=x.series||{}, sm=x.summary||{}, wd=x.words||{}, sec=x.sections||{};
+  var sent=okDay(String(f.at||"").slice(0,10))?fmtD(String(f.at).slice(0,10),true):"";
+  var tag="(Our Child's Plan · reported by family"+(sent?" · sent "+sent:"")+")";
+  var fields=input.fields, has=function(k){ return !fields||fields.indexOf(k)>=0; };
+  var R={}; FAMILY_ROUTES.forEach(function(r){ R[r.what]=has(r.field)?r.field:(r.fallback&&has(r.fallback)?r.fallback:""); });
+  /* the family's own words */
+  if(R.words){ var w=[];
+    if(String(wd.who||"").trim()) w.push("Who our child is, in the family's words: “"+clean(wd.who).slice(0,400)+"”");
+    (sec.hard||[]).slice(0,3).forEach(function(l){ w.push("What is hard right now at home: "+clean(l).slice(0,240)); });
+    (sec.helps||[]).slice(0,3).forEach(function(l){ w.push("What helps at home: "+clean(l).slice(0,240)); });
+    if(String(wd.questions||"").trim()) w.push("Questions for the school: “"+clean(wd.questions).slice(0,400)+"”");
+    if(w.length) T[R.words]=add(T[R.words],"Family input "+tag+":\n"+w.map(function(l){ return "- "+l; }).join("\n")); }
+  /* therapies and support, as the family reported them */
+  var th=(sm.therapies||[]).filter(function(t){ return t&&String(t.therapy||"").trim(); });
+  if(R.therapies&&th.length){ var WH={school:"at school",home:"at home",outside:"outside school",both:"at school and outside school"};
+    var lines=th.map(function(t){ var b=[WH[t.where]||"",clean(t.howOften||""),t.who?"with "+clean(t.who):""].filter(Boolean);
+      return "- "+clean(t.therapy)+(b.length?" — "+b.join(", "):"")+(t.workingOn?". Working on: “"+clean(t.workingOn).slice(0,200)+"”":"")+(t.status==="ended"?". Paused or ended for now":"")+
+        (t.sessionsLogged?". "+t.sessionsLogged+" session"+(t.sessionsLogged===1?"":"s")+" logged"+(t.rated?", went well "+t.wentWell+" of "+t.rated:""):"")+"."; });
+    T[R.therapies]=add(T[R.therapies],"Reported by family, not school services "+tag+":\n"+lines.join("\n"));
+    (se.therapies||[]).forEach(function(t,i){ var p=(t.pts||[]).filter(function(q){ return okDay(q.d)&&num(q.v)!=null; }); if(p.length<2) return;
+      C.push({id:"fam-th-"+i,field:R.therapies,caption:"Home log · "+clean(t.name)+" · how sessions went, 1 to 5 · reported by family · "+p.length+" sessions · "+fmtRange(p[0].d,p[p.length-1].d),min:1,max:5,pts:p,family:true}); }); }
+  /* sleep and mood → social-emotional */
+  var sl=(se.sleep||[]).filter(function(p){ return okDay(p.d)&&num(p.v)!=null; }), md=(se.mood||[]).filter(function(p){ return okDay(p.d)&&num(p.v)!=null; });
+  if(R.sleepmood){
+    if(md.length){ var mt=trend(md.map(function(p){ return +p.v; }),0.3);
+      T[R.sleepmood]=add(T[R.sleepmood],"How the day went at home: "+r1(mean(md.map(function(p){ return +p.v; })))+" of 5 on average"+(sm.goodDays!=null?"; "+sm.goodDays+" good or great days of "+md.length:"")+(mt?"; "+trendWords(mt,false,"days"):"")+". "+famSrc("Home log",md)); }
+    if(sl.length){ T[R.sleepmood]=add(T[R.sleepmood],"Sleep at home: "+r1(mean(sl.map(function(p){ return +p.v; })))+" hours on average (from "+Math.min.apply(0,sl.map(function(p){ return +p.v; }))+" to "+Math.max.apply(0,sl.map(function(p){ return +p.v; }))+"). "+famSrc("Home log",sl)); }
+    if(md.length>=2) C.push({id:"fam-mood",field:R.sleepmood,caption:"Home log · how the day went, 1 to 5 · reported by family · "+md.length+" days · "+fmtRange(md[0].d,md[md.length-1].d),min:1,max:5,pts:md,family:true});
+    if(sl.length>=2) C.push({id:"fam-sleep",field:R.sleepmood,caption:"Home log · hours of sleep · reported by family · "+sl.length+" days · "+fmtRange(sl[0].d,sl[sl.length-1].d),min:4,max:12,pts:sl,family:true}); }
+  /* routines and goals at home → independence */
+  if(R.routines){ (sm.routines||[]).forEach(function(r){ if(!r||!r.days) return; var p=((se.routines||[]).filter(function(q){ return q.name===r.routine; })[0]||{}).pts||[];
+      T[R.routines]=add(T[R.routines],"Home routine “"+clean(r.routine)+"”: on their own "+r.onTheirOwn+", with help "+r.withHelp+", not today "+r.notToday+" of "+r.days+" days. "+famSrc("Home routines",p.length?p:[]));
+      var pp=p.filter(function(q){ return okDay(q.d)&&num(q.v)!=null; }); if(pp.length>=2) C.push({id:"fam-rt-"+fold(r.routine),field:R.routines,caption:"Home routines · "+clean(r.routine)+" · 0 not today, 1 with help, 2 on their own · reported by family · "+pp.length+" days · "+fmtRange(pp[0].d,pp[pp.length-1].d),min:0,max:2,pts:pp,family:true}); }); }
+  if(R.goals){ (se.goals||[]).forEach(function(g,i){ var p=(g.pts||[]).filter(function(q){ return okDay(q.d)&&num(q.v)!=null; }); if(!p.length) return;
+      var y=p.filter(function(q){ return +q.v===2; }).length, l=p.filter(function(q){ return +q.v===1; }).length;
+      T[R.goals]=add(T[R.goals],"Family goal at home “"+clean(g.text)+"”: yes on "+y+", a little on "+l+", not today on "+(p.length-y-l)+" of "+p.length+" days. "+famSrc("Home goals",p));
+      if(p.length>=2) C.push({id:"fam-g-"+i,field:R.goals,caption:"Home goals · "+clean(g.text)+" · 0 not today, 1 a little, 2 yes · reported by family · "+p.length+" days · "+fmtRange(p[0].d,p[p.length-1].d),min:0,max:2,pts:p,family:true}); }); }
+}
+
 function add(a,b){ return a?a+"\n"+b:b; }
 
 /* ── the whole draft for one student ── */
@@ -303,6 +364,7 @@ function build(input){ input=input||{}; var T={}, C=[];
   reflection(input,T,C);
   voice(input,T,(input.fields&&input.fields.indexOf("a_strengths")<0)?"e_sel":"a_strengths");
   goals(input,T,C,acad);
+  family(input,T,C);
   if(input.pm&&(input.pm.int||input.pm.goal)){ var pm=input.pm; T.d_other=add(T.d_other,"MTSS plan on file: "+[pm.int?"intervention “"+clean(pm.int)+"”":"",pm.start?"started "+clean(pm.start):"",pm.goal?"goal “"+clean(pm.goal)+"”":"",pm.review?"review "+clean(pm.review):""].filter(Boolean).join(", ")+". (MTSS Report · plan)"); }
   if(acad.impact.length) T.g_impact="Where the classroom data shows support helps most:\n"+acad.impact.map(function(s){ return "- "+s; }).join("\n");
   var dl=acad.dataList.slice();
@@ -310,6 +372,7 @@ function build(input){ input=input||{}; var T={}, C=[];
   var ck=routeRows({src:"checkin"},input); if(ck.length) dl.push("Daily check-ins: "+ck.length+" "+src("Daily check-ins",ck.length,["check-in","check-ins"],ck));
   if((input.slips||[]).length) dl.push("Slips: "+input.slips.length+" "+src("Slips",input.slips.length,["slip","slips"],input.slips));
   if((input.reflect||[]).length) dl.push("Self-reflections: "+input.reflect.length+" "+src("MTSS self-reflection",input.reflect.length,["reflection","reflections"],input.reflect));
+  if(input.family&&input.family.x) dl.push("Our Child's Plan from the family (reported by family"+(okDay(String(input.family.at||"").slice(0,10))?" · sent "+fmtD(String(input.family.at).slice(0,10),true):"")+")");
   if(dl.length) T.f_data="Classroom data on this device (new since the last meeting is for the team to confirm):\n"+dl.map(function(s){ return "- "+s; }).join("\n");
   /* charts land in the section of their field */
   C.forEach(function(c){ if(!c.sec) c.sec=secOf(c.field); });
@@ -322,7 +385,8 @@ function fieldsFor(sectionIds){ var out=[]; (sectionIds||[]).forEach(function(s)
 /* ── the two layers. doc.eng[k] = {text, at, prev, base}; doc.own[k] = true once the teacher edits it. ── */
 function apply(doc,texts,keys,today){ doc.fields=doc.fields||{}; doc.eng=doc.eng||{}; doc.own=doc.own||{}; var changed=false;
   if(!doc.engV){ keys.forEach(function(k){ if(String(doc.fields[k]==null?"":doc.fields[k]).trim()) doc.own[k]=true; }); doc.engV=1; changed=true; }
-  keys.forEach(function(k){ var nt=texts[k]||"", e=doc.eng[k]||(doc.eng[k]={text:"",at:""});
+  keys.forEach(function(k){ if(!doc.eng[k]&&!doc.own[k]&&String(doc.fields[k]==null?"":doc.fields[k]).trim()){ doc.own[k]=true; changed=true; } /* AOG-IEP-FAMILY-V1: a box that joins the engine later (a_parent) keeps what the teacher already wrote */
+    var nt=texts[k]||"", e=doc.eng[k]||(doc.eng[k]={text:"",at:""});
     if(e.text!==nt){ e.prev=e.text; e.text=nt; e.at=today; changed=true; }
     if(!doc.own[k]&&String(doc.fields[k]==null?"":doc.fields[k])!==nt){ doc.fields[k]=nt; changed=true; } });
   return changed; }
@@ -344,12 +408,13 @@ function augment(secs,doc){ var f=doc.fields||{}, has=function(k){ return f[k]!=
       else { var at=px==="ela"?(L.indexOf("Math")>=0?L.indexOf("Math"):firstOther(L)):firstOther(L); L.splice.apply(L,[at,0,head].concat(block)); } });
     if(has("d_selfview")){ var o=firstOther(L); L.splice.apply(L,[o,0,"Student self-assessment (from slips):"].concat(v("d_selfview").split("\n"))); }
     p.text=L.join("\n"); }
-  var fx=[]; if(has("e_sel")) fx.push("Social-emotional (check-ins, slips, self-reflection):\n"+v("e_sel")); if(has("e_indep")) fx.push("Independence and self-advocacy:\n"+v("e_indep"));
+  if(has("svc_family")){ var sv=find("svc")||insertAfter(["purpose"],{id:"svc",title:"CURRENT SPECIAL EDUCATION SERVICES",text:""}); sv.text=(sv.text?sv.text+"\n":"")+v("svc_family"); }
+  var fx=[]; if(has("e_sel")) fx.push("Social-emotional (check-ins, slips, self-reflection"+(/reported by family/.test(v("e_sel"))?", home log reported by family":"")+"):\n"+v("e_sel")); if(has("e_indep")) fx.push("Independence and self-advocacy:\n"+v("e_indep"));
   if(fx.length){ var fn=find("func")||insertAfter(["pl"],{id:"func",title:"STUDENT'S PRESENT LEVELS OF FUNCTIONAL/DEVELOPMENTAL PERFORMANCE",text:""}); fn.text=(fn.text?fn.text+"\n":"")+fx.join("\n"); }
   return out; }
 function firstOther(L){ for(var i=0;i<L.length;i++) if(/^(EL services|Other areas)/.test(L[i])) return i; return L.length; }
 
 var API={ROUTES:ROUTES,AREAS:AREAS,FIELDS:FIELDS,OBS:OBS,build:build,apply:apply,noteEdit:noteEdit,hasNews:hasNews,restore:restore,augment:augment,fieldsFor:fieldsFor,secOf:secOf,
-  _:{fmtD:fmtD,fmtRange:fmtRange,trend:trend,tally:tally,parseStrands:parseStrands,strandTable:strandTable,strongWeak:strongWeak,scoreStats:scoreStats,subjectOf:subjectOf,kindOf:kindOf,wscale:wscale,fold:fold}};
+  _:{fmtD:fmtD,fmtRange:fmtRange,trend:trend,tally:tally,parseStrands:parseStrands,strandTable:strandTable,strongWeak:strongWeak,scoreStats:scoreStats,subjectOf:subjectOf,kindOf:kindOf,wscale:wscale,fold:fold},FAMILY_ROUTES:FAMILY_ROUTES};
 if(typeof module!=="undefined"&&module.exports) module.exports=API; else root.AOG_IEPFILL=API;
 })(typeof window!=="undefined"?window:this);
