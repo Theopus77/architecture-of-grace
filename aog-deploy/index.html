@@ -4833,6 +4833,57 @@ html[data-sr-results]:root body #screen-myresults#screen-myresults .aog-srt-grid
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
 })();
 </script>
+<style id="aog-sr-slip-paper">
+/* AOG-SR-SLIP-PAPER-V1 (2026-09-28) — Jimmy: the student's printed results slip (Save / Print on "See your results"
+   after the SEL self-reflection) gets the same sketchbook look as the results screen. Only for a student's or
+   child's own results (html[data-sr-results]); adult and workplace prints keep their look. White paper, one pencil
+   outline, Fraunces heading, the four scores as small pencil cards with a hatched bar, striped numbers 1-3 for the
+   three areas, the Grace Compass as a pencil card. Nothing is added, removed or reworded; one page. */
+@media print{
+html[data-sr-results] #printReport .home-view{background:#fff!important;color:#1F2630!important;border:1.5px solid #2A2622!important;border-radius:12px 14px 11px 13px!important;padding:22px 24px!important;max-width:7.2in;margin:0 auto!important;box-shadow:none!important}
+html[data-sr-results] #printReport .home-view>div:first-child{border-bottom:1.5px dashed #2A2622!important}
+html[data-sr-results] #printReport .home-view>div:first-child>div:first-child{color:#7E5B18!important}
+html[data-sr-results] #printReport .home-view>div:first-child>div:nth-child(2){font-family:Fraunces,Georgia,serif!important;font-size:28px!important;color:#1F2630!important}
+html[data-sr-results] #printReport .home-view>div:first-child>div:nth-child(3){color:#4A5260!important}
+html[data-sr-results] #printReport .home-view>div:nth-child(2){display:grid!important;grid-template-columns:repeat(4,1fr);gap:10px!important;counter-reset:srp}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div:nth-child(-n+4){min-width:0!important;border:1.5px solid #2A2622;border-radius:11px 12px 10px 12px;padding:10px 10px 12px;background:#fff;position:relative}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div:not(:first-child):nth-child(-n+4){counter-increment:srp;padding-left:48px}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div:not(:first-child):nth-child(-n+4)::before{content:counter(srp);position:absolute;left:9px;top:10px;display:grid;place-items:center;width:30px;height:30px;box-sizing:border-box;border-radius:7px;font:700 15px/1 Fraunces,Georgia,serif;color:#1F2630;
+  background:linear-gradient(#fff,#fff) padding-box,repeating-linear-gradient(38deg,var(--nc,#B87A12) 0 2.4px,#fff 2.4px 4.8px) border-box;border:4px solid transparent;outline:1.5px solid #2A2622;outline-offset:-1px}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div:nth-child(2){--nc:#2F63B8}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div:nth-child(3){--nc:#B8457A}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div:nth-child(4){--nc:#2E8B57}
+html[data-sr-results] #printReport .home-view>div:nth-child(2)>div>div:first-child{color:#7E5B18!important;overflow-wrap:anywhere;line-height:1.25}
+html[data-sr-results] #printReport .srp-bar{display:block;height:10px;margin-top:6px;border:1.5px solid #2A2622;border-radius:6px;overflow:hidden;background:#fff}
+html[data-sr-results] #printReport .srp-bar b{display:block;height:100%;border-right:1.5px solid #2A2622;background:repeating-linear-gradient(38deg,var(--nc,#2A2622) 0 2px,#fff 2px 4.6px)}
+html[data-sr-results] #printReport .aog-gc{background:#fff!important;background-image:none!important;border:1.5px solid #2A2622!important;border-radius:12px 14px 11px 13px!important;box-shadow:none!important;color:#1F2630!important}
+html[data-sr-results] #printReport .aog-gc::before,html[data-sr-results] #printReport .aog-gc::after,html[data-sr-results] #printReport .aog-gc *::before,html[data-sr-results] #printReport .aog-gc *::after{display:none!important}
+html[data-sr-results] #printReport .aog-gc :is(.gc-eyebrow,.gc-next-step,.gc-lead,.gc-res-lesson,.gc-home-q,.gc-res-v,.gc-tool-tx){color:#1F2630!important}
+html[data-sr-results] #printReport .aog-gc :is(.gc-eyebrow,.gc-next-step){color:#7E5B18!important}
+html[data-sr-results] #printReport .aog-gc .gc-eyebrow{font-family:Fraunces,Georgia,serif!important}
+html[data-sr-results] #printReport .gc-score-pill{background:#fff!important;color:#1F2630!important;border:1.5px solid #2A2622!important}
+html[data-sr-results] #printReport :is(.gc-res,.gc-tool){background:#fff!important;border:1.5px dashed #2A2622!important;border-radius:11px!important}
+html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
+}
+</style>
+<script>
+/* AOG-SR-SLIP-PAPER-V1: while a student's own results are printed, draws a hatched bar under each of the four
+   scores that are already on the slip (width = that score out of 100). It only adds a drawing; it never changes
+   the record or what is saved or sent, and the print sheet is emptied after printing as before. */
+(function(){
+  function bars(){ try{
+    if(!document.documentElement.hasAttribute("data-sr-results")) return;
+    var r=document.getElementById("printReport"), row=r&&r.querySelector(".home-view>div:nth-child(2)"); if(!row||row.querySelector(".srp-bar")) return;
+    Array.prototype.forEach.call(row.children,function(c,k){
+      if(k>3) return; var v=c.children[1], m=v&&v.textContent.match(/^\s*(\d+)/); if(!m) return;
+      var i=document.createElement("i"); i.className="srp-bar"; i.setAttribute("aria-hidden","true");
+      var b=document.createElement("b"); b.style.width=Math.max(0,Math.min(100,+m[1]))+"%"; i.appendChild(b); c.appendChild(i);
+    });
+  }catch(e){} }
+  function boot(){ var r=document.getElementById("printReport"); if(r) new MutationObserver(bars).observe(r,{childList:true}); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
+})();
+</script>
 
 
 <section id="screen-adult" class="screen">
