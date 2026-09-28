@@ -230,7 +230,8 @@
       var c = cards[i]; if (c.querySelector(".aog-card-sketch")) continue;
       var a = c.querySelector("a.door"); if (!a) continue;
       var h = (a.getAttribute("href") || "").replace(/[?#].*$/, "");
-      var id = SHORT[h] || (h.match(/^\/?([A-Za-z0-9-]+)\.html$/) || [])[1]; if (!id) continue;
+      var id = SHORT[h] || (h.match(/^\/?([A-Za-z0-9-]+)\.html$/) || [])[1] || (/^\/(microscope|telescope)$/.test(h) ? h.slice(1) : ""); if (!id) continue;
+      if (typeof PAGE !== "undefined" && PAGE[id] && PAGE[id].indexOf("page-") === 0 && /microscope|telescope/.test(id)) id = PAGE[id];
       var f = D.createElement("span"); f.className = "aog-card-sketch"; f.setAttribute("aria-hidden", "true");
       var im = D.createElement("img"); im.alt = ""; im.loading = "lazy"; im.decoding = "async"; im.src = "/img/banners/" + id + "-pencil-900.webp";
       im.onerror = (function (fr) { return function () { if (fr.parentNode) fr.parentNode.removeChild(fr); }; })(f);
