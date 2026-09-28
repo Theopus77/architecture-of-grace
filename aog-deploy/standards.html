@@ -114,6 +114,11 @@ footer a{color:var(--gold-deep)}
 @media (min-width:700px){ .cgrid{grid-template-columns:1fr 1fr} }
 @media (min-width:1000px){ .cgrid{grid-template-columns:1fr 1fr 1fr} }
 .ccard{background:var(--card); border:1.5px solid var(--rule); border-radius:14px; padding:14px 16px; color:var(--ink)}
+.bandfold{margin:12px 0; border:1.5px solid var(--rule); border-radius:14px; background:var(--card); color:var(--ink)}
+.bandfold>summary{cursor:pointer; min-height:44px; padding:12px 16px; font-family:"Fraunces","Lora",Georgia,serif; font-size:18px; font-weight:600; color:var(--ink); list-style-position:inside}
+.bandfold[open]>summary{border-bottom:1.5px solid var(--rule)}
+.bandfold>:not(summary){margin-left:12px; margin-right:12px}
+@media print{ .bandfold>summary{display:none} .bandfold{border:0} }
 .ccard h3{margin:0 0 2px}
 .ccard .cmeta{margin:0 0 6px; font-size:14px; color:var(--ink-soft)}
 .ccard .cfw{margin:0 0 6px}
@@ -235,18 +240,13 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     <p data-en="&lt;b&gt;136 of 140 lessons&lt;/b&gt; carry an Illinois SEL benchmark, drawing on &lt;b&gt;75 distinct benchmarks&lt;/b&gt; across all three Illinois goals. &lt;b&gt;119 of 140&lt;/b&gt; name a primary CASEL competency. &lt;b&gt;67&lt;/b&gt; are additionally mapped to the companion novel — the chapter the lesson sits against, and the anchor chart built from it." data-es="&lt;b&gt;136 de 140 lecciones&lt;/b&gt; llevan un estándar SEL de Illinois, sobre &lt;b&gt;75 estándares distintos&lt;/b&gt; de las tres metas de Illinois. &lt;b&gt;119 de 140&lt;/b&gt; nombran una competencia CASEL principal. &lt;b&gt;67&lt;/b&gt; están además vinculadas a la novela complementaria — el capítulo sobre el que se apoya la lección y el cartel de anclaje que sale de él."><b>136 of 140 lessons</b> carry an Illinois SEL benchmark, drawing on <b>75 distinct benchmarks</b> across all three Illinois goals. <b>119 of 140</b> name a primary CASEL competency. <b>67</b> are additionally mapped to the companion novel &mdash; the chapter the lesson sits against, and the anchor chart built from it.</p>
   </div>
   <div class="note" data-en="&lt;b&gt;On this page in Spanish.&lt;/b&gt; The framing, the headings and every explanation switch with the language button. &lt;b&gt;The table cells do not.&lt;/b&gt; Lesson titles are the titles as printed in the books, and the Illinois benchmark text is the wording the Illinois State Board of Education publishes — in English. An unofficial translation of a state standard would misrepresent it, and a lesson title that appears in no book would send a teacher looking for something that does not exist. Both stay in the original on purpose." data-es="&lt;b&gt;Sobre esta página en español.&lt;/b&gt; El marco, los encabezados y todas las explicaciones cambian con el botón de idioma. &lt;b&gt;Las celdas de la tabla no.&lt;/b&gt; Los títulos de las lecciones son los títulos tal como están impresos en los libros, y el texto de los estándares de Illinois es la redacción que publica la Junta de Educación del Estado de Illinois — en inglés. Una traducción no oficial de un estándar estatal lo tergiversaría, y un título de lección que no aparece en ningún libro haría que un maestro buscara algo que no existe. Los dos se dejan en el original a propósito."><b>On this page in Spanish.</b> The framing, the headings and every explanation switch with the language button. <b>The table cells do not.</b> Lesson titles are the titles as printed in the books, and the Illinois benchmark text is the wording the Illinois State Board of Education publishes &mdash; in English. An unofficial translation of a state standard would misrepresent it, and a lesson title that appears in no book would send a teacher looking for something that does not exist. Both stay in the original on purpose.</div>
-  <h2 data-en="Coverage at a glance" data-es="Cobertura de un vistazo">Coverage at a glance</h2>
-  <div class="tblwrap">
-  <table class="tbl">
-    <thead><tr><th data-en="Band" data-es="Banda">Band</th><th data-en="Room" data-es="Sala">Room</th><th data-en="Curriculum &amp; novel" data-es="Currículo y novela">Curriculum &amp; novel</th><th data-en="Lessons" data-es="Lecciones">Lessons</th><th data-en="With CASEL" data-es="Con CASEL">With CASEL</th><th data-en="With Illinois" data-es="Con Illinois">With Illinois</th><th data-en="Novel-mapped" data-es="Con novela">Novel-mapped</th></tr></thead>
-    <tbody>
-      <tr><td><b>K-2</b></td><td>Room 12</td><td>Book 1 · The Foundation<span class="sub">The Year We Met Sammy</span></td><td>28</td><td>28</td><td>26</td><td>18</td></tr>
-      <tr><td><b>3-5</b></td><td>Room 18</td><td>Book 2 · The Framework<span class="sub">The Year of the Inner Critic</span></td><td>28</td><td>28</td><td>26</td><td>18</td></tr>
-      <tr><td><b>6-8</b></td><td>Room 36</td><td>Book 3 · The Interior<span class="sub">The Year of Two Voices</span></td><td>28</td><td>28</td><td>28</td><td>14</td></tr>
-      <tr><td><b>9-10</b></td><td>Room 104</td><td>Book 4 · The Facade<span class="sub">The Year We Looked Up</span></td><td>28</td><td>28</td><td>28</td><td>8</td></tr>
-      <tr><td><b>11-12</b></td><td>Room 207</td><td>Book 5 · The Capstone<span class="sub">The Year We Walked Out</span></td><td>28</td><td>7</td><td>28</td><td>9</td></tr>
-    </tbody>
-  </table>
+  <h2 data-en="The five books" data-es="Los cinco libros">The five books</h2>
+  <div class="cgrid">
+  <article class="ccard"><h3>Book 1 · The Foundation</h3><p class="cmeta"><span data-en="Grades K-2 · Room 12 · 28 lessons" data-es="Grados K-2 · Sala 12 · 28 lecciones">Grades K-2 · Room 12 · 28 lessons</span></p><p class="cfw"><i>The Year We Met Sammy</i></p><p class="cnum"><b>26</b> <span data-en="lessons with an Illinois SEL standard" data-es="lecciones con un estándar SEL de Illinois">lessons with an Illinois SEL standard</span></p><p class="cacts"><a class="hbtn" href="#band-K-2" data-openfold="band-K-2"><span data-en="Every lesson and standard" data-es="Cada lección y estándar">Every lesson and standard</span></a><a class="hbtn ghost" href="/lessons12"><span data-en="Open the lessons" data-es="Abrir las lecciones">Open the lessons</span></a></p></article>
+  <article class="ccard"><h3>Book 2 · The Framework</h3><p class="cmeta"><span data-en="Grades 3-5 · Room 18 · 28 lessons" data-es="Grados 3-5 · Sala 18 · 28 lecciones">Grades 3-5 · Room 18 · 28 lessons</span></p><p class="cfw"><i>The Year of the Inner Critic</i></p><p class="cnum"><b>26</b> <span data-en="lessons with an Illinois SEL standard" data-es="lecciones con un estándar SEL de Illinois">lessons with an Illinois SEL standard</span></p><p class="cacts"><a class="hbtn" href="#band-3-5" data-openfold="band-3-5"><span data-en="Every lesson and standard" data-es="Cada lección y estándar">Every lesson and standard</span></a><a class="hbtn ghost" href="/lessons18"><span data-en="Open the lessons" data-es="Abrir las lecciones">Open the lessons</span></a></p></article>
+  <article class="ccard"><h3>Book 3 · The Interior</h3><p class="cmeta"><span data-en="Grades 6-8 · Room 36 · 28 lessons" data-es="Grados 6-8 · Sala 36 · 28 lecciones">Grades 6-8 · Room 36 · 28 lessons</span></p><p class="cfw"><i>The Year of Two Voices</i></p><p class="cnum"><b>28</b> <span data-en="lessons with an Illinois SEL standard" data-es="lecciones con un estándar SEL de Illinois">lessons with an Illinois SEL standard</span></p><p class="cacts"><a class="hbtn" href="#band-6-8" data-openfold="band-6-8"><span data-en="Every lesson and standard" data-es="Cada lección y estándar">Every lesson and standard</span></a><a class="hbtn ghost" href="/lessons36"><span data-en="Open the lessons" data-es="Abrir las lecciones">Open the lessons</span></a></p></article>
+  <article class="ccard"><h3>Book 4 · The Facade</h3><p class="cmeta"><span data-en="Grades 9-10 · Room 104 · 28 lessons" data-es="Grados 9-10 · Sala 104 · 28 lecciones">Grades 9-10 · Room 104 · 28 lessons</span></p><p class="cfw"><i>The Year We Looked Up</i></p><p class="cnum"><b>28</b> <span data-en="lessons with an Illinois SEL standard" data-es="lecciones con un estándar SEL de Illinois">lessons with an Illinois SEL standard</span></p><p class="cacts"><a class="hbtn" href="#band-9-10" data-openfold="band-9-10"><span data-en="Every lesson and standard" data-es="Cada lección y estándar">Every lesson and standard</span></a><a class="hbtn ghost" href="/lessons104"><span data-en="Open the lessons" data-es="Abrir las lecciones">Open the lessons</span></a></p></article>
+  <article class="ccard"><h3>Book 5 · The Capstone</h3><p class="cmeta"><span data-en="Grades 11-12 · Room 207 · 28 lessons" data-es="Grados 11-12 · Sala 207 · 28 lecciones">Grades 11-12 · Room 207 · 28 lessons</span></p><p class="cfw"><i>The Year We Walked Out</i></p><p class="cnum"><b>28</b> <span data-en="lessons with an Illinois SEL standard" data-es="lecciones con un estándar SEL de Illinois">lessons with an Illinois SEL standard</span></p><p class="cacts"><a class="hbtn" href="#band-11-12" data-openfold="band-11-12"><span data-en="Every lesson and standard" data-es="Cada lección y estándar">Every lesson and standard</span></a><a class="hbtn ghost" href="/lessons207"><span data-en="Open the lessons" data-es="Abrir las lecciones">Open the lessons</span></a></p></article>
   </div>
   <p class="legend">
     <span data-en="&lt;b&gt;Domains.&lt;/b&gt; A — Emotional Regulation · B — Self-Compassion / Identity · C — Social &amp; Repair · ALL — Integration" data-es="&lt;b&gt;Dominios.&lt;/b&gt; A — Regulación emocional · B — Autocompasión / Identidad · C — Competencia social y reparación · ALL — Integración"><b>Domains.</b> A &mdash; Emotional Regulation &middot; B &mdash; Self-Compassion / Identity &middot; C &mdash; Social &amp; Repair &middot; ALL &mdash; Integration</span>
@@ -255,6 +255,7 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
   <div class="note" data-en="&lt;b&gt;On the flags.&lt;/b&gt; The counselor column is a &lt;em&gt;safety&lt;/em&gt; requirement, not a tier of support. See &lt;a href=&quot;/counselor&quot;&gt;Counselor Capacity&lt;/a&gt; for what it costs a building in hours, and the sanctioned protocol for a year you cannot staff every date as written." data-es="&lt;b&gt;Sobre las marcas.&lt;/b&gt; La columna de consejero es un requisito de &lt;em&gt;seguridad&lt;/em&gt;, no un nivel de apoyo. Véase &lt;a href=&quot;/counselor&quot;&gt;Capacidad del Consejero&lt;/a&gt; para lo que cuesta a un edificio en horas, y el protocolo autorizado para un año en el que no se pueda cubrir cada fecha como está escrita."><b>On the flags.</b> The counselor column is a <em>safety</em> requirement, not a tier of support. See <a href="/counselor">Counselor Capacity</a> for what it costs a building in hours, and the sanctioned protocol for a year you cannot staff every date as written.</div>
 
 
+<details class="bandfold" id="fold-band-K-2"><summary>Room 12 &middot; Grades K-2 &middot; <span data-en="every lesson" data-es="cada lección">every lesson</span></summary>
   <div class="bandhead">
     <h2 id="band-K-2">Room 12 &middot; Grades K-2</h2>
     <span class="bmeta">Book 1 · The Foundation &middot; <i>The Year We Met Sammy</i> &middot;
@@ -296,7 +297,9 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     </tbody>
   </table>
   </div>
+  </details>
 
+<details class="bandfold" id="fold-band-3-5"><summary>Room 18 &middot; Grades 3-5 &middot; <span data-en="every lesson" data-es="cada lección">every lesson</span></summary>
   <div class="bandhead">
     <h2 id="band-3-5">Room 18 &middot; Grades 3-5</h2>
     <span class="bmeta">Book 2 · The Framework &middot; <i>The Year of the Inner Critic</i> &middot;
@@ -338,7 +341,9 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     </tbody>
   </table>
   </div>
+  </details>
 
+<details class="bandfold" id="fold-band-6-8"><summary>Room 36 &middot; Grades 6-8 &middot; <span data-en="every lesson" data-es="cada lección">every lesson</span></summary>
   <div class="bandhead">
     <h2 id="band-6-8">Room 36 &middot; Grades 6-8</h2>
     <span class="bmeta">Book 3 · The Interior &middot; <i>The Year of Two Voices</i> &middot;
@@ -380,7 +385,9 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     </tbody>
   </table>
   </div>
+  </details>
 
+<details class="bandfold" id="fold-band-9-10"><summary>Room 104 &middot; Grades 9-10 &middot; <span data-en="every lesson" data-es="cada lección">every lesson</span></summary>
   <div class="bandhead">
     <h2 id="band-9-10">Room 104 &middot; Grades 9-10</h2>
     <span class="bmeta">Book 4 · The Facade &middot; <i>The Year We Looked Up</i> &middot;
@@ -422,7 +429,9 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     </tbody>
   </table>
   </div>
+  </details>
 
+<details class="bandfold" id="fold-band-11-12"><summary>Room 207 &middot; Grades 11-12 &middot; <span data-en="every lesson" data-es="cada lección">every lesson</span></summary>
   <div class="bandhead">
     <h2 id="band-11-12">Room 207 &middot; Grades 11-12</h2>
     <span class="bmeta">Book 5 · The Capstone &middot; <i>The Year We Walked Out</i> &middot;
@@ -464,8 +473,10 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     </tbody>
   </table>
   </div>
+  </details>
 
-  <h2 data-en="Cross-cutting strands" data-es="Hilos transversales">Cross-cutting strands</h2>
+  <details class="bandfold"><summary data-en="Cross-cutting strands" data-es="Hilos transversales">Cross-cutting strands</summary>
+  
   <div class="card">
     <p>9 rows in the K&ndash;12 crosswalk are not single lessons. They run across a unit or across the year &mdash; the Regulation Toolkit, the grief strand, the year-long anchors and the closing liturgy &mdash; and are listed here rather than dropped, because a reviewer counting lessons against the crosswalk will otherwise find a gap that is not one.</p>
   </div>
@@ -486,7 +497,10 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
   </table>
   </div>
 
-  <h2 data-en="Illinois SEL benchmark index" data-es="Índice de estándares SEL de Illinois">Illinois SEL benchmark index</h2>
+  </details>
+
+  <details class="bandfold"><summary data-en="Illinois SEL benchmark index" data-es="Índice de estándares SEL de Illinois">Illinois SEL benchmark index</summary>
+  
   <div class="card">
     <p data-en="Every Illinois Social/Emotional Learning benchmark this curriculum is written against, as printed in the lessons. Aligned to the Illinois Social/Emotional Learning Standards (ISBE)." data-es="Cada estándar de Aprendizaje Social y Emocional de Illinois con el que se escribió este currículo, tal como aparece impreso en las lecciones. Alineado con los Estándares de Aprendizaje Social y Emocional de Illinois (ISBE).">Every Illinois Social/Emotional Learning benchmark this curriculum is written against, as printed in the lessons. Aligned to the Illinois Social/Emotional Learning Standards (ISBE).</p>
   </div>
@@ -567,6 +581,8 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
     <div class="row"><span class="cd">3C.5a</span> Work cooperatively with others to plan, implement, and evaluate a project to meet an identified school need.</div>
     <div class="row"><span class="cd">3C.5b</span> Work cooperatively with others to plan, implement, and evaluate a project that addresses an identified need in the broader community.</div>
   </div>
+
+  </details>
 
   <h2 data-en="What is not mapped" data-es="Lo que no está alineado">What is not mapped</h2>
   <div class="card">
@@ -676,5 +692,10 @@ ul.rooms .sub a{display:inline-block; min-width:28px; text-align:center; font-we
   </footer>
 
 </div>
+<script>/* Book cards open their folded table (Jimmy: "I don't like the one major scroll"). */
+(function(){function op(id){var h=document.getElementById(id);var d=h&&h.closest("details");if(d)d.open=true;}
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("[data-openfold]");if(a)op(a.getAttribute("data-openfold"));});
+if(/^#band-/.test(location.hash))op(location.hash.slice(1));
+window.addEventListener("beforeprint",function(){document.querySelectorAll("details.bandfold").forEach(function(d){d.open=true;});});})();</script>
 </body>
 </html>
