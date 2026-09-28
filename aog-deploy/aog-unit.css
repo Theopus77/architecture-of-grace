@@ -21,16 +21,16 @@
 .aog-ws .wq .no{color:#8A2A2A;font-weight:700;margin-left:8px}
 .aog-ws .pad{border:1.5px dashed var(--rule,#C9C2B2);border-radius:12px;min-height:120px;background-image:radial-gradient(var(--rule-soft,#D9D3C6) 1px,transparent 1.2px);background-size:18px 18px}
 .aog-ws .btns{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
-.aog-ws .btns button{min-height:44px;font:700 15px var(--sans,system-ui,sans-serif);border-radius:12px;border:1.5px solid var(--rule,#C9C2B2);background:var(--field-2,#F4F0E6);color:var(--ink,#1B2430);padding:0 16px;cursor:pointer}
-.aog-ws .btns button.go{background:var(--navy,#1B3A5F);color:#FFF6E4;border-color:var(--navy,#1B3A5F)}
+.aog-ws .btns button,.aog-ws .chkall,.aog-ws .aog-ws-send .go{min-height:44px;font:700 15px var(--sans,system-ui,sans-serif);border-radius:12px;border:1.5px solid var(--rule,#C9C2B2);background:var(--field-2,#F4F0E6);color:var(--ink,#1B2430);padding:0 16px;cursor:pointer}
+.aog-ws .btns button.go,.aog-ws .aog-ws-send .go{background:var(--navy,#1B3A5F);color:#FFF6E4;border-color:var(--navy,#1B3A5F)}
 .aog-ws .st{font:600 .9rem var(--sans,system-ui,sans-serif);color:var(--ink-soft,#5B6470);margin:8px 0 0;min-height:1.2em}
 .aog-ws .st.done{color:#1E6B3A}
 .aog-ws .who{display:none}
 .aog-ws[data-dest="1"] .who{display:block}
 :root[data-theme="dark"] .aog-ws{background:#1A1F27;color:#EDE7DA;border-color:#3A414C}
 :root[data-theme="dark"] .aog-ws input,:root[data-theme="dark"] .aog-ws textarea{background:#252B35;color:#EDE7DA;border-color:#3A414C;background-image:repeating-linear-gradient(transparent 0,transparent 27px,#3A414C 27px,#3A414C 28px)}
-:root[data-theme="dark"] .aog-ws .btns button{background:#252B35;color:#EDE7DA;border-color:#3A414C}
-:root[data-theme="dark"] .aog-ws .btns button.go{background:#E9C46A;color:#12161C;border-color:#E9C46A}
+:root[data-theme="dark"] .aog-ws .btns button,:root[data-theme="dark"] .aog-ws .chkall{background:#252B35;color:#EDE7DA;border-color:#3A414C}
+:root[data-theme="dark"] .aog-ws .btns button.go,:root[data-theme="dark"] .aog-ws .aog-ws-send .go{background:#E9C46A;color:#12161C;border-color:#E9C46A}
 :root[data-theme="dark"] .aog-ws label,:root[data-theme="dark"] .aog-ws .sub,:root[data-theme="dark"] .aog-ws .st{color:#B8BFC9}
 :root[data-theme="dark"] .aog-ws .part h6 .n{background:#E9C46A;color:#12161C}
 :root[data-theme="dark"] .aog-ws .wq .ok{color:#86D36F}
@@ -95,3 +95,5 @@
 @media print{.tl{overflow:visible!important;flex-wrap:wrap!important;row-gap:10pt}.tl .pin{flex:0 0 22%!important}}
 @media print{.spread::before,.spread::after,.spread .shade{display:none!important;background:none!important}.kw{color:#111!important;display:inline!important}.review .opt{display:inline-flex!important}}
 @media print{.les .reading,.les .body>*{max-width:none!important}.les .main-idea{break-after:avoid!important}}
+
+/* AOG-WS-MODEL-V1 — Check my work, the name line and Send sit at the end of the worksheet (aog-worksheet.js styles the rows) */

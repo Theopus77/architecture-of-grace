@@ -258,17 +258,22 @@
     '.aogtest{margin:14px 0 0;padding:14px;border:2px solid var(--navy-2,#1E3D62);border-radius:14px;display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}' +
     '.aogtest .aogtest-h{flex:1 1 100%;margin:0;font-weight:800}.aogtest .aogtest-n{flex:1 1 100%;margin:0;font-size:.95rem}' +
     '.aogtest label{display:flex;flex-direction:column;gap:4px;flex:1 1 200px;font-weight:700;font-size:.95rem}.aogtest input{font-size:16px;padding:9px 10px;border:1px solid var(--rule,#c9c2b3);border-radius:8px;min-height:44px}' +
-    '.aogtest .aogtest-st{flex:1 1 100%;margin:0;font-weight:700}.aogtest .aogtest-st:empty{display:none}.review.aogrev .aogtest label,.review.aogrev .aogtest button{display:none}';
+    '.aogtest .aogtest-st{flex:1 1 100%;margin:0;font-weight:700}.aogtest .aogtest-st:empty{display:none}.review.aogrev .aogtest .aog-ws-sig,.review.aogrev .aogtest button{display:none}.aogtest{display:block}.aogtest .aog-ws-check{margin:0 0 6px}';
     (D.head || D.documentElement).appendChild(cs); } catch (e) {}
   var box = D.createElement("div"); box.className = "aogtest no-print";
   var foot = r.querySelector(".rfoot"); if (foot && foot.parentNode) foot.parentNode.insertBefore(box, foot); else r.appendChild(box);
   function paintBox() {
     var n = qs().length, k = Object.keys(S.picks).length;
-    box.innerHTML = '<p class="aogtest-h">' + T("One shot: answer every question, then press the button.", "Una sola oportunidad: responde todas las preguntas y luego pulsa el botón.") + '</p>' +
+    /* AOG-WS-MODEL-V1 — the Daily Drafts order: check my work, then the name line, then Send */
+    box.innerHTML = '<div class="aog-ws-check"><p class="aogtest-h">' + T("One shot: answer every question, then press the button.", "Una sola oportunidad: responde todas las preguntas y luego pulsa el botón.") + '</p>' +
       '<p class="aogtest-n">' + T("Answered", "Respondidas") + ": " + k + " / " + n + '</p>' +
-      (DEST ? '<label><span>' + T("Your name or code", "Tu nombre o código") + '</span><input type="text" maxlength="40" autocomplete="off" value="' + who().replace(/"/g, "&quot;") + '"></label>' : "") +
-      '<button type="button" class="btn solid">' + (DEST ? T("Send to my teacher", "Enviar a mi maestro") : T("Check my test", "Revisar mi prueba")) + '</button><p class="aogtest-st" aria-live="polite">' + (S.st || "") + '</p>';
-    box.querySelector("button").addEventListener("click", submit);
+      (DEST ? "" : '<button type="button" class="btn solid aogtest-go">' + T("Check my test", "Revisar mi prueba") + '</button>') + '</div>' +
+      (DEST ? '<div class="aog-ws-sig"><label for="aogTestWho">' + T("Name", "Nombre") + '</label><input id="aogTestWho" type="text" maxlength="40" autocomplete="off" placeholder="' + T("Enter your name", "Escribe tu nombre") + '" value="' + who().replace(/"/g, "&quot;") + '">' +
+        '<p class="aog-ws-note">' + T("Sign with your name or class code. Use the same one every time.", "Firma con tu nombre o tu código de clase. Usa siempre el mismo.") + '</p></div>' +
+        '<div class="aog-ws-send"><p class="aog-ws-snote">' + T("Your answers and score go to your teacher when you tap Send. Then you see your score.", "Tus respuestas y tu puntaje le llegan a tu maestro cuando tocas Enviar. Luego ves tu puntaje.") + '</p>' +
+        '<button type="button" class="btn solid aogtest-go">' + T("Send to my teacher", "Enviar a mi maestro") + '</button></div>' : "") +
+      '<p class="aogtest-st" aria-live="polite">' + (S.st || "") + '</p>';
+    box.querySelector(".aogtest-go").addEventListener("click", submit);
   }
   function say(m) { S.st = m; save(); var e = box.querySelector(".aogtest-st"); if (e) e.textContent = m; }
   function paintPicks() { Array.prototype.forEach.call(qs(), function (q) { var id = q.getAttribute("data-q"), p = S.picks[id];

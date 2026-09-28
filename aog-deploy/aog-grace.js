@@ -158,6 +158,11 @@
       var skw = D.createElement("script"); skw.id = "aog-sketch-js"; skw.src = "/aog-sketch.js"; skw.defer = true; (D.head || H).appendChild(skw);
     }
   } catch (e) {}
+  /* AOG-WS-MODEL-V1 (2026-09-28) — every test and worksheet ends the Daily Drafts way: check my work,
+     name line, send to my teacher; on sketch-pad paper (aog-worksheet.js). */
+  try {
+    if (!D.getElementById("aog-ws-js")) { var wsj = D.createElement("script"); wsj.id = "aog-ws-js"; wsj.src = "/aog-worksheet.js"; wsj.defer = true; (D.head || H).appendChild(wsj); }
+  } catch (e) {}
   /* AOG-MARKUP-V1 (2026-09-27) — Jimmy: "INTERACTIVE TEXT THROUGHOUT THE ECOSYSTEM." Every
      reading page gets highlights and notes (aog-markup.js). Tool pages opt out below. */
   try {
