@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>For Schools &amp; Districts &middot; Architecture of Grace</title>
-<meta name="description" content="Policy, terms, the signable data agreement, accessibility, and an honest evidence roadmap — the paperwork a district asks for before a pilot.">
+<meta name="description" content="A free K–12 curriculum and teacher tools: courses in every subject, Daily Drafts, hands-on benches, SEL, the Educator Dashboard, family tools, standards and privacy.">
 <!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
      Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
      script and re-run it, or the 100 pages drift apart again. The card
@@ -35,238 +36,149 @@
 <meta name="apple-mobile-web-app-title" content="Grace">
 <meta name="application-name" content="Architecture of Grace">
 <!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=optional">
+<!-- AOG-FOR-SCHOOLS-V2 (2026-09-28) — Jimmy: "This needs to be updated as I am no longer an SEL curriculum first."
+     The page now leads with the whole K–12 curriculum and the teacher tools; SEL is one pillar. Every claim links
+     to the page that shows it. Paid/free line, PO/W-9/vendor, privacy and evidence statements kept in meaning. -->
 <style>
-:root{
-  --ground:#FBF6EC; --card:#FFFDF8; --ink:#182F4C; --ink-soft:#4A5B72;
-  --navy:#14304F; --gold:#C9962E; --gold-deep:#825E10;
-  --wash:#F4E8CC; --rule:#E4D9C3;
-}
+:root{--navy:#0A1E33;--ink:#1f2a36;--soft:#4f5b69;--gold:#8A6116;--cream:#FBF6EA;--card:#fff;--line:#E6DCC6}
+[data-theme="dark"]{--ink:#EDEAE2;--soft:#B6C0CC;--gold:#F2C964;--cream:#101820;--card:#18222E;--line:#2E3A48}
 *{box-sizing:border-box}
-body{
-  margin:0; background:var(--ground); color:var(--ink);
-  font-family:"Source Sans 3",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
-  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%;
-}
-.wrap{max-width:46rem; margin:0 auto; padding:30px 20px 70px}
-a{color:var(--gold-deep)}
-a:hover{color:var(--navy)}
-code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.86em;
-  background:var(--wash); border-radius:5px; padding:1px 6px 2px; white-space:nowrap}
-
-/* masthead */
-.mast{padding:8px 0 22px; border-bottom:2px solid var(--gold); margin-bottom:6px}
-.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--gold-deep); margin:0 0 6px}
-h1{font-family:"Lora",Georgia,serif; font-weight:600; font-size:clamp(29px,6.5vw,38px);
-  line-height:1.12; margin:0 0 10px; color:var(--navy); text-wrap:balance}
-h1 em{font-style:italic; color:var(--gold-deep)}
-.dek{margin:0 0 10px; color:var(--ink-soft); max-width:36em}
-.meta{margin:0; font-size:14px; color:var(--ink-soft)}
-h2{font-family:"Lora",Georgia,serif; font-weight:600; font-size:22px;
-  margin:36px 0 12px; color:var(--navy); text-wrap:balance}
-
-/* cards */
-.card{background:var(--card); border:1.5px solid var(--rule); border-radius:14px;
-  padding:16px 18px; margin:0 0 12px}
-.card p{margin:0 0 10px; font-size:16px}
-.card p:last-child{margin-bottom:0}
-.card b{color:var(--navy)}
-.card ul{margin:0; padding-left:20px}
-.card li{margin-bottom:8px}
-.card li:last-child{margin-bottom:0}
-.path{font-weight:700; color:var(--navy); background:var(--wash); border-radius:6px; padding:1px 7px 2px}
-.note{border-left:3px solid var(--gold); background:var(--wash); border-radius:0 9px 9px 0;
-  padding:9px 12px; font-size:15px; margin:10px 0}
-.note b:first-child{color:var(--gold-deep)}
-
-/* the open / licensed split */
-.split{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0 0}
-.col{background:var(--card); border:1.5px solid var(--rule); border-radius:14px; overflow:hidden}
-.col .colhead{padding:12px 16px 10px; border-bottom:1.5px solid var(--rule)}
-.col.open .colhead{background:var(--wash); border-bottom-color:var(--gold)}
-.col.licensed .colhead{background:var(--navy); border-bottom-color:var(--navy)}
-.col .tag{display:block; font-size:11.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:2px}
-.col.open .tag{color:var(--gold-deep)}
-.col.licensed .tag{color:var(--gold)}
-.col h3{font-family:"Lora",Georgia,serif; font-weight:600; font-size:18px; margin:0; line-height:1.25}
-.col.open h3{color:var(--navy)}
-.col.licensed h3{color:#FFFDF8}
-.col ul{margin:0; padding:13px 16px 15px 32px; font-size:15.5px}
-.col li{margin-bottom:9px}
-.col li:last-child{margin-bottom:0}
-.col li b{color:var(--navy)}
-
-/* the quote checklist */
-.fix dt{font-weight:700; color:var(--navy); margin-top:12px}
-.fix dt:first-child{margin-top:0}
-.fix dd{margin:2px 0 0 0; color:var(--ink-soft); font-size:16px}
-
-/* shelf */
-.shelf{margin:0; padding:0; list-style:none}
-.shelf li{margin:0 0 10px; padding-left:0}
-.shelf li:last-child{margin-bottom:0}
-.shelf a{font-weight:700; color:var(--navy); text-decoration-color:var(--gold)}
-.shelf .what{color:var(--ink-soft); font-size:15.5px}
-
-/* contact */
-.cta{display:inline-block; background:var(--navy); color:#FFFDF8; font-weight:700;
-  text-decoration:none; border-radius:10px; padding:10px 18px; font-size:16px; margin-top:4px}
-.cta:hover{background:var(--gold-deep); color:#FFFDF8}
-
-footer{margin-top:40px; padding-top:14px; border-top:1.5px solid var(--rule);
-  font-size:13.5px; color:var(--ink-soft); line-height:1.6}
-footer a{color:var(--ink-soft)}
-footer a:hover{color:var(--navy)}
-
-@media (max-width:620px){
-  .split{grid-template-columns:1fr}
-}
+html{background:var(--cream)}
+body{margin:0;color:var(--ink);background:var(--cream);font:17px/1.55 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif}
+header.hero{background:linear-gradient(180deg,#12314F,#0A1E33);color:#F4EEE2;padding:26px 16px 30px}
+.hero-in{max-width:860px;margin:0 auto}
+.ey{font:800 12px/1.3 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#F2C964;margin:0 0 6px}
+h1{font:600 clamp(30px,6vw,44px)/1.1 Fraunces,Georgia,serif;margin:0 0 8px;color:#F4EEE2}
+.lede{color:#D5DEE8;margin:0;max-width:640px}
+main{max-width:860px;margin:0 auto;padding:18px 16px 70px}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:760px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;margin:0 0 14px;box-shadow:inset 0 5px 0 #B8893A,0 10px 28px -22px rgba(10,30,51,.5);min-width:0}
+.grid .card{margin:0}
+.pic{margin:-4px -4px 12px;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line)}
+.pic img{display:block;width:100%;height:auto;aspect-ratio:900/315;object-fit:cover}
+[data-theme="dark"] .pic img{filter:invert(.88) hue-rotate(180deg)}
+.card h2{font:600 clamp(21px,4.4vw,25px)/1.25 Fraunces,Georgia,serif;margin:0 0 8px;color:var(--ink)}
+.card p{margin:0 0 10px;color:var(--ink)}
+.card p.sub{color:var(--soft);font-size:15px;margin:10px 0 0}
+.card a{color:var(--ink);text-decoration-color:var(--gold);text-underline-offset:3px;font-weight:600}
+ul.links{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+ul.links a{display:inline-flex;align-items:center;min-height:44px;padding:6px 14px;border-radius:999px;border:1.5px solid var(--gold);text-decoration:none;line-height:1.3}
+ul.plain{margin:12px 0 0;padding-left:20px}
+ul.plain li,ol.steps li{margin-bottom:8px}
+ol.steps{margin:0;padding-left:22px}
+a.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--navy);color:#F4EEE2;font-weight:700;text-decoration:none}
+[data-theme="dark"] a.btn{background:#F2C964;color:#0A1E33}
+a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (hover:hover){ul.links a:hover{background:color-mix(in srgb,#B8893A 12%,transparent)}}
+.full{margin-top:14px}
 @media print{
-  body{background:#fff; font-size:12.5px; line-height:1.4}
-  .wrap{max-width:none; padding:0}
-  h1{font-size:26px}
-  h2{font-size:17px; margin:16px 0 8px}
-  .card,.col{padding:0; background:#fff}
-  .card{padding:10px 13px; margin-bottom:8px}
-  .card p,.card li,.col ul{font-size:12.5px}
-  .col.licensed .colhead{background:#fff}
-  .col.licensed h3{color:#14304F}
-  .col.licensed .tag{color:#8A6414}
-  .note{font-size:12px; padding:7px 10px; margin:7px 0}
-  .fix dd{font-size:12.5px}
-  footer{font-size:10.5px; margin-top:16px}
-  .card,.col,.note{break-inside:avoid; page-break-inside:avoid}
-  h2,h1,.col h3{break-after:avoid; page-break-after:avoid}
+  .aogtop,.aogtop-spacer{display:none!important}
+  html,body{background:#fff!important;color:#000}
+  header.hero{background:#fff!important;color:#000;padding:0 0 8px;border-bottom:2px solid #000}
+  header.hero h1,header.hero .lede,header.hero .ey{color:#000!important}
+  .card{break-inside:avoid;box-shadow:none;background:#fff!important;border-color:#999}
+  .card,.card p,.card a,.card h2{color:#000!important}
+  .pic{display:none}
+  ul.links a{min-height:0;border:0;padding:0 8px 0 0}
+  a.btn{background:#fff!important;color:#000!important;border:1px solid #000}
   @page{margin:12mm 14mm}
-}
-
-/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
-   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
-   the material cut off." These are the rules that keep paper honest on every
-   engine — a table row, a list item, a figure and a picture stay whole; a head
-   keeps the lines under it; no paragraph strands one line at a page edge; and a
-   long table repeats its head at the top of each page. Printed pages only. */
-@media print{
-  table{break-inside:auto; page-break-inside:auto}
-  thead{display:table-header-group}
-  tfoot{display:table-footer-group}
-  tr{break-inside:avoid; page-break-inside:avoid}
-  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
-  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
-  p{orphans:3; widows:3}
 }
 </style>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
-<script src="/aog-grace.js" defer></script>
-
-<div class="wrap">
-
-  <header class="mast">
-    <p class="eyebrow">Architecture of Grace &middot; For schools &amp; districts</p>
-    <h1>How schools <em>adopt this</em></h1>
-    <p class="dek">Architecture of Grace is a system, not a curriculum — and all five bands are open to read and teach from: no license required, usable in a classroom today. This page draws the line between what is open and what is paid, lays out a pilot that needs no contract and no contact with us, and tells your business office exactly how a quote and a purchase order work.</p>
-    <p class="meta"><b>Who this is for.</b> Counselors and teachers deciding whether to try it; principals and curriculum directors deciding whether to adopt it; the business office deciding how to buy it.</p>
-  </header>
-
-  <h2>What is open, and what is licensed</h2>
-  <div class="split">
-    <div class="col open">
-      <div class="colhead">
-        <span class="tag">Open &middot; No license required</span>
-        <h3>Use it today</h3>
-      </div>
-      <ul>
-        <li><b>Every band, K&ndash;12:</b> Foundation (<a href="/room12">K&ndash;2</a>), Framework (<a href="/room18">3&ndash;5</a>), Interior (<a href="/room36">6&ndash;8</a>), Facade (<a href="/room104">9&ndash;10</a>) and Capstone (<a href="/room207">11&ndash;12</a>) &mdash; the curriculum, the lessons, the workbooks with their answer keys, and the anchor charts.</li>
-        <li><b>The companion novels</b> as digital editions, and the <a href="/standards">lesson-level standards crosswalk</a>.</li>
-        <li><b>Every web tool:</b> the student regulation tools, the check-ins, and the family page.</li>
-        <li><b>Every practice hub:</b> math (<a href="/math">/math</a>), science (<a href="/science">/science</a>), social studies (<a href="/social">/social</a>), word study (<a href="/words">/words</a>), and concepts &amp; data (<a href="/concepts">/concepts</a>).</li>
-      </ul>
-    </div>
-    <div class="col licensed">
-      <div class="colhead">
-        <span class="tag">Paid &middot; By quote</span>
-        <h3>Things that cost something to make</h3>
-      </div>
-      <ul>
-        <li><b>Print editions</b> of all six books &mdash; paper, printing and shipping.</li>
-        <li><b>Home Editions</b> for families.</li>
-        <li><b>Professional development workshops</b> &mdash; institute days and staff sessions on the framework, the safety and disclosure protocols, and what the four pillars look like in a resource room. In person or remote. Run by the author: a practicing special education teacher and case manager, with a master&rsquo;s in special education, who wrote the K&ndash;12 framework and teaches it. <a href="mailto:Theopus77@yahoo.com?subject=Workshop%20enquiry">Ask about a workshop</a>.</li>
-        <li><b>District implementation support</b> &mdash; counselor calendar planning, scheduling help, and someone on the other end of an email.</li>
-      </ul>
-    </div>
-  </div>
-  <div class="note"><b>Why the line sits here:</b> nothing that is readable today becomes paid tomorrow. The open side is not a sample, a preview, or a trial that expires — it is the whole curriculum. What costs money is what costs money to make: paper, and a person's time.</div>
-
-  <h2>The pilot path</h2>
-  <div class="card">
-    <p><b>Start with any band, at no cost.</b> No contract, no sign-up, and no contact with us is required to pilot. A pilot needs exactly three things, all of them yours:</p>
-    <ul>
-      <li><b>Your own counselor calendar</b> — deciding who runs which pieces, and when. The <a href="counselor-capacity.html">staffing planner</a> helps size this.</li>
-      <li><b>The family letters</b> — ready-to-send consent letters in English and Spanish, at <a href="family-letters.html">family-letters.html</a>.</li>
-      <li><b>The data agreement, only if you turn on sync.</b> By default, student reflections stay on each student's own device and nothing is collected anywhere. If your pilot turns on syncing, responses go to a Google Sheet your school creates and owns — there is no company server — and the signable agreement at <a href="dpa.html">dpa.html</a> covers it.</li>
-    </ul>
-    <p>When a pilot convinces you, the quote process below covers print editions, workshops and implementation support &mdash; the digital materials you piloted with stay open either way. When it does not convince you, nothing was bought and nothing needs canceling.</p>
-  </div>
-
-  <h2>How to get a quote</h2>
-  <div class="card">
-    <p>Print pricing is being set now, so purchasing runs through a written quote rather than a posted price sheet. One email starts it &mdash; and nothing on this page is needed to start teaching.</p>
-    <dl class="fix">
-      <dt>What to include</dt>
-      <dd>Your district and the buildings involved; which print editions you want and for which bands; approximate student counts; whether you want professional development workshops, implementation support, or both; and your timeline. The digital materials need no quote &mdash; they are open.</dd>
-      <dt>What you get back</dt>
-      <dd>A written quote suitable for attaching to a purchase order — itemized, with terms, in a form your procurement office can act on.</dd>
-      <dt>What the business office will ask, answered</dt>
-      <dd>Purchase orders are accepted. A W-9 is available on request. The vendor of record is <b>Architecture of Grace (Illinois)</b>.</dd>
-    </dl>
-    <p style="margin-top:12px"><a class="cta" href="mailto:Theopus77@yahoo.com?subject=School%20quote%20request">Email a quote request</a></p>
-  </div>
-  <div class="card">
-    <p><b>Who you are buying from — honestly.</b> Architecture of Grace is a small operation, founded and run by one practicing educator. Your procurement office should weigh that, so here is the continuity picture: the materials and your data are built to outlive any vendor. The site is a static web page with no server of ours behind it; student data, when synced at all, lives only in a Google Sheet your school owns; the books are printed and on your shelves. If Architecture of Grace disappeared tomorrow, everything you had adopted would keep working. The full story — including what the program is grounded in and what has not yet been tested — is at <a href="evidence.html">evidence.html</a>.</p>
-  </div>
-
-  <h2>The paperwork shelf</h2>
-  <div class="card">
-    <p>Everything a review committee asks for, in one place:</p>
-    <ul class="shelf">
-      <li><a href="dpa.html">Data privacy agreement</a> <span class="what">— a signable DPA covering what syncing does and does not collect.</span></li>
-      <li><a href="privacy.html">Privacy policy</a> <span class="what">— the plain statement of how the site and tools handle information.</span></li>
-      <li><a href="data-governance.html">Data governance</a> <span class="what">— where data lives, who owns it, and how it is switched off.</span></li>
-      <li><a href="counselor-capacity.html">Counselor capacity planner</a> <span class="what">— a staffing worksheet for sizing an implementation.</span></li>
-      <li><a href="family-letters.html">Family letters</a> <span class="what">— consent and introduction letters for families, in English and Spanish.</span></li>
-    </ul>
-  </div>
-
-  <h2>Straight answers</h2>
-  <div class="card">
-    <dl class="fix">
-      <dt>Can we really use the 6&ndash;8 band without talking to you?</dt>
-      <dd>Yes. That is what "open" means here: no license, no account, no registration. The quote process exists for the licensed bands, print, and district-wide adoption.</dd>
-      <dt>Where does student data go?</dt>
-      <dd>By default, nowhere — each reflection stays on the device that wrote it. With syncing turned on, rows go to a Google Sheet your school creates and owns. There is no company server.</dd>
-      <dt>Is it evidence of outcomes?</dt>
-      <dd>The honest claim is research-grounded and not yet outcome-tested. What it draws on, and what has not yet been studied, is laid out at <a href="evidence.html">evidence.html</a> — no scores, no efficacy claims.</dd>
-      <dt>Is there a religious edition and a non-religious one?</dt>
-      <dd>Yes — every band is available as a Universal Edition alongside the Divine track. State that in your quote request and the quote reflects it.</dd>
-      <dt>How fast do quotes come back?</dt>
-      <dd>This is a one-educator operation, so the honest answer is: quickly, but from a person, not a system. Include your timeline in the request and it will be respected.</dd>
-    </dl>
-  </div>
-
-  <footer>
-    Architecture of Grace is independent work by its author, the vendor of record for print editions and support (Illinois). Paperwork:
-    <a href="/logic-model">The logic model</a> &middot; <a href="/standards">Standards &amp; alignment</a> &middot; <a href="dpa.html">Data privacy agreement</a> &middot;
-    <a href="privacy.html">Privacy</a> &middot;
-    <a href="data-governance.html">Data governance</a> &middot;
-    <a href="counselor-capacity.html">Counselor capacity</a> &middot;
-    <a href="family-letters.html">Family letters</a> &middot;
-    <a href="evidence.html">Evidence</a> &middot;
-    <a href="/">Home</a>
-  </footer>
-
+<header class="hero"><div class="hero-in">
+  <p class="ey"><span data-en="For schools &amp;amp; districts" data-es="Para escuelas y distritos">For schools &amp; districts</span></p>
+  <h1><span data-en="A whole K–12 school, free to teach from" data-es="Una escuela completa de K a 12, gratis para enseñar">A whole K–12 school, free to teach from</span></h1>
+  <p class="lede"><span data-en="Courses in every subject, daily review, hands-on benches, SEL, and tools that save teachers time. Here is what is here, and how to start." data-es="Cursos en cada materia, repaso diario, bancos de trabajo, SEL y herramientas que ahorran tiempo. Aquí está lo que hay y cómo empezar.">Courses in every subject, daily review, hands-on benches, SEL, and tools that save teachers time. Here is what is here, and how to start.</span></p>
+</div></header>
+<main>
+<div class="grid">
+  <section class="card" aria-labelledby="s-courses">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-door-atrium-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-courses"><span data-en="A full K–12 curriculum" data-es="Un currículo completo de K a 12">A full K–12 curriculum</span></h2>
+    <p><span data-en="Every course runs K–12. Each unit has lessons, worksheets, a chapter review and a unit test." data-es="Cada curso va de K a 12. Cada unidad trae lecciones, hojas de trabajo, un repaso del capítulo y una prueba.">Every course runs K–12. Each unit has lessons, worksheets, a chapter review and a unit test.</span></p>
+    <ul class="links"><li><a href="/math"><span data-en="Math" data-es="Matemáticas">Math</span></a></li><li><a href="/science"><span data-en="Science" data-es="Ciencias">Science</span></a></li><li><a href="/social"><span data-en="Social Studies" data-es="Estudios sociales">Social Studies</span></a></li><li><a href="/english"><span data-en="English / Language Arts" data-es="Inglés / Artes del lenguaje">English / Language Arts</span></a></li><li><a href="/spanish"><span data-en="Spanish" data-es="Español">Spanish</span></a></li><li><a href="/facs"><span data-en="FACS" data-es="Ciencias de la familia (FACS)">FACS</span></a></li><li><a href="/economics"><span data-en="Economics" data-es="Economía">Economics</span></a></li><li><a href="/world-cultures"><span data-en="World Cultures &amp;amp; Societies" data-es="Culturas y sociedades del mundo">World Cultures &amp; Societies</span></a></li><li><a href="/medicine-health"><span data-en="Medicine &amp;amp; Health" data-es="Medicina y salud">Medicine &amp; Health</span></a></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-faith">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-door-faith-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-faith"><span data-en="Faith &amp;amp; Texts" data-es="Fe y textos">Faith &amp; Texts</span></h2>
+    <p><span data-en="The great texts, studied as literature and history. Studied, never preached." data-es="Los grandes textos, leídos como literatura e historia. Se estudian, nunca se predican.">The great texts, studied as literature and history. Studied, never preached.</span></p>
+    <ul class="links"><li><a href="/religions"><span data-en="World Religions" data-es="Religiones del mundo">World Religions</span></a></li><li><a href="/bible"><span data-en="The Bible" data-es="La Biblia">The Bible</span></a></li><li><a href="/hebrew-bible"><span data-en="The Hebrew Bible" data-es="La Biblia hebrea">The Hebrew Bible</span></a></li><li><a href="/quran"><span data-en="The Qur’an" data-es="El Corán">The Qur’an</span></a></li><li><a href="/talmud"><span data-en="The Talmud" data-es="El Talmud">The Talmud</span></a></li><li><a href="/hindu-texts"><span data-en="Hindu texts" data-es="Textos hindúes">Hindu texts</span></a></li><li><a href="/buddhist-texts"><span data-en="Buddhist texts" data-es="Textos budistas">Buddhist texts</span></a></li><li><a href="/chinese-classics"><span data-en="Chinese Classics" data-es="Clásicos chinos">Chinese Classics</span></a></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-drafts">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-daily-drops-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-drafts"><span data-en="Daily Drafts" data-es="Daily Drafts: repaso diario">Daily Drafts</span></h2>
+    <p><span data-en="Ten short items a day, in every subject and grade. Students check, sign and send." data-es="Diez preguntas cortas al día, en cada materia y grado. Los estudiantes revisan, firman y envían.">Ten short items a day, in every subject and grade. Students check, sign and send.</span></p>
+    <ul class="links"><li><a href="/drops"><span data-en="Open Daily Drafts" data-es="Abrir Daily Drafts">Open Daily Drafts</span></a></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-bench">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-microscope-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-bench"><span data-en="Practice and hands-on benches" data-es="Práctica y bancos de trabajo">Practice and hands-on benches</span></h2>
+    <p><span data-en="Practice pages, plus benches students can use with their hands. Each bench has lessons and worksheets." data-es="Páginas de práctica y bancos para trabajar con las manos. Cada banco trae lecciones y hojas de trabajo.">Practice pages, plus benches students can use with their hands. Each bench has lessons and worksheets.</span></p>
+    <ul class="links"><li><a href="/concepts"><span data-en="Concepts &amp;amp; data practice" data-es="Práctica de conceptos y datos">Concepts &amp; data practice</span></a></li><li><a href="/words"><span data-en="Word Foundry" data-es="Word Foundry: fundición de palabras">Word Foundry</span></a></li><li><a href="/microscope"><span data-en="Microscope" data-es="Microscopio">Microscope</span></a></li><li><a href="/telescope"><span data-en="Telescope" data-es="Telescopio">Telescope</span></a></li><li><a href="/waves"><span data-en="Waves" data-es="Ondas">Waves</span></a></li><li><a href="/drums"><span data-en="Drum machine" data-es="Caja de ritmos">Drum machine</span></a></li><li><a href="/turntables"><span data-en="Turntables" data-es="Tornamesas">Turntables</span></a></li><li><a href="/kitchen"><span data-en="Kitchen &amp;amp; sewing bench" data-es="Cocina y costura">Kitchen &amp; sewing bench</span></a></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-sel">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/sel12-u1-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-sel"><span data-en="Social-emotional learning" data-es="Aprendizaje socioemocional">Social-emotional learning</span></h2>
+    <p><span data-en="One strong part of the whole: five rooms, K–12, with lessons, workbooks, anchor charts, scenario cards and five novels." data-es="Una parte fuerte del conjunto: cinco salones, de K a 12, con lecciones, cuadernos, carteles, tarjetas de situaciones y cinco novelas.">One strong part of the whole: five rooms, K–12, with lessons, workbooks, anchor charts, scenario cards and five novels.</span></p>
+    <ul class="links"><li><a href="/room12"><span data-en="Room 12 · K–2" data-es="Room 12 · K–2">Room 12 · K–2</span></a></li><li><a href="/room18"><span data-en="Room 18 · 3–5" data-es="Room 18 · 3–5">Room 18 · 3–5</span></a></li><li><a href="/room36"><span data-en="Room 36 · 6–8" data-es="Room 36 · 6–8">Room 36 · 6–8</span></a></li><li><a href="/room104"><span data-en="Room 104 · 9–10" data-es="Room 104 · 9–10">Room 104 · 9–10</span></a></li><li><a href="/room207"><span data-en="Room 207 · 11–12" data-es="Room 207 · 11–12">Room 207 · 11–12</span></a></li><li><a href="/novels"><span data-en="The five novels" data-es="Las cinco novelas">The five novels</span></a></li><li><a href="/quiet-space"><span data-en="Calm tools and the Quiet Space" data-es="Herramientas de calma y el Espacio tranquilo">Calm tools and the Quiet Space</span></a></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-dash">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-dashboard-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-dash"><span data-en="The Educator Dashboard" data-es="El panel docente">The Educator Dashboard</span></h2>
+    <p><span data-en="Hand out today’s work with one link. See what came back, and let the paperwork start itself." data-es="Reparte el trabajo de hoy con un solo enlace. Mira lo que llegó y deja que el papeleo empiece solo.">Hand out today’s work with one link. See what came back, and let the paperwork start itself.</span></p>
+    <ul class="links"><li><a href="/dashboard"><span data-en="Open the dashboard" data-es="Abrir el panel">Open the dashboard</span></a></li></ul>
+    <ul class="plain"><li><span data-en="&lt;b&gt;Inbox:&lt;/b&gt; every turn-in, by student. Print the actual work." data-es="&lt;b&gt;Bandeja:&lt;/b&gt; todo lo entregado, por estudiante. Imprime el trabajo tal cual."><b>Inbox:</b> every turn-in, by student. Print the actual work.</span></li><li><span data-en="&lt;b&gt;Student pages, Trends and Brick by brick:&lt;/b&gt; how each student and the class are doing." data-es="&lt;b&gt;Páginas de estudiantes, Tendencias y Ladrillo a ladrillo:&lt;/b&gt; cómo va cada estudiante y la clase."><b>Student pages, Trends and Brick by brick:</b> how each student and the class are doing.</span></li><li><span data-en="&lt;b&gt;MTSS report.&lt;/b&gt;" data-es="&lt;b&gt;Informe MTSS.&lt;/b&gt;"><b>MTSS report.</b></span></li><li><span data-en="&lt;b&gt;IEP paperwork:&lt;/b&gt; a draft built from classroom data. Each line names its source. Your edits are never overwritten." data-es="&lt;b&gt;Papeleo del IEP:&lt;/b&gt; un borrador hecho con datos del salón. Cada línea dice de dónde viene. Tus cambios nunca se borran."><b>IEP paperwork:</b> a draft built from classroom data. Each line names its source. Your edits are never overwritten.</span></li><li><span data-en="&lt;b&gt;Their Blueprint:&lt;/b&gt; each student’s own Blueprint." data-es="&lt;b&gt;Su plano:&lt;/b&gt; el plano propio de cada estudiante."><b>Their Blueprint:</b> each student’s own Blueprint.</span></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-fam">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-door-porch-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-fam"><span data-en="Families" data-es="Familias">Families</span></h2>
+    <p><span data-en="Tools for home, in English and Spanish." data-es="Herramientas para la casa, en inglés y español.">Tools for home, in English and Spanish.</span></p>
+    <ul class="links"><li><a href="/family-plan"><span data-en="Our Child’s Plan: home log, routines, goals, therapies and support" data-es="El plan de nuestro hijo: registro en casa, rutinas, metas, terapias y apoyos">Our Child’s Plan: home log, routines, goals, therapies and support</span></a></li><li><a href="/grace-at-home"><span data-en="Conversation starters" data-es="Para empezar a conversar">Conversation starters</span></a></li><li><a href="/AoG-Four-Pillars-at-Home.html"><span data-en="The Four Pillars at Home" data-es="Los cuatro pilares en casa">The Four Pillars at Home</span></a></li><li><a href="/family-letters.html"><span data-en="Family letters and consent templates" data-es="Cartas y formularios de consentimiento para familias">Family letters and consent templates</span></a></li></ul>
+  </section>
+  <section class="card" aria-labelledby="s-std">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-door-crosswalk-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-std"><span data-en="Standards" data-es="Estándares">Standards</span></h2>
+    <p><span data-en="SEL lessons are mapped to CASEL and Illinois SEL. The courses are mapped unit by unit to NGSS, the Illinois Learning Standards, ACTFL, CEE and the National FCS Standards." data-es="Las lecciones SEL están alineadas con CASEL y los estándares SEL de Illinois. Los cursos están alineados, unidad por unidad, con NGSS, los Estándares de Aprendizaje de Illinois, ACTFL, CEE y los estándares nacionales de FCS.">SEL lessons are mapped to CASEL and Illinois SEL. The courses are mapped unit by unit to NGSS, the Illinois Learning Standards, ACTFL, CEE and the National FCS Standards.</span></p>
+    <ul class="links"><li><a href="/standards"><span data-en="SEL alignment and crosswalks (CASEL, Illinois SEL, IDEA, MTSS, Danielson, restorative practices)" data-es="Alineación SEL y tablas (CASEL, SEL de Illinois, IDEA, MTSS, Danielson, prácticas restaurativas)">SEL alignment and crosswalks (CASEL, Illinois SEL, IDEA, MTSS, Danielson, restorative practices)</span></a></li><li><a href="/standards-crosswalk"><span data-en="Course standards crosswalk" data-es="Tabla de estándares de los cursos">Course standards crosswalk</span></a></li><li><a href="evidence.html"><span data-en="Evidence: what is tested, and what is not yet" data-es="Evidencia: lo que está probado y lo que aún no">Evidence: what is tested, and what is not yet</span></a></li></ul>
+    <p class="sub"><span data-en="This shows which standard each lesson is written against. It is not a claim of results." data-es="Esto muestra con qué estándar se escribió cada lección. No es una promesa de resultados.">This shows which standard each lesson is written against. It is not a claim of results.</span></p>
+  </section>
+  <section class="card" aria-labelledby="s-priv">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-door-privacy-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div><h2 id="s-priv"><span data-en="Privacy" data-es="Privacidad">Privacy</span></h2>
+    <p><span data-en="No accounts, no sign-ins, no trackers, no ads, and no company server." data-es="Sin cuentas, sin inicio de sesión, sin rastreadores, sin anuncios y sin servidor de la empresa.">No accounts, no sign-ins, no trackers, no ads, and no company server.</span></p>
+    <ul class="links"><li><a href="privacy.html"><span data-en="Privacy policy" data-es="Política de privacidad">Privacy policy</span></a></li><li><a href="dpa.html"><span data-en="Data privacy agreement (ready to sign)" data-es="Acuerdo de privacidad de datos (listo para firmar)">Data privacy agreement (ready to sign)</span></a></li><li><a href="data-governance.html"><span data-en="Data governance" data-es="Gestión de datos">Data governance</span></a></li><li><a href="/accessibility"><span data-en="Accessibility" data-es="Accesibilidad">Accessibility</span></a></li></ul>
+    <ul class="plain"><li><span data-en="By default, a student’s work stays in the browser of the device they used." data-es="De forma predeterminada, el trabajo del estudiante se queda en el navegador del aparato que usó.">By default, a student’s work stays in the browser of the device they used.</span></li><li><span data-en="If your school turns on syncing, work goes to a Google Sheet your school creates and owns. It never passes through us." data-es="Si su escuela activa la sincronización, el trabajo va a una hoja de Google que la escuela crea y es suya. Nunca pasa por nosotros.">If your school turns on syncing, work goes to a Google Sheet your school creates and owns. It never passes through us.</span></li></ul>
+  </section>
 </div>
+<div class="full">
+  <section class="card" aria-labelledby="s-start">
+    <h2 id="s-start"><span data-en="How a school starts" data-es="Cómo empieza una escuela">How a school starts</span></h2>
+    <ol class="steps">
+      <li><span data-en="&lt;b&gt;Just begin.&lt;/b&gt; Everything on this site is open to teach from. No contract, no sign-up, and no need to contact us." data-es="&lt;b&gt;Solo empiecen.&lt;/b&gt; Todo en este sitio está abierto para enseñar. Sin contrato, sin registro y sin tener que escribirnos."><b>Just begin.</b> Everything on this site is open to teach from. No contract, no sign-up, and no need to contact us.</span></li>
+      <li><span data-en="&lt;b&gt;Send the family letters&lt;/b&gt; home, in English and Spanish." data-es="&lt;b&gt;Envíen las cartas a las familias&lt;/b&gt;, en inglés y español."><b>Send the family letters</b> home, in English and Spanish.</span> <a href="family-letters.html"><span data-en="Family letters" data-es="Cartas">Family letters</span></a></li>
+      <li><span data-en="&lt;b&gt;Only if you turn on syncing,&lt;/b&gt; sign the data agreement." data-es="&lt;b&gt;Solo si activan la sincronización,&lt;/b&gt; firmen el acuerdo de datos."><b>Only if you turn on syncing,</b> sign the data agreement.</span> <a href="dpa.html"><span data-en="Data agreement" data-es="Acuerdo de datos">Data agreement</span></a></li>
+      <li><span data-en="&lt;b&gt;Want help with a pilot?&lt;/b&gt; A pilot costs nothing: one grade or building, one semester." data-es="&lt;b&gt;¿Quieren ayuda con un piloto?&lt;/b&gt; Un piloto no cuesta nada: un grado o un edificio, un semestre."><b>Want help with a pilot?</b> A pilot costs nothing: one grade or building, one semester.</span> <a href="/#pilot"><span data-en="The pilot" data-es="El piloto">The pilot</span></a></li>
+    </ol>
+    <p class="sub"><span data-en="Planning staff time? The" data-es="¿Planean el tiempo del personal? Usen el">Planning staff time? The</span> <a href="counselor-capacity.html"><span data-en="counselor capacity planner" data-es="planificador de consejería">counselor capacity planner</span></a> <span data-en="helps." data-es=".">helps.</span></p>
+  </section>
+
+  <section class="card" aria-labelledby="s-cost">
+    <h2 id="s-cost"><span data-en="What is free, and what costs money" data-es="Lo que es gratis y lo que cuesta">What is free, and what costs money</span></h2>
+    <p><span data-en="&lt;b&gt;Free and open:&lt;/b&gt; every course, lesson, worksheet, tool and the dashboard. Nothing open today becomes paid later." data-es="&lt;b&gt;Gratis y abierto:&lt;/b&gt; cada curso, lección, hoja, herramienta y el panel. Nada de lo que hoy es abierto se cobrará después."><b>Free and open:</b> every course, lesson, worksheet, tool and the dashboard. Nothing open today becomes paid later.</span></p>
+    <p><span data-en="&lt;b&gt;By quote:&lt;/b&gt; print editions of the six books, Home Editions for families, staff workshops (in person or remote), and district support." data-es="&lt;b&gt;Con cotización:&lt;/b&gt; las ediciones impresas de los seis libros, las ediciones para el hogar, talleres para el personal (en persona o a distancia) y apoyo al distrito."><b>By quote:</b> print editions of the six books, Home Editions for families, staff workshops (in person or remote), and district support.</span></p>
+    <p><span data-en="Purchase orders are accepted. A W-9 is available on request. The vendor of record is &lt;b&gt;Architecture of Grace (Illinois)&lt;/b&gt;." data-es="Se aceptan órdenes de compra. Hay un W-9 si lo piden. El proveedor oficial es &lt;b&gt;Architecture of Grace (Illinois)&lt;/b&gt;.">Purchase orders are accepted. A W-9 is available on request. The vendor of record is <b>Architecture of Grace (Illinois)</b>.</span></p>
+    <p><span data-en="Every book comes in a Universal Edition and a Divine track. Say which you want." data-es="Cada libro viene en Edición Universal y en la versión Divine. Díganos cuál quieren.">Every book comes in a Universal Edition and a Divine track. Say which you want.</span></p>
+    <p><a class="btn" href="mailto:Theopus77@yahoo.com?subject=School%20quote%20request"><span data-en="Email a quote request" data-es="Pedir una cotización por correo">Email a quote request</span></a></p>
+  </section>
+
+  <section class="card" aria-labelledby="s-who">
+    <h2 id="s-who"><span data-en="Who you are working with" data-es="Con quién trabajan">Who you are working with</span></h2>
+    <p><span data-en="One practicing special-education teacher made this and runs it. Replies come from a person, not a system." data-es="Lo hizo y lo mantiene un maestro de educación especial en activo. Responde una persona, no un sistema.">One practicing special-education teacher made this and runs it. Replies come from a person, not a system.</span></p>
+    <p><span data-en="The site is static, and your data lives in your own Sheet. If Architecture of Grace stopped tomorrow, what you adopted would keep working." data-es="El sitio es estático y sus datos viven en su propia hoja. Si Architecture of Grace cerrara mañana, lo que adoptaron seguiría funcionando.">The site is static, and your data lives in your own Sheet. If Architecture of Grace stopped tomorrow, what you adopted would keep working.</span></p>
+  </section>
+
+  <section class="card contact" aria-labelledby="s-contact">
+    <div class="pic" aria-hidden="true"><img src="/img/banners/page-door-contact-pencil-900.webp" alt="" width="900" height="315" decoding="async"></div>
+    <h2 id="s-contact"><span data-en="Questions?" data-es="¿Preguntas?">Questions?</span></h2>
+    <p><span data-en="Write to me. I read every note." data-es="Escríbanme. Leo cada mensaje.">Write to me. I read every note.</span></p>
+    <a class="btn" href="/contact"><span data-en="Contact" data-es="Contacto">Contact</span></a>
+  </section>
+</div>
+</main>
+<script src="/aog-grace.js" defer></script>
 </body>
 </html>
