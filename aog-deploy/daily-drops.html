@@ -1284,7 +1284,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 /* AOG-DD-LEATHER-V1 (2026-09-29) — Jimmy: "make the books look more real with leather bound books."
    Each spine is leather in its subject's colour, with raised bands, gold rules and a gold-foil title. */
 #subjSeg .bs button, #subjSeg .bs button:nth-child(n){
-  color:#FBEFC8 !important;text-shadow:0 1px 0 rgba(0,0,0,.55);letter-spacing:.06em;
+  color:#FBEFC8 !important;text-shadow:0 1px 0 rgba(0,0,0,.55);letter-spacing:0;
   font-family:"Fraunces",Georgia,serif !important;
   border:1px solid #1A120C !important;border-radius:4px 4px 2px 2px !important;
   background-color:color-mix(in srgb,var(--gl,#5E3A1E) 62%,#1A0F08) !important;
@@ -1305,6 +1305,31 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   background-color:color-mix(in srgb,var(--gl,#5E3A1E) 80%,#1A0F08) !important;
   outline:2.5px solid #C9A24A;outline-offset:2px;color:#FFF6DC !important}
 @media print{ #subjSeg .bs button{background:#fff !important;color:#1D2733 !important;text-shadow:none} }
+/* V2 — "try a bit harder": two raised ribs top and bottom with gold tooling, worn corners,
+   a rounded back, and a real wooden shelf. */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){
+  box-shadow:inset 0 0 0 1px rgba(255,235,190,.08),inset 0 6px 8px -6px rgba(255,255,255,.25),inset 0 -6px 8px -6px rgba(0,0,0,.6),3px 3px 4px rgba(0,0,0,.35),1px 0 0 rgba(0,0,0,.4) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after,
+#subjSeg .bs button[aria-pressed="true"]::before{
+  height:34px;
+  background:
+    linear-gradient(180deg,
+      transparent 0 2px,#D9B45A 2px 3px,transparent 3px 5px,
+      rgba(0,0,0,.5) 5px 6px,rgba(255,255,255,.22) 6px 8px,rgba(0,0,0,.08) 8px 10px,rgba(0,0,0,.55) 10px 11px,
+      transparent 11px 14px,#D9B45A 14px 15px,transparent 15px 18px,
+      rgba(0,0,0,.5) 18px 19px,rgba(255,255,255,.22) 19px 21px,rgba(0,0,0,.08) 21px 23px,rgba(0,0,0,.55) 23px 24px,
+      transparent 24px 27px,#D9B45A 27px 28px,transparent 28px) !important}
+#subjSeg .bs button::before{top:3px !important;transform:scaleY(.7) !important;transform-origin:top}
+#subjSeg .bs button::after{bottom:3px !important;transform:scaleY(.7) !important;transform-origin:bottom}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){padding:28px 0 !important;font-size:13px !important}
+#subjSeg .bs{
+  background:
+    repeating-linear-gradient(180deg, transparent 0 172px, #3B2414 172px 173px, #8A5A32 173px 175px, #6B4323 175px 180px, #4A2C16 180px 183px, rgba(0,0,0,.25) 183px 186px, transparent 186px 200px) 0 0/100% 200px content-box !important;
+  background-clip:content-box !important}
+@media (max-width:720px){
+  #subjSeg .bs{background:repeating-linear-gradient(180deg, transparent 0 160px, #3B2414 160px 161px, #8A5A32 161px 163px, #6B4323 163px 167px, #4A2C16 167px 170px, rgba(0,0,0,.25) 170px 173px, transparent 173px 184px) 0 0/100% 184px content-box !important;background-clip:content-box !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){font-size:12px !important;padding:26px 0 !important}
+}
 </style>
 <style id="aog-dd-sendbyname">
 /* the send box beside the name line: one row, no repeated heading */
