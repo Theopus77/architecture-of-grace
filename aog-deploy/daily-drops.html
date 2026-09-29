@@ -1280,6 +1280,32 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 @media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
 #subjSeg .bs button[aria-pressed="true"]::before{background:var(--gl,#5E6B7A) !important}
 </style>
+<style id="aog-dd-leather">
+/* AOG-DD-LEATHER-V1 (2026-09-29) — Jimmy: "make the books look more real with leather bound books."
+   Each spine is leather in its subject's colour, with raised bands, gold rules and a gold-foil title. */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){
+  color:#FBEFC8 !important;text-shadow:0 1px 0 rgba(0,0,0,.55);letter-spacing:.06em;
+  font-family:"Fraunces",Georgia,serif !important;
+  border:1px solid #1A120C !important;border-radius:4px 4px 2px 2px !important;
+  background-color:color-mix(in srgb,var(--gl,#5E3A1E) 62%,#1A0F08) !important;
+  background-image:
+    linear-gradient(90deg,rgba(0,0,0,.45) 0,rgba(255,255,255,.14) 22%,rgba(255,255,255,.04) 50%,rgba(0,0,0,.18) 78%,rgba(0,0,0,.5) 100%),
+    radial-gradient(rgba(0,0,0,.18) 1px,transparent 1.4px),
+    radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px) !important;
+  background-size:100% 100%,5px 5px,7px 7px !important;background-position:0 0,0 0,2px 3px !important;
+  box-shadow:2px 2px 3px rgba(0,0,0,.35) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after,
+#subjSeg .bs button[aria-pressed="true"]::before{
+  height:20px;border:0 !important;
+  background:
+    linear-gradient(180deg,transparent 0 3px,#C9A24A 3px 4px,transparent 4px 7px,rgba(0,0,0,.45) 7px 8px,rgba(255,255,255,.18) 8px 11px,rgba(0,0,0,.45) 11px 12px,transparent 12px 15px,#C9A24A 15px 16px,transparent 16px) !important}
+#subjSeg .bs button::before{top:6px !important}
+#subjSeg .bs button::after{bottom:6px !important}
+#subjSeg .bs button[aria-pressed="true"]{
+  background-color:color-mix(in srgb,var(--gl,#5E3A1E) 80%,#1A0F08) !important;
+  outline:2.5px solid #C9A24A;outline-offset:2px;color:#FFF6DC !important}
+@media print{ #subjSeg .bs button{background:#fff !important;color:#1D2733 !important;text-shadow:none} }
+</style>
 <style id="aog-dd-sendbyname">
 /* the send box beside the name line: one row, no repeated heading */
 .sig + #sendBox{margin:10px 0 4px !important;padding:10px 14px !important;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;max-width:none !important}
