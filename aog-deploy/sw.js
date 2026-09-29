@@ -8,7 +8,10 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.29.m7225'   // EUROPE, CHINA AND JAPAN HISTORY HUBS (/europe, /china, /japan). previous: m7224
+const CACHE = 'aog-cache-2026.09.29.m7228'   // THESE UNITED STATES AND ILLINOIS HISTORY HUBS (/us, /illinois), LISTED UNDER SOCIAL STUDIES. previous: m7227
+// const CACHE = 'aog-cache-2026.09.29.m7227'   // MEXICO AND RUSSIA HISTORY HUBS (/mexico, /russia), LISTED UNDER WORLD CULTURES. previous: m7226
+// const CACHE = 'aog-cache-2026.09.29.m7226'   // EUROPE, CHINA, JAPAN AND SPORTS HISTORY IN EXPLORE AND THE HOME COURSES LIST; JAPAN HUB DROPS STRAY SPORTS LINK. previous: m7225
+// const CACHE = 'aog-cache-2026.09.29.m7225'   // EUROPE, CHINA AND JAPAN HISTORY HUBS (/europe, /china, /japan). previous: m7224
 // const CACHE = 'aog-cache-2026.09.29.m7224'   // SPORTS AND MARTIAL ARTS: PLAIN FOOTERS, CANONICAL LINKS ON NETLIFY. previous: m7223
 // const CACHE = 'aog-cache-2026.09.29.m7223'   // SPORTS HISTORY HUB (/sports) AND THE MEASURED STEP MARTIAL ARTS COURSE (/martial-arts). previous: m7222
 // const CACHE = 'aog-cache-2026.09.29.m7222'   // DAILY DRAFTS: LEATHER SPINES V3 (GOLD CAPITALS, CREAM VELLUM). previous: m7221
