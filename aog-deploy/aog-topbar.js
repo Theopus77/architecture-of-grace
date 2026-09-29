@@ -2622,7 +2622,7 @@
     + ".aogtop-back{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 12px 0 8px;margin-right:8px;flex:none;"
     + "border-radius:999px;border:1.5px solid var(--bar-rule);background:transparent;color:var(--bar-ink);"
     + "font:700 14px/1 inherit;font-family:inherit;cursor:pointer}"
-    + ".aogtop-back:hover{background:var(--bar-wash)}.aogtop-back svg{width:18px;height:18px}"
+    + ".aogtop-back[hidden]{display:none!important}.aogtop-back:hover{background:var(--bar-wash)}.aogtop-back svg{width:18px;height:18px}"
     + ".aogtop-lead{display:flex;align-items:center;min-width:0}"
     + "@media (max-width:520px){.aogtop-back .lbl{display:none}.aogtop-back{padding:0 10px}}"
     + "@media (max-width:440px){.aogtop-acts{gap:5px!important}.aogtop-div{display:none!important}.aogtop-lang button{padding:5px 8px!important}.aogtop-back{margin-right:5px;padding:0 7px}.aogtop-pill{padding:6px 8px!important}.aogtop-ico{width:32px;height:32px}}";
@@ -2633,7 +2633,14 @@
      Back goes to the dashboard, never the student self-reflection. */
   var staffLink = false;
   try { var qs = new URLSearchParams(location.search); staffLink = !!((qs.get("checkin") || qs.get("checkinType")) && (qs.get("who") || "").toLowerCase() === "staff"); } catch (e) {}
-  if ((p === "/" || p === "/index.html") && !staffLink) return;
+  /* AOG-ROOM-BACK-V1 (2026-09-29) — Jimmy: "NOT all the sites have the back button … mostly the older
+     pages within the framework." A room inside the home page (#framework, #workplace …) is a page of its
+     own to the reader, so it gets Back too; the plain home page still has none. */
+  var isHome = (p === "/" || p === "/index.html") && !staffLink;
+  function roomOpen() { var h = (location.hash || "").replace(/^#/, "").toLowerCase(); return !!h && h !== "home" && h !== "top"; }
+  var moved = false;
+  if (isHome) window.addEventListener("hashchange", function () { moved = true; var b = document.querySelector(".aogtop-back"); if (b) b.hidden = !roomOpen(); else if (roomOpen()) add(); });
+  if (isHome && !roomOpen()) return;
   function add() {
     var bar = document.getElementById("aogTopbar"), brand = bar && bar.querySelector(".aogtop-brand");
     if (!brand) return setTimeout(add, 60);
@@ -2652,6 +2659,7 @@
         if (same && history.length > 1) history.back(); else { clearTimeout(t); location.href = "/dashboard"; }
         return;
       }
+      if (isHome) { if (moved || same) history.back(); else location.href = "/"; return; }
       if (same && history.length > 1) history.back(); else location.href = "/";
     });
     var lead = document.createElement("div"); lead.className = "aogtop-lead";
