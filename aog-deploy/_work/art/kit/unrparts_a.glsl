@@ -505,3 +505,24 @@ float t_rloaf(vec3 q,float r){ vec3 c=q-vec3(0.,r*.3,0.); if(c.y>r*.3&&abs(fract
 float o_plate2(vec3 q,float R){ float r=length(q.xz); float d=max(r-R,abs(q.y-.005)-.005); d=max(d,-max(r-R+.025,-(q.y-.007)));
   d=min(d,sdTorus(q-vec3(0.,.009,0.),R-.006,.004)); return d; }
 float t_plate2(vec3 q,float R){ float r=length(q.xz); if(abs(r-R+.02)<.002) return .4; return .82; }
+/* ---- a diamond kite leaning back, bottom tip at q=0, face toward -z; w half width, hb/ht lower/upper lengths ---- */
+vec3 kiteL(vec3 q){ q.yz=rot(.38)*q.yz; return q; }
+float kiteF(vec2 u,float w,float hb,float ht){ float v=u.y>hb?(u.y-hb)/ht:(hb-u.y)/hb; return (abs(u.x)/w+v-1.)*min(w,ht)*.6; }
+float o_kite(vec3 q,float w,float hb,float ht){
+  vec3 k=kiteL(q);
+  float sail=max(kiteF(k.xy,w,hb,ht),abs(k.z)-.0012);
+  float sv=sdCapsule(k,vec3(0.,.004,.004),vec3(0.,hb+ht-.004,.004),.0028);
+  float sh=sdCapsule(k,vec3(-w+.004,hb,.005),vec3(w-.004,hb,.005),.0028);
+  float d=min(sail,min(sv,sh));
+  float tail=1e5; vec3 a=vec3(0.,.004,-.002);                      /* the tail string runs off over the table */
+  for(int i=0;i<6;i++){ float t=float(i+1)/6.; vec3 b=vec3(.05*sin(t*4.),.003,-.03-.16*t); vec3 aa=i==0?q:q; 
+    tail=min(tail,sdCapsule(q,i==0?vec3(0.,.006,0.):vec3(.05*sin(float(i)/6.*4.),.003,-.03-.16*float(i)/6.),b,.0012)); }
+  for(int i=1;i<4;i++){ float t=float(i)*.3; vec3 c=q-vec3(.05*sin(t*4.),.005,-.03-.16*t);
+    c.xz=rot(float(i))*c.xz; tail=min(tail,min(sdEll(c-vec3(.009,0.,0.),vec3(.009,.004,.006)),sdEll(c+vec3(.009,0.,0.),vec3(.009,.004,.006)))); }
+  return min(d,tail); }
+float t_kite(vec3 q,float w,float hb,float ht){
+  vec3 k=kiteL(q);
+  if(q.y<.012&&k.y<.02) return .35;                                 /* tail and bows */
+  if(abs(kiteF(k.xy,w,hb,ht))<.0015) return .3;                     /* the edge binding */
+  if(k.z>.001) return .45;                                          /* sticks on the back */
+  return (k.x>0.)==(k.y>hb)?.55:.9; }                               /* two quarters coloured */
