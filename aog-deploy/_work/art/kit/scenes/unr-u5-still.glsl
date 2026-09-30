@@ -19,7 +19,7 @@ vec3 BQ(vec3 p,int i){ vec3 q=p-vec3(-.1,0.,.12);
   return q; }
 float bricksD(vec3 p){ float d=1e5; for(int i=0;i<5;i++) d=min(d,o_brick(BQ(p,i),BB)); return d; }
 float bricksT(vec3 p){ float d=1e5,t=.6; for(int i=0;i<5;i++){ float e=o_brick(BQ(p,i),BB); if(e<d){ d=e; t=t_brick(BQ(p,i)); } } return t; }
-vec3 Q3(vec3 p){ return p-vec3(.13,.06,-.05); }
+vec3 Q3(vec3 p){ vec3 q=p-vec3(.13,.06,-.05); q.xz=rot(2.2)*q.xz; return q; }
 vec3 Q5(vec3 p){ vec3 q=p-vec3(.05,0.,-.2); q.xz=rot(-.25)*q.xz; return q; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.); r=U(r,.9-p.z,2.);

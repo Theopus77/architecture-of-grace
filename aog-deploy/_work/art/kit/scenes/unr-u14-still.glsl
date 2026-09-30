@@ -2,8 +2,8 @@
    with a horn at each corner and a shallow bowl on top (worship in the temple, Isaiah 6 and
    Revelation 8), and a long straight silver trumpet with a flared bell lying in front (the trumpet of
    1 Thessalonians 4:16). */
-#define CAM_POS vec3(-0.5220,0.3208,-0.9270)
-#define CAM_TGT vec3(-0.3256,0.0152,0.0991)
+#define CAM_POS vec3(-0.5405,0.3282,-1.0104)
+#define CAM_TGT vec3(-0.3289,-0.0010,0.0949)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -38,7 +38,7 @@ float bowlD(vec3 p){ vec3 q=altQ(p)-vec3(0.,.215,0.);
   o=min(o,sdCylY(q-vec3(0.,.002,0.),.018,.003));
   return o; }
 /* the trumpet: a straight tube along x, two bands, a mouthpiece and a flared bell */
-vec3 trpQ(vec3 p){ vec3 q=p-TRP; q.xz=rot(-.55)*q.xz; q.xy-=vec2(.18,.0465); q.xy=rot(.0985)*q.xy; q.x+=.18; return q; }   /* bell and mouthpiece both rest on the table */
+vec3 trpQ(vec3 p){ vec3 q=p-TRP; q.xz=rot(-1.05)*q.xz; q.xy-=vec2(.18,.0465); q.xy=rot(.0985)*q.xy; q.x+=.18; return q; }   /* bell and mouthpiece both rest on the table */
 float trumpetD(vec3 p){ vec3 q=trpQ(p);
   float x=q.x; float t=clamp((x-.1)/.08,0.,1.);
   float r=.0065+.0012*smoothstep(-.18,.1,x)+.038*pow(t,3.2);
