@@ -47,6 +47,7 @@ COURSES = [
     ("med", "academic", "Medicine & Health",          "Medicina y Salud",                          "medicine-health-course.html",  "med-u{n}.html", "med{n}", None),
     ("spt", "academic", "Sports History",             "Historia del deporte",                      "sports-course.html",           "spt-u{n}.html", "spt{n}", None),
     ("mar", "academic", "The Measured Step",          "El paso medido",                            "martial-arts-course.html",     "mar-u{n}.html", "mar{n}", None),
+    ("sec", "academic", "Secret Societies",           "Sociedades secretas",                       "secret-societies-course.html", "sec-u{n}.html", "sec{n}", None),
     ("rel", "academic", "World Religions",            "Religiones del Mundo",                      "religions-course.html",        "rel-u{n}.html", "rel{n}", "r{n}"),
     ("spa", "academic", "Spanish",                    "Español",                                   "spanish-course.html",          "spa-u{n}.html", "spa{n}", None),
     ("fcs", "academic", "Family & Consumer Sciences", "Ciencias de la Familia y del Consumidor",   "facs-course.html",             "fcs-u{n}.html", "fcs{n}", None),

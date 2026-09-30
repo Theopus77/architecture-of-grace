@@ -210,6 +210,15 @@ COURSES = [
                 "Diez líneas cortas al día: palabras clave, pasajes y preguntas rápidas del curso."),
          sources=("Every lesson starts from an ancient text: the Bible, 1 Enoch, Jubilees, the Dead Sea Scrolls and others, quoted from public-domain translations or retold. Scholars’ ideas, Michael Heiser’s and others’, are told in our own words and named as theirs. Everything else is original text written for this course.",
                   "Cada lección empieza con un texto antiguo: la Biblia, 1 Enoc, Jubileos, los Rollos del Mar Muerto y otros, citados de traducciones de dominio público o contados de nuevo. Las ideas de los estudiosos, de Michael Heiser y de otros, se cuentan con nuestras palabras y se presentan como suyas. Todo lo demás es texto original escrito para este curso.")),
+    # AOG-SEC-V1 (2026-09-30) — Secret Societies. Run `doors sec` after secret-societies-course.html exists.
+    dict(cid="sec", file="secret-societies-hub.html", slug="secret-societies", name=("Secret Societies", "Sociedades secretas"), contents="secret-societies-course",
+         drops="secrets", res="social-studies", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
+         lede=("Lodges, orders, codes and legends, K–12. What the records show, and how to test a claim.",
+               "Logias, órdenes, códigos y leyendas, K–12. Lo que muestran los documentos y cómo poner a prueba una afirmación."),
+         daily=("Ten short lines a day: key words, places, people and dates from the history of secret societies.",
+                "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia de las sociedades secretas."),
+         sources=("Every fact is checked against records: trial papers, lodge minutes, court cases and hearings. Legends are named as legends. Crime and hate groups are taught in grades 6–12 only. Everything is original text written for this course.",
+                  "Cada dato se comprueba con documentos: actas de juicios y de logias, casos judiciales y audiencias. Las leyendas se llaman leyendas. Los grupos criminales y de odio se estudian solo en los grados 6–12. Todo es texto original escrito para este curso.")),
 ]
 
 # More to explore: every place a band links to, named once, with one plain line.
@@ -243,6 +252,7 @@ EXPLORE = {
     "/ec8": (R_, "Trade, taxes and the world", "Comercio, impuestos y el mundo", "Why countries trade, and how taxes work.", "Por qué comercian los países y cómo funcionan los impuestos."),
     "/sports-course": (C_, "Sports History", "Historia del deporte", "How games got their fields, rules and leagues, K–12.", "Cómo los juegos recibieron sus campos, reglas y ligas, K–12."),
     "/martial-arts-course": (C_, "The Measured Step", "El paso medido", "Martial arts history: rooms, codes and schools, K–12.", "Historia de las artes marciales: espacios, códigos y escuelas, K–12."),
+    "/secret-societies-course": (C_, "Secret Societies", "Sociedades secretas", "Lodges, orders, codes and legends, K–12.", "Logias, órdenes, códigos y leyendas, K–12."),
     "/social": (C_, "Social Studies", "Estudios Sociales", "History, civics, geography and economics, every band.", "Historia, civismo, geografía y economía, cada banda."),
     "/world-cultures": (C_, "World Cultures", "Culturas del mundo", "How people live together around the world, K–12.", "Cómo vive la gente en el mundo, K–12."),
     "/us-history": (C_, "U.S. History 6–8", "Historia de EE. UU. 6–8", "The story of the United States, as a full course.", "La historia de Estados Unidos, como un curso completo."),
