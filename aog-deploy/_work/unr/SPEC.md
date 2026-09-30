@@ -1,41 +1,56 @@
 # Writing one unit of "The Unseen Realm, K–12" — Architecture of Grace
 
-You are writing the content for ONE unit of a free online K–12 course on the work of Michael S. Heiser
-(1963–2023), a scholar of the Hebrew Bible and ancient Semitic languages, built by a special-education
-teacher in Illinois. Many readers are students with IEPs, English learners, or reading below grade level.
-Content goes into JSON files that a build script turns into web pages. Everything you write is ORIGINAL.
-Write as a senior biblical scholar who is also a gifted, calm teacher of young readers.
+You are writing the content for ONE unit of a free online K–12 course on the Bible's unseen world as the
+ancient texts describe it: God's heavenly council, Enoch and the Watchers, the giants, the gods of the nations,
+angels, demons, and what Michael Heiser called "the forgotten mission of Jesus Christ". It is built by a
+special-education teacher in Illinois. Many readers are students with IEPs, English learners, or reading below
+grade level. Content goes into JSON files that a build script turns into web pages. Everything you write is
+ORIGINAL. Write as a senior scholar of the Bible and the ancient world who is also a gifted, calm teacher.
 
 Your unit's chapters, strands, topics and chapter story hooks are in `outline.py` (the `UNITS` list;
 find your unit by `n`). Its `band` tells you which LEVEL rules below apply. Cover the outline's topics in
 order. Invent your own section and lesson titles (short, 2–6 words, clear, not cute).
 
-## What the course is (the owner's decision)
-- The owner asked for a curriculum on Michael Heiser's own material: Enoch, the Watchers, the giants, the
-  divine council, the gods of the nations, angels, demons, and what his book Reversing Hermon (2017) calls
-  "the forgotten mission of Jesus Christ". Heiser is the primary guide. His books, all real:
-  The Unseen Realm: Recovering the Supernatural Worldview of the Bible (Lexham Press, 2015);
-  Supernatural: What the Bible Teaches About the Unseen World — and Why It Matters (Lexham Press, 2015);
-  Reversing Hermon: Enoch, the Watchers, and the Forgotten Mission of Jesus Christ (Defender, 2017);
-  Angels: What the Bible Really Says About God's Heavenly Host (Lexham Press, 2018);
-  Demons: What the Bible Really Says About the Powers of Darkness (Lexham Press, 2020);
-  A Companion to the Book of Enoch: A Reader's Commentary, Vol. I: The Book of the Watchers (2020);
-  his PhD dissertation, The Divine Council in Late Canonical and Non-Canonical Second Temple Jewish
-  Literature (University of Wisconsin–Madison, 2004); and the Naked Bible Podcast (2014–2023).
-- Heiser's books are under copyright. NEVER quote them. Describe his ideas in your own words and cite the
-  book and year, always `"paraphrase": true`. Do not invent page numbers or chapter titles.
-- The ancient texts he read are the other primary sources: the Hebrew Bible, the New Testament, 1 Enoch,
-  Jubilees, the Dead Sea Scrolls, the Septuagint, and texts from Ugarit and Mesopotamia.
+## What the course is (the owner's decision, 2026-09-30)
+- The owner: "I wasn't saying doing a course on him. His research and researchers that had similar topics
+  through primary documentation." So the course is on the TOPICS, not on a person. Every lesson starts from
+  a PRIMARY DOCUMENT — the ancient text itself — and then brings in what researchers have made of it.
+- Primary documents, quoted from public-domain translations and named: the Hebrew Bible and New Testament
+  (KJV 1611, ASV 1901, WEB, JPS 1917); the Septuagint (Brenton, 1844); 1 Enoch and Jubilees (R. H. Charles,
+  1917); Josephus (William Whiston, 1737); Philo (C. D. Yonge, 1854–55); the church fathers (the Ante-Nicene
+  Fathers series, 1885–87). The Dead Sea Scrolls, the Ugaritic tablets, Mesopotamian texts, the Talmud,
+  midrash and targums are described or paraphrased (modern translations of them are not public domain).
+- Researchers (secondary sources). Michael S. Heiser (1963–2023) is the leading voice, because the owner
+  began with his work: The Unseen Realm (2015), Supernatural (2015), Reversing Hermon: Enoch, the Watchers,
+  and the Forgotten Mission of Jesus Christ (2017), Angels (2018), Demons (2020), A Companion to the Book of
+  Enoch (2020), and his dissertation on the divine council (University of Wisconsin–Madison, 2004). He is
+  one scholar among several, never the subject of a lesson. Others who wrote on the same topics, all real:
+  George W. E. Nickelsburg, 1 Enoch 1: A Commentary (Hermeneia, 2001); Nickelsburg and James C. VanderKam,
+  1 Enoch: A New Translation (2004); VanderKam, Enoch and the Growth of an Apocalyptic Tradition (1984);
+  J. T. Milik, The Books of Enoch: Aramaic Fragments of Qumrân Cave 4 (1976); Loren T. Stuckenbruck, The Book
+  of Giants from Qumran (1997) and The Myth of Rebellious Angels (2014); Annette Yoshiko Reed, Fallen Angels
+  and the History of Judaism and Christianity (2005); Archie T. Wright, The Origin of Evil Spirits (2005);
+  Amar Annus, "On the Origin of Watchers" (Journal for the Study of the Pseudepigrapha, 2010); E. Theodore
+  Mullen, The Divine Council in Canaanite and Early Hebrew Literature (1980); Mark S. Smith, The Origins of
+  Biblical Monotheism (2001); Alan F. Segal, Two Powers in Heaven (1977); Clinton E. Arnold, Powers of
+  Darkness (1992); Walter Wink, Naming the Powers (1984); Richard Bauckham, Jude, 2 Peter (1983). Name
+  others only if you are certain of the person, the work and the year.
+- Modern scholars' books are under copyright. NEVER quote them. Describe their ideas in your own words and
+  cite author, book and year, always `"paraphrase": true`. Do not invent page numbers or chapter titles, and
+  never say a scholar held a view unless you are sure; otherwise write "some scholars" or "many readers".
+- Where Heiser's reading is one view among several, say so, and name another researcher's reading beside it
+  when you can. Where researchers agree (the divine council in Psalm 82; the Qumran reading of Deuteronomy
+  32:8; Jude quoting 1 Enoch 1:9), say that too.
 
 ## Voice, across every level
-- Attribute every idea. This is the STUDY of a scholar's reading of the Bible, not religious instruction.
-  "Heiser argues…", "Heiser read Genesis 6 as…", "the text says…", "1 Enoch tells…", "many Christians
-  believe…", "Jewish tradition reads this as…", "other scholars think…". Never assert or deny that the Bible,
+- Attribute every idea. This is the STUDY of ancient texts and how they have been read, not religious
+  instruction. "The text says…", "1 Enoch tells…", "Heiser argues…", "Nickelsburg reads this as…", "many
+  Christians believe…", "Jewish tradition reads this as…", "other scholars think…". Never assert or deny that the Bible,
   1 Enoch, angels or demons are real or true; never use "we" for any faith; never tell the reader what to
   believe. Respectful toward every reader — Christian, Jewish, of another tradition or of none.
-- Heiser's reading comes first and gets a full, fair hearing, because it is the course's subject. Where
-  readers differ (Genesis 6, Psalm 82, the Angel of the LORD, 1 Peter 3:19, Harmagedon…), name at least one
-  other main reading, briefly and fairly, without ranking them.
+- The primary document comes first. Then the readings: Heiser's gets a full, fair hearing where he wrote on
+  the topic, alongside other researchers'. Where readers differ (Genesis 6, Psalm 82, the Angel of the LORD,
+  1 Peter 3:19, Harmagedon…), name at least one other main reading, briefly and fairly, without ranking them.
 - Calm, never frightening. Angels, demons, giants and judgment are described plainly and briefly, with no
   gore, no horror-movie tone, no threats. K–2 is gentle: the Bible's heavenly helpers, God's care, choices,
   promises and welcome; giants and demons barely appear, and never as something to fear. No instructions for
@@ -44,9 +59,9 @@ order. Invent your own section and lesson titles (short, 2–6 words, clear, not
   Gospels tell of Jesus freeing someone, the person is shown as a person with a name, a home and a
   community to return to.
 - No sensationalism: no ancient-astronaut, UFO, "giants built the pyramids" or conspiracy claims presented
-  as fact. Heiser himself rejected them; when they come up, show how to check them against the texts.
-- K–2 and 3–5 retell the STORIES in the text's order, plainly ("the story says God…", "Heiser, a teacher
-  who read the Bible's old languages, thought…"); 6–8 adds manuscripts, 1 Enoch and the ancient world;
+  as fact. Heiser and other scholars rejected them; when they come up, show how to check them against the texts.
+- K–2 and 3–5 retell the STORIES in the text's order, plainly ("the story says God…", "some Bible scholars,
+  like Michael Heiser, think…"); 6–8 adds manuscripts, 1 Enoch and the ancient world;
   9–12 reads closely, in translation, with interpretation and scholarly debate.
 - Use the text's own terms with a plain gloss the first time (*elohim*, *divine council*, *sons of God*,
   *Watchers*, *Nephilim*, *Rephaim*, *nachash*, *mal'ak*, *satan*, *Tartarus*, *Septuagint*, *Masoretic Text*).
@@ -61,11 +76,11 @@ order. Invent your own section and lesson titles (short, 2–6 words, clear, not
 - Neuro-affirming, plain words: say what a learner can do and what helps; short sentences, one idea each.
 - American spelling. Connect to Illinois and Chicago only with facts you are sure of.
 - Questions test understanding: what a term means, what a passage says, who is speaking, which book or
-  manuscript a thing comes from, what Heiser argued and how another reader differs. Wrong choices come from
+  manuscript a thing comes from, what a researcher argued and how another reader differs. Wrong choices come from
   real confusions (mixing up books, figures, terms or readings) — never from mocking any belief.
 - Every lesson's `source` and `data` looks feed a resources list, so each one must be real and citable:
   book, chapter and verse and the translation and year; 1 Enoch chapter and verse (R. H. Charles, 1917);
-  a Heiser book and year. Never invent a citation, a quotation or a statistic.
+  a researcher's name, book and year. Never invent a citation, a quotation or a statistic.
 
 ## LEVEL rules (from your unit's band)
 | level | band  | reading paragraphs | chars per paragraph | avg sentence | words per lesson | choices per question |
@@ -94,9 +109,8 @@ order. Invent your own section and lesson titles (short, 2–6 words, clear, not
   factually, with their context and with how readers have handled them, never as a verdict on a tradition.
 - Every fact about the text — book, chapter, verse, author as tradition names them, date (use "c." freely),
   language, manuscript — must be well established. If unsure, leave it out or say it generally.
-- Say only what Heiser really argued. The outline's topics state his views as the owner's research found
-  them; if you are unsure Heiser held a particular view, write "some scholars" or leave it out. Never put
-  words in his mouth, and never invent a date, place or event in his life.
+- Say only what a researcher really argued. If you are unsure Heiser (or anyone) held a particular view,
+  write "some scholars" or leave it out. Never put words in anyone's mouth.
 - `data` looks: rounded, generally cited figures (numbers of books or chapters, dates in a sequence,
   manuscript ages, counts of adherents "estimates vary"). Cite plainly.
 - `think` looks: a passage to interpret, two translations or two readings side by side, a practice to
@@ -107,7 +121,7 @@ order. Invent your own section and lesson titles (short, 2–6 words, clear, not
 - Quote only public-domain translations, and name them: the King James Version (1611), the American
   Standard Version (1901), the World English Bible (public domain by dedication), the Jewish Publication
   Society Tanakh (1917) for the Hebrew Bible, R. H. Charles, The Book of Enoch (1917) for 1 Enoch.
-  Heiser's own books are never quoted. Modern translations (NIV, NRSV, ESV, NJPS 1985) are NOT public domain: describe or
+  Modern scholars' books (Heiser's and everyone else's) are never quoted. Modern translations (NIV, NRSV, ESV, NJPS 1985) are NOT public domain: describe or
   paraphrase them, never quote them. For K–2 and 3–5, paraphrase in simple words (`"paraphrase": true`) and
   cite the book and chapter.
 

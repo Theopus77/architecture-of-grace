@@ -1,15 +1,17 @@
-# The Unseen Realm, K–12 — the course arc. Our own wording. A study of the work of
-# Michael S. Heiser (1963–2023), a scholar of the Hebrew Bible and ancient Semitic
-# languages, on what he called the Bible's "supernatural worldview": the divine council,
-# Enoch and the Watchers, the giants, the gods of the nations, angels, demons, and what
-# his book Reversing Hermon (2017) calls "the forgotten mission of Jesus Christ".
-# Heiser's own books are the primary guide (The Unseen Realm 2015, Supernatural 2015,
-# Reversing Hermon 2017, Angels 2018, Demons 2020, A Companion to the Book of Enoch 2020);
-# the texts he read are quoted from public-domain translations (KJV, ASV, WEB, JPS 1917;
-# R. H. Charles's 1 Enoch, 1917). Heiser's ideas are always attributed ("Heiser argues…"),
-# with other readings beside them; the course never tells a student what to believe.
-# K–2 is gentle and never frightening. Topics guide the writers; story = the chapter's
-# opening narrative hook.
+# The Unseen Realm, K–12 — the course arc. Our own wording. The Bible's unseen world as the
+# ancient texts describe it: God's heavenly council, Enoch and the Watchers, the giants, the
+# gods of the nations, angels, demons, and what Michael Heiser called "the forgotten mission of
+# Jesus Christ" (Reversing Hermon, 2017). Owner's decision (Jimmy, 2026-09-30): the course is on
+# these TOPICS, taught from the PRIMARY DOCUMENTS (the Hebrew Bible, the Septuagint, 1 Enoch,
+# Jubilees, the Dead Sea Scrolls, Ugaritic and Mesopotamian texts, Josephus, Philo, the New
+# Testament, the church fathers and the rabbis), with the researchers who study them: Michael
+# S. Heiser first among several (with George Nickelsburg, James VanderKam, J. T. Milik, Loren
+# Stuckenbruck, Annette Yoshiko Reed, Archie Wright, Amar Annus, E. Theodore Mullen, Mark S.
+# Smith, Alan Segal and others). Public-domain translations are quoted (KJV, ASV, WEB, JPS 1917;
+# R. H. Charles's 1 Enoch and Jubilees, 1917; Whiston's Josephus; Brenton's Septuagint); every
+# researcher's idea is attributed, with other readings beside it; the course never tells a
+# student what to believe. K–2 is gentle and never frightening. Topics guide the writers;
+# story = the chapter's opening narrative hook.
 #
 # Units number 1–17 straight through the course; chapters 1–34. Sister courses: The Bible
 # (bib), The Hebrew Bible (heb), World Religions (rel).
@@ -50,12 +52,12 @@ UNITS = [
  ]),
 
  # ══════════════════════════════ 3–5 (units 4–7, chapters 7–14) ══════════════════════════════
- dict(n=4, band="3-5", title="Meeting Michael Heiser and the Divine Council", strand="The Scholar and His Big Idea", chapters=[
-  dict(n=7, title="A Scholar Who Read the Old Languages", strand="Michael Heiser",
-       topics="Michael S. Heiser (1963–2023): PhD in Hebrew Bible and Semitic languages (University of Wisconsin–Madison, 2004); read Hebrew, Greek, Ugaritic and other ancient languages; wrote The Unseen Realm (2015) and Supernatural (2015); hosted the Naked Bible Podcast; his big idea: read the Bible the way its first readers did, not through later ideas; the Hebrew word elohim can mean God or other spirit beings — it tells where a being lives (the spirit world), not what it is; Heiser said Israel's God is unique and above all others.",
+ dict(n=4, band="3-5", title="Old Books and God's Council", strand="Sources and the Divine Council", chapters=[
+  dict(n=7, title="How We Know: Old Books and Those Who Study Them", strand="Primary Sources",
+       topics="a primary source is the old writing itself (a scroll, a tablet, a book of the Bible); a secondary source is what a later scholar writes about it; manuscripts are hand-made copies; translations carry old words into English; the Bible's first languages (Hebrew, Aramaic, Greek); scholars who study the unseen world in these texts, named simply: Michael S. Heiser (The Unseen Realm, 2015), George Nickelsburg and James VanderKam (who translated 1 Enoch, 2004), Loren Stuckenbruck (who studied the Dead Sea Scroll Book of Giants); the Hebrew word elohim can mean God or other spirit beings, and scholars explain it in different ways (Heiser: it tells where a being lives, the spirit world); reading an old text the way its first readers did; checking a claim against the text itself.",
        story="A college student opens a Hebrew Bible to Psalm 82 and cannot believe what the first verse seems to say"),
   dict(n=8, title="God's Council in Heaven", strand="The Divine Council",
-       topics="Psalm 82: God stands in the 'divine council' and judges the elohim; Psalm 89:5–7 the assembly of the holy ones; 1 Kings 22:19–23 Micaiah's vision of the host of heaven; Job 1–2 the sons of God come before the LORD; Isaiah 6 the seraphim; Heiser: God has a council like a king's court, not because he needs help but because he shares his work; other readers (some Jewish and Christian readers) say the 'gods' in Psalm 82 are human judges — describe both.",
+       topics="Psalm 82: God stands in the 'divine council' and judges the elohim (scholars such as E. Theodore Mullen, 1980, and Heiser compare the council of El in texts from Ugarit); Psalm 89:5–7 the assembly of the holy ones; 1 Kings 22:19–23 Micaiah's vision of the host of heaven; Job 1–2 the sons of God come before the LORD; Isaiah 6 the seraphim; Heiser: God has a council like a king's court, not because he needs help but because he shares his work; other readers (some Jewish and Christian readers) say the 'gods' in Psalm 82 are human judges — describe both.",
        story="A class visits the city council and a student notices it is a bit like a picture in the Psalms"),
  ]),
  dict(n=5, band="3-5", title="Three Rebellions", strand="Genesis 3, 6 and 11", chapters=[
@@ -108,7 +110,7 @@ UNITS = [
        topics="Daniel 10:13, 20–21: the prince of Persia and the prince of Greece opposed by Michael 'your prince'; Heiser: spiritual rulers over nations; holy ground: Sinai, Zion, the tabernacle; 2 Kings 5:17 Naaman takes two mule-loads of Israel's soil home to worship the LORD; 1 Samuel 26:19 David driven out to 'serve other gods'; Heiser's point that land and worship were linked; other readers see these as figures of speech or later development; how Christians and Jews have read Daniel's princes.",
        story="Naaman, a Syrian general healed in the Jordan, asks for an odd gift: two loads of dirt"),
  ]),
- dict(n=11, band="6-8", title="The Satan, Demons and Dark Powers", strand="Heiser's Demons", chapters=[
+ dict(n=11, band="6-8", title="The Satan, Demons and Dark Powers", strand="Dark Powers in the Texts", chapters=[
   dict(n=21, title="The Satan, the Serpent and the Devil", strand="The Adversary",
        topics="Hebrew satan means 'adversary'; in Job 1–2 and Zechariah 3 'the satan' (with 'the') is a title for an accuser in God's council; Heiser (Demons, 2020): the Old Testament does not use 'satan' as a name the way the New Testament uses 'Satan' and 'the devil'; Isaiah 14 (the king of Babylon, 'Day Star'/'Lucifer' in the KJV) and Ezekiel 28 (the king of Tyre) — read as poems about human kings, and by many Christians also as the fall of a spirit being; Heiser saw the Eden rebel behind them; Second Temple names (Belial, Mastema); Satan in the Gospels and Revelation 12:9.",
        story="A student notices that in Job 'the satan' walks into God's court like he belongs there"),
@@ -118,8 +120,8 @@ UNITS = [
  ]),
 
  # ══════════════════════════════ 9–10 (units 12–14, chapters 23–28) ══════════════════════════════
- dict(n=12, band="9-10", title="Reversing Hermon: The Forgotten Mission", strand="Heiser's Reversing Hermon", chapters=[
-  dict(n=23, title="Caesarea Philippi and the Mountain", strand="Hermon in the Gospels",
+ dict(n=12, band="9-10", title="Reversing Hermon: The Forgotten Mission", strand="Hermon in the Gospels", chapters=[
+  dict(n=23, title="Caesarea Philippi and the Mountain", strand="Caesarea Philippi",
        topics="Reversing Hermon (2017), subtitle Enoch, the Watchers, and the Forgotten Mission of Jesus Christ; Caesarea Philippi at Panias (Banias), the cave shrine of Pan at the foot of Mount Hermon; Matthew 16:13–20 Peter's confession and 'the gates of Hades'; Heiser's reading: Jesus declares war on the powers at the very place tied to the Watchers' descent; the Transfiguration (Matthew 17:1–8) on 'a high mountain' — Heiser and others place it on Hermon, while old tradition names Mount Tabor; the Gospels' sequence as he reads it; other readings of the rock and the gates.",
        story="At the Banias spring, water pours from the rock below a cliff carved with niches for Pan"),
   dict(n=24, title="Pentecost, the Nations and Paul's Road to Spain", strand="Babel Reversed",
@@ -134,7 +136,7 @@ UNITS = [
        topics="Paul's vocabulary: rulers (archai), authorities (exousiai), powers, thrones, dominions, world-rulers (Ephesians 1:21; 6:12; Colossians 1:16; 2:15; Romans 8:38–39; 1 Corinthians 2:6–8 the 'rulers of this age' who crucified the Lord); Heiser: the fallen sons of God of Deuteronomy 32; 1 Corinthians 10:20 sacrifices to daimonia; 1 Corinthians 11:10 'because of the angels' — Heiser's reading linked to the Watchers, alongside other scholarly readings; Galatians 4:3, 9 'elemental spirits' (stoicheia) debated; Colossians 2:15 the powers disarmed at the cross.",
        story="A teacher writes Paul's list of powers on the board and asks who these 'rulers' could be"),
  ]),
- dict(n=14, band="9-10", title="Angels Up Close", strand="Heiser's Angels", chapters=[
+ dict(n=14, band="9-10", title="Angels Up Close", strand="Angels in the Texts", chapters=[
   dict(n=27, title="Names, Ranks and Roles", strand="The Heavenly Host",
        topics="Heiser (Angels, 2018): terms describe roles or status — elohim, sons of God, holy ones, host, watchers ('irin, Daniel 4:13, 17, 23), ministers, cherubim, seraphim, archangel (1 Thessalonians 4:16; Jude 9 Michael); ranks as the Bible hints at them and how later writers (Pseudo-Dionysius, about 500 CE, nine choirs) built fuller systems that go beyond the text; guardian angels (Matthew 18:10; Acts 12:15); angels are not dead humans; Hebrews 1–2 Christ above the angels.",
        story="Isaiah stands in the temple and sees six-winged seraphim calling 'Holy, holy, holy'"),
@@ -144,13 +146,13 @@ UNITS = [
  ]),
 
  # ══════════════════════════════ 11–12 (units 15–17, chapters 29–34) ══════════════════════════════
- dict(n=15, band="11-12", title="How Heiser Read the Bible", strand="Method", chapters=[
-  dict(n=29, title="Context, Languages and the Ancient Near East", strand="Heiser's Method",
-       topics="Heiser's method: read the Bible in its ancient context, not through later church tradition or modern assumptions; Ugarit (Ras Shamra, found 1928): the council of El, the sons of El, Baal, and parallels with Psalm 82 and Psalm 29; Mesopotamian apkallu and the Watchers; Hebrew terms (elohim as 'place of residence' term, not a set of traits); his rule that Israel's God is 'species-unique' among the elohim; his 'Naked Bible' name for reading without filters; strengths and cautions of comparing texts (parallelomania, a term from Samuel Sandmel, 1961).",
+ dict(n=15, band="11-12", title="The Primary Documents and the Scholars", strand="Sources", chapters=[
+  dict(n=29, title="The Documents: Enoch, Jubilees, the Scrolls and Their Neighbors", strand="The Documents",
+       topics="read the sources themselves: 1 Enoch 6–16 (R. H. Charles, 1917); Jubilees 4:15–22, 5:1–11 and 10:1–14 (the Watchers first sent to teach, Mastema and the spirits; Charles, 1917); the Book of Giants from Qumran (fragments studied by J. T. Milik, 1976, and Loren Stuckenbruck, 1997); the Damascus Document's line on the Watchers who fell; the Genesis Apocryphon (Lamech fears Noah's father was a Watcher); Josephus, Antiquities 1.73 (angels of God and women; Whiston, 1737); Philo, On the Giants; Ugarit (Ras Shamra, found 1928): the council of El and parallels with Psalm 82 and 29; Mesopotamian apkallu sages and Berossus's Oannes (Amar Annus, 2010, compared them with the Watchers, as did Heiser); comparing texts with care (Samuel Sandmel's warning against 'parallelomania', 1961).",
        story="In 1928 a farmer's plow in northern Syria hits a stone slab and opens a lost city's library"),
-  dict(n=30, title="Critics and Conversations", strand="Scholarly Reception",
-       topics="where Heiser's ideas stand in scholarship: the divine council is widely recognized (E. Theodore Mullen, 1980; Mark S. Smith); the Qumran reading of Deuteronomy 32:8 is widely accepted by text critics; debated points: monotheism in ancient Israel (Smith's view of development versus Heiser's), his use of 1 Enoch, the 'two powers in heaven' idea (Alan Segal, Two Powers in Heaven, 1977, on the rabbinic debate), the Sethite view's defenders, the 'three rebellions' framework; Jewish perspectives; reading an argument fairly: claim, evidence, counter-evidence.",
-       story="Two seminary students debate Psalm 82 in a library, each with a stack of commentaries"),
+  dict(n=30, title="Scholars in Conversation", strand="The Research",
+       topics="how the researchers read these texts and where they differ: the divine council (E. Theodore Mullen, 1980; Mark S. Smith, The Origins of Biblical Monotheism, 2001; Michael Heiser's 2004 dissertation and The Unseen Realm, 2015); Deuteronomy 32:8 and the text critics (the Qumran reading widely accepted; Emanuel Tov); 1 Enoch's date and growth (J. T. Milik, 1976; James VanderKam, 1984; George Nickelsburg's commentary, 2001); where evil spirits come from (Archie Wright, The Origin of Evil Spirits, 2005; Stuckenbruck, The Myth of Rebellious Angels, 2014); how the Watchers story spread (Annette Yoshiko Reed, Fallen Angels and the History of Judaism and Christianity, 2005); 'two powers in heaven' (Alan Segal, 1977; Heiser); Heiser's 'three rebellions' and 'Deuteronomy 32 worldview' and its critics; Jewish perspectives; reading an argument fairly: claim, evidence, counter-evidence.",
+       story="Two students debate Psalm 82 in a library, each with a stack of commentaries by different scholars"),
  ]),
  dict(n=16, band="11-12", title="Destiny: God's Family and the Nations Restored", strand="Endgame", chapters=[
   dict(n=31, title="Believers as God's Family", strand="Children of God",
@@ -160,12 +162,12 @@ UNITS = [
        topics="Revelation 16:16 Armageddon (Har Magedon); the usual reading 'mountain of Megiddo'; Heiser's proposal that it echoes har mo'ed, the 'mount of assembly' of Isaiah 14:13, the mountain of God's council; the final battle as the powers' last stand; Revelation 20: Satan bound; Revelation 21–22: the new Jerusalem as a cube like the holy of holies, a garden city with the tree of life whose leaves heal 'the nations' (22:2) — Eden restored; other ways readers interpret Revelation (preterist, historicist, futurist, idealist) named neutrally.",
        story="On the hill of Megiddo, a tour guide points to twenty-some layers of ruined cities"),
  ]),
- dict(n=17, band="11-12", title="Heiser's Legacy, and Capstone", strand="Capstone", chapters=[
-  dict(n=33, title="Legacy, Influence and Misuses", strand="Legacy",
-       topics="Heiser's work at Logos Bible Software (Faithlife) as scholar-in-residence; the Naked Bible Podcast (2014–2023); Awakening School of Theology and Ministry; his death in February 2023; influence on popular teaching and on the Bible Project (their 'spiritual beings' series draws on his work — say only what is sure); his critique of ancient-astronaut claims (Zecharia Sitchin) and of sensational UFO and Nephilim theories; how popular writers sometimes stretch his ideas; how to check a claim against the text and against Heiser's own words.",
-       story="A student finds a viral video claiming 'the Bible proves giants built the pyramids' and checks what Heiser actually wrote"),
+ dict(n=17, band="11-12", title="How the Story Was Received, and Capstone", strand="Reception and Capstone", chapters=[
+  dict(n=33, title="From the Scrolls to the Church Fathers and the Rabbis", strand="Reception",
+       topics="how later readers received the Watchers story, read from their own writings: the Testament of Reuben 5; Justin Martyr, 2 Apology 5 (angels, women and demons; Ante-Nicene Fathers); Irenaeus; Tertullian defends reading Enoch (On the Apparel of Women 1.3); Julius Africanus and the Sethite reading (early 200s CE); Augustine, City of God 15.23 (c. 420 CE); Genesis Rabbah 26 and the Targum Onqelos ('sons of the great ones'); Targum Pseudo-Jonathan names Shemhazai and Azael; the Ethiopian Orthodox church keeps 1 Enoch in its canon; James Bruce and R. H. Charles bring it to English readers; Annette Yoshiko Reed's account of why the story faded and returned (2005); modern popular claims (ancient astronauts, 'giants built the pyramids') checked against the texts — Heiser, among others, argued against Zecharia Sitchin's readings.",
+       story="A student finds a viral video claiming 'the Bible proves giants built the pyramids' and checks it against the ancient texts"),
   dict(n=34, title="Capstone: An Argument from the Texts", strand="Capstone",
-       topics="choose one question (e.g. Who are the sons of God in Genesis 6? Does Deuteronomy 32:8 support Heiser's worldview? Is 1 Peter 3:19 about the Watchers? What does 'Reversing Hermon' mean?); gather the primary texts (Hebrew Bible, 1 Enoch, New Testament) and manuscripts; state Heiser's reading and at least one other; weigh the evidence; write a fair argument; cite book, chapter and verse and translation; present calmly and respectfully to readers who may believe differently.",
+       topics="choose one question (e.g. Who are the sons of God in Genesis 6? What does Deuteronomy 32:8 say in the oldest copies? Is 1 Peter 3:19 about the Watchers? What did Jesus do at Caesarea Philippi? Where do demons come from in 1 Enoch and in the Gospels?); gather the primary documents (Hebrew Bible, Septuagint, 1 Enoch, Jubilees, the Scrolls, the New Testament, the fathers and the rabbis); state at least two researchers' readings (for example Heiser and Nickelsburg, or Reed and Stuckenbruck); weigh the evidence; write a fair argument; cite document, chapter and verse and translation; present calmly and respectfully to readers who may believe differently.",
        story="A senior lays out Genesis 6, 1 Enoch 6 and Jude 14 on a table and starts to write"),
  ]),
 ]

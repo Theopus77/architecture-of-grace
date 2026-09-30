@@ -358,25 +358,23 @@ float t_mount(vec3 q,float H,float R){
   return .46+.12*(fbm3(q*60.)-.5); }
 /* ---- a toy ark: rounded hull, flat deck, a cabin with a gabled roof (long along x) ---- */
 float o_ark(vec3 q){
-  float hull=max(sdEll(q-vec3(0.,.06,0.),vec3(.155,.06,.058)),q.y-.058);
+  float hull=max(sdEll(q-vec3(0.,.075,0.),vec3(.155,.075,.058)),q.y-.07);
   hull=max(hull,-q.y);
-  float deck=sdRBox(q-vec3(0.,.058,0.),vec3(.14,.003,.048),.002);
-  hull=min(hull,max(deck,sdEll(q-vec3(0.,.06,0.),vec3(.156,.062,.06))));
-  float cab=sdRBox(q-vec3(-.005,.088,0.),vec3(.075,.03,.036),.003);
-  vec3 r=q-vec3(-.005,.118,0.);
-  float roof=max(max(abs(r.x)-.085,-r.y),r.y-.045+abs(r.z)*1.0);
-  roof=max(roof,-(max(max(abs(r.x)-.09,-r.y+.006),r.y-.045+abs(r.z)*1.0+.006)));  /* hollow a little under the eaves */
-  roof=min(roof,max(max(abs(r.x)-.085,-r.y),r.y-.045+abs(r.z)*1.0)-.002);
+  float deck=max(sdRBox(q-vec3(0.,.07,0.),vec3(.15,.004,.06),.003),sdEll(q-vec3(0.,.075,0.),vec3(.16,.08,.062)));
+  hull=min(hull,deck);
+  float cab=sdRBox(q-vec3(-.01,.094,0.),vec3(.06,.022,.034),.003);
+  vec3 r=q-vec3(-.01,.114,0.);
+  float roof=max(max(abs(r.x)-.07,-r.y),r.y-.036+abs(r.z)*.85)-.001;
   return min(min(hull,cab),roof); }
 float t_ark(vec3 q){
-  if(q.y<.057){ if(fract(q.y/.012)<.14) return .32; return .55+.08*sin(q.x*200.+fbm(q.xy*40.)*3.); }  /* hull planks */
-  if(q.y>.117){ vec3 r=q-vec3(-.005,.118,0.); if(fract((r.y+abs(r.z))/.011)<.16) return .3; return .48; } /* roof shingles */
-  if(q.y>.062){ vec3 c=q-vec3(-.005,.088,0.);                   /* cabin: boards and three small windows */
-    if(c.z<-.03&&abs(c.y-.006)<.009&&abs(fract((c.x+.075)/.05)-.5)<.14&&abs(c.x)<.07) return .18;
-    if(fract(c.x/.014)<.1) return .55; return .72; }
+  if(q.y<.069){ if(fract(q.y/.013)<.14) return .32; return .55+.08*sin(q.x*200.+fbm(q.xy*40.)*3.); }  /* hull planks */
+  if(q.y>.113){ vec3 r=q-vec3(-.01,.114,0.); if(fract((r.y+abs(r.z)*.85)/.009)<.16) return .3; return .48; } /* roof shingles */
+  if(q.y>.073){ vec3 c=q-vec3(-.01,.094,0.);                    /* cabin: boards and three small windows */
+    if(c.z<-.03&&abs(c.y-.004)<.007&&abs(fract((c.x+.06)/.04)-.5)<.15&&abs(c.x)<.055) return .18;
+    if(fract(c.x/.012)<.1) return .55; return .72; }
   return .6; }
 /* ---- a tower of wooden toy blocks: five cubes, each turned a little, and a pointed top ---- */
-#define TB .026
+#define TB .034
 vec3 tbQ(vec3 q,int i){ float fi=float(i); float s=TB*(1.-fi*.07);
   float y=0.; for(int k=0;k<5;k++){ if(k>=i) break; y+=2.*TB*(1.-float(k)*.07); }
   vec3 c=q-vec3(.004*sin(fi*2.3),y+s,.003*cos(fi*1.7)); c.xz=rot(.35*sin(fi*1.9+.4))*c.xz; return c; }
