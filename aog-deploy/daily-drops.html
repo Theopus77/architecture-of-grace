@@ -19518,14 +19518,23 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
         headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
       .then(function(res){return res.json()})
       .then(function(j){sendBusy=false;
-        if(j&&j.ok){sentAt=new Date().toISOString();sentHow="ok"}else{sendErr=true}
+        if(j&&j.ok){sentAt=new Date().toISOString();sentHow="ok";clearName()}else{sendErr=true}
         paint()})
       .catch(function(){
         /* ONE blind send and an honest label, never an automatic retry */
         fetch(DEST.url,{method:"POST",mode:"no-cors",redirect:"follow",
             headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
-          .then(function(){sendBusy=false;sentAt=new Date().toISOString();sentHow="blind";paint()})
+          .then(function(){sendBusy=false;sentAt=new Date().toISOString();sentHow="blind";clearName();paint()})
           .catch(function(){sendBusy=false;sendErr=true;paint()})});
+  }
+
+  /* AOG-DD-CLEAR-NAME-V1 (2026-09-30) — Jimmy: "after someone sends a daily draft make sure their name doesn't save.
+     So after each send, clear the name as well." Once a send has gone, the name line is emptied and the saved name is
+     forgotten, so the next student on a shared device starts blank. The row already sent keeps the name. */
+  function clearName(){
+    try{ localStorage.removeItem("aog.drops.name"); localStorage.removeItem(whoKey); }catch(e){}
+    var n=document.getElementById("nameIn"); if(n) n.value="";
+    var e=document.getElementById("sigEcho"); if(e) e.textContent="";
   }
 
   function buildSendUI(){
