@@ -16,7 +16,7 @@ Before a lesson goes live, a person should open each URL once and check the page
 ## Summary
 
 1. All four groups were "secret" in different ways. Eleusis kept a **ritual** secret, the Mithraists kept a **membership** secret, the Pythagoreans kept a **teaching** secret, and the Templars were public, but their **chapter meetings and reception ceremony** were closed. That closed ceremony is what their accusers used against them.
-2. The Eleusinian Mysteries ran for about a thousand years. Thousands of people were initiated, and the core secret was kept so well that we still do not know exactly what happened in the Telesterion (the initiation hall).
+2. The Eleusinian Mysteries ran for more than a thousand years. CORRECTED 2026-09-30: was "about a thousand years"; the rites are securely attested from at least the 6th c. BC to 392/396 AD (about 1,000 years), and some reference works (https://www.worldhistory.org/article/32/the-eleusinian-mysteries-the-rites-of-demeter/ ; Wikipedia) date the cult from c. 1600-1500 BC and say "almost 2,000 years"; "more than a thousand years" is safe on either view. Thousands of people were initiated, and the core secret was kept so well that we still do not know exactly what happened in the Telesterion (the initiation hall).
 3. Mithraism left no scripture. Almost everything we know comes from buildings (mithraea), images, inscriptions, and hostile Christian writers. It is a real "archaeology of a secret".
 4. The Pythagoreans are known mostly from writers who lived 600 to 800 years later (Iamblichus, Porphyry, Diogenes Laertius). Separating record from legend is the main teaching point.
 5. The Templars are the best-documented group in this dossier. We have their Rule, papal bulls, royal arrest orders, and hundreds of pages of interrogation transcripts, printed by Michelet in 1841-1851 and now free online.
@@ -46,7 +46,7 @@ Before a lesson goes live, a person should open each URL once and check the page
 | mid-3rd c. AD | London Mithraeum (Walbrook) built. | Documented (archaeology) |
 | 2nd half 3rd c. AD | Mithraeum of Felicissimus at Ostia, with its seven-grade mosaic. | Documented |
 | c. AD 300 | Iamblichus writes *On the Pythagorean Life*. | Documented |
-| 390s AD | Theodosian laws close pagan cults. Eleusis ends soon after (sacked by Alaric in 395/396). | Scholarly consensus |
+| 390s AD | Theodosian laws close pagan cults. Eleusis ends soon after (sacked by Alaric in 395/396). | Scholarly consensus. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/392 ; https://en.wikipedia.org/wiki/Telesterion : Theodosius's edict 392; Alaric's forces wreck the Telesterion 396, search-result text; Wikipedia) |
 | 1119/1120 | Hugh of Payns and companions found the "Poor Fellow-Soldiers of Christ" in Jerusalem. William of Tyre gives 1118; most historians prefer 1119/1120. | Disputed year; founding documented |
 | c. 1129 | Council of Troyes gives the Templars their Latin Rule (72 clauses). | Documented |
 | c. 1129-1136 | Bernard of Clairvaux writes *De laude novae militiae*. | Documented (exact year disputed) |
@@ -60,17 +60,17 @@ Before a lesson goes live, a person should open each URL once and check the page
 | 12 May 1310 | 54 Templars who had withdrawn their confessions are burned near Paris. | Scholarly consensus (from chronicle and trial sources) |
 | 22 Mar 1312 | *Vox in excelso*: Clement V suppresses the order "by apostolic provision", without a guilty verdict. | Documented |
 | 2 May 1312 | *Ad providam* transfers Templar property, mainly to the Hospitallers. Iberia is an exception. | Documented |
-| 18 Mar 1314 | Molay and Geoffroi de Charney are burned on the Île aux Juifs, Paris. | Documented (a modern plaque marks the site) |
+| 18 Mar 1314 | Molay and Geoffroi de Charney are burned on the Île aux Juifs, Paris. | Documented (a modern plaque marks the site). VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/%C3%8Ele_aux_Juifs , Wikipedia) |
 | 1319 | Portugal's Order of Christ is recognized by Pope John XXII and receives Templar property. | Documented |
 | 1737 | Ramsay's oration links Freemasonry to crusaders. This is the first documented Masonic crusader claim. | Documented |
 | 1751 onward | Von Hund's Rite of Strict Observance claims Templar descent. | Documented (the claim itself is unsupported) |
 | 1841-1851 | Michelet publishes *Procès des Templiers* (2 volumes). | Documented |
-| 1857 onward | Father Joseph Mullooly excavates beneath San Clemente. The mithraeum is reached c. 1869; full excavation waits until 1914. | Documented |
+| 1857 onward | Father Joseph Mullooly excavates beneath San Clemente. The mithraeum is found in 1867; full excavation waits until 1914. | Documented. CORRECTED 2026-09-30: was "reached c. 1869"; https://www.mithraeum.eu/monument/mitreo_di_san_clemente ("In 1867 a Mithraeum was discovered ... excavations could only be continued in 1914 after the construction of a water-tunnel") |
 | 1880 | 21st Triennial Conclave of the (Masonic) Knights Templar, Chicago. | Documented |
 | 1895 | The Ninnion Tablet is found at Eleusis. | Documented |
 | 1933-34 | Dura-Europos mithraeum excavated. It is later rebuilt at Yale. | Documented |
 | 1940 | Calza excavates the Felicissimus mithraeum at Ostia. | Documented |
-| 18 Sept 1954 | The head of Mithras is found on the last scheduled day of the Walbrook dig in London. | Documented |
+| 18 Sept 1954 | The head of Mithras is found on the last scheduled day of the Walbrook dig in London. | Documented. VERIFIED 2026-09-30 (https://britishonlinearchives.com/posts/category/notable-days/826/70-years-since-marble-head-of-mithras-unearthed-in-walbrook ; https://en.wikipedia.org/wiki/London_Mithraeum : Saturday 18 September 1954, last day of the excavation) |
 | 27 Apr 1967 | The forged *Dossiers Secrets* are deposited in the Bibliothèque nationale. | Documented |
 | 1982 | *The Holy Blood and the Holy Grail* popularizes the Priory of Sion hoax. | Documented |
 | 1991 | Milton William Cooper publishes *Behold a Pale Horse*. | Documented |
@@ -92,6 +92,7 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 - Band: myth 3-5; quotation 6-8.
 
 **P2. Ninnion Tablet (Ninnion Pinax), red-figure clay votive plaque, c. 370 BC.** National Archaeological Museum, Athens, inv. 11036. Found at Eleusis in 1895. 44.5 x 33 cm.
+- VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Ninnion_Tablet , Wikipedia): c. 370 BC, 44.5 x 33 cm, found at Eleusis 1895, National Archaeological Museum of Athens 11036.
 - Where: https://en.wikipedia.org/wiki/Ninnion_Tablet (for orientation); Oxford Classical Art Research Centre record: https://www.carc.ox.ac.uk/record/07DB1472-B21D-409A-8D98-604BBF95736A (contents UNVERIFIED; the page could not be opened)
 - What it shows: a procession of initiates, torches, and Demeter and Persephone. A woman named Ninnion dedicated it. It is one of the very few surviving pictures of the initiation. Wikipedia calls it "the only known original representation"; treat that wording as DISPUTED and say "one of the rare".
 - Band: 3-5 ("What can you see? What is hidden?").
@@ -118,10 +119,10 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 
 **P7. Mithraeum beneath the Basilica of San Clemente, Rome (early 3rd c. AD).** Built in a 1st-c. Roman house under a 4th-c. church, under a 12th-c. church. Its altar has the tauroctony (Mithras killing the bull) on the front, the torch-bearers Cautes and Cautopates on the sides, and a serpent on the back.
 - Where: https://mithraeum.eu/monument/13 ; the Basilica is open to visitors (lower levels ticketed).
-- What it shows: a secret meeting cave literally buried under two churches. Father Mullooly (Irish Dominican) began digging in 1857. Water flooding delayed full excavation until 1914, when a drainage tunnel was built.
+- What it shows: a secret meeting cave literally buried under two churches. Father Mullooly (Irish Dominican) began digging in 1857. The mithraeum was found in 1867. Water flooding delayed full excavation until 1914, when a drainage tunnel was built (1912-14). VERIFIED 2026-09-30 (https://www.mithraeum.eu/monument/mitreo_di_san_clemente ; https://en.wikipedia.org/wiki/San_Clemente,_Rome)
 - Band: 3-5 (layers of a city as a "layer cake").
 
-**P8. The London Mithraeum, Walbrook (mid-3rd c. AD).** Excavated 1954 by W. F. Grimes and Audrey Williams. The marble head of Mithras was found on the last scheduled day of the dig. Crowds, parliamentary debate and Cabinet discussion followed. The temple was rebuilt on its original site by Bloomberg (opened 2017; opening year from general knowledge, UNVERIFIED here).
+**P8. The London Mithraeum, Walbrook (mid-3rd c. AD).** Excavated 1954 by W. F. Grimes and Audrey Williams. The marble head of Mithras was found on the last scheduled day of the dig. Crowds, parliamentary debate and Cabinet discussion followed. The temple was rebuilt on its original site by Bloomberg (London Mithraeum Bloomberg SPACE opened to the public on Tuesday 14 November 2017; VERIFIED 2026-09-30 (https://www.londonmithraeum.com/bloomberg-space-archive/ , search-result text)).
 - Where: https://en.wikipedia.org/wiki/London_Mithraeum ; British Online Archives note on the 70th anniversary: https://britishonlinearchives.com/posts/category/notable-days/826/70-years-since-marble-head-of-mithras-unearthed-in-walbrook
 - Band: 3-5.
 
@@ -131,7 +132,8 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 - Band: 6-8.
 
 **P10. Mithraeum of Felicissimus, Ostia (2nd half 3rd c. AD).** Excavated by Guido and Raissa Calza in 1940. The floor mosaic is divided into seven panels, one for each grade: Raven (Corax), Bridegroom (Nymphus), Soldier (Miles), Lion (Leo), Persian (Perses), Runner of the Sun (Heliodromus), Father (Pater). Each panel has symbols and its planet.
-- Where: Parco archeologico di Ostia antica panel: https://ostiaantica.cultura.gov.it/en/educational-panels-and-maps/larea-dei-culti-orientali-e-il-quartiere-residenziale-di-porta-laurentina/mitreo-di-felicissimo/ ; https://www.mithraeum.eu/monument/7
+- Where: Parco archeologico di Ostia antica panel: https://ostiaantica.cultura.gov.it/en/educational-panels-and-maps/larea-dei-culti-orientali-e-il-quartiere-residenziale-di-porta-laurentina/mitreo-di-felicissimo/ (the address seen in search on 2026-09-30 was https://ostiaantica.beniculturali.it/en/educational-panels/the-area-of-the-eastern-cults-and-the-porta-laurentina-district/mitreo-di-felicissimo ); https://www.mithraeum.eu/monument/7
+- VERIFIED 2026-09-30 (https://www.mithraeum.eu/monument/7 ; Ostia panel above): excavated by Guido and Raissa Calza in 1940; built in the second half of the 3rd c. AD in Regio V, insula 9.1; corridor mosaic in seven panels for the seven grades and their planets, with an eighth panel naming Felicissimus.
 - What it shows: the clearest surviving "ladder" of a secret society's ranks.
 - Band: 3-5 ("design your own seven symbols").
 
@@ -143,7 +145,7 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 ### C. Pythagoreans
 
 **P12. Polybius, *Histories* 2.39 (2nd c. BC).** Reports that the Pythagorean "meeting houses" (*synedria*) in Magna Graecia were burned and the region fell into disorder.
-- Where: LacusCurtius (Univ. of Chicago server, Bill Thayer), Loeb trans. W. R. Paton. URL for 2.39 **UNVERIFIED** (the server could not be reached).
+- Where: LacusCurtius (Univ. of Chicago server, Bill Thayer), Loeb trans. W. R. Paton. Book 2 page: https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Polybius/2*.html (URL VERIFIED 2026-09-30 in search results). The wording of 2.39 itself STILL UNVERIFIED (checked 2026-09-30: page fetch blocked; search showed only secondary summaries).
 - What it shows: the earliest surviving *historian* (not philosopher) to record violence against the brotherhood. It is about 300 years after the events.
 - Band: 9-10.
 
@@ -177,7 +179,7 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 - Band: 11-12 (ethics of holy war; handle with care).
 
 **P19. Philip IV's secret arrest order, 14 September 1307, and instructions to royal officers.** Original held in the Archives nationales, Paris (shelfmark **UNVERIFIED**). English translation in Malcolm Barber & Keith Bate, *The Templars* (Manchester Medieval Sources, 2002). Discussed in Barber, *The Trial of the Templars* (Cambridge, 2nd ed. 2006), ch. "Arrests": https://www.cambridge.org/core/books/trial-of-the-templars/3CEF95FD22DD129F4B4BFE3A6D5074D8
-- What it shows: the opening pile-up of horror words ("A bitter thing, a lamentable thing, a thing which is horrible to contemplate, terrible to hear of..."). This is propaganda written a month before the arrests. It works well for teaching loaded language. Quoted as it appears in the Barber summary; the full original French wording is UNVERIFIED.
+- What it shows: the opening pile-up of horror words ("A bitter thing, a lamentable thing, a thing which is horrible to contemplate, terrible to hear of..."). This is propaganda written a month before the arrests. It works well for teaching loaded language. Quoted as it appears in the Barber summary; the full original French wording is UNVERIFIED. Date 14 September 1307 and the English opening ("A bitter thing, a lamentable thing, a thing which is horrible to contemplate, terrible to hear of, a detestable crime, an execrable evil, an abominable work, a detestable disgrace, a thing almost inhuman, indeed set apart from all humanity") VERIFIED 2026-09-30 in search-result text from Barber, *Trial of the Templars*, ch. "Arrests" (https://resolve.cambridge.org/core/books/trial-of-the-templars/arrests/E61C735AB028E79956EC6555A6886BC6). Archives nationales shelfmark STILL UNVERIFIED.
 - Band: 9-10.
 
 **P20. Jules Michelet (ed.), *Procès des Templiers*, 2 vols. (Paris: Imprimerie royale, 1841-1851), Collection de documents inédits sur l'histoire de France.**
@@ -185,17 +187,18 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 - What it shows: the Latin minutes of the papal commission (1309-1311). It includes Jacques de Molay's own appearances and the testimony of 231 knights and serving brothers. Hundreds of real voices, many of them ordinary farm managers and servants, not warriors.
 - Band: 11-12 (Latin; excerpts in translation at 9-10).
 
-**P21. The Chinon Parchment, 17-20 August 1308.** Vatican Apostolic Archive, Archivum Arcis, Armarium D 217 (original); D 218 is an authenticated copy. Issued by Cardinals Bérenger Frédol, Étienne de Suisy and Landolfo Brancacci. Identified by Barbara Frale in September 2001.
+**P21. The Chinon Parchment, 17-20 August 1308.** Vatican Apostolic Archive, Archivum Arcis, Armarium D 217 (original); D 218 is an authenticated copy. Issued by Cardinals Bérenger Frédol, Étienne de Suisy and Landolfo Brancacci. Identified by Barbara Frale in September 2001. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Chinon_Parchment : dated 17-20 August 1308 at Chinon; the three cardinals named; found September 2001; Frale told AP a 1628 catalog entry was "too vague").
 - Where: https://en.wikipedia.org/wiki/Chinon_Parchment (for orientation); Google Arts & Culture image: https://artsandculture.google.com/asset/le-parchemin-de-chinon/TgEQuKxdDIbFlA ; History News Network report: https://www.historynewsnetwork.org/article/53043
 - What it shows: the cardinals questioned Molay and other leaders at Chinon castle and **absolved** them and restored them to the sacraments. Frale's reading is that Clement V meant to reform the order, not destroy it, and was overruled by royal pressure.
 - Band: 6-8 (the discovery story); document analysis 9-12.
 
-**P22. *Processus contra Templarios* (Vatican Secret Archives / Scrinium, 2007).** Facsimile edition of the Templar trial documents, including the Chinon Parchment. 799 numbered copies plus one for Pope Benedict XVI. **Copy no. 164 is in the Rare Book Collection of the Law Library of Congress**, Washington DC.
+**P22. *Processus contra Templarios* (Vatican Secret Archives / Scrinium, 2007).** Facsimile edition of the Templar trial documents, including the Chinon Parchment. 799 numbered copies plus one for Pope Benedict XVI. **Copy no. 164 is in the Rare Book Collection of the Law Library of Congress**, Washington DC. VERIFIED 2026-09-30 (https://blogs.loc.gov/law/2011/09/templar-secrets-at-the-law-library-of-congress/ , search-result text: "Copy number 164 of the 799 numbered copies").
 - Where: Library of Congress Law blog, "Templar Secrets at the Law Library of Congress" (Sept 2011): https://blogs.loc.gov/law/2011/09/templar-secrets-at-the-law-library-of-congress/ ; Catholic News Agency on the launch: https://www.catholicnewsagency.com/news/book_published_from_vatican_secret_archives
 - Band: 6-8 (as a story about a book that cost about $8,400 and had wax-seal replicas).
 
 **P23. Papal bulls of Clement V at the Council of Vienne: *Vox in excelso* (22 March 1312) and *Ad providam* (2 May 1312).**
 - Where: English text of the Vienne decrees, Tanner ed. (PDF, Univ. of Trieste course copy): https://moodle2.units.it/pluginfile.php/320815/mod_resource/content/1/Concilio%20Vienne%2C%201311%20%28inglese%29.pdf ; EWTN: https://www.ewtn.com/catholicism/library/council-of-vienne-1542
+- VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Council_of_Vienne ; https://www.ewtn.com/catholicism/library/council-of-vienne-1542): *Vox in excelso* dated 22 March 1312; suppression "by Apostolic ordinance", not by legal sentence.
 - What it shows: the pope suppressed the order by apostolic ordinance, "not by definitive sentence". The Templars were never found guilty as an order. *Ad providam* gave the property to the Hospitallers, with separate arrangements in Iberia.
 - Band: 9-10.
 
@@ -243,7 +246,7 @@ Each entry gives the citation, where to find it, the URL, what it shows, and the
 | 10 | Pythagorean meeting houses were burned in anti-Pythagorean violence. | DOCUMENTED (late); details DISPUTED | Polybius 2.39 (P12); dating c. 509 vs c. 450 BC debated |
 | 11 | The Templars were founded in 1118. | DISPUTED | William of Tyre says 1118 (P16). Most historians (e.g. Barber) prefer 1119 or early 1120. |
 | 12 | There were only nine Templars for nine years. | DISPUTED | William of Tyre says so. Other evidence (for example, Hugh recruiting in Europe in 1127-29) suggests the story simplifies. |
-| 13 | The Templars ran an early international banking system. | SCHOLARLY CONSENSUS | Deposits, transfers, and the Paris Temple acting as a royal treasury (Barber, *The New Knighthood*, 1994) |
+| 13 | The Templars ran an early international banking system. | SCHOLARLY CONSENSUS | Deposits, transfers, and the Paris Temple acting as a royal treasury (Barber, *The New Knighthood*, 1994). The popular detail that pilgrims got "letters of credit" from 1150 is STILL UNVERIFIED (checked 2026-09-30: only Wikipedia and popular sites state it; no scholarly page seen). Teach deposits and transfers; avoid the pilgrim-cheque detail until a scholarly source is found. |
 | 14 | The Templars were arrested on Friday 13 October 1307, and this created the Friday-the-13th superstition. | Arrest date DOCUMENTED; superstition link UNSUPPORTED | Written Friday-13th fear appears in the 19th century. Thomas Lawson's novel *Friday, the Thirteenth* (1907) spread it. The Templar link was popularized much later (Helen Nicholson, Cardiff, quoted in Live Science). |
 | 15 | Templars confessed to spitting on the cross, denying Christ, and idol worship. | DOCUMENTED (the confessions); truth of charges DISPUTED to largely rejected | Many confessions came under torture or its threat, and many were retracted. Michelet (P20). Barber, *Trial of the Templars*, argues the charges were fabricated. Frale argues a real but misunderstood "hazing" ritual of denial. |
 | 16 | "Baphomet" was a goat-headed idol of the Templars. | UNSUPPORTED (the goat image) | "Baphomet" appears in a few trial confessions, widely read as an Old French corruption of "Mahomet". The goat-headed figure was drawn by Éliphas Lévi in 1856, 540 years later. |
@@ -326,5 +329,5 @@ Illinois ties for the ancient and medieval groups are thin. Only confirmed items
    - content of Chicago History Museum asset 146401;
    - the Clement *Protrepticus* passage number and wording;
    - the Aristotle fragment number;
-   - the London Mithraeum reopening year.
+   - the London Mithraeum reopening year. (Settled 2026-09-30: opened 14 November 2017, see P8.)
 7. Could the Library of Congress Law Library supply classroom-usable images from copy no. 164 of *Processus contra Templarios*?

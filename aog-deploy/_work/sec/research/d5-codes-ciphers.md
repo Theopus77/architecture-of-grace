@@ -19,7 +19,7 @@ Dossier D5 for the K-12 course "Secret Societies" (Architecture of Grace). Compi
 1. Secret societies protected their words in three ways: **written ciphers** (pigpen, the Copiale cipher), **body signs** (grips, handshakes, ways of holding a tea cup), and **spoken passwords and verse** (catechisms, recited poems).
 2. The **pigpen cipher** (also called the Masonic or Freemasons' cipher) swaps each letter for a piece of a tic-tac-toe grid or an X. A version appears in Agrippa's *De occulta philosophia* (1530s). Freemasons used it widely from the 1700s.
 3. The best classroom artifact is the **James Leeson gravestone** (d. 1794) in Trinity Churchyard, New York. Its pigpen line reads "REMEMBER DEATH." The Trinity Record newspaper reported the solution in 1889.
-4. The **Copiale cipher** is a 105-page, roughly 75,000-character German manuscript from about 1760-1780. In 2011 Kevin Knight (USC), Beáta Megyesi and Christiane Schaefer (Uppsala) broke it with computers and language skills. It holds the rituals of the **Oculists**, a society built around eyes and seeing.
+4. The **Copiale cipher** is a 105-page, roughly 75,000-character German manuscript from about 1730 (CORRECTED 2026-09-30: was "about 1760-1780"; the Stockholm University project page says it "can be dated back to around 1730"; early 2011 reports gave 1760-1780; https://www.su.se/english/research/research-catalogue/research-projects/d/decipherment-of-historical-manuscripts/the-copiale-cipher). In 2011 Kevin Knight (USC), Beáta Megyesi and Christiane Schaefer (Uppsala) broke it with computers and language skills. It holds the rituals of the **Oculists**, a society built around eyes and seeing.
 5. The **"Templar cipher"** is a modern name for a pigpen variant. No medieval evidence ties it to the Knights Templar.
 6. **Rosicrucian and alchemical symbols** (e.g., *Geheime Figuren der Rosenkreuzer*, Altona, 1785-88) are picture-languages more than ciphers. They are digitized at the Wellcome Collection and Internet Archive.
 7. **Grips and passwords** of Freemasonry were printed by critics in exposés: Morgan's *Illustrations of Masonry* (1826/27) and Duncan's *Masonic Ritual and Monitor* (1866). Morgan's disappearance sparked the Anti-Masonic movement.
@@ -37,8 +37,8 @@ Dossier D5 for the K-12 course "Secret Societies" (Architecture of Grace). Compi
 | 1740s | Royal Arch degree worked in London; pigpen is later taught to Royal Arch Masons | SCHOLARLY CONSENSUS (that it was taught *in the 1740s specifically* is UNVERIFIED) |
 | c.1760 | Encrypted Masonic book discussed by cryptologist Klaus Schmeh | UNVERIFIED (secondary blog) |
 | 1761 | Tiandihui founded at Guanyinting, Gaoxi, Fujian, by Zheng Kai (Ti Xi) | SCHOLARLY CONSENSUS (Murray & Qin 1994) |
-| c.1760-1780 | Copiale cipher manuscript written (dates vary by source; one says c.1730) | SCHOLARLY CONSENSUS on mid/late 18th c. |
-| 1775 | Death of Count Friedrich August von Veltheim, linked to the Oculists | UNVERIFIED (from secondary summary of Knight et al.) |
+| c.1730 | Copiale cipher manuscript written | CORRECTED 2026-09-30: was "c.1760-1780 ... SCHOLARLY CONSENSUS on mid/late 18th c."; the Stockholm University project page (Megyesi's team) dates it "back to around 1730"; the 1760-1780 date was the first estimate reported in 2011 (https://www.su.se/english/research/research-catalogue/research-projects/d/decipherment-of-historical-manuscripts/the-copiale-cipher) |
+| 1775 | Death of Count Friedrich August von Veltheim, linked to the Oculists | STILL UNVERIFIED (checked 2026-09-30: search results name Veltheim as the Oculists' leader, but no page gave his death year; JRFF 2.2 not openable) |
 | 1785-1788 | *Geheime Figuren der Rosenkreuzer*, Altona | DOCUMENTED |
 | 1794 | James Leeson dies; buried Trinity Churchyard with pigpen "REMEMBER DEATH" | DOCUMENTED (stone survives; photographs abundant) |
 | 1796 | James Lacey dies; pigpen-inscribed stone in Lower Manhattan (reported by Schmeh) | UNVERIFIED |
@@ -51,7 +51,7 @@ Dossier D5 for the K-12 course "Secret Societies" (Architecture of Grace). Compi
 | 1863-66 | Schlegel translates seized Tiandihui papers in Batavia; publishes *Thian Ti Hwui* (1866) | DOCUMENTED |
 | 1866 | Malcolm C. Duncan, *Masonic Ritual and Monitor*, with drawings of grips and signs | DOCUMENTED |
 | 1870 | "Supreme Council, Southern Masonic Jurisdiction, cipher" (Scottish Rite) | DOCUMENTED (catalogue record) |
-| 1889 | Trinity Record reports Leeson code solved | UNVERIFIED (reported by secondary sources; original issue not seen) |
+| 1889 | Trinity Record reports Leeson code solved | STILL UNVERIFIED (checked 2026-09-30: Atlas Obscura, Untapped Cities and Forgotten NY all repeat the 1889 Trinity Record claim; no copy of the issue found; Trinity archives not searchable here) |
 | 1889-1894 | US newspapers print "tramp sign" charts (Great Falls, MT 1889; WaKeeney, KS 1893; New Ulm, MN 2 Aug 1893; Washington DC 1894) | UNVERIFIED (titles and dates from a secondary compilation) |
 | 1890 | Straits Settlements outlaws secret societies; seized items later go to Stirling collection | DOCUMENTED (museum records) |
 | 1893 | Hans Gross, *Handbuch für Untersuchungsrichter*, explains vagrants' chalk signs (Gaunerzinken) | DOCUMENTED (book); specific examples UNVERIFIED |
@@ -60,10 +60,10 @@ Dossier D5 for the K-12 course "Secret Societies" (Architecture of Grace). Compi
 | 1921-1931 | William Stirling, Assistant Protector of Chinese, Singapore, compiles triad notes | DOCUMENTED (museum records) |
 | 1923 | Nels Anderson, *The Hobo*, Univ. of Chicago Press | DOCUMENTED |
 | 1925-26 | J.S.M. Ward and W.G. Stirling, *The Hung Society* (3 vols.) | SCHOLARLY CONSENSUS that it exists; contents UNVERIFIED here |
-| Jan. 1957 | Meyer Berger's New York Times column on the Leeson stone | UNVERIFIED |
+| Jan. 1957 | Meyer Berger's New York Times column on the Leeson stone | STILL UNVERIFIED (checked 2026-09-30: stated by Forgotten NY, https://forgotten-ny.com/2025/11/james-leeson-trinity-cemetery/ ; NYT archive not opened) |
 | 1972 | Henry Dreyfuss, *Symbol Sourcebook*, prints 60 hobo signs | UNVERIFIED count |
-| 2011 | Knight, Megyesi and Schaefer publish the Copiale decipherment | DOCUMENTED |
-| 2012 (year UNVERIFIED; may be 2013) | NSPCC "PANTS" (Underwear Rule) campaign launched in the UK: "Talk about secrets that upset you" | DOCUMENTED (campaign); launch year UNVERIFIED |
+| 2011 | Knight, Megyesi and Schaefer publish the Copiale decipherment | DOCUMENTED; VERIFIED 2026-09-30 (ACL Anthology record W11-1202: BUCC workshop, Portland, Oregon, June 2011, pp. 2-9; https://aclanthology.org/W11-1202/) |
+| July 2013 | NSPCC "PANTS" (Underwear Rule) campaign launched in the UK: "Talk about secrets that upset you" | CORRECTED 2026-09-30: was "2012 (year UNVERIFIED; may be 2013)"; Design Week, July 2013, "NSPCC talks PANTS in new campaign" (https://www.designweek.co.uk/issues/july-2013/nspcc-talks-pants-in-new-campaign/) and The Drum (https://www.thedrum.com/news/nspcc-urges-parents-talk-pants-underwear-rule-campaign) |
 | 2016 | Susan Phillips reports finding A-No. 1's 1914 marks | DOCUMENTED (NPR, Smithsonian) |
 
 ---
@@ -78,7 +78,7 @@ Each entry: citation / where / URL / what it shows / youngest band.
 - Where: in place, Trinity Churchyard. Photographed widely.
 - URLs (secondary, with photos): https://www.atlasobscura.com/places/trinity-churchyard ; https://untappedcities.com/2021/10/22/financial-district-nyc-secrets/6/ ; https://mysteriouswritings.com/mw-codes-ciphers-and-puzzle-series-the-pigpen-cipher-and-the-mysterious-grave-of-james-leeson-at-trinity-church-manhattan/
 - Shows: a Masonic square and compasses and funeral symbols, plus a pigpen line that reads REMEMBER DEATH (a *memento mori*). Secondary sources give Leeson's life as 1756-1794.
-- Status: DOCUMENTED (the stone); decoded reading SCHOLARLY CONSENSUS; birth year UNVERIFIED.
+- Status: DOCUMENTED (the stone); decoded reading SCHOLARLY CONSENSUS, VERIFIED 2026-09-30 in secondary sources (d. 1794, Trinity Churchyard, pigpen "Remember death": https://www.atlasobscura.com/places/trinity-churchyard ; https://untappedcities.com/2021/10/22/financial-district-nyc-secrets/6/); birth year STILL UNVERIFIED (checked 2026-09-30: only mysteriouswritings.com gives 1756, "died 38 years later").
 - Band: **3-5** (the gravestone and death theme); the pigpen grid itself is fine for **K-2**.
 
 **P2. James Lacey gravestone (d. 1796), Lower Manhattan (reported near the World Trade Center site).**
@@ -119,14 +119,14 @@ Each entry: citation / where / URL / what it shows / youngest band.
 
 ### B. The Copiale cipher
 
-**P7. The Copiale manuscript (c.1760-1780).**
-- Physical: 105 pages, about 75,000 characters, about 90 distinct cipher symbols, bound in gold-and-green brocade paper. Found in the East Berlin academy after the Cold War; reported now in a private collection.
+**P7. The Copiale manuscript (c.1730; CORRECTED 2026-09-30: was c.1760-1780; https://www.su.se/english/research/research-catalogue/research-projects/d/decipherment-of-historical-manuscripts/the-copiale-cipher).**
+- Physical: 105 pages, about 75,000 characters, about 90 distinct cipher symbols, bound in gold-and-green brocade paper (VERIFIED 2026-09-30: Stockholm University project page, "a 105 pages manuscript containing around 75,000 characters, beautifully bound in green and gold brocade cover ... two different watermarks"). The society is the "high enlightened" (Hocherleuchtete) Oculist order of Wolfenbüttel; a parallel manuscript is reported at the Staatsarchiv Wolfenbüttel (Wikipedia only). Found in the East Berlin academy after the Cold War; reported now in a private collection.
 - Stockholm/Uppsala project page: https://www.su.se/english/research/research-catalogue/research-projects/d/decipherment-of-historical-manuscripts/the-copiale-cipher
 - Status: DOCUMENTED (the manuscript); current owner UNVERIFIED.
 - Band: **3-5** for the "eye society" story and symbol-matching; 6-8 for how it was cracked.
 
 **P8. Kevin Knight, Beáta Megyesi, Christiane Schaefer, "The Copiale Cipher," *Proceedings of the 4th Workshop on Building and Using Comparable Corpora* (BUCC), ACL, Portland, OR, June 2011, pp. 2-9.**
-- URL: https://aclanthology.org/W11-1202/ (free PDF)
+- URL: https://aclanthology.org/W11-1202/ (free PDF). Venue and pages VERIFIED 2026-09-30 (ACL Anthology record in search results: Proceedings of the 4th Workshop on Building and Using Comparable Corpora, Portland, Oregon, June 2011, pp. 2-9). PDF itself not openable (host blocked).
 - Shows: method. Scholarly consensus summary: the plain Roman letters were mostly decoys/spaces; the real text was German hidden in symbols and accented letters, with several symbols per common letter (a homophonic cipher). The breakthrough came when a symbol turned out to mean "eye."
 - Status: DOCUMENTED; the method summary is SCHOLARLY CONSENSUS but should be checked against the PDF.
 - Band: 9-10 (method); 6-8 (story).
@@ -244,7 +244,7 @@ Each entry: citation / where / URL / what it shows / youngest band.
 
 ### H. Safe and unsafe secrets (K-2 frame)
 
-**P25. NSPCC, "Talk PANTS" / Underwear Rule (UK; launch year UNVERIFIED, 2012 or 2013), incl. autism-friendly and Makaton versions.**
+**P25. NSPCC, "Talk PANTS" / Underwear Rule (UK; launched July 2013; CORRECTED 2026-09-30: was "launch year UNVERIFIED, 2012 or 2013"; https://www.designweek.co.uk/issues/july-2013/nspcc-talks-pants-in-new-campaign/), incl. autism-friendly and Makaton versions.**
 - Autism guide: https://www.nspcc.org.uk/globalassets/documents/pants-2018/underwear-rule-parents-guide-children-autism.pdf
 - Makaton guide: https://www.nspcc.org.uk/globalassets/documents/advice-and-info/pants/pants_makaton_guide_parents.pdf
 - Shows: the rule "Talk about secrets that upset you." Guidance that secrets should not be traded for gifts, should never make a child feel uneasy, and that a surprise is something that is told in the end.
@@ -261,7 +261,7 @@ Each entry: citation / where / URL / what it shows / youngest band.
 | Freemasons used pigpen in the 1700s for records and between lodges. | SCHOLARLY CONSENSUS | Gravestones (P1, P2); cipher books (P5); Browne (P4). |
 | Royal Arch Masons learned a version of pigpen. | SCHOLARLY CONSENSUS | Widely stated by Masonic writers; exact ritual text UNVERIFIED. |
 | The Leeson stone reads "REMEMBER DEATH." | SCHOLARLY CONSENSUS | Anyone can check it with the key; multiple sources agree. |
-| The Trinity Record solved it in 1889. | UNVERIFIED | Repeated in secondary sources; original issue not located. |
+| The Trinity Record solved it in 1889. | STILL UNVERIFIED (checked 2026-09-30: Atlas Obscura, Untapped Cities, Forgotten NY repeat it; original issue not found) | Repeated in secondary sources; original issue not located. |
 | The Knights Templar used a secret cipher. | UNSUPPORTED | No medieval evidence; name is modern (P11). |
 | Union prisoners used pigpen in the Civil War. | UNVERIFIED | Widely repeated; no letter or diary found this session. |
 | The Copiale cipher was cracked in 2011 by Knight, Megyesi and Schaefer. | DOCUMENTED | P8, P9. |
@@ -287,7 +287,7 @@ Each entry: citation / where / URL / what it shows / youngest band.
 
 2. **The eyebrow test (Germany, 1700s; decoded 2011).** A candidate is led in. He is shown a blank page and asked, "Can you read the writing?" He cannot. He is given glasses. Still nothing. His eyes are wiped with a cloth. Finally the master says an "operation" is needed, and plucks one hair from his eyebrow. That is the whole "operation." The Oculists were teaching about learning to see. *(Band 3-5. Quote text UNVERIFIED; see table.)*
 
-3. **The word "eye" (Uppsala and Los Angeles, 2011).** A computer tells Kevin Knight the hidden language is German. Beáta Megyesi notices one symbol keeps landing where "eye" (*Auge*) should be. Christiane Schaefer links it to a real society of the "Oculists." 260 years of silence end with one small word. *(Band 6-8.)*
+3. **The word "eye" (Uppsala and Los Angeles, 2011).** A computer tells Kevin Knight the hidden language is German. Beáta Megyesi notices one symbol keeps landing where "eye" (*Auge*) should be. Christiane Schaefer links it to a real society of the "Oculists." Almost 300 years of silence end with one small word. (CORRECTED 2026-09-30: was "260 years", which assumed a 1760s date; the book is now dated about 1730, https://www.su.se/english/research/research-catalogue/research-projects/d/decipherment-of-historical-manuscripts/the-copiale-cipher) *(Band 6-8.)*
 
 4. **The book that got a man kidnapped (Batavia, NY, 1826).** William Morgan tells people he will print the secret words and handshakes of the Masons. Before the book is out, he is taken from the jail in Canandaigua and never seen again. The book sells anyway, and a new political party forms against secret societies. *(Band 9-10.)*
 
@@ -349,12 +349,12 @@ None of these was checked against a scan in this session. Do not publish until v
 | Text as reported | Reported source | Verify at |
 |---|---|---|
 | "REMEMBER DEATH" (decoded) | Leeson stone | Photograph of stone; decode with key |
-| "If nothing helps, he will announce that they have to proceed with the operation" | Copiale, English translation via NPR 2011 | Knight et al., JRFF 2.2 |
+| "If nothing helps, he will announce that they have to proceed with the operation" | Copiale, English translation via NPR 2011 | Knight et al., JRFF 2.2. STILL UNVERIFIED (checked 2026-09-30: wording seen only in press reports, e.g. https://www.thehistoryblog.com/archives/13315 and NPR; JRFF and ACL PDF blocked) |
 | "He carries him thereafter to a secondary table where, next to a lot of candles, several instruments and eye glasses, microscopic perspective, a cloth and a glass of water must be present." | Copiale, via press | Knight et al., JRFF 2.2 |
 | "the reported puzzling signs and marks which are supposed to obviate all verbal speech are a fabrication, so far as the majority of roadsters are concerned" | Flynt, *Tramping with Tramps* (1899) | Gutenberg #40036 |
 | "hoboes do not make use of the marks and signs with which the popular fancy has credited them" | Flynt, *Notes of an Itinerant Policeman* (1900) | Internet Archive / HathiTrust |
 | "Soft hearted man unable to refuse solicitation" (feather sign) | *New Ulm Review*, 2 Aug 1893 | Chronicling America |
-| "Talk about secrets that upset you" | NSPCC PANTS | nspcc.org.uk (current) |
+| "Talk about secrets that upset you" | NSPCC PANTS | VERIFIED 2026-09-30 (the "T" of PANTS, quoted in The Drum and Design Week launch reports, July 2013: https://www.thedrum.com/news/nspcc-urges-parents-talk-pants-underwear-rule-campaign ; nspcc.org.uk blocked) |
 
 ---
 

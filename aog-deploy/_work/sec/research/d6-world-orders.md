@@ -15,12 +15,12 @@ No direct quotations appear, because none could be checked word for word against
 ## Summary
 
 1. "Secret society" is an outsider's label. Most groups in this dossier are **initiation societies**: schools, courts, and places for mutual aid and worship. Only the initiates hold some of the knowledge, and that is where much of the groups' authority comes from.
-2. **Poro** (men) and **Sande/Bondo** (women) of Sierra Leone, Liberia and Guinea run "bush schools". There, young people learn adult roles, crafts, law and how to behave. Historically, Poro also held judicial and political power (Little 1965–66).
+2. **Poro** (men) and **Sande/Bondo** (women) of Sierra Leone, Liberia and Guinea (and parts of Côte d'Ivoire, per Britannica "Sande", https://www.britannica.com/topic/Sande) run "bush schools". There, young people learn adult roles, crafts, law and how to behave. Historically, Poro also held judicial and political power (Little 1965–66).
 3. The **Sande sowei helmet mask** is one of the very few masks in Africa owned and danced by women. Male carvers make it. Many museums hold examples, including the **Art Institute of Chicago**.
 4. The **Tiandihui (Heaven and Earth Society)**, ancestor of the "Hongmen" and later the "Triads", claimed a 1670s founding by Shaolin monks loyal to the Ming dynasty. Qing government archives show a mutual-aid brotherhood founded around **1761–62** in Zhangpu county, Fujian (Murray and Qin 1994).
 5. The Qing state first "discovered" the Tiandihui during the **Lin Shuangwen uprising in Taiwan (1786–88)**. Much of what we know comes from the confessions of arrested members.
 6. **Ekpe (Leopard society)** of the Cross River region (Efik, Ejagham, Efut; now Nigeria and Cameroon) governed towns, enforced trade debts and judged disputes. It was central to Old Calabar's Atlantic trade, including the slave trade.
-7. **Nsibidi** is a system of signs from the Cross River region. It has public forms and forms kept secret by initiates. British officers first wrote it down in **1909 and 1911** (Macgregor; Dayrell).
+7. **Nsibidi** is a system of signs from the Cross River region. It has public forms and forms kept secret by initiates. British writers first published lists of signs in **1909 and 1911**: Macgregor, a missionary, and Dayrell, a colonial officer. (CORRECTED 2026-09-30: was "British officers first wrote it down"; Macgregor was a Church of Scotland missionary (Rev.), and T. D. Maxwell, a district officer, reported nsibidi in 1904, per Wikipedia "Nsibidi", https://en.wikipedia.org/wiki/Nsibidi ; articles VERIFIED via https://zenodo.org/record/1449627 and the AIM25 Dayrell record.)
 8. Enslaved Cross River people rebuilt Ekpe in Cuba as **Abakuá**. The first lodge was in **Regla, 1836**, and the society is still active today.
 9. Brief extras: the **Hidden Christians of Japan** (a faith kept secret to survive), and the **Bwami** of the Lega and **Ogboni** of the Yoruba (flagged for more checking).
 10. **Respect rule:** members of these societies still live and practise today. Lessons describe what communities share openly. They never reproduce sacred songs, secret signs, or rites that are closed to outsiders, and they never ask students to act out initiation.
@@ -34,24 +34,24 @@ No direct quotations appear, because none could be checked word for word against
 | Before 1600s (exact date unknown) | Poro and Sande already exist among Mande-speaking and neighbouring peoples of the Upper Guinea coast. European visitors' accounts from the 1600s describe bush schools. | KNOWN, NOT RE-CHECKED. The date of origin is unknown. |
 | 1674 (legend) | Hongmen legend: Shaolin monks who helped the Kangxi emperor are betrayed. Five survivors ("Five Ancestors") found the society to "Overthrow the Qing, restore the Ming". | LEGEND. No record from that time supports it (Murray and Qin 1994). |
 | 1700s (date disputed) | The Ekpe society is established among the Ejagham and spreads to the Efik of Old Calabar. | SCHOLARLY CONSENSUS, with the exact date debated |
-| 1761–62 | Tiandihui founded at the Guanyin pavilion, Gaoxi township, Zhangpu county, Zhangzhou, Fujian. The monk **Tixi** (also called Wan Tixi / Hong Erfang) is linked to the founding. | DOCUMENTED in Qing archives, as summarised by Murray and Qin (CONFIRMED, catalogue/publisher) |
-| 1785–88 | **Antera Duke**, an Efik trader and Ekpe member at Old Calabar, keeps a diary in trade English. | CONFIRMED (catalogue) |
-| 1786–88 | Lin Shuangwen uprising in Taiwan. Governor Sun Jingsui had banned the Tiandihui and arrested Lin's uncles. Qing investigators trace the society to Fujian. | CONFIRMED (secondary sources). Start date given as 1786 or 1787. |
+| 1761–62 | Tiandihui founded at the Guanyin pavilion, Gaoxi township, Zhangpu county, Zhangzhou, Fujian. The monk **Tixi** (also called Wan Tixi / Hong Erfang) is linked to the founding. | DOCUMENTED in Qing archives, as summarised by Murray and Qin. VERIFIED 2026-09-30 (Stanford UP page https://sup.org/books/cite/?id=2943 : "founded not as a political movement but as a mutual aid brotherhood in 1761"; place and "1761 or 1762" per Wikipedia "Hongmen" citing Murray and Qin, https://en.wikipedia.org/wiki/Hongmen) |
+| 1785–88 | **Antera Duke**, an Efik trader and Ekpe member at Old Calabar, keeps a diary in trade English. | VERIFIED 2026-09-30 (OUP 2010 edition, catalogue records e.g. https://catalogue.bnf.fr/ark:/12148/cb42351873z ; https://muse.jhu.edu/article/430361/summary) |
+| 1786–88 | Lin Shuangwen uprising in Taiwan. Governor Sun Jingsui had banned the Tiandihui and arrested Lin's uncles. Qing investigators trace the society to Fujian. | VERIFIED 2026-09-30 (secondary: Swaen, "The Pacification of Taiwan (1786-1788)", https://www.swaen.com/mapping-of/taiwan-mapping/pacification ; Wikipedia "Lin Shuangwen rebellion" gives 1787–1788 for the fighting, after the 1786 crackdown, https://en.wikipedia.org/wiki/Lin_Shuangwen_rebellion). Safest wording: "the crackdown of 1786 and the rising of 1787–88". |
 | 1788 onward | The Qianlong emperor celebrates the "Pacification of Taiwan" among his campaigns. A set of copperplate engravings is made. | CONFIRMED (dealer catalogue: swaen.com) |
-| 1836 | First Abakuá lodge (juego) founded in Regla, Havana, for African-born "Carabalí" and Cuban-born members | CONFIRMED (secondary) |
+| 1836 | First Abakuá lodge (juego) founded in Regla, Havana, for African-born "Carabalí" and Cuban-born members | VERIFIED 2026-09-30 (Wikipedia "Abakuá": first potencia Efí Butón, Regla, 1836, https://en.wikipedia.org/wiki/Abaku%C3%A1 ; Miller's own papers appear at https://people.bu.edu/imiller/pubs/Miller%202010-s.pdf, not opened) |
 | 1866 | Gustaaf Schlegel publishes *Thian Ti Hwui: The Hung-League or Heaven-Earth-League* (Batavia: Lange & Co.) | CONFIRMED (HathiTrust, WorldCat and Oregon Digital records) |
 | 1909 | Rev. J. K. Macgregor, "Some Notes on Nsibidi", *JRAI* 39 | CONFIRMED (DOI 10.2307/2843292) |
 | 1911 | Elphinstone Dayrell, "Further Notes on 'Nsibidi Signs with Their Meanings from the Ikom District, Southern Nigeria'", *JRAI* 41: 521–540 | CONFIRMED |
-| 1925–26 | J. S. M. Ward and W. G. Stirling, *The Hung Society, or The Society of Heaven and Earth*, 3 vols (London) | KNOWN, NOT RE-CHECKED |
-| 1950 | George W. Harley, *Masks as Agents of Social Control in Northeast Liberia* (Peabody Museum Papers) | KNOWN, NOT RE-CHECKED |
+| 1925–26 | J. S. M. Ward and W. G. Stirling, *The Hung Society, or The Society of Heaven and Earth*, 3 vols (London) | VERIFIED 2026-09-30 (HathiTrust record https://catalog.hathitrust.org/Record/001732800 ; Baskerville Press, 1925–26, 3 vols) |
+| 1950 | George W. Harley, *Masks as Agents of Social Control in Northeast Liberia* (Peabody Museum Papers) | VERIFIED 2026-09-30 (vol. 32 no. 2, 45 pp., 16 plates; https://peabody.harvard.edu/publications/masks-agents-social-control-northeast-liberia) |
 | 1965–66 | Kenneth Little, "The Political Function of the Poro", *Africa* 35(4): 349–365 (Part I), with Part II following | CONFIRMED (Cambridge Core) |
-| 1986 | Sylvia Ardyn Boone, *Radiance from the Waters: Ideals of Feminine Beauty in Mende Art* (Yale UP) | KNOWN, NOT RE-CHECKED |
+| 1986 | Sylvia Ardyn Boone, *Radiance from the Waters: Ideals of Feminine Beauty in Mende Art* (Yale UP) | VERIFIED 2026-09-30 (Africa review, Cambridge Core: https://www.cambridge.org/core/journals/africa/article/sylvia-ardyn-boone-radiance-from-the-waters-ideas-of-feminine-beauty-in-mende-art-new-haven-london-yale-university-press-1986-282-pp-3000-isbn-0-300-03576-4/BF9EE4D982A183936ADE977887598F80) |
 | 1991–2002 | Sierra Leone civil war disrupts Sande masquerade practice (Art Institute of Chicago label) | CONFIRMED (museum page summary) |
 | 1994 | Dian H. Murray with Qin Baoqi, *The Origins of the Tiandihui: The Chinese Triads in Legend and History* (Stanford UP) | CONFIRMED |
 | 1995 | Ruth B. Phillips, *Representing Woman: Sande Masquerades of the Mende of Sierra Leone* (UCLA Fowler Museum) | CONFIRMED |
 | 1996 | David Ownby, *Brotherhoods and Secret Societies in Early and Mid-Qing China* (Stanford UP) | CONFIRMED (publisher page appeared in results) |
 | 2009 | Ivor L. Miller, *Voice of the Leopard: African Secret Societies and Cuba* (University Press of Mississippi) | CONFIRMED |
-| 2018 | UNESCO lists "Hidden Christian Sites in the Nagasaki Region" as World Heritage | KNOWN, NOT RE-CHECKED |
+| 2018 | UNESCO lists "Hidden Christian Sites in the Nagasaki Region" as World Heritage | VERIFIED 2026-09-30 (inscribed 30 June 2018, 42nd session, Manama; https://whc.unesco.org/en/decisions/7135 ; https://www.mofa.go.jp/press/release/press1e_000076.html) |
 
 ---
 
@@ -62,7 +62,7 @@ No direct quotations appear, because none could be checked word for word against
 ### A. Poro and Sande (Sierra Leone, Liberia, Guinea)
 
 **A1. Sande helmet mask (sowei), Art Institute of Chicago, object 146941.** Wood, early to mid-20th century, Mende or Sherbro, Sierra Leone. 48.9 × 28 × 30.5 cm. Arts of Africa collection, currently off view.
-URL: https://www.artic.edu/artworks/146941/helmet-mask-sowei
+URL: https://www.artic.edu/artworks/146941/helmet-mask-sowei (VERIFIED 2026-09-30: the URL and the label sentence "This is one of the rare instances in Africa when women danced with sculpted masks" appear in live search results for the museum page; page itself blocked)
 Shows: the museum label says senior Sande officials danced such masks at initiations, at funerals and for visiting guests. It calls this "one of the rare instances in Africa when women danced with sculpted masks". It also notes that the civil war (1991–2002) disrupted this practice. A **Chicago** object students can look up. CONFIRMED (museum page via search).
 Band: **3-5** (looking at the art: hair, neck rings, a shining black surface as ideals of beauty and dignity). The initiation context is for **6-8**.
 
@@ -96,8 +96,8 @@ Band: **6-8** for the illustrations (codes, poems, symbols); **11-12** for the t
 
 ### C. Ekpe, Nsibidi and Abakuá (Cross River and Cuba)
 
-**C1. The Diary of Antera Duke (1785–88).** Written at Old Calabar in trade ("pidgin") English by an Efik trader and Ekpe member. Modern scholarly edition: Stephen D. Behrendt, A. J. H. Latham and David Northrup, *The Diary of Antera Duke, an Eighteenth-Century African Slave Trader* (Oxford UP, 2010). The title was CONFIRMED in a library catalogue; the editors and year are KNOWN, NOT RE-CHECKED.
-**Hard-to-find note:** the original manuscript is widely reported to have been destroyed in the Second World War. The text survives in an early 20th-century transcription of extracts published in Daryll Forde (ed.), *Efik Traders of Old Calabar* (1956). KNOWN, NOT RE-CHECKED.
+**C1. The Diary of Antera Duke (1785–88).** Written at Old Calabar in trade ("pidgin") English by an Efik trader and Ekpe member. Modern scholarly edition: Stephen D. Behrendt, A. J. H. Latham and David Northrup, *The Diary of Antera Duke, an Eighteenth-Century African Slave Trader* (Oxford UP, 2010). Title, editors and year VERIFIED 2026-09-30 (https://catalogue.bnf.fr/ark:/12148/cb42351873z ; https://en.wikipedia.org/wiki/Stephen_D._Behrendt).
+**Hard-to-find note:** the original manuscript is widely reported to have been destroyed in the Second World War. The text survives in an early 20th-century transcription of extracts published in Daryll Forde (ed.), *Efik Traders of Old Calabar* (1956). Loss in WWII VERIFIED 2026-09-30 (Project MUSE review summary: found by William Valentine in Free Church of Scotland files, Edinburgh, 1907, and lost in World War II "except for the excerpts"; https://muse.jhu.edu/article/430361/summary). The Forde 1956 detail STILL UNVERIFIED (not searched).
 Shows: Ekpe "plays", Ekpe fines and the society's role in trade, written by an African member in his own words. It also records the slave trade he took part in (about twenty Liverpool ships "slaved", per secondary summary).
 Band: **9-10** (short, teacher-picked entries only; the slave-trade content needs care).
 
@@ -130,12 +130,12 @@ Band: **3-5** (public signs as pictures: "love", "a meeting", "a house"). Use on
 |---|---|---|---|
 | 1 | The Tiandihui was founded in the 1670s by five Shaolin monks to restore the Ming. | **LEGEND / UNSUPPORTED** as history | Murray and Qin (1994), using Qing archives, find no evidence before about 1761. The story appears in society documents such as those in Schlegel (1866) and was spread by Sun Yat-sen's revolutionaries. |
 | 2 | The Tiandihui was founded around 1761–62 in Zhangpu county, Fujian, as a mutual-aid brotherhood. | **DOCUMENTED** (Qing archives) / **SCHOLARLY CONSENSUS** | Murray and Qin 1994; Ownby 1996. |
-| 3 | A monk named Tixi was central to the founding. | **DOCUMENTED** in confessions | Arrested members named him (Murray and Qin). One secondary source lists co-founders "Li Amin, Zhu Dingyuan, Tao Yuan"; **UNVERIFIED**. Do not use these names until checked in Murray and Qin. |
+| 3 | A monk named Tixi was central to the founding. | **DOCUMENTED** in confessions | Arrested members named him (Murray and Qin). One secondary source lists co-founders "Li Amin, Zhu Dingyuan, Tao Yuan"; **STILL UNVERIFIED** (checked 2026-09-30: the names appear on Wikipedia "Hongmen" only; Murray and Qin not openable). Do not use these names until checked in Murray and Qin. |
 | 4 | The Tiandihui was always a revolutionary anti-Qing movement. | **DISPUTED** | Murray and Qin, and Ownby: first mainly mutual aid and protection for poor, mobile men; anti-Qing slogans grew later and varied. The revolutionary reading came from Sun Yat-sen's era (about 1900s). |
 | 5 | The Qing learned of the Tiandihui through the Lin Shuangwen uprising in Taiwan, 1786–88. | **DOCUMENTED** | Qing investigation records; secondary summaries (Bitter Winter series; Wikipedia). A cloth peddler, Yan Yan, brought the society to Taiwan. |
 | 6 | Initiates sacrificed a rooster, swore blood brotherhood, and passed under crossed swords. | **DOCUMENTED** (Qing records, per secondary summary) | Needs checking in Murray and Qin before print. Band 9-10 only; describe, never act out. |
 | 7 | Modern "Triads" are simply the same organisation as the Tiandihui. | **DISPUTED / OVERSIMPLIFIED** | Hongmen split into many groups. Some became political (Chee Kung Tong / "Chinese Freemasons"), some fraternal, some criminal. Say "descended from, not identical to". |
-| 8 | Sun Yat-sen joined the Hongmen (Honolulu, 1904). | **SCHOLARLY CONSENSUS** | KNOWN, NOT RE-CHECKED this session. |
+| 8 | Sun Yat-sen joined the Hongmen (Honolulu, 1904). | **SCHOLARLY CONSENSUS** | VERIFIED 2026-09-30 (Wikipedia "Chee Kung Tong" and "Hongmen": joined in Honolulu, 1904, and helped write the Chee Kung Tong constitution that year, https://en.wikipedia.org/wiki/Chee_Kung_Tong). Sun was in Hawaii Sept 1903–March 1904 (https://sunyatsenhawaii.org/2008/10/18/dr-sun-historical-sites/), so some books say late 1903. |
 | 9 | Sande masks are carved by men but owned and danced by women. | **SCHOLARLY CONSENSUS**, also stated by museums | Art Institute of Chicago; Princeton; Phillips 1995; Boone 1986. |
 | 10 | Sande is one of the few African masquerades performed by women. | **SCHOLARLY CONSENSUS** | Phillips 1995; Art Institute label. Say "one of the few", never "the only". |
 | 11 | Sande initiation teaches adult women's knowledge: medicine, law, crafts, songs, behaviour. | **SCHOLARLY CONSENSUS** | Phillips; Boone; museum labels. |
@@ -145,7 +145,7 @@ Band: **3-5** (public signs as pictures: "love", "a meeting", "a house"). Use on
 | 15 | Ekpe members took part in the Atlantic slave trade. | **DOCUMENTED** | Antera Duke's own diary. |
 | 16 | Nsibidi is an indigenous writing system of the Cross River region, with sacred forms kept by Ekpe/Mgbe initiates. | **SCHOLARLY CONSENSUS**; whether it is "full writing" is **DISPUTED** | Macgregor 1909; Dayrell 1911; later scholars differ on whether it records language or ideas. |
 | 17 | Nsibidi is thousands of years old (claims like "5000 BC"). | **UNSUPPORTED** | Popular websites repeat this. The earliest firm written record is from 1904–1911. Archaeological links are argued but not agreed. |
-| 18 | Abakuá was founded in Regla, Havana, in 1836, modelled on Ekpe. | **SCHOLARLY CONSENSUS** | Miller 2009. |
+| 18 | Abakuá was founded in Regla, Havana, in 1836, modelled on Ekpe. | **SCHOLARLY CONSENSUS** | Miller 2009. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Abaku%C3%A1). |
 | 19 | Abakuá is a criminal gang. | **UNSUPPORTED as a general claim** | It was persecuted by colonial and republican police as "ñáñigos". Members and scholars (Miller) describe a mutual-aid religious brotherhood. Say that it was *treated* as criminal. |
 | 20 | Sande and Poro "secret societies" are cults. | **UNSUPPORTED / a biased outsider label** | Scholars call them initiation associations or sodalities. Much of their teaching is public in outcome, even though parts of it are closed. |
 
@@ -195,7 +195,7 @@ Band: **3-5** (public signs as pictures: "love", "a meeting", "a house"). Use on
 
 ## Other examples (brief; check before use)
 
-- **Japan, Kakure Kirishitan (Hidden Christians):** a faith kept in secret under persecution from the 1600s to the 1870s. Nagasaki sites were listed by UNESCO in 2018. It is a *hidden faith community*, not an order, but it teaches why people keep secrets for safety. KNOWN, NOT RE-CHECKED. Band 6-8.
+- **Japan, Kakure Kirishitan (Hidden Christians):** a faith kept in secret under persecution from the 1600s to the 1870s. Nagasaki sites were listed by UNESCO in 2018 (VERIFIED 2026-09-30, https://whc.unesco.org/en/decisions/7135 ; the ban was lifted in 1873). It is a *hidden faith community*, not an order, but it teaches why people keep secrets for safety. Band 6-8.
 - **Japan, Genyōsha (1881) and Kokuryūkai / "Black Dragon Society" (1901):** political nationalist societies. They were not secret initiation orders, despite their English nicknames. **Leave them out** unless another dossier covers them (band 11-12).
 - **Lega (DR Congo), Bwami society:** a graded association whose ivory and wooden figures teach proverbs. Main source: Daniel Biebuyck. UNVERIFIED this session. Band 6-8.
 - **Yoruba, Ogboni:** an earth-cult society with judicial power. Paired brass *edan* figures are in many museums. The "Reformed Ogboni Fraternity" was founded 1914. UNVERIFIED this session. Band 6-8.
