@@ -7,9 +7,9 @@ ten strands per band; items [mc|tf|voc|open]. Re-run after editing cul.py / med.
 import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import cul, med, spt, mar, unr
+import cul, med, spt, mar, unr, sec
 PAGE = os.path.join(HERE, '..', '..', 'daily-drops.html')
-SUBJECTS = [('cul', 'CUL', cul), ('med', 'MED', med), ('spt', 'SPT', spt), ('mar', 'MAR', mar), ('unr', 'UNR', unr)]
+SUBJECTS = [('cul', 'CUL', cul), ('med', 'MED', med), ('spt', 'SPT', spt), ('mar', 'MAR', mar), ('unr', 'UNR', unr), ('sec', 'SEC', sec)]
 GRADES = [('K', 'k2'), ('1', 'k2'), ('2', 'k2'), ('3', '35'), ('4', '35'), ('5', '35'),
           ('6', '68'), ('7', '68'), ('8', '68'), ('9-10', '912'), ('11-12', '912'), ('adult', 'adult')]
 BEGIN, END = '/* ══ AOG-DD-WORLDHEALTH-V1 BEGIN', '/* ══ AOG-DD-WORLDHEALTH-V1 END ══ */'

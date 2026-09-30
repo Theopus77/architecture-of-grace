@@ -119,7 +119,7 @@ def jump_block():
     # s13 has had every course's options injected already; strip them all so
     # mark_current() adds this course's block exactly once (and the other
     # course's injector adds its own afterwards).
-    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+|math-course|mth-u\d+|spanish-course|spa-u\d+|social-studies-course|ssc-u\d+|english-course|ela-u\d+|facs-course|fcs-u\d+|religions-course|rel-u\d+|economics-course|eco-u\d+|bible-course|bib-u\d+|hebrew-bible-course|heb-u\d+|quran-course|qur-u\d+|talmud-course|tal-u\d+|hindu-texts-course|hin-u\d+|buddhist-texts-course|bud-u\d+|chinese-classics-course|chn-u\d+|world-cultures-course|wcs-u\d+|medicine-health-course|med-u\d+|sports-course|spt-u\d+|martial-arts-course|mar-u\d+|unseen-realm-course|unr-u\d+)\.html">[^<]*</option>\n?', "", blk)
+    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+|math-course|mth-u\d+|spanish-course|spa-u\d+|social-studies-course|ssc-u\d+|english-course|ela-u\d+|facs-course|fcs-u\d+|religions-course|rel-u\d+|economics-course|eco-u\d+|bible-course|bib-u\d+|hebrew-bible-course|heb-u\d+|quran-course|qur-u\d+|talmud-course|tal-u\d+|hindu-texts-course|hin-u\d+|buddhist-texts-course|bud-u\d+|chinese-classics-course|chn-u\d+|world-cultures-course|wcs-u\d+|medicine-health-course|med-u\d+|sports-course|spt-u\d+|martial-arts-course|mar-u\d+|unseen-realm-course|unr-u\d+|secret-societies-course|sec-u\d+)\.html">[^<]*</option>\n?', "", blk)
     return blk
 
 def mark_current(blk, value, text):
