@@ -71,7 +71,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==3.) return bookT(bk1Q(p),B1,.4);
   if(id==4.) return bookT(bk2Q(p),B2,.55);
   if(id==5.){ vec3 q=tabQ(p); float a=.62+.1*(fbm(q.xy*30.)-.5);
-    if(q.z<-.008&&wedges(q.xy)<.5) a=.42;
+    if(q.z<-.008&&wedges(q.xy)<.5) a=.34;
     if(q.z<-.008&&abs(q.y-.1+.017*10.)<.0012&&abs(q.x)<.06) a=.45;
     return a; }
   if(id==6.) return .8;

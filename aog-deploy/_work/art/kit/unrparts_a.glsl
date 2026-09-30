@@ -466,7 +466,7 @@ float o_codex(vec3 q,vec3 b){
   float pg=sdBox(c-vec3(.001,0.,0.),vec3(b.x-.005,b.y-t,b.z-.005));
   return min(min(top,bot),min(sp,pg)); }
 float t_codex(vec3 q,vec3 b,float cv){ vec3 c=q-vec3(0.,b.y,0.);
-  if(abs(c.y)<b.y-.006&&c.x>-b.x+.01) return fract(c.y/.0026)<.3?.7:.92;   /* page edges */
+  if(abs(c.y)<b.y-.006&&c.x>-b.x+.01) return fract(c.y/.0042)<.32?.5:.9;   /* page edges */
   if(c.y>b.y-.004){ float f=max(abs(c.x)/b.x,abs(c.z)/b.z);
     if(abs(f-.86)<.014||abs(f-.76)<.01) return cv*.6;                        /* tooled double frame */
     if(f<.3&&abs(abs(c.x)-abs(c.z))<.003) return cv*.6; }                     /* a small cross-hatched centre knot */
@@ -562,3 +562,10 @@ float t_map2(vec3 q,float hx,float hz){
   float route=abs(q.z-.035*sin(q.x*14.+.5)+.01);
   if(route<.0016&&fract(q.x/.012)<.5&&c>.52) return .35;           /* a dotted route over the land */
   return c>.52?.6:.95; }
+/* ---- a ram's horn lying on its side on the table: it curves sideways, the wide mouth toward +x ---- */
+float hornR(float t){ return .007+.026*t*t; }
+vec3 hornP(float t){ return vec3(-.13+.27*t, hornR(t)+.001, .07*sin(t*2.6)-.03*t); }
+float o_horn(vec3 q){ float d=1e5;
+  for(int i=0;i<12;i++){ float t0=float(i)/12.,t1=float(i+1)/12.; d=smin(d,sdCapsule(q,hornP(t0),hornP(t1),hornR(t0)),.004); }
+  vec3 e=hornP(1.); d=max(d,-(length(q-e-vec3(.016,0.,0.))-.03)); return d; }
+float t_horn(vec3 q){ float t=clamp((q.x+.13)/.27,0.,1.); return fract(t*16.)<.16?.3:.58-.12*t; }
