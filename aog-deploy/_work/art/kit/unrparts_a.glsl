@@ -535,3 +535,12 @@ float wcan(vec3 q,float r,float h){
   vec3 t2=q-vec3(-r,h*.55,0.); float hdl2=length(vec2(length(t2.xy)-h*.28,t2.z))-.006; hdl2=max(hdl2,t2.x+.004);
   return min(min(body,sp),min(min(rose,hdl),hdl2)); }
 float wcanT(vec3 q,float r,float h){ if(abs(q.y-h*.15)<.004||abs(q.y-h*.85)<.004) return .4; return .66; }
+float appleD(vec3 q,float r){
+  float rr=length(q.xz);
+  float d=length(q*vec3(1.,1.07,1.))-r;
+  d+=r*.2*exp(-rr*rr/(r*r*.07))*smoothstep(-.2*r,.6*r,q.y);
+  d+=r*.1*exp(-rr*rr/(r*r*.05))*smoothstep(.2*r,-.7*r,q.y);
+  d*=.8;
+  float stem=sdCapsule(q,vec3(0.,.62*r,0.),vec3(.12*r,1.18*r,.02*r),.055*r);
+  return min(d,stem); }
+float appleLeaf(vec3 q,float r){ vec3 l=q-vec3(.3*r,1.02*r,0.); l.xy=rot(-.5)*l.xy; return sdEll(l,vec3(.34*r,.06*r,.15*r)); }
