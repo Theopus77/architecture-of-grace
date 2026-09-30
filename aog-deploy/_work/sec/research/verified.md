@@ -4,13 +4,17 @@ Checked 2026-09-30. This file gates what lessons may use (see SPEC.md, "Research
 
 ## Read this first: how strong the evidence is
 
+- **Two live passes ran on 2026-09-30.** The second pass is below by dossier. The third pass ("Third pass" sections near the end) re-checked what the second left open. Where they differ, the third pass wins.
+
 - **No source page could be opened in this pass.** The network proxy refused every page fetch. Blocked hosts included Wikipedia, Wikisource, Gutenberg, archive.org, Founders Online, loc.gov, senate.gov, vault.fbi.gov, quod.lib.umich.edu and addiopizzo.org.
 - **The session's web-search limit (200 searches) ran out** partway through. D8 (chapters 20 and 29), D4 (chapter 23 and the rest of 24) and D9 (chapter 32) were hit hardest.
 - So **VERIFIED here means: the fact appeared in search-result text taken from the source named in the row.** That is a live check against today's web. It is stronger than the first pass's CONFIRMED\*. It is not the same as reading the page or a scan.
 - **CORRECTED** means the search evidence showed the dossier was wrong. The dossier text has been fixed and marked "CORRECTED 2026-09-30".
 - **STILL UNVERIFIED** means the item stays out of lessons, or is said only in general terms, until someone confirms it.
 
-**Totals: 144 verified, 21 corrected, 71 still unverified** (236 rows; a few marked "VERIFIED (secondary)"; some rows group several small facts).
+**Second pass totals: 144 verified, 21 corrected, 71 still unverified** (236 rows; a few marked "VERIFIED (secondary)"; some rows group several small facts).
+
+**Third pass totals: 81 verified, 6 corrected, 27 still unverified.** Most third-pass rows settle items the second pass left open.
 
 ## Corrections made to outline.py
 
@@ -26,6 +30,7 @@ Checked 2026-09-30. This file gates what lessons may use (see SPEC.md, "Research
 | 27 | Kefauver "televised, with sessions in Chicago" | hearings in 14 cities including Chicago, some Chicago testimony in closed session, live TV at the New York hearings in March 1951 | senate.gov Kefauver page; americanmafia.com |
 | 28 | Maxi Trial "hundreds convicted (confirm the exact figure)" | 475 charged; on 16 Dec 1987, 346 convicted and 19 life sentences (some sources give 338–344); upheld 30 Jan 1992 | ilsussidiario.net; geopop.it; en.wikipedia (338) |
 | 28 (story) | "Palermo shopkeepers post stickers" | young activists posted them on the night of 28–29 June 2004; shopkeepers joined later | addiopizzo.org, "L'inizio della storia" |
+| 19 | "thousands of lodges closed" | "hundreds of lodges closed (New York fell from about 480 lodges to about 75)" (third pass) | universalfreemasonry.org; Wikipedia, Anti-Masonic Party |
 | 30 | MJ-12: "Air Force investigators called them bogus" | Air Force OSI said no such committee was ever formed; an FBI official called the document "completely bogus" | muckrock.com (2017); atlasobscura.com |
 | 33 | "his tax indictment (1998)" | "his 1998 federal charges of tax evasion and bank fraud" | SPLC report (search text); Wikipedia |
 
@@ -39,10 +44,10 @@ Suggested but not applied (the outline is not wrong as written):
 
 | Open item | Result |
 |---|---|
-| Maxi Trial conviction count | **CORRECTED.** 346 convicted of 460 still on trial at the verdict (475 first charged); 114 acquitted; 19 life sentences; 2,665 years; verdict 16 Dec 1987; upheld 30 Jan 1992. English Wikipedia says 338 and one site says 342, so lessons should name the range or say "more than 330". |
+| Maxi Trial conviction count | **CORRECTED.** Third pass: no Italian state page gave 346; the Camera Antimafia chronology gives 474 defendants, 19 life terms, 114 acquitted and "more than 2,000 years" but no conviction count. The indictment was filed 8 Nov 1985. Keep the hedge in chapter 28. 346 convicted of 460 still on trial at the verdict (475 first charged); 114 acquitted; 19 life sentences; 2,665 years; verdict 16 Dec 1987; upheld 30 Jan 1992. English Wikipedia says 338 and one site says 342, so lessons should name the range or say "more than 330". |
 | Cooper's note on the *Protocols* in *Behold a Pale Horse* | **Wording STILL UNVERIFIED.** It was seen only in secondary sources, which say readers are told to substitute "Illuminati" for "Jews" (some add "Sion" for "Zion"). Do not quote it. |
 | Does the book still contain that chapter? | **CORRECTED (weakly).** The 1991 printing has it as chapter 15. A revised edition of about 2019–2020 reportedly drops it and adds a publisher's note calling it a forgery. The evidence is seller listings and search text, not the publisher. Lessons should say "the 1991 edition reprinted it; later revised printings reportedly removed it." |
-| Cooper's 2001 death: date and deputy | Deputy **Robert Martinez** (wounded, survived) is VERIFIED. The date: most sources give **5 Nov 2001** (a DPS detective gives 11:40 p.m.), while SPLC and the *White Mountain Independent* give 6 Nov. Say "the night of 5 November 2001". The name of the deputy who fired the fatal shot is STILL UNVERIFIED. |
+| Cooper's 2001 death: date and deputy | The wounded deputy (he survived) is VERIFIED; the third pass **CORRECTED** the spelling to **Robert Marinez**, as the *White Mountain Independent* spells it in every article (wmicentral.com). That paper gives the date as 6 Nov. The date: most sources give **5 Nov 2001** (a DPS detective gives 11:40 p.m.), while SPLC and the *White Mountain Independent* give 6 Nov. Say "the night of 5 November 2001". The name of the deputy who fired the fatal shot is STILL UNVERIFIED. |
 | Prince Hall 1775 initiation; 1784/1787 charter | The traditional **6 March 1775**, Army Lodge No. 441 and Sgt John Batt are VERIFIED. Oscar Alleyne's AQC 139 paper (19 Feb 2026) argues **6 March 1778**; that paper exists, and it is now in outline ch. 11. The charter dated 29 Sept 1784 and delivered 1787 is VERIFIED in d2/d3 (see rows). |
 | 1831 Anti-Masonic convention | Baltimore, 26–28 Sept 1831, the first national nominating convention: **VERIFIED**. The delegate count is **CORRECTED** to "about 110 from 13 states" (sources give 111, 113 or 116). |
 | John Adams, 22 June 1798 | **VERIFIED.** Adams to Josiah Bartlett and the Grand Lodge of Massachusetts, 22 June 1798, Founders Online Adams/99-02-02-2634 (search text). |
@@ -323,6 +328,149 @@ Note: every WebFetch host tried was blocked by the proxy (wikipedia, splcenter, 
 | URLs in D5/D6 (62 total) | D5, D6 | STILL UNVERIFIED as opened pages | All blocked. These URLs appeared in live search results on 2026-09-30: aclanthology W11-1202, equinoxpub JRFF 7999, su.se Copiale, today.usc.edu/?p=6245, npr transcript 142284553, atlasobscura, untappedcities, mysteriouswritings, artic 146941, zenodo 1449627, AIM25 and RAI Dayrell MS 23, swaen pacification, freemasonry.bcy.ca Shaolin PDF |
 
 
+## Third pass (2026-09-30)
+
+Same limits as before: search-result text only, no page opened. About 125 searches across five checkers.
+
+### Third pass: D9 Cooper and chapter 32
+
+| Item | Dossier | Status | Source checked |
+|---|---|---|---|
+| COINTELPRO ran 1956-1971; Hoover officially ended it 28 Apr 1971 | d9, ch32 | VERIFIED | https://www.britannica.com/topic/Counterintelligence-Program ; https://todayinclh.com/?p=19720 ; https://jacobin.com/2021/03/fbi-cointelpro-exposed-undemocratic-abuses |
+| Media, PA FBI office burglary 8 Mar 1971 by eight people (3 women, 5 men), the Citizens' Commission to Investigate the FBI; about 1,000 pages taken; Medsger's *The Burglary* (2014) named five | d9, ch32 | VERIFIED | https://www.broadstreetreview.com/articles/the-burglary-by-betty-medsger ; https://www.kirkusreviews.com/book-reviews/betty-medsger/the-burglary/ ; https://jacobin.com/2021/03/fbi-cointelpro-exposed-undemocratic-abuses |
+| Story hook 1 extras: "while the country watches the Ali-Frazier fight"; "carry out every file" | d9 | STILL UNVERIFIED | not searched (budget); sources say "about 1,000 pages" |
+| Fred Hampton killed 4 Dec 1969 | d9, ch32 | VERIFIED | https://en.wikipedia.org/wiki/Fred_Hampton (snippet) |
+| CORRECTED: settlement was "about $1.85 million in 1982-83 from city, county and federal governments"; now "$1.85 million in 1982; federal government, Cook County and City of Chicago each paid one-third (~$616,333) to nine plaintiffs" | d9, ch32 | CORRECTED | https://en.wikipedia.org/wiki/Fred_Hampton ; https://en.wikipedia.org/wiki/Edward_Hanrahan (snippets; Wikipedia only) |
+| Northwoods memo 13 Mar 1962, "Justification for U.S. Military Intervention in Cuba", Lemnitzer (JCS) to McNamara | d9, ch32 | VERIFIED | https://maryferrell.org/pages/Operation_Northwoods.html ; https://sourcewatch.org/index.php/Operation_Northwoods ; https://abcnews.go.com/US/story?id=92662 |
+| Northwoods "rejected by President Kennedy's administration": Kennedy rejected it; 16 Mar 1962 White House meeting, Lansdale memo: "The President said bluntly that we were not discussing the use of U.S. military force." No record seen of a McNamara written reply | d9, ch32 | VERIFIED | https://maryferrell.org/pages/Operation_Northwoods.html ; https://en.wikipedia.org/wiki/Lyman_Lemnitzer (snippets) |
+| Northwoods released Nov 1997 by the JFK Assassination Records Review Board; National Security Archive posting 30 Apr 2001 ("Pentagon Proposed Pretexts for Cuba Invasion in 1962") with Bamford's *Body of Secrets* | d9, ch32 | VERIFIED | https://sourcewatch.org/index.php/Operation_Northwoods ; https://nsarchive2.gwu.edu/news/20010430/ (listed; text via sourcewatch/ibrattleboro snippets) |
+| Church Committee created 27 Jan 1975; final report 29 Apr 1976, six books, 2,702 pages | d9, ch31-32 | VERIFIED | https://en.wikipedia.org/wiki/Church_Committee ; https://www.senate.gov/about/powers-procedures/investigations/church-committee.htm (snippets) |
+| CORRECTED: wounded deputy was "Robert Martinez"; the cited White Mountain Independent spells it "Robert Marinez" in every snippet (two WMI articles); "Martinez" not seen in any source | d9 | CORRECTED | https://www.wmicentral.com/news/latest_news/deputy-sues-county-over-shootingclaims-he-was-not-properly-equipped/article_8d60fd63-9e74-5e80-b749-255d806356d0.html ; https://www.wmicentral.com/news/springerville_eagar/help-for-disabled-deputy-not-in-countys-best-interest/article_292baa8a-ea40-57cf-8e09-154960e9a9ca.html |
+| Name of deputy who fired the fatal shot (sources say only "another deputy returned fire, hitting Cooper several times") | d9 | STILL UNVERIFIED | 4 searches; WMI, SPLC, Wikipedia snippets give no name |
+| Air Force discharge 1965 | d9, ch33 | VERIFIED | https://en.wikipedia.org/wiki/Milton_William_Cooper (snippet: "Honorable Discharge from the United States Air Force in 1965") |
+| Air Force start year 1961 | d9, ch33 | STILL UNVERIFIED | no dated source seen |
+| Navy: Cooper claimed Navy and Naval Intelligence service to 1975; public records show only Navy, E-5, Vietnam tour, two service medals | d9, ch33 | VERIFIED | https://en.wikipedia.org/wiki/Milton_William_Cooper (snippet) |
+| Navy start year 1966; Naval Security Group / ONI specifics | d9, ch33 | STILL UNVERIFIED | only the claim, no record |
+| 1988 ParaNet start / 1989 lectures; "The Secret Government" paper 23 May 1989 | d9, ch33 | STILL UNVERIFIED (month of 1988 posts); paper date already VERIFIED in pass 2 | one more search, nothing new |
+| *The Hour of the Time* on WWCR from 1992 to 2001 | d9, ch33 | STILL UNVERIFIED | WWCR carrier seen (https://kiwix.lema.org/rationalwiki_en_all_maxi_2021-03/A/WWCR); "from 1992" only in search summaries without a nameable source page |
+| 28 Jun 2001 bin Laden broadcast date | d9 | STILL UNVERIFIED | podcast/audiobook listings only (https://www.audible.fr/podcast/ITEM_NAME/B0H5629ZJV) |
+| 1998 indictment: tax evasion and bank fraud (already corrected pass 2); counts, month, docket | d9, ch33 | STILL UNVERIFIED | 2 searches; SPLC adds only that agents deferred serving the warrant over three years |
+| Cooper's Protocols note, exact wording | d9, ch33 | STILL UNVERIFIED | 5 searches; fuller wording seen only in secondary search text (skeptic.org.uk / New Republic): "This is an exact reprint of the original text. This has been written intentionally to deceive people. For clear understanding, the word 'Zion' should be 'Sion'; any reference to 'Jews' should be replaced with the word 'Illuminati'; and the word 'goyim' should be replaced with the word 'cattle.'" archive.org copy blocked |
+| Current (revised 2020) printing drops the Protocols chapter | d9, ch33 | STILL UNVERIFIED | no Light Technology page found; seller listings show "Revised 2020 Paperback 470 Page" vs "1991 UNREVISED ... Protocols" (https://gestiontransparente.tierradelfuego.gob.ar/item/behold-a-pale-horse-by-william-cooper-re/ ; https://www.ebay.de/itm/376294154094); several search summaries say later printings removed the chapter; no publisher note seen |
+
+### Third pass: D8 Hate orders, chapters 20, 26, 29
+
+| Item | Dossier | Status | Source checked |
+|---|---|---|---|
+| OSSB created 1849 by Charles B. Allen, New York City, oath-bound; members "knew nothing"; Greeley coined "Know Nothings" | d8, ch20 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Order_of_the_Star_Spangled_Banner (snippet) |
+| Massachusetts 1854: Gardner governor, all but two legislators | d8 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Henry_Gardner (snippet) |
+| Fillmore 1856 carried only Maryland | d8 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/1856_United_States_presidential_election_in_Maryland (snippet) |
+| Bloody Monday, Louisville, 6 Aug 1855, 22 dead | d8 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Bloody_Monday (snippet) |
+| Boone's coalition won the city election 6 March 1855 (dossier "March 1855" sharpened to 6 March) | d8, ch20 | VERIFIED | Encyclopedia of Chicago https://encyclopedia.chicagohistory.org/pages/703.html (snippet) |
+| Lager Beer Riot 21 Apr 1855: licence $50 to $300/yr renewable quarterly; Germans marched over Clark Street bridge; 1 death, 60 arrests | d8, ch20 | VERIFIED | Encyclopedia of Chicago https://encyclopedia.chicagohistory.org/pages/703.html ; Wikipedia https://en.wikipedia.org/wiki/Lager_Beer_Riot (snippets) |
+| Name of the dead protester, Peter Martin | d8 | STILL UNVERIFIED | name appeared in search-summary text but not attributable to one URL; Encyclopedia of Chicago snippet gives no name |
+| Blanchard: first president of Wheaton (1860); co-founded National Christian Association 1868, HQ Chicago; edited *Christian Cynosure*, Chicago, from 1868 | ch20 | VERIFIED | https://omeka.wheaton.edu/exhibits/show/jonathan-blanchard/bio ; https://en.wikipedia.org/wiki/Christian_Cynosure ; https://en.wikipedia.org/wiki/National_Christian_Association (snippets) |
+| Bogus K of C oath: printed as an exhibit in House contested election *Bonniwell v. Butler*; Committee on Elections No. 1 report, Congressional Record 15 Feb 1913, pp. 3215 ff.; committee condemned it; pamphlets later cited "Copied from the Congressional Record, Feb. 15, 1913" | ch20 | VERIFIED | Catholic pamphlets citing the Record: https://repository.mainlib.upd.edu.ph/omekas/s/rare-periodicals/media/218941 ; https://distantreader.org/stacks/pamphlets/pdf/003078114.pdf ; Wikipedia https://en.wikipedia.org/wiki/Eugene_C._Bonniwell (snippets). The Record page itself not seen |
+| Protocols first printed in *Znamya* (St Petersburg), Aug-Sept 1903, Krushevan | d8, ch29 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Znamya_(newspaper) (snippet) |
+| Nilus 1905, final chapter of 2nd ed. of *Velikoe v malom i antikhrist* | d8 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Sergei_Nilus (snippet) |
+| Graves, Constantinople correspondent, three *Times* articles 16-18 Aug 1921; pamphlet "The Truth About 'The Protocols': A Literary Forgery. From The Times of August 16, 17 and 18, 1921"; source Raslovlev | d8, ch29 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Philip_Graves ; USHMM https://encyclopedia.ushmm.org/content/en/artifact/the-times-august-17-1921 (snippets) |
+| Joly, *Dialogue aux enfers...*, Bruxelles: A. Mertens et fils, 1864, anonymous ("par un contemporain"); sentenced 25 Apr 1865 to 18 months | d8, ch29 | VERIFIED | Varshavsky Collection catalogue https://varshavskycollection.com/collection/maurice-joly-dialogue-aux-enfers-entre-machiavel-et-montesquieu-ou-la-politique-de-machiavel-au-xixe-siecle-par-un-contemporain-bruxelles-a-mertens-et-fils-1864/ ; Wikipedia https://en.wikipedia.org/wiki/Maurice_Joly (snippets) |
+| Bern verdict 14 May 1935 (Fischer, Schnell convicted; three acquitted; Judge Walter Meyer); appeal 1 Nov 1937 acquitted on the "Schundliteratur" point only | d8 | VERIFIED | EHRI archival unit "Berner Prozess Urteile vom 14.5.1935 and 1.11.1937" https://portal.ehri-project.eu/units/il-002820-9932929394804146-9932918399204146 ; https://portal.ehri-project.eu/units/il-002820-9932929394904146-9932984996604146 (snippets). Some secondary text says 19 May; 14 May is the archive's date |
+| *Dearborn Independent* "International Jew" began 22 May 1920, ran in 91 further issues; vol. 1 Nov 1920 | d8, ch29 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/The_International_Jew ; https://israeled.org/timeline/the-international-jew (snippets) |
+| Ford apology signed 30 June 1927, drafted by Louis Marshall and accepted unchanged, reached Marshall 1 July; after Sapiro mistrial | d8, ch29 | VERIFIED | https://reformjudaism.org/blog/henry-fords-apology ; https://www.bjpa.org/content/upload/bjpa/ford/Ford%20Statement.pdf (snippets) |
+| Public release day of apology (7-8 July 1927) | d8 | STILL UNVERIFIED | only a NZ paper reporting it on 8 July: https://dynamic-rsnz.natlib.govt.nz/newspapers/MH19270712.2.7 (snippet); dossier keeps "early July" |
+| *Dearborn Independent* last issue Dec 1927 (31 Dec) | d8 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/The_Dearborn_Independent (snippet) |
+| Nazi use: Rosenberg introduced Hitler to it; at least 23 Nazi editions 1919-39; used in some schools after 1933; *International Jew* in 16+ languages; *Frankfurter Zeitung* exposure 1924 | ch29 | VERIFIED | USHMM https://encyclopedia.ushmm.org/content/en/article/protocols-of-the-elders-of-zion (snippet) |
+| Ford Grand Cross of the German Eagle, 30 July 1938, 75th birthday, Dearborn | d8 | VERIFIED | Wikipedia https://en.wikipedia.org/wiki/Order_of_the_German_Eagle (snippet) |
+| Senate Judiciary subcommittee print on the Protocols, 88th Cong., 1964 | d8 | VERIFIED | https://mocat.library.unt.edu/catalog/837-17882 (snippet) |
+| NAACP v. Alabama ex rel. Patterson, 357 U.S. 449, argued 15-16 Jan, decided 30 June 1958, Harlan, unanimous, membership lists | ch26 | VERIFIED | https://www.govinfo.gov/content/pkg/USREPORTS-357/pdf/USREPORTS-357-449.pdf ; https://www.law.cornell.edu/supremecourt/text/357/449 (snippets) |
+| "Hoodwinked?", Dubner and Levitt, NYT Magazine 8 Jan 2006; informant "John Brown"; Ben Green raised it | d8, ch26 | VERIFIED | https://freakonomics.com/2006/01/08/freakonomics-in-the-times-magazine-hoodwinked ; https://undercover.hosting.nyu.edu/s/undercover-reporting/item/13956 ; https://www.georgiaencyclopedia.org/articles/history-archaeology/stetson-kennedy-1916-2011/ (snippets) |
+| Superman "Clan of the Fiery Cross": 16 episodes, June 1946; Kennedy's claimed role disputed | d8, ch26 | VERIFIED | https://www.openculture.com/2025/03/superman-vs-the-kkk-hear-the-1946-superman-radio-show-that-weakened-the-klan.html (snippet) |
+| Notre Dame students vs Klan, South Bend, 17 May 1924 | d8 | VERIFIED | https://stories.nd.edu/stories/a-clash-over-catholicism/ ; https://mentalfloss.com/article/503749/day-notre-dame-students-pummeled-ku-klux-klan (snippets) |
+| Lincoln to Speed 24 Aug 1855, exact wording | d8 | STILL UNVERIFIED | quod.lib.umich.edu fetch refused (403); wording seen only in search text from NPS https://home.nps.gov/liho/historyculture/knownothingparty.htm and MHS https://www.masshist.org/database/456, not a transcription opened |
+| Barker's 1852-54 role; Lester & Wilson; Forrest items; Moore 1951; Sapiro "Chicago-based"; Kennedy papers' archives | d8 | STILL UNVERIFIED | not searched this pass (budget reserved for chapter 20/26/29 facts) |
+
+### Third pass: D4 Illuminati (and a D1 note), chapters 23-24
+
+| Item | Dossier | Status | Source checked |
+|---|---|---|---|
+| Illuminati founded 1 May 1776, Ingolstadt; Weishaupt professor of canon law | D4 | VERIFIED | https://en.wikipedia.org/wiki/Adam_Weishaupt (Wikipedia); https://www.lmu.de/en/about-lmu/lmu-at-a-glance/history/1776/ (result title only) |
+| Weishaupt's code name Spartacus; Knigge's Philo | D4 | VERIFIED | https://en.wikipedia.org/wiki/Adolph_Freiherr_Knigge (Wikipedia); https://www.newadvent.org/cathen/07661b.htm |
+| Zwack's code name "Cato" | D4 | STILL UNVERIFIED | not in any search text seen |
+| Minerval grade (name and "first grade") | D4 | STILL UNVERIFIED | no search text named it; not searched separately (budget) |
+| Knigge joined 1780 | D4 | VERIFIED | https://en.wikipedia.org/wiki/Adolph_Freiherr_Knigge ; https://www.newadvent.org/cathen/07661b.htm |
+| Knigge left 1 July 1784 | D4 | VERIFIED | same two; the Catholic Encyclopedia cites Nachtrag I, 129 for his complaint |
+| Edict 22 June 1784 | D4 | VERIFIED | https://bitterwinter.org/?p=28889 (Introvigne); https://www.catholic.com/encyclopedia/illuminati |
+| Petition to the Elector 24 Feb 1785 | D4 | VERIFIED | https://bitterwinter.org/?p=28889 |
+| Edict 2 March 1785 names Freemasons and Illuminati | D4 | VERIFIED | https://bitterwinter.org/?p=28889 ; https://www.catholic.com/encyclopedia/illuminati |
+| Edict 16 Aug 1785 (plus a fourth, 16 Aug 1787, recruiting punishable by death) | D4 | VERIFIED | https://www.catholic.com/encyclopedia/illuminati ("four successive enactments (June 22, 1784; March 2, and August 16, 1785; and August 16, 1787)") |
+| Zwack house search, Landshut, 11-12 Oct 1786 | D4 | VERIFIED | https://database.factgrid.de/wiki/Item:Q9081 |
+| Search at Sandersdorf (Baron Bassus's castle) 1787; papers printed in the Nachtrag (added to D4) | D4 | VERIFIED | https://en.wikipedia.org/wiki/Sandersdorf_Castle (Wikipedia); https://sacred-texts.com/sro/mhj/mhj301.htm . Exact 1787 day not seen |
+| Einige Originalschriften (Munich 1787) and Nachtrag (1787), printed by the Elector's order | D4 | VERIFIED | https://www.deutsche-digitale-bibliothek.de/item/2JQCYT6D6HH3SG3PTWLJ7ZNENVLZC5P4?lang=en ; https://ego-plone.uni-trier.de/en/mediainfo/against-the-illuminati-1787 ; https://onlinebooks.library.upenn.edu/webbin/who/Illuminatenorden |
+| Weishaupt died at Gotha, 18 Nov 1830 | D4 | VERIFIED | https://en.wikipedia.org/wiki/Adam_Weishaupt ; https://www.deutsche-biographie.de/pnd118766384.html (1748-1830, Gotha) |
+| Fama 1614 Kassel; Confessio 1615 Kassel; Chymical Wedding 1616 Strasbourg, anonymous, Andreae later claimed it | D4 | VERIFIED | https://en.wikipedia.org/wiki/Rosicrucianism (Wikipedia); https://ciphermysteries.com/secret-history-of-the-rosicrucians/the-secret-history-of-the-rosicrucians-2-the-three-texts . The printers' names (Wessel, Zetzner) were not seen |
+| Golden Dawn founded London 1888 by Westcott, Woodman and Mathers; Isis-Urania, Osiris and Horus temples by end of 1888 | D4 | VERIFIED | https://atom.aim25.com/index.php/the-hermetic-order-of-the-golden-dawn-its-members-and-related-bodies-3 ; https://branchcollective.org/?p=1987 (Denisoff); https://www.mysteriousbritain.co.uk/?p=146 (gives 20 March 1888) |
+| Barruel, Mémoires, French 1797-98, Clifford's English the same years | D4 | VERIFIED | https://en.wikipedia.org/wiki/Memoirs_Illustrating_the_History_of_Jacobinism (Wikipedia); https://search.worldcat.org/oclc/519407172 (Hamburg, P. Fauche). Some French editions have 5 volumes |
+| Robison, Proofs of a Conspiracy, 1797, Edinburgh (Creech) and London (Cadell jun. & Davies) | D4 | VERIFIED | https://wellcomecollection.org/works/g422h5nu |
+| Morse sermon 9 May 1798: New North Church in the morning, Charlestown in the afternoon, national fast day called by Adams; printed by Samuel Hall | D4 | VERIFIED | https://gutenberg.org/cache/epub/55983/pg55983-images.html (Stauffer 1918); https://www.grubstreetproject.net/publications/W29144/ |
+| Dwight, The Duty of Americans, 4 July 1798, New Haven (T. & S. Green, 32 pp.) | D4 | VERIFIED | https://www.singerman.judaicadhpenn.org/entry/supp1053 ; https://llds.ling-phil.ox.ac.uk/llds/xmlui/handle/20.500.14106/N25378?show=full |
+| Principia Discordia: 1st edition 1963 (the Garrison-copier story says "allegedly"), 2nd edition 1965 in five copies; Greg Hill with Kerry Thornley | D4 | VERIFIED | https://en.wikipedia.org/wiki/Discordianism (Wikipedia). The copier story stays DISPUTED |
+| Illuminatus! trilogy, Dell, 1975, by Shea and Wilson (begun 1969, Playboy Forum) | D4 | VERIFIED | https://en.wikipedia.org/wiki/The_Illuminatus!_Trilogy (Wikipedia); https://sf-encyclopedia.com/entry/shea_robert ; https://www.lfs.org/newsletter/013/02/IlluminatusSaga.shtml |
+| Hofstadter, "The Paranoid Style in American Politics", Harper's, Nov 1964 | D4 | VERIFIED | https://harpers.org/2014/01/richard-hofstadters-the-paranoid-style-in-american-politics-1964 ; https://en.wikipedia.org/wiki/The_Paranoid_Style_in_American_Politics |
+| Washington to Snyder, 25 Sept 1798: original in the LOC GW Papers, Series 4 | D4 | VERIFIED | https://www.loc.gov/item/mgw441338/ (result title) |
+| Washington to Snyder, 25 Sept 1798: exact wording ("notwithstanding" vs "notwithstandings"; "&" vs "and") | D4 | STILL UNVERIFIED | searches limited to founders.archives.gov, loc.gov and gutenberg.org gave paraphrased summaries only, and they disagreed. One secondary blog (humblymybrain.substack.com) prints "notwithstandings". A loc.gov summary gave "nefarious, and dangerous plan", possibly normalized. The Founders Online document ID was not surfaced (probably 06-03-02-0016, between 0015 and 0017, but that is not confirmed). curl to loc.gov got a 403 |
+| Templar "letters of credit" for pilgrims from 1150 | D1 | STILL UNVERIFIED | Three more searches (Barber/Nicholson/Delisle) found the claim only on Wikipedia and popular sites. The scholarly support seen covers transfers only: Delisle 1889's category "transfers of money and long-distance payments" (https://revistas.uned.es/index.php/ETFIII/article/download/3690/3547/6980). Note added to D1 |
+
+### Third pass: D2 and D3, chapters 5, 6, 12, 16, 19
+
+| Item | Dossier | Status | Source checked |
+|---|---|---|---|
+| Morgan arrested 11 Sep 1826 on a loan and shirt-and-tie theft charge, jailed at Canandaigua. The theft charge was dropped and he was re-arrested for a $2.69 innkeeper's debt. On 12 Sep men paid what he owed and took him from the jail by carriage to Fort Niagara. The search text did not restate that the first arrest was at Batavia. | D2, D3 | VERIFIED | https://en.wikipedia.org/wiki/William_Morgan_(anti-Mason) ; https://www.freemasonry.bcy.ca/morgan_notes.html |
+| Lawson, Chesebro, Sawyer and Sheldon tried Jan 1827 (court sat 4 Jan) at Canandaigua. Sentences: Lawson 2 years, Chesebro 1 year, Sheldon 3 months, Sawyer 1 month. The search text named these two pages but did not show which one it came from. | D3 | VERIFIED | https://nymasoniclibrary.org/archival-finding-aids/papers-of-victory-birdseye-ar-1993-16/ ; https://ldsgenealogy.com/NY/books/A-history-of-Ontario-County-New-York-and-its-people-Volume-I-part-17.htm |
+| Eli Bruce, sheriff of Niagara County: 28 months in the Canandaigua jail. Governor Clinton removed him from office. | D3 | VERIFIED | https://www.huntington.org/collections/lib-95000 (catalog of *The Masonic Martyr*) ; https://niagara.nygenweb.net/history/sheriffs.html |
+| Sentence range. CORRECTED from "about 30 days to 28 months" to "one month to 28 months" (same span). One summary said 54 were indicted, 39 tried and 10 convicted, but it did not name its page. | D3 | CORRECTED | as above |
+| Lodges closed after the Morgan affair. The outline says "thousands". The sources seen support hundreds: New York had about 480-500 lodges in 1826, about 75 were left in the 1830s, and one source says instead "two thirds of 127". All Vermont lodges closed, and Kentucky went from 66 lodges to 37. New row added to D2. | D2 (new row) | CORRECTED | https://www.universalfreemasonry.org/en/article/effects-of-antimasonry-on-the-fraternity ; https://www.universalfreemasonry.org/en/stories/morgan-affair ; https://en.wikipedia.org/wiki/Anti-Masonic_Party |
+| Exact New York lodge counts. The sources disagree. | D2 | STILL UNVERIFIED | same as above |
+| Knights of Columbus: chartered by the Connecticut legislature on 29 Mar 1882. Fr. Michael J. McGivney was assistant pastor at St. Mary's, New Haven. The group first formed in Oct 1881. | D3 | VERIFIED | https://connecticuthistory.org/?p=50440 |
+| Chicago Masonic Temple: 1892, Burnham & Root, State & Randolph, 302 ft to the roof, 21 or 22 stories, demolished 1939. | D2, D3 | VERIFIED | https://skyscraper.org/tallest-towers/masonic-temple/ ; https://en.wikipedia.org/wiki/Masonic_Temple_(Chicago) ; https://www.preservationchicago.org/masonic-temple-by-burnham-root-built-1892-demolished-1939 |
+| "Tallest in the world"? It was only claimed at opening. New York's World Building, with its lantern, was taller, but the Masonic Temple had the highest occupied floor. It became Chicago's tallest in 1895. The 1899 end date was not seen. | D2, D3 | VERIFIED (as DISPUTED claim) | https://skyscraper.org/tallest-towers/masonic-temple/ ; Wikipedia (above) |
+| Medinah Temple: completed 1912 by Huehl & Schmid at 600 N. Wabash. About 4,200 seats. Chicago Landmark 2000. | D3 | VERIFIED | https://en.wikipedia.org/wiki/Medinah_Temple ; https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=1367 |
+| Woodmen of the World: founded 6 Jun 1890 in Omaha by Joseph Cullen Root. Tree-stump markers were free at first, then needed a $100 rider, and stopped in the 1920s. Stott 2003 itself not seen. | D3 | VERIFIED | https://en.wikipedia.org/wiki/WoodmenLife |
+| Modern Woodmen of America: founded by Root in Lyons, Iowa, in 1883. The year was confirmed; the exact date of 5 Jan was not seen. | D3 | VERIFIED | https://en.wikipedia.org/wiki/WoodmenLife |
+| First Shriners hospital: opened 16 Sep 1922 in Shreveport. The Chicago hospital opened 20 Mar 1926 and was the 11th. | D3 | VERIFIED | https://shrinerschildrens.org/en/Locations/Shreveport/About-Us/Our-History ; https://shrinerschildrens.org/en/Locations/Chicago/About-Us/Our-History |
+| Odd Fellows: founded 26 Apr 1819 at the Seven Stars Tavern, Baltimore, by Wildey and four others (Welch, Duncan, Cheatam, Rushworth). Source is Wikipedia only. | D3 | VERIFIED | https://en.wikipedia.org/wiki/Thomas_Wildey |
+| Eastern Star: Rob Morris wrote the Rosary in Feb 1850 at Jackson, Mississippi. The General Grand Chapter was organized at Indianapolis in Nov 1876; the search text gives both 6 and 16 Nov, so say "November 1876". | D3 | VERIFIED | https://en.wikipedia.org/wiki/Order_of_the_Eastern_Star |
+| Du Simitière: "no records at all showing Masonic membership". Teach "not known to be a Mason." | D2 | VERIFIED | https://greatseal.com/mythamerica/notmasonic.html ; https://greatseal.com/committees/firstcomm |
+| Washington to Snyder, 25 Sep 1798, "once or twice, within the last thirty years". A search limited to Founders Online and loc.gov returned this exact wording twice. Both times it was credited wrongly to Snyder, and the page with Washington's letter was not identified. | D2 | STILL UNVERIFIED | https://founders.archives.gov/documents/Washington/06-02-02-0435 ; https://www.loc.gov/resource/mgw2.021/?q=Illuminati&sp=182&st=text |
+| Capitol cornerstone, 18 Sep 1793: a Masonic ceremony led by the Grand Lodge of Maryland with Alexandria Lodge No. 22. Washington laid a silver plate. Already verified in the second pass; this is a fresh confirmation. | outline ch16 | VERIFIED | https://www.senate.gov/about/historic-buildings-spaces/capitol/washington-lays-capitol-cornerstone.htm ; https://en.wikipedia.org/wiki/United_States_Capitol_cornerstone_laying |
+| Jefferson: no record that he was a Mason. Settled in the second pass. | D2 | VERIFIED | https://www.monticello.org/encyclopedia/fraternal-organizations |
+
+### Third pass: D5, D6 and D7 leftovers
+
+| Item | Dossier | Status | Source checked |
+|---|---|---|---|
+| Sangiorgi report: eight cosche (mafia "branches"/clans) and 218 men of honour | d7 | VERIFIED | https://impact.ref.ac.uk/casestudies/CaseStudy.aspx?Id=42282 (Dickie REF case study: "eight mafia branches ... profile of 218 men of honor"); https://en.wikipedia.org/wiki/Sangiorgi_report ("eight mafia clans") |
+| Kefauver Third Interim Report "Mafia" sentence, exact wording (secondary transcription, page not seen) | d7 | VERIFIED | https://mafiahistory.us/maf-kef.html ; https://www.cheviothillshistory.org/wp-content/uploads/2023/06/1951-Kefauver-Committee-Report.pdf |
+| Kefauver TV audience: "an estimated 30 million" watched in March 1951 | d7 | VERIFIED | https://www.senate.gov/about/powers-procedures/investigations/kefauver.htm |
+| Falcone "fenomeno umano" quote: standard wording confirmed across sources (with "quindi"); primary source (page of *Cose di Cosa Nostra* or dated interview) not found | d7 | STILL UNVERIFIED | https://www.filodiritto.com/giovanni-falcone-le-sue-frasi-piu-famose-e-importanti ; https://libreriamo.it/libri/cose-di-cosa-nostra-libro-mafia/ ; https://it.wikiquote.org/wiki/Giovanni_Falcone |
+| Capone ledger: was "Frank paid $17,500 for Al"; now "Frank $17,500 for Al"; three mislabelled Hawthorne Smoke Shop ledgers (1924-26); Shumway found by handwriting on deposit slips, located in Miami early 1931, explained the code and testified | d7 | CORRECTED | https://www.thedailybeast.com/the-bean-counter-who-put-al-capone-in-the-slammer ; https://en.wikipedia.org/wiki/Hawthorne_Smoke_Shop ; https://en.wikipedia.org/wiki/Frank_J._Wilson (Wilson's 1933 IRS report itself not seen) |
+| Secret Six: Chicago Association of Commerce committee, announced by Col. Robert Isham Randolph 7 Feb 1930, active 8 Feb 1930 - 17 Jan 1933 | d7 | VERIFIED | https://en.wikipedia.org/wiki/Secret_Six_(Chicago) (Wikipedia); https://rosenwaldfilm.org/tag/little-caesar/ |
+| St Valentine's Day garage demolished 1967 (414 bricks bought by George Patey) | d7 | VERIFIED | https://www.wbez.org/morning-shift/2018/02/14/whats-that-building-the-site-of-the-st-valentines-day-massacre ; https://en.wikipedia.org/wiki/Clark_Street_(Chicago) |
+| Giancana at Apalachin, fled through the woods, not detained | d7 | VERIFIED | https://en.wikipedia.org/wiki/Sam_Giancana (Wikipedia only) |
+| Buscetta: back in Italy mid-July 1984; Falcone questioned him in Rome from July 1984 (16 or 21 July in different passages) to about Jan 1985; 329 handwritten pages | d7 | VERIFIED | https://www.editorialedomani.it/la-cantata-di-don-masino-e-i-verbali-scritti-a-mano-da-giovanni-falcone-e03xq6y6 ; https://www.ilpost.it/2022/12/03/cinquantanni-fa-si-inizio-a-parlare-di-tommaso-buscetta/ |
+| On Leong raid 20 Apr 1988 ($350,000 seized; $6m profits 1966-88 alleged); building bought from federal government by Chinese Christian Union Church 1993; Pui Tak Center 1994 | d7 | VERIFIED | https://en.wikipedia.org/wiki/Pui_Tak_Center (Wikipedia); https://theclio.com/entry/93341 |
+| Hip Sing in Chicago: North Side Chinatown, Argyle and Broadway; FBI shut gambling at both tongs 1988 | d7 | VERIFIED | https://www.wbez.org/curious-city/2018/05/06/what-a-murder-in-my-family-reveals-about-chicagos-chinese-gangs |
+| Valachi hearings: opened 25 Sep 1963; sessions 25, 27 Sep, 1, 2, 8, 9, 10, 11, 15, 16 Oct 1963; Valachi on camera five days | d7 | VERIFIED | https://en.wikipedia.org/wiki/Valachi_hearings (Wikipedia); https://levin-center.org/wp-content/uploads/2023/04/Portraits-in-Oversight-Congress-Investigates-Mafia.pdf |
+| Maxi Trial ordinanza-sentenza: was "Nov 1985, thousands of pages"; now deposited 8 Nov 1985, 40 volumes, about 8,000 pages (8,608 in one parliamentary source) | d7 | CORRECTED | https://leg15.camera.it/_bicamerali/leg15/commbicantimafia/cronologiamafieantimafia/157/schedabase.asp ; https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/023/009_t01/INTERO.pdf |
+| Maxi Trial count 346 from an Italian institutional source: Camera Antimafia chronology gives 474 defendants, 19 life terms, "more than 2,000 years", 114 acquitted (consistent with 346 of 460) but no conviction count; verdict PDFs exist on tribunale-palermo.giustizia.it and archiviopiolatorre.camera.it, not opened | d7 | STILL UNVERIFIED | https://leg15.camera.it/_bicamerali/leg15/commbicantimafia/cronologiamafieantimafia/157/schedabase.asp ; https://tribunale-palermo.giustizia.it/cmsresources/cms/documents/Corte_assise_Palermo_16_dicembre_1987_-_parte_3_2.pdf |
+| Trinity Record 1889 solution | d5 | STILL UNVERIFIED | Only https://forgotten-ny.com/2025/11/james-leeson-trinity-cemetery/ (says the claim comes from Berger's 1957 column) |
+| Meyer Berger NYT column, Jan 1957 | d5 | STILL UNVERIFIED | Same Forgotten NY page; NYT archive not in results |
+| Leeson born 1756 | d5 | STILL UNVERIFIED | Only mysteriouswritings.com / lodge46 blog text ("died 38 years later") |
+| Copiale "operation" quote: press text agrees; Stockholm Univ. English translation exists but text not seen | d5 | STILL UNVERIFIED | https://www.thehistoryblog.com/archives/13315 ; https://www.npr.org/transcripts/142284553 ; https://www.su.se/english/research/research-catalogue/research-projects/d/decipherment-of-historical-manuscripts/the-copiale-cipher |
+| Veltheim (Friedrich August von) 1709-1775, died Braunschweig | d5 | VERIFIED | https://www.deutsche-biographie.de/102573735.html |
+| Tiandihui monk named "Wan Tixi" / "Ti Xi" | d5, d6 | VERIFIED | https://bitterwinter.org/chinas-secret-societies-2-the-tiandihui ; https://en.wikipedia.org/wiki/Hongmen |
+| Tiandihui co-founders Li Amin, Zhu Dingyuan, Tao Yuan; lay name "Zheng Kai" (d5); "Hong Erfang" (d6) | d5, d6 | STILL UNVERIFIED | Wikipedia "Hongmen" only; Bitter Winter says it is "less clear" Li Amin was an original member |
+
 ## Quotations
 
 SPEC.md lets a lesson set `"paraphrase": false` only for a quotation confirmed word for word against the original. **No quotation reached that standard in this pass**, because no page or scan could be opened. **Until someone opens the page named and ticks a quotation off, every quotation stays `"paraphrase": true`.**
@@ -342,6 +490,13 @@ These are the strongest. One click on the URL each should be enough to move them
 
 ### Tier 2: transcriptions or secondary quotations (compare with the original before printing)
 
+- Third pass, Lincoln to Speed, fuller wording from NPS and MHS search text: "I am not a Know-Nothing. That is certain. How could I be? How can any one who abhors the oppression of negroes, be in favor of degrading classes of white people?"
+- "This committee cannot condemn too strongly the publication of the false and libelous article referred to in the paper of Mr. Bonniwell, and which was the spurious Knights of Columbus Oath". House Committee on Elections No. 1, *Bonniwell v. Butler*, *Congressional Record*, 15 Feb 1913, p. 3215 ff. Seen in pamphlets quoting the Record, not in the Record scan.
+- "heated exaggeration, suspiciousness, and conspiratorial fantasy". Hofstadter, "The Paranoid Style in American Politics", *Harper's*, Nov 1964 (harpers.org search text).
+- "There is a Nation-wide crime syndicate known as the Mafia, whose tentacles are found in many large cities." Kefauver Committee, *Third Interim Report*, S. Rep. 82-307, 1 May 1951, from a secondary transcription (mafiahistory.us).
+- "Frank $17,500 for Al". Hawthorne Smoke Shop ledger entry, as reported by the Daily Beast.
+- "The President said bluntly that we were not discussing the use of U.S. military force." Lansdale memo on the 16 Mar 1962 meeting (Northwoods), secondary text only.
+
 - "Nov. 4th. 1752. This evening Mr. George Washington was initiated as an entered Apprentice". Fredericksburg Lodge ledger, as transcribed by Mount Vernon. https://www.mountvernon.org/digital-encyclopedia/article/freemasonry
 - "tak tryall of ye airt of memorie and science yrof, of everie fellowe of craft and everie prenteiss according ayr of yr vocations". Second Schaw Statutes, 28 Dec 1599, as transcribed in *The Square*. https://www.thesquaremagazine.com/mag/article/202204the-second-william-schaw-statutes-1599/
 - "I was made a Free Mason at Warrington in Lancashire, with Coll: Henry Mainwaring of Karincham in Cheshire." Ashmole's diary, 16 Oct 1646, in an 1881 *Masonic Magazine* reprint. Compare with Josten's edition.
@@ -355,11 +510,12 @@ These are the strongest. One click on the URL each should be enough to move them
 
 - Cooper's note introducing the *Protocols* chapter in *Behold a Pale Horse*. It was seen only in secondary sources.
 - The FBI's "completely bogus" line on MJ-12. It was seen only in secondary articles, not in the FBI Vault scan.
-- Falcone's "fenomeno umano" line. The wording and source are not settled.
+- Falcone's "fenomeno umano" line ("La mafia è un fenomeno umano e come tutti i fenomeni umani ha un principio, una sua evoluzione e avrà quindi anche una fine"). It appears only in quote collections, with no primary source. Paraphrase it and name it as widely attributed.
 
-## What a third pass should do first
+## What is still open after the third pass
 
-1. Open the Tier 1 URLs and mark each quotation confirmed or fixed.
-2. Chapters 20 and 29 (Know-Nothings, Lager Beer Riot, Blanchard, the forged Knights of Columbus oath, the *Protocols*, Graves, Joly, Bern, Ford) had no live check. Chapter 23 (Illuminati dates) and chapter 32 (COINTELPRO years, the eight Media burglars, the Hampton settlement, Northwoods wording) are the same.
-3. D3 items for chapters 6 and 12: Knights of Columbus, the Chicago Masonic Temple's height, Medinah Temple, Woodmen, Shriners hospitals, Odd Fellows and Eastern Star.
-4. Morgan affair dates and sentences (chapter 19).
+1. **Open the Tier 1 URLs** (a person with a normal browser, or a session whose network allows these hosts). Then mark each quotation confirmed or fixed. Nothing can be `paraphrase: false` until this is done.
+2. **Washington to Snyder, 25 Sept 1798:** the exact wording ("once or twice, within the last thirty years"; "notwithstanding") is still unsettled. The original is at https://www.loc.gov/item/mgw441338/ . Until it is checked, use the 24 Oct 1798 quotation.
+3. **Cooper:** the exact wording of his note before the *Protocols* chapter; whether Light Technology's current printing drops the chapter (so far only seller listings say so); the counts in the 1998 indictment; the year *The Hour of the Time* began; the name of the deputy who fired the fatal shot (no source names him).
+4. **The Templar "letters of credit" story** (chapter 9). Scholarly support seen covers money transfers, not pilgrims' letters. The story hook now says "a written receipt".
+5. **Smaller items:** the Minerval grade's name (standard, but not seen in search text); Peter Martin at the Lager Beer Riot; the day Ford's apology was made public (7 or 8 July 1927); Leeson's birth year and the 1889 *Trinity Record* solution; the Tiandihui co-founders' names; the exact New York lodge counts after 1826.
