@@ -78,6 +78,7 @@ start, and match their depth — every paragraph teaches something specific and 
   of thing in one unit per chart** (all years, or all feet — never mixed; no "note" rows, no filler rows).
 - `think` looks: a document or scene to interpret, two rules side by side, an object described, a case to
   reason about.
+- Confirmed IHSA dates (checked on ihsa.org): IHSA founded 1900; boys wrestling first state champions 1937; girls wrestling first state finals 2022 (the 2021–22 season); boys tennis first champion 1912.
 - Timelines hold real dates only (years or "c." years) — no measurements or counts.
 - Hard history (segregation, exclusion of women, injuries and deaths that forced rule changes, war,
   nationalism, colonial rule) is told factually with context and dates, never sensational.

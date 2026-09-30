@@ -23,10 +23,9 @@ What was wrong with the Grok drafts (the reason for each rule in the SPECs):
 - Charts with "note" rows, mixed units (yards beside meters, feet beside a track lap), off-topic rows.
 - Timelines holding measurements ("400 m", "11") instead of dates.
 - Facts corrected: Wingfield introduced lawn tennis in 1873 and patented it in 1874; IHSA records list
-  track champions from 1893, before the IHSA was founded (1900). Still to confirm on ihsa.org: first IHSA
-  girls wrestling state finals (believed February 2022, the 2021–22 season — Grok wrote 2021) and first
-  IHSA boys tennis champion (Grok: 1912). Until confirmed, write "the 2021–22 season" for girls wrestling
-  and leave boys tennis out of charts and questions.
+  track champions from 1893, before the IHSA was founded (1900). Confirmed by Jimmy on ihsa.org
+  (2026-09-30): first IHSA girls wrestling state finals **2022** (the 2021–22 season; Grok wrote 2021),
+  first IHSA boys tennis champion **1912**.
 
 ## Gates — every unit must pass all three
 
