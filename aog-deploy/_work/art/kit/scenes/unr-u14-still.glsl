@@ -2,8 +2,8 @@
    with a horn at each corner and a shallow bowl on top (worship in the temple, Isaiah 6 and
    Revelation 8), and a long straight silver trumpet with a flared bell lying in front (the trumpet of
    1 Thessalonians 4:16). */
-#define CAM_POS vec3(-0.4345,0.3225,-0.9208)
-#define CAM_TGT vec3(-0.2419,0.0227,0.0853)
+#define CAM_POS vec3(-0.5220,0.3208,-0.9270)
+#define CAM_TGT vec3(-0.3256,0.0152,0.0991)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -14,7 +14,7 @@
 #include "studio.glsl"
 #include "medparts_a.glsl"
 #define ALT vec3(.04,0.,.1)
-#define TRP vec3(-.05,0.,-.1)
+#define TRP vec3(-.08,0.,-.06)
 #define TNG vec3(.21,0.,.1)
 /* the altar: plinth, body, cornice, four horns, and a bowl on top */
 vec3 altQ(vec3 p){ vec3 q=p-ALT; q.xz=rot(.35)*q.xz; return q; }
