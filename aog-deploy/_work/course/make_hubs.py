@@ -184,6 +184,23 @@ COURSES = [
                 "Diez líneas cortas al día: el cuerpo, estar sano y la historia de la medicina."),
          sources=("Traditions are described with respect, and the course says plainly what the evidence shows. It is for learning, not medical advice: ask a doctor or nurse about your own health.",
                   "Las tradiciones se describen con respeto, y el curso dice con claridad lo que muestra la evidencia. Es para aprender, no es consejo médico: pregunta a un médico o enfermera sobre tu salud.")),
+    # AOG-SPT-MAR-V1 (2026-09-30) — the two history books. Run `doors spt` / `doors mar` after each *-course.html exists.
+    dict(cid="spt", file="sports-hub.html", slug="sports", name=("Sports History", "Historia del deporte"), contents="sports-course",
+         drops="sports", res="social-studies", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
+         lede=("How games got their fields, rules and leagues, and who got to play, K–12. History, not a playbook.",
+               "Cómo los juegos recibieron sus campos, reglas y ligas, y quién pudo jugar, K–12. Historia, no un manual de jugadas."),
+         daily=("Ten short lines a day: key words, places, people and dates from sports history.",
+                "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia del deporte."),
+         sources=("Every fact is checked against records, rulebooks and newspapers of the time. No play, drill or technique is taught. Everything is original text written for this course.",
+                  "Cada dato se comprueba con registros, reglamentos y periódicos de la época. No se enseña ninguna jugada ni técnica. Todo es texto original escrito para este curso.")),
+    dict(cid="mar", file="martial-arts-hub.html", slug="martial-arts", name=("The Measured Step", "El paso medido"), contents="martial-arts-course",
+         drops="martial", res="social-studies", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
+         lede=("The history of the martial arts: rooms, codes, schools and who was let in, K–12. History only; no technique.",
+               "La historia de las artes marciales: espacios, códigos, escuelas y quién pudo entrar, K–12. Solo historia; ninguna técnica."),
+         daily=("Ten short lines a day: key words, places, people and dates from martial arts history.",
+                "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia de las artes marciales."),
+         sources=("No strike, hold or throw is taught or shown. Bowing and meditation are described, never led. Stories about where an art began are named as stories. Everything is original text written for this course.",
+                  "No se enseña ni se muestra ningún golpe, llave ni lanzamiento. El saludo y la meditación se describen, nunca se dirigen. Las historias sobre el origen de un arte se presentan como historias. Todo es texto original escrito para este curso.")),
 ]
 
 # More to explore: every place a band links to, named once, with one plain line.
@@ -214,6 +231,11 @@ EXPLORE = {
     "/ec6": (R_, "The business cycle", "El ciclo económico", "Good times, hard times, and what government does.", "Tiempos buenos, tiempos difíciles y lo que hace el gobierno."),
     "/ec7": (R_, "Money, banks and the Fed", "Dinero, bancos y la Reserva Federal", "What money is, how banks lend, and the Fed’s tools.", "Qué es el dinero, cómo prestan los bancos y las herramientas de la Reserva Federal."),
     "/ec8": (R_, "Trade, taxes and the world", "Comercio, impuestos y el mundo", "Why countries trade, and how taxes work.", "Por qué comercian los países y cómo funcionan los impuestos."),
+    "/sports-course": (C_, "Sports History", "Historia del deporte", "How games got their fields, rules and leagues, K–12.", "Cómo los juegos recibieron sus campos, reglas y ligas, K–12."),
+    "/martial-arts-course": (C_, "The Measured Step", "El paso medido", "Martial arts history: rooms, codes and schools, K–12.", "Historia de las artes marciales: espacios, códigos y escuelas, K–12."),
+    "/social": (C_, "Social Studies", "Estudios Sociales", "History, civics, geography and economics, every band.", "Historia, civismo, geografía y economía, cada banda."),
+    "/world-cultures": (C_, "World Cultures", "Culturas del mundo", "How people live together around the world, K–12.", "Cómo vive la gente en el mundo, K–12."),
+    "/us-history": (C_, "U.S. History 6–8", "Historia de EE. UU. 6–8", "The story of the United States, as a full course.", "La historia de Estados Unidos, como un curso completo."),
     "/s24": (("Social Studies", "Estudios Sociales"), "Economics in Social Studies", "Economía en Estudios Sociales", "The economics room in the Social Studies hub.", "La sala de economía en Estudios Sociales."),
 }
 # the rooms the old religions and economics doors listed on each band (kept, so no door is lost)

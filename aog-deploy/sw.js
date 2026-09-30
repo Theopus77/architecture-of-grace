@@ -8,7 +8,16 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7223'   // FOUNDRY CLASS UNITS: CUMULATIVE WORD LIST OPTION. previous: m7222
+const CACHE = 'aog-cache-2026.09.30.m7232'   // MERGE: FOUNDRY CUMULATIVE (m7223) + MARTIAL ARTS COURSE (main m7231). previous: m7231
+// const CACHE = 'aog-cache-2026.09.29.m7231'   // THE MEASURED STEP AS A COURSE. /martial-arts-course, /martial-arts and /mar1…: a K–12 course built by _work/mar/build_mar.py; every page's The Measured Step jump groups list the course first. previous: m7230   // SPORTS HISTORY AS A COURSE. /sports-course, /sports and /spt1…: a K–12 course built by _work/spt/build_spt.py; every page's Sports History jump groups list the course first. previous: m7229   // REMOVED TODAY'S HISTORY HUBS, SPORTS AND MARTIAL ARTS PAGES AND THEIR MENU ENTRIES (NOT FINISHED). previous: m7228
+// const CACHE = 'aog-cache-2026.09.29.m7228'   // THESE UNITED STATES AND ILLINOIS HISTORY HUBS (/us, /illinois), LISTED UNDER SOCIAL STUDIES. previous: m7227
+// const CACHE = 'aog-cache-2026.09.29.m7227'   // MEXICO AND RUSSIA HISTORY HUBS (/mexico, /russia), LISTED UNDER WORLD CULTURES. previous: m7226
+// const CACHE = 'aog-cache-2026.09.29.m7226'   // EUROPE, CHINA, JAPAN AND SPORTS HISTORY IN EXPLORE AND THE HOME COURSES LIST; JAPAN HUB DROPS STRAY SPORTS LINK. previous: m7225
+// const CACHE = 'aog-cache-2026.09.29.m7225'   // EUROPE, CHINA AND JAPAN HISTORY HUBS (/europe, /china, /japan). previous: m7224
+// const CACHE = 'aog-cache-2026.09.29.m7224'   // SPORTS AND MARTIAL ARTS: PLAIN FOOTERS, CANONICAL LINKS ON NETLIFY. previous: m7223
+// const CACHE = 'aog-cache-2026.09.29.m7223'   // SPORTS HISTORY HUB (/sports) AND THE MEASURED STEP MARTIAL ARTS COURSE (/martial-arts). previous: m7222
+// const CACHE = 'aog-cache-2026.09.29.m7222'   // DAILY DRAFTS: LEATHER SPINES V3 (GOLD CAPITALS, CREAM VELLUM). previous: m7221
+// const CACHE = 'aog-cache-2026.09.30.m7223'   // FOUNDRY CLASS UNITS: CUMULATIVE WORD LIST OPTION. previous: m7222
 // const CACHE = 'aog-cache-2026.09.28.m7217'   // MERGE: STANDARDS FOLDS (m7216) + GRACE AT HOME DAY BUTTONS (main m7083). previous: m7216
 // const CACHE = 'aog-cache-2026.09.28.m7216'   // STANDARDS: BOOK CARDS + FOLDED TABLES, ONE SUBJECT AT A TIME. previous: m7215
 // const CACHE = 'aog-cache-2026.09.27.m7082'   // GRACE AT HOME: DAY BUTTONS EVEN. previous: aog-cache-2026.09.27.m7081   // UNIT WRAP-UP LINK OPENS THE WRAP-UP. previous: m7080   // FINAL MERGE: PENCIL EVERYWHERE, NO EMOJI; ALL COURSES, SEL, NOVELS, CROSSWALK LINKS. previous: m7078
@@ -274,6 +283,8 @@ const PRECACHE = [
 // precache and take the site's offline capability down with it. Same rule as
 // the scroll reveal: this must fail open.
 const PRECACHE_LESSONS = [
+  './martial-arts-course.html', './mar-u1.html', './mar-u2.html', './mar-u3.html', './mar-u4.html', './mar-u5.html', './mar-u6.html', './mar-u7.html', './mar-u8.html', './mar-u9.html', './mar-u10.html', './mar-u11.html', './mar-u12.html', './mar-u13.html', './mar-u14.html', './mar-u15.html', './mar-u16.html', './mar-u17.html',   // AOG-MAR-V1 — the The Measured Step course
+  './sports-course.html', './spt-u1.html', './spt-u2.html', './spt-u3.html', './spt-u4.html', './spt-u5.html', './spt-u6.html', './spt-u7.html', './spt-u8.html', './spt-u9.html', './spt-u10.html', './spt-u11.html', './spt-u12.html', './spt-u13.html', './spt-u14.html', './spt-u15.html', './spt-u16.html', './spt-u17.html',   // AOG-SPT-V1 — the Sports History course
   './medicine-health-course.html', './med-u1.html', './med-u2.html', './med-u3.html', './med-u4.html', './med-u5.html', './med-u6.html', './med-u7.html', './med-u8.html', './med-u9.html', './med-u10.html', './med-u11.html', './med-u12.html', './med-u13.html', './med-u14.html', './med-u15.html', './med-u16.html', './med-u17.html',   // AOG-MED-V1 — the Medicine and Health course
   './world-cultures-course.html', './wcs-u1.html', './wcs-u2.html', './wcs-u3.html', './wcs-u4.html', './wcs-u5.html', './wcs-u6.html', './wcs-u7.html', './wcs-u8.html', './wcs-u9.html', './wcs-u10.html', './wcs-u11.html', './wcs-u12.html', './wcs-u13.html', './wcs-u14.html', './wcs-u15.html', './wcs-u16.html', './wcs-u17.html',   // AOG-WCS-V1 — the World Cultures course
   './buddhist-texts-course.html', './bud-u1.html', './bud-u2.html', './bud-u3.html', './bud-u4.html', './bud-u5.html', './bud-u6.html', './bud-u7.html', './bud-u8.html', './bud-u9.html', './bud-u10.html', './bud-u11.html', './bud-u12.html', './bud-u13.html', './bud-u14.html', './bud-u15.html', './bud-u16.html', './bud-u17.html',   // AOG-BUD-V1 — the Buddhist Texts course
