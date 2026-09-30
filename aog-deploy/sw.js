@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7234'   // MERGE: TAP MATCH WORDING + MAIN. previous: m7233
+const CACHE = 'aog-cache-2026.09.30.m7235'   // MERGE: TEACHER DOOR ORDER + CHECK-IN START INK + 1940 BASEBALL LINE (m7234) + main m7234. previous: m7234
+// const CACHE = 'aog-cache-2026.09.30.m7234'   // MERGE: TAP MATCH WORDING + MAIN. previous: m7233
 // const CACHE = 'aog-cache-2026.09.30.m7233b'   // SPORTS HISTORY AND THE MEASURED STEP: PENCIL BANNERS ON EVERY UNIT AND BOTH HUBS (16 OF JIMMY'S DRAWINGS, 20 FROM THE KIT). previous: m7232
 // const CACHE = 'aog-cache-2026.09.30.m7232b'   // MERGE: FOUNDRY CUMULATIVE (m7223) + MARTIAL ARTS COURSE (main m7231). previous: m7231
 // const CACHE = 'aog-cache-2026.09.29.m7231b'   // THE MEASURED STEP AS A COURSE. /martial-arts-course, /martial-arts and /mar1…: a K–12 course built by _work/mar/build_mar.py; every page's The Measured Step jump groups list the course first. previous: m7230   // SPORTS HISTORY AS A COURSE. /sports-course, /sports and /spt1…: a K–12 course built by _work/spt/build_spt.py; every page's Sports History jump groups list the course first. previous: m7229   // REMOVED TODAY'S HISTORY HUBS, SPORTS AND MARTIAL ARTS PAGES AND THEIR MENU ENTRIES (NOT FINISHED). previous: m7228
