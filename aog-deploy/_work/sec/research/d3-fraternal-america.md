@@ -39,19 +39,19 @@ Status key: **DOCUMENTED** (primary evidence exists), **SCHOLARLY CONSENSUS**,
 
 | Date | Event | Status |
 |---|---|---|
-| 6 Mar 1775 (traditional date) | Prince Hall and 14 other Black men are initiated by Lodge No. 441 (Irish registry), attached to the British 38th Foot, Boston. | DOCUMENTED tradition; **date DISPUTED**: Oscar Alleyne, AQC 139 (2025-26), argues 6 Mar 1778 (paper UNVERIFIED in source check) |
-| 3 Jul 1776 | African Lodge organized under a limited "permit" left by Sgt. John Batt. | Lodge tradition; DOCUMENTED in Prince Hall histories |
-| Jan 1777 | Prince Hall and other Black Bostonians petition the Massachusetts legislature to end slavery. | DOCUMENTED |
+| 6 Mar 1775 (traditional date) | Prince Hall and 14 other Black men are initiated by Lodge No. 441 (Irish registry), attached to the British 38th Foot, Boston. | DOCUMENTED tradition; **date DISPUTED**: Oscar Alleyne, AQC 139 (2025-26), argues 6 Mar 1778. Traditional date, lodge and Batt VERIFIED 2026-09-30 (https://www.freemasonry.bcy.ca/biography/hall_p/hall_p.html ; https://princehall.org/?p=28747); Alleyne paper, its 19 Feb 2026 reading and its 1778 argument VERIFIED 2026-09-30 (https://www.quatuorcoronati.com/?p=406 ; https://www.quatuorcoronati.com/wp-content/uploads/2025/12/AQC-139-Alleyne.pdf) |
+| 3 Jul 1776 | African Lodge organized under a limited "permit" left by Sgt. John Batt. | Lodge tradition; DOCUMENTED in Prince Hall histories. STILL UNVERIFIED (checked 2026-09-30: histories disagree; https://phoenixmasonry.org/prince_hall_freemasonry.htm gives Batt's permit 17 Mar 1776 and African Lodge No. 1 formed 3 Jul 1776, while https://www.freemasonry.bcy.ca/biography/hall_p/hall_p.html gives 3 Jul 1775) |
+| 13 Jan 1777 | Prince Hall and other Black Bostonians (eight signers) petition the Massachusetts legislature to end slavery. | DOCUMENTED. VERIFIED 2026-09-30 (https://alphahistory.com/americanrevolution/prince-hall-abolition-slavery-1777/ ; https://teachingamericanhistory.org/library/document/massachusetts-antislavery-petition/) |
 | 1786-87 | Hall writes Gov. James Bowdoin offering Black volunteers against Shays' Rebellion; the offer is declined. | DOCUMENTED (Mass. Archives); exact number of men UNVERIFIED |
-| 29 Sep 1784 | Grand Lodge of England (Moderns) issues warrant for African Lodge No. 459. | DOCUMENTED |
-| 29 Apr 1787 | Warrant delivered to Prince Hall in Boston by Capt. James Scott. | DOCUMENTED (lodge records) |
-| 17 Oct 1787 | Hall and others petition for schooling for Black children in Boston. | DOCUMENTED |
+| 29 Sep 1784 | Grand Lodge of England (Moderns) issues warrant for African Lodge No. 459. | DOCUMENTED. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/African_Lodge_No._459 ; https://baystatebanner.com/2017/02/08/black-masons-owe-lineage-to-18th-century-boston-pioneer-prince-hall/) |
+| 29 Apr 1787 | Warrant delivered to Prince Hall in Boston by Capt. James Scott. | DOCUMENTED (lodge records). VERIFIED 2026-09-30 (same sources) |
+| 17 Oct 1787 | Hall and others petition for schooling for Black children in Boston. | DOCUMENTED. VERIFIED 2026-09-30 (https://whenandwhereinboston.org/entry/schools-for-african-american-children-are-demanded ; https://www.nps.gov/articles/000/the-black-struggle-for-equal-education-in-boston-1787-to-1976.htm) |
 | Feb-Mar 1788 | Three free Black men are kidnapped from Boston Harbor; Hall petitions. On 26 Mar 1788 Massachusetts passes an act against the slave trade. | DOCUMENTED |
 | 24 Jun 1797 | Hall delivers *A Charge Delivered to the African Lodge* at Menotomy (now Arlington), MA; printed 1797. | DOCUMENTED |
 | 1813 | African Lodge left off the rolls after the English Grand Lodges merge. | DOCUMENTED |
 | 18 Jun 1827 | African Lodge declares itself independent. | DOCUMENTED (lodge declaration) |
-| 26 Apr 1819 | Thomas Wildey and four others form Washington Lodge No. 1 of Odd Fellows at the Seven Stars Tavern, Baltimore. | DOCUMENTED |
-| 11-12 Sep 1826 | William Morgan, who planned an exposé of Masonry, is arrested at Batavia (11 Sep), jailed at Canandaigua, and abducted from outside that jail on the night of 12 Sep; he disappears. (Date corrected in source check.) | DOCUMENTED |
+| 26 Apr 1819 | Thomas Wildey and four others form Washington Lodge No. 1 of Odd Fellows at the Seven Stars Tavern, Baltimore. | DOCUMENTED. STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked) |
+| 11-12 Sep 1826 | William Morgan, who planned an exposé of Masonry, is arrested at Batavia (11 Sep), jailed at Canandaigua, and abducted from outside that jail on the night of 12 Sep; he disappears. (Date corrected in source check.) | DOCUMENTED. STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked) |
 | 1827-1832 | Kidnapping trials; the Anti-Masonic Party forms; William Wirt wins Vermont's 7 electoral votes in 1832. | DOCUMENTED |
 | 15-16 Mar 1842 | Illinois Grand Master Abraham Jonas installs the Nauvoo Lodge and makes Joseph Smith a Mason "at sight." | DOCUMENTED (Joseph Smith Papers) |
 | 1849-50 | Rob Morris writes *The Rosary of the Eastern Star*, the basis of the Order of the Eastern Star. | SCHOLARLY CONSENSUS |
@@ -66,16 +66,16 @@ Status key: **DOCUMENTED** (primary evidence exists), **SCHOLARLY CONSENSUS**,
 | 1870-72 | Shriners (A.A.O.N.M.S.) founded in New York; Mecca Temple is chartered 26 Sep 1872. | DOCUMENTED |
 | 1 Dec 1874 | Queen Esther Chapter No. 1, the first Prince Hall Eastern Star chapter, opens in Washington, D.C. | DOCUMENTED per order histories |
 | 1876-78 | Elizabeth Butler of Illinois is the first Most Worthy Grand Matron of the General Grand Chapter, OES. | DOCUMENTED |
-| 29 Mar 1882 | Connecticut charters the Knights of Columbus (Fr. Michael McGivney, New Haven). | DOCUMENTED |
+| 29 Mar 1882 | Connecticut charters the Knights of Columbus (Fr. Michael McGivney, New Haven). | DOCUMENTED. STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked) |
 | 5 Jan 1883 | Joseph Cullen Root founds Modern Woodmen of America at Lyons, Iowa (later headquartered in Rock Island, IL). | DOCUMENTED |
 | 6 Nov 1890 | Cornerstone laid for the Chicago Masonic Temple (Masonic Fraternity Temple). | DOCUMENTED (printed program, SRMML) |
 | 1890 | Root founds Woodmen of the World in Omaha; its tree-stump gravestone program begins. | DOCUMENTED |
-| 1892 | Chicago Masonic Temple completed (State & Randolph; Burnham & Root; about 302 ft). | DOCUMENTED |
+| 1892 | Chicago Masonic Temple completed (State & Randolph; Burnham & Root; about 302 ft). | DOCUMENTED. STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked) |
 | 21 Mar 1895 | Royal Neighbors of America chartered in Illinois: a women's fraternal life insurer. | DOCUMENTED |
 | 10 Jul 1896 | Chicago Council No. 182, the first Knights of Columbus council in Illinois. | DOCUMENTED per K of C Illinois |
 | 1897-98 | Improved Benevolent and Protective Order of Elks of the World (the Black Elks) founded in Cincinnati after the white Elks refused Black members. | DOCUMENTED |
 | 1903 | Maggie Lena Walker (Independent Order of St. Luke) opens St. Luke Penny Savings Bank in Richmond. | DOCUMENTED (NPS) |
-| 1912 | Medinah Temple (Shriners) opens at 600 N. Wabash, Chicago. | DOCUMENTED |
+| 1912 | Medinah Temple (Shriners) opens at 600 N. Wabash, Chicago. | DOCUMENTED. STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked) |
 | 1912 | *Creswill v. Grand Lodge Knights of Pythias of Georgia*, 225 U.S. 246 (a Black-vs-white Pythian name dispute) reaches the U.S. Supreme Court. | DOCUMENTED |
 | Feb 1913 | The fake "Knights of Columbus Fourth Degree oath" is printed in the Congressional Record as evidence in the contested election *Bonniwell v. Butler*; the House Committee on Elections condemns it as spurious. | DOCUMENTED |
 | 1913 | Mooseheart opens near Batavia, Illinois (Loyal Order of Moose). | DOCUMENTED |
@@ -95,7 +95,8 @@ Format: citation / where / URL / what it shows / youngest band.
 ### Prince Hall and African Lodge
 
 1. **Petition of Prince Hall and others to the Massachusetts General Court, January 1777** (anti-slavery petition).
-   Where: Massachusetts Archives (original); transcribed in *Collections of the Massachusetts Historical Society*, 5th ser., vol. 3 (1877) (UNVERIFIED volume and page; confirm). Teaching transcriptions: National Constitution Center Historic Document Library; Facing History (PDF).
+   Date VERIFIED 2026-09-30: 13 January 1777 (https://alphahistory.com/americanrevolution/prince-hall-abolition-slavery-1777/).
+   Where: Massachusetts Archives (original); transcribed in *Collections of the Massachusetts Historical Society*, 5th ser., vol. 3 (1877) (STILL UNVERIFIED volume and page, checked 2026-09-30). Teaching transcriptions: National Constitution Center Historic Document Library; Facing History (PDF).
    URL: https://constitutioncenter.org/the-constitution/historic-document-library/detail/prince-hall-petition-to-the-massachusetts-legislature
    Shows: a lodge founder turning Revolutionary language ("natural and inalienable right") against slavery. Band: **3-5** (excerpt), full text 6-8.
 
@@ -104,7 +105,7 @@ Format: citation / where / URL / what it shows / youngest band.
    URL: https://quod.lib.umich.edu/e/evans/N24354.0001.001 ; https://ota.bodleian.ox.ac.uk/repository/xmlui/handle/20.500.12024/N24354
    Shows: a Black Masonic leader's public speech. It names street harassment in Boston and cites the Haitian Revolution as hope. Band: **6-8**.
 
-3. **Petition of Prince Hall and others for schooling, 17 Oct 1787** (Massachusetts Archives). Shows that Black families paid school taxes but were shut out of Boston's free schools. Hall later ran a school in his own home (about 1800). Band: **3-5**.
+3. **Petition of Prince Hall and others for schooling, 17 Oct 1787** (Massachusetts Archives). Shows that Black families paid school taxes but were shut out of Boston's free schools. In 1798 a community-run "African School" opened in the Beacon Hill home of his son, Primus Hall; it moved to a shop on Belknap Street in 1803. CORRECTED 2026-09-30: was "Hall later ran a school in his own home (about 1800)"; https://www.nps.gov/people/primus-hall.htm ; https://www.nps.gov/articles/000/the-black-struggle-for-equal-education-in-boston-1787-to-1976.htm . Petition date VERIFIED 2026-09-30 (same NPS article). Band: **3-5**.
    URL (summary): https://whenandwhereinboston.org/entry/schools-for-african-american-children-are-demanded
 
 4. **Petition of Prince Hall on the kidnapping of three free Black men, dated 27 Feb 1788**, and the Massachusetts act of 26 Mar 1788 "to prevent the Slave Trade, and for granting Relief to the Families of such unhappy Persons as may be Kidnapped or decoyed away from this Commonwealth."
@@ -140,7 +141,7 @@ Format: citation / where / URL / what it shows / youngest band.
     URLs: https://www.loc.gov/resource/sn00062200/1892-09-28/ed-1/?sp=4 ; https://www.loc.gov/resource/sn83045003/1893-03-27/ed-1/?sp=1
 
 11. **Prince Hall Freemasonry Archives, 1902-2006**, Vivian G. Harsh Research Collection, Woodson Regional Library, Chicago Public Library. Collection 1997/03; 7.5 linear feet, 16 boxes; donated by Brian L. Abrams Sr. and Isaac Washington, April 1997; no access restrictions.
-    URL: https://www.chipublib.org/fa-prince-hall-freemasonry-archives/
+    URL: https://www.chipublib.org/fa-prince-hall-freemasonry-archives/ (VERIFIED 2026-09-30: collection title, 1902-2006, 1997/03, 7.5 linear ft, 16 boxes, Abrams and Washington April 1997, no restrictions, at Woodson Regional Library, 9525 S. Halsted; a later donation by Robert DeCuir is also listed)
     Shows: 20th-century Black Chicago lodge life. It is a real, open, local archive a teacher can visit. Band: **9-10** (research), **6-8** (with teacher-chosen items).
 
 12. **Joseph Smith Papers, "Minutes, 15-16 March 1842"** (Nauvoo Lodge). Also "Nauvoo Masonic Lodge Officers, May-August 1842."
@@ -220,7 +221,7 @@ Format: citation / where / URL / what it shows / youngest band.
 - Joanna Brooks, *American Lazarus: Religion and the Rise of African-American and Native American Literatures* (Oxford UP, 2003). Includes Prince Hall's writings.
 - Christopher J. Kauffman, *Faith and Fraternalism: The History of the Knights of Columbus, 1882-1982* (Harper & Row, 1982).
 - Robert D. Putnam, "Bowling Alone: America's Declining Social Capital," *Journal of Democracy* 6:1 (1995), and *Bowling Alone: The Collapse and Revival of American Community* (Simon & Schuster, 2000).
-- Oscar Alleyne, "John Batt: Mercenary, Opportunist and Hero," *Ars Quatuor Coronatorum* 139. Presented at Quatuor Coronati Lodge, London, 19 Feb 2026. UNVERIFIED (source check could not reach it; confirm the paper, volume and argument before citing). New archival argument on the Prince Hall start date.
+- Oscar Alleyne, "John Batt: Mercenary, Opportunist and Hero," *Ars Quatuor Coronatorum* 139. Presented at Quatuor Coronati Lodge, London (Freemasons' Hall), 19 Feb 2026. VERIFIED 2026-09-30 (https://www.quatuorcoronati.com/?p=406 ; https://www.quatuorcoronati.com/wp-content/uploads/2025/12/AQC-139-Alleyne.pdf): it argues the start date was 6 March 1778, not 1775. Paper is in copyright. New archival argument on the Prince Hall start date.
 
 ---
 
@@ -228,23 +229,23 @@ Format: citation / where / URL / what it shows / youngest band.
 
 | Claim | Status | Evidence |
 |---|---|---|
-| Prince Hall and 14 other Black men were initiated by a British military lodge in Boston in March 1775. | DOCUMENTED tradition / **DISPUTED date** | The standard Prince Hall histories give 6 Mar 1775, Lodge No. 441 (Irish), 38th Foot. Alleyne (AQC 139) argues the evidence points to 6 Mar 1778. Teach "1775 (some historians now argue 1778)." |
-| African Lodge No. 459 received a warrant from the Grand Lodge of England in 1784, delivered in 1787. | DOCUMENTED | Warrant dated 29 Sep 1784; delivered 29 Apr 1787 by Capt. James Scott (lodge records; SRMML facsimile). |
+| Prince Hall and 14 other Black men were initiated by a British military lodge in Boston in March 1775. | DOCUMENTED tradition / **DISPUTED date** | The standard Prince Hall histories give 6 Mar 1775, Lodge No. 441 (Irish), 38th Foot. Alleyne (AQC 139) argues the evidence points to 6 Mar 1778. Teach "1775 (some historians now argue 1778)." VERIFIED 2026-09-30 (https://www.freemasonry.bcy.ca/biography/hall_p/hall_p.html ; https://www.quatuorcoronati.com/?p=406) |
+| African Lodge No. 459 received a warrant from the Grand Lodge of England in 1784, delivered in 1787. | DOCUMENTED | Warrant dated 29 Sep 1784; delivered 29 Apr 1787 by Capt. James Scott (lodge records; SRMML facsimile). VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/African_Lodge_No._459) |
 | Prince Hall was born in Barbados. | DISPUTED / UNVERIFIED | Commonly stated (the CPL finding aid says "believed to"). Birth records are not established; some older claims about his origins are unreliable. Say "possibly." |
 | Prince Hall fought at Bunker Hill. | DISPUTED | Repeated in popular sources. Several men named Prince Hall appear in Massachusetts service records, and identification is uncertain. Do not teach as fact. |
 | Prince Hall Masonry is "clandestine" (illegitimate). | DISPROVEN as a matter of record; historically a live dispute | White grand lodges long called it clandestine. Since 1989 (Connecticut first) most U.S. grand lodges recognize Prince Hall grand lodges. UGLE recognizes Prince Hall Grand Lodge of Massachusetts (verify date before stating). |
-| The Chicago Masonic Temple (1892) was the tallest building in the world. | DISPUTED | Skyscraper Museum: it had the highest occupied floor, but New York's World Building (1890), with its lantern, was taller. It was Chicago's tallest from 1895 (when the Board of Trade tower came down) to 1899. Say "one of the tallest buildings in the world." |
+| The Chicago Masonic Temple (1892) was the tallest building in the world. | DISPUTED. STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked) | Skyscraper Museum: it had the highest occupied floor, but New York's World Building (1890), with its lantern, was taller. It was Chicago's tallest from 1895 (when the Board of Trade tower came down) to 1899. Say "one of the tallest buildings in the world." |
 | The Masonic Temple was demolished in 1939 partly because of the State Street subway. | SCHOLARLY CONSENSUS | Preservation Chicago and architectural historians cite outdated services plus subway foundation costs. |
 | Lincoln was a Freemason. | DISPROVEN | No lodge record of his initiation. Masonic historians (for example, the Grand Lodge of British Columbia & Yukon's "wannabe" list) state he was not. |
 | Lincoln applied to Tyrian Lodge, Springfield, in 1860 and withdrew to avoid seeming political. | DISPUTED / UNVERIFIED | A widely repeated story, with a supposed Tyrian Lodge resolution of 17 Apr 1865. Masonic sources note it has not been corroborated by the Grand Lodge of Illinois or Tyrian Lodge. *Lincoln Lore* (Jan 1971) discusses the question. Present it as "a story, not proven." |
 | Stephen A. Douglas was a Mason. | DOCUMENTED | Springfield Lodge No. 4, admitted 1839/1840. Wayne C. Temple, *Stephen A. Douglas, Freemason* (1982). |
 | Knights of Columbus was founded partly because Catholics were barred from other fraternal orders. | SCHOLARLY CONSENSUS, with nuance | The Catholic Church forbade membership in Freemasonry (papal condemnations beginning 1738). Many fraternal insurers were Protestant in culture. McGivney wanted a Catholic alternative that gave widows insurance (Kauffman 1982). "Barred" is often both exclusion by others and prohibition by the Church; teach both. |
 | The Knights of Columbus "Fourth Degree oath" pledges to kill Protestants. | DISPROVEN | It is a forgery. It was printed in the Congressional Record (15 Feb 1913) only as evidence in *Bonniwell v. Butler*. The House Committee on Elections condemned "the spurious Knights of Columbus Oath." Pamphlets later cut that context out. |
-| Masons murdered William Morgan. | DISPUTED | Kidnapping is DOCUMENTED: several Masons were convicted in 1827-28, with sentences from about 30 days to 28 months. That he was killed is widely believed but never proven in court. No body was conclusively identified. |
+| Masons murdered William Morgan. | DISPUTED | Kidnapping is DOCUMENTED: several Masons were convicted in 1827-28, with sentences from about 30 days to 28 months (STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked)). That he was killed is widely believed but never proven in court. No body was conclusively identified. |
 | The Anti-Masonic Party won electoral votes in 1832. | DOCUMENTED | William Wirt carried Vermont (7 electoral votes). |
 | Around 1910, about one-third of adult American men belonged to a lodge. | SCHOLARLY ESTIMATE | Beito (2000) calls it "conservative." Estimates vary with double-counting (many men belonged to several orders). |
 | Fraternal societies were mainly insurance and welfare providers. | SCHOLARLY CONSENSUS (for benefit orders) | AOUW (1868) paid death benefits (started at $500, soon $2,000). Modern Woodmen, WOW, Royal Neighbors and K of C sold life insurance. Beito documents lodge doctors, orphanages and old-age homes. Masons and Elks were more social and charitable than insurance-based. |
-| The Woodmen of the World gave every member a tree-stump gravestone. | DOCUMENTED, with dates | Free marker about 1890-1900. After that, a $100 rider was needed (about 1900-1920s). Program discontinued in the 1920s (Stott 2003). Not every WOW grave is a tree stone. |
+| The Woodmen of the World gave every member a tree-stump gravestone. | DOCUMENTED, with dates | Free marker about 1890-1900. After that, a $100 rider was needed (about 1900-1920s). Program discontinued in the 1920s (Stott 2003). STILL UNVERIFIED (checked 2026-09-30: web-search budget used up and archive hosts blocked before this item could be checked). Not every WOW grave is a tree stone. |
 | Royal Neighbors of America was the first fraternal society to insure women's lives. | Organization's claim; plausible, UNVERIFIED as a "first" | Chartered 21 Mar 1895 in Illinois; it began in 1888 as an auxiliary to Modern Woodmen. Treat "first" as the organization's own claim. |
 | Maggie Lena Walker was the first Black woman to charter a bank in the U.S. | DOCUMENTED (NPS) | St. Luke Penny Savings Bank, 1903; it grew out of the Independent Order of St. Luke. |
 | African American fraternal groups helped win civil rights. | SCHOLARLY (argued, well-evidenced) | Skocpol, Liazos and Ganz (2006) document lodges funding lawyers, taking cases to the Supreme Court (for example, *Creswill*, 1912), and joining 1950s-60s mobilization. |
@@ -259,7 +260,7 @@ Format: citation / where / URL / what it shows / youngest band.
 
 ## Story hooks
 
-1. **The school in the kitchen (Boston, 1787-1800).** Prince Hall and other Black fathers pay school taxes, but their children are turned away from Boston's free schools. They petition the legislature in October 1787 and lose. So Hall opens a school in his own home, and Harvard students teach there. *Band 3-5.* Lesson: a club can be a place where people help each other learn.
+1. **The school in the kitchen (Boston, 1787-1800).** Prince Hall and other Black fathers pay school taxes, but their children are turned away from Boston's free schools. They petition the legislature in October 1787 and lose. So in 1798 the community opens its own school in the home of Hall's son, Primus Hall. (CORRECTED 2026-09-30: was "So Hall opens a school in his own home, and Harvard students teach there"; https://www.nps.gov/people/primus-hall.htm . The Harvard-students detail is STILL UNVERIFIED.) *Band 3-5.* Lesson: a club can be a place where people help each other learn.
 
 2. **Locked below deck (Boston Harbor, February 1788).** A man named Avery hires three free Black Bostonians, Cato Newell, Wenham Carey and Luke Russell, to repair a ship. He sends them below, locks them in, and sails for the Caribbean to sell them. Their families write to the government. Prince Hall petitions, and Governor Hancock writes to other governors. A month later Massachusetts outlaws the slave trade. MHS reports the men eventually came home (confirm details in the MHS essay). *Band 6-8.*
 
@@ -330,13 +331,13 @@ These come from transcriptions reached through search. They were not checked lin
 
 - **Prince Hall et al., petition, January 1777** (Mass. Archives; NCC transcription):
   "...have in common with all other men a natural and inalienable right to that freedom which the Great Parent of the Universe hath bestowed equally on all mankind..."
-  Note: some transcriptions read "has," others "hath." Resolve against the Massachusetts Archives image or MHS *Collections*.
+  Note: some transcriptions read "has," others "hath"; some read "a natural & unalienable right" (https://alphahistory.com/americanrevolution/prince-hall-abolition-slavery-1777/). STILL UNVERIFIED (checked 2026-09-30: only modernized transcriptions seen). Resolve against the Massachusetts Archives image or MHS *Collections*.
 - **Prince Hall, *A Charge ... 1797*** (Evans N24354):
   "Patience, I say, for were we not possess'd of a great measure of it you could not bear up under the daily insults you meet with in the streets of Boston; much more on public days of recreation, how are you shamefully abus'd..."
   "...Thus doth Ethiopia stretch forth her hand from slavery, to freedom and equality."
   Check the page numbers in the Evans facsimile.
 - **Petition of 17 Oct 1787** (as quoted in secondary sources): "...they can't enjoy them because they are black."
-  Check against the Massachusetts Archives original.
+  Check against the Massachusetts Archives original. Matches the secondary quotation at https://whenandwhereinboston.org/entry/schools-for-african-american-children-are-demanded (fuller: "We must fear for our rising offspring to keep them in ignorance in a land of gospel light, where there is provision made for them as well as others, and yet they can't enjoy them because they are black."); original STILL UNVERIFIED (checked 2026-09-30).
 - **House Committee on Elections, 1913**: "The Committee cannot condemn too strongly the publication of the false and libelous article ... which was the spurious Knights of Columbus Oath."
   Check the Congressional Record, 15 Feb 1913.
 - **Rep. Thomas S. Butler (R-PA), defense in *Bonniwell v. Butler***: "I did not believe in its truthfulness and so stated my judgment concerning it on November 4, 1912..."

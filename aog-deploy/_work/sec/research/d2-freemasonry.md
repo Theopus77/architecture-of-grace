@@ -38,13 +38,13 @@ Status labels: **DOCUMENTED** (primary evidence), **SCHOLARLY CONSENSUS**, **DIS
 |---|---|---|
 | c. 1390 | Regius Poem written (Middle English verse; British Library Royal MS 17 A I). Tells of King Athelstan giving masons "fifteen articles and fifteen points". | Manuscript DOCUMENTED; date is scholarly estimate (SCHOLARLY CONSENSUS); the Athelstan story is legend. |
 | c. 1450 | Cooke Manuscript (British Library Add MS 23198), second-oldest Old Charge. | DOCUMENTED (date is estimate from handwriting) |
-| 1598, 28 Dec | First Schaw Statutes, signed by William Schaw; original held by the Lodge of Edinburgh (Mary's Chapel). | DOCUMENTED |
-| 1599, 9 Jan | Oldest surviving lodge minute (Lodge Aitchison's Haven, East Lothian): Robert Widderspone made a Fellow of Craft. Now held by the Grand Lodge of Scotland. | DOCUMENTED |
-| 1599, 31 Jul | Lodge of Edinburgh (Mary's Chapel) minutes begin: oldest records of a lodge that still exists. | DOCUMENTED |
-| 1599, 28 Dec | Second Schaw Statutes: Kilwinning wardens must test "ye airt of memorie". | DOCUMENTED |
-| 1646, 16 Oct | Elias Ashmole "made a Free Mason at Warrington". | DOCUMENTED (Ashmole's own diary) |
+| 1598, 28 Dec | First Schaw Statutes, signed by William Schaw; original held by the Lodge of Edinburgh (Mary's Chapel). | DOCUMENTED. VERIFIED 2026-09-30 (date; https://pglforfarshire.org/Aitchisons_Haven.html , https://Freemasonry.bcy.ca/aqc/aitchison-lodge.pdf) |
+| 1599, 9 Jan | Oldest surviving lodge minute (Lodge Aitchison's Haven, East Lothian): Robert Widderspone made a Fellow of Craft. Now held by the Grand Lodge of Scotland. (The minute itself is dated 9 January 1598 old style; the Scottish year began 25 March until 1600.) | DOCUMENTED. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Grand_Lodge_of_Scotland ; https://pglforfarshire.org/Aitchisons_Haven.html) |
+| 1599, 31 Jul | Lodge of Edinburgh (Mary's Chapel) minutes begin: oldest records of a lodge that still exists. | DOCUMENTED. VERIFIED 2026-09-30 (https://pglforfarshire.org/Aitchisons_Haven.html) |
+| 1599, 28 Dec | Second Schaw Statutes: Kilwinning wardens must test "ye airt of memorie". | DOCUMENTED. VERIFIED 2026-09-30 (https://www.thesquaremagazine.com/mag/article/202204the-second-william-schaw-statutes-1599/) |
+| 1646, 16 Oct | Elias Ashmole "made a Free Mason at Warrington". | DOCUMENTED (Ashmole's own diary). VERIFIED 2026-09-30 (https://masonicperiodicals.org/periodicals/mmg/issues/mmg_01121881/page/1/ ; Wikipedia "Elias Ashmole") |
 | 1696 | Edinburgh Register House Manuscript: earliest known written catechism and admission ritual. | DOCUMENTED |
-| 1717, 24 Jun | Traditional founding of the Grand Lodge at the Goose and Gridiron, London. | DISPUTED (see Claims ledger) |
+| 1717, 24 Jun | Traditional founding of the Grand Lodge at the Goose and Gridiron, London. | DISPUTED (see Claims ledger). Traditional date and the 1721 counter-argument VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Premier_Grand_Lodge_of_England ; https://www.quatuorcoronati.com/wp-content/uploads/2018/02/1717-and-All-That-Hamill.pdf) |
 | 1721 | Duke of Montagu becomes Grand Master; Prescott and Sommers date the real Grand Lodge from here. | DOCUMENTED (Montagu); dating argument DISPUTED |
 | 1723 | Anderson's *Constitutions of the Free-Masons*, London. | DOCUMENTED |
 | 1726 | Graham Manuscript (Noah legend instead of Hiram); held by the Library and Museum of Freemasonry, London. | DOCUMENTED |
@@ -52,12 +52,12 @@ Status labels: **DOCUMENTED** (primary evidence), **SCHOLARLY CONSENSUS**, **DIS
 | 1730, 8 Dec | Franklin's *Pennsylvania Gazette* (No. 108) reports "several Lodges of Freemasons erected in the Province". | DOCUMENTED |
 | 1731 | Franklin joins St. John's Lodge, Philadelphia (probably February). | DOCUMENTED that he was a member; exact month is "probably" |
 | 1734 | Franklin prints Anderson's *Constitutions* in Philadelphia. | DOCUMENTED |
-| 1738, 28 Apr | Clement XII issues *In eminenti apostolatus specula*. | DOCUMENTED |
-| 1752, 4 Nov | George Washington initiated at the Fredericksburg Lodge, Virginia. Master Mason 4 Aug 1753. | DOCUMENTED (lodge ledger) |
-| 1775, 6 Mar | Prince Hall and 14 men of color made Masons in an Irish-warranted military lodge (38th Foot) in Boston. | DOCUMENTED per Prince Hall lodge histories; see ledger |
-| 1776, 20 Aug | First Great Seal committee (Franklin, Adams, Jefferson; consultant Du Simitière) reports a design with "The Eye of Providence in a radiant Triangle". Congress tables it. | DOCUMENTED |
-| 1782, 20 Jun | Congress adopts the Great Seal; the reverse carries an unfinished pyramid under the eye. | DOCUMENTED |
-| 1784, 29 Sep | Grand Lodge of England charters African Lodge No. 459 (Prince Hall). Warrant arrives in Boston 1787. | DOCUMENTED |
+| 1738, 28 Apr | Clement XII issues *In eminenti apostolatus specula*. | DOCUMENTED. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/In_eminenti_apostolatus) |
+| 1752, 4 Nov | George Washington initiated at the Fredericksburg Lodge, Virginia. Fellowcraft 3 Mar 1753; Master Mason 4 Aug 1753. | DOCUMENTED (lodge ledger). VERIFIED 2026-09-30 (https://www.mountvernon.org/digital-encyclopedia/article/freemasonry) |
+| 1775, 6 Mar | Prince Hall and 14 men of color made Masons in an Irish-warranted military lodge (Lodge No. 441, 38th Foot; Sgt John Batt) in Boston. | Traditional date VERIFIED 2026-09-30 as stated in Prince Hall lodge histories (https://www.freemasonry.bcy.ca/biography/hall_p/hall_p.html ; https://princehall.org/?p=28747). DISPUTED: Oscar Alleyne, "John Batt: Mercenary, Opportunist and Hero", AQC 139 (read 19 Feb 2026), argues 6 Mar 1778 (paper's existence and argument VERIFIED 2026-09-30, https://www.quatuorcoronati.com/?p=406 ; https://www.quatuorcoronati.com/wp-content/uploads/2025/12/AQC-139-Alleyne.pdf) |
+| 1776, 20 Aug | First Great Seal committee (Franklin, Adams, Jefferson; consultant Du Simitière) reports a design with "The Eye of Providence in a radiant Triangle". Congress tables it. | DOCUMENTED. VERIFIED 2026-09-30 (https://gutenberg.org/files/73844/73844-h/73844-h.htm ; https://greatseal.com/committees/firstcomm) |
+| 1782, 20 Jun | Congress adopts the Great Seal; the reverse carries an unfinished pyramid under the eye. | DOCUMENTED. VERIFIED 2026-09-30 (https://www.archives.gov/milestone-documents/original-design-of-the-great-seal-of-the-united-states ; Wikipedia "Great Seal of the United States") |
+| 1784, 29 Sep | Grand Lodge of England charters African Lodge No. 459 (Prince Hall). Warrant delivered in Boston 29 Apr 1787 by Capt. James Scott. | DOCUMENTED. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/African_Lodge_No._459 ; https://baystatebanner.com/2017/02/08/black-masons-owe-lineage-to-18th-century-boston-pioneer-prince-hall/) |
 | 1797 | Thomas Smith Webb, *The Freemason's Monitor*, gives the all-seeing eye a standard place in American Masonic teaching. | DOCUMENTED (the book); "first Masonic use" DISPUTED |
 | 1798 | Washington, replying to G. W. Snyder about the "Illuminati", says he has been in a lodge only "once or twice" in thirty years. John Adams tells Massachusetts Masons he was "never" initiated. | DOCUMENTED |
 | 1822 to 1827 | First Grand Lodge of Illinois (Vandalia; Shadrach Bond Grand Master 1823) collapses in the anti-Masonic years. | DOCUMENTED per Grand Lodge histories |
@@ -66,14 +66,14 @@ Status labels: **DOCUMENTED** (primary evidence), **SCHOLARLY CONSENSUS**, **DIS
 | 1827, Oct | A body found at Oak Orchard Creek is claimed to be Morgan; later identified as Timothy Munroe (Monroe). | DOCUMENTED |
 | 1828, Feb | Thurlow Weed and Samuel Heron start the *Anti-Masonic Enquirer*, Rochester. | DOCUMENTED |
 | 1830 | *People v. Mather*: trial connected to the abduction; acquittal. | DOCUMENTED |
-| 1831, 26 to 28 Sep | Anti-Masonic Party national convention, Baltimore: 111 delegates (count UNVERIFIED), 13 states; nominates William Wirt, a former Mason. | DOCUMENTED |
+| 1831, 26 to 28 Sep | Anti-Masonic Party national convention, Baltimore: about 110 delegates (sources give 111, 113 or 116), 13 states; nominates William Wirt, a former Mason. CORRECTED 2026-09-30: was "111 delegates (count UNVERIFIED)"; sources disagree (Wikipedia "1832 United States presidential election": 111; https://www.dictionary.com/browse/anti-masonic%20party : 113). | DOCUMENTED. Dates and "first national nominating convention" VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/1832_United_States_presidential_election ; https://constitutingamerica.org/1832-the-anti-masonic-controversy-guest-essayist-daniel-cotter/) |
 | 1831 to 1833 | John Quincy Adams writes public anti-Masonic letters (collected 1847). | DOCUMENTED |
 | 1840, 6 Apr | Grand Lodge of Illinois re-formed at Jacksonville. | DOCUMENTED per Grand Lodge histories |
 | 1842, 15 to 16 Mar | Joseph Smith made a Mason at sight at Nauvoo, Illinois, by Grand Master Abraham Jonas. | DOCUMENTED (minutes) |
 | 1868 | National Christian Association, an anti-secret-society group led by Jonathan Blanchard of Wheaton College, founded; its paper *Christian Cynosure* published in Chicago. | DOCUMENTED |
 | 1882, Sep | Morgan Monument dedicated in Batavia Cemetery, paid for by the National Christian Association. | DOCUMENTED |
 | 1892 | Masonic Temple, Chicago (Burnham and Root), 21 stories at State and Randolph; tallest in Chicago 1895 to 1899; torn down 1939. | DOCUMENTED |
-| 1935 | Both sides of the Great Seal appear on the $1 silver certificate, after Henry A. Wallace (a Mason) suggested it to FDR (also a Mason). | DOCUMENTED |
+| 1935 | Both sides of the Great Seal appear on the $1 silver certificate, after Henry A. Wallace (a Mason) suggested it to FDR (also a Mason). | DOCUMENTED. 1935 and Wallace's role VERIFIED 2026-09-30 (Wikipedia "Great Seal of the United States"; https://www.govinfo.gov/features/great-seal) |
 
 ---
 
@@ -87,7 +87,7 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 - Catalogue: https://searcharchives.bl.uk/catalog/040-002107232 (URL confirmed by search; the record returned was for this manuscript).
 - Transcription with modern English: https://phoenixmasonry.org/regius_poem.htm (URL confirmed by search).
 - Shows: a craft rulebook in rhyme. Honest work, fair pay, keeping the master's counsel, good manners at church and at table. Came into the British Museum with the Royal Library in 1757. It sat in the catalogue as a poem of "moral duties" until James O. Halliwell, who was not a Mason, spotted its subject in 1838-39 and published it in 1840 (*The Early History of Freemasonry in England*, 2nd ed. 1844).
-- Short quotation (Middle English): "Fyftene artyculus þey þer sow3ton, and fyftene poyntys þer þey wro3ton" ("Fifteen articles they there sought, and fifteen points there they wrought"). QUOTE CHECK against the BL images or Halliwell 1840.
+- Short quotation (Middle English): "Fyftene artyculus þey þer sow3ton, and fyftene poyntys þer þey wro3ton" ("Fifteen articles they there sought, and fifteen points there they wrought"). QUOTE CHECK against the BL images or Halliwell 1840. STILL UNVERIFIED (checked 2026-09-30: archive hosts blocked; no transcription seen). Date c. 1390 and shelfmark Royal MS 17 A I VERIFIED 2026-09-30 (https://phoenixmasonry.org/regius_poem.htm ; https://en.wikipedia.org/wiki/Masonic_manuscripts); note one source gives the size as about 4 x 5.5 inches.
 - Band: **3-5** (a medieval rulebook for builders; "rules for being a good worker and neighbor").
 
 **2. The Cooke Manuscript.** Old Charges in prose, c. 1450. British Library **Add MS 23198**. Sold to the British Museum on 14 October 1859 by Mrs Caroline Baker for £4 (recorded in Sir Frederic Madden's diary). First printed by Matthew Cooke, 1861; facsimile by Quatuor Coronati Lodge No. 2076, 1890.
@@ -103,7 +103,7 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 
 **4. Second Schaw Statutes, 28 December 1599.** Addressed partly to the Lodge of Kilwinning.
 - Text and article: https://www.thesquaremagazine.com/mag/article/202204the-second-william-schaw-statutes-1599/ (URL confirmed by search).
-- Short quotation (Scots): the warden of the lodge of Kilwinning is to "tak tryall of ye airt of memorie and science yrof, of everie fellowe of craft and everie prenteiss". QUOTE CHECK.
+- Short quotation (Scots): the warden of the lodge of Kilwinning is to "tak tryall of ye airt of memorie and science yrof, of everie fellowe of craft and everie prenteiss" (the text continues "according ayr of yr vocations"). VERIFIED 2026-09-30 (https://www.thesquaremagazine.com/mag/article/202204the-second-william-schaw-statutes-1599/ ; transcription, not a scan).
 - Shows: masons were tested on a memory skill. Historian David Stevenson (*The Origins of Freemasonry: Scotland's Century, 1590-1710*, Cambridge UP, 1988) links this to Renaissance "memory palace" methods. That link is an interpretation (DISPUTED in degree, widely cited).
 - Band: **6-8** (memory palaces are also a fine 3-5 activity).
 
@@ -112,7 +112,7 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 - Band: **6-8**.
 
 **6. Elias Ashmole, diary entry, 16 October 1646.** Bodleian Library, Ashmole manuscripts. Standard edition: C. H. Josten, ed., *Elias Ashmole (1617-1692): His Autobiographical and Historical Notes*, 5 vols, Oxford, 1966. **UNVERIFIED**: exact Bodleian shelfmark and page in Josten.
-- Quotation: "I was made a Free Mason at Warrington in Lancashire, with Coll: Henry Mainwaring of Karincham in Cheshire." The entry then lists those present (Richard Penket, Warden; James Collier; Richard Sankey; Henry Littler; John Ellam; Richard Ellam; Hugh Brewer). QUOTE CHECK against Josten.
+- Quotation: "I was made a Free Mason at Warrington in Lancashire, with Coll: Henry Mainwaring of Karincham in Cheshire." The entry then lists those present (Richard Penket, Warden; James Collier; Richard Sankey; Henry Littler; John Ellam; Richard Ellam; Hugh Brewer). VERIFIED 2026-09-30 against the 1881 *Masonic Magazine* reprint and Wikipedia "Elias Ashmole" (search-result text; "Karincham" is glossed [Kermincham]); still compare with Josten before printing.
 - Reprinted in the *Masonic Magazine*, 1 December 1881: https://masonicperiodicals.org/periodicals/mmg/issues/mmg_01121881/page/1/ (URL confirmed by search).
 - Shows: a scholar, not a builder, joining a lodge. Ashmole later founded the Ashmolean Museum. His diary mentions Masonry once more, in 1682.
 - Band: **6-8**.
@@ -160,13 +160,13 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 - Band: **6-8**.
 
 **14. Fredericksburg Lodge ledger, 4 November 1752.** Held by Fredericksburg Lodge No. 4, Virginia.
-- Quotation: "Nov. 4th. 1752. This evening Mr. George Washington was initiated as an entered Apprentice." Fee: £2 3s. QUOTE CHECK.
+- Quotation: "Nov. 4th. 1752. This evening Mr. George Washington was initiated as an entered Apprentice." Fee: £2 3s. VERIFIED 2026-09-30 (Mount Vernon transcription, https://www.mountvernon.org/digital-encyclopedia/article/freemasonry ; not the ledger image).
 - Context: Mount Vernon Digital Encyclopedia, https://www.mountvernon.org/digital-encyclopedia/article/freemasonry and https://www.mountvernon.org/george-washington/freemasonry/masonic-associations (URLs confirmed by search).
 - Band: **3-5** (young Washington, age 20, joining a club).
 
 **15. Report of the first Great Seal committee, 20 August 1776.** Thomas Jefferson Papers.
 - Founders Online: https://founders.archives.gov/documents/Jefferson/01-01-02-0206-0004 (URL confirmed by search).
-- Quotation: "The Eye of Providence in a radiant Triangle whose Glory extends over the Shield and beyond the Figures." QUOTE CHECK.
+- Quotation: "The Eye of Providence in a radiant Triangle whose Glory extends over the Shield and beyond the Figures." VERIFIED 2026-09-30 (Hunt 1909, https://gutenberg.org/files/73844/73844-h/73844-h.htm ; https://greatseal.com/committees/firstcomm).
 - Du Simitière's own sketch is among the Jefferson Papers at the Library of Congress. **UNVERIFIED**: LOC item URL.
 - Shows: the eye was placed on the front of the seal by the 1776 committee and its artist-consultant. Congress tabled the design.
 - Band: **3-5** (design a seal for your class).
@@ -178,18 +178,18 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 
 **17. John Adams to Josiah Bartlett (Grand Lodge of Massachusetts), 22 June 1798.**
 - Founders Online: https://founders.archives.gov/documents/Adams/99-02-02-2634 (URL confirmed by search).
-- Quotations: "As I never had the honor to be one of your ancient Fraternity" and "So it has happened that I never had the Felicity to be initiated." QUOTE CHECK.
+- Quotations: "As I never had the honor to be one of your ancient Fraternity" and "Yet So it has happened that I never had the Felicity to be initiated." VERIFIED 2026-09-30 (Founders Online text as shown in search results for https://founders.archives.gov/documents/Adams/99-02-02-2634 ; page itself blocked). Bartlett here is Josiah Bartlett, Grand Master of Massachusetts, 1798.
 - Shows: a founder saying in his own words that he was not a Mason while still praising the lodge.
 - Band: **6-8**.
 
 **18. G. W. Snyder to George Washington, 22 August 1798, and Washington's reply, 25 September 1798.**
 - Snyder's letter: https://founders.archives.gov/documents/Washington/06-02-02-0435 (URL confirmed by search). Washington's reply is in Retirement Series vol. 3: https://founders.archives.gov/volumes/Washington/06-03 (**UNVERIFIED**: exact document URL).
-- Quotation from the reply: "The fact is, I preside over none, nor have I been in one more than once or twice, within the last thirty years." QUOTE CHECK.
+- Quotation from the reply: "The fact is, I preside over none, nor have I been in one more than once or twice, within the last thirty years." STILL UNVERIFIED (checked 2026-09-30: wording appears only in secondary search summaries; Founders Online and Gutenberg #29949 blocked; exact document URL not found).
 - Shows: the 1798 "Illuminati" panic, and Washington quietly correcting a stranger's exaggeration of his Masonic role.
 - Also: Julius F. Sachse, *Washington's Masonic Correspondence as Found Among the Washington Papers in the Library of Congress* (Philadelphia, 1915), Project Gutenberg #29949: https://gutenberg.org/ebooks/29949 (item confirmed by search).
 - Band: **9-10** (the Illuminati scare belongs with the conspiracy-theory unit).
 
-**19. Prince Hall and African Lodge No. 459.** Warrant from the Grand Lodge of England, 29 September 1784; delivered in Boston 29 April 1787.
+**19. Prince Hall and African Lodge No. 459.** Warrant from the Grand Lodge of England, 29 September 1784; delivered in Boston 29 April 1787 by Capt. James Scott. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/African_Lodge_No._459 ; https://baystatebanner.com/2017/02/08/black-masons-owe-lineage-to-18th-century-boston-pioneer-prince-hall/).
 - Lodge-published history: https://princehall.org/?p=28747 ; Dorchester Atheneum: https://www.dorchesteratheneum.org/?p=2653 (URLs confirmed by search). **UNVERIFIED**: where the original warrant is kept today and whether a scan is online.
 - Shows: free Black men in Boston built their own Masonic tradition when white lodges shut them out. Prince Hall also petitioned the Massachusetts legislature against slavery.
 - Band: **6-8**.
@@ -263,8 +263,8 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 | George Washington was a Mason. | DOCUMENTED | Fredericksburg ledger 1752; Master Mason 1753. He was Master of Alexandria Lodge No. 22 (1788; standard fact, not re-checked in this search). He was not a "Grand Master of the United States" (no such office existed). |
 | Washington was an active leader of American Masonry. | UNSUPPORTED | His 1798 letter to Snyder: in a lodge only "once or twice" in thirty years. |
 | Benjamin Franklin was a Mason. | DOCUMENTED | St. John's Lodge, Philadelphia (1731); Grand Master of Pennsylvania 1734; printed the *Constitutions* 1734; later in Paris lodge of the Nine Sisters. |
-| John Adams was a Mason. | DISPROVEN | His own letter, 22 June 1798: "never had the Felicity to be initiated." |
-| Thomas Jefferson was a Mason. | UNSUPPORTED | No lodge record found. Masonic sources themselves do not claim him as a proven member. |
+| John Adams was a Mason. | DISPROVEN | His own letter, 22 June 1798: "never had the Felicity to be initiated." VERIFIED 2026-09-30 (https://founders.archives.gov/documents/Adams/99-02-02-2634 , via search result text) |
+| Thomas Jefferson was a Mason. | UNSUPPORTED | No lodge record found. Masonic sources themselves do not claim him as a proven member. VERIFIED 2026-09-30: Monticello says he "is not known to have belonged to any fraternal organization such as the Freemasons" (https://www.monticello.org/encyclopedia/fraternal-organizations). |
 | "Most signers of the Declaration were Masons." | DISPROVEN / exaggerated | The Grand Lodge of Pennsylvania counts 9 of 56 as proven, about 11 more "suspected". Counts vary by source; treat any number above ~9 as unproven. |
 | The Constitution/Revolution was a Masonic plot. | UNSUPPORTED | Masons were on both sides (many British officers belonged to military lodges; Prince Hall was made a Mason in a British regiment's lodge). |
 | The eye on the Great Seal is a Masonic symbol put there by Masons. | DISPROVEN | The eye came from the 1776 committee and its consultant Du Simitière, not a Mason. Of the committee, only Franklin was a Mason, and the design record shows no Masonic input from him. The pyramid came later (1782; William Barton and Charles Thomson). The eye was a common Christian-art symbol of God's watchfulness long before. |
@@ -272,7 +272,7 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 | The dollar bill design (1935) had Masonic involvement. | DOCUMENTED (partly) | Wallace and FDR were both Masons, and Wallace saw the eye as Masonic. But they were copying an existing 1782 seal, not inventing it. |
 | William Morgan was murdered by Masons. | DISPUTED / UNPROVEN | DOCUMENTED: he was abducted by men connected to local lodges and taken to Fort Niagara; some Masons were convicted of the kidnapping with short sentences. His death was never proved in court and no body was confirmed. Rumors had him alive elsewhere. The 1882 monument states murder as fact. |
 | Thurlow Weed said the Oak Orchard body was "a good enough Morgan until after the election." | DISPUTED | This is the popular version. Weed's own account says the reply was: "That is a good enough Morgan for us until you bring back the one you carried off." Teach both and ask which source to trust. |
-| The Anti-Masonic Party held the first national presidential nominating convention. | DOCUMENTED | Baltimore, 26 to 28 Sep 1831; 111 delegates (count UNVERIFIED) from 13 states. |
+| The Anti-Masonic Party held the first national presidential nominating convention. | DOCUMENTED | Baltimore, 26 to 28 Sep 1831; about 110 delegates from 13 states. VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/1832_United_States_presidential_election ; https://constitutingamerica.org/1832-the-anti-masonic-controversy-guest-essayist-daniel-cotter/). CORRECTED 2026-09-30: was "111 delegates (count UNVERIFIED)"; sources give 111, 113 or 116. Note: its own *Proceedings* call it the "Second" Anti-Masonic convention (a 1830 Philadelphia meeting nominated no one), so say "first national *nominating* convention", not "first national convention". |
 | The Anti-Masonic Party wrote the first party platform. | SCHOLARLY CONSENSUS (widely stated) | Convention's "Address to the People", 1831. |
 | William Wirt, the Anti-Masonic nominee, was himself a former Mason. | DOCUMENTED | Standard accounts of the 1832 election; Wirt said so in his acceptance letter (QUOTE CHECK in the 1832 *Proceedings*). |
 | Anti-Masonry nearly wiped out Illinois Masonry. | DOCUMENTED (per Grand Lodge histories) | First Grand Lodge of Illinois (1823) stopped work around 1827; reorganized 1840. |
@@ -291,7 +291,7 @@ Each entry: citation / where it is / URL / what it shows / youngest grade band.
 6. **Prince Hall's long wait for a letter (6-8).** Boston, March 1775. Prince Hall and fourteen other free Black men are made Masons in a British army lodge. When the army leaves, they have no charter. Hall writes to London. The charter is issued in 1784 and finally arrives by ship in 1787. Lesson: persistence, and building your own institutions when doors are shut.
 7. **The man who never came home (6-8).** Batavia, New York, September 1826. William Morgan, a bricklayer, plans to print Masonic secrets. He is arrested, taken to the jail in Canandaigua over a small debt, let out at night, pushed into a carriage, and driven toward Fort Niagara. He is never seen again. Lesson: rumor, evidence and how a mystery can change a nation's politics.
 8. **"A good enough Morgan" (9-10).** October 1827. A body washes up at Oak Orchard Creek. Anti-Masons say it is Morgan. A widow identifies her husband, Timothy Munroe. Editor Thurlow Weed is accused of using the body for politics. Two versions of his reply survive. Lesson: comparing sources.
-9. **The first convention (6-8 civics).** Baltimore, September 1831. 111 delegates from 13 states meet to choose a president. It is the first national nominating convention in U.S. history, and the party is built on opposing a secret society. Their nominee turns out to be a former Mason.
+9. **The first convention (6-8 civics).** Baltimore, September 1831. About 110 delegates from 13 states meet to choose a president. (CORRECTED 2026-09-30: was "111 delegates"; counts vary by source.) It is the first national nominating convention in U.S. history, and the party is built on opposing a secret society. Their nominee turns out to be a former Mason.
 10. **The eye on your dollar (3-5).** Philadelphia, August 1776. Franklin, Adams and Jefferson ask an artist for a seal. The artist, not a Mason, draws an eye in a triangle. Lesson: design a seal for the class; then check the claim "Masons put the eye on the dollar" with evidence.
 
 ---
