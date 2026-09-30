@@ -67,7 +67,7 @@ float rodD(vec3 p){ vec3 q=rodQ(p);
   float d=sdRBox(q,vec3(.215,.014,.009),.003);
   if(d>.02) return d;
   float nx=mod(q.x+.215,.07)-.035; d=max(d,-max(max(abs(nx)-.0016,abs(q.y-.014)-.006),abs(q.z)-.02));
-  for(int i=0;i<3;i++){ float cx=-.07+float(i)*.07; d=carve(d,vec2(q.x-cx,q.y+.001),49+i,.02,.0017,q.z+.009,.0018); }
+  for(int i=0;i<3;i++){ float cx=-.07+float(i)*.07; d=carve(d,vec2(q.x-cx,q.y+.001),49+i,.02,.0017,abs(q.z)-.009,.0018); }
   d=max(d,-(p.y));
   return d; }
 vec2 map(vec3 p){
@@ -85,13 +85,15 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==2.) return .9;
   if(id==3.){ vec3 q=bagQ(p); float a=.55+.1*fbm(q.xy*30.);
     if(abs(q.y-.04)<.003) a=.35;                            /* a stitched seam near the base */
+    float ang=atan(q.z,q.x); float fold=abs(fract(ang*1.6+q.y*3.)-.5);
+    if(q.y>.1&&fold<.06*smoothstep(.1,.17,q.y)) a=.3;       /* gathered folds under the cord */
     if(q.y>.185) a=.45; return a; }
   if(id==4.) return .35;
   if(id==5.){ vec3 q=p-PCH; q.xz=rot(.5)*q.xz; return abs(length(q.xz*vec2(1.,1.6))-.035)<.002?.3:.5; }
   if(id==6.) return .45;
-  if(id==7.){ float w; stonesD(p,w); return .62+.08*mod(w,3.)+.06*fbm(p.xz*80.); }
+  if(id==7.){ float w; stonesD(p,w); return .5+.08*mod(w,3.)+.12*fbm(p.xz*120.+p.y*60.); }
   if(id==8.){ vec3 q=rodQ(p); float a=.62+.12*grain(q.yzx,30.);
     float nx=mod(q.x+.215,.07)-.035; if(abs(nx)<.0028&&q.y>.008) a=.25;
-    if(q.z<-.006){ for(int i=0;i<3;i++){ float cx=-.07+float(i)*.07; if(glyph(vec2(q.x-cx,q.y+.001)/.02,49+i)*.02<.0024) a=.2; } }
+    if(abs(q.z)>.006){ for(int i=0;i<3;i++){ float cx=-.07+float(i)*.07; if(glyph(vec2(q.x-cx,q.y+.001)/.02,49+i)*.02<.0024) a=.2; } }
     return a; }
   return .7; }
