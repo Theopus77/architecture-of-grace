@@ -1111,7 +1111,7 @@ function numOrNull_(v) {
 function doGet(e) {
   return json_({
     ok: true,
-    service: 'AoG Screener Sync',
+    service: 'AoG Sheet Sync',
     status: 'connected',
     version: SCRIPT_VERSION,
     versionDate: SCRIPT_VERSION_DATE

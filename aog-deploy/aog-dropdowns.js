@@ -210,7 +210,7 @@
     var open = bar.__open || !connected;
     var html = !open
       ? '<button type="button" class="aogdd-gsb" data-gsopen="1">✓ ' + (es() ? "Tu Hoja está conectada · herramientas de la Hoja" : "Your Sheet is connected · Sheet tools") + ' ▸</button>'
-      : '<b>' + h[0] + '</b> <a class="aogdd-gsb" href="AoG-Screener-Sync-Code.gs" download="AoG-Screener-Sync-Code.gs">⬇ ' + h[1] + '</a>'
+      : '<b>' + h[0] + '</b> <a class="aogdd-gsb" href="AoG-Sheet-Sync-Code.gs" download="AoG-Sheet-Sync-Code.gs">⬇ ' + h[1] + '</a>'
       + ' <a class="aogdd-gsb" href="AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 ' + h[2] + '</a>'
       + ' <button type="button" class="aogdd-gsb" data-gsconnect="1">' + h[3] + '</button>'
       + (connected ? ' <button type="button" class="aogdd-gsb" data-gsopen="0">' + (es() ? "Ocultar" : "Hide") + '</button>' : '');

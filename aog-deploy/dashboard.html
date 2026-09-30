@@ -742,7 +742,7 @@ function connectCard(){
   return '<details class="card" id="connCard" style="margin-bottom:16px"'+(open?' open':'')+'><summary style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;cursor:pointer;list-style:none;min-height:44px"><p class="k" style="color:var(--goldInk);margin:0">'+t2("Connection details","Detalles de conexión")+' <span class="s" style="font-weight:600">'+(open?"▴":"▾")+'</span></p></summary><p class="s">'+t2("The same link and two keys you set in Apps Script.","El mismo enlace y las dos claves de Apps Script.")+'</p>'
    +'<div class="fld"><label for="syU">'+t2("Web App link","Enlace de la Web App")+'</label><input type="url" id="syU" value="'+esc(u)+'" placeholder="https://script.google.com/…/exec" autocomplete="off" spellcheck="false"></div>'
    +'<div class="f2"><div class="fld"><label for="syW">'+"BACKEND_AUTH_KEY"+'</label><input type="text" id="syW" value="'+esc(w)+'" autocomplete="off"></div><div class="fld"><label for="syK">'+"ADMIN_PULL_KEY"+'</label><input type="text" id="syK" value="'+esc(k)+'" autocomplete="off"></div></div>'
-   +'<div class="row"><button class="btn solid" type="button" id="syS">'+t2("Save","Guardar")+'</button><button class="btn" type="button" id="syT">'+t2("Send a test","Enviar prueba")+'</button>'+(u?'<button class="btn danger" type="button" id="syD">'+t2("Disconnect","Desconectar")+'</button>':'')+'<a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ Code.gs v'+GS_V+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div>'
+   +'<div class="row"><button class="btn solid" type="button" id="syS">'+t2("Save","Guardar")+'</button><button class="btn" type="button" id="syT">'+t2("Send a test","Enviar prueba")+'</button>'+(u?'<button class="btn danger" type="button" id="syD">'+t2("Disconnect","Desconectar")+'</button>':'')+'<a class="btn" href="/AoG-Sheet-Sync-Code.gs" download="AoG-Sheet-Sync-Code-v'+GS_V+'.gs">⬇ Code.gs v'+GS_V+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div>'
    +'<p class="s" id="syMsg" style="margin:10px 0 0" aria-live="polite"></p></details>';
 }
 function dangerCard(){
@@ -1224,7 +1224,7 @@ function student(){
    newest script and what not. A small green light." Three lights, one line each: the Sheet, the script version (asked
    of the Sheet itself: its Web App answers a plain GET with {version}), and bringing work back. "In your Sheet" is
    grouped into Courses, Daily Drafts and Practice as small tiles. ⚠ GS_V must match SCRIPT_VERSION in
-   AoG-Screener-Sync-Code.gs and EXPECTED in index.html. */
+   AoG-Sheet-Sync-Code.gs and EXPECTED in index.html. */
 const GS_V=19;
 function scriptRec(){ const r=get("aog.sync.scriptv",null); return (r&&typeof r==="object"&&r.u===raw("aog.sync.url"))?r:null; }
 function noteScript(v,d){ const n=+v; if(!isFinite(n)||n<=0) return; put("aog.sync.scriptv",{v:n,d:String(d||"").slice(0,10),at:new Date().toISOString(),u:raw("aog.sync.url")}); }
@@ -1242,7 +1242,7 @@ function light(kind,title,line,extra){
 }
 function lights(){
   const u=raw("aog.sync.url"), w=raw("aog.sync.writekey"), k=raw("aog.sync.key"), r=scriptRec(), st=get("aog.dash2.gsCheck","");
-  const gs='<a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ '+t2("Download Code.gs v","Descargar Code.gs v")+GS_V+'</a>';
+  const gs='<a class="btn" href="/AoG-Sheet-Sync-Code.gs" download="AoG-Sheet-Sync-Code-v'+GS_V+'.gs">⬇ '+t2("Download Code.gs v","Descargar Code.gs v")+GS_V+'</a>';
   const how='<details class="lt-how"><summary>'+t2("How to update","Cómo actualizar")+'</summary><ol>'
     +'<li>'+t2("Download the new Code.gs below.","Descarga el nuevo Code.gs abajo.")+'</li>'
     +'<li>'+t2("Open your Sheet, then Extensions ▸ Apps Script. Select everything in Code.gs and paste the new one over it. Save.","Abre tu Hoja y luego Extensiones ▸ Apps Script. Selecciona todo en Code.gs y pega el nuevo encima. Guarda.")+'</li>'
