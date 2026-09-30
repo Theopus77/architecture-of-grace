@@ -1,7 +1,7 @@
 /* The Unseen Realm Unit 1 "God's Family in Heaven" - a paper pinwheel (the wind: real but unseen)
    standing in a clay pot with a young plant (the garden home), and a feather on the table, and a diamond kite with its tail. Objects only. */
-#define CAM_POS vec3(-0.45,0.42,-1.0)
-#define CAM_TGT vec3(-0.1,0.08,0.1)
+#define CAM_POS vec3(-0.9001,0.4901,-1.2607)
+#define CAM_TGT vec3(-0.4370,0.0402,0.1949)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.32)
 #define MAXT 8.
