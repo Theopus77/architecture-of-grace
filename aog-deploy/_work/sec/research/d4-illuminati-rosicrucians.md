@@ -17,7 +17,7 @@ Prepared for the Architecture of Grace K-12 course "Secret Societies." Research 
 ## Summary
 
 1. The Order of the Illuminati was real. Adam Weishaupt, a law professor at the University of Ingolstadt in Bavaria, founded it on 1 May 1776 (SCHOLARLY CONSENSUS; the date comes from the order's own papers).
-2. Its first and, for years, only grade was the "Minerval," named for Minerva, goddess of wisdom. Members took classical code names (Weishaupt was "Spartacus"; Zwack was "Cato"; Knigge was "Philo").
+2. Its first and, for years, only grade was the "Minerval," named for Minerva, goddess of wisdom. Members took classical code names (Weishaupt was "Spartacus"; Zwack was "Cato"; Knigge was "Philo"). Code names Spartacus and Philo VERIFIED 2026-09-30, third pass (https://en.wikipedia.org/wiki/Adolph_Freiherr_Knigge (Wikipedia); https://www.newadvent.org/cathen/07661b.htm). "Cato" for Zwack and the Minerval grade STILL UNVERIFIED (checked 2026-09-30, third pass: not in the search text seen; check the *Originalschriften* or Catholic Encyclopedia page).
 3. Its aim, in its own papers, was moral and intellectual improvement of an elite and quiet influence over appointments, against church control of education. Critics read the same papers as a plot against church and throne.
 4. Baron Adolph Knigge joined in 1780, wrote most of the higher degrees, grew the order into the hundreds, and left on 1 July 1784 after quarrels with Weishaupt.
 5. Elector Karl Theodor of Bavaria banned unauthorized secret societies on 22 June 1784, then named Freemasons and Illuminati specifically on 2 March 1785. Weishaupt lost his post and fled, first to Regensburg and later to Gotha.
@@ -33,41 +33,41 @@ Prepared for the Architecture of Grace K-12 course "Secret Societies." Research 
 
 | Date | Event | Status |
 |---|---|---|
-| 1614 | *Fama Fraternitatis* printed at Kassel by Wilhelm Wessel, bound with an Italian satire (*Allgemeine und general Reformation der gantzen weiten Welt*) | DOCUMENTED (imprint) |
-| 1615 | *Confessio Fraternitatis* printed (Kassel, Wessel) | SCHOLARLY CONSENSUS |
-| 1616 | *Chymische Hochzeit Christiani Rosencreutz anno 1459*, Strasbourg, heirs of Lazarus Zetzner | DOCUMENTED (imprint) |
+| 1614 | *Fama Fraternitatis* printed at Kassel by Wilhelm Wessel, bound with an Italian satire (*Allgemeine und general Reformation der gantzen weiten Welt*) | DOCUMENTED (imprint). VERIFIED 2026-09-30, third pass for 1614 and Kassel (https://en.wikipedia.org/wiki/Rosicrucianism (Wikipedia); https://ciphermysteries.com/secret-history-of-the-rosicrucians/the-secret-history-of-the-rosicrucians-2-the-three-texts) |
+| 1615 | *Confessio Fraternitatis* printed (Kassel, Wessel) | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30, third pass for 1615 and Kassel (https://en.wikipedia.org/wiki/Rosicrucianism (Wikipedia)); printer's name not seen |
+| 1616 | *Chymische Hochzeit Christiani Rosencreutz anno 1459*, Strasbourg, heirs of Lazarus Zetzner | DOCUMENTED (imprint). VERIFIED 2026-09-30, third pass for 1616, Strasbourg, anonymous, and Andreae's later claim of authorship in his autobiography (https://en.wikipedia.org/wiki/Rosicrucianism (Wikipedia)); Zetzner imprint not seen |
 | 1652 | Thomas Vaughan ("Eugenius Philalethes") publishes English translation, *The Fame and Confession of the Fraternity of R: C:*, London, for Giles Calvert | DOCUMENTED (imprint) |
 | 1690 | Ezechiel Foxcroft's English *Chymical Wedding* | SCHOLARLY CONSENSUS |
-| 1 May 1776 | Weishaupt founds the "Perfectibilists," soon the Illuminati, at Ingolstadt | SCHOLARLY CONSENSUS |
+| 1 May 1776 | Weishaupt founds the "Perfectibilists," soon the Illuminati, at Ingolstadt | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30, third pass (https://en.wikipedia.org/wiki/Adam_Weishaupt (Wikipedia); LMU Munich's own history page for 1776, https://www.lmu.de/en/about-lmu/lmu-at-a-glance/history/1776/ , seen as a result title only) |
 | 1777-1780 | Minerval grade only; slow growth among students and young officials | SCHOLARLY CONSENSUS |
-| 1780 | Knigge joins; writes higher degrees; order spreads through Masonic lodges | SCHOLARLY CONSENSUS |
+| 1780 | Knigge joins; writes higher degrees; order spreads through Masonic lodges | SCHOLARLY CONSENSUS. Joining in 1780 VERIFIED 2026-09-30, third pass (https://en.wikipedia.org/wiki/Adolph_Freiherr_Knigge (Wikipedia); Catholic Encyclopedia 1910, "Illuminati", https://www.newadvent.org/cathen/07661b.htm) |
 | 1782 | Wilhelmsbad Masonic Congress; Knigge recruits heavily from it | SCHOLARLY CONSENSUS |
-| 1 July 1784 | Knigge formally leaves the order | SCHOLARLY CONSENSUS |
-| 22 June 1784 | First Bavarian edict: all societies not approved by the state banned | DOCUMENTED (edict cited in all scholarship; original text not examined in this session) |
-| 24 Feb 1785 | Illuminati petition the Elector, saying they were misunderstood | SCHOLARLY CONSENSUS |
-| 2 March 1785 | Second edict names Freemasons and Illuminati | DOCUMENTED (as above) |
+| 1 July 1784 | Knigge formally leaves the order | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30, third pass (https://en.wikipedia.org/wiki/Adolph_Freiherr_Knigge (Wikipedia); https://www.newadvent.org/cathen/07661b.htm , which cites Nachtrag I, 129 for his complaint about Weishaupt) |
+| 22 June 1784 | First Bavarian edict: all societies not approved by the state banned | DOCUMENTED (edict cited in all scholarship; original text not examined in this session). VERIFIED 2026-09-30, third pass (Massimo Introvigne, Bitter Winter, https://bitterwinter.org/?p=28889 ; Catholic Encyclopedia, https://www.catholic.com/encyclopedia/illuminati) |
+| 24 Feb 1785 | Illuminati petition the Elector, saying they were misunderstood | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30, third pass (https://bitterwinter.org/?p=28889) |
+| 2 March 1785 | Second edict names Freemasons and Illuminati | DOCUMENTED (as above). VERIFIED 2026-09-30, third pass (https://bitterwinter.org/?p=28889 ; https://www.catholic.com/encyclopedia/illuminati) |
 | Feb 1785 | Weishaupt dismissed; flees to Regensburg | SCHOLARLY CONSENSUS |
 | 20 July 1785 | Illuminatus priest Johann Jakob Lanz killed by lightning near Regensburg; story that order papers were found on him | DEATH: widely reported; PAPERS STORY: DISPUTED |
-| 16 Aug 1785 | Third edict (often cited) | STILL UNVERIFIED (checked 2026-09-30: session search budget ran out and archive hosts were blocked before this could be searched) |
-| 11-12 Oct 1786 | Search of Zwack's house, Landshut; papers seized | DOCUMENTED (title page of the 1787 print says so) |
-| 1787 | *Einige Originalschriften des Illuminatenordens* printed "by highest command"; *Nachtrag von weitern Originalschriften* follows | DOCUMENTED |
+| 16 Aug 1785 | Third edict (often cited) | VERIFIED 2026-09-30, third pass: the Catholic Encyclopedia lists "four successive enactments" (22 June 1784; 2 March and 16 August 1785; 16 August 1787), the last forbidding recruitment on pain of death (https://www.catholic.com/encyclopedia/illuminati ; https://www.newadvent.org/cathen/07661b.htm). Wikipedia adds edicts in 1787 and 1790 (https://en.wikipedia.org/wiki/Illuminati). Original edict text not seen. |
+| 11-12 Oct 1786 | Search of Zwack's house, Landshut; papers seized | DOCUMENTED (title page of the 1787 print says so). VERIFIED 2026-09-30, third pass (FactGrid, https://database.factgrid.de/wiki/Item:Q9081). A second search, at Baron Thomas von Bassus's castle at Sandersdorf, followed in 1787; its papers went into the *Nachtrag* (https://en.wikipedia.org/wiki/Sandersdorf_Castle (Wikipedia); https://sacred-texts.com/sro/mhj/mhj301.htm). Exact 1787 date not seen. |
+| 1787 | *Einige Originalschriften des Illuminatenordens* printed "by highest command"; *Nachtrag von weitern Originalschriften* follows | DOCUMENTED. VERIFIED 2026-09-30, third pass (Munich 1787: https://www.deutsche-digitale-bibliothek.de/item/2JQCYT6D6HH3SG3PTWLJ7ZNENVLZC5P4?lang=en ; https://ego-plone.uni-trier.de/en/mediainfo/against-the-illuminati-1787 ; https://onlinebooks.library.upenn.edu/webbin/who/Illuminatenorden) |
 | 1787 | Weishaupt settles at Gotha under Duke Ernst II, himself a former Illuminatus | SCHOLARLY CONSENSUS |
 | 1788 | Knigge publishes *Philo's endliche Antwort*, his account of his time in the order | DOCUMENTED (title) |
-| 1797-98 | Barruel, *Mémoires pour servir à l'histoire du Jacobinisme* (4 vols.), English by Robert Clifford, London | DOCUMENTED |
-| 1797 | Robison, *Proofs of a Conspiracy*, Edinburgh (William Creech) and London (T. Cadell jun. and W. Davies) | DOCUMENTED |
-| 9 May 1798 | Jedidiah Morse preaches national fast-day sermon (New North Church, Boston, a.m.; Charlestown, p.m.) warning of Illuminati | DOCUMENTED (Evans 34148/34149) |
-| 4 July 1798 | Timothy Dwight, Yale president, preaches *The Duty of Americans, at the Present Crisis* at New Haven | DOCUMENTED |
+| 1797-98 | Barruel, *Mémoires pour servir à l'histoire du Jacobinisme* (4 vols.), English by Robert Clifford, London | DOCUMENTED. VERIFIED 2026-09-30, third pass (French 1797-98, Clifford's English the same years: https://en.wikipedia.org/wiki/Memoirs_Illustrating_the_History_of_Jacobinism (Wikipedia); French edition sold by P. Fauche, Hamburg: https://search.worldcat.org/oclc/519407172). Some French editions ran to 5 volumes. |
+| 1797 | Robison, *Proofs of a Conspiracy*, Edinburgh (William Creech) and London (T. Cadell jun. and W. Davies) | DOCUMENTED. VERIFIED 2026-09-30, third pass (Wellcome Collection record, https://wellcomecollection.org/works/g422h5nu) |
+| 9 May 1798 | Jedidiah Morse preaches national fast-day sermon (New North Church, Boston, a.m.; Charlestown, p.m.) warning of Illuminati | DOCUMENTED (Evans 34148/34149). VERIFIED 2026-09-30, third pass (Stauffer 1918, Project Gutenberg #55983, https://gutenberg.org/cache/epub/55983/pg55983-images.html ; printed by Samuel Hall, Boston: https://www.grubstreetproject.net/publications/W29144/) |
+| 4 July 1798 | Timothy Dwight, Yale president, preaches *The Duty of Americans, at the Present Crisis* at New Haven | DOCUMENTED. VERIFIED 2026-09-30, third pass (printed New Haven by Thomas and Samuel Green, 1798, 32 pp.: https://www.singerman.judaicadhpenn.org/entry/supp1053 ; Oxford Text Archive, https://llds.ling-phil.ox.ac.uk/llds/xmlui/handle/20.500.14106/N25378?show=full) |
 | 22 Aug 1798 | Rev. G. W. Snyder of Frederick-Town, Maryland, writes Washington, enclosing Robison | DOCUMENTED (Founders Online) |
 | 24 Oct 1798 | Washington's second reply to Snyder | DOCUMENTED. VERIFIED 2026-09-30 (date: Mount Vernon archives record "Letter, to G.W. Snyder, 1798 October 24", https://archives.mountvernon.org/repositories/3/archival_objects/5047 ; wording: Library of Congress letterbook transcription, https://www.loc.gov/resource/mgw2.021/?sp=6&st=gallery , search-result text). Snyder also wrote again on 1 Oct and 17 Oct 1798 (Mount Vernon records .../6329 and .../6331). |
 | 31 Jan 1800 | Jefferson writes Bishop James Madison of Virginia, a calm reading of Weishaupt from Barruel's own quotations | DOCUMENTED (Founders Online) |
-| 18 Nov 1830 | Weishaupt dies at Gotha, having lived there quietly for over 40 years | SCHOLARLY CONSENSUS |
-| 1887-88 | W. Wynn Westcott decodes the "Cipher Manuscripts"; Golden Dawn's Isis-Urania Temple opens in London (1888), then Osiris (Weston-super-Mare) and Horus (Bradford) | SCHOLARLY CONSENSUS |
+| 18 Nov 1830 | Weishaupt dies at Gotha, having lived there quietly for over 40 years | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30, third pass (https://en.wikipedia.org/wiki/Adam_Weishaupt (Wikipedia); Deutsche Biographie, https://www.deutsche-biographie.de/pnd118766384.html , 1748-1830, Gotha) |
+| 1887-88 | W. Wynn Westcott decodes the "Cipher Manuscripts"; Golden Dawn's Isis-Urania Temple opens in London (1888), then Osiris (Weston-super-Mare) and Horus (Bradford) | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30, third pass: founded London 1888 by Westcott, W. R. Woodman and S. L. MacGregor Mathers; three temples (Isis-Urania, Osiris, Horus) by end of 1888 (https://atom.aim25.com/index.php/the-hermetic-order-of-the-golden-dawn-its-members-and-related-bodies-3 ; Dennis Denisoff, BRANCH, https://branchcollective.org/?p=1987) |
 | 1900 | Golden Dawn splits (Mathers vs. London members); later factions include Alpha et Omega and Stella Matutina | SCHOLARLY CONSENSUS |
 | 1918 | Vernon Stauffer, *New England and the Bavarian Illuminati* (Columbia PhD) | DOCUMENTED |
-| 1963 / 1965 | Early *Principia Discordia* printings by Greg Hill and Kerry Thornley; the 1965 edition was 5 copies | DISPUTED details (see ledger) |
+| 1963 / 1965 | Early *Principia Discordia* printings by Greg Hill and Kerry Thornley; the 1965 edition was 5 copies | DISPUTED details (see ledger). VERIFIED 2026-09-30, third pass as the standard account: first edition 1963 ("allegedly" on Jim Garrison's Xerox), second edition 1965, five copies (https://en.wikipedia.org/wiki/Discordianism (Wikipedia)). The copier story stays DISPUTED. |
 | 1965-1971 | Robert Anton Wilson associate editor at *Playboy*, Chicago; co-edits "Playboy Forum" with Robert Shea | SCHOLARLY CONSENSUS (biographies) |
 | 1969 | Wilson and Shea begin *Illuminatus!* | SCHOLARLY CONSENSUS |
-| 1975 | *Illuminatus!* trilogy published (Dell) | DOCUMENTED |
+| 1975 | *Illuminatus!* trilogy published (Dell) | DOCUMENTED. VERIFIED 2026-09-30, third pass (https://en.wikipedia.org/wiki/The_Illuminatus!_Trilogy (Wikipedia); https://sf-encyclopedia.com/entry/shea_robert ; begun 1969 from Playboy Forum mail: https://www.lfs.org/newsletter/013/02/IlluminatusSaga.shtml) |
 
 ---
 
@@ -128,7 +128,7 @@ Each entry: citation / where / URL / what it shows / youngest band.
 - Shows: the President of Yale naming the Illuminati as a national danger on Independence Day.
 - Band: 9-10.
 
-**10. G. W. Snyder to George Washington, 22 August 1798, and Washington's replies (first reply 25 September 1798; second reply 24 October 1798).** VERIFIED 2026-09-30: 25 Sept and 24 Oct are the dates given by Founders Online-derived results and the Mount Vernon archives (https://archives.mountvernon.org/repositories/3/archival_objects/5047). The "10 October" variant was not found. Note: the American Philosophical Society catalog lists an item "Washington, George to Rev. G.W. Snyder, 1798 September 14" (https://diglib.amphilsoc.org/islandora/object/george-washington-rev-gw-snyder-1798-september-14); STILL UNVERIFIED whether that is a copy misdated or a separate letter. Use 25 Sept.
+**10. G. W. Snyder to George Washington, 22 August 1798, and Washington's replies (first reply 25 September 1798; second reply 24 October 1798).** VERIFIED 2026-09-30: 25 Sept and 24 Oct are the dates given by Founders Online-derived results and the Mount Vernon archives (https://archives.mountvernon.org/repositories/3/archival_objects/5047). The "10 October" variant was not found. The 25 Sept original is Library of Congress, George Washington Papers, Series 4: "George Washington to George Washington Snyder, September 25, 1798", https://www.loc.gov/item/mgw441338/ (VERIFIED 2026-09-30, third pass, result title). Exact wording of the 25 Sept letter ("notwithstanding" vs "notwithstandings"; "&" vs "and" in "nefarious, & dangerous plan") STILL UNVERIFIED (checked 2026-09-30, third pass: searches restricted to founders.archives.gov, loc.gov and gutenberg.org returned only paraphrased summaries; one secondary blog prints "notwithstandings"; loc.gov fetch blocked 403). Note: the American Philosophical Society catalog lists an item "Washington, George to Rev. G.W. Snyder, 1798 September 14" (https://diglib.amphilsoc.org/islandora/object/george-washington-rev-gw-snyder-1798-september-14); STILL UNVERIFIED whether that is a copy misdated or a separate letter. Use 25 Sept.
 - Where: Founders Online, *Papers of George Washington, Retirement Series*, vol. 2: https://founders.archives.gov/documents/Washington/06-02-02-0435 ; also printed in Julius F. Sachse, *Washington's Masonic Correspondence as Found among the Washington Papers in the Library of Congress* (Philadelphia, 1915), Project Gutenberg #29949: https://www.gutenberg.org/ebooks/29949 ; originals in the George Washington Papers, Library of Congress.
 - Shows: the scare reached the most famous Freemason in America. Washington (himself a Mason) said he did not think American lodges as bodies had spread Illuminati ideas, while agreeing that "Jacobin" ideas had spread.
 - Band: 6-8 (the story); 9-10 (the letters).
@@ -186,7 +186,7 @@ Each entry: citation / where / URL / what it shows / youngest band.
 - Gotha Research Centre / FactGrid publications (Meumann, Simons) on the Schwedenkiste essays.
 - Ellic Howe, *The Magicians of the Golden Dawn* (1972): argued the Sprengel letters were forgeries.
 - Frances Yates, *The Rosicrucian Enlightenment* (1972): influential; parts now debated.
-- Richard Hofstadter, "The Paranoid Style in American Politics," *Harper's*, November 1964: discusses the 1798 scare.
+- Richard Hofstadter, "The Paranoid Style in American Politics," *Harper's*, November 1964: discusses the 1798 scare. VERIFIED 2026-09-30, third pass (date and his phrase "heated exaggeration, suspiciousness, and conspiratorial fantasy": https://harpers.org/2014/01/richard-hofstadters-the-paranoid-style-in-american-politics-1964 ; https://en.wikipedia.org/wiki/The_Paranoid_Style_in_American_Politics).
 
 Count of primary sources listed above: 19 (items 1-19).
 
