@@ -1,8 +1,8 @@
 /* The Unseen Realm Unit 9 "Giants in the Land" — pencil still life: a shepherd's leather bag
    standing with its drawstring, a sling lying in front of it with its cords, five smooth stones,
    and a wooden cubit rod with notches carved 1, 2, 3 (Og's bed, Goliath's height). */
-#define CAM_POS vec3(-0.6194,0.4756,-1.0580)
-#define CAM_TGT vec3(-0.4298,-0.0811,0.1059)
+#define CAM_POS vec3(-0.7120,0.5138,-1.2022)
+#define CAM_TGT vec3(-0.3450,0.0438,0.1486)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -12,7 +12,7 @@
 #include "lib.glsl"
 #include "studio.glsl"
 #include "medparts_a.glsl"
-#define BAG vec3(.02,0.,.06)
+#define BAG vec3(.04,0.,.07)
 #define ROD vec3(-.02,.011,.2)
 /* the bag: a soft leather sack, gathered at the neck, with a folded rim and a cord */
 vec3 bagQ(vec3 p){ vec3 q=p-BAG; q.xz=rot(-.3)*q.xz; return q; }
@@ -33,7 +33,7 @@ float cordD(vec3 p){ vec3 q=bagQ(p)-vec3(0.,.168,0.);
   float e2=sdCapsule(q,vec3(.038,-.002,-.02),vec3(.055,-.06,-.07),.004);
   return min(t,min(e1,e2)); }
 /* the sling: a leather pouch lying flat and two cords curving away on the table */
-#define PCH vec3(-.17,.0,-.08)
+#define PCH vec3(.05,.0,-.13)
 float slingPouch(vec3 p){ vec3 q=p-PCH; q.xz=rot(.5)*q.xz;
   float d=sdEll(q-vec3(0.,.008,0.),vec3(.045,.012,.028));
   d=max(d,-sdEll(q-vec3(0.,.024,0.),vec3(.035,.016,.02)));
@@ -41,28 +41,34 @@ float slingPouch(vec3 p){ vec3 q=p-PCH; q.xz=rot(.5)*q.xz;
 float slingCord(vec3 p){ float d=1e3;
   vec3 q=p-PCH; q.xz=rot(.5)*q.xz;
   for(int s=0;s<2;s++){ float sg=s==0?1.:-1.;
-    vec3 a=vec3(sg*.043,.006,0.);
+    vec3 a=vec3(.043,.006,sg*.008);
     for(int i=0;i<9;i++){ float t=float(i+1)/9.;
-      vec3 b=vec3(sg*(.043+.2*t),.0035,.05*sin(t*3.1+float(s)*1.4)*t+sg*.02*t);
+      float L=s==0?.13:.09; vec3 b=vec3(.043+L*t,.0035,sg*(.012+.04*sin(t*2.6))*(.4+t)-.01*t*t);
       d=min(d,sdCapsule(q,a,b,.0035)); a=b; } }
-  vec3 k=q-vec3(-.243,.004,-.025); d=min(d,length(k*vec3(1.,1.3,1.))-.008);   /* finger loop knot */
-  d=min(d,sdTorus((q-vec3(-.262,.003,-.03)).xzy*vec3(1.,1.,1.),.016,.0033));
+  vec3 k=q-vec3(.176,.004,.0); d=min(d,length(k*vec3(1.,1.3,1.))-.008);   /* finger loop knot */
+  d=min(d,sdTorus(q-vec3(.195,.003,.012),.016,.0033));
   return d; }
 /* five smooth stones: river pebbles, one resting in the sling */
-vec3 st(int i){ return i==0?vec3(-.17,.028,-.08):i==1?vec3(-.06,.021,-.13):i==2?vec3(-.015,.018,-.1):i==3?vec3(-.045,.018,-.075):vec3(-.035,.052,-.105); }
+vec3 st(int i){ return i==0?vec3(.05,.028,-.13):i==1?vec3(-.12,.021,-.11):i==2?vec3(-.075,.018,-.13):i==3?vec3(-.1,.018,-.07):vec3(-.098,.052,-.1); }
 vec3 stR(int i){ return i==0?vec3(.028,.018,.022):i==1?vec3(.03,.021,.024):i==2?vec3(.024,.018,.02):i==3?vec3(.027,.018,.021):vec3(.024,.017,.019); }
 float stonesD(vec3 p,out float which){ float d=1e3; which=0.;
   for(int i=0;i<5;i++){ vec3 q=p-st(i); q.xz=rot(float(i)*1.3)*q.xz; q.xy=rot(float(i)*.2-.3)*q.xy;
     float e=sdEll(q,stR(i))+.0012*vn3(q*140.);
     if(e<d){ d=e; which=float(i); } }
   return d; }
-/* the cubit rod: a squared wooden rod with notches, marks 1 2 3 carved on the top face */
-vec3 rodQ(vec3 p){ vec3 q=p-ROD; q.xz=rot(-.12)*q.xz; return q; }
+/* the cubit rod: a squared wooden rod with notches, marks 1 2 3 carved on its front face,
+   leaning against the bag's left shoulder */
+#define RA vec3(-.27,.0,-.02)
+#define RB vec3(-.07,.36,.03)
+vec3 rodQ(vec3 p){ vec3 ax=normalize(RB-RA); vec3 q=p-(RA+RB)*.5;
+  vec3 sd=normalize(cross(vec3(0.,0.,1.),ax)); vec3 fw=cross(ax,sd);
+  return vec3(dot(q,ax),dot(q,sd),dot(q,fw)); }   /* x along rod, y across (face), z depth (-z toward us) */
 float rodD(vec3 p){ vec3 q=rodQ(p);
-  float d=sdRBox(q,vec3(.3,.011,.018),.003);
+  float d=sdRBox(q,vec3(.215,.014,.009),.003);
   if(d>.02) return d;
-  float nx=mod(q.x+.3,.075)-.0375; d=max(d,-max(max(abs(nx)-.0016,abs(q.z+.018)-.006),-(q.y-.004)+.0));
-  for(int i=0;i<3;i++){ float cx=-.1+float(i)*.075; d=carve(d,vec2(q.x-cx-.0375,q.z+.002),49+i,.022,.0018,q.y-.011,.0018); }
+  float nx=mod(q.x+.215,.07)-.035; d=max(d,-max(max(abs(nx)-.0016,abs(q.y-.014)-.006),abs(q.z)-.02));
+  for(int i=0;i<3;i++){ float cx=-.07+float(i)*.07; d=carve(d,vec2(q.x-cx,q.y+.001),49+i,.02,.0017,q.z+.009,.0018); }
+  d=max(d,-(p.y));
   return d; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
@@ -84,8 +90,8 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==5.){ vec3 q=p-PCH; q.xz=rot(.5)*q.xz; return abs(length(q.xz*vec2(1.,1.6))-.035)<.002?.3:.5; }
   if(id==6.) return .45;
   if(id==7.){ float w; stonesD(p,w); return .62+.08*mod(w,3.)+.06*fbm(p.xz*80.); }
-  if(id==8.){ vec3 q=rodQ(p); float a=.62+.12*grain(q.zyx*vec3(1.,1.,1.),30.);
-    float nx=mod(q.x+.3,.075)-.0375; if(abs(nx)<.003&&q.z<-.01) a=.25;
-    if(q.y>.009){ for(int i=0;i<3;i++){ float cx=-.1+float(i)*.075; if(glyph(vec2(q.x-cx-.0375,q.z+.002)/.022,49+i)*.022<.0025) a=.2; } }
+  if(id==8.){ vec3 q=rodQ(p); float a=.62+.12*grain(q.yzx,30.);
+    float nx=mod(q.x+.215,.07)-.035; if(abs(nx)<.0028&&q.y>.008) a=.25;
+    if(q.z<-.006){ for(int i=0;i<3;i++){ float cx=-.07+float(i)*.07; if(glyph(vec2(q.x-cx,q.y+.001)/.02,49+i)*.02<.0024) a=.2; } }
     return a; }
   return .7; }

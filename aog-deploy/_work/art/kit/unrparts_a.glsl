@@ -339,11 +339,12 @@ float sdB2(vec2 p,vec2 b){ return sdBox2(p,b); }
 /* ---- a small model mountain (clay, on a round wooden plinth): two shoulders and a peak; H tall, R base radius ---- */
 float mountR(vec3 c,float H,float R){
   float a=atan(c.z,c.x); float y=clamp(c.y/H,0.,1.);
-  return R*pow(1.-y,1.25)*(1.+.09*sin(a*5.+y*5.)+.05*sin(a*11.-y*9.)); }
+  return R*(pow(1.-y,1.25)+.04)*(1.+.09*sin(a*5.+y*5.)+.05*sin(a*11.-y*9.)); }
 float o_mount(vec3 q,float H,float R){
   vec3 c=q-vec3(0.,.016,0.);
-  float m=(length(c.xz)-mountR(c,H,R))*.42; m=max(m,-c.y);
-  vec3 c2=c-vec3(R*.55,0.,R*.2); float m2=(length(c2.xz)-mountR(c2,H*.62,R*.6))*.42; m2=max(m2,-c2.y);
+  float m=(length(c.xz)-mountR(c,H,R))*.42; m=max(m,max(-c.y,c.y-H*.97));
+  vec3 c2=c-vec3(R*.55,0.,R*.2); float m2=(length(c2.xz)-mountR(c2,H*.62,R*.6))*.42; m2=max(m2,max(-c2.y,c2.y-H*.6));
+  vec3 c3=c-vec3(-R*.5,0.,-R*.1); float m3=(length(c3.xz)-mountR(c3,H*.45,R*.55))*.42; m3=max(m3,max(-c3.y,c3.y-H*.43)); m2=smin(m2,m3,.02);
   m=smin(m,m2,.02); m+=.0025*(fbm3(q*70.)-.5);
   float plinth=sdCylY(q-vec3(0.,.008,0.),R*1.25,.008)-.002;
   return min(m,plinth); }
