@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7238'   // SECRET SOCIETIES AS A COURSE. /secret-societies-course, /secret-societies and /sec1…: a K–12 course built by _work/sec/build_sec.py; every page's Secret Societies jump groups list the course first. previous: m7237
+const CACHE = 'aog-cache-2026.09.30.m7239'   // FIX: DAILY DRAFTS CHECK ROW NO LONGER THROWS ON REDRAW; UNSEEN REALM, BUDDHIST, CHINESE AND HINDU HUBS KEEP CREAM WORDS ON THE NAVY PHONE HERO. previous: m7238
+// const CACHE = 'aog-cache-2026.09.30.m7238'   // SECRET SOCIETIES AS A COURSE. /secret-societies-course, /secret-societies and /sec1…: a K–12 course built by _work/sec/build_sec.py; every page's Secret Societies jump groups list the course first. previous: m7237
 // const CACHE = 'aog-cache-2026.09.30.m7237'   // MERGE: THE UNSEEN REALM COURSE + STUDENT START BUTTON INK (branch m7235) + MAIN (m7236: SPORTS AND MEASURED STEP HUB CARDS). previous: m7236
 // const CACHE = 'aog-cache-2026.09.30.m7236'   // MERGE: SPORTS AND MEASURED STEP HUB CARDS (m7234b) + main m7235. previous: m7235
 // const CACHE = 'aog-cache-2026.09.30.m7235'   // MERGE: THE UNSEEN REALM COURSE (m7233) + MAIN (m7234: TAP MATCH WORDING, SPORTS AND MEASURED STEP PENCIL BANNERS). previous: m7234

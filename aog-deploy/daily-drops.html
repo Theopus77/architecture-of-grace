@@ -18288,6 +18288,10 @@ function render(){
      path below returns with it off. */
   var ab=$('#algBtn'); if(ab)ab.hidden=true;
   if(ST.subj==='write')return renderWrite();
+  /* AOG-DD-CHECKROW-SAFE (2026-09-30): the check row (Inspect, Repair, #resLine) sits inside the sheet by
+     the name line; lift it out before the sheet is redrawn so it survives, and the name-line observer
+     puts it back. Without this #resLine was gone for a moment and render() threw. */
+  var crow=$('#checkRow'),sh0=$('#sheet'); if(crow&&sh0&&sh0.contains(crow))sh0.parentNode.insertBefore(crow,sh0);
   $('#sheet').innerHTML=sheetHTML(false);
   if(ab)ab.hidden=!$('.bw.tall');
   bind(); bindWrite(); bindName(); paintPips(null); $('#resLine').textContent=''; $('#scoreVal').textContent='—';
@@ -18351,6 +18355,7 @@ function writeHTML(pack){
     sigPrint(pack)+writeBand()+(pack?'':sigRow())}
 
 function renderWrite(){
+  var crow=$('#checkRow'),sh0=$('#sheet'); if(crow&&sh0&&sh0.contains(crow))sh0.parentNode.insertBefore(crow,sh0);   /* AOG-DD-CHECKROW-SAFE */
   $('#sheet').innerHTML=writeHTML(false);
   ST.boxes=[]; ST.checked=false;
   bindWrite(); bindName()}
