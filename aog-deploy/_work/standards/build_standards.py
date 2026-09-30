@@ -57,6 +57,7 @@ COURSES = [
     ("hin", "faith",    "Hindu Texts",                "Textos hindúes",                            "hindu-texts-course.html",      "hin-u{n}.html", "hin{n}", None),
     ("bud", "faith",    "Buddhist Texts",             "Textos budistas",                           "buddhist-texts-course.html",   "bud-u{n}.html", "bud{n}", None),
     ("chn", "faith",    "Chinese Classics",           "Clásicos chinos",                           "chinese-classics-course.html", "chn-u{n}.html", "chn{n}", None),
+    ("unr", "faith",    "The Unseen Realm",           "El reino invisible",                        "unseen-realm-course.html",     "unr-u{n}.html", "unr{n}", None),
 ]
 HUB_FALLBACK = {"eco": "economics-hub.html", "rel": "religions-hub.html", "fcs": "facs-hub.html", "spa": "spanish-hub.html"}
 UNIT_PREFIX = {c[5].split("-u")[0]: c[0] for c in COURSES}          # "ssc" -> "ss"

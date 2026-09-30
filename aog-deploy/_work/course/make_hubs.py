@@ -201,12 +201,22 @@ COURSES = [
                 "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia de las artes marciales."),
          sources=("No strike, hold or throw is taught or shown. Bowing and meditation are described, never led. Stories about where an art began are named as stories. Everything is original text written for this course.",
                   "No se enseña ni se muestra ningún golpe, llave ni lanzamiento. El saludo y la meditación se describen, nunca se dirigen. Las historias sobre el origen de un arte se presentan como historias. Todo es texto original escrito para este curso.")),
+    # AOG-UNR-V1 (2026-09-30) — The Unseen Realm (Michael Heiser). Run `doors unr` after unseen-realm-course.html exists.
+    dict(cid="unr", file="unseen-realm-hub.html", slug="unseen-realm", name=("The Unseen Realm", "El reino invisible"), contents="unseen-realm-course",
+         drops="unseen", res="religions", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
+         lede=("Michael Heiser’s reading of the Bible’s unseen world: Enoch, the Watchers, angels, demons and the mission of Jesus, K–12.",
+               "Cómo leía Michael Heiser el mundo invisible de la Biblia: Enoc, los Vigilantes, ángeles, demonios y la misión de Jesús, K–12."),
+         daily=("Ten short lines a day: key words, passages and quick questions from the course.",
+                "Diez líneas cortas al día: palabras clave, pasajes y preguntas rápidas del curso."),
+         sources=("Heiser’s ideas are told in our own words and named as his: “Heiser argues…”. Other readings sit beside them. Bible and Enoch passages come from public-domain translations. Everything else is original text written for this course.",
+                  "Las ideas de Heiser se cuentan con nuestras palabras y se presentan como suyas: “Heiser sostiene…”. Otras lecturas van al lado. Los pasajes de la Biblia y de Enoc vienen de traducciones de dominio público. Todo lo demás es texto original escrito para este curso.")),
 ]
 
 # More to explore: every place a band links to, named once, with one plain line.
 C_, R_ = ("Course", "Curso"), ("Practice room", "Sala de práctica")
 EXPLORE = {
     "/bible": (C_, "The Bible", "La Biblia", "The Bible as literature and history, K–12.", "La Biblia como literatura e historia, K–12."),
+    "/bible-course": (C_, "The Bible", "La Biblia", "The Bible as literature and history, K–12.", "La Biblia como literatura e historia, K–12."),
     "/hebrew-bible": (C_, "The Hebrew Bible", "La Biblia Hebrea", "The Tanakh as literature and history, K–12.", "El Tanaj como literatura e historia, K–12."),
     "/quran": (C_, "The Qur’an", "El Corán", "How the Qur’an is read, recited and studied, K–12.", "Cómo se lee, se recita y se estudia el Corán, K–12."),
     "/talmud": (C_, "Talmud Study", "Estudio del Talmud", "How the Talmud asks and answers, K–12.", "Cómo pregunta y responde el Talmud, K–12."),
