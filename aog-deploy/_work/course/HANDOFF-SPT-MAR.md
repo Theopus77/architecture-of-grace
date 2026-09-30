@@ -25,7 +25,10 @@ What was wrong with the Grok drafts (the reason for each rule in the SPECs):
 - Facts corrected: Wingfield introduced lawn tennis in 1873 and patented it in 1874; IHSA records list
   track champions from 1893, before the IHSA was founded (1900). Confirmed by Jimmy on ihsa.org
   (2026-09-30): first IHSA girls wrestling state finals **2022** (the 2021–22 season; Grok wrote 2021),
-  first IHSA boys tennis champion **1912**.
+  first IHSA boys tennis champion **1912**. Also confirmed by Jimmy (2026-09-30): first IHSA boys basketball
+  tournament **1908** (Lewis Omer; Peoria won); baseball: first state tournament **1940** (Belleville), IHSA
+  sponsorship from **1941**; football playoffs **1974**; Chicago Tribune Golden Gloves **1923** (Arch Ward), name
+  "Golden Gloves" from **1928**.
 
 ## Gates — every unit must pass all three
 

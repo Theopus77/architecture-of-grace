@@ -185,18 +185,18 @@ COURSES = [
          sources=("Traditions are described with respect, and the course says plainly what the evidence shows. It is for learning, not medical advice: ask a doctor or nurse about your own health.",
                   "Las tradiciones se describen con respeto, y el curso dice con claridad lo que muestra la evidencia. Es para aprender, no es consejo médico: pregunta a un médico o enfermera sobre tu salud.")),
     # AOG-SPT-MAR-V1 (2026-09-30) — the two history books. Run `doors spt` / `doors mar` after each *-course.html exists.
-    dict(cid="spt", file="sports-hub.html", slug="sports", name=("Sports History", "Historia del deporte"), contents="sports-course",
+    dict(cid="spt", cards="ss", file="sports-hub.html", slug="sports", name=("Sports History", "Historia del deporte"), contents="sports-course",
          drops="sports", res="social-studies", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
-         lede=("How games got their fields, rules and leagues, and who got to play, K–12. History, not a playbook.",
-               "Cómo los juegos recibieron sus campos, reglas y ligas, y quién pudo jugar, K–12. Historia, no un manual de jugadas."),
+         lede=("Explore how games got their fields, rules and leagues, and who got to play. Grades K–12.",
+               "Explora cómo los juegos recibieron sus campos, reglas y ligas, y quién pudo jugar. Grados K–12."),
          daily=("Ten short lines a day: key words, places, people and dates from sports history.",
                 "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia del deporte."),
          sources=("Every fact is checked against records, rulebooks and newspapers of the time. No play, drill or technique is taught. Everything is original text written for this course.",
                   "Cada dato se comprueba con registros, reglamentos y periódicos de la época. No se enseña ninguna jugada ni técnica. Todo es texto original escrito para este curso.")),
-    dict(cid="mar", file="martial-arts-hub.html", slug="martial-arts", name=("The Measured Step", "El paso medido"), contents="martial-arts-course",
+    dict(cid="mar", cards="ss", file="martial-arts-hub.html", slug="martial-arts", name=("The Measured Step", "El paso medido"), contents="martial-arts-course",
          drops="martial", res="social-studies", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
-         lede=("The history of the martial arts: rooms, codes, schools and who was let in, K–12. History only; no technique.",
-               "La historia de las artes marciales: espacios, códigos, escuelas y quién pudo entrar, K–12. Solo historia; ninguna técnica."),
+         lede=("Explore the story of the martial arts: the rooms, the codes, the schools and who got to join. Grades K–12.",
+               "Explora la historia de las artes marciales: los espacios, los códigos, las escuelas y quién pudo entrar. Grados K–12."),
          daily=("Ten short lines a day: key words, places, people and dates from martial arts history.",
                 "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia de las artes marciales."),
          sources=("No strike, hold or throw is taught or shown. Bowing and meditation are described, never led. Stories about where an art began are named as stories. Everything is original text written for this course.",
@@ -299,7 +299,20 @@ def sp(en, es, tag="span", cls="", extra=""):
 ARROW = '<svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 ICO_BOARD = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
 
+def unit_card_ss(h, u):
+    """AOG-SS-CARDS-V1 (2026-09-30) — Jimmy: the two history books' cards match social-studies-hub
+    exactly: the same .unit.open.course markup, so aog-sketch.js adds the unit's pencil drawing,
+    aog-grace.js the striped number and the chevron that opens the description."""
+    n = u["n"]; en, es = h["name"]; t = u["title"]
+    d = "; ".join(c["title"] for c in u["chapters"]) + "."
+    return (f'<div class="unit open course"><div class="un" aria-hidden="true">{n}</div>'
+            f'<div class="t" data-en="{E(t)}" data-es="{E(t)}">{E(t)}</div><div class="yrs">{E(u["strand"])}</div>'
+            f'<div class="d" data-en="{E(d)}" data-es="{E(d)}">{E(d)}</div>'
+            f'<div class="doors"><a class="door" href="/{h["cid"]}{n}" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a>'
+            f'<button class="beam no-print" type="button" data-beam="/{h["cid"]}{n}" data-name="{E(en)} · Unit {n} · {E(t)}" data-name-es="{E(es)} · Unidad {n} · {E(t)}" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>')
+
 def unit_card(h, u, art):
+    if h.get("cards") == "ss": return unit_card_ss(h, u)
     n = u["n"]; en, es = h["name"]; svg, nl = art.get(u["n"], ("", 0))
     nch = len(u["chapters"]); t = u["title"]
     chs = "".join("<li>%s</li>" % E(c["title"]) for c in u["chapters"])
@@ -344,7 +357,7 @@ def band_section(h, o, b, art):
     if hint: out.append(sp(hint[0], hint[1], "p", "dr-hint"))
     out.append(sp("%d units · %d chapters · %d lessons" % (len(bu), nch, nl), "%d unidades · %d capítulos · %d lecciones" % (len(bu), nch, nl), "p", "dr-stats"))
     out.append(f'</div><a class="dr-sec" href="/{h["contents"]}#band-{b}">{sp("All lessons in this band", "Todas las lecciones de esta banda")}{ARROW}</a></div>')
-    out.append('<div class="dr-grid">' + "\n".join(unit_card(h, u, art) for u in bu) + '</div>')
+    out.append('<div class="%s">' % ("grid" if h.get("cards") == "ss" else "dr-grid") + "\n".join(unit_card(h, u, art) for u in bu) + '</div>')
     if ex:
         out.append(f'<div class="dr-more"><h3>{sp("More to explore on this band", "Más para explorar en esta banda")}</h3>'
                    '<div class="dr-exgrid">' + "".join(explore_card(x) for x in ex) + '</div></div>')
@@ -463,12 +476,18 @@ html.aog-grace [data-aog-hero] a.btn.dr-go, a.btn.dr-go{display:inline-flex;alig
   font:700 16px/1.1 var(--d-sans) !important;letter-spacing:0 !important;text-decoration:none !important;flex:1 1 200px;text-align:center}
 html.aog-grace [data-aog-hero] a.btn.dr-go1, a.btn.dr-go1{background:var(--d-gold-l) !important;border:2px solid var(--d-gold-l) !important;color:#0A1E33 !important}
 html.aog-grace [data-aog-hero] a.btn.dr-go1 *{color:#0A1E33 !important}
-html.aog-grace [data-aog-hero] a.btn.dr-go2, a.btn.dr-go2{background:rgba(255,255,255,.06) !important;border:2px solid rgba(242,201,100,.75) !important;color:#F4EEE2 !important}
+/* AOG-HERO-INK-V1 (2026-09-30): cream words only once the masthead is painted navy; before that
+   (or if aog-grace.js is slow on a phone) they are dark ink, so they never fade into a light page. */
+a.btn.dr-go2{background:var(--d-card) !important;border:2px solid var(--d-gold) !important;color:var(--d-ink) !important}
+html.aog-grace [data-aog-hero] a.btn.dr-go2{background:rgba(255,255,255,.06) !important;border:2px solid rgba(242,201,100,.75) !important;color:#F4EEE2 !important}
+html.aog-grace [data-aog-hero] a.btn.dr-go2 *{color:#F4EEE2 !important;opacity:1 !important}
 html.aog-grace [data-aog-hero] a.btn.dr-go:hover{transform:none}
 html.aog-grace [data-aog-hero] a.btn.dr-go2:hover{background:rgba(242,201,100,.16) !important}
 .dr-facts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:4px 22px}
-.dr-facts li{display:flex;flex-direction:column;font-size:13px;letter-spacing:.04em;color:rgba(244,238,226,.8)}
-.dr-facts b{font:600 26px/1.1 var(--d-serif);color:#F4EEE2;letter-spacing:0}
+.dr-facts li{display:flex;flex-direction:column;font-size:13px;letter-spacing:.04em;color:var(--d-sub)}
+.dr-facts b{font:600 26px/1.1 var(--d-serif);color:var(--d-ink);letter-spacing:0}
+html.aog-grace [data-aog-hero] .dr-facts li, html.aog-grace [data-aog-hero] .dr-facts li span{color:#E6DDCB !important;opacity:1 !important}
+html.aog-grace [data-aog-hero] .dr-facts b{color:#F4EEE2 !important;opacity:1 !important}
 .dr-collage{display:grid;grid-template-columns:1.55fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:200px}
 .dr-tile{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(242,201,100,.45);box-shadow:0 18px 36px -22px rgba(0,0,0,.8);background:#13294A}
 .dr-tile svg{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -674,6 +693,26 @@ paintLang();
 })();
 """
 
+# the unit cards of social-studies-hub.html (its own rules, with the door's colours)
+SS_CARD_CSS = """
+/* AOG-SS-CARDS-V1 — the cards of social-studies-hub.html */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.unit{background:var(--d-card);border:1px solid var(--d-line);border-radius:10px;padding:14px 16px;box-shadow:var(--d-shadow);display:flex;flex-direction:column;gap:6px}
+.unit.open{border-left:4px solid var(--room,var(--d-gold))}
+.unit .t{font-family:var(--d-serif);font-weight:700;font-size:1.05rem;line-height:1.25}
+.unit .d{font-size:.88rem;color:var(--d-sub);flex:1 1 auto}
+.doors{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.door{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--d-line);border-radius:999px;background:var(--d-bg);color:var(--d-ink);font:600 .85rem var(--d-sans);text-decoration:none}
+.door:hover{border-color:var(--d-gold)}
+.door:focus-visible,.beam:focus-visible{outline:2px solid var(--d-gold);outline-offset:2px}
+.beam{border:0;background:none;color:var(--d-sub);font:600 .8rem var(--d-sans);cursor:pointer;min-height:44px;padding:8px 6px;text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.beam:hover{color:var(--d-ink)}
+.unit.course{position:relative;padding-left:64px}
+.unit.course .un{position:absolute;left:14px;top:14px;width:38px;height:38px;border-radius:9px;background:#A8323A;color:#fff;display:flex;align-items:center;justify-content:center;font:800 1.25rem "Avenir Next Condensed","Arial Narrow",var(--d-sans);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #5A151B}
+.unit.course .yrs{font:italic 600 .84rem var(--d-serif);color:var(--d-sub);margin-top:-2px}
+@media print{ .beam{display:none !important} .grid{display:block !important} .grid>*{break-inside:avoid;margin:0 0 12px} }
+"""
+
 def head_of(file, h=None):
     """the page's own head up to and including the managed icons block (kept verbatim).
     A new door has no page yet: it borrows talmud-hub.html's head with its own name, words and address."""
@@ -700,7 +739,7 @@ def make_door(h):
            .replace("__NAME__", '["%s","%s"]' % (en.replace('"', ""), es.replace('"', "")))
     page = f'''{head}
 <!-- AOG-DOORS-V2 — built by _work/course/make_hubs.py doors. Do not hand-edit; re-run it. -->
-<style>{CSS}</style>
+<style>{CSS}{SS_CARD_CSS if h.get("cards") == "ss" else ""}</style>
 <link rel="stylesheet" href="/aog-resources.css">
 <link rel="stylesheet" href="/aog-calm.css">
 </head>

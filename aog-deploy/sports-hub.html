@@ -77,12 +77,18 @@ html.aog-grace [data-aog-hero] a.btn.dr-go, a.btn.dr-go{display:inline-flex;alig
   font:700 16px/1.1 var(--d-sans) !important;letter-spacing:0 !important;text-decoration:none !important;flex:1 1 200px;text-align:center}
 html.aog-grace [data-aog-hero] a.btn.dr-go1, a.btn.dr-go1{background:var(--d-gold-l) !important;border:2px solid var(--d-gold-l) !important;color:#0A1E33 !important}
 html.aog-grace [data-aog-hero] a.btn.dr-go1 *{color:#0A1E33 !important}
-html.aog-grace [data-aog-hero] a.btn.dr-go2, a.btn.dr-go2{background:rgba(255,255,255,.06) !important;border:2px solid rgba(242,201,100,.75) !important;color:#F4EEE2 !important}
+/* AOG-HERO-INK-V1 (2026-09-30): cream words only once the masthead is painted navy; before that
+   (or if aog-grace.js is slow on a phone) they are dark ink, so they never fade into a light page. */
+a.btn.dr-go2{background:var(--d-card) !important;border:2px solid var(--d-gold) !important;color:var(--d-ink) !important}
+html.aog-grace [data-aog-hero] a.btn.dr-go2{background:rgba(255,255,255,.06) !important;border:2px solid rgba(242,201,100,.75) !important;color:#F4EEE2 !important}
+html.aog-grace [data-aog-hero] a.btn.dr-go2 *{color:#F4EEE2 !important;opacity:1 !important}
 html.aog-grace [data-aog-hero] a.btn.dr-go:hover{transform:none}
 html.aog-grace [data-aog-hero] a.btn.dr-go2:hover{background:rgba(242,201,100,.16) !important}
 .dr-facts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:4px 22px}
-.dr-facts li{display:flex;flex-direction:column;font-size:13px;letter-spacing:.04em;color:rgba(244,238,226,.8)}
-.dr-facts b{font:600 26px/1.1 var(--d-serif);color:#F4EEE2;letter-spacing:0}
+.dr-facts li{display:flex;flex-direction:column;font-size:13px;letter-spacing:.04em;color:var(--d-sub)}
+.dr-facts b{font:600 26px/1.1 var(--d-serif);color:var(--d-ink);letter-spacing:0}
+html.aog-grace [data-aog-hero] .dr-facts li, html.aog-grace [data-aog-hero] .dr-facts li span{color:#E6DDCB !important;opacity:1 !important}
+html.aog-grace [data-aog-hero] .dr-facts b{color:#F4EEE2 !important;opacity:1 !important}
 .dr-collage{display:grid;grid-template-columns:1.55fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:200px}
 .dr-tile{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(242,201,100,.45);box-shadow:0 18px 36px -22px rgba(0,0,0,.8);background:#13294A}
 .dr-tile svg{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -205,6 +211,23 @@ footer p{margin:0 0 6px}
   .dr-grid,.dr-exgrid{grid-template-columns:1fr 1fr}
   .dr-teach .inner{display:block}
 }
+
+/* AOG-SS-CARDS-V1 — the cards of social-studies-hub.html */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.unit{background:var(--d-card);border:1px solid var(--d-line);border-radius:10px;padding:14px 16px;box-shadow:var(--d-shadow);display:flex;flex-direction:column;gap:6px}
+.unit.open{border-left:4px solid var(--room,var(--d-gold))}
+.unit .t{font-family:var(--d-serif);font-weight:700;font-size:1.05rem;line-height:1.25}
+.unit .d{font-size:.88rem;color:var(--d-sub);flex:1 1 auto}
+.doors{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.door{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--d-line);border-radius:999px;background:var(--d-bg);color:var(--d-ink);font:600 .85rem var(--d-sans);text-decoration:none}
+.door:hover{border-color:var(--d-gold)}
+.door:focus-visible,.beam:focus-visible{outline:2px solid var(--d-gold);outline-offset:2px}
+.beam{border:0;background:none;color:var(--d-sub);font:600 .8rem var(--d-sans);cursor:pointer;min-height:44px;padding:8px 6px;text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.beam:hover{color:var(--d-ink)}
+.unit.course{position:relative;padding-left:64px}
+.unit.course .un{position:absolute;left:14px;top:14px;width:38px;height:38px;border-radius:9px;background:#A8323A;color:#fff;display:flex;align-items:center;justify-content:center;font:800 1.25rem "Avenir Next Condensed","Arial Narrow",var(--d-sans);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #5A151B}
+.unit.course .yrs{font:italic 600 .84rem var(--d-serif);color:var(--d-sub);margin-top:-2px}
+@media print{ .beam{display:none !important} .grid{display:block !important} .grid>*{break-inside:avoid;margin:0 0 12px} }
 </style>
 <link rel="stylesheet" href="/aog-resources.css">
 <link rel="stylesheet" href="/aog-calm.css">
@@ -225,7 +248,7 @@ footer p{margin:0 0 6px}
   <div class="dr-hgrid">
     <div class="dr-htext">
       <h1 data-en="Sports History" data-es="Historia del deporte">Sports History</h1>
-      <p class="dr-lede" data-aog-fits="1" data-en="How games got their fields, rules and leagues, and who got to play, K–12. History, not a playbook." data-es="Cómo los juegos recibieron sus campos, reglas y ligas, y quién pudo jugar, K–12. Historia, no un manual de jugadas.">How games got their fields, rules and leagues, and who got to play, K–12. History, not a playbook.</p>
+      <p class="dr-lede" data-aog-fits="1" data-en="Explore how games got their fields, rules and leagues, and who got to play. Grades K–12." data-es="Explora cómo los juegos recibieron sus campos, reglas y ligas, y quién pudo jugar. Grados K–12.">Explore how games got their fields, rules and leagues, and who got to play. Grades K–12.</p>
       <div class="dr-cta no-print">
         <a class="btn dr-go dr-go1" href="/sports-course"><span data-en="Course contents" data-es="Contenido del curso">Course contents</span></a>
         <a class="btn dr-go dr-go2" href="/spt1"><span data-en="Start at the beginning" data-es="Empezar desde el principio">Start at the beginning</span></a>
@@ -234,7 +257,7 @@ footer p{margin:0 0 6px}
         <li><b>17</b><span data-en="units" data-es="unidades">units</span></li><li><b>34</b><span data-en="chapters" data-es="capítulos">chapters</span></li><li><b>340</b><span data-en="lessons" data-es="lecciones">lessons</span></li><li><b>5</b><span data-en="grade bands" data-es="bandas de grados">grade bands</span></li>
       </ul>
     </div>
-    <div class="dr-collage"><div class="dr-tile dr-t1" style="grid-column:1 / span 2"><picture><source type="image/webp" srcset="/img/banners/sports-hub-pencil-900.webp 900w, /img/banners/sports-hub-pencil-1600.webp 1600w" sizes="(min-width:1000px) 560px, 100vw"><img src="/img/banners/sports-hub-pencil-900.jpg" alt="A pencil drawing of a swimming pool with lane lines, a swim cap and a stopwatch" width="900" height="315" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:85% 45%;display:block"></picture></div></div>
+    <div class="dr-collage" aria-hidden="true"><div class="dr-tile dr-t1"><picture style="display:block;width:100%;height:100%"><source type="image/webp" srcset="img/banners/spt-u1-pencil-900.webp 900w, img/banners/spt-u1-pencil-1600.webp 1600w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)"><img aria-hidden="true" class="" style="width:100%;height:100%;object-fit:cover;object-position:75% 40%" src="img/banners/spt-u1-pencil-900.jpg" srcset="img/banners/spt-u1-pencil-900.jpg 900w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)" width="1600" height="560" alt="" decoding="async" loading="lazy" style="display:block;width:100%;height:100%;object-fit:cover;object-position:85%% 45%%"></picture></div><div class="dr-tile dr-t2"><picture style="display:block;width:100%;height:100%"><source type="image/webp" srcset="img/banners/spt-u9-pencil-900.webp 900w, img/banners/spt-u9-pencil-1600.webp 1600w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)"><img aria-hidden="true" class="" style="width:100%;height:100%;object-fit:cover;object-position:75% 40%" src="img/banners/spt-u9-pencil-900.jpg" srcset="img/banners/spt-u9-pencil-900.jpg 900w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)" width="1600" height="560" alt="" decoding="async" loading="lazy" style="display:block;width:100%;height:100%;object-fit:cover;object-position:85%% 45%%"></picture></div><div class="dr-tile dr-t3"><picture style="display:block;width:100%;height:100%"><source type="image/webp" srcset="img/banners/spt-u17-pencil-900.webp 900w, img/banners/spt-u17-pencil-1600.webp 1600w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)"><img aria-hidden="true" class="" style="width:100%;height:100%;object-fit:cover;object-position:75% 40%" src="img/banners/spt-u17-pencil-900.jpg" srcset="img/banners/spt-u17-pencil-900.jpg 900w" sizes="(max-width: 720px) 860px, min(100vw, 1200px)" width="1600" height="560" alt="" decoding="async" loading="lazy" style="display:block;width:100%;height:100%;object-fit:cover;object-position:85%% 45%%"></picture></div></div>
   </div>
 </header>
 <main id="content">
@@ -248,45 +271,9 @@ footer p{margin:0 0 6px}
 <h2 id="h-k-2" data-en="Grades K–2" data-es="Grados K–2">Grades K–2</h2>
 <p class="dr-stats" data-en="3 units · 6 chapters · 39 lessons" data-es="3 unidades · 6 capítulos · 39 lecciones">3 units · 6 chapters · 39 lessons</p>
 </div><a class="dr-sec" href="/sports-course#band-k-2"><span data-en="All lessons in this band" data-es="Todas las lecciones de esta banda">All lessons in this band</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-<div class="dr-grid"><article class="dr-card" aria-labelledby="ut1">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c1-ubf1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c1-ubf1)"/></svg><span class="dr-num"><span data-en="Unit 1" data-es="Unidad 1">Unit 1</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Play</p>
-    <h3 id="ut1">Play Has Kinds</h3>
-    <ol class="dr-chs"><li>Balls, Races, Water, Ice</li><li>A Turn Everyone Can See</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 14 lessons" data-es="2 capítulos · 14 lecciones">2 chapters · 14 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt1" aria-describedby="ut1"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt1" data-name="Sports History · Unit 1 · Play Has Kinds" data-name-es="Historia del deporte · Unidad 1 · Play Has Kinds"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut2">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c2-ubf2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c2-ubf2)"/></svg><span class="dr-num"><span data-en="Unit 2" data-es="Unidad 2">Unit 2</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Place</p>
-    <h3 id="ut2">Our Field</h3>
-    <ol class="dr-chs"><li>Park, Gym, Lights</li><li>A Rule You Can Say</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 12 lessons" data-es="2 capítulos · 12 lecciones">2 chapters · 12 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt2" aria-describedby="ut2"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt2" data-name="Sports History · Unit 2 · Our Field" data-name-es="Historia del deporte · Unidad 2 · Our Field"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut3">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c3-ubf3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c3-ubf3)"/></svg><span class="dr-num"><span data-en="Unit 3" data-es="Unidad 3">Unit 3</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Names</p>
-    <h3 id="ut3">Many Games, One Book</h3>
-    <ol class="dr-chs"><li>Games That Travel</li><li>Mats, Rings and Strips</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 13 lessons" data-es="2 capítulos · 13 lecciones">2 chapters · 13 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt3" aria-describedby="ut3"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt3" data-name="Sports History · Unit 3 · Many Games, One Book" data-name-es="Historia del deporte · Unidad 3 · Many Games, One Book"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article></div>
+<div class="grid"><div class="unit open course"><div class="un" aria-hidden="true">1</div><div class="t" data-en="Play Has Kinds" data-es="Play Has Kinds">Play Has Kinds</div><div class="yrs">Play</div><div class="d" data-en="Balls, Races, Water, Ice; A Turn Everyone Can See." data-es="Balls, Races, Water, Ice; A Turn Everyone Can See.">Balls, Races, Water, Ice; A Turn Everyone Can See.</div><div class="doors"><a class="door" href="/spt1" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt1" data-name="Sports History · Unit 1 · Play Has Kinds" data-name-es="Historia del deporte · Unidad 1 · Play Has Kinds" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">2</div><div class="t" data-en="Our Field" data-es="Our Field">Our Field</div><div class="yrs">Place</div><div class="d" data-en="Park, Gym, Lights; A Rule You Can Say." data-es="Park, Gym, Lights; A Rule You Can Say.">Park, Gym, Lights; A Rule You Can Say.</div><div class="doors"><a class="door" href="/spt2" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt2" data-name="Sports History · Unit 2 · Our Field" data-name-es="Historia del deporte · Unidad 2 · Our Field" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">3</div><div class="t" data-en="Many Games, One Book" data-es="Many Games, One Book">Many Games, One Book</div><div class="yrs">Names</div><div class="d" data-en="Games That Travel; Mats, Rings and Strips." data-es="Games That Travel; Mats, Rings and Strips.">Games That Travel; Mats, Rings and Strips.</div><div class="doors"><a class="door" href="/spt3" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt3" data-name="Sports History · Unit 3 · Many Games, One Book" data-name-es="Historia del deporte · Unidad 3 · Many Games, One Book" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div></div>
 <div class="dr-more"><h3><span data-en="More to explore on this band" data-es="Más para explorar en esta banda">More to explore on this band</span></h3><div class="dr-exgrid"><a class="dr-ex" href="/martial-arts-course"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="The Measured Step" data-es="El paso medido">The Measured Step</b><span class="dr-exd" data-en="Martial arts history: rooms, codes and schools, K–12." data-es="Historia de las artes marciales: espacios, códigos y escuelas, K–12.">Martial arts history: rooms, codes and schools, K–12.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="dr-ex" href="/social"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</b><span class="dr-exd" data-en="History, civics, geography and economics, every band." data-es="Historia, civismo, geografía y economía, cada banda.">History, civics, geography and economics, every band.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 </section>
 <section class="band dr-band" id="3-5" aria-labelledby="h-3-5">
@@ -294,58 +281,10 @@ footer p{margin:0 0 6px}
 <h2 id="h-3-5" data-en="Grades 3–5" data-es="Grados 3–5">Grades 3–5</h2>
 <p class="dr-stats" data-en="4 units · 8 chapters · 80 lessons" data-es="4 unidades · 8 capítulos · 80 lecciones">4 units · 8 chapters · 80 lessons</p>
 </div><a class="dr-sec" href="/sports-course#band-3-5"><span data-en="All lessons in this band" data-es="Todas las lecciones de esta banda">All lessons in this band</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-<div class="dr-grid"><article class="dr-card" aria-labelledby="ut4">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c4-ubf4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c4-ubf4)"/></svg><span class="dr-num"><span data-en="Unit 4" data-es="Unidad 4">Unit 4</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Origins</p>
-    <h3 id="ut4">How a Diamond Got Lines</h3>
-    <ol class="dr-chs"><li>From a Lot to a Diamond</li><li>A Scorebook and a Diamond Plan</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 21 lessons" data-es="2 capítulos · 21 lecciones">2 chapters · 21 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt4" aria-describedby="ut4"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt4" data-name="Sports History · Unit 4 · How a Diamond Got Lines" data-name-es="Historia del deporte · Unidad 4 · How a Diamond Got Lines"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut5">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c5-ubf5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c5-ubf5)"/></svg><span class="dr-num"><span data-en="Unit 5" data-es="Unidad 5">Unit 5</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Origins</p>
-    <h3 id="ut5">An Indoor Winter Game</h3>
-    <ol class="dr-chs"><li>A Peach Basket in a Gym</li><li>From Y to School Hoop</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 21 lessons" data-es="2 capítulos · 21 lecciones">2 chapters · 21 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt5" aria-describedby="ut5"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt5" data-name="Sports History · Unit 5 · An Indoor Winter Game" data-name-es="Historia del deporte · Unidad 5 · An Indoor Winter Game"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut6">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c6-ubf6" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c6-ubf6)"/></svg><span class="dr-num"><span data-en="Unit 6" data-es="Unidad 6">Unit 6</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Origins</p>
-    <h3 id="ut6">School Fields and World Pitches</h3>
-    <ol class="dr-chs"><li>The Gridiron Beside the School</li><li>A Rectangle the World Can Share</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 21 lessons" data-es="2 capítulos · 21 lecciones">2 chapters · 21 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt6" aria-describedby="ut6"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt6" data-name="Sports History · Unit 6 · School Fields and World Pitches" data-name-es="Historia del deporte · Unidad 6 · School Fields and World Pitches"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut7">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c7-ubf7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c7-ubf7)"/></svg><span class="dr-num"><span data-en="Unit 7" data-es="Unidad 7">Unit 7</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Origins</p>
-    <h3 id="ut7">Time, Water, a Line</h3>
-    <ol class="dr-chs"><li>A Clock on a Track</li><li>Pool Length and a Tennis Line</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 17 lessons" data-es="2 capítulos · 17 lecciones">2 chapters · 17 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt7" aria-describedby="ut7"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt7" data-name="Sports History · Unit 7 · Time, Water, a Line" data-name-es="Historia del deporte · Unidad 7 · Time, Water, a Line"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article></div>
+<div class="grid"><div class="unit open course"><div class="un" aria-hidden="true">4</div><div class="t" data-en="How a Diamond Got Lines" data-es="How a Diamond Got Lines">How a Diamond Got Lines</div><div class="yrs">Origins</div><div class="d" data-en="From a Lot to a Diamond; A Scorebook and a Diamond Plan." data-es="From a Lot to a Diamond; A Scorebook and a Diamond Plan.">From a Lot to a Diamond; A Scorebook and a Diamond Plan.</div><div class="doors"><a class="door" href="/spt4" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt4" data-name="Sports History · Unit 4 · How a Diamond Got Lines" data-name-es="Historia del deporte · Unidad 4 · How a Diamond Got Lines" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">5</div><div class="t" data-en="An Indoor Winter Game" data-es="An Indoor Winter Game">An Indoor Winter Game</div><div class="yrs">Origins</div><div class="d" data-en="A Peach Basket in a Gym; From Y to School Hoop." data-es="A Peach Basket in a Gym; From Y to School Hoop.">A Peach Basket in a Gym; From Y to School Hoop.</div><div class="doors"><a class="door" href="/spt5" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt5" data-name="Sports History · Unit 5 · An Indoor Winter Game" data-name-es="Historia del deporte · Unidad 5 · An Indoor Winter Game" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">6</div><div class="t" data-en="School Fields and World Pitches" data-es="School Fields and World Pitches">School Fields and World Pitches</div><div class="yrs">Origins</div><div class="d" data-en="The Gridiron Beside the School; A Rectangle the World Can Share." data-es="The Gridiron Beside the School; A Rectangle the World Can Share.">The Gridiron Beside the School; A Rectangle the World Can Share.</div><div class="doors"><a class="door" href="/spt6" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt6" data-name="Sports History · Unit 6 · School Fields and World Pitches" data-name-es="Historia del deporte · Unidad 6 · School Fields and World Pitches" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">7</div><div class="t" data-en="Time, Water, a Line" data-es="Time, Water, a Line">Time, Water, a Line</div><div class="yrs">Origins</div><div class="d" data-en="A Clock on a Track; Pool Length and a Tennis Line." data-es="A Clock on a Track; Pool Length and a Tennis Line.">A Clock on a Track; Pool Length and a Tennis Line.</div><div class="doors"><a class="door" href="/spt7" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt7" data-name="Sports History · Unit 7 · Time, Water, a Line" data-name-es="Historia del deporte · Unidad 7 · Time, Water, a Line" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div></div>
 <div class="dr-more"><h3><span data-en="More to explore on this band" data-es="Más para explorar en esta banda">More to explore on this band</span></h3><div class="dr-exgrid"><a class="dr-ex" href="/martial-arts-course"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="The Measured Step" data-es="El paso medido">The Measured Step</b><span class="dr-exd" data-en="Martial arts history: rooms, codes and schools, K–12." data-es="Historia de las artes marciales: espacios, códigos y escuelas, K–12.">Martial arts history: rooms, codes and schools, K–12.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="dr-ex" href="/social"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</b><span class="dr-exd" data-en="History, civics, geography and economics, every band." data-es="Historia, civismo, geografía y economía, cada banda.">History, civics, geography and economics, every band.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 </section>
 <section class="band dr-band" id="6-8" aria-labelledby="h-6-8">
@@ -353,58 +292,10 @@ footer p{margin:0 0 6px}
 <h2 id="h-6-8" data-en="Grades 6–8" data-es="Grados 6–8">Grades 6–8</h2>
 <p class="dr-stats" data-en="4 units · 8 chapters · 89 lessons" data-es="4 unidades · 8 capítulos · 89 lecciones">4 units · 8 chapters · 89 lessons</p>
 </div><a class="dr-sec" href="/sports-course#band-6-8"><span data-en="All lessons in this band" data-es="Todas las lecciones de esta banda">All lessons in this band</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-<div class="dr-grid"><article class="dr-card" aria-labelledby="ut8">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c8-ubf8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c8-ubf8)"/></svg><span class="dr-num"><span data-en="Unit 8" data-es="Unidad 8">Unit 8</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">History</p>
-    <h3 id="ut8">Who Was Written Out</h3>
-    <ol class="dr-chs"><li>Baseball and the Color Line</li><li>Amateur Codes and Other Locks</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 21 lessons" data-es="2 capítulos · 21 lecciones">2 chapters · 21 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt8" aria-describedby="ut8"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt8" data-name="Sports History · Unit 8 · Who Was Written Out" data-name-es="Historia del deporte · Unidad 8 · Who Was Written Out"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut9">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c9-ubf9" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c9-ubf9)"/></svg><span class="dr-num"><span data-en="Unit 9" data-es="Unidad 9">Unit 9</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">History</p>
-    <h3 id="ut9">City Rooms and Civic Nights</h3>
-    <ol class="dr-chs"><li>Boxing and the Newspaper</li><li>Basketball in the Neighborhood</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 23 lessons" data-es="2 capítulos · 23 lecciones">2 chapters · 23 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt9" aria-describedby="ut9"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt9" data-name="Sports History · Unit 9 · City Rooms and Civic Nights" data-name-es="Historia del deporte · Unidad 9 · City Rooms and Civic Nights"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut10">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c10-ubf10" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c10-ubf10)"/></svg><span class="dr-num"><span data-en="Unit 10" data-es="Unidad 10">Unit 10</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">History</p>
-    <h3 id="ut10">Nations and New Rosters</h3>
-    <ol class="dr-chs"><li>Olympics as a Stage</li><li>Title IX and a New Door</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 22 lessons" data-es="2 capítulos · 22 lecciones">2 chapters · 22 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt10" aria-describedby="ut10"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt10" data-name="Sports History · Unit 10 · Nations and New Rosters" data-name-es="Historia del deporte · Unidad 10 · Nations and New Rosters"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut11">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c11-ubf11" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c11-ubf11)"/></svg><span class="dr-num"><span data-en="Unit 11" data-es="Unidad 11">Unit 11</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">History</p>
-    <h3 id="ut11">Other Institutions, Same State</h3>
-    <ol class="dr-chs"><li>Disability Sport as Institution</li><li>Illinois Rooms</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 23 lessons" data-es="2 capítulos · 23 lecciones">2 chapters · 23 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt11" aria-describedby="ut11"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt11" data-name="Sports History · Unit 11 · Other Institutions, Same State" data-name-es="Historia del deporte · Unidad 11 · Other Institutions, Same State"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article></div>
+<div class="grid"><div class="unit open course"><div class="un" aria-hidden="true">8</div><div class="t" data-en="Who Was Written Out" data-es="Who Was Written Out">Who Was Written Out</div><div class="yrs">History</div><div class="d" data-en="Baseball and the Color Line; Amateur Codes and Other Locks." data-es="Baseball and the Color Line; Amateur Codes and Other Locks.">Baseball and the Color Line; Amateur Codes and Other Locks.</div><div class="doors"><a class="door" href="/spt8" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt8" data-name="Sports History · Unit 8 · Who Was Written Out" data-name-es="Historia del deporte · Unidad 8 · Who Was Written Out" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">9</div><div class="t" data-en="City Rooms and Civic Nights" data-es="City Rooms and Civic Nights">City Rooms and Civic Nights</div><div class="yrs">History</div><div class="d" data-en="Boxing and the Newspaper; Basketball in the Neighborhood." data-es="Boxing and the Newspaper; Basketball in the Neighborhood.">Boxing and the Newspaper; Basketball in the Neighborhood.</div><div class="doors"><a class="door" href="/spt9" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt9" data-name="Sports History · Unit 9 · City Rooms and Civic Nights" data-name-es="Historia del deporte · Unidad 9 · City Rooms and Civic Nights" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">10</div><div class="t" data-en="Nations and New Rosters" data-es="Nations and New Rosters">Nations and New Rosters</div><div class="yrs">History</div><div class="d" data-en="Olympics as a Stage; Title IX and a New Door." data-es="Olympics as a Stage; Title IX and a New Door.">Olympics as a Stage; Title IX and a New Door.</div><div class="doors"><a class="door" href="/spt10" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt10" data-name="Sports History · Unit 10 · Nations and New Rosters" data-name-es="Historia del deporte · Unidad 10 · Nations and New Rosters" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">11</div><div class="t" data-en="Other Institutions, Same State" data-es="Other Institutions, Same State">Other Institutions, Same State</div><div class="yrs">History</div><div class="d" data-en="Disability Sport as Institution; Illinois Rooms." data-es="Disability Sport as Institution; Illinois Rooms.">Disability Sport as Institution; Illinois Rooms.</div><div class="doors"><a class="door" href="/spt11" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt11" data-name="Sports History · Unit 11 · Other Institutions, Same State" data-name-es="Historia del deporte · Unidad 11 · Other Institutions, Same State" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div></div>
 <div class="dr-more"><h3><span data-en="More to explore on this band" data-es="Más para explorar en esta banda">More to explore on this band</span></h3><div class="dr-exgrid"><a class="dr-ex" href="/us-history"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="U.S. History 6–8" data-es="Historia de EE. UU. 6–8">U.S. History 6–8</b><span class="dr-exd" data-en="The story of the United States, as a full course." data-es="La historia de Estados Unidos, como un curso completo.">The story of the United States, as a full course.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="dr-ex" href="/martial-arts-course"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="The Measured Step" data-es="El paso medido">The Measured Step</b><span class="dr-exd" data-en="Martial arts history: rooms, codes and schools, K–12." data-es="Historia de las artes marciales: espacios, códigos y escuelas, K–12.">Martial arts history: rooms, codes and schools, K–12.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="dr-ex" href="/social"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</b><span class="dr-exd" data-en="History, civics, geography and economics, every band." data-es="Historia, civismo, geografía y economía, cada banda.">History, civics, geography and economics, every band.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 </section>
 <section class="band dr-band" id="9-10" aria-labelledby="h-9-10">
@@ -412,45 +303,9 @@ footer p{margin:0 0 6px}
 <h2 id="h-9-10" data-en="Grades 9–10" data-es="Grados 9–10">Grades 9–10</h2>
 <p class="dr-stats" data-en="3 units · 6 chapters · 67 lessons" data-es="3 unidades · 6 capítulos · 67 lecciones">3 units · 6 chapters · 67 lessons</p>
 </div><a class="dr-sec" href="/sports-course#band-9-10"><span data-en="All lessons in this band" data-es="Todas las lecciones de esta banda">All lessons in this band</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-<div class="dr-grid"><article class="dr-card" aria-labelledby="ut12">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c12-ubf12" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c12-ubf12)"/></svg><span class="dr-num"><span data-en="Unit 12" data-es="Unidad 12">Unit 12</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Institutions</p>
-    <h3 id="ut12">School, Work, and the Clip</h3>
-    <ol class="dr-chs"><li>College Sport as Two Sentences</li><li>Who Owned a Career</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 23 lessons" data-es="2 capítulos · 23 lecciones">2 chapters · 23 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt12" aria-describedby="ut12"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt12" data-name="Sports History · Unit 12 · School, Work, and the Clip" data-name-es="Historia del deporte · Unidad 12 · School, Work, and the Clip"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut13">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c13-ubf13" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c13-ubf13)"/></svg><span class="dr-num"><span data-en="Unit 13" data-es="Unidad 13">Unit 13</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Institutions</p>
-    <h3 id="ut13">Numbers and Squares</h3>
-    <ol class="dr-chs"><li>Radio, Television, the Clip</li><li>A Record Is an Argument</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 22 lessons" data-es="2 capítulos · 22 lecciones">2 chapters · 22 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt13" aria-describedby="ut13"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt13" data-name="Sports History · Unit 13 · Numbers and Squares" data-name-es="Historia del deporte · Unidad 13 · Numbers and Squares"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut14">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c14-ubf14" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c14-ubf14)"/></svg><span class="dr-num"><span data-en="Unit 14" data-es="Unidad 14">Unit 14</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Institutions</p>
-    <h3 id="ut14">Field as Square</h3>
-    <ol class="dr-chs"><li>Protest on a Field</li><li>Two Tours, Not One Ladder</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 22 lessons" data-es="2 capítulos · 22 lecciones">2 chapters · 22 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt14" aria-describedby="ut14"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt14" data-name="Sports History · Unit 14 · Field as Square" data-name-es="Historia del deporte · Unidad 14 · Field as Square"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article></div>
+<div class="grid"><div class="unit open course"><div class="un" aria-hidden="true">12</div><div class="t" data-en="School, Work, and the Clip" data-es="School, Work, and the Clip">School, Work, and the Clip</div><div class="yrs">Institutions</div><div class="d" data-en="College Sport as Two Sentences; Who Owned a Career." data-es="College Sport as Two Sentences; Who Owned a Career.">College Sport as Two Sentences; Who Owned a Career.</div><div class="doors"><a class="door" href="/spt12" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt12" data-name="Sports History · Unit 12 · School, Work, and the Clip" data-name-es="Historia del deporte · Unidad 12 · School, Work, and the Clip" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">13</div><div class="t" data-en="Numbers and Squares" data-es="Numbers and Squares">Numbers and Squares</div><div class="yrs">Institutions</div><div class="d" data-en="Radio, Television, the Clip; A Record Is an Argument." data-es="Radio, Television, the Clip; A Record Is an Argument.">Radio, Television, the Clip; A Record Is an Argument.</div><div class="doors"><a class="door" href="/spt13" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt13" data-name="Sports History · Unit 13 · Numbers and Squares" data-name-es="Historia del deporte · Unidad 13 · Numbers and Squares" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">14</div><div class="t" data-en="Field as Square" data-es="Field as Square">Field as Square</div><div class="yrs">Institutions</div><div class="d" data-en="Protest on a Field; Two Tours, Not One Ladder." data-es="Protest on a Field; Two Tours, Not One Ladder.">Protest on a Field; Two Tours, Not One Ladder.</div><div class="doors"><a class="door" href="/spt14" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt14" data-name="Sports History · Unit 14 · Field as Square" data-name-es="Historia del deporte · Unidad 14 · Field as Square" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div></div>
 <div class="dr-more"><h3><span data-en="More to explore on this band" data-es="Más para explorar en esta banda">More to explore on this band</span></h3><div class="dr-exgrid"><a class="dr-ex" href="/martial-arts-course"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="The Measured Step" data-es="El paso medido">The Measured Step</b><span class="dr-exd" data-en="Martial arts history: rooms, codes and schools, K–12." data-es="Historia de las artes marciales: espacios, códigos y escuelas, K–12.">Martial arts history: rooms, codes and schools, K–12.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="dr-ex" href="/social"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</b><span class="dr-exd" data-en="History, civics, geography and economics, every band." data-es="Historia, civismo, geografía y economía, cada banda.">History, civics, geography and economics, every band.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 </section>
 <section class="band dr-band" id="11-12" aria-labelledby="h-11-12">
@@ -458,45 +313,9 @@ footer p{margin:0 0 6px}
 <h2 id="h-11-12" data-en="Grades 11–12" data-es="Grados 11–12">Grades 11–12</h2>
 <p class="dr-stats" data-en="3 units · 6 chapters · 65 lessons" data-es="3 unidades · 6 capítulos · 65 lecciones">3 units · 6 chapters · 65 lessons</p>
 </div><a class="dr-sec" href="/sports-course#band-11-12"><span data-en="All lessons in this band" data-es="Todas las lecciones de esta banda">All lessons in this band</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-<div class="dr-grid"><article class="dr-card" aria-labelledby="ut15">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c15-ubf15" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c15-ubf15)"/></svg><span class="dr-num"><span data-en="Unit 15" data-es="Unidad 15">Unit 15</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Argument</p>
-    <h3 id="ut15">What a League Is</h3>
-    <ol class="dr-chs"><li>A Constitution for a Game</li><li>High School Profit and the District</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 24 lessons" data-es="2 capítulos · 24 lecciones">2 chapters · 24 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt15" aria-describedby="ut15"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt15" data-name="Sports History · Unit 15 · What a League Is" data-name-es="Historia del deporte · Unidad 15 · What a League Is"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut16">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c16-ubf16" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c16-ubf16)"/></svg><span class="dr-num"><span data-en="Unit 16" data-es="Unidad 16">Unit 16</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Argument</p>
-    <h3 id="ut16">Bodies, Data, and the State</h3>
-    <ol class="dr-chs"><li>Classification, Sex, and Eligibility</li><li>The State in the Stadium</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 20 lessons" data-es="2 capítulos · 20 lecciones">2 chapters · 20 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt16" aria-describedby="ut16"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt16" data-name="Sports History · Unit 16 · Bodies, Data, and the State" data-name-es="Historia del deporte · Unidad 16 · Bodies, Data, and the State"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article>
-<article class="dr-card" aria-labelledby="ut17">
-  <div class="dr-art"><svg aria-hidden="true" class="" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" focusable="false"><defs><linearGradient id="c17-ubf17" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#c17-ubf17)"/></svg><span class="dr-num"><span data-en="Unit 17" data-es="Unidad 17">Unit 17</span></span></div>
-  <div class="dr-cbody">
-    <p class="dr-strand">Capstone</p>
-    <h3 id="ut17">Capstone</h3>
-    <ol class="dr-chs"><li>Pick One Sport and Its Paper</li><li>Object and Plan</li></ol>
-    <p class="dr-meta"><span data-en="2 chapters · 21 lessons" data-es="2 capítulos · 21 lecciones">2 chapters · 21 lessons</span></p>
-    <div class="dr-acts">
-      <a class="dr-open" href="/spt17" aria-describedby="ut17"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <button class="dr-beam no-print" type="button" data-beam="/spt17" data-name="Sports History · Unit 17 · Capstone" data-name-es="Historia del deporte · Unidad 17 · Capstone"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13.5v3M6.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</span></button>
-    </div>
-  </div>
-</article></div>
+<div class="grid"><div class="unit open course"><div class="un" aria-hidden="true">15</div><div class="t" data-en="What a League Is" data-es="What a League Is">What a League Is</div><div class="yrs">Argument</div><div class="d" data-en="A Constitution for a Game; High School Profit and the District." data-es="A Constitution for a Game; High School Profit and the District.">A Constitution for a Game; High School Profit and the District.</div><div class="doors"><a class="door" href="/spt15" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt15" data-name="Sports History · Unit 15 · What a League Is" data-name-es="Historia del deporte · Unidad 15 · What a League Is" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">16</div><div class="t" data-en="Bodies, Data, and the State" data-es="Bodies, Data, and the State">Bodies, Data, and the State</div><div class="yrs">Argument</div><div class="d" data-en="Classification, Sex, and Eligibility; The State in the Stadium." data-es="Classification, Sex, and Eligibility; The State in the Stadium.">Classification, Sex, and Eligibility; The State in the Stadium.</div><div class="doors"><a class="door" href="/spt16" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt16" data-name="Sports History · Unit 16 · Bodies, Data, and the State" data-name-es="Historia del deporte · Unidad 16 · Bodies, Data, and the State" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+<div class="unit open course"><div class="un" aria-hidden="true">17</div><div class="t" data-en="Capstone" data-es="Capstone">Capstone</div><div class="yrs">Capstone</div><div class="d" data-en="Pick One Sport and Its Paper; Object and Plan." data-es="Pick One Sport and Its Paper; Object and Plan.">Pick One Sport and Its Paper; Object and Plan.</div><div class="doors"><a class="door" href="/spt17" data-en="Open the unit" data-es="Abrir la unidad">Open the unit</a><button class="beam no-print" type="button" data-beam="/spt17" data-name="Sports History · Unit 17 · Capstone" data-name-es="Historia del deporte · Unidad 17 · Capstone" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div></div>
 <div class="dr-more"><h3><span data-en="More to explore on this band" data-es="Más para explorar en esta banda">More to explore on this band</span></h3><div class="dr-exgrid"><a class="dr-ex" href="/martial-arts-course"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="The Measured Step" data-es="El paso medido">The Measured Step</b><span class="dr-exd" data-en="Martial arts history: rooms, codes and schools, K–12." data-es="Historia de las artes marciales: espacios, códigos y escuelas, K–12.">Martial arts history: rooms, codes and schools, K–12.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="dr-ex" href="/social"><span class="dr-exk" data-en="Course" data-es="Curso">Course</span><b class="dr-ext" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</b><span class="dr-exd" data-en="History, civics, geography and economics, every band." data-es="Historia, civismo, geografía y economía, cada banda.">History, civics, geography and economics, every band.</span><svg class="dr-ar" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 </section>
 <section class="dr-practice no-print" aria-labelledby="h-practice">
