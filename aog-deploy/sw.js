@@ -8,7 +8,9 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7235'   // MERGE: TEACHER DOOR ORDER + CHECK-IN START INK + 1940 BASEBALL LINE (m7234) + main m7234. previous: m7234
+const CACHE = 'aog-cache-2026.09.30.m7236'   // MERGE: SPORTS AND MEASURED STEP HUB CARDS (m7234b) + main m7235. previous: m7235
+// const CACHE = 'aog-cache-2026.09.30.m7234b'   // SPORTS AND MEASURED STEP HUBS: SOCIAL-STUDIES UNIT CARDS WITH PENCIL DRAWINGS, HERO WORDS ALWAYS READABLE, PLAIN INTROS. previous: m7233
+// const CACHE = 'aog-cache-2026.09.30.m7235'   // MERGE: TEACHER DOOR ORDER + CHECK-IN START INK + 1940 BASEBALL LINE (m7234) + main m7234. previous: m7234
 // const CACHE = 'aog-cache-2026.09.30.m7234'   // MERGE: TAP MATCH WORDING + MAIN. previous: m7233
 // const CACHE = 'aog-cache-2026.09.30.m7233b'   // SPORTS HISTORY AND THE MEASURED STEP: PENCIL BANNERS ON EVERY UNIT AND BOTH HUBS (16 OF JIMMY'S DRAWINGS, 20 FROM THE KIT). previous: m7232
 // const CACHE = 'aog-cache-2026.09.30.m7232b'   // MERGE: FOUNDRY CUMULATIVE (m7223) + MARTIAL ARTS COURSE (main m7231). previous: m7231

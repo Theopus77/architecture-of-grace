@@ -61,7 +61,9 @@
       "room12":"#2E8B57", "room18":"#B87A12", "room36":"#2F63B8", "room104":"#A8323E", "room207":"#7B4FA0",
       /* AOG-FAITH-GLASS-V1 (2026-09-27): the four text courses join the subject rooms */
       "bible-hub":"#8A6516", "hebrew-bible-hub":"#1F8080", "talmud-hub":"#3F4AA6", "quran-hub":"#2E8B57",
-      "bible":"#8A6516", "hebrew-bible":"#1F8080", "talmud":"#3F4AA6", "quran":"#2E8B57" };
+      "bible":"#8A6516", "hebrew-bible":"#1F8080", "talmud":"#3F4AA6", "quran":"#2E8B57",
+      /* AOG-SS-CARDS-V1 (2026-09-30): the two history books use social-studies-hub's unit cards */
+      "sports-hub":"#B5541C", "martial-arts-hub":"#7A3B2E", "sports":"#B5541C", "martial-arts":"#7A3B2E" };
     var slug = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
     if (ROOMS[slug]) {
       H.classList.add("aog-glass-rooms"); H.style.setProperty("--room", ROOMS[slug]);
