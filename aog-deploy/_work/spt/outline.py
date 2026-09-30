@@ -34,7 +34,7 @@ UNITS = [
   dict(n=5, title="Games That Travel", strand="Names",
        topics="some games move to new towns; a ball can cross an ocean; names of a few sports without plays.",
        story="A ball from a closet has no writing on it, only wear from many hands"),
-  dict(n=6, title="The Measured Step Lives Next Door", strand="Names",
+  dict(n=6, title="Mats, Rings and Strips", strand="Names",
        topics="martial arts is a sister book; this book does not teach a strike; a mat and a field are different rooms.",
        story="A folded jacket hangs in a hallway next to a bag of baseballs"),
  ]),
