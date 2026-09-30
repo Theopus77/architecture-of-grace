@@ -392,6 +392,13 @@ function toggleTheme() {
 <style id="aog-sr-start-ink">/* the self-reflection Start button: light words on its navy pill */
 html body #btnStart, html body #btnStart > span{color:#F7F2E6 !important;-webkit-text-fill-color:#F7F2E6 !important}
 </style>
+<style id="aog-btnstart-ink">
+/* AOG-BTNSTART-INK (2026-09-30): the student room's Start button is navy with cream words, except in the
+   gold dark-theme version. "#screen-checkin .btn:not(.btn-secondary) *" gave its words navy color (only
+   -webkit-text-fill-color painted them cream), so the readable-text check measured navy on navy. Here the
+   words get cream color wherever the button is navy (every theme but data-theme="dark", where it is gold). */
+html:not([data-theme="dark"]) body #screen-checkin #btnStart:not(.btn-secondary) *{color:#F7F2E6 !important;-webkit-text-fill-color:#F7F2E6 !important}
+</style>
 </head>
 <body>
 <!-- AOG-BAR-ONEBAR-V1: the home page runs the same site bar as every other page.
