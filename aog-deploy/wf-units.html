@@ -1361,7 +1361,7 @@ var VTABS=[["learn","Learn"],["quiz","Quiz"],["draft","Daily Draft"],["test","Te
 function tabsFor(u){return u&&u.kind==="vocab"?VTABS:TABS;}
 function tabOK(){var ok=tabsFor(U).some(function(t){return t[0]===tab;});if(!ok)tab="learn";}
 function nav(){ $("#h1").textContent="Class Units · "+U.name;
- $("#unitNav").innerHTML=UNITS.map(function(x,i){return '<button class="pill'+(x===U?" on":"")+'" data-u="'+i+'" type="button">'+esc(x.name)+'</button>';}).join("");
+ $("#unitNav").innerHTML=UNITS.map(function(x,i){return '<button class="pill'+(x===(U.__base||U)?" on":"")+'" data-u="'+i+'" type="button">'+esc(x.name)+'</button>';}).join("");
  $("#tabNav").innerHTML=tabsFor(U).map(function(t){return '<button class="tab'+(tab===t[0]?" on":"")+'" data-t="'+t[0]+'" type="button">'+t[1]+'</button>';}).join(""); }
 $("#unitNav").addEventListener("click",function(e){var b=e.target.closest("[data-u]");if(!b)return;U=UNITS[+b.getAttribute("data-u")];put("unit",String(U.n));render();});
 $("#tabNav").addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(!b)return;tab=b.getAttribute("data-t");render();});
@@ -1584,10 +1584,27 @@ function wGuide(){
 document.addEventListener("input",function(e){var i=e.target.closest("[data-vk]");if(!i)return;
  var o={};try{o=JSON.parse(get("vguide."+U.n)||"{}")||{};}catch(x){}
  o[i.getAttribute("data-vk")]=i.value; put("vguide."+U.n,JSON.stringify(o));});
-function render(){ tabOK(); nav();
+/* AOG-WF-CUMULATIVE-V1 (2026-09-30) — Jimmy: "the word list … the option to have it cumulative."
+   "Units 1 to N" puts every word from the first unit of this year's ten (1, 11 or 21) up to this one
+   into Learn, Quiz, Find, Test and the study guide. The Daily Draft already spirals back on its own. */
+var cumul=get("cumul")==="1";
+function yearStart(b){return Math.floor((b.n-1)/10)*10+1;}
+function merged(b){var from=yearStart(b),us=UNITS.filter(function(x){return x.n>=from&&x.n<=b.n&&x.kind===b.kind;});
+ if(us.length<2)return b;var m={};for(var k in b)m[k]=b[k];m.__base=b;m.name=b.name;
+ function cat(key,id){var seen={},out=[];us.forEach(function(x){(x[key]||[]).forEach(function(v){var i=id(v);if(!seen[i]){seen[i]=1;out.push(v);}});});return out;}
+ if(b.stems)m.stems=cat("stems",function(v){return v.s;});
+ if(b.words)m.words=cat("words",function(v){return v.w;});
+ if(b.find)m.find=cat("find",function(v){return v[0];});
+ if(b.x)m.x=cat("x",function(v){return v[0];});
+ m.__from=from;return m;}
+function cumulRow(b){var from=yearStart(b);if(b.n===from)return "";
+ return '<div class="row no-print" style="margin:10px 0 0"><button class="pill'+(!cumul?" on":"")+'" data-cumul="0" type="button" aria-pressed="'+!cumul+'">This unit only</button>'+
+  '<button class="pill'+(cumul?" on":"")+'" data-cumul="1" type="button" aria-pressed="'+cumul+'">Units '+from+' to '+b.n+' together</button></div>';}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-cumul]");if(!b)return;cumul=b.getAttribute("data-cumul")==="1";put("cumul",cumul?"1":"0");render();});
+function render(){ var base=U.__base||U; U=(cumul&&tab!=="draft")?merged(base):base; tabOK(); nav();
  var V=(U.kind==="vocab")?{learn:wLearn,quiz:wQuiz,draft:ddView,test:wTest,guide:wGuide}
                          :{learn:vLearn,quiz:vQuiz,find:vFind,draft:ddView,test:vTest,guide:vGuide};
- $("#content").innerHTML=draftNote()+V[tab](); }
+ $("#content").innerHTML=cumulRow(U.__base||U)+draftNote()+V[tab](); }
 
 /* ══ AOG-WF-TEST-SEND-V1 (2026-09-21) ════════════════════════════════════════
    Jimmy: "I need the Words within the Words list test rehearsal to have the

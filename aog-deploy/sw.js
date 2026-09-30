@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.29.m7231'   // THE MEASURED STEP AS A COURSE. /martial-arts-course, /martial-arts and /mar1…: a K–12 course built by _work/mar/build_mar.py; every page's The Measured Step jump groups list the course first. previous: m7230   // SPORTS HISTORY AS A COURSE. /sports-course, /sports and /spt1…: a K–12 course built by _work/spt/build_spt.py; every page's Sports History jump groups list the course first. previous: m7229   // REMOVED TODAY'S HISTORY HUBS, SPORTS AND MARTIAL ARTS PAGES AND THEIR MENU ENTRIES (NOT FINISHED). previous: m7228
+const CACHE = 'aog-cache-2026.09.30.m7232'   // MERGE: FOUNDRY CUMULATIVE (m7223) + MARTIAL ARTS COURSE (main m7231). previous: m7231
+// const CACHE = 'aog-cache-2026.09.29.m7231'   // THE MEASURED STEP AS A COURSE. /martial-arts-course, /martial-arts and /mar1…: a K–12 course built by _work/mar/build_mar.py; every page's The Measured Step jump groups list the course first. previous: m7230   // SPORTS HISTORY AS A COURSE. /sports-course, /sports and /spt1…: a K–12 course built by _work/spt/build_spt.py; every page's Sports History jump groups list the course first. previous: m7229   // REMOVED TODAY'S HISTORY HUBS, SPORTS AND MARTIAL ARTS PAGES AND THEIR MENU ENTRIES (NOT FINISHED). previous: m7228
 // const CACHE = 'aog-cache-2026.09.29.m7228'   // THESE UNITED STATES AND ILLINOIS HISTORY HUBS (/us, /illinois), LISTED UNDER SOCIAL STUDIES. previous: m7227
 // const CACHE = 'aog-cache-2026.09.29.m7227'   // MEXICO AND RUSSIA HISTORY HUBS (/mexico, /russia), LISTED UNDER WORLD CULTURES. previous: m7226
 // const CACHE = 'aog-cache-2026.09.29.m7226'   // EUROPE, CHINA, JAPAN AND SPORTS HISTORY IN EXPLORE AND THE HOME COURSES LIST; JAPAN HUB DROPS STRAY SPORTS LINK. previous: m7225
@@ -16,6 +17,7 @@ const CACHE = 'aog-cache-2026.09.29.m7231'   // THE MEASURED STEP AS A COURSE. /
 // const CACHE = 'aog-cache-2026.09.29.m7224'   // SPORTS AND MARTIAL ARTS: PLAIN FOOTERS, CANONICAL LINKS ON NETLIFY. previous: m7223
 // const CACHE = 'aog-cache-2026.09.29.m7223'   // SPORTS HISTORY HUB (/sports) AND THE MEASURED STEP MARTIAL ARTS COURSE (/martial-arts). previous: m7222
 // const CACHE = 'aog-cache-2026.09.29.m7222'   // DAILY DRAFTS: LEATHER SPINES V3 (GOLD CAPITALS, CREAM VELLUM). previous: m7221
+// const CACHE = 'aog-cache-2026.09.30.m7223'   // FOUNDRY CLASS UNITS: CUMULATIVE WORD LIST OPTION. previous: m7222
 // const CACHE = 'aog-cache-2026.09.28.m7217'   // MERGE: STANDARDS FOLDS (m7216) + GRACE AT HOME DAY BUTTONS (main m7083). previous: m7216
 // const CACHE = 'aog-cache-2026.09.28.m7216'   // STANDARDS: BOOK CARDS + FOLDED TABLES, ONE SUBJECT AT A TIME. previous: m7215
 // const CACHE = 'aog-cache-2026.09.27.m7082'   // GRACE AT HOME: DAY BUTTONS EVEN. previous: aog-cache-2026.09.27.m7081   // UNIT WRAP-UP LINK OPENS THE WRAP-UP. previous: m7080   // FINAL MERGE: PENCIL EVERYWHERE, NO EMOJI; ALL COURSES, SEL, NOVELS, CROSSWALK LINKS. previous: m7078
