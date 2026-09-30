@@ -8,7 +8,7 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7232'   // MERGE: FOUNDRY CUMULATIVE (m7223) + MARTIAL ARTS COURSE (main m7231). previous: m7231
+const CACHE = 'aog-cache-2026.09.30.m7233'   // DAILY DRAFTS: TAP-TO-FILL QUESTIONS SAY MATCH/CHOOSE, NOT WRITE. previous: m7232
 // const CACHE = 'aog-cache-2026.09.29.m7231'   // THE MEASURED STEP AS A COURSE. /martial-arts-course, /martial-arts and /mar1…: a K–12 course built by _work/mar/build_mar.py; every page's The Measured Step jump groups list the course first. previous: m7230   // SPORTS HISTORY AS A COURSE. /sports-course, /sports and /spt1…: a K–12 course built by _work/spt/build_spt.py; every page's Sports History jump groups list the course first. previous: m7229   // REMOVED TODAY'S HISTORY HUBS, SPORTS AND MARTIAL ARTS PAGES AND THEIR MENU ENTRIES (NOT FINISHED). previous: m7228
 // const CACHE = 'aog-cache-2026.09.29.m7228'   // THESE UNITED STATES AND ILLINOIS HISTORY HUBS (/us, /illinois), LISTED UNDER SOCIAL STUDIES. previous: m7227
 // const CACHE = 'aog-cache-2026.09.29.m7227'   // MEXICO AND RUSSIA HISTORY HUBS (/mexico, /russia), LISTED UNDER WORLD CULTURES. previous: m7226
