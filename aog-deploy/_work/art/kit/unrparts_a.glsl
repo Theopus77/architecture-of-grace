@@ -396,7 +396,7 @@ float t_tower(vec3 q){ float best=1e5; int bi=0;
 /* ---- a feather lying on the table, quill toward -x, curving a little ---- */
 float o_feather(vec3 q,float L){
   float x=q.x/L; float bend=.1*L*x*x; vec3 c=vec3(q.x,q.y,q.z-bend);
-  float lift=.004+.006*smoothstep(-.3,1.,x);
+  float lift=.004+.016*smoothstep(-.2,1.,x);
   float shaft=max(length(vec2(c.y-lift,c.z))-.0018*(1.2-.6*x),abs(q.x)-L);
   float t=clamp((x+.7)/1.7,0.,1.); float w=L*.2*pow(sin(3.1416*pow(t,.75)),.8);
   float vane=max(max(abs(c.z+.01*L*sin(t*3.))-w,abs(c.y-lift-.0006*sin(c.z*300.))-.0012),max(-.7-x,x-1.));
@@ -526,3 +526,14 @@ float t_kite(vec3 q,float w,float hb,float ht){
   if(abs(kiteF(k.xy,w,hb,ht))<.0015) return .3;                     /* the edge binding */
   if(k.z>.001) return .45;                                          /* sticks on the back */
   return (k.x>0.)==(k.y>hb)?.55:.9; }                               /* two quarters coloured */
+/* ---- watering can (body radius r, height h), spout toward +x (from selparts) ---- */
+float wcan(vec3 q,float r,float h){
+  float body=sdCylY(q-vec3(0.,h*.5,0.),r,h*.5)-.003;
+  body=max(body,-sdCylY(q-vec3(0.,h+.001,0.),r-.006,.004));
+  float sp=sdCapsule(q,vec3(r*.6,h*.2,0.),vec3(r*2.3,h*1.05,0.),.0075);
+  float rose=sdCone((q-vec3(r*2.35,h*1.1,0.))*mat3(1.),.009,.018,.012);
+  vec3 t=q-vec3(-r*.1,h,0.); float hdl=length(vec2(length(t.xy)-r*.85,t.z))-.006; hdl=max(hdl,-t.y+.004);
+  hdl=max(hdl,t.x-r*.2);
+  vec3 t2=q-vec3(-r,h*.55,0.); float hdl2=length(vec2(length(t2.xy)-h*.28,t2.z))-.006; hdl2=max(hdl2,t2.x+.004);
+  return min(min(body,sp),min(min(rose,hdl),hdl2)); }
+float wcanT(vec3 q,float r,float h){ if(abs(q.y-h*.15)<.004||abs(q.y-h*.85)<.004) return .4; return .66; }

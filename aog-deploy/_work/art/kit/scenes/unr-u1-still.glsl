@@ -1,7 +1,7 @@
-/* The Unseen Realm Unit 1 "God's Family in Heaven" - a paper pinwheel (the wind: real but unseen)
-   standing in a clay pot with a young plant (the garden home), and a feather on the table, and a diamond kite with its tail. Objects only. */
-#define CAM_POS vec3(-0.9001,0.4901,-1.2607)
-#define CAM_TGT vec3(-0.4370,0.0402,0.1949)
+/* The Unseen Realm Unit 1 "God's Family in Heaven" - a garden home: a clay pot with a young plant,
+   a watering can, and a white feather on the table. Objects only. */
+#define CAM_POS vec3(-0.5490,0.3686,-0.9590)
+#define CAM_TGT vec3(-0.2060,0.0157,0.1192)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.32)
 #define MAXT 8.
@@ -11,26 +11,23 @@
 #include "lib.glsl"
 #include "studio.glsl"
 #include "unrparts_a.glsl"
-#define PR .075
-#define PH .12
-vec3 Q3(vec3 p){ return p-vec3(.02,0.,.05); }
-vec3 Q4(vec3 p){ return Q3(p)-vec3(-.02,PH-.016,.01); }
-vec3 Q5(vec3 p){ vec3 q=Q3(p)-vec3(.028,PH-.016,-.012); q.xz=rot(-.45)*q.xz; return q; }
-vec3 Q6(vec3 p){ vec3 q=p-vec3(-.19,0.,-.1); q.xz=rot(-.3)*q.xz; return q; }
-vec3 Q7(vec3 p){ vec3 q=p-vec3(.24,0.,.16); q.xz=rot(-.35)*q.xz; return q; }
+#define PR .08
+#define PH .13
+vec3 Q3(vec3 p){ return p-vec3(-.04,0.,.05); }
+vec3 Q4(vec3 p){ return Q3(p)-vec3(0.,PH-.016,0.); }
+vec3 Q5(vec3 p){ vec3 q=p-vec3(.21,0.,.14); q.xz=rot(-.5)*q.xz; return q; }
+vec3 Q6(vec3 p){ vec3 q=p-vec3(.06,0.,-.15); q.xz=rot(-.25)*q.xz; return q; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.); r=U(r,.9-p.z,2.);
   r=U(r,o_pot(Q3(p),PR,PH),3.);
-  r=U(r,o_sprout(Q4(p),.1,.04,3.),4.);
-  r=U(r,o_pinwheel(Q5(p),.22,.065),5.);
+  r=U(r,o_sprout(Q4(p),.15,.055,4.),4.);
+  r=U(r,wcan(Q5(p),.065,.13),5.);
   r=U(r,o_feather(Q6(p),.15),6.);
-  r=U(r,o_kite(Q7(p),.1,.19,.1),7.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72; if(id==2.) return .9;
   if(id==3.) return t_pot(Q3(p),PR,PH);
   if(id==4.) return t_sprout(Q4(p));
-  if(id==5.) return t_pinwheel(Q5(p),.22,.065);
+  if(id==5.) return wcanT(Q5(p),.065,.13);
   if(id==6.) return t_feather(Q6(p),.15);
-  if(id==7.) return t_kite(Q7(p),.1,.19,.1);
   return .7; }

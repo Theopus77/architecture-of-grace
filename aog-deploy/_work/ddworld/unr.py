@@ -38,6 +38,28 @@ ES = {
  "A Word for Adversary": "Una palabra para adversario",
  "Three Groups of Dark Powers": "Tres grupos de poderes oscuros",
  "Azazel and the Day of Atonement": "Azazel y el Día de la Expiación",
+ # 9–12
+ "The Book and Its Mountain": "El libro y su monte",
+ "Pentecost in Jerusalem": "Pentecostés en Jerusalén",
+ "The Spirits in Prison": "Los espíritus encarcelados",
+ "Words for Heavenly Beings": "Palabras para los seres celestiales",
+ "Worship Belongs to God": "La adoración es para Dios",
+ "Sages, Watchers and a Hebrew Word": "Sabios, Vigilantes y una palabra hebrea",
+ "Weighing an Argument": "Sopesar un argumento",
+ "Heiser's Mount of Assembly": "El monte de la asamblea según Heiser",
+ "Ancient Astronauts and Other Claims": "Astronautas antiguos y otras afirmaciones",
+ "Writing and Presenting": "Escribir y presentar",
+ # Adult (more 11–12)
+ "Reading in Context": "Leer en contexto",
+ "Comparing With Care": "Comparar con cuidado",
+ "Where Scholars Debate": "Donde debaten los estudiosos",
+ "The Goal of the Story": "La meta de la historia",
+ "Judging and Ruling": "Juzgar y gobernar",
+ "The Place Called Armageddon": "El lugar llamado Armagedón",
+ "Ways to Read Revelation": "Maneras de leer el Apocalipsis",
+ "How His Ideas Spread": "Cómo se difundieron sus ideas",
+ "Choosing a Question": "Elegir una pregunta",
+ "Weighing Readings Fairly": "Sopesar las lecturas con justicia",
 }
 
 EXTRA = {
