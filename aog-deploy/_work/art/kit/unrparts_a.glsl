@@ -544,3 +544,21 @@ float appleD(vec3 q,float r){
   float stem=sdCapsule(q,vec3(0.,.62*r,0.),vec3(.12*r,1.18*r,.02*r),.055*r);
   return min(d,stem); }
 float appleLeaf(vec3 q,float r){ vec3 l=q-vec3(.3*r,1.02*r,0.); l.xy=rot(-.5)*l.xy; return sdEll(l,vec3(.34*r,.06*r,.15*r)); }
+float mapS(vec3 q,float hx,float hz){
+  float sh=sdBox(q-vec3(0.,.0012,0.),vec3(hx,.0008,hz));
+  float r1=max(length(q.xy-vec2(hx,.009))-.009,abs(q.z)-hz); r1=max(r1,-(length(q.xy-vec2(hx,.009))-.0075));
+  float r2=max(length(q.xy-vec2(-hx,.011))-.011,abs(q.z)-hz); r2=max(r2,-(length(q.xy-vec2(-hx,.011))-.0095));
+  return min(sh,min(r1,r2)); }
+float mapT(vec3 q){ float c=fbm(q.xz*14.); float l=fract(c*7.);
+  if(l<.08) return .5;                                              /* contour lines */
+  if(abs(q.z-.03*sin(q.x*30.))<.0016) return .35;                   /* a path */
+  return .9; }
+/* a calmer map face: coastlines round a few lands, pale land, a dotted route (no words) */
+float t_map2(vec3 q,float hx,float hz){
+  if(abs(q.x)>hx-.004) return .8;
+  if(abs(abs(q.x)-hx+.012)<.0014||abs(abs(q.z)-hz+.008)<.0014) return .45;   /* a ruled border */
+  float c=fbm(q.xz*9.+vec2(3.1,1.7));
+  if(abs(c-.52)<.006) return .22;                                   /* coastlines */
+  float route=abs(q.z-.035*sin(q.x*14.+.5)+.01);
+  if(route<.0016&&fract(q.x/.012)<.5&&c>.52) return .35;           /* a dotted route over the land */
+  return c>.52?.6:.95; }
