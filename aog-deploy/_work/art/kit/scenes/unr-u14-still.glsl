@@ -2,8 +2,8 @@
    with a horn at each corner and a shallow bowl on top (worship in the temple, Isaiah 6 and
    Revelation 8), a long straight silver trumpet with a flared bell lying in front (the trumpet of
    1 Thessalonians 4:16), and a pair of temple tongs holding a smooth coal (Isaiah 6:6). */
-#define CAM_POS vec3(-0.4197,0.3146,-0.9178)
-#define CAM_TGT vec3(-0.2284,0.0170,0.0811)
+#define CAM_POS vec3(-0.4010,0.3197,-0.9171)
+#define CAM_TGT vec3(-0.2102,0.0228,0.0793)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
