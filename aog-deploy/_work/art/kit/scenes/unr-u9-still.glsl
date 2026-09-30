@@ -1,8 +1,8 @@
 /* The Unseen Realm Unit 9 "Giants in the Land" — pencil still life: a shepherd's leather bag
    standing with its drawstring, a sling lying in front of it with its cords, five smooth stones,
    and a wooden cubit rod with notches carved 1, 2, 3 (Og's bed, Goliath's height). */
-#define CAM_POS vec3(-0.7120,0.5138,-1.2022)
-#define CAM_TGT vec3(-0.3450,0.0438,0.1486)
+#define CAM_POS vec3(-0.5030,0.4013,-1.0612)
+#define CAM_TGT vec3(-0.3182,0.0196,0.0960)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -58,8 +58,8 @@ float stonesD(vec3 p,out float which){ float d=1e3; which=0.;
   return d; }
 /* the cubit rod: a squared wooden rod with notches, marks 1 2 3 carved on its front face,
    leaning against the bag's left shoulder */
-#define RA vec3(-.27,.0,-.02)
-#define RB vec3(-.07,.36,.03)
+#define RA vec3(-.25,.0,-.0)
+#define RB vec3(.052,.29,.09)
 vec3 rodQ(vec3 p){ vec3 ax=normalize(RB-RA); vec3 q=p-(RA+RB)*.5;
   vec3 sd=normalize(cross(vec3(0.,0.,1.),ax)); vec3 fw=cross(ax,sd);
   return vec3(dot(q,ax),dot(q,sd),dot(q,fw)); }   /* x along rod, y across (face), z depth (-z toward us) */
