@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7241'   // SHEET SCRIPT v20: EVERY COURSE AND DAILY DRAFTS BOOK GETS ITS OWN TAB UP FRONT; DASHBOARD EXPECTS v20. previous: m7240
+const CACHE = 'aog-cache-2026.09.30.m7242'   // INBOX AND BLUEPRINT NAME EVERY BOOK (SPORTS HISTORY, SECRET SOCIETIES, COURSE UNITS); BLUEPRINT FILLS ITS DASHBOARD FRAME; DAILY DRAFTS CLEARS THE NAME AFTER EACH SEND. previous: m7241
+// const CACHE = 'aog-cache-2026.09.30.m7241'   // SHEET SCRIPT v20: EVERY COURSE AND DAILY DRAFTS BOOK GETS ITS OWN TAB UP FRONT; DASHBOARD EXPECTS v20. previous: m7240
 // const CACHE = 'aog-cache-2026.09.30.m7240'   // DASHBOARD SET UP: THREE STATUS LIGHTS (SHEET, NEWEST SCRIPT, BRING WORK BACK), SHEET TABS AS TILES; SHEET SCRIPT v19 (EVERY COURSE AND BOOK ITS OWN TAB), RENAMED AoG-Sheet-Sync-Code.gs. previous: m7239
 // const CACHE = 'aog-cache-2026.09.30.m7239'   // FIX: DAILY DRAFTS CHECK ROW NO LONGER THROWS ON REDRAW; UNSEEN REALM, BUDDHIST, CHINESE AND HINDU HUBS KEEP CREAM WORDS ON THE NAVY PHONE HERO. previous: m7238
 // const CACHE = 'aog-cache-2026.09.30.m7238'   // SECRET SOCIETIES AS A COURSE. /secret-societies-course, /secret-societies and /sec1…: a K–12 course built by _work/sec/build_sec.py; every page's Secret Societies jump groups list the course first. previous: m7237

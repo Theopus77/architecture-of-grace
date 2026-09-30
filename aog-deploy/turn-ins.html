@@ -464,6 +464,11 @@ body.stackon .wrap>*:not(#paperStack){display:none !important}
 })();
 </script>
 
+<!-- AOG-FRAME-NOZOOM-V1 (2026-09-30) — Jimmy: "The screen has a white space on the edge." Inside the dashboard's frame
+     (Inbox, Their Blueprint) this page must not take the 85% computer zoom again: the dashboard is already at 85%, and
+     the zoomed body left the last 15% of the frame empty and white. -->
+<script>try{ if(window.self!==window.top) document.documentElement.classList.add("aog-in-frame"); }catch(e){ document.documentElement.classList.add("aog-in-frame"); }</script>
+<style>html.aog-in-frame body{ zoom:1 !important; }</style>
 </head>
 <body>
 <script>/* AOG-INBOX-EMBED-V1 — inside the dashboard the dashboard's own bar is the bar */
@@ -700,13 +705,22 @@ else document.documentElement.classList.add("aog-embed");</script>
     /* ⚠ THE SUBJECT LIST HAS TO MATCH daily-drops.html's SUBJ keys.
        A new subject there is a line here and a chip in SUBJECTS, or it
        silently goes back to Other. */
-    var dd=/^dd-(math|ela|write|science|social-studies|spanish|facs|religion|bible|quran|talmud|hindu|buddhist|chinese|cultures|health|economics|foundry|sports|martial|unseen)-/.exec(id);
+    var dd=/^dd-(math|ela|write|science|social-studies|spanish|facs|religion|bible|quran|talmud|hindu|buddhist|chinese|cultures|health|economics|foundry|sports|martial|unseen|secrets)-/.exec(id);
     if(dd) return ({ math:["Math","s-math"], ela:["Language Arts","s-eng"],
                      write:["Writing","s-wri"], science:["Science","s-sci"],
                      "social-studies":["Social Studies","s-soc"],
                      spanish:["Spanish","s-spa"], facs:["FACS","s-facs"],
-                     religion:["Religions","s-rel"], bible:["The Bible","s-rel"], quran:["The Qur’an","s-rel"], talmud:["The Talmud","s-rel"], hindu:["Hindu Texts","s-rel"], buddhist:["Buddhist Texts","s-rel"], chinese:["Chinese Classics","s-rel"], cultures:["World Cultures","s-soc"], health:["Medicine & Health","s-sci"], economics:["Economics","s-eco"], sports:["Sports History","s-soc"], martial:["The Measured Step","s-soc"], unseen:["The Unseen Realm","s-rel"],
+                     religion:["Religions","s-rel"], bible:["The Bible","s-rel"], quran:["The Qur’an","s-rel"], talmud:["The Talmud","s-rel"], hindu:["Hindu Texts","s-rel"], buddhist:["Buddhist Texts","s-rel"], chinese:["Chinese Classics","s-rel"], cultures:["World Cultures","s-soc"], health:["Medicine & Health","s-sci"], economics:["Economics","s-eco"], sports:["Sports History","s-soc"], martial:["The Measured Step","s-soc"], unseen:["The Unseen Realm","s-rel"], secrets:["Secret Societies","s-soc"],
                      foundry:["Foundry","s-fdy"] })[dd[1]];
+    /* AOG-INBOX-COURSES-V1 (2026-09-30) — Jimmy: "the secret societies and the sports history is not there." A course
+       unit's send (crs-<course>-u…) is filed under its own subject, the same names as the Daily Drafts books. */
+    var cr=/^crs-([a-z]+)-/.exec(id);
+    if(cr){ var CRS={ sci:["Science","s-sci"], mth:["Math","s-math"], ela:["Language Arts","s-eng"], ss:["Social Studies","s-soc"], ssc:["Social Studies","s-soc"],
+                  ush:["Social Studies","s-soc"], eco:["Economics","s-eco"], rel:["Religions","s-rel"], spa:["Spanish","s-spa"], fcs:["FACS","s-facs"],
+                  wcs:["World Cultures","s-soc"], med:["Medicine & Health","s-sci"], bib:["The Bible","s-rel"], heb:["The Hebrew Bible","s-rel"],
+                  qur:["The Qur’an","s-rel"], tal:["The Talmud","s-rel"], hin:["Hindu Texts","s-rel"], bud:["Buddhist Texts","s-rel"], chn:["Chinese Classics","s-rel"],
+                  spt:["Sports History","s-soc"], mar:["The Measured Step","s-soc"], unr:["The Unseen Realm","s-rel"], sec:["Secret Societies","s-soc"] };
+      if(CRS[cr[1]]) return CRS[cr[1]]; }
     if(s==="daily-drops") return ["Daily Drafts","s-oth"];
     return ["Other","s-oth"];
   }
@@ -1164,7 +1178,9 @@ else document.documentElement.classList.add("aog-embed");</script>
      The chip is dropped from the row; rows that classify as SEL still appear
      under All (their label is unchanged), they just have no chip of their own.
      To bring it back, put "SEL · Room 36" back in this list. */
-  var SUBJECTS=["All","SEL","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
+  var SUBJECTS=["All","SEL","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English",
+                "World Cultures","Medicine & Health","The Bible","The Hebrew Bible","The Qur’an","The Talmud","Hindu Texts","Buddhist Texts","Chinese Classics",
+                "Sports History","The Measured Step","Secret Societies","The Unseen Realm","Other"];   /* AOG-INBOX-COURSES-V1: every book has its own subject */
   /* 2026-09-26: one SEL chip for every room (SEL · Room 12 … 207), now that every worksheet and workbook lands here with its room */
   /* AOG-INBOX-KIND-V1 (2026-09-26) — Jimmy: "it should NOT start on Everything." What kind opens on Turn-ins (the
      students' work) the first time, and after that on whatever was chosen last on this device. */
