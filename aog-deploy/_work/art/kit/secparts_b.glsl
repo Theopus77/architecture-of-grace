@@ -393,7 +393,7 @@ float s_swradio(vec3 q){ float bb=bnd(q,vec3(-.02,.22,.02),vec3(.19,.23,.1)); if
   float kn=1e3; for(int i=0;i<3;i++){ float x=.04+float(i)*.042; float r=i==2?.017:.012; kn=min(kn,sdCylZ(q-vec3(x,.06,-h.z-.007),r,.007)-.0015); }
   float hd=sdCapsule(q,vec3(-.09,.232,0.),vec3(.09,.232,0.),.009);
   float hp=min(sdCapsule(q,vec3(-.1,.19,0.),vec3(-.09,.232,0.),.008),sdCapsule(q,vec3(.1,.19,0.),vec3(.09,.232,0.),.008));
-  vec3 a0=vec3(.12,.19,.03), a1=vec3(-.03,.44,.07); float an=1e3;
+  vec3 a0=vec3(.12,.19,.03), a1=vec3(-.06,.37,.08); float an=1e3;
   for(int i=0;i<3;i++){ float t0=float(i)/3., t1=float(i+1)/3.; an=min(an,sdCapsule(q,mix(a0,a1,t0),mix(a0,a1,t1),.0042-.0011*float(i))); }
   an=min(an,length(q-a1)-.005); an=min(an,sdCylY(q-a0+vec3(0.,.005,0.),.008,.006));
   return min(min(min(b,glass),min(gr,kn)),min(min(hd,hp),an)); }
@@ -402,7 +402,7 @@ float ts_swradio(vec3 q){ vec3 h=vec3(.15,.095,.055);
     if(abs(q.y-.14)<.032&&abs(q.x)<.12){ vec2 u=q.xy-vec2(0.,.14);           /* dial: rows of ticks and a pointer */
       if(abs(u.x-.028)<.0012) return .1;
       for(int r=0;r<3;r++){ float y=.018-float(r)*.016; if(abs(u.y-y)<.0006&&abs(u.x)<.108) return .35;
-        if(u.y>y&&u.y<y+.0045+.003*step(.8,fract(u.x/.02+.1))&&fract(u.x/.008+float(r)*.3)<.18&&abs(u.x)<.108) return .3; }
+        float big=step(.5,fract(u.x/.04+.25)); if(u.y>y&&u.y<y+.0035+.0025*step(fract(u.x/.02+.1),.25)&&fract(u.x/.01+.1)<.14&&abs(u.x)<.105) return .3; }
       return .92; }
     if(abs(q.x+.07)<.07&&abs(q.y-.058)<.042){ if(abs(max(abs(q.x+.07)-.066,abs(q.y-.058)-.038))<.0015) return .3; return fract(q.y/.0065)<.4?.25:.6; }
     if(q.x>.02&&q.y<.09&&q.z<-h.z-.002){ float cx=q.x<.061?.04:(q.x<.103?.082:.124); float a=atan(q.y-.06,q.x-cx); return fract(a*4.)<.4?.3:.55; } }
@@ -428,8 +428,8 @@ float ts_notebook(vec3 q){ if(q.y<.0032) return .35; if(q.x<-.1) return q.y>.007
   float row=floor((u.y+.08)/.013); float f=fract((u.y+.08)/.013);
   if(u.y>-.08&&u.y<.074){ if(f<.06&&u.x>-.1) return .7;
     vec2 c=vec2(u.x+.084,(f-.5)*.013);
-    if(row<10.&&hs2(vec2(row,2.))<.8){ float ck=min(sdSeg2(c,vec2(-.004,.0),vec2(-.001,-.0035)),sdSeg2(c,vec2(-.001,-.0035),vec2(.005,.0045)));
-      if(ck<.00075) return .12; }
+    if(row<10.&&hs2(vec2(row,2.))<.8){ float ck=min(sdSeg2(c,vec2(-.005,.0005),vec2(-.0015,-.004)),sdSeg2(c,vec2(-.0015,-.004),vec2(.0065,.0055)));
+      if(ck<.0012) return .1; }
     else if(abs(max(abs(c.x),abs(c.y))-.0032)<.0005) return .35;
     if(u.x>-.064&&u.x<.02+.07*hs2(vec2(row,5.))&&abs(f-.5)<.14) return .5; }
   return .95; }
@@ -444,7 +444,7 @@ float s_skey(vec3 q){ float bb=bnd(q,vec3(.02,.006,0.),vec3(.1,.012,.05)); if(bb
   float bit=sdRBox(q-vec3(.062,.005,.016),vec3(.011,.0035,.014),.001);
   bit=max(bit,-sdBox(q-vec3(.062,.005,.024),vec3(.0028,.01,.007))); bit=max(bit,-sdBox(q-vec3(.068,.005,.013),vec3(.0025,.01,.004)));
   return min(min(ring,lobes),min(min(sh,col),bit)); }
-float ts_skey(vec3 q){ return .55+.25*step(.7,fract(q.x*60.+q.z*30.)); }
+float ts_skey(vec3 q){ return .6+.08*vn(q.xz*300.); }
 float s_envelope(vec3 q){ float bb=bnd(q,vec3(0.,.006,0.),vec3(.12,.015,.08)); if(bb>.2) return bb;
   float body=sdRBox(q-vec3(0.,.002,0.),vec3(.1,.002,.063),.001);
   vec2 f=q.xz-vec2(0.,.063); /* flap: a triangle pointing down the envelope */
@@ -467,13 +467,13 @@ float ts_square(vec3 q){ vec2 u=q.xz; float t=.8;
   else if(abs(u.x+.078)<.0125){ float f=fract(u.y/.008); if(u.x>-.072&&f<.14) t=.25; if(u.x>-.078&&fract(u.y/.04)<.03) t=.25; }
   return t; }
 float s_compass(vec3 q){ float bb=bnd(q,vec3(0.,.11,0.),vec3(.1,.12,.04)); if(bb>.2) return bb;
-  vec3 hd=vec3(0.,.19,0.); float head=sdCylZ(q-hd,.013,.005)-.0015;
+  vec3 hd=vec3(0.,.19,0.); float head=sdCylZ(q-hd,.016,.007)-.0015;
   float hn=sdCylY(q-vec3(0.,.212,0.),.0045,.014)-.0005; float kn=sdCylY(q-vec3(0.,.228,0.),.007,.006)-.001;
   vec3 fl=vec3(-.068,.0,-.004), fr=vec3(.066,.0,.004);
-  float l1=sdCapsule(q,hd+vec3(-.006,-.006,0.),fl+vec3(0.,.02,0.),.0045);
-  float nd=sdCapsule(q,fl+vec3(0.,.02,0.),fl+vec3(0.,.001,0.),.0012);
-  float l2=sdCapsule(q,hd+vec3(.006,-.006,0.),fr+vec3(-.004,.03,0.),.0045);
-  float hold=sdCapsule(q,fr+vec3(-.004,.03,0.),fr+vec3(-.001,.01,0.),.0042);
+  float l1=sdCapsule(q,hd+vec3(-.006,-.006,0.),fl+vec3(0.,.02,0.),.0065);
+  float nd=sdCapsule(q,fl+vec3(0.,.02,0.),fl+vec3(0.,.001,0.),.0018);
+  float l2=sdCapsule(q,hd+vec3(.006,-.006,0.),fr+vec3(-.004,.03,0.),.0065);
+  float hold=sdCapsule(q,fr+vec3(-.004,.03,0.),fr+vec3(-.001,.01,0.),.006);
   float lead=sdCapsule(q,fr+vec3(-.001,.01,0.),fr+vec3(0.,.001,0.),.0018);
   float bow=sdCapsule(q,vec3(-.032,.1,0.),vec3(.03,.1,0.),.0018); float nut=sdCylX(q-vec3(0.,.1,0.),.009,.0028)-.001;
   return min(min(min(head,hn),min(kn,l1)),min(min(nd,l2),min(min(hold,lead),min(bow,nut)))); }
