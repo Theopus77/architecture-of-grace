@@ -8,6 +8,8 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 - **UNVERIFIED**: I believe it but am less sure. Check before use.
 - The claims ledger uses the required status words (DOCUMENTED, SCHOLARLY CONSENSUS, DISPUTED, UNSUPPORTED / DISPROVEN). There, "DOCUMENTED" means that primary evidence exists and is catalogued, not that I saw it today.
 
+**Verification pass 2026-09-30.** Items marked VERIFIED or CORRECTED below were checked against web search results (every direct page fetch was blocked by the proxy, and the shared search budget ran out part-way). Everything still marked KNOWN, NOT RE-CHECKED or UNVERIFIED is STILL UNVERIFIED (checked 2026-09-30: not reached before the search budget ran out; page fetches blocked). That includes all the Know-Nothing, *Protocols*, Ford, Bern trial and Stetson Kennedy items.
+
 **No URL was guessed.** Where I name a place, I give only its home domain and the words to search for there. One direct quotation (Lincoln, 1855) appears. It is clearly flagged, because I could not check it word for word against the scan this session.
 
 **Teaching frame.** The victims and the resisters are the main characters. Klan members appear as people who made choices, not as mysterious figures. Never reproduce slurs, ritual oaths or recruiting text for students to read aloud or act out. Never ask students to design a costume, symbol or ritual for a hate group. Never show the *Protocols* text except in short pieces set side by side with Joly's *Dialogue*, so students see the copying.
@@ -38,41 +40,41 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 | March 1855 | Levi D. Boone elected mayor of Chicago on the Know-Nothing / American ticket | KNOWN, NOT RE-CHECKED |
 | 21 April 1855 | Chicago Lager Beer Riot. Mostly German and Irish protesters against Boone's liquor-licence and Sunday-closing rules clash with police at the Clark Street bridge. One protester, Peter Martin, is killed. | KNOWN, NOT RE-CHECKED (death count and name: UNVERIFIED) |
 | 6 Aug. 1855 | "Bloody Monday", Louisville, Kentucky. Election-day attacks on German and Irish Catholic neighbourhoods; about 22 dead. | KNOWN, NOT RE-CHECKED (the death toll varies) |
-| 24 Aug. 1855 | Abraham Lincoln writes to Joshua Speed: "I am not a Know-Nothing." | KNOWN, NOT RE-CHECKED |
+| 24 Aug. 1855 | Abraham Lincoln writes to Joshua Speed: "I am not a Know-Nothing." | VERIFIED 2026-09-30: date and the sentence (https://papersofabrahamlincoln.org/documents/D200860; original manuscript at the Massachusetts Historical Society, https://www.masshist.org/database/456) |
 | 1856 | Millard Fillmore runs for president as the American Party candidate and wins only Maryland | KNOWN, NOT RE-CHECKED |
 | 1864 | Maurice Joly publishes *Dialogue aux enfers entre Machiavel et Montesquieu* anonymously in Brussels, a satire on Napoleon III. Joly is jailed for it. | KNOWN, NOT RE-CHECKED |
-| 24 Dec. 1865 (traditional date) to spring 1866 | Six Confederate veterans form the Ku Klux in Pulaski, Tennessee | DISPUTED exact date |
+| 24 Dec. 1865 (traditional date) to spring 1866 | Six Confederate veterans form the Ku Klux in Pulaski, Tennessee | DISPUTED exact date. VERIFIED 2026-09-30: the dispute itself is real; Wikipedia gives 24 Dec. 1865, the Tennessee Encyclopedia says May or early June 1866 (https://tennesseeencyclopedia.net/?p=1102; https://en.wikipedia.org/wiki/Ku_Klux_Klan) |
 | April 1867 | Nashville meeting (traditionally at the Maxwell House hotel). The *Prescript* is adopted and Nathan Bedford Forrest is named "Grand Wizard". | Meeting: SCHOLARLY CONSENSUS. Forrest's role: DISPUTED in detail. |
 | 1868 | Klan violence peaks around the elections, especially in Georgia, Louisiana and Tennessee. Forrest gives an interview to the *Cincinnati Commercial* (Aug. 1868). | KNOWN, NOT RE-CHECKED |
 | Jan. 1869 | Forrest orders the Klan's regalia destroyed and the order dissolved. Local dens carry on. | KNOWN, NOT RE-CHECKED |
-| 31 May 1870; 28 Feb. 1871; 20 Apr. 1871 | The three Enforcement Acts. The third is the "Ku Klux Klan Act". | DOCUMENTED (*U.S. Statutes at Large*, vols. 16-17) |
-| Apr. 1871 to Feb. 1872 | Joint Select Committee takes testimony in Washington and in the South. Report submitted 19 Feb. 1872 as 13 volumes. | DOCUMENTED |
-| 17 Oct. 1871 | President Grant suspends habeas corpus in nine upstate South Carolina counties | DOCUMENTED (presidential proclamation) |
-| Nov. 1871 to 1872 | South Carolina Ku Klux trials in federal court at Columbia | DOCUMENTED; Lou Falkner Williams (1996) |
+| 31 May 1870; 28 Feb. 1871; 20 Apr. 1871 | The three Enforcement Acts. The third is the "Ku Klux Klan Act". | DOCUMENTED (*U.S. Statutes at Large*, vols. 16-17). VERIFIED 2026-09-30 (https://teachingamericanhistory.org/document/the-enforcement-acts/; https://www.nps.gov/articles/000/protecting-life-and-property-passing-the-ku-klux-klan-act.htm) |
+| Apr. 1871 to Feb. 1872 | Joint Select Committee takes testimony in Washington and in the South. Report submitted 19 Feb. 1872 as 13 volumes. | DOCUMENTED. VERIFIED 2026-09-30: vol. 1 holds the report, the minority views and the committee journal, 20 Apr. 1871 to 19 Feb. 1872; 13 volumes, GPO 1872 (https://dlg.usg.edu/record/dlg_klan; https://tngenweb.org/tncolor/?p=324) |
+| 17 Oct. 1871 | President Grant suspends habeas corpus in nine upstate South Carolina counties | DOCUMENTED (presidential proclamation). VERIFIED 2026-09-30: Proclamation 201; Spartanburg, York, Marion, Chester, Laurens, Newberry, Fairfield, Lancaster, Chesterfield (https://www.presidency.ucsb.edu/documents/proclamation-201-suspending-the-writ-habeas-corpus-certain-counties-south-carolina) |
+| Nov. 1871 to 1872 | South Carolina Ku Klux trials in federal court at Columbia | DOCUMENTED; Lou Falkner Williams (1996). Book VERIFIED 2026-09-30: *The Great South Carolina Ku Klux Klan Trials, 1871-1872*, University of Georgia Press, 1996 (https://search.worldcat.org/oclc/32550240). Month and city STILL UNVERIFIED (checked 2026-09-30: search results did not state them) |
 | 1884 | J. C. Lester and D. L. Wilson publish *Ku Klux Klan: Its Origin, Growth and Disbandment* (Nashville). Reissued 1905 with an introduction by Walter L. Fleming. | KNOWN, NOT RE-CHECKED |
 | 9 Mar. 1892 | Lynching of Thomas Moss, Calvin McDowell and Will Stewart in Memphis. Ida B. Wells begins her investigations. | KNOWN, NOT RE-CHECKED |
 | 1892 | Wells, *Southern Horrors: Lynch Law in All Its Phases* (New York) | KNOWN, NOT RE-CHECKED |
-| 1895 | Wells, *A Red Record* (Chicago: Donohue & Henneberry) | KNOWN, NOT RE-CHECKED |
+| 1895 | Wells, *A Red Record* (Chicago: Donohue & Henneberry) | VERIFIED 2026-09-30 (https://www.nypl.org/research/research-catalog/bib/b12602001; https://sites.miamioh.edu/empire/files/2024/11/1895-Wells-Red-Record.pdf). Catalogues bracket the year as [1895?] |
 | Aug.-Sept. 1903 | Abridged *Protocols* serialized in *Znamya* (St Petersburg), edited by Pavel Krushevan | SCHOLARLY CONSENSUS |
 | 1905 | Sergei Nilus prints a fuller text in *Velikoe v malom* | SCHOLARLY CONSENSUS |
 | 1909 | NAACP founded; Wells is among the signers of "The Call" | KNOWN, NOT RE-CHECKED |
-| 8 Feb. 1915 | *The Birth of a Nation* premieres in Los Angeles (then titled *The Clansman*). The NAACP organizes protests. | KNOWN, NOT RE-CHECKED |
-| 25 Nov. 1915 | Simmons and a small group burn a cross on Stone Mountain, Georgia. The second Klan is born. | SCHOLARLY CONSENSUS |
+| 8 Feb. 1915 | *The Birth of a Nation* premieres in Los Angeles (then titled *The Clansman*). The NAACP organizes protests. | VERIFIED 2026-09-30 (Clune's Auditorium; https://www.history.com/this-day-in-history/february-8/birth-of-a-nation-opens) |
+| 25 Nov. 1915 | Simmons and a small group burn a cross on Stone Mountain, Georgia. The second Klan is born. | SCHOLARLY CONSENSUS. VERIFIED 2026-09-30 (https://mississippitoday.org/2023/11/25/on-this-day-in-1915-cross-burning-in-georgia-signals-klan-rebirth; https://en.wikipedia.org/wiki/William_Joseph_Simmons). State charter 4 Dec. 1915; the film opened at the Atlanta Theatre 6 Dec. 1915 (same sources) |
 | 1920 | Simmons hires Edward Young Clarke and Mary Elizabeth Tyler (Southern Publicity Association). Membership selling begins. | SCHOLARLY CONSENSUS |
 | 8 May 1920 | *The Times* (London) editorial, "The Jewish Peril", calls for an inquiry into the *Protocols* | KNOWN, NOT RE-CHECKED |
 | 22 May 1920 | *Dearborn Independent* (Henry Ford) begins "The International Jew" series | KNOWN, NOT RE-CHECKED |
 | 16-18 Aug. 1921 | Philip Graves's three *Times* articles expose the *Protocols* as copied from Joly | KNOWN, NOT RE-CHECKED |
-| 6 Sept. 1921 onward | *New York World* runs about three weeks of Klan exposé, syndicated to other papers | KNOWN, NOT RE-CHECKED |
-| 11-17 Oct. 1921 | U.S. House Committee on Rules hearings on the Klan; Simmons testifies | DOCUMENTED (GPO printed hearings) |
-| 1922 | *New York World* wins the Pulitzer Prize for Public Service for the Klan exposé | KNOWN, NOT RE-CHECKED |
-| 1922 | American Unity League active in Chicago; its paper *Tolerance* prints names of alleged Klansmen | KNOWN, NOT RE-CHECKED |
+| 6 Sept. 1921 onward | *New York World* runs about three weeks of Klan exposé, syndicated to other papers | VERIFIED 2026-09-30: 21 consecutive daily articles from 6 Sept. 1921, edited by Herbert Bayard Swope (https://en.wikipedia.org/wiki/New_York_World_Expos%C3%A9_of_the_Ku_Klux_Klan) |
+| 11-17 Oct. 1921 | U.S. House Committee on Rules hearings on the Klan; Simmons testifies | DOCUMENTED (GPO printed hearings). Opening day 11 Oct. 1921 and GPO 1921 printing (184 pp.) VERIFIED 2026-09-30 (https://catalog.hathitrust.org/Record/100479396; https://mocat.library.unt.edu/catalog/322-ch288). Closing date STILL UNVERIFIED (checked 2026-09-30: not in search results) |
+| 1922 | *New York World* wins the Pulitzer Prize for Public Service for the Klan exposé | VERIFIED 2026-09-30 (https://www.pulitzer.org/prize-winners-by-year/1922) |
+| 1922 | American Unity League active in Chicago; its paper *Tolerance* prints names of alleged Klansmen | VERIFIED 2026-09-30: founded in Chicago in 1922, mostly Roman Catholic; weekly *Tolerance* (1922-23) printed names, addresses and occupations of thousands of Chicago-area Klansmen (Encyclopedia of Chicago, http://www.encyclopedia.chicagohistory.org/pages/696.html; https://history.hanover.edu/texts/1923Kluxer.html) |
 | Nov. 1922 | Hiram Wesley Evans replaces Simmons as Imperial Wizard | SCHOLARLY CONSENSUS |
-| Dec. 1923 to 1926 | Williamson County, Illinois: Klan-backed liquor raids led by S. Glenn Young. Gunfights with the Shelton gang and the sheriff's side. | SCHOLARLY CONSENSUS (Angle 1952) |
+| Dec. 1923 to 1926 | Williamson County, Illinois: Klan-backed liquor raids led by S. Glenn Young. Gunfights with the Shelton gang and the sheriff's side. | SCHOLARLY CONSENSUS (Angle 1952). Start date STILL UNVERIFIED (checked 2026-09-30: one account says Young returned Nov. 1923 and began raids Jan. 1924; the sheriff asked for the National Guard on 8 Jan. 1924, https://www.mihp.org/?p=6320). The April 1926 Herrin shootout (Birger and Shelton gangs against Klan leaders; five killed) ended the local Klan (Wikipedia, https://en.wikipedia.org/wiki/Charles_Birger) |
 | 17-19 May 1924 | University of Notre Dame students confront a Klan rally in South Bend, Indiana | KNOWN, NOT RE-CHECKED |
-| 24 Jan. 1925 | S. Glenn Young and Deputy Ora Thomas kill each other in the European Hotel cigar store, Herrin, Illinois | KNOWN, NOT RE-CHECKED |
-| Mar.-Apr. 1925 | Madge Oberholtzer is abducted and assaulted by D. C. Stephenson, and dies 14 April 1925 | DOCUMENTED (trial record) |
-| 8 Aug. 1925 | Klan march on Pennsylvania Avenue, Washington (estimates 25,000-35,000+) | DOCUMENTED (photos, newspapers); crowd size DISPUTED |
-| Nov. 1925 | Stephenson convicted of second-degree murder in Noblesville, Indiana; sentenced to life | DOCUMENTED |
+| 24 Jan. 1925 | S. Glenn Young, Deputy Ora Thomas, and Young's companions Ed Forbes and Omer Warren are all killed in a gunfight in a cigar store in Herrin, Illinois | CORRECTED 2026-09-30: was "Young and Thomas kill each other"; four men died (Wikipedia, https://en.wikipedia.org/wiki/Williamson_County_Jail; *Daily Worker* 27 Jan. 1925 via https://revolutionsnewsstand.com/2025/03/09/glenn-young-klan-raider-meets-death-from-the-daily-worker-vol-2-no-13-january-27-1925/). "European Hotel" STILL UNVERIFIED |
+| Mar.-Apr. 1925 | Madge Oberholtzer is abducted and assaulted by D. C. Stephenson, and dies 14 April 1925 | DOCUMENTED (trial record). VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/D._C._Stephenson; https://www.ipm.org/momentofindianahistory/slaying-dragon) |
+| 8 Aug. 1925 | Klan march on Pennsylvania Avenue, Washington (period estimates about 30,000-40,000) | DOCUMENTED (photos, newspapers); crowd size DISPUTED. CORRECTED 2026-09-30: was "estimates 25,000-35,000+"; the *New York Herald* said 30,000 and other reports about 40,000 (https://americanheritage.com/klan-parade) |
+| Nov. 1925 | Stephenson convicted of second-degree murder in Noblesville, Indiana; sentenced to life | DOCUMENTED. VERIFIED 2026-09-30: verdict 14 Nov. 1925 (https://en.wikipedia.org/wiki/D._C._Stephenson; https://en.wikipedia.org/wiki/Stephenson_v._State) |
 | 1927 | Stephenson releases records exposing Indiana officials; the *Indianapolis Times* wins the 1928 Pulitzer | KNOWN, NOT RE-CHECKED |
 | Mar.-July 1927 | Aaron Sapiro's libel suit against Ford ends in a mistrial. Ford's apology (dated 30 June, released early July 1927) is drafted with Louis Marshall of the American Jewish Committee. | KNOWN, NOT RE-CHECKED |
 | Dec. 1927 | *Dearborn Independent* ceases publication | KNOWN, NOT RE-CHECKED |
@@ -93,13 +95,13 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 
 ### A. The first Klan and Reconstruction
 
-**1. Joint Select Committee to Inquire into the Condition of Affairs in the Late Insurrectionary States, *Report* and testimony, 13 vols.** Washington: Government Printing Office, 1872. 42nd Congress, 2nd Session. Printed as both a House and a Senate report; commonly cited as H. Rpt. 22 / S. Rpt. 41. KNOWN, NOT RE-CHECKED.
+**1. Joint Select Committee to Inquire into the Condition of Affairs in the Late Insurrectionary States, *Report* and testimony, 13 vols.** Washington: Government Printing Office, 1872. 42nd Congress, 2nd Session. Printed as both a House and a Senate report; commonly cited as H. Rpt. 22 / S. Rpt. 41. Title, 13 volumes and GPO 1872 VERIFIED 2026-09-30 (https://dlg.usg.edu/record/dlg_klan); report numbers STILL UNVERIFIED (checked 2026-09-30: not in search results).
 - The volumes are usually described as follows. Vol. 1 holds the majority and minority reports. Vol. 2 is North Carolina, vols. 3-5 South Carolina, 6-7 Georgia, 8-10 Alabama, 11-12 Mississippi, and 13 Florida. UNVERIFIED volume split; check.
 - Where: HathiTrust and archive.org (full scans of every volume; search "Condition of Affairs in the Late Insurrectionary States"); the ProQuest Congressional Serial Set; many Federal Depository libraries (in Illinois, UIUC and the Chicago Public Library government documents collections are likely holders).
 - What it shows: sworn testimony from hundreds of Black and white Southerners. Survivors describe raids, whippings and murders, and name their attackers. The Democratic minority report denies that the Klan was organized, so the same volumes hold both sides of the argument.
 - Band: 9-10 for selected testimony (Elias Hill, Hannah Tutson, Abram Colby). The introduction to the report works at 6-8.
 
-**2. Testimony of Elias Hill, York County, South Carolina (July 1871), in the Joint Select Committee's South Carolina volumes.** KNOWN, NOT RE-CHECKED (volume and page to confirm).
+**2. Testimony of Elias Hill, York County, South Carolina (July 1871), in the Joint Select Committee's South Carolina volumes.** Attack (6 May 1871), testimony to the committee sitting in York County, and emigration to Arthington, Liberia, in autumn 1871 VERIFIED 2026-09-30 (https://ldhi.library.cofc.edu/exhibits/show/after_slavery_educator/unit_nine_documents/document_9; Wikipedia, https://en.wikipedia.org/wiki/Elias_Hill). Month of testimony, volume and page STILL UNVERIFIED (checked 2026-09-30: search results did not give them). Hill died in Liberia, 28 March 1872 (Wikipedia).
 - What it shows: Hill was a Black Baptist preacher and schoolteacher. Childhood illness had left him unable to walk or use his arms. Klansmen dragged him from his cabin and beat him in May 1871. He testified in detail, and later he led a group from York County who emigrated to Liberia.
 - Why it matters for this site: he is a disabled teacher at the centre of the story. Present him as a leader and witness, not as a figure of pity.
 - Band: 9-10.
@@ -125,23 +127,23 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 - What it shows: the founders' own account (Lester was one of the six). It is self-serving: it calls the Klan a prank that "got out of hand". Teach it as a source to be questioned.
 - Band: 11-12.
 
-**8. The Enforcement Acts and the Ku Klux Klan Act.** Act of 31 May 1870 (16 Stat. 140); Act of 28 Feb. 1871 (16 Stat. 433); Act of 20 April 1871 (17 Stat. 13). KNOWN, NOT RE-CHECKED (statute citations are standard; confirm).
+**8. The Enforcement Acts and the Ku Klux Klan Act.** Act of 31 May 1870 (16 Stat. 140); Act of 28 Feb. 1871 (16 Stat. 433); Act of 20 April 1871 (17 Stat. 13). 16 Stat. 140 and 17 Stat. 13 VERIFIED 2026-09-30 (https://en.wikipedia.org/wiki/Enforcement_Act_of_1870; https://en.wikipedia.org/wiki/Ku_Klux_Klan_Act); 16 Stat. 433 STILL UNVERIFIED (checked 2026-09-30: not in search results).
 - Where: *U.S. Statutes at Large* (Library of Congress "A Century of Lawmaking" collection; govinfo).
 - What it shows: section 1 of the 1871 Act survives as **42 U.S.C. § 1983**, the law most civil-rights lawsuits use today. A short, true "then and now" link.
 - Band: 9-10.
 
-**9. Ulysses S. Grant, proclamation suspending habeas corpus in nine South Carolina counties, 17 October 1871.** KNOWN, NOT RE-CHECKED.
+**9. Ulysses S. Grant, proclamation suspending habeas corpus in nine South Carolina counties, 17 October 1871.** VERIFIED 2026-09-30 (Proclamation 201, https://www.presidency.ucsb.edu/documents/proclamation-201-suspending-the-writ-habeas-corpus-certain-counties-south-carolina).
 - Where: the *Messages and Papers of the Presidents* (Richardson); the American Presidency Project (UC Santa Barbara).
 - Band: 9-10.
 
 ### B. The second Klan (1915-1930s)
 
-**10. U.S. House of Representatives, Committee on Rules, *The Ku-Klux Klan: Hearings*, 67th Congress, 1st Session, October 1921.** Washington: GPO, 1921. KNOWN, NOT RE-CHECKED.
+**10. U.S. House of Representatives, Committee on Rules, *The Ku-Klux Klan: Hearings*, 67th Congress, 1st Session, October 1921.** Washington: GPO, 1921. VERIFIED 2026-09-30 (https://catalog.hathitrust.org/Record/100479396; hearings opened 11 Oct. 1921; 184 pp.; Arno Press reprint 1969).
 - Where: HathiTrust, archive.org, Google Books; Serial Set libraries.
 - What it shows: reporters from the *New York World* and critics give evidence, and so does William J. Simmons. Simmons claims the Klan is a patriotic fraternal order. Students can test that claim against the evidence of the hearing itself.
 - Band: 9-10 (excerpts 6-8).
 
-**11. *New York World*, Klan exposé series, from 6 Sept. 1921 (about 21 daily parts; reporter usually named as Rowland Thomas).** KNOWN, NOT RE-CHECKED (the reporter's name is UNVERIFIED).
+**11. *New York World*, Klan exposé series, from 6 Sept. 1921 (about 21 daily parts; reporter usually named as Rowland Thomas).** VERIFIED 2026-09-30: 21 consecutive daily articles, edited by Herbert Bayard Swope; Rowland Thomas named as the reporter (https://en.wikipedia.org/wiki/New_York_World_Expos%C3%A9_of_the_Ku_Klux_Klan; https://www.cjr.org/the_feature/exposing_the_invisible_empire.php).
 - Where: microfilm at large libraries. Syndicated copies appear in other papers on Chronicling America (chroniclingamerica.loc.gov; search "Ku Klux" September 1921).
 - What it shows: the *World* printed the Klan's own membership forms, its fee structure and a list of violent incidents.
 - Band: 6-8 (the headlines and the money-selling angle).
@@ -154,7 +156,7 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 - What it shows: hoods pushed back, faces visible. The 1920s Klan was open and mainstream in many places. Its "secrecy" was mostly theatre and a way to sell memberships.
 - Band: 6-8.
 
-**14. *State of Indiana v. D. C. Stephenson* (Hamilton County Circuit Court, Noblesville, 1925), including Madge Oberholtzer's dying declaration, and the Indiana Supreme Court appeal, *Stephenson v. State*, 205 Ind. 141 (1932).** KNOWN, NOT RE-CHECKED (the reporter citation is UNVERIFIED).
+**14. *State of Indiana v. D. C. Stephenson* (Hamilton County Circuit Court, Noblesville, 1925), including Madge Oberholtzer's dying declaration, and the Indiana Supreme Court appeal, *Stephenson v. State*, 205 Ind. 141 (1932).** Citation VERIFIED 2026-09-30: 205 Ind. 141, 179 N.E. 633, decided 19 Jan. 1932 (https://en.wikipedia.org/wiki/Stephenson_v._State; https://www.famous-trials.com/stephenson/82-discussion).
 - Where: Indiana State Library; Indiana Supreme Court opinions (the appellate opinion quotes and discusses the declaration).
 - What it shows: one young woman's sworn statement, given as she was dying, brought down the most powerful Klan leader in the North.
 - Band: 11-12 (the case involves sexual assault; teach only the outline below 11).
@@ -163,7 +165,7 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 - Secondary, but built on local newspapers, court and coroner records. It is still the standard account of the Herrin Klan war.
 - Band: 9-10.
 
-**16. Ida B. Wells-Barnett, *Southern Horrors: Lynch Law in All Its Phases*** (New York: New York Age Print, 1892) and ***A Red Record*** (Chicago: Donohue & Henneberry, 1895). KNOWN, NOT RE-CHECKED.
+**16. Ida B. Wells-Barnett, *Southern Horrors: Lynch Law in All Its Phases*** (New York: New York Age Print, 1892) and ***A Red Record*** (Chicago: Donohue & Henneberry, 1895). *A Red Record* imprint VERIFIED 2026-09-30 (https://www.nypl.org/research/research-catalog/bib/b12602001); *Southern Horrors* imprint STILL UNVERIFIED (checked 2026-09-30: search budget ran out).
 - Where: Project Gutenberg; archive.org; Library of Congress Rare Book collection (the Daniel A. P. Murray Pamphlets).
 - What it shows: Wells used white newspapers' own reports as her data. That is a lesson in evidence as a weapon against hate.
 - Band: 6-8 (her method); 9-10 (her tables and cases).
@@ -185,7 +187,7 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 
 ### D. The Know-Nothings
 
-**21. Abraham Lincoln to Joshua F. Speed, 24 August 1855.** In Roy P. Basler, ed., *The Collected Works of Abraham Lincoln*, vol. 2 (Rutgers University Press, 1953), pp. 320-323 (page range UNVERIFIED). Free online through the University of Michigan (quod.lib.umich.edu, "Collected Works of Abraham Lincoln"). The original letter's location is also to be confirmed. KNOWN, NOT RE-CHECKED.
+**21. Abraham Lincoln to Joshua F. Speed, 24 August 1855.** In Roy P. Basler, ed., *The Collected Works of Abraham Lincoln*, vol. 2 (Rutgers University Press, 1953), pp. 320-323. Page range VERIFIED 2026-09-30 (source note at https://hd.housedivided.dickinson.edu/node/40437). Free online through the University of Michigan (https://quod.lib.umich.edu/l/lincoln/lincoln2/1:339?rgn=div1&view=fulltext). The original letter is at the Massachusetts Historical Society VERIFIED 2026-09-30 (https://www.masshist.org/database/456).
 - Band: 6-8. See the quotation note under Hard-to-find finds.
 
 **22. Know-Nothing ritual exposés and lodge papers.** Newspapers in 1854-55 printed the order's passwords, signs and oaths. Local lodge minute books survive in historical societies. UNVERIFIED: I could not confirm specific titles or holdings this session. Search Chronicling America for "Know Nothing" + "ritual" or "exposed", 1854-1855.
@@ -231,15 +233,15 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 | 2 | The first Klan was "just a prank that got out of hand". | UNSUPPORTED as a full account | This is the founders' own excuse (Lester and Wilson). The 1872 testimony shows organized political terror by 1868. Parsons (2015) also shows early violence. |
 | 3 | Nathan Bedford Forrest was the first Grand Wizard. | SCHOLARLY CONSENSUS; details DISPUTED | No membership roll survives. The evidence is his 1868 interview, later testimony and his 1869 disbanding order. He denied it under oath in 1871. |
 | 4 | Congress's 1871 investigation produced 13 volumes of testimony. | DOCUMENTED | GPO 1872 printing. |
-| 5 | Federal action broke the first Klan by about 1872. | SCHOLARLY CONSENSUS, qualified | Trelease; Lou Falkner Williams. Prosecutions dropped after 1872, and terror carried on under other names (White League, Red Shirts). |
-| 6 | Section 1 of the 1871 Act is today's 42 U.S.C. § 1983. | DOCUMENTED | *Monroe v. Pape*, 365 U.S. 167 (1961), a **Chicago** police case, revived its use. KNOWN, NOT RE-CHECKED. |
+| 5 | Federal action broke the first Klan by about 1872. | SCHOLARLY CONSENSUS, qualified | Trelease; Lou Falkner Williams. Prosecutions dropped after 1872, and terror carried on under other names (White League, Red Shirts). White League founded 1874 in Louisiana; unlike the Klan it operated openly, not in secret (VERIFIED 2026-09-30, Wikipedia, https://en.wikipedia.org/wiki/White_League; 64 Parishes, https://64parishes.org/entry/white-league). |
+| 6 | Section 1 of the 1871 Act is today's 42 U.S.C. § 1983. | DOCUMENTED | *Monroe v. Pape*, 365 U.S. 167 (1961), a **Chicago** police case, revived its use. VERIFIED 2026-09-30 (decided 20 Feb. 1961; https://en.wikipedia.org/wiki/Monroe_v._Pape; https://www.govinfo.gov/metadata/granule/USREPORTS-365/USREPORTS-365-167/mods.xml). |
 | 7 | *The Birth of a Nation* inspired the 1915 revival. | SCHOLARLY CONSENSUS | Simmons timed the Stone Mountain ceremony to the film's Atlanta run. Klan recruiters later used the film. |
 | 8 | Woodrow Wilson called the film "like writing history with lightning". | DISPUTED / likely UNSUPPORTED | The quotation first appears years later (often traced to Thomas Dixon's circle or later memoirs). No 1915 record confirms it. In 1915 Wilson's secretary Joseph Tumulty said the president had not approved the film. See Mark E. Benbow, *Journal of the Gilded Age and Progressive Era* 9:4 (2010). KNOWN, NOT RE-CHECKED. |
 | 9 | The second Klan had 3-6 million members at its peak. | DISPUTED | Estimates run from about 2 million to 5-6 million (Jackson 1967; Moore 1991; Gordon 2017). There are no reliable national rolls. |
-| 10 | The *New York World* exposé made the Klan grow. | SCHOLARLY CONSENSUS (widely argued) | Recruitment rose after the series and the hearings (Jackson; Gordon). Simmons himself boasted that Congress gave him free advertising. The boast is UNVERIFIED as a quotation. |
+| 10 | The *New York World* exposé made the Klan grow. | SCHOLARLY CONSENSUS (widely argued) | Recruitment rose after the series and the hearings (Jackson; Gordon). Simmons, Clarke and Tyler themselves said the exposé caused membership to grow (VERIFIED 2026-09-30, https://online.salempress.com/10.3331/GEHR2E_0058). A word-for-word Simmons boast is STILL UNVERIFIED as a quotation. |
 | 11 | The 1920s Klan was strongest in the rural South. | DISPROVEN as stated | Jackson (1967) showed large urban and Northern Klans: Indianapolis, Chicago, Detroit, Denver, Portland (Oregon). |
-| 12 | Chicago had one of the largest urban Klans (tens of thousands). | SCHOLARLY CONSENSUS | Jackson (1967) estimates about 50,000 in the Chicago area at the peak. KNOWN, NOT RE-CHECKED. |
-| 13 | The Williamson County Klan war was about liquor, not race. | DISPUTED / partly true | The Klan presented it as a dry-law crusade. Its targets were bootleggers, many of them Italian immigrants and Catholics, so nativism was central (Angle 1952). About 20 people died in 1924-26 (UNVERIFIED count). |
+| 12 | Chicago had one of the largest urban Klans (tens of thousands). | SCHOLARLY CONSENSUS | Jackson (1967) estimates about 50,000 in the Chicago area at the peak. VERIFIED 2026-09-30: the Encyclopedia of Chicago says Chicago had the largest metropolitan membership in the U.S., 50,000 (http://www.encyclopedia.chicagohistory.org/pages/696.html). The Jackson attribution itself STILL UNVERIFIED. |
+| 13 | The Williamson County Klan war was about liquor, not race. | DISPUTED / partly true | The Klan presented it as a dry-law crusade. Its targets were bootleggers, many of them Italian immigrants and Catholics, so nativism was central (Angle 1952). About 20 people died in 1924-26 (STILL UNVERIFIED count; checked 2026-09-30: a Wikipedia-derived account says eighteen killed in 1924-25, plus five in the April 1926 Herrin shootout, https://en.wikipedia.org/wiki/Charles_Birger). |
 | 14 | Madge Oberholtzer's dying declaration was admitted and convicted Stephenson. | DOCUMENTED | Trial record; upheld on appeal. |
 | 15 | Stephenson said "I am the law in Indiana." | DISPUTED | Widely repeated. Its first recorded source is unclear (UNVERIFIED). |
 | 16 | Stetson Kennedy personally infiltrated the Klan and supplied the Superman show. | DISPUTED | Kennedy's 1954 book says yes. In "Hoodwinked?" (NYT Magazine, 8 Jan. 2006), Levitt and Dubner reported that Kennedy's own papers show much of the inside information came from an informant ("John Brown"), and that Kennedy told some of it as his own experience. Ben Green (researching Harry T. Moore) raised this. Kennedy's defenders say he did go undercover in some form and did real anti-Klan work. The charter revocation and the radio serial are not in doubt. |
@@ -261,7 +263,7 @@ Dossier D8 for the Architecture of Grace course "Secret Societies". Compiled 202
 2. **A pamphlet printed in exile (Memphis to New York, 1892).** Ida B. Wells is in New York when she learns that a mob has wrecked the office of her paper, *Free Speech*, and threatened her life. Instead of going home, she gathers the white press's own lynching reports into *Southern Horrors*. *(6-8)*
 3. **Thanksgiving night on the mountain (Stone Mountain, Georgia, 25 Nov. 1915).** A few men climb a granite dome in the cold and set up a cross. Their leader, a failed preacher and lodge organizer, is selling a new "fraternal order". Ask: what was he really selling? *(9-10)*
 4. **Reporters at a desk with the Klan's price list (New York, September 1921).** *World* reporters lay out membership forms and fees ($10 a head). Then they tally a list of floggings and tar-and-featherings. The series runs for three weeks, and Congress calls hearings. *(6-8)*
-5. **The cigar store in Herrin (Illinois, 24 January 1925).** Two armed men, the Klan's raid leader S. Glenn Young and Deputy Ora Thomas, meet in a hotel cigar store in a coal town. Within seconds both are dead. The whole county had been choosing sides for a year. *(9-10; describe it without detail of the injuries)*
+5. **The cigar store in Herrin (Illinois, 24 January 1925).** Two armed men, the Klan's raid leader S. Glenn Young and Deputy Ora Thomas, meet in a cigar store in a coal town. Within seconds both are dead, and so are two of Young's companions (CORRECTED 2026-09-30: was "both are dead" only; four died, Wikipedia, https://en.wikipedia.org/wiki/Williamson_County_Jail). The whole county had been choosing sides for a year. *(9-10; describe it without detail of the injuries)*
 6. **A dying woman's statement (Indianapolis, April 1925).** Madge Oberholtzer, 28, who ran a state programme against illiteracy, gives lawyers a sworn statement about what the state's most powerful man did to her. Her words send him to prison. *(11-12 for the full account; 9-10 for "one testimony ended an empire")*
 7. **The battered little book in Constantinople (1921).** A Russian refugee hands *The Times* correspondent Philip Graves an old French book with its title page missing. Graves opens it and finds whole passages of the "secret Jewish plan", written 40 years earlier as a satire about a French emperor. *(9-10)*
 8. **Superman fights the Klan on the radio (1946).** Children listening at home hear the Klan's secret words mocked on air. Later we learn the story behind it is more tangled than the hero's version. *(6-8; add the Kennedy debate at 9-10)*
@@ -276,10 +278,10 @@ Only items I am fairly sure of. All are KNOWN, NOT RE-CHECKED.
 
 - **Chicago Know-Nothing mayor Levi D. Boone (1855)** and the **Lager Beer Riot** (21 April 1855). The next election removed the Know-Nothings. Sources: Chicago Tribune archive; Chicago History Museum; *Encyclopedia of Chicago* (Newberry Library / Chicago Historical Society).
 - **Lincoln's letter to Speed (1855)**: an Illinois politician rejects a secret nativist order in private.
-- **Ida B. Wells in Chicago.** She settled in Chicago in the 1890s, published *A Red Record* here in 1895, and co-wrote the 1893 World's Columbian Exposition protest pamphlet with Frederick Douglass. She founded the Alpha Suffrage Club (1913). Her house on South Martin Luther King Drive is a National Historic Landmark. Congress Parkway was renamed **Ida B. Wells Drive** in 2018. Her papers are at the University of Chicago Library. The *Light of Truth* monument (Bronzeville, 2021) is UNVERIFIED as to exact name and date.
+- **Ida B. Wells in Chicago.** She settled in Chicago in the 1890s, published *A Red Record* here in 1895 (VERIFIED 2026-09-30, Chicago: Donohue & Henneberry, https://www.nypl.org/research/research-catalog/bib/b12602001), and co-wrote the 1893 World's Columbian Exposition protest pamphlet with Frederick Douglass. She founded the Alpha Suffrage Club (1913). Her house on South Martin Luther King Drive is a National Historic Landmark. Congress Parkway was renamed **Ida B. Wells Drive** in 2018. Her papers are at the University of Chicago Library. The *Light of Truth* monument (Bronzeville, 2021) is UNVERIFIED as to exact name and date.
 - **Chicago's 1920s Klan and its opponents.** Kenneth T. Jackson counts Chicago among the biggest urban Klans. The **American Unity League** (Chicago, 1922) and its paper ***Tolerance*** published names of alleged members. Some named people said they had been listed by mistake, which is a lesson in the ethics of exposure. The Chicago City Council passed an anti-Klan resolution in 1922 (UNVERIFIED).
 - **Williamson County "Klan war" (Herrin, Marion, 1923-26).** See Angle, *Bloody Williamson*. It is separate from, but in the same county as, the **Herrin Massacre** of June 1922 (a mine-strike killing, not a Klan event). Keep the two apart.
-- **Monroe v. Pape (1961).** Chicago police raided a Black family's home without a warrant. The Supreme Court ruled the family could sue under the 1871 Ku Klux Klan Act. It is a direct line from the Reconstruction Klan hearings to Chicago.
+- **Monroe v. Pape (1961).** Chicago police raided a Black family's home without a warrant (VERIFIED 2026-09-30 for the warrantless search and arrest, https://en.wikipedia.org/wiki/Monroe_v._Pape; the family's race not shown in what I saw). The Supreme Court ruled the family could sue under the 1871 Ku Klux Klan Act. It is a direct line from the Reconstruction Klan hearings to Chicago.
 - **Aaron Sapiro**, whose libel suit forced Ford's retraction, was a Chicago-based lawyer at the time (UNVERIFIED; check).
 
 ---
@@ -294,7 +296,7 @@ Only items I am fairly sure of. All are KNOWN, NOT RE-CHECKED.
 6. **The Ford-Marshall apology papers.** The draft of Ford's 1927 retraction was written by the Jewish leader Louis Marshall. Among the papers is a document that asked a powerful man to put his name to the truth.
 7. **Stephenson's dying-declaration case.** It is an Indiana Supreme Court opinion that ended a Klan empire on the testimony of one woman. Treat it with care and use it at 11-12 only.
 8. **"Hoodwinked?" (2006) against *I Rode with the Ku Klux Klan* (1954).** This is a rare case in which the tellers of a famous story publicly corrected it, which makes it good material on memoir, heroism and evidence.
-9. **Lincoln's "I am not a Know-Nothing."** Flagged quotation. I did **not** check it word for word against the scan this session, so confirm it at *Collected Works*, vol. 2, before use. The widely reproduced text includes the line *"I am not a Know-Nothing. That is certain."* and continues that under Know-Nothing rule the Declaration would "read 'all men are created equal, except negroes, and foreigners, and catholics.'" (Basler, vol. 2; page to confirm). The word "negroes" is Lincoln's 1855 usage. Tell students this before they read it.
+9. **Lincoln's "I am not a Know-Nothing."** Flagged quotation. Checked 2026-09-30 by search only: the wording "I am not a Know-Nothing. That is certain." and "When the Know-Nothings get control, it will read 'all men are created equal, except negroes, and foreigners, and catholics.'" appeared in search text drawn from the Papers of Abraham Lincoln (https://papersofabrahamlincoln.org/documents/D200860) and House Divided (https://housedivided.dickinson.edu/sites/lincoln/letter-to-joshua-speed-august-24-1855/). Every page itself was blocked, so this is STILL UNVERIFIED against a scan; open *Collected Works* vol. 2, pp. 320-323 once before printing. Note that the Declaration line begins "When the Know-Nothings get control, it will read". The widely reproduced text includes the line *"I am not a Know-Nothing. That is certain."* and continues that under Know-Nothing rule the Declaration would "read 'all men are created equal, except negroes, and foreigners, and catholics.'" (Basler, vol. 2; page to confirm). The word "negroes" is Lincoln's 1855 usage. Tell students this before they read it.
 
 ---
 
