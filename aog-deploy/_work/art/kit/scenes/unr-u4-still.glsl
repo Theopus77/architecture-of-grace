@@ -1,7 +1,7 @@
 /* The Unseen Realm Unit 4 "Meeting Michael Heiser and the Divine Council" - a scholar's desk: a stack
    of old language books, an open study book with notes round the text, and a magnifying glass. Objects only. */
-#define CAM_POS vec3(-0.6690,0.4035,-1.0451)
-#define CAM_TGT vec3(-0.2386,-0.0484,0.1386)
+#define CAM_POS vec3(-0.7082,0.4133,-1.0764)
+#define CAM_TGT vec3(-0.2637,-0.0533,0.1459)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.32)
 #define MAXT 8.
