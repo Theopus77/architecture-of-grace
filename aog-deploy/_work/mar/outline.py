@@ -47,7 +47,7 @@ UNITS = [
        story="A 1937 program lists names under a state seal"),
  ]),
  dict(n=5, band="3-5", title="A School with a Rulebook", strand="Origins", chapters=[
-  dict(n=9, title="Kano Writes Judo", strand="Judo",
+  dict(n=9, title="Kanō Writes Judo", strand="Judo",
        topics="Jigoro Kano late 1800s; older jujutsu schools; education code; ranks; Olympic judo 1964 Tokyo.",
        story="A teacher rewrites older school notes into a book meant for a classroom"),
   dict(n=10, title="Why a Code Matters", strand="Judo",
