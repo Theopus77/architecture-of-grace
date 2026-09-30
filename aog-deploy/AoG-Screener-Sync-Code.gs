@@ -1,8 +1,16 @@
-/* Architecture of Grace — Sheet sync · Apps Script · v18
+/* Architecture of Grace — Sheet sync · Apps Script · v19
    Trimmed 2026-09-20: comments stripped, and five functions nothing ever
    called were removed (runWriteTest, checkKeys, checkinSelfTest — editor-only
    tools — plus safe_ and getPracticeSheet). What runs is unchanged. The fully
    annotated original: _not-deployed/AoG-Screener-Sync-Code.annotated.gs
+
+   v19 (2026-09-30): every course and every Daily Drafts book gets its own
+   tab: World Cultures, Medicine & Health, the faith texts, Sports History,
+   The Measured Step, The Unseen Realm, Secret Societies. A course added later
+   files itself into "Course · <ID>" (no edit to this script needed), and its
+   Daily Drafts into "Practice · Daily Drafts · Other". The dashboard's Set up
+   page reads this version and shows a green light when the Sheet runs it.
+   (v18's tab routing shipped with SCRIPT_VERSION still at 17; v19 sets both.)
 
    v18 (2026-09-26): every Daily Drafts subject gets its own tab. Jimmy:
    "There is no Daily Drafts for the Bible on the Google Sheets, or any of
@@ -26,8 +34,8 @@
    A NEW deployment gets a NEW URL, and every page sends nowhere until
    aog-sync-config.js is changed to match. */
 
-var SCRIPT_VERSION      = 17;
-var SCRIPT_VERSION_DATE = '2026-09-21';
+var SCRIPT_VERSION      = 19;
+var SCRIPT_VERSION_DATE = '2026-09-30';
 var MAX_BODY_BYTES     = 65536;
 var MAX_FIELD_CHARS    = 2000;
 var MAX_JSON_CHARS     = 20000;
@@ -283,6 +291,11 @@ var PRACTICE_TABS = {
   'drops-cultures':  'Practice · Daily Drafts · World Cultures',
   'drops-health':    'Practice · Daily Drafts · Medicine & Health',
   'drops-economics': 'Practice · Daily Drafts · Economics',
+  // v19 — the history books
+  'drops-sports':    'Practice · Daily Drafts · Sports History',
+  'drops-martial':   'Practice · Daily Drafts · The Measured Step',
+  'drops-unseen':    'Practice · Daily Drafts · The Unseen Realm',
+  'drops-secrets':   'Practice · Daily Drafts · Secret Societies',
   'drops-other':     'Practice · Daily Drafts · Other',
   'reading':       'Practice · Reading',
   'writing':       'Practice · Writing',
@@ -300,7 +313,21 @@ var PRACTICE_TABS = {
   'course-eco':    'Course · Economics',
   'course-rel':    'Course · World Religions',
   'course-spa':    'Course · Spanish',
-  'course-fcs':    'Course · FACS'
+  'course-fcs':    'Course · FACS',
+  // v19 — every course built since; a later one files as "Course · <ID>" (see practiceTabName_)
+  'course-wcs':    'Course · World Cultures',
+  'course-med':    'Course · Medicine & Health',
+  'course-bib':    'Course · The Bible',
+  'course-heb':    'Course · The Hebrew Bible',
+  'course-qur':    'Course · Qur\'an',
+  'course-tal':    'Course · Talmud',
+  'course-hin':    'Course · Hindu Texts',
+  'course-bud':    'Course · Buddhist Texts',
+  'course-chn':    'Course · Chinese Classics',
+  'course-spt':    'Course · Sports History',
+  'course-mar':    'Course · The Measured Step',
+  'course-unr':    'Course · The Unseen Realm',
+  'course-sec':    'Course · Secret Societies'
 };
 var PRACTICE_ROUTES = {
   m1:'math-interior',  m2:'math-interior',  m3:'math-interior',  m4:'math-interior',
@@ -343,10 +370,14 @@ var PRACTICE_PATTERNS = [
   [/^dd-cultures\b/i,       'drops-cultures'],
   [/^dd-health\b/i,         'drops-health'],
   [/^dd-economics\b/i,      'drops-economics'],
+  [/^dd-sports\b/i,         'drops-sports'],
+  [/^dd-martial\b/i,        'drops-martial'],
+  [/^dd-unseen\b/i,         'drops-unseen'],
+  [/^dd-secrets\b/i,        'drops-secrets'],
   [/^wf-u\d+/i,             'wordfoundry'],
   [/^dd-foundry\b/i,        'wordfoundry'],  // AOG-DD-FOUNDRY-V1: the Foundry's Daily Drafts land with its test rehearsals
   [/^dd-/i,                 'drops-other'],  // v18: a Daily Drafts subject this script has not met yet
-  [/^crs-(sci|mth|ela|ss|ush|eco|rel|spa|fcs)-/i, function (m) { return 'course-' + m[1].toLowerCase(); }]
+  [/^crs-([a-z]{2,4})-/i, function (m) { return 'course-' + m[1].toLowerCase(); }]   // v19: every course, now and later
 ];
 
 function practiceGroup_(body) {
@@ -379,8 +410,27 @@ function migratePracticeTabName_(ss, name) {
   return old;
 }
 
+// v19 — a known group has its tab name; a course this script has not met files as "Course · <ID>".
+function practiceTabName_(group) {
+  if (group && PRACTICE_TABS[group]) { return PRACTICE_TABS[group]; }
+  var m = /^course-([a-z]{2,4})$/.exec(String(group || ''));
+  return m ? 'Course · ' + m[1].toUpperCase() : PRACTICE_SHEET_NAME;
+}
+// v19 — every tab that can hold practice rows: the known ones, plus any "Course · …" or
+// "Practice · …" tab already in the Sheet (a course added after this script was pasted).
+function practiceTabNames_() {
+  var names = [PRACTICE_SHEET_NAME].concat(Object.keys(PRACTICE_TABS).map(function (g) { return PRACTICE_TABS[g]; }));
+  try {
+    SpreadsheetApp.getActiveSpreadsheet().getSheets().forEach(function (sh) {
+      var nm = sh.getName();
+      if ((/^Course · /.test(nm) || /^Practice · /.test(nm)) && names.indexOf(nm) === -1) { names.push(nm); }
+    });
+  } catch (err) {}
+  return names;
+}
+
 function getPracticeSheetFor_(group) {
-  var name = (group && PRACTICE_TABS[group]) ? PRACTICE_TABS[group] : PRACTICE_SHEET_NAME;
+  var name = practiceTabName_(group);
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   migratePracticeTabName_(ss, name);
   var sheet = ss.getSheetByName(name);
@@ -415,9 +465,9 @@ function getPracticeSheetFor_(group) {
 }
 
 function readAllPractice_() {
-  var out = readPracticeTab_(PRACTICE_SHEET_NAME);
-  Object.keys(PRACTICE_TABS).forEach(function (g) {
-    out = out.concat(readPracticeTab_(PRACTICE_TABS[g]));
+  var out = [];
+  practiceTabNames_().forEach(function (nm) {
+    out = out.concat(readPracticeTab_(nm));
   });
   return out;
 }
@@ -706,7 +756,7 @@ function doPost(e) {
       var tabs = {};
       try {
         var ssT = SpreadsheetApp.getActiveSpreadsheet();
-        var names = [PRACTICE_SHEET_NAME].concat(Object.keys(PRACTICE_TABS).map(function (g) { return PRACTICE_TABS[g]; }));
+        var names = practiceTabNames_();
         names.forEach(function (nm) { var sh = ssT.getSheetByName(nm); if (sh && sh.getLastRow() > 1) { tabs[nm] = sh.getLastRow() - 1; } });
       } catch (errTabs) {}
       console.log('CHECKIN PULL OK · returning ' + checkins.length +
@@ -716,7 +766,7 @@ function doPost(e) {
         checkins: checkins,
         practice: practice,
         tabs: tabs,
-        script: 'v18'
+        script: 'v' + SCRIPT_VERSION
       });
     }
     if (body.action === 'home') {
