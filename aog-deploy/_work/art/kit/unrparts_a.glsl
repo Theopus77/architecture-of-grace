@@ -324,3 +324,183 @@ float o_trowel(vec3 q){ vec2 u=q.xz; float blade=max(sdBox2(vec2(u.x+.05,u.y),ve
 float t_trowel(vec3 q){ return q.x>.028?.4:.7; }
 float t_bookcover(vec3 q){ return q.y<.03&&abs(q.z-.09)<.035?.8:.35; }
 
+float o_bookcover(vec3 q){ vec3 b=obQ(q); float x=abs(b.x);
+  float c=sdRBox(vec3(x-.082,b.y+.001,b.z),vec3(.086,.004,.116),.002);
+  float prop=sdRBox(q-vec3(0.,.014,.09),vec3(.15,.014,.03),.004);
+  return min(c,prop); }
+float t_bookpages(vec3 q,int kind){ q=obQ(q); float x=abs(q.x); float a=.94; float l=fract((q.z+.2)/.0105);
+  if(kind==0){ float col=abs(abs(x-.078)-.034); if(col<.03&&abs(q.z)<.09&&l<.28) a=.62; }
+  else { float u=x-.078; bool core=abs(u)<.032&&abs(q.z)<.05; float l2=fract((q.z+.2)/.0065);
+    if(core&&l<.32) a=.5; else if(!core&&abs(u)<.066&&abs(q.z)<.095&&l2<.3) a=.72; }
+  if(x<.006) a=.7; return a; }
+
+/* ======================= new parts for The Unseen Realm ======================= */
+float sdB2(vec2 p,vec2 b){ return sdBox2(p,b); }
+/* ---- a small model mountain (clay, on a round wooden plinth): two shoulders and a peak; H tall, R base radius ---- */
+float mountR(vec3 c,float H,float R){
+  float a=atan(c.z,c.x); float y=clamp(c.y/H,0.,1.);
+  return R*pow(1.-y,1.25)*(1.+.09*sin(a*5.+y*5.)+.05*sin(a*11.-y*9.)); }
+float o_mount(vec3 q,float H,float R){
+  vec3 c=q-vec3(0.,.016,0.);
+  float m=(length(c.xz)-mountR(c,H,R))*.42; m=max(m,-c.y);
+  vec3 c2=c-vec3(R*.55,0.,R*.2); float m2=(length(c2.xz)-mountR(c2,H*.62,R*.6))*.42; m2=max(m2,-c2.y);
+  m=smin(m,m2,.02); m+=.0025*(fbm3(q*70.)-.5);
+  float plinth=sdCylY(q-vec3(0.,.008,0.),R*1.25,.008)-.002;
+  return min(m,plinth); }
+float t_mount(vec3 q,float H,float R){
+  if(q.y<.0175) return abs(q.y-.009)<.0018?.3:.45;               /* the wooden plinth, one turned line */
+  vec3 c=q-vec3(0.,.016,0.); float y=c.y/H;
+  float snow=.72+.06*sin(atan(c.z,c.x)*7.);
+  if(y>snow) return .95;                                        /* a pale snow cap */
+  float a=atan(c.z,c.x); float s=fract(a*9./6.2832+y*1.3+fbm(c.xz*30.)*.4);
+  if(s<.07&&y>.15) return .38;                                  /* ridge lines down the slopes */
+  return .6+.1*(fbm3(q*60.)-.5); }
+/* ---- a toy ark: rounded hull, flat deck, a cabin with a gabled roof (long along x) ---- */
+float o_ark(vec3 q){
+  float hull=max(sdEll(q-vec3(0.,.06,0.),vec3(.155,.06,.058)),q.y-.058);
+  hull=max(hull,-q.y);
+  float deck=sdRBox(q-vec3(0.,.058,0.),vec3(.14,.003,.048),.002);
+  hull=min(hull,max(deck,sdEll(q-vec3(0.,.06,0.),vec3(.156,.062,.06))));
+  float cab=sdRBox(q-vec3(-.005,.088,0.),vec3(.075,.03,.036),.003);
+  vec3 r=q-vec3(-.005,.118,0.);
+  float roof=max(max(abs(r.x)-.085,-r.y),r.y-.045+abs(r.z)*1.0);
+  roof=max(roof,-(max(max(abs(r.x)-.09,-r.y+.006),r.y-.045+abs(r.z)*1.0+.006)));  /* hollow a little under the eaves */
+  roof=min(roof,max(max(abs(r.x)-.085,-r.y),r.y-.045+abs(r.z)*1.0)-.002);
+  return min(min(hull,cab),roof); }
+float t_ark(vec3 q){
+  if(q.y<.057){ if(fract(q.y/.012)<.14) return .32; return .55+.08*sin(q.x*200.+fbm(q.xy*40.)*3.); }  /* hull planks */
+  if(q.y>.117){ vec3 r=q-vec3(-.005,.118,0.); if(fract((r.y+abs(r.z))/.011)<.16) return .3; return .48; } /* roof shingles */
+  if(q.y>.062){ vec3 c=q-vec3(-.005,.088,0.);                   /* cabin: boards and three small windows */
+    if(c.z<-.03&&abs(c.y-.006)<.009&&abs(fract((c.x+.075)/.05)-.5)<.14&&abs(c.x)<.07) return .18;
+    if(fract(c.x/.014)<.1) return .55; return .72; }
+  return .6; }
+/* ---- a tower of wooden toy blocks: five cubes, each turned a little, and a pointed top ---- */
+#define TB .026
+vec3 tbQ(vec3 q,int i){ float fi=float(i); float s=TB*(1.-fi*.07);
+  float y=0.; for(int k=0;k<5;k++){ if(k>=i) break; y+=2.*TB*(1.-float(k)*.07); }
+  vec3 c=q-vec3(.004*sin(fi*2.3),y+s,.003*cos(fi*1.7)); c.xz=rot(.35*sin(fi*1.9+.4))*c.xz; return c; }
+float o_tower(vec3 q){ float d=1e5;
+  for(int i=0;i<5;i++){ float s=TB*(1.-float(i)*.07); d=min(d,sdRBox(tbQ(q,i),vec3(s),.004)); }
+  vec3 t=tbQ(q,5); float s=TB*.65; t.y+=TB*.65-s;
+  float roof=max(max(abs(t.x)-s,abs(t.z)-s),t.y*.9+max(abs(t.x),abs(t.z))*.9-s*1.2); roof=max(roof,-t.y-s*.6);
+  return min(d,roof); }
+float t_tower(vec3 q){ float best=1e5; int bi=0;
+  for(int i=0;i<6;i++){ vec3 c=tbQ(q,i); float s=TB*(1.-float(i)*.07); float e=sdBox(c,vec3(s)); if(e<best){ best=e; bi=i; } }
+  if(bi==5) return .42;
+  vec3 c=tbQ(q,bi); float s=TB*(1.-float(bi)*.07); vec3 a=abs(c);
+  vec2 f=a.x>a.y&&a.x>a.z?c.yz:(a.y>a.z?c.xz:c.xy);
+  if(abs(max(abs(f.x),abs(f.y))-s*.8)<.0018) return .38;        /* a painted border on each face */
+  if(max(abs(f.x),abs(f.y))<s*.45&&bi%2==0) return .5;          /* a painted square on every other block */
+  return .74; }
+/* ---- a feather lying on the table, quill toward -x, curving a little ---- */
+float o_feather(vec3 q,float L){
+  float x=q.x/L; float bend=.1*L*x*x; vec3 c=vec3(q.x,q.y,q.z-bend);
+  float lift=.004+.006*smoothstep(-.3,1.,x);
+  float shaft=max(length(vec2(c.y-lift,c.z))-.0018*(1.2-.6*x),abs(q.x)-L);
+  float t=clamp((x+.7)/1.7,0.,1.); float w=L*.2*pow(sin(3.1416*pow(t,.75)),.8);
+  float vane=max(max(abs(c.z+.01*L*sin(t*3.))-w,abs(c.y-lift-.0006*sin(c.z*300.))-.0012),max(-.7-x,x-1.));
+  return min(shaft,vane*.9); }
+float t_feather(vec3 q,float L){
+  float x=q.x/L; float bend=.1*L*x*x; float z=q.z-bend;
+  if(abs(z)<.0022) return .8;                                    /* the pale shaft */
+  if(fract(abs(z)*140.-x*6.)<.28) return .45;                    /* barbs sweeping back */
+  return .78; }
+/* ---- a paper pinwheel on a stick: stick from the base up to height h; four blades face -z ---- */
+float o_pinwheel(vec3 q,float h,float s){
+  float stick=sdCapsule(q,vec3(0.),vec3(0.,h,.012),.0032);
+  vec3 c=q-vec3(0.,h,-.004); float d=1e5;
+  for(int k=0;k<4;k++){ vec3 b=c; b.xy=rot(float(k)*1.5708+.3)*b.xy;
+    float tri=max(max(-b.y,b.x-s),b.y-b.x);
+    float bend=b.z+.012*(b.x/s)*(b.x/s);                             /* each blade curls back a little */
+    d=min(d,max(tri,abs(bend)-.0009)); }
+  float pin=length(c-vec3(0.,0.,-.004))-.0055;
+  return min(min(stick,d),pin); }
+float t_pinwheel(vec3 q,float h,float s){
+  vec3 c=q-vec3(0.,h,-.004); if(length(c.xy)<.007&&c.z<-.002) return .3;
+  if(length(c.xy)>s*1.5) return .5;                                  /* the stick */
+  float a=atan(c.y,c.x)-.3; float k=floor(mod(a/1.5708+4.,4.));
+  if(abs(fract(a/1.5708)-.02)<.02) return .45;
+  return mod(k,2.)<.5?.9:.62; }                                     /* two papers, pale and patterned */
+/* ---- clay flower pot (top radius r, height h) with soil, and a young plant ---- */
+float o_pot(vec3 q,float r,float h){
+  float rr=length(q.xz); float rad=r*(.72+.28*q.y/h);
+  float wall=max(abs(rr-rad)-.005,abs(q.y-h*.5)-h*.5);
+  float rim=sdRBox(vec3(rr-r-.002,q.y-h+.012,0.),vec3(.009,.013,1.),.004);
+  float soil=sdCylY(q-vec3(0.,h-.02,0.),r-.006,.004);
+  float bot=sdCylY(q-vec3(0.,.004,0.),r*.72,.004);
+  return min(min(wall,rim),min(soil,bot)); }
+float t_pot(vec3 q,float r,float h){ if(length(q.xz)<r-.004&&q.y<h-.012) return .22; if(abs(q.y-h+.012)<.013) return .5; return .62; }
+float o_sprout(vec3 q,float sh,float ll,float n){
+  float bend=.015*sin(q.y/sh*2.);
+  float d=sdCapsule(q-vec3(bend,0.,0.),vec3(0.),vec3(0.,sh,0.),.003);
+  for(int i=0;i<4;i++){ if(float(i)>=n) break;
+    float y=sh*(1.-float(i)*.28); float a=float(i)*1.7;
+    for(int s=-1;s<=1;s+=2){
+      vec3 t=q-vec3(bend,y,0.); t.xz=rot(a)*t.xz; t.x*=float(s);
+      t-=vec3(ll*.55,ll*.18,0.); t.xy=rot(-.45)*t.xy;
+      float lf=sdEll(t,vec3(ll*.55,.0025,ll*.26)); d=min(d,lf); } }
+  return d; }
+float t_sprout(vec3 q){ return .5+.1*sin(q.x*400.+q.z*300.); }
+/* ---- an old iron key lying flat along x, bow at -x (length 2L) ---- */
+float o_key(vec3 q,float L){
+  vec3 c=q-vec3(0.,.007,0.);
+  float bow=sdTorus(c-vec3(-L*.78,0.,0.),L*.2,.0055);
+  float bow2=sdTorus(c-vec3(-L*.78,0.,0.),L*.09,.0035);
+  float spokes=max(sdBox(c-vec3(-L*.78,0.,0.),vec3(L*.2,.003,.003)),0.);
+  float collar=sdCylX(c-vec3(-L*.5,0.,0.),.009,.006)-.001;
+  float collar2=sdCylX(c-vec3(-L*.4,0.,0.),.0075,.003)-.001;
+  float sh=sdCylX(c-vec3(.1*L,0.,0.),.0055,L*.62);
+  vec3 b=c-vec3(L*.6,0.,.016); float bit=sdRBox(b,vec3(.016,.0045,.016),.001);
+  bit=max(bit,-sdBox(b-vec3(0.,0.,.012),vec3(.004,.01,.008)));
+  bit=max(bit,-sdBox(b-vec3(-.009,0.,.0),vec3(.0025,.01,.006)));
+  return min(min(min(bow,bow2),min(spokes,collar)),min(min(collar2,sh),bit)); }
+float t_key(vec3 q,float L){ return .35+.08*(fbm3(q*120.)-.5); }
+/* ---- mud bricks: a rounded brick with worn edges and straw specks (half sizes b) ---- */
+float o_brick(vec3 q,vec3 b){ return sdRBox(q-vec3(0.,b.y,0.),b,.006)+.0018*(fbm3(q*90.)-.5); }
+float t_brick(vec3 q){ float n=vn(q.xz*420.+q.y*300.); if(n>.82) return .38; return .6+.08*(fbm3(q*50.)-.5); }
+/* ---- a closed old codex: thick boards, page block, a tooled frame on the cover (half sizes b) ---- */
+float o_codex(vec3 q,vec3 b){
+  float t=.006; vec3 c=q-vec3(0.,b.y,0.);
+  float top=sdRBox(c-vec3(0.,b.y-t*.5,0.),vec3(b.x,t*.5,b.z),.0025);
+  float bot=sdRBox(c-vec3(0.,-b.y+t*.5,0.),vec3(b.x,t*.5,b.z),.0025);
+  float sp=sdRBox(c-vec3(-b.x+.004,0.,0.),vec3(.005,b.y,b.z),.004);
+  float pg=sdBox(c-vec3(.001,0.,0.),vec3(b.x-.005,b.y-t,b.z-.005));
+  return min(min(top,bot),min(sp,pg)); }
+float t_codex(vec3 q,vec3 b,float cv){ vec3 c=q-vec3(0.,b.y,0.);
+  if(abs(c.y)<b.y-.006&&c.x>-b.x+.01) return fract(c.y/.0026)<.3?.7:.92;   /* page edges */
+  if(c.y>b.y-.004){ float f=max(abs(c.x)/b.x,abs(c.z)/b.z);
+    if(abs(f-.86)<.014||abs(f-.76)<.01) return cv*.6;                        /* tooled double frame */
+    if(f<.3&&abs(abs(c.x)-abs(c.z))<.003) return cv*.6; }                     /* a small cross-hatched centre knot */
+  if(c.x<-b.x+.01&&abs(abs(c.z)-b.z*.5)<.004) return cv*.55;                 /* spine bands */
+  return cv; }
+/* ---- a travel lantern (half width w, height h): frame, glass, a candle and a ring ---- */
+float o_lantern(vec3 q,float w,float h){
+  float base=sdRBox(q-vec3(0.,.01,0.),vec3(w,.01,w),.003);
+  float top=sdRBox(q-vec3(0.,h-.012,0.),vec3(w,.008,w),.003);
+  float roof=max(sdRBox(q-vec3(0.,h+.012,0.),vec3(w*.9,.02,w*.9),.002),dot(vec2(max(abs(q.x),abs(q.z)),q.y-h),normalize(vec2(1.,1.2)))-w*.55);
+  vec2 c=vec2(abs(q.x)-w+.004,abs(q.z)-w+.004);
+  float posts=max(sdB2(c,vec2(.004)),abs(q.y-h*.5)-h*.5);
+  float candle=sdCylY(q-vec3(0.,.02+h*.15,0.),w*.3,h*.15)-.001;
+  float flame=sdEll(q-vec3(0.,.02+h*.3+.014,0.),vec3(.005,.013,.005));
+  vec3 t=q-vec3(0.,h+.045,0.); float ring=length(vec2(length(t.xy)-.018,t.z))-.003; ring=max(ring,-t.y);
+  return min(min(min(base,top),min(roof,posts)),min(candle,min(flame,ring))); }
+float t_lantern(vec3 q,float w,float h){
+  if(length(q.xz)<w*.3+.002&&q.y>.02&&q.y<h-.025) return q.y>.02+h*.3?.97:.86;
+  return .32; }
+/* ---- a cup (simple beaker cup with a foot) ---- */
+float o_bcup(vec3 q,float r,float h){
+  float body=sdCylY(q-vec3(0.,h*.5,0.),r*(1.-.1*(1.-q.y/h)),h*.5)-.002;
+  body=max(body,-sdCylY(q-vec3(0.,h*.5+.006,0.),r-.005,h*.5));
+  body=min(body,sdTorus(q-vec3(0.,h,0.),r-.0025,.003));
+  return body; }
+float t_bcup(vec3 q,float h){ if(abs(q.y-h*.72)<.003||abs(q.y-h*.64)<.002) return .32; return .55; }
+/* ---- a round loaf with three score lines ---- */
+float o_rloaf(vec3 q,float r){ vec3 c=q-vec3(0.,r*.3,0.); float d=sdEll(c,vec3(r,r*.62,r*.9));
+  for(int i=-1;i<=1;i++) d=max(d,-(length(vec2(c.x-float(i)*r*.38,max(c.y-r*.45,0.)))-.0025));
+  return max(d,-q.y); }
+float t_rloaf(vec3 q,float r){ vec3 c=q-vec3(0.,r*.3,0.); if(c.y>r*.3&&abs(fract(c.x/(r*.38)+.5)-.5)*r*.38<.004&&abs(c.x)<r*.6) return .3;
+  return .55+.1*(fbm3(q*80.)-.5); }
+/* ---- a plate (shallow, with a rim) ---- */
+float o_plate2(vec3 q,float R){ float r=length(q.xz); float d=max(r-R,abs(q.y-.005)-.005); d=max(d,-max(r-R+.025,-(q.y-.007)));
+  d=min(d,sdTorus(q-vec3(0.,.009,0.),R-.006,.004)); return d; }
+float t_plate2(vec3 q,float R){ float r=length(q.xz); if(abs(r-R+.02)<.002) return .4; return .82; }
