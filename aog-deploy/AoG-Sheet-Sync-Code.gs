@@ -1,6 +1,6 @@
-// Architecture of Grace · Sheet sync · v19
+// Architecture of Grace · Sheet sync · v20
 
-var SCRIPT_VERSION = 19;
+var SCRIPT_VERSION = 20;
 
 var SCRIPT_VERSION_DATE = '2026-09-30';
 
@@ -1162,7 +1162,38 @@ function numOrNull_(v) {
   return isNaN(n) ? null : n;
 }
 
+function ensureAllTabs_() {
+  try {
+    var props = PropertiesService.getScriptProperties();
+    if (props.getProperty('AOG_TABS_MADE') === String(SCRIPT_VERSION)) {
+      return;
+    }
+    var lock = LockService.getScriptLock();
+    if (!lock.tryLock(2e4)) {
+      return;
+    }
+    try {
+      Object.keys(PRACTICE_TABS).forEach(function (g) {
+        getPracticeSheetFor_(g);
+      });
+      props.setProperty('AOG_TABS_MADE', String(SCRIPT_VERSION));
+    } finally {
+      lock.releaseLock();
+    }
+  } catch (err) {
+    console.log('ensureAllTabs_ skipped: ' + err);
+  }
+}
+
+function makeAllTabs() {
+  Object.keys(PRACTICE_TABS).forEach(function (g) {
+    getPracticeSheetFor_(g);
+  });
+  PropertiesService.getScriptProperties().setProperty('AOG_TABS_MADE', String(SCRIPT_VERSION));
+}
+
 function doGet(e) {
+  ensureAllTabs_();
   return json_({
     ok: true,
     service: 'AoG Sheet Sync',

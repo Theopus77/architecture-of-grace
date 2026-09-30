@@ -1,4 +1,10 @@
-/* Architecture of Grace — Sheet sync · Apps Script · v19
+/* Architecture of Grace — Sheet sync · Apps Script · v20
+   v20 (2026-09-30): every tab is made up front, empty with its headings, so each
+   course and Daily Drafts book has its own page in the Sheet before any work
+   arrives. It happens once per version, the first time the dashboard checks the
+   script (a plain GET) or pulls. To make them by hand: choose makeAllTabs in the
+   Apps Script toolbar and press Run.
+
    Trimmed 2026-09-20: comments stripped, and five functions nothing ever
    called were removed (runWriteTest, checkKeys, checkinSelfTest — editor-only
    tools — plus safe_ and getPracticeSheet). What runs is unchanged. The fully
@@ -34,7 +40,7 @@
    A NEW deployment gets a NEW URL, and every page sends nowhere until
    aog-sync-config.js is changed to match. */
 
-var SCRIPT_VERSION      = 19;
+var SCRIPT_VERSION      = 20;
 var SCRIPT_VERSION_DATE = '2026-09-30';
 var MAX_BODY_BYTES     = 65536;
 var MAX_FIELD_CHARS    = 2000;
@@ -1108,7 +1114,32 @@ function numOrNull_(v) {
   return isNaN(n) ? null : n;
 }
 
+// v20 — make every known tab now, empty with its headings. Runs once per script version.
+function ensureAllTabs_() {
+  try {
+    var props = PropertiesService.getScriptProperties();
+    if (props.getProperty('AOG_TABS_MADE') === String(SCRIPT_VERSION)) { return; }
+    var lock = LockService.getScriptLock();
+    if (!lock.tryLock(20000)) { return; }
+    try {
+      Object.keys(PRACTICE_TABS).forEach(function (g) { getPracticeSheetFor_(g); });
+      props.setProperty('AOG_TABS_MADE', String(SCRIPT_VERSION));
+    } finally {
+      lock.releaseLock();
+    }
+  } catch (err) {
+    console.log('ensureAllTabs_ skipped: ' + err);
+  }
+}
+
+// v20 — the same, by hand: choose makeAllTabs in the Apps Script toolbar and press Run.
+function makeAllTabs() {
+  Object.keys(PRACTICE_TABS).forEach(function (g) { getPracticeSheetFor_(g); });
+  PropertiesService.getScriptProperties().setProperty('AOG_TABS_MADE', String(SCRIPT_VERSION));
+}
+
 function doGet(e) {
+  ensureAllTabs_();
   return json_({
     ok: true,
     service: 'AoG Sheet Sync',

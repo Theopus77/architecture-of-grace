@@ -1225,7 +1225,7 @@ function student(){
    of the Sheet itself: its Web App answers a plain GET with {version}), and bringing work back. "In your Sheet" is
    grouped into Courses, Daily Drafts and Practice as small tiles. ⚠ GS_V must match SCRIPT_VERSION in
    AoG-Sheet-Sync-Code.gs and EXPECTED in index.html. */
-const GS_V=19;
+const GS_V=20;
 function scriptRec(){ const r=get("aog.sync.scriptv",null); return (r&&typeof r==="object"&&r.u===raw("aog.sync.url"))?r:null; }
 function noteScript(v,d){ const n=+v; if(!isFinite(n)||n<=0) return; put("aog.sync.scriptv",{v:n,d:String(d||"").slice(0,10),at:new Date().toISOString(),u:raw("aog.sync.url")}); }
 let __gsAsked="";
