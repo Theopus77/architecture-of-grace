@@ -69,6 +69,23 @@ html[data-theme="dark"] .linkbox code{color:#E8EEF4!important}
 .hello p{margin:4px 0 0;color:var(--soft)}
 .pill{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;border:1.5px solid var(--line);background:var(--card)}
 .pill .dot{width:9px;height:9px;border-radius:50%;background:#C7931F}.pill.ok .dot{background:var(--good)}
+/* AOG-DASH-SETUP-LIGHTS-V1 — the status lights and the Sheet tiles on Set up */
+.lts{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.lt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card)}
+.lt-dot{flex:none;width:12px;height:12px;border-radius:50%;margin-top:5px;background:#8A93A0}
+.lt-ok .lt-dot{background:#2E9B5A;box-shadow:0 0 0 4px rgba(46,155,90,.18)}
+.lt-warn .lt-dot{background:#D08A12;box-shadow:0 0 0 4px rgba(208,138,18,.18)}
+.lt-wait .lt-dot{background:#8A93A0;box-shadow:0 0 0 4px rgba(138,147,160,.18)}
+.lt-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lt-t b{font-size:16px;color:var(--ink)}
+.lt-t>span{font-size:15px;color:var(--soft);line-height:1.45}
+.lt-how{margin-top:8px}.lt-how summary{cursor:pointer;font-weight:700;color:var(--goldInk);min-height:40px;display:flex;align-items:center}
+.lt-how ol{margin:6px 0 8px;padding-left:22px;color:var(--ink);font-size:15px;line-height:1.5}
+.tl-g{margin-top:12px}.tl-h{margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.tls{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.tl{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);font-size:15px;color:var(--ink)}
+.tl-n{min-width:0;overflow-wrap:anywhere}
+.tl b{flex:none;min-width:28px;height:28px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:rgba(201,162,74,.18);color:var(--ink);font-size:14px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .cap{font-size:14px;color:var(--soft);margin:4px 0 0;line-height:1.4}.chart{color:var(--ink)}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 18px}
@@ -697,7 +714,7 @@ async function pullAll(btn){
   const post=b=>fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(b)}).then(r=>r.json());
   try{
     const [a,b]=await Promise.all([post({action:"pull",passcode:key}).catch(e=>({error:String(e)})),post({action:"pullCheckins",passcode:key}).catch(e=>({error:String(e)}))]);
-    const errs=[];
+    const errs=[]; try{ const vv=(a&&a.v)||(b&&b.v); if(vv) noteScript(vv,(a&&a.vDate)||(b&&b.vDate)); }catch(e){}
     if(a&&a.error) errs.push(a.error); else if(a&&"records" in a){ const num=v=>{ const n=parseFloat(v); return isNaN(n)?null:n; };
       const recs=(a.records||[]).filter(r=>r&&r.timestamp).map(r=>({timestamp:r.timestamp,studentId:String(r.studentId==null?"":r.studentId),grade:r.grade,window:r.window,mode:r.mode==="depth"?"depth":"rapid",population:(r.population==="adult"||String(r.grade)==="Adult")?"adult":"k12",normA:num(r.normA),normB:num(r.normB),normC:num(r.normC),normComposite:num(r.normComposite),tier:r.tier||"",trustedAdultFlag:String(r.trustedAdultFlag).toUpperCase()==="TRUE",unsafeFlag:String(r.unsafeFlag).toUpperCase()==="TRUE",synced:true}));
       put("aog.reflect.remote",recs); }
@@ -725,7 +742,7 @@ function connectCard(){
   return '<details class="card" id="connCard" style="margin-bottom:16px"'+(open?' open':'')+'><summary style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;cursor:pointer;list-style:none;min-height:44px"><p class="k" style="color:var(--goldInk);margin:0">'+t2("Connection details","Detalles de conexión")+' <span class="s" style="font-weight:600">'+(open?"▴":"▾")+'</span></p></summary><p class="s">'+t2("The same link and two keys you set in Apps Script.","El mismo enlace y las dos claves de Apps Script.")+'</p>'
    +'<div class="fld"><label for="syU">'+t2("Web App link","Enlace de la Web App")+'</label><input type="url" id="syU" value="'+esc(u)+'" placeholder="https://script.google.com/…/exec" autocomplete="off" spellcheck="false"></div>'
    +'<div class="f2"><div class="fld"><label for="syW">'+"BACKEND_AUTH_KEY"+'</label><input type="text" id="syW" value="'+esc(w)+'" autocomplete="off"></div><div class="fld"><label for="syK">'+"ADMIN_PULL_KEY"+'</label><input type="text" id="syK" value="'+esc(k)+'" autocomplete="off"></div></div>'
-   +'<div class="row"><button class="btn solid" type="button" id="syS">'+t2("Save","Guardar")+'</button><button class="btn" type="button" id="syT">'+t2("Send a test","Enviar prueba")+'</button>'+(u?'<button class="btn danger" type="button" id="syD">'+t2("Disconnect","Desconectar")+'</button>':'')+'<a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ Code.gs v18</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div>'
+   +'<div class="row"><button class="btn solid" type="button" id="syS">'+t2("Save","Guardar")+'</button><button class="btn" type="button" id="syT">'+t2("Send a test","Enviar prueba")+'</button>'+(u?'<button class="btn danger" type="button" id="syD">'+t2("Disconnect","Desconectar")+'</button>':'')+'<a class="btn" href="/AoG-Sheet-Sync-Code.gs" download="AoG-Sheet-Sync-Code-v'+GS_V+'.gs">⬇ Code.gs v'+GS_V+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div>'
    +'<p class="s" id="syMsg" style="margin:10px 0 0" aria-live="polite"></p></details>';
 }
 function dangerCard(){
@@ -1203,17 +1220,65 @@ function student(){
    +'<section class="card"><label class="f" for="stN">'+T("name")+'</label>'+nameChips(nm)+'<input type="text" id="stN" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" value="'+esc(nm)+'"><p class="note">'+T("nameS")+'</p></section>'
    +'<div class="work">'+(items.length?items.map(it=>{ const dn=sentToday(it); return '<a class="go'+(dn?' sent':'')+'" style="--ac:'+itemColor(it)+'" href="'+esc(studentHref(it))+'"><span class="ic">'+itemIcon(it)+'</span><span><b>'+esc(itemLabel(it,lang))+'</b><span>'+(dn?T("sentTick"):TAG[it.t][0])+'</span></span><span class="arr">'+(dn?'✓':'›')+'</span></a>'; }).join(""):'<p class="empty">'+T("nothing")+'</p>')+'</div>'+earlierHandouts(items)+'</div>';
 }
+/* AOG-DASH-SETUP-LIGHTS-V1 (2026-09-30) — Jimmy: "This needs to look prettier. I want it to say if you connected to the
+   newest script and what not. A small green light." Three lights, one line each: the Sheet, the script version (asked
+   of the Sheet itself: its Web App answers a plain GET with {version}), and bringing work back. "In your Sheet" is
+   grouped into Courses, Daily Drafts and Practice as small tiles. ⚠ GS_V must match SCRIPT_VERSION in
+   AoG-Sheet-Sync-Code.gs and EXPECTED in index.html. */
+const GS_V=20;
+function scriptRec(){ const r=get("aog.sync.scriptv",null); return (r&&typeof r==="object"&&r.u===raw("aog.sync.url"))?r:null; }
+function noteScript(v,d){ const n=+v; if(!isFinite(n)||n<=0) return; put("aog.sync.scriptv",{v:n,d:String(d||"").slice(0,10),at:new Date().toISOString(),u:raw("aog.sync.url")}); }
+let __gsAsked="";
+async function checkScript(force){
+  const u=raw("aog.sync.url"); if(!u||!SYNC_RE.test(u)) return;
+  const r=scriptRec(); if(!force&&(__gsAsked===u||(r&&Date.now()-Date.parse(r.at)<10*60*1000&&r.v>=GS_V))) return;
+  __gsAsked=u; put("aog.dash2.gsCheck","checking"); if(PAGE==="setup") paintLights();
+  try{ const j=await fetch(u,{method:"GET"}).then(x=>x.json()); if(j&&(j.version!=null||j.v!=null)){ noteScript(j.version!=null?j.version:j.v,j.versionDate||j.vDate); put("aog.dash2.gsCheck","ok"); } else put("aog.dash2.gsCheck","old"); }
+  catch(e){ put("aog.dash2.gsCheck","fail"); }
+  if(PAGE==="setup") paintLights();
+}
+function light(kind,title,line,extra){
+  return '<li class="lt lt-'+kind+'"><span class="lt-dot" aria-hidden="true"></span><span class="lt-t"><b>'+title+'</b><span>'+line+'</span>'+(extra||"")+'</span></li>';
+}
+function lights(){
+  const u=raw("aog.sync.url"), w=raw("aog.sync.writekey"), k=raw("aog.sync.key"), r=scriptRec(), st=get("aog.dash2.gsCheck","");
+  const gs='<a class="btn" href="/AoG-Sheet-Sync-Code.gs" download="AoG-Sheet-Sync-Code-v'+GS_V+'.gs">⬇ '+t2("Download Code.gs v","Descargar Code.gs v")+GS_V+'</a>';
+  const how='<details class="lt-how"><summary>'+t2("How to update","Cómo actualizar")+'</summary><ol>'
+    +'<li>'+t2("Download the new Code.gs below.","Descarga el nuevo Code.gs abajo.")+'</li>'
+    +'<li>'+t2("Open your Sheet, then Extensions ▸ Apps Script. Select everything in Code.gs and paste the new one over it. Save.","Abre tu Hoja y luego Extensiones ▸ Apps Script. Selecciona todo en Code.gs y pega el nuevo encima. Guarda.")+'</li>'
+    +'<li>'+t2("Deploy ▸ Manage deployments ▸ the pencil ▸ Version: New version ▸ Deploy.","Implementar ▸ Administrar implementaciones ▸ el lápiz ▸ Versión: Nueva versión ▸ Implementar.")+'</li>'
+    +'<li>'+t2("Come back here and press Check again. Your link and keys stay the same.","Vuelve aquí y presiona Revisar otra vez. Tu enlace y tus claves no cambian.")+'</li>'
+    +'</ol><p class="s">'+t2("Choose the pencil, not “New deployment”. A new deployment gets a new link.","Elige el lápiz, no “Nueva implementación”. Una implementación nueva tiene otro enlace.")+'</p><div class="row">'+gs+'</div></details>';
+  let a,b,c;
+  a=u&&w?light("ok",t2("Sheet connected","Hoja conectada"),t2("Students’ work arrives in your Sheet.","El trabajo de los estudiantes llega a tu Hoja.")):
+    u?light("warn",t2("Almost connected","Casi conectada"),t2("Add BACKEND_AUTH_KEY in Connection details so student work can arrive.","Agrega BACKEND_AUTH_KEY en Detalles de conexión para que llegue el trabajo.")):
+      light("off",t2("Not connected yet","Aún sin conexión"),t2("Open Connection details below and paste your Web App link and keys.","Abre Detalles de conexión abajo y pega tu enlace y tus claves."));
+  if(!u) b=light("off",t2("Sheet script","Script de la Hoja"),t2("Connect first. Then this light shows which version your Sheet runs.","Conecta primero. Después esta luz muestra qué versión usa tu Hoja."));
+  else if(r&&r.v>=GS_V) b=light("ok",t2("Newest script","Script más nuevo"),t2("Your Sheet runs v"+r.v+", the newest. Every course has its own tab.","Tu Hoja usa la v"+r.v+", la más nueva. Cada curso tiene su propia pestaña."));
+  else if(r) b=light("warn",t2("Update your Sheet script","Actualiza el script de tu Hoja"),t2("Your Sheet runs v","Tu Hoja usa la v")+r.v+t2(". The newest is v",". La más nueva es la v")+GS_V+t2(". Nothing is lost; newer work waits in the Practice tab until you update.",". No se pierde nada; el trabajo nuevo espera en la pestaña Practice hasta que actualices."),how);
+  else if(st==="checking") b=light("wait",t2("Checking your script…","Revisando tu script…"),t2("Asking your Sheet which version it runs.","Preguntando a tu Hoja qué versión usa."));
+  else if(st==="old") b=light("warn",t2("Update your Sheet script","Actualiza el script de tu Hoja"),t2("Your Sheet runs an old script that doesn’t say its version. The newest is v","Tu Hoja usa un script viejo que no dice su versión. La más nueva es la v")+GS_V+".",how);
+  else b=light("off",t2("Sheet script","Script de la Hoja"),t2("Couldn’t ask your Sheet right now. Press Check again.","No se pudo preguntar a tu Hoja ahora. Presiona Revisar otra vez."));
+  c=!u?"":k?light("ok",t2("Can bring work back","Puede traer el trabajo"),t2("This device can refresh from your Sheet.","Este aparato puede actualizar desde tu Hoja.")):
+    light("warn",t2("Can’t bring work back yet","Aún no puede traer el trabajo"),t2("Add ADMIN_PULL_KEY in Connection details.","Agrega ADMIN_PULL_KEY en Detalles de conexión."));
+  return '<ul class="lts">'+a+b+c+'</ul>'+(u?'<div class="row" style="margin-top:12px;align-items:center">'+(u&&w&&k?pullBtn():'')+'<button class="btn" type="button" id="gsRe">'+t2("Check again","Revisar otra vez")+'</button></div>':'');
+}
+function paintLights(){ const el=document.getElementById("setLights"); if(!el) return; el.innerHTML=lights(); const g=document.getElementById("gsRe"); if(g) g.onclick=()=>checkScript(true); }
+function sheetTiles(tb){
+  if(!tb||typeof tb!=="object") return "";
+  const grp={c:[],d:[],p:[]};
+  Object.keys(tb).forEach(x=>{ const n=+tb[x]||0;
+    if(/^Course · /.test(x)) grp.c.push([x.replace(/^Course · /,""),n]);
+    else if(/^Practice · Daily Drafts · /.test(x)) grp.d.push([x.replace(/^Practice · Daily Drafts · /,""),n]);
+    else grp.p.push([x==="Practice"?t2("Not sorted yet","Sin ordenar"):x.replace(/^Practice · /,""),n]); });
+  const sec=(h,a)=>a.length?'<div class="tl-g"><p class="tl-h">'+h+'</p><div class="tls">'+a.sort((x,y)=>y[1]-x[1]).map(t=>'<span class="tl"><span class="tl-n">'+esc(t[0])+'</span><b>'+t[1]+'</b></span>').join("")+'</div></div>':"";
+  const body=sec(t2("Courses","Cursos"),grp.c)+sec(t2("Daily Drafts","Daily Drafts"),grp.d)+sec(t2("Practice","Práctica"),grp.p);
+  return body?'<p class="k" style="color:var(--goldInk);margin:20px 0 4px">'+t2("In your Sheet","En tu Hoja")+'</p><p class="s" style="margin:0 0 10px">'+t2("Rows in each tab, from your last refresh.","Filas en cada pestaña, desde tu última actualización.")+'</p>'+body:"";
+}
 function setup(){
-  /* AOG-DASH-SETUP-CALM-V1 (2026-09-27) — Jimmy: "This is very ugly and confusing … all the words." One status line, one
-     button, the tabs as small counts. The connection details stay folded until they are wanted. */
-  const u=raw("aog.sync.url"), w=raw("aog.sync.writekey"), k=raw("aog.sync.key"), ok=!!(u&&w), tb=get("aog.sheet.tabs",null), at=get("aog.dash2.pulledAt","");
-  const status=ok?(k?t2("Connected. Students’ work comes to your Sheet, and this device can bring it back.","Conectado. El trabajo llega a tu Hoja y este aparato puede traerlo."):t2("Connected for sending. Add ADMIN_PULL_KEY below to bring work back.","Conectado para enviar. Agrega ADMIN_PULL_KEY abajo para traer el trabajo.")):t2("Not connected yet. Open Connect below.","Aún sin conexión. Abre Conectar abajo.");
-  const tabs=(tb&&typeof tb==="object")?Object.keys(tb).map(x=>'<span class="pill" style="min-height:30px;font-size:13px;font-weight:600">'+esc(x.replace(/^Practice · (Daily Drafts · )?/,""))+' <b style="margin-left:4px">'+tb[x]+'</b></span>').join(""):"";
+  setTimeout(()=>checkScript(false),0);
   return '<div class="hello"><div><h1>'+T("setupH")+'</h1></div></div>'
-   +'<section class="card" style="margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="pill '+(ok?"ok":"")+'"><span class="dot"></span>'+(ok?t2("Sheet connected","Hoja conectada"):t2("Not connected","Sin conexión"))+'</span><span class="s" style="margin:0">'+status+'</span></div>'
-   +(ok&&k?'<div class="row" style="margin-top:14px;align-items:center">'+pullBtn()+'</div>':'')
-   +(tabs?'<p class="k" style="color:var(--goldInk);margin:16px 0 8px">'+t2("In your Sheet","En tu Hoja")+'</p><div style="display:flex;flex-wrap:wrap;gap:6px">'+tabs+'</div>':'')
-   +'</section>'
+   +'<section class="card" style="margin-bottom:16px"><div id="setLights">'+lights()+'</div>'+sheetTiles(get("aog.sheet.tabs",null))+'</section>'
    +connectCard()+dangerCard();
 }
 /* AOG-DASH-BLUEPRINT-V1 — Jimmy: "their blueprint should be a tab on the left." One student's stained-glass Blueprint, from the Inbox page. */
@@ -1280,7 +1345,7 @@ function wire(){
   on("navSel","change",()=>{ location.hash=val("navSel"); });
   on("bpStu","change",()=>{ put("aog.dash2.bpStu",val("bpStu")); render(); });
   on("syS","click",syncSave);
-  const cc=document.getElementById("connCard"); if(cc) cc.addEventListener("toggle",()=>{ put("aog.dash2.connOpen",cc.open); }); on("syT","click",syncTest); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
+  const cc=document.getElementById("connCard"); if(cc) cc.addEventListener("toggle",()=>{ put("aog.dash2.connOpen",cc.open); }); on("syT","click",syncTest); on("gsRe","click",()=>checkScript(true)); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
   on("tcp","click",async()=>{ const b=document.getElementById("tcp"); try{ await navigator.clipboard.writeText(teamLink()); b.textContent=T("copied"); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("tlk")); getSelection().removeAllRanges(); getSelection().addRange(r); } });
   on("gNew","click",()=>{ put("aog.dash2.gEdit","new"); render(); const f=document.getElementById("gForm"); if(f) f.scrollIntoView({block:"start"}); });
   on("gCancel","click",()=>{ put("aog.dash2.gEdit",""); render(); }); on("gSave","click",goalSave);
