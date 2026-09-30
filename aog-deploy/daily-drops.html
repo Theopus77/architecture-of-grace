@@ -19701,6 +19701,22 @@ function bankOf(box){return $1('.wbank',box)}
 function chipsIn(box){var b=bankOf(box); if(!b)return [];
   return [].filter.call(b.children,function(c){return c.tagName==='SPAN'&&!c.classList.contains('bkhow')})}
 
+/* AOG-TAP-MATCH-V1 (2026-09-30) — Jimmy: where a word can be TAPPED from the bank, the question must not
+   say "Write". It says Match (or Choose) instead; the child can still type. */
+function tapWord(t){var o=t;
+  t=t.replace(/^(\s*)Write the word that matches each meaning/,'$1Match a word from the bank to each meaning')
+     .replace(/^(\s*)Write the words? that match(es)?/,'$1Match the word that matches')
+     .replace(/^(\s*)Write (the|a|each|one)\b/,'$1Choose $2')
+     .replace(/^(\s*)Escribe la palabra que corresponde a cada significado/,'$1Une una palabra del banco con cada significado')
+     .replace(/^(\s*)Escribe (la|el|una|un|cada)\b/,'$1Elige $2');
+  return t===o?null:t}
+function reword(box,bank){
+  all('[data-en]',box).forEach(function(el){if(bank.contains(el))return;
+    var e=tapWord(el.getAttribute('data-en')||''); if(e){el.setAttribute('data-en',e);if(!el.children.length&&/^\s*Write/.test(el.textContent))el.textContent=e;}
+    var s2=el.getAttribute('data-es'); if(s2){var z=tapWord(s2); if(z)el.setAttribute('data-es',z);}});
+  var w=document.createTreeWalker(box,NodeFilter.SHOW_TEXT,null),n,hit=[];
+  while((n=w.nextNode())){if(bank.contains(n))continue; if(tapWord(n.nodeValue))hit.push(n);}
+  hit.forEach(function(n){n.nodeValue=tapWord(n.nodeValue);});}
 /* ── dress a freshly rendered sheet: only banks that have blanks to fill ── */
 function dress(){
   all('#sheet .box').forEach(function(box){
@@ -19708,7 +19724,7 @@ function dress(){
     if(!fieldsIn(box).length)return;          /* a bank with nothing to fill is a hint, leave it */
     var chips=[].filter.call(b.children,function(c){return c.tagName==='SPAN'});
     if(!chips.length)return;
-    b.__aogTap=1; b.classList.add('tapbank');
+    b.__aogTap=1; b.classList.add('tapbank'); reword(box,b);
     chips.forEach(function(c){
       c.setAttribute('role','button'); c.setAttribute('tabindex','0');
       c.setAttribute('draggable','true'); c.setAttribute('aria-pressed','false')});
