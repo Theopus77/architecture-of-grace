@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Daily Drafts: World Cultures and Societies; Medicine and Health.
+"""Daily Drafts: World Cultures and Societies; Medicine and Health; the history books Sports History
+and The Measured Step (AOG-DD-HIST-V1, 2026-09-30: spt.py, mar.py, drawn from the courses' own lessons).
 Writes the banks into aog-deploy/daily-drops.html between the AOG-DD-WORLDHEALTH markers,
 just before `var SUBJ={`. Same shape as bible/quran/talmud: bands k2, 35, 68, 912, adult;
-ten strands per band; items [mc|tf|voc|open]. Re-run after editing cul.py / med.py."""
+ten strands per band; items [mc|tf|voc|open]. Re-run after editing cul.py / med.py / spt.py / mar.py."""
 import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import cul, med
+import cul, med, spt, mar
 PAGE = os.path.join(HERE, '..', '..', 'daily-drops.html')
-SUBJECTS = [('cul', 'CUL', cul), ('med', 'MED', med)]
+SUBJECTS = [('cul', 'CUL', cul), ('med', 'MED', med), ('spt', 'SPT', spt), ('mar', 'MAR', mar)]
 GRADES = [('K', 'k2'), ('1', 'k2'), ('2', 'k2'), ('3', '35'), ('4', '35'), ('5', '35'),
           ('6', '68'), ('7', '68'), ('8', '68'), ('9-10', '912'), ('11-12', '912'), ('adult', 'adult')]
 BEGIN, END = '/* ══ AOG-DD-WORLDHEALTH-V1 BEGIN', '/* ══ AOG-DD-WORLDHEALTH-V1 END ══ */'
@@ -31,7 +32,8 @@ def check(pref, band, strands):
 def js(o): return json.dumps(o, ensure_ascii=False)
 
 out = [BEGIN + ' ══ (2026-09-27) World Cultures and Societies; Medicine and Health, K–12 and Adult.',
-       '   Built by _work/ddworld/build.py from cul.py, med.py. Edit those, not this block.',
+       '   Built by _work/ddworld/build.py from cul.py, med.py, spt.py, mar.py. Edit those, not this block.',
+       '   Sports History and The Measured Step: history only, items from the courses\' own lessons.',
        '   Balanced: ideologies described with what supporters and critics say. Traditional medicine',
        '   described respectfully, with what the evidence shows. Bands K–2, 3–5, 6–8, 9–12, Adult. */']
 errs = []

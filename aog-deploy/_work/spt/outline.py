@@ -34,8 +34,8 @@ UNITS = [
   dict(n=5, title="Games That Travel", strand="Names",
        topics="some games move to new towns; a ball can cross an ocean; names of a few sports without plays.",
        story="A ball from a closet has no writing on it, only wear from many hands"),
-  dict(n=6, title="A Mat Beside the Field", strand="Names",
-       topics="mats, rings, strips, the dohyo and the dojo as rooms with their own rules; a mat and a field are different rooms; each room has its own rule book and governing body.",
+  dict(n=6, title="Mats, Rings and Strips", strand="Names",
+       topics="martial arts is a sister book; this book does not teach a strike; a mat and a field are different rooms.",
        story="A folded jacket hangs in a hallway next to a bag of baseballs"),
  ]),
  dict(n=4, band="3-5", title="How a Diamond Got Lines", strand="Origins", chapters=[
@@ -146,9 +146,9 @@ UNITS = [
   dict(n=33, title="Pick One Sport and Its Paper", strand="Capstone",
        topics="student chooses one sport; gather rulebook dates; who was written in and out; cite institutions.",
        story="A stack of constitutions from one sport sits on a desk"),
-  dict(n=34, title="Objects as Evidence", strand="Capstone",
-       topics="a scorebook, a ticket, a program, a rule book and a field plan read as primary sources; halls of fame and archives that keep them (Baseball Hall of Fame, 1939; Naismith Hall of Fame); writing a caption that says what an object is, where it came from and who made it.",
-       story="A scorebook and a field plan sit side by side in an archive box"),
+  dict(n=34, title="Object and Plan", strand="Capstone",
+       topics="pencil still life: object plus measured plan; write the caption the site requires; no logos; no mid-action bodies.",
+       story="A scorebook and a field plan wait for a pencil caption"),
  ]),
 ]
 
