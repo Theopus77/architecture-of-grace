@@ -1,8 +1,8 @@
 /* The Unseen Realm Unit 9 "Giants in the Land" — pencil still life: a shepherd's leather bag
    standing with its drawstring, a sling lying in front of it with its cords, five smooth stones,
    and a wooden cubit rod with notches carved 1, 2, 3 (Og's bed, Goliath's height). */
-#define CAM_POS vec3(-0.30,0.40,-0.84)
-#define CAM_TGT vec3(-0.15,-0.04,0.08)
+#define CAM_POS vec3(-0.6030,0.5349,-1.1784)
+#define CAM_TGT vec3(-0.3943,-0.0775,0.1019)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
