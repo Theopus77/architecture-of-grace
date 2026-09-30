@@ -1,6 +1,6 @@
-# The Unseen Realm (Michael Heiser's work) — Daily Drafts banks. Every item comes from the
-# course's own reviewed lessons (see hist_banks.py): Heiser's ideas stay named as his, with
-# other readings beside them. This file only adds the Spanish strand names and a third wrong
+# The Unseen Realm (the Bible's unseen world, from the primary documents) — Daily Drafts banks.
+# Every item comes from the course's own reviewed lessons (see hist_banks.py): each scholar's idea
+# stays named as theirs, with other readings beside it. This file only adds the Spanish strand names and a third wrong
 # choice for each K–2 question.
 from hist_banks import make
 

@@ -34,7 +34,7 @@ def js(o): return json.dumps(o, ensure_ascii=False)
 out = [BEGIN + ' ══ (2026-09-27) World Cultures and Societies; Medicine and Health, K–12 and Adult.',
        '   Built by _work/ddworld/build.py from cul.py, med.py, spt.py, mar.py, unr.py. Edit those, not this block.',
        '   Sports History and The Measured Step: history only, items from the courses\' own lessons.',
-       '   The Unseen Realm (AOG-UNR-V1): Michael Heiser\'s ideas named as his, from the course\'s own lessons.',
+       '   The Unseen Realm (AOG-UNR-V1): the primary documents, every scholar\'s idea named as theirs.',
        '   Balanced: ideologies described with what supporters and critics say. Traditional medicine',
        '   described respectfully, with what the evidence shows. Bands K–2, 3–5, 6–8, 9–12, Adult. */']
 errs = []

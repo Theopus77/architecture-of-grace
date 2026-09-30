@@ -204,12 +204,12 @@ COURSES = [
     # AOG-UNR-V1 (2026-09-30) — The Unseen Realm (Michael Heiser). Run `doors unr` after unseen-realm-course.html exists.
     dict(cid="unr", file="unseen-realm-hub.html", slug="unseen-realm", name=("The Unseen Realm", "El reino invisible"), contents="unseen-realm-course",
          drops="unseen", res="religions", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
-         lede=("Michael Heiser’s reading of the Bible’s unseen world: Enoch, the Watchers, angels, demons and the mission of Jesus, K–12.",
-               "Cómo leía Michael Heiser el mundo invisible de la Biblia: Enoc, los Vigilantes, ángeles, demonios y la misión de Jesús, K–12."),
+         lede=("Enoch, the Watchers, angels, demons and the mission of Jesus, read from the ancient documents with the scholars who study them, K–12.",
+               "Enoc, los Vigilantes, ángeles, demonios y la misión de Jesús, leídos en los documentos antiguos con los estudiosos que los estudian, K–12."),
          daily=("Ten short lines a day: key words, passages and quick questions from the course.",
                 "Diez líneas cortas al día: palabras clave, pasajes y preguntas rápidas del curso."),
-         sources=("Heiser’s ideas are told in our own words and named as his: “Heiser argues…”. Other readings sit beside them. Bible and Enoch passages come from public-domain translations. Everything else is original text written for this course.",
-                  "Las ideas de Heiser se cuentan con nuestras palabras y se presentan como suyas: “Heiser sostiene…”. Otras lecturas van al lado. Los pasajes de la Biblia y de Enoc vienen de traducciones de dominio público. Todo lo demás es texto original escrito para este curso.")),
+         sources=("Every lesson starts from an ancient text: the Bible, 1 Enoch, Jubilees, the Dead Sea Scrolls and others, quoted from public-domain translations or retold. Scholars’ ideas, Michael Heiser’s and others’, are told in our own words and named as theirs. Everything else is original text written for this course.",
+                  "Cada lección empieza con un texto antiguo: la Biblia, 1 Enoc, Jubileos, los Rollos del Mar Muerto y otros, citados de traducciones de dominio público o contados de nuevo. Las ideas de los estudiosos, de Michael Heiser y de otros, se cuentan con nuestras palabras y se presentan como suyas. Todo lo demás es texto original escrito para este curso.")),
 ]
 
 # More to explore: every place a band links to, named once, with one plain line.
