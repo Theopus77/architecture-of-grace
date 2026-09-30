@@ -1,9 +1,9 @@
 /* The Unseen Realm Unit 14 "Angels Up Close" — pencil still life: a small square incense altar
    with a horn at each corner and a shallow bowl on top (worship in the temple, Isaiah 6 and
-   Revelation 8), a long straight silver trumpet with a flared bell lying in front (the trumpet of
-   1 Thessalonians 4:16), and a pair of temple tongs holding a smooth coal (Isaiah 6:6). */
-#define CAM_POS vec3(-0.4010,0.3197,-0.9171)
-#define CAM_TGT vec3(-0.2102,0.0228,0.0793)
+   Revelation 8), and a long straight silver trumpet with a flared bell lying in front (the trumpet of
+   1 Thessalonians 4:16). */
+#define CAM_POS vec3(-0.4345,0.3225,-0.9208)
+#define CAM_TGT vec3(-0.2419,0.0227,0.0853)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -14,8 +14,8 @@
 #include "studio.glsl"
 #include "medparts_a.glsl"
 #define ALT vec3(.04,0.,.1)
-#define TRP vec3(-.02,0.,-.11)
-#define TNG vec3(.22,0.,-.02)
+#define TRP vec3(-.05,0.,-.1)
+#define TNG vec3(.21,0.,.1)
 /* the altar: plinth, body, cornice, four horns, and a bowl on top */
 vec3 altQ(vec3 p){ vec3 q=p-ALT; q.xz=rot(.35)*q.xz; return q; }
 float altarD(vec3 p){ vec3 q=altQ(p);
@@ -38,7 +38,7 @@ float bowlD(vec3 p){ vec3 q=altQ(p)-vec3(0.,.215,0.);
   o=min(o,sdCylY(q-vec3(0.,.002,0.),.018,.003));
   return o; }
 /* the trumpet: a straight tube along x, two bands, a mouthpiece and a flared bell */
-vec3 trpQ(vec3 p){ vec3 q=p-TRP; q.xz=rot(-.14)*q.xz; q.xy-=vec2(.18,.0465); q.xy=rot(.0985)*q.xy; q.x+=.18; return q; }   /* bell and mouthpiece both rest on the table */
+vec3 trpQ(vec3 p){ vec3 q=p-TRP; q.xz=rot(-.55)*q.xz; q.xy-=vec2(.18,.0465); q.xy=rot(.0985)*q.xy; q.x+=.18; return q; }   /* bell and mouthpiece both rest on the table */
 float trumpetD(vec3 p){ vec3 q=trpQ(p);
   float x=q.x; float t=clamp((x-.1)/.08,0.,1.);
   float r=.0065+.0012*smoothstep(-.18,.1,x)+.038*pow(t,3.2);
@@ -50,7 +50,7 @@ float trumpetD(vec3 p){ vec3 q=trpQ(p);
   float lip=sdTorus((q-vec3(.18,0.,0.)).yxz,.0445,.0025);
   return min(min(tube,mp),min(bands,lip)); }
 /* the tongs: two long arms joined in a loop, tips pinching a coal; lying on the table */
-vec3 tngQ(vec3 p){ vec3 q=p-TNG; q.xz=rot(2.)*q.xz; return q; }
+vec3 tngQ(vec3 p){ vec3 q=p-TNG; q.xz=rot(1.2)*q.xz; return q; }
 float tongsD(vec3 p){ vec3 q=tngQ(p)-vec3(0.,.005,0.);
   float d=1e3;
   for(int i=0;i<2;i++){ float sg=i==0?1.:-1.;
@@ -66,8 +66,6 @@ vec2 map(vec3 p){
   r=U(r,altarD(p),3.);
   r=U(r,bowlD(p),4.);
   r=U(r,trumpetD(p),5.);
-  r=U(r,tongsD(p),6.);
-  r=U(r,coalD(p),7.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
@@ -78,7 +76,7 @@ float toneAlb(float id,vec3 p,vec3 n){
     if(abs(q.y-.11)<.057&&abs(abs(q.y-.11)-.054)<.0025&&fc<.047) a=.35;
     return a; }
   if(id==4.) return .5;
-  if(id==5.){ vec3 q=trpQ(p); if(q.x>.12&&length(q.yz)<.043&&n.x<-.2) return .3; return .82; }
+  if(id==5.){ vec3 q=trpQ(p); if(q.x>.17&&length(q.yz)<.041) return .3; if(abs(q.x-.18)<.004) return .4; return .7; }
   if(id==6.) return .38;
   if(id==7.) return .5+.12*vn(p.xz*300.);
   return .7; }

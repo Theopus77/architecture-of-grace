@@ -60,6 +60,24 @@ ES = {
  "How His Ideas Spread": "Cómo se difundieron sus ideas",
  "Choosing a Question": "Elegir una pregunta",
  "Weighing Readings Fairly": "Sopesar las lecturas con justicia",
+ # added after the 2026-09-30 revision (topics and primary documents)
+ "Old Words for Heavenly Ones": "Palabras antiguas para los seres celestiales",
+ "The Old Writings Themselves": "Los escritos antiguos mismos",
+ "How Researchers Work": "Cómo trabajan los investigadores",
+ "Old Stories, Old Words": "Historias antiguas, palabras antiguas",
+ "The Choice and the Promise": "La decisión y la promesa",
+ "Weighing the Clues": "Sopesar las pistas",
+ "Messengers and Their Names": "Los mensajeros y sus nombres",
+ "Why Readers Still Study Enoch": "Por qué se sigue estudiando Enoc",
+ "Babylon's Sages and the Watchers": "Los sabios de Babilonia y los Vigilantes",
+ "Other Voices from the Same Centuries": "Otras voces de los mismos siglos",
+ "Weighing the Arguments": "Sopesar los argumentos",
+ "The Mount of Assembly": "El monte de la asamblea",
+ "The Rabbis and the Ethiopian Church": "Los rabinos y la Iglesia etíope",
+ "The Books of Enoch": "Los libros de Enoc",
+ "Ugarit, Mesopotamia and Careful Comparison": "Ugarit, Mesopotamia y la comparación cuidadosa",
+ "How Old Is 1 Enoch?": "¿Qué edad tiene 1 Enoc?",
+ "The Church Fathers": "Los Padres de la Iglesia",
 }
 
 EXTRA = {
@@ -135,6 +153,18 @@ EXTRA = {
  "What is one way to welcome a new friend?": "Turn your back",
  "What does welcome mean?": "To forget someone",
  "How do many Christians read these stories?": "As a story about a flood",
+ # added after the 2026-09-30 revision
+ "What old language was most of the Old Testament written in?": "Chinese",
+ "Where were the Dead Sea Scrolls found?": "Under a tall tower",
+ "What do some Bible scholars, like Michael Heiser, see in the name sons of God?": "A kind of fish",
+ "What did the prophet Ezekiel call Eden?": "The desert of God",
+ "What do some Bible scholars, like Michael Heiser, think Eden was?": "A tall tower",
+ "What did the writer Josephus say the sons of God were?": "Trees in the garden",
+ "What does 1 Enoch say the heavenly ones did?": "Planted a garden",
+ "What does the old Greek Bible, the Septuagint, say in this verse?": "Birds of the air",
+ "Which verse says God called to Moses from the bush?": "Revelation 7:9",
+ "Some Bible scholars, like Michael Heiser, think the Angel was who?": "A bird in the tree",
+ "What did Jesus' friends ask after the storm?": "What is for lunch?",
 }
 
 BANDS = make('unr', ES, EXTRA)

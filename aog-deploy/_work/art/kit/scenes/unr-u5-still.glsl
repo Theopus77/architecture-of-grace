@@ -1,7 +1,7 @@
 /* The Unseen Realm Unit 5 "Three Rebellions" - Genesis 3, 6 and 11: an apple with a leaf (Eden),
    five mud bricks stacked like a small tower (Babel's bricks) and a rolled scroll (the Genesis text). Objects only. */
-#define CAM_POS vec3(-0.45,0.45,-1.0)
-#define CAM_TGT vec3(-0.05,0.03,0.1)
+#define CAM_POS vec3(-0.4457,0.2753,-0.6913)
+#define CAM_TGT vec3(-0.1529,-0.0321,0.1136)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.32)
 #define MAXT 8.
