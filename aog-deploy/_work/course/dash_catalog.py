@@ -12,7 +12,8 @@ COURSES = [  # id, English, Spanish — in menu order
  ("heb","The Hebrew Bible","La Biblia hebrea"),("qur","The Qur’an","El Corán"),("tal","Talmud Study","Estudio del Talmud"),
  ("hin","Hindu Texts","Textos hindúes"),("bud","Buddhist Texts","Textos budistas"),("chn","Chinese Classics","Clásicos chinos"),
  ("wcs","World Cultures","Culturas del mundo"),("med","Medicine & Health","Medicina y salud"),
- ("spt","Sports History","Historia del deporte"),("mar","The Measured Step","El paso medido")]
+ ("spt","Sports History","Historia del deporte"),("mar","The Measured Step","El paso medido"),
+ ("unr","The Unseen Realm","El reino invisible")]
 units, names = {}, {}
 for cid, en, es in COURSES:
     rows = []

@@ -8,7 +8,9 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.30.m7236'   // MERGE: SPORTS AND MEASURED STEP HUB CARDS (m7234b) + main m7235. previous: m7235
+const CACHE = 'aog-cache-2026.09.30.m7237'   // MERGE: THE UNSEEN REALM COURSE + STUDENT START BUTTON INK (branch m7235) + MAIN (m7236: SPORTS AND MEASURED STEP HUB CARDS). previous: m7236
+// const CACHE = 'aog-cache-2026.09.30.m7236'   // MERGE: SPORTS AND MEASURED STEP HUB CARDS (m7234b) + main m7235. previous: m7235
+// const CACHE = 'aog-cache-2026.09.30.m7235'   // MERGE: THE UNSEEN REALM COURSE (m7233) + MAIN (m7234: TAP MATCH WORDING, SPORTS AND MEASURED STEP PENCIL BANNERS). previous: m7234
 // const CACHE = 'aog-cache-2026.09.30.m7234b'   // SPORTS AND MEASURED STEP HUBS: SOCIAL-STUDIES UNIT CARDS WITH PENCIL DRAWINGS, HERO WORDS ALWAYS READABLE, PLAIN INTROS. previous: m7233
 // const CACHE = 'aog-cache-2026.09.30.m7235'   // MERGE: TEACHER DOOR ORDER + CHECK-IN START INK + 1940 BASEBALL LINE (m7234) + main m7234. previous: m7234
 // const CACHE = 'aog-cache-2026.09.30.m7234'   // MERGE: TAP MATCH WORDING + MAIN. previous: m7233
@@ -337,6 +339,7 @@ const PRECACHE = [
 // precache and take the site's offline capability down with it. Same rule as
 // the scroll reveal: this must fail open.
 const PRECACHE_LESSONS = [
+  './unseen-realm-course.html', './unr-u1.html', './unr-u2.html', './unr-u3.html', './unr-u4.html', './unr-u5.html', './unr-u6.html', './unr-u7.html', './unr-u8.html', './unr-u9.html', './unr-u10.html', './unr-u11.html', './unr-u12.html', './unr-u13.html', './unr-u14.html', './unr-u15.html', './unr-u16.html', './unr-u17.html',   // AOG-UNR-V1 — The Unseen Realm course
   './martial-arts-course.html', './mar-u1.html', './mar-u2.html', './mar-u3.html', './mar-u4.html', './mar-u5.html', './mar-u6.html', './mar-u7.html', './mar-u8.html', './mar-u9.html', './mar-u10.html', './mar-u11.html', './mar-u12.html', './mar-u13.html', './mar-u14.html', './mar-u15.html', './mar-u16.html', './mar-u17.html',   // AOG-MAR-V1 — the The Measured Step course
   './sports-course.html', './spt-u1.html', './spt-u2.html', './spt-u3.html', './spt-u4.html', './spt-u5.html', './spt-u6.html', './spt-u7.html', './spt-u8.html', './spt-u9.html', './spt-u10.html', './spt-u11.html', './spt-u12.html', './spt-u13.html', './spt-u14.html', './spt-u15.html', './spt-u16.html', './spt-u17.html',   // AOG-SPT-V1 — the Sports History course
   './medicine-health-course.html', './med-u1.html', './med-u2.html', './med-u3.html', './med-u4.html', './med-u5.html', './med-u6.html', './med-u7.html', './med-u8.html', './med-u9.html', './med-u10.html', './med-u11.html', './med-u12.html', './med-u13.html', './med-u14.html', './med-u15.html', './med-u16.html', './med-u17.html',   // AOG-MED-V1 — the Medicine and Health course

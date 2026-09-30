@@ -1,0 +1,44 @@
+You are revising ONE unit of "The Unseen Realm, K–12" for Architecture of Grace. Work only inside
+FOLDER = /home/user/architecture-of-grace/aog-deploy/_work/unr . Your unit: UNIT_N (given below).
+
+WHY: the owner (Jimmy) clarified what he asked for: "I wasn't saying doing a course on him. His research and
+researchers that had similar topics through primary documentation." The first draft made Michael Heiser the
+subject. The course is about the TOPICS (the divine council, Enoch and the Watchers, the giants, the gods of
+the nations, angels, demons, the mission of Jesus), taught from the PRIMARY DOCUMENTS, with Heiser as one
+researcher among several.
+
+Steps, in order:
+1. Read FOLDER/SPEC.md completely. Its section "What the course is (the owner's decision, 2026-09-30)" is new:
+   it lists the primary documents and their public-domain translations, and the real researchers you may name.
+   Then read your unit in FOLDER/outline.py (its topics were updated too).
+2. Read your unit's current files: FOLDER/ch<N>.json for each of its chapters, and FOLDER/u<UNIT_N>_head.json.
+3. MODE (given below):
+   - "revise": edit the existing files in place. Keep what is good, accurate and at the right level.
+   - "rewrite": the outline changed this chapter's subject. Write those chapter files fresh (you may reuse
+     good material), and revise the unit's other chapters and head as in "revise".
+4. What to change, everywhere in the unit (story, readings, words, looks, checks, reviews, intro, timeline,
+   wrap test, write prompt):
+   - Lead with the document. Each lesson opens from the ancient text, manuscript, place or practice, says what
+     it says, and only then gives how researchers read it.
+   - Heiser is one voice, not the subject. Keep his reading where he truly wrote on the topic, attributed and
+     fair, but cut repetition: no lesson, story, section or unit is "about Heiser". Aim for Heiser named in at
+     most about a third of the lessons (K–2: at most once or twice per chapter, as "some Bible scholars, like
+     Michael Heiser, think…"). Most questions ask about the text, a term, a document, or a reading, not "What
+     did Heiser think…?" Keep at most 2–3 Heiser questions per chapter.
+   - Bring in the wider research where you are SURE of it: the researchers and works listed in SPEC.md
+     (Nickelsburg, VanderKam, Milik, Stuckenbruck, Reed, Wright, Annus, Mullen, Smith, Segal, Arnold, Wink,
+     Bauckham…), or "many scholars" / "other researchers" when unsure who. Never invent a view, a title or a year.
+   - Use more primary documents where they fit: 1 Enoch and Jubilees (R. H. Charles, 1917), the Septuagint
+     (Brenton, 1844), Josephus (Whiston, 1737), Philo (Yonge), the church fathers (Ante-Nicene Fathers), the
+     Dead Sea Scrolls and Ugaritic texts (described or paraphrased). Exact quotes ("paraphrase": false) only
+     from public-domain translations you are certain of, word for word; otherwise paraphrase.
+   - A `source` look citing a modern scholar is always "paraphrase": true, in your own words, author + book + year.
+   - Keep: the LEVEL rules, calm and never frightening, no link between demons and disability, illness or
+     neurodivergence, K–2 gentle, balance with other readings, accuracy.
+5. Run:  cd FOLDER && python3 shuffle_answers.py UNIT_N && python3 assemble.py UNIT_N
+   (shuffle_answers spreads the right answers evenly; always run it after editing questions.)
+   Fix every problem the validator prints and re-run both until OK. Do not edit assemble.py, validate.py,
+   shuffle_answers.py, outline.py or SPEC.md. Do not use git.
+6. Reply with ONLY: the validator's OK line; the count of "Heiser" before and after
+   (grep -o Heiser u<UNIT_N>.json | wc -l); the researchers and primary documents you added; and any fact you
+   were unsure about and left out or softened (one line each).
