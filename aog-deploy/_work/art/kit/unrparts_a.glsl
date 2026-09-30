@@ -355,7 +355,7 @@ float t_mount(vec3 q,float H,float R){
   if(y>snow) return .95;                                        /* a pale snow cap */
   float a=atan(c.z,c.x); float s=fract(a*9./6.2832+y*1.3+fbm(c.xz*30.)*.4);
   if(s<.07&&y>.15) return .38;                                  /* ridge lines down the slopes */
-  return .6+.1*(fbm3(q*60.)-.5); }
+  return .46+.12*(fbm3(q*60.)-.5); }
 /* ---- a toy ark: rounded hull, flat deck, a cabin with a gabled roof (long along x) ---- */
 float o_ark(vec3 q){
   float hull=max(sdEll(q-vec3(0.,.06,0.),vec3(.155,.06,.058)),q.y-.058);
