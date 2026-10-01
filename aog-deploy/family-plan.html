@@ -12,7 +12,7 @@
 <!-- AOG-FAMILY-PLAN-V1 (2026-09-28) — Jimmy: families collect their own data at home, and an engine turns it into
      a document for them automatically, like the teacher's IEP engine. Three parts: Today at home (the log, with
      routines), Our goals, and Our child's plan (built by aog-family-plan.js). Everything stays on this device
-     (aog.family.*.v1.<child>). The dashboard's family list (aog.dash2.kids) is only read. Nothing is sent unless
+     (aog.family.*.v1.<child>). The family list is the dashboard's own (aog.dash2.kids), shared both ways (AOG-FAMILY-ONELIST-V1). Nothing is sent unless
      the family presses Send, and Send only shows when the device already has a class Sheet connection. -->
 <style>
 :root{--navy:#0A1E33;--ink:#1f2a36;--soft:#4f5b69;--gold:#B8893A;--gold2:#F2C964;--cream:#FBF6EA;--card:#fff;--line:#E6DCC6;
@@ -95,7 +95,7 @@ summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:
 const E=window.AOG_FAMILY_PLAN;
 const UI={
 en:{ey:"For families",h1:"Our Child's Plan",lede:"Log a day at home in about 30 seconds. Your notes build your child's plan.",
- parts:["Today at home","Goals and support","Our child's plan"],child:"Child",addChild:"Add a child",addChildPh:"Your child's first name",add:"Add",
+ parts:["Today at home","Goals and support","Our child's plan"],child:"Child",ourFamily:"Our family",addChild:"Add a child",addChildPh:"Your child's first name",add:"Add",
  noKids:"Add your child's first name to begin.",date:"Day",how:"How was today?",faces:["Very hard","Hard","Okay","Good","Great"],
  feel:"Feeling words (pick any)",sleep:"Sleep last night (hours)",hw:"Homework or reading",hwOpts:{done:"Done",some:"Some",not:"Not today",none:"No homework"},
  hwHow:"How did it go?",hwHowOpts:{easy:"Easy",ok:"Okay",help:"Needed help",hard:"Hard"},helped:"What helped today",hard:"Anything hard? (optional)",
@@ -127,7 +127,7 @@ en:{ey:"For families",h1:"Our Child's Plan",lede:"Log a day at home in about 30 
  privacy:"Your notes stay on this device. Nothing is sent unless you press Send.",del:"Delete this child's home data",
  delAsk:n=>"Delete "+n+"'s home log, routines, goals and plan on this device? This cannot be undone.",yesDel:"Yes, delete",deleted:"Deleted."},
 es:{ey:"Para familias",h1:"El plan de nuestro hijo",lede:"Anote un día en casa en unos 30 segundos. Sus notas forman el plan de su hijo.",
- parts:["Hoy en casa","Metas y apoyo","El plan de nuestro hijo"],child:"Hijo o hija",addChild:"Agregar un hijo",addChildPh:"El primer nombre de su hijo",add:"Agregar",
+ parts:["Hoy en casa","Metas y apoyo","El plan de nuestro hijo"],child:"Hijo o hija",ourFamily:"Nuestra familia",addChild:"Agregar un hijo",addChildPh:"El primer nombre de su hijo",add:"Agregar",
  noKids:"Agregue el primer nombre de su hijo para empezar.",date:"Día",how:"¿Cómo fue hoy?",faces:["Muy difícil","Difícil","Regular","Bien","Muy bien"],
  feel:"Palabras de sentimientos (elija las que quiera)",sleep:"Sueño anoche (horas)",hw:"Tarea o lectura",hwOpts:{done:"Hecha",some:"Una parte",not:"Hoy no",none:"No hubo tarea"},
  hwHow:"¿Cómo le fue?",hwHowOpts:{easy:"Fácil",ok:"Regular",help:"Necesitó ayuda",hard:"Difícil"},helped:"Lo que ayudó hoy",hard:"¿Algo difícil? (opcional)",
@@ -171,8 +171,26 @@ const addDays=(d,n)=>{const p=d.split("-");return iso(new Date(+p[0],+p[1]-1,+p[
 const key=(what,c)=>"aog.family."+what+".v1."+encodeURIComponent(String(c).trim().toLowerCase());
 
 /* children: the dashboard's family list (read only) plus any added here */
-function kids(){ const a=[].concat(get("aog.dash2.kids",[])||[],get("aog.family.kids.v1",[])||[]), seen={}, out=[];
+/* AOG-FAMILY-ONELIST-V1 (2026-10-01) — Jimmy: "DO IT UP!" One family list for the whole family area: the dashboard's
+   Our family and this page both read and write aog.dash2.kids. A child added here appears there, and the other way
+   round. Children this page once kept on its own (aog.family.kids.v1) move into the shared list, once. */
+const FKEY="aog.dash2.kids";
+(function(){ try{ const old=get("aog.family.kids.v1",null); if(!Array.isArray(old)) return;
+  const a=get(FKEY,[])||[], low=a.map(x=>String(x).toLowerCase());
+  old.forEach(n=>{ n=String(n||"").trim().slice(0,40); if(n&&low.indexOf(n.toLowerCase())<0){ a.push(n); low.push(n.toLowerCase()); } });
+  put(FKEY,a.slice(0,12)); localStorage.removeItem("aog.family.kids.v1"); }catch(e){} })();
+function addKidName(n){ n=String(n||"").trim().slice(0,40); if(!n) return; const a=get(FKEY,[])||[]; if(!a.some(k=>String(k).toLowerCase()===n.toLowerCase())) a.push(n); put(FKEY,a.slice(0,12)); }
+function kidsLink(){ return btoa(unescape(encodeURIComponent(JSON.stringify(kids())))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function kids(){ const a=[].concat(get(FKEY,[])||[]), seen={}, out=[];
   a.forEach(n=>{ n=String(n||"").trim().slice(0,40); const k=n.toLowerCase(); if(n&&!seen[k]){ seen[k]=1; out.push(n); } }); return out; }
+/* AOG-FAMILY-LINK-V1 (2026-10-01) — Jimmy: the family link "brought into … the handoff slips". The dashboard's family
+   link (?kids=…, the same list as Our family) opens this page with those children on any phone, and ?child= opens one
+   child's plan straight away. The children are added to this device's own list; nothing is sent. */
+(function(){ try{ const q=new URLSearchParams(location.search), k=q.get("kids");
+  if(k){ let z=k.replace(/-/g,"+").replace(/_/g,"/"); while(z.length%4) z+="="; const arr=JSON.parse(decodeURIComponent(escape(atob(z))));
+    if(Array.isArray(arr)) arr.forEach(addKidName); }
+  const c=String(q.get("child")||"").trim().slice(0,40); if(c) put("aog.family.child",c);
+}catch(e){} })();
 let child=raw("aog.family.child").replace(/^"|"$/g,""), part=+get("aog.family.part",0)||0, day=today(), busy={};
 function fixChild(){ const ks=kids(); if(!ks.some(k=>k===child)) child=ks[0]||""; }
 const L=()=>get(key("log",child),{}), saveL=v=>put(key("log",child),v);
@@ -229,6 +247,8 @@ function strip(fn){ let h='<div class="dots" aria-hidden="true">'; for(let i=6;i
 
 function header(){ const t=T(), ks=kids();
   let h='<div class="card noprint"><div class="row">';
+  /* AOG-FAMILY-ONELIST-V1 — the way back to the children's cards (work, Blueprint, evening check-in) */
+  h+='<a class="b" style="text-decoration:none;display:inline-flex;align-items:center;min-height:44px" href="/dashboard.html?view=family'+(ks.length?'&kids='+kidsLink():'')+'">← '+esc(t.ourFamily||"Our family")+'</a>';
   if(ks.length) h+='<label for="kid" class="k" style="margin:0">'+t.child+'</label><select id="kid">'+ks.map(k=>'<option'+(k===child?" selected":"")+'>'+esc(k)+'</option>').join("")+'</select>';
   h+='<details style="margin:0"'+(ks.length?"":" open")+'><summary>'+t.addChild+'</summary><div class="row"><input id="newKid" maxlength="40" placeholder="'+esc(t.addChildPh)+'" aria-label="'+esc(t.addChildPh)+'"><button type="button" class="b" id="addKid">'+t.add+'</button></div></details></div>';
   if(!ks.length) h+='<p class="sub">'+t.noKids+'</p>';
@@ -401,7 +421,7 @@ function render(){ const t=T(); document.querySelectorAll("[data-t]").forEach(n=
   const y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y); }
 
 app.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b) return; const d=b.dataset, t=T();
-  if(b.id==="addKid"){ const v=(document.getElementById("newKid").value||"").trim().slice(0,40); if(!v) return; const a=get("aog.family.kids.v1",[]); if(!kids().some(k=>k.toLowerCase()===v.toLowerCase())) a.push(v); put("aog.family.kids.v1",a); child=v; put("aog.family.child",v); return render(); }
+  if(b.id==="addKid"){ const v=(document.getElementById("newKid").value||"").trim().slice(0,40); if(!v) return; addKidName(v); child=v; put("aog.family.child",v); return render(); }
   if(d.part!=null){ part=+d.part; put("aog.family.part",part); return render(); }
   if(d.mood) setEntry(e=>e.mood=+d.mood);
   else if(d.feel) setEntry(e=>{ const a=e.feel||[], i=a.indexOf(d.feel); i<0?a.push(d.feel):a.splice(i,1); e.feel=a; });
@@ -435,7 +455,7 @@ app.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b) r
   else if(b.id==="del"){ document.getElementById("delBox").innerHTML='<div class="confirm"><p style="margin:0 0 8px">'+esc(t.delAsk(child))+'</p><div class="row"><button type="button" class="b solid" id="delYes">'+t.yesDel+'</button><button type="button" class="b" id="delNo">'+t.keep+'</button></div></div>'; return; }
   else if(b.id==="delNo"){ document.getElementById("delBox").innerHTML=""; return; }
   else if(b.id==="delYes"){ ["log","goals","routines","plan","therapies"].forEach(w=>{ try{ localStorage.removeItem(key(w,child)); }catch(e){} });
-    put("aog.family.kids.v1",get("aog.family.kids.v1",[]).filter(k=>String(k).toLowerCase()!==child.toLowerCase())); child=""; }
+    put(FKEY,(get(FKEY,[])||[]).filter(k=>String(k).toLowerCase()!==child.toLowerCase())); child=""; }
   else return;
   render(); });
 app.addEventListener("change",ev=>{ const el=ev.target;
