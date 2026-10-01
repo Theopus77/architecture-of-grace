@@ -758,6 +758,9 @@ textarea.wbox:focus{border-color:var(--gold); background-color:var(--field);
   background:var(--navy); color:#fff; padding:13px 26px; border-radius:999px; font-weight:700;
   box-shadow:var(--lift); transition:.42s cubic-bezier(.16,1,.3,1)}
 :root[data-theme="dark"] .toast{color:#12161C}
+/* AOG-DD-TOAST-HIDE-V1 (2026-10-01) — Jimmy: "secret societies has a blue dot on it." The parked toast was slid
+   150% of its own height below the bottom edge, which left a sliver of navy showing; it is invisible until shown. */
+.toast:not(.show){visibility:hidden; pointer-events:none}
 .toast.show{transform:translate(-50%,0)}
 
 @media (max-width:640px){
@@ -20108,30 +20111,31 @@ else watch();
   --art:none;position:relative;
   writing-mode:horizontal-tb !important;transform:none;
   width:118px;min-width:118px !important;height:158px;min-height:158px !important;margin:0 0 30px !important;
-  padding:0 14px 15px !important;display:flex !important;flex-direction:column;align-items:center;justify-content:flex-end;
-  font:600 12px/1.15 "Fraunces",Georgia,serif !important;text-transform:none !important;letter-spacing:0 !important;
-  text-align:center;white-space:normal !important;color:#2A1808 !important;text-shadow:none !important;
+  padding:0 8px 9px !important;display:flex !important;flex-direction:column;align-items:center;justify-content:flex-end;
+  /* AOG-DD-COVERS-V2 (2026-10-01) — Jimmy: "Pictures still need to be bigger, the text should be smaller but bolder,
+     maybe white letters without the white background." The plate fills the cover down to the name band; the name is
+     small, bold, cream, straight on the leather. */
+  font:800 10.5px/1.15 "Fraunces",Georgia,serif !important;text-transform:none !important;letter-spacing:.01em !important;
+  text-align:center;white-space:normal !important;color:#FFF4DC !important;text-shadow:0 1px 1px rgba(0,0,0,.7) !important;
   border:1px solid #1A120C !important;border-radius:3px 8px 8px 3px !important;
   background-color:#5A3A22 !important;
   background-image:
-    linear-gradient(#E9DCC0,#E9DCC0),
-    linear-gradient(#2A1808,#2A1808),
     radial-gradient(60% 40% at 30% 25%, rgba(255,230,190,.22), transparent 70%),
     radial-gradient(50% 35% at 80% 85%, rgba(0,0,0,.38), transparent 70%),
     radial-gradient(rgba(0,0,0,.22) 1px,transparent 1.4px),
     radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px),
     linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.18) 9px,rgba(255,255,255,.08) 24px,rgba(255,255,255,.03) 50%,rgba(0,0,0,.12) 85%,rgba(0,0,0,.4) 100%) !important;
-  background-size:calc(100% - 24px) 40px, calc(100% - 22px) 42px, 100% 100%, 100% 100%, 5px 5px, 7px 7px, 100% 100% !important;
-  background-position:12px calc(100% - 11px), 11px calc(100% - 10px), 0 0, 0 0, 0 0, 2px 3px, 0 0 !important;
-  background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,repeat,repeat,no-repeat !important;
+  background-size:100% 100%, 100% 100%, 5px 5px, 7px 7px, 100% 100% !important;
+  background-position:0 0, 0 0, 0 0, 2px 3px, 0 0 !important;
+  background-repeat:no-repeat,no-repeat,repeat,repeat,no-repeat !important;
   box-shadow:inset 0 0 0 8px rgba(201,162,74,0), inset 0 0 0 9px rgba(201,162,74,.5),
      inset 0 6px 8px -6px rgba(255,255,255,.25), inset 0 -6px 8px -6px rgba(0,0,0,.6),
      7px -6px 0 -1px #EFE6D2, 7px -6px 0 0.5px #3B2414,
      3px 3px 4px rgba(0,0,0,.35) !important}
 #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{
-  content:"" !important;position:absolute !important;left:12px !important;right:12px !important;top:12px !important;bottom:auto !important;
-  height:auto !important;aspect-ratio:2/1;transform:none !important;z-index:0;border-radius:2px;
-  border:1px solid #2A1808 !important;background:#FBF8F0 var(--art) 88% 40% / 135% auto no-repeat !important;
+  content:"" !important;position:absolute !important;left:11px !important;right:11px !important;top:11px !important;bottom:40px !important;
+  height:auto !important;transform:none !important;z-index:0;border-radius:2px;
+  border:1px solid #2A1808 !important;background:#FBF8F0 var(--art) 72% 42% / cover no-repeat !important;
   box-shadow:1px 1px 0 rgba(42,24,8,.35) !important}
 #subjSeg .bs button::after{content:none !important}
 #subjSeg .bs button[data-s="math"]{--art:url("/img/banners/page-math-hub-pencil-900.webp")}
@@ -20157,7 +20161,7 @@ else watch();
 #subjSeg .bs button[data-s="unseen"]{--art:url("/img/banners/unseen-realm-hub-pencil-900.webp")}
 #subjSeg .bs button[data-s="religion"]{--art:url("/img/banners/r10-religion-and-the-world-pencil-900.webp")}
 #subjSeg .bs button[aria-pressed="true"], #subjSeg .bs button[data-s][aria-pressed="true"]{
-  transform:translateY(-10px) !important;background-color:#6B4628 !important;color:#2A1808 !important;
+  transform:translateY(-10px) !important;background-color:#6B4628 !important;color:#FFF4DC !important;
   outline:2.5px solid #C9A24A;outline-offset:3px}
 #subjSeg .bs button:focus-visible{outline:3px solid #F2C964 !important;outline-offset:3px}
 @media (hover:hover){ #subjSeg .bs button[aria-pressed="false"]:hover{transform:translateY(-5px)} }
@@ -20166,9 +20170,8 @@ else watch();
 @media (max-width:720px){
   #subjSeg .bs{gap:14px 8px !important;padding:10px 2px 0 !important}
   #subjSeg .bs button, #subjSeg .bs button:nth-child(n){width:90px;min-width:90px !important;height:122px;min-height:122px !important;margin:0 0 24px !important;
-    padding:0 10px 11px !important;font-size:10.5px !important;background-size:calc(100% - 20px) 36px, calc(100% - 18px) 38px, 100% 100%, 100% 100%, 5px 5px, 7px 7px, 100% 100% !important;
-    background-position:10px calc(100% - 10px), 9px calc(100% - 9px), 0 0, 0 0, 0 0, 2px 3px, 0 0 !important}
-  #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{left:10px !important;right:10px !important;top:10px !important}
+    padding:0 7px 8px !important;font-size:9.5px !important}
+  #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{left:9px !important;right:9px !important;top:9px !important;bottom:34px !important}
 }
 @media print{ #subjSeg .bs button{background:#fff !important;color:#1D2733 !important} }
 </style>
