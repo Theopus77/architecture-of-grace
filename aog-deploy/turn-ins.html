@@ -2088,6 +2088,7 @@ else document.documentElement.classList.add("aog-embed");</script>
         lsSet("aog.checkin.remote", JSON.stringify(rows));
         lsSet("aog.practice.remote", JSON.stringify(practice));
         lsSet("aog.practice.remote.at", new Date().toISOString());
+        /* AOG-SHEET-WINS-V1 (2026-10-01) — Jimmy: "our Google Sheets says that there are no luke r but the pull is saying there are some." This device keeps copies of its own sends until the Sheet hands them back. After a good pull the Sheet is the record: a copy older than 15 minutes that the Sheet no longer has was deleted or renamed there, so it goes. */ try{ var cutM=Date.now()-15*60*1000, mineM=JSON.parse(localStorage.getItem("aog.practice.mine")||"[]"); localStorage.setItem("aog.practice.mine", JSON.stringify(mineM.filter(function(r){ var t=Date.parse((r&&r.timestamp)||""); return !isNaN(t)&&t>cutM; }))); }catch(eM){}
         got.push(rows.length+" check-ins"); got.push(practice.length+" turn-ins");
         /* AOG-INBOX-ARRIVED-V1 (2026-09-26) — what actually arrived, by activity id, so a row that lands in the Sheet
            but never shows here can be seen at the door (Jimmy: "the Practice tab is getting the Bible stuff"). */
