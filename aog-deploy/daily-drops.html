@@ -1425,6 +1425,16 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
 .divg .pencilroom{background:none !important}
 @media print{ .pencilroom{height:auto !important;min-height:40px} }
 </style>
+<style id="aog-dd-more">
+/* AOG-DD-MORE-V1 · AOG-DD-STREAK-RULE-V1 · AOG-DD-TEACHERLINES-V1 (2026-10-01) */
+#moreBtn{justify-self:start;margin:6px 0 2px}
+#moreBtn[aria-expanded="true"]{border-color:var(--gold,#F2C964)}
+#moreSubj[hidden]{display:none !important}
+.streaknote{flex:1 1 100%;margin:4px 0 0;font-size:.84rem;line-height:1.5;color:var(--ink-faint)}
+.tlines{margin:0 0 14px;padding:0 0 0 20px;font-size:.84rem;line-height:1.5;color:var(--ink-faint)}
+.tlines li{margin:2px 0}
+body.packing .packsheet .tlines{color:#333}
+</style>
 <style id="aog-dd-onesize">
 /* AOG-DD-ONE-SIZE (2026-09-27) — Jimmy: "Grade 7 zooms in compared to the other grades." Pages show at 85% on a
    computer, but a page with a pencil canvas draws at full size (aog-calm.css), and only some grades' sheets have
@@ -1480,6 +1490,10 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
       <button data-s="science" aria-pressed="false" data-en="Science" data-es="Ciencias">Science</button>
       <button data-s="social-studies" aria-pressed="false" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</button>
       </div></div>
+      <!-- AOG-DD-MORE-V1 (2026-10-01) — Core subjects stand alone. Everything else waits behind one plain button,
+           "More subjects", closed unless the subject on the page is one of them. Same buttons, same handler. -->
+      <button class="btn morebtn" id="moreBtn" type="button" aria-expanded="false" aria-controls="moreSubj" data-en="More subjects" data-es="M&aacute;s materias">More subjects</button>
+      <div id="moreSubj" hidden>
       <div class="sgrp"><span class="sg-k" data-en="Languages &amp; life" data-es="Idiomas y vida">Languages &amp; life</span><div class="bs">
       <button data-s="spanish" aria-pressed="false" data-en="Spanish" data-es="Español">Spanish</button>
       <button data-s="foundry" aria-pressed="false" title="Word Foundry" data-en="Foundry" data-es="Foundry">Foundry</button>
@@ -1503,6 +1517,7 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
       <button data-s="unseen" aria-pressed="false" title="The Unseen Realm: Enoch, the Watchers, angels and demons in the ancient texts" data-en="The Unseen Realm" data-es="El reino invisible">The Unseen Realm</button>
       <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       </div></div>
+      </div>
     </div>
   </div>
   <div class="fg">
@@ -1519,6 +1534,7 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
   </div>
   <span class="grow"></span>
   <button class="btn" id="keyBtn" type="button" aria-pressed="false" data-en="Answer key" data-es="Clave">Answer key</button>
+  <button class="btn" id="keyPrintBtn" type="button" hidden data-en="Print answer key" data-es="Imprimir la clave">Print answer key</button>
   <button class="btn solid" id="checkBtn" type="button" data-en="Inspect my build" data-es="Inspeccionar mi obra">Inspect my build</button>
 </div>
 
@@ -1531,6 +1547,7 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
     <div><span class="statv" id="scoreVal">—</span><span class="statl" data-en="Score" data-es="Puntaje">Score</span></div>
     <div><span class="statv gold" id="streakVal">0</span><span class="statl" data-en="Foundation streak" data-es="Racha de base">Foundation streak</span></div>
   </div>
+  <p class="streaknote" data-en="A day counts when you finish a sheet with every crack repaired. The streak lives in this browser only, so a new device starts at 0." data-es="Un d&iacute;a cuenta cuando terminas una hoja con todas las grietas reparadas. La racha vive solo en este navegador; un aparato nuevo empieza en 0.">A day counts when you finish a sheet with every crack repaired. The streak lives in this browser only, so a new device starts at 0.</p>
 </div>
 
 <div class="workbar no-print" id="workBar">
@@ -1554,16 +1571,21 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
      a print option in the actual page?" Type the numbers, get those drafts, one to a
      page, blank and ready to hand out. Nothing on screen is disturbed by it. -->
 <div class="packbar no-print" id="packBar" hidden>
-  <label class="lbl" for="packIn" data-en="Drafts to print" data-es="Borradores a imprimir">Drafts to print</label>
+  <!-- AOG-DD-PACK-V2 (2026-10-01): a start draft and a count; each page is the next draft number. The exact list still works. -->
+  <label class="lbl" for="packStart" data-en="Start at draft" data-es="Empezar en el borrador">Start at draft</label>
+  <input id="packStart" type="number" min="1" max="180" value="1" inputmode="numeric" autocomplete="off" aria-label="First draft to print">
+  <label class="lbl" for="packCount" data-en="How many" data-es="Cu&aacute;ntos">How many</label>
+  <input id="packCount" type="number" min="1" max="40" value="5" inputmode="numeric" autocomplete="off" aria-label="How many drafts to print">
+  <label class="lbl" for="packIn" data-en="Or exact drafts" data-es="O borradores exactos">Or exact drafts</label>
   <input id="packIn" type="text" inputmode="numeric" autocomplete="off" placeholder="10, 13, 176"
-         aria-label="Draft numbers to print">
+         aria-label="Exact draft numbers to print">
   <button class="btn solid" id="packGo" type="button" data-en="Print these" data-es="Imprimir estos">Print these</button>
   <button class="btn" id="packX" type="button" data-en="Close" data-es="Cerrar">Close</button>
   <span class="packnote" id="packNote"></span>
 </div>
 <div id="packPack" aria-hidden="true"></div>
 
-<p class="sheet-foot" id="footNet" data-en="Your work saves in this browser as you go. When you sign your name, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace." data-es="Tu trabajo se guarda en este navegador mientras avanzas. Cuando firmas con tu nombre, va una vez a la Hoja de tu maestro: tus respuestas y tu puntaje, o tu escritura, tu plan y la rúbrica. Enviar otra vez lo reenvía. Sin enlace del maestro, nada sale de este aparato. Nada se carga de internet. Práctica original, escrita para Architecture of Grace.">Your work saves in this browser as you go. When you sign your name, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace.</p>
+<p class="sheet-foot" id="footNet" data-en="Your work saves in this browser as you go. When you sign your name and tap Send, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace." data-es="Tu trabajo se guarda en este navegador mientras avanzas. Cuando firmas con tu nombre y tocas Enviar, va una vez a la Hoja de tu maestro: tus respuestas y tu puntaje, o tu escritura, tu plan y la rúbrica. Enviar otra vez lo reenvía. Sin enlace del maestro, nada sale de este aparato. Nada se carga de internet. Práctica original, escrita para Architecture of Grace.">Your work saves in this browser as you go. When you sign your name and tap Send, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace.</p>
 </main>
 </div>
 <div class="toast" id="toast"></div>
@@ -18240,6 +18262,15 @@ function sigPrint(pack){
   return '<div class="signprint"><span class="spl">'+t('Name','Nombre')+
     '</span><span class="spv"'+(pack?'':' id="sigEcho"')+'></span></div>'}
 
+/* AOG-DD-TEACHERLINES-V1 (2026-10-01) — three short lines on the sheet itself, screen and paper. */
+function teacherLines(){
+  return '<ul class="tlines"><li>'+t('Draft '+ST.sheet+' is the same page for every student.',
+      'El borrador '+ST.sheet+' es la misma p\u00e1gina para cada estudiante.')+'</li><li>'+
+    t('Nothing is sent until you sign and tap Send. With no teacher link, it stays on this device.',
+      'Nada se env\u00eda hasta que firmas y tocas Enviar. Sin enlace del maestro, se queda en este aparato.')+'</li><li>'+
+    t('Original practice for Architecture of Grace. Not a published workbook, and not endorsed by a district or standards body.',
+      'Pr\u00e1ctica original para Architecture of Grace. No es un cuaderno publicado ni est\u00e1 avalada por un distrito ni por un organismo de est\u00e1ndares.')+'</li></ul>'}
+
 function sigRow(){
   return '<div class="sig"><label for="nameIn">'+t('Name','Nombre')+'</label>'+
     '<input id="nameIn" autocomplete="off" placeholder="'+t('Enter your name','Escribe tu nombre')+'">'+
@@ -18260,7 +18291,7 @@ function sheetHTML(pack){
     '<div class="smeta"><span>'+t('Score','Puntaje')+' <b class="sval"'+(pack?'':' id="mScore"')+'>\u2014</b>'+'<span class="dline" aria-hidden="true"></span></span>'+
     '<span>'+t('Date','Fecha')+' <b class="dval">'+new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
     '</b><span class="dline" aria-hidden="true"></span></span></div>'+
-    sigPrint(pack)+
+    teacherLines()+sigPrint(pack)+
     '<div class="boxes">';
   ST.boxes.forEach(function(b,i){
     /* AOG-DD-TALLBOX-V1 (2026-09-23) — a box holding column algorithms is in a
@@ -18352,7 +18383,7 @@ function writeHTML(pack){
     '<div class="smeta"><span>'+t('Date','Fecha')+' <b class="dval">'+
       new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
       '</b><span class="dline" aria-hidden="true"></span></span></div>'+
-    sigPrint(pack)+writeBand()+(pack?'':sigRow())}
+    teacherLines()+sigPrint(pack)+writeBand()+(pack?'':sigRow())}
 
 function renderWrite(){
   var crow=$('#checkRow'),sh0=$('#sheet'); if(crow&&sh0&&sh0.contains(crow))sh0.parentNode.insertBefore(crow,sh0);   /* AOG-DD-CHECKROW-SAFE */
@@ -18388,8 +18419,8 @@ function parseDrafts(str){
 function packNote(msg){ var n=$('#packNote'); if(n)n.innerHTML=msg||'' }
 
 function packHint(){
-  packNote(t('One draft to a page, blank, in the subject and grade above. A range works too \u2014 <b>20-24<\/b>. Up to '+PACK_MAX+' at a time.',
-             'Un borrador por p\u00e1gina, en blanco, en la materia y el grado de arriba. Tambi\u00e9n sirve un rango \u2014 <b>20-24<\/b>. Hasta '+PACK_MAX+' a la vez.'))}
+  packNote(t('One draft to a page, blank, no answers, in the subject and grade above. Each page is the next draft number. Up to '+PACK_MAX+' at a time.',
+             'Un borrador por p\u00e1gina, en blanco, sin respuestas, en la materia y el grado de arriba. Cada p\u00e1gina es el siguiente borrador. Hasta '+PACK_MAX+' a la vez.'))}
 
 function buildPack(list){
   /* everything build() writes, held for the duration */
@@ -18411,6 +18442,9 @@ function clearPack(){
 
 function printPack(){
   var list=parseDrafts($('#packIn').value);
+  if(!list.length){
+    var s0=parseInt($('#packStart').value,10),c0=parseInt($('#packCount').value,10);
+    if(s0>=1&&s0<=180&&c0>=1)for(var i0=0;i0<c0&&i0<PACK_MAX&&s0+i0<=180;i0++)list.push(s0+i0)}
   if(!list.length){
     packNote(t('Type the draft numbers you want, separated by commas \u2014 <b>10, 13, 176<\/b>.',
                'Escribe los n\u00fameros de los borradores separados por comas \u2014 <b>10, 13, 176<\/b>.'));
@@ -18891,7 +18925,9 @@ function fillReview(rv){
   if(rv.print)setTimeout(function(){try{window.print()}catch(e){}},600)}
 
 function check(){
+  if(ST.subj==='write')return inspectWrite();
   var tot=0,got=0,per=[];
+  $$('.sol[data-blank]').forEach(function(e){e.parentNode.removeChild(e)});
   ST.boxes.forEach(function(b,bi){
     var box=$('.box[data-b="'+bi+'"]'),n=0,k=0;
     b.item.fields.forEach(function(f,i){
@@ -18908,7 +18944,7 @@ function check(){
       var ky=bi+'|'+i;
       if(!(ky in ST.first))ST.first[ky]=ok;
       ST.cur[ky]=ok;
-      mark(box,i,f,ok)});
+      mark(box,i,f,ok,String(v==null?'':v).trim()==='')});
     tot+=n; got+=k; per.push({n:n,k:k});
     var sc=$('.bsc',box); if(sc)sc.textContent=n?(k+'/'+n):'';
     box.classList.toggle('right',n>0&&k===n); box.classList.toggle('wrong',n>0&&k<n)});
@@ -18920,7 +18956,11 @@ function check(){
   var ms=$('#mScore'); if(ms){ms.textContent=got+'/'+tot; ms.classList.add('scored')}
   $('#resLine').innerHTML=t('<b>'+got+' of '+tot+'</b> correct — '+pct+'%',
     '<b>'+got+' de '+tot+'</b> correctas — '+pct+'%');
-  if(!ST.review)bumpStreak();
+  /* AOG-DD-STREAK-RULE-V1 (2026-10-01) — a day counts when the sheet is finished with every crack repaired:
+     every item right on an inspection. Opening the page, or an inspection with misses still on it, does not.
+     It lives in this browser only (aog.drops.streak), so a new device starts at 0. The sentence under the
+     number says the same. */
+  if(!ST.review&&tot&&got===tot)bumpStreak();
   if(ST.review){}
   else if(tot&&got===tot)toast(t('Perfect sheet. Bucket full.','Hoja perfecta. Balde lleno.'));
   else if(pct>=80)toast(t('Strong work — '+pct+'%','Buen trabajo — '+pct+'%'));
@@ -18955,9 +18995,15 @@ function gotSol(host){
   if(host.querySelector&&host.querySelector('.sol'))return true;
   return !!(host.nextSibling&&host.nextSibling.className==='sol')}
 
-function mark(box,i,f,ok){
+/* AOG-DD-ATTEMPT-V1 (2026-10-01) — Inspect shows the expected answer only after the student has tried the
+   item. A blank gets "Not answered yet" instead, so an untouched sheet never turns Inspect into an answer key. */
+function blankTag(){
+  var s=document.createElement('span'); s.className='sol'; s.setAttribute('data-miss','1'); s.setAttribute('data-blank','1');
+  s.textContent=t('Not answered yet.','Sin responder.'); return s}
+function mark(box,i,f,ok,blank){
   var tp=$('.timep[data-i="'+i+'"]',box);
   if(tp){tp.classList.toggle('ok',ok); tp.classList.toggle('no',!ok);
+    if(!ok&&blank){if(!gotSol(tp))putSol(tp,blankTag()); return}
     if(!ok&&!gotSol(tp)){
       var ts=document.createElement('span'); ts.className='sol';
       ts.textContent=ansLead()+showAns(f); ts.setAttribute('data-miss','1');
@@ -18965,6 +19011,7 @@ function mark(box,i,f,ok){
     return}
   var cp=$('.colp[data-i="'+i+'"]',box);
   if(cp){cp.classList.toggle('ok',ok); cp.classList.toggle('no',!ok);
+    if(!ok&&blank){if(!gotSol(cp))putSol(cp,blankTag()); return}
     if(!ok&&!gotSol(cp)){
       var cs=document.createElement('span'); cs.className='sol';
       cs.textContent=ansLead()+showAns(f); cs.setAttribute('data-miss','1');
@@ -18972,14 +19019,17 @@ function mark(box,i,f,ok){
     return}
   var inp=$('input.fld[data-i="'+i+'"]',box);
   if(inp){inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok);
+    if(!ok&&blank){if(!(inp.nextSibling&&inp.nextSibling.className==='sol'))inp.parentNode.insertBefore(blankTag(),inp.nextSibling); return}
     if(!ok)addSol(inp,f); return}
   var mc=$('.mc[data-mc="'+i+'"]',box);
+  if(mc&&blank){if(!(mc.nextSibling&&mc.nextSibling.className==='sol'))mc.parentNode.insertBefore(blankTag(),mc.nextSibling); return}
   if(mc){$$('.mcb[data-i="'+i+'"]',box).forEach(function(btn){
       var isA=String(btn.getAttribute('data-v'))===String(f.a);
       btn.classList.remove('ok','no');
       if(isA)btn.classList.add('ok'); else if(btn.classList.contains('sel'))btn.classList.add('no')});
     return}
   var ed=$('.edwrap[data-i="'+i+'"]',box);
+  if(ed&&blank){if(!(ed.nextSibling&&ed.nextSibling.className==='sol'))ed.parentNode.insertBefore(blankTag(),ed.nextSibling); return}
   if(ed){ /* show each word: found, wrongly flagged, or missed */
     var want={}; String(f.a).split(',').forEach(function(k){if(k!=='')want[k]=1});
     $$('.ew[data-w="'+i+'"]',box).forEach(function(w){
@@ -18991,12 +19041,15 @@ function mark(box,i,f,ok){
     return}
   var sw=$('.shwrap[data-i="'+i+'"]',box)||$('.ptwrap[data-i="'+i+'"]',box);
   if(sw){sw.style.outline='2px solid '+(ok?'var(--good)':'var(--miss)');sw.style.borderRadius='8px';
+    if(!ok&&blank){if(!gotSol(sw))putSol(sw,blankTag()); return}
     if(!ok&&!gotSol(sw)){var tag=document.createElement('span');tag.className='sol';
       tag.textContent=ansLead()+showAns(f);tag.setAttribute('data-miss','1');
       putSol(sw,tag)}}}
 
 function markOpen(box,i,f){
   var inp=$('input.fld[data-i="'+i+'"]',box); if(!inp)return;
+  /* AOG-DD-ATTEMPT-V1 — an open box left blank is "Not answered yet", not the model answer */
+  if(!inp.value.trim()){if(!(inp.nextSibling&&inp.nextSibling.className==='sol'))inp.parentNode.insertBefore(blankTag(),inp.nextSibling); return}
   if($('.sol[data-for="'+i+'"]',box))return;
   var tag=document.createElement('span'); tag.className='sol'; tag.setAttribute('data-for',i);
   tag.innerHTML='<span class="tagt">'+t('teacher check','revisar')+'</span> '+esc(f.a);
@@ -19138,6 +19191,8 @@ function paintPips(per){
   row.innerHTML=h}
 
 function tryAgain(){
+  var firstBox=$('.box.wrong');
+  $$('.sol[data-blank]').forEach(function(e){e.parentNode.removeChild(e)});
   ST.boxes.forEach(function(b,bi){var box=$('.box[data-b="'+bi+'"]'); if(!box)return;
     b.item.fields.forEach(function(f,i){
       var tp=$('.timep[data-i="'+i+'"]',box);
@@ -19157,7 +19212,28 @@ function tryAgain(){
     box.classList.remove('right','wrong')});
   $$('.mcb.no').forEach(function(b){b.classList.remove('no','sel')});
   $$('.mcb.ok').forEach(function(b){b.classList.remove('ok')});
-  var f=$('input.fld:not(.ok)'); if(f&&!TOUCH)f.focus()}
+  /* AOG-DD-REPAIR-FOCUS-V1 (2026-10-01) — Repair takes the student to the first crack: the box scrolls into
+     view (the student asked for it by tapping) and, off touch screens, the first empty field in it is focused. */
+  if(firstBox){try{firstBox.scrollIntoView({block:'center'})}catch(e){}}
+  var f=(firstBox&&firstBox.querySelector('input.fld:not(.ok),.colp:not(.ok) input.dg,.timep:not(.ok) input.tm'))||$('input.fld:not(.ok)');
+  if(f&&!TOUCH)f.focus()}
+
+/* AOG-DD-INSPECT-WRITE-V1 (2026-10-01) — on a writing draft there is no expected sentence. Inspect my build
+   says what is present and what is missing: plan boxes filled, words written, rubric rows scored. */
+function inspectWrite(){
+  var org=$('#wOrg'),cells=org?$$('textarea',org):[],filled=cells.filter(function(c){return c.value.trim()}).length;
+  var wb=$('#wBox'),txt=wb?wb.value.trim():'',words=txt?txt.split(/\s+/).length:0;
+  var missing=[],scored=0;
+  RUBRIC.forEach(function(r){var g=$('#wBand .rlv[data-r="'+r.k+'"]');
+    if(g&&g.querySelector('button[aria-pressed="true"]'))scored++; else missing.push(t(r.en,r.es))});
+  var parts=[t('Plan: '+filled+' of '+cells.length+' boxes filled','Plan: '+filled+' de '+cells.length+' casillas llenas'),
+    t('Writing: '+words+' word'+(words===1?'':'s'),'Escritura: '+words+' palabra'+(words===1?'':'s')),
+    t('Rubric: '+scored+' of '+RUBRIC.length+' rows scored','R\u00fabrica: '+scored+' de '+RUBRIC.length+' filas calificadas')];
+  var todo=[]; if(!filled)todo.push(t('fill the plan','llena el plan')); if(!words)todo.push(t('write your draft','escribe tu borrador'));
+  if(missing.length)todo.push(t('score ','califica ')+missing.join(', '));
+  var rl=$('#resLine'); if(rl)rl.innerHTML='<b>'+esc(parts.join(' \u00b7 '))+'</b>'+
+    (todo.length?' \u2014 '+esc(t('Still to do: ','Falta: ')+todo.join('; ')):' \u2014 '+esc(t('Every part is here.','Est\u00e1 todo.')));
+  ST.checked=true}
 
 function bumpStreak(){
   var today=new Date().toISOString().slice(0,10),last=LS.get('aog.drops.last',''),n=+LS.get('aog.drops.streak','0');
@@ -19204,7 +19280,8 @@ function syncURL(){
 
 function paintMode(){
   var w=(ST.subj==='write');
-  [['#checkBtn',1],['#checkBtn2',1],['#tryBtn',1]].forEach(function(p){
+  /* AOG-DD-INSPECT-WRITE-V1 — Inspect stays on a writing draft; Repair has nothing to clear there */
+  [['#checkBtn',1],['#tryBtn',1]].forEach(function(p){
     var el=$(p[0]); if(el)el.hidden=w});
   /* ══ AOG-DD-KEYGATE-V1 ═══════════════════════════════════════════════════
      Jimmy: "I don't like how the answer key is open for the students to use."
@@ -19219,6 +19296,7 @@ function paintMode(){
      item and shows the correct answer for the ones they missed — and that is
      now counted as support rather than passing for independent work. */
   var kb=$('#keyBtn'); if(kb)kb.hidden=(w||!ST.keyOK);
+  var kp=$('#keyPrintBtn'); if(kp)kp.hidden=(w||!ST.keyOK);
   var strip=$('.strip'); if(strip)strip.hidden=w;
   /* AOG-DD-LOCKPICK-V1 — hide the three pickers the Distribute card promises are hidden.
      Each lives in its own .fg group with its label, so the group is what goes; #prevS is
@@ -19229,6 +19307,13 @@ function paintMode(){
   ['#subjSeg','#grade','#prevS'].forEach(function(sel){
     var el=$(sel), fg=(el&&el.closest)?el.closest('.fg'):null;
     if(fg)fg.hidden=!!ST.lockPick})}
+/* AOG-DD-MORE-V1 */
+var CORE=['math','ela','write','science','social-studies'];
+function paintMore(open){
+  var m=$('#moreSubj'),b=$('#moreBtn'); if(!m||!b)return;
+  m.hidden=!open; b.setAttribute('aria-expanded',open?'true':'false');
+  /* AOG-DD-SHELF-FIT-V1 lays a shelf under each row of books it can measure; rows that were hidden get theirs now */
+  try{window.dispatchEvent(new Event('resize'))}catch(e){}}
 function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try{fillGrades()}catch(e){}build();render();paintMode();syncURL();
   LS.set('aog.drops.subj',ST.subj);LS.set('aog.drops.grade',ST.grade)}
 
@@ -19255,9 +19340,9 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
   ST.lang=(q.lang==='es')?'es':(LS.get('aog.drops.lang','en')==='es'?'es':'en');
   $('#streakVal').textContent=LS.get('aog.drops.streak','0');
   $('#sheetIn').value=ST.sheet;
-  $$('#subjSeg button').forEach(function(b){
+  $$('#subjSeg button[data-s]').forEach(function(b){
     b.setAttribute('aria-pressed',b.getAttribute('data-s')===ST.subj?'true':'false')});
-  paintLang(); paintTheme(); refresh();
+  paintLang(); paintTheme(); paintMore(CORE.indexOf(ST.subj)<0); refresh();
   /* AOG-DD-REVIEW-V1 — a teacher's reviewed copy: the row's answers ride in the link */
   if(q.review){try{
     var rvj=decodeURIComponent(escape(atob(q.review.replace(/-/g,'+').replace(/_/g,'/'))));
@@ -19266,8 +19351,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
 
   $('#subjSeg').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b)return;
+    if(b.id==='moreBtn'){paintMore($('#moreSubj').hidden);return}
+    if(!b.hasAttribute('data-s'))return;
     ST.subj=b.getAttribute('data-s');
-    $$('#subjSeg button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});
+    $$('#subjSeg button[data-s]').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});
     refresh()});
   $('#grade').addEventListener('change',function(){ST.grade=this.value;refresh()});
   $('#sheetIn').addEventListener('change',function(){
@@ -19290,12 +19377,19 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
   /* AOG-DD-PACK-V1 */
   $('#packBtn').addEventListener('click',function(){
     var bar=$('#packBar'),open=bar.hasAttribute('hidden');
-    if(open){bar.removeAttribute('hidden'); packHint(); $('#packIn').focus()}
+    if(open){bar.removeAttribute('hidden'); packHint(); $('#packStart').value=ST.sheet; if(!TOUCH)$('#packStart').focus()}
     else bar.setAttribute('hidden','')});
   $('#packX').addEventListener('click',function(){$('#packBar').setAttribute('hidden','')});
   $('#packGo').addEventListener('click',printPack);
   $('#packIn').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();printPack()}});
   $('#keyBtn').addEventListener('click',function(){showKey(!ST.key)});
+  /* AOG-DD-KEYPRINT-V1 (2026-10-01) — the answer key is its own print, on the teacher link only: the answers
+     are shown, the draft prints, and the page goes back to how it was. The student packet never carries them. */
+  $('#keyPrintBtn').addEventListener('click',function(){
+    var was=ST.key,hints=ST.hints; if(!was)showKey(true); ST.hints=hints;
+    var undo=function(){ if(!undo.done){undo.done=1; if(!was)showKey(false)} };
+    window.addEventListener('afterprint',undo,{once:true}); setTimeout(undo,120000);
+    setTimeout(function(){ try{window.print()}catch(e){} undo() },60)});
   $('#langBtn').addEventListener('click',function(){
     ST.lang=ST.lang==='es'?'en':'es'; LS.set('aog.drops.lang',ST.lang);
     paintLang(); paintTheme(); refresh()});
@@ -19542,7 +19636,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     box.className="sendbox no-print"; box.id="sendBox";
     box.innerHTML=
       '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
-      +'<p class="snote" data-en="Your answers and score go to your teacher when you sign. Tap to send again." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.">Your answers and score go to your teacher when you sign. Tap to send again.</p>'
+      +'<p class="snote" data-en="Your answers and score go to your teacher when you sign and tap Send." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas y tocas Enviar.">Your answers and score go to your teacher when you sign and tap Send.</p>'
       +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button></div>'
       +'<p class="sst" aria-live="polite"></p>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
@@ -19579,14 +19673,20 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
       setWho(who);doSend(who)});
   }
 
+  /* AOG-DD-SEND-ONLY-V1 — there is something to send: the sheet was inspected, or the writing box has words */
+  function readyToSend(){
+    if(ST.review)return false;
+    if(ST.subj==='write'){var wb=document.getElementById("wBox"); return !!(wb&&wb.value.trim())}
+    return !!ST.checked}
+
   function paint(){
     if(!ui)return;
     var note=ui.box.querySelector('.snote');
     if(note){note.textContent=(ST.subj==='write')
-      ? T("Your writing, plan and rubric go to your teacher when you sign. Tap to send again.",
-          "Tu escrito, tu plan y la rúbrica le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")
-      : T("Your answers and score go to your teacher when you sign. Tap to send again.",
-          "Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")}
+      ? T("Your writing, plan and rubric go to your teacher when you sign and tap Send.",
+          "Tu escrito, tu plan y la rúbrica le llegan a tu maestro cuando firmas y tocas Enviar.")
+      : T("Your answers and score go to your teacher when you sign and tap Send.",
+          "Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas y tocas Enviar.")}
     /* a new sheet is a new row waiting to be earned */
     var k=sheetKey(); if(k!==lastKey){lastKey=k;sentAt=null;sentHow="";sendErr=false}
     /* THE DOOR IS ALWAYS HERE. It does not appear when the work is done —
@@ -19606,79 +19706,35 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
         ? T("Sent — but this browser can’t confirm it arrived. Your teacher can check the Sheet.",
             "Enviado — pero este navegador no puede confirmar que llegó. Tu maestro puede revisar la Hoja.")
         : T("Sent to your teacher.","Enviado a tu maestro.")}
+    else if(readyToSend()){
+      txt=T("All done? Sign your name and tap Send.","¿Terminaste? Firma con tu nombre y toca Enviar.")}
     ui.st.className=cls; ui.st.textContent=txt;
   }
 
   buildSendUI();
   window.aogSendPaint=paint;
-  /* ══ AOG-DD-AUTOSEND-V1 (2026-09-12) — Jimmy: "After the 'Student' signs it I would
-     like it to be sent to the google sheet like it was once." Every other assignment page
-     has sent on finish since .30hd; Daily Drafts now does the same: the moment a name is
-     signed (Enter or leaving the line) — or Check my work is tapped with a name already on
-     the line — the row goes, ONCE per sheet. "Send again" stays as the manual re-send.
-     With no destination on the link nothing changes: there is still no way to send. */
-  /* ══ AOG-DD-REWIRE-V1 (2026-09-19) — WHY WRITING NEVER REACHED THE SHEET
-     The autosend handlers were bound ONCE, at load, to an element that does not
-     survive. #nameIn and #wBox are written by render()/renderWrite() into
-     #sheet.innerHTML, so every subject change, grade change, sheet change and
-     language flip replaces them — and the handlers were left on detached nodes.
-     The four practice subjects never noticed: #checkBtn is a STATIC element
-     OUTSIDE #sheet, its listener survives, and tapping "Check my work" sent the
-     row. THE WRITING PAGE HIDES #checkBtn (paintMode), so it had no surviving
-     trigger at all. A signed writing sheet sent nothing, ever, while the page's
-     own note promised the row goes the moment a name is signed.
-     Measured in Chromium 2026-09-19, four scenarios, requests intercepted:
-       write via direct link, sign, no re-render .... 1 POST   (the only one that worked)
-       math → switch to Writing, sign ............... 0 POSTs
-       write → change the sheet number, sign ....... 0 POSTs
-       math, sign + Check my work .................. 1 POST   (the static button)
-     The wiring is re-applied after every render now, and marked on the node so
-     the same element is never bound twice. */
-  var lastSentText="", lastSentMs=0;
-  function autoSend(){
-    if(ST.review)return;
-    if(!ui||sendBusy)return;
-    var n=document.getElementById("nameIn"), who=(n?n.value:"").trim().slice(0,40);
-    if(!who)return;
-    var k=sheetKey(); if(k!==lastKey){lastKey=k;sentAt=null;sentHow="";sendErr=false;lastSentText=""}
-    /* ⚠ A WRITING SHEET IS NOT FINISHED WHEN IT IS FIRST LEFT. A practice sheet
-       is scored from whatever is on it, so one row per sheet is the whole truth.
-       A draft grows: the row sent after the first paragraph is NOT the piece the
-       teacher wants to read. So writing re-sends when the words have actually
-       changed, at most one row every 30 seconds, and never while the box is
-       empty. Rows are append-only and "Send again" already makes more than one
-       — the teacher reads the newest. A duplicate row can be sorted; a lost
-       draft cannot be recovered. */
-    if(ST.subj==='write'){
-      var wb=document.getElementById("wBox"), txt=wb?wb.value.trim():"";
-      if(!txt)return;
-      if(sentAt){
-        if(txt===lastSentText)return;
-        if(Date.now()-lastSentMs<30000)return;
-      }
-      lastSentText=txt; lastSentMs=Date.now();
-    } else if(sentAt) return;
-    setWho(who); doSend(who);
-  }
+  /* ══ AOG-DD-SEND-ONLY-V1 (2026-10-01) — Jimmy: "Send button only." AOG-DD-AUTOSEND-V1 (2026-09-12)
+     sent the row the moment a name was signed, or when Inspect my build was tapped with a name on the
+     line, and a writing page re-sent every time the words changed. That sent the score before the
+     repairs, cleared the name in the middle of the work (AOG-DD-CLEAR-NAME-V1), filled the Sheet with
+     half drafts, and broke the promise on /privacy: "It happens only after the student puts a name on
+     the page and taps Send." Now a row goes ONLY when Send is tapped. One tap, one row; once sent the
+     button reads "Send again", so a second row is always a choice. Nothing else sends.
+     So the door is not forgotten, the line under it says "All done? Sign your name and tap Send." once
+     there is something to send: after Inspect my build, or when the writing box has words in it.
+     The wiring is re-applied after every render (AOG-DD-REWIRE-V1: render() replaces #nameIn and #wBox),
+     and marked on the node so the same element is never bound twice. */
   function wireName(){
     var n=document.getElementById("nameIn");
     if(n&&!n.__aogWired){ n.__aogWired=1;
-      n.addEventListener("change", autoSend);
+      /* Return on the name line closes the keyboard. It never sends. */
       n.addEventListener("keydown", function(e){
-        if(e.key==="Enter"){ e.preventDefault(); n.blur(); autoSend(); } }); }
-    /* ⚠ A RETURNING STUDENT NEVER FIRES `change` ON THE NAME. bindName()
-       restores the name from localStorage, so the line is already signed and
-       nobody types in it. On the writing page that left nothing to trigger on
-       even once the rebinding above was fixed, so leaving the writing box is
-       the second trigger — the first moment there is something worth sending. */
+        if(e.key==="Enter"){ e.preventDefault(); n.blur(); } }); }
     var w=document.getElementById("wBox");
     if(w&&!w.__aogWired){ w.__aogWired=1;
-      w.addEventListener("change", function(){ autoSend(); }); }
+      w.addEventListener("change", function(){ paint(); }); }
   }
   wireName();
-  (function(){
-    ["checkBtn","checkBtn2"].forEach(function(id){ var b=document.getElementById(id); if(b) b.addEventListener("click", function(){ setTimeout(autoSend, 0); }); });
-  })();
   /* repaint after every check, every sheet change, and every language flip —
      and RE-WIRE, because the render just replaced the nodes we listen to */
   var _render=window.render, _paintLang=window.paintLang;
