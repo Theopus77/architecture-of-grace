@@ -20044,5 +20044,33 @@ else watch();
 })();
 </script>
 <script src="/aog-sketch.js" data-pad=".sheet" data-inline=".sheet,.wb" defer></script>
+<!-- AOG-DD-SHELF-FIT-V1 (2026-10-01) — Jimmy: "when you enlarge the screen the books enlarge, but the shelves stay."
+     The shelves were a stripe painted every 200px, so taller books (a bigger window or zoom) stood off them. Now each
+     row of books gets its own shelf, laid exactly under that row's bottom edge, and re-laid whenever the size changes. -->
+<style>
+#subjSeg .bs{background:none !important;position:relative}
+#subjSeg .bs > .aog-shelf{position:absolute;left:0;right:0;height:14px;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,#3B2414 0 1px,#8A5A32 1px 3px,#6B4323 3px 8px,#4A2C16 8px 11px,rgba(0,0,0,.25) 11px 14px);border-radius:1px}
+#subjSeg .bs > button{position:relative;z-index:1}
+@media print{ #subjSeg .bs > .aog-shelf{display:none} }
+</style>
+<script>
+(function(){
+  function lay(bs){
+    var old=bs.querySelectorAll(":scope > .aog-shelf"); for(var i=0;i<old.length;i++) old[i].remove();
+    var bt=bs.querySelectorAll(":scope > button"), rows={};
+    for(var j=0;j<bt.length;j++){ var b=bt[j]; if(!b.offsetParent) continue;
+      var bottom=b.offsetTop+b.offsetHeight, key=Math.round(bottom/30); rows[key]=Math.max(rows[key]||0,bottom); }
+    Object.keys(rows).forEach(function(k){ var sh=document.createElement("span"); sh.className="aog-shelf"; sh.setAttribute("aria-hidden","true");
+      sh.style.top=(rows[k]-1)+"px"; bs.insertBefore(sh,bs.firstChild); });
+  }
+  function all(){ var g=document.querySelectorAll("#subjSeg .bs"); for(var i=0;i<g.length;i++) lay(g[i]); }
+  var t=0; function soon(){ clearTimeout(t); t=setTimeout(all,60); }
+  if(document.readyState!=="loading") all(); else document.addEventListener("DOMContentLoaded",all);
+  window.addEventListener("load",all); window.addEventListener("resize",soon);
+  if(window.ResizeObserver){ var ro=new ResizeObserver(soon); var g=document.querySelectorAll("#subjSeg .bs"); for(var i=0;i<g.length;i++) ro.observe(g[i]); }
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(all);
+})();
+</script>
 </body>
 </html>
