@@ -98,6 +98,34 @@
     (D.head || H).appendChild(st);
   }
 
+  /* AOG-WS-NAME-FIX-V1 (2026-10-01) — Jimmy, on an iPhone: "I can't type my name." Two things got in the way:
+     · "Type your name or code first." stayed on screen after the name was typed, so a good name looked refused.
+       Typing (or AutoFill finishing) now clears it.
+     · Safari offered Contacts AutoFill here (the yellow box), which can leave the name half-handed to the page and
+       puts two spaces in "Jimmy  Ramsden". The box now asks not to be filled from Contacts, and a name is tidied
+       (one space, no stray ends) when the student leaves it. */
+  function nameFix(input, box) {
+    if (input.getAttribute("data-aog-namefix")) return;
+    input.setAttribute("data-aog-namefix", "1");
+    input.setAttribute("autocomplete", "off"); input.setAttribute("aria-autocomplete", "none");
+    input.setAttribute("autocorrect", "off"); input.setAttribute("autocapitalize", "words"); input.setAttribute("spellcheck", "false");
+    input.setAttribute("data-1p-ignore", ""); input.setAttribute("data-lpignore", "true");
+    if (!input.getAttribute("name") || /name/i.test(input.getAttribute("name"))) input.setAttribute("name", "aog-sig-" + (++uid));
+    function clearMsg() {
+      if (!box || !input.value.trim()) return;
+      Array.prototype.forEach.call(box.querySelectorAll(".sst, [aria-live]"), function (el) {
+        if (el.contains(input)) return;
+        if (/bad|err/.test(el.className) || /name|nombre/i.test(el.textContent)) { el.textContent = ""; el.className = el.className.replace(/\b(bad|err)\b/g, "").trim(); }
+      });
+    }
+    input.addEventListener("input", clearMsg); input.addEventListener("change", clearMsg);
+    input.addEventListener("blur", function () {
+      var v = input.value, t = v.replace(/\s+/g, " ").trim();
+      if (t !== v) { input.value = t; try { input.dispatchEvent(new Event("input", { bubbles: true })); } catch (e) {} }
+      clearMsg();
+    });
+  }
+
   function sigRow(input) {
     var sig = mk("div", "aog-ws-sig no-print");
     if (!input.id) input.id = "aogWsName" + (++uid);
@@ -121,7 +149,7 @@
       var inp = box.querySelector("label input, input[type=text]"); if (!inp) return;
       box.setAttribute("data-aog-ws", "1");
       var lab = inp.closest("label");
-      var sig = sigRow(inp); sig.classList.add("aog-ws-keep");   /* the name line is always there; the page shows its Send box when a set is done */
+      var sig = sigRow(inp); sig.classList.add("aog-ws-keep"); nameFix(inp, box);   /* the name line is always there; the page shows its Send box when a set is done */
       if (lab && lab.parentNode) lab.parentNode.removeChild(lab);
       box.parentNode.insertBefore(sig, box);
       box.parentNode.insertBefore(signPrint(), sig);
@@ -148,7 +176,7 @@
       /* Jimmy, 2026-09-26: "Those mid chapter reviews don't need a teacher check." — aog-pages.js keeps their
          Send box off, so a chapter review gets the check row only: no name line, nothing to send. */
       if (r.getAttribute("data-kind") === "chapter-review") { r.insertBefore(chk, cs); if (foot) r.insertBefore(foot, cs.nextSibling); return; }
-      var sig = sigRow(inp);
+      var sig = sigRow(inp); nameFix(inp, cs);
       var note = bi(mk("p", "aog-ws-snote"), SEND_EN, SEND_ES);
       cs.insertBefore(note, cs.firstChild.nextSibling);
       cs.classList.add("aog-ws-send");
@@ -201,6 +229,7 @@
       btn.classList.add("go"); send.appendChild(btn);
       if (st) send.appendChild(st);
       block.appendChild(send);
+      nameFix(inp, block);
       /* the button keeps its element and listener; only its words follow the model */
       function label() {
         var t = btn.textContent || "", w = T("Send to my teacher", "Enviar a mi maestro/a");
