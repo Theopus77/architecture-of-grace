@@ -19048,6 +19048,8 @@ function mark(box,i,f,ok,blank){
 
 function markOpen(box,i,f){
   var inp=$('input.fld[data-i="'+i+'"]',box); if(!inp)return;
+  /* AOG-DD-ATTEMPT-V1 — an open box left blank is "Not answered yet", not the model answer */
+  if(!inp.value.trim()){if(!(inp.nextSibling&&inp.nextSibling.className==='sol'))inp.parentNode.insertBefore(blankTag(),inp.nextSibling); return}
   if($('.sol[data-for="'+i+'"]',box))return;
   var tag=document.createElement('span'); tag.className='sol'; tag.setAttribute('data-for',i);
   tag.innerHTML='<span class="tagt">'+t('teacher check','revisar')+'</span> '+esc(f.a);
