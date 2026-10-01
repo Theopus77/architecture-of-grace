@@ -1549,7 +1549,7 @@ else document.documentElement.classList.add("aog-embed");</script>
     if(nz(r.hintsUsed)&&String(r.hintsUsed)!=="0") L.push(r.hintsUsed+" hints");
     return L.join(" · ");
   }
-  var DD_FRAME=null, DD_CSS=null, DD_Q=Promise.resolve();
+  var DD_FRAME=null, DD_CSS=null, DD_Q=Promise.resolve(), DD_N=0;
   function ddCss(doc){
     var t=[];
     Array.prototype.forEach.call(doc.styleSheets,function(s){ try{ Array.prototype.forEach.call(s.cssRules,function(r){ t.push(r.cssText); }); }catch(e){} });
@@ -1572,7 +1572,12 @@ else document.documentElement.classList.add("aog-embed");</script>
       function finish(v){ if(fin) return; fin=true; restore(); done(v); }
       function poll(){
         var d=null; try{ d=DD_FRAME.contentDocument; }catch(e){}
-        var sh=d&&d.getElementById("sheet"), ready=sh&&sh.querySelector(".box")&&(!reviewed||d.querySelector(".rvbanner"));
+        /* AOG-INBOX-PAPER-MATCH-V1 (2026-10-01) — Jimmy: "This is a screw up." A Qur'an send showed another paper (Math,
+           Grade 5, from 9/12). The frame is reused: the first poll ran before the new page replaced the last one, found
+           the OLD finished sheet and copied it. A page only counts once the frame has finished loading THIS job's address
+           (its own onload; the page rewrites its URL, so the address itself cannot be the test). */
+        var mine=loaded && !!d && d!==oldDoc;
+        var sh=mine&&d.getElementById("sheet"), ready=sh&&sh.querySelector(".box")&&(!reviewed||d.querySelector(".rvbanner"));
         if(ready){
           try{
             Array.prototype.forEach.call(d.querySelectorAll("#sheet input"),function(i){ if(i.type==="checkbox"||i.type==="radio"){ if(i.checked) i.setAttribute("checked",""); } else i.setAttribute("value",i.value); });
@@ -1586,8 +1591,10 @@ else document.documentElement.classList.add("aog-embed");</script>
         if(Date.now()-t0>9000){ finish(null); return; }
         setTimeout(poll,120);
       }
-      DD_FRAME.onload=function(){ setTimeout(poll,60); };
-      DD_FRAME.src=url+(url.indexOf("?")<0?"?":"&")+"embed=1&_p="+(Date.now()%100000);
+      var loaded=false, oldDoc=null; try{ oldDoc=DD_FRAME.contentDocument; }catch(e){}
+      DD_FRAME.onload=function(){ loaded=true; setTimeout(poll,60); };
+      var tag=(++DD_N)+"x"+(Date.now()%100000);
+      DD_FRAME.src=url+(url.indexOf("?")<0?"?":"&")+"embed=1&_p="+tag;
       setTimeout(poll,400);
     }); });
     DD_Q=job.catch(function(){});
