@@ -1284,11 +1284,38 @@ function sheetTiles(tb){
   const body=sec(t2("Courses","Cursos"),grp.c)+sec(t2("Daily Drafts","Daily Drafts"),grp.d)+sec(t2("Practice","Práctica"),grp.p);
   return body?'<p class="k" style="color:var(--goldInk);margin:20px 0 4px">'+t2("In your Sheet","En tu Hoja")+'</p><p class="s" style="margin:0 0 10px">'+t2("Rows in each tab, from your last refresh.","Filas en cada pestaña, desde tu última actualización.")+'</p>'+body:"";
 }
+/* AOG-SW-LIGHT-V1 (2026-10-01) — "Save the whole site for offline". The service worker no longer downloads every
+   lesson after each update (that was ~218 MB, and why the site crawled on a phone). Pages save themselves as they are
+   visited; this card saves all of them on purpose, one at a time, best on Wi-Fi. Nothing is sent anywhere. */
+let OFF={saved:null,total:null,busy:false,msg:""};
+function swReady(){ if(!("serviceWorker" in navigator)) return Promise.reject(new Error("none"));
+  return navigator.serviceWorker.register("/sw.js").catch(()=>null).then(()=>navigator.serviceWorker.ready); }
+function swSend(msg){ return swReady().then(reg=>{ const w=navigator.serviceWorker.controller||reg.active; if(w) w.postMessage(msg); }); }
+if("serviceWorker" in navigator){ navigator.serviceWorker.addEventListener("message",ev=>{ const d=ev.data||{};
+  if(d.type==="aog-offline-status"){ OFF.saved=d.saved; OFF.total=d.total; OFF.busy=!!d.saving; }
+  else if(d.type==="aog-save-progress"){ OFF.busy=true; OFF.msg=t2("Saving… ","Guardando… ")+d.done+" / "+d.total; }
+  else if(d.type==="aog-save-done"){ OFF.busy=false; OFF.saved=d.saved; OFF.total=d.total; OFF.msg=d.stopped?t2("Stopped. What was saved stays saved.","Detenido. Lo guardado se queda."):(d.failed?t2("Done. A few pages could not be saved; press again on Wi-Fi to finish them.","Listo. Algunas páginas no se guardaron; presiona otra vez con Wi-Fi para terminarlas."):t2("Done. The whole site works on this device without Wi-Fi.","Listo. Todo el sitio funciona en este aparato sin Wi-Fi.")); }
+  paintOffline(); }); }
+function offlineCard(){
+  if(!("serviceWorker" in navigator)) return "";
+  const has=OFF.total!=null, all=has&&OFF.saved>=OFF.total;
+  const line=has?(all?t2("Every page is saved on this device. It works without Wi-Fi.","Todas las páginas están guardadas en este aparato. Funciona sin Wi-Fi.")
+      :OFF.saved+" "+t2("of","de")+" "+OFF.total+" "+t2("pages are saved on this device. Pages you open save themselves.","páginas están guardadas en este aparato. Las páginas que abres se guardan solas.")):t2("Checking what is saved on this device…","Revisando lo guardado en este aparato…");
+  return '<p class="k" style="color:var(--goldInk);margin:0 0 6px">'+t2("Use without Wi-Fi","Usar sin Wi-Fi")+'</p><p class="s" style="margin:0 0 10px">'+line+'</p>'
+   +'<div class="row" style="align-items:center">'+(OFF.busy?'<button class="btn" type="button" id="offStop">'+t2("Stop","Detener")+'</button>'
+     :(all?"":'<button class="btn solid" type="button" id="offGo">'+t2("Save the whole site for offline","Guardar todo el sitio sin conexión")+'</button>'))+'<span class="s" style="margin:0" aria-live="polite">'+esc(OFF.msg)+'</span></div>'
+   +(all||OFF.busy?"":'<p class="s" style="margin:10px 0 0">'+t2("Best on Wi-Fi. It is large (about 220 MB) and saves one page at a time, so you can keep working.","Mejor con Wi-Fi. Es grande (unos 220 MB) y guarda una página a la vez, así que puedes seguir trabajando.")+'</p>');
+}
+function paintOffline(){ const el=document.getElementById("offBox"); if(!el) return; el.innerHTML=offlineCard();
+  const g=document.getElementById("offGo"); if(g) g.onclick=()=>{ OFF.busy=true; OFF.msg=t2("Starting…","Empezando…"); paintOffline(); swSend({type:"aog-save-offline"}).catch(()=>{ OFF.busy=false; OFF.msg=t2("This browser cannot save the site for offline.","Este navegador no puede guardar el sitio sin conexión."); paintOffline(); }); };
+  const st=document.getElementById("offStop"); if(st) st.onclick=()=>{ swSend({type:"aog-save-stop"}); }; }
+
 function setup(){
   setTimeout(()=>checkScript(false),0);
+  setTimeout(()=>{ paintOffline(); swSend({type:"aog-offline-status"}).catch(()=>{}); },0);
   return '<div class="hello"><div><h1>'+T("setupH")+'</h1></div></div>'
    +'<section class="card" style="margin-bottom:16px"><div id="setLights">'+lights()+'</div>'+sheetTiles(get("aog.sheet.tabs",null))+'</section>'
-   +connectCard()+dangerCard();
+   +connectCard()+('serviceWorker' in navigator?'<section class="card" style="margin-bottom:16px" id="offBox">'+offlineCard()+'</section>':'')+dangerCard();
 }
 /* AOG-DASH-BLUEPRINT-V1 — Jimmy: "their blueprint should be a tab on the left." One student's stained-glass Blueprint, from the Inbox page. */
 function blueprint(){ const names=Object.keys(data().S).sort(), sel=get("aog.dash2.bpStu","")||names[0]||"";
