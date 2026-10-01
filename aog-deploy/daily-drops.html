@@ -19245,10 +19245,13 @@ function toast(msg){var el=$('#toast');el.textContent=msg;el.classList.add('show
   clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show')},2600)}
 
 /* ---- language + theme ---- */
+function wrapSpines(){ /* AOG-DD-COVERS-V2: the name sits centred in the band under the plate */
+  $$('#subjSeg .bs button[data-s]').forEach(function(b){ if(!b.querySelector('.bt'))b.innerHTML='<span class="bt">'+b.innerHTML+'</span>' })}
 function paintLang(){
   var es=ST.lang==='es';
   $$('[data-en]').forEach(function(el){
     var v=el.getAttribute(es?'data-es':'data-en'); if(v!=null)el.innerHTML=v});
+  wrapSpines();
   $('#langBtn').textContent=es?'English':'Español';
   document.documentElement.setAttribute('lang',es?'es':'en');
   fillGrades()}
@@ -20111,11 +20114,12 @@ else watch();
   --art:none;position:relative;
   writing-mode:horizontal-tb !important;transform:none;
   width:118px;min-width:118px !important;height:158px;min-height:158px !important;margin:0 0 30px !important;
-  padding:0 8px 9px !important;display:flex !important;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:0 8px 0 !important;display:flex !important;flex-direction:column;align-items:center;justify-content:flex-end;
   /* AOG-DD-COVERS-V2 (2026-10-01) — Jimmy: "Pictures still need to be bigger, the text should be smaller but bolder,
      maybe white letters without the white background." The plate fills the cover down to the name band; the name is
      small, bold, cream, straight on the leather. */
   font:800 10.5px/1.15 "Fraunces",Georgia,serif !important;text-transform:none !important;letter-spacing:.01em !important;
+  box-sizing:border-box;
   text-align:center;white-space:normal !important;color:#FFF4DC !important;text-shadow:0 1px 1px rgba(0,0,0,.7) !important;
   border:1px solid #1A120C !important;border-radius:3px 8px 8px 3px !important;
   background-color:#5A3A22 !important;
@@ -20133,11 +20137,15 @@ else watch();
      7px -6px 0 -1px #EFE6D2, 7px -6px 0 0.5px #3B2414,
      3px 3px 4px rgba(0,0,0,.35) !important}
 #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{
-  content:"" !important;position:absolute !important;left:11px !important;right:11px !important;top:11px !important;bottom:40px !important;
+  content:"" !important;position:absolute !important;left:11px !important;right:11px !important;top:11px !important;bottom:46px !important;
   height:auto !important;transform:none !important;z-index:0;border-radius:2px;
   border:1px solid #2A1808 !important;background:#FBF8F0 var(--art) 72% 42% / cover no-repeat !important;
   box-shadow:1px 1px 0 rgba(42,24,8,.35) !important}
 #subjSeg .bs button::after{content:none !important}
+/* the name band: the text is the button's own text, held in the 46px under the plate */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){padding-bottom:0 !important}
+#subjSeg .bs button > .bt{display:flex;align-items:center;justify-content:center;height:46px;width:100%}
+@media (max-width:720px){ #subjSeg .bs button > .bt{height:40px} }
 #subjSeg .bs button[data-s="math"]{--art:url("/img/banners/page-math-hub-pencil-900.webp")}
 #subjSeg .bs button[data-s="ela"]{--art:url("/img/banners/page-english-hub-pencil-900.webp")}
 #subjSeg .bs button[data-s="write"]{--art:url("/img/banners/e12-the-paragraph-pencil-900.webp")}
@@ -20170,8 +20178,8 @@ else watch();
 @media (max-width:720px){
   #subjSeg .bs{gap:14px 8px !important;padding:10px 2px 0 !important}
   #subjSeg .bs button, #subjSeg .bs button:nth-child(n){width:90px;min-width:90px !important;height:122px;min-height:122px !important;margin:0 0 24px !important;
-    padding:0 7px 8px !important;font-size:9.5px !important}
-  #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{left:9px !important;right:9px !important;top:9px !important;bottom:34px !important}
+    padding:0 7px 0 !important;font-size:9.5px !important}
+  #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{left:9px !important;right:9px !important;top:9px !important;bottom:40px !important}
 }
 @media print{ #subjSeg .bs button{background:#fff !important;color:#1D2733 !important} }
 </style>
