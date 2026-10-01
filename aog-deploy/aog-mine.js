@@ -39,6 +39,14 @@
       var u = typeof url === "string" ? url : (url && url.url) || "";
       if (opts && /post/i.test(opts.method || "") && /script\.google(usercontent)?\.com\//.test(u) && typeof opts.body === "string" && opts.body.charAt(0) === "{") {
         var p = JSON.parse(opts.body);
+        /* AOG-NAME-TIDY-V1 (2026-10-01) — Jimmy: "Rockin' Ramsden is not spelled two ways. I copied and pasted the name."
+           A curly ’ and a straight ', or two spaces for one, made two "spellings" in the Sheet. Every name is tidied
+           before it is sent: ends trimmed, runs of spaces made one, curly apostrophes made straight. Capitals are
+           left as typed (the site already counts "luke r" and "Luke R" as one student). */
+        if (p && typeof p.studentId === "string") {
+          var tidy = p.studentId.replace(/[\u2018\u2019\u02BC`\u00B4]/g, "'").replace(/\s+/g, " ").trim();
+          if (tidy !== p.studentId) { p.studentId = tidy; opts = Object.assign({}, opts, { body: JSON.stringify(p) }); arguments[1] = opts; }
+        }
         if (testOn() && p && p.action === "checkin" && p.studentId && !/\(test\)$/.test(String(p.studentId))) {
           p.studentId = String(p.studentId).trim() + " (test)";
           opts = Object.assign({}, opts, { body: JSON.stringify(p) });
