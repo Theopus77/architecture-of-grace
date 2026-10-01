@@ -173,6 +173,16 @@ const key=(what,c)=>"aog.family."+what+".v1."+encodeURIComponent(String(c).trim(
 /* children: the dashboard's family list (read only) plus any added here */
 function kids(){ const a=[].concat(get("aog.dash2.kids",[])||[],get("aog.family.kids.v1",[])||[]), seen={}, out=[];
   a.forEach(n=>{ n=String(n||"").trim().slice(0,40); const k=n.toLowerCase(); if(n&&!seen[k]){ seen[k]=1; out.push(n); } }); return out; }
+/* AOG-FAMILY-LINK-V1 (2026-10-01) — Jimmy: the family link "brought into … the handoff slips". The dashboard's family
+   link (?kids=…, the same list as Our family) opens this page with those children on any phone, and ?child= opens one
+   child's plan straight away. The children are added to this device's own list; nothing is sent. */
+(function(){ try{ const q=new URLSearchParams(location.search), k=q.get("kids");
+  if(k){ let z=k.replace(/-/g,"+").replace(/_/g,"/"); while(z.length%4) z+="="; const arr=JSON.parse(decodeURIComponent(escape(atob(z))));
+    if(Array.isArray(arr)){ const have=get("aog.family.kids.v1",[])||[], low=have.map(x=>String(x).toLowerCase());
+      arr.map(x=>String(x).trim().slice(0,40)).filter(Boolean).forEach(n=>{ if(low.indexOf(n.toLowerCase())<0){ have.push(n); low.push(n.toLowerCase()); } });
+      put("aog.family.kids.v1",have.slice(0,12)); } }
+  const c=String(q.get("child")||"").trim().slice(0,40); if(c) put("aog.family.child",c);
+}catch(e){} })();
 let child=raw("aog.family.child").replace(/^"|"$/g,""), part=+get("aog.family.part",0)||0, day=today(), busy={};
 function fixChild(){ const ks=kids(); if(!ks.some(k=>k===child)) child=ks[0]||""; }
 const L=()=>get(key("log",child),{}), saveL=v=>put(key("log",child),v);
