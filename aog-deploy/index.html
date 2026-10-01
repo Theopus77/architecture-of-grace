@@ -57613,6 +57613,7 @@ html.js-reveal .reveal,
       var practice = (out.practice || []).concat(stray);
       jsave(RKEY, rows);
       try { localStorage.setItem("aog.practice.remote", JSON.stringify(practice)); } catch (ePr) {}
+      /* AOG-SHEET-WINS-V1 (2026-10-01) — Jimmy: "our Google Sheets says that there are no luke r but the pull is saying there are some." This device keeps copies of its own sends until the Sheet hands them back. After a good pull the Sheet is the record: a copy older than 15 minutes that the Sheet no longer has was deleted or renamed there, so it goes. */ try{ var cutM=Date.now()-15*60*1000, mineM=JSON.parse(localStorage.getItem("aog.practice.mine")||"[]"); localStorage.setItem("aog.practice.mine", JSON.stringify(mineM.filter(function(r){ var t=Date.parse((r&&r.timestamp)||""); return !isNaN(t)&&t>cutM; }))); }catch(eM){}
       mergeRemoteIntoDaily(rows);
       try { if (typeof window.aogRenderPractice === "function") window.aogRenderPractice(); } catch (ePr2) {}
       return { ok: true, count: rows.length, practice: practice.length };
