@@ -1358,6 +1358,8 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 .sig + #sendBox .srow{margin:0 !important;order:-1}
 .sig + #sendBox .sst{flex-basis:100%;margin:0 !important}
 .sig + #sendBox .sst:empty{display:none}
+.sig + #sendBox .backroom{flex-basis:100%;display:inline-flex;align-items:center;min-height:44px;margin:0;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sig + #sendBox .backroom[hidden]{display:none !important}
 #checkRow{margin:14px 0 10px !important;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 @media print{ #sendBox,#checkRow{display:none !important} }
 </style>
@@ -19653,9 +19655,11 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     box.innerHTML=
       '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
       +'<p class="snote" data-en="Your answers and score go to your teacher when you sign and tap Send." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas y tocas Enviar.">Your answers and score go to your teacher when you sign and tap Send.</p>'
-      +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button>'
-      +'<a class="btn" id="backRoom" href="/?room=drafts" hidden data-en="Back to the drafts" data-es="Volver a los borradores">Back to the drafts</a></div>'
-      +'<p class="sst" aria-live="polite"></p>';
+      +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button></div>'
+      +'<p class="sst" aria-live="polite"></p>'
+      /* AOG-DD-ROOM-RETURN-V3 (2026-10-02) — Jimmy: "put it underneath." Its own row under "Sent to your teacher.",
+         a plain link (not a .btn in .srow, which wears the envelope and wrapped on a phone). */
+      +'<a class="backroom" id="backRoom" href="/?room=drafts" hidden data-en="&larr; Back to the drafts" data-es="&larr; Volver a los borradores">&larr; Back to the drafts</a>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
        The door sits directly above that row now, so signing and sending are
        the last thing on the page rather than something below the buttons. */
