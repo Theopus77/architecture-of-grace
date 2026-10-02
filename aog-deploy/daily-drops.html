@@ -18318,8 +18318,8 @@ function sheetHTML(pack){
   h+='</div>';
   /* AOG-DD-TEACHERLINES-V2 (2026-10-02) — Jimmy: "Could these be put at the bottom of the page?" The three lines sit
      at the foot of the sheet now, above the name line, so the first question comes first on a phone. */
-  h+=teacherLines();
   if(!pack)h+=sigRow();
+  h+=teacherLines();   /* last on the sheet, after the name line and Send (Jimmy: "further down") */
   return h}
 
 function render(){
@@ -18394,7 +18394,7 @@ function writeHTML(pack){
     '<div class="smeta"><span>'+t('Date','Fecha')+' <b class="dval">'+
       new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
       '</b><span class="dline" aria-hidden="true"></span></span></div>'+
-    sigPrint(pack)+writeBand()+teacherLines()+(pack?'':sigRow())}
+    sigPrint(pack)+writeBand()+(pack?'':sigRow())+teacherLines()}
 
 function renderWrite(){
   var crow=$('#checkRow'),sh0=$('#sheet'); if(crow&&sh0&&sh0.contains(crow))sh0.parentNode.insertBefore(crow,sh0);   /* AOG-DD-CHECKROW-SAFE */
