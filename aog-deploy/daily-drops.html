@@ -19637,7 +19637,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
      forgotten, so the next student on a shared device starts blank. The row already sent keeps the name. */
   /* AOG-DD-ROOM-RETURN-V1 — Jimmy: "once you press Send it should take you back to the home page with the drafts
      laid out." After "Sent to your teacher." has shown for a moment, the home page opens on the Daily Drafts room. */
-  function goHome(){ if(ST.review)return; setTimeout(function(){ location.href="/?room=drafts"; },1600); }
+  /* AOG-DD-ROOM-RETURN-V2 (2026-10-02) — Jimmy: "I wasn't able to inspect my build, as after I sent the draft I was
+     taken back to the main page." The page stays after Send now. "Sent to your teacher." gets a Back to the drafts
+     button beside it; the student goes back when ready, and Inspect and Repair still work. */
+  function goHome(){ }
   function clearName(){
     try{ localStorage.removeItem("aog.drops.name"); localStorage.removeItem(whoKey); }catch(e){}
     var n=document.getElementById("nameIn"); if(n) n.value="";
@@ -19650,7 +19653,8 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     box.innerHTML=
       '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
       +'<p class="snote" data-en="Your answers and score go to your teacher when you sign and tap Send." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas y tocas Enviar.">Your answers and score go to your teacher when you sign and tap Send.</p>'
-      +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button></div>'
+      +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button>'
+      +'<a class="btn" id="backRoom" href="/?room=drafts" hidden data-en="Back to the drafts" data-es="Volver a los borradores">Back to the drafts</a></div>'
       +'<p class="sst" aria-live="polite"></p>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
        The door sits directly above that row now, so signing and sending are
@@ -19722,6 +19726,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     else if(readyToSend()){
       txt=T("All done? Sign your name and tap Send.","¿Terminaste? Firma con tu nombre y toca Enviar.")}
     ui.st.className=cls; ui.st.textContent=txt;
+    var br=document.getElementById("backRoom"); if(br)br.hidden=!(sentAt&&!sendBusy);
   }
 
   buildSendUI();
