@@ -19912,14 +19912,19 @@ function target(box){
   for(i=0;i<fs.length;i++)if(!String(fs[i].value).trim())return fs[i];
   return fs.length?fs[fs.length-1]:null}
 
+/* AOG-DD-BANK-STILL-V1 (2026-10-02) — Jimmy, on the iPhone: "when one taps a word it goes far down and the user
+   has to scroll back up to the words." Tapping a chip used to focus the next blank, which raised the keyboard and
+   scrolled the page away from the bank. On a touch screen a tap now only places the word; nothing is focused and
+   nothing moves. A mouse and keyboard still get the next blank. */
 function place(chip){
   var box=chip.closest('.box'); if(!box)return;
   var word=txtOf(chip), fs=fieldsIn(box), i;
   if(chip.classList.contains('used')){
-    for(i=0;i<fs.length;i++)if(key(fs[i].value)===key(word)){put(fs[i],''); try{fs[i].focus()}catch(e){} return}
+    for(i=0;i<fs.length;i++)if(key(fs[i].value)===key(word)){put(fs[i],''); if(!TOUCH)try{fs[i].focus()}catch(e){} return}
     sync(box); return}
   var to=target(box); if(!to)return;
   put(to,word);
+  if(TOUCH)return;
   for(i=0;i<fs.length;i++)if(!String(fs[i].value).trim()){try{fs[i].focus()}catch(e){} return}
   try{to.blur()}catch(e){}}
 
