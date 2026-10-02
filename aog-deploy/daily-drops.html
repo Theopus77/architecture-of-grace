@@ -1435,6 +1435,13 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
 .tlines li{margin:2px 0}
 body.packing .packsheet .tlines{color:#333}
 </style>
+<style id="aog-dd-roomreturn">
+/* AOG-DD-ROOM-RETURN-V1 (2026-10-02) — the shelf lives on the home page; here, the book you are in and a way back */
+#subjSeg{display:none !important}
+.subjnow{margin:0;font-size:1.05rem;line-height:1.5;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+.subjnow b{font-size:1.15rem}
+.subjnow a{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+</style>
 <style id="aog-dd-onesize">
 /* AOG-DD-ONE-SIZE (2026-09-27) — Jimmy: "Grade 7 zooms in compared to the other grades." Pages show at 85% on a
    computer, but a page with a pencil canvas draws at full size (aog-calm.css), and only some grades' sheets have
@@ -1479,6 +1486,10 @@ body.packing .packsheet .tlines{color:#333}
 <div class="rail no-print">
   <div class="fg">
     <span class="lbl" data-en="Subject" data-es="Materia">Subject</span>
+    <!-- AOG-DD-ROOM-RETURN-V1 (2026-10-02) — Jimmy: "Does it make sense to have this on the draft page anymore?" The
+         shelf is picked on the home page now (the Daily Drafts room). This page shows the book you are in and one link
+         back to the room; #subjSeg stays in the page, hidden, so ?subject= links and the handlers keep working. -->
+    <p class="subjnow"><b id="subjNow"></b> <a href="/?room=drafts" data-en="Change subject" data-es="Cambiar materia">Change subject</a></p>
     <!-- AOG-DD-SUBJ-GROUPS-V1 (2026-09-26) — Jimmy: "Can these be paired up better?" Thirteen subjects in three
          families, each on its own row with a small name, so the eye finds Bible next to Qur'an and Talmud, and
          Math next to Science, instead of one long shuffle. Same buttons, same data-s, same handler. -->
@@ -19308,6 +19319,7 @@ function paintMode(){
     var el=$(sel), fg=(el&&el.closest)?el.closest('.fg'):null;
     if(fg)fg.hidden=!!ST.lockPick})}
 function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try{fillGrades()}catch(e){}build();render();paintMode();syncURL();
+  var sn=$('#subjNow'),snn=SUBJN[ST.subj]||SUBJN.math; if(sn)sn.textContent=t(snn[0],snn[1]);
   LS.set('aog.drops.subj',ST.subj);LS.set('aog.drops.grade',ST.grade)}
 
 /* ---- boot ---- */
@@ -19322,7 +19334,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
   if(GRADES.indexOf(ST.grade)<0)ST.grade='3';
   if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);
   var s=parseInt(q.sheet,10); ST.sheet=(s>=1&&s<=180)?s:1;
+  /* AOG-DD-ROOM-RETURN-V1 — a teacher link's Sheet destination is kept for this visit (sessionStorage), so the
+     next book picked from the home room still sends to the same Sheet. Gone when the tab closes. */
   ST.dest=q.dest||'';
+  try{ if(ST.dest)sessionStorage.setItem('aog.drops.dest',ST.dest); else ST.dest=sessionStorage.getItem('aog.drops.dest')||''; }catch(e){}
   /* AOG-DD-WORDBANK-V1: a teacher hands ONE student a link with the bank on,
      rather than walking to each device. The link wins until the student
      touches the toggle themselves. */
@@ -19604,19 +19619,22 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
         headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
       .then(function(res){return res.json()})
       .then(function(j){sendBusy=false;
-        if(j&&j.ok){sentAt=new Date().toISOString();sentHow="ok";clearName()}else{sendErr=true}
+        if(j&&j.ok){sentAt=new Date().toISOString();sentHow="ok";clearName();goHome()}else{sendErr=true}
         paint()})
       .catch(function(){
         /* ONE blind send and an honest label, never an automatic retry */
         fetch(DEST.url,{method:"POST",mode:"no-cors",redirect:"follow",
             headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
-          .then(function(){sendBusy=false;sentAt=new Date().toISOString();sentHow="blind";clearName();paint()})
+          .then(function(){sendBusy=false;sentAt=new Date().toISOString();sentHow="blind";clearName();paint();goHome()})
           .catch(function(){sendBusy=false;sendErr=true;paint()})});
   }
 
   /* AOG-DD-CLEAR-NAME-V1 (2026-09-30) — Jimmy: "after someone sends a daily draft make sure their name doesn't save.
      So after each send, clear the name as well." Once a send has gone, the name line is emptied and the saved name is
      forgotten, so the next student on a shared device starts blank. The row already sent keeps the name. */
+  /* AOG-DD-ROOM-RETURN-V1 — Jimmy: "once you press Send it should take you back to the home page with the drafts
+     laid out." After "Sent to your teacher." has shown for a moment, the home page opens on the Daily Drafts room. */
+  function goHome(){ if(ST.review)return; setTimeout(function(){ location.href="/?room=drafts"; },1600); }
   function clearName(){
     try{ localStorage.removeItem("aog.drops.name"); localStorage.removeItem(whoKey); }catch(e){}
     var n=document.getElementById("nameIn"); if(n) n.value="";

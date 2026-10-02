@@ -1783,12 +1783,15 @@ function aogToggleBand(e, b){
     background-repeat:no-repeat,no-repeat,repeat,repeat,no-repeat;
     box-shadow:inset 0 0 0 8px rgba(201,162,74,0), inset 0 0 0 9px rgba(201,162,74,.5), inset 0 6px 8px -6px rgba(255,255,255,.25), inset 0 -6px 8px -6px rgba(0,0,0,.6),
       7px -6px 0 -1px #EFE6D2, 7px -6px 0 0.5px #3B2414, 3px 3px 4px rgba(0,0,0,.35); }
-  #aog-thresholds .aogdn-plate{ position:absolute; left:11px; right:11px; top:11px; bottom:46px; overflow:hidden; border-radius:2px; background:#FBF8F0; border:1px solid #2A1808; box-shadow:1px 1px 0 rgba(42,24,8,.35); }
+  #aog-thresholds .aogdn-plate{ position:absolute; left:11px; right:11px; top:11px; bottom:50px; overflow:hidden; border-radius:2px; background:#FBF8F0; border:1px solid #2A1808; box-shadow:1px 1px 0 rgba(42,24,8,.35); }
   #aog-thresholds .aogdn-plate img{ display:block; width:100%; height:100%; object-fit:cover; object-position:72% 42%; }
-  #aog-thresholds .aogdn-bkname{ position:absolute; left:10px; right:calc(10px + 9px); bottom:9px; height:34px; display:flex; align-items:center; justify-content:center; text-align:center;
-    font-family:var(--font-serif,Fraunces,serif); font-weight:800; font-size:11px; line-height:1.15; letter-spacing:.01em; color:#FFF4DC; text-shadow:0 1px 1px rgba(0,0,0,.7); overflow-wrap:break-word; }
+  #aog-thresholds .aogdn-bkname{ position:absolute; left:8px; right:calc(8px + 9px); bottom:8px; height:40px; display:flex; align-items:center; justify-content:center; text-align:center;
+    font-family:var(--font-serif,Fraunces,serif); font-weight:800; font-size:11px; line-height:1.12; letter-spacing:0; color:#FFF4DC; text-shadow:0 1px 1px rgba(0,0,0,.7); overflow-wrap:break-word; }
+  /* AOG-DD-ROOM-V3 — Jimmy: "Look at Family & Consumer Sciences": a long name ran to three lines and out of its
+     band in Safari. Long names are set a size smaller. */
+  #aog-thresholds .aogdn-bk[data-long] .aogdn-bkname{ font-size:9.5px; }
   @media (max-width:479px){ #aog-thresholds .aogdn-books{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-  @media (min-width:768px){ #aog-thresholds .aogdn-books{ grid-template-columns:repeat(4,minmax(0,1fr)); } #aog-thresholds .aogdn-bkname{ font-size:12px; } }
+  @media (min-width:768px){ #aog-thresholds .aogdn-books{ grid-template-columns:repeat(4,minmax(0,1fr)); } #aog-thresholds .aogdn-bkname{ font-size:11.5px; } #aog-thresholds .aogdn-bk[data-long] .aogdn-bkname{ font-size:10px; } }
   @media (min-width:1100px){ #aog-thresholds .aogdn-books{ grid-template-columns:repeat(6,minmax(0,1fr)); } }
   @media (hover:hover) and (prefers-reduced-motion:no-preference){
     #aog-thresholds .aogdn-bk:hover .aogdn-cover{ transform:translateY(-5px); outline:2.5px solid #C9A24A; outline-offset:3px; }
@@ -1916,14 +1919,14 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         <div class="aogdn-shelf"><h3 class="aogdn-shelfk" data-en="Languages &amp; life" data-es="Idiomas y vida">Languages &amp; life</h3><ul class="aogdn-books">
           <li><a class="aogdn-bk" href="/drops?subject=spanish&amp;sheet=1" style="--gl:#B8457A"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/page-spanish-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Spanish" data-es="Espa&ntilde;ol">Spanish</span></a></li>
           <li><a class="aogdn-bk" href="/drops?subject=foundry&amp;sheet=1" style="--gl:#A85A24"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/word-foundry-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Word Foundry" data-es="Word Foundry">Word Foundry</span></a></li>
-          <li><a class="aogdn-bk" href="/drops?subject=facs&amp;sheet=1" style="--gl:#7B4FA0"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/page-facs-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Family &amp; Consumer Sciences" data-es="Ciencias de la familia y del consumidor">Family &amp; Consumer Sciences</span></a></li>
+          <li><a class="aogdn-bk" data-long href="/drops?subject=facs&amp;sheet=1" style="--gl:#7B4FA0"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/page-facs-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Family &amp; Consumer Sciences" data-es="Ciencias de la familia y del consumidor">Family &amp; Consumer Sciences</span></a></li>
           <li><a class="aogdn-bk" href="/drops?subject=economics&amp;sheet=1" style="--gl:#6E7C22"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/ec1-scarcity-and-choice-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Economics" data-es="Econom&iacute;a">Economics</span></a></li>
           <li><a class="aogdn-bk" href="/drops?subject=cultures&amp;sheet=1" style="--gl:#2F6F8F"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/s14-world-regions-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="World Cultures" data-es="Culturas del mundo">World Cultures</span></a></li>
-          <li><a class="aogdn-bk" href="/drops?subject=health&amp;sheet=1" style="--gl:#2E8B6A"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/med-u2-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Medicine &amp; Health" data-es="Medicina y salud">Medicine &amp; Health</span></a></li>
+          <li><a class="aogdn-bk" data-long href="/drops?subject=health&amp;sheet=1" style="--gl:#2E8B6A"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/med-u2-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Medicine &amp; Health" data-es="Medicina y salud">Medicine &amp; Health</span></a></li>
         </ul></div>
         <div class="aogdn-shelf"><h3 class="aogdn-shelfk" data-en="History books" data-es="Libros de historia">History books</h3><ul class="aogdn-books">
           <li><a class="aogdn-bk" href="/drops?subject=sports&amp;sheet=1" style="--gl:#8A4B1E"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/sports-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Sports History" data-es="Historia del deporte">Sports History</span></a></li>
-          <li><a class="aogdn-bk" href="/drops?subject=martial&amp;sheet=1" style="--gl:#4B5E2A"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/martial-arts-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="The Measured Step" data-es="El paso medido">The Measured Step</span></a></li>
+          <li><a class="aogdn-bk" data-long href="/drops?subject=martial&amp;sheet=1" style="--gl:#4B5E2A"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/martial-arts-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="The Measured Step" data-es="El paso medido">The Measured Step</span></a></li>
           <li><a class="aogdn-bk" href="/drops?subject=secrets&amp;sheet=1" style="--gl:#5C3A1E"><span class="aogdn-cover" aria-hidden="true"><span class="aogdn-plate"><img src="/img/banners/secret-societies-hub-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span></span><span class="aogdn-bkname" data-en="Secret Societies" data-es="Sociedades secretas">Secret Societies</span></a></li>
         </ul></div>
         <div class="aogdn-shelf"><h3 class="aogdn-shelfk" data-en="Faith &amp; texts" data-es="Fe y textos">Faith &amp; texts</h3><ul class="aogdn-books">
@@ -2011,6 +2014,9 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         if(d.getAttribute("aria-expanded") !== "true") d.click(); try{ d.scrollIntoView({block:"start", behavior:"instant"}); }catch(e){} };
       var k = "all"; try{ k = localStorage.getItem(KEY) || "all"; }catch(e){}
       apply(k);
+      /* AOG-DD-ROOM-RETURN-V1 (2026-10-02) — Jimmy: "once you press Send it should take you back to the home page
+         with the drafts laid out." /drops sends the student to /?room=drafts; the room opens on arrival. */
+      try{ if(/[?&]room=drafts(&|$)/.test(location.search)){ setTimeout(function(){ if(typeof aogAudDoor==="function") aogAudDoor("drafts"); }, 120); } }catch(e){}
     })();
     </script>
     <!-- AOG-DOORS-ELEVEN-V1: the "For schools" line (Crosswalk, Privacy) is gone; both are doors now. -->
