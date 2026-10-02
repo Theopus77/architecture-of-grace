@@ -1431,7 +1431,7 @@ html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !import
 <style id="aog-dd-more">
 /* AOG-DD-MORE-V1 · AOG-DD-STREAK-RULE-V1 · AOG-DD-TEACHERLINES-V1 (2026-10-01) */
 .streaknote{flex:1 1 100%;margin:4px 0 0;font-size:.84rem;line-height:1.5;color:var(--ink-faint)}
-.tlines{margin:0 0 14px;padding:0 0 0 20px;font-size:.84rem;line-height:1.5;color:var(--ink-faint)}
+.tlines{margin:14px 0 0;padding:12px 0 0 20px;border-top:1px solid var(--rule-soft);font-size:.8rem;line-height:1.5;color:var(--ink-faint)}
 .tlines li{margin:2px 0}
 body.packing .packsheet .tlines{color:#333}
 </style>
@@ -18299,7 +18299,7 @@ function sheetHTML(pack){
     '<div class="smeta"><span>'+t('Score','Puntaje')+' <b class="sval"'+(pack?'':' id="mScore"')+'>\u2014</b>'+'<span class="dline" aria-hidden="true"></span></span>'+
     '<span>'+t('Date','Fecha')+' <b class="dval">'+new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
     '</b><span class="dline" aria-hidden="true"></span></span></div>'+
-    teacherLines()+sigPrint(pack)+
+    sigPrint(pack)+
     '<div class="boxes">';
   ST.boxes.forEach(function(b,i){
     /* AOG-DD-TALLBOX-V1 (2026-09-23) — a box holding column algorithms is in a
@@ -18316,6 +18316,9 @@ function sheetHTML(pack){
        '<span class="bs">'+esc(t(b.st.en,b.st.es))+'</span></div>'+
        '<div class="bbody">'+b.item.html+'<span class="bsc"></span></div></div></div>'});
   h+='</div>';
+  /* AOG-DD-TEACHERLINES-V2 (2026-10-02) — Jimmy: "Could these be put at the bottom of the page?" The three lines sit
+     at the foot of the sheet now, above the name line, so the first question comes first on a phone. */
+  h+=teacherLines();
   if(!pack)h+=sigRow();
   return h}
 
@@ -18391,7 +18394,7 @@ function writeHTML(pack){
     '<div class="smeta"><span>'+t('Date','Fecha')+' <b class="dval">'+
       new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
       '</b><span class="dline" aria-hidden="true"></span></span></div>'+
-    teacherLines()+sigPrint(pack)+writeBand()+(pack?'':sigRow())}
+    sigPrint(pack)+writeBand()+teacherLines()+(pack?'':sigRow())}
 
 function renderWrite(){
   var crow=$('#checkRow'),sh0=$('#sheet'); if(crow&&sh0&&sh0.contains(crow))sh0.parentNode.insertBefore(crow,sh0);   /* AOG-DD-CHECKROW-SAFE */
