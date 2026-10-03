@@ -93,7 +93,7 @@ const STR={
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Every note is a real player, recorded for VS Chamber Orchestra: Community Edition by Versilian Studios and given to everyone (public domain).",es:"Cada nota es un músico de verdad, grabado para VS Chamber Orchestra: Community Edition de Versilian Studios y regalado a todos (dominio público)."},
+  credit:{en:"Every note is a real player. The orchestra comes from VS Chamber Orchestra: Community Edition by Versilian Studios, and the saxophone from Weresax by Karoryfer Samples. Both are given to everyone (public domain).",es:"Cada nota es un músico de verdad. La orquesta viene de VS Chamber Orchestra: Community Edition de Versilian Studios, y el saxofón de Weresax de Karoryfer Samples. Los dos son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
@@ -112,10 +112,13 @@ const SOUNDS={
   clarinet:{grp:"grpWinds", en:"Clarinet",         es:"Clarinete",       gain:1.71, rev:0.15, stand:"wind"},
   oboe:    {grp:"grpWinds", en:"Oboe",             es:"Oboe",            gain:0.96, rev:0.15, stand:"wind"},
   bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.11, rev:0.14, stand:"wind"},
+  /* AOG-BAND-SAX-V1 (2026-10-03) — Jimmy: "You can add the Saxophone after everything else is deployed". An alto saxophone
+     from Weresax by Karoryfer Samples (CC0), recorded on every note; held notes only, so its short notes are held ones let go */
+  sax:     {grp:"grpWinds", en:"Alto saxophone",   es:"Saxofón alto",    gain:1.4, rev:0.14, stand:"wind"},
   winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], gain:1.21, rev:0.17, stand:"wind"}
 };
 /* how loud each player is next to the others (measured, AOG-BAND-V1) */
-const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, clarinet:0.80, oboe:0.94, bassoon:1.14};
+const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, clarinet:0.80, oboe:0.94, bassoon:1.14, sax:0.89};
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 function partsOf(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
 /* the notes a player reaches: from a step below its lowest recording to a step above its highest */
