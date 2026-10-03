@@ -81,6 +81,7 @@ textarea{min-height:84px;resize:vertical}
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
+<script src="/aog-sky.js"></script>
 <div class="wrap" id="app" role="main"></div>
 <script>
 (function(){
@@ -307,9 +308,13 @@ function ptsCards(q){ var gs=goalsOf(q), P=A[q.id]||{};
   q.blocks.forEach(function(b,bi){ h+='<div class="card"><p class="q">'+esc(t(b[0],b[1]))+'</p>'+gs.map(function(g,gi){ var k=bi+"-"+gi, v=P[k];
     return '<div class="prow"><span class="pg">'+esc(t(g.t[0],g.t[1]))+'</span><div class="seg" role="group" aria-label="'+esc(t(b[0],b[1])+" · "+t(g.t[0],g.t[1]))+'">'+PV.map(function(o,i){ return '<button type="button" class="opt pv" data-pq="'+q.id+'" data-pk="'+k+'" data-v="'+i+'" aria-pressed="'+(v===i)+'">'+esc(t(o[0],o[1]))+'</button>'; }).join("")+'</div></div>'; }).join("")+'</div>'; });
   return h+'<div class="card artcard"><p class="q">'+t("Today's wall","El muro de hoy")+'</p><p class="hint">'+t("Building lays one brick. Built it lays two.","Construyendo pone un ladrillo. Lo logré pone dos.")+'</p><div id="wallBox">'+wallSvg(q)+'</div></div>'; }
+/* AOG-SKY-V1 — the reward after Send: a new star in their sky (aog-sky.js), drawn from every slip this device has sent for them */
+function skyDone(){ if(!window.AOGSky) return ""; var rs=[]; try{ rs=AOGSky.rows(who); }catch(e){} if(!rs.length) return "";
+  return '<h2 style="margin:18px 0 0">'+(S.parent?t("A new star in "+who+"'s sky","Una estrella nueva en el cielo de "+who):t("A new star in your sky","Una estrella nueva en tu cielo"))+'</h2>'+AOGSky.html(rs,{mark:true,es:ES})
+    +'<p class="lead" style="margin:8px 0 0">'+(S.parent?t("Every note you send lights a star. Seven make a constellation.","Cada nota que envía enciende una estrella. Siete forman una constelación."):t("Every slip you send lights a star. Seven make a constellation. Show your grown-up!","Cada hoja que envías enciende una estrella. Siete forman una constelación. ¡Muéstraselo a un adulto!"))+'</p>'; }
 function paint(){
   var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
-  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?((S.parent||S.together)?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p>'+(S.qs.filter(function(q){ return q.kind==="points"; }).map(function(q){ return wallSvg(q); }).join(""))+(S.art?artSvg()+'<p class="lead" style="margin:6px 0 0">'+t("Show your grown-up your drawing.","Muéstrale tu dibujo a un adulto.")+'</p>':'')+'<a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
+  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?((S.parent||S.together)?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p>'+skyDone()+'<a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
   var ns=names();
   h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):S.together?t("Student's name","Nombre del estudiante"):t("Your name","Tu nombre"))+'</label>'
     +(ns.length?'<div class="names" style="margin-top:8px">'+ns.map(function(n){ return '<button type="button" data-who="'+esc(n)+'" aria-pressed="'+(n.toLowerCase()===who.toLowerCase())+'">'+esc(n)+'</button>'; }).join("")+'</div>':'')

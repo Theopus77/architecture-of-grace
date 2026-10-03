@@ -273,6 +273,8 @@ body.stackon .wrap>*:not(#paperStack){display:none !important}
 .bp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .bp-ey{font:800 .72rem var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
 .bp-card h2{font-family:var(--serif);font-weight:900;font-size:1.6rem;margin:2px 0 0}
+/* AOG-SKY-V1 — their sky, under the window */
+.bp-sky{margin-top:26px;padding-top:20px;border-top:1px solid var(--line,rgba(0,0,0,.12))}
 .bp-tools{display:flex;gap:8px;flex-wrap:wrap}
 .bp-stats{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 16px}
 .bp-stats>div{flex:1 1 110px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
@@ -348,6 +350,7 @@ body.stackon .wrap>*:not(#paperStack){display:none !important}
 </style>
 <script src="aog-sync-config.js"></script>
 <script src="/aog-glass.js?v=5167"></script>
+<script src="/aog-sky.js"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
      This page shows the same student records the dashboard does, and it used
      to open to anyone who typed its address on this computer. It now asks for
@@ -1953,6 +1956,8 @@ else document.documentElement.classList.add("aog-embed");</script>
   var bpWho=null, bpSpec=null;
   var SOLO=/[?&]solo=1/.test(location.search);
   if(SOLO){ document.documentElement.classList.add("bp-solo"); try{ localStorage.setItem("aog.learner","1"); }catch(e){} curView="bp"; }
+  /* AOG-BP-VIEW-V1 (2026-10-03) — the dashboard's Reports card links ?view=bp; it opened the Inbox, not the window */
+  if(/[?&]view=bp(&|$)/.test(location.search)) curView="bp";
   (function(){ var m=/[?&]blueprint=([^&]*)/.exec(location.search); if(m && m[1]){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
   function learner(){ if(/[?&]teacher=1/.test(location.search)) return false; return lsGet("aog.learner")==="1"; }
   function bpStrength(it){
@@ -1961,6 +1966,14 @@ else document.documentElement.classList.add("aog-embed");</script>
     return null;
   }
   function bpDay(it){ var d=new Date(it.ts); return isNaN(d)?String(it.ts||"").slice(0,10):d.toISOString().slice(0,10); }
+  /* AOG-SKY-V1 (2026-10-03) — Jimmy: the slips earn a picture too, "not stained glass but something else".
+     Under the window, their sky: one star for every slip, seven to a constellation (aog-sky.js). */
+  function bpSky(name, me){
+    if(!window.AOGSky) return "";
+    var rs=[]; try{ rs=AOGSky.rows(name); }catch(e){}
+    return '<div class="bp-sky"><div class="bp-ey">'+(me?"My sky":"Their sky")+'</div><h2>'+esc(me?"Every slip lights a star":name+"’s sky")+'</h2>'
+      +(rs.length?AOGSky.html(rs,{}):'<p>Every check-in, checklist and point sheet '+(me?"you send":name+" sends")+' lights a star here. Seven make a constellation.</p>')+'</div>';
+  }
   function blueprint(box, all){
     var by={}, shown={};
     all.forEach(function(it){ var k=String(it.student||"—").replace(/\s+/g," ").trim().toLowerCase(); (by[k]=by[k]||[]).push(it); shown[k]=it.student; });
@@ -1992,6 +2005,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       +'<div class="bp-wall">'+bpWindow(sty,list)+'</div>'
       +'<div class="bp-legend">'+legend+'<span class="bp-lg"><i class="solid"></i>bright glass = done without a hint</span><span class="bp-lg"><i class="key"></i>gold-leaded = every 25th pane</span></div>'
       +'<div class="bp-say" id="bpSay">'+(list.length?"Tap a pane to see what it was.":"")+'</div>'
+      +bpSky(name, me)
       +'</div>';
     box.appendChild(wrap);
     /* AOG-GLASS-REAL-V1 — paint the real glass once; if it cannot, the SVG window stays as it was */
