@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
+try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
+</script>
+<title>The Band — Architecture of Grace</title>
+<meta name="description" content="Trumpet, trombone, French horn and tuba; flute, clarinet, oboe and bassoon, recorded for real. Tap a chord, or play a tune on the keys. Works on a phone, a tablet and a computer.">
+<link rel="canonical" href="https://architectureofgrace.org/band">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="The Band — Architecture of Grace">
+<meta property="og:description" content="Brass and woodwinds, recorded for real. Tap a chord, or play a tune on the keys.">
+<meta property="og:url" content="https://architectureofgrace.org/band">
+<meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/aog-calm.css">
+<!-- AOG-BAND-V1 (2026-10-03) — Jimmy: "How about horns and wood instruments as well?" then "One tool: The Band" and
+     "Recorded". Brass (trumpet, trombone, French horn, tuba) and woodwinds (flute, clarinet, oboe, bassoon), each a real
+     player recorded for VS Chamber Orchestra: Community Edition (Versilian Studios, CC0; audio/band/CREDITS.txt), two
+     strengths held and one short; and the four of each together. The piano's chord pads, eighteen patterns, chord wheel,
+     drum beat, 1987–2026 dial, Send to the turntables and chords for the drum machine, with the piano's keys for a tune.
+     Built from _work/music/band_head.html and band_script.js by _work/music/make_band.py (it adds audio/band/manifest.json). -->
+<style>
+:root{
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --good:#2c7a4e;
+  --steel-fg:#f4f8f9; --good-soft:#e2f1e8; --bad:#b4361f; --bad-soft:#f6e5e2;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark,[data-theme="dark"]{
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --good:#6fbf8b;
+  --steel-fg:#14181e; --good-soft:#1c3326; --bad:#ff8f7a; --bad-soft:#3a1f1b;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47; --steel:#7fb4c7; --steel-soft:#1d2f36; --good:#6fbf8b; --steel-fg:#14181e; --good-soft:#1c3326; --bad:#ff8f7a; --bad-soft:#3a1f1b; } }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip;overscroll-behavior:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:clip;overscroll-behavior:none}
+body *{overscroll-behavior:contain}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{text-wrap:pretty}
+a{color:inherit}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+.wrap{max-width:1100px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:1rem}
+.brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.tools{display:flex;gap:.5rem}
+.pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.lead{max-width:66ch;color:var(--muted)}
+.muted{color:var(--muted)}
+.nav{display:flex;gap:4px}
+.nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem}
+/* no selecting, no copy bubble, no magnifier, no double-tap wait anywhere on the instrument (AOG-MUSIC-TOUCH-V1, AOG-PIANO-NO-LOUPE-V1) */
+body,.rig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.rig select{-webkit-user-select:auto;user-select:auto}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+
+/* ══ the instrument: the piano's dark panel ══ */
+.rig{position:relative;margin-top:1rem;border-radius:18px;padding:16px 14px 18px;border:1px solid #07080a;color:#ece6da;
+  background:linear-gradient(180deg,#2a2d31 0%,#17191c 16%,#101114 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 26px rgba(0,0,0,.28)}
+.plate{text-align:center;margin:-2px 0 12px}
+.plate b{display:block;letter-spacing:.3em;font-size:.78rem;color:#ddd6c9;font-weight:700}
+.plate small{display:block;letter-spacing:.2em;font-size:.6rem;color:#bdb5a7;margin-top:.15rem}
+.blk{border-top:1px solid #2f3339;padding:14px 0 4px}
+.blk:first-of-type{border-top:0;padding-top:4px}
+/* an ID, so the site's serif heading rule (aog-grace.css) does not turn these small labels into squashed titles */
+#rig .blk>h2{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0 0 .6rem}
+.plab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
+.line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
+.line.note{color:#ffd9a8}
+.line a{color:#cfe2ff}
+.row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
+.field{display:grid;min-width:0;flex:1 1 15rem}
+.field.small{flex:0 1 auto}
+.rig select{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);color:#0A1E33;background-color:#FFFDF8;
+  border:1.5px solid #C9A24A;border-radius:12px;padding:8px 38px 8px 14px;-webkit-appearance:none;appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a5a12' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:16px}
+.pbtn{min-height:48px;border-radius:12px;border:1px solid #0a0b0d;background:linear-gradient(#3a3e44,#1c1f23);color:#f3efe6;
+  font-weight:800;font-size:.98rem;letter-spacing:.01em;padding:0 1rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 3px 0 #07080a}
+.pbtn[aria-pressed="true"]{background:linear-gradient(#ffe8b0,#e0a640);color:#2a1a08}
+.pbtn.play{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08;min-width:11rem}
+.pbtn.play.go{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+.pbtn.send{border-color:#5b8fd6;color:#cfe2ff}
+.pbtn.clear{border-color:#c4452a;color:#ffb1a4}
+.pbtn:disabled{opacity:.6;cursor:default}
+.seg{display:inline-flex;gap:.4rem;flex-wrap:wrap}
+
+/* chord pads: one tap, one chord */
+.pads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.2rem 0 .2rem}
+@media (min-width:700px){ .pads{grid-template-columns:repeat(6,minmax(0,1fr))} }
+.pad{min-height:86px;border-radius:14px;border:1px solid #0a0b0d;padding:.4rem .3rem;color:#1f1a10;
+  background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 0 #07080a;
+  font:800 1.45rem/1.05 var(--display);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pad small{display:block;font:800 .72rem/1 var(--sans);letter-spacing:.12em;color:#5a4b2b;margin-bottom:.4rem}
+.pad kbd{display:none}
+.pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
+.pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
+/* the chord wheel (circle of fifths), as on the piano (AOG-PIANO-WHEEL-V1/V2) */
+.wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+#rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.wheel-side{flex:1 1 230px;min-width:0}
+.wheel .wd{cursor:pointer;outline:none}
+.wheel .wd path{stroke:#0c0d10;stroke-width:2}
+.wheel .wd text{font-family:var(--display);font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.wheel .wd.o path{fill:#2a2e35} .wheel .wd.i path{fill:#202328}
+.wheel .wd.o text{fill:#ece3d2} .wheel .wd.i text{fill:#ddd2bf}
+.wheel .wd.fit path{fill:#f8eed3} .wheel .wd.fit text{fill:#2b2116}
+.wheel .wd .pn{font-family:var(--sans);font-weight:800;fill:#4a3a18}
+.wheel .wd.now path{fill:#ef9a4a} .wheel .wd.now text{fill:#1f1206} .wheel .wd.now .pn{fill:#3a1c06}
+.wheel .wd.hit path{fill:#ffd36b} .wheel .wd.hit text{fill:#1f1206}
+.wheel .wd:focus-visible path{stroke:#ffffff;stroke-width:5}
+.wheel .home{fill:none;stroke:#e0a640;stroke-width:6;pointer-events:none}
+.wheel .hub{fill:#15171b;stroke:#e0a640;stroke-width:3}
+.wheel .hub-k{font-family:var(--display);font-weight:800;fill:#f4ecd8;text-anchor:middle;dominant-baseline:central}
+.wheel .hub-m{font-family:var(--sans);font-weight:700;fill:#d9cdb2;text-anchor:middle;dominant-baseline:central}
+.prog{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 0;min-height:44px;align-items:center}
+.slot{min-width:3.6rem;min-height:44px;border-radius:10px;border:1px solid #565c66;background:#1d2024;color:#f1ebdf;
+  display:inline-flex;align-items:center;justify-content:center;font:800 1.05rem/1 var(--display);padding:0 .65rem}
+.slot.now{background:#f0c26e;color:#2a1a08;border-color:#f0c26e}
+.tempo{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.tempo input[type=range],.dial input[type=range]{flex:1 1 10rem;min-width:8rem;height:44px;margin:0;accent-color:#e0a640;touch-action:pan-y}
+.tempo b,.dial b{font:800 .9rem/1 var(--sans);color:#ffd9a8}
+.dial{display:flex;align-items:center;gap:.5rem .8rem;flex-wrap:wrap}
+.dial em{font-style:normal;color:#b7f7a8;font-size:.9rem;min-width:8em}
+
+/* ══ the keys (the piano's): pale = fits the chord, orange = sounding now, gold = your finger; dim = out of reach ══ */
+.krow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .7rem;margin:0 0 .6rem}
+.krow .range{font:800 1rem/1 var(--display);color:#f1ebdf;min-width:6.5rem;text-align:center}
+.kbd{position:relative;display:flex;height:178px;border-top:7px solid #7a1e22;border-radius:4px;background:#0b0c0e;padding:0 2px 2px;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.wk{flex:1 1 0;min-width:0;position:relative;margin:0 1px;border:1px solid #23262a;border-top:0;border-radius:0 0 8px 8px;
+  background:linear-gradient(#fffdf6 0%,#f2ede1 88%,#d9d2c2 100%);color:#2b3440;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:9px;font:700 .8rem/1.1 var(--sans)}
+.wk .nm small{font-size:.68rem;margin-left:1px;color:#4d5763}
+.bk{position:absolute;top:0;height:60%;z-index:2;border:1px solid #000;border-top:0;border-radius:0 0 6px 6px;
+  background:linear-gradient(#34373d,#0e0f11);color:#e8e2d4;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  padding-bottom:6px;font:700 .62rem/1 var(--sans);box-shadow:0 3px 4px rgba(0,0,0,.45)}
+.wk.lit{background:linear-gradient(#fff3d1,#f5dc9c)} .bk.lit{background:linear-gradient(#6c5426,#3d2f15)}
+.wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
+.wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
+.bk.now .kc{color:#1f1206}
+/* a key the instrument cannot reach: grey, and silent */
+.wk.out{background:linear-gradient(#cfcac0,#b9b3a8);color:#3b4048} .wk.out .nm small{color:#3b4048}
+.bk.out{background:linear-gradient(#55585e,#3a3c40)}
+.kc{display:none}
+@media (hover:hover) and (pointer:fine){
+  .wk .kc,.bk .kc{display:block;font:700 .66rem/1 var(--sans);margin-bottom:5px;letter-spacing:0}
+  .wk .kc{color:#6b6355} .bk .kc{color:#cfc6b5}
+}
+@media (max-width:520px){ .kbd{height:164px} }
+.keys-line{display:none}
+.touch-line{display:block}
+@media (hover:hover) and (pointer:fine){
+  .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+  .keys-line{display:block}
+  .touch-line{display:none}
+}
+.foot{margin:2rem 0 0;color:var(--muted);font-size:.92rem}
+.foot p{margin:.35rem 0}
+@media (max-width:520px){
+  .rig{padding:14px 10px 16px;border-radius:14px}
+  .pbtn.play{min-width:0;flex:1 1 100%}
+}
+@media print{ .rig,.bench-bar,header{display:none!important} }
+</style>
+<link rel="stylesheet" href="/aog-bench.css">
+<script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="#" id="brand">The Band</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar"><!-- the music tools, one menu (four or more places: CLAUDE.md, drop-downs) -->
+    <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
+  </div>
+  <main id="view">
+    <section class="rig" id="rig" aria-labelledby="mastH">
+      <div class="plate" aria-hidden="true"><b>THE BAND</b><small>BRASS · WOODWINDS</small></div>
+
+      <div class="blk">
+        <div class="row">
+          <label class="field"><span class="plab" data-t="instrument"></span><select id="soundSel"></select></label>
+        </div>
+        <p class="line note" id="loadLine" aria-live="polite"></p>
+      </div>
+
+      <div class="blk">
+        <h2 data-t="chordsH"></h2>
+        <div class="row">
+          <label class="field"><span class="plab" data-t="keyLab"></span><select id="keySel"></select></label>
+          <div class="field small"><span class="plab" data-t="moodLab"></span>
+            <div class="seg" role="group"><button type="button" class="pbtn" id="majBtn"></button><button type="button" class="pbtn" id="minBtn"></button></div></div>
+        </div>
+        <p class="line" data-t="padsLine"></p>
+        <div class="pads" id="pads"></div>
+        <p class="line" id="stepLine" data-t="stepLine" hidden></p>
+        <div class="row" style="margin-top:.8rem">
+          <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel"></select></label>
+          <label class="field"><span class="plab" data-t="rhythmLab"></span><select id="rhythmSel"></select></label>
+        </div>
+        <span class="plab" style="margin-top:.9rem" data-t="yourPattern"></span>
+        <div class="prog" id="prog"></div>
+        <p class="line" id="ownLine"></p>
+        <div class="row" style="margin-top:.6rem">
+          <button type="button" class="pbtn play" id="playBtn"></button>
+          <button type="button" class="pbtn" id="ownBtn" aria-pressed="false"></button>
+          <button type="button" class="pbtn clear" id="clearBtn"></button>
+        </div>
+        <div class="tempo" style="margin-top:.8rem">
+          <span class="plab" style="margin:0" data-t="tempoLab"></span>
+          <input type="range" id="bpm" min="50" max="180" step="1" aria-labelledby="bpmOut">
+          <b id="bpmOut"></b>
+        </div>
+        <div id="drumBox"></div>
+      </div>
+
+      <div class="blk" id="wheelBlk">
+        <h2 data-t="wheelH"></h2>
+        <div class="wheel-wrap">
+          <svg class="wheel" id="wheel" viewBox="0 0 400 400" role="group"></svg>
+          <div class="wheel-side">
+            <p class="line" style="margin-top:0" data-t="wheelLine"></p>
+            <div class="row" style="margin-top:.7rem">
+              <button type="button" class="pbtn" id="turnL"></button>
+              <button type="button" class="pbtn" id="turnR"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="blk">
+        <h2 data-t="keysH"></h2>
+        <div class="krow">
+          <button type="button" class="pbtn" id="downBtn"></button>
+          <span class="range" id="rangeOut" aria-live="polite"></span>
+          <button type="button" class="pbtn" id="upBtn"></button>
+          <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
+          <span id="recTime" hidden>0:00</span>
+        </div>
+        <div class="kbd" id="kbd" role="group"></div>
+        <p class="line" id="litLine" data-t="litLine" hidden></p>
+        <p class="line touch-line" data-t="touchLine"></p>
+        <p class="line keys-line" data-t="keysLine"></p>
+        <p class="line" id="recLine" aria-live="polite"></p>
+        <div id="takes"></div>
+      </div>
+
+      <div class="blk">
+        <div class="dial">
+          <span class="plab" style="margin:0" data-t="eraLab"></span>
+          <b aria-hidden="true">1987</b>
+          <input type="range" id="era" min="0" max="100" step="1">
+          <b aria-hidden="true">2026</b>
+          <em id="eraOut"></em>
+        </div>
+        <div class="dial" style="margin-top:.4rem">
+          <span class="plab" style="margin:0" data-t="volLab"></span>
+          <input type="range" id="vol" min="5" max="100" step="1">
+          <b id="volOut"></b>
+        </div>
+        <div class="row" style="margin-top:.8rem">
+          <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button>
+        </div>
+        <p class="line" id="sendLine" aria-live="polite"></p>
+        <p class="line" id="padsLine" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+  <footer class="foot" id="foot"></footer>
+</div>
+

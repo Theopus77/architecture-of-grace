@@ -282,7 +282,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
   <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
-  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><span class="sisters"><a class="sep" href="/decks-guide" id="navGuide"><span class="lg">Picture guide</span><span class="sh">Guide</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos"><a href="music-drums.html" id="navDrums">Drums</a><a href="music-piano.html" id="navPiano">Piano</a><a href="music-guitar.html" id="navGuitar">Guitar</a><a href="music-bass.html" id="navBass">Bass</a><a href="music-decks.html" class="on" id="navDecksTool">Turntables</a></span></span></nav>
+  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><span class="sisters"><a class="sep" href="/decks-guide" id="navGuide"><span class="lg">Picture guide</span><span class="sh">Guide</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos"><a href="music-drums.html" id="navDrums">Drums</a><a href="music-piano.html" id="navPiano">Piano</a><a href="music-guitar.html" id="navGuitar">Guitar</a><a href="music-bass.html" id="navBass">Bass</a><a href="music-band.html" id="navBand">Band</a><a href="music-decks.html" class="on" id="navDecksTool">Turntables</a></span></span></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
@@ -399,6 +399,8 @@ const STR = {
   keysGo:{en:"Open the piano",es:"Abrir el piano"},
   guitar:{en:"From the guitar",es:"De la guitarra"}, guitarGo:{en:"Open the guitar",es:"Abrir la guitarra"},   /* AOG-STRINGS-V1 */
   bassT:{en:"From the bass",es:"Del bajo"}, bassGo:{en:"Open the bass",es:"Abrir el bajo"},
+  bandT:{en:"From the band",es:"De la banda"}, bandGo:{en:"Open the band",es:"Abrir la banda"},   /* AOG-BAND-V1 */
+  drumTakeT:{en:"A take from the drum machine",es:"Una toma de la caja de ritmos"},   /* AOG-MUSIC-REC-V1 */
   crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
@@ -774,12 +776,14 @@ function paintTape(){
    The drum machine bounces its pattern onto a shelf both benches can reach
    (aog-handoff.js); here it is a beat you drop on a platter. So: your own beat
    on deck B, a song on deck A, scratch over it, and Record keeps the lot. */
-let benchTake = null, keysTake = null, guitarTake = null, bassTake = null;
+let benchTake = null, keysTake = null, guitarTake = null, bassTake = null, bandTake = null, drumTake = null;
 async function checkBench(){
   try{ benchTake = await AOGHandoff.get("drumbench"); }catch(e){ benchTake = null; }
   try{ keysTake = await AOGHandoff.get("keysbench"); }catch(e){ keysTake = null; }   /* AOG-PIANO-V1 */
   try{ guitarTake = await AOGHandoff.get("guitarbench"); }catch(e){ guitarTake = null; }   /* AOG-STRINGS-V1 */
   try{ bassTake = await AOGHandoff.get("bassbench"); }catch(e){ bassTake = null; }
+  try{ bandTake = await AOGHandoff.get("bandbench"); }catch(e){ bandTake = null; }   /* AOG-BAND-V1 */
+  try{ drumTake = await AOGHandoff.get("drumtake"); }catch(e){ drumTake = null; }    /* AOG-MUSIC-REC-V1: a take recorded on the drum machine */
   paintBench();
 }
 function paintBench(){
@@ -806,8 +810,8 @@ function paintBench(){
       <a class="ghost" href="music-piano.html">${t("keysGo")}</a>
     </div>`;
   }
-  /* AOG-STRINGS-V1 — the guitar and the bass leave theirs here too, each under its own name */
-  [["guitar", guitarTake, "guitar", "guitarGo", "music-guitar.html"], ["bass", bassTake, "bassT", "bassGo", "music-bass.html"]].forEach(([id, tk, lab, go, href])=>{
+  /* AOG-STRINGS-V1 — the guitar and the bass leave theirs here too, each under its own name (and the band, AOG-BAND-V1) */
+  [["guitar", guitarTake, "guitar", "guitarGo", "music-guitar.html"], ["bass", bassTake, "bassT", "bassGo", "music-bass.html"], ["band", bandTake, "bandT", "bandGo", "music-band.html"], ["drumtake", drumTake, "drumTakeT", "benchGo", "music-drums.html"]].forEach(([id, tk, lab, go, href])=>{
     if(!tk || !tk.wav) return;
     html += `<div class="take">
       <b>${t(lab)}</b> <span class="tlen">${tk.name||""}</span>
@@ -819,7 +823,7 @@ function paintBench(){
   box.innerHTML = html;
   box.querySelectorAll("[data-take]").forEach(b=>{
     b.onclick = ()=>{
-      const id = b.getAttribute("data-take"), tk = id==="guitar" ? guitarTake : bassTake;
+      const id = b.getAttribute("data-take"), tk = id==="guitar" ? guitarTake : id==="band" ? bandTake : id==="drumtake" ? drumTake : bassTake;
       const d = decks.find(x=>x.id===b.getAttribute("data-deck"));
       if(tk && tk.wav) loadFile(d, new File([tk.wav], id+".wav", { type:"audio/wav" }));
     };
@@ -1823,7 +1827,7 @@ document.addEventListener("visibilitychange", ()=>{
     document.querySelectorAll("[data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",on?"true":"false"); });
     const es=S.lang==="es";
-    const L={navDecks:["Bench","Mesa"],navDrums:["Drums","Ritmos"],navPiano:["Piano","Piano"],navGuitar:["Guitar","Guitarra"],navBass:["Bass","Bajo"],navDecksTool:["Turntables","Tocadiscos"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
+    const L={navDecks:["Bench","Mesa"],navDrums:["Drums","Ritmos"],navPiano:["Piano","Piano"],navGuitar:["Guitar","Guitarra"],navBass:["Bass","Bajo"],navBand:["Band","Banda"],navDecksTool:["Turntables","Tocadiscos"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
     const SH={navGuide:["Guide","Guía"]};   /* AOG-BENCH-SHORT-V1: the short name a phone shows (the tools are in one menu: AOG-MUSIC-TOOLS-MENU-V1) */
     Object.keys(SH).forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=`<span class="lg">${L[id][es?1:0]}</span><span class="sh">${SH[id][es?1:0]}</span>`; });
@@ -2013,7 +2017,7 @@ function paintLessons(){
 paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
-try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="keysbench" || key==="guitarbench" || key==="bassbench") checkBench(); }); }catch(e){}
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="keysbench" || key==="guitarbench" || key==="bassbench" || key==="bandbench" || key==="drumtake") checkBench(); }); }catch(e){}
 window.addEventListener("focus", checkBench);
 </script>
 <script>

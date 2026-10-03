@@ -179,6 +179,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -226,6 +227,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         </div>
         <p class="line" data-t="padsLine"></p>
         <div class="pads" id="pads"></div>
+        <p class="line" id="stepLine" data-t="stepLine" hidden></p>
         <div class="row" style="margin-top:.8rem">
           <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel"></select></label>
           <label class="field"><span class="plab" data-t="rhythmLab"></span><select id="rhythmSel"></select></label>
@@ -267,11 +269,15 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <span class="range" id="fretsOut" aria-live="polite"></span>
           <button type="button" class="pbtn" id="upBtn"></button>
           <button type="button" class="pbtn" id="muteBtn"></button>
+          <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
+          <span id="recTime" hidden>0:00</span>
         </div>
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine"></p>
+        <p class="line" id="recLine" aria-live="polite"></p>
+        <div id="takes"></div>
       </div>
 
       <div class="blk">
@@ -289,8 +295,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
+        <p class="line" id="padsLine" aria-live="polite"></p>
       </div>
     </section>
   </main>
@@ -307,7 +315,7 @@ const LKEY="aog."+INST+".v1";
 /* the strings, low to high, as note numbers: a guitar E A D G B E, a bass E A D G */
 const TUNING=GTR?[40,45,50,55,59,64]:[28,33,38,43];
 const MAXF=15;                                   /* the highest fret on the neck */
-const RHYTHMS=GTR?["hold","down","folk","pick","reggae"]:["root","steady","eighths","fifth","walk","octave"];
+const RHYTHMS=GTR?["hold","down","folk","pick","reggae","chug","gallop"]:["root","steady","eighths","fifth","walk","octave"];
 const S={ lang:"en", sound:GTR?"steel":"finger", key:0, minor:false, preset:"", prog:[], own:false, rhythm:RHYTHMS[0], bpm:90,
   fret0:1, era:0, vol:0.8, withDrums:false, playing:false, hand:null };
 try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
@@ -353,6 +361,7 @@ const STR={
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine: GTR?{en:"Tap a pad to strum a chord. Every pad fits this key.",es:"Toca un pad para rasguear un acorde. Todos los pads van con este tono."}
                :{en:"Tap a pad to play the chord's low note. Every pad fits this key.",es:"Toca un pad para tocar la nota grave del acorde. Todos los pads van con este tono."},
+  stepLine:{en:"Each number is the chord's step in the scale. In a minor key, there is no pad 2: that chord sounds tense.",es:"Cada número es el paso del acorde en la escala. En un tono menor no hay pad 2: ese acorde suena tenso."},   /* AOG-PADS-STEPS-V1: why a minor key skips pad 2 (Jimmy, 2026-10-03: "the numbers are off") */
   wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
   wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
   wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
@@ -395,6 +404,9 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  padsBtn: GTR?{en:"Send chords to the drum machine",es:"Enviar acordes a la caja de ritmos"}:{en:"Send the low notes to the drum machine",es:"Enviar las notas graves a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
+  padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
   credit: GTR?{en:"Every guitar here is built on this page: a plucked string, made with math. Nothing to download.",es:"Cada guitarra aquí se crea en esta página: una cuerda pulsada, hecha con matemáticas. No hay nada que descargar."}
              :{en:"Every bass here is built on this page: a plucked string, made with math. Nothing to download.",es:"Cada bajo aquí se crea en esta página: una cuerda pulsada, hecha con matemáticas. No hay nada que descargar."},
@@ -415,6 +427,10 @@ const SOUNDS = GTR ? {
           s:{sr:32000, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.0, pos:0.12, bright:0.7, soft:0.5, noise:0.3, pol2:0.25, atk:0.06, atkLp:0.5, pick:0.16, durMax:6, body:[["highpass",80,0.7,0]]}},
   crunch:{grp:"grpElectric", en:"Electric guitar · crunch", es:"Guitarra eléctrica · crujiente", kind:"pluck", amp:"crunch", gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.03,
           s:{sr:32000, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.0, pos:0.11, bright:0.75, soft:0.55, noise:0.35, pol2:0.25, atk:0.06, atkLp:0.5, pick:0.11, durMax:6, body:[["highpass",80,0.7,0]]}},
+  /* AOG-GUITAR-METAL-V1 (2026-10-03) — Jimmy: "Can we have a guitar that sounds heavy like PANTERA, LAMB OF GOD, style". The
+     bridge pickup (bright, picked near the bridge, a long ring) into the high-gain amp; its chords are power chords */
+  metal: {grp:"grpElectric", en:"Electric guitar · heavy metal", es:"Guitarra eléctrica · metal pesado", kind:"pluck", amp:"metal", power:true, gain:1, rev:0.06, lp:2600, lpSpan:2.6, damp:0.03,
+          s:{sr:32000, T0:12, fref:82, Texp:0.5, Tmin:2.5, Tmax:12, Thf:0.55, Thmax:1.0, pos:0.09, bright:0.8, soft:0.55, noise:0.35, pol2:0.22, atk:0.07, atkLp:0.55, pick:0.09, durMax:6, body:[["highpass",80,0.7,0]]}},
   jazz:  {grp:"grpElectric", en:"Jazz guitar", es:"Guitarra de jazz", kind:"pluck", amp:"jazz", gain:1, rev:0.14, lp:1300, lpSpan:2.6, damp:0.04,
           s:{sr:32000, T0:6, fref:82, Texp:0.55, Tmin:1.6, Tmax:7, Thf:0.25, Thmax:0.16, pos:0.2, bright:0.28, soft:0.32, noise:0.12, pol2:0.25, atk:0.04, atkLp:0.3, pick:0.27, durMax:5, body:[["highpass",70,0.7,0]]}}
 } : {
@@ -478,7 +494,9 @@ const RHYTHM_WORDS = GTR ? {
   down:{en:"Down strums · four a bar",es:"Rasgueos hacia abajo · cuatro por compás"},
   folk:{en:"Folk · down, down-up, up-down-up",es:"Folk · abajo, abajo-arriba, arriba-abajo-arriba"},
   pick:{en:"Fingerpicking · one string at a time",es:"Punteo · una cuerda a la vez"},
-  reggae:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"}
+  reggae:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"},
+  chug:{en:"Chug · short muted strums, metal",es:"Chug · rasgueos cortos y apagados, metal"},          /* AOG-GUITAR-METAL-V1 */
+  gallop:{en:"Gallop · da-ga-da, metal",es:"Galope · ta-ca-ta, metal"}
 } : {
   root:{en:"Root · one long note a bar",es:"Raíz · una nota larga por compás"},
   steady:{en:"Steady · four notes a bar",es:"Constante · cuatro notas por compás"},
@@ -520,9 +538,24 @@ function shapesFor(c){
    none of them fits, findVoicing builds one that does, so every chord can be played wherever the hand is */
 const VOICINGS=new Map();
 function fits(f, a, b){ return f.every(x=>x<0 || (x===0 ? a<=2 : (x>=a && x<=b))); }
+/* AOG-GUITAR-METAL-V1: a power chord is the root, its fifth and the root again, on the lowest strings that fit where the
+   hand is (the E string first, then A, then D); no third, so it stays clear through a high-gain amp. When none fits, the
+   ordinary shape plays. */
+function powerFor(c, a, b){
+  const root=((S.key+c.off)%12+12)%12;
+  for(let s=0; s<3; s++){
+    for(let f=0; f<=MAXF-2; f++){
+      if((TUNING[s]+f)%12!==root) continue;
+      const sh=TUNING.map((_,i)=>i===s?f:(i===s+1||i===s+2)?f+2:-1);
+      if(fits(sh, a, b)) return sh;
+    }
+  }
+  return null;
+}
 function shapeFor(c){
-  const [a,b]=win(), key=[S.key,c.off,c.q,a,b].join("|");
+  const [a,b]=win(), pw=!!(SOUNDS[S.sound]&&SOUNDS[S.sound].power), key=[S.key,c.off,c.q,a,b,pw?"p":""].join("|");
   if(VOICINGS.has(key)) return VOICINGS.get(key);
+  if(pw){ const p=powerFor(c, a, b); if(p){ VOICINGS.set(key, p); return p; } }
   let best=null, bs=1e9;
   shapesFor(c).forEach(sh=>{ if(!fits(sh.f, a, b)) return;
     const fr=sh.f.filter(x=>x>0); let sc=0;
@@ -728,7 +761,8 @@ const AMPS={
   crunch:   {hp:150, drive:1.6,  out:0.33, cab:4200, pk:1500, pkDb:4},
   jazz:     {hp:60,  drive:0.2,  out:2.44,  cab:2100, pk:600,  pkDb:2},
   bass:     {hp:28,  drive:0.15, out:8.0,  cab:2800, pk:800,  pkDb:1},
-  bassdrive:{hp:32,  drive:0.9,  out:1.04, cab:3600, pk:1100, pkDb:3}
+  bassdrive:{hp:32,  drive:0.9,  out:1.04, cab:3600, pk:1100, pkDb:3},
+  metal:    {metal:true, out:0.235}     /* the high-gain path (makeChain); out levels it (measured, as the others) */
 };
 function makeChain(c){
   const ch={c:c};
@@ -736,7 +770,22 @@ function makeChain(c){
   ch.ampHp=filt(c,"highpass",80,0.7); ch.drive=c.createGain(); ch.shaper=c.createWaveShaper(); ch.shaper.curve=softClip();
   try{ ch.shaper.oversample="4x"; }catch(e){}
   ch.cab=filt(c,"lowpass",6000,0.7); ch.cabPk=filt(c,"peaking",1400,1); ch.ampOut=c.createGain();
-  ch.amp.connect(ch.ampHp); ch.ampHp.connect(ch.drive); ch.drive.connect(ch.shaper); ch.shaper.connect(ch.cab); ch.cab.connect(ch.cabPk); ch.cabPk.connect(ch.ampOut); ch.ampOut.connect(ch.bus);
+  ch.nIn=gainAt(c,1); ch.amp.connect(ch.nIn); ch.nIn.connect(ch.ampHp); ch.ampHp.connect(ch.drive); ch.drive.connect(ch.shaper); ch.shaper.connect(ch.cab); ch.cab.connect(ch.cabPk); ch.cabPk.connect(ch.ampOut); ch.ampOut.connect(ch.bus);
+  /* AOG-GUITAR-METAL-V1: the high-gain amp, a path of its own, in only for the metal sound. The low end is tightened and the
+     middle pushed before the drive (so a palm-muted low string stays tight), two drive stages with the fizz taken off
+     between them, then the scooped middle these bands are known for, and a 4x12 cabinet */
+  ch.mIn=gainAt(c,0); ch.mOut=gainAt(c,0);
+  if(GTR){
+    const mHp=filt(c,"highpass",140,0.7), mBoost=filt(c,"peaking",820,0.9); mBoost.gain.value=9;
+    const mD1=gainAt(c,16), mS1=c.createWaveShaper(); mS1.curve=softClip(); try{ mS1.oversample="4x"; }catch(e){}
+    const mInter=filt(c,"lowpass",6500,0.6), mHp2=filt(c,"highpass",90,0.6);
+    const mD2=gainAt(c,5), mS2=c.createWaveShaper(); mS2.curve=softClip(); try{ mS2.oversample="4x"; }catch(e){}
+    const mScoop=filt(c,"peaking",650,0.8); mScoop.gain.value=-9;
+    const mLow=filt(c,"lowshelf",110,0.7); mLow.gain.value=4;
+    const mPres=filt(c,"peaking",3200,1); mPres.gain.value=4;
+    const mCab1=filt(c,"lowpass",5200,0.7), mCab2=filt(c,"lowpass",7500,0.5);
+    [ch.amp, ch.mIn, mHp, mBoost, mD1, mS1, mInter, mHp2, mD2, mS2, mScoop, mLow, mPres, mCab1, mCab2, ch.mOut, ch.bus].reduce((x,y)=>{ x.connect(y); return y; });
+  }
   /* the room */
   const cv=c.createConvolver(); cv.buffer=roomIR(c); ch.send.connect(cv);
   const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
@@ -768,6 +817,8 @@ function volGain(v){ return Math.max(0,Math.min(1,v))*0.95; }
 function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
 function setAmp(ch, id){
   const a=AMPS[SOUNDS[id].amp]; if(!a) return;
+  ch.nIn.gain.value=a.metal?0:1; ch.mIn.gain.value=a.metal?1:0; ch.mOut.gain.value=a.metal?a.out:0;   /* AOG-GUITAR-METAL-V1 */
+  if(a.metal) return;
   ch.ampHp.frequency.value=a.hp; ch.drive.gain.value=a.drive; ch.ampOut.gain.value=a.out;
   ch.cab.frequency.value=a.cab; ch.cabPk.frequency.value=a.pk; ch.cabPk.gain.value=a.pkDb;
 }
@@ -906,6 +957,9 @@ function strumEvents(rh){
   if(rh==="folk") return [{t:0,w:"d",v:.78},{t:1,w:"d",v:.68},{t:1.5,w:"u",v:.55},{t:2.5,w:"u",v:.55},{t:3,w:"d",v:.7},{t:3.5,w:"u",v:.55}];
   if(rh==="pick") return [{t:0,w:"b",v:.78},{t:.5,w:3,v:.6},{t:1,w:"a",v:.68},{t:1.5,w:2,v:.58},{t:2,w:"b",v:.74},{t:2.5,w:1,v:.6},{t:3,w:"a",v:.66},{t:3.5,w:2,v:.56}];
   if(rh==="reggae") return [.5,1.5,2.5,3.5].map(x=>({t:x, w:"u", v:.72, chop:.3}));
+  /* AOG-GUITAR-METAL-V1: the hand rests on the strings by the bridge, so each strum is short and thuds (palm muting) */
+  if(rh==="chug") return [0,1,2,3,4,5,6,7].map(i=>({t:i/2, w:"p", v:i%4===0?.82:i%2?.66:.74, chop:i%4===3?.4:.2, mute:true}));
+  if(rh==="gallop") return [0,1,2,3].reduce((o,bt)=>o.concat([{t:bt, w:"p", v:.82, chop:.4, mute:true},{t:bt+.5, w:"p", v:.66, chop:.2, mute:true},{t:bt+.75, w:"p", v:.7, chop:.2, mute:true}]), []);
   return [{t:0, w:"d", v:.76}];
 }
 /* which string plays when, in one bar of a shape; each string rings until it is played again or the bar ends */
@@ -918,8 +972,9 @@ function strumPlan(shp, rh){
     if(ev.w==="d"){ ss=on; sp=rh==="hold"?0.022:0.012; }
     else if(ev.w==="u"){ ss=top.slice(0, Math.min(4, top.length)); sp=0.010; }
     else if(ev.w==="b") ss=[bassS]; else if(ev.w==="a") ss=[alt];
+    else if(ev.w==="p"){ ss=on.slice(0,3); sp=0.006; }
     else ss=[top[Math.min(ev.w-1, top.length-1)]];
-    ss.forEach((s,i)=>out.push({s:s, t:ev.t, off:i*sp, v:ev.v*(1-0.035*i), chop:ev.chop||0}));
+    ss.forEach((s,i)=>out.push({s:s, t:ev.t, off:i*sp, v:ev.v*(1-0.035*i)*(ev.mute?0.7:1), chop:ev.chop||0}));
   });
   out.forEach(p=>{ let next=4; out.forEach(q=>{ if(q.s===p.s && q.t>p.t && q.t<next) next=q.t; }); p.end=p.chop ? p.t+p.chop : next; });
   return out;
@@ -1052,15 +1107,46 @@ async function bounce(){
   btn.disabled=false;
 }
 
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The six chords of the key, each a short hit made
+   the way a pad plays it (on the bass, the chord's low note), go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
+   at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
+function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(GTR&&c.q==="min"?"m":""); }
+async function sendPads(){
+  const line=$("padsLine"), btn=$("padsBtn");
+  btn.disabled=true; line.textContent=t("padsSending");
+  try{
+    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
+    for(const c of pads()){
+      const oc=new OC(1, Math.ceil(LEN*SR), SR), ch=makeChain(oc), stopAt=LEN-0.3;
+      ch.master.gain.value=volGain(0.8); setSound(ch, S.sound); setEra(ch, 0, 0);
+      if(GTR){ const shp=shapeFor(c); let k=0; shp.forEach((f,s)=>{ if(f<0) return; const vc=makeVoice(oc, ch, S.sound, TUNING[s]+f, 0.74*(1-0.03*k), 0.004+k*0.014, s); if(vc) vc.stop(stopAt, Math.max(0.04, vc.tau)); k++; }); }
+      else { const m=bassRoot(c), cl=cellFor(m), vc=makeVoice(oc, ch, S.sound, m, 0.8, 0.004, cl?cl.s:null); if(vc) vc.stop(stopAt, Math.max(0.04, vc.tau)); }
+      const d=(await oc.startRendering()).getChannelData(0);
+      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
+      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
+      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
+    }
+    await AOGHandoff.put("chordpads", {from:INST, name:soundName(S.sound), at:Date.now(), pads:out});
+    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drums")}</a>`;
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    THE PAGE
    ══════════════════════════════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
-/* the five music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
+/* the six music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["decks","music-decks.html","Turntables","Tocadiscos"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]===INST?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
+/* AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". ● Record on the
+   neck keeps what the guitar or the bass plays as a take (aog-recorder.js, the one recorder every music tool shares) */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang,
+  what:GTR?{en:"the guitar",es:"la guitarra"}:{en:"the bass",es:"el bajo"}, prefix:GTR?{en:"Guitar",es:"Guitarra"}:{en:"Bass",es:"Bajo"},
+  file:GTR?{en:"guitar-take",es:"guitarra-toma"}:{en:"bass-take",es:"bajo-toma"}, shelf:INST+"bench", bpm:()=>curBpm(),
+  ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
 function paintText(){
   document.documentElement.setAttribute("lang", S.lang);
   document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });
@@ -1070,7 +1156,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
-  $("sendBtn").textContent=t("send");
+  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn"); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")}</p>`;
@@ -1095,6 +1181,7 @@ function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
+  const sl=document.getElementById("stepLine"); if(sl) sl.hidden=!S.minor;   /* AOG-PADS-STEPS-V1 */
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
     const i=+el.getAttribute("data-i"); let downAt=0;
@@ -1378,6 +1465,7 @@ function bind(){
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=bounce;
+  $("padsBtn").onclick=sendPads;
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };

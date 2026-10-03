@@ -127,6 +127,9 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .simple-row .s-len{margin-left:auto}
 .simple-row .s-reset{border-color:#c4452a;color:#ffb1a4;min-width:0;margin-left:auto}
 .simple-note{color:#ffd9a8;font-size:.9rem;margin:.3rem 0 0}
+/* AOG-CHORD-PADS-V1 — chords sent from the piano, the guitar or the bass */
+.chord-row .cp-list{color:#f3efe6;font:800 1rem/1.2 Georgia,"Times New Roman",serif;letter-spacing:.02em}
+.chord-row .s-chords{border-color:#5b8fd6;color:#cfe2ff;min-width:0;padding:0 .8rem}
 .simple-line{color:#d7cbb8;font-size:.95rem;margin:.2rem 0 .6rem;line-height:1.4}
 @media (max-width:520px){ .simple-strip{grid-template-columns:1fr 1fr} .simple-strip .s-play{grid-column:1 / -1} }
 .machine.simple .sp-keys,.machine.simple .sp-banks,.machine.simple .scope-bezel,.machine.simple .sp-eq,.machine.simple .fader,.machine.simple .seg-label{display:none}
@@ -420,6 +423,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
 <script src="aog-eq.js"></script>
 </head>
 <body>
@@ -460,6 +464,14 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   </div>
   </div>
   <main id="view"></main>
+  <!-- AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". A take of what
+       the machine plays (aog-recorder.js, shared by every music tool). REC on the machine still records into the pattern;
+       this one keeps the sound. paint() sets it under Tempo and Volume, the way it sets the lesson card. -->
+  <div class="aogrec-box no-print" id="takeBox" hidden>
+    <div class="aogrec-row"><button type="button" class="aogrec-b" id="takeBtn" aria-pressed="false"></button><span id="takeTime" hidden>0:00</span></div>
+    <p class="aogrec-line" id="takeLine" aria-live="polite"></p>
+    <div id="takeList"></div>
+  </div>
   <!-- AOG-DRUMS-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card does not sit on top of the tool.
        It lives here, and paint() slips it in under the tempo and volume row on the bench. -->
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
@@ -548,7 +560,11 @@ const STR = {
   clear:{en:"Clear grid",es:"Vaciar"},
   benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
   sPlay:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, sStop:{en:"■ Stop",es:"■ Parar"}, sClear:{en:"Clear the beat",es:"Borrar el ritmo"}, sDecks:{en:"Send to the turntables",es:"Enviar a los platos"},
-  sKit:{en:"Sounds",es:"Sonidos"}, sLen:{en:"Length",es:"Largo"}, sSwing:{en:"Swing",es:"Swing"}, sReset:{en:"Put the kit sounds back",es:"Devolver los sonidos del kit"}, sUndoKit:{en:"Put my sounds back",es:"Devolver mis sonidos"}, sHolds:{en:"Your own samples are on pad",es:"Tus propias muestras están en el pad"}, sPart:{en:"Part",es:"Parte"},
+  sKit:{en:"Sounds",es:"Sonidos"}, sLen:{en:"Length",es:"Largo"}, sSwing:{en:"Swing",es:"Swing"}, sReset:{en:"Put the kit sounds back",es:"Devolver los sonidos del kit"}, sUndoKit:{en:"Put my sounds back",es:"Devolver mis sonidos"}, sHolds:{en:"Your own samples are on pad",es:"Tus propias muestras están en el pad"},
+  /* AOG-CHORD-PADS-V1 */ cpFrom_piano:{en:"From the piano",es:"Del piano"}, cpFrom_guitar:{en:"From the guitar",es:"De la guitarra"}, cpFrom_bass:{en:"From the bass",es:"Del bajo"}, cpFrom_band:{en:"From the band",es:"De la banda"},
+  cpPut:{en:"Put them on pads 3 to 8",es:"Ponerlos en los pads 3 a 8"},
+  cpOn:{en:"They are on pads 3 to 8. The kick and snare stay on 1 and 2.",es:"Están en los pads 3 a 8. El bombo y la caja siguen en el 1 y el 2."},
+  cpFull:{en:"The sampler's memory is full. Put the kit sounds back on another kit first.",es:"La memoria del sampler está llena. Primero devuelve los sonidos del kit en otro kit."}, sPart:{en:"Part",es:"Parte"},
   sLine:{en:"Pick a beat, or tap the squares to build one. Then press Play.",es:"Elige un ritmo o toca los cuadros para armar uno. Luego pulsa Tocar."},
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
@@ -1088,7 +1104,8 @@ class Sp12 extends AudioWorkletProcessor {
     const k = this.kit[m.id];
     if(!k) return;
     const data = k.v;
-    if(m.choke){ for(let q=this.active.length-1; q>=0; q--){ if(this.active[q].choke === m.choke) this.active.splice(q,1); } }
+    /* AOG-CHORD-PADS-V1: a choked sound fades out over about 3 ms rather than stopping dead, so it never clicks */
+    if(m.choke){ for(let q=this.active.length-1; q>=0; q--){ const o=this.active[q]; if(o.choke === m.choke && !o.out) o.out=1; } }
     if(this.active.length >= 8) this.active.shift();
     const ratio = Math.pow(2, (m.tune||0)/12);
     this.active.push({
@@ -1138,8 +1155,10 @@ class Sp12 extends AudioWorkletProcessor {
         const tau = Math.max(32, (a.data.length / a.step) * a.decay * 0.42);
         s *= Math.exp(-a.age / tau) * a.level;
         if(!a.raw) s = this.ladder(a, s);   /* outs 1-2 never met a filter chip */
+        if(a.out){ s *= a.out; a.out *= 0.965; }
         mix += s;
         a.pos += a.step;
+        if(a.out && a.out < 0.004) this.active.splice(v,1);
       }
       mix = Math.tanh(mix * 1.25);
       this.dc += 0.002 * (mix - this.dc);
@@ -1173,7 +1192,7 @@ function chanMsg(id, when, accent){
   const tune = Math.max(-24, Math.min(24, (ch.tune||0) + extra));
   const lvl = Math.max(0, Math.min(1, ch.level * (typeof accent === "number" ? velOf(accent) : (accent ? 1 : 0.75))));
   /* one hand cannot hold a hat open and shut it at the same time */
-  const choke = (id==="ch" || id==="oh") ? 1 : 0;
+  const choke = (CHORDPAD[S.bank] && CHORDPAD[S.bank][id] && USER[S.bank] && USER[S.bank][id]) ? 2 : ((id==="ch" || id==="oh") ? 1 : 0);   /* AOG-CHORD-PADS-V1: a chord stops the chord before it */
   const sampled = !!(USER[S.bank] && USER[S.bank][id]);
   const raw = isRawOut(id);
   /* a sampled sound carries no built-in tone — only the output it leaves by */
@@ -1436,7 +1455,7 @@ function paintLang(){
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["decks","music-decks.html","Turntables","Tocadiscos"]];
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(){
@@ -1670,16 +1689,60 @@ function kitBackKeys(cls, full){
   const undo=(S.kitUndo && S.kitUndo.bank===S.bank) ? `<button type="button" class="${cls}"${full?' id="kitUndoBtn"':''} data-kitundo="1">${t("sUndoKit")}</button>` : "";
   return back+undo;
 }
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The piano, the guitar and the bass leave the six
+   chords of their key on the shelf the music tools share, each one a short hit. One tap puts them on pads 3 to 8 of this kit,
+   so the kick and snare stay on 1 and 2 and the chords play in the same beat. They live in the sampler's memory like any sample
+   (ten seconds in all, so each is as long as there is room for, up to 1.4 s); a chord stops the chord before it; and
+   Put my sounds back undoes it. */
+const CHORDPAD=bankObj();
+const CP={take:null, at:0, note:""};
+function chordRow(){
+  const tk=CP.take; if(!tk) return "";
+  const es=S.lang==="es", list=tk.pads.slice(0,6).map(p=>String((es?p.es:p.en)||"")).join(" · ").replace(/</g,"&lt;");
+  return `<div class="simple-row chord-row"><span>${t("cpFrom_"+(STR["cpFrom_"+tk.from]?tk.from:"piano"))}</span><b class="cp-list">${list}</b><button type="button" class="sp-key s-chords" data-chordpads="1">${t("cpPut")}</button></div>`+
+    (CP.note?`<p class="simple-note">${t(CP.note==="full"?"cpFull":"cpOn")}</p>`:"");
+}
+async function putChords(){
+  const tk=CP.take; if(!tk || !tk.pads || tk.pads.length<6) return;
+  try{ await ensureKit("A"); }catch(e){}                    /* the built-in kit's share of the memory is known */
+  const b=S.bank, ids=VOICES.slice(2,8).map(v=>v.id);
+  let free=10-memUsed();
+  ids.forEach(id=>{ const u=USER[b][id]; if(u) free+=u.length/26040; else if(b==="A") free+=ROM_LEN[id]||0; });
+  const each=Math.min(1.4, free/6);
+  if(each<0.3){ CP.note="full"; S.lcdNote="MEM FULL"; paint(); return; }
+  S.kitUndo={bank:b, user:Object.assign({},USER[b]), names:Object.assign({},USER_NAME[b]), trim:JSON.parse(JSON.stringify(S.trim[b]||{})), chord:Object.assign({},CHORDPAD[b])};
+  const n=Math.floor(each*26040), fade=Math.min(n>>2, Math.floor(0.06*26040)), es=S.lang==="es";
+  tk.pads.slice(0,6).forEach((p,i)=>{
+    const src=p.pcm instanceof Float32Array ? p.pcm : new Float32Array(p.pcm||[]), id=ids[i];
+    const a=new Float32Array(Math.max(64, Math.min(n, src.length)));
+    for(let j=0;j<a.length;j++){ const k=a.length-1-j; a[j]=(src[j]||0)*(k<fade?k/fade:1); }
+    USER[b][id]=quantize12(a);
+    USER_NAME[b][id]=String((es?p.es:p.en)||"").replace(/[^a-z0-9#]/gi,"").slice(0,6)||"CHORD";
+    CHORDPAD[b][id]=true;
+    if(S.trim[b]) delete S.trim[b][id];
+  });
+  CP.note="on"; S.lcdNote="CHORDS 3-8";
+  if(engine&&kitReady) pushBank();
+  save(); paint();
+  setTimeout(()=>{ if(S.lcdNote==="CHORDS 3-8"){ S.lcdNote=""; refreshLcd(); } }, 2200);
+}
+async function checkChordPads(){
+  let tk=null; try{ tk=await AOGHandoff.get("chordpads"); }catch(e){}
+  if(!(tk && Array.isArray(tk.pads) && tk.pads.length>=6)) tk=null;
+  const at=tk?(tk.at||1):0; if(at===CP.at) return;
+  CP.take=tk; CP.at=at; CP.note="";
+  paint();
+}
 function kitSoundsBack(){
   const b=S.bank;
   if(!userPads().length) return;
-  S.kitUndo={bank:b, user:USER[b], names:USER_NAME[b], trim:S.trim[b]};
-  USER[b]={}; USER_NAME[b]={}; if(S.trim) S.trim[b]={};
+  S.kitUndo={bank:b, user:USER[b], names:USER_NAME[b], trim:S.trim[b], chord:CHORDPAD[b]};
+  USER[b]={}; USER_NAME[b]={}; CHORDPAD[b]={}; CP.note=""; if(S.trim) S.trim[b]={};
   pushBank(); save(); paint();
 }
 function kitSoundsUndo(){
   const u=S.kitUndo; if(!u) return;
-  USER[u.bank]=u.user; USER_NAME[u.bank]=u.names; S.trim[u.bank]=u.trim;
+  USER[u.bank]=u.user; USER_NAME[u.bank]=u.names; S.trim[u.bank]=u.trim; CHORDPAD[u.bank]=u.chord||{}; CP.note="";
   S.kitUndo=null;
   if(S.bank===u.bank) pushBank();
   save(); paint();
@@ -1724,10 +1787,11 @@ function machineHtml(){
     </div>
     <div class="pick-row">${starterRow()}
     <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${BANKS.map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${kitBackKeys("sp-key s-reset")}</div></div>
+    ${chordRow()}
     ${userPads().length?`<p class="simple-note">${t("sHolds")} ${userPads().map(v=>(padIndex(v)+1)+" · "+(USER_NAME[S.bank][v]||"SAMP")).join(", ")}.</p>`:""}
     <div class="simple-row"><span>${t("sPart")}</span>${Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-simple-seg="${i}">${i+1}</button>`).join("")}<button type="button" class="sp-key s-len" data-simple-press="lenBtn">${t("sLen")} ${segLen()}</button><button type="button" class="sp-key s-swing" data-simple-press="swingBtn">${t("sSwing")} ${swingPct()}%</button><button type="button" class="sp-key s-roll${S.roll!=="off"?" on":""}" data-simple-press="rollBtn">${t("sRoll")} ${rollWord()}</button></div>
     ${eraRow()}
-    <p class="simple-line">${t("sLine")}${S.roll!=="off"?" "+t("rollTip"):""}</p>`:`${starterRow()}${eraRow()}${S.roll!=="off"?`<p class="simple-line">${t("rollTip")}</p>`:""}`;
+    <p class="simple-line">${t("sLine")}${S.roll!=="off"?" "+t("rollTip"):""}</p>`:`${starterRow()}${chordRow()}${eraRow()}${S.roll!=="off"?`<p class="simple-line">${t("rollTip")}</p>`:""}`;
   return `<div class="machine no-print${simple?" simple":""}">
     <div class="chassis-top">
       <div class="screws"><span class="screw"><i></i></span><span class="screw"><i></i></span></div>
@@ -2436,6 +2500,11 @@ function lessonsView(){
     </div>`;
 }
 
+/* AOG-MUSIC-REC-V1: ● Record a take (aog-recorder.js); a take goes to the turntables on a shelf of its own, so it never
+   stands in for the beat the other tools play along with */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>limiter, lang:()=>S.lang, what:{en:"the drum machine",es:"la caja de ritmos"},
+  prefix:{en:"Drums",es:"Ritmos"}, file:{en:"drums-take",es:"ritmos-toma"}, shelf:"drumtake", bpm:()=>S.bpm,
+  label:{en:"● Record a take",es:"● Grabar una toma"}, ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 function paint(){
   S.view=hash();
   if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
@@ -2452,12 +2521,15 @@ function paint(){
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.documentElement.lang=S.lang;   /* the top bar reads this; without it a Spanish visit was flipped back to English */
   const map={home:homeView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
-  { const vw=document.getElementById("view"), lb=document.getElementById("lessons");
+  { const vw=document.getElementById("view"), lb=document.getElementById("lessons"), tb=document.getElementById("takeBox");
     if(lb && vw.contains(lb)) vw.after(lb);                             /* AOG-DRUMS-LESSONS-BELOW-V1: keep the card safe … */
+    if(tb && vw.contains(tb)) vw.after(tb);                             /* AOG-MUSIC-REC-V1: and the takes, so one playing back keeps playing */
     vw.innerHTML=(map[S.view]||homeView)();
-    const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb); }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
+    const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb);
+    if(tb){ if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`;
   bind();
+  REC.paint();
   paintLessonBox();
 }
 
@@ -2606,6 +2678,7 @@ async function takeSample(file){
     q=q.slice(0, end+1);
     USER[S.bank][id]=q;
     USER_NAME[S.bank][id]=(file.name||"SAMP").replace(/\.[^.]+$/,"").replace(/[^a-z0-9]/gi,"").slice(0,6).toUpperCase()||"SAMP";
+    if(CHORDPAD[S.bank]) delete CHORDPAD[S.bank][id];   /* AOG-CHORD-PADS-V1 */
     pushPad(id);
     S.lcdNote="END "+(q.length/26040).toFixed(2)+"s";
     save();
@@ -2699,7 +2772,7 @@ function sessionObject(){
     VOICES.forEach(v=>{
       const u=USER[b]&&USER[b][v.id];
       if(!u) return;
-      bank[v.id]={name:(USER_NAME[b]&&USER_NAME[b][v.id])||"SAMP", pcm:packI16(u).buffer};
+      bank[v.id]={name:(USER_NAME[b]&&USER_NAME[b][v.id])||"SAMP", pcm:packI16(u).buffer, chord:(CHORDPAD[b]&&CHORDPAD[b][v.id])?1:0};
     });
     if(Object.keys(bank).length) samples[b]=bank;
   });
@@ -2738,7 +2811,7 @@ function applySession(o, quiet){
     if(typeof c.decay==="number") ch.decay=Math.max(0.2, Math.min(1, c.decay));
     if(typeof c.cutoff==="number") ch.cutoff=Math.max(0, Math.min(1, c.cutoff));
   });
-  BANKS.forEach(b=>{ USER[b]={}; USER_NAME[b]={}; });
+  BANKS.forEach(b=>{ USER[b]={}; USER_NAME[b]={}; CHORDPAD[b]={}; });
   let dropped=false;
   BANKS.forEach(b=>{
     const bank=o.samples&&o.samples[b]; if(!bank) return;
@@ -2749,7 +2822,8 @@ function applySession(o, quiet){
       if(f.length>cap) f=f.slice(0, cap);
       if(f.length/26040 > 10-memUsed()+0.01){ dropped=true; return; }
       USER[b][v.id]=f;
-      USER_NAME[b][v.id]=String(slot.name||"SAMP").replace(/[^a-z0-9]/gi,"").slice(0,6).toUpperCase()||"SAMP";
+      USER_NAME[b][v.id]=slot.chord ? (String(slot.name||"CHORD").replace(/[^a-z0-9#]/gi,"").slice(0,6)||"CHORD") : (String(slot.name||"SAMP").replace(/[^a-z0-9]/gi,"").slice(0,6).toUpperCase()||"SAMP");
+      if(slot.chord) CHORDPAD[b][v.id]=true;
     });
   });
   if(engine&&kitReady) pushBank();
@@ -2769,7 +2843,7 @@ function exportSession(){
     VOICES.forEach(v=>{
       const u=USER[b]&&USER[b][v.id];
       if(!u) return;
-      bank[v.id]={name:(USER_NAME[b]&&USER_NAME[b][v.id])||"SAMP", pcm:u8ToB64(packI16(u))};
+      bank[v.id]={name:(USER_NAME[b]&&USER_NAME[b][v.id])||"SAMP", pcm:u8ToB64(packI16(u)), chord:(CHORDPAD[b]&&CHORDPAD[b][v.id])?1:0};
     });
     if(Object.keys(bank).length) samples[b]=bank;
   });
@@ -2882,6 +2956,7 @@ function bind(){
     setTimeout(()=>{ b.textContent=(b.classList.contains("s-len")?t("sLen")+" "+segLen():t("sSwing")+" "+swingPct()+"%"); },0); });
   document.querySelectorAll("[data-resetkit]").forEach(b=>b.onclick=kitSoundsBack);     /* AOG-DRUM-KITBACK-V2: both benches */
   document.querySelectorAll("[data-kitundo]").forEach(b=>b.onclick=kitSoundsUndo);
+  document.querySelectorAll("[data-chordpads]").forEach(b=>b.onclick=putChords);   /* AOG-CHORD-PADS-V1 */
   document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
@@ -3237,6 +3312,10 @@ document.addEventListener("visibilitychange", ()=>{ if(document.hidden){ holdNon
   }catch(e){}
 })();
 paint();
+/* AOG-CHORD-PADS-V1 — chords from the piano, the guitar or the bass, on the shelf the music tools share */
+checkChordPads();
+try{ AOGHandoff.listen(function(key){ if(key==="chordpads") checkChordPads(); }); }catch(e){}
+window.addEventListener("focus", checkChordPads);
 let benchReady=false;
 idbGet().then(function(o){
   benchReady=true;

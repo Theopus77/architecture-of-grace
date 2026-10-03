@@ -250,6 +250,7 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -300,6 +301,7 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         </div>
         <p class="line" data-t="padsLine"></p>
         <div class="pads" id="pads"></div>
+        <p class="line" id="stepLine" data-t="stepLine" hidden></p>
         <div class="row" style="margin-top:.8rem">
           <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel"></select></label>
           <label class="field"><span class="plab" data-t="rhythmLab"></span><select id="rhythmSel"></select></label>
@@ -342,6 +344,8 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
           <button type="button" class="pbtn" id="upBtn"></button>
           <button type="button" class="pbtn" id="susBtn" aria-pressed="false"></button>
           <button type="button" class="pbtn" id="midiBtn" hidden></button>
+          <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
+          <span id="recTime" hidden>0:00</span>
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="kbd" id="kbd" role="group"></div>
@@ -349,6 +353,8 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine1"></p>
         <p class="line keys-line" data-t="keysLine2"></p>
+        <p class="line" id="recLine" aria-live="polite"></p>
+        <div id="takes"></div>
       </div>
 
       <div class="blk">
@@ -366,8 +372,10 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
+        <p class="line" id="padsLine" aria-live="polite"></p>
       </div>
     </section>
     <div id="alt" hidden></div>
@@ -439,6 +447,7 @@ const STR={
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine:{en:"Tap a pad to hear a chord. Every pad fits this key.",es:"Toca un pad para oír un acorde. Todos los pads van con este tono."},
+  stepLine:{en:"Each number is the chord's step in the scale. In a minor key, there is no pad 2: that chord sounds tense.",es:"Cada número es el paso del acorde en la escala. En un tono menor no hay pad 2: ese acorde suena tenso."},   /* AOG-PADS-STEPS-V1: why a minor key skips pad 2 (Jimmy, 2026-10-03: "the numbers are off") */
   wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
   wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
   wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
@@ -481,6 +490,9 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  padsBtn:{en:"Send chords to the drum machine",es:"Enviar acordes a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
+  padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
   credit:{en:"Grand piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright and honky-tonk: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). The electric pianos and organs are built on this page.",
           es:"Piano de cola: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical y honky-tonk: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Los pianos eléctricos y los órganos se crean en esta página."},
@@ -522,7 +534,7 @@ const SOUNDS={
   honky:  {grp:"grpPiano", en:"Honky-tonk piano",       es:"Piano honky-tonk",           kind:"sample", set:"upright", honky:true, gain:1.80, rev:0.10},
   epwarm: {grp:"grpEp",    en:"Electric piano · warm",  es:"Piano eléctrico · cálido",   kind:"tine",   gain:0.56, rev:0.12},
   epreed: {grp:"grpEp",    en:"Electric piano · bright",es:"Piano eléctrico · brillante",kind:"reed",   gain:0.72, rev:0.10},
-  ep80:   {grp:"grpEp",    en:"'80s electric piano",    es:"Piano eléctrico de los 80",  kind:"fm",     gain:0.64, rev:0.14},
+  ep80:   {grp:"grpEp",    en:"'80s electric piano",    es:"Piano eléctrico de los 80",  kind:"fm",     gain:0.86, rev:0.14},
   organ:  {grp:"grpOrgan", en:"Rock and jazz organ",    es:"Órgano de rock y jazz",      kind:"organ",  gain:0.42, rev:0.12},
   church: {grp:"grpOrgan", en:"Church organ",           es:"Órgano de iglesia",          kind:"church", gain:0.45, rev:0.55}
 };
@@ -574,9 +586,24 @@ const PRESETS=[
   {id:"epic",    g:"min",  en:"Epic · 1 7 6 7",            es:"Épico · 1 7 6 7",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]}
 ];
 const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
-const RHYTHMS=["hold","pulse","broken","offbeat"];
+/* AOG-PIANO-WAYS-V2 (2026-10-03) — Jimmy: "there be more ways to play the chords!" Eleven now, in three groups as the patterns
+   are; the first four keep their names and places, so the lessons that use them still find them */
+const RHYTHMS=["hold","pulse","eighths","broken","ballad","sweep","oompah","offbeat","boogie","charleston","tresillo"];
 const RHYTHM_WORDS={hold:{en:"Hold · one long chord",es:"Mantener · un acorde largo"}, pulse:{en:"Pulse · four beats",es:"Pulso · cuatro tiempos"},
-  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"}, offbeat:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"}};
+  eighths:{en:"Eight a bar · pop and rock",es:"Ocho por compás · pop y rock"},
+  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"},
+  ballad:{en:"Ballad · rolling up and down",es:"Balada · sube y baja"},
+  sweep:{en:"Sweep · up like a harp",es:"Barrido · sube como un arpa"},
+  oompah:{en:"Oom-pah · march and polka",es:"Um-pa · marcha y polka"},
+  offbeat:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"},
+  boogie:{en:"Boogie-woogie · blues",es:"Boogie-woogie · blues"},
+  charleston:{en:"Charleston · swing and jazz",es:"Charleston · swing y jazz"},
+  tresillo:{en:"Three-three-two · Latin and reggaeton",es:"Tres-tres-dos · latino y reguetón"}};
+const RHYTHM_GROUPS=[[{en:"Steady",es:"Firmes"},["hold","pulse","eighths"]],[{en:"Flowing",es:"Fluidos"},["broken","ballad","sweep"]],
+  [{en:"Dance and groove",es:"Para bailar"},["oompah","offbeat","boogie","charleston","tresillo"]]];
+/* boogie-woogie and the Charleston swing by themselves (the second half of each beat comes a little late); with your drum
+   beat, everything swings as the beat does */
+const RHYTHM_SWING={boogie:0.64, charleston:0.62};
 /* a chord's notes in the middle of the keyboard, moved as little as possible from the last chord */
 let lastVoicing=null;
 function voicing(c, prev){
@@ -794,10 +821,20 @@ function synthVoice(c, ch, snd, m, v, when){
     a.car.connect(drive); drive.connect(sh); sh.connect(amp); nodes.push(a.car,a.mod);
     amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
     tau=0.06;
-  } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: two stacks, a shimmer and a ping */
-    const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when), b=fmPair(c,f,14, 1.6*vv, 0, 0.02, when, 1.0035);
-    const ag=c.createGain(), bg=c.createGain(); ag.gain.value=0.7; bg.gain.value=0.42;
-    a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); nodes.push(a.car,a.mod,b.car,b.mod);
+  } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: a round body, a bell-like ping that fades fast, and a faint shimmer */
+    /* AOG-PIANO-EP80-V2 (2026-10-03) — Jimmy: "On the electric piano, it sounds a bit iffy". The ping's voice sat 6 cents sharp
+       at full strength for the whole note, so every note swelled and dipped by about 10 dB (the warm and bright pianos: 1 to 3).
+       Now the ping is in tune and fades within a moment; the shimmer is a much quieter voice only 1.2 cents sharp. The ping's
+       partner sits 14 times higher, or less for the top notes, so it stays under the highest pitch the sound engine can make
+       (above that, a tone folds back as a harsh one). */
+    const r=f*14<15000 ? 14 : Math.max(3, Math.floor(15000/f));
+    const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when);
+    const b=fmPair(c,f,r, (0.2+0.5*vv)*Math.min(1, Math.sqrt(1200/f))*r, 0, 0.06, when);
+    const sh=fmPair(c,f,1, 0.3, 0.1, 0.8, when, 1.0007);
+    const ag=gainAt(c,0.7), bg=gainAt(c,0.36), sg=gainAt(c,0.08);
+    bg.gain.setValueAtTime(0.36, when); bg.gain.setTargetAtTime(0.03, when, 0.18);
+    a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); sh.car.connect(sg); sg.connect(amp);
+    nodes.push(a.car,a.mod,b.car,b.mod,sh.car,sh.mod);
     amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
     tau=0.09;
   } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out */
@@ -910,11 +947,26 @@ function padUp(i){
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.remove("hit");
   paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
 }
-/* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high */
-function barEvents(rhythm, n){
+/* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high (past the
+   top, the same notes an octave up); bi = a note this many steps from the bass note; ns = keeps time even when it swings */
+function barEvents(rhythm, n, chord){
   if(rhythm==="pulse") return [{t:0,w:"b",d:1.9,v:0.8},{t:2,w:"b",d:1.9,v:0.75},{t:0,w:"c",d:0.85,v:0.8},{t:1,w:"c",d:0.85,v:0.62},{t:2,w:"c",d:0.85,v:0.72},{t:3,w:"c",d:0.85,v:0.62}];
   if(rhythm==="broken"){ const p=n>3?[0,2,1,3,0,2,1,3]:[0,2,1,2,0,2,1,2]; return [{t:0,w:"b",d:3.9,v:0.78}].concat(p.map((k,i)=>({t:i*0.5,w:k,d:0.95,v:i%2?0.58:0.68}))); }
   if(rhythm==="offbeat") return [{t:0,w:"b",d:0.9,v:0.8},{t:2,w:"b",d:0.9,v:0.75}].concat([0.5,1.5,2.5,3.5].map(x=>({t:x,w:"c",d:0.3,v:0.72})));
+  /* AOG-PIANO-WAYS-V2 */
+  if(rhythm==="eighths") return [{t:0,w:"b",d:1.9,v:0.8},{t:2,w:"b",d:1.9,v:0.76}].concat([0,1,2,3,4,5,6,7].map(i=>({t:i*0.5,w:"c",d:0.42,v:i===0?0.8:i%2?0.54:0.7})));
+  if(rhythm==="ballad"){ const top=n>3?3:2;          /* the bass, its fifth and its octave, then the chord up and back, each note left ringing */
+    return [{t:0,w:"b",d:3.9,v:0.76},{t:0.5,bi:7,d:3.4,v:0.58},{t:1,bi:12,d:2.9,v:0.6},{t:1.5,w:0,d:1.4,v:0.64},{t:2,w:1,d:1.4,v:0.6},
+            {t:2.5,w:top,d:1.3,v:0.66},{t:3,w:1,d:0.9,v:0.58},{t:3.5,w:0,d:0.45,v:0.55}]; }
+  if(rhythm==="sweep"){                                /* from the bass up through the chord to its top an octave higher, quick as a harp */
+    const seq=[{bi:0},{bi:7},{bi:12}]; for(let k=0;k<=n;k++) seq.push({w:k});
+    return seq.map((x,i)=>Object.assign({t:i*0.125, d:3.9-i*0.125, v:0.5+0.035*i, ns:true}, x)); }
+  if(rhythm==="oompah") return [{t:0,w:"b",d:0.9,v:0.82},{t:1,w:"c",d:0.6,v:0.64},{t:2,bi:-5,d:0.9,v:0.76},{t:3,w:"c",d:0.6,v:0.62}];
+  if(rhythm==="boogie"){                               /* the left hand walks: 1 3 5 6 ♭7 6 5 3, while the right hand answers on 2 and 4 */
+    const third=(chord && Q[chord.q][1]===3) ? 3 : 4, walk=[0,third,7,9,10,9,7,third];
+    return walk.map((bi,i)=>({t:i*0.5, bi:bi, d:0.45, v:i%2?0.62:0.78})).concat([{t:1,w:"c",d:0.4,v:0.62},{t:3,w:"c",d:0.4,v:0.6}]); }
+  if(rhythm==="charleston") return [{t:0,w:"b",d:1.4,v:0.8},{t:2,bi:-5,d:1.4,v:0.74},{t:0,w:"c",d:0.9,v:0.78},{t:1.5,w:"c",d:0.45,v:0.7},{t:2,w:"c",d:0.9,v:0.74},{t:3.5,w:"c",d:0.45,v:0.68}];
+  if(rhythm==="tresillo") return [{t:0,w:"b",d:1.4,v:0.82},{t:1.5,w:"b",d:1.4,v:0.72},{t:3,w:"b",d:0.9,v:0.76},{t:0,w:"c",d:0.5,v:0.76},{t:1.5,w:"c",d:0.5,v:0.68},{t:3,w:"c",d:0.45,v:0.72}];
   return [{t:0,w:"b",d:3.85,v:0.75},{t:0,w:"c",d:3.85,v:0.68}];
 }
 /* schedule bar k of the pattern on a context and chain; returns the voices it made */
@@ -922,16 +974,16 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   const chord=S.prog[k%S.prog.length]; if(!chord) return [];
   const vo=voicing(chord, prevRef.v); prevRef.v=vo;
   const beat=barSec/4, out=[];
-  barEvents(S.rhythm, vo.length).forEach(ev=>{
-    const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
-    const when=t0+ev.t*beat+late, notes=ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[vo[Math.min(ev.w, vo.length-1)]];
+  barEvents(S.rhythm, vo.length, chord).forEach(ev=>{
+    const late=(!ev.ns && ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
+    const when=t0+ev.t*beat+late, notes=ev.bi!=null?[bassOf(chord)+ev.bi]:ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[ev.w<vo.length?vo[ev.w]:vo[ev.w-vo.length]+12];
     notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when); if(vc){ vc.stop(when+ev.d*beat, vc.tau); vc.m=m; vc.on=when; vc.off=when+ev.d*beat; out.push(vc); } });
   });
   return out;
 }
 const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], prev:{v:null}, drum:null, cur:-1, vo:{}};
 function curBpm(){ return (S.withDrums && DRUM.take) ? DRUM.take.bpm : S.bpm; }
-function curSwing(){ return (S.withDrums && DRUM.take && typeof DRUM.take.swing==="number") ? DRUM.take.swing : 0.5; }
+function curSwing(){ return (S.withDrums && DRUM.take && typeof DRUM.take.swing==="number") ? DRUM.take.swing : (RHYTHM_SWING[S.rhythm]||0.5); }
 async function start(){
   if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
   const c=ctx();
@@ -996,6 +1048,13 @@ function wavBlob(L, R, sr){
     v.setInt16(o,l<0?l*0x8000:l*0x7fff,true); v.setInt16(o+2,r<0?r*0x8000:r*0x7fff,true); o+=4; }
   return new Blob([ab],{type:"audio/wav"});
 }
+/* AOG-PIANO-REC-V1 → AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the piano plays as a take (aog-recorder.js,
+   the one recorder every music tool shares: never a microphone, full strength whatever the Volume, up to five minutes, the
+   last three takes to hear, save as .wav or send to the turntables) */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
+  prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
+  ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+
 async function bounce(){
   const line=document.getElementById("sendLine"), btn=document.getElementById("sendBtn");
   if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
@@ -1030,6 +1089,33 @@ async function bounce(){
   btn.disabled=false;
 }
 
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The six chords of the key, each a short hit made
+   the way a pad plays it, go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
+   at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
+function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(c.q==="min"?"m":""); }
+async function sendPads(){
+  const line=$("padsLine"), btn=$("padsBtn");
+  btn.disabled=true; line.textContent=t("padsSending");
+  try{
+    const snd=SOUNDS[S.sound];
+    if(snd.kind==="sample") await loadSet(snd.set, paintLoad);
+    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
+    for(const c of pads()){
+      const oc=new OC(1, Math.ceil(LEN*SR), SR), ch=makeChain(oc);
+      ch.master.gain.value=volGain(0.8); setSendLevel(ch, S.sound); setEra(ch, 0, 0);
+      const notes=voicing(c, null).concat([bassOf(c)]);
+      notes.forEach((m,j)=>{ const vc=makeVoice(oc, ch, S.sound, m, 0.74*(j===notes.length-1?0.85:1), 0.004); if(vc) vc.stop(LEN-0.3, Math.min(vc.tau, 0.12)); });
+      const d=(await oc.startRendering()).getChannelData(0);
+      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
+      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
+      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
+    }
+    await AOGHandoff.put("chordpads", {from:"piano", name:soundName(S.sound), at:Date.now(), pads:out});
+    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drums")}</a>`;
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    THE PAGE
    ══════════════════════════════════════════════════════════════════════════ */
@@ -1043,7 +1129,8 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear"); $("susBtn").textContent=t("sus");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("midiBtn").textContent=t("midi");
-  $("sendBtn").textContent=t("send");
+  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn");
+  REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/piano/CREDITS.txt">${t("credits")}</a></p><p><a href="music-drums.html">${t("drums")}</a> · <a href="music-decks.html">${t("decks")}</a> · <a href="piano-lessons.html">${t("sheets")}</a></p>`;
   $("pgLab").textContent=t("guide"); $("pgSub").textContent=t("pgSub"); $("pgFoot").innerHTML=t("pgFoot");
@@ -1063,10 +1150,11 @@ function paintProgSel(){
     html+=`<option value="${p.id}"${p.id===S.preset?" selected":""}>${S.lang==="es"?p.es:p.en}</option>`; });
   $("progSel").innerHTML=html+(g?"</optgroup>":"");
 }
-function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join(""); }
+function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
+  const sl=document.getElementById("stepLine"); if(sl) sl.hidden=!S.minor;   /* AOG-PADS-STEPS-V1 */
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
     const i=+el.getAttribute("data-i"); let downAt=0;
@@ -1364,6 +1452,7 @@ function bind(){
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(()=>{ save(); lessonsChanged(); },250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=bounce;
+  $("padsBtn").onclick=sendPads;
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
@@ -1659,7 +1748,7 @@ function hashView(){ const v=(location.hash||"").replace(/^#/,""); return VIEWS.
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["decks","music-decks.html","Turntables","Tocadiscos"]];
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(v){

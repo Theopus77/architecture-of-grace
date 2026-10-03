@@ -490,6 +490,16 @@ window.AOG_ROOM_MAP = {
   "confidence": "high",
   "note": "Longer, heavier strings shake more slowly: the bass's low E shakes 41 times a second, an octave below the guitar's."
  },
+ "music-band": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 61 · What Sound Is",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "A wind instrument plays a column of air: the longer the tube, the lower the note. A tuba's tube is about four times as long as a trumpet's, so it sounds two octaves lower."
+ },
  "music-decks": {
   "subject": "Science",
   "band": "6–8",
