@@ -62,6 +62,13 @@ textarea{min-height:84px;resize:vertical}
 .prt{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:12px 0 0;padding:0 20px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:700 16px inherit;font-family:inherit;cursor:pointer}
 .prt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 @media print{.send,.st,.names,.prt{display:none}}
+/* AOG-SLIP-POINTS-V1 — the point sheet: the goals, one card per part of the day, three calm choices per goal */
+.goals{margin:8px 0 0;padding-left:22px}.goals li{margin:0 0 10px}.goals b{display:block}.goals .gh{display:block;color:var(--soft);font-size:15px}
+.pil{display:inline-block;margin-top:3px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--goldInk)}
+.prow{padding:10px 0;border-top:1px solid var(--line)}.prow:first-of-type{border-top:0}
+.pg{display:block;font-weight:700;margin:0 0 6px}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.seg .opt{justify-content:center;text-align:center;min-height:48px;padding:8px 6px;font-size:16px}
 /* AOG-SLIP-SKETCH-V1 — the checklist's drawing: an architect's pencil sketch on drafting paper. Drawn lines are graphite;
    the parts still to come are faint blueprint dashes. It sits on its own paper in both themes. Nothing moves. */
 .artpad{background:linear-gradient(rgba(47,99,184,.07) 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,rgba(47,99,184,.07) 1px,transparent 1px) 0 0/16px 16px,#F7F2E6;border:1px solid rgba(42,38,34,.35);border-radius:10px;padding:8px}
@@ -174,6 +181,29 @@ var SLIPS={
         {id:"ready",kind:"check",q:["Get ready","Prepararme"],o:[["Bath or shower","Baño o ducha"],["Put on my pajamas","Ponerme la pijama"],["Brush my teeth","Cepillarme los dientes"],["Use the bathroom","Ir al baño"],["Fill my water cup","Llenar mi vaso de agua"]]},
         {id:"settle",kind:"check",q:["Settle in","Acomodarme"],o:[["Read or listen to a story","Leer o escuchar un cuento"],["Say a prayer or name one good thing from today","Hacer una oración o decir algo bueno de hoy"],["Lights low and slow breaths","Luz baja y respiraciones lentas"]]},
         {id:"help",kind:"note",q:["Anything on my mind tonight? (optional)","¿Algo en lo que estoy pensando esta noche? (opcional)"]}] },
+  /* AOG-SLIP-POINTS-V1 (2026-10-03) — Jimmy: "Can a behavioral point sheet be made for home and school but in the love and
+     care of Architecture of Grace." The same four goals at school and at home, one for each pillar. Each part of the day
+     is scored Not yet / Building / Built it (0, 1, 2) and every point lays a brick in today's wall. A part not scored
+     does not count against anyone (absent, not yet happened). Every part of the day is a fresh start. A teacher can
+     set their own goals with ?g=Goal one|Goal two (up to five) and today's aim with ?goal=80. */
+  points:{ together:true, k:["At school · Grace point sheet","En la escuela · Hoja de puntos de gracia"], h:["Building my day","Construyendo mi día"],
+    lead:["Fill it in together at each change in the day. Every part of the day is a fresh start. Building lays one brick; Built it lays two.","Llénenla juntos en cada cambio del día. Cada parte del día es un nuevo comienzo. Construyendo pone un ladrillo; Lo logré pone dos."],
+    qs:[{id:"pts",kind:"points",blocks:[["Arrival","Llegada"],["Morning","Mañana"],["Late morning","Media mañana"],["Lunch and recess","Almuerzo y recreo"],["Afternoon","Tarde"],["End of day","Fin del día"]],
+         goals:[{t:["I do my part","Hago mi parte"],h:["I start the work and keep trying.","Empiezo el trabajo y sigo intentando."],p:["Identity","Identidad"]},
+            {t:["Kind words, to others and to me","Palabras amables, para otros y para mí"],h:["I speak kindly, even to myself when it is hard.","Hablo con amabilidad, también a mí mismo cuando cuesta."],p:["Self-Compassion","Autocompasión"]},
+            {t:["I make it right and start fresh","Lo arreglo y empiezo de nuevo"],h:["After a mistake I fix what I can and try again.","Después de un error arreglo lo que puedo y lo intento otra vez."],p:["Forgiveness","Perdón"]},
+            {t:["Safe body, patient heart","Cuerpo seguro, corazón paciente"],h:["I keep hands and feet safe and give others room.","Mantengo manos y pies seguros y doy espacio a los demás."],p:["Grace","Gracia"]}]},
+        {id:"well",kind:"note",q:["One thing that went well today","Algo que salió bien hoy"]},
+        {id:"helped",kind:"pick",max:3,q:["What helped today?","¿Qué ayudó hoy?"],hint:["Pick up to three.","Elige hasta tres."],o:[["A break","Una pausa"],["A reminder","Un recordatorio"],["Someone to talk to","Alguien con quien hablar"],["Moving my body","Mover el cuerpo"],["A quiet spot","Un lugar tranquilo"],["Encouragement","Ánimo"]]}]},
+  homepoints:{ parent:true, k:["At home · Grace point sheet","En casa · Hoja de puntos de gracia"], h:["Building our day at home","Construyendo nuestro día en casa"],
+    lead:["The same four goals as at school. Fill it in together at each change in the day. Every part is a fresh start.","Las mismas cuatro metas que en la escuela. Llénenla juntos en cada cambio del día. Cada parte es un nuevo comienzo."],
+    qs:[{id:"pts",kind:"points",blocks:[["Morning routine","Rutina de la mañana"],["After school","Después de la escuela"],["Homework","La tarea"],["Dinner","La cena"],["Evening","La tarde"],["Bedtime","La hora de dormir"]],
+         goals:[{t:["I do my part","Hago mi parte"],h:["I start the work and keep trying.","Empiezo el trabajo y sigo intentando."],p:["Identity","Identidad"]},
+            {t:["Kind words, to others and to me","Palabras amables, para otros y para mí"],h:["I speak kindly, even to myself when it is hard.","Hablo con amabilidad, también a mí mismo cuando cuesta."],p:["Self-Compassion","Autocompasión"]},
+            {t:["I make it right and start fresh","Lo arreglo y empiezo de nuevo"],h:["After a mistake I fix what I can and try again.","Después de un error arreglo lo que puedo y lo intento otra vez."],p:["Forgiveness","Perdón"]},
+            {t:["Safe body, patient heart","Cuerpo seguro, corazón paciente"],h:["I keep hands and feet safe and give others room.","Mantengo manos y pies seguros y doy espacio a los demás."],p:["Grace","Gracia"]}]},
+        {id:"well",kind:"note",q:["One thing that went well today","Algo que salió bien hoy"]},
+        {id:"helped",kind:"pick",max:3,q:["What helped today?","¿Qué ayudó hoy?"],hint:["Pick up to three.","Elige hasta tres."],o:[["A break","Una pausa"],["A reminder","Un recordatorio"],["Someone to talk to","Alguien con quien hablar"],["Moving my body","Mover el cuerpo"],["A quiet spot","Un lugar tranquilo"],["Encouragement","Ánimo"]]}]},
   team:{ k:["Group work","Trabajo en grupo"], h:["How did our team do?","¿Cómo le fue a nuestro equipo?"],
     lead:["About the team and about you. No one else sees your answers.","Sobre el equipo y sobre ti. Nadie más ve tus respuestas."],
     qs:[{id:"team",kind:"scale",q:["How well did our team work together?","¿Qué tan bien trabajó nuestro equipo?"],o:[["Not well","No bien"],["A little","Un poco"],["Okay","Bien"],["Well","Muy bien"],["Really well","Excelente"]]},
@@ -259,16 +289,35 @@ function artSvg(){ var sc=ART[S.art], c=artSteps(), parts=sc.p, n=Math.round(par
   return '<div class="artpad"><svg viewBox="0 0 320 200" role="img" aria-label="'+esc(label)+'" fill="none" stroke-linecap="round" stroke-linejoin="round">'+g+'</svg></div>'
     +'<p class="artcap">'+(n===parts.length?t("Your drawing is finished.","Tu dibujo está terminado."):t("Your drawing: ","Tu dibujo: ")+n+t(" of "," de ")+parts.length+t(" parts"," partes"))+'</p>'; }
 function artCard(){ return S.art?'<div class="card artcard"><p class="q">'+t("Your drawing","Tu dibujo")+'</p><p class="hint">'+t("Each step you tick draws one more part.","Cada paso que marcas dibuja una parte más.")+'</p><div id="artBox">'+artSvg()+'</div></div>':''; }
+/* AOG-SLIP-POINTS-V1 — the point sheet's parts */
+var PV=[["Not yet","Todavía no"],["Building","Construyendo"],["Built it","Lo logré"]];
+function goalsOf(q){ var g=String(Q.get("g")||""); if(g){ var a=g.split("|").map(function(x){ return x.trim().slice(0,60); }).filter(Boolean).slice(0,5); if(a.length) return a.map(function(x){ return {t:[x,x]}; }); } return q.goals; }
+function aim(){ var g=parseInt(Q.get("goal"),10); return (g>=10&&g<=100)?g:80; }
+function ptsSum(q){ var P=A[q.id]||{}, gs=goalsOf(q), e=0, n=0; q.blocks.forEach(function(b,bi){ gs.forEach(function(g,gi){ var v=P[bi+"-"+gi]; if(v!=null){ e+=v; n++; } }); }); return {earned:e,scored:n,max:2*q.blocks.length*gs.length,pct:n?Math.round(100*e/(2*n)):0}; }
+function wallSvg(q){ var c=ptsSum(q), N=c.max, cols=8, rows=Math.ceil(N/cols), H=rows*16+12, g="";
+  for(var i=0;i<N;i++){ var r=Math.floor(i/cols), col=i%cols, x=8+col*36+(r%2?14:0), y=H-6-(r+1)*16;
+    g+=i<c.earned?'<rect x="'+x+'" y="'+y+'" width="32" height="13" rx="1.5" fill="rgba(47,42,37,.14)" stroke="#2F2A25" stroke-width="1.8"/>'
+      :'<rect x="'+x+'" y="'+y+'" width="32" height="13" rx="1.5" stroke="#2F63B8" stroke-width="1.2" stroke-dasharray="3 4" opacity=".35"/>'; }
+  var label=t("A pencil drawing of a brick wall, ","Un dibujo a lápiz de un muro, ")+c.earned+t(" bricks laid"," ladrillos puestos");
+  return '<div class="artpad"><svg viewBox="0 0 320 '+H+'" role="img" aria-label="'+esc(label)+'" fill="none">'+'<path d="M6 '+(H-6)+'H314" stroke="#2F2A25" stroke-width="2.2" stroke-linecap="round"/>'+g+'</svg></div>'
+    +'<p class="artcap">'+c.earned+t(" bricks laid"," ladrillos puestos")+(c.scored?" · "+c.pct+t("% of the bricks so far","% de los ladrillos hasta ahora"):"")+'</p>'
+    +'<p class="hint" style="margin:4px 0 0">'+(c.scored&&c.pct>=aim()?t("Today's aim is "+aim()+"%. You reached it.","La meta de hoy es "+aim()+"%. La alcanzaste."):t("Today's aim: "+aim()+"%.","Meta de hoy: "+aim()+"%."))+'</p>'; }
+function ptsCards(q){ var gs=goalsOf(q), P=A[q.id]||{};
+  var h='<div class="card"><p class="q">'+t("Our goals today","Nuestras metas de hoy")+'</p><ol class="goals">'+gs.map(function(g){ return '<li><b>'+esc(t(g.t[0],g.t[1]))+'</b>'+(g.h?'<span class="gh">'+esc(t(g.h[0],g.h[1]))+'</span>':'')+(g.p?'<span class="pil">'+esc(t(g.p[0],g.p[1]))+'</span>':'')+'</li>'; }).join("")+'</ol></div>';
+  q.blocks.forEach(function(b,bi){ h+='<div class="card"><p class="q">'+esc(t(b[0],b[1]))+'</p>'+gs.map(function(g,gi){ var k=bi+"-"+gi, v=P[k];
+    return '<div class="prow"><span class="pg">'+esc(t(g.t[0],g.t[1]))+'</span><div class="seg" role="group" aria-label="'+esc(t(b[0],b[1])+" · "+t(g.t[0],g.t[1]))+'">'+PV.map(function(o,i){ return '<button type="button" class="opt pv" data-pq="'+q.id+'" data-pk="'+k+'" data-v="'+i+'" aria-pressed="'+(v===i)+'">'+esc(t(o[0],o[1]))+'</button>'; }).join("")+'</div></div>'; }).join("")+'</div>'; });
+  return h+'<div class="card artcard"><p class="q">'+t("Today's wall","El muro de hoy")+'</p><p class="hint">'+t("Building lays one brick. Built it lays two.","Construyendo pone un ladrillo. Lo logré pone dos.")+'</p><div id="wallBox">'+wallSvg(q)+'</div></div>'; }
 function paint(){
   var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
-  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?(S.parent?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p>'+(S.art?artSvg()+'<p class="lead" style="margin:6px 0 0">'+t("Show your grown-up your drawing.","Muéstrale tu dibujo a un adulto.")+'</p>':'')+'<a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
+  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?((S.parent||S.together)?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p>'+(S.qs.filter(function(q){ return q.kind==="points"; }).map(function(q){ return wallSvg(q); }).join(""))+(S.art?artSvg()+'<p class="lead" style="margin:6px 0 0">'+t("Show your grown-up your drawing.","Muéstrale tu dibujo a un adulto.")+'</p>':'')+'<a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
   var ns=names();
-  h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):t("Your name","Tu nombre"))+'</label>'
+  h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):S.together?t("Student's name","Nombre del estudiante"):t("Your name","Tu nombre"))+'</label>'
     +(ns.length?'<div class="names" style="margin-top:8px">'+ns.map(function(n){ return '<button type="button" data-who="'+esc(n)+'" aria-pressed="'+(n.toLowerCase()===who.toLowerCase())+'">'+esc(n)+'</button>'; }).join("")+'</div>':'')
     +'<input type="text" id="who" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" value="'+esc(who)+'"></div>';
   var gt=Q.get("gt"); if(id==="goal"&&gt) h+='<div class="goalbox">'+t("My goal: ","Mi meta: ")+esc(gt)+'</div>';
   var un=Q.get("u"); if(id==="unit"&&un) h+='<div class="goalbox">'+esc(un)+'</div>';
   S.qs.forEach(function(q){
+    if(q.kind==="points"){ h+=ptsCards(q); return; }
     h+='<div class="card"><p class="q">'+esc(t(q.q[0],q.q[1]))+'</p>'+(q.kind==="check"?'<p class="hint cnt" data-cnt="'+q.id+'">'+cnt(q)+'</p>':q.hint?'<p class="hint">'+esc(t(q.hint[0],q.hint[1]))+'</p>':'<p class="hint"></p>');
     if(q.kind==="note"){ h+='<textarea data-note="'+q.id+'" maxlength="400">'+esc(A[q.id]||"")+'</textarea>'; }
     else{ var multi=q.kind==="pick"||q.kind==="check", cur=A[q.id]; h+='<div class="opts'+(q.kind==="scale"?"":q.kind==="check"?" checks":" chips")+'" role="group">'+q.o.map(function(o,i){ var on=multi?((cur||[]).indexOf(i)>=0):(cur===i); return '<button type="button" class="opt" data-q="'+q.id+'" data-i="'+i+'" aria-pressed="'+on+'">'+(q.kind==="scale"?'<span class="n">'+(i+1)+'</span>':q.kind==="check"?'<span class="box" aria-hidden="true"></span>':'')+esc(t(o[0],o[1]))+'</button>'; }).join("")+'</div>'; }
@@ -277,7 +326,7 @@ function paint(){
   });
   h+=artCard();
   if(S.talk) h+='<div class="card"><label class="talk"><input type="checkbox" id="talk"'+(TALK?' checked':'')+'> '+t("I would like to talk to an adult","Me gustaría hablar con un adulto")+'</label></div>';
-  h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):(S.parent?t("Send to the teacher","Enviar al maestro"):t("Send to my teacher","Enviar a mi maestro")))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
+  h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):((S.parent||S.together)?t("Send to the teacher","Enviar al maestro"):t("Send to my teacher","Enviar a mi maestro")))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
   /* AOG-SLIP-PRINT-V1 — a Print button for a paper copy (screen only) */
   h+='<button type="button" class="prt" id="prt">'+t("Print this slip","Imprimir esta hoja")+'</button>';
   app.innerHTML=h; wire();
@@ -293,6 +342,10 @@ function wire(){
     else A[qid]=(A[qid]===i?null:i);
     b.closest(".opts").querySelectorAll(".opt").forEach(function(x){ var j=+x.getAttribute("data-i"); x.setAttribute("aria-pressed", String(q.kind==="pick"||q.kind==="check"?(A[qid]||[]).indexOf(j)>=0:A[qid]===j)); });
     if(q.kind==="check"){ var c=app.querySelector('[data-cnt="'+qid+'"]'); if(c) c.textContent=cnt(q); var ab=document.getElementById("artBox"); if(ab) ab.innerHTML=artSvg(); } }; });
+  app.querySelectorAll(".pv").forEach(function(b){ b.onclick=function(){ var qid=b.getAttribute("data-pq"), k=b.getAttribute("data-pk"), v=+b.getAttribute("data-v"), P=A[qid]=A[qid]||{};
+    if(P[k]===v) delete P[k]; else P[k]=v;
+    b.parentNode.querySelectorAll(".pv").forEach(function(x){ x.setAttribute("aria-pressed", String(P[k]===+x.getAttribute("data-v"))); });
+    var q=S.qs.filter(function(x){ return x.id===qid; })[0], wb=document.getElementById("wallBox"); if(wb&&q) wb.innerHTML=wallSvg(q); }; });
   var s=document.getElementById("send"); if(s) s.onclick=send;
   var pr=document.getElementById("prt"); if(pr) pr.onclick=function(){ window.print(); };
 }
@@ -300,6 +353,8 @@ function wire(){
 /* a checklist's count, said plainly */
 function cnt(q){ var n=(A[q.id]||[]).length, m=q.o.length; return n===m?t("All "+m+" done","Las "+m+" listas"):t(n+" of "+m+" done",n+" de "+m+" listas"); }
 function readable(){ var out={}, nums={}, done=0, all=0; S.qs.forEach(function(q){ var v=A[q.id];
+  if(q.kind==="points"){ var c=ptsSum(q), gs=goalsOf(q), P=v||{}; out.bricks=c.earned+" of "+(2*c.scored)+" bricks ("+c.pct+"%) · aim "+aim()+"%"; nums.bricks=c.pct;
+    gs.forEach(function(g,gi){ out["goal"+(gi+1)]=g.t[0]+": "+q.blocks.map(function(b,bi){ var x=P[bi+"-"+gi]; return b[0]+" "+(x==null?"–":["Not yet","Building","Built it"][x]); }).join(", "); }); return; }
   if(q.kind==="check"){ var d=(v||[]).slice().sort(), no=q.o.map(function(o,i){ return i; }).filter(function(i){ return d.indexOf(i)<0; }); done+=d.length; all+=q.o.length;
     out[q.id]=(d.length?"Done: "+d.map(function(i){ return q.o[i][0]; }).join("; "):"")+(d.length&&no.length?" · ":"")+(no.length?"Not yet: "+no.map(function(i){ return q.o[i][0]; }).join("; "):""); return; }
   if(v==null||v===""||(Array.isArray(v)&&!v.length)) return;
@@ -322,7 +377,7 @@ function send(){
   var follow=!!(S.follow&&S.follow(Object.keys(r.nums).reduce(function(o,k){ o[k]=r.nums[k]-1; return o; },{ today:r.words.today })));
   var row=S.weekly?weeklyRow(now,d):{ action:"checkin", checkinType:"slip-"+id, slipType:id, studentId:who, respondentId:S.parent?"parent":who, respondentRole:S.parent?"parent":"student",
     timestamp:now.toISOString(), date:d, period:Q.get("period")||"", classId:Q.get("classId")||"", grade:Q.get("grade")||"",
-    note:[r.words.steps,r.words.words,r.words.topic,r.words.help].filter(Boolean).join(" · "), followUp:follow, source:"link",
+    note:[r.words.bricks,r.words.steps,r.words.words,r.words.topic,r.words.help,r.words.well].filter(Boolean).join(" · "), followUp:follow, source:"link",
     extra:JSON.stringify({ series:"slip", slip:id, v:1, lang:ES?"es":"en", answers:r.words, scale:r.nums, goalId:Q.get("goal")||"", goalTitle:Q.get("gt")||"", unit:Q.get("u")||"" }) };
   if(S.weekly) jSet("aog.weekly.mine",(jGet("aog.weekly.mine",[])||[]).concat([{w:S.weekly,who:who,ts:now.toISOString(),answers:JSON.parse(row.extra).answers,talk:TALK}]).slice(-60));
   var mine=jGet("aog.slips.mine",[])||[]; mine.push(Object.assign({},row,{mine:true})); jSet("aog.slips.mine",mine.slice(-300));
