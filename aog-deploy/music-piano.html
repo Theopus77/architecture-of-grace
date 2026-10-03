@@ -58,9 +58,11 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
 .muted{color:var(--muted)}
 .nav{display:flex;gap:4px}
 .nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem}
-/* no selecting, no copy bubble, no double-tap wait on the instrument (AOG-MUSIC-TOUCH-V1) */
-.rig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+/* no selecting, no copy bubble, no magnifier, no double-tap wait anywhere on the piano, like the drum machine (AOG-MUSIC-TOUCH-V1;
+   AOG-PIANO-NO-LOUPE-V1: Jimmy saw the iPad magnifier while tapping notes). Boxes you type in still select. */
+body,.rig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .rig select{-webkit-user-select:auto;user-select:auto}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 
 /* ══ the instrument: a dark stage-piano panel, felt over the keys ══ */
 .rig{position:relative;margin-top:1rem;border-radius:18px;padding:16px 14px 18px;border:1px solid #07080a;color:#ece6da;
@@ -76,6 +78,7 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
 .plab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
 .line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
 .line.note{color:#ffd9a8}
+#midiLine:empty{display:none}   /* the MIDI answer takes room only when there is one */
 .line a{color:#cfe2ff}
 .row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
 .field{display:grid;min-width:0;flex:1 1 15rem}
@@ -304,11 +307,11 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
           <button type="button" class="pbtn" id="susBtn" aria-pressed="false"></button>
           <button type="button" class="pbtn" id="midiBtn" hidden></button>
         </div>
+        <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="kbd" id="kbd" role="group"></div>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine1"></p>
         <p class="line keys-line" data-t="keysLine2"></p>
-        <p class="line" id="midiLine" aria-live="polite"></p>
       </div>
 
       <div class="blk">
@@ -422,8 +425,9 @@ const STR={
   keysLine2:{en:"Hold Shift to keep notes ringing. 1 to 6 play the chord pads. Space starts and stops.",es:"Mantén Shift para que las notas sigan sonando. Del 1 al 6 tocan los pads. La barra espaciadora empieza y para."},
   midi:{en:"Use a MIDI keyboard",es:"Usar un teclado MIDI"},
   midiReady:{en:"MIDI keyboard ready: {name}.",es:"Teclado MIDI listo: {name}."},
-  midiNone:{en:"No MIDI keyboard found. Plug one in, then press the button again.",es:"No se encontró un teclado MIDI. Conéctalo y vuelve a pulsar el botón."},
-  midiNo:{en:"This browser did not allow MIDI. Try Chrome or Edge.",es:"Este navegador no permitió MIDI. Prueba Chrome o Edge."},
+  midiNone:{en:"No MIDI keyboard yet. Plug one in and it shows up here.",es:"Todavía no hay un teclado MIDI. Conéctalo y aparecerá aquí."},
+  midiWait:{en:"Looking for your MIDI keyboard…",es:"Buscando tu teclado MIDI…"},
+  midiNo:{en:"This browser did not let the piano use MIDI. On a computer, try Chrome or Edge.",es:"Este navegador no dejó que el piano use MIDI. En una computadora, prueba Chrome o Edge."},
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
   era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
   eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
@@ -565,8 +569,6 @@ function roomIR(c){
   }
   return ir;
 }
-const NOISE=new WeakMap();
-function noiseBuf(c){ let b=NOISE.get(c); if(b) return b; b=c.createBuffer(1, c.sampleRate, c.sampleRate); const d=b.getChannelData(0), r=seeded(0x13579bdf); for(let i=0;i<d.length;i++) d[i]=r(); NOISE.set(c,b); return b; }
 function eraHz(e){ return Math.exp(Math.log(18000)*(1-e)+Math.log(8500)*e); }
 function makeChain(c){
   const ch={c:c};
@@ -695,48 +697,54 @@ function sampleVoice(c, ch, snd, m, v, when){
   return vc;
 }
 function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
+/* AOG-PIANO-LATE-NOTE-V1 (2026-10-03) — Jimmy, on an iPad: "playing the ORGAN, every 4-5 notes I would hear a drum".
+   A note played by hand is timed for "now", and now and then the sound engine first hears it a moment later. Safari can
+   then skip the note's first step ("start at 0"), and a new gain starts at its default of 1: the church organ's breath
+   came out full blast, like a snare, over a thump. So every envelope's gain is made already holding where its sound is
+   a moment in, and a late note just starts a moment late. */
+function gainAt(c, v){ try{ return new GainNode(c, {gain:v}); }catch(e){ const g=c.createGain(); g.gain.value=v; return g; } }
 function fmPair(c, f, ratio, idx0, idx1, tau, when, carrierDetune){
-  const car=osc(c,"sine",f*(carrierDetune||1)), mod=osc(c,"sine",f*ratio), mg=c.createGain();
+  const car=osc(c,"sine",f*(carrierDetune||1)), mod=osc(c,"sine",f*ratio), mg=gainAt(c, f*idx0);
   mg.gain.setValueAtTime(f*idx0, when); mg.gain.setTargetAtTime(f*idx1, when, tau);
   mod.connect(mg); mg.connect(car.frequency); return {car:car, mod:mod};
 }
 let shapeCache=null;
 function softClip(){ if(shapeCache) return shapeCache; const n=1024, cv=new Float32Array(n); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; cv[i]=Math.tanh(1.8*x)/Math.tanh(1.8); } shapeCache=cv; return cv; }
-function synthVoice(c, ch, snd, m, v, when, legato){
+function synthVoice(c, ch, snd, m, v, when){
   const f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), nodes=[];
-  const amp=c.createGain(), rel=c.createGain(); rel.gain.value=1;
+  /* the loudest point of each sound; the quick attacks hold it from the start, the church organ swells up from silence */
+  const peak = snd.kind==="tine"||snd.kind==="fm" ? 0.30*velAmp(vv) : snd.kind==="reed" ? 0.24*velAmp(vv)
+             : snd.kind==="organ" ? 0.16*(0.75+0.25*vv) : 0.14*(0.8+0.2*vv);
+  const amp=gainAt(c, snd.kind==="church"?0:peak), rel=c.createGain(); rel.gain.value=1;
   let dest=amp, tau=0.08;
   const decay=(base, lo, hi)=>Math.max(lo, Math.min(hi, base*Math.pow(261.6/f, 0.4)));
   if(snd.kind==="tine"){                 /* warm electric piano: a bell-like tine over a round body */
     const a=fmPair(c,f,1, 1.0+2.2*vv, 0.25, 0.35, when), b=fmPair(c,f,14, 1.3*vv, 0, 0.03, when);
     const bg=c.createGain(); bg.gain.value=0.35; a.car.connect(amp); b.car.connect(bg); bg.connect(amp);
     nodes.push(a.car,a.mod,b.car,b.mod);
-    const peak=0.30*velAmp(vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.9,0.6,4.5));
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.9,0.6,4.5));
     tau=0.07;
   } else if(snd.kind==="reed"){          /* bright electric piano: a reed that barks when you dig in */
     const a=fmPair(c,f,1, 1.8+3.2*vv, 0.7, 0.45, when);
     const sh=c.createWaveShaper(); sh.curve=softClip(); const drive=c.createGain(); drive.gain.value=0.7+1.6*vv;
     a.car.connect(drive); drive.connect(sh); sh.connect(amp); nodes.push(a.car,a.mod);
-    const peak=0.24*velAmp(vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
     tau=0.06;
   } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: two stacks, a shimmer and a ping */
     const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when), b=fmPair(c,f,14, 1.6*vv, 0, 0.02, when, 1.0035);
     const ag=c.createGain(), bg=c.createGain(); ag.gain.value=0.7; bg.gain.value=0.42;
     a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); nodes.push(a.car,a.mod,b.car,b.mod);
-    const peak=0.30*velAmp(vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
     tau=0.09;
-  } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out, a click, and a percussion ping */
+  } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out */
+    /* a key makes one sound, the organ's (Jimmy, 2026-10-03: "a drum sound happens prior to the organ sounds … hitting the keys
+       should not make a secondary sound"): no key click, no percussion ping, and a soft 8 ms start so nothing thumps */
     const o=osc(c,"sine",f/2); o.setPeriodicWave(organWave(c)); o.connect(amp); nodes.push(o);
-    const peak=0.16*(0.75+0.25*vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.005);
-    if(!legato){ const p=osc(c,"sine",f*3), pg=c.createGain(); pg.gain.setValueAtTime(0.09, when); pg.gain.setTargetAtTime(0, when, 0.18); p.connect(pg); pg.connect(amp); nodes.push(p); }
-    const k=c.createBufferSource(); k.buffer=noiseBuf(c); const kh=c.createBiquadFilter(); kh.type="highpass"; kh.frequency.value=1200;
-    const kg=c.createGain(); kg.gain.setValueAtTime(0.05, when); kg.gain.setTargetAtTime(0, when, 0.002); k.connect(kh); kh.connect(kg); kg.connect(amp); k.start(when); k.stop(when+0.03);
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.008);
     dest=amp; tau=0.02;
-  } else {                               /* church organ: pipes that take a moment to speak, in a big room */
+  } else {                               /* church organ: pipes that take a moment to speak, in a big room (one sound: no breath noise) */
     const o=osc(c,"sine",f/2); o.setPeriodicWave(churchWave(c)); o.connect(amp); nodes.push(o);
-    const peak=0.14*(0.8+0.2*vv); amp.gain.setValueAtTime(0, when); amp.gain.setTargetAtTime(peak, when, 0.035);
-    const k=c.createBufferSource(); k.buffer=noiseBuf(c); const kb=c.createBiquadFilter(); kb.type="bandpass"; kb.frequency.value=Math.min(9000,f*4); kb.Q.value=2;
-    const kg=c.createGain(); kg.gain.setValueAtTime(0.06, when); kg.gain.setTargetAtTime(0, when, 0.03); k.connect(kb); kb.connect(kg); kg.connect(amp); k.start(when); k.stop(when+0.25);
+    amp.gain.setValueAtTime(0, when); amp.gain.setTargetAtTime(peak, when, 0.035);
     tau=0.12;
   }
   const lvl=c.createGain(); lvl.gain.value=snd.gain;
@@ -756,13 +764,13 @@ function waveFrom(c, key, levels){ let w=WAVES.get(c)||{}; if(w[key]) return w[k
 const DB=n=>n?Math.pow(10,-(8-n)*3/20):0;
 function organWave(c){ return waveFrom(c,"organ",{1:DB(8),3:DB(8),2:DB(8),4:DB(6)}); }
 function churchWave(c){ return waveFrom(c,"church",{1:0.35,2:1,4:0.55,6:0.25,8:0.35,12:0.18,16:0.12}); }
-function makeVoice(c, ch, id, m, v, when, legato){
+function makeVoice(c, ch, id, m, v, when){
   const snd=SOUNDS[id];
   if(snd.kind==="sample"){
     if(SETS[snd.set].ready){ const vc=sampleVoice(c, ch, snd, m, v, when); if(vc) return vc; }
-    return synthVoice(c, ch, SOUNDS.epwarm, m, v, when, legato);   /* the stand-in while the recordings load */
+    return synthVoice(c, ch, SOUNDS.epwarm, m, v, when);   /* the stand-in while the recordings load */
   }
-  return synthVoice(c, ch, snd, m, v, when, legato);
+  return synthVoice(c, ch, snd, m, v, when);
 }
 
 /* ── the live engine ── */
@@ -790,8 +798,7 @@ function noteOn(tag, m, v){
   if(m<21||m>108) return;
   const c=ctx(), now=c.currentTime, key=tag+m;
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
-  const legato=[...LIVE.values()].some(x=>x.down && SOUNDS[S.sound].kind==="organ");
-  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now, legato);
+  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
   if(!vc) return;
   vc.down=true; LIVE.set(key, vc); track(vc); prune();
   litKeys();
@@ -852,7 +859,7 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   barEvents(S.rhythm, vo.length).forEach(ev=>{
     const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
     const when=t0+ev.t*beat+late, notes=ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[vo[Math.min(ev.w, vo.length-1)]];
-    notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when, false); if(vc){ vc.stop(when+ev.d*beat, vc.tau); out.push(vc); } });
+    notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when); if(vc){ vc.stop(when+ev.d*beat, vc.tau); out.push(vc); } });
   });
   return out;
 }
@@ -1092,6 +1099,8 @@ function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.c
 function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
 function bindKeyboard(){
   const kb=$("kbd");
+  /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
+  [kb, $("pads")].forEach(el=>el.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}));
   kb.addEventListener("pointerdown",(e)=>{
     if(e.button>0) return; e.preventDefault();
     const k=keyAt(e.clientX,e.clientY); if(!k) return;
@@ -1143,13 +1152,16 @@ function midiMsg(e){
 }
 async function useMidi(){
   const line=$("midiLine");
+  /* AOG-PIANO-MIDI-V2 (Jimmy, on an iPad: "nothing changes when you tap the MIDI keyboard"). The sound starts now, inside
+     the tap: an iPad will not start it later for a key on the MIDI keyboard. The answer shows at once, under the buttons. */
+  ctx();
+  line.textContent=t("midiWait");
   try{
     midiAccess=midiAccess||await navigator.requestMIDIAccess();
-    const ins=[...midiAccess.inputs.values()];
-    ins.forEach(i=>{ i.onmidimessage=midiMsg; });
-    midiAccess.onstatechange=()=>{ [...midiAccess.inputs.values()].forEach(i=>{ i.onmidimessage=midiMsg; }); };
-    line.textContent= ins.length ? t("midiReady",{name:ins.map(i=>i.name).join(", ")}) : t("midiNone");
-    ctx();
+    /* listen to every keyboard, and say so again when one is plugged in or taken out */
+    const hook=()=>{ const ins=[...midiAccess.inputs.values()]; ins.forEach(i=>{ i.onmidimessage=midiMsg; });
+      line.textContent= ins.length ? t("midiReady",{name:ins.map(i=>i.name).join(", ")}) : t("midiNone"); };
+    hook(); midiAccess.onstatechange=hook;
   }catch(e){ line.textContent=t("midiNo"); }
 }
 
@@ -1540,8 +1552,8 @@ async function hear(id, btn){
     if(btn) btn.textContent=t("hear");
   }
   const now=c.currentTime+0.05;
-  [60,64,67,72].forEach((m,i)=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.7, now+i*0.22, false); if(vc){ vc.stop(now+1.6, vc.tau); track(vc); } });
-  [48,60,64,67].forEach(m=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.62, now+1.0, false); if(vc){ vc.stop(now+2.8, vc.tau); track(vc); } });
+  [60,64,67,72].forEach((m,i)=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.7, now+i*0.22); if(vc){ vc.stop(now+1.6, vc.tau); track(vc); } });
+  [48,60,64,67].forEach(m=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.62, now+1.0); if(vc){ vc.stop(now+2.8, vc.tau); track(vc); } });
   document.querySelectorAll(".mcard").forEach(el=>el.classList.toggle("on", el.getAttribute("data-id")===id));
   soundUsed(); lessonsChanged();
 }

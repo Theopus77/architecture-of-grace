@@ -234,7 +234,7 @@ FIX = lst("ul", [
     ("<b>Notes keep ringing.</b> Hold notes (pedal) is on. Press it again.", "<b>Las notas siguen sonando.</b> Mantener notas (pedal) está activo. Púlsalo otra vez."),
     ("<b>A phone shows only one octave.</b> Use ◀ Lower and Higher ▶, or turn the phone sideways for more keys.", "<b>Un teléfono muestra solo una octava.</b> Usa ◀ Más grave y Más agudo ▶, o gira el teléfono de lado para ver más teclas."),
     ("<b>A lesson step does not tick.</b> Check that the right lesson is picked. A song's steps tick only while that song is picked.", "<b>Un paso de la lección no se marca.</b> Revisa que esté elegida la lección correcta. Los pasos de una canción solo se marcan mientras esa canción está elegida."),
-    ("<b>No MIDI keyboard found.</b> Use Chrome or Edge. Plug it in first, then press Use a MIDI keyboard.", "<b>No encuentra el teclado MIDI.</b> Usa Chrome o Edge. Conéctalo primero y luego pulsa Usar un teclado MIDI.")])
+    ("<b>No MIDI keyboard yet.</b> Press Use a MIDI keyboard and plug it in. The line under the buttons says when it is ready. No button? This browser cannot use MIDI. On a computer, try Chrome or Edge.", "<b>Todavía no hay un teclado MIDI.</b> Pulsa Usar un teclado MIDI y conéctalo. La línea bajo los botones dice cuándo está listo. ¿No ves el botón? Este navegador no puede usar MIDI. En una computadora, prueba Chrome o Edge.")])
 
 IMG_JS = """<script>
 /* AOG-MASTERING-PIANO-V1 — each picture has a Spanish twin; it follows the page language (the EN/ES switch in the top bar) */
