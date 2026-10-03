@@ -1,0 +1,320 @@
+# -*- coding: utf-8 -*-
+"""AOG-MASTERING-PIANO-V1 (2026-10-03) — mastering-piano.html, the piano's manual.
+
+The same course shape as mastering-drums.html (Jimmy's Mastering course): short lessons done in order with the
+instrument open, each with Try it, Listen for and Check yourself, pictures of the real instrument at the lesson
+that teaches them, a practice plan and a fix-it list. Written in English and Spanish; the words swap with the
+site's EN/ES switch (aog-topbar.js) and each picture swaps with its Spanish twin.
+
+  python3 _work/music/make_mastering_piano.py        (from aog-deploy/)
+"""
+import html, os, re
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
+
+
+def esc(t):
+    return html.escape(t, quote=True)
+
+
+def bl(tag, en, es, attrs=""):
+    """a block in both languages; the text may hold <b>"""
+    return '<%s%s data-en="%s" data-es="%s">%s</%s>' % (tag, attrs, esc(en), esc(es), en, tag)
+
+
+def fig(name, en, es):
+    return ('<figure class="mg-fig"><img src="/%s.png" data-en-src="/%s.png" data-es-src="/%s-es.png" alt="%s" data-en-alt="%s" data-es-alt="%s" loading="lazy">'
+            '<figcaption data-en="%s" data-es="%s">%s</figcaption></figure>' % (name, name, name, esc(en), esc(en), esc(es), esc(en), esc(es), en))
+
+
+def lst(tag, items):
+    return "<%s>%s</%s>" % (tag, "".join(bl("li", a, b) for a, b in items), tag)
+
+
+LESSONS = []
+
+
+def lesson(n, slug, title, intro, figure, tryit, listen, check, extra=None):
+    LESSONS.append(dict(n=n, slug=slug, title=title, intro=intro, figure=figure, tryit=tryit, listen=listen, check=check, extra=extra or []))
+
+
+lesson(1, "find-your-way-around", ("Find your way around", "Conoce el piano"),
+  [("The piano has four parts, from top to bottom: <b>Instrument</b>, <b>Chords</b>, <b>Keys</b>, and the <b>Sound</b> dial.",
+    "El piano tiene cuatro partes, de arriba abajo: <b>Instrumento</b>, <b>Acordes</b>, <b>Teclas</b> y el dial de <b>Sonido</b>.")],
+  ("pp-whole", "The whole piano: Instrument, Chords with six pads, Keys, the Sound dial and Send to the turntables.", "Todo el piano: Instrumento, Acordes con seis pads, Teclas, el dial de Sonido y Enviar a los platos."),
+  [("Open <b>Instrument</b> and pick <b>Grand piano</b>. Wait until the line under it says <b>Ready</b>.", "Abre <b>Instrumento</b> y elige <b>Piano de cola</b>. Espera a que la línea de abajo diga <b>Listo</b>."),
+   ("Tap pad 1, then pad 4, then pad 5, then pad 1 again.", "Toca el pad 1, luego el 4, luego el 5 y otra vez el 1."),
+   ("Tap three keys on the keyboard: one low, one in the middle, one high.", "Toca tres teclas del teclado: una grave, una en el medio y una aguda.")],
+  ("A pad plays three or more notes at once: a chord. A key plays one note.", "Un pad toca tres o más notas a la vez: un acorde. Una tecla toca una nota."),
+  [("I can point to the Instrument menu, the pads, the pattern menu, Play, the keys and the Sound dial.", "Puedo señalar el menú Instrumento, los pads, el menú de patrones, Tocar, las teclas y el dial de Sonido."),
+   ("I heard the difference between a chord and one note.", "Oí la diferencia entre un acorde y una nota.")])
+
+lesson(2, "a-song-in-two-taps", ("A song in two taps", "Una canción en dos toques"),
+  [("A <b>chord pattern</b> is a short list of chords that repeats. Each chord lasts one <b>bar</b>: four beats.",
+    "Un <b>patrón de acordes</b> es una lista corta de acordes que se repite. Cada acorde dura un <b>compás</b>: cuatro pulsos.")],
+  ("pp-pattern", "Start from a chord pattern, set to Pop · 1 5 6 4, and How the chords play, set to Pulse.", "Empieza con un patrón de acordes, en Pop · 1 5 6 4, y Cómo suenan los acordes, en Pulso."),
+  [("Under <b>Start from a chord pattern</b>, pick <b>Pop · 1 5 6 4</b>.", "En <b>Empieza con un patrón de acordes</b>, elige <b>Pop · 1 5 6 4</b>."),
+   ("Press <b>Play the chords</b>. Count 1 2 3 4 out loud.", "Pulsa <b>Tocar los acordes</b>. Cuenta 1 2 3 4 en voz alta."),
+   ("Slide <b>Tempo</b> left, then right.", "Desliza el <b>Tempo</b> a la izquierda y luego a la derecha."),
+   ("Press <b>Stop</b>.", "Pulsa <b>Parar</b>.")],
+  ("A new chord starts on every 1. The chord playing now lights up in your pattern, on the pads and on the keys.", "Un acorde nuevo empieza en cada 1. El acorde que suena ahora se ilumina en tu patrón, en los pads y en las teclas."),
+  [("I can start and stop a pattern.", "Puedo empezar y parar un patrón."), ("I can make it faster and slower.", "Puedo hacerlo más rápido y más lento."),
+   ("I counted four beats for each chord.", "Conté cuatro pulsos por cada acorde.")])
+
+lesson(3, "the-keys-names-and-octaves", ("The keys: names and octaves", "Las teclas: nombres y octavas"),
+  [("The white keys are named <b>C D E F G A B</b>, then the names start again. Each <b>C</b> sits just left of a group of two black keys.",
+    "Las teclas blancas se llaman <b>Do Re Mi Fa Sol La Si</b>, y luego los nombres empiezan otra vez. Cada <b>Do</b> está justo a la izquierda de un grupo de dos teclas negras."),
+   ("From one C to the next is an <b>octave</b>. The small number on each C says which one: <b>C4</b> is middle C. One octave up, the string shakes twice as fast: A4 is 440 times a second, A5 is 880.",
+    "De un Do al siguiente hay una <b>octava</b>. El número pequeño en cada Do dice cuál es: <b>Do4</b> es el Do central. Una octava arriba, la cuerda vibra el doble de rápido: La4 son 440 veces por segundo, La5 son 880.")],
+  ("pp-kbd", "The keys, one octave on a phone: C4 to C5.", "Las teclas, una octava en un teléfono: Do4 a Do5."),
+  [("Find every C you can see.", "Busca cada Do que veas."),
+   ("Play C D E F G A B C going up, then come back down. That is the C major scale.", "Toca Do Re Mi Fa Sol La Si Do subiendo, y luego bajando. Esa es la escala de Do mayor."),
+   ("Press <b>Higher ▶</b> and play C again. Then press <b>◀ Lower</b> twice and play it once more.", "Pulsa <b>Más agudo ▶</b> y toca Do otra vez. Luego pulsa <b>◀ Más grave</b> dos veces y tócalo una vez más.")],
+  ("Notes an octave apart sound like the same note, higher or lower. That is why they share a name.", "Las notas separadas por una octava suenan como la misma nota, más aguda o más grave. Por eso comparten el nombre."),
+  [("I can find C without reading the names.", "Puedo encontrar Do sin leer los nombres."), ("I can play the C major scale up and down.", "Puedo tocar la escala de Do mayor subiendo y bajando."),
+   ("I can move the keyboard up and down an octave.", "Puedo subir y bajar el teclado una octava.")])
+
+lesson(4, "soft-loud-and-the-pedal", ("Touch: soft, loud and the pedal", "El toque: suave, fuerte y el pedal"),
+  [("Where your finger lands sets how hard the note is played. Near the <b>bottom</b> of a key is loud. Near the <b>top</b> is soft. On a computer, click high or low on a key; the letter keys always play medium. A MIDI keyboard sends how hard you press.",
+    "Donde cae tu dedo decide qué tan fuerte suena la nota. Cerca de la parte de <b>abajo</b> de una tecla es fuerte. Cerca de <b>arriba</b> es suave. En la computadora, haz clic arriba o abajo en una tecla; las teclas de letras siempre tocan a medio volumen. Un teclado MIDI envía qué tan fuerte presionas."),
+   ("<b>Hold notes (pedal)</b> works like the right pedal of a real piano: notes keep ringing after you let go. On a computer, hold <b>Shift</b>.",
+    "<b>Mantener notas (pedal)</b> funciona como el pedal derecho de un piano real: las notas siguen sonando cuando sueltas. En la computadora, mantén <b>Shift</b>.")],
+  ("pp-keyrow", "Lower, Higher and Hold notes (pedal).", "Más grave, Más agudo y Mantener notas (pedal)."),
+  [("On the Grand piano, play one key four times, from the top edge to the bottom edge.", "Con el Piano de cola, toca una tecla cuatro veces, del borde de arriba al de abajo."),
+   ("Press <b>Hold notes (pedal)</b>. Play C, E, G, C going up. Let go of every key.", "Pulsa <b>Mantener notas (pedal)</b>. Toca Do, Mi, Sol, Do subiendo. Suelta todas las teclas."),
+   ("Press <b>Hold notes</b> again to lift the pedal.", "Pulsa <b>Mantener notas</b> otra vez para soltar el pedal.")],
+  ("The grand piano gets louder and brighter when you play hard. With the pedal on, the notes ring together until you lift it.", "El piano de cola suena más fuerte y más brillante cuando tocas fuerte. Con el pedal activo, las notas suenan juntas hasta que lo sueltas."),
+  [("I can play soft and loud on purpose.", "Puedo tocar suave y fuerte a propósito."), ("I can turn the pedal on and off.", "Puedo activar y desactivar el pedal.")])
+
+lesson(5, "chords-by-hand", ("Chords by hand: major and minor", "Acordes con la mano: mayor y menor"),
+  [("A chord is three or more notes played together. Play one key, skip one, play one, skip one, play one.",
+    "Un acorde son tres o más notas tocadas juntas. Toca una tecla, salta una, toca una, salta una, toca una."),
+   ("<b>C E G</b> is C major: bright. Move the middle note down one key to <b>E♭</b> and you get C minor: moody.",
+    "<b>Do Mi Sol</b> es Do mayor: brillante. Baja la nota del medio una tecla hasta <b>Mi♭</b> y tienes Do menor: melancólico.")],
+  None,
+  [("Hold C, E and G with your thumb, middle finger and little finger. On a computer, hold A, D and G.", "Mantén Do, Mi y Sol con el pulgar, el dedo medio y el meñique. En la computadora, mantén A, D y G."),
+   ("Slide your middle finger to E♭, the black key just left of E.", "Desliza el dedo medio a Mi♭, la tecla negra justo a la izquierda de Mi."),
+   ("Move the same hand shape up: F A C, then G B D.", "Mueve la misma forma de la mano hacia arriba: Fa La Do, luego Sol Si Re.")],
+  ("Major sounds bright and settled. Minor sounds moody. Only one note changed.", "Mayor suena brillante y tranquilo. Menor suena melancólico. Solo cambió una nota."),
+  [("I can play C major and C minor by hand.", "Puedo tocar Do mayor y Do menor con la mano."), ("I can play F major and G major by hand.", "Puedo tocar Fa mayor y Sol mayor con la mano.")])
+
+lesson(6, "the-six-pads", ("The six pads", "Los seis pads"),
+  [("In every key, a handful of chords fit together. The six pads show them, numbered by the step of the scale they start on. Pad 1 is home.",
+    "En cada tono, unos cuantos acordes encajan entre sí. Los seis pads los muestran, numerados por el paso de la escala donde empiezan. El pad 1 es la casa."),
+   ("In <b>Major</b>, pads 1, 4 and 5 are major and pads 2, 3 and 6 are minor. In the key of C they are C, Dm, Em, F, G and Am. In <b>Minor</b> the pads become 1, 3, 4, 5, 6 and 7.",
+    "En <b>Mayor</b>, los pads 1, 4 y 5 son mayores y los pads 2, 3 y 6 son menores. En el tono de Do son Do, Re m, Mi m, Fa, Sol y La m. En <b>Menor</b> los pads son 1, 3, 4, 5, 6 y 7.")],
+  ("pp-pads", "The six pads in the key of C: C, Dm, Em, F, G, Am.", "Los seis pads en el tono de Do: Do, Re m, Mi m, Fa, Sol, La m."),
+  [("Set <b>Key</b> to C and <b>Mood</b> to Major. Tap the pads from 1 to 6.", "Pon el <b>Tono</b> en Do y el <b>Ánimo</b> en Mayor. Toca los pads del 1 al 6."),
+   ("Tap 5, then 1.", "Toca el 5 y luego el 1."),
+   ("Change Key to G. Tap them again: G, Am, Bm, C, D, Em.", "Cambia el Tono a Sol. Tócalos otra vez: Sol, La m, Si m, Do, Re, Mi m."),
+   ("Press <b>Minor · moody</b> and tap them once more.", "Pulsa <b>Menor · melancólico</b> y tócalos una vez más.")],
+  ("5 then 1 sounds like coming home. Every key has the same pull.", "5 y luego 1 suena como volver a casa. Cada tono tiene la misma atracción."),
+  [("I can name the six pads in the key of C.", "Puedo nombrar los seis pads en el tono de Do."), ("I can hear 5 going home to 1.", "Puedo oír el 5 volviendo a casa en el 1.")])
+
+lesson(7, "patterns-and-four-ways-to-play", ("Nine patterns, four ways to play", "Nueve patrones, cuatro maneras de tocar"),
+  [("The pattern menu holds nine chord patterns that songs use again and again. Here they are in the key of C (the two minor ones in A minor):",
+    "El menú de patrones tiene nueve patrones de acordes que las canciones usan una y otra vez. Aquí están en el tono de Do (los dos menores, en La menor):")],
+  ("pp-pattern", "The pattern menu and the How the chords play menu.", "El menú de patrones y el menú Cómo suenan los acordes."),
+  [("Try three patterns. Let each one go round twice.", "Prueba tres patrones. Deja que cada uno dé dos vueltas."),
+   ("While one plays, change <b>How the chords play</b>: Hold, Pulse, Broken and Off-beat.", "Mientras uno suena, cambia <b>Cómo suenan los acordes</b>: Mantener, Pulso, Arpegio y Contratiempo."),
+   ("Pick the pattern and the way of playing you like best.", "Elige el patrón y la manera de tocar que más te gusten.")],
+  ("Hold is calm. Pulse is steady. Broken flows, one note at a time (an arpeggio). Off-beat bounces between the counts, like reggae and ska.", "Mantener es tranquilo. Pulso es firme. Arpegio fluye, una nota a la vez. Contratiempo rebota entre los conteos, como el reggae y el ska."),
+  [("I tried at least three patterns.", "Probé por lo menos tres patrones."), ("I can name the four ways the chords can play.", "Puedo nombrar las cuatro maneras en que pueden sonar los acordes.")],
+  extra=[lst("ul", [("<b>Pop · 1 5 6 4</b>: C, G, Am, F", "<b>Pop · 1 5 6 4</b>: Do, Sol, La m, Fa"),
+                    ("<b>Fifties · 1 6 4 5</b>: C, Am, F, G", "<b>Años 50 · 1 6 4 5</b>: Do, La m, Fa, Sol"),
+                    ("<b>Sad pop · 6 4 1 5</b>: Am, F, C, G", "<b>Pop triste · 6 4 1 5</b>: La m, Fa, Do, Sol"),
+                    ("<b>Anime and J-pop · 4 5 3 6</b>: F, G, Em, Am", "<b>Anime y J-pop · 4 5 3 6</b>: Fa, Sol, Mi m, La m"),
+                    ("<b>Canon · 8 chords</b>: C, G, Am, Em, F, C, F, G", "<b>Canon · 8 acordes</b>: Do, Sol, La m, Mi m, Fa, Do, Fa, Sol"),
+                    ("<b>Blues · 12 bars</b>: C7 four times, F7 twice, C7 twice, G7, F7, C7, G7", "<b>Blues · 12 compases</b>: Do7 cuatro veces, Fa7 dos veces, Do7 dos veces, Sol7, Fa7, Do7, Sol7"),
+                    ("<b>Jazz · 2 5 1</b>: Dm7, G7, Cmaj7, Cmaj7", "<b>Jazz · 2 5 1</b>: Re m7, Sol7, Do maj7, Do maj7"),
+                    ("<b>Minor groove · 1 6 3 7</b> (A minor): Am, F, C, G", "<b>Ritmo menor · 1 6 3 7</b> (La menor): La m, Fa, Do, Sol"),
+                    ("<b>Flamenco · 1 7 6 5</b> (A minor): Am, G, F, E", "<b>Flamenco · 1 7 6 5</b> (La menor): La m, Sol, Fa, Mi")])])
+
+lesson(8, "make-your-own-pattern", ("Make your own pattern", "Haz tu propio patrón"),
+  [("Press <b>Make my own</b> and tap the pads in the order you want, up to eight. Each tap adds one bar to <b>Your chord pattern</b>.",
+    "Pulsa <b>Hacer el mío</b> y toca los pads en el orden que quieras, hasta ocho. Cada toque agrega un compás a <b>Tu patrón de acordes</b>.")],
+  ("pp-prog", "Your chord pattern, with Play the chords, Make my own and Clear.", "Tu patrón de acordes, con Tocar los acordes, Hacer el mío y Borrar."),
+  [("Press <b>Clear</b>, then <b>Make my own</b>.", "Pulsa <b>Borrar</b> y luego <b>Hacer el mío</b>."),
+   ("Tap four pads. End on pad 1.", "Toca cuatro pads. Termina en el pad 1."),
+   ("Press <b>Make my own</b> again to stop adding, then press <b>Play the chords</b>.", "Pulsa <b>Hacer el mío</b> otra vez para dejar de agregar, y luego pulsa <b>Tocar los acordes</b>."),
+   ("Change the Key while it plays. Your pattern moves with it.", "Cambia el Tono mientras suena. Tu patrón se mueve con él.")],
+  ("Ending on 1 sounds finished. Ending on 5 sounds like it wants to go on. Starting on 6 sounds more serious.", "Terminar en 1 suena terminado. Terminar en 5 suena como si quisiera seguir. Empezar en 6 suena más serio."),
+  [("I made a pattern of my own and played it.", "Hice un patrón propio y lo toqué."), ("I can explain why I ended where I did.", "Puedo explicar por qué terminé donde terminé.")])
+
+lesson(9, "eight-sounds", ("Eight sounds", "Ocho sonidos"),
+  [("Same keys, different color. That color is called <b>timbre</b>. Here is how each sound is made:",
+    "Las mismas teclas, otro color. Ese color se llama <b>timbre</b>. Así se hace cada sonido:")],
+  ("pp-sound", "The Instrument menu, set to Grand piano.", "El menú Instrumento, en Piano de cola."),
+  [("Hold C, E and G on the Grand piano. Listen to it fade.", "Mantén Do, Mi y Sol con el Piano de cola. Escucha cómo se apaga."),
+   ("Do the same on the Rock and jazz organ.", "Haz lo mismo con el Órgano de rock y jazz."),
+   ("Play one pattern on three different sounds. Open <b>Meet the sounds</b> in the Go to menu to hear all eight.", "Toca un patrón con tres sonidos distintos. Abre <b>Conoce los sonidos</b> en el menú Ir a para oír los ocho.")],
+  ("A piano note fades, because the string slowly stops shaking. An organ note stays as long as you hold it.", "Una nota de piano se apaga, porque la cuerda deja de vibrar poco a poco. Una nota de órgano dura mientras la mantengas."),
+  [("I can name the eight sounds.", "Puedo nombrar los ocho sonidos."), ("I can say how a piano and an organ make sound.", "Puedo decir cómo hacen sonido un piano y un órgano.")],
+  extra=[lst("ul", [("<b>Grand piano</b>: felt hammers hit long strings. A real recording.", "<b>Piano de cola</b>: martillos de fieltro golpean cuerdas largas. Una grabación real."),
+                    ("<b>Upright piano</b>: the strings stand up tall. A real recording.", "<b>Piano vertical</b>: las cuerdas están de pie. Una grabación real."),
+                    ("<b>Honky-tonk piano</b>: an upright, a little out of tune with itself.", "<b>Piano honky-tonk</b>: un vertical, un poco desafinado consigo mismo."),
+                    ("<b>Electric piano · warm</b>: hammers hit thin metal tines.", "<b>Piano eléctrico · cálido</b>: martillos golpean varillas delgadas de metal."),
+                    ("<b>Electric piano · bright</b>: hammers hit flat metal reeds.", "<b>Piano eléctrico · brillante</b>: martillos golpean lengüetas planas de metal."),
+                    ("<b>'80s electric piano</b>: a computer chip does the math (FM).", "<b>Piano eléctrico de los 80</b>: un chip de computadora hace las cuentas (FM)."),
+                    ("<b>Rock and jazz organ</b>: metal wheels spin past magnets.", "<b>Órgano de rock y jazz</b>: ruedas de metal giran junto a imanes."),
+                    ("<b>Church organ</b>: air blows through pipes.", "<b>Órgano de iglesia</b>: el aire sopla por tubos.")])])
+
+lesson(10, "play-along", ("Play along: the lit keys and the black keys", "Toca encima: las teclas iluminadas y las negras"),
+  [("While the chords play, the keys of the chord playing now light up. Any lit key fits. Play them in your own order and you are making up a melody.",
+    "Mientras suenan los acordes, se iluminan las teclas del acorde que suena ahora. Cualquier tecla iluminada encaja. Tócalas en tu propio orden y estás inventando una melodía."),
+   ("The five black keys make a <b>pentatonic scale</b>, used in folk music from China to West Africa to the Andes. In the key of F♯, every black key fits.",
+    "Las cinco teclas negras forman una <b>escala pentatónica</b>, que se usa en la música tradicional de China, de África occidental y de los Andes. En el tono de Fa♯, cada tecla negra encaja.")],
+  ("pp-kbd-lit", "The keys of the C chord, lit while it plays.", "Las teclas del acorde de Do, iluminadas mientras suena."),
+  [("Pick a pattern, choose <b>Hold</b>, slow the Tempo down and press Play.", "Elige un patrón, escoge <b>Mantener</b>, baja el Tempo y pulsa Tocar."),
+   ("Play the lit keys, one at a time. Follow them when the chord changes.", "Toca las teclas iluminadas, una a la vez. Síguelas cuando cambie el acorde."),
+   ("Set Key to F♯. Make your own pattern: pads 1, 4, 5, 1. Play only black keys over it.", "Pon el Tono en Fa♯. Haz tu propio patrón: pads 1, 4, 5, 1. Toca solo teclas negras encima.")],
+  ("Lit keys always fit the chord under them. Black keys over F♯ never clash.", "Las teclas iluminadas siempre encajan con el acorde de abajo. Las negras sobre Fa♯ nunca chocan."),
+  [("I made up a melody on the lit keys.", "Inventé una melodía con las teclas iluminadas."), ("I played a black-key tune over the F♯ pattern.", "Toqué una melodía con teclas negras sobre el patrón en Fa♯.")])
+
+lesson(11, "with-the-drum-machine-and-turntables", ("With the drum machine and the turntables", "Con la caja de ritmos y los platos"),
+  [("The three music tools share one shelf. A beat from the drum machine shows up on the piano, and a recording from the piano shows up on the turntables.",
+    "Las tres herramientas de música comparten un estante. Un ritmo de la caja de ritmos aparece en el piano, y una grabación del piano aparece en los platos.")],
+  ("pp-s-drum", "Play with my drum beat, with the name of the beat from the drum machine.", "Tocar con mi ritmo de batería, con el nombre del ritmo de la caja de ritmos."),
+  [("On the drum machine, make a beat and press <b>Send to the turntables</b>.", "En la caja de ritmos, haz un ritmo y pulsa <b>Enviar a los platos</b>."),
+   ("Back on the piano, press <b>Play with my drum beat</b>. The beat now sets the tempo and the swing.", "De vuelta en el piano, pulsa <b>Tocar con mi ritmo de batería</b>. Ahora el ritmo pone el tempo y el swing."),
+   ("Pick a pattern and press Play. Try Pulse and Off-beat with the drums.", "Elige un patrón y pulsa Tocar. Prueba Pulso y Contratiempo con la batería."),
+   ("Press <b>Send to the turntables</b>. On the turntables, load it from <b>From the piano</b>.", "Pulsa <b>Enviar a los platos</b>. En los platos, cárgalo desde <b>Del piano</b>.")],
+  ("The chords land exactly with the drums, round after round.", "Los acordes caen justo con la batería, vuelta tras vuelta."),
+  [("I played my chords with my own beat.", "Toqué mis acordes con mi propio ritmo."), ("I sent a recording to the turntables and played it there.", "Mandé una grabación a los platos y la toqué ahí.")])
+
+lesson(12, "the-1987-2026-dial", ("The Sound dial: 1987 or 2026", "El dial de Sonido: 1987 o 2026"),
+  [("A computer keeps sound as a long list of numbers. The 1987 samplers kept 26,040 numbers a second, each with 4,096 steps of loudness (12 bits). That rough copy is the crunch. A CD keeps 44,100 a second with 65,536 steps.",
+    "Una computadora guarda el sonido como una lista larga de números. Los samplers de 1987 guardaban 26 040 números por segundo, cada uno con 4096 escalones de volumen (12 bits). Esa copia áspera es el crujido. Un CD guarda 44 100 por segundo con 65 536 escalones.")],
+  ("pp-dial", "The Sound dial from 1987 to 2026, Volume, and Send to the turntables.", "El dial de Sonido de 1987 a 2026, Volumen y Enviar a los platos."),
+  [("Pick the Grand piano. Turn the Sound dial all the way to <b>1987</b>.", "Elige el Piano de cola. Gira el dial de Sonido del todo a <b>1987</b>."),
+   ("Press <b>Higher ▶</b> until you reach the top, and play the highest keys.", "Pulsa <b>Más agudo ▶</b> hasta llegar arriba y toca las teclas más agudas."),
+   ("Turn the dial to <b>2026</b> and play them again. Then find your spot in the middle.", "Gira el dial a <b>2026</b> y tócalas otra vez. Luego busca tu punto en el medio.")],
+  ("On 1987 the high notes fizz and the tone gets darker. On 2026 it is clean.", "En 1987 las notas agudas chisporrotean y el tono se oscurece. En 2026 es limpio."),
+  [("I heard the crunch on the high notes.", "Oí el crujido en las notas agudas."), ("I can explain the crunch with numbers.", "Puedo explicar el crujido con números.")])
+
+
+HOW = [bl("p", "There are 12 short lessons. Do them in order, with the piano open next to this page.", "Hay 12 lecciones cortas. Hazlas en orden, con el piano abierto junto a esta página."),
+       bl("p", "Every lesson works the same way:", "Cada lección funciona igual:"),
+       "<ol>" + "".join(bl("li", a, b) for a, b in [
+           ("<b>Read</b> the short part at the top. It says what the controls do.", "<b>Lee</b> la parte corta de arriba. Dice qué hacen los controles."),
+           ("<b>Try it:</b> do the numbered steps, one at a time, on the real piano.", "<b>Pruébalo:</b> haz los pasos numerados, uno a la vez, en el piano de verdad."),
+           ("<b>Listen for:</b> what you should hear if it worked.", "<b>Escucha:</b> lo que deberías oír si funcionó."),
+           ("<b>Check yourself:</b> if you can't tick a box yet, do the steps again.", "<b>Revisa:</b> si todavía no puedes marcar una casilla, haz los pasos otra vez.")]) + "</ol>",
+       bl("p", "<b>Before you start</b>", "<b>Antes de empezar</b>"),
+       lst("ul", [("Use <b>headphones or real speakers</b>. Small laptop speakers lose the low notes.", "Usa <b>audífonos o bocinas de verdad</b>. Las bocinas pequeñas de una laptop pierden las notas graves."),
+                  ("The piano has its own 38 lessons too. Pick one in the <b>Lesson</b> menu and its steps tick themselves.", "El piano también tiene sus propias 38 lecciones. Elige una en el menú <b>Lección</b> y sus pasos se marcan solos.")]),
+       bl("p", "<b>Words you'll see</b>", "<b>Palabras que vas a ver</b>"),
+       lst("ul", [("<b>Key</b>: two meanings. A key you press, and the key of a song: its home note. The <b>Key</b> menu is the second one.", "<b>Tecla</b> y <b>tono</b>: una tecla es lo que presionas; el tono de una canción es su nota casa. El menú <b>Tono</b> es el segundo."),
+                  ("<b>Chord</b>: three or more notes played together.", "<b>Acorde</b>: tres o más notas tocadas juntas."),
+                  ("<b>Pad</b>: one of the six big buttons. Each plays a chord.", "<b>Pad</b>: uno de los seis botones grandes. Cada uno toca un acorde."),
+                  ("<b>Bar</b>: four beats. Each chord in a pattern lasts one bar.", "<b>Compás</b>: cuatro pulsos. Cada acorde de un patrón dura un compás."),
+                  ("<b>Octave</b>: from one note to the next note with the same name.", "<b>Octava</b>: de una nota a la siguiente con el mismo nombre."),
+                  ("<b>Tempo</b>: how many beats in a minute.", "<b>Tempo</b>: cuántos pulsos hay en un minuto."),
+                  ("<b>Major / Minor</b>: bright / moody.", "<b>Mayor / Menor</b>: brillante / melancólico.")])]
+
+PLAN = [bl("p", "Twenty minutes a day for three weeks.", "Veinte minutos al día durante tres semanas."),
+        lst("ul", [("<b>Week 1:</b> one lesson a day, Lessons 1 to 5.", "<b>Semana 1:</b> una lección al día, de la 1 a la 5."),
+                   ("<b>Week 2:</b> Lessons 6 to 9. Then play one of the piano's songs a day (the Lesson menu, songs 1 to 17).", "<b>Semana 2:</b> lecciones 6 a 9. Luego toca una de las canciones del piano al día (el menú Lección, canciones 1 a 17)."),
+                   ("<b>Week 3:</b> Lessons 10 to 12. Then make a track of your own and send it to the turntables.", "<b>Semana 3:</b> lecciones 10 a 12. Luego haz una pista propia y mándala a los platos.")]),
+        bl("p", "<b>You've mastered it when you can:</b>", "<b>Lo dominas cuando puedes:</b>"),
+        lst("ul", [("Find any note without reading the names", "Encontrar cualquier nota sin leer los nombres"),
+                   ("Play a major and a minor chord by hand", "Tocar un acorde mayor y uno menor con la mano"),
+                   ("Name the six pads in the key of C", "Nombrar los seis pads en el tono de Do"),
+                   ("Make a pattern of your own that ends at home", "Hacer un patrón propio que termine en casa"),
+                   ("Make up a melody on the lit keys", "Inventar una melodía con las teclas iluminadas"),
+                   ("Play your chords with your own drum beat", "Tocar tus acordes con tu propio ritmo de batería"),
+                   ("Send a track to the turntables and play it there", "Mandar una pista a los platos y tocarla ahí")])]
+
+FIX = lst("ul", [
+    ("<b>No sound at all.</b> Turn Volume up and tap a key once: a phone wakes its sound on the first tap. An iPhone plays even with the silent switch on.", "<b>No hay sonido.</b> Sube el Volumen y toca una tecla una vez: un teléfono despierta su sonido con el primer toque. Un iPhone suena aunque esté en silencio."),
+    ("<b>It says “Getting the grand piano ready…”.</b> The recordings are on their way. Until then you hear the electric piano.", "<b>Dice “Preparando el piano de cola…”.</b> Las grabaciones vienen en camino. Mientras tanto suena el piano eléctrico."),
+    ("<b>Play does nothing.</b> Pick a chord pattern first, or press Make my own and tap some pads.", "<b>Tocar no hace nada.</b> Primero elige un patrón de acordes, o pulsa Hacer el mío y toca algunos pads."),
+    ("<b>The tempo will not move.</b> Play with my drum beat is on, so the drum beat sets the tempo. Press it again to turn it off.", "<b>El tempo no se mueve.</b> Tocar con mi ritmo de batería está activo, así que el ritmo pone el tempo. Púlsalo otra vez para apagarlo."),
+    ("<b>Notes keep ringing.</b> Hold notes (pedal) is on. Press it again.", "<b>Las notas siguen sonando.</b> Mantener notas (pedal) está activo. Púlsalo otra vez."),
+    ("<b>A phone shows only one octave.</b> Use ◀ Lower and Higher ▶, or turn the phone sideways for more keys.", "<b>Un teléfono muestra solo una octava.</b> Usa ◀ Más grave y Más agudo ▶, o gira el teléfono de lado para ver más teclas."),
+    ("<b>A lesson step does not tick.</b> Check that the right lesson is picked. A song's steps tick only while that song is picked.", "<b>Un paso de la lección no se marca.</b> Revisa que esté elegida la lección correcta. Los pasos de una canción solo se marcan mientras esa canción está elegida."),
+    ("<b>No MIDI keyboard found.</b> Use Chrome or Edge. Plug it in first, then press Use a MIDI keyboard.", "<b>No encuentra el teclado MIDI.</b> Usa Chrome o Edge. Conéctalo primero y luego pulsa Usar un teclado MIDI.")])
+
+IMG_JS = """<script>
+/* AOG-MASTERING-PIANO-V1 — each picture has a Spanish twin; it follows the page language (the EN/ES switch in the top bar) */
+(function(){
+  function swap(){
+    var es=(document.documentElement.getAttribute("lang")||"").indexOf("es")===0;
+    document.querySelectorAll("img[data-es-src]").forEach(function(im){
+      var src=im.getAttribute(es?"data-es-src":"data-en-src"), alt=im.getAttribute(es?"data-es-alt":"data-en-alt");
+      if(src && im.getAttribute("src")!==src) im.setAttribute("src", src);
+      if(alt) im.setAttribute("alt", alt);
+    });
+  }
+  try{ new MutationObserver(swap).observe(document.documentElement, {attributes:true, attributeFilter:["lang"]}); }catch(e){}
+  swap();
+})();
+</script>"""
+
+
+def build():
+    src = open(os.path.join(ROOT, "mastering-drums.html"), encoding="utf-8").read()
+    head = src.split("</head>", 1)[0]
+    rep = [("<title>Mastering the Drum Machine · Architecture of Grace</title>", "<title>Mastering the Piano · Architecture of Grace</title>"),
+           ('content="Twelve lessons on the SP-1200: your first beat, swing, the sliders, nine kits, your own samples, the 1987-to-2026 Sound dial, and a whole song you can send to the turntables."',
+            'content="Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, eight sounds, playing along, the drum machine and the 1987-to-2026 Sound dial."'),
+           ('href="https://architectureofgrace.org/mastering-drums"', 'href="https://architectureofgrace.org/mastering-piano"')]
+    for a, b in rep:
+        assert head.count(a) == 1, a
+        head = head.replace(a, b)
+    head = re.sub(r"<!-- AOG-MASTERING-V1 .*?-->",
+                  "<!-- AOG-MASTERING-PIANO-V1 (2026-10-03) — the piano's manual, in the shape of Mastering the Drum Machine: twelve short\n"
+                  "     lessons with Try it, Listen for and Check yourself, pictures of the real piano, a practice plan and a fix-it list.\n"
+                  "     English and Spanish. Built by _work/music/make_mastering_piano.py. -->", head, count=1, flags=re.S)
+    i = head.rfind("</style>")
+    head = head[:i] + "\n.mg-fig img{max-width:460px;margin:0 auto}\n.mg-fig.wide img{max-width:none}\n" + head[i:]
+
+    opts = ['<option value="how-to-use-this-course" data-en="How to use this course" data-es="Cómo usar este curso">How to use this course</option>']
+    secs = []
+    for L in LESSONS:
+        sid = "lesson-%d-%s" % (L["n"], L["slug"])
+        t_en = "Lesson %d — %s" % (L["n"], L["title"][0]); t_es = "Lección %d — %s" % (L["n"], L["title"][1])
+        opts.append('<option value="%s" data-en="%s" data-es="%s">%s</option>' % (sid, esc(t_en), esc(t_es), esc(t_en)))
+        parts = [bl("h2", t_en, t_es, ' id="%s"' % sid)]
+        parts += [bl("p", a, b) for a, b in L["intro"]]
+        parts += L["extra"]
+        if L["figure"]:
+            parts.append(fig(*L["figure"]))
+        parts.append(bl("p", "<b>Try it:</b>", "<b>Pruébalo:</b>", ' class="step doit"'))
+        parts.append("<ol>" + "".join(bl("li", a, b) for a, b in L["tryit"]) + "</ol>")
+        parts.append(bl("p", "<b>Listen for:</b> " + L["listen"][0], "<b>Escucha:</b> " + L["listen"][1]))
+        parts.append(bl("p", "<b>Check yourself:</b>", "<b>Revisa:</b>", ' class="step check"'))
+        parts.append(lst("ul", L["check"]))
+        secs.append("\n".join(parts))
+    opts.append('<option value="practice-plan" data-en="Practice plan" data-es="Plan de práctica">Practice plan</option>')
+    opts.append('<option value="when-something-goes-wrong" data-en="When something goes wrong" data-es="Cuando algo no funciona">When something goes wrong</option>')
+
+    body = ('<body>\n<script src="/aog-topbar.js"></script>\n<main class="xw" style="--gl:#6A4C9C">\n<header class="xw-hero">\n'
+            '  %s\n  %s\n  %s\n' % (bl("p", "Hands-on tools · The mastering course", "Herramientas prácticas · El curso para dominarlo", ' class="xw-ey"'),
+                                     bl("h1", "Mastering the Piano", "Domina el piano"),
+                                     bl("p", "Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, eight sounds, playing along, the drum machine, and the 1987-to-2026 Sound dial.",
+                                        "Doce lecciones de piano: las teclas, los acordes con la mano, los seis pads, los patrones de acordes, tu propio patrón, ocho sonidos, tocar encima, la caja de ritmos y el dial de Sonido de 1987 a 2026.", ' class="xw-lede"')) +
+            '  <div class="xw-meta"><span class="xw-pill" data-en="Music" data-es="Música">Music</span><span class="xw-pill" data-en="12 lessons" data-es="12 lecciones">12 lessons</span><span class="xw-pill" data-en="With pictures" data-es="Con imágenes">With pictures</span></div>\n'
+            '</header>\n<div class="xw-bar no-print">\n'
+            '  <a class="xw-btn solid" href="/music-piano.html" data-en="Open the piano" data-es="Abrir el piano">Open the piano</a>\n'
+            '  <a class="xw-btn" href="/piano-guide" data-en="Picture guide" data-es="Guía en imágenes">Picture guide</a>\n'
+            '  <a class="xw-btn" href="/piano-lessons" data-en="Worksheets" data-es="Hojas de trabajo">Worksheets</a>\n'
+            '  <button class="xw-btn" type="button" onclick="window.print()" data-en="Print this course" data-es="Imprimir este curso">Print this course</button>\n'
+            '</div>\n'
+            '<div class="mg-jump no-print"><label for="mgJump" data-en="Jump to a lesson" data-es="Ir a una lección">Jump to a lesson</label>\n'
+            '<select id="mgJump" onchange="var e=document.getElementById(this.value);if(e)e.scrollIntoView({behavior:\'smooth\'});">%s</select></div>\n'
+            '<section class="xw-sec">\n' % "".join(opts) +
+            bl("h2", "How to use this course", "Cómo usar este curso", ' id="how-to-use-this-course"') + "\n" + "\n".join(HOW) + "\n" +
+            "\n".join(secs) + "\n" +
+            bl("h2", "Practice plan", "Plan de práctica", ' id="practice-plan"') + "\n" + "\n".join(PLAN) + "\n" +
+            bl("h2", "When something goes wrong", "Cuando algo no funciona", ' id="when-something-goes-wrong"') + "\n" + FIX + "\n"
+            '</section>\n<div data-aog-resources="music" data-topic="notation"></div>\n'
+            '<footer class="xw-foot" data-en="Mastering the Piano · Architecture of Grace · everything stays on this computer." data-es="Domina el piano · Architecture of Grace · todo se queda en esta computadora.">Mastering the Piano · Architecture of Grace · everything stays on this computer.</footer>\n'
+            '</main>\n<script src="/aog-grace.js" defer></script>\n<script src="/aog-resources.js" defer></script>\n' + IMG_JS + '\n</body>\n</html>\n')
+    open(os.path.join(ROOT, "mastering-piano.html"), "w", encoding="utf-8").write(head + "</head>\n" + body)
+    print("mastering-piano.html written (%d lessons)" % len(LESSONS))
+
+
+if __name__ == "__main__":
+    build()

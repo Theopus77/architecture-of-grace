@@ -2706,7 +2706,8 @@
     [/telescope-guide/, /(^|\/)(telescope|science-telescope|telescope\.html)$/],
     [/oscilloscope-guide/, /(^|\/)(oscilloscope|waves|science-waves(\.html)?)$/],
     [/drums-guide|mastering-drums/, /(^|\/)(drums|drum-machine|music-drums(\.html)?)$/],
-    [/decks-guide|mastering-turntables/, /(^|\/)(turntables|decks|music-decks(\.html)?)$/]
+    [/decks-guide|mastering-turntables/, /(^|\/)(turntables|decks|music-decks(\.html)?)$/],
+    [/piano-guide|mastering-piano/, /(^|\/)(piano|keys|music-piano(\.html)?)$/]
   ];
   function item(a) { var li = a.closest("li"); return li && li.parentNode === a.parentNode.parentNode ? li : (li || a); }
   function pair() {

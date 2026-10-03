@@ -8,6 +8,7 @@ Text must never be unreadable against what is behind it: no cream or light text
 on a white box, no dark text on navy, in light or dark theme, on any page.
 
 - The check also opens every room inside index.html (#framework, #workplace …); add new rooms to ROOMS in tools/check-contrast.js.
+- It also opens the music tools' views behind their Go to menu (music-piano.html#lessons, #meet …); add new views to VIEWS there.
 - Before every commit that touches an `.html`, `.css`, or `aog-grace.*` file, run:
 
       node tools/check-contrast.js <the pages you changed>

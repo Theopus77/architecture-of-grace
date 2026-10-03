@@ -1436,7 +1436,7 @@ function navHtml(){
   const items=[["home","homeNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
   /* AOG-BENCH-TOP-V1: five places to look, so one menu (aog-dropdowns.js reads the span) */
   return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+`</span>`+
-    `<a class="sep" href="/drums-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="music-decks.html">${S.lang==="es"?"Los tocadiscos":"The turntables"}</a><a class="sep" href="music-piano.html">${S.lang==="es"?"El piano":"The piano"}</a>`;
+    `<span class="sisters"><a class="sep" href="/drums-guide"><span class="lg">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</span><span class="sh">${S.lang==="es"?"Guía":"Guide"}</span></a><a class="sep" href="music-decks.html"><span class="lg">${S.lang==="es"?"Los tocadiscos":"The turntables"}</span><span class="sh">${S.lang==="es"?"Tocadiscos":"Turntables"}</span></a><a class="sep" href="music-piano.html"><span class="lg">${S.lang==="es"?"El piano":"The piano"}</span><span class="sh">Piano</span></a></span>`;
 }
 
 function flashVoice(id){

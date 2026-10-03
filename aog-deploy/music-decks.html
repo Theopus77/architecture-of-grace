@@ -282,7 +282,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
   <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
-  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><a class="sep" href="/decks-guide" id="navGuide">Picture guide</a><a class="sep" href="music-drums.html" id="navDrums">The drum machine</a><a class="sep" href="music-piano.html" id="navPiano">The piano</a></nav>
+  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><span class="sisters"><a class="sep" href="/decks-guide" id="navGuide"><span class="lg">Picture guide</span><span class="sh">Guide</span></a><a class="sep" href="music-drums.html" id="navDrums"><span class="lg">The drum machine</span><span class="sh">Drums</span></a><a class="sep" href="music-piano.html" id="navPiano"><span class="lg">The piano</span><span class="sh">Piano</span></a></span></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
@@ -1804,6 +1804,8 @@ document.addEventListener("visibilitychange", ()=>{
     const es=S.lang==="es";
     const L={navDecks:["Bench","Mesa"],navDrums:["The drum machine","La caja de ritmos"],navPiano:["The piano","El piano"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
+    const SH={navGuide:["Guide","Guía"],navDrums:["Drums","Ritmos"],navPiano:["Piano","Piano"]};   /* AOG-BENCH-SHORT-V1: the short name a phone shows */
+    Object.keys(SH).forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=`<span class="lg">${L[id][es?1:0]}</span><span class="sh">${SH[id][es?1:0]}</span>`; });
   }
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
   document.querySelectorAll("[data-decktab]").forEach(b=>b.onclick=()=>{ tab=b.getAttribute("data-decktab"); paintSw(); });
