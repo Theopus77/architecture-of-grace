@@ -470,6 +470,26 @@ window.AOG_ROOM_MAP = {
   "confidence": "high",
   "note": "Pitch and octaves on the keys: each key up is a higher frequency, and the same note an octave up vibrates twice as fast."
  },
+ "music-guitar": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 61 · What Sound Is",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "Pitch from a string: each fret makes the part of the string that shakes shorter, so the note goes up; the 12th fret halves it, one octave up."
+ },
+ "music-bass": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 61 · What Sound Is",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "Longer, heavier strings shake more slowly: the bass's low E shakes 41 times a second, an octave below the guitar's."
+ },
  "music-decks": {
   "subject": "Science",
   "band": "6–8",
