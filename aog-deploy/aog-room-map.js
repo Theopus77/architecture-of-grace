@@ -460,6 +460,16 @@ window.AOG_ROOM_MAP = {
   "confidence": "high",
   "note": "Tempo, 16 steps, swing; Chapter 63 explains its 12-bit, 26.04 kHz sampling."
  },
+ "music-piano": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 61 · What Sound Is",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "Pitch and octaves on the keys: each key up is a higher frequency, and the same note an octave up vibrates twice as fast."
+ },
  "music-decks": {
   "subject": "Science",
   "band": "6–8",

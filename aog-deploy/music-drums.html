@@ -536,7 +536,7 @@ const STARTERS = [
 ];
 const STR = {
   app:{en:"The Drum Machine",es:"La caja de ritmos"},
-  eyebrow:{en:"A moving beat first.",es:"Primero el ritmo. Los nombres después de tocar."},
+  eyebrow:{en:"A moving beat first.",es:"Primero, el ritmo."},
   tag:{en:"The 1987 sampler, with nine kits and a dial that turns it into 2026. Pick a beat, play the pads, make it yours.",es:"El sampler de 1987, con nueve kits y un dial que lo lleva a 2026. Elige un ritmo, toca los pads y hazlo tuyo."},
   priv:{en:"Twelve bits. 26,040 samples a second. Ten seconds of memory, and no sample longer than 2.5. Save writes a file you can send. Open reads a file someone sent you. This computer also keeps the last session, so closing the page does not throw the work away.",es:"Doce bits. 26.040 muestras por segundo. Diez segundos de memoria, y ninguna muestra de más de 2.5. Guardar escribe un archivo que puedes enviar. Abrir lee un archivo que alguien te mandó. Esta computadora también guarda la última sesión, así que cerrar la página no tira el trabajo."},
   download:{en:"Download this page",es:"Descargar esta página"},
@@ -1436,7 +1436,7 @@ function navHtml(){
   const items=[["home","homeNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
   /* AOG-BENCH-TOP-V1: five places to look, so one menu (aog-dropdowns.js reads the span) */
   return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+`</span>`+
-    `<a class="sep" href="/drums-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="music-decks.html">${S.lang==="es"?"Los tocadiscos":"The turntables"}</a>`;
+    `<a class="sep" href="/drums-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="music-decks.html">${S.lang==="es"?"Los tocadiscos":"The turntables"}</a><a class="sep" href="music-piano.html">${S.lang==="es"?"El piano":"The piano"}</a>`;
 }
 
 function flashVoice(id){
@@ -2443,12 +2443,13 @@ function paint(){
     document.querySelectorAll("#benchSwitch [data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===(S.bench==="full"?"full":"simple"); b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); }); }
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  document.documentElement.lang=S.lang;   /* the top bar reads this; without it a Spanish visit was flipped back to English */
   const map={home:homeView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
   { const vw=document.getElementById("view"), lb=document.getElementById("lessons");
     if(lb && vw.contains(lb)) vw.after(lb);                             /* AOG-DRUMS-LESSONS-BELOW-V1: keep the card safe … */
     vw.innerHTML=(map[S.view]||homeView)();
     const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb); }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
-  document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="/science">${t("backSci")}</a></p>`;
+  document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`;
   bind();
   paintLessonBox();
 }
@@ -2554,7 +2555,10 @@ async function bounceToDecks(){
     const bars=Math.max(1, Math.round(loops*chain.length*4*
       (chain.reduce((n,i)=>n + Math.max(4, Math.min(16, (S.segs[i]&&S.segs[i].len)||16)), 0)/chain.length)/16/4));
     const name=(S.lang==="es"?"Caja de ritmos":"Drum machine")+" · "+Math.round(S.bpm)+" BPM · "+bars+(S.lang==="es"?" compases":" bars")+((S.trackOn&&S.track.length)?(S.lang==="es"?" · pista":" · track"):"");
-    await AOGHandoff.put("drumbench", { name:name, bpm:S.bpm, bars:bars, bank:S.bank, at:Date.now(), wav:blob });
+    /* AOG-PIANO-V1: the piano loops this beat in time, so it is told exactly how long one pass is,
+       how many passes there are, where the first downbeat sits, and the swing */
+    await AOGHandoff.put("drumbench", { name:name, bpm:S.bpm, bars:bars, bank:S.bank, at:Date.now(), wav:blob,
+      passSec:chainSec, loops:loops, offset:0.03, swing:snapSwing(S.swing) });
     /* a muted or soloed pad is not in the bounce either — say so, or the kick
        goes missing on the turntables and nobody knows why */
     const soloed=Object.keys(S.solo).filter(k=>S.solo[k]);
