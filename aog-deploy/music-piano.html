@@ -108,6 +108,25 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .pad kbd{display:none}
 .pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
 .pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
+/* AOG-PIANO-WHEEL-V1 — the chord wheel (circle of fifths): majors outside, their minors inside.
+   Light text on the dark wedges; the six that fit the key are cream like the pads, with dark text; orange = playing now. */
+.wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+#rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.wheel-side{flex:1 1 230px;min-width:0}
+.wheel .wd{cursor:pointer;outline:none}
+.wheel .wd path{stroke:#0c0d10;stroke-width:2}
+.wheel .wd text{font-family:var(--display);font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.wheel .wd.o path{fill:#2a2e35} .wheel .wd.i path{fill:#202328}
+.wheel .wd.o text{fill:#ece3d2} .wheel .wd.i text{fill:#ddd2bf}
+.wheel .wd.fit path{fill:#f8eed3} .wheel .wd.fit text{fill:#2b2116}
+.wheel .wd .pn{font-family:var(--sans);font-weight:800;fill:#4a3a18}
+.wheel .wd.now path{fill:#ef9a4a} .wheel .wd.now text{fill:#1f1206} .wheel .wd.now .pn{fill:#3a1c06}
+.wheel .wd.hit path{fill:#ffd36b} .wheel .wd.hit text{fill:#1f1206}
+.wheel .wd:focus-visible path{stroke:#ffffff;stroke-width:5}
+.wheel .home{fill:none;stroke:#e0a640;stroke-width:6;pointer-events:none}
+.wheel .hub{fill:#15171b;stroke:#e0a640;stroke-width:3}
+.wheel .hub-k{font-family:var(--display);font-weight:800;fill:#f4ecd8;text-anchor:middle;dominant-baseline:central}
+.wheel .hub-m{font-family:var(--sans);font-weight:700;fill:#d9cdb2;text-anchor:middle;dominant-baseline:central}
 .prog{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 0;min-height:44px;align-items:center}
 .slot{min-width:3.6rem;min-height:44px;border-radius:10px;border:1px solid #565c66;background:#1d2024;color:#f1ebdf;
   display:inline-flex;align-items:center;justify-content:center;font:800 1.05rem/1 var(--display);padding:0 .65rem}
@@ -301,6 +320,20 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         <div id="drumBox"></div>
       </div>
 
+      <div class="blk" id="wheelBlk">
+        <h2 data-t="wheelH"></h2>
+        <div class="wheel-wrap">
+          <svg class="wheel" id="wheel" viewBox="0 0 400 400" role="group"></svg>
+          <div class="wheel-side">
+            <p class="line" style="margin-top:0" data-t="wheelLine"></p>
+            <div class="row" style="margin-top:.7rem">
+              <button type="button" class="pbtn" id="turnL"></button>
+              <button type="button" class="pbtn" id="turnR"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="blk">
         <h2 data-t="keysH"></h2>
         <div class="krow">
@@ -406,12 +439,18 @@ const STR={
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine:{en:"Tap a pad to hear a chord. Every pad fits this key.",es:"Toca un pad para oír un acorde. Todos los pads van con este tono."},
+  wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
+  wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
+  wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
+  wheelMajor:{en:"major",es:"mayor"}, wheelMinor:{en:"minor",es:"menor"},
+  wheelGroup:{en:"Chord wheel. Tap a chord to hear it.",es:"Rueda de acordes. Toca un acorde para oírlo."},
+  wheelChord:{en:"{c} chord",es:"Acorde {c}"}, wheelPad:{en:"pad {n}",es:"pad {n}"},
   patternLab:{en:"Start from a chord pattern",es:"Empieza con un patrón de acordes"},
   pickPattern:{en:"Choose a pattern…",es:"Elige un patrón…"}, myOwn:{en:"My own pattern",es:"Mi propio patrón"},
   rhythmLab:{en:"How the chords play",es:"Cómo suenan los acordes"},
   yourPattern:{en:"Your chord pattern · one chord for each bar",es:"Tu patrón de acordes · un acorde por compás"},
   progEmpty:{en:"Pick a pattern above, or press Make my own.",es:"Elige un patrón arriba, o pulsa Hacer el mío."},
-  ownOn:{en:"Tap the chord pads in the order you want. Up to 8.",es:"Toca los pads en el orden que quieras. Hasta 8."},
+  ownOn:{en:"Tap the chord pads or the wheel in the order you want. Up to 8.",es:"Toca los pads o la rueda en el orden que quieras. Hasta 8."},
   play:{en:"▶ Play the chords",es:"▶ Tocar los acordes"}, stop:{en:"■ Stop",es:"■ Parar"},
   own:{en:"Make my own",es:"Hacer el mío"}, clear:{en:"Clear",es:"Borrar"},
   tempoLab:{en:"Tempo",es:"Tempo"}, bpm:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
@@ -498,7 +537,15 @@ const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","
 const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
 function flats(){ const major=S.minor?(S.key+3)%12:S.key; return [5,10,3,8,1].indexOf(major)>=0; }
 function pcName(pc){ const set=flats()?"flat":"sharp"; return (S.lang==="es"?SOLFA:NAMES)[set][((pc%12)+12)%12]; }
-function chordName(c){ return pcName(S.key+c.off)+(S.lang==="es"?SUF_ES:SUF)[c.q]; }
+function chordName(c){ const pc=((S.key+c.off)%12+12)%12; return rootName(pc, c.q)+(S.lang==="es"?SUF_ES:SUF)[c.q]; }
+/* AOG-PIANO-WHEEL-V1: a root in the key is spelled like the key (as before). A root outside it, which the chord wheel lets
+   you pick, is spelled the usual way round the wheel: sharps on the right, flats on the left (in C: A♭ and B♭, not G♯ and A♯). */
+function rootName(pc, q){
+  const major=S.minor?(S.key+3)%12:S.key, deg=((pc-major)%12+12)%12;
+  if([0,2,4,5,7,9,11].indexOf(deg)>=0) return pcName(pc);
+  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : pc;
+  return (S.lang==="es"?SOLFA:NAMES)[(rel*7)%12<=6?"sharp":"flat"][pc];
+}
 /* six pads: the chords that belong to the key (numbers are steps of the scale) */
 const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n:4,off:5,q:"maj"},{n:5,off:7,q:"maj"},{n:6,off:9,q:"min"}];
 const PADS_MINOR=[{n:1,off:0,q:"min"},{n:3,off:3,q:"maj"},{n:4,off:5,q:"min"},{n:5,off:7,q:"min"},{n:6,off:8,q:"maj"},{n:7,off:10,q:"maj"}];
@@ -1028,7 +1075,64 @@ function paintNow(){
   document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now", +el.getAttribute("data-s")===k));
   const cur=k>=0?S.prog[k]:null;
   document.querySelectorAll(".pad").forEach(el=>{ const c=pads()[+el.getAttribute("data-i")]; el.classList.toggle("now", !!(cur && c && c.off===cur.off && (c.q===cur.q || (cur.q==="dom7"&&c.q==="maj") || (cur.q==="maj7"&&c.q==="maj") || (cur.q==="m7"&&c.q==="min")))); });
+  paintWheel();   /* AOG-PIANO-WHEEL-V1 */
 }
+/* AOG-PIANO-WHEEL-V1 (2026-10-03) — Jimmy: "Can an interactive chord wheel be made here?"
+   The circle of fifths: one step clockwise adds a sharp. The majors go round the outside, each one's minor just inside it.
+   In any key the six pads sit side by side on the wheel: three neighbours on each ring. Tap a chord to hear it (with
+   Make my own on, it joins the pattern); turn the wheel to change key; the chord that is playing turns orange. */
+const WHEEL={held:null, hit:"", t:0};
+function wheelPos(pc){ return (pc*7)%12; }                                   /* where a major root sits on the wheel */
+function wheelChord(p, ring){ const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12; return {off:((root-S.key)%12+12)%12, q:ring==="o"?"maj":"min"}; }
+function wheelName(p, ring){
+  const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12;
+  return {root:rootName(root, ring==="o"?"maj":"min"), m:ring==="i"};   /* spelled the same as the pads and the pattern */
+}
+function paintWheel(){
+  const svg=$("wheel"); if(!svg) return;
+  const es=S.lang==="es", home=wheelPos(S.minor?(S.key+3)%12:S.key), P=(r,a)=>{ const q=(a-90)*Math.PI/180; return [200+r*Math.cos(q), 200+r*Math.sin(q)]; };
+  const f=n=>n.toFixed(1), arc=(r1,r2,a0,a1)=>{ const A=P(r2,a0),B=P(r2,a1),C=P(r1,a1),D=P(r1,a0); return `M${f(A[0])} ${f(A[1])}A${r2} ${r2} 0 0 1 ${f(B[0])} ${f(B[1])}L${f(C[0])} ${f(C[1])}A${r1} ${r1} 0 0 0 ${f(D[0])} ${f(D[1])}Z`; };
+  const k = S.playing && PLAY.cur>=0 && S.prog.length ? S.prog[PLAY.cur%S.prog.length] : null;
+  const cur = k ? {off:k.off, q:(k.q==="min"||k.q==="m7")?"min":"maj"} : null;
+  const focusK = document.activeElement && document.activeElement.closest && document.activeElement.closest("#wheel .wd") ? document.activeElement.getAttribute("data-k") : "";
+  let out="", ring="";
+  [["o",124,198,160],["i",56,124,90]].forEach(([g,r1,r2,rl])=>{
+    for(let p=0;p<12;p++){
+      const fit=[(home+11)%12,home,(home+1)%12].indexOf(p)>=0, c=wheelChord(p,g), nm=wheelName(p,g), key=g+p;
+      const pad=fit ? pads().find(x=>x.off===c.off && x.q===c.q) : null;
+      const now=!!(cur && cur.off===c.off && cur.q===c.q), hit=WHEEL.hit===key;
+      const name=nm.root+(nm.m?(es?" m":"m"):""), short=nm.root+(nm.m?"m":"");
+      const label=t("wheelChord",{c:name})+(pad?", "+t("wheelPad",{n:pad.n}):"");
+      const [x,y]=P(rl,p*30), big=g==="o"?(short.length>2?23:27):(short.length>4?14:(short.length>3?16:18));
+      let txt=`<text x="${f(x)}" y="${f(y)}" style="font-size:${big}px">${short}</text>`;
+      if(pad){ const [nx,ny]=P(g==="o"?183:109,p*30); txt+=`<text class="pn" x="${f(nx)}" y="${f(ny)}" style="font-size:12px">${pad.n}</text>`; }
+      out+=`<g class="wd ${g}${fit?" fit":""}${now?" now":""}${hit?" hit":""}" data-k="${key}" tabindex="0" role="button" aria-label="${label}"><path d="${arc(r1,r2,p*30-15,p*30+15)}"/>${txt}</g>`;
+    }
+  });
+  /* the home chord gets a gold ring, drawn on top */
+  const hr=S.minor?[56,124]:[124,198];
+  ring=`<path class="home" d="${arc(hr[0]+3,hr[1]-3,home*30-15+1.2,home*30+15-1.2)}"/>`;
+  const hub=`<circle class="hub" cx="200" cy="200" r="52"/><text class="hub-k" x="200" y="190" style="font-size:${pcName(S.key).length>3?22:28}px">${pcName(S.key)}</text><text class="hub-m" x="200" y="218" style="font-size:14px">${t(S.minor?"wheelMinor":"wheelMajor")}</text>`;
+  svg.innerHTML=out+ring+hub;
+  svg.setAttribute("aria-label", t("wheelGroup"));
+  if(focusK){ const el=svg.querySelector(`[data-k="${focusK}"]`); if(el) el.focus({preventScroll:true}); }
+  /* the turn buttons say where they go */
+  const kn=(pc)=>KEY_NAMES[S.lang][((pc%12)+12)%12]+(S.minor?"m":"");   /* written the way the wheel writes it */
+  const L=$("turnL"), R=$("turnR"); if(L) L.textContent=t("wheelL",{k:kn(S.key+5)}); if(R) R.textContent=t("wheelR",{k:kn(S.key+7)});
+}
+function wheelUp(){ const n=WHEEL.held; WHEEL.held=null; WHEEL.hit=""; clearTimeout(WHEEL.t);
+  if(n) n.forEach(m=>{ if(!Object.values(padHeld).some(x=>x.indexOf(m)>=0)) noteOff("p", m); }); paintWheel(); }
+function wheelPlay(key){
+  const g=key[0], p=+key.slice(1), c=wheelChord(p,g);
+  ctx(); if(WHEEL.held) wheelUp();
+  const vo=voicing(c, lastVoicing); lastVoicing=vo;
+  const notes=vo.concat([bassOf(c)]); WHEEL.held=notes; WHEEL.hit=key;
+  notes.forEach((m,j)=>noteOn("p", m, 0.74*(j===notes.length-1?0.85:1)));
+  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  WHEEL.t=setTimeout(wheelUp, 1100);
+  paintWheel();
+}
+function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
 function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); $("litLine").hidden=!S.playing; }
 function paintTempo(){
   const r=$("bpm"), locked=S.withDrums && DRUM.take;
@@ -1202,6 +1306,9 @@ function bind(){
     paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); }
     if(was) mark("cswap"); lessonsChanged(); };
   $("rhythmSel").onchange=()=>{ S.rhythm=$("rhythmSel").value; save(); lessonsChanged(); };
+  $("wheel").addEventListener("click",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g) wheelPlay(g.getAttribute("data-k")); });
+  $("wheel").addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); wheelPlay(g.getAttribute("data-k")); } });
+  $("turnL").onclick=()=>turnWheel(5); $("turnR").onclick=()=>turnWheel(7);
   $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); lessonsChanged(); };
   $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); lessonsChanged(); };
   $("playBtn").onclick=()=>{ S.playing?userStop():start(); };
