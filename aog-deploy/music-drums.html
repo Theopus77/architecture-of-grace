@@ -552,7 +552,7 @@ const STR = {
   benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
   sPlay:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, sStop:{en:"■ Stop",es:"■ Parar"}, sClear:{en:"Clear the beat",es:"Borrar el ritmo"}, sDecks:{en:"Send to the turntables",es:"Enviar a los platos"},
   sKit:{en:"Sounds",es:"Sonidos"}, sLen:{en:"Length",es:"Largo"}, sSwing:{en:"Swing",es:"Swing"}, sReset:{en:"Put the kit sounds back",es:"Devolver los sonidos del kit"}, sUndoKit:{en:"Put my sounds back",es:"Devolver mis sonidos"}, sHolds:{en:"Your own samples are on pad",es:"Tus propias muestras están en el pad"},
-  /* AOG-CHORD-PADS-V1 */ cpFrom_piano:{en:"From the piano",es:"Del piano"}, cpFrom_guitar:{en:"From the guitar",es:"De la guitarra"}, cpFrom_bass:{en:"From the bass",es:"Del bajo"},
+  /* AOG-CHORD-PADS-V1 */ cpFrom_piano:{en:"From the piano",es:"Del piano"}, cpFrom_guitar:{en:"From the guitar",es:"De la guitarra"}, cpFrom_bass:{en:"From the bass",es:"Del bajo"}, cpFrom_band:{en:"From the band",es:"De la banda"},
   cpPut:{en:"Put them on pads 3 to 8",es:"Ponerlos en los pads 3 a 8"},
   cpOn:{en:"They are on pads 3 to 8. The kick and snare stay on 1 and 2.",es:"Están en los pads 3 a 8. El bombo y la caja siguen en el 1 y el 2."},
   cpFull:{en:"The sampler's memory is full. Put the kit sounds back on another kit first.",es:"La memoria del sampler está llena. Primero devuelve los sonidos del kit en otro kit."}, sPart:{en:"Part",es:"Parte"},
@@ -1446,7 +1446,7 @@ function paintLang(){
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["decks","music-decks.html","Turntables","Tocadiscos"]];
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(){

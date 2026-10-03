@@ -102,7 +102,7 @@
   try {
     var PR = { math:"#2F63B8", sci:"#2E8B57", ss:"#A8323E", ela:"#B87A12", spa:"#B8457A", facs:"#7B4FA0", eco:"#6E7C22", rel:"#3F4AA6" };
     var PR_FILES = { "concepts-and-data":"math", "interior-math":"math", "b10-interior-math":"math", "b12-sixth-grade-review":"math",
-      "b13-sixth-grade-practice":"math", "science-microscope":"sci", "telescope":"sci", "science-waves":"sci", "music-drums":"sci", "music-piano":"sci", "music-guitar":"sci", "music-bass":"sci",
+      "b13-sixth-grade-practice":"math", "science-microscope":"sci", "telescope":"sci", "science-waves":"sci", "music-drums":"sci", "music-piano":"sci", "music-guitar":"sci", "music-bass":"sci", "music-band":"sci",
       "music-decks":"sci", "vocabulary-science":"sci", "us-history":"ss", "b9-new-nation":"ss", "social-quiz":"ss",
       "n1-the-outsiders":"ela", "wf-units":"ela", "word-foundry":"ela", "b11-grammar":"ela" };
     var prs = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
@@ -170,7 +170,7 @@
      reading page gets highlights and notes (aog-markup.js). Tool pages opt out below. */
   try {
     var ms = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
-    if (!/^(|index|dashboard|turn-ins|today|404|offline|daily-drops|music-drums|music-decks|music-piano|music-guitar|music-bass|science-waves|science-microscope|science-telescope|quiet-space)$/.test(ms)) {
+    if (!/^(|index|dashboard|turn-ins|today|404|offline|daily-drops|music-drums|music-decks|music-piano|music-guitar|music-bass|music-band|science-waves|science-microscope|science-telescope|quiet-space)$/.test(ms)) {
       var mc = D.createElement("link"); mc.rel = "stylesheet"; mc.href = "/aog-markup.css"; (D.head || H).appendChild(mc);
       var mj = D.createElement("script"); mj.src = "/aog-markup.js"; mj.defer = true; (D.head || H).appendChild(mj);
     }
