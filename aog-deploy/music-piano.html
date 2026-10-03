@@ -132,6 +132,9 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   padding-bottom:6px;font:700 .62rem/1 var(--sans);box-shadow:0 3px 4px rgba(0,0,0,.45)}
 .wk.lit{background:linear-gradient(#fff3d1,#f5dc9c)} .bk.lit{background:linear-gradient(#6c5426,#3d2f15)}
 .wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
+/* AOG-PIANO-LIT-V2: a key the chords are sounding right now (orange, with a darker edge at the bottom) */
+.wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
+.bk.now .kc{color:#1f1206}
 .kc{display:none}
 @media (hover:hover) and (pointer:fine){
   .wk .kc,.bk .kc{display:block;font:700 .66rem/1 var(--sans);margin-bottom:5px;letter-spacing:0}
@@ -309,6 +312,7 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="kbd" id="kbd" role="group"></div>
+        <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine1"></p>
         <p class="line keys-line" data-t="keysLine2"></p>
@@ -420,6 +424,7 @@ const STR={
   lower:{en:"◀ Lower",es:"◀ Más grave"}, higher:{en:"Higher ▶",es:"Más agudo ▶"},
   rangeOut:{en:"{a} to {b}",es:"{a} a {b}"},
   sus:{en:"Hold notes (pedal)",es:"Mantener notas (pedal)"},
+  litLine:{en:"Pale keys fit the chord. Orange keys are playing now.",es:"Las teclas claras encajan con el acorde. Las naranjas suenan ahora."},
   touchLine:{en:"Press near the bottom of a key for a louder note. Slide a finger to play many keys.",es:"Presiona cerca de la parte de abajo de una tecla para una nota más fuerte. Desliza un dedo para tocar muchas teclas."},
   keysLine1:{en:"On a computer, A S D F G H J K L ; ' play the white keys and W E T Y U O P the black keys. Z and X go lower and higher.",es:"En la computadora, A S D F G H J K L Ñ ' tocan las teclas blancas y W E T Y U O P las negras. Z y X bajan y suben."},
   keysLine2:{en:"Hold Shift to keep notes ringing. 1 to 6 play the chord pads. Space starts and stops.",es:"Mantén Shift para que las notas sigan sonando. Del 1 al 6 tocan los pads. La barra espaciadora empieza y para."},
@@ -859,7 +864,7 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   barEvents(S.rhythm, vo.length).forEach(ev=>{
     const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
     const when=t0+ev.t*beat+late, notes=ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[vo[Math.min(ev.w, vo.length-1)]];
-    notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when); if(vc){ vc.stop(when+ev.d*beat, vc.tau); out.push(vc); } });
+    notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when); if(vc){ vc.stop(when+ev.d*beat, vc.tau); vc.m=m; vc.on=when; vc.off=when+ev.d*beat; out.push(vc); } });
   });
   return out;
 }
@@ -906,6 +911,7 @@ function tick(){
   }
   const cur=Math.floor((now-PLAY.t0)/PLAY.barSec);
   if(cur>=0 && cur!==PLAY.cur){ PLAY.cur=cur; paintNow(); litKeys(); onBar(); }
+  else if([...sounding()].sort((a,b)=>a-b).join(",")!==PLAY.sig) litKeys();   /* the orange keys follow each note */
   PLAY.raf=requestAnimationFrame(tick);
 }
 
@@ -1023,7 +1029,7 @@ function paintNow(){
   const cur=k>=0?S.prog[k]:null;
   document.querySelectorAll(".pad").forEach(el=>{ const c=pads()[+el.getAttribute("data-i")]; el.classList.toggle("now", !!(cur && c && c.off===cur.off && (c.q===cur.q || (cur.q==="dom7"&&c.q==="maj") || (cur.q==="maj7"&&c.q==="maj") || (cur.q==="m7"&&c.q==="min")))); });
 }
-function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); }
+function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); $("litLine").hidden=!S.playing; }
 function paintTempo(){
   const r=$("bpm"), locked=S.withDrums && DRUM.take;
   r.value=String(curBpm()); r.disabled=!!locked;
@@ -1086,12 +1092,29 @@ function buildKeys(){
   $("downBtn").disabled=S.oct<=1; $("upBtn").disabled=S.oct>=7-oc;
   litKeys();
 }
+/* AOG-PIANO-LIT-V2 (2026-10-03) — Jimmy: "When it is playing chords one note at a time, the keyboard is not lighting up
+   correctly … It is not showing all the notes being played." The whole chord stayed lit for the whole bar, and only in the
+   octave it was played in, so notes below or above the keys on screen never showed. Now, while the chords play:
+   pale = every key on screen that fits the chord, in every octave (any of them fits, as Lesson 16 says);
+   orange = a key while the chords are sounding it, so a broken chord walks across the keys; gold = your own fingers. */
+function sounding(){
+  const now=ac?ac.currentTime:0, by=new Map(), out=new Set();
+  PLAY.voices.forEach(v=>{ if(v.m==null) return; if(!by.has(v.m)) by.set(v.m,[]); by.get(v.m).push(v); });
+  /* a key that plays again a moment later stays lit, so a steady chord does not blink */
+  by.forEach((list,m)=>{ list.sort((a,b)=>a.on-b.on);
+    for(let i=0;i<list.length;i++){ const a=list[i], b=list[i+1];
+      if(now>=a.on && now<a.off){ out.add(m); return; }
+      if(b && now>=a.off && now<b.on && b.on-a.off<0.2){ out.add(m); return; } } });
+  return out;
+}
 function litKeys(){
   const kb=$("kbd"); if(!kb) return;
-  const down=new Set(), lit=new Set();
+  const down=new Set(), now=S.playing?sounding():new Set(), fit=new Set(), cc=curChord();
   LIVE.forEach((vc,key)=>{ const m=+key.slice(1); if(vc.down || S.sus) down.add(m); });
-  if(S.playing && PLAY.cur>=0 && S.prog.length && PLAY.vo[PLAY.cur]){ const c=S.prog[PLAY.cur%S.prog.length]; PLAY.vo[PLAY.cur].concat([bassOf(c)]).forEach(m=>lit.add(m)); }
-  kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"); el.classList.toggle("down", down.has(m)); el.classList.toggle("lit", !down.has(m)&&lit.has(m)); });
+  if(cc) chordPcs(cc).forEach(pc=>fit.add(pc));
+  PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
+  kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
+    el.classList.toggle("down", d); el.classList.toggle("now", n); el.classList.toggle("lit", !d&&!n&&fit.has(((m%12)+12)%12)); });
 }
 /* fingers: each pointer plays the key under it, and sliding moves to the next key */
 const POINTERS=new Map();
