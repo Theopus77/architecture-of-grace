@@ -62,6 +62,14 @@ textarea{min-height:84px;resize:vertical}
 .prt{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:12px 0 0;padding:0 20px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:700 16px inherit;font-family:inherit;cursor:pointer}
 .prt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 @media print{.send,.st,.names,.prt{display:none}}
+/* AOG-SLIP-SKETCH-V1 — the checklist's drawing: an architect's pencil sketch on drafting paper. Drawn lines are graphite;
+   the parts still to come are faint blueprint dashes. It sits on its own paper in both themes. Nothing moves. */
+.artpad{background:linear-gradient(rgba(47,99,184,.07) 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,rgba(47,99,184,.07) 1px,transparent 1px) 0 0/16px 16px,#F7F2E6;border:1px solid rgba(42,38,34,.35);border-radius:10px;padding:8px}
+.artpad svg{display:block;width:100%;height:auto}
+.artcap{margin:8px 0 0;font-weight:700;color:var(--ink)}
+.done .artpad{margin-top:14px}.done .artcap{color:inherit}
+@media print{.artpad{background:#fff}}
+
 </style>
 </head>
 <body>
@@ -147,12 +155,12 @@ var SLIPS={
   /* AOG-SLIP-CHECKLIST-V1 (2026-10-03) — Jimmy: "one of the slips can be a school check list, a home check list for
      gathering materials, checking homework, putting stuff away." kind:"check" is a list of steps; each tap ticks one.
      Steps not done yet are fine: they show the teacher where a hand would help. */
-  school:{ k:["At school · My checklist","En la escuela · Mi lista"], h:["My school checklist","Mi lista de la escuela"],
+  school:{ art:"school", k:["At school · My checklist","En la escuela · Mi lista"], h:["My school checklist","Mi lista de la escuela"],
     lead:["Tap each step when it is done. It is fine if some are not done yet. Your teacher sees where a hand would help.","Toca cada paso cuando lo termines. Está bien si alguno falta. Tu maestro verá dónde puede ayudarte."],
     qs:[{id:"arrive",kind:"check",q:["When I arrive","Cuando llego"],o:[["Hang up my backpack and coat","Colgar mi mochila y mi abrigo"],["Turn in my homework","Entregar mi tarea"],["Take out what I need: pencil, folder, book","Sacar lo que necesito: lápiz, carpeta, libro"],["Read today's plan on the board","Leer el plan de hoy en la pizarra"],["Get water or use the restroom if I need to","Tomar agua o ir al baño si lo necesito"]]},
         {id:"leave",kind:"check",q:["Before I leave","Antes de irme"],o:[["Write down my homework","Anotar mi tarea"],["Pack my folder and books","Guardar mi carpeta y mis libros"],["Take home notes for my family","Llevar a casa las notas para mi familia"],["Clean up my space","Limpiar mi lugar"],["Check for my lunchbox, water bottle and coat","Revisar mi lonchera, mi botella de agua y mi abrigo"]]},
         {id:"help",kind:"note",q:["Anything I need help with? (optional)","¿Algo en lo que necesito ayuda? (opcional)"]}] },
-  homecheck:{ k:["At home · My checklist","En casa · Mi lista"], h:["My home checklist","Mi lista de la casa"],
+  homecheck:{ art:"house", k:["At home · My checklist","En casa · Mi lista"], h:["My home checklist","Mi lista de la casa"],
     lead:["Tap each step when it is done. A grown-up can do it with you. Your teacher sees how the evening went.","Toca cada paso cuando lo termines. Un adulto puede hacerlo contigo. Tu maestro verá cómo te fue en la tarde."],
     qs:[{id:"gather",kind:"check",q:["Get ready","Prepararme"],o:[["Find my folder and planner","Buscar mi carpeta y mi agenda"],["Gather what I need: pencil, eraser, paper","Reunir lo que necesito: lápiz, borrador, papel"],["Find a quiet spot to work","Buscar un lugar tranquilo para trabajar"]]},
         {id:"homework",kind:"check",q:["Homework","La tarea"],o:[["Look at my planner","Mirar mi agenda"],["Do my homework","Hacer mi tarea"],["Check my work","Revisar mi trabajo"],["Show a grown-up","Mostrársela a un adulto"]]},
@@ -160,7 +168,7 @@ var SLIPS={
         {id:"help",kind:"note",q:["Anything to tell my teacher? (optional)","¿Algo que decirle a mi maestro? (opcional)"]}] },
   /* AOG-SLIP-BEDTIME-V1 (2026-10-03) — Jimmy: "Getting ready for bed routine could work perhaps." The same step list,
      for the end of the day: wind down, get ready, settle in. */
-  bedtime:{ k:["At home · Bedtime checklist","En casa · Lista para dormir"], h:["Getting ready for bed","Preparándome para dormir"],
+  bedtime:{ art:"night", k:["At home · Bedtime checklist","En casa · Lista para dormir"], h:["Getting ready for bed","Preparándome para dormir"],
     lead:["Tap each step as you go. A grown-up can do it with you. Your teacher sees it in the morning.","Toca cada paso mientras lo haces. Un adulto puede hacerlo contigo. Tu maestro lo verá en la mañana."],
     qs:[{id:"wind",kind:"check",q:["Wind down","Calmarme"],o:[["Put screens away","Guardar las pantallas"],["Tidy my room a little","Ordenar un poco mi cuarto"],["Pack anything I forgot for tomorrow","Guardar lo que olvidé para mañana"]]},
         {id:"ready",kind:"check",q:["Get ready","Prepararme"],o:[["Bath or shower","Baño o ducha"],["Put on my pajamas","Ponerme la pijama"],["Brush my teeth","Cepillarme los dientes"],["Use the bathroom","Ir al baño"],["Fill my water cup","Llenar mi vaso de agua"]]},
@@ -227,9 +235,33 @@ function remember(n){ n=String(n||"").trim(); if(!n) return; var a=(jGet("aog.da
 var who=(Q.get("sid")||"").trim()||String(jGet("aog.dash2.student","")||"").trim()||lsGet("aog.drops.who","");
 var A={}, MORE={}, TALK=false, sent=false, busy=false, err="";
 
+/* AOG-SLIP-SKETCH-V1 (2026-10-03) — Jimmy: "These can produce canvas pictures (not stained glass but something else)."
+   A checklist builds an architect's sketch: each step ticked draws the next part of the building, foundation first,
+   whichever step it was. Parts not drawn yet wait as faint blueprint dashes. */
+var STAR="l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1z";
+var ART={
+  house:{n:["a house","una casa"],p:["M10 180H310","M70 180V170H250V180","M80 170V100","M240 170V100M80 100H240","M68 102L160 45L252 102",
+    "M145 170V130H175V170M167 151h.1","M100 115h30v25h-30zM115 115v25M100 127h30","M190 115h30v25h-30zM205 115v25M190 127h30",
+    "M200 70V46H218V82","M22 180V162M34 180V162M46 180V162M58 180V162M18 167H62M18 175H62","M285 180V142M267 132a18 22 0 1 0 36 0a18 22 0 1 0 -36 0","M26 40a14 14 0 1 0 28 0a14 14 0 1 0 -28 0M40 18V10M40 62V70M18 40H10M62 40H70"]},
+  school:{n:["a schoolhouse","una escuela"],p:["M10 180H310","M130 180V174H190V180M136 174V168H184V174","M70 168V95H250V168H70","M60 97L160 52L260 97Z",
+    "M148 168V128H172V168M160 128V168","M88 112h28v24h-28zM102 112v24M88 124h28","M204 112h28v24h-28zM218 112v24M204 124h28",
+    "M145 64V32H175V64M145 32L160 20L175 32M154 48a6 6 0 1 0 12 0a6 6 0 1 0 -12 0","M160 20V6M160 6h16l-4 5l4 5h-16","M35 180V150M19 140a16 20 0 1 0 32 0a16 20 0 1 0 -32 0"]},
+  night:{n:["a house at night","una casa de noche"],p:["M10 180H310","M90 180V105H230V180","M80 107L160 55L240 107","M150 180V140H174V180",
+    "M105 120h30v26h-30zM120 120v26M105 133h30","M185 120h30v26h-30zM200 120v26M185 133h30","M205 78V56H220V90",
+    "M270 22A22 22 0 1 0 292 50A17 17 0 1 1 270 22Z","M40 26"+STAR,"M110 18"+STAR,"M222 14"+STAR]}
+};
+function artSteps(){ var d=0, all=0; S.qs.forEach(function(q){ if(q.kind==="check"){ d+=(A[q.id]||[]).length; all+=q.o.length; } }); return {d:d,all:all}; }
+function artSvg(){ var sc=ART[S.art], c=artSteps(), parts=sc.p, n=Math.round(parts.length*(c.all?c.d/c.all:0)), g="";
+  parts.forEach(function(d,i){ g+=i<n
+    ? '<path d="'+d+'" stroke="#2F2A25" stroke-width="2.4"/><path d="'+d+'" stroke="#2F2A25" stroke-width="1" opacity=".35" transform="translate(.9 .7)"/>'
+    : '<path d="'+d+'" stroke="#2F63B8" stroke-width="1.4" stroke-dasharray="3 5" opacity=".35"/>'; });
+  var label=t("A pencil drawing of ","Un dibujo a lápiz de ")+t(sc.n[0],sc.n[1])+", "+n+t(" of "," de ")+parts.length+t(" parts drawn"," partes dibujadas");
+  return '<div class="artpad"><svg viewBox="0 0 320 200" role="img" aria-label="'+esc(label)+'" fill="none" stroke-linecap="round" stroke-linejoin="round">'+g+'</svg></div>'
+    +'<p class="artcap">'+(n===parts.length?t("Your drawing is finished.","Tu dibujo está terminado."):t("Your drawing: ","Tu dibujo: ")+n+t(" of "," de ")+parts.length+t(" parts"," partes"))+'</p>'; }
+function artCard(){ return S.art?'<div class="card artcard"><p class="q">'+t("Your drawing","Tu dibujo")+'</p><p class="hint">'+t("Each step you tick draws one more part.","Cada paso que marcas dibuja una parte más.")+'</p><div id="artBox">'+artSvg()+'</div></div>':''; }
 function paint(){
   var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
-  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?(S.parent?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p><a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
+  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?(S.parent?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p>'+(S.art?artSvg()+'<p class="lead" style="margin:6px 0 0">'+t("Show your grown-up your drawing.","Muéstrale tu dibujo a un adulto.")+'</p>':'')+'<a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
   var ns=names();
   h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):t("Your name","Tu nombre"))+'</label>'
     +(ns.length?'<div class="names" style="margin-top:8px">'+ns.map(function(n){ return '<button type="button" data-who="'+esc(n)+'" aria-pressed="'+(n.toLowerCase()===who.toLowerCase())+'">'+esc(n)+'</button>'; }).join("")+'</div>':'')
@@ -243,6 +275,7 @@ function paint(){
     if(q.more) h+='<details class="more"'+(MORE[q.id]?' open':'')+'><summary>✎ '+t("Write more (optional)","Escribe más (opcional)")+'</summary><textarea data-more="'+q.id+'" maxlength="400" aria-label="'+esc(t("Write more","Escribe más"))+'">'+esc(MORE[q.id]||"")+'</textarea></details>';
     h+='</div>';
   });
+  h+=artCard();
   if(S.talk) h+='<div class="card"><label class="talk"><input type="checkbox" id="talk"'+(TALK?' checked':'')+'> '+t("I would like to talk to an adult","Me gustaría hablar con un adulto")+'</label></div>';
   h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):(S.parent?t("Send to the teacher","Enviar al maestro"):t("Send to my teacher","Enviar a mi maestro")))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
   /* AOG-SLIP-PRINT-V1 — a Print button for a paper copy (screen only) */
@@ -259,7 +292,7 @@ function wire(){
     if(q.kind==="pick"||q.kind==="check"){ var a=(A[qid]||[]).slice(), p=a.indexOf(i); if(p>=0) a.splice(p,1); else { if(a.length>=(q.max||(q.kind==="check"?99:3))) a.shift(); a.push(i); } A[qid]=a; }
     else A[qid]=(A[qid]===i?null:i);
     b.closest(".opts").querySelectorAll(".opt").forEach(function(x){ var j=+x.getAttribute("data-i"); x.setAttribute("aria-pressed", String(q.kind==="pick"||q.kind==="check"?(A[qid]||[]).indexOf(j)>=0:A[qid]===j)); });
-    if(q.kind==="check"){ var c=app.querySelector('[data-cnt="'+qid+'"]'); if(c) c.textContent=cnt(q); } }; });
+    if(q.kind==="check"){ var c=app.querySelector('[data-cnt="'+qid+'"]'); if(c) c.textContent=cnt(q); var ab=document.getElementById("artBox"); if(ab) ab.innerHTML=artSvg(); } }; });
   var s=document.getElementById("send"); if(s) s.onclick=send;
   var pr=document.getElementById("prt"); if(pr) pr.onclick=function(){ window.print(); };
 }
