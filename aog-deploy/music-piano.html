@@ -58,9 +58,11 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
 .muted{color:var(--muted)}
 .nav{display:flex;gap:4px}
 .nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem}
-/* no selecting, no copy bubble, no double-tap wait on the instrument (AOG-MUSIC-TOUCH-V1) */
-.rig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+/* no selecting, no copy bubble, no magnifier, no double-tap wait anywhere on the piano, like the drum machine (AOG-MUSIC-TOUCH-V1;
+   AOG-PIANO-NO-LOUPE-V1: Jimmy saw the iPad magnifier while tapping notes). Boxes you type in still select. */
+body,.rig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .rig select{-webkit-user-select:auto;user-select:auto}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 
 /* ══ the instrument: a dark stage-piano panel, felt over the keys ══ */
 .rig{position:relative;margin-top:1rem;border-radius:18px;padding:16px 14px 18px;border:1px solid #07080a;color:#ece6da;
@@ -76,6 +78,7 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
 .plab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
 .line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
 .line.note{color:#ffd9a8}
+#midiLine:empty{display:none}   /* the MIDI answer takes room only when there is one */
 .line a{color:#cfe2ff}
 .row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
 .field{display:grid;min-width:0;flex:1 1 15rem}
@@ -105,6 +108,25 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
 .pad kbd{display:none}
 .pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
 .pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
+/* AOG-PIANO-WHEEL-V1 — the chord wheel (circle of fifths): majors outside, their minors inside.
+   Light text on the dark wedges; the six that fit the key are cream like the pads, with dark text; orange = playing now. */
+.wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+#rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.wheel-side{flex:1 1 230px;min-width:0}
+.wheel .wd{cursor:pointer;outline:none}
+.wheel .wd path{stroke:#0c0d10;stroke-width:2}
+.wheel .wd text{font-family:var(--display);font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.wheel .wd.o path{fill:#2a2e35} .wheel .wd.i path{fill:#202328}
+.wheel .wd.o text{fill:#ece3d2} .wheel .wd.i text{fill:#ddd2bf}
+.wheel .wd.fit path{fill:#f8eed3} .wheel .wd.fit text{fill:#2b2116}
+.wheel .wd .pn{font-family:var(--sans);font-weight:800;fill:#4a3a18}
+.wheel .wd.now path{fill:#ef9a4a} .wheel .wd.now text{fill:#1f1206} .wheel .wd.now .pn{fill:#3a1c06}
+.wheel .wd.hit path{fill:#ffd36b} .wheel .wd.hit text{fill:#1f1206}
+.wheel .wd:focus-visible path{stroke:#ffffff;stroke-width:5}
+.wheel .home{fill:none;stroke:#e0a640;stroke-width:6;pointer-events:none}
+.wheel .hub{fill:#15171b;stroke:#e0a640;stroke-width:3}
+.wheel .hub-k{font-family:var(--display);font-weight:800;fill:#f4ecd8;text-anchor:middle;dominant-baseline:central}
+.wheel .hub-m{font-family:var(--sans);font-weight:700;fill:#d9cdb2;text-anchor:middle;dominant-baseline:central}
 .prog{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 0;min-height:44px;align-items:center}
 .slot{min-width:3.6rem;min-height:44px;border-radius:10px;border:1px solid #565c66;background:#1d2024;color:#f1ebdf;
   display:inline-flex;align-items:center;justify-content:center;font:800 1.05rem/1 var(--display);padding:0 .65rem}
@@ -129,6 +151,9 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
   padding-bottom:6px;font:700 .62rem/1 var(--sans);box-shadow:0 3px 4px rgba(0,0,0,.45)}
 .wk.lit{background:linear-gradient(#fff3d1,#f5dc9c)} .bk.lit{background:linear-gradient(#6c5426,#3d2f15)}
 .wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
+/* AOG-PIANO-LIT-V2: a key the chords are sounding right now (orange, with a darker edge at the bottom) */
+.wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
+.bk.now .kc{color:#1f1206}
 .kc{display:none}
 @media (hover:hover) and (pointer:fine){
   .wk .kc,.bk .kc{display:block;font:700 .66rem/1 var(--sans);margin-bottom:5px;letter-spacing:0}
@@ -295,6 +320,20 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         <div id="drumBox"></div>
       </div>
 
+      <div class="blk" id="wheelBlk">
+        <h2 data-t="wheelH"></h2>
+        <div class="wheel-wrap">
+          <svg class="wheel" id="wheel" viewBox="0 0 400 400" role="group"></svg>
+          <div class="wheel-side">
+            <p class="line" style="margin-top:0" data-t="wheelLine"></p>
+            <div class="row" style="margin-top:.7rem">
+              <button type="button" class="pbtn" id="turnL"></button>
+              <button type="button" class="pbtn" id="turnR"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="blk">
         <h2 data-t="keysH"></h2>
         <div class="krow">
@@ -304,11 +343,12 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
           <button type="button" class="pbtn" id="susBtn" aria-pressed="false"></button>
           <button type="button" class="pbtn" id="midiBtn" hidden></button>
         </div>
+        <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="kbd" id="kbd" role="group"></div>
+        <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine1"></p>
         <p class="line keys-line" data-t="keysLine2"></p>
-        <p class="line" id="midiLine" aria-live="polite"></p>
       </div>
 
       <div class="blk">
@@ -399,12 +439,18 @@ const STR={
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine:{en:"Tap a pad to hear a chord. Every pad fits this key.",es:"Toca un pad para oír un acorde. Todos los pads van con este tono."},
+  wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
+  wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
+  wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
+  wheelMajor:{en:"major",es:"mayor"}, wheelMinor:{en:"minor",es:"menor"},
+  wheelGroup:{en:"Chord wheel. Tap a chord to hear it.",es:"Rueda de acordes. Toca un acorde para oírlo."},
+  wheelChord:{en:"{c} chord",es:"Acorde {c}"}, wheelPad:{en:"pad {n}",es:"pad {n}"},
   patternLab:{en:"Start from a chord pattern",es:"Empieza con un patrón de acordes"},
   pickPattern:{en:"Choose a pattern…",es:"Elige un patrón…"}, myOwn:{en:"My own pattern",es:"Mi propio patrón"},
   rhythmLab:{en:"How the chords play",es:"Cómo suenan los acordes"},
   yourPattern:{en:"Your chord pattern · one chord for each bar",es:"Tu patrón de acordes · un acorde por compás"},
   progEmpty:{en:"Pick a pattern above, or press Make my own.",es:"Elige un patrón arriba, o pulsa Hacer el mío."},
-  ownOn:{en:"Tap the chord pads in the order you want. Up to 8.",es:"Toca los pads en el orden que quieras. Hasta 8."},
+  ownOn:{en:"Tap the chord pads or the wheel in the order you want. Up to 8.",es:"Toca los pads o la rueda en el orden que quieras. Hasta 8."},
   play:{en:"▶ Play the chords",es:"▶ Tocar los acordes"}, stop:{en:"■ Stop",es:"■ Parar"},
   own:{en:"Make my own",es:"Hacer el mío"}, clear:{en:"Clear",es:"Borrar"},
   tempoLab:{en:"Tempo",es:"Tempo"}, bpm:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
@@ -417,13 +463,15 @@ const STR={
   lower:{en:"◀ Lower",es:"◀ Más grave"}, higher:{en:"Higher ▶",es:"Más agudo ▶"},
   rangeOut:{en:"{a} to {b}",es:"{a} a {b}"},
   sus:{en:"Hold notes (pedal)",es:"Mantener notas (pedal)"},
+  litLine:{en:"Pale keys fit the chord. Orange keys are playing now.",es:"Las teclas claras encajan con el acorde. Las naranjas suenan ahora."},
   touchLine:{en:"Press near the bottom of a key for a louder note. Slide a finger to play many keys.",es:"Presiona cerca de la parte de abajo de una tecla para una nota más fuerte. Desliza un dedo para tocar muchas teclas."},
   keysLine1:{en:"On a computer, A S D F G H J K L ; ' play the white keys and W E T Y U O P the black keys. Z and X go lower and higher.",es:"En la computadora, A S D F G H J K L Ñ ' tocan las teclas blancas y W E T Y U O P las negras. Z y X bajan y suben."},
   keysLine2:{en:"Hold Shift to keep notes ringing. 1 to 6 play the chord pads. Space starts and stops.",es:"Mantén Shift para que las notas sigan sonando. Del 1 al 6 tocan los pads. La barra espaciadora empieza y para."},
   midi:{en:"Use a MIDI keyboard",es:"Usar un teclado MIDI"},
   midiReady:{en:"MIDI keyboard ready: {name}.",es:"Teclado MIDI listo: {name}."},
-  midiNone:{en:"No MIDI keyboard found. Plug one in, then press the button again.",es:"No se encontró un teclado MIDI. Conéctalo y vuelve a pulsar el botón."},
-  midiNo:{en:"This browser did not allow MIDI. Try Chrome or Edge.",es:"Este navegador no permitió MIDI. Prueba Chrome o Edge."},
+  midiNone:{en:"No MIDI keyboard yet. Plug one in and it shows up here.",es:"Todavía no hay un teclado MIDI. Conéctalo y aparecerá aquí."},
+  midiWait:{en:"Looking for your MIDI keyboard…",es:"Buscando tu teclado MIDI…"},
+  midiNo:{en:"This browser did not let the piano use MIDI. On a computer, try Chrome or Edge.",es:"Este navegador no dejó que el piano use MIDI. En una computadora, prueba Chrome o Edge."},
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
   era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
   eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
@@ -489,7 +537,15 @@ const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","
 const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
 function flats(){ const major=S.minor?(S.key+3)%12:S.key; return [5,10,3,8,1].indexOf(major)>=0; }
 function pcName(pc){ const set=flats()?"flat":"sharp"; return (S.lang==="es"?SOLFA:NAMES)[set][((pc%12)+12)%12]; }
-function chordName(c){ return pcName(S.key+c.off)+(S.lang==="es"?SUF_ES:SUF)[c.q]; }
+function chordName(c){ const pc=((S.key+c.off)%12+12)%12; return rootName(pc, c.q)+(S.lang==="es"?SUF_ES:SUF)[c.q]; }
+/* AOG-PIANO-WHEEL-V1: a root in the key is spelled like the key (as before). A root outside it, which the chord wheel lets
+   you pick, is spelled the usual way round the wheel: sharps on the right, flats on the left (in C: A♭ and B♭, not G♯ and A♯). */
+function rootName(pc, q){
+  const major=S.minor?(S.key+3)%12:S.key, deg=((pc-major)%12+12)%12;
+  if([0,2,4,5,7,9,11].indexOf(deg)>=0) return pcName(pc);
+  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : pc;
+  return (S.lang==="es"?SOLFA:NAMES)[(rel*7)%12<=6?"sharp":"flat"][pc];
+}
 /* six pads: the chords that belong to the key (numbers are steps of the scale) */
 const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n:4,off:5,q:"maj"},{n:5,off:7,q:"maj"},{n:6,off:9,q:"min"}];
 const PADS_MINOR=[{n:1,off:0,q:"min"},{n:3,off:3,q:"maj"},{n:4,off:5,q:"min"},{n:5,off:7,q:"min"},{n:6,off:8,q:"maj"},{n:7,off:10,q:"maj"}];
@@ -565,8 +621,6 @@ function roomIR(c){
   }
   return ir;
 }
-const NOISE=new WeakMap();
-function noiseBuf(c){ let b=NOISE.get(c); if(b) return b; b=c.createBuffer(1, c.sampleRate, c.sampleRate); const d=b.getChannelData(0), r=seeded(0x13579bdf); for(let i=0;i<d.length;i++) d[i]=r(); NOISE.set(c,b); return b; }
 function eraHz(e){ return Math.exp(Math.log(18000)*(1-e)+Math.log(8500)*e); }
 function makeChain(c){
   const ch={c:c};
@@ -695,48 +749,54 @@ function sampleVoice(c, ch, snd, m, v, when){
   return vc;
 }
 function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
+/* AOG-PIANO-LATE-NOTE-V1 (2026-10-03) — Jimmy, on an iPad: "playing the ORGAN, every 4-5 notes I would hear a drum".
+   A note played by hand is timed for "now", and now and then the sound engine first hears it a moment later. Safari can
+   then skip the note's first step ("start at 0"), and a new gain starts at its default of 1: the church organ's breath
+   came out full blast, like a snare, over a thump. So every envelope's gain is made already holding where its sound is
+   a moment in, and a late note just starts a moment late. */
+function gainAt(c, v){ try{ return new GainNode(c, {gain:v}); }catch(e){ const g=c.createGain(); g.gain.value=v; return g; } }
 function fmPair(c, f, ratio, idx0, idx1, tau, when, carrierDetune){
-  const car=osc(c,"sine",f*(carrierDetune||1)), mod=osc(c,"sine",f*ratio), mg=c.createGain();
+  const car=osc(c,"sine",f*(carrierDetune||1)), mod=osc(c,"sine",f*ratio), mg=gainAt(c, f*idx0);
   mg.gain.setValueAtTime(f*idx0, when); mg.gain.setTargetAtTime(f*idx1, when, tau);
   mod.connect(mg); mg.connect(car.frequency); return {car:car, mod:mod};
 }
 let shapeCache=null;
 function softClip(){ if(shapeCache) return shapeCache; const n=1024, cv=new Float32Array(n); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; cv[i]=Math.tanh(1.8*x)/Math.tanh(1.8); } shapeCache=cv; return cv; }
-function synthVoice(c, ch, snd, m, v, when, legato){
+function synthVoice(c, ch, snd, m, v, when){
   const f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), nodes=[];
-  const amp=c.createGain(), rel=c.createGain(); rel.gain.value=1;
+  /* the loudest point of each sound; the quick attacks hold it from the start, the church organ swells up from silence */
+  const peak = snd.kind==="tine"||snd.kind==="fm" ? 0.30*velAmp(vv) : snd.kind==="reed" ? 0.24*velAmp(vv)
+             : snd.kind==="organ" ? 0.16*(0.75+0.25*vv) : 0.14*(0.8+0.2*vv);
+  const amp=gainAt(c, snd.kind==="church"?0:peak), rel=c.createGain(); rel.gain.value=1;
   let dest=amp, tau=0.08;
   const decay=(base, lo, hi)=>Math.max(lo, Math.min(hi, base*Math.pow(261.6/f, 0.4)));
   if(snd.kind==="tine"){                 /* warm electric piano: a bell-like tine over a round body */
     const a=fmPair(c,f,1, 1.0+2.2*vv, 0.25, 0.35, when), b=fmPair(c,f,14, 1.3*vv, 0, 0.03, when);
     const bg=c.createGain(); bg.gain.value=0.35; a.car.connect(amp); b.car.connect(bg); bg.connect(amp);
     nodes.push(a.car,a.mod,b.car,b.mod);
-    const peak=0.30*velAmp(vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.9,0.6,4.5));
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.9,0.6,4.5));
     tau=0.07;
   } else if(snd.kind==="reed"){          /* bright electric piano: a reed that barks when you dig in */
     const a=fmPair(c,f,1, 1.8+3.2*vv, 0.7, 0.45, when);
     const sh=c.createWaveShaper(); sh.curve=softClip(); const drive=c.createGain(); drive.gain.value=0.7+1.6*vv;
     a.car.connect(drive); drive.connect(sh); sh.connect(amp); nodes.push(a.car,a.mod);
-    const peak=0.24*velAmp(vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
     tau=0.06;
   } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: two stacks, a shimmer and a ping */
     const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when), b=fmPair(c,f,14, 1.6*vv, 0, 0.02, when, 1.0035);
     const ag=c.createGain(), bg=c.createGain(); ag.gain.value=0.7; bg.gain.value=0.42;
     a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); nodes.push(a.car,a.mod,b.car,b.mod);
-    const peak=0.30*velAmp(vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
     tau=0.09;
-  } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out, a click, and a percussion ping */
+  } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out */
+    /* a key makes one sound, the organ's (Jimmy, 2026-10-03: "a drum sound happens prior to the organ sounds … hitting the keys
+       should not make a secondary sound"): no key click, no percussion ping, and a soft 8 ms start so nothing thumps */
     const o=osc(c,"sine",f/2); o.setPeriodicWave(organWave(c)); o.connect(amp); nodes.push(o);
-    const peak=0.16*(0.75+0.25*vv); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.005);
-    if(!legato){ const p=osc(c,"sine",f*3), pg=c.createGain(); pg.gain.setValueAtTime(0.09, when); pg.gain.setTargetAtTime(0, when, 0.18); p.connect(pg); pg.connect(amp); nodes.push(p); }
-    const k=c.createBufferSource(); k.buffer=noiseBuf(c); const kh=c.createBiquadFilter(); kh.type="highpass"; kh.frequency.value=1200;
-    const kg=c.createGain(); kg.gain.setValueAtTime(0.05, when); kg.gain.setTargetAtTime(0, when, 0.002); k.connect(kh); kh.connect(kg); kg.connect(amp); k.start(when); k.stop(when+0.03);
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.008);
     dest=amp; tau=0.02;
-  } else {                               /* church organ: pipes that take a moment to speak, in a big room */
+  } else {                               /* church organ: pipes that take a moment to speak, in a big room (one sound: no breath noise) */
     const o=osc(c,"sine",f/2); o.setPeriodicWave(churchWave(c)); o.connect(amp); nodes.push(o);
-    const peak=0.14*(0.8+0.2*vv); amp.gain.setValueAtTime(0, when); amp.gain.setTargetAtTime(peak, when, 0.035);
-    const k=c.createBufferSource(); k.buffer=noiseBuf(c); const kb=c.createBiquadFilter(); kb.type="bandpass"; kb.frequency.value=Math.min(9000,f*4); kb.Q.value=2;
-    const kg=c.createGain(); kg.gain.setValueAtTime(0.06, when); kg.gain.setTargetAtTime(0, when, 0.03); k.connect(kb); kb.connect(kg); kg.connect(amp); k.start(when); k.stop(when+0.25);
+    amp.gain.setValueAtTime(0, when); amp.gain.setTargetAtTime(peak, when, 0.035);
     tau=0.12;
   }
   const lvl=c.createGain(); lvl.gain.value=snd.gain;
@@ -756,13 +816,13 @@ function waveFrom(c, key, levels){ let w=WAVES.get(c)||{}; if(w[key]) return w[k
 const DB=n=>n?Math.pow(10,-(8-n)*3/20):0;
 function organWave(c){ return waveFrom(c,"organ",{1:DB(8),3:DB(8),2:DB(8),4:DB(6)}); }
 function churchWave(c){ return waveFrom(c,"church",{1:0.35,2:1,4:0.55,6:0.25,8:0.35,12:0.18,16:0.12}); }
-function makeVoice(c, ch, id, m, v, when, legato){
+function makeVoice(c, ch, id, m, v, when){
   const snd=SOUNDS[id];
   if(snd.kind==="sample"){
     if(SETS[snd.set].ready){ const vc=sampleVoice(c, ch, snd, m, v, when); if(vc) return vc; }
-    return synthVoice(c, ch, SOUNDS.epwarm, m, v, when, legato);   /* the stand-in while the recordings load */
+    return synthVoice(c, ch, SOUNDS.epwarm, m, v, when);   /* the stand-in while the recordings load */
   }
-  return synthVoice(c, ch, snd, m, v, when, legato);
+  return synthVoice(c, ch, snd, m, v, when);
 }
 
 /* ── the live engine ── */
@@ -790,8 +850,7 @@ function noteOn(tag, m, v){
   if(m<21||m>108) return;
   const c=ctx(), now=c.currentTime, key=tag+m;
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
-  const legato=[...LIVE.values()].some(x=>x.down && SOUNDS[S.sound].kind==="organ");
-  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now, legato);
+  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
   if(!vc) return;
   vc.down=true; LIVE.set(key, vc); track(vc); prune();
   litKeys();
@@ -828,6 +887,7 @@ function padDown(i, v){
   padHeld[i]=notes;
   notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.85:1)));
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
   onPad(i, c);   /* AOG-PIANO-LESSONS-V1 */
 }
@@ -836,6 +896,7 @@ function padUp(i){
   delete padHeld[i];
   notes.forEach(m=>{ if(!Object.values(padHeld).some(n=>n.indexOf(m)>=0)) noteOff("p", m); });
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.remove("hit");
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
 }
 /* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high */
 function barEvents(rhythm, n){
@@ -852,7 +913,7 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   barEvents(S.rhythm, vo.length).forEach(ev=>{
     const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
     const when=t0+ev.t*beat+late, notes=ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[vo[Math.min(ev.w, vo.length-1)]];
-    notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when, false); if(vc){ vc.stop(when+ev.d*beat, vc.tau); out.push(vc); } });
+    notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when); if(vc){ vc.stop(when+ev.d*beat, vc.tau); vc.m=m; vc.on=when; vc.off=when+ev.d*beat; out.push(vc); } });
   });
   return out;
 }
@@ -899,6 +960,7 @@ function tick(){
   }
   const cur=Math.floor((now-PLAY.t0)/PLAY.barSec);
   if(cur>=0 && cur!==PLAY.cur){ PLAY.cur=cur; paintNow(); litKeys(); onBar(); }
+  else if([...sounding()].sort((a,b)=>a-b).join(",")!==PLAY.sig) litKeys();   /* the orange keys follow each note */
   PLAY.raf=requestAnimationFrame(tick);
 }
 
@@ -1000,6 +1062,7 @@ function paintPads(){
     el.onpointerup=el.onpointercancel=el.onlostpointercapture=()=>padUp(i);
     el.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } padDown(i,0.74); setTimeout(()=>padUp(i), 900); };
   });
+  paintWheel();   /* key, mood or words changed: the wheel is drawn again */
   paintNow();
 }
 function paintProg(){
@@ -1015,8 +1078,83 @@ function paintNow(){
   document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now", +el.getAttribute("data-s")===k));
   const cur=k>=0?S.prog[k]:null;
   document.querySelectorAll(".pad").forEach(el=>{ const c=pads()[+el.getAttribute("data-i")]; el.classList.toggle("now", !!(cur && c && c.off===cur.off && (c.q===cur.q || (cur.q==="dom7"&&c.q==="maj") || (cur.q==="maj7"&&c.q==="maj") || (cur.q==="m7"&&c.q==="min")))); });
+  paintWheelState();   /* AOG-PIANO-WHEEL-V1 */
 }
-function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); }
+/* AOG-PIANO-WHEEL-V1 (2026-10-03) — Jimmy: "Can an interactive chord wheel be made here?"
+   The circle of fifths: one step clockwise adds a sharp. The majors go round the outside, each one's minor just inside it.
+   In any key the six pads sit side by side on the wheel: three neighbours on each ring. Tap a chord to hear it (with
+   Make my own on, it joins the pattern); turn the wheel to change key; the chord that is playing turns orange. */
+const WHEEL={held:null, press:"", ptr:null};
+function wheelPos(pc){ return (pc*7)%12; }                                   /* where a major root sits on the wheel */
+function wheelChord(p, ring){ const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12; return {off:((root-S.key)%12+12)%12, q:ring==="o"?"maj":"min"}; }
+function wheelName(p, ring){
+  const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12;
+  return {root:rootName(root, ring==="o"?"maj":"min"), m:ring==="i"};   /* spelled the same as the pads and the pattern */
+}
+function paintWheel(){
+  const svg=$("wheel"); if(!svg) return;
+  const es=S.lang==="es", home=wheelPos(S.minor?(S.key+3)%12:S.key), P=(r,a)=>{ const q=(a-90)*Math.PI/180; return [200+r*Math.cos(q), 200+r*Math.sin(q)]; };
+  const f=n=>n.toFixed(1), arc=(r1,r2,a0,a1)=>{ const A=P(r2,a0),B=P(r2,a1),C=P(r1,a1),D=P(r1,a0); return `M${f(A[0])} ${f(A[1])}A${r2} ${r2} 0 0 1 ${f(B[0])} ${f(B[1])}L${f(C[0])} ${f(C[1])}A${r1} ${r1} 0 0 0 ${f(D[0])} ${f(D[1])}Z`; };
+  const focusK = document.activeElement && document.activeElement.closest && document.activeElement.closest("#wheel .wd") ? document.activeElement.getAttribute("data-k") : "";
+  let out="", ring="";
+  [["o",124,198,160],["i",56,124,90]].forEach(([g,r1,r2,rl])=>{
+    for(let p=0;p<12;p++){
+      const fit=[(home+11)%12,home,(home+1)%12].indexOf(p)>=0, c=wheelChord(p,g), nm=wheelName(p,g), key=g+p;
+      const pad=fit ? pads().find(x=>x.off===c.off && x.q===c.q) : null;
+      const name=nm.root+(nm.m?(es?" m":"m"):""), short=nm.root+(nm.m?"m":"");
+      const label=t("wheelChord",{c:name})+(pad?", "+t("wheelPad",{n:pad.n}):"");
+      const [x,y]=P(rl,p*30), big=g==="o"?(short.length>2?23:27):(short.length>4?14:(short.length>3?16:18));
+      let txt=`<text x="${f(x)}" y="${f(y)}" style="font-size:${big}px">${short}</text>`;
+      if(pad){ const [nx,ny]=P(g==="o"?183:109,p*30); txt+=`<text class="pn" x="${f(nx)}" y="${f(ny)}" style="font-size:12px">${pad.n}</text>`; }
+      out+=`<g class="wd ${g}${fit?" fit":""}" data-k="${key}" tabindex="0" role="button" aria-label="${label}"><path d="${arc(r1,r2,p*30-15,p*30+15)}"/>${txt}</g>`;
+    }
+  });
+  /* the home chord gets a gold ring, drawn on top */
+  const hr=S.minor?[56,124]:[124,198];
+  ring=`<path class="home" d="${arc(hr[0]+3,hr[1]-3,home*30-15+1.2,home*30+15-1.2)}"/>`;
+  const hub=`<circle class="hub" cx="200" cy="200" r="52"/><text class="hub-k" x="200" y="190" style="font-size:${pcName(S.key).length>3?22:28}px">${pcName(S.key)}</text><text class="hub-m" x="200" y="218" style="font-size:14px">${t(S.minor?"wheelMinor":"wheelMajor")}</text>`;
+  svg.innerHTML=out+ring+hub;
+  svg.setAttribute("aria-label", t("wheelGroup"));
+  if(focusK){ const el=svg.querySelector(`[data-k="${focusK}"]`); if(el) el.focus({preventScroll:true}); }
+  /* the turn buttons say where they go */
+  const kn=(pc)=>KEY_NAMES[S.lang][((pc%12)+12)%12]+(S.minor?"m":"");   /* written the way the wheel writes it */
+  const L=$("turnL"), R=$("turnR"); if(L) L.textContent=t("wheelL",{k:kn(S.key+5)}); if(R) R.textContent=t("wheelR",{k:kn(S.key+7)});
+  paintWheelState();
+}
+/* AOG-PIANO-WHEEL-V2 (2026-10-03) — Jimmy: "Can the wheel light up when the chords are played / appropriate number on the
+   keyboard is played. There is a delay. Make it instant like everything else." The wheel now lights, at once, the chord your
+   fingers play anywhere: on the wheel, on a pad (or keys 1 to 6), or held on the keys (three notes that make a major or minor
+   chord). Gold = your fingers, as on the keys; orange = the chord the pattern is playing. Only colours change: nothing redraws. */
+function wheelKeyOf(c){ const root=((S.key+c.off)%12+12)%12; return (c.q==="min"||c.q==="m7") ? "i"+wheelPos((root+3)%12) : "o"+wheelPos(root); }
+function handChordKey(){
+  const pcs=new Set(); LIVE.forEach((vc,key)=>{ if(vc.down && key[0]!=="p") pcs.add(((+key.slice(1))%12+12)%12); });
+  if(pcs.size!==3) return "";
+  for(const r of pcs){ if(pcs.has((r+4)%12) && pcs.has((r+7)%12)) return "o"+wheelPos(r); if(pcs.has((r+3)%12) && pcs.has((r+7)%12)) return "i"+wheelPos((r+3)%12); }
+  return "";
+}
+function paintWheelState(){
+  const svg=$("wheel"); if(!svg) return;
+  const k = S.playing && PLAY.cur>=0 && S.prog.length ? S.prog[PLAY.cur%S.prog.length] : null, now = k ? wheelKeyOf(k) : "";
+  const hit=new Set(); if(WHEEL.press) hit.add(WHEEL.press);
+  Object.keys(padHeld).forEach(i=>{ const c=pads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
+  const hand=handChordKey(); if(hand) hit.add(hand);
+  svg.querySelectorAll(".wd").forEach(g=>{ const key=g.getAttribute("data-k"), h=hit.has(key);
+    if(g.classList.contains("hit")!==h) g.classList.toggle("hit", h);
+    const n=!h && key===now; if(g.classList.contains("now")!==n) g.classList.toggle("now", n); });
+}
+function wheelRelease(){ const n=WHEEL.held; WHEEL.held=null; WHEEL.press="";
+  if(n) n.forEach(m=>{ if(!Object.values(padHeld).some(x=>x.indexOf(m)>=0)) noteOff("p", m); }); paintWheelState(); }
+function wheelDown(key){
+  const g=key[0], p=+key.slice(1), c=wheelChord(p,g);
+  ctx(); if(WHEEL.held) wheelRelease();
+  const vo=voicing(c, lastVoicing); lastVoicing=vo;
+  const notes=vo.concat([bassOf(c)]); WHEEL.held=notes; WHEEL.press=key;
+  notes.forEach((m,j)=>noteOn("p", m, 0.74*(j===notes.length-1?0.85:1)));
+  paintWheelState();
+  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+}
+function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
+function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); $("litLine").hidden=!S.playing; }
 function paintTempo(){
   const r=$("bpm"), locked=S.withDrums && DRUM.take;
   r.value=String(curBpm()); r.disabled=!!locked;
@@ -1079,12 +1217,30 @@ function buildKeys(){
   $("downBtn").disabled=S.oct<=1; $("upBtn").disabled=S.oct>=7-oc;
   litKeys();
 }
+/* AOG-PIANO-LIT-V2 (2026-10-03) — Jimmy: "When it is playing chords one note at a time, the keyboard is not lighting up
+   correctly … It is not showing all the notes being played." The whole chord stayed lit for the whole bar, and only in the
+   octave it was played in, so notes below or above the keys on screen never showed. Now, while the chords play:
+   pale = every key on screen that fits the chord, in every octave (any of them fits, as Lesson 16 says);
+   orange = a key while the chords are sounding it, so a broken chord walks across the keys; gold = your own fingers. */
+function sounding(){
+  const now=ac?ac.currentTime:0, by=new Map(), out=new Set();
+  PLAY.voices.forEach(v=>{ if(v.m==null) return; if(!by.has(v.m)) by.set(v.m,[]); by.get(v.m).push(v); });
+  /* a key that plays again a moment later stays lit, so a steady chord does not blink */
+  by.forEach((list,m)=>{ list.sort((a,b)=>a.on-b.on);
+    for(let i=0;i<list.length;i++){ const a=list[i], b=list[i+1];
+      if(now>=a.on && now<a.off){ out.add(m); return; }
+      if(b && now>=a.off && now<b.on && b.on-a.off<0.2){ out.add(m); return; } } });
+  return out;
+}
 function litKeys(){
   const kb=$("kbd"); if(!kb) return;
-  const down=new Set(), lit=new Set();
+  const down=new Set(), now=S.playing?sounding():new Set(), fit=new Set(), cc=curChord();
   LIVE.forEach((vc,key)=>{ const m=+key.slice(1); if(vc.down || S.sus) down.add(m); });
-  if(S.playing && PLAY.cur>=0 && S.prog.length && PLAY.vo[PLAY.cur]){ const c=S.prog[PLAY.cur%S.prog.length]; PLAY.vo[PLAY.cur].concat([bassOf(c)]).forEach(m=>lit.add(m)); }
-  kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"); el.classList.toggle("down", down.has(m)); el.classList.toggle("lit", !down.has(m)&&lit.has(m)); });
+  if(cc) chordPcs(cc).forEach(pc=>fit.add(pc));
+  PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
+  kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
+    el.classList.toggle("down", d); el.classList.toggle("now", n); el.classList.toggle("lit", !d&&!n&&fit.has(((m%12)+12)%12)); });
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2: a chord held on the keys lights its wedge */
 }
 /* fingers: each pointer plays the key under it, and sliding moves to the next key */
 const POINTERS=new Map();
@@ -1092,6 +1248,8 @@ function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.c
 function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
 function bindKeyboard(){
   const kb=$("kbd");
+  /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
+  [kb, $("pads")].forEach(el=>el.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}));
   kb.addEventListener("pointerdown",(e)=>{
     if(e.button>0) return; e.preventDefault();
     const k=keyAt(e.clientX,e.clientY); if(!k) return;
@@ -1143,13 +1301,16 @@ function midiMsg(e){
 }
 async function useMidi(){
   const line=$("midiLine");
+  /* AOG-PIANO-MIDI-V2 (Jimmy, on an iPad: "nothing changes when you tap the MIDI keyboard"). The sound starts now, inside
+     the tap: an iPad will not start it later for a key on the MIDI keyboard. The answer shows at once, under the buttons. */
+  ctx();
+  line.textContent=t("midiWait");
   try{
     midiAccess=midiAccess||await navigator.requestMIDIAccess();
-    const ins=[...midiAccess.inputs.values()];
-    ins.forEach(i=>{ i.onmidimessage=midiMsg; });
-    midiAccess.onstatechange=()=>{ [...midiAccess.inputs.values()].forEach(i=>{ i.onmidimessage=midiMsg; }); };
-    line.textContent= ins.length ? t("midiReady",{name:ins.map(i=>i.name).join(", ")}) : t("midiNone");
-    ctx();
+    /* listen to every keyboard, and say so again when one is plugged in or taken out */
+    const hook=()=>{ const ins=[...midiAccess.inputs.values()]; ins.forEach(i=>{ i.onmidimessage=midiMsg; });
+      line.textContent= ins.length ? t("midiReady",{name:ins.map(i=>i.name).join(", ")}) : t("midiNone"); };
+    hook(); midiAccess.onstatechange=hook;
   }catch(e){ line.textContent=t("midiNo"); }
 }
 
@@ -1167,6 +1328,15 @@ function bind(){
     paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); }
     if(was) mark("cswap"); lessonsChanged(); };
   $("rhythmSel").onchange=()=>{ S.rhythm=$("rhythmSel").value; save(); lessonsChanged(); };
+  { const W=$("wheel");
+    W.addEventListener("pointerdown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(!g || e.button>0) return; e.preventDefault();
+      try{ W.setPointerCapture(e.pointerId); }catch(err){} WHEEL.ptr=e.pointerId; wheelDown(g.getAttribute("data-k")); });
+    const wUp=(e)=>{ if(WHEEL.ptr!==e.pointerId) return; WHEEL.ptr=null; wheelRelease(); };
+    W.addEventListener("pointerup",wUp); W.addEventListener("pointercancel",wUp); W.addEventListener("lostpointercapture",wUp);
+    W.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll from the wheel */
+    W.addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(!e.repeat) wheelDown(g.getAttribute("data-k")); } });
+    W.addEventListener("keyup",(e)=>{ if((e.key==="Enter"||e.key===" ") && WHEEL.ptr==null && WHEEL.held) wheelRelease(); }); }
+  $("turnL").onclick=()=>turnWheel(5); $("turnR").onclick=()=>turnWheel(7);
   $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); lessonsChanged(); };
   $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); lessonsChanged(); };
   $("playBtn").onclick=()=>{ S.playing?userStop():start(); };
@@ -1540,8 +1710,8 @@ async function hear(id, btn){
     if(btn) btn.textContent=t("hear");
   }
   const now=c.currentTime+0.05;
-  [60,64,67,72].forEach((m,i)=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.7, now+i*0.22, false); if(vc){ vc.stop(now+1.6, vc.tau); track(vc); } });
-  [48,60,64,67].forEach(m=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.62, now+1.0, false); if(vc){ vc.stop(now+2.8, vc.tau); track(vc); } });
+  [60,64,67,72].forEach((m,i)=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.7, now+i*0.22); if(vc){ vc.stop(now+1.6, vc.tau); track(vc); } });
+  [48,60,64,67].forEach(m=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.62, now+1.0); if(vc){ vc.stop(now+2.8, vc.tau); track(vc); } });
   document.querySelectorAll(".mcard").forEach(el=>el.classList.toggle("on", el.getAttribute("data-id")===id));
   soundUsed(); lessonsChanged();
 }

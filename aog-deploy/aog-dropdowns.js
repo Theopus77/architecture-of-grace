@@ -91,7 +91,18 @@
     box.hidden = list.length < 2;
   }
   var t = 0;
-  function refresh() { if (t) return; t = setTimeout(function () { t = 0; try { ROWS.concat(extra()).forEach(function (r) { try { build(r); } catch (e) {} }); } catch (e) {} try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} try { gsBar(); } catch (e) {} try { practiceFilter(); } catch (e) {} }, 40); }
+  function pass() { try { ROWS.concat(extra()).forEach(function (r) { try { build(r); } catch (e) {} }); } catch (e) {} try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} try { gsBar(); } catch (e) {} try { practiceFilter(); } catch (e) {} }
+  function refresh() { if (t) return; t = setTimeout(function () { t = 0; pass(); }, 40); }
+  /* AOG-DROPDOWNS-NOW-V1 (2026-10-03) — a page that draws a row again (the drum machine, on every beat change) showed the
+     bare row, a wall of plain buttons, for a few frames until its menu came back. Jimmy, on an iPhone: "a quick screen
+     (super fast) with hyper links appears. Yuck." A row that has just arrived now gets its menu at once, before the screen
+     draws; everything else still waits the short moment. */
+  function fresh() {
+    var rows = D.querySelectorAll("[data-aog-dropdown]");
+    for (var i = 0; i < rows.length; i++) if (!rows[i].__aogdd) return true;
+    for (var j = 0; j < ROWS.length; j++) { var r = D.querySelector(ROWS[j].sel); if (r && !r.__aogdd) return true; }
+    return false;
+  }
   var css = D.createElement("style");
   css.textContent =
     ".aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}" +
@@ -246,7 +257,9 @@
   function start() {
     D.head.appendChild(css); refresh();
     new MutationObserver(function (list) {
-      for (var i = 0; i < list.length; i++) { var n = list[i].target; if (n.closest && n.closest(".aogdd")) continue; refresh(); return; }
+      for (var i = 0; i < list.length; i++) { var n = list[i].target; if (n.closest && n.closest(".aogdd")) continue;
+        if (fresh()) { if (t) { clearTimeout(t); t = 0; } pass(); } else refresh();
+        return; }
     }).observe(D.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "hidden", "style", "aria-selected"] });
     D.addEventListener("click", function () { setTimeout(refresh, 80); }, true);
     new MutationObserver(refresh).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] });

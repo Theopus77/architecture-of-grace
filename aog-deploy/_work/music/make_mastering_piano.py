@@ -104,13 +104,18 @@ lesson(6, "the-six-pads", ("The six pads", "Los seis pads"),
     "En cada tono, unos cuantos acordes encajan entre sí. Los seis pads los muestran, numerados por el paso de la escala donde empiezan. El pad 1 es la casa."),
    ("In <b>Major</b>, pads 1, 4 and 5 are major and pads 2, 3 and 6 are minor. In the key of C they are C, Dm, Em, F, G and Am. In <b>Minor</b> the pads become 1, 3, 4, 5, 6 and 7.",
     "En <b>Mayor</b>, los pads 1, 4 y 5 son mayores y los pads 2, 3 y 6 son menores. En el tono de Do son Do, Re m, Mi m, Fa, Sol y La m. En <b>Menor</b> los pads son 1, 3, 4, 5, 6 y 7.")],
-  ("pp-pads", "The six pads in the key of C: C, Dm, Em, F, G, Am.", "Los seis pads en el tono de Do: Do, Re m, Mi m, Fa, Sol, La m."),
+  None,
   [("Set <b>Key</b> to C and <b>Mood</b> to Major. Tap the pads from 1 to 6.", "Pon el <b>Tono</b> en Do y el <b>Ánimo</b> en Mayor. Toca los pads del 1 al 6."),
    ("Tap 5, then 1.", "Toca el 5 y luego el 1."),
-   ("Change Key to G. Tap them again: G, Am, Bm, C, D, Em.", "Cambia el Tono a Sol. Tócalos otra vez: Sol, La m, Si m, Do, Re, Mi m."),
+   ("On the <b>Chord wheel</b>, press <b>Turn to G ▶</b>. The six light chords move one step. Tap them: G, Am, Bm, C, D, Em.", "En la <b>Rueda de acordes</b>, pulsa <b>Girar a Sol ▶</b>. Los seis acordes claros se mueven un paso. Tócalos: Sol, La m, Si m, Do, Re, Mi m."),
    ("Press <b>Minor · moody</b> and tap them once more.", "Pulsa <b>Menor · melancólico</b> y tócalos una vez más.")],
   ("5 then 1 sounds like coming home. Every key has the same pull.", "5 y luego 1 suena como volver a casa. Cada tono tiene la misma atracción."),
-  [("I can name the six pads in the key of C.", "Puedo nombrar los seis pads en el tono de Do."), ("I can hear 5 going home to 1.", "Puedo oír el 5 volviendo a casa en el 1.")])
+  [("I can name the six pads in the key of C.", "Puedo nombrar los seis pads en el tono de Do."), ("I can hear 5 going home to 1.", "Puedo oír el 5 volviendo a casa en el 1."),
+   ("I can find the six pads of any key on the chord wheel.", "Puedo encontrar los seis pads de cualquier tono en la rueda de acordes.")],
+  extra=[fig("pp-pads", "The six pads in the key of C: C, Dm, Em, F, G, Am.", "Los seis pads en el tono de Do: Do, Re m, Mi m, Fa, Sol, La m."),
+         bl("p", "The <b>Chord wheel</b> puts all 24 major and minor chords in a circle. The majors go round the outside, each one's minor just inside it. In any key the six pads sit side by side: three on each ring. One step clockwise adds a sharp.",
+                 "La <b>Rueda de acordes</b> pone los 24 acordes mayores y menores en un círculo. Los mayores van por fuera y cada menor justo dentro de su mayor. En cualquier tono, los seis pads quedan juntos: tres en cada anillo. Un paso en el sentido del reloj añade un sostenido."),
+         fig("pp-wheel", "The chord wheel in C: the six pads, lit, with their numbers. C has the gold ring.", "La rueda de acordes en Do: los seis pads, iluminados, con sus números. Do tiene el aro dorado.")])
 
 lesson(7, "patterns-and-four-ways-to-play", ("Nine patterns, four ways to play", "Nueve patrones, cuatro maneras de tocar"),
   [("The pattern menu holds nine chord patterns that songs use again and again. Here they are in the key of C (the two minor ones in A minor):",
@@ -161,11 +166,11 @@ lesson(9, "eight-sounds", ("Eight sounds", "Ocho sonidos"),
                     ("<b>Church organ</b>: air blows through pipes.", "<b>Órgano de iglesia</b>: el aire sopla por tubos.")])])
 
 lesson(10, "play-along", ("Play along: the lit keys and the black keys", "Toca encima: las teclas iluminadas y las negras"),
-  [("While the chords play, the keys of the chord playing now light up. Any lit key fits. Play them in your own order and you are making up a melody.",
-    "Mientras suenan los acordes, se iluminan las teclas del acorde que suena ahora. Cualquier tecla iluminada encaja. Tócalas en tu propio orden y estás inventando una melodía."),
+  [("While the chords play, every key that fits the chord turns pale, in every octave, and a key turns orange while its note sounds. Any lit key fits. Play them in your own order and you are making up a melody.",
+    "Mientras suenan los acordes, cada tecla que encaja con el acorde se pone clara, en todas las octavas, y una tecla se pone naranja mientras suena su nota. Cualquier tecla iluminada encaja. Tócalas en tu propio orden y estás inventando una melodía."),
    ("The five black keys make a <b>pentatonic scale</b>, used in folk music from China to West Africa to the Andes. In the key of F♯, every black key fits.",
     "Las cinco teclas negras forman una <b>escala pentatónica</b>, que se usa en la música tradicional de China, de África occidental y de los Andes. En el tono de Fa♯, cada tecla negra encaja.")],
-  ("pp-kbd-lit", "The keys of the C chord, lit while it plays.", "Las teclas del acorde de Do, iluminadas mientras suena."),
+  ("pp-kbd-lit", "The C chord playing: orange keys are sounding, the pale key fits it.", "Suena el acorde de Do: las teclas naranjas suenan, la clara encaja."),
   [("Pick a pattern, choose <b>Hold</b>, slow the Tempo down and press Play.", "Elige un patrón, escoge <b>Mantener</b>, baja el Tempo y pulsa Tocar."),
    ("Play the lit keys, one at a time. Follow them when the chord changes.", "Toca las teclas iluminadas, una a la vez. Síguelas cuando cambie el acorde."),
    ("Set Key to F♯. Make your own pattern: pads 1, 4, 5, 1. Play only black keys over it.", "Pon el Tono en Fa♯. Haz tu propio patrón: pads 1, 4, 5, 1. Toca solo teclas negras encima.")],
@@ -234,7 +239,7 @@ FIX = lst("ul", [
     ("<b>Notes keep ringing.</b> Hold notes (pedal) is on. Press it again.", "<b>Las notas siguen sonando.</b> Mantener notas (pedal) está activo. Púlsalo otra vez."),
     ("<b>A phone shows only one octave.</b> Use ◀ Lower and Higher ▶, or turn the phone sideways for more keys.", "<b>Un teléfono muestra solo una octava.</b> Usa ◀ Más grave y Más agudo ▶, o gira el teléfono de lado para ver más teclas."),
     ("<b>A lesson step does not tick.</b> Check that the right lesson is picked. A song's steps tick only while that song is picked.", "<b>Un paso de la lección no se marca.</b> Revisa que esté elegida la lección correcta. Los pasos de una canción solo se marcan mientras esa canción está elegida."),
-    ("<b>No MIDI keyboard found.</b> Use Chrome or Edge. Plug it in first, then press Use a MIDI keyboard.", "<b>No encuentra el teclado MIDI.</b> Usa Chrome o Edge. Conéctalo primero y luego pulsa Usar un teclado MIDI.")])
+    ("<b>No MIDI keyboard yet.</b> Press Use a MIDI keyboard and plug it in. The line under the buttons says when it is ready. No button? This browser cannot use MIDI. On a computer, try Chrome or Edge.", "<b>Todavía no hay un teclado MIDI.</b> Pulsa Usar un teclado MIDI y conéctalo. La línea bajo los botones dice cuándo está listo. ¿No ves el botón? Este navegador no puede usar MIDI. En una computadora, prueba Chrome o Edge.")])
 
 IMG_JS = """<script>
 /* AOG-MASTERING-PIANO-V1 — each picture has a Spanish twin; it follows the page language (the EN/ES switch in the top bar) */
