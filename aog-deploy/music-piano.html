@@ -111,7 +111,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 /* AOG-PIANO-WHEEL-V1 — the chord wheel (circle of fifths): majors outside, their minors inside.
    Light text on the dark wedges; the six that fit the key are cream like the pads, with dark text; orange = playing now. */
 .wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
-#rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .wheel-side{flex:1 1 230px;min-width:0}
 .wheel .wd{cursor:pointer;outline:none}
 .wheel .wd path{stroke:#0c0d10;stroke-width:2}
@@ -887,6 +887,7 @@ function padDown(i, v){
   padHeld[i]=notes;
   notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.85:1)));
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
   onPad(i, c);   /* AOG-PIANO-LESSONS-V1 */
 }
@@ -895,6 +896,7 @@ function padUp(i){
   delete padHeld[i];
   notes.forEach(m=>{ if(!Object.values(padHeld).some(n=>n.indexOf(m)>=0)) noteOff("p", m); });
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.remove("hit");
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
 }
 /* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high */
 function barEvents(rhythm, n){
@@ -1060,6 +1062,7 @@ function paintPads(){
     el.onpointerup=el.onpointercancel=el.onlostpointercapture=()=>padUp(i);
     el.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } padDown(i,0.74); setTimeout(()=>padUp(i), 900); };
   });
+  paintWheel();   /* key, mood or words changed: the wheel is drawn again */
   paintNow();
 }
 function paintProg(){
@@ -1075,13 +1078,13 @@ function paintNow(){
   document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now", +el.getAttribute("data-s")===k));
   const cur=k>=0?S.prog[k]:null;
   document.querySelectorAll(".pad").forEach(el=>{ const c=pads()[+el.getAttribute("data-i")]; el.classList.toggle("now", !!(cur && c && c.off===cur.off && (c.q===cur.q || (cur.q==="dom7"&&c.q==="maj") || (cur.q==="maj7"&&c.q==="maj") || (cur.q==="m7"&&c.q==="min")))); });
-  paintWheel();   /* AOG-PIANO-WHEEL-V1 */
+  paintWheelState();   /* AOG-PIANO-WHEEL-V1 */
 }
 /* AOG-PIANO-WHEEL-V1 (2026-10-03) — Jimmy: "Can an interactive chord wheel be made here?"
    The circle of fifths: one step clockwise adds a sharp. The majors go round the outside, each one's minor just inside it.
    In any key the six pads sit side by side on the wheel: three neighbours on each ring. Tap a chord to hear it (with
    Make my own on, it joins the pattern); turn the wheel to change key; the chord that is playing turns orange. */
-const WHEEL={held:null, hit:"", t:0};
+const WHEEL={held:null, press:"", ptr:null};
 function wheelPos(pc){ return (pc*7)%12; }                                   /* where a major root sits on the wheel */
 function wheelChord(p, ring){ const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12; return {off:((root-S.key)%12+12)%12, q:ring==="o"?"maj":"min"}; }
 function wheelName(p, ring){
@@ -1092,21 +1095,18 @@ function paintWheel(){
   const svg=$("wheel"); if(!svg) return;
   const es=S.lang==="es", home=wheelPos(S.minor?(S.key+3)%12:S.key), P=(r,a)=>{ const q=(a-90)*Math.PI/180; return [200+r*Math.cos(q), 200+r*Math.sin(q)]; };
   const f=n=>n.toFixed(1), arc=(r1,r2,a0,a1)=>{ const A=P(r2,a0),B=P(r2,a1),C=P(r1,a1),D=P(r1,a0); return `M${f(A[0])} ${f(A[1])}A${r2} ${r2} 0 0 1 ${f(B[0])} ${f(B[1])}L${f(C[0])} ${f(C[1])}A${r1} ${r1} 0 0 0 ${f(D[0])} ${f(D[1])}Z`; };
-  const k = S.playing && PLAY.cur>=0 && S.prog.length ? S.prog[PLAY.cur%S.prog.length] : null;
-  const cur = k ? {off:k.off, q:(k.q==="min"||k.q==="m7")?"min":"maj"} : null;
   const focusK = document.activeElement && document.activeElement.closest && document.activeElement.closest("#wheel .wd") ? document.activeElement.getAttribute("data-k") : "";
   let out="", ring="";
   [["o",124,198,160],["i",56,124,90]].forEach(([g,r1,r2,rl])=>{
     for(let p=0;p<12;p++){
       const fit=[(home+11)%12,home,(home+1)%12].indexOf(p)>=0, c=wheelChord(p,g), nm=wheelName(p,g), key=g+p;
       const pad=fit ? pads().find(x=>x.off===c.off && x.q===c.q) : null;
-      const now=!!(cur && cur.off===c.off && cur.q===c.q), hit=WHEEL.hit===key;
       const name=nm.root+(nm.m?(es?" m":"m"):""), short=nm.root+(nm.m?"m":"");
       const label=t("wheelChord",{c:name})+(pad?", "+t("wheelPad",{n:pad.n}):"");
       const [x,y]=P(rl,p*30), big=g==="o"?(short.length>2?23:27):(short.length>4?14:(short.length>3?16:18));
       let txt=`<text x="${f(x)}" y="${f(y)}" style="font-size:${big}px">${short}</text>`;
       if(pad){ const [nx,ny]=P(g==="o"?183:109,p*30); txt+=`<text class="pn" x="${f(nx)}" y="${f(ny)}" style="font-size:12px">${pad.n}</text>`; }
-      out+=`<g class="wd ${g}${fit?" fit":""}${now?" now":""}${hit?" hit":""}" data-k="${key}" tabindex="0" role="button" aria-label="${label}"><path d="${arc(r1,r2,p*30-15,p*30+15)}"/>${txt}</g>`;
+      out+=`<g class="wd ${g}${fit?" fit":""}" data-k="${key}" tabindex="0" role="button" aria-label="${label}"><path d="${arc(r1,r2,p*30-15,p*30+15)}"/>${txt}</g>`;
     }
   });
   /* the home chord gets a gold ring, drawn on top */
@@ -1119,18 +1119,39 @@ function paintWheel(){
   /* the turn buttons say where they go */
   const kn=(pc)=>KEY_NAMES[S.lang][((pc%12)+12)%12]+(S.minor?"m":"");   /* written the way the wheel writes it */
   const L=$("turnL"), R=$("turnR"); if(L) L.textContent=t("wheelL",{k:kn(S.key+5)}); if(R) R.textContent=t("wheelR",{k:kn(S.key+7)});
+  paintWheelState();
 }
-function wheelUp(){ const n=WHEEL.held; WHEEL.held=null; WHEEL.hit=""; clearTimeout(WHEEL.t);
-  if(n) n.forEach(m=>{ if(!Object.values(padHeld).some(x=>x.indexOf(m)>=0)) noteOff("p", m); }); paintWheel(); }
-function wheelPlay(key){
+/* AOG-PIANO-WHEEL-V2 (2026-10-03) — Jimmy: "Can the wheel light up when the chords are played / appropriate number on the
+   keyboard is played. There is a delay. Make it instant like everything else." The wheel now lights, at once, the chord your
+   fingers play anywhere: on the wheel, on a pad (or keys 1 to 6), or held on the keys (three notes that make a major or minor
+   chord). Gold = your fingers, as on the keys; orange = the chord the pattern is playing. Only colours change: nothing redraws. */
+function wheelKeyOf(c){ const root=((S.key+c.off)%12+12)%12; return (c.q==="min"||c.q==="m7") ? "i"+wheelPos((root+3)%12) : "o"+wheelPos(root); }
+function handChordKey(){
+  const pcs=new Set(); LIVE.forEach((vc,key)=>{ if(vc.down && key[0]!=="p") pcs.add(((+key.slice(1))%12+12)%12); });
+  if(pcs.size!==3) return "";
+  for(const r of pcs){ if(pcs.has((r+4)%12) && pcs.has((r+7)%12)) return "o"+wheelPos(r); if(pcs.has((r+3)%12) && pcs.has((r+7)%12)) return "i"+wheelPos((r+3)%12); }
+  return "";
+}
+function paintWheelState(){
+  const svg=$("wheel"); if(!svg) return;
+  const k = S.playing && PLAY.cur>=0 && S.prog.length ? S.prog[PLAY.cur%S.prog.length] : null, now = k ? wheelKeyOf(k) : "";
+  const hit=new Set(); if(WHEEL.press) hit.add(WHEEL.press);
+  Object.keys(padHeld).forEach(i=>{ const c=pads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
+  const hand=handChordKey(); if(hand) hit.add(hand);
+  svg.querySelectorAll(".wd").forEach(g=>{ const key=g.getAttribute("data-k"), h=hit.has(key);
+    if(g.classList.contains("hit")!==h) g.classList.toggle("hit", h);
+    const n=!h && key===now; if(g.classList.contains("now")!==n) g.classList.toggle("now", n); });
+}
+function wheelRelease(){ const n=WHEEL.held; WHEEL.held=null; WHEEL.press="";
+  if(n) n.forEach(m=>{ if(!Object.values(padHeld).some(x=>x.indexOf(m)>=0)) noteOff("p", m); }); paintWheelState(); }
+function wheelDown(key){
   const g=key[0], p=+key.slice(1), c=wheelChord(p,g);
-  ctx(); if(WHEEL.held) wheelUp();
+  ctx(); if(WHEEL.held) wheelRelease();
   const vo=voicing(c, lastVoicing); lastVoicing=vo;
-  const notes=vo.concat([bassOf(c)]); WHEEL.held=notes; WHEEL.hit=key;
+  const notes=vo.concat([bassOf(c)]); WHEEL.held=notes; WHEEL.press=key;
   notes.forEach((m,j)=>noteOn("p", m, 0.74*(j===notes.length-1?0.85:1)));
+  paintWheelState();
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
-  WHEEL.t=setTimeout(wheelUp, 1100);
-  paintWheel();
 }
 function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
 function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); $("litLine").hidden=!S.playing; }
@@ -1219,6 +1240,7 @@ function litKeys(){
   PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
   kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
     el.classList.toggle("down", d); el.classList.toggle("now", n); el.classList.toggle("lit", !d&&!n&&fit.has(((m%12)+12)%12)); });
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2: a chord held on the keys lights its wedge */
 }
 /* fingers: each pointer plays the key under it, and sliding moves to the next key */
 const POINTERS=new Map();
@@ -1306,8 +1328,14 @@ function bind(){
     paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); }
     if(was) mark("cswap"); lessonsChanged(); };
   $("rhythmSel").onchange=()=>{ S.rhythm=$("rhythmSel").value; save(); lessonsChanged(); };
-  $("wheel").addEventListener("click",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g) wheelPlay(g.getAttribute("data-k")); });
-  $("wheel").addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); wheelPlay(g.getAttribute("data-k")); } });
+  { const W=$("wheel");
+    W.addEventListener("pointerdown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(!g || e.button>0) return; e.preventDefault();
+      try{ W.setPointerCapture(e.pointerId); }catch(err){} WHEEL.ptr=e.pointerId; wheelDown(g.getAttribute("data-k")); });
+    const wUp=(e)=>{ if(WHEEL.ptr!==e.pointerId) return; WHEEL.ptr=null; wheelRelease(); };
+    W.addEventListener("pointerup",wUp); W.addEventListener("pointercancel",wUp); W.addEventListener("lostpointercapture",wUp);
+    W.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll from the wheel */
+    W.addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(!e.repeat) wheelDown(g.getAttribute("data-k")); } });
+    W.addEventListener("keyup",(e)=>{ if((e.key==="Enter"||e.key===" ") && WHEEL.ptr==null && WHEEL.held) wheelRelease(); }); }
   $("turnL").onclick=()=>turnWheel(5); $("turnR").onclick=()=>turnWheel(7);
   $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); lessonsChanged(); };
   $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); lessonsChanged(); };
