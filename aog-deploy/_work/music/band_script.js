@@ -53,7 +53,6 @@ const STR={
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine:{en:"Hold a pad to hear the band play a chord. Every pad fits this key.",es:"Mantén un pad para oír a la banda tocar un acorde. Todos los pads van con este tono."},
-  stepLine:{en:"Each number is the chord's step in the scale. In a minor key, there is no pad 2: that chord sounds tense.",es:"Cada número es el paso del acorde en la escala. En un tono menor no hay pad 2: ese acorde suena tenso."},   /* AOG-PADS-STEPS-V1: why a minor key skips pad 2 (Jimmy, 2026-10-03: "the numbers are off") */
   wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
   wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
   wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
@@ -93,7 +92,7 @@ const STR={
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Every note is a real player, recorded for VS Chamber Orchestra: Community Edition by Versilian Studios and given to everyone (public domain).",es:"Cada nota es un músico de verdad, grabado para VS Chamber Orchestra: Community Edition de Versilian Studios y regalado a todos (dominio público)."},
+  credit:{en:"Every note is a real player. The orchestra comes from VS Chamber Orchestra: Community Edition by Versilian Studios, and the saxophone from Weresax by Karoryfer Samples. Both are given to everyone (public domain).",es:"Cada nota es un músico de verdad. La orquesta viene de VS Chamber Orchestra: Community Edition de Versilian Studios, y el saxofón de Weresax de Karoryfer Samples. Los dos son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
@@ -112,10 +111,13 @@ const SOUNDS={
   clarinet:{grp:"grpWinds", en:"Clarinet",         es:"Clarinete",       gain:1.71, rev:0.15, stand:"wind"},
   oboe:    {grp:"grpWinds", en:"Oboe",             es:"Oboe",            gain:0.96, rev:0.15, stand:"wind"},
   bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.11, rev:0.14, stand:"wind"},
+  /* AOG-BAND-SAX-V1 (2026-10-03) — Jimmy: "You can add the Saxophone after everything else is deployed". An alto saxophone
+     from Weresax by Karoryfer Samples (CC0), recorded on every note; held notes only, so its short notes are held ones let go */
+  sax:     {grp:"grpWinds", en:"Alto saxophone",   es:"Saxofón alto",    gain:1.4, rev:0.14, stand:"wind"},
   winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], gain:1.21, rev:0.17, stand:"wind"}
 };
 /* how loud each player is next to the others (measured, AOG-BAND-V1) */
-const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, clarinet:0.80, oboe:0.94, bassoon:1.14};
+const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, clarinet:0.80, oboe:0.94, bassoon:1.14, sax:0.89};
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 function partsOf(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
 /* the notes a player reaches: from a step below its lowest recording to a step above its highest */
@@ -141,7 +143,9 @@ function rootName(pc, q){
 }
 /* six pads: the chords that belong to the key (numbers are steps of the scale) */
 const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n:4,off:5,q:"maj"},{n:5,off:7,q:"maj"},{n:6,off:9,q:"min"}];
-const PADS_MINOR=[{n:1,off:0,q:"min"},{n:3,off:3,q:"maj"},{n:4,off:5,q:"min"},{n:5,off:7,q:"min"},{n:6,off:8,q:"maj"},{n:7,off:10,q:"maj"}];
+/* AOG-PADS-1TO6-V1 (2026-10-03) — Jimmy: "The wheel the the pad chords have the wrong numbers. It is 134567, not 123456".
+   The pads count 1 to 6 in a minor key too (they had been the chords' steps in the scale: 1 3 4 5 6 7) */
+const PADS_MINOR=[{n:1,off:0,q:"min"},{n:2,off:3,q:"maj"},{n:3,off:5,q:"min"},{n:4,off:7,q:"min"},{n:5,off:8,q:"maj"},{n:6,off:10,q:"maj"}];
 function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
 const C=(off,q)=>({off:off,q:q||"maj"});
 /* the piano's eighteen patterns, in the same three groups (AOG-PIANO-PATTERNS-V2); the ids never change */
@@ -160,10 +164,10 @@ const PRESETS=[
   {id:"jazz",    g:"jazz", en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(0,"maj7")]},
   {id:"turn",    g:"jazz", en:"Jazz turnaround · 1 6 2 5", es:"Vuelta de jazz · 1 6 2 5",   minor:false, chords:[C(0,"maj7"),C(9,"m7"),C(2,"m7"),C(7,"dom7")]},
   {id:"mblues",  g:"jazz", en:"Minor blues · 12 bars",     es:"Blues menor · 12 compases",  minor:true,  chords:[C(0,"m7"),C(0,"m7"),C(0,"m7"),C(0,"m7"),C(5,"m7"),C(5,"m7"),C(0,"m7"),C(0,"m7"),C(7,"dom7"),C(5,"m7"),C(0,"m7"),C(7,"dom7")]},
-  {id:"minor",   g:"min",  en:"Minor groove · 1 6 3 7",    es:"Ritmo menor · 1 6 3 7",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
-  {id:"flamenco",g:"min",  en:"Flamenco · 1 7 6 5",        es:"Flamenco · 1 7 6 5",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]},
-  {id:"mfolk",   g:"min",  en:"Minor folk · 1 4 5 1",      es:"Folk menor · 1 4 5 1",       minor:true,  chords:[C(0,"min"),C(5,"min"),C(7),C(0,"min")]},
-  {id:"epic",    g:"min",  en:"Epic · 1 7 6 7",            es:"Épico · 1 7 6 7",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]}
+  {id:"minor",   g:"min",  en:"Minor groove",              es:"Ritmo menor",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
+  {id:"flamenco",g:"min",  en:"Flamenco",                  es:"Flamenco",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]},
+  {id:"mfolk",   g:"min",  en:"Minor folk",                es:"Folk menor",       minor:true,  chords:[C(0,"min"),C(5,"min"),C(7),C(0,"min")]},
+  {id:"epic",    g:"min",  en:"Epic",                      es:"Épico",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]}
 ];
 const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
 const RHYTHM_WORDS={
@@ -673,7 +677,6 @@ function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
-  const sl=document.getElementById("stepLine"); if(sl) sl.hidden=!S.minor;   /* AOG-PADS-STEPS-V1 */
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
     const i=+el.getAttribute("data-i"); let downAt=0;
