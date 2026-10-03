@@ -551,17 +551,29 @@ const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n
 const PADS_MINOR=[{n:1,off:0,q:"min"},{n:3,off:3,q:"maj"},{n:4,off:5,q:"min"},{n:5,off:7,q:"min"},{n:6,off:8,q:"maj"},{n:7,off:10,q:"maj"}];
 function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
 const C=(off,q)=>({off:off,q:q||"maj"});
+/* AOG-PIANO-PATTERNS-V2 (2026-10-03) — Jimmy: "Are there more chord patterns that can be added to the list?" Nine more,
+   eighteen in all, in three groups (g) so the menu stays easy to read. The ids of the first nine never change: lessons use them. */
 const PRESETS=[
-  {id:"pop",     en:"Pop · 1 5 6 4",             es:"Pop · 1 5 6 4",              minor:false, chords:[C(0),C(7),C(9,"min"),C(5)]},
-  {id:"fifties", en:"Fifties · 1 6 4 5",         es:"Años 50 · 1 6 4 5",          minor:false, chords:[C(0),C(9,"min"),C(5),C(7)]},
-  {id:"sadpop",  en:"Sad pop · 6 4 1 5",         es:"Pop triste · 6 4 1 5",       minor:false, chords:[C(9,"min"),C(5),C(0),C(7)]},
-  {id:"anime",   en:"Anime and J-pop · 4 5 3 6", es:"Anime y J-pop · 4 5 3 6",    minor:false, chords:[C(5),C(7),C(4,"min"),C(9,"min")]},
-  {id:"canon",   en:"Canon · 8 chords",          es:"Canon · 8 acordes",          minor:false, chords:[C(0),C(7),C(9,"min"),C(4,"min"),C(5),C(0),C(5),C(7)]},
-  {id:"blues",   en:"Blues · 12 bars",           es:"Blues · 12 compases",        minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
-  {id:"jazz",    en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(0,"maj7")]},
-  {id:"minor",   en:"Minor groove · 1 6 3 7",    es:"Ritmo menor · 1 6 3 7",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
-  {id:"flamenco",en:"Flamenco · 1 7 6 5",        es:"Flamenco · 1 7 6 5",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]}
+  {id:"pop",     g:"pop",  en:"Pop · 1 5 6 4",             es:"Pop · 1 5 6 4",              minor:false, chords:[C(0),C(7),C(9,"min"),C(5)]},
+  {id:"fifties", g:"pop",  en:"Fifties · 1 6 4 5",         es:"Años 50 · 1 6 4 5",          minor:false, chords:[C(0),C(9,"min"),C(5),C(7)]},
+  {id:"sadpop",  g:"pop",  en:"Sad pop · 6 4 1 5",         es:"Pop triste · 6 4 1 5",       minor:false, chords:[C(9,"min"),C(5),C(0),C(7)]},
+  {id:"anime",   g:"pop",  en:"Anime and J-pop · 4 5 3 6", es:"Anime y J-pop · 4 5 3 6",    minor:false, chords:[C(5),C(7),C(4,"min"),C(9,"min")]},
+  {id:"canon",   g:"pop",  en:"Canon · 8 chords",          es:"Canon · 8 acordes",          minor:false, chords:[C(0),C(7),C(9,"min"),C(4,"min"),C(5),C(0),C(5),C(7)]},
+  {id:"three",   g:"pop",  en:"Three chords · 1 4 5 1",    es:"Tres acordes · 1 4 5 1",     minor:false, chords:[C(0),C(5),C(7),C(0)]},
+  {id:"fiesta",  g:"pop",  en:"Fiesta · 1 4 5 4",          es:"Fiesta · 1 4 5 4",           minor:false, chords:[C(0),C(5),C(7),C(5)]},
+  {id:"rock",    g:"pop",  en:"Rock · 1 ♭7 4 1",           es:"Rock · 1 ♭7 4 1",            minor:false, chords:[C(0),C(10),C(5),C(0)]},
+  {id:"hymn",    g:"pop",  en:"Hymn and gospel · 1 4 1 5", es:"Himno y góspel · 1 4 1 5",  minor:false, chords:[C(0),C(5),C(0),C(7)]},
+  {id:"wheel",   g:"pop",  en:"Around the wheel · 3 6 2 5 1", es:"Por la rueda · 3 6 2 5 1", minor:false, chords:[C(4,"dom7"),C(9,"dom7"),C(2,"dom7"),C(7,"dom7"),C(0),C(0)]},
+  {id:"blues",   g:"jazz", en:"Blues · 12 bars",           es:"Blues · 12 compases",        minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"jazz",    g:"jazz", en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(0,"maj7")]},
+  {id:"turn",    g:"jazz", en:"Jazz turnaround · 1 6 2 5", es:"Vuelta de jazz · 1 6 2 5",   minor:false, chords:[C(0,"maj7"),C(9,"m7"),C(2,"m7"),C(7,"dom7")]},
+  {id:"mblues",  g:"jazz", en:"Minor blues · 12 bars",     es:"Blues menor · 12 compases",  minor:true,  chords:[C(0,"m7"),C(0,"m7"),C(0,"m7"),C(0,"m7"),C(5,"m7"),C(5,"m7"),C(0,"m7"),C(0,"m7"),C(7,"dom7"),C(5,"m7"),C(0,"m7"),C(7,"dom7")]},
+  {id:"minor",   g:"min",  en:"Minor groove · 1 6 3 7",    es:"Ritmo menor · 1 6 3 7",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
+  {id:"flamenco",g:"min",  en:"Flamenco · 1 7 6 5",        es:"Flamenco · 1 7 6 5",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]},
+  {id:"mfolk",   g:"min",  en:"Minor folk · 1 4 5 1",      es:"Folk menor · 1 4 5 1",       minor:true,  chords:[C(0,"min"),C(5,"min"),C(7),C(0,"min")]},
+  {id:"epic",    g:"min",  en:"Epic · 1 7 6 7",            es:"Épico · 1 7 6 7",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]}
 ];
+const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
 const RHYTHMS=["hold","pulse","broken","offbeat"];
 const RHYTHM_WORDS={hold:{en:"Hold · one long chord",es:"Mantener · un acorde largo"}, pulse:{en:"Pulse · four beats",es:"Pulso · cuatro tiempos"},
   broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"}, offbeat:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"}};
@@ -1046,9 +1058,10 @@ function paintSounds(){
 }
 function paintKeySel(){ $("keySel").innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===S.key?" selected":""}>${n}</option>`).join(""); }
 function paintProgSel(){
-  const opts=[`<option value="">${t(S.prog.length&&!S.preset?"myOwn":"pickPattern")}</option>`]
-    .concat(PRESETS.map(p=>`<option value="${p.id}"${p.id===S.preset?" selected":""}>${S.lang==="es"?p.es:p.en}</option>`));
-  $("progSel").innerHTML=opts.join("");
+  let html=`<option value="">${t(S.prog.length&&!S.preset?"myOwn":"pickPattern")}</option>`, g=null;
+  PRESETS.forEach(p=>{ if(p.g!==g){ if(g) html+="</optgroup>"; g=p.g; html+=`<optgroup label="${PRESET_GROUPS[g][S.lang]}">`; }   /* AOG-PIANO-PATTERNS-V2 */
+    html+=`<option value="${p.id}"${p.id===S.preset?" selected":""}>${S.lang==="es"?p.es:p.en}</option>`; });
+  $("progSel").innerHTML=html+(g?"</optgroup>":"");
 }
 function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join(""); }
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
