@@ -141,7 +141,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 body.bench-simple .hear,body.bench-simple #hearNow,body.bench-simple .k-priv,body.bench-simple .bitchip,body.bench-simple .knob.k-outf{display:none}
 /* one colour per job, in both benches */
 .sp-key,.sp-run,.sp-rec{min-height:44px;font-size:.7rem}
-#clearBtn,#eraseBtn,#trkClr{border-color:#c4452a;color:#ffb1a4}
+#clearBtn,#eraseBtn,#trkClr,#kitBackBtn,#kitUndoBtn{border-color:#c4452a;color:#ffb1a4}
 #eraseBtn.on{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
 [data-mode],#revBtn,#swingBtn,#eqFlat,#metroBtn{border-color:#6ea56a}
 #saveWork,#toDecks,.file-sample{border-color:#5b8fd6;color:#cfe2ff}
@@ -548,7 +548,7 @@ const STR = {
   clear:{en:"Clear grid",es:"Vaciar"},
   benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
   sPlay:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, sStop:{en:"■ Stop",es:"■ Parar"}, sClear:{en:"Clear the beat",es:"Borrar el ritmo"}, sDecks:{en:"Send to the turntables",es:"Enviar a los platos"},
-  sKit:{en:"Sounds",es:"Sonidos"}, sLen:{en:"Length",es:"Largo"}, sSwing:{en:"Swing",es:"Swing"}, sReset:{en:"Put the kit sounds back",es:"Devolver los sonidos del kit"}, sHolds:{en:"Your own samples are on pad",es:"Tus propias muestras están en el pad"}, sPart:{en:"Part",es:"Parte"},
+  sKit:{en:"Sounds",es:"Sonidos"}, sLen:{en:"Length",es:"Largo"}, sSwing:{en:"Swing",es:"Swing"}, sReset:{en:"Put the kit sounds back",es:"Devolver los sonidos del kit"}, sUndoKit:{en:"Put my sounds back",es:"Devolver mis sonidos"}, sHolds:{en:"Your own samples are on pad",es:"Tus propias muestras están en el pad"}, sPart:{en:"Part",es:"Parte"},
   sLine:{en:"Pick a beat, or tap the squares to build one. Then press Play.",es:"Elige un ritmo o toca los cuadros para armar uno. Luego pulsa Tocar."},
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
@@ -638,7 +638,7 @@ function bankObj(){ const o={}; BANKS.forEach(b=>o[b]={}); return o; }
 const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench")||"simple"; }catch(e){ return "simple"; } })(), lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
   view:"home", bpm:96, swing:0.50, vol:0.8, outF:0.78, bit:true, sliderMode:"mix",
   playing:false, rec:false, metro:false, bank:"A", sel:"kick", step:0, grid: emptyGrid(), met:{}, chan: freshChans(),
-  seg:0, segs:null, track:[], trackOn:false, trkI:0, tc:"1/16", trim:bankObj(), clip:null, era:1, roll:"off", starter:null, undo:null,
+  seg:0, segs:null, track:[], trackOn:false, trkI:0, tc:"1/16", trim:bankObj(), clip:null, era:1, roll:"off", starter:null, undo:null, kitUndo:null,
   stepTime:0, sixteenth:0.15625, mute:{}, solo:{}, padMode:null, erase:false,
   eq:{low:0, lmid:0, lmidF:400, hmid:0, hmidF:2500, high:0, hp:20} };
 const USER = bankObj();
@@ -802,7 +802,11 @@ function noiseBuf(ac){
   if(n) return n;
   n=ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
   const d=n.getChannelData(0);
-  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  /* AOG-DRUM-ROM-SEED-V1 (2026-10-03) — the same noise every time (a fixed seed, not Math.random), so
+     every kit renders exactly the same each time the page opens, like the sounds in a real ROM chip.
+     Before, a hat or a guiro could come out several decibels louder or quieter from one visit to the next. */
+  let x=0x2f6b1a3d;
+  for(let i=0;i<d.length;i++){ x^=x<<13; x^=x>>>17; x^=x<<5; d[i]=((x>>>0)/4294967296)*2-1; }
   noiseCache.set(ac, n);
   return n;
 }
@@ -970,7 +974,7 @@ function renderVoiceG(id, t0, dest, ac){      /* LO-FI — everything soft and a
   const d=lowpass(ac, dest, id==="bell"?2600:3600);
   if(id==="kick"){ tone(ac, d, t0, "sine", 120, 48, 0.85, 0.3); noiseHit(ac, d, t0, "lowpass", 400, 0.5, 0.05, 0.03); }
   else if(id==="snare"){ tone(ac, d, t0, "triangle", 190, 150, 0.2, 0.1); noiseHit(ac, d, t0, "bandpass", 2500, 0.5, 0.36, 0.26); }
-  else if(id==="ch"){ noiseHit(ac, d, t0, "highpass", 5000, 0.7, 0.24, 0.05); }
+  else if(id==="ch"){ noiseHit(ac, d, t0, "highpass", 3200, 0.7, 0.22, 0.05); }   /* as loud as kit A's hat under the lo-fi lid */
   else if(id==="oh"){ noiseHit(ac, d, t0, "highpass", 4500, 0.6, 0.18, 0.4); }
   else if(id==="clap"){ noiseHit(ac, d, t0, "bandpass", 1900, 1.2, 0.45, 0.05); tone(ac, d, t0, "sine", 650, 300, 0.1, 0.02); }
   else if(id==="tom"){ tone(ac, d, t0, "sine", 170, 120, 0.55, 0.3); }
@@ -980,7 +984,7 @@ function renderVoiceG(id, t0, dest, ac){      /* LO-FI — everything soft and a
 function renderVoiceH(id, t0, dest, ac){      /* LATIN PERCUSSION — hand drums, a guiro, a clave, an agogo */
   if(id==="kick"){ tone(ac, dest, t0, "sine", 90, 60, 0.9, 0.5); noiseHit(ac, dest, t0, "lowpass", 300, 0.5, 0.1, 0.04); }
   else if(id==="snare"){ tone(ac, dest, t0, "sine", 400, 330, 0.45, 0.2); tone(ac, dest, t0, "square", 1600, 1580, 0.06, 0.08); noiseHit(ac, dest, t0, "bandpass", 3500, 0.8, 0.15, 0.03); }
-  else if(id==="ch"){ [0, 0.012, 0.024, 0.036, 0.048, 0.06].forEach((off,i)=>noiseHit(ac, dest, t0+off, "bandpass", 3500, 3, 0.2-i*0.015, 0.012)); }
+  else if(id==="ch"){ [0, 0.012, 0.024, 0.036, 0.048, 0.06].forEach((off,i)=>noiseHit(ac, dest, t0+off, "bandpass", 3500, 3, 0.42-i*0.03, 0.012)); }   /* level with kit A's hat */
   else if(id==="oh"){ noiseHit(ac, dest, t0, "highpass", 5000, 0.8, 0.25, 0.09); noiseHit(ac, dest, t0+0.03, "highpass", 5500, 0.8, 0.12, 0.06); }
   else if(id==="clap"){ tone(ac, dest, t0, "sine", 2500, 2450, 0.4, 0.06); tone(ac, dest, t0, "sine", 5000, 4950, 0.05, 0.02); }
   else if(id==="tom"){ tone(ac, dest, t0, "sine", 300, 250, 0.6, 0.25); tone(ac, dest, t0, "triangle", 600, 500, 0.1, 0.03); }
@@ -994,7 +998,7 @@ function renderVoiceI(id, t0, dest, ac){      /* LIVE DRUMS — a real kit in a 
   else if(id==="oh"){ metal(ac, dest, t0, 310, 0.5, 0.05, 4500); }
   else if(id==="clap"){ tone(ac, dest, t0, "triangle", 1500, 1100, 0.25, 0.03); tone(ac, dest, t0, "sine", 420, 410, 0.15, 0.05); noiseHit(ac, dest, t0, "bandpass", 2500, 1, 0.12, 0.02); }
   else if(id==="tom"){ tone(ac, dest, t0, "sine", 110, 80, 0.7, 0.45); noiseHit(ac, dest, t0, "lowpass", 500, 0.5, 0.08, 0.05); }
-  else if(id==="rim"){ metal(ac, dest, t0, 420, 1.0, 0.03, 6000); tone(ac, dest, t0, "sine", 3200, 3190, 0.035, 0.6); }
+  else if(id==="rim"){ metal(ac, dest, t0, 420, 1.0, 0.036, 6000); tone(ac, dest, t0, "sine", 3200, 3190, 0.042, 0.6); }
   else if(id==="bell"){ noiseHit(ac, dest, t0, "highpass", 4000, 0.5, 0.3, 1.1); metal(ac, dest, t0, 280, 1.0, 0.03, 3500); }
 }
 const KIT_RENDER = {C:renderVoiceC, D:renderVoiceD, E:renderVoiceE, F:renderVoiceF, G:renderVoiceG, H:renderVoiceH, I:renderVoiceI};
@@ -1651,6 +1655,28 @@ function trimOf(id){
   return (b[id] || (b[id]={start:0, rev:false}));
 }
 function kitName(b){ return (KIT_LABEL[b]||["",""])[S.lang==="es"?1:0]; }
+/* AOG-DRUM-KITBACK-V2 (2026-10-03) — Jimmy: "add it to full bench." Put the kit sounds back now sits
+   on both benches, next to the Sounds menu, whenever this kit holds your own sounds. It takes them all
+   off this kit in one tap, so Put my sounds back undoes it, until you load another sound. */
+function kitBackKeys(cls, full){
+  const back=userPads().length ? `<button type="button" class="${cls}"${full?' id="kitBackBtn"':''} data-resetkit="1">${t("sReset")}</button>` : "";
+  const undo=(S.kitUndo && S.kitUndo.bank===S.bank) ? `<button type="button" class="${cls}"${full?' id="kitUndoBtn"':''} data-kitundo="1">${t("sUndoKit")}</button>` : "";
+  return back+undo;
+}
+function kitSoundsBack(){
+  const b=S.bank;
+  if(!userPads().length) return;
+  S.kitUndo={bank:b, user:USER[b], names:USER_NAME[b], trim:S.trim[b]};
+  USER[b]={}; USER_NAME[b]={}; if(S.trim) S.trim[b]={};
+  pushBank(); save(); paint();
+}
+function kitSoundsUndo(){
+  const u=S.kitUndo; if(!u) return;
+  USER[u.bank]=u.user; USER_NAME[u.bank]=u.names; S.trim[u.bank]=u.trim;
+  S.kitUndo=null;
+  if(S.bank===u.bank) pushBank();
+  save(); paint();
+}
 function rollWord(){ return S.roll==="off" ? t("rollOff") : S.roll; }
 function eraWord(){
   const e=S.era;
@@ -1690,7 +1716,7 @@ function machineHtml(){
       <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
     </div>
     <div class="pick-row">${starterRow()}
-    <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${BANKS.map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${userPads().length?`<button type="button" class="sp-key s-reset" data-simple-resetkit="1">${t("sReset")}</button>`:""}</div></div>
+    <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${BANKS.map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${kitBackKeys("sp-key s-reset")}</div></div>
     ${userPads().length?`<p class="simple-note">${t("sHolds")} ${userPads().map(v=>(padIndex(v)+1)+" · "+(USER_NAME[S.bank][v]||"SAMP")).join(", ")}.</p>`:""}
     <div class="simple-row"><span>${t("sPart")}</span>${Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-simple-seg="${i}">${i+1}</button>`).join("")}<button type="button" class="sp-key s-len" data-simple-press="lenBtn">${t("sLen")} ${segLen()}</button><button type="button" class="sp-key s-swing" data-simple-press="swingBtn">${t("sSwing")} ${swingPct()}%</button><button type="button" class="sp-key s-roll${S.roll!=="off"?" on":""}" data-simple-press="rollBtn">${t("sRoll")} ${rollWord()}</button></div>
     ${eraRow()}
@@ -1717,7 +1743,7 @@ function machineHtml(){
         <label class="sp-key file-sample">${S.lang==="es"?"ABRIR":"OPEN"}<input id="openWork" type="file" accept="application/json,.json"></label>
       </div>
     </div>
-    <div class="sp-banks">${banks}<span style="margin-left:.4rem">TUNE / MIX / DECAY / TRIM</span>${modes}
+    <div class="sp-banks">${banks}${kitBackKeys("sp-key", true)}<span style="margin-left:.4rem">TUNE / MIX / DECAY / TRIM</span>${modes}
       <label class="sp-key file-sample">SAMPLE<input id="sampleIn" type="file" accept="audio/*"></label>
       <button type="button" class="sp-key${trimOf(S.sel).rev?" on":""}" id="revBtn">REV</button>
       <button type="button" class="sp-key${S.erase?" on":""}" id="eraseBtn">ERASE</button>
@@ -2545,6 +2571,7 @@ async function bounceToDecks(){
   if(btn) btn.disabled=false;
 }
 async function takeSample(file){
+  S.kitUndo=null;              /* AOG-DRUM-KITBACK-V2: a new sound ends "Put my sounds back" */
   try{
     ctx();
     await bootSampler();
@@ -2668,6 +2695,7 @@ function sessionObject(){
   return {aog:"drum-bench", v:2, segs:S.segs, seg:S.seg, track:S.track, tc:S.tc, eq:S.eq, trim:S.trim, bpm:S.bpm, swing:S.swing, vol:S.vol, outF:S.outF, bit:S.bit, era:S.era, sliderMode:S.sliderMode, bank:S.bank, metro:!!S.metro, grid:S.grid, chan:S.chan, met:S.met, samples:samples};
 }
 function applySession(o, quiet){
+  S.kitUndo=null;              /* AOG-DRUM-KITBACK-V2 */
   if(!o || o.aog!=="drum-bench") return false;
   if(o.segs && o.segs.length){
     S.segs=o.segs.map(sg=>({grid:cleanGrid(sg.grid||{}), off:sg.off||emptyOff(), len:Math.max(4,Math.min(16,sg.len||16)), bpm:(typeof sg.bpm==="number"?Math.max(40,Math.min(240,Math.round(sg.bpm))):null), swing:(typeof sg.swing==="number"?snapSwing(sg.swing):null)}));
@@ -2841,7 +2869,8 @@ function bind(){
   document.querySelectorAll("[data-simple-press]").forEach(b=>b.onclick=()=>{ const r=document.getElementById(b.getAttribute("data-simple-press")); if(r) r.click();
     if(b.classList.contains("s-roll")) return;
     setTimeout(()=>{ b.textContent=(b.classList.contains("s-len")?t("sLen")+" "+segLen():t("sSwing")+" "+swingPct()+"%"); },0); });
-  document.querySelectorAll("[data-simple-resetkit]").forEach(b=>b.onclick=()=>{ USER[S.bank]={}; USER_NAME[S.bank]={}; if(S.trim) S.trim[S.bank]={}; pushBank(); save(); paint(); });
+  document.querySelectorAll("[data-resetkit]").forEach(b=>b.onclick=kitSoundsBack);     /* AOG-DRUM-KITBACK-V2: both benches */
+  document.querySelectorAll("[data-kitundo]").forEach(b=>b.onclick=kitSoundsUndo);
   document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
