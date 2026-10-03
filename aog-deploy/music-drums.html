@@ -423,6 +423,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
 <script src="aog-eq.js"></script>
 </head>
 <body>
@@ -463,6 +464,14 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   </div>
   </div>
   <main id="view"></main>
+  <!-- AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". A take of what
+       the machine plays (aog-recorder.js, shared by every music tool). REC on the machine still records into the pattern;
+       this one keeps the sound. paint() sets it under Tempo and Volume, the way it sets the lesson card. -->
+  <div class="aogrec-box no-print" id="takeBox" hidden>
+    <div class="aogrec-row"><button type="button" class="aogrec-b" id="takeBtn" aria-pressed="false"></button><span id="takeTime" hidden>0:00</span></div>
+    <p class="aogrec-line" id="takeLine" aria-live="polite"></p>
+    <div id="takeList"></div>
+  </div>
   <!-- AOG-DRUMS-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card does not sit on top of the tool.
        It lives here, and paint() slips it in under the tempo and volume row on the bench. -->
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
@@ -2491,6 +2500,11 @@ function lessonsView(){
     </div>`;
 }
 
+/* AOG-MUSIC-REC-V1: ● Record a take (aog-recorder.js); a take goes to the turntables on a shelf of its own, so it never
+   stands in for the beat the other tools play along with */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>limiter, lang:()=>S.lang, what:{en:"the drum machine",es:"la caja de ritmos"},
+  prefix:{en:"Drums",es:"Ritmos"}, file:{en:"drums-take",es:"ritmos-toma"}, shelf:"drumtake", bpm:()=>S.bpm,
+  label:{en:"● Record a take",es:"● Grabar una toma"}, ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 function paint(){
   S.view=hash();
   if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
@@ -2507,12 +2521,15 @@ function paint(){
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.documentElement.lang=S.lang;   /* the top bar reads this; without it a Spanish visit was flipped back to English */
   const map={home:homeView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
-  { const vw=document.getElementById("view"), lb=document.getElementById("lessons");
+  { const vw=document.getElementById("view"), lb=document.getElementById("lessons"), tb=document.getElementById("takeBox");
     if(lb && vw.contains(lb)) vw.after(lb);                             /* AOG-DRUMS-LESSONS-BELOW-V1: keep the card safe … */
+    if(tb && vw.contains(tb)) vw.after(tb);                             /* AOG-MUSIC-REC-V1: and the takes, so one playing back keeps playing */
     vw.innerHTML=(map[S.view]||homeView)();
-    const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb); }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
+    const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb);
+    if(tb){ if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`;
   bind();
+  REC.paint();
   paintLessonBox();
 }
 

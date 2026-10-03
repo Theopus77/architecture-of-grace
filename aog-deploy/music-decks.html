@@ -400,6 +400,7 @@ const STR = {
   guitar:{en:"From the guitar",es:"De la guitarra"}, guitarGo:{en:"Open the guitar",es:"Abrir la guitarra"},   /* AOG-STRINGS-V1 */
   bassT:{en:"From the bass",es:"Del bajo"}, bassGo:{en:"Open the bass",es:"Abrir el bajo"},
   bandT:{en:"From the band",es:"De la banda"}, bandGo:{en:"Open the band",es:"Abrir la banda"},   /* AOG-BAND-V1 */
+  drumTakeT:{en:"A take from the drum machine",es:"Una toma de la caja de ritmos"},   /* AOG-MUSIC-REC-V1 */
   crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
@@ -775,13 +776,14 @@ function paintTape(){
    The drum machine bounces its pattern onto a shelf both benches can reach
    (aog-handoff.js); here it is a beat you drop on a platter. So: your own beat
    on deck B, a song on deck A, scratch over it, and Record keeps the lot. */
-let benchTake = null, keysTake = null, guitarTake = null, bassTake = null, bandTake = null;
+let benchTake = null, keysTake = null, guitarTake = null, bassTake = null, bandTake = null, drumTake = null;
 async function checkBench(){
   try{ benchTake = await AOGHandoff.get("drumbench"); }catch(e){ benchTake = null; }
   try{ keysTake = await AOGHandoff.get("keysbench"); }catch(e){ keysTake = null; }   /* AOG-PIANO-V1 */
   try{ guitarTake = await AOGHandoff.get("guitarbench"); }catch(e){ guitarTake = null; }   /* AOG-STRINGS-V1 */
   try{ bassTake = await AOGHandoff.get("bassbench"); }catch(e){ bassTake = null; }
   try{ bandTake = await AOGHandoff.get("bandbench"); }catch(e){ bandTake = null; }   /* AOG-BAND-V1 */
+  try{ drumTake = await AOGHandoff.get("drumtake"); }catch(e){ drumTake = null; }    /* AOG-MUSIC-REC-V1: a take recorded on the drum machine */
   paintBench();
 }
 function paintBench(){
@@ -809,7 +811,7 @@ function paintBench(){
     </div>`;
   }
   /* AOG-STRINGS-V1 — the guitar and the bass leave theirs here too, each under its own name (and the band, AOG-BAND-V1) */
-  [["guitar", guitarTake, "guitar", "guitarGo", "music-guitar.html"], ["bass", bassTake, "bassT", "bassGo", "music-bass.html"], ["band", bandTake, "bandT", "bandGo", "music-band.html"]].forEach(([id, tk, lab, go, href])=>{
+  [["guitar", guitarTake, "guitar", "guitarGo", "music-guitar.html"], ["bass", bassTake, "bassT", "bassGo", "music-bass.html"], ["band", bandTake, "bandT", "bandGo", "music-band.html"], ["drumtake", drumTake, "drumTakeT", "benchGo", "music-drums.html"]].forEach(([id, tk, lab, go, href])=>{
     if(!tk || !tk.wav) return;
     html += `<div class="take">
       <b>${t(lab)}</b> <span class="tlen">${tk.name||""}</span>
@@ -821,7 +823,7 @@ function paintBench(){
   box.innerHTML = html;
   box.querySelectorAll("[data-take]").forEach(b=>{
     b.onclick = ()=>{
-      const id = b.getAttribute("data-take"), tk = id==="guitar" ? guitarTake : id==="band" ? bandTake : bassTake;
+      const id = b.getAttribute("data-take"), tk = id==="guitar" ? guitarTake : id==="band" ? bandTake : id==="drumtake" ? drumTake : bassTake;
       const d = decks.find(x=>x.id===b.getAttribute("data-deck"));
       if(tk && tk.wav) loadFile(d, new File([tk.wav], id+".wav", { type:"audio/wav" }));
     };
@@ -2015,7 +2017,7 @@ function paintLessons(){
 paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
-try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="keysbench" || key==="guitarbench" || key==="bassbench" || key==="bandbench") checkBench(); }); }catch(e){}
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="keysbench" || key==="guitarbench" || key==="bassbench" || key==="bandbench" || key==="drumtake") checkBench(); }); }catch(e){}
 window.addEventListener("focus", checkBench);
 </script>
 <script>

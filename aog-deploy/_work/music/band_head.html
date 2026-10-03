@@ -177,6 +177,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -265,11 +266,15 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="rangeOut" aria-live="polite"></span>
           <button type="button" class="pbtn" id="upBtn"></button>
+          <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
+          <span id="recTime" hidden>0:00</span>
         </div>
         <div class="kbd" id="kbd" role="group"></div>
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine"></p>
+        <p class="line" id="recLine" aria-live="polite"></p>
+        <div id="takes"></div>
       </div>
 
       <div class="blk">

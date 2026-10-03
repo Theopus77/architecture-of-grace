@@ -635,6 +635,11 @@ function navHtml(){
   const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="band"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
+/* AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the band plays as a take (aog-recorder.js, the one recorder
+   every music tool shares) */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the band",es:"la banda"},
+  prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
+  ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
 function paintText(){
   document.documentElement.setAttribute("lang", S.lang);
   document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });
@@ -644,7 +649,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher");
-  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn");
+  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn"); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
