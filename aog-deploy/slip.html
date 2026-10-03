@@ -121,6 +121,24 @@ var SLIPS={
         {id:"today",kind:"pick",max:3,q:["Anything from today?","¿Algo de hoy?"],o:[["Big day, tired","Día largo, cansado"],["Something upset them","Algo le molestó"],["Didn't eat well","No comió bien"],["Great day","Buen día"],["Medicine change","Cambio de medicina"],["Nothing new","Nada nuevo"]]},
         {id:"words",kind:"note",q:["Anything the teacher should know tomorrow? (optional)","¿Algo que el maestro deba saber mañana? (opcional)"]}],
     follow:function(a){ return (a.mood!=null&&a.mood<=0)||/upset|Medicine|molest|medicina/i.test(String(a.today||"")); } },
+  /* AOG-SLIP-PARENT-V1 (2026-10-03) — Jimmy: "Are there not a few or at least one parent slip?" Two more notes from home,
+     beside the evening one: the morning before school, and homework. Each is filled in by a parent about their child. */
+  morning:{ k:["Home · Morning note","Casa · Nota de la mañana"], h:["How did the morning go?","¿Cómo estuvo la mañana?"], parent:true,
+    lead:["A short note before school. The teacher sees it at the start of the day.","Una nota corta antes de la escuela. El maestro la verá al empezar el día."],
+    qs:[{id:"sleep",kind:"one",q:["Sleep last night","Sueño anoche"],o:[["Good","Bien"],["Okay","Regular"],["Short","Poco"],["Rough","Difícil"]]},
+        {id:"ate",kind:"one",q:["Breakfast","Desayuno"],o:[["Ate well","Comió bien"],["Ate a little","Comió poco"],["Didn't eat","No comió"]]},
+        {id:"mood",kind:"scale",q:["Mood heading to school","Ánimo al salir a la escuela"],o:[["Rough","Difícil"],["Low","Bajo"],["Okay","Bien"],["Good","Bueno"],["Great","Muy bueno"]]},
+        {id:"help",kind:"pick",max:2,q:["What might help today?","¿Qué podría ayudar hoy?"],hint:["Pick up to two.","Elige hasta dos."],o:[["A calm start","Un comienzo tranquilo"],["A check-in with an adult","Hablar con un adulto"],["A movement break","Una pausa para moverse"],["Extra time","Más tiempo"],["Nothing extra today","Nada extra hoy"]]},
+        {id:"words",kind:"note",q:["Anything the teacher should know today? (optional)","¿Algo que el maestro deba saber hoy? (opcional)"]}],
+    follow:function(a){ return (a.mood!=null&&a.mood<=0); } },
+  homework:{ k:["Home · Homework note","Casa · Nota de la tarea"], h:["How did homework go?","¿Cómo fue la tarea?"], parent:true,
+    lead:["A few taps about homework tonight. It helps the teacher see what to go over.","Unos toques sobre la tarea de hoy. Ayuda al maestro a ver qué repasar."],
+    qs:[{id:"went",kind:"scale",q:["How did it go?","¿Cómo le fue?"],o:[["Really hard","Muy difícil"],["Hard","Difícil"],["Okay","Bien"],["Pretty well","Bastante bien"],["Really well","Muy bien"]]},
+        {id:"time",kind:"one",q:["How long did it take?","¿Cuánto tiempo tomó?"],o:[["Under 15 minutes","Menos de 15 minutos"],["15 to 30 minutes","De 15 a 30 minutos"],["30 to 60 minutes","De 30 a 60 minutos"],["Over an hour","Más de una hora"]]},
+        {id:"how",kind:"one",q:["How did they work?","¿Cómo trabajó?"],o:[["On their own","Por su cuenta"],["With a little help","Con un poco de ayuda"],["With a lot of help","Con mucha ayuda"],["We stopped for tonight","Paramos por hoy"]]},
+        {id:"tricky",kind:"pick",max:3,q:["What was tricky?","¿Qué fue difícil?"],hint:["Pick up to three.","Elige hasta tres."],o:[["Understanding the directions","Entender las instrucciones"],["Remembering how","Recordar cómo"],["Reading it","Leerlo"],["Staying focused","Mantener la atención"],["Nothing was tricky","Nada fue difícil"]]},
+        {id:"words",kind:"note",q:["Which part, or anything else? (optional)","¿Qué parte, o algo más? (opcional)"]}],
+    follow:function(a){ return (a.went!=null&&a.went<=0); } },
   team:{ k:["Group work","Trabajo en grupo"], h:["How did our team do?","¿Cómo le fue a nuestro equipo?"],
     lead:["About the team and about you. No one else sees your answers.","Sobre el equipo y sobre ti. Nadie más ve tus respuestas."],
     qs:[{id:"team",kind:"scale",q:["How well did our team work together?","¿Qué tan bien trabajó nuestro equipo?"],o:[["Not well","No bien"],["A little","Un poco"],["Okay","Bien"],["Well","Muy bien"],["Really well","Excelente"]]},
@@ -184,7 +202,7 @@ var A={}, MORE={}, TALK=false, sent=false, busy=false, err="";
 
 function paint(){
   var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
-  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?t("Your teacher will see it.","Tu maestro lo verá."):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p><a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
+  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?(S.parent?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p><a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
   var ns=names();
   h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):t("Your name","Tu nombre"))+'</label>'
     +(ns.length?'<div class="names" style="margin-top:8px">'+ns.map(function(n){ return '<button type="button" data-who="'+esc(n)+'" aria-pressed="'+(n.toLowerCase()===who.toLowerCase())+'">'+esc(n)+'</button>'; }).join("")+'</div>':'')
@@ -199,7 +217,7 @@ function paint(){
     h+='</div>';
   });
   if(S.talk) h+='<div class="card"><label class="talk"><input type="checkbox" id="talk"'+(TALK?' checked':'')+'> '+t("I would like to talk to an adult","Me gustaría hablar con un adulto")+'</label></div>';
-  h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):t("Send to my teacher","Enviar a mi maestro"))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
+  h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):(S.parent?t("Send to the teacher","Enviar al maestro"):t("Send to my teacher","Enviar a mi maestro")))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
   /* AOG-SLIP-PRINT-V1 — a Print button for a paper copy (screen only) */
   h+='<button type="button" class="prt" id="prt">'+t("Print this slip","Imprimir esta hoja")+'</button>';
   app.innerHTML=h; wire();

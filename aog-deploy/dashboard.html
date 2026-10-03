@@ -171,6 +171,30 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
  .hello .pullwrap{display:none}}
 @media (min-width:761px){.railsel{display:none}}
 </style>
+<style id="aog-dash-sketchbook">
+/* AOG-DASH-SKETCHBOOK-V1 (2026-10-03) — Jimmy: "May the dashboard look and feel like the rest of the set, the drafting
+   sketch book theme?" The work area is the drafting table (the same faint graph paper as every page), the hand-out
+   and report cards carry the same pencil drawings as the home table, and the bright app colours give way to the set's
+   own: graphite pencil, navy ink, gold. The navy sidebar stays the blueprint. Nothing moves. */
+html:not([data-theme="dark"]) #app{background:linear-gradient(rgba(47,99,184,.055) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,rgba(47,99,184,.055) 1px,transparent 1px) 0 0/22px 22px,#F7F2E6}
+html:not([data-theme="dark"]) .card{background:#FBF8F0}
+.card.hand::before{display:none}
+.dsk{display:block;aspect-ratio:3/1;overflow:hidden;border-radius:10px;margin:0 0 12px;background:#F4EFE3;box-shadow:0 0 0 1px rgba(42,38,34,.28)}
+.dsk img{display:block;width:100%;height:100%;object-fit:cover;object-position:80% 42%}
+.card.hand .k{color:var(--goldInk)!important}
+.card.hand h2{font-size:24px}
+/* pencil, not paint: icons are drawn in ink with a graphite ring */
+.ic{background:transparent!important;color:var(--ink)!important;border:1.5px solid currentColor;box-shadow:none!important}
+.item .tag{background:transparent!important;color:var(--ink)!important;border:1.5px solid currentColor}
+.btn.add{background:var(--gold2);border-color:#B8893A;color:#0A1E33}
+.stu a.go{background:#FBF8F0;box-shadow:0 0 0 1.2px rgba(42,38,34,.62),1.5px 2px 0 -0.4px rgba(42,38,34,.32),0 12px 24px -18px rgba(0,0,0,.35)}
+.stu a.go b{color:var(--ink)}
+html[data-theme="dark"] .stu a.go{background:var(--card);box-shadow:var(--shadow)}
+.spark i{background:var(--navy)}
+html[data-theme="dark"] .spark i{background:#F2C964}
+.hello h1{font-family:Fraunces,Georgia,serif}
+@media print{.dsk{display:none}}
+</style>
 <style id="aog-link-door">
 /* AOG-LINK-DOOR-V1 (2026-09-27) — Jimmy: "The link looks ugly. They are all so long. Can't we make it into a
    copyable door the person clicks on?" A link box is a paper door now: a link icon, the short start of the
@@ -185,6 +209,17 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
 html[data-theme="dark"] .linkbox{width:fit-content;max-width:100%;box-sizing:border-box;background:#FBF8F0 !important;color:#1F2630 !important;border-color:#2A2622 !important}
 html[data-theme="dark"] .linkbox code{color:#4A5563 !important}
 @media (max-width:560px){ .linkbox{display:grid !important;grid-template-columns:26px minmax(0,1fr);align-items:center} .linkbox code{max-width:none} .linkbox .btn{grid-column:span 1} .linkbox > :nth-child(n+2){grid-column:1 / -1} .linkbox > code{grid-column:2} }
+/* AOG-LINK-TICKET-V1 (2026-10-03) — Jimmy: "Can the class link box look nicer." A paper ticket across the card: the
+   address on its own dashed strip, then one even row of buttons, all the same size (the buttons had a broken font
+   rule, so "Show it big" came out smaller than "Open as a student"). */
+.linkbox{display:flex !important;flex-wrap:wrap !important;align-items:center;width:100% !important;padding:14px 16px !important;gap:12px !important;border-radius:16px !important;
+  background:repeating-linear-gradient(0deg,rgba(29,39,51,.03) 0 1px,transparent 1px 6px),#FBF8F0 !important;box-shadow:0 0 0 .5px rgba(42,38,34,.3),2px 3px 0 rgba(42,38,34,.16) !important}
+.linkbox::before{flex:0 0 26px}
+.linkbox code{flex:1 1 calc(100% - 40px) !important;max-width:none !important;padding:10px 12px;border:1.4px dashed rgba(42,38,34,.5);border-radius:10px;background:#FFFDF7;color:#1F2630 !important;font:15px/1.3 Inter,system-ui,sans-serif !important}
+.linkbox .btn{flex:1 1 0;min-width:max-content;justify-content:center;min-height:48px;padding:0 18px;font:700 15px/1.1 Inter,system-ui,sans-serif !important;border-color:#2A2622;background:#FFFDF7;color:#1F2630}
+.linkbox .btn.gold{background:#F2C964;border-color:#B8893A;color:#0A1E33}
+html[data-theme="dark"] .linkbox code{color:#1F2630 !important}
+@media (max-width:560px){ .linkbox{display:flex !important} .linkbox > *{grid-column:auto !important} .linkbox .btn{flex:1 1 100%} }
 </style>
 </head>
 <body>
@@ -468,7 +503,9 @@ function lineSvg(pts,opt){ opt=opt||{}; const W=opt.w||560,H=opt.h||180,P=28; if
 function chartKey(items){ return '<p class="cap">'+items.map(it=>'<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><svg width="30" height="10" aria-hidden="true"><line x1="2" x2="28" y1="5" y2="5" stroke="'+it.c+'" stroke-width="3" stroke-linecap="round"'+(it.dash?' stroke-dasharray="7 6"':'')+'/></svg>'+esc(it.t)+'</span>').join("")+'</p>'; }
 /* AOG-SLIP-TRENDS-V1 — every 1-to-5 answer on a slip, as a daily average, for the class or one student.
    Slips stay apart from the check-in counts; this is their own chart. */
-const SLIPSCALE={"slip-test":{ready:["Ready for the test","Listo para el examen"]},"slip-endclass":{got:["Understood the lesson","Entendió la lección"]},"slip-posttest":{went:["How the test went","Cómo le fue en el examen"]},"slip-repair":{now:["How they felt after","Cómo se sintió después"]},"slip-goal":{close:["Close to their goal","Cerca de su meta"]},"slip-home":{mood:["Mood at home","Ánimo en casa"]},"slip-team":{team:["Team worked well","El equipo trabajó bien"],me:["How much they helped","Cuánto ayudó"]},"slip-unit":{conf:["Ready for the unit test","Listo para el examen de la unidad"]}};
+const SLIPSCALE={"slip-test":{ready:["Ready for the test","Listo para el examen"]},"slip-endclass":{got:["Understood the lesson","Entendió la lección"]},"slip-posttest":{went:["How the test went","Cómo le fue en el examen"]},"slip-repair":{now:["How they felt after","Cómo se sintió después"]},"slip-goal":{close:["Close to their goal","Cerca de su meta"]},"slip-home":{mood:["Mood at home","Ánimo en casa"]},"slip-team":{team:["Team worked well","El equipo trabajó bien"],me:["How much they helped","Cuánto ayudó"]},"slip-unit":{conf:["Ready for the unit test","Listo para el examen de la unidad"]},"slip-morning":{mood:["Mood leaving for school","Ánimo al salir a la escuela"]},"slip-homework":{went:["How homework went","Cómo fue la tarea"]}};
+/* AOG-SLIP-PARENT-V1 — the notes a parent sends from home, named for the charts (they are not handed out in class) */
+const PSLIPS=[["slip-home","Evening at home · How was the evening?","Tarde en casa · ¿Cómo estuvo la tarde?"],["slip-morning","Morning at home · How did the morning go?","Mañana en casa · ¿Cómo estuvo la mañana?"],["slip-homework","Homework at home · How did it go?","Tarea en casa · ¿Cómo le fue?"]];
 let SLIPSTU="";
 function slipRows(){ const seen={}, out=[]; rows("aog.checkin.remote").concat(rows("aog.slips.mine")).forEach(r=>{ const ty=String(r.checkinType||""); if(!SLIPSCALE[ty]) return; let x={}; try{ x=typeof r.extra==="string"?JSON.parse(r.extra):(r.extra||{}); }catch(e){} const k=ty+"|"+who(r).toLowerCase()+"|"+String(r.timestamp||day(r)); if(seen[k]) return; seen[k]=1; out.push({ty,who:who(r),d:day(r),sc:x.scale||{}}); }); return out; }
 function slipTrends(){ const all=slipRows(); if(!all.length) return "";
@@ -480,7 +517,7 @@ function slipTrends(){ const all=slipRows(); if(!all.length) return "";
     const pts0=rs.filter(r=>r.ty===ty&&+r.sc[q]>0); if(!pts0.length) return;
     const days=[...new Set(pts0.map(r=>r.d))].filter(Boolean).sort().slice(-20);
     const pts=days.map(d=>{ const v=pts0.filter(r=>r.d===d).map(r=>+r.sc[q]); return {l:nice(d),v:Math.round(10*v.reduce((a,b)=>a+b,0)/v.length)/10}; });
-    const nm=SLIPS.find(x=>x[0]===ty), lab=SLIPSCALE[ty][q];
+    const nm=SLIPS.find(x=>x[0]===ty)||PSLIPS.find(x=>x[0]===ty), lab=SLIPSCALE[ty][q];
     cards+='<section class="card"><p class="k" style="color:var(--goldInk)">'+esc(L()==="es"?lab[1]:lab[0])+'</p><p style="margin:0 0 6px;font-size:14px">'+esc(nm?(L()==="es"?nm[2]:nm[1]).split(" · ")[0]:ty)+' · '+pts0.length+(L()==="es"?(pts0.length===1?" respuesta":" respuestas")+" · de 1 a 5":(pts0.length===1?" answer":" answers")+" · 1 to 5")+'</p>'+lineSvg(pts,{min:1,max:5,c:SCOL[ty]||"#2F63B8"})+'</section>'; }); });
   if(!cards) return "";
   return '<h2 style="margin:24px 0 6px">'+(L()==="es"?"Boletos":"Slips")+'</h2><p style="margin:0 0 10px">'+(L()==="es"?"El promedio de cada día. 5 es lo más alto.":"The average for each day. 5 is the highest.")+'</p>'
@@ -542,13 +579,13 @@ function brick(){
    +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr))">'+cards+'</div>';
 }
 function reports(){
-  const R=[["mtss","MTSS Report","Informe MTSS","Tiers, movement and a summary for your team.","Niveles, movimiento y resumen para tu equipo.","#mtss","c4"],
-   ["inbox","Inbox — every turn-in","Bandeja — todo lo entregado","Worksheets, workbooks and practice, by student.","Hojas, cuadernos y práctica, por estudiante.","/turn-ins.html","c1"],
-   ["bp","Blueprints","Planos","Each student's stained-glass window. Prints in colour.","El vitral de cada estudiante. Se imprime a color.","/turn-ins.html?view=bp","c5"],
-   ["iep","IEP progress (printable)","Progreso IEP (imprimible)","Goal graphs for a meeting.","Gráficas de metas para una reunión.","#brick","c2"],
-   ["trends","Class trends (printable)","Tendencias (imprimible)","Check-ins, accuracy and feelings over time.","Registros, precisión y sentimientos en el tiempo.","#trends","c3"]];
+  const R=[["mtss","MTSS Report","Informe MTSS","Tiers, movement and a summary for your team.","Niveles, movimiento y resumen para tu equipo.","#mtss","c4","page-xw-mtss"],
+   ["inbox","Inbox — every turn-in","Bandeja — todo lo entregado","Worksheets, workbooks and practice, by student.","Hojas, cuadernos y práctica, por estudiante.","/turn-ins.html","c1","page-turn-ins"],
+   ["bp","Blueprints","Planos","Each student's stained-glass window. Prints in colour.","El vitral de cada estudiante. Se imprime a color.","/turn-ins.html?view=bp","c5","page-xw-matrix-divine"],
+   ["iep","IEP progress (printable)","Progreso IEP (imprimible)","Goal graphs for a meeting.","Gráficas de metas para una reunión.","#brick","c2","page-xw-idea"],
+   ["trends","Class trends (printable)","Tendencias (imprimible)","Check-ins, accuracy and feelings over time.","Registros, precisión y sentimientos en el tiempo.","#trends","c3","concepts-and-data"]];
   return '<div class="hello"><div><h1>'+T("reports")+'</h1><p>'+T("repS")+'</p></div></div><div class="grid3">'
-   +R.map(r=>'<a class="card hand" style="--ac:var(--'+r[6]+');text-decoration:none;color:inherit" href="'+r[5]+'"><div class="ic">'+svg("reports")+'</div><h2>'+(L()==="es"?r[2]:r[1])+'</h2><p class="s">'+(L()==="es"?r[4]:r[3])+'</p><span class="btn solid">'+T("open2")+' ›</span></a>').join("")+'</div>';
+   +R.map(r=>'<a class="card hand" style="--ac:var(--'+r[6]+');text-decoration:none;color:inherit" href="'+r[5]+'">'+dsk(r[7])+'<h2>'+(L()==="es"?r[2]:r[1])+'</h2><p class="s">'+(L()==="es"?r[4]:r[3])+'</p><span class="btn solid">'+T("open2")+' ›</span></a>').join("")+'</div>';
 }
 
 /* ══ AOG-DASH-MTSS-V1 (2026-09-26) — Jimmy: "MAKE THE MTSS on this page now, incorporate everything we
@@ -1108,7 +1145,7 @@ function family(){
   const pickRow=picks.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk);margin:0 0 8px">'+t2("From your Sheet","De tu Hoja")+'</p><p class="s" style="margin:0 0 10px">'+t2("Tap a name to add them to your family.","Toca un nombre para agregarlo a tu familia.")+'</p><div class="row" style="gap:8px">'+picks.map(n=>'<button type="button" class="btn" data-kidpick="'+esc(n)+'" style="min-height:40px">+ '+esc(n)+'</button>').join("")+'</div></section>':"";
   const cards=ks.map(n=>{ const sInfo=D.S[n]||D.S[Object.keys(D.S).find(k=>k.toLowerCase()===n.toLowerCase())||""]||{ci:[],pr:[],flags:0,acc:null,last:""}, q=encodeURIComponent(n);
     return '<section class="card" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap"><h2 style="margin:0">'+esc(n)+'</h2><span class="s" style="margin:0">'+(sInfo.last?t2("last seen","última vez")+" "+nice(sInfo.last):t2("nothing yet","nada aún"))+' · '+sInfo.ci.length+' '+t2("check-ins","registros")+' · '+sInfo.pr.length+' '+t2("panes","paneles")+'</span></div>'
-     +'<div class="row" style="margin-top:12px"><button class="btn solid" type="button" data-kidgo="'+esc(n)+'">'+t2("Open their work today","Abrir su trabajo de hoy")+' ›</button><a class="btn" href="/turn-ins.html?solo=1&teacher=1&blueprint='+q+'">'+t2("Their Blueprint","Su Plano")+'</a><a class="btn" href="/turn-ins.html?student='+q+'">'+t2("Everything they turned in","Todo lo que entregaron")+'</a><a class="btn" href="/slip.html?s=home&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Evening check-in","Registro de la tarde")+'</a><a class="btn" href="/family-plan?child='+q+'&kids='+kidsParam()+'">'+t2("Our Child’s Plan","El plan de nuestro hijo")+'</a><button class="btn" type="button" data-kiddel="'+esc(n)+'" style="margin-left:auto">✕</button></div></section>'; }).join("");
+     +'<div class="row" style="margin-top:12px"><button class="btn solid" type="button" data-kidgo="'+esc(n)+'">'+t2("Open their work today","Abrir su trabajo de hoy")+' ›</button><a class="btn" href="/turn-ins.html?solo=1&teacher=1&blueprint='+q+'">'+t2("Their Blueprint","Su Plano")+'</a><a class="btn" href="/turn-ins.html?student='+q+'">'+t2("Everything they turned in","Todo lo que entregaron")+'</a><a class="btn" href="/slip.html?s=home&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Evening check-in","Registro de la tarde")+'</a><a class="btn" href="/slip.html?s=morning&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Morning note","Nota de la mañana")+'</a><a class="btn" href="/slip.html?s=homework&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Homework note","Nota de la tarea")+'</a><a class="btn" href="/family-plan?child='+q+'&kids='+kidsParam()+'">'+t2("Our Child’s Plan","El plan de nuestro hijo")+'</a><button class="btn" type="button" data-kiddel="'+esc(n)+'" style="margin-left:auto">✕</button></div></section>'; }).join("");
   const link=ks.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Hand this to a parent","Entregar esto a un padre")+'</p><p class="s">'+t2("One link opens this family page on their phone: the children, today's work, and each Blueprint.","Un enlace abre esta página familiar en su teléfono: los niños, el trabajo de hoy y cada Plano.")+'</p><div class="linkbox"><code id="flk">'+esc(familyLink())+'</code><button class="btn gold" type="button" id="fcp">'+T("copy")+'</button></div></section>':'';
   const home='<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("At home","En casa")+'</p><div class="row"><a class="btn" href="/at-home">'+t2("Grace at Home — one pillar a week","Gracia en casa — un pilar por semana")+' ›</a><a class="btn" href="/family">'+t2("Family letters","Cartas a la familia")+' ›</a></div></section>';
   return head+add+pickRow+(cards||'<p class="s" style="margin:0 0 16px">'+t2("No children added yet.","Aún no hay niños.")+'</p>')+link+home;
@@ -1151,6 +1188,8 @@ const SICON={
 const SCOL={math:"#2F63B8",ela:"#B87A12",write:"#C2552A",science:"#2E8B57",'social-studies':"#A8323E",spanish:"#B8457A",facs:"#7B4FA0",religion:"#3F4AA6",bible:"#7A3B2E",quran:"#1F6B4A",talmud:"#2E5A8A",hindu:"#B5562B",buddhist:"#A0701A",chinese:"#9B2F2F",cultures:"#2F6F8F",health:"#2E8B6A",economics:"#6E7C22",foundry:"#A85A24",
   mth:"#2F63B8",sci:"#2E8B57",ssc:"#A8323E",ush:"#A8323E",fcs:"#7B4FA0",rel:"#3F4AA6",spa:"#B8457A",eco:"#6E7C22",checkin:"#1F8080",exit:"#B87A12",'slip-test':"#2F63B8",'slip-posttest':"#1F8080",'slip-endclass':"#B87A12",'slip-repair':"#A8323E",'slip-team':"#2E8B57",'slip-unit':"#7B4FA0",'slip-goal':"#8A6516",'slip-home':"#B8457A",reflection:"#3F4AA6",myvoice:"#B8457A",weekly:"#1F8080",prac:"#5E6B7A"};
 function itemKey(it){ if(it.t==="dd") return it.s; if(it.t==="unit") return it.p; if(it.t==="prac") return "prac"; if(it.t==="slip") return /^weekly/.test(it.i)?"weekly":it.i; return "prac"; }
+/* AOG-DASH-SKETCHBOOK-V1 — the pencil drawing at the top of a card, the same drawings the home table uses */
+function dsk(n){ return '<span class="dsk" aria-hidden="true"><img src="/img/banners/'+n+'-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span>'; }
 function itemIcon(it){ const k=itemKey(it); return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(SICON[k]||SICON.prac)+'</svg>'; }
 function itemColor(it){ return SCOL[itemKey(it)]||"#5E6B7A"; }
 
@@ -1178,19 +1217,19 @@ function today(){
   const tr=get(K.tray,[]), link=classLink();
   return '<div class="hello"><div><h1>'+hi+'.</h1><p>'+T("sub")+'</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+pullBtn()+'<span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div></div>'
   +'<div class="grid3">'
-  +'<section class="card hand" style="--ac:var(--c1)"><div class="ic">'+svg("dd")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("dd")+'</h2><p class="s">'+T("ddS")+'</p>'
+  +'<section class="card hand" style="--ac:var(--c1)">'+dsk("page-daily-drops")+'<p class="k">'+T("hand")+'</p><h2>'+T("dd")+'</h2><p class="s">'+T("ddS")+'</p>'
     +'<label class="f" for="ddS">'+T("subject")+'</label><select id="ddS">'+SUBJ.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===dd.s)).join("")+'</select>'
     +'<label class="f" for="ddG">'+T("grade")+'</label><select id="ddG">'+gradesFor(dd.s).map(g=>opt(g,gradeLabel(g,lang),g===dd.g)).join("")+'</select>'
     +'<label class="f" for="ddN">'+T("sheet")+'</label><select id="ddN">'+Array.from({length:180},(_,i)=>opt(i+1,"#"+(i+1),i+1===+dd.n)).join("")+'</select>'
     +'<div class="row"><a class="btn solid" id="ddPrint" target="_blank" rel="noopener" href="'+esc("/daily-drops.html?subject="+dd.s+"&grade="+dd.g+"&sheet="+dd.n)+'">🖨 '+T("print")+'</a><button class="btn add" type="button" data-add="dd">+ '+T("add")+'</button></div></section>'
-  +'<section class="card hand" style="--ac:var(--c3)"><div class="ic">'+svg("as")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("as")+'</h2><p class="s">'+T("asS")+'</p>'
+  +'<section class="card hand" style="--ac:var(--c3)">'+dsk("page-door-atrium")+'<p class="k">'+T("hand")+'</p><h2>'+T("as")+'</h2><p class="s">'+T("asS")+'</p>'
     +'<label class="f" for="asK">'+T("kind")+'</label><select id="asK">'+opt("unit",T("unit"),as.k==="unit")+opt("prac",T("prac"),as.k==="prac")+'</select>'
     +(as.k==="unit"
       ? '<label class="f" for="asP">'+T("subject")+'</label><select id="asP">'+Object.keys(UNITNAME).filter(k=>CAT.units[k]).map(k=>opt(k,UNITNAME[k][lang==="es"?1:0],k===as.p)).join("")+'</select>'
        +'<label class="f" for="asF">'+T("pick")+'</label><select id="asF">'+units.map(u=>opt(u[2],u[1],u[2]===as.f)).join("")+'</select>'
       : '<label class="f" for="asI">'+T("pick")+'</label><select id="asI">'+CAT.acts.filter(a=>a[0]!=="drops").map(a=>opt(a[0],lang==="es"?a[2]:a[1],a[0]===as.i)).join("")+'</select>')
     +'<div class="row"><button class="btn add" type="button" data-add="as">+ '+T("add")+'</button></div></section>'
-  +'<section class="card hand" style="--ac:var(--c5)"><div class="ic">'+svg("sl")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("sl")+'</h2><p class="s">'+T("slS")+'</p>'
+  +'<section class="card hand" style="--ac:var(--c5)">'+dsk("page-turn-ins")+'<p class="k">'+T("hand")+'</p><h2>'+T("sl")+'</h2><p class="s">'+T("slS")+'</p>'
     +'<label class="f" for="slI">'+T("slip")+'</label><select id="slI">'+SLIPS.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===sl.i)).join("")+'</select>'
     +'<div class="row"><button class="btn add" type="button" data-add="sl">+ '+T("add")+'</button></div></section>'
   +'</div>'
