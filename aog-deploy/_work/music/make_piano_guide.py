@@ -98,9 +98,9 @@ B('''<div class="wrap">
 
 # ★ the whole piano
 B('<section>\n  <h2><span class="n">&#9733;</span>%s</h2>\n  <p class="sub">%s</p>' % (sp("Start here · the whole piano", "Empieza aquí · todo el piano"),
-  sp("Top to bottom: the sound, the chords, the keys, and the dial.", "De arriba abajo: el sonido, los acordes, las teclas y el dial.")))
-B('  <figure class="whole">%s<figcaption>%s</figcaption></figure>' % (img("pp-whole", "The whole piano: Instrument, Chords with the six pads, Keys, the Sound dial and Send to the turntables.",
-  "Todo el piano: Instrumento, Acordes con los seis pads, Teclas, el dial de Sonido y Enviar a los platos."),
+  sp("Top to bottom: the sound, the chords, the chord wheel, the keys, and the dial.", "De arriba abajo: el sonido, los acordes, la rueda de acordes, las teclas y el dial.")))
+B('  <figure class="whole">%s<figcaption>%s</figcaption></figure>' % (img("pp-whole", "The whole piano: Instrument, Chords with the six pads, the Chord wheel, Keys, the Sound dial and Send to the turntables.",
+  "Todo el piano: Instrumento, Acordes con los seis pads, la Rueda de acordes, Teclas, el dial de Sonido y Enviar a los platos."),
   sp("The whole piano. Each part is below, close up.", "Todo el piano. Cada parte está abajo, de cerca.")))
 B('  <div class="parts">')
 B(part("wide", "pp-sound", ("The Instrument menu, set to Grand piano.", "El menú Instrumento, en Piano de cola."), ("Instrument", "Instrumento"),
@@ -113,9 +113,11 @@ B(part("wide", "pp-pattern", ("The pattern menu and the How the chords play menu
        ("Pick a chord pattern. Then pick how it plays: long, in beats, one note at a time, or off the beat.", "Elige un patrón de acordes. Luego elige cómo suena: largo, en pulsos, una nota a la vez o a contratiempo.")))
 B(part("wide", "pp-prog", ("Your chord pattern, with Play the chords, Make my own and Clear.", "Tu patrón de acordes, con Tocar los acordes, Hacer el mío y Borrar."), ("Your pattern · Play · Make my own · Clear", "Tu patrón · Tocar · Hacer el mío · Borrar"),
        ("One chord for each bar. Orange plays and stops. Make my own: tap pads in order.", "Un acorde por compás. El naranja toca y para. Hacer el mío: toca los pads en orden.")))
-B(part("half", "pp-tempo", ("The Tempo slider at 90 beats a minute.", "El deslizador de Tempo en 90 pulsos por minuto."), ("Tempo", "Tempo"),
+B(part("wide", "pp-tempo", ("The Tempo slider at 90 beats a minute.", "El deslizador de Tempo en 90 pulsos por minuto."), ("Tempo", "Tempo"),
        ("Slower or faster.", "Más lento o más rápido.")))
-B(part("half", "pp-keyrow", ("Lower, Higher and Hold notes (pedal).", "Más grave, Más agudo y Mantener notas (pedal)."), ("Lower · Higher · Hold notes", "Más grave · Más agudo · Mantener notas"),
+B(part("wide", "pp-wheel", ("The chord wheel in C: the six pads lit, C with the gold ring.", "La rueda de acordes en Do: los seis pads iluminados, Do con el aro dorado."), ("Chord wheel", "Rueda de acordes"),
+       ("Every chord in a circle. The six light ones are your pads. Tap one to hear it.", "Todos los acordes en un círculo. Los seis claros son tus pads. Toca uno para oírlo.")))
+B(part("wide", "pp-keyrow", ("Lower, Higher and Hold notes (pedal).", "Más grave, Más agudo y Mantener notas (pedal)."), ("Lower · Higher · Hold notes", "Más grave · Más agudo · Mantener notas"),
        ("Move the keys down or up. Hold notes is the pedal.", "Baja o sube las teclas. Mantener notas es el pedal.")))
 B(part("wide", "pp-kbd", ("The keys, two octaves from C3 to C5.", "Las teclas, dos octavas de Do3 a Do5."), ("The keys", "Las teclas"),
        ("Press near the bottom for a loud note, near the top for a soft one. Slide a finger to play many.", "Presiona cerca de abajo para una nota fuerte y cerca de arriba para una suave. Desliza un dedo para tocar muchas.")))
@@ -128,7 +130,7 @@ B('<section>\n  <h2><span class="n">1</span>%s</h2>\n  <p class="sub">%s</p>\n  
   sp("Pick a pattern. Press Play. That is a song.", "Elige un patrón. Pulsa Tocar. Eso es una canción.")))
 B(step(1, img("pp-s-pattern", "Start from a chord pattern, set to Pop.", "Empieza con un patrón de acordes, en Pop."), ("Pick a pattern", "Elige un patrón"), ("Pop is a good first one.", "Pop es un buen primero.")))
 B(step(2, img("pp-s-play", "Play the chords.", "Tocar los acordes."), ("Press Play", "Pulsa Tocar"), ("The orange button.", "El botón naranja.")))
-B(step(3, img("pp-kbd-lit", "The keys of the chord light up while it plays.", "Las teclas del acorde se iluminan mientras suena."), ("Watch the keys", "Mira las teclas"), ("The chord's keys light up.", "Se iluminan las teclas del acorde.")))
+B(step(3, img("pp-kbd-lit", "Orange keys are playing now; the pale key fits the chord.", "Las teclas naranjas suenan ahora; la clara encaja con el acorde."), ("Watch the keys", "Mira las teclas"), ("Orange keys are playing. Pale keys fit the chord.", "Las naranjas suenan. Las claras encajan con el acorde.")))
 B(step(4, img("pp-pads-now", "The pad that is playing now has a red ring.", "El pad que suena ahora tiene un aro rojo."), ("Watch the pads", "Mira los pads"), ("The red ring shows the chord now.", "El aro rojo muestra el acorde de ahora.")))
 B('  </div>\n</section>')
 
@@ -175,16 +177,25 @@ for num, cls, en, es in [("1", "maj", "Home. Songs often start and end here.", "
     B('    <li><span class="pn %s">%s</span><span>%s</span></li>' % (cls, num, sp(en, es)))
 B('  </ul>\n  <p class="note">%s</p>\n</section>' % sp("In Minor the pads become 1, 3, 4, 5, 6 and 7, and the moody chords lead.", "En Menor los pads son 1, 3, 4, 5, 6 y 7, y mandan los acordes melancólicos."))
 
-# 6 · your own pattern
-B('<section>\n  <h2><span class="n">6</span>%s</h2>\n  <div class="steps">' % sp("Make your own pattern", "Haz tu propio patrón"))
+# 6 · the chord wheel (AOG-PIANO-WHEEL-V1)
+B('<section>\n  <h2><span class="n">6</span>%s</h2>\n  <p class="sub">%s</p>\n  <div class="steps">' % (sp("The chord wheel", "La rueda de acordes"),
+  sp("Every major chord goes round the outside, its minor just inside. Tap any chord to hear it.", "Cada acorde mayor va por fuera y su menor justo dentro. Toca cualquier acorde para oírlo.")))
+B(step(1, img("pp-wheel", "The chord wheel in C: the six pads lit with their numbers, C with the gold ring.", "La rueda de acordes en Do: los seis pads iluminados con sus números, Do con el aro dorado."),
+           ("Your six pads", "Tus seis pads"), ("They sit together, with their numbers. Gold ring: home.", "Están juntos, con sus números. Aro dorado: la casa.")))
+B(step(2, img("pp-s-turn", "Turn to F and Turn to G.", "Girar a Fa y Girar a Sol."), ("Turn the wheel", "Gira la rueda"), ("One step changes the key. The pads follow.", "Un paso cambia el tono. Los pads lo siguen.")))
+B(step(3, img("pp-wheel-now", "While the chords play, G is orange.", "Mientras suenan los acordes, Sol está naranja."), ("Watch it play", "Mírala sonar"), ("The chord playing now is orange.", "El acorde que suena ahora está naranja.")))
+B('  </div>\n  <p class="note">%s</p>\n</section>' % sp("With Make my own on, a tap on the wheel adds that chord to your pattern. Any of the 24 can join.", "Con Hacer el mío activo, un toque en la rueda añade ese acorde a tu patrón. Cualquiera de los 24 puede entrar."))
+
+# 7 · your own pattern
+B('<section>\n  <h2><span class="n">7</span>%s</h2>\n  <div class="steps">' % sp("Make your own pattern", "Haz tu propio patrón"))
 B(step(1, img("pp-s-own", "Make my own and Clear.", "Hacer el mío y Borrar."), ("Clear, then Make my own", "Borrar, luego Hacer el mío"), ("Clear empties the pattern.", "Borrar vacía el patrón.")))
 B(step(2, img("pp-pads", "The six pads.", "Los seis pads."), ("Tap pads", "Toca pads"), ("In the order you like. Up to 8.", "En el orden que quieras. Hasta 8.")))
 B(step(3, img("pp-s-pad1", "Pad 1.", "El pad 1.", "max-width:150px"), ("End on 1", "Termina en 1"), ("It sounds finished.", "Suena terminado.")))
 B(step(4, img("pp-s-play", "Play the chords.", "Tocar los acordes."), ("Press Play", "Pulsa Tocar"), ("Your pattern goes round.", "Tu patrón da vueltas.")))
 B('  </div>\n</section>')
 
-# 7 · eight sounds
-B('<section>\n  <h2><span class="n">7</span>%s</h2>\n  <p class="sub">%s</p>\n  <div class="kits">' % (sp("Eight sounds", "Ocho sonidos"),
+# 8 · eight sounds
+B('<section>\n  <h2><span class="n">8</span>%s</h2>\n  <p class="sub">%s</p>\n  <div class="kits">' % (sp("Eight sounds", "Ocho sonidos"),
   sp("Same keys, different color. That color is called timbre.", "Las mismas teclas, otro color. Ese color se llama timbre.")))
 for letter, en, es, how_en, how_es in [
     ("1", "Grand piano", "Piano de cola", "Felt hammers hit long strings. A real recording.", "Martillos de fieltro golpean cuerdas largas. Una grabación real."),
@@ -198,8 +209,8 @@ for letter, en, es, how_en, how_es in [
     B('    <div class="bank"><div class="letter">%s</div><div><b>%s</b><span>%s</span></div></div>' % (letter, sp(en, es), sp(how_en, how_es)))
 B('  </div>\n</section>')
 
-# 8 · the drum machine and the turntables
-B('<section>\n  <h2><span class="n">8</span>%s</h2>\n  <div class="steps">' % sp("With the drum machine and the turntables", "Con la caja de ritmos y los platos"))
+# 9 · the drum machine and the turntables
+B('<section>\n  <h2><span class="n">9</span>%s</h2>\n  <div class="steps">' % sp("With the drum machine and the turntables", "Con la caja de ritmos y los platos"))
 B(step(1, '<svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="52" height="38" rx="6" fill="#2b2f35"/><g fill="#f2c76a"><rect x="12" y="20" width="10" height="10" rx="2"/><rect x="27" y="20" width="10" height="10" rx="2"/><rect x="42" y="20" width="10" height="10" rx="2"/><rect x="12" y="35" width="10" height="10" rx="2"/><rect x="27" y="35" width="10" height="10" rx="2"/><rect x="42" y="35" width="10" height="10" rx="2"/></g></svg>',
        ("On the drum machine", "En la caja de ritmos"), ("Make a beat. Press Send to the turntables.", "Haz un ritmo. Pulsa Enviar a los platos.")))
 B(step(2, img("pp-s-drum", "Play with my drum beat, and the name of the beat.", "Tocar con mi ritmo de batería, y el nombre del ritmo."), ("Back on the piano", "De vuelta en el piano"),
@@ -208,8 +219,8 @@ B(step(3, img("pp-s-play", "Play the chords.", "Tocar los acordes."), ("Press Pl
 B(step(4, img("pp-s-send", "Send to the turntables.", "Enviar a los platos."), ("Send", "Enviar"), ("On the turntables it is under From the piano.", "En los platos está en Del piano.")))
 B('  </div>\n</section>')
 
-# 9 · a computer
-B('<section>\n  <h2><span class="n">9</span>%s</h2>\n  <p class="sub">%s</p>' % (sp("On a computer", "En una computadora"),
+# 10 · a computer
+B('<section>\n  <h2><span class="n">10</span>%s</h2>\n  <p class="sub">%s</p>' % (sp("On a computer", "En una computadora"),
   sp("Each key shows its letter. The letters stay put when you move up or down.", "Cada tecla muestra su letra. Las letras no cambian al subir o bajar.")))
 B('  <figure class="whole letters">%s<figcaption>%s</figcaption></figure>' % (img("pp-letters", "The keys with their computer letters: A S D F G H J K L ; and W E T Y U O P.", "Las teclas con sus letras de la computadora: A S D F G H J K L Ñ y W E T Y U O P."),
   sp("The middle row plays the white keys. The row above plays the black keys.", "La fila del medio toca las teclas blancas. La fila de arriba toca las negras.")))
@@ -220,8 +231,8 @@ for k, en, es in [("A S D F G H J K", "White keys, C up to C", "Teclas blancas, 
     B('    <li><kbd>%s</kbd><span>%s</span></li>' % (esc(k) if k != "Space" else sp("Space", "Espacio"), sp(en, es)))
 B('  </ul>\n</section>')
 
-# 10 · the lessons
-B('<section>\n  <h2><span class="n">10</span>%s</h2>\n  <p class="sub">%s</p>' % (sp("The lessons", "Las lecciones"),
+# 11 · the lessons
+B('<section>\n  <h2><span class="n">11</span>%s</h2>\n  <p class="sub">%s</p>' % (sp("The lessons", "Las lecciones"),
   sp("Pick a lesson in the Lesson menu. Do the steps on the piano. They tick themselves.", "Elige una lección en el menú Lección. Haz los pasos en el piano. Se marcan solos.")))
 B('  <figure class="whole lessons">%s<figcaption>%s</figcaption></figure>' % (img("pp-lessons", "The lesson card: three steps ticked, and the Worksheet button.", "La tarjeta de la lección: tres pasos marcados y el botón de la hoja de trabajo."),
   sp("Worksheet opens the sheet for that lesson. Type on it or print it.", "La hoja de trabajo abre la hoja de esa lección. Escribe en ella o imprímela.")))
