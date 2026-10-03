@@ -153,6 +153,11 @@
     }
     D.addEventListener("pointerover", function (e) { hoverCheck(e.target); }, true);
     D.addEventListener("focusin", function (e) { hoverCheck(e.target); }, true);
+    /* AOG-LEGIBLE-CLICK-V1 (2026-10-03) — a click can turn the button under the pointer gold (the dashboard's
+       Teacher / Family / Student switch), and the hover fix made for its old colours stayed: pale words on gold.
+       After a click the thing under the pointer is looked at afresh. */
+    D.addEventListener("click", function (e) { var x = e.clientX, y = e.clientY;
+      setTimeout(function () { reset("data-aog-legible-hover"); hov = null; hoverCheck(D.elementFromPoint(x, y)); }, 60); }, true);
     try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { soon(true); }); } catch (e) {}
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
