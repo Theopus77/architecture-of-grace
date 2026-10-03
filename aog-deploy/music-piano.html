@@ -1655,10 +1655,17 @@ function ladderHtml(){
    Name it and Print. Four or more places, so one Go to menu (aog-dropdowns.js reads the span). ══ */
 const VIEWS=["home","lessons","meet","words","print"];
 function hashView(){ const v=(location.hash||"").replace(/^#/,""); return VIEWS.indexOf(v)>0 ? v : "home"; }
+/* AOG-MUSIC-TOOLS-MENU-V1 (2026-10-03) — five music tools now (the guitar and the bass joined): the tools sit in one menu
+   at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
+   this tool is the one shown */
+function toolsMenu(cur, es){
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["decks","music-decks.html","Turntables","Tocadiscos"]];
+  return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
+}
 function navHtml(v){
   const items=[["home",t("navBench")],["lessons",lt("lessonsNav")],["meet",t("navMeet")],["words",t("navWords")],["print",t("navPrint")]];
   return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,l])=>`<a href="#${id}" class="${v===id?"on":""}">${l}</a>`).join("")+`</span>`+
-    `<span class="sisters"><a class="sep" href="/piano-guide"><span class="lg">${t("guide")}</span><span class="sh">${t("guideSh")}</span></a><a class="sep" href="music-drums.html"><span class="lg">${t("drums")}</span><span class="sh">${t("drumsSh")}</span></a><a class="sep" href="music-decks.html"><span class="lg">${t("decks")}</span><span class="sh">${t("decksSh")}</span></a></span>`;
+    `<span class="sisters"><a class="sep" href="/piano-guide"><span class="lg">${t("guide")}</span><span class="sh">${t("guideSh")}</span></a>${toolsMenu("piano", S.lang==="es")}</span>`;
 }
 function paintView(){
   const v=hashView(), rig=$("rig"), alt=$("alt"), box=$("lessons"), pg=$("pgPanel"), main=$("view");
