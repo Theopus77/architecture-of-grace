@@ -117,15 +117,15 @@ lesson(6, "the-six-pads", ("The six pads", "Los seis pads"),
                  "La <b>Rueda de acordes</b> pone los 24 acordes mayores y menores en un círculo. Los mayores van por fuera y cada menor justo dentro de su mayor. En cualquier tono, los seis pads quedan juntos: tres en cada anillo. Un paso en el sentido del reloj añade un sostenido."),
          fig("pp-wheel", "The chord wheel in C: the six pads, lit, with their numbers. C has the gold ring.", "La rueda de acordes en Do: los seis pads, iluminados, con sus números. Do tiene el aro dorado.")])
 
-lesson(7, "patterns-and-four-ways-to-play", ("Eighteen patterns, four ways to play", "Dieciocho patrones, cuatro maneras de tocar"),
+lesson(7, "patterns-and-four-ways-to-play", ("Eighteen patterns, eleven ways to play", "Dieciocho patrones, once maneras de tocar"),
   [("The pattern menu holds eighteen chord patterns that songs use again and again, in three groups. Here they are in the key of C (the minor ones in A minor):",
     "El menú de patrones tiene dieciocho patrones de acordes que las canciones usan una y otra vez, en tres grupos. Aquí están en el tono de Do (los menores, en La menor):")],
   ("pp-pattern", "The pattern menu and the How the chords play menu.", "El menú de patrones y el menú Cómo suenan los acordes."),
   [("Try three patterns. Let each one go round twice.", "Prueba tres patrones. Deja que cada uno dé dos vueltas."),
-   ("While one plays, change <b>How the chords play</b>: Hold, Pulse, Broken and Off-beat.", "Mientras uno suena, cambia <b>Cómo suenan los acordes</b>: Mantener, Pulso, Arpegio y Contratiempo."),
+   ("While one plays, change <b>How the chords play</b>. Start with Hold, Pulse, Broken and Off-beat, then try the others.", "Mientras uno suena, cambia <b>Cómo suenan los acordes</b>. Empieza con Mantener, Pulso, Arpegio y Contratiempo, y luego prueba las demás."),
    ("Pick the pattern and the way of playing you like best.", "Elige el patrón y la manera de tocar que más te gusten.")],
   ("Hold is calm. Pulse is steady. Broken flows, one note at a time (an arpeggio). Off-beat bounces between the counts, like reggae and ska.", "Mantener es tranquilo. Pulso es firme. Arpegio fluye, una nota a la vez. Contratiempo rebota entre los conteos, como el reggae y el ska."),
-  [("I tried at least three patterns.", "Probé por lo menos tres patrones."), ("I can name the four ways the chords can play.", "Puedo nombrar las cuatro maneras en que pueden sonar los acordes.")],
+  [("I tried at least three patterns.", "Probé por lo menos tres patrones."), ("I can name four ways the chords can play.", "Puedo nombrar cuatro maneras en que pueden sonar los acordes.")],
   extra=[bl("p", "<b>Pop, rock and folk</b>", "<b>Pop, rock y folk</b>"),
          lst("ul", [("<b>Pop · 1 5 6 4</b>: C, G, Am, F", "<b>Pop · 1 5 6 4</b>: Do, Sol, La m, Fa"),
                     ("<b>Fifties · 1 6 4 5</b>: C, Am, F, G", "<b>Años 50 · 1 6 4 5</b>: Do, La m, Fa, Sol"),
@@ -146,7 +146,15 @@ lesson(7, "patterns-and-four-ways-to-play", ("Eighteen patterns, four ways to pl
          lst("ul", [("<b>Minor groove · 1 6 3 7</b>: Am, F, C, G", "<b>Ritmo menor · 1 6 3 7</b>: La m, Fa, Do, Sol"),
                     ("<b>Flamenco · 1 7 6 5</b>: Am, G, F, E", "<b>Flamenco · 1 7 6 5</b>: La m, Sol, Fa, Mi"),
                     ("<b>Minor folk · 1 4 5 1</b>: Am, Dm, E, Am", "<b>Folk menor · 1 4 5 1</b>: La m, Re m, Mi, La m"),
-                    ("<b>Epic · 1 7 6 7</b>: Am, G, F, G. A big film-score sound.", "<b>Épico · 1 7 6 7</b>: La m, Sol, Fa, Sol. Un sonido grande, de película.")])])
+                    ("<b>Epic · 1 7 6 7</b>: Am, G, F, G. A big film-score sound.", "<b>Épico · 1 7 6 7</b>: La m, Sol, Fa, Sol. Un sonido grande, de película.")]),
+         # AOG-PIANO-WAYS-V2 (2026-10-03): the eleven ways to play, in the menu's three groups
+         bl("p", "<b>The eleven ways to play</b>", "<b>Las once maneras de tocar</b>"),
+         lst("ul", [("<b>Steady</b>: <b>Hold</b>, one long chord. <b>Pulse</b>, the chord on each beat. <b>Eight a bar</b>, the chord on every half beat, for pop and rock.",
+                     "<b>Firmes</b>: <b>Mantener</b>, un acorde largo. <b>Pulso</b>, el acorde en cada tiempo. <b>Ocho por compás</b>, el acorde en cada medio tiempo, para pop y rock."),
+                    ("<b>Flowing</b>: <b>Broken</b>, one note at a time (an arpeggio). <b>Ballad</b>, from the low notes up through the chord and back down. <b>Sweep</b>, every note from low to high, quick as a harp.",
+                     "<b>Fluidos</b>: <b>Arpegio</b>, una nota a la vez. <b>Balada</b>, desde las notas graves hasta arriba del acorde y de vuelta. <b>Barrido</b>, todas las notas de grave a agudo, rápido como un arpa."),
+                    ("<b>Dance and groove</b>: <b>Oom-pah</b>, a low note, then the chord, like a march. <b>Off-beat</b>, between the counts, like reggae and ska. <b>Boogie-woogie</b>, the low notes walk up and down, like blues piano. <b>Charleston</b>, on 1 and just before 3, from 1920s jazz. <b>Three-three-two</b>, count 1 2 3, 1 2 3, 1 2, as in Latin music and reggaeton.",
+                     "<b>Para bailar</b>: <b>Um-pa</b>, una nota grave y luego el acorde, como una marcha. <b>Contratiempo</b>, entre los conteos, como el reggae y el ska. <b>Boogie-woogie</b>, las notas graves suben y bajan, como el piano de blues. <b>Charleston</b>, en el 1 y justo antes del 3, del jazz de los años 20. <b>Tres-tres-dos</b>, cuenta 1 2 3, 1 2 3, 1 2, como en la música latina y el reguetón.")])])
 
 lesson(8, "make-your-own-pattern", ("Make your own pattern", "Haz tu propio patrón"),
   [("Press <b>Make my own</b> and tap the pads in the order you want, up to eight. Each tap adds one bar to <b>Your chord pattern</b>.",

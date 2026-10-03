@@ -581,9 +581,24 @@ const PRESETS=[
   {id:"epic",    g:"min",  en:"Epic · 1 7 6 7",            es:"Épico · 1 7 6 7",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]}
 ];
 const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
-const RHYTHMS=["hold","pulse","broken","offbeat"];
+/* AOG-PIANO-WAYS-V2 (2026-10-03) — Jimmy: "there be more ways to play the chords!" Eleven now, in three groups as the patterns
+   are; the first four keep their names and places, so the lessons that use them still find them */
+const RHYTHMS=["hold","pulse","eighths","broken","ballad","sweep","oompah","offbeat","boogie","charleston","tresillo"];
 const RHYTHM_WORDS={hold:{en:"Hold · one long chord",es:"Mantener · un acorde largo"}, pulse:{en:"Pulse · four beats",es:"Pulso · cuatro tiempos"},
-  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"}, offbeat:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"}};
+  eighths:{en:"Eight a bar · pop and rock",es:"Ocho por compás · pop y rock"},
+  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"},
+  ballad:{en:"Ballad · rolling up and down",es:"Balada · sube y baja"},
+  sweep:{en:"Sweep · up like a harp",es:"Barrido · sube como un arpa"},
+  oompah:{en:"Oom-pah · march and polka",es:"Um-pa · marcha y polka"},
+  offbeat:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"},
+  boogie:{en:"Boogie-woogie · blues",es:"Boogie-woogie · blues"},
+  charleston:{en:"Charleston · swing and jazz",es:"Charleston · swing y jazz"},
+  tresillo:{en:"Three-three-two · Latin and reggaeton",es:"Tres-tres-dos · latino y reguetón"}};
+const RHYTHM_GROUPS=[[{en:"Steady",es:"Firmes"},["hold","pulse","eighths"]],[{en:"Flowing",es:"Fluidos"},["broken","ballad","sweep"]],
+  [{en:"Dance and groove",es:"Para bailar"},["oompah","offbeat","boogie","charleston","tresillo"]]];
+/* boogie-woogie and the Charleston swing by themselves (the second half of each beat comes a little late); with your drum
+   beat, everything swings as the beat does */
+const RHYTHM_SWING={boogie:0.64, charleston:0.62};
 /* a chord's notes in the middle of the keyboard, moved as little as possible from the last chord */
 let lastVoicing=null;
 function voicing(c, prev){
@@ -927,11 +942,26 @@ function padUp(i){
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.remove("hit");
   paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
 }
-/* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high */
-function barEvents(rhythm, n){
+/* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high (past the
+   top, the same notes an octave up); bi = a note this many steps from the bass note; ns = keeps time even when it swings */
+function barEvents(rhythm, n, chord){
   if(rhythm==="pulse") return [{t:0,w:"b",d:1.9,v:0.8},{t:2,w:"b",d:1.9,v:0.75},{t:0,w:"c",d:0.85,v:0.8},{t:1,w:"c",d:0.85,v:0.62},{t:2,w:"c",d:0.85,v:0.72},{t:3,w:"c",d:0.85,v:0.62}];
   if(rhythm==="broken"){ const p=n>3?[0,2,1,3,0,2,1,3]:[0,2,1,2,0,2,1,2]; return [{t:0,w:"b",d:3.9,v:0.78}].concat(p.map((k,i)=>({t:i*0.5,w:k,d:0.95,v:i%2?0.58:0.68}))); }
   if(rhythm==="offbeat") return [{t:0,w:"b",d:0.9,v:0.8},{t:2,w:"b",d:0.9,v:0.75}].concat([0.5,1.5,2.5,3.5].map(x=>({t:x,w:"c",d:0.3,v:0.72})));
+  /* AOG-PIANO-WAYS-V2 */
+  if(rhythm==="eighths") return [{t:0,w:"b",d:1.9,v:0.8},{t:2,w:"b",d:1.9,v:0.76}].concat([0,1,2,3,4,5,6,7].map(i=>({t:i*0.5,w:"c",d:0.42,v:i===0?0.8:i%2?0.54:0.7})));
+  if(rhythm==="ballad"){ const top=n>3?3:2;          /* the bass, its fifth and its octave, then the chord up and back, each note left ringing */
+    return [{t:0,w:"b",d:3.9,v:0.76},{t:0.5,bi:7,d:3.4,v:0.58},{t:1,bi:12,d:2.9,v:0.6},{t:1.5,w:0,d:1.4,v:0.64},{t:2,w:1,d:1.4,v:0.6},
+            {t:2.5,w:top,d:1.3,v:0.66},{t:3,w:1,d:0.9,v:0.58},{t:3.5,w:0,d:0.45,v:0.55}]; }
+  if(rhythm==="sweep"){                                /* from the bass up through the chord to its top an octave higher, quick as a harp */
+    const seq=[{bi:0},{bi:7},{bi:12}]; for(let k=0;k<=n;k++) seq.push({w:k});
+    return seq.map((x,i)=>Object.assign({t:i*0.125, d:3.9-i*0.125, v:0.5+0.035*i, ns:true}, x)); }
+  if(rhythm==="oompah") return [{t:0,w:"b",d:0.9,v:0.82},{t:1,w:"c",d:0.6,v:0.64},{t:2,bi:-5,d:0.9,v:0.76},{t:3,w:"c",d:0.6,v:0.62}];
+  if(rhythm==="boogie"){                               /* the left hand walks: 1 3 5 6 ♭7 6 5 3, while the right hand answers on 2 and 4 */
+    const third=(chord && Q[chord.q][1]===3) ? 3 : 4, walk=[0,third,7,9,10,9,7,third];
+    return walk.map((bi,i)=>({t:i*0.5, bi:bi, d:0.45, v:i%2?0.62:0.78})).concat([{t:1,w:"c",d:0.4,v:0.62},{t:3,w:"c",d:0.4,v:0.6}]); }
+  if(rhythm==="charleston") return [{t:0,w:"b",d:1.4,v:0.8},{t:2,bi:-5,d:1.4,v:0.74},{t:0,w:"c",d:0.9,v:0.78},{t:1.5,w:"c",d:0.45,v:0.7},{t:2,w:"c",d:0.9,v:0.74},{t:3.5,w:"c",d:0.45,v:0.68}];
+  if(rhythm==="tresillo") return [{t:0,w:"b",d:1.4,v:0.82},{t:1.5,w:"b",d:1.4,v:0.72},{t:3,w:"b",d:0.9,v:0.76},{t:0,w:"c",d:0.5,v:0.76},{t:1.5,w:"c",d:0.5,v:0.68},{t:3,w:"c",d:0.45,v:0.72}];
   return [{t:0,w:"b",d:3.85,v:0.75},{t:0,w:"c",d:3.85,v:0.68}];
 }
 /* schedule bar k of the pattern on a context and chain; returns the voices it made */
@@ -939,16 +969,16 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   const chord=S.prog[k%S.prog.length]; if(!chord) return [];
   const vo=voicing(chord, prevRef.v); prevRef.v=vo;
   const beat=barSec/4, out=[];
-  barEvents(S.rhythm, vo.length).forEach(ev=>{
-    const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
-    const when=t0+ev.t*beat+late, notes=ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[vo[Math.min(ev.w, vo.length-1)]];
+  barEvents(S.rhythm, vo.length, chord).forEach(ev=>{
+    const late=(!ev.ns && ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
+    const when=t0+ev.t*beat+late, notes=ev.bi!=null?[bassOf(chord)+ev.bi]:ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[ev.w<vo.length?vo[ev.w]:vo[ev.w-vo.length]+12];
     notes.forEach(m=>{ const vc=makeVoice(c, ch, S.sound, m, ev.v, when); if(vc){ vc.stop(when+ev.d*beat, vc.tau); vc.m=m; vc.on=when; vc.off=when+ev.d*beat; out.push(vc); } });
   });
   return out;
 }
 const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], prev:{v:null}, drum:null, cur:-1, vo:{}};
 function curBpm(){ return (S.withDrums && DRUM.take) ? DRUM.take.bpm : S.bpm; }
-function curSwing(){ return (S.withDrums && DRUM.take && typeof DRUM.take.swing==="number") ? DRUM.take.swing : 0.5; }
+function curSwing(){ return (S.withDrums && DRUM.take && typeof DRUM.take.swing==="number") ? DRUM.take.swing : (RHYTHM_SWING[S.rhythm]||0.5); }
 async function start(){
   if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
   const c=ctx();
@@ -1107,7 +1137,7 @@ function paintProgSel(){
     html+=`<option value="${p.id}"${p.id===S.preset?" selected":""}>${S.lang==="es"?p.es:p.en}</option>`; });
   $("progSel").innerHTML=html+(g?"</optgroup>":"");
 }
-function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join(""); }
+function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
