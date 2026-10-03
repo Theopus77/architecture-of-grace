@@ -224,6 +224,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         </div>
         <p class="line" data-t="padsLine"></p>
         <div class="pads" id="pads"></div>
+        <p class="line" id="stepLine" data-t="stepLine" hidden></p>
         <div class="row" style="margin-top:.8rem">
           <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel"></select></label>
           <label class="field"><span class="plab" data-t="rhythmLab"></span><select id="rhythmSel"></select></label>
@@ -351,6 +352,7 @@ const STR={
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine:{en:"Hold a pad to hear the band play a chord. Every pad fits this key.",es:"Mantén un pad para oír a la banda tocar un acorde. Todos los pads van con este tono."},
+  stepLine:{en:"Each number is the chord's step in the scale. In a minor key, there is no pad 2: that chord sounds tense.",es:"Cada número es el paso del acorde en la escala. En un tono menor no hay pad 2: ese acorde suena tenso."},   /* AOG-PADS-STEPS-V1: why a minor key skips pad 2 (Jimmy, 2026-10-03: "the numbers are off") */
   wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
   wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
   wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
@@ -965,6 +967,7 @@ function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
+  const sl=document.getElementById("stepLine"); if(sl) sl.hidden=!S.minor;   /* AOG-PADS-STEPS-V1 */
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
     const i=+el.getAttribute("data-i"); let downAt=0;

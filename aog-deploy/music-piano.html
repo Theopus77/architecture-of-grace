@@ -300,6 +300,7 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         </div>
         <p class="line" data-t="padsLine"></p>
         <div class="pads" id="pads"></div>
+        <p class="line" id="stepLine" data-t="stepLine" hidden></p>
         <div class="row" style="margin-top:.8rem">
           <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel"></select></label>
           <label class="field"><span class="plab" data-t="rhythmLab"></span><select id="rhythmSel"></select></label>
@@ -441,6 +442,7 @@ const STR={
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
   major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
   padsLine:{en:"Tap a pad to hear a chord. Every pad fits this key.",es:"Toca un pad para oír un acorde. Todos los pads van con este tono."},
+  stepLine:{en:"Each number is the chord's step in the scale. In a minor key, there is no pad 2: that chord sounds tense.",es:"Cada número es el paso del acorde en la escala. En un tono menor no hay pad 2: ese acorde suena tenso."},   /* AOG-PADS-STEPS-V1: why a minor key skips pad 2 (Jimmy, 2026-10-03: "the numbers are off") */
   wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
   wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
   wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
@@ -527,7 +529,7 @@ const SOUNDS={
   honky:  {grp:"grpPiano", en:"Honky-tonk piano",       es:"Piano honky-tonk",           kind:"sample", set:"upright", honky:true, gain:1.80, rev:0.10},
   epwarm: {grp:"grpEp",    en:"Electric piano · warm",  es:"Piano eléctrico · cálido",   kind:"tine",   gain:0.56, rev:0.12},
   epreed: {grp:"grpEp",    en:"Electric piano · bright",es:"Piano eléctrico · brillante",kind:"reed",   gain:0.72, rev:0.10},
-  ep80:   {grp:"grpEp",    en:"'80s electric piano",    es:"Piano eléctrico de los 80",  kind:"fm",     gain:0.64, rev:0.14},
+  ep80:   {grp:"grpEp",    en:"'80s electric piano",    es:"Piano eléctrico de los 80",  kind:"fm",     gain:0.86, rev:0.14},
   organ:  {grp:"grpOrgan", en:"Rock and jazz organ",    es:"Órgano de rock y jazz",      kind:"organ",  gain:0.42, rev:0.12},
   church: {grp:"grpOrgan", en:"Church organ",           es:"Órgano de iglesia",          kind:"church", gain:0.45, rev:0.55}
 };
@@ -799,10 +801,20 @@ function synthVoice(c, ch, snd, m, v, when){
     a.car.connect(drive); drive.connect(sh); sh.connect(amp); nodes.push(a.car,a.mod);
     amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
     tau=0.06;
-  } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: two stacks, a shimmer and a ping */
-    const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when), b=fmPair(c,f,14, 1.6*vv, 0, 0.02, when, 1.0035);
-    const ag=c.createGain(), bg=c.createGain(); ag.gain.value=0.7; bg.gain.value=0.42;
-    a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); nodes.push(a.car,a.mod,b.car,b.mod);
+  } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: a round body, a bell-like ping that fades fast, and a faint shimmer */
+    /* AOG-PIANO-EP80-V2 (2026-10-03) — Jimmy: "On the electric piano, it sounds a bit iffy". The ping's voice sat 6 cents sharp
+       at full strength for the whole note, so every note swelled and dipped by about 10 dB (the warm and bright pianos: 1 to 3).
+       Now the ping is in tune and fades within a moment; the shimmer is a much quieter voice only 1.2 cents sharp. The ping's
+       partner sits 14 times higher, or less for the top notes, so it stays under the highest pitch the sound engine can make
+       (above that, a tone folds back as a harsh one). */
+    const r=f*14<15000 ? 14 : Math.max(3, Math.floor(15000/f));
+    const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when);
+    const b=fmPair(c,f,r, (0.2+0.5*vv)*Math.min(1, Math.sqrt(1200/f))*r, 0, 0.06, when);
+    const sh=fmPair(c,f,1, 0.3, 0.1, 0.8, when, 1.0007);
+    const ag=gainAt(c,0.7), bg=gainAt(c,0.36), sg=gainAt(c,0.08);
+    bg.gain.setValueAtTime(0.36, when); bg.gain.setTargetAtTime(0.03, when, 0.18);
+    a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); sh.car.connect(sg); sg.connect(amp);
+    nodes.push(a.car,a.mod,b.car,b.mod,sh.car,sh.mod);
     amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
     tau=0.09;
   } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out */
@@ -1099,6 +1111,7 @@ function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
+  const sl=document.getElementById("stepLine"); if(sl) sl.hidden=!S.minor;   /* AOG-PADS-STEPS-V1 */
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
     const i=+el.getAttribute("data-i"); let downAt=0;
