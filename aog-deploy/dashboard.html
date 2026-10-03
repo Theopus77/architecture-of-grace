@@ -341,6 +341,39 @@ function ptsRows(){ const seen={}, out=[]; rows("aog.checkin.remote").concat(row
     let v=x.scale&&x.scale.bricks!=null?+x.scale.bricks:null; if(v==null){ const m=/\((\d+)%\)/.exec(String((x.answers||{}).bricks||"")); if(m) v=+m[1]; } if(v==null||isNaN(v)) return;
     out.push({who:String(r.studentId||"").trim(),home:ty==="slip-homepoints",d:day(r),v:v}); }); return out; }
 function weekOf(d){ const t=new Date(d+"T12:00:00"); if(isNaN(t)) return d; t.setDate(t.getDate()-((t.getDay()+6)%7)); return t.toISOString().slice(0,10); }
+/* AOG-PTS-TEAM-V1 (2026-10-03) — Jimmy: one digital point sheet the whole team adds to (option A). Every point sheet sent for one
+   student on one day, from every adult, put back together: each part of the day, who scored it, the bricks and the wall.
+   A later score for the same box replaces an earlier one. Read from what this dashboard already holds; nothing new is shared. */
+let PTSDSTU="", PTSDDAY="";
+function ptsSends(){ const seen={}, out=[]; rows("aog.checkin.remote").concat(rows("aog.slips.mine")).forEach(r=>{ if(String(r.checkinType||"")!=="slip-points") return;
+    let x={}; try{ x=typeof r.extra==="string"?JSON.parse(r.extra):(r.extra||{}); }catch(e){} const P=x.pts; if(!P||!Array.isArray(P.blocks)||!P.scores) return;
+    const k=fold(r.studentId)+"|"+String(r.timestamp||"").slice(0,16)+"|"+JSON.stringify(P.scores); if(seen[k]) return; seen[k]=1;
+    out.push({who:String(r.studentId||"").trim(),d:day(r),ts:String(r.timestamp||""),P:P}); });
+  return out.sort((a,b)=>a.ts<b.ts?-1:1); }
+function ptsWall(earned,max){ const cols=8, rowsN=Math.max(1,Math.ceil(max/cols)), H=rowsN*16+12; let g="";
+  for(let i=0;i<max;i++){ const r=Math.floor(i/cols), c=i%cols, x=8+c*36+(r%2?14:0), y=H-6-(r+1)*16;
+    g+=i<earned?'<rect x="'+x+'" y="'+y+'" width="32" height="13" rx="1.5" fill="rgba(47,42,37,.14)" stroke="#2F2A25" stroke-width="1.8"/>':'<rect x="'+x+'" y="'+y+'" width="32" height="13" rx="1.5" fill="none" stroke="#2F63B8" stroke-width="1.2" stroke-dasharray="3 4" opacity=".35"/>'; }
+  return '<div style="background:#F7F2E6;border:1px solid rgba(42,38,34,.35);border-radius:10px;padding:8px;max-width:520px"><svg viewBox="0 0 320 '+H+'" role="img" aria-label="'+esc(t2("A brick wall, ","Un muro, ")+earned+t2(" bricks"," ladrillos"))+'" style="display:block;width:100%;height:auto"><path d="M6 '+(H-6)+'H314" stroke="#2F2A25" stroke-width="2.2"/>'+g+'</svg></div>'; }
+function ptsDay(){ const all=ptsSends(); if(!all.length) return "";
+  const names=[...new Set(all.map(r=>r.who).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); if(!names.includes(PTSDSTU)) PTSDSTU=names[0];
+  const mine=all.filter(r=>r.who===PTSDSTU), days=[...new Set(mine.map(r=>r.d))].sort().reverse(); if(!days.includes(PTSDDAY)) PTSDDAY=days[0];
+  const sends=mine.filter(r=>r.d===PTSDDAY), last=sends[sends.length-1].P, B=last.blocks, G=last.goals||[], cell={}, byRow={};
+  sends.forEach(x=>{ Object.keys(x.P.scores||{}).forEach(k=>{ cell[k]=+x.P.scores[k]; if(x.P.by) byRow[k.split("-")[0]]=x.P.by; }); });
+  const W=[t2("Not yet","Todavía no"),t2("Building","Construyendo"),t2("Built it","Lo logré")];
+  let earned=0, scored=0; Object.keys(cell).forEach(k=>{ earned+=cell[k]; scored++; });
+  const pct=scored?Math.round(100*earned/(2*scored)):0, aimV=+last.aim||80;
+  const head='<tr><th>'+(last.day==="periods"?t2("Period","Periodo"):t2("Part of the day","Parte del día"))+'</th>'+G.map(g=>'<th>'+esc(g)+'</th>').join("")+'<th>'+t2("Scored by","Calificó")+'</th></tr>';
+  const body=B.map((b,bi)=>{ const any=G.some((g,gi)=>cell[bi+"-"+gi]!=null);
+    return '<tr><td data-label=""><b>'+esc(b)+'</b></td>'+G.map((g,gi)=>{ const v=cell[bi+"-"+gi]; return '<td data-label="'+esc(g)+'">'+(v==null?'<span style="color:var(--faint)">—</span>':esc(W[v]))+'</td>'; }).join("")
+      +'<td data-label="'+esc(t2("Scored by","Calificó"))+'">'+(any?esc(byRow[bi]||"—"):"")+'</td></tr>'; }).join("");
+  return '<h2 style="margin:28px 0 6px">'+t2("One day, the whole team","Un día, todo el equipo")+'</h2><p style="margin:0 0 10px">'+t2("Every point sheet sent for one student on one day, put together. A later score for the same box replaces an earlier one.","Todas las hojas de puntos enviadas para un estudiante en un día, juntas. Una calificación más reciente reemplaza a la anterior.")+'</p>'
+   +'<div class="row" style="margin:0 0 12px"><label style="display:block"><span style="display:block;font-weight:700;margin-bottom:4px">'+t2("Student","Estudiante")+'</span><select id="ptsDStu" style="font-size:16px;min-height:44px">'+names.map(n=>'<option'+(n===PTSDSTU?' selected':'')+'>'+esc(n)+'</option>').join("")+'</select></label>'
+   +'<label style="display:block"><span style="display:block;font-weight:700;margin-bottom:4px">'+t2("Day","Día")+'</span><select id="ptsDDay" style="font-size:16px;min-height:44px">'+days.map(d=>'<option value="'+d+'"'+(d===PTSDDAY?' selected':'')+'>'+esc(nice(d))+'</option>').join("")+'</select></label></div>'
+   +'<section class="card"><p class="k" style="color:var(--goldInk)">'+esc(PTSDSTU)+' · '+esc(nice(PTSDDAY))+'</p>'
+   +'<div style="overflow-x:auto"><table class="tbl">'+head+body+'</table></div>'
+   +'<p style="margin:14px 0 8px;font-weight:700">'+earned+t2(" of "," de ")+(2*scored)+t2(" bricks"," ladrillos")+' ('+pct+'%) · '+t2("aim ","meta ")+aimV+'% · '+sends.length+' '+(sends.length===1?t2("sheet sent","hoja enviada"):t2("sheets sent","hojas enviadas"))+'</p>'
+   +ptsWall(earned,2*B.length*G.length)
+   +'<div class="row"><button class="btn" type="button" onclick="window.print()">🖨 '+t2("Print this day","Imprimir este día")+'</button></div></section>'; }
 function ptsTrends(){ const all=ptsRows(); if(!all.length) return "";
   const names=[...new Set(all.map(r=>r.who).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); if(PTSSTU&&!names.includes(PTSSTU)) PTSSTU="";
   const rs=PTSSTU?all.filter(r=>r.who===PTSSTU):all, wk=h=>rs.filter(r=>r.home===h).map(r=>({d:weekOf(r.d),v:r.v}));
@@ -561,7 +594,7 @@ function slipTrends(){ const all=slipRows(); if(!all.length) return "";
    +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+cards+'</div>';
 }
 function trends(){
-  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+((slipTrends()+ptsTrends())||noData());
+  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+((slipTrends()+ptsTrends()+ptsDay())||noData());
   const days=[...new Set(D.ci.concat(D.pr).map(day))].filter(Boolean).sort().slice(-20);
   const ciPts=days.map(d=>({l:nice(d),v:D.ci.filter(r=>day(r)===d).length}));
   const accPts=days.map(d=>{ const rs=D.pr.filter(r=>day(r)===d&&+r.itemsTotal>0); return rs.length?{l:nice(d),v:Math.round(100*rs.reduce((a,r)=>a+(+r.independent||0),0)/rs.reduce((a,r)=>a+(+r.itemsTotal||0),0))}:null; }).filter(Boolean);
@@ -575,7 +608,7 @@ function trends(){
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("accDay")+'</p>'+(accPts.length?lineSvg(accPts,{min:0,max:100,c:"#2E7D4F"})+cap(t2("Turned-in work","Trabajo entregado"),prN,t2("pieces","trabajos")):'<p class="empty">—</p>')+'</section>'
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("flagDay")+'</p>'+lineSvg(flagPts,{min:0,c:"#B3261E"})+cap(t2("Daily check-ins","Registros diarios"),D.ci.filter(r=>days.indexOf(day(r))>=0&&flagged(r)).length,t2("follow-ups","seguimientos"))+'</section>'
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+topF.map(([f,n])=>'<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:110px">'+esc(f)+'</span><div class="bar" style="flex:1"><i style="width:'+Math.round(100*n/mx)+'%;background:var(--c5)"></i></div><b style="width:30px;text-align:right">'+n+'</b></div>').join("")+'</section>'
-   +'</div>'+homeTrends(D)+slipTrends()+ptsTrends();
+   +'</div>'+homeTrends(D)+slipTrends()+ptsTrends()+ptsDay();
 }
 /* AOG-DASH-FROMHOME-V1 — the home series beside the school ones: ready to learn at school (check-ins) next to how the
    day went at home, and sleep, from the plans families sent. For every family who sent one, or one student. */
@@ -1437,6 +1470,8 @@ function wire(){
   document.querySelectorAll("[data-ptssave]").forEach(b=>b.onclick=()=>{ ptsSave(b.dataset.ptssave); render(); });
   document.querySelectorAll("[data-ptsreset]").forEach(b=>b.onclick=()=>{ const P=ptsGet(); put("aog.dash2.ptsGoals",{g:[],aim:80,day:P.day,n:P.n}); render(); });
   const pst=document.getElementById("ptsStu"); if(pst) pst.onchange=()=>{ PTSSTU=pst.value; render(); };
+  const pds=document.getElementById("ptsDStu"); if(pds) pds.onchange=()=>{ PTSDSTU=pds.value; PTSDDAY=""; render(); };
+  const pdd=document.getElementById("ptsDDay"); if(pdd) pdd.onchange=()=>{ PTSDDAY=pdd.value; render(); };
   document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{
     const tr=get(K.tray,[]), w=b.dataset.add;
     if(w==="dd") tr.push({t:"dd",s:val("ddS"),g:val("ddG"),n:+val("ddN")});
