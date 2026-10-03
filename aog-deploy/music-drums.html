@@ -357,6 +357,23 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
 .platter,canvas.wave,canvas.zoom{touch-action:none}
 
+/* AOG-DRUM-PLAY-V1 (2026-10-03) — Jimmy: "It must work flawlessly on iPhone, iPad
+   or computer … keys are used on the computer for quick beat making." A pad now
+   sounds the moment a finger lands (not when it lifts), every finger counts, and a
+   pad never scrolls or zooms the page. On a computer the keys A S D F and J K L ;
+   play the pads and Space starts and stops; each pad shows its key. */
+.pad,.sp-pad{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.kc,.keys-line{display:none}
+@media (hover:hover) and (pointer:fine){
+  .kc{display:block;margin:.25rem auto 0;width:max-content;min-width:1.6em;padding:0 .35em;border:1px solid #6b665c;border-radius:4px;font:700 .7rem/1.5 var(--sans);color:#c6f7b0;text-shadow:none;letter-spacing:0}
+  .keys-line{display:block;color:var(--muted);font-size:.95rem;margin:.6rem 0 0}
+  .machine .keys-line{color:#d7cbb8}
+}
+@media (max-width:520px){
+  .machine:not(.simple) .sp-perf{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .sp-pad,.machine.simple .sp-pad{min-height:72px;font-size:.8rem}
+}
+
 /* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
 /* ══ AOG-DRUM-LESSONS-V1 — the lesson ladder ══ */
 .lesson-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
@@ -457,6 +474,11 @@ const VOICES = [
   {id:"rim", en:"Rim", es:"Aro", face:"Rim", color:"#9aa3b0"},
   {id:"bell", en:"Bell", es:"Campana", face:"Bell", color:"#d9a84e"}
 ];
+/* AOG-DRUM-PLAY-V1 — the eight keys that play the eight pads, by where they sit on the keyboard */
+const KEYPAD = ["KeyA","KeyS","KeyD","KeyF","KeyJ","KeyK","KeyL","Semicolon"];
+const KEYCAP = ["A","S","D","F","J","K","L",";"];
+function kc(i){ return `<kbd class="kc" data-kc="${i}" aria-hidden="true">${KEYCAP[i]}</kbd>`; }
+function keysLine(){ return `<p class="keys-line">${t("keysLine").replace("{keys}", KEYCAP.slice(0,4).join(" ")+" · "+KEYCAP.slice(4).join(" "))}</p>`; }
 const PRESETS = [
   {id:"four", en:"Four on the floor", es:"Cuatro en el suelo",
    map:{kick:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]}},
@@ -507,6 +529,7 @@ const STR = {
   slidersDo:{en:"The eight sliders",es:"Los ocho deslizadores"},
   vol:{en:"Room volume",es:"Volumen del aula"},
   bpm:{en:"beats per minute",es:"pulsos por minuto"},
+  keysLine:{en:"On a keyboard, the keys {keys} play the pads. Space starts and stops.",es:"Con teclado, las teclas {keys} tocan los pads. La barra espaciadora empieza y para."},
   tapPad:{en:"Tap a pad to hear one voice.",es:"Toca una almohadilla para oír una voz."},
   presets:{en:"Starter patterns",es:"Patrones de arranque"},
   meetLead:{en:"A kick is the low thump. A snare is the crack on 2 and 4. Hats keep time. Names after you hear them.",es:"El bombo es el golpe grave. La caja es el chasquido en 2 y 4. Los charles marcan el tiempo. Los nombres después de oírlos."},
@@ -685,7 +708,10 @@ function fixVol(v){
 function ctx(){
   if(!actx){
     const AC=window.AudioContext||window.webkitAudioContext;
-    actx=new AC();
+    /* AOG-DRUM-PLAY-V1 — an iPhone with its side switch on silent mutes web audio.
+       A drum machine is something you play, so it plays like music does. */
+    try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+    actx=new AC({latencyHint:"interactive"});
     /* AOG-DRUM-LOUDNESS-V1 (2026-09-22) — Jimmy: "the volume on the drum sampler
        is incredibly low at 100%." It was: the room-volume knob topped out at a
        master gain of 0.165, about 25 dB below the ceiling, so a full pattern
@@ -1422,7 +1448,7 @@ function perfHtml(){
     const sp=faderSpec(v.id);
     return `<label class="fader"><input type="range" data-fader="${v.id}" min="${sp.min}" max="${sp.max}" step="${sp.step}" value="${sp.val}" aria-label="${v.en}"><i data-fread="${v.id}">${sp.read}</i></label>`;
   }).join("");
-  const pads=VOICES.map((v,i)=>`<button type="button" class="sp-pad${S.sel===v.id?" sel":""}${S.mute[v.id]?" muted":""}${S.solo[v.id]?" soloed":""}" data-pad="${v.id}"><small>${i+1}${i<2?" · RAW":""}</small>${padCaption(v)}</button>`).join("");
+  const pads=VOICES.map((v,i)=>`<button type="button" class="sp-pad${S.sel===v.id?" sel":""}${S.mute[v.id]?" muted":""}${S.solo[v.id]?" soloed":""}" data-pad="${v.id}"><small>${i+1}${i<2?" · RAW":""}</small>${padCaption(v)}${kc(i)}</button>`).join("");
   return `<div class="sp-perf">${sliders}${pads}</div>`;
 }
 
@@ -1484,6 +1510,7 @@ function machineHtml(){
       <button type="button" class="sp-key${S.trackOn?" on":""}" id="trkBtn">PLAY TRACK</button>
     </div>
     ${perfHtml()}
+    ${keysLine()}
     <div class="scope-bezel">
       <div class="meter-note" id="scopeNote">Mix · eight voices</div>
       <canvas id="scope" width="640" height="72" aria-hidden="true"></canvas>
@@ -1569,8 +1596,9 @@ function meetView(){
     <p class="muted">${t("tapPad")}</p>
     ${kitSvg()}
     <div class="pads no-print">
-      ${VOICES.map(v=>`<button type="button" class="pad" data-pad="${v.id}">${v[S.lang]}</button>`).join("")}
+      ${VOICES.map((v,i)=>`<button type="button" class="pad" data-pad="${v.id}">${v[S.lang]}${kc(i)}</button>`).join("")}
     </div>
+    ${keysLine()}
     <div class="card side" style="margin-top:1.25rem">
       <div class="tiny" id="voiceTitle">${t("tapPad")}</div>
       <p id="voiceBlurb" class="muted"></p>
@@ -2439,6 +2467,34 @@ async function openWorkFile(file){
   catch(e){ S.lcdNote="NOT A BENCH FILE"; refreshLcd(); return; }
   if(!applySession(o)){ S.lcdNote="NOT A BENCH FILE"; refreshLcd(); }
 }
+function padFire(id){
+  if(S.padMode==="mute" || S.padMode==="solo"){
+const bag = S.padMode==="mute" ? S.mute : S.solo;
+bag[id] = !bag[id];
+document.querySelectorAll(".sp-pad").forEach(p=>{
+  const pid=p.getAttribute("data-pad");
+  p.classList.toggle("muted", !!S.mute[pid]);
+  p.classList.toggle("soloed", !!S.solo[pid]);
+});
+save(); try{ lessonMuteTouched(); }catch(e){} return;
+  }
+  /* AOG-SP-BANKCD-V1 — an empty pad made no sound and gave no reason. Tapping one
+ now selects it and opens the file picker, which is the only thing you could
+ have wanted to do with it. */
+  document.querySelectorAll(".sp-pad").forEach(p=>p.classList.toggle("sel", p.getAttribute("data-pad")===id));
+  if(!padHasSound(id)){
+S.sel=id; save(); refreshLcd();
+const fin=document.getElementById("sampleIn"); if(fin){ try{ fin.click() }catch(e){} }
+return;
+  }
+  ctx(); hit(id, ctx().currentTime);
+  scopeNote();
+  if(!S.met[id]){ S.met[id]=1; save(); }
+  const title=document.getElementById("voiceTitle");
+  const blurb=document.getElementById("voiceBlurb");
+  if(title) title.textContent=vname(id);
+  if(blurb) blurb.textContent=BLURB[id][S.lang];
+}
 function bind(){
   document.body.classList.toggle("bench-simple", S.bench!=="full");
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ S.bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.drums.bench", S.bench); }catch(e){} paint(); });
@@ -2699,38 +2755,22 @@ function bind(){
       save(); paint();
     };
   });
+  /* AOG-DRUM-PLAY-V1 — a pad sounds on pointerdown, the instant a finger, pen or
+     mouse lands, and each finger is its own hit. The click that follows is skipped.
+     Mute, solo and an empty pad (which opens the file picker, and Safari only
+     allows that on a finished tap) still wait for the click. */
   document.querySelectorAll("[data-pad]").forEach(btn=>{
-    const fire=()=>{
-      const id=btn.getAttribute("data-pad");
-      if(S.padMode==="mute" || S.padMode==="solo"){
-        const bag = S.padMode==="mute" ? S.mute : S.solo;
-        bag[id] = !bag[id];
-        document.querySelectorAll(".sp-pad").forEach(p=>{
-          const pid=p.getAttribute("data-pad");
-          p.classList.toggle("muted", !!S.mute[pid]);
-          p.classList.toggle("soloed", !!S.solo[pid]);
-        });
-        save(); try{ lessonMuteTouched(); }catch(e){} return;
-      }
-      /* AOG-SP-BANKCD-V1 — an empty pad made no sound and gave no reason. Tapping one
-         now selects it and opens the file picker, which is the only thing you could
-         have wanted to do with it. */
-      document.querySelectorAll(".sp-pad").forEach(p=>p.classList.toggle("sel", p.getAttribute("data-pad")===id));
-      if(!padHasSound(id)){
-        S.sel=id; save(); refreshLcd();
-        const fin=document.getElementById("sampleIn"); if(fin){ try{ fin.click() }catch(e){} }
-        return;
-      }
-      ctx(); hit(id, ctx().currentTime);
-      scopeNote();
-      S.met[id]=1; save();
-      const title=document.getElementById("voiceTitle");
-      const blurb=document.getElementById("voiceBlurb");
-      if(title) title.textContent=vname(id);
-      if(blurb) blurb.textContent=BLURB[id][S.lang];
+    const id=btn.getAttribute("data-pad");
+    let downAt=0;
+    btn.onpointerdown=(e)=>{
+      if(e.button>0) return;
+      if(S.padMode==="mute" || S.padMode==="solo" || !padHasSound(id)) return;
+      if(e.pointerType==="mouse") e.preventDefault();     /* focus stays put, so Space still plays */
+      downAt=performance.now();
+      padFire(id);
     };
-    btn.onclick=fire;
-    btn.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); fire(); } };
+    btn.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } padFire(id); };
+    btn.onkeydown=(e)=>{ if(e.key==="Enter"){ e.preventDefault(); if(!e.repeat) padFire(id); } };
   });
   document.querySelectorAll(".opt").forEach(btn=>{
     btn.onclick=()=>{
@@ -2769,6 +2809,51 @@ window.addEventListener("pagehide", function(){
   idbPut(sessionObject()).catch(function(){});
 });
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden) stop(); });
+/* AOG-DRUM-PLAY-V1 — keyboard pads. A S D F and J K L ; play pads 1 to 8 (by key
+   position, so other keyboard layouts work too). Holding a key plays it once.
+   Space starts and stops, unless another button has focus. Typing in a box,
+   or a key with Ctrl, Alt or Cmd, is left alone. */
+(function(){
+  let spaceTaken=false;
+  function typing(el){
+    if(!el || !el.tagName) return false;
+    const tag=el.tagName;
+    return el.isContentEditable || tag==="TEXTAREA" || tag==="SELECT" || (tag==="INPUT" && el.type!=="range");
+  }
+  document.addEventListener("keydown", (e)=>{
+    if(e.metaKey || e.ctrlKey || e.altKey || typing(e.target)) return;
+    const i=KEYPAD.indexOf(e.code);
+    if(i>=0){
+      const id=VOICES[i].id;
+      if(!document.querySelector('[data-pad="'+id+'"]')) return;
+      e.preventDefault();
+      if(e.repeat) return;
+      if(!padHasSound(id) && S.padMode!=="mute" && S.padMode!=="solo"){
+        S.sel=id; refreshLcd();
+        document.querySelectorAll(".sp-pad").forEach(p=>p.classList.toggle("sel", p.getAttribute("data-pad")===id));
+        return;
+      }
+      padFire(id);
+      return;
+    }
+    if(e.code==="Space"){
+      const pb=document.getElementById("playBtn"); if(!pb) return;
+      const ctl=e.target.closest && e.target.closest("button,a,summary,label,[role=button]");
+      if(ctl && !ctl.hasAttribute("data-pad") && ctl!==pb && ctl.getAttribute("data-simple")!=="play") return;
+      e.preventDefault(); spaceTaken=true;
+      if(!e.repeat) pb.click();
+    }
+  });
+  document.addEventListener("keyup", (e)=>{ if(e.code==="Space" && spaceTaken){ spaceTaken=false; e.preventDefault(); } });
+  /* the real label on this keyboard for each key, where the browser can tell us */
+  try{
+    if(navigator.keyboard && navigator.keyboard.getLayoutMap) navigator.keyboard.getLayoutMap().then((m)=>{
+      KEYPAD.forEach((c,i)=>{ const k=m.get(c); if(k) KEYCAP[i]=k.toUpperCase(); });
+      document.querySelectorAll("[data-kc]").forEach(el=>{ el.textContent=KEYCAP[+el.getAttribute("data-kc")]; });
+      document.querySelectorAll(".keys-line").forEach(el=>{ el.outerHTML=keysLine(); });
+    }).catch(()=>{});
+  }catch(e){}
+})();
 paint();
 let benchReady=false;
 idbGet().then(function(o){
@@ -2796,7 +2881,7 @@ idbGet().then(function(o){
 </script>
 <script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
 (function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
-  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
+  ["touchstart","touchend","pointerdown","click","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
 /* AOG-SOUND-HANDOFF-V1 — a sound sent from the oscilloscope becomes this pad's sample */
 (function(){ if(!/[?&]take=1/.test(location.search)||!window.aogHandoffTake) return;
   setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(v&&v.blob) takeSample(new File([v.blob], v.name||"scope.wav", {type:"audio/wav"})); }); }, 900); })();
