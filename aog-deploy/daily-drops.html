@@ -1463,7 +1463,7 @@ body.packing .packsheet .tlines{color:#333}
     s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
     document.head.appendChild(s);
   }
-  add(new URL("aog-topbar.js", document.baseURI).href);
+  add(new URL("/aog-topbar.js", document.baseURI).href);   /* AOG-DD-PATH-V1: from the site root, so /drops/foundry loads the bar too */
 })();
 </script>
 <!-- 2026-09-12: the old AOG-R36-NAV bar is retired here; this page now wears the site bar like every other standalone page (ONE BAR, EVERY PAGE). -->
@@ -1603,7 +1603,7 @@ body.packing .packsheet .tlines{color:#333}
 <!-- The deployed site's default destination, same as the w-series worksheets.
      Same origin, never the internet. A ?dest= on the link WINS over this file,
      and with neither one present no Send control is added to the page at all. -->
-<script src="aog-sync-config.js"></script>
+<script src="/aog-sync-config.js"></script>
 <script>
 "use strict";
 /* ============================ core ============================ */
@@ -18207,7 +18207,7 @@ var SUBJALIAS={math:'math',math:'math',ela:'ela',english:'ela','language-arts':'
   hindu:'hindu',hin:'hindu','hindu-texts':'hindu',hinduism:'hindu',gita:'hindu',vedas:'hindu',
   buddhist:'buddhist',bud:'buddhist','buddhist-texts':'buddhist',buddhism:'buddhist',dhammapada:'buddhist',
   chinese:'chinese',chn:'chinese','chinese-classics':'chinese',analects:'chinese',daodejing:'chinese',confucius:'chinese',tao:'chinese',
-  cultures:'cultures',cul:'cultures','world-cultures':'cultures',culture:'cultures',societies:'cultures',politics:'cultures',civics:'cultures',
+  cultures:'cultures',cul:'cultures','world-cultures':'cultures',culture:'cultures',politics:'cultures',civics:'cultures',
   sports:'sports',spt:'sports','sports-history':'sports',sport:'sports',
   martial:'martial',mar:'martial','martial-arts':'martial','measured-step':'martial','the-measured-step':'martial',
   secrets:'secrets',sec:'secrets','secret-societies':'secrets',societies:'secrets',
@@ -19332,6 +19332,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
   var q={}; (location.search||'').replace(/^\?/,'').split('&').forEach(function(p){
     var kv=p.split('='); if(kv[0])q[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||'')});
   if(q.s&&!q.subject)q.subject=q.s; if(q.g&&!q.grade)q.grade=q.g;   /* AOG-DD-HS-V1 short names */
+  /* AOG-DD-PATH-V1 (2026-10-03) — Jimmy: "The Word Foundry opens up the secret societies page." /drops/foundry and
+     /drops/math/3 are Netlify rewrites: the browser keeps the short address, so ?subject= never reached this page and
+     it reopened the last subject used. The subject (and grade) are read from the address itself now. */
+  if(!q.subject){ var pm=/^\/drops\/([^\/?#]+)(?:\/([^\/?#]+))?\/?$/.exec(location.pathname||''); if(pm){ q.subject=decodeURIComponent(pm[1]); if(pm[2]&&!q.grade)q.grade=decodeURIComponent(pm[2]); } }
   ST.subj=normSubj(q.subject)||normSubj(LS.get('aog.drops.subj','math'))||'math';
   /* AOG-DD-FOUNDRY-NUM — ?subject=foundry&grade=7 means Unit 7 */
   if(normSubj(q.subject)==='foundry'&&/^\d{1,2}$/.test(q.grade||''))q.grade='u'+q.grade;
