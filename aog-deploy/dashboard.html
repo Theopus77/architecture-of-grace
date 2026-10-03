@@ -307,17 +307,50 @@ function itemPath(it){
      /support carried nothing and the door sent it to the front page. Each slip now carries the
      params its page reads (the same ones link/*.html would add). "support" was the ADULT team
      form and "home" needs a payload only the classic dashboard builds, so neither is handed out here. */
-  if(it.t==="slip"&&/^slip-/.test(it.i)) return "/slip.html?s="+it.i.slice(5);
+  if(it.t==="slip"&&/^slip-/.test(it.i)){ const a=it.i.slice(5).split("?"); return "/slip.html?s="+a[0]+(a[1]?"&"+a[1]:""); }
   if(it.t==="slip"){ const SP={checkin:"/checkin?checkin=daily&who=student&sync=on",exit:"/exit?exit=1&who=student&sync=on",reflection:"/reflection?sync=on",myvoice:"/myvoice?thisisme=1",support:"/checkin?checkin=daily&who=student&sync=on",home:"/checkin?checkin=daily&who=student&sync=on"};
     if(SP[it.i]) return SP[it.i]; if(/^weekly\?/.test(it.i)) return "/"+it.i; return "/checkin?checkin=daily&who=student&sync=on"; }
   return "/";
 }
 try{ const _tr=get(K.tray,[]); const _ok=_tr.filter(it=>it.t!=="slip"||SLIPS.some(s=>s[0]===it.i)); if(_ok.length!==_tr.length) put(K.tray,_ok); }catch(e){}
+/* AOG-PTS-GOALS-V1 (2026-10-03) — Jimmy: yes to "a small Set goals box … so any teacher can do it with no codes" ("or parent").
+   One set of point-sheet goals on this device, shared by the school and the home sheet so a child hears the same words
+   in both places. Left as the four pillars, the sheet shows its own goals (with the pillar names); changed, the goals and
+   the day's aim ride on the link as g= and goal=. A dot, tilde, &, #, ?, = or % would break the class link, so they are left out (& becomes "and"). */
+const PTS_DEF=[["I do my part","Hago mi parte"],["Kind words, to others and to me","Palabras amables, para otros y para mí"],["I make it right and start fresh","Lo arreglo y empiezo de nuevo"],["Safe body, patient heart","Cuerpo seguro, corazón paciente"]];
+function ptsGet(){ const v=get("aog.dash2.ptsGoals",null)||{}; return {g:Array.isArray(v.g)?v.g:[],aim:+v.aim||80}; }
+function ptsClean(x){ return String(x||"").replace(/&/g," and ").replace(/[.~|#?=%+]/g," ").replace(/\s+/g," ").trim().slice(0,60); }
+function ptsQ(){ const P=ptsGet(), g=P.g.map(ptsClean).filter(Boolean), q=[]; if(g.length) q.push("g="+encodeURIComponent(g.join("|"))); if(P.aim!==80) q.push("goal="+P.aim); return q.join("&"); }
+function ptsSave(id){ if(!document.getElementById(id+"G0")) return; const g=[0,1,2,3,4].map(i=>ptsClean(val(id+"G"+i))).filter(Boolean), es=L()==="es";
+  const def=PTS_DEF.map(d=>es?d[1]:d[0]), same=g.length===def.length&&g.every((x,i)=>x===def[i]); put("aog.dash2.ptsGoals",{g:same?[]:g,aim:+val(id+"Aim")||80}); }
+function ptsEditor(id){ const P=ptsGet(), es=L()==="es", cur=P.g.length?P.g:PTS_DEF.map(d=>es?d[1]:d[0]);
+  return '<div class="ptsed" id="'+id+'"><p class="k" style="color:var(--goldInk);margin:14px 0 4px">'+t2("Point sheet goals","Metas de la hoja de puntos")+'</p>'
+   +'<p class="s" style="margin:0 0 8px">'+t2("The same goals go on the school and the home sheet. Up to five.","Las mismas metas van en la hoja de la escuela y la de casa. Hasta cinco.")+'</p>'
+   +[0,1,2,3,4].map(i=>'<label class="f" for="'+id+'G'+i+'">'+t2("Goal ","Meta ")+(i+1)+(i>=4?t2(" (optional)"," (opcional)"):"")+'</label><input type="text" id="'+id+'G'+i+'" data-ptsg="'+i+'" maxlength="60" autocomplete="off" value="'+esc(cur[i]||"")+'">').join("")
+   +'<label class="f" for="'+id+'Aim">'+t2("Today's aim","Meta del día")+'</label><select id="'+id+'Aim" data-ptsaim="1">'+[60,65,70,75,80,85,90,95,100].map(a=>opt(a,a+"%",a===P.aim)).join("")+'</select>'
+   +'<div class="row"><button class="btn gold" type="button" data-ptssave="'+id+'">'+t2("Save goals","Guardar metas")+'</button><button class="btn" type="button" data-ptsreset="1">'+t2("Use the four pillars","Usar los cuatro pilares")+'</button></div>'
+   +'<p class="note" id="'+id+'St" aria-live="polite">'+(P.g.length?t2("Your own goals are on.","Tus propias metas están activas."):t2("The four pillar goals are on.","Las metas de los cuatro pilares están activas."))+'</p></div>'; }
+/* AOG-PTS-TRENDS-V1 (2026-10-03) — Jimmy: yes to a weekly chart of each child's wall. The share of bricks laid each week,
+   school (solid) beside home (dashed), for the whole class or one child. */
+let PTSSTU="";
+function ptsRows(){ const seen={}, out=[]; rows("aog.checkin.remote").concat(rows("aog.slips.mine")).forEach(r=>{ const ty=String(r.checkinType||""); if(ty!=="slip-points"&&ty!=="slip-homepoints") return;
+    const k=ty+"|"+fold(r.studentId)+"|"+String(r.timestamp||"").slice(0,15); if(seen[k]) return; seen[k]=1; let x={}; try{ x=typeof r.extra==="string"?JSON.parse(r.extra):(r.extra||{}); }catch(e){}
+    let v=x.scale&&x.scale.bricks!=null?+x.scale.bricks:null; if(v==null){ const m=/\((\d+)%\)/.exec(String((x.answers||{}).bricks||"")); if(m) v=+m[1]; } if(v==null||isNaN(v)) return;
+    out.push({who:String(r.studentId||"").trim(),home:ty==="slip-homepoints",d:day(r),v:v}); }); return out; }
+function weekOf(d){ const t=new Date(d+"T12:00:00"); if(isNaN(t)) return d; t.setDate(t.getDate()-((t.getDay()+6)%7)); return t.toISOString().slice(0,10); }
+function ptsTrends(){ const all=ptsRows(); if(!all.length) return "";
+  const names=[...new Set(all.map(r=>r.who).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); if(PTSSTU&&!names.includes(PTSSTU)) PTSSTU="";
+  const rs=PTSSTU?all.filter(r=>r.who===PTSSTU):all, wk=h=>rs.filter(r=>r.home===h).map(r=>({d:weekOf(r.d),v:r.v}));
+  const sc=wk(false), hm=wk(true), weeks=[...new Set(rs.map(r=>weekOf(r.d)))];
+  return '<h2 style="margin:24px 0 6px">'+t2("Grace point sheets","Hojas de puntos de gracia")+'</h2><p style="margin:0 0 10px">'+t2("The share of bricks laid each week, from 0 to 100%. School is the solid line; home is dashed.","La parte de ladrillos puestos cada semana, de 0 a 100%. La escuela es la línea continua; la casa, la discontinua.")+'</p>'
+   +'<label style="display:block;margin:0 0 12px"><span style="display:block;font-weight:700;margin-bottom:4px">'+t2("Show","Mostrar")+'</span><select id="ptsStu" style="font-size:16px;min-height:44px;max-width:100%"><option value="">'+t2("The whole class","Toda la clase")+'</option>'+names.map(n=>'<option'+(n===PTSSTU?' selected':'')+'>'+esc(n)+'</option>').join("")+'</select></label>'
+   +'<section class="card">'+pairChart({t:t2("At school","En la escuela"),c:"#2F63B8",pts:sc},{t:t2("At home","En casa"),c:"#B8457A",pts:hm},0,100)
+   +'<p class="cap">('+t2("Grace point sheets","Hojas de puntos de gracia")+' · '+rs.length+' '+t2("sheets","hojas")+' · '+weeks.length+' '+t2("weeks","semanas")+' · '+t2("each point is the week's average","cada punto es el promedio de la semana")+')</p></section>'; }
 function itemLabel(it,L){
   if(it.t==="dd"){ const s=SUBJ.find(x=>x[0]===it.s)||SUBJ[0]; return "Daily Drafts · "+(L==="es"?s[2]:s[1])+" · "+gradeLabel(it.g,L)+" · #"+it.n; }
   if(it.t==="unit"){ const u=(CAT.units[it.p]||[]).find(x=>x[2]===it.f); return (UNITNAME[it.p]?UNITNAME[it.p][L==="es"?1:0]+" · ":"")+(u?u[1]:it.f); }
   if(it.t==="prac"){ const a=CAT.acts.find(x=>x[0]===it.i); return a?(L==="es"?a[2]:a[1]):it.i; }
-  if(it.t==="slip"){ const s=SLIPS.find(x=>x[0]===it.i); return s?(L==="es"?s[2]:s[1]):it.i; }
+  if(it.t==="slip"){ const s=SLIPS.find(x=>x[0]===String(it.i).split("?")[0]); return s?(L==="es"?s[2]:s[1]):it.i; }
   return "";
 }
 const TAG={dd:["Daily Draft","var(--c1)"],unit:["Assignment","var(--c3)"],prac:["Practice","var(--c3)"],slip:["Slip","var(--c5)"]};
@@ -525,7 +558,7 @@ function slipTrends(){ const all=slipRows(); if(!all.length) return "";
    +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+cards+'</div>';
 }
 function trends(){
-  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+(slipTrends()||noData());
+  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+((slipTrends()+ptsTrends())||noData());
   const days=[...new Set(D.ci.concat(D.pr).map(day))].filter(Boolean).sort().slice(-20);
   const ciPts=days.map(d=>({l:nice(d),v:D.ci.filter(r=>day(r)===d).length}));
   const accPts=days.map(d=>{ const rs=D.pr.filter(r=>day(r)===d&&+r.itemsTotal>0); return rs.length?{l:nice(d),v:Math.round(100*rs.reduce((a,r)=>a+(+r.independent||0),0)/rs.reduce((a,r)=>a+(+r.itemsTotal||0),0))}:null; }).filter(Boolean);
@@ -539,7 +572,7 @@ function trends(){
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("accDay")+'</p>'+(accPts.length?lineSvg(accPts,{min:0,max:100,c:"#2E7D4F"})+cap(t2("Turned-in work","Trabajo entregado"),prN,t2("pieces","trabajos")):'<p class="empty">—</p>')+'</section>'
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("flagDay")+'</p>'+lineSvg(flagPts,{min:0,c:"#B3261E"})+cap(t2("Daily check-ins","Registros diarios"),D.ci.filter(r=>days.indexOf(day(r))>=0&&flagged(r)).length,t2("follow-ups","seguimientos"))+'</section>'
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+topF.map(([f,n])=>'<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:110px">'+esc(f)+'</span><div class="bar" style="flex:1"><i style="width:'+Math.round(100*n/mx)+'%;background:var(--c5)"></i></div><b style="width:30px;text-align:right">'+n+'</b></div>').join("")+'</section>'
-   +'</div>'+homeTrends(D)+slipTrends();
+   +'</div>'+homeTrends(D)+slipTrends()+ptsTrends();
 }
 /* AOG-DASH-FROMHOME-V1 — the home series beside the school ones: ready to learn at school (check-ins) next to how the
    day went at home, and sleep, from the plans families sent. For every family who sent one, or one student. */
@@ -1147,10 +1180,11 @@ function family(){
   const pickRow=picks.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk);margin:0 0 8px">'+t2("From your Sheet","De tu Hoja")+'</p><p class="s" style="margin:0 0 10px">'+t2("Tap a name to add them to your family.","Toca un nombre para agregarlo a tu familia.")+'</p><div class="row" style="gap:8px">'+picks.map(n=>'<button type="button" class="btn" data-kidpick="'+esc(n)+'" style="min-height:40px">+ '+esc(n)+'</button>').join("")+'</div></section>':"";
   const cards=ks.map(n=>{ const sInfo=D.S[n]||D.S[Object.keys(D.S).find(k=>k.toLowerCase()===n.toLowerCase())||""]||{ci:[],pr:[],flags:0,acc:null,last:""}, q=encodeURIComponent(n);
     return '<section class="card" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap"><h2 style="margin:0">'+esc(n)+'</h2><span class="s" style="margin:0">'+(sInfo.last?t2("last seen","última vez")+" "+nice(sInfo.last):t2("nothing yet","nada aún"))+' · '+sInfo.ci.length+' '+t2("check-ins","registros")+' · '+sInfo.pr.length+' '+t2("panes","paneles")+' · '+stars(n)+' '+t2("stars","estrellas")+'</span></div>'
-     +'<div class="row" style="margin-top:12px"><button class="btn solid" type="button" data-kidgo="'+esc(n)+'">'+t2("Open their work today","Abrir su trabajo de hoy")+' ›</button><a class="btn" href="/turn-ins.html?solo=1&teacher=1&blueprint='+q+'">'+t2("Their Blueprint","Su Plano")+'</a><a class="btn" href="/turn-ins.html?student='+q+'">'+t2("Everything they turned in","Todo lo que entregaron")+'</a><a class="btn" href="/slip.html?s=home&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Evening check-in","Registro de la tarde")+'</a><a class="btn" href="/slip.html?s=morning&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Morning note","Nota de la mañana")+'</a><a class="btn" href="/slip.html?s=homework&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Homework note","Nota de la tarea")+'</a><a class="btn" href="/slip.html?s=homecheck&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Home checklist","Lista de la casa")+'</a><a class="btn" href="/slip.html?s=bedtime&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Bedtime checklist","Lista para dormir")+'</a><a class="btn" href="/slip.html?s=homepoints&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Point sheet at home","Hoja de puntos en casa")+'</a><a class="btn" href="/family-plan?child='+q+'&kids='+kidsParam()+'">'+t2("Our Child’s Plan","El plan de nuestro hijo")+'</a><button class="btn" type="button" data-kiddel="'+esc(n)+'" style="margin-left:auto">✕</button></div></section>'; }).join("");
+     +'<div class="row" style="margin-top:12px"><button class="btn solid" type="button" data-kidgo="'+esc(n)+'">'+t2("Open their work today","Abrir su trabajo de hoy")+' ›</button><a class="btn" href="/turn-ins.html?solo=1&teacher=1&blueprint='+q+'">'+t2("Their Blueprint","Su Plano")+'</a><a class="btn" href="/turn-ins.html?student='+q+'">'+t2("Everything they turned in","Todo lo que entregaron")+'</a><a class="btn" href="/slip.html?s=home&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Evening check-in","Registro de la tarde")+'</a><a class="btn" href="/slip.html?s=morning&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Morning note","Nota de la mañana")+'</a><a class="btn" href="/slip.html?s=homework&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Homework note","Nota de la tarea")+'</a><a class="btn" href="/slip.html?s=homecheck&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Home checklist","Lista de la casa")+'</a><a class="btn" href="/slip.html?s=bedtime&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Bedtime checklist","Lista para dormir")+'</a><a class="btn" href="/slip.html?s=homepoints'+(ptsQ()?"&"+ptsQ():"")+'&sid='+q+(shortDest()?"&d="+encodeURIComponent(shortDest()):"")+'">'+t2("Point sheet at home","Hoja de puntos en casa")+'</a><a class="btn" href="/family-plan?child='+q+'&kids='+kidsParam()+'">'+t2("Our Child’s Plan","El plan de nuestro hijo")+'</a><button class="btn" type="button" data-kiddel="'+esc(n)+'" style="margin-left:auto">✕</button></div></section>'; }).join("");
   const link=ks.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Hand this to a parent","Entregar esto a un padre")+'</p><p class="s">'+t2("One link opens this family page on their phone: the children, today's work, and each Blueprint.","Un enlace abre esta página familiar en su teléfono: los niños, el trabajo de hoy y cada Plano.")+'</p><div class="linkbox"><code id="flk">'+esc(familyLink())+'</code><button class="btn gold" type="button" id="fcp">'+T("copy")+'</button></div></section>':'';
   const home='<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("At home","En casa")+'</p><div class="row"><a class="btn" href="/at-home">'+t2("Grace at Home — one pillar a week","Gracia en casa — un pilar por semana")+' ›</a><a class="btn" href="/family">'+t2("Family letters","Cartas a la familia")+' ›</a></div></section>';
-  return head+add+pickRow+(cards||'<p class="s" style="margin:0 0 16px">'+t2("No children added yet.","Aún no hay niños.")+'</p>')+link+home;
+  const ptsCard=ks.length?'<section class="card" style="margin-bottom:16px">'+ptsEditor("ptsF")+'</section>':"";
+  return head+add+pickRow+(cards||'<p class="s" style="margin:0 0 16px">'+t2("No children added yet.","Aún no hay niños.")+'</p>')+ptsCard+link+home;
 }
 
 
@@ -1190,7 +1224,7 @@ const SICON={
 };
 const SCOL={math:"#2F63B8",ela:"#B87A12",write:"#C2552A",science:"#2E8B57",'social-studies':"#A8323E",spanish:"#B8457A",facs:"#7B4FA0",religion:"#3F4AA6",bible:"#7A3B2E",quran:"#1F6B4A",talmud:"#2E5A8A",hindu:"#B5562B",buddhist:"#A0701A",chinese:"#9B2F2F",cultures:"#2F6F8F",health:"#2E8B6A",economics:"#6E7C22",foundry:"#A85A24",
   mth:"#2F63B8",sci:"#2E8B57",ssc:"#A8323E",ush:"#A8323E",fcs:"#7B4FA0",rel:"#3F4AA6",spa:"#B8457A",eco:"#6E7C22",checkin:"#1F8080",exit:"#B87A12",'slip-test':"#2F63B8",'slip-posttest':"#1F8080",'slip-endclass':"#B87A12",'slip-repair':"#A8323E",'slip-team':"#2E8B57",'slip-unit':"#7B4FA0",'slip-goal':"#8A6516",'slip-home':"#B8457A",reflection:"#3F4AA6",myvoice:"#B8457A",weekly:"#1F8080",prac:"#5E6B7A"};
-function itemKey(it){ if(it.t==="dd") return it.s; if(it.t==="unit") return it.p; if(it.t==="prac") return "prac"; if(it.t==="slip") return /^weekly/.test(it.i)?"weekly":it.i; return "prac"; }
+function itemKey(it){ if(it.t==="dd") return it.s; if(it.t==="unit") return it.p; if(it.t==="prac") return "prac"; if(it.t==="slip") return /^weekly/.test(it.i)?"weekly":String(it.i).split("?")[0]; return "prac"; }
 /* AOG-DASH-SKETCHBOOK-V1 — the pencil drawing at the top of a card, the same drawings the home table uses */
 function dsk(n){ return '<span class="dsk" aria-hidden="true"><img src="/img/banners/'+n+'-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span>'; }
 function itemIcon(it){ const k=itemKey(it); return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(SICON[k]||SICON.prac)+'</svg>'; }
@@ -1233,7 +1267,7 @@ function today(){
       : '<label class="f" for="asI">'+T("pick")+'</label><select id="asI">'+CAT.acts.filter(a=>a[0]!=="drops").map(a=>opt(a[0],lang==="es"?a[2]:a[1],a[0]===as.i)).join("")+'</select>')
     +'<div class="row"><button class="btn add" type="button" data-add="as">+ '+T("add")+'</button></div></section>'
   +'<section class="card hand" style="--ac:var(--c5)">'+dsk("page-turn-ins")+'<p class="k">'+T("hand")+'</p><h2>'+T("sl")+'</h2><p class="s">'+T("slS")+'</p>'
-    +'<label class="f" for="slI">'+T("slip")+'</label><select id="slI">'+SLIPS.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===sl.i)).join("")+'</select>'
+    +'<label class="f" for="slI">'+T("slip")+'</label><select id="slI">'+SLIPS.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===sl.i)).join("")+'</select>'+(sl.i==="slip-points"?ptsEditor("ptsA"):"")
     +'<div class="row"><button class="btn add" type="button" data-add="sl">+ '+T("add")+'</button></div></section>'
   +'</div>'
   +'<section class="card tray"><p class="k" style="color:var(--goldInk)">'+T("tray")+'</p>'
@@ -1396,12 +1430,15 @@ function wire(){
   on("asP","change",()=>{ const a=asGet(); a.p=val("asP"); a.f=(CAT.units[a.p]||[[0,"",""]])[0][2]; put(K.as,a); render(); });
   on("asF","change",()=>{ const a=asGet(); a.f=val("asF"); put(K.as,a); });
   on("asI","change",()=>{ const a=asGet(); a.i=val("asI"); put(K.as,a); });
-  on("slI","change",()=>{ put(K.sl,{i:val("slI")}); });
+  on("slI","change",()=>{ put(K.sl,{i:val("slI")}); render(); });
+  document.querySelectorAll("[data-ptssave]").forEach(b=>b.onclick=()=>{ ptsSave(b.dataset.ptssave); render(); });
+  document.querySelectorAll("[data-ptsreset]").forEach(b=>b.onclick=()=>{ put("aog.dash2.ptsGoals",{g:[],aim:80}); render(); });
+  const pst=document.getElementById("ptsStu"); if(pst) pst.onchange=()=>{ PTSSTU=pst.value; render(); };
   document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{
     const tr=get(K.tray,[]), w=b.dataset.add;
     if(w==="dd") tr.push({t:"dd",s:val("ddS"),g:val("ddG"),n:+val("ddN")});
     if(w==="as"){ if(val("asK")==="unit") tr.push({t:"unit",p:val("asP"),f:val("asF")}); else tr.push({t:"prac",i:val("asI")}); }
-    if(w==="sl") tr.push({t:"slip",i:val("slI")});
+    if(w==="sl"){ ptsSave("ptsA"); const v=val("slI"), q=v==="slip-points"?ptsQ():""; tr.push({t:"slip",i:v+(q?"?"+q:"")}); }
     put(K.tray,tr); render();
   });
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ const tr=get(K.tray,[]); tr.splice(+b.dataset.del,1); put(K.tray,tr); render(); });
