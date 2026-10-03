@@ -318,16 +318,19 @@ try{ const _tr=get(K.tray,[]); const _ok=_tr.filter(it=>it.t!=="slip"||SLIPS.som
    in both places. Left as the four pillars, the sheet shows its own goals (with the pillar names); changed, the goals and
    the day's aim ride on the link as g= and goal=. A dot, tilde, &, #, ?, = or % would break the class link, so they are left out (& becomes "and"). */
 const PTS_DEF=[["I do my part","Hago mi parte"],["Kind words, to others and to me","Palabras amables, para otros y para mí"],["I make it right and start fresh","Lo arreglo y empiezo de nuevo"],["Safe body, patient heart","Cuerpo seguro, corazón paciente"]];
-function ptsGet(){ const v=get("aog.dash2.ptsGoals",null)||{}; return {g:Array.isArray(v.g)?v.g:[],aim:+v.aim||80}; }
+function ptsGet(){ const v=get("aog.dash2.ptsGoals",null)||{}, n=+v.n; return {g:Array.isArray(v.g)?v.g:[],aim:+v.aim||80,day:v.day==="periods"?"periods":"parts",n:(n>=1&&n<=10)?n:7}; }
 function ptsClean(x){ return String(x||"").replace(/&/g," and ").replace(/[.~|#?=%+]/g," ").replace(/\s+/g," ").trim().slice(0,60); }
-function ptsQ(){ const P=ptsGet(), g=P.g.map(ptsClean).filter(Boolean), q=[]; if(g.length) q.push("g="+encodeURIComponent(g.join("|"))); if(P.aim!==80) q.push("goal="+P.aim); return q.join("&"); }
+function ptsQ(){ const P=ptsGet(), g=P.g.map(ptsClean).filter(Boolean), q=[]; if(g.length) q.push("g="+encodeURIComponent(g.join("|"))); if(P.aim!==80) q.push("goal="+P.aim); if(P.day==="periods") q.push("day=periods","n="+P.n); return q.join("&"); }
 function ptsSave(id){ if(!document.getElementById(id+"G0")) return; const g=[0,1,2,3,4].map(i=>ptsClean(val(id+"G"+i))).filter(Boolean), es=L()==="es";
-  const def=PTS_DEF.map(d=>es?d[1]:d[0]), same=g.length===def.length&&g.every((x,i)=>x===def[i]); put("aog.dash2.ptsGoals",{g:same?[]:g,aim:+val(id+"Aim")||80}); }
+  const def=PTS_DEF.map(d=>es?d[1]:d[0]), same=g.length===def.length&&g.every((x,i)=>x===def[i]); const P=ptsGet(), hasDay=!!document.getElementById(id+"Day"); put("aog.dash2.ptsGoals",{g:same?[]:g,aim:+val(id+"Aim")||80,day:hasDay?(val(id+"Day")==="periods"?"periods":"parts"):P.day,n:hasDay?(+val(id+"N")||7):P.n}); }
 function ptsEditor(id){ const P=ptsGet(), es=L()==="es", cur=P.g.length?P.g:PTS_DEF.map(d=>es?d[1]:d[0]);
   return '<div class="ptsed" id="'+id+'"><p class="k" style="color:var(--goldInk);margin:14px 0 4px">'+t2("Point sheet goals","Metas de la hoja de puntos")+'</p>'
    +'<p class="s" style="margin:0 0 8px">'+t2("The same goals go on the school and the home sheet. Up to five.","Las mismas metas van en la hoja de la escuela y la de casa. Hasta cinco.")+'</p>'
    +[0,1,2,3,4].map(i=>'<label class="f" for="'+id+'G'+i+'">'+t2("Goal ","Meta ")+(i+1)+(i>=4?t2(" (optional)"," (opcional)"):"")+'</label><input type="text" id="'+id+'G'+i+'" data-ptsg="'+i+'" maxlength="60" autocomplete="off" value="'+esc(cur[i]||"")+'">').join("")
    +'<label class="f" for="'+id+'Aim">'+t2("Today's aim","Meta del día")+'</label><select id="'+id+'Aim" data-ptsaim="1">'+[60,65,70,75,80,85,90,95,100].map(a=>opt(a,a+"%",a===P.aim)).join("")+'</select>'
+   /* AOG-PTS-PERIODS-V1 — the shape of the school day: the elementary parts, or Homeroom and Period 1–10 (the home sheet keeps its own) */
+   +(id==="ptsF"?"":'<label class="f" for="'+id+'Day">'+t2("The school day","El día escolar")+'</label><select id="'+id+'Day">'+opt("parts",t2("Parts of the day (elementary)","Partes del día (primaria)"),P.day!=="periods")+opt("periods",t2("Class periods (middle and high school)","Periodos de clase (secundaria y preparatoria)"),P.day==="periods")+'</select>'
+   +'<label class="f" for="'+id+'N">'+t2("Periods after homeroom","Periodos después del aula de inicio")+'</label><select id="'+id+'N">'+[1,2,3,4,5,6,7,8,9,10].map(n=>opt(n,String(n),n===P.n)).join("")+'</select>')
    +'<div class="row"><button class="btn gold" type="button" data-ptssave="'+id+'">'+t2("Save goals","Guardar metas")+'</button><button class="btn" type="button" data-ptsreset="1">'+t2("Use the four pillars","Usar los cuatro pilares")+'</button></div>'
    +'<p class="note" id="'+id+'St" aria-live="polite">'+(P.g.length?t2("Your own goals are on.","Tus propias metas están activas."):t2("The four pillar goals are on.","Las metas de los cuatro pilares están activas."))+'</p></div>'; }
 /* AOG-PTS-TRENDS-V1 (2026-10-03) — Jimmy: yes to a weekly chart of each child's wall. The share of bricks laid each week,
@@ -1432,7 +1435,7 @@ function wire(){
   on("asI","change",()=>{ const a=asGet(); a.i=val("asI"); put(K.as,a); });
   on("slI","change",()=>{ put(K.sl,{i:val("slI")}); render(); });
   document.querySelectorAll("[data-ptssave]").forEach(b=>b.onclick=()=>{ ptsSave(b.dataset.ptssave); render(); });
-  document.querySelectorAll("[data-ptsreset]").forEach(b=>b.onclick=()=>{ put("aog.dash2.ptsGoals",{g:[],aim:80}); render(); });
+  document.querySelectorAll("[data-ptsreset]").forEach(b=>b.onclick=()=>{ const P=ptsGet(); put("aog.dash2.ptsGoals",{g:[],aim:80,day:P.day,n:P.n}); render(); });
   const pst=document.getElementById("ptsStu"); if(pst) pst.onchange=()=>{ PTSSTU=pst.value; render(); };
   document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{
     const tr=get(K.tray,[]), w=b.dataset.add;
