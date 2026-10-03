@@ -1870,6 +1870,7 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(242,201,100,.55); cursor:pointer; }
       #one-framework .ofh-gold-btn:focus-visible, #one-framework .ofh-text-btn:focus-visible{ outline:3px solid #F2C964; outline-offset:3px; }
       #aog-thresholds .aogdn-grid > [hidden]{ display:none !important; }
+      @media (min-width:1100px){ #aog-thresholds .aogdn-grid.aogau-three > .aogdn-door:not(.aogdn-today){ flex-basis:calc((100% - 44px) / 3); } }
       #aog-thresholds .aogdn-grid > .aogdn-grp{ flex:0 0 100%; margin:22px 0 0; font:800 13px/1.2 var(--font-sans,Inter,sans-serif); letter-spacing:.14em; text-transform:uppercase; color:#D5DCE6; }
       #aog-thresholds .aogdn-grid > .aogdn-grp:first-child{ margin-top:0; }
       #aog-thresholds .aogau-more{ max-width:1120px; margin:18px auto 0; text-align:center; }
@@ -2016,12 +2017,12 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
     <p class="aogau-more" hidden><button type="button" id="aogMoreBtn" class="aogau-moreb" aria-expanded="false" aria-controls="aogdnGrid" onclick="aogAudMore()">More doors</button></p>
     <script>
     /* AOG-AUDIENCE-V3 (2026-10-03) — the handoff "front-door facelift": the role filter now filters, and the Lab Bench is on
-       every path. Teacher sees five doors, Family four, Student four; "More doors" shows the rest, never hides the house.
+       every path. Teacher sees six doors (The Courses added at Jimmy's word), Family four, Student four; "More doors" shows the rest, never hides the house.
        Show everything lays the whole table out in three labelled groups. The choice is kept for this visit (sessionStorage).
        Replaces AOG-AUDIENCE-V1, which only reordered the doors (V2 removed the gold links under the switch). */
     (function(){
       var SETS = {
-        teacher: ["today","drafts","bench","dashboard","crosswalk"],
+        teacher: ["today","drafts","courses","bench","dashboard","crosswalk"],   /* Jimmy, 2026-10-03: "Courses should be on the home page of teachers." */
         family:  ["talk","checkin","bench","families"],
         student: ["checkin","quiet","drafts","bench"]
       };
@@ -2051,6 +2052,9 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
           SETS[k].forEach(function(n, i){ var d = D(n); if(d){ d.hidden = false; grid.appendChild(d); d.classList.add("aogau-pick"); if(i === 0) d.classList.add("aogau-lead"); placed[n] = 1; } });
           base.forEach(function(n){ if(!placed[n]){ var d = D(n); if(d){ d.hidden = !more; grid.appendChild(d); } } });
         }
+        /* five doors under Today would leave one alone on a computer's row of four; they go three across instead */
+        var shown = [].filter.call(grid.querySelectorAll(":scope > .aogdn-door"), function(d){ return !d.hidden && d.getAttribute("data-door") !== "today"; }).length;
+        grid.classList.toggle("aogau-three", k !== "all" && shown === 5);
         /* a family's check-in is the family one */
         var ci = D("checkin"); if(ci) ci.setAttribute("href", k === "family" ? "#family/check-in" : "#checkin");
         if(panel) grid.appendChild(panel);
