@@ -598,7 +598,7 @@ SONGS = [
   q2=("Why might reggae sound better slower than ska?", "¿Por qué el reggae podría sonar mejor más lento que el ska?"),
   links=[("Reggae — Wikipedia", W + "Reggae")]),
 
- dict(n=31, t=("Cumbia", "Cumbia"), key=4, minor=True, bpm=94, sound="ep80", rhythm="offbeat", pads=[1, 4, 5, 1],
+ dict(n=31, t=("Cumbia", "Cumbia"), key=4, minor=True, bpm=94, sound="ep80", rhythm="offbeat", pads=[1, 3, 4, 1],
   blurb=("Cumbia began on the Caribbean coast of Colombia, from African, Indigenous and Spanish music. Today it is played from Mexico to Argentina, often on electronic keyboards.",
          "La cumbia nació en la costa caribe de Colombia, de música africana, indígena y española. Hoy se toca de México a Argentina, muchas veces con teclados electrónicos."),
   tog=("Step side to side on each beat, like a cumbia dancer. If your class made the Cumbia-style groove on the drum machine, send it here and play along.",
@@ -695,11 +695,11 @@ PRESETS = {
   "canon": (("Canon · 8 chords", "Canon · 8 acordes"), False, [(0, "maj"), (7, "maj"), (9, "min"), (4, "min"), (5, "maj"), (0, "maj"), (5, "maj"), (7, "maj")]),
   "blues": (("Blues · 12 bars", "Blues · 12 compases"), False, [(0, "dom7")] * 4 + [(5, "dom7")] * 2 + [(0, "dom7")] * 2 + [(7, "dom7"), (5, "dom7"), (0, "dom7"), (7, "dom7")]),
   "jazz": (("Jazz · 2 5 1", "Jazz · 2 5 1"), False, [(2, "m7"), (7, "dom7"), (0, "maj7"), (0, "maj7")]),
-  "minor": (("Minor groove · 1 6 3 7", "Ritmo menor · 1 6 3 7"), True, [(0, "min"), (8, "maj"), (3, "maj"), (10, "maj")]),
-  "flamenco": (("Flamenco · 1 7 6 5", "Flamenco · 1 7 6 5"), True, [(0, "min"), (10, "maj"), (8, "maj"), (7, "maj")]),
+  "minor": (("Minor groove", "Ritmo menor"), True, [(0, "min"), (8, "maj"), (3, "maj"), (10, "maj")]),
+  "flamenco": (("Flamenco", "Flamenco"), True, [(0, "min"), (10, "maj"), (8, "maj"), (7, "maj")]),
 }
 PADS_MAJOR = {1: (0, "maj"), 2: (2, "min"), 3: (4, "min"), 4: (5, "maj"), 5: (7, "maj"), 6: (9, "min")}
-PADS_MINOR = {1: (0, "min"), 3: (3, "maj"), 4: (5, "min"), 5: (7, "min"), 6: (8, "maj"), 7: (10, "maj")}
+PADS_MINOR = {1: (0, "min"), 2: (3, "maj"), 3: (5, "min"), 4: (7, "min"), 5: (8, "maj"), 6: (10, "maj")}   # AOG-PADS-1TO6-V1
 KEY_NAMES = {"en": ["C", "D♭", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"],
              "es": ["Do", "Re♭", "Re", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si"]}
 NAMES = {"sharp": ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"], "flat": ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"]}
