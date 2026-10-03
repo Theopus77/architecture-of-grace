@@ -553,8 +553,6 @@ const STR = {
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
   reso:{en:"Filter resonance",es:"Resonancia del filtro"},
-  bitOn:{en:"12-bit · drop-sample",es:"12 bits · sin suavizar"},
-  bitOff:{en:"smoothed (modern)",es:"suavizado (moderno)"},
   level:{en:"Level",es:"Nivel"},
   tune:{en:"Tune",es:"Afinación"},
   decay:{en:"Decay",es:"Caída"},
@@ -1266,6 +1264,7 @@ function ensureKit(bank){
 function useBank(b){
   if(BANKS.indexOf(b)<0) return;
   S.bank=b; S.lcdNote="";
+  try{ kitHeard(); }catch(e){}
   save();
   if(engine&&kitReady) pushBank(); else ensureKit(b);
 }
@@ -1331,6 +1330,7 @@ function hit(id, time, fromSeq, accent){
     const st=((q[0]%len)+len)%len;
     S.grid[id][st]=1;
     if(S.off && S.off[id]) S.off[id][st]=q[1];
+    try{ lmark("recpad"); if(HELD.has(id)){ lmark("rollrec"); if(id==="ch") lmark("rollrecch"); } }catch(e){}
     const cell=document.querySelector('.cell[data-v="'+id+'"][data-step="'+st+'"]');
     if(cell){ cell.classList.add("on"); cell.setAttribute("aria-pressed","true"); }
     save();
@@ -1612,11 +1612,15 @@ function hearNow(){
                     : "TIME CORRECT "+S.tc+": lo que tocas se acomoda a esa rejilla.")
     : (S.tc==="OFF" ? "TIME CORRECT is off: what you play stays where it landed."
                     : "TIME CORRECT "+S.tc+": what you play is tidied onto that grid.");
-  const bitLine = S.lang==="es"
-    ? (S.bit ? "12 bits y sin suavizar: la máquina saltaba de muestra a muestra al cambiar el tono, y ese salto es el crujido que la hizo famosa — se oye más al bajar el tono."
-             : "Suavizado: interpola entre muestras, como un sampler moderno. Enciéndelo de nuevo para oír la máquina de 1987.")
-    : (S.bit ? "Twelve bits, and no smoothing: the machine jumped from sample point to sample point when it changed pitch, and that jump is the crunch it is famous for — you hear it most pitching down."
-             : "Smoothed: it interpolates between sample points, the way a modern sampler does. Switch it back to hear the 1987 machine.");
+  /* AOG-DRUM-ERA-V1 — the explainer follows the Sound dial, not the old 12-bit button */
+  const bitLine = S.era>=0.9
+    ? (S.lang==="es" ? "Sonido en 1987: 12 bits y sin suavizar. La máquina salta de muestra en muestra al cambiar el tono, y ese salto es el crujido que la hizo famosa. Se oye más al bajar el tono."
+                     : "Sound on 1987: twelve bits, no smoothing. The machine jumps from sample point to sample point when it changes pitch, and that jump is the crunch it is famous for. You hear it most pitching down.")
+    : S.era<=0.1
+      ? (S.lang==="es" ? "Sonido en 2026: cada sonido es una copia limpia a 44.100 muestras por segundo, y el filtro se abre. Gira el dial a 1987 para oír la máquina original."
+                       : "Sound on 2026: each sound is a clean copy at 44,100 samples a second, and the filter opens up. Turn the dial to 1987 to hear the original machine.")
+      : (S.lang==="es" ? "Sonido entre 1987 y 2026: el dial mezcla el crujido de 12 bits con la copia limpia."
+                       : "Sound between 1987 and 2026: the dial blends the twelve-bit crunch with the clean copy.");
   const outLine = S.lang==="es"
     ? "Salidas: los pads 1 y 2 salen crudos; del 3 al 8 pasan por el filtro analógico de la máquina — 24 dB por octava, fijo cerca de 8.5 kHz. Lo que quieras brillante, cárgalo en el pad 1 o 2."
     : "Outputs: pads 1 and 2 leave raw; pads 3 to 8 go through the machine's analog filter — 24 dB an octave, fixed near 8.5 kHz. Whatever you want bright, load it on pad 1 or 2.";
@@ -1888,6 +1892,14 @@ const LESSONS = [
     blurb_en:"Tap a pad. Press Play. Press Stop. That is the whole machine.",
     blurb_es:"Toca un pad. Pulsa Tocar. Pulsa Parar. Esa es toda la máquina.",
     steps:["pad", "play", "stop"]},
+  /* AOG-DRUM-LADDER-V3 (2026-10-03) — Jimmy: "update the worksheets and lessons now that the drum machine
+     has been upgraded." Four new lessons go where they teach best: Start from a beat (2), the nine kits (7),
+     playing live with fingers, keys and rolls (10), and the 1987 ↔ 2026 Sound dial (20). Ticks are still
+     kept by step id, so nothing a learner finished is lost. */
+  {id:"lbeat", en:"Start from a beat, make it yours", es:"Empieza con un ritmo y hazlo tuyo",
+    blurb_en:"Producers rarely start from nothing. Pick a style, listen, then change it until it sounds like you.",
+    blurb_es:"Los productores casi nunca empiezan de cero. Elige un estilo, escucha y cámbialo hasta que suene a ti.",
+    steps:["starter", "playstarter", "remix", "playremix"]},
   {id:"l2", en:"Tempo", es:"Tempo",
     blurb_en:"Tempo is how fast the beat goes. Slow it down, speed it up, then tap it in.",
     blurb_es:"El tempo es qué tan rápido va el ritmo. Bájalo, súbelo, y luego márcalo con TAP.",
@@ -1904,6 +1916,10 @@ const LESSONS = [
     blurb_en:"A hat on every other box keeps the time. A hat on every box drives it. An open hat lets it breathe.",
     blurb_es:"Un charles cada dos cuadros lleva el tiempo. Uno en cada cuadro lo empuja. Un charles abierto lo deja respirar.",
     steps:["hat8", "hat16", "oh14", "play16"]},
+  {id:"lkits", en:"Same beat, new sounds: the nine kits", es:"El mismo ritmo, sonidos nuevos: los nueve kits",
+    blurb_en:"A kit is a set of eight sounds. Keep the beat, change the kit, and the whole mood changes.",
+    blurb_es:"Un kit es un grupo de ocho sonidos. Deja el ritmo, cambia el kit y cambia todo el ánimo.",
+    steps:["kit3", "kit808", "kitlatin", "kitfave"]},
   {id:"l6", en:"Loud and soft: accents", es:"Fuerte y suave: acentos",
     blurb_en:"Tap a box again to make it an accent. Tap once more to make it soft.",
     blurb_es:"Toca un cuadro otra vez para acentuarlo. Una vez más para hacerlo suave.",
@@ -1912,6 +1928,10 @@ const LESSONS = [
     blurb_en:"The last four boxes are where a drummer shows off. Fill them.",
     blurb_es:"Los últimos cuatro cuadros son donde el baterista se luce. Llénalos.",
     steps:["fill", "tomfill", "playfill"]},
+  {id:"llive", en:"Play it live: fingers, keys and rolls", es:"Tócalo en vivo: dedos, teclas y redobles",
+    blurb_en:"A drum machine is an instrument. Play the pads in time, record what you play, then hold a pad for a roll.",
+    blurb_es:"Una caja de ritmos es un instrumento. Toca los pads a tiempo, graba lo que tocas y mantén un pad para un redoble.",
+    steps:["twohands", "recpad", "rollhold", "rollrec"]},
   {id:"l8", en:"Parts and song mode", es:"Partes y modo canción",
     blurb_en:"Copy part 1 into part 2 and change it. Chain the parts in the track and play it.",
     blurb_es:"Copia la parte 1 en la parte 2 y cámbiala. Encadena las partes en la pista y tócala.",
@@ -1921,20 +1941,20 @@ const LESSONS = [
     blurb_es:"Silenciar quita un tambor. Solo deja uno. Hazlo con tus manos mientras suena el ritmo.",
     steps:["mute", "solo", "livemute", "liveback"]},
   {id:"l10", en:"Boom-bap swing", es:"Swing boom-bap",
-    blurb_en:"The 1990s sampler sound. A slow tempo, deep swing, and a snare that leans back a little.",
-    blurb_es:"El sonido de los samplers de los 90. Tempo lento, swing profundo y una caja que se recuesta un poco.",
+    blurb_en:"The 1990s sampler sound. A slow tempo, deep swing, and a snare that leans back a little. Kit E is made for it.",
+    blurb_es:"El sonido de los samplers de los 90. Tempo lento, swing profundo y una caja que se recuesta un poco. El kit E está hecho para esto.",
     steps:["bbfeel", "bbpat", "bblazy", "playbb"]},
   {id:"l11", en:"Ghost notes", es:"Notas fantasma",
     blurb_en:"Quiet snares between the loud ones make a beat sound played by a person.",
     blurb_es:"Cajas suaves entre las fuertes hacen que el ritmo suene tocado por una persona.",
     steps:["ghost", "backacc", "hatvel", "playghost"]},
   {id:"l12", en:"Trap hi-hats and rolls", es:"Charles de trap y redobles",
-    blurb_en:"A fast tempo, a half-time snare, and hat rolls. TC 1/32 lets a hat land between two boxes.",
-    blurb_es:"Tempo rápido, caja a medio tiempo y redobles de charles. TC 1/32 deja caer un charles entre dos cuadros.",
-    steps:["trapbase", "hatroll", "roll32", "playtrap"]},
+    blurb_en:"A fast tempo, a half-time snare, and hat rolls. Kit F has the 808. Hold a hat with Roll on and it rolls by itself.",
+    blurb_es:"Tempo rápido, caja a medio tiempo y redobles de charles. El kit F tiene el 808. Mantén un charles con el redoble activo y redobla solo.",
+    steps:["trapbase", "hatroll", "traproll", "playtrap"]},
   {id:"l13", en:"Four-on-the-floor house", es:"House de cuatro en el suelo",
-    blurb_en:"A kick on every beat, a clap on 2 and 4, and an open hat on every off-beat.",
-    blurb_es:"Un bombo en cada pulso, un aplauso en 2 y 4, y un charles abierto en cada contratiempo.",
+    blurb_en:"A kick on every beat, a clap on 2 and 4, and an open hat on every off-beat. Kit C (electro) suits it.",
+    blurb_es:"Un bombo en cada pulso, un aplauso en 2 y 4, y un charles abierto en cada contratiempo. El kit C (electro) le queda bien.",
     steps:["housebpm", "house4", "ohoff", "playhouse"]},
   {id:"l14", en:"Breakbeat chops", es:"Cortes de breakbeat",
     blurb_en:"Build an Amen-style break: busy kicks and a snare that jumps. Then chop it in part 2.",
@@ -1948,6 +1968,10 @@ const LESSONS = [
     blurb_en:"Intro, verse, hook and bridge. Chain them in song mode, and take the kick out for a drop.",
     blurb_es:"Intro, verso, coro y puente. Encadénalos en modo canción, y quita el bombo para una caída.",
     steps:["arr4", "drop", "arrmute", "arrplay"]},
+  {id:"lera", en:"1987 or 2026? How sound becomes numbers", es:"¿1987 o 2026? Cómo el sonido se vuelve números",
+    blurb_en:"A sampler stores sound as numbers. In 1987 it kept fewer numbers, and that is the crunch. Turn the Sound dial and hear it.",
+    blurb_es:"Un sampler guarda el sonido como números. En 1987 guardaba menos números, y ese es el crujido. Gira el dial de Sonido y escúchalo.",
+    steps:["era87play", "era26play", "eracrunch", "eramid"]},
   {id:"l17", en:"Make it knock, then hand it in", es:"Que pegue fuerte, y entrégalo",
     blurb_en:"Mix the kit so the kick hits hardest and the hats sit back. Send it to the Turntables. Name it and save it.",
     blurb_es:"Mezcla el kit para que el bombo pegue más y los charles queden atrás. Mándalo a los Tocadiscos. Ponle nombre y guárdalo.",
@@ -2036,7 +2060,25 @@ const LSTEP = {
   kicktop:{en:"Kick slider (MIX) the loudest of all eight",es:"Deslizador del bombo (MIX) el más alto de los ocho"},
   hatdown:{en:"Closed hat MIX at 60 or lower",es:"MIX del charles cerrado en 60 o menos"},
   kickdecay:{en:"Shape the kick's tail with its DECAY slider",es:"Da forma a la cola del bombo con su deslizador DECAY"},
-  bounce:{en:"Press TO THE DECKS (full bench)",es:"Pulsa A LOS PLATOS (banco completo)"}
+  bounce:{en:"Press TO THE DECKS (full bench)",es:"Pulsa A LOS PLATOS (banco completo)"},
+  /* AOG-DRUM-LADDER-V3 — the steps for the new machine */
+  starter:{en:"Pick a style in Start from a beat",es:"Elige un estilo en Empieza con un ritmo"},
+  playstarter:{en:"Play it and listen",es:"Tócalo y escucha"},
+  remix:{en:"Change at least two boxes so it is yours",es:"Cambia al menos dos cuadros para que sea tuyo"},
+  playremix:{en:"Play your version",es:"Toca tu versión"},
+  kit3:{en:"Play your beat on three different kits (Sounds)",es:"Toca tu ritmo con tres kits distintos (Sonidos)"},
+  kit808:{en:"Kit F: tap pad 1 and hear the long 808",es:"Kit F: toca el pad 1 y escucha el largo 808"},
+  kitlatin:{en:"Kit H: find the guiro, the clave and the conga",es:"Kit H: encuentra el güiro, la clave y la conga"},
+  kitfave:{en:"Pick the kit that fits your beat and play it",es:"Elige el kit que mejor le queda a tu ritmo y tócalo"},
+  twohands:{en:"Play two pads at once: two fingers, or two keys (A and J)",es:"Toca dos pads a la vez: dos dedos o dos teclas (A y J)"},
+  recpad:{en:"Full bench: press REC, press RUN, and tap a pad. It lands in the grid",es:"Banco completo: pulsa REC, pulsa RUN y toca un pad. Cae en la cuadrícula"},
+  rollhold:{en:"Turn Roll on and hold a pad",es:"Activa el redoble y mantén un pad"},
+  rollrec:{en:"Record a roll: REC on, the beat running, hold a pad",es:"Graba un redoble: REC activo, el ritmo sonando, mantén un pad"},
+  traproll:{en:"Record a hat roll: Roll on, REC on, hold the closed hat (or TC 1/32 and tap between boxes)",es:"Graba un redoble de charles: redoble y REC activos, mantén el charles cerrado (o TC 1/32 y toca entre cuadros)"},
+  era87play:{en:"Play a beat with the Sound dial all the way on 1987",es:"Toca un ritmo con el dial de Sonido del todo en 1987"},
+  era26play:{en:"Play it again all the way on 2026",es:"Tócalo otra vez del todo en 2026"},
+  eracrunch:{en:"Full bench: tune a drum down (TUNE) and tap it on 1987. Hear the crunch",es:"Banco completo: baja la afinación de un tambor (TUNE) y tócalo en 1987. Escucha el crujido"},
+  eramid:{en:"Find your spot in the middle and play it there",es:"Busca tu punto en el medio y toca ahí"}
 };
 /* ══ AOG-DRUM-SONGS-V1 (2026-09-27) — Jimmy: "The drum machine should have [us] make 17
    songs together!" Lessons 18–34, "Songs we make": each one is a whole, original beat a
@@ -2116,8 +2158,9 @@ const LS={done:{}, pick:null, title:""};
 try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r){ LS.done=r.done||{}; LS.pick=(typeof r.pick==="number")?r.pick:null; LS.title=r.title||"";
   /* AOG-DRUM-BLEND-V1: the ladder was rebuilt. Ticks are kept by step id; the lesson a
      learner had open now means something else, so it goes back to "where you are up to". */
-  if(r.ladder!==2) LS.pick=null; } }catch(e){}
-LS.ladder=2;
+  if(r.ladder!==3) LS.pick=null;              /* AOG-DRUM-LADDER-V3: four lessons were added, so the numbers moved */
+  LS.kp=r.kp||{}; LS.hp=r.hp||{}; } }catch(e){}
+LS.ladder=3; LS.kp=LS.kp||{}; LS.hp=LS.hp||{};
 function saveLessons(){ try{ localStorage.setItem(LKEY, JSON.stringify(LS)); }catch(e){} }
 function lessonNow(){ for(let i=0;i<LESSONS.length;i++) if(!LESSONS[i].steps.every(id=>LS.done[id])) return i; return LESSONS.length; }
 function lessonPicked(){ const n=lessonNow(); if(LS.pick==null||LS.pick<0||LS.pick>=LESSONS.length) return Math.min(n, LESSONS.length-1); return LS.pick; }
@@ -2198,6 +2241,11 @@ function tickLessons(){
   if(lv("kick")>=0.8 && VOICES.every(v=>v.id==="kick"||lv(v.id)<lv("kick"))) d.kicktop=true;
   if(lv("ch")<=0.605) d.hatdown=true;
   if(S.chan.kick && Math.abs((S.chan.kick.decay==null?0.85:S.chan.kick.decay)-0.85)>0.03) d.kickdecay=true;
+  /* AOG-DRUM-LADDER-V3 */
+  if(remixCount()>=2) d.remix=true;
+  if(d.roll32 || d.rollrecch) d.traproll=true;
+  if(Object.keys(LS.kp||{}).length>=3) d.kit3=true;
+  if(["ch","clap","tom"].every(k=>(LS.hp||{})[k])) d.kitlatin=true;
   songTick(false);                                                   /* AOG-DRUM-SONGS-V1 */
   saveLessons();
 }
@@ -2222,8 +2270,34 @@ function lessonPlayed(){
   if(S.bpm>=136 && S.bpm<=175 && rowHas("kick",[0,2,10]) && rowHas("snare",[4,12])) d.playamen=true;
   if(segLen()===12 && [0,3,6,9].every(i=>(S.grid.kick||[])[i]) && [0,4,8].every(i=>(S.grid.bell||[])[i])) d.playpoly=true;
   if(S.trackOn && S.track.length>=6 && new Set(S.track).size>=4) d.arrplay=true;
+  /* AOG-DRUM-LADDER-V3 */
+  kitHeard();
+  if(d.starter) d.playstarter=true;
+  if(d.remix && remixCount()>=2) d.playremix=true;
+  if(Object.keys(LS.kp||{}).length>=3) d.kit3=true;
+  if(d.kit3 && n>=4) d.kitfave=true;
+  if(n>=4 && S.era>=0.9) d.era87play=true;
+  if(n>=4 && S.era<=0.1) d.era26play=true;
+  if(n>=4 && S.era>=0.2 && S.era<=0.8) d.eramid=true;
   songTick(true);                                                    /* AOG-DRUM-SONGS-V1 */
   saveLessons(); paintLessonBox();
+}
+/* AOG-DRUM-LADDER-V3 — helpers the new steps read */
+function lmark(id){ if(!LS.done[id]){ mark(id); paintLessonBoxSoon(); } }
+function kitHeard(){ if(S.playing){ LS.kp=LS.kp||{}; LS.kp[S.bank]=1; } }
+function remixCount(){                       /* boxes changed since the style beat was loaded */
+  const ld=S.loaded; if(!ld || ld.seg!==S.seg) return 0;
+  let n=0; VOICES.forEach(v=>{ const a=ld.grid[v.id]||[], b=S.grid[v.id]||[]; for(let i=0;i<16;i++) if((a[i]||0)!==(b[i]||0)) n++; });
+  return n;
+}
+let lastHand=null;
+function lessonHand(id){                     /* a pad struck by a hand (finger, mouse or key) */
+  const now=performance.now();
+  if(lastHand && lastHand.id!==id && now-lastHand.t<70) lmark("twohands");
+  lastHand={id:id, t:now};
+  if(S.bank==="F" && id==="kick") lmark("kit808");
+  if(S.bank==="H" && (id==="ch"||id==="clap"||id==="tom")){ LS.hp=LS.hp||{}; LS.hp[id]=1; if(["ch","clap","tom"].every(k=>LS.hp[k])) lmark("kitlatin"); else saveLessons(); }
+  const ch=S.chan[id]; if(ch && (ch.tune||0)<=-3 && S.era>=0.9) lmark("eracrunch");
 }
 function lessonStopped(){ if(LS.done.play){ mark("stop"); paintLessonBox(); } }
 function lessonMuteTouched(){
@@ -2240,7 +2314,7 @@ const LSTR = {
   lessonsNav:{en:"Lessons",es:"Lecciones"},
   lessonK:{en:"Lesson",es:"Lección"},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
-  lessonsLead:{en:"Seventeen short lessons take you from your first pad to producer-level beats. Then come seventeen songs we make together. Do the steps on the machine and the boxes tick themselves. Each lesson has a worksheet.",es:"Diecisiete lecciones cortas te llevan de tu primer pad a ritmos de productor. Después vienen diecisiete canciones que hacemos juntos. Haz los pasos en la máquina y las casillas se marcan solas. Cada lección tiene una hoja."},
+  lessonsLead:{en:"Twenty-one short lessons take you from your first pad to producer-level beats. Then come seventeen songs we make together. Do the steps on the machine and the boxes tick themselves. Each lesson has a worksheet.",es:"Veintiuna lecciones cortas te llevan de tu primer pad a ritmos de productor. Después vienen diecisiete canciones que hacemos juntos. Haz los pasos en la máquina y las casillas se marcan solas. Cada lección tiene una hoja."},
   lessonsAll:{en:"All lessons",es:"Todas las lecciones"},
   worksheet:{en:"Open the worksheet",es:"Abrir la hoja"},
   toBench:{en:"Go to the bench",es:"Ir a la mesa"},
@@ -2257,7 +2331,8 @@ const LSTR = {
 };
 function lt(k){ const o=LSTR[k]; return o? o[S.lang]:k; }
 /* AOG-DRUM-SONGS-V1: how a lesson is named in the menu and the ladder */
-function lessonName(m){ const es=S.lang==="es", t=es?m.es:m.en; return m.song? (lt("songWord")+" "+(m.song.n-17)+": "+t) : t; }
+function songNo(sg){ return SONGS.indexOf(sg)+1; }      /* AOG-DRUM-LADDER-V3: songs count 1–17 wherever they sit */
+function lessonName(m){ const es=S.lang==="es", t=es?m.es:m.en; return m.song? (lt("songWord")+" "+songNo(m.song)+": "+t) : t; }
 /* AOG-BENCH-TOP-V1 (2026-09-27) — the lessons sit at the top, the same as the Turntables:
    BENCH [Simple] [Full]  LESSON [menu], then one Lessons card (aog-bench.css). */
 function lessonCard(){
@@ -2267,7 +2342,7 @@ function lessonCard(){
   const name=(m.id==="l17")?`<label class="lesson-name"><span>${lt("beatName")}</span><input id="beatName" type="text" maxlength="40" value="${(LS.title||"").replace(/"/g,"&quot;")}" autocomplete="off"></label>`:"";
   const next=p<LESSONS.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:"";
   const sg=m.song;
-  const songTop=sg?`<p class="mk">${lt("songsGroup")} · ${lt("songWord")} ${sg.n-17} ${es?"de":"of"} ${SONGS.length}</p>`:"";
+  const songTop=sg?`<p class="mk">${lt("songsGroup")} · ${lt("songWord")} ${songNo(sg)} ${es?"de":"of"} ${SONGS.length}</p>`:"";
   const songSet=sg?`<p class="lblurb"><b>${lt("settings")}:</b> ${sg.free?lt("freeTempo"):("Tempo "+sg.bpm+" · Swing "+sg.swing+"%"+(sg.len?(" · "+(es?"Largo ":"Length ")+sg.len):""))}</p>`:"";
   const songTog=sg?`<p class="lblurb"><b>${lt("together")}:</b> ${es?sg.tog_es:sg.tog_en}</p>`:"";
   return `<p class="mk">${lt("lessonK")} ${p+1} ${es?"de":"of"} ${LESSONS.length}${done?" · ✓":""}</p>${songTop}
@@ -2690,6 +2765,8 @@ function loadBeat(p){
   if(typeof p.swing==="number"){ S.swing=snapSwing(p.swing); sg.swing=S.swing; }
   if(p.kit) useBank(p.kit);
   S.starter=p.id;
+  S.loaded={seg:S.seg, grid:JSON.parse(JSON.stringify(S.grid))};   /* AOG-DRUM-LADDER-V3: Lesson 2 compares against this */
+  try{ lmark("starter"); }catch(e){}
   save(); paint();
 }
 function undoBeat(){
@@ -2725,7 +2802,7 @@ function rollTick(){
   const iv=rollSec();
   if(!iv || !actx){ HELD.clear(); return; }
   const horizon=actx.currentTime+0.1;
-  HELD.forEach((h,id)=>{ while(h.next < horizon){ hit(id, Math.max(h.next, actx.currentTime)); h.next+=iv; } });
+  HELD.forEach((h,id)=>{ while(h.next < horizon){ hit(id, Math.max(h.next, actx.currentTime)); h.next+=iv; try{ lmark("rollhold"); }catch(e){} } });
   if(HELD.size) rollRaf=requestAnimationFrame(rollTick);
 }
 function padFire(id){
@@ -2749,6 +2826,7 @@ const fin=document.getElementById("sampleIn"); if(fin){ try{ fin.click() }catch(
 return;
   }
   ctx(); hit(id, ctx().currentTime);
+  try{ lessonHand(id); }catch(e){}
   scopeNote();
   if(!S.met[id]){ S.met[id]=1; save(); }
   const title=document.getElementById("voiceTitle");
@@ -2931,14 +3009,6 @@ function bind(){
     S.vol=+vol.value; const o=document.getElementById("volOut"); if(o) o.textContent=Math.round(S.vol*100);
     if(master) master.gain.value=volGain(S.vol); save();
   };
-  const bit=document.getElementById("bitBtn");
-  if(bit) bit.onclick=()=>{
-    S.bit=!S.bit; save();
-    bit.classList.toggle("on", S.bit);
-    bit.textContent=S.bit?t("bitOn"):t("bitOff");
-    refreshLcd();
-    const h=document.getElementById("hearNow"); if(h) h.textContent=hearNow();
-  };
   const toDecks=document.getElementById("toDecks");
   if(toDecks) toDecks.onclick=bounceToDecks;
   const rec=document.getElementById("recBtn");
@@ -3014,6 +3084,7 @@ function bind(){
     S.era=Math.max(0, Math.min(1, 1-(+eraIn.value)/100)); S.bit=S.era>=0.5;
     const o=document.getElementById("eraOut"); if(o) o.textContent=eraWord();
     eraIn.setAttribute("aria-valuetext", eraWord());
+    const hn=document.getElementById("hearNow"); if(hn) hn.textContent=hearNow();
     clearTimeout(eraIn.t); eraIn.t=setTimeout(save, 250);
   };
   const rollB=document.getElementById("rollBtn");
@@ -3076,7 +3147,7 @@ window.addEventListener("pagehide", function(){
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden){ holdNone(); stop(); } });
 /* AOG-DRUM-PLAY-V1 — keyboard pads. A S D F and J K L ; play pads 1 to 8 (by key
    position, so other keyboard layouts work too). Holding a key plays it once.
-   Space starts and stops, unless another button has focus. Typing in a box,
+   Space starts and stops, unless another button (not a pad or a grid square) has focus. Typing in a box,
    or a key with Ctrl, Alt or Cmd, is left alone. */
 (function(){
   let spaceTaken=false;
@@ -3105,7 +3176,8 @@ document.addEventListener("visibilitychange", ()=>{ if(document.hidden){ holdNon
     if(e.code==="Space"){
       const pb=document.getElementById("playBtn"); if(!pb) return;
       const ctl=e.target.closest && e.target.closest("button,a,summary,label,[role=button]");
-      if(ctl && !ctl.hasAttribute("data-pad") && ctl!==pb && ctl.getAttribute("data-simple")!=="play") return;
+      /* a grid square keeps focus after a click, so Space still means play there (Enter toggles it) */
+      if(ctl && !ctl.hasAttribute("data-pad") && !ctl.classList.contains("cell") && ctl!==pb && ctl.getAttribute("data-simple")!=="play") return;
       e.preventDefault(); spaceTaken=true;
       if(!e.repeat) pb.click();
     }
