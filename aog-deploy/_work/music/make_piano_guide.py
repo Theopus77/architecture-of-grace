@@ -238,8 +238,8 @@ for en_b, es_b, en_s, es_s in [
      "Primero elige un patrón de acordes, o pulsa Hacer el mío y toca algunos pads."),
     ("The tempo will not move", "El tempo no se mueve", "Play with my drum beat is on. The drum beat sets the tempo. Press it again to turn it off.",
      "Tocar con mi ritmo de batería está activo. El ritmo pone el tempo. Púlsalo otra vez para apagarlo."),
-    ("A MIDI keyboard", "Un teclado MIDI", "Use Chrome or Edge. Plug it in, then press Use a MIDI keyboard.",
-     "Usa Chrome o Edge. Conéctalo y luego pulsa Usar un teclado MIDI.")]:
+    ("A MIDI keyboard", "Un teclado MIDI", "Press Use a MIDI keyboard and plug it in. The line under the buttons says when it is ready. No button? This browser cannot use MIDI. On a computer, try Chrome or Edge.",
+     "Pulsa Usar un teclado MIDI y conéctalo. La línea bajo los botones dice cuándo está listo. ¿No ves el botón? Este navegador no puede usar MIDI. En una computadora, prueba Chrome o Edge.")]:
     B('    <li><span class="q">?</span><div><b>%s</b><span>%s</span></div></li>' % (sp(en_b, es_b), sp(en_s, es_s)))
 B('  </ul>\n</section>')
 
