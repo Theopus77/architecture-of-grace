@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Piano &mdash; Picture Guide</title>
+<meta name="description" content="The piano in pictures. Almost no reading. Print it and keep it next to the piano.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-PIANOPIC-V1 (2026-10-03) — the piano in pictures, the drum machine's picture guide in form: student-facing,
+     almost no reading, prints on letter, every figure one block that does not split across a page. English and
+     Spanish, pictures included. Built by _work/music/make_piano_guide.py. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+/* four picture steps */
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; align-items:start; }
+@media (max-width:700px){ .steps { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg, .step img { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:150px; border-radius:6px; }
+.step img { max-width:100%; }
+.states { margin:0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.states img { display:block; width:100%; max-width:420px; height:auto; border-radius:6px; }
+.states figcaption { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; max-width:420px; margin-top:.45rem; }
+.states figcaption span { text-align:center; color:var(--muted); font-size:.82rem; line-height:1.25; }
+.states figcaption b { display:block; color:var(--ink); font-size:.92rem; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* the 16 boxes */
+.gridwrap { overflow-x:auto; }
+.g { display:grid; grid-template-columns:78px repeat(16, minmax(20px,1fr)); gap:3px; align-items:center; margin-bottom:3px; min-width:440px; }
+.gl { font-size:.78rem; font-weight:700; color:var(--muted); text-align:right; padding-right:.35rem; white-space:nowrap; }
+.gn { font-size:.72rem; font-weight:700; color:var(--muted); text-align:center; }
+.gn.st { color:var(--ink); font-size:.85rem; }
+.gs { height:26px; border:1.5px solid var(--line); border-radius:5px; background:transparent; }
+.gs.st { border-color:var(--muted); }
+.gs.on { background:var(--c); border-color:rgb(0 0 0 / .35);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.recipe { margin:0 0 1.1rem; padding:.85rem .9rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  break-inside:avoid; page-break-inside:avoid; }
+.recipe figcaption { margin:0 0 .6rem; }
+.recipe figcaption b { font-size:1.05rem; }
+.recipe figcaption span { display:block; color:var(--muted); font-size:.88rem; }
+.recipe figcaption span.bpm { display:inline-block; width:auto; color:var(--muted); }
+.bpm { display:inline-block; margin-left:.5rem; padding:.05rem .5rem; border-radius:999px; background:var(--chip); color:var(--muted);
+  font-size:.72rem; font-weight:800; letter-spacing:.06em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* banks + sounds */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.kits { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; align-items:stretch; }
+@media (max-width:820px){ .kits { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .kits { grid-template-columns:1fr; } }
+.kits .bank { padding:.65rem .75rem; gap:.65rem; }
+.kits .bank .letter { width:2.2rem; height:2.2rem; font-size:1.1rem; }
+.kits .bank span { font-size:.86rem; line-height:1.35; display:block; }
+.note { margin:.8rem 0 0; color:var(--muted); font-size:.92rem; }
+.bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
+  break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
+.bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font:800 1.3rem/1 var(--sans); background:var(--steel); color:#f4f8f9; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.bank.empty .letter { background:transparent; color:var(--muted); border:2px dashed var(--muted); }
+.bank b { display:block; }
+.bank span { color:var(--muted); font-size:.9rem; }
+
+.sounds { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem .8rem; }
+.padn { display:inline-flex; align-items:center; justify-content:center; width:1.5rem; height:1.5rem; border-radius:5px;
+  background:#2b2620; color:#f0ebe0; font:800 .8rem/1 var(--sans); flex:0 0 auto;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media (max-width:700px){ .sounds { grid-template-columns:repeat(2,1fr); } }
+.sounds li { display:flex; align-items:center; gap:.5rem; font-weight:600; font-size:.95rem; }
+.dot { width:1.15rem; height:1.15rem; border-radius:6px; background:var(--c); border:1px solid rgb(0 0 0 / .3);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* stuck */
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; align-self:center; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.panel, svg.dial { min-width:0; }
+  .figwrap, .gridwrap { overflow:visible; }
+  .g { min-width:0; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  .recipe, .step, .bank, .fix li { box-shadow:none; }
+  .kits { grid-template-columns:repeat(3,1fr); gap:.4rem; }
+  .kits .bank { padding:.4rem .55rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .fix { gap:.35rem; }
+  .fix li { padding:.35rem .6rem; }
+  .fix img { max-width:90px; }
+  a { text-decoration:none; color:inherit; }
+}
+
+/* AOG-PIANOPIC-V1 — the piano's own pieces */
+.whole img { max-width:560px; }
+.whole.letters img { max-width:720px; }
+.whole.lessons img { max-width:440px; }
+.part img { width:100%; max-width:460px; }
+/* the step boxes hold real close-ups, so they get room: two across, one across on a phone */
+.steps { grid-template-columns:repeat(2,1fr); }
+@media (max-width:700px){ .steps { grid-template-columns:1fr; } }
+.step img { max-width:100%; }
+.draw { margin:0 0 .4rem; break-inside:avoid; page-break-inside:avoid; }
+.draw.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .9rem .9rem; }
+.draw figcaption { color:var(--muted); font-size:.92rem; margin-top:.45rem; }
+.draw figcaption b { color:var(--ink); }
+svg.kb { display:block; width:100%; max-width:640px; height:auto; }
+svg.kb .kl { font:700 15px var(--sans); fill:#1a232c; }
+svg.kb .kg { font:800 16px var(--sans); fill:#2f5c6b; }
+svg.kb.big .kl { font-size:26px; }
+svg.kb.big .kg { font-size:28px; }
+svg.onekey { display:block; width:100%; max-width:240px; height:auto; }
+svg.onekey .kz { font:800 15px var(--sans); fill:#1a232c; }
+svg.onekey .kd { font:italic 700 18px var(--display); fill:#1a232c; }
+[data-theme="dark"] svg.kb .kl, .dark svg.kb .kl { fill:#edeae2; }
+[data-theme="dark"] svg.kb .kg, .dark svg.kb .kg { fill:#7fb4c7; }
+[data-theme="dark"] svg.onekey .kd, .dark svg.onekey .kd { fill:#edeae2; }
+.padlist { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:.55rem; }
+@media (max-width:700px){ .padlist { grid-template-columns:1fr; } }
+.padlist li { display:flex; gap:.7rem; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.55rem .7rem; break-inside:avoid; }
+.pn { flex:0 0 auto; width:2.4rem; height:2.4rem; border-radius:10px; display:flex; align-items:center; justify-content:center; font:800 1.2rem/1 var(--display);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.pn.maj { background:#f2d58f; color:#2a1a08; }
+.pn.min { background:#bcd6e8; color:#10273a; }
+.padlist li > span:last-child { font-size:.92rem; }
+.keys { list-style:none; margin:.8rem 0 0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem .9rem; }
+@media (max-width:700px){ .keys { grid-template-columns:1fr; } }
+.keys li { display:flex; gap:.6rem; align-items:center; font-size:.95rem; }
+.keys kbd { flex:0 0 auto; min-width:4.6rem; text-align:center; font:700 .85rem/1 var(--sans); padding:.4rem .5rem; border:1px solid var(--line); border-bottom-width:3px; border-radius:7px; background:var(--card); color:var(--ink); }
+.step svg.ico { max-width:90px; }
+.fix .q { flex:0 0 auto; width:2rem; height:2rem; border-radius:50%; background:var(--chip); color:var(--ink); display:flex; align-items:center; justify-content:center; font:800 1rem/1 var(--sans); }
+</style>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/piano"><span data-en="← The piano" data-es="← El piano">← The piano</span></a>
+    <button class="btn go" type="button" onclick="window.print()"><span data-en="Print this" data-es="Imprimir">Print this</span></button>
+  </div>
+</header>
+
+<h1><span data-en="The Piano, in pictures" data-es="El piano, en imágenes">The Piano, in pictures</span></h1>
+<p class="lede"><span data-en="Almost no reading. Keep it next to the piano. Every picture is the real piano." data-es="Casi sin lectura. Tenla junto al piano. Cada imagen es el piano de verdad.">Almost no reading. Keep it next to the piano. Every picture is the real piano.</span></p>
+
+<section>
+  <h2><span class="n">&#9733;</span><span data-en="Start here · the whole piano" data-es="Empieza aquí · todo el piano">Start here · the whole piano</span></h2>
+  <p class="sub"><span data-en="Top to bottom: the sound, the chords, the keys, and the dial." data-es="De arriba abajo: el sonido, los acordes, las teclas y el dial.">Top to bottom: the sound, the chords, the keys, and the dial.</span></p>
+  <figure class="whole"><img src="/pp-whole.png" data-en-src="/pp-whole.png" data-es-src="/pp-whole-es.png" alt="The whole piano: Instrument, Chords with the six pads, Keys, the Sound dial and Send to the turntables." data-en-alt="The whole piano: Instrument, Chords with the six pads, Keys, the Sound dial and Send to the turntables." data-es-alt="Todo el piano: Instrumento, Acordes con los seis pads, Teclas, el dial de Sonido y Enviar a los platos." loading="lazy"><figcaption><span data-en="The whole piano. Each part is below, close up." data-es="Todo el piano. Cada parte está abajo, de cerca.">The whole piano. Each part is below, close up.</span></figcaption></figure>
+  <div class="parts">
+    <div class="part wide">
+      <img src="/pp-sound.png" data-en-src="/pp-sound.png" data-es-src="/pp-sound-es.png" alt="The Instrument menu, set to Grand piano." data-en-alt="The Instrument menu, set to Grand piano." data-es-alt="El menú Instrumento, en Piano de cola." loading="lazy">
+      <b><span data-en="Instrument" data-es="Instrumento">Instrument</span></b><span><span data-en="Eight sounds. The grand and the upright are real pianos, recorded." data-es="Ocho sonidos. El de cola y el vertical son pianos de verdad, grabados.">Eight sounds. The grand and the upright are real pianos, recorded.</span></span>
+    </div>
+    <div class="part wide">
+      <img src="/pp-key.png" data-en-src="/pp-key.png" data-es-src="/pp-key-es.png" alt="Key and Mood: Major is bright, Minor is moody." data-en-alt="Key and Mood: Major is bright, Minor is moody." data-es-alt="Tono y Ánimo: Mayor es brillante, Menor es melancólico." loading="lazy">
+      <b><span data-en="Key · Mood" data-es="Tono · Ánimo">Key · Mood</span></b><span><span data-en="Key moves every chord up or down. Major is bright. Minor is moody." data-es="El tono sube o baja todos los acordes. Mayor es brillante. Menor es melancólico.">Key moves every chord up or down. Major is bright. Minor is moody.</span></span>
+    </div>
+    <div class="part wide">
+      <img src="/pp-pads.png" data-en-src="/pp-pads.png" data-es-src="/pp-pads-es.png" alt="The six chord pads, numbered 1 to 6." data-en-alt="The six chord pads, numbered 1 to 6." data-es-alt="Los seis pads de acordes, del 1 al 6." loading="lazy">
+      <b><span data-en="The six pads" data-es="Los seis pads">The six pads</span></b><span><span data-en="Tap one: a chord that fits the key. Pad 1 is home." data-es="Toca uno: un acorde que va con el tono. El pad 1 es la casa.">Tap one: a chord that fits the key. Pad 1 is home.</span></span>
+    </div>
+    <div class="part wide">
+      <img src="/pp-pattern.png" data-en-src="/pp-pattern.png" data-es-src="/pp-pattern-es.png" alt="The pattern menu and the How the chords play menu." data-en-alt="The pattern menu and the How the chords play menu." data-es-alt="El menú de patrones y el menú Cómo suenan los acordes." loading="lazy">
+      <b><span data-en="Pattern · How the chords play" data-es="Patrón · Cómo suenan los acordes">Pattern · How the chords play</span></b><span><span data-en="Pick a chord pattern. Then pick how it plays: long, in beats, one note at a time, or off the beat." data-es="Elige un patrón de acordes. Luego elige cómo suena: largo, en pulsos, una nota a la vez o a contratiempo.">Pick a chord pattern. Then pick how it plays: long, in beats, one note at a time, or off the beat.</span></span>
+    </div>
+    <div class="part wide">
+      <img src="/pp-prog.png" data-en-src="/pp-prog.png" data-es-src="/pp-prog-es.png" alt="Your chord pattern, with Play the chords, Make my own and Clear." data-en-alt="Your chord pattern, with Play the chords, Make my own and Clear." data-es-alt="Tu patrón de acordes, con Tocar los acordes, Hacer el mío y Borrar." loading="lazy">
+      <b><span data-en="Your pattern · Play · Make my own · Clear" data-es="Tu patrón · Tocar · Hacer el mío · Borrar">Your pattern · Play · Make my own · Clear</span></b><span><span data-en="One chord for each bar. Orange plays and stops. Make my own: tap pads in order." data-es="Un acorde por compás. El naranja toca y para. Hacer el mío: toca los pads en orden.">One chord for each bar. Orange plays and stops. Make my own: tap pads in order.</span></span>
+    </div>
+    <div class="part half">
+      <img src="/pp-tempo.png" data-en-src="/pp-tempo.png" data-es-src="/pp-tempo-es.png" alt="The Tempo slider at 90 beats a minute." data-en-alt="The Tempo slider at 90 beats a minute." data-es-alt="El deslizador de Tempo en 90 pulsos por minuto." loading="lazy">
+      <b><span data-en="Tempo" data-es="Tempo">Tempo</span></b><span><span data-en="Slower or faster." data-es="Más lento o más rápido.">Slower or faster.</span></span>
+    </div>
+    <div class="part half">
+      <img src="/pp-keyrow.png" data-en-src="/pp-keyrow.png" data-es-src="/pp-keyrow-es.png" alt="Lower, Higher and Hold notes (pedal)." data-en-alt="Lower, Higher and Hold notes (pedal)." data-es-alt="Más grave, Más agudo y Mantener notas (pedal)." loading="lazy">
+      <b><span data-en="Lower · Higher · Hold notes" data-es="Más grave · Más agudo · Mantener notas">Lower · Higher · Hold notes</span></b><span><span data-en="Move the keys down or up. Hold notes is the pedal." data-es="Baja o sube las teclas. Mantener notas es el pedal.">Move the keys down or up. Hold notes is the pedal.</span></span>
+    </div>
+    <div class="part wide">
+      <img src="/pp-kbd.png" data-en-src="/pp-kbd.png" data-es-src="/pp-kbd-es.png" alt="The keys, two octaves from C3 to C5." data-en-alt="The keys, two octaves from C3 to C5." data-es-alt="Las teclas, dos octavas de Do3 a Do5." loading="lazy">
+      <b><span data-en="The keys" data-es="Las teclas">The keys</span></b><span><span data-en="Press near the bottom for a loud note, near the top for a soft one. Slide a finger to play many." data-es="Presiona cerca de abajo para una nota fuerte y cerca de arriba para una suave. Desliza un dedo para tocar muchas.">Press near the bottom for a loud note, near the top for a soft one. Slide a finger to play many.</span></span>
+    </div>
+    <div class="part wide">
+      <img src="/pp-dial.png" data-en-src="/pp-dial.png" data-es-src="/pp-dial-es.png" alt="The Sound dial from 1987 to 2026, Volume, and Send to the turntables." data-en-alt="The Sound dial from 1987 to 2026, Volume, and Send to the turntables." data-es-alt="El dial de Sonido de 1987 a 2026, Volumen y Enviar a los platos." loading="lazy">
+      <b><span data-en="Sound · Volume · Send" data-es="Sonido · Volumen · Enviar">Sound · Volume · Send</span></b><span><span data-en="Left: 1987 crunch. Right: clean 2026. Send makes a recording for the turntables." data-es="Izquierda: crujido de 1987. Derecha: limpio 2026. Enviar hace una grabación para los platos.">Left: 1987 crunch. Right: clean 2026. Send makes a recording for the turntables.</span></span>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">1</span><span data-en="A song in two taps" data-es="Una canción en dos toques">A song in two taps</span></h2>
+  <p class="sub"><span data-en="Pick a pattern. Press Play. That is a song." data-es="Elige un patrón. Pulsa Tocar. Eso es una canción.">Pick a pattern. Press Play. That is a song.</span></p>
+  <div class="steps">
+    <div class="step"><span class="num">1</span>
+      <img src="/pp-s-pattern.png" data-en-src="/pp-s-pattern.png" data-es-src="/pp-s-pattern-es.png" alt="Start from a chord pattern, set to Pop." data-en-alt="Start from a chord pattern, set to Pop." data-es-alt="Empieza con un patrón de acordes, en Pop." loading="lazy">
+      <b><span data-en="Pick a pattern" data-es="Elige un patrón">Pick a pattern</span></b><span><span data-en="Pop is a good first one." data-es="Pop es un buen primero.">Pop is a good first one.</span></span>
+    </div>
+    <div class="step"><span class="num">2</span>
+      <img src="/pp-s-play.png" data-en-src="/pp-s-play.png" data-es-src="/pp-s-play-es.png" alt="Play the chords." data-en-alt="Play the chords." data-es-alt="Tocar los acordes." loading="lazy">
+      <b><span data-en="Press Play" data-es="Pulsa Tocar">Press Play</span></b><span><span data-en="The orange button." data-es="El botón naranja.">The orange button.</span></span>
+    </div>
+    <div class="step"><span class="num">3</span>
+      <img src="/pp-kbd-lit.png" data-en-src="/pp-kbd-lit.png" data-es-src="/pp-kbd-lit-es.png" alt="The keys of the chord light up while it plays." data-en-alt="The keys of the chord light up while it plays." data-es-alt="Las teclas del acorde se iluminan mientras suena." loading="lazy">
+      <b><span data-en="Watch the keys" data-es="Mira las teclas">Watch the keys</span></b><span><span data-en="The chord&#x27;s keys light up." data-es="Se iluminan las teclas del acorde.">The chord&#x27;s keys light up.</span></span>
+    </div>
+    <div class="step"><span class="num">4</span>
+      <img src="/pp-pads-now.png" data-en-src="/pp-pads-now.png" data-es-src="/pp-pads-now-es.png" alt="The pad that is playing now has a red ring." data-en-alt="The pad that is playing now has a red ring." data-es-alt="El pad que suena ahora tiene un aro rojo." loading="lazy">
+      <b><span data-en="Watch the pads" data-es="Mira los pads">Watch the pads</span></b><span><span data-en="The red ring shows the chord now." data-es="El aro rojo muestra el acorde de ahora.">The red ring shows the chord now.</span></span>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">2</span><span data-en="Find C" data-es="Encuentra el Do">Find C</span></h2>
+  <p class="sub"><span data-en="Black keys come in groups of two and three. C is just left of the two." data-es="Las teclas negras van en grupos de dos y de tres. Do está justo a la izquierda del dos.">Black keys come in groups of two and three. C is just left of the two.</span></p>
+  <figure class="draw"><svg class="kb big" viewBox="0 0 618 218" role="img" aria-hidden="true"><rect x="1" y="34" width="44" height="150" rx="4" fill="#f2c76a" stroke="#3b3f46" stroke-width="1.6"/><text x="23.0" y="208" text-anchor="middle" class="kl" data-en="C" data-es="Do">C</text><rect x="45" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="89" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="133" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="177" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="221" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="265" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="309" y="34" width="44" height="150" rx="4" fill="#f2c76a" stroke="#3b3f46" stroke-width="1.6"/><text x="331.0" y="208" text-anchor="middle" class="kl" data-en="C" data-es="Do">C</text><rect x="353" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="397" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="441" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="485" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="529" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="573" y="34" width="44" height="150" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><rect x="31" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="75" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="163" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="207" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="251" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="339" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="383" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="471" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="515" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="559" y="34" width="28" height="90" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><path d="M31 30 v-8 h72 v8" fill="none" stroke="#2f5c6b" stroke-width="2"/><text x="67" y="18" text-anchor="middle" class="kg">2</text><path d="M163 30 v-8 h116 v8" fill="none" stroke="#2f5c6b" stroke-width="2"/><text x="221" y="18" text-anchor="middle" class="kg">3</text><path d="M339 30 v-8 h72 v8" fill="none" stroke="#2f5c6b" stroke-width="2"/><text x="375" y="18" text-anchor="middle" class="kg">2</text><path d="M471 30 v-8 h116 v8" fill="none" stroke="#2f5c6b" stroke-width="2"/><text x="529" y="18" text-anchor="middle" class="kg">3</text></svg><figcaption><span data-en="Every C is gold here. The names go C D E F G A B, then start again." data-es="Aquí cada Do es dorado. Los nombres van Do Re Mi Fa Sol La Si, y luego empiezan otra vez.">Every C is gold here. The names go C D E F G A B, then start again.</span></figcaption></figure>
+</section>
+<section>
+  <h2><span class="n">3</span><span data-en="Soft, loud, and the pedal" data-es="Suave, fuerte y el pedal">Soft, loud, and the pedal</span></h2>
+  <div class="two">
+    <figure class="draw card"><svg class="onekey" viewBox="0 0 220 200" role="img" aria-hidden="true"><rect x="70" y="6" width="80" height="188" rx="6" fill="#fffdf7" stroke="#3b3f46" stroke-width="2"/><rect x="74" y="10" width="72" height="56" rx="4" fill="#dcefe0"/><rect x="74" y="130" width="72" height="60" rx="4" fill="#f9d9c8"/><text x="110" y="44" text-anchor="middle" class="kz" data-en="soft" data-es="suave">soft</text><text x="110" y="166" text-anchor="middle" class="kz" data-en="loud" data-es="fuerte">loud</text><path d="M160 38 h40 M160 160 h40" stroke="#5c6670" stroke-width="2"/><text x="204" y="42" text-anchor="start" class="kd" data-en="p" data-es="p">p</text><text x="204" y="164" text-anchor="start" class="kd" data-en="f" data-es="f">f</text></svg><figcaption><span data-en="Press near the top for soft (p), near the bottom for loud (f). The grand piano also gets brighter when it is loud." data-es="Presiona cerca de arriba para suave (p) y cerca de abajo para fuerte (f). El piano de cola también suena más brillante cuando es fuerte.">Press near the top for soft (p), near the bottom for loud (f). The grand piano also gets brighter when it is loud.</span></figcaption></figure>
+    <div class="part wide"><img src="/pp-keyrow.png" data-en-src="/pp-keyrow.png" data-es-src="/pp-keyrow-es.png" alt="Hold notes (pedal), beside Lower and Higher." data-en-alt="Hold notes (pedal), beside Lower and Higher." data-es-alt="Mantener notas (pedal), junto a Más grave y Más agudo." loading="lazy"><b><span data-en="Hold notes · the pedal" data-es="Mantener notas · el pedal">Hold notes · the pedal</span></b><span><span data-en="On: notes keep ringing after you let go. Off: they stop. On a computer, hold Shift." data-es="Activo: las notas siguen sonando cuando sueltas. Apagado: paran. En la computadora, mantén Shift.">On: notes keep ringing after you let go. Off: they stop. On a computer, hold Shift.</span></span></div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">4</span><span data-en="A chord with your hand" data-es="Un acorde con tu mano">A chord with your hand</span></h2>
+  <p class="sub"><span data-en="Play one, skip one, play one, skip one, play one." data-es="Toca una, salta una, toca una, salta una, toca una.">Play one, skip one, play one, skip one, play one.</span></p>
+  <div class="two">
+    <figure class="draw card"><svg class="kb" viewBox="0 0 282 158" role="img" aria-hidden="true"><rect x="1" y="4" width="40" height="120" rx="4" fill="#f2c76a" stroke="#3b3f46" stroke-width="1.6"/><text x="21.0" y="148" text-anchor="middle" class="kl" data-en="C" data-es="Do">C</text><rect x="41" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="61.0" y="148" text-anchor="middle" class="kl" data-en="D" data-es="Re">D</text><rect x="81" y="4" width="40" height="120" rx="4" fill="#f2c76a" stroke="#3b3f46" stroke-width="1.6"/><text x="101.0" y="148" text-anchor="middle" class="kl" data-en="E" data-es="Mi">E</text><rect x="121" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="141.0" y="148" text-anchor="middle" class="kl" data-en="F" data-es="Fa">F</text><rect x="161" y="4" width="40" height="120" rx="4" fill="#f2c76a" stroke="#3b3f46" stroke-width="1.6"/><text x="181.0" y="148" text-anchor="middle" class="kl" data-en="G" data-es="Sol">G</text><rect x="201" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="221.0" y="148" text-anchor="middle" class="kl" data-en="A" data-es="La">A</text><rect x="241" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="261.0" y="148" text-anchor="middle" class="kl" data-en="B" data-es="Si">B</text><rect x="27" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="67" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="147" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="187" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="227" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/></svg><figcaption><b><span data-en="C major:" data-es="Do mayor:">C major:</span></b> <span data-en="C, E, G. Bright." data-es="Do, Mi, Sol. Brillante.">C, E, G. Bright.</span></figcaption></figure>
+    <figure class="draw card"><svg class="kb" viewBox="0 0 282 158" role="img" aria-hidden="true"><rect x="1" y="4" width="40" height="120" rx="4" fill="#9cc8e8" stroke="#3b3f46" stroke-width="1.6"/><text x="21.0" y="148" text-anchor="middle" class="kl" data-en="C" data-es="Do">C</text><rect x="41" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="61.0" y="148" text-anchor="middle" class="kl" data-en="D" data-es="Re">D</text><rect x="81" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="101.0" y="148" text-anchor="middle" class="kl" data-en="E" data-es="Mi">E</text><rect x="121" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="141.0" y="148" text-anchor="middle" class="kl" data-en="F" data-es="Fa">F</text><rect x="161" y="4" width="40" height="120" rx="4" fill="#9cc8e8" stroke="#3b3f46" stroke-width="1.6"/><text x="181.0" y="148" text-anchor="middle" class="kl" data-en="G" data-es="Sol">G</text><rect x="201" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="221.0" y="148" text-anchor="middle" class="kl" data-en="A" data-es="La">A</text><rect x="241" y="4" width="40" height="120" rx="4" fill="#fffdf7" stroke="#3b3f46" stroke-width="1.6"/><text x="261.0" y="148" text-anchor="middle" class="kl" data-en="B" data-es="Si">B</text><rect x="27" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="67" y="4" width="28" height="72" rx="3" fill="#9cc8e8" stroke="#111" stroke-width="1.2"/><rect x="147" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="187" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/><rect x="227" y="4" width="28" height="72" rx="3" fill="#1f2227" stroke="#111" stroke-width="1.2"/></svg><figcaption><b><span data-en="C minor:" data-es="Do menor:">C minor:</span></b> <span data-en="C, E♭, G. The middle key moves down one. Moody." data-es="Do, Mi♭, Sol. La tecla del medio baja una. Melancólico.">C, E♭, G. The middle key moves down one. Moody.</span></figcaption></figure>
+  </div>
+</section>
+<section>
+  <h2><span class="n">5</span><span data-en="The six pads, in any key" data-es="Los seis pads, en cualquier tono">The six pads, in any key</span></h2>
+  <p class="sub"><span data-en="The numbers are steps of the scale. They mean the same thing in every key." data-es="Los números son pasos de la escala. Significan lo mismo en cualquier tono.">The numbers are steps of the scale. They mean the same thing in every key.</span></p>
+  <ul class="padlist">
+    <li><span class="pn maj">1</span><span><span data-en="Home. Songs often start and end here." data-es="La casa. Las canciones suelen empezar y terminar aquí.">Home. Songs often start and end here.</span></span></li>
+    <li><span class="pn min">2</span><span><span data-en="Moody. Leads on to 5." data-es="Melancólico. Lleva al 5.">Moody. Leads on to 5.</span></span></li>
+    <li><span class="pn min">3</span><span><span data-en="Moody, soft." data-es="Melancólico, suave.">Moody, soft.</span></span></li>
+    <li><span class="pn maj">4</span><span><span data-en="Bright. Away from home." data-es="Brillante. Lejos de casa.">Bright. Away from home.</span></span></li>
+    <li><span class="pn maj">5</span><span><span data-en="Bright. Wants to go home: tap 5, then 1." data-es="Brillante. Quiere volver a casa: toca 5 y luego 1.">Bright. Wants to go home: tap 5, then 1.</span></span></li>
+    <li><span class="pn min">6</span><span><span data-en="Moody. The sad friend of 1." data-es="Melancólico. El amigo triste del 1.">Moody. The sad friend of 1.</span></span></li>
+  </ul>
+  <p class="note"><span data-en="In Minor the pads become 1, 3, 4, 5, 6 and 7, and the moody chords lead." data-es="En Menor los pads son 1, 3, 4, 5, 6 y 7, y mandan los acordes melancólicos.">In Minor the pads become 1, 3, 4, 5, 6 and 7, and the moody chords lead.</span></p>
+</section>
+<section>
+  <h2><span class="n">6</span><span data-en="Make your own pattern" data-es="Haz tu propio patrón">Make your own pattern</span></h2>
+  <div class="steps">
+    <div class="step"><span class="num">1</span>
+      <img src="/pp-s-own.png" data-en-src="/pp-s-own.png" data-es-src="/pp-s-own-es.png" alt="Make my own and Clear." data-en-alt="Make my own and Clear." data-es-alt="Hacer el mío y Borrar." loading="lazy">
+      <b><span data-en="Clear, then Make my own" data-es="Borrar, luego Hacer el mío">Clear, then Make my own</span></b><span><span data-en="Clear empties the pattern." data-es="Borrar vacía el patrón.">Clear empties the pattern.</span></span>
+    </div>
+    <div class="step"><span class="num">2</span>
+      <img src="/pp-pads.png" data-en-src="/pp-pads.png" data-es-src="/pp-pads-es.png" alt="The six pads." data-en-alt="The six pads." data-es-alt="Los seis pads." loading="lazy">
+      <b><span data-en="Tap pads" data-es="Toca pads">Tap pads</span></b><span><span data-en="In the order you like. Up to 8." data-es="En el orden que quieras. Hasta 8.">In the order you like. Up to 8.</span></span>
+    </div>
+    <div class="step"><span class="num">3</span>
+      <img src="/pp-s-pad1.png" data-en-src="/pp-s-pad1.png" data-es-src="/pp-s-pad1-es.png" alt="Pad 1." data-en-alt="Pad 1." data-es-alt="El pad 1." loading="lazy" style="max-width:150px">
+      <b><span data-en="End on 1" data-es="Termina en 1">End on 1</span></b><span><span data-en="It sounds finished." data-es="Suena terminado.">It sounds finished.</span></span>
+    </div>
+    <div class="step"><span class="num">4</span>
+      <img src="/pp-s-play.png" data-en-src="/pp-s-play.png" data-es-src="/pp-s-play-es.png" alt="Play the chords." data-en-alt="Play the chords." data-es-alt="Tocar los acordes." loading="lazy">
+      <b><span data-en="Press Play" data-es="Pulsa Tocar">Press Play</span></b><span><span data-en="Your pattern goes round." data-es="Tu patrón da vueltas.">Your pattern goes round.</span></span>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">7</span><span data-en="Eight sounds" data-es="Ocho sonidos">Eight sounds</span></h2>
+  <p class="sub"><span data-en="Same keys, different color. That color is called timbre." data-es="Las mismas teclas, otro color. Ese color se llama timbre.">Same keys, different color. That color is called timbre.</span></p>
+  <div class="kits">
+    <div class="bank"><div class="letter">1</div><div><b><span data-en="Grand piano" data-es="Piano de cola">Grand piano</span></b><span><span data-en="Felt hammers hit long strings. A real recording." data-es="Martillos de fieltro golpean cuerdas largas. Una grabación real.">Felt hammers hit long strings. A real recording.</span></span></div></div>
+    <div class="bank"><div class="letter">2</div><div><b><span data-en="Upright piano" data-es="Piano vertical">Upright piano</span></b><span><span data-en="The strings stand up tall. A real recording." data-es="Las cuerdas están de pie. Una grabación real.">The strings stand up tall. A real recording.</span></span></div></div>
+    <div class="bank"><div class="letter">3</div><div><b><span data-en="Honky-tonk piano" data-es="Piano honky-tonk">Honky-tonk piano</span></b><span><span data-en="An upright, a little out of tune with itself." data-es="Un vertical, un poco desafinado consigo mismo.">An upright, a little out of tune with itself.</span></span></div></div>
+    <div class="bank"><div class="letter">4</div><div><b><span data-en="Electric piano · warm" data-es="Piano eléctrico · cálido">Electric piano · warm</span></b><span><span data-en="Hammers hit thin metal tines." data-es="Martillos golpean varillas delgadas de metal.">Hammers hit thin metal tines.</span></span></div></div>
+    <div class="bank"><div class="letter">5</div><div><b><span data-en="Electric piano · bright" data-es="Piano eléctrico · brillante">Electric piano · bright</span></b><span><span data-en="Hammers hit flat metal reeds." data-es="Martillos golpean lengüetas planas de metal.">Hammers hit flat metal reeds.</span></span></div></div>
+    <div class="bank"><div class="letter">6</div><div><b><span data-en="&#x27;80s electric piano" data-es="Piano eléctrico de los 80">&#x27;80s electric piano</span></b><span><span data-en="A computer chip does the math (FM)." data-es="Un chip de computadora hace las cuentas (FM).">A computer chip does the math (FM).</span></span></div></div>
+    <div class="bank"><div class="letter">7</div><div><b><span data-en="Rock and jazz organ" data-es="Órgano de rock y jazz">Rock and jazz organ</span></b><span><span data-en="Spinning wheels near magnets. Never fades." data-es="Ruedas que giran cerca de imanes. Nunca se apaga.">Spinning wheels near magnets. Never fades.</span></span></div></div>
+    <div class="bank"><div class="letter">8</div><div><b><span data-en="Church organ" data-es="Órgano de iglesia">Church organ</span></b><span><span data-en="Air through pipes, in a big room." data-es="Aire por tubos, en una sala grande.">Air through pipes, in a big room.</span></span></div></div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">8</span><span data-en="With the drum machine and the turntables" data-es="Con la caja de ritmos y los platos">With the drum machine and the turntables</span></h2>
+  <div class="steps">
+    <div class="step"><span class="num">1</span>
+      <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="52" height="38" rx="6" fill="#2b2f35"/><g fill="#f2c76a"><rect x="12" y="20" width="10" height="10" rx="2"/><rect x="27" y="20" width="10" height="10" rx="2"/><rect x="42" y="20" width="10" height="10" rx="2"/><rect x="12" y="35" width="10" height="10" rx="2"/><rect x="27" y="35" width="10" height="10" rx="2"/><rect x="42" y="35" width="10" height="10" rx="2"/></g></svg>
+      <b><span data-en="On the drum machine" data-es="En la caja de ritmos">On the drum machine</span></b><span><span data-en="Make a beat. Press Send to the turntables." data-es="Haz un ritmo. Pulsa Enviar a los platos.">Make a beat. Press Send to the turntables.</span></span>
+    </div>
+    <div class="step"><span class="num">2</span>
+      <img src="/pp-s-drum.png" data-en-src="/pp-s-drum.png" data-es-src="/pp-s-drum-es.png" alt="Play with my drum beat, and the name of the beat." data-en-alt="Play with my drum beat, and the name of the beat." data-es-alt="Tocar con mi ritmo de batería, y el nombre del ritmo." loading="lazy">
+      <b><span data-en="Back on the piano" data-es="De vuelta en el piano">Back on the piano</span></b><span><span data-en="Press Play with my drum beat, under Tempo." data-es="Pulsa Tocar con mi ritmo de batería, debajo del Tempo.">Press Play with my drum beat, under Tempo.</span></span>
+    </div>
+    <div class="step"><span class="num">3</span>
+      <img src="/pp-s-play.png" data-en-src="/pp-s-play.png" data-es-src="/pp-s-play-es.png" alt="Play the chords." data-en-alt="Play the chords." data-es-alt="Tocar los acordes." loading="lazy">
+      <b><span data-en="Press Play" data-es="Pulsa Tocar">Press Play</span></b><span><span data-en="Your chords play in time with the beat." data-es="Tus acordes suenan a tiempo con el ritmo.">Your chords play in time with the beat.</span></span>
+    </div>
+    <div class="step"><span class="num">4</span>
+      <img src="/pp-s-send.png" data-en-src="/pp-s-send.png" data-es-src="/pp-s-send-es.png" alt="Send to the turntables." data-en-alt="Send to the turntables." data-es-alt="Enviar a los platos." loading="lazy">
+      <b><span data-en="Send" data-es="Enviar">Send</span></b><span><span data-en="On the turntables it is under From the piano." data-es="En los platos está en Del piano.">On the turntables it is under From the piano.</span></span>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">9</span><span data-en="On a computer" data-es="En una computadora">On a computer</span></h2>
+  <p class="sub"><span data-en="Each key shows its letter. The letters stay put when you move up or down." data-es="Cada tecla muestra su letra. Las letras no cambian al subir o bajar.">Each key shows its letter. The letters stay put when you move up or down.</span></p>
+  <figure class="whole letters"><img src="/pp-letters.png" data-en-src="/pp-letters.png" data-es-src="/pp-letters-es.png" alt="The keys with their computer letters: A S D F G H J K L ; and W E T Y U O P." data-en-alt="The keys with their computer letters: A S D F G H J K L ; and W E T Y U O P." data-es-alt="Las teclas con sus letras de la computadora: A S D F G H J K L Ñ y W E T Y U O P." loading="lazy"><figcaption><span data-en="The middle row plays the white keys. The row above plays the black keys." data-es="La fila del medio toca las teclas blancas. La fila de arriba toca las negras.">The middle row plays the white keys. The row above plays the black keys.</span></figcaption></figure>
+  <ul class="keys">
+    <li><kbd>A S D F G H J K</kbd><span><span data-en="White keys, C up to C" data-es="Teclas blancas, de Do a Do">White keys, C up to C</span></span></li>
+    <li><kbd>W E T Y U O P</kbd><span><span data-en="Black keys" data-es="Teclas negras">Black keys</span></span></li>
+    <li><kbd>Shift</kbd><span><span data-en="Hold for the pedal" data-es="Mantén para el pedal">Hold for the pedal</span></span></li>
+    <li><kbd>1 – 6</kbd><span><span data-en="The six pads" data-es="Los seis pads">The six pads</span></span></li>
+    <li><kbd>Z · X</kbd><span><span data-en="Lower · higher" data-es="Más grave · más agudo">Lower · higher</span></span></li>
+    <li><kbd><span data-en="Space" data-es="Espacio">Space</span></kbd><span><span data-en="Play and stop" data-es="Tocar y parar">Play and stop</span></span></li>
+  </ul>
+</section>
+<section>
+  <h2><span class="n">10</span><span data-en="The lessons" data-es="Las lecciones">The lessons</span></h2>
+  <p class="sub"><span data-en="Pick a lesson in the Lesson menu. Do the steps on the piano. They tick themselves." data-es="Elige una lección en el menú Lección. Haz los pasos en el piano. Se marcan solos.">Pick a lesson in the Lesson menu. Do the steps on the piano. They tick themselves.</span></p>
+  <figure class="whole lessons"><img src="/pp-lessons.png" data-en-src="/pp-lessons.png" data-es-src="/pp-lessons-es.png" alt="The lesson card: three steps ticked, and the Worksheet button." data-en-alt="The lesson card: three steps ticked, and the Worksheet button." data-es-alt="La tarjeta de la lección: tres pasos marcados y el botón de la hoja de trabajo." loading="lazy"><figcaption><span data-en="Worksheet opens the sheet for that lesson. Type on it or print it." data-es="La hoja de trabajo abre la hoja de esa lección. Escribe en ella o imprímela.">Worksheet opens the sheet for that lesson. Type on it or print it.</span></figcaption></figure>
+</section>
+<section>
+  <h2><span class="n">?</span><span data-en="Nothing is happening?" data-es="¿No pasa nada?">Nothing is happening?</span></h2>
+  <ul class="fix">
+    <li><span class="q">?</span><div><b><span data-en="No sound" data-es="No hay sonido">No sound</span></b><span><span data-en="Turn Volume up and tap a key once. A phone wakes its sound on the first tap. An iPhone plays even with the silent switch on." data-es="Sube el Volumen y toca una tecla una vez. Un teléfono despierta su sonido con el primer toque. Un iPhone suena aunque esté en silencio.">Turn Volume up and tap a key once. A phone wakes its sound on the first tap. An iPhone plays even with the silent switch on.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="“Getting the grand piano ready…”" data-es="“Preparando el piano de cola…”">“Getting the grand piano ready…”</span></b><span><span data-en="The recordings are on their way. Until then you hear the electric piano." data-es="Las grabaciones vienen en camino. Mientras tanto suena el piano eléctrico.">The recordings are on their way. Until then you hear the electric piano.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="Play does nothing" data-es="Tocar no hace nada">Play does nothing</span></b><span><span data-en="Pick a chord pattern first, or press Make my own and tap some pads." data-es="Primero elige un patrón de acordes, o pulsa Hacer el mío y toca algunos pads.">Pick a chord pattern first, or press Make my own and tap some pads.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="The tempo will not move" data-es="El tempo no se mueve">The tempo will not move</span></b><span><span data-en="Play with my drum beat is on. The drum beat sets the tempo. Press it again to turn it off." data-es="Tocar con mi ritmo de batería está activo. El ritmo pone el tempo. Púlsalo otra vez para apagarlo.">Play with my drum beat is on. The drum beat sets the tempo. Press it again to turn it off.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="A MIDI keyboard" data-es="Un teclado MIDI">A MIDI keyboard</span></b><span><span data-en="Use Chrome or Edge. Plug it in, then press Use a MIDI keyboard." data-es="Usa Chrome o Edge. Conéctalo y luego pulsa Usar un teclado MIDI.">Use Chrome or Edge. Plug it in, then press Use a MIDI keyboard.</span></span></div></li>
+  </ul>
+</section>
+<footer>
+  <span data-en="The Piano · Architecture of Grace · grand piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0); upright: Simon Dalzell, Ivy Audio, for Versilian Studios (CC0)" data-es="El piano · Architecture of Grace · piano de cola: Salamander Grand Piano de Alexander Holm (CC BY 3.0); vertical: Simon Dalzell, Ivy Audio, para Versilian Studios (CC0)">The Piano · Architecture of Grace · grand piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0); upright: Simon Dalzell, Ivy Audio, for Versilian Studios (CC0)</span>
+</footer>
+
+</div>
+<script>
+/* AOG-PIANOPIC-V1 — each picture has a Spanish twin; it follows the page language (the EN/ES switch in the top bar) */
+(function(){
+  function swap(){
+    var es=(document.documentElement.getAttribute("lang")||"").indexOf("es")===0;
+    document.querySelectorAll("img[data-es-src]").forEach(function(im){
+      var src=im.getAttribute(es?"data-es-src":"data-en-src"), alt=im.getAttribute(es?"data-es-alt":"data-en-alt");
+      if(src && im.getAttribute("src")!==src) im.setAttribute("src", src);
+      if(alt) im.setAttribute("alt", alt);
+    });
+  }
+  try{ new MutationObserver(swap).observe(document.documentElement, {attributes:true, attributeFilter:["lang"]}); }catch(e){}
+  swap();
+})();
+</script>
+<script src="/aog-topbar.js"></script>
+</body>
+</html>

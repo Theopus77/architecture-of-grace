@@ -113,6 +113,13 @@ svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
 /* banks + sounds */
 .two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
 @media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.kits { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; align-items:stretch; }
+@media (max-width:820px){ .kits { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .kits { grid-template-columns:1fr; } }
+.kits .bank { padding:.65rem .75rem; gap:.65rem; }
+.kits .bank .letter { width:2.2rem; height:2.2rem; font-size:1.1rem; }
+.kits .bank span { font-size:.86rem; line-height:1.35; display:block; }
+.note { margin:.8rem 0 0; color:var(--muted); font-size:.92rem; }
 .bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
   break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
 .bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
@@ -162,6 +169,12 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
   .part b { font-size:10.5pt; }
   .part span { font-size:9.5pt; }
   .recipe, .step, .bank, .fix li { box-shadow:none; }
+  .kits { grid-template-columns:repeat(3,1fr); gap:.4rem; }
+  .kits .bank { padding:.4rem .55rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .fix { gap:.35rem; }
+  .fix li { padding:.35rem .6rem; }
+  .fix img { max-width:90px; }
   a { text-decoration:none; color:inherit; }
 }
 </style>
@@ -185,7 +198,8 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 <section>
   <h2><span class="n">&#9733;</span>Start here &middot; the Simple bench</h2>
   <p class="sub">This is what the machine shows first. Everything you need for a beat is on it. <b>Full bench</b> brings back every switch on the real SP-1200 &mdash; that is what the rest of this guide shows.</p>
-  <figure class="whole"><img src="/pd-s-machine.png" alt="The drum machine on the Simple bench: the switch, three big buttons, eight pads and the grid."><figcaption>The Simple bench. Pads, the grid, and three buttons.</figcaption></figure>
+  <!-- AOG-DRUMPIC-V2 (2026-10-03) - the machine now has nine kits, a Start from a beat menu, a Sound dial and Roll. New pictures of the real machine. -->
+  <figure class="whole"><img src="/pd-s-bench.png" alt="The drum machine on the Simple bench: three big buttons, Start from a beat, Sounds, Part, the Sound dial, the screen and eight pads."><figcaption>The Simple bench. Pick a beat, pick a kit, play the pads.</figcaption></figure>
   <div class="parts">
     <div class="part wide">
       <img src="/pd-s-switch.png" alt="Simple bench and Full bench buttons.">
@@ -193,11 +207,19 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
     </div>
     <div class="part wide">
       <img src="/pd-s-strip.png" alt="Play the beat, Clear the beat, Send to the turntables.">
-      <b>The three buttons</b><span>Orange <b>plays</b> and stops. Red <b>clears</b> the beat. Blue <b>sends</b> it to the turntables. On the Full bench these are RUN, CLEAR and TO THE DECKS.</span>
+      <b>The three buttons</b><span>Orange <b>plays</b> and stops. Red <b>clears</b> the beat. Blue <b>sends</b> it to the turntables. On the Full bench these are RUN, CLEAR GRID and TO THE DECKS.</span>
+    </div>
+    <div class="part half">
+      <img src="/pd-startbeat.png" alt="The Start from a beat menu.">
+      <b>Start from a beat</b><span>Pick a style. A beat is already there. Change it.</span>
+    </div>
+    <div class="part half">
+      <img src="/pd-sounds.png" alt="The Sounds menu, set to Kit A, the classic.">
+      <b>Sounds</b><span>Nine kits, A to I. Pick one. Your beat stays.</span>
     </div>
     <div class="part wide">
-      <img src="/pd-s-rows.png" alt="Sounds A B C D and Part 1 to 8.">
-      <b>Sounds &middot; Part</b><span>A and B are the classic kit. <b>C</b> is electro: boom, snap, cowbell, conga, zap. <b>D</b> is dusty breaks: thump, crack, shaker, tambourine, snap, timbale, woodblock, triangle. Part 1 to 8 are the eight segments of your song.</span>
+      <img src="/pd-s-part.png" alt="Part 1 to 8, Length, Swing and Roll.">
+      <b>Part &middot; Length &middot; Swing &middot; Roll</b><span>Part 1 to 8 are the eight parts of your song.</span>
     </div>
     <div class="part half">
       <img src="/pd-s-pads.png" alt="The eight pads.">
@@ -212,19 +234,19 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
       <b>Tempo &middot; Room volume</b><span>Faster or slower. Louder or quieter.</span>
     </div>
     <div class="part half">
-      <img src="/pd-s-presets.png" alt="Starter pattern chips.">
-      <b>Starter patterns</b><span>Tap one and a beat is already there. Change it.</span>
+      <img src="/pd-dial.png" alt="The Sound dial, from 1987 to 2026.">
+      <b>Sound</b><span>Left: 1987 crunch. Right: clean 2026.</span>
     </div>
   </div>
 </section>
 
 <section>
   <h2><span class="n">1</span>What everything is</h2>
-  <figure class="whole"><img src="/panel-drums.png" alt="The whole drum machine screen."><figcaption>The whole machine. Every piece of it is below, close up.</figcaption></figure>
+  <figure class="whole"><img src="/pd-f-machine.png" alt="The whole drum machine on the Full bench."><figcaption>The whole machine. Every piece of it is below, close up.</figcaption></figure>
   <div class="parts">
     <div class="part half">
       <img src="/pd-screen.png" alt="The green screen.">
-      <b>The screen</b><span>Which bank, the tempo, the swing, and whether it is running.</span>
+      <b>The screen</b><span>Which kit, the tempo, the swing, and whether it is running.</span>
     </div>
     <div class="part half">
       <img src="/pd-run.png" alt="The RUN button.">
@@ -238,9 +260,13 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
       <img src="/pd-decks.png" alt="The TO THE DECKS button.">
       <b>TO THE DECKS</b><span>Sends your beat over to the turntables.</span>
     </div>
-    <div class="part wide">
-      <img src="/pd-select.png" alt="SELECT A B C D.">
-      <b>SELECT</b><span>Four sets of sounds. A and B are full. C and D are empty and yours.</span>
+    <div class="part half">
+      <img src="/pd-f-sounds.png" alt="The Sounds menu.">
+      <b>SOUNDS</b><span>Nine kits, A to I. The screen shows the letter.</span>
+    </div>
+    <div class="part half">
+      <img src="/pd-repeat.png" alt="The REPEAT OFF button." style="max-width:140px">
+      <b>REPEAT</b><span>Same as Roll. Hold a pad and it repeats.</span>
     </div>
     <div class="part wide">
       <img src="/pd-pads.png" alt="The eight sliders above the eight pads.">
@@ -285,7 +311,35 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 </section>
 
 <section>
-  <h2><span class="n">3</span>One box, four taps</h2>
+  <h2><span class="n">3</span>Four more things to try</h2>
+  <p class="sub">On both benches.</p>
+  <div class="steps">
+    <div class="step">
+      <img src="/pd-startbeat.png" alt="The Start from a beat menu.">
+      <b>Start from a beat</b>
+      <span>Pick a style. Its kit, tempo and swing come too. Want yours back? Press <strong>Put my beat back</strong>.</span>
+    </div>
+    <div class="step">
+      <img src="/pd-dial.png" alt="The Sound dial, from 1987 to 2026.">
+      <b>Slide the Sound dial</b>
+      <span>Left is 1987 crunch. Right is clean 2026.</span>
+    </div>
+    <div class="step">
+      <img src="/pd-roll.png" alt="The Roll key, set to 1/16." style="max-width:110px">
+      <b>Roll</b>
+      <span>Tap: 1/8, 1/16, 1/32, off. Hold a pad. It repeats in time. With REC on, it records.</span>
+    </div>
+    <div class="step">
+      <img src="/pd-keys.png" alt="The eight pads, each with its key letter.">
+      <b>On a computer</b>
+      <span>Keys A S D F and J K L ; play the pads. Space starts and stops.</span>
+    </div>
+  </div>
+  <p class="sub" style="margin-left:0;margin-top:.7rem">Two fingers can play two pads at once.</p>
+</section>
+
+<section>
+  <h2><span class="n">4</span>One box, four taps</h2>
   <p class="sub">Keep clicking the same box. It goes round.</p>
   <figure class="states">
     <img src="/pd-states.png" alt="Four grid boxes: off, on, louder, and a green quieter one.">
@@ -300,7 +354,7 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 </section>
 
 <section>
-  <h2><span class="n">4</span>The sixteen boxes</h2>
+  <h2><span class="n">5</span>The sixteen boxes</h2>
   <p class="sub">One bar of music, chopped into sixteen. The big numbers are the beats you count out loud.</p>
   <div class="gridwrap">
     <div class="g">
@@ -322,9 +376,9 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 </section>
 
 <section>
-  <h2><span class="n">5</span>Five beats to copy</h2>
-  <p class="sub">Light up the same boxes and press RUN. Or press the preset with the same name.</p>
-  <figure class="whole"><img src="/pd-presets.png" alt="The Starter patterns buttons: Four on the floor, Backbeat, School clave and more."><figcaption>The presets sit under Tempo, marked <b>Starter patterns</b>.</figcaption></figure>
+  <h2><span class="n">6</span>Five beats to copy</h2>
+  <p class="sub">Light up the same boxes and press RUN. Or pick the one with the same name.</p>
+  <figure class="whole"><img src="/pd-startbeat.png" alt="The Start from a beat menu." style="max-width:300px"><figcaption>Open <b>Start from a beat</b>. These are under <b>Classroom patterns</b>.</figcaption></figure>
 <figure class="recipe">
   <figcaption><b>Four on the floor</b><span>Every beat gets a kick. The one everybody dances to.</span></figcaption>
   <div class="gridwrap">
@@ -676,7 +730,7 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 </section>
 
 <section>
-  <h2><span class="n">6</span>Swing</h2>
+  <h2><span class="n">7</span>Swing</h2>
   <p class="sub">The SWING button up top. Slides the in-between notes late. Straight on the left, lazy on the right. Six steps &mdash; the real machine had six.</p>
   <figure class="whole"><img src="/pd-swing.png" alt="The SWING button." style="max-width:170px"><figcaption>Each press moves one step to the right.</figcaption></figure>
   <div class="figwrap">
@@ -705,20 +759,26 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 </section>
 
 <section>
-  <h2><span class="n">7</span>The four banks</h2>
-  <p class="sub">Same eight pads, different sounds behind them.</p>
-  <figure class="whole"><img src="/pd-select.png" alt="SELECT A B C D, with B lit." style="max-width:290px"><figcaption>The lit letter is the bank you are playing.</figcaption></figure>
-  <div class="two">
-    <div class="bank"><div class="letter">A</div><div><b>The kit</b><span>The kit that is already in there. Start here.</span></div></div>
-    <div class="bank"><div class="letter">B</div><div><b>The same kit, tuned</b><span>Deeper kick, brighter hats.</span></div></div>
-    <div class="bank empty"><div class="letter">C</div><div><b>Empty &mdash; yours</b><span>Tap a pad, pick a sound file.</span></div></div>
-    <div class="bank empty"><div class="letter">D</div><div><b>Empty &mdash; yours</b><span>Tap a pad, pick a sound file.</span></div></div>
+  <h2><span class="n">8</span>The nine kits</h2>
+  <p class="sub">Same eight pads, different sounds behind them. Every kit is ready to play. Pick one under <b>Sounds</b>.</p>
+  <figure class="whole noprint"><img src="/pd-sounds.png" alt="The Sounds menu, set to Kit A, the classic." style="max-width:300px"><figcaption>Pick a kit under <b>Sounds</b>. The screen shows its letter.</figcaption></figure>
+  <div class="kits">
+    <div class="bank"><div class="letter">A</div><div><b>The classic</b><span>Kick, snare, hats, clap, tom, rim, bell. Start here.</span></div></div>
+    <div class="bank"><div class="letter">B</div><div><b>The classic, retuned</b><span>Deeper kick, brighter hats.</span></div></div>
+    <div class="bank"><div class="letter">C</div><div><b>Electro</b><span>Boom, snap, cowbell, conga, zap.</span></div></div>
+    <div class="bank"><div class="letter">D</div><div><b>Dusty breaks</b><span>Thump, crack, shaker, tambourine, woodblock, triangle.</span></div></div>
+    <div class="bank"><div class="letter">E</div><div><b>Boom bap</b><span>Kick, snare, hats, low tom, stick, scratch.</span></div></div>
+    <div class="bank"><div class="letter">F</div><div><b>808 trap</b><span>808, snare, hats, clap, pluck.</span></div></div>
+    <div class="bank"><div class="letter">G</div><div><b>Lo-fi</b><span>Soft kick, brush, sizzle, snap, keys.</span></div></div>
+    <div class="bank"><div class="letter">H</div><div><b>Latin percussion</b><span>Bombo, timbal, g&uuml;iro, maraca, clave, conga, bongo, agog&ocirc;.</span></div></div>
+    <div class="bank"><div class="letter">I</div><div><b>Live drums</b><span>Kick, snare, hats, cross-stick, floor tom, ride, crash.</span></div></div>
   </div>
+  <p class="note">Your own sound on a pad plays instead of the kit sound. Want the kit back? Next to <strong>Sounds</strong>, press <strong>Put the kit sounds back</strong>. Changed your mind? Press <strong>Put my sounds back</strong>.</p>
 </section>
 
 <section>
-  <h2><span class="n">8</span>The eight sounds</h2>
-  <p class="sub">One row of eight, left to right. The number is printed on the pad.</p>
+  <h2><span class="n">9</span>The eight sounds</h2>
+  <p class="sub">Kit A, left to right. The number is printed on the pad. Other kits show their own names.</p>
   <figure class="whole"><img src="/pd-pads.png" alt="The eight pads with a slider above each one."><figcaption>The slider above a pad is how loud it plays.</figcaption></figure>
   <ul class="sounds">
 <li><span class="padn">1</span>Kick</li>
@@ -733,7 +793,7 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 </section>
 
 <section>
-  <h2><span class="n">9</span>Nothing is happening</h2>
+  <h2><span class="n">10</span>Something is not right</h2>
   <ul class="fix">
     <li>
       <img src="/pd-run.png" alt="The RUN button.">
@@ -744,8 +804,16 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
       <div><b>One pad is silent</b><span>Its slider is at the bottom. Push it up.</span></div>
     </li>
     <li>
-      <img src="/pd-select.png" alt="SELECT A B C D.">
-      <div><b>Whole bank is silent</b><span>SELECT is on C or D. Those start empty. Press A.</span></div>
+      <img src="/pd-sounds.png" alt="The Sounds menu.">
+      <div><b>A pad plays the wrong sound</b><span>Your own sound is on it. Next to <strong>Sounds</strong>, press <strong>Put the kit sounds back</strong>.</span></div>
+    </li>
+    <li>
+      <img src="/pd-roll.png" alt="The Roll key, turned on." style="max-width:90px">
+      <div><b>A pad keeps hitting</b><span>Roll is on. Tap it until it says off.</span></div>
+    </li>
+    <li>
+      <img src="/pd-startbeat.png" alt="The Start from a beat menu.">
+      <div><b>My beat is gone</b><span>A new beat took its place. Press <strong>Put my beat back</strong>.</span></div>
     </li>
     <li>
       <img src="/pd-tempo.png" alt="The Tempo slider.">

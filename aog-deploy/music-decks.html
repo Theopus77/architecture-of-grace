@@ -282,7 +282,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
   <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
-  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><a class="sep" href="/decks-guide" id="navGuide">Picture guide</a><a class="sep" href="music-drums.html" id="navDrums">The drum machine</a></nav>
+  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><span class="sisters"><a class="sep" href="/decks-guide" id="navGuide"><span class="lg">Picture guide</span><span class="sh">Guide</span></a><a class="sep" href="music-drums.html" id="navDrums"><span class="lg">The drum machine</span><span class="sh">Drums</span></a><a class="sep" href="music-piano.html" id="navPiano"><span class="lg">The piano</span><span class="sh">Piano</span></a></span></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
@@ -340,7 +340,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
    A song is a file the student picks; it is decoded here and never sent. */
 const STR = {
   app:{en:"The Turntables",es:"Los tocadiscos"},
-  eyebrow:{en:"Load a song. Then move the platter.",es:"Carga una canción. Luego mueve el plato."},
+  eyebrow:{en:"Load a song. Spin it.",es:"Pon un disco. Gíralo."},
   tag:{en:"Two decks with weight. Grab a platter and it follows your hand; let go and the motor takes it back.",es:"Dos platos con peso. Agarra un plato y sigue tu mano; suéltalo y el motor lo retoma."},
   tagLong:{en:"Two decks with weight. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The crossfader mixes them, and Record keeps the take as a .wav you can save or drop back onto a platter. We do not provide songs, and a song never leaves this computer.",es:"Dos platos con peso. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El crossfader los mezcla, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. No damos canciones, y una canción nunca sale de esta computadora."},
   load:{en:"Load a song",es:"Cargar una canción"},
@@ -395,6 +395,8 @@ const STR = {
   bench:{en:"From the drum machine",es:"De la caja de ritmos"},
   benchNone:{en:"Bounce a pattern from the drum machine and it lands here.",es:"Rebota un patrón de la caja de ritmos y aparece aquí."},
   benchGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
+  keys:{en:"From the piano",es:"Del piano"},
+  keysGo:{en:"Open the piano",es:"Abrir el piano"},
   crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
@@ -770,29 +772,47 @@ function paintTape(){
    The drum machine bounces its pattern onto a shelf both benches can reach
    (aog-handoff.js); here it is a beat you drop on a platter. So: your own beat
    on deck B, a song on deck A, scratch over it, and Record keeps the lot. */
-let benchTake = null;
+let benchTake = null, keysTake = null;
 async function checkBench(){
   try{ benchTake = await AOGHandoff.get("drumbench"); }catch(e){ benchTake = null; }
+  try{ keysTake = await AOGHandoff.get("keysbench"); }catch(e){ keysTake = null; }   /* AOG-PIANO-V1 */
   paintBench();
 }
 function paintBench(){
   const box = document.getElementById("bench");
   if(!box) return;
+  let html;
   if(!benchTake || !benchTake.wav){
-    box.innerHTML = `<div class="take empty"><b>${t("bench")}</b> <span class="tlen">${t("benchNone")}</span>
+    html = `<div class="take empty"><b>${t("bench")}</b> <span class="tlen">${t("benchNone")}</span>
       <a class="ghost" href="music-drums.html">${t("benchGo")}</a></div>`;
-    return;
-  }
-  box.innerHTML = `<div class="take">
+  } else {
+    html = `<div class="take">
       <b>${t("bench")}</b> <span class="tlen">${benchTake.name||""}</span>
       <button type="button" class="ghost" data-bench="A">${t("toA")}</button>
       <button type="button" class="ghost" data-bench="B">${t("toB")}</button>
       <a class="ghost" href="music-drums.html">${t("benchGo")}</a>
     </div>`;
+  }
+  /* AOG-PIANO-V1 — the piano leaves its chords on the same shelf, under its own name */
+  if(keysTake && keysTake.wav){
+    html += `<div class="take">
+      <b>${t("keys")}</b> <span class="tlen">${keysTake.name||""}</span>
+      <button type="button" class="ghost" data-keys="A">${t("toA")}</button>
+      <button type="button" class="ghost" data-keys="B">${t("toB")}</button>
+      <a class="ghost" href="music-piano.html">${t("keysGo")}</a>
+    </div>`;
+  }
+  box.innerHTML = html;
   box.querySelectorAll("[data-bench]").forEach(b=>{
     b.onclick = ()=>{
       const d = decks.find(x=>x.id===b.getAttribute("data-bench"));
       loadFile(d, new File([benchTake.wav], "drum-bench.wav", { type:"audio/wav" }));
+    };
+  });
+  box.querySelectorAll("[data-keys]").forEach(b=>{
+    b.onclick = ()=>{
+      const d = decks.find(x=>x.id===b.getAttribute("data-keys"));
+      loadFile(d, new File([keysTake.wav], "piano.wav", { type:"audio/wav" }));
     };
   });
 }
@@ -1749,7 +1769,7 @@ function paintChrome(){
   paintTape();
   document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");
-  document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-drums.html">${t("drums")}</a> · <a href="/science">${t("sci")}</a></p>`;
+  document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-drums.html">${t("drums")}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("sci")}</a></p>`;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
 }
@@ -1782,8 +1802,10 @@ document.addEventListener("visibilitychange", ()=>{
     document.querySelectorAll("[data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",on?"true":"false"); });
     const es=S.lang==="es";
-    const L={navDecks:["Bench","Mesa"],navDrums:["The drum machine","La caja de ritmos"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
+    const L={navDecks:["Bench","Mesa"],navDrums:["The drum machine","La caja de ritmos"],navPiano:["The piano","El piano"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
+    const SH={navGuide:["Guide","Guía"],navDrums:["Drums","Ritmos"],navPiano:["Piano","Piano"]};   /* AOG-BENCH-SHORT-V1: the short name a phone shows */
+    Object.keys(SH).forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=`<span class="lg">${L[id][es?1:0]}</span><span class="sh">${SH[id][es?1:0]}</span>`; });
   }
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
   document.querySelectorAll("[data-decktab]").forEach(b=>b.onclick=()=>{ tab=b.getAttribute("data-decktab"); paintSw(); });
@@ -1970,7 +1992,7 @@ function paintLessons(){
 paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
-try{ AOGHandoff.listen(function(key){ if(key==="drumbench") checkBench(); }); }catch(e){}
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="keysbench") checkBench(); }); }catch(e){}
 window.addEventListener("focus", checkBench);
 </script>
 <script>

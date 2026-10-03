@@ -36,6 +36,15 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .bench-bar .nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
 .bench-bar .nav a.sep{order:3;padding:0 .5rem}
 .bench-bar .nav a.sep:not(.sep ~ .sep){margin-left:auto}
+/* AOG-BENCH-SHORT-V1 (2026-10-03) — three music tools now link to each other. On a phone the sister links use their
+   short names (Guide · Drums · Turntables · Piano), so they still fit one line and the controls take the next. */
+.bench-bar .nav a .sh{display:none}
+@media (max-width:700px){ .bench-bar .nav a .lg{display:none} .bench-bar .nav a .sh{display:inline} }
+/* a bench with the Simple and Full switch has less room in the bar, so it uses the short names at every size */
+.bench-bar:has(.bench-switch [data-bench]) .nav a .lg{display:none}
+.bench-bar:has(.bench-switch [data-bench]) .nav a .sh{display:inline}
+/* the sister links stay together: when they do not fit beside the controls, they move to the next line as one group */
+.bench-bar .nav .sisters{order:3;margin-left:auto;display:inline-flex;flex-wrap:nowrap;align-items:center;max-width:100%}
 .bench-bar .nav>span,.bench-bar .nav>.aogdd{order:1}
 /* a bench with four or more places to look lists them in one menu (CLAUDE.md: drop-downs, not walls of tabs) */
 .bench-bar .nav .aogdd{margin:0;flex:0 0 auto;gap:0}
