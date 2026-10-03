@@ -366,8 +366,10 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
+        <p class="line" id="padsLine" aria-live="polite"></p>
       </div>
     </section>
     <div id="alt" hidden></div>
@@ -481,6 +483,9 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  padsBtn:{en:"Send chords to the drum machine",es:"Enviar acordes a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
+  padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
   credit:{en:"Grand piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright and honky-tonk: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). The electric pianos and organs are built on this page.",
           es:"Piano de cola: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical y honky-tonk: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Los pianos eléctricos y los órganos se crean en esta página."},
@@ -1030,6 +1035,33 @@ async function bounce(){
   btn.disabled=false;
 }
 
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The six chords of the key, each a short hit made
+   the way a pad plays it, go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
+   at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
+function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(c.q==="min"?"m":""); }
+async function sendPads(){
+  const line=$("padsLine"), btn=$("padsBtn");
+  btn.disabled=true; line.textContent=t("padsSending");
+  try{
+    const snd=SOUNDS[S.sound];
+    if(snd.kind==="sample") await loadSet(snd.set, paintLoad);
+    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
+    for(const c of pads()){
+      const oc=new OC(1, Math.ceil(LEN*SR), SR), ch=makeChain(oc);
+      ch.master.gain.value=volGain(0.8); setSendLevel(ch, S.sound); setEra(ch, 0, 0);
+      const notes=voicing(c, null).concat([bassOf(c)]);
+      notes.forEach((m,j)=>{ const vc=makeVoice(oc, ch, S.sound, m, 0.74*(j===notes.length-1?0.85:1), 0.004); if(vc) vc.stop(LEN-0.3, Math.min(vc.tau, 0.12)); });
+      const d=(await oc.startRendering()).getChannelData(0);
+      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
+      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
+      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
+    }
+    await AOGHandoff.put("chordpads", {from:"piano", name:soundName(S.sound), at:Date.now(), pads:out});
+    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drums")}</a>`;
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    THE PAGE
    ══════════════════════════════════════════════════════════════════════════ */
@@ -1043,7 +1075,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear"); $("susBtn").textContent=t("sus");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("midiBtn").textContent=t("midi");
-  $("sendBtn").textContent=t("send");
+  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn");
   $("era").setAttribute("aria-label", t("eraAria"));
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/piano/CREDITS.txt">${t("credits")}</a></p><p><a href="music-drums.html">${t("drums")}</a> · <a href="music-decks.html">${t("decks")}</a> · <a href="piano-lessons.html">${t("sheets")}</a></p>`;
   $("pgLab").textContent=t("guide"); $("pgSub").textContent=t("pgSub"); $("pgFoot").innerHTML=t("pgFoot");
@@ -1364,6 +1396,7 @@ function bind(){
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(()=>{ save(); lessonsChanged(); },250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=bounce;
+  $("padsBtn").onclick=sendPads;
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };

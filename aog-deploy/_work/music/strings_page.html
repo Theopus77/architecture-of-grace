@@ -289,8 +289,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
+        <p class="line" id="padsLine" aria-live="polite"></p>
       </div>
     </section>
   </main>
@@ -395,6 +397,9 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  padsBtn: GTR?{en:"Send chords to the drum machine",es:"Enviar acordes a la caja de ritmos"}:{en:"Send the low notes to the drum machine",es:"Enviar las notas graves a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
+  padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
   credit: GTR?{en:"Every guitar here is built on this page: a plucked string, made with math. Nothing to download.",es:"Cada guitarra aquí se crea en esta página: una cuerda pulsada, hecha con matemáticas. No hay nada que descargar."}
              :{en:"Every bass here is built on this page: a plucked string, made with math. Nothing to download.",es:"Cada bajo aquí se crea en esta página: una cuerda pulsada, hecha con matemáticas. No hay nada que descargar."},
@@ -1052,6 +1057,31 @@ async function bounce(){
   btn.disabled=false;
 }
 
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The six chords of the key, each a short hit made
+   the way a pad plays it (on the bass, the chord's low note), go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
+   at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
+function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(GTR&&c.q==="min"?"m":""); }
+async function sendPads(){
+  const line=$("padsLine"), btn=$("padsBtn");
+  btn.disabled=true; line.textContent=t("padsSending");
+  try{
+    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
+    for(const c of pads()){
+      const oc=new OC(1, Math.ceil(LEN*SR), SR), ch=makeChain(oc), stopAt=LEN-0.3;
+      ch.master.gain.value=volGain(0.8); setSound(ch, S.sound); setEra(ch, 0, 0);
+      if(GTR){ const shp=shapeFor(c); let k=0; shp.forEach((f,s)=>{ if(f<0) return; const vc=makeVoice(oc, ch, S.sound, TUNING[s]+f, 0.74*(1-0.03*k), 0.004+k*0.014, s); if(vc) vc.stop(stopAt, Math.max(0.04, vc.tau)); k++; }); }
+      else { const m=bassRoot(c), cl=cellFor(m), vc=makeVoice(oc, ch, S.sound, m, 0.8, 0.004, cl?cl.s:null); if(vc) vc.stop(stopAt, Math.max(0.04, vc.tau)); }
+      const d=(await oc.startRendering()).getChannelData(0);
+      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
+      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
+      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
+    }
+    await AOGHandoff.put("chordpads", {from:INST, name:soundName(S.sound), at:Date.now(), pads:out});
+    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drums")}</a>`;
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    THE PAGE
    ══════════════════════════════════════════════════════════════════════════ */
@@ -1070,7 +1100,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
-  $("sendBtn").textContent=t("send");
+  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn");
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")}</p>`;
@@ -1378,6 +1408,7 @@ function bind(){
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=bounce;
+  $("padsBtn").onclick=sendPads;
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
