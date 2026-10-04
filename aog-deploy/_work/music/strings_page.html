@@ -181,6 +181,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-amp.js"></script>
+<script src="/aog-solo.js" defer></script><!-- AOG-SOLO-V1: Solo mode on the neck (aog-solo.js) -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -264,6 +265,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 
       <div class="blk">
         <h2 data-t="neckH"></h2>
+        <div id="soloMode"></div><div id="soloTop" hidden></div><!-- AOG-SOLO-V1: Chords or Solo, the scale and the lead sound (aog-solo.js fills them) -->
         <div class="krow">
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="fretsOut" aria-live="polite"></span>
@@ -273,6 +275,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <span id="recTime" hidden>0:00</span>
         </div>
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
+        <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line keys-line" data-t="keysLine"></p>
@@ -1895,6 +1898,7 @@ function litNeck(){
     const nm=svg.querySelector(`.nk-name[data-s="${x.getAttribute("data-s")}"]`); if(nm) nm.style.display=sk?"none":""; });
   const ll=$("litLine"); if(ll) ll.hidden=!(cc || S.playing);
   paintWheelState();
+  if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
 }
 function neckHit(e){
   const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
@@ -1914,12 +1918,14 @@ function bindNeck(){
     const h=neckHit(e); if(!h) return;
     try{ svg.setPointerCapture(e.pointerId); }catch(err){}
     FINGERS.set(e.pointerId, h);
+    if(window.AOGSolo && AOGSolo.down(e, h)){ litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch */
     if(h.zone==="strum") pluckShape(h.s, 0.72); else pluckCell(h.s, h.f, 0.76);
     litNeck();
   });
   svg.addEventListener("pointermove",(e)=>{
     const p=FINGERS.get(e.pointerId); if(!p) return;
     const h=neckHit(e); if(!h) return;
+    if(window.AOGSolo && AOGSolo.move(e, p, h)) return;   /* AOG-SOLO-V1: bends, slides, the whammy */
     if(p.zone==="strum"){
       if(h.zone!=="strum" || h.s===p.s) return;
       /* every string crossed sounds, one after another, as a strum does */
@@ -1933,7 +1939,7 @@ function bindNeck(){
     }
     litNeck();
   });
-  const up=(e)=>{ if(!FINGERS.has(e.pointerId)) return; FINGERS.delete(e.pointerId); litNeck(); };
+  const up=(e)=>{ if(!FINGERS.has(e.pointerId)) return; if(window.AOGSolo) AOGSolo.up(e); /* AOG-SOLO-V1: pull-offs */ FINGERS.delete(e.pointerId); litNeck(); };
   svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up); svg.addEventListener("lostpointercapture",up);
 }
 function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fret0!==was) save(); }
@@ -1944,6 +1950,7 @@ function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; ret
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   if(e.target && e.target.tagName==="SELECT") return;
+  if(window.AOGSolo && AOGSolo.key(e, true)) return;   /* AOG-SOLO-V1: the Solo mode keys */
   const si=STRING_KEYS.indexOf(e.code);
   if(si>=0){ e.preventDefault(); if(e.repeat||KEYCELLS.has(e.code)) return;
     if(GTR){ const c=shapeChord(), f=c?shapeFor(c)[si]:0; pluckShape(si, 0.72); if(f>=0) KEYCELLS.set(e.code, si+":"+f); }
@@ -1958,6 +1965,7 @@ document.addEventListener("keydown",(e)=>{
   }
 });
 document.addEventListener("keyup",(e)=>{
+  if(window.AOGSolo && AOGSolo.key(e, false)) return;   /* AOG-SOLO-V1 */
   if(KEYCELLS.has(e.code)){ KEYCELLS.delete(e.code); litNeck(); return; }
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
 });
