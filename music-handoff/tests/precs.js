@@ -1,6 +1,7 @@
 /* AOG-PIANO-REAL-V1 — the piano's sounds that became recordings (music-handoff/tools/piano_vcsl_sets.py): the '80s electric
    piano, the church organ, the glockenspiel, the vibraphone, the bells, the harpsichord, the kalimba and the tape flute; and
-   (AOG-PIANO-REAL-V2) the warm electric piano, whose notes' tails were made from their own loops.
+   (AOG-PIANO-REAL-V2) the warm electric piano, whose notes' tails were made from their own loops; and (V3, V4) every set in
+   music-handoff/tools/piano_real_sets.json, so that now every one of the piano's sounds is a recording.
    For each one:
    · its recordings download only when it is picked (none at page load, none for the others), and until they arrive the
      version built on the page plays, with a line that says so;
@@ -126,9 +127,9 @@ window.__calls={sample:0, made:0};
     await p.waitForFunction(()=>SETS.upright.state==="ready", null, {timeout:60000}); await p.waitForTimeout(1500);
     const left=await p.evaluate(()=>Object.keys(SETS).filter(k=>k!=="upright" && (SETS[k].state!=="idle" || Object.keys(SETS[k].buf).length)));
     ok(left.length===0, "stepping quickly through five sounds leaves only the last one's recordings ("+(left.join(", ")||"nothing else")+")"); }
-  /* a sound still built on the page downloads nothing */
-  { const k=Object.assign({}, got); await p.selectOption("#soundSel","toy"); await p.waitForTimeout(800);
-    ok(JSON.stringify(k)===JSON.stringify(got) && /built on the page/.test(await p.textContent("#loadLine")), "a sound built on the page (toy piano) downloads nothing"); }
+  /* AOG-PIANO-REAL-V4: no sound is built on the page any more; each one names its recordings */
+  { const r=await p.evaluate(()=>{ const ids=Object.keys(SOUNDS); return {all:ids.length, built:ids.filter(id=>SOUNDS[id].kind!=="sample" || !SETS[SOUNDS[id].set])}; });
+    ok(r.built.length===0, `every one of the ${r.all} sounds plays recordings`+(r.built.length?" (built: "+r.built.join(", ")+")":"")); }
 
   /* ── 3 · in tune across the range, and as loud as the grand ── */
   const levels=await p.evaluate(async ids=>{
@@ -147,6 +148,7 @@ window.__calls={sample:0, made:0};
       const out=[]; for(const m of ms){ const zz=z||Math.max(0.35, Math.min(0.7, 60/mtof(m))), d=await __note(id, m, 0.74, zz+0.6);
         out.push([m, d ? __cents(d, 44100, m, how, a, zz) : NaN]); }
       return out; }, [id,set,how,a,z]);
+    /* the toy piano's keys are a few cents out of tune on purpose (up to 4 either way, as a toy's are): within 5 still */
     const bad=r.filter(x=>!(Math.abs(x[1])<=5)), cs=r.map(x=>x[1]);
     ok(bad.length===0, `${id}: ${r.length} notes from ${r[0][0]} to ${r[r.length-1][0]} in tune (${how}), ${Math.min(...cs).toFixed(1)} to ${Math.max(...cs).toFixed(1)} cents`+(bad.length?" (off: "+bad.map(x=>x[0]+" "+x[1].toFixed(1)).join(", ")+")":""));
     const d=levels[id]-levels.grand;

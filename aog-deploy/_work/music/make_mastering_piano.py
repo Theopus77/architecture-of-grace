@@ -209,8 +209,8 @@ lesson(9, "eight-sounds", ("34 sounds in eight groups", "34 sonidos en ocho grup
    ("Play one pattern on three different sounds. Open <b>Meet the sounds</b> in the Go to menu to hear them all.", "Toca un patrón con tres sonidos distintos. Abre <b>Conoce los sonidos</b> en el menú Ir a para oírlos todos.")],
   ("A piano note fades, because the string slowly stops shaking. An organ note stays as long as you hold it.", "Una nota de piano se apaga, porque la cuerda deja de vibrar poco a poco. Una nota de órgano dura mientras la mantengas."),
   [("I can name a sound from each group.", "Puedo nombrar un sonido de cada grupo."), ("I can say how a piano and an organ make sound.", "Puedo decir cómo hacen sonido un piano y un órgano.")],
-  extra=[lst("ul", [("<b>Pianos</b>: felt hammers hit strings. The grand, upright, honky-tonk, bright and soft felt pianos are real recordings. The toy piano's hammers hit metal rods.",
-                     "<b>Pianos</b>: martillos de fieltro golpean cuerdas. El de cola, el vertical, el honky-tonk, el brillante y el suave de fieltro son grabaciones reales. Los martillos del piano de juguete golpean varillas de metal."),
+  extra=[lst("ul", [("<b>Pianos</b>: felt hammers hit strings. The grand, upright, honky-tonk, bright and soft felt pianos are real recordings. The toy piano's hammers hit metal rods (here a real celesta plays it).",
+                     "<b>Pianos</b>: martillos de fieltro golpean cuerdas. El de cola, el vertical, el honky-tonk, el brillante y el suave de fieltro son grabaciones reales. Los martillos del piano de juguete golpean varillas de metal (aquí lo toca una celesta de verdad)."),
                     ("<b>Electric pianos</b>: hammers hit metal tines (warm) or reeds (bright); a computer chip does the math (FM) for the '80s one; on the clavinet, a rubber tip hits a string (here a real synthesizer copies it). All four are real recordings.",
                      "<b>Pianos eléctricos</b>: martillos golpean varillas (cálido) o lengüetas de metal (brillante); un chip de computadora hace las cuentas (FM) en el de los 80; en el clavinet, una punta de goma golpea una cuerda (aquí lo imita un sintetizador de verdad). Los cuatro son grabaciones reales."),
                     ("<b>Organs and accordion</b>: metal wheels spin past magnets (rock and jazz, gospel, '70s rock; here a real 1983 transistor organ plays them); air blows through pipes (church and cinema, real recordings); air pushes through metal reeds (accordion, a real recording).",
@@ -219,12 +219,12 @@ lesson(9, "eight-sounds", ("34 sounds in eight groups", "34 sonidos en ocho grup
                      "<b>Láminas y campanas</b>: un mazo o un martillo golpea barras de metal (celesta, glockenspiel, vibráfono), barras de madera (marimba), un tambor de acero o tubos largos de metal (campanas). Todos son grabaciones reales."),
                     ("<b>Plucked</b>: a small pick plucks a string (harpsichord, a real recording); fingers pluck strings (harp, a real recording); thumbs or pins pluck metal tongues (kalimba, a real recording; the music box, played here by a real celesta).",
                      "<b>Pulsados</b>: una púa pequeña pulsa una cuerda (clavecín, una grabación real); los dedos pulsan cuerdas (arpa, una grabación real); pulgares o alfileres pulsan lengüetas de metal (kalimba, una grabación real; la caja de música, que aquí toca una celesta de verdad)."),
-                    ("<b>Strings and voices</b>: bows on violins, violas and cellos (soft strings, a real recording); many voices singing “ah” (choir).",
-                     "<b>Cuerdas y voces</b>: arcos sobre violines, violas y violonchelos (cuerdas suaves, una grabación real); muchas voces que cantan “a” (coro)."),
+                    ("<b>Strings and voices</b>: bows on violins, violas and cellos (soft strings, a real recording); many voices singing “ah” (choir; here one real singer, recorded four times).",
+                     "<b>Cuerdas y voces</b>: arcos sobre violines, violas y violonchelos (cuerdas suaves, una grabación real); muchas voces que cantan “a” (coro; aquí un cantante de verdad, grabado cuatro veces)."),
                     ("<b>Tape keyboards</b>: each key starts a short tape of real strings or a real flute, as on the keyboards of 1970s prog rock.",
                      "<b>Teclados de cinta</b>: cada tecla pone en marcha una cinta corta de cuerdas o de flauta de verdad, como en los teclados del rock progresivo de los 70."),
-                    ("<b>Synths</b>: electronic waves, shaped and softened: the '70s string synth, the warm synth, the '80s synth brass and the synth lead (here a real transistor organ plays all but the brass).",
-                     "<b>Sintetizadores</b>: ondas electrónicas, moldeadas y suavizadas: el sintetizador de cuerdas de los 70, el sintetizador cálido, los metales de los 80 y el sintetizador solista (aquí un órgano de transistores de verdad los toca todos menos los metales).")])])
+                    ("<b>Synths</b>: electronic waves, shaped and softened: the '70s string synth, the warm synth, the '80s synth brass and the synth lead (here a real transistor organ plays them all).",
+                     "<b>Sintetizadores</b>: ondas electrónicas, moldeadas y suavizadas: el sintetizador de cuerdas de los 70, el sintetizador cálido, los metales de los 80 y el sintetizador solista (aquí un órgano de transistores de verdad los toca todos).")])])
 
 lesson(10, "play-along", ("Play along: the lit keys and the black keys", "Toca encima: las teclas iluminadas y las negras"),
   [("While the chords play, every key that fits the chord turns pale, in every octave, and a key turns orange while its note sounds. Any lit key fits. Play them in your own order and you are making up a melody.",
@@ -323,7 +323,7 @@ def build():
     src = open(os.path.join(ROOT, "mastering-drums.html"), encoding="utf-8").read()
     head = src.split("</head>", 1)[0]
     rep = [("<title>Mastering the Drum Machine · Architecture of Grace</title>", "<title>Mastering the Piano · Architecture of Grace</title>"),
-           ('content="Twelve lessons on the SP-1200: your first beat, swing, the sliders, nine kits, your own samples, the 1987-to-2026 Sound dial, and a whole song you can send to the turntables."',
+           ('content="Twelve lessons on the SP-1200: your first beat, swing, the sliders, twenty-five kits, your own samples, the 1987-to-2026 Sound dial, and a whole song you can send to the turntables."',
             'content="Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, 34 sounds, playing along, the drum machine and the 1987-to-2026 Sound dial."'),
            ('href="https://architectureofgrace.org/mastering-drums"', 'href="https://architectureofgrace.org/mastering-piano"')]
     for a, b in rep:
