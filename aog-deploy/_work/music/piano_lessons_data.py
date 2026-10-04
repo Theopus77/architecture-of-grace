@@ -85,7 +85,7 @@ LSTEP = {
   "tgrand": ("Play on the Grand piano", "Toca con el Piano de cola"),
   "tep": ("Play on an electric piano", "Toca con un piano eléctrico"),
   "torg": ("Play on an organ", "Toca con un órgano"),
-  "tall": ("Try all eight sounds", "Prueba los ocho sonidos"),
+  "tall": ("Try eight different sounds", "Prueba ocho sonidos distintos"),
   # 16 · the lit keys
   "lplay": ("Play a pattern with Hold · one long chord", "Toca un patrón con Mantener · un acorde largo"),
   "llit": ("While it plays, play a lit key", "Mientras suena, toca una tecla iluminada"),

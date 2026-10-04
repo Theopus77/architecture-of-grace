@@ -8,12 +8,12 @@
 try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
 </script>
 <title>The Piano — Architecture of Grace</title>
-<meta name="description" content="Grand and upright pianos, electric pianos and organs. Tap a chord or play the keys. Works on a phone, a tablet and a computer.">
+<meta name="description" content="Pianos, organs, bells, harps, strings and synths: 34 sounds. Tap a chord or play the keys. Works on a phone, a tablet and a computer.">
 <link rel="canonical" href="https://architectureofgrace.org/piano">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
 <meta property="og:title" content="The Piano — Architecture of Grace">
-<meta property="og:description" content="Real pianos, electric pianos and organs. Tap a chord, or play the keys.">
+<meta property="og:description" content="Pianos, organs, bells, harps, strings and synths. Tap a chord, or play the keys.">
 <meta property="og:url" content="https://architectureofgrace.org/piano">
 <meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
 <meta name="theme-color" content="#0A1E33">
@@ -201,9 +201,11 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
 .meet{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));margin-top:1rem}
 .mcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem 1rem;display:flex;flex-direction:column;gap:.45rem}
 .mcard.on{border-color:var(--steel);box-shadow:inset 0 0 0 1px var(--steel)}
-.mcard h2{font-size:1.15rem;margin:0}
+.mcard h3{font-size:1.15rem;margin:0}
 .mcard p{margin:0;color:var(--muted);font-size:.95rem}
-.mcard .mgrp{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+/* AOG-PIANO-SOUNDS-V2: the cards sit under their group's name */
+#alt h2.mgh{font:700 .8rem/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin:1.6rem 0 0}
+#alt h2.mgh+.meet{margin-top:.6rem}
 .mcard .pill{align-self:flex-start;margin-top:auto}
 /* Name it: one question at a time */
 .quiz{max-width:40rem;margin-top:1rem}
@@ -283,7 +285,7 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
   </div>
   <main id="view">
     <section class="rig" id="rig" aria-labelledby="mastH">
-      <div class="plate" aria-hidden="true"><b>STAGE PIANO</b><small>GRAND · UPRIGHT · ELECTRIC · ORGAN</small></div>
+      <div class="plate" aria-hidden="true"><b>STAGE PIANO</b><small>PIANO · ORGAN · BELLS · STRINGS · SYNTH</small></div>
 
       <div class="blk">
         <div class="row">
@@ -431,16 +433,19 @@ function save(){
 const STR={
   app:{en:"The Piano",es:"El piano"},
   kicker:{en:"A song in two taps.",es:"Dos toques y suena."},
-  lead:{en:"Grand and upright pianos, electric pianos and organs. Tap a chord, or play the keys.",es:"Pianos de cola y verticales, pianos eléctricos y órganos. Toca un acorde o toca las teclas."},
+  lead:{en:"Pianos, organs, bells, harps, strings and synths. Tap a chord, or play the keys.",es:"Pianos, órganos, campanas, arpas, cuerdas y sintetizadores. Toca un acorde o toca las teclas."},
   drums:{en:"The drum machine",es:"La caja de ritmos"}, decks:{en:"The turntables",es:"Los tocadiscos"},
   instrument:{en:"Instrument",es:"Instrumento"},
-  grpPiano:{en:"Pianos",es:"Pianos"}, grpEp:{en:"Electric pianos",es:"Pianos eléctricos"}, grpOrgan:{en:"Organs",es:"Órganos"},
-  loading:{en:"Getting the {name} ready… {n} of {all}",es:"Preparando el {name}… {n} de {all}"},
+  grpPiano:{en:"Pianos",es:"Pianos"}, grpEp:{en:"Electric pianos",es:"Pianos eléctricos"}, grpOrgan:{en:"Organs and accordion",es:"Órganos y acordeón"},
+  /* AOG-PIANO-SOUNDS-V2 */
+  grpMallet:{en:"Mallets and bells",es:"Láminas y campanas"}, grpPluck:{en:"Plucked",es:"Pulsados"},
+  grpVoice:{en:"Strings and voices",es:"Cuerdas y voces"}, grpTape:{en:"Tape keyboards",es:"Teclados de cinta"}, grpSynth:{en:"Synths",es:"Sintetizadores"},
+  loading:{en:"Getting the {name} ready… {n} of {all}",es:"Preparando {name}… {n} de {all}"},
   stand:{en:"Until then you hear the electric piano.",es:"Mientras tanto suena el piano eléctrico."},
-  ready:{en:"Ready. Every note is a real {name}.",es:"Listo. Cada nota es un {name} de verdad."},
+  ready:{en:"Ready. Every note is a real {name}.",es:"Listo. Cada nota es {name} de verdad."},
   readyHonky:{en:"Ready. This is the upright piano, played a little out of tune with itself.",es:"Listo. Es el piano vertical, tocado un poco desafinado consigo mismo."},
   more:{en:"Ready to play. Adding the soft and loud notes… {n} of {all}",es:"Listo para tocar. Sumando las notas suaves y fuertes… {n} de {all}"},
-  loadFail:{en:"The piano sounds did not load. Check the internet, then pick the instrument again.",es:"No cargaron los sonidos del piano. Revisa el internet y vuelve a elegir el instrumento."},
+  loadFail:{en:"The recorded notes did not load. Check the internet, then pick the instrument again.",es:"No cargaron las notas grabadas. Revisa el internet y vuelve a elegir el instrumento."},
   built:{en:"This sound is built on the page. Nothing to download.",es:"Este sonido se crea en la página. No hay nada que descargar."},
   chordsH:{en:"Chords",es:"Acordes"},
   keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
@@ -493,8 +498,8 @@ const STR={
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Grand piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright and honky-tonk: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). The electric pianos and organs are built on this page.",
-          es:"Piano de cola: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical y honky-tonk: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Los pianos eléctricos y los órganos se crean en esta página."},
+  credit:{en:"Grand and bright piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright, honky-tonk and felt piano: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). Harp, marimba, soft strings and tape strings: VS Chamber Orchestra: Community Edition by Versilian Studios (CC0). Every other sound is built on this page.",
+          es:"Piano de cola y piano brillante: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical, honky-tonk y piano de fieltro: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Arpa, marimba, cuerdas suaves y cuerdas de cinta: VS Chamber Orchestra: Community Edition de Versilian Studios (CC0). Todos los demás sonidos se crean en esta página."},
   credits:{en:"Full credits",es:"Créditos completos"},
   /* AOG-PIANO-VIEWS-V1 */
   navBench:{en:"Bench",es:"Mesa"}, navMeet:{en:"Meet the sounds",es:"Conoce los sonidos"}, navWords:{en:"Name it",es:"Nómbralo"}, navPrint:{en:"Print",es:"Imprimir"},
@@ -503,7 +508,7 @@ const STR={
   pgSub:{en:"Almost no reading",es:"Casi sin lectura"},
   pgFoot:{en:"To print it, <a href=\"/piano-guide\">open the picture guide on its own page</a>.",es:"Para imprimirla, <a href=\"/piano-guide\">abre la guía en imágenes en su propia página</a>."},
   meetH:{en:"How each sound is made",es:"Cómo se hace cada sonido"},
-  meetLead:{en:"The same keys, eight different instruments. Tap Hear it, then read how it makes its sound.",es:"Las mismas teclas, ocho instrumentos distintos. Pulsa Escúchalo y luego lee cómo hace su sonido."},
+  meetLead:{en:"The same keys, {n} different instruments. Tap Hear it, then read how it makes its sound.",es:"Las mismas teclas, {n} instrumentos distintos. Pulsa Escúchalo y luego lee cómo hace su sonido."},
   hear:{en:"Hear it",es:"Escúchalo"}, hearWait:{en:"Getting it ready…",es:"Preparándolo…"},
   wordsH:{en:"Name it",es:"Nómbralo"}, wordsLead:{en:"One question at a time. Tap the answer you think is right.",es:"Una pregunta a la vez. Toca la respuesta que creas correcta."},
   qOf:{en:"Question {n} of {all}",es:"Pregunta {n} de {all}"}, qNext:{en:"Next question →",es:"Siguiente pregunta →"},
@@ -526,16 +531,55 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
 
 /* the instruments: two recordings, one recording played twice out of tune, five built here.
    gain levels them: the same C-major chord comes out equally loud on all eight (measured, AOG-PIANO-V1);
-   the organs sit 2 dB lower again because a held chord sounds louder than a fading one. */
+   the organs sit 2 dB lower again because a held chord sounds louder than a fading one.
+   AOG-PIANO-SOUNDS-V2 (2026-10-04) — Jimmy: "Can all instruments have MULTIPLE VERSIONS OF HOW THEY SOUND? Like a lot more
+   than they all currently have!?" He named rock bands too, from Led Zeppelin and Black Sabbath to Opeth: hence the '70s
+   rock organ and the tape keyboard of prog rock, named by their music. Twenty-six more, thirty-four in all, in eight groups
+   (the menu's groups follow this order). Each new one's gain is measured: its C chord (C4 E4 G4 and C3, as a pad plays it) is as loud as the grand
+   piano's, K-weighted, the loudest 400 ms, before the compressor, within half a decibel. tau = how fast a note stops when
+   it is let go; tone = how a recorded piano is voiced; ready and the = the words while a recording loads. */
 const SOUNDS={
   grand:  {grp:"grpPiano", en:"Grand piano",            es:"Piano de cola",              kind:"sample", set:"grand",   gain:1.72, rev:0.16},
   upright:{grp:"grpPiano", en:"Upright piano",          es:"Piano vertical",             kind:"sample", set:"upright", gain:1.45, rev:0.13},
   honky:  {grp:"grpPiano", en:"Honky-tonk piano",       es:"Piano honky-tonk",           kind:"sample", set:"upright", honky:true, gain:1.80, rev:0.10},
+  bright: {grp:"grpPiano", en:"Bright piano",           es:"Piano brillante",            kind:"sample", set:"grand",   tone:"bright", gain:1.709, rev:0.14,
+           ready:{en:"Ready. This is the grand piano, with its high notes turned up.",es:"Listo. Es el piano de cola, con los agudos más fuertes."}},
+  felt:   {grp:"grpPiano", en:"Soft felt piano",        es:"Piano suave de fieltro",     kind:"sample", set:"upright", tone:"felt", gain:1.919, rev:0.2,
+           ready:{en:"Ready. This is the upright piano, with soft felt in front of its strings.",es:"Listo. Es el piano vertical, con fieltro suave delante de sus cuerdas."}},
+  toy:    {grp:"grpPiano", en:"Toy piano",              es:"Piano de juguete",           kind:"toy",    gain:1.02, rev:0.12},
   epwarm: {grp:"grpEp",    en:"Electric piano · warm",  es:"Piano eléctrico · cálido",   kind:"tine",   gain:0.56, rev:0.12},
   epreed: {grp:"grpEp",    en:"Electric piano · bright",es:"Piano eléctrico · brillante",kind:"reed",   gain:0.72, rev:0.10},
   ep80:   {grp:"grpEp",    en:"'80s electric piano",    es:"Piano eléctrico de los 80",  kind:"fm",     gain:0.86, rev:0.14},
+  clav:   {grp:"grpEp",    en:"Clavinet · funk",        es:"Clavinet · funk",            kind:"clav",   gain:1.677, rev:0.08},
   organ:  {grp:"grpOrgan", en:"Rock and jazz organ",    es:"Órgano de rock y jazz",      kind:"organ",  gain:0.42, rev:0.12},
-  church: {grp:"grpOrgan", en:"Church organ",           es:"Órgano de iglesia",          kind:"church", gain:0.45, rev:0.55}
+  church: {grp:"grpOrgan", en:"Church organ",           es:"Órgano de iglesia",          kind:"church", gain:0.45, rev:0.55},
+  gospel: {grp:"grpOrgan", en:"Gospel organ",           es:"Órgano góspel",              kind:"gospel", gain:1.602, rev:0.14},
+  rockorgan:{grp:"grpOrgan", en:"'70s rock organ",      es:"Órgano de rock de los 70",   kind:"rockorgan", gain:0.612, rev:0.12},
+  theatre:{grp:"grpOrgan", en:"Cinema organ",           es:"Órgano de cine",             kind:"theatre", gain:1.665, rev:0.4},
+  accordion:{grp:"grpOrgan", en:"Accordion",            es:"Acordeón",                   kind:"accordion", gain:1.598, rev:0.1},
+  celesta:{grp:"grpMallet", en:"Celesta",               es:"Celesta",                    kind:"celesta", gain:1.036, rev:0.22},
+  glock:  {grp:"grpMallet", en:"Glockenspiel",          es:"Glockenspiel",               kind:"glock",  gain:0.98, rev:0.2},
+  vibes:  {grp:"grpMallet", en:"Vibraphone",            es:"Vibráfono",                  kind:"vibes",  gain:1.232, rev:0.18},
+  marimba:{grp:"grpMallet", en:"Marimba",               es:"Marimba",                    kind:"sample", set:"marimba", tau:0.2, gain:2.243, rev:0.15,
+           ready:{en:"Ready. Every note is a real marimba.",es:"Listo. Cada nota es una marimba de verdad."}, the:{es:"la marimba"}},
+  steel:  {grp:"grpMallet", en:"Steel drums",           es:"Tambores de acero",          kind:"steel",  gain:0.917, rev:0.15},
+  bells:  {grp:"grpMallet", en:"Bells",                 es:"Campanas",                   kind:"bells",  gain:0.879, rev:0.35},
+  harpsi: {grp:"grpPluck",  en:"Harpsichord",           es:"Clavecín",                   kind:"harpsi", gain:1.139, rev:0.18},
+  harp:   {grp:"grpPluck",  en:"Harp",                  es:"Arpa",                       kind:"sample", set:"harp", tau:0.3, gain:2.524, rev:0.22,
+           ready:{en:"Ready. Every note is a real harp.",es:"Listo. Cada nota es un arpa de verdad."}},
+  kalimba:{grp:"grpPluck",  en:"Kalimba",               es:"Kalimba",                    kind:"kalimba", gain:1.0, rev:0.15},
+  musicbox:{grp:"grpPluck", en:"Music box",             es:"Caja de música",             kind:"musicbox", gain:1.0, rev:0.25},
+  strings:{grp:"grpVoice",  en:"Soft strings",          es:"Cuerdas suaves",             kind:"sample", set:"strings", tau:0.16, gain:2.689, rev:0.3,
+           ready:{en:"Ready. Every note is a real string section.",es:"Listo. Cada nota es una sección de cuerdas de verdad."}, the:{es:"las cuerdas suaves"}},
+  choir:  {grp:"grpVoice",  en:"Choir",                 es:"Coro",                       kind:"choir",  gain:1.354, rev:0.4},
+  /* the 1970s tape keyboard of prog rock: each key starts a short tape (eight seconds of it), a little wobbly and hazy */
+  tapestr:{grp:"grpTape",   en:"Tape strings · prog rock", es:"Cuerdas de cinta · rock progresivo", kind:"sample", set:"strings", tone:"tape", bus:"tape", tape:8, tau:0.12, gain:2.473, rev:0.25,
+           ready:{en:"Ready. These are the soft strings, played from tape like a 1970s keyboard.",es:"Listo. Son las cuerdas suaves, tocadas desde una cinta como un teclado de los 70."}, the:{en:"tape strings",es:"las cuerdas de cinta"}},
+  tapeflute:{grp:"grpTape", en:"Tape flute · prog rock", es:"Flauta de cinta · rock progresivo", kind:"tapeflute", gain:1.483, rev:0.25},
+  strsynth:{grp:"grpSynth", en:"'70s string synth",     es:"Sintetizador de cuerdas de los 70", kind:"strsynth", gain:3.268, rev:0.25},
+  pad:    {grp:"grpSynth",  en:"Warm synth",            es:"Sintetizador cálido",        kind:"pad",    gain:2.099, rev:0.3},
+  brass:  {grp:"grpSynth",  en:"'80s synth brass",      es:"Metales de sintetizador de los 80", kind:"brass", gain:2.168, rev:0.15},
+  lead:   {grp:"grpSynth",  en:"Synth lead",            es:"Sintetizador solista",       kind:"lead",   gain:2.163, rev:0.12}
 };
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 
@@ -715,9 +759,14 @@ function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
 /* ── the recorded pianos ── */
 const SETS={
   grand:  {dir:"/audio/piano/grand/",   notes:[21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108]},
-  upright:{dir:"/audio/piano/upright/", notes:[21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,108]}
+  upright:{dir:"/audio/piano/upright/", notes:[21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,108]},
+  /* AOG-PIANO-SOUNDS-V2: one layer each, already brought to one level (even), every few semitones and in tune; the strings'
+     notes loop between 2.4 s and 5.4 s while a key is held (audio/piano/CREDITS.txt) */
+  harp:   {dir:"/audio/piano/harp/",    layers:["m"], even:true, notes:[28,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,98,101]},
+  marimba:{dir:"/audio/piano/marimba/", layers:["m"], even:true, notes:[41,48,55,59,65,72,79,83,89,96]},
+  strings:{dir:"/audio/piano/strings/", layers:["m"], even:true, loop:[2.4,5.4], notes:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]}
 };
-Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},state:"idle",done:0,job:null,ready:false}));
+Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},state:"idle",done:0,job:null,ready:false}));
 const LAYER_TARGET={s:-24, m:-19, l:-15};          /* dB, the level each layer is brought most of the way to */
 function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
 function measure(buf, layer){
@@ -728,17 +777,17 @@ function measure(buf, layer){
   let s=0, n=Math.min(d.length-i, Math.floor(0.3*sr)); for(let j=0;j<n;j++) s+=d[i+j]*d[i+j];
   const db=10*Math.log10(s/Math.max(1,n)+1e-12);
   const g=Math.max(-6, Math.min(18, (LAYER_TARGET[layer]-db)*0.7));
-  return {start:start, gain:Math.pow(10,g/20)};
+  return {start:start, gain:Math.pow(10,g/20), peak:pk};
 }
 function loadSet(name, onStep){
   const set=SETS[name];
   if(set.job) return set.job;
   /* only one recorded piano is kept at a time, so a phone keeps its memory */
-  Object.keys(SETS).forEach(k=>{ if(k!==name && SETS[k].state!=="idle"){ Object.assign(SETS[k],{buf:{},gain:{},start:{},state:"idle",done:0,job:null,ready:false}); } });
+  Object.keys(SETS).forEach(k=>{ if(k!==name && SETS[k].state!=="idle"){ Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},state:"idle",done:0,job:null,ready:false}); } });
   set.state="loading"; set.done=0;
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const dec=new OC(1, 1, 32000);
-  const files=[]; ["m","s","l"].forEach(l=>set.notes.forEach(n=>files.push([n,l])));
+  const files=[]; (set.layers||["m","s","l"]).forEach(l=>set.notes.forEach(n=>files.push([n,l])));
   set.total=files.length;
   let failed=0, idx=0;
   async function worker(){
@@ -748,7 +797,8 @@ function loadSet(name, onStep){
         const r=await fetch(set.dir+n+l+".mp3"); if(!r.ok) throw new Error(r.status);
         const b=await decodeWith(dec, await r.arrayBuffer());
         const m=measure(b, l);
-        set.buf[n+l]=b; set.start[n+l]=m.start; set.gain[n+l]=m.gain;
+        if(set.loop) bakeLoop(b, set.loop[0], set.loop[1], 0.5);
+        set.buf[n+l]=b; set.start[n+l]=m.start; set.gain[n+l]=set.even?1:m.gain; set.peak[n+l]=m.peak;
       }catch(e){ failed++; }
       set.done++;
       if(!set.ready && set.notes.every(k=>set.buf[k+"m"])) set.ready=true;
@@ -762,6 +812,12 @@ function loadSet(name, onStep){
     return set;
   });
   return set.job;
+}
+/* AOG-PIANO-SOUNDS-V2: a held string note loops. The half second before the loop's end is faded into the half second before
+   its start, so the jump back lands where the sound already is: no seam, whatever the decoder did to the file's timing */
+function bakeLoop(b, a, z, x){
+  const sr=b.sampleRate, d=b.getChannelData(0), A=Math.round(a*sr), Z=Math.min(d.length, Math.round(z*sr)), X=Math.min(Math.round(x*sr), A, Z-A);
+  for(let i=0;i<X;i++){ const w=(i+0.5)/X*Math.PI/2, j=Z-X+i, k=A-X+i; d[j]=d[j]*Math.cos(w)+d[k]*Math.sin(w); }
 }
 function nearest(set, m){ let best=set.notes[0]; set.notes.forEach(n=>{ if(Math.abs(n-m)<Math.abs(best-m)) best=n; }); return best; }
 function velAmp(v){ return Math.pow(0.3+0.7*Math.max(0,Math.min(1,v)), 1.5); }
@@ -782,21 +838,37 @@ function sampleVoice(c, ch, snd, m, v, when){
   const set=SETS[snd.set];
   const n=nearest(set, m);
   let layer=v<0.42?"s":v<0.78?"m":"l";
+  if(snd.tone==="felt") layer="m";                    /* AOG-PIANO-SOUNDS-V2: one even layer; the felt (the filter below) softens every hammer */
   if(!set.buf[n+layer]) layer=["m","l","s"].find(l=>set.buf[n+l]);
   if(!layer) return null;
   const buf=set.buf[n+layer], rate=Math.pow(2,(m-n)/12);
-  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(19000, 1500*Math.pow(2, v*3.7));
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5;
+  /* the felt piano is darker, the bright piano opens sooner (and its high notes are turned up, below), a tape is hazy */
+  lp.frequency.value=snd.tone==="felt" ? Math.max(360*Math.pow(2, v*2.3), 1.3*mtof(m)) : snd.tone==="bright" ? Math.min(19000, 3200*Math.pow(2, v*2.6))
+    : snd.tone==="tape" ? 2600*Math.pow(2, v) : Math.min(19000, 1500*Math.pow(2, v*3.7));
   const g=c.createGain(); g.gain.value=set.gain[n+layer]*velAmp(v)*snd.gain;
+  /* AOG-PIANO-SOUNDS-V2: the new recorded sounds keep a note's sharpest instant under 0.85 even at full strength (each
+     recording's peak is measured as it loads; the bright piano's lift can raise it); the three first pianos are as they were */
+  if(snd.tone || set.even){ const pk=(set.peak[n+layer]||0)*set.gain[n+layer]*velAmp(v)*snd.gain*(snd.tone==="bright"?1.6:1); if(pk>0.85) g.gain.value*=0.85/pk; }
   const rel=c.createGain(); rel.gain.value=1;
-  lp.connect(g); g.connect(rel); rel.connect(ch.bus); rel.connect(ch.send);
+  if(snd.tone==="bright"){ const hs=c.createBiquadFilter(); hs.type="highshelf"; hs.frequency.value=2600; hs.gain.value=7*clampV((96-m)/24,0,1); lp.connect(hs); hs.connect(g); }   /* the top notes are bright already */
+  else lp.connect(g);
+  /* a tape keyboard's tape lasts eight seconds: a note held longer fades as the tape runs out */
+  if(snd.tape){ const G=g.gain.value; g.gain.setValueAtTime(G, when+snd.tape-0.8); g.gain.linearRampToValueAtTime(0, when+snd.tape); }
+  g.connect(rel); rel.connect(snd.bus ? fx(ch, snd.bus) : ch.bus); rel.connect(ch.send);
   const srcs=[];
   const mk=(cents, delay, lvl)=>{ const s=c.createBufferSource(); s.buffer=buf; s.playbackRate.value=rate*Math.pow(2,cents/1200);
-    const sg=c.createGain(); sg.gain.value=lvl; s.connect(sg); sg.connect(lp); s.start(when+delay, set.start[n+layer]); srcs.push(s); };
+    if(set.loop){ s.loop=true; s.loopStart=set.loop[0]; s.loopEnd=set.loop[1]; }     /* the strings keep bowing while a key is held */
+    const sg=c.createGain(); sg.gain.value=lvl; s.connect(sg); sg.connect(lp); s.start(when+delay, set.start[n+layer]);
+    if(snd.tape) s.stop(when+snd.tape+0.05);
+    srcs.push(s); };
   if(snd.honky){ mk(-11,0,0.62); mk(11,0.004,0.62); } else mk(0,0,1);
   const vc=voiceShell(c, ch.bus, srcs, rel);
-  vc.tau=damper(m);
-  /* the sample runs out: let the voice end itself */
-  vc.natural=when+(buf.duration-set.start[n+layer])/rate;
+  vc.tau=snd.tau||damper(m);
+  /* the sample (or the tape) runs out: let the voice end itself */
+  if(snd.tape) vc.natural=when+snd.tape;
+  else if(!set.loop) vc.natural=when+(buf.duration-set.start[n+layer])/rate;
+  if(snd.tone || set.even) ringOn(ch, m, vc, when);   /* AOG-PIANO-SOUNDS-V2 (the three first pianos are as they were) */
   return vc;
 }
 function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
@@ -883,7 +955,333 @@ function makeVoice(c, ch, id, m, v, when){
     if(SETS[snd.set].ready){ const vc=sampleVoice(c, ch, snd, m, v, when); if(vc) return vc; }
     return synthVoice(c, ch, SOUNDS.epwarm, m, v, when);   /* the stand-in while the recordings load */
   }
+  if(BUILD[snd.kind]) return buildVoice(c, ch, snd, m, v, when);   /* AOG-PIANO-SOUNDS-V2 */
   return synthVoice(c, ch, snd, m, v, when);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-PIANO-SOUNDS-V2 (2026-10-04) — the twenty new sounds that are built here (the harp, the marimba and the soft strings
+   are recordings, above; the bright and felt pianos are the grand and the upright, voiced another way).
+   · Struck and plucked sounds (toy piano, clavinet, celesta, glockenspiel, steel drums, harpsichord, kalimba, music box) are
+     worked out note by note the first time a note is needed, kept for the sound that is picked, and played back like a
+     recording, so a phone plays them as easily as the pianos. A bar, rod or tine is a few partials, each fading at its own
+     speed; the harpsichord's and the clavinet's strings are plucked strings (Karplus–Strong), tuned to the cent.
+   · Held sounds (the new organs, the accordion, the vibraphone, the bells, the choir and the synths) are oscillators, as the
+     organs always were: two or three to a note.
+   · The gospel organ's spinning speaker, the cinema organ's tremble, the vibraphone's motor and the synths' chorus are one
+     shared effect each, made the first time that sound plays; when it has rested, its wobblers stop.
+   Nothing plays by itself. A wobble that belongs to an instrument (the vibraphone's motor, an organ's tremble, a singer's
+   vibrato) is heard only while that instrument's note sounds. No note goes past the highest pitch the engine can make.
+   ══════════════════════════════════════════════════════════════════════════ */
+const clampV=(x,a,b)=>Math.max(a,Math.min(b,x));
+const BSR=32000;                                   /* made notes are kept at the recordings' rate */
+const MADE={kind:"", notes:new Map()};             /* one sound's made notes at a time, so a phone keeps its memory */
+function newBuf(c, d){
+  let b=null;
+  try{ b=new AudioBuffer({length:d.length, sampleRate:BSR, numberOfChannels:1}); }catch(e){ try{ b=c?c.createBuffer(1, d.length, BSR):null; }catch(e2){ b=null; } }
+  if(b) b.getChannelData(0).set(d);
+  return b;
+}
+function madeBuf(c, kind, m){
+  if(MADE.kind!==kind){ MADE.kind=kind; MADE.notes=new Map(); }
+  let b=MADE.notes.get(m);
+  if(!b){ b=newBuf(c, MAKERS[kind](m)); if(b) MADE.notes.set(m, b); }
+  return b;
+}
+/* a struck bar, rod or tine: partials [ratio to the note, level, fade time in s, swell time in s], each a sine that fades on
+   its own (worked out by a two-step recursion, no table), and the strike [level, time, tone in Hz, sharp] as a puff of noise.
+   A partial past the highest pitch is left out. */
+function partials(m, len, parts, hit){
+  const f=mtof(m), n=Math.ceil(len*BSR), out=new Float32Array(n), top=0.44*BSR;
+  parts.forEach(([r,a,tau,sw])=>{
+    const fr=f*r; if(!(a>0) || fr>=top) return;
+    const w=2*Math.PI*fr/BSR, d=Math.exp(-1/(tau*BSR)), c2=2*d*Math.cos(w), d2=d*d, kmax=Math.min(n, Math.ceil(tau*BSR*9));
+    const qd=sw?Math.exp(-1/(sw*BSR)):0; let y0=0, y1=a*d*Math.sin(w), q=1;
+    for(let k=1;k<kmax;k++){ if(sw){ q*=qd; out[k]+=y1*(1-q); } else out[k]+=y1; const y=c2*y1-d2*y0; y0=y1; y1=y; }
+  });
+  if(hit){
+    const [a,tau,fc,sharp]=hit, r=seeded(0x5bd1e995^(m*40503)), al=1-Math.exp(-2*Math.PI*Math.min(fc,top)/BSR), ed=Math.exp(-1/(tau*BSR)), kmax=Math.min(n, Math.ceil(tau*BSR*8));
+    let lp=0, pr=0, e=1;
+    for(let k=0;k<kmax;k++){ lp+=al*(r()-lp); out[k]+=a*e*(sharp?(lp-pr)*3:lp); pr=lp; e*=ed; }
+  }
+  return out;
+}
+/* a plucked or struck string (Karplus–Strong): one wave's worth of noise runs round a loop, a little softer and darker each
+   time round. The loop's last fraction of a sample is an all-pass filter, set for this very note, so it is in tune. o = {t60:
+   seconds to fade 60 dB, S: how fast the high partials fade, fc: the pluck's brightness, pos: where it is plucked, two: a second
+   string this many cents apart, pick: where the pickup sits} */
+function pluck(m, len, o){
+  const n=Math.ceil(len*BSR), out=new Float32Array(n), f0=mtof(m);
+  const one=(f, seed, amp)=>{
+    const D=BSR/f, S=o.S, w0=2*Math.PI*f/BSR;
+    const pdLP=Math.atan2(S*Math.sin(w0), (1-S)+S*Math.cos(w0))/w0;
+    let N=Math.floor(D-pdLP-0.2); if(N<2) N=2;
+    const want=D-pdLP-N;
+    const pdAP=C=>-(Math.atan2(-Math.sin(w0), C+Math.cos(w0))-Math.atan2(-C*Math.sin(w0), 1+C*Math.cos(w0)))/w0;
+    let lo=-0.999, hi=0.999; for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(pdAP(mid)>want) lo=mid; else hi=mid; }
+    const C=(lo+hi)/2, rho=Math.pow(0.001, 1/(o.t60*f)), dl=new Float64Array(N), r=seeded(seed), al=1-Math.exp(-2*Math.PI*Math.min(o.fc,0.44*BSR)/BSR);
+    /* the pluck: the string's slope, one way on the pick's side and the other way beyond it (so where it is plucked shapes
+       the tone), a touch of noise from the quill or the tip, softened by how bright the pluck is (once round, then again) */
+    const P=Math.max(1, Math.round(o.pos*N));
+    for(let k=0;k<N;k++) dl[k]=(k<P?1:0)+0.15*r();
+    let lp=dl[N-1]; for(let pass=0;pass<2;pass++) for(let k=0;k<N;k++){ lp+=al*(dl[k]-lp); if(pass) dl[k]=lp; }
+    let mean=0, pk=0; for(let k=0;k<N;k++) mean+=dl[k]; mean/=N; for(let k=0;k<N;k++){ dl[k]-=mean; pk=Math.max(pk,Math.abs(dl[k])); }
+    for(let k=0;k<N;k++) dl[k]*=amp/(pk||1);
+    let idx=0, uP=0, vP=0, wP=0;
+    for(let k=0;k<n;k++){ const u=dl[idx], v=(1-S)*u+S*uP; uP=u; const w=C*v+vP-C*wP; vP=v; wP=w; dl[idx]=rho*w; if(++idx===N) idx=0; out[k]+=u; }
+  };
+  one(f0, 0x2f6b1a3d^(m*7919), o.two?0.5:1);
+  if(o.two) one(f0*Math.pow(2,o.two/1200), 0x51a7c3e1^(m*104729), 0.5);
+  if(o.pick){ const P=Math.max(1,Math.round(o.pick*BSR/f0)); for(let k=n-1;k>=P;k--) out[k]-=out[k-P]; }
+  let x1=0, y1=0; for(let k=0;k<n;k++){ const y=out[k]-x1+0.995*y1; x1=out[k]; y1=y; out[k]=y; }   /* no slow drift below the note */
+  return out;
+}
+/* every made note equally strong in its first moment, a little softer at the very top, and never sharper than 0.6 at its
+   peak (a plucked string's first instant can be spiky); a gentle start, and the end faded over the last part of the note,
+   so a long-held note dies away instead of stopping */
+function finishNote(d, m, tail, knee){
+  const n=d.length, w=Math.min(n, Math.floor(0.3*BSR)); let s=0, pk=0; for(let k=0;k<w;k++) s+=d[k]*d[k]; for(let k=0;k<n;k++) pk=Math.max(pk, Math.abs(d[k]));
+  const rms=Math.sqrt(s/Math.max(1,w)), g=Math.min(rms>0 ? Math.min(8, 0.2/rms) : 1, pk>0 ? 0.6/pk : 1)*(m>84 ? Math.pow(2,-(m-84)/24) : 1);
+  const fi=Math.ceil(0.0005*BSR), fo=Math.max(Math.ceil(0.05*BSR), Math.floor(n*(tail||0)));
+  for(let k=0;k<n;k++){ let x=d[k]*g; if(k<fi) x*=k/fi; const left=n-1-k; if(left<fo){ const u=left/fo; x*=u*u*(3-2*u); }
+    /* knee: a plucked string's first instant is rounded off above this level (only the spikes; the tone stays as it is) */
+    if(knee){ const a=Math.abs(x); if(a>knee) x=Math.sign(x)*(knee+0.15*Math.tanh((a-knee)/0.15)); }
+    d[k]=x; }
+  return d;
+}
+const MAKERS={
+  toy(m){ const f=mtof(m), t1=clampV(0.7*Math.pow(1046.5/f,0.4),0.25,1.5), r=Math.pow(2,(((m*37)%13)-6)/1200);   /* each rod a few cents off, as on a real toy piano */
+    return finishNote(partials(m, Math.min(3, t1*4+0.2), [[r,1,t1],[2.38*r,0.12,t1*0.3],[6.27*r,0.5,0.05],[17.5*r,0.18,0.012]], [0.16,0.006,1400,0]), m, 0.2); },
+  celesta(m){ const f=mtof(m), t1=clampV(0.95*Math.pow(1046.5/f,0.4),0.4,2.2);
+    return finishNote(partials(m, Math.min(4, t1*4+0.2), [[1,1,t1],[2.756,0.13,0.06+0.1*t1],[5.404,0.04,0.035]], [0.05,0.004,1800,0]), m, 0.2); },
+  glock(m){ const f=mtof(m), t1=clampV(1.9*Math.pow(1046.5/f,0.3),0.7,3);
+    return finishNote(partials(m, Math.min(3.6, t1*3+0.2), [[1,1,t1],[2.756,0.5,t1*0.45],[5.404,0.28,t1*0.2],[8.933,0.14,0.08],[13.34,0.07,0.03]], [0.1,0.002,6000,1]), m, 0.3); },
+  steel(m){ const f=mtof(m), t1=clampV(0.9*Math.pow(1046.5/f,0.35),0.35,1.7);
+    return finishNote(partials(m, Math.min(3, t1*4+0.2), [[1,1,t1],[2.003,0.62,t1*0.7,0.014],[3.006,0.24,t1*0.35],[4.01,0.12,t1*0.2],[5.02,0.05,t1*0.1]], [0.06,0.003,2200,0]), m, 0.2); },
+  kalimba(m){ const f=mtof(m), t1=clampV(0.8*Math.pow(1046.5/f,0.4),0.3,1.8);
+    return finishNote(partials(m, Math.min(3, t1*4+0.15), [[1,1,t1,0.0015],[2,0.06,t1*0.35],[5.95,0.3,0.05]], [0.05,0.004,2500,0]), m, 0.2); },
+  musicbox(m){ const f=mtof(m), t1=clampV(1.3*Math.pow(1046.5/f,0.5),0.35,2.6);
+    return finishNote(partials(m, Math.min(3.5, t1*3.5+0.15), [[1,1,t1],[2,0.04,t1*0.5],[6.267,0.42,0.07],[17.55,0.15,0.015]], [0.05,0.0012,7000,1]), m, 0.25); },
+  harpsi(m){ const f=mtof(m), t60=clampV(5*Math.pow(261.6/f,0.55),1.2,9);
+    return finishNote(pluck(m, Math.min(4.5, 0.55*t60+0.4), {t60:t60, S:clampV(0.12*Math.pow(523.3/f,0.5),0.03,0.12), fc:7000, pos:0.12, two:1.4}), m, 0.35, 0.35); },
+  clav(m){ const f=mtof(m), t60=clampV(2.6*Math.pow(261.6/f,0.4),0.8,4.5);
+    return finishNote(pluck(m, Math.min(3, 0.5*t60+0.3), {t60:t60, S:clampV(0.07*Math.pow(523.3/f,0.5),0.02,0.07), fc:10000, pos:0.04, pick:0.13}), m, 0.3, 0.35); }
+};
+/* the made notes, played like a recording: each sound's brightness for soft and hard playing [Hz at the softest, octaves more
+   at the hardest], and how fast it stops when let go (a glockenspiel and a music box have no dampers: they ring on) */
+const MADE_TONE={toy:[2500,2.5,0.25], celesta:[1800,2.6,0.12], glock:[3500,2.2,0.5], steel:[2200,2.4,0.22], kalimba:[1500,2.5,0.2],
+  musicbox:[3500,2,0.4], harpsi:[3000,2.2,0.09], clav:[1800,3,0.035]};
+function madeVoice(c, ch, snd, m, v, when){
+  const buf=madeBuf(c, snd.kind, m); if(!buf) return null;
+  const [lo,oct,tau]=MADE_TONE[snd.kind], s=c.createBufferSource(); s.buffer=buf;
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(0.45*c.sampleRate, lo*Math.pow(2, v*oct));
+  const g=gainAt(c, velAmp(v)); s.connect(lp); lp.connect(g);
+  return {nodes:[s], out:g, tau:tau, natural:when+buf.duration};
+}
+function waveArr(c, key, amps){ let w=WAVES.get(c)||{}; if(w[key]) return w[key];
+  const real=new Float32Array(amps.length), imag=new Float32Array(amps.length); amps.forEach((a,i)=>{ imag[i]=a||0; });
+  w[key]=c.createPeriodicWave(real, imag, {disableNormalization:false}); WAVES.set(c,w); return w[key]; }
+/* the gospel organ: every tone pulled out (16' 5⅓' 8' 4' 2⅔' 2' 1⅓' 1', counted from the 16' as the rock organ's are) */
+function gospelWave(c){ return waveFrom(c,"gospel",{1:DB(8),3:DB(6),2:DB(8),4:DB(8),6:DB(5),8:DB(6),12:DB(3),16:DB(4)}); }
+/* the cinema organ: flute pipes (tibias) at 16' 8' 4' 2⅔' 2', nearly pure */
+function tibiaWave(c){ return waveFrom(c,"tibia",{1:0.55,2:1,3:0.05,4:0.6,6:0.2,8:0.3}); }
+/* the '70s rock organ: 16' 5⅓' 8' 4' all out and a little 2⅔' (888 84), counted from the 16' */
+function rockWave(c){ return waveFrom(c,"rock",{1:DB(8),3:DB(8),2:DB(8),4:DB(8),6:DB(4)}); }
+/* its amplifier: loud enough that a chord growls, while one note stays nearly clean */
+let growlCache=null;
+function growlCurve(){ if(growlCache) return growlCache; const n=2048, cv=new Float32Array(n); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; cv[i]=Math.tanh(4*x)/Math.tanh(4); } growlCache=cv; return cv; }
+/* a flute: nearly pure, a little of its octave and twelfth */
+function fluteWave(c){ return waveArr(c,"flute",[0,1,0.25,0.12,0.04,0.02]); }
+/* the breath in a flute: one second of soft noise per sound engine, the same every time (a fixed seed) */
+function breathBuf(c){ let w=WAVES.get(c)||{}; if(w.breath) return w.breath;
+  const sr=c.sampleRate, b=c.createBuffer(1, sr, sr), d=b.getChannelData(0), r=seeded(0x1b873593); for(let i=0;i<d.length;i++) d[i]=r();
+  w.breath=b; WAVES.set(c,w); return b; }
+/* an accordion reed: every partial, the even ones a little weaker */
+function reedWave(c){ const a=[0]; for(let n=1;n<=28;n++) a.push(Math.pow(n,-0.9)*(n%2?1:0.72)); return waveArr(c,"reed",a); }
+/* a choir on "ah": four formants of a mixed choir, sampled at this very note's partials */
+function vowelWave(c, m){
+  const f=mtof(m), N=Math.max(2, Math.min(120, Math.floor(7000/f))), a=[0], F=[[800,120,1],[1150,140,0.5],[2900,220,0.18],[3900,300,0.08]];
+  for(let n=1;n<=N;n++){ const x=n*f; let e=0.015; F.forEach(([fc,bw,g])=>{ const u=(x-fc)/(bw/2); e+=g/(1+u*u); }); a.push(Math.pow(n,-1.1)*e); }
+  return waveArr(c, "ah"+m, a);
+}
+/* the shared effects: one of each per sound engine (the live one, or a recording's), made the first time a sound needs it */
+function lfoTo(c, hz, deg, depth, param, t0, list){
+  const o=c.createOscillator(); o.frequency.value=hz;
+  if(deg){ const q=deg*Math.PI/180; o.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,Math.sin(q)]), new Float32Array([0,Math.cos(q)]), {disableNormalization:true})); }
+  const g=c.createGain(); g.gain.value=depth; o.connect(g); g.connect(param); o.start(t0); list.push(o); return o;
+}
+function fx(ch, name){
+  const c=ch.c, now=c.currentTime; ch.fx=ch.fx||{};
+  /* an effect no note has gone into for twenty seconds rests: its wobblers stop (the sound still passes), so a phone does no work for nothing */
+  Object.keys(ch.fx).forEach(k=>{ const e=ch.fx[k]; if(k!==name && now-e.used>20){ e.lfos.forEach(o=>{ try{ o.stop(); }catch(err){} }); delete ch.fx[k]; } });
+  const have=ch.fx[name]; if(have){ have.used=now; return have.inp; }
+  const inp=c.createGain(), out=c.createGain(), lfos=[];
+  out.connect(ch.bus);
+  const delay=base=>{ const d=c.createDelay(0.05); d.delayTime.value=base; return d; };
+  if(name==="rot"){             /* the gospel organ's speaker, spinning fast: the sound circles round, a little louder and softer, higher and lower */
+    const d=delay(0.004), am=c.createGain(), dry=c.createGain(); am.gain.value=0.8; dry.gain.value=0.5;
+    lfoTo(c,6.3,0,0.00016,d.delayTime,now,lfos); lfoTo(c,6.3,90,0.2,am.gain,now,lfos);
+    inp.connect(d); d.connect(am); am.connect(out); inp.connect(dry); dry.connect(out);
+  } else if(name==="trem"){     /* the cinema organ's tremulant: the whole organ trembles, in pitch and in loudness */
+    const d=delay(0.004), am=c.createGain(); am.gain.value=0.85;
+    lfoTo(c,6.6,0,0.00022,d.delayTime,now,lfos); lfoTo(c,6.6,90,0.15,am.gain,now,lfos);
+    inp.connect(d); d.connect(am); am.connect(out);
+  } else if(name==="vibe"){     /* the vibraphone's motor: fans in the tubes open and close, and the sound gently pulses */
+    const am=c.createGain(); am.gain.value=0.78; lfoTo(c,5.2,0,0.22,am.gain,now,lfos);
+    inp.connect(am); am.connect(out);
+  } else if(name==="rock"){     /* the '70s rock organ: all its notes into one loud amplifier (so a chord growls, as on the records), then the
+                                   spinning speaker, a horn for the highs and a drum for the lows, each going round at its own speed */
+    const sh=c.createWaveShaper(); sh.curve=growlCurve(); sh.oversample="4x";
+    const spk=c.createBiquadFilter(); spk.type="lowpass"; spk.frequency.value=5200; spk.Q.value=0.7;
+    inp.connect(sh); sh.connect(spk);
+    const hi=c.createBiquadFilter(); hi.type="highpass"; hi.frequency.value=800; hi.Q.value=0.6;
+    const lo=c.createBiquadFilter(); lo.type="lowpass"; lo.frequency.value=800; lo.Q.value=0.6;
+    const hd=delay(0.004), ham=c.createGain(), lam=c.createGain(); ham.gain.value=0.75; lam.gain.value=0.85;
+    lfoTo(c,6.1,0,0.00018,hd.delayTime,now,lfos); lfoTo(c,6.1,90,0.25,ham.gain,now,lfos); lfoTo(c,5.3,30,0.15,lam.gain,now,lfos);
+    spk.connect(hi); hi.connect(hd); hd.connect(ham); ham.connect(out);
+    spk.connect(lo); lo.connect(lam); lam.connect(out);
+    out.gain.value=SOUNDS.rockorgan.gain; out.connect(ch.send);   /* its level is set after the amplifier, so the growl stays the same; the room hears the speaker */
+  } else if(name==="tape"){     /* the tape keyboard: the tapes' narrower sound and their slow wow and quick flutter */
+    const h=c.createBiquadFilter(); h.type="highpass"; h.frequency.value=70; h.Q.value=0.6;
+    const l=c.createBiquadFilter(); l.type="lowpass"; l.frequency.value=6000; l.Q.value=0.6;
+    const d=delay(0.006); lfoTo(c,0.55,0,0.0009,d.delayTime,now,lfos); lfoTo(c,7.3,0,0.00006,d.delayTime,now,lfos);
+    inp.connect(h); h.connect(l); l.connect(d); d.connect(out);
+  } else {                      /* ens: the string synth's ensemble (three copies, each drifting in time); cho: a soft chorus; choir: many singers */
+    const P={ens:{hp:90, lp:4500, dry:0, taps:[[0.0075,0],[0.0095,120],[0.0115,240]], lvl:0.42, slow:[0.62,0.0014], fast:[5.8,0.00015]},
+             cho:{dry:0.75, taps:[[0.009,0],[0.013,180]], lvl:0.35, slow:[0.4,0.0016]},
+             choir:{dry:0.6, taps:[[0.012,0],[0.017,120],[0.022,240]], lvl:0.4, slow:[0.33,0.0022], fast:[4.7,0.00012]}}[name];
+    let src=inp;
+    if(P.hp){ const h=c.createBiquadFilter(); h.type="highpass"; h.frequency.value=P.hp; h.Q.value=0.6; src.connect(h); src=h; }
+    if(P.lp){ const l=c.createBiquadFilter(); l.type="lowpass"; l.frequency.value=P.lp; l.Q.value=0.6; src.connect(l); src=l; }
+    if(P.dry){ const g=c.createGain(); g.gain.value=P.dry; src.connect(g); g.connect(out); }
+    P.taps.forEach(([base,deg])=>{ const d=delay(base), g=c.createGain(); g.gain.value=P.lvl;
+      lfoTo(c,P.slow[0],deg,P.slow[1],d.delayTime,now,lfos); if(P.fast) lfoTo(c,P.fast[0],deg,P.fast[1],d.delayTime,now,lfos);
+      src.connect(d); d.connect(g); g.connect(out); });
+  }
+  ch.fx[name]={inp:inp, lfos:lfos, used:now};
+  return inp;
+}
+const BUILD={
+  toy:madeVoice, clav:madeVoice, celesta:madeVoice, glock:madeVoice, steel:madeVoice, harpsi:madeVoice, kalimba:madeVoice, musicbox:madeVoice,
+  vibes(c,ch,snd,m,v,when){         /* soft mallets on metal bars: the note, the bar's ring two octaves up and a faint chime; the motor does the rest */
+    const f=mtof(m), top=0.42*c.sampleRate, ta=clampV(3*Math.pow(523.3/f,0.35),1.2,5), A=0.3*velAmp(v), out=gainAt(c,1), nodes=[];
+    [[1,1,ta],[4,0.22*(0.6+0.6*v),0.42],[10,0.06*v,0.07]].forEach(([r,a,tau])=>{ if(f*r>=top) return;
+      const o=osc(c,"sine",f*r), g=gainAt(c,A*a); g.gain.setValueAtTime(0,when); g.gain.linearRampToValueAtTime(A*a,when+0.002); g.gain.setTargetAtTime(0,when+0.002,tau);
+      o.connect(g); g.connect(out); nodes.push(o); });
+    return {nodes:nodes, out:out, tau:0.15, bus:"vibe"};
+  },
+  bells(c,ch,snd,m,v,when){         /* a tube struck at the top: FM at 1 to 3.5 gives a bell's out-of-line partials; a second voice a hair sharp lets it shimmer */
+    const f=mtof(m), sr=c.sampleRate, ta=clampV(3.2*Math.pow(261.6/f,0.35),1,4.5), A=0.24*velAmp(v);
+    const I=Math.max(0, Math.min(1.6+1.6*v, (0.42*sr-f)/(3.5*f)-1));          /* never past the highest pitch the engine can make */
+    const car=osc(c,"sine",f), mod=osc(c,"sine",f*3.5), dev=gainAt(c,I*3.5*f), hum=osc(c,"sine",f*Math.pow(2,4/1200)), out=gainAt(c,1);
+    dev.gain.setValueAtTime(I*3.5*f,when); dev.gain.setTargetAtTime(0.25*I*3.5*f,when,0.9); mod.connect(dev); dev.connect(car.frequency);
+    const ga=gainAt(c,A), gh=gainAt(c,A*0.3);
+    ga.gain.setValueAtTime(0,when); ga.gain.linearRampToValueAtTime(A,when+0.002); ga.gain.setTargetAtTime(0,when+0.002,ta);
+    gh.gain.setValueAtTime(0,when); gh.gain.linearRampToValueAtTime(A*0.3,when+0.004); gh.gain.setTargetAtTime(0,when+0.004,ta*1.3);
+    car.connect(ga); ga.connect(out); hum.connect(gh); gh.connect(out);
+    return {nodes:[car,mod,hum], out:out, tau:0.4};
+  },
+  gospel(c,ch,snd,m,v,when){        /* the rock and jazz organ with every tone out, into a fast-spinning speaker. A key makes one sound: no click, no ping */
+    const f=mtof(m), peak=0.15*(0.75+0.25*v), o=osc(c,"sine",f/2), amp=gainAt(c,peak);
+    o.setPeriodicWave(gospelWave(c)); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.008);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.02, bus:"rot"};
+  },
+  rockorgan(c,ch,snd,m,v,when){     /* the low tones pulled out, into the amplifier and the spinning speaker (the "rock" effect). One sound: no click */
+    const f=mtof(m), peak=0.15*(0.8+0.2*v), o=osc(c,"sine",f/2), amp=gainAt(c,peak);
+    o.setPeriodicWave(rockWave(c)); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.008);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.02, bus:"rock", post:true};
+  },
+  tapeflute(c,ch,snd,m,v,when){     /* a flute on tape: a nearly pure tone with a little breath; the tape leans in, and after eight seconds runs out */
+    const f=mtof(m), peak=0.13*(0.6+0.4*v), o=osc(c,"sine",f), amp=gainAt(c,0);
+    o.setPeriodicWave(fluteWave(c));
+    const nz=c.createBufferSource(); nz.buffer=breathBuf(c); nz.loop=true;
+    const bp=c.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=Math.min(0.45*c.sampleRate, 2*f); bp.Q.value=1.2;
+    const ng=gainAt(c,0.45); nz.connect(bp); bp.connect(ng); ng.connect(amp); o.connect(amp);
+    amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.06); amp.gain.setValueAtTime(peak,when+7.2); amp.gain.linearRampToValueAtTime(0,when+8);
+    nz.start(when, (m*0.137)%0.9);     /* each note its own stretch of breath */
+    return {nodes:[o,nz], started:[nz], out:amp, tau:0.1, bus:"tape", natural:when+8, end:when+8.05};
+  },
+  theatre(c,ch,snd,m,v,when){       /* the cinema organ: flute pipes at five pitches, speaking softly, through the tremulant */
+    const f=mtof(m), peak=0.15*(0.8+0.2*v), o=osc(c,"sine",f/2), amp=gainAt(c,0);
+    o.setPeriodicWave(tibiaWave(c)); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.03);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.07, bus:"trem"};
+  },
+  accordion(c,ch,snd,m,v,when){     /* two reeds a few cents apart: the slow beat between them is the accordion's shimmer; the bellows swell a little */
+    const f=mtof(m), peak=0.12*(0.55+0.45*v), w=reedWave(c), o1=osc(c,"sine",f*Math.pow(2,-4.5/1200)), o2=osc(c,"sine",f*Math.pow(2,4.5/1200));
+    o1.setPeriodicWave(w); o2.setPeriodicWave(w);
+    const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.6; lp.frequency.value=Math.min(0.45*c.sampleRate, 2400+2600*v+2*f);
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak*0.85,when+0.035); amp.gain.linearRampToValueAtTime(peak,when+0.35);
+    o1.connect(lp); o2.connect(lp); lp.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.05};
+  },
+  strsynth(c,ch,snd,m,v,when){      /* the 1970s string synth: a buzzy wave and its octave, swelling in, through the ensemble */
+    const f=mtof(m), peak=0.1*(0.7+0.3*v), o1=osc(c,"sawtooth",f), o2=osc(c,"sawtooth",2*f), g2=gainAt(c,0.35), amp=gainAt(c,0);
+    amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.14);
+    o1.connect(amp); o2.connect(g2); g2.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.22, bus:"ens"};
+  },
+  pad(c,ch,snd,m,v,when){           /* two buzzy waves a hair apart, softened and slowly opening, swelling in */
+    const f=mtof(m), peak=0.1*(0.6+0.4*v), o1=osc(c,"sawtooth",f*Math.pow(2,-7/1200)), o2=osc(c,"sawtooth",f*Math.pow(2,7/1200));
+    const top=Math.min(0.45*c.sampleRate, 900+1500*v+1.5*f), lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.9;
+    lp.frequency.value=top*0.45; lp.frequency.setValueAtTime(top*0.45,when); lp.frequency.setTargetAtTime(top,when,0.35);
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.38);
+    o1.connect(lp); o2.connect(lp); lp.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.42, bus:"cho"};
+  },
+  brass(c,ch,snd,m,v,when){         /* the 1980s synth brass: two buzzy waves; the tone opens fast and bright, then settles; the pitch scoops up a little */
+    const f=mtof(m), peak=0.11*(0.55+0.45*v), o1=osc(c,"sawtooth",f), o2=osc(c,"sawtooth",f), ny=0.45*c.sampleRate;
+    [[o1,-6],[o2,6]].forEach(([o,d])=>{ o.detune.value=d-28; o.detune.setValueAtTime(d-28,when); o.detune.setTargetAtTime(d,when,0.025); });
+    const lo=Math.min(ny,1.3*f+250), hi=Math.min(ny,5*f+1800+2400*v), sus=Math.min(ny,3*f+900+1200*v), lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=1.4;
+    lp.frequency.value=lo; lp.frequency.setValueAtTime(lo,when); lp.frequency.linearRampToValueAtTime(hi,when+0.07); lp.frequency.setTargetAtTime(sus,when+0.07,0.28);
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.03);
+    o1.connect(lp); o2.connect(lp); lp.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.1, bus:"cho"};
+  },
+  lead(c,ch,snd,m,v,when){          /* a buzzy wave and a hollow one, bright, with a singer's wobble that grows in while a note is held */
+    const f=mtof(m), peak=0.09*(0.6+0.4*v), o1=osc(c,"sawtooth",f), o2=osc(c,"square",f*Math.pow(2,5/1200)), g2=gainAt(c,0.55);
+    const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=2; lp.frequency.value=Math.min(0.45*c.sampleRate, Math.max(3*f, 1800+3800*v));
+    const lfo=osc(c,"sine",5.6), dep=gainAt(c,0); dep.gain.setValueAtTime(0,when+0.35); dep.gain.linearRampToValueAtTime(14,when+0.8);
+    lfo.connect(dep); dep.connect(o1.detune); dep.connect(o2.detune);
+    const amp=gainAt(c,peak); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.006);
+    o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(amp); return {nodes:[o1,o2,lfo], out:amp, tau:0.07};
+  },
+  choir(c,ch,snd,m,v,when){         /* singers on "ah": the voice's color worked out for this very note; the shared chorus makes them many
+                                       (two voices a few cents apart would beat in a steady wobble, which a real choir never does) */
+    const f=mtof(m), peak=0.15*(0.6+0.4*v), o=osc(c,"sine",f);
+    o.setPeriodicWave(vowelWave(c,m));
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.22);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.25, bus:"choir"};
+  }
+};
+/* one bar, one string, one reed for each note: a note struck again takes over from its last voice, which fades in a moment
+   (so a fast pattern on a ringing sound never piles up voices on a phone) */
+function ringOn(ch, m, vc, when){
+  const R=ch.ring||(ch.ring={}), p=R[m];
+  const cut=(v,t)=>{ if(!v.cut && (v.end==null || v.end>t+0.02)){ v.cut=true; try{ v.kill(t); }catch(e){} } };
+  /* the chord player makes a bar's notes in any order, so whichever starts first gives way to the later one */
+  if(p && p.vc!==vc && p.at>when){ cut(vc, p.at); return; }
+  if(p && p.vc!==vc && p.at<when) cut(p.vc, when);
+  R[m]={vc:vc, at:when};
+}
+function buildVoice(c, ch, snd, m, v, when){
+  const vv=clampV(v,0.05,1), b=BUILD[snd.kind](c, ch, snd, m, vv, when); if(!b) return null;
+  const lvl=gainAt(c, b.post?1:snd.gain), rel=gainAt(c, 1);   /* post: the sound's level is set after its shared effect */
+  b.out.connect(lvl); lvl.connect(rel);
+  rel.connect(b.bus ? fx(ch, b.bus) : ch.bus); if(!b.post) rel.connect(ch.send);   /* a post sound's effect feeds the room itself */
+  b.nodes.forEach(n=>{ if(!b.started || b.started.indexOf(n)<0) n.start(when); if(b.end) n.stop(b.end); });
+  const vc=voiceShell(c, ch.bus, b.nodes, rel);
+  vc.tau=b.tau; if(b.natural) vc.natural=b.natural;
+  ringOn(ch, m, vc, when);
+  return vc;
+}
+/* a made sound's notes are worked out a few at a time while the page is quiet, the middle of the keyboard first, so the first
+   touch of each key is instant */
+let warmJob=0;
+function warmMade(id){
+  clearTimeout(warmJob);
+  const snd=SOUNDS[id]; if(!snd || !MAKERS[snd.kind]) return;
+  const order=[]; for(let m=55;m<=79;m++) order.push(m); for(let m=36;m<55;m++) order.push(m); for(let m=80;m<=84;m++) order.push(m);
+  let i=0;
+  const step=()=>{ if(S.sound!==id) return; const t0=performance.now();
+    while(i<order.length && performance.now()-t0<8) madeBuf(ac, snd.kind, order[i++]);
+    if(i<order.length) warmJob=setTimeout(step, 40); };
+  warmJob=setTimeout(step, 60);
 }
 
 /* ── the live engine ── */
@@ -1290,12 +1688,13 @@ function paintLoad(){
   const snd=SOUNDS[S.sound], line=$("loadLine");
   if(!line) return;
   if(snd.kind!=="sample"){ line.textContent=t("built"); return; }
-  const set=SETS[snd.set], name=soundName(S.sound).toLowerCase();
+  const set=SETS[snd.set], es=S.lang==="es", name=soundName(S.sound).toLowerCase();
   if(set.state==="failed"){ line.textContent=t("loadFail"); return; }
-  if(set.state==="ready" && set.done>=set.total){ line.textContent=snd.honky?t("readyHonky"):t("ready",{name:name}); return; }
+  /* AOG-PIANO-SOUNDS-V2: a sound can bring its own words (the marimba is "la marimba", the strings are a section) */
+  if(set.state==="ready" && set.done>=set.total){ line.textContent=snd.ready?snd.ready[S.lang]:snd.honky?t("readyHonky"):t("ready",{name:(es?"un ":"")+name}); return; }
   if(set.ready){ line.textContent=t("more",{n:set.done,all:set.total}); return; }
-  const firstAll=set.notes.length;
-  line.textContent=t("loading",{name:name, n:Math.min(set.done, firstAll), all:firstAll})+" "+t("stand");
+  const firstAll=set.notes.length, the=(snd.the&&snd.the[S.lang])||((es?"el ":"")+name);
+  line.textContent=t("loading",{name:the, n:Math.min(set.done, firstAll), all:firstAll})+" "+t("stand");
 }
 function paintDrums(){
   const box=$("drumBox"); if(!box) return;
@@ -1438,7 +1837,7 @@ async function useMidi(){
 function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save();
     if(ac) setSendLevel(LIVE_CH, id);
-    const snd=SOUNDS[id]; if(snd.kind==="sample") loadSet(snd.set, paintLoad);
+    const snd=SOUNDS[id]; if(snd.kind==="sample") loadSet(snd.set, paintLoad); else warmMade(id);   /* AOG-PIANO-SOUNDS-V2 */
     paintLoad(); lessonsChanged(); };
   $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); paintPads(); paintProg(); buildKeys(); if(S.playing) mark("klive"); lessonsChanged(); };
   $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; save(); paintMood(); paintPads(); paintProg(); lessonsChanged(); };
@@ -1497,7 +1896,7 @@ function bind(){
    ══════════════════════════════════════════════════════════════════════════ */
 /* AOG-PIANO-LESSONS-DATA:BEGIN — made by _work/music/make_piano_lessons.py from piano_lessons_data.py. Edit there, then run it. */
 const LESSONS=[{"id":"p1","en":"Turn it on and play","es":"Enciéndelo y toca","blurb_en":"Tap a key. Tap a chord pad. Pick a pattern and press Play. That is the whole piano.","blurb_es":"Toca una tecla. Toca un pad de acorde. Elige un patrón y pulsa Tocar. Ese es todo el piano.","steps":["key1","pad1","pat1","play1","stop1"]},{"id":"p2","en":"Find C: the black keys show the way","es":"Encuentra el Do: las teclas negras te guían","blurb_en":"The black keys come in groups of two and three. Every C sits just to the left of a group of two.","blurb_es":"Las teclas negras vienen en grupos de dos y de tres. Cada Do está justo a la izquierda de un grupo de dos.","steps":["fc","fc2","fb2","fb3"]},{"id":"p3","en":"Seven letters, then they repeat","es":"Siete notas, y se repiten","blurb_en":"The white keys are named A B C D E F G, and then the names start over. From C up to the next C is the C major scale.","blurb_es":"Las teclas blancas se llaman Do Re Mi Fa Sol La Si, y luego los nombres empiezan otra vez. De un Do al siguiente Do tienes la escala de Do mayor.","steps":["up8","down8","up8hi"]},{"id":"p4","en":"Octaves: same name, twice as fast","es":"Octavas: el mismo nombre, el doble de rápido","blurb_en":"Play a C, then the next C up. It sounds like the same note, only higher. The higher string shakes twice as fast. That jump is an octave.","blurb_es":"Toca un Do y luego el siguiente Do hacia arriba. Suena como la misma nota, pero más aguda. La cuerda de arriba vibra el doble de rápido. Ese salto es una octava.","steps":["opair","ohigher","olower","ofar"]},{"id":"p5","en":"Soft and loud: piano and forte","es":"Suave y fuerte: piano y forte","blurb_en":"The piano's full name is pianoforte, Italian for soft-loud. Press near the top of a key for a soft note and near the bottom for a loud one.","blurb_es":"El nombre completo del piano es pianoforte, que en italiano quiere decir suave-fuerte. Presiona cerca de la parte de arriba de una tecla para una nota suave, y cerca de la de abajo para una fuerte.","steps":["vsoft","vloud","vgrow"]},{"id":"p6","en":"Make a chord with your hand","es":"Haz un acorde con tu mano","blurb_en":"A chord is three or more notes played together. Play one key, skip one, play one, skip one, play one.","blurb_es":"Un acorde son tres o más notas tocadas juntas. Toca una tecla, salta una, toca una, salta una, toca una.","steps":["hceg","hfac","hgbd","hpad"]},{"id":"p7","en":"Major and minor: bright and moody","es":"Mayor y menor: brillante y melancólico","blurb_en":"Move the middle note of a chord down one key, and bright turns moody. C E G is C major. C E♭ G is C minor.","blurb_es":"Baja una tecla la nota del medio de un acorde, y lo brillante se vuelve melancólico. Do Mi Sol es Do mayor. Do Mi♭ Sol es Do menor.","steps":["mjr","mnr","mmood","mback"]},{"id":"p8","en":"Six chords that fit: the pads","es":"Seis acordes que encajan: los pads","blurb_en":"In every key, a handful of chords belong together. The pads show six of them, numbered by the step of the scale they start on. Pad 1 is home.","blurb_es":"En cada tono, unos cuantos acordes van juntos. Los pads muestran seis, numerados por el paso de la escala donde empiezan. El pad 1 es la casa.","steps":["p6","p51","pmin","p4key"]},{"id":"p9","en":"A chord pattern: one chord each bar","es":"Un patrón de acordes: un acorde por compás","blurb_en":"Most songs repeat a short pattern of chords. Each chord lasts one bar: count 1 2 3 4, and the next chord comes in.","blurb_es":"Casi todas las canciones repiten un patrón corto de acordes. Cada acorde dura un compás: cuenta 1 2 3 4 y entra el siguiente acorde.","steps":["cpop","cplay","cround","cswap"]},{"id":"p10","en":"Four ways to play a chord","es":"Cuatro maneras de tocar un acorde","blurb_en":"The same chords can feel calm, steady, flowing or bouncy. Change How the chords play and listen.","blurb_es":"Los mismos acordes pueden sentirse tranquilos, firmes, fluidos o saltarines. Cambia Cómo suenan los acordes y escucha.","steps":["rhold","rpulse","rbroken","roff"]},{"id":"p11","en":"Tempo: beats in a minute","es":"Tempo: pulsos en un minuto","blurb_en":"Tempo is how many beats fit in one minute. At 60, one beat lasts exactly one second, like the second hand of a clock.","blurb_es":"El tempo es cuántos pulsos caben en un minuto. A 60, cada pulso dura exactamente un segundo, como la aguja de los segundos de un reloj.","steps":["t60","t60p","t120","t120p"]},{"id":"p12","en":"Change the key","es":"Cambia el tono","blurb_en":"A key is the home note a song is built on. Change the key, and every chord moves together. It is the same song, just higher or lower.","blurb_es":"El tono es la nota casa sobre la que se construye una canción. Cambia el tono, y todos los acordes se mueven juntos. Es la misma canción, solo más aguda o más grave.","steps":["kpat","kg","k3","klive"]},{"id":"p13","en":"Make your own pattern","es":"Haz tu propio patrón","blurb_en":"Press Make my own and tap the pads in any order. You are writing the chords of a song.","blurb_es":"Pulsa Hacer el mío y toca los pads en el orden que quieras. Estás escribiendo los acordes de una canción.","steps":["own1","own4","ownhome","ownplay"]},{"id":"p14","en":"The pedal: let it ring","es":"El pedal: déjalo sonar","blurb_en":"On a real piano, the right pedal lifts felt dampers off the strings, so notes keep ringing after you let go. Here it is the Hold notes button, or Shift on a computer.","blurb_es":"En un piano real, el pedal derecho levanta los apagadores de fieltro de las cuerdas, y las notas siguen sonando cuando sueltas. Aquí es el botón Mantener notas, o Shift en la computadora.","steps":["son","sring","soff"]},{"id":"p15","en":"Eight sounds: hammers, tines, reeds and pipes","es":"Ocho sonidos: martillos, varillas, lengüetas y tubos","blurb_en":"A grand piano hits strings with felt hammers. An electric piano hits metal tines or reeds. An organ blows air through pipes or spins wheels. Same notes, different color. That color is called timbre.","blurb_es":"Un piano de cola golpea cuerdas con martillos de fieltro. Un piano eléctrico golpea varillas o lengüetas de metal. Un órgano sopla aire por tubos o hace girar ruedas. Las mismas notas, otro color. Ese color se llama timbre.","steps":["tgrand","tep","torg","tall"]},{"id":"p16","en":"Play along: follow the lit keys","es":"Toca encima: sigue las teclas iluminadas","blurb_en":"While the chords play, the keys of each chord light up. Any lit key fits. Play them in your own order and you are making up a melody.","blurb_es":"Mientras suenan los acordes, se iluminan las teclas de cada acorde. Cualquier tecla iluminada encaja. Tócalas en tu propio orden y estás inventando una melodía.","steps":["lplay","llit","llit8","lchange"]},{"id":"p17","en":"Play with the drum machine","es":"Toca con la caja de ritmos","blurb_en":"Make a beat on the drum machine and press Send to the turntables. The piano finds it too, and plays your chords in time with it.","blurb_es":"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. El piano también lo encuentra y toca tus acordes a tiempo con él.","steps":["dsend","don","dplay","dpulse"]},{"id":"p18","en":"Twelve-bar blues","es":"Blues de doce compases","blurb_en":"The blues grew in the American South around 1900, from African American work songs and spirituals. Twelve bars, three chords, and a seventh in every one.","blurb_es":"El blues nació en el sur de Estados Unidos hacia 1900, de los cantos de trabajo y los espirituales afroamericanos. Doce compases, tres acordes y una séptima en cada uno.","steps":["bpick","borg","bpulse","b12"]},{"id":"p19","en":"Seventh chords: jazz 2-5-1","es":"Acordes de séptima: el 2-5-1 del jazz","blurb_en":"Stack one more note on a chord, skipping a key again, and you get a seventh chord. Jazz is built on them, and 2-5-1 is its favorite way home.","blurb_es":"Pon una nota más encima de un acorde, saltando otra tecla, y tienes un acorde de séptima. El jazz se construye con ellos, y el 2-5-1 es su camino favorito a casa.","steps":["jpick","jep","jplay","jhand"]},{"id":"p20","en":"1987 or 2026? Sound becomes numbers","es":"¿1987 o 2026? El sonido se vuelve números","blurb_en":"A computer keeps sound as a long list of numbers. The 1987 samplers kept fewer, rougher numbers, and that is the crunch. Turn the Sound dial and hear it.","blurb_es":"Una computadora guarda el sonido como una lista larga de números. Los samplers de 1987 guardaban menos números, más ásperos, y ese es el crujido. Gira el dial de Sonido y escúchalo.","steps":["e87","ehigh","e26","emid"]},{"id":"p21","en":"Make a track, then hand it in","es":"Haz una pista y entrégala","blurb_en":"Choose a sound, a key and a pattern that feel like you. Send it to the turntables, give it a name, and hand in the worksheet.","blurb_es":"Elige un sonido, un tono y un patrón que se sientan tuyos. Mándalo a los platos, ponle nombre y entrega la hoja.","steps":["fown","fname","fsend","fsheet"]},{"id":"s22","en":"Frère Jacques · a round","es":"Frère Jacques (Martinillo) · un canon","blurb_en":"A French song from the 1700s, sung all over the world. In Spanish it is Martinillo. It is a round: groups start the same tune at different times, and it still fits together.","blurb_es":"Una canción francesa del siglo XVIII que se canta en todo el mundo. En español es Martinillo. Es un canon: los grupos empiezan la misma melodía en momentos distintos, y aun así encaja.","tog_en":"Make three groups. Group 1 starts singing. Group 2 starts when group 1 reaches line 2, then group 3. The piano keeps everyone together.","tog_es":"Hagan tres grupos. El grupo 1 empieza a cantar. El grupo 2 empieza cuando el grupo 1 llega a la línea 2, y luego el grupo 3. El piano mantiene a todos juntos.","steps":["s22_1","s22_2","s22_3","s22_4","s22_5","s22_6","s22_7","s22_8"],"song":{"n":22,"k":1,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"mel","pcs":[0,2,4,0,0,2,4,0]},{"k":"mel","pcs":[4,5,7,4,5,7]},{"k":"mel","pcs":[7,9,7,5,4,0,7,9,7,5,4,0]},{"k":"mel","pcs":[0,7,0,0,7,0]},{"k":"play"}],"key":0,"minor":false,"bpm":100,"sound":"grand","rhythm":"pulse","prog":[{"off":0,"q":"maj"}]}},{"id":"s23","en":"Ode to Joy","es":"Himno de la alegría","blurb_en":"Ludwig van Beethoven wrote this tune for his Ninth Symphony in 1824, when he could hardly hear at all. Today it is the anthem of Europe.","blurb_es":"Ludwig van Beethoven escribió esta melodía para su Novena Sinfonía en 1824, cuando ya casi no podía oír. Hoy es el himno de Europa.","tog_en":"One group plays the chords on the piano. Everyone else hums or sings the tune, one note for each beat.","tog_es":"Un grupo toca los acordes en el piano. Todos los demás tararean o cantan la melodía, una nota por cada pulso.","steps":["s23_1","s23_2","s23_3","s23_4","s23_5","s23_6","s23_7"],"song":{"n":23,"k":2,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"mel","pcs":[4,4,5,7,7,5,4,2]},{"k":"mel","pcs":[0,0,2,4,4,2,2]},{"k":"mel","pcs":[0,0,2,4,2,0,0]},{"k":"play"}],"key":0,"minor":false,"bpm":100,"sound":"grand","rhythm":"pulse","prog":[{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":0,"q":"maj"}]}},{"id":"s24","en":"When the Saints Go Marching In","es":"When the Saints Go Marching In (Cuando los santos marchan)","blurb_en":"A Black American spiritual that became the marching song of New Orleans jazz. Brass bands still play it in the city's street parades.","blurb_es":"Un espiritual afroamericano que se volvió la canción de marcha del jazz de Nueva Orleans. Las bandas de metales todavía la tocan en los desfiles de la ciudad.","tog_en":"Everyone marches in place and sings. Wave a hand each time the chord changes.","tog_es":"Todos marchan en su lugar y cantan. Saluden con la mano cada vez que cambia el acorde.","steps":["s24_1","s24_2","s24_3","s24_4","s24_5","s24_6","s24_7","s24_8"],"song":{"n":24,"k":3,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"mel","pcs":[0,4,5,7,0,4,5,7]},{"k":"mel","pcs":[0,4,5,7,4,0,4,2]},{"k":"mel","pcs":[4,4,2,0,0,4,7,7,5]},{"k":"mel","pcs":[4,5,7,4,0,2,0]},{"k":"play"}],"key":0,"minor":false,"bpm":112,"sound":"honky","rhythm":"pulse","prog":[{"off":0,"q":"maj"},{"off":0,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"}]}},{"id":"s25","en":"Canon","es":"Canon","blurb_en":"Johann Pachelbel, a church organist in Germany, wrote this canon around 1700. Its eight chords go round and round under new tunes, and pop songs still borrow them.","blurb_es":"Johann Pachelbel, organista de iglesia en Alemania, escribió este canon hacia 1700. Sus ocho acordes dan vueltas y vueltas debajo de melodías nuevas, y las canciones pop todavía los toman prestados.","tog_en":"Sit still and listen to the eight chords go round three times. Then two volunteers hum lit notes on top.","tog_es":"Siéntense quietos y escuchen los ocho acordes dar tres vueltas. Luego dos voluntarios tararean notas iluminadas encima.","steps":["s25_1","s25_2","s25_3","s25_4"],"song":{"n":25,"k":4,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":2,"minor":false,"bpm":66,"sound":"church","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":9,"q":"min"},{"off":4,"q":"min"},{"off":5,"q":"maj"},{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"}],"preset":"canon"}},{"id":"s26","en":"Blues on the organ","es":"Blues con órgano","blurb_en":"In the 1950s and 60s, jazz and soul players brought the blues to the Hammond organ, a heavy keyboard with spinning wheels inside that make its tone.","blurb_es":"En los años 50 y 60, músicos de jazz y soul llevaron el blues al órgano Hammond, un teclado pesado con ruedas que giran por dentro y hacen su sonido.","tog_en":"Everyone snaps on 2 and 4. Count the twelve bars out loud, 1 to 12, then start again.","tog_es":"Todos chasquean los dedos en 2 y 4. Cuenten los doce compases en voz alta, del 1 al 12, y vuelvan a empezar.","steps":["s26_1","s26_2","s26_3","s26_4"],"song":{"n":26,"k":5,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":5,"minor":false,"bpm":96,"sound":"organ","rhythm":"offbeat","prog":[{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":5,"q":"dom7"},{"off":5,"q":"dom7"},{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":7,"q":"dom7"},{"off":5,"q":"dom7"},{"off":0,"q":"dom7"},{"off":7,"q":"dom7"}],"preset":"blues"}},{"id":"s27","en":"Doo-wop ballad","es":"Balada doo-wop","blurb_en":"In the 1950s, teenagers in US cities sang in groups on street corners, with their voices in place of instruments. Their favorite chords went 1 6 4 5.","blurb_es":"En los años 50, adolescentes de las ciudades de Estados Unidos cantaban en grupo en las esquinas, con sus voces en lugar de instrumentos. Sus acordes favoritos iban 1 6 4 5.","tog_en":"Make four groups, one for each chord. Each group sings a soft 'ooh' while its chord plays.","tog_es":"Hagan cuatro grupos, uno por acorde. Cada grupo canta un 'uh' suave mientras suena su acorde.","steps":["s27_1","s27_2","s27_3","s27_4"],"song":{"n":27,"k":6,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":3,"minor":false,"bpm":76,"sound":"upright","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":9,"q":"min"},{"off":5,"q":"maj"},{"off":7,"q":"maj"}],"preset":"fifties"}},{"id":"s28","en":"Highlife","es":"Highlife","blurb_en":"Highlife began in Ghana in the early 1900s, when dance bands mixed local rhythms with brass and guitars. Its bright, rolling chords spread across West Africa.","blurb_es":"El highlife nació en Ghana a principios del siglo XX, cuando las bandas de baile mezclaron ritmos locales con metales y guitarras. Sus acordes brillantes y ondulantes se extendieron por África occidental.","tog_en":"Everyone steps side to side, one step for each beat. A few learners clap between the steps.","tog_es":"Todos dan un paso al lado en cada pulso. Algunos aplauden entre los pasos.","steps":["s28_1","s28_2","s28_3","s28_4"],"song":{"n":28,"k":7,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":9,"minor":false,"bpm":120,"sound":"epreed","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"}]}},{"id":"s29","en":"Ska","es":"Ska","blurb_en":"Ska was born in Jamaica in the early 1960s, mixing local mento with American rhythm and blues. The piano and guitar play on the off-beats, between the counts.","blurb_es":"El ska nació en Jamaica a principios de los años 60, mezclando el mento local con el rhythm and blues de Estados Unidos. El piano y la guitarra tocan en los contratiempos, entre los conteos.","tog_en":"Everyone counts 1 2 3 4 out loud and claps only on the AND between the numbers.","tog_es":"Todos cuentan 1 2 3 4 en voz alta y aplauden solo en el Y entre los números.","steps":["s29_1","s29_2","s29_3","s29_4"],"song":{"n":29,"k":8,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":7,"minor":false,"bpm":150,"sound":"upright","rhythm":"offbeat","prog":[{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":5,"q":"maj"}]}},{"id":"s30","en":"Reggae organ","es":"Órgano de reggae","blurb_en":"Reggae grew out of ska in Jamaica in the late 1960s. It slowed down, and the organ began to bubble on the off-beats while the bass sang underneath.","blurb_es":"El reggae salió del ska en Jamaica a finales de los años 60. Se volvió más lento, y el órgano empezó a burbujear en los contratiempos mientras el bajo cantaba por debajo.","tog_en":"Sway gently and say 'chk' on each off-beat. If your class made the Reggae one drop on the drum machine, send it here and press Play with my drum beat.","tog_es":"Mézanse suave y digan 'chk' en cada contratiempo. Si su clase hizo el Reggae one drop en la caja de ritmos, mándenlo aquí y pulsen Tocar con mi ritmo de batería.","steps":["s30_1","s30_2","s30_3","s30_4"],"song":{"n":30,"k":9,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":9,"minor":true,"bpm":76,"sound":"organ","rhythm":"offbeat","prog":[{"off":0,"q":"min"},{"off":8,"q":"maj"},{"off":3,"q":"maj"},{"off":10,"q":"maj"}],"preset":"minor"}},{"id":"s31","en":"Cumbia","es":"Cumbia","blurb_en":"Cumbia began on the Caribbean coast of Colombia, from African, Indigenous and Spanish music. Today it is played from Mexico to Argentina, often on electronic keyboards.","blurb_es":"La cumbia nació en la costa caribe de Colombia, de música africana, indígena y española. Hoy se toca de México a Argentina, muchas veces con teclados electrónicos.","tog_en":"Step side to side on each beat, like a cumbia dancer. If your class made the Cumbia-style groove on the drum machine, send it here and play along.","tog_es":"Den un paso al lado en cada pulso, como en el baile de cumbia. Si su clase hizo el Ritmo estilo cumbia en la caja de ritmos, mándenlo aquí y toquen encima.","steps":["s31_1","s31_2","s31_3","s31_4"],"song":{"n":31,"k":10,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":4,"minor":true,"bpm":94,"sound":"ep80","rhythm":"offbeat","prog":[{"off":0,"q":"min"},{"off":5,"q":"min"},{"off":7,"q":"min"},{"off":0,"q":"min"}]}},{"id":"s32","en":"Flamenco · the Andalusian cadence","es":"Flamenco · la cadencia andaluza","blurb_en":"Flamenco comes from Andalusia, in southern Spain, with roots in Romani, Arab, Jewish and Spanish music. Four chords step down, and the last one sounds like a door left open.","blurb_es":"El flamenco viene de Andalucía, en el sur de España, con raíces en la música gitana, árabe, judía y española. Cuatro acordes bajan paso a paso, y el último suena como una puerta que se queda abierta.","tog_en":"Half the class claps on every beat (palmas). The other half claps softly on 2 and 4.","tog_es":"La mitad de la clase aplaude en cada pulso (palmas). La otra mitad aplaude suave en 2 y 4.","steps":["s32_1","s32_2","s32_3","s32_4"],"song":{"n":32,"k":11,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":9,"minor":true,"bpm":100,"sound":"grand","rhythm":"broken","prog":[{"off":0,"q":"min"},{"off":10,"q":"maj"},{"off":8,"q":"maj"},{"off":7,"q":"maj"}],"preset":"flamenco"}},{"id":"s33","en":"Black keys only","es":"Solo teclas negras","blurb_en":"The five black keys make a pentatonic scale, one of the oldest scales in the world. Folk music from China, Scotland, West Africa and the Andes uses it. Over these chords, every black key fits.","blurb_es":"Las cinco teclas negras forman una escala pentatónica, una de las escalas más antiguas del mundo. La música tradicional de China, Escocia, África occidental y los Andes la usa. Sobre estos acordes, cada tecla negra encaja.","tog_en":"Take turns. Each learner plays one short black-key tune over the chords. Everyone else listens, then claps.","tog_es":"Túrnense. Cada quien toca una melodía corta con teclas negras sobre los acordes. Los demás escuchan y luego aplauden.","steps":["s33_1","s33_2","s33_3","s33_4","s33_5"],"song":{"n":33,"k":12,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"},{"k":"black"}],"key":6,"minor":false,"bpm":90,"sound":"epwarm","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"}]}},{"id":"s34","en":"City pop","es":"City pop","blurb_en":"City pop was the sound of Tokyo in the 1980s: bright, smooth and full of the new digital electric piano. Its favorite chords, 4 5 3 6, still fill anime songs.","blurb_es":"El city pop fue el sonido de Tokio en los años 80: brillante, suave y lleno del nuevo piano eléctrico digital. Sus acordes favoritos, 4 5 3 6, siguen llenando las canciones de anime.","tog_en":"Everyone nods on beat 1. Two volunteers make up a 'la la' tune on the lit keys.","tog_es":"Todos asienten en el pulso 1. Dos voluntarios inventan una melodía de 'la la' con las teclas iluminadas.","steps":["s34_1","s34_2","s34_3","s34_4"],"song":{"n":34,"k":13,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":4,"minor":false,"bpm":112,"sound":"ep80","rhythm":"pulse","prog":[{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":4,"q":"min"},{"off":9,"q":"min"}],"preset":"anime"}},{"id":"s35","en":"Pop anthem · 1 5 6 4","es":"Himno pop · 1 5 6 4","blurb_en":"Four chords, 1 5 6 4, sit under hundreds of hit songs from many countries. Learn them once and you can play along with the radio.","blurb_es":"Cuatro acordes, 1 5 6 4, están debajo de cientos de éxitos de muchos países. Apréndelos una vez y podrás acompañar a la radio.","tog_en":"Everyone sings one long 'oh' on the same note while the chords change under it. Notice how the same note feels different on each chord.","tog_es":"Todos cantan un 'oh' largo en la misma nota mientras los acordes cambian debajo. Fíjense cómo la misma nota se siente distinta en cada acorde.","steps":["s35_1","s35_2","s35_3","s35_4"],"song":{"n":35,"k":14,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":7,"minor":false,"bpm":100,"sound":"grand","rhythm":"pulse","prog":[{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":9,"q":"min"},{"off":5,"q":"maj"}],"preset":"pop"}},{"id":"s36","en":"Sad pop · 6 4 1 5","es":"Pop triste · 6 4 1 5","blurb_en":"These are the same four chords as the pop anthem, started on the minor one. Starting on 6 makes the whole song feel more serious.","blurb_es":"Son los mismos cuatro acordes del himno pop, empezando por el menor. Empezar en el 6 hace que toda la canción se sienta más seria.","tog_en":"Close your eyes for one time round. Then everyone writes one word for how it made them feel.","tog_es":"Cierren los ojos durante una vuelta. Luego cada quien escribe una palabra sobre cómo le hizo sentir.","steps":["s36_1","s36_2","s36_3","s36_4"],"song":{"n":36,"k":15,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":0,"minor":false,"bpm":72,"sound":"upright","rhythm":"broken","prog":[{"off":9,"q":"min"},{"off":5,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"}],"preset":"sadpop"}},{"id":"s37","en":"Lo-fi study beat","es":"Ritmo lo-fi para estudiar","blurb_en":"Lo-fi beats grew online in the 2010s: slow hip-hop drums, soft jazz chords and a dusty sound, on purpose. Turn the Sound dial toward 1987 for the dust.","blurb_es":"Los ritmos lo-fi crecieron en internet en los años 2010: batería lenta de hip-hop, acordes suaves de jazz y un sonido polvoso, a propósito. Gira el dial de Sonido hacia 1987 para el polvo.","tog_en":"If your class made the Lo-fi study beat on the drum machine, send it here and press Play with my drum beat. Then everyone reads or writes quietly for one minute while it plays.","tog_es":"Si su clase hizo el ritmo Lo-fi para estudiar en la caja de ritmos, mándenlo aquí y pulsen Tocar con mi ritmo de batería. Luego todos leen o escriben en silencio un minuto mientras suena.","steps":["s37_1","s37_2","s37_3","s37_4","s37_5"],"song":{"n":37,"k":16,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"era"},{"k":"play"}],"key":5,"minor":false,"bpm":76,"sound":"epwarm","rhythm":"hold","prog":[{"off":2,"q":"m7"},{"off":7,"q":"dom7"},{"off":0,"q":"maj7"},{"off":0,"q":"maj7"}],"preset":"jazz","era":true}},{"id":"s38","en":"Our class song","es":"La canción de nuestra clase","blurb_en":"Everyone adds something. Each group picks the chords for its part of the pattern, and the piano plays them all as one song.","blurb_es":"Todos aportan algo. Cada grupo elige los acordes de su parte del patrón, y el piano los toca todos como una sola canción.","tog_en":"Make four groups. Each group chooses two chords, in order. When your two bars play, your group stands up.","tog_es":"Hagan cuatro grupos. Cada grupo elige dos acordes, en orden. Cuando suenan sus dos compases, su grupo se pone de pie.","steps":["s38_1","s38_2","s38_3","s38_4","s38_5"],"song":{"n":38,"k":17,"checks":[{"k":"own8"},{"k":"own4d"},{"k":"ownend"},{"k":"play"},{"k":"send"}],"free":true}}];
-const LSTEP={"key1":{"en":"Tap any key and hear it","es":"Toca cualquier tecla y escúchala"},"pad1":{"en":"Tap any chord pad","es":"Toca cualquier pad de acorde"},"pat1":{"en":"Pick a chord pattern","es":"Elige un patrón de acordes"},"play1":{"en":"Press Play the chords","es":"Pulsa Tocar los acordes"},"stop1":{"en":"Press Stop","es":"Pulsa Parar"},"fc":{"en":"Play a C","es":"Toca un Do"},"fc2":{"en":"Play two different C's, one higher than the other","es":"Toca dos Do distintos, uno más agudo que el otro"},"fb2":{"en":"Play both keys of a group of two black keys","es":"Toca las dos teclas de un grupo de dos teclas negras"},"fb3":{"en":"Play all three keys of a group of three black keys","es":"Toca las tres teclas de un grupo de tres teclas negras"},"up8":{"en":"Play C D E F G A B C, going up","es":"Toca Do Re Mi Fa Sol La Si Do, subiendo"},"down8":{"en":"Play it back down: C B A G F E D C","es":"Tócala de bajada: Do Si La Sol Fa Mi Re Do"},"up8hi":{"en":"Play the scale going up again, one octave higher","es":"Toca la escala subiendo otra vez, una octava más arriba"},"opair":{"en":"Play a note, then the same note one octave higher","es":"Toca una nota y luego la misma nota una octava más arriba"},"ohigher":{"en":"Press Higher ▶ to move the keyboard up","es":"Pulsa Más agudo ▶ para subir el teclado"},"olower":{"en":"Press ◀ Lower to move it down","es":"Pulsa ◀ Más grave para bajarlo"},"ofar":{"en":"Play a very low note (C2 or lower) and a very high one (C6 or higher)","es":"Toca una nota muy grave (Do2 o más abajo) y una muy aguda (Do6 o más arriba)"},"vsoft":{"en":"Play a soft note: press near the top of a key","es":"Toca una nota suave: presiona cerca de la parte de arriba de una tecla"},"vloud":{"en":"Play a loud note: press near the bottom of a key","es":"Toca una nota fuerte: presiona cerca de la parte de abajo de una tecla"},"vgrow":{"en":"Play one key four times, from soft to loud","es":"Toca una tecla cuatro veces, de suave a fuerte"},"hceg":{"en":"Hold C, E and G down together","es":"Mantén Do, Mi y Sol presionadas a la vez"},"hfac":{"en":"Hold F, A and C together","es":"Mantén Fa, La y Do a la vez"},"hgbd":{"en":"Hold G, B and D together","es":"Mantén Sol, Si y Re a la vez"},"hpad":{"en":"Key C, Major: tap pad 1 and hear the same chord","es":"Tono Do, Mayor: toca el pad 1 y oye el mismo acorde"},"mjr":{"en":"Hold C, E and G: C major","es":"Mantén Do, Mi y Sol: Do mayor"},"mnr":{"en":"Hold C, E♭ and G: C minor","es":"Mantén Do, Mi♭ y Sol: Do menor"},"mmood":{"en":"Press Minor · moody, then tap pad 1","es":"Pulsa Menor · melancólico y toca el pad 1"},"mback":{"en":"Press Major · bright and tap pad 1 again","es":"Pulsa Mayor · brillante y toca otra vez el pad 1"},"p6":{"en":"Tap all six pads","es":"Toca los seis pads"},"p51":{"en":"Tap pad 5, then pad 1. Hear it come home","es":"Toca el pad 5 y luego el pad 1. Oye cómo vuelve a casa"},"pmin":{"en":"In Major, tap a minor pad: 2, 3 or 6","es":"En Mayor, toca un pad menor: 2, 3 o 6"},"p4key":{"en":"Change the Key and tap all six pads again","es":"Cambia el Tono y toca otra vez los seis pads"},"cpop":{"en":"Pick Pop · 1 5 6 4","es":"Elige Pop · 1 5 6 4"},"cplay":{"en":"Press Play the chords","es":"Pulsa Tocar los acordes"},"cround":{"en":"Let it go round twice: 8 bars","es":"Déjalo dar dos vueltas: 8 compases"},"cswap":{"en":"Pick another pattern while it plays","es":"Elige otro patrón mientras suena"},"rhold":{"en":"Play with Hold · one long chord","es":"Toca con Mantener · un acorde largo"},"rpulse":{"en":"Play with Pulse · four beats","es":"Toca con Pulso · cuatro tiempos"},"rbroken":{"en":"Play with Broken · one note at a time","es":"Toca con Arpegio · una nota a la vez"},"roff":{"en":"Play with Off-beat · reggae and ska","es":"Toca con Contratiempo · reggae y ska"},"t60":{"en":"Set the tempo to 60","es":"Pon el tempo en 60"},"t60p":{"en":"Play a pattern at 60","es":"Toca un patrón a 60"},"t120":{"en":"Set the tempo to 120: twice as fast","es":"Pon el tempo en 120: el doble de rápido"},"t120p":{"en":"Play it at 120","es":"Tócalo a 120"},"kpat":{"en":"Play a chord pattern in the key of C","es":"Toca un patrón de acordes en el tono de Do"},"kg":{"en":"Change Key to G and play it again","es":"Cambia el Tono a Sol y tócalo otra vez"},"k3":{"en":"Play it in three different keys","es":"Tócalo en tres tonos distintos"},"klive":{"en":"Change the Key while it plays","es":"Cambia el Tono mientras suena"},"own1":{"en":"Press Make my own","es":"Pulsa Hacer el mío"},"own4":{"en":"Tap four pads: a pattern of four chords","es":"Toca cuatro pads: un patrón de cuatro acordes"},"ownhome":{"en":"End your pattern on pad 1, the home chord","es":"Termina tu patrón en el pad 1, el acorde casa"},"ownplay":{"en":"Play your pattern","es":"Toca tu patrón"},"son":{"en":"Turn on Hold notes (pedal)","es":"Activa Mantener notas (pedal)"},"sring":{"en":"With the pedal on, play five keys one after another","es":"Con el pedal activo, toca cinco teclas una tras otra"},"soff":{"en":"Turn the pedal off and hear the notes stop","es":"Desactiva el pedal y oye cómo paran las notas"},"tgrand":{"en":"Play on the Grand piano","es":"Toca con el Piano de cola"},"tep":{"en":"Play on an electric piano","es":"Toca con un piano eléctrico"},"torg":{"en":"Play on an organ","es":"Toca con un órgano"},"tall":{"en":"Try all eight sounds","es":"Prueba los ocho sonidos"},"lplay":{"en":"Play a pattern with Hold · one long chord","es":"Toca un patrón con Mantener · un acorde largo"},"llit":{"en":"While it plays, play a lit key","es":"Mientras suena, toca una tecla iluminada"},"llit8":{"en":"Play eight lit notes in a row","es":"Toca ocho notas iluminadas seguidas"},"lchange":{"en":"Keep going when the chord changes: play lit notes on two different chords","es":"Sigue cuando cambia el acorde: toca notas iluminadas en dos acordes distintos"},"dsend":{"en":"On the drum machine, make a beat and press Send to the turntables","es":"En la caja de ritmos, haz un ritmo y pulsa Enviar a los platos"},"don":{"en":"Back here, press Play with my drum beat","es":"De vuelta aquí, pulsa Tocar con mi ritmo de batería"},"dplay":{"en":"Play your chords with the beat","es":"Toca tus acordes con el ritmo"},"dpulse":{"en":"With the drums, try Pulse or Off-beat","es":"Con la batería, prueba Pulso o Contratiempo"},"bpick":{"en":"Pick Blues · 12 bars","es":"Elige Blues · 12 compases"},"borg":{"en":"Pick the Rock and jazz organ","es":"Elige el Órgano de rock y jazz"},"bpulse":{"en":"Set How the chords play to Pulse","es":"Pon Cómo suenan los acordes en Pulso"},"b12":{"en":"Play all twelve bars","es":"Toca los doce compases"},"jpick":{"en":"Pick Jazz · 2 5 1","es":"Elige Jazz · 2 5 1"},"jep":{"en":"Pick Electric piano · warm","es":"Elige Piano eléctrico · cálido"},"jplay":{"en":"Play it with Broken · one note at a time","es":"Tócalo con Arpegio · una nota a la vez"},"jhand":{"en":"On the keys, hold D, F, A and C together: D minor 7","es":"En las teclas, mantén Re, Fa, La y Do a la vez: Re menor 7"},"e87":{"en":"Turn the Sound dial all the way to 1987 and play","es":"Gira el dial de Sonido del todo a 1987 y toca"},"ehigh":{"en":"On 1987, play the highest keys and hear the fizz","es":"En 1987, toca las teclas más agudas y oye el chisporroteo"},"e26":{"en":"Turn it to 2026 and play those high keys again","es":"Gíralo a 2026 y toca otra vez esas teclas agudas"},"emid":{"en":"Find your spot in the middle and play there","es":"Busca tu punto en el medio y toca ahí"},"fown":{"en":"Make your own pattern of four or more chords","es":"Haz tu propio patrón de cuatro acordes o más"},"fname":{"en":"Type a name for your piece","es":"Escribe un nombre para tu pieza"},"fsend":{"en":"Press Send to the turntables","es":"Pulsa Enviar a los platos"},"fsheet":{"en":"Open the worksheet for this lesson","es":"Abre la hoja de esta lección"},"s22_1":{"en":"Key C · Major · Tempo 100","es":"Tono Do · Mayor · Tempo 100"},"s22_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s22_3":{"en":"Press Clear, then Make my own and tap pad 1 once: C. The whole song fits one chord","es":"Pulsa Borrar, luego Hacer el mío y toca el pad 1 una vez: Do. Toda la canción cabe en un acorde"},"s22_4":{"en":"On the keys, play line 1: C D E C, two times","es":"En las teclas, toca la línea 1: Do Re Mi Do, dos veces"},"s22_5":{"en":"On the keys, play line 2: E F G, two times","es":"En las teclas, toca la línea 2: Mi Fa Sol, dos veces"},"s22_6":{"en":"On the keys, play line 3: G A G F E C, two times","es":"En las teclas, toca la línea 3: Sol La Sol Fa Mi Do, dos veces"},"s22_7":{"en":"On the keys, play line 4: C G C, two times (that G is the low one)","es":"En las teclas, toca la línea 4: Do Sol Do, dos veces (ese Sol es el grave)"},"s22_8":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s23_1":{"en":"Key C · Major · Tempo 100","es":"Tono Do · Mayor · Tempo 100"},"s23_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s23_3":{"en":"Press Clear, then Make my own and tap pads 1 5 1 5 1 5 1 1: C, G, C, G, C, G, C, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 5 1 5 1 5 1 1: Do, Sol, Do, Sol, Do, Sol, Do, Do"},"s23_4":{"en":"On the keys, play line 1: E E F G G F E D","es":"En las teclas, toca la línea 1: Mi Mi Fa Sol Sol Fa Mi Re"},"s23_5":{"en":"On the keys, play line 2: C C D E E D D","es":"En las teclas, toca la línea 2: Do Do Re Mi Mi Re Re"},"s23_6":{"en":"On the keys, play line 3: line 1 again, then the ending: C C D E D C C","es":"En las teclas, toca la línea 3: otra vez la línea 1, y el final: Do Do Re Mi Re Do Do"},"s23_7":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s24_1":{"en":"Key C · Major · Tempo 112","es":"Tono Do · Mayor · Tempo 112"},"s24_2":{"en":"Instrument: Honky-tonk piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano honky-tonk. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s24_3":{"en":"Press Clear, then Make my own and tap pads 1 1 1 5 1 4 5 1: C, C, C, G, C, F, G, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 1 1 5 1 4 5 1: Do, Do, Do, Sol, Do, Fa, Sol, Do"},"s24_4":{"en":"On the keys, play line 1: C E F G, two times","es":"En las teclas, toca la línea 1: Do Mi Fa Sol, dos veces"},"s24_5":{"en":"On the keys, play line 2: C E F G E C E D","es":"En las teclas, toca la línea 2: Do Mi Fa Sol Mi Do Mi Re"},"s24_6":{"en":"On the keys, play line 3: E E D C C E G G F","es":"En las teclas, toca la línea 3: Mi Mi Re Do Do Mi Sol Sol Fa"},"s24_7":{"en":"On the keys, play line 4: E F G E C D C","es":"En las teclas, toca la línea 4: Mi Fa Sol Mi Do Re Do"},"s24_8":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s25_1":{"en":"Key D · Major · Tempo 66","es":"Tono Re · Mayor · Tempo 66"},"s25_2":{"en":"Instrument: Church organ. How the chords play: Broken · one note at a time","es":"Instrumento: Órgano de iglesia. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s25_3":{"en":"Pick the pattern Canon · 8 chords","es":"Elige el patrón Canon · 8 acordes"},"s25_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s26_1":{"en":"Key F · Major · Tempo 96","es":"Tono Fa · Mayor · Tempo 96"},"s26_2":{"en":"Instrument: Rock and jazz organ. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Órgano de rock y jazz. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s26_3":{"en":"Pick the pattern Blues · 12 bars","es":"Elige el patrón Blues · 12 compases"},"s26_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s27_1":{"en":"Key E♭ · Major · Tempo 76","es":"Tono Mi♭ · Mayor · Tempo 76"},"s27_2":{"en":"Instrument: Upright piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s27_3":{"en":"Pick the pattern Fifties · 1 6 4 5","es":"Elige el patrón Años 50 · 1 6 4 5"},"s27_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s28_1":{"en":"Key A · Major · Tempo 120","es":"Tono La · Mayor · Tempo 120"},"s28_2":{"en":"Instrument: Electric piano · bright. How the chords play: Broken · one note at a time","es":"Instrumento: Piano eléctrico · brillante. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s28_3":{"en":"Press Clear, then Make my own and tap pads 1 4 1 5: A, D, A, E","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 1 5: La, Re, La, Mi"},"s28_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s29_1":{"en":"Key G · Major · Tempo 150","es":"Tono Sol · Mayor · Tempo 150"},"s29_2":{"en":"Instrument: Upright piano. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s29_3":{"en":"Press Clear, then Make my own and tap pads 1 4 5 4: G, C, D, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 5 4: Sol, Do, Re, Do"},"s29_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s30_1":{"en":"Key A · Minor · Tempo 76","es":"Tono La · Menor · Tempo 76"},"s30_2":{"en":"Instrument: Rock and jazz organ. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Órgano de rock y jazz. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s30_3":{"en":"Pick the pattern Minor groove","es":"Elige el patrón Ritmo menor"},"s30_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s31_1":{"en":"Key E · Minor · Tempo 94","es":"Tono Mi · Menor · Tempo 94"},"s31_2":{"en":"Instrument: '80s electric piano. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Piano eléctrico de los 80. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s31_3":{"en":"Press Clear, then Make my own and tap pads 1 3 4 1: Em, Am, Bm, Em","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 3 4 1: Mi m, La m, Si m, Mi m"},"s31_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s32_1":{"en":"Key A · Minor · Tempo 100","es":"Tono La · Menor · Tempo 100"},"s32_2":{"en":"Instrument: Grand piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s32_3":{"en":"Pick the pattern Flamenco","es":"Elige el patrón Flamenco"},"s32_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s33_1":{"en":"Key F♯ · Major · Tempo 90","es":"Tono Fa♯ · Mayor · Tempo 90"},"s33_2":{"en":"Instrument: Electric piano · warm. How the chords play: Broken · one note at a time","es":"Instrumento: Piano eléctrico · cálido. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s33_3":{"en":"Press Clear, then Make my own and tap pads 1 4 5 1: F♯, B, C♯, F♯","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 5 1: Fa♯, Si, Do♯, Fa♯"},"s33_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s33_5":{"en":"While it plays, play ten black keys in a row, in any order","es":"Mientras suena, toca diez teclas negras seguidas, en cualquier orden"},"s34_1":{"en":"Key E · Major · Tempo 112","es":"Tono Mi · Mayor · Tempo 112"},"s34_2":{"en":"Instrument: '80s electric piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano eléctrico de los 80. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s34_3":{"en":"Pick the pattern Anime and J-pop · 4 5 3 6","es":"Elige el patrón Anime y J-pop · 4 5 3 6"},"s34_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s35_1":{"en":"Key G · Major · Tempo 100","es":"Tono Sol · Mayor · Tempo 100"},"s35_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s35_3":{"en":"Pick the pattern Pop · 1 5 6 4","es":"Elige el patrón Pop · 1 5 6 4"},"s35_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s36_1":{"en":"Key C · Major · Tempo 72","es":"Tono Do · Mayor · Tempo 72"},"s36_2":{"en":"Instrument: Upright piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s36_3":{"en":"Pick the pattern Sad pop · 6 4 1 5","es":"Elige el patrón Pop triste · 6 4 1 5"},"s36_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s37_1":{"en":"Key F · Major · Tempo 76","es":"Tono Fa · Mayor · Tempo 76"},"s37_2":{"en":"Instrument: Electric piano · warm. How the chords play: Hold · one long chord","es":"Instrumento: Piano eléctrico · cálido. Cómo suenan los acordes: Mantener · un acorde largo"},"s37_3":{"en":"Pick the pattern Jazz · 2 5 1","es":"Elige el patrón Jazz · 2 5 1"},"s37_4":{"en":"Turn the Sound dial toward 1987: Mostly 1987 or more","es":"Gira el dial de Sonido hacia 1987: Casi todo 1987 o más"},"s37_5":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s38_1":{"en":"Make my own: a pattern of eight chords","es":"Hacer el mío: un patrón de ocho acordes"},"s38_2":{"en":"Use at least four different chords","es":"Usa por lo menos cuatro acordes distintos"},"s38_3":{"en":"End the pattern on pad 1","es":"Termina el patrón en el pad 1"},"s38_4":{"en":"Press Play the chords and play the whole class song","es":"Pulsa Tocar los acordes y toca toda la canción de la clase"},"s38_5":{"en":"Press Send to the turntables","es":"Pulsa Enviar a los platos"}};
+const LSTEP={"key1":{"en":"Tap any key and hear it","es":"Toca cualquier tecla y escúchala"},"pad1":{"en":"Tap any chord pad","es":"Toca cualquier pad de acorde"},"pat1":{"en":"Pick a chord pattern","es":"Elige un patrón de acordes"},"play1":{"en":"Press Play the chords","es":"Pulsa Tocar los acordes"},"stop1":{"en":"Press Stop","es":"Pulsa Parar"},"fc":{"en":"Play a C","es":"Toca un Do"},"fc2":{"en":"Play two different C's, one higher than the other","es":"Toca dos Do distintos, uno más agudo que el otro"},"fb2":{"en":"Play both keys of a group of two black keys","es":"Toca las dos teclas de un grupo de dos teclas negras"},"fb3":{"en":"Play all three keys of a group of three black keys","es":"Toca las tres teclas de un grupo de tres teclas negras"},"up8":{"en":"Play C D E F G A B C, going up","es":"Toca Do Re Mi Fa Sol La Si Do, subiendo"},"down8":{"en":"Play it back down: C B A G F E D C","es":"Tócala de bajada: Do Si La Sol Fa Mi Re Do"},"up8hi":{"en":"Play the scale going up again, one octave higher","es":"Toca la escala subiendo otra vez, una octava más arriba"},"opair":{"en":"Play a note, then the same note one octave higher","es":"Toca una nota y luego la misma nota una octava más arriba"},"ohigher":{"en":"Press Higher ▶ to move the keyboard up","es":"Pulsa Más agudo ▶ para subir el teclado"},"olower":{"en":"Press ◀ Lower to move it down","es":"Pulsa ◀ Más grave para bajarlo"},"ofar":{"en":"Play a very low note (C2 or lower) and a very high one (C6 or higher)","es":"Toca una nota muy grave (Do2 o más abajo) y una muy aguda (Do6 o más arriba)"},"vsoft":{"en":"Play a soft note: press near the top of a key","es":"Toca una nota suave: presiona cerca de la parte de arriba de una tecla"},"vloud":{"en":"Play a loud note: press near the bottom of a key","es":"Toca una nota fuerte: presiona cerca de la parte de abajo de una tecla"},"vgrow":{"en":"Play one key four times, from soft to loud","es":"Toca una tecla cuatro veces, de suave a fuerte"},"hceg":{"en":"Hold C, E and G down together","es":"Mantén Do, Mi y Sol presionadas a la vez"},"hfac":{"en":"Hold F, A and C together","es":"Mantén Fa, La y Do a la vez"},"hgbd":{"en":"Hold G, B and D together","es":"Mantén Sol, Si y Re a la vez"},"hpad":{"en":"Key C, Major: tap pad 1 and hear the same chord","es":"Tono Do, Mayor: toca el pad 1 y oye el mismo acorde"},"mjr":{"en":"Hold C, E and G: C major","es":"Mantén Do, Mi y Sol: Do mayor"},"mnr":{"en":"Hold C, E♭ and G: C minor","es":"Mantén Do, Mi♭ y Sol: Do menor"},"mmood":{"en":"Press Minor · moody, then tap pad 1","es":"Pulsa Menor · melancólico y toca el pad 1"},"mback":{"en":"Press Major · bright and tap pad 1 again","es":"Pulsa Mayor · brillante y toca otra vez el pad 1"},"p6":{"en":"Tap all six pads","es":"Toca los seis pads"},"p51":{"en":"Tap pad 5, then pad 1. Hear it come home","es":"Toca el pad 5 y luego el pad 1. Oye cómo vuelve a casa"},"pmin":{"en":"In Major, tap a minor pad: 2, 3 or 6","es":"En Mayor, toca un pad menor: 2, 3 o 6"},"p4key":{"en":"Change the Key and tap all six pads again","es":"Cambia el Tono y toca otra vez los seis pads"},"cpop":{"en":"Pick Pop · 1 5 6 4","es":"Elige Pop · 1 5 6 4"},"cplay":{"en":"Press Play the chords","es":"Pulsa Tocar los acordes"},"cround":{"en":"Let it go round twice: 8 bars","es":"Déjalo dar dos vueltas: 8 compases"},"cswap":{"en":"Pick another pattern while it plays","es":"Elige otro patrón mientras suena"},"rhold":{"en":"Play with Hold · one long chord","es":"Toca con Mantener · un acorde largo"},"rpulse":{"en":"Play with Pulse · four beats","es":"Toca con Pulso · cuatro tiempos"},"rbroken":{"en":"Play with Broken · one note at a time","es":"Toca con Arpegio · una nota a la vez"},"roff":{"en":"Play with Off-beat · reggae and ska","es":"Toca con Contratiempo · reggae y ska"},"t60":{"en":"Set the tempo to 60","es":"Pon el tempo en 60"},"t60p":{"en":"Play a pattern at 60","es":"Toca un patrón a 60"},"t120":{"en":"Set the tempo to 120: twice as fast","es":"Pon el tempo en 120: el doble de rápido"},"t120p":{"en":"Play it at 120","es":"Tócalo a 120"},"kpat":{"en":"Play a chord pattern in the key of C","es":"Toca un patrón de acordes en el tono de Do"},"kg":{"en":"Change Key to G and play it again","es":"Cambia el Tono a Sol y tócalo otra vez"},"k3":{"en":"Play it in three different keys","es":"Tócalo en tres tonos distintos"},"klive":{"en":"Change the Key while it plays","es":"Cambia el Tono mientras suena"},"own1":{"en":"Press Make my own","es":"Pulsa Hacer el mío"},"own4":{"en":"Tap four pads: a pattern of four chords","es":"Toca cuatro pads: un patrón de cuatro acordes"},"ownhome":{"en":"End your pattern on pad 1, the home chord","es":"Termina tu patrón en el pad 1, el acorde casa"},"ownplay":{"en":"Play your pattern","es":"Toca tu patrón"},"son":{"en":"Turn on Hold notes (pedal)","es":"Activa Mantener notas (pedal)"},"sring":{"en":"With the pedal on, play five keys one after another","es":"Con el pedal activo, toca cinco teclas una tras otra"},"soff":{"en":"Turn the pedal off and hear the notes stop","es":"Desactiva el pedal y oye cómo paran las notas"},"tgrand":{"en":"Play on the Grand piano","es":"Toca con el Piano de cola"},"tep":{"en":"Play on an electric piano","es":"Toca con un piano eléctrico"},"torg":{"en":"Play on an organ","es":"Toca con un órgano"},"tall":{"en":"Try eight different sounds","es":"Prueba ocho sonidos distintos"},"lplay":{"en":"Play a pattern with Hold · one long chord","es":"Toca un patrón con Mantener · un acorde largo"},"llit":{"en":"While it plays, play a lit key","es":"Mientras suena, toca una tecla iluminada"},"llit8":{"en":"Play eight lit notes in a row","es":"Toca ocho notas iluminadas seguidas"},"lchange":{"en":"Keep going when the chord changes: play lit notes on two different chords","es":"Sigue cuando cambia el acorde: toca notas iluminadas en dos acordes distintos"},"dsend":{"en":"On the drum machine, make a beat and press Send to the turntables","es":"En la caja de ritmos, haz un ritmo y pulsa Enviar a los platos"},"don":{"en":"Back here, press Play with my drum beat","es":"De vuelta aquí, pulsa Tocar con mi ritmo de batería"},"dplay":{"en":"Play your chords with the beat","es":"Toca tus acordes con el ritmo"},"dpulse":{"en":"With the drums, try Pulse or Off-beat","es":"Con la batería, prueba Pulso o Contratiempo"},"bpick":{"en":"Pick Blues · 12 bars","es":"Elige Blues · 12 compases"},"borg":{"en":"Pick the Rock and jazz organ","es":"Elige el Órgano de rock y jazz"},"bpulse":{"en":"Set How the chords play to Pulse","es":"Pon Cómo suenan los acordes en Pulso"},"b12":{"en":"Play all twelve bars","es":"Toca los doce compases"},"jpick":{"en":"Pick Jazz · 2 5 1","es":"Elige Jazz · 2 5 1"},"jep":{"en":"Pick Electric piano · warm","es":"Elige Piano eléctrico · cálido"},"jplay":{"en":"Play it with Broken · one note at a time","es":"Tócalo con Arpegio · una nota a la vez"},"jhand":{"en":"On the keys, hold D, F, A and C together: D minor 7","es":"En las teclas, mantén Re, Fa, La y Do a la vez: Re menor 7"},"e87":{"en":"Turn the Sound dial all the way to 1987 and play","es":"Gira el dial de Sonido del todo a 1987 y toca"},"ehigh":{"en":"On 1987, play the highest keys and hear the fizz","es":"En 1987, toca las teclas más agudas y oye el chisporroteo"},"e26":{"en":"Turn it to 2026 and play those high keys again","es":"Gíralo a 2026 y toca otra vez esas teclas agudas"},"emid":{"en":"Find your spot in the middle and play there","es":"Busca tu punto en el medio y toca ahí"},"fown":{"en":"Make your own pattern of four or more chords","es":"Haz tu propio patrón de cuatro acordes o más"},"fname":{"en":"Type a name for your piece","es":"Escribe un nombre para tu pieza"},"fsend":{"en":"Press Send to the turntables","es":"Pulsa Enviar a los platos"},"fsheet":{"en":"Open the worksheet for this lesson","es":"Abre la hoja de esta lección"},"s22_1":{"en":"Key C · Major · Tempo 100","es":"Tono Do · Mayor · Tempo 100"},"s22_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s22_3":{"en":"Press Clear, then Make my own and tap pad 1 once: C. The whole song fits one chord","es":"Pulsa Borrar, luego Hacer el mío y toca el pad 1 una vez: Do. Toda la canción cabe en un acorde"},"s22_4":{"en":"On the keys, play line 1: C D E C, two times","es":"En las teclas, toca la línea 1: Do Re Mi Do, dos veces"},"s22_5":{"en":"On the keys, play line 2: E F G, two times","es":"En las teclas, toca la línea 2: Mi Fa Sol, dos veces"},"s22_6":{"en":"On the keys, play line 3: G A G F E C, two times","es":"En las teclas, toca la línea 3: Sol La Sol Fa Mi Do, dos veces"},"s22_7":{"en":"On the keys, play line 4: C G C, two times (that G is the low one)","es":"En las teclas, toca la línea 4: Do Sol Do, dos veces (ese Sol es el grave)"},"s22_8":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s23_1":{"en":"Key C · Major · Tempo 100","es":"Tono Do · Mayor · Tempo 100"},"s23_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s23_3":{"en":"Press Clear, then Make my own and tap pads 1 5 1 5 1 5 1 1: C, G, C, G, C, G, C, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 5 1 5 1 5 1 1: Do, Sol, Do, Sol, Do, Sol, Do, Do"},"s23_4":{"en":"On the keys, play line 1: E E F G G F E D","es":"En las teclas, toca la línea 1: Mi Mi Fa Sol Sol Fa Mi Re"},"s23_5":{"en":"On the keys, play line 2: C C D E E D D","es":"En las teclas, toca la línea 2: Do Do Re Mi Mi Re Re"},"s23_6":{"en":"On the keys, play line 3: line 1 again, then the ending: C C D E D C C","es":"En las teclas, toca la línea 3: otra vez la línea 1, y el final: Do Do Re Mi Re Do Do"},"s23_7":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s24_1":{"en":"Key C · Major · Tempo 112","es":"Tono Do · Mayor · Tempo 112"},"s24_2":{"en":"Instrument: Honky-tonk piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano honky-tonk. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s24_3":{"en":"Press Clear, then Make my own and tap pads 1 1 1 5 1 4 5 1: C, C, C, G, C, F, G, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 1 1 5 1 4 5 1: Do, Do, Do, Sol, Do, Fa, Sol, Do"},"s24_4":{"en":"On the keys, play line 1: C E F G, two times","es":"En las teclas, toca la línea 1: Do Mi Fa Sol, dos veces"},"s24_5":{"en":"On the keys, play line 2: C E F G E C E D","es":"En las teclas, toca la línea 2: Do Mi Fa Sol Mi Do Mi Re"},"s24_6":{"en":"On the keys, play line 3: E E D C C E G G F","es":"En las teclas, toca la línea 3: Mi Mi Re Do Do Mi Sol Sol Fa"},"s24_7":{"en":"On the keys, play line 4: E F G E C D C","es":"En las teclas, toca la línea 4: Mi Fa Sol Mi Do Re Do"},"s24_8":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s25_1":{"en":"Key D · Major · Tempo 66","es":"Tono Re · Mayor · Tempo 66"},"s25_2":{"en":"Instrument: Church organ. How the chords play: Broken · one note at a time","es":"Instrumento: Órgano de iglesia. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s25_3":{"en":"Pick the pattern Canon · 8 chords","es":"Elige el patrón Canon · 8 acordes"},"s25_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s26_1":{"en":"Key F · Major · Tempo 96","es":"Tono Fa · Mayor · Tempo 96"},"s26_2":{"en":"Instrument: Rock and jazz organ. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Órgano de rock y jazz. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s26_3":{"en":"Pick the pattern Blues · 12 bars","es":"Elige el patrón Blues · 12 compases"},"s26_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s27_1":{"en":"Key E♭ · Major · Tempo 76","es":"Tono Mi♭ · Mayor · Tempo 76"},"s27_2":{"en":"Instrument: Upright piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s27_3":{"en":"Pick the pattern Fifties · 1 6 4 5","es":"Elige el patrón Años 50 · 1 6 4 5"},"s27_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s28_1":{"en":"Key A · Major · Tempo 120","es":"Tono La · Mayor · Tempo 120"},"s28_2":{"en":"Instrument: Electric piano · bright. How the chords play: Broken · one note at a time","es":"Instrumento: Piano eléctrico · brillante. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s28_3":{"en":"Press Clear, then Make my own and tap pads 1 4 1 5: A, D, A, E","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 1 5: La, Re, La, Mi"},"s28_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s29_1":{"en":"Key G · Major · Tempo 150","es":"Tono Sol · Mayor · Tempo 150"},"s29_2":{"en":"Instrument: Upright piano. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s29_3":{"en":"Press Clear, then Make my own and tap pads 1 4 5 4: G, C, D, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 5 4: Sol, Do, Re, Do"},"s29_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s30_1":{"en":"Key A · Minor · Tempo 76","es":"Tono La · Menor · Tempo 76"},"s30_2":{"en":"Instrument: Rock and jazz organ. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Órgano de rock y jazz. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s30_3":{"en":"Pick the pattern Minor groove","es":"Elige el patrón Ritmo menor"},"s30_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s31_1":{"en":"Key E · Minor · Tempo 94","es":"Tono Mi · Menor · Tempo 94"},"s31_2":{"en":"Instrument: '80s electric piano. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Piano eléctrico de los 80. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s31_3":{"en":"Press Clear, then Make my own and tap pads 1 3 4 1: Em, Am, Bm, Em","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 3 4 1: Mi m, La m, Si m, Mi m"},"s31_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s32_1":{"en":"Key A · Minor · Tempo 100","es":"Tono La · Menor · Tempo 100"},"s32_2":{"en":"Instrument: Grand piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s32_3":{"en":"Pick the pattern Flamenco","es":"Elige el patrón Flamenco"},"s32_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s33_1":{"en":"Key F♯ · Major · Tempo 90","es":"Tono Fa♯ · Mayor · Tempo 90"},"s33_2":{"en":"Instrument: Electric piano · warm. How the chords play: Broken · one note at a time","es":"Instrumento: Piano eléctrico · cálido. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s33_3":{"en":"Press Clear, then Make my own and tap pads 1 4 5 1: F♯, B, C♯, F♯","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 5 1: Fa♯, Si, Do♯, Fa♯"},"s33_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s33_5":{"en":"While it plays, play ten black keys in a row, in any order","es":"Mientras suena, toca diez teclas negras seguidas, en cualquier orden"},"s34_1":{"en":"Key E · Major · Tempo 112","es":"Tono Mi · Mayor · Tempo 112"},"s34_2":{"en":"Instrument: '80s electric piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano eléctrico de los 80. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s34_3":{"en":"Pick the pattern Anime and J-pop · 4 5 3 6","es":"Elige el patrón Anime y J-pop · 4 5 3 6"},"s34_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s35_1":{"en":"Key G · Major · Tempo 100","es":"Tono Sol · Mayor · Tempo 100"},"s35_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s35_3":{"en":"Pick the pattern Pop · 1 5 6 4","es":"Elige el patrón Pop · 1 5 6 4"},"s35_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s36_1":{"en":"Key C · Major · Tempo 72","es":"Tono Do · Mayor · Tempo 72"},"s36_2":{"en":"Instrument: Upright piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s36_3":{"en":"Pick the pattern Sad pop · 6 4 1 5","es":"Elige el patrón Pop triste · 6 4 1 5"},"s36_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s37_1":{"en":"Key F · Major · Tempo 76","es":"Tono Fa · Mayor · Tempo 76"},"s37_2":{"en":"Instrument: Electric piano · warm. How the chords play: Hold · one long chord","es":"Instrumento: Piano eléctrico · cálido. Cómo suenan los acordes: Mantener · un acorde largo"},"s37_3":{"en":"Pick the pattern Jazz · 2 5 1","es":"Elige el patrón Jazz · 2 5 1"},"s37_4":{"en":"Turn the Sound dial toward 1987: Mostly 1987 or more","es":"Gira el dial de Sonido hacia 1987: Casi todo 1987 o más"},"s37_5":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s38_1":{"en":"Make my own: a pattern of eight chords","es":"Hacer el mío: un patrón de ocho acordes"},"s38_2":{"en":"Use at least four different chords","es":"Usa por lo menos cuatro acordes distintos"},"s38_3":{"en":"End the pattern on pad 1","es":"Termina el patrón en el pad 1"},"s38_4":{"en":"Press Play the chords and play the whole class song","es":"Pulsa Tocar los acordes y toca toda la canción de la clase"},"s38_5":{"en":"Press Send to the turntables","es":"Pulsa Enviar a los platos"}};
 /* AOG-PIANO-LESSONS-DATA:END */
 const SONG_COUNT=LESSONS.filter(m=>m.song).length, SKILL_COUNT=LESSONS.length-SONG_COUNT;
 const LSKEY="aog.piano.lessons.v1";
@@ -1523,8 +1922,8 @@ function curChord(){ return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog
 function soundUsed(){
   const s=S.sound;
   if(s==="grand") mark("tgrand");
-  if(s==="epwarm"||s==="epreed"||s==="ep80") mark("tep");
-  if(s==="organ"||s==="church") mark("torg");
+  if(SOUNDS[s] && SOUNDS[s].grp==="grpEp") mark("tep");                          /* any sound in the Electric pianos group */
+  if(["organ","church","gospel","rockorgan","theatre"].indexOf(s)>=0) mark("torg");   /* AOG-PIANO-SOUNDS-V2: any organ (not the accordion) */
   const a=Array.isArray(LS.x.snd)?LS.x.snd:[];
   if(a.indexOf(s)<0){ a.push(s); LS.x.snd=a; lessonDirty=true; }
   if(a.length>=8) mark("tall");
@@ -1823,17 +2222,73 @@ const MEET={
   organ:{en:"Metal wheels spin past magnets and make the tone. A note never fades while you hold it. Gospel, jazz, reggae and rock all love it.",
          es:"Ruedas de metal giran junto a imanes y hacen el tono. Una nota no se apaga mientras la mantienes. Al gospel, al jazz, al reggae y al rock les encanta."},
   church:{en:"Air blows through rows of pipes, from tiny whistles to pipes taller than a house. The big room around it keeps the sound ringing.",
-          es:"El aire sopla por filas de tubos, desde silbatos diminutos hasta tubos más altos que una casa. La sala grande alrededor hace que el sonido siga resonando."}
+          es:"El aire sopla por filas de tubos, desde silbatos diminutos hasta tubos más altos que una casa. La sala grande alrededor hace que el sonido siga resonando."},
+  /* AOG-PIANO-SOUNDS-V2 */
+  bright:{en:"The grand piano with its high notes turned up, so it rings out over a band. Pop and rock players love it.",
+          es:"El piano de cola con los agudos más fuertes, para que se oiga sobre una banda. A los músicos de pop y rock les encanta."},
+  felt:{en:"The upright piano with a strip of soft felt between the hammers and the strings. Every note comes out quiet and close.",
+        es:"El piano vertical con una tira de fieltro suave entre los martillos y las cuerdas. Cada nota sale suave y cercana."},
+  toy:{en:"Tiny hammers hit short metal rods instead of strings. It sounds bright, small and a little out of tune.",
+       es:"Martillos pequeñitos golpean varillas cortas de metal en vez de cuerdas. Suena brillante, pequeño y un poco desafinado."},
+  clav:{en:"A rubber tip hits a string, and a pickup turns it into electricity. Its short, snappy notes are the sound of 1970s funk.",
+        es:"Una punta de goma golpea una cuerda, y una pastilla la convierte en electricidad. Sus notas cortas y saltarinas son el sonido del funk de los 70."},
+  gospel:{en:"The rock and jazz organ with all its tones turned on and its speaker spinning fast. Gospel choirs sing over it.",
+          es:"El órgano de rock y jazz con todos sus tonos encendidos y su altavoz girando rápido. Los coros góspel cantan sobre él."},
+  rockorgan:{en:"The rock and jazz organ played through a loud amplifier and a spinning speaker. Its growl and swirl filled 1970s hard rock.",
+             es:"El órgano de rock y jazz tocado con un amplificador fuerte y un altavoz que gira. Su gruñido y su remolino llenaron el hard rock de los años 70."},
+  theatre:{en:"Before movies had sound, an organ played along in the theater. Its pipes sound like flutes, with a deep, wavy tremble.",
+           es:"Antes de que las películas tuvieran sonido, un órgano tocaba en el cine. Sus tubos suenan como flautas, con un temblor profundo."},
+  accordion:{en:"You squeeze the bellows to push air through metal reeds. Two reeds for each note, a little apart in tune, give it its shimmer.",
+             es:"Aprietas el fuelle para empujar aire por lengüetas de metal. Dos lengüetas para cada nota, un poco desafinadas entre sí, le dan su brillo."},
+  celesta:{en:"Felt hammers hit small steel plates over wooden boxes. It sounds like sweet little bells. Listen for it in The Nutcracker.",
+           es:"Martillos de fieltro golpean placas pequeñas de acero sobre cajas de madera. Suena como campanitas dulces. Escúchala en El Cascanueces."},
+  glock:{en:"Hard mallets hit steel bars. The notes are high and bright, and they ring for a long time.",
+         es:"Mazos duros golpean barras de acero. Las notas son agudas y brillantes, y suenan por mucho tiempo."},
+  vibes:{en:"Soft mallets hit metal bars over tubes. A motor turns small fans in the tubes, so the sound gently pulses. A favorite in jazz.",
+         es:"Mazos suaves golpean barras de metal sobre tubos. Un motor hace girar pequeños ventiladores en los tubos, y el sonido late suavemente. Un favorito del jazz."},
+  marimba:{en:"Mallets hit wooden bars, and a tube under each bar makes the note warm and round. Every note here is a recording of a real marimba.",
+           es:"Mazos golpean barras de madera, y un tubo debajo de cada barra hace la nota cálida y redonda. Cada nota aquí es una grabación de una marimba de verdad."},
+  steel:{en:"Made from oil drums in Trinidad and Tobago. Each dent in the metal plays one note, bright and ringing.",
+         es:"Se hacen con barriles de petróleo en Trinidad y Tobago. Cada abolladura del metal toca una nota, brillante y resonante."},
+  bells:{en:"Long metal tubes hang in a row, and a hammer strikes the top. Each note rings out like a church bell.",
+         es:"Tubos largos de metal cuelgan en fila, y un martillo golpea la parte de arriba. Cada nota suena como una campana de iglesia."},
+  harpsi:{en:"Each key lifts a small pick that plucks a string. It was the keyboard of Bach's time, 300 years ago.",
+          es:"Cada tecla levanta una pequeña púa que pulsa una cuerda. Era el teclado de la época de Bach, hace 300 años."},
+  harp:{en:"Fingers pluck 47 strings on a tall wooden frame. Every note here is a recording of a real harp.",
+        es:"Los dedos pulsan 47 cuerdas en un marco alto de madera. Cada nota aquí es una grabación de un arpa de verdad."},
+  kalimba:{en:"Thumbs pluck thin metal tongues on a wooden box. It comes from Africa, where a cousin is called the mbira.",
+           es:"Los pulgares pulsan lengüetas delgadas de metal sobre una caja de madera. Viene de África, donde una prima se llama mbira."},
+  musicbox:{en:"A turning drum with tiny pins plucks the teeth of a metal comb. Each tooth plays one note.",
+            es:"Un cilindro que gira, con alfileres pequeñitos, pulsa los dientes de un peine de metal. Cada diente toca una nota."},
+  strings:{en:"Violins, violas and cellos, played softly with bows. Every note here is a recording of a real string section.",
+           es:"Violines, violas y violonchelos, tocados suavemente con arco. Cada nota aquí es una grabación de una sección de cuerdas de verdad."},
+  choir:{en:"Many voices sing “ah” together. No two singers are exactly alike, and that makes the sound big and warm.",
+         es:"Muchas voces cantan “a” juntas. No hay dos voces exactamente iguales, y eso hace que el sonido sea grande y cálido."},
+  tapestr:{en:"Each key starts a short tape of a real string section. Hold a note for eight seconds and the tape runs out. Prog rock bands loved its hazy sound.",
+           es:"Cada tecla pone en marcha una cinta corta de una sección de cuerdas de verdad. Si mantienes una nota ocho segundos, la cinta se acaba. A las bandas de rock progresivo les encantaba su sonido brumoso."},
+  tapeflute:{en:"The same tape keyboard, with a flute on its tapes. It sounds breathy and a little wobbly, like an old record.",
+             es:"El mismo teclado de cinta, con una flauta en sus cintas. Suena con aire y un poco tembloroso, como un disco viejo."},
+  strsynth:{en:"An electronic keyboard from the 1970s, made to sound like violins. Its swirling, glassy sound became a sound of its own.",
+            es:"Un teclado electrónico de los años 70, hecho para sonar como violines. Su sonido brillante y ondulante se volvió un sonido propio."},
+  pad:{en:"A synthesizer makes two buzzing waves, then softens them and lets them swell. Good for slow, dreamy chords.",
+       es:"Un sintetizador hace dos ondas que zumban, las suaviza y las deja crecer. Bueno para acordes lentos y de ensueño."},
+  brass:{en:"A 1980s synthesizer copying a horn section. Each note opens up bright and bold, like a trumpet.",
+         es:"Un sintetizador de los 80 que imita una sección de metales. Cada nota se abre brillante y fuerte, como una trompeta."},
+  lead:{en:"A synthesizer voice made to play melodies. It is bright and buzzy, with a small wobble when you hold a note.",
+        es:"Una voz de sintetizador hecha para tocar melodías. Es brillante y zumbante, con un pequeño vaivén cuando mantienes una nota."}
 };
+/* AOG-PIANO-SOUNDS-V2: thirty-one cards, so they sit under their groups' names (the same groups as the Instrument menu) */
 function meetView(){
-  return `<p class="kicker">${t("navMeet")}</p><h1>${t("meetH")}</h1><p class="lead">${t("meetLead")}</p>
-    <div class="meet">${Object.keys(SOUNDS).map(id=>`<article class="mcard${id===S.sound?" on":""}" data-id="${id}"><span class="mgrp">${t(SOUNDS[id].grp)}</span><h2>${soundName(id)}</h2><p>${MEET[id][S.lang]}</p><button type="button" class="pill" data-hear="${id}">${t("hear")}</button></article>`).join("")}</div>`;
+  const groups=[]; Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp; let x=groups.find(y=>y.g===g); if(!x){ x={g:g, ids:[]}; groups.push(x); } x.ids.push(id); });
+  return `<p class="kicker">${t("navMeet")}</p><h1>${t("meetH")}</h1><p class="lead">${t("meetLead",{n:Object.keys(SOUNDS).length})}</p>`+
+    groups.map(x=>`<h2 class="mgh">${t(x.g)}</h2><div class="meet">${x.ids.map(id=>`<article class="mcard${id===S.sound?" on":""}" data-id="${id}"><h3>${soundName(id)}</h3><p>${MEET[id][S.lang]}</p><button type="button" class="pill" data-hear="${id}">${t("hear")}</button></article>`).join("")}</div>`).join("");
 }
 async function hear(id, btn){
   if(!SOUNDS[id]) return;
   S.sound=id; save(); $("soundSel").value=id; paintLoad();
   const c=ctx(); setSendLevel(LIVE_CH, id);
   const snd=SOUNDS[id];
+  warmMade(id);   /* AOG-PIANO-SOUNDS-V2 */
   if(snd.kind==="sample" && !SETS[snd.set].ready){
     if(btn) btn.textContent=t("hearWait");
     loadSet(snd.set, paintLoad);
@@ -1944,7 +2399,7 @@ window.addEventListener("pagehide",()=>{ stop(true); allOff(); });
 /* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */
 ["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
 /* the recordings start loading once the page is up; the drum beat is looked up on the shared shelf */
-window.addEventListener("load",()=>{ setTimeout(()=>{ const snd=SOUNDS[S.sound]; if(snd.kind==="sample") loadSet(snd.set, paintLoad); }, 300); });
+window.addEventListener("load",()=>{ setTimeout(()=>{ const snd=SOUNDS[S.sound]; if(snd.kind==="sample") loadSet(snd.set, paintLoad); else warmMade(S.sound); }, 300); });
 checkDrums();
 try{ AOGHandoff.listen(function(key){ if(key==="drumbench") checkDrums(); }); }catch(e){}
 window.addEventListener("focus", checkDrums);
