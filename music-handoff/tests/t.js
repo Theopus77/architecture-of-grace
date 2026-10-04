@@ -1,0 +1,64 @@
+const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
+const http=require("http"),fs=require("fs"),path=require("path");
+const root="/home/user/architecture-of-grace/aog-deploy";
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0].split("#")[0]));if(f.endsWith("/"))f+="index.html";
+ fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);return r.end();}const ext=path.extname(f);r.writeHead(200,{"content-type":{".html":"text/html",".js":"text/javascript",".css":"text/css"}[ext]||"application/octet-stream"});r.end(d);});}).listen(8765);
+const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;};
+const hook=()=>{window.__hits=[];const h=window.hit;window.hit=function(id,t,seq){if(!seq)window.__hits.push(id);return h.apply(this,arguments);};};
+(async()=>{
+ const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
+ // computer, full bench
+ let c=await b.newContext({viewport:{width:1280,height:900}});
+ await c.addInitScript(()=>{try{localStorage.setItem("aog.drums.bench","full")}catch(e){}});
+ let p=await c.newPage(); p.on("pageerror",e=>console.log("PAGEERR",e.message));
+ await p.goto("http://localhost:8765/music-drums.html#home"); await p.waitForTimeout(1500); await p.evaluate(hook);
+ await p.keyboard.press("a"); await p.keyboard.press("s"); await p.keyboard.press(";");
+ ok(JSON.stringify(await p.evaluate("__hits"))==='["kick","snare","bell"]', "keys a s ; play kick snare bell: "+JSON.stringify(await p.evaluate("__hits")));
+ await p.evaluate("__hits=[]"); await p.keyboard.down("d"); await p.keyboard.down("d"); await p.keyboard.down("d"); await p.keyboard.up("d");
+ ok((await p.evaluate("__hits.length"))===1, "holding a key plays once");
+ await p.evaluate("__hits=[]"); await p.click('.sp-pad[data-pad="tom"]');
+ ok(JSON.stringify(await p.evaluate("__hits"))==='["tom"]', "one mouse click = one hit");
+ await p.keyboard.press("Space"); await p.waitForTimeout(300);
+ ok(await p.evaluate("S.playing")===true, "Space starts after clicking a pad");
+ await p.keyboard.press("Space"); ok(await p.evaluate("S.playing")===false, "Space stops");
+ ok(await p.isVisible('.sp-pad[data-pad="kick"] .kc'), "key letter shows on pads on a computer");
+ ok(await p.isVisible('.keys-line'), "keys line shows on a computer");
+ const y0=await p.evaluate("scrollY"); ok(true,"");
+ await p.focus('input[type=range]').catch(()=>{});
+ // iPhone
+ const ip=pw.devices["iPhone 13"];
+ c=await b.newContext({...ip, browserName:undefined, defaultBrowserType:undefined});
+ await c.addInitScript(()=>{try{localStorage.setItem("aog.drums.bench","full")}catch(e){}});
+ p=await c.newPage(); p.on("pageerror",e=>console.log("PAGEERR",e.message));
+ await p.goto("http://localhost:8765/music-drums.html#home"); await p.waitForTimeout(1500); await p.evaluate(hook);
+ const cdp=await c.newCDPSession(p);
+ const box=async s=>{const r=await p.locator(s).boundingBox();return {x:r.x+r.width/2,y:r.y+r.height/2};};
+ await p.locator('.sp-pad[data-pad="kick"]').scrollIntoViewIfNeeded();
+ const k=await box('.sp-pad[data-pad="kick"]'), h=await box('.sp-pad[data-pad="ch"]');
+ await cdp.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x:k.x,y:k.y,id:1}]});
+ await p.waitForTimeout(50);
+ ok(JSON.stringify(await p.evaluate("__hits"))==='["kick"]', "sound starts as the finger lands (before lift)");
+ await cdp.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]}); await p.waitForTimeout(400);
+ ok((await p.evaluate("__hits.length"))===1, "lifting the finger does not play it again");
+ await p.evaluate("__hits=[]");
+ await cdp.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x:k.x,y:k.y,id:1},{x:h.x,y:h.y,id:2}]});
+ await p.waitForTimeout(50);
+ await cdp.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]}); await p.waitForTimeout(400);
+ ok(JSON.stringify((await p.evaluate("__hits")).sort())==='["ch","kick"]', "two fingers at once = two hits: "+JSON.stringify(await p.evaluate("__hits")));
+ await p.evaluate("__hits=[]");
+ for(let i=0;i<8;i++){ await cdp.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x:k.x,y:k.y,id:1}]}); await cdp.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]}); await p.waitForTimeout(60); }
+ await p.waitForTimeout(400);
+ ok((await p.evaluate("__hits.length"))===8, "eight fast taps = eight hits: "+(await p.evaluate("__hits.length")));
+ ok(!(await p.isVisible('.sp-pad .kc')), "no key letters on a phone");
+ const cols=await p.evaluate(()=>getComputedStyle(document.querySelector('.sp-perf')).gridTemplateColumns.split(" ").length);
+ ok(cols===4, "pads in 4 columns on a phone: "+cols);
+ const pb=await p.locator('.sp-pad[data-pad="kick"]').boundingBox(); ok(pb.width>=60&&pb.height>=64, "pad size "+Math.round(pb.width)+"x"+Math.round(pb.height));
+ await p.screenshot({path:"iphone.png",fullPage:false});
+ // simple bench iPad
+ c=await b.newContext({...pw.devices["iPad (gen 7)"]}); p=await c.newPage();
+ await p.goto("http://localhost:8765/music-drums.html#home"); await p.waitForTimeout(1500); await p.evaluate(hook);
+ await p.locator('.sp-pad[data-pad="snare"]').tap(); await p.waitForTimeout(300);
+ ok(JSON.stringify(await p.evaluate("__hits"))==='["snare"]', "iPad tap = one hit");
+ await p.screenshot({path:"ipad.png"});
+ await b.close(); srv.close();
+})();

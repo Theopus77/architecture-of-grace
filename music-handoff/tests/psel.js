@@ -1,0 +1,16 @@
+const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
+const srv=require("./srv.js")(9912);
+const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;};
+(async()=>{const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
+ const p=await (await b.newContext({viewport:{width:1280,height:900}})).newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
+ await p.goto("http://localhost:9912/music-piano.html"); await p.waitForTimeout(1500);
+ const sel=p.locator("#progSel"); await sel.scrollIntoViewIfNeeded();
+ await sel.dispatchEvent("pointerdown"); await sel.selectOption("fifties"); await p.waitForTimeout(100);
+ ok(await p.evaluate("document.activeElement.id")!=="progSel", "after a mouse pick the menu lets go of focus");
+ await p.keyboard.press("Space"); await p.waitForTimeout(400);
+ ok(await p.evaluate("S.playing"), "so Space plays the new pattern right away");
+ await p.keyboard.press("Space");
+ await sel.focus(); await p.keyboard.press("ArrowDown"); await p.waitForTimeout(100);
+ ok(await p.evaluate("document.activeElement.id")==="progSel", "a keyboard user keeps focus on the menu");
+ ok(errs.length===0, "no page errors "+errs.join("|"));
+ await b.close(); srv.close();})();
