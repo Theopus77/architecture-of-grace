@@ -117,15 +117,75 @@ WARM ELECTRIC PIANO (audio/piano/rhodes/)
   second, like the pianos. Each recording is short and ends in a loop that
   a player repeats while the note fades; here that loop is repeated
   before the note is saved, and the note keeps fading at the rate it was
-  fading when it reached the loop, until it has died away (at most 8
+  fading when it reached the loop, until it has died away (at most 10
   seconds). The rumble below each note taken away; every note brought to
   one loudness; every note retuned to A = 440 (most sat 2 to 10 cents
   sharp). On the page, a note played softly sounds rounder and a note
   played hard sounds brighter, with more bark.
 
-Every other sound on the piano is not a recording: the bright electric
-piano, the clavinet, the rock and jazz, gospel, '70s rock and cinema
-organs, the accordion, the toy piano, the celesta, the steel drums, the
+MORE RECORDED SOUNDS (October 2026)
+
+How these were made, for all of them: each note is mixed to mono and
+saved as a 96 kbps MP3 at 44,100 samples a second, like the pianos; its
+pitch is measured and the note retuned to A = 440; the quiet moment
+before it is trimmed; every note of a sound is brought to one loudness.
+Each sound has a note on every third key from C1 to C7, so no key is more
+than one key away from a recording. Where an instrument has no recording
+of a note, the nearest recording is moved in pitch; where the keyboard
+goes past the instrument's own range, its lowest or highest recording is.
+The programs that made them are in the site's source
+(music-handoff/tools/piano_real_sets.py).
+
+ELECTRIC PIANO · BRIGHT (audio/piano/epreed/)
+  A Wurlitzer EP200 electric piano: "Wurlitzer EP200 Electric Piano
+  v1.1" (1999), sampled by Greg Sullivan, http://www.sullivang.net/
+  SFZ edition by kinwie for sfzinstruments:
+  https://github.com/sfzinstruments/GregSullivan.E-Pianos
+  License: Creative Commons Attribution 3.0 Unported (CC BY 3.0)
+  https://creativecommons.org/licenses/by/3.0/
+  Credit: Wurlitzer EP200 samples by Greg Sullivan (sullivang.net),
+  SFZ by kinwie / sfzinstruments, CC BY 3.0. The samples have been
+  changed (below). This site is not connected with or endorsed by
+  Greg Sullivan.
+  Changes made here: three of its four strengths (mp, f and ff, for
+  soft, middle and hard playing); the library's notes stop while they
+  are still sounding, so each note's last few cycles carry on, dying
+  away at the rate the recording was dying away, and then fade out.
+
+SYNTH CLAVINET · FUNK (audio/piano/clav/)
+  No recording of a real clavinet with a license that lets us share it
+  was found. This is the next best thing: a Yamaha TX81Z synthesizer
+  playing a clavinet-style sound ("Clavisynth"), recorded from the
+  hardware, from the Versilian Community Sample Library (VCSL) by
+  Versilian Studios. https://github.com/sgossner/VCSL
+  License: CC0 1.0 Universal (public domain).
+  Changes made here: its three strengths; it was recorded every fourth
+  key, from C2 up.
+
+CELESTA (audio/piano/celesta/)
+  A celesta recorded by stamperadam (Freesound pack 6166,
+  https://freesound.org/people/stamperadam/packs/6166/), as prepared by
+  Paul Battersby for Virtual Playing Orchestra 3:
+  https://github.com/open-soundfonts/Virtual_Playing_Orchestra_3
+  License: CC0 1.0 Universal (public domain).
+  Changes made here: soft and hard strokes, for soft and hard playing.
+  It was recorded on C, E and G sharp from C4 to A7 (the library calls
+  its G sharps G); the library leaves out C5, which had a click. Some of
+  its top notes were up to 40 cents out of tune; every note is retuned.
+
+STEEL DRUMS (audio/piano/steel/)
+  jSteelDrum v2 by Jeff Learman: a Trinidad tenor pan, hand-made, recorded
+  in 2021. https://github.com/sfzinstruments/jlearman.SteelDrum
+  (original: https://github.com/jlearman/jSteelDrum2)
+  License: the Unlicense (public domain).
+  Changes made here: three of its five strengths (the 2nd, 3rd and 5th);
+  one of its three or four takes of each note (the one whose tone is
+  nearest the middle of them); the middle microphone of its mid-side
+  pair. A pan's note glides a little in pitch as it rings, so each note
+  is tuned over its first half second, the part you hear most.
+
+Every other sound on the piano is not a recording: the toy piano, the
+rock and jazz, gospel, '70s rock and cinema organs, the accordion, the
 music box, the choir and the synths. They are built on the page from
 simple waves, the same way the drum machine builds its kits.
 
@@ -219,10 +279,51 @@ falta pedir permiso; lo nombramos con gratitud.
 Lo que cambiamos: cada nota está en MP3, como los pianos. Cada grabación
 es corta y termina en un tramo que se repite mientras la nota se apaga;
 aquí repetimos ese tramo antes de guardar la nota, y la nota se sigue
-apagando al mismo ritmo, hasta que se acaba (8 segundos como mucho).
+apagando al mismo ritmo, hasta que se acaba (10 segundos como mucho).
 Quitamos el retumbo por debajo de cada nota, igualamos el volumen y
 afinamos cada nota a la = 440. En la página, una nota tocada suave suena
 más redonda, y una tocada fuerte suena más brillante y con más garra.
+
+MÁS SONIDOS GRABADOS (octubre de 2026)
+
+Cómo los hicimos, para todos: cada nota está en mono y en MP3, como los
+pianos; medimos su afinación y la afinamos a la = 440; quitamos el
+silencio del principio; igualamos el volumen de las notas de cada sonido.
+Cada sonido tiene una nota cada tres teclas, de do 1 a do 7, así que
+ninguna tecla está a más de una tecla de una grabación. Donde un
+instrumento no tiene grabada una nota, usamos la grabación más cercana
+movida de tono; donde el teclado pasa del registro del instrumento, su
+grabación más grave o más aguda. Los programas que los hicieron están en
+el código del sitio (music-handoff/tools/piano_real_sets.py).
+
+PIANO ELÉCTRICO · BRILLANTE (audio/piano/epreed/): un piano eléctrico
+Wurlitzer EP200, grabado por Greg Sullivan (sullivang.net) y preparado
+por kinwie para sfzinstruments, bajo la licencia Creative Commons
+Atribución 3.0 (CC BY 3.0). Usamos tres de sus cuatro fuerzas (suave,
+media y fuerte). Las notas de la biblioteca se cortan mientras todavía
+suenan, así que sus últimos ciclos siguen apagándose al mismo ritmo y
+luego se desvanecen. Cambiamos las grabaciones como se dice arriba; Greg
+Sullivan no tiene relación con este sitio.
+
+CLAVINET DE SINTETIZADOR · FUNK (audio/piano/clav/): no encontramos una grabación de un
+clavinet de verdad con una licencia que nos deje compartirla. Esto es lo
+más parecido: un sintetizador Yamaha TX81Z con un sonido de clavinet
+("Clavisynth"), grabado del aparato, de la Versilian Community Sample
+Library (VCSL) de Versilian Studios, bajo CC0 1.0 Universal (dominio
+público). Usamos sus tres fuerzas.
+
+CELESTA (audio/piano/celesta/): una celesta grabada por stamperadam
+(Freesound, paquete 6166) y preparada por Paul Battersby para Virtual
+Playing Orchestra 3, bajo CC0 1.0 Universal (dominio público). Golpes
+suaves y fuertes. Algunas notas agudas estaban hasta 40 centésimas
+desafinadas; afinamos todas.
+
+TAMBORES DE ACERO (audio/piano/steel/): jSteelDrum v2 de Jeff Learman, un
+tambor de acero tenor de Trinidad hecho a mano, grabado en 2021, de
+dominio público (Unlicense). Usamos tres de sus cinco fuerzas y una toma
+de cada nota. La nota de un tambor de acero sube un poco de tono mientras
+suena, así que afinamos cada nota en su primer medio segundo, la parte
+que más se oye.
 
 Todos los demás sonidos del piano no son grabaciones: se crean en la
 página con ondas sencillas, como la caja de ritmos crea sus kits.
