@@ -181,6 +181,15 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .pbtn.play{min-width:0;flex:1 1 100%}
 }
 @media print{ .rig,.bench-bar,header{display:none!important} }
+/* AOG-CHORDSTRIP-V1: the six chords in one row, right on top of the instrument */
+.cstrip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:.1rem 0 .6rem}
+.cs{min-height:48px;min-width:0;border-radius:10px;border:1px solid #0a0b0d;padding:0 .2rem;color:#1f1a10;
+  background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 0 #07080a;
+  font:800 1.05rem/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.cs.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
+#playView .cstrip{flex:0 0 auto;margin:0 0 4px}
+#playView .cs{min-height:40px}
 /* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways: a phone or tablet turned on its side shows only the instrument, filling
    the screen, clear of the notch and the home bar: a keyboard (two octaves on a phone, three on an iPad), the harp as
    strings you sweep, the marimba, xylophone and glockenspiel as bars. Not zoomed (a finger lands on the key it touches). ══ */
@@ -316,6 +325,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
           <span id="recTime" hidden>0:00</span>
         </div>
+        <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the keys -->
         <div class="kbd" id="kbd" role="group"></div>
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
@@ -361,6 +371,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
     <button type="button" class="bp-b" id="bpUp">▶</button>
     <button type="button" class="bp-b" id="bpRec" aria-pressed="false"></button>
   </div>
+  <div class="cstrip" id="pvStrip" role="group"></div>
   <div class="bp-main" id="bpMain"></div>
 </div>
 <script>
@@ -1095,6 +1106,11 @@ const KIT_BEATS={
   broken: [["bd",0,.5],["tri",1,.4],["tri",3,.4]]
 };
 /* schedule bar k of the pattern on a context and chain; returns the voices it made */
+/* AOG-FEEL-V1 (2026-10-04) — Jimmy: "A lot of the How the chords are played sounds, sound like fake instruments." Every note
+   of a pattern landed exactly on the grid at exactly the same strength, the way a machine plays. A player never is: each
+   hit a few milliseconds early or late (less on the beat), a little softer or louder, a chord's notes not quite together.
+   Seeded by the bar and the hit, so no two bars are the same and a test can still play the same bar twice. */
+function feel(k, i){ if(window.AOG_FEEL_OFF) return ()=>0; const r=seeded((k+1)*7919+(i+1)*104729); r(); return r; }   /* the pattern tests check the grid itself with AOG_FEEL_OFF */
 function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   const chord=S.prog[k%S.prog.length]; if(!chord) return [];
   const vo=voicing(chord, prevRef.v); prevRef.v=vo;
@@ -1105,18 +1121,21 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   const bass=rest.filter(p=>p.bass), upper=rest.filter(p=>!p.bass).sort((a,b)=>a.m-b.m);
   const beat=barSec/beatsPerBar(), out=[], started={}, live=(c===ac);
   const keep=(vc, p, when, dur)=>{ vc.stop(when+dur, vc.tau); vc.m=p.m; vc.inst=p.inst; vc.on=when; vc.off=when+dur; out.push(vc); if(live) track(vc, when); };
-  barEvents(S.rhythm, upper.length).forEach(ev=>{
+  barEvents(S.rhythm, upper.length).forEach((ev,ei)=>{
     const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
-    const when=t0+ev.t*beat+late, dur=ev.d*beat;
+    const fr=feel(k, ei), when=Math.max(t0, t0+ev.t*beat+late+fr()*(ev.t%1===0?0.002:0.004)), dur=ev.d*beat;   /* AOG-FEEL-V1 */
     let who;
     if(ev.w==="b") who=ev.a==="stac" ? bass.filter(p=>!p.fifth) : bass;   /* a timpani's fifth joins held notes, not strokes */
     else if(ev.w==="f") who=bass.filter(p=>!p.fifth).map(p=>{ const x=fitIn(p.m+7, p.inst); return x!=null ? {inst:p.inst, m:(x-12>=rangeOf(p.inst)[0]?x-12:x)} : p; });
     else if(ev.w==="c") who=upper;
     else who=upper.length ? [upper[Math.min(ev.w, upper.length-1)]] : [];
     who.forEach(p=>{
-      const id=p.inst+":"+p.m+"@"+Math.round(when*1000); if(started[id]) return; started[id]=1;   /* never the same note twice at once */
-      const vc=makeVoice(c, ch, p.inst, p.m, ev.v*(p.bass?0.9:1), when, ev.a, ev.to, ev.to!=null?dur:0);
-      if(vc) keep(vc, p, when, dur);
+      const id=p.inst+":"+p.m+"@"+Math.round((t0+ev.t*beat+late)*1000); if(started[id]) return; started[id]=1;   /* never the same note twice at once (on the grid, before the feel) */
+      /* AOG-FEEL-V1: each player a little early or late, a little softer or louder, as players in a band are */
+      let hsh=0; for(let q=0;q<p.inst.length;q++) hsh=(hsh*31+p.inst.charCodeAt(q))|0;
+      const pr=feel(k, ei*53+(hsh&1023)+p.m), w2=Math.max(t0, when+0.006*pr());
+      const vc=makeVoice(c, ch, p.inst, p.m, Math.min(1, ev.v*(p.bass?0.9:1)*(1+0.06*pr())), w2, ev.a, ev.to, ev.to!=null?dur:0);
+      if(vc) keep(vc, p, w2, dur-(w2-when));
     });
   });
   held.forEach(p=>{ const vc=makeVoice(c, ch, p.inst, p.m, 0.56, t0, "sus"); if(vc){ vc.held=true; keep(vc, p, t0, barSec-0.1*beat); } });
@@ -1312,6 +1331,7 @@ function paintPads(){
   });
   paintWheel();   /* key, mood or words changed: the wheel is drawn again */
   paintNow();
+  paintStrips();   /* AOG-CHORDSTRIP-V1 */
 }
 function paintProg(){
   const box=$("prog");
@@ -1511,6 +1531,21 @@ function bindKeyboard(){
 const HELD_KEYS=new Map();
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
 function moveOct(step){ const was=S.oct; S.oct+=step; buildKeys(); if(S.oct!==was) save(); }
+/* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
+   single notes." The six chord pads sat a long scroll above the keys. The same six chords now sit in one row right on
+   top of it, upright and sideways: a chord with one finger, a single note with the next, nothing to switch. They are the
+   pads' own (padDown, padUp), so a pattern being built, the wheel and the lit notes all follow. */
+function paintStrips(){
+  document.querySelectorAll(".cstrip").forEach(box=>{
+    box.setAttribute("aria-label", t("chordsH"));
+    box.innerHTML=pads().map((c,i)=>`<button type="button" class="cs" data-i="${i}">${chordName(c)}</button>`).join("");
+    box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
+      b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
+      b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
+      b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } };
+      b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); });
+  });
+}
 /* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways ════════════════════════════════════════════════════════════════
    Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
    phone or tablet shows only the instrument: the page's own keys (#kbd) move into #playView and fill the screen, two

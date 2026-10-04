@@ -30,6 +30,12 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(st.z==="1" && st.sw<=st.iw && st.sh<=st.ih+1 && st.pad, `not zoomed, nothing scrolls (${st.sw}×${st.sh}), clear of the notch`);
     ok(st.whites===7*oc+1 && st.kh>vp.height*0.7, `${oc} octaves (${st.whites} white keys), ${Math.round(st.kh)} px tall`);
     const kw=await key(st.lo); ok(kw.w>=44, `a white key is ${Math.round(kw.w)} px wide`);
+    /* AOG-CHORDSTRIP-V1: the six chords on top of the keys; one tap holds a chord, the next finger a single note */
+    const sb=await p.evaluate(()=>{ const b=document.querySelector('#pvStrip .cs[data-i="0"]'), r=b.getBoundingClientRect(), k=document.getElementById("kbd").getBoundingClientRect();
+      return {x:r.x+r.width/2, y:r.y+r.height/2, n:document.querySelectorAll("#pvStrip .cs").length, above:r.bottom<=k.top+1}; });
+    await p.evaluate("__n=[]"); await T("touchStart",[{x:sb.x,y:sb.y,id:5}]); await p.waitForTimeout(60);
+    const chn=await p.evaluate("__n.map(m=>m%12).sort((a,b)=>a-b)"); await T("touchEnd",[]); await p.waitForTimeout(40);
+    ok(sb.n===6 && sb.above && chn.length>=3 && [0,4,7].every(pc=>chn.indexOf(pc)>=0), "a tap on C in the chord strip above the keys plays a C chord: "+chn.join(" "));
     /* a chord held with three fingers */
     const lo=await p.evaluate(()=>Math.min(...[...document.querySelectorAll("#kbd .wk:not(.out)")].map(e=>+e.getAttribute("data-m")).filter(m=>m%12===0))), C=await key(lo), E=await key(lo+4), G=await key(lo+7);
     await p.evaluate("__n=[]"); await T("touchStart",[{...C,id:1},{...E,id:2},{...G,id:3}]); await p.waitForTimeout(80);
