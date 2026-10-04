@@ -192,6 +192,8 @@ const CSS=`
 #rig .so-panel[hidden]{display:none!important}
 #rig .so-panel .line:first-child{margin-top:0}
 #rig .so-h{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:1.2rem 0 .55rem}
+#rig .so-h.so-first{margin-top:.7rem}
+#rig .so-licks{padding-bottom:.4rem;border-bottom:1px solid rgba(227,218,201,.18);margin-bottom:.2rem}
 #rig .so-sw{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
 #rig .so-sw .pbtn{flex:1 1 9.5rem}
 #rig .pbtn.so-kill{border-color:#c4452a;color:#ffd0c8;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -241,7 +243,15 @@ function build(){
   top.innerHTML=`<p class="line"><span id="soSay" aria-live="polite"></span> <span data-so="intro"></span></p>
     <p class="line so-legend" id="soLegend"></p>`;
   bot.classList.add("so-panel");
-  bot.innerHTML=`<div class="so-sw" id="soSw" role="group">
+  /* AOG-SOLO-LICKNEAR-V1 (Jimmy, 2026-10-04: "the try the lick is too far from the fret board"): the licks sit right
+     under the neck, so the lit notes are in view while the lick plays; the switches, the scale and the band follow */
+  bot.innerHTML=`${GTR?`<div class="so-licks"><h3 class="so-h so-first" data-so="lickH"></h3>
+    <div class="row">
+      <label class="field"><span class="plab" data-so="lickLab"></span><select id="soLickSel"></select></label>
+      <button type="button" class="pbtn" id="soLickBtn"></button>
+    </div>
+    <p class="line" id="soLickLine" aria-live="polite"></p></div>`:""}
+    <div class="so-sw" id="soSw" role="group">
       <button type="button" class="pbtn" id="soTap" aria-pressed="false"></button>
       ${GTR?`<button type="button" class="pbtn" id="soPinch" aria-pressed="false"></button><button type="button" class="pbtn" id="soWah" aria-pressed="false"></button>`:""}
       <button type="button" class="pbtn" id="soVib" aria-pressed="false"></button>
@@ -263,12 +273,7 @@ function build(){
     <p class="line" id="soBandLine"></p>
     <p class="line" id="soBandLoad" aria-live="polite" hidden></p>
     <div class="prog" id="soBandProg" aria-hidden="true"></div>
-    ${GTR?`<h3 class="so-h" data-so="lickH"></h3>
-    <div class="row">
-      <label class="field"><span class="plab" data-so="lickLab"></span><select id="soLickSel"></select></label>
-      <button type="button" class="pbtn" id="soLickBtn"></button>
-    </div>
-    <p class="line" id="soLickLine" aria-live="polite"></p>`:""}`;
+`;
   wire();
   SO.built=true;
   return true;
