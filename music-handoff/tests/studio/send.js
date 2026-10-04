@@ -180,10 +180,10 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   /* the Studio's own mix still goes to the turntables, and is offered here too, beside the takes */
   await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 30000 });
   await p.click("#sendBtn"); await p.waitForFunction(() => /Sent|did not/.test(document.getElementById("sendLine").textContent), null, { timeout: 10000 });
-  await p.waitForFunction(() => [...document.querySelectorAll("#srcSel option")].some(o => /^Your last mix from the studio/.test(o.textContent)), null, { timeout: 5000 }).catch(() => {});
+  await p.waitForFunction(() => [...document.querySelectorAll("#srcSel option")].some(o => /^Your last mix from the mixing desk/.test(o.textContent)), null, { timeout: 5000 }).catch(() => {});
   const sb = await p.evaluate(async () => { const x = await AOGHandoff.get("studiobench"); return { shelf: !!(x && x.wav && x.wav.size > 44), line: document.getElementById("sendLine").textContent.trim(),
     grp: [...document.querySelectorAll("#srcSel optgroup")].map(g => g.label + ": " + [...g.children].map(o => o.textContent.split(" · ")[0]).join(", ")).pop() }; });
-  ok(sb.shelf && sb.line === "Sent. Open the turntables to play it. The turntables" && sb.grp === "Sent to the turntables: Your last mix from the studio, From the bass",
+  ok(sb.shelf && sb.line === "Sent. Open the turntables to play it. The turntables" && sb.grp === "Sent to the turntables: Your last mix from the mixing desk, From the bass",
     "the Studio's mix still goes to the turntables (\"" + sb.line + "\"), and is offered here too: " + sb.grp);
 
   /* a reload keeps both tracks */
