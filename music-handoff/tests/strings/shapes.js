@@ -32,7 +32,8 @@ const srv=require("../srv.js")(9975);
               const why=[];
               if(R%12!==pcs[0]) why.push("root is wrong note");
               if(!cl || !inReach(cl.f)) why.push("root not in reach");
-              ["root","steady","eighths","fifth","walk","octave"].forEach(rh=>{ lineEvents(rh, c, {off:(root+5)%12,q:"maj"}).forEach(ev=>{ const cc=cellFor(ev.m); if(!cc) why.push(rh+" note "+ev.m+" has no place"); }); });
+              /* AOG-STRINGS-WAYS-V1: every way of playing, and every note on the frets on screen */
+              RHYTHMS.forEach(rh=>[0,1,2,3].forEach(k=>{ lineEvents(rh, c, {off:(root+5)%12,q:"maj"}, k).forEach(ev=>{ const cc=cellFor(ev.m); if(!cc) why.push(rh+" note "+ev.m+" has no place"); else if(!inReach(cc.f)) why.push(rh+" bar "+(k+1)+" note "+ev.m+" off the frets on screen (fret "+cc.f+")"); }); }));
               if(why.length) bad.push(`n${n} at ${f0}: ${KEY_NAMES.en[root]}${q} root ${R} — ${why.join(", ")}`);
             }
           }
