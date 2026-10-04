@@ -17,7 +17,13 @@
    AOGAmp.load(ctx)             → Promise; adds the worklet to that context (await it before an offline render)
    AOGAmp.create(ctx, {kind})   → rig {input, output, set(state)}; kind "guitar" or "bass"
    AOGAmp.defaults(kind)        → a state: {model, cab, k:{gain…}, bright, tight, eq:{on, db:[10]}, fx:{…}}
-   AOGAmp.ui(host, opts)        → the panel: amp head, pedalboard, EQ; opts {kind, lang(), get(), set(state), reset()} */
+   AOGAmp.ui(host, opts)        → the panel: amp head, pedalboard, EQ; opts {kind, lang(), get(), set(state), reset()}
+
+   AOG-AMP-TONES-V1 (2026-10-04) — Jimmy: "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the
+   sounds", then "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix … BLOW my mind". Four amps
+   (the 100-watt British head with no master volume, the same head at low voltage, a small combo turned all the way up, a
+   British high-gain head), a 4×10 cabinet, and seven pedals or voices (envelope filter, pitch shifter, treble booster,
+   octave fuzz, a vintage fuzz voice, vibe, rotating speaker) and a tape echo. A pedal can belong to one instrument (kind). */
 (function(G){
 "use strict";
 
@@ -41,7 +47,14 @@ const WORDS={
   mode:{en:"Mode",es:"Modo"}, type:{en:"Type",es:"Tipo"},
   touch:{en:"Touch",es:"Toque"}, fixed:{en:"Fixed",es:"Fijo"}, sine:{en:"Smooth",es:"Suave"}, square:{en:"Choppy",es:"Cortado"},
   spring:{en:"Spring",es:"Muelle"}, room:{en:"Room",es:"Sala"}, hall:{en:"Hall",es:"Auditorio"}, plate:{en:"Plate",es:"Placa"},
-  db:{en:"dB",es:"dB"}, ms:{en:"ms",es:"ms"}
+  db:{en:"dB",es:"dB"}, ms:{en:"ms",es:"ms"},
+  /* AOG-AMP-TONES-V1: the new pedals' modes and types */
+  deep:{en:"Deep",es:"Profundo"}, vowel:{en:"Vowel",es:"Vocal"},
+  up:{en:"Octave up",es:"Octava arriba"}, down:{en:"Octave down",es:"Octava abajo"}, fifth:{en:"Fifth up",es:"Quinta arriba"},
+  throb:{en:"Throb",es:"Pulso"}, vibrato:{en:"Vibrato",es:"Vibrato"},
+  slow:{en:"Slow",es:"Lento"}, fast:{en:"Fast",es:"Rápido"},
+  clear:{en:"Clear",es:"Nítido"}, tape:{en:"Tape",es:"Cinta"},
+  thick:{en:"Thick",es:"Grueso"}, vintage:{en:"Vintage",es:"Vintage"}
 };
 
 /* ── knobs ── */
@@ -109,6 +122,56 @@ const MODELS={
               {g:4, head:0.7, hard:true, hp:100, lp:5500, cut:6, cutF:250}],
       stack:STACKS.marshall, stackGain:2.6,
       power:{drive:0.7+0.6*n10(k.master), head:1.0, sag:0.04, hard:true}, presF:3600, depthF:85}, pd(k))},
+  /* AOG-AMP-TONES-V1 — the 100-watt British head of the late 1960s with no master volume (the stacks behind Jimmy Page, Angus
+     and Malcolm Young, and Jimi Hendrix): V1 with its Volume knob, V2 and the cathode follower, the tone stack, then a phase
+     inverter and four power tubes. Gain is that one Volume knob, so it drives the phase inverter and the power tubes too,
+     and most of the grit comes from there. A big sag; open and dynamic, it cleans up when you play softly. */
+  plexi:{kind:"guitar", en:"Vintage stack · loud and open", es:"Cabezal vintage · fuerte y abierto", cab:"green412", out:0.521, lvl:[-5.2,-2,0,1.2,1.8],
+    make:(k,sw)=>Object.assign({inHp:sw.tight?150:30, brightDb:(sw.bright?8:3.5)*(1-0.6*n10(k.gain)), brightF:2400,
+      stages:[{g:0.5+7*lg(n10(k.gain)), head:3.0, asym:1.2, bias:0.05, hp:20, lp:15000},
+              {g:2.2, head:2.4, asym:1.5, bias:0.12, hp:35, lp:11000},
+              {g:2.5, head:1.25, asym:1.06, bias:0.02, hp:25, lp:12000, pi:true}],
+      stackAt:1, stack:STACKS.marshall, stackGain:3.0,
+      power:{drive:(0.45+0.9*n10(k.master))*(0.55+1.1*n10(k.gain)), head:1.0, sag:0.45, lp:9000}, presF:3600, depthF:100}, pd(k))},
+  /* the same head with its mains voltage turned down (Eddie Van Halen's variac, late 1970s): every stage has less headroom
+     and the supply gives way sooner, so it saturates early, softly and warmly, with a spongy feel and little fizz */
+  brown:{kind:"guitar", en:"Warm stack · spongy and saturated", es:"Cabezal cálido · esponjoso y saturado", cab:"green412", out:0.607, lvl:[-2.2,-0.8,0,0.5,0.9],
+    make:(k,sw)=>Object.assign({inHp:sw.tight?160:45, brightDb:(sw.bright?6:2)*(1-0.5*n10(k.gain)), brightF:2600,
+      stages:[{g:0.8+14*lg(n10(k.gain)), head:2.4, asym:1.25, bias:0.08, hp:25, lp:9000},
+              {g:3.0, head:1.6, asym:1.45, bias:0.15, hp:40, lp:6000},
+              {g:2.6, head:1.0, asym:1.15, bias:0.05, hp:30, lp:5500, pi:true}],
+      stackAt:1, stack:STACKS.marshall, stackGain:3.0,
+      power:{drive:(0.6+0.9*n10(k.master))*(0.8+0.8*n10(k.gain)), head:0.75, sag:0.7, lp:4200}, presF:3000, depthF:95}, pd(k))},
+  /* a small combo turned all the way up (the little American amps of the 1950s and 60s that Jimmy Page and the blues players
+     recorded with): two stages, a simple tone, and one power tube on its own (single-ended) that clips one side first,
+     compressing and growling, on a weak supply */
+  small:{kind:"guitar", en:"Small combo · turned all the way up", es:"Combo pequeño · al máximo", cab:"open112", out:0.578, lvl:[-4.2,-1.6,0,0.9,1.4],
+    make:(k,sw)=>Object.assign({inHp:sw.tight?150:50, brightDb:sw.bright?6:1, brightF:2200,
+      stages:[{g:1+18*lg(n10(k.gain)), head:1.8, asym:1.35, bias:0.1, hp:25, lp:9000},
+              {g:2.6, head:1.7, asym:1.45, bias:0.18, hp:45, lp:7000}],
+      bax:{low:(n10(k.bass)-0.5)*14, lowF:120, mid:(n10(k.mid)-0.5)*10, midF:800, midQ:0.7, high:(n10(k.treble)-0.5)*16, highF:2500},
+      power:{drive:(0.5+1.2*n10(k.master))*(0.7+0.6*n10(k.gain)), head:0.9, sag:0.6, asym:0.65, bias:0.15, lp:7000}, presF:3400, depthF:110}, pd(k))},
+  /* the cascaded American lead amp of the early 1970s (Carlos Santana's singing tone): the tone stack comes right after the
+     first stage, before the gain, so Bass, Middle and Treble shape what distorts; then three more stages in a row. Warm,
+     vocal, a long sustain */
+  cascade:{kind:"guitar", en:"American lead · warm and vocal", es:"Solista americano · cálido y vocal", cab:"open112", out:0.441, lvl:[-0.9,-0.3,0,0.1,0.1],
+    make:(k,sw)=>Object.assign({inHp:sw.tight?150:45, brightDb:sw.bright?6*(1-0.5*n10(k.gain)):1, brightF:2200,
+      stages:[{g:0.8+12*lg(n10(k.gain)), head:4.0, asym:1.2, bias:0.04, hp:20, lp:14000},
+              {g:5, head:1.3, asym:1.4, bias:0.1, hp:60, lp:9000},
+              {g:4, head:1.1, asym:1.55, bias:0.18, hp:120, lp:6500},
+              {g:1.5, head:1.4, asym:1.3, bias:0.08, hp:40, lp:6000}],
+      stackAt:0, stack:STACKS.fender, stackGain:3.0,
+      power:{drive:0.45+0.7*n10(k.master), head:1.2, sag:0.25, lp:7000}, presF:3200, depthF:100}, pd(k))},
+  /* British high gain (the heads of the late 1980s and 90s, as on Opeth's heavy riffs): four stages, the lows cut between
+     them so fast palm mutes stay tight, and the middle left in (not scooped) so a riff cuts through */
+  brithigh:{kind:"guitar", en:"British high gain · tight and focused", es:"Alta ganancia británica · firme y definida", cab:"v30_412", out:0.343, lvl:[-0.2,-0.1,0,0,0.1],
+    make:(k,sw)=>Object.assign({inHp:sw.tight?180:90, brightDb:sw.bright?5:1.5, brightF:3000,
+      stages:[{g:1.5+55*lg(n10(k.gain)), head:1.3, asym:1.4, bias:0.1, hp:40, lp:11000},
+              {g:6, head:1.1, asym:1.6, bias:0.2, hp:180, lp:8000, cut:3, cutF:250},
+              {g:4.5, head:1.0, asym:1.7, bias:0.25, hp:110, lp:7000},
+              {g:2, head:1.2, asym:1.3, bias:0.05, hp:60, lp:6500}],
+      stack:STACKS.marshall, stackGain:3.0,
+      power:{drive:0.45+0.7*n10(k.master), head:1.2, sag:0.18}, presF:3300, depthF:90}, pd(k))},
   /* the bass amps: a bass player's tone controls (low shelf, a middle, a high shelf) in place of the guitar stack */
   btube:{kind:"bass", en:"Bass · classic tube", es:"Bajo · válvulas clásico", cab:"b810", out:0.306, lvl:[-4.6,-2.5,0,2.3,4.2],
     make:(k,sw)=>Object.assign({inHp:sw.tight?60:22, brightDb:sw.bright?6:0, brightF:2500,
@@ -146,6 +209,8 @@ const CABS={
   blue212: {kind:"guitar", en:"2×12 British · bright",        es:"2×12 británico · brillante",  hp:[95,1.0], lp:[6800,2], peaks:[[1000,1.2,1.5],[2600,1.5,4],[4200,2,3]], seed:13},
   green412:{kind:"guitar", en:"4×12 British · warm and thick",es:"4×12 británico · cálido y grueso", hp:[78,1.3], lp:[4800,3], peaks:[[120,1.2,2],[700,1.2,-1],[1500,1.0,2.5],[2500,1.5,1.5]], seed:14},
   v30_412: {kind:"guitar", en:"4×12 modern · tight and heavy",es:"4×12 moderno · firme y pesado", hp:[82,1.4], lp:[5400,3], peaks:[[110,1.4,3],[480,1.0,-3],[2400,1.6,5],[4000,2.5,3]], seed:15},
+  /* AOG-AMP-TONES-V1: four 10-inch speakers in an open back, the big American blues combo (Stevie Ray Vaughan's) */
+  open410: {kind:"guitar", en:"4×10 open back · full and bright", es:"4×10 abierto · lleno y brillante", hp:[88,0.9], lp:[6000,2], peaks:[[220,1,1.5],[1200,1.1,1],[2600,1.4,3],[4300,2,2.5]], seed:16},
   b810:    {kind:"bass",   en:"8×10 · big and punchy",        es:"8×10 · grande y con pegada",  hp:[42,1.2], lp:[4200,3], peaks:[[90,1,3],[800,1,-2],[2400,1.2,2]], seed:21},
   b410:    {kind:"bass",   en:"4×10 with tweeter · clear",    es:"4×10 con tweeter · claro",    hp:[40,1.0], lp:[9000,1], peaks:[[100,1,2],[600,1,-2],[3500,1.2,2]], seed:22},
   b115:    {kind:"bass",   en:"1×15 · round and deep",        es:"1×15 · redondo y profundo",   hp:[36,1.4], lp:[2600,3], peaks:[[80,1.3,3],[1200,1,-2]], seed:23}
@@ -204,18 +269,38 @@ const PEDALS=[
   {id:"wah", en:"Wah", es:"Wah", col:["#1f1f1f","#f5f5f5"], modes:["touch","fixed"],
    d:{en:"A talking, sweeping tone. Touch opens it when you play harder.",es:"Un tono que habla y barre. Toque lo abre cuando tocas más fuerte."},
    knobs:[["pos",{en:"Position",es:"Posición"},5],["sens",{en:"Sensitivity",es:"Sensibilidad"},5],["q",{en:"Peak",es:"Pico"},5]]},
+  /* AOG-AMP-TONES-V1: the envelope filter (the funk bass of Les Claypool and Flea) */
+  {id:"env", en:"Envelope filter", es:"Filtro de envolvente", col:["#e3c13b","#111111"], modes:["deep","vowel"],
+   d:{en:"A funky quack that opens when you play harder.",es:"Un graznido funky que se abre cuando tocas más fuerte."},
+   knobs:[["sens",{en:"Sensitivity",es:"Sensibilidad"},6],["q",{en:"Peak",es:"Pico"},6],["mix",{en:"Mix",es:"Mezcla"},8]]},
   {id:"oct", en:"Octave down", es:"Octava abajo", col:["#7a7f87","#111111"],
    d:{en:"Adds a note an octave lower. Best on one note at a time.",es:"Añade una nota una octava más grave. Mejor con una nota a la vez."},
    knobs:[["sub",{en:"Low note",es:"Nota grave"},6],["dry",{en:"Your note",es:"Tu nota"},7]]},
+  /* AOG-AMP-TONES-V1: the pitch shifter (Buckethead's and Tom Morello's squeals an octave up) */
+  {id:"pitch", en:"Pitch shifter", es:"Cambio de altura", col:["#1c6e8c","#ffffff"], modes:["up","down","fifth"],
+   d:{en:"Moves your notes an octave up or down, or a fifth up. Mix keeps some of your own note.",es:"Sube o baja tus notas una octava, o las sube una quinta. Mezcla guarda parte de tu nota."},
+   knobs:[["amt",{en:"How far",es:"Cuánto"},10],["mix",{en:"Mix",es:"Mezcla"},10]]},
+  /* AOG-AMP-TONES-V1: the treble booster (Tony Iommi's and Brian May's) */
+  {id:"tb", kind:"guitar", en:"Treble booster", es:"Realce de agudos", col:["#c7ccd1","#111111"],
+   d:{en:"Hits the amp harder, mostly in the highs. Body lets more low notes through.",es:"Golpea más fuerte al amplificador, sobre todo en los agudos. Cuerpo deja pasar más notas graves."},
+   knobs:[["boost",{en:"Boost",es:"Realce"},7],["body",{en:"Body",es:"Cuerpo"},3]]},
+  /* AOG-AMP-TONES-V1: the octave fuzz (Jimi Hendrix's) */
+  {id:"ofz", kind:"guitar", en:"Octave fuzz", es:"Fuzz de octava", col:["#b0306a","#ffffff"],
+   d:{en:"A wild fuzz with a note an octave higher. Best on single notes, high on the neck.",es:"Un fuzz salvaje con una nota una octava más aguda. Mejor con notas sueltas, arriba en el mástil."},
+   knobs:[["fuzz",{en:"Fuzz",es:"Fuzz"},7],["up",{en:"High note",es:"Nota aguda"},7],["lvl",{en:"Level",es:"Nivel"},5]]},
   {id:"od", en:"Overdrive", es:"Overdrive", col:["#2f7a40","#ffffff"],
    d:{en:"A warm push. With Drive low it makes the amp bite harder.",es:"Un empuje cálido. Con poco Drive hace que el amplificador muerda más."},
    knobs:[["drive",{en:"Drive",es:"Drive"},4],["tone",{en:"Tone",es:"Tono"},5],["lvl",{en:"Level",es:"Nivel"},6]]},
   {id:"ds", en:"Distortion", es:"Distorsión", col:["#d7742a","#111111"],
    d:{en:"Hard, buzzing grit, for rock and punk.",es:"Aspereza dura y zumbante, para rock y punk."},
    knobs:[["dist",{en:"Distortion",es:"Distorsión"},6],["tone",{en:"Tone",es:"Tono"},5],["lvl",{en:"Level",es:"Nivel"},5]]},
-  {id:"fz", en:"Fuzz", es:"Fuzz", col:["#6d3fa0","#ffffff"],
-   d:{en:"A thick, woolly wall of sound.",es:"Un muro de sonido grueso y lanudo."},
+  {id:"fz", en:"Fuzz", es:"Fuzz", col:["#6d3fa0","#ffffff"], types:["thick","vintage"],
+   d:{en:"A thick, woolly wall of sound. Vintage is rawer and cleans up when you play softly.",es:"Un muro de sonido grueso y lanudo. Vintage es más crudo y se limpia cuando tocas suave."},
    knobs:[["sus",{en:"Sustain",es:"Sostén"},7],["tone",{en:"Tone",es:"Tono"},5],["lvl",{en:"Level",es:"Nivel"},5]]},
+  /* AOG-AMP-TONES-V1: the vibe (Jimi Hendrix's, and Robin Trower's) */
+  {id:"vibe", kind:"guitar", en:"Vibe", es:"Vibe", col:["#4a3f73","#ffffff"], modes:["throb","vibrato"],
+   d:{en:"A deep, throbbing swirl. Vibrato makes the note wobble instead.",es:"Un remolino profundo que late. Vibrato hace temblar la nota."},
+   knobs:[["rate",{en:"Speed",es:"Velocidad"},3],["depth",{en:"Depth",es:"Profundidad"},7]]},
   {id:"chorus", en:"Chorus", es:"Chorus", col:["#7fc6d9","#111111"],
    d:{en:"Shimmer, as if two guitars played together.",es:"Brillo, como si tocaran dos guitarras juntas."},
    knobs:[["rate",{en:"Speed",es:"Velocidad"},3],["depth",{en:"Depth",es:"Profundidad"},5],["mix",{en:"Mix",es:"Mezcla"},5]]},
@@ -228,15 +313,19 @@ const PEDALS=[
   {id:"trem", en:"Tremolo", es:"Trémolo", col:["#b23b3b","#ffffff"], modes:["sine","square"],
    d:{en:"The volume pulses up and down.",es:"El volumen sube y baja en pulsos."},
    knobs:[["rate",{en:"Speed",es:"Velocidad"},5],["depth",{en:"Depth",es:"Profundidad"},6]]},
-  {id:"delay", en:"Delay", es:"Delay", col:["#cfd5da","#111111"],
-   d:{en:"Echoes of what you play.",es:"Ecos de lo que tocas."},
+  /* AOG-AMP-TONES-V1: the rotating speaker (Stevie Ray Vaughan's "Cold Shot") */
+  {id:"rotary", kind:"guitar", en:"Rotating speaker", es:"Altavoz giratorio", col:["#7a5230","#ffffff"], modes:["slow","fast"],
+   d:{en:"A speaker that spins: a warm swirl, slow or fast.",es:"Un altavoz que gira: un remolino cálido, lento o rápido."},
+   knobs:[["depth",{en:"Depth",es:"Profundidad"},6],["mix",{en:"Mix",es:"Mezcla"},8]]},
+  {id:"delay", en:"Delay", es:"Delay", col:["#cfd5da","#111111"], types:["clear","tape"],
+   d:{en:"Echoes of what you play. Tape makes them darker and gently wavy.",es:"Ecos de lo que tocas. Cinta los hace más oscuros y un poco ondulados."},
    knobs:[["time",{en:"Time",es:"Tiempo"},4],["fb",{en:"Repeats",es:"Repeticiones"},4],["mix",{en:"Mix",es:"Mezcla"},4],["tone",{en:"Tone",es:"Tono"},5]]},
   {id:"reverb", en:"Reverb", es:"Reverb", col:["#244a66","#ffffff"], types:["spring","room","hall","plate"],
    d:{en:"The sound of a room, a hall or a spring.",es:"El sonido de una sala, un auditorio o un muelle."},
    knobs:[["decay",{en:"Decay",es:"Duración"},5],["mix",{en:"Mix",es:"Mezcla"},4],["tone",{en:"Tone",es:"Tono"},6]]}
 ];
 const PED=Object.fromEntries(PEDALS.map(p=>[p.id,p]));
-const PRE=["gate","comp","wah","oct","od","ds","fz"];          /* the pedals before the amp; the rest sit after it */
+const PRE=["gate","comp","wah","env","oct","pitch","tb","ofz","od","ds","fz","vibe"];   /* the pedals before the amp; the rest sit after it */
 const EQ_F=[31,63,125,250,500,1000,2000,4000,8000,16000];
 const AMP_KNOBS=["gain","bass","mid","treble","presence","depth","master"];
 function delayMs(v){ return Math.round(40*Math.pow(30, n10(v))); }        /* 40 ms to 1.2 s */
@@ -268,6 +357,16 @@ function coreParams(st, kind){
   const od=fx.od; P.od={on:od.on, gain:3+110*lg(n10(od.drive)), tone:700*Math.pow(8.5, n10(od.tone)), level:0.2+1.6*n10(od.lvl)};
   const ds=fx.ds; P.ds={on:ds.on, gain:2+900*lg(n10(ds.dist)), filter:600*Math.pow(28, n10(ds.tone)), level:0.12+1.2*n10(ds.lvl)};
   const fz=fx.fz; P.fz={on:fz.on, gain:2+70*lg(n10(fz.sus)), gain2:8, tone:n10(fz.tone), level:0.15+1.4*n10(fz.lvl)};
+  /* AOG-AMP-TONES-V1: the new pedals (levels measured so a pedal at its own settings is about as loud as without it) */
+  P.fz.type=fz.type==="vintage"?"vintage":"thick"; P.fz.gainV=1.2+24*lg(n10(fz.sus)); P.fz.levelV=(0.15+1.4*n10(fz.lvl))*1.0;
+  const ef=fx.env, eq=2+1.2*clamp(+ef.q,0,10);
+  P.env={on:ef.on, mode:ef.mode==="vowel"?"vowel":"deep", sens:0.8+0.5*clamp(+ef.sens,0,10), k:1/eq, lpG:1/Math.sqrt(1+(bass?0.12:0.25)*(eq-1)), bpG:bass?3.5:2.0,
+         mix:n10(ef.mix), f0:bass?130:260, f1:bass?2400:2600};
+  const wh=fx.pitch, semis=(wh.mode==="down"?-12:wh.mode==="fifth"?7:12)*n10(wh.amt);
+  P.ps={on:wh.on, r:Math.pow(2, semis/12), mix:n10(wh.mix)};
+  const tb=fx.tb; P.tb={on:tb.on, gain:6, fc:2400*Math.pow(0.12, n10(tb.body)), level:0.3+2.0*n10(tb.boost)};
+  const of=fx.ofz; P.ofz={on:of.on, pre:2.5, gain:2+40*lg(n10(of.fuzz)), up:n10(of.up), tone:5200, level:0.15+1.2*n10(of.lvl)};
+  const vb=fx.vibe; P.vibe={on:vb.on, mode:vb.mode==="vibrato"?"vibrato":"throb", rate:0.5*Math.pow(18, n10(vb.rate)), depth:n10(vb.depth)};
   const k=st.k, sw={bright:st.bright, tight:st.tight};
   if(M.make){ P.amp=M.make(k, sw); P.amp.on=true;
     /* the tone stack's three pots: treble and middle turn evenly, bass is an audio-taper pot */
@@ -301,7 +400,8 @@ function fallbackCore(c){
   return {input:inp, output:out, set(P){ const a=P.amp||{}, on=!!a.on;
     wet.gain.value=on?1:0; bypass.gain.value=on?0:1;
     if(!on) return;
-    const gsum=(a.stages||[]).reduce((m,s,i)=>m*(i===0?s.g:Math.sqrt(s.g)),1)*(P.od&&P.od.on?P.od.gain*0.1:1)*(P.ds&&P.ds.on?P.ds.gain*0.05:1)*(P.fz&&P.fz.on?P.fz.gain*0.2:1);
+    const gsum=(a.stages||[]).reduce((m,s,i)=>m*(i===0?s.g:Math.sqrt(s.g)),1)*(P.od&&P.od.on?P.od.gain*0.1:1)*(P.ds&&P.ds.on?P.ds.gain*0.05:1)*(P.fz&&P.fz.on?P.fz.gain*0.2:1)
+      *(P.tb&&P.tb.on?P.tb.level*1.5:1)*(P.ofz&&P.ofz.on?P.ofz.gain*0.2:1);
     pre.gain.value=Math.min(400, gsum)/4; hp.frequency.value=a.inHp||40;
     sh1.curve=shaperCurve((a.stages||[]).some(s=>s.hard)?"hard":"soft");
     const t=a.stack?a.t:0.5, m=a.stack?a.m:0.5, l=a.stack?a.l:0.5;
@@ -351,15 +451,48 @@ function create(c, opt){
   FX.trem=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), vca=gainNode(c,1), lfo=c.createOscillator(), sm=biq(c,"lowpass",40,0.7), dg=gainNode(c,0.3);
     i.connect(vca); vca.connect(o); lfo.connect(sm); sm.connect(dg); dg.connect(vca.gain); lfo.start();
     return {in:i, out:o, set(p){ const r=1+11*n10(p.rate)*n10(p.rate)+0.0, d=n10(p.depth); lfo.type=p.mode==="square"?"square":"sine"; lfo.frequency.value=r; dg.gain.value=d*0.5; vca.gain.value=1-d*0.5; }}; })();
+  /* AOG-AMP-TONES-V1: the rotating speaker. The horn (the highs) and the drum (the lows) each spin past two microphones: as
+     a rotor comes towards you its sound rises a little in pitch (a moving delay), it is loudest facing you, and it swings
+     from side to side. The horn spins a little faster than the drum; Slow is about once a second, Fast about six times. */
+  FX.rotary=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,0.2), wet=gainNode(c,0.8), xl=biq(c,"lowpass",800,0.6), xh=biq(c,"highpass",800,0.6);
+    const rotor=src=>{ const d=c.createDelay(0.02), am=gainNode(c,1); let pan=null; d.delayTime.value=0.003;
+      try{ pan=new StereoPannerNode(c, {pan:0}); }catch(e){ try{ pan=c.createStereoPanner(); }catch(e2){ pan=null; } }
+      src.connect(d); d.connect(am); if(pan){ am.connect(pan); pan.connect(wet); } else am.connect(wet); return {d:d, am:am, pan:pan}; };
+    const lfo=()=>{ const s=c.createOscillator(), q=c.createOscillator(); s.type="sine";
+      try{ q.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,1]), new Float32Array([0,0]))); }catch(e){ q.type="sine"; }
+      s.start(); q.start(); return {s:s, q:q}; };
+    i.connect(xl); i.connect(xh); i.connect(dry); dry.connect(o); wet.connect(o);
+    const horn=rotor(xh), drum=rotor(xl), hl=lfo(), dl2=lfo();
+    const hD=gainNode(c,0), hA=gainNode(c,0), hP=gainNode(c,0), dD=gainNode(c,0), dA=gainNode(c,0), dP=gainNode(c,0);
+    hl.s.connect(hD); hD.connect(horn.d.delayTime); hl.q.connect(hA); hA.connect(horn.am.gain);
+    dl2.s.connect(dD); dD.connect(drum.d.delayTime); dl2.q.connect(dA); dA.connect(drum.am.gain);
+    if(horn.pan){ hl.s.connect(hP); hP.connect(horn.pan.pan); } if(drum.pan){ dl2.s.connect(dP); dP.connect(drum.pan.pan); }
+    return {in:i, out:o, set(p){ const fast=p.mode==="fast", d=n10(p.depth), w=n10(p.mix);
+      hl.s.frequency.value=hl.q.frequency.value=fast?6.7:0.83; dl2.s.frequency.value=dl2.q.frequency.value=fast?5.8:0.68;
+      hD.gain.value=0.00045*d; hA.gain.value=0.3*d; horn.am.gain.value=1-0.3*d; hP.gain.value=0.6*d;
+      dD.gain.value=0.00012*d; dA.gain.value=0.18*d; drum.am.gain.value=1-0.18*d; dP.gain.value=0.25*d;
+      wet.gain.value=w*1.12; dry.gain.value=1-w; }}; })();
   FX.delay=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.4), dl=c.createDelay(2.0), fb=gainNode(c,0.35), tone=biq(c,"lowpass",4000,0.6), hp=biq(c,"highpass",120,0.6);
-    i.connect(dry); dry.connect(o); i.connect(dl); dl.connect(tone); tone.connect(hp); hp.connect(fb); fb.connect(dl); hp.connect(wet); wet.connect(o);
-    return {in:i, out:o, set(p){ const t=delayMs(p.time)/1000; try{ dl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); }catch(e){ dl.delayTime.value=t; }
-      fb.gain.value=0.85*n10(p.fb); wet.gain.value=0.75*n10(p.mix); tone.frequency.value=1500*Math.pow(6,n10(p.tone)); }}; })();
+    const inC=gainNode(c,1);
+    i.connect(dry); dry.connect(o); i.connect(inC); inC.connect(dl); dl.connect(tone); tone.connect(hp); hp.connect(fb); fb.connect(dl); hp.connect(wet); wet.connect(o);
+    /* AOG-AMP-TONES-V1: Tape, the tape echo beside it (Jimmy Page's and Eddie Van Halen's): each repeat darker than the one
+       before, squashed a little by the tape, and wavering gently with the tape's speed (wow, and a faint flutter) */
+    const inT=gainNode(c,0), tdl=c.createDelay(2.0), sat=c.createWaveShaper(), satIn=gainNode(c,0.5), satOut=gainNode(c,2), ttone=biq(c,"lowpass",2500,0.6), ttone2=biq(c,"lowpass",6000,0.5), thp=biq(c,"highpass",150,0.6), tfb=gainNode(c,0.35), twet=gainNode(c,0);
+    sat.curve=tapeCurve(); const wow=c.createOscillator(), wowG=gainNode(c,0), flut=c.createOscillator(), flutG=gainNode(c,0);
+    wow.frequency.value=0.55; flut.frequency.value=6.3; wow.connect(wowG); wowG.connect(tdl.delayTime); flut.connect(flutG); flutG.connect(tdl.delayTime); wow.start(); flut.start();
+    i.connect(inT); inT.connect(tdl); tdl.connect(ttone); ttone.connect(ttone2); ttone2.connect(satIn); satIn.connect(sat); sat.connect(satOut); satOut.connect(thp);
+    thp.connect(tfb); tfb.connect(tdl); thp.connect(twet); twet.connect(o);
+    return {in:i, out:o, set(p){ const t=delayMs(p.time)/1000, tape=p.type==="tape";
+      try{ dl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); tdl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); }catch(e){ dl.delayTime.value=t; tdl.delayTime.value=t; }
+      inC.gain.value=tape?0:1; inT.gain.value=tape?1:0;
+      fb.gain.value=0.85*n10(p.fb); wet.gain.value=tape?0:0.75*n10(p.mix); tone.frequency.value=1500*Math.pow(6,n10(p.tone));
+      tfb.gain.value=0.85*n10(p.fb); twet.gain.value=tape?0.85*n10(p.mix):0; ttone.frequency.value=900*Math.pow(5,n10(p.tone));
+      wowG.gain.value=tape?0.0007:0; flutG.gain.value=tape?0.00004:0; }}; })();
   FX.reverb=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.3), cv=c.createConvolver(), tone=biq(c,"lowpass",8000,0.6); let key="";
     i.connect(dry); dry.connect(o); i.connect(cv); cv.connect(tone); tone.connect(wet); wet.connect(o);
     return {in:i, out:o, set(p){ const k=(p.type||"spring")+":"+Math.round(+p.decay*2)/2; if(k!==key){ key=k; cv.buffer=reverbIR(c, p.type||"spring", n10(p.decay)); }
       wet.gain.value=0.9*n10(p.mix); dry.gain.value=1-0.25*n10(p.mix); tone.frequency.value=2000*Math.pow(6,n10(p.tone)); }}; })();
-  const ORDER=["chorus","phaser","flanger","trem","delay","reverb"];
+  const ORDER=["chorus","phaser","flanger","trem","rotary","delay","reverb"];
   let wiring="";
   function rewire(st){
     const on=ORDER.filter(id=>st.fx[id].on), useCab=st.cab!=="off" && CABS[st.cab] && CABS[st.cab].hp, key=[st.cab, st.eq.on?1:0].concat(on).join(",");
@@ -382,6 +515,10 @@ function create(c, opt){
   rig.set(rig.state);
   return rig;
 }
+/* the tape's squash (AOG-AMP-TONES-V1): the same as the input when quiet, rounding off the loud peaks; the shaper sees half
+   the level and its output is doubled, so a loud repeat still has room */
+let TAPE=null;
+function tapeCurve(){ if(TAPE) return TAPE; const n=1025; TAPE=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2; TAPE[i]=Math.tanh(1.1*x)/1.1/2; } return TAPE; }
 /* reverbs: a spring (drips, a little boing), a room, a hall, a plate; stereo noise that dies away, darker as it goes */
 const VERBS=new WeakMap();
 function reverbIR(c, type, d){
@@ -460,9 +597,11 @@ const CSS=`
 .aogamp.aa-flat .aa-band input{order:0;writing-mode:horizontal-tb;direction:ltr;width:100%;height:auto;min-height:32px}
 .aogamp.aa-flat .aa-band output{order:0;font-size:.82rem;text-align:right}
 .aogamp .aa-bands[data-off="1"]{opacity:.62}
-.aogamp .aa-foot{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
-.aogamp .aa-foot .aa-btn{background:var(--card,#fffcf7);color:var(--ink,#1a232c);border-color:var(--line,#ddd8cc)}
-.aogamp .aa-note{font-size:.9rem;color:var(--muted,#5c6670);margin:0}
+/* AOG-AMP-TONES-V1: the foot has its own dark ground, like the rest of the panel, so its line stays readable after the panel
+   redraws (the page's ink fix in aog-grace.js runs once, at load, and missed the redrawn note on the dark rig) */
+.aogamp .aa-foot{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;background:#2b2926;border-radius:14px;padding:.6rem .8rem}
+.aogamp .aa-foot .aa-btn{background:#2a2622;color:#f3ead7;border-color:#6b6255}
+.aogamp .aa-note{font-size:.9rem;color:#e9dfc8;margin:0}
 .aogamp :focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
 @media (min-width:760px){ .aogamp .aa-plate{grid-template-columns:repeat(7,1fr)} }
 `;
@@ -489,7 +628,7 @@ function ui(host, opt){
     const cabs=Object.keys(CABS).filter(id=>CABS[id].kind===kind||CABS[id].kind==="both");
     const knobs=AMP_KNOBS.concat(st.model==="bdrive"?["blend"]:[]);
     const amped=st.model!=="none";
-    const pedals=PEDALS;
+    const pedals=PEDALS.filter(p=>!p.kind || p.kind===kind);     /* AOG-AMP-TONES-V1: a pedal can belong to one instrument */
     const pedal=p=>{ const f=st.fx[p.id];
           const modes=p.modes?`<div class="aa-modes" role="group" aria-label="${esc(word("mode",lang))}">${p.modes.map(m=>`<button type="button" data-ped="${p.id}" data-mode="${m}" aria-pressed="${f.mode===m}">${word(m,lang)}</button>`).join("")}</div>`:"";
           const types=p.types?`<label class="aa-sel"><span style="color:var(--pi)">${word("type",lang)}</span><select data-ped="${p.id}" data-type="1">${p.types.map(t=>`<option value="${t}"${f.type===t?" selected":""}>${word(t,lang)}</option>`).join("")}</select></label>`:"";

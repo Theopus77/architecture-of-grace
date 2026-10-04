@@ -8,7 +8,12 @@
    The rest of the rig (cabinet, EQ, chorus, phaser, flanger, tremolo, delay, reverb) is Web Audio nodes, in aog-amp.js,
    which also turns the knobs into the numbers this file uses (P, below).
 
-   Loaded with audioWorklet.addModule("/aog-amp-worklet.js"). In Node (the tests) it exports AOGAmpCore instead. */
+   Loaded with audioWorklet.addModule("/aog-amp-worklet.js"). In Node (the tests) it exports AOGAmpCore instead.
+
+   AOG-AMP-TONES-V1 (2026-10-04) — Jimmy: "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the
+   sounds", then "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix … BLOW my mind". The pieces
+   those sounds need, here on the audio thread: a treble booster, an octave fuzz, a vintage fuzz voice, a vibe, an envelope
+   filter, a pitch shifter, and a power amp that can clip unevenly (one tube, single-ended, as in a small combo). */
 (function(G){
 "use strict";
 const TAU=2*Math.PI;
@@ -88,22 +93,76 @@ function soft(x){ return x/Math.sqrt(1+x*x); }
 function hard(x){ const x2=x*x; return x/Math.sqrt(Math.sqrt(1+x2*x2)); }
 function tube(x, asym){ return x>0 ? soft(x) : (asym>0 ? -asym*soft(-x/asym) : soft(x)); }
 
+/* AOG-AMP-TONES-V1 — the pitch shifter. The note goes into a short delay line and is read back at another speed (faster is
+   higher). A read head soon runs out of room, so a second head starts a little way back, at the place where the wave lines
+   up best with the first (it compares the last few milliseconds of both), and the two cross-fade over 10 ms. The splice
+   lands in step with the wave, so a held note stays smooth and a chord only shimmers a little, as on the real pedal. */
+function Shifter(fs){
+  const sc=fs/48000;
+  this.X=Math.max(64, Math.round(480*sc));    /* the cross-fade */
+  this.J=Math.max(256, Math.round(1400*sc));  /* how far back a new head starts */
+  this.S=Math.max(64, Math.round(360*sc));    /* searched either side of that: more than half the lowest note's period */
+  this.M=Math.max(64, Math.round(256*sc));    /* how much of the wave is compared */
+  let n=1; while(n<2*(4*this.X+this.J+this.S+this.M+64)) n<<=1;
+  this.mask=n-1; this.buf=new Float32Array(n); this.w=0; this.d=0; this.d2=0; this.k=-1; this.init=false;
+}
+Shifter.prototype.reset=function(){ this.buf.fill(0); this.w=0; this.k=-1; this.init=false; };
+/* the wave d samples back, between samples by a 4-point Hermite curve (d is never under 6) */
+Shifter.prototype.read=function(d){
+  const pos=this.w-1-d, i=Math.floor(pos), f=pos-i, m=this.mask, b=this.buf;
+  const xm1=b[(i-1)&m], x0=b[i&m], x1=b[(i+1)&m], x2=b[(i+2)&m];
+  const c1=0.5*(x1-xm1), c2=xm1-2.5*x0+2*x1-0.5*x2, c3=0.5*(x2-xm1)+1.5*(x0-x1);
+  return ((c3*f+c2)*f+c1)*f+x0;
+};
+/* where near dNom the wave matches the one at dOld best: every other sample of the last M, against each place in ±S */
+Shifter.prototype.best=function(dOld, dNom){
+  const b=this.buf, m=this.mask, M=this.M, S=this.S, i0=Math.round(dOld), a0=this.w-1-i0;
+  let best=Math.round(dNom), bs=-1e30;
+  for(let o=-S;o<=S;o+=2){ const d=Math.round(dNom)+o; if(d<6) continue; const a1=this.w-1-d; let c=0, e=1e-9;
+    for(let j=0;j<M;j+=2){ const y=b[(a1-j)&m]; c+=b[(a0-j)&m]*y; e+=y*y; }
+    const s=c/Math.sqrt(e); if(s>bs){ bs=s; best=d; } }
+  return best+(dOld-i0);                       /* the same fraction as the old head, so the two move in step */
+};
+Shifter.prototype.run=function(x, r){
+  this.buf[this.w]=x; this.w=(this.w+1)&this.mask;
+  const X=this.X, J=this.J, S=this.S, step=1-r;
+  const lo=r>1 ? (r-1)*X+6 : 6, hi=r>1 ? lo+J+S : 6+S+J;
+  if(!this.init){ this.d=r>1 ? lo+J : 6+S; this.init=true; }
+  if(this.k<0){
+    if(r>1.0001 && this.d<=lo){ this.d2=this.best(this.d, this.d+J); this.k=0; }
+    else if(r<0.9999 && this.d>=hi){ this.d2=this.best(this.d, Math.max(6+S, this.d-J)); this.k=0; }
+  }
+  let y;
+  if(this.k>=0){ const g=0.5-0.5*Math.cos(Math.PI*this.k/X); y=this.read(this.d)*(1-g)+this.read(this.d2)*g; }
+  else y=this.read(this.d);
+  this.d+=step;
+  if(this.k>=0){ this.d2+=step; if(++this.k>=X){ this.d=this.d2; this.k=-1; } }
+  if(this.d<6) this.d=6;
+  return y;
+};
+
 /* ── the amp ────────────────────────────────────────────────────────────── */
 function AmpCore(fs){
   this.fs=fs; this.fo=fs*4; this.ov=new Over4(); this.u=new Float64Array(4);
   /* at the page's rate, before the fast part */
   this.pick=new Biquad(); this.gate={env:0, g:1, open:false}; this.comp={env:0};
   this.wah={ic1:0, ic2:0, env:0, pos:0}; this.oct={lp1:new Biquad(), lp2:new Biquad(), sm:new Pole(), ff:1, st:0, env:0};
+  /* AOG-AMP-TONES-V1: the envelope filter; the pitch shifter (made the first time it is turned on) */
+  this.env={ic1:0, ic2:0, env:0}; this.ps=null; this.psOn=false;
   /* fast: the drive pedals */
+  this.tb={hp:new Pole(), lp:new Pole(), out:new Pole()};
+  this.ofz={hp:new Pole(), hp2:new Pole(), lp:new Pole(), out:new Pole()};
   this.od={hp:new Pole(), lp:new Pole(), out:new Pole()};
   this.ds={pre:new Biquad(), hp:new Pole(), slew:new Pole(), filt:new Pole()};
   this.fz={hp:new Pole(), lp1:new Pole(), hp2:new Pole(), toneL:new Pole(), toneH:new Pole()};
+  this.fv={hp:new Pole(), lp:new Pole(), lp2:new Pole(), out:new Pole()};
+  this.vibe={ph:0, lamp:0, am:1, a:new Float64Array(4), x1:new Float64Array(4), y1:new Float64Array(4)};
   /* fast: the amp */
   this.inHp=new Biquad(); this.inHp2=new Biquad(); this.bright=new Biquad();
   this.st=[0,1,2,3].map(()=>({pre:new Biquad(), hp:new Pole(), lp:new Pole()}));
   this.stack=new ToneStack(); this.bax=[new Biquad(), new Biquad(), new Biquad()];
   this.clean={lp:new Biquad()};
-  this.pw={env:0, hp:new Pole()};
+  this.pw={env:0, hp:new Pole(), lp:new Pole()};
   /* at the page's rate, after */
   this.pres=new Biquad(); this.depth=new Biquad(); this.dc=new Pole();
   /* the gains a knob moves glide, so a turn never clicks */
@@ -116,9 +175,14 @@ AmpCore.prototype.set=function(P){
   if(a.pick) this.pick.set("peak", a.pick.f, a.pick.q, a.pick.db, fs); else this.pick.flat();
   if(P.wah && P.wah.on){ this.wahK=1/Math.max(0.5,P.wah.q); }
   if(P.oct && P.oct.on){ const f=P.oct.f||220; this.oct.lp1.set("lp", f, 0.7, 0, fs); this.oct.lp2.set("lp", f, 0.7, 0, fs); this.oct.sm.lp(f*1.6, fs); }
+  if(P.ps && P.ps.on){ if(!this.ps) this.ps=new Shifter(fs); if(!this.psOn) this.ps.reset(); }
+  this.psOn=!!(P.ps && P.ps.on);
+  if(P.tb && P.tb.on){ this.tb.hp.hp(P.tb.fc, fo); this.tb.lp.lp(8500, fo); this.tb.out.hp(30, fo); }
+  if(P.ofz && P.ofz.on){ this.ofz.hp.hp(110, fo); this.ofz.hp2.hp(40, fo); this.ofz.lp.lp(P.ofz.tone||5200, fo); this.ofz.out.hp(35, fo); }
   if(P.od && P.od.on){ this.od.hp.hp(720, fo); this.od.lp.lp(P.od.tone, fo); this.od.out.hp(30, fo); }
   if(P.ds && P.ds.on){ this.ds.pre.set("hs", 1500, 0.7, 9, fo); this.ds.hp.hp(70, fo); this.ds.slew.lp(Math.min(18000, 1.2e6/Math.max(1,P.ds.gain)), fo); this.ds.filt.lp(P.ds.filter, fo); }
-  if(P.fz && P.fz.on){ this.fz.hp.hp(90, fo); this.fz.lp1.lp(4500, fo); this.fz.hp2.hp(60, fo); this.fz.toneL.lp(700, fo); this.fz.toneH.hp(1200, fo); }
+  if(P.fz && P.fz.on){ this.fz.hp.hp(90, fo); this.fz.lp1.lp(4500, fo); this.fz.hp2.hp(60, fo); this.fz.toneL.lp(700, fo); this.fz.toneH.hp(1200, fo);
+    this.fv.hp.hp(60, fo); this.fv.lp.lp(1800*Math.pow(4, P.fz.tone==null?0.5:P.fz.tone), fo); this.fv.lp2.lp(9000, fo); this.fv.out.hp(30, fo); }
   if(a.on){
     this.inHp.set("hp", a.inHp||20, 0.7, 0, fo); this.inHp2.set("hp", a.inHp||20, 0.55, 0, fo);
     this.bright.set("hs", a.brightF||2000, 0.7, a.brightDb||0, fo);
@@ -128,20 +192,27 @@ AmpCore.prototype.set=function(P){
     if(a.stack) this.stack.set(a.stack, a.t, a.m, a.l, fo);
     if(a.bax){ this.bax[0].set("ls", a.bax.lowF||80, 0.7, a.bax.low||0, fo); this.bax[1].set("peak", a.bax.midF||500, a.bax.midQ||0.8, a.bax.mid||0, fo); this.bax[2].set("hs", a.bax.highF||3000, 0.7, a.bax.high||0, fo); }
     if(a.blend!=null) this.clean.lp.set("lp", a.cleanF||180, 0.7, 0, fo);
-    this.pw.hp.hp(25, fo);
+    this.pw.hp.hp(25, fo); if(a.power && a.power.lp) this.pw.lp.lp(a.power.lp, fo);
   }
   this.pres.set("hs", a.presF||3500, 0.7, a.presDb||0, fs);
   this.depth.set("peak", a.depthF||90, 1.0, a.depthDb||0, fs);
   this.dc.hp(12, fs);
   if(this.first){ this.sm.lvl=P.level||1; this.sm.drive=(a.power&&a.power.drive)||1; this.sm.g0=(a.stages&&a.stages[0]&&a.stages[0].g)||1; this.first=false; }
-  this.fast=!!((P.od&&P.od.on)||(P.ds&&P.ds.on)||(P.fz&&P.fz.on)||a.on);
+  this.fast=!!((P.od&&P.od.on)||(P.ds&&P.ds.on)||(P.fz&&P.fz.on)||(P.tb&&P.tb.on)||(P.ofz&&P.ofz.on)||(P.vibe&&P.vibe.on)||a.on);
 };
+/* the vibe's four stages (AOG-AMP-TONES-V1): a lamp lights four light-dependent resistors, each with its own capacitor, so
+   the four phase shifts sit far apart and sweep unevenly; the lamp heats faster than it cools, so the throb leans. The
+   capacitors and the resistors' range are those of the 1960s pedal. */
+const VIBE_C=[15e-9, 220e-9, 470e-12, 4.7e-9], VIBE_RB=3.5e3, VIBE_RD=90e3;
 /* one block: inp → out, n samples, mono */
 AmpCore.prototype.process=function(inp, out, n){
   const P=this.P; if(!P){ for(let i=0;i<n;i++) out[i]=inp?inp[i]:0; return; }
   const fs=this.fs, a=P.amp||{}, u=this.u, ov=this.ov;
   const gate=P.gate&&P.gate.on ? P.gate : null, comp=P.comp&&P.comp.on ? P.comp : null, wah=P.wah&&P.wah.on ? P.wah : null, oct=P.oct&&P.oct.on ? P.oct : null;
   const od=P.od&&P.od.on ? P.od : null, ds=P.ds&&P.ds.on ? P.ds : null, fz=P.fz&&P.fz.on ? P.fz : null;
+  const envf=P.env&&P.env.on ? P.env : null, ps=P.ps&&P.ps.on&&this.ps ? P.ps : null, tb=P.tb&&P.tb.on ? P.tb : null;
+  const ofz=P.ofz&&P.ofz.on ? P.ofz : null, vibe=P.vibe&&P.vibe.on ? P.vibe : null, fzv=fz&&fz.type==="vintage";
+  const eA=Math.exp(-1/(0.002*fs)), eR=Math.exp(-1/(0.09*fs)), vUp=1-Math.exp(-1/(0.010*fs)), vDn=1-Math.exp(-1/(0.045*fs));
   const stages=a.on ? (a.stages||[]) : [], pw=a.on ? (a.power||null) : null, ns=stages.length;
   /* smoothing constants at the page's rate: about 20 ms for a knob, the gate's and the compressor's own times */
   const kSm=Math.exp(-1/(0.02*fs));
@@ -172,23 +243,56 @@ AmpCore.prototype.process=function(inp, out, n){
       const a1=1/(1+g*(g+k)), a2=g*a1, a3=g*a2, v3=x-W.ic2, v1=a1*W.ic1+a2*v3, v2=W.ic2+a2*W.ic1+a3*v3;
       W.ic1=2*v1-W.ic1; W.ic2=2*v2-W.ic2;
       x = x*(1-wah.mix) + (v1*k*2.2 + v2*0.25)*wah.mix; }
+    /* envelope filter (AOG-AMP-TONES-V1): a resonant filter that opens as hard as you play and closes as the note dies.
+       Deep keeps the low notes under the quack (the bass player's favourite); Vowel is the thinner, talking one. */
+    if(envf){ const E=this.env, ax=Math.abs(x); E.env = ax>E.env ? ax+(E.env-ax)*eA : ax+(E.env-ax)*eR;
+      const pos=Math.min(1, E.env*envf.sens), f=envf.f0*Math.pow(envf.f1/envf.f0, pos), g=Math.tan(Math.PI*Math.min(f, fs*0.45)/fs), k=envf.k;
+      const a1=1/(1+g*(g+k)), a2=g*a1, a3=g*a2, v3=x-E.ic2, v1=a1*E.ic1+a2*v3, v2=E.ic2+a2*E.ic1+a3*v3;
+      E.ic1=2*v1-E.ic1; E.ic2=2*v2-E.ic2;
+      x = x*(1-envf.mix) + (envf.mode==="vowel" ? v1*k*envf.bpG : v2*envf.lpG)*envf.mix; }
     /* octave down: the note's own swing, counted every other time round, and given the note's loudness */
     if(oct){ const O=this.oct, l=O.lp2.run(O.lp1.run(x)), al=Math.abs(l);
       O.env = al>O.env ? al+(O.env-al)*0.99 : al+(O.env-al)*0.9995;
       if(O.st<=0 && l>O.env*0.12){ O.st=1; O.ff=-O.ff; } else if(O.st>0 && l<-O.env*0.12){ O.st=-1; }
       const sub=O.sm.run(O.ff*O.env*1.6); x = x*oct.dry + sub*oct.sub; }
+    /* pitch shifter (AOG-AMP-TONES-V1): an octave up or down, or a fifth up, with as much of your own note as Mix keeps */
+    if(ps){ const sh=this.ps.run(x, ps.r); x = x*(1-ps.mix) + sh*ps.mix; }
+    /* the vibe's lamp, once a sample: how bright it is sets the four phase shifts for the fast part below */
+    if(vibe){ const V=this.vibe; V.ph+=vibe.rate/fs; if(V.ph>=1) V.ph-=1;
+      const s0=0.5+0.5*Math.sin(TAU*V.ph), pwr=s0*s0; V.lamp+=(pwr-V.lamp)*(pwr>V.lamp?vUp:vDn);
+      const lx=0.45+(V.lamp-0.45)*vibe.depth, R=VIBE_RD*Math.pow(VIBE_RB/VIBE_RD, lx), fo=this.fo;
+      for(let s=0;s<4;s++){ const t=Math.tan(Math.PI*Math.min(1/(TAU*R*VIBE_C[s]), 0.45*fo)/fo); V.a[s]=(t-1)/(t+1); }
+      V.am=1+0.22*vibe.depth*(V.lamp-0.45); }
     let y;
     if(this.fast){
       ov.upsample(x, u);
       for(let q=0;q<4;q++){
         let v=u[q];
+        /* treble booster (AOG-AMP-TONES-V1): a small capacitor lets mostly the highs in, one germanium transistor at full
+           gain rounds its top unevenly, and the knob sets how hard it hits the amp */
+        if(tb){ const T=this.tb; let w=T.hp.run(v)*tb.gain; w=1.6*tube(w/1.6+0.12, 0.7)-1.6*tube(0.12, 0.7); v=T.out.run(T.lp.run(w))*tb.level; }
+        /* octave fuzz (AOG-AMP-TONES-V1): the wave, turned so both halves point up (two diodes, a full-wave rectifier),
+           sounds an octave higher; then a transistor driven hard. Clearest on single notes high on the neck. */
+        if(ofz){ const O=this.ofz; let w=O.hp.run(v)*ofz.pre; w=1.5*soft(w/1.5);
+          const r=Math.abs(w)-0.12, up=O.hp2.run(0.5*(r+Math.sqrt(r*r+0.003)));
+          w=up*2.4*ofz.up+w*0.7*(1-ofz.up); w=0.8*soft(w*ofz.gain/0.8);
+          v=O.out.run(O.lp.run(w))*ofz.level; }
         /* overdrive (the green one): only the middle is driven, and soft diodes round it off; the rest passes clean */
         if(od){ const h=this.od.hp.run(v); v = v + 0.55*soft(od.gain*h/0.55); v=this.od.out.run(this.od.lp.run(v))*od.level; }
         /* distortion: a lot of gain, more of it up high, an op-amp that cannot keep up, two hard diodes, a filter */
         if(ds){ let w=this.ds.pre.run(this.ds.hp.run(v))*ds.gain; w=this.ds.slew.run(w); w=0.7*hard(w/0.7); v=this.ds.filt.run(w)*ds.level; }
-        /* fuzz: two stages driven flat out, then a tone that scoops the middle */
-        if(fz){ let w=this.fz.hp.run(v)*fz.gain; w=0.6*soft(w/0.6+0.13)-0.6*soft(0.13); w=this.fz.lp1.run(w); w=this.fz.hp2.run(w)*fz.gain2; w=0.6*soft(w/0.6);
-          v=(this.fz.toneL.run(w)*(1-fz.tone)+this.fz.toneH.run(w)*fz.tone)*fz.level; }
+        /* fuzz, Thick: two stages driven flat out, then a tone that scoops the middle. Vintage (AOG-AMP-TONES-V1): two
+           germanium transistors set off-centre, so one side of the wave flattens first; less gain, so it cleans up when you
+           play softly, and no scoop */
+        if(fz){ if(fzv){ const F=this.fv; let w=F.hp.run(v)*fz.gainV; w=0.85*tube(w/0.85+0.3, 0.55)-0.85*tube(0.3, 0.55);
+            w=F.lp.run(w); w=0.9*soft(w*1.4/0.9); v=F.out.run(F.lp2.run(w))*fz.levelV; }
+          else { let w=this.fz.hp.run(v)*fz.gain; w=0.6*soft(w/0.6+0.13)-0.6*soft(0.13); w=this.fz.lp1.run(w); w=this.fz.hp2.run(w)*fz.gain2; w=0.6*soft(w/0.6);
+            v=(this.fz.toneL.run(w)*(1-fz.tone)+this.fz.toneH.run(w)*fz.tone)*fz.level; } }
+        /* the vibe's four phase shifts; Throb adds your own note back (the swirling notches), Vibrato is the shifted
+           note alone (a wobble in pitch) */
+        if(vibe){ const V=this.vibe, A=V.a, X1=V.x1, Y1=V.y1; let w=v;
+          for(let s=0;s<4;s++){ const yy=A[s]*w+X1[s]-A[s]*Y1[s]; X1[s]=w; Y1[s]=yy; w=yy; }
+          w*=V.am; v = vibe.mode==="vibrato" ? w : (v+w)*0.62; }
         /* the amp: tight input, bright cap, the gain stages, the tone stack, the power amp and its sag */
         if(a.on){
           const dry=v;
@@ -204,9 +308,11 @@ AmpCore.prototype.process=function(inp, out, n){
           if(a.bax){ v=this.bax[2].run(this.bax[1].run(this.bax[0].run(v))); }
           if(a.blend!=null) v = v*a.blend + this.clean.lp.run(dry)*(1-a.blend)*(a.cleanGain||1);
           if(pw){ const W=this.pw, hd=pw.head||1, sg=1/(1+pw.sag*W.env);
-            let w=v*drv*sg; w = pw.hard ? hd*hard(w/hd) : hd*soft(w/hd);
+            /* push-pull tubes clip both sides alike; one tube on its own (single-ended, asym) clips one side first; lp is the
+               output transformer losing the highs (AOG-AMP-TONES-V1) */
+            let w=v*drv*sg; w = pw.asym ? hd*tube(w/hd+(pw.bias||0), pw.asym)-hd*tube(pw.bias||0, pw.asym) : pw.hard ? hd*hard(w/hd) : hd*soft(w/hd);
             const aw=Math.abs(w)/hd; W.env = aw>W.env ? aw+(W.env-aw)*sagA : aw+(W.env-aw)*sagR;
-            v=this.pw.hp.run(w)*(pw.out||1); }
+            v=this.pw.hp.run(pw.lp ? this.pw.lp.run(w) : w)*(pw.out||1); }
         }
         ov.push(v);
       }
@@ -234,5 +340,5 @@ if(typeof G.registerProcessor==="function" && typeof G.AudioWorkletProcessor==="
   }
   G.registerProcessor("aog-amp", AogAmp);
 }
-if(typeof module!=="undefined" && module.exports) module.exports={AmpCore:AmpCore, ToneStack:ToneStack, Over4:Over4, Biquad:Biquad};
+if(typeof module!=="undefined" && module.exports) module.exports={AmpCore:AmpCore, ToneStack:ToneStack, Over4:Over4, Biquad:Biquad, Shifter:Shifter};
 })(typeof globalThis!=="undefined"?globalThis:this);

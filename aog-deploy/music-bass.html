@@ -364,6 +364,8 @@ const STR={
   /* AOG-AMP-V1: the sound menu's groups, and the amp block */
   grpClean:{en:"Clean electric",es:"Eléctricas limpias"}, grpRock:{en:"Crunch and rock",es:"Crujientes y rock"}, grpMetal:{en:"Metal",es:"Metal"},
   grpBass:{en:"Electric bass",es:"Bajo eléctrico"}, grpHeavy:{en:"Heavy and effects",es:"Pesados y con efectos"}, grpOther:{en:"Upright and synth",es:"Contrabajo y sintetizador"},
+  /* AOG-AMP-TONES-V1: the new sounds' groups */
+  grpBlues:{en:"Blues and psychedelic",es:"Blues y psicodelia"}, grpLead:{en:"Lead and solos",es:"Solistas"}, grpFunk:{en:"Funk and slap",es:"Funk y slap"},
   ampH:{en:"Amp and pedals",es:"Amplificador y pedales"},
   ampLine:{en:"Each sound comes with its own amp and pedals.",es:"Cada sonido trae su propio amplificador y pedales."},
   built:{en:"This sound is built on the page. Nothing to download.",es:"Este sonido se crea en la página. No hay nada que descargar."},
@@ -440,6 +442,18 @@ function R(model, cab, k, more){ return Object.assign({model:model, cab:cab, k:k
 const NO_AMP=R("none","off");
 const STEEL_S={sr:32000, T0:7.0, fref:82, Texp:0.55, Tmin:1.5, Tmax:9, Thf:0.55, Thmax:0.9, pos:0.13, bright:0.72, soft:0.7, noise:0.55, pol2:0.32, atk:0.10, atkLp:0.6, pick:0, durMax:5.5,
              body:[["highpass",70,0.7,0],["peaking",102,2.2,6],["peaking",205,2,4],["peaking",410,1.8,2],["highshelf",5000,0.7,3]]};
+/* AOG-AMP-TONES-V1 — the new sounds' strings and pickups. BIG: heavy strings (a 13 on top), the neck and middle single
+   coils; TELE: a bright single coil right by the bridge; SGH: a low-output humbucker, open and bright, for open chords;
+   HOT: a hot humbucker by the bridge with a long sustain, for leads; WARM12: the steel string, a touch softer and darker
+   for a twelve-string in a room. The bass: BS, fingers over the middle, and its variations. */
+const BIG=el({T0:13, Tmax:13, Tmin:2.6, pos:0.12, bright:0.66, soft:0.5, noise:0.28, pol2:0.22, atk:0.08, atkLp:0.5, pick:0.2});
+const TELE=el({pos:0.085, bright:0.82, soft:0.55, noise:0.33, pick:0.07});
+const SGH=el({T0:11.5, pos:0.1, bright:0.78, soft:0.52, noise:0.32, pick:0.1});
+const HOT=el({T0:13, Tmin:2.8, Tmax:13, pos:0.09, bright:0.8, soft:0.56, noise:0.33, pol2:0.22, atk:0.07, atkLp:0.55, pick:0.09});
+const WARM12=Object.assign({}, STEEL_S, {bright:0.64, soft:0.74, noise:0.48, body:[["highpass",70,0.7,0],["peaking",100,2.2,6.5],["peaking",200,2,4.5],["peaking",400,1.8,2],["highshelf",5000,0.7,1]]});
+const PU2={paf:{f:3100, q:1.4, db:4.5}, p90:{f:3300, q:1.6, db:5}, tele:{f:5200, q:2.2, db:6}, hot:{f:2500, q:1.2, db:4}, strat:{f:3900, q:1.7, db:4.5}};
+const BS={sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]};
+const bs=o=>Object.assign({}, BS, o);
 const SOUNDS = GTR ? {
   steel: {grp:"grpAcoustic", en:"Acoustic guitar · steel strings", es:"Guitarra acústica · cuerdas de acero", kind:"pluck", out:1.0, gain:1.02, rev:0.14, lp:2200, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
   twelve:{grp:"grpAcoustic", en:"Twelve-string acoustic", es:"Guitarra acústica de doce cuerdas", kind:"pluck", out:1.15, twelve:true, gain:0.85, rev:0.16, lp:2400, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
@@ -487,7 +501,79 @@ const SOUNDS = GTR ? {
   thrash:{grp:"grpMetal", en:"Thrash · fast and biting", es:"Thrash · rápido y mordiente", kind:"pluck", out:0.647, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:9, bass:5.5, mid:6, treble:7, presence:6.5, depth:6}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}, od:{on:true, drive:2, tone:6, lvl:8}}})},
   doom:  {grp:"grpMetal", en:"Doom · slow and huge", es:"Doom · lento y enorme", kind:"pluck", out:0.889, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.05, s:BRH, pick:PU.humb,
-          rig:R("high","v30_412",{gain:4, bass:7, mid:4, treble:4, presence:4, depth:8}, {fx:{fz:{on:true, sus:8, tone:3, lvl:6}, reverb:{on:true, type:"room", mix:2, decay:5}}})}
+          rig:R("high","v30_412",{gain:4, bass:7, mid:4, treble:4, presence:4, depth:8}, {fx:{fz:{on:true, sus:8, tone:3, lvl:6}, reverb:{on:true, type:"room", mix:2, decay:5}}})},
+  /* AOG-AMP-TONES-V1 (2026-10-04) — Jimmy: "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the
+     sounds", then "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix … BLOW my mind". Named on
+     screen by style and feel; what inspired each is in its comment. out is measured (the C chord as loud as the grand). */
+  /* Jimmy Page: a humbucker into a cranked 100-watt British head with no master volume, a little tape echo; mid-rich, thick */
+  bigstack:{grp:"grpRock", en:"Classic rock · big stack and tape echo", es:"Rock clásico · gran cabezal y eco de cinta", kind:"pluck", out:0.663, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BRH, pick:PU2.paf,
+          rig:R("plexi","green412",{gain:6.5, bass:5, mid:7, treble:6, presence:5.5, master:6}, {fx:{delay:{on:true, type:"tape", time:3.4, fb:2, mix:2.5, tone:4}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
+  /* early Jimmy Page: a bright single coil by the bridge into a small combo turned all the way up */
+  smallamp:{grp:"grpRock", en:"Raw blues rock · small amp turned up", es:"Blues rock crudo · amplificador pequeño a tope", kind:"pluck", out:0.586, gain:1, rev:0.10, lp:2400, lpSpan:2.9, damp:0.03, s:TELE, pick:PU2.tele,
+          rig:R("small","open112",{gain:7, bass:4.5, mid:6, treble:6, presence:5.5, master:7})},
+  /* Joe Perry and Brad Whitford: a Les Paul into an American tweed head turned up, in an open-back cabinet: loose, dry, bluesy */
+  swagger:{grp:"grpRock", en:"Blues hard rock · swagger", es:"Hard rock bluesero · con actitud", kind:"pluck", out:0.536, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
+          rig:R("blues","open212",{gain:6.5, bass:5, mid:7, treble:6.5, presence:6, master:7}, {fx:{reverb:{on:true, type:"spring", mix:1.5, decay:3}}})},
+  /* Joe Perry's wah: a Les Paul, a wah that opens as you dig in, a British head */
+  wahrock:{grp:"grpRock", en:"Hard rock · talking wah", es:"Hard rock · wah que habla", kind:"pluck", out:0.519, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
+          rig:R("crunch","green412",{gain:6, bass:5, mid:6, treble:6, master:6}, {fx:{wah:{on:true, mode:"touch", sens:5, q:6}}})},
+  /* Angus and Malcolm Young: a low-output humbucker into a loud British head at low gain and no pedals; open chords that bite
+     when you dig in and clean up when you play softly */
+  openchords:{grp:"grpRock", en:"Hard rock · bright open chords", es:"Hard rock · acordes abiertos y brillantes", kind:"pluck", out:0.537, gain:1, rev:0.08, lp:2500, lpSpan:2.9, damp:0.03, s:SGH, pick:PU2.paf,
+          rig:R("plexi","green412",{gain:3.5, bass:4.5, mid:6.5, treble:8, presence:7.5, master:7}, {bright:true})},
+  /* Eddie Van Halen: a hot humbucker into a cranked 100-watt head at low voltage ("brown"), a phaser and a tape echo */
+  brown: {grp:"grpRock", en:"Eighties rock · warm and spongy, with phaser", es:"Rock de los ochenta · cálido y esponjoso, con phaser", kind:"pluck", out:0.642, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.035, s:HOT, pick:PU2.paf,
+          rig:R("brown","green412",{gain:6.5, bass:6, mid:6.5, treble:6.5, presence:6, master:7}, {fx:{phaser:{on:true, rate:2.5, depth:5, mix:4}, delay:{on:true, type:"tape", time:3.8, fb:2, mix:2.5, tone:4}, reverb:{on:true, type:"plate", mix:2, decay:4}}})},
+  /* Tony Iommi: a treble booster into a cranked British head, the bass up and the treble down: dark, thick and heavy */
+  darkriff:{grp:"grpMetal", en:"Heavy riffs · dark and thick", es:"Riffs pesados · oscuros y gruesos", kind:"pluck", out:0.532, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.045, s:BRH, pick:PU2.p90,
+          rig:R("plexi","green412",{gain:7, bass:9, mid:6, treble:2.5, presence:3, depth:7, master:7.5}, {fx:{tb:{on:true, boost:6, body:9}}, eq:{on:true, db:[0,4,6,3,0,-1,-3,-5,-6,-3]}})},
+  /* Opeth's heavy riffs: a hot humbucker into a British high-gain head, tight and gated, the middle left in */
+  progheavy:{grp:"grpMetal", en:"Progressive metal · tight and focused", es:"Metal progresivo · firme y definido", kind:"pluck", out:0.64, power:true, gain:1, rev:0.06, lp:2600, lpSpan:2.6, damp:0.03, s:HOT, pick:PU2.hot,
+          rig:R("brithigh","v30_412",{gain:6, bass:5.5, mid:6.5, treble:6, presence:6, depth:6}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}}})},
+  /* Opeth's quiet passages: the neck humbucker, a clean amp, a slow deep chorus and a big reverb */
+  lushclean:{grp:"grpClean", en:"Clean · lush chorus and reverb", es:"Limpia · coro y reverb envolventes", kind:"pluck", out:1.611, gain:1, rev:0.12, lp:1900, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
+          rig:R("clean","open212",{gain:3, bass:5.5, mid:5, treble:4.5, presence:4.5}, {fx:{chorus:{on:true, rate:1.5, depth:6, mix:5}, reverb:{on:true, type:"hall", mix:5, decay:7, tone:4}}})},
+  /* Opeth's acoustic passages: a twelve-string, warm, with a little room around it */
+  warmtwelve:{grp:"grpAcoustic", en:"Twelve-string · warm, in a room", es:"Doce cuerdas · cálida, en una sala", kind:"pluck", out:1.364, twelve:true, gain:0.85, rev:0.14, lp:2200, lpSpan:2.8, damp:0.035, s:WARM12,
+          rig:R("none","off",{}, {fx:{reverb:{on:true, type:"room", mix:3, decay:4, tone:5}}, eq:{on:true, db:[0,1.5,1,0,0,-0.5,-1,-1.5,-2,-1]}})},
+  /* Stevie Ray Vaughan: heavy strings and a single coil; a green overdrive with little drive and a lot of level into a loud
+     clean American amp; a spring reverb */
+  texas: {grp:"grpBlues", en:"Texas blues · heavy strings, pushed", es:"Blues de Texas · cuerdas gruesas, empujadas", kind:"pluck", out:0.363, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
+          rig:R("clean","open410",{gain:5, bass:5.5, mid:5.5, treble:6, presence:6, master:7.5}, {fx:{od:{on:true, drive:1.5, tone:5.5, lvl:8.5}, reverb:{on:true, type:"spring", mix:2.5, decay:4}}})},
+  /* Stevie Ray Vaughan's "Cold Shot": the same strings through a spinning speaker */
+  spinblues:{grp:"grpBlues", en:"Blues · spinning speaker", es:"Blues · altavoz giratorio", kind:"pluck", out:0.683, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
+          rig:R("clean","open410",{gain:4.5, bass:5.5, mid:5.5, treble:5.5, presence:5.5, master:6.5}, {fx:{od:{on:true, drive:1, tone:5, lvl:6.5}, rotary:{on:true, mode:"slow", depth:7, mix:8}, reverb:{on:true, type:"spring", mix:2, decay:4}}})},
+  /* Jimi Hendrix: a single coil into a vintage fuzz, a vibe, and a cranked British stack */
+  psych: {grp:"grpBlues", en:"Psychedelic rock · fuzz and vibe", es:"Rock psicodélico · fuzz y vibe", kind:"pluck", out:0.54, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
+          rig:R("plexi","green412",{gain:4.5, bass:5, mid:6, treble:6.5, presence:6, master:7}, {fx:{fz:{on:true, type:"vintage", sus:5.5, tone:5.5, lvl:5}, vibe:{on:true, mode:"throb", rate:3, depth:7}}})},
+  /* Jimi Hendrix's octave fuzz: the neck pickup, the octave fuzz, the stack */
+  octfuzz:{grp:"grpBlues", en:"Psychedelic lead · octave fuzz", es:"Solo psicodélico · fuzz de octava", kind:"pluck", out:0.569, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:NK1, pick:PU2.strat,
+          rig:R("plexi","green412",{gain:5, bass:5, mid:6, treble:6, presence:6, master:7}, {fx:{ofz:{on:true, fuzz:7, up:7, lvl:5}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
+  /* Eddie Van Halen's tapping lead: the low-voltage stack with more gain, a slow flanger, a tape echo */
+  taplead:{grp:"grpLead", en:"Tapping lead · warm and singing", es:"Solo con tapping · cálido y cantante", kind:"pluck", out:0.589, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.paf,
+          rig:R("brown","green412",{gain:8, bass:5.5, mid:7, treble:6, presence:5.5, master:7}, {fx:{flanger:{on:true, rate:1.5, depth:4, fb:4, mix:3}, delay:{on:true, type:"tape", time:4.5, fb:3, mix:3, tone:4}, reverb:{on:true, type:"plate", mix:2, decay:4}}})},
+  /* Buckethead: a modern high-gain head pushed by a clean boost; smooth, a long sustain, a delay */
+  shred: {grp:"grpLead", en:"Shred lead · smooth, long sustain", es:"Solo shred · suave, sostenido largo", kind:"pluck", out:0.76, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.hot,
+          rig:R("high","v30_412",{gain:7, bass:5, mid:6.5, treble:5, presence:4, depth:6, master:6}, {fx:{od:{on:true, drive:0, tone:4, lvl:7}, delay:{on:true, time:5.5, fb:4, mix:3, tone:4}, reverb:{on:true, type:"hall", mix:2, decay:5}}, eq:{on:true, db:[0,0,0,0,1,1,-2,-3,-2,0]}})},
+  /* Tom Morello and Buckethead: the pitch shifter an octave up into a British head */
+  octup: {grp:"grpLead", en:"Pitch-shift lead · an octave up", es:"Solo con cambio de altura · una octava arriba", kind:"pluck", out:0.62, gain:1, rev:0.08, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU2.paf,
+          rig:R("crunch","green412",{gain:6.5, bass:5, mid:6.5, treble:6, master:6}, {fx:{pitch:{on:true, mode:"up", amt:10, mix:10}}})},
+  /* David Gilmour: a single coil into a thick fuzz, a loud clean amp, a long echo and a hall */
+  spacefuzz:{grp:"grpLead", en:"Space rock lead · big fuzz, long echoes", es:"Solo de rock espacial · gran fuzz, ecos largos", kind:"pluck", out:0.847, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.05, s:BR1, pick:PU2.strat,
+          rig:R("clean","green412",{gain:3.5, bass:5, mid:5.5, treble:6, presence:5.5, master:6}, {fx:{fz:{on:true, sus:7, tone:5.5, lvl:5}, delay:{on:true, time:6.5, fb:5, mix:4, tone:5}, reverb:{on:true, type:"hall", mix:4, decay:6, tone:5}}})},
+  /* Carlos Santana: the neck humbucker into a cascaded American lead amp, warm and vocal */
+  singing:{grp:"grpLead", en:"Latin rock lead · warm and vocal", es:"Solo de rock latino · cálido y vocal", kind:"pluck", out:0.76, gain:1, rev:0.12, lp:2000, lpSpan:2.8, damp:0.045, s:NKH, pick:PU.neck,
+          rig:R("cascade","open112",{gain:7, bass:4.5, mid:7, treble:5, presence:4.5, master:6}, {fx:{reverb:{on:true, type:"hall", mix:3, decay:5}}, eq:{on:true, db:[0,0,-1,0,2,3,1,-2,-3,0]}})},
+  /* Brian May: a treble booster into a chiming British combo turned up, and echoes */
+  anthem:{grp:"grpLead", en:"Anthem rock lead · treble boost and echoes", es:"Solo de rock de himno · realce de agudos y ecos", kind:"pluck", out:0.424, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:BR1, pick:PU2.strat,
+          rig:R("chime","blue212",{gain:6.5, bass:4.5, mid:6, treble:6.5, presence:6, master:7.5}, {fx:{tb:{on:true, boost:7, body:4}, delay:{on:true, time:5, fb:4, mix:3.5, tone:5}, reverb:{on:true, type:"hall", mix:2, decay:5}}})},
+  /* Dimebag Darrell's lead voice: the solid-state groove head, the middle less scooped than for riffs, the top lifted so
+     pinched harmonics squeal, no gate (the notes ring on), an echo */
+  groovelead:{grp:"grpLead", en:"Groove metal lead · sharp and singing", es:"Solo de metal groove · afilado y cantante", kind:"pluck", out:0.465, gain:1, rev:0.08, lp:2600, lpSpan:2.7, damp:0.035, s:HOT, pick:PU2.hot,
+          rig:R("groove","v30_412",{gain:7.5, bass:6, mid:5, treble:7, presence:7, depth:6.5, master:6}, {fx:{delay:{on:true, time:4.5, fb:3, mix:3, tone:5}, reverb:{on:true, type:"hall", mix:2, decay:4}}, eq:{on:true, db:[1,2,1,0,-1,-1,1,3,2,0]}})},
+  /* Jimi Hendrix's wah: the vintage fuzz and a wah that opens as you dig in, into the cranked stack */
+  fuzzwah:{grp:"grpBlues", en:"Psychedelic wah · fuzz and wah", es:"Wah psicodélico · fuzz y wah", kind:"pluck", out:0.434, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
+          rig:R("plexi","green412",{gain:4.5, bass:5, mid:6, treble:6, presence:6, master:7}, {fx:{wah:{on:true, mode:"touch", sens:6, q:6}, fz:{on:true, type:"vintage", sus:5.5, tone:5.5, lvl:5}}})}
 } : {
   finger:{grp:"grpBass", en:"Electric bass · fingers", es:"Bajo eléctrico · con los dedos", kind:"pluck", out:3.119, gain:1, rev:0.05, lp:600, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
@@ -526,7 +612,58 @@ const SOUNDS = GTR ? {
              body:[["highpass",35,0.7,0],["peaking",72,1.5,5],["peaking",145,1.6,3],["peaking",290,1.5,1.5],["highshelf",1500,0.7,-6]]}, rig:NO_AMP},
   synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", out:4.71, gain:1.41, rev:0.06, damp:0.035, rig:R("bclean","off",{gain:2})},
   acid:  {grp:"grpOther", en:"Synth bass · acid squelch", es:"Bajo de sintetizador · ácido", kind:"synth", out:0.868, gain:1, rev:0.05, damp:0.03,
-          syn:{sq:0, q:13, fa:5, fv:2600, fb:1.2, fb0:110, tc:0.11}, rig:R("bclean","off",{gain:2}, {fx:{ds:{on:true, dist:3, tone:6, lvl:5}}})}
+          syn:{sq:0, q:13, fa:5, fv:2600, fb:1.2, fb0:110, tc:0.11}, rig:R("bclean","off",{gain:2}, {fx:{ds:{on:true, dist:3, tone:6, lvl:5}}})},
+  /* AOG-AMP-TONES-V1 (2026-10-04) — the new basses, named by style and feel; what inspired each is in its comment */
+  /* John Paul Jones: fingers, round, warm and melodic; a tube amp into one big speaker, a light compressor */
+  melodic:{grp:"grpBass", en:"Rock bass · round and melodic", es:"Bajo de rock · redondo y melódico", kind:"pluck", out:2.059, gain:1, rev:0.05, lp:650, lpSpan:2.7, damp:0.05,
+          s:bs({Thf:0.2, Thmax:0.3, pos:0.2, bright:0.36, soft:0.2, pick:0.18}), pick:PU.bass,
+          rig:R("btube","b115",{gain:4, bass:6, mid:7, treble:5}, {fx:{comp:{on:true, sus:3, att:5, lvl:5}}, eq:{on:true, db:[0,0,0,0,2,3,1,0,0,0]}})},
+  /* Tom Hamilton: a pick, punchy: clean lows with a little hair from the drive in the upper middle */
+  punchy:{grp:"grpBass", en:"Hard rock bass · pick, punchy", es:"Bajo de hard rock · púa, con pegada", kind:"pluck", out:3.453, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.045,
+          s:bs({T0:7, Tmax:8, Thf:0.25, Thmax:0.6, pos:0.12, bright:0.62, soft:0.38, noise:0.22, atk:0.14, atkLp:0.6, pick:0.12, durMax:5.5}), pick:PU.bass,
+          rig:R("bdrive","b410",{gain:3, bass:8, mid:6.5, treble:6.5, blend:0})},
+  /* Cliff Williams: a pick, simple and solid eighth notes, deep and even */
+  eighths:{grp:"grpBass", en:"Driving rock bass · pick, solid eighths", es:"Bajo de rock constante · púa, corcheas sólidas", kind:"pluck", out:2.922, gain:1, rev:0.05, lp:800, lpSpan:2.7, damp:0.04,
+          s:bs({T0:7, Thf:0.22, Thmax:0.45, pos:0.14, bright:0.48, soft:0.32, noise:0.18, atk:0.12, atkLp:0.5, pick:0.17, durMax:5.5}), pick:PU.bass,
+          rig:R("btube","b810",{gain:4.5, bass:7, mid:5, treble:3.5}, {fx:{comp:{on:true, sus:6, att:4, lvl:5}}})},
+  /* Martín Méndez: fingers, warm and clear, a little grit over the clean lows */
+  progbass:{grp:"grpBass", en:"Progressive bass · warm and clear, a little grit", es:"Bajo progresivo · cálido y claro, algo áspero", kind:"pluck", out:3.181, gain:1, rev:0.05, lp:750, lpSpan:2.8, damp:0.05,
+          s:bs({Thf:0.22, Thmax:0.35, pos:0.18, bright:0.42, soft:0.24, noise:0.1, atk:0.08, atkLp:0.25, pick:0.16}), pick:PU.bass,
+          rig:R("bdrive","b410",{gain:2.5, bass:6, mid:5.5, treble:5.5, blend:2.5})},
+  /* Geezer Butler: fingers into a cranked tube amp and a vintage fuzz, dark and heavy */
+  doombass:{grp:"grpHeavy", en:"Heavy bass · dark fuzz", es:"Bajo pesado · fuzz oscuro", kind:"pluck", out:1.006, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
+          s:bs({pos:0.2, bright:0.4, soft:0.25, noise:0.12, pick:0.17}), pick:PU.bass,
+          rig:R("btube","b810",{gain:7, bass:7, mid:6, treble:3.5, master:7}, {fx:{fz:{on:true, type:"vintage", sus:6, tone:4, lvl:5}}})},
+  /* Geezer Butler's wah: the fuzz, and a wah left half open */
+  wahbass:{grp:"grpHeavy", en:"Heavy bass · fuzz and wah", es:"Bajo pesado · fuzz y wah", kind:"pluck", out:1.142, gain:1, rev:0.05, lp:800, lpSpan:2.8, damp:0.05,
+          s:bs({pos:0.2, bright:0.4, soft:0.25, noise:0.12, pick:0.17}), pick:PU.bass,
+          rig:R("btube","b810",{gain:6, bass:6, mid:6, treble:5, master:6}, {fx:{fz:{on:true, type:"vintage", sus:6, tone:5, lvl:5}, wah:{on:true, mode:"fixed", pos:5.5, q:5}}})},
+  /* Les Claypool: slap and tap, bright and aggressive, the middle kept, a little drive */
+  slaptap:{grp:"grpFunk", en:"Slap and tap · bright and aggressive", es:"Slap y tapping · brillante y agresivo", kind:"pluck", out:0.74, gain:1, rev:0.05, lp:1500, lpSpan:2.8, damp:0.04,
+          s:bs({T0:6, Tmax:7, Tmin:1.8, Thf:0.35, Thmax:0.9, pos:0.07, bright:0.88, soft:0.62, noise:0.32, atk:0.32, atkLp:0.9, pick:0.09, durMax:5}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3.5, bass:7, mid:6.5, treble:7.5, presence:6}, {fx:{comp:{on:true, sus:5, att:2, lvl:5}, od:{on:true, drive:2, tone:7, lvl:5}}})},
+  /* Flea: slap, punchy and squeezed, a deep bottom and a bright top */
+  funkslap:{grp:"grpFunk", en:"Funk rock slap · punchy, deep and bright", es:"Slap de funk rock · con pegada, profundo y brillante", kind:"pluck", out:1.745, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
+          s:bs({T0:6.5, Thf:0.3, Thmax:0.8, pos:0.08, bright:0.84, soft:0.58, noise:0.28, atk:0.28, atkLp:0.85, pick:0.11, durMax:5}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3, bass:8, mid:3, treble:8, presence:6, depth:7}, {bright:true, fx:{comp:{on:true, sus:8, att:2, lvl:5}}, eq:{on:true, db:[2,3,1,-1,-3,-2,0,3,2,0]}})},
+  /* Les Claypool and Flea: the envelope filter's funky quack, with the low notes kept under it */
+  envfunk:{grp:"grpFunk", en:"Funk bass · envelope filter", es:"Bajo funk · filtro de envolvente", kind:"pluck", out:3.511, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.04,
+          s:bs({pos:0.16, bright:0.5, soft:0.3, noise:0.12, atk:0.1, atkLp:0.4, pick:0.14}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3, bass:6, mid:5, treble:5}, {fx:{env:{on:true, mode:"deep", sens:6, q:6, mix:9}}})},
+  /* Les Claypool's flanger: slap through a jet-plane swirl */
+  flangeslap:{grp:"grpFunk", en:"Slap · flanger swirl", es:"Slap · remolino de flanger", kind:"pluck", out:2.079, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
+          s:bs({T0:6, Tmax:7, Tmin:1.8, Thf:0.35, Thmax:0.9, pos:0.07, bright:0.88, soft:0.62, noise:0.32, atk:0.32, atkLp:0.9, pick:0.09, durMax:5}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3.5, bass:6, mid:6, treble:7}, {fx:{comp:{on:true, sus:5, att:2, lvl:5}, flanger:{on:true, rate:2, depth:6, fb:5, mix:5}}})},
+  /* Jaco Pastorius: a fretless as a lead voice. Plucked and heard near the bridge, the highs ring on (the "mwah" of a string
+     on a smooth fingerboard, and clear harmonics); a clean solid-state amp, a compressor, a touch of chorus and a room */
+  fretlead:{grp:"grpBass", en:"Fretless lead · bright and singing", es:"Sin trastes solista · brillante y cantante", kind:"pluck", out:3.155, gain:1, rev:0.08, lp:1300, lpSpan:2.6, damp:0.06,
+          s:bs({T0:10, Tmax:11, Tmin:2.6, Thf:0.55, Thmax:1.6, pos:0.12, bright:0.5, soft:0.16, noise:0.03, pol2:0.38, atk:0.03, atkLp:0.2, pick:0.1}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3, bass:5, mid:6.5, treble:6, presence:5.5}, {fx:{comp:{on:true, sus:5, att:4, lvl:5}, chorus:{on:true, rate:2, depth:3, mix:3}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
+  /* James Jamerson: flatwound strings on a split-coil bass with a foam mute by the bridge, into a small tube combo: round,
+     short, thumpy notes */
+  thump:{grp:"grpBass", en:"Sixties soul bass · round, short and thumpy", es:"Bajo soul de los sesenta · redondo, corto y con golpe", kind:"pluck", out:3.278, gain:1, rev:0.05, lp:450, lpSpan:2.2, damp:0.04,
+          s:bs({T0:1.3, Tmin:0.7, Tmax:1.6, Texp:0.3, Thf:0.12, Thmax:0.08, pos:0.2, bright:0.2, soft:0.1, noise:0.03, pol2:0.2, atk:0.05, atkLp:0.1, pick:0.22, durMax:2.2}), pick:PU.bass,
+          rig:R("bvint","b115",{gain:3.5, bass:6.5, mid:5.5, treble:2.5})}
 };
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 
