@@ -23,7 +23,8 @@
    ══ AOG-DRUM-REAL-V2 (2026-10-04) — EVERY KIT THAT IMITATES REAL DRUMS IS NOW REAL DRUMS ═══════════════════════════
    Jimmy wants every instrument sound to be a real recording. Two changes, built by music-handoff/tools/drumkits/:
    · Kits D, E, G to K and M to O used to be made on the page and imitated real drums and percussion. They are now
-     recordings, with the same letter, name and character, each pad as loud as its page-made sound was. Where no
+     recordings, with the same letter, name and character, each pad as loud as its page-made sound was (the
+     near-silent closed hats of I, J, K and M, J's open hat and O's roll a little louder, so they sound clearly). Where no
      recording of a sound passes the licence rules, the nearest real instrument plays and the pad says what it is:
      D's finger snap and G's snap are a hand clap, H's maraca is a shaker, N's talking drum is a djembe.
    · Five new kits after the drummers Jimmy named, on screen by style only: U jazz club (Buddy Rich), V brush ballad,
