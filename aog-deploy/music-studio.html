@@ -160,6 +160,16 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .st-sg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .st-sg .st-btn{padding:0 .25rem;font-size:.9rem;min-width:0;min-height:46px}
+/* AOG-STUDIO-EDIT-V1: pieces, speed and fades */
+.st-cc .st-row .st-btn{justify-self:auto}
+.st-pc{margin-top:.9rem}
+.st-pr{margin-top:.6rem}
+.st-spd{display:flex;align-items:center;gap:.5rem .8rem;flex-wrap:wrap}
+.st-spd input[type=range]{flex:1 1 12rem;min-width:8rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
+.st-spd b{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
+.st-clip.pk{box-shadow:inset 0 0 0 3px #fffaf0,inset 0 0 0 4px #07080a}
+.st-ed{width:100%;min-height:44px;margin:.45rem 0 0;padding:0 .3rem;font-size:.88rem}
+.st-ed[hidden]{display:none}
 .st-recs{display:grid;gap:.55rem}
 .st-rec{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.6rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#181a1e}
 .st-rtx{flex:1 1 14rem;min-width:0;display:grid;gap:.1rem}
@@ -440,9 +450,33 @@ const STR={
   goneOne:{en:"The Studio keeps {max} takes. To make room for a new one, the oldest went: {list}.",es:"El estudio guarda {max} tomas. Para hacer lugar a una nueva, se fue la más antigua: {list}."},
   goneMany:{en:"The Studio keeps {max} takes. To make room for new ones, the oldest went: {list}.",es:"El estudio guarda {max} tomas. Para hacer lugar a las nuevas, se fueron las más antiguas: {list}."},
   goneKept:{en:"A take already on a track stays there.",es:"Una toma que ya está en una pista se queda ahí."},
-  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  /* AOG-STUDIO-EDIT-V1: cut a track into pieces, change its speed, fade it, undo */
+  undo:{en:"↶ Undo",es:"↶ Deshacer"}, undone:{en:"Back to how it was.",es:"Volvió a como estaba."},
+  pieceLab:{en:"Piece",es:"Parte"},
+  pieceN:{en:"Piece {n} · bars {a} to {b}",es:"Parte {n} · compases {a} a {b}"}, pieceN1:{en:"Piece {n} · bar {a}",es:"Parte {n} · compás {a}"},
+  posBeat:{en:"Bar {b} · beat {n}",es:"Compás {b} · pulso {n}"},
+  cutH:{en:"Cut it up",es:"Córtala en partes"},
+  cutAt:{en:"Cut at",es:"Cortar en"}, cutBtn:{en:"✂ Cut here",es:"✂ Cortar aquí"},
+  cutShort:{en:"This piece is too short to cut.",es:"Esta parte es muy corta para cortarla."},
+  cutDone:{en:"Cut in two. Now there are {n} pieces.",es:"Cortada en dos. Ahora hay {n} partes."},
+  copyP:{en:"Copy this piece",es:"Copiar esta parte"}, copied:{en:"The copy plays right after it.",es:"La copia suena justo después."},
+  dropP:{en:"Remove this piece",es:"Quitar esta parte"}, dropped:{en:"Piece removed. Undo brings it back.",es:"Parte quitada. Deshacer la trae de vuelta."},
+  spdH:{en:"Speed",es:"Velocidad"}, spdAria:{en:"Speed of track {n}",es:"Velocidad de la pista {n}"},
+  spdNorm:{en:"Normal speed",es:"Velocidad normal"}, spdN:{en:"{n}% speed",es:"{n} % de velocidad"},
+  keep:{en:"Keep the pitch",es:"Mantener el tono"},
+  keepOn:{en:"Slower or faster, the notes stay in tune.",es:"Más lento o más rápido, las notas siguen afinadas."},
+  keepOff:{en:"Like a tape: slower sounds lower, faster sounds higher.",es:"Como una cinta: más lento suena más grave, más rápido suena más agudo."},
+  tempoSets:{en:"This track sets the song's tempo.",es:"Esta pista marca el tempo de la canción."},
+  match:{en:"Match the song's tempo",es:"Igualar el tempo de la canción"},
+  spdAll:{en:"Use this tempo on every track",es:"Usar este tempo en todas las pistas"},
+  spdAllDone:{en:"Every track now plays at {n} beats a minute.",es:"Todas las pistas suenan ahora a {n} pulsos por minuto."},
+  stretching:{en:"Getting the new speed ready…",es:"Preparando la nueva velocidad…"},
+  fadeH:{en:"Fade in and out",es:"Entrada y salida suaves"},
+  fadeIn:{en:"Fade in",es:"Entrada suave"}, fadeOut:{en:"Fade out",es:"Salida suave"}, fadeNone:{en:"None",es:"Ninguna"},
+  edit:{en:"✎ Edit",es:"✎ Editar"}, editAria:{en:"Edit track {n}",es:"Editar la pista {n}"}
 };
-const S={ lang:"en", decoding:0, busy:false, pick:"", picked:false, ask:"" };
+const S={ lang:"en", decoding:0, busy:false, pick:"", picked:false, ask:"", stretching:0, edMsg:"", edAt:"cut" };
 try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
 function t(k, vars){ let s=(STR[k]||{})[S.lang]; if(s==null) s=k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
 function L(o){ return o ? (o[S.lang]||o.en) : ""; }
@@ -467,12 +501,25 @@ function cleanClip(c){
     head:num(c.head,0,10,0), body:num(c.body,0,3600,0), tail:num(c.tail,0,120,0), bpb:Math.round(num(c.bpb,2,7,4)),
     peakDb:(typeof c.peakDb==="number" && isFinite(c.peakDb)) ? num(c.peakDb,-120,6,-6) : null,
     startBar:Math.round(num(c.startBar,1,MAX_BARS,1)), trimIn:Math.round(num(c.trimIn,0,1e5,0)), trimOut:Math.round(num(c.trimOut,0,1e5,0)),
-    loops:Math.round(num(c.loops,1,16,1)) };
+    loops:Math.round(num(c.loops,1,16,1)),
+    /* AOG-STUDIO-EDIT-V1 */
+    speed:Math.round(num(c.speed,0.5,1.5,1)*1000)/1000, keep:c.keep!==false,
+    fadeIn:FADES.indexOf(+c.fadeIn)>=0 ? +c.fadeIn : 0, fadeOut:FADES.indexOf(+c.fadeOut)>=0 ? +c.fadeOut : 0,
+    pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)) };
   if(!(o.sec>0) || !(o.body>0)) return null;
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
     o.tid=(typeof c.tid==="string" && /^t[a-z0-9]{4,40}$/.test(c.tid)) ? c.tid : ""; }
   return o;
+}
+const FADES=[0,1,4,8,16];        /* beats: none, 1 beat, 1 bar, 2 bars, 4 bars */
+function cleanPieces(a){
+  if(!Array.isArray(a)) return null;
+  const out=[];
+  a.slice(0,64).forEach(p=>{ if(!p || typeof p!=="object") return;
+    const q={a:num(p.a,0,1e5,0), b:num(p.b,0,1e5,0), at:num(p.at,0,MAX_BARS*4,0), n:Math.round(num(p.n,1,16,1))};
+    if(q.b-q.a>=0.25) out.push(q); });
+  return out.length ? out : null;
 }
 function cleanSong(r){
   const s=blankSong();
@@ -571,16 +618,41 @@ function analyse(rec, info){
 
 /* ══ time: the song's bars come from its first recording's tempo ══ */
 function tempoTrack(){ for(let i=0;i<NT;i++){ const c=SONG.tracks[i].clip; if(c && c.bpm>0) return i; } return -1; }
-function songBpm(){ const i=tempoTrack(); return i>=0 ? SONG.tracks[i].clip.bpm : 120; }
+/* AOG-STUDIO-EDIT-V1 (Jimmy, 2026-10-04: "a way to edit the tracks that are in the mixer. Cut them up, slow or speed
+   them up"): each recording has a speed (50 % to 150 %); the track that sets the tempo sets it at its own speed */
+function spd(c){ return c && c.speed>0 ? c.speed : 1; }
+function songBpm(){ const i=tempoTrack(); return i>=0 ? SONG.tracks[i].clip.bpm*spd(SONG.tracks[i].clip) : 120; }
 function barSec(){ return 240/songBpm(); }
+function songBeat(){ return 60/songBpm(); }
+/* one beat of the recording as it was played, in seconds of the recording (one with no tempo counts the song's beats) */
 function beatOf(c){ return 60/(c.bpm>0 ? c.bpm : songBpm()); }
-function totalBeats(c){ return Math.max(1, Math.floor(c.body/beatOf(c)+1e-6)); }
-function region(c){
-  const b=beatOf(c), rs=c.head+c.trimIn*b, re=c.head+c.body-c.trimOut*b;
-  return {rs:rs, len:Math.max(b*0.5, re-rs), tail:c.trimOut>0 ? 0 : c.tail};
+function effBpm(c){ return c.bpm>0 ? c.bpm*spd(c) : 0; }
+function fullBeats(c){ return Math.max(0.5, c.body/beatOf(c)); }
+function ratio(c){ return beatOf(c)/spd(c)/songBeat(); }          /* song beats for one beat of the recording */
+/* the pieces of a track: a to b, the beats of the recording it plays (counted from its first beat); at, the song beat it
+   starts on (bar 1 is beat 0); n, how many times it plays. A recording never cut is one piece: its start bar, its two
+   cuts and its repeats */
+function pcs(c){
+  if(c.pieces && c.pieces.length) return c.pieces;
+  const full=fullBeats(c);
+  return [{a:c.trimIn, b:Math.max(c.trimIn+0.5, full-c.trimOut), at:(c.startBar-1)*4, n:c.loops}];
 }
-function clipStart(c){ return (c.startBar-1)*barSec(); }
-function clipEnd(c, withTail){ const r=region(c); return clipStart(c)+c.loops*r.len+(withTail ? r.tail : 0); }
+function own(c){ if(!c.pieces || !c.pieces.length){ c.pieces=pcs(c).map(p=>Object.assign({}, p)); c.psel=0; } return c.pieces; }
+function pSel(c){ return Math.max(0, Math.min(pcs(c).length-1, c.psel|0)); }
+function pLen(c, p){ return (p.b-p.a)*beatOf(c)/spd(c); }                         /* once through, in seconds of the song */
+function pTail(c, p){ return p.b>=fullBeats(c)-1e-6 ? c.tail/spd(c) : 0; }        /* the last notes ring on after the end */
+function pAt(p){ return p.at*songBeat(); }
+function clipStart(c){ return Math.min.apply(null, pcs(c).map(pAt)); }
+function clipEnd(c, withTail){ let e=0; pcs(c).forEach(p=>{ e=Math.max(e, pAt(p)+p.n*pLen(c,p)+(withTail ? pTail(c,p) : 0)); }); return e; }
+/* the pieces in song order, the chosen one still chosen; the start bar kept for anything that reads it */
+function tidyPieces(c){
+  if(!c.pieces) return;
+  const cur=c.pieces[pSel(c)];
+  c.pieces.sort((x,y)=>x.at-y.at || x.a-y.a);
+  c.psel=Math.max(0, c.pieces.indexOf(cur));
+  c.startBar=Math.max(1, Math.min(MAX_BARS, Math.floor(Math.min.apply(null, c.pieces.map(p=>p.at))/4+1e-6)+1));
+}
+function clampSpeed(x){ return Math.round(Math.max(0.5, Math.min(1.5, x))*1000)/1000; }
 function clips(){ return SONG.tracks.map((x,i)=>({i:i, c:x.clip})).filter(x=>x.c); }
 function songEnd(){ let e=0; clips().forEach(x=>{ e=Math.max(e, clipEnd(x.c,true)); }); return e; }
 function songEndMusic(){ let e=0; clips().forEach(x=>{ e=Math.max(e, clipEnd(x.c,false)); }); return e; }
@@ -699,28 +771,124 @@ function liveApply(fn){ if(LIVE) fn(LIVE); }
 /* every piece of every recording that sounds between song time `from` and `to`, started at context time `at`.
    A piece cut in the middle of a sound fades in or out over a few milliseconds, so nothing clicks. */
 const BUF=new Map();
+/* AOG-STUDIO-EDIT-V1: what a recording plays from at its speed. Keep the pitch: a stretched copy (made once, below),
+   played as it is; like a tape (or while the copy is being made): the recording itself, played faster or slower */
+function playBuf(cl){
+  const b=BUF.get(cl.id); if(!b) return null;
+  const sp=spd(cl);
+  if(Math.abs(sp-1)<1e-3) return {buf:b, rate:1, scale:1};
+  if(cl.keep!==false){ const st=STRETCH.get(cl.id); if(st && Math.abs(st.sp-sp)<1e-3) return {buf:st.buf, rate:1, scale:1/sp}; }
+  return {buf:b, rate:sp, scale:1};
+}
+/* how loud a track is at song time t, from its fade in and fade out (1 = as recorded) */
+function fadeAt(cl, t, cs, ce){
+  let g=1; const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
+  if(fi>0) g=Math.min(g, (t-cs)/fi);
+  if(fo>0) g=Math.min(g, (ce-t)/fo);
+  return Math.max(0, Math.min(1, g));
+}
 function schedule(E, from, to, at){
   const c=E.c, out=[];
   SONG.tracks.forEach((x,i)=>{
-    const cl=x.clip; if(!cl) return; const buf=BUF.get(cl.id); if(!buf) return;
-    const r=region(cl), st=clipStart(cl), pass=r.len+r.tail;
-    for(let k=0;k<cl.loops;k++){
-      const p0=st+k*r.len, p1=p0+pass, s0=Math.max(p0,from), s1=Math.min(p1,to);
-      if(s1-s0<0.003) continue;
-      const off=r.rs+(s0-p0), d=Math.min(s1-s0, buf.duration-off);
-      if(!(d>0.003)) continue;
-      const when=at+(s0-from), cutIn=(s0>p0+1e-4) || cl.trimIn>0, cutOut=(s1<p1-1e-4) || cl.trimOut>0;
-      const src=c.createBufferSource(); src.buffer=buf;
-      const env=c.createGain(); env.gain.value=cutIn?0:1;
-      if(cutIn){ env.gain.setValueAtTime(0, when); env.gain.linearRampToValueAtTime(1, when+0.004); }
-      if(cutOut && d>0.02){ env.gain.setValueAtTime(1, when+d-0.008); env.gain.linearRampToValueAtTime(0, when+d); }
-      src.connect(env); env.connect(E.tr[i].in);
-      src.start(when, off, d);
-      out.push({src:src, env:env, end:when+d});
-    }
+    const cl=x.clip; if(!cl) return; const P=playBuf(cl); if(!P) return;
+    const sp=spd(cl), sb=beatOf(cl), full=fullBeats(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
+    const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
+    pcs(cl).forEach(p=>{
+      const s0=cl.head+p.a*sb, len=pLen(cl,p), tl=pTail(cl,p), st=pAt(p), whole=p.b>=full-1e-6;
+      for(let k=0;k<p.n;k++){
+        const p0=st+k*len, p1=p0+len+tl, a0=Math.max(p0,from), a1=Math.min(p1,to);
+        if(a1-a0<0.003) continue;
+        const off=(s0+(a0-p0)*sp)*P.scale, d=Math.min((a1-a0)*sp*P.scale, P.buf.duration-off);
+        if(!(d>0.003)) continue;
+        const dur=d/(sp*P.scale), e1=a0+dur, when=at+(a0-from);       /* dur: seconds of the song */
+        const cutIn=(a0>p0+1e-4) || p.a>1e-6, cutOut=(e1<p1-1e-4) || !whole, edge=cutOut && dur>0.02;
+        const src=c.createBufferSource(); src.buffer=P.buf; if(P.rate!==1) src.playbackRate.value=P.rate;
+        const env=c.createGain();
+        if(!cutIn && !edge && !fades) env.gain.value=1;
+        else {
+          /* the 4 ms in and 8 ms out of a cut (no clicks), times the fades, as straight lines between their corners */
+          const val=t=>{ let v=fades ? fadeAt(cl, t, cs, ce) : 1;
+            if(cutIn) v*=Math.max(0, Math.min(1, (t-a0)/0.004)); if(edge) v*=Math.max(0, Math.min(1, (e1-t)/0.008)); return v; };
+          const pts=[a0, e1]; if(cutIn) pts.push(a0+0.004); if(edge) pts.push(e1-0.008);
+          if(fi>0) pts.push(cs+fi); if(fo>0) pts.push(ce-fo, ce);
+          const list=[...new Set(pts.filter(v=>v>=a0-1e-9 && v<=e1+1e-9))].sort((u,v)=>u-v);
+          env.gain.value=val(a0); env.gain.setValueAtTime(val(a0), when);
+          list.forEach(tp=>{ if(tp>a0+1e-9) env.gain.linearRampToValueAtTime(val(tp), when+(tp-a0)); });
+        }
+        src.connect(env); env.connect(E.tr[i].in);
+        src.start(when, off, d);
+        out.push({src:src, env:env, end:when+dur});
+      }
+    });
   });
   return out;
 }
+
+/* ══ AOG-STUDIO-EDIT-V1 · a slower or faster copy that keeps the pitch (WSOLA): the recording cut into short windows
+   (40 ms), each one laid down at the new pace, and each taken from where it best matches the sound before it, so
+   nothing warbles. Made once per speed, a little at a time so the page stays easy to use. ══ */
+const STRETCH=new Map(), SJOB=new Map();
+function needStretch(c){ return c.keep!==false && Math.abs(spd(c)-1)>1e-3; }
+function stretchReady(c){ const st=STRETCH.get(c.id); return !!(st && Math.abs(st.sp-spd(c))<1e-3); }
+function newBuf(nch, len, sr){ try{ return new AudioBuffer({numberOfChannels:nch, length:len, sampleRate:sr}); }catch(e){ return live().createBuffer(nch, len, sr); } }
+async function wsola(buf, sp, cancelled){
+  const sr=buf.sampleRate, nch=buf.numberOfChannels, n=buf.length;
+  const H=Math.max(64, Math.round(0.02*sr)), N=2*H, tol=Math.round(0.012*sr), Ha=H*sp, outN=Math.max(1, Math.round(n/sp));
+  const X=[], Y=[]; for(let ch=0;ch<nch;ch++){ X.push(buf.getChannelData(ch)); Y.push(new Float32Array(outN+N)); }
+  const W=new Float32Array(N); for(let j=0;j<N;j++) W[j]=0.5-0.5*Math.cos(2*Math.PI*j/N);
+  /* the search listens to a quarter-rate mono copy, then looks again closely around the best place */
+  const Q=4, m=Math.floor(n/Q), D=new Float32Array(m+1);
+  for(let i=0;i<m;i++){ let v=0; const o=i*Q; for(let ch=0;ch<nch;ch++){ const x=X[ch]; v+=x[o]+x[o+1]+x[o+2]+x[o+3]; } D[i]=v; }
+  const Hq=Math.floor(H/Q), tq=Math.floor(tol/Q);
+  let prev=0, k=0;
+  for(let op=0; op<outN; op+=H, k++){
+    const nom=Math.round(k*Ha); let pos;
+    if(k===0) pos=0;
+    else {
+      const tgt=prev+H;
+      if(tgt+N>=n || nom+tol+N>=n){ pos=Math.max(0, Math.min(nom, n-N)); }   /* the last moments: no search */
+      else {
+        const tg=Math.floor(tgt/Q), lo=Math.max(0, Math.floor(nom/Q)-tq), hi=Math.min(m-Hq-1, Math.floor(nom/Q)+tq);
+        let best=-Infinity, bq=Math.floor(nom/Q);
+        for(let q=lo;q<=hi;q++){ let v=0; for(let j=0;j<Hq;j++) v+=D[tg+j]*D[q+j]; if(v>best){ best=v; bq=q; } }
+        let fb=-Infinity, fp=Math.max(0, Math.min(n-N-1, bq*Q));
+        for(let q=Math.max(0, bq*Q-Q); q<=Math.min(n-N-1, bq*Q+Q); q++){
+          let v=0; for(let j=0;j<H;j+=2){ let a=0, b=0; for(let ch=0;ch<nch;ch++){ a+=X[ch][tgt+j]; b+=X[ch][q+j]; } v+=a*b; }
+          if(v>fb){ fb=v; fp=q; } }
+        pos=fp;
+      }
+    }
+    for(let ch=0;ch<nch;ch++){ const x=X[ch], y=Y[ch], L=Math.min(N, n-pos);
+      if(k===0){ for(let j=0;j<L;j++) y[op+j]+=x[pos+j]*(j<H ? 1 : W[j]); }   /* the very start keeps its full strength */
+      else for(let j=0;j<L;j++) y[op+j]+=x[pos+j]*W[j]; }
+    prev=pos;
+    if((k&127)===127){ await new Promise(r=>setTimeout(r, 0)); if(cancelled()) return null; }
+  }
+  const out=newBuf(nch, outN, sr);
+  for(let ch=0;ch<nch;ch++) out.getChannelData(ch).set(Y[ch].subarray(0, outN));
+  return out;
+}
+function ensureStretch(c){
+  if(!needStretch(c)){ STRETCH.delete(c.id); SJOB.delete(c.id); return Promise.resolve(); }
+  if(stretchReady(c)) return Promise.resolve();
+  const b=BUF.get(c.id); if(!b) return Promise.resolve();
+  const sp=spd(c), key=c.id+"@"+sp, run=SJOB.get(c.id);
+  if(run && run.key===key) return run.p;
+  const job={key:key};
+  job.p=(async()=>{
+    S.stretching++; paintEditLine(); paintFinish();
+    try{
+      const out=await wsola(b, sp, ()=>{ const j=SJOB.get(c.id); return !j || j.key!==key; });
+      if(out && SJOB.get(c.id)===job){ STRETCH.set(c.id, {sp:sp, buf:out}); }
+    }catch(e){}
+    if(SJOB.get(c.id)===job) SJOB.delete(c.id);
+    S.stretching--;
+    reschedule(); paintEditLine(); paintFinish();
+  })();
+  SJOB.set(c.id, job);
+  return job.p;
+}
+function stretchAll(){ return Promise.all(clips().map(x=>ensureStretch(x.c))); }
 
 /* ══ the speakers ══ */
 let ac=null, LIVE=null, AN=null;
@@ -991,7 +1159,7 @@ async function removeTake(id){
   /* the keyboard lands on the take that moved into its place */
   const btns=$("inbox").querySelectorAll("[data-drop]"), next=btns[Math.min(at, btns.length-1)] || $("trackSel"); if(next) next.focus();
 }
-function dropClip(id){ BUF.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
+function dropClip(id){ BUF.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
 function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const id=x.clip.id; x.clip=null; dropClip(id); songChanged(); }
 /* after any change to what plays where */
 function songChanged(){
@@ -1021,6 +1189,7 @@ async function restore(){
   try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
   liveApply(applyAll);
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
+  stretchAll();                    /* AOG-STUDIO-EDIT-V1: a track slowed or sped up, keeping its pitch, is made again */
 }
 
 /* ══ Make the mix: the same engine in an OfflineAudioContext, then a 16-bit .wav ══ */
@@ -1063,6 +1232,7 @@ async function makeMix(){
   if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("mixQuiet"); return; }
   btn.disabled=true; line.textContent=t("mixing");
   try{
+    await stretchAll();             /* AOG-STUDIO-EDIT-V1: every slower or faster track ready first */
     const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat=await chainLatency();
     const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
     const oc=new OC(2, frames+lat, MIX_SR), E=makeEngine(oc, false);
@@ -1095,6 +1265,7 @@ async function newSong(){
   const ids=clips().map(x=>x.c.id);
   SONG=blankSong(); save();
   ids.forEach(id=>{ BUF.delete(id); sdel(id); });
+  STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
   sdel("mix"); setMix(null);
   $("newAsk").hidden=true;
   $("mixLine").textContent=t("newDone"); $("sendLine").textContent=""; $("recLine").textContent="";
@@ -1180,11 +1351,15 @@ function paintTimeline(){
     const x=SONG.tracks[i], c=x.clip, cur=i===SONG.sel;
     let inner, label;
     if(c){
-      const st=clipStart(c)/bs, len=(clipEnd(c,false)-clipStart(c))/bs;
-      const l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
-      const nm=trackName(i)+(c.loops>1 ? " ×"+c.loops : "");
-      inner=`<span class="st-clip${audible(i)?"":" off"}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${esc(nm)}</span>`;
-      label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:c.startBar, b:Math.max(c.startBar, Math.ceil(st+len-1e-6))})});
+      /* AOG-STUDIO-EDIT-V1: one block for each piece; the chosen piece of the chosen track is outlined */
+      const P=pcs(c), ks=pSel(c);
+      inner=P.map((p,j)=>{
+        const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
+        const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${esc(nm)}</span>`;
+      }).join("");
+      const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
+      label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
     } else { inner=`<span class="st-empty">${esc(t("empty"))}</span>`; label=t("laneAria",{n:i+1, name:t("emptyL")}); }
     lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln">${i+1}</span><span class="st-lt">${inner}</span></button>`;
   }
@@ -1199,54 +1374,167 @@ function paintNowBar(bar){
   if(bar>=0 && RULER[bar]) RULER[bar].classList.add("now");
 }
 
-/* ── 3 · the track ── */
+/* ── 3 · the track: its recording, its pieces, its speed and its fades (AOG-STUDIO-EDIT-V1) ── */
+function posWords(beat){ const bi=Math.max(0, Math.round(beat)), b=Math.floor(bi/4)+1, n=bi%4+1; return n===1 ? t("barN",{n:b}) : t("posBeat",{b:b, n:n}); }
+function pieceName(c, p, j){
+  const a=Math.floor(p.at/4+1e-6)+1, b=Math.max(a, Math.ceil((p.at+p.n*(p.b-p.a)*ratio(c))/4-1e-6));
+  return a===b ? t("pieceN1",{n:j+1, a:a}) : t("pieceN",{n:j+1, a:a, b:b});
+}
+/* where a piece can be cut: on each beat of the recording at least one beat from either end, named by the bar it lands
+   on in the song (a long piece: on the bar lines only) */
+function cutPlaces(c, p){
+  const r=ratio(c), out=[];
+  for(let k=Math.ceil(p.a+1-1e-6); k<=p.b-1+1e-6; k++){ const at=p.at+(k-p.a)*r, bi=Math.round(at); out.push({k:k, bar:bi%4===0, label:posWords(at)}); }
+  const bars=out.filter(x=>x.bar);
+  return out.length>64 && bars.length ? bars : out;
+}
+function spdWords(c, pct){
+  const w=pct===100 ? t("spdNorm") : t("spdN",{n:pct});
+  return c.bpm>0 ? w+" · "+t("bpmN",{n:Math.round(c.bpm*pct/100)}) : w;
+}
+function fadeOpts(v){
+  return FADES.map(b=>`<option value="${b}"${b===v?" selected":""}>${esc(b===0 ? t("fadeNone") : b<4 ? t("beat1") : b===4 ? t("bar1") : t("barsN",{n:b/4}))}</option>`).join("");
+}
 function paintTrack(){
   const sel=$("trackSel"), i=SONG.sel;
   sel.innerHTML=SONG.tracks.map((x,k)=>`<option value="${k}"${k===i?" selected":""}>${esc(t("trackN",{n:k+1})+" · "+trackName(k))}</option>`).join("");
   const c=SONG.tracks[i].clip, box=$("clipBox");
   if(!c){ box.innerHTML=""; paintRecs(); return; }
-  const s=shelfOf(c.src), b=beatOf(c), tb=totalBeats(c), r=region(c), inb=c.src===INBOX_KEY;
+  /* the keyboard stays on the button or menu it was on */
+  const fa=document.activeElement, keepF=fa && box.contains(fa) ? (fa.id || (fa.getAttribute("data-act") ? "[data-act='"+fa.getAttribute("data-act")+"']" : "")) : "";
+  const s=shelfOf(c.src), inb=c.src===INBOX_KEY;
   const meta=(inb ? [TOOLS[c.from] ? L(TOOLS[c.from].from) : "", clockLen(c.sec)] : [bareName(c.name), clockLen(c.sec)]).filter(Boolean).join(" · ");
   const head=inb ? esc(trackName(i)) : esc(s ? L(s.from) : "")+(c.take ? " · "+esc(t("aTake")) : "");
-  const lenTxt=clockLen(c.loops*r.len);
-  const diff=c.bpm>0 && Math.abs(c.bpm-songBpm())>0.5;
+  const P=pcs(c), k=pSel(c), p=P[k], many=P.length>1, bpb=c.bpb||4, full=fullBeats(c);
+  const lenTxt=clockLen(p.n*pLen(c,p));
+  const diff=c.bpm>0 && Math.abs(effBpm(c)-songBpm())>0.5, isTempo=tempoTrack()===i;
+  const cuts=cutPlaces(c, p), mid=cuts.length ? cuts[Math.floor((cuts.length-1)/2)] : null;
+  const pct=Math.round(spd(c)*100), keep=c.keep!==false;
   box.innerHTML=
     `<div class="st-cc" style="--c:${COLORS[i]}">
       <div><b>${head}</b></div>
       <div class="st-cn">${esc(meta)}</div>
-      <button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button>
+      <div class="st-row"><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button></div>
+      ${lineAt("top")}
     </div>
+    ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
     <div class="st-steps">
-      <div class="st-stp"><span class="st-lab">${esc(t("startsAt"))}</span><span class="st-val">${esc(t("barN",{n:c.startBar}))}</span>
-        <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${c.startBar<=1?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${c.startBar>=MAX_BARS?" disabled":""}>${esc(t("later"))}</button></div></div>
-      <div class="st-stp"><span class="st-lab">${esc(t("plays"))}</span><span class="st-val">${esc(c.loops===1 ? t("times1") : t("timesN",{n:c.loops}))} · ${esc(lenTxt)}</span>
-        <div class="st-sg two"><button type="button" class="st-btn" data-act="loops-" aria-label="${esc(t("plays")+": "+t("fewer"))}"${c.loops<=1?" disabled":""}>${esc(t("fewer"))}</button><button type="button" class="st-btn" data-act="loops+" aria-label="${esc(t("plays")+": "+t("more"))}"${c.loops>=16?" disabled":""}>${esc(t("more"))}</button></div></div>
-      ${trimHtml("in", t("cutStart"), c.trimIn, c, tb)}
-      ${trimHtml("out", t("cutEnd"), c.trimOut, c, tb)}
+      <div class="st-stp"><span class="st-lab">${esc(t("startsAt"))}</span><span class="st-val">${esc(posWords(p.at))}</span>
+        <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<0.5?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div></div>
+      <div class="st-stp"><span class="st-lab">${esc(t("plays"))}</span><span class="st-val">${esc(p.n===1 ? t("times1") : t("timesN",{n:p.n}))} · ${esc(lenTxt)}</span>
+        <div class="st-sg two"><button type="button" class="st-btn" data-act="loops-" aria-label="${esc(t("plays")+": "+t("fewer"))}"${p.n<=1?" disabled":""}>${esc(t("fewer"))}</button><button type="button" class="st-btn" data-act="loops+" aria-label="${esc(t("plays")+": "+t("more"))}"${p.n>=16?" disabled":""}>${esc(t("more"))}</button></div></div>
+      ${trimHtml("in", t("cutStart"), Math.round(p.a), p.b-p.a>1+1e-6, bpb)}
+      ${trimHtml("out", t("cutEnd"), Math.round(full-p.b), p.b-p.a>1+1e-6, bpb)}
     </div>
-    ${diff ? `<p class="st-line note">${esc(t("bpmDiff",{a:Math.round(c.bpm), b:Math.round(songBpm())}))}</p>` : ""}`;
+    <h3 class="st-h3">${esc(t("cutH"))}</h3>
+    ${cuts.length ? `<div class="st-row">
+      <label class="st-field"><span class="st-lab">${esc(t("cutAt"))}</span><select id="cutSel">${cuts.map(x=>`<option value="${x.k}"${x===mid?" selected":""}>${esc(x.label)}</option>`).join("")}</select></label>
+      <button type="button" class="st-btn" data-act="cut">${esc(t("cutBtn"))}</button>
+    </div>` : `<p class="st-line" style="margin-top:0">${esc(t("cutShort"))}</p>`}
+    <div class="st-row st-pr"><button type="button" class="st-btn" data-act="copy">${esc(t("copyP"))}</button>${many ? `<button type="button" class="st-btn st-clear" data-act="drop">${esc(t("dropP"))}</button>` : ""}</div>
+    ${lineAt("cut")}
+    <h3 class="st-h3">${esc(t("spdH"))}</h3>
+    <div class="st-spd"><input type="range" id="spdR" min="50" max="150" step="5" value="${pct}" aria-label="${esc(t("spdAria",{n:i+1}))}" aria-valuetext="${esc(spdWords(c,pct))}"><b id="spdOut">${esc(spdWords(c,pct))}</b></div>
+    <div class="st-row st-pr">
+      <button type="button" class="st-btn" data-act="keep" aria-pressed="${keep?"true":"false"}">${esc(t("keep"))}</button>
+      ${diff && !isTempo ? `<button type="button" class="st-btn" data-act="match">${esc(t("match"))}</button>` : ""}
+      ${c.bpm>0 && clips().filter(x=>x.c.bpm>0 && x.c!==c).length ? `<button type="button" class="st-btn" data-act="spdall">${esc(t("spdAll"))}</button>` : ""}
+    </div>
+    <p class="st-line">${esc(t(keep ? "keepOn" : "keepOff"))}${isTempo && clips().length>1 ? " "+esc(t("tempoSets")) : ""}</p>
+    ${diff ? `<p class="st-line note">${esc(t("bpmDiff",{a:Math.round(effBpm(c)), b:Math.round(songBpm())}))}</p>` : ""}
+    ${lineAt("spd")}
+    <h3 class="st-h3">${esc(t("fadeH"))}</h3>
+    <div class="st-row">
+      <label class="st-field"><span class="st-lab">${esc(t("fadeIn"))}</span><select id="fiSel">${fadeOpts(c.fadeIn||0)}</select></label>
+      <label class="st-field"><span class="st-lab">${esc(t("fadeOut"))}</span><select id="foSel">${fadeOpts(c.fadeOut||0)}</select></label>
+    </div>`;
+  paintEditLine();
+  if(keepF){ const el=box.querySelector(keepF.charAt(0)==="[" ? keepF : "#"+keepF); if(el && !el.disabled) try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
   paintRecs();
 }
-function trimHtml(which, label, v, c, tb){
-  const room=tb-1-c.trimIn-c.trimOut, bpb=c.bpb||4;
+/* the panel's one message sits beside what it is about: Undo, the pieces, or the speed */
+function lineAt(where){ const at=S.edAt||"cut"; return where===at ? `<p class="st-line" id="editLine" aria-live="polite"></p>` : ""; }
+function paintEditLine(){ const c=SONG.tracks[SONG.sel].clip, busy=S.stretching && c && needStretch(c) && !stretchReady(c);
+  if(busy && S.edAt!=="spd"){ S.edAt="spd"; if($("editLine")){ paintTrack(); return; } }
+  const el=$("editLine"); if(!el) return;
+  const w=busy ? t("stretching") : S.edMsg;
+  if(el.textContent!==w) el.textContent=w; }
+function trimHtml(which, label, v, room, bpb){
   const btn=(act, txt, off)=>`<button type="button" class="st-btn" data-act="${which}${act}" aria-label="${esc(label+": "+txt)}"${off?" disabled":""}>${esc(txt)}</button>`;
   return `<div class="st-stp"><span class="st-lab">${esc(label)}</span><span class="st-val">${esc(beatsWords(v, bpb))}</span>
-    <div class="st-sg">${btn("-bar", t("mBar"), v<=0)}${btn("-beat", t("mBeat"), v<=0)}${btn("+beat", t("pBeat"), room<1)}${btn("+bar", t("pBar"), room<1)}</div></div>`;
+    <div class="st-sg">${btn("-bar", t("mBar"), v<=0)}${btn("-beat", t("mBeat"), v<=0)}${btn("+beat", t("pBeat"), !room)}${btn("+bar", t("pBar"), !room)}</div></div>`;
+}
+/* ── undo: each change to a track's pieces, speed or fades can be taken back (a change to several tracks at once is one step) ── */
+const UNDO=[]; let UG=0;
+function remember(i, g){ const c=SONG.tracks[i].clip; if(!c) return; UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c)}); if(UNDO.length>60) UNDO.shift(); }
+function canUndo(){ return UNDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
+function undo(){
+  while(UNDO.length){
+    const g=UNDO[UNDO.length-1].g; let done=-1;
+    while(UNDO.length && UNDO[UNDO.length-1].g===g){
+      const u=UNDO.pop(), x=SONG.tracks[u.i];
+      if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){ x.clip=back; done=u.i; } }
+    }
+    if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; songChanged(); stretchAll(); return; }
+  }
+  paintTrack();
 }
 function clipAct(act){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   if(act==="off"){ takeOff(i); return; }
-  const tb=totalBeats(c), bpb=c.bpb||4, room=()=>tb-1-c.trimIn-c.trimOut;
-  if(act==="start-") c.startBar=Math.max(1, c.startBar-1);
-  else if(act==="start+") c.startBar=Math.min(MAX_BARS, c.startBar+1);
-  else if(act==="loops-") c.loops=Math.max(1, c.loops-1);
-  else if(act==="loops+") c.loops=Math.min(16, c.loops+1);
-  else {
-    const m=/^(in|out)([+-])(bar|beat)$/.exec(act); if(!m) return;
-    const key=m[1]==="in" ? "trimIn" : "trimOut", step=m[3]==="bar" ? bpb : 1;
-    if(m[2]==="-") c[key]=Math.max(0, c[key]-step);
-    else c[key]+=Math.max(0, Math.min(step, room()));
+  if(act==="undo"){ undo(); return; }
+  const g=++UG; remember(i, g);
+  const P=own(c), k=pSel(c), p=P[k], full=fullBeats(c), bpb=c.bpb||4;
+  S.edMsg=""; S.edAt=/^(keep|match|spdall)$/.test(act) ? "spd" : "cut";
+  if(act==="start-") p.at=Math.max(0, p.at-4);
+  else if(act==="start+") p.at=Math.min((MAX_BARS-1)*4, p.at+4);
+  else if(act==="loops-") p.n=Math.max(1, p.n-1);
+  else if(act==="loops+") p.n=Math.min(16, p.n+1);
+  else if(act==="cut"){
+    const el=$("cutSel"), kk=el ? +el.value : NaN;
+    if(!(kk>p.a+0.5 && kk<p.b-0.5)){ UNDO.pop(); return; }
+    const r=ratio(c), parts=[{a:p.a, b:kk, at:p.at, n:1}, {a:kk, b:p.b, at:p.at+(kk-p.a)*r, n:1}];
+    if(p.n>1) parts.push({a:p.a, b:p.b, at:p.at+(p.b-p.a)*r, n:p.n-1});     /* its other times through stay as they were */
+    P.splice(k, 1, ...parts); c.psel=k+1;
+    S.edMsg=t("cutDone",{n:P.length});
   }
+  else if(act==="copy"){
+    const q={a:p.a, b:p.b, at:Math.min((MAX_BARS-1)*4, p.at+p.n*(p.b-p.a)*ratio(c)), n:p.n};
+    P.push(q); c.psel=P.length-1; S.edMsg=t("copied");
+  }
+  else if(act==="drop"){ if(P.length<2){ UNDO.pop(); return; } P.splice(k, 1); c.psel=Math.min(k, P.length-1); S.edMsg=t("dropped"); }
+  else if(act==="keep") c.keep=c.keep===false;
+  else if(act==="match"){ if(!(c.bpm>0)){ UNDO.pop(); return; } c.speed=clampSpeed(songBpm()/c.bpm); }
+  else if(act==="spdall"){
+    if(!(c.bpm>0)){ UNDO.pop(); return; }
+    const want=effBpm(c);
+    clips().forEach(x=>{ if(x.c!==c && x.c.bpm>0){ remember(x.i, g); x.c.speed=clampSpeed(want/x.c.bpm); } });
+    S.edMsg=t("spdAllDone",{n:Math.round(want)});
+  }
+  else {
+    const m=/^(in|out)([+-])(bar|beat)$/.exec(act); if(!m){ UNDO.pop(); return; }
+    const step=m[3]==="bar" ? bpb : 1;
+    if(m[1]==="in") p.a = m[2]==="+" ? Math.min(p.a+step, p.b-1) : Math.max(0, p.a-step);
+    else p.b = m[2]==="+" ? Math.max(p.b-step, p.a+1) : Math.min(full, p.b+step);
+    if(p.b-p.a<1 && p.b<full-1e-6) p.b=Math.min(full, p.a+1);
+  }
+  tidyPieces(c);
+  songChanged();
+  stretchAll();
+}
+/* the speed slider: its words follow the finger; the change is made when it is let go */
+function speedInput(el){ const c=SONG.tracks[SONG.sel].clip; if(!c) return; const v=Math.round(+el.value), w=spdWords(c, v);
+  const o=$("spdOut"); if(o) o.textContent=w; el.setAttribute("aria-valuetext", w); }
+function speedChange(el){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
+  const v=clampSpeed(Math.round(+el.value)/100); if(Math.abs(v-spd(c))<1e-3) return;
+  remember(i, ++UG); c.speed=v; S.edMsg=""; S.edAt="spd";
+  songChanged(); stretchAll();
+}
+function fadeChange(el){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
+  const v=+el.value; if(FADES.indexOf(v)<0) return;
+  remember(i, ++UG); if(el.id==="fiSel") c.fadeIn=v; else c.fadeOut=v; S.edMsg="";
   songChanged();
 }
 function paintRecs(){
@@ -1313,6 +1601,7 @@ function paintMixer(rebuild){
     box.innerHTML=SONG.tracks.map((x,i)=>
       `<div class="st-strip" data-tr="${i}" style="--c:${COLORS[i]}">
         <button type="button" class="st-sh" data-sel="${i}"><span class="st-dot" aria-hidden="true"></span><span class="st-shn"></span></button>
+        <button type="button" class="st-btn st-ed" data-edit="${i}" aria-label="${esc(t("editAria",{n:i+1}))}" hidden>${esc(t("edit"))}</button>
         <div class="st-ms"><button type="button" class="st-btn st-mute" data-ms="mute" aria-pressed="false">${esc(t("mute"))}</button><button type="button" class="st-btn st-solo" data-ms="solo" aria-pressed="false">${esc(t("solo"))}</button></div>
         <div class="st-sls">${KNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,x[k],"t"+i)).join("")}</div>
       </div>`).join("");
@@ -1328,6 +1617,7 @@ function paintMixer(rebuild){
     el.querySelector(".st-sh").setAttribute("aria-pressed", i===SONG.sel ? "true" : "false");
     el.querySelector("[data-ms=mute]").setAttribute("aria-pressed", x.mute?"true":"false");
     el.querySelector("[data-ms=solo]").setAttribute("aria-pressed", x.solo?"true":"false");
+    el.querySelector("[data-edit]").hidden=!x.clip;
     el.querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, x[r.getAttribute("data-k")]));
   });
   $("master").querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, SONG.master[r.getAttribute("data-k")]));
@@ -1371,6 +1661,11 @@ function bind(){
   $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
   $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
   $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(b && !b.disabled) clipAct(b.getAttribute("data-act")); });
+  $("clipBox").addEventListener("input", e=>{ if(e.target.id==="spdR") speedInput(e.target); });
+  $("clipBox").addEventListener("change", e=>{ const el=e.target;
+    if(el.id==="spdR") speedChange(el);
+    else if(el.id==="fiSel" || el.id==="foSel") fadeChange(el);
+    else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
   $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
   /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
   $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
@@ -1383,6 +1678,9 @@ function bind(){
   });
   $("mixer").addEventListener("click", e=>{
     const sh=e.target.closest("[data-sel]"); if(sh){ selectTrack(+sh.getAttribute("data-sel")); return; }
+    /* AOG-STUDIO-EDIT-V1: Edit opens that track's pieces, speed and fades, just above the mixer */
+    const ed=e.target.closest("[data-edit]"); if(ed){ selectTrack(+ed.getAttribute("data-edit")); const tb=$("trackBlk"); if(tb) tb.scrollIntoView({block:"start"});
+      try{ $("trackSel").focus({preventScroll:true}); }catch(err){} return; }
     const ms=e.target.closest("[data-ms]"); if(!ms) return;
     const i=+ms.closest(".st-strip").getAttribute("data-tr"), k=ms.getAttribute("data-ms");
     SONG.tracks[i][k]=!SONG.tracks[i][k]; save();
@@ -1441,7 +1739,8 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, sources:sources, putOn:putOn, get S(){ return S; } };
+  INBOX:INBOX, refreshInbox:refreshInbox, sources:sources, putOn:putOn, get S(){ return S; },
+  pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
 </script>
 </body>
 </html>
