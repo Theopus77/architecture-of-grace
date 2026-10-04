@@ -31,16 +31,19 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     const at=(s,f,dx)=>p.evaluate(([s,f,dx])=>{ const r=document.getElementById("neck").getBoundingClientRect(), k=r.width/NECK.W;
       let [x,y]=neckXY(s, f==="strum"?0:f); if(f==="strum"){ const sb=neckStrum(); x=sb.x0+sb.w/2; }
       return {x:r.left+(x+(dx||0))*k, y:r.top+y*k, row:NECK.rowH*k}; }, [s,f,dx||0]);
-    return {c, p, errs, T, at};
+    /* the bar ignores a tap while a hand plays or just after (AOG-PLAY-GUARD-V1); a test's own presses wait it out */
+    const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    const menu=async(...sels)=>{ await press("#pvMore"); for(const x of sels) await p.click(x); if(sels.length) await press("#pvMore"); };
+    return {c, p, errs, T, at, press, menu};
   };
 
   for(const [dev, opt] of [["iPhone sideways", PHONE], ["iPad sideways", PAD]]){
-    const {c, p, errs, T, at}=await open("guitar", opt); console.log("== guitar · "+dev);
+    const {c, p, errs, T, at, press, menu}=await open("guitar", opt); console.log("== guitar · "+dev);
     const lay=await p.evaluate(()=>{ const fx=NECK.fx, w=fx.slice(1).map((x,i)=>x-fx[i]);
       return {on:PV.on, play:NECK.play, inView:!!document.querySelector("#playView #neckBox"), page:getComputedStyle(document.querySelector(".wrap")).display,
         zoom:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
         w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)>neckY(5), nutLeft:NECK.fx[0]<NECK.sx && !NECK.flip && neckStrum().x0===NECK.sx && neckXY(0,3)[0]<NECK.W/2,
-        chords:(()=>{ const c=document.getElementById("pvStrip").getBoundingClientRect(), n=document.getElementById("neck").getBoundingClientRect(); return {left:c.right<=n.left+1, h:c.height/n.height, n:document.querySelectorAll("#pvStrip .cs").length}; })(),
+        chords:(()=>{ const c=document.getElementById("pvStrip").getBoundingClientRect(), n=document.getElementById("neck").getBoundingClientRect(); return {left:c.right<=n.left+1, h:c.height/n.height, n:document.querySelectorAll("#pvStrip .cs").length, gap:n.left-c.right}; })(),
         strip:neckStrum().w/NECK.W,
         pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#playView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText) && /safe-area-inset-bottom/.test(r.cssText)); }catch(e){ return false; } }),
         ta:getComputedStyle(document.getElementById("neck")).touchAction, bar:document.getElementById("pvClose").textContent }; });
@@ -48,7 +51,7 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(lay.zoom==="1", "the play view is not zoomed (zoom "+lay.zoom+")");
     ok(lay.sw<=lay.iw && lay.sh<=lay.ih+1, `nothing scrolls: ${lay.sw}×${lay.sh} in ${lay.iw}×${lay.ih}`);
     ok(lay.w.every((x,i)=>i===0||x<lay.w[i-1]) && lay.w[lay.w.length-1]>=44, `${lay.n} frets, closer together towards the body: ${lay.w.join(", ")} px`);
-    ok(lay.chords.n===6 && lay.chords.left && lay.chords.h>0.9, "the six chords stand in a column at the nut end of the neck, the neck's whole height");
+    ok(lay.chords.n===10 && lay.chords.left && lay.chords.h>0.9 && lay.chords.gap>=16, `the chords stand at the nut end of the neck, the neck's whole height, ${Math.round(lay.chords.gap)} px clear of the open strings`);
     ok(lay.strip<=0.19, `a slim strum strip (${Math.round(lay.strip*100)}% of the neck)`);
     ok(lay.low && lay.nutLeft, "screen facing you: the low string at the bottom, the nut on the left, the strum strip on the right");
     ok(lay.pad, "the play view keeps clear of the notch and the home bar (safe-area padding)");
@@ -56,15 +59,21 @@ const cents=(a,b)=>1200*Math.log2(a/b);
 
     /* AOG-CHORDSTRIP-V1: ♪ Notes (the first way): a fret plays the moment it is touched; the chord strip plays a chord */
     const md=await p.evaluate(()=>({tap:PV.tap, notes:document.getElementById("pvTap").getAttribute("aria-pressed"), strip:[...document.querySelectorAll("#pvStrip .cs")].map(b=>b.textContent)}));
-    ok(md.tap && md.notes==="true" && md.strip.join(" ")==="C Dm Em F G Am", "♪ Notes is on, and the six chords sit on top of the neck: "+md.strip.join(" "));
+    ok(md.tap && md.notes==="true" && md.strip.join(" ")==="C Dm Em F G Am G7 Cadd9 D7 Em7", "♪ Notes is on, and the chords sit by the neck (the six, then G7 Cadd9 D7 Em7): "+md.strip.join(" "));
     await p.evaluate("muteAll(); __v=[]"); { const q=await at(2,5); await T("touchStart",[q]); await p.waitForTimeout(60); await T("touchEnd",[]); }
     ok(JSON.stringify(await p.evaluate("__v.map(x=>x.m)"))==="[55]", "♪ Notes: a touch on a fret plays it at once (G)");
     await p.evaluate("muteAll(); __v=[]");
     { const b2=await p.evaluate(()=>{ const r=document.querySelector('#pvStrip .cs[data-i="0"]').getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
       await T("touchStart",[b2]); await p.waitForTimeout(120); await T("touchEnd",[]); await p.waitForTimeout(40); }
     ok(JSON.stringify(await p.evaluate("__v.map(x=>x.m)"))==="[48,52,55,60,64]", "a tap on C in the strip strums a C chord: "+JSON.stringify(await p.evaluate("__v.map(x=>x.m)")));
+    /* AOG-CHORDS-MORE-V1: the second row plays its own shapes */
+    for(const [i,want,name] of [[7,[48,52,55,62,64],"Cadd9"],[6,[43,47,50,55,59,65],"G7"]]){
+      await p.evaluate("muteAll(); __v=[]");
+      const b3=await p.evaluate(i=>{ const r=document.querySelector(`#pvStrip .cs[data-i="${i}"]`).getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; }, i);
+      await T("touchStart",[b3]); await p.waitForTimeout(120); await T("touchEnd",[]); await p.waitForTimeout(40);
+      const got=await p.evaluate("__v.map(x=>x.m)"); ok(JSON.stringify(got)===JSON.stringify(want), `${name} strums its open shape: ${JSON.stringify(got)}`); }
     await p.evaluate("muteAll(); S.hand=null; litNeck()");
-    await p.click("#pvHold"); await p.waitForTimeout(60);
+    await menu("#pvHold"); await p.waitForTimeout(60);
     ok(await p.evaluate("!PV.tap && document.getElementById('pvHold').getAttribute('aria-pressed')==='true'"), "one tap on ✋ Hold + strum switches to holding the frets");
     /* a held fret is silent; the strip sounds it at the right pitch, on every string */
     for(const [s,f] of [[0,3],[1,2],[2,5],[3,4],[4,1],[5,7]]){
@@ -127,10 +136,10 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     await T("touchEnd",[]);
 
     /* the drawer holds the sounds; a chord from the strip, then a strum with no fingers plays its shape */
-    await p.evaluate("muteAll()"); await p.click("#pvMore"); await p.waitForTimeout(80);
+    await p.evaluate("muteAll()"); await press("#pvMore"); await p.waitForTimeout(80);
     const dr=await p.evaluate(()=>({open:!document.getElementById("pvDrawer").hidden, sound:document.getElementById("pvSound").options.length}));
     ok(dr.open && dr.sound>20, `the drawer opens with ${dr.sound} sounds`);
-    await p.click("#pvMore");
+    await press("#pvMore");
     const g=await p.evaluate(()=>{ const b=document.querySelector('#pvStrip .cs[data-i="4"]'), r=b.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
     await T("touchStart",[g]); await p.waitForTimeout(60); await T("touchEnd",[]); await p.waitForTimeout(40);
     await p.evaluate("muteAll(); __v=[]");
@@ -140,27 +149,27 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(JSON.stringify(gs)===JSON.stringify([43,47,50,55,59,67]), "with no fingers, the strum plays the G tapped in the strip: "+JSON.stringify(gs));
 
     /* left-handed: the nut on the right, the strip on the left, the same notes */
-    await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvMore");
+    await menu("#pvLeft");
     const L=await p.evaluate(()=>({flip:NECK.flip, strip:neckStrum().x0, W:NECK.W, x:neckXY(0,3)[0]}));
     await p.evaluate("muteAll(); __v=[]");
     const lq=await at(0,3), ls=await at(0,"strum");
     await T("touchStart",[{...lq,id:1}]); await T("touchStart",[{...lq,id:1},{...ls,id:2}]); await p.waitForTimeout(60); await T("touchEnd",[]);
     const lm=await p.evaluate("__v.map(x=>x.m)");
     ok(L.flip && L.strip===0 && L.x>L.W/2 && JSON.stringify(lm)==="[43]", `left-handed: the strip on the left, the low frets on the right, the same G (${lm})`);
-    await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvMore");
+    await menu("#pvLeft");
 
     /* AOG-PLAY-AWAY-V1: the screen turned away from the player: mirrored and upside down, so the strum is under the right
        hand and the low string on top; the same notes. With Left-handed too, the strum goes back to the screen's right. */
-    await p.click("#pvMore"); await p.click("#pvAway"); await p.click("#pvMore");
+    await menu("#pvAway");
     const A=await p.evaluate(()=>({strip:neckStrum().x0, W:NECK.W, x:neckXY(0,3)[0], low:neckY(0)<neckY(5), pressed:document.getElementById("pvAway").getAttribute("aria-pressed")}));
     await p.evaluate("muteAll(); __v=[]");
     { const aq=await at(0,3), as=await at(0,"strum"); await T("touchStart",[{...aq,id:1}]); await T("touchStart",[{...aq,id:1},{...as,id:2}]); await p.waitForTimeout(60); await T("touchEnd",[]); }
     const am=await p.evaluate("__v.map(x=>x.m)");
     ok(A.pressed==="true" && A.strip===0 && A.x>A.W/2 && A.low && JSON.stringify(am)==="[43]", `screen faces away: the strip on the screen's left (your right), the low string on top, the same G (${am})`);
-    await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvMore");
+    await menu("#pvLeft");
     const AL=await p.evaluate(()=>({strip:neckStrum().x0, sx:NECK.sx, low:neckY(0)<neckY(5)}));
     ok(AL.strip===AL.sx && AL.low, "screen away and left-handed: the strip on the screen's right, the low string still on top");
-    await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvAway"); await p.click("#pvMore");
+    await menu("#pvLeft","#pvAway");
 
     /* Solo mode on the sideways neck: a touch plays at once; the strip is the whammy */
     await p.evaluate("AOGSolo.setMode('solo'); buildNeck(); muteAll(); __v=[]");
@@ -170,8 +179,19 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     await p.evaluate("AOGSolo.setMode('chords'); buildNeck()");
 
     /* frets up and down; Close; turned back upright */
-    await p.click("#pvUp"); const up=await p.evaluate("[S.fret0, document.getElementById('pvFrets').textContent]"); await p.click("#pvDown");
+    await press("#pvUp"); const up=await p.evaluate("[S.fret0, document.getElementById('pvFrets').textContent]"); await press("#pvDown");
     ok(up[0]===2 && /2/.test(up[1]), "▶ moves the hand up the neck: "+up[1]);
+    /* AOG-PLAY-GUARD-V1: a slip onto the bar while playing is ignored; a real press a moment later works */
+    { const q=await at(2,3); await T("touchStart",[q]); await p.waitForTimeout(40);
+      const slip=await p.evaluate(()=>{ document.getElementById("pvMore").click(); return !document.getElementById("pvDrawer").hidden; });
+      await T("touchEnd",[]); await p.waitForTimeout(800);
+      const real=await p.evaluate(()=>{ document.getElementById("pvMore").click(); return !document.getElementById("pvDrawer").hidden; });
+      ok(!slip && real, "a tap on ☰ Menu while a hand is on the strings is ignored; a moment later it opens the menu"); }
+    const bar=await p.evaluate(()=>[...document.querySelectorAll("#playView .pv-bar button")].filter(b=>!b.hidden && getComputedStyle(b).display!=="none").map(b=>b.id));
+    const above=await p.evaluate(()=>{ const s=neckStrum(), r=document.getElementById("neck").getBoundingClientRect(), k=r.width/NECK.W, x0=r.left+s.x0*k, x1=x0+s.w*k;
+      return [...document.querySelectorAll("#playView .pv-bar button")].filter(b=>!b.hidden).some(b=>{ const q=b.getBoundingClientRect(); return q.width && q.right>x0 && q.left<x1; }); });
+    ok(JSON.stringify(bar)===JSON.stringify(["pvMore","pvDown","pvUp"]) && !above, "the bar keeps only ☰ Menu and the frets, none of it above the strum strip: "+bar.join(" "));
+    if(await p.evaluate("document.getElementById('pvDrawer').hidden")) await press("#pvMore");
     await p.click("#pvClose"); await p.waitForTimeout(100);
     const cl=await p.evaluate(()=>({on:PV.on, back:!!document.querySelector("#rig #neckBox"), page:getComputedStyle(document.querySelector(".wrap")).display, play:NECK.play}));
     ok(!cl.on && cl.back && cl.page!=="none" && !cl.play, "Close puts the page back, with its neck");
@@ -190,15 +210,15 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(/sideways/.test(u.turn), "one quiet line: "+u.turn);
     ok(u.big==="none" && u.sw<=390, "no computer button on a phone; no sideways scroll");
     const cs=await p.evaluate(()=>{ const st=document.getElementById("chordStrip"), nk=document.getElementById("neckBox"); return {n:st.querySelectorAll(".cs").length, above:st.getBoundingClientRect().bottom<=nk.getBoundingClientRect().top+1 && nk.getBoundingClientRect().top-st.getBoundingClientRect().bottom<40, w:document.querySelector("#chordStrip .cs").getBoundingClientRect().width}; });
-    ok(cs.n===6 && cs.above && cs.w>=44, `upright, the six chords sit right on top of the neck (${Math.round(cs.w)} px each)`);
+    ok(cs.n===10 && cs.above && cs.w>=44, `upright, the six chords and the four more sit right on top of the neck (${Math.round(cs.w)} px each)`);
     await p.setViewportSize({width:844,height:390}); await p.waitForTimeout(300); await p.setViewportSize({width:390,height:844}); await p.waitForTimeout(300);
     ok(await p.evaluate("document.getElementById('pvTurn').hidden"), "once turned, the line does not come back");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
 
   /* Spanish */
   { const {c, p, errs}=await open("guitar", PHONE, ()=>{ try{ localStorage.setItem("aog.lang","es"); }catch(e){} }); console.log("== guitar · español");
-    const es=await p.evaluate(()=>[...document.querySelectorAll("#playView .pv-bar button, #pvHint, #pvFrets")].map(e=>e.textContent||e.getAttribute("aria-label")).join(" | ")+" | "+document.querySelector("#neck .nk-strumlab").textContent);
-    ok(/Cerrar/.test(es) && /Sonidos/.test(es) && /Notas/.test(es) && /Apagar/.test(es) && /Trastes 1/.test(es) && /RASGUEA/.test(es), "en español: "+es);
+    const es=await p.evaluate(()=>[...document.querySelectorAll("#playView button, #pvHint, #pvFrets")].map(e=>e.textContent||e.getAttribute("aria-label")).join(" | ")+" | "+document.querySelector("#neck .nk-strumlab").textContent);
+    ok(/Cerrar/.test(es) && /Menú/.test(es) && /Notas/.test(es) && /Apagar/.test(es) && /Trastes 1/.test(es) && /RASGUEA/.test(es), "en español: "+es);
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
 
   /* the bass: four strings, two fingers in turn, the fretless upright */

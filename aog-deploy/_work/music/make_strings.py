@@ -16,14 +16,14 @@ PAGES = {
     "guitar": {
         "TITLE": "The Guitar",
         "DESC": "Acoustic, classical and electric guitars, with an amp and pedals. Tap a chord, strum the strings, or play the frets. Works on a phone, a tablet and a computer.",
-        "OGDESC": "Acoustic, classical and electric guitars, with an amp and pedals. Tap a chord, strum the strings, or play the frets.",
+        "OGDESC": "Tap a chord. Strum. No login.",
         "PLATE": "SIX-STRING GUITAR",
         "PLATESMALL": "ACOUSTIC · ELECTRIC · AMP · PEDALS",
     },
     "bass": {
         "TITLE": "The Bass",
         "DESC": "Electric, upright and synth bass, with an amp and pedals. Tap a chord to hear its low note, or play the frets. Works on a phone, a tablet and a computer.",
-        "OGDESC": "Electric, upright and synth bass, with an amp and pedals. Tap a chord to hear its low note, or play the frets.",
+        "OGDESC": "Tap a chord. Pluck. No login.",
         "PLATE": "FOUR-STRING BASS",
         "PLATESMALL": "FINGERS · PICK · AMP · PEDALS",
     },

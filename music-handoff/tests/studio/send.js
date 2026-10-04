@@ -34,7 +34,7 @@ async function record(p, play) {
 /* Send to the Studio on take n; the line it leaves */
 async function toStudio(p, list, line, n) {
   await p.click(`#${list} [data-aogrec-studio="${n}"]`);
-  await p.waitForFunction(id => /^(Sent to the Studio|Enviada al estudio|That did not work|No funcionó|This device has no room|Este (aparato|dispositivo) no tiene)/.test(document.getElementById(id).textContent.trim()), line, { timeout: 10000 });
+  await p.waitForFunction(id => /^(Sent to the Mixing Desk|Enviada a la mesa de mezclas|That did not work|No funcionó|This device has no room|Este (aparato|dispositivo) no tiene)/.test(document.getElementById(id).textContent.trim()), line, { timeout: 10000 });
   return p.evaluate(id => { const el = document.getElementById(id), a = el.querySelector("a"); return { text: el.textContent.trim(), href: a ? a.getAttribute("href") : null }; }, line);
 }
 const acts = (p, list) => p.evaluate(l => { const r = document.querySelector(`#${l} .aogrec-take`); return r ? [...r.querySelectorAll("a,button")].map(e => e.textContent).join(" | ") : ""; }, list);
@@ -60,21 +60,21 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await p.goto(U + "music-piano.html"); await p.waitForTimeout(900);
   await p.selectOption("#soundSel", "epwarm");
   await record(p, async () => { await p.evaluate(() => noteOn("k", 60, 0.7)); await p.waitForTimeout(900); await p.evaluate(() => noteOff("k", 60)); });
-  ok(await acts(p, "takes") === "Save as .wav | Send to the turntables | Send to the drum machine | Send to the Studio", "the piano's take: " + await acts(p, "takes"));
+  ok(await acts(p, "takes") === "Save as .wav | Send to the turntables | Send to the drum machine | Send to the Mixing Desk | Delete", "the piano's take: " + await acts(p, "takes"));
   let ln = await toStudio(p, "takes", "recLine", 1);
-  ok(ln.text === "Sent to the Studio. Open the Studio" && ln.href === "/studio", "the piano's line after sending: \"" + ln.text + "\" (" + ln.href + ")");
+  ok(ln.text === "Sent to the Mixing Desk. Open the Mixing Desk" && ln.href === "/studio", "the piano's line after sending: \"" + ln.text + "\" (" + ln.href + ")");
   await p.evaluate(() => paintText()); await p.waitForTimeout(100);
-  ok((await p.textContent("#recLine")).trim() === "Sent to the Studio. Open the Studio", "the line stays when the page repaints its words");
+  ok((await p.textContent("#recLine")).trim() === "Sent to the Mixing Desk. Open the Mixing Desk", "the line stays when the page repaints its words");
   sent.push("Piano take 1");
 
   /* 2 · the drum machine: its own takes go to the Studio too (not to a drum pad) */
   await p.goto(U + "music-drums.html"); await p.waitForTimeout(1300);
   await p.click('.sp-pad[data-pad="kick"]'); await p.waitForTimeout(1500);
   await record(p, async () => { for (const id of ["kick", "snare", "kick", "snare"]) { await p.click(`.sp-pad[data-pad="${id}"]`); await p.waitForTimeout(230); } await p.waitForTimeout(300); });
-  ok(await acts(p, "takeList") === "Save as .wav | Send to the turntables | Send to the Studio", "the drum machine's take: " + await acts(p, "takeList"));
+  ok(await acts(p, "takeList") === "Save as .wav | Send to the turntables | Send to the Mixing Desk | Delete", "the drum machine's take: " + await acts(p, "takeList"));
   ln = await toStudio(p, "takeList", "takeLine", 1);
   await p.evaluate(() => paint()); await p.waitForTimeout(100);
-  ok(ln.text === "Sent to the Studio. Open the Studio" && (await p.textContent("#takeLine")).trim() === ln.text, "the drum machine's line, kept through a repaint: " + ln.text);
+  ok(ln.text === "Sent to the Mixing Desk. Open the Mixing Desk" && (await p.textContent("#takeLine")).trim() === ln.text, "the drum machine's line, kept through a repaint: " + ln.text);
   sent.push("Drum take 1");
 
   /* 3 · the guitar, twice: a C chord, then a G chord */
@@ -83,7 +83,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await toStudio(p, "takes", "recLine", 1); sent.push("Guitar take 1");
   await record(p, async () => { await p.evaluate(() => playChord(pads()[4], 0.8)); await p.waitForTimeout(1600); });
   ln = await toStudio(p, "takes", "recLine", 2); sent.push("Guitar take 2");
-  ok(ln.text === "Sent to the Studio. Open the Studio" && await p.evaluate(() => REC.takes.map(k => k.n).join()) === "2,1", "the guitar sends two takes: " + ln.text);
+  ok(ln.text === "Sent to the Mixing Desk. Open the Mixing Desk" && await p.evaluate(() => REC.takes.map(k => k.n).join()) === "2,1", "the guitar sends two takes: " + ln.text);
   /* the same take sent twice is kept once */
   await toStudio(p, "takes", "recLine", 2);
   const twice = await p.evaluate(async () => (await AOGHandoff.list(AOGHandoff.INBOX)).items.map(x => x.from + x.n).join());
@@ -102,7 +102,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await p.waitForFunction(() => soundReady(S.sound), null, { timeout: 30000 });
   await record(p, async () => { await p.evaluate(() => padDown(0, 0.8)); await p.waitForTimeout(900); await p.evaluate(() => padUp(0)); await p.waitForTimeout(300); });
   ln = await toStudio(p, "takes", "recLine", 1); sent.push("Band take 1");
-  ok(ln.text === "Sent to the Studio. Open the Studio", "The Band sends its take: " + ln.text);
+  ok(ln.text === "Sent to the Mixing Desk. Open the Mixing Desk", "The Band sends its take: " + ln.text);
 
   /* 6 · the turntables: a mix recorded with their own Record */
   await p.goto(U + "music-decks.html"); await p.waitForTimeout(1200);
@@ -112,17 +112,17 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await p.click("#recBtn"); await p.waitForTimeout(2200); await p.click("#recBtn"); await p.waitForTimeout(700);
   await p.click('[data-play="A"]');
   const drow = await p.evaluate(() => { const r = document.querySelector("#takes .take"); return r && { onto: r.querySelectorAll("[data-totake]").length, btn: (r.querySelector("[data-tostudio]") || {}).textContent, bpm: TAPE.takes[0].bpm }; });
-  ok(drow && drow.onto === 3 && drow.btn === "Send to the Studio" && Math.abs(drow.bpm - 125) < 0.5, "the turntables' take: Onto deck A, B, C and Send to the Studio; its tempo is the MASTER deck's: " + JSON.stringify(drow));
+  ok(drow && drow.onto === 3 && drow.btn === "Send to the Mixing Desk" && Math.abs(drow.bpm - 125) < 0.5, "the turntables' take: Onto deck A, B, C and Send to the Studio; its tempo is the MASTER deck's: " + JSON.stringify(drow));
   await p.click('#takes [data-tostudio="1"]');
-  await p.waitForFunction(() => /^(Sent to the Studio|That did not work)/.test(document.getElementById("takeLine").textContent.trim()), null, { timeout: 10000 });
+  await p.waitForFunction(() => /^(Sent to the Mixing Desk|That did not work)/.test(document.getElementById("takeLine").textContent.trim()), null, { timeout: 10000 });
   const dl = await p.evaluate(() => ({ text: document.getElementById("takeLine").textContent.trim(), href: document.querySelector("#takeLine a").getAttribute("href") }));
-  ok(dl.text === "Sent to the Studio. Open the Studio" && dl.href === "/studio", "the turntables' line: \"" + dl.text + "\" (" + dl.href + ")");
+  ok(dl.text === "Sent to the Mixing Desk. Open the Mixing Desk" && dl.href === "/studio", "the turntables' line: \"" + dl.text + "\" (" + dl.href + ")");
   sent.push("Turntables take 1");
 
   /* 7 · the Studio, through the line's own link */
   await Promise.all([p.waitForNavigation({ timeout: 15000 }), p.click("#takeLine a")]);
   await p.waitForFunction(() => window.__aogStudio && __aogStudio.INBOX.items.length >= 7, null, { timeout: 10000 });
-  ok(/\/studio$/.test(p.url()) && await p.evaluate(() => document.getElementById("mastH").textContent) === "The Studio", "Open the Studio opens the Studio (" + p.url().replace(U, "/") + ")");
+  ok(/\/studio$/.test(p.url()) && await p.evaluate(() => document.getElementById("mastH").textContent) === "The Mixing Desk", "Open the Studio opens the Studio (" + p.url().replace(U, "/") + ")");
   const names = await inboxNames(p);
   const want = sent.slice().reverse();
   ok(names.join(" | ") === want.join(" | "), "Takes sent here, newest first: " + names.join(" | "));
@@ -180,10 +180,10 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   /* the Studio's own mix still goes to the turntables, and is offered here too, beside the takes */
   await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 30000 });
   await p.click("#sendBtn"); await p.waitForFunction(() => /Sent|did not/.test(document.getElementById("sendLine").textContent), null, { timeout: 10000 });
-  await p.waitForFunction(() => [...document.querySelectorAll("#srcSel option")].some(o => /^Your last mix from the studio/.test(o.textContent)), null, { timeout: 5000 }).catch(() => {});
+  await p.waitForFunction(() => [...document.querySelectorAll("#srcSel option")].some(o => /^Your last mix from the mixing desk/.test(o.textContent)), null, { timeout: 5000 }).catch(() => {});
   const sb = await p.evaluate(async () => { const x = await AOGHandoff.get("studiobench"); return { shelf: !!(x && x.wav && x.wav.size > 44), line: document.getElementById("sendLine").textContent.trim(),
     grp: [...document.querySelectorAll("#srcSel optgroup")].map(g => g.label + ": " + [...g.children].map(o => o.textContent.split(" · ")[0]).join(", ")).pop() }; });
-  ok(sb.shelf && sb.line === "Sent. Open the turntables to play it. The turntables" && sb.grp === "Sent to the turntables: Your last mix from the studio, From the bass",
+  ok(sb.shelf && sb.line === "Sent. Open the turntables to play it. The turntables" && sb.grp === "Sent to the turntables: Your last mix from the mixing desk, From the bass",
     "the Studio's mix still goes to the turntables (\"" + sb.line + "\"), and is offered here too: " + sb.grp);
 
   /* a reload keeps both tracks */
@@ -203,7 +203,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await p.waitForFunction(() => /oldest/.test(document.getElementById("goneLine").textContent), null, { timeout: 5000 });
   const g = await p.evaluate(() => ({ line: document.getElementById("goneLine").textContent, n: document.querySelector("#inbox > .st-line").textContent, first: document.querySelector("#inbox .st-rec b").textContent,
     piano1: [...document.querySelectorAll("#inbox .st-rec b")].filter(b => b.textContent === "Piano take 1").length, tracks: __aogStudio.SONG.tracks.slice(0, 2).every(x => x.clip) }));
-  ok(/^The Studio keeps 16 takes\. To make room for a new one, the oldest went: Piano take 1 \(made at \d{1,2}:\d\d (AM|PM)\)\.$/.test(g.line.replace(/\u202f/g, " ")) && g.n === "16 of 16 takes, newest first." && g.first === "Piano take 1" && g.piano1 === 1 && g.tracks,
+  ok(/^The Mixing Desk keeps 16 takes\. To make room for a new one, the oldest went: Piano take 1 \(made at \d{1,2}:\d\d (AM|PM)\)\.$/.test(g.line.replace(/\u202f/g, " ")) && g.n === "16 of 16 takes, newest first." && g.first === "Piano take 1" && g.piano1 === 1 && g.tracks,
     "the 17th take pushes out the oldest, and the Studio says so plainly: \"" + g.line + "\" (the newest piano take is first; the tracks are untouched)");
   await q.close();
 
@@ -239,7 +239,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await r.goto(U + "music-guitar.html"); await r.waitForTimeout(900);
   await record(r, async () => { await r.evaluate(() => playChord(pads()[0], 0.8)); await r.waitForTimeout(900); });
   const esActs = await acts(r, "takes"); const esLn = await toStudio(r, "takes", "recLine", 1);
-  ok(esActs === "Guardar como .wav | Enviar a los platos | Enviar a la caja de ritmos | Enviar al estudio" && esLn.text === "Enviada al estudio. Abrir el estudio", "the guitar in Spanish: " + esActs + " → " + esLn.text);
+  ok(esActs === "Guardar como .wav | Enviar a los platos | Enviar a la caja de ritmos | Enviar a la mesa de mezclas | Borrar" && esLn.text === "Enviada a la mesa de mezclas. Abrir la mesa de mezclas", "the guitar in Spanish: " + esActs + " → " + esLn.text);
   await r.evaluate(() => { try { localStorage.setItem("aog.lang", "en"); } catch (e) {} }); await r.close();
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();
@@ -262,11 +262,11 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
     await m.evaluate(() => { const s = document.querySelector(".viewpick select.aogdd-sel"); if (s) { s.value = [...s.options].find(o => /Mixer/.test(o.text)).value; s.dispatchEvent(new Event("change")); } });
     await m.waitForTimeout(200);
     await m.click("#recBtn"); await m.waitForTimeout(1200); await m.click("#recBtn"); await m.waitForTimeout(700);
-    await m.click('#takes [data-tostudio="1"]'); await m.waitForFunction(() => /^(Sent to the Studio|That did not work)/.test(document.getElementById("takeLine").textContent.trim()), null, { timeout: 10000 });
+    await m.click('#takes [data-tostudio="1"]'); await m.waitForFunction(() => /^(Sent to the Mixing Desk|That did not work)/.test(document.getElementById("takeLine").textContent.trim()), null, { timeout: 10000 });
     await m.locator("#takeLine").scrollIntoViewIfNeeded(); await m.waitForTimeout(200);
     const dfit = await m.evaluate(() => { const bt = document.querySelector('#takes [data-tostudio="1"]').getBoundingClientRect(); return { h: Math.round(bt.height), right: Math.round(bt.right), iw: innerWidth, sw: document.scrollingElement.scrollWidth, line: document.getElementById("takeLine").textContent.trim() }; });
     const dc = await m.evaluate(`(${PROBE})()`), dk = await m.evaluate(`(${CALM})()`);
-    ok(dfit.h >= 40 && dfit.right <= dfit.iw && dfit.sw <= dfit.iw && dfit.line === "Sent to the Studio. Open the Studio" && !dc.length && !dk.length,
+    ok(dfit.h >= 40 && dfit.right <= dfit.iw && dfit.sw <= dfit.iw && dfit.line === "Sent to the Mixing Desk. Open the Mixing Desk" && !dc.length && !dk.length,
       `iPhone, ${theme}: the turntables' take row and its line fit (${JSON.stringify(dfit)}), read (${dc.length} unreadable ${JSON.stringify(dc.slice(0, 2))}) and are calm (${dk.join("; ") || "ok"})`);
     await m.screenshot({ path: `studiosend-decks-${theme}.png` });
     /* the Studio with a full list, a take on a track and a question open */

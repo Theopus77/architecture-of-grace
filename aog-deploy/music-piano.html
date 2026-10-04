@@ -273,6 +273,13 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;touch-action:manipulation}
 .bp-b[aria-pressed="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
 .bp-b:disabled{opacity:.45}
+.bp-recnow{border-color:#c4452a;color:#ffb1a4}
+.bp-b[hidden]{display:none}
+.bp-drawer{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 52px);left:max(env(safe-area-inset-left,0px),8px);width:min(420px,80vw);
+  background:#1a1c21;border:1px solid #5b5446;border-radius:12px;padding:.7rem .8rem;display:grid;gap:.6rem;touch-action:manipulation}
+.bp-drawer[hidden]{display:none}
+.bp-row{display:flex;flex-wrap:wrap;gap:6px}
+.bp-drawer .bp-sel{width:100%;flex:none}
 .bp-sel{flex:0 1 15rem;min-width:7rem;min-height:40px;font:600 16px/1.2 var(--sans);color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:10px;padding:0 .4rem}
 .bp-range{font:700 14px/1.1 var(--sans);color:#f1e9d6;white-space:nowrap}
 .bp-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 var(--sans);color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
@@ -431,13 +438,18 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
      Turned sideways on the bench, the page's own keys (#kbd) move in here and fill the screen; turned back, they go home. -->
 <div id="playView" class="bp" role="region">
   <div class="bp-bar">
-    <button type="button" class="bp-b" id="bpClose"></button>
-    <select class="bp-sel" id="bpSound"></select>
-    <span class="bp-hint" id="bpHint"></span>
+    <!-- AOG-PLAY-GUARD-V1 — Jimmy: "I keep on hitting or tapping the buttons on top while playing." The bar keeps ☰ Menu and
+         the octave; Close, Record and the sound are in the menu. While a recording runs, its Stop shows here. -->
+    <button type="button" class="bp-b" id="bpMore" aria-expanded="false" aria-controls="bpDrawer"></button>
+    <button type="button" class="bp-b bp-recnow" id="bpRec" aria-pressed="true" hidden></button>
     <button type="button" class="bp-b" id="bpDown">◀</button>
     <span class="bp-range" id="bpRange" aria-live="polite"></span>
     <button type="button" class="bp-b" id="bpUp">▶</button>
-    <button type="button" class="bp-b" id="bpRec" aria-pressed="false"></button>
+    <span class="bp-hint" id="bpHint"></span>
+  </div>
+  <div class="bp-drawer" id="bpDrawer" hidden>
+    <div class="bp-row"><button type="button" class="bp-b" id="bpClose"></button><button type="button" class="bp-b" id="bpRecGo" aria-pressed="false"></button></div>
+    <select class="bp-sel" id="bpSound"></select>
   </div>
   <div class="cstrip" id="pvStrip" role="group"></div>
   <div class="bp-main" id="bpMain"></div>
@@ -2005,7 +2017,7 @@ function playZoomLock(on){
 const BP={on:false, closed:false, mq:null, back:null, y:0, seen:false};
 try{ BP.seen=localStorage.getItem("aog.piano.play.v1")==="1"; }catch(e){}
 function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen.height||0)>=900; return {
-  close:es?"✕ Cerrar":"✕ Close",
+  close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu",
   hint: es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like.",
   turn: tab ? (es?"Gira tu tableta de lado para tocar en toda la pantalla.":"Turn your tablet sideways to play on the whole screen.")
             : (es?"Gira tu teléfono de lado para tocar en toda la pantalla.":"Turn your phone sideways to play on the whole screen."),
@@ -2013,10 +2025,10 @@ function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen
 function bpText(){
   if(!$("playView")) return; const W=bpWords();
   $("playView").setAttribute("aria-label", W.region);
-  $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint;
+  $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint; $("bpMore").textContent=W.menu;
   $("bpDown").setAttribute("aria-label", W.lower); $("bpUp").setAttribute("aria-label", W.higher);
   $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
-  $("bpRec").textContent=$("recBtn").textContent; $("bpRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false");
+  bpRecPaint();
   $("bpTurn").textContent=W.turn;
   $("bpTurn").hidden=BP.seen || BP.on || hashView()!=="home" || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
 }
@@ -2030,21 +2042,36 @@ function bpSync(){
     playZoomLock(true); document.body.classList.add("aog-play");
     if(!BP.seen){ BP.seen=true; try{ localStorage.setItem("aog.piano.play.v1","1"); }catch(e){} }
   } else {
-    BP.on=false; document.body.classList.remove("aog-play"); playZoomLock(false);
+    BP.on=false; bpDrawer(false); document.body.classList.remove("aog-play"); playZoomLock(false);
     if(BP.back && BP.back.parentNode) BP.back.parentNode.replaceChild(kb, BP.back); BP.back=null;
   }
   buildKeys(); bpText(); if(!w) window.scrollTo(0, BP.y);
+}
+const GUARD={down:new Set(), last:0};
+function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
+function bpDrawer(open){ const d=$("bpDrawer"); if(!d) return; d.hidden=!open; $("bpMore").setAttribute("aria-expanded", open?"true":"false"); }
+function bpRecPaint(){
+  const on=$("recBtn").getAttribute("aria-pressed")==="true";
+  $("bpRecGo").textContent=$("recBtn").textContent; $("bpRecGo").setAttribute("aria-pressed", on?"true":"false");
+  $("bpRec").hidden=!on; $("bpRec").textContent=(S.lang==="es"?"■ Parar ":"■ Stop ")+($("recTime").textContent||"");
 }
 function bpInit(){
   if(!$("playView") || !window.matchMedia) return;
   BP.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
   const ch=()=>{ BP.closed=false; bpSync(); bpText(); };
   if(BP.mq.addEventListener) BP.mq.addEventListener("change", ch); else if(BP.mq.addListener) BP.mq.addListener(ch);
-  $("bpClose").onclick=()=>{ BP.closed=true; bpSync(); };
+  $("bpClose").onclick=()=>{ bpDrawer(false); BP.closed=true; bpSync(); };
   $("bpDown").onclick=()=>$("downBtn").click(); $("bpUp").onclick=()=>$("upBtn").click();   /* the page's own, so a lesson hears about it */
-  $("bpRec").onclick=()=>$("recBtn").click();
-  try{ new MutationObserver(()=>{ $("bpRec").textContent=$("recBtn").textContent; $("bpRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false"); })
-    .observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  $("bpRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
+  $("bpRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) bpDrawer(false); };
+  $("bpMore").onclick=()=>bpDrawer($("bpDrawer").hidden);
+  try{ const mo=new MutationObserver(bpRecPaint); mo.observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true});
+    mo.observe($("recTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  /* AOG-PLAY-GUARD-V1: a tap on the bar while a hand is playing (or just after) is a slip, not a press */
+  document.addEventListener("pointerdown",(e)=>{ if(e.target.closest && e.target.closest("#kbd,#pvStrip")){ GUARD.down.add(e.pointerId); GUARD.last=Date.now(); } },true);
+  const lift=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
+  document.addEventListener("pointerup",lift,true); document.addEventListener("pointercancel",lift,true);
+  $("playView").querySelector(".bp-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
   $("bpSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("bpSound").value; ss.onchange(); bpText(); setTimeout(()=>$("bpSound").blur(),0); };
   /* touch on the strings, the bars and the keys: no magnifier, no scroll */
   $("playView").addEventListener("touchstart",(e)=>{ if(e.cancelable && !(e.target.closest && e.target.closest("button,select"))) e.preventDefault(); },{passive:false});
@@ -2484,7 +2511,7 @@ function hashView(){ const v=(location.hash||"").replace(/^#/,""); return VIEWS.
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(v){
