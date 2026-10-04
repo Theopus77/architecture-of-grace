@@ -260,8 +260,9 @@ AmpCore.prototype.process=function(inp, out, n){
     /* the vibe's lamp, once a sample: how bright it is sets the four phase shifts for the fast part below */
     if(vibe){ const V=this.vibe; V.ph+=vibe.rate/fs; if(V.ph>=1) V.ph-=1;
       const s0=0.5+0.5*Math.sin(TAU*V.ph), pwr=s0*s0; V.lamp+=(pwr-V.lamp)*(pwr>V.lamp?vUp:vDn);
-      const lx=0.45+(V.lamp-0.45)*vibe.depth, R=VIBE_RD*Math.pow(VIBE_RB/VIBE_RD, lx), fo=this.fo;
-      for(let s=0;s<4;s++){ const t=Math.tan(Math.PI*Math.min(1/(TAU*R*VIBE_C[s]), 0.45*fo)/fo); V.a[s]=(t-1)/(t+1); }
+      /* the lamp moves slowly, so the four stages are re-tuned every eighth sample (kind to a phone) */
+      if(((V.n=(V.n|0)+1)&7)===1){ const lx=0.45+(V.lamp-0.45)*vibe.depth, R=VIBE_RD*Math.pow(VIBE_RB/VIBE_RD, lx), fo=this.fo;
+        for(let s=0;s<4;s++){ const t=Math.tan(Math.PI*Math.min(1/(TAU*R*VIBE_C[s]), 0.45*fo)/fo); V.a[s]=(t-1)/(t+1); } }
       V.am=1+0.22*vibe.depth*(V.lamp-0.45); }
     let y;
     if(this.fast){
