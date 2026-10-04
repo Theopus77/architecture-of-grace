@@ -32,7 +32,7 @@ const smooth=x=>x<=0?0:x>=1?1:x*x*(3-2*x);
 const WD={
   modeGroup:{en:"How the neck plays",es:"Cómo suena el mástil"},
   chords:{en:"Chords",es:"Acordes"}, solo:{en:"Solo",es:"Solo"},
-  intro:{en:"Solo mode lights the scale for your key. Every lit note fits.",es:"El modo solo ilumina la escala de tu tono. Toda nota iluminada encaja."},
+  intro:{en:"Every lit note fits.",es:"Toda nota iluminada encaja."},
   scaleLab:{en:"Scale",es:"Escala"},
   soundLab: GTR?{en:"Lead sound",es:"Sonido solista"}:{en:"Solo sound",es:"Sonido para el solo"},
   sc_minpent:{en:"Minor pentatonic",es:"Pentatónica menor"},
@@ -184,6 +184,7 @@ const CSS=`
 #rig .so-mode{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 .8rem}
 #rig .so-mode .pbtn{flex:0 1 9rem}
 #rig .so-panel{margin:0 0 .75rem}
+#rig #soloTop{margin:0 0 .6rem}
 #rig .so-panel[hidden]{display:none!important}
 #rig .so-panel .line:first-child{margin-top:0}
 #rig .so-h{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:1.2rem 0 .55rem}
@@ -203,7 +204,6 @@ const CSS=`
 @media (max-width:520px){ #rig .so-band .pbtn.play{flex:1 1 100%} }
 #rig.aog-solo-on .neck .dot.fit{display:none}
 #rig.aog-solo-on .neck .nk-x{display:none!important}
-#rig.aog-solo-on .neck .nk-name{display:inline!important}
 #rig.aog-solo-on .neck .nk-strumlab{display:none}
 #rig.aog-solo-on [data-t="touchLine"],#rig.aog-solo-on [data-t="keysLine"],#rig.aog-solo-on #litLine{display:none!important}
 #neck .so-c circle{fill:#9cc6d8;stroke:#0c0d10;stroke-width:1.5}
@@ -234,12 +234,7 @@ function build(){
   mode.classList.add("so-mode"); mode.setAttribute("role","group");
   mode.innerHTML=`<button type="button" class="pbtn" data-so-mode="chords" aria-pressed="true"></button><button type="button" class="pbtn" data-so-mode="solo" aria-pressed="false"></button>`;
   top.classList.add("so-panel");
-  top.innerHTML=`<p class="line" data-so="intro"></p>
-    <div class="row" style="margin-top:.6rem">
-      <label class="field"><span class="plab" data-so="scaleLab"></span><select id="soScaleSel"></select></label>
-      <label class="field"><span class="plab" data-so="soundLab"></span><select id="soSoundSel"></select></label>
-    </div>
-    <p class="line" id="soSay" aria-live="polite"></p>
+  top.innerHTML=`<p class="line"><span id="soSay" aria-live="polite"></span> <span data-so="intro"></span></p>
     <p class="line so-legend" id="soLegend"></p>`;
   bot.classList.add("so-panel");
   bot.innerHTML=`<div class="so-sw" id="soSw" role="group">
@@ -251,6 +246,10 @@ function build(){
     <p class="line" data-so="techHelp"></p>
     <p class="line touch-line" data-so="touch"></p>
     <p class="line keys-line" data-so="keys"></p>
+    <div class="row" style="margin-top:.9rem">
+      <label class="field"><span class="plab" data-so="scaleLab"></span><select id="soScaleSel"></select></label>
+      <label class="field"><span class="plab" data-so="soundLab"></span><select id="soSoundSel"></select></label>
+    </div>
     <h3 class="so-h" data-so="bandH"></h3>
     <div class="row so-band">
       <button type="button" class="pbtn play" id="soBand"></button>
@@ -364,7 +363,9 @@ function setMode(m, quiet){
   const on=m==="solo"; if(on===SO.on && !quiet) return;
   SO.on=on; P.mode=on?"solo":"chords";
   if(on){
-    if(!quiet && LEADS.indexOf(S.sound)<0 && SOUNDS[DEF_LEAD]){ P.prev=S.sound; setSoundId(DEF_LEAD); P.auto=S.sound; }
+    /* a lead sound goes on (the bass's plain finger sound gives way to the slap bass), and comes off again with Chords */
+    const isLead=LEADS.indexOf(S.sound)>=0 && (GTR || S.sound!=="finger");
+    if(!quiet && !isLead && SOUNDS[DEF_LEAD]){ P.prev=S.sound; setSoundId(DEF_LEAD); P.auto=S.sound; }
     if(S.playing && typeof stop==="function") stop();
     prepBand();
   } else {
@@ -386,10 +387,14 @@ function gEl(id){ const g=document.createElementNS(NS,"g"); g.setAttribute("id",
 function soPaint(){
   const svg=$q("neck"); if(!svg || !SO.built) return;
   if(S.lang!==SO.lang) paintWords();
+  const hasBeat=!!(DRUM.take && DRUM.take.wav); if(hasBeat!==SO.hadBeat){ SO.hadBeat=hasBeat; paintBand(); }
+  const mood=S.key+":"+S.minor; if(mood!==SO.mood){ SO.mood=mood; paintScaleSel(); paintLegend(); paintBandLine(); paintBandProg(); }
   if(!SO.on){ ["soScale","soBend","soTop"].forEach(id=>{ const g=svg.querySelector("#"+id); if(g) g.remove(); }); return; }
   const lc=landChord(), sig=[S.key, S.minor?1:0, scaleId(), S.fret0, NECK.n, NECK.W, NECK.H, chordPcs(lc).join("."), S.lang].join("|");
   if(!svg.querySelector("#soScale") || sig!==SO.sig){ SO.sig=sig; drawScale(svg, lc); }
   if(!svg.querySelector("#soTop")){ const g=gEl("soTop"); svg.appendChild(g); drawWham(); LICK.key=""; }
+  /* an open string's name gives way to its lit note (the same name, in the scale's colours); the others keep theirs */
+  svg.querySelectorAll(".nk-name").forEach(nm=>{ const lit=!!svg.querySelector(`#soScale [data-c="${nm.getAttribute("data-s")}:0"]`); nm.style.display=lit?"none":""; });
   if(!svg.querySelector("#soBend .so-bent") && SOUNDING.some(fs=>fs && fs.bend>0.02)) SOUNDING.forEach(fs=>{ if(fs && fs.bend>0.02) drawBend(fs.s, fs.f, fs.bend, fs.dir||1); });
   sayIt();
 }
@@ -777,9 +782,11 @@ function releaseAll(){
    take both; it sits about 6 dB under the lead. */
 const BAND={on:false, c:null, ch:null, mix:null, bass:null, drums:null, t0:0, bar:0, barSec:2.5, bpm:90, voices:[], loop:null, cur:-1, chord:null, log:[], style:"straight", swing:0.5, beat:false};
 const BAND_LVL=0.5;
-function firstPluck(){ for(const id in SOUNDS){ if(SOUNDS[id].kind==="pluck" && SOUNDS[id].s) return SOUNDS[id].s; } return {}; }
-function gtrP(){ return Object.assign({}, firstPluck(), {sr:32000, T0:9, fref:82, Texp:0.5, Tmin:1.6, Tmax:10, Thf:0.45, Thmax:0.8, pos:0.13, bright:0.62, soft:0.5, noise:0.25, pol2:0.25, atk:0.05, atkLp:0.5, pick:0.15, durMax:2.4, body:[["highpass",80,0.7,0]]}); }
-function bassP(){ return Object.assign({}, firstPluck(), {sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.15, Thmax:0.25, pos:0.2, bright:0.32, soft:0.2, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:2.2, body:[["highpass",30,0.7,0]]}); }
+/* the rhythm guitar is the page's own electric string (EL); the bass line is the finger bass's string (AOG-STRINGS-V2 numbers,
+   tuned at 44.1 kHz), both cut short: a backing note never needs more than a couple of seconds */
+function gtrP(){ return Object.assign({}, typeof EL!=="undefined" ? EL : {sr:44100, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.2, pos:0.12, bright:0.58, soft:0.4, pol2:0.25, atk:0.3, atkLp:0.5, body:[["highpass",80,0.7,0]]}, {pick:0.15, durMax:2.4}); }
+function bassP(){ return {sr:44100, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.15, Thmax:0.6, pos:0.22, bright:0.16, soft:0.09, loop:0.02, pol2:0.25, atk:0, glow:0, rise:4, pick:0.2, durMax:2.2, body:[["highpass",30,0.7,0]]}; }
+const NOTE_RATE=()=>typeof NOTE_SR!=="undefined" ? NOTE_SR : 44100;
 const BS={gtr:{}, bass:{}, drums:null, job:0};
 const BS_NOTES={gtr:[], bass:[]};
 for(let m=40;m<=79;m+=3) BS_NOTES.gtr.push(m);
@@ -789,10 +796,11 @@ function bsMake(kind, n){
   if(BS[kind][n]) return BS[kind][n];
   const P2=kind==="gtr"?gtrP():bassP(); let d=null;
   try{ d=renderNote(n, P2, (n*104729)^0x5a17); }catch(e){ d=null; }
-  if(!d || !d.length || d[100]!==d[100]){ const sr=P2.sr, len=Math.floor(sr*1.6), per=sr/mtof(n); d=new Float32Array(len); const r=seeded(n*31+7);
+  let rate=NOTE_RATE();
+  if(!d || !d.length || d[100]!==d[100]){ const sr=rate=P2.sr||44100, len=Math.floor(sr*1.6), per=sr/mtof(n); d=new Float32Array(len); const r=seeded(n*31+7);
     const N=Math.max(2,Math.round(per)), dl=new Float32Array(N); for(let i=0;i<N;i++) dl[i]=r()*0.5; let idx=0, prev=0;
     for(let i=0;i<len;i++){ const x=dl[idx]; d[i]=x; const y=0.996*(0.5*x+0.5*prev); prev=x; dl[idx]=y; if(++idx===N) idx=0; } }
-  BS[kind][n]=makeBuffer(d, P2.sr); return BS[kind][n];
+  BS[kind][n]=makeBuffer(d, rate); return BS[kind][n];
 }
 function bsBuf(kind, m){ const n=bsNearest(kind, m); return [bsMake(kind, n), Math.pow(2,(m-n)/12)]; }
 /* made a few at a time once Solo mode is open, so Play starts at once */
@@ -818,19 +826,24 @@ function bandProg(){
   if(S.prog && S.prog.length){ const pr=S.preset && PRESETS.find(p=>p.id===S.preset);
     return {chords:S.prog, id:pr?pr.id:"", name:pr?(S.lang==="es"?pr.es:pr.en):(typeof t==="function"?t("myOwn"):"")}; }
   const pr=PRESETS.find(p=>p.minor===S.minor)||PRESETS[0];
-  return {chords:pr.chords, id:pr.id, name:S.lang==="es"?pr.es:pr.en};
+  return {chords:pr.chords, id:pr.id, g:pr.g, name:S.lang==="es"?pr.es:pr.en};
 }
+/* how the band plays it: a boogie for the blues, palm-muted power chords on a tight high-gain amp for the minor rock and
+   metal patterns (the groove-metal chug), open power chords for major rock, strums for the rest */
 function bandStyle(pr){
-  if(pr.id==="blues" || (pr.chords.length>=8 && pr.chords.every(c=>c.q==="dom7"))) return "boogie";
+  const g=pr.g || ((PRESETS.find(p=>p.id===pr.id)||{}).g);
   if(pr.id==="mblues") return "mblues";
+  if(/blues|quick/.test(pr.id||"") || (pr.chords.length>=8 && pr.chords.every(c=>c.q==="dom7"))) return "boogie";
+  if(g==="rock") return S.minor ? "metal" : "rock";
   return S.minor ? "minor" : "straight";
 }
 function bandBpm(){ return BAND.beat && DRUM.take ? DRUM.take.bpm : S.bpm; }
 function bandRigState(style){
-  const crunchy=style==="boogie" || style==="mblues";
-  const st=crunchy ? R("crunch","green412",{gain:4, bass:5, mid:6.5, treble:5.5, master:5})
+  const crunchy=style==="boogie" || style==="mblues" || style==="rock";
+  const st=style==="metal" ? R("high","v30_412",{gain:5.5, bass:6, mid:4, treble:6, presence:6, depth:6.5}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}}})
+    : crunchy ? R("crunch","green412",{gain:style==="rock"?5.5:4, bass:5, mid:6.5, treble:5.5, master:5})
                    : R("clean","open212",{gain:3, bass:5, mid:5, treble:6, presence:5.5}, {bright:true, fx:{chorus:{on:true, rate:2, depth:3, mix:3}}});
-  const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); o.pickup=crunchy?PU.humb:PU.single; return o;
+  const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); o.pickup=crunchy||style==="metal"?PU.humb:PU.single; return o;
 }
 /* the band's own chain: makeChain on the same context, its master into dest (the lead's limiter, live) */
 function bandParts(c, B, dest){
@@ -842,7 +855,7 @@ function bandParts(c, B, dest){
   B.drums=gainAt(c, 0.75); B.drums.connect(ch.pre);
   B.ch=ch; B.c=c; return ch;
 }
-function bandSetup(B){ B.ch.rig.set(bandRigState(B.style)); B.ch.post.gain.value=B.style==="boogie"||B.style==="mblues"?0.784:0.705; }
+function bandSetup(B){ B.ch.rig.set(bandRigState(B.style)); B.ch.post.gain.value={metal:0.68, rock:0.62, boogie:0.784, mblues:0.784}[B.style]||0.705; }
 function strumNotes(chord){
   const pc=((S.key+chord.off)%12+12)%12, r=40+((pc-4+12)%12), q=chord.q, third=(q==="min"||q==="m7")?3:4, sev=q==="dom7"||q==="m7"?10:q==="maj7"?11:-1;
   const n=[r, r+7, r+12, r+12+third]; n.push(sev>=0 ? r+12+sev : r+19); return n;
@@ -860,14 +873,19 @@ function drumHit(c, B, which, when, v){
   const D=drumBufs(c), b=c.createBufferSource(); b.buffer=D[which]; const g=gainAt(c, v); b.connect(g); g.connect(B.drums); b.start(when);
   B.voices.push({end:when+b.buffer.duration, kill(t){ try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,0.01); b.stop(t+0.08); }catch(e){} }});
 }
-function blog(B, p, t, m){ B.log.push({p, t:+t.toFixed(4), m}); if(B.log.length>600) B.log.splice(0, 100); }
+function blog(B, p, t, m){ B.log.push({p, t:+t.toFixed(4), m, ahead:B.c?+(t-B.c.currentTime).toFixed(4):0}); if(B.log.length>600) B.log.splice(0, 100); }
 /* one bar of the band, on any context (live, or offline in a test) */
 function bandBar(c, B, k, t0, barSec){
   const pr=bandProg(), chords=pr.chords, chord=chords[k%chords.length], next=chords[(k+1)%chords.length]; if(!chord) return;
   const beat=barSec/4, lean=x=>(Math.abs((x%1)-0.5)<1e-6)?(B.swing-0.5)*beat:0, at=x=>t0+x*beat+lean(x);
   const st=B.style, pc=((S.key+chord.off)%12+12)%12, gr=40+((pc-4+12)%12);
   /* the rhythm guitar */
-  if(st==="boogie"){
+  if(st==="metal" || st==="rock"){
+    /* power chords in eighths: chugged short (metal, the hand on the strings by the bridge) or let ring a little (rock) */
+    const pcd=[gr, gr+7, gr+12], mute=st==="metal";
+    for(let i=0;i<8;i++){ if(mute && i===7) continue; const x=i/2, d=mute?(i%4===0?0.42:0.26):0.46, v=(i%4===0?0.56:0.44)*(mute?1:0.9);
+      pcd.forEach((m,j)=>{ const w0=at(x)+j*0.005; bandNote(c, B, "gtr", m, v*(1-0.04*j), w0, w0+d*beat, 0.015); blog(B,"gtr",w0,m); }); }
+  } else if(st==="boogie"){
     for(let i=0;i<8;i++){ const x=i/2, six=((i>>1)%2)===1, dy=[gr, gr+(six?9:7)];
       dy.forEach((m,j)=>{ const w0=at(x)+j*0.006; bandNote(c, B, "gtr", m, i%2?0.42:0.52, w0, w0+0.42*beat, 0.02); blog(B,"gtr",w0,m); }); }
   } else {
@@ -881,14 +899,15 @@ function bandBar(c, B, k, t0, barSec){
   /* the bass (on the guitar page) */
   if(GTR){
     const br=28+((pc-4+12)%12), npc=((S.key+next.off)%12+12)%12, nb=28+((npc-4+12)%12), minor=chord.q==="min"||chord.q==="m7";
-    const line = st==="boogie" ? [0,4,7,9,10,9,7,4].map((iv,i)=>[i/2, br+iv, 0.45, i%2?0.62:0.74])
+    const line = (st==="metal"||st==="rock") ? [0,1,2,3,4,5,6,7].map(i=>[i/2, br, 0.42, i%4===0?0.78:0.64])
+      : st==="boogie" ? [0,4,7,9,10,9,7,4].map((iv,i)=>[i/2, br+iv, 0.45, i%2?0.62:0.74])
       : (st==="mblues"||st==="minor") ? [[0,br,1.4,.78],[1.5,br,.45,.62],[2,br+7,.9,.7],[3,br+(minor?10:10),.45,.62],[3.5,br+12,.45,.66]]
       : [[0,br,.9,.78],[1,br,.45,.62],[1.5,br,.45,.66],[2,br,.9,.72],[3,br+7,.45,.64],[3.5,nb>br?nb-1:nb+1,.45,.6]];
     line.forEach(([x,m,d,v])=>{ const w0=at(x); bandNote(c, B, "bass", m, v, w0, w0+d*beat, 0.04); blog(B,"bass",w0,m); });
   }
   /* the drums made here (the drum machine's beat loops on its own) */
   if(!B.beat){
-    const kick=st==="boogie"||st==="mblues"?[0,2]:[0,2,2.5], snare=[1,3];
+    const kick=st==="boogie"||st==="mblues"?[0,2]:st==="metal"?[0,0.5,2,2.5]:[0,2,2.5], snare=[1,3];
     if(k%chords.length===0){ drumHit(c, B, "crash", at(0), 0.5); blog(B,"crash",at(0)); }
     kick.forEach(x=>{ drumHit(c, B, "kick", at(x), 0.95); blog(B,"kick",at(x)); });
     snare.forEach(x=>{ drumHit(c, B, "snare", at(x), 0.62); blog(B,"snare",at(x)); });
@@ -1071,7 +1090,7 @@ async function renderBand(bars, o){
   const bpm=S.bpm, barSec=240/bpm, dur=bars*barSec+1.2;
   const oc=new OfflineAudioContext(2, Math.ceil(dur*sr), sr); await AOGAmp.load(oc);
   const lead=makeChain(oc); setSound(lead, S.sound); lead.master.gain.value=volGain(S.vol); setEra(lead, 0, 0);
-  if(o.band!==false){ bandParts(oc, B, lead.lim); bandSetup(B); BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n));
+  if(o.band!==false){ bandParts(oc, B, lead.lim); if(o.noRoom) try{ B.ch.send.disconnect(); }catch(e){} bandSetup(B); BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n));
     for(let k=0;k<bars;k++) bandBar(oc, B, k, 0.1+k*barSec, barSec); }
   if(o.lead){ const m=o.lead, s=TUNING.reduce((b,x,i)=>(m-x>=0 && m-x<=MAXF)?i:b, 0); const vc=makeVoice(oc, lead, S.sound, m, 0.76, 0.2, s); if(vc) vc.stop(dur-0.6, 0.05); }
   const t0=performance.now(); const buf=await oc.startRendering();
