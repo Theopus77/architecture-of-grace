@@ -183,8 +183,13 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   font:800 1.05rem/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .cs.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
-#playView .cstrip{flex:0 0 auto;margin:0 0 4px}
-#playView .cs{min-height:40px}
+/* AOG-PLAY-CHORDS-V1 — Jimmy: "Can the chords be on the neck and make the strumming bar a bit smaller." Sideways, the six
+   chords stand in a column at the nut end of the neck (the fretting hand picks the chord, the other strums), so the neck
+   has the whole height; mirrored (Left-handed, Screen faces away) they move with the nut. */
+#playView .cstrip.pv-chords{flex:0 0 auto;display:grid;grid-template-columns:1fr;grid-template-rows:repeat(6,minmax(0,1fr));gap:5px;
+  width:clamp(64px,9vw,112px);margin:0 6px 20px 0}
+body.pv-left #playView .cstrip.pv-chords{order:2;margin:0 0 20px 6px}
+#playView .cs{min-height:0;font-size:1rem}
 /* ══ AOG-PLAY-V1 — the neck sideways. A phone or tablet turned on its side (or a computer's "Play on the whole screen"):
    the page steps aside and the neck fills the screen, clear of the notch and the home bar. Nothing moves on its own. The
    page is not zoomed while you play (aog-calm.css zooms a wide page; a finger must land on the string it touches). ══ */
@@ -377,8 +382,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
     <button type="button" class="pv-b" id="pvMute"></button>
     <button type="button" class="pv-b" id="pvRec" aria-pressed="false"></button>
   </div>
-  <div class="cstrip" id="pvStrip" role="group"></div>
   <div class="pv-main" id="pvNeck">
+    <div class="cstrip pv-chords" id="pvStrip" role="group"></div><!-- AOG-PLAY-CHORDS-V1: the six chords down the nut end of the neck -->
     <div class="pv-drawer" id="pvDrawer" hidden>
       <label class="pv-field"><span class="pv-lab" data-t="instrument"></span><select id="pvSound"></select></label>
       <label class="pv-field"><span class="pv-lab" data-t="keyLab"></span><select id="pvKey"></select></label>
@@ -2404,7 +2409,7 @@ function paintStrips(){
    An upright or fretless sound has no frets: the note is where the finger is, dots only where a player marks positions.
    Solo mode keeps its own hooks (aog-solo.js); the strip is its whammy bar. It is the page's own neck (#neckBox), moved
    here, so the lit notes, Record and the computer keys work the same. A computer gets it from "Play on the whole screen". */
-const PV={on:false, forced:false, closed:false, left:false, tap:true, alt:0, mq:null, back:null, y:0, seen:false};
+const PV={on:false, forced:false, closed:false, left:false, away:false, tap:true, alt:0, mq:null, back:null, y:0, seen:false};
 const PVKEY="aog."+INST+".play.v1";
 try{ const r=JSON.parse(localStorage.getItem(PVKEY)||"null"); if(r){ PV.left=!!r.left; PV.away=!!r.away; PV.seen=!!r.seen; if(typeof r.tap==="boolean") PV.tap=r.tap; } }catch(e){}
 function pvSave(){ try{ localStorage.setItem(PVKEY, JSON.stringify({left:PV.left, away:PV.away, seen:PV.seen, tap:PV.tap})); }catch(e){} }
@@ -2429,9 +2434,9 @@ function neckStrum(){ if(!NECK.play) return null; const w=NECK.W-NECK.sx; return
 function buildPlayNeck(){
   const svg=$("neck"), box=$("neckBox");
   const W=Math.max(320, Math.round(box.clientWidth||640)), H=Math.max(180, Math.round(box.clientHeight||300));
-  const rows=TUNING.length, top=4, foot=20, rowH=(H-top-foot)/rows, fl=fretless(), flip=PV.left!==PV.away;
+  const rows=TUNING.length, top=4, foot=20, rowH=(H-top-foot)/rows, fl=fretless(), flip=!!PV.left!==!!PV.away;
   const nut=Math.round(Math.max(40, Math.min(56, W*0.055)));
-  const strW=Math.round(Math.max(120, Math.min(GTR?280:240, W*(GTR?0.24:0.22)))), sx=W-strW, xb=sx-8;
+  const strW=Math.round(Math.max(96, Math.min(GTR?210:180, W*(GTR?0.18:0.16)))), sx=W-strW, xb=sx-8;   /* AOG-PLAY-CHORDS-V1: a slimmer strip (Jimmy) */
   /* as many frets as fit with the narrowest still a finger wide (a phone about ten, an iPad twelve) */
   const minW=W>=1000?60:46; let n=12;
   while(n>5 && (xb-nut)*(fretD(n)-fretD(n-1))/fretD(n)<minW) n--;
@@ -2578,7 +2583,7 @@ function pvEnter(){
   const box=$("neckBox"); if(!box || PV.on) return;
   PV.on=true; PV.y=window.scrollY||0;
   PV.back=document.createComment("neckBox"); box.parentNode.insertBefore(PV.back, box); $("pvNeck").appendChild(box);
-  document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", PV.left!==PV.away);
+  document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", !!PV.left!==!!PV.away);
   NECK.play=true; FINGERS.clear(); pvText(); buildNeck();
   if(!PV.seen){ PV.seen=true; pvSave(); } $("pvTurn").hidden=true;
 }

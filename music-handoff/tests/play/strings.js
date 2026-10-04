@@ -39,13 +39,17 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     const lay=await p.evaluate(()=>{ const fx=NECK.fx, w=fx.slice(1).map((x,i)=>x-fx[i]);
       return {on:PV.on, play:NECK.play, inView:!!document.querySelector("#playView #neckBox"), page:getComputedStyle(document.querySelector(".wrap")).display,
         zoom:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
-        w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)>neckY(5), nutLeft:NECK.fx[0]<NECK.sx,
+        w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)>neckY(5), nutLeft:NECK.fx[0]<NECK.sx && !NECK.flip && neckStrum().x0===NECK.sx && neckXY(0,3)[0]<NECK.W/2,
+        chords:(()=>{ const c=document.getElementById("pvStrip").getBoundingClientRect(), n=document.getElementById("neck").getBoundingClientRect(); return {left:c.right<=n.left+1, h:c.height/n.height, n:document.querySelectorAll("#pvStrip .cs").length}; })(),
+        strip:neckStrum().w/NECK.W,
         pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#playView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText) && /safe-area-inset-bottom/.test(r.cssText)); }catch(e){ return false; } }),
         ta:getComputedStyle(document.getElementById("neck")).touchAction, bar:document.getElementById("pvClose").textContent }; });
     ok(lay.on && lay.play && lay.inView && lay.page==="none", "turned sideways, the neck fills the screen and the page steps aside");
     ok(lay.zoom==="1", "the play view is not zoomed (zoom "+lay.zoom+")");
     ok(lay.sw<=lay.iw && lay.sh<=lay.ih+1, `nothing scrolls: ${lay.sw}×${lay.sh} in ${lay.iw}×${lay.ih}`);
     ok(lay.w.every((x,i)=>i===0||x<lay.w[i-1]) && lay.w[lay.w.length-1]>=44, `${lay.n} frets, closer together towards the body: ${lay.w.join(", ")} px`);
+    ok(lay.chords.n===6 && lay.chords.left && lay.chords.h>0.9, "the six chords stand in a column at the nut end of the neck, the neck's whole height");
+    ok(lay.strip<=0.19, `a slim strum strip (${Math.round(lay.strip*100)}% of the neck)`);
     ok(lay.low && lay.nutLeft, "screen facing you: the low string at the bottom, the nut on the left, the strum strip on the right");
     ok(lay.pad, "the play view keeps clear of the notch and the home bar (safe-area padding)");
     ok(lay.ta==="none" && /Close/.test(lay.bar), "the neck takes the touch; the bar reads "+lay.bar);
