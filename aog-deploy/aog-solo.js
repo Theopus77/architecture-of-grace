@@ -99,14 +99,22 @@ const WD={
   lk_shred:{en:"Shred run",es:"Carrera rápida"},
   lk_funk:{en:"Funky single-note line",es:"Línea funky de una nota"},
   lk_bend:{en:"Slow singing bend",es:"Estirón lento y cantado"},
+  lk_groove:{en:"Groove metal lick",es:"Frase de groove metal"},
+  lk_thrash:{en:"Thrash metal lick",es:"Frase de thrash metal"},
   ld_blues:{en:"A bend on the G string, then down the box to the home note.",es:"Un estirón en la cuerda Sol y luego baja por la caja hasta la nota casa."},
   ld_double:{en:"Two strings at once, a slide, then a bend that meets the note beside it.",es:"Dos cuerdas a la vez, un deslizamiento y luego un estirón que alcanza la nota de al lado."},
   ld_tap:{en:"One hand taps high, the other holds low. Every note is smooth, with no pick.",es:"Una mano golpea arriba y la otra sostiene abajo. Cada nota sale ligada, sin púa."},
   ld_shred:{en:"Fast groups of six down the box: pick one note, pull off to the next.",es:"Grupos rápidos de seis bajando por la caja: púa en una nota y ligado a la siguiente."},
   ld_funk:{en:"Short, bouncy notes on the low strings, with soft ghost notes between.",es:"Notas cortas y saltarinas en las cuerdas graves, con notas fantasma suaves entre ellas."},
   ld_bend:{en:"Bend slowly up a whole step, hold it, and let it sing.",es:"Estira despacio un tono entero, sostenlo y deja que cante."},
+  ld_groove:{en:"A heavy low riff with the blue note, then a squealing bend with a wide vibrato. It ends on a low squeal.",es:"Un riff grave y pesado con la nota blue, luego un estirón que chilla con un vibrato ancho. Termina con un chillido grave."},
+  ld_thrash:{en:"Fast groups of three on the top strings, again and again, down the box. Then a screaming bend. Try it with Wah on.",es:"Grupos rápidos de tres en las cuerdas agudas, una y otra vez, bajando por la caja. Luego un estirón que grita. Pruébala con Wah encendido."},
+  lickSpeed:{en:"Lick speed",es:"Velocidad de la frase"},
+  spdFull:{en:"Full speed",es:"Velocidad completa"},
+  spdPart:{en:"{n}% speed",es:"{n} % de velocidad"},
+  spdHelp:{en:"Slow it down to learn it. Then speed it up.",es:"Bájale la velocidad para aprenderla. Luego súbela."},
   tg_b:{en:"bend",es:"estira"}, tg_h:{en:"hammer",es:"ligado"}, tg_o:{en:"pull",es:"suelta"}, tg_t:{en:"tap",es:"tapping"},
-  tg_sl:{en:"slide",es:"desliza"}, tg_g:{en:"ghost",es:"fantasma"}, tg_v:{en:"vibrato",es:"vibrato"},
+  tg_q:{en:"squeal",es:"chillido"}, tg_sl:{en:"slide",es:"desliza"}, tg_g:{en:"ghost",es:"fantasma"}, tg_v:{en:"vibrato",es:"vibrato"},
   playing:{en:"Playing: {name}.",es:"Sonando: {name}."}
 };
 function w(k, vars){ const e=WD[k]; let s=e?(e[S.lang]||e.en):k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
@@ -121,7 +129,8 @@ const SC_ORDER=["minpent","blues","majpent","natmin","major","dorian","mixo","ha
 /* ══ licks: t = when (beats), s = string (0 = the thick one), f = fret above the box's low root, d = how long (beats);
    k = how: p pick (the usual), h hammer-on, o pull-off, t tap (no pick), g a ghost note (muted);
    b = a bend [half steps, starts at, takes, released at, takes] in beats from the note's start; v = vibrato from (beats);
-   sl = a slide [to fret, starts at, takes]; home = the note the lick comes home on (in a major key it moves to the key's
+   sl = a slide [to fret, starts at, takes]; q = a pinch squeal on this note (Pinch squeal off or on);
+   vw = how wide the vibrato is (1 = the usual); home = the note the lick comes home on (in a major key it moves to the key's
    own home note). Written in the minor box; in a major key the same shapes sit where the major pentatonic is. */
 function legatoGroups(groups, reps, step, t0){
   const out=[]; let t=t0;
@@ -159,9 +168,27 @@ const LICKS=(()=>{
     {t:3.25, s:4, f:0, d:0.75},
     {t:4, s:3, f:2, d:2, b:[2,0,0.5], v:0.7},
     {t:6, s:2, f:2, d:2, v:0.3, home:1}];
+  /* AOG-SOLO-METAL-LICKS-V1 (Jimmy, 2026-10-04): groove metal (a heavy low riff with the blue note, chugs between, a
+     squealing bend with a wide vibrato, a low squeal at the end) and thrash metal (fast three-note groups on the top
+     strings, again and again, down the box, then a screaming bend). Named on screen by their style. */
+  L.groove=[
+    {t:0, s:0, f:0, d:0.25}, {t:0.25, s:0, f:0, d:0.1, k:"g"}, {t:0.5, s:0, f:0, d:0.25},
+    {t:0.75, s:1, f:0, d:0.25}, {t:1, s:1, f:1, d:0.25, k:"h"}, {t:1.25, s:1, f:2, d:0.25, k:"h"},
+    {t:1.5, s:2, f:0, d:0.25}, {t:1.75, s:2, f:2, d:0.25, k:"h"},
+    {t:2, s:3, f:2, d:1.75, b:[2,0.05,0.25], v:0.45, vw:1.7, q:1},
+    {t:4, s:2, f:2, d:0.25}, {t:4.25, s:2, f:0, d:0.25, k:"o"},
+    {t:4.5, s:1, f:2, d:0.25}, {t:4.75, s:1, f:1, d:0.25, k:"o"}, {t:5, s:1, f:0, d:0.25, k:"o"},
+    {t:5.25, s:0, f:3, d:0.25},
+    {t:5.5, s:0, f:0, d:1.75, v:0.3, vw:1.7, q:1, home:1}];
+  { /* the repeating cell: high note picked, pulled off to the box, then the string below picked; four times on each pair */
+    const cell=(hi, fh, lo, fl, t0)=>{ const out=[]; let t=t0; for(let r=0;r<4;r++){ [[hi,fh,"p"],[hi,0,"o"],[lo,fl,"p"]].forEach(([ss,ff,kk])=>{ out.push({t:+t.toFixed(4), s:ss, f:ff, d:1/6, k:kk}); t+=1/6; }); } return {notes:out, t}; };
+    const c1=cell(5,3,4,3,0), c2=cell(4,3,3,2,c1.t), c3=cell(3,2,2,2,c2.t);
+    L.thrash=c1.notes.concat(c2.notes, c3.notes, [
+      {t:c3.t, s:4, f:3, d:1.5, b:[2,0.02,0.18], v:0.35, vw:1.5, q:1},
+      {t:c3.t+1.75, s:2, f:2, d:1.5, v:0.3, home:1}]); }
   return L;
 })();
-const LICK_ORDER=["blues","double","tap","shred","funk","bend"];
+const LICK_ORDER=["blues","double","tap","shred","funk","bend","groove","thrash"];
 
 /* the lead sounds this page has (another helper may add more; only the ones that are here are listed) */
 /* the lead sounds made for solos (AOG-AMP-TONES-V1) come right after the first, then the older ones */
@@ -171,12 +198,12 @@ const DEF_LEAD=LEADS[0]||S.sound;
 
 /* ══ what is kept between visits (this browser only) ═════════════════════════ */
 const PKEY="aog."+INST+".solo.v1";
-const P={mode:"chords", scMin:"blues", scMaj:"majpent", tap:false, pinch:false, wah:false, vib:false, lick:"blues", prev:"", auto:"", beat:true};
+const P={mode:"chords", scMin:"blues", scMaj:"majpent", tap:false, pinch:false, wah:false, vib:false, lick:"blues", prev:"", auto:"", beat:true, lspd:100};
 try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null");
   if(r && typeof r==="object"){
     if(r.mode==="solo") P.mode="solo";
     if(SCALES[r.scMin]) P.scMin=r.scMin; if(SCALES[r.scMaj]) P.scMaj=r.scMaj;
-    P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(LICKS[r.lick]) P.lick=r.lick;
+    P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(LICKS[r.lick]) P.lick=r.lick; if(r.lspd>=25 && r.lspd<=100) P.lspd=Math.round(r.lspd/5)*5;
     if(typeof r.prev==="string" && SOUNDS[r.prev]) P.prev=r.prev; if(typeof r.auto==="string") P.auto=r.auto; if(r.beat===false) P.beat=false;
   } }catch(e){}
 function keep(){ try{ localStorage.setItem(PKEY, JSON.stringify(P)); }catch(e){} }
@@ -250,6 +277,7 @@ function build(){
       <label class="field"><span class="plab" data-so="lickLab"></span><select id="soLickSel"></select></label>
       <button type="button" class="pbtn" id="soLickBtn"></button>
     </div>
+    <div class="tempo" style="margin-top:.6rem"><span class="plab" style="margin:0" data-so="lickSpeed"></span><input type="range" id="soLickSpd" min="25" max="100" step="5"><b id="soLickSpdOut"></b></div>
     <p class="line" id="soLickLine" aria-live="polite"></p></div>`:""}
     <div class="so-sw" id="soSw" role="group">
       <button type="button" class="pbtn" id="soTap" aria-pressed="false"></button>
@@ -295,7 +323,7 @@ function paintWords(){
   if($q("soPinch")) $q("soPinch").textContent=w("pinch");
   if($q("soWah")) $q("soWah").textContent=w("wah");
   $q("soBpm").setAttribute("aria-label", w("tempo"));
-  paintScaleSel(); paintSoundSel(); paintLickSel(); paintSwitches(); paintMode(); paintLegend(); paintBand(); paintLickBtn();
+  paintScaleSel(); paintSoundSel(); paintLickSel(); paintLickSpd(); paintSwitches(); paintMode(); paintLegend(); paintBand(); paintLickBtn();
   SO.say=""; sayIt();
 }
 function paintMode(){
@@ -312,10 +340,19 @@ function paintSoundSel(){
   const ids=LEADS.slice(); if(ids.indexOf(S.sound)<0 && SOUNDS[S.sound]) ids.unshift(S.sound);
   sel.innerHTML=ids.map(id=>`<option value="${id}"${id===S.sound?" selected":""}>${esc(soundName(id))}</option>`).join("");
 }
+/* AOG-SOLO-LICKSPEED-V1 (Jimmy, 2026-10-04: "a slide to slow down the leads so one can memorize them"): 25 % to full
+   speed. Bends, slides and the lit notes slow down with the notes; the next Play uses the new speed. */
+function lickDesc(){ return w("ld_"+P.lick)+(P.lspd<100?" "+w("spdHelp"):""); }
+function lickSpdWord(){ return P.lspd>=100 ? w("spdFull") : w("spdPart",{n:P.lspd}); }
+function paintLickSpd(){
+  const r=$q("soLickSpd"); if(!r) return;
+  r.value=String(P.lspd); r.setAttribute("aria-label", w("lickSpeed")); r.setAttribute("aria-valuetext", lickSpdWord());
+  $q("soLickSpdOut").textContent=lickSpdWord();
+}
 function paintLickSel(){
   const sel=$q("soLickSel"); if(!sel) return;
   sel.innerHTML=LICK_ORDER.map(id=>`<option value="${id}"${id===P.lick?" selected":""}>${esc(w("lk_"+id))}</option>`).join("");
-  const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=w("ld_"+P.lick);
+  const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc();
 }
 function paintSwitches(){
   [["soTap","tap"],["soPinch","pinch"],["soWah","wah"],["soVib","vib"]].forEach(([id,k])=>{ const b=$q(id); if(b) b.setAttribute("aria-pressed", P[k]?"true":"false"); });
@@ -357,8 +394,10 @@ function wire(){
   $q("soBand").addEventListener("click",()=>{ BAND.on?bandStop():bandStart(); });
   $q("soBpm").addEventListener("input",()=>{ const v=+$q("soBpm").value, pb=$q("bpm"); if(pb && !pb.disabled){ pb.value=String(v); if(typeof pb.oninput==="function") pb.oninput(); } else S.bpm=v; paintTempo(); paintBandLine(); });
   if($q("soLickSel")){
-    $q("soLickSel").addEventListener("change",(e)=>{ if(LICKS[e.target.value]){ P.lick=e.target.value; keep(); if(!LICK.on) $q("soLickLine").textContent=w("ld_"+P.lick); } });
+    $q("soLickSel").addEventListener("change",(e)=>{ if(LICKS[e.target.value]){ P.lick=e.target.value; keep(); if(!LICK.on) $q("soLickLine").textContent=lickDesc(); } });
     $q("soLickBtn").addEventListener("click",()=>{ LICK.on?lickStop():playLick(P.lick); });
+    $q("soLickSpd").addEventListener("input",(e)=>{ const v=Math.round(clamp(+e.target.value,25,100)/5)*5; if(v===P.lspd) return; P.lspd=v; paintLickSpd(); clearTimeout(wire.st); wire.st=setTimeout(keep,250);
+      const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc(); });
   }
   /* a pick from a menu gives the focus back, so Space plays the band instead of reopening the menu (as the page does) */
   ["soScaleSel","soSoundSel","soLickSel"].forEach(id=>{ const el=$q(id); if(!el) return;
@@ -1081,7 +1120,7 @@ function lickFn(list, beat){
     if(n.b){ const [amt, a, d, ra, rd]=n.b; bend=amt*smooth((rel-a)/d); if(ra!=null) bend-=amt*smooth((rel-ra)/rd); }
     const vv=lickVib(n); let vib=0;
     if(vv && rel>=vv[0] && rel<vv[1]+0.5){ const tt=(rel-vv[0])*beat, k=Math.min(1,tt/0.15)*(rel>vv[1]?Math.max(0,1-(rel-vv[1])*beat/0.12):1);
-      vib=(bend>1?-1:1)*0.32*k*(1-Math.cos(2*Math.PI*5.5*tt))/2; }
+      vib=(bend>1?-1:1)*0.32*(n.vw||1)*k*(1-Math.cos(2*Math.PI*5.5*tt))/2; }
     return m+bend+vib;
   };
 }
@@ -1090,9 +1129,9 @@ function playLick(id){
   const ev=LICKS[id]; if(!ev || !GTR) return;
   const c=ctx(), r=boxRoot(), want=Math.max(1, r);
   if(S.fret0!==want){ S.fret0=want; buildNeck(); if(typeof save==="function") save(); }
-  const bpm=clamp(BAND.on?BAND.bpm:curBpm(), 60, 132), beat=60/bpm;
+  const spd=clamp(P.lspd||100, 25, 100)/100, bpm=clamp(BAND.on?BAND.bpm:curBpm(), 60, 132), beat=60/bpm/spd;
   let T0=c.currentTime+0.12;
-  if(BAND.on){ const k=Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6); T0=BAND.t0+k*BAND.barSec; }
+  if(BAND.on && spd>=1){ const k=Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6); T0=BAND.t0+k*BAND.barSec; }
   const notes=lickNotes(id), cur={}, lights=[], voices=[];
   notes.forEach(n=>{
     const at=T0+n.t*beat, end=at+n.d*beat, m=TUNING[n.s]+n.f, k=n.k||"p";
@@ -1101,7 +1140,8 @@ function playLick(id){
     if(legato){ v.list.push({at, m, n}); v.end=Math.max(v.end, end); }
     else {
       if(v) v.cut=at;
-      const lv=makeLead(n.s, m, k==="g"?0.32:(P.pinch?0.62:0.74), at, {soft:k==="t", pinch:P.pinch && k!=="g"});
+      const sq=(P.pinch||!!n.q) && k!=="g";
+      const lv=makeLead(n.s, m, k==="g"?0.32:(sq?0.62:0.74), at, {soft:k==="t", pinch:sq});
       v=cur[n.s]={lv, list:[{at, m, n}], end:k==="g"?at+0.035:end, cut:null, ghost:k==="g"};
       if(lv) voices.push(v);
     }
@@ -1113,7 +1153,8 @@ function playLick(id){
     lv.fn=lickFn(v.list, beat); lv.planAll=true; lv.planEnd=stopAt; lv.until=lv.born-STEP; lv.lastT=NaN; lv.plan(c.currentTime);
     DYN.add(lv); lv.stop(stopAt, v.ghost?0.012:(v.cut!=null?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.04)*1.5)); });
   LICK.voices=voices; LICK.lights=lights; LICK.end=Math.max.apply(null, lights.map(L=>L.t1)); LICK.on=true; LICK.id=id; LICK.key=""; LICK.t0=T0;
-  LICK.log=notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, k:n.k||"p"}));
+  LICK.log=notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, k:n.k||"p", q:!!n.q}));
+  LICK.beat=beat; LICK.spd=spd;
   const ln=$q("soLickLine"); if(ln) ln.textContent=w("playing",{name:w("lk_"+id)})+" "+w("lickNow");
   paintLickBtn(); wake();
   LICK.raf=requestAnimationFrame(lickFrame);
@@ -1122,8 +1163,8 @@ function lickState(L, now){
   const v=LICK.voices.find(x=>x.list.some(e=>e.n===L.n)); const fn=v&&v.lv&&v.lv.fn;
   let m=TUNING[L.s]+L.n.f, bend=0;
   if(fn){ const T=fn(now); const n=L.n; let b=0; if(n.b){ const rel=(now-L.at)/L.beat, [amt,a,d,ra,rd]=n.b; b=amt*smooth((rel-a)/d); if(ra!=null) b-=amt*smooth((rel-ra)/rd); }
-    bend=b; m=Math.round(T-b); }
-  const k=L.n.k||"p", tag=L.n.b&&bend>0.05?"b":L.n.sl&&m!==TUNING[L.s]+L.n.f?"sl":(k!=="p"?k:(lickVib(L.n)&&(now-L.at)/L.beat>=lickVib(L.n)[0]?"v":""));
+    bend=b; if(n.sl) m=Math.round(T-b); }   /* only a slide moves the lit note; a vibrato (a wide one too) stays on its fret */
+  const k=L.n.k||"p", tag=L.n.b&&bend>0.05?"b":L.n.q&&!L.n.b&&(now-L.at)/L.beat<0.6?"q":L.n.sl&&m!==TUNING[L.s]+L.n.f?"sl":(k!=="p"?k:(lickVib(L.n)&&(now-L.at)/L.beat>=lickVib(L.n)[0]?"v":""));
   return {f:m-TUNING[L.s], bend, tag};
 }
 function lickFrame(){
@@ -1159,7 +1200,7 @@ function lickStop(natural){
   LICK.voices=[]; LICK.lights=[]; LICK.key="";
   const svg=$q("neck"), g=svg && svg.querySelector("#soLick"); if(g) g.innerHTML="";
   for(let s=0;s<TUNING.length;s++) if(!(SOUNDING[s] && SOUNDING[s].bend>0.02)) clearBend(s);
-  const ln=$q("soLickLine"); if(ln) ln.textContent=w("ld_"+P.lick);
+  const ln=$q("soLickLine"); if(ln) ln.textContent=lickDesc();
   paintLickBtn();
 }
 function paintLickBtn(){ const b=$q("soLickBtn"); if(b){ b.textContent=w(LICK.on?"lickStop":"lickPlay"); b.setAttribute("aria-pressed", LICK.on?"true":"false"); } }
