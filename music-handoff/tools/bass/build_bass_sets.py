@@ -11,6 +11,17 @@
 #   upright  A 1958 Otto Rubner double bass, plucked (pizzicato), by D. Smolken. The library has a note every 3 or 4
 #            semitones; the four 4-semitone gaps are filled from Meatbass (Karoryfer Samples), the same bass and player
 #            recorded in 2016, brightened to sit with the notes around them. Release noises: the player's string mutes.
+#   AOG-STRINGS-REAL-V1 (2026-10-04) — Jimmy: "make sure all instruments are LEGIT and real sounds":
+#   ergo     Ergo, an electric upright bass (fretless, a piezo pickup), plucked, by D. Smolken (Karoryfer Samples): a note
+#            every 3 semitones, two strengths (mf, f), two takes low and middle. Release noises: his double bass's string
+#            mutes (the same player, the same Spirocore strings). For the fretless sounds.
+#   cosmo    Caveman Cosmonaut (Karoryfer Samples): a 1983 Unitra B-11 transistor organ, its bass voices: "bass 16'"
+#            (a hollow, square-like wave: layer 1) and "bass 8'" (a full, saw-like wave: layer 2), 19 notes each, made
+#            to loop. Each zone carries lp: [loop start, loop end] in seconds of its own file; the page loops it while
+#            the note is held. For the synth sounds, through their own filter and envelope.
+#   slaps    Five "muted slap" noises from Swagbass (Karoryfer Samples, D. Smolken): the thumb hitting muted strings, a
+#            short low thump. Added to growly's noises (k "slap", own level) for the slap sounds; --only slaps adds
+#            them to a growly set already built.
 #
 # What every file gets (the format the engine helper and this tool share):
 #   mono MP3, 44,100 Hz, 128 kbps; it starts 0.5 ms before the pluck (the lead-in faded up from silence), keeps its
@@ -22,7 +33,9 @@
 # Usage (needs ffmpeg with libmp3lame, numpy, scipy):
 #   git clone --depth 1 https://github.com/sfzinstruments/karoryfer.growlybass     (and dsmolken.double-bass,
 #   git clone --depth 1 https://github.com/sfzinstruments/karoryfer.meatbass)       into one folder, then
-#   python3 build_bass_sets.py --libs <that folder> --out aog-deploy/audio/bass [--only growly|upright]
+#   python3 build_bass_sets.py --libs <that folder> --out aog-deploy/audio/bass [--only growly|upright|ergo|cosmo|slaps]
+#   (ergo, cosmo and slaps also want karoryfer.ergo, karoryfer.caveman-cosmonaut and karoryfer.swagbass there, and
+#   dsmolken.double-bass's pizz/noises for ergo's release noises)
 # Check the result with:  node music-handoff/tests/strings/bassets.js
 import argparse, json, math, os, re, subprocess, sys
 import numpy as np
@@ -395,8 +408,10 @@ def natural_end(y):
     return min(len(y), (alive[-1] + 1) * w + FADE)
 
 
-def shape(x, maxlen=MAXLEN):
-    """Start 0.5 ms before the pluck (faded up from silence), keep the natural decay up to maxlen, fade the last 30 ms."""
+def shape(x, maxlen=MAXLEN, tail=None):
+    """Start 0.5 ms before the pluck (faded up from silence), keep the natural decay up to maxlen, fade the last 30 ms.
+    tail (seconds): a longer fade for a recording that ends while its note is still faintly there (ergo's end 52 dB
+    under their loudest: faded over tail seconds instead, so they still end on silence)"""
     on = onset(x)
     if on >= PRE:
         y = x[on - PRE:].copy()
@@ -405,7 +420,13 @@ def shape(x, maxlen=MAXLEN):
     y[:PRE] *= 0.5 - 0.5 * np.cos(np.pi * np.arange(PRE) / PRE)
     n = min(natural_end(y), int(maxlen * SR), len(y))
     y = y[:n].copy()
-    y[-FADE:] *= 0.5 + 0.5 * np.cos(np.pi * np.arange(1, FADE + 1) / FADE)
+    fl = FADE
+    if tail and n > int(tail * SR) + int(0.1 * SR):
+        w = int(0.05 * SR)
+        top = max(np.sqrt(np.mean(y[a:a + w] ** 2)) for a in range(0, n - w, w))
+        if np.sqrt(np.mean(y[n - int(0.08 * SR):n - int(0.03 * SR)] ** 2)) > top * 10 ** (-56 / 20):
+            fl = int(tail * SR)
+    y[-fl:] *= 0.5 + 0.5 * np.cos(np.pi * np.arange(1, fl + 1) / fl)
     return y
 
 
@@ -440,6 +461,48 @@ UPRIGHT_LAYERS = [('m', '3', 1), ('f', '4', 2)]   # Smolken's m and f; Meatbass'
 OPEN_STRINGS = (24, 31, 38, 45)                   # C1 G1 D2 A2: the double bass is tuned in fifths
 UPRIGHT_RELEASE = ['mute_d', 'mute_d2', 'mute_g4', 'mute_a', 'mute_g3']   # the player stopping a string: least ringing
 UPRIGHT_RELEASE_G = round(10 ** (-12 / 20), 3)  # they are played as hard as a note; as a release they sit 12 dB down
+
+
+# Ergo (names as they sound: measured) and its takes per strength; the top note was recorded in one strength only
+ERGO_NOTES = [('Eb1', 27), ('Gb1', 30), ('A1', 33), ('C2', 36), ('Eb2', 39), ('Gb2', 42), ('A2', 45), ('C3', 48),
+              ('Eb3', 51), ('Gb3', 54), ('A3', 57)]
+ERGO_LAYERS = [('mf', 1), ('f', 2)]
+# Caveman Cosmonaut's bass voices sound an octave under their names (measured: "c2" peaks at 32.7 Hz)
+COSMO_VOICES = [('bass_16_2', 1), ('bass_8', 2)]
+SLAPS = ['noise_mutedslap_rr%d' % r for r in range(1, 6)]
+SLAP_PEAK_DB = -3.0
+
+
+def smpl_loop(path):
+    """A WAV's first loop (its smpl chunk): start and end sample, the end included"""
+    import struct
+    d = open(path, 'rb').read()
+    i = 12
+    while i + 8 <= len(d):
+        cid = d[i:i + 4]
+        sz = struct.unpack('<I', d[i + 4:i + 8])[0]
+        body = d[i + 8:i + 8 + sz]
+        if cid == b'smpl' and struct.unpack('<I', body[28:32])[0] > 0:
+            _, typ, st, en, frac, cnt = struct.unpack('<IIIIII', body[36:60])
+            return st, en
+        i += 8 + sz + (sz & 1)
+    raise SystemExit('no loop in ' + path)
+
+
+def shape_loop(x, lp):
+    """A note made to loop: from 0.5 ms before its start (faded up from silence) to 0.15 s past its loop's end, with
+    the 30 ms fade; the loop points move with the start (returned as [start, end) in samples of the shaped file)"""
+    on = onset(x)
+    ls, le = lp[0], lp[1] + 1
+    a = on - PRE
+    y = x[a:].copy() if a >= 0 else np.concatenate([np.zeros(-a), x])
+    y[:PRE] *= 0.5 - 0.5 * np.cos(np.pi * np.arange(PRE) / PRE)
+    # after the loop's end: the loop played on from its start for 0.15 s (as the page plays it), then the fade, so a
+    # note played without looping ends cleanly and the loop itself is never touched by the fade
+    y = np.concatenate([y[:le - a], y[ls - a:ls - a + int(0.15 * SR)]])
+    y[-FADE:] *= 0.5 + 0.5 * np.cos(np.pi * np.arange(1, FADE + 1) / FADE)
+    assert PRE < ls - a < le - a <= len(y) - FADE, (ls, le, a, len(y))
+    return y, (ls - a, le - a)
 
 
 def rr_needed(m):
@@ -548,10 +611,82 @@ def build_upright(libs):
     return items, meta
 
 
+def build_ergo(libs):
+    root = os.path.join(libs, 'karoryfer.ergo')
+    items = []
+    for name, m in ERGO_NOTES:
+        for lay, v in ERGO_LAYERS:
+            if name == 'A3':
+                cands = [dict(src='ergo/pizz/A3_%d.wav' % r) for r in ((1, 3) if v == 1 else (2, 4))]
+            else:
+                cands = [dict(src='ergo/pizz/%s_%d_%s.wav' % (name, r, lay)) for r in range(1, 5)]
+            cands = [c for c in cands if os.path.exists(os.path.join(root, c['src']))]
+            for c in cands:
+                c['x'] = load(os.path.join(root, c['src']))
+            for r, c in enumerate(pick(cands, rr_needed(m), 'sus', m), 1):
+                items.append(dict(out='m%d_v%d_r%d.mp3' % (m, v, r), kind='sus', m=m, s=None, v=v, r=r,
+                                  src='karoryfer.ergo/' + c['src'], x=c['x'], layer=('sus', v), tail=0.4))
+    dsm = os.path.join(libs, 'dsmolken.double-bass', 'pizz')
+    for r, nm in enumerate(UPRIGHT_RELEASE, 1):
+        items.append(dict(out='rel_r%d.mp3' % r, kind='release', r=r, src='dsmolken.double-bass/pizz/noises/pizz_noise_%s.wav' % nm,
+                          x=load(os.path.join(dsm, 'noises', 'pizz_noise_%s.wav' % nm)), g=UPRIGHT_RELEASE_G))
+    meta = dict(id='ergo', instrument='bass',
+                name={'en': 'Recorded fretless electric upright bass', 'es': 'Contrabajo eléctrico sin trastes grabado'},
+                source="Ergo electric upright bass by D. Smolken (Karoryfer Samples), with his double bass's string mutes",
+                license='CC0-1.0', tuning=[24, 31, 38, 45], vel=[0, 0.75], maxShift=3)
+    return items, meta
+
+
+def build_cosmo(libs):
+    root = os.path.join(libs, 'karoryfer.caveman-cosmonaut', 'Samples')
+    items = []
+    for voice, v in COSMO_VOICES:
+        for f in sorted(os.listdir(root)):
+            mm = re.match(r'%s_([a-g]b?\d)\.wav$' % voice, f)
+            if not mm:
+                continue
+            m = label_midi(mm.group(1)) - 12
+            path = os.path.join(root, f)
+            items.append(dict(out='m%d_v%d_r1.mp3' % (m, v), kind='sus', m=m, s=None, v=v, r=1,
+                              src='karoryfer.caveman-cosmonaut/Samples/' + f, x=load(path), layer=('sus', v), lp=smpl_loop(path)))
+    meta = dict(id='cosmo', instrument='bass',
+                name={'en': 'Recorded organ bass (for the synth sounds)', 'es': 'Bajo de órgano grabado (para los sonidos de sintetizador)'},
+                source='Caveman Cosmonaut by Karoryfer Samples: a 1983 Unitra B-11 transistor organ', license='CC0-1.0',
+                tuning=[28, 33, 38, 43], vel=[0, 0.6], maxShift=19)
+    return items, meta
+
+
+def add_slaps(libs, out_dir, report):
+    """Swagbass's muted slaps, added to a growly set already built (any earlier ones replaced)"""
+    jf = os.path.join(out_dir, 'set.json')
+    S = json.load(open(jf, encoding='utf-8'))
+    for n in [n for n in S['noise'] if n['k'] == 'slap']:
+        os.remove(os.path.join(out_dir, n['f']))
+    S['noise'] = [n for n in S['noise'] if n['k'] != 'slap']
+    ys = [shape(load(os.path.join(libs, 'karoryfer.swagbass', 'noises', nm + '.wav'))) for nm in SLAPS]
+    gdb = SLAP_PEAK_DB - max(20 * np.log10(np.abs(y).max()) for y in ys)
+    for r, (nm, y) in enumerate(zip(SLAPS, ys), 1):
+        f = 'slap_r%d.mp3' % r
+        encode(y * 10 ** (gdb / 20), os.path.join(out_dir, f))
+        d = decode(os.path.join(out_dir, f))
+        S['noise'].append(dict(f=f, k='slap', r=r, g=1.0))
+        report.append(dict(out=f, src='karoryfer.swagbass/noises/%s.wav' % nm, kind='slap', gain_db=round(gdb, 2),
+                           seconds=round(len(d) / SR, 3), onset_ms=round(onset(d) / SR * 1000, 2),
+                           peak_db=round(20 * np.log10(np.abs(d).max()), 2), bytes=os.path.getsize(os.path.join(out_dir, f))))
+        print('growly   %-20s <- karoryfer.swagbass/noises/%s.wav  gain %+5.1f dB  %.2f s' % (f, nm, gdb, len(d) / SR), flush=True)
+    if 'Swagbass' not in S['source']:
+        S['source'] += ', with muted slaps from Swagbass by Karoryfer Samples'
+    with open(jf, 'w', encoding='utf-8') as fh:
+        fh.write(json_text(S))
+
+
 def render(items, meta, out_dir, report):
     os.makedirs(out_dir, exist_ok=True)
     for it in items:
-        it['y'] = shape(it['x'])
+        if it.get('lp'):
+            it['y'], it['lpz'] = shape_loop(it['x'], it['lp'])
+        else:
+            it['y'] = shape(it['x'], tail=it.get('tail'))
         it['L0'] = loud400(it['y'])
         it['pk0'] = 20 * np.log10(np.abs(it['y']).max())
     # each layer at the average loudness its notes were recorded at (staccato sits with the hard layer: the library
@@ -563,11 +698,12 @@ def render(items, meta, out_dir, report):
     # one offset for the whole set: as loud as it can be with every peak under PEAK_MAX_DB
     def gain_rel(it):
         return (layer_db[it['layer']] - it['L0']) if it['kind'] in ('sus', 'stac') else 0.0
-    off = min(PEAK_MAX_DB - (it['pk0'] + gain_rel(it)) for it in items)
+    off = min(PEAK_MAX_DB - (it['pk0'] + gain_rel(it)) for it in items if it['kind'] != 'slap')
     off = min(off, -18.0 - max(layer_db.values()))    # and the loudest layer no louder than -18 LUFS (400 ms)
     zones, noise = [], []
+    slaps = [it['pk0'] for it in items if it['kind'] == 'slap']
     for it in items:
-        gdb = gain_rel(it) + off
+        gdb = gain_rel(it) + off if it['kind'] != 'slap' else SLAP_PEAK_DB - max(slaps)   # the slaps: their own level
         y = it['y'] * 10 ** (gdb / 20)
         path = os.path.join(out_dir, it['out'])
         encode(y, path)
@@ -583,6 +719,9 @@ def render(items, meta, out_dir, report):
             cents, n, _ = pitch_cents(d, it['m'], it['kind'])
             rec.update(m=it['m'], cents=round(cents, 1), frames=n)
             zones.append(dict(f=it['out'], m=it['m'], c=round(cents, 1), s=it['s'], v=it['v'], r=it['r'], k=it['kind'], g=1.0))
+            if it.get('lpz'):
+                zones[-1]['lp'] = [round(it['lpz'][0] / SR, 6), round(it['lpz'][1] / SR, 6)]
+                rec['loop'] = zones[-1]['lp']
         else:
             noise.append(dict(f=it['out'], k=it['kind'], r=it['r'], g=it['g']))
         report.append(rec)
@@ -613,15 +752,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--libs', required=True)
     ap.add_argument('--out', required=True)
-    ap.add_argument('--only', choices=['growly', 'upright'])
+    ap.add_argument('--only', choices=['growly', 'upright', 'ergo', 'cosmo', 'slaps'])
     ap.add_argument('--report', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sources.json'))
     a = ap.parse_args()
     try:
         allrep = json.load(open(a.report))
     except (OSError, ValueError):
         allrep = {}
-    for sid, fn in (('growly', build_growly), ('upright', build_upright)):
+    for sid, fn in (('growly', build_growly), ('upright', build_upright), ('ergo', build_ergo), ('cosmo', build_cosmo), ('slaps', None)):
         if a.only and a.only != sid:
+            continue
+        if sid == 'slaps':
+            rep = []
+            add_slaps(a.libs, os.path.join(a.out, 'growly'), rep)
+            allrep.setdefault('growly', {})['slaps'] = rep
             continue
         items, meta = fn(a.libs)
         d = os.path.join(a.out, sid)

@@ -16,7 +16,11 @@
      at least 2 layers; at least 2 takes in the low and middle range; at least 3 release noises (growly: scrapes too);
    - loudness (K-weighted, the loudest 400 ms, times g): each layer within 1.5 dB of its own middle along the neck, and
      the layers louder in order;
-   - each set is at most 4 MB; CREDITS.txt is there in English and Spanish. */
+   - each set is at most 4 MB; CREDITS.txt is there in English and Spanish.
+   AOG-STRINGS-REAL-V1 (2026-10-04): an organ set made to loop (every zone has lp: [loop start, loop end] in seconds of its
+   own file; cosmo) plays one take of each note, needs no release noises, and may reach the top of the neck by playing
+   its notes faster (maxShift up to 24: its highest note + maxShift reaches 60); its loops must lie inside the file, last
+   at least 0.1 s and join without a click. A noise may also be a "slap" (the thumb on muted strings: growly). */
 const fs = require("fs"), path = require("path"), { execFileSync } = require("child_process");
 const ROOT = path.join(__dirname, "..", "..", "..", "aog-deploy", "audio", "bass");
 const SR = 44100;
@@ -109,13 +113,15 @@ function checkSet(id) {
     S.name && typeof S.name.en === "string" && typeof S.name.es === "string" && S.name.en && S.name.es,
     `${id}: id, instrument "bass", names in English and Spanish ("${S.name && S.name.en}" / "${S.name && S.name.es}"), source, CC0-1.0`);
   ok(Array.isArray(S.tuning) && S.tuning.length === 4 && S.tuning.every((t, i) => Number.isInteger(t) && (!i || t > S.tuning[i - 1])), `${id}: tuning ${JSON.stringify(S.tuning)}`);
-  ok(S.maxShift === 3, `${id}: maxShift ${S.maxShift}`);
-  const zk = ["f", "m", "c", "s", "v", "r", "k", "g"], nk = ["f", "k", "r", "g"];
+  const looped = S.zones.length > 0 && S.zones.every(z => Array.isArray(z.lp));
+  ok(looped ? Number.isInteger(S.maxShift) && S.maxShift >= 3 && S.maxShift <= 24 : S.maxShift === 3, `${id}: maxShift ${S.maxShift}${looped ? " (a looped set)" : ""}`);
+  const zk = ["f", "m", "c", "s", "v", "r", "k", "g"].concat(looped ? ["lp"] : []), nk = ["f", "k", "r", "g"];
   const badZ = S.zones.filter(z => JSON.stringify(Object.keys(z)) !== JSON.stringify(zk) || typeof z.f !== "string" || !Number.isInteger(z.m) ||
+    (looped && !(z.lp.length === 2 && z.lp[0] > 0 && z.lp[1] - z.lp[0] >= 0.1)) ||
     typeof z.c !== "number" || !(z.s === null || (Number.isInteger(z.s) && z.s >= 0 && z.s < S.tuning.length)) || !Number.isInteger(z.v) || z.v < 1 ||
     !Number.isInteger(z.r) || z.r < 1 || !["sus", "stac"].includes(z.k) || !(z.g > 0));
   ok(S.zones.length > 0 && !badZ.length, `${id}: ${S.zones.length} zones, each {f,m,c,s,v,r,k,g} ${badZ.map(z => z.f).join(" ")}`);
-  const badN = S.noise.filter(n => JSON.stringify(Object.keys(n)) !== JSON.stringify(nk) || !["release", "fingering", "scrape"].includes(n.k) || !Number.isInteger(n.r) || !(n.g > 0));
+  const badN = S.noise.filter(n => JSON.stringify(Object.keys(n)) !== JSON.stringify(nk) || !["release", "fingering", "scrape", "slap"].includes(n.k) || !Number.isInteger(n.r) || !(n.g > 0));
   ok(!badN.length, `${id}: ${S.noise.length} noises, each {f,k,r,g} ${badN.map(n => n.f).join(" ")}`);
   const susV = [...new Set(S.zones.filter(z => z.k === "sus").map(z => z.v))].sort((a, b) => a - b);
   ok(susV.length >= 2 && susV.every((v, i) => v === i + 1), `${id}: held-note layers ${susV.join(",")}`);
@@ -153,19 +159,28 @@ function checkSet(id) {
        left in front would cross first and climb no further), and the file begins from silence, not inside the attack
        (MP3 pre-echo can put -30 dB in the first samples; a cut attack puts far more) */
     let on20 = 0; while (on20 < x.length && Math.abs(x[on20]) < pk * 0.1) on20++;
-    if ((on20 - on) / SR > 0.0035) late.push(`${z.f} crosses -40 dB at ${ms.toFixed(2)} ms but -20 dB only at ${(on20 / SR * 1000).toFixed(2)} ms`);
+    /* (an organ's key is not a pluck: its note swells up over some 5 to 10 ms, so a looped set gets 15) */
+    if ((on20 - on) / SR > (looped ? 0.015 : 0.0035)) late.push(`${z.f} crosses -40 dB at ${ms.toFixed(2)} ms but -20 dB only at ${(on20 / SR * 1000).toFixed(2)} ms`);
     const w = 16, lead = Math.sqrt(rmsPow(x, 0, w));
     let top = 0; for (let a = 0; a + w <= Math.min(x.length, Math.floor(0.02 * SR)); a += 4) top = Math.max(top, Math.sqrt(rmsPow(x, a, a + w)));
     if (lead > top * 0.1) late.push(`${z.f} begins inside the attack: its first 0.36 ms at ${(20 * Math.log10(lead / top)).toFixed(1)} dB re the attack`);
     const [cents, frames] = pitchCents(x, z.m, z.k);
     if (!(Math.abs(cents - z.c) <= 5)) off.push(`${z.f} measured ${cents.toFixed(1)} c, set.json ${z.c}`);
-    const P = Math.round(SR / midiHz(z.m + z.c / 100)), cyc = maxStep(x, on, on + P + 1);
+    /* the note's own steps: its first cycle (a pluck is loudest there), or a looped note's loop (an organ's swell
+       is quiet at first) */
+    const P = Math.round(SR / midiHz(z.m + z.c / 100)), cyc = looped ? maxStep(x, Math.round(z.lp[0] * SR), Math.round(z.lp[1] * SR)) : maxStep(x, on, on + P + 1);
     const st = on > 0 ? maxStep(x, 0, on) : Math.abs(x[0]), en = Math.max(Math.abs(x[x.length - 1]), maxStep(x, x.length - Math.floor(0.03 * SR), x.length));
     if (!(st <= cyc && en <= cyc)) clicks.push(`${z.f} start ${st.toFixed(4)} end ${en.toFixed(4)} first cycle ${cyc.toFixed(4)}`);
     const sec = x.length / SR;
     if (sec > 6.0005) long.push(`${z.f} ${sec.toFixed(3)} s`);
     if (Math.abs(x[x.length - 1]) > 1e-3) cut.push(`${z.f} ends at ${x[x.length - 1].toFixed(4)}`);
-    if (z.k === "sus" && sec < 5.99) {   /* cut early: only once the note has died away */
+    if (looped) {   /* a looped note: its loop inside the file, before the end's fade, and its seam no bigger a step than the
+                       loop's own near it */
+      const ls = Math.round(z.lp[0] * SR), le = Math.round(z.lp[1] * SR);
+      if (le > x.length - Math.floor(0.03 * SR)) cut.push(`${z.f} loop ends at ${z.lp[1]} s, inside the end's fade (${sec.toFixed(3)} s)`);
+      else { const seam = Math.abs(x[ls] - x[le - 1]), own = maxStep(x, le - 400, le);
+        if (seam > own * 1.5) clicks.push(`${z.f} loop seam ${seam.toFixed(4)} against the loop's own steps ${own.toFixed(4)}`); }
+    } else if (z.k === "sus" && sec < 5.99) {   /* cut early: only once the note has died away */
       const w = Math.floor(0.05 * SR), endPart = rmsDb(x, x.length - Math.floor(0.03 * SR) - w, x.length - Math.floor(0.03 * SR));
       let top = -300; for (let a = on; a + w <= x.length; a += w) top = Math.max(top, rmsDb(x, a, a + w));
       if (endPart > top - 54) cut.push(`${z.f} stops at ${sec.toFixed(2)} s while still at ${(endPart - top).toFixed(1)} dB`);
@@ -181,8 +196,8 @@ function checkSet(id) {
   /* coverage */
   const sus = S.zones.filter(z => z.k === "sus"), notes = [...new Set(sus.map(z => z.m))].sort((a, b) => a - b);
   const gaps = notes.slice(1).map((m, i) => m - notes[i]);
-  ok(notes[0] <= 28 && notes[notes.length - 1] >= 55 && Math.max(...gaps) <= 3,
-    `${id}: held notes ${notes.join(" ")}: from ${notes[0]} to ${notes[notes.length - 1]}, at most ${Math.max(...gaps)} semitones apart`);
+  ok(notes[0] <= 28 && (looped ? notes[notes.length - 1] + S.maxShift >= 60 : notes[notes.length - 1] >= 55) && Math.max(...gaps) <= 3,
+    `${id}: held notes ${notes.join(" ")}: from ${notes[0]} to ${notes[notes.length - 1]}${looped ? " (played up to " + (notes[notes.length - 1] + S.maxShift) + ")" : ""}, at most ${Math.max(...gaps)} semitones apart`);
   const byS = {}; sus.forEach(z => { if (z.s !== null) (byS[z.s] = byS[z.s] || new Set()).add(z.m - S.tuning[z.s]); });
   if (Object.keys(byS).length) console.log(`     ${id}: frets per string (measured from each note's inharmonicity): ` +
     Object.keys(byS).map(s => `string ${s}: ${[...byS[s]].sort((a, b) => a - b).join(",")}`).join("; "));
@@ -192,7 +207,7 @@ function checkSet(id) {
   for (const v of susV) for (const m of notes) {
     const rs = sus.filter(z => z.v === v && z.m === m).map(z => z.r).sort((a, b) => a - b);
     if (!rs.every((r, i) => r === i + 1)) thin.push(`v${v} ${m}: takes ${rs.join(",")}`);
-    if (m <= mid && rs.length < 2) thin.push(`v${v} ${m}: ${rs.length} take`);
+    if (m <= mid && rs.length < 2 && !looped) thin.push(`v${v} ${m}: ${rs.length} take`);
   }
   ok(!thin.length, `${id}: at least 2 takes for every held note up to ${Math.floor(mid)} (the low and middle range), takes numbered from 1 ${thin.join("; ")}`);
   const stac = S.zones.filter(z => z.k === "stac");
@@ -201,7 +216,7 @@ function checkSet(id) {
     ok(sn[0] <= 28 && sn[sn.length - 1] >= 55 && Math.max(...sg) <= 3, `${id}: short (staccato) notes ${sn.join(" ")}, ${stac.length} zones, at most ${Math.max(...sg)} apart`);
   }
   const kinds = {}; S.noise.forEach(n => (kinds[n.k] = (kinds[n.k] || 0) + 1));
-  ok((kinds.release || 0) >= 3 && (id !== "growly" || ((kinds.scrape || 0) >= 1 && stac.length > 0)),
+  ok((looped || (kinds.release || 0) >= 3) && (id !== "growly" || ((kinds.scrape || 0) >= 1 && stac.length > 0)),
     `${id}: noises ${Object.entries(kinds).map(([k, n]) => n + " " + k).join(", ")}${id === "growly" ? " (and staccato zones)" : ""}`);
 
   /* loudness */
@@ -238,7 +253,8 @@ const sets = fs.existsSync(ROOT) ? fs.readdirSync(ROOT).filter(d => fs.statSync(
 ok(sets.length > 0, `sets in aog-deploy/audio/bass: ${sets.join(", ")}`);
 for (const id of sets) if (!want.length || want.includes(id)) checkSet(id);
 const cr = path.join(ROOT, "CREDITS.txt"), ct = fs.existsSync(cr) ? fs.readFileSync(cr, "utf8") : "";
-const NEEDS = { growly: [/Growlybass/, /Karoryfer/, /karoryfer\.growlybass/], upright: [/Smolken/, /Meatbass/, /dsmolken\.double-bass/, /karoryfer\.meatbass/] };
+const NEEDS = { growly: [/Growlybass/, /Karoryfer/, /karoryfer\.growlybass/, /Swagbass/, /karoryfer\.swagbass/], upright: [/Smolken/, /Meatbass/, /dsmolken\.double-bass/, /karoryfer\.meatbass/],
+  ergo: [/Ergo/, /karoryfer\.ergo/], cosmo: [/Caveman Cosmonaut/, /Unitra/, /karoryfer\.caveman-cosmonaut/] };
 const lacking = sets.filter(s => NEEDS[s] && !NEEDS[s].every(r => r.test(ct)));
 ok(/CC0 1\.0/.test(ct) && /dominio público/.test(ct) && /What we changed/.test(ct) && /Lo que cambiamos/.test(ct) && !lacking.length,
   `CREDITS.txt names each set's library, maker and link, CC0, and what we changed, in English and Spanish ${lacking.join(" ")}`);
