@@ -193,6 +193,10 @@ Before any push:
 
 **Never erase** `aog.sync.url`, `aog.sync.key` or `aog.sync.writekey` in localStorage, except through Disconnect or Delete everything.
 
+## 7b. Played sideways (AOG-PLAY-V1, 2026-10-04)
+
+Turn a phone or tablet on its side and the guitar, bass, piano, The Band and the drum machine fill the screen to be played with both hands. See `music-handoff/LANDSCAPE-HANDOFF.md` §10 for how each is built and tested (`tests/play/*`).
+
 ## 8. Known risks and next ideas
 
 - **Not yet heard on an iPad or in Safari.** No WebKit browser is available here. Ask Jimmy to try on his iPad:

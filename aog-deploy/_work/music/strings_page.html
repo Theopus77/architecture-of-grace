@@ -176,6 +176,42 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .pbtn.play{min-width:0;flex:1 1 100%}
 }
 @media print{ .rig,.bench-bar,header{display:none!important} }
+/* ══ AOG-PLAY-V1 — the neck sideways. A phone or tablet turned on its side (or a computer's "Play on the whole screen"):
+   the page steps aside and the neck fills the screen, clear of the notch and the home bar. Nothing moves on its own. The
+   page is not zoomed while you play (aog-calm.css zooms a wide page; a finger must land on the string it touches). ══ */
+.pv{display:none}
+.pv-big{display:none}
+@media (pointer:fine){ .pv-big{display:inline-flex} }
+html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body.aog-play>*:not(#playView){display:none !important}
+body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
+  background:#0d0e11;color:#f1e9d6;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  padding:env(safe-area-inset-top,0px) max(env(safe-area-inset-right,0px),8px) env(safe-area-inset-bottom,0px) max(env(safe-area-inset-left,0px),8px)}
+.pv-bar{display:flex;align-items:center;gap:6px;padding:4px 0;flex:0 0 auto;min-width:0}
+.pv-b{min-height:40px;min-width:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 var(--sans);padding:0 .7rem;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;touch-action:manipulation;flex:0 0 auto}
+.pv-b[aria-pressed="true"],.pv-b[aria-expanded="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+.pv-b:disabled{opacity:.45}
+.pv-arrow{padding:0 .5rem}
+.pv-frets{font:700 14px/1.1 var(--sans);color:#f1e9d6;white-space:nowrap}
+.pv-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 var(--sans);color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+@media (max-width:900px){ .pv-hint{visibility:hidden} }
+.pv-main{position:relative;flex:1 1 auto;min-height:0;display:flex}
+.pv-main .neckbox{flex:1 1 auto;min-width:0;min-height:0;position:relative}
+#playView svg.neck{display:block;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#playView .neck .nk-fl{fill:#d9cfb8;opacity:.75}
+.pv-drawer{position:absolute;z-index:2;top:0;bottom:0;left:0;width:min(440px,72%);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+  background:#1a1c21;color:#f1e9d6;border:1px solid #5b5446;border-radius:12px;padding:.7rem .8rem 1rem;-webkit-user-select:none;user-select:none}
+.pv-drawer[hidden]{display:none}
+body.pv-left .pv-drawer{left:auto;right:0}
+.pv-lab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#e3dac9;margin:.7rem 0 .3rem}
+.pv-field{display:block}
+.pv-field select{min-height:44px;width:100%;font:600 16px/1.25 var(--sans);color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:10px;padding:0 .6rem}
+.pv-pads{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pv-pads .pv-b{min-height:48px;font-size:16px}
+.pv-pads .pv-b.hit{background:#ffd36b;color:#1f1206}
+.pv-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pv-say{font:500 14px/1.4 var(--sans);color:#e3dac9;margin:.8rem 0 0}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
@@ -273,7 +309,9 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <button type="button" class="pbtn" id="muteBtn"></button>
           <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
           <span id="recTime" hidden>0:00</span>
+          <button type="button" class="pbtn pv-big" id="pvBig"></button><!-- AOG-PLAY-V1: the neck on the whole screen (a computer) -->
         </div>
+        <p class="line pv-turn" id="pvTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
@@ -312,6 +350,33 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
     </section>
   </main>
   <footer class="foot" id="foot"></footer>
+</div>
+<!-- AOG-PLAY-V1 (2026-10-04) — Jimmy: "When you turn the iPhone or iPad horizontally, you can play the guitar or bass like a
+     real instrument." Turned sideways, the page's own neck (#neckBox) moves in here and fills the screen; turned back, it
+     goes home. The chord pads, the sound menu and the rest stay one tap away, in the drawer and on the page. -->
+<div id="playView" class="pv" role="region">
+  <div class="pv-bar">
+    <button type="button" class="pv-b" id="pvClose"></button>
+    <button type="button" class="pv-b" id="pvMore" aria-expanded="false" aria-controls="pvDrawer"></button>
+    <span class="pv-hint" id="pvHint"></span>
+    <button type="button" class="pv-b pv-arrow" id="pvDown">◀</button>
+    <span class="pv-frets" id="pvFrets" aria-live="polite"></span>
+    <button type="button" class="pv-b pv-arrow" id="pvUp">▶</button>
+    <button type="button" class="pv-b" id="pvMute"></button>
+    <button type="button" class="pv-b" id="pvRec" aria-pressed="false"></button>
+  </div>
+  <div class="pv-main" id="pvNeck">
+    <div class="pv-drawer" id="pvDrawer" hidden>
+      <label class="pv-field"><span class="pv-lab" data-t="instrument"></span><select id="pvSound"></select></label>
+      <label class="pv-field"><span class="pv-lab" data-t="keyLab"></span><select id="pvKey"></select></label>
+      <span class="pv-lab" data-t="chordsH"></span>
+      <div class="pv-pads" id="pvPads"></div>
+      <span class="pv-lab" data-t="pvHow"></span>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvChords" aria-pressed="true"></button><button type="button" class="pv-b" id="pvSolo" aria-pressed="false"></button></div>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvPlay"></button><button type="button" class="pv-b" id="pvLeft" aria-pressed="false"></button></div>
+      <p class="pv-say" id="pvSay"></p>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -405,6 +470,29 @@ const STR={
   fretsOut:{en:"Frets {a} to {b}",es:"Trastes {a} a {b}"},
   mute:{en:"✋ Mute the strings",es:"✋ Apagar las cuerdas"},
   strum:{en:"STRUM",es:"RASGUEA"},
+  /* AOG-PLAY-V1: the neck sideways */
+  pluck:{en:"PLUCK",es:"PULSA"},
+  pvTurnPhone: GTR?{en:"Turn your phone sideways to play the neck like a real guitar.",es:"Gira tu teléfono de lado para tocar el mástil como una guitarra de verdad."}
+                 :{en:"Turn your phone sideways to play the neck like a real bass.",es:"Gira tu teléfono de lado para tocar el mástil como un bajo de verdad."},
+  pvTurnTablet: GTR?{en:"Turn your tablet sideways to play the neck like a real guitar.",es:"Gira tu tableta de lado para tocar el mástil como una guitarra de verdad."}
+                  :{en:"Turn your tablet sideways to play the neck like a real bass.",es:"Gira tu tableta de lado para tocar el mástil como un bajo de verdad."},
+  pvBig:{en:"⤢ Play on the whole screen",es:"⤢ Tocar en toda la pantalla"},
+  pvClose:{en:"✕ Close",es:"✕ Cerrar"},
+  pvMore:{en:"☰ Chords and sounds",es:"☰ Acordes y sonidos"},
+  pvHint: GTR?{en:"Hold the frets with one hand. Strum on the right with the other.",es:"Pisa los trastes con una mano. Rasguea a la derecha con la otra."}
+             :{en:"Hold the frets with one hand. Pluck on the right with the other.",es:"Pisa los trastes con una mano. Pulsa a la derecha con la otra."},
+  pvHintL: GTR?{en:"Hold the frets with one hand. Strum on the left with the other.",es:"Pisa los trastes con una mano. Rasguea a la izquierda con la otra."}
+              :{en:"Hold the frets with one hand. Pluck on the left with the other.",es:"Pisa los trastes con una mano. Pulsa a la izquierda con la otra."},
+  pvFretless:{en:"No frets: the note is right under your finger. Slide, and the sound follows.",es:"Sin trastes: la nota está justo bajo tu dedo. Desliza el dedo y el sonido lo sigue."},
+  pvMute:{en:"✋ Mute",es:"✋ Apagar"},
+  pvLower:{en:"Lower frets",es:"Trastes más graves"}, pvHigher:{en:"Higher frets",es:"Trastes más agudos"},
+  pvFrets:{en:"Frets {a}–{b}",es:"Trastes {a}–{b}"},
+  pvHow:{en:"How the neck plays",es:"Cómo suena el mástil"},
+  pvChords:{en:"Chords",es:"Acordes"}, pvSolo:{en:"Solo",es:"Solo"},
+  pvLeft:{en:"Left-handed",es:"Para zurdos"},
+  pvSay: GTR?{en:"Pick a chord here, then strum: it plays even with no fingers on the frets. Slide a held finger to slide; push it across the string to bend.",es:"Elige un acorde aquí y rasguea: suena aunque no pises ningún traste. Desliza un dedo pisado para deslizar; empújalo a lo ancho de la cuerda para estirarla."}
+            :{en:"Tap the PLUCK strip with two fingers in turn, as a bass player does. Slide a held finger to slide; push it across the string to bend.",es:"Toca la franja PULSA con dos dedos, uno y otro, como un bajista. Desliza un dedo pisado para deslizar; empújalo a lo ancho de la cuerda para estirarla."},
+  pvRegion:{en:"The neck, on the whole screen",es:"El mástil, en toda la pantalla"},
   neckGroup: GTR?{en:"Guitar neck, six strings. Tap a fret to play it.",es:"Mástil de la guitarra, seis cuerdas. Toca un traste para tocarlo."}
                 :{en:"Bass neck, four strings. Tap a fret to play it.",es:"Mástil del bajo, cuatro cuerdas. Toca un traste para tocarlo."},
   litLine: GTR?{en:"Pale dots show where fingers go for the chord. × means skip that string. Orange notes are playing now.",es:"Los puntos claros muestran dónde van los dedos para el acorde. × significa no tocar esa cuerda. Las notas naranjas suenan ahora."}
@@ -1585,10 +1673,10 @@ const STR_LIVE=[];           /* the note ringing on each string, played by hand:
 const ALL=[];                /* every voice still sounding, to keep the count kind to the phone */
 function track(vc){ ALL.push(vc); if(ALL.length>40){ const old=ALL.shift(); try{ old.kill(ac.currentTime); }catch(e){} } }
 function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--){ const v=ALL[i]; if((v.end&&v.end<now)||(v.natural&&v.natural<now)) ALL.splice(i,1); } }
-function pluckCell(s, f, v, when){
+function pluckCell(s, f, v, when, o){
   const c=ctx(), at=Math.max(c.currentTime, when||0), m=TUNING[s]+f;
   const old=STR_LIVE[s]; if(old && !old.vc.stopped) old.vc.stop(at, SOUNDS[S.sound].damp);
-  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, at, s); if(!vc) return;
+  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, at, s, o); if(!vc) return;
   STR_LIVE[s]={vc:vc, m:m, f:f}; track(vc); prune();
 }
 function dampString(s, when){ const old=STR_LIVE[s]; if(old && ac && !old.vc.stopped) old.vc.stop(Math.max(ac.currentTime, when||0), 0.03, {rel:true}); STR_LIVE[s]=null; }   /* the hand on the string (a recording: its sound, AOG-STRINGS-REAL-V1) */
@@ -2010,7 +2098,7 @@ function paintText(){
   $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
   recLine();
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
-  paintDial(); paintDrums(); buildNeck();
+  paintDial(); paintDrums(); buildNeck(); pvText();
 }
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
@@ -2116,7 +2204,7 @@ function wheelDown(key){
   litNeck();
 }
 function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
-function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); }
+function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); const pb=$("pvPlay"); if(pb) pb.textContent=b.textContent; }
 function paintTempo(){
   const r=$("bpm"), locked=drumsLive();
   r.value=String(curBpm()); r.disabled=!!locked;
@@ -2143,6 +2231,7 @@ function paintDrums(){
 /* ══ the neck (AOG-STRINGS-V1): as many frets as fit (at least 43 px wide on a phone, 50 on bigger screens); the thick string on top ══ */
 function buildNeck(){
   const svg=$("neck"); if(!svg) return;
+  if(NECK.play){ buildPlayNeck(); return; }   /* AOG-PLAY-V1: sideways, the neck fills the screen */
   const w=Math.max(280, Math.round($("neckBox").clientWidth||330));
   const rows=TUNING.length, rowH=GTR?44:52, nut=46, top=8, strW=GTR?(w<360?50:w<600?58:120):0;
   const n=Math.max(GTR?4:5, Math.min(12, Math.floor((w-nut-strW-(GTR?6:0))/(w<600?43:50))));
@@ -2218,6 +2307,7 @@ function litNeck(){
   if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
 }
 function neckHit(e){
+  if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
   const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
   const x=(e.clientX-r.left)*NECK.W/r.width, y=(e.clientY-r.top)*NECK.H/r.height;
   const row=Math.max(0, Math.min(NECK.rows-1, Math.floor((y-NECK.top)/NECK.rowH))), s=row;
@@ -2236,6 +2326,7 @@ function bindNeck(){
     try{ svg.setPointerCapture(e.pointerId); }catch(err){}
     FINGERS.set(e.pointerId, h);
     if(window.AOGSolo && AOGSolo.down(e, h)){ litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch */
+    if(NECK.play && pvDown(e, h)){ litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
     if(h.zone==="strum") pluckShape(h.s, 0.72); else pluckCell(h.s, h.f, 0.76);
     litNeck();
   });
@@ -2243,6 +2334,7 @@ function bindNeck(){
     const p=FINGERS.get(e.pointerId); if(!p) return;
     const h=neckHit(e); if(!h) return;
     if(window.AOGSolo && AOGSolo.move(e, p, h)) return;   /* AOG-SOLO-V1: bends, slides, the whammy */
+    if(NECK.play && pvMove(e, p, h)) return;   /* AOG-PLAY-V1: strums, slides, bends */
     if(p.zone==="strum"){
       if(h.zone!=="strum" || h.s===p.s) return;
       /* every string crossed sounds, one after another, as a strum does */
@@ -2256,10 +2348,259 @@ function bindNeck(){
     }
     litNeck();
   });
-  const up=(e)=>{ if(!FINGERS.has(e.pointerId)) return; if(window.AOGSolo) AOGSolo.up(e); /* AOG-SOLO-V1: pull-offs */ FINGERS.delete(e.pointerId); litNeck(); };
+  const up=(e)=>{ if(!FINGERS.has(e.pointerId)) return; if(window.AOGSolo) AOGSolo.up(e); /* AOG-SOLO-V1: pull-offs */
+    const p=FINGERS.get(e.pointerId); FINGERS.delete(e.pointerId); if(NECK.play) pvUp(e, p); /* AOG-PLAY-V1: a lifted finger */ litNeck(); };
   svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up); svg.addEventListener("lostpointercapture",up);
 }
 function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fret0!==was) save(); }
+
+/* ══ AOG-PLAY-V1 (2026-10-04) — the neck sideways ════════════════════════════════════════════════════════════════
+   Jimmy: "When you turn the iPhone or iPad horizontally, you can play the guitar or bass like a real instrument."
+   Turned on its side, a phone or tablet shows only the neck: the nut on the left, the frets closer together towards the
+   body, as a real neck's are; the low string at the bottom, as you see your own guitar when you look down at it.
+   One hand holds the frets (silent, as on a real guitar); the other strums or plucks on the strip at the right: a swipe
+   sounds each string it crosses, in that order and at that speed; a tap plucks one. A held finger slides along its string
+   and bends across it (a small wiggle is vibrato); lifting it mutes the string, or pulls off to a finger still on it.
+   With no finger on the frets, the strum plays the chord in your hand (a pad from the drawer, or the pattern's chord).
+   An upright or fretless sound has no frets: the note is where the finger is, dots only where a player marks positions.
+   Solo mode keeps its own hooks (aog-solo.js); the strip is its whammy bar. It is the page's own neck (#neckBox), moved
+   here, so the lit notes, Record and the computer keys work the same. A computer gets it from "Play on the whole screen". */
+const PV={on:false, forced:false, closed:false, left:false, alt:0, mq:null, back:null, y:0, seen:false};
+const PVKEY="aog."+INST+".play.v1";
+try{ const r=JSON.parse(localStorage.getItem(PVKEY)||"null"); if(r){ PV.left=!!r.left; PV.seen=!!r.seen; } }catch(e){}
+function pvSave(){ try{ localStorage.setItem(PVKEY, JSON.stringify({left:PV.left, seen:PV.seen})); }catch(e){} }
+function fretD(k){ return 1-Math.pow(2,-k/12); }        /* where fret k sits, as a share of the string from the nut */
+function fretless(){ const d=SOUNDS[S.sound]; return !GTR && !!(d && (d.rec==="upright" || d.rec==="ergo")); }
+/* the neck's places, sideways or not (aog-solo.js draws with them too) */
+function neckY(s){ return NECK.top+(NECK.play ? NECK.rows-1-s : s)*NECK.rowH+NECK.rowH/2; }
+function neckXY(s, f){
+  let x;
+  if(f===0) x=(NECK.nut-4)/2;
+  else if(!NECK.play) x=NECK.nut+(f-S.fret0+0.5)*NECK.cw;
+  else { const i=Math.max(0, Math.min(NECK.n-1, f-S.fret0)); x=NECK.fl ? NECK.fx[i+1] : (NECK.fx[i]+NECK.fx[i+1])/2; }
+  return [NECK.play && NECK.flip ? NECK.W-x : x, neckY(s)];
+}
+function neckSpan(){ return NECK.play && NECK.flip ? [NECK.W-NECK.nut+10, 0] : [NECK.nut-10, NECK.W]; }
+function neckStrum(){ if(!NECK.play) return null; const w=NECK.W-NECK.sx; return {x0:NECK.flip?0:NECK.sx, w:w, y:NECK.top, h:NECK.rows*NECK.rowH}; }
+function buildPlayNeck(){
+  const svg=$("neck"), box=$("neckBox");
+  const W=Math.max(320, Math.round(box.clientWidth||640)), H=Math.max(180, Math.round(box.clientHeight||300));
+  const rows=TUNING.length, top=4, foot=20, rowH=(H-top-foot)/rows, fl=fretless(), flip=PV.left;
+  const nut=Math.round(Math.max(40, Math.min(56, W*0.055)));
+  const strW=Math.round(Math.max(120, Math.min(GTR?280:240, W*(GTR?0.24:0.22)))), sx=W-strW, xb=sx-8;
+  /* as many frets as fit with the narrowest still a finger wide (a phone about ten, an iPad twelve) */
+  const minW=W>=1000?60:46; let n=12;
+  while(n>5 && (xb-nut)*(fretD(n)-fretD(n-1))/fretD(n)<minW) n--;
+  S.fret0=Math.max(1, Math.min(MAXF-n+1, S.fret0));
+  const a=S.fret0, d0=fretD(a-1), d1=fretD(a-1+n), fx=[];
+  for(let i=0;i<=n;i++) fx.push(nut+(fretD(a-1+i)-d0)/(d1-d0)*(xb-nut));
+  Object.assign(NECK,{n:n, W:W, H:H, rowH:rowH, nut:nut, strW:strW, cw:fx[n]-fx[n-1], top:top, rows:rows, fx:fx, sx:sx, xb:xb, flip:flip, fl:fl});
+  const f=v=>v.toFixed(1), X=x=>flip?W-x:x, Y=s=>neckY(s), by=top, bh=rows*rowH;
+  const rx=(x0,x1)=>{ const l=Math.min(X(x0),X(x1)); return `x="${f(l)}" width="${f(Math.abs(x1-x0))}"`; };
+  const ox=(nut-4)/2;
+  let o=`<rect class="nk-open" ${rx(0,nut-4)} y="${by}" height="${f(bh)}" rx="6"/><rect class="nk-wood" ${rx(nut,xb)} y="${by}" height="${f(bh)}"/>`;
+  /* the position dots: on a fretted neck between the frets; on a fretless one on the line where the note is */
+  for(let i=0;i<n;i++){ const fr=a+i, cx=f(X(fl?fx[i+1]:(fx[i]+fx[i+1])/2)), r=fl?4:5, cls=fl?"nk-inlay nk-fl":"nk-inlay";
+    if(fr===12) o+=`<circle class="${cls}" cx="${cx}" cy="${f(by+bh*0.27)}" r="${r}"/><circle class="${cls}" cx="${cx}" cy="${f(by+bh*0.73)}" r="${r}"/>`;
+    else if([3,5,7,9,15].indexOf(fr)>=0) o+=`<circle class="${cls}" cx="${cx}" cy="${f(by+bh/2)}" r="${r}"/>`; }
+  if(!fl) for(let i=1;i<=n;i++) o+=`<line class="nk-fret" x1="${f(X(fx[i]))}" y1="${by}" x2="${f(X(fx[i]))}" y2="${f(by+bh)}"/>`;
+  o+= a===1 ? `<rect class="nk-nut" ${rx(nut-3,nut+4)} y="${by-2}" height="${f(bh+4)}" rx="2"/>` : `<line class="nk-fret" x1="${f(X(nut))}" y1="${by}" x2="${f(X(nut))}" y2="${f(by+bh)}"/>`;
+  o+=`<rect class="nk-strum" ${rx(sx,W-1)} y="${by}" height="${f(bh)}" rx="10"/>`;
+  for(let s=0;s<rows;s++){ const wd=GTR?[2.8,2.3,1.9,1.4,1.1,0.9][s]:[3.6,3.1,2.6,2.1][s];
+    o+=`<line class="nk-str${GTR&&s>=3?" plain":""}" x1="${f(X(nut-10))}" y1="${f(Y(s))}" x2="${f(X(W))}" y2="${f(Y(s))}" style="stroke-width:${wd}px"/>`; }
+  const R=Math.max(10, Math.min(NECK.cw, rowH)*0.36);
+  for(let s=0;s<rows;s++){
+    o+=`<text class="nk-name" data-s="${s}" x="${f(X(ox))}" y="${f(Y(s))}" style="font-size:15px">${pcName(TUNING[s])}</text>`;
+    o+=`<text class="nk-x" data-s="${s}" x="${f(X(ox))}" y="${f(Y(s))}" style="font-size:22px;display:none">×</text>`;
+    [0].concat(Array.from({length:n},(_,i)=>a+i)).forEach(fr=>{
+      const [cx,cy]=neckXY(s, fr), nm=pcName(TUNING[s]+fr), fs=nm.length>3?10:nm.length>2?11.5:13.5;
+      o+=`<g class="dot" data-c="${s}:${fr}"><circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R)}"/><text x="${f(cx)}" y="${f(cy)}" style="font-size:${fs}px">${nm}</text></g>`; });
+  }
+  const ny=f(by+bh+foot/2+2);
+  o+=`<text class="nk-num" x="${f(X(ox))}" y="${ny}" style="font-size:12px">0</text>`;
+  for(let i=0;i<n;i++) o+=`<text class="nk-num" x="${f(neckXY(0, a+i)[0])}" y="${ny}" style="font-size:12px">${a+i}</text>`;
+  o+=`<text class="nk-strumlab" x="${f(X(sx+strW/2))}" y="${ny}" style="font-size:12px">${t(GTR?"strum":"pluck")}</text>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("aria-label", t("neckGroup"));
+  svg.innerHTML=o;
+  $("fretsOut").textContent=t("fretsOut",{a:a, b:a+n-1});
+  $("downBtn").disabled=a<=1; $("upBtn").disabled=a>=MAXF-n+1;
+  $("pvFrets").textContent=t("pvFrets",{a:a, b:a+n-1});
+  $("pvDown").disabled=a<=1; $("pvUp").disabled=a>=MAXF-n+1;
+  $("pvHint").textContent=t(fl?"pvFretless":PV.left?"pvHintL":"pvHint");
+  litNeck();
+}
+/* a fretless note settles on the note when the finger is within an eighth of a step of it; elsewhere it follows the finger */
+function inTune(k){ const r=Math.round(k), q=k-r, z=0.12; return Math.abs(q)<z ? r : r+Math.sign(q)*(Math.abs(q)-z)/(0.5-z)*0.5; }
+function playHit(e){
+  const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
+  let x=(e.clientX-r.left)*NECK.W/r.width; const y=(e.clientY-r.top)*NECK.H/r.height;
+  if(NECK.flip) x=NECK.W-x;
+  const row=Math.max(0, Math.min(NECK.rows-1, Math.floor((y-NECK.top)/NECK.rowH))), s=NECK.rows-1-row;
+  if(x>=NECK.sx-4) return {zone:"strum", s:s, y:y};
+  if(x<NECK.nut-2) return {zone:"fret", s:s, f:0, fc:0, y:y};
+  const a=S.fret0, n=NECK.n, fx=NECK.fx;
+  let i=0; while(i<n-1 && x>=fx[i+1]) i++;
+  if(!NECK.fl) return {zone:"fret", s:s, f:a+i, y:y};
+  const d0=fretD(a-1), d1=fretD(a-1+n), u=Math.max(0, Math.min(1, (x-NECK.nut)/(fx[n]-NECK.nut)));
+  const k=Math.max(0, inTune(-12*Math.log2(1-(d0+u*(d1-d0)))));
+  return {zone:"fret", s:s, f:Math.max(a, Math.min(a+n-1, Math.round(k))), fc:k, y:y};
+}
+/* the fingers holding a string, and the note it gives: the highest finger, else open; with no finger anywhere on the
+   frets, the guitar's chord in your hand */
+function pvOn(s){ const out=[]; FINGERS.forEach(p=>{ if(p.zone==="fret" && p.s===s) out.push(p); }); return out; }
+function pvAt(p){ return NECK.fl && p.fc!=null ? p.fc : p.f; }
+function pvTop(s){ return pvOn(s).reduce((a,p)=>!a || pvAt(p)>pvAt(a) ? p : a, null); }
+function pvFret(s){
+  const top=pvTop(s); if(top) return pvAt(top);
+  let any=false; FINGERS.forEach(p=>{ if(p.zone==="fret") any=true; }); if(any || !GTR) return 0;
+  const c=shapeChord(); return c ? shapeFor(c)[s] : 0;
+}
+function pvRinging(s){ const L=STR_LIVE[s]; return !!(L && ac && !L.vc.stopped && !(L.vc.natural && L.vc.natural<ac.currentTime)); }
+/* the string follows its hand: a new top finger hammers on, a slide glides, a push bends (the made string and the
+   recordings glide the same way) */
+function pvRetune(s){
+  if(!pvRinging(s)) return; const L=STR_LIVE[s], fr=pvFret(s);
+  if(fr<0){ dampString(s); return; }
+  const top=pvTop(s), m=TUNING[s]+fr;
+  L.vc.glide(m+(top && top.bend || 0), ac.currentTime); L.m=m; L.f=Math.round(fr);
+}
+function pvPluck(s, v, when){
+  const fr=pvFret(s); if(fr<0){ dampString(s, when); return; }
+  const fi=Math.round(fr); pluckCell(s, fi, v, when);
+  const top=pvTop(s), more=fr-fi+(top && top.bend || 0);
+  if(Math.abs(more)>0.001){ const L=STR_LIVE[s]; if(L){ L.vc.glide(TUNING[s]+fr+(top && top.bend || 0), Math.max(ac.currentTime, when||0)); L.m=TUNING[s]+fr; } }
+}
+const pvBend=dy=>(window.AOGSolo && AOGSolo._t && AOGSolo._t.bendFrom) ? AOGSolo._t.bendFrom(dy) : Math.min(2, 2*Math.abs(dy)/(0.8*NECK.rowH));
+function pvDown(e, h){
+  const p=FINGERS.get(e.pointerId); if(!p) return false;
+  ctx();
+  if(h.zone==="strum"){
+    /* a tap plucks the string under it; the bass's two fingers take turns (a little softer, a little louder) */
+    Object.assign(p, {y:h.y, last:h.s, fresh:true, t:performance.now()});
+    PV.alt^=1; pvPluck(h.s, GTR?0.72:(PV.alt?0.78:0.7));
+    return true;
+  }
+  Object.assign(p, {y0:h.y, bend:0, fc:h.fc});
+  if(e.pointerType==="mouse"){ pvPluck(h.s, 0.76); return true; }   /* a mouse is one finger: it plays where it lands */
+  pvRetune(h.s);
+  return true;
+}
+function pvMove(e, p, h){
+  if(p.zone==="strum"){
+    if(h.zone!=="strum" && h.y==null) return true;
+    const y=h.y, lo=Math.min(p.y,y), hi=Math.max(p.y,y); if(hi-lo<0.5) return true;
+    const down=y>p.y, list=[];
+    for(let s=0;s<NECK.rows;s++){ const c=neckY(s); if(c>lo && c<=hi && !(p.fresh && s===p.last)) list.push(s); }
+    p.fresh=false;
+    if(list.length){
+      list.sort((a,b)=>down ? neckY(a)-neckY(b) : neckY(b)-neckY(a));
+      const nowMs=performance.now(), dt=Math.max(4, nowMs-p.t), speed=(hi-lo)/dt;   /* svg px a millisecond */
+      const v=Math.max(0.46, Math.min(0.9, 0.46+speed*0.09)), sp=Math.max(0.002, Math.min(0.02, dt/1000/list.length)), now=ac?ac.currentTime:0;
+      list.forEach((s,k)=>pvPluck(s, v*(1-0.02*k), now+k*sp));
+      p.last=list[list.length-1]; p.t=nowMs;
+    }
+    p.y=y; litNeck(); return true;
+  }
+  if(h.zone!=="fret" && h.y==null) return true;
+  const s0=p.s, top=pvTop(s0)===p, ringing=top && pvRinging(s0);
+  let moved=false;
+  if(h.zone==="fret"){ const fc=NECK.fl ? h.fc : null; if(h.f!==p.f || fc!==p.fc){ moved=h.f!==p.f; p.f=h.f; p.fc=fc; } }
+  if(ringing){
+    /* across the string: a bend (the same push as Solo mode's), a small wiggle is vibrato */
+    const dy=h.y-p.y0; p.bend=Math.abs(dy)>3 ? pvBend(dy) : 0;
+    pvRetune(s0);
+  } else if(h.s!==p.s && Math.abs(h.y-p.y0)>NECK.rowH*0.6){
+    /* a quiet string: the finger simply moves to the next one */
+    p.s=h.s; p.y0=h.y; p.bend=0; moved=true;
+  }
+  if(moved) litNeck();
+  return true;
+}
+function pvUp(e, p){
+  if(!p || p.zone!=="fret" || (window.AOGSolo && AOGSolo.isOn())) return;
+  if(e.pointerType==="mouse") return;                               /* a mouse's note rings on, as on the page */
+  if(!pvRinging(p.s)) return;
+  if(pvOn(p.s).length) pvRetune(p.s);                               /* a finger still on the string: a pull-off */
+  else if(Math.round(STR_LIVE[p.s].m)===Math.round(TUNING[p.s]+pvAt(p))) dampString(p.s);   /* lifted: the string stops */
+}
+/* in and out */
+function pvTouch(){ return !!(window.matchMedia && matchMedia("(pointer: coarse)").matches); }
+function pvWanted(){ return PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed); }
+function pvSync(){ const w=pvWanted(); if(w===PV.on){ if(w) buildNeck(); return; } if(w) pvEnter(); else pvExit(); }
+function pvEnter(){
+  const box=$("neckBox"); if(!box || PV.on) return;
+  PV.on=true; PV.y=window.scrollY||0;
+  PV.back=document.createComment("neckBox"); box.parentNode.insertBefore(PV.back, box); $("pvNeck").appendChild(box);
+  document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", PV.left);
+  NECK.play=true; FINGERS.clear(); pvText(); buildNeck();
+  if(!PV.seen){ PV.seen=true; pvSave(); } $("pvTurn").hidden=true;
+}
+function pvExit(){
+  if(!PV.on) return; PV.on=false; FINGERS.clear(); pvDrawer(false);
+  document.body.classList.remove("aog-play","pv-left");
+  const box=$("neckBox"); if(PV.back && PV.back.parentNode){ PV.back.parentNode.replaceChild(box, PV.back); } PV.back=null;
+  NECK.play=false; buildNeck(); window.scrollTo(0, PV.y);
+}
+function pvDrawer(open){
+  const d=$("pvDrawer"); if(!d) return; d.hidden=!open; $("pvMore").setAttribute("aria-expanded", open?"true":"false");
+  if(open) pvPaintDrawer();
+}
+function pvPaintDrawer(){
+  const ss=$("soundSel"), ps=$("pvSound"); ps.innerHTML=ss.innerHTML; ps.value=S.sound;
+  const ks=$("keySel"), pk=$("pvKey"); pk.innerHTML=ks.innerHTML; pk.value=String(S.key);
+  $("pvPads").innerHTML=pads().map((c,i)=>`<button type="button" class="pv-b" data-i="${i}">${chordName(c)}</button>`).join("");
+  $("pvPads").querySelectorAll("button").forEach(b=>{ const i=+b.getAttribute("data-i");
+    b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
+    b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ b.classList.remove("hit"); padUp(i); };
+    b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } }; });
+  const solo=!!(window.AOGSolo && AOGSolo.isOn());
+  $("pvChords").setAttribute("aria-pressed", solo?"false":"true"); $("pvSolo").setAttribute("aria-pressed", solo?"true":"false");
+  $("pvSolo").hidden=!window.AOGSolo;
+  $("pvLeft").setAttribute("aria-pressed", PV.left?"true":"false");
+  $("pvPlay").textContent=$("playBtn").textContent;
+}
+function pvText(){
+  if(!$("playView")) return;
+  $("playView").setAttribute("aria-label", t("pvRegion"));
+  $("pvClose").textContent=t("pvClose"); $("pvMore").textContent=t("pvMore"); $("pvMute").textContent=t("pvMute");
+  $("pvDown").setAttribute("aria-label", t("pvLower")); $("pvUp").setAttribute("aria-label", t("pvHigher"));
+  $("pvChords").textContent=t("pvChords"); $("pvSolo").textContent=t("pvSolo"); $("pvLeft").textContent=t("pvLeft");
+  $("pvSay").textContent=t("pvSay"); $("pvBig").textContent=t("pvBig");
+  $("pvRec").textContent=$("recBtn").textContent; $("pvRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false");
+  const tablet=Math.max(screen.width||0, screen.height||0)>=900;
+  $("pvTurn").textContent=t(tablet?"pvTurnTablet":"pvTurnPhone");
+  $("pvTurn").hidden=PV.seen || PV.on || !pvTouch() || !(window.matchMedia && matchMedia("(orientation: portrait)").matches);
+  if(!$("pvDrawer").hidden) pvPaintDrawer();
+}
+function pvInit(){
+  if(!$("playView")) return;
+  if(window.matchMedia){
+    PV.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
+    const ch=()=>{ PV.closed=false; pvSync(); pvText(); };
+    if(PV.mq.addEventListener) PV.mq.addEventListener("change", ch); else if(PV.mq.addListener) PV.mq.addListener(ch);
+  }
+  $("pvClose").onclick=()=>{ PV.forced=false; PV.closed=true; pvSync(); };
+  $("pvBig").onclick=()=>{ PV.forced=true; PV.closed=false; pvSync(); };
+  $("pvMore").onclick=()=>pvDrawer($("pvDrawer").hidden);
+  $("pvDown").onclick=()=>moveNeck(-1); $("pvUp").onclick=()=>moveNeck(1);
+  $("pvMute").onclick=muteAll;
+  $("pvRec").onclick=()=>$("recBtn").click();
+  try{ new MutationObserver(()=>{ $("pvRec").textContent=$("recBtn").textContent; $("pvRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false"); })
+    .observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  $("pvSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("pvSound").value; ss.onchange(); };
+  $("pvKey").onchange=()=>{ const ks=$("keySel"); ks.value=$("pvKey").value; ks.onchange(); pvPaintDrawer(); };
+  $("pvChords").onclick=()=>{ if(window.AOGSolo) AOGSolo.setMode("chords"); pvPaintDrawer(); buildNeck(); };
+  $("pvSolo").onclick=()=>{ if(window.AOGSolo) AOGSolo.setMode("solo"); pvPaintDrawer(); buildNeck(); };
+  $("pvPlay").onclick=()=>{ $("playBtn").click(); pvPaintDrawer(); };
+  $("pvLeft").onclick=()=>{ PV.left=!PV.left; pvSave(); document.body.classList.toggle("pv-left", PV.left && PV.on); pvPaintDrawer(); buildNeck(); };
+  ["pvSound","pvKey"].forEach(id=>{ const el=$(id); el.addEventListener("change",()=>setTimeout(()=>el.blur(),0)); });
+  document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && PV.on){ if(!$("pvDrawer").hidden) pvDrawer(false); else if(PV.forced){ PV.forced=false; pvSync(); } } });
+  /* the bars of Safari come and go: the neck is measured again */
+  let rt=0; const again=()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(PV.on) buildNeck(); }, 120); };
+  window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
+  pvText(); pvSync();
+}
 /* computer keys: by position, so other keyboard layouts work too */
 const STRING_KEYS=GTR?["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH"]:["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"];
 function scaleNote(i){ const iv=S.minor?[0,2,3,5,7,8,10,12]:[0,2,4,5,7,9,11,12]; return bassRoot({off:0, q:S.minor?"min":"maj"})+iv[i]; }
@@ -2290,7 +2631,7 @@ window.addEventListener("blur",()=>{ if(KEYCELLS.size){ KEYCELLS.clear(); litNec
 
 function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save();
-    muteAll(); if(ac) setSound(LIVE_CH, id); prepare(id); paintAmp(); };
+    muteAll(); if(ac) setSound(LIVE_CH, id); prepare(id); paintAmp(); if(NECK.play) buildNeck(); };   /* AOG-PLAY-V1: an upright or fretless sound has no frets */
   $("keySel").onchange=()=>{ S.key=+$("keySel").value; S.hand=null; save(); paintPads(); paintProg(); buildNeck(); };
   $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
   $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
@@ -2335,6 +2676,7 @@ function bind(){
 loadState();
 bind();
 paintText();
+pvInit();
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ stop(); muteAll(); } });
 window.addEventListener("pagehide",()=>{ stop(true); muteAll(); });
 /* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */

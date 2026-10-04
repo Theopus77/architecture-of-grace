@@ -424,6 +424,32 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 .ladder .lt{font-weight:600}
 .ladder li.lgroup{border:0;padding:.7rem .2rem .1rem}                     /* AOG-DRUM-SONGS-V1: "Songs we make" */
 .ladder li.lgroup .lt{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+/* ══ AOG-PLAY-V1 (2026-10-04) — the kit sideways: a phone or tablet turned on its side shows a drum kit seen from the
+   drummer's seat, filling the screen, clear of the notch and the home bar. Nothing moves on its own: a piece lights
+   only when it is hit. ══ */
+.dk{display:none}
+html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body.aog-play>*:not(#kitView){display:none !important}
+body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
+  background:#15110d;color:#f4efe6;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  padding:env(safe-area-inset-top,0px) max(env(safe-area-inset-right,0px),8px) env(safe-area-inset-bottom,0px) max(env(safe-area-inset-left,0px),8px)}
+.dk-bar{display:flex;align-items:center;gap:6px;padding:4px 0;flex:0 0 auto}
+.dk-b{flex:0 0 auto;min-height:40px;min-width:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding:0 .7rem;display:inline-flex;align-items:center;white-space:nowrap;touch-action:manipulation}
+.dk-b[aria-pressed="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+.dk-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+@media (max-width:700px){ .dk-hint{visibility:hidden} }
+#kitView svg.dk-kit{flex:1 1 auto;min-height:0;width:100%;height:100%;display:block;touch-action:none}
+.dk-kit [data-pad]{cursor:pointer}
+.dk-kit text{font:800 26px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dk-kit .skin{fill:#f0dfbd;stroke:#2a1d10;stroke-width:4}
+.dk-kit .shell{fill:#8a3a1c;stroke:#2a1d10;stroke-width:4}
+.dk-kit .metal{fill:#b9bec5;stroke:#2a1d10;stroke-width:4}
+.dk-kit .brass{fill:#d9b34a;stroke:#4a3305;stroke-width:4}
+.dk-kit .epad{fill:#3a342c;stroke:#8a7a5c;stroke-width:4}
+.dk-kit .ink{fill:#2b2116} .dk-kit .ink-l{fill:#f4efe6}
+.dk-kit .hit .skin,.dk-kit .hit .brass,.dk-kit .hit .metal,.dk-kit .hit .epad,.dk-kit .hit .shell{fill:#ffd36b}
+.dk-kit .hit .ink-l{fill:#1f1206}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
@@ -468,6 +494,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
   </div>
   </div>
+  <p class="muted no-print" id="dkTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
   <main id="view"></main>
   <!-- AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". A take of what
        the machine plays (aog-recorder.js, shared by every music tool). REC on the machine still records into the pattern;
@@ -491,6 +518,16 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     <p class="pgfoot">To print it, <a href="/drums-guide">open the picture guide on its own page</a>.</p>
   </details>
   <footer class="no-print" id="foot"></footer>
+</div>
+<!-- AOG-PLAY-V1 (2026-10-04): the drum kit, sideways (dkSync fills it) -->
+<div id="kitView" class="dk" role="region">
+  <div class="dk-bar">
+    <button type="button" class="dk-b" id="dkClose"></button>
+    <span class="dk-hint" id="dkHint"></span>
+    <button type="button" class="dk-b" id="dkRun" aria-pressed="false"></button>
+    <button type="button" class="dk-b" id="dkTake" aria-pressed="false"></button>
+  </div>
+  <div id="dkKitBox" style="flex:1 1 auto;min-height:0;display:flex"></div>
 </div>
 <script>
 /* AOG-DRUM-BENCH-V1 — school beat only. Synthesized voices. Tempo 60–140. Master gain clamped. */
@@ -2581,6 +2618,7 @@ function paint(){
     const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb);
     if(tb){ if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`+(window.AOGDrumKit?AOGDrumKit.creditHtml(S.lang):"");   /* AOG-DRUM-REAL-V1: where the recorded kits come from */
+  if(typeof dkSync==="function") dkSync();   /* AOG-PLAY-V1: the kit sideways (before bind, which gives its pieces the pads' touch) */
   bind();
   REC.paint();
   paintLessonBox();
@@ -3311,6 +3349,81 @@ document.getElementById("themeBtn").onclick=()=>{
   paint();
 };
 window.addEventListener("hashchange", paint);
+/* ══ AOG-PLAY-V1 (2026-10-04) — the kit sideways ═══════════════════════════════════════════════════════════════════
+   Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
+   phone or tablet on the bench (or Meet the drums) shows a drum kit seen from the drummer's seat: the kick and the
+   hi-hat low, the snare in the middle with its rim around it, the tom above, the cymbals at the top, the clap on a pad
+   where the floor tom stands. The same eight voices: every piece carries data-pad, so bind() gives it the pads' own
+   touch (a sound the instant a finger lands, each finger its own hit, rolls when Roll is on). ══ */
+const DK={on:false, closed:false, mq:null, seen:false};
+try{ DK.seen=localStorage.getItem("aog.drums.play.v1")==="1"; }catch(e){}
+function dkWords(){ const es=S.lang==="es"; return {
+  close:es?"✕ Cerrar":"✕ Close", run:es?"▶ Tocar el ritmo":"▶ Play the beat", stop:es?"■ Parar":"■ Stop",
+  hint:es?"Toca la batería con los dedos. Usa las dos manos.":"Play the kit with your fingers. Use both hands.",
+  turn:Math.max(screen.width||0, screen.height||0)>=900
+    ? (es?"Gira tu tableta de lado para tocar una batería.":"Turn your tablet sideways to play a drum kit.")
+    : (es?"Gira tu teléfono de lado para tocar una batería.":"Turn your phone sideways to play a drum kit."),
+  region:es?"La batería, en toda la pantalla":"The drum kit, on the whole screen" }; }
+function dkSvg(){
+  const nm=id=>{ const v=VOICES.find(x=>x.id===id); return v ? v[S.lang] : id; };
+  /* a sideways phone is much wider than it is tall: the kit spreads out to fill it, the pieces a little bigger */
+  const box=document.getElementById("dkKitBox"), asp=box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8;
+  const VW=Math.round(Math.max(1000, Math.min(1400, 560*asp))), k=VW/1000, g=1+(k-1)*0.5;
+  const X=x=>Math.round(500*k+(x-500)*k), R=r=>Math.round(r*g);
+  const lab=(x,y,id,cls)=>`<text class="${cls||"ink"}" x="${X(x)}" y="${y}">${nm(id)}</text>`;
+  const piece=(id, body)=>`<g data-pad="${id}" role="button" tabindex="0" aria-label="${nm(id)}">${body}</g>`;
+  const el=(cls,x,y,rx,ry)=>`<ellipse class="${cls}" cx="${X(x)}" cy="${y}" rx="${R(rx)}" ry="${ry}"/>`;
+  return `<svg class="dk-kit" id="dkKit" viewBox="0 0 ${VW} 560" preserveAspectRatio="xMidYMid meet" role="group">
+    ${piece("oh", el("brass",215,92,185,70)+`<circle class="brass" cx="${X(215)}" cy="70" r="14"/>`+lab(215,112,"oh"))}
+    ${piece("bell", el("brass",790,96,195,72)+el("brass",790,72,52,22)+lab(790,124,"bell"))}
+    ${piece("tom", el("skin",560,235,118,84)+lab(560,235,"tom"))}
+    ${piece("rim", el("metal",345,335,152,114)+lab(345,240,"rim"))}
+    ${piece("snare", el("skin",345,345,120,86)+lab(345,350,"snare"))}
+    ${piece("clap", `<rect class="epad" x="${X(830)-R(125)}" y="265" width="${R(250)}" height="165" rx="26"/>`+lab(830,348,"clap","ink-l"))}
+    ${piece("ch", el("brass",120,452,120,64)+`<circle class="brass" cx="${X(120)}" cy="424" r="11"/>`+lab(120,466,"ch"))}
+    ${piece("kick", el("shell",540,494,250,62)+lab(540,494,"kick","ink-l"))}
+  </svg>`;
+}
+function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="meet")); }
+function dkPaint(){
+  const v=document.getElementById("kitView"); if(!v) return; const W=dkWords();
+  v.setAttribute("aria-label", W.region);
+  document.getElementById("dkClose").textContent=W.close;
+  document.getElementById("dkHint").textContent=W.hint;
+  const pb=document.getElementById("playBtn"), run=document.getElementById("dkRun");
+  run.hidden=!pb; run.textContent=S.playing?W.stop:W.run; run.setAttribute("aria-pressed", S.playing?"true":"false");
+  const tb=document.getElementById("takeBtn"), tk=document.getElementById("dkTake");
+  tk.textContent=tb?tb.textContent:""; tk.setAttribute("aria-pressed", (tb&&tb.getAttribute("aria-pressed"))||"false");
+  const kit=document.getElementById("dkKitBox"); const key=S.lang+(kit.clientHeight && kit.clientWidth/kit.clientHeight>2.1 ? "w" : "");
+  if(kit.getAttribute("data-k")===key && kit.firstElementChild) return dkTurn(W);
+  kit.setAttribute("data-k", key); kit.innerHTML=dkSvg();
+  kit.firstElementChild.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll */
+  dkTurn(W);
+}
+function dkTurn(W){
+  const turn=document.getElementById("dkTurn");
+  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="meet"); }
+}
+function dkSync(){
+  const want=dkWanted();
+  if(want!==DK.on){
+    DK.on=want; document.body.classList.toggle("aog-play", want);
+    if(want && !DK.seen){ DK.seen=true; try{ localStorage.setItem("aog.drums.play.v1","1"); }catch(e){} }
+  }
+  dkPaint();
+}
+(function dkInit(){
+  if(!window.matchMedia || !document.getElementById("kitView")) return;
+  DK.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
+  const ch=()=>{ DK.closed=false; paint(); };   /* paint() lays the kit out for the screen, then bind() gives it the touch */
+  if(DK.mq.addEventListener) DK.mq.addEventListener("change", ch); else if(DK.mq.addListener) DK.mq.addListener(ch);
+  document.getElementById("dkClose").onclick=()=>{ DK.closed=true; paint(); };
+  document.getElementById("dkRun").onclick=()=>{ const pb=document.getElementById("playBtn"); if(pb) pb.click(); setTimeout(dkPaint, 30); };
+  document.getElementById("dkTake").onclick=()=>{ const tb=document.getElementById("takeBtn"); if(tb) tb.click(); setTimeout(dkPaint, 30); };
+  try{ const tb=document.getElementById("takeBtn"); new MutationObserver(()=>{ const tk=document.getElementById("dkTake"); tk.textContent=tb.textContent; tk.setAttribute("aria-pressed", tb.getAttribute("aria-pressed")||"false"); })
+    .observe(tb, {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+})();
+
 window.addEventListener("pagehide", function(){
   stop();
   if(!benchReady && !userTouched) return;

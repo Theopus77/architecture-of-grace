@@ -181,6 +181,47 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .pbtn.play{min-width:0;flex:1 1 100%}
 }
 @media print{ .rig,.bench-bar,header{display:none!important} }
+/* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways: a phone or tablet turned on its side shows only the instrument, filling
+   the screen, clear of the notch and the home bar: a keyboard (two octaves on a phone, three on an iPad), the harp as
+   strings you sweep, the marimba, xylophone and glockenspiel as bars. Not zoomed (a finger lands on the key it touches). ══ */
+.bp{display:none}
+html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body.aog-play>*:not(#playView){display:none !important}
+body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
+  background:#0d0e11;color:#f1e9d6;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  padding:env(safe-area-inset-top,0px) max(env(safe-area-inset-right,0px),8px) env(safe-area-inset-bottom,0px) max(env(safe-area-inset-left,0px),8px)}
+.bp-bar{display:flex;align-items:center;gap:6px;padding:4px 0;flex:0 0 auto;min-width:0}
+.bp-b{flex:0 0 auto;min-height:40px;min-width:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 var(--sans);padding:0 .7rem;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;touch-action:manipulation}
+.bp-b[aria-pressed="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+.bp-b:disabled{opacity:.45}
+.bp-sel{flex:0 1 15rem;min-width:7rem;min-height:40px;font:600 16px/1.2 var(--sans);color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:10px;padding:0 .4rem}
+.bp-range{font:700 14px/1.1 var(--sans);color:#f1e9d6;white-space:nowrap}
+.bp-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 var(--sans);color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+@media (max-width:900px){ .bp-hint{display:none} }
+.bp-main{position:relative;flex:1 1 auto;min-height:0;display:flex;padding-bottom:4px}
+#playView .kbd{flex:1 1 auto;height:auto;min-height:0;width:100%}
+#playView .wk{font-size:.95rem;padding-bottom:14px}
+#playView .bk{font-size:.75rem}
+/* the harp: one string to a note of the key, C strings red and F strings dark blue, as a harpist's are */
+#playView .kbd.pv-harp{display:flex;border-top:7px solid #6b4a1e;background:linear-gradient(#2a1d10,#15100a);padding:0 4px}
+#playView .pv-harp .hs{flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:8px;
+  font:700 .8rem/1 var(--sans);color:#f1e9d6;background:none;border:0}
+#playView .pv-harp .hs::before{content:"";position:absolute;top:0;bottom:30px;left:50%;width:var(--sw,2px);margin-left:calc(var(--sw,2px)/-2);background:#e8dcc0;border-radius:2px}
+#playView .pv-harp .hs.c::before{background:#e0533e} #playView .pv-harp .hs.f::before{background:#4f7fd0}
+#playView .pv-harp .hs.lit::before{background:#ffe6a6;box-shadow:0 0 0 2px #8a6a2a}
+#playView .pv-harp .hs.down::before,#playView .pv-harp .hs.now::before{background:#ffd36b;box-shadow:0 0 0 3px #ffd36b}
+#playView .pv-harp .hs.out{color:#9a9182} #playView .pv-harp .hs.out::before{background:#55585e}
+/* the bars: naturals in front, sharps and flats behind, longer for the low notes */
+#playView .kbd.pv-bars{display:block;border-top:0;background:#16110c;padding:0}
+#playView .pv-bars .wk,#playView .pv-bars .bk{position:absolute;margin:0;border:2px solid #120c07;border-radius:8px;box-shadow:none;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:8px;font:700 .85rem/1 var(--sans);
+  background:linear-gradient(#a9643a,#7a4022);color:#fbf1df}
+#playView .pv-bars.glock .wk,#playView .pv-bars.glock .bk{background:linear-gradient(#e9ebef,#b9bec6);color:#1e232a}
+#playView .pv-bars .wk.lit,#playView .pv-bars .bk.lit{background:linear-gradient(#f2d9a6,#d9b06a);color:#1f1206}
+#playView .pv-bars .wk.down,#playView .pv-bars .bk.down,#playView .pv-bars .wk.now,#playView .pv-bars .bk.now{background:linear-gradient(#ffe39a,#efb94e);color:#1f1206}
+#playView .pv-bars .wk.out,#playView .pv-bars .bk.out{background:linear-gradient(#6b6760,#4a4741);color:#efe9dc}
+#playView .pv-bars .nm small{color:inherit}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
@@ -278,6 +319,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         <div class="kbd" id="kbd" role="group"></div>
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
+        <p class="line" id="bpTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
         <p class="line keys-line" data-t="keysLine"></p>
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
@@ -306,5 +348,19 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
     </section>
   </main>
   <footer class="foot" id="foot"></footer>
+</div>
+<!-- AOG-PLAY-V1 (2026-10-04) — Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument."
+     Turned sideways, the page's own keys (#kbd) move in here and fill the screen; turned back, they go home. -->
+<div id="playView" class="bp" role="region">
+  <div class="bp-bar">
+    <button type="button" class="bp-b" id="bpClose"></button>
+    <select class="bp-sel" id="bpSound"></select>
+    <span class="bp-hint" id="bpHint"></span>
+    <button type="button" class="bp-b" id="bpDown">◀</button>
+    <span class="bp-range" id="bpRange" aria-live="polite"></span>
+    <button type="button" class="bp-b" id="bpUp">▶</button>
+    <button type="button" class="bp-b" id="bpRec" aria-pressed="false"></button>
+  </div>
+  <div class="bp-main" id="bpMain"></div>
 </div>
 
