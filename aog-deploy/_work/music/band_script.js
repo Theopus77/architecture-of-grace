@@ -115,12 +115,12 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
    plucked, the double bass and the harp; the trumpet with two mutes and the horn with one; the piccolo; trumpet, trombone,
    flute, oboe and bassoon with vibrato (their short notes are the plain ones'). And bands made of them. */
 const SOUNDS={
-  trumpet: {grp:"grpBrass", en:"Trumpet",          es:"Trompeta",        gain:1.4, rev:0.14, stand:"brass"},
+  trumpet: {grp:"grpBrass", en:"Trumpet",          es:"Trompeta",        gain:1.491, rev:0.14, stand:"brass"},
   /* AOG-BAND-JAZZ-V1 (2026-10-04) — Jimmy's list of the players the band's sounds should be like; on screen each is named
      by its style. trad jazz: warm and open, singing, vibrato on held notes; cool jazz: the harmon mute, intimate and
      breathy (touch < 1 leans on the soft recording); bebop: bright and brassy, with bite (touch > 1 leans on the loud one) */
   trumpet_vib:{grp:"grpJazz", en:"Trumpet · trad jazz, warm with vibrato", es:"Trompeta · jazz tradicional, cálida con vibrato", gain:1.486, rev:0.16, stand:"brass"},
-  trumpet_bebop:{grp:"grpJazz", en:"Trumpet · bebop, bright", es:"Trompeta · bebop, brillante", parts:["trumpet"], touch:1.3, gain:1.16, rev:0.1, stand:"brass"},
+  trumpet_bebop:{grp:"grpJazz", en:"Trumpet · bebop, bright", es:"Trompeta · bebop, brillante", parts:["trumpet"], touch:1.3, gain:1.23, rev:0.1, stand:"brass"},
   trumpet_harmon:{grp:"grpJazz", en:"Muted trumpet · cool jazz", es:"Trompeta con sordina · cool jazz", touch:0.7, gain:2.255, rev:0.2, stand:"brass"},
   sax_bebop:{grp:"grpJazz", en:"Alto sax · bebop, bright", es:"Saxo alto · bebop, brillante", parts:["sax"], touch:1.3, gain:1.111, rev:0.1, stand:"wind"},
   /* AOG-BAND-SAX2-V1 (2026-10-04) — the tenor and the soprano of Jimmy's list of influences, named by style on screen.
@@ -131,9 +131,9 @@ const SOUNDS={
   tenor_vib:{grp:"grpJazz", en:"Tenor sax · ballad, warm with vibrato", es:"Saxo tenor · balada, cálido con vibrato", gain:1.256, rev:0.18, stand:"wind"},
   tenor_modal:{grp:"grpJazz", en:"Tenor sax · modal jazz, big and strong", es:"Saxo tenor · jazz modal, grande y fuerte", parts:["tenor"], touch:1.3, gain:1.09, rev:0.1, stand:"wind"},
   soprano_fusion:{grp:"grpJazz", en:"Soprano sax · jazz fusion, light and airy", es:"Saxo soprano · jazz fusión, ligero y aireado", parts:["soprano"], touch:0.45, gain:2.946, rev:0.22, stand:"wind"},
-  bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, gain:1.003, rev:0.12, stand:"brass",
+  bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, mono:true, gain:1.116, rev:0.12, stand:"brass",
     who:{en:"trumpet and alto sax on the tune, trombone, a plucked double bass and drums",es:"trompeta y saxo alto en la melodía, trombón, un contrabajo pulsado y batería"}},
-  cooljazz:{grp:"grpJazz", en:"Cool jazz group",   es:"Grupo de cool jazz", parts:["contrabass_pizz","horn","sax","trumpet_harmon"], touch:0.7, gain:2.022, rev:0.2, stand:"brass",
+  cooljazz:{grp:"grpJazz", en:"Cool jazz group",   es:"Grupo de cool jazz", parts:["contrabass_pizz","horn","sax","trumpet_harmon"], touch:0.7, mono:true, gain:2.154, rev:0.2, stand:"brass",
     who:{en:"muted trumpet, alto sax, French horn and a plucked double bass",es:"trompeta con sordina, saxo alto, corno francés y un contrabajo pulsado"}},
   /* the big band's saxophones are an alto on its part and, under it, a tenor (AOG-BAND-SAX2-V1: the alto had played both
      notes, the lower one at the bottom of its reach), as a swing band's sax section has altos over tenors */
@@ -142,21 +142,21 @@ const SOUNDS={
     who:{en:"trumpets, alto and tenor saxes, trombones, a plucked double bass and drums",es:"trompetas, saxos alto y tenor, trombones, un contrabajo pulsado y batería"}},
   trumpet_straight:{grp:"grpBrass", en:"Trumpet · straight mute", es:"Trompeta · sordina recta", gain:1.387, rev:0.16, stand:"brass"},
   trombone:{grp:"grpBrass", en:"Trombone",         es:"Trombón",         gain:1.05, rev:0.14, stand:"brass"},
-  trombone_vib:{grp:"grpBrass", en:"Trombone · with vibrato", es:"Trombón · con vibrato", gain:0.967, rev:0.14, stand:"brass"},
-  horn:    {grp:"grpBrass", en:"French horn",      es:"Corno francés",   gain:1.01, rev:0.18, stand:"brass"},
+  trombone_vib:{grp:"grpBrass", en:"Trombone · with vibrato", es:"Trombón · con vibrato", gain:1.107, rev:0.14, stand:"brass"},
+  horn:    {grp:"grpBrass", en:"French horn",      es:"Corno francés",   gain:1.146, rev:0.18, stand:"brass"},
   horn_mute:{grp:"grpBrass", en:"French horn · muted", es:"Corno francés · con sordina", gain:1.181, rev:0.18, stand:"brass"},
-  tuba:    {grp:"grpBrass", en:"Tuba",             es:"Tuba",            gain:1.06, rev:0.12, stand:"brass"},
-  brass:   {grp:"grpBrass", en:"Brass section · all four", es:"Sección de metales · los cuatro", parts:["tuba","trombone","horn","trumpet"], gain:1.07, rev:0.16, stand:"brass",
+  tuba:    {grp:"grpBrass", en:"Tuba",             es:"Tuba",            gain:1.474, rev:0.12, stand:"brass"},
+  brass:   {grp:"grpBrass", en:"Brass section · all four", es:"Sección de metales · los cuatro", parts:["tuba","trombone","horn","trumpet"], mono:true, gain:1.167, rev:0.16, stand:"brass",
     who:{en:"tuba, trombone, French horn and trumpet",es:"tuba, trombón, corno francés y trompeta"}},
-  brass_mute:{grp:"grpBrass", en:"Brass section · with mutes", es:"Sección de metales · con sordinas", parts:["trombone","horn_mute","trumpet_straight","trumpet_harmon"], gain:1.419, rev:0.17, stand:"brass",
+  brass_mute:{grp:"grpBrass", en:"Brass section · with mutes", es:"Sección de metales · con sordinas", parts:["trombone","horn_mute","trumpet_straight","trumpet_harmon"], mono:true, gain:1.419, rev:0.17, stand:"brass",
     who:{en:"trombone, muted French horn and two muted trumpets",es:"trombón, corno francés con sordina y dos trompetas con sordina"}},
   piccolo: {grp:"grpWinds", en:"Piccolo",          es:"Flautín",         gain:1.506, rev:0.16, stand:"wind"},
-  flute:   {grp:"grpWinds", en:"Flute",            es:"Flauta",          gain:1.33, rev:0.16, stand:"wind"},
+  flute:   {grp:"grpWinds", en:"Flute",            es:"Flauta",          gain:1.439, rev:0.16, stand:"wind"},
   flute_vib:{grp:"grpWinds", en:"Flute · with vibrato", es:"Flauta · con vibrato", gain:1.499, rev:0.16, stand:"wind"},
   clarinet:{grp:"grpWinds", en:"Clarinet",         es:"Clarinete",       gain:1.71, rev:0.15, stand:"wind"},
   oboe:    {grp:"grpWinds", en:"Oboe",             es:"Oboe",            gain:0.96, rev:0.15, stand:"wind"},
   oboe_vib:{grp:"grpWinds", en:"Oboe · with vibrato", es:"Oboe · con vibrato", gain:1.356, rev:0.15, stand:"wind"},
-  bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.11, rev:0.14, stand:"wind"},
+  bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.175, rev:0.14, stand:"wind"},
   bassoon_vib:{grp:"grpWinds", en:"Bassoon · with vibrato", es:"Fagot · con vibrato", gain:1.279, rev:0.14, stand:"wind"},
   /* AOG-BAND-SAX2-V1 (2026-10-04) — Jimmy's list of influences: Wayne Shorter (soprano) and John Coltrane (tenor). A
      soprano saxophone (a saxello, the curved soprano) and a tenor saxophone from the Versilian Community Sample Library
@@ -167,16 +167,16 @@ const SOUNDS={
      from Weresax by Karoryfer Samples (CC0), recorded on every note; held notes only, so its short notes are held ones let go */
   sax:     {grp:"grpWinds", en:"Alto saxophone",   es:"Saxofón alto",    gain:1.4, rev:0.14, stand:"wind"},
   tenor:   {grp:"grpWinds", en:"Tenor saxophone",  es:"Saxofón tenor",   gain:1.364, rev:0.14, stand:"wind"},
-  winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], gain:1.21, rev:0.17, stand:"wind",
+  winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], mono:true, gain:1.21, rev:0.17, stand:"wind",
     who:{en:"bassoon, clarinet, oboe and flute",es:"fagot, clarinete, oboe y flauta"}},
-  winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], gain:1.148, rev:0.18, stand:"wind",
+  winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], mono:true, gain:1.148, rev:0.18, stand:"wind",
     who:{en:"bassoon, clarinet, oboe, flute and piccolo",es:"fagot, clarinete, oboe, flauta y flautín"}},
   violins: {grp:"grpStrings", en:"Violins",        es:"Violines",        gain:1.295, rev:0.18, stand:"string"},
-  violins_pizz:{grp:"grpStrings", en:"Violins · plucked", es:"Violines · pulsados", gain:1.396, rev:0.2, stand:"pluck"},
+  violins_pizz:{grp:"grpStrings", en:"Violins · plucked", es:"Violines · pulsados", gain:1.49, rev:0.2, stand:"pluck"},
   violas:  {grp:"grpStrings", en:"Violas",         es:"Violas",          gain:1.362, rev:0.18, stand:"string"},
   violas_pizz:{grp:"grpStrings", en:"Violas · plucked", es:"Violas · pulsadas", gain:1.021, rev:0.2, stand:"pluck"},
   cellos:  {grp:"grpStrings", en:"Cellos",         es:"Violonchelos",    gain:1.38, rev:0.17, stand:"string"},
-  cellos_pizz:{grp:"grpStrings", en:"Cellos · plucked", es:"Violonchelos · pulsados", gain:1.361, rev:0.18, stand:"pluck"},
+  cellos_pizz:{grp:"grpStrings", en:"Cellos · plucked", es:"Violonchelos · pulsados", gain:1.464, rev:0.18, stand:"pluck"},
   contrabass:{grp:"grpStrings", en:"Double bass",  es:"Contrabajo",      gain:1.033, rev:0.14, stand:"string"},
   contrabass_pizz:{grp:"grpStrings", en:"Double bass · plucked", es:"Contrabajo · pulsado", gain:1.099, rev:0.14, stand:"pluck"},
   harp:    {grp:"grpStrings", en:"Harp",           es:"Arpa",            gain:1.377, rev:0.2, stand:"pluck"},
@@ -195,9 +195,9 @@ const SOUNDS={
   percussion:{grp:"grpPerc", en:"Percussion section · all", es:"Sección de percusión · toda", parts:["timpani","marimba","xylophone","glockenspiel"], dbl:[["timpani","b5",0]],
     kit:["bd","sn","cy","tri","tamb","roll"], gain:1.124, rev:0.18, stand:"pluck",
     who:{en:"timpani, marimba, xylophone, glockenspiel, bass drum, snare drum, cymbal, triangle and tambourine",es:"timbales, marimba, xilófono, glockenspiel, bombo, caja, platillo, triángulo y pandereta"}},
-  marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], gain:1.031, rev:0.14, stand:"brass",
+  marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], mono:true, gain:1.1, rev:0.14, stand:"brass",
     who:{en:"tuba, trombone, saxophone, trumpet and piccolo",es:"tuba, trombón, saxofón, trompeta y flautín"}},
-  mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.223, rev:0.15, stand:"brass",
+  mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.313, rev:0.15, stand:"brass",
     who:{en:"two trumpets, violins, harp and a plucked double bass",es:"dos trompetas, violines, arpa y un contrabajo pulsado"}},
   /* AOG-BAND-ORCH-V1 (2026-10-04) — Jimmy: "Can one of the agents make the ORCHESTRA tab, where everyone plays!" Every
      player of the band, voiced as an orchestra is: the bass line on double bass and tuba, the timpani on the root, cellos
@@ -210,9 +210,13 @@ const SOUNDS={
   orchestra:{grp:"grpAll", en:"Orchestra · everyone plays", es:"Orquesta · todos tocan", parts:["contrabass","trombone","horn","trumpet"],
     dbl:[["tuba","b",0],["timpani","b",0],["cellos","b",12],["bassoon","b",12],["harp","b",24],["violas","lo",0],["tenor","lo",0],["sax","mid",0],["clarinet","mid",0],
          ["oboe","top",0],["soprano","top",0],["violins","top",0],["violins","top",12],["flute","top",12],["glockenspiel","top",12]],
-    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.508, rev:0.2, stand:"string",
+    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.59, rev:0.2, stand:"string",
     who:{en:"every player in the band",es:"todos los músicos de la banda"}}
 };
+/* AOG-BAND-STEREO-ALL-V1: in stereo, a few sounds' C chords came out more than 0.5 dB from the grand's (the two microphones
+   added together had changed the tone, and so how loud it sounds); their gains were measured again (bandt/level): trumpet,
+   trumpet bebop, trombone with vibrato, French horn, tuba, flute, bassoon (0.5 dB, on the edge), violins and cellos
+   plucked, the bebop and cool jazz groups, the brass section, the marching band, the mariachi band and the orchestra */
 /* how loud each player is next to the others: a held note in the middle of its reach comes out as loud on each (measured,
    AOG-BAND-V1, AOG-BAND-MORE-V1) */
 const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, clarinet:0.80, oboe:0.94, bassoon:1.14, sax:0.89,
@@ -458,9 +462,21 @@ const LEAN=Object.keys(SOUNDS).find(id=>SOUNDS[id].lean);
 /* AOG-BAND-STEREO-STRINGS-V1: the violin, viola and cello sections are in stereo now (twice the memory a note), so a sound
    with several of them (the string section, "one") loads one held recording per note for those players: "one:<player>" */
 const ONE_OK={violins:1, violas:1, cellos:1};
-function setKey(inst, id){ const snd=SOUNDS[id||S.sound]||{}; return snd.lean ? "lean:"+inst : (snd.one && ONE_OK[inst]) ? "one:"+inst : inst; }
-function instOf(key){ return key.replace(/^(lean|one):/, ""); }
+/* AOG-BAND-STEREO-ALL-V1: every other player from the same library is in stereo now too (brass, woodwinds, double bass,
+   plucked strings, harp, percussion; their folders end in 2). Two microphones are twice the memory, so in a big group
+   (brass, woodwinds, the bebop and cool jazz groups, the marching band: "mono" in SOUNDS; and the orchestra) these players
+   keep one microphone, the left one, as the recording made it (never the two added together, which sounded hollow):
+   "mono:<player>", and the orchestra's lean sets. Each such group then loads what it loaded before (the string
+   section stays as PR #280 left it; the big band, the mariachi band, the plucked strings and the percussion grow by less
+   than half, or stay under 40 MB, so they keep both microphones) */
+function oneMic(inst){ return !!(MAN[inst] && MAN[inst].dir) && !ONE_OK[inst]; }
+function setKey(inst, id){ const snd=SOUNDS[id||S.sound]||{};
+  return snd.lean ? "lean:"+inst : (snd.one && ONE_OK[inst]) ? "one:"+inst : (snd.mono && oneMic(inst)) ? "mono:"+inst : inst; }
+function instOf(key){ return key.replace(/^(lean|one|mono):/, ""); }
 function isOne(key){ return key.slice(0,4)==="one:"; }
+function isLean(key){ return key.slice(0,5)==="lean:"; }
+/* the sets that keep one microphone of a stereo recording */
+function leftOnly(key){ return key.slice(0,5)==="mono:" || (isLean(key) && oneMic(instOf(key))); }
 /* every set a sound needs: its players, and the kit if it has a beat section */
 function setsOf(id){ return partsOf(id).concat((SOUNDS[id]||{}).kit ? ["kit"] : []).map(p=>setKey(p, id)); }
 const LEAN_NOTES={};
@@ -479,7 +495,7 @@ function leanNotes(inst){
   return (LEAN_NOTES[inst]={sus:[...sus].sort((a,b)=>a-b), stac:[...stac].sort((a,b)=>a-b)});
 }
 function filesOf(key){
-  const inst=instOf(key), lean=key!==inst, m=MAN[inst], f=[];
+  const inst=instOf(key), lean=isLean(key), m=MAN[inst], f=[];
   if(m.hits){ (lean ? SOUNDS[LEAN].kit : Object.keys(m.hits)).forEach(p=>(m.hits[p]||[]).forEach(h=>f.push(h))); return f; }
   if(isOne(key)){ m.sus.forEach(n=>f.push(n+(m.susL.indexOf(n)>=0?"l":"s"))); m.stac.forEach(n=>f.push(n+"t")); return f; }
   if(lean){ const ln=leanNotes(inst); ln.sus.forEach(n=>f.push(n+(m.susL.indexOf(n)>=0?"l":"s"))); if(inst==="timpani") ln.stac.forEach(n=>f.push(n+"t")); return f; }
@@ -488,7 +504,7 @@ function filesOf(key){
 /* the files a set must have before its player plays: every soft held note (or, lean, every file it loads) */
 function mainOf(key){ const inst=instOf(key), m=MAN[inst];
   if(isOne(key)) return m.sus.map(n=>n+(m.susL.indexOf(n)>=0?"l":"s"));
-  return (key!==inst || m.hits) ? filesOf(key) : m.sus.map(n=>n+"s"); }
+  return (isLean(key) || m.hits) ? filesOf(key) : m.sus.map(n=>n+"s"); }
 /* where a file lives: a player's own folder, but the vibrato players' short notes are the plain player's (stacDir) */
 /* a player whose recordings were made again sits in its own new folder (dir), as files are kept a year under one name */
 function fileUrl(key, f){ const inst=instOf(key), p=(f.slice(-1)==="t" && MAN[inst].stacDir) || inst; return "/audio/band/"+((MAN[p]&&MAN[p].dir)||p)+"/"+f+".mp3"; }
@@ -498,6 +514,15 @@ function onsetOf(buf){
   const d=buf.getChannelData(0); let pk=0; for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
   let i=0; const thr=pk*0.03; while(i<d.length && Math.abs(d[i])<thr) i++;
   return Math.max(0, i-Math.floor(0.002*buf.sampleRate))/buf.sampleRate;
+}
+/* one microphone of a stereo recording (leftOnly), brought to the loudness of the two together, so the note is as loud
+   in a big group as on its own */
+function leftOf(dec, b){
+  const L=b.getChannelData(0), R=b.getChannelData(1); let eL=0, eR=0;
+  for(let i=0;i<L.length;i++){ eL+=L[i]*L[i]; eR+=R[i]*R[i]; }
+  const g=eL>0 ? Math.min(2, Math.sqrt((eL+eR)/2/eL)) : 1, m=dec.createBuffer(1, b.length, b.sampleRate), d=m.getChannelData(0);
+  for(let i=0;i<L.length;i++) d[i]=L[i]*g;
+  return m;
 }
 function loadInst(key, onStep, lanes){
   const set=setOf(key);
@@ -512,7 +537,8 @@ function loadInst(key, onStep, lanes){
       const f=files[idx++];
       try{
         const r=await fetch(fileUrl(key, f)); if(!r.ok) throw new Error(r.status);
-        const b=await decodeWith(dec, await r.arrayBuffer());
+        let b=await decodeWith(dec, await r.arrayBuffer());
+        if(b.numberOfChannels>1 && leftOnly(key)) b=leftOf(dec, b);
         set.buf[f]=b; set.start[f]=onsetOf(b);
       }catch(e){}
       set.done++;
