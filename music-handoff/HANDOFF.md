@@ -48,6 +48,19 @@ The working branch for music is `claude/drum-pads-touch-keys`. After every deplo
     - slap and pop on the bass. Most of it lives in `aog-solo.js`.
 15. "yes I want how it is played increase and start a chord pattern increased!!!!" (the guitar page) → the **ways** branch: more ways to play, and chord patterns 18 → 44 in five groups (Pop, rock and folk · Rock and metal · Soul, funk and dance · Blues and jazz · Minor and moody). The 18 old ids are unchanged. **At merge, copy the same PRESETS and PRESET_GROUPS into `music-piano.html` and `_work/music/band_script.js`**, so all four tools offer the same patterns. Leave the piano lessons alone: they use the old ids.
 
+### Jimmy's list of influences (2026-10-04): "These are some of influences the instruments should get their sounds from"
+
+On screen, sounds are named by style, never by player.
+
+| Instrument | Players | Who takes it |
+|---|---|---|
+| Guitar | Dimebag Darrell, Jimi Hendrix, Eddie Van Halen (plus Zeppelin, Aerosmith, AC/DC, Sabbath, Opeth, Buckethead, Stevie Ray Vaughan from earlier) | **tones** |
+| Bass | Jaco Pastorius (fretless lead), James Jamerson (flatwound Motown), Flea (slap) (plus Les Claypool) | **tones** |
+| Drums | Vinnie Paul, John Bonham, Buddy Rich, Neil Peart, Jeff Porcaro: kit voicings, plus starter beats in their spirit (a half-time shuffle, the big "Levee" room groove, big-band swing, a groove-metal double kick, a prog beat) | **drumkit** |
+| Brass | Louis Armstrong, Miles Davis (Harmon mute), Dizzy Gillespie | **band** (second commit) |
+| Woodwinds | Charlie Parker (alto), John Coltrane (tenor), Wayne Shorter (soprano). Tenor and soprano only if real recordings or a convincing voicing exist | **band** (second commit) |
+| DJs | Frankie Knuckles (house), DJ Shadow (sampling, turntablism), Carl Cox (techno, three decks) | **dj**, a turntables helper started after a slot opens; if it never started, it is the next job |
+
 ## 3. The amp (AOG-AMP-V1): live since #265
 
 The files:
