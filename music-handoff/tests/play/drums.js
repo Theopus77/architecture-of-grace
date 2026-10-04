@@ -15,7 +15,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.evaluate(()=>{ window.__h=[]; const h=window.hit; window.hit=function(id,t,fromSeq){ if(!fromSeq) __h.push(id); return h.apply(this,arguments); }; });
     const cdp=await c.newCDPSession(p);
     const T=(type,pts)=>cdp.send("Input.dispatchTouchEvent",{type, touchPoints:pts.map((q,i)=>({x:q.x,y:q.y,id:q.id||i+1}))});
-    const where=()=>p.evaluate(()=>{ const o={}; document.querySelectorAll("#dkKit [data-pad]").forEach(g=>{ const sh=g.querySelector("ellipse,rect"), r=sh.getBoundingClientRect(); o[g.getAttribute("data-pad")]={x:r.x+r.width/2, y:r.y+r.height/2, top:r.y, left:r.x, w:r.width, h:r.height}; }); return o; });
+    const where=()=>p.evaluate(()=>{ const o={}; document.querySelectorAll("#dkKit [data-pad]").forEach(g=>{ const sh=g.querySelector(".glow > *"), r=sh.getBoundingClientRect();   /* the piece's own outline (its glow) */ const kb=document.getElementById("dkKit").getBoundingClientRect(); o[g.getAttribute("data-pad")]={x:r.x+r.width/2, y:Math.min(r.y+r.height/2, kb.bottom-30) /* the kick shows only its top half */, top:r.y, left:r.x, w:r.width, h:r.height}; }); return o; });
     return {c, p, errs, T, where};
   };
   for(const [dev, vp] of [["iPhone sideways",{width:844,height:390}],["iPad sideways",{width:1180,height:820}]]){
