@@ -3,7 +3,7 @@
    Rendered offline through the page's own chain, before the compressor, K-weighted, loudest 400 ms. */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const srv=require("../srv.js")(9985);
-const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync("measure.inc","utf8").replace(/^const MEASURE=/,""));
+const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(require("path").join(__dirname,"measure.inc"),"utf8").replace(/^const MEASURE=/,""));
 (async()=>{
   const b=await pw.chromium.launch(); const res={};
   { const p=await b.newPage(); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
