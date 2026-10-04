@@ -111,13 +111,13 @@ If you ever merge more work into the generated pages (`music-guitar.html`, `musi
 |---|---|---|
 | Drum machine | `music-drums.html`, `aog-drumkit.js` | SP-1200 model. Kits A–O are made on the page; P–T are a recorded kit (`audio/drums/<style>/`, loaded only when picked, two kept in memory). Memory: 10 s for user samples, 26,040 Hz, 12-bit. Chord pads, a take on any pad, kit undo. |
 | Turntables | `music-decks.html`, `aog-dj.js`, `aog-vinyl-worklet.js` | Three decks (one at a time on a phone, from the Show menu) and a three-channel mixer. The crate: `audio/crate/*.mp3` plus four records made on the page in a Worker. Reads every shelf. A limiter keeps every mix under −1 dBFS. |
-| Studio | `music-studio.html` (`/studio`) | 8 tracks, a mixer with sends, a master, bounce. Takes what you made on the other tools from their shelves; its bounce goes on the `studiobench` shelf for the turntables. |
+| Studio | `music-studio.html` (`/studio`) | 8 tracks, a mixer with sends, a master, bounce. Takes what you made on the other tools from their shelves and from "Takes sent here" (the `studioinbox` list); its bounce goes on the `studiobench` shelf for the turntables. |
 | Piano | `music-piano.html` | Hand-written, except LESSONS (`_work/music/make_piano_lessons.py`). Lessons: `piano-lessons.html`, `mastering-piano.html` (`make_mastering_piano.py`). |
 | Guitar and bass | `_work/music/strings_page.html` → `make_strings.py`; `aog-solo.js` | One source, `GTR` true or false. Solo mode lives in `aog-solo.js` and joins the page through nine small AOG-SOLO-V1 hooks; in Chords mode every hook returns false. |
 | The Band | `_work/music/band_head.html` + `band_script.js` → `make_band.py` | VSCO 2 CE recordings plus Weresax (CC0). |
 
 Shared files:
-- `aog-recorder.js`: ● Record. Only the tool's own sound, never a microphone; 3 takes.
+- `aog-recorder.js`: ● Record. Only the tool's own sound, never a microphone; 3 takes. Each take: Save as .wav, Send to the turntables, Send to the drum machine (not on the drum machine), Send to the Studio (AOG-STUDIO-SEND-V1). The turntables keep their own Record, with Send to the Studio too.
 - `aog-handoff.js`: the IndexedDB shelves:
   - `drumbench`: the drum machine's bounce;
   - `keysbench`: the piano;
@@ -126,7 +126,8 @@ Shared files:
   - `drumtake`: a take from the drum machine's recorder;
   - `chordpads`;
   - `drumsample`: a take from any tool, for a drum pad;
-  - `studiobench`: the Studio's bounce.
+  - `studiobench`: the Studio's bounce;
+  - `studioinbox`: a LIST, not a shelf (AOG-STUDIO-INBOX-V1): every take sent to the Studio, newest first, at most 16; the 17th pushes out the oldest and the Studio names it. `add`/`list`/`item`/`remove`; one record per take (`studioinbox/<id>`, with its .wav) plus an index (`studioinbox`), written in one transaction. Same database, store and version as the shelves.
 - `aog-amp*.js`.
 - Site wiring:
   - `aog-topbar.js`;
@@ -161,7 +162,8 @@ What the newer suites cover:
 - `solo/s1` (the panel and the lit scale on an iPhone, an iPad and a computer), `solo/s2` (bends, vibrato, hammer-ons, tap, squeal, whammy, kill, feedback, slap and pop, the keys), `solo/s3` (the backing band in time, the licks);
 - `realkit` (kits P to T: loading, every pad soft to accent, takes, levels against kit A, the era dial, TRIM, the starter beats, Send to the turntables, a reload, Spanish, a phone);
 - `ppat` (all 44 chord patterns on the piano, in five groups, in English and Spanish);
-- `dj/d0` (the turntables' engine and the four records, in Node), `dj/d1` (three decks in sync), `dj/d2` (loops, pads, slip, to the sample), `dj/d3` (EQ, filter, effects), `dj/d4` (phone, iPad and computer layouts, Spanish, contrast, keyboard), `dj/d5` (frame rate on a slowed iPad).
+- `dj/d0` (the turntables' engine and the four records, in Node), `dj/d1` (three decks in sync), `dj/d2` (loops, pads, slip, to the sample), `dj/d3` (EQ, filter, effects), `dj/d4` (phone, iPad and computer layouts, Spanish, contrast, keyboard), `dj/d5` (frame rate on a slowed iPad);
+- `studio/send` (Send to the Studio from the piano, the drum machine, the guitar twice, the bass, The Band and the turntables; Takes sent here, newest first; two guitar takes on two tracks, played and mixed; a reload; the 17th take; Remove; Spanish; an iPhone in light and dark; an iPad). Port 9241.
 
 - Playwright and Chromium are installed globally: `require(execSync("npm root -g")+"/playwright")`. Never run `playwright install`.
 - Each suite uses a fixed 99xx port. **Never run two copies at once.**
@@ -200,4 +202,4 @@ Before any push:
 - **Flanger.** Chrome clamps a delay inside a feedback loop to one render quantum (2.7 ms), so it cannot sweep through zero. Moving it into the worklet would fix that.
 - **Solo mode.** Licks are guitar only, and a lick moves the hand's window to its box.
 - **Download size.** The new recordings (piano, band, drum kits) load only when a sound is picked. Keep it that way.
-- **Next for the studio:** "Send to the studio" buttons in `aog-recorder.js`; a shelf for a turntables take, so a DJ mix can go onto a track; a second clip per track. Never a microphone.
+- **Next for the studio:** a second clip per track. (Send to the Studio from every tool, the turntables' mix included, is done: AOG-STUDIO-SEND-V1.) Never a microphone.

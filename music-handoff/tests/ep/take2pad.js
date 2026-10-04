@@ -33,7 +33,8 @@ async function recordGuitar(p){            /* ● Record, a C chord through the 
   await p.selectOption("#keySel","0"); await p.evaluate(()=>{ if(S.minor) document.getElementById("majBtn").click(); });
   await recordGuitar(p);
   const acts=await p.evaluate(()=>[...document.querySelectorAll("#takes .aogrec-take a, #takes .aogrec-take button")].map(e=>e.textContent));
-  ok(acts.join(" | ")==="Save as .wav | Send to the turntables | Send to the drum machine", "the guitar's take has one more action: "+acts.join(" | "));
+  /* AOG-STUDIO-SEND-V1 (2026-10-04): every take now also has Send to the Studio, last in the row (tests/studio/send.js) */
+  ok(acts.join(" | ")==="Save as .wav | Send to the turntables | Send to the drum machine | Send to the Studio", "the guitar's take has one more action: "+acts.join(" | "));
 
   /* 2. Send to the drum machine */
   await p.click('#takes [data-aogrec-drum="1"]');
