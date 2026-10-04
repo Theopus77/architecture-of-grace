@@ -180,7 +180,7 @@ const SOUNDS={
   contrabass:{grp:"grpStrings", en:"Double bass",  es:"Contrabajo",      gain:1.033, rev:0.14, stand:"string"},
   contrabass_pizz:{grp:"grpStrings", en:"Double bass · plucked", es:"Contrabajo · pulsado", gain:1.099, rev:0.14, stand:"pluck"},
   harp:    {grp:"grpStrings", en:"Harp",           es:"Arpa",            gain:1.377, rev:0.2, stand:"pluck"},
-  strings: {grp:"grpStrings", en:"String section · all four", es:"Sección de cuerdas · las cuatro", parts:["contrabass","cellos","violas","violins"], dbl:[["cellos","b",12],["violins","top",12]], gain:1.024, rev:0.18, stand:"string",
+  strings: {grp:"grpStrings", en:"String section · all four", es:"Sección de cuerdas · las cuatro", one:true, parts:["contrabass","cellos","violas","violins"], dbl:[["cellos","b",12],["violins","top",12]], gain:1.024, rev:0.18, stand:"string",
     who:{en:"double bass, cellos, violas and violins",es:"contrabajo, violonchelos, violas y violines"}},
   strings_pizz:{grp:"grpStrings", en:"String section · plucked", es:"Sección de cuerdas · pulsada", parts:["contrabass_pizz","cellos_pizz","violas_pizz","violins_pizz"], dbl:[["cellos_pizz","b",12]], gain:1.212, rev:0.2, stand:"pluck",
     who:{en:"double bass, cellos, violas and violins, all plucked",es:"contrabajo, violonchelos, violas y violines, todos pulsados"}},
@@ -222,6 +222,8 @@ const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, cla
   tenor:1.152, tenor_vib:0.788, soprano:0.917,                     /* AOG-BAND-SAX2-V1 */
   kit:5.07};  /* a bass drum stroke as loud as a player's note; the other pieces a little under it (KIT_MIX) */
 /* players whose note is struck or plucked: it rings out by itself, and a key let go lets it ring a moment longer */
+/* AOG-BAND-STEREO-STRINGS-V1: a bow lifted off the string lets it ring a moment longer than a breath stops */
+const BOWED={violins:1, violas:1, cellos:1, contrabass:1};
 const PLUCKED={violins_pizz:1, violas_pizz:1, cellos_pizz:1, contrabass_pizz:1, harp:1, timpani:1, marimba:1, xylophone:1, glockenspiel:1};
 /* the unpitched pieces' levels next to each other (the kit is one player: PLAYER.kit) */
 const KIT_MIX={bd:1, sn:0.74, cy:0.3, tri:0.27, tamb:0.25, roll:0.4};   /* measured: snare 1 dB under the bass drum, cymbal and roll 3, tambourine 5, triangle 6 */
@@ -453,8 +455,12 @@ function setOf(key){ return SETS[key]||(SETS[key]={buf:{}, start:{}, state:"idle
    where there is one), only the notes the orchestra can ask that player for, and short notes only for the timpani; its
    kit, only the cymbal. So an iPad keeps up, and each player joins in as soon as its own notes are in. */
 const LEAN=Object.keys(SOUNDS).find(id=>SOUNDS[id].lean);
-function setKey(inst, id){ return (SOUNDS[id||S.sound]||{}).lean ? "lean:"+inst : inst; }
-function instOf(key){ return key.slice(0,5)==="lean:" ? key.slice(5) : key; }
+/* AOG-BAND-STEREO-STRINGS-V1: the violin, viola and cello sections are in stereo now (twice the memory a note), so a sound
+   with several of them (the string section, "one") loads one held recording per note for those players: "one:<player>" */
+const ONE_OK={violins:1, violas:1, cellos:1};
+function setKey(inst, id){ const snd=SOUNDS[id||S.sound]||{}; return snd.lean ? "lean:"+inst : (snd.one && ONE_OK[inst]) ? "one:"+inst : inst; }
+function instOf(key){ return key.replace(/^(lean|one):/, ""); }
+function isOne(key){ return key.slice(0,4)==="one:"; }
 /* every set a sound needs: its players, and the kit if it has a beat section */
 function setsOf(id){ return partsOf(id).concat((SOUNDS[id]||{}).kit ? ["kit"] : []).map(p=>setKey(p, id)); }
 const LEAN_NOTES={};
@@ -475,13 +481,17 @@ function leanNotes(inst){
 function filesOf(key){
   const inst=instOf(key), lean=key!==inst, m=MAN[inst], f=[];
   if(m.hits){ (lean ? SOUNDS[LEAN].kit : Object.keys(m.hits)).forEach(p=>(m.hits[p]||[]).forEach(h=>f.push(h))); return f; }
+  if(isOne(key)){ m.sus.forEach(n=>f.push(n+(m.susL.indexOf(n)>=0?"l":"s"))); m.stac.forEach(n=>f.push(n+"t")); return f; }
   if(lean){ const ln=leanNotes(inst); ln.sus.forEach(n=>f.push(n+(m.susL.indexOf(n)>=0?"l":"s"))); if(inst==="timpani") ln.stac.forEach(n=>f.push(n+"t")); return f; }
   m.sus.forEach(n=>f.push(n+"s")); m.susL.forEach(n=>f.push(n+"l")); m.stac.forEach(n=>f.push(n+"t")); return f;
 }
 /* the files a set must have before its player plays: every soft held note (or, lean, every file it loads) */
-function mainOf(key){ const inst=instOf(key); return (key!==inst || MAN[inst].hits) ? filesOf(key) : MAN[inst].sus.map(n=>n+"s"); }
+function mainOf(key){ const inst=instOf(key), m=MAN[inst];
+  if(isOne(key)) return m.sus.map(n=>n+(m.susL.indexOf(n)>=0?"l":"s"));
+  return (key!==inst || m.hits) ? filesOf(key) : m.sus.map(n=>n+"s"); }
 /* where a file lives: a player's own folder, but the vibrato players' short notes are the plain player's (stacDir) */
-function fileUrl(key, f){ const inst=instOf(key), d=(f.slice(-1)==="t" && MAN[inst].stacDir) || inst; return "/audio/band/"+d+"/"+f+".mp3"; }
+/* a player whose recordings were made again sits in its own new folder (dir), as files are kept a year under one name */
+function fileUrl(key, f){ const inst=instOf(key), p=(f.slice(-1)==="t" && MAN[inst].stacDir) || inst; return "/audio/band/"+((MAN[p]&&MAN[p].dir)||p)+"/"+f+".mp3"; }
 function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
 /* where the sound starts in a decoded file (an MP3 can carry a little silence in front) */
 function onsetOf(buf){
@@ -584,7 +594,7 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
   if(!main) return null;
   out.connect(rel); rel.connect(ch.bus); rel.connect(ch.send);
   const vc=voiceShell(c, ch.bus, srcs, rel);
-  vc.tau=art==="stac" ? 0.03 : PLUCKED[inst] ? 0.3 : 0.07;     /* a pluck let go rings on a moment, as a string does */
+  vc.tau=art==="stac" ? 0.03 : PLUCKED[inst] ? 0.3 : BOWED[inst] ? 0.16 : 0.07;     /* a pluck let go rings on a moment, as a string does */
   vc.natural=when+(main.buf.duration-(set.start[main.key]||0))/main.rate;
   return vc;
 }
