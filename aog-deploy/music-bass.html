@@ -427,10 +427,10 @@ const STR={
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
   /* AOG-STRINGS-REAL-V1: the recorded guitars and basses */
-  credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. They are free for everyone to use (CC0).",
-               es:"Las guitarras de aquí son guitarras de verdad, grabadas nota por nota: Black And Green Guitars de Karoryfer Samples, una guitarra Martin de cuerdas de acero grabada por Jeff Learman y una guitarra clásica española de FreePats. Todos pueden usarlas libremente (CC0)."}
-             :{en:"The basses here are real basses, recorded note by note: Growlybass by Karoryfer Samples, and a double bass recorded by D. Smolken (with Meatbass by Karoryfer Samples). They are free for everyone to use (CC0). The slap, fretless and synth sounds are made on this page.",
-               es:"Los bajos de aquí son bajos de verdad, grabados nota por nota: Growlybass de Karoryfer Samples y un contrabajo grabado por D. Smolken (con Meatbass de Karoryfer Samples). Todos pueden usarlos libremente (CC0). Los sonidos de slap, sin trastes y sintetizador se crean en esta página."},
+  credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. In Solo mode, the band's bass is Growlybass by Karoryfer Samples. All of them are free for everyone to use (CC0).",
+               es:"Las guitarras de aquí son guitarras de verdad, grabadas nota por nota: Black And Green Guitars de Karoryfer Samples, una guitarra Martin de cuerdas de acero grabada por Jeff Learman y una guitarra clásica española de FreePats. En el modo Solo, el bajo de la banda es Growlybass de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0)."}
+             :{en:"The basses here are real basses, recorded note by note: Growlybass by Karoryfer Samples, and a double bass recorded by D. Smolken (with Meatbass by Karoryfer Samples). In Solo mode, the band's guitar is Black And Green Guitars by Karoryfer Samples. All of them are free for everyone to use (CC0). The slap, fretless and synth sounds are made on this page.",
+               es:"Los bajos de aquí son bajos de verdad, grabados nota por nota: Growlybass de Karoryfer Samples y un contrabajo grabado por D. Smolken (con Meatbass de Karoryfer Samples). En el modo Solo, la guitarra de la banda es Black And Green Guitars de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0). Los sonidos de slap, sin trastes y sintetizador se crean en esta página."},
   credits:{en:"Full credits",es:"Créditos completos"},
   recLoading: GTR?{en:"Getting the recorded guitar ready…",es:"Preparando la guitarra grabada…"}:{en:"Getting the recorded bass ready…",es:"Preparando el bajo grabado…"},
   recReady: GTR?{en:"This sound is a real guitar, recorded note by note.",es:"Este sonido es una guitarra de verdad, grabada nota por nota."}
@@ -1134,8 +1134,18 @@ function prepare(id){
    · The muted ways to play (chug, gallop, thrash, breakdown, the funk and pop slaps) play the short, muted recordings;
      a hammer-on or a tap starts its note without the pick; letting go of a ringing note adds the sound of the hand.
    · A bend, vibrato, a slide or the whammy glide the recording itself (its playback rate), as they glide the made string.
+   · Solo mode's band plays recorded sets too (aog-solo.js), only once Play is pressed. A set of the other instrument is
+     named with its folder ("bass/growly" on the guitar page, "guitar/green" on the bass page). While the band plays, its
+     sets stay (pin); room says how many sets a device keeps at once: 3 where it has the memory for them (4 GB or more,
+     or, where the browser does not say, a screen as big as a tablet's), else 2, and the band's bass plays the made string.
    ══════════════════════════════════════════════════════════════════════════ */
-const REAL={base:"/audio/"+INST+"/", ver:"1", keep:2, on:true, sets:{}, order:[]};
+const REAL={base:"/audio/"+INST+"/", ver:"1", keep:2, on:true, sets:{}, order:[], pin:[],
+  room:(()=>{ try{ const dm=navigator.deviceMemory; if(typeof dm==="number") return dm>=4?3:2;
+    return Math.min(screen.width||0, screen.height||0)>=700?3:2; }catch(e){ return 2; } })()};
+/* where a set's files are: this instrument's folder, or the one its name says ("bass/growly") */
+function recPath(id){ return id.indexOf("/")>=0 ? "/audio/"+id+"/" : REAL.base+id+"/"; }
+/* how much memory a set's decoded notes take (bytes: 4 a sample) */
+function recBytes(R){ let n=0; Object.values((R&&R.buf)||{}).forEach(b=>{ n+=b.length*b.numberOfChannels*4; }); return n; }
 function recOf(id){ const s=SOUNDS[id]; return (REAL.on && s && s.rec) ? s.rec : ""; }
 function recSet(id){ return REAL.sets[id]||(REAL.sets[id]={id:id, state:"idle", meta:null, buf:{}, at:{}, lvl:null, job:null, rr:{}, done:0, total:0}); }
 /* is this sound ready to play its recordings (a sound made on the page always is); get it ready (for a recording made
@@ -1188,11 +1198,11 @@ function recLoad(id){
   const job=(async()=>{
     try{
       if(!OC || !window.fetch) throw new Error("no audio");
-      const r=await fetch(REAL.base+id+"/set.json?v="+REAL.ver); if(!r.ok) throw new Error(r.status);
+      const r=await fetch(recPath(id)+"set.json?v="+REAL.ver); if(!r.ok) throw new Error(r.status);
       const meta=await r.json(), dec=new OC(1, 1, 44100), files=meta.zones.map(z=>z.f).concat(recRel(meta).map(n=>n.f));
       R.total=files.length; let i=0;
       const lane=async()=>{ while(i<files.length && !R.dropped){ const f=files[i++];
-        try{ const q=await fetch(REAL.base+id+"/"+f+"?v="+REAL.ver); if(!q.ok) throw new Error(q.status);
+        try{ const q=await fetch(recPath(id)+f+"?v="+REAL.ver); if(!q.ok) throw new Error(q.status);
           const ab=await q.arrayBuffer(), gl=mp3Gapless(ab), b=await decodeWith(dec, ab); R.buf[f]=b; R.at[f]=recLead(b, gl); }catch(e){}
         R.done++; } };
       await Promise.all([lane(), lane(), lane(), lane(), lane(), lane()]);
@@ -1211,10 +1221,10 @@ function recLoad(id){
 }
 /* the sound playing now: its level follows what plays (the recordings, once they are in) */
 function recLive(){ try{ if(ac && LIVE_CH) LIVE_CH.trim.gain.setTargetAtTime(recTrim(S.sound), ac.currentTime, 0.03); }catch(e){} }
-/* two sets stay: the ones picked last (the sound playing now always among them) */
+/* two sets stay: the ones picked last (the sound playing now always among them), and the band's while it plays */
 function recForget(){
   const keep=REAL.order.slice(-REAL.keep), now=recOf(S.sound);
-  Object.keys(REAL.sets).forEach(k=>{ if(keep.indexOf(k)<0 && k!==now){ const R=REAL.sets[k]; R.dropped=true; delete REAL.sets[k]; } });
+  Object.keys(REAL.sets).forEach(k=>{ if(keep.indexOf(k)<0 && k!==now && REAL.pin.indexOf(k)<0){ const R=REAL.sets[k]; R.dropped=true; delete REAL.sets[k]; } });
 }
 /* the set's notes by kind, and the loudness each kind sits at, measured once it is in (so any set, made anywhere,
    plays at the page's own level) */

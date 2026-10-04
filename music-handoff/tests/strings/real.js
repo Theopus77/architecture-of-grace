@@ -13,9 +13,14 @@
    7  every note lands on time whatever the decoder does with the MP3's gapless header (a decoder that keeps the encoder's
       lead-in, as one that ignores the header would: the note still starts at the same moment)
    8  a phone (390 px): no sideways scroll, the line fits
+   9  Solo mode's band: its sets come down only when Play is pressed, with one calm line; the made strings play until they
+      are in; the guitar plays the green set, the bass (guitar page) the recorded bass, unless the device has room for two
+      sets only and three would be needed (then the made bass); out of Solo mode its sets go; on the recordings the band is
+      as loud as the made band in every style; each set's decoded memory
    Run: node strings/real.js   (AOG_ROOT=<a worktree>/aog-deploy to test another copy) */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const srv=require("../srv.js")(9917);
+const MEASURE=(0,eval)(require("fs").readFileSync(__dirname+"/../bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
 const LIB=`
 window.__T={
@@ -265,6 +270,59 @@ const sets=a=>[...new Set(a)].sort().join(",");
       const lay=await p.evaluate(()=>{ const l=document.getElementById("loadLine"), r=l.getBoundingClientRect(); return {over:document.documentElement.scrollWidth-innerWidth, right:r.right, w:innerWidth, text:l.textContent}; });
       ok(lay.over<=1 && lay.right<=lay.w, `${inst}: on a 390 px phone, no sideways scroll (${lay.over} px) and the line fits ("${lay.text}")`);
       ok(!errs.length, `${inst} (phone): no page errors ${errs.slice(0,3).join(" | ")}`);
+      await c.close(); }
+
+    /* ── 9 · Solo mode's band on the recorded sets ── */
+    for(const prof of inst==="guitar" ? ["roomy","phone"] : ["roomy"]){
+      const lang=inst==="bass" ? "es" : "en", {c, p, errs}=await open(b, inst), got=[];
+      p.on("request", q=>{ const m=q.url().match(/\/audio\/(guitar|bass)\/([^/]+)\//); if(m) got.push(m[1]+"/"+m[2]); });
+      await p.addInitScript(([dm, l])=>{ try{ Object.defineProperty(Navigator.prototype, "deviceMemory", {get:()=>dm, configurable:true}); }catch(e){} try{ localStorage.setItem("aog.lang", l); }catch(e){} }, [prof==="phone"?2:8, lang]);
+      let hold=false; await p.route(/\/audio\/(guitar|bass)\/.*\.mp3/, async r=>{ while(hold) await new Promise(ok=>setTimeout(ok,50)); r.continue(); });
+      await p.goto(`http://localhost:9917/music-${inst}.html`); await p.waitForTimeout(500);
+      /* Solo mode; on the phone, a lead on the other guitar (black): its set, the band's guitar and its bass would be three */
+      const lead=await p.evaluate(async(prof)=>{
+        if(prof==="phone"){ const sel=document.getElementById("soundSel"); sel.value="shred"; sel.onchange(); }
+        AOGSolo.setMode("solo"); await loadSound(S.sound); return {sound:S.sound, set:recOf(S.sound), room:REAL.room}; }, prof);
+      await p.waitForTimeout(300);
+      const before=[...new Set(got)];
+      hold=true; await p.click("#soBand"); await p.waitForTimeout(400);
+      const during=await p.evaluate(()=>{ const X=AOGSolo._t, el=document.getElementById("soBandLoad"), vs=X.BAND.voices.filter(v=>v.kind);
+        return {line:el.hidden?"":el.textContent, plan:X.BAND.plan, made:{gtr:vs.filter(v=>v.kind==="gtr" && !v.rec).length, bass:vs.filter(v=>v.kind==="bass" && !v.rec).length},
+          rec:{gtr:vs.filter(v=>v.kind==="gtr" && v.rec).length, bass:vs.filter(v=>v.kind==="bass" && v.rec).length}}; });
+      hold=false;
+      await p.waitForFunction(()=>{ const pl=AOGSolo._t.BAND.plan; return pl && [pl.gtr, pl.bass].filter(Boolean).every(id=>REAL.sets[id] && REAL.sets[id].state==="ready"); }, null, {timeout:60000});
+      await p.waitForTimeout(3500);
+      const after=await p.evaluate(()=>{ const X=AOGSolo._t, now=ac.currentTime, vs=X.BAND.voices.filter(v=>v.kind && v.end>now), el=document.getElementById("soBandLoad");
+        return {gtrRec:vs.filter(v=>v.kind==="gtr" && v.rec).length, gtrMade:vs.filter(v=>v.kind==="gtr" && !v.rec).length, bassRec:vs.filter(v=>v.kind==="bass" && v.rec).length, bassMade:vs.filter(v=>v.kind==="bass" && !v.rec).length,
+          line:el.hidden?"":el.textContent, sets:Object.keys(REAL.sets).filter(k=>REAL.sets[k].state==="ready")}; });
+      await p.evaluate(()=>{ AOGSolo._t.bandStop(); AOGSolo.setMode("chords"); }); await p.waitForTimeout(300);
+      const left=await p.evaluate(()=>({sets:Object.keys(REAL.sets), pin:REAL.pin.length}));
+      const want=lang==="es" ? "Preparando la banda grabada…" : "Getting the recorded band ready…", bassSet=inst==="guitar" && prof==="roomy" ? "bass/growly" : null;
+      const gset=(inst==="guitar"?"":"guitar/")+"green", fetched=[...new Set(got)], bandOnly=inst==="bass"||prof==="phone" ? ["guitar/green"] : ["bass/growly"];
+      ok(bandOnly.every(x=>before.indexOf(x)<0 && fetched.indexOf(x)>=0) && (prof==="phone" ? fetched.indexOf("bass/growly")<0 : true),
+        `${inst} (${prof}, room for ${lead.room} sets): the band's sets come down only when Play is pressed (before: ${before.join(", ")}; then: ${fetched.filter(x=>before.indexOf(x)<0).join(", ")||"none new"}), the lead on ${lead.sound} (${lead.set||"made"})`);
+      ok(during.plan && during.plan.gtr===gset && during.plan.bass===bassSet, `${inst} (${prof}): the band's guitar plays the green set${inst==="guitar"?(bassSet?", its bass the recorded bass":", its bass the made string (three sets would not fit)"):""} (${JSON.stringify(during.plan)})`);
+      ok(during.line===want && (during.made.gtr+during.made.bass)>0, `${inst} (${prof}, ${lang}): while they load, the made strings play (${during.made.gtr} guitar, ${during.made.bass} bass notes) and one calm line says "${during.line}"`);
+      ok(after.gtrRec>0 && after.line==="" && (bassSet ? after.bassRec>0 : after.bassRec===0) && after.sets.length<=lead.room,
+        `${inst} (${prof}): once in, the band plays them (guitar ${after.gtrRec} recorded, ${after.gtrMade} made; bass ${after.bassRec} recorded, ${after.bassMade} made), the line is gone, ${after.sets.length} sets in memory (${after.sets.join(", ")})`);
+      ok(left.pin===0 && left.sets.indexOf("bass/growly")<0 && left.sets.indexOf("guitar/green")<0, `${inst} (${prof}): out of Solo mode the band's sets are let go (left: ${left.sets.join(", ")})`);
+      ok(!errs.length, `${inst} (${prof}, band): no page errors ${errs.slice(0,3).join(" | ")}`);
+      await c.close(); }
+    /* the band on the recordings sits where the made band did (each style, the whole band, K-weighted), and each set's
+       decoded memory */
+    { const {c, p, errs}=await open(b, inst);
+      await p.goto(`http://localhost:9917/music-${inst}.html`); await p.waitForTimeout(500);
+      await p.addScriptTag({content:MEASURE});
+      const lv=await p.evaluate(async(inst)=>{ const X=AOGSolo._t, out={styles:{}, mem:{}};
+        for(const style of ["straight","minor","rock","boogie","mblues","metal"]){ const a=await X.renderBand(2, {style}), r=await X.renderBand(2, {style, real:true});
+          out.styles[style]={made:+__kw(a.buf).toFixed(2), rec:+__kw(r.buf).toFixed(2), recNotes:r.rec}; }
+        for(const id of inst==="guitar" ? ["green","black","steel","nylon","bass/growly"] : ["growly","upright"]){ await recLoad(id); const R=REAL.sets[id]; out.mem[id]=R && R.state==="ready" ? +(recBytes(R)/1048576).toFixed(1) : null; }
+        return out; }, inst);
+      const bad=Object.entries(lv.styles).filter(([k,x])=>Math.abs(x.rec-x.made)>1 || !x.recNotes);
+      ok(!bad.length, `${inst}: the band on the recordings is as loud as the made band, within 1 dB, in every style (${Object.entries(lv.styles).map(([k,x])=>k+" "+x.made+" → "+x.rec).join("; ")} dB)`);
+      console.log(`     ${inst}: each set's decoded memory: ${Object.entries(lv.mem).map(([k,v])=>k+" "+v+" MB").join(", ")}`);
+      ok(Object.values(lv.mem).every(v=>v>0 && v<45), `${inst}: every set decodes, each under 45 MB`);
+      ok(!errs.length, `${inst} (band levels): no page errors ${errs.slice(0,3).join(" | ")}`);
       await c.close(); }
   }
   console.log(fails?fails+" FAILED":"ALL PASS"); await b.close(); srv.close(); process.exit(fails?1:0);
