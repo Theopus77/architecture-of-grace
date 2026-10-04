@@ -11,7 +11,7 @@ const NEW={J:["Kit J · rock arena","Kit J · rock de estadio","KICK,SNARE,HAT,O
   K:["Kit K · jazz brushes","Kit K · jazz con escobillas","KICK,BRUSH,CHICK,SWISH,SLAP,TOM,RIDE,BASS"],
   L:["Kit L · 909 house","Kit L · house 909","909,SNARE,HAT,OPEN,CLAP,TOM,RIDE,STAB"],
   M:["Kit M · reggae and dub","Kit M · reggae y dub","KICK,SNARE,HAT,OPEN,SYNTOM,TOM,XSTICK,SKANK"],
-  N:["Kit N · afrobeat","Kit N · afrobeat","KICK,SNARE,SHAKER,OPEN,TALK,CONGA,STICKS,BELL"],
+  N:["Kit N · afrobeat","Kit N · afrobeat","KICK,SNARE,SHAKER,OPEN,DJEMBE,CONGA,STICKS,BELL"],   /* AOG-DRUM-REAL-V2: no free recording of a talking drum; a djembe plays */
   O:["Kit O · marching band","Kit O · banda de marcha","BASS,SNARE,CLICK,CYMBAL,ROLL,TENOR,RIM,BELLS"]};
 (async()=>{
   const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
@@ -22,14 +22,18 @@ const NEW={J:["Kit J · rock arena","Kit J · rock de estadio","KICK,SNARE,HAT,O
   /* the menus */
   const kitSel=p.locator('.kit-src').locator('xpath=..').locator('.aogdd-sel');
   const opts=await kitSel.locator("option").allTextContents();
-  ok(opts.length===20 && opts[0]==="Kit A · the classic" && Object.keys(NEW).every(k=>opts.indexOf(NEW[k][0])>=0) && opts.slice(9,15).join("|")===Object.keys(NEW).map(k=>NEW[k][0]).join("|"),
-    "the Simple bench's Sounds menu lists A to O, the new ones last: "+opts.slice(9).join(", "));
+  /* AOG-DRUM-REAL-V2: 25 kits; the menu lists the drum-machine kits made here first (A, B, C, F, L), then every recorded kit
+     (J, K, M, N and O among them) under its heading, each group in letter order */
+  const inOrder=(list, names)=>names.every((n,i)=>list.indexOf(n)>=0 && (i===0 || list.indexOf(n)>list.indexOf(names[i-1])));
+  const REC=["J","K","M","N","O"];
+  ok(opts.length===25 && opts[0]==="Kit A · the classic" && inOrder(opts, REC.map(k=>NEW[k][0])) && opts.indexOf(NEW.L[0])<opts.indexOf(NEW.J[0]),
+    "the Simple bench's Sounds menu lists the kits, J to O among them: "+opts.join(", "));
   await p.evaluate(()=>{ S.lang="es"; paint(); }); await p.waitForTimeout(250);
   const esOpts=await p.locator('.kit-src').locator('xpath=..').locator('.aogdd-sel').locator("option").allTextContents();
-  ok(esOpts.slice(9,15).join("|")===Object.keys(NEW).map(k=>NEW[k][1]).join("|"), "and in Spanish: "+esOpts.slice(9).join(", "));
+  ok(esOpts.length===25 && inOrder(esOpts, REC.map(k=>NEW[k][1])) && esOpts.indexOf(NEW.L[1])>=0, "and in Spanish: "+esOpts.join(", "));
   await p.evaluate(()=>{ S.lang="en"; S.bench="full"; paint(); }); await p.waitForTimeout(250);
   const fullOpts=await p.locator('.bank-src').locator('xpath=..').locator('.aogdd-sel').locator("option").allTextContents();
-  ok(fullOpts.length===20 && fullOpts.slice(9,15).join("|")===Object.keys(NEW).map(k=>NEW[k][0]).join("|"), "the Full bench's kit menu lists them too");
+  ok(fullOpts.length===25 && inOrder(fullOpts, REC.map(k=>NEW[k][0])) && fullOpts.indexOf(NEW.L[0])>=0, "the Full bench's kit menu lists them too");
   await p.evaluate(()=>{ S.bench="simple"; paint(); });
   /* every new kit: picked from the menu, its pads named, its sounds rendered and level */
   await p.click('.sp-pad[data-pad="kick"]'); await p.waitForTimeout(3500);
@@ -46,8 +50,11 @@ const NEW={J:["Kit J · rock arena","Kit J · rock de estadio","KICK,SNARE,HAT,O
     ok(r.bank===k && r.faces===NEW[k][2] && !bad.length, `kit ${k}: pads ${r.faces.toLowerCase()}; every sound plays (peaks ${r.st.map(x=>x.pk).join(" ")}), none clips or is cut off ${JSON.stringify(bad)}`);
   }
   /* the new kits sit at the older kits' levels, pad for pad */
-  const lv=await p.evaluate(()=>{ const pk=b=>VOICES.map(v=>{ let m=0; for(const x of romFor(b)[v.id]) m=Math.max(m,Math.abs(x)); return m; });
-    const old=["A","C","D","E","F","G","H","I"].map(pk), nu=["J","K","L","M","N","O"].map(pk), out=[];
+  /* AOG-DRUM-REAL-V2: a recorded kit holds its memory only while it is loaded (two at a time), so each is loaded before it is read */
+  const lv=await p.evaluate(async()=>{ const pk=async b=>{ if(realKit(b)) S.bank=b; await ensureKit(b); return VOICES.map(v=>{ let m=0; for(const x of romFor(b)[v.id]) m=Math.max(m,Math.abs(x)); return m; }); };
+    const old=[], nu=[], out=[];
+    for(const b of ["A","C","D","E","F","G","H","I"]) old.push(await pk(b));
+    for(const b of ["J","K","L","M","N","O"]) nu.push(await pk(b));
     VOICES.forEach((v,i)=>{ const lo=Math.min(...old.map(r=>r[i])), hi=Math.max(...old.map(r=>r[i])), n=nu.map(r=>r[i]); out.push({id:v.id, lo:+lo.toFixed(2), hi:+hi.toFixed(2), min:+Math.min(...n).toFixed(2), max:+Math.max(...n).toFixed(2)}); });
     return out; });
   ok(lv.every(x=>x.min>=x.lo*0.5 && x.max<=Math.max(0.75, x.hi*1.5)), "pad for pad, the new kits are as loud as the old ones: "+lv.map(x=>`${x.id} ${x.min}-${x.max} (old ${x.lo}-${x.hi})`).join(", "));
@@ -88,7 +95,7 @@ const NEW={J:["Kit J · rock arena","Kit J · rock de estadio","KICK,SNARE,HAT,O
   await p.evaluate(()=>{ LS.kp={}; });
   for(const k of ["J","M","O"]){ await p.evaluate(k=>{ useBank(k); paint(); }, k); await p.keyboard.press("Space"); await p.waitForTimeout(250); await p.keyboard.press("Space"); }
   ok(await p.evaluate(()=>!!(LS.kp && LS.kp.J && LS.kp.M && LS.kp.O)), "playing a beat on kits J, M and O counts for the kits lesson");
-  ok(await p.evaluate(()=>LESSONS.find(m=>m.id==="lkits").en==="Same beat, new sounds: the kits" && /twenty kits/.test(STR.tag.en) && /veinte kits/.test(STR.tag.es) && /Kits C to O/.test(STR.hear.en)), "the words that count the kits say fifteen, or no number");
+  ok(await p.evaluate(()=>LESSONS.find(m=>m.id==="lkits").en==="Same beat, new sounds: the kits" && /twenty-five kits/.test(STR.tag.en) && /veinticinco kits/.test(STR.tag.es) && /Kits A, B, C, F and L/.test(STR.hear.en) && /Los kits A, B, C, F y L/.test(STR.hear.es)), "the words that count the kits say twenty-five, or no number");   /* AOG-DRUM-REAL-V2 */
   ok(errs.length===0, "no page errors "+errs.join(" | "));
   console.log(fails? fails+" FAILED":"ALL PASS"); await b.close(); srv.close(); process.exit(fails?1:0);
 })().catch(e=>{ console.log("CRASH", e.stack); process.exit(1); });

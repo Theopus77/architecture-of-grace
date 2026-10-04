@@ -27,13 +27,17 @@ window.__A={
     const C=new Float64Array(hi+2); let run=0; C[0]=1; for(let tau=1;tau<=hi+1;tau++){ run+=D[tau]; C[tau]=D[tau]*tau/(run||1e-20); }
     let best=lo; for(let tau=lo;tau<=hi;tau++) if(C[tau]<C[best]) best=tau; const y0=C[best-1], y1=C[best], y2=C[best+1], den=y0-2*y1+y2, off=den>0?0.5*(y0-y2)/den:0; return sr/(best+off); }
 };
-/* the page's chain, dry (no room), before the compressor; events [{m,v,t,s}] */
-window.__render=async function(id, events, dur, sr, dry){
+/* the page's chain, dry (no room), before the compressor; events [{m,v,t,s}]. AOG-STRINGS-REAL-V1: the string made on the
+   page unless real is true (then the sound's recordings, loaded first) */
+window.__render=async function(id, events, dur, sr, dry, real){
+  if(typeof REAL!=="undefined"){ REAL.on=!!real; if(real){ await loadSound(id); if(!soundReady(id)) throw new Error(id+": the recordings did not load"); } }
   S.sound=id; VOICINGS.clear();
   const oc=new OfflineAudioContext(2, Math.ceil(sr*dur), sr); await AOGAmp.load(oc); const ch=makeChain(oc);
   ch.master.gain.value=volGain(0.8); setSound(ch,id); setEra(ch,0,0); ch.send.gain.value=0; ch.pre.disconnect(); ch.master.disconnect(); ch.pre.connect(oc.destination);
   if(dry){ ch.amp.disconnect(); ch.amp.connect(ch.post); }
-  events.forEach(e=>{ const vc=makeVoice(oc,ch,id,e.m,e.v,e.t,e.s==null?null:e.s); if(vc) vc.stop(dur-0.06, vc.tau); });
+  let rec=0; events.forEach(e=>{ const vc=makeVoice(oc,ch,id,e.m,e.v,e.t,e.s==null?null:e.s); if(vc){ vc.stop(dur-0.06, vc.tau); if(vc.rec) rec++; } });
+  if(!!real!==(rec>0)) throw new Error(id+(real?": the recordings did not play":": a recording played where the made string should"));
+  if(typeof REAL!=="undefined") REAL.on=true;
   const b=await oc.startRendering(), L=b.getChannelData(0), R=b.getChannelData(1), d=new Float32Array(L.length); for(let i=0;i<d.length;i++) d[i]=(L[i]+R[i])/2; return d;
 };
 window.__padStrum=function(c){ const ev=[]; let k=0; shapeFor(c).forEach((f,s)=>{ if(f<0) return; ev.push({m:TUNING[s]+f, v:0.74*(1-0.03*k), t:0.05+k*0.014, s:s}); k++; }); return ev; };`;
@@ -64,6 +68,17 @@ async function open(b, inst, ver, dev){
         out.chord={};
         for(const id of ["steel","nylon","twelve","clean","jazz"]){ const sr=44100, d=await __render(id, __padStrum({off:0,q:"maj"}), 1.2, sr), lv=(a,b)=>A.db(A.rms(d,sr,a,b));
           out.chord[id]={c05:A.centroid(d,sr,0.05,0.55), c70:A.centroid(d,sr,0.05,0.12), hf2k:A.hf(d,sr,0.05,0.12,2000)-lv(0.05,0.55), atk:lv(0.05,0.12)-lv(0.12,0.55)}; }
+        /* AOG-STRINGS-REAL-V1: the same, on the recordings: the open E of a recorded string (it drifts a few cents as it rings,
+           as a real string does), and the recorded steel string against the recorded nylon one */
+        if(typeof REAL!=="undefined"){
+          out.rpitch={};
+          for(const id of ["steel","nylon","clean","lead"]) for(const sr of [44100,48000]){ const d=await __render(id,[{m:40,v:0.74,t:0.05,s:0}],1.7,sr,false,true), f0=mtof(40), c=[];
+            for(let t=0.15;t<=1.5;t+=0.05){ const f=A.yin(d,sr,t,f0); if(f===f) c.push(1200*Math.log2(f/f0)); }
+            out.rpitch[id+"@"+sr]={mean:c.reduce((a,b)=>a+b,0)/c.length, min:Math.min(...c), max:Math.max(...c), n:c.length}; }
+          out.rchord={};
+          for(const id of ["steel","nylon"]){ const sr=44100, d=await __render(id, __padStrum({off:0,q:"maj"}), 1.2, sr, false, true), lv=(a,b)=>A.db(A.rms(d,sr,a,b));
+            out.rchord[id]={c05:A.centroid(d,sr,0.05,0.55), hf2k:A.hf(d,sr,0.05,0.55,2000)-lv(0.05,0.55)}; }
+        }
         return out; });
       ok(!errs.length, `guitar (${ver}): no page errors ${errs.join(" | ")}`);
       /* 6 held pads (new only) */
@@ -156,5 +171,13 @@ async function open(b, inst, ver, dev){
   ok(pk.c05/fi.c05>=1.5 && pk.hf2k-fi.hf2k>=10 && pk.dryEnd<=fi.dryEnd-1.5, `fingers against pick: centroid ${fi.c05.toFixed(0)} vs ${pk.c05.toFixed(0)} Hz (×${(pk.c05/fi.c05).toFixed(2)}), HF>2k at the start ${(pk.hf2k-fi.hf2k).toFixed(1)} dB apart, the pick's string dies sooner (${fi.dryEnd.toFixed(1)} vs ${pk.dryEnd.toFixed(1)} dB at 1.1 s; through each rig, the pick's with its compressor pedal: ${fi.end.toFixed(1)} vs ${pk.end.toFixed(1)})`);
   ok(up.c05<=fi.c05 && up.hf2k<=-25 && up.low>=4, `upright: darker (${up.c05.toFixed(0)} Hz), no fret click (HF>2k ${up.hf2k.toFixed(1)} dB), a soft thump (lows ${up.low.toFixed(1)} dB up at the start)`);
   ok(bb.synth.synth.peak<=2.5 && bb.synth.synth.sub>=bb.synth.acid.sub+10 && bb.synth.synth.c0>bb.synth.synth.c2, `synth low G: no resonant peak standing out (${bb.synth.synth.peak.toFixed(1)} dB over the low harmonics), a thump (the octave-down sine ${bb.synth.synth.sub.toFixed(1)} dB against the note at the start; acid, without it, ${bb.synth.acid.sub.toFixed(1)}), the filter closes (${bb.synth.synth.c0.toFixed(0)} → ${bb.synth.synth.c2.toFixed(0)} Hz)`);
+  /* AOG-STRINGS-REAL-V1: the recordings (the checks above stay on the strings made on the page, which play while a set loads) */
+  if(g.rpitch){
+    const rp=Object.entries(g.rpitch);
+    for(const [k,v] of rp) console.log(`  recorded pitch ${k.padEnd(12)} mean ${f(v.mean,2)} c, ${f(v.min,2)}..${f(v.max,2)} c over ${v.n} frames`);
+    for(const [k,v] of Object.entries(g.rchord)) console.log(`  recorded C pad ${k.padEnd(6)} centroid ${v.c05.toFixed(0)} Hz, HF>2k ${f(v.hf2k)} dB`);
+    ok(rp.every(([k,v])=>Math.abs(v.mean)<=5 && v.max-v.min<=20), `recorded guitars: the open E in tune within ±5 cents on average; over 1.5 s it glides no more than 20 cents (a plucked string starts a little sharp and settles flat as it rings): ${rp.map(([k,v])=>k+" "+v.mean.toFixed(1)+" ("+v.min.toFixed(1)+".."+v.max.toFixed(1)+")").join("; ")}`);
+    ok(g.rchord.steel.c05>g.rchord.nylon.c05 && g.rchord.steel.hf2k>g.rchord.nylon.hf2k, `recorded steel strings brighter than the recorded nylon ones: centroid ${g.rchord.steel.c05.toFixed(0)} vs ${g.rchord.nylon.c05.toFixed(0)} Hz, HF>2k ${g.rchord.steel.hf2k.toFixed(1)} vs ${g.rchord.nylon.hf2k.toFixed(1)} dB`);
+  }
   console.log(fails?fails+" FAILED":"ALL PASS"); await b.close(); srv.close(); process.exit(fails?1:0);
 })().catch(e=>{ console.log("CRASH", e.stack); process.exit(1); });

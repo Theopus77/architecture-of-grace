@@ -104,7 +104,7 @@ B('  <figure class="whole">%s<figcaption>%s</figcaption></figure>' % (img("pp-wh
   sp("The whole piano. Each part is below, close up.", "Todo el piano. Cada parte está abajo, de cerca.")))
 B('  <div class="parts">')
 B(part("wide", "pp-sound", ("The Instrument menu, set to Grand piano.", "El menú Instrumento, en Piano de cola."), ("Instrument", "Instrumento"),
-       ("34 sounds in eight groups. Some are real recordings: the grand and upright pianos, the harp, the marimba and the strings.", "34 sonidos en ocho grupos. Algunos son grabaciones de verdad: los pianos de cola y vertical, el arpa, la marimba y las cuerdas.")))
+       ("34 sounds in eight groups. Many are real recordings, from the grand piano to the church organ and the bells.", "34 sonidos en ocho grupos. Muchos son grabaciones de verdad, del piano de cola al órgano de iglesia y las campanas.")))
 B(part("wide", "pp-key", ("Key and Mood: Major is bright, Minor is moody.", "Tono y Ánimo: Mayor es brillante, Menor es melancólico."), ("Key · Mood", "Tono · Ánimo"),
        ("Key moves every chord up or down. Major is bright. Minor is moody.", "El tono sube o baja todos los acordes. Mayor es brillante. Menor es melancólico.")))
 B(part("wide", "pp-pads", ("The six chord pads, numbered 1 to 6.", "Los seis pads de acordes, del 1 al 6."), ("The six pads", "Los seis pads"),
@@ -243,8 +243,8 @@ B('<section>\n  <h2><span class="n">?</span>%s</h2>\n  <ul class="fix">' % sp("N
 for en_b, es_b, en_s, es_s in [
     ("No sound", "No hay sonido", "Turn Volume up and tap a key once. A phone wakes its sound on the first tap. An iPhone plays even with the silent switch on.",
      "Sube el Volumen y toca una tecla una vez. Un teléfono despierta su sonido con el primer toque. Un iPhone suena aunque esté en silencio."),
-    ("“Getting the grand piano ready…”", "“Preparando el piano de cola…”", "The recordings are on their way. Until then you hear the electric piano.",
-     "Las grabaciones vienen en camino. Mientras tanto suena el piano eléctrico."),
+    ("“Getting the grand piano ready…”", "“Preparando el piano de cola…”", "The recordings are on their way. Until then you hear a sound made on this page.",
+     "Las grabaciones vienen en camino. Mientras tanto suena un sonido hecho en esta página."),
     ("Play does nothing", "Tocar no hace nada", "Pick a chord pattern first, or press Make my own and tap some pads.",
      "Primero elige un patrón de acordes, o pulsa Hacer el mío y toca algunos pads."),
     ("The tempo will not move", "El tempo no se mueve", "Play with my drum beat is on. The drum beat sets the tempo. Press it again to turn it off.",

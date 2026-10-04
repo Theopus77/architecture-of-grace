@@ -9,7 +9,7 @@
    - up to five minutes, then it stops by itself and says why;
    - the quiet moment before the first sound is left out, and half a second after Stop is kept so the last note rings out;
    - a take with nothing in it is not kept;
-   - the last three takes stay, each to hear, save as .wav, or send to the turntables; nothing leaves the device;
+   - the last three takes stay, each to hear, save as .wav, or send to the turntables or the Studio; nothing leaves the device;
    - switching away from the page ends the take and keeps it.
    A take is kept small while it records: 16 bits, left and right side by side, just as it will sit in the .wav; the rare
    peak past full scale is rounded off rather than cut flat.
@@ -37,14 +37,23 @@
    is a windowed-sinc sum of the old ones around it), so nothing above the new rate's limit folds back as a whistle. Its peak is set
    to 0.8, as the chord pads are, and its last 20 ms fade so a sound cut at 2.5 s does not click. The shelf holds
    {from:"piano"|"guitar"|"bass"|"band", name:{en:"Guitar take 2", es:"Toma de guitarra 2"}, seconds, at, rate:26040, pcm:Float32Array};
-   the drum machine shows it and puts it on the pad you pick. */
+   the drum machine shows it and puts it on the pad you pick.
+
+   AOG-STUDIO-SEND-V1 (2026-10-04) — Jimmy: "All the instruments should be able to record and send their tracks over to the
+   STUDIO." Every take, on every tool (the drum machine's too), has one more action: Send to the Studio. The take joins the
+   Studio's inbox (aog-handoff.js, the list "studioinbox"), which keeps many takes, not just the newest: two guitar takes, a bass
+   take and a drum take can all wait there together. Each carries the tool, its number, its length, its tempo (the tool's tempo
+   when Record was pressed) and when it was made; the inbox keeps the newest 16. Sending the same take twice keeps it once. The
+   line then says "Sent to the Studio. Open the Studio", and keeps saying it when the page repaints, until the next thing
+   happens. The tool is known by its shelf (or the page's address, or o.tool), so no page has to change. Send to the turntables
+   and Send to the drum machine work exactly as before. */
 (function () {
   "use strict";
   var W = {
     rec: { en: "● Record", es: "● Grabar" },
     recStop: { en: "■ Stop recording", es: "■ Parar grabación" },
     recOn: { en: "Recording {what}, never a microphone. Play anything, then press Stop recording.", es: "Grabando {what}, nunca un micrófono. Toca lo que quieras y luego pulsa Parar grabación." },
-    recKeep: { en: "Takes stay on this device until you leave the page. To keep one, save it or send it to the turntables.", es: "Las tomas se quedan en este dispositivo hasta que salgas de la página. Para guardar una, guárdala o envíala a los platos." },
+    recKeep: { en: "Takes stay on this device until you leave the page. To keep one, save it or send it to the Studio.", es: "Las tomas se quedan en este dispositivo hasta que salgas de la página. Para guardar una, guárdala o envíala al estudio." },
     recFull: { en: "Five minutes is the limit, so recording stopped.", es: "Cinco minutos es el límite, así que la grabación se detuvo." },
     recNone: { en: "Nothing was played, so there is no take.", es: "No se tocó nada, así que no hay toma." },
     take: { en: "Take", es: "Toma" },
@@ -57,7 +66,12 @@
     drum: { en: "Send to the drum machine", es: "Enviar a la caja de ritmos" },
     drumSent: { en: "Sent. On the drum machine, pick a pad for it.", es: "Enviada. En la caja de ritmos, elige un pad para la toma." },
     drums: { en: "The drum machine", es: "La caja de ritmos" },
-    fail: { en: "That did not work. Try again.", es: "No funcionó. Inténtalo otra vez." }
+    fail: { en: "That did not work. Try again.", es: "No funcionó. Inténtalo otra vez." },
+    /* AOG-STUDIO-SEND-V1 */
+    studio: { en: "Send to the Studio", es: "Enviar al estudio" },
+    studioSent: { en: "Sent to the Studio.", es: "Enviada al estudio." },
+    studioGo: { en: "Open the Studio", es: "Abrir el estudio" },
+    noRoom: { en: "This device has no room left for takes. In the Studio, remove a take you do not need, then try again.", es: "Este dispositivo no tiene más espacio para tomas. En el estudio, quita una toma que no necesites y vuelve a intentarlo." }
   };
   /* AOG-TAKE-TO-PADS-V1 — the tools whose takes can go to the drum machine, and what a take is called there */
   var TOOL = { keysbench: "piano", guitarbench: "guitar", bassbench: "bass", bandbench: "band" };
@@ -71,6 +85,20 @@
     if (TOOL[o.shelf]) return TOOL[o.shelf];
     var m = /music-(piano|guitar|bass|band)\b/.exec(location.pathname || "");
     return m ? m[1] : "";
+  }
+  /* AOG-STUDIO-SEND-V1 — every tool's takes go to the Studio, the drum machine's too; its take is a "Drum take" */
+  var STUDIO_TOOL = { keysbench: "piano", guitarbench: "guitar", bassbench: "bass", bandbench: "band", drumtake: "drums" };
+  var DRUM_TAKE = { en: "Drum take ", es: "Toma de ritmos " };
+  function studioTool(o) {
+    if (o.tool) return String(o.tool);
+    if (STUDIO_TOOL[o.shelf]) return STUDIO_TOOL[o.shelf];
+    var m = /music-(piano|guitar|bass|band|drums)\b/.exec(location.pathname || "");
+    return m ? m[1] : "";
+  }
+  function studioName(o, tool, n) {
+    var nm = tool === "drums" ? DRUM_TAKE : TAKE_NAME[tool];
+    if (!nm) nm = { en: o.prefix.en + " take ", es: "Toma de " + String(o.prefix.es).toLowerCase() + " " };
+    return { en: nm.en + n, es: nm.es + n };
   }
   var PAD_RATE = 26040, PAD_MAX = 2.5;
   /* a band-limited change of rate: a windowed-sinc low-pass (Blackman, 16 zero crossings a side, cut at 45% of the lower rate)
@@ -156,7 +184,8 @@
   function clock(sec) { var s = Math.max(0, Math.floor(sec)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
 
   function attach(o) {
-    var R = { on: false, closing: false, chunks: [], frames: 0, t0: 0, timer: 0, takes: [], n: 0, max: 300, msg: "", node: null, sink: null, sr: 44100 };
+    var R = { on: false, closing: false, chunks: [], frames: 0, t0: 0, timer: 0, takes: [], n: 0, max: 300, msg: "", node: null, sink: null, sr: 44100,
+      bpm0: 0, studioLine: false };
     function L() { return o.lang() === "es" ? "es" : "en"; }
     function w(k) { var src = (k === "rec" && o.label) ? o.label : W[k]; return src[L()].split("{what}").join(o.what[L()]); }
     function el(k) { return document.getElementById(o.ids[k]); }
@@ -211,7 +240,8 @@
       v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, bytes, true);
       var blob = new Blob([h].concat(parts), { type: "audio/wav" });
       R.chunks = []; R.frames = 0;
-      R.takes.unshift({ n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob) });
+      R.takes.unshift({ n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: R.bpm0 });
+      R.studioLine = false;
       while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); }
       if (!R.msg) R.msg = "recKeep";
       R.paint();
@@ -221,7 +251,8 @@
       if (!R.on) {
         if (R.closing) return;
         await build();
-        R.chunks = []; R.frames = 0; R.t0 = performance.now(); R.msg = "recOn";
+        R.chunks = []; R.frames = 0; R.t0 = performance.now(); R.msg = "recOn"; R.studioLine = false;
+        try { R.bpm0 = o.bpm ? +o.bpm() || 0 : 0; } catch (e) { R.bpm0 = 0; }
         arm(true);
         R.timer = setInterval(function () {
           var sec = (performance.now() - R.t0) / 1000, t = el("time"); if (t) t.textContent = clock(sec);
@@ -239,6 +270,7 @@
     R.send = async function (n) {
       var k = R.takes.find(function (x) { return x.n === n; }); if (!k) return;
       var name = o.prefix[L()] + " · " + w("mine") + " · " + w("take") + " " + k.n + " · " + clock(k.sec), line = el("line");
+      R.studioLine = false;
       try {
         await AOGHandoff.put(o.shelf, { name: name, bpm: Math.round(o.bpm ? o.bpm() : 120), bars: 0, at: Date.now(), wav: k.blob, take: true });
         if (line) line.innerHTML = w("sent") + ' <a href="music-decks.html">' + w("decks") + "</a>";
@@ -248,6 +280,7 @@
     R.toDrums = async function (n, btn) {
       var k = R.takes.find(function (x) { return x.n === n; }), from = toolOf(o), line = el("line");
       if (!k || !from) return;
+      R.studioLine = false;
       if (btn) btn.disabled = true;
       try {
         var pcm = await toPad(k.blob); if (!pcm || pcm.length < 64) throw new Error("no sound");
@@ -258,12 +291,32 @@
       } catch (e) { if (line) line.textContent = w("fail"); }
       if (btn) btn.disabled = false;
     };
+    /* AOG-STUDIO-SEND-V1 — Send to the Studio: the take joins the Studio's inbox, beside the others */
+    function studioHtml() { return w("studioSent") + ' <a href="/studio">' + w("studioGo") + "</a>"; }
+    R.toStudio = async function (n, btn) {
+      var k = R.takes.find(function (x) { return x.n === n; }), line = el("line");
+      if (!k) return;
+      if (btn) btn.disabled = true;
+      try {
+        if (!window.AOGHandoff || !AOGHandoff.add) throw new Error("no inbox");
+        var tool = studioTool(o), bpm = k.bpm > 0 ? k.bpm : 0;
+        if (!(bpm > 0)) { try { bpm = o.bpm ? +o.bpm() || 0 : 0; } catch (e) { bpm = 0; } }
+        await AOGHandoff.add(AOGHandoff.INBOX, { from: tool, n: k.n, name: studioName(o, tool, k.n), sec: Math.round(k.sec * 1000) / 1000,
+          bpm: Math.round(bpm * 100) / 100, at: k.at || Date.now(), take: true, wav: k.blob }, { key: tool + "|" + (k.at || 0) + "|" + k.n });
+        R.studioLine = true;
+        if (line) line.innerHTML = studioHtml();
+      } catch (e) {
+        R.studioLine = false;
+        if (line) line.textContent = w(e && e.name === "QuotaExceededError" ? "noRoom" : "fail");
+      }
+      if (btn) btn.disabled = false;
+    };
     R.paint = function () {
       var btn = el("btn"); if (!btn) return;
       btn.textContent = R.on ? w("recStop") : w("rec"); btn.setAttribute("aria-pressed", R.on ? "true" : "false"); btn.classList.add("aogrec-btn");
       if (!btn._aogrec) { btn._aogrec = true; btn.addEventListener("click", function () { R.toggle(); }); }
       var tm = el("time"); if (tm) { tm.hidden = !R.on; tm.classList.add("aogrec-time"); if (!R.on) tm.textContent = "0:00"; }
-      var line = el("line"); if (line) line.textContent = R.msg ? w(R.msg) : "";
+      var line = el("line"); if (line) { if (R.studioLine) line.innerHTML = studioHtml(); else line.textContent = R.msg ? w(R.msg) : ""; }
       var list = el("list"); if (!list) return;
       list.classList.add("aogrec-list");
       /* only when the takes or the words change: a take being listened to keeps playing while the page repaints */
@@ -276,10 +329,12 @@
           '<audio controls preload="metadata" src="' + k.url + '"></audio>' +
           '<a class="aogrec-b" href="' + k.url + '" download="' + o.file[L()] + "-" + k.n + '.wav">' + w("save") + "</a>" +
           '<button type="button" class="aogrec-b send" data-aogrec-send="' + k.n + '">' + w("send") + "</button>" +
-          (drums ? '<button type="button" class="aogrec-b send" data-aogrec-drum="' + k.n + '">' + w("drum") + "</button>" : "") + "</div>";
+          (drums ? '<button type="button" class="aogrec-b send" data-aogrec-drum="' + k.n + '">' + w("drum") + "</button>" : "") +
+          '<button type="button" class="aogrec-b send" data-aogrec-studio="' + k.n + '">' + w("studio") + "</button></div>";
       }).join("");
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-send]"), function (b) { b.onclick = function () { R.send(+b.getAttribute("data-aogrec-send")); }; });
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-drum]"), function (b) { b.onclick = function () { R.toDrums(+b.getAttribute("data-aogrec-drum"), b); }; });
+      Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-studio]"), function (b) { b.onclick = function () { R.toStudio(+b.getAttribute("data-aogrec-studio"), b); }; });
     };
     document.addEventListener("visibilitychange", function () { if (document.hidden && R.on) R.toggle(); });
     style();

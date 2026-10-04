@@ -205,6 +205,10 @@ footer a{color:inherit}
 .rechint{font-size:.8rem;color:var(--muted);margin:.5rem 0 0}
 .takes{display:grid;gap:.5rem;margin-top:.6rem}
 .takes:empty{display:none}
+/* AOG-STUDIO-SEND-V1 — the line under the takes: "Sent to the Studio. Open the Studio" */
+.takeline{margin:.55rem 0 0;font-size:.95rem;line-height:1.45;color:var(--ink)}
+.takeline:empty{display:none}
+.takeline a{color:inherit;font-weight:700;text-decoration-color:var(--lamp);text-underline-offset:3px}
 .eqwrap{position:relative;margin-top:.7rem;background:#06110c;border-radius:10px}
 .eqcurve{position:relative;display:block;width:100%;height:110px;border-radius:10px}
 .eqlive{position:absolute;left:0;top:0;width:100%;height:110px;border-radius:10px;pointer-events:none}
@@ -415,6 +419,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     <p class="rechint" id="recHint"></p>
   </section>
   <div id="takes" class="takes no-print"></div>
+  <p class="takeline no-print" id="takeLine" aria-live="polite"></p>
   <section class="cratecard no-print" id="cratecard" aria-label="Records">
     <div id="made" class="crate"></div>
     <div id="crate" class="crate"></div>
@@ -539,6 +544,12 @@ const STR = {
   takes:{en:"Takes",es:"Tomas"},
   take:{en:"Take",es:"Toma"},
   save:{en:"Save as .wav",es:"Guardar como .wav"},
+  /* AOG-STUDIO-SEND-V1 */
+  toStudio:{en:"Send to the Studio",es:"Enviar al estudio"},
+  studioSent:{en:"Sent to the Studio.",es:"Enviada al estudio."},
+  studioGo:{en:"Open the Studio",es:"Abrir el estudio"},
+  studioFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  noRoom:{en:"This device has no room left for takes. In the Studio, remove a take you do not need, then try again.",es:"Este aparato no tiene más espacio para tomas. En el estudio, quita una toma que no necesites y vuelve a intentarlo."},
   toA:{en:"Onto deck A",es:"Al plato A"},
   toB:{en:"Onto deck B",es:"Al plato B"},
   toC:{en:"Onto deck C",es:"Al plato C"},
@@ -603,7 +614,7 @@ const TOUCH = { fine:0.35, normal:0.6, vinyl:1 };
 let touch = (localStorage.getItem("aog.decks.touch") || "fine");
 if(!TOUCH[touch]) touch = "fine";
 /* the tape: what the decks are doing, caught on its way to the speakers */
-const TAPE = { node:null, sink:null, on:false, chunks:[], frames:0, t0:0, takes:[], n:0, timer:null };
+const TAPE = { node:null, sink:null, on:false, chunks:[], frames:0, t0:0, takes:[], n:0, timer:null, bpm0:0, bpm1:0, msg:"" };
 const TAPE_MAX_SEC = 600;
 /* AOG-DJ-LEVEL-V1 — every record is level-matched as it loads (measured in LUFS, the
    way broadcasters measure loudness), so a quiet record and a loud one blend evenly. */
@@ -912,6 +923,7 @@ async function recToggle(){
   ctx(); await buildTape();
   if(!TAPE.on){
     TAPE.chunks = []; TAPE.frames = 0; TAPE.t0 = performance.now();
+    TAPE.bpm0 = mixTempo(); TAPE.bpm1 = 0; TAPE.msg = "";
     armTape(true);
     TAPE.timer = setInterval(()=>{
       const sec = (performance.now()-TAPE.t0)/1000;
@@ -919,6 +931,7 @@ async function recToggle(){
       if(sec >= TAPE_MAX_SEC){ recToggle(); const h=document.getElementById("recHint"); if(h) h.textContent = t("full"); }
     }, 200);
   } else {
+    TAPE.bpm1 = mixTempo();
     armTape(false);
     clearInterval(TAPE.timer); TAPE.timer = null;
     setTimeout(()=>{ finishTake(); }, 120);   /* let the last chunk arrive */
@@ -932,7 +945,7 @@ function finishTake(){
   TAPE.chunks.forEach(c=>{ L.set(c[0], o); R.set(c[1], o); o += c[0].length; });
   TAPE.chunks = []; TAPE.frames = 0;
   const wav = wavBlob(L, R, actx.sampleRate);
-  TAPE.takes.unshift({ n: ++TAPE.n, sec: n/actx.sampleRate, url: URL.createObjectURL(wav), blob: wav });
+  TAPE.takes.unshift({ n: ++TAPE.n, sec: n/actx.sampleRate, url: URL.createObjectURL(wav), blob: wav, at: Date.now(), bpm: TAPE.bpm1 || TAPE.bpm0 });
   while(TAPE.takes.length > 6){ const old = TAPE.takes.pop(); URL.revokeObjectURL(old.url); }
   paintTape();
 }
@@ -969,6 +982,7 @@ function paintTape(){
       <audio controls preload="none" src="${k.url}"></audio>
       <a class="ghost" href="${k.url}" download="turntables-take-${k.n}.wav">${t("save")}</a>
       ${ontoHTML(id=>`data-totake="${k.n}" data-deck="${id}"`)}
+      <button type="button" class="ghost" data-tostudio="${k.n}">${t("toStudio")}</button>
     </div>`).join("");
   box.querySelectorAll("a[download]").forEach(a=>{ a.addEventListener("click", ()=>{ LX.saved = true; }); });
   box.querySelectorAll("[data-totake]").forEach(b=>{
@@ -978,6 +992,33 @@ function paintTape(){
       loadFile(d, new File([k.blob], "take-"+k.n+".wav", { type:"audio/wav" }));
     };
   });
+  box.querySelectorAll("[data-tostudio]").forEach(b=>{ b.onclick = ()=>tapeToStudio(+b.getAttribute("data-tostudio"), b); });
+  paintTakeLine();
+}
+/* AOG-STUDIO-SEND-V1 (2026-10-04) — Jimmy: "All the instruments should be able to record and send their tracks over to
+   the STUDIO." A take of the mix joins the Studio's inbox (aog-handoff.js, "studioinbox"), beside the instruments' takes:
+   its number, length, tempo (the MASTER deck's, as heard, when Record stopped; 0 when no deck knows its tempo) and when it
+   was made. The same take sent twice is kept once. One line says what happened. */
+function mixTempo(){
+  const m = decks.find(d=>d.id===masterId && d.buf && d.bpm > 0) || decks.find(d=>d.motor && d.buf && d.bpm > 0);
+  return m ? Math.round(effBpm(m)*100)/100 : 0;
+}
+async function tapeToStudio(n, btn){
+  const k = TAPE.takes.find(x=>x.n === n); if(!k) return;
+  if(btn) btn.disabled = true;
+  try{
+    if(!window.AOGHandoff || !AOGHandoff.add) throw new Error("no inbox");
+    await AOGHandoff.add(AOGHandoff.INBOX, { from:"decks", n:k.n, name:{ en:"Turntables take "+k.n, es:"Toma de los tocadiscos "+k.n },
+      sec:Math.round(k.sec*1000)/1000, bpm:k.bpm || 0, at:k.at || Date.now(), take:true, wav:k.blob }, { key:"decks|"+(k.at||0)+"|"+k.n });
+    TAPE.msg = "studioSent";
+  }catch(e){ TAPE.msg = (e && e.name === "QuotaExceededError") ? "noRoom" : "studioFail"; }
+  if(btn) btn.disabled = false;
+  paintTakeLine();
+}
+function paintTakeLine(){
+  const el = document.getElementById("takeLine"); if(!el) return;
+  if(TAPE.msg === "studioSent") el.innerHTML = `${t("studioSent")} <a href="/studio">${t("studioGo")}</a>`;
+  else el.textContent = TAPE.msg ? t(TAPE.msg) : "";
 }
 /* ══ AOG-DECKS-FROM-BENCH-V1 (2026-09-23) ════════════════════════════════════
    The drum machine bounces its pattern onto a shelf both benches can reach
