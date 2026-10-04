@@ -104,7 +104,7 @@ B('  <figure class="whole">%s<figcaption>%s</figcaption></figure>' % (img("pp-wh
   sp("The whole piano. Each part is below, close up.", "Todo el piano. Cada parte está abajo, de cerca.")))
 B('  <div class="parts">')
 B(part("wide", "pp-sound", ("The Instrument menu, set to Grand piano.", "El menú Instrumento, en Piano de cola."), ("Instrument", "Instrumento"),
-       ("Eight sounds. The grand and the upright are real pianos, recorded.", "Ocho sonidos. El de cola y el vertical son pianos de verdad, grabados.")))
+       ("34 sounds in eight groups. Some are real recordings: the grand and upright pianos, the harp, the marimba and the strings.", "34 sonidos en ocho grupos. Algunos son grabaciones de verdad: los pianos de cola y vertical, el arpa, la marimba y las cuerdas.")))
 B(part("wide", "pp-key", ("Key and Mood: Major is bright, Minor is moody.", "Tono y Ánimo: Mayor es brillante, Menor es melancólico."), ("Key · Mood", "Tono · Ánimo"),
        ("Key moves every chord up or down. Major is bright. Minor is moody.", "El tono sube o baja todos los acordes. Mayor es brillante. Menor es melancólico.")))
 B(part("wide", "pp-pads", ("The six chord pads, numbered 1 to 6.", "Los seis pads de acordes, del 1 al 6."), ("The six pads", "Los seis pads"),
@@ -194,18 +194,18 @@ B(step(3, img("pp-s-pad1", "Pad 1.", "El pad 1.", "max-width:150px"), ("End on 1
 B(step(4, img("pp-s-play", "Play the chords.", "Tocar los acordes."), ("Press Play", "Pulsa Tocar"), ("Your pattern goes round.", "Tu patrón da vueltas.")))
 B('  </div>\n</section>')
 
-# 8 · eight sounds
-B('<section>\n  <h2><span class="n">8</span>%s</h2>\n  <p class="sub">%s</p>\n  <div class="kits">' % (sp("Eight sounds", "Ocho sonidos"),
+# 8 · the sounds: AOG-PIANO-SOUNDS-V2 (2026-10-04), 34 of them in the menu's eight groups, one line each
+B('<section>\n  <h2><span class="n">8</span>%s</h2>\n  <p class="sub">%s</p>\n  <div class="kits">' % (sp("34 sounds, eight groups", "34 sonidos, ocho grupos"),
   sp("Same keys, different color. That color is called timbre.", "Las mismas teclas, otro color. Ese color se llama timbre.")))
 for letter, en, es, how_en, how_es in [
-    ("1", "Grand piano", "Piano de cola", "Felt hammers hit long strings. A real recording.", "Martillos de fieltro golpean cuerdas largas. Una grabación real."),
-    ("2", "Upright piano", "Piano vertical", "The strings stand up tall. A real recording.", "Las cuerdas están de pie. Una grabación real."),
-    ("3", "Honky-tonk piano", "Piano honky-tonk", "An upright, a little out of tune with itself.", "Un vertical, un poco desafinado consigo mismo."),
-    ("4", "Electric piano · warm", "Piano eléctrico · cálido", "Hammers hit thin metal tines.", "Martillos golpean varillas delgadas de metal."),
-    ("5", "Electric piano · bright", "Piano eléctrico · brillante", "Hammers hit flat metal reeds.", "Martillos golpean lengüetas planas de metal."),
-    ("6", "'80s electric piano", "Piano eléctrico de los 80", "A computer chip does the math (FM).", "Un chip de computadora hace las cuentas (FM)."),
-    ("7", "Rock and jazz organ", "Órgano de rock y jazz", "Spinning wheels near magnets. Never fades.", "Ruedas que giran cerca de imanes. Nunca se apaga."),
-    ("8", "Church organ", "Órgano de iglesia", "Air through pipes, in a big room.", "Aire por tubos, en una sala grande.")]:
+    ("1", "Pianos", "Pianos", "Hammers hit strings. Grand, upright, honky-tonk, bright, soft felt, toy.", "Martillos golpean cuerdas. De cola, vertical, honky-tonk, brillante, suave de fieltro, de juguete."),
+    ("2", "Electric pianos", "Pianos eléctricos", "Metal tines, reeds or a computer chip. And the funky clavinet.", "Varillas, lengüetas o un chip de computadora. Y el clavinet del funk."),
+    ("3", "Organs and accordion", "Órganos y acordeón", "Spinning wheels or air through pipes. Never fades.", "Ruedas que giran o aire por tubos. Nunca se apaga."),
+    ("4", "Mallets and bells", "Láminas y campanas", "Celesta, glockenspiel, vibraphone, marimba, steel drums, bells.", "Celesta, glockenspiel, vibráfono, marimba, tambores de acero, campanas."),
+    ("5", "Plucked", "Pulsados", "Harpsichord, harp, kalimba, music box.", "Clavecín, arpa, kalimba, caja de música."),
+    ("6", "Strings and voices", "Cuerdas y voces", "Soft strings, recorded. A choir.", "Cuerdas suaves, grabadas. Un coro."),
+    ("7", "Tape keyboards", "Teclados de cinta", "Strings and flute on tape, for prog rock.", "Cuerdas y flauta en cinta, para el rock progresivo."),
+    ("8", "Synths", "Sintetizadores", "String synth, warm synth, synth brass, synth lead.", "Sintetizador de cuerdas, cálido, de metales y solista.")]:
     B('    <div class="bank"><div class="letter">%s</div><div><b>%s</b><span>%s</span></div></div>' % (letter, sp(en, es), sp(how_en, how_es)))
 B('  </div>\n</section>')
 

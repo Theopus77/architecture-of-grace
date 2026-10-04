@@ -597,11 +597,10 @@ const CSS=`
 .aogamp.aa-flat .aa-band input{order:0;writing-mode:horizontal-tb;direction:ltr;width:100%;height:auto;min-height:32px}
 .aogamp.aa-flat .aa-band output{order:0;font-size:.82rem;text-align:right}
 .aogamp .aa-bands[data-off="1"]{opacity:.62}
-/* AOG-AMP-TONES-V1: the foot has its own dark ground, like the rest of the panel, so its line stays readable after the panel
-   redraws (the page's ink fix in aog-grace.js runs once, at load, and missed the redrawn note on the dark rig) */
-.aogamp .aa-foot{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;background:#2b2926;border-radius:14px;padding:.6rem .8rem}
-.aogamp .aa-foot .aa-btn{background:#2a2622;color:#f3ead7;border-color:#6b6255}
-.aogamp .aa-note{font-size:.9rem;color:#e9dfc8;margin:0}
+.aogamp .aa-foot{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+/* the panel sits on the page's dark board in both themes, so its own colours, not the page's */
+.aogamp .aa-foot .aa-btn{background:#fffcf7;color:#1a232c;border-color:#ddd8cc}
+.aogamp .aa-note{font-size:.9rem;color:#d7cbb8;margin:0}
 .aogamp :focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
 @media (min-width:760px){ .aogamp .aa-plate{grid-template-columns:repeat(7,1fr)} }
 `;
