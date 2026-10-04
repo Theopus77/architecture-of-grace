@@ -183,7 +183,8 @@ const OLD18=[{"id":"pop","g":"pop","en":"Pop · 1 5 6 4","es":"Pop · 1 5 6 4","
         /* how bright the start is: the wave's change from sample to sample against the wave itself (a high string changes faster) */
         const bright=(d,a,b2)=>{ let x=0,y=0; for(let i=Math.floor(a*44100)+1;i<Math.floor(b2*44100);i++){ x+=d[i]*d[i]; y+=(d[i]-d[i-1])*(d[i]-d[i-1]); } return Math.sqrt(y/(x+1e-12)); };
         let sxy=0,sxx=0,syy=0; for(let i=0;i<dn.length;i++){ sxy+=dn[i]*upw[i]; sxx+=dn[i]*dn[i]; syy+=upw[i]*upw[i]; }
-        r.brDown=+bright(dn,0.02,0.035).toFixed(3); r.brUp=+bright(upw,0.02,0.035).toFixed(3); r.corr=+(sxy/Math.sqrt(sxx*syy+1e-12)).toFixed(2);
+        /* from 5 ms after the strum starts, past the pick's click (the same on every string), for 20 ms */
+        r.brDown=+bright(dn,0.025,0.045).toFixed(3); r.brUp=+bright(upw,0.025,0.045).toFixed(3); r.corr=+(sxy/Math.sqrt(sxx*syy+1e-12)).toFixed(2);
         /* the pad: a strum in the hand */
         window.__w=[]; const mv=window.makeVoice; window.makeVoice=function(cx,ch2,id,m,v,when,s){ if(cx===ac) window.__w.push({s, when}); return mv.apply(this,arguments); };
         padDown(0,0.74); padUp(0); window.makeVoice=mv;
@@ -195,7 +196,7 @@ const OLD18=[{"id":"pop","g":"pop","en":"Pop · 1 5 6 4","es":"Pop · 1 5 6 4","
       ok(hand.dirs==="0:down 1:down 1.5:up 2.5:up 3:down 3.5:up", "folk goes as its name says: "+hand.dirs);
       ok(hand.down.split("").every((s,i,a)=>!i||+s>+a[i-1]) && hand.up.split("").every((s,i,a)=>!i||+s<+a[i-1]) && hand.gd.concat(hand.gu).every(g=>g>=15&&g<=40),
         `a down strum plays low to high (strings ${hand.down}, ${hand.gd.join("/")} ms apart), an up strum high to low (${hand.up}, ${hand.gu.join("/")} ms)`);
-      ok(hand.brUp>hand.brDown*1.1 && hand.corr<0.6, `and they sound different: the up strum starts on the high string, brighter in its first 15 ms (${hand.brUp} against the down strum's ${hand.brDown}); the two sounds match ${hand.corr} of the way`);
+      ok(hand.brUp>hand.brDown*1.1 && hand.corr<0.6, `and they sound different: the up strum starts on the high string, brighter just after the pick (5 to 25 ms) (${hand.brUp} against the down strum's ${hand.brDown}); the two sounds match ${hand.corr} of the way`);
       ok(hand.padGaps.length>=4 && hand.padGaps.every(g=>g>=15&&g<=40) && hand.pad.split("").every((s,i,a)=>!i||+s>+a[i-1]), `a pad strums like a hand: strings ${hand.pad}, ${hand.padGaps.join("/")} ms apart`);
       ok(hand.pick===hand.pickWant, `fingerpicking: the thumb on the lowest note, then strings 3, 2, 1 (${hand.pick})`);
     } else {
