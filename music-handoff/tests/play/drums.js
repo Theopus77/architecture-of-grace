@@ -24,6 +24,16 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
       pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#kitView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText)); }catch(e){ return false; } })}));
     ok(st.on && st.shown==="flex" && st.page==="none", "turned sideways, the kit fills the screen");
+    /* AOG-KIT-REAL-V1's drawing once took the name realKit, so every made kit played as a recorded one ("new noise") */
+    ok(await p.evaluate("realKit('A')===false && realKit('L')===false && realKit('P')===true && typeof drawKit==='function'"), "the made kits play as made kits again (realKit is the page's own)");
+    /* AOG-PLAY-ZOOM-V1: the page holds still while the kit fills the screen */
+    ok(await p.evaluate("/maximum-scale=1/.test(document.querySelector('meta[name=viewport]').content) && getComputedStyle(document.documentElement).touchAction==='manipulation'"), "sideways, the page cannot zoom (viewport held at 1, no double-tap zoom)");
+    /* AOG-KIT-LOOKS-V1: every kit in one menu, each drawn as its own kind of kit */
+    const looks=[]; for(const k of ["A","J","K","P"]){ await p.selectOption("#dkKitSel", k); await p.waitForTimeout(250);
+      looks.push(await p.evaluate(()=>({b:S.bank, sh:[...document.querySelectorAll("#dkKit linearGradient[id$=wine] stop")].map(x=>x.getAttribute("stop-color")).join(), mesh:!!document.querySelector("#dkKit pattern[id$=head]")}))); }
+    ok(await p.evaluate("document.getElementById('dkKitSel').options.length")>=25 && looks.map(x=>x.b).join("")==="AJKP", "the kit menu holds every kit and picks it: "+looks.map(x=>x.b).join(" "));
+    ok(looks[0].mesh && !looks[1].mesh && new Set(looks.map(x=>x.sh)).size>=3, "each kind of kit looks its own (an electronic kit with mesh heads; blue, pearl, maple shells)");
+    await p.selectOption("#dkKitSel", "A"); await p.waitForTimeout(250);
     ok(st.z==="1" && st.sw<=st.iw && st.sh<=st.ih+1 && st.pad, `not zoomed, nothing scrolls (${st.sw}×${st.sh}), clear of the notch`);
     const w=await where();
     ok(w.kick.y>w.snare.y && w.ch.y>w.snare.y && w.snare.y>w.oh.y && w.snare.y>w.bell.y && w.tom.y<w.snare.y, "the drummer's seat: kick and hi-hat low, snare in the middle, tom above, cymbals at the top");
@@ -53,6 +63,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(await p.evaluate("!!document.getElementById('dkTake').textContent"), "Record a take is one tap away");
     await p.click("#dkClose"); await p.waitForTimeout(150);
     ok(await p.evaluate(()=>!DK.on && getComputedStyle(document.querySelector(".wrap")).display!=="none"), "Close gives the page back");
+    await p.waitForTimeout(700);
+    ok(await p.evaluate("!/maximum-scale/.test(document.querySelector('meta[name=viewport]').content)"), "and the page can be zoomed again");
     await p.setViewportSize({width:vp.height, height:vp.width}); await p.waitForTimeout(250); await p.setViewportSize(vp); await p.waitForTimeout(250);
     ok(await p.evaluate("DK.on"), "turned upright and back, the kit is back");
     await p.evaluate("__h=[]"); const w2=await where(); await T("touchStart",[w2.tom]); await p.waitForTimeout(40); await T("touchEnd",[]);

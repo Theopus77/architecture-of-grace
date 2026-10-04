@@ -1175,6 +1175,29 @@ function paintStrips(){
    octaves on a phone, three on an iPad, every finger its own note. The harp becomes strings tuned to the song's key, to
    sweep a finger across; the marimba, xylophone and glockenspiel become bars, the naturals in front. The same notes, the
    same touch (bindKeyboard), so Record and the chords keep working. Turned back, the keys go home. */
+/* AOG-PLAY-ZOOM-V1 (2026-10-04) — Jimmy: "It zooms in occasionally. Also, when I turn it it ZOOMS in too much." On an
+   iPhone a quick second tap on the same spot zooms, two hands playing at once read as a pinch, and Safari keeps (or adds)
+   a zoom when the phone turns. While the instrument fills the screen the page holds still at its own size: the viewport
+   is held at 1, pinches and double taps on the instrument are kept, and when it is turned back the page returns to its
+   own size (the hold lets go a moment later, so a reader can zoom the page again). */
+const ZOOM={base:null, t:0};
+function playZoomLock(on){
+  const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  if(ZOOM.base==null) ZOOM.base=m.getAttribute("content")||"width=device-width, initial-scale=1";
+  clearTimeout(ZOOM.t);
+  m.setAttribute("content", ZOOM.base+", maximum-scale=1, user-scalable=no");
+  if(!on) ZOOM.t=setTimeout(()=>m.setAttribute("content", ZOOM.base), 600);
+}
+(function(){
+  const playing=()=>document.body && document.body.classList.contains("aog-play");
+  const keep=(e)=>{ if(playing() && e.cancelable) e.preventDefault(); };
+  ["gesturestart","gesturechange","gestureend","dblclick"].forEach(ev=>document.addEventListener(ev, keep, {passive:false}));
+  /* two fingers moving on the instrument are two hands playing, not a pinch */
+  document.addEventListener("touchmove",(e)=>{ if(playing() && e.touches.length>1 && e.cancelable && !(e.target.closest && e.target.closest("select,.pv-drawer"))) e.preventDefault(); },{passive:false});
+  /* a quick second tap is a second note, not a zoom */
+  let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
+    if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
+})();
 const BP={on:false, closed:false, mq:null, back:null, y:0, seen:false};
 try{ BP.seen=localStorage.getItem("aog.band.play.v1")==="1"; }catch(e){}
 function bpMode(){ if(!BP.on) return ""; return S.sound==="harp" ? "harp" : ["marimba","xylophone","glockenspiel"].indexOf(S.sound)>=0 ? "bars" : "keys"; }
@@ -1220,10 +1243,10 @@ function bpSync(){
   if(w){
     BP.on=true; BP.y=window.scrollY||0;
     BP.back=document.createComment("kbd"); kb.parentNode.insertBefore(BP.back, kb); $("bpMain").appendChild(kb);
-    document.body.classList.add("aog-play");
+    playZoomLock(true); document.body.classList.add("aog-play");
     if(!BP.seen){ BP.seen=true; try{ localStorage.setItem("aog.band.play.v1","1"); }catch(e){} }
   } else {
-    BP.on=false; document.body.classList.remove("aog-play");
+    BP.on=false; document.body.classList.remove("aog-play"); playZoomLock(false);
     if(BP.back && BP.back.parentNode) BP.back.parentNode.replaceChild(kb, BP.back); BP.back=null;
   }
   buildKeys(); bpText(); if(!w) window.scrollTo(0, BP.y);
