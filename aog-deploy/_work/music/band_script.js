@@ -729,6 +729,11 @@ const KIT_BEATS={
   broken: [["bd",0,.5],["tri",1,.4],["tri",3,.4]]
 };
 /* schedule bar k of the pattern on a context and chain; returns the voices it made */
+/* AOG-FEEL-V1 (2026-10-04) — Jimmy: "A lot of the How the chords are played sounds, sound like fake instruments." Every note
+   of a pattern landed exactly on the grid at exactly the same strength, the way a machine plays. A player never is: each
+   hit a few milliseconds early or late (less on the beat), a little softer or louder, a chord's notes not quite together.
+   Seeded by the bar and the hit, so no two bars are the same and a test can still play the same bar twice. */
+function feel(k, i){ if(window.AOG_FEEL_OFF) return ()=>0; const r=seeded((k+1)*7919+(i+1)*104729); r(); return r; }   /* the pattern tests check the grid itself with AOG_FEEL_OFF */
 function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   const chord=S.prog[k%S.prog.length]; if(!chord) return [];
   const vo=voicing(chord, prevRef.v); prevRef.v=vo;
@@ -739,18 +744,21 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
   const bass=rest.filter(p=>p.bass), upper=rest.filter(p=>!p.bass).sort((a,b)=>a.m-b.m);
   const beat=barSec/beatsPerBar(), out=[], started={}, live=(c===ac);
   const keep=(vc, p, when, dur)=>{ vc.stop(when+dur, vc.tau); vc.m=p.m; vc.inst=p.inst; vc.on=when; vc.off=when+dur; out.push(vc); if(live) track(vc, when); };
-  barEvents(S.rhythm, upper.length).forEach(ev=>{
+  barEvents(S.rhythm, upper.length).forEach((ev,ei)=>{
     const late=(ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
-    const when=t0+ev.t*beat+late, dur=ev.d*beat;
+    const fr=feel(k, ei), when=Math.max(t0, t0+ev.t*beat+late+fr()*(ev.t%1===0?0.002:0.004)), dur=ev.d*beat;   /* AOG-FEEL-V1 */
     let who;
     if(ev.w==="b") who=ev.a==="stac" ? bass.filter(p=>!p.fifth) : bass;   /* a timpani's fifth joins held notes, not strokes */
     else if(ev.w==="f") who=bass.filter(p=>!p.fifth).map(p=>{ const x=fitIn(p.m+7, p.inst); return x!=null ? {inst:p.inst, m:(x-12>=rangeOf(p.inst)[0]?x-12:x)} : p; });
     else if(ev.w==="c") who=upper;
     else who=upper.length ? [upper[Math.min(ev.w, upper.length-1)]] : [];
     who.forEach(p=>{
-      const id=p.inst+":"+p.m+"@"+Math.round(when*1000); if(started[id]) return; started[id]=1;   /* never the same note twice at once */
-      const vc=makeVoice(c, ch, p.inst, p.m, ev.v*(p.bass?0.9:1), when, ev.a, ev.to, ev.to!=null?dur:0);
-      if(vc) keep(vc, p, when, dur);
+      const id=p.inst+":"+p.m+"@"+Math.round((t0+ev.t*beat+late)*1000); if(started[id]) return; started[id]=1;   /* never the same note twice at once (on the grid, before the feel) */
+      /* AOG-FEEL-V1: each player a little early or late, a little softer or louder, as players in a band are */
+      let hsh=0; for(let q=0;q<p.inst.length;q++) hsh=(hsh*31+p.inst.charCodeAt(q))|0;
+      const pr=feel(k, ei*53+(hsh&1023)+p.m), w2=Math.max(t0, when+0.006*pr());
+      const vc=makeVoice(c, ch, p.inst, p.m, Math.min(1, ev.v*(p.bass?0.9:1)*(1+0.06*pr())), w2, ev.a, ev.to, ev.to!=null?dur:0);
+      if(vc) keep(vc, p, w2, dur-(w2-when));
     });
   });
   held.forEach(p=>{ const vc=makeVoice(c, ch, p.inst, p.m, 0.56, t0, "sus"); if(vc){ vc.held=true; keep(vc, p, t0, barSec-0.1*beat); } });
@@ -914,7 +922,7 @@ function paintText(){
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
-  paintDial(); paintLoad(); paintDrums(); buildKeys();
+  paintDial(); paintLoad(); paintDrums(); buildKeys(); bpText();
 }
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
 const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpJazz","grpBands","grpAll"];
@@ -933,7 +941,7 @@ function paintProgSel(){
   $("progSel").innerHTML=html+(g?"</optgroup>":"");
 }
 function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join(""); }
-function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
+function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false");  if(bpMode()==="harp") buildKeys(); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
@@ -946,6 +954,7 @@ function paintPads(){
   });
   paintWheel();   /* key, mood or words changed: the wheel is drawn again */
   paintNow();
+  paintStrips();   /* AOG-CHORDSTRIP-V1 */
 }
 function paintProg(){
   const box=$("prog");
@@ -1064,7 +1073,8 @@ const WHITE=[0,2,4,5,7,9,11], BLACK_AFTER={0:1,2:3,5:6,7:8,9:10};
 const KEYMAP={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
 const CAP={0:"A",1:"W",2:"S",3:"E",4:"D",5:"F",6:"T",7:"G",8:"Y",9:"H",10:"U",11:"J",12:"K",13:"O",14:"L",15:"P",16:";",17:"'"};
 let KB={whites:8, lo:60, hi:72};
-function octaves(){ const w=$("kbd").clientWidth||330; return w>=880?3 : w>=600?2 : 1; }
+function octaves(){ const w=$("kbd").clientWidth||330; if(BP.on) return w>=1000?3 : 2;   /* AOG-PLAY-V1: sideways, two octaves on a phone, three on an iPad */
+  return w>=880?3 : w>=600?2 : 1; }
 /* the octaves the keys may start on, for this sound: the lowest whose keys reach its range, up to the highest */
 function octSpan(oc){ const [lo,hi]=soundRange(S.sound); const a=Math.max(1, Math.floor(lo/12)-1), b=Math.max(a, Math.min(7-oc, Math.ceil((hi-12*oc)/12)-1)); return [a,b]; }
 function buildKeys(){
@@ -1074,7 +1084,9 @@ function buildKeys(){
   const lo=12*(S.oct+1), hi=lo+12*oc;
   KB={whites:7*oc+1, lo:lo, hi:hi};
   let html="", wi=0; const w=100/KB.whites;
-  for(let m=lo; m<=hi; m++){
+  const mode=bpMode(); kb.classList.toggle("pv-harp", mode==="harp"); kb.classList.toggle("pv-bars", mode==="bars"); kb.classList.toggle("glock", S.sound==="glockenspiel");
+  if(mode==="harp" || mode==="bars") html=bpHtml(lo, hi);   /* AOG-PLAY-V1: the harp's strings, the mallets' bars */
+  else for(let m=lo; m<=hi; m++){
     const pc=m%12; if(WHITE.indexOf(pc)<0) continue;
     const cap=CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"", out=playerFor(m)?"":" out";
     html+=`<div class="wk${out}" data-m="${m}" aria-label="${noteLabel(m)}">${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
@@ -1087,6 +1099,7 @@ function buildKeys(){
   kb.innerHTML=html;
   $("rangeOut").textContent=t("rangeOut",{a:noteLabel(lo), b:noteLabel(hi)});
   $("downBtn").disabled=S.oct<=oa; $("upBtn").disabled=S.oct>=ob;
+  if($("bpRange")){ $("bpRange").textContent=$("rangeOut").textContent; $("bpDown").disabled=S.oct<=oa; $("bpUp").disabled=S.oct>=ob; }
   litKeys();
 }
 /* pale = every key on screen that fits the chord; orange = a key while the band is sounding it; gold = your fingers (AOG-PIANO-LIT-V2) */
@@ -1141,6 +1154,98 @@ function bindKeyboard(){
 const HELD_KEYS=new Map();
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
 function moveOct(step){ const was=S.oct; S.oct+=step; buildKeys(); if(S.oct!==was) save(); }
+/* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
+   single notes." The six chord pads sat a long scroll above the keys. The same six chords now sit in one row right on
+   top of it, upright and sideways: a chord with one finger, a single note with the next, nothing to switch. They are the
+   pads' own (padDown, padUp), so a pattern being built, the wheel and the lit notes all follow. */
+function paintStrips(){
+  document.querySelectorAll(".cstrip").forEach(box=>{
+    box.setAttribute("aria-label", t("chordsH"));
+    box.innerHTML=pads().map((c,i)=>`<button type="button" class="cs" data-i="${i}">${chordName(c)}</button>`).join("");
+    box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
+      b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
+      b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
+      b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } };
+      b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); });
+  });
+}
+/* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways ════════════════════════════════════════════════════════════════
+   Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
+   phone or tablet shows only the instrument: the page's own keys (#kbd) move into #playView and fill the screen, two
+   octaves on a phone, three on an iPad, every finger its own note. The harp becomes strings tuned to the song's key, to
+   sweep a finger across; the marimba, xylophone and glockenspiel become bars, the naturals in front. The same notes, the
+   same touch (bindKeyboard), so Record and the chords keep working. Turned back, the keys go home. */
+const BP={on:false, closed:false, mq:null, back:null, y:0, seen:false};
+try{ BP.seen=localStorage.getItem("aog.band.play.v1")==="1"; }catch(e){}
+function bpMode(){ if(!BP.on) return ""; return S.sound==="harp" ? "harp" : ["marimba","xylophone","glockenspiel"].indexOf(S.sound)>=0 ? "bars" : "keys"; }
+function bpScale(){ const iv=S.minor?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]; return iv.map(i=>(S.key+i)%12); }
+/* the harp's strings and the bars, from lo to hi (the keyboard keeps buildKeys' own) */
+function bpHtml(lo, hi){
+  const mode=bpMode(), out=m=>playerFor(m)?"":" out";
+  if(mode==="harp"){
+    const pcs=bpScale(), set=NAMES[flats()?"flat":"sharp"], list=[]; for(let m=lo; m<=hi; m++) if(pcs.indexOf(m%12)>=0) list.push(m);
+    return list.map((m,i)=>{ const L=set[m%12][0], cls=L==="C"?" c":L==="F"?" f":"", sw=(3.2-2.2*i/Math.max(1,list.length-1)).toFixed(1);
+      return `<div class="hs${cls}${out(m)}" data-m="${m}" style="--sw:${sw}px" aria-label="${noteLabel(m)}"><span class="nm">${pcName(m)}</span></div>`; }).join("");
+  }
+  const whites=[]; for(let m=lo; m<=hi; m++) if(WHITE.indexOf(m%12)>=0) whites.push(m);
+  const n=whites.length, w=100/n, g=0.5; let html="";
+  whites.forEach((m,i)=>{ const f=i/Math.max(1,n-1), h=58-20*f;
+    html+=`<div class="wk${out(m)}" data-m="${m}" aria-label="${noteLabel(m)}" style="left:${(i*w+g/2).toFixed(2)}%;width:${(w-g).toFixed(2)}%;top:${(70-h/2).toFixed(1)}%;height:${h.toFixed(1)}%"><span class="nm">${pcName(m)}${m%12===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
+    const pc=m%12; if(BLACK_AFTER[pc]!=null && m+1<=hi){ const bh=36-12*f;
+      html+=`<div class="bk${out(m+1)}" data-m="${m+1}" aria-label="${noteLabel(m+1)}" style="left:${((i+1)*w-w*0.36).toFixed(2)}%;width:${(w*0.72).toFixed(2)}%;top:${(20-bh/2).toFixed(1)}%;height:${bh.toFixed(1)}%"><span class="nm">${pcName(m+1)}</span></div>`; } });
+  return html;
+}
+function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen.height||0)>=900, m=bpMode(); return {
+  close:es?"✕ Cerrar":"✕ Close",
+  hint: m==="harp" ? (es?"Pasa un dedo por las cuerdas. El arpa está afinada en el tono de la canción.":"Sweep a finger across the strings. The harp is tuned to the song's key.")
+      : m==="bars" ? (es?"Toca las láminas. Las de atrás son los sostenidos y bemoles.":"Tap the bars. The ones at the back are the sharps and flats.")
+      : (es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like."),
+  turn: tab ? (es?"Gira tu tableta de lado para tocar en toda la pantalla.":"Turn your tablet sideways to play on the whole screen.")
+            : (es?"Gira tu teléfono de lado para tocar en toda la pantalla.":"Turn your phone sideways to play on the whole screen."),
+  lower:es?"Más grave":"Lower", higher:es?"Más agudo":"Higher", region:es?"El instrumento, en toda la pantalla":"The instrument, on the whole screen" }; }
+function bpText(){
+  if(!$("playView")) return; const W=bpWords();
+  $("playView").setAttribute("aria-label", W.region);
+  $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint;
+  $("bpDown").setAttribute("aria-label", W.lower); $("bpUp").setAttribute("aria-label", W.higher);
+  $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
+  $("bpRec").textContent=$("recBtn").textContent; $("bpRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false");
+  $("bpTurn").textContent=W.turn;
+  $("bpTurn").hidden=BP.seen || BP.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
+}
+function bpWanted(){ return !!(BP.mq && BP.mq.matches && !BP.closed); }
+function bpSync(){
+  const w=bpWanted(); if(w===BP.on) return;
+  const kb=$("kbd"); POINTERS.forEach(m=>{ if(m!=null) keyOff(m); }); POINTERS.clear();
+  if(w){
+    BP.on=true; BP.y=window.scrollY||0;
+    BP.back=document.createComment("kbd"); kb.parentNode.insertBefore(BP.back, kb); $("bpMain").appendChild(kb);
+    document.body.classList.add("aog-play");
+    if(!BP.seen){ BP.seen=true; try{ localStorage.setItem("aog.band.play.v1","1"); }catch(e){} }
+  } else {
+    BP.on=false; document.body.classList.remove("aog-play");
+    if(BP.back && BP.back.parentNode) BP.back.parentNode.replaceChild(kb, BP.back); BP.back=null;
+  }
+  buildKeys(); bpText(); if(!w) window.scrollTo(0, BP.y);
+}
+function bpInit(){
+  if(!$("playView") || !window.matchMedia) return;
+  BP.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
+  const ch=()=>{ BP.closed=false; bpSync(); bpText(); };
+  if(BP.mq.addEventListener) BP.mq.addEventListener("change", ch); else if(BP.mq.addListener) BP.mq.addListener(ch);
+  $("bpClose").onclick=()=>{ BP.closed=true; bpSync(); };
+  $("bpDown").onclick=()=>moveOct(-1); $("bpUp").onclick=()=>moveOct(1);
+  $("bpRec").onclick=()=>$("recBtn").click();
+  try{ new MutationObserver(()=>{ $("bpRec").textContent=$("recBtn").textContent; $("bpRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false"); })
+    .observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  $("bpSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("bpSound").value; ss.onchange(); bpText(); setTimeout(()=>$("bpSound").blur(),0); };
+  /* touch on the strings, the bars and the keys: no magnifier, no scroll */
+  $("playView").addEventListener("touchstart",(e)=>{ if(e.cancelable && !(e.target.closest && e.target.closest("button,select"))) e.preventDefault(); },{passive:false});
+  let rt=0; const again=()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(BP.on) buildKeys(); }, 120); };
+  window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
+  bpText(); bpSync();
+}
+
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   if(e.target && e.target.tagName==="SELECT") return;
@@ -1163,7 +1268,7 @@ window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>keyOff(m)); HELD_KEYS.
 function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; S.oct=null; save();
     allOff(); if(ac) setSendLevel(LIVE_CH, id);
-    loadSound(id, paintLoad); paintLoad(); buildKeys(); };
+    loadSound(id, paintLoad); paintLoad(); buildKeys(); if(BP.on) bpText(); };
   $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); paintPads(); paintProg(); buildKeys(); };
   $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; save(); paintMood(); paintPads(); paintProg(); };
   $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; save(); paintMood(); paintPads(); paintProg(); };
@@ -1207,6 +1312,7 @@ function bind(){
 loadState();
 bind();
 paintText();
+bpInit();
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ stop(); allOff(); } });
 window.addEventListener("pagehide",()=>{ stop(true); allOff(); });
 /* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */

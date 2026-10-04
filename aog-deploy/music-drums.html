@@ -286,7 +286,6 @@ body.bench-simple .hear,body.bench-simple #hearNow,body.bench-simple .k-priv,bod
   radial-gradient(80% 70% at 50% 60%, #3a332c, #1a1612 70%);
   border-radius:16px; }
 .kit .drum { cursor:pointer; }
-.kit .drum.hit .skin { filter:brightness(1.35); }
 .meter-note { color:#9aa394; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; padding:0 2px 4px; }
 .hear { margin: .9rem 0 .25rem; max-width: 68ch; }
 .bitchip.on { background:#163024; color:#c6f7b0; border-color:#3d6b4e; }
@@ -424,6 +423,29 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 .ladder .lt{font-weight:600}
 .ladder li.lgroup{border:0;padding:.7rem .2rem .1rem}                     /* AOG-DRUM-SONGS-V1: "Songs we make" */
 .ladder li.lgroup .lt{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+/* ══ AOG-PLAY-V1 (2026-10-04) — the kit sideways: a phone or tablet turned on its side shows a drum kit seen from the
+   drummer's seat, filling the screen, clear of the notch and the home bar. Nothing moves on its own: a piece lights
+   only when it is hit. ══ */
+.dk{display:none}
+html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body.aog-play>*:not(#kitView){display:none !important}
+body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
+  background:#15110d;color:#f4efe6;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  padding:env(safe-area-inset-top,0px) max(env(safe-area-inset-right,0px),8px) env(safe-area-inset-bottom,0px) max(env(safe-area-inset-left,0px),8px)}
+.dk-bar{display:flex;align-items:center;gap:6px;padding:4px 0;flex:0 0 auto}
+.dk-b{flex:0 0 auto;min-height:40px;min-width:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding:0 .7rem;display:inline-flex;align-items:center;white-space:nowrap;touch-action:manipulation}
+.dk-b[aria-pressed="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+.dk-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+@media (max-width:700px){ .dk-hint{visibility:hidden} }
+#kitView svg.dk-kit{flex:1 1 auto;min-height:0;width:100%;height:100%;display:block;touch-action:none}
+.dk-kit [data-pad]{cursor:pointer}
+.dk-kit text{font:800 26px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+/* AOG-KIT-REAL-V1: the real kit's words, and the glow of a piece while it is hit */
+.kit text{font:800 26px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.kit .ink,.dk-kit .ink{fill:#1f160c} .kit .ink-l,.dk-kit .ink-l{fill:#f4efe6}
+.kit .glow,.dk-kit .glow{fill:#ffd36b;opacity:0;pointer-events:none}
+.kit .drum.hit .glow,.dk-kit .drum.hit .glow{opacity:.42}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
@@ -468,6 +490,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
   </div>
   </div>
+  <p class="muted no-print" id="dkTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
   <main id="view"></main>
   <!-- AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". A take of what
        the machine plays (aog-recorder.js, shared by every music tool). REC on the machine still records into the pattern;
@@ -491,6 +514,16 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     <p class="pgfoot">To print it, <a href="/drums-guide">open the picture guide on its own page</a>.</p>
   </details>
   <footer class="no-print" id="foot"></footer>
+</div>
+<!-- AOG-PLAY-V1 (2026-10-04): the drum kit, sideways (dkSync fills it) -->
+<div id="kitView" class="dk" role="region">
+  <div class="dk-bar">
+    <button type="button" class="dk-b" id="dkClose"></button>
+    <span class="dk-hint" id="dkHint"></span>
+    <button type="button" class="dk-b" id="dkRun" aria-pressed="false"></button>
+    <button type="button" class="dk-b" id="dkTake" aria-pressed="false"></button>
+  </div>
+  <div id="dkKitBox" style="flex:1 1 auto;min-height:0;display:flex"></div>
 </div>
 <script>
 /* AOG-DRUM-BENCH-V1 — school beat only. Synthesized voices. Tempo 60–140. Master gain clamped. */
@@ -1935,28 +1968,7 @@ function drum(id, cx, cy, r, label){
     <text x="${cx}" y="${cy+4}" text-anchor="middle" fill="#2a2118" font-size="13" font-family="Georgia, serif" font-weight="700">${label}</text>
   </g>`;
 }
-function kitSvg(){
-  const L=S.lang;
-  const nm=id=>VOICES.find(v=>v.id===id)[L];
-  return `<svg class="kit" viewBox="0 0 640 340" role="img" aria-label="${t("meet")}">
-    <defs>
-      <radialGradient id="skin" cx="38%" cy="32%" r="70%">
-        <stop offset="0" stop-color="#f3e2c2"/><stop offset=".55" stop-color="#e2c48a"/><stop offset="1" stop-color="#b8894a"/>
-      </radialGradient>
-      <radialGradient id="brass" cx="40%" cy="35%" r="70%">
-        <stop offset="0" stop-color="#fff1c4"/><stop offset=".4" stop-color="#e0b44a"/><stop offset="1" stop-color="#8a6416"/>
-      </radialGradient>
-    </defs>
-    <ellipse cx="470" cy="78" rx="78" ry="22" fill="rgba(0,0,0,.01)" stroke="url(#brass)" stroke-width="10" data-pad="oh" class="drum"/>
-    <ellipse cx="520" cy="118" rx="62" ry="16" fill="rgba(0,0,0,.01)" stroke="url(#brass)" stroke-width="8" data-pad="ch" class="drum"/>
-    ${drum("kick", 250, 230, 78, nm("kick"))}
-    ${drum("snare", 120, 168, 52, nm("snare"))}
-    ${drum("tom", 400, 160, 46, nm("tom"))}
-    ${drum("clap", 70, 270, 36, nm("clap"))}
-    ${drum("rim", 180, 86, 28, nm("rim"))}
-    ${drum("bell", 560, 230, 32, nm("bell"))}
-  </svg>`;
-}
+function kitSvg(){ return realKit({pre:"mk", cls:"kit", label:t("meet")}); }   /* AOG-KIT-REAL-V1 */
 
 function meetView(){
   return `<p class="kicker">${t("eyebrow")}</p>
@@ -2581,6 +2593,7 @@ function paint(){
     const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb);
     if(tb){ if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`+(window.AOGDrumKit?AOGDrumKit.creditHtml(S.lang):"");   /* AOG-DRUM-REAL-V1: where the recorded kits come from */
+  if(typeof dkSync==="function") dkSync();   /* AOG-PLAY-V1: the kit sideways (before bind, which gives its pieces the pads' touch) */
   bind();
   REC.paint();
   paintLessonBox();
@@ -3311,6 +3324,147 @@ document.getElementById("themeBtn").onclick=()=>{
   paint();
 };
 window.addEventListener("hashchange", paint);
+/* ══ AOG-PLAY-V1 (2026-10-04) — the kit sideways ═══════════════════════════════════════════════════════════════════
+   Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
+   phone or tablet on the bench (or Meet the drums) shows a drum kit seen from the drummer's seat: the kick and the
+   hi-hat low, the snare in the middle with its rim around it, the tom above, the cymbals at the top, the clap on a pad
+   where the floor tom stands. The same eight voices: every piece carries data-pad, so bind() gives it the pads' own
+   touch (a sound the instant a finger lands, each finger its own hit, rolls when Roll is on). ══ */
+const DK={on:false, closed:false, mq:null, seen:false};
+try{ DK.seen=localStorage.getItem("aog.drums.play.v1")==="1"; }catch(e){}
+function dkWords(){ const es=S.lang==="es"; return {
+  close:es?"✕ Cerrar":"✕ Close", run:es?"▶ Tocar el ritmo":"▶ Play the beat", stop:es?"■ Parar":"■ Stop",
+  hint:es?"Toca la batería con los dedos. Usa las dos manos.":"Play the kit with your fingers. Use both hands.",
+  turn:Math.max(screen.width||0, screen.height||0)>=900
+    ? (es?"Gira tu tableta de lado para tocar una batería.":"Turn your tablet sideways to play a drum kit.")
+    : (es?"Gira tu teléfono de lado para tocar una batería.":"Turn your phone sideways to play a drum kit."),
+  region:es?"La batería, en toda la pantalla":"The drum kit, on the whole screen" }; }
+/* ══ AOG-KIT-REAL-V1 (2026-10-04) — Jimmy: "Make the drums look more authentic and real." One drawing of a real kit, seen
+   from the drummer's seat, for Meet the drums and for the kit sideways: lacquered wood shells with chrome hoops, lugs
+   and tension rods, coated white heads, brass cymbals with their lathe grooves and bell, hi-hats on their stand, the
+   kick's front head over its pedal, and the clap on a rubber sample pad. Still: a piece only lights while it is hit.
+   pre keeps the gradient names apart when both drawings are in the page; VW widens the kit to fill a wide screen. ══ */
+function realKit(o){
+  const pre=o.pre, VW=o.VW||1000, k=VW/1000, g=1+(k-1)*0.5, X=x=>Math.round(500*k+(x-500)*k), R=r=>Math.round(r*g);
+  const nm=id=>{ const v=VOICES.find(x=>x.id===id); return v ? v[S.lang] : id; };
+  const u=id=>`url(#${pre}${id})`, f1=v=>(+v).toFixed(1);
+  const lab=(x,y,id,cls)=>`<text class="${cls||"ink"}" x="${f1(x)}" y="${f1(y)}">${nm(id)}</text>`;
+  const piece=(id, body, glow)=>`<g class="drum" data-pad="${id}" role="button" tabindex="0" aria-label="${nm(id)}">${body}<g class="glow">${glow}</g></g>`;
+  /* a drum seen from above and in front: the shell's side under the head, lugs on it, the hoop, the head */
+  const drumAt=(id, cx, cy, rx, ry, d, shell, rim)=>{
+    let s=`<ellipse cx="${f1(cx)}" cy="${f1(cy+d+4)}" rx="${f1(rx+6)}" ry="${f1(ry+4)}" fill="rgba(0,0,0,.45)"/>`;
+    s+=`<path d="M${f1(cx-rx)} ${f1(cy)}L${f1(cx-rx)} ${f1(cy+d)}A${f1(rx)} ${f1(ry)} 0 0 0 ${f1(cx+rx)} ${f1(cy+d)}L${f1(cx+rx)} ${f1(cy)}Z" fill="${u(shell)}" stroke="#1a0f08" stroke-width="2"/>`;
+    s+=`<path d="M${f1(cx-rx)} ${f1(cy+d)}A${f1(rx)} ${f1(ry)} 0 0 0 ${f1(cx+rx)} ${f1(cy+d)}" fill="none" stroke="${u("chrome")}" stroke-width="5"/>`;
+    for(let i=1;i<8;i++){ const a=Math.PI*i/8, x=cx-rx*Math.cos(a), y=cy+ry*Math.sin(a)+d*0.5;
+      s+=`<rect x="${f1(x-4)}" y="${f1(y-d*0.28)}" width="8" height="${f1(d*0.56)}" rx="3" fill="${u("chrome")}" stroke="#2b2f35" stroke-width="1"/>`; }
+    const hw=rim?rim:8;
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="none" stroke="${u("chrome")}" stroke-width="${hw}"/>`;
+    for(let i=0;i<10;i++){ const a=Math.PI*2*i/10+0.3; s+=`<circle cx="${f1(cx+(rx)*Math.cos(a))}" cy="${f1(cy+(ry)*Math.sin(a))}" r="3.2" fill="#e8ecf1" stroke="#3a3f46" stroke-width="1"/>`; }
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx-hw/2-1)}" ry="${f1(ry-hw/2-1)}" fill="${u("head")}" stroke="#a89f8c" stroke-width="1"/>`;
+    s+=`<ellipse cx="${f1(cx+rx*0.05)}" cy="${f1(cy+ry*0.08)}" rx="${f1(rx*0.3)}" ry="${f1(ry*0.3)}" fill="rgba(120,100,70,.10)"/>`;   /* where the sticks land */
+    return s;
+  };
+  /* a cymbal: brass, a sheen, the lathe's rings, the bell, the felt and the nut on its stand */
+  const cym=(cx, cy, rx, ry, bell)=>{
+    let s=`<ellipse cx="${f1(cx)}" cy="${f1(cy+6)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="rgba(0,0,0,.45)"/>`;
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="${u("brass")}" stroke="#5a3f0a" stroke-width="2"/>`;
+    for(let i=1;i<=14;i++){ const q=i/15; s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx*q)}" ry="${f1(ry*q)}" fill="none" stroke="rgba(90,60,10,${i%2?.22:.12})" stroke-width="1"/>`; }
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="${u("sheen")}"/>`;
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(bell)}" ry="${f1(bell*ry/rx*1.15)}" fill="${u("bell")}" stroke="#6a4a0e" stroke-width="1.5"/>`;
+    s+=`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="4" fill="#2b2f35"/>`;
+    return s;
+  };
+  const stand=(x, y0, y1)=>`<line x1="${f1(x)}" y1="${f1(y0)}" x2="${f1(x)}" y2="${f1(y1)}" stroke="${u("chromeV")}" stroke-width="7" stroke-linecap="round"/>`;
+  const defs=`<defs>
+    <linearGradient id="${pre}chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfcfe"/><stop offset=".35" stop-color="#8d96a1"/><stop offset=".55" stop-color="#ffffff"/><stop offset=".8" stop-color="#6c747e"/><stop offset="1" stop-color="#d9dde3"/></linearGradient>
+    <linearGradient id="${pre}chromeV" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5d646d"/><stop offset=".45" stop-color="#f6f8fa"/><stop offset="1" stop-color="#5d646d"/></linearGradient>
+    <radialGradient id="${pre}head" cx="42%" cy="35%" r="75%"><stop offset="0" stop-color="#fbfaf6"/><stop offset=".6" stop-color="#ece6d8"/><stop offset="1" stop-color="#cfc6b2"/></radialGradient>
+    <linearGradient id="${pre}wine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a0a0d"/><stop offset=".22" stop-color="#8e1d24"/><stop offset=".3" stop-color="#d9555c"/><stop offset=".38" stop-color="#8e1d24"/><stop offset=".85" stop-color="#5a1015"/><stop offset="1" stop-color="#2a0709"/></linearGradient>
+    <linearGradient id="${pre}steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4b5058"/><stop offset=".3" stop-color="#e9edf2"/><stop offset=".5" stop-color="#9aa3ad"/><stop offset=".75" stop-color="#f4f6f8"/><stop offset="1" stop-color="#4b5058"/></linearGradient>
+    <radialGradient id="${pre}brass" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="#f6dc8c"/><stop offset=".5" stop-color="#d5a83f"/><stop offset=".85" stop-color="#a87a1e"/><stop offset="1" stop-color="#7d5812"/></radialGradient>
+    <linearGradient id="${pre}sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff8e0" stop-opacity=".45"/><stop offset=".58" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="${pre}bell" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fff0bd"/><stop offset=".6" stop-color="#d9ab45"/><stop offset="1" stop-color="#8a6416"/></radialGradient>
+    <linearGradient id="${pre}rubber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d42"/><stop offset="1" stop-color="#16181b"/></linearGradient>
+    <radialGradient id="${pre}reso" cx="50%" cy="30%" r="80%"><stop offset="0" stop-color="#2a2d33"/><stop offset="1" stop-color="#0d0e10"/></radialGradient>
+    <radialGradient id="${pre}floor" cx="50%" cy="60%" r="75%"><stop offset="0" stop-color="#3b2a1d"/><stop offset="1" stop-color="#140d08"/></radialGradient>
+  </defs>`;
+  const hot=(cx,cy,rx,ry)=>`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}"/>`;
+  let s=`<svg class="${o.cls}" id="${o.id||""}" viewBox="0 0 ${VW} 560" preserveAspectRatio="xMidYMid meet" role="group" aria-label="${o.label||""}">${defs}
+    <rect width="${VW}" height="560" fill="${u("floor")}"/>
+    <ellipse cx="${X(500)}" cy="330" rx="${R(470)}" ry="215" fill="rgba(120,30,25,.18)"/>`;   /* the rug the kit stands on */
+  /* stands first, under everything */
+  s+=stand(X(790), 120, 360)+stand(X(210), 112, 300)+stand(X(140), 460, 560);
+  /* the kick: its front head over the pedal, the shell's top behind it */
+  { const cx=X(540), cy=566, rx=R(250), ry=150;
+    s+=piece("kick", `<ellipse cx="${cx}" cy="${cy-8}" rx="${rx+10}" ry="${ry+6}" fill="${u("wine")}" stroke="#1a0f08" stroke-width="2"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${u("chrome")}" stroke-width="10"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx-6}" ry="${ry-6}" fill="${u("reso")}"/>
+      <ellipse cx="${cx}" cy="${cy-58}" rx="${R(110)}" ry="38" fill="#f1ead9" stroke="#b9ad92" stroke-width="2"/>
+      <rect x="${cx-26}" y="${cy-150}" width="52" height="16" rx="3" fill="${u("chromeV")}"/>`+lab(cx, cy-58, "kick"), hot(cx, cy, rx, ry)); }
+  /* the open hi-hat (two cymbals apart), the ride with its bell */
+  s+=piece("oh", cym(X(210), 116, R(160), 44, 30)+cym(X(210), 92, R(165), 46, 32)+lab(X(210), 120, "oh"), hot(X(210), 100, R(165), 50));
+  s+=piece("bell", cym(X(790), 104, R(200), 60, 50)+lab(X(790), 140, "bell"), hot(X(790), 104, R(200), 60));
+  /* the tom on the kick, the snare with its rim (the wide chrome hoop) */
+  s+=piece("tom", drumAt("tom", X(560), 228, R(112), 74, 44, "wine")+lab(X(560), 228, "tom"), hot(X(560), 240, R(114), 90));
+  s+=piece("rim", drumAt("rim", X(345), 328, R(148), 106, 38, "steel", 30)+lab(X(345), 222, "rim"), hot(X(345), 328, R(150), 108));
+  s+=piece("snare", `<ellipse cx="${X(345)}" cy="328" rx="${R(126)}" ry="88" fill="${u("head")}" stroke="#a89f8c" stroke-width="1"/><ellipse cx="${X(352)}" cy="335" rx="${R(40)}" ry="26" fill="rgba(120,100,70,.10)"/>`+lab(X(345), 332, "snare"), hot(X(345), 328, R(126), 88));
+  /* the clap: a round rubber pad, as an electronic kit's, on its arm */
+  { const cx=X(830), cy=350, rx=R(122), ry=86;
+    s+=`<line x1="${cx}" y1="${cy}" x2="${X(690)}" y2="${cy+40}" stroke="${u("chromeV")}" stroke-width="8" stroke-linecap="round"/>`;
+    s+=piece("clap", `<ellipse cx="${cx}" cy="${cy+18}" rx="${rx+4}" ry="${ry+2}" fill="rgba(0,0,0,.45)"/>
+      <path d="M${cx-rx} ${cy}L${cx-rx} ${cy+16}A${rx} ${ry} 0 0 0 ${cx+rx} ${cy+16}L${cx+rx} ${cy}Z" fill="#1c1e22"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${u("chrome")}" stroke-width="9"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx-5}" ry="${ry-5}" fill="${u("rubber")}"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx*0.62}" ry="${ry*0.62}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>`+lab(cx, cy, "clap", "ink-l"), hot(cx, cy, rx, ry)); }
+  /* the closed hi-hat: two cymbals together on the stand, low on the left */
+  s+=piece("ch", cym(X(140), 466, R(122), 38, 26)+cym(X(140), 458, R(124), 38, 26)+lab(X(140), 480, "ch"), hot(X(140), 462, R(124), 42));
+  return s+`</svg>`;
+}
+function dkSvg(){
+  /* a sideways phone is much wider than it is tall: the kit spreads out to fill it */
+  const box=document.getElementById("dkKitBox"), asp=box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8;
+  return realKit({pre:"dk", cls:"dk-kit", id:"dkKit", VW:Math.round(Math.max(1000, Math.min(1400, 560*asp))), label:dkWords().region});
+}
+function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="meet")); }
+function dkPaint(){
+  const v=document.getElementById("kitView"); if(!v) return; const W=dkWords();
+  v.setAttribute("aria-label", W.region);
+  document.getElementById("dkClose").textContent=W.close;
+  document.getElementById("dkHint").textContent=W.hint;
+  const pb=document.getElementById("playBtn"), run=document.getElementById("dkRun");
+  run.hidden=!pb; run.textContent=S.playing?W.stop:W.run; run.setAttribute("aria-pressed", S.playing?"true":"false");
+  const tb=document.getElementById("takeBtn"), tk=document.getElementById("dkTake");
+  tk.textContent=tb?tb.textContent:""; tk.setAttribute("aria-pressed", (tb&&tb.getAttribute("aria-pressed"))||"false");
+  const kit=document.getElementById("dkKitBox"); const key=S.lang+(kit.clientHeight && kit.clientWidth/kit.clientHeight>2.1 ? "w" : "");
+  if(kit.getAttribute("data-k")===key && kit.firstElementChild) return dkTurn(W);
+  kit.setAttribute("data-k", key); kit.innerHTML=dkSvg();
+  kit.firstElementChild.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll */
+  dkTurn(W);
+}
+function dkTurn(W){
+  const turn=document.getElementById("dkTurn");
+  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="meet"); }
+}
+function dkSync(){
+  const want=dkWanted();
+  if(want!==DK.on){
+    DK.on=want; document.body.classList.toggle("aog-play", want);
+    if(want && !DK.seen){ DK.seen=true; try{ localStorage.setItem("aog.drums.play.v1","1"); }catch(e){} }
+  }
+  dkPaint();
+}
+(function dkInit(){
+  if(!window.matchMedia || !document.getElementById("kitView")) return;
+  DK.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
+  const ch=()=>{ DK.closed=false; paint(); };   /* paint() lays the kit out for the screen, then bind() gives it the touch */
+  if(DK.mq.addEventListener) DK.mq.addEventListener("change", ch); else if(DK.mq.addListener) DK.mq.addListener(ch);
+  document.getElementById("dkClose").onclick=()=>{ DK.closed=true; paint(); };
+  document.getElementById("dkRun").onclick=()=>{ const pb=document.getElementById("playBtn"); if(pb) pb.click(); setTimeout(dkPaint, 30); };
+  document.getElementById("dkTake").onclick=()=>{ const tb=document.getElementById("takeBtn"); if(tb) tb.click(); setTimeout(dkPaint, 30); };
+  try{ const tb=document.getElementById("takeBtn"); new MutationObserver(()=>{ const tk=document.getElementById("dkTake"); tk.textContent=tb.textContent; tk.setAttribute("aria-pressed", tb.getAttribute("aria-pressed")||"false"); })
+    .observe(tb, {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+})();
+
 window.addEventListener("pagehide", function(){
   stop();
   if(!benchReady && !userTouched) return;

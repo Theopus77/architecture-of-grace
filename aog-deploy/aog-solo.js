@@ -430,7 +430,8 @@ function setMode(m, quiet){
 /* ══ the lit scale (an SVG layer under the page's own dots: the orange "playing now" and the gold finger stay on top) ══ */
 function visFrets(){ const out=[]; if(S.fret0<=2) out.push(0); for(let i=0;i<NECK.n;i++){ const f=S.fret0+i; if(f<=MAXF) out.push(f); } return out; }
 function inWin(f){ return f===0 ? S.fret0<=2 : (f>=S.fret0 && f<=S.fret0+NECK.n-1); }
-function cellXY(s, f){ const y=NECK.top+s*NECK.rowH+NECK.rowH/2, x=f===0 ? (NECK.nut-4)/2 : NECK.nut+(f-S.fret0+0.5)*NECK.cw; return [x, y]; }
+function cellXY(s, f){ if(typeof neckXY==="function") return neckXY(s, f);   /* AOG-PLAY-V1: the page's places, sideways too */
+  const y=NECK.top+s*NECK.rowH+NECK.rowH/2, x=f===0 ? (NECK.nut-4)/2 : NECK.nut+(f-S.fret0+0.5)*NECK.cw; return [x, y]; }
 function landChord(){ return (BAND.on && BAND.chord) || (typeof shapeChord==="function" && shapeChord()) || {off:0, q:S.minor?"min":"maj"}; }
 function gEl(id){ const g=document.createElementNS(NS,"g"); g.setAttribute("id", id); return g; }
 function soPaint(){
@@ -478,10 +479,11 @@ function drawBend(s, f, semis, dir){
   const old=g.querySelector(`[data-s="${s}"]`); if(old) old.remove();
   const strs=svg.querySelectorAll(".nk-str"), line=strs[s];
   if(!(semis>0.02)){ if(line) line.style.visibility=""; return; }
-  const y=NECK.top+s*NECK.rowH+NECK.rowH/2, dy=(dir<0?-1:1)*Math.min(1,semis/2)*0.78*NECK.rowH, [fx]=cellXY(s,f);
+  const y=typeof neckY==="function" ? neckY(s) : NECK.top+s*NECK.rowH+NECK.rowH/2, dy=(dir<0?-1:1)*Math.min(1,semis/2)*0.78*NECK.rowH, [fx]=cellXY(s,f);
+  const ends=typeof neckSpan==="function" ? neckSpan() : [NECK.nut-10, NECK.W];
   const sw=line ? (line.style.strokeWidth||getComputedStyle(line).strokeWidth||"2px") : "2px";
   const p=document.createElementNS(NS,"path"); p.setAttribute("class","so-bent"); p.setAttribute("data-s", s);
-  p.setAttribute("d", `M${f1(NECK.nut-10)} ${f1(y)}L${f1(fx)} ${f1(y+dy)}L${f1(NECK.W)} ${f1(y)}`); p.style.strokeWidth=sw;
+  p.setAttribute("d", `M${f1(ends[0])} ${f1(y)}L${f1(fx)} ${f1(y+dy)}L${f1(ends[1])} ${f1(y)}`); p.style.strokeWidth=sw;
   g.appendChild(p); if(line) line.style.visibility="hidden";
 }
 function clearBend(s){ drawBend(s, 0, 0, 1); }
@@ -614,7 +616,9 @@ function whamTo(to, tau){
   leadsNow().forEach(lv=>{ if(lv.planAll){ lv.until=now; lv.put(lv.target(now), now); lv.plan(now); } else lv.replan(now); });
   drawWham(); wake();
 }
-function whamBox(){ const x0=NECK.nut+NECK.n*NECK.cw+6, w2=NECK.W-x0-1, y=NECK.top, h=NECK.rows*NECK.rowH; return {x0, w:w2, y, h, yUp:y+0.06*h, yDn:y+0.94*h}; }
+function whamBox(){
+  const sb=typeof neckStrum==="function" && neckStrum(); if(sb) return {x0:sb.x0, w:sb.w, y:sb.y, h:sb.h, yUp:sb.y+0.06*sb.h, yDn:sb.y+0.94*sb.h};   /* AOG-PLAY-V1 */
+  const x0=NECK.nut+NECK.n*NECK.cw+6, w2=NECK.W-x0-1, y=NECK.top, h=NECK.rows*NECK.rowH; return {x0, w:w2, y, h, yUp:y+0.06*h, yDn:y+0.94*h}; }
 function whamY(W){ const b=whamBox(); return b.yUp+(2-W)/14*(b.yDn-b.yUp); }
 function whamText(W){ const n=Math.round(Math.abs(W)); return n===0?w("whamRest"):w(W<0?"whamDown":"whamUp",{n}); }
 function drawWham(){

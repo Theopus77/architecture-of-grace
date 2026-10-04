@@ -6,7 +6,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
   const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
   const c=await b.newContext(pw.devices["iPad (gen 7)"]); const p=await c.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
   await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
-  await p.goto("http://localhost:9990/music-piano.html"); await p.waitForTimeout(900);
+  await p.addInitScript(()=>{ window.AOG_FEEL_OFF=true; });   /* AOG-FEEL-V1: the grid itself, without the human feel (play/feel.js checks the feel) */ await p.goto("http://localhost:9990/music-piano.html"); await p.waitForTimeout(900);
   const menu=await p.evaluate(()=>({groups:[...document.querySelectorAll("#rhythmSel optgroup")].map(g=>g.label+": "+[...g.querySelectorAll("option")].map(o=>o.textContent).join(" | ")), n:document.querySelectorAll("#rhythmSel option").length}));
   ok(menu.n===16 && menu.groups.length===4, "the menu: 16 ways in 4 groups\n   "+menu.groups.join("\n   "));
   /* one bar of each, on the warm electric piano (built on the page, so nothing to wait for) */

@@ -27,7 +27,7 @@ const OLD18=[{"id":"pop","g":"pop","en":"Pop · 1 5 6 4","es":"Pop · 1 5 6 4","
     const c=await b.newContext(pw.devices["iPhone 13"]); const p=await c.newPage();
     const errs=[]; p.on("pageerror",e=>errs.push(e.message));
     await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
-    await p.goto(`http://localhost:9978/music-${inst}.html`); await p.waitForTimeout(1000);
+    await p.addInitScript(()=>{ window.AOG_FEEL_OFF=true; });   /* AOG-FEEL-V1: the grid itself, without the human feel (play/feel.js checks the feel) */ await p.goto(`http://localhost:9978/music-${inst}.html`); await p.waitForTimeout(1000);
     console.log("== "+inst);
     const W=WANT[inst];
 
