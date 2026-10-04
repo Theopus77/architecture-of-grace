@@ -1,6 +1,7 @@
 /* AOG-PIANO-REAL-V1 — the piano's sounds that became recordings (music-handoff/tools/piano_vcsl_sets.py): the '80s electric
    piano, the church organ, the glockenspiel, the vibraphone, the bells, the harpsichord, the kalimba and the tape flute; and
-   (AOG-PIANO-REAL-V2) the warm electric piano, whose notes' tails were made from their own loops.
+   (AOG-PIANO-REAL-V2) the warm electric piano, whose notes' tails were made from their own loops; and (V3, V4) every set in
+   music-handoff/tools/piano_real_sets.json, so that now every one of the piano's sounds is a recording.
    For each one:
    · its recordings download only when it is picked (none at page load, none for the others), and until they arrive the
      version built on the page plays, with a line that says so;
@@ -19,10 +20,10 @@ const MEASURE=(0,eval)(fs.readFileSync(__dirname+"/bandt/measure.inc","utf8").re
 let fails=0, passes=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(c) passes++; else fails++; };
 /* the sounds made by music-handoff/tools/piano_vcsl_sets.py, and the set each plays */
 const REAL={ep80:"fmpiano", church:"pipeorgan", glock:"glockenspiel", vibes:"vibraphone", bells:"bells", harpsi:"harpsichord", kalimba:"kalimba", tapeflute:"flute",
-  epwarm:"rhodes"};   /* AOG-PIANO-REAL-V2: the warm electric piano */
+  epwarm:"rhodes3d"};   /* AOG-PIANO-RHODES-V1: the warm electric piano, the fuller jRhodes3d */
 /* how each set's pitch is measured, and over which part of the note (seconds after it starts) */
 const HOW={fmpiano:["harm",0.05,1.0], pipeorgan:["harm",0.6,2.6], harpsichord:["harm",0.05,0.8], flute:["harm",0.6,2.6],
-  vibraphone:["bar",0.04,0.6], glockenspiel:["bar",0.04,0.6], kalimba:["bar",0.02,0.4], bells:["bell",0.05,1.0], rhodes:["harm",0.05,1.0]};
+  vibraphone:["bar",0.04,0.6], glockenspiel:["bar",0.04,0.6], kalimba:["bar",0.02,0.4], bells:["bell",0.05,1.0], rhodes3d:["harm",0.05,1.0]};
 /* AOG-PIANO-REAL-V3: and every set made by music-handoff/tools/piano_real_sets.py (listed in its piano_real_sets.json), each on
    the sound with the same id, its pitch read the way that maker's own checker (pianosets.js) reads it: its method (fund = the
    fundamental; centroid = the mean frequency near the first four harmonics, for reeds and voices that are not one clean
@@ -34,7 +35,8 @@ Object.keys(MADE_SETS).forEach(s=>{ const e=MADE_SETS[s].sets_entry, m=MADE_SETS
   HOW[s] = [m==="fund"?"bar":m, e.loop?e.loop[0]:0.03, e.loop?e.loop[1]-0.6:0]; });
 /* where each warm electric piano note's own loop began in its recording (seconds; piano_vcsl_sets.py prints them): from there
    on, the note is that loop repeated, fading on */
-const RHODES_LOOP={29:4.92, 35:4.25, 40:5.85, 45:6.35, 50:5.39, 55:5.76, 59:4.84, 62:6.08, 65:5.34, 71:4.43, 76:3.09, 81:3.80, 86:3.53, 91:1.53, 96:0.65};
+/* AOG-PIANO-RHODES-V1: jRhodes3d notes are full length (no loop); the tail is checked from 0.6 s, after the attack */
+const RHODES_LOOP={29:0.6, 35:0.6, 40:0.6, 45:0.6, 50:0.6, 55:0.6, 59:0.6, 62:0.6, 65:0.6, 71:0.6, 76:0.6, 81:0.6, 86:0.6, 91:0.6, 96:0.3};   /* C7 is recorded 1.4 s long */
 /* the pitch meter, in the page: an FFT, a peak found to a fraction of a bin, and the three ways of reading a note */
 const PITCH=`
 window.__fft=function(re,im){ const n=re.length; for(let i=1,j=0;i<n;i++){ let b=n>>1; for(;j&b;b>>=1) j^=b; j^=b; if(i<j){ let t=re[i]; re[i]=re[j]; re[j]=t; t=im[i]; im[i]=im[j]; im[j]=t; } }
@@ -83,7 +85,7 @@ window.__calls={sample:0, made:0};
   await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   /* every request for a piano recording, by folder */
   const got={}; let slow=null;
-  p.on("request", r=>{ const m=r.url().match(/\/audio\/piano\/([a-z]+)\//); if(m) got[m[1]]=(got[m[1]]||0)+1; });
+  p.on("request", r=>{ const m=r.url().match(/\/audio\/piano\/([a-z0-9]+)\//); if(m) got[m[1]]=(got[m[1]]||0)+1; });
   await p.route(/\/audio\/piano\/[a-z]+\/\d+m\.mp3$/, async r=>{ if(slow && r.request().url().indexOf("/audio/piano/"+slow+"/")>=0) await new Promise(x=>setTimeout(x,180)); r.continue(); });
   await p.goto(U); await p.waitForTimeout(2500);
   await p.addScriptTag({content:PITCH}); await p.addScriptTag({content:MEASURE});
@@ -126,9 +128,9 @@ window.__calls={sample:0, made:0};
     await p.waitForFunction(()=>SETS.upright.state==="ready", null, {timeout:60000}); await p.waitForTimeout(1500);
     const left=await p.evaluate(()=>Object.keys(SETS).filter(k=>k!=="upright" && (SETS[k].state!=="idle" || Object.keys(SETS[k].buf).length)));
     ok(left.length===0, "stepping quickly through five sounds leaves only the last one's recordings ("+(left.join(", ")||"nothing else")+")"); }
-  /* a sound still built on the page downloads nothing */
-  { const k=Object.assign({}, got); await p.selectOption("#soundSel","toy"); await p.waitForTimeout(800);
-    ok(JSON.stringify(k)===JSON.stringify(got) && /built on the page/.test(await p.textContent("#loadLine")), "a sound built on the page (toy piano) downloads nothing"); }
+  /* AOG-PIANO-REAL-V4: no sound is built on the page any more; each one names its recordings */
+  { const r=await p.evaluate(()=>{ const ids=Object.keys(SOUNDS); return {all:ids.length, built:ids.filter(id=>SOUNDS[id].kind!=="sample" || !SETS[SOUNDS[id].set])}; });
+    ok(r.built.length===0, `every one of the ${r.all} sounds plays recordings`+(r.built.length?" (built: "+r.built.join(", ")+")":"")); }
 
   /* ── 3 · in tune across the range, and as loud as the grand ── */
   const levels=await p.evaluate(async ids=>{
@@ -147,6 +149,7 @@ window.__calls={sample:0, made:0};
       const out=[]; for(const m of ms){ const zz=z||Math.max(0.35, Math.min(0.7, 60/mtof(m))), d=await __note(id, m, 0.74, zz+0.6);
         out.push([m, d ? __cents(d, 44100, m, how, a, zz) : NaN]); }
       return out; }, [id,set,how,a,z]);
+    /* the toy piano's keys are a few cents out of tune on purpose (up to 4 either way, as a toy's are): within 5 still */
     const bad=r.filter(x=>!(Math.abs(x[1])<=5)), cs=r.map(x=>x[1]);
     ok(bad.length===0, `${id}: ${r.length} notes from ${r[0][0]} to ${r[r.length-1][0]} in tune (${how}), ${Math.min(...cs).toFixed(1)} to ${Math.max(...cs).toFixed(1)} cents`+(bad.length?" (off: "+bad.map(x=>x[0]+" "+x[1].toFixed(1)).join(", ")+")":""));
     const d=levels[id]-levels.grand;
@@ -184,11 +187,11 @@ window.__calls={sample:0, made:0};
   /* ── 4b · the warm electric piano: each note's tail, made from its own loop, fades smoothly (no click at a repeat, no
      pulsing: its loudness falls along a straight line in decibels), and how hard a key is played changes the tone ── */
   { const r=await p.evaluate(async LOOP=>{
-      await loadSet("rhodes"); const out=[], sr=44100;
+      await loadSet("rhodes3d"); const out=[], sr=44100;
       for(const m of Object.keys(LOOP).map(Number)){
-        const buf=SETS.rhodes.buf[m+"m"], dur=buf.duration, st=SETS.rhodes.start[m+"m"], d=await __note("epwarm", m, 0.74, dur+0.2);
+        const buf=SETS.rhodes3d.buf[m+"m"], dur=buf.duration, st=SETS.rhodes3d.start[m+"m"], d=await __note("epwarm", m, 0.74, dur+0.2);
         const at=t=>0.02+t-st;                              /* where a moment of the file lands in this rendering */
-        const a=at(LOOP[m]+0.1), z=at(dur-1.2);           /* the tail, before the file's last fade */
+        const a=at(LOOP[m]+0.1), z=at(dur-(dur<2?0.45:1.2));   /* the tail, before the file's last fade (a short note: its last 0.45 s) */
         const step=(x,y)=>{ let q=0; for(let i=Math.max(1,Math.floor(x*sr)); i<Math.min(d.length,Math.floor(y*sr)); i++) q=Math.max(q,Math.abs(d[i]-d[i-1])); return q; };
         const W=Math.floor(0.05*sr), tt=[], lv=[];
         for(let i=Math.floor(a*sr); i+W<=Math.floor(z*sr); i+=W){ let q=0; for(let k=i;k<i+W;k++) q+=d[k]*d[k]; tt.push((i+W/2)/sr); lv.push(10*Math.log10(q/W+1e-20)); }
