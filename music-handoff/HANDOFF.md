@@ -46,6 +46,7 @@ The working branch for music is `claude/drum-pads-touch-keys`. After every deplo
     - licks to copy, with each note lit;
     - a lead-sound picker;
     - slap and pop on the bass. Most of it lives in `aog-solo.js`.
+15. "yes I want how it is played increase and start a chord pattern increased!!!!" (the guitar page) → the **ways** branch: more ways to play, and chord patterns 18 → 44 in five groups (Pop, rock and folk · Rock and metal · Soul, funk and dance · Blues and jazz · Minor and moody). The 18 old ids are unchanged. **At merge, copy the same PRESETS and PRESET_GROUPS into `music-piano.html` and `_work/music/band_script.js`**, so all four tools offer the same patterns. Leave the piano lessons alone: they use the old ids.
 
 ## 3. The amp (AOG-AMP-V1): on the branch, not live yet
 
@@ -79,7 +80,7 @@ There are nine. Each was cut from `470e18a2` (main) or `63d8440a` (the amp), wor
 | `claude/amp-piano` | 16+ new piano sounds (some from VSCO 2 CE recordings: harp, marimba…) | `music-piano.html`, `audio/piano/*`, `_headers` |
 | `claude/amp-band` | The Band: strings and percussion sections, muted and vibrato brass, ensembles, and **Orchestra · everyone plays** | `_work/music/band_*`, `music-band.html`, `audio/band/*`, `_headers`, maybe `science-hub.html` |
 | `claude/amp-drums` | Send a recorded take to a drum pad | `aog-recorder.js`, `music-drums.html` |
-| `claude/amp-ways` | ~18–20 guitar and 16+ bass ways to play; bass lines leave the root; strum gaps | `strings_page.html` (rhythm parts only) and the 2 generated pages |
+| `claude/amp-ways` | ~18–20 guitar and 16+ bass ways to play; bass lines leave the root; strum gaps; **44 chord patterns** (copy them to the piano and band at merge) | `strings_page.html` (rhythm parts only) and the 2 generated pages |
 | `claude/amp-stringfix` | Jimmy's handoff: a 44.1 kHz string, pick burst, pitch, sounds that disagree, synth bass | `strings_page.html` (engine, voices, existing SOUNDS values, neck drawing) |
 | `claude/amp-tones` | Zeppelin, Aerosmith, AC/DC, Sabbath and Opeth-style guitar and bass sounds; new amp models and pedals | `aog-amp.js`, `aog-amp-worklet.js`, new SOUNDS entries appended after `doom` and `acid` |
 | `claude/amp-drumkit` | Recorded acoustic drum kits and voicings | `aog-drumkit.js` (new), `music-drums.html` (tagged AOG-DRUM-REAL-V1), `audio/drums/*`, `_headers` |
