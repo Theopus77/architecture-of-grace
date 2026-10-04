@@ -169,23 +169,32 @@ lesson(8, "make-your-own-pattern", ("Make your own pattern", "Haz tu propio patr
   ("Ending on 1 sounds finished. Ending on 5 sounds like it wants to go on. Starting on 6 sounds more serious.", "Terminar en 1 suena terminado. Terminar en 5 suena como si quisiera seguir. Empezar en 6 suena más serio."),
   [("I made a pattern of my own and played it.", "Hice un patrón propio y lo toqué."), ("I can explain why I ended where I did.", "Puedo explicar por qué terminé donde terminé.")])
 
-lesson(9, "eight-sounds", ("Eight sounds", "Ocho sonidos"),
-  [("Same keys, different color. That color is called <b>timbre</b>. Here is how each sound is made:",
-    "Las mismas teclas, otro color. Ese color se llama <b>timbre</b>. Así se hace cada sonido:")],
+# AOG-PIANO-SOUNDS-V2 (2026-10-04): 34 sounds in eight groups (the slug stays, so links to it still land)
+lesson(9, "eight-sounds", ("34 sounds in eight groups", "34 sonidos en ocho grupos"),
+  [("Same keys, different color. That color is called <b>timbre</b>. The Instrument menu holds 34 sounds in eight groups. Here is how each group makes its sound:",
+    "Las mismas teclas, otro color. Ese color se llama <b>timbre</b>. El menú Instrumento tiene 34 sonidos en ocho grupos. Así hace su sonido cada grupo:")],
   ("pp-sound", "The Instrument menu, set to Grand piano.", "El menú Instrumento, en Piano de cola."),
   [("Hold C, E and G on the Grand piano. Listen to it fade.", "Mantén Do, Mi y Sol con el Piano de cola. Escucha cómo se apaga."),
    ("Do the same on the Rock and jazz organ.", "Haz lo mismo con el Órgano de rock y jazz."),
-   ("Play one pattern on three different sounds. Open <b>Meet the sounds</b> in the Go to menu to hear all eight.", "Toca un patrón con tres sonidos distintos. Abre <b>Conoce los sonidos</b> en el menú Ir a para oír los ocho.")],
+   ("Play one pattern on three different sounds. Open <b>Meet the sounds</b> in the Go to menu to hear them all.", "Toca un patrón con tres sonidos distintos. Abre <b>Conoce los sonidos</b> en el menú Ir a para oírlos todos.")],
   ("A piano note fades, because the string slowly stops shaking. An organ note stays as long as you hold it.", "Una nota de piano se apaga, porque la cuerda deja de vibrar poco a poco. Una nota de órgano dura mientras la mantengas."),
-  [("I can name the eight sounds.", "Puedo nombrar los ocho sonidos."), ("I can say how a piano and an organ make sound.", "Puedo decir cómo hacen sonido un piano y un órgano.")],
-  extra=[lst("ul", [("<b>Grand piano</b>: felt hammers hit long strings. A real recording.", "<b>Piano de cola</b>: martillos de fieltro golpean cuerdas largas. Una grabación real."),
-                    ("<b>Upright piano</b>: the strings stand up tall. A real recording.", "<b>Piano vertical</b>: las cuerdas están de pie. Una grabación real."),
-                    ("<b>Honky-tonk piano</b>: an upright, a little out of tune with itself.", "<b>Piano honky-tonk</b>: un vertical, un poco desafinado consigo mismo."),
-                    ("<b>Electric piano · warm</b>: hammers hit thin metal tines.", "<b>Piano eléctrico · cálido</b>: martillos golpean varillas delgadas de metal."),
-                    ("<b>Electric piano · bright</b>: hammers hit flat metal reeds.", "<b>Piano eléctrico · brillante</b>: martillos golpean lengüetas planas de metal."),
-                    ("<b>'80s electric piano</b>: a computer chip does the math (FM).", "<b>Piano eléctrico de los 80</b>: un chip de computadora hace las cuentas (FM)."),
-                    ("<b>Rock and jazz organ</b>: metal wheels spin past magnets.", "<b>Órgano de rock y jazz</b>: ruedas de metal giran junto a imanes."),
-                    ("<b>Church organ</b>: air blows through pipes.", "<b>Órgano de iglesia</b>: el aire sopla por tubos.")])])
+  [("I can name a sound from each group.", "Puedo nombrar un sonido de cada grupo."), ("I can say how a piano and an organ make sound.", "Puedo decir cómo hacen sonido un piano y un órgano.")],
+  extra=[lst("ul", [("<b>Pianos</b>: felt hammers hit strings. The grand, upright, honky-tonk, bright and soft felt pianos are real recordings. The toy piano's hammers hit metal rods.",
+                     "<b>Pianos</b>: martillos de fieltro golpean cuerdas. El de cola, el vertical, el honky-tonk, el brillante y el suave de fieltro son grabaciones reales. Los martillos del piano de juguete golpean varillas de metal."),
+                    ("<b>Electric pianos</b>: hammers hit metal tines (warm) or reeds (bright); a computer chip does the math (FM) for the '80s one; on the clavinet, a rubber tip hits a string.",
+                     "<b>Pianos eléctricos</b>: martillos golpean varillas (cálido) o lengüetas de metal (brillante); un chip de computadora hace las cuentas (FM) en el de los 80; en el clavinet, una punta de goma golpea una cuerda."),
+                    ("<b>Organs and accordion</b>: metal wheels spin past magnets (rock and jazz, gospel, '70s rock); air blows through pipes (church, cinema); air pushes through metal reeds (accordion).",
+                     "<b>Órganos y acordeón</b>: ruedas de metal giran junto a imanes (rock y jazz, góspel, rock de los 70); el aire sopla por tubos (iglesia, cine); el aire empuja lengüetas de metal (acordeón)."),
+                    ("<b>Mallets and bells</b>: a mallet or a hammer hits metal bars (celesta, glockenspiel, vibraphone), wooden bars (marimba, a real recording), a steel drum, or long metal tubes (bells).",
+                     "<b>Láminas y campanas</b>: un mazo o un martillo golpea barras de metal (celesta, glockenspiel, vibráfono), barras de madera (marimba, una grabación real), un tambor de acero o tubos largos de metal (campanas)."),
+                    ("<b>Plucked</b>: a small pick plucks a string (harpsichord); fingers pluck strings (harp, a real recording); thumbs or pins pluck metal tongues (kalimba, music box).",
+                     "<b>Pulsados</b>: una púa pequeña pulsa una cuerda (clavecín); los dedos pulsan cuerdas (arpa, una grabación real); pulgares o alfileres pulsan lengüetas de metal (kalimba, caja de música)."),
+                    ("<b>Strings and voices</b>: bows on violins, violas and cellos (soft strings, a real recording); many voices singing “ah” (choir).",
+                     "<b>Cuerdas y voces</b>: arcos sobre violines, violas y violonchelos (cuerdas suaves, una grabación real); muchas voces que cantan “a” (coro)."),
+                    ("<b>Tape keyboards</b>: each key starts a short tape of strings or of a flute, as on the keyboards of 1970s prog rock.",
+                     "<b>Teclados de cinta</b>: cada tecla pone en marcha una cinta corta de cuerdas o de flauta, como en los teclados del rock progresivo de los 70."),
+                    ("<b>Synths</b>: electronic waves, shaped and softened: the '70s string synth, the warm synth, the '80s synth brass and the synth lead.",
+                     "<b>Sintetizadores</b>: ondas electrónicas, moldeadas y suavizadas: el sintetizador de cuerdas de los 70, el sintetizador cálido, los metales de los 80 y el sintetizador solista.")])])
 
 lesson(10, "play-along", ("Play along: the lit keys and the black keys", "Toca encima: las teclas iluminadas y las negras"),
   [("While the chords play, every key that fits the chord turns pale, in every octave, and a key turns orange while its note sounds. Any lit key fits. Play them in your own order and you are making up a melody.",
@@ -285,7 +294,7 @@ def build():
     head = src.split("</head>", 1)[0]
     rep = [("<title>Mastering the Drum Machine · Architecture of Grace</title>", "<title>Mastering the Piano · Architecture of Grace</title>"),
            ('content="Twelve lessons on the SP-1200: your first beat, swing, the sliders, nine kits, your own samples, the 1987-to-2026 Sound dial, and a whole song you can send to the turntables."',
-            'content="Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, eight sounds, playing along, the drum machine and the 1987-to-2026 Sound dial."'),
+            'content="Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, 34 sounds, playing along, the drum machine and the 1987-to-2026 Sound dial."'),
            ('href="https://architectureofgrace.org/mastering-drums"', 'href="https://architectureofgrace.org/mastering-piano"')]
     for a, b in rep:
         assert head.count(a) == 1, a
@@ -320,8 +329,8 @@ def build():
     body = ('<body>\n<script src="/aog-topbar.js"></script>\n<main class="xw" style="--gl:#6A4C9C">\n<header class="xw-hero">\n'
             '  %s\n  %s\n  %s\n' % (bl("p", "Hands-on tools · The mastering course", "Herramientas prácticas · El curso para dominarlo", ' class="xw-ey"'),
                                      bl("h1", "Mastering the Piano", "Domina el piano"),
-                                     bl("p", "Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, eight sounds, playing along, the drum machine, and the 1987-to-2026 Sound dial.",
-                                        "Doce lecciones de piano: las teclas, los acordes con la mano, los seis pads, los patrones de acordes, tu propio patrón, ocho sonidos, tocar encima, la caja de ritmos y el dial de Sonido de 1987 a 2026.", ' class="xw-lede"')) +
+                                     bl("p", "Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, 34 sounds, playing along, the drum machine, and the 1987-to-2026 Sound dial.",
+                                        "Doce lecciones de piano: las teclas, los acordes con la mano, los seis pads, los patrones de acordes, tu propio patrón, 34 sonidos, tocar encima, la caja de ritmos y el dial de Sonido de 1987 a 2026.", ' class="xw-lede"')) +
             '  <div class="xw-meta"><span class="xw-pill" data-en="Music" data-es="Música">Music</span><span class="xw-pill" data-en="12 lessons" data-es="12 lecciones">12 lessons</span><span class="xw-pill" data-en="With pictures" data-es="Con imágenes">With pictures</span></div>\n'
             '</header>\n<div class="xw-bar no-print">\n'
             '  <a class="xw-btn solid" href="/music-piano.html" data-en="Open the piano" data-es="Abrir el piano">Open the piano</a>\n'
