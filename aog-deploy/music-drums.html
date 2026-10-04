@@ -130,6 +130,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 /* AOG-CHORD-PADS-V1 — chords sent from the piano, the guitar or the bass */
 .chord-row .cp-list{color:#f3efe6;font:800 1rem/1.2 Georgia,"Times New Roman",serif;letter-spacing:.02em}
 .chord-row .s-chords{border-color:#5b8fd6;color:#cfe2ff;min-width:0;padding:0 .8rem}
+/* AOG-TAKE-TO-PADS-V1 — a take sent from a music tool, waiting for a pad; the menu is the machine's other menus (aog-dropdowns.js),
+   and the row's key is a full 44px for a finger, as the chord row's now is */
+.sample-row .sm-pad{min-height:44px;font-size:16px;flex:0 1 15rem;min-width:0;max-width:100%}
+.chord-row .s-chords{min-height:44px}
 .simple-line{color:#d7cbb8;font-size:.95rem;margin:.2rem 0 .6rem;line-height:1.4}
 @media (max-width:520px){ .simple-strip{grid-template-columns:1fr 1fr} .simple-strip .s-play{grid-column:1 / -1} }
 .machine.simple .sp-keys,.machine.simple .sp-banks,.machine.simple .scope-bezel,.machine.simple .sp-eq,.machine.simple .fader,.machine.simple .seg-label{display:none}
@@ -565,6 +569,11 @@ const STR = {
   cpPut:{en:"Put them on pads 3 to 8",es:"Ponerlos en los pads 3 a 8"},
   cpOn:{en:"They are on pads 3 to 8. The kick and snare stay on 1 and 2.",es:"Están en los pads 3 a 8. El bombo y la caja siguen en el 1 y el 2."},
   cpFull:{en:"The sampler's memory is full. Put the kit sounds back on another kit first.",es:"La memoria del sampler está llena. Primero devuelve los sonidos del kit en otro kit."}, sPart:{en:"Part",es:"Parte"},
+  /* AOG-TAKE-TO-PADS-V1 */ smOther:{en:"A recorded take",es:"Una toma grabada"}, smPick:{en:"Which pad",es:"Qué pad"}, smPad:{en:"Pad",es:"Pad"},
+  smPut:{en:"Put it on this pad",es:"Ponerla en este pad"},
+  smOn:{en:"Done. Tap pad {n} to hear it.",es:"Listo. Toca el pad {n} para oírla."},
+  smShort:{en:"Done. The memory had room for the first {s} seconds. Tap pad {n} to hear it.",es:"Listo. La memoria tenía lugar para los primeros {s} segundos. Toca el pad {n} para oírla."},
+  smFull:{en:"The sampler's memory is full. Put the kit sounds back on another kit, or pick a pad that holds one of your own sounds.",es:"La memoria del sampler está llena. Devuelve los sonidos del kit en otro kit, o elige un pad que tenga uno de tus sonidos."},
   sLine:{en:"Pick a beat, or tap the squares to build one. Then press Play.",es:"Elige un ritmo o toca los cuadros para armar uno. Luego pulsa Tocar."},
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
@@ -1733,6 +1742,79 @@ async function checkChordPads(){
   CP.take=tk; CP.at=at; CP.note="";
   paint();
 }
+/* AOG-TAKE-TO-PADS-V1 (2026-10-03) — Jimmy: "Can we send the sounds from the instruments to the drum machine as samples? Not just
+   for the pads". A take recorded on the piano, the guitar, the bass or the band (● Record, then Send to the drum machine, in
+   aog-recorder.js) waits on the shelf the music tools share, "drumsample": one channel at 26,040 a second, from its first sound,
+   at most 2.5 s. A row says where it came from; a menu picks one of this kit's eight pads, by the names the pads show (pad 8 to
+   start, the one a beat leans on least, so the kick and snare stay put, as with the chords); one tap puts it there. It lives in the sampler's memory like any sample: twelve bits, inside the ten seconds every kit shares (if there
+   is not room for all of it, the first part that fits, faded at the cut; under a quarter of a second, MEM FULL). The pad takes its
+   name from the take, and TRIM, REV, Save, Open and a reload treat it as any sample. Put my sounds back undoes it. */
+const SMP={take:null, at:0, note:"", pad:null, n:0, s:"", busy:false};
+function smpName(tk){ const nm=(tk&&tk.name)||{}; return String((S.lang==="es"?nm.es:nm.en)||nm.en||""); }
+function smpPadName(tk){                       /* "Guitar take 2" → GTR2, "Toma de bajo 2" → BAJO2: six letters at most, as a pad shows */
+  const s=smpName(tk), num=(s.match(/(\d+)\s*$/)||["",""])[1];
+  let w=(s.replace(/\d+\s*$/,"").replace(/\b(take|toma|de|la|el)\b/gi," ").trim().split(/\s+/)[0]||"").normalize("NFD").replace(/[^a-z0-9]/gi,"").toUpperCase();
+  if(/^GUITAR/.test(w)) w="GTR";
+  return ((w||"TAKE").slice(0, Math.max(1, 6-num.length))+num).slice(0,6);
+}
+function sampleRow(){
+  const tk=SMP.take; if(!tk) return "";
+  const esc=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  const from=STR["cpFrom_"+tk.from] ? t("cpFrom_"+tk.from) : t("smOther");
+  const sec=(typeof tk.seconds==="number" ? tk.seconds : tk.pcm.length/26040).toFixed(1);
+  const pick=SMP.pad || "bell";
+  const opts=VOICES.map((v,i)=>`<option value="${v.id}"${v.id===pick?" selected":""}>${esc(t("smPad")+" "+(i+1)+" · "+padCaption(v))}</option>`).join("");
+  const note=SMP.note==="full" ? t("smFull") : SMP.note ? t(SMP.note==="short"?"smShort":"smOn").replace("{n}", SMP.n).replace("{s}", SMP.s) : "";
+  return `<div class="simple-row chord-row sample-row"><span>${esc(from)}</span><b class="cp-list">${esc(smpName(tk))} (${sec} s)</b>`+
+    `<select class="aogdd-sel sm-pad" id="smPad" aria-label="${esc(t("smPick"))}">${opts}</select>`+
+    `<button type="button" class="sp-key s-chords" data-drumsample="1">${t("smPut")}</button></div>`+
+    (note?`<p class="simple-note sm-note">${esc(note)}</p>`:"");
+}
+async function putSample(){
+  const tk=SMP.take; if(!tk || !tk.pcm || SMP.busy) return;      /* a second tap while the first is working does nothing */
+  SMP.busy=true;
+  let put=null;
+  try{ put=await putSampleNow(tk); }finally{ SMP.busy=false; }
+  if(!put) return;
+  try{ ctx(); await bootSampler(); }catch(e){}            /* so the first tap on the pad plays the take, not the kit's sound */
+  if(engine&&kitReady&&S.bank===put.b) pushPad(put.id);
+}
+async function putSampleNow(tk){
+  const sel=document.getElementById("smPad");
+  const b=S.bank, id=(sel && VOICES.some(v=>v.id===sel.value)) ? sel.value : (SMP.pad || "bell");
+  SMP.pad=id;
+  try{ await ensureKit("A"); }catch(e){}                    /* the built-in kit's share of the memory is known */
+  const src=tk.pcm instanceof Float32Array ? tk.pcm : new Float32Array(tk.pcm);
+  const want=Math.min(src.length, Math.floor(2.5*26040));
+  const u=USER[b][id];
+  let room=10-memUsed(); if(u) room+=u.length/26040; else if(b==="A") room+=ROM_LEN[id]||0;   /* the sound it replaces gives its room back */
+  const n=Math.max(0, Math.min(want, Math.floor(room*26040+1e-6)));
+  if(want<64 || n<Math.min(want, Math.floor(0.25*26040))){
+    SMP.note="full"; S.lcdNote="MEM FULL"; paint();
+    setTimeout(()=>{ if(S.lcdNote==="MEM FULL"){ S.lcdNote=""; refreshLcd(); } }, 3000);
+    return null;
+  }
+  S.kitUndo={bank:b, user:Object.assign({},USER[b]), names:Object.assign({},USER_NAME[b]), trim:JSON.parse(JSON.stringify(S.trim[b]||{})), chord:Object.assign({},CHORDPAD[b])};
+  const a=new Float32Array(n); a.set(src.subarray(0, n));
+  if(n<want){ const f=Math.min(n>>2, Math.floor(0.03*26040)); for(let j=0;j<f;j++) a[n-1-j]*=j/f; }   /* cut short to fit: it fades out, so it never clicks */
+  USER[b][id]=quantize12(a);
+  USER_NAME[b][id]=smpPadName(tk);
+  if(CHORDPAD[b]) delete CHORDPAD[b][id];
+  if(S.trim[b]) delete S.trim[b][id];
+  S.sel=id;
+  SMP.note=n<want?"short":"on"; SMP.n=padIndex(id)+1; SMP.s=(n/26040).toFixed(1);
+  S.lcdNote="END "+(n/26040).toFixed(2)+"s";
+  save(); paint();
+  const lcd=S.lcdNote; setTimeout(()=>{ if(S.lcdNote===lcd){ S.lcdNote=""; refreshLcd(); } }, 2500);
+  return {b:b, id:id};
+}
+async function checkDrumSample(){
+  let tk=null; try{ tk=await AOGHandoff.get("drumsample"); }catch(e){}
+  if(!(tk && tk.pcm && tk.pcm.length>=64 && tk.name && (tk.rate||26040)===26040)) tk=null;   /* the machine's own rate, or nothing */
+  const at=tk?(tk.at||1):0; if(at===SMP.at) return;
+  SMP.take=tk; SMP.at=at; SMP.note=""; SMP.pad=null;
+  paint();
+}
 function kitSoundsBack(){
   const b=S.bank;
   if(!userPads().length) return;
@@ -1787,11 +1869,11 @@ function machineHtml(){
     </div>
     <div class="pick-row">${starterRow()}
     <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${BANKS.map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${kitBackKeys("sp-key s-reset")}</div></div>
-    ${chordRow()}
+    ${chordRow()}${sampleRow()}
     ${userPads().length?`<p class="simple-note">${t("sHolds")} ${userPads().map(v=>(padIndex(v)+1)+" · "+(USER_NAME[S.bank][v]||"SAMP")).join(", ")}.</p>`:""}
     <div class="simple-row"><span>${t("sPart")}</span>${Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-simple-seg="${i}">${i+1}</button>`).join("")}<button type="button" class="sp-key s-len" data-simple-press="lenBtn">${t("sLen")} ${segLen()}</button><button type="button" class="sp-key s-swing" data-simple-press="swingBtn">${t("sSwing")} ${swingPct()}%</button><button type="button" class="sp-key s-roll${S.roll!=="off"?" on":""}" data-simple-press="rollBtn">${t("sRoll")} ${rollWord()}</button></div>
     ${eraRow()}
-    <p class="simple-line">${t("sLine")}${S.roll!=="off"?" "+t("rollTip"):""}</p>`:`${starterRow()}${chordRow()}${eraRow()}${S.roll!=="off"?`<p class="simple-line">${t("rollTip")}</p>`:""}`;
+    <p class="simple-line">${t("sLine")}${S.roll!=="off"?" "+t("rollTip"):""}</p>`:`${starterRow()}${chordRow()}${sampleRow()}${eraRow()}${S.roll!=="off"?`<p class="simple-line">${t("rollTip")}</p>`:""}`;
   return `<div class="machine no-print${simple?" simple":""}">
     <div class="chassis-top">
       <div class="screws"><span class="screw"><i></i></span><span class="screw"><i></i></span></div>
@@ -2957,6 +3039,8 @@ function bind(){
   document.querySelectorAll("[data-resetkit]").forEach(b=>b.onclick=kitSoundsBack);     /* AOG-DRUM-KITBACK-V2: both benches */
   document.querySelectorAll("[data-kitundo]").forEach(b=>b.onclick=kitSoundsUndo);
   document.querySelectorAll("[data-chordpads]").forEach(b=>b.onclick=putChords);   /* AOG-CHORD-PADS-V1 */
+  document.querySelectorAll("[data-drumsample]").forEach(b=>b.onclick=putSample);  /* AOG-TAKE-TO-PADS-V1 */
+  { const sm=document.getElementById("smPad"); if(sm) sm.onchange=()=>{ SMP.pad=sm.value; }; }
   document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
@@ -3312,10 +3396,11 @@ document.addEventListener("visibilitychange", ()=>{ if(document.hidden){ holdNon
   }catch(e){}
 })();
 paint();
-/* AOG-CHORD-PADS-V1 — chords from the piano, the guitar or the bass, on the shelf the music tools share */
-checkChordPads();
-try{ AOGHandoff.listen(function(key){ if(key==="chordpads") checkChordPads(); }); }catch(e){}
-window.addEventListener("focus", checkChordPads);
+/* AOG-CHORD-PADS-V1 — chords from the piano, the guitar or the bass, on the shelf the music tools share;
+   AOG-TAKE-TO-PADS-V1 — and a take from any of them, waiting for a pad */
+checkChordPads(); checkDrumSample();
+try{ AOGHandoff.listen(function(key){ if(key==="chordpads") checkChordPads(); else if(key==="drumsample") checkDrumSample(); }); }catch(e){}
+window.addEventListener("focus", ()=>{ checkChordPads(); checkDrumSample(); });
 let benchReady=false;
 idbGet().then(function(o){
   benchReady=true;
