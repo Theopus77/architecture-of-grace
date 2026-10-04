@@ -16,7 +16,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
     AOG-DRUM-REAL-V1: the recorded kits P to T load only when picked, so the built ones are checked here (realkit.js checks the others) */
  await p.waitForFunction(()=>BANKS.filter(b=>!realKit(b)).every(b=>{const r=romFor(b), h=hiFor(b); return VOICES.every(v=>r[v.id]&&h[v.id]);}), null, {timeout:30000}).catch(()=>{});
  const kits=await p.evaluate(()=>BANKS.filter(b=>!realKit(b)).map(b=>{const r=romFor(b), h=hiFor(b); return b+":"+VOICES.filter(v=>r[v.id]&&r[v.id].length&&h[v.id]&&h[v.id].length).length;}).join(" "));
- ok(!/:[0-7]\b/.test(kits), "all 15 built kits rendered, 1987 + 2026 copies: "+kits);
+ ok(!/:[0-7]\b/.test(kits), "every kit made on the page rendered, 1987 + 2026 copies: "+kits);   /* AOG-DRUM-REAL-V2: A, B, C, F and L (the rest are recordings: realkit.js) */
  const loud=await p.evaluate(()=>BANKS.filter(b=>b!=="B"&&!realKit(b)).map(b=>b+":"+VOICES.map(v=>{const d=romFor(b)[v.id];let m=0;for(const x of d)m=Math.max(m,Math.abs(x));return m.toFixed(2)}).join(",")).join(" | "));
  console.log("   peak per pad:", loud);
  ok(!/0\.0[0-4]/.test(loud), "every new sound makes a sound (peak > 0.05)");
@@ -24,7 +24,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await p.evaluate(()=>{const pm=engine.port.postMessage.bind(engine.port); engine.port.postMessage=(m,t)=>{window.__msgs.push(m); return pm(m,t);};});
  // starter via the dropdown select
  const sel=p.locator('.starter-row .aogdd-sel'); ok(await sel.count()===1, "Start-from-a-beat is a drop-down");
- const opts=await sel.locator("option").allTextContents(); ok(opts.length===1+13+10 && opts[0].startsWith("Choose"), "menu: placeholder + 13 styles (5 for the recorded kits) + 10 classroom patterns ("+opts.length+")");
+ const opts=await sel.locator("option").allTextContents(); ok(opts.length===1+18+10 && opts[0].startsWith("Choose"), "menu: placeholder + 18 styles (10 of them came with recorded kits P to Y) + 10 classroom patterns ("+opts.length+")");   /* AOG-DRUM-REAL-V2: five new kits, a beat each */
  await sel.selectOption({label:"Trap"}); await p.waitForTimeout(700);
  ok(await p.evaluate("S.bank==='F' && S.bpm===140 && S.grid.clap[8]===2"), "Trap loads kit F, 140 BPM, clap on beat 3");
  ok(await p.isHidden('#undoBeat'), "no undo when the part was empty");
@@ -35,7 +35,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  ok(await p.evaluate("S.bank==='F' && S.bpm===140 && S.grid.clap[8]===2"), "undo brings back the Trap beat, kit and tempo");
  // kit menu
  const kitSel=p.locator('.kit-src').locator('xpath=..').locator('.aogdd-sel');
- ok((await kitSel.locator("option").count())===20, "Sounds menu lists 20 kits");   /* A to O built here, P to T recorded */
+ ok((await kitSel.locator("option").count())===25, "Sounds menu lists 25 kits");   /* AOG-DRUM-REAL-V2: A, B, C, F, L made here, the other twenty recorded */
  await kitSel.selectOption({label:"Kit H · Latin percussion"}); await p.waitForTimeout(600);
  ok(await p.evaluate("S.bank==='H'"), "picking a kit switches to it");
  ok((await p.textContent('.sp-pad[data-pad="ch"]')).includes("GUIRO"), "pads show the kit's names (GUIRO)");
@@ -54,7 +54,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  ok((await p.textContent('.simple-line')).includes("hold a pad"), "a line explains how to roll");
  await p.evaluate("__msgs=[]");
  await p.keyboard.down("d"); await p.waitForTimeout(520); await p.keyboard.up("d"); await p.waitForTimeout(250);
- const n=await p.evaluate("__msgs.filter(x=>x.type==='hit'&&x.id==='ch').length");
+ const n=await p.evaluate("__msgs.filter(x=>x.type==='hit'&&(x.id==='ch'||x.id.split(':')[1]==='ch')).length");   /* AOG-DRUM-REAL-V2: kit H is recorded, its hits name their take (H:ch:m0) */
  ok(n>=4 && n<=7, "holding D for 0.5 s at 1/16 (120 BPM) gives a roll of "+n+" hits");
  const gaps=await p.evaluate("(()=>{const w=__msgs.filter(x=>x.type==='hit').map(x=>x.when);return w.slice(2).map((t,i)=>+(t-w[i+1]).toFixed(3))})()");
  ok(gaps.every(g=>Math.abs(g-0.125)<0.002), "repeats are evenly spaced at 1/16: "+JSON.stringify(gaps));
@@ -64,7 +64,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await p.evaluate("__msgs=[]");
  const bx=await p.locator('.sp-pad[data-pad="tom"]').boundingBox();
  await p.mouse.move(bx.x+20,bx.y+20); await p.mouse.down(); await p.waitForTimeout(520); await p.mouse.up(); await p.waitForTimeout(300);
- const nm=await p.evaluate("__msgs.filter(x=>x.type==='hit'&&x.id==='tom').length");
+ const nm=await p.evaluate("__msgs.filter(x=>x.type==='hit'&&(x.id==='tom'||x.id.split(':')[1]==='tom')).length");
  ok(nm>=4 && nm<=7, "holding a pad with the mouse rolls too: "+nm);
  // roll + REC while playing records into the grid
  await p.evaluate("S.grid.rim=Array(16).fill(0); S.rec=true;");

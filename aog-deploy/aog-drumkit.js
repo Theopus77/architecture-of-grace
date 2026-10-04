@@ -18,16 +18,65 @@
      twelve-bit 26,040 Hz machine heard it (1987) or as recorded (2026).
    · The page keeps all its own logic; it asks this file five things: is this a recorded kit (has), get it ready
      (load), send its hits to an engine (post), which recording does this hit play (route), and what to show (label,
-     padNames, lineHtml, decorate, creditHtml). ════════════════════════════════════════════════════════════════════ */
+     padNames, lineHtml, decorate, creditHtml). ════════════════════════════════════════════════════════════════════
+
+   ══ AOG-DRUM-REAL-V2 (2026-10-04) — EVERY KIT THAT IMITATES REAL DRUMS IS NOW REAL DRUMS ═══════════════════════════
+   Jimmy wants every instrument sound to be a real recording. Two changes, built by music-handoff/tools/drumkits/:
+   · Kits D, E, G to K and M to O used to be made on the page and imitated real drums and percussion. They are now
+     recordings, with the same letter, name and character, each pad as loud as its page-made sound was (the
+     near-silent closed hats of I, J, K and M, J's open hat and O's roll a little louder, so they sound clearly). Where no
+     recording of a sound passes the licence rules, the nearest real instrument plays and the pad says what it is:
+     D's finger snap and G's snap are a hand clap, H's maraca is a shaker, N's talking drum is a djembe.
+   · Five new kits after the drummers Jimmy named, on screen by style only: U jazz club (Buddy Rich), V brush ballad,
+     W studio funk (Jeff Porcaro), X 1970s vintage (John Bonham), Y hip-hop break; each with a beat to start from.
+   Kits A, B, C, F and L imitate electronic drum machines (synth voices, electro, the 808, the 909), whose sound is
+   made electronically on the real machines too; they stay made on the page. So does kit M's synth tom: a pad marked
+   made:1 is drawn by the page (the page's maker) inside an otherwise recorded kit.
+   The libraries, all CC0 (public domain): Big Rusty Drums, Swirly Drums and Gogodze Phu Vol II (Karoryfer Samples),
+   Virtuosity Drums (Versilian Studios and Karoryfer), the Versilian Community Sample Library and VS Chamber
+   Orchestra 2 Community Edition (Versilian Studios), jRhodes GM (Jeff Learman) and the "a" of Hadzi-Fia (Karoryfer).
+   Credits: audio/drums/CREDITS.txt. ══════════════════════════════════════════════════════════════════════════════ */
 (function (root) {
   "use strict";
   var BASE = "/audio/drums/", VER = "1";
   var HI = 44100, LO = 26040;
   /* A pad: the name it shows, the file it plays (name-s / name-m / name-h, numbered when there are two or more takes),
-     and how many takes each layer has: [soft, normal, hard]. hat:1 = it shuts the open hat, as a foot does. */
-  function P(name, n, extra) { var o = { name: name, n: n }; if (extra) for (var k in extra) o[k] = extra[k]; return o; }
-  /* the five kits, after the drummers Jimmy named; on screen they go by style, never by player */
+     and how many takes each layer has: [soft, normal, hard]. hat:1 = it shuts the open hat, as a foot does.
+     made:1 = the page draws this pad itself (an electronic sound inside a recorded kit). */
+  function P(name, n, extra) { var o = { name: name, n: n || [0, 0, 0] }; if (extra) for (var k in extra) o[k] = extra[k]; return o; }
+  /* the recorded kits. P to T and U to Y follow the drummers Jimmy named; on screen they go by style, never by player */
   var KITS = {
+    /* AOG-DRUM-REAL-V2: the kits that used to be made on the page, now recorded (same letter, name and character) */
+    D: { dir: "dusty", en: "Kit D · dusty breaks", es: "Kit D · breaks polvorientos",
+      pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
+              clap: P("CLAP", [1, 1, 1]), tom: P("TIMBAL", [1, 2, 1]), rim: P("BLOCK", [1, 2, 1]), bell: P("TRIANG", [1, 1, 1]) } },
+    E: { dir: "boombap", en: "Kit E · boom bap", es: "Kit E · boom bap",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("CLAP", [1, 2, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("STICK", [1, 1, 1]), bell: P("SCRTCH", [1, 2, 1]) } },
+    G: { dir: "lofi", en: "Kit G · lo-fi", es: "Kit G · lo-fi",
+      pads: { kick: P("SOFT", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("TICK", [1, 2, 1]), oh: P("SIZZLE", [1, 1, 1]),
+              clap: P("CLAP", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIM", [1, 1, 1]), bell: P("KEYS", [1, 1, 1]) } },
+    H: { dir: "latin", en: "Kit H · Latin percussion", es: "Kit H · percusión latina",
+      pads: { kick: P("BOMBO", [1, 2, 1]), snare: P("TIMBAL", [1, 2, 1]), ch: P("GUIRO", [1, 1, 1]), oh: P("SHAKER", [1, 1, 1]),
+              clap: P("CLAVE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("BONGO", [1, 2, 1]), bell: P("AGOGO", [1, 1, 1]) } },
+    I: { dir: "live", en: "Kit I · live drums", es: "Kit I · batería en vivo",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("XSTICK", [1, 2, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
+    J: { dir: "arena", en: "Kit J · rock arena", es: "Kit J · rock de estadio",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("CLAPS", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("STOMP", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
+    K: { dir: "jazzbrush", en: "Kit K · jazz brushes", es: "Kit K · jazz con escobillas",
+      pads: { kick: P("KICK", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("SWISH", [1, 2, 1]),
+              clap: P("SLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("BASS", [1, 2, 1]) } },
+    M: { dir: "reggae", en: "Kit M · reggae and dub", es: "Kit M · reggae y dub",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("SYNTOM", null, { made: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("XSTICK", [1, 2, 1]), bell: P("SKANK", [1, 2, 1]) } },
+    N: { dir: "afrobeat", en: "Kit N · afrobeat", es: "Kit N · afrobeat",
+      pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("SHAKER", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("DJEMBE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("STICKS", [1, 1, 1]), bell: P("BELL", [1, 1, 1]) } },
+    O: { dir: "marching", en: "Kit O · marching band", es: "Kit O · banda de marcha",
+      pads: { kick: P("BASS", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("CLICK", [1, 1, 1]), oh: P("CYMBAL", [1, 1, 1]),
+              clap: P("ROLL", [1, 2, 1]), tom: P("TENOR", [1, 2, 1]), rim: P("RIM", [1, 1, 1]), bell: P("BELLS", [1, 1, 1]) } },
     P: { dir: "studio", en: "Kit P · studio session, dry", es: "Kit P · sesión de estudio, seca",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
@@ -42,10 +91,27 @@
               clap: P("HITOM", [1, 1, 1]), tom: P("MIDTOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } },
     T: { dir: "groovemetal", en: "Kit T · groove metal", es: "Kit T · groove metal",
       pads: { kick: P("KICK", [1, 4, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
-              clap: P("CHINA", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } }
+              clap: P("CHINA", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
+    /* AOG-DRUM-REAL-V2: five more kits after Jimmy's drummers (U Buddy Rich, W Jeff Porcaro, X John Bonham) */
+    U: { dir: "jazzclub", en: "Kit U · jazz club", es: "Kit U · club de jazz",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("PEDAL", [1, 2, 1], { hat: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
+    V: { dir: "brushes", en: "Kit V · brush ballad", es: "Kit V · balada con escobillas",
+      pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("STIR", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("FLUTTR", [1, 1, 1]) } },
+    W: { dir: "funk", en: "Kit W · studio funk", es: "Kit W · funk de estudio",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
+    X: { dir: "vintage70", en: "Kit X · 1970s vintage", es: "Kit X · vintage de los años 70",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("TOM", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("PEDAL", [1, 2, 1], { hat: 1 }), bell: P("CRASH", [1, 1, 1]) } },
+    Y: { dir: "break", en: "Kit Y · hip-hop break", es: "Kit Y · break de hip-hop",
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["P", "Q", "R", "S", "T"];
+  var IDS = ["D", "E", "G", "H", "I", "J", "K", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
   var LAYERS = ["s", "m", "h"];
+  function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
   /* Beats to start from, one per kit, in the same shape as the machine's own (1 = a hit, 2 = an accent, 3 = soft).
      The prog beat has a second part, a bar of 7 (14 steps): it goes in the next part, and the two play in turn. */
@@ -61,7 +127,23 @@
     { id: "prog47", en: "Prog rock in two parts (4, then 7)", es: "Rock progresivo en dos partes (4 y luego 7)", kit: "S", bpm: 132, swing: 0.50,
       map: { kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] },
       parts: [{ len: 14, map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0],
-        clap: [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0], rim: [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } }] }
+        clap: [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0], rim: [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } }] },
+    /* AOG-DRUM-REAL-V2: a beat for each new kit. U fast swing: the ride's "ding, ding-a ding", the hi-hat foot on 2 and 4,
+       the kick feathered on every beat, two soft snare comps. V a brush ballad: a long stir on 1 and 3, the brush on 2 and 4.
+       W funk: sixteenths on the hat, ghost notes on the snare. X 1970s rock with a fill on the toms in its second part.
+       Y a break as it sounds sampled from an old record. */
+    { id: "bebop", en: "Fast swing (bebop)", es: "Swing rápido (bebop)", kit: "U", bpm: 200, swing: 0.67,
+      map: { rim: [1,0,0,0,2,0,1,0,1,0,0,0,2,0,1,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], kick: [3,0,0,0,3,0,0,0,3,0,0,0,3,0,0,0], snare: [0,0,0,0,0,0,3,0,0,0,3,0,0,0,0,0] } },
+    { id: "brushballad", en: "Brush ballad", es: "Balada con escobillas", kit: "V", bpm: 66, swing: 0.67,
+      map: { clap: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], kick: [3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0] } },
+    { id: "funkghost", en: "Funk with ghost notes", es: "Funk con notas fantasma", kit: "W", bpm: 98, swing: 0.54,
+      map: { ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,0,3], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0], kick: [2,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0], snare: [0,0,3,0,2,0,0,3,0,0,3,0,2,0,0,3] } },
+    { id: "rock70s", en: "1970s rock with a tom fill", es: "Rock de los 70 con redoble en los toms", kit: "X", bpm: 92, swing: 0.50,
+      map: { kick: [2,0,0,1,0,0,1,0,2,0,0,0,0,0,1,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,2,0,1,0,0,0,0,0], ch: [1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0],
+        clap: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] },
+    { id: "break70s", en: "Break from an old record", es: "Break de un disco viejo", kit: "Y", bpm: 92, swing: 0.58,
+      map: { kick: [2,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,3,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0] } }
   ];
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
@@ -95,8 +177,8 @@
     loading: { en: "Getting the recorded drums ready…", es: "Preparando la batería grabada…" },
     failed:  { en: "The recorded drums did not load. Check the internet, then pick the kit again.",
                es: "La batería grabada no se cargó. Revisa el internet y vuelve a elegir el kit." },
-    credit:  { en: "Kits P to T are a real drum kit: Big Rusty Drums by Karoryfer Samples (CC0).",
-               es: "Los kits P a T son una batería de verdad: Big Rusty Drums de Karoryfer Samples (CC0)." },
+    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman.",
+               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman." },
     credits: { en: "Full credits", es: "Créditos completos" }
   };
   function w(k, lang) { var o = WORDS[k]; return o ? (lang === "es" ? o.es : o.en) : k; }
@@ -144,7 +226,8 @@
     delete DATA[b]; delete JOBS[b]; delete STATE[b];
     if (STORES) { delete STORES.rom[b]; delete STORES.hi[b]; }
   }
-  function load(b, rom, hi, q12) {
+  /* make(id), from the page: a made:1 pad drawn by the page, as {lo: twelve-bit 26,040 Hz, hi: 44,100 Hz} (or a promise of it) */
+  function load(b, rom, hi, q12, make) {
     if (!has(b)) return Promise.resolve();
     STORES = { rom: rom, hi: hi, q12: q12 };
     var at = ORDER.indexOf(b); if (at >= 0) ORDER.splice(at, 1); ORDER.push(b);
@@ -171,8 +254,17 @@
     }
     var job = Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]).then(function () {
       if (bad) { forget(b); setState(b, { state: "failed", got: n - bad, total: jobs.length }); return; }
+      /* AOG-DRUM-REAL-V2: the pads the page draws itself, before the kit counts as ready */
+      var mine = Object.keys(kit.pads).filter(function (id) { return kit.pads[id].made; });
+      return Promise.all(mine.map(function (id) {
+        return Promise.resolve(make ? make(id) : null).catch(function () { return null; }).then(function (o) { return [id, o]; });
+      })).then(function (drawn) { ready(drawn); });
+    });
+    function ready(drawn) {
       var data = {}, r = rom[b] || (rom[b] = {}), h = hi[b] || (hi[b] = {});
+      drawn.forEach(function (d) { data[d[0]] = { made: true }; if (d[1] && d[1].lo && d[1].hi) { r[d[0]] = d[1].lo; h[d[0]] = d[1].hi; } });
       Object.keys(kit.pads).forEach(function (id) {
+        if (kit.pads[id].made) return;
         var f = files(b, id), first = got[id + "/m/0"];
         var len = first.h.length / HI - onsetAt(first.h, HI);          /* every take of a pad is as long as its first normal one */
         data[id] = {};
@@ -188,7 +280,7 @@
       setState(b, { state: "ready", got: n, total: jobs.length });
       var keep = ORDER.slice(-KEEP);                 /* the two kits asked for last stay; an older one is let go */
       Object.keys(DATA).forEach(function (k) { if (k !== b && keep.indexOf(k) < 0) forget(k); });
-    });
+    }
     JOBS[b] = job;
     return job;
   }
@@ -202,6 +294,7 @@
     Object.keys(sent).forEach(function (v) {
       var p = v.split(":"); if (p[1] === id && p[0] !== b) { port.postMessage({ type: "clear", id: v }); delete sent[v]; }
     });
+    if (DATA[b][id].made) return;                     /* AOG-DRUM-REAL-V2: the page sends its own drawn pad */
     LAYERS.forEach(function (lay) {
       DATA[b][id][lay].forEach(function (tk, j) {
         var lo = cut(tk.lo), hi = cut(tk.hi), v = vid(b, id, lay, j);
@@ -220,7 +313,7 @@
   }
   /* which recording this hit plays: the layer by how hard it is struck, the take in turn */
   function route(m, b, id, accent) {
-    if (!has(b)) return m;
+    if (!has(b) || made(b, id)) return m;           /* a pad the page draws keeps its own name */
     var p = KITS[b].pads[id], k = pick(b, id, accent);
     m.id = vid(b, id, k.lay, k.j);
     if (p && p.hat) m.choke = 1;
@@ -228,7 +321,7 @@
   }
   /* without the sampler engine (a very old browser, or the first tap before it starts): play the recording directly */
   function playDirect(ac, dest, b, id, t0, accent, level) {
-    var d = DATA[b] && DATA[b][id]; if (!d || !ac || !dest) return;
+    var d = DATA[b] && DATA[b][id]; if (!d || d.made || !ac || !dest) return;
     var k = pick(b, id, accent), tk = d[k.lay] && d[k.lay][k.j]; if (!tk) return;
     try {
       var buf = ac.createBuffer(1, tk.hi.length, HI); buf.getChannelData(0).set(tk.hi);
@@ -286,7 +379,7 @@
   try { style(); } catch (e) {}
 
   root.AOGDrumKit = {
-    ids: IDS.slice(), starters: STARTERS, parts: parts, unparts: unparts, has: has, label: label, padNames: padNames, files: files,
+    ids: IDS.slice(), starters: STARTERS, parts: parts, unparts: unparts, has: has, made: made, label: label, padNames: padNames, files: files,
     load: load, post: post, route: route, playDirect: playDirect, state: function (b) { return STATE[b] || null; },
     ready: function (b) { return !!DATA[b]; }, lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
   };
