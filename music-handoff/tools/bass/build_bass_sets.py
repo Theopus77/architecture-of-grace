@@ -210,16 +210,22 @@ def _ar_fill(x, i, j, p=40, ctx=400):
     return sm
 
 
+DECLIP_MAX = 1.5    # a rebuilt peak may reach 1.5 times the clip level, no more
+
+
 def declip(x):
-    """Rebuild flat-topped (clipped) peaks: short runs (up to 12 samples) by least-squares AR interpolation, longer
-    ones by a cubic spline through 8 good samples on each side (the better method for each length, measured by
-    clipping clean notes on purpose). The rebuilt wave is never inside the clip level, nor more than twice it."""
+    """Rebuild flat-topped (clipped) peaks: short runs (up to 12 samples, with 40 good samples before them) by
+    least-squares AR interpolation, the others by a cubic spline through 8 samples on each side (the better method for
+    each length, measured by clipping clean notes on purpose). Before the file's first sample the string was at rest,
+    so a run at the very start is drawn up from silence. The rebuilt wave never sits inside the clip level; where it
+    would rise past DECLIP_MAX times the clip, the part above the clip is scaled down, keeping its rounded shape."""
     runs, lev = clipped_runs(x)
     y = x.copy()
+    pad = 8
     for i, j in runs:
         s = np.sign(x[i])
         seg = None
-        if j - i + 1 <= 12:
+        if j - i + 1 <= 12 and i >= 40:
             try:
                 seg = _ar_fill(y, i, j)
                 if np.abs(seg).max() > 2 * lev:
@@ -227,9 +233,14 @@ def declip(x):
             except np.linalg.LinAlgError:
                 seg = None
         if seg is None:
-            idx = np.r_[max(0, i - 8):i, j + 1:min(len(x), j + 9)]
-            seg = CubicSpline(idx, y[idx])(np.arange(i, j + 1))
-        y[i:j + 1] = s * np.clip(np.abs(seg), lev, 2 * lev)
+            yp = np.concatenate([np.zeros(pad), y])
+            idx = np.r_[max(0, i + pad - 8):i + pad, j + 1 + pad:min(len(yp), j + 9 + pad)]
+            seg = CubicSpline(idx, yp[idx])(np.arange(i + pad, j + 1 + pad))
+        a = np.maximum(np.abs(seg), lev)
+        r = a.max() / lev
+        if r > DECLIP_MAX:
+            a = lev + (a - lev) * ((DECLIP_MAX - 1) / (r - 1))
+        y[i:j + 1] = s * a
     return y, runs
 
 
