@@ -3,9 +3,9 @@
 # a note every few semitones, the quiet moment before the note trimmed, each note shortened and faded, the notes of an
 # instrument brought to one level, and each note's pitch measured and, if it is off, the note retuned (resampled).
 #
-#   python3 piano_real_sets.py <aog-deploy/audio/piano> <VCSL clone> <aog-deploy/audio/band/flute>
+#   python3 piano_real_sets.py <aog-deploy/audio/piano> <VCSL clone> <aog-deploy/audio/band/flute> [sets,…] [Discord-SFZ-GM-Bank clone]
 #
-# Sources (all CC0 1.0):
+# Sources (all CC0 1.0, except the Rhodes: CC0 as its author wrote it, "Creative Commons CC0, Jeff Learman"):
 #   Versilian Community Sample Library (VCSL), https://github.com/sgossner/VCSL — the harpsichord (the English one, a
 #   Zuckermann kit harpsichord, "Normal": the brightest and cleanest of the five in the middle of the keyboard), the pipe
 #   organ (the loud registration, a full chorus; sampled by Simon Dalzell of Ivy Audio), the vibraphone (soft mallets),
@@ -13,6 +13,12 @@
 #   recording of a real Yamaha TX81Z playing its "FM Piano" patch (the loud layer).
 #   VS Chamber Orchestra: Community Edition, through The Band's own notes in the repo (audio/band/flute/*s.mp3): the flute,
 #   soft and held, without vibrato (the page's tape gives it its wobble).
+#   AOG-PIANO-REAL-V2: "jRhodes GM" by Jeff Learman (a 1977 Rhodes Mark I Stage 73), mapped and relooped by him for the
+#   Discord SFZ GM Bank, https://github.com/sfzinstruments/Discord-SFZ-GM-Bank ("Discord GM/Melodic/005-Electric Piano 1"):
+#   15 notes, F1 to C7, one layer. Its .sfz says "License: Creative Commons CC0, Jeff Learman". Each file is short and ends
+#   in a loop (the 'smpl' chunk) that a player repeats while it fades the note out. Those loops are clean (the jump back is
+#   no bigger than the note's own steps) and level inside (within 0.6 dB), so here each note's tail is made from them: the
+#   loop, repeated, carries on fading at the rate the note was fading as it reached it. The page plays one file per note.
 #
 # What is new beside piano_vsco_sets.py:
 #   · every source is read through ffmpeg (24-bit, 48 kHz and MP3 sources as well), and the two microphones are lined up
@@ -31,6 +37,7 @@ import numpy as np
 from scipy.signal import resample_poly, butter, sosfilt, lfilter
 
 OUT, VCSL, FLUTE = sys.argv[1], sys.argv[2], sys.argv[3]
+GMBANK = sys.argv[5] if len(sys.argv) > 5 else None
 SR = 44100
 NOTE = {"C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5, "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11}
 
@@ -41,6 +48,7 @@ GL = "Idiophones/Struck Idiophones/Glockenspiel/glock_loud_%s_01.wav"
 TB = "Idiophones/Struck Idiophones/Tubular Bells 2/TB_hit_%s.wav"
 KT = "Idiophones/Plucked Idiophones/Kalimba, Tanzania/MBira3_pluck_Main_%s_50_100_rr2.wav"
 FM = "Electrophones/TX81Z/FM Piano/FMPiano_%s_vl3.wav"
+RH = "Discord GM/Melodic/005-Electric Piano 1/A_%03d__%s.wav"
 
 
 def nm(name, octave_up=0):
@@ -85,6 +93,10 @@ SETS = {
     # The Band's flute (VSCO 2 CE), soft, held, without vibrato: every note it has, C4 to C7; held notes, looped from 1.2 s,
     # each loop 2.0 to 2.8 s long (The Band's notes fade out after 4.5 s, so the loops end before that)
     "flute": dict(kind="hold", pitch="harm", loop=(1.2, 2.0, 2.8), files=[(m, "%ds" % m, m) for m in [60, 64, 69, 72, 76, 81, 84, 88, 93, 96]]),
+    # AOG-PIANO-REAL-V2: the Rhodes, all 15 notes (about every fifth semitone, F1 to C7); its file names give the MIDI note
+    "rhodes": dict(kind="rhodes", pitch="harm", lib="gm", files=[(m, RH % (m, n), m) for m, n in [(29, "F1_3"), (35, "B1_3"), (40, "E2_3"),
+        (45, "A2_3"), (50, "D3_3"), (55, "G3_3"), (59, "B3_3"), (62, "D4_3"), (65, "F4_3"), (71, "B4_4"), (76, "E5_4"), (81, "A5_4"),
+        (86, "D6_4"), (91, "G6_4"), (96, "C7_4")]]),
 }
 
 
@@ -97,6 +109,9 @@ def length_for(kind, m):
         return 6.0 if m <= 65 else 5.2 if m <= 72 else 4.4
     if kind == "tine":
         return 2.6 if m <= 55 else 2.1 if m <= 70 else 1.7
+    if kind == "rhodes":                 # an electric piano's bass rings a long time; a note that dies away sooner is cut there.
+        # Every note keeps at least a second and a half of its loop's tail before the last fade
+        return 10.0 if m <= 45 else 9.0 if m <= 62 else 8.0 if m <= 71 else 6.0 if m <= 86 else 4.0
     if kind == "ep":
         return 5.0 if m <= 40 else 4.2 if m <= 56 else 3.4 if m <= 72 else 2.6
     return None                          # held: set by the loop
@@ -124,6 +139,38 @@ def load(path):
         if c > best:
             best, blag = c, lag
     return 0.5 * (L + np.roll(R, -blag))
+
+
+def smpl_loop(path):
+    """the first loop in a WAV file's 'smpl' chunk: (start, end) in sample frames, the end included"""
+    import struct
+    b = open(path, "rb").read()
+    i = 12
+    while i + 8 <= len(b):
+        cid, sz = b[i:i + 4], struct.unpack("<I", b[i + 4:i + 8])[0]
+        if cid == b"smpl":
+            return struct.unpack("<II", b[i + 8 + 44:i + 8 + 52])
+        i += 8 + sz + (sz & 1)
+    raise ValueError("no loop in " + path)
+
+
+def rhodes_tail(d, path):
+    """AOG-PIANO-REAL-V2: the note as recorded up to its loop, then the loop over and over, fading on at the rate the note
+    was fading over the 1.5 s before it (from 0.15 s at the earliest, past the strike), until it is 60 dB below where the loop
+    began. Returns the note, the seconds it lasts, and that rate (dB a second)."""
+    a, z = smpl_loop(path)
+    loop = d[a:z + 1]
+    W = int(0.1 * SR)
+    t0 = max(int(0.15 * SR), a - int(1.5 * SR))
+    k = (a - t0) // W
+    t = [(t0 + (i + 0.5) * W) / SR for i in range(k)]
+    lv = [20 * np.log10(np.sqrt((d[t0 + i * W:t0 + (i + 1) * W] ** 2).mean()) + 1e-12) for i in range(k)]
+    slope = min(-1.0, float(np.polyfit(t, lv, 1)[0]))          # never a note that does not fade
+    L = a / SR + 60.0 / -slope
+    n = int(L * SR) + 1
+    out = np.concatenate([d[:a], np.tile(loop, int(np.ceil(max(0, n - a) / len(loop))) + 1)])[:n]
+    s = (np.arange(len(out)) - a) / SR
+    return out * np.where(s > 0, 10 ** (slope * s / 20), 1.0), L, slope
 
 
 def kweight(d):
@@ -185,7 +232,8 @@ def cents_off(d, onset, midi, how, kind):
     """how far (in cents) the note sits above midi: harm = its row of partials (each partial's frequency over its number,
     a weighted median), bar = its lowest partial, bell = half its fourth partial (the strike note the ear hears)"""
     f_exp = 440.0 * 2 ** ((midi - 69) / 12)
-    a, z = {"hold": (0.6, 2.6), "pluck": (0.05, 0.8), "ep": (0.05, 1.0), "bar": (0.04, 0.6), "bell": (0.05, 1.0), "tine": (0.02, 0.4)}[kind]
+    a, z = {"hold": (0.6, 2.6), "pluck": (0.05, 0.8), "ep": (0.05, 1.0), "rhodes": (0.05, 1.0), "bar": (0.04, 0.6), "bell": (0.05, 1.0),
+            "tine": (0.02, 0.4)}[kind]
     seg = d[onset + int(a * SR): onset + int(z * SR)]
     n = 1 << 19
     S = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), n))
@@ -238,15 +286,27 @@ def make(name, spec, report):
     kind = spec["kind"]
     os.makedirs(os.path.join(OUT, name), exist_ok=True)
     notes, segs = [], []
+    tails = {}
     for target, src, sounding in spec["files"]:
-        path = os.path.join(FLUTE, src + ".mp3") if name == "flute" else os.path.join(VCSL, src)
+        if spec.get("lib") == "gm":
+            if not GMBANK:
+                sys.exit("the Rhodes needs the Discord-SFZ-GM-Bank clone as the fifth argument")
+            path = os.path.join(GMBANK, src)
+        else:
+            path = os.path.join(FLUTE, src + ".mp3") if name == "flute" else os.path.join(VCSL, src)
         d = load(path)
+        Lnat = None
+        if kind == "rhodes":                                 # AOG-PIANO-REAL-V2: the tail from the note's own loop
+            d, Lnat, slope = rhodes_tail(d, path)
+            tails[target] = (smpl_loop(path)[0] / SR, slope)
         pk = np.abs(d).max()
         onset = int(np.argmax(np.abs(d) > pk * spec.get("onset", 0.03)))      # the harpsichord's low keys knock before they pluck
         dev = cents_off(d, onset, sounding, spec["pitch"], kind)
         shift = (target - sounding) * 100 + dev
         start = max(0, onset - int(0.005 * SR))
         L = length_for(kind, target) if kind != "hold" else spec["loop"][0] + spec["loop"][2] + 0.3
+        if Lnat is not None:                                 # a note that has died away 60 dB ends there (as long as retuning makes it)
+            L = min(L, round(Lnat * 2 ** (shift / 1200) + 0.3, 2))
         seg = d[start: start + int((L * 2 ** (abs(shift) / 1200) + 0.3) * SR)]
         if abs(shift) > 1:
             seg = retune(seg, shift)
@@ -262,7 +322,7 @@ def make(name, spec, report):
         segs.append((target, src, dev, seg))
     # one level for the whole instrument: each note's loudest 400 ms, K-weighted, to the target; if any note's sharpest
     # instant would then pass 0.93, the target comes down for all of them, so they stay even
-    target_db = {"pluck": -21.0, "bar": -21.0, "bell": -22.0, "tine": -21.0, "ep": -21.0, "hold": -22.0}[kind]
+    target_db = {"pluck": -21.0, "bar": -21.0, "bell": -22.0, "tine": -21.0, "ep": -21.0, "rhodes": -21.0, "hold": -22.0}[kind]
     lv = [loudest(s) for (_, _, _, s) in segs]
     worst = max(np.abs(s).max() * 10 ** ((target_db - l) / 20) for (_, _, _, s), l in zip(segs, lv))
     if worst > 0.93:
@@ -280,7 +340,9 @@ def make(name, spec, report):
             ends[target] = round(e, 5)
             seg = seg[:int((e + 0.25) * SR)]
             loopinfo = "  loop %.1f-%.5f s (match %.3f)" % (spec["loop"][0], e, c)
-        fo = int((0.06 if kind == "hold" else 0.6) * SR); seg[-fo:] *= np.cos(np.linspace(0, np.pi / 2, fo)) ** 2
+        if target in tails:
+            loopinfo = "  its own loop from %.2f s, fading on at %.1f dB/s" % tails[target]
+        fo = int((0.06 if kind == "hold" else 1.0 if kind == "rhodes" else 0.6) * SR); seg[-fo:] *= np.cos(np.linspace(0, np.pi / 2, fo)) ** 2
         out = os.path.join(OUT, name, "%dm.mp3" % target)
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tf:
             pcm = (np.clip(seg, -1, 1) * 32767).astype(np.int16).tobytes()

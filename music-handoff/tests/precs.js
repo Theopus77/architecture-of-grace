@@ -1,5 +1,6 @@
 /* AOG-PIANO-REAL-V1 — the piano's sounds that became recordings (music-handoff/tools/piano_real_sets.py): the '80s electric
-   piano, the church organ, the glockenspiel, the vibraphone, the bells, the harpsichord, the kalimba and the tape flute.
+   piano, the church organ, the glockenspiel, the vibraphone, the bells, the harpsichord, the kalimba and the tape flute; and
+   (AOG-PIANO-REAL-V2) the warm electric piano, whose notes' tails were made from their own loops.
    For each one:
    · its recordings download only when it is picked (none at page load, none for the others), and until they arrive the
      version built on the page plays, with a line that says so;
@@ -16,10 +17,14 @@ const srv=require("./srv.js")(9370);
 const U="http://localhost:9370/music-piano.html";
 const MEASURE=(0,eval)(fs.readFileSync(__dirname+"/bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
 let fails=0, passes=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(c) passes++; else fails++; };
-const REAL={ep80:"fmpiano", church:"pipeorgan", glock:"glockenspiel", vibes:"vibraphone", bells:"bells", harpsi:"harpsichord", kalimba:"kalimba", tapeflute:"flute"};
+const REAL={ep80:"fmpiano", church:"pipeorgan", glock:"glockenspiel", vibes:"vibraphone", bells:"bells", harpsi:"harpsichord", kalimba:"kalimba", tapeflute:"flute",
+  epwarm:"rhodes"};   /* AOG-PIANO-REAL-V2: the warm electric piano */
 /* how each set's pitch is measured, and over which part of the note (seconds after it starts) */
 const HOW={fmpiano:["harm",0.05,1.0], pipeorgan:["harm",0.6,2.6], harpsichord:["harm",0.05,0.8], flute:["harm",0.6,2.6],
-  vibraphone:["bar",0.04,0.6], glockenspiel:["bar",0.04,0.6], kalimba:["bar",0.02,0.4], bells:["bell",0.05,1.0]};
+  vibraphone:["bar",0.04,0.6], glockenspiel:["bar",0.04,0.6], kalimba:["bar",0.02,0.4], bells:["bell",0.05,1.0], rhodes:["harm",0.05,1.0]};
+/* where each warm electric piano note's own loop began in its recording (seconds; piano_real_sets.py prints them): from there
+   on, the note is that loop repeated, fading on */
+const RHODES_LOOP={29:4.92, 35:4.25, 40:5.85, 45:6.35, 50:5.39, 55:5.76, 59:4.84, 62:6.08, 65:5.34, 71:4.43, 76:3.09, 81:3.80, 86:3.53, 91:1.53, 96:0.65};
 /* the pitch meter, in the page: an FFT, a peak found to a fraction of a bin, and the three ways of reading a note */
 const PITCH=`
 window.__fft=function(re,im){ const n=re.length; for(let i=1,j=0;i<n;i++){ let b=n>>1; for(;j&b;b>>=1) j^=b; j^=b; if(i<j){ let t=re[i]; re[i]=re[j]; re[j]=t; t=im[i]; im[i]=im[j]; im[j]=t; } }
@@ -148,6 +153,34 @@ window.__calls={sample:0, made:0};
       return out; }, [id,set,ms]);
     for(const x of r) ok(x.all<=x.own+1.0 && x.seam<=x.held*1.05 && x.seams>=2,
       `${id} ${x.m} held 7 s, ${x.seams} loops: its loudness moves ${x.all.toFixed(2)} dB (the recording itself ${x.own.toFixed(2)}); the seam's sharpest step ${x.seam.toFixed(4)} (before it: ${x.held.toFixed(4)})`);
+  }
+
+  /* ── 4b · the warm electric piano: each note's tail, made from its own loop, fades smoothly (no click at a repeat, no
+     pulsing: its loudness falls along a straight line in decibels), and how hard a key is played changes the tone ── */
+  { const r=await p.evaluate(async LOOP=>{
+      await loadSet("rhodes"); const out=[], sr=44100;
+      for(const m of Object.keys(LOOP).map(Number)){
+        const buf=SETS.rhodes.buf[m+"m"], dur=buf.duration, st=SETS.rhodes.start[m+"m"], d=await __note("epwarm", m, 0.74, dur+0.2);
+        const at=t=>0.02+t-st;                              /* where a moment of the file lands in this rendering */
+        const a=at(LOOP[m]+0.1), z=at(dur-1.2);           /* the tail, before the file's last fade */
+        const step=(x,y)=>{ let q=0; for(let i=Math.max(1,Math.floor(x*sr)); i<Math.min(d.length,Math.floor(y*sr)); i++) q=Math.max(q,Math.abs(d[i]-d[i-1])); return q; };
+        const W=Math.floor(0.05*sr), tt=[], lv=[];
+        for(let i=Math.floor(a*sr); i+W<=Math.floor(z*sr); i+=W){ let q=0; for(let k=i;k<i+W;k++) q+=d[k]*d[k]; tt.push((i+W/2)/sr); lv.push(10*Math.log10(q/W+1e-20)); }
+        const n=tt.length, mt=tt.reduce((s,x)=>s+x,0)/n, ml=lv.reduce((s,x)=>s+x,0)/n;
+        let sxy=0, sxx=0; for(let i=0;i<n;i++){ sxy+=(tt[i]-mt)*(lv[i]-ml); sxx+=(tt[i]-mt)*(tt[i]-mt); }
+        const k=sxy/sxx, off=Math.max(...lv.map((x,i)=>Math.abs(x-(ml+k*(tt[i]-mt)))));
+        out.push({m:m, tail:+(z-a).toFixed(2), rate:+k.toFixed(1), off:+off.toFixed(2), seam:step(a,z), before:step(at(LOOP[m]-0.6), at(LOOP[m]-0.1))});
+      }
+      /* soft and hard: how bright middle C is (its energy above 1 kHz, against all of it, in dB) in its first 0.3 s, and the
+         hard note a second later */
+      const bright=(d,a,z)=>{ const s0=Math.floor(a*sr), L=Math.floor((z-a)*sr); let N=1; while(N<L) N<<=1; const re=new Float64Array(N), im=new Float64Array(N);
+        for(let i=0;i<L;i++) re[i]=d[s0+i]*(0.5-0.5*Math.cos(2*Math.PI*i/(L-1))); __fft(re,im); let hi=0, s=0;
+        for(let i=1;i<N/2;i++){ const P=re[i]*re[i]+im[i]*im[i]; s+=P; if(i*sr/N>1000) hi+=P; } return 10*Math.log10(hi/s); };
+      const soft=await __note("epwarm", 60, 0.3, 2.2), hard=await __note("epwarm", 60, 1.0, 2.2);
+      return {notes:out, soft:bright(soft,0.02,0.32), hard:bright(hard,0.02,0.32), hardLate:bright(hard,1.3,1.6)}; }, RHODES_LOOP);
+    for(const x of r.notes) ok(x.tail>=0.5 && x.off<=1.0 && x.seam<=x.before*1.05,
+      `epwarm ${x.m}: its ${x.tail} s tail fades at ${x.rate} dB/s, never more than ${x.off} dB off a smooth fade; sharpest step ${x.seam.toFixed(4)} (before the loop: ${x.before.toFixed(4)})`);
+    ok(r.hard>=r.soft+6 && r.hard>=r.hardLate+1, `epwarm: played hard (at least 6 dB more above 1 kHz; the built warm sound had 13.5), middle C's attack is brighter (${r.hard.toFixed(1)} dB above 1 kHz) than played softly (${r.soft.toFixed(1)} dB), and settles (${r.hardLate.toFixed(1)} dB a second later)`);
   }
 
   /* ── 5 · the offline renders use the recordings ── */

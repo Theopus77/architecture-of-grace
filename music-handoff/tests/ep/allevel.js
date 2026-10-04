@@ -6,7 +6,7 @@ const pw=require(require("child_process").execSync("npm root -g").toString().tri
 const srv=require("../srv.js")(9950);
 const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(__dirname+"/../bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
 /* AOG-PIANO-REAL-V1: the '80s electric piano and the church organ are recordings now, so they are checked like the rest */
-const OLD=["grand","upright","honky","epwarm","epreed","organ"];
+const OLD=["grand","upright","honky","epreed","organ"];   /* AOG-PIANO-REAL-V2: the warm electric piano too */
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
 (async()=>{
   const b=await pw.chromium.launch(); const p=await b.newPage(); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
