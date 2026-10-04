@@ -17,8 +17,8 @@ This file is for a NEW session taking over the music work. Everything below can 
 
 | What | Where | State |
 |---|---|---|
-| Live site | `main` | Everything up to PR **#264**: The Band's saxophone, pads 1–6 in a minor key, the piano's 16 ways to play. |
-| The amp and pedals | branch `claude/drum-pads-touch-keys`, commit `63d8440a` | Pushed, **not deployed**. See §3. |
+| Live site | `main` | Everything up to PR **#265**: the amp, pedals, cabinets and EQ; 22 guitar and 13 bass sounds; the metal distortion fix (on top of #264's saxophone, pads 1–6 and the piano's 16 ways). |
+| The amp and pedals | live since #265 (`aog-amp.js`, `aog-amp-worklet.js`) | Deployed 2026-10-04. |
 | Nine helper branches | `origin/claude/amp-*` | Each helper agent pushes its branch when it finishes. See §4. |
 
 The working branch for music is `claude/drum-pads-touch-keys`. After every deploy it is reset to `origin/main`, keeping the same name.
@@ -48,7 +48,7 @@ The working branch for music is `claude/drum-pads-touch-keys`. After every deplo
     - slap and pop on the bass. Most of it lives in `aog-solo.js`.
 15. "yes I want how it is played increase and start a chord pattern increased!!!!" (the guitar page) → the **ways** branch: more ways to play, and chord patterns 18 → 44 in five groups (Pop, rock and folk · Rock and metal · Soul, funk and dance · Blues and jazz · Minor and moody). The 18 old ids are unchanged. **At merge, copy the same PRESETS and PRESET_GROUPS into `music-piano.html` and `_work/music/band_script.js`**, so all four tools offer the same patterns. Leave the piano lessons alone: they use the old ids.
 
-## 3. The amp (AOG-AMP-V1): on the branch, not live yet
+## 3. The amp (AOG-AMP-V1): live since #265
 
 The files:
 - `aog-deploy/aog-amp-worklet.js`: the AudioWorklet that bends the wave, four times oversampled (a 64-tap Kaiser FIR, 90 dB clean round trip). In order: pickup resonance → gate, compressor, wah, octave → overdrive, distortion, fuzz → 1–4 preamp stages → the real treble–middle–bass tone stack (solved from the circuit, checked against Yeh & Smith) or bass shelves → a power amp with sag → presence and depth. In Node it exports `AmpCore` (the tests use it).
