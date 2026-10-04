@@ -47,7 +47,7 @@ const STR={
   drums:{en:"The drum machine",es:"La caja de ritmos"}, decks:{en:"The turntables",es:"Los tocadiscos"},
   instrument:{en:"Instrument",es:"Instrumento"},
   grpBrass:{en:"Brass",es:"Metales"}, grpWinds:{en:"Woodwinds",es:"Maderas"},
-  grpStrings:{en:"Strings",es:"Cuerdas"}, grpPerc:{en:"Percussion",es:"Percusión"}, grpBands:{en:"Bands",es:"Bandas"}, grpAll:{en:"Everyone",es:"Todos"},
+  grpStrings:{en:"Strings",es:"Cuerdas"}, grpPerc:{en:"Percussion",es:"Percusión"}, grpJazz:{en:"Jazz",es:"Jazz"}, grpBands:{en:"Bands",es:"Bandas"}, grpAll:{en:"Everyone",es:"Todos"},
   loadingPlayers:{en:"Getting the {name} ready · {n} of {all} players. The ready ones play now.",es:"Preparando: {name} · {n} de {all} instrumentos. Los que están listos ya suenan."},
   drumThree:{en:"A waltz counts in threes, so it plays without your four-beat drum beat.",es:"Un vals cuenta de tres en tres, así que suena sin tu ritmo de batería de cuatro."},
   loading:{en:"Getting the {name} ready… {n} of {all}",es:"Preparando: {name}… {n} de {all}"},
@@ -116,8 +116,20 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
    flute, oboe and bassoon with vibrato (their short notes are the plain ones'). And bands made of them. */
 const SOUNDS={
   trumpet: {grp:"grpBrass", en:"Trumpet",          es:"Trompeta",        gain:1.4, rev:0.14, stand:"brass"},
-  trumpet_vib:{grp:"grpBrass", en:"Trumpet · with vibrato", es:"Trompeta · con vibrato", gain:1.486, rev:0.14, stand:"brass"},
-  trumpet_harmon:{grp:"grpBrass", en:"Trumpet · jazz mute (harmon)", es:"Trompeta · sordina de jazz (harmon)", gain:1.652, rev:0.16, stand:"brass"},
+  /* AOG-BAND-JAZZ-V1 (2026-10-04) — Jimmy's list of the players the band's sounds should be like; on screen each is named
+     by its style. trad jazz: warm and open, singing, vibrato on held notes; cool jazz: the harmon mute, intimate and
+     breathy (touch < 1 leans on the soft recording); bebop: bright and brassy, with bite (touch > 1 leans on the loud one) */
+  trumpet_vib:{grp:"grpJazz", en:"Trumpet · trad jazz, warm with vibrato", es:"Trompeta · jazz tradicional, cálida con vibrato", gain:1.486, rev:0.16, stand:"brass"},
+  trumpet_bebop:{grp:"grpJazz", en:"Trumpet · bebop, bright", es:"Trompeta · bebop, brillante", parts:["trumpet"], touch:1.3, gain:1.16, rev:0.1, stand:"brass"},
+  trumpet_harmon:{grp:"grpJazz", en:"Muted trumpet · cool jazz", es:"Trompeta con sordina · cool jazz", touch:0.7, gain:2.255, rev:0.2, stand:"brass"},
+  sax_bebop:{grp:"grpJazz", en:"Alto sax · bebop, bright", es:"Saxo alto · bebop, brillante", parts:["sax"], touch:1.3, gain:1.111, rev:0.1, stand:"wind"},
+  bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, gain:1.003, rev:0.12, stand:"brass",
+    who:{en:"trumpet and alto sax on the tune, trombone, a plucked double bass and drums",es:"trompeta y saxo alto en la melodía, trombón, un contrabajo pulsado y batería"}},
+  cooljazz:{grp:"grpJazz", en:"Cool jazz group",   es:"Grupo de cool jazz", parts:["contrabass_pizz","horn","sax","trumpet_harmon"], touch:0.7, gain:2.022, rev:0.2, stand:"brass",
+    who:{en:"muted trumpet, alto sax, French horn and a plucked double bass",es:"trompeta con sordina, saxo alto, corno francés y un contrabajo pulsado"}},
+  bigband: {grp:"grpJazz", en:"Big band · swing", es:"Big band · swing", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["trombone","b",12],["trombone","lo",-12],["sax","lo",0],["trumpet","mid",0],["trumpet","top",12]],
+    kit:["bd","sn","cy"], touch:1.15, gain:0.769, rev:0.14, stand:"brass",
+    who:{en:"trumpets, saxophones, trombones, a plucked double bass and drums",es:"trompetas, saxofones, trombones, un contrabajo pulsado y batería"}},
   trumpet_straight:{grp:"grpBrass", en:"Trumpet · straight mute", es:"Trompeta · sordina recta", gain:1.387, rev:0.16, stand:"brass"},
   trombone:{grp:"grpBrass", en:"Trombone",         es:"Trombón",         gain:1.05, rev:0.14, stand:"brass"},
   trombone_vib:{grp:"grpBrass", en:"Trombone · with vibrato", es:"Trombón · con vibrato", gain:0.967, rev:0.14, stand:"brass"},
@@ -167,8 +179,6 @@ const SOUNDS={
   percussion:{grp:"grpPerc", en:"Percussion section · all", es:"Sección de percusión · toda", parts:["timpani","marimba","xylophone","glockenspiel"], dbl:[["timpani","b5",0]],
     kit:["bd","sn","cy","tri","tamb","roll"], gain:1.124, rev:0.18, stand:"pluck",
     who:{en:"timpani, marimba, xylophone, glockenspiel, bass drum, snare drum, cymbal, triangle and tambourine",es:"timbales, marimba, xilófono, glockenspiel, bombo, caja, platillo, triángulo y pandereta"}},
-  bigband: {grp:"grpBands", en:"Big band",         es:"Big band de jazz", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["trombone","b",12]], gain:1.137, rev:0.14, stand:"brass",
-    who:{en:"trumpet, saxophone, trombones and a plucked double bass",es:"trompeta, saxofón, trombones y un contrabajo pulsado"}},
   marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], gain:1.031, rev:0.14, stand:"brass",
     who:{en:"tuba, trombone, saxophone, trumpet and piccolo",es:"tuba, trombón, saxofón, trompeta y flautín"}},
   mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.223, rev:0.15, stand:"brass",
@@ -499,7 +509,7 @@ function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency
    own recording. */
 function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
   const set=SETS[setKey(inst)], man=MAN[inst]; if(!set || !set.ready) return null;
-  const vv=Math.max(0.05, Math.min(1, v)), srcs=[], snd=SOUNDS[S.sound], trim=(snd.trim&&snd.trim[inst])||1;
+  const snd=SOUNDS[S.sound], vv=Math.max(0.05, Math.min(1, v*(snd.touch||1))), srcs=[], trim=(snd.trim&&snd.trim[inst])||1;   /* touch: a style's lean to the soft or the loud recording */
   const out=gainAt(c, PLAYER[inst]*snd.gain*trim*(0.55+0.45*vv)), rel=gainAt(c, 1);
   const play=(key, n, g, gTo)=>{
     const buf=set.buf[key]; if(!buf) return null;
@@ -859,9 +869,12 @@ function paintText(){
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); buildKeys();
 }
+/* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
+const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpJazz","grpBands","grpAll"];
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
   Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp||""; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(id); });
+  order.sort((a,b)=>(GROUP_ORDER.indexOf(a)+1||99)-(GROUP_ORDER.indexOf(b)+1||99));
   const opt=id=>`<option value="${id}"${id===S.sound?" selected":""}>${soundName(id)}</option>`;
   sel.innerHTML=order.map(g=>g ? `<optgroup label="${t(g)}">`+groups[g].map(opt).join("")+`</optgroup>` : groups[g].map(opt).join("")).join("");
 }
