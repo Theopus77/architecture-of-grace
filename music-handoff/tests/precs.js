@@ -84,9 +84,12 @@ window.__calls={sample:0, made:0};
   const p=await c.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
   await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   /* every request for a piano recording, by folder */
+  /* AOG-PIANO-STEREO-V1: a set's folder can have a new name (strings2/: rebuilt in stereo, the old name stays cached for a
+     year), so every request is counted under the set the page's SETS gives that folder */
+  const DIR={}, SET_OF={}; for(const m of fs.readFileSync(path.join(ROOT,"music-piano.html"),"utf8").matchAll(/(\w+):\s*\{dir:"\/audio\/piano\/([a-z0-9]+)\/"/g)){ DIR[m[1]]=m[2]; SET_OF[m[2]]=m[1]; }
   const got={}; let slow=null;
-  p.on("request", r=>{ const m=r.url().match(/\/audio\/piano\/([a-z0-9]+)\//); if(m) got[m[1]]=(got[m[1]]||0)+1; });
-  await p.route(/\/audio\/piano\/[a-z]+\/\d+m\.mp3$/, async r=>{ if(slow && r.request().url().indexOf("/audio/piano/"+slow+"/")>=0) await new Promise(x=>setTimeout(x,180)); r.continue(); });
+  p.on("request", r=>{ const m=r.url().match(/\/audio\/piano\/([a-z0-9]+)\//); if(m){ const k=SET_OF[m[1]]||m[1]; got[k]=(got[k]||0)+1; } });
+  await p.route(/\/audio\/piano\/[a-z0-9]+\/\d+m\.mp3$/, async r=>{ if(slow && r.request().url().indexOf("/audio/piano/"+(DIR[slow]||slow)+"/")>=0) await new Promise(x=>setTimeout(x,180)); r.continue(); });
   await p.goto(U); await p.waitForTimeout(2500);
   await p.addScriptTag({content:PITCH}); await p.addScriptTag({content:MEASURE});
 

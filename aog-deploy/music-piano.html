@@ -882,7 +882,7 @@ const SETS={
      notes loop between 2.4 s and 5.4 s while a key is held (audio/piano/CREDITS.txt) */
   harp:   {dir:"/audio/piano/harp/",    layers:["m"], even:true, notes:[28,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,98,101]},
   marimba:{dir:"/audio/piano/marimba/", layers:["m"], even:true, notes:[41,48,55,59,65,72,79,83,89,96]},
-  strings:{dir:"/audio/piano/strings/", layers:["m"], even:true, loop:[2.4,5.4], notes:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]},
+  strings:{dir:"/audio/piano/strings2/", layers:["m"], even:true, loop:[2.4,5.4], notes:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]},
   /* AOG-PIANO-REAL-V1 (2026-10-04) — Jimmy: "Also are ALL instruments sounds real?" Eight more are recordings now, made the
      same way (music-handoff/tools/piano_vcsl_sets.py; audio/piano/CREDITS.txt). The organ's and the flute's held notes loop
      from loop[0]; each note's loop ends where its own waves line up best (ends, in seconds), and the two ends are joined
@@ -932,13 +932,17 @@ const SETS={
 Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},lp:{},state:"idle",done:0,job:null,ready:false,run:null}));
 const LAYER_TARGET={s:-24, m:-19, l:-15};          /* dB, the level each layer is brought most of the way to */
 function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
+/* AOG-PIANO-STEREO-V1: a recording may keep both its microphones (left and right). Its peak is the louder side's, it
+   starts where either side does, and its level is the two sides' average, so a stereo note is levelled as its one-channel
+   file was */
 function measure(buf, layer){
-  const d=buf.getChannelData(0), sr=buf.sampleRate; let pk=0;
-  for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
-  let i=0; const thr=pk*0.03; while(i<d.length && Math.abs(d[i])<thr) i++;
+  const C=buf.numberOfChannels, ds=[], sr=buf.sampleRate; for(let c=0;c<C;c++) ds.push(buf.getChannelData(c));
+  const N=ds[0].length; let pk=0;
+  for(const d of ds) for(let i=0;i<N;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
+  let i=0; const thr=pk*0.03; while(i<N && !ds.some(d=>Math.abs(d[i])>=thr)) i++;
   const start=Math.max(0, i-Math.floor(0.002*sr))/sr;
-  let s=0, n=Math.min(d.length-i, Math.floor(0.3*sr)); for(let j=0;j<n;j++) s+=d[i+j]*d[i+j];
-  const db=10*Math.log10(s/Math.max(1,n)+1e-12);
+  let s=0, n=Math.min(N-i, Math.floor(0.3*sr)); for(const d of ds) for(let j=0;j<n;j++) s+=d[i+j]*d[i+j];
+  const db=10*Math.log10(s/C/Math.max(1,n)+1e-12);
   const g=Math.max(-6, Math.min(18, (LAYER_TARGET[layer]-db)*0.7));
   return {start:start, gain:Math.pow(10,g/20), peak:pk};
 }
@@ -985,7 +989,10 @@ function loadSet(name, onStep){
 /* AOG-PIANO-SOUNDS-V2: a held string note loops. The half second before the loop's end is faded into the half second before
    its start, so the jump back lands where the sound already is: no seam, whatever the decoder did to the file's timing */
 function bakeLoop(b, a, z, x, steady){
-  const sr=b.sampleRate, d=b.getChannelData(0), A=Math.round(a*sr), Z=Math.min(d.length, Math.round(z*sr)), X=Math.min(Math.round(x*sr), A, Z-A);
+  const sr=b.sampleRate, N=b.length, A=Math.round(a*sr), Z=Math.min(N, Math.round(z*sr)), X=Math.min(Math.round(x*sr), A, Z-A);
+  /* AOG-PIANO-STEREO-V1: each microphone's channel is joined the same way, at the same moments */
+  for(let ch=0; ch<b.numberOfChannels; ch++){
+  const d=b.getChannelData(ch);
   if(steady){
     /* AOG-PIANO-REAL-V1: an organ pipe or a flute holds one steady tone, so the two half seconds are much alike (a whole
        number of the note's waves apart). An equal-power fade would swell where they agree, a straight one dip where they
@@ -998,7 +1005,8 @@ function bakeLoop(b, a, z, x, steady){
   /* AOG-PIANO-REAL-V3: the loop turns round on whole samples (returned, for the player), and the few samples just past its end
      become those just past its start, so a playhead that reads a little beyond the end as it turns (it reads between two
      samples) finds the same wave there: no tick at the seam, on any turn */
-  for(let j=0;j<4 && Z+j<d.length;j++) d[Z+j]=d[A+j];
+  for(let j=0;j<4 && Z+j<N;j++) d[Z+j]=d[A+j];
+  }
   return [A/sr, Z/sr];
 }
 function loopEnd(set, n){ return (set.ends && set.ends[n]) || set.loop[1]; }
