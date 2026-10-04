@@ -38,7 +38,7 @@
    Credits: audio/drums/CREDITS.txt. ══════════════════════════════════════════════════════════════════════════════ */
 (function (root) {
   "use strict";
-  var BASE = "/audio/drums/", VER = "3";   /* 3: Kit T's kick made again with its body, so it is a drum, not a stick (Jimmy, 2026-10-04) */
+  var BASE = "/audio/drums/", VER = "3";   /* 3: Kit T's kick made again with its body, so it is a drum, not a stick (Jimmy, 2026-10-04) (2 was its two hard kicks brought under full scale) */
   var HI = 44100, LO = 26040;
   /* A pad: the name it shows, the file it plays (name-s / name-m / name-h, numbered when there are two or more takes),
      and how many takes each layer has: [soft, normal, hard]. hat:1 = it shuts the open hat, as a foot does.
@@ -328,7 +328,9 @@
       var s = ac.createBufferSource(), g = ac.createGain();
       s.buffer = buf; g.gain.value = Math.max(0, Math.min(1, level == null ? 0.46 : level));
       s.connect(g); g.connect(dest); s.start(Math.max(t0 || 0, ac.currentTime));
+      return { src: s, gain: g };                     /* AOG-KIT-PAGE-V1: the Drum Kit stops a ringing open hat with it */
     } catch (e) {}
+    return null;
   }
 
   /* ── what the page shows ─────────────────────────────────────────────────── */

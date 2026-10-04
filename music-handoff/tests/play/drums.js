@@ -16,10 +16,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const cdp=await c.newCDPSession(p);
     const T=(type,pts)=>cdp.send("Input.dispatchTouchEvent",{type, touchPoints:pts.map((q,i)=>({x:q.x,y:q.y,id:q.id||i+1}))});
     const where=()=>p.evaluate(()=>{ const o={}; document.querySelectorAll("#dkKit [data-pad]").forEach(g=>{ const sh=g.querySelector(".glow > *"), r=sh.getBoundingClientRect();   /* the piece's own outline (its glow) */ const kb=document.getElementById("dkKit").getBoundingClientRect(); o[g.getAttribute("data-pad")]={x:r.x+r.width/2, y:Math.min(r.y+r.height/2, kb.bottom-30) /* the kick shows only its top half */, top:r.y, left:r.x, w:r.width, h:r.height}; }); return o; });
-    return {c, p, errs, T, where};
+    const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    return {c, p, errs, T, where, press};
   };
   for(const [dev, vp] of [["iPhone sideways",{width:844,height:390}],["iPad sideways",{width:1180,height:820}]]){
-    const {c, p, errs, T, where}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== drums · "+dev);
+    const {c, p, errs, T, where, press}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== drums · "+dev);
     const st=await p.evaluate(()=>({on:DK.on, shown:getComputedStyle(document.getElementById("kitView")).display, page:getComputedStyle(document.querySelector(".wrap")).display,
       z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
       pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#kitView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText)); }catch(e){ return false; } })}));
@@ -56,11 +57,20 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.waitForTimeout(200);
     ok(lit && await p.evaluate(()=>!document.querySelector('#dkKit [data-pad="snare"]').classList.contains("hit")), "a piece lights while it is hit, then goes still");
     /* Play the beat */
-    await p.click("#dkRun"); await p.waitForTimeout(150);
+    await press("#dkMore"); await p.click("#dkRun"); await p.waitForTimeout(150);
     const run=await p.evaluate(()=>({p:S.playing, t:document.getElementById("dkRun").textContent}));
     await p.click("#dkRun"); await p.waitForTimeout(80);
+    /* AOG-PLAY-GUARD-V1: the bar keeps ☰ Menu and the kit; a slip onto it while playing is ignored */
+    await press("#dkMore");
+    const barIds=await p.evaluate(()=>[...document.querySelectorAll("#kitView .dk-bar button")].filter(b=>!b.hidden).map(b=>b.id).join(" "));
+    { const w3=await where(); await T("touchStart",[w3.snare]); await p.waitForTimeout(40);
+      const slip=await p.evaluate(()=>{ document.getElementById("dkMore").click(); return !document.getElementById("dkDrawer").hidden; });
+      await T("touchEnd",[]); await p.waitForTimeout(800);
+      const real=await p.evaluate(()=>{ document.getElementById("dkMore").click(); return !document.getElementById("dkDrawer").hidden; });
+      ok(barIds==="dkMore" && !slip && real, "the bar keeps ☰ Menu (and the kit menu); a slip onto it while playing is ignored, a real tap opens it"); }
     ok(run.p && /Stop/.test(run.t) && await p.evaluate("!S.playing"), "Play the beat starts and stops the pattern ("+run.t+")");
     ok(await p.evaluate("!!document.getElementById('dkTake').textContent"), "Record a take is one tap away");
+    if(await p.evaluate("document.getElementById('dkDrawer').hidden")) await press("#dkMore");
     await p.click("#dkClose"); await p.waitForTimeout(150);
     ok(await p.evaluate(()=>!DK.on && getComputedStyle(document.querySelector(".wrap")).display!=="none"), "Close gives the page back");
     await p.waitForTimeout(700);
@@ -71,6 +81,10 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(JSON.stringify(await p.evaluate("__h"))==='["tom"]', "and it still plays");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close();
   }
+  /* AOG-KIT-PAGE-V1: the drum kit is its own page now; an old link to the kit here goes there */
+  { const {c, p, errs}=await open({viewport:{width:390,height:844}, isMobile:true, hasTouch:true}, "#kit"); console.log("== drums · #kit");
+    ok(/music-kit\.html$/.test(p.url()), "an old link to the drum machine's kit opens the Drum Kit page: "+p.url().split("/").pop());
+    await c.close(); }
   { const {c, p, errs}=await open({viewport:{width:844,height:390}, isMobile:true, hasTouch:true}, "#lessons"); console.log("== drums · lessons sideways");
     ok(await p.evaluate("!DK.on && getComputedStyle(document.querySelector('.wrap')).display!=='none'"), "the Lessons view stays a page to read");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
