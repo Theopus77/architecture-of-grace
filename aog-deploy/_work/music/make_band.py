@@ -32,6 +32,7 @@ def build():
         for kind, key in (("s", "sus"), ("l", "susL"), ("t", "stac")):
             for n in m[key]:
                 folder = m.get("stacDir", inst) if kind == "t" else inst
+                folder = man.get(folder, {}).get("dir", folder)    # a player made again sits in its own new folder
                 p = os.path.join(ROOT, "audio", "band", folder, "%d%s.mp3" % (n, kind))
                 if not os.path.exists(p):
                     missing.append(os.path.relpath(p, ROOT))
