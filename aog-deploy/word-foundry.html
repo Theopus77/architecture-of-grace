@@ -236,7 +236,7 @@ h2{font-size:1.6rem;letter-spacing:-.01em}
     <button id="themeBtn" type="button" aria-label="Switch between light and dark">Dark mode</button>
   </div>
   <h1>The Word Foundry</h1>
-  <p class="tag">Where big words come apart — and new ones get made. Your class’s own units, plus eight themed sets of stems with six words on every stem — a quiz that runs four directions, analogies, word mysteries, a coinage forge, poetics, and four-level sentence analysis.</p>
+  <p class="tag">Where big words come apart — and new ones get made. Your class’s own units, plus eight themed sets of stems with six words on every stem — a quiz that runs four directions, analogies, word mysteries, a coinage forge, poetics, and four-level sentence analysis. On the Lab Bench, one stem stays in front of you while you try six ways to use it.</p>
   <div class="legend">
     <span class="lg lat"><span class="dot"></span>Latin stem</span>
     <span class="lg grk"><span class="dot"></span>Greek stem</span>
@@ -252,6 +252,44 @@ h2{font-size:1.6rem;letter-spacing:-.01em}
   <p>Original word-study material for classroom practice — stems, examples, analogies, and poems written for this page. Tap a stem card to flip it; quiz scores reset when you switch lists.</p>
 </footer>
 </div>
+
+<style id="aog-bench-v1">
+/* AOG-BENCH-V1 — the stem stays on the bench; the tools come to it. */
+.bench{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:16px 16px 18px;box-shadow:var(--shadow)}
+.bench-kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--warn);font-weight:800;margin:0 0 6px}
+.ingot{font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,3.4rem);letter-spacing:-.02em;line-height:1;margin:0}
+.ingot.lat{color:var(--latin)} .ingot.grk{color:var(--greek)}
+.ingot-mean{margin:6px 0 0;color:var(--sub);font-size:1.02rem}
+.ingot-mean b{color:var(--ink)}
+.bolts{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.bolt{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:4px 10px;font:600 .82rem var(--sans);cursor:pointer}
+.bolt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stations{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 12px}
+.stations button{border:1px solid var(--line);background:transparent;color:var(--sub);border-radius:999px;padding:6px 12px;font:700 .8rem var(--sans);cursor:pointer}
+.stations button.on{background:var(--warn-soft);color:var(--ink);border-color:var(--warn)}
+.bench-work{border-top:1px solid var(--line);padding-top:12px}
+.bench-work label{display:block;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--sub);margin:10px 0 4px}
+.bench-work input[type=text],.bench-work textarea,.bench-work select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:10px 12px;font:16px/1.45 var(--sans)}
+.bench-work textarea{min-height:74px;resize:vertical}
+.slip{margin-top:14px;border:1px dashed var(--warn);border-radius:12px;padding:12px 14px;background:var(--warn-soft)}
+.slip h3{font-family:var(--serif);margin:0 0 4px;font-size:1.15rem}
+.slip .mintword{font-family:var(--serif);font-weight:900;font-size:1.6rem;margin:0}
+.mark{font-weight:800}
+.mark.good{color:var(--good)} .mark.miss{color:var(--latin)}
+body.bench-board .stations,body.bench-board .bench-work,body.bench-board .bolts,body.bench-board .lists,body.bench-board .tabs,body.bench-board .tag,body.bench-board .legend{display:none !important}body.bench-board #benchBoard{display:inline-block !important}
+.bench-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px 12px;margin:14px 0 12px}
+.bench-picks label,.bench-dir{display:block;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--sub)}
+.bench-picks select,.bench-dir select{display:block;width:100%;margin-top:4px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:10px 12px;font:600 16px/1.3 var(--sans);text-transform:none;letter-spacing:0}
+.bench-dir{margin:6px 0 10px;max-width:440px}
+body.bench-board .bench-picks{display:none !important}
+body.bench-board .ingot{font-size:clamp(3rem,10vw,6rem);text-align:center}
+body.bench-board .ingot-mean{text-align:center;font-size:1.35rem}
+@media print{
+  .bench-tools,.stations,.lists,.tabs{display:none !important}
+  .slip{border:1px solid #8A5A00;background:#fff}
+}
+</style>
+
 <script src="aog-sync-config.js"></script>
 <script>
 (function(){
@@ -1588,8 +1626,8 @@ var DECODE=[
  {word:"vivigraph",parts:"viv (life) + graph (write)",opts:["a heart monitor","a written record of a life","a lively drawing","a birth certificate"],k:1}];
 DECODE=DECODE.concat(DECODE_MORE);PQUIZ=PQUIZ.concat(PQUIZ_MORE);
 GRAM.forEach(function(g,i){g.lv=GRAM_LV[i];});GRAM=GRAM.concat(GRAM_MORE);
-var TABS=[["stems","Stems"],["quiz","Stem Quiz"],["ana","Analogies"],["myst","Mysteries"],["forge","Word Forge"],["write","Writing"],["poet","Poetics"],["gram","Four-Level"]];
-var cur=0,tab="stems";
+var TABS=[["bench","Lab Bench"],["stems","Stems"],["quiz","Stem Quiz"],["ana","Analogies"],["myst","Mysteries"],["forge","Word Forge"],["write","Writing"],["poet","Poetics"],["gram","Four-Level"]];
+var cur=0,tab="bench";
 /* AOG-WFU-NOPIN — the link wins, then the device's memory, then the first unit. */
 (function(){var q=/[?&]unit=([^&]+)/.exec(location.search||"");
   if(q){var w=decodeURIComponent(q[1]);
@@ -1818,9 +1856,220 @@ function vGram(){
     +'<div class="lvlbox"><div class="lvltext">Choose a lens.</div></div>'
     +'</div>';}).join("");
 }
+
+/* AOG-BENCH-V1 — one ingot, six stations. The other doors stay. */
+var BENCH={list:-1,i:0,station:"compass",dir:"sm"};
+function normStem(s){return String(s||"").toLowerCase().replace(/[^a-z]/g,"");}
+function vBench(){
+  var L=LISTS[cur];
+  if(!L||!L.stems||!L.stems.length) return '<p class="hint">This list has no stems yet. Pick another list.</p>';
+  if(BENCH.list!==cur){BENCH.list=cur;BENCH.i=0;}
+  if(BENCH.i>=L.stems.length) BENCH.i=0;
+  var st=L.stems[BENCH.i];
+  var origin=st.o==="G"?"Greek":(st.o==="E"?"Old English":"Latin");
+  var cls=st.o==="G"?"grk":"lat";
+  var stemOpts=L.stems.map(function(s,i){
+    return '<option value="'+i+'"'+(i===BENCH.i?" selected":"")+'>'+esc(stemTxt(s))+' · '+esc(s.m)+'</option>';
+  }).join("");
+  var stations=[["compass","Compass · stem and meaning"],["analogy","Analogy · finish the pattern"],["mystery","Mystery · solve a word puzzle"],["forge","Forge · make a new word"],["poetic","Poetic line · use the word three ways"],["levels","Four levels · the word in a sentence"]];
+  var stOpts=stations.map(function(s){
+    return '<option value="'+s[0]+'"'+(BENCH.station===s[0]?" selected":"")+'>'+s[1]+'</option>';
+  }).join("");
+  setTimeout(wireBench,0);
+  return '<div class="bench">'
+    +'<p class="bench-kicker">Lab bench · '+esc(label(L))+' · from '+origin+'</p>'
+    +'<p class="ingot '+cls+'">'+esc(stemTxt(st))+'</p>'
+    +'<p class="ingot-mean"><b>'+esc(st.m)+'</b>'+(st.es?' · '+esc(st.es):"")+'</p>'
+    +'<div class="bench-picks bench-tools">'
+    +'<label for="benchStem">Stem on the bench<select id="benchStem">'+stemOpts+'</select></label>'
+    +'<label for="benchStationSel">Station<select id="benchStationSel">'+stOpts+'</select></label>'
+    +'</div>'
+    +'<div class="bench-tools" style="margin:-4px 0 10px"><button type="button" class="lvlb" id="benchBoard">Show on the board</button></div>'
+    +'<div class="bench-work" id="benchWork">'+benchStation(L,st)+'</div>'
+    +'</div>';
+}
+function benchStation(L,st){
+  if(BENCH.station==="compass") return benchCompass(L,st);
+  if(BENCH.station==="analogy") return benchAnalogy(L,st);
+  if(BENCH.station==="mystery") return benchMystery(L,st);
+  if(BENCH.station==="forge") return benchForge(L,st);
+  if(BENCH.station==="poetic") return benchPoetic(L,st);
+  return benchLevels(L,st);
+}
+function benchWords(st){return (st.w||[]).slice(0,6);}
+function neighborStems(L,st,n){
+  var others=L.stems.filter(function(s){return s!==st;});
+  return shuffle(others).slice(0,n);
+}
+function benchCompass(L,st){
+  var dirs=[["sm","Stem → meaning"],["ms","Meaning → stem"],["ws","Word → stem"],["ds","Definition → stem"]];
+  var bar='<label class="bench-dir" for="benchDirSel">Direction<select id="benchDirSel">'+dirs.map(function(d){return '<option value="'+d[0]+'"'+(BENCH.dir===d[0]?" selected":"")+'>'+d[1]+'</option>';}).join("")+'</select></label>';
+  var words=benchWords(st);
+  var w=words.length?words[Math.floor(Math.random()*words.length)]:[st.s,"a word built on this stem"];
+  var prompt="", field="";
+  if(BENCH.dir==="sm"){
+    prompt='What does <b>'+esc(stemTxt(st))+'</b> mean?';
+    var opts=shuffle([st.m].concat(neighborStems(L,st,3).map(function(s){return s.m;})));
+    field=opts.map(function(o){return '<button type="button" class="bolt" data-pick="'+esc(o)+'" data-ok="'+(o===st.m?"1":"0")+'">'+esc(o)+'</button>';}).join(" ");
+  } else if(BENCH.dir==="ws"){
+    prompt='Which stem is inside <b>'+esc(w[0])+'</b>?<p class="hint">'+esc(w[1])+'</p>';
+    var opts2=shuffle([st.s].concat(neighborStems(L,st,3).map(function(s){return s.s;})));
+    field=opts2.map(function(o){return '<button type="button" class="bolt" data-pick="'+esc(o)+'" data-ok="'+(o===st.s?"1":"0")+'">'+esc(stemTxt({s:o}))+'</button>';}).join(" ");
+  } else if(BENCH.dir==="ms"){
+    prompt='Spell the stem that means <b>'+esc(st.m)+'</b>.';
+    field='<input id="benchSpell" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="spell the stem">'
+      +'<button type="button" class="next" id="benchCheck" style="margin-top:8px">Check the spelling</button>';
+  } else {
+    prompt='“'+esc(w[1])+'” — the word is <b>'+esc(w[0])+'</b>. Spell the stem it is built on.';
+    field='<input id="benchSpell" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="spell the stem">'
+      +'<button type="button" class="next" id="benchCheck" style="margin-top:8px">Check the spelling</button>';
+  }
+  return '<p class="hint">Pick a direction. Some questions you answer with a tap. Some you answer by spelling the stem. If you pick a wrong meaning, you will see which stem it belongs to.</p>'
+    +bar
+    +'<div class="qtext" style="margin-top:8px">'+prompt+'</div>'
+    +'<div id="benchField" style="margin-top:8px">'+field+'</div>'
+    +'<p id="benchMark" class="hint"></p>';
+}
+function benchAnalogy(L,st){
+  var words=benchWords(st);
+  var w=words[0]||[st.s,st.m];
+  var nb=neighborStems(L,st,1)[0];
+  var line = esc(w[0])+' is to '+esc(st.m)+' as '+(nb?esc(nb.w&&nb.w[0]?nb.w[0][0]:nb.s):"____")+' is to ____';
+  return '<p class="hint">Finish the pattern. The second pair works the same way as the first: “____ is to ____ as ____ is to ____.”</p>'
+    +'<div class="qtext">'+line+'</div>'
+    +'<label for="benchAna">Finish it</label><input id="benchAna" type="text" placeholder="'+(nb?esc(nb.m):"the meaning")+'">'
+    +'<p class="hint" id="benchAnaNote">'+(nb?'The other stem is <b>'+esc(stemTxt(nb))+'</b>. It means '+esc(nb.m)+'.':'')+'</p>';
+}
+function benchMystery(L,st){
+  var hit=null;
+  (L.my||[]).forEach(function(m){ if(!hit && normStem(m.q+" "+m.a).indexOf(normStem(st.s))>=0) hit=m; });
+  var words=benchWords(st);
+  var w=words[0]||[st.s,st.m];
+  if(!hit) hit={q:'Why does “'+w[0]+'” remember '+st.m+'?', a:'<b>'+esc(st.s)+'</b> means '+esc(st.m)+'. In <i>'+esc(w[0])+'</i>: '+esc(w[1])+'.'};
+  return '<p class="hint">The stem on the bench is the clue. Think about what it means, then check.</p>'
+    +'<div class="qtext">'+esc(hit.q)+'</div>'
+    +'<button type="button" class="next" id="benchReveal" style="margin-top:8px">Show how the word is made</button>'
+    +'<div id="benchRevealBox" hidden style="margin-top:10px">'+hit.a+'</div>';
+}
+function benchForge(L,st){
+  var opts=L.stems.map(function(s,i){
+    if(s===st) return "";
+    return '<option value="'+i+'">'+esc(stemTxt(s))+' · '+esc(s.m)+'</option>';
+  }).join("");
+  return '<p class="hint"><b>Make up a new word.</b> It starts with the stem on the bench. Add a second stem, then give your word a definition, an analogy and a sentence.</p>'
+    +'<label for="benchMate">Add a second stem</label><select id="benchMate">'+opts+'</select>'
+    +'<p class="mintword" id="benchCoin"></p><p class="hint" id="benchCoinParts"></p>'
+    +'<label for="benchDef">Dictionary definition</label><textarea id="benchDef" placeholder="noun. a thing that…"></textarea>'
+    +'<label for="benchAs">Analogy</label><input id="benchAs" type="text" placeholder="'+esc(stemTxt(st))+' is to '+esc(st.m)+' as my word is to…">'
+    +'<label for="benchSent">A sentence that needs the word</label><textarea id="benchSent" placeholder="Write one sentence a classmate could not finish without your word."></textarea>'
+    +'<button type="button" class="next" id="benchStamp" style="margin-top:10px">Make my word card</button>'
+    +'<div id="benchSlip"></div>';
+}
+function benchPoetic(L,st){
+  var words=benchWords(st);
+  var w=words[0]||[st.s,st.m];
+  return '<p class="hint">Use the same word three ways: a science note, a story sentence and one line of a poem. Nothing here is scored.</p>'
+    +'<p class="hint">Use <b>'+esc(w[0])+'</b> ('+esc(w[1])+').</p>'
+    +'<label for="benchLab">Science note</label><textarea id="benchLab" placeholder="One exact sentence, like a science notebook."></textarea>'
+    +'<label for="benchStory">Story sentence</label><textarea id="benchStory" placeholder="Someone does something, and the word has to be there."></textarea>'
+    +'<label for="benchLine">One line of a poem</label><textarea id="benchLine" placeholder="Any line. There is no right answer."></textarea>'
+    +'<button type="button" class="next" id="benchKeep" style="margin-top:10px">Keep my lines</button>'
+    +'<p class="hint" id="benchKept"></p>';
+}
+function benchLevels(L,st){
+  var words=benchWords(st);
+  var w=words[0]||[st.s,st.m];
+  return '<p class="hint">Write a sentence with <b>'+esc(w[0])+'</b>. Then name four things about that word: its part of speech, its job in the sentence, the phrase it is in, and the clause it is in. This is not graded.</p>'
+    +'<label for="benchLvSent">Sentence</label><textarea id="benchLvSent" placeholder="Write a sentence that needs '+esc(w[0])+'"></textarea>'
+    +'<label for="benchL1">Level 1 · part of speech of the stem word</label><input id="benchL1" type="text" placeholder="noun, verb, adjective…">'
+    +'<label for="benchL2">Level 2 · its job in the sentence</label><input id="benchL2" type="text" placeholder="subject, verb, object, modifier…">'
+    +'<label for="benchL3">Level 3 · the phrase it sits in</label><input id="benchL3" type="text" placeholder="the prepositional phrase, the noun phrase…">'
+    +'<label for="benchL4">Level 4 · the clause</label><input id="benchL4" type="text" placeholder="one independent clause, or which clause it belongs to">'
+    +'<button type="button" class="next" id="benchLevelsKeep" style="margin-top:10px">Keep my answers</button>'
+    +'<p class="hint" id="benchLvNote"></p>';
+}
+function wireBench(){
+  var L=LISTS[cur]; if(!L) return;
+  var st=L.stems[BENCH.i];
+  var stemSel=$("#benchStem");
+  if(stemSel) stemSel.addEventListener("change",function(){BENCH.i=+stemSel.value;render();var x=$("#benchStem");if(x)x.focus();});
+  var stSel=$("#benchStationSel");
+  if(stSel) stSel.addEventListener("change",function(){BENCH.station=stSel.value;render();var x=$("#benchStationSel");if(x)x.focus();});
+  var board=$("#benchBoard");
+  if(board) board.addEventListener("click",function(){
+    document.body.classList.toggle("bench-board");
+    board.textContent=document.body.classList.contains("bench-board")?"Leave the board":"Show on the board";
+  });
+  var dirSel=$("#benchDirSel");
+  if(dirSel) dirSel.addEventListener("change",function(){BENCH.dir=dirSel.value;render();var x=$("#benchDirSel");if(x)x.focus();});
+  document.querySelectorAll("[data-pick]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var ok=b.getAttribute("data-ok")==="1";
+      var mark=$("#benchMark");
+      if(!mark) return;
+      if(ok){mark.className="mark good";mark.textContent="Yes. "+stemTxt(st)+" means "+st.m+".";}
+      else {
+        var nb=neighborStems(L,st,1)[0];
+        mark.className="mark miss";
+        mark.textContent="Not this one. That meaning goes with another stem. "+stemTxt(st)+" means "+st.m+".";
+      }
+    });
+  });
+  var check=$("#benchCheck");
+  if(check) check.addEventListener("click",function(){
+    var got=normStem($("#benchSpell").value);
+    var want=normStem(st.s);
+    var alts=(st.d||[]).map(normStem);
+    var mark=$("#benchMark");
+    if(got===want||alts.indexOf(got)>=0){mark.className="mark good";mark.textContent="Yes. "+stemTxt(st)+" means "+st.m+".";}
+    else {mark.className="mark miss";mark.textContent="Not yet. Look at the stem at the top of the bench and try again.";}
+  });
+  var rev=$("#benchReveal");
+  if(rev) rev.addEventListener("click",function(){var box=$("#benchRevealBox"); if(box) box.hidden=false;});
+  var mate=$("#benchMate"), coin=$("#benchCoin"), parts=$("#benchCoinParts");
+  function updCoin(){
+    if(!mate||!coin) return;
+    var b=L.stems[+mate.value]; if(!b) return;
+    var w=st.s+(/[aeiou]$/.test(st.s)||/^[aeiou]/.test(b.s)?"":"o")+b.s;
+    coin.textContent=w;
+    parts.textContent=st.s+" ("+st.m+") + "+b.s+" ("+b.m+")";
+  }
+  if(mate){mate.addEventListener("change",updCoin);updCoin();}
+  var stamp=$("#benchStamp");
+  if(stamp) stamp.addEventListener("click",function(){
+    var def=($("#benchDef").value||"").trim();
+    var as=($("#benchAs").value||"").trim();
+    var sent=($("#benchSent").value||"").trim();
+    if(!def||!as||!sent){$("#benchSlip").innerHTML='<p class="hint">Fill in all three: the definition, the analogy and the sentence.</p>';return;}
+    var w=coin?coin.textContent:st.s;
+    var slip='<div class="slip"><p class="bench-kicker">My new word · '+esc(label(L))+'</p><p class="mintword">'+esc(w)+'</p>'
+      +'<p>'+esc(st.s)+' ('+esc(st.m)+') joined to a second stem.</p>'
+      +'<p><b>Definition.</b> '+esc(def)+'</p>'
+      +'<p><b>Analogy.</b> '+esc(as)+'</p>'
+      +'<p><b>Sentence.</b> '+esc(sent)+'</p>'
+      +'<p class="hint">Nothing on this card is sent anywhere. Print it to keep a copy.</p></div>';
+    $("#benchSlip").innerHTML=slip;
+    try{
+      var led=JSON.parse(store(KEY+"ledger")||"[]");
+      led.unshift({w:w,def:def,as:as,sent:sent});
+      store(KEY+"ledger",JSON.stringify(led.slice(0,20)));
+    }catch(e){}
+  });
+  var keep=$("#benchKeep");
+  if(keep) keep.addEventListener("click",function(){
+    $("#benchKept").textContent="Kept. Nothing here is scored.";
+  });
+  var lv=$("#benchLevelsKeep");
+  if(lv) lv.addEventListener("click",function(){
+    var sent=($("#benchLvSent").value||"").trim();
+    if(!sent){$("#benchLvNote").textContent="Write the sentence first.";return;}
+    $("#benchLvNote").textContent="Kept. This is not graded.";
+  });
+}
+
 function render(){
   nav();
-  var v={stems:vStems,quiz:vQuiz,ana:vAna,myst:vMyst,forge:vForge,write:vWrite,poet:vPoet,gram:vGram}[tab];
+  var v={bench:vBench,stems:vStems,quiz:vQuiz,ana:vAna,myst:vMyst,forge:vForge,write:vWrite,poet:vPoet,gram:vGram}[tab];
   $("#content").innerHTML=v();
 }
 document.addEventListener("click",function(e){
@@ -2060,7 +2309,7 @@ render();
 <script>
 
 (function(){
-  var CFG = {"mode": "tabs", "mount": null, "sel": ["#tabNav .tab[data-t=\"stems\"]", "#tabNav .tab[data-t=\"quiz\"]", "#tabNav .tab[data-t=\"ana\"]", "#tabNav .tab[data-t=\"myst\"]", "#tabNav .tab[data-t=\"forge\"]", "#tabNav .tab[data-t=\"write\"]", "#tabNav .tab[data-t=\"poet\"]", "#tabNav .tab[data-t=\"gram\"]"]};
+  var CFG = {"mode": "tabs", "mount": null, "sel": ["#tabNav .tab[data-t=\"bench\"]", "#tabNav .tab[data-t=\"stems\"]", "#tabNav .tab[data-t=\"quiz\"]", "#tabNav .tab[data-t=\"ana\"]", "#tabNav .tab[data-t=\"myst\"]", "#tabNav .tab[data-t=\"forge\"]", "#tabNav .tab[data-t=\"write\"]", "#tabNav .tab[data-t=\"poet\"]", "#tabNav .tab[data-t=\"gram\"]"]};
   var nav = document.getElementById("aogSubRail");
   if(!nav) return;
   var items = [].slice.call(nav.querySelectorAll(".sr-i"));

@@ -281,6 +281,34 @@ html[data-theme="dark"]{background:#081828}
 .ladder .lt{font-weight:600}
 .ladder-group{margin:1rem 0 .2rem}
 .lab-lesson{margin-top:1rem}
+
+/* AOG-BENCH-UI-V1 — the lab is a seated bench, not a form. */
+.lab-page > h1 { display:none; }
+.lab-page .lab-lead { margin:.15rem 0 .85rem; max-width:62ch; }
+.eye-box { background:#14110c; border:1px solid #3a2c14; border-radius:22px; padding:.7rem .7rem .85rem; box-shadow:inset 0 0 0 1px rgba(224,192,112,.18), 0 14px 30px rgba(20,16,8,.18); }
+.eye-wrap { max-width:min(480px,52dvh); border-radius:50%; }
+.eye-wrap canvas { border-radius:50%; display:block; width:100%; height:100%; }
+.eye-read { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.7rem; }
+.eye-read span { font-variant-numeric:tabular-nums; font-size:.82rem; letter-spacing:.01em; color:#e7d7ae; background:rgba(255,255,255,.04); border:1px solid rgba(224,192,112,.28); border-radius:999px; padding:.22rem .65rem; }
+#dragread { color:#b7a888 !important; margin:.4rem .15rem 0 !important; }
+.bench-wells { display:grid; gap:.7rem; margin-top:.85rem; }
+.bench-well { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:.75rem .8rem .85rem; }
+.bench-well h2 { margin:0 0 .55rem; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--steel); }
+.bench-well .knobs { margin-top:0; gap:.45rem .7rem; }
+.slide-map { position:relative; height:72px; margin:.15rem 0 .55rem; border-radius:8px; border:1px solid #c4b48a; background:
+  linear-gradient(180deg, rgba(255,255,255,.45), transparent 40%),
+  repeating-linear-gradient(90deg, rgba(120,90,40,.08) 0 1px, transparent 1px 14px),
+  #efe4c8; }
+.slide-map i { position:absolute; width:22px; height:22px; border:2px solid #8a6116; border-radius:50%; box-shadow:0 0 0 4px rgba(138,97,22,.12); transform:translate(-50%,-50%); }
+.well-note { margin:.45rem 0 0; color:var(--muted); font-size:.8rem; line-height:1.4; }
+.oil-warn, .oil-foul, .crack-card { margin-top:.7rem; }
+.desk-bar .board { border-radius:16px; }
+.board .row { align-items:center; }
+.board .tiny { min-width:5.5rem; }
+@media (min-width:900px){
+  .lab-grid { grid-template-columns:minmax(0,1.15fr) minmax(300px,380px); gap:1rem; }
+  .eye-stick { position:sticky; top:.6rem; }
+}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 </head>
@@ -401,7 +429,13 @@ const STR = {
   researchK:{en:"Research bench",es:"Banco de investigación"},
   researchBody:{en:"Risley, polarized light, the slit, lamp color. Open it above. Shorter light splits a slightly smaller gap. It still cannot draw a virus.",es:"Risley, luz polarizada, la rendija, color de lámpara. Ábrelo arriba. La luz más corta separa un hueco un poco menor. Sigue sin poder dibujar un virus."},
   researchDone:{en:"You read the number. Violet did not find the virus.",es:"Leíste el número. El violeta no encontró el virus."},
-  dragHint:{en:"Drag the field to move the stage.",es:"Arrastra el campo para mover la platina."},
+  dragHint:{en:"Drag the field, or turn the stage knobs. The glass moves one way. The picture goes the other.",es:"Arrastra el campo, o gira los botones de la platina. El vidrio va para un lado. La imagen va para el otro."},
+  stageX:{en:"Stage X",es:"Platina X"}, stageY:{en:"Stage Y",es:"Platina Y"},
+  rheo:{en:"Lamp",es:"Lámpara"}, cond:{en:"Condenser",es:"Condensador"}, fieldDia:{en:"Field iris",es:"Iris de campo"},
+  oil40:{en:"Oil is on the 40×. That lens is dry. The field stays milky until you clean it.",es:"Hay aceite en el 40×. Ese lente es seco. El campo se queda lechoso hasta que lo limpies."},
+  clean40:{en:"Clean the 40×",es:"Limpiar el 40×"},
+  kohlerNote:{en:"Lamp is brightness. The diaphragm under the stage is contrast. The field iris is the circle of light. Raise the condenser until that circle's edge is sharp, then open it to the rim.",es:"La lámpara es brillo. El diafragma bajo la platina es contraste. El iris de campo es el círculo de luz. Sube el condensador hasta que el borde de ese círculo esté nítido, y ábrelo hasta el borde."},
+  parNote:{en:"The nosepiece is nearly parfocal. A small turn of the fine knob finishes it. Oil belongs on the 100× only.",es:"El revólver es casi parafocal. Un giro chico del micrométrico lo termina. El aceite es solo para el 100×."},
   findHint:{en:"Two tries. First try counts as independent — after two, the part shows itself and the review moves on.",es:"Dos intentos. El primero cuenta como independiente — tras dos, la parte se muestra sola y el repaso sigue."},
   tapThis:{en:"Tap this part on the machine:",es:"Toca esta parte en la máquina:"},
   whichJob:{en:"Which part does this job? Tap it on the machine.",es:"¿Qué parte hace este trabajo? Tócala en la máquina."},
@@ -1106,6 +1140,47 @@ function focusBand(c,f,o){const e=Math.abs(stageZ(c,f)-idealZ(o)),d=dof(o);retur
 function blurPx(c,f,o){return Math.min(22,(Math.abs(stageZ(c,f)-idealZ(o))/dof(o))*3.6)}
 function wouldCrack(o,nc,f){return (o>=40 && o<100 && stageZ(nc,f)>54) || (o===100 && stageZ(nc,f)>49.5)}
 function wd(c,f){return Math.max(0,Math.min(1,1-stageZ(c,f)/70))}
+/* AOG-BENCH-APEX-V1 — stage inversion, parfocal, oil on the 40×, focus thickness, Köhler. */
+function panFromStage(L){ L.panX=(50-(L.stageX??50))/0.42; L.panY=(50-(L.stageY??50))/0.42; }
+function stageFromPan(L){ L.stageX=Math.max(0,Math.min(100,50-L.panX*0.42)); L.stageY=Math.max(0,Math.min(100,50-L.panY*0.42)); }
+function planeOf(L){ const d=(stageZ(L.coarse,L.fine)-idealZ(L.obj))/Math.max(1.2,dof(L.obj)); return Math.max(-1.4,Math.min(1.4,d)); }
+function seatObj(L,n){
+  if(L.obj===100 && L.oil && n===40) L.oil40=true;
+  const z=stageZ(L.coarse,L.fine);
+  L.obj=n;
+  if(n!==100) L.oil=false;
+  L.dfNote=false;
+  const want=idealZ(n), gap=want-z;
+  if(Math.abs(gap)>dof(n)*1.35){
+    const target=want-Math.sign(gap||1)*dof(n)*0.65;
+    L.coarse=Math.max(0,Math.min(100,Math.round(target-L.fine*0.12)));
+  }
+}
+function drawPlanes(ctx,L){
+  if(L.spec!=="pond"&&L.spec!=="section"&&L.spec!=="elodea") return;
+  const pl=planeOf(L);
+  ctx.save();
+  const top=Math.max(0,Math.min(1,(pl+0.05)*1.15));
+  if(top>0.04){
+    ctx.globalAlpha=top*0.9;
+    ctx.strokeStyle="rgba(255,255,255,.85)"; ctx.lineWidth=1.4;
+    [[-40,-18,16],[22,8,11],[6,-36,7]].forEach(([x,y,R])=>{
+      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(x-R*.3,y-R*.3,R*.28,0,Math.PI*2); ctx.stroke();
+    });
+  }
+  const bot=Math.max(0,Math.min(0.9,(-pl)*0.85));
+  if(bot>0.04){
+    ctx.globalAlpha=bot;
+    ctx.fillStyle="rgba(40,32,24,.8)";
+    [[-28,20,3],[14,-12,2],[40,24,2.4],[-8,-22,1.6],[30,-30,1.8]].forEach(([x,y,R])=>{
+      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.fill();
+    });
+    ctx.strokeStyle="rgba(30,24,18,.7)"; ctx.lineWidth=.6;
+    ctx.beginPath(); ctx.moveTo(-50,14); ctx.lineTo(-20,18); ctx.lineTo(8,12); ctx.stroke();
+  }
+  ctx.restore();
+}
 /* AOG-SCOPE-OPTICS-V1 — darkfield, stains, ocular micrometer.
    Research-bench light, classroom-honest science. The eyepiece scale is a real
    100-unit ocular (FN 18): 25 / 10 / 2.5 µm per unit at 4× / 10× / 40×. */
@@ -1225,7 +1300,7 @@ const S = {
   page:"home", lang:"en", theme:"light", teacher:"open",
   met:{}, findBest:0, jobBest:0, cracked:0, missions:{low:true},
   sel:null, walk:-1, playing:false, moreOpen:false,
-  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false,quartz:true},
+  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,stageX:50,stageY:50,rheo:72,cond:62,fieldDia:90,oil40:false,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false,quartz:true},
   find:null, job:null
 };
 try {
@@ -1425,7 +1500,7 @@ function instrumentHTML(){
     <div class="row"><span class="tiny">${t("clips")}</span><span>${btn(L.clipped,"clip1",t("seated"))}${btn(!L.clipped,"clip0",t("loose"))}</span></div>
     <div class="row"><span class="tiny">${t("objective")}</span><span>${objs.map(o=>btn(L.obj===o,"obj"+o,o+"×")).join("")}</span></div>
     <div class="row"><span class="tiny">${t("lens")}</span><span>${btn(L.quartz,"quartz1",t("quartz"))}${btn(!L.quartz,"quartz0",t("glass"))}</span></div>
-    ${L.obj===100?`<div class="row"><span class="tiny">${t("oil")}</span><span>${btn(L.oil,"oil1",t("oilOn"))}${btn(!L.oil,"oil0",t("oilOff"))}</span></div>`:""}
+    ${(L.obj===100||L.oil40)?`<div class="row"><span class="tiny">${t("oil")}</span><span>${btn(L.oil,"oil1",t("oilOn"))}${btn(!L.oil,"oil0",t("oilOff"))}${L.oil40?btn(false,"clean40",t("clean40")):""}</span></div>`:""}
     ${step>=LX("m3")?`<div class="row"><span class="tiny">${t("stain")}</span><span>${STAINS.filter(s=>stains.includes(s.id)).map(s=>btn(L.stain===s.id,"stain-"+s.id,`<i class="swatch" style="background:${s.color}"></i>${s.id==="none"?(S.lang==="es"?"Nada":"None"):s.id==="methylene"?(S.lang==="es"?"Metileno":"Methylene"):t(s.key)}`)).join("")}</span></div>
     <div class="row"><span class="tiny">${t("illum")}</span><span>${illumBtns}</span></div>`:""}
     ${step>=LX("m4")?`<div class="row"><span class="tiny">${t("ocular")}</span><span>${btn(L.graticule,"grat1",t("scaleOn"))}${btn(!L.graticule,"grat0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
@@ -1453,24 +1528,46 @@ function pageLab(){
         <div class="eye-box">
           <div class="eye-wrap${L.measure?" measuring":""}" id="eye"><canvas id="eyecanvas"></canvas>
           <div class="eye-hud" id="eyehud">${L.graticule?`${t("unitCal")} = ${fmtUm(unitUm(L.obj))}`:""}</div></div>
-          <div style="display:flex;justify-content:space-between;color:color-mix(in oklab,var(--steel-fg) 80%,transparent);font-size:.9rem;margin-top:.5rem;font-variant-numeric:tabular-nums">
+          <div class="eye-read">
             <span id="magread">10× × ${L.obj}× = ${mag}×</span><span id="abberead">${L.prism?bandNm(L.band)+" nm · "+limitUm(L).d.toFixed(2)+" µm":""}</span><span id="focusread">${fl}</span>
           </div>
-          <p style="color:color-mix(in oklab,var(--steel-fg) 60%,transparent);font-size:.75rem;margin:.25rem 0 0" id="dragread">${L.measure?t("tapMeasure"):t("dragHint")}</p>
+          <p id="dragread">${L.measure?t("tapMeasure"):t("dragHint")}</p>
         </div>
-        ${L.obj===100&&!L.oil&&!L.cracked?`<div class="card side oil-warn" style="margin-top:.75rem"><p>${t("oilNeed")}</p></div>`:""}
-        ${L.cracked?`<div class="card side" style="margin-top:.75rem;background:var(--bad-soft)"><p class="no">${t("cracked")}</p><button class="btn btn-bad" data-act="newslide" style="margin-top:.6rem">${t("newSlide")}</button></div>`
+        ${L.obj===100&&!L.oil&&!L.cracked?`<div class="card side oil-warn"><p>${t("oilNeed")}</p></div>`:""}
+        ${L.oil40&&L.obj===40?`<div class="card side oil-foul"><p>${t("oil40")}</p><button class="btn" data-act="clean40" style="margin-top:.6rem">${t("clean40")}</button></div>`:""}
+        ${L.cracked?`<div class="card side crack-card" style="background:var(--bad-soft)"><p class="no">${t("cracked")}</p><button class="btn btn-bad" data-act="newslide" style="margin-top:.6rem">${t("newSlide")}</button></div>`
           : !L.lightOn?`<p class="muted" style="margin-top:.75rem">${t("darkField")}</p>`:""}
-        <div class="knobs">
-          ${knob("coarse",t("coarse"),L.coarse,L.cracked)}
-          ${knob("fine",t("fine"),L.fine,L.cracked)}
-          ${knob("dia",t("diaphragm"),L.dia,!L.lightOn||L.cracked)}
-          ${knob("eyeTwist",t("twist"),L.eyeTwist||0,false,Math.round((L.eyeTwist||0)/100*360)+"°")}
-          <div>
-            <p class="tiny" style="color:var(--muted)">${t("working")}</p>
+        <div class="bench-wells">
+          <section class="bench-well">
+            <h2>${S.lang==="es"?"Enfoque":"Focus"}</h2>
+            <div class="knobs">
+              ${knob("coarse",t("coarse"),L.coarse,L.cracked)}
+              ${knob("fine",t("fine"),L.fine,L.cracked)}
+              ${knob("eyeTwist",t("twist"),L.eyeTwist||0,false,Math.round((L.eyeTwist||0)/100*360)+"°")}
+            </div>
+            <p class="tiny" style="color:var(--muted);margin:.55rem 0 .2rem">${t("working")}</p>
             <div class="wd"><i id="wdbar" style="width:${Math.round(w*100)}%;background:${wcol}"></i></div>
-            <p class="muted" style="font-size:.75rem" id="wdnote">${L.obj===100&&w<.35?(S.lang==="es"?"El 100× está a una fracción de milímetro del vidrio.":"100× is a fraction of a millimeter from the glass."):L.obj===40&&w<.28?(S.lang==="es"?"El 40× está muy cerca del vidrio.":"40× is very close to the glass."):(S.lang==="es"?"Más barra = más lejos del lente.":"More bar = farther from the lens.")}</p>
-          </div>
+            <p class="well-note" id="wdnote">${L.obj===100&&w<.35?(S.lang==="es"?"El 100× está a una fracción de milímetro del vidrio.":"100× is a fraction of a millimeter from the glass."):L.obj===40&&w<.28?(S.lang==="es"?"El 40× está muy cerca del vidrio.":"40× is very close to the glass."):(S.lang==="es"?"Más barra = más lejos del lente.":"More bar = farther from the lens.")}</p>
+            <p class="well-note">${t("parNote")}</p>
+          </section>
+          <section class="bench-well">
+            <h2>${S.lang==="es"?"Platina":"Stage"}</h2>
+            <div id="slidemap" class="slide-map" aria-hidden="true"><i id="sdot" style="left:${Math.round(L.stageX??50)}%;top:${Math.round(L.stageY??50)}%"></i></div>
+            <div class="knobs">
+              ${knob("stageX",t("stageX"),Math.round(L.stageX??50),L.cracked)}
+              ${knob("stageY",t("stageY"),Math.round(L.stageY??50),L.cracked)}
+            </div>
+          </section>
+          <section class="bench-well">
+            <h2>${S.lang==="es"?"Luz":"Light"}</h2>
+            <div class="knobs">
+              ${knob("rheo",t("rheo"),Math.round(L.rheo??72),!L.lightOn)}
+              ${knob("dia",t("diaphragm"),L.dia,!L.lightOn||L.cracked)}
+              ${knob("cond",t("cond"),Math.round(L.cond??62),!L.lightOn||L.cracked)}
+              ${knob("fieldDia",t("fieldDia"),Math.round(L.fieldDia??90),!L.lightOn||L.cracked)}
+            </div>
+            <p class="well-note">${t("kohlerNote")}</p>
+          </section>
         </div>
       </div>
       <div class="desk-bar">
@@ -5306,6 +5403,7 @@ function drawSpec(ctx, now, L, reduced, dt){
       drawPondLive(ctx, now, reduced || !live);
     }
   }
+  drawPlanes(ctx, L);
 }
 function specNote(spec){
   const es=S.lang==="es", o=S.lab.obj, L=S.lab;
@@ -5398,7 +5496,7 @@ function startEye(){
       const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
       moved+=Math.abs(dx)+Math.abs(dy);
       drag={x:e.clientX,y:e.clientY};
-      if(!(S.lab.measure && moved<10)){ S.lab.panX+=-dx*.6*.35; S.lab.panY+=-dy*.6*.35; }
+      if(!(S.lab.measure && moved<10)){ S.lab.panX+=-dx*.6*.35; S.lab.panY+=-dy*.6*.35; stageFromPan(S.lab); const dot=document.getElementById("sdot"); if(dot){ dot.style.left=Math.round(S.lab.stageX)+"%"; dot.style.top=Math.round(S.lab.stageY)+"%"; } }
     };
     const up=e=>{
       if(S.lab.measure && moved<12){
@@ -5457,8 +5555,8 @@ function startEye(){
       ctx.beginPath(); ctx.moveTo(cx-.2*r,cy-.5*r); ctx.lineTo(cx-.05*r,cy-.48*r); ctx.lineTo(cx-.12*r,cy-.2*r); ctx.closePath(); ctx.fill();
     } else {
       if(!L.clipped){ S.lab.panX+=8*dt; S.lab.panY+=3*dt; }
-      const iris=.35+(L.dia/100)*.65, bright=.35+(L.dia/100)*.7;
-      let blur=blurPx(L.coarse,L.fine,L.obj) + (L.obj===100 && !L.oil ? 7 : 0);
+      const iris=.35+(L.dia/100)*.65, bright=(.35+(L.dia/100)*.7)*((L.rheo??72)/78);
+      let blur=blurPx(L.coarse,L.fine,L.obj) + (L.obj===100 && !L.oil ? 7 : 0) + (L.obj===40 && L.oil40 ? 9 : 0);
       if(L.prism) blur *= 0.84 + (bandNm(L.band)-420)/230*0.26;
       /* AOG-SCOPE-QUARTZ-V1 — fused-quartz objectives: purer glass, no colour fringe, a crisper edge */
       if(L.quartz!==false) blur *= 0.78;
@@ -5537,6 +5635,18 @@ function startEye(){
         ctx.fillText(barUm>=200?(barUm/1000)+" mm":barUm+" µm", cx, by+6);
       }
       if(L.graticule) drawGraticule(ctx, cx, cy, r, L, w);
+      if(L.lightOn && !L.cracked && (L.fieldDia??90)<97){
+        const fr=r*Math.max(.18,(L.fieldDia??90)/100);
+        const soft=Math.abs((L.cond??62)-62)>10;
+        ctx.fillStyle="#07080c";
+        ctx.beginPath(); ctx.arc(cx,cy,r+1,0,Math.PI*2); ctx.arc(cx,cy,fr,0,Math.PI*2,true); ctx.fill("evenodd");
+        ctx.strokeStyle=soft?"rgba(255,214,150,.45)":"rgba(255,236,200,.8)";
+        ctx.lineWidth=soft?Math.max(3,w*.012):Math.max(1.2,w*.003);
+        ctx.beginPath(); ctx.arc(cx,cy,fr,0,Math.PI*2); ctx.stroke();
+      }
+      if(L.obj===40 && L.oil40 && L.lightOn){
+        ctx.fillStyle="rgba(236,228,196,.42)"; ctx.fillRect(cx-r,cy-r,r*2,r*2);
+      }
       drawMeasure(ctx, cx, cy, r, L, w, zoom);
     }
     ctx.restore();
@@ -5667,13 +5777,14 @@ function paint(){
       if(a==="lamp0") L.lightOn=false;
       if(a==="clip1") L.clipped=true;
       if(a==="clip0") L.clipped=false;
-      if(a==="obj4"){ L.obj=4; L.oil=false; L.dfNote=false; }
-      if(a==="obj10"){ L.obj=10; L.oil=false; L.dfNote=false; }
-      if(a==="obj40"){ L.obj=40; L.oil=false; L.dfNote=false; }
+      if(a==="obj4"){ seatObj(L,4); }
+      if(a==="obj10"){ seatObj(L,10); }
+      if(a==="obj40"){ seatObj(L,40); }
       if(a==="obj100"){
-        L.obj=100;
+        seatObj(L,100);
         if(L.illum==="dark"){ L.illum="bright"; L.dfNote=true; }
       }
+      if(a==="clean40"){ L.oil40=false; L.oil=false; }
       if(a==="quartz1") L.quartz=true; if(a==="quartz0") L.quartz=false;
       if(a==="oil1") L.oil=true; if(a==="oil0") L.oil=false;
       if(a==="rife"){ L.lightOn=true; L.clipped=true; L.spec="pond"; L.stain="none"; L.illum="dark"; L.filter="day"; L.prism=false; L.obj=4; L.oil=false; L.dfNote=false; L.panX=0; L.panY=0; L.mA=null; L.mB=null; if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; } }
@@ -5686,7 +5797,7 @@ function paint(){
         L.panX=0; L.panY=0;
         if(L.cracked){ L.cracked=false; }
       }
-      if(a==="newslide"){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; L.panX=0; L.panY=0; L.mA=null; L.mB=null; L.oil=false; }
+      if(a==="newslide"){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; L.panX=0; L.panY=0; L.stageX=50; L.stageY=50; L.mA=null; L.mB=null; L.oil=false; L.oil40=false; }
       if(a.startsWith("spec-")){
         L.spec=a.slice(5); L.panX=0; L.panY=0; L.mA=null; L.mB=null;
         if(!allowedStains(L.spec).includes(L.stain)) L.stain=DEFAULT_STAIN[L.spec]||"none";
@@ -5722,6 +5833,11 @@ function paint(){
         if(k==="polar") L.polar=v;
         if(k==="band") L.band=v;
         if(k==="eyeTwist") L.eyeTwist=v;
+        if(k==="stageX"){ L.stageX=v; panFromStage(L); }
+        if(k==="stageY"){ L.stageY=v; panFromStage(L); }
+        if(k==="rheo") L.rheo=v;
+        if(k==="cond") L.cond=v;
+        if(k==="fieldDia") L.fieldDia=v;
         const lab=inp.closest("label"); if(lab){ const b=lab.querySelector("b"); if(b) b.textContent = k==="band" ? bandNm(v)+" nm" : k==="eyeTwist" ? Math.round(v/100*360)+"°" : Math.round(v); }
         const ab=document.querySelectorAll(".abbe"); if(k==="band"||k==="polar") ab.forEach(el=>{ el.textContent=abbeSentence(); });
         tickMissions();
