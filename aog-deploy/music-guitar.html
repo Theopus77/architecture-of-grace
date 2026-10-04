@@ -432,102 +432,111 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
    gain levels them, so the same chord comes out about equally loud on each (measured, AOG-STRINGS-V1, AOG-AMP-V1);
    rev = the room. AOG-AMP-V1 (2026-10-03) — Jimmy: "Can all instruments have MULTIPLE VERSIONS OF HOW THEY SOUND? Like a
    lot more than they all currently have!?" Twenty-two guitars and thirteen basses, each a string, a pickup and a rig. */
-const EL={sr:32000, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.0, pos:0.12, bright:0.7, soft:0.5, noise:0.3, pol2:0.25, atk:0.06, atkLp:0.5, pick:0.16, durMax:6, body:[["highpass",80,0.7,0]]};
+/* AOG-STRINGS-V2: the numbers are for 44.1 kHz. atk/atkLp/atkHp/atkMs = the pick's click (how loud, its top, its low cut,
+   how fast it dies); glow = how much brighter the first 40 ms are (dB); loop = the noise left inside the string; thump = an
+   upright's knock; rise = how slowly the note comes in (ms) */
+const EL={sr:44100, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.2, pos:0.12, bright:0.58, soft:0.4, edge:0.8, edgeHz:1200, edgeTop:4000, disp:20, dispA:-0.6, noise:0.3, pol2:0.25,
+          atk:0.4, atkLp:0.5, atkHp:700, atkMs:1.6, pick:0.16, durMax:6, body:[["highpass",80,0.7,0]]};
 const el=o=>Object.assign({}, EL, o);
-const BR1=el({pos:0.10, bright:0.76, pick:0.12}), NK1=el({pos:0.17, bright:0.6, pick:0.24, noise:0.25});
-const BRH=el({T0:12, Tmin:2.5, pos:0.09, bright:0.8, soft:0.55, noise:0.35, pol2:0.22, atk:0.07, atkLp:0.55, pick:0.09});
-const NKH=el({pos:0.18, bright:0.5, soft:0.45, noise:0.2, pick:0.26});
+const BR1=el({pos:0.10, bright:0.645, pick:0.12}), NK1=el({pos:0.17, bright:0.486, pick:0.24, noise:0.25, atk:0.3});
+const BRH=el({T0:12, Tmin:2.5, Thmax:1.5, pos:0.09, bright:0.689, soft:0.44, edge:1, noise:0.35, pol2:0.22, atk:0.45, atkLp:0.44, pick:0.09});
+const NKH=el({pos:0.18, bright:0.395, soft:0.352, noise:0.2, atk:0.25, pick:0.26});
 const PU={single:{f:4300, q:1.8, db:5}, humb:{f:2700, q:1.3, db:4}, neck:{f:2200, q:1.1, db:3}, bass:{f:2400, q:1.0, db:2}};
 /* a rig: the amp, its cabinet and knobs (0 to 10), then whatever else differs from AOGAmp.defaults (pedals that are on, the EQ) */
 function R(model, cab, k, more){ return Object.assign({model:model, cab:cab, k:k||{}}, more||{}); }
 const NO_AMP=R("none","off");
-const STEEL_S={sr:32000, T0:7.0, fref:82, Texp:0.55, Tmin:1.5, Tmax:9, Thf:0.55, Thmax:0.9, pos:0.13, bright:0.72, soft:0.7, noise:0.55, pol2:0.32, atk:0.10, atkLp:0.6, pick:0, durMax:5.5,
+/* steel strings and a pick: struck near the bridge, a bright click, the highs gone sooner on the thin strings */
+const STEEL_S={sr:44100, T0:8, fref:82, Texp:0.7, Tmin:1.6, Tmax:9, Thf:0.3, Thmax:1.2, pos:0.12, bright:0.6, soft:0.68, edge:1, edgeHz:850, edgeTop:3500, disp:24, dispA:-0.6, loop:0.1, pol2:0.32,
+             atk:0.8, atkLp:0.55, atkHp:1000, atkMs:1.8, glow:6, pick:0, durMax:5.5,
              body:[["highpass",70,0.7,0],["peaking",102,2.2,6],["peaking",205,2,4],["peaking",410,1.8,2],["highshelf",5000,0.7,3]]};
 const SOUNDS = GTR ? {
-  steel: {grp:"grpAcoustic", en:"Acoustic guitar · steel strings", es:"Guitarra acústica · cuerdas de acero", kind:"pluck", out:1.0, gain:1.02, rev:0.14, lp:2200, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
-  twelve:{grp:"grpAcoustic", en:"Twelve-string acoustic", es:"Guitarra acústica de doce cuerdas", kind:"pluck", out:1.15, twelve:true, gain:0.85, rev:0.16, lp:2400, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
-  nylon: {grp:"grpAcoustic", en:"Classical guitar · nylon strings", es:"Guitarra clásica · cuerdas de nailon", kind:"pluck", out:1.008, gain:1.28, rev:0.18, lp:1800, lpSpan:2.7, damp:0.04,
-          s:{sr:32000, T0:4.5, fref:82, Texp:0.6, Tmin:1.2, Tmax:6, Thf:0.35, Thmax:0.32, pos:0.17, bright:0.38, soft:0.45, noise:0.25, pol2:0.28, atk:0.04, atkLp:0.25, pick:0, durMax:4.5,
+  steel: {grp:"grpAcoustic", en:"Acoustic guitar · steel strings", es:"Guitarra acústica · cuerdas de acero", kind:"pluck", out:1.036, gain:1.02, rev:0.14, lp:2200, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
+  twelve:{grp:"grpAcoustic", en:"Twelve-string acoustic", es:"Guitarra acústica de doce cuerdas", kind:"pluck", out:1.088, twelve:true, gain:0.85, rev:0.16, lp:2400, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
+  nylon: {grp:"grpAcoustic", en:"Classical guitar · nylon strings", es:"Guitarra clásica · cuerdas de nailon", kind:"pluck", out:1.023, gain:1.28, rev:0.18, lp:1800, lpSpan:2.7, damp:0.04,
+          s:{sr:44100, T0:6, fref:82, Texp:0.6, Tmin:1.8, Tmax:7, Thf:0.3, Thmax:0.7, pos:0.2, bright:0.29, soft:0.33, edge:0.3, edgeHz:1500, edgeTop:3000, disp:8, dispA:-0.6, loop:0.05, pol2:0.28,
+             atk:0.4, atkLp:0.35, atkHp:400, atkMs:3, glow:3, pick:0, durMax:5,
              body:[["highpass",70,0.7,0],["peaking",96,2.2,6],["peaking",192,2,4],["peaking",380,1.8,2.5],["highshelf",3000,0.7,-4]]}, rig:NO_AMP},
-  clean: {grp:"grpClean", en:"Electric guitar · clean", es:"Guitarra eléctrica · limpia", kind:"pluck", out:0.705, gain:1, rev:0.12, lp:2200, lpSpan:2.9, damp:0.03, s:EL, pick:PU.single,
+  clean: {grp:"grpClean", en:"Electric guitar · clean", es:"Guitarra eléctrica · limpia", kind:"pluck", out:0.718, gain:1, rev:0.12, lp:2200, lpSpan:2.9, damp:0.03, s:EL, pick:PU.single,
           rig:R("clean","open212",{gain:3.5, bass:5, mid:5, treble:6, presence:5.5}, {bright:true, fx:{reverb:{on:true, type:"spring", mix:3, decay:4}}})},
-  funk:  {grp:"grpClean", en:"Funk · clean and snappy", es:"Funk · limpia y con chispa", kind:"pluck", out:0.975, gain:1, rev:0.08, lp:2400, lpSpan:2.9, damp:0.025, s:BR1, pick:PU.single,
+  funk:  {grp:"grpClean", en:"Funk · clean and snappy", es:"Funk · limpia y con chispa", kind:"pluck", out:0.967, gain:1, rev:0.08, lp:2400, lpSpan:2.9, damp:0.025, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:3, bass:4.5, mid:4, treble:6.5, presence:6}, {bright:true, fx:{comp:{on:true, sus:6, att:2, lvl:5}}})},
-  pop:   {grp:"grpClean", en:"Pop · shimmering chorus", es:"Pop · coro brillante", kind:"pluck", out:0.883, gain:1, rev:0.12, lp:2300, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+  pop:   {grp:"grpClean", en:"Pop · shimmering chorus", es:"Pop · coro brillante", kind:"pluck", out:0.878, gain:1, rev:0.12, lp:2300, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:3, treble:6}, {bright:true, fx:{comp:{on:true, sus:4, att:4, lvl:5}, chorus:{on:true, rate:3, depth:5, mix:5}, reverb:{on:true, type:"plate", mix:3, decay:4}}})},
-  jazz:  {grp:"grpClean", en:"Jazz guitar", es:"Guitarra de jazz", kind:"pluck", out:2.343, gain:1, rev:0.14, lp:1300, lpSpan:2.6, damp:0.04,
+  jazz:  {grp:"grpClean", en:"Jazz guitar", es:"Guitarra de jazz", kind:"pluck", out:2.261, gain:1, rev:0.14, lp:1300, lpSpan:2.6, damp:0.04,
           s:{sr:32000, T0:6, fref:82, Texp:0.55, Tmin:1.6, Tmax:7, Thf:0.25, Thmax:0.16, pos:0.2, bright:0.28, soft:0.32, noise:0.12, pol2:0.25, atk:0.04, atkLp:0.3, pick:0.27, durMax:5, body:[["highpass",70,0.7,0]]},
           pick:PU.neck, rig:R("clean","open112",{gain:3, bass:6, mid:5.5, treble:3.5, presence:4}, {fx:{reverb:{on:true, type:"room", mix:2.5, decay:4}}})},
-  country:{grp:"grpClean", en:"Country · twang and slapback", es:"Country · twang y eco corto", kind:"pluck", out:0.677, gain:1, rev:0.08, lp:2600, lpSpan:2.9, damp:0.028, s:BR1, pick:PU.single,
+  country:{grp:"grpClean", en:"Country · twang and slapback", es:"Country · twang y eco corto", kind:"pluck", out:0.767, gain:1, rev:0.08, lp:2600, lpSpan:2.9, damp:0.028, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:4, bass:4.5, mid:5.5, treble:7, presence:6}, {bright:true, fx:{comp:{on:true, sus:5, att:3, lvl:5}, delay:{on:true, time:3.2, fb:1, mix:4, tone:6}}})},
-  surf:  {grp:"grpClean", en:"Surf · drenched in spring reverb", es:"Surf · empapada de reverb de muelle", kind:"pluck", out:0.66, gain:1, rev:0.06, lp:2500, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+  surf:  {grp:"grpClean", en:"Surf · drenched in spring reverb", es:"Surf · empapada de reverb de muelle", kind:"pluck", out:0.696, gain:1, rev:0.06, lp:2500, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:4.5, bass:4, treble:7}, {bright:true, fx:{reverb:{on:true, type:"spring", mix:7, decay:6, tone:7}}})},
-  ambient:{grp:"grpClean", en:"Ambient · echoes and space", es:"Ambiental · ecos y espacio", kind:"pluck", out:1.363, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.05, s:NK1, pick:PU.single,
+  ambient:{grp:"grpClean", en:"Ambient · echoes and space", es:"Ambiental · ecos y espacio", kind:"pluck", out:1.332, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.05, s:NK1, pick:PU.single,
           rig:R("clean","open212",{gain:3, treble:5}, {fx:{chorus:{on:true, rate:2, depth:4, mix:4}, delay:{on:true, time:6.3, fb:6, mix:5, tone:4}, reverb:{on:true, type:"hall", mix:6, decay:8, tone:5}}})},
-  blues: {grp:"grpRock", en:"Blues · warm breakup", es:"Blues · saturación cálida", kind:"pluck", out:0.833, gain:1, rev:0.10, lp:2100, lpSpan:2.9, damp:0.03, s:NK1, pick:PU.single,
+  blues: {grp:"grpRock", en:"Blues · warm breakup", es:"Blues · saturación cálida", kind:"pluck", out:0.797, gain:1, rev:0.10, lp:2100, lpSpan:2.9, damp:0.03, s:NK1, pick:PU.single,
           rig:R("blues","open112",{gain:5.5, bass:5, mid:6, treble:5.5, master:6}, {fx:{reverb:{on:true, type:"spring", mix:2.5, decay:4}}})},
-  crunch:{grp:"grpRock", en:"Electric guitar · crunch", es:"Guitarra eléctrica · crujiente", kind:"pluck", out:0.784, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.03,
-          s:{sr:32000, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.0, pos:0.11, bright:0.75, soft:0.55, noise:0.35, pol2:0.25, atk:0.06, atkLp:0.5, pick:0.11, durMax:6, body:[["highpass",80,0.7,0]]},
+  crunch:{grp:"grpRock", en:"Electric guitar · crunch", es:"Guitarra eléctrica · crujiente", kind:"pluck", out:0.821, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.03,
+          s:EL,
           pick:PU.humb, rig:R("crunch","green412",{gain:5, bass:5, mid:6, treble:6})},
-  chime: {grp:"grpRock", en:"British jangle", es:"Brillo británico", kind:"pluck", out:0.686, gain:1, rev:0.12, lp:2400, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+  chime: {grp:"grpRock", en:"British jangle", es:"Brillo británico", kind:"pluck", out:0.727, gain:1, rev:0.12, lp:2400, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
           rig:R("chime","blue212",{gain:4.5, bass:4, mid:5, treble:6.5, master:6}, {fx:{reverb:{on:true, type:"room", mix:2.5, decay:4}}})},
-  classic:{grp:"grpRock", en:"Classic rock · cranked stack", es:"Rock clásico · amplificador a tope", kind:"pluck", out:0.529, gain:1, rev:0.08, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU.humb,
+  classic:{grp:"grpRock", en:"Classic rock · cranked stack", es:"Rock clásico · amplificador a tope", kind:"pluck", out:0.533, gain:1, rev:0.08, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:7.5, bass:5.5, mid:7, treble:6, master:7}, {fx:{od:{on:true, drive:2.5, tone:5, lvl:7}}})},
-  punk:  {grp:"grpRock", en:"Punk · buzzing distortion", es:"Punk · distorsión zumbante", kind:"pluck", out:0.597, power:true, gain:1, rev:0.06, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
+  punk:  {grp:"grpRock", en:"Punk · buzzing distortion", es:"Punk · distorsión zumbante", kind:"pluck", out:0.589, power:true, gain:1, rev:0.06, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:3, bass:6, mid:6, treble:6}, {fx:{ds:{on:true, dist:6, tone:5, lvl:5}}})},
-  grunge:{grp:"grpRock", en:"Grunge · fuzz and crunch", es:"Grunge · fuzz y crujido", kind:"pluck", out:0.698, gain:1, rev:0.08, lp:2300, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
+  grunge:{grp:"grpRock", en:"Grunge · fuzz and crunch", es:"Grunge · fuzz y crujido", kind:"pluck", out:0.686, gain:1, rev:0.08, lp:2300, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:4, bass:6, mid:5, treble:5}, {fx:{fz:{on:true, sus:6, tone:4, lvl:6}}})},
-  lead:  {grp:"grpRock", en:"Lead · smooth and singing", es:"Solista · suave y cantante", kind:"pluck", out:0.906, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.04, s:NKH, pick:PU.neck,
+  lead:  {grp:"grpRock", en:"Lead · smooth and singing", es:"Solista · suave y cantante", kind:"pluck", out:0.83, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.04, s:NKH, pick:PU.neck,
           rig:R("lead","v30_412",{gain:7, bass:5, mid:6.5, treble:5}, {fx:{delay:{on:true, time:5.2, fb:4, mix:3, tone:4}, reverb:{on:true, type:"hall", mix:3, decay:5}}})},
-  fuzzwall:{grp:"grpRock", en:"Fuzz wall · thick and dreamy", es:"Muro de fuzz · grueso y de ensueño", kind:"pluck", out:1.21, gain:1, rev:0.10, lp:2100, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
+  fuzzwall:{grp:"grpRock", en:"Fuzz wall · thick and dreamy", es:"Muro de fuzz · grueso y de ensueño", kind:"pluck", out:1.064, gain:1, rev:0.10, lp:2100, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
           rig:R("clean","open212",{gain:4, treble:5}, {fx:{fz:{on:true, sus:9, tone:5, lvl:5}, chorus:{on:true, rate:2, depth:4, mix:3}, reverb:{on:true, type:"hall", mix:5, decay:7, tone:4}}})},
   /* AOG-GUITAR-METAL-V1, then AOG-AMP-V1: "There is NO distortion for the METAL guitar chords". Now the real thing: a solid-state
      high-gain head, the middle scooped, a gate for tight stops, a 4x12; power chords */
   metal: {grp:"grpMetal", en:"Heavy metal · groove", es:"Metal pesado · groove", kind:"pluck", out:0.701, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("groove","v30_412",{gain:6.5, bass:6.5, mid:2.5, treble:6.5, presence:6.5, depth:7}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}}, eq:{on:true, db:[2,3,1,0,-3,-4,-1,2,0,0]}})},
-  modern:{grp:"grpMetal", en:"Modern metal · tight and heavy", es:"Metal moderno · firme y pesado", kind:"pluck", out:0.678, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+  modern:{grp:"grpMetal", en:"Modern metal · tight and heavy", es:"Metal moderno · firme y pesado", kind:"pluck", out:0.642, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("high","v30_412",{gain:6, bass:5.5, mid:5.5, treble:6, presence:6, depth:6.5}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}, od:{on:true, drive:0, tone:6, lvl:8}}})},
   thrash:{grp:"grpMetal", en:"Thrash · fast and biting", es:"Thrash · rápido y mordiente", kind:"pluck", out:0.647, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:9, bass:5.5, mid:6, treble:7, presence:6.5, depth:6}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}, od:{on:true, drive:2, tone:6, lvl:8}}})},
   doom:  {grp:"grpMetal", en:"Doom · slow and huge", es:"Doom · lento y enorme", kind:"pluck", out:0.889, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.05, s:BRH, pick:PU.humb,
           rig:R("high","v30_412",{gain:4, bass:7, mid:4, treble:4, presence:4, depth:8}, {fx:{fz:{on:true, sus:8, tone:3, lvl:6}, reverb:{on:true, type:"room", mix:2, decay:5}}})}
 } : {
-  finger:{grp:"grpBass", en:"Electric bass · fingers", es:"Bajo eléctrico · con los dedos", kind:"pluck", out:3.119, gain:1, rev:0.05, lp:600, lpSpan:2.8, damp:0.05,
-          s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
+  finger:{grp:"grpBass", en:"Electric bass · fingers", es:"Bajo eléctrico · con los dedos", kind:"pluck", out:3.137, gain:1, rev:0.05, lp:600, lpSpan:2.8, damp:0.05,
+          s:{sr:44100, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.6, pos:0.22, bright:0.16, soft:0.09, loop:0.02, pol2:0.25, atk:0, glow:0, rise:6, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:3, bass:6, mid:5, treble:4.5})},
-  pick:  {grp:"grpBass", en:"Electric bass · pick", es:"Bajo eléctrico · con púa", kind:"pluck", out:2.375, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.05,
-          s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.25, Thmax:0.6, pos:0.12, bright:0.62, soft:0.38, noise:0.22, pol2:0.25, atk:0.14, atkLp:0.6, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
+  pick:  {grp:"grpBass", en:"Electric bass · pick", es:"Bajo eléctrico · con púa", kind:"pluck", out:2.589, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.05,
+          s:{sr:44100, T0:6.5, fref:41, Texp:0.5, Tmin:2, Tmax:7.5, Thf:0.15, Thmax:0.5, pos:0.12, bright:0.38, soft:0.43, edge:0.6, edgeHz:1200, edgeTop:2500, disp:20, dispA:-0.6, loop:0.04, pol2:0.25,
+             atk:0.35, atkLp:0.43, atkHp:600, atkMs:1.6, glow:4, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:5, bass:5.5, mid:6, treble:6}, {fx:{comp:{on:true, sus:4, att:4, lvl:5}}})},
-  motown:{grp:"grpBass", en:"Vintage · warm and round", es:"Vintage · cálido y redondo", kind:"pluck", out:3.283, gain:1, rev:0.05, lp:500, lpSpan:2.4, damp:0.05,
+  motown:{grp:"grpBass", en:"Vintage · warm and round", es:"Vintage · cálido y redondo", kind:"pluck", out:3.264, gain:1, rev:0.05, lp:500, lpSpan:2.4, damp:0.05,
           s:{sr:22050, T0:4, fref:41, Texp:0.5, Tmin:1.5, Tmax:5, Thf:0.08, Thmax:0.1, pos:0.2, bright:0.22, soft:0.12, noise:0.04, pol2:0.25, atk:0.04, atkLp:0.12, pick:0.22, durMax:4.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bvint","b115",{gain:3, bass:6, mid:5, treble:3})},
-  slap:  {grp:"grpBass", en:"Slap · bright and punchy", es:"Slap · brillante y con pegada", kind:"pluck", out:2.924, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
+  slap:  {grp:"grpBass", en:"Slap · bright and punchy", es:"Slap · brillante y con pegada", kind:"pluck", out:3.342, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
           s:{sr:22050, T0:6, fref:41, Texp:0.5, Tmin:1.8, Tmax:7, Thf:0.3, Thmax:0.8, pos:0.07, bright:0.85, soft:0.6, noise:0.3, pol2:0.25, atk:0.3, atkLp:0.85, pick:0.1, durMax:5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bclean","b410",{gain:3, bass:7, mid:2.5, treble:7.5}, {fx:{comp:{on:true, sus:6, att:2, lvl:5}}})},
-  fretless:{grp:"grpBass", en:"Fretless · smooth and singing", es:"Sin trastes · suave y cantante", kind:"pluck", out:3.92, gain:1, rev:0.07, lp:700, lpSpan:2.6, damp:0.06,
+  fretless:{grp:"grpBass", en:"Fretless · smooth and singing", es:"Sin trastes · suave y cantante", kind:"pluck", out:3.889, gain:1, rev:0.07, lp:700, lpSpan:2.6, damp:0.06,
           s:{sr:22050, T0:9, fref:41, Texp:0.5, Tmin:2.2, Tmax:10, Thf:0.3, Thmax:0.5, pos:0.24, bright:0.35, soft:0.12, noise:0.02, pol2:0.35, atk:0.02, atkLp:0.1, pick:0.24, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b410",{gain:2.5, bass:5.5, mid:6, treble:5}, {fx:{chorus:{on:true, rate:2, depth:3, mix:3}}})},
   dub:   {grp:"grpBass", en:"Dub · deep and dark", es:"Dub · profundo y oscuro", kind:"pluck", out:2.19, gain:1, rev:0.04, lp:420, lpSpan:2.2, damp:0.06,
           s:{sr:22050, T0:6, fref:41, Texp:0.5, Tmin:1.8, Tmax:7, Thf:0.1, Thmax:0.12, pos:0.24, bright:0.22, soft:0.12, noise:0.04, pol2:0.25, atk:0.03, atkLp:0.1, pick:0.24, durMax:5, body:[["highpass",28,0.7,0]]},
           pick:PU.bass, rig:R("bvint","b115",{gain:2, bass:7.5, mid:4, treble:2}, {eq:{on:true, db:[3,4,2,0,-2,-3,-3,-2,0,0]}})},
-  rock:  {grp:"grpHeavy", en:"Rock · gritty pick", es:"Rock · púa con aspereza", kind:"pluck", out:1.494, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.05,
+  rock:  {grp:"grpHeavy", en:"Rock · gritty pick", es:"Rock · púa con aspereza", kind:"pluck", out:1.749, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.25, Thmax:0.6, pos:0.12, bright:0.62, soft:0.38, noise:0.22, pol2:0.25, atk:0.14, atkLp:0.6, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:7.5, bass:5.5, mid:6.5, treble:6, master:7})},
   /* AOG-AMP-V1 — Jimmy: "I want a metal style sounds (like Pantera / lamb of god)" for the bass too: the lows stay clean and
      round under a driven middle (a blend, as metal bassists do), with the gate */
-  metal: {grp:"grpHeavy", en:"Heavy metal bass", es:"Bajo de metal pesado", kind:"pluck", out:1.685, gain:1, rev:0.04, lp:1100, lpSpan:2.8, damp:0.04,
+  metal: {grp:"grpHeavy", en:"Heavy metal bass", es:"Bajo de metal pesado", kind:"pluck", out:1.941, gain:1, rev:0.04, lp:1100, lpSpan:2.8, damp:0.04,
           s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.3, Thmax:0.7, pos:0.1, bright:0.75, soft:0.45, noise:0.25, pol2:0.25, atk:0.18, atkLp:0.65, pick:0.1, durMax:5.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bdrive","b410",{gain:6.5, bass:6, mid:6, treble:6.5, blend:5}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}}})},
-  fuzz:  {grp:"grpHeavy", en:"Fuzz bass", es:"Bajo con fuzz", kind:"pluck", out:1.466, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
+  fuzz:  {grp:"grpHeavy", en:"Fuzz bass", es:"Bajo con fuzz", kind:"pluck", out:1.394, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bclean","b810",{gain:3, bass:6, mid:5, treble:5}, {fx:{fz:{on:true, sus:7, tone:5, lvl:5}}})},
   octave:{grp:"grpHeavy", en:"Octave bass · extra deep", es:"Bajo con octava · muy profundo", kind:"pluck", out:3.009, gain:1, rev:0.04, lp:600, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:3, bass:6, mid:5, treble:4.5}, {fx:{oct:{on:true, sub:7, dry:7}}})},
-  upright:{grp:"grpOther", en:"Upright bass", es:"Contrabajo", kind:"pluck", out:1.013, gain:3.94, rev:0.09, lp:650, lpSpan:2.6, damp:0.06,
-          s:{sr:22050, T0:3, fref:41, Texp:0.4, Tmin:1.2, Tmax:3.5, Thf:0.1, Thmax:0.12, pos:0.25, bright:0.35, soft:0.15, noise:0.06, pol2:0.3, atk:0.08, atkLp:0.08, pick:0, durMax:3.5,
-             body:[["highpass",35,0.7,0],["peaking",72,1.5,5],["peaking",145,1.6,3],["peaking",290,1.5,1.5],["highshelf",1500,0.7,-6]]}, rig:NO_AMP},
-  synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", out:4.71, gain:1.41, rev:0.06, damp:0.035, rig:R("bclean","off",{gain:2})},
+  upright:{grp:"grpOther", en:"Upright bass", es:"Contrabajo", kind:"pluck", out:1.058, gain:3.94, rev:0.09, lp:650, lpSpan:2.6, damp:0.06,
+          s:{sr:44100, T0:3.2, fref:41, Texp:0.4, Tmin:1.4, Tmax:3.8, Thf:0.12, Thmax:0.35, pos:0.25, bright:0.19, soft:0.07, loop:0.02, pol2:0.3, atk:0, thump:0.6, thumpHz:65, thumpMs:25, glow:0, rise:3, pick:0, durMax:3.8,
+             body:[["highpass",35,0.7,0],["peaking",72,2.5,6],["peaking",145,2,3],["peaking",290,1.8,1.5],["highshelf",1200,0.7,-8]]}, rig:NO_AMP},
+  synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", out:5.279, gain:1.41, rev:0.06, damp:0.035,
+          syn:{sq:0.45, det:3, q:1.5, fa:4, fv:1500, fb:2.2, fb0:160, tc:0.12, sub:0.35, subMs:50, sus:0.62, st:0.22}, rig:R("bclean","off",{gain:2})},
   acid:  {grp:"grpOther", en:"Synth bass · acid squelch", es:"Bajo de sintetizador · ácido", kind:"synth", out:0.868, gain:1, rev:0.05, damp:0.03,
           syn:{sq:0, q:13, fa:5, fv:2600, fb:1.2, fb0:110, tc:0.11}, rig:R("bclean","off",{gain:2}, {fx:{ds:{on:true, dist:3, tone:6, lvl:5}}})}
 };
@@ -709,7 +718,7 @@ function fits(f, a, b){ return f.every(x=>x<0 || (x===0 ? a<=2 : (x>=a && x<=b))
    hand is (the E string first, then A, then D); no third, so it stays clear through a high-gain amp. When none fits, the
    ordinary shape plays. */
 function powerFor(c, a, b){
-  const root=((S.key+c.off)%12+12)%12;
+  const root=((S.key+c.off)%12+12)%12, fifth=(root+7)%12;
   for(let s=0; s<3; s++){
     for(let f=0; f<=MAXF-2; f++){
       if((TUNING[s]+f)%12!==root) continue;
@@ -719,7 +728,21 @@ function powerFor(c, a, b){
       if(fits(sh, a, b)) return sh;
     }
   }
-  return null;
+  /* AOG-STRINGS-V2: where that shape does not fit the frets on screen, the root and fifth the hand can reach there: three
+     strings side by side (or two), the root lowest if it can be, else the fifth under it; at the least the root alone.
+     Never a third. The handoff: "a full C major never reaches the amp" */
+  const opts=TUNING.map(o=>{ const l=[]; if(a<=2 && (o%12===root || o%12===fifth)) l.push(0); for(let f=a; f<=b; f++){ const pc=(o+f)%12; if(pc===root || pc===fifth) l.push(f); } return l; });
+  let best=null, bs=1e9;
+  for(const len of [3,2,1]) for(let s=0; s+len<=TUNING.length; s++){
+    (function walk(cur){
+      if(cur.length===len){ const notes=cur.map((f,j)=>TUNING[s+j]+f), fr=cur.filter(f=>f>0), low=notes[0]%12;
+        if(notes.some(m=>m<notes[0]) || !notes.some(m=>m%12===root) || (len>1 && !notes.some(m=>m%12===fifth)) || (len===1 && low!==root)) return;
+        if(fr.length && Math.max.apply(null,fr)-Math.min.apply(null,fr)>3) return;
+        const sc=(3-len)*100+(low===root?0:50)+s*10+notes[0]/100; if(sc<bs){ bs=sc; best=TUNING.map((_,k)=>k>=s && k<s+len ? cur[k-s] : -1); } return; }
+      opts[s+cur.length].forEach(f=>walk(cur.concat([f])));
+    })([]);
+  }
+  return best;
 }
 function shapeFor(c){
   const [a,b]=win(), pw=!!(SOUNDS[S.sound]&&SOUNDS[S.sound].power), key=[S.key,c.off,c.q,a,b,pw?"p":""].join("|");
@@ -791,28 +814,39 @@ function bassRoot(c){
    exact tuning (a fractional delay), how long it rings and how fast it darkens, where it is plucked, two directions of
    swing, the pick or the finger, and the wooden body (or the pickup). An instrument's notes are made once, when it is
    picked, every third note (the notes between play those a little faster or slower); nothing is downloaded.
+   AOG-STRINGS-V2 (2026-10-04) — the handoff: "One string, heard at a rate that can hold a pick". Every note is now made at
+   44.1 kHz (it was 32 kHz for the guitar, 22 kHz for the bass). The pick or the nail is a short burst at the pluck, a
+   click: it no longer rings on inside the string as a buzz. The first 40 ms are brighter than the rest, as a real pluck
+   is. An upright bass gets a soft thump from its wooden body.
    ══════════════════════════════════════════════════════════════════════════ */
 function seeded(seed){ let x=seed|0||0x2f6b1a3d; return ()=>{ x^=x<<13; x^=x>>>17; x^=x<<5; return ((x>>>0)/4294967296)*2-1; }; }
-function lossDelay(S2, w){ return Math.atan2(S2*Math.sin(w), (1-S2)+S2*Math.cos(w))/w; }
+/* the loss filter is one pole, b/(1+a·z⁻¹): what a trip round the loop loses grows with the frequency, as much as a string's
+   highs need (AOG-STRINGS-V2: at 44.1 kHz the old one-zero filter could not darken the highs fast enough). Its delay at w: */
+function lossDelay(a, w){ return Math.atan2(-a*Math.sin(w), 1+a*Math.cos(w))/w; }
 function apDelay(Cc, w){ let ph=Math.atan2(-Math.sin(w), Cc+Math.cos(w))-Math.atan2(-Cc*Math.sin(w), 1+Cc*Math.cos(w));
   while(ph>0) ph-=2*Math.PI; while(ph<=-2*Math.PI) ph+=2*Math.PI; return -ph/w; }
-/* the loop for one pitch: T0 = seconds for the note to fall 60 dB, Th = the same for its highs (at 3 kHz) */
-function stringLoop(sr, f0, T0, Th){
-  const w0=2*Math.PI*f0/sr, P=sr/f0, wh=2*Math.PI*Math.min(3000, sr*0.4)/sr;
-  const a0=Math.pow(0.001, 1/(f0*T0)), ah=Math.pow(0.001, 1/(f0*Math.min(Th,T0)));
-  const A=1-Math.cos(wh), B=1-Math.cos(w0), r2=(ah/a0)*(ah/a0);
-  let k=(1-r2)/(2*(A-r2*B)); k=Math.max(0, Math.min(0.25, k));
-  const S2=(1-Math.sqrt(1-4*k))/2, rho=Math.min(0.999995, a0/Math.sqrt(1-2*k*B));
-  const N=Math.max(2, Math.floor(P-lossDelay(S2,w0)-0.5)), D=P-lossDelay(S2,w0)-N;
+/* the loop for one pitch: T0 = seconds for the note to fall 60 dB, Th = the same for its highs (at 3 kHz). ref = the rate a
+   set of numbers was tuned at: below 44.1 kHz, its highs die as fast as they did there */
+function stringLoop(sr, f0, T0, Th, ref){
+  const w0=2*Math.PI*f0/sr, P=sr/f0, a0=Math.pow(0.001, 1/(f0*T0));
+  let ah=Math.pow(0.001, 1/(f0*Math.min(Th,T0)));
+  if(ref && ref<sr){ const B=1-Math.cos(2*Math.PI*f0/ref), A=1-Math.cos(2*Math.PI*Math.min(3000, ref*0.4)/ref), r2=(ah/a0)*(ah/a0);
+    let k=(1-r2)/(2*(A-r2*B)); k=Math.max(0, Math.min(0.25, k)); ah=Math.min(0.999995, a0/Math.sqrt(1-2*k*B))*Math.sqrt(1-2*k*A); }
+  /* the pole that loses a0 a trip at the note and ah at 3 kHz, and the gain that holds the note's own decay exactly */
+  const c0=Math.cos(w0), ch=Math.cos(2*Math.PI*Math.min(3000, sr*0.4)/sr), R=Math.min(1, (ah/a0)*(ah/a0)), p=c0-R*ch, q=1-R;
+  const a=q>1e-12 ? Math.max(-0.95, (-p+Math.sqrt(Math.max(0, p*p-q*q)))/q) : 0;
+  const b=Math.min(0.999995, a0*Math.sqrt(1+a*a+2*a*c0)/(1+a))*(1+a);
+  /* the delay, and an allpass for the last fraction of a sample, so the loop is exactly one vibration long */
+  const N=Math.max(2, Math.floor(P-lossDelay(a,w0)-0.5)), D=P-lossDelay(a,w0)-N;
   let lo=-0.95, hi=0.995; for(let i=0;i<48;i++){ const mid=(lo+hi)/2; if(apDelay(mid,w0)>D) lo=mid; else hi=mid; }
-  return {N:N, S:S2, rho:rho, C:(lo+hi)/2};
+  return {N:N, a:a, b:b, C:(lo+hi)/2};
 }
-function runLoop(L, exc, out, mix){
-  const N=L.N, dl=new Float32Array(N), n=out.length; for(let i=0;i<N;i++) dl[i]=exc[i%exc.length];
-  let idx=0, prev=0, ax=0, ay=0; const S2=L.S, rho=L.rho, Cc=L.C, a=1-S2;
+function runLoop(L, exc, out, mix, len){
+  const N=L.N, dl=new Float32Array(N), n=Math.min(out.length, len||out.length); for(let i=0;i<N;i++) dl[i]=exc[i%exc.length];
+  let idx=0, l=0, ax=0, ay=0; const a=L.a, b=L.b, Cc=L.C;
   for(let i=0;i<n;i++){
     const x=dl[idx]; out[i]+=x*mix;
-    const l=rho*(a*x+S2*prev); prev=x;
+    l=b*x-a*l;
     const y=Cc*l+ax-Cc*ay; ax=l; ay=y;
     dl[idx]=y; if(++idx===N) idx=0;
   }
@@ -826,35 +860,73 @@ function rbj(type, f, Q2, dB, sr){
   else { const sq=2*Math.sqrt(A)*al; b0=A*((A+1)+(A-1)*cw+sq); b1=-2*A*((A-1)+(A+1)*cw); b2=A*((A+1)+(A-1)*cw-sq); a0=(A+1)-(A-1)*cw+sq; a1=2*((A-1)-(A+1)*cw); a2=(A+1)-(A-1)*cw-sq; }
   return {b0:b0/a0, b1:b1/a0, b2:b2/a0, a1:a1/a0, a2:a2/a0};
 }
-function biq(d, k){ let x1=0,x2=0,y1=0,y2=0; for(let i=0;i<d.length;i++){ const x=d[i], y=k.b0*x+k.b1*x1+k.b2*x2-k.a1*y1-k.a2*y2; x2=x1; x1=x; y2=y1; y1=y; d[i]=y; } }
-/* one note, as numbers: m its note number, P how the string is made */
+function biq(d, k){ const b0=k.b0, b1=k.b1, b2=k.b2, a1=k.a1, a2=k.a2; let x1=0,x2=0,y1=0,y2=0;
+  for(let i=0, n=d.length;i<n;i++){ const x=d[i], y=b0*x+b1*x1+b2*x2-a1*y1-a2*y2; x2=x1; x1=x; y2=y1; y1=y; d[i]=y; } }
+/* one note, as numbers at 44.1 kHz: m its note number, P how the string is made.
+   P.sr is the rate P's one-step smoothing numbers (soft, bright, atkLp) were tuned at; a set tuned at a lower rate keeps its
+   corners in Hz, and its noise keeps its loudness, so it sounds as it was made to, with the room above it the rate gives. */
+const NOTE_SR=44100;
 function renderNote(m, P, seed){
-  const sr=P.sr, f0=mtof(m), rnd=seeded(seed);
+  const sr=NOTE_SR, ref=P.sr||sr, up=Math.sqrt(sr/ref), f0=mtof(m), rnd=seeded(seed);
+  const step=c=>1-Math.pow(1-Math.max(0, Math.min(0.999, c)), ref/sr);
   const T0=Math.max(P.Tmin, Math.min(P.Tmax, P.T0*Math.pow(P.fref/f0, P.Texp))), Th=Math.min(T0*P.Thf, P.Thmax);
   const n=Math.floor(Math.max(1.4, Math.min(P.durMax, T0*0.8))*sr), out=new Float32Array(n);
-  const L1=stringLoop(sr, f0, T0, Th), N=L1.N, exc=new Float32Array(N), nz=new Float32Array(N);
+  const L1=stringLoop(sr, f0, T0, Th, ref), N=L1.N, exc=new Float32Array(N);
   /* the pluck: the string's shape as it is let go, a bend at the plucking point, so each overtone is weaker than the one
      below it and the ones that would need the string to move at that point are missing; rounded off by how soft the finger
-     or pick is (P.soft); plus a little noise for the scrape of a pick or a nail (P.noise, softened by P.bright) */
-  const M=Math.max(1, Math.round(P.pos*N)), beta=M/N;
-  let sm=0; for(let i=0;i<2*N;i++){ sm+=(((i%N)<M ? 1-beta : -beta)-sm)*P.soft; if(i>=N) exc[i-N]=sm; }
-  let lp=0; for(let i=0;i<N;i++){ lp+=(rnd()-lp)*P.bright; nz[i]=lp; }
-  for(let i=N-1;i>=M;i--) nz[i]-=nz[i-M];
-  for(let i=0;i<N;i++) exc[i]=exc[i]*(1-P.noise)+nz[i]*P.noise*1.6;
+     or pick is (P.soft) */
+  const M=Math.max(1, Math.round(P.pos*N)), beta=M/N, soft=step(P.soft);
+  let sm=0; for(let i=0;i<2*N;i++){ sm+=(((i%N)<M ? 1-beta : -beta)-sm)*soft; if(i>=N) exc[i-N]=sm; }
+  /* a pick also flicks the string as it slips off: its edge (P.edge) keeps the overtones from fading above P.edgeHz, up to
+     P.edgeTop, so the pluck itself is bright; the loss filter takes those highs away again within a moment. A set without
+     P.edge gets one from its old noise, which used to be all of its brightness */
+  const brightHz=-Math.log(1-Math.min(0.999, P.bright))*ref/(2*Math.PI);
+  /* a thick wound string flicks darker than a thin one: the edge scales with the note against the instrument's middle (a
+     down strum, low strings first, then starts darker than an up strum) */
+  const edge=(P.edge!=null ? P.edge : Math.min(1, (P.noise||0)*2.5))*Math.max(0.55, Math.min(1.3, Math.sqrt(f0/((P.fref||82)*2.4)))), edgeTop=P.edge!=null ? (P.edgeTop||5000) : Math.max(1000, Math.min(6000, brightHz));
+  if(edge>0){ const k=edge*sr/(2*Math.PI*(P.edgeHz||1500)), x=Float32Array.from(exc), c=1-Math.exp(-2*Math.PI*edgeTop/sr);
+    let prev=x[N-1], e=0; for(let i=0;i<3*N;i++){ const j=i%N; e+=(k*(x[j]-prev)-e)*c; prev=x[j]; if(i>=2*N) exc[j]+=e; } }
+  /* a stiff string carries its highs a little faster than its lows, so the sharp corner of the pluck reaches the bridge as a
+     short sweep, not one hard tick (P.disp sections of allpass, each P.dispA) */
+  for(let s=0, K=P.disp!=null ? P.disp|0 : (edge>0 ? 20 : 0), ad=P.dispA==null?-0.6:P.dispA; s<K; s++){ const x=Float32Array.from(exc); let xp=0, yp=0;
+    for(let i=0;i<3*N;i++){ const xi=x[i%N], y=ad*xi+xp-ad*yp; xp=xi; yp=y; if(i>=2*N) exc[i%N]=y; } }
+  /* a little noise in the shape, so no two notes are quite alike (P.loop). It used to be all of P.noise, and it rang on
+     with the string as a buzz; the rest of it is now the pick's click, below */
+  const ln=P.loop!=null ? P.loop : (P.noise||0)*0.3;
+  if(ln>0){ const nz=new Float32Array(N), b=step(P.bright); let lp=0;
+    for(let i=0;i<N;i++){ lp+=(rnd()*up-lp)*b; nz[i]=lp; }
+    for(let i=N-1;i>=M;i--) nz[i]-=nz[i-M];
+    for(let i=0;i<N;i++) exc[i]=exc[i]*(1-ln)+nz[i]*ln*1.6; }
   let mean=0; for(let i=0;i<N;i++) mean+=exc[i]; mean/=N; for(let i=0;i<N;i++) exc[i]-=mean;
   runLoop(L1, exc, out, 1);
-  /* the string also swings the other way: a touch sharper, and it dies sooner */
-  runLoop(stringLoop(sr, f0*Math.pow(2,1.2/1200), T0*0.5, Th*0.7), exc, out, P.pol2);
-  /* the pick or the finger itself, a few thousandths of a second */
-  if(P.atk){ const an=Math.floor(sr*0.006); let a=0; for(let i=0;i<an;i++){ a+=(rnd()-a)*P.atkLp; out[i]+=a*P.atk*4*Math.pow(1-i/an,2); } }
+  /* the string also swings the other way: a touch sharper, and it dies sooner (made only while it can be heard) */
+  runLoop(stringLoop(sr, f0*Math.pow(2,1.2/1200), T0*0.5, Th*0.7, ref), exc, out, P.pol2, Math.ceil(T0*0.6*sr));
+  /* the first 40 ms are brighter: the highs (P.glowHz up) lifted by P.glow dB at the pluck, back to the string's own by 40 ms
+     (a set without P.glow gets a lift from how bright its noise is: up to 6 dB) */
+  const glow=P.glow!=null ? P.glow : Math.max(0, Math.min(6, (brightHz-1000)/1000));
+  if(glow>0){ const gg=Math.pow(10, glow/20)-1, a=1-Math.exp(-2*Math.PI*(P.glowHz||2000)/sr), L=Math.min(n, Math.floor(0.04*sr)); let lp=0;
+    const on=(P.glowOn==null?3:P.glowOn)*0.001*sr;   /* it comes up over the first few ms, so the pluck's first edge is not made sharper still */
+    for(let i=0;i<L;i++){ lp+=(out[i]-lp)*a; out[i]+=(out[i]-lp)*gg*(0.5+0.5*Math.cos(Math.PI*i/L))*(on>0?1-Math.exp(-i/on):1); } }
+  /* the pick or the nail: a short burst of noise at the pluck, a click and then gone, never a hiss under the note.
+     P.atk how loud, P.atkLp how bright (its top), P.atkHp its low cut (a click, not a thud), P.atkMs how fast it dies */
+  if(P.atk>0){ const b=step(P.atkLp), hp=1-Math.exp(-2*Math.PI*(P.atkHp||300)/sr), tau=(P.atkMs||2.4)*0.001*sr, on=0.00015*sr, L=Math.min(n, Math.ceil(tau*8));
+    let lp=0, lo=0;
+    for(let i=0;i<L;i++){ lp+=(rnd()*up-lp)*b; lo+=(lp-lo)*hp; out[i]+=(lp-lo)*P.atk*4*Math.exp(-i/tau)*(1-Math.exp(-i/on)); } }
+  /* a soft thump: the wooden body's air knocked by the pluck (an upright bass), P.thump how loud, near P.thumpHz */
+  if(P.thump){ const w=2*Math.PI*(P.thumpHz||70)/sr, tau=(P.thumpMs||40)*0.001*sr, on=0.003*sr, L=Math.min(n, Math.ceil(tau*8));
+    for(let i=0;i<L;i++) out[i]+=P.thump*Math.sin(w*i)*Math.exp(-i/tau)*(1-Math.exp(-i/on)); }
   /* an electric string is heard from one point under it, the pickup */
   if(P.pick){ const K=Math.max(1, Math.round(P.pick*sr/f0)); for(let i=n-1;i>=K;i--) out[i]-=out[i-K]*0.85; }
   /* the wooden body's ring, or the amp's low cut */
   (P.body||[]).forEach(b=>biq(out, rbj(b[0], b[1], b[2], b[3], sr)));
-  /* every note brought to one loudness over its first quarter second, then faded in (1 ms) and out (the last third) */
+  /* every note brought to one loudness over its first quarter second, then faded in (P.rise ms: a finger is slower than a
+     pick) and out (the last third) */
   let s=0; const a0=Math.floor(0.01*sr), a1=Math.min(n, a0+Math.floor(0.25*sr)); for(let i=a0;i<a1;i++) s+=out[i]*out[i];
-  const g=0.2/Math.sqrt(s/Math.max(1,a1-a0)+1e-12), fin=Math.floor(sr*0.001), fo=Math.floor(n*0.34);
-  for(let i=0;i<n;i++){ let w=g; if(i<fin) w*=i/fin; const j=n-1-i; if(j<fo) w*=0.5-0.5*Math.cos(Math.PI*j/fo); out[i]*=w; }
+  const g=0.2/Math.sqrt(s/Math.max(1,a1-a0)+1e-12), fin=Math.max(1, Math.floor(sr*(P.rise||1)*0.001)), fo=Math.floor(n*0.34);
+  for(let i=0;i<fin;i++) out[i]*=0.5-0.5*Math.cos(Math.PI*i/fin);
+  for(let i=0, e=n-fo;i<e;i++) out[i]*=g;
+  /* the fade out, a half cosine turned step by step (no cosine for every sample) */
+  for(let j=0, c=1, sn=0, cd=Math.cos(Math.PI/fo), sd=Math.sin(Math.PI/fo);j<fo;j++){ out[n-1-j]*=g*(0.5-0.5*c); const c2=c*cd-sn*sd; sn=sn*cd+c*sd; c=c2; }
   return out;
 }
 /* the notes each instrument keeps: every third note, from the lowest string to as high as the neck goes */
@@ -873,13 +945,14 @@ function makeBuffer(d, sr){
 function idSeed(id){ let h=0x51a7; for(let i=0;i<id.length;i++) h=(h*131+id.charCodeAt(i))|0; return h; }
 function noteBuf(id, n){
   const st=setFor(id);
-  if(!st.buf[n]){ const P=SOUNDS[id].s; st.buf[n]=makeBuffer(renderNote(n, P, (n*7919)^idSeed(id)), P.sr); }
+  if(!st.buf[n]){ const P=SOUNDS[id].s; st.buf[n]=makeBuffer(renderNote(n, P, (n*7919)^idSeed(id)), NOTE_SR); }
   return st.buf[n];
 }
 /* the notes are made a few at a time after the page is up, so the first strum is already ready */
 let prepJob=0;
 function prepare(id){
   const snd=SOUNDS[id]; clearTimeout(prepJob);
+  litNeck();      /* a new sound can play the chord in the hand another way (a metal sound: a power chord), so the neck shows it now */
   if(!snd || snd.kind!=="pluck") return;
   Object.keys(SETS).forEach(k=>{ if(k!==id) delete SETS[k]; });     /* one instrument's notes at a time, kind to a phone */
   const todo=SAMPLE_NOTES.slice();
@@ -1006,18 +1079,26 @@ function stringVoice(c, ch, id, m, v, when, s){
   vc.glide=(m2, at)=>{ pairs.forEach(([sx, nn, det])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(Math.pow(2,(m2-nn)/12)*det, at, 0.012); }catch(e){} }); };
   return vc;
 }
-/* the synth bass: two oscillators through a filter that closes after the start, as on the analogue synths */
+/* the synth bass: a saw and a square a hair apart, through a filter that opens with the note and closes after it, as on
+   the analogue synths. AOG-STRINGS-V2 — the handoff: "It honks. It does not thump." It should thump, then growl, then sit:
+   a quiet sine an octave down for the first moment (the thump), the filter closing (the growl), then the level settling.
+   syn: sq the square's level · det how far apart they are (cents) · q the filter's peak (dB; kept low, so it does not
+   whistle) · it opens to fa×f+fv×velocity and settles at fb×f+fb0 in about tc s · sub the thump's level, subMs how fast it
+   goes · sus where the level settles, st how fast */
 function synthVoice(c, ch, id, m, v, when, s){
   const snd=SOUNDS[id], f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), peak=0.2*velAmp(vv), sy=snd.syn||{};
-  const o1=osc(c,"sawtooth",f), o2=osc(c,"square",f); o2.detune.value=7;
+  const o1=osc(c,"sawtooth",f), o2=osc(c,"square",f); o2.detune.value=sy.det==null?7:sy.det;
   const m2=gainAt(c, sy.sq==null?0.5:sy.sq); o2.connect(m2);
-  const fa=Math.min(9000, f*(sy.fa||3)+(sy.fv||1800)*vv), fb=Math.min(fa, f*(sy.fb||1.6)+(sy.fb0==null?240:sy.fb0)), q=sy.q||5;
+  const fa=Math.min(9000, f*(sy.fa||3)+(sy.fv||1800)*vv), fb=Math.min(fa, f*(sy.fb||1.6)+(sy.fb0==null?240:sy.fb0)), q=sy.q==null?5:sy.q;
   let lpf; try{ lpf=new BiquadFilterNode(c,{type:"lowpass", frequency:fa, Q:q}); }catch(e){ lpf=filt(c,"lowpass",fa,q); }
   lpf.frequency.setValueAtTime(fa, when); lpf.frequency.setTargetAtTime(fb, when, sy.tc||0.08);
   o1.connect(lpf); m2.connect(lpf);
-  const amp=gainAt(c, peak); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(peak*0.72, when+0.004, 0.3);
+  const amp=gainAt(c, peak); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(peak*(sy.sus||0.72), when+0.004, sy.st||0.3);
   lpf.connect(amp);
   const lvl=gainAt(c, snd.gain), rel=gainAt(c,1); amp.connect(lvl);
+  if(sy.sub){ const o3=osc(c,"sine",f/2), sg=gainAt(c,0), d=(sy.subMs||50)/1000;
+    sg.gain.setValueAtTime(0, when); sg.gain.linearRampToValueAtTime(peak*sy.sub, when+0.003); sg.gain.setTargetAtTime(0, when+0.003, d);
+    o3.connect(sg); sg.connect(lvl); o3.start(when); o3.stop(when+0.003+d*9); }
   let tail=lvl; const pan=panFor(c, s); if(pan){ lvl.connect(pan); tail=pan; }
   tail.connect(rel); rel.connect(ch.amp);
   o1.start(when); o2.start(when);
@@ -1650,7 +1731,9 @@ const FINGERS=new Map();      /* each finger (pointer) on the neck → where it 
 const KEYCELLS=new Map();     /* each computer key held → the place it plays */
 function litNeck(){
   const svg=$("neck"); if(!svg) return;
-  const now=S.playing?sounding():new Set(), down=new Set(), fit=new Map(), cc=shapeChord();
+  /* AOG-STRINGS-V2: a pad held down shows its own shape, even while the pattern plays (a metal sound: its power chord) */
+  const held=Object.keys(padHeld).length ? S.hand : null;
+  const now=S.playing?sounding():new Set(), down=new Set(), fit=new Map(), cc=held||shapeChord();
   FINGERS.forEach(p=>{ if(p.zone==="fret") down.add(p.s+":"+p.f); });
   KEYCELLS.forEach(cell=>down.add(cell));
   let shp=null;
