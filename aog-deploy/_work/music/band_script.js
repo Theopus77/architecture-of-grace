@@ -900,7 +900,7 @@ async function sendPads(){
 const $=id=>document.getElementById(id);
 /* the music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1) */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-drums.html#kit","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="band"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the band plays as a take (aog-recorder.js, the one recorder
@@ -1219,7 +1219,7 @@ function bpHtml(lo, hi){
   return html;
 }
 function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen.height||0)>=900, m=bpMode(); return {
-  close:es?"✕ Cerrar":"✕ Close",
+  close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu",
   hint: m==="harp" ? (es?"Pasa un dedo por las cuerdas. El arpa está afinada en el tono de la canción.":"Sweep a finger across the strings. The harp is tuned to the song's key.")
       : m==="bars" ? (es?"Toca las láminas. Las de atrás son los sostenidos y bemoles.":"Tap the bars. The ones at the back are the sharps and flats.")
       : (es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like."),
@@ -1229,10 +1229,10 @@ function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen
 function bpText(){
   if(!$("playView")) return; const W=bpWords();
   $("playView").setAttribute("aria-label", W.region);
-  $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint;
+  $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint; $("bpMore").textContent=W.menu;
   $("bpDown").setAttribute("aria-label", W.lower); $("bpUp").setAttribute("aria-label", W.higher);
   $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
-  $("bpRec").textContent=$("recBtn").textContent; $("bpRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false");
+  bpRecPaint();
   $("bpTurn").textContent=W.turn;
   $("bpTurn").hidden=BP.seen || BP.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
 }
@@ -1246,21 +1246,36 @@ function bpSync(){
     playZoomLock(true); document.body.classList.add("aog-play");
     if(!BP.seen){ BP.seen=true; try{ localStorage.setItem("aog.band.play.v1","1"); }catch(e){} }
   } else {
-    BP.on=false; document.body.classList.remove("aog-play"); playZoomLock(false);
+    BP.on=false; bpDrawer(false); document.body.classList.remove("aog-play"); playZoomLock(false);
     if(BP.back && BP.back.parentNode) BP.back.parentNode.replaceChild(kb, BP.back); BP.back=null;
   }
   buildKeys(); bpText(); if(!w) window.scrollTo(0, BP.y);
+}
+const GUARD={down:new Set(), last:0};
+function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
+function bpDrawer(open){ const d=$("bpDrawer"); if(!d) return; d.hidden=!open; $("bpMore").setAttribute("aria-expanded", open?"true":"false"); }
+function bpRecPaint(){
+  const on=$("recBtn").getAttribute("aria-pressed")==="true";
+  $("bpRecGo").textContent=$("recBtn").textContent; $("bpRecGo").setAttribute("aria-pressed", on?"true":"false");
+  $("bpRec").hidden=!on; $("bpRec").textContent=(S.lang==="es"?"■ Parar ":"■ Stop ")+($("recTime").textContent||"");
 }
 function bpInit(){
   if(!$("playView") || !window.matchMedia) return;
   BP.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
   const ch=()=>{ BP.closed=false; bpSync(); bpText(); };
   if(BP.mq.addEventListener) BP.mq.addEventListener("change", ch); else if(BP.mq.addListener) BP.mq.addListener(ch);
-  $("bpClose").onclick=()=>{ BP.closed=true; bpSync(); };
+  $("bpClose").onclick=()=>{ bpDrawer(false); BP.closed=true; bpSync(); };
   $("bpDown").onclick=()=>moveOct(-1); $("bpUp").onclick=()=>moveOct(1);
-  $("bpRec").onclick=()=>$("recBtn").click();
-  try{ new MutationObserver(()=>{ $("bpRec").textContent=$("recBtn").textContent; $("bpRec").setAttribute("aria-pressed", $("recBtn").getAttribute("aria-pressed")||"false"); })
-    .observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  $("bpRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
+  $("bpRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) bpDrawer(false); };
+  $("bpMore").onclick=()=>bpDrawer($("bpDrawer").hidden);
+  try{ const mo=new MutationObserver(bpRecPaint); mo.observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true});
+    mo.observe($("recTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  /* AOG-PLAY-GUARD-V1: a tap on the bar while a hand is playing (or just after) is a slip, not a press */
+  document.addEventListener("pointerdown",(e)=>{ if(e.target.closest && e.target.closest("#kbd,#pvStrip")){ GUARD.down.add(e.pointerId); GUARD.last=Date.now(); } },true);
+  const lift=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
+  document.addEventListener("pointerup",lift,true); document.addEventListener("pointercancel",lift,true);
+  $("playView").querySelector(".bp-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
   $("bpSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("bpSound").value; ss.onchange(); bpText(); setTimeout(()=>$("bpSound").blur(),0); };
   /* touch on the strings, the bars and the keys: no magnifier, no scroll */
   $("playView").addEventListener("touchstart",(e)=>{ if(e.cancelable && !(e.target.closest && e.target.closest("button,select"))) e.preventDefault(); },{passive:false});

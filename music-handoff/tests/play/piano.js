@@ -17,10 +17,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const T=(type,pts)=>cdp.send("Input.dispatchTouchEvent",{type, touchPoints:pts.map((q,i)=>({x:q.x,y:q.y,id:q.id||i+1}))});
     const key=(m)=>p.evaluate(m=>{ const el=document.querySelector(`#kbd [data-m="${m}"]`); if(!el) return null; const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height*0.8, top:r.y, h:r.height, w:r.width}; }, m);
     const pick=(id)=>p.evaluate(id=>{ const s=document.getElementById("bpSound"); s.value=id; s.onchange(); }, id);
-    return {c, p, errs, T, key, pick};
+    const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    return {c, p, errs, T, key, pick, press};
   };
   for(const [dev, vp, oc] of [["iPhone sideways",{width:844,height:390},2],["iPad sideways",{width:1180,height:820},3]]){
-    const {c, p, errs, T, key, pick}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== piano · "+dev);
+    const {c, p, errs, T, key, pick, press}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== piano · "+dev);
     const st=await p.evaluate(()=>({on:BP.on, inView:!!document.querySelector("#playView #kbd"), page:getComputedStyle(document.querySelector(".wrap")).display,
       z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
       whites:document.querySelectorAll("#kbd .wk").length, kh:document.getElementById("kbd").getBoundingClientRect().height, lo:KB.lo,
@@ -45,9 +46,16 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.evaluate("__n=[]"); const F=await key(lo+5);
     await T("touchStart",[C]); for(let i=1;i<=10;i++){ await T("touchMove",[{x:C.x+(F.x-C.x)*i/10, y:C.y}]); await p.waitForTimeout(12); } await T("touchEnd",[]);
     ok(JSON.stringify(await p.evaluate("__n"))===JSON.stringify([lo,lo+2,lo+4,lo+5]), "a finger slid along the keys plays each: "+(await p.evaluate("__n")).join(" "));
-    if(await p.evaluate("document.getElementById('bpUp').disabled")) await p.click("#bpDown");
-    await p.click("#bpUp"); const up=await p.evaluate("KB.lo"); await p.click("#bpDown");
+    if(await p.evaluate("document.getElementById('bpUp').disabled")) await press("#bpDown");
+    await press("#bpUp"); const up=await p.evaluate("KB.lo"); await press("#bpDown");
     ok(up===await p.evaluate("KB.lo")+12, "▶ moves up an octave");
+    /* AOG-PLAY-GUARD-V1: a slip onto the bar while playing is ignored; the bar keeps ☰ Menu and the octave */
+    { const k0=await key(await p.evaluate("KB.lo")); await T("touchStart",[k0]); await p.waitForTimeout(40);
+      const slip=await p.evaluate(()=>{ document.getElementById("bpMore").click(); return !document.getElementById("bpDrawer").hidden; });
+      await T("touchEnd",[]); await p.waitForTimeout(800);
+      const real=await p.evaluate(()=>{ document.getElementById("bpMore").click(); return !document.getElementById("bpDrawer").hidden; });
+      const bar=await p.evaluate(()=>[...document.querySelectorAll("#playView .bp-bar button")].filter(b=>!b.hidden).map(b=>b.id).join(" "));
+      ok(!slip && real && bar==="bpMore bpDown bpUp", "a slip onto ☰ Menu while playing is ignored, a real tap opens it; the bar: "+bar); }
     await p.click("#bpClose"); await p.waitForTimeout(100);
     ok(await p.evaluate(()=>!BP.on && !!document.querySelector("#rig #kbd") && getComputedStyle(document.querySelector(".wrap")).display!=="none"), "Close gives the page back, with its keys");
     await p.setViewportSize({width:vp.height, height:vp.width}); await p.waitForTimeout(250); await p.setViewportSize(vp); await p.waitForTimeout(250);

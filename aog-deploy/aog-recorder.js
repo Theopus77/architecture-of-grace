@@ -71,6 +71,12 @@
     studio: { en: "Send to the Studio", es: "Enviar al estudio" },
     studioSent: { en: "Sent to the Studio.", es: "Enviada al estudio." },
     studioGo: { en: "Open the Studio", es: "Abrir el estudio" },
+    /* AOG-REC-DELETE-V1 — Jimmy: "There should be a delete button for the musical recording. I accidentally hit the record
+       button when I was playing." Every take can be deleted; for a moment it can be brought back. */
+    del: { en: "Delete", es: "Borrar" },
+    delAria: { en: "Delete take {n}", es: "Borrar la toma {n}" },
+    deleted: { en: "Take {n} is deleted.", es: "La toma {n} está borrada." },
+    undo: { en: "Bring it back", es: "Recuperarla" },
     noRoom: { en: "This device has no room left for takes. In the Studio, remove a take you do not need, then try again.", es: "Este dispositivo no tiene más espacio para tomas. En el estudio, quita una toma que no necesites y vuelve a intentarlo." }
   };
   /* AOG-TAKE-TO-PADS-V1 — the tools whose takes can go to the drum machine, and what a take is called there */
@@ -173,6 +179,7 @@
     ".aogrec-b{min-height:44px;border-radius:12px;border:1px solid #0a0b0d;background:linear-gradient(#3a3e44,#1c1f23);color:#f3efe6;font:800 .95rem/1.2 -apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif;padding:0 1rem;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;touch-action:manipulation}",
     ".aogrec-b.send{border-color:#5b8fd6;color:#cfe2ff}",
     ".aogrec-b:disabled{opacity:.6;cursor:default}",
+    ".aogrec-b.del{border-color:#c4452a;color:#ffb1a4}",
     /* a page whose recorder sits outside its dark instrument gets a dark panel of its own */
     ".aogrec-box{background:linear-gradient(180deg,#2a2d31 0%,#17191c 16%,#101114 100%);border:1px solid #07080a;border-radius:18px;padding:14px;margin:1rem 0;color:#d7cbb8}",
     ".aogrec-box .aogrec-row{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem}",
@@ -330,11 +337,29 @@
           '<a class="aogrec-b" href="' + k.url + '" download="' + o.file[L()] + "-" + k.n + '.wav">' + w("save") + "</a>" +
           '<button type="button" class="aogrec-b send" data-aogrec-send="' + k.n + '">' + w("send") + "</button>" +
           (drums ? '<button type="button" class="aogrec-b send" data-aogrec-drum="' + k.n + '">' + w("drum") + "</button>" : "") +
-          '<button type="button" class="aogrec-b send" data-aogrec-studio="' + k.n + '">' + w("studio") + "</button></div>";
+          '<button type="button" class="aogrec-b send" data-aogrec-studio="' + k.n + '">' + w("studio") + "</button>" +
+          '<button type="button" class="aogrec-b del" data-aogrec-del="' + k.n + '" aria-label="' + w("delAria").split("{n}").join(k.n) + '">' + w("del") + "</button></div>";
       }).join("");
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-send]"), function (b) { b.onclick = function () { R.send(+b.getAttribute("data-aogrec-send")); }; });
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-drum]"), function (b) { b.onclick = function () { R.toDrums(+b.getAttribute("data-aogrec-drum"), b); }; });
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-studio]"), function (b) { b.onclick = function () { R.toStudio(+b.getAttribute("data-aogrec-studio"), b); }; });
+      Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-del]"), function (b) { b.onclick = function () { R.del(+b.getAttribute("data-aogrec-del")); }; });
+    };
+    /* AOG-REC-DELETE-V1: a deleted take waits, so the next tap can bring it back; the one after that lets it go */
+    R.del = function (n) {
+      var i = R.takes.findIndex(function (x) { return x.n === n; }); if (i < 0) return;
+      if (R.bin) URL.revokeObjectURL(R.bin.k.url);
+      R.bin = { k: R.takes[i], i: i }; R.takes.splice(i, 1); R.studioLine = false; R.msg = "";
+      R.paint();
+      var line = el("line"); if (line) { line.textContent = w("deleted").split("{n}").join(n) + " ";
+        var u = document.createElement("button"); u.type = "button"; u.className = "aogrec-b"; u.textContent = w("undo");
+        u.onclick = function () { R.undo(); }; line.appendChild(u); }
+    };
+    R.undo = function () {
+      if (!R.bin) return; var b = R.bin; R.bin = null;
+      R.takes.splice(Math.min(b.i, R.takes.length), 0, b.k); R.takes.sort(function (a, c) { return c.n - a.n; });
+      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); }
+      R.msg = ""; R.paint();
     };
     document.addEventListener("visibilitychange", function () { if (document.hidden && R.on) R.toggle(); });
     style();

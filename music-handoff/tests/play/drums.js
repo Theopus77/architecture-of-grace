@@ -16,10 +16,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const cdp=await c.newCDPSession(p);
     const T=(type,pts)=>cdp.send("Input.dispatchTouchEvent",{type, touchPoints:pts.map((q,i)=>({x:q.x,y:q.y,id:q.id||i+1}))});
     const where=()=>p.evaluate(()=>{ const o={}; document.querySelectorAll("#dkKit [data-pad]").forEach(g=>{ const sh=g.querySelector(".glow > *"), r=sh.getBoundingClientRect();   /* the piece's own outline (its glow) */ const kb=document.getElementById("dkKit").getBoundingClientRect(); o[g.getAttribute("data-pad")]={x:r.x+r.width/2, y:Math.min(r.y+r.height/2, kb.bottom-30) /* the kick shows only its top half */, top:r.y, left:r.x, w:r.width, h:r.height}; }); return o; });
-    return {c, p, errs, T, where};
+    const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    return {c, p, errs, T, where, press};
   };
   for(const [dev, vp] of [["iPhone sideways",{width:844,height:390}],["iPad sideways",{width:1180,height:820}]]){
-    const {c, p, errs, T, where}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== drums · "+dev);
+    const {c, p, errs, T, where, press}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== drums · "+dev);
     const st=await p.evaluate(()=>({on:DK.on, shown:getComputedStyle(document.getElementById("kitView")).display, page:getComputedStyle(document.querySelector(".wrap")).display,
       z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
       pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#kitView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText)); }catch(e){ return false; } })}));
@@ -56,11 +57,20 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.waitForTimeout(200);
     ok(lit && await p.evaluate(()=>!document.querySelector('#dkKit [data-pad="snare"]').classList.contains("hit")), "a piece lights while it is hit, then goes still");
     /* Play the beat */
-    await p.click("#dkRun"); await p.waitForTimeout(150);
+    await press("#dkMore"); await p.click("#dkRun"); await p.waitForTimeout(150);
     const run=await p.evaluate(()=>({p:S.playing, t:document.getElementById("dkRun").textContent}));
     await p.click("#dkRun"); await p.waitForTimeout(80);
+    /* AOG-PLAY-GUARD-V1: the bar keeps ☰ Menu and the kit; a slip onto it while playing is ignored */
+    await press("#dkMore");
+    const barIds=await p.evaluate(()=>[...document.querySelectorAll("#kitView .dk-bar button")].filter(b=>!b.hidden).map(b=>b.id).join(" "));
+    { const w3=await where(); await T("touchStart",[w3.snare]); await p.waitForTimeout(40);
+      const slip=await p.evaluate(()=>{ document.getElementById("dkMore").click(); return !document.getElementById("dkDrawer").hidden; });
+      await T("touchEnd",[]); await p.waitForTimeout(800);
+      const real=await p.evaluate(()=>{ document.getElementById("dkMore").click(); return !document.getElementById("dkDrawer").hidden; });
+      ok(barIds==="dkMore" && !slip && real, "the bar keeps ☰ Menu (and the kit menu); a slip onto it while playing is ignored, a real tap opens it"); }
     ok(run.p && /Stop/.test(run.t) && await p.evaluate("!S.playing"), "Play the beat starts and stops the pattern ("+run.t+")");
     ok(await p.evaluate("!!document.getElementById('dkTake').textContent"), "Record a take is one tap away");
+    if(await p.evaluate("document.getElementById('dkDrawer').hidden")) await press("#dkMore");
     await p.click("#dkClose"); await p.waitForTimeout(150);
     ok(await p.evaluate(()=>!DK.on && getComputedStyle(document.querySelector(".wrap")).display!=="none"), "Close gives the page back");
     await p.waitForTimeout(700);
@@ -71,6 +81,29 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(JSON.stringify(await p.evaluate("__h"))==='["tom"]', "and it still plays");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close();
   }
+  /* AOG-KIT-BENCH-V1: the drum kit has its own bench (Go to, every music menu, /drum-kit); AOG-REC-DELETE-V1: a take can be deleted */
+  { const {c, p, errs}=await open({viewport:{width:390,height:844}, isMobile:true, hasTouch:true}, "#kit"); console.log("== drum kit bench · iPhone upright");
+    const kb=await p.evaluate(()=>({view:S.view, mast:document.getElementById("mastH").textContent, n:document.querySelectorAll("#kbKit [data-pad]").length, go:[...document.querySelectorAll("#navViews a")].map(a=>a.textContent).join("|"),
+      tools:[...document.querySelectorAll("#navTools a")].map(a=>a.getAttribute("href")).join(" "), opts:document.getElementById("kbKitSel").options.length, take:!!document.querySelector("#takeSlot #takeBtn")}));
+    ok(kb.view==="kit" && kb.mast==="The Drum Kit" && kb.n===8 && /Drum kit/.test(kb.go) && /music-drums\.html#kit/.test(kb.tools) && kb.opts>=25 && kb.take, "the drum kit's own bench: "+JSON.stringify(kb));
+    const sn=await p.evaluate(()=>{ const el=document.querySelector('#kbKit [data-pad="snare"] .glow > *'); el.scrollIntoView({block:"center"}); const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
+    await p.evaluate("__h=[]"); await p.touchscreen.tap(sn.x, sn.y); await p.waitForTimeout(80);
+    ok(JSON.stringify(await p.evaluate("__h"))==='["snare"]', "a tap on its snare plays the snare");
+    await p.selectOption("#kbKitSel","J"); await p.waitForTimeout(300);
+    ok(await p.evaluate("S.bank==='J' && document.getElementById('kbKitSel').value==='J'"), "its kit menu picks a kit");
+    /* record a take, then delete it, then bring it back */
+    await p.evaluate(()=>{ document.getElementById("takeBtn").click(); }); await p.waitForTimeout(400);
+    const sn2=await p.evaluate(()=>{ const el=document.querySelector('#kbKit [data-pad="snare"] .glow > *'); el.scrollIntoView({block:"center"}); const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
+    await p.touchscreen.tap(sn2.x, sn2.y); await p.waitForTimeout(300); await p.touchscreen.tap(sn2.x, sn2.y); await p.waitForTimeout(400);
+    await p.evaluate(()=>{ document.getElementById("takeBtn").click(); }); await p.waitForTimeout(1200);
+    const t1=await p.evaluate(()=>document.querySelectorAll("#takeList .aogrec-take").length);
+    if(!t1) console.log("no take: "+await p.evaluate(()=>document.getElementById("takeLine").textContent+" | "+document.getElementById("takeBtn").getAttribute("aria-pressed")+" | "+__h.join()));
+    await p.evaluate(()=>document.querySelector("#takeList [data-aogrec-del]").click()); await p.waitForTimeout(100);
+    const t2=await p.evaluate(()=>({n:document.querySelectorAll("#takeList .aogrec-take").length, line:document.getElementById("takeLine").textContent}));
+    await p.evaluate(()=>document.querySelector("#takeLine button").click()); await p.waitForTimeout(100);
+    const t3=await p.evaluate(()=>document.querySelectorAll("#takeList .aogrec-take").length);
+    ok(t1===1 && t2.n===0 && /deleted/.test(t2.line) && t3===1, `a take can be deleted (${t1} → ${t2.n}, "${t2.line}") and brought back (${t3})`);
+    ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
   { const {c, p, errs}=await open({viewport:{width:844,height:390}, isMobile:true, hasTouch:true}, "#lessons"); console.log("== drums · lessons sideways");
     ok(await p.evaluate("!DK.on && getComputedStyle(document.querySelector('.wrap')).display!=='none'"), "the Lessons view stays a page to read");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }

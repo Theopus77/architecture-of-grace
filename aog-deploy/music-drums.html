@@ -437,6 +437,18 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 .dk-b{flex:0 0 auto;min-height:40px;min-width:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   padding:0 .7rem;display:inline-flex;align-items:center;white-space:nowrap;touch-action:manipulation}
 .dk-b[aria-pressed="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+.dk-recnow{border-color:#c4452a;color:#ffb1a4}
+.dk-b[hidden]{display:none}
+.dk-drawer{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 52px);left:max(env(safe-area-inset-left,0px),8px);
+  background:#1a1c21;border:1px solid #5b5446;border-radius:12px;padding:.7rem .8rem;display:flex;flex-wrap:wrap;gap:6px;max-width:80vw;touch-action:manipulation}
+.dk-drawer[hidden]{display:none}
+/* AOG-KIT-BENCH-V1: the drum kit's own bench */
+.kb-row{display:flex;flex-wrap:wrap;gap:.6rem .8rem;align-items:flex-end;margin:.2rem 0 .8rem}
+.kb-field{display:grid;gap:.3rem;flex:1 1 15rem;min-width:0;font:800 .72rem/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.kb-field select{min-height:48px;font:600 16px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:0;text-transform:none;color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:12px;padding:0 .6rem}
+.kb-run{min-height:48px;border-radius:12px;border:1px solid #8a6a2a;background:linear-gradient(#ffe08a,#e0a640);color:#1f1206;font:800 1rem/1.1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:0 1.1rem}
+.kb-run[aria-pressed="true"]{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+svg.kb-kit{border-radius:16px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .dk-sel{flex:0 1 16rem;min-width:8rem;min-height:40px;font:600 16px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:10px;padding:0 .4rem}
 .dk-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
 @media (max-width:900px){ .dk-hint{display:none} }
@@ -519,10 +531,16 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 </div>
 <!-- AOG-PLAY-V1 (2026-10-04): the drum kit, sideways (dkSync fills it) -->
 <div id="kitView" class="dk" role="region">
+  <!-- AOG-PLAY-GUARD-V1 — Jimmy: "I keep on hitting or tapping the buttons on top while playing." The bar keeps ☰ Menu and
+       the kit; Close, Play the beat and Record are in the menu. While a recording runs, its Stop shows here. -->
   <div class="dk-bar">
-    <button type="button" class="dk-b" id="dkClose"></button>
+    <button type="button" class="dk-b" id="dkMore" aria-expanded="false" aria-controls="dkDrawer"></button>
+    <button type="button" class="dk-b dk-recnow" id="dkRec" aria-pressed="true" hidden></button>
     <select class="dk-sel" id="dkKitSel"></select><!-- AOG-KIT-LOOKS-V1: every kit, one menu -->
     <span class="dk-hint" id="dkHint"></span>
+  </div>
+  <div class="dk-drawer" id="dkDrawer" hidden>
+    <button type="button" class="dk-b" id="dkClose"></button>
     <button type="button" class="dk-b" id="dkRun" aria-pressed="false"></button>
     <button type="button" class="dk-b" id="dkTake" aria-pressed="false"></button>
   </div>
@@ -596,6 +614,9 @@ const STR = {
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
   home:{en:"Bench",es:"Mesa"}, meet:{en:"Meet the voices",es:"Conoce las voces"},
   words:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print it",es:"Imprimir"},
+  kitNav:{en:"Drum kit",es:"Batería"}, kitH:{en:"The Drum Kit",es:"La batería"},
+  kitLead:{en:"A real drum kit to play with your fingers. Pick a kit, then play.",es:"Una batería de verdad para tocar con los dedos. Elige una batería y toca."},
+  kitRun:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, kitStop:{en:"■ Stop the beat",es:"■ Parar el ritmo"},
   homeNav:{en:"Bench",es:"Mesa"}, lessonsNav:{en:"Lessons",es:"Lecciones"}, meetNav:{en:"Meet the voices",es:"Conoce las voces"}, wordsNav:{en:"Name the job",es:"Nombra el trabajo"}, printNav:{en:"Print",es:"Imprimir"},
   play:{en:"Play",es:"Tocar"}, stop:{en:"Silence",es:"Silencio"},
   clear:{en:"Clear grid",es:"Vaciar"},
@@ -1455,7 +1476,8 @@ function stop(){
   paint();
 }
 
-function hash(){ return (location.hash||"#home").slice(1) || "home"; }
+function hash(){ if(!location.hash && /\/drum-kit\/?$/.test(location.pathname)) return "kit";   /* AOG-KIT-BENCH-V1: /drum-kit */
+  return (location.hash||"#home").slice(1) || "home"; }
 function go(v){ location.hash="#"+v; }
 
 function paintLang(){
@@ -1469,14 +1491,14 @@ function paintLang(){
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-drums.html#kit","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(){
-  const items=[["home","homeNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
+  const items=[["home","homeNav"],["kit","kitNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
   /* AOG-BENCH-TOP-V1: five places to look, so one menu (aog-dropdowns.js reads the span) */
   return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+`</span>`+
-    `<span class="sisters"><a class="sep" href="/drums-guide"><span class="lg">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</span><span class="sh">${S.lang==="es"?"Guía":"Guide"}</span></a>${toolsMenu("drums", S.lang==="es")}</span>`;
+    `<span class="sisters"><a class="sep" href="/drums-guide"><span class="lg">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</span><span class="sh">${S.lang==="es"?"Guía":"Guide"}</span></a>${toolsMenu(S.view==="kit"?"kit":"drums", S.lang==="es")}</span>`;
 }
 
 function flashVoice(id){
@@ -1973,6 +1995,25 @@ function drum(id, cx, cy, r, label){
 }
 function kitSvg(){ return drawKit({pre:"mk", cls:"kit", label:t("meet")}); }   /* AOG-KIT-REAL-V1 */
 
+/* ══ AOG-KIT-BENCH-V1 (2026-10-04) — Jimmy: "The drum kit should not be hidden in the sampler. It should get its own lab
+   bench." The Drum Kit: its own place in Go to, in every music tool's menu, on the science hub and at /drum-kit. A real kit
+   to play with the fingers, every kit in one menu (each drawn as its kind), the beat, and a take to record (and delete).
+   It plays the drum machine's own voices, so both always sound alike; sideways it fills the screen. ══ */
+function kitBenchView(){
+  const made=kitMenu().filter(b=>!realKit(b)), rec=kitMenu().filter(b=>realKit(b)), op=b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`;
+  return `<div class="kb-row">
+      <label class="kb-field"><span>${S.lang==="es"?"Batería":"Drum kit"}</span><select id="kbKitSel">${rec.length ? `<optgroup label="${S.lang==="es"?"Cajas de ritmos":"Drum machine kits"}">${made.map(op).join("")}</optgroup><optgroup label="${S.lang==="es"?"Baterías grabadas":"Recorded drum kits"}">${rec.map(op).join("")}</optgroup>` : made.map(op).join("")}</select></label>
+      <button type="button" class="kb-run" id="kbRun" aria-pressed="${S.playing?"true":"false"}">${t(S.playing?"kitStop":"kitRun")}</button>
+    </div>
+    ${drawKit({pre:"bk", cls:"kit kb-kit", id:"kbKit", label:t("kitH")})}
+    <div id="takeSlot" style="margin-top:1rem"></div>`;
+}
+function bindKitBench(){
+  const ks=document.getElementById("kbKitSel"); if(!ks) return;
+  ks.onchange=()=>{ if(BANKS.indexOf(ks.value)<0) return; useBank(ks.value); paint(); };
+  const run=document.getElementById("kbRun"); if(run) run.onclick=()=>{ S.playing?stop():start(); setTimeout(paint, 30); };
+  const k=document.getElementById("kbKit"); if(k) k.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll */
+}
 function meetView(){
   return `<p class="kicker">${t("eyebrow")}</p>
     <h1>${t("meet")}</h1>
@@ -2575,10 +2616,10 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>limiter, lang:()=>S.lan
   label:{en:"● Record a take",es:"● Grabar una toma"}, ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 function paint(){
   S.view=hash();
-  if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
+  if(!["home","kit","meet","words","print","lessons"].includes(S.view)) S.view="home";
   try{ tickLessons(); }catch(e){}
   document.getElementById("brand").textContent=t("app");
-  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=hash()==="kit"; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); }
   document.getElementById("nav").innerHTML=navHtml();
   { const top=S.view==="home"||S.view==="lessons";                 /* AOG-BENCH-TOP-V1 */
     document.getElementById("benchSwitch").hidden=!top; document.getElementById("lessons").hidden=!top;
@@ -2588,16 +2629,18 @@ function paint(){
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.documentElement.lang=S.lang;   /* the top bar reads this; without it a Spanish visit was flipped back to English */
-  const map={home:homeView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
+  const map={home:homeView,kit:kitBenchView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
   { const vw=document.getElementById("view"), lb=document.getElementById("lessons"), tb=document.getElementById("takeBox");
     if(lb && vw.contains(lb)) vw.after(lb);                             /* AOG-DRUMS-LESSONS-BELOW-V1: keep the card safe … */
     if(tb && vw.contains(tb)) vw.after(tb);                             /* AOG-MUSIC-REC-V1: and the takes, so one playing back keeps playing */
     vw.innerHTML=(map[S.view]||homeView)();
     const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb);
-    if(tb){ if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
+    const ts=vw.querySelector("#takeSlot");                             /* AOG-KIT-BENCH-V1: the drum kit keeps its takes under the kit */
+    if(tb){ if(ts){ ts.appendChild(tb); tb.hidden=false; } else if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`+(window.AOGDrumKit?AOGDrumKit.creditHtml(S.lang):"");   /* AOG-DRUM-REAL-V1: where the recorded kits come from */
   if(typeof dkSync==="function") dkSync();   /* AOG-PLAY-V1: the kit sideways (before bind, which gives its pieces the pads' touch) */
   bind();
+  bindKitBench();   /* AOG-KIT-BENCH-V1 */
   REC.paint();
   paintLessonBox();
 }
@@ -3359,7 +3402,7 @@ function playZoomLock(on){
 const DK={on:false, closed:false, mq:null, seen:false};
 try{ DK.seen=localStorage.getItem("aog.drums.play.v1")==="1"; }catch(e){}
 function dkWords(){ const es=S.lang==="es"; return {
-  close:es?"✕ Cerrar":"✕ Close", run:es?"▶ Tocar el ritmo":"▶ Play the beat", stop:es?"■ Parar":"■ Stop",
+  close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu", run:es?"▶ Tocar el ritmo":"▶ Play the beat", stop:es?"■ Parar":"■ Stop",
   hint:es?"Toca la batería con los dedos. Usa las dos manos.":"Play the kit with your fingers. Use both hands.",
   turn:Math.max(screen.width||0, screen.height||0)>=900
     ? (es?"Gira tu tableta de lado para tocar una batería.":"Turn your tablet sideways to play a drum kit.")
@@ -3472,34 +3515,41 @@ function dkSvg(){
   const box=document.getElementById("dkKitBox"), asp=box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8;
   return drawKit({pre:"dk", cls:"dk-kit", id:"dkKit", VW:Math.round(Math.max(1000, Math.min(1400, 560*asp))), label:dkWords().region});
 }
-function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="meet")); }
+function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="kit" || S.view==="meet")); }
 function dkPaint(){
   const v=document.getElementById("kitView"); if(!v) return; const W=dkWords();
   v.setAttribute("aria-label", W.region);
-  document.getElementById("dkClose").textContent=W.close;
+  document.getElementById("dkClose").textContent=W.close; document.getElementById("dkMore").textContent=W.menu;
   document.getElementById("dkHint").textContent=W.hint;
   /* the kits, as the page's Sounds menu: the drum machine's own, then the recorded kits */
   const ks=document.getElementById("dkKitSel"), made=kitMenu().filter(b=>!realKit(b)), rec=kitMenu().filter(b=>realKit(b)), op=b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`;
   ks.innerHTML=(rec.length ? `<optgroup label="${S.lang==="es"?"Cajas de ritmos":"Drum machine kits"}">${made.map(op).join("")}</optgroup><optgroup label="${S.lang==="es"?"Baterías grabadas":"Recorded drum kits"}">${rec.map(op).join("")}</optgroup>` : made.map(op).join(""));
   ks.setAttribute("aria-label", S.lang==="es"?"Batería":"Drum kit");
-  const pb=document.getElementById("playBtn"), run=document.getElementById("dkRun");
-  run.hidden=!pb; run.textContent=S.playing?W.stop:W.run; run.setAttribute("aria-pressed", S.playing?"true":"false");
-  const tb=document.getElementById("takeBtn"), tk=document.getElementById("dkTake");
-  tk.textContent=tb?tb.textContent:""; tk.setAttribute("aria-pressed", (tb&&tb.getAttribute("aria-pressed"))||"false");
+  const run=document.getElementById("dkRun");
+  run.textContent=S.playing?W.stop:W.run; run.setAttribute("aria-pressed", S.playing?"true":"false");
+  dkRecPaint();
   const kit=document.getElementById("dkKitBox"); const key=S.lang+S.bank+(kit.clientHeight && kit.clientWidth/kit.clientHeight>2.1 ? "w" : "");
   if(kit.getAttribute("data-k")===key && kit.firstElementChild) return dkTurn(W);
   kit.setAttribute("data-k", key); kit.innerHTML=dkSvg();
   kit.firstElementChild.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll */
   dkTurn(W);
 }
+const GUARD={down:new Set(), last:0};
+function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
+function dkDrawer(open){ const d=document.getElementById("dkDrawer"); if(!d) return; d.hidden=!open; document.getElementById("dkMore").setAttribute("aria-expanded", open?"true":"false"); }
+function dkRecPaint(){
+  const tb=document.getElementById("takeBtn"), on=!!(tb && tb.getAttribute("aria-pressed")==="true"), tk=document.getElementById("dkTake"), rn=document.getElementById("dkRec");
+  tk.textContent=tb?tb.textContent:""; tk.setAttribute("aria-pressed", on?"true":"false");
+  rn.hidden=!on; rn.textContent=(S.lang==="es"?"■ Parar ":"■ Stop ")+((document.getElementById("takeTime")||{}).textContent||"");
+}
 function dkTurn(W){
   const turn=document.getElementById("dkTurn");
-  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="meet"); }
+  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="kit"||S.view==="meet"); }
 }
 function dkSync(){
   const want=dkWanted();
   if(want!==DK.on){
-    DK.on=want; document.body.classList.toggle("aog-play", want); playZoomLock(want);
+    DK.on=want; document.body.classList.toggle("aog-play", want); playZoomLock(want); if(!want) dkDrawer(false);
     if(want && !DK.seen){ DK.seen=true; try{ localStorage.setItem("aog.drums.play.v1","1"); }catch(e){} }
   }
   dkPaint();
@@ -3509,12 +3559,20 @@ function dkSync(){
   DK.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
   const ch=()=>{ DK.closed=false; paint(); };   /* paint() lays the kit out for the screen, then bind() gives it the touch */
   if(DK.mq.addEventListener) DK.mq.addEventListener("change", ch); else if(DK.mq.addListener) DK.mq.addListener(ch);
-  document.getElementById("dkClose").onclick=()=>{ DK.closed=true; paint(); };
-  document.getElementById("dkRun").onclick=()=>{ const pb=document.getElementById("playBtn"); if(pb) pb.click(); setTimeout(dkPaint, 30); };
+  document.getElementById("dkClose").onclick=()=>{ dkDrawer(false); DK.closed=true; paint(); };
+  document.getElementById("dkRun").onclick=()=>{ S.playing?stop():start(); setTimeout(dkPaint, 30); };
+  document.getElementById("dkMore").onclick=()=>dkDrawer(document.getElementById("dkDrawer").hidden);
+  document.getElementById("dkRec").onclick=()=>{ const tb=document.getElementById("takeBtn"); if(tb) tb.click(); };   /* the bar's Stop, only while recording */
+  /* AOG-PLAY-GUARD-V1: a tap on the bar while a hand is playing (or just after) is a slip, not a press */
+  document.addEventListener("pointerdown",(e)=>{ if(e.target.closest && e.target.closest("#dkKit")){ GUARD.down.add(e.pointerId); GUARD.last=Date.now(); } },true);
+  const lift=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
+  document.addEventListener("pointerup",lift,true); document.addEventListener("pointercancel",lift,true);
+  document.querySelector("#kitView .dk-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button,select")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
+  document.querySelector("#kitView .dk-bar").addEventListener("pointerdown",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("select")) e.preventDefault(); },true);
   document.getElementById("dkKitSel").onchange=()=>{ const b=document.getElementById("dkKitSel").value; if(BANKS.indexOf(b)<0) return; useBank(b); paint(); setTimeout(()=>document.getElementById("dkKitSel").blur(),0); };
-  document.getElementById("dkTake").onclick=()=>{ const tb=document.getElementById("takeBtn"); if(tb) tb.click(); setTimeout(dkPaint, 30); };
-  try{ const tb=document.getElementById("takeBtn"); new MutationObserver(()=>{ const tk=document.getElementById("dkTake"); tk.textContent=tb.textContent; tk.setAttribute("aria-pressed", tb.getAttribute("aria-pressed")||"false"); })
-    .observe(tb, {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  document.getElementById("dkTake").onclick=()=>{ const tb=document.getElementById("takeBtn"), was=tb && tb.getAttribute("aria-pressed")==="true"; if(tb) tb.click(); if(!was) dkDrawer(false); };
+  try{ const mo=new MutationObserver(dkRecPaint); mo.observe(document.getElementById("takeBtn"), {childList:true, characterData:true, subtree:true, attributes:true});
+    mo.observe(document.getElementById("takeTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
 })();
 
 window.addEventListener("pagehide", function(){
