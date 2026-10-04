@@ -9,8 +9,8 @@
      within 2 ms of the file start; the file starts and ends in silence;
    - tuning: the note's pitch, measured from the decoded file, is within 5 cents of the key (and, for the toy
      piano, within 3 cents of the small detuning it was given on purpose);
-   - clicks: no sudden jump anywhere after the first 30 ms of the note (a jump = a burst in the second
-     difference of the wave 10 times stronger (20 dB) than its surroundings);
+   - clicks: no click anywhere after the first 30 ms of the note (a click = a burst of energy above 8 kHz,
+     15 dB stronger than anything in the 70 ms around it);
    - loops (held sets): the page's own loader is copied here: the file is decoded at 32,000 Hz, bakeLoop()
      blends the loop end into the loop start, and a held note is played three times round the loop. The blend
      and the jump must add no click, and the blended half second must stay within 1 dB of the same part of the
@@ -21,8 +21,8 @@
 "use strict";
 const fs = require("fs"), path = require("path"), { execFileSync } = require("child_process");
 const ROOT = path.resolve(__dirname, "..", "..");
-const MANIFEST = path.join(ROOT, "music-handoff", "tools", "piano_real_sets.json");
-const AUDIO = path.join(ROOT, "aog-deploy", "audio", "piano");
+const MANIFEST = process.env.PIANOSETS_MANIFEST || path.join(ROOT, "music-handoff", "tools", "piano_real_sets.json");
+const AUDIO = process.env.PIANOSETS_AUDIO || path.join(ROOT, "aog-deploy", "audio", "piano");
 const SR = 44100, KEY_LO = 24, KEY_HI = 96, MAX_BYTES = 3e6, AIM_BYTES = 2e6;
 
 /* ── decoding ── */
@@ -107,15 +107,28 @@ function peakAbs(x, a, b) { let p = 0; for (let i = a || 0; i < (b || x.length);
 function rms(x, a, b) { let s = 0; a = Math.max(0, a); b = Math.min(x.length, b); for (let i = a; i < b; i++) s += x[i] * x[i]; return Math.sqrt(s / Math.max(1, b - a)); }
 const dB = v => 20 * Math.log10(v + 1e-12);
 function onsetOf(x) { const pk = peakAbs(x); for (let i = 0; i < x.length; i++) if (Math.abs(x[i]) > 0.03 * pk) return i; return 0; }
-/* the second difference's energy in 1 ms windows. A click is a window 20 dB stronger than every other window in
-   the 70 ms around it (3 ms either side left out). Comparing with the strongest neighbour, not a typical one,
-   keeps an instrument's own sharp once-a-cycle peaks (a reed's bark, down to C1's 31 ms cycle) from counting. A
-   floor 70 dB under the note's peak keeps codec noise in near-silence from counting. */
+/* a 4th-order high-pass (two RBJ biquads) */
+function highpass(x, fc, sr) {
+  let y = Float64Array.from(x);
+  for (let pass = 0; pass < 2; pass++) {
+    const w = 2 * Math.PI * fc / sr, cw = Math.cos(w), al = Math.sin(w) / (2 * Math.SQRT1_2), a0 = 1 + al;
+    const b0 = (1 + cw) / 2 / a0, b1 = -(1 + cw) / a0, b2 = (1 + cw) / 2 / a0, a1 = -2 * cw / a0, a2 = (1 - al) / a0;
+    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    for (let i = 0; i < y.length; i++) { const v = y[i], o = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = v; y2 = y1; y1 = o; y[i] = o; }
+  }
+  return y;
+}
+/* a click is a burst of energy across the whole band: measured above 8 kHz (where a note has little and steady
+   energy and a click has much), in 1 ms windows; a window 15 dB stronger than every other window in the 70 ms
+   around it (3 ms either side left out) is a click. Comparing with the strongest neighbour, not a typical one,
+   keeps an instrument's own sharp once-a-cycle peaks (a reed's bark, down to C1's 31 ms cycle) from counting; a
+   floor 75 dB under the note's peak keeps codec noise in near-silence from counting. */
 function clicks(x, from, to, sr, floorAmp) {
+  const a0 = Math.max(0, from - Math.round(0.01 * sr)), h = highpass(x.subarray(a0, Math.min(x.length, to)), 8000, sr);
   const w = Math.round(0.001 * sr), n = Math.floor((to - from) / w), e = new Float64Array(n);
   for (let k = 0; k < n; k++) {
-    let s = 0; const a = from + k * w;
-    for (let i = Math.max(1, a); i < Math.min(x.length - 1, a + w); i++) { const d = x[i + 1] - 2 * x[i] + x[i - 1]; s += d * d; }
+    let s = 0; const a = from - a0 + k * w;
+    for (let i = a; i < Math.min(h.length, a + w); i++) s += h[i] * h[i];
     e[k] = s / w;
   }
   const floor = Math.pow(floorAmp || 1e-7, 2);
@@ -135,29 +148,33 @@ function bakeLoop(d, sr, a, z, x) {
   for (let i = 0; i < X; i++) { const w = (i + 0.5) / X * Math.PI / 2, j = Z - X + i, k = A - X + i; d[j] = d[j] * Math.cos(w) + d[k] * Math.sin(w); }
   return { A, Z, X };
 }
-function loopCheck(file, loop, raw) {
+function loopCheck(file, loop, raw, f) {
   const sr = 32000, d = Float32Array.from(decode(file, sr, raw));
   const before = Float32Array.from(d);
   const { A, Z, X } = bakeLoop(d, sr, loop[0], loop[1], 0.5);
   const play = new Float32Array(Z + 3 * (Z - A));
   play.set(d.subarray(0, Z));
   for (let r = 0; r < 3; r++) play.set(d.subarray(A, Z), Z + r * (Z - A));
-  /* the blended half second against the same stretch one loop earlier (the unblended file), in 20 ms steps */
-  const w = Math.round(0.02 * sr); let worst = 0;
+  /* the blended half second against the same stretch one loop earlier (the unblended file), in steps of 20 ms or
+     five cycles of the note, whichever is longer (2.5 cycles of a 16' tone under it: a shorter window would see
+     the shape of the wave, not its level) */
+  const w = Math.round(Math.max(0.02, 5 / f) * sr); let worst = 0;
   for (let i = Z - X; i + w <= Z; i += w) {
     const now = rms(play, i, i + w), was = rms(before, i - (Z - A), i - (Z - A) + w);
     const dd = Math.abs(dB(now) - dB(was)); if (dd > worst) worst = dd;
   }
   /* clicks around the blend and the jumps, and anywhere in one whole pass round the loop */
-  const fl = peakAbs(play) * Math.pow(10, -70 / 20);
+  const fl = peakAbs(play) * Math.pow(10, -75 / 20);
   const c1 = clicks(play, Math.max(0, Z - X - Math.round(0.08 * sr)), Math.min(play.length, Z + Math.round(0.12 * sr)), sr, fl);
   const c2 = clicks(play, Z + (Z - A) - Math.round(0.08 * sr), Z + (Z - A) + Math.round(0.08 * sr), sr, fl);
   const c3 = clicks(play, Z, Z + (Z - A), sr, fl);
-  /* the level's wobble, 20 ms at a time against the 300 ms around it: across the blend, the jump and a whole
-     pass round the loop, it may wobble no more than the note does by itself before its loop (or 1.5 dB) */
+  /* the level's wobble, one window at a time against the 7 windows around it (a bad seam is a short dip or bump;
+     an instrument's own slow beat, a second or more long, hardly moves within 7 windows): across the blend, the
+     jump and a whole pass round the loop, it may wobble no more than the note does by itself before its loop (or
+     1.5 dB) */
   const wob = (x, a, b) => {
     const lv = []; for (let i = a; i + w <= b; i += w) lv.push(dB(rms(x, i, i + w)));
-    let mx = 0; const R = 7;
+    let mx = 0; const R = 3;
     for (let k = 0; k < lv.length; k++) {
       const nb = lv.slice(Math.max(0, k - R), Math.min(lv.length, k + R + 1)).sort((p, q) => p - q);
       const d = Math.abs(lv[k] - nb[nb.length >> 1]); if (d > mx) mx = d;
@@ -205,16 +222,16 @@ function checkSet(name, info) {
     if (Math.abs(c) > 5) say(`${key}: ${c.toFixed(1)} cents off`);
     if (meta.detune_c && Math.abs(cw) > 3) say(`${key}: ${cw.toFixed(1)} cents from its intended ${meta.detune_c} cents`);
     /* clicks after the attack */
-    const ck = clicks(x, on + Math.round(0.03 * SR), x.length, SR, pk * Math.pow(10, -70 / 20));
+    const ck = clicks(x, on + Math.round(0.03 * SR), x.length, SR, pk * Math.pow(10, -75 / 20));
     res.worstClick = Math.max(res.worstClick, ck.ratioDb);
-    if (ck.ratioDb > 20) say(`${key}: click ${ck.ratioDb.toFixed(0)} dB at ${ck.at.toFixed(3)} s`);
+    if (ck.ratioDb > 15) say(`${key}: click ${ck.ratioDb.toFixed(0)} dB at ${ck.at.toFixed(3)} s`);
     /* the loop, as the page plays it */
     if (e.loop) [false, true].forEach(raw => {
-      const lc = loopCheck(f, e.loop, raw), tag = raw ? " (encoder delay kept)" : "";
+      const lc = loopCheck(f, e.loop, raw, mtof(n)), tag = raw ? " (encoder delay kept)" : "";
       res.worstSwell = Math.max(res.worstSwell, lc.swellDb); res.worstLoopClick = Math.max(res.worstLoopClick, lc.clickDb);
       res.worstWobble = Math.max(res.worstWobble || 0, lc.wobbleDb - lc.naturalDb);
       if (lc.swellDb > 1) say(`${key}: the loop blend moves the level ${lc.swellDb.toFixed(2)} dB${tag}`);
-      if (lc.clickDb > 20) say(`${key}: a click at the loop, ${lc.clickDb.toFixed(0)} dB${tag}`);
+      if (lc.clickDb > 15) say(`${key}: a click at the loop, ${lc.clickDb.toFixed(0)} dB${tag}`);
       if (lc.wobbleDb > Math.max(1.5, lc.naturalDb + 0.75)) say(`${key}: the level wobbles ${lc.wobbleDb.toFixed(2)} dB round the loop (by itself ${lc.naturalDb.toFixed(2)} dB)${tag}`);
     });
   }));
