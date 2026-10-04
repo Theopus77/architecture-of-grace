@@ -29,9 +29,9 @@ What each set is made from (all real recordings; licenses checked in each reposi
   organ, gospel, rockorgan, strsynth, pad, brass, lead
              Unitra B-11 transistor organ (Karoryfer Caveman Cosmonaut, CC0), voices chosen and mixed per set
   theatre    the Quiet manual of Simon Dalzell's pipe organ (VS Chamber Orchestra: Community Edition, CC0),
-             stopped flutes at 16', 8' and 4'
-  choir      one singer on "ah" (Karoryfer Hadzi-Fia, from sfzinstruments/legato_vocal_tutorial, CC0), four takes
-             layered per note
+             stopped flutes at 16', 8', 4' and 2'
+  choir      one singer on "ah" (Karoryfer Hadzi-Fia, from sfzinstruments/legato_vocal_tutorial, CC0), four of his
+             takes per note moved to it by PSOLA
   musicbox, toy
              the celesta above (soft and short; hard, short and a little out of tune)
 
