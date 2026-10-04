@@ -145,17 +145,20 @@ def measure_mp3(path):
     return onset_of(d) / SR, float(np.max(np.abs(d[:4])) / pk)
 
 
-def write_struck(path, y):
-    """a note that starts with a strike: written, then decoded and measured as the page measures it. A slow strike
-    whose onset lands past 1.6 ms loses a little of the silence in front; if the MP3's pre-echo lifts the very first
-    samples over 0.6% of the peak, a little silence is added in front until it does not. Returns (onset s, head)."""
+def write_struck(path, y, max_cut=None):
+    """a note, written, then decoded and measured as the page measures it. A slow start whose onset lands past
+    1.6 ms loses a little of the silence in front (a held note at most 2 ms in all: its loop allows that); if the
+    MP3's pre-echo lifts the very first samples over 0.6% of the peak, a little silence is added in front until it
+    does not. Returns (onset s, head)."""
     L = int(0.0008 * SR)
+    budget = int(max_cut * SR) if max_cut else 10 ** 9
     for _ in range(3):
         write_mp3(path, y)
         on, head = measure_mp3(path)
-        if on <= 0.0016:
+        if on <= 0.0016 or budget <= 0:
             break
-        cut = int((on - 0.0009) * SR)
+        cut = min(budget, int((on - 0.0009) * SR))
+        budget -= cut
         y = np.concatenate([y[cut:], np.zeros(cut)])
         y[:L] *= np.sin(np.linspace(0, np.pi / 2, L)) ** 2
         y[0] = 0.0
@@ -316,6 +319,8 @@ def pitch_as_checked(y, n, method):
     seg = y[a:b]
     if method == "centroid":
         return pitch_centroid(seg, mtof(n), 0, len(seg) / SR, ks=(1, 2, 3, 4), span_c=60)
+    if method == "centre":          # a pan note rings as two close partials: the ear hears the middle of the pair
+        return pitch_centroid(seg, mtof(n), 0, len(seg) / SR, ks=(1,), span_c=60)
     ks = (1,) if method == "fund" else (1, 2, 3, 4, 5, 6)
     return pitch_harm(seg, mtof(n), 0, len(seg) / SR, ks=ks, span_c=60)
 
@@ -473,11 +478,8 @@ def record(setname, info):
 
 def note_file(setname, n, layer, y, meta, struck=True):
     p = os.path.join(OUT, setname, "%d%s.mp3" % (n, layer))
-    if struck:
-        on, head = write_struck(p, y)
-        meta = dict(meta, onset_ms=round(1000 * on, 2), first_samples=round(head, 4))
-    else:
-        write_mp3(p, y)
+    on, head = write_struck(p, y, max_cut=None if struck else 0.002)
+    meta = dict(meta, onset_ms=round(1000 * on, 2), first_samples=round(head, 4))
     REPORT.setdefault(setname, {"files": {}})["files"]["%d%s" % (n, layer)] = meta
     return p
 
@@ -721,9 +723,11 @@ def typical_take(takes, r):
 def build_steel():
     s = steel_sources()
     layer_src = {layer: {m: typical_take(t, m) for m, t in d.items()} for layer, d in s.items()}
+    # a pan's note often rings as two close partials (about 15 cents apart, nearly as strong, and which is stronger
+    # can change as it rings): each note is tuned by the middle of the pair, the pitch the ear hears
     struck_set("steel", layer_src, fund_measure(0.04, 0.5),
                lambda n, l: 2.2 if n < 60 else 2.4 if n < 72 else 2.0 if n < 84 else 1.6,
-               note_opts=lambda n, l: {"fade_frac": 0.4})
+               pitch="centre", note_opts=lambda n, l: {"fade_frac": 0.4})
 
 
 # ── clav: the Yamaha TX81Z's "Clavisynth" patch, sampled from the hardware (VCSL) ──
@@ -744,7 +748,316 @@ def build_clav():
 
 
 # ══════════════════════════════════════════════════════════════════════════
-BUILDERS = ["epreed", "celesta", "steel", "clav"]
+#  held notes (organs, accordion, choir, synths): the page loops them
+# ══════════════════════════════════════════════════════════════════════════
+def rbj_lowpass(fc, q):
+    w = 2 * np.pi * min(fc, 0.45 * SR) / SR; cw = np.cos(w); al = np.sin(w) / (2 * q)
+    b = np.array([(1 - cw) / 2, 1 - cw, (1 - cw) / 2]); a = np.array([1 + al, -2 * cw, 1 - al])
+    return b / a[0], a / a[0]
+
+
+def tv_lowpass(y, fc_of_t, q=0.7, block=32):
+    """a low-pass whose cutoff moves with time (fc_of_t: seconds → Hz), its settings renewed every 32 samples"""
+    out = np.empty_like(y)
+    zi = np.zeros(2)
+    for s in range(0, len(y), block):
+        b, a = rbj_lowpass(fc_of_t((s + block / 2) / SR), q)
+        out[s:s + block], zi = lfilter(b, a, y[s:s + block], zi=zi)
+    return out
+
+
+def loud_phase(x, s0, period):
+    """a start point within one cycle after s0 (samples) where the wave is near its largest, 0.3 ms early: a note
+    that starts there is under way at once, even a slow low one"""
+    a = int(s0)
+    seg = np.abs(x[a:a + int(period) + 2])
+    return a + max(0, int(np.argmax(seg)) - int(0.0003 * SR))
+
+
+def steady_read(x, f_src, f_out, n_out, s0=0.1, s1=None, pm=None, loop=None, div=1):
+    """an endless held tone from a short recording: read at the speed that moves f_src to f_out, and before the
+    recording ends, jump back a whole number of its cycles (div notes' worth each: 2 when a 16' tone makes the
+    real cycle two notes long), or by its own loop when it has one, with a 30 ms blend. The read starts at a loud
+    point of the wave. pm: an optional speed multiplier per output sample (a vibrato, a scoop)."""
+    rho = f_out / f_src
+    XW = int(0.03 * SR)
+    if loop:
+        S0, Lam = float(loop[0]), float(loop[1] - loop[0])
+    else:
+        S1 = (s1 if s1 else len(x) / SR - 0.05) * SR
+        P = div * SR / f_src
+        S0 = float(loud_phase(x, s0 * SR, P))
+        Lam = int((S1 - S0 - XW) // P) * P
+    if pm is None:
+        u = S0 + np.arange(n_out) * rho
+        rate = rho
+    else:
+        u = S0 + np.concatenate([[0.0], np.cumsum(rho * pm[:n_out - 1])])
+        rate = rho * float(np.max(pm))
+    r = S0 + np.mod(u - S0, Lam)
+    out = sinc_read(x, r, rate)
+    near = r > S0 + Lam - XW
+    if np.any(near):
+        B = sinc_read(x, r[near] - Lam, rate)
+        w = np.sin((r[near] - (S0 + Lam - XW)) / XW * np.pi / 2) ** 2
+        out[near] = out[near] * (1 - w) + B * w
+    return out
+
+
+def corr(a, b):
+    return float(np.dot(a, b) / math.sqrt(np.dot(a, a) * np.dot(b, b) + 1e-30))
+
+
+def make_loop(y, P0, L, a, z, W=0.05, search=None):
+    """make a held note exactly periodic with period L from P0 on, for the page's loop [a, z] (z = a + L):
+    - the last W seconds before P0 + L are blended into the W seconds before P0, with gains that keep the level
+      steady for how alike the two are (linear when they match, equal-power when they do not); with search=(lo,
+      hi), P0 is first moved within [lo, hi] to where the two match best;
+    - that cycle repeats to the end;
+    - the half second before z is pre-faded by tan(pi/4 - w/2), so that the page's own equal-power blend of it
+      with the half second before a gives back the note exactly (designed for an MP3 decoder delay half way
+      between 0 and 25 ms, the two cases browsers show);
+    - after z, silence."""
+    Ls, Ws = int(round(L * SR)), int(round(W * SR))
+    P0s = int(round(P0 * SR))
+    if search:
+        best = None
+        for p in range(int(search[0] * SR), int(search[1] * SR) + 1, int(0.001 * SR)):
+            if p + Ls > len(y) or p < Ws:
+                continue
+            r = corr(y[p + Ls - Ws:p + Ls], y[p - Ws:p])
+            if best is None or r > best[0]:
+                best = (r, p)
+        P0s = best[1]
+    if P0s + Ls > len(y):
+        raise ValueError("note too short for its loop")
+    A, B = y[P0s + Ls - Ws:P0s + Ls], y[P0s - Ws:P0s]
+    rho = max(0.0, min(1.0, corr(A, B)))
+    gb = np.sin(np.linspace(0, np.pi / 2, Ws)) ** 2
+    ga = -rho * gb + np.sqrt(np.maximum(0.0, 1 - gb * gb * (1 - rho * rho)))
+    n_total = int(round((z + 0.06) * SR))
+    out = np.zeros(n_total)
+    out[:P0s + Ls] = y[:P0s + Ls]
+    out[P0s + Ls - Ws:P0s + Ls] = ga * A + gb * B
+    cyc = out[P0s:P0s + Ls].copy()
+    pos = P0s + Ls
+    while pos < n_total:
+        k = min(Ls, n_total - pos)
+        out[pos:pos + k] = cyc[:k]
+        pos += k
+    t = np.arange(n_total) / SR
+    w = np.clip((t + DEC_DELAY / 2 - (z - LOOP_X)) / LOOP_X, 0, 1) * np.pi / 2
+    out *= np.tan(np.pi / 4 - w / 2)
+    out[int(round(z * SR)):] = 0.0
+    if P0s / SR > a - LOOP_X - DEC_DELAY - 0.004:
+        raise ValueError("cycle starts too late for the loop")
+    return out, rho, P0s / SR
+
+
+def pick_loop_len(freqs_divs, lo, hi):
+    """the loop length (a multiple of 10 ms, so it is a whole number of samples at 44,100 and 32,000 Hz) that lets
+    every held note make a whole number of its slowest cycles per loop with the least retuning. freqs_divs: for
+    each note, (its frequency, D) where its slowest cycle is D notes long (2 when a voice carries a 16' tone)."""
+    best = None
+    for L in np.arange(lo, hi + 1e-9, 0.01):
+        err = max(abs(1200 * math.log2(D * round(f * L / D) / (f * L))) for f, D in freqs_divs)
+        if best is None or err < best[0]:
+            best = (err, round(float(L), 2))
+    return best[1], best[0]
+
+
+def attack_env(t, rise, pre=0.0, shape="cos"):
+    """0 → 1 over `rise` seconds (raised cosine, or linear); with pre > 0 the sound first steps up to `pre` within
+    0.8 ms, so a slow swell still starts at once (the page finds a note's start at 3% of its peak)"""
+    if shape == "lin":
+        e = np.clip(t / rise, 0, 1)
+    else:
+        e = np.sin(np.clip(t / rise, 0, 1) * np.pi / 2) ** 2
+    if pre:
+        e = np.maximum(e, pre * np.clip(t / 0.0008, 0, 1))
+    return e
+
+
+# ── the Unitra B-11 (Karoryfer Caveman Cosmonaut): one recording per voice and key, G3 to C7, held ──
+CAVE_SUB = {"flutes": 2, "trombone": 2, "all_all_all": 2}      # voices with a 16' undertone: a cycle is two notes long
+
+
+def cave_files(voice):
+    d = src("caveman", "Samples")
+    out = {}
+    for fn in os.listdir(d):
+        m = re.match(r"^%s_([a-g]b?\d)\.wav$" % voice, fn)
+        if m:
+            out[name_midi(m.group(1))] = os.path.join(d, fn)
+    return out
+
+
+_CAVE = {}
+
+
+def cave_note(voice, r):
+    """a Caveman recording: mono, and its exact frequency (its whole cycle, two notes long for a voice with a 16'
+    tone, measured over the recording's length)"""
+    key = (voice, r)
+    if key not in _CAVE:
+        x = to_mono(load(cave_files(voice)[r]))
+        f0 = pitch_harm(x, mtof(r), 0.1, min(1.5, len(x) / SR - 0.05), ks=(1, 2, 3, 4, 5, 6))
+        div = CAVE_SUB.get(voice, 1)
+        P = period_exact(x, f0 / div, 0.1, len(x) / SR - 0.05)
+        _CAVE[key] = (x, div * SR / P)
+    return _CAVE[key]
+
+
+def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.0, 4.5), detune=None, vib=None,
+             level_db=-22.0, pitch="harm", describe=None):
+    """a held organ-family sound from Caveman voices. comps: [(voice, octave offset in keys, gain dB)]. Every note
+    is retuned to a whole number of cycles per loop, so the loop needs no blend of its own beyond a 50 ms touch.
+    detune(n, L) → the extra steps (in 1/L Hz, per component) that spread two voices a little apart; vib(t) → a
+    speed multiplier (vibrato); env(t) → the attack; post(y) → filters."""
+    notes = grid(0)
+    divs = []
+    for n in notes:
+        D = 1
+        for voice, oc, g in comps:
+            D = max(D, int(round(CAVE_SUB.get(voice, 1) * 2 ** (-oc / 12))))
+        divs.append((mtof(n), D))
+    L, err = pick_loop_len(divs, *Lrange)
+    a = round(P0 + LOOP_X + DEC_DELAY + 0.01, 2)
+    z = round(a + L, 2)
+    files = {}
+    for n, (f, D) in zip(notes, divs):
+        N = D * round(f * L / D)
+        fq = N / L
+        n_out = int(round((P0 + L + 0.05) * SR))
+        pm = vib(np.arange(n_out) / SR) if vib else None
+        y = np.zeros(n_out)
+        used = []
+        for ci, (voice, oc, g) in enumerate(comps):
+            files_v = cave_files(voice)
+            r = nearest(sorted(files_v), n + oc)
+            x, fs = cave_note(voice, r)
+            steps = detune(n, L)[ci] if detune else 0
+            fc = (N * 2 ** (oc / 12) + steps) / L
+            y += 10 ** (g / 20) * steady_read(x, fs, fc, n_out, pm=pm, div=CAVE_SUB.get(voice, 1))
+            used.append({"voice": voice, "from": os.path.relpath(files_v[r], SRC_ROOT), "recorded": r,
+                         "source_cents": round(1200 * math.log2(fs / mtof(r)), 1),
+                         "shift_semitones": round(12 * math.log2(fc / fs), 2), "gain_db": g,
+                         "detune_cents": round(1200 * math.log2(fc / (fq * 2 ** (oc / 12))), 2)})
+        y = hp(y, max(20.0, 0.25 * f))
+        if post:
+            y = post(y, n)
+        t = np.arange(len(y)) / SR
+        y *= env(t) if env else attack_env(t, 0.008)
+        y[0] = 0.0
+        y, rho, p0 = make_loop(y, P0, L, a, z)
+        files[(n, "m")] = (y, {"components": used, "loop_cents": round(1200 * math.log2(fq / f), 2),
+                               "seam_match": round(rho, 4)})
+    finish_set(name, notes, ["m"], files, targets={"m": level_db}, extra={"loop": [a, z]})
+    REPORT[name]["pitch"] = pitch
+    REPORT[name]["loop_note"] = ("held notes repeat from %.2f s to %.2f s; every note is retuned by at most %.1f cents "
+                                 "to fit a whole number of cycles in the loop" % (a, z, err))
+    if describe:
+        REPORT[name]["made_from"] = describe
+
+
+def spread(n, L, f_unit=1.0):
+    """two voices a few cents apart (at most 4): the steps (in 1/L Hz, even, so a voice with a 16' tone keeps its
+    whole cycles) for each, or none where that would be more than 4 cents"""
+    k = int(math.floor(0.00115 * L * mtof(n)))
+    return [-2 * k, 2 * k]
+
+
+def settle(t, start, end, v0, v1, tau):
+    """v0 → v1 with time constant tau from `start`, made to arrive exactly at `end` (so the loop that follows is
+    steady)"""
+    e = np.exp(-np.clip(t - start, 0, None) / tau)
+    v = v1 + (v0 - v1) * e
+    k = np.clip((t - 0.7 * end) / (0.3 * end), 0, 1)
+    k = np.sin(k * np.pi / 2) ** 2
+    return v * (1 - k) + v1 * k
+
+
+def build_organ():
+    """rock and jazz organ: the B-11's flute voice (16', 8', 4' and 2 2/3' sound together, like drawbars out)"""
+    held_set("organ", [("flutes", 0, 0.0)], describe="Caveman Cosmonaut 'flutes' voice")
+
+
+def build_gospel():
+    """gospel organ, every tone out: the flute, violin, trumpet, clarinet and bright 'tremolo' voices together
+    (the page's fast spinning speaker does the rest)"""
+    held_set("gospel", [("flutes", 0, 0.0), ("violin", 0, -3.0), ("trompette", 0, -4.0), ("clarinet", 0, -7.0),
+                        ("tremolo", 0, -12.0)],
+             describe="Caveman Cosmonaut 'flutes', 'violin', 'trompette', 'clarinet' and 'tremolo' voices together")
+
+
+def build_rockorgan():
+    """the '70s rock organ: the flute voice with the trumpet voice for bite (the page's amplifier makes it growl)"""
+    held_set("rockorgan", [("flutes", 0, 0.0), ("trompette", 0, -4.0)],
+             describe="Caveman Cosmonaut 'flutes' voice with the 'trompette' voice")
+
+
+def build_strsynth():
+    """the '70s string synth: the violin voice and its octave, swelling in (the page's ensemble makes it a
+    string machine)"""
+    held_set("strsynth", [("violin", 0, 0.0), ("violin", 12, -9.0)],
+             env=lambda t: attack_env(t, 0.14, pre=0.06, shape="lin"),
+             describe="Caveman Cosmonaut 'violin' voice, with the same voice an octave up, swelling in over 0.14 s")
+
+
+def build_pad():
+    """warm synth: the flute and violin voices a few cents apart (a slow beat), darkened, the tone opening and the
+    sound swelling in"""
+    def post(y, n):
+        top = 2000.0 + 1.5 * mtof(n)
+        t = np.arange(len(y)) / SR
+        return tv_lowpass(y, lambda s: float(settle(np.array([s]), 0.0, 1.15, 0.45 * top, top, 0.35)[0]), q=0.9)
+    held_set("pad", [("flutes", 0, 0.0), ("violin", 0, -2.0)], P0=1.25, detune=spread, post=post,
+             env=lambda t: attack_env(t, 0.38, pre=0.06, shape="lin"), pitch="centroid",
+             describe="Caveman Cosmonaut 'flutes' and 'violin' voices, a few cents apart, through a low-pass that "
+                      "opens as the sound swells in over 0.38 s")
+
+
+def build_brass():
+    """'80s synth brass: the trumpet and trombone voices a few cents apart; the tone opens fast and bright, then
+    settles, and the pitch scoops up into the note"""
+    def post(y, n):
+        f = mtof(n)
+        lo, hi, sus = 1.3 * f + 250, 5 * f + 3600, 3 * f + 1800
+        def fc(s):
+            if s < 0.07:
+                return lo + (hi - lo) * s / 0.07
+            return float(settle(np.array([s]), 0.07, 1.15, hi, sus, 0.28)[0])
+        return tv_lowpass(y, fc, q=1.4)
+    def vib(t):                                   # the scoop: 28 cents under, gone in about 0.1 s
+        return 2 ** ((-28 * np.exp(-t / 0.025)) / 1200)
+    held_set("brass", [("trompette", 0, 0.0), ("trombone", 0, -2.0)], P0=1.25, detune=spread, post=post, vib=vib,
+             env=lambda t: attack_env(t, 0.03, shape="lin"), pitch="centroid",
+             describe="Caveman Cosmonaut 'trompette' and 'trombone' voices, a few cents apart, with a low-pass that "
+                      "opens quickly and settles, and a small scoop up into the pitch")
+
+
+def build_lead():
+    """synth lead: the clarinet voice (hollow) with a little of the trumpet voice (buzzy), bright, and a singer's
+    vibrato that grows in while the note is held"""
+    holder = {}
+    def post(y, n):
+        return sosfilt(butter(2, min(0.45 * SR, max(3 * mtof(n), 4650.0)), "lowpass", fs=SR, output="sos"), y)
+    def vib(t):
+        L = holder["L"]
+        fv = round(5.6 * L) / L                   # a whole number of wobbles per loop
+        depth = np.clip((t - 0.35) / 0.45, 0, 1)
+        depth = np.sin(depth * np.pi / 2) ** 2
+        return 2 ** (14 * depth * np.sin(2 * np.pi * fv * t) / 1200)
+    comps = [("clarinet", 0, 0.0), ("trompette", 0, -8.0)]
+    divs = [(mtof(n), 1) for n in grid(0)]
+    holder["L"] = pick_loop_len(divs, 3.0, 4.5)[0]
+    held_set("lead", comps, P0=1.0, post=post, vib=vib, env=lambda t: attack_env(t, 0.006), pitch="centroid",
+             describe="Caveman Cosmonaut 'clarinet' voice with a little 'trompette', bright, with a vibrato (14 "
+                      "cents, 5.6 a second) that grows in from 0.35 s to 0.8 s")
+
+
+# ══════════════════════════════════════════════════════════════════════════
+BUILDERS = ["epreed", "celesta", "steel", "clav"]          # the held sets below are still being made
 OUT = os.path.join(REPO, "aog-deploy", "audio", "piano")
 MANIFEST = os.path.join(HERE, "piano_real_sets.json")
 
