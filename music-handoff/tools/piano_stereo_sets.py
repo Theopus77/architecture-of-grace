@@ -123,10 +123,14 @@ def match_and_write(name, key, y, info):
     encode(y, dst)
     back = decode(dst)
     # the encoder trims the very top of the sound, which the K-weighting counts: measured again as written, and the
-    # difference made up once (within the peak cap)
-    miss = ref - loud_db(back)
-    if abs(miss) > 0.05:
+    # difference made up (within the peak cap)
+    for _ in range(4):
+        miss = ref - loud_db(back)
+        if abs(miss) <= 0.05:
+            break
         k = min(10 ** (miss / 20), PEAK_CAP / max(1e-9, float(np.max(np.abs(y)))))
+        if abs(k - 1) < 1e-4:
+            break
         y = y * k; g *= k
         encode(y, dst)
         back = decode(dst)
@@ -304,6 +308,204 @@ def build_vsco(name):
 
 
 BUILDERS = {"strings": build_vsco, "harp": build_vsco, "marimba": build_vsco}
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  2 · piano_vcsl_sets.py: the harpsichord, the church organ, the glockenspiel, the bells, the kalimba, the tape flute
+# ══════════════════════════════════════════════════════════════════════════
+NOTE = {"C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5, "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11}
+HS = "Chordophones/Zithers/Harpsichord, English/Sustains/Normal/ZuckermannKitHarpsi_Normal_Sus_%s_rr1.wav"
+PO = "Aerophones/Edge-blown Aerophones/Pipe Organ/Loud/Rode_Man3Open_%s.wav"
+GL = "Idiophones/Struck Idiophones/Glockenspiel/glock_loud_%s_01.wav"
+TB = "Idiophones/Struck Idiophones/Tubular Bells 2/TB_hit_%s.wav"
+KT = "Idiophones/Plucked Idiophones/Kalimba, Tanzania/MBira3_pluck_Main_%s_50_100_rr2.wav"
+FL = "Woodwinds/Flute/susNV/LDFlute_susNV_%s_v1_1.wav"
+
+
+def nm(name, octave_up=0):
+    name = name.split("_")[0]
+    p = name.rstrip("0123456789")
+    return 12 * (int(name[len(p):]) + 1) + NOTE[p] + 12 * octave_up
+
+
+def same(path, names, up, fmt=None):
+    return [(nm(n, up), path % (fmt(n) if fmt else n), nm(n, up)) for n in names]
+
+
+VCSL_SETS = {
+    "harpsichord": dict(kind="pluck", pitch="harm", onset=0.10, files=same(HS, ["A#0", "C1", "D1", "E1", "F#1", "G#1", "A#1", "C2", "D2", "E2", "F#2",
+        "G#2", "A#2", "C3", "D3", "E3", "F#3", "G#3", "A#3", "C4", "D4", "E4", "F#4", "G#4", "A#4", "C5", "D5", "E5"], 1)),
+    "pipeorgan": dict(kind="hold", pitch="harm", loop=(1.4, 1.2, 2.6), files=same(PO, ["C1", "D#1", "F#1", "A1", "C2", "D#2", "F#2", "A2", "C3", "D#3",
+        "F#3", "A3", "C4", "D#4", "F#4", "A4", "C5", "D#5", "F#5", "A5", "C6"], 0)),
+    "glockenspiel": dict(kind="bar", pitch="bar", files=same(GL, ["G4", "C5", "G5", "C6", "G#6", "C7"], 1)),
+    "bells": dict(kind="bell", pitch="bell", files=same(TB, ["C4", "D4_2", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5_2", "F5"], 0,
+        fmt=lambda n: n.replace("_", "_v4_") if "_" in n else n + "_v4_1")),
+    "kalimba": dict(kind="tine", pitch="bar", files=same(KT, ["G#1_k11", "C#2_k10", "D#2_k14", "F2_k9alt", "G2_k15", "A#2_k8", "C#3_k16", "D#3_k7",
+        "F3_k17", "G3_k6", "A#3_k18", "C#4_k5", "D#4_k4", "F4_k3", "G4_k22", "B4_k23", "E5_k25", "G#5_k26", "C#6_k27"], 1)),
+    # piano_vcsl_sets.py read The Band's soft flute notes (audio/band/flute/<midi>s.mp3, one channel); those were made by
+    # band/process.py from these takes (the softest, first take of each note; the library names them an octave low)
+    "flute": dict(kind="hold", pitch="harm", loop=(1.2, 2.0, 2.8), lib="vsco",
+                  files=[(m, FL % ("%s%d" % ([k for k, v in NOTE.items() if v == m % 12][0], m // 12 - 2)), m)
+                         for m in [60, 64, 69, 72, 76, 81, 84, 88, 93, 96]]),
+}
+
+
+def vcsl_length(kind, m):
+    if kind == "pluck":
+        return 5.0 if m <= 40 else 4.2 if m <= 52 else 3.4 if m <= 64 else 2.6 if m <= 76 else 2.1
+    if kind == "bar":
+        return 4.5 if m <= 64 else 4.0 if m <= 76 else 3.2 if m <= 88 else 2.4
+    if kind == "bell":
+        return 6.0 if m <= 65 else 5.2 if m <= 72 else 4.4
+    if kind == "tine":
+        return 2.6 if m <= 55 else 2.1 if m <= 70 else 1.7
+    return None
+
+
+def vcsl_load(repo, path):
+    """both channels as recorded, and the mix piano_vcsl_sets.py listened to: the second microphone moved by the lag (at
+    most 3 ms) that lines it up best with the first, then the two averaged"""
+    raw = git_bytes(repo, path)
+    ch = channels_of(raw)
+    d = decode(raw, ch=ch)
+    if ch == 1:
+        return np.stack([d[:, 0], d[:, 0]], axis=1), d[:, 0].copy()
+    L, R = d[:, 0], d[:, 1]
+    pk = np.abs(d).max(axis=1)
+    on = int(np.argmax(pk > pk.max() * 0.03))
+    a, z = on, min(len(L), on + int(0.25 * SR))
+    best, blag = -2.0, 0
+    for lag in range(-int(0.003 * SR), int(0.003 * SR) + 1):
+        if a + lag < 0 or z + lag > len(R):
+            continue
+        x, y = L[a:z], R[a + lag:z + lag]
+        c = np.dot(x, y) / (np.linalg.norm(x) * np.linalg.norm(y) + 1e-12)
+        if c > best:
+            best, blag = c, lag
+    return d[:, :2].copy(), 0.5 * (L + np.roll(R, -blag))
+
+
+def vcsl_cents_off(d, onset, midi, how, kind):
+    f_exp = 440.0 * 2 ** ((midi - 69) / 12)
+    a, z = {"hold": (0.6, 2.6), "pluck": (0.05, 0.8), "ep": (0.05, 1.0), "bar": (0.04, 0.6), "bell": (0.05, 1.0), "tine": (0.02, 0.4)}[kind]
+    seg = d[onset + int(a * SR): onset + int(z * SR)]
+    n = 1 << 19
+    S = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), n))
+    if how == "bar":
+        return 1200 * np.log2(peak_near(S, n, f_exp, 80)[0] / f_exp)
+    if how == "bell":
+        return 1200 * np.log2(peak_near(S, n, 2 * f_exp, 100)[0] / (2 * f_exp))
+    est = []
+    for k in range(1, 7):
+        r = peak_near(S, n, k * f_exp, 60)
+        if r is None:
+            break
+        est.append((r[0] / k, r[1]))
+    mx = max(e[1] for e in est)
+    est = sorted(e for e in est if e[1] > 0.08 * mx)
+    w = np.array([e[1] for e in est]); f = np.array([e[0] for e in est]); c = np.cumsum(w)
+    return 1200 * np.log2(f[np.searchsorted(c, c[-1] / 2)] / f_exp)
+
+
+def vcsl_retune(seg, cents_):
+    r = 2 ** (cents_ / 1200)
+    return resample_poly(seg, int(round(r * 10000)), 10000, axis=0, window=("kaiser", 10.0))
+
+
+def tick_gain(seg, crest_db=9.0):
+    """piano_vcsl_sets.py's soften_tick, as a gain curve (worked out on the mix, then given to both channels)"""
+    from scipy.ndimage import maximum_filter1d
+    ceil = 10 ** ((loud_db(seg, 0.1) + crest_db) / 20)
+    a = np.abs(seg)
+    if a.max() <= ceil:
+        return None
+    env = maximum_filter1d(a, size=2 * int(0.0005 * SR) + 1)
+    need = np.minimum(1.0, ceil / np.maximum(env, 1e-12))
+    rel = 1 - np.exp(-1 / (0.010 * SR)); att = 1 - np.exp(-1 / (0.0005 * SR))
+    g = need.copy()
+    for i in range(1, len(g)):
+        g[i] = min(need[i], g[i - 1] + (1 - g[i - 1]) * rel)
+    for i in range(len(g) - 2, -1, -1):
+        g[i] = min(g[i], g[i + 1] + (1 - g[i + 1]) * att)
+    return g
+
+
+def loop_end2(x, a, lmin, lmax, xw=0.5):
+    """piano_vcsl_sets.py's loop_end, for both channels at once: the end, from a+lmin to a+lmax, whose half second before
+    it matches the half second before a best (the two channels' correlations added, weighted by their energy). Returns the
+    end (s), the joint match, and each channel's own match there"""
+    A = int(round(a * SR)); X = int(round(xw * SR))
+    lo, hi = A + int(round(lmin * SR)), A + int(round(lmax * SR))
+    num = 0; den_ref = 0; e2 = 0
+    for c in range(x.shape[1]):
+        seg = x[:, c]; ref = seg[A - X:A]; reg = seg[lo - X:hi]
+        n = 1 << int(np.ceil(np.log2(len(reg) + X)))
+        cc = np.fft.irfft(np.fft.rfft(reg, n) * np.conj(np.fft.rfft(ref, n)), n)[:len(reg) - X + 1]
+        num = num + cc
+        e2 = e2 + np.maximum(np.convolve(reg ** 2, np.ones(X), "valid"), 1e-20)
+        den_ref += float(np.dot(ref, ref))
+    rho = num / (np.sqrt(e2 * den_ref) + 1e-12)
+    i = int(np.argmax(rho)); p = 0.0
+    if 0 < i < len(rho) - 1:
+        al, be, ga = rho[i - 1], rho[i], rho[i + 1]
+        den = al - 2 * be + ga
+        p = 0.5 * (al - ga) / den if den != 0 else 0.0
+    e = (lo + i + p) / SR
+    Z = int(round(e * SR))
+    own = [float(np.dot(x[Z - X:Z, c], x[A - X:A, c]) / (np.linalg.norm(x[Z - X:Z, c]) * np.linalg.norm(x[A - X:A, c]) + 1e-12))
+           for c in range(x.shape[1])]
+    return e, float(rho[i]), own
+
+
+ENDS = {}
+
+
+def build_vcsl(name):
+    spec = VCSL_SETS[name]; kind = spec["kind"]
+    repo = VSCO if spec.get("lib") == "vsco" else VCSL
+    ends = {}
+    for target, src, sounding in spec["files"]:
+        st, d = vcsl_load(repo, src)
+        pk = np.abs(d).max()
+        onset = int(np.argmax(np.abs(d) > pk * spec.get("onset", 0.03)))
+        dev = vcsl_cents_off(d, onset, sounding, spec["pitch"], kind)
+        shift = (target - sounding) * 100 + dev
+        start = max(0, onset - int(0.005 * SR))
+        L = vcsl_length(kind, target) if kind != "hold" else spec["loop"][0] + spec["loop"][2] + 0.3
+        stop = start + int((L * 2 ** (abs(shift) / 1200) + 0.3) * SR)
+        both = np.concatenate([st[start:stop], d[start:stop, None]], axis=1)     # left, right, and the mix, alike
+        if abs(shift) > 1:
+            both = vcsl_retune(both, shift)
+        n = int(L * SR)
+        both = np.concatenate([both, np.zeros((max(0, n - len(both)), 3))])[:n]
+        f0 = 440.0 * 2 ** ((target - 69) / 12)
+        hpf = max(20.0, f0 * (0.35 if kind in ("bar", "bell", "tine") else 0.5))
+        both = sosfilt(butter(2, hpf, "highpass", fs=SR, output="sos"), both, axis=0)
+        if kind == "tine":
+            g = tick_gain(both[:, 2])
+            if g is not None:
+                both = both * g[:, None]
+        seg = both[:, :2].copy()
+        fi = int(0.005 * SR); seg[:fi] *= (np.sin(np.linspace(0, np.pi / 2, fi)) ** 2)[:, None]
+        info = {"src": src, "shift_cents": round(shift, 1)}
+        if kind == "hold":
+            e, c, own = loop_end2(seg, *spec["loop"])
+            ends[target] = round(e, 5)
+            seg = seg[:int((e + 0.25) * SR)]
+            info["note"] = "loop %.1f-%.5f s (match %.3f; left %.3f, right %.3f)" % (spec["loop"][0], e, c, own[0], own[1])
+            info.update(loop_end=round(e, 5), loop_match=round(c, 3), loop_match_lr=[round(own[0], 3), round(own[1], 3)])
+        fo = int((0.06 if kind == "hold" else 0.6) * SR); seg[-fo:] *= (np.cos(np.linspace(0, np.pi / 2, fo)) ** 2)[:, None]
+        key = "%dm" % target
+        back = match_and_write(name, key, seg, info)
+        a, z = {"hold": (0.6, 2.6), "pluck": (0.05, 0.8), "bar": (0.04, 0.6), "bell": (0.05, 1.0), "tine": (0.02, 0.4)}[kind]
+        tuning(name, key, target, back, spec["pitch"], a, z)
+    if ends:
+        ENDS[name] = ends
+        print("%s ends: %s" % (name, json.dumps({str(k): v for k, v in ends.items()}).replace('"', "").replace(" ", "")))
+
+
+for _n in VCSL_SETS:
+    BUILDERS[_n] = build_vcsl
 
 
 def main():
