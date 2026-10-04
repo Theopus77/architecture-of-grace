@@ -38,7 +38,7 @@
    Credits: audio/drums/CREDITS.txt. ══════════════════════════════════════════════════════════════════════════════ */
 (function (root) {
   "use strict";
-  var BASE = "/audio/drums/", VER = "1";
+  var BASE = "/audio/drums/", VER = "3";   /* 3: Kit T's kick made again with its body, so it is a drum, not a stick (Jimmy, 2026-10-04) */
   var HI = 44100, LO = 26040;
   /* A pad: the name it shows, the file it plays (name-s / name-m / name-h, numbered when there are two or more takes),
      and how many takes each layer has: [soft, normal, hard]. hat:1 = it shuts the open hat, as a foot does.
