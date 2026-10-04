@@ -80,9 +80,12 @@ function peakNear(sp, f, spanC) {
 /* the note's pitch, measured the way that suits the instrument */
 function pitch(seg, f, method) {
   const sp = magSpectrum(seg);
-  if (method === "centroid") {             // two reeds, detuned voices, a vibrato: the mean frequency near each harmonic
+  /* centroid: two reeds, detuned voices, a vibrato: the power-weighted mean frequency near each of the first four
+     harmonics. centre: the same near the note itself only (a pan's note rings as two close partials, nearly as
+     strong, and the ear hears the middle of the pair) */
+  if (method === "centroid" || method === "centre") {
     let num = 0, den = 0;
-    for (let k = 1; k <= 4; k++) {
+    for (let k = 1; k <= (method === "centre" ? 1 : 4); k++) {
       const span = 60, lo = Math.floor(k * f * Math.pow(2, -span / 1200) * sp.n / SR), hi = Math.floor(k * f * Math.pow(2, span / 1200) * sp.n / SR) + 1;
       if (hi >= sp.S.length) break;
       let pw = 0, pf = 0;
@@ -145,11 +148,25 @@ function loopCheck(file, loop, raw) {
     const now = rms(play, i, i + w), was = rms(before, i - (Z - A), i - (Z - A) + w);
     const dd = Math.abs(dB(now) - dB(was)); if (dd > worst) worst = dd;
   }
-  /* clicks around the blend and the jumps */
+  /* clicks around the blend and the jumps, and anywhere in one whole pass round the loop */
   const fl = peakAbs(play) * Math.pow(10, -70 / 20);
   const c1 = clicks(play, Math.max(0, Z - X - Math.round(0.08 * sr)), Math.min(play.length, Z + Math.round(0.12 * sr)), sr, fl);
   const c2 = clicks(play, Z + (Z - A) - Math.round(0.08 * sr), Z + (Z - A) + Math.round(0.08 * sr), sr, fl);
-  return { swellDb: worst, clickDb: Math.max(c1.ratioDb, c2.ratioDb) };
+  const c3 = clicks(play, Z, Z + (Z - A), sr, fl);
+  /* the level's wobble, 20 ms at a time against the 300 ms around it: across the blend, the jump and a whole
+     pass round the loop, it may wobble no more than the note does by itself before its loop (or 1.5 dB) */
+  const wob = (x, a, b) => {
+    const lv = []; for (let i = a; i + w <= b; i += w) lv.push(dB(rms(x, i, i + w)));
+    let mx = 0; const R = 7;
+    for (let k = 0; k < lv.length; k++) {
+      const nb = lv.slice(Math.max(0, k - R), Math.min(lv.length, k + R + 1)).sort((p, q) => p - q);
+      const d = Math.abs(lv[k] - nb[nb.length >> 1]); if (d > mx) mx = d;
+    }
+    return mx;
+  };
+  const natural = wob(before, Math.max(Math.round(0.15 * sr), A - X - Math.round(0.6 * sr)), A - X);
+  const looped = wob(play, A - X, Z + (Z - A));
+  return { swellDb: worst, clickDb: Math.max(c1.ratioDb, c2.ratioDb, c3.ratioDb), wobbleDb: looped, naturalDb: natural };
 }
 
 /* ── one set ── */
@@ -193,17 +210,19 @@ function checkSet(name, info) {
     if (ck.ratioDb > 20) say(`${key}: click ${ck.ratioDb.toFixed(0)} dB at ${ck.at.toFixed(3)} s`);
     /* the loop, as the page plays it */
     if (e.loop) [false, true].forEach(raw => {
-      const lc = loopCheck(f, e.loop, raw);
+      const lc = loopCheck(f, e.loop, raw), tag = raw ? " (encoder delay kept)" : "";
       res.worstSwell = Math.max(res.worstSwell, lc.swellDb); res.worstLoopClick = Math.max(res.worstLoopClick, lc.clickDb);
-      if (lc.swellDb > 1) say(`${key}: the loop blend moves the level ${lc.swellDb.toFixed(2)} dB${raw ? " (encoder delay kept)" : ""}`);
-      if (lc.clickDb > 20) say(`${key}: a click at the loop, ${lc.clickDb.toFixed(0)} dB${raw ? " (encoder delay kept)" : ""}`);
+      res.worstWobble = Math.max(res.worstWobble || 0, lc.wobbleDb - lc.naturalDb);
+      if (lc.swellDb > 1) say(`${key}: the loop blend moves the level ${lc.swellDb.toFixed(2)} dB${tag}`);
+      if (lc.clickDb > 20) say(`${key}: a click at the loop, ${lc.clickDb.toFixed(0)} dB${tag}`);
+      if (lc.wobbleDb > Math.max(1.5, lc.naturalDb + 0.75)) say(`${key}: the level wobbles ${lc.wobbleDb.toFixed(2)} dB round the loop (by itself ${lc.naturalDb.toFixed(2)} dB)${tag}`);
     });
   }));
   if (bytes > MAX_BYTES) say(`${(bytes / 1e6).toFixed(2)} MB, over 3 MB`);
   const cs = res.cents;
   const line = `${name.padEnd(10)} ${String(notes.length).padStart(2)} notes ${notes[0]}-${notes[notes.length - 1]} x [${layers.join("")}] ` +
     `${(bytes / 1e6).toFixed(2)} MB${bytes > AIM_BYTES ? " (over 2 MB)" : ""}  tuning ${Math.min.apply(null, cs).toFixed(1)}..${Math.max.apply(null, cs).toFixed(1)} c  ` +
-    `onset <= ${res.onsetMs.toFixed(1)} ms  click ${res.worstClick.toFixed(0)} dB` + (e.loop ? `  loop [${e.loop}] swell ${res.worstSwell.toFixed(2)} dB click ${res.worstLoopClick.toFixed(0)} dB` : "");
+    `onset <= ${res.onsetMs.toFixed(1)} ms  click ${res.worstClick.toFixed(0)} dB` + (e.loop ? `  loop [${e.loop}] blend ${res.worstSwell.toFixed(2)} dB, wobble +${Math.max(0, res.worstWobble).toFixed(2)} dB, click ${res.worstLoopClick.toFixed(0)} dB` : "");
   return { fails, line };
 }
 
