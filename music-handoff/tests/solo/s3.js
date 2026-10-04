@@ -40,7 +40,9 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.selectOption("#keySel","4"); await p.waitForTimeout(1600);
     const ek=await p.evaluate(()=>{ const B=AOGSolo._t.BAND, t=ac.currentTime; const late=B.log.filter(e=>e.p==="gtr" && e.t>t-0.4); return late.map(e=>e.m%12); });
     ok(ek.length>0 && ek.every(x=>[4,7,11,2,9,0,6,5].indexOf(x)>=0), `the band follows the key (E minor): ${[...new Set(ek)].join(",")}`);
-    const playing=await p.evaluate(()=>__brms());
+    /* the band's level while it plays: the loudest of ten looks over half a second (AOG-STRINGS-REAL-V1: the recorded band's
+       chugged notes die away fast, so one look can fall in the gap between two of them) */
+    const playing=await p.evaluate(async()=>{ let m=0; for(let i=0;i<10;i++){ m=Math.max(m, __brms()); await new Promise(r=>setTimeout(r,50)); } return m; });
     await press("#soBand"); await p.waitForTimeout(350);
     const st=await p.evaluate(()=>({on:AOGSolo._t.BAND.on, rms:__brms(), n:AOGSolo._t.BAND.log.length, btn:document.getElementById("soBand").textContent}));
     await p.waitForTimeout(400); const n2=await p.evaluate(()=>AOGSolo._t.BAND.log.length);

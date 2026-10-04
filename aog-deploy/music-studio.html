@@ -31,6 +31,15 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
      a copy of each recording on a track is kept in IndexedDB ("aog-studio"), so a new bounce on an instrument never
      changes a song already made. Phone first: one track's controls at a time; a row of channel strips on a bigger
      screen. Nothing moves or sounds until Play is pressed. -->
+<!-- AOG-STUDIO-INBOX-V1 (2026-10-04) — Jimmy: "All the instruments should be able to record and send their tracks over to
+     the STUDIO." Every tool's takes (the piano, the drum machine, the guitar, the bass, The Band and the turntables) have
+     Send to the Studio, and wait here under "Takes sent here": many at once, newest first, each named by its tool and its
+     number, with its length (aog-handoff.js, the list "studioinbox"). The menu under "Put a recording on this track" puts
+     any of them, or the newest thing each tool sent to the turntables, on the track picked; two takes from one tool can sit
+     on two tracks. A take on a
+     track is the track's own copy, so it comes back after a reload, and stays after the take leaves the list. The list keeps
+     16; when a 17th comes the oldest goes, and a line here says which. A take can be taken out of the list (asked once
+     first). Nothing is uploaded. -->
 <style>
 :root{
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
@@ -157,6 +166,18 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-rec b{color:#f1ebdf}
 .st-rec .st-btn{flex:1 1 11rem}
 
+/* ── AOG-STUDIO-INBOX-V1 · the menu of recordings, and the takes sent here ── */
+.st-put{display:grid;gap:.5rem;max-width:44rem}
+.st-put .st-btn{flex:0 1 auto}
+.st-info{margin:0;color:#d7cbb8;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
+.st-inb{display:grid;gap:.55rem}
+.st-inb .st-rtx{flex:1 1 10rem}
+.st-inb .st-rec .st-btn{flex:0 0 auto}
+.st-on{color:#c8f5d0;font-weight:700;font-size:.92rem}
+.st-q{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.6rem .7rem;border:1px solid #c4452a;border-radius:12px;background:#22140f}
+.st-q p{margin:0;color:#f6dcd4;font-weight:700;flex:1 1 14rem}
+.st-q .st-btn{flex:0 0 auto}
+
 /* ── 4 · the mixer: one strip per track ── */
 .st-mixer{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
 .st-strip{border:1px solid #2f3339;border-radius:12px;background:#181a1e;padding:.55rem .55rem .7rem;min-width:0}
@@ -198,6 +219,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .st-mixer .st-strip:not(.sel){display:none}
   .st-strip .st-sls{grid-template-columns:repeat(2,minmax(0,1fr))}
   .st-play{flex:1 1 100%}
+  .st-put .st-btn{flex:1 1 100%}
 }
 @media (min-width:700px){
   .st-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -269,9 +291,16 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
         <div id="clipBox"></div>
-        <h3 class="st-h3" data-t="recsH"></h3>
+        <h3 class="st-h3" data-t="recsH" id="recsH"></h3>
         <div class="st-recs" id="recs"></div>
         <p class="st-line" id="recLine" aria-live="polite"></p>
+      </div>
+
+      <div class="st-blk" id="inboxBlk">
+        <h2 class="st-h" data-t="inboxH"></h2>
+        <p class="st-line note" id="goneLine" aria-live="polite" style="margin:0 0 .6rem"></p>
+        <div class="st-inb" id="inbox"></div>
+        <p class="st-line" id="inboxLine" aria-live="polite"></p>
       </div>
 
       <div class="st-blk">
@@ -312,16 +341,26 @@ const SHELVES=[
   {key:"keysbench",  from:{en:"From the piano",es:"Del piano"}, sh:{en:"Piano",es:"Piano"}, tk:{en:"Piano take",es:"Toma de piano"}},
   {key:"guitarbench",from:{en:"From the guitar",es:"De la guitarra"}, sh:{en:"Guitar",es:"Guitarra"}, tk:{en:"Guitar take",es:"Toma de guitarra"}},
   {key:"bassbench",  from:{en:"From the bass",es:"Del bajo"}, sh:{en:"Bass",es:"Bajo"}, tk:{en:"Bass take",es:"Toma de bajo"}},
-  {key:"bandbench",  from:{en:"From the band",es:"De la banda"}, sh:{en:"Band",es:"Banda"}, tk:{en:"Band take",es:"Toma de banda"}},
+  {key:"bandbench",  from:{en:"From the band",es:"De la banda"}, sh:{en:"Band",es:"Banda"}, tk:{en:"Band take",es:"Toma de la banda"}},
   {key:"studiobench",from:{en:"Your last mix from the studio",es:"Tu última mezcla del estudio"}, sh:{en:"Mix",es:"Mezcla"}, tk:{en:"Mix",es:"Mezcla"}}
 ];
 const SHELF_KEYS=SHELVES.map(s=>s.key);
 function shelfOf(k){ return SHELVES.find(s=>s.key===k)||null; }
+/* AOG-STUDIO-INBOX-V1 — the takes sent here (aog-handoff.js, the list "studioinbox"), and the tools they come from */
+const INBOX_KEY=(window.AOGHandoff && AOGHandoff.INBOX) || "studioinbox", INBOX_MAX=(window.AOGHandoff && AOGHandoff.INBOX_MAX) || 16;
+const TOOLS={
+  drums:{from:{en:"From the drum machine",es:"De la caja de ritmos"}, take:{en:"Drum take",es:"Toma de ritmos"}},
+  piano:{from:{en:"From the piano",es:"Del piano"}, take:{en:"Piano take",es:"Toma de piano"}},
+  guitar:{from:{en:"From the guitar",es:"De la guitarra"}, take:{en:"Guitar take",es:"Toma de guitarra"}},
+  bass:{from:{en:"From the bass",es:"Del bajo"}, take:{en:"Bass take",es:"Toma de bajo"}},
+  band:{from:{en:"From the band",es:"De la banda"}, take:{en:"Band take",es:"Toma de la banda"}},
+  decks:{from:{en:"From the turntables",es:"De los tocadiscos"}, take:{en:"Turntables take",es:"Toma de los tocadiscos"}}
+};
 
 const STR={
   app:{en:"The Studio",es:"El estudio"},
   kicker:{en:"Put your song together.",es:"Arma tu canción."},
-  lead:{en:"Play an instrument, press Send to the turntables or Record, then come here.",es:"Toca un instrumento, pulsa Enviar a los platos o Grabar, y luego ven aquí."},
+  lead:{en:"Record on any instrument, press Send to the Studio, then come here.",es:"Graba en cualquier instrumento, pulsa Enviar al estudio y luego ven aquí."},
   plate:{en:"THE STUDIO",es:"EL ESTUDIO"}, plateSub:{en:"EIGHT TRACKS · MIXER",es:"OCHO PISTAS · MEZCLADORA"},
   play:{en:"▶ Play",es:"▶ Tocar"}, stop:{en:"■ Stop",es:"■ Parar"},
   pos:{en:"Bar {b} · beat {n} · {t}",es:"Compás {b} · pulso {n} · {t}"},
@@ -341,7 +380,7 @@ const STR={
   laneAria:{en:"Track {n}: {name}",es:"Pista {n}: {name}"}, laneBars:{en:"bars {a} to {b}",es:"compases {a} a {b}"},
   trackPick:{en:"Track",es:"Pista"},
   recsH:{en:"Put a recording on this track",es:"Pon una grabación en esta pista"},
-  recsNone:{en:"No recordings yet. Play an instrument, then press Send to the turntables or Record.",es:"Aún no hay grabaciones. Toca un instrumento y luego pulsa Enviar a los platos o Grabar."},
+  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Studio.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar al estudio."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
   putFail:{en:"That recording could not be read. Try sending it again.",es:"No se pudo leer esa grabación. Intenta enviarla otra vez."},
@@ -376,16 +415,34 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."}, decks:{en:"The turntables",es:"Los tocadiscos"},
   fail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
   newSong:{en:"Start a new song",es:"Empezar una canción nueva"},
-  newAsk:{en:"Clear all eight tracks and the mixer? This cannot be undone.",es:"¿Borrar las ocho pistas y la mezcladora? No se puede deshacer."},
+  newAsk:{en:"Clear all eight tracks and the mixer? The takes sent here stay. This cannot be undone.",es:"¿Borrar las ocho pistas y la mezcladora? Las tomas enviadas aquí se quedan. No se puede deshacer."},
   newYes:{en:"Yes, clear it all",es:"Sí, borrar todo"}, newNo:{en:"Keep my song",es:"Conservar mi canción"},
   newDone:{en:"Your tracks are clear. Put a recording on a track to begin.",es:"Tus pistas están vacías. Pon una grabación en una pista para empezar."},
   gone:{en:"A recording could not be found, so its track is empty now.",es:"No se encontró una grabación, así que su pista quedó vacía."},
   mixName:{en:"Studio · Your song · {bpm} BPM · {bars} bars",es:"Estudio · Tu canción · {bpm} BPM · {bars} compases"},
   file:{en:"my-song",es:"mi-cancion"},
-  foot:{en:"Your song stays on this device. The studio never uses a microphone.",es:"Tu canción se queda en este aparato. El estudio nunca usa un micrófono."},
+  foot:{en:"Your song and your takes stay on this device. The studio never uses a microphone.",es:"Tu canción y tus tomas se quedan en este aparato. El estudio nunca usa un micrófono."},
+  /* AOG-STUDIO-INBOX-V1 */
+  grpTakes:{en:"Takes sent here",es:"Tomas enviadas aquí"}, grpShelves:{en:"Sent to the turntables",es:"Enviado a los platos"},
+  inboxH:{en:"Takes sent here",es:"Tomas enviadas aquí"},
+  inboxNone:{en:"Takes you send from an instrument wait here.",es:"Las tomas que envíes desde un instrumento esperan aquí."},
+  inboxCount:{en:"{n} of {max} takes, newest first.",es:"{n} de {max} tomas, la más nueva primero."},
+  takeN:{en:"Take {n}",es:"Toma {n}"},
+  bpmN:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
+  madeAt:{en:"made at {t}",es:"hecha a las {t}"}, madeOn:{en:"made {d} at {t}",es:"hecha el {d} a las {t}"},
+  onTrack1:{en:"On track {list}",es:"En la pista {list}"}, onTrackN:{en:"On tracks {list}",es:"En las pistas {list}"},
+  and:{en:"and",es:"y"},
+  remove:{en:"Remove",es:"Quitar"}, removeAria:{en:"Remove {name}",es:"Quitar {name}"},
+  removeAsk:{en:"Remove {name} from this list?",es:"¿Quitar {name} de esta lista?"},
+  stays1:{en:"It stays on track {list}.",es:"Se queda en la pista {list}."}, staysN:{en:"It stays on tracks {list}.",es:"Se queda en las pistas {list}."},
+  removeYes:{en:"Yes, remove it",es:"Sí, quitarla"}, removeNo:{en:"Keep it",es:"Conservarla"},
+  removed:{en:"{name} is out of the list.",es:"{name} ya no está en la lista."},
+  goneOne:{en:"The Studio keeps {max} takes. To make room for a new one, the oldest went: {list}.",es:"El estudio guarda {max} tomas. Para hacer lugar a una nueva, se fue la más antigua: {list}."},
+  goneMany:{en:"The Studio keeps {max} takes. To make room for new ones, the oldest went: {list}.",es:"El estudio guarda {max} tomas. Para hacer lugar a las nuevas, se fueron las más antiguas: {list}."},
+  goneKept:{en:"A take already on a track stays there.",es:"Una toma que ya está en una pista se queda ahí."},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
-const S={ lang:"en", decoding:0, busy:false };
+const S={ lang:"en", decoding:0, busy:false, pick:"", picked:false, ask:"" };
 try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
 function t(k, vars){ let s=(STR[k]||{})[S.lang]; if(s==null) s=k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
 function L(o){ return o ? (o[S.lang]||o.en) : ""; }
@@ -405,13 +462,16 @@ function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), m
 let SONG=blankSong();
 function cleanClip(c){
   if(!c || typeof c!=="object" || typeof c.id!=="string" || !/^c[a-z0-9]{4,40}$/.test(c.id)) return null;
-  const o={ id:c.id, src:SHELF_KEYS.indexOf(c.src)>=0?c.src:"", name:String(c.name||"").slice(0,200), at:num(c.at,0,1e15,0),
+  const o={ id:c.id, src:(SHELF_KEYS.indexOf(c.src)>=0 || c.src===INBOX_KEY)?c.src:"", name:String(c.name||"").slice(0,200), at:num(c.at,0,1e15,0),
     sec:num(c.sec,0,3600,0), bpm:num(c.bpm,0,400,0), bars:num(c.bars,0,10000,0), take:!!c.take,
     head:num(c.head,0,10,0), body:num(c.body,0,3600,0), tail:num(c.tail,0,120,0), bpb:Math.round(num(c.bpb,2,7,4)),
     peakDb:(typeof c.peakDb==="number" && isFinite(c.peakDb)) ? num(c.peakDb,-120,6,-6) : null,
     startBar:Math.round(num(c.startBar,1,MAX_BARS,1)), trimIn:Math.round(num(c.trimIn,0,1e5,0)), trimOut:Math.round(num(c.trimOut,0,1e5,0)),
     loops:Math.round(num(c.loops,1,16,1)) };
   if(!(o.sec>0) || !(o.body>0)) return null;
+  /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
+  if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
+    o.tid=(typeof c.tid==="string" && /^t[a-z0-9]{4,40}$/.test(c.tid)) ? c.tid : ""; }
   return o;
 }
 function cleanSong(r){
@@ -845,25 +905,91 @@ async function refreshShelves(){
   }
   paintRecs();
 }
+/* AOG-STUDIO-INBOX-V1 — the takes sent here: the list's index (no audio), newest first; the audio is read when a take
+   goes on a track */
+const INBOX={items:[], gone:[]};
+async function refreshInbox(){
+  let r=null;
+  try{ r=(window.AOGHandoff && AOGHandoff.list) ? await AOGHandoff.list(INBOX_KEY) : null; }catch(e){ r=null; }
+  INBOX.items=((r && r.items) || []).filter(x=>x && typeof x.id==="string" && x.sec>0).sort((a,b)=>(b.sent||0)-(a.sent||0));
+  INBOX.gone=((r && r.gone) || []).filter(x=>x && typeof x.id==="string");
+  if(S.ask && !INBOX.items.some(x=>x.id===S.ask)) S.ask="";
+  paintInbox(); paintRecs();
+}
+/* every recording that can go on a track: the takes sent here, then the newest thing each tool sent to the turntables */
+function sources(){
+  const out=INBOX.items.map(x=>({id:"take:"+x.id, kind:"take", x:x}));
+  SHELVES.map(s=>({s:s, v:SHELF[s.key]})).filter(y=>y.v).sort((a,b)=>(b.v.rec.at||0)-(a.v.rec.at||0))
+    .forEach(y=>out.push({id:"shelf:"+y.s.key, kind:"shelf", s:y.s, v:y.v}));
+  return out;
+}
+/* a take is named by its tool and its number: "Guitar take 2" */
+function takeLabel(x){
+  const T=TOOLS[x.from], n=x.n!=null ? x.n : x.tn;
+  if(T && n>0) return L(T.take)+" "+n;
+  if(x.name && typeof x.name==="object") return L(x.name);
+  if(typeof x.name==="string" && x.name) return x.name;
+  return t("takeN",{n:n>0 ? n : "?"});
+}
+function andList(a){ return a.length<2 ? a.join("") : a.slice(0,-1).join(", ")+" "+t("and")+" "+a[a.length-1]; }
+function timeOf(d){ try{ return d.toLocaleTimeString(S.lang==="es"?"es":"en",{hour:"numeric", minute:"2-digit"}); }catch(e){ return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0"); } }
+function dayOf(d){ try{ return d.toLocaleDateString(S.lang==="es"?"es":"en",{month:"short", day:"numeric"}); }catch(e){ return (d.getMonth()+1)+"/"+d.getDate(); } }
+function sameDay(d){ return d.toDateString()===new Date().toDateString(); }
+function whenShort(at){ if(!(at>0)) return ""; const d=new Date(at); return sameDay(d) ? timeOf(d) : dayOf(d)+", "+timeOf(d); }
+function madeWords(at){ if(!(at>0)) return ""; const d=new Date(at); return sameDay(d) ? t("madeAt",{t:timeOf(d)}) : t("madeOn",{d:dayOf(d), t:timeOf(d)}); }
+function tracksOf(tid){ const out=[]; SONG.tracks.forEach((x,i)=>{ if(x.clip && x.clip.src===INBOX_KEY && x.clip.tid===tid) out.push(i+1); }); return out; }
+function shelfWhat(o){ const r=o.v.rec; return L(o.s.from)+(r.take && o.s.key!=="drumtake" ? " · "+t("aTake") : ""); }
+function srcLabel(o){
+  if(o.kind==="take") return [takeLabel(o.x), clockLen(o.x.sec), whenShort(o.x.at||o.x.sent)].filter(Boolean).join(" · ");
+  return shelfWhat(o)+" · "+clockLen(o.v.info.sec);
+}
+function srcInfo(o){
+  if(!o) return "";
+  if(o.kind==="take"){ const x=o.x, T=TOOLS[x.from];
+    return [T ? L(T.from) : "", clockLen(x.sec), x.bpm>0 ? t("bpmN",{n:Math.round(x.bpm)}) : "", madeWords(x.at||x.sent)].filter(Boolean).join(" · "); }
+  const nm=bareName(o.v.rec.name);
+  return [shelfWhat(o), nm, clockLen(o.v.info.sec)].filter(Boolean).join(" · ");
+}
 /* a recording onto a track: a copy is kept in this browser, decoded, and its loudest point measured */
-async function putOn(key, ti){
-  const sh=SHELF[key]; if(!sh || S.busy) return;
+async function putOn(srcId, ti){
+  if(S.busy) return;
+  const src=sources().find(o=>o.id===srcId); if(!src) return;
   S.busy=true; paintRecs(); $("recLine").textContent=t("putting");
   try{
     const id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-    const meta=analyse(sh.rec, sh.info), blob=sh.rec.wav;
-    const buf=await decodeWav(blob, sh.info.sr);
+    let rec, info, blob, from;
+    if(src.kind==="shelf"){ rec=src.v.rec; info=src.v.info; blob=rec.wav;
+      from={src:src.s.key, name:String(rec.name||"").slice(0,200), at:rec.at||Date.now()}; }
+    else {
+      const it=await AOGHandoff.item(INBOX_KEY, src.x.id);
+      if(!it || !it.wav || !(it.wav.size>44)) throw new Error("gone");
+      info=await wavInfo(it.wav); if(!info) throw new Error("not a wav");
+      blob=it.wav; rec={take:true, bpm:it.bpm, bars:0};
+      from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now()};
+    }
+    const meta=analyse(rec, info);
+    const buf=await decodeWav(blob, info.sr);
     await sput(id, {wav:blob});
     BUF.set(id, buf);
     const x=SONG.tracks[ti], old=x.clip;
-    x.clip=Object.assign({id:id, src:key, name:String(sh.rec.name||"").slice(0,200), at:sh.rec.at||Date.now(),
-      startBar:old ? old.startBar : 1, trimIn:0, trimOut:0, loops:1}, meta, {peakDb:peakDbOf(buf)});
+    x.clip=Object.assign({id:id}, from, {startBar:old ? old.startBar : 1, trimIn:0, trimOut:0, loops:1}, meta, {peakDb:peakDbOf(buf)});
     x.clip=cleanClip(x.clip);
     if(old) dropClip(old.id);
     $("recLine").textContent="";
     S.busy=false;
     songChanged();
   }catch(e){ S.busy=false; paintRecs(); $("recLine").textContent=t("putFail"); }
+}
+/* out of the list: asked once first; a copy on a track stays */
+async function removeTake(id){
+  const at=INBOX.items.findIndex(y=>y.id===id), x=INBOX.items[at]; if(!x) return;
+  const name=takeLabel(x);
+  S.ask="";
+  try{ await AOGHandoff.remove(INBOX_KEY, id); $("inboxLine").textContent=t("removed",{name:name}); }
+  catch(e){ $("inboxLine").textContent=t("fail"); }
+  await refreshInbox();
+  /* the keyboard lands on the take that moved into its place */
+  const btns=$("inbox").querySelectorAll("[data-drop]"), next=btns[Math.min(at, btns.length-1)] || $("trackSel"); if(next) next.focus();
 }
 function dropClip(id){ BUF.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
 function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const id=x.clip.id; x.clip=null; dropClip(id); songChanged(); }
@@ -872,7 +998,7 @@ function songChanged(){
   save();
   liveApply(applyAll);
   reschedule();
-  paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
+  paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox();
 }
 /* a reload: every recording comes back from this browser */
 async function restore(){
@@ -986,6 +1112,7 @@ function navHtml(){
 }
 function trackName(i){
   const c=SONG.tracks[i].clip; if(!c) return t("emptyL");
+  if(c.src===INBOX_KEY) return takeLabel({from:c.from, n:c.tn, name:c.name});
   const s=shelfOf(c.src); return s ? L(c.take ? s.tk : s.sh) : (c.name||"");
 }
 function beatsWords(n, bpb){
@@ -1011,7 +1138,7 @@ function paintText(){
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
   $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
 }
-function paintAll(){ paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); }
+function paintAll(){ paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); }
 
 /* ── 1 · play ── */
 function paintPlay(){
@@ -1078,13 +1205,14 @@ function paintTrack(){
   sel.innerHTML=SONG.tracks.map((x,k)=>`<option value="${k}"${k===i?" selected":""}>${esc(t("trackN",{n:k+1})+" · "+trackName(k))}</option>`).join("");
   const c=SONG.tracks[i].clip, box=$("clipBox");
   if(!c){ box.innerHTML=""; paintRecs(); return; }
-  const s=shelfOf(c.src), b=beatOf(c), tb=totalBeats(c), r=region(c);
-  const meta=[bareName(c.name), clockLen(c.sec)].filter(Boolean).join(" · ");
+  const s=shelfOf(c.src), b=beatOf(c), tb=totalBeats(c), r=region(c), inb=c.src===INBOX_KEY;
+  const meta=(inb ? [TOOLS[c.from] ? L(TOOLS[c.from].from) : "", clockLen(c.sec)] : [bareName(c.name), clockLen(c.sec)]).filter(Boolean).join(" · ");
+  const head=inb ? esc(trackName(i)) : esc(s ? L(s.from) : "")+(c.take ? " · "+esc(t("aTake")) : "");
   const lenTxt=clockLen(c.loops*r.len);
   const diff=c.bpm>0 && Math.abs(c.bpm-songBpm())>0.5;
   box.innerHTML=
     `<div class="st-cc" style="--c:${COLORS[i]}">
-      <div><b>${esc(s ? L(s.from) : "")}${c.take ? " · "+esc(t("aTake")) : ""}</b></div>
+      <div><b>${head}</b></div>
       <div class="st-cn">${esc(meta)}</div>
       <button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button>
     </div>
@@ -1122,13 +1250,43 @@ function clipAct(act){
   songChanged();
 }
 function paintRecs(){
-  const box=$("recs"), i=SONG.sel;
-  const have=SHELVES.map(s=>({s:s, v:SHELF[s.key]})).filter(x=>x.v).sort((a,b)=>(b.v.rec.at||0)-(a.v.rec.at||0));
-  if(!have.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("recsNone"))}</p>`; return; }
-  box.innerHTML=have.map(({s,v})=>{
-    const r=v.rec, what=L(s.from)+(r.take && s.key!=="drumtake" ? " · "+t("aTake") : "");
-    return `<div class="st-rec"><div class="st-rtx"><b>${esc(what)}</b><span class="st-cn">${esc(bareName(r.name))}${bareName(r.name)?" · ":""}<span class="st-len">${clockLen(v.info.sec)}</span></span></div>`+
-      `<button type="button" class="st-btn" data-put="${s.key}"${S.busy?" disabled":""}>${esc(t("putOn",{n:i+1}))}</button></div>`;
+  const box=$("recs"), i=SONG.sel, list=sources();
+  if(!list.length){ const h=`<p class="st-line" style="margin:0">${esc(t("recsNone"))}</p>`; if(box._sig!=="none|"+S.lang){ box.innerHTML=h; box._sig="none|"+S.lang; } return; }
+  if(!S.picked || !list.some(o=>o.id===S.pick)){ S.pick=list[0].id; S.picked=false; }
+  const takes=list.filter(o=>o.kind==="take"), shelves=list.filter(o=>o.kind==="shelf");
+  const sig=S.lang+"|"+list.map(o=>o.id+"="+srcLabel(o)).join("|");
+  if(box._sig!==sig || !$("srcSel")){
+    box._sig=sig;
+    const opt=o=>`<option value="${esc(o.id)}">${esc(srcLabel(o))}</option>`;
+    box.innerHTML=`<div class="st-put"><select id="srcSel" aria-labelledby="recsH">`+
+        (takes.length ? `<optgroup label="${esc(t("grpTakes"))}">${takes.map(opt).join("")}</optgroup>` : "")+
+        (shelves.length ? `<optgroup label="${esc(t("grpShelves"))}">${shelves.map(opt).join("")}</optgroup>` : "")+
+        `</select>
+      <p class="st-info" id="srcInfo"></p>
+      <div class="st-row"><button type="button" class="st-btn st-go" id="putBtn"></button></div></div>`;
+  }
+  const sel=$("srcSel"); if(sel.value!==S.pick) sel.value=S.pick;
+  sel.disabled=!!S.busy;
+  const b=$("putBtn"); b.textContent=t("putOn",{n:i+1}); b.setAttribute("data-put", S.pick); b.disabled=!!S.busy;
+  $("srcInfo").textContent=srcInfo(list.find(o=>o.id===S.pick));
+}
+
+/* ── AOG-STUDIO-INBOX-V1 · the takes sent here ── */
+function paintInbox(){
+  const box=$("inbox"), gl=$("goneLine");
+  const gone=INBOX.gone.slice().sort((a,b)=>(a.sent||0)-(b.sent||0));
+  const note=gone.length ? t(gone.length===1 ? "goneOne" : "goneMany",{max:INBOX_MAX, list:andList(gone.map(x=>takeLabel(x)+" ("+madeWords(x.at||x.sent)+")"))})+
+    (gone.some(x=>tracksOf(x.id).length) ? " "+t("goneKept") : "") : "";
+  if(gl.textContent!==note) gl.textContent=note;   /* a live line: said once, not again at every repaint */
+  if(!INBOX.items.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxNone"))}</p>`; return; }
+  box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxCount",{n:INBOX.items.length, max:INBOX_MAX}))}</p>`+INBOX.items.map(x=>{
+    const name=takeLabel(x), T=TOOLS[x.from], on=tracksOf(x.id);
+    const sub=[T ? esc(L(T.from)) : "", `<span class="st-len">${clockLen(x.sec)}</span>`, esc(madeWords(x.at||x.sent))].filter(Boolean).join(" · ");
+    const onTxt=on.length ? t(on.length===1 ? "onTrack1" : "onTrackN",{list:andList(on.map(String))}) : "";
+    const ask=S.ask===x.id ? `<div class="st-q" role="group" aria-label="${esc(t("removeAsk",{name:name}))}"><p>${esc(t("removeAsk",{name:name}))}${on.length ? " "+esc(t(on.length===1 ? "stays1" : "staysN",{list:andList(on.map(String))})) : ""}</p>`+
+      `<button type="button" class="st-btn st-clear" data-dropyes="${esc(x.id)}">${esc(t("removeYes"))}</button><button type="button" class="st-btn" data-dropno="${esc(x.id)}">${esc(t("removeNo"))}</button></div>` : "";
+    return `<div class="st-rec" data-take="${esc(x.id)}"><div class="st-rtx"><b>${esc(name)}</b><span class="st-cn">${sub}</span>${onTxt ? `<span class="st-on">${esc(onTxt)}</span>` : ""}</div>`+
+      (S.ask===x.id ? "" : `<button type="button" class="st-btn st-clear" data-drop="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:name}))}">${esc(t("remove"))}</button>`)+ask+`</div>`;
   }).join("");
 }
 
@@ -1214,6 +1372,15 @@ function bind(){
   $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
   $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(b && !b.disabled) clipAct(b.getAttribute("data-act")); });
   $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
+  /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
+  $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
+  $("recs").addEventListener("pointerdown", e=>{ const el=e.target; if(el && el.id==="srcSel") el._ptr=true; });
+  $("inbox").addEventListener("click", e=>{
+    const d=e.target.closest("[data-drop]"), y=e.target.closest("[data-dropyes]"), n=e.target.closest("[data-dropno]");
+    if(d){ S.ask=d.getAttribute("data-drop"); $("inboxLine").textContent=""; paintInbox(); const k=$("inbox").querySelector("[data-dropno]"); if(k) k.focus(); }
+    else if(n){ const id=n.getAttribute("data-dropno"); S.ask=""; paintInbox(); const b=[...$("inbox").querySelectorAll("[data-drop]")].find(x=>x.getAttribute("data-drop")===id); if(b) b.focus(); }
+    else if(y){ removeTake(y.getAttribute("data-dropyes")); }
+  });
   $("mixer").addEventListener("click", e=>{
     const sh=e.target.closest("[data-sel]"); if(sh){ selectTrack(+sh.getAttribute("data-sel")); return; }
     const ms=e.target.closest("[data-ms]"); if(!ms) return;
@@ -1267,12 +1434,14 @@ window.addEventListener("pagehide", ()=>{ stop(); });
   await restore();
   try{ const m=await sget("mix"); if(m && m.wav) setMix({wav:m.wav, sec:m.sec, bars:m.bars, bpm:m.bpm, body:m.body, at:m.at}); }catch(e){}
   await refreshShelves();
+  await refreshInbox();
 })();
-try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); }); }catch(e){}
-window.addEventListener("focus", ()=>{ refreshShelves(); });
+try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
+window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, songBars:songBars,
-  barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop };
+  barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
+  INBOX:INBOX, refreshInbox:refreshInbox, sources:sources, putOn:putOn, get S(){ return S; } };
 </script>
 </body>
 </html>

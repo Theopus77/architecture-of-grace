@@ -1,6 +1,6 @@
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const http=require("http"),fs=require("fs"),path=require("path");
-const root="/home/user/architecture-of-grace/aog-deploy";const port=9770;
+const root=process.env.AOG_ROOT||require("path").resolve(__dirname,"../../aog-deploy");const port=9770;
 const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);return r.end();}r.writeHead(200,{"content-type":{".html":"text/html",".js":"text/javascript",".css":"text/css"}[path.extname(f)]||"application/octet-stream"});r.end(d);});}).listen(port);
 const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;};
 (async()=>{const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});

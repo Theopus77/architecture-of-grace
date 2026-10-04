@@ -99,7 +99,7 @@ const STR={
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios, and the saxophone from Weresax by Karoryfer Samples. Both are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios, y el saxofón de Weresax de Karoryfer Samples. Los dos son regalos para todos (dominio público)."},
+  credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. All three are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. Las tres colecciones son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
@@ -123,13 +123,23 @@ const SOUNDS={
   trumpet_bebop:{grp:"grpJazz", en:"Trumpet · bebop, bright", es:"Trompeta · bebop, brillante", parts:["trumpet"], touch:1.3, gain:1.16, rev:0.1, stand:"brass"},
   trumpet_harmon:{grp:"grpJazz", en:"Muted trumpet · cool jazz", es:"Trompeta con sordina · cool jazz", touch:0.7, gain:2.255, rev:0.2, stand:"brass"},
   sax_bebop:{grp:"grpJazz", en:"Alto sax · bebop, bright", es:"Saxo alto · bebop, brillante", parts:["sax"], touch:1.3, gain:1.111, rev:0.1, stand:"wind"},
+  /* AOG-BAND-SAX2-V1 (2026-10-04) — the tenor and the soprano of Jimmy's list of influences, named by style on screen.
+     ballad: John Coltrane's ballads ("Ballads", 1962; "John Coltrane and Johnny Hartman", 1963), warm and unhurried, the
+     tenor recorded with vibrato; modal jazz: Coltrane's "Impressions" and "A Love Supreme" (1964), a big, strong
+     straight tone (touch > 1 leans on the loud recording, a small room); jazz fusion: Wayne Shorter's soprano with
+     Weather Report and on "Native Dancer" (1975), light and airy (touch < 1 leans on the soft recording, a larger room) */
+  tenor_vib:{grp:"grpJazz", en:"Tenor sax · ballad, warm with vibrato", es:"Saxo tenor · balada, cálido con vibrato", gain:1.256, rev:0.18, stand:"wind"},
+  tenor_modal:{grp:"grpJazz", en:"Tenor sax · modal jazz, big and strong", es:"Saxo tenor · jazz modal, grande y fuerte", parts:["tenor"], touch:1.3, gain:1.09, rev:0.1, stand:"wind"},
+  soprano_fusion:{grp:"grpJazz", en:"Soprano sax · jazz fusion, light and airy", es:"Saxo soprano · jazz fusión, ligero y aireado", parts:["soprano"], touch:0.45, gain:2.946, rev:0.22, stand:"wind"},
   bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, gain:1.003, rev:0.12, stand:"brass",
     who:{en:"trumpet and alto sax on the tune, trombone, a plucked double bass and drums",es:"trompeta y saxo alto en la melodía, trombón, un contrabajo pulsado y batería"}},
   cooljazz:{grp:"grpJazz", en:"Cool jazz group",   es:"Grupo de cool jazz", parts:["contrabass_pizz","horn","sax","trumpet_harmon"], touch:0.7, gain:2.022, rev:0.2, stand:"brass",
     who:{en:"muted trumpet, alto sax, French horn and a plucked double bass",es:"trompeta con sordina, saxo alto, corno francés y un contrabajo pulsado"}},
-  bigband: {grp:"grpJazz", en:"Big band · swing", es:"Big band · swing", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["trombone","b",12],["trombone","lo",-12],["sax","lo",0],["trumpet","mid",0],["trumpet","top",12]],
-    kit:["bd","sn","cy"], touch:1.15, gain:0.769, rev:0.14, stand:"brass",
-    who:{en:"trumpets, saxophones, trombones, a plucked double bass and drums",es:"trompetas, saxofones, trombones, un contrabajo pulsado y batería"}},
+  /* the big band's saxophones are an alto on its part and, under it, a tenor (AOG-BAND-SAX2-V1: the alto had played both
+     notes, the lower one at the bottom of its reach), as a swing band's sax section has altos over tenors */
+  bigband: {grp:"grpJazz", en:"Big band · swing", es:"Big band · swing", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["trombone","b",12],["trombone","lo",-12],["tenor","lo",0],["trumpet","mid",0],["trumpet","top",12]],
+    kit:["bd","sn","cy"], touch:1.15, gain:0.78, rev:0.14, stand:"brass",
+    who:{en:"trumpets, alto and tenor saxes, trombones, a plucked double bass and drums",es:"trompetas, saxos alto y tenor, trombones, un contrabajo pulsado y batería"}},
   trumpet_straight:{grp:"grpBrass", en:"Trumpet · straight mute", es:"Trompeta · sordina recta", gain:1.387, rev:0.16, stand:"brass"},
   trombone:{grp:"grpBrass", en:"Trombone",         es:"Trombón",         gain:1.05, rev:0.14, stand:"brass"},
   trombone_vib:{grp:"grpBrass", en:"Trombone · with vibrato", es:"Trombón · con vibrato", gain:0.967, rev:0.14, stand:"brass"},
@@ -148,9 +158,15 @@ const SOUNDS={
   oboe_vib:{grp:"grpWinds", en:"Oboe · with vibrato", es:"Oboe · con vibrato", gain:1.356, rev:0.15, stand:"wind"},
   bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.11, rev:0.14, stand:"wind"},
   bassoon_vib:{grp:"grpWinds", en:"Bassoon · with vibrato", es:"Fagot · con vibrato", gain:1.279, rev:0.14, stand:"wind"},
+  /* AOG-BAND-SAX2-V1 (2026-10-04) — Jimmy's list of influences: Wayne Shorter (soprano) and John Coltrane (tenor). A
+     soprano saxophone (a saxello, the curved soprano) and a tenor saxophone from the Versilian Community Sample Library
+     (VCSL, Versilian Studios, CC0): held notes without vibrato, soft and loud, and short notes of their own; beside the
+     alto. Made by music-handoff/tools/band/sax2.py (one microphone, levelled on the held part, tuned within 3 cents) */
+  soprano: {grp:"grpWinds", en:"Soprano saxophone", es:"Saxofón soprano", gain:1.469, rev:0.14, stand:"wind"},
   /* AOG-BAND-SAX-V1 (2026-10-03) — Jimmy: "You can add the Saxophone after everything else is deployed". An alto saxophone
      from Weresax by Karoryfer Samples (CC0), recorded on every note; held notes only, so its short notes are held ones let go */
   sax:     {grp:"grpWinds", en:"Alto saxophone",   es:"Saxofón alto",    gain:1.4, rev:0.14, stand:"wind"},
+  tenor:   {grp:"grpWinds", en:"Tenor saxophone",  es:"Saxofón tenor",   gain:1.364, rev:0.14, stand:"wind"},
   winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], gain:1.21, rev:0.17, stand:"wind",
     who:{en:"bassoon, clarinet, oboe and flute",es:"fagot, clarinete, oboe y flauta"}},
   winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], gain:1.148, rev:0.18, stand:"wind",
@@ -185,13 +201,15 @@ const SOUNDS={
     who:{en:"two trumpets, violins, harp and a plucked double bass",es:"dos trompetas, violines, arpa y un contrabajo pulsado"}},
   /* AOG-BAND-ORCH-V1 (2026-10-04) — Jimmy: "Can one of the agents make the ORCHESTRA tab, where everyone plays!" Every
      player of the band, voiced as an orchestra is: the bass line on double bass and tuba, the timpani on the root, cellos
-     and bassoon an octave up, the harp two octaves up; the middle on trombone, violas, horn, clarinet and saxophone; the
-     top on trumpet, oboe and violins, with violins, flute and (lightly) glockenspiel an octave up; a cymbal at the start of
-     every four bars. In the ways of playing that have a beat, the violins and violas hold the chord softly under the winds.
-     It loads lean (one recording per note, only the notes it uses) and each player joins in as soon as its notes are in. */
+     and bassoon an octave up, the harp two octaves up; the middle on trombone, violas, tenor saxophone, horn, clarinet and
+     alto saxophone; the top on trumpet, oboe, soprano saxophone and violins, with violins, flute and (lightly)
+     glockenspiel an octave up; a cymbal at the start of every four bars. In the ways of playing that have a beat, the
+     violins and violas hold the chord softly under the winds. It loads lean (one recording per note, only the notes it
+     uses) and each player joins in as soon as its notes are in. AOG-BAND-SAX2-V1: the tenor and soprano saxophones join
+     the alto, so everyone still plays. */
   orchestra:{grp:"grpAll", en:"Orchestra · everyone plays", es:"Orquesta · todos tocan", parts:["contrabass","trombone","horn","trumpet"],
-    dbl:[["tuba","b",0],["timpani","b",0],["cellos","b",12],["bassoon","b",12],["harp","b",24],["violas","lo",0],["sax","mid",0],["clarinet","mid",0],
-         ["oboe","top",0],["violins","top",0],["violins","top",12],["flute","top",12],["glockenspiel","top",12]],
+    dbl:[["tuba","b",0],["timpani","b",0],["cellos","b",12],["bassoon","b",12],["harp","b",24],["violas","lo",0],["tenor","lo",0],["sax","mid",0],["clarinet","mid",0],
+         ["oboe","top",0],["soprano","top",0],["violins","top",0],["violins","top",12],["flute","top",12],["glockenspiel","top",12]],
     kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.508, rev:0.2, stand:"string",
     who:{en:"every player in the band",es:"todos los músicos de la banda"}}
 };
@@ -201,6 +219,7 @@ const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, cla
   trumpet_vib:0.888, trumpet_harmon:0.858, trumpet_straight:0.834, trombone_vib:1.196, horn_mute:1.085, piccolo:0.885, flute_vib:0.945, oboe_vib:1.038, bassoon_vib:1.103,
   violins:1.097, violas:1.065, cellos:1.096, contrabass:1.389, violins_pizz:2.376, violas_pizz:2.539, cellos_pizz:2.118, contrabass_pizz:2.469, harp:1.821,
   timpani:1.299, marimba:1.881, xylophone:1.806, glockenspiel:1.692,
+  tenor:1.152, tenor_vib:0.788, soprano:0.917,                     /* AOG-BAND-SAX2-V1 */
   kit:5.07};  /* a bass drum stroke as loud as a player's note; the other pieces a little under it (KIT_MIX) */
 /* players whose note is struck or plucked: it rings out by itself, and a key let go lets it ring a moment longer */
 const PLUCKED={violins_pizz:1, violas_pizz:1, cellos_pizz:1, contrabass_pizz:1, harp:1, timpani:1, marimba:1, xylophone:1, glockenspiel:1};

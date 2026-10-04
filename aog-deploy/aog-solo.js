@@ -83,6 +83,8 @@ const WD={
   drumsOwn:{en:"Drums: a simple beat made here.",es:"Batería: un ritmo sencillo hecho aquí."},
   useBeat:{en:"Play with my drum beat",es:"Tocar con mi ritmo de batería"},
   bassBand:{en:"The band is a rhythm guitar and drums. You are the bass.",es:"La banda es una guitarra rítmica y batería. Tú eres el bajo."},
+  bandLoading:{en:"Getting the recorded band ready…",es:"Preparando la banda grabada…"},
+  bandFailed:{en:"The recorded band did not load. The band made on this page plays instead.",es:"La banda grabada no se cargó. Suena la banda hecha en esta página."},
   tempo:{en:"Tempo",es:"Tempo"},
   bpm:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
   major:{en:"major",es:"mayor"}, minor:{en:"minor",es:"menor"},
@@ -259,6 +261,7 @@ function build(){
     </div>
     <div class="tempo" style="margin-top:.8rem"><span class="plab" style="margin:0" data-so="tempo"></span><input type="range" id="soBpm" min="50" max="180" step="1"><b id="soBpmOut"></b></div>
     <p class="line" id="soBandLine"></p>
+    <p class="line" id="soBandLoad" aria-live="polite" hidden></p>
     <div class="prog" id="soBandProg" aria-hidden="true"></div>
     ${GTR?`<h3 class="so-h" data-so="lickH"></h3>
     <div class="row">
@@ -356,7 +359,7 @@ function wire(){
   ["soScaleSel","soSoundSel","soLickSel"].forEach(id=>{ const el=$q(id); if(!el) return;
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
-  const ss=$q("soundSel"); if(ss) ss.addEventListener("change",()=>{ paintSoundSel(); wahApply(); });
+  const ss=$q("soundSel"); if(ss) ss.addEventListener("change",()=>{ paintSoundSel(); wahApply(); if(BAND.on) bandReplan(); });
   const ab=$q("ampBox"); if(ab) ["input","click","change"].forEach(ev=>ab.addEventListener(ev,()=>{ if(P.wah && SO.on) setTimeout(wahApply, 0); }));
   const pb=$q("bpm"); if(pb) pb.addEventListener("input",()=>{ paintTempo(); paintBandLine(); });
   const mb=$q("muteBtn"); if(mb) mb.addEventListener("click",()=>{ lickStop(); });
@@ -371,7 +374,7 @@ function setMode(m, quiet){
     if(S.playing && typeof stop==="function") stop();
     prepBand();
   } else {
-    bandStop(); lickStop(); if(SO.killed) killSet(false); if(WH.to!==0 && ac) whamTo(0, 0.04);
+    bandStop(); bandForget(); lickStop(); if(SO.killed) killSet(false); if(WH.to!==0 && ac) whamTo(0, 0.04);
     FING.clear(); KEYF.clear(); SOUNDING.length=0;
     if(P.prev && P.auto && S.sound===P.auto && SOUNDS[P.prev]) setSoundId(P.prev);
     P.prev=""; P.auto="";
@@ -481,12 +484,12 @@ function makeLead(s, m, v, when, o){
   o=o||{};
   const c=ctx(); const vg=gainAt(c, o.soft?0:1); vg.connect(soloIn());
   const chx=Object.create(LIVE_CH); chx.amp=vg;          /* the page's voice, played into this note's own gain */
-  const W0=whamAt(when), vc=makeVoice(c, chx, S.sound, m+W0, v, when, s);
+  const W0=whamAt(when), vc=makeVoice(c, chx, S.sound, m+W0, v, when, s, o.soft?{soft:true}:o.snap?{pop:true}:undefined);   /* AOG-STRINGS-REAL-V1: a tap starts a recorded note without its pick; a pop is a recorded slap sound's pop */
   if(!vc){ try{ vg.disconnect(); }catch(e){} return null; }
   if(o.soft){ vg.gain.setValueAtTime(0, when); vg.gain.linearRampToValueAtTime(1, when+0.006); }   /* a tap: no pick */
   const lv=new Lead(c, vc, vg, s, m, when); lv.lastT=m+W0;
   if(o.pinch) lv.parts.push(pinchPart(c, lv, m+W0, when));
-  if(o.snap) snapPart(c, lv, when);
+  if(o.snap && !(vc.rec && SOUNDS[S.sound] && SOUNDS[S.sound].rslap)) snapPart(c, lv, when);   /* a recorded slap sound pops with its own snap */
   track(lv);
   return lv;
 }
@@ -823,6 +826,69 @@ function drumBufs(c){
   const crash=mk(1.5,(d,n)=>{ let p1=0, p2=0; for(let i=0;i<n;i++){ const t=i/sr, x=r(), h1=x-p1; p1=x; const h2=h1-p2; p2=h1; d[i]=h2*0.16*Math.exp(-t/0.5)*Math.min(1,t/0.002); } });
   BS.drums={sr, kick, snare, hat, crash}; return BS.drums;
 }
+/* AOG-STRINGS-REAL-V1 — Jimmy: "make sure all instruments are LEGIT and real sounds". The band plays recorded sets too:
+   its rhythm guitar the set its amp suits (BAND_SET: the one nearer the made string through that amp, by brightness, attack
+   and fizz), its bass (on the guitar page) the recorded electric bass. They download only when Play is pressed, with one
+   calm line while they get ready; until they are in, and if they cannot load, the made strings play. The page keeps
+   REAL.room sets at once (3 where a device has the memory, else 2): when the lead's set, the guitar's and the bass's would
+   be more, the band's bass plays the made string. BAND_RT: each part's level on the recordings against the made string's
+   (measured, so the band still sits where it did under the lead) */
+const BAND_SET={straight:"green", minor:"green", rock:"green", boogie:"green", mblues:"green", metal:"green"};
+const BAND_RT={gtr:{straight:1.032, minor:0.92, rock:0.941, boogie:1.106, mblues:0.971, metal:1.123},
+              bass:{straight:1.418, minor:1.286, rock:1.62, boogie:1.278, mblues:1.362, metal:1.62}};
+/* the band's own compressor and limiter squeeze the recorded bass harder than the made one: on the guitar page the whole
+   band is brought back to the made band's loudness after them (full: guitar and bass recorded; gtr: the bass made). On
+   the bass page (no band bass) the recorded band already lands within half a decibel */
+const BAND_MIX={full:{straight:0.981, minor:0.985, rock:1.103, boogie:1.013, mblues:0.959, metal:1.156},
+                gtr:{straight:0.954, minor:0.997, rock:1.01, boogie:1.034, mblues:0.969, metal:1.09}};
+function bandPlan(style){
+  if(typeof REAL==="undefined" || !REAL.on) return {gtr:null, bass:null};
+  const gtr=(GTR?"":"guitar/")+(BAND_SET[style]||"green");
+  let bass=GTR ? "bass/growly" : null;
+  const need=[recOf(S.sound), gtr, bass].filter((x,i,a)=>x && a.indexOf(x)===i);
+  if(bass && need.length>REAL.room) bass=null;
+  return {gtr, bass};
+}
+/* the band's sets: held while it plays, fetched if they are not in yet */
+function bandLoad(B){
+  const ids=[B.plan.gtr, B.plan.bass].filter(Boolean);
+  REAL.pin=ids.slice(); B.lead=recOf(S.sound);
+  try{ recForget(); }catch(e){}
+  ids.forEach(id=>{ const R=REAL.sets[id]; if(R && R.state==="ready") return; const j=recLoad(id); if(j && j.then) j.then(()=>paintBandLoad(), ()=>paintBandLoad()); });
+  paintBandLoad();
+}
+function bandReplan(){ if(!BAND.on) return; BAND.plan=bandPlan(BAND.style); bandLoad(BAND); }
+/* out of Solo mode: the band's sets are let go (the lead's own stays) */
+function bandForget(){
+  if(typeof REAL==="undefined") return;
+  const lead=recOf(S.sound), band=BAND.plan ? [BAND.plan.gtr, BAND.plan.bass].filter(x=>x && x!==lead) : [];
+  REAL.pin=[]; REAL.order=REAL.order.filter(x=>band.indexOf(x)<0); try{ recForget(); }catch(e){}
+  BAND.plan=null; paintBandLoad();
+}
+function bandRec(B, kind){ const id=B.plan && B.plan[kind], R=id && typeof REAL!=="undefined" && REAL.sets[id]; return R && R.state==="ready" ? R : null; }
+function paintBandLoad(){
+  const el=$q("soBandLoad"); if(!el || typeof REAL==="undefined") return;
+  const ids=BAND.on && BAND.plan ? [BAND.plan.gtr, BAND.plan.bass].filter(Boolean) : [];
+  const st=ids.map(id=>REAL.sets[id] ? REAL.sets[id].state : "idle");
+  const k=st.some(x=>x==="loading"||x==="idle") ? "bandLoading" : st.some(x=>x==="failed") ? "bandFailed" : "";
+  const txt=k?w(k):""; if(el.textContent!==txt) el.textContent=txt; el.hidden=!k;
+}
+/* one recorded note of the band: the nearest recording (a chugged note, the short ones), at the made string's level
+   (0.2 × v over its first quarter second) times BAND_RT; how hard it is played (v, a little higher) picks the layer */
+function bandRecNote(c, B, kind, R, m, v, when, end, tau, mute){
+  const rv=Math.min(1, v*1.3);
+  let k=(mute && (R.by.mute||R.by.stac)) ? (R.by.mute?"mute":"stac") : "sus", pk=recPick(R, k, m, rv, null);
+  if(!pk && k!=="sus"){ k="sus"; pk=recPick(R, k, m, rv, null); }
+  if(!pk) return null;
+  const z=pk.z, L=R.lvl, top=R.top, rt=(BAND_RT[kind]||{})[B.style]||1, base=0.2*v*rt*(z.g||1);
+  const amp=k==="sus" ? base/L.long[pk.lay] : base*(L.short[top]/L.long[top])/L.mute;
+  const src=c.createBufferSource(); src.buffer=R.buf[z.f]; src.playbackRate.value=recRate(z, m);
+  const g=gainAt(c, amp); src.connect(g); g.connect(kind==="gtr"?B.ch.amp:B.bass);
+  const tt=tau||0.04; src.start(when, R.at[z.f]); g.gain.setValueAtTime(amp, end); g.gain.setTargetAtTime(0, end, tt);
+  try{ src.stop(end+tt*8+0.02); }catch(e){}
+  const vo={end:end+tt*8, kind, rec:z.f, kill(t){ try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,0.012); src.stop(t+0.12); }catch(e){} }};
+  B.voices.push(vo); return vo;
+}
 /* the chord pattern the band plays: yours, or the first of the page's patterns that fits the key */
 function bandProg(){
   if(S.prog && S.prog.length){ const pr=S.preset && PRESETS.find(p=>p.id===S.preset);
@@ -862,18 +928,19 @@ function strumNotes(chord){
   const pc=((S.key+chord.off)%12+12)%12, r=40+((pc-4+12)%12), q=chord.q, third=(q==="min"||q==="m7")?3:4, sev=q==="dom7"||q==="m7"?10:q==="maj7"?11:-1;
   const n=[r, r+7, r+12, r+12+third]; n.push(sev>=0 ? r+12+sev : r+19); return n;
 }
-function bandNote(c, B, kind, m, v, when, end, tau){
+function bandNote(c, B, kind, m, v, when, end, tau, mute){
+  const R=bandRec(B, kind); if(R){ const vo=bandRecNote(c, B, kind, R, m, v, when, end, tau, mute); if(vo) return vo; }
   const [buf, rate]=bsBuf(kind, m); if(!buf) return null;
   const src=c.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
   const g=gainAt(c, v); src.connect(g); g.connect(kind==="gtr"?B.ch.amp:B.bass);
   const tt=tau||0.04; src.start(when); g.gain.setValueAtTime(v, end); g.gain.setTargetAtTime(0, end, tt);
   try{ src.stop(end+tt*8+0.02); }catch(e){}
-  const vo={end:end+tt*8, kill(t){ try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,0.012); src.stop(t+0.12); }catch(e){} }};
+  const vo={end:end+tt*8, kind, kill(t){ try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,0.012); src.stop(t+0.12); }catch(e){} }};
   B.voices.push(vo); return vo;
 }
 function drumHit(c, B, which, when, v){
   const D=drumBufs(c), b=c.createBufferSource(); b.buffer=D[which]; const g=gainAt(c, v); b.connect(g); g.connect(B.drums); b.start(when);
-  B.voices.push({end:when+b.buffer.duration, kill(t){ try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,0.01); b.stop(t+0.08); }catch(e){} }});
+  B.voices.push({end:when+b.buffer.duration, drum:true, kill(t){ try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,0.01); b.stop(t+0.08); }catch(e){} }});
 }
 function blog(B, p, t, m){ B.log.push({p, t:+t.toFixed(4), m, ahead:B.c?+(t-B.c.currentTime).toFixed(4):0}); if(B.log.length>600) B.log.splice(0, 100); }
 /* one bar of the band, on any context (live, or offline in a test) */
@@ -881,12 +948,16 @@ function bandBar(c, B, k, t0, barSec){
   const pr=bandProg(), chords=pr.chords, chord=chords[k%chords.length], next=chords[(k+1)%chords.length]; if(!chord) return;
   const beat=barSec/4, lean=x=>(Math.abs((x%1)-0.5)<1e-6)?(B.swing-0.5)*beat:0, at=x=>t0+x*beat+lean(x);
   const st=B.style, pc=((S.key+chord.off)%12+12)%12, gr=40+((pc-4+12)%12);
+  if(B.mix && GTR){ const rg=!!bandRec(B,"gtr"), rb=!!bandRec(B,"bass"), mx=rg ? ((rb?BAND_MIX.full:BAND_MIX.gtr)[st]||1) : 1;
+    try{ B.mix.gain.setValueAtTime(BAND_LVL*mx, t0); }catch(e){} }
   /* the rhythm guitar */
-  if(st==="metal" || st==="rock"){
+  const skip=B.skip||{};
+  if(skip.gtr){}
+  else if(st==="metal" || st==="rock"){
     /* power chords in eighths: chugged short (metal, the hand on the strings by the bridge) or let ring a little (rock) */
     const pcd=[gr, gr+7, gr+12], mute=st==="metal";
     for(let i=0;i<8;i++){ if(mute && i===7) continue; const x=i/2, d=mute?(i%4===0?0.42:0.26):0.46, v=(i%4===0?0.56:0.44)*(mute?1:0.9);
-      pcd.forEach((m,j)=>{ const w0=at(x)+j*0.005; bandNote(c, B, "gtr", m, v*(1-0.04*j), w0, w0+d*beat, 0.015); blog(B,"gtr",w0,m); }); }
+      pcd.forEach((m,j)=>{ const w0=at(x)+j*0.005; bandNote(c, B, "gtr", m, v*(1-0.04*j), w0, w0+d*beat, 0.015, mute); blog(B,"gtr",w0,m); }); }
   } else if(st==="boogie"){
     for(let i=0;i<8;i++){ const x=i/2, six=((i>>1)%2)===1, dy=[gr, gr+(six?9:7)];
       dy.forEach((m,j)=>{ const w0=at(x)+j*0.006; bandNote(c, B, "gtr", m, i%2?0.42:0.52, w0, w0+0.42*beat, 0.02); blog(B,"gtr",w0,m); }); }
@@ -899,7 +970,7 @@ function bandBar(c, B, k, t0, barSec){
       ns.forEach((m,j)=>{ const w0=at(x)+j*sp; bandNote(c, B, "gtr", m, v*(1-0.04*j), w0, at(x)+d*beat, d<0.45?0.02:0.05); blog(B,"gtr",w0,m); }); });
   }
   /* the bass (on the guitar page) */
-  if(GTR){
+  if(GTR && !skip.bass){
     const br=28+((pc-4+12)%12), npc=((S.key+next.off)%12+12)%12, nb=28+((npc-4+12)%12), minor=chord.q==="min"||chord.q==="m7";
     const line = (st==="metal"||st==="rock") ? [0,1,2,3,4,5,6,7].map(i=>[i/2, br, 0.42, i%4===0?0.78:0.64])
       : st==="boogie" ? [0,4,7,9,10,9,7,4].map((iv,i)=>[i/2, br+iv, 0.45, i%2?0.62:0.74])
@@ -908,7 +979,7 @@ function bandBar(c, B, k, t0, barSec){
     line.forEach(([x,m,d,v])=>{ const w0=at(x); bandNote(c, B, "bass", m, v, w0, w0+d*beat, 0.04); blog(B,"bass",w0,m); });
   }
   /* the drums made here (the drum machine's beat loops on its own) */
-  if(!B.beat){
+  if(!B.beat && !skip.drums){
     const kick=st==="boogie"||st==="mblues"?[0,2]:st==="metal"?[0,0.5,2,2.5]:[0,2,2.5], snare=[1,3];
     if(k%chords.length===0){ drumHit(c, B, "crash", at(0), 0.5); blog(B,"crash",at(0)); }
     kick.forEach(x=>{ drumHit(c, B, "kick", at(x), 0.95); blog(B,"kick",at(x)); });
@@ -927,6 +998,7 @@ async function bandStart(){
   BAND.swing=BAND.beat ? ((typeof DRUM.take.swing==="number")?DRUM.take.swing:0.5) : ((BAND.style==="boogie"||BAND.style==="mblues")?0.64:0.5);
   bandSetup(BAND);
   BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n)); drumBufs(c);
+  BAND.plan=bandPlan(BAND.style);
   BAND.bpm=bandBpm(); BAND.barSec=240/BAND.bpm; BAND.bar=0; BAND.cur=-1; BAND.chord=null; BAND.voices=[]; BAND.log=[];
   try{ BAND.mix.gain.cancelScheduledValues(c.currentTime); BAND.mix.gain.setValueAtTime(BAND_LVL, c.currentTime); }catch(e){}
   const T=c.currentTime+0.15;
@@ -937,6 +1009,7 @@ async function bandStart(){
     const g=gainAt(c, 0.9); s.connect(g); g.connect(BAND.ch.pre); s.start(T); BAND.loop={src:s, g}; BAND.t0=T+off; blog(BAND,"loop",T);
   } else BAND.t0=T;
   BAND.on=true; BAND.started=T;
+  bandLoad(BAND);
   bandTick(c.currentTime); wake(); paintBand();
 }
 function bandStop(){
@@ -944,9 +1017,10 @@ function bandStop(){
   BAND.on=false; const now=BAND.c?BAND.c.currentTime:0;
   BAND.voices.forEach(v=>v.kill(now)); BAND.voices=[];
   if(BAND.loop){ try{ BAND.loop.g.gain.setTargetAtTime(0, now, 0.01); BAND.loop.src.stop(now+0.1); }catch(e){} BAND.loop=null; }
-  BAND.stopped=now; BAND.cur=-1; BAND.chord=null; paintBand(); SO.sig=""; soPaint();
+  BAND.stopped=now; BAND.cur=-1; BAND.chord=null; if(typeof REAL!=="undefined") REAL.pin=[]; paintBand(); paintBandLoad(); SO.sig=""; soPaint();
 }
 function bandTick(now){
+  if(typeof REAL!=="undefined" && BAND.plan && recOf(S.sound)!==BAND.lead) bandReplan();
   if(!BAND.beat && S.bpm!==BAND.bpm){ const next=BAND.t0+BAND.bar*BAND.barSec, nb=240/S.bpm; BAND.t0=next-BAND.bar*nb; BAND.barSec=nb; BAND.bpm=S.bpm; paintBandLine(); }
   while(BAND.t0+BAND.bar*BAND.barSec < now+0.5){ bandBar(BAND.c, BAND, BAND.bar, BAND.t0+BAND.bar*BAND.barSec, BAND.barSec); BAND.bar++; }
   const cur=Math.floor((now-BAND.t0)/BAND.barSec);
@@ -1088,15 +1162,17 @@ function paintLickBtn(){ const b=$q("soLickBtn"); if(b){ b.textContent=w(LICK.on
 /* ══ an offline render of the band (and a lead note over it), for the tests: what it costs and how loud ══ */
 async function renderBand(bars, o){
   o=o||{};
-  const sr=44100, B={voices:[], log:[], beat:false}, pr=bandProg(); B.style=bandStyle(pr); B.swing=(B.style==="boogie"||B.style==="mblues")?0.64:0.5;
+  const sr=44100, B={voices:[], log:[], beat:false}, pr=bandProg(); B.style=o.style||bandStyle(pr); B.swing=(B.style==="boogie"||B.style==="mblues")?0.64:0.5;
   const bpm=S.bpm, barSec=240/bpm, dur=bars*barSec+1.2;
   const oc=new OfflineAudioContext(2, Math.ceil(dur*sr), sr); await AOGAmp.load(oc);
   const lead=makeChain(oc); setSound(lead, S.sound); lead.master.gain.value=volGain(S.vol); setEra(lead, 0, 0);
+  if(o.real){ B.plan=Object.assign(bandPlan(B.style), o.plan||{}); for(const id of [B.plan.gtr, B.plan.bass]) if(id) await recLoad(id); }
+  if(o.skip) B.skip=o.skip;
   if(o.band!==false){ bandParts(oc, B, lead.lim); if(o.noRoom) try{ B.ch.send.disconnect(); }catch(e){} bandSetup(B); BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n));
     for(let k=0;k<bars;k++) bandBar(oc, B, k, 0.1+k*barSec, barSec); }
   if(o.lead){ const m=o.lead, s=TUNING.reduce((b,x,i)=>(m-x>=0 && m-x<=MAXF)?i:b, 0); const vc=makeVoice(oc, lead, S.sound, m, 0.76, 0.2, s); if(vc) vc.stop(dur-0.6, 0.05); }
   const t0=performance.now(); const buf=await oc.startRendering();
-  return {ms:performance.now()-t0, dur, buf, log:B.log};
+  return {ms:performance.now()-t0, dur, buf, log:B.log, rec:B.voices.filter(v=>v.rec).length, made:B.voices.filter(v=>!v.rec && v.kill && !v.drum).length, plan:B.plan||null};
 }
 
 /* ══ the page's way in ══════════════════════════════════════════════════════ */
@@ -1116,7 +1192,7 @@ window.AOGSolo={
   paint:soPaint, down:down, move:move, up:up, key:key,
   setMode:setMode, isOn:()=>SO.on,
   _t:{P, SO, BAND, LICK, LICKS, FING, KEYF, SOUNDING, WH, Lead, bendFrom, boxRoot, keyCells, lickNotes, renderBand, scalePcs, bluePc,
-      leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, get LAST(){ return LAST; }}
+      leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, bandPlan, BAND_SET, BAND_RT, get LAST(){ return LAST; }}
 };
 init();
 })();
