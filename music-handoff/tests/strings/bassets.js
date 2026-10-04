@@ -5,10 +5,13 @@
    For every set:
    - set.json keeps the shared format; every file it names is there, and nothing else is;
    - every file is a mono MP3, 44,100 Hz, 128 kbps, and decodes;
-   - every zone: the pluck (its first sample within 40 dB of its loudest) is within 2 ms of the file start; its pitch,
-     measured the way the build measures it (YIN over the steady part), is within 5 cents of m once c is applied; no
-     click at the start or the end (no step bigger than the biggest step of the note's own first cycle); at most 6 s,
-     and a file shorter than 6 s has died away before it ends; it ends on silence;
+   - every zone: the pluck (its first sample within 40 dB of its loudest) is within 2 ms of the file start, and it is
+     the pluck (it climbs to within 20 dB of the peak in 3.5 ms; the file begins from silence, not inside the attack);
+     its pitch, measured the way the build measures it (YIN over the steady part), is within 5 cents of m once c is
+     applied; no click at the start or the end (no step bigger than the biggest step of the note's own first cycle);
+     at most 6 s, and a file shorter than 6 s has died away before it ends; it ends on silence;
+   Checked by putting faults in on purpose: a wrong c, a wrong level or bitrate, a stray file, silence or hiss left in
+   front of the pluck, and a pluck cut into, all fail.
    - coverage: held notes from E1 (28) to at least G3 (55), no more than 3 semitones apart; every layer has every note;
      at least 2 layers; at least 2 takes in the low and middle range; at least 3 release noises (growly: scrapes too);
    - loudness (K-weighted, the loudest 400 ms, times g): each layer within 1.5 dB of its own middle along the neck, and
@@ -91,7 +94,8 @@ function pitchCents(x, m, kind) {
   return [median(good.map(f => 1200 * Math.log2(f / f0))), good.length];
 }
 function maxStep(x, from, to) { let s = 0; for (let i = Math.max(from, 0); i < Math.min(to, x.length); i++) s = Math.max(s, Math.abs(x[i] - (i > 0 ? x[i - 1] : 0))); return s; }
-function rmsDb(x, a, b) { let s = 0; for (let i = a; i < b; i++) s += x[i] * x[i]; return 10 * Math.log10(s / Math.max(1, b - a) + 1e-30); }
+function rmsPow(x, a, b) { let s = 0; for (let i = a; i < b; i++) s += x[i] * x[i]; return s / Math.max(1, b - a); }
+function rmsDb(x, a, b) { return 10 * Math.log10(rmsPow(x, a, b) + 1e-30); }
 
 /* ---------------------------------------------------------------- one set */
 function checkSet(id) {
@@ -143,8 +147,16 @@ function checkSet(id) {
   const late = [], off = [], clicks = [], long = [], cut = [], rows = [];
   for (const z of S.zones) {
     const x = dec[z.f]; if (!x) continue;
-    const on = onset(x), ms = on / SR * 1000;
+    const on = onset(x), ms = on / SR * 1000, pk = peakOf(x);
     if (ms > 2) late.push(`${z.f} ${ms.toFixed(2)} ms`);
+    /* and it is the pluck that crossed: the note climbs on to within 20 dB of its peak in 3.5 ms (hiss or MP3 pre-echo
+       left in front would cross first and climb no further), and the file begins from silence, not inside the attack
+       (MP3 pre-echo can put -30 dB in the first samples; a cut attack puts far more) */
+    let on20 = 0; while (on20 < x.length && Math.abs(x[on20]) < pk * 0.1) on20++;
+    if ((on20 - on) / SR > 0.0035) late.push(`${z.f} crosses -40 dB at ${ms.toFixed(2)} ms but -20 dB only at ${(on20 / SR * 1000).toFixed(2)} ms`);
+    const w = 16, lead = Math.sqrt(rmsPow(x, 0, w));
+    let top = 0; for (let a = 0; a + w <= Math.min(x.length, Math.floor(0.02 * SR)); a += 4) top = Math.max(top, Math.sqrt(rmsPow(x, a, a + w)));
+    if (lead > top * 0.1) late.push(`${z.f} begins inside the attack: its first 0.36 ms at ${(20 * Math.log10(lead / top)).toFixed(1)} dB re the attack`);
     const [cents, frames] = pitchCents(x, z.m, z.k);
     if (!(Math.abs(cents - z.c) <= 5)) off.push(`${z.f} measured ${cents.toFixed(1)} c, set.json ${z.c}`);
     const P = Math.round(SR / midiHz(z.m + z.c / 100)), cyc = maxStep(x, on, on + P + 1);
