@@ -16,6 +16,12 @@
 #   - 32 kHz (the rate the page decodes at), stereo, MP3 at 112 kbps held and 96 kbps short, plucked and struck
 #   - the tuning measured again from the new files (both microphones; the page corrects 3 cents or more)
 #   - into new folders (audio/band/<player>2/), since the old files are cached for a year under their own names
+# Two microphones are twice the memory once the page has opened the files. So in a big group (brass, woodwinds, the bebop
+# and cool jazz groups, the marching band and the orchestra) the page keeps one microphone of these players, the left
+# one, brought to the loudness of the two (band_script.js: leftOnly), and each group needs what it needed before. One
+# microphone alone sounds as recorded; only the two added together sounded hollow.
+# "map" and "build" read the old one-channel files; they were removed once the new ones were in. To run them again, put
+# the old folders back from the commit before (git checkout 7804f700 -- aog-deploy/audio/band/<player>).
 #
 #   python3 band_stereo.py corr            how much each player's two microphones agree (a few takes each)
 #   python3 band_stereo.py map             find the take behind every old file (needs the old folders; writes
