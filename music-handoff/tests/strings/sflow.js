@@ -105,7 +105,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const es=await p.evaluate(()=>({h:document.getElementById("mastH").textContent, pad:document.querySelector(".pad").textContent, open:[...document.querySelectorAll("#neck .nk-name")].map(e=>e.textContent).join(" "),
       menu:[...document.querySelectorAll(".bench-bar select option")].map(o=>o.textContent).join("|"), rh:document.getElementById("rhythmSel").selectedOptions[0].textContent, neckH:document.querySelector("[data-t=neckH]").textContent, lang:document.documentElement.lang}));
     ok(es.lang==="es" && /La guitarra|El bajo/.test(es.h) && /Do/.test(es.pad) && /Mi La Re Sol/.test(es.open), `Spanish: ${es.h}; pad ${es.pad.replace(/\s+/g," ").trim()}; strings ${es.open}`);
-    ok(/Trastes y cuerdas/.test(es.neckH) && es.menu==="Ritmos|Piano|Guitarra|Bajo|Banda|Tocadiscos", `the words and the tools menu change too: ${es.menu}`);
+    ok(/Trastes y cuerdas/.test(es.neckH) && es.menu==="Ritmos|Piano|Guitarra|Bajo|Banda|Tocadiscos|Estudio", `the words and the tools menu change too: ${es.menu}`);
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(200);
     /* 8. saving */
     await p.selectOption("#soundSel", inst==="guitar"?"nylon":"upright"); await p.selectOption("#keySel", "7"); await p.keyboard.press("KeyX");

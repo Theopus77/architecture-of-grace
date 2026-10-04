@@ -1,10 +1,15 @@
-/* the eighteen chord patterns: the menu, the chords each one loads (as the manual lists them), playing, the wheel walk, Spanish */
+/* the forty-four chord patterns (AOG-STRINGS-WAYS-V1, the same on all four tools): the menu, the chords each one loads (as the manual lists them), playing, the wheel walk, Spanish */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const srv=require("./srv.js")(9981);
 let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m); } else { fails++; console.log("FAIL "+m); } }
-const WANT={pop:"C G Am F", fifties:"C Am F G", sadpop:"Am F C G", anime:"F G Em Am", canon:"C G Am Em F C F G", three:"C F G C", fiesta:"C F G F",
-  rock:"C B♭ F C", hymn:"C F C G", wheel:"E7 A7 D7 G7 C C", blues:"C7 C7 C7 C7 F7 F7 C7 C7 G7 F7 C7 G7", jazz:"Dm7 G7 Cmaj7 Cmaj7", turn:"Cmaj7 Am7 Dm7 G7",
-  mblues:"Am7 Am7 Am7 Am7 Dm7 Dm7 Am7 Am7 E7 Dm7 Am7 E7", minor:"Am F C G", flamenco:"Am G F E", mfolk:"Am Dm E Am", epic:"Am G F G"};
+const WANT={pop:"C G Am F", fifties:"C Am F G", sadpop:"Am F C G", anime:"F G Em Am", canon:"C G Am Em F C F G", three:"C F G C", fiesta:"C F G F", 
+  rock:"C B♭ F C", hymn:"C F C G", wheel:"E7 A7 D7 G7 C C", anthem:"C F Am G", uplift:"C Em Am F", folkrock:"C G Dm Dm", dreamy:"C E F Fm", 
+  country:"C C F F G G C C", arena:"C G F F", mixo:"C B♭ C B♭", grunge:"C F E♭ A♭", fifths:"A♭ E♭ B♭ F C", metalmarch:"Am F G Am", 
+  darkheavy:"Am B♭ Am B♭", doom:"Am E♭ Dm Am", soul:"C Em F G", funk:"C7 C7 F7 C7", groove2:"C F C F", dance:"Am G F G", lofi:"Fmaj7 Em7 Dm7 Cmaj7", 
+  neosoul:"Dm7 G7 Cmaj7 Am7", blues:"C7 C7 C7 C7 F7 F7 C7 C7 G7 F7 C7 G7", jazz:"Dm7 G7 Cmaj7 Cmaj7", turn:"Cmaj7 Am7 Dm7 G7", 
+  mblues:"Am7 Am7 Am7 Am7 Dm7 Dm7 Am7 Am7 E7 Dm7 Am7 E7", blues8:"C7 G7 F7 F7 C7 G7 C7 G7", quick:"C7 F7 C7 C7 F7 F7 C7 C7 G7 F7 C7 G7", 
+  jazzblues:"C7 F7 C7 C7 F7 F7 C7 A7 Dm7 G7 C7 G7", bossa:"Cmaj7 Dm7 G7 Cmaj7", circle:"Am7 Dm7 G7 Cmaj7", minor:"Am F C G", flamenco:"Am G F E", 
+  mfolk:"Am Dm E Am", epic:"Am G F G", mballad:"Am Dm G C", heroic:"Am C G D", latin:"Am7 D7 Am7 D7"};
 (async()=>{
   const b=await pw.chromium.launch();
   const c=await b.newContext({viewport:{width:1024,height:768}}); await c.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
@@ -12,8 +17,8 @@ const WANT={pop:"C G Am F", fifties:"C Am F G", sadpop:"Am F C G", anime:"F G Em
   const p=await c.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
   await p.goto("http://localhost:9981/music-piano.html"); await p.waitForTimeout(1000);
   const menu=await p.evaluate(()=>{ const s=document.getElementById("progSel"); return {groups:[...s.querySelectorAll("optgroup")].map(g=>g.label+" ("+g.querySelectorAll("option").length+")"), n:s.querySelectorAll("optgroup option").length, first:s.options[0].text}; });
-  ok(menu.n===18, "18 patterns in the menu");
-  ok(menu.groups.join(" | ")==="Pop, rock and folk (10) | Blues and jazz (4) | Minor and moody (4)", "in three groups: "+menu.groups.join(" | "));
+  ok(menu.n===44, "44 patterns in the menu ("+menu.n+")");
+  ok(menu.groups.join(" | ")==="Pop, rock and folk (15) | Rock and metal (7) | Soul, funk and dance (6) | Blues and jazz (9) | Minor and moody (7)", "in five groups: "+menu.groups.join(" | "));
   ok(menu.first==="Choose a pattern…", "the menu still starts with: "+menu.first);
   for(const id of Object.keys(WANT)){
     const minor=await p.evaluate(id=>PRESETS.find(x=>x.id===id).minor, id);
@@ -39,8 +44,8 @@ const WANT={pop:"C G Am F", fifties:"C Am F G", sadpop:"Am F C G", anime:"F G Em
   /* Spanish */
   await p.evaluate(()=>{ S.lang="es"; save(); paintText(); }); await p.waitForTimeout(80);
   const es=await p.evaluate(()=>{ const s=document.getElementById("progSel"); return {groups:[...s.querySelectorAll("optgroup")].map(g=>g.label).join(" | "), names:[...s.querySelectorAll("optgroup option")].map(o=>o.text)}; });
-  ok(es.groups==="Pop, rock y folk | Blues y jazz | Menor y melancólico", "in Spanish: "+es.groups);
-  ok(es.names.includes("Himno y góspel · 1 4 1 5") && es.names.includes("Por la rueda · 3 6 2 5 1") && es.names.includes("Épico"), "the new patterns have Spanish names (the minor ones by name, AOG-PADS-1TO6-V1)");
+  ok(es.groups==="Pop, rock y folk | Rock y metal | Soul, funk y baile | Blues y jazz | Menor y melancólico", "in Spanish: "+es.groups);
+  ok(es.names.includes("Himno y góspel · 1 4 1 5") && es.names.includes("Por la rueda · 3 6 2 5 1") && es.names.includes("Épico") && es.names.includes("Heroico") && es.names.includes("Rock de estadio · 1 5 4 4"), "the new patterns have Spanish names (the minor ones by name, AOG-PADS-1TO6-V1)");
   ok(errs.length===0, "no page errors "+errs.join(" | "));
   console.log((fails?fails+" FAILED, ":"")+passes+" passed");
   await b.close(); srv.close();

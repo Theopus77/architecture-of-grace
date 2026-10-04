@@ -2,7 +2,7 @@
    level against the grand piano, and the heavy sounds really distorted (they hold their level: sustain) */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const srv=require("../srv.js")(9961);
-const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync("../bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
+const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(require("path").join(__dirname,"../bandt/measure.inc"),"utf8").replace(/^const MEASURE=/,""));
 let pass=0, fail=0; const ok=(c,m)=>{ if(c){ pass++; console.log("PASS", m); } else { fail++; console.log("FAIL", m); } };
 (async()=>{
   const b=await pw.chromium.launch();
@@ -12,7 +12,7 @@ let pass=0, fail=0; const ok=(c,m)=>{ if(c){ pass++; console.log("PASS", m); } e
     await p.goto(`http://localhost:9961/music-${inst}.html`); await p.waitForTimeout(800); await p.addScriptTag({content:MEASURE});
     const ui=await p.evaluate(()=>({panel:!!document.querySelector("#ampBox .aogamp"), knobs:document.querySelectorAll("#ampBox input[data-k]").length, pedals:document.querySelectorAll("#ampBox .aa-ped").length,
       bands:document.querySelectorAll("#ampBox input[data-band]").length, sounds:Object.keys(SOUNDS).length}));
-    ok(ui.panel && ui.pedals===13 && ui.bands===10, `${inst}: the amp panel is there (${ui.knobs} knobs showing, ${ui.pedals} pedals, ${ui.bands} EQ bands), ${ui.sounds} sounds`);
+    ok(ui.panel && ui.pedals===(inst==="guitar"?19:15) && ui.bands===10, `${inst}: the amp panel is there (${ui.knobs} knobs showing, ${ui.pedals} pedals, ${ui.bands} EQ bands), ${ui.sounds} sounds`);
     const live=await p.evaluate(async()=>{ ctx(); for(let i=0;i<40 && !LIVE_CH.rig.worklet;i++) await new Promise(r=>setTimeout(r,50)); return LIVE_CH.rig.worklet; });
     ok(live, `${inst}: the live engine runs the amp in its worklet`);
     const r=await p.evaluate(async(GTRp)=>{

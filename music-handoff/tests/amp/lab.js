@@ -4,17 +4,25 @@ const core=require(path+"aog-amp-worklet.js"), AMP=require(path+"aog-amp.js"), f
 /* the guitar's own string, taken from the page (renderNote and what it needs) */
 const page=fs.readFileSync(path+"_work/music/strings_page.html","utf8");
 function grab(name){ const i=page.indexOf("function "+name+"("); if(i<0) throw new Error("no "+name); let d=0, j=page.indexOf("{",i); for(let k=j;k<page.length;k++){ if(page[k]==="{") d++; else if(page[k]==="}"){ d--; if(d===0) return page.slice(i,k+1); } } }
-const src=["seeded","lossDelay","apDelay","stringLoop","runLoop","rbj","biq","renderNote"].map(grab).join("\n")+"\nfunction mtof(m){ return 440*Math.pow(2,(m-69)/12); }";
+const src=["seeded","lossDelay","apDelay","stringLoop","runLoop","rbj","biq","renderNote"].map(grab).join("\n")+"\nconst NOTE_SR=44100;\nfunction mtof(m){ return 440*Math.pow(2,(m-69)/12); }";
 const vm=require("vm"), box={Math, Float32Array, Float64Array}; vm.createContext(box); vm.runInContext(src, box);
-function soundParams(id){
-  const m=page.match(new RegExp("\\n\\s*"+id+":\\s*\\{")); if(!m) throw new Error("no sound "+id);
-  const i=page.indexOf("s:{", m.index); let d=0, j=i+2;
-  for(let k=j;k<page.length;k++){ if(page[k]==="{") d++; else if(page[k]==="}"){ d--; if(d===0) return vm.runInContext("("+page.slice(j,k+1)+")", box); } }
+/* AOG-AMP-TONES-V1: the page's own SOUNDS (both instruments), evaluated, so a sound whose string is a shared constant
+   (s:EL, s:BRH) gets that string (a search for "s:{" picked up the next sound's, or a pedal's, braces) */
+const SND={};
+function soundsOf(gtr){ if(SND[gtr]) return SND[gtr];
+  const a=page.indexOf("const EL="), b=page.indexOf("function soundName("); if(a<0||b<0) throw new Error("no SOUNDS block");
+  const bx={Math, Object, JSON}; vm.createContext(bx); vm.runInContext("const GTR="+(gtr?"true":"false")+";\n"+page.slice(a,b)+"\nthis.SOUNDS=SOUNDS;", bx);
+  return (SND[gtr]=JSON.parse(JSON.stringify(bx.SOUNDS))); }
+function soundParams(id, kind){
+  const g=soundsOf(true), bs=soundsOf(false);
+  const s=kind==="bass" ? bs[id] : kind==="guitar" ? g[id] : (g[id]||bs[id]);
+  if(!s || !s.s) throw new Error("no sound "+id);
+  return s.s;
 }
 /* a chord at rate sr: notes (midi) strummed 14 ms apart, each note rendered by the page's string, resampled linearly */
-function chord(id, notes, sr, dur, vel){
-  const P=soundParams(id), out=new Float64Array(Math.ceil(sr*dur));
-  notes.forEach((m,k)=>{ const d=vm.runInContext(`renderNote(${m}, ${JSON.stringify(P)}, ${(m*7919)^0x51a7})`, box), r=P.sr/sr, t0=Math.floor((0.02+k*0.014)*sr), v=Math.pow(0.3+0.7*(vel||0.74)*(1-0.03*k),1.5);
+function chord(id, notes, sr, dur, vel, kind){
+  const P=soundParams(id, kind), out=new Float64Array(Math.ceil(sr*dur));
+  notes.forEach((m,k)=>{ const d=vm.runInContext(`renderNote(${m}, ${JSON.stringify(P)}, ${(m*7919)^0x51a7})`, box), r=44100/sr, t0=Math.floor((0.02+k*0.014)*sr), v=Math.pow(0.3+0.7*(vel||0.74)*(1-0.03*k),1.5);
     for(let i=0;i+t0<out.length;i++){ const x=i*r, j=Math.floor(x); if(j+1>=d.length) break; out[i+t0]+=(d[j]+(d[j+1]-d[j])*(x-j))*v; } });
   return out;
 }
@@ -33,4 +41,4 @@ function thd(P, f, amp, sr){ sr=sr||48000; const N=16384, x=new Float64Array(sr)
   const y=runCore(P, x, sr), mag=spectrum(y, Math.floor(0.5*sr), N, sr), bin=f*N/sr; let h1=0, hs=0;
   for(let h=1;h<=20;h++){ const b=Math.round(bin*h); if(b+2>=N/2) break; let e=0; for(let k=b-2;k<=b+2;k++) e+=mag[k]*mag[k]; if(h===1) h1=e; else hs+=e; }
   return Math.sqrt(hs/h1); }
-module.exports={core, AMP, chord, runCore, stubCtx, conv, rms, db, spectrum, thd, soundParams};
+module.exports={core, AMP, chord, runCore, stubCtx, conv, rms, db, spectrum, thd, soundParams, soundsOf};

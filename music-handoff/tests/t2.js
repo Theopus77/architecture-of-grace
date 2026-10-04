@@ -1,6 +1,6 @@
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const http=require("http"),fs=require("fs"),path=require("path");
-const root="/home/user/architecture-of-grace/aog-deploy";const port=9070;
+const root=process.env.AOG_ROOT||require("path").resolve(__dirname,"../../aog-deploy");const port=9970;
 const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);return r.end();}r.writeHead(200,{"content-type":{".html":"text/html",".js":"text/javascript",".css":"text/css"}[path.extname(f)]||"application/octet-stream"});r.end(d);});}).listen(port);
 const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;};
 (async()=>{
@@ -12,16 +12,19 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  // start engine with a tap, wait for kits
  await p.click('.sp-pad[data-pad="kick"]'); await p.waitForTimeout(4000);
  ok(await p.evaluate("!!engine && kitReady"), "sampler engine running");
- const kits=await p.evaluate(()=>BANKS.map(b=>{const r=romFor(b), h=hiFor(b); return b+":"+VOICES.filter(v=>r[v.id]&&r[v.id].length&&h[v.id]&&h[v.id].length).length;}).join(" "));
- ok(!/:[0-7]\b/.test(kits), "all 9 kits rendered, 1987 + 2026 copies: "+kits);
- const loud=await p.evaluate(()=>BANKS.filter(b=>b!=="B").map(b=>b+":"+VOICES.map(v=>{const d=romFor(b)[v.id];let m=0;for(const x of d)m=Math.max(m,Math.abs(x));return m.toFixed(2)}).join(",")).join(" | "));
+ /* AOG-DRUM-KITS-V3: fifteen kits take longer to build in the background on a busy machine; wait until they are all built (up to 30 s more).
+    AOG-DRUM-REAL-V1: the recorded kits P to T load only when picked, so the built ones are checked here (realkit.js checks the others) */
+ await p.waitForFunction(()=>BANKS.filter(b=>!realKit(b)).every(b=>{const r=romFor(b), h=hiFor(b); return VOICES.every(v=>r[v.id]&&h[v.id]);}), null, {timeout:30000}).catch(()=>{});
+ const kits=await p.evaluate(()=>BANKS.filter(b=>!realKit(b)).map(b=>{const r=romFor(b), h=hiFor(b); return b+":"+VOICES.filter(v=>r[v.id]&&r[v.id].length&&h[v.id]&&h[v.id].length).length;}).join(" "));
+ ok(!/:[0-7]\b/.test(kits), "all 15 built kits rendered, 1987 + 2026 copies: "+kits);
+ const loud=await p.evaluate(()=>BANKS.filter(b=>b!=="B"&&!realKit(b)).map(b=>b+":"+VOICES.map(v=>{const d=romFor(b)[v.id];let m=0;for(const x of d)m=Math.max(m,Math.abs(x));return m.toFixed(2)}).join(",")).join(" | "));
  console.log("   peak per pad:", loud);
  ok(!/0\.0[0-4]/.test(loud), "every new sound makes a sound (peak > 0.05)");
  // spy on engine messages
  await p.evaluate(()=>{const pm=engine.port.postMessage.bind(engine.port); engine.port.postMessage=(m,t)=>{window.__msgs.push(m); return pm(m,t);};});
  // starter via the dropdown select
  const sel=p.locator('.starter-row .aogdd-sel'); ok(await sel.count()===1, "Start-from-a-beat is a drop-down");
- const opts=await sel.locator("option").allTextContents(); ok(opts.length===1+8+10 && opts[0].startsWith("Choose"), "menu: placeholder + 8 styles + 10 classroom patterns ("+opts.length+")");
+ const opts=await sel.locator("option").allTextContents(); ok(opts.length===1+13+10 && opts[0].startsWith("Choose"), "menu: placeholder + 13 styles (5 for the recorded kits) + 10 classroom patterns ("+opts.length+")");
  await sel.selectOption({label:"Trap"}); await p.waitForTimeout(700);
  ok(await p.evaluate("S.bank==='F' && S.bpm===140 && S.grid.clap[8]===2"), "Trap loads kit F, 140 BPM, clap on beat 3");
  ok(await p.isHidden('#undoBeat'), "no undo when the part was empty");
@@ -32,7 +35,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  ok(await p.evaluate("S.bank==='F' && S.bpm===140 && S.grid.clap[8]===2"), "undo brings back the Trap beat, kit and tempo");
  // kit menu
  const kitSel=p.locator('.kit-src').locator('xpath=..').locator('.aogdd-sel');
- ok((await kitSel.locator("option").count())===9, "Sounds menu lists 9 kits");
+ ok((await kitSel.locator("option").count())===20, "Sounds menu lists 20 kits");   /* A to O built here, P to T recorded */
  await kitSel.selectOption({label:"Kit H · Latin percussion"}); await p.waitForTimeout(600);
  ok(await p.evaluate("S.bank==='H'"), "picking a kit switches to it");
  ok((await p.textContent('.sp-pad[data-pad="ch"]')).includes("GUIRO"), "pads show the kit's names (GUIRO)");

@@ -36,7 +36,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.evaluate(()=>{ padDown(0,0.74); }); await p.waitForTimeout(120); await p.evaluate(()=>padUp(0));
     v=await p.evaluate("__v");
     const kept=await p.evaluate(()=>Object.keys(SETS).join(","));
-    ok(ready && v.length>=3 && v.every(x=>x.real), `${id}: ready ${ready}, pad C plays ${v.map(x=>x.inst[0]+x.m).join(" ")}; sets kept: ${kept}; keys ${await p.textContent("#rangeOut")}`);
+    const roots=await p.evaluate(id=>!!SOUNDS[id].roots, id);   /* the timpani play the root and the fifth only */
+    ok(ready && (roots ? v.length===2 : v.length>=3) && v.every(x=>x.real), `${id}: ready ${ready}, pad C plays ${v.map(x=>x.inst[0]+x.m).join(" ")}; sets kept: ${kept}; keys ${await p.textContent("#rangeOut")}`);
   }
   /* every rhythm with a pattern, briefly, on the brass section */
   await p.selectOption("#soundSel", "brass"); await p.waitForFunction(()=>soundReady("brass"), null, {timeout:60000});

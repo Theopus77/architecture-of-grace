@@ -9,7 +9,7 @@ The site owner is Jimmy, a special-education teacher. The site is static and liv
 
 This file is for a NEW session taking over the music work. Everything below can be checked in the repo.
 
-> **Before you merge anything:** the session that wrote this file may still be merging the helper branches itself. Run `git fetch origin && git log --oneline -8 origin/claude/drum-pads-touch-keys`. If the newest commits already merge the `claude/amp-*` branches, start from there.
+> **State of the helper branches:** the session that wrote this file merged all of them into `claude/drum-pads-touch-keys` and deployed them together (see §1 and §4). Check with `git log --oneline -12 origin/main`. Start new work from `main`.
 
 ---
 
@@ -17,58 +17,53 @@ This file is for a NEW session taking over the music work. Everything below can 
 
 | What | Where | State |
 |---|---|---|
-| Live site | `main` | Everything up to PR **#265**: the amp, pedals, cabinets and EQ; 22 guitar and 13 bass sounds; the metal distortion fix (on top of #264's saxophone, pads 1–6 and the piano's 16 ways). |
-| The amp and pedals | live since #265 (`aog-amp.js`, `aog-amp-worklet.js`) | Deployed 2026-10-04. |
-| Nine helper branches | `origin/claude/amp-*` | Each helper agent pushes its branch when it finishes. See §4. |
+| Live site | `main` | The amp (PR #265), then every helper branch in one deploy (§4): the Studio; the piano's 34 sounds; The Band's 46 (strings, percussion, Orchestra, jazz); guitar 44 and bass 25 sounds on a 44.1 kHz string; 21 guitar and 19 bass ways to play; 44 chord patterns on all four tools; Solo mode; 20 drum kits (P–T recorded); a take sent to a drum pad; the turntables helper's work if it landed (§4). |
+| The amp and pedals | `aog-amp.js`, `aog-amp-worklet.js` | 16 amps, 9 cabinets, 19 guitar pedals (15 on the bass), a 10-band EQ. |
+| Helper branches | `origin/claude/amp-*` | All merged. The branches stay on GitHub as a record; do not merge them again. |
 
 The working branch for music is `claude/drum-pads-touch-keys`. After every deploy it is reset to `origin/main`, keeping the same name.
 
-## 2. Jimmy's open requests, in his words
+## 2. Jimmy's requests, in his words, and where each one went
 
-1. "May the guitar and bass get a Amplifier … the worlds best that has guitar pedals … attached … part of the two engines" → **built** (§3).
-2. "There is NO distortion for the METAL guitar chords" → **fixed** in the amp. The distortion now runs on the audio thread, not in the browser's WaveShaper; a held chord keeps its level for 2 s. Not yet heard on Jimmy's iPad.
-3. "I want more ways to play chords on the guitar as well as bass … metal style sounds (like Pantera / lamb of god)" → the **ways** branch; the metal sounds are built.
-4. "Can all instruments have MULTIPLE VERSIONS OF HOW THEY SOUND? … a lot more" → guitar 22 and bass 13 (built). Piano, Band and drum kits are on helper branches.
-5. "send the sounds from the instruments to the drum machine as samples. Not just for the pads" → the **drums** branch.
-6. Jimmy's uploaded handoff "fix the guitar and the bass" → the **stringfix** branch (string engine, the six sounds, synth bass) and the **ways** branch (bass lines that leave the root, strum gaps 15–40 ms, picking order).
-   - **Note:** that handoff's "Do not add a pedalboard / cabinet / new amp / new sounds" lines were written *before* Jimmy asked for the amp and pedals. The amp stays. Everything else in that handoff is being followed.
-7. "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the sounds" → the **tones** branch for guitar and bass; the **drumkit** branch for drum voicings. On screen, sounds are named by genre, never by band.
-8. "I would love an authentic Drum kit" → the **drumkit** branch: recorded acoustic kits, CC0 or CC-BY.
-9. "Could a state of the art Recording studio be built?" → the **studio** branch: a new page `music-studio.html`, route `/studio`.
-10. Record already exists on every music tool (piano, guitar, bass, band, drum machine): `aog-recorder.js`, deployed in #263.
-11. "Can one of the agents make the ORCHESTRA tab, where everyone plays!" (The Band, on his iPad) → the **band** branch: "Orchestra · everyone plays", in its own group in the Instrument drop-down, orchestrated by section and leveled like the rest.
-12. "We need a string and percussion section!" → the **band** branch: strings (violins, violas, cellos, contrabass, harp) and a percussion section from VSCO 2 CE (timpani, mallets, concert snare, bass drum, cymbal, triangle, tambourine…). The unpitched instruments play the beat of the chosen way to play. Both join the Orchestra.
-13. "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix, the list can go on and on" → the **tones** branch: more sounds, plus new pedals (Uni-Vibe, octave-up fuzz, pitch-shift whammy, rotating speaker, a bass envelope filter).
-14. "In guitar there should be a solo mode as well! BLOW my mind" → the **solo** branch. Solo mode on the neck:
-    - the scale lit for the key, the blue note marked;
-    - bends, vibrato, hammer-ons, two-hand tapping, a pinch-harmonic squeal, a whammy bar, a killswitch, and feedback bloom on high gain;
-    - a backing band (rhythm guitar on its own rig, a bass line, the user's drum beat or a built-in one);
-    - licks to copy, with each note lit;
-    - a lead-sound picker;
-    - slap and pop on the bass. Most of it lives in `aog-solo.js`.
-15. "yes I want how it is played increase and start a chord pattern increased!!!!" (the guitar page) → the **ways** branch: more ways to play, and chord patterns 18 → 44 in five groups (Pop, rock and folk · Rock and metal · Soul, funk and dance · Blues and jazz · Minor and moody). The 18 old ids are unchanged. **At merge, copy the same PRESETS and PRESET_GROUPS into `music-piano.html` and `_work/music/band_script.js`**, so all four tools offer the same patterns. Leave the piano lessons alone: they use the old ids.
+1. "May the guitar and bass get a Amplifier … the worlds best that has guitar pedals … attached … part of the two engines" → **done** (§3).
+2. "There is NO distortion for the METAL guitar chords" → **done**. The distortion runs on the audio thread, not in the browser's WaveShaper; a held chord keeps its level for 2 s. Not yet heard on Jimmy's iPad.
+3. "I want more ways to play chords on the guitar as well as bass … metal style sounds (like Pantera / lamb of god)" → **done**: 21 guitar and 19 bass ways to play, in groups; the metal sounds (metal, thrash, doom, heavy riffs, progressive metal, groove-metal lead) and a metal bass.
+4. "Can all instruments have MULTIPLE VERSIONS OF HOW THEY SOUND? … a lot more" → **done**: piano 34 sounds, The Band 46, guitar 44, bass 25, drum machine 20 kits.
+5. "send the sounds from the instruments to the drum machine as samples. Not just for the pads" → **done**: ● Record on any tool, then send the take to a drum pad (the `drumsample` shelf).
+6. Jimmy's uploaded handoff "fix the guitar and the bass" → **done**: one string at 44.1 kHz, a pick that clicks, in-tune notes, sounds that differ, a synth bass that thumps; bass lines that leave the root, strum gaps of 15–40 ms, picking order; a held pad draws its shape.
+   - **Note:** that handoff's "Do not add a pedalboard / cabinet / new amp / new sounds" lines were written *before* Jimmy asked for the amp and pedals. The amp stays.
+7. "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the sounds" → **done**: 22 new guitar and 12 new bass sounds, 5 new amps. On screen, sounds are named by style and feel, never by band or player; the inspiration is in each sound's code comment.
+8. "I would love an authentic Drum kit" → **done**: kits P to T are a real kit, recorded (Big Rusty Drums by Karoryfer Samples, CC0), in five styles, each with a starter beat. A kit downloads only when it is picked.
+9. "Could a state of the art Recording studio be built?" → **done**: `music-studio.html`, route `/studio`, in every music tool's menu and on the science hub.
+10. Record exists on every music tool (piano, guitar, bass, band, drum machine): `aog-recorder.js`.
+11. "Can one of the agents make the ORCHESTRA tab, where everyone plays!" → **done**: "Orchestra · everyone plays" on The Band.
+12. "We need a string and percussion section!" → **done**: strings (violins, violas, cellos, contrabass, harp) and percussion from VSCO 2 CE; both join the Orchestra.
+13. "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix, the list can go on and on" → **done**: their sounds (by style) and new pedals: vibe, octave fuzz, pitch shifter, rotating speaker, envelope filter, treble booster, a vintage fuzz and a tape echo.
+14. "In guitar there should be a solo mode as well! BLOW my mind" → **done**: Solo mode (`aog-solo.js`), §5.
+15. "yes I want how it is played increase and start a chord pattern increased!!!!" → **done**: 44 chord patterns in five groups on the guitar, bass, piano and band (the 18 old ids unchanged); lesson 7 of Mastering the Piano lists them all.
+16. "Start the DJ turntables agent now too" (Frankie Knuckles, DJ Shadow, Carl Cox) → see §4: the **dj** branch.
 
 ### Jimmy's list of influences (2026-10-04): "These are some of influences the instruments should get their sounds from"
 
 On screen, sounds are named by style, never by player.
 
-| Instrument | Players | Who takes it |
+| Instrument | Players | Where it went |
 |---|---|---|
-| Guitar | Dimebag Darrell, Jimi Hendrix, Eddie Van Halen (plus Zeppelin, Aerosmith, AC/DC, Sabbath, Opeth, Buckethead, Stevie Ray Vaughan from earlier) | **tones** |
-| Bass | Jaco Pastorius (fretless lead), James Jamerson (flatwound Motown), Flea (slap) (plus Les Claypool) | **tones** |
-| Drums | Vinnie Paul, John Bonham, Buddy Rich, Neil Peart, Jeff Porcaro: kit voicings, plus starter beats in their spirit (a half-time shuffle, the big "Levee" room groove, big-band swing, a groove-metal double kick, a prog beat) | **drumkit** |
-| Brass | Louis Armstrong, Miles Davis (Harmon mute), Dizzy Gillespie | **band** (second commit) |
-| Woodwinds | Charlie Parker (alto), John Coltrane (tenor), Wayne Shorter (soprano). Tenor and soprano only if real recordings or a convincing voicing exist | **band** (second commit) |
-| DJs | Frankie Knuckles (house), DJ Shadow (sampling, turntablism), Carl Cox (techno, three decks) | **dj**, a turntables helper started after a slot opens; if it never started, it is the next job |
+| Guitar | Dimebag Darrell, Jimi Hendrix, Eddie Van Halen (plus Zeppelin, Aerosmith, AC/DC, Sabbath, Opeth, Buckethead, Stevie Ray Vaughan from earlier) | **tones**: done |
+| Bass | Jaco Pastorius (fretless lead), James Jamerson (flatwound Motown), Flea (slap) (plus Les Claypool) | **tones**: done |
+| Drums | Vinnie Paul, John Bonham, Buddy Rich, Neil Peart, Jeff Porcaro: kit voicings, plus starter beats in their spirit (a half-time shuffle, the big "Levee" room groove, big-band swing, a groove-metal double kick, a prog beat) | **drumkit**: done (kits P–T) |
+| Brass | Louis Armstrong, Miles Davis (Harmon mute), Dizzy Gillespie | **band**: done (jazz styles) |
+| Woodwinds | Charlie Parker (alto), John Coltrane (tenor), Wayne Shorter (soprano). Tenor and soprano only if real recordings or a convincing voicing exist | **band**: done (jazz styles) |
+| DJs | Frankie Knuckles (house), DJ Shadow (sampling, turntablism), Carl Cox (techno, three decks) | **dj** (§4) |
 
 ## 3. The amp (AOG-AMP-V1): live since #265
 
 The files:
 - `aog-deploy/aog-amp-worklet.js`: the AudioWorklet that bends the wave, four times oversampled (a 64-tap Kaiser FIR, 90 dB clean round trip). In order: pickup resonance → gate, compressor, wah, octave → overdrive, distortion, fuzz → 1–4 preamp stages → the real treble–middle–bass tone stack (solved from the circuit, checked against Yeh & Smith) or bass shelves → a power amp with sag → presence and depth. In Node it exports `AmpCore` (the tests use it).
 - `aog-deploy/aog-amp.js`:
-  - `MODELS`: 7 guitar amps and 4 bass amps, each with `make(knobs)`, a cabinet, and `out`/`lvl` loudness calibrations;
-  - `CABS`: 8 minimum-phase impulses made from speaker curves;
-  - `PEDALS`: 13 pedals;
+  - `MODELS`: 12 guitar amps and 4 bass amps, each with `make(knobs)`, a cabinet, and `out`/`lvl` loudness calibrations;
+  - `CABS`: 9 minimum-phase impulses made from speaker curves;
+  - `PEDALS`: 19 pedals; a pedal with `kind:"guitar"` is hidden on the bass page (the bass shows 15);
   - `coreParams(state)`, which turns knobs into worklet numbers;
   - `create(ctx,{kind})`: the rig, with the cabinet, 10-band EQ, chorus, phaser, flanger, tremolo, delay and reverb as Web Audio nodes, and a WaveShaper fallback for a browser without AudioWorklet;
   - `ui(host, opts)`: the panel (amp head, two rows of pedals, ten upright EQ faders, Put this sound back).
@@ -84,47 +79,40 @@ Measured:
 - the high-gain amps hold a chord within about 1 dB for 2 s;
 - the amp costs about 5–8% of one CPU core.
 
-## 4. The helper branches (merge these)
+## 4. The helper branches: all merged
 
-There are nine. Each was cut from `470e18a2` (main) or `63d8440a` (the amp), worked in its own worktree, and pushes to `origin/claude/amp-<name>`:
+Each helper worked in its own worktree and pushed `origin/claude/amp-<name>`. All of them are merged into `claude/drum-pads-touch-keys` and deployed together. The branches stay on GitHub as a record.
 
-| Branch | Job | Files it changes |
+| Branch | What it brought | Merge commit |
 |---|---|---|
-| `claude/amp-piano` | 16+ new piano sounds (some from VSCO 2 CE recordings: harp, marimba…) | `music-piano.html`, `audio/piano/*`, `_headers` |
-| `claude/amp-band` | The Band: strings and percussion sections, muted and vibrato brass, ensembles, and **Orchestra · everyone plays** | `_work/music/band_*`, `music-band.html`, `audio/band/*`, `_headers`, maybe `science-hub.html` |
-| `claude/amp-drums` | Send a recorded take to a drum pad | `aog-recorder.js`, `music-drums.html` |
-| `claude/amp-ways` | ~18–20 guitar and 16+ bass ways to play; bass lines leave the root; strum gaps; **44 chord patterns** (copy them to the piano and band at merge) | `strings_page.html` (rhythm parts only) and the 2 generated pages |
-| `claude/amp-stringfix` | Jimmy's handoff: a 44.1 kHz string, pick burst, pitch, sounds that disagree, synth bass | `strings_page.html` (engine, voices, existing SOUNDS values, neck drawing) |
-| `claude/amp-tones` | Zeppelin, Aerosmith, AC/DC, Sabbath and Opeth-style guitar and bass sounds; new amp models and pedals | `aog-amp.js`, `aog-amp-worklet.js`, new SOUNDS entries appended after `doom` and `acid` |
-| `claude/amp-drumkit` | Recorded acoustic drum kits and voicings | `aog-drumkit.js` (new), `music-drums.html` (tagged AOG-DRUM-REAL-V1), `audio/drums/*`, `_headers` |
-| `claude/amp-solo` | Solo mode on the guitar (and slap and pop on the bass) | `aog-solo.js` (new), small AOG-SOLO-V1 hooks in `strings_page.html` |
-| `claude/amp-studio` | The Studio: 8 tracks, mixer, sends, master, bounce, `studiobench` shelf | `music-studio.html` (new), `_redirects` |
+| `claude/amp-ways` | 21 guitar and 19 bass ways to play, in groups; bass lines that leave the root; strum gaps; **44 chord patterns** | `6a2027e0` |
+| `claude/amp-studio` | The Studio: 8 tracks, mixer, sends, master, bounce, the `studiobench` shelf | `b2fc90f3` |
+| `claude/amp-piano` | 34 piano sounds (some recorded from VSCO 2 CE); the seven older ones levelled to the grand | `e102efdf` |
+| `claude/amp-drums` | Send a recorded take to a drum pad (`drumsample` shelf); kits J to O | `6e0f3839` |
+| `claude/amp-band` | The Band: strings and percussion, Orchestra, muted and vibrato brass, jazz styles | `fd0c4c0e` |
+| `claude/amp-stringfix` | One string at 44.1 kHz, the pick click, pitch, sounds that differ, the synth bass | `c61d66c7` |
+| `claude/amp-tones` | 5 amps, a 4×10 cabinet, 6 pedals, a vintage fuzz and a tape echo; 22 guitar and 12 bass sounds; 3 new sound groups | `f50fe60b` |
+| `claude/amp-drumkit` | Recorded kits P to T, a starter beat each (`aog-drumkit.js`, `audio/drums/*`) | `67f68cea` |
+| `claude/amp-solo` | Solo mode (`aog-solo.js`) | `fe9b8e38` |
+| `claude/amp-dj` | The turntables (see the note below) | — |
 
-How to merge:
-1. `git fetch origin`
-2. Merge each branch into the working branch. Use `git log origin/claude/amp-X` to see whether it has landed. A branch that is missing may still be running in the old session; check with Jimmy.
-3. Conflicts you should expect:
-   - **The generated pages** (`music-guitar.html`, `music-bass.html`, `music-band.html`): take either side, then regenerate from the merged sources with `make_strings.py` or `make_band.py`.
-   - **`strings_page.html`**: ways, stringfix and tones were told to keep to separate regions. Read each hunk.
-   - **`_headers`** (piano, band, drumkit): keep every new folder's lines.
-   - **`music-drums.html`** (drums and drumkit): keep both.
-   - **`science-hub.html`**: the guitar and bass card text changed in the amp commit; the band card may change on the band branch.
-4. **Wire the studio.** The studio agent's final message lists the exact edits. Do them by hand:
-   - `aog-topbar.js`: the Lab Bench `items` list in `EX`, plus the colour map near `"/band":"#8A6A16"`;
-   - each music page's `navHtml()` tools list: `strings_page.html`, `music-piano.html`, the `_work/music/band_*` sources, `music-drums.html`, `music-decks.html`;
-   - the science hub cards;
-   - `aog-room-map.js`;
-   - the home page's Lab Bench card;
-   - the turntables' `studiobench` row.
+After the merges, the lead session:
+- copied the 44 patterns into `music-piano.html` and `_work/music/band_script.js`, gave **Heroic** its own chords (Am C G D; it had copied Minor groove), and listed all 44 in lesson 7 of Mastering the Piano (`make_mastering_piano.py`);
+- added the new lead sounds to Solo mode's sound menu (`LEADS` in `aog-solo.js`);
+- put the Studio in every music tool's menu and on the science hub's five unit lists;
+- made one `sw.js` CACHE bump for the whole batch.
+
+If you ever merge more work into the generated pages (`music-guitar.html`, `music-bass.html`, `music-band.html`): take either side, then regenerate from the sources with `make_strings.py` or `make_band.py`.
 
 ## 5. The music bench, how it fits together
 
 | Tool | File(s) | Notes |
 |---|---|---|
-| Drum machine | `music-drums.html` | SP-1200 model. Kits A–I are made on the page. Memory: 10 s for user samples, 26,040 Hz, 12-bit. Chord pads and kit undo. |
+| Drum machine | `music-drums.html`, `aog-drumkit.js` | SP-1200 model. Kits A–O are made on the page; P–T are a recorded kit (`audio/drums/<style>/`, loaded only when picked, two kept in memory). Memory: 10 s for user samples, 26,040 Hz, 12-bit. Chord pads, a take on any pad, kit undo. |
 | Turntables | `music-decks.html` | Reads the shelves. |
+| Studio | `music-studio.html` (`/studio`) | 8 tracks, a mixer with sends, a master, bounce. Takes what you made on the other tools from their shelves; its bounce goes on the `studiobench` shelf for the turntables. |
 | Piano | `music-piano.html` | Hand-written, except LESSONS (`_work/music/make_piano_lessons.py`). Lessons: `piano-lessons.html`, `mastering-piano.html` (`make_mastering_piano.py`). |
-| Guitar and bass | `_work/music/strings_page.html` → `make_strings.py` | One source, `GTR` true or false. |
+| Guitar and bass | `_work/music/strings_page.html` → `make_strings.py`; `aog-solo.js` | One source, `GTR` true or false. Solo mode lives in `aog-solo.js` and joins the page through nine small AOG-SOLO-V1 hooks; in Chords mode every hook returns false. |
 | The Band | `_work/music/band_head.html` + `band_script.js` → `make_band.py` | VSCO 2 CE recordings plus Weresax (CC0). |
 
 Shared files:
@@ -136,7 +124,8 @@ Shared files:
   - `bandbench`;
   - `drumtake`: a take from the drum machine's recorder;
   - `chordpads`;
-  - planned: `drumsample` and `studiobench`.
+  - `drumsample`: a take from any tool, for a drum pad;
+  - `studiobench`: the Studio's bounce.
 - `aog-amp*.js`.
 - Site wiring:
   - `aog-topbar.js`;
@@ -157,20 +146,27 @@ On a new container, re-clone them only if you need new recordings. Every source 
 
 ## 6. Tests
 
-`music-handoff/tests/` holds every suite, copied from the old session's scratchpad. Run them with:
+`music-handoff/tests/` holds every suite, copied from the old session's and the helpers' scratchpads. Run them with:
 
 ```
-bash music-handoff/tests/run.sh              # all of them, about 25 minutes, one at a time
+bash music-handoff/tests/run.sh              # all of them, about 45 minutes, one at a time
 bash music-handoff/tests/run.sh amp/b1 amp/b2 strings/st
 node music-handoff/tests/amp/t3.js           # each amp's distortion and compression across Gain (Node, no browser)
 ```
+
+What the newer suites cover:
+- `amp/b1` (every sound's C chord within 0.5 dB of the grand, the panel, a reload), `amp/b2` (every pedal and amp model);
+- `strings/sfix` (the 44.1 kHz string: pitch, the pick click, steel against nylon, fingers against pick, the synth's thump, held pads), `strings/sways` (the ways to play), `strings/sdecks` (the tools menu on every music page, with the Studio);
+- `solo/s1` (the panel and the lit scale on an iPhone, an iPad and a computer), `solo/s2` (bends, vibrato, hammer-ons, tap, squeal, whammy, kill, feedback, slap and pop, the keys), `solo/s3` (the backing band in time, the licks);
+- `realkit` (kits P to T: loading, every pad soft to accent, takes, levels against kit A, the era dial, TRIM, the starter beats, Send to the turntables, a reload, Spanish, a phone);
+- `ppat` (all 44 chord patterns on the piano, in five groups, in English and Spanish).
 
 - Playwright and Chromium are installed globally: `require(execSync("npm root -g")+"/playwright")`. Never run `playwright install`.
 - Each suite uses a fixed 99xx port. **Never run two copies at once.**
 - `AOG_ROOT` points the server at another checkout.
 
 Before any push:
-- `node tools/check-contrast.js <pages>` and `node tools/check-calm.js <pages>`;
+- `node tools/check-contrast.js <pages>` and `node tools/check-calm.js <pages>`. Name the pages as they sit in `aog-deploy/` (`music-band.html`, not `aog-deploy/music-band.html`): a path the server cannot find opens an empty page, which the contrast check passes without looking;
 - with no arguments (the whole site) after changing a shared file.
 
 ## 7. How "deploy" is done here
@@ -192,7 +188,14 @@ Before any push:
 
 ## 8. Known risks and next ideas
 
-- **Not yet heard on an iPad.** No WebKit browser is available here. Ask Jimmy to try the metal sound and the amp on his iPad after the deploy.
+- **Not yet heard on an iPad or in Safari.** No WebKit browser is available here. Ask Jimmy to try on his iPad:
+  - the metal sound and the amp;
+  - a recorded drum kit (P to T): it is decoded with `decodeAudioData` on OfflineAudioContexts at 44,100 and 26,040 Hz;
+  - Solo mode's slap and pop on the bass (a pop arrives 20–60 ms after the slap starts).
+- **Phone memory.** Each recorded kit takes about 10–16 MB decoded, plus a copy in the audio engine; two stay loaded.
+- **Pitch shifter.** It lags the note by 8–39 ms and chords shimmer a little, as on the real pedal.
+- **Browsers without AudioWorklet.** The fallback amp has no envelope filter, pitch shifter, octave fuzz or vibe; the treble booster only adds gain there.
 - **Flanger.** Chrome clamps a delay inside a feedback loop to one render quantum (2.7 ms), so it cannot sweep through zero. Moving it into the worklet would fix that.
+- **Solo mode.** Licks are guitar only, and a lick moves the hand's window to its box.
 - **Download size.** The new recordings (piano, band, drum kits) load only when a sound is picked. Keep it that way.
 - **Next for the studio:** "Send to the studio" buttons in `aog-recorder.js`; a second clip per track. Never a microphone.

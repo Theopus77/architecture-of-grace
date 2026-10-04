@@ -26,11 +26,18 @@ def build():
     with open(os.path.join(ROOT, "audio", "band", "manifest.json"), encoding="utf-8") as f:
         man = json.load(f)
     # every file the manifest names must be there, or a note would fall silent
+    # (the vibrato players' short notes are the plain player's: "stacDir"; the kit's strokes are named: "hits")
     missing = []
     for inst, m in man.items():
         for kind, key in (("s", "sus"), ("l", "susL"), ("t", "stac")):
             for n in m[key]:
-                p = os.path.join(ROOT, "audio", "band", inst, "%d%s.mp3" % (n, kind))
+                folder = m.get("stacDir", inst) if kind == "t" else inst
+                p = os.path.join(ROOT, "audio", "band", folder, "%d%s.mp3" % (n, kind))
+                if not os.path.exists(p):
+                    missing.append(os.path.relpath(p, ROOT))
+        for names in m.get("hits", {}).values():
+            for h in names:
+                p = os.path.join(ROOT, "audio", "band", inst, h + ".mp3")
                 if not os.path.exists(p):
                     missing.append(os.path.relpath(p, ROOT))
     if missing:

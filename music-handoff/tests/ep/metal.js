@@ -2,7 +2,7 @@
    chords, how much of it is very high (fizz), and the chug and gallop */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const srv=require("../srv.js")(9995);
-const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync("../bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
+const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(require("path").join(__dirname,"../bandt/measure.inc"),"utf8").replace(/^const MEASURE=/,""));
 (async()=>{
   const b=await pw.chromium.launch(); const p=await b.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message)); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   await p.goto("http://localhost:9995/music-guitar.html"); await p.waitForTimeout(600); await p.addScriptTag({content:MEASURE});
