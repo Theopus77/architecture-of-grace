@@ -19,7 +19,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
         for(const r of RHYTHMS){ S.rhythm=r; const prev={v:null};
           for(let k=0;k<S.prog.length;k++){
             const v=scheduleBar(oc, ch, k, 0.05, 2.5, 0.5, prev), seen={}; let dbl=0;
-            v.forEach(x=>{ const id2=x.m+"@"+x.on.toFixed(3); if(seen[id2]) dbl++; seen[id2]=1; });
+            v.forEach(x=>{ const id2=(x.kit?"kit:"+x.kit:x.inst+":"+x.m)+"@"+x.on.toFixed(3); if(seen[id2]) dbl++; seen[id2]=1; });   /* a player (or a drum) twice; two players in unison are an orchestra's doubling */
             const bassNotes=chordParts(S.prog[k], prev.v).filter(p=>p.bass).length;
             if(!v.length || dbl || !bassNotes) out.push(id+" "+pr+" bar "+k+" "+r+": "+v.length+" notes, "+dbl+" twice, bass "+bassNotes);
           }

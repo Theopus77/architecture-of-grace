@@ -7,7 +7,7 @@
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
 </script>
 <title>The Turntables &mdash; Picture Guide</title>
-<meta name="description" content="The turntables in pictures. Almost no reading. Print it and keep it next to the decks.">
+<meta name="description" content="The turntables in pictures: three decks and a mixer. Almost no reading. Print it and keep it next to the decks.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0A1E33">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -15,7 +15,11 @@
      reading. Less words, more pictures." Student-facing, junior high, prints on letter.
      The scratch diagrams draw the hand motion and the crossfader state side by side,
      because a scratch is two hands doing two different things and reading about that
-     is exactly what stops people. Fills print exact; every color is also labeled. -->
+     is exactly what stops people. Fills print exact; every color is also labeled.
+     AOG-DECKPIC-V2 (2026-10-04) - the turntables became three decks and a mixer, so every
+     picture is new (dj-*.png, taken from the real page: phone pictures at iPhone size, the
+     rest at iPad size) and the guide reads in English and Spanish, pictures included
+     (dj-*-es.png), the way the piano guide does. Each translated tag is a leaf. -->
 <style>
 :root {
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
@@ -56,6 +60,13 @@ svg.wide { display:block; width:100%; min-width:620px; height:auto; }
 .whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
 .whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
 .whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.whole.big img { max-width:700px; }
+/* the tall phone picture stands beside its parts on an iPad, a computer and paper */
+@media (min-width:701px){
+  .whole.tall { float:left; width:290px; margin:0 1.1rem 1rem 0; }
+  .whole.tall img { max-width:100%; }
+  section::after { content:""; display:block; clear:both; }
+}
 .parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
 .part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
   padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
@@ -104,12 +115,16 @@ svg.wide { display:block; width:100%; min-width:620px; height:auto; }
 .bpmpair img { display:block; width:100%; height:auto; border-radius:5px; }
 .tagbad, .taggood { font:800 .72rem/1 var(--sans); letter-spacing:.1em; color:#9c3a2e; margin-bottom:.15rem; }
 .taggood { color:#2c7a4e; }
+.sub .g { color:#2c7a4e; } .sub .r { color:#9c3a2e; }
+.dark .tagbad, [data-theme="dark"] .tagbad, .dark .sub .r, [data-theme="dark"] .sub .r { color:#f0a092; }
+.dark .taggood, [data-theme="dark"] .taggood, .dark .sub .g, [data-theme="dark"] .sub .g { color:#7fd19c; }
 .fix img { width:auto; max-width:120px; height:auto; border-radius:5px; flex:0 0 auto; align-self:center; }
+.fix img.wide { max-width:min(220px, 40vw); }
 .fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
 .fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
   border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
 .fix svg { width:34px; height:34px; flex:0 0 auto; }
-.step img { display:block; max-width:100%; height:auto; margin:0 auto .5rem; border-radius:6px; }
+.step img { display:block; max-width:100%; max-height:190px; height:auto; object-fit:contain; margin:0 auto .5rem; border-radius:6px; }
 .fix b { display:block; font-size:.97rem; }
 .fix span { color:var(--muted); font-size:.9rem; }
 
@@ -133,8 +148,26 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
   section { margin-bottom:1.1rem; }
   h1 { font-size:20pt; }
   h2 { font-size:13pt; }
-  .whole img { max-width:330px; border:1px solid #bbb; }
+  .whole img { width:auto; max-width:100%; max-height:4.3in; border:1px solid #bbb; }
+  .whole.big img { max-height:3.4in; }
+  .whole.tall { float:left; width:2.1in; margin:0 .2in .12in 0; }
+  .whole.tall img { width:100%; max-height:none; }
+  section::after { content:""; display:block; clear:both; }
+  .parts { gap:.45rem; }
+  .part, .part.half, .part.wide { grid-column:span 2; }
+  .whole.tall + .parts .part { grid-column:span 3; }
+  .part img { max-height:1.8in; object-fit:contain; object-position:left top; }
   .part { padding:.5rem .55rem .6rem; }
+  .steps { gap:.5rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .step img { max-height:1.35in; }
+  .scr { grid-template-columns:repeat(4,1fr); gap:.5rem; }
+  .onplatter { max-width:1.4in; }
+  .card { padding:.5rem .55rem .6rem; }
+  .card h3 { font-size:11pt; }
+  .card p, .faderstrip span { font-size:9pt; }
+  .fix { grid-template-columns:1fr 1fr; gap:.4rem; }
+  .fix li { padding:.45rem .55rem; }
   .part b { font-size:10.5pt; }
   .part span { font-size:9.5pt; }
   a { text-decoration:none; color:inherit; }
@@ -148,263 +181,343 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
 <header>
   <a class="brand" href="/">Architecture of Grace</a>
   <div class="tools">
-    <a class="btn" href="/decks">&larr; The turntables</a>
-    <button class="btn go" type="button" onclick="window.print()">Print this</button>
+    <a class="btn" href="/decks"><span data-en="← The turntables" data-es="← Los tocadiscos">← The turntables</span></a>
+    <button class="btn go" type="button" onclick="window.print()"><span data-en="Print this" data-es="Imprimir">Print this</span></button>
   </div>
 </header>
 
-<h1>The Turntables, in pictures</h1>
-<p class="lede">Almost no reading. Tape it to the wall next to the decks. The first page is the Simple bench; the rest is the Full bench.</p>
+<h1><span data-en="The Turntables, in pictures" data-es="Los tocadiscos, en imágenes">The Turntables, in pictures</span></h1>
+<p class="lede" data-en="Almost no reading. Tape it to the wall next to the decks. It starts with the Simple bench, then the Full bench." data-es="Casi sin lectura. Pégala en la pared junto a los platos. Empieza con el Banco sencillo y luego el Banco completo.">Almost no reading. Tape it to the wall next to the decks. It starts with the Simple bench, then the Full bench.</p>
 
-<!-- AOG-DECKS-SIMPLE-GUIDE-V1 (2026-09-26) — the decks open on the Simple bench, so the guide does too. -->
+<!-- AOG-DECKS-SIMPLE-GUIDE-V2 (2026-10-04) — the decks open on the Simple bench, so the guide does too. Phone pictures: one deck at a time. -->
 <section>
-  <h2><span class="n">&#9733;</span>Start here &middot; the Simple bench</h2>
-  <p class="sub">This is what the turntables show first: the record, the buttons, cues, loops, SYNC, Pitch and Volume. <b>Full bench</b> adds the mixing layer &mdash; nudge, filter, echo, EQ and the kills &mdash; which the rest of this guide shows.</p>
-  <figure class="whole"><img src="/pt-s-deck.png" alt="One deck on the Simple bench: the record, Load a song, Take it off, Start, CUE, Pitch and Volume."><figcaption>One deck on the Simple bench. Deck B is the same.</figcaption></figure>
+  <h2><span class="n">&#9733;</span><span data-en="Start here · the Simple bench" data-es="Empieza aquí · el Banco sencillo">Start here · the Simple bench</span></h2>
+  <p class="sub" data-en="The turntables open here. Full bench adds the mixing tools; the rest of this guide shows them." data-es="Los tocadiscos abren aquí. El Banco completo agrega las herramientas de mezcla; el resto de esta guía las muestra.">The turntables open here. Full bench adds the mixing tools; the rest of this guide shows them.</p>
+  <figure class="whole tall"><img src="/dj-s-deck.png" width="370" height="939" alt="Deck A on a phone, Simple bench: the song and its BPM, the song drawn, the record, Load a song, Take it off, Start, CUE, Set cue, the 8 pads, Loop, SYNC, KEY, SLIP, REV, TAP, half and double, and Pitch." data-en-src="/dj-s-deck.png" data-es-src="/dj-s-deck-es.png" data-en-alt="Deck A on a phone, Simple bench: the song and its BPM, the song drawn, the record, Load a song, Take it off, Start, CUE, Set cue, the 8 pads, Loop, SYNC, KEY, SLIP, REV, TAP, half and double, and Pitch." data-es-alt="El Plato A en un teléfono, Banco sencillo: la canción y sus BPM, la canción dibujada, el disco, Cargar una canción, Quitar, Arrancar, CUE, Marcar cue, los 8 pads, Bucle, SYNC, TONO FIJO, SLIP, REV, TAP, mitad y doble, y Tono." data-en-w="370" data-en-h="939" data-es-w="370" data-es-h="971" loading="lazy"><figcaption><span data-en="One deck on a phone. Decks B and C are the same." data-es="Un plato en un teléfono. Los platos B y C son iguales.">One deck on a phone. Decks B and C are the same.</span></figcaption></figure>
   <div class="parts">
-    <div class="part wide">
-      <img src="/pt-s-switch.png" alt="Simple bench and Full bench buttons.">
-      <b>Simple bench &middot; Full bench</b><span>Tap to swap. The decks remember which one you like.</span>
-    </div>
-    <div class="part wide">
-      <img src="/pt-s-buttons.png" alt="Load a song, Take it off, Start, CUE.">
-      <b>Load &middot; Take it off &middot; Start &middot; CUE</b><span>Load puts a song on. Start goes and stops. CUE jumps back to the start of the song.</span>
+    <div class="part half">
+      <img src="/dj-s-switch.png" width="265" height="56" alt="The Simple bench and Full bench buttons." data-en-src="/dj-s-switch.png" data-es-src="/dj-s-switch-es.png" data-en-alt="The Simple bench and Full bench buttons." data-es-alt="Los botones Banco sencillo y Banco completo." data-en-w="265" data-en-h="56" data-es-w="318" data-es-h="56" loading="lazy">
+      <b data-en="Simple bench · Full bench" data-es="Banco sencillo · Banco completo">Simple bench · Full bench</b><span data-en="Tap to switch. The page remembers your pick." data-es="Toca para cambiar. La página recuerda tu elección.">Tap to switch. The page remembers your pick.</span>
     </div>
     <div class="part half">
-      <img src="/pt-s-pitch.png" alt="The gold Pitch slider.">
-      <b>Pitch (gold)</b><span>A little faster, a little slower.</span>
+      <img src="/dj-s-show.png" width="370" height="80" alt="The Show menu, set to Deck A." data-en-src="/dj-s-show.png" data-es-src="/dj-s-show-es.png" data-en-alt="The Show menu, set to Deck A." data-es-alt="El menú Mostrar, en Plato A." data-en-w="370" data-en-h="80" data-es-w="370" data-es-h="80" loading="lazy">
+      <b data-en="On a phone: Show" data-es="En un teléfono: Mostrar">On a phone: Show</b><span data-en="Pick Deck A, B, C or the Mixer. One fills the screen." data-es="Elige Plato A, B, C o el Mezclador. Uno llena la pantalla.">Pick Deck A, B, C or the Mixer. One fills the screen.</span>
     </div>
     <div class="part half">
-      <img src="/pt-s-vol.png" alt="The white Volume slider.">
-      <b>Volume (white)</b><span>How loud this deck is.</span>
+      <img src="/dj-s-buttons.png" width="340" height="123" alt="Load a song, Take it off, Start, CUE, Set cue and the time." data-en-src="/dj-s-buttons.png" data-es-src="/dj-s-buttons-es.png" data-en-alt="Load a song, Take it off, Start, CUE, Set cue and the time." data-es-alt="Cargar una canción, Quitar, Arrancar, CUE, Marcar cue y el tiempo." data-en-w="340" data-en-h="123" data-es-w="340" data-es-h="155" loading="lazy">
+      <b data-en="Load · Take it off · Start · CUE · Set cue" data-es="Cargar · Quitar · Arrancar · CUE · Marcar cue">Load · Take it off · Start · CUE · Set cue</b><span data-en="Start plays and stops. Set cue marks a spot. Hold CUE to hear it." data-es="Arrancar toca y para. Marcar cue marca un punto. Mantén CUE para oírlo.">Start plays and stops. Set cue marks a spot. Hold CUE to hear it.</span>
     </div>
     <div class="part half">
-      <img src="/pt-s-xf.png" alt="The crossfader.">
-      <b>Crossfader</b><span>Left is Deck A. Right is Deck B. The middle is both.</span>
+      <img src="/dj-s-pads.png" width="340" height="195" alt="The 8 pads, Lands on the beat, Chop 8 and Erase." data-en-src="/dj-s-pads.png" data-es-src="/dj-s-pads-es.png" data-en-alt="The 8 pads, Lands on the beat, Chop 8 and Erase." data-es-alt="Los 8 pads, Cae en el pulso, Cortar 8 y Borrar." data-en-w="340" data-en-h="195" data-es-w="340" data-es-h="195" loading="lazy">
+      <b data-en="8 pads" data-es="8 pads">8 pads</b><span data-en="Tap an empty pad to mark a spot. Tap it again to jump there, on the beat. Chop 8 fills all eight." data-es="Toca un pad vacío para marcar un punto. Tócalo otra vez para saltar ahí, en el pulso. Cortar 8 llena los ocho.">Tap an empty pad to mark a spot. Tap it again to jump there, on the beat. Chop 8 fills all eight.</span>
     </div>
     <div class="part half">
-      <img src="/pt-s-tabs.png" alt="Deck A, Deck B and Mix tabs.">
-      <b>On a phone: Deck A &middot; Deck B &middot; Mix</b><span>One at a time, so the record and its buttons fit one screen.</span>
+      <img src="/dj-s-loops.png" width="340" height="60" alt="The Loop buttons: 1, 2, 4, 8 and 4 bars." data-en-src="/dj-s-loops.png" data-es-src="/dj-s-loops-es.png" data-en-alt="The Loop buttons: 1, 2, 4, 8 and 4 bars." data-es-alt="Los botones de Bucle: 1, 2, 4, 8 y 4 compases." data-en-w="340" data-en-h="60" data-es-w="340" data-es-h="60" loading="lazy">
+      <b data-en="Loop" data-es="Bucle">Loop</b><span data-en="Repeats 1, 2, 4 or 8 beats, or 4 bars. Tap it again to go on." data-es="Repite 1, 2, 4 u 8 pulsos, o 4 compases. Tócalo otra vez para seguir.">Repeats 1, 2, 4 or 8 beats, or 4 bars. Tap it again to go on.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-s-modes.png" width="340" height="113" alt="SYNC, KEY, SLIP, REV, TAP, half and double." data-en-src="/dj-s-modes.png" data-es-src="/dj-s-modes-es.png" data-en-alt="SYNC, KEY, SLIP, REV, TAP, half and double." data-es-alt="SYNC, TONO FIJO, SLIP, REV, TAP, mitad y doble." data-en-w="340" data-en-h="113" data-es-w="340" data-es-h="113" loading="lazy">
+      <b data-en="SYNC · KEY · SLIP · REV · TAP · ½× · 2×" data-es="SYNC · TONO FIJO · SLIP · REV · TAP · ½× · 2×">SYNC · KEY · SLIP · REV · TAP · ½× · 2×</b><span data-en="SYNC matches speeds. KEY keeps the tune. SLIP keeps your place. Hold REV to play backwards. TAP the beat to set it. ½× and 2× fix a BPM that is half or double." data-es="SYNC iguala velocidades. TONO FIJO mantiene la nota. SLIP guarda tu lugar. Mantén REV para tocar al revés. Toca TAP con el pulso para marcarlo. ½× y 2× arreglan unos BPM a la mitad o al doble.">SYNC matches speeds. KEY keeps the tune. SLIP keeps your place. Hold REV to play backwards. TAP the beat to set it. ½× and 2× fix a BPM that is half or double.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-s-pitch.png" width="344" height="78" alt="The gold Pitch slider." data-en-src="/dj-s-pitch.png" data-es-src="/dj-s-pitch-es.png" data-en-alt="The gold Pitch slider." data-es-alt="El deslizador dorado de Tono." data-en-w="344" data-en-h="78" data-es-w="344" data-es-h="78" loading="lazy">
+      <b data-en="Pitch (gold)" data-es="Tono (dorado)">Pitch (gold)</b><span data-en="A little faster, a little slower." data-es="Un poco más rápido, un poco más lento.">A little faster, a little slower.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-s-strip.png" width="340" height="209" alt="A mixer strip on a phone: Volume and Crossfader side." data-en-src="/dj-s-strip.png" data-es-src="/dj-s-strip-es.png" data-en-alt="A mixer strip on a phone: Volume and Crossfader side." data-es-alt="Una franja del mezclador en un teléfono: Volumen y Lado del crossfader." data-en-w="340" data-en-h="209" data-es-w="340" data-es-h="209" loading="lazy">
+      <b data-en="Mixer: Volume · Crossfader side" data-es="Mezclador: Volumen · Lado del crossfader">Mixer: Volume · Crossfader side</b><span data-en="How loud each deck is, and its side of the crossfader." data-es="Qué tan fuerte suena cada plato, y su lado del crossfader.">How loud each deck is, and its side of the crossfader.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-s-xf.png" width="340" height="98" alt="The crossfader." data-en-src="/dj-s-xf.png" data-es-src="/dj-s-xf-es.png" data-en-alt="The crossfader." data-es-alt="El crossfader." data-en-w="340" data-en-h="98" data-es-w="340" data-es-h="98" loading="lazy">
+      <b data-en="Crossfader" data-es="Crossfader">Crossfader</b><span data-en="Left plays the Left decks. Right plays the Right decks. The middle plays both." data-es="A la izquierda suenan los platos Izq. A la derecha, los Der. En el medio, los dos.">Left plays the Left decks. Right plays the Right decks. The middle plays both.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-s-rec.png" width="152" height="56" alt="The Record button." data-en-src="/dj-s-rec.png" data-es-src="/dj-s-rec-es.png" data-en-alt="The Record button." data-es-alt="El botón Grabar." data-en-w="152" data-en-h="56" data-es-w="149" data-es-h="56" loading="lazy">
+      <b data-en="Record" data-es="Grabar">Record</b><span data-en="Records the mix. The take stays on this computer." data-es="Graba la mezcla. La toma se queda en esta computadora.">Records the mix. The take stays on this computer.</span>
     </div>
   </div>
 </section>
 
 <section>
-  <h2><span class="n">1</span>What everything is</h2>
-  <figure class="whole"><img src="/panel-decks.png" alt="Both turntable decks."><figcaption>Two decks, side by side. They have exactly the same buttons.</figcaption></figure>
+  <h2><span class="n">1</span><span data-en="What everything is · Full bench" data-es="Qué es cada cosa · Banco completo">What everything is · Full bench</span></h2>
+  <p class="sub" data-en="On an iPad or a computer, the three decks sit side by side. The mixer sits under them." data-es="En un iPad o una computadora, los tres platos están lado a lado. El mezclador está debajo.">On an iPad or a computer, the three decks sit side by side. The mixer sits under them.</p>
+  <figure class="whole big"><img src="/dj-decks.png" width="938" height="1105" alt="The three decks, A, B and C, side by side on the Full bench." data-en-src="/dj-decks.png" data-es-src="/dj-decks-es.png" data-en-alt="The three decks, A, B and C, side by side on the Full bench." data-es-alt="Los tres platos, A, B y C, lado a lado en el Banco completo." data-en-w="938" data-en-h="1105" data-es-w="938" data-es-h="1168" loading="lazy"><figcaption><span data-en="Three decks. They have the same buttons." data-es="Tres platos. Tienen los mismos botones.">Three decks. They have the same buttons.</span></figcaption></figure>
   <div class="parts">
-    <div class="part wide">
-      <img src="/pt-wave.png" alt="The waveform and the close-up strip.">
-      <b>The song, drawn</b><span>Tall bumps are the drums. The thin strip under it is a close-up of where you are right now.</span>
+    <div class="part half">
+      <img src="/dj-wave.png" width="285" height="116" alt="The song drawn, and the close-up strip under it." data-en-src="/dj-wave.png" data-es-src="/dj-wave-es.png" data-en-alt="The song drawn, and the close-up strip under it." data-es-alt="La canción dibujada y la franja de acercamiento debajo." data-en-w="285" data-en-h="116" data-es-w="285" data-es-h="116" loading="lazy">
+      <b data-en="The song, drawn" data-es="La canción, dibujada">The song, drawn</b><span data-en="Tall bumps are the drums. The strip under it is a close-up. Tap either one to move." data-es="Los picos altos son la batería. La franja de abajo es un acercamiento. Toca cualquiera para moverte.">Tall bumps are the drums. The strip under it is a close-up. Tap either one to move.</span>
     </div>
     <div class="part half">
-      <img src="/pt-platter.png" alt="The record on the platter.">
-      <b>The record</b><span>Drag it to scratch. Hold it still and it goes quiet, the way vinyl does.</span>
+      <img src="/dj-master.png" width="285" height="64" alt="Deck A with MASTER lit and 125.0 BPM." data-en-src="/dj-master.png" data-es-src="/dj-master-es.png" data-en-alt="Deck A with MASTER lit and 125.0 BPM." data-es-alt="El Plato A con MASTER encendido y 125.0 BPM." data-en-w="285" data-en-h="64" data-es-w="285" data-es-h="64" loading="lazy">
+      <b data-en="MASTER · BPM" data-es="MASTER · BPM">MASTER · BPM</b><span data-en="The yellow number is beats a minute. With SYNC, the other decks follow the MASTER deck." data-es="El número amarillo son los pulsos por minuto. Con SYNC, los otros platos siguen al plato MASTER.">The yellow number is beats a minute. With SYNC, the other decks follow the MASTER deck.</span>
+    </div>
+    <div class="part">
+      <img src="/dj-platter.png" width="248" height="248" alt="The record on the platter." data-en-src="/dj-platter.png" data-es-src="/dj-platter-es.png" data-en-alt="The record on the platter." data-es-alt="El disco en el plato." data-en-w="248" data-en-h="248" data-es-w="248" data-es-h="248" loading="lazy">
+      <b data-en="The record" data-es="El disco">The record</b><span data-en="Drag it to scratch. Hold it still and it goes quiet." data-es="Arrástralo para rayar. Si lo detienes, se calla.">Drag it to scratch. Hold it still and it goes quiet.</span>
+    </div>
+    <div class="part">
+      <img src="/dj-nudge.png" width="285" height="105" alt="The Nudge buttons and the 33 and 45 speeds." data-en-src="/dj-nudge.png" data-es-src="/dj-nudge-es.png" data-en-alt="The Nudge buttons and the 33 and 45 speeds." data-es-alt="Los botones de Empuje y las velocidades 33 y 45." data-en-w="285" data-en-h="105" data-es-w="285" data-es-h="105" loading="lazy">
+      <b data-en="Nudge · 33⅓ · 45" data-es="Empuje · 33⅓ · 45">Nudge · 33⅓ · 45</b><span data-en="Nudge slides the beat a hair. 33⅓ and 45 are record speeds." data-es="Empuje mueve el pulso un poquito. 33⅓ y 45 son velocidades del disco.">Nudge slides the beat a hair. 33⅓ and 45 are record speeds.</span>
+    </div>
+    <div class="part">
+      <img src="/dj-pitch.png" width="289" height="86" alt="The Pitch slider with WIDE." data-en-src="/dj-pitch.png" data-es-src="/dj-pitch-es.png" data-en-alt="The Pitch slider with WIDE." data-es-alt="El deslizador de Tono con AMPLIO." data-en-w="289" data-en-h="86" data-es-w="289" data-es-h="86" loading="lazy">
+      <b data-en="Pitch · WIDE" data-es="Tono · AMPLIO">Pitch · WIDE</b><span data-en="WIDE lets Pitch go from half speed to one and a half." data-es="AMPLIO deja que Tono vaya de la mitad a una vez y media.">WIDE lets Pitch go from half speed to one and a half.</span>
+    </div>
+  </div>
+  <figure class="whole big"><img src="/dj-mixer.png" width="920" height="852" alt="The mixer: three channel strips, the crossfader and the row under it." data-en-src="/dj-mixer.png" data-es-src="/dj-mixer-es.png" data-en-alt="The mixer: three channel strips, the crossfader and the row under it." data-es-alt="El mezclador: tres franjas, el crossfader y la fila de abajo." data-en-w="920" data-en-h="852" data-es-w="920" data-es-h="852" loading="lazy"><figcaption><span data-en="The mixer: one strip for each deck, then the crossfader. A limiter at the end keeps the sound from getting too loud." data-es="El mezclador: una franja por plato y luego el crossfader. Un limitador al final evita que suene demasiado fuerte.">The mixer: one strip for each deck, then the crossfader. A limiter at the end keeps the sound from getting too loud.</span></figcaption></figure>
+  <div class="parts">
+    <div class="part half">
+      <img src="/dj-eq.png" width="281" height="216" alt="High, Mid and Low, each with a KILL button." data-en-src="/dj-eq.png" data-es-src="/dj-eq-es.png" data-en-alt="High, Mid and Low, each with a KILL button." data-es-alt="Agudos, Medios y Graves, cada uno con su botón CORTA." data-en-w="281" data-en-h="216" data-es-w="281" data-es-h="216" loading="lazy">
+      <b data-en="High · Mid · Low · KILL (green)" data-es="Agudos · Medios · Graves · CORTA (verde)">High · Mid · Low · KILL (green)</b><span data-en="Turn a band down or up. KILL takes it out." data-es="Baja o sube una banda. CORTA la quita.">Turn a band down or up. KILL takes it out.</span>
     </div>
     <div class="part half">
-      <img src="/pt-transport.png" alt="Load a song, Take it off, Start, CUE.">
-      <b>Load &middot; Start &middot; CUE</b><span>Start goes and stops. Set cue marks a spot; CUE jumps back to it.</span>
-    </div>
-    <div class="part wide">
-      <img src="/pt-sync.png" alt="Hot cues, loops, SYNC and the BPM readout.">
-      <b>SYNC, and the BPM</b><span>Matches this deck to the other one. The yellow number is how fast this song is.</span>
-    </div>
-    <div class="part wide">
-      <img src="/pt-nudge.png" alt="Nudge buttons and the 33 and 45 speeds.">
-      <b>Nudge</b><span>Slides the beat a hair forward or back, without changing the speed.</span>
-    </div>
-    <div class="part wide">
-      <img src="/pt-pitch.png" alt="The PITCH readout and slider.">
-      <b>PITCH</b><span>A little faster, a little slower. This is how you match two songs by hand.</span>
+      <img src="/dj-vol.png" width="281" height="185" alt="FLAT, Volume and Crossfader side." data-en-src="/dj-vol.png" data-es-src="/dj-vol-es.png" data-en-alt="FLAT, Volume and Crossfader side." data-es-alt="PLANO, Volumen y Lado del crossfader." data-en-w="281" data-en-h="185" data-es-w="281" data-es-h="185" loading="lazy">
+      <b data-en="FLAT · Volume · Crossfader side" data-es="PLANO · Volumen · Lado del crossfader">FLAT · Volume · Crossfader side</b><span data-en="FLAT puts the EQ and the filter back to the middle." data-es="PLANO regresa el ecualizador y el filtro al medio.">FLAT puts the EQ and the filter back to the middle.</span>
     </div>
     <div class="part half">
-      <img src="/pt-kill.png" alt="The KILL LOW, KILL MID, KILL HIGH and FLAT buttons.">
-      <b>KILL LOW</b><span>Takes the bass out. Press it on the song coming in, then swap.</span>
+      <img src="/dj-filter.png" width="281" height="74" alt="The blue Filter slider." data-en-src="/dj-filter.png" data-es-src="/dj-filter-es.png" data-en-alt="The blue Filter slider." data-es-alt="El deslizador azul de Filtro." data-en-w="281" data-en-h="74" data-es-w="281" data-es-h="74" loading="lazy">
+      <b data-en="Filter (blue)" data-es="Filtro (azul)">Filter (blue)</b><span data-en="Left takes away the highs. Right takes away the lows." data-es="A la izquierda quita los agudos. A la derecha quita los graves.">Left takes away the highs. Right takes away the lows.</span>
     </div>
     <div class="part half">
-      <img src="/pt-vol.png" alt="The volume slider.">
-      <b>VOLUME</b><span>How loud this deck is.</span>
+      <img src="/dj-fx.png" width="281" height="168" alt="Echo, Reverb and Flanger, Beats and Amount." data-en-src="/dj-fx.png" data-es-src="/dj-fx-es.png" data-en-alt="Echo, Reverb and Flanger, Beats and Amount." data-es-alt="Eco, Sala y Flanger, Pulsos y Cantidad." data-en-w="281" data-en-h="168" data-es-w="281" data-es-h="168" loading="lazy">
+      <b data-en="Echo · Reverb · Flanger" data-es="Eco · Sala · Flanger">Echo · Reverb · Flanger</b><span data-en="Pick one. Pick the beats. Then raise Amount." data-es="Elige uno. Elige los pulsos. Luego sube Cantidad.">Pick one. Pick the beats. Then raise Amount.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-xrow.png" width="912" height="56" alt="Fader: Blend, Vinyl noise, Platter: fine and Record." data-en-src="/dj-xrow.png" data-es-src="/dj-xrow-es.png" data-en-alt="Fader: Blend, Vinyl noise, Platter: fine and Record." data-es-alt="Fader: Mezcla, Ruido de vinilo, Plato: fino y Grabar." data-en-w="912" data-en-h="56" data-es-w="912" data-es-h="56" loading="lazy">
+      <b data-en="Fader · Vinyl noise · Platter · Record" data-es="Fader · Ruido de vinilo · Plato · Grabar">Fader · Vinyl noise · Platter · Record</b><span data-en="Fader: Blend fades, Cut switches fast. Platter sets how scratching feels (part 3)." data-es="Fader: Mezcla funde, Corte cambia rápido. Plato cambia cómo se siente rayar (parte 3).">Fader: Blend fades, Cut switches fast. Platter sets how scratching feels (part 3).</span>
     </div>
   </div>
 </section>
 
 <section>
-  <h2><span class="n">2</span>Get a song on there</h2>
-  <p class="sub">The song stays on this computer. Nothing is uploaded anywhere.</p>
+  <h2><span class="n">2</span><span data-en="Get a song on there" data-es="Pon una canción">Get a song on there</span></h2>
+  <p class="sub" data-en="Your song stays on this computer. Nothing is uploaded." data-es="Tu canción se queda en esta computadora. No se sube nada.">Your song stays on this computer. Nothing is uploaded.</p>
   <div class="steps">
     <div class="step"><span class="num">1</span>
-      <img src="/pt-load.png" alt="The Load a song button.">
-      <b>Load a song</b><span>MP3, M4A or WAV, from this computer.</span></div>
+      <img src="/dj-load.png" width="285" height="305" alt="Load a song, open: your songs and From this device." data-en-src="/dj-load.png" data-es-src="/dj-load-es.png" data-en-alt="Load a song, open: your songs and From this device." data-es-alt="Cargar una canción, abierto: tus canciones y De este aparato." data-en-w="285" data-en-h="305" data-es-w="285" data-es-h="348" loading="lazy">
+      <b data-en="Load a song" data-es="Cargar una canción">Load a song</b><span data-en="Tap one of your songs, or + From this device." data-es="Toca una de tus canciones, o + De este aparato.">Tap one of your songs, or + From this device.</span></div>
     <div class="step"><span class="num">2</span>
-      <img src="/pt-wave-live.png" alt="The waveform after a song loads.">
-      <b>It draws itself</b><span>Wait a second. The tall bumps are the drum hits.</span></div>
+      <img src="/dj-wave.png" width="285" height="116" alt="The song, drawn." data-en-src="/dj-wave.png" data-es-src="/dj-wave-es.png" data-en-alt="The song, drawn." data-es-alt="La canción, dibujada." data-en-w="285" data-en-h="116" data-es-w="285" data-es-h="116" loading="lazy">
+      <b data-en="It draws itself" data-es="Se dibuja sola">It draws itself</b><span data-en="Wait a second. The tall bumps are the drums." data-es="Espera un segundo. Los picos altos son la batería.">Wait a second. The tall bumps are the drums.</span></div>
     <div class="step"><span class="num">3</span>
-      <img src="/pt-start.png" alt="The red Start button.">
-      <b>Press Start</b><span>The red one. Now put a hand on the record.</span></div>
+      <img src="/dj-start.png" width="77" height="56" alt="The red Start button." data-en-src="/dj-start.png" data-es-src="/dj-start-es.png" data-en-alt="The red Start button." data-es-alt="El botón rojo Arrancar." data-en-w="77" data-en-h="56" data-es-w="107" data-es-h="56" loading="lazy">
+      <b data-en="Press Start" data-es="Pulsa Arrancar">Press Start</b><span data-en="The red one. Now put a hand on the record." data-es="El rojo. Ahora pon una mano en el disco.">The red one. Now put a hand on the record.</span></div>
   </div>
+  <p class="sub" style="margin:.8rem 0 0" data-en="No song yet? Part 7 has four records made right here." data-es="¿Aún no tienes canción? En la parte 7 hay cuatro discos hechos aquí mismo.">No song yet? Part 7 has four records made right here.</p>
 </section>
 
 <section>
-  <h2><span class="n">3</span>If scratching feels too fast</h2>
-  <p class="sub">One button fixes it. It sits under the two decks. Click it to change it.</p>
+  <h2><span class="n">3</span><span data-en="If scratching feels too fast" data-es="Si rayar se siente muy rápido">If scratching feels too fast</span></h2>
+  <p class="sub" data-en="One button changes it. It sits under the crossfader, on the Full bench. Tap it to change it." data-es="Un botón lo cambia. Está debajo del crossfader, en el Banco completo. Tócalo para cambiarlo.">One button changes it. It sits under the crossfader, on the Full bench. Tap it to change it.</p>
   <div class="parts">
-    <div class="part half"><img src="/pt-touch-fine.png" alt="The button reading Platter: fine.">
-      <b>Start here</b><span>Your hand moves a long way, the music moves a little. Easiest to control.</span></div>
-    <div class="part half"><img src="/pt-touch-normal.png" alt="The button reading Platter: normal.">
-      <b>When your hand is steady</b><span>The middle setting.</span></div>
-    <div class="part wide"><img src="/pt-touch-vinyl.png" alt="The button reading Platter: 1:1 vinyl.">
-      <b>Like a real record &mdash; very touchy</b><span>The screen is small and a real record is the size of a dinner plate, so at 1:1 the smallest movement is a big move in the music. This is the setting that makes people say they cannot do it.</span></div>
+    <div class="part half">
+      <img src="/dj-touch-fine.png" width="128" height="54" alt="The button reading Platter: fine." data-en-src="/dj-touch-fine.png" data-es-src="/dj-touch-fine-es.png" data-en-alt="The button reading Platter: fine." data-es-alt="El botón que dice Plato: fino." data-en-w="128" data-en-h="54" data-es-w="119" data-es-h="54" loading="lazy">
+      <b data-en="Start here" data-es="Empieza aquí">Start here</b><span data-en="Your hand moves a lot, the music moves a little. Easiest to control." data-es="Tu mano se mueve mucho y la música poco. Es lo más fácil de controlar.">Your hand moves a lot, the music moves a little. Easiest to control.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-touch-normal.png" width="153" height="54" alt="The button reading Platter: normal." data-en-src="/dj-touch-normal.png" data-es-src="/dj-touch-normal-es.png" data-en-alt="The button reading Platter: normal." data-es-alt="El botón que dice Plato: normal." data-en-w="153" data-en-h="54" data-es-w="143" data-es-h="54" loading="lazy">
+      <b data-en="When your hand feels steady" data-es="Cuando tu mano se sienta firme">When your hand feels steady</b><span data-en="The middle setting." data-es="El punto medio.">The middle setting.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-touch-vinyl.png" width="164" height="54" alt="The button reading Platter: 1:1 vinyl." data-en-src="/dj-touch-vinyl.png" data-es-src="/dj-touch-vinyl-es.png" data-en-alt="The button reading Platter: 1:1 vinyl." data-es-alt="El botón que dice Plato: vinilo 1:1." data-en-w="164" data-en-h="54" data-es-w="159" data-es-h="54" loading="lazy">
+      <b data-en="Like a real record" data-es="Como un disco de verdad">Like a real record</b><span data-en="Very touchy: a tiny move is a big jump in the music. Try it once fine feels easy." data-es="Muy sensible: un movimiento pequeño es un gran salto en la música. Pruébalo cuando fino se sienta fácil.">Very touchy: a tiny move is a big jump in the music. Try it once fine feels easy.</span>
+    </div>
   </div>
 </section>
 
 <section>
-  <h2><span class="n">4</span>Four scratches</h2>
-  <p class="sub"><b style="color:#2c7a4e">Green = push forward.</b> <b style="color:#9c3a2e">Red = pull back.</b> Two hands: one on the record, one on the crossfader under the decks.</p>
+  <h2><span class="n">4</span><span data-en="Four scratches" data-es="Cuatro rayados">Four scratches</span></h2>
+  <p class="sub" data-en="&lt;b class=&quot;g&quot;&gt;Green = push forward.&lt;/b&gt; &lt;b class=&quot;r&quot;&gt;Red = pull back.&lt;/b&gt; One hand on the record of Deck A, one on the crossfader." data-es="&lt;b class=&quot;g&quot;&gt;Verde = empuja hacia adelante.&lt;/b&gt; &lt;b class=&quot;r&quot;&gt;Rojo = jala hacia atrás.&lt;/b&gt; Una mano en el disco del Plato A y otra en el crossfader."><b class="g">Green = push forward.</b> <b class="r">Red = pull back.</b> One hand on the record of Deck A, one on the crossfader.</p>
   <div class="scr">
     <div class="card">
       <div class="onplatter">
-        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <img src="/dj-platter.png" width="248" height="248" alt="The record on Deck A." data-en-src="/dj-platter.png" data-es-src="/dj-platter-es.png" data-en-alt="The record on Deck A." data-es-alt="El disco del Plato A." data-en-w="248" data-en-h="248" data-es-w="248" data-es-h="248" loading="lazy">
         <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 54.7 36.5" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="65.0,28.5 49.5,29.8 60.0,43.2" fill="#35b96b"/><path d="M72.0 58.5 A78 78 0 0 0 53.9 161.3" fill="none" stroke="#e04a3c" stroke-width="8" stroke-linecap="round"/><polygon points="60.7,172.4 46.6,165.8 61.1,156.8" fill="#e04a3c"/></svg>
       </div>
       <div class="faderstrip">
         <b>Crossfader</b>
-        <img src="/pt-xf-mid.png" alt="The crossfader.">
-        <span>stays in the middle the whole time</span>
+        <img src="/dj-xf-mid.png" width="912" height="98" alt="The crossfader in the middle." data-en-src="/dj-xf-mid.png" data-es-src="/dj-xf-mid-es.png" data-en-alt="The crossfader in the middle." data-es-alt="El crossfader en el medio." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+        <span data-en="stays in the middle the whole time" data-es="se queda en el medio todo el tiempo">stays in the middle the whole time</span>
       </div>
-      <h3>Baby<span class="hard">Easy</span></h3>
-      <p>Push the record forward, then pull it back. The fader never moves. Say <b>hmm-hmm</b> while you do it.</p>
+      <h3><span data-en="Baby" data-es="Bebé">Baby</span><span class="hard" data-en="Easy" data-es="Fácil">Easy</span></h3>
+      <p data-en="Push the record forward, then pull it back. The fader stays still. Say hmm-hmm as you go." data-es="Empuja el disco hacia adelante y luego jálalo hacia atrás. El fader no se mueve. Di mm-mm mientras lo haces.">Push the record forward, then pull it back. The fader stays still. Say hmm-hmm as you go.</p>
     </div>
     <div class="card">
       <div class="onplatter">
-        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <img src="/dj-platter.png" width="248" height="248" alt="The record on Deck A." data-en-src="/dj-platter.png" data-es-src="/dj-platter-es.png" data-en-alt="The record on Deck A." data-es-alt="El disco del Plato A." data-en-w="248" data-en-h="248" data-es-w="248" data-es-h="248" loading="lazy">
         <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 54.7 36.5" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="65.0,28.5 49.5,29.8 60.0,43.2" fill="#35b96b"/></svg>
       </div>
       <div class="faderstrip">
         <b>Crossfader</b>
-        <img src="/pt-xf-mid.png" alt="The crossfader.">
-        <span>open on the push &middot; across on the pull</span>
+        <img src="/dj-xf-mid.png" width="912" height="98" alt="The crossfader in the middle." data-en-src="/dj-xf-mid.png" data-es-src="/dj-xf-mid-es.png" data-en-alt="The crossfader in the middle." data-es-alt="El crossfader en el medio." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+        <span data-en="open on the push · across on the pull" data-es="abierto al empujar · cruzado al jalar">open on the push · across on the pull</span>
       </div>
-      <h3>Forward<span class="hard">Easy</span></h3>
-      <p>Push forward with the fader open. Slide the fader across, pull back silently, slide it back. Only the push is heard.</p>
+      <h3><span data-en="Forward" data-es="Hacia adelante">Forward</span><span class="hard" data-en="Easy" data-es="Fácil">Easy</span></h3>
+      <p data-en="Push forward with the fader open. Slide the fader across, pull back quietly, slide it back. You hear only the push." data-es="Empuja con el fader abierto. Cruza el fader, jala en silencio y regrésalo. Solo se oye el empujón.">Push forward with the fader open. Slide the fader across, pull back quietly, slide it back. You hear only the push.</p>
     </div>
     <div class="card">
       <div class="onplatter">
-        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <img src="/dj-platter.png" width="248" height="248" alt="The record on Deck A." data-en-src="/dj-platter.png" data-es-src="/dj-platter-es.png" data-en-alt="The record on Deck A." data-es-alt="El disco del Plato A." data-en-w="248" data-en-h="248" data-es-w="248" data-es-h="248" loading="lazy">
         <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 18.1 90.8" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="21.7,78.3 9.9,88.4 26.3,93.1" fill="#35b96b"/></svg>
       </div>
       <div class="faderstrip">
         <b>Crossfader</b>
-        <img src="/pt-xf-mid.png" alt="The crossfader.">
-        <span>opens and closes inside one push</span>
+        <img src="/dj-xf-mid.png" width="912" height="98" alt="The crossfader in the middle." data-en-src="/dj-xf-mid.png" data-es-src="/dj-xf-mid-es.png" data-en-alt="The crossfader in the middle." data-es-alt="El crossfader en el medio." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+        <span data-en="opens and closes inside one push" data-es="se abre y se cierra en un solo empujón">opens and closes inside one push</span>
       </div>
-      <h3>Chirp<span class="hard">Medium</span></h3>
-      <p>Open as you push, close before the push ends. A short bird sound.</p>
+      <h3><span data-en="Chirp" data-es="Chirp">Chirp</span><span class="hard" data-en="Medium" data-es="Media">Medium</span></h3>
+      <p data-en="Open as you push, close before the push ends. A short bird sound." data-es="Abre al empujar y cierra antes de que termine. Suena como un pajarito.">Open as you push, close before the push ends. A short bird sound.</p>
     </div>
     <div class="card">
       <div class="onplatter">
-        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <img src="/dj-platter.png" width="248" height="248" alt="The record on Deck A." data-en-src="/dj-platter.png" data-es-src="/dj-platter-es.png" data-en-alt="The record on Deck A." data-es-alt="El disco del Plato A." data-en-w="248" data-en-h="248" data-es-w="248" data-es-h="248" loading="lazy">
         <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 54.7 36.5" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="65.0,28.5 49.5,29.8 60.0,43.2" fill="#35b96b"/><path d="M72.0 58.5 A78 78 0 0 0 44.3 101.1" fill="none" stroke="#e04a3c" stroke-width="8" stroke-linecap="round"/><polygon points="41.2,113.7 36.1,99.1 52.6,103.2" fill="#e04a3c"/><path d="M69.5 107.4 A52 52 0 0 0 75.9 147.6" fill="none" stroke="#e04a3c" stroke-width="8" stroke-linecap="round"/><polygon points="82.8,158.6 68.7,152.1 83.1,143.1" fill="#e04a3c"/></svg>
       </div>
       <div class="faderstrip">
         <b>Crossfader</b>
-        <img src="/pt-xf-mid.png" alt="The crossfader.">
-        <span>stays in the middle</span>
+        <img src="/dj-xf-mid.png" width="912" height="98" alt="The crossfader in the middle." data-en-src="/dj-xf-mid.png" data-es-src="/dj-xf-mid-es.png" data-en-alt="The crossfader in the middle." data-es-alt="El crossfader en el medio." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+        <span data-en="stays in the middle" data-es="se queda en el medio">stays in the middle</span>
       </div>
-      <h3>Tear<span class="hard">Medium</span></h3>
-      <p>One push. Then pull back in two pieces &mdash; fast, then slow. Fader open. It tears.</p>
+      <h3><span data-en="Tear" data-es="Tear">Tear</span><span class="hard" data-en="Medium" data-es="Media">Medium</span></h3>
+      <p data-en="One push. Then pull back in two pieces: fast, then slow. Fader open." data-es="Un empujón. Luego jala en dos partes: rápido y después lento. Fader abierto.">One push. Then pull back in two pieces: fast, then slow. Fader open.</p>
     </div>
   </div>
-  <p class="sub" style="margin-left:0">Set <b>Fader: Cut</b> (under the decks) before you try the forward scratch. On Blend the fader fades instead of cutting, and the pull-back is still heard.</p>
+  <p class="sub" style="margin:.8rem 0 0" data-en="Before the forward scratch, set Fader: Cut (under the crossfader, Full bench). On Blend you still hear the pull back." data-es="Antes del rayado hacia adelante, pon Fader: Corte (debajo del crossfader, Banco completo). En Mezcla todavía se oye el regreso.">Before the forward scratch, set Fader: Cut (under the crossfader, Full bench). On Blend you still hear the pull back.</p>
 </section>
 
 <section>
-  <h2><span class="n">5</span>Lining two songs up</h2>
-  <p class="sub">Two songs only sound like one when the numbers agree. Watch the yellow BPM on each deck.</p>
+  <h2><span class="n">5</span><span data-en="Lining two songs up" data-es="Alinear dos canciones">Lining two songs up</span></h2>
+  <p class="sub" data-en="Two songs sound like one when their BPM match. Watch the yellow number on each deck." data-es="Dos canciones suenan como una cuando sus BPM coinciden. Mira el número amarillo de cada plato.">Two songs sound like one when their BPM match. Watch the yellow number on each deck.</p>
   <div class="two">
     <div class="card">
       <div class="bpmpair">
-        <span class="tagbad">NOT LINED UP</span>
-        <img src="/pt-bpm-a.png" alt="Deck A reading 106.8 BPM.">
-        <img src="/pt-bpm-b-off.png" alt="Deck B reading 99.8 BPM.">
+        <span class="tagbad" data-en="NOT LINED UP" data-es="NO ALINEADAS">NOT LINED UP</span>
+        <img src="/dj-bpm-a.png" width="285" height="64" alt="Deck A: Chicago House, 125.0 BPM." data-en-src="/dj-bpm-a.png" data-es-src="/dj-bpm-a-es.png" data-en-alt="Deck A: Chicago House, 125.0 BPM." data-es-alt="Plato A: House de Chicago, 125.0 BPM." data-en-w="285" data-en-h="64" data-es-w="285" data-es-h="64" loading="lazy">
+        <img src="/dj-bpm-b-off.png" width="285" height="64" alt="Deck B: Disco Edit, 120.0 BPM." data-en-src="/dj-bpm-b-off.png" data-es-src="/dj-bpm-b-off-es.png" data-en-alt="Deck B: Disco Edit, 120.0 BPM." data-es-alt="Plato B: Edit de disco, 120.0 BPM." data-en-w="285" data-en-h="64" data-es-w="285" data-es-h="64" loading="lazy">
       </div>
-      <h3>Wrong</h3>
-      <p>106.8 against 99.8. The beats drift apart and it sounds like two songs fighting.</p>
+      <h3><span data-en="Not yet" data-es="Todavía no">Not yet</span></h3>
+      <p data-en="125 against 120. The beats drift apart." data-es="125 contra 120. Los pulsos se separan.">125 against 120. The beats drift apart.</p>
     </div>
     <div class="card">
       <div class="bpmpair">
-        <span class="taggood">LINED UP</span>
-        <img src="/pt-bpm-a.png" alt="Deck A reading 106.8 BPM.">
-        <img src="/pt-bpm-b-on.png" alt="Deck B reading 106.7 BPM.">
+        <span class="taggood" data-en="LINED UP" data-es="ALINEADAS">LINED UP</span>
+        <img src="/dj-bpm-a.png" width="285" height="64" alt="Deck A: Chicago House, 125.0 BPM." data-en-src="/dj-bpm-a.png" data-es-src="/dj-bpm-a-es.png" data-en-alt="Deck A: Chicago House, 125.0 BPM." data-es-alt="Plato A: House de Chicago, 125.0 BPM." data-en-w="285" data-en-h="64" data-es-w="285" data-es-h="64" loading="lazy">
+        <img src="/dj-bpm-b-on.png" width="285" height="64" alt="Deck B: Disco Edit, now 125.0 BPM." data-en-src="/dj-bpm-b-on.png" data-es-src="/dj-bpm-b-on-es.png" data-en-alt="Deck B: Disco Edit, now 125.0 BPM." data-es-alt="Plato B: Edit de disco, ahora 125.0 BPM." data-en-w="285" data-en-h="64" data-es-w="285" data-es-h="64" loading="lazy">
       </div>
-      <h3>Right</h3>
-      <p>106.8 against 106.7. Close enough. Now you can move the crossfader.</p>
+      <h3><span data-en="Lined up" data-es="Alineadas">Lined up</span></h3>
+      <p data-en="125 against 125. Now move the crossfader." data-es="125 contra 125. Ahora mueve el crossfader.">125 against 125. Now move the crossfader.</p>
     </div>
   </div>
   <div class="steps" style="margin-top:1rem">
     <div class="step"><span class="num">1</span>
-      <img src="/pt-pitch.png" alt="The PITCH slider.">
-      <b>Drag PITCH</b><span>On the slow deck. Watch its BPM climb toward the other one.</span></div>
+      <img src="/dj-pitch.png" width="289" height="86" alt="The Pitch slider." data-en-src="/dj-pitch.png" data-es-src="/dj-pitch-es.png" data-en-alt="The Pitch slider." data-es-alt="El deslizador de Tono." data-en-w="289" data-en-h="86" data-es-w="289" data-es-h="86" loading="lazy">
+      <b data-en="Drag Pitch" data-es="Arrastra Tono">Drag Pitch</b><span data-en="On the slower deck. Watch its BPM climb." data-es="En el plato más lento. Mira cómo sube su BPM.">On the slower deck. Watch its BPM climb.</span></div>
     <div class="step"><span class="num">2</span>
-      <img src="/pt-nudge.png" alt="The Nudge buttons.">
-      <b>Then Nudge</b><span>Same speed but landing late? Nudge it forward a hair.</span></div>
+      <img src="/dj-nudge.png" width="285" height="105" alt="The Nudge buttons." data-en-src="/dj-nudge.png" data-es-src="/dj-nudge-es.png" data-en-alt="The Nudge buttons." data-es-alt="Los botones de Empuje." data-en-w="285" data-en-h="105" data-es-w="285" data-es-h="105" loading="lazy">
+      <b data-en="Then Nudge" data-es="Luego Empuje">Then Nudge</b><span data-en="Same speed, but landing late? Nudge it forward a hair." data-es="¿Misma velocidad pero llega tarde? Empújalo un poquito.">Same speed, but landing late? Nudge it forward a hair.</span></div>
     <div class="step"><span class="num">3</span>
-      <img src="/pt-sync.png" alt="The SYNC button and BPM readout.">
-      <b>Or press SYNC</b><span>Does it for you. Try by hand first &mdash; it trains your ear.</span></div>
+      <img src="/dj-sync.png" width="285" height="93" alt="SYNC lit on Deck B." data-en-src="/dj-sync.png" data-es-src="/dj-sync-es.png" data-en-alt="SYNC lit on Deck B." data-es-alt="SYNC encendido en el Plato B." data-en-w="285" data-en-h="93" data-es-w="285" data-es-h="93" loading="lazy">
+      <b data-en="Or press SYNC" data-es="O pulsa SYNC">Or press SYNC</b><span data-en="It matches the MASTER deck for you. Try by ear first: it trains your ear." data-es="Iguala al plato MASTER por ti. Prueba primero de oído: así lo entrenas.">It matches the MASTER deck for you. Try by ear first: it trains your ear.</span></div>
   </div>
 </section>
 
 <section>
-  <h2><span class="n">6</span>Swapping to the next song</h2>
-  <p class="sub">The crossfader lives under the two decks. Count 32 beats to get from one side to the other.</p>
+  <h2><span class="n">6</span><span data-en="Swapping to the next song" data-es="Pasar a la siguiente canción">Swapping to the next song</span></h2>
+  <p class="sub" data-en="Slide the crossfader slowly. Count 32 beats from one side to the other." data-es="Desliza el crossfader despacio. Cuenta 32 pulsos de un lado al otro.">Slide the crossfader slowly. Count 32 beats from one side to the other.</p>
   <div class="parts">
-    <div class="part wide"><img src="/pt-xf-l.png" alt="The crossfader all the way left.">
-      <b>Hard left &mdash; only deck A</b><span>Deck B is silent, however loud its volume is.</span></div>
-    <div class="part wide"><img src="/pt-xf-mid.png" alt="The crossfader in the middle.">
-      <b>Middle &mdash; both decks</b><span>Where a mix happens. Also where you leave it to scratch.</span></div>
-    <div class="part wide"><img src="/pt-xf-r.png" alt="The crossfader all the way right.">
-      <b>Hard right &mdash; only deck B</b><span>The swap is finished.</span></div>
-    <div class="part wide"><img src="/pt-kill-on.png" alt="KILL LOW lit up on a deck.">
-      <b>KILL LOW, halfway across</b><span>Two kick drums at once is mud. Bring the new song in with its bass killed, then at the halfway point swap: bass out of the old one, bass into the new one.</span></div>
+    <div class="part wide">
+      <img src="/dj-xf-l.png" width="912" height="98" alt="The crossfader all the way left." data-en-src="/dj-xf-l.png" data-es-src="/dj-xf-l-es.png" data-en-alt="The crossfader all the way left." data-es-alt="El crossfader todo a la izquierda." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+      <b data-en="All the way left: the Left decks only" data-es="Todo a la izquierda: solo los platos Izq.">All the way left: the Left decks only</b><span data-en="At the start, that is Deck A. The Right decks are silent." data-es="Al empezar, ese es el Plato A. Los platos Der. no suenan.">At the start, that is Deck A. The Right decks are silent.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-xf-mid.png" width="912" height="98" alt="The crossfader in the middle." data-en-src="/dj-xf-mid.png" data-es-src="/dj-xf-mid-es.png" data-en-alt="The crossfader in the middle." data-es-alt="El crossfader en el medio." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+      <b data-en="Middle: both sides" data-es="En medio: los dos lados">Middle: both sides</b><span data-en="Where a mix happens. Also where you leave it to scratch." data-es="Aquí pasa la mezcla. También aquí lo dejas para rayar.">Where a mix happens. Also where you leave it to scratch.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-xf-r.png" width="912" height="98" alt="The crossfader all the way right." data-en-src="/dj-xf-r.png" data-es-src="/dj-xf-r-es.png" data-en-alt="The crossfader all the way right." data-es-alt="El crossfader todo a la derecha." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+      <b data-en="All the way right: the Right decks only" data-es="Todo a la derecha: solo los platos Der.">All the way right: the Right decks only</b><span data-en="At the start, that is Deck B. The swap is done." data-es="Al empezar, ese es el Plato B. El cambio está hecho.">At the start, that is Deck B. The swap is done.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-side.png" width="281" height="71" alt="Crossfader side for Deck C: Left, None, Right, with None lit." data-en-src="/dj-side.png" data-es-src="/dj-side-es.png" data-en-alt="Crossfader side for Deck C: Left, None, Right, with None lit." data-es-alt="Lado del crossfader del Plato C: Izq., Ninguno, Der., con Ninguno encendido." data-en-w="281" data-en-h="71" data-es-w="281" data-es-h="71" loading="lazy">
+      <b data-en="Crossfader side" data-es="Lado del crossfader">Crossfader side</b><span data-en="Left, None or Right. A deck on None plays at any crossfader spot. Deck C starts on None." data-es="Izq., Ninguno o Der. Un plato en Ninguno suena en cualquier punto del crossfader. El Plato C empieza en Ninguno.">Left, None or Right. A deck on None plays at any crossfader spot. Deck C starts on None.</span>
+    </div>
+    <div class="part half">
+      <img src="/dj-kill-on.png" width="281" height="216" alt="KILL LOW lit on Deck B." data-en-src="/dj-kill-on.png" data-es-src="/dj-kill-on-es.png" data-en-alt="KILL LOW lit on Deck B." data-es-alt="CORTA GRAVES encendido en el Plato B." data-en-w="281" data-en-h="216" data-es-w="281" data-es-h="216" loading="lazy">
+      <b data-en="KILL LOW, halfway across" data-es="CORTA GRAVES, a mitad de camino">KILL LOW, halfway across</b><span data-en="Two bass drums at once sound muddy. Bring the new song in with KILL LOW on, then swap halfway." data-es="Dos bombos a la vez suenan turbios. Entra la canción nueva con CORTA GRAVES y cambia a la mitad.">Two bass drums at once sound muddy. Bring the new song in with KILL LOW on, then swap halfway.</span>
+    </div>
   </div>
 </section>
 
 <section>
-  <h2><span class="n">7</span>Your record crate</h2>
-  <p class="sub">Under the crossfader. It keeps your songs, even after you close the tab.</p>
+  <h2><span class="n">7</span><span data-en="Your record crate" data-es="Tu caja de discos">Your record crate</span></h2>
+  <p class="sub" data-en="Under the mixer. It keeps your songs, even after you close the tab." data-es="Debajo del mezclador. Guarda tus canciones aunque cierres la pestaña.">Under the mixer. It keeps your songs, even after you close the tab.</p>
   <div class="parts">
-    <div class="part wide"><img src="/pt-crate-next.png" alt="The crate with three records standing in it, each with A, B and remove buttons.">
-      <b>Up next &mdash; pack the crate before the set</b><span>Press <b>Add songs</b> and pick all of them at once. They stand in the crate in order. When it is time, drag a record onto a deck, or press <b>A</b> or <b>B</b> under it. It goes on the platter and leaves the crate.</span></div>
-    <div class="part wide"><img src="/pt-crate-prev.png" alt="The Previously spun list with one song in it.">
-      <b>Previously spun</b><span>The last eight records you played. One press puts any of them back on a deck.</span></div>
+    <div class="part wide">
+      <img src="/dj-made.png" width="908" height="252" alt="Four records made right here, each with Onto deck A, B and C." data-en-src="/dj-made.png" data-es-src="/dj-made-es.png" data-en-alt="Four records made right here, each with Onto deck A, B and C." data-es-alt="Cuatro discos hechos aquí mismo, cada uno con Al plato A, B y C." data-en-w="908" data-en-h="252" data-es-w="908" data-es-h="206" loading="lazy">
+      <b data-en="Made right here" data-es="Hechos aquí mismo">Made right here</b><span data-en="Four records the page makes. Press A, B or C to put one on a deck." data-es="Cuatro discos que hace la página. Pulsa A, B o C para ponerlo en un plato.">Four records the page makes. Press A, B or C to put one on a deck.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-starter.png" width="908" height="352" alt="The Starter crate: eleven songs and Load the starter crate." data-en-src="/dj-starter.png" data-es-src="/dj-starter-es.png" data-en-alt="The Starter crate: eleven songs and Load the starter crate." data-es-alt="La Caja inicial: once canciones y Cargar la caja inicial." data-en-w="908" data-en-h="352" data-es-w="908" data-es-h="374" loading="lazy">
+      <b data-en="Starter crate" data-es="Caja inicial">Starter crate</b><span data-en="Eleven recorded songs, 80 to 128 BPM. One press puts them all in Up next." data-es="Once canciones grabadas, de 80 a 128 BPM. Un toque las pone todas en Lo que sigue.">Eleven recorded songs, 80 to 128 BPM. One press puts them all in Up next.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-crate-next.png" width="908" height="284" alt="Up next: records standing in the crate, each with A, B and C." data-en-src="/dj-crate-next.png" data-es-src="/dj-crate-next-es.png" data-en-alt="Up next: records standing in the crate, each with A, B and C." data-es-alt="Lo que sigue: discos en la caja, cada uno con A, B y C." data-en-w="908" data-en-h="284" data-es-w="908" data-es-h="284" loading="lazy">
+      <b data-en="Up next" data-es="Lo que sigue">Up next</b><span data-en="Add songs before you play. Drag a record onto a deck, or press A, B or C." data-es="Agrega canciones antes de tocar. Arrastra un disco a un plato, o pulsa A, B o C.">Add songs before you play. Drag a record onto a deck, or press A, B or C.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-crate-prev.png" width="908" height="152" alt="Previously spun, with one song in it." data-en-src="/dj-crate-prev.png" data-es-src="/dj-crate-prev-es.png" data-en-alt="Previously spun, with one song in it." data-es-alt="Tocadas antes, con una canción." data-en-w="908" data-en-h="152" data-es-w="908" data-es-h="152" loading="lazy">
+      <b data-en="Previously spun" data-es="Tocadas antes">Previously spun</b><span data-en="The last eight records you played. One press puts one back on a deck." data-es="Los últimos ocho discos que tocaste. Un toque pone uno de nuevo en un plato.">The last eight records you played. One press puts one back on a deck.</span>
+    </div>
+    <div class="part wide">
+      <img src="/dj-takes.png" width="942" height="70" alt="A take: play it, Save as .wav, or put it onto deck A, B or C." data-en-src="/dj-takes.png" data-es-src="/dj-takes-es.png" data-en-alt="A take: play it, Save as .wav, or put it onto deck A, B or C." data-es-alt="Una toma: escúchala, Guardar como .wav, o ponla en el plato A, B o C." data-en-w="942" data-en-h="70" data-es-w="942" data-es-h="70" loading="lazy">
+      <b data-en="Takes" data-es="Tomas">Takes</b><span data-en="After you record: Save as .wav, or put the take on a deck." data-es="Después de grabar: Guardar como .wav, o pon la toma en un plato.">After you record: Save as .wav, or put the take on a deck.</span>
+    </div>
   </div>
-  <p class="sub" style="margin-top:.8rem">Closed the tab by mistake? Open the Turntables again. Both records go back on, stopped right where you left them.</p>
+  <p class="sub" style="margin:.8rem 0 0" data-en="Closed the tab by mistake? Open the turntables again. Each record goes back on its deck, stopped where you left it." data-es="¿Cerraste la pestaña sin querer? Abre los tocadiscos otra vez. Cada disco vuelve a su plato, parado donde lo dejaste.">Closed the tab by mistake? Open the turntables again. Each record goes back on its deck, stopped where you left it.</p>
 </section>
 
 <section>
-  <h2><span class="n">8</span>Nothing is happening</h2>
+  <h2><span class="n">8</span><span data-en="Nothing is happening" data-es="No pasa nada">Nothing is happening</span></h2>
   <ul class="fix">
-    <li><img src="/pt-xf-r.png" alt="The crossfader hard right.">
-      <div><b>No sound from deck A</b><span>The crossfader is all the way over to B. Slide it back to the middle.</span></div></li>
-    <li><img src="/pt-start.png" alt="The Start button.">
-      <div><b>No sound at all</b><span>Start was never pressed. It is the red one.</span></div></li>
-    <li><img src="/pt-platter-big.png" alt="The record.">
-      <div><b>Sound, but it will not scratch</b><span>Your hand is on the gold rim. That is the motor. Touch the black record part.</span></div></li>
-    <li><img src="/pt-touch-vinyl.png" alt="The button reading Platter: 1:1 vinyl.">
-      <div><b>Way too fast to control</b><span>It is set to 1:1 vinyl. Click the button until it reads <b>Platter: fine</b>.</span></div></li>
-    <li><img src="/pt-load.png" alt="The Load a song button.">
-      <div><b>The file will not load</b><span>A song rented from a streaming app is locked. Use a file you own.</span></div></li>
-    <li><img src="/pt-crate-row.png" alt="A song in the Up next list.">
-      <div><b>My song is gone</b><span>Look in <b>Previously spun</b> under the crossfader and press Onto deck A.</span></div></li>
-    <li><img src="/pt-kill-on.png" alt="KILL LOW lit up.">
-      <div><b>Both songs sound like mud</b><span>Two bass drums at once. Press KILL LOW on one of them.</span></div></li>
+    <li><img class="wide" src="/dj-xf-r.png" width="912" height="98" alt="The crossfader all the way right." data-en-src="/dj-xf-r.png" data-es-src="/dj-xf-r-es.png" data-en-alt="The crossfader all the way right." data-es-alt="El crossfader todo a la derecha." data-en-w="912" data-en-h="98" data-es-w="912" data-es-h="98" loading="lazy">
+      <div><b data-en="No sound from Deck A" data-es="No suena el Plato A">No sound from Deck A</b><span data-en="The crossfader is all the way right. Slide it back to the middle." data-es="El crossfader está todo a la derecha. Regrésalo al medio.">The crossfader is all the way right. Slide it back to the middle.</span></div></li>
+    <li><img src="/dj-start.png" width="77" height="56" alt="The Start button." data-en-src="/dj-start.png" data-es-src="/dj-start-es.png" data-en-alt="The Start button." data-es-alt="El botón Arrancar." data-en-w="77" data-en-h="56" data-es-w="107" data-es-h="56" loading="lazy">
+      <div><b data-en="No sound at all" data-es="No suena nada">No sound at all</b><span data-en="Press Start. It is the red one." data-es="Pulsa Arrancar. Es el rojo.">Press Start. It is the red one.</span></div></li>
+    <li><img src="/dj-platter.png" width="248" height="248" alt="The record." data-en-src="/dj-platter.png" data-es-src="/dj-platter-es.png" data-en-alt="The record." data-es-alt="El disco." data-en-w="248" data-en-h="248" data-es-w="248" data-es-h="248" loading="lazy">
+      <div><b data-en="The record will not move" data-es="El disco no se mueve">The record will not move</b><span data-en="Put a song on first. An empty deck has nothing to turn." data-es="Primero pon una canción. Un plato vacío no tiene nada que girar.">Put a song on first. An empty deck has nothing to turn.</span></div></li>
+    <li><img src="/dj-touch-vinyl.png" width="164" height="54" alt="The button reading Platter: 1:1 vinyl." data-en-src="/dj-touch-vinyl.png" data-es-src="/dj-touch-vinyl-es.png" data-en-alt="The button reading Platter: 1:1 vinyl." data-es-alt="El botón que dice Plato: vinilo 1:1." data-en-w="164" data-en-h="54" data-es-w="159" data-es-h="54" loading="lazy">
+      <div><b data-en="Way too fast to control" data-es="Va demasiado rápido">Way too fast to control</b><span data-en="It is on 1:1 vinyl. Tap it until it reads Platter: fine." data-es="Está en vinilo 1:1. Tócalo hasta que diga Plato: fino.">It is on 1:1 vinyl. Tap it until it reads Platter: fine.</span></div></li>
+    <li><img src="/dj-load.png" width="285" height="305" alt="The Load a song list." data-en-src="/dj-load.png" data-es-src="/dj-load-es.png" data-en-alt="The Load a song list." data-es-alt="La lista de Cargar una canción." data-en-w="285" data-en-h="305" data-es-w="285" data-es-h="348" loading="lazy">
+      <div><b data-en="The file will not load" data-es="El archivo no carga">The file will not load</b><span data-en="A song from a streaming app is locked. Use a file you own." data-es="Una canción de una app de streaming está bloqueada. Usa un archivo que sea tuyo.">A song from a streaming app is locked. Use a file you own.</span></div></li>
+    <li><img class="wide" src="/dj-crate-prev.png" width="908" height="152" alt="Previously spun." data-en-src="/dj-crate-prev.png" data-es-src="/dj-crate-prev-es.png" data-en-alt="Previously spun." data-es-alt="Tocadas antes." data-en-w="908" data-en-h="152" data-es-w="908" data-es-h="152" loading="lazy">
+      <div><b data-en="My song is gone" data-es="Mi canción desapareció">My song is gone</b><span data-en="Look in Previously spun and press A, B or C." data-es="Busca en Tocadas antes y pulsa A, B o C.">Look in Previously spun and press A, B or C.</span></div></li>
+    <li><img src="/dj-kill-on.png" width="281" height="216" alt="KILL LOW lit." data-en-src="/dj-kill-on.png" data-es-src="/dj-kill-on-es.png" data-en-alt="KILL LOW lit." data-es-alt="CORTA GRAVES encendido." data-en-w="281" data-en-h="216" data-es-w="281" data-es-h="216" loading="lazy">
+      <div><b data-en="Two songs sound muddy" data-es="Dos canciones suenan turbias">Two songs sound muddy</b><span data-en="Two bass drums at once. Press KILL LOW on one." data-es="Dos bombos a la vez. Pulsa CORTA GRAVES en una.">Two bass drums at once. Press KILL LOW on one.</span></div></li>
   </ul>
 </section>
 
 <footer>
-  The Turntables &#183; Architecture of Grace &#183; your song stays on this computer
+  <span data-en="The Turntables · Architecture of Grace · your song stays on this computer" data-es="Los tocadiscos · Architecture of Grace · tu canción se queda en esta computadora">The Turntables · Architecture of Grace · your song stays on this computer</span>
 </footer>
 
 </div>
+<script>
+/* AOG-DECKPIC-V2 — each picture has a Spanish twin; it follows the page language (the EN/ES switch in the top bar) */
+(function(){
+  function swap(){
+    var es=(document.documentElement.getAttribute("lang")||"").indexOf("es")===0, k=es?"es":"en";
+    document.querySelectorAll("img[data-es-src]").forEach(function(im){
+      var src=im.getAttribute("data-"+k+"-src"), alt=im.getAttribute("data-"+k+"-alt"),
+          w=im.getAttribute("data-"+k+"-w"), h=im.getAttribute("data-"+k+"-h");
+      if(src && im.getAttribute("src")!==src) im.setAttribute("src", src);
+      if(alt) im.setAttribute("alt", alt);
+      if(w && h){ im.setAttribute("width", w); im.setAttribute("height", h); }
+    });
+  }
+  try{ new MutationObserver(swap).observe(document.documentElement, {attributes:true, attributeFilter:["lang"]}); }catch(e){}
+  swap();
+})();
+</script>
 <script src="/aog-topbar.js"></script>
 </body>
 </html>

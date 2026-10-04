@@ -17,8 +17,9 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(v.length===3 && v[1].m-v[0].m===7 && v[2].m-v[0].m===12, `${dev}: pad C plays a power chord, ${v.map(x=>x.m).join(" ")} (shape ${shp})`);
     const dots=await p.evaluate(()=>[...document.querySelectorAll("#neck .dot.fit")].map(g=>g.getAttribute("data-c")).join(" "));
     ok(dots.split(" ").filter(Boolean).length>=3, dev+": the neck shows it: "+dots);
-    const rh=await p.evaluate(()=>[...document.querySelectorAll("#rhythmSel option")].map(o=>o.textContent).slice(-2).join(" | "));
-    ok(/Chug/.test(rh) && /Gallop/.test(rh), dev+": the rhythm list ends with "+rh);
+    /* AOG-STRINGS-WAYS-V1: the ways are in groups now; Chug and Gallop are in Rock and metal */
+    const rh=await p.evaluate(()=>{ const g=[...document.querySelectorAll("#rhythmSel optgroup")].find(x=>x.label==="Rock and metal"); return g?[...g.querySelectorAll("option")].map(o=>o.textContent).join(" | "):""; });
+    ok(/Chug/.test(rh) && /Gallop/.test(rh), dev+": the Rock and metal group has Chug and Gallop: "+rh);
     await p.selectOption("#progSel","epic");
     for(const r of ["chug","gallop"]){
       await p.selectOption("#rhythmSel", r); await p.evaluate("__v=[]");

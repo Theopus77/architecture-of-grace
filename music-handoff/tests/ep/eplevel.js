@@ -1,7 +1,7 @@
 /* the C-major chord on each piano sound, K-weighted, loudest 400 ms, before the compressor (as AOG-PIANO-V1 leveled them) */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const srv=require("../srv.js")(9988);
-const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync("../bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
+const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(require("path").join(__dirname,"../bandt/measure.inc"),"utf8").replace(/^const MEASURE=/,""));
 (async()=>{
   const b=await pw.chromium.launch(); const p=await b.newPage(); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   await p.goto("http://localhost:9988/music-piano.html"); await p.waitForTimeout(600); await p.addScriptTag({content:MEASURE});

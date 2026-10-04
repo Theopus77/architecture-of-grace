@@ -27,7 +27,17 @@
        label: {en:"● Record a take", es:"● Grabar una toma"},   // optional: another name for the button
        ids: {btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}
      });
-   then calls REC.toggle() from its button and REC.paint() whenever it paints its words. */
+   then calls REC.toggle() from its button and REC.paint() whenever it paints its words.
+
+   AOG-TAKE-TO-PADS-V1 (2026-10-03) — Jimmy: "Can we send the sounds from the instruments to the drum machine as samples? Not just
+   for the pads". On the piano, the guitar, the bass and the band a take has one more action, Send to the drum machine. The tool is
+   known by its shelf (keysbench, guitarbench, bassbench, bandbench), so no page has to say more; the drum machine's own takes do
+   not get it. The take goes on the shelf "drumsample" the way the drum machine keeps a sample: one channel, 26,040 samples a
+   second, from its first sound, and no longer than 2.5 s. To get there it is low-passed and resampled in one step (each new sample
+   is a windowed-sinc sum of the old ones around it), so nothing above the new rate's limit folds back as a whistle. Its peak is set
+   to 0.8, as the chord pads are, and its last 20 ms fade so a sound cut at 2.5 s does not click. The shelf holds
+   {from:"piano"|"guitar"|"bass"|"band", name:{en:"Guitar take 2", es:"Toma de guitarra 2"}, seconds, at, rate:26040, pcm:Float32Array};
+   the drum machine shows it and puts it on the pad you pick. */
 (function () {
   "use strict";
   var W = {
@@ -43,8 +53,67 @@
     send: { en: "Send to the turntables", es: "Enviar a los platos" },
     sent: { en: "Sent. Open the turntables to play it.", es: "Enviado. Abre los platos para tocarlo." },
     decks: { en: "The turntables", es: "Los tocadiscos" },
+    /* AOG-TAKE-TO-PADS-V1 */
+    drum: { en: "Send to the drum machine", es: "Enviar a la caja de ritmos" },
+    drumSent: { en: "Sent. On the drum machine, pick a pad for it.", es: "Enviada. En la caja de ritmos, elige un pad para la toma." },
+    drums: { en: "The drum machine", es: "La caja de ritmos" },
     fail: { en: "That did not work. Try again.", es: "No funcionó. Inténtalo otra vez." }
   };
+  /* AOG-TAKE-TO-PADS-V1 — the tools whose takes can go to the drum machine, and what a take is called there */
+  var TOOL = { keysbench: "piano", guitarbench: "guitar", bassbench: "bass", bandbench: "band" };
+  var TAKE_NAME = {
+    piano: { en: "Piano take ", es: "Toma de piano " },
+    guitar: { en: "Guitar take ", es: "Toma de guitarra " },
+    bass: { en: "Bass take ", es: "Toma de bajo " },
+    band: { en: "Band take ", es: "Toma de la banda " }
+  };
+  function toolOf(o) {
+    if (TOOL[o.shelf]) return TOOL[o.shelf];
+    var m = /music-(piano|guitar|bass|band)\b/.exec(location.pathname || "");
+    return m ? m[1] : "";
+  }
+  var PAD_RATE = 26040, PAD_MAX = 2.5;
+  /* a band-limited change of rate: a windowed-sinc low-pass (Blackman, 16 zero crossings a side, cut at 45% of the lower rate)
+     and the resampling in one sum, read from a table of the kernel */
+  function resample(x, from, to) {
+    if (from === to) return x.slice();
+    var fc = 0.45 * Math.min(1, to / from), half = 16 / (2 * fc), OS = 512, nt = Math.ceil(half * OS) + 2, tab = new Float32Array(nt), i;
+    for (i = 0; i < nt; i++) {
+      var d = i / OS; if (d >= half) break;
+      var a = 2 * fc * d, s = a ? Math.sin(Math.PI * a) / (Math.PI * a) : 1, u = d / half;
+      tab[i] = 2 * fc * s * (0.42 + 0.5 * Math.cos(Math.PI * u) + 0.08 * Math.cos(2 * Math.PI * u));
+    }
+    var step = from / to, n = Math.max(1, Math.floor((x.length - 1) / step) + 1), y = new Float32Array(n), last = x.length - 1;
+    for (var j = 0; j < n; j++) {
+      var t = j * step, k0 = Math.max(0, Math.ceil(t - half)), k1 = Math.min(last, Math.floor(t + half)), acc = 0;
+      for (var k = k0; k <= k1; k++) {
+        var p = (t > k ? t - k : k - t) * OS, q = p | 0;
+        if (q + 1 < nt) acc += x[k] * (tab[q] + (tab[q + 1] - tab[q]) * (p - q));
+      }
+      y[j] = acc;
+    }
+    return y;
+  }
+  /* a take (the 16-bit stereo .wav this recorder writes), made ready for a drum pad */
+  async function toPad(blob) {
+    var head = new DataView(await blob.slice(0, 44).arrayBuffer()), sr = head.getUint32(24, true) || 44100;
+    /* the take starts about 50 ms before its first sound, so its first three seconds hold everything a pad can use */
+    var bytes = await blob.slice(44, 44 + Math.ceil(3 * sr) * 4).arrayBuffer();
+    var x = new Int16Array(bytes, 0, (bytes.byteLength >> 2) * 2), n = x.length >> 1, quiet = 66, on = 0;
+    while (on < n && x[2 * on] <= quiet && x[2 * on] >= -quiet && x[2 * on + 1] <= quiet && x[2 * on + 1] >= -quiet) on++;
+    if (on >= n) return null;
+    on = Math.max(0, on - Math.round(0.001 * sr));                    /* 1 ms before the first sound, so its attack is whole */
+    var len = Math.min(n - on, Math.ceil(PAD_MAX * sr) + 64), mono = new Float32Array(len), i;
+    for (i = 0; i < len; i++) mono[i] = (x[2 * (on + i)] + x[2 * (on + i) + 1]) / 65536;
+    var y = resample(mono, sr, PAD_RATE), end = Math.min(y.length, Math.floor(PAD_MAX * PAD_RATE));
+    while (end > 64 && y[end - 1] < 0.002 && y[end - 1] > -0.002) end--;   /* no quiet tail to take up the sampler's memory */
+    y = y.slice(0, end);
+    var pk = 0; for (i = 0; i < y.length; i++) { var a = y[i] < 0 ? -y[i] : y[i]; if (a > pk) pk = a; }
+    var g = pk > 0 ? Math.min(8, 0.8 / pk) : 1, f = Math.min(y.length >> 2, Math.round(0.02 * PAD_RATE));
+    for (i = 0; i < y.length; i++) y[i] *= g;
+    for (i = 0; i < f; i++) y[y.length - 1 - i] *= i / f;
+    return y;
+  }
   /* the listening ear: it collects what passes through it in pieces of 4096 frames, only while it is armed */
   var SRC = [
     "class AogRec extends AudioWorkletProcessor{",
@@ -175,6 +244,20 @@
         if (line) line.innerHTML = w("sent") + ' <a href="music-decks.html">' + w("decks") + "</a>";
       } catch (e) { if (line) line.textContent = w("fail"); }
     };
+    /* AOG-TAKE-TO-PADS-V1 — Send to the drum machine: the take, ready for a pad, on the shelf the drum machine reads */
+    R.toDrums = async function (n, btn) {
+      var k = R.takes.find(function (x) { return x.n === n; }), from = toolOf(o), line = el("line");
+      if (!k || !from) return;
+      if (btn) btn.disabled = true;
+      try {
+        var pcm = await toPad(k.blob); if (!pcm || pcm.length < 64) throw new Error("no sound");
+        var nm = TAKE_NAME[from];
+        await AOGHandoff.put("drumsample", { from: from, name: { en: nm.en + k.n, es: nm.es + k.n }, seconds: Math.round(pcm.length / PAD_RATE * 100) / 100,
+          at: Date.now(), rate: PAD_RATE, pcm: pcm });
+        if (line) line.innerHTML = w("drumSent") + ' <a href="music-drums.html">' + w("drums") + "</a>";
+      } catch (e) { if (line) line.textContent = w("fail"); }
+      if (btn) btn.disabled = false;
+    };
     R.paint = function () {
       var btn = el("btn"); if (!btn) return;
       btn.textContent = R.on ? w("recStop") : w("rec"); btn.setAttribute("aria-pressed", R.on ? "true" : "false"); btn.classList.add("aogrec-btn");
@@ -187,17 +270,20 @@
       var sig = L() + "|" + R.takes.map(function (k) { return k.n; }).join(",");
       if (list._aogrecSig === sig) return;
       list._aogrecSig = sig;
+      var drums = !!toolOf(o);                         /* AOG-TAKE-TO-PADS-V1: every tool but the drum machine itself */
       list.innerHTML = R.takes.map(function (k) {
         return '<div class="aogrec-take"><b>' + w("take") + " " + k.n + '</b> <span class="aogrec-len">' + clock(k.sec) + "</span>" +
           '<audio controls preload="metadata" src="' + k.url + '"></audio>' +
           '<a class="aogrec-b" href="' + k.url + '" download="' + o.file[L()] + "-" + k.n + '.wav">' + w("save") + "</a>" +
-          '<button type="button" class="aogrec-b send" data-aogrec-send="' + k.n + '">' + w("send") + "</button></div>";
+          '<button type="button" class="aogrec-b send" data-aogrec-send="' + k.n + '">' + w("send") + "</button>" +
+          (drums ? '<button type="button" class="aogrec-b send" data-aogrec-drum="' + k.n + '">' + w("drum") + "</button>" : "") + "</div>";
       }).join("");
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-send]"), function (b) { b.onclick = function () { R.send(+b.getAttribute("data-aogrec-send")); }; });
+      Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-drum]"), function (b) { b.onclick = function () { R.toDrums(+b.getAttribute("data-aogrec-drum"), b); }; });
     };
     document.addEventListener("visibilitychange", function () { if (document.hidden && R.on) R.toggle(); });
     style();
     return R;
   }
-  window.AOGRecorder = { attach: attach, clock: clock };
+  window.AOGRecorder = { attach: attach, clock: clock, toPad: toPad };
 })();

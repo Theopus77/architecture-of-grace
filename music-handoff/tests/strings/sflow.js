@@ -14,22 +14,36 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     /* 1. every pattern × every way of playing: one pass of the pattern, scheduled on an offline context */
     const sch=await p.evaluate(()=>{
       const out=[]; const keep=[S.preset,S.prog,S.minor,S.rhythm,S.key];
-      for(const pr of PRESETS) for(const rh of RHYTHMS){
+      /* one offline context and chain per pattern, shared by its ways (44 patterns × every way would otherwise build 800+ chains) */
+      for(const pr of PRESETS){ const oc=new OfflineAudioContext(2, 44100, 44100), ch=makeChain(oc); for(const rh of RHYTHMS){
         S.preset=pr.id; S.prog=pr.chords.map(c=>({off:c.off,q:c.q})); S.minor=pr.minor; S.rhythm=rh; S.key=pr.minor?9:0;
-        const oc=new OfflineAudioContext(2, 44100, 44100), ch=makeChain(oc); let bad=[], count=0;
+        let bad=[], count=0; const line=[];
         for(let k=0;k<S.prog.length;k++){
           const vs=scheduleBar(oc, ch, k, k*2, 2, 0.5), chord=S.prog[k], pcs=chordPcs(chord);
           count+=vs.length;
           if(!vs.length) bad.push("bar "+(k+1)+" silent");
+          /* AOG-STRINGS-WAYS-V1: every note is in the chord, except a note marked as on the way ("pass") or played early ("ant":
+             in the next chord). On the guitar a note on the way is the root's sixth or seventh (the shuffle); on the bass it is a
+             step (one or two half steps) from the note before it or after it in the line (checked below) */
+          const next=S.prog[(k+1)%S.prog.length], npcs=chordPcs(next), root=pcs[0], iv=(a,b)=>((a-b)%12+12)%12, seen={};
           vs.forEach(v=>{ if(!(v.on<v.off)) bad.push("note ends before it starts");
-            if(GTR && pcs.indexOf(v.m%12)<0) bad.push("bar "+(k+1)+" "+v.m+" not in "+chordName(chord));
-            if(!v.cell) bad.push("no place on the neck for "+v.m); });
-          if(!GTR && rh!=="walk"){ const bass=vs.map(v=>v.m%12); if(bass.some(x=>pcs.indexOf(x)<0)) bad.push("bar "+(k+1)+" bass note outside "+chordName(chord)); }
+            const pc=v.m%12;
+            if(!GTR) line.push(v);
+            if(v.role==="ant"){ if(npcs.indexOf(pc)<0) bad.push("bar "+(k+1)+" early note "+v.m+" not in the next chord "+chordName(next)); }
+            else if(v.role==="pass"){ if(GTR && [9,10,11].indexOf(iv(pc,root))<0) bad.push("bar "+(k+1)+" passing note "+v.m+" is not a sixth or seventh of "+chordName(chord)); }
+            else if(pcs.indexOf(pc)<0) bad.push("bar "+(k+1)+" "+v.m+" not in "+chordName(chord));
+            if(!v.cell) bad.push("no place on the neck for "+v.m);
+            else { const id=v.cell.split(":")[0]+"@"+Math.round(v.on*1000); if(seen[id]) bad.push("bar "+(k+1)+" a string started twice at once"); seen[id]=1; } });
           if(GTR){ const per={}; vs.forEach(v=>{ const s=v.cell.split(":")[0]; (per[s]=per[s]||[]).push(v); });
             Object.values(per).forEach(list=>{ list.sort((x,y)=>x.on-y.on); for(let i=1;i<list.length;i++) if(list[i].on<list[i-1].off-0.03) bad.push("bar "+(k+1)+" two notes at once on one string"); }); }
         }
+        /* a note on the way sits a step from a neighbour in the line; the last one leads into the bar that comes next (the
+           pattern's first chord, as bar number len, since a walking line changes from bar to bar) */
+        if(!GTR){ const L=S.prog.length, after=lineEvents(rh, S.prog[0], S.prog[1%L], L).slice().sort((x,y)=>x.t-y.t)[0].m;
+          line.sort((x,y)=>x.on-y.on).forEach((v,i)=>{ if(v.role!=="pass") return; const a=i?line[i-1].m:null, z=line[i+1]?line[i+1].m:after;
+            if(!(a!=null && Math.abs(v.m-a)<=2) && Math.abs(v.m-z)>2) bad.push("passing note "+v.m+" is not a step from "+a+" or "+z); }); }
         out.push({p:pr.id, rh:rh, n:count, bad:[...new Set(bad)].slice(0,3)});
-      }
+      } }
       [S.preset,S.prog,S.minor,S.rhythm,S.key]=keep;
       return out;
     });
@@ -91,7 +105,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const es=await p.evaluate(()=>({h:document.getElementById("mastH").textContent, pad:document.querySelector(".pad").textContent, open:[...document.querySelectorAll("#neck .nk-name")].map(e=>e.textContent).join(" "),
       menu:[...document.querySelectorAll(".bench-bar select option")].map(o=>o.textContent).join("|"), rh:document.getElementById("rhythmSel").selectedOptions[0].textContent, neckH:document.querySelector("[data-t=neckH]").textContent, lang:document.documentElement.lang}));
     ok(es.lang==="es" && /La guitarra|El bajo/.test(es.h) && /Do/.test(es.pad) && /Mi La Re Sol/.test(es.open), `Spanish: ${es.h}; pad ${es.pad.replace(/\s+/g," ").trim()}; strings ${es.open}`);
-    ok(/Trastes y cuerdas/.test(es.neckH) && es.menu==="Ritmos|Piano|Guitarra|Bajo|Banda|Tocadiscos", `the words and the tools menu change too: ${es.menu}`);
+    ok(/Trastes y cuerdas/.test(es.neckH) && es.menu==="Ritmos|Piano|Guitarra|Bajo|Banda|Tocadiscos|Estudio", `the words and the tools menu change too: ${es.menu}`);
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(200);
     /* 8. saving */
     await p.selectOption("#soundSel", inst==="guitar"?"nylon":"upright"); await p.selectOption("#keySel", "7"); await p.keyboard.press("KeyX");
@@ -105,4 +119,4 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
   console.log(fails? fails+" FAILED":"ALL PASS");
   await b.close(); srv.close();
 })().catch(e=>{ console.log("CRASH", e.stack); process.exit(1); });
-function PRESET_COUNT(inst){ return 18*(inst==="guitar"?7:6); }   /* the guitar has Chug and Gallop too (AOG-GUITAR-METAL-V1) */
+function PRESET_COUNT(inst){ return 44*(inst==="guitar"?21:19); }   /* AOG-STRINGS-WAYS-V1: 44 patterns; 21 ways on the guitar, 19 on the bass */
