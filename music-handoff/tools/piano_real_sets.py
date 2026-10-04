@@ -979,11 +979,18 @@ def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.
         REPORT[name]["made_from"] = describe
 
 
-def spread(n, L, f_unit=1.0):
-    """two voices a few cents apart (at most 4): the steps (in 1/L Hz, even, so a voice with a 16' tone keeps its
-    whole cycles) for each, or none where that would be more than 4 cents"""
-    k = int(math.floor(0.00115 * L * mtof(n)))
-    return [-2 * k, 2 * k]
+def spread(n, L):
+    """two voices a little apart: one step (1/L Hz, about 0.24 Hz) down and up, so they beat slowly (about twice
+    in four seconds) at every pitch, as two detuned synth oscillators set by ear; none where a step would be more
+    than 4 cents (below A2)"""
+    k = 1 if 1200 * math.log2(1 + 1 / (L * mtof(n))) <= 4.0 else 0
+    return [-k, k]
+
+
+def spread_brass(n, L):
+    """as spread(); the trombone voice is taken from the key an octave up, so its step is two of that key's"""
+    s = spread(n, L)
+    return [s[0], 2 * s[1]]
 
 
 def settle(t, start, end, v0, v1, tau):
@@ -1039,7 +1046,7 @@ def build_strsynth():
     """the '70s string synth: the violin voice and its octave, swelling in (the page's ensemble makes it a
     string machine)"""
     held_set("strsynth", [("violin", 0, 0.0), ("violin", 12, -9.0)],
-             env=lambda t: attack_env(t, 0.14, pre=0.06, shape="lin"),
+             env=lambda t: attack_env(t, 0.14, pre=0.15, shape="lin"),
              describe="Caveman Cosmonaut 'violin' voice, with the same voice an octave up, swelling in over 0.14 s")
 
 
@@ -1049,8 +1056,8 @@ def build_pad():
     def post(y, n):
         top = 2000.0 + 1.5 * mtof(n)
         return tv_lowpass(y, lambda s: float(settle(np.array([s]), 0.0, 1.15, 0.45 * top, top, 0.35)[0]), q=0.9)
-    held_set("pad", [("clarinet", 0, 0.0), ("violin", 0, -2.0)], P0=1.25, detune=spread, post=post,
-             env=lambda t: attack_env(t, 0.38, pre=0.06, shape="lin"), pitch="centroid",
+    held_set("pad", [("clarinet", 0, 0.0), ("violin", 0, -4.0)], P0=1.25, detune=spread, post=post,
+             env=lambda t: attack_env(t, 0.38, pre=0.15, shape="lin"), pitch="centroid",
              describe="Caveman Cosmonaut 'clarinet' and 'violin' voices, a few cents apart, through a low-pass that "
                       "opens as the sound swells in over 0.38 s")
 
@@ -1068,8 +1075,8 @@ def build_brass():
         return tv_lowpass(y, fc, q=1.4)
     def vib(t):                                   # the scoop: 28 cents under, gone in about 0.1 s
         return 2 ** ((-28 * np.exp(-t / 0.025)) / 1200)
-    held_set("brass", [("trompette", 0, 0.0), ("trombone", 12, -2.0)], P0=1.25, detune=spread, post=post, vib=vib,
-             env=lambda t: attack_env(t, 0.03, shape="lin"), pitch="centroid",
+    held_set("brass", [("trompette", 0, 0.0), ("trombone", 12, -2.0)], P0=1.25, detune=spread_brass, post=post, vib=vib,
+             env=lambda t: attack_env(t, 0.03, pre=0.12, shape="lin"), pitch="centroid",
              describe="Caveman Cosmonaut 'trompette' voice and 'trombone' voice (a 16' reed, so taken from the key an "
                       "octave up), a few cents apart, with a low-pass that opens quickly and settles, and a small "
                       "scoop up into the pitch")
@@ -1307,8 +1314,8 @@ def pitch_marks(x, track, hs):
     """one mark per cycle, each at the same point of its cycle: the first on the strongest peak of the first
     cycle, each next one where its cycle best matches the one before"""
     T = lambda i: track[min(len(track) - 1, max(0, int(i // hs)))]
-    first = onset_of(x)
-    p0 = T(first)
+    p0 = T(onset_of(x))
+    first = max(onset_of(x), int(p0) + 2)            # a whole cycle in, so the first mark has a cycle before it
     i = first + int(np.argmax(np.abs(x[first:first + int(1.5 * p0)])))
     M = [i]
     while True:
@@ -1324,24 +1331,34 @@ def pitch_marks(x, track, hs):
     return np.array(M)
 
 
-def psola(x, track, hs, marks, ratio_of_t, n_out):
+def mark_periods(marks):
+    """each cycle's length from one mark to the next (a stray mark, more than 30% off its neighbours, is replaced
+    by their median)"""
+    p = np.diff(marks).astype(float)
+    p = np.append(p, p[-1])
+    med = np.array([np.median(p[max(0, i - 4):i + 5]) for i in range(len(p))])
+    bad = np.abs(p / med - 1) > 0.3
+    p[bad] = med[bad]
+    return p
+
+
+def psola(x, marks, periods, ratio_of_t, n_out):
     """TD-PSOLA: the voice's own cycles (two cycles long, Hann-windowed, around each mark) laid down again at the
     new pitch; the vowel (the formants) stays as it was. ratio_of_t(t seconds) → the pitch change there."""
-    T = lambda i: track[min(len(track) - 1, max(0, int(i // hs)))]
-    y = np.zeros(n_out + 4 * int(np.max(track)) + 8)
+    y = np.zeros(n_out + 4 * int(np.max(periods)) + 8)
     t = float(marks[0])
     j = 0
     while t < min(n_out, marks[-1]):
         while j + 1 < len(marks) and abs(marks[j + 1] - t) <= abs(marks[j] - t):
             j += 1
         a = marks[j]
-        p = int(round(T(a)))
+        p = int(round(periods[j]))
         rt = ratio_of_t(t / SR)
         if a - p >= 0 and a + p + 1 <= len(x):
             ts = int(round(t))
             if ts - p >= 0:
                 y[ts - p:ts + p + 1] += x[a - p:a + p + 1] * np.hanning(2 * p + 1) / rt
-        t += T(a) / rt
+        t += periods[j] / rt
     y[:marks[0]] = x[:marks[0]]                       # the breath before the first cycle, as it was
     return y[:n_out]
 
@@ -1373,10 +1390,14 @@ def voice_take(r):
         f_est = pitch_harm(seg0, mtof(r), 0, len(seg0) / SR, ks=(1, 2, 3, 4), span_c=90)
         track, hs = yin_track(x, f_est)
         marks = pitch_marks(x, track, hs)
-        f_t = SR / track
-        k = int(0.6 / (hs / SR))
-        f_s = np.convolve(np.pad(f_t, (k // 2, k - k // 2 - 1), mode="edge"), np.ones(k) / k, mode="valid")
-        _VOICE[r] = (x, track, hs, marks, f_s, f_est)
+        periods = mark_periods(marks)
+        # the pitch at each moment, from the marks themselves (so the shifted voice lands where it should), smoothed
+        # over 0.6 s; sampled every 5 ms
+        tt = np.arange(0, len(x), int(0.005 * SR))
+        p_at = np.interp(tt, marks, periods)
+        k = max(1, int(0.6 / 0.005))
+        p_s = np.convolve(np.pad(p_at, (k // 2, k - k // 2 - 1), mode="edge"), np.ones(k) / k, mode="valid")
+        _VOICE[r] = (x, marks, periods, SR / p_s, f_est)
     return _VOICE[r]
 
 
@@ -1385,43 +1406,54 @@ def build_choir():
     note), each moved to the note by PSOLA (his vowel stays), a few cents apart and a few milliseconds apart, each
     looped on its own; high notes get the vowel's resonances lifted a little (towards a higher voice)"""
     vf = voice_files()
-    reals = sorted(vf)
+    # his two lowest takes (C2, C sharp 2) are too rough (a creaky voice) to follow cycle by cycle: left out
+    reals = [r for r in sorted(vf) if r >= 38]
     notes = grid(0)
     L = 2.4
     P0lo, P0hi = 0.7, 1.0
     a = round(P0hi + LOOP_X + DEC_DELAY + 0.01, 2)
     z = round(a + L, 2)
     n_total = int(round((z + 0.06) * SR))
-    DET = [-7.0, -2.0, 3.0, 8.0]
+    DET = [-5.0, -1.0, 2.0, 6.0]                    # a few cents apart (their own wobble does the rest)
     DLY = [0.0, 0.009, 0.017, 0.026]
+    LVL = [0.0, -1.5, -3.0, -4.5]                   # not all equally loud, so they do not beat to silence
     files = {}
     for n in notes:
         f = mtof(n)
         takes = sorted(reals, key=lambda r: (abs(r - n), r))[:4]
         phi = 1.0 + 0.2 * min(1.0, max(0.0, (n - 62) / 22.0))      # vowel resonances lifted up to 20% at C6 and up
-        mix = np.zeros(n_total)
-        used = []
+        singers = []
         for i, r in enumerate(takes):
-            x, track, hs, marks, f_s, f_est = voice_take(r)
+            x, marks, periods, f_s, f_est = voice_take(r)
             target = f * 2 ** (DET[i] / 1200) / phi
-            def ratio_of_t(t, f_s=f_s, hs=hs, target=target):
-                return target / f_s[min(len(f_s) - 1, int(t * SR // hs))]
-            n_need = int(round((P0hi + L + 0.1) * SR * phi)) + 64
-            y = psola(x, track, hs, marks, ratio_of_t, min(len(x), n_need))
+            def ratio_of_t(t, f_s=f_s, target=target):
+                return target / f_s[min(len(f_s) - 1, int(t / 0.005))]
+            n_need = int(round((P0hi + L + 0.15) * SR * phi)) + 64
+            y = psola(x, marks, periods, ratio_of_t, min(len(x), n_need))
             if phi != 1.0:
                 y = resample(y, phi)
             y = hp(y, max(20.0, 0.5 * f))
             y = trim_start(y)
-            d = int(DLY[i] * SR)
-            y = np.concatenate([np.zeros(d), y])
+            y = np.concatenate([np.zeros(int(DLY[i] * SR)), y])
+            y *= 10 ** ((-22.0 + LVL[i] - kw_level(y)) / 20)
+            singers.append((r, i, y))
+        # a sung note starts with a breath: the four together start where the page will hear them start (3% of
+        # their peak), less 0.8 ms, so every singer moves earlier by the same amount, before each is looped
+        m = max(len(s[2]) for s in singers)
+        pre = np.zeros(m)
+        for r, i, y in singers:
+            pre[:len(y)] += y
+        cut = max(0, onset_of(pre) - int(0.0008 * SR))
+        mix = np.zeros(n_total)
+        used = []
+        for r, i, y in singers:
+            y = y[cut:]
             y, rho, p0 = periodize(y, P0lo, L, n_total, W=0.25, search=(P0lo, P0hi))
-            y *= 10 ** ((-22.0 - kw_level(y[:int(z * SR)])) / 20)       # four singers, equally loud
             mix += y
             used.append({"take": os.path.relpath(vf[r], SRC_ROOT), "sings": r, "detune_cents": DET[i],
                          "delay_ms": round(1000 * DLY[i]), "seam_match": round(rho, 3), "cycle_start": round(p0, 3)})
-        t = np.arange(n_total) / SR
-        mix *= attack_env(t, 0.12, pre=0.06)
-        mix[0] = 0.0
+        mix[:int(0.0008 * SR)] *= np.sin(np.linspace(0, np.pi / 2, int(0.0008 * SR))) ** 2   # the singers' own
+        mix[0] = 0.0                                                                           # soft start stays
         mix = page_prefade(mix, z)
         files[(n, "m")] = (mix, {"singers": used, "vowel_lift": round(phi, 3)})
     finish_set("choir", notes, ["m"], files, targets={"m": -22.0}, extra={"loop": [a, z]})
@@ -1431,7 +1463,8 @@ def build_choir():
 
 
 # ══════════════════════════════════════════════════════════════════════════
-BUILDERS = ["epreed", "celesta", "steel", "clav", "organ", "gospel", "rockorgan", "strsynth", "pad", "brass", "lead"]
+BUILDERS = ["epreed", "celesta", "steel", "clav", "organ", "gospel", "rockorgan", "strsynth", "pad", "brass", "lead",
+            "theatre", "accordion", "choir", "musicbox", "toy"]
 OUT = os.path.join(REPO, "aog-deploy", "audio", "piano")
 MANIFEST = os.path.join(HERE, "piano_real_sets.json")
 
