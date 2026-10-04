@@ -181,6 +181,18 @@ def write_struck(path, y, max_cut=None):
             best = (head2, sh, on2)
         if 0.0003 <= on2 <= 0.00195 and head2 <= 0.006:
             return on2, head2
+    # last resort: the fade-in reaches a little into the strike (0.3, 0.6, then 0.9 ms past the onset), which
+    # rounds its very first instant and gives the MP3 less to smear forward
+    if best[0] > 0.008:
+        i = onset_of(y)
+        for extra in (0.0003, 0.0006, 0.0009):
+            k = i + int(extra * SR)
+            z = y.copy()
+            z[:k] *= np.sin(np.linspace(0, np.pi / 2, k)) ** 2
+            write_mp3(path, z)
+            on2, head2 = measure_mp3(path)
+            if 0.0003 <= on2 <= 0.00195 and head2 <= 0.008:
+                return on2, head2
     write_mp3(path, shifted(best[1]))
     return best[2], best[0]
 
@@ -625,15 +637,17 @@ def best_grid(real_sets):
     return best[1]
 
 
-def struck_set(name, layer_src, measure, lengths, pitch="fund", grid_notes=None, note_opts=None, extra_meta=None):
+def struck_set(name, layer_src, measure, lengths, pitch="fund", grid_notes=None, note_opts=None, extra_meta=None,
+               pick=None):
     """a set of struck or plucked notes. layer_src: {layer: {recorded midi: path}}; measure(x, r) → the
-    recording's true frequency; lengths(n, layer) → seconds; note_opts(n, layer) → extra decay_note options"""
+    recording's true frequency; lengths(n, layer) → seconds; note_opts(n, layer) → extra decay_note options;
+    pick(layer, n, recorded) → which recording a note is made from (the nearest, unless given)"""
     notes = grid_notes or best_grid([sorted(v) for v in layer_src.values()])
     files, cache = {}, {}
     for layer, reals in layer_src.items():
         rs = sorted(reals)
         for n in notes:
-            r = nearest(rs, n)
+            r = pick(layer, n, rs) if pick else nearest(rs, n)
             path = reals[r]
             if path not in cache:
                 x = to_mono(load(path))
@@ -818,6 +832,15 @@ def make_loop(y, P0, L, a, z, W=0.05, search=None):
       with the half second before a gives back the note exactly (designed for an MP3 decoder delay half way
       between 0 and 25 ms, the two cases browsers show);
     - after z, silence."""
+    n_total = int(round((z + 0.06) * SR))
+    out, rho, p0 = periodize(y, P0, L, n_total, W, search)
+    if p0 > a - LOOP_X - DEC_DELAY - 0.004:
+        raise ValueError("cycle starts too late for the loop")
+    return page_prefade(out, z), rho, p0
+
+
+def periodize(y, P0, L, n_total, W=0.05, search=None):
+    """y made exactly periodic with period L from P0 on (see make_loop), n_total samples long"""
     Ls, Ws = int(round(L * SR)), int(round(W * SR))
     P0s = int(round(P0 * SR))
     if search:
@@ -835,7 +858,6 @@ def make_loop(y, P0, L, a, z, W=0.05, search=None):
     rho = max(0.0, min(1.0, corr(A, B)))
     gb = np.sin(np.linspace(0, np.pi / 2, Ws)) ** 2
     ga = -rho * gb + np.sqrt(np.maximum(0.0, 1 - gb * gb * (1 - rho * rho)))
-    n_total = int(round((z + 0.06) * SR))
     out = np.zeros(n_total)
     out[:P0s + Ls] = y[:P0s + Ls]
     out[P0s + Ls - Ws:P0s + Ls] = ga * A + gb * B
@@ -845,13 +867,16 @@ def make_loop(y, P0, L, a, z, W=0.05, search=None):
         k = min(Ls, n_total - pos)
         out[pos:pos + k] = cyc[:k]
         pos += k
-    t = np.arange(n_total) / SR
-    w = np.clip((t + DEC_DELAY / 2 - (z - LOOP_X)) / LOOP_X, 0, 1) * np.pi / 2
-    out *= np.tan(np.pi / 4 - w / 2)
-    out[int(round(z * SR)):] = 0.0
-    if P0s / SR > a - LOOP_X - DEC_DELAY - 0.004:
-        raise ValueError("cycle starts too late for the loop")
     return out, rho, P0s / SR
+
+
+def page_prefade(out, z):
+    """the half second before z pre-faded for the page's own loop blend (see make_loop); silence after z"""
+    t = np.arange(len(out)) / SR
+    w = np.clip((t + DEC_DELAY / 2 - (z - LOOP_X)) / LOOP_X, 0, 1) * np.pi / 2
+    out = out * np.tan(np.pi / 4 - w / 2)
+    out[int(round(z * SR)):] = 0.0
+    return out
 
 
 def pick_loop_len(freqs_divs, lo, hi):
@@ -915,12 +940,10 @@ def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.
     detune(n, L) → the extra steps (in 1/L Hz, per component) that spread two voices a little apart; vib(t) → a
     speed multiplier (vibrato); env(t) → the attack; post(y) → filters."""
     notes = grid(0)
-    divs = []
-    for n in notes:
-        D = 1
-        for voice, oc, g in comps:
-            D = max(D, int(round(CAVE_SUB.get(voice, 1) * 2 ** (-oc / 12))))
-        divs.append((mtof(n), D))
+    # the longest cycle in a note: a voice played an octave down, or one with its own 16' tone, puts a tone an
+    # octave under the note, so its cycle is two notes long; anything lower is taken out (the high-pass below)
+    D = 2 if any(c[1] < 0 or (c[1] == 0 and c[0] in CAVE_SUB) for c in comps) else 1
+    divs = [(mtof(n), D) for n in notes]
     L, err = pick_loop_len(divs, *Lrange)
     a = round(P0 + LOOP_X + DEC_DELAY + 0.01, 2)
     z = round(a + L, 2)
@@ -932,23 +955,33 @@ def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.
         pm = vib(np.arange(n_out) / SR) if vib else None
         y = np.zeros(n_out)
         used = []
-        for ci, (voice, oc, g) in enumerate(comps):
+        for ci, comp in enumerate(comps):
+            voice, oc, g = comp[:3]
+            lpm = comp[3] if len(comp) > 3 else None
             files_v = cave_files(voice)
             r = nearest(sorted(files_v), n + oc)
             x, fs = cave_note(voice, r)
             steps = detune(n, L)[ci] if detune else 0
-            fc = (N * 2 ** (oc / 12) + steps) / L
-            y += 10 ** (g / 20) * steady_read(x, fs, fc, n_out, pm=pm, div=CAVE_SUB.get(voice, 1))
-            used.append({"voice": voice, "from": os.path.relpath(files_v[r], SRC_ROOT), "recorded": r,
-                         "source_cents": round(1200 * math.log2(fs / mtof(r)), 1),
+            k = N * 2 ** (oc / 12)                   # octaves stay exact; a fifth or a twelfth is its own whole
+            if oc % 12:                               # number of cycles per loop (tempered, as on a Hammond)
+                k = round(k)
+            fc = (k + steps) / L
+            c = steady_read(x, fs, fc, n_out, pm=pm, div=CAVE_SUB.get(voice, 1))
+            if lpm:                                   # softened towards the plain tone of a drawbar
+                c = lp(c, lpm * fc / CAVE_SUB.get(voice, 1))
+            y += 10 ** (g / 20) * c
+            used.append({"voice": voice, "keys_from_note": oc, "from": os.path.relpath(files_v[r], SRC_ROOT),
+                         "recorded": r, "source_cents": round(1200 * math.log2(fs / mtof(r)), 1),
                          "shift_semitones": round(12 * math.log2(fc / fs), 2), "gain_db": g,
-                         "detune_cents": round(1200 * math.log2(fc / (fq * 2 ** (oc / 12))), 2)})
-        y = hp(y, max(20.0, 0.25 * f))
-        if post:
+                         "lowpass_x": lpm, "cents_from_key": round(1200 * math.log2(fc / mtof(n + oc)), 2)})
+        y = hp(y, max(20.0, 0.35 * f), order=4)     # nothing under the 16' tone (a voice played an octave down
+        if post:                                     # brings its own 16' two octaves under the note: out)
             y = post(y, n)
         t = np.arange(len(y)) / SR
         y *= env(t) if env else attack_env(t, 0.008)
         y[0] = 0.0
+        y = trim_start(y)                             # starts 0.8 ms before the page hears it (a filtered or
+        y = np.concatenate([y, np.zeros(max(0, n_out - len(y)))])[:n_out]   # mixed start can cross late)
         y, rho, p0 = make_loop(y, P0, L, a, z)
         files[(n, "m")] = (y, {"components": used, "loop_cents": round(1200 * math.log2(fq / f), 2),
                                "seam_match": round(rho, 4)})
@@ -960,11 +993,18 @@ def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.
         REPORT[name]["made_from"] = describe
 
 
-def spread(n, L, f_unit=1.0):
-    """two voices a few cents apart (at most 4): the steps (in 1/L Hz, even, so a voice with a 16' tone keeps its
-    whole cycles) for each, or none where that would be more than 4 cents"""
-    k = int(math.floor(0.00115 * L * mtof(n)))
-    return [-2 * k, 2 * k]
+def spread(n, L):
+    """two voices a little apart: one step (1/L Hz, about 0.24 Hz) down and up, so they beat slowly (about twice
+    in four seconds) at every pitch, as two detuned synth oscillators set by ear; none where a step would be more
+    than 4 cents (below A2)"""
+    k = 1 if 1200 * math.log2(1 + 1 / (L * mtof(n))) <= 4.0 else 0
+    return [-k, k]
+
+
+def spread_brass(n, L):
+    """as spread(); the trombone voice is taken from the key an octave up, so its step is two of that key's"""
+    s = spread(n, L)
+    return [s[0], 2 * s[1]]
 
 
 def settle(t, start, end, v0, v1, tau):
@@ -977,43 +1017,62 @@ def settle(t, start, end, v0, v1, tau):
     return v * (1 - k) + v1 * k
 
 
+# The B-11's 'flutes' and 'all' voices beat slowly inside one recording (the first holds a tempered 2 2/3' quint a
+# cent from the 8' tone's own third harmonic, the second celeste voices 21 cents either side), so no loop can repeat
+# them seamlessly. Its other voices are perfectly steady ('trombone' is a 16' reed: it sounds an octave under its
+# key). A drawbar organ is several steady tones at set pitches; so are these organs: the B-11's clarinet voice,
+# softened towards a plain tone, recorded on the keys an octave under, a fifth over, on, an octave over (and more)
+# the note, like drawbars 16', 5 1/3', 8', 4' ... Each is retuned to a whole number of cycles per loop on its own,
+# so the sum loops exactly even where two of them beat (a tempered fifth, as on a Hammond).
+DRAWBAR = {"16": -12, "5.33": 7, "8": 0, "4": 12, "2.67": 19, "2": 24}
+
+
+def bars(voice, levels, lpm):
+    return [(voice, DRAWBAR[k], db, lpm) for k, db in levels]
+
+
 def build_organ():
-    """rock and jazz organ: the B-11's flute voice (16', 8', 4' and 2 2/3' sound together, like drawbars out)"""
-    held_set("organ", [("flutes", 0, 0.0)], describe="Caveman Cosmonaut 'flutes' voice")
+    """rock and jazz organ: three drawbars out (16', 5 1/3', 8') and the 4' a little under, as the page's organ"""
+    held_set("organ", bars("clarinet", [("16", 0.0), ("5.33", 0.0), ("8", 0.0), ("4", -6.0)], 1.2),
+             describe="Caveman Cosmonaut 'clarinet' voice, softened, on four keys at once like drawbars 16', 5 1/3', 8' "
+                      "and 4'")
 
 
 def build_gospel():
-    """gospel organ, every tone out: the flute, violin, trumpet, clarinet and bright 'tremolo' voices together
-    (the page's fast spinning speaker does the rest)"""
-    held_set("gospel", [("flutes", 0, 0.0), ("violin", 0, -3.0), ("trompette", 0, -4.0), ("clarinet", 0, -7.0),
-                        ("tremolo", 0, -12.0)],
-             describe="Caveman Cosmonaut 'flutes', 'violin', 'trompette', 'clarinet' and 'tremolo' voices together")
+    """gospel organ, every tone out: drawbars 16' to 2', brighter, with the violin voice on top (the page's fast
+    spinning speaker does the rest)"""
+    held_set("gospel", bars("clarinet", [("16", 0.0), ("8", 0.0), ("5.33", -2.0), ("4", -2.0), ("2.67", -5.0),
+                                         ("2", -5.0)], 1.6) + [("violin", 0, -9.0)],
+             describe="Caveman Cosmonaut 'clarinet' voice on six keys at once like drawbars 16' to 2', with the 'violin' "
+                      "voice")
 
 
 def build_rockorgan():
-    """the '70s rock organ: the flute voice with the trumpet voice for bite (the page's amplifier makes it growl)"""
-    held_set("rockorgan", [("flutes", 0, 0.0), ("trompette", 0, -4.0)],
-             describe="Caveman Cosmonaut 'flutes' voice with the 'trompette' voice")
+    """the '70s rock organ: 16', 5 1/3', 8' and 4' all out and a little 2 2/3', as the page's, with the trumpet voice
+    for bite (the page's amplifier makes it growl)"""
+    held_set("rockorgan", bars("clarinet", [("16", 0.0), ("5.33", 0.0), ("8", 0.0), ("4", 0.0), ("2.67", -12.0)], 1.4)
+             + [("trompette", 0, -12.0)],
+             describe="Caveman Cosmonaut 'clarinet' voice on five keys at once like drawbars 16', 5 1/3', 8', 4' and a "
+                      "little 2 2/3', with the 'trompette' voice")
 
 
 def build_strsynth():
     """the '70s string synth: the violin voice and its octave, swelling in (the page's ensemble makes it a
     string machine)"""
     held_set("strsynth", [("violin", 0, 0.0), ("violin", 12, -9.0)],
-             env=lambda t: attack_env(t, 0.14, pre=0.06, shape="lin"),
+             env=lambda t: attack_env(t, 0.14, pre=0.15, shape="lin"),
              describe="Caveman Cosmonaut 'violin' voice, with the same voice an octave up, swelling in over 0.14 s")
 
 
 def build_pad():
-    """warm synth: the flute and violin voices a few cents apart (a slow beat), darkened, the tone opening and the
-    sound swelling in"""
+    """warm synth: the clarinet and violin voices a few cents apart (a slow beat), darkened, the tone opening and
+    the sound swelling in"""
     def post(y, n):
         top = 2000.0 + 1.5 * mtof(n)
-        t = np.arange(len(y)) / SR
         return tv_lowpass(y, lambda s: float(settle(np.array([s]), 0.0, 1.15, 0.45 * top, top, 0.35)[0]), q=0.9)
-    held_set("pad", [("flutes", 0, 0.0), ("violin", 0, -2.0)], P0=1.25, detune=spread, post=post,
-             env=lambda t: attack_env(t, 0.38, pre=0.06, shape="lin"), pitch="centroid",
-             describe="Caveman Cosmonaut 'flutes' and 'violin' voices, a few cents apart, through a low-pass that "
+    held_set("pad", [("clarinet", 0, 0.0), ("violin", 0, -4.0)], P0=1.25, detune=spread, post=post,
+             env=lambda t: attack_env(t, 0.38, pre=0.15, shape="lin"), pitch="centroid",
+             describe="Caveman Cosmonaut 'clarinet' and 'violin' voices, a few cents apart, through a low-pass that "
                       "opens as the sound swells in over 0.38 s")
 
 
@@ -1030,10 +1089,11 @@ def build_brass():
         return tv_lowpass(y, fc, q=1.4)
     def vib(t):                                   # the scoop: 28 cents under, gone in about 0.1 s
         return 2 ** ((-28 * np.exp(-t / 0.025)) / 1200)
-    held_set("brass", [("trompette", 0, 0.0), ("trombone", 0, -2.0)], P0=1.25, detune=spread, post=post, vib=vib,
-             env=lambda t: attack_env(t, 0.03, shape="lin"), pitch="centroid",
-             describe="Caveman Cosmonaut 'trompette' and 'trombone' voices, a few cents apart, with a low-pass that "
-                      "opens quickly and settles, and a small scoop up into the pitch")
+    held_set("brass", [("trompette", 0, 0.0), ("trombone", 12, -2.0)], P0=1.25, detune=spread_brass, post=post, vib=vib,
+             env=lambda t: attack_env(t, 0.03, pre=0.25, shape="lin"), pitch="centroid",
+             describe="Caveman Cosmonaut 'trompette' voice and 'trombone' voice (a 16' reed, so taken from the key an "
+                      "octave up), a few cents apart, with a low-pass that opens quickly and settles, and a small "
+                      "scoop up into the pitch")
 
 
 def build_lead():
@@ -1056,8 +1116,371 @@ def build_lead():
                       "cents, 5.6 a second) that grows in from 0.35 s to 0.8 s")
 
 
+# ── theatre: the Quiet manual of Simon Dalzell's pipe organ (VS Chamber Orchestra: Community Edition) ──
+def pipe_files():
+    d = src("pipes", "Keys", "Organ", "Quiet")
+    out = {}
+    for fn in os.listdir(d):
+        m = re.match(r"^NT5_Man3Quiet_(\d+)_rr1\.wav$", fn)
+        if m:
+            out[int(m.group(1)) - 86] = os.path.join(d, fn)     # 122 is C2 (measured), every third key to C7
+    return out
+
+
+_PIPE = {}
+
+
+def pipe_note(r):
+    """one pipe recording: mono, from the moment the pipe speaks, and its exact frequency (over its steady part)"""
+    if r not in _PIPE:
+        x = to_mono(load(pipe_files()[r]))
+        x = x[max(0, onset_of(x) - int(0.001 * SR)):]
+        f0 = pitch_harm(x, mtof(r), 1.5, 6.0, ks=(1, 2, 3))
+        _PIPE[r] = (x, SR / period_exact(x, f0, 1.5, 8.0))
+    return _PIPE[r]
+
+
+def build_theatre():
+    """the cinema organ: stopped flute pipes (a tibia's cousin) at 16', 8', 4' and 2' together; past the top pipe a
+    rank breaks back an octave, as organ ranks do. The page's tremulant, shared by all the notes, makes it tremble."""
+    reals = sorted(pipe_files())
+    comps = [(-12, -5.0), (0, 0.0), (12, -4.5), (24, -10.0)]
+    notes = grid(0)
+    D = 2
+    L, err = pick_loop_len([(mtof(n), D) for n in notes], 3.0, 4.5)
+    P0lo, P0hi = 1.0, 1.25
+    a = round(P0hi + LOOP_X + DEC_DELAY + 0.01, 2)
+    z = round(a + L, 2)
+    files = {}
+    for n in notes:
+        f = mtof(n)
+        N = D * round(f * L / D)
+        n_out = int(round((P0hi + L + 0.15) * SR))
+        y = np.zeros(n_out)
+        used = []
+        for oc, g in comps:
+            k = n + oc
+            while k > reals[-1] + 1:
+                k -= 12
+            r = nearest(reals, k)
+            x, fs = pipe_note(r)
+            fc = N * 2 ** ((k - n) / 12) / L
+            ratio = fc / fs
+            c = resample(x[:int(n_out * ratio) + 64], ratio)[:n_out]
+            y[:len(c)] += 10 ** (g / 20) * c
+            used.append({"rank": {-12: "16'", 0: "8'", 12: "4'", 24: "2'"}[oc], "key": k,
+                         "from": os.path.relpath(pipe_files()[r], SRC_ROOT), "recorded": r,
+                         "source_cents": round(1200 * math.log2(fs / mtof(r)), 1),
+                         "shift_semitones": round(12 * math.log2(fc / fs), 2), "gain_db": g})
+        y = hp(y, max(20.0, 0.35 * f), order=4)
+        y = trim_start(y)
+        y = np.concatenate([y, np.zeros(max(0, n_out - len(y)))])
+        y, rho, p0 = make_loop(y, P0lo, L, a, z, W=0.1, search=(P0lo, P0hi))
+        files[(n, "m")] = (y, {"ranks": used, "loop_cents": round(1200 * math.log2(N / L / f), 2),
+                               "seam_match": round(rho, 4), "cycle_start": round(p0, 3)})
+    finish_set("theatre", notes, ["m"], files, targets={"m": -22.0}, extra={"loop": [a, z]})
+    REPORT["theatre"]["pitch"] = "harm"
+    REPORT["theatre"]["loop_note"] = ("held notes repeat from %.2f s to %.2f s; every note is retuned by at most %.1f "
+                                      "cents to fit a whole number of cycles in the loop" % (a, z, err))
+    REPORT["theatre"]["made_from"] = "VSCO 2 CE pipe organ, Quiet manual (stopped flutes), at 16', 8', 4' and 2'"
+
+
+# ── accordion: Button Accordion HN, a Hohner (FreePats) ──
+def accordion_regions():
+    """the instrument's own mapping: each recording's key (an octave under its file name) and its loop"""
+    d = src("accordion")
+    txt = open(os.path.join(d, "PRESET Button Accordion HN tuned.sfz"), encoding="utf-8").read()
+    txt = txt.split("trigger=release")[0]
+    out = {}
+    for m in re.finditer(r"sample=(.+?\.flac)\s+pitch_keycenter=(\d+).*?loop_start=(\d+)\s+loop_end=(\d+)", txt, re.S):
+        out[int(m.group(2))] = (os.path.join(d, m.group(1).strip()), int(m.group(3)), int(m.group(4)))
+    return out
+
+
+def sampler_read(x, ratio, ls, le, n_out, xw=0.02):
+    """a recording played from its start at `ratio` speed; past its loop end it goes round its loop (ls to le, in
+    samples), with a short blend each time"""
+    Lam = float(le - ls)
+    XW = int(xw * SR)
+    u = np.arange(n_out) * ratio
+    r = np.where(u < le, u, ls + np.mod(u - ls, Lam))
+    out = sinc_read(x, r, ratio)
+    near = r > le - XW
+    if np.any(near):
+        B = sinc_read(x, r[near] - Lam, ratio)
+        w = np.sin((r[near] - (le - XW)) / XW * np.pi / 2) ** 2
+        out[near] = out[near] * (1 - w) + B * w
+    return out
+
+
+def build_accordion():
+    """two reeds per note, tuned apart (the accordion's shimmer): each note tuned by the middle of the two; held
+    notes go round the instrument's own loops, then the page's loop"""
+    regs = accordion_regions()
+    reals = sorted(regs)
+    notes = best_grid([reals])
+    L = 2.0
+    P0lo, P0hi = 0.22, 0.6
+    a = round(P0hi + LOOP_X + DEC_DELAY + 0.01, 2)
+    z = round(a + L, 2)
+    files, cache = {}, {}
+    for n in notes:
+        r = nearest(reals, n)
+        path, ls, le = regs[r]
+        if path not in cache:
+            x = to_mono(load(path))
+            cache[path] = (x, pitch_centroid(x, mtof(r), ls / SR, le / SR, ks=(1, 2, 3, 4), span_c=60))
+        x, fm = cache[path]
+        f = mtof(n)
+        ratio = f / fm
+        n_out = int(round((z + 0.1) * SR))
+
+        def make(ratio):
+            y = sampler_read(x, ratio, ls, le, n_out)
+            y = hp(y, 0.5 * f)
+            if ratio > 2 ** (4 / 12):
+                y = lp(y, 14000.0)
+            y = trim_start(y)
+            y = np.concatenate([y, np.zeros(max(0, n_out - len(y)))])
+            return make_loop(y, P0lo, L, a, z, W=0.4, search=(P0lo, P0hi))
+        for _ in range(3):                 # the finished note measured as the checker measures it, and retuned
+            y, rho, p0 = make(ratio)
+            res = 1200 * math.log2(pitch_centroid(y, f, a, z - 0.6, ks=(1, 2, 3, 4), span_c=60) / f)
+            if abs(res) < 0.5:
+                break
+            ratio *= 2 ** (-res / 1200)
+        files[(n, "m")] = (y, {"from": os.path.relpath(path, SRC_ROOT), "recorded": r,
+                               "source_cents": round(1200 * math.log2(fm / mtof(r)), 1),
+                               "shift_semitones": round(12 * math.log2(f / fm), 2), "seam_match": round(rho, 4),
+                               "cycle_start": round(p0, 3)})
+    finish_set("accordion", notes, ["m"], files, targets={"m": -22.0}, extra={"loop": [a, z]})
+    REPORT["accordion"]["pitch"] = "centroid"
+    REPORT["accordion"]["made_from"] = "FreePats Button Accordion HN (a Hohner), its one register"
+
+
+# ── music box and toy piano: the celesta, voiced another way ──
+def build_musicbox():
+    """music box: the celesta's soft strokes, short and bright; from C5 up every note comes from the celesta's top
+    octave (C6 to A7), its thinnest, most tine-like plates"""
+    soft = celesta_sources()["soft"]
+    top = {k: v for k, v in soft.items() if k >= 84}
+    def pick(layer, n, reals):
+        return nearest(sorted(top), n) if n >= 72 else nearest(reals, n)
+    struck_set("musicbox", {"m": soft}, fund_measure(),
+               lambda n, l: 2.0 if n < 60 else 1.7 if n < 72 else 1.4 if n < 84 else 1.2, pick=pick,
+               note_opts=lambda n, l: {"fade_frac": 0.4, "shelf": (3000.0, 3.0),
+                                       "env": lambda t: np.exp(-2.5 * t)})
+
+
+def build_toy():
+    """toy piano: the celesta's hard strokes, short, harder in tone, each note a few cents out of tune (as a toy
+    piano's rods are)"""
+    hard = celesta_sources()["hard"]
+    def detune(n):
+        return float(((n * 37) % 9) - 4)            # -4 to +4 cents, fixed per key
+    struck_set("toy", {"m": hard}, fund_measure(),
+               lambda n, l: 1.6 if n < 60 else 1.4 if n < 72 else 1.2 if n < 84 else 1.0,
+               note_opts=lambda n, l: {"fade_frac": 0.4, "shelf": (2500.0, 5.0), "lp_hz": 12000.0, "detune_c": detune(n),
+                                       "env": lambda t: np.exp(-3.5 * t)})
+
+
+# ── choir: one singer on "ah" (Karoryfer Hadzi-Fia), four of his takes per note, as four singers ──
+def yin_track(x, f_guess, hop=0.005, span=4.0, thr=0.15):
+    """the length of one cycle (samples) every `hop` seconds, searched within `span` semitones of f_guess (YIN);
+    where the voice is silent the guess stands"""
+    P = SR / f_guess
+    lo, hi = max(2, int(P * 2 ** (-span / 12))), int(P * 2 ** (span / 12)) + 2
+    W = int(max(2.5 * hi, 0.025 * SR))
+    hs = int(hop * SR)
+    n = max(1, (len(x) - W - hi) // hs)
+    out = np.full(n, P)
+    N = 1 << int(math.ceil(math.log2(W + hi + 1)))
+    pk = np.max(np.abs(x))
+    for k in range(n):
+        a = k * hs
+        seg = x[a:a + W + hi]
+        if np.max(np.abs(seg)) < 0.02 * pk:
+            continue
+        w0 = seg[:W]
+        r = np.fft.irfft(np.conj(np.fft.rfft(w0, N)) * np.fft.rfft(seg, N), N)[:hi + 1]
+        cs = np.concatenate([[0], np.cumsum(seg ** 2)])
+        e0 = cs[W]
+        et = cs[np.arange(hi + 1) + W] - cs[np.arange(hi + 1)]
+        d = e0 + et - 2 * r
+        d[0] = 0
+        cm = np.ones(hi + 1)
+        c = np.cumsum(d[1:])
+        cm[1:] = d[1:] * np.arange(1, hi + 1) / np.maximum(c, 1e-20)
+        t = None
+        for tau in range(lo, hi):
+            if cm[tau] < thr and cm[tau] <= cm[tau + 1]:
+                t = tau
+                break
+        if t is None:
+            t = lo + int(np.argmin(cm[lo:hi]))
+        if 0 < t < hi:
+            den = cm[t - 1] - 2 * cm[t] + cm[t + 1]
+            out[k] = t + (0.5 * (cm[t - 1] - cm[t + 1]) / den if den != 0 else 0.0)
+        else:
+            out[k] = t
+    return out, hs
+
+
+def pitch_marks(x, track, hs):
+    """one mark per cycle, each at the same point of its cycle: the first on the strongest peak of the first
+    cycle, each next one where its cycle best matches the one before"""
+    T = lambda i: track[min(len(track) - 1, max(0, int(i // hs)))]
+    p0 = T(onset_of(x))
+    first = max(onset_of(x), int(p0) + 2)            # a whole cycle in, so the first mark has a cycle before it
+    i = first + int(np.argmax(np.abs(x[first:first + int(1.5 * p0)])))
+    M = [i]
+    while True:
+        p = T(M[-1])
+        h = int(p // 2)
+        c = int(round(M[-1] + p))
+        rr = max(2, int(p / 6))
+        if c + rr + h + 2 >= len(x) or M[-1] - h < 0:
+            break
+        ref = x[M[-1] - h:M[-1] + h]
+        cc = np.correlate(x[c - rr - h:c + rr + h], ref, "valid")
+        M.append(c - rr + int(np.argmax(cc)))
+    return np.array(M)
+
+
+def mark_periods(marks):
+    """each cycle's length from one mark to the next (a stray mark, more than 30% off its neighbours, is replaced
+    by their median)"""
+    p = np.diff(marks).astype(float)
+    p = np.append(p, p[-1])
+    med = np.array([np.median(p[max(0, i - 4):i + 5]) for i in range(len(p))])
+    bad = np.abs(p / med - 1) > 0.3
+    p[bad] = med[bad]
+    return p
+
+
+def psola(x, marks, periods, ratio_of_t, n_out):
+    """TD-PSOLA: the voice's own cycles (two cycles long, Hann-windowed, around each mark) laid down again at the
+    new pitch; the vowel (the formants) stays as it was. ratio_of_t(t seconds) → the pitch change there."""
+    y = np.zeros(n_out + 4 * int(np.max(periods)) + 8)
+    t = float(marks[0])
+    j = 0
+    while t < min(n_out, marks[-1]):
+        while j + 1 < len(marks) and abs(marks[j + 1] - t) <= abs(marks[j] - t):
+            j += 1
+        a = marks[j]
+        p = int(round(periods[j]))
+        rt = ratio_of_t(t / SR)
+        if a - p >= 0 and a + p + 1 <= len(x):
+            ts = int(round(t))
+            if ts - p >= 0:
+                y[ts - p:ts + p + 1] += x[a - p:a + p + 1] * np.hanning(2 * p + 1) / rt
+        t += periods[j] / rt
+    y[:marks[0]] = x[:marks[0]]                       # the breath before the first cycle, as it was
+    return y[:n_out]
+
+
+VOICE_NAMES = {}
+
+
+def voice_files():
+    d = src("voice", "Samples", "vowel_sustain", "a")
+    out = {}
+    for fn in os.listdir(d):
+        m = re.match(r"^vowel_a_([a-g]b?\d)\.wav$", fn)
+        if m:
+            out[name_midi(m.group(1)) - 12] = os.path.join(d, fn)    # he sings an octave under the file names
+    return out
+
+
+_VOICE = {}
+
+
+def voice_take(r):
+    """one take: mono, from its onset; its cycle track; its marks; its pitch, smoothed over 0.6 s (the slow drift,
+    which the choir's tuning removes; the faster wobble of the voice stays)"""
+    if r not in _VOICE:
+        x = to_mono(load(voice_files()[r]))
+        x = x[max(0, onset_of(x) - int(0.002 * SR)):]
+        # his pitch sits up to 60 cents flat of the file's name: find it first, then track it
+        seg0 = x[int(0.5 * SR):int(2.5 * SR)]
+        f_est = pitch_harm(seg0, mtof(r), 0, len(seg0) / SR, ks=(1, 2, 3, 4), span_c=90)
+        track, hs = yin_track(x, f_est)
+        marks = pitch_marks(x, track, hs)
+        periods = mark_periods(marks)
+        # the pitch at each moment, from the marks themselves (so the shifted voice lands where it should), smoothed
+        # over 0.6 s; sampled every 5 ms
+        tt = np.arange(0, len(x), int(0.005 * SR))
+        p_at = np.interp(tt, marks, periods)
+        k = max(1, int(0.6 / 0.005))
+        p_s = np.convolve(np.pad(p_at, (k // 2, k - k // 2 - 1), mode="edge"), np.ones(k) / k, mode="valid")
+        _VOICE[r] = (x, marks, periods, SR / p_s, f_est)
+    return _VOICE[r]
+
+
+def build_choir():
+    """a small choir on "ah": for each note, four takes of the one real singer (his four recordings nearest the
+    note), each moved to the note by PSOLA (his vowel stays), a few cents apart and a few milliseconds apart, each
+    looped on its own; high notes get the vowel's resonances lifted a little (towards a higher voice)"""
+    vf = voice_files()
+    # his two lowest takes (C2, C sharp 2) are too rough (a creaky voice) to follow cycle by cycle: left out
+    reals = [r for r in sorted(vf) if r >= 38]
+    notes = grid(0)
+    L = 2.4
+    P0lo, P0hi = 0.7, 1.0
+    a = round(P0hi + LOOP_X + DEC_DELAY + 0.01, 2)
+    z = round(a + L, 2)
+    n_total = int(round((z + 0.06) * SR))
+    DET = [-4.0, -1.0, 2.0, 5.0]                    # a few cents apart (their own wobble does the rest)
+    DLY = [0.0, 0.009, 0.017, 0.026]
+    LVL = [0.0, -2.0, -4.0, -6.0]                   # not all equally loud, so they do not beat to silence
+    files = {}
+    for n in notes:
+        f = mtof(n)
+        takes = sorted(reals, key=lambda r: (abs(r - n), r))[:4]
+        phi = 1.0 + 0.2 * min(1.0, max(0.0, (n - 62) / 22.0))      # vowel resonances lifted up to 20% at C6 and up
+        singers = []
+        for i, r in enumerate(takes):
+            x, marks, periods, f_s, f_est = voice_take(r)
+            target = f * 2 ** (DET[i] / 1200) / phi
+            def ratio_of_t(t, f_s=f_s, target=target):
+                return target / f_s[min(len(f_s) - 1, int(t / 0.005))]
+            n_need = int(round((P0hi + L + 0.15) * SR * phi)) + 64
+            y = psola(x, marks, periods, ratio_of_t, min(len(x), n_need))
+            if phi != 1.0:
+                y = resample(y, phi)
+            y = hp(y, max(20.0, 0.5 * f))
+            y = trim_start(y)
+            y = np.concatenate([np.zeros(int(DLY[i] * SR)), y])
+            y *= 10 ** ((-22.0 + LVL[i] - kw_level(y)) / 20)
+            singers.append((r, i, y))
+        # a sung note starts with a breath: the four together start where the page will hear them start (3% of
+        # their peak), less 0.8 ms, so every singer moves earlier by the same amount, before each is looped
+        m = max(len(s[2]) for s in singers)
+        pre = np.zeros(m)
+        for r, i, y in singers:
+            pre[:len(y)] += y
+        cut = max(0, onset_of(pre) - int(0.0008 * SR))
+        mix = np.zeros(n_total)
+        used = []
+        for r, i, y in singers:
+            y = y[cut:]
+            y, rho, p0 = periodize(y, P0lo, L, n_total, W=0.25, search=(P0lo, P0hi))
+            mix += y
+            used.append({"take": os.path.relpath(vf[r], SRC_ROOT), "sings": r, "detune_cents": DET[i],
+                         "delay_ms": round(1000 * DLY[i]), "seam_match": round(rho, 3), "cycle_start": round(p0, 3)})
+        mix[:int(0.0008 * SR)] *= np.sin(np.linspace(0, np.pi / 2, int(0.0008 * SR))) ** 2   # the singers' own
+        mix[0] = 0.0                                                                           # soft start stays
+        mix = page_prefade(mix, z)
+        files[(n, "m")] = (mix, {"singers": used, "vowel_lift": round(phi, 3)})
+    finish_set("choir", notes, ["m"], files, targets={"m": -22.0}, extra={"loop": [a, z]})
+    REPORT["choir"]["pitch"] = "centroid"
+    REPORT["choir"]["made_from"] = ("Karoryfer Hadzi-Fia 'a' vowel (one singer, from sfzinstruments/"
+                                    "legato_vocal_tutorial): four takes per note, moved by PSOLA")
+
+
 # ══════════════════════════════════════════════════════════════════════════
-BUILDERS = ["epreed", "celesta", "steel", "clav"]          # the held sets below are still being made
+BUILDERS = ["epreed", "celesta", "steel", "clav", "organ", "gospel", "rockorgan", "strsynth", "pad", "brass", "lead",
+            "theatre", "accordion", "choir", "musicbox", "toy"]
 OUT = os.path.join(REPO, "aog-deploy", "audio", "piano")
 MANIFEST = os.path.join(HERE, "piano_real_sets.json")
 

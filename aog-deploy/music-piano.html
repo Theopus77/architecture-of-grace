@@ -25,7 +25,8 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
      "Its own page", "Electric pianos and organ", "Acoustic grand and upright", "Chord pads for beginners".
      The third music tool, beside the Drum Machine and the Turntables. Same engine family (Web Audio), its own
      instrument: held notes, a sustain pedal, many notes at once. The grand and the upright are recordings of
-     real pianos (audio/piano/CREDITS.txt); the electric pianos and the organs are built on this page. -->
+     real pianos (audio/piano/CREDITS.txt); the electric pianos and the organs are built on this page.
+     Since AOG-PIANO-REAL-V1 to V4 most sounds are recordings too; CREDITS.txt lists them. -->
 <style>
 :root{
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
@@ -535,8 +536,8 @@ const STR={
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Grand and bright piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright, honky-tonk and felt piano: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). Harp, marimba, soft strings, tape strings and tape flute: VS Chamber Orchestra: Community Edition by Versilian Studios (CC0). Harpsichord, church organ (recorded by Simon Dalzell of Ivy Audio), vibraphone, glockenspiel, bells, kalimba, '80s electric piano and synth clavinet: Versilian Community Sample Library by Versilian Studios (CC0). Warm electric piano: jRhodes GM by Jeff Learman (CC0). Bright electric piano: Wurlitzer EP200 samples by Greg Sullivan (CC BY 3.0). Celesta: stamperadam, via Virtual Playing Orchestra 3 (CC0). Steel drums: jSteelDrum by Jeff Learman (public domain). Every other sound is built on this page.",
-          es:"Piano de cola y piano brillante: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical, honky-tonk y piano de fieltro: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Arpa, marimba, cuerdas suaves, cuerdas de cinta y flauta de cinta: VS Chamber Orchestra: Community Edition de Versilian Studios (CC0). Clavecín, órgano de iglesia (grabado por Simon Dalzell de Ivy Audio), vibráfono, glockenspiel, campanas, kalimba, piano eléctrico de los 80 y clavinet de sintetizador: Versilian Community Sample Library de Versilian Studios (CC0). Piano eléctrico cálido: jRhodes GM de Jeff Learman (CC0). Piano eléctrico brillante: muestras de Wurlitzer EP200 de Greg Sullivan (CC BY 3.0). Celesta: stamperadam, en Virtual Playing Orchestra 3 (CC0). Tambores de acero: jSteelDrum de Jeff Learman (dominio público). Todos los demás sonidos se crean en esta página."},
+  credit:{en:"Grand and bright piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright, honky-tonk and felt piano: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). Harp, marimba, soft strings, tape strings and tape flute: VS Chamber Orchestra: Community Edition by Versilian Studios (CC0). Harpsichord, church organ (recorded by Simon Dalzell of Ivy Audio), vibraphone, glockenspiel, bells, kalimba, '80s electric piano and synth clavinet: Versilian Community Sample Library by Versilian Studios (CC0). Warm electric piano: jRhodes GM by Jeff Learman (CC0). Bright electric piano: Wurlitzer EP200 samples by Greg Sullivan (CC BY 3.0). Celesta: stamperadam, via Virtual Playing Orchestra 3 (CC0). Steel drums: jSteelDrum by Jeff Learman (public domain). Rock and jazz, gospel and '70s rock organs, '70s string synth, warm synth and synth lead: a Unitra B-11 transistor organ, recorded by Karoryfer Samples as Caveman Cosmonaut (CC0). Cinema organ: VS Chamber Orchestra: Community Edition by Versilian Studios, recorded by Simon Dalzell of Ivy Audio (CC0). Celesta music box: the celesta above. Accordion: Button Accordion HN, a Hohner recorded by Jeff Stauffer for FreePats (CC0). Every other sound is built on this page.",
+          es:"Piano de cola y piano brillante: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical, honky-tonk y piano de fieltro: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Arpa, marimba, cuerdas suaves, cuerdas de cinta y flauta de cinta: VS Chamber Orchestra: Community Edition de Versilian Studios (CC0). Clavecín, órgano de iglesia (grabado por Simon Dalzell de Ivy Audio), vibráfono, glockenspiel, campanas, kalimba, piano eléctrico de los 80 y clavinet de sintetizador: Versilian Community Sample Library de Versilian Studios (CC0). Piano eléctrico cálido: jRhodes GM de Jeff Learman (CC0). Piano eléctrico brillante: muestras de Wurlitzer EP200 de Greg Sullivan (CC BY 3.0). Celesta: stamperadam, en Virtual Playing Orchestra 3 (CC0). Tambores de acero: jSteelDrum de Jeff Learman (dominio público). Órganos de rock y jazz, góspel y de rock de los 70, sintetizador de cuerdas de los 70, sintetizador cálido y sintetizador solista: un órgano de transistores Unitra B-11, grabado por Karoryfer Samples como Caveman Cosmonaut (CC0). Órgano de cine: VS Chamber Orchestra: Community Edition de Versilian Studios, grabado por Simon Dalzell de Ivy Audio (CC0). Celesta de caja de música: la celesta de arriba. Acordeón: Button Accordion HN, un Hohner grabado por Jeff Stauffer para FreePats (CC0). Todos los demás sonidos se crean en esta página."},
   credits:{en:"Full credits",es:"Créditos completos"},
   /* AOG-PIANO-VIEWS-V1 */
   navBench:{en:"Bench",es:"Mesa"}, navMeet:{en:"Meet the sounds",es:"Conoce los sonidos"}, navWords:{en:"Name it",es:"Nómbralo"}, navPrint:{en:"Print",es:"Imprimir"},
@@ -603,12 +604,21 @@ const SOUNDS={
   clav:   {grp:"grpEp",    en:"Synth clavinet · funk",  es:"Clavinet de sintetizador · funk", kind:"sample", set:"clav", made:{kind:"clav", gain:1.677}, tau:0.035, gain:2.042, rev:0.08,
            ready:{en:"Ready. Every note is a real 1980s synthesizer playing a clavinet sound.",es:"Listo. Cada nota es un sintetizador de verdad de los años 80 con sonido de clavinet."},
            the:{en:"synth clavinet",es:"el clavinet de sintetizador"}},
-  organ:  {grp:"grpOrgan", en:"Rock and jazz organ",    es:"Órgano de rock y jazz",      kind:"organ",  gain:1.47, rev:0.12},
+  /* AOG-PIANO-REAL-V4: the organs and the synth lead are a real 1983 transistor organ; the swirl, the spinning speaker and the
+     amplifier are still added here. org: the rock and jazz organ's gentle swirl (ch.org) */
+  organ:  {grp:"grpOrgan", en:"Rock and jazz organ",    es:"Órgano de rock y jazz",      kind:"sample", set:"organ", tone:"pipe", org:true, made:{kind:"organ", gain:1.47}, tau:0.03, gain:1.255, rev:0.12,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983."}},
   church: {grp:"grpOrgan", en:"Church organ",           es:"Órgano de iglesia",          kind:"sample", set:"pipeorgan", tone:"pipe", made:{kind:"church", gain:1.52}, tau:0.12, gain:1.972, rev:0.35},
-  gospel: {grp:"grpOrgan", en:"Gospel organ",           es:"Órgano góspel",              kind:"gospel", gain:1.602, rev:0.14},
-  rockorgan:{grp:"grpOrgan", en:"'70s rock organ",      es:"Órgano de rock de los 70",   kind:"rockorgan", gain:0.612, rev:0.12},
-  theatre:{grp:"grpOrgan", en:"Cinema organ",           es:"Órgano de cine",             kind:"theatre", gain:1.665, rev:0.4},
-  accordion:{grp:"grpOrgan", en:"Accordion",            es:"Acordeón",                   kind:"accordion", gain:1.598, rev:0.1},
+  gospel: {grp:"grpOrgan", en:"Gospel organ",           es:"Órgano góspel",              kind:"sample", set:"gospel", tone:"pipe", bus:"rot", made:{kind:"gospel", gain:1.602}, tau:0.03, gain:1.282, rev:0.14,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, with all its tones on.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, con todos sus tonos."}},
+  /* post: its level (gain) is set after the amplifier, its own (fx "rockrec"; the built one's is "rock"); drive is how hard
+     it goes in, as hard as the built sound did, so it growls as much */
+  rockorgan:{grp:"grpOrgan", en:"'70s rock organ",      es:"Órgano de rock de los 70",   kind:"sample", set:"rockorgan", tone:"pipe", bus:"rockrec", post:true, drive:0.91, made:{kind:"rockorgan", gain:0.612}, tau:0.03, gain:0.508, rev:0.12,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, through a loud amplifier.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, con un amplificador fuerte."}},
+  theatre:{grp:"grpOrgan", en:"Cinema organ",           es:"Órgano de cine",             kind:"sample", set:"theatre", tone:"pipe", bus:"trem", made:{kind:"theatre", gain:1.665}, tau:0.1, gain:1.861, rev:0.4,
+           ready:{en:"Ready. Every note is a real pipe organ's soft flute pipes.",es:"Listo. Cada nota son los tubos suaves de flauta de un órgano de tubos de verdad."}},
+  accordion:{grp:"grpOrgan", en:"Accordion",            es:"Acordeón",                   kind:"sample", set:"accordion", made:{kind:"accordion", gain:1.598}, tau:0.05, gain:2.499, rev:0.1,
+           ready:{en:"Ready. Every note is a real accordion.",es:"Listo. Cada nota es un acordeón de verdad."}, the:{es:"el acordeón"}},
   celesta:{grp:"grpMallet", en:"Celesta",               es:"Celesta",                    kind:"sample", set:"celesta", made:{kind:"celesta", gain:1.036}, tau:0.12, gain:2.244, rev:0.22,
            ready:{en:"Ready. Every note is a real celesta.",es:"Listo. Cada nota es una celesta de verdad."}, the:{es:"la celesta"}},
   glock:  {grp:"grpMallet", en:"Glockenspiel",          es:"Glockenspiel",               kind:"sample", set:"glockenspiel", made:{kind:"glock", gain:0.98}, tau:0.6, gain:1.788, rev:0.2},
@@ -625,7 +635,9 @@ const SOUNDS={
            ready:{en:"Ready. Every note is a real harp.",es:"Listo. Cada nota es un arpa de verdad."}},
   kalimba:{grp:"grpPluck",  en:"Kalimba",               es:"Kalimba",                    kind:"sample", set:"kalimba", made:{kind:"kalimba", gain:1.0}, tau:0.25, gain:2.211, rev:0.15,
            ready:{en:"Ready. Every note is a real kalimba.",es:"Listo. Cada nota es una kalimba de verdad."}, the:{es:"la kalimba"}},
-  musicbox:{grp:"grpPluck", en:"Music box",             es:"Caja de música",             kind:"musicbox", gain:1.0, rev:0.25},
+  /* AOG-PIANO-REAL-V4: a real celesta plays it, so its name says so */
+  musicbox:{grp:"grpPluck", en:"Celesta · music box",   es:"Celesta · caja de música",   kind:"sample", set:"musicbox", made:{kind:"musicbox", gain:1.0}, tau:0.4, gain:2.224, rev:0.25,
+           ready:{en:"Ready. Every note is a real celesta, played softly like a music box.",es:"Listo. Cada nota es una celesta de verdad, tocada suave como una caja de música."}, the:{en:"celesta music box",es:"la celesta de caja de música"}},
   strings:{grp:"grpVoice",  en:"Soft strings",          es:"Cuerdas suaves",             kind:"sample", set:"strings", tau:0.16, gain:2.689, rev:0.3,
            ready:{en:"Ready. Every note is a real string section.",es:"Listo. Cada nota es una sección de cuerdas de verdad."}, the:{es:"las cuerdas suaves"}},
   choir:  {grp:"grpVoice",  en:"Choir",                 es:"Coro",                       kind:"choir",  gain:1.354, rev:0.4},
@@ -635,10 +647,13 @@ const SOUNDS={
   /* the tape flute is a real flute with the tape strings' tape: the same haze, wobble and eight seconds */
   tapeflute:{grp:"grpTape", en:"Tape flute · prog rock", es:"Flauta de cinta · rock progresivo", kind:"sample", set:"flute", tone:"tape", bus:"tape", tape:8, made:{kind:"tapeflute", gain:1.483}, tau:0.1, gain:2.559, rev:0.25,
            ready:{en:"Ready. This is a real flute, played from tape like a 1970s keyboard.",es:"Listo. Es una flauta de verdad, tocada desde una cinta como un teclado de los 70."}, the:{en:"tape flute",es:"la flauta de cinta"}},
-  strsynth:{grp:"grpSynth", en:"'70s string synth",     es:"Sintetizador de cuerdas de los 70", kind:"strsynth", gain:3.268, rev:0.25},
-  pad:    {grp:"grpSynth",  en:"Warm synth",            es:"Sintetizador cálido",        kind:"pad",    gain:2.099, rev:0.3},
+  strsynth:{grp:"grpSynth", en:"'70s string synth",     es:"Sintetizador de cuerdas de los 70", kind:"sample", set:"strsynth", tone:"pipe", bus:"ens", made:{kind:"strsynth", gain:3.268}, tau:0.22, gain:1.891, rev:0.25,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, played like a string synth.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, tocado como un sintetizador de cuerdas."}},
+  pad:    {grp:"grpSynth",  en:"Warm synth",            es:"Sintetizador cálido",        kind:"sample", set:"pad", tone:"pipe", bus:"cho", made:{kind:"pad", gain:2.099}, tau:0.42, gain:2.268, rev:0.3,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, played like a warm synth.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, tocado como un sintetizador cálido."}},
   brass:  {grp:"grpSynth",  en:"'80s synth brass",      es:"Metales de sintetizador de los 80", kind:"brass", gain:2.168, rev:0.15},
-  lead:   {grp:"grpSynth",  en:"Synth lead",            es:"Sintetizador solista",       kind:"lead",   gain:2.163, rev:0.12}
+  lead:   {grp:"grpSynth",  en:"Synth lead",            es:"Sintetizador solista",       kind:"sample", set:"lead", tone:"pipe", made:{kind:"lead", gain:2.163}, tau:0.07, gain:1.713, rev:0.12,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, played like a synth lead.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, tocado como un sintetizador solista."}}
 };
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 
@@ -875,7 +890,21 @@ const SETS={
   epreed: {dir:"/audio/piano/epreed/",  layers:["m","s","l"], even:true, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   clav:   {dir:"/audio/piano/clav/",    layers:["m","s","l"], even:true, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   celesta:{dir:"/audio/piano/celesta/", layers:["m","l"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
-  steel:  {dir:"/audio/piano/steel/",   layers:["m","s","l"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]}
+  steel:  {dir:"/audio/piano/steel/",   layers:["m","s","l"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
+  /* AOG-PIANO-REAL-V4: a real 1983 transistor organ (the Unitra B-11), one strength. Each file holds a whole number of the
+     note's waves between the loop points, and is faded so the page's own blend at the seam rebuilds it */
+  organ:  {dir:"/audio/piano/organ/",   layers:["m"], even:true, loop:[0.79,4.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  gospel: {dir:"/audio/piano/gospel/",  layers:["m"], even:true, loop:[0.79,4.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  rockorgan:{dir:"/audio/piano/rockorgan/", layers:["m"], even:true, loop:[0.79,4.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  lead:   {dir:"/audio/piano/lead/",    layers:["m"], even:true, loop:[1.54,5.76], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  strsynth:{dir:"/audio/piano/strsynth/", layers:["m"], even:true, loop:[0.79,5.01], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  pad:    {dir:"/audio/piano/pad/",     layers:["m"], even:true, loop:[1.79,6.01], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* the cinema organ: a real pipe organ's quiet stopped flutes (VSCO 2 CE), four pipes to a key */
+  theatre:{dir:"/audio/piano/theatre/", layers:["m"], even:true, loop:[1.79,5.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* the music box: the celesta's soft strokes, short and bright, its top octave from C5 up */
+  musicbox:{dir:"/audio/piano/musicbox/", layers:["m"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
+  /* the accordion: a real Hohner, its two reeds a note as recorded; a held note goes round the library's own loops, then this one */
+  accordion:{dir:"/audio/piano/accordion/", layers:["m"], even:true, loop:[1.14,3.14], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]}
 };
 Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},lp:{},state:"idle",done:0,job:null,ready:false,run:null}));
 const LAYER_TARGET={s:-24, m:-19, l:-15};          /* dB, the level each layer is brought most of the way to */
@@ -979,10 +1008,12 @@ function sampleVoice(c, ch, snd, m, v, when){
   lp.frequency.value=snd.tone==="felt" ? Math.max(360*Math.pow(2, v*2.3), 1.3*mtof(m)) : snd.tone==="bright" ? Math.min(19000, 3200*Math.pow(2, v*2.6))
     : snd.tone==="tape" ? 2600*Math.pow(2, v) : snd.tone==="pipe" ? 19000 : Math.min(19000, 1500*Math.pow(2, v*3.7));
   const va=snd.tone==="pipe" ? 0.8+0.2*clampV(v,0,1) : velAmp(v);
-  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*snd.gain;
+  /* AOG-PIANO-REAL-V4: a post sound's level is set after its effect; drive is how hard it goes into it */
+  const lv=snd.post ? snd.drive : snd.gain;
+  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*lv;
   /* AOG-PIANO-SOUNDS-V2: the new recorded sounds keep a note's sharpest instant under 0.85 even at full strength (each
      recording's peak is measured as it loads; the bright piano's lift can raise it); the three first pianos are as they were */
-  if(snd.tone || set.even){ const pk=(set.peak[n+layer]||0)*set.gain[n+layer]*va*snd.gain*(snd.tone==="bright"?1.6:1); if(pk>0.85) g.gain.value*=0.85/pk; }
+  if(snd.tone || set.even){ const pk=(set.peak[n+layer]||0)*set.gain[n+layer]*va*lv*(snd.tone==="bright"?1.6:1); if(pk>0.85) g.gain.value*=0.85/pk; }
   const rel=c.createGain(); rel.gain.value=1;
   if(snd.tone==="bright"){ const hs=c.createBiquadFilter(); hs.type="highshelf"; hs.frequency.value=2600; hs.gain.value=7*clampV((96-m)/24,0,1); lp.connect(hs); hs.connect(g); }   /* the top notes are bright already */
   else if(snd.tone==="tine"){
@@ -1001,7 +1032,8 @@ function sampleVoice(c, ch, snd, m, v, when){
   else lp.connect(g);
   /* a tape keyboard's tape lasts eight seconds: a note held longer fades as the tape runs out */
   if(snd.tape){ const G=g.gain.value; g.gain.setValueAtTime(G, when+snd.tape-0.8); g.gain.linearRampToValueAtTime(0, when+snd.tape); }
-  g.connect(rel); rel.connect(snd.bus ? fx(ch, snd.bus) : ch.bus); rel.connect(ch.send);
+  /* AOG-PIANO-REAL-V4: the rock and jazz organ keeps its swirl (org); a post sound's effect feeds the room itself */
+  g.connect(rel); rel.connect(snd.bus ? fx(ch, snd.bus) : snd.org ? ch.org : ch.bus); if(!snd.post) rel.connect(ch.send);
   const srcs=[];
   const mk=(cents, delay, lvl)=>{ const s=c.createBufferSource(); s.buffer=buf; s.playbackRate.value=rate*Math.pow(2,cents/1200);
     if(set.loop){ const lp=set.lp[n+layer]; s.loop=true; s.loopStart=lp?lp[0]:set.loop[0]; s.loopEnd=lp?lp[1]:loopEnd(set, n); }     /* the strings keep bowing while a key is held (the organ keeps sounding, the flute keeps blowing) */
@@ -1284,7 +1316,7 @@ function fx(ch, name){
   } else if(name==="vibe"){     /* the vibraphone's motor: fans in the tubes open and close, and the sound gently pulses */
     const am=c.createGain(); am.gain.value=0.78; lfoTo(c,5.2,0,0.22,am.gain,now,lfos);
     inp.connect(am); am.connect(out);
-  } else if(name==="rock"){     /* the '70s rock organ: all its notes into one loud amplifier (so a chord growls, as on the records), then the
+  } else if(name==="rock" || name==="rockrec"){     /* the '70s rock organ (built, or recorded: rockrec): all its notes into one loud amplifier (so a chord growls, as on the records), then the
                                    spinning speaker, a horn for the highs and a drum for the lows, each going round at its own speed */
     const sh=c.createWaveShaper(); sh.curve=growlCurve(); sh.oversample="4x";
     const spk=c.createBiquadFilter(); spk.type="lowpass"; spk.frequency.value=5200; spk.Q.value=0.7;
@@ -1295,7 +1327,7 @@ function fx(ch, name){
     lfoTo(c,6.1,0,0.00018,hd.delayTime,now,lfos); lfoTo(c,6.1,90,0.25,ham.gain,now,lfos); lfoTo(c,5.3,30,0.15,lam.gain,now,lfos);
     spk.connect(hi); hi.connect(hd); hd.connect(ham); ham.connect(out);
     spk.connect(lo); lo.connect(lam); lam.connect(out);
-    out.gain.value=SOUNDS.rockorgan.gain; out.connect(ch.send);   /* its level is set after the amplifier, so the growl stays the same; the room hears the speaker */
+    out.gain.value=name==="rock" ? SOUNDS.rockorgan.made.gain : SOUNDS.rockorgan.gain; out.connect(ch.send);   /* its level is set after the amplifier, so the growl stays the same; the room hears the speaker */
   } else if(name==="tape"){     /* the tape keyboard: the tapes' narrower sound and their slow wow and quick flutter */
     const h=c.createBiquadFilter(); h.type="highpass"; h.frequency.value=70; h.Q.value=0.6;
     const l=c.createBiquadFilter(); l.type="lowpass"; l.frequency.value=6000; l.Q.value=0.6;
@@ -2432,8 +2464,8 @@ const MEET={
           es:"Martillos golpean lengüetas planas de acero. Toca suave para un sonido dulce, o fuerte para que suene áspero. Fue un favorito del pop de los años 60 y de los salones de música. Cada nota aquí es una grabación de un piano eléctrico de lengüetas de verdad."},
   ep80:{en:"No hammers at all. A computer chip makes the sound with math, called FM. In 1983 this bright, glassy piano was everywhere, from pop songs to TV themes. Every note here is a recording of a real 1980s FM synthesizer.",
         es:"Sin martillos. Un chip de computadora hace el sonido con matemáticas, llamado FM. En 1983 este piano brillante y cristalino estaba en todas partes, de canciones pop a temas de televisión. Cada nota aquí es una grabación de un sintetizador FM de verdad de los años 80."},
-  organ:{en:"Metal wheels spin past magnets and make the tone. A note never fades while you hold it. Gospel, jazz, reggae and rock all love it.",
-         es:"Ruedas de metal giran junto a imanes y hacen el tono. Una nota no se apaga mientras la mantienes. Al gospel, al jazz, al reggae y al rock les encanta."},
+  organ:{en:"On the famous rock and jazz organ, metal wheels spin past magnets and make the tone. A note never fades while you hold it. Gospel, jazz, reggae and rock all love it. Here, a real 1983 transistor organ plays that part.",
+         es:"En el famoso órgano de rock y jazz, ruedas de metal giran junto a imanes y hacen el tono. Una nota no se apaga mientras la mantienes. Al gospel, al jazz, al reggae y al rock les encanta. Aquí, un órgano de transistores de verdad de 1983 hace ese papel."},
   church:{en:"Air blows through rows of pipes, from tiny whistles to pipes taller than a house. The big room around it keeps the sound ringing. Every note here is a recording of a real church organ.",
           es:"El aire sopla por filas de tubos, desde silbatos diminutos hasta tubos más altos que una casa. La sala grande alrededor hace que el sonido siga resonando. Cada nota aquí es una grabación de un órgano de iglesia de verdad."},
   /* AOG-PIANO-SOUNDS-V2 */
@@ -2449,10 +2481,10 @@ const MEET={
           es:"El órgano de rock y jazz con todos sus tonos encendidos y su altavoz girando rápido. Los coros góspel cantan sobre él."},
   rockorgan:{en:"The rock and jazz organ played through a loud amplifier and a spinning speaker. Its growl and swirl filled 1970s hard rock.",
              es:"El órgano de rock y jazz tocado con un amplificador fuerte y un altavoz que gira. Su gruñido y su remolino llenaron el hard rock de los años 70."},
-  theatre:{en:"Before movies had sound, an organ played along in the theater. Its pipes sound like flutes, with a deep, wavy tremble.",
-           es:"Antes de que las películas tuvieran sonido, un órgano tocaba en el cine. Sus tubos suenan como flautas, con un temblor profundo."},
-  accordion:{en:"You squeeze the bellows to push air through metal reeds. Two reeds for each note, a little apart in tune, give it its shimmer.",
-             es:"Aprietas el fuelle para empujar aire por lengüetas de metal. Dos lengüetas para cada nota, un poco desafinadas entre sí, le dan su brillo."},
+  theatre:{en:"Before movies had sound, an organ played along in the theater. Its pipes sound like flutes, with a deep, wavy tremble. Here, a real pipe organ's soft flute pipes play it.",
+           es:"Antes de que las películas tuvieran sonido, un órgano tocaba en el cine. Sus tubos suenan como flautas, con un temblor profundo. Aquí lo tocan los tubos suaves de flauta de un órgano de tubos de verdad."},
+  accordion:{en:"You squeeze the bellows to push air through metal reeds. Two reeds for each note, a little apart in tune, give it its shimmer. Every note here is a recording of a real accordion.",
+             es:"Aprietas el fuelle para empujar aire por lengüetas de metal. Dos lengüetas para cada nota, un poco desafinadas entre sí, le dan su brillo. Cada nota aquí es una grabación de un acordeón de verdad."},
   celesta:{en:"Felt hammers hit small steel plates over wooden boxes. It sounds like sweet little bells. Listen for it in The Nutcracker. Every note here is a recording of a real celesta.",
            es:"Martillos de fieltro golpean placas pequeñas de acero sobre cajas de madera. Suena como campanitas dulces. Escúchala en El Cascanueces. Cada nota aquí es una grabación de una celesta de verdad."},
   glock:{en:"Hard mallets hit steel bars. The notes are high and bright, and they ring for a long time. Every note here is a recording of a real glockenspiel.",
@@ -2471,8 +2503,8 @@ const MEET={
         es:"Los dedos pulsan 47 cuerdas en un marco alto de madera. Cada nota aquí es una grabación de un arpa de verdad."},
   kalimba:{en:"Thumbs pluck thin metal tongues on a wooden box. It comes from Africa, where a cousin is called the mbira. Every note here is a recording of a real kalimba from Tanzania.",
            es:"Los pulgares pulsan lengüetas delgadas de metal sobre una caja de madera. Viene de África, donde una prima se llama mbira. Cada nota aquí es una grabación de una kalimba de verdad de Tanzania."},
-  musicbox:{en:"A turning drum with tiny pins plucks the teeth of a metal comb. Each tooth plays one note.",
-            es:"Un cilindro que gira, con alfileres pequeñitos, pulsa los dientes de un peine de metal. Cada diente toca una nota."},
+  musicbox:{en:"In a music box, a turning drum with tiny pins plucks the teeth of a metal comb. Each tooth plays one note. Here, a real celesta plays it, softly, on its smallest, brightest plates.",
+            es:"En una caja de música, un cilindro que gira, con alfileres pequeñitos, pulsa los dientes de un peine de metal. Cada diente toca una nota. Aquí la toca una celesta de verdad, suave, en sus placas más pequeñas y brillantes."},
   strings:{en:"Violins, violas and cellos, played softly with bows. Every note here is a recording of a real string section.",
            es:"Violines, violas y violonchelos, tocados suavemente con arco. Cada nota aquí es una grabación de una sección de cuerdas de verdad."},
   choir:{en:"Many voices sing “ah” together. No two singers are exactly alike, and that makes the sound big and warm.",
@@ -2481,14 +2513,14 @@ const MEET={
            es:"Cada tecla pone en marcha una cinta corta de una sección de cuerdas de verdad. Si mantienes una nota ocho segundos, la cinta se acaba. A las bandas de rock progresivo les encantaba su sonido brumoso."},
   tapeflute:{en:"The same tape keyboard, with a real flute on its tapes. It sounds breathy and a little wobbly, like an old record.",
              es:"El mismo teclado de cinta, con una flauta de verdad en sus cintas. Suena con aire y un poco tembloroso, como un disco viejo."},
-  strsynth:{en:"An electronic keyboard from the 1970s, made to sound like violins. Its swirling, glassy sound became a sound of its own.",
-            es:"Un teclado electrónico de los años 70, hecho para sonar como violines. Su sonido brillante y ondulante se volvió un sonido propio."},
-  pad:{en:"A synthesizer makes two buzzing waves, then softens them and lets them swell. Good for slow, dreamy chords.",
-       es:"Un sintetizador hace dos ondas que zumban, las suaviza y las deja crecer. Bueno para acordes lentos y de ensueño."},
+  strsynth:{en:"An electronic keyboard from the 1970s, made to sound like violins. Its swirling, glassy sound became a sound of its own. Here, a real 1983 transistor organ plays that part.",
+            es:"Un teclado electrónico de los años 70, hecho para sonar como violines. Su sonido brillante y ondulante se volvió un sonido propio. Aquí, un órgano de transistores de verdad de 1983 hace ese papel."},
+  pad:{en:"A synthesizer makes two buzzing waves, then softens them and lets them swell. Good for slow, dreamy chords. Here, a real 1983 transistor organ plays that part.",
+       es:"Un sintetizador hace dos ondas que zumban, las suaviza y las deja crecer. Bueno para acordes lentos y de ensueño. Aquí, un órgano de transistores de verdad de 1983 hace ese papel."},
   brass:{en:"A 1980s synthesizer copying a horn section. Each note opens up bright and bold, like a trumpet.",
          es:"Un sintetizador de los 80 que imita una sección de metales. Cada nota se abre brillante y fuerte, como una trompeta."},
-  lead:{en:"A synthesizer voice made to play melodies. It is bright and buzzy, with a small wobble when you hold a note.",
-        es:"Una voz de sintetizador hecha para tocar melodías. Es brillante y zumbante, con un pequeño vaivén cuando mantienes una nota."}
+  lead:{en:"A synthesizer voice made to play melodies. It is bright and buzzy, with a small wobble when you hold a note. Here, a real 1983 transistor organ plays that part.",
+        es:"Una voz de sintetizador hecha para tocar melodías. Es brillante y zumbante, con un pequeño vaivén cuando mantienes una nota. Aquí, un órgano de transistores de verdad de 1983 hace ese papel."}
 };
 /* AOG-PIANO-SOUNDS-V2: thirty-one cards, so they sit under their groups' names (the same groups as the Instrument menu) */
 function meetView(){
