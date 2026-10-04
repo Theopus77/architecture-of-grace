@@ -5,7 +5,8 @@
    - coverage: every key the page plays (C1 to C7, MIDI 24 to 96) is within one semitone of a recorded note
      (no more than 3 semitones between notes), and every note has a file for every layer;
    - size: the set's MP3s together are under 3 MB (over 2 MB is reported, not failed);
-   - each file decodes as mono MP3 at 44,100 Hz; the note starts (3% of its peak, as the page measures it)
+   - each file decodes as MP3 at 44,100 Hz, mono or (AOG-PIANO-STEREO-V1, a set rebuilt with both its microphones, in
+     the folder the page's SETS names) stereo, every check below then made on each channel; the note starts (3% of its peak, as the page measures it)
      within 2 ms of the file start; the file starts and ends in silence;
    - tuning: the note's pitch, measured from the decoded file, is within 5 cents of the key (and, for the toy
      piano, within 3 cents of the small detuning it was given on purpose);
@@ -26,11 +27,24 @@ const AUDIO = process.env.PIANOSETS_AUDIO || path.join(ROOT, "aog-deploy", "audi
 const SR = 44100, KEY_LO = 24, KEY_HI = 96, MAX_BYTES = 3e6, AIM_BYTES = 2e6;
 
 /* ── decoding ── */
-function decode(file, rate, raw) {
-  const args = ["-v", "error"].concat(raw ? ["-flags2", "+skip_manual"] : [], ["-i", file, "-ac", "1", "-ar", String(rate || SR), "-f", "f32le", "-"]);
+function decode(file, rate, raw, ch) {
+  const args = ["-v", "error"].concat(raw ? ["-flags2", "+skip_manual"] : [], ["-i", file, "-ac", String(ch || 1), "-ar", String(rate || SR), "-f", "f32le", "-"]);
   const buf = execFileSync("ffmpeg", args, { maxBuffer: 1 << 28 });
   return new Float32Array(buf.buffer, buf.byteOffset, buf.length / 4);
 }
+/* AOG-PIANO-STEREO-V1: each channel of a file on its own */
+function decodeEach(file, ch, rate, raw) {
+  if (ch === 1) return [decode(file, rate, raw)];
+  const d = decode(file, rate, raw, ch), n = d.length / ch, out = [];
+  for (let c = 0; c < ch; c++) { const x = new Float32Array(n); for (let i = 0; i < n; i++) x[i] = d[i * ch + c]; out.push(x); }
+  return out;
+}
+/* the folder the page plays each set from (its SETS[...].dir; a set rebuilt gets a new folder name) */
+const PAGE_DIRS = {};
+try {
+  const html = fs.readFileSync(path.join(ROOT, "aog-deploy", "music-piano.html"), "utf8");
+  for (const m of html.matchAll(/(\w+):\s*\{dir:"\/audio\/piano\/([a-z0-9]+)\/"/g)) PAGE_DIRS[m[1]] = m[2];
+} catch (e) { /* no page: each set's own name */ }
 function probe(file) {
   const out = execFileSync("ffprobe", ["-v", "error", "-select_streams", "a:0", "-show_entries", "stream=codec_name,channels,sample_rate", "-of", "json", file]).toString();
   return JSON.parse(out).streams[0];
@@ -148,8 +162,8 @@ function bakeLoop(d, sr, a, z, x) {
   for (let i = 0; i < X; i++) { const w = (i + 0.5) / X * Math.PI / 2, j = Z - X + i, k = A - X + i; d[j] = d[j] * Math.cos(w) + d[k] * Math.sin(w); }
   return { A, Z, X };
 }
-function loopCheck(file, loop, raw, f) {
-  const sr = 32000, d = Float32Array.from(decode(file, sr, raw));
+function loopCheck(file, loop, raw, f, ch, c) {
+  const sr = 32000, d = Float32Array.from(decodeEach(file, ch, sr, raw)[c]);
   const before = Float32Array.from(d);
   const { A, Z, X } = bakeLoop(d, sr, loop[0], loop[1], 0.5);
   const play = new Float32Array(Z + 3 * (Z - A));
@@ -198,7 +212,7 @@ function checkSet(name, info) {
   if (notes[0] > KEY_LO + 1) say(`lowest note ${notes[0]} leaves C1 uncovered`);
   if (notes[notes.length - 1] < KEY_HI - 1) say(`highest note ${notes[notes.length - 1]} leaves C7 uncovered`);
   if (layers.indexOf("m") < 0) say("no m layer (the page waits for every note's m)");
-  const dir = path.join(AUDIO, name);
+  const dir = path.join(AUDIO, PAGE_DIRS[name] || name);
   let bytes = 0;
   const res = { files: 0, onsetMs: 0, cents: [], worstClick: -99, worstSwell: 0, worstLoopClick: -99 };
   notes.forEach(n => layers.forEach(l => {
@@ -206,13 +220,20 @@ function checkSet(name, info) {
     if (!fs.existsSync(f)) { say(`missing ${key}.mp3`); return; }
     bytes += fs.statSync(f).size; res.files++;
     const p = probe(f);
-    if (p.codec_name !== "mp3" || +p.channels !== 1 || +p.sample_rate !== SR) say(`${key}: ${p.codec_name} ${p.channels} ch ${p.sample_rate} Hz`);
-    const x = decode(f), pk = peakAbs(x), on = onsetOf(x), onMs = 1000 * on / SR;
+    const nch = +p.channels;
+    if (p.codec_name !== "mp3" || (nch !== 1 && nch !== 2) || +p.sample_rate !== SR) say(`${key}: ${p.codec_name} ${p.channels} ch ${p.sample_rate} Hz`);
+    /* x: the channels together, for the pitch; chs: each on its own. The note starts where either channel reaches 3%
+       of the louder one's peak, as the page finds it */
+    const x = decode(f), chs = decodeEach(f, nch), pk = Math.max.apply(null, chs.map(c => peakAbs(c)));
+    const on = Math.min.apply(null, chs.map(c => { for (let i = 0; i < c.length; i++) if (Math.abs(c[i]) > 0.03 * pk) return i; return c.length; })), onMs = 1000 * on / SR;
     res.onsetMs = Math.max(res.onsetMs, onMs);
     if (onMs > 2) say(`${key}: starts ${onMs.toFixed(1)} ms late`);
-    if (peakAbs(x, 0, 4) > 0.01 * pk) say(`${key}: does not start from silence`);
-    const tail = rms(x, x.length - Math.round(0.005 * SR), x.length);
-    if (!e.loop && dB(tail / pk) > -45) say(`${key}: ends at ${dB(tail / pk).toFixed(0)} dB, not in silence`);
+    chs.forEach((c, ci) => {
+      const side = nch > 1 ? ["left", "right"][ci] + " " : "";
+      if (peakAbs(c, 0, 4) > 0.01 * pk) say(`${key}: ${side}does not start from silence`);
+      const tail = rms(c, c.length - Math.round(0.005 * SR), c.length);
+      if (!e.loop && dB(tail / pk) > -45) say(`${key}: ${side}ends at ${dB(tail / pk).toFixed(0)} dB, not in silence`);
+    });
     if (e.loop && x.length < Math.round(e.loop[1] * SR)) say(`${key}: shorter than its loop end`);
     /* tuning */
     const meta = (info.files || {})[key] || {}, want = mtof(n) * Math.pow(2, (meta.detune_c || 0) / 1200);
@@ -224,18 +245,20 @@ function checkSet(name, info) {
     if (Math.abs(c) > 5) say(`${key}: ${c.toFixed(1)} cents off`);
     if (meta.detune_c && Math.abs(cw) > 3) say(`${key}: ${cw.toFixed(1)} cents from its intended ${meta.detune_c} cents`);
     /* clicks after the attack */
-    const ck = clicks(x, on + Math.round(0.03 * SR), x.length, SR, pk * Math.pow(10, -75 / 20));
-    res.worstClick = Math.max(res.worstClick, ck.ratioDb);
-    if (ck.ratioDb > 15) say(`${key}: click ${ck.ratioDb.toFixed(0)} dB at ${ck.at.toFixed(3)} s`);
+    chs.forEach((c, ci) => {
+      const ck = clicks(c, on + Math.round(0.03 * SR), c.length, SR, pk * Math.pow(10, -75 / 20));
+      res.worstClick = Math.max(res.worstClick, ck.ratioDb);
+      if (ck.ratioDb > 15) say(`${key}: ${nch > 1 ? ["left", "right"][ci] + " " : ""}click ${ck.ratioDb.toFixed(0)} dB at ${ck.at.toFixed(3)} s`);
+    });
     /* the loop, as the page plays it */
-    if (e.loop) [false, true].forEach(raw => {
-      const lc = loopCheck(f, e.loop, raw, mtof(n)), tag = raw ? " (encoder delay kept)" : "";
+    if (e.loop) [false, true].forEach(raw => chs.forEach((_, ci) => {
+      const lc = loopCheck(f, e.loop, raw, mtof(n), nch, ci), tag = (raw ? " (encoder delay kept)" : "") + (nch > 1 ? [" (left)", " (right)"][ci] : "");
       res.worstSwell = Math.max(res.worstSwell, lc.swellDb); res.worstLoopClick = Math.max(res.worstLoopClick, lc.clickDb);
       res.worstWobble = Math.max(res.worstWobble || 0, lc.wobbleDb - 1.1 * lc.naturalDb);
       if (lc.swellDb > 1) say(`${key}: the loop blend moves the level ${lc.swellDb.toFixed(2)} dB${tag}`);
       if (lc.clickDb > 15) say(`${key}: a click at the loop, ${lc.clickDb.toFixed(0)} dB${tag}`);
       if (lc.wobbleDb > Math.max(1.5, 1.1 * lc.naturalDb + 0.75)) say(`${key}: the level wobbles ${lc.wobbleDb.toFixed(2)} dB round the loop (by itself ${lc.naturalDb.toFixed(2)} dB)${tag}`);
-    });
+    }));
   }));
   if (bytes > MAX_BYTES) say(`${(bytes / 1e6).toFixed(2)} MB, over 3 MB`);
   const cs = res.cents;
