@@ -38,7 +38,7 @@ def build():
                     missing.append(os.path.relpath(p, ROOT))
         for names in m.get("hits", {}).values():
             for h in names:
-                p = os.path.join(ROOT, "audio", "band", inst, h + ".mp3")
+                p = os.path.join(ROOT, "audio", "band", m.get("dir", inst), h + ".mp3")
                 if not os.path.exists(p):
                     missing.append(os.path.relpath(p, ROOT))
     if missing:

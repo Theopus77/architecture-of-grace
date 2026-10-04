@@ -395,7 +395,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 const LKEY="aog.band.v1";
 /* every recording the page can load: for each instrument, the held notes (soft "s" and loud "l") and the short ones ("t"),
    and a tuning correction in cents for the few that were recorded a little off (made by _work/music/make_band.py) */
-const MAN={"bassoon":{"sus":[34,37,41,45,46,48,55,60,63,68,69,72,75],"susL":[34,37,41,45,46,48,55,60,63,68,69,72,75],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{}},"clarinet":{"sus":[50,53,58,62,65,70,74,77,82,86,89],"susL":[50,53,58,62,65,70,74,77,82,86,89],"stac":[50,53,58,62,65,70,74,77,82,86,89],"tune":{"50l":5,"50t":-30,"53t":-33,"58t":-46,"62t":-34,"65t":-31,"70t":-15,"74t":-22,"77t":-20,"89l":-5,"89t":-5}},"flute":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[60,64,69,72,76,81,84,88,93],"stac":[69,72,76,81,84,88,93,96],"tune":{}},"horn":{"sus":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"susL":[36,39,43,46,50,53,57,60,63,66],"stac":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"tune":{"33s":-5,"36s":-5,"36t":-29,"43t":-7,"53s":-8,"57l":-5,"57s":-10,"66l":-5}},"oboe":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"65s":-7,"86t":12,"89s":5,"89t":11}},"sax":{"sus":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"susL":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"stac":[],"tune":{}},"trombone":{"sus":[34,37,39,41,46,50,53,60,61,63,65],"susL":[34,37,39,41,46,50,53,60,61,63,65],"stac":[34,41,46,53,58,62,65],"tune":{"41t":13}},"trumpet":{"sus":[53,57,60,63,67,70,74,77,81,84],"susL":[53,57,60,63,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53t":-11,"57l":-6,"60t":7,"67l":7,"67s":6,"74l":7,"81l":7,"84t":-5}},"tuba":{"sus":[29,34,39,41,46,50,53,58,62],"susL":[34,39,41,46,50,53,58],"stac":[34,39,41,46,50,53,58,62],"tune":{"29s":-6,"34s":-6,"34t":-17,"46s":-6,"46t":-15,"50l":-6,"50t":-11,"58t":-12}},"bassoon_vib":{"sus":[43,45,48,55,57,60,64,67,69,72],"susL":[43,45,48,55,60,64,67,69,72],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"stacDir":"bassoon"},"cellos":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[36,40,43,47,50,53,57,60,64,67,71,74,77],"tune":{"36t":5,"40t":14,"47t":4,"53t":4,"57t":4,"60t":8,"77t":7},"dir":"cellos2"},"cellos_pizz":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[],"tune":{"40s":11,"47l":-8,"53s":12,"57s":-5,"64s":19,"74l":19,"77l":8}},"contrabass":{"sus":[30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[30,31,34,36,38,40,42,44,45,49,52,56,59],"stac":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"tune":{"30t":-30,"34t":9,"40t":-9,"45t":-8}},"contrabass_pizz":{"sus":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[],"stac":[],"tune":{"28s":-16,"30s":-8,"31s":-14,"36s":8,"38s":5,"40s":-7,"42s":-14,"45s":18,"56s":-9}},"flute_vib":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[],"stac":[69,72,76,81,84,88,93,96],"tune":{},"stacDir":"flute"},"glockenspiel":{"sus":[79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":16,"108s":23,"79s":8,"84s":12,"91s":12,"96s":16}},"harp":{"sus":[28,31,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,95,98,101],"susL":[],"stac":[],"tune":{"101s":-31,"28s":-15,"31s":-22,"35s":-14,"38s":-5,"41s":-7,"55s":-8,"59s":-13,"62s":-12,"69s":-10,"72s":-11,"76s":-11,"79s":-7,"83s":-8,"86s":-8,"89s":-6,"93s":-19,"95s":-10,"98s":-9}},"horn_mute":{"sus":[46,51,53,60,63,68,70,74,77],"susL":[46,51,53,60,63,68,70],"stac":[],"tune":{}},"kit":{"sus":[],"susL":[],"stac":[],"tune":{},"hits":{"bd":["bd1","bd2"],"sn":["sn1","sn2"],"cy":["cy1","cy2"],"tri":["tri1","tri2"],"tamb":["tamb1","tamb2"],"roll":["roll1"]}},"marimba":{"sus":[41,48,55,59,65,72,79,83,89,96],"susL":[],"stac":[],"tune":{}},"oboe_vib":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"86l":-5,"86t":12,"89t":11},"stacDir":"oboe"},"piccolo":{"sus":[79,84,91,96,103],"susL":[],"stac":[82,91,94,103,106],"tune":{"103t":5,"106t":10,"91t":5,"96s":6}},"timpani":{"sus":[42,48,49,52,55],"susL":[42,48,49,52,55],"stac":[41,47,49,52,55],"tune":{"41t":73,"42l":33,"42s":-16,"47t":-10,"48l":-63,"48s":-70,"49l":-12,"49s":-18,"49t":48,"52l":51,"52t":35,"55l":47,"55s":59,"55t":-59}},"trombone_vib":{"sus":[41,44,46,48,51,53,56,58,60,62,63],"susL":[],"stac":[34,41,46,53,58,62,65],"tune":{"41t":13},"stacDir":"trombone"},"trumpet_harmon":{"sus":[58,60,63,68,70,74,77,81],"susL":[58,60,63,68,70,74,77,81],"stac":[],"tune":{}},"trumpet_straight":{"sus":[58,60,62,67,70,74,77,81],"susL":[58,60,62,67,70,74,77,81],"stac":[],"tune":{}},"trumpet_vib":{"sus":[53,57,60,63,65,67,70,74,77,81,84],"susL":[53,57,60,63,65,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53s":-12,"65l":6,"74l":-5,"53t":-11,"60t":7,"84t":-5},"stacDir":"trumpet"},"violas":{"sus":[48,50,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,50,52,55,59,62,65,69,72,76,79,83,86],"stac":[48,52,55,59,62,65,69,72,76,79,83,86],"tune":{"48t":9,"52t":-7,"55t":4,"59t":-5,"65t":6},"dir":"violas2"},"violas_pizz":{"sus":[48,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,52,55,59,62,65,69,72,76,79,83],"stac":[],"tune":{"48l":-7,"55l":6,"55s":-5,"59l":-15,"69l":-16,"69s":-6,"72l":-7,"76l":-10,"79l":-9,"79s":-6,"83s":-23,"86s":-26}},"violins":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[55,57,59,62,66,69,72,76,79,83,86],"tune":{"59t":-8,"69t":7},"dir":"violins2"},"violins_pizz":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[],"tune":{"57s":-12,"59s":-12,"62s":5,"66s":-7,"69l":-8,"76l":-11,"76s":-21,"83l":-7,"86l":-15,"86s":5}},"xylophone":{"sus":[67,72,79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":18,"108s":15,"67s":12,"72s":12,"79s":14,"84s":15,"91s":16,"96s":17}},"tenor":{"sus":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"susL":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6}},"tenor_vib":{"sus":[46,48,50,52,54,58,60,62,64,66,70,72,74,76,79,80,82,84,86],"susL":[],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"46s":-4,"58s":-7,"70s":-4,"48s":3,"72s":-5,"84s":3,"50s":5,"62s":4,"74s":7,"86s":6,"64s":3,"66s":-7,"80s":3,"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6},"stacDir":"tenor"},"soprano":{"sus":[58,62,66,70,74,78,82,88],"susL":[58,62,66,70,74,78,82,88],"stac":[58,62,66,70,74,78,82,86],"tune":{"62s":-3,"58l":-3,"62l":-4,"74l":3,"70t":4,"74t":5,"78t":4}}};
+const MAN={"bassoon":{"sus":[34,37,41,45,46,48,55,60,63,68,69,72,75],"susL":[34,37,41,45,46,48,55,60,63,68,69,72,75],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"dir":"bassoon2"},"clarinet":{"sus":[50,53,58,62,65,70,74,77,82,86,89],"susL":[50,53,58,62,65,70,74,77,82,86,89],"stac":[50,53,58,62,65,70,74,77,82,86,89],"tune":{"50t":-30,"53t":-30,"58s":3,"58t":-41,"62s":5,"62t":-33,"65t":-24,"70s":3,"70t":-11,"74s":3,"74t":-20,"77t":-21,"82s":3,"82t":-6,"86t":-3,"89t":-4},"dir":"clarinet2"},"flute":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[60,64,69,72,76,81,84,88,93],"stac":[69,72,76,81,84,88,93,96],"tune":{"60s":3,"69t":-4,"93t":4},"dir":"flute2"},"horn":{"sus":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"susL":[36,39,43,46,50,53,57,60,63,66],"stac":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"tune":{"33s":-6,"33t":-5,"36t":-31,"57s":-3,"57t":-4,"74t":3},"dir":"horn2"},"oboe":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"58l":3,"86t":6,"89t":-4},"dir":"oboe2"},"sax":{"sus":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"susL":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"stac":[],"tune":{}},"trombone":{"sus":[34,37,39,41,46,50,53,60,61,63,65],"susL":[34,37,39,41,46,50,53,60,61,63,65],"stac":[34,41,46,53,58,62,65],"tune":{"41t":11},"dir":"trombone2"},"trumpet":{"sus":[53,57,60,63,67,70,74,77,81,84],"susL":[53,57,60,63,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53l":-3,"53t":-6,"60t":5,"67l":4,"67s":7,"74l":3,"77t":3,"81l":4,"84t":-3},"dir":"trumpet2"},"tuba":{"sus":[29,34,39,41,46,50,53,58,62],"susL":[34,39,41,46,50,53,58],"stac":[34,39,41,46,50,53,58,62],"tune":{"29s":-6,"34s":-3,"34t":-18,"41l":3,"46t":-15,"50s":4,"50t":-10,"53l":-3,"53t":-5,"58t":-10},"dir":"tuba2"},"bassoon_vib":{"sus":[43,45,48,55,57,60,64,67,69,72],"susL":[43,45,48,55,60,64,67,69,72],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"stacDir":"bassoon","dir":"bassoon_vib2"},"cellos":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[36,40,43,47,50,53,57,60,64,67,71,74,77],"tune":{"36t":5,"40t":14,"47t":4,"53t":4,"57t":4,"60t":8,"77t":7},"dir":"cellos2"},"cellos_pizz":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[],"tune":{"40l":4,"40s":12,"43s":-3,"47l":-8,"47s":-3,"53s":12,"57s":-4,"60l":3,"60s":4,"64s":5,"67s":-3,"71l":3,"71s":3,"74l":13,"74s":4,"77l":6,"77s":-3},"dir":"cellos_pizz2"},"contrabass":{"sus":[30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[30,31,34,36,38,40,42,44,45,49,52,56,59],"stac":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"tune":{"28t":-3,"30t":-24,"34t":17,"36t":7,"40t":-7,"45t":11,"49t":6,"52t":17,"56t":-7},"dir":"contrabass2"},"contrabass_pizz":{"sus":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[],"stac":[],"tune":{"28s":-10,"30s":-6,"31s":-18,"34s":3,"36s":9,"38s":6,"42s":-10,"44s":4,"45s":18,"56s":-6,"59s":-6},"dir":"contrabass_pizz2"},"flute_vib":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[],"stac":[69,72,76,81,84,88,93,96],"tune":{"69t":-4,"93t":4},"stacDir":"flute","dir":"flute_vib2"},"glockenspiel":{"sus":[79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":16,"108s":23,"79s":8,"84s":12,"91s":12,"96s":16},"dir":"glockenspiel2"},"harp":{"sus":[28,31,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,95,98,101],"susL":[],"stac":[],"tune":{"101s":-30,"28s":-15,"31s":-21,"35s":-13,"38s":-5,"41s":-7,"45s":-4,"52s":-4,"55s":-8,"59s":-12,"62s":-12,"69s":-10,"72s":-10,"76s":-11,"79s":-6,"83s":-8,"86s":-8,"89s":-6,"93s":-18,"95s":-9,"98s":-9},"dir":"harp2"},"horn_mute":{"sus":[46,51,53,60,63,68,70,74,77],"susL":[46,51,53,60,63,68,70],"stac":[],"tune":{},"dir":"horn_mute2"},"kit":{"sus":[],"susL":[],"stac":[],"tune":{},"hits":{"bd":["bd1","bd2"],"sn":["sn1","sn2"],"cy":["cy1","cy2"],"tri":["tri1","tri2"],"tamb":["tamb1","tamb2"],"roll":["roll1"]},"dir":"kit2"},"marimba":{"sus":[41,48,55,59,65,72,79,83,89,96],"susL":[],"stac":[],"tune":{"72s":4,"96s":3},"dir":"marimba2"},"oboe_vib":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"58l":3,"74l":3,"82l":3,"86l":-4,"86t":6,"89t":-4},"stacDir":"oboe","dir":"oboe_vib2"},"piccolo":{"sus":[79,84,91,96,103],"susL":[],"stac":[82,91,94,103,106],"tune":{"103t":4,"106t":10,"82t":-5,"84s":-3,"91s":4,"94t":-4,"96s":6},"dir":"piccolo2"},"timpani":{"sus":[42,48,49,52,55],"susL":[42,48,49,52,55],"stac":[41,47,49,52,55],"tune":{"41t":67,"42l":51,"42s":-11,"48l":-58,"48s":-68,"49l":-10,"49s":-9,"49t":46,"52l":36,"52s":-29,"52t":36,"55l":7,"55s":41,"55t":-44},"dir":"timpani2"},"trombone_vib":{"sus":[41,44,46,48,51,53,56,58,60,62,63],"susL":[],"stac":[34,41,46,53,58,62,65],"tune":{"41t":11},"stacDir":"trombone","dir":"trombone_vib2"},"trumpet_harmon":{"sus":[58,60,63,68,70,74,77,81],"susL":[58,60,63,68,70,74,77,81],"stac":[],"tune":{"58l":-3,"58s":-3,"74l":4,"81s":3},"dir":"trumpet_harmon2"},"trumpet_straight":{"sus":[58,60,62,67,70,74,77,81],"susL":[58,60,62,67,70,74,77,81],"stac":[],"tune":{"58s":-4},"dir":"trumpet_straight2"},"trumpet_vib":{"sus":[53,57,60,63,65,67,70,74,77,81,84],"susL":[53,57,60,63,65,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53s":-12,"63l":3,"63s":-3,"65l":5,"74l":-4,"74s":4,"77s":4,"84l":-4,"53t":-6,"60t":5,"77t":3,"84t":-3},"stacDir":"trumpet","dir":"trumpet_vib2"},"violas":{"sus":[48,50,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,50,52,55,59,62,65,69,72,76,79,83,86],"stac":[48,52,55,59,62,65,69,72,76,79,83,86],"tune":{"48t":9,"52t":-7,"55t":4,"59t":-5,"65t":6},"dir":"violas2"},"violas_pizz":{"sus":[48,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,52,55,59,62,65,69,72,76,79,83],"stac":[],"tune":{"48l":-5,"52l":-3,"55l":6,"59l":-14,"69l":-15,"69s":-7,"72l":-11,"76l":-7,"79l":-8,"79s":-5,"83s":-12,"86s":-26},"dir":"violas_pizz2"},"violins":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[55,57,59,62,66,69,72,76,79,83,86],"tune":{"59t":-8,"69t":7},"dir":"violins2"},"violins_pizz":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[],"tune":{"55s":-5,"57l":-4,"57s":-8,"59s":-7,"62l":-4,"62s":3,"66s":-8,"69l":-3,"76s":-7,"79l":-3,"79s":-5,"83l":-6,"83s":-3,"86l":-11},"dir":"violins_pizz2"},"xylophone":{"sus":[67,72,79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":19,"108s":16,"67s":13,"72s":12,"79s":14,"84s":15,"91s":16,"96s":17},"dir":"xylophone2"},"tenor":{"sus":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"susL":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6}},"tenor_vib":{"sus":[46,48,50,52,54,58,60,62,64,66,70,72,74,76,79,80,82,84,86],"susL":[],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"46s":-4,"58s":-7,"70s":-4,"48s":3,"72s":-5,"84s":3,"50s":5,"62s":4,"74s":7,"86s":6,"64s":3,"66s":-7,"80s":3,"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6},"stacDir":"tenor"},"soprano":{"sus":[58,62,66,70,74,78,82,88],"susL":[58,62,66,70,74,78,82,88],"stac":[58,62,66,70,74,78,82,86],"tune":{"62s":-3,"58l":-3,"62l":-4,"74l":3,"70t":4,"74t":5,"78t":4}}};
 const RHYTHMS=["long","swell","stabs","offbeat","march","waltz","fanfare","broken"];
 /* a waltz has three beats in a bar; everything else, four. A waltz plays without a four-beat drum beat (as on the piano) */
 const RHYTHM_BEATS={waltz:3};
@@ -505,12 +505,12 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
    plucked, the double bass and the harp; the trumpet with two mutes and the horn with one; the piccolo; trumpet, trombone,
    flute, oboe and bassoon with vibrato (their short notes are the plain ones'). And bands made of them. */
 const SOUNDS={
-  trumpet: {grp:"grpBrass", en:"Trumpet",          es:"Trompeta",        gain:1.4, rev:0.14, stand:"brass"},
+  trumpet: {grp:"grpBrass", en:"Trumpet",          es:"Trompeta",        gain:1.491, rev:0.14, stand:"brass"},
   /* AOG-BAND-JAZZ-V1 (2026-10-04) — Jimmy's list of the players the band's sounds should be like; on screen each is named
      by its style. trad jazz: warm and open, singing, vibrato on held notes; cool jazz: the harmon mute, intimate and
      breathy (touch < 1 leans on the soft recording); bebop: bright and brassy, with bite (touch > 1 leans on the loud one) */
   trumpet_vib:{grp:"grpJazz", en:"Trumpet · trad jazz, warm with vibrato", es:"Trompeta · jazz tradicional, cálida con vibrato", gain:1.486, rev:0.16, stand:"brass"},
-  trumpet_bebop:{grp:"grpJazz", en:"Trumpet · bebop, bright", es:"Trompeta · bebop, brillante", parts:["trumpet"], touch:1.3, gain:1.16, rev:0.1, stand:"brass"},
+  trumpet_bebop:{grp:"grpJazz", en:"Trumpet · bebop, bright", es:"Trompeta · bebop, brillante", parts:["trumpet"], touch:1.3, gain:1.23, rev:0.1, stand:"brass"},
   trumpet_harmon:{grp:"grpJazz", en:"Muted trumpet · cool jazz", es:"Trompeta con sordina · cool jazz", touch:0.7, gain:2.255, rev:0.2, stand:"brass"},
   sax_bebop:{grp:"grpJazz", en:"Alto sax · bebop, bright", es:"Saxo alto · bebop, brillante", parts:["sax"], touch:1.3, gain:1.111, rev:0.1, stand:"wind"},
   /* AOG-BAND-SAX2-V1 (2026-10-04) — the tenor and the soprano of Jimmy's list of influences, named by style on screen.
@@ -521,9 +521,9 @@ const SOUNDS={
   tenor_vib:{grp:"grpJazz", en:"Tenor sax · ballad, warm with vibrato", es:"Saxo tenor · balada, cálido con vibrato", gain:1.256, rev:0.18, stand:"wind"},
   tenor_modal:{grp:"grpJazz", en:"Tenor sax · modal jazz, big and strong", es:"Saxo tenor · jazz modal, grande y fuerte", parts:["tenor"], touch:1.3, gain:1.09, rev:0.1, stand:"wind"},
   soprano_fusion:{grp:"grpJazz", en:"Soprano sax · jazz fusion, light and airy", es:"Saxo soprano · jazz fusión, ligero y aireado", parts:["soprano"], touch:0.45, gain:2.946, rev:0.22, stand:"wind"},
-  bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, gain:1.003, rev:0.12, stand:"brass",
+  bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, mono:true, gain:1.116, rev:0.12, stand:"brass",
     who:{en:"trumpet and alto sax on the tune, trombone, a plucked double bass and drums",es:"trompeta y saxo alto en la melodía, trombón, un contrabajo pulsado y batería"}},
-  cooljazz:{grp:"grpJazz", en:"Cool jazz group",   es:"Grupo de cool jazz", parts:["contrabass_pizz","horn","sax","trumpet_harmon"], touch:0.7, gain:2.022, rev:0.2, stand:"brass",
+  cooljazz:{grp:"grpJazz", en:"Cool jazz group",   es:"Grupo de cool jazz", parts:["contrabass_pizz","horn","sax","trumpet_harmon"], touch:0.7, mono:true, gain:2.154, rev:0.2, stand:"brass",
     who:{en:"muted trumpet, alto sax, French horn and a plucked double bass",es:"trompeta con sordina, saxo alto, corno francés y un contrabajo pulsado"}},
   /* the big band's saxophones are an alto on its part and, under it, a tenor (AOG-BAND-SAX2-V1: the alto had played both
      notes, the lower one at the bottom of its reach), as a swing band's sax section has altos over tenors */
@@ -532,21 +532,21 @@ const SOUNDS={
     who:{en:"trumpets, alto and tenor saxes, trombones, a plucked double bass and drums",es:"trompetas, saxos alto y tenor, trombones, un contrabajo pulsado y batería"}},
   trumpet_straight:{grp:"grpBrass", en:"Trumpet · straight mute", es:"Trompeta · sordina recta", gain:1.387, rev:0.16, stand:"brass"},
   trombone:{grp:"grpBrass", en:"Trombone",         es:"Trombón",         gain:1.05, rev:0.14, stand:"brass"},
-  trombone_vib:{grp:"grpBrass", en:"Trombone · with vibrato", es:"Trombón · con vibrato", gain:0.967, rev:0.14, stand:"brass"},
-  horn:    {grp:"grpBrass", en:"French horn",      es:"Corno francés",   gain:1.01, rev:0.18, stand:"brass"},
+  trombone_vib:{grp:"grpBrass", en:"Trombone · with vibrato", es:"Trombón · con vibrato", gain:1.107, rev:0.14, stand:"brass"},
+  horn:    {grp:"grpBrass", en:"French horn",      es:"Corno francés",   gain:1.146, rev:0.18, stand:"brass"},
   horn_mute:{grp:"grpBrass", en:"French horn · muted", es:"Corno francés · con sordina", gain:1.181, rev:0.18, stand:"brass"},
-  tuba:    {grp:"grpBrass", en:"Tuba",             es:"Tuba",            gain:1.06, rev:0.12, stand:"brass"},
-  brass:   {grp:"grpBrass", en:"Brass section · all four", es:"Sección de metales · los cuatro", parts:["tuba","trombone","horn","trumpet"], gain:1.07, rev:0.16, stand:"brass",
+  tuba:    {grp:"grpBrass", en:"Tuba",             es:"Tuba",            gain:1.474, rev:0.12, stand:"brass"},
+  brass:   {grp:"grpBrass", en:"Brass section · all four", es:"Sección de metales · los cuatro", parts:["tuba","trombone","horn","trumpet"], mono:true, gain:1.167, rev:0.16, stand:"brass",
     who:{en:"tuba, trombone, French horn and trumpet",es:"tuba, trombón, corno francés y trompeta"}},
-  brass_mute:{grp:"grpBrass", en:"Brass section · with mutes", es:"Sección de metales · con sordinas", parts:["trombone","horn_mute","trumpet_straight","trumpet_harmon"], gain:1.419, rev:0.17, stand:"brass",
+  brass_mute:{grp:"grpBrass", en:"Brass section · with mutes", es:"Sección de metales · con sordinas", parts:["trombone","horn_mute","trumpet_straight","trumpet_harmon"], mono:true, gain:1.419, rev:0.17, stand:"brass",
     who:{en:"trombone, muted French horn and two muted trumpets",es:"trombón, corno francés con sordina y dos trompetas con sordina"}},
   piccolo: {grp:"grpWinds", en:"Piccolo",          es:"Flautín",         gain:1.506, rev:0.16, stand:"wind"},
-  flute:   {grp:"grpWinds", en:"Flute",            es:"Flauta",          gain:1.33, rev:0.16, stand:"wind"},
+  flute:   {grp:"grpWinds", en:"Flute",            es:"Flauta",          gain:1.439, rev:0.16, stand:"wind"},
   flute_vib:{grp:"grpWinds", en:"Flute · with vibrato", es:"Flauta · con vibrato", gain:1.499, rev:0.16, stand:"wind"},
   clarinet:{grp:"grpWinds", en:"Clarinet",         es:"Clarinete",       gain:1.71, rev:0.15, stand:"wind"},
   oboe:    {grp:"grpWinds", en:"Oboe",             es:"Oboe",            gain:0.96, rev:0.15, stand:"wind"},
   oboe_vib:{grp:"grpWinds", en:"Oboe · with vibrato", es:"Oboe · con vibrato", gain:1.356, rev:0.15, stand:"wind"},
-  bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.11, rev:0.14, stand:"wind"},
+  bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.175, rev:0.14, stand:"wind"},
   bassoon_vib:{grp:"grpWinds", en:"Bassoon · with vibrato", es:"Fagot · con vibrato", gain:1.279, rev:0.14, stand:"wind"},
   /* AOG-BAND-SAX2-V1 (2026-10-04) — Jimmy's list of influences: Wayne Shorter (soprano) and John Coltrane (tenor). A
      soprano saxophone (a saxello, the curved soprano) and a tenor saxophone from the Versilian Community Sample Library
@@ -557,16 +557,16 @@ const SOUNDS={
      from Weresax by Karoryfer Samples (CC0), recorded on every note; held notes only, so its short notes are held ones let go */
   sax:     {grp:"grpWinds", en:"Alto saxophone",   es:"Saxofón alto",    gain:1.4, rev:0.14, stand:"wind"},
   tenor:   {grp:"grpWinds", en:"Tenor saxophone",  es:"Saxofón tenor",   gain:1.364, rev:0.14, stand:"wind"},
-  winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], gain:1.21, rev:0.17, stand:"wind",
+  winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], mono:true, gain:1.21, rev:0.17, stand:"wind",
     who:{en:"bassoon, clarinet, oboe and flute",es:"fagot, clarinete, oboe y flauta"}},
-  winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], gain:1.148, rev:0.18, stand:"wind",
+  winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], mono:true, gain:1.148, rev:0.18, stand:"wind",
     who:{en:"bassoon, clarinet, oboe, flute and piccolo",es:"fagot, clarinete, oboe, flauta y flautín"}},
   violins: {grp:"grpStrings", en:"Violins",        es:"Violines",        gain:1.295, rev:0.18, stand:"string"},
-  violins_pizz:{grp:"grpStrings", en:"Violins · plucked", es:"Violines · pulsados", gain:1.396, rev:0.2, stand:"pluck"},
+  violins_pizz:{grp:"grpStrings", en:"Violins · plucked", es:"Violines · pulsados", gain:1.49, rev:0.2, stand:"pluck"},
   violas:  {grp:"grpStrings", en:"Violas",         es:"Violas",          gain:1.362, rev:0.18, stand:"string"},
   violas_pizz:{grp:"grpStrings", en:"Violas · plucked", es:"Violas · pulsadas", gain:1.021, rev:0.2, stand:"pluck"},
   cellos:  {grp:"grpStrings", en:"Cellos",         es:"Violonchelos",    gain:1.38, rev:0.17, stand:"string"},
-  cellos_pizz:{grp:"grpStrings", en:"Cellos · plucked", es:"Violonchelos · pulsados", gain:1.361, rev:0.18, stand:"pluck"},
+  cellos_pizz:{grp:"grpStrings", en:"Cellos · plucked", es:"Violonchelos · pulsados", gain:1.464, rev:0.18, stand:"pluck"},
   contrabass:{grp:"grpStrings", en:"Double bass",  es:"Contrabajo",      gain:1.033, rev:0.14, stand:"string"},
   contrabass_pizz:{grp:"grpStrings", en:"Double bass · plucked", es:"Contrabajo · pulsado", gain:1.099, rev:0.14, stand:"pluck"},
   harp:    {grp:"grpStrings", en:"Harp",           es:"Arpa",            gain:1.377, rev:0.2, stand:"pluck"},
@@ -585,9 +585,9 @@ const SOUNDS={
   percussion:{grp:"grpPerc", en:"Percussion section · all", es:"Sección de percusión · toda", parts:["timpani","marimba","xylophone","glockenspiel"], dbl:[["timpani","b5",0]],
     kit:["bd","sn","cy","tri","tamb","roll"], gain:1.124, rev:0.18, stand:"pluck",
     who:{en:"timpani, marimba, xylophone, glockenspiel, bass drum, snare drum, cymbal, triangle and tambourine",es:"timbales, marimba, xilófono, glockenspiel, bombo, caja, platillo, triángulo y pandereta"}},
-  marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], gain:1.031, rev:0.14, stand:"brass",
+  marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], mono:true, gain:1.1, rev:0.14, stand:"brass",
     who:{en:"tuba, trombone, saxophone, trumpet and piccolo",es:"tuba, trombón, saxofón, trompeta y flautín"}},
-  mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.223, rev:0.15, stand:"brass",
+  mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.313, rev:0.15, stand:"brass",
     who:{en:"two trumpets, violins, harp and a plucked double bass",es:"dos trompetas, violines, arpa y un contrabajo pulsado"}},
   /* AOG-BAND-ORCH-V1 (2026-10-04) — Jimmy: "Can one of the agents make the ORCHESTRA tab, where everyone plays!" Every
      player of the band, voiced as an orchestra is: the bass line on double bass and tuba, the timpani on the root, cellos
@@ -600,9 +600,13 @@ const SOUNDS={
   orchestra:{grp:"grpAll", en:"Orchestra · everyone plays", es:"Orquesta · todos tocan", parts:["contrabass","trombone","horn","trumpet"],
     dbl:[["tuba","b",0],["timpani","b",0],["cellos","b",12],["bassoon","b",12],["harp","b",24],["violas","lo",0],["tenor","lo",0],["sax","mid",0],["clarinet","mid",0],
          ["oboe","top",0],["soprano","top",0],["violins","top",0],["violins","top",12],["flute","top",12],["glockenspiel","top",12]],
-    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.508, rev:0.2, stand:"string",
+    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.59, rev:0.2, stand:"string",
     who:{en:"every player in the band",es:"todos los músicos de la banda"}}
 };
+/* AOG-BAND-STEREO-ALL-V1: in stereo, a few sounds' C chords came out more than 0.5 dB from the grand's (the two microphones
+   added together had changed the tone, and so how loud it sounds); their gains were measured again (bandt/level): trumpet,
+   trumpet bebop, trombone with vibrato, French horn, tuba, flute, bassoon (0.5 dB, on the edge), violins and cellos
+   plucked, the bebop and cool jazz groups, the brass section, the marching band, the mariachi band and the orchestra */
 /* how loud each player is next to the others: a held note in the middle of its reach comes out as loud on each (measured,
    AOG-BAND-V1, AOG-BAND-MORE-V1) */
 const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, clarinet:0.80, oboe:0.94, bassoon:1.14, sax:0.89,
@@ -848,9 +852,21 @@ const LEAN=Object.keys(SOUNDS).find(id=>SOUNDS[id].lean);
 /* AOG-BAND-STEREO-STRINGS-V1: the violin, viola and cello sections are in stereo now (twice the memory a note), so a sound
    with several of them (the string section, "one") loads one held recording per note for those players: "one:<player>" */
 const ONE_OK={violins:1, violas:1, cellos:1};
-function setKey(inst, id){ const snd=SOUNDS[id||S.sound]||{}; return snd.lean ? "lean:"+inst : (snd.one && ONE_OK[inst]) ? "one:"+inst : inst; }
-function instOf(key){ return key.replace(/^(lean|one):/, ""); }
+/* AOG-BAND-STEREO-ALL-V1: every other player from the same library is in stereo now too (brass, woodwinds, double bass,
+   plucked strings, harp, percussion; their folders end in 2). Two microphones are twice the memory, so in a big group
+   (brass, woodwinds, the bebop and cool jazz groups, the marching band: "mono" in SOUNDS; and the orchestra) these players
+   keep one microphone, the left one, as the recording made it (never the two added together, which sounded hollow):
+   "mono:<player>", and the orchestra's lean sets. Each such group then loads what it loaded before (the string
+   section stays as PR #280 left it; the big band, the mariachi band, the plucked strings and the percussion grow by less
+   than half, or stay under 40 MB, so they keep both microphones) */
+function oneMic(inst){ return !!(MAN[inst] && MAN[inst].dir) && !ONE_OK[inst]; }
+function setKey(inst, id){ const snd=SOUNDS[id||S.sound]||{};
+  return snd.lean ? "lean:"+inst : (snd.one && ONE_OK[inst]) ? "one:"+inst : (snd.mono && oneMic(inst)) ? "mono:"+inst : inst; }
+function instOf(key){ return key.replace(/^(lean|one|mono):/, ""); }
 function isOne(key){ return key.slice(0,4)==="one:"; }
+function isLean(key){ return key.slice(0,5)==="lean:"; }
+/* the sets that keep one microphone of a stereo recording */
+function leftOnly(key){ return key.slice(0,5)==="mono:" || (isLean(key) && oneMic(instOf(key))); }
 /* every set a sound needs: its players, and the kit if it has a beat section */
 function setsOf(id){ return partsOf(id).concat((SOUNDS[id]||{}).kit ? ["kit"] : []).map(p=>setKey(p, id)); }
 const LEAN_NOTES={};
@@ -869,7 +885,7 @@ function leanNotes(inst){
   return (LEAN_NOTES[inst]={sus:[...sus].sort((a,b)=>a-b), stac:[...stac].sort((a,b)=>a-b)});
 }
 function filesOf(key){
-  const inst=instOf(key), lean=key!==inst, m=MAN[inst], f=[];
+  const inst=instOf(key), lean=isLean(key), m=MAN[inst], f=[];
   if(m.hits){ (lean ? SOUNDS[LEAN].kit : Object.keys(m.hits)).forEach(p=>(m.hits[p]||[]).forEach(h=>f.push(h))); return f; }
   if(isOne(key)){ m.sus.forEach(n=>f.push(n+(m.susL.indexOf(n)>=0?"l":"s"))); m.stac.forEach(n=>f.push(n+"t")); return f; }
   if(lean){ const ln=leanNotes(inst); ln.sus.forEach(n=>f.push(n+(m.susL.indexOf(n)>=0?"l":"s"))); if(inst==="timpani") ln.stac.forEach(n=>f.push(n+"t")); return f; }
@@ -878,7 +894,7 @@ function filesOf(key){
 /* the files a set must have before its player plays: every soft held note (or, lean, every file it loads) */
 function mainOf(key){ const inst=instOf(key), m=MAN[inst];
   if(isOne(key)) return m.sus.map(n=>n+(m.susL.indexOf(n)>=0?"l":"s"));
-  return (key!==inst || m.hits) ? filesOf(key) : m.sus.map(n=>n+"s"); }
+  return (isLean(key) || m.hits) ? filesOf(key) : m.sus.map(n=>n+"s"); }
 /* where a file lives: a player's own folder, but the vibrato players' short notes are the plain player's (stacDir) */
 /* a player whose recordings were made again sits in its own new folder (dir), as files are kept a year under one name */
 function fileUrl(key, f){ const inst=instOf(key), p=(f.slice(-1)==="t" && MAN[inst].stacDir) || inst; return "/audio/band/"+((MAN[p]&&MAN[p].dir)||p)+"/"+f+".mp3"; }
@@ -888,6 +904,15 @@ function onsetOf(buf){
   const d=buf.getChannelData(0); let pk=0; for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
   let i=0; const thr=pk*0.03; while(i<d.length && Math.abs(d[i])<thr) i++;
   return Math.max(0, i-Math.floor(0.002*buf.sampleRate))/buf.sampleRate;
+}
+/* one microphone of a stereo recording (leftOnly), brought to the loudness of the two together, so the note is as loud
+   in a big group as on its own */
+function leftOf(dec, b){
+  const L=b.getChannelData(0), R=b.getChannelData(1); let eL=0, eR=0;
+  for(let i=0;i<L.length;i++){ eL+=L[i]*L[i]; eR+=R[i]*R[i]; }
+  const g=eL>0 ? Math.min(2, Math.sqrt((eL+eR)/2/eL)) : 1, m=dec.createBuffer(1, b.length, b.sampleRate), d=m.getChannelData(0);
+  for(let i=0;i<L.length;i++) d[i]=L[i]*g;
+  return m;
 }
 function loadInst(key, onStep, lanes){
   const set=setOf(key);
@@ -902,7 +927,8 @@ function loadInst(key, onStep, lanes){
       const f=files[idx++];
       try{
         const r=await fetch(fileUrl(key, f)); if(!r.ok) throw new Error(r.status);
-        const b=await decodeWith(dec, await r.arrayBuffer());
+        let b=await decodeWith(dec, await r.arrayBuffer());
+        if(b.numberOfChannels>1 && leftOnly(key)) b=leftOf(dec, b);
         set.buf[f]=b; set.start[f]=onsetOf(b);
       }catch(e){}
       set.done++;
