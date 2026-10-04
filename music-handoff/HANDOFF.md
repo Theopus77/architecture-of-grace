@@ -17,7 +17,7 @@ This file is for a NEW session taking over the music work. Everything below can 
 
 | What | Where | State |
 |---|---|---|
-| Live site | `main` | The amp (PR #265), then every helper branch in one deploy (§4): the Studio; the piano's 34 sounds; The Band's 46 (strings, percussion, Orchestra, jazz); guitar 44 and bass 25 sounds on a 44.1 kHz string; 21 guitar and 19 bass ways to play; 44 chord patterns on all four tools; Solo mode; 20 drum kits (P–T recorded); a take sent to a drum pad; the turntables helper's work if it landed (§4). |
+| Live site | `main` | The amp (PR #265), then every helper branch in one deploy (§4): the Studio; the piano's 34 sounds; The Band's 46 (strings, percussion, Orchestra, jazz); guitar 44 and bass 25 sounds on a 44.1 kHz string; 21 guitar and 19 bass ways to play; 44 chord patterns on all four tools; Solo mode; 20 drum kits (P–T recorded); a take sent to a drum pad; the turntables as three decks and a mixer, with their picture guide redrawn. |
 | The amp and pedals | `aog-amp.js`, `aog-amp-worklet.js` | 16 amps, 9 cabinets, 19 guitar pedals (15 on the bass), a 10-band EQ. |
 | Helper branches | `origin/claude/amp-*` | All merged. The branches stay on GitHub as a record; do not merge them again. |
 
@@ -41,7 +41,7 @@ The working branch for music is `claude/drum-pads-touch-keys`. After every deplo
 13. "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix, the list can go on and on" → **done**: their sounds (by style) and new pedals: vibe, octave fuzz, pitch shifter, rotating speaker, envelope filter, treble booster, a vintage fuzz and a tape echo.
 14. "In guitar there should be a solo mode as well! BLOW my mind" → **done**: Solo mode (`aog-solo.js`), §5.
 15. "yes I want how it is played increase and start a chord pattern increased!!!!" → **done**: 44 chord patterns in five groups on the guitar, bass, piano and band (the 18 old ids unchanged); lesson 7 of Mastering the Piano lists them all.
-16. "Start the DJ turntables agent now too" (Frankie Knuckles, DJ Shadow, Carl Cox) → see §4: the **dj** branch.
+16. "Start the DJ turntables agent now too" (Frankie Knuckles, DJ Shadow, Carl Cox) → **done**: three decks and a three-channel mixer, pads, loops and slip on the beat, EQ kills, a filter, beat-timed echo, reverb and flanger, and four records made on the page (house, techno, trip-hop, disco edit), named by style.
 
 ### Jimmy's list of influences (2026-10-04): "These are some of influences the instruments should get their sounds from"
 
@@ -54,7 +54,7 @@ On screen, sounds are named by style, never by player.
 | Drums | Vinnie Paul, John Bonham, Buddy Rich, Neil Peart, Jeff Porcaro: kit voicings, plus starter beats in their spirit (a half-time shuffle, the big "Levee" room groove, big-band swing, a groove-metal double kick, a prog beat) | **drumkit**: done (kits P–T) |
 | Brass | Louis Armstrong, Miles Davis (Harmon mute), Dizzy Gillespie | **band**: done (jazz styles) |
 | Woodwinds | Charlie Parker (alto), John Coltrane (tenor), Wayne Shorter (soprano). Tenor and soprano only if real recordings or a convincing voicing exist | **band**: done (jazz styles) |
-| DJs | Frankie Knuckles (house), DJ Shadow (sampling, turntablism), Carl Cox (techno, three decks) | **dj** (§4) |
+| DJs | Frankie Knuckles (house), DJ Shadow (sampling, turntablism), Carl Cox (techno, three decks) | **dj**: done |
 
 ## 3. The amp (AOG-AMP-V1): live since #265
 
@@ -94,7 +94,8 @@ Each helper worked in its own worktree and pushed `origin/claude/amp-<name>`. Al
 | `claude/amp-tones` | 5 amps, a 4×10 cabinet, 6 pedals, a vintage fuzz and a tape echo; 22 guitar and 12 bass sounds; 3 new sound groups | `f50fe60b` |
 | `claude/amp-drumkit` | Recorded kits P to T, a starter beat each (`aog-drumkit.js`, `audio/drums/*`) | `67f68cea` |
 | `claude/amp-solo` | Solo mode (`aog-solo.js`) | `fe9b8e38` |
-| `claude/amp-dj` | The turntables (see the note below) | — |
+| `claude/amp-dj` | The turntables as a three-deck DJ instrument (`aog-dj.js`, `aog-vinyl-worklet.js`, `music-decks.html` rewritten) | `2a383519` |
+| `claude/amp-decksguide` | The turntables picture guide, `decks-guide.html`, redrawn for three decks | (see §1) |
 
 After the merges, the lead session:
 - copied the 44 patterns into `music-piano.html` and `_work/music/band_script.js`, gave **Heroic** its own chords (Am C G D; it had copied Minor groove), and listed all 44 in lesson 7 of Mastering the Piano (`make_mastering_piano.py`);
@@ -109,7 +110,7 @@ If you ever merge more work into the generated pages (`music-guitar.html`, `musi
 | Tool | File(s) | Notes |
 |---|---|---|
 | Drum machine | `music-drums.html`, `aog-drumkit.js` | SP-1200 model. Kits A–O are made on the page; P–T are a recorded kit (`audio/drums/<style>/`, loaded only when picked, two kept in memory). Memory: 10 s for user samples, 26,040 Hz, 12-bit. Chord pads, a take on any pad, kit undo. |
-| Turntables | `music-decks.html` | Reads the shelves. |
+| Turntables | `music-decks.html`, `aog-dj.js`, `aog-vinyl-worklet.js` | Three decks (one at a time on a phone, from the Show menu) and a three-channel mixer. The crate: `audio/crate/*.mp3` plus four records made on the page in a Worker. Reads every shelf. A limiter keeps every mix under −1 dBFS. |
 | Studio | `music-studio.html` (`/studio`) | 8 tracks, a mixer with sends, a master, bounce. Takes what you made on the other tools from their shelves; its bounce goes on the `studiobench` shelf for the turntables. |
 | Piano | `music-piano.html` | Hand-written, except LESSONS (`_work/music/make_piano_lessons.py`). Lessons: `piano-lessons.html`, `mastering-piano.html` (`make_mastering_piano.py`). |
 | Guitar and bass | `_work/music/strings_page.html` → `make_strings.py`; `aog-solo.js` | One source, `GTR` true or false. Solo mode lives in `aog-solo.js` and joins the page through nine small AOG-SOLO-V1 hooks; in Chords mode every hook returns false. |
@@ -159,7 +160,8 @@ What the newer suites cover:
 - `strings/sfix` (the 44.1 kHz string: pitch, the pick click, steel against nylon, fingers against pick, the synth's thump, held pads), `strings/sways` (the ways to play), `strings/sdecks` (the tools menu on every music page, with the Studio);
 - `solo/s1` (the panel and the lit scale on an iPhone, an iPad and a computer), `solo/s2` (bends, vibrato, hammer-ons, tap, squeal, whammy, kill, feedback, slap and pop, the keys), `solo/s3` (the backing band in time, the licks);
 - `realkit` (kits P to T: loading, every pad soft to accent, takes, levels against kit A, the era dial, TRIM, the starter beats, Send to the turntables, a reload, Spanish, a phone);
-- `ppat` (all 44 chord patterns on the piano, in five groups, in English and Spanish).
+- `ppat` (all 44 chord patterns on the piano, in five groups, in English and Spanish);
+- `dj/d0` (the turntables' engine and the four records, in Node), `dj/d1` (three decks in sync), `dj/d2` (loops, pads, slip, to the sample), `dj/d3` (EQ, filter, effects), `dj/d4` (phone, iPad and computer layouts, Spanish, contrast, keyboard), `dj/d5` (frame rate on a slowed iPad).
 
 - Playwright and Chromium are installed globally: `require(execSync("npm root -g")+"/playwright")`. Never run `playwright install`.
 - Each suite uses a fixed 99xx port. **Never run two copies at once.**
@@ -198,4 +200,4 @@ Before any push:
 - **Flanger.** Chrome clamps a delay inside a feedback loop to one render quantum (2.7 ms), so it cannot sweep through zero. Moving it into the worklet would fix that.
 - **Solo mode.** Licks are guitar only, and a lick moves the hand's window to its box.
 - **Download size.** The new recordings (piano, band, drum kits) load only when a sound is picked. Keep it that way.
-- **Next for the studio:** "Send to the studio" buttons in `aog-recorder.js`; a second clip per track. Never a microphone.
+- **Next for the studio:** "Send to the studio" buttons in `aog-recorder.js`; a shelf for a turntables take, so a DJ mix can go onto a track; a second clip per track. Never a microphone.
