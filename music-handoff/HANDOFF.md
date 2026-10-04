@@ -19,7 +19,7 @@ This file is for a NEW session taking over the music work. Everything below can 
 |---|---|---|
 | Live site | `main` | Everything up to PR **#264**: The Band's saxophone, pads 1–6 in a minor key, the piano's 16 ways to play. |
 | The amp and pedals | branch `claude/drum-pads-touch-keys`, commit `63d8440a` | Pushed, **not deployed**. See §3. |
-| Eight helper branches | `origin/claude/amp-*` | Each helper agent pushes its branch when it finishes. See §4. |
+| Nine helper branches | `origin/claude/amp-*` | Each helper agent pushes its branch when it finishes. See §4. |
 
 The working branch for music is `claude/drum-pads-touch-keys`. After every deploy it is reset to `origin/main`, keeping the same name.
 
@@ -37,6 +37,15 @@ The working branch for music is `claude/drum-pads-touch-keys`. After every deplo
 9. "Could a state of the art Recording studio be built?" → the **studio** branch: a new page `music-studio.html`, route `/studio`.
 10. Record already exists on every music tool (piano, guitar, bass, band, drum machine): `aog-recorder.js`, deployed in #263.
 11. "Can one of the agents make the ORCHESTRA tab, where everyone plays!" (The Band, on his iPad) → the **band** branch: "Orchestra · everyone plays", in its own group in the Instrument drop-down, orchestrated by section and leveled like the rest.
+12. "We need a string and percussion section!" → the **band** branch: strings (violins, violas, cellos, contrabass, harp) and a percussion section from VSCO 2 CE (timpani, mallets, concert snare, bass drum, cymbal, triangle, tambourine…). The unpitched instruments play the beat of the chosen way to play. Both join the Orchestra.
+13. "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix, the list can go on and on" → the **tones** branch: more sounds, plus new pedals (Uni-Vibe, octave-up fuzz, pitch-shift whammy, rotating speaker, a bass envelope filter).
+14. "In guitar there should be a solo mode as well! BLOW my mind" → the **solo** branch. Solo mode on the neck:
+    - the scale lit for the key, the blue note marked;
+    - bends, vibrato, hammer-ons, two-hand tapping, a pinch-harmonic squeal, a whammy bar, a killswitch, and feedback bloom on high gain;
+    - a backing band (rhythm guitar on its own rig, a bass line, the user's drum beat or a built-in one);
+    - licks to copy, with each note lit;
+    - a lead-sound picker;
+    - slap and pop on the bass. Most of it lives in `aog-solo.js`.
 
 ## 3. The amp (AOG-AMP-V1): on the branch, not live yet
 
@@ -63,17 +72,18 @@ Measured:
 
 ## 4. The helper branches (merge these)
 
-Each was cut from `470e18a2` (main) or `63d8440a` (the amp), worked in its own worktree, and pushes to `origin/claude/amp-<name>`:
+There are nine. Each was cut from `470e18a2` (main) or `63d8440a` (the amp), worked in its own worktree, and pushes to `origin/claude/amp-<name>`:
 
 | Branch | Job | Files it changes |
 |---|---|---|
 | `claude/amp-piano` | 16+ new piano sounds (some from VSCO 2 CE recordings: harp, marimba…) | `music-piano.html`, `audio/piano/*`, `_headers` |
-| `claude/amp-band` | The Band: strings sections, muted and vibrato brass, ensembles, and **Orchestra · everyone plays** | `_work/music/band_*`, `music-band.html`, `audio/band/*`, `_headers`, maybe `science-hub.html` |
+| `claude/amp-band` | The Band: strings and percussion sections, muted and vibrato brass, ensembles, and **Orchestra · everyone plays** | `_work/music/band_*`, `music-band.html`, `audio/band/*`, `_headers`, maybe `science-hub.html` |
 | `claude/amp-drums` | Send a recorded take to a drum pad | `aog-recorder.js`, `music-drums.html` |
 | `claude/amp-ways` | ~18–20 guitar and 16+ bass ways to play; bass lines leave the root; strum gaps | `strings_page.html` (rhythm parts only) and the 2 generated pages |
 | `claude/amp-stringfix` | Jimmy's handoff: a 44.1 kHz string, pick burst, pitch, sounds that disagree, synth bass | `strings_page.html` (engine, voices, existing SOUNDS values, neck drawing) |
 | `claude/amp-tones` | Zeppelin, Aerosmith, AC/DC, Sabbath and Opeth-style guitar and bass sounds; new amp models and pedals | `aog-amp.js`, `aog-amp-worklet.js`, new SOUNDS entries appended after `doom` and `acid` |
 | `claude/amp-drumkit` | Recorded acoustic drum kits and voicings | `aog-drumkit.js` (new), `music-drums.html` (tagged AOG-DRUM-REAL-V1), `audio/drums/*`, `_headers` |
+| `claude/amp-solo` | Solo mode on the guitar (and slap and pop on the bass) | `aog-solo.js` (new), small AOG-SOLO-V1 hooks in `strings_page.html` |
 | `claude/amp-studio` | The Studio: 8 tracks, mixer, sends, master, bounce, `studiobench` shelf | `music-studio.html` (new), `_redirects` |
 
 How to merge:
