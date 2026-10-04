@@ -35,8 +35,8 @@ The working branch for music is `claude/drum-pads-touch-keys`. After every deplo
 7. "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the sounds" → the **tones** branch for guitar and bass; the **drumkit** branch for drum voicings. On screen, sounds are named by genre, never by band.
 8. "I would love an authentic Drum kit" → the **drumkit** branch: recorded acoustic kits, CC0 or CC-BY.
 9. "Could a state of the art Recording studio be built?" → the **studio** branch: a new page `music-studio.html`, route `/studio`.
-11. "Can one of the agents make the ORCHESTRA tab, where everyone plays!" (The Band, on his iPad) → the **band** branch: "Orchestra · everyone plays", in its own group in the Instrument drop-down, orchestrated by section and leveled like the rest.
 10. Record already exists on every music tool (piano, guitar, bass, band, drum machine): `aog-recorder.js`, deployed in #263.
+11. "Can one of the agents make the ORCHESTRA tab, where everyone plays!" (The Band, on his iPad) → the **band** branch: "Orchestra · everyone plays", in its own group in the Instrument drop-down, orchestrated by section and leveled like the rest.
 
 ## 3. The amp (AOG-AMP-V1): on the branch, not live yet
 
