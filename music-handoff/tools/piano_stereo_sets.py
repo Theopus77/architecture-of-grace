@@ -108,8 +108,9 @@ def loud_db(x, win=0.4):
     return 10 * np.log10(np.max(c[n:] - c[:-n]) / n + 1e-15)
 
 
-def match_and_write(name, key, y, info):
-    """bring y (stereo) to the loudness of the old file it replaces, keep its sharpest instant under PEAK_CAP, write it"""
+def match_and_write(name, key, y, info, write=None):
+    """bring y (stereo) to the loudness of the old file it replaces, keep its sharpest instant under PEAK_CAP, write it
+    (write(dst, y) → the y it wrote, for a builder that places the note's start in the file as it writes)"""
     old = old_file(name, key)
     ref, now = loud_db(old), loud_db(y)
     g = 10 ** ((ref - now) / 20)
@@ -120,7 +121,10 @@ def match_and_write(name, key, y, info):
         capped = 20 * math.log10(PEAK_CAP / pk)
         y *= PEAK_CAP / pk
     dst = os.path.join(PIANO, NEW(name), key + ".mp3")
-    encode(y, dst)
+    if write:
+        y = write(dst, y)
+    else:
+        encode(y, dst)
     back = decode(dst)
     # the encoder trims the very top of the sound, which the K-weighting counts: measured again as written, and the
     # difference made up (within the peak cap)
@@ -508,7 +512,289 @@ for _n in VCSL_SETS:
     BUILDERS[_n] = build_vcsl
 
 
+# ══════════════════════════════════════════════════════════════════════════
+#  3 · the first piano build (2026-10-03), the grand and the upright. Its program was never put in the repo; it is
+#  kept here as it ran (piano_build.py), with both channels carried through:
+#    the two microphones time-aligned (the lag, within 96 samples, that matches them best over the first 0.4 s) and
+#    averaged; the note starts 2 ms before the hammer lands (3 % of its loudest); kept 8 s low to 2.5 s high; the last
+#    35 % faded (a raised cosine); one level for the whole piano; 96 kbps MP3
+# ══════════════════════════════════════════════════════════════════════════
+PB_NAMES = {"C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5, "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11}
+
+
+def pb_midi(name):
+    return 12 * (int(name[-1]) + 1) + PB_NAMES[name[:-1]]
+
+
+def pb_best_lag(L, R, maxlag=96):
+    a = L[:int(0.4 * SR)]; b = R[:int(0.4 * SR)]; best = (0, -1e18)
+    for k in range(-maxlag, maxlag + 1):
+        c = np.dot(a[k:], b[:len(b) - k]) if k >= 0 else np.dot(a[:k], b[-k:])
+        if c > best[1]:
+            best = (k, c)
+    return best[0]
+
+
+def pb_shift(R, k):
+    if k > 0:
+        return np.concatenate([np.zeros(k), R[:-k]])
+    if k < 0:
+        return np.concatenate([R[-k:], np.zeros(-k)])
+    return R
+
+
+def pb_keep(m):
+    return 8.0 if m < 36 else 7.0 if m < 48 else 6.0 if m < 60 else 5.0 if m < 72 else 3.5 if m < 84 else 2.5
+
+
+def pb_items(name):
+    if name == "grand":
+        names = ["A0"] + ["%s%d" % (n, o) for o in range(1, 8) for n in ["C", "D#", "F#", "A"]] + ["C8"]
+        return [(pb_midi(nm_), lay, ("file", os.path.join(SALAMANDER, "%sv%d.flac" % (nm_, v))))
+                for nm_ in names for lay, v in [("s", 4), ("m", 8), ("l", 12)]]
+    keys = {2 * k: (21 + 4 * k if 2 * k < 44 else 108) for k in range(23)}
+    return [(keys[i], lay, ("vsco", "Keys/Upright Piano/Player_dyn%d_rr1_%03d.wav" % (d, i)))
+            for i in sorted(keys) for lay, d in [("s", 1), ("m", 2), ("l", 3)]]
+
+
+def build_first(name):
+    for m, lay, (kind, path) in pb_items(name):
+        raw = git_bytes(VSCO, path) if kind == "vsco" else open(path, "rb").read()
+        x = decode(raw, ch=2).astype(np.float32).astype(np.float64)    # the first build read float32
+        L, R = x[:, 0], x[:, 1]
+        mono = (L + pb_shift(R, pb_best_lag(L, R))) * 0.5             # the mix it listened to
+        pk = np.max(np.abs(mono))
+        on = int(np.argmax(np.abs(mono) > pk * 0.03)); on = max(0, on - int(0.002 * SR))
+        n = int(pb_keep(m) * SR)
+        y = x[on:on + n].copy()
+        f = int(len(y) * 0.35); t = np.linspace(0, np.pi, f); y[-f:] *= (0.5 + 0.5 * np.cos(t))[:, None]
+        match_and_write(name, "%d%s" % (m, lay), y, {"src": os.path.basename(path)})
+
+
+BUILDERS["grand"] = build_first
+BUILDERS["upright"] = build_first
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  4 · piano_real_sets.py: the cinema organ and the accordion (held notes, looped in the file for the page)
+#  Its own functions are used as they are, one channel at a time; every choice it makes from the sound (where the note
+#  starts, its tuning) is made from the same one-channel mix it listened to (to_mono: the microphones lined up and
+#  averaged). Where a held note's repeating cycle starts is chosen where both channels match best, and each channel's
+#  blend into it is set by how alike that channel's two ends are.
+# ══════════════════════════════════════════════════════════════════════════
+_RS = None
+
+
+def rs():
+    global _RS
+    if _RS is None:
+        sys.path.insert(0, HERE)
+        import piano_real_sets as m
+        m.SRC_ROOT = SOURCES_DIR
+        _RS = m
+    return _RS
+
+
+SOURCES_DIR = os.environ.get("AOG_SOURCES", "")
+
+
+def three(path):
+    """left, right and the builder's mix (to_mono) of a recording"""
+    R = rs()
+    x = R.load(path)
+    if x.shape[1] == 1:
+        return [x[:, 0], x[:, 0], x[:, 0]]
+    return [x[:, 0].copy(), x[:, 1].copy(), R.to_mono(x)]
+
+
+def trim_like(chs, lead=0.0008):
+    """piano_real_sets.trim_start, its cut found on the mix (the last of chs) and made in every channel"""
+    R = rs()
+    i = R.onset_of(chs[-1]); Ld = int(lead * SR)
+    out = []
+    for y in chs:
+        if i < Ld:
+            y = np.concatenate([np.zeros(Ld - i), y])
+        s0 = max(i, Ld) - Ld
+        y = y[s0:].copy()
+        y[:Ld] *= np.sin(np.linspace(0, np.pi / 2, Ld)) ** 2
+        y[0] = 0.0
+        out.append(y)
+    return out
+
+
+def loop_like(chs, P0, L, a, z, W, search):
+    """piano_real_sets.make_loop for the left and right channels: the cycle's start searched where the two channels'
+    ends match best (their correlations averaged), then each channel made periodic from there"""
+    R = rs()
+    Ls, Ws = int(round(L * SR)), int(round(W * SR))
+    best = None
+    for p in range(int(search[0] * SR), int(search[1] * SR) + 1, int(0.001 * SR)):
+        if p + Ls > len(chs[0]) or p < Ws:
+            continue
+        r = np.mean([R.corr(y[p + Ls - Ws:p + Ls], y[p - Ws:p]) for y in chs[:2]])
+        if best is None or r > best[0]:
+            best = (r, p)
+    p0 = best[1] / SR
+    outs, rhos = [], []
+    for y in chs[:2]:
+        o, rho, _ = R.make_loop(y, p0, L, a, z, W=W, search=None)
+        outs.append(o); rhos.append(rho)
+    return np.stack(outs, axis=1), rhos, p0
+
+
+def write_held(dst, y, max_cut=0.002):
+    """piano_real_sets.write_struck for a held note, in stereo: written, decoded and measured as the page measures it
+    (its start: 3 % of its peak, in either channel); a start later than 1.6 ms loses up to 2 ms of the silence in
+    front; if the MP3's pre-echo lifts the first samples over 0.6 % of the peak, the note moves a few samples"""
+    Ld = int(0.0008 * SR)
+    budget = int(max_cut * SR)
+
+    def meas():
+        d = decode(dst); a = np.max(np.abs(d), axis=1); pk = a.max()
+        return int(np.argmax(a > 0.03 * pk)) / SR, float(np.max(a[:4]) / pk)
+    for _ in range(3):
+        encode(y, dst)
+        on, head = meas()
+        if on <= 0.0016 or budget <= 0:
+            break
+        cut = min(budget, int((on - 0.0009) * SR))
+        budget -= cut
+        y = np.concatenate([y[cut:], np.zeros((cut, 2))])
+        y[:Ld] *= (np.sin(np.linspace(0, np.pi / 2, Ld)) ** 2)[:, None]
+        y[0] = 0.0
+    if head <= 0.006:
+        return y
+    best = (head, 0, y)
+
+    def shifted(sh):
+        if sh >= 0:
+            return np.concatenate([np.zeros((sh, 2)), y])[:len(y)]
+        z = np.concatenate([y[-sh:], np.zeros((-sh, 2))])
+        k = max(2, Ld + sh)
+        z[:k] *= (np.sin(np.linspace(0, np.pi / 2, k)) ** 2)[:, None]
+        z[0] = 0.0
+        return z
+    for sh in (4, 8, -6, 12, 16, -12, 20, 24, 28, 32, 36, 40):
+        z = shifted(sh)
+        encode(z, dst)
+        on2, head2 = meas()
+        if 0.0003 <= on2 <= 0.00195 and head2 < best[0]:
+            best = (head2, sh, z)
+        if 0.0003 <= on2 <= 0.00195 and head2 <= 0.006:
+            return z
+    encode(best[2], dst)
+    return best[2]
+
+
+def build_theatre(name):
+    R = rs()
+    files = R.pipe_files()
+    reals = sorted(files)
+    comps = [(-12, -5.0), (0, 0.0), (12, -4.5), (24, -10.0)]
+    notes = R.grid(0)
+    D = 2
+    L, err = R.pick_loop_len([(R.mtof(n), D) for n in notes], 3.0, 4.5)
+    P0lo, P0hi = 1.0, 1.25
+    a = round(P0hi + R.LOOP_X + R.DEC_DELAY + 0.01, 2)
+    z = round(a + L, 2)
+    cache = {}
+
+    def pipe(r):
+        if r not in cache:
+            chs = three(files[r])
+            M = chs[2]
+            s0 = max(0, R.onset_of(M) - int(0.001 * SR))
+            chs = [c[s0:] for c in chs]
+            f0 = R.pitch_harm(chs[2], R.mtof(r), 1.5, 6.0, ks=(1, 2, 3))
+            cache[r] = (chs, SR / R.period_exact(chs[2], f0, 1.5, 8.0))
+        return cache[r]
+    for n in notes:
+        f = R.mtof(n)
+        N = D * round(f * L / D)
+        n_out = int(round((P0hi + L + 0.15) * SR))
+        ys = [np.zeros(n_out) for _ in range(3)]
+        for oc, g in comps:
+            k = n + oc
+            while k > reals[-1] + 1:
+                k -= 12
+            r = R.nearest(reals, k)
+            chs, fs = pipe(r)
+            fc = N * 2 ** ((k - n) / 12) / L
+            ratio = fc / fs
+            for y, x in zip(ys, chs):
+                c = R.resample(x[:int(n_out * ratio) + 64], ratio)[:n_out]
+                y[:len(c)] += 10 ** (g / 20) * c
+        ys = [R.hp(y, max(20.0, 0.35 * f), order=4) for y in ys]
+        ys = trim_like(ys)
+        ys = [np.concatenate([y, np.zeros(max(0, n_out - len(y)))]) for y in ys]
+        y2, rhos, p0 = loop_like(ys, P0lo, L, a, z, 0.1, (P0lo, P0hi))
+        match_and_write(name, "%dm" % n, y2, {"cycle_start": round(p0, 3), "seam_match": [round(x, 3) for x in rhos],
+                                              "note": "cycle from %.3f s, its seam alike %.2f (left) %.2f (right)" % (p0, rhos[0], rhos[1])},
+                        write=write_held)
+    print("theatre loop [%.2f, %.2f] (as before)" % (a, z))
+
+
+def build_accordion(name):
+    R = rs()
+    regs = R.accordion_regions()
+    reals = sorted(regs)
+    notes = R.best_grid([reals])
+    L = 2.0
+    P0lo, P0hi = 0.22, 0.6
+    a = round(P0hi + R.LOOP_X + R.DEC_DELAY + 0.01, 2)
+    z = round(a + L, 2)
+    cache = {}
+    for n in notes:
+        r = R.nearest(reals, n)
+        path, ls, le = regs[r]
+        if path not in cache:
+            chs = three(path)
+            cache[path] = (chs, R.pitch_centroid(chs[2], R.mtof(r), ls / SR, le / SR, ks=(1, 2, 3, 4), span_c=60))
+        chs, fm = cache[path]
+        f = R.mtof(n)
+        ratio = f / fm
+        n_out = int(round((z + 0.1) * SR))
+
+        def make(ratio):
+            ys = []
+            for x in chs:
+                y = R.sampler_read(x, ratio, ls, le, n_out)
+                y = R.hp(y, 0.5 * f)
+                if ratio > 2 ** (4 / 12):
+                    y = R.lp(y, 14000.0)
+                ys.append(y)
+            ys = trim_like(ys)
+            ys = [np.concatenate([y, np.zeros(max(0, n_out - len(y)))]) for y in ys]
+            y2, rhos, p0 = loop_like(ys, P0lo, L, a, z, 0.4, (P0lo, P0hi))
+            mix, _, _ = R.make_loop(ys[2], p0, L, a, z, W=0.4, search=None)
+            return y2, rhos, p0, mix
+        for _ in range(3):                 # the finished note measured as the checker measures it (the mix), and retuned
+            y2, rhos, p0, mix = make(ratio)
+            res = 1200 * math.log2(R.pitch_centroid(mix, f, a, z - 0.6, ks=(1, 2, 3, 4), span_c=60) / f)
+            if abs(res) < 0.5:
+                break
+            ratio *= 2 ** (-res / 1200)
+        match_and_write(name, "%dm" % n, y2, {"src": os.path.basename(path), "cycle_start": round(p0, 3),
+                                              "seam_match": [round(x, 3) for x in rhos],
+                                              "note": "cycle from %.3f s, its seam alike %.2f (left) %.2f (right)" % (p0, rhos[0], rhos[1])},
+                        write=write_held)
+        back = decode(os.path.join(PIANO, NEW(name), "%dm.mp3" % n))
+        cs = [1200 * math.log2(R.pitch_centroid(back[:, c], f, a, z - 0.6, ks=(1, 2, 3, 4), span_c=60) / f) for c in (0, 1)]
+        cm = 1200 * math.log2(R.pitch_centroid(back.mean(axis=1), f, a, z - 0.6, ks=(1, 2, 3, 4), span_c=60) / f)
+        REPORT[name][-1].update(cents_L=round(cs[0], 1), cents_R=round(cs[1], 1), cents_mix=round(cm, 1))
+        print("%-12s %5s  tuning (over its loop): L %+.1f R %+.1f (both %+.1f) cents" % (name, "%dm" % n, cs[0], cs[1], cm))
+    print("accordion loop [%.2f, %.2f] (as before)" % (a, z))
+
+
+BUILDERS["theatre"] = build_theatre
+BUILDERS["accordion"] = build_accordion
+
+
 def main():
+    global SOURCES_DIR
+    if "--sources" in sys.argv:
+        SOURCES_DIR = os.path.abspath(sys.argv[sys.argv.index("--sources") + 1])
     names = sys.argv[1].split(",")
     for nm in names:
         BUILDERS[nm](nm)
