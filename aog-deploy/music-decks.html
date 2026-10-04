@@ -7,13 +7,18 @@
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
 </script>
 <title>The Turntables — Architecture of Grace</title>
-<meta name="description" content="Two platters with weight. Load a song from this computer, scratch it, mix it, and record the take as a .wav. The song never leaves.">
+<meta name="description" content="Three platters with weight and a mixer. Play the records made right here or load a song from this computer, scratch it, mix it, and record the take as a .wav. The song never leaves.">
 <link rel="canonical" href="https://architectureofgrace.org/decks">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0A1E33">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <!-- AOG-DECKS-V1 (2026-09-22) — Jimmy: turntables a student can load a song onto, scratch, and mix.
      Local file only. Nothing is uploaded. We do not ship songs. Classroom volume. -->
+<!-- AOG-DJ-V1 (2026-10-04) — Jimmy's DJs: a Chicago house DJ (long blends, extended grooves, the bass swap),
+     a sampling DJ (records chopped into pads, played in time, slip and censor), a techno DJ (three decks,
+     a three-channel mixer, effects in beats). Three decks, a mixer with a 3-band isolator EQ and kills, a
+     filter and beat-timed echo, reverb and flanger on every channel, SYNC to a MASTER deck, 8 pads a deck,
+     beat loops, and four records made on the page (aog-dj.js). On a phone: one deck at a time, from a menu. -->
 <style>
 :root {
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
@@ -47,44 +52,62 @@ button,label.file{font:inherit;cursor:pointer;touch-action:none}
    grid column of plain 1fr lets that picture push the column wider every
    redraw. minmax(0,1fr) and min-width:0 keep each deck the width of the screen. */
 
-/* ══ AOG-DECKS-SIMPLE-V1 (2026-09-26) — same recipe as the drum machine. Two decks carried
-   ~55 controls before the crossfader. SIMPLE BENCH (default): Load, Take it off, Start, CUE,
-   the platter, Speed and Volume per deck; the crossfader and Record. FULL BENCH brings back
-   hot cues, loops, sync, key/slip, nudge, filter, echo, EQ and kills. On a phone in Simple,
-   a Deck A / Deck B / Mix row shows one thing at a time so a platter and its controls share
-   one screen. Sliders are colour-coded by job: gold speed, white volume, green EQ, blue
-   filter and echo. ═══════════════════════════════════════════════════════════════════ */
-.decktabs{display:none;gap:.4rem;margin:.7rem 0 0}
-.decktabs .pill{flex:1;justify-content:center;font-weight:800}
-.decktabs .pill.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+/* ══ AOG-DECKS-SIMPLE-V1 (2026-09-26) — same recipe as the drum machine. SIMPLE BENCH (default):
+   Load, Take it off, Start, CUE, the platter, Speed and Volume per deck; the crossfader and Record.
+   FULL BENCH brings back nudge, the close-up groove, and the mixer's EQ, kills, filter and effects.
+   Sliders are colour-coded by job: gold speed, white volume, green EQ, blue filter and effects. ═══ */
 /* Jimmy, 2026-09-26: keep Set cue, the hot cues, loops, SYNC, BPM, KEY / SLIP / REV / TAP / ½× / 2× on the Simple bench too.
-   Simple now hides only the mixing layer: nudge, filter, echo, EQ and the kills. */
+   Simple now hides only the mixing layer: nudge, filter, effects, EQ and the kills. */
 body.bench-simple .deck .zoom,
-body.bench-simple .deck label.knob:has([data-filter]),body.bench-simple .deck label.knob:has([data-echo]),body.bench-simple .deck label.knob:has([data-eq]),
-body.bench-simple .deck .row:has([data-nudge]),body.bench-simple .deck .row:has([data-kill]),body.bench-simple .deck [data-wide],
+body.bench-simple .deck .row.nud,body.bench-simple .deck [data-wide],
+body.bench-simple .strip .eqk,body.bench-simple .strip .flt,body.bench-simple .strip .fxbox,body.bench-simple .strip [data-flat],
 body.bench-simple .xrow #curveBtn,body.bench-simple .xrow #noiseBtn,body.bench-simple .xrow #touchBtn,body.bench-simple .eqwrap{display:none}
 body.bench-simple .deck .row .file,body.bench-simple .deck .row .go{min-height:52px;font-size:1.02rem;padding:0 1.1rem}
 body.bench-simple .deck .row .ghost{min-height:48px}
 .deck label.knob:has([data-speed]){color:#f0c26e}.deck [data-speed]{accent-color:#f0c26e}
-.deck label.knob:has([data-vol]){color:#f4efe4}.deck [data-vol]{accent-color:#f4efe4}
-.deck label.knob:has([data-eq]){color:#9fd4a0}.deck [data-eq]{accent-color:#9fd4a0}
-.deck label.knob:has([data-filter]),.deck label.knob:has([data-echo]){color:#7fc7f5}.deck [data-filter],.deck [data-echo]{accent-color:#7fc7f5}
-@media (max-width:700px){
-  body.bench-simple .decktabs{display:flex}
-  body.bench-simple[data-decktab="A"] #deckB,body.bench-simple[data-decktab="A"] .xfade,
-  body.bench-simple[data-decktab="B"] #deckA,body.bench-simple[data-decktab="B"] .xfade,
-  body.bench-simple[data-decktab="mix"] #deckA,body.bench-simple[data-decktab="mix"] #deckB{display:none}
-}
+.strip label.knob:has([data-vol]){color:#f4efe4}.strip [data-vol]{accent-color:#f4efe4}
+.strip label.knob:has([data-eq]){color:#9fd4a0}.strip [data-eq]{accent-color:#9fd4a0}
+.strip label.knob:has([data-filter]),.strip label.knob:has([data-fxamt]){color:#7fc7f5}.strip [data-filter],.strip [data-fxamt]{accent-color:#7fc7f5}
+
+/* ══ AOG-DJ-LAYOUT-V1 (2026-10-04) — iPhone first: one deck (or the mixer) at a time, picked from a menu
+   (CLAUDE.md: four choices are a drop-down). An iPad or a computer shows the three decks side by side,
+   the mixer under them. ═══════════════════════════════════════════════════════════════════════════ */
+.viewpick{display:none;margin:.7rem 0 0}
+.viewpick .decktabs{display:flex;gap:.4rem}
+.viewpick .aogdd{margin:0}
+.viewpick .aogdd-lab{flex:0 0 auto!important;min-width:0!important;margin-right:.3rem;color:var(--ink)}
+.viewpick .aogdd-sel{flex:1 1 auto!important;min-width:0!important;width:100%}
 .decks{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:minmax(0,1fr)}
 .deck{min-width:0}
-@media(min-width:800px){.decks{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (max-width:700px){
+  .viewpick{display:block}
+  body[data-decktab="A"] #deckB,body[data-decktab="A"] #deckC,body[data-decktab="A"] #mixer,
+  body[data-decktab="B"] #deckA,body[data-decktab="B"] #deckC,body[data-decktab="B"] #mixer,
+  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB,body[data-decktab="C"] #mixer,
+  body[data-decktab="mix"] .decks{display:none}
+  body[data-decktab="mix"] #mixer{margin-top:.8rem}
+}
+@media (min-width:701px){
+  .decks{grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+  .deck{padding:11px}
+  .platter{width:min(190px,19vw)}
+  .deck .row{gap:.35rem}
+}
 .deck{
   background:radial-gradient(140% 90% at 50% -10%,#4a545f,#171c22 70%);
   border-radius:20px;padding:14px;color:#efe8dc;border:1px solid #0c0f13;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 16px 36px rgba(0,0,0,.35);
 }
-.deck h2{margin:.1rem 0 .4rem;font-size:1rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
-.wave{width:100%;height:64px;background:#06110c;border-radius:8px;display:block}
+.dhead{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.deck h2{margin:.1rem 0 .3rem;font-size:1rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.wave{position:relative;overflow:hidden;width:100%;height:64px;background:#06110c;border-radius:8px;display:block}
+.wave img,.zoom img{position:absolute;left:0;top:0;pointer-events:none;max-width:none;-webkit-user-drag:none;user-select:none}
+.wave img:not([src]),.zoom img:not([src]){display:none}
+.wave .wimg{width:100%;height:100%}
+.wave i{position:absolute;top:0;bottom:0;left:0;pointer-events:none}
+.wave .wloop{width:0;background:rgba(127,199,245,.22)}
+.wave .whead{width:2px;margin-left:-1px;background:#fff;will-change:transform}
+.wave .wslip{width:0;margin-left:-1px;border-left:2px dashed rgba(159,212,160,.9);opacity:0;will-change:transform,opacity}
 .platter-wrap{display:flex;justify-content:center;margin:.7rem 0}
 .platter{
   width:min(240px,52vw);aspect-ratio:1;border-radius:50%;position:relative;
@@ -96,7 +119,7 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 .vinyl{
   position:absolute;inset:7%;border-radius:50%;
   background:repeating-radial-gradient(circle at 50% 50%, #161616 0 1px, #0c0c0c 2px 4px);
-  transform:rotate(var(--rot,0deg));
+  will-change:transform;
 }
 .label{
   position:absolute;inset:27%;border-radius:50%;
@@ -106,12 +129,12 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 .hole{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#0b0d10;z-index:2}
 .arm{
   position:absolute;right:8%;top:10%;width:8px;height:46%;border-radius:8px;
-  background:linear-gradient(#d9d3c6,#6e675c);transform-origin:50% 0;transform:rotate(18deg);
-  pointer-events:none;z-index:3;
+  background:linear-gradient(#d9d3c6,#6e675c);transform-origin:50% 0;transform:rotate(16deg);
+  pointer-events:none;z-index:3;will-change:transform;
 }
 .arm::after{content:"";position:absolute;left:-3px;bottom:-6px;width:14px;height:10px;border-radius:2px;background:#c4452a}
 .meter{height:8px;border-radius:99px;background:#0b0e12;margin-top:.45rem;overflow:hidden}
-.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6fbf8b,#d9a84e,#c4452a)}
+.meter i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#6fbf8b,#d9a84e,#c4452a);transform-origin:0 50%;transform:scaleX(0);will-change:transform}
 .time{font-variant-numeric:tabular-nums;color:#f4e2b0;font-weight:700;margin-left:auto}
 .row{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin-top:.45rem}
 .ghost,.go{
@@ -131,19 +154,18 @@ button.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-f
 .dsong.rm{border-color:#c0523a;background:#3a1e16}
 .dsong.rm span::before{content:"";display:inline-block;width:.9em;height:.9em;margin-right:.3em;vertical-align:-.1em;background:url(/img/sketch/2715.webp) center/contain no-repeat;filter:invert(1) brightness(1.9)} /* pencil cross */
 .dockrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
-.song{font-size:.85rem;color:#c9bfae;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song{font-size:.85rem;color:#c9bfae;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 .3rem}
 .knob{display:block;margin-top:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c9bfae}
 .knob input{width:100%;height:36px}
-.xfade{margin-top:1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
-.xfade span{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-#xf{display:block;width:100%;margin:.55rem 0 0;height:36px;accent-color:var(--steel)}
 footer{margin-top:2rem;color:var(--muted);font-size:.9rem}
 footer a{color:inherit}
 @media print{.no-print{display:none!important}}
 .deck.dragover{ outline:2px dashed currentColor; outline-offset:4px; }
-.drophint{ font-size:12px; opacity:.72; margin:2px 0 0; color:#c9bfae; }
+.drophint{ font-size:.82rem; margin:.5rem 0 0; color:var(--muted); }
 /* AOG-VINYL-ENGINE-V1 — the close-up groove, the strobe ring, the 33/45 pair */
-.zoom{width:100%;height:36px;background:#0a1410;border-radius:8px;display:block;margin-top:.3rem}
+.zoom{position:relative;overflow:hidden;width:100%;height:36px;background:#0a1410;border-radius:8px;display:block;margin-top:.3rem;touch-action:none}
+.zoom .zimg{height:36px;width:auto;will-change:transform}
+.zoom .zhead{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#c4452a;pointer-events:none}
 .strobe{position:absolute;inset:2%;border-radius:50%;pointer-events:none;
   background:repeating-conic-gradient(from 0deg,#f0dfae 0deg 2.2deg,transparent 2.2deg 9deg);
   -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);
@@ -161,21 +183,78 @@ footer a{color:inherit}
 .ghost.sm{min-height:38px;padding:0 .7rem;font-size:.85rem}
 .ghost.sm.on{background:#f4a3b0;color:#2a0c08;border-color:#f4a3b0}
 .bpm{margin-left:auto;font-variant-numeric:tabular-nums;font-size:.8rem;font-weight:700;color:#f4e2b0}
+/* AOG-DJ-DECK-V1 — MASTER, the 8 pads, the loops */
+.mst{min-height:30px;margin:0}
+.mst.on{background:#9fd4a0;color:#0e2412;border-color:#9fd4a0}
+.dlab{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9bfae}
+.pads{margin-top:.55rem}
+.padhead{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .5rem;margin-bottom:.35rem}
+.padhead .snap{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:#c9bfae}
+.padhead select{min-height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:#20262e;color:#efe8dc;font:600 16px/1.2 var(--sans);padding:0 .4rem;max-width:9.5rem}
+.padgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.3rem}
+.pad{min-height:46px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);background:rgba(0,0,0,.3);color:#c9bfae;font:800 1rem/1 var(--sans);touch-action:none}
+.pad.set{border-style:solid;color:#14100a;background:var(--pc);border-color:var(--pc)}
+.pad.hit{outline:3px solid #fff8e8;outline-offset:-3px}
+.pad.erase{border-color:#ff8a70;border-style:solid}
+.loops .dlab{margin-right:.15rem}
+.loops [data-beats="16"]{margin-left:.15rem}
+.deck .ghost.sm.on[data-sync]{background:#9fd4a0;color:#0e2412;border-color:#9fd4a0}
+.deck .ghost.sm.on[data-loop]{background:#7fc7f5;color:#08202e;border-color:#7fc7f5}
 .xrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;align-items:center}
-.pill.rec{border-color:#c4452a;color:#c4452a;font-weight:700}
-:root[data-theme="dark"] .pill.rec:not(.on){border-color:#ff8a70;color:#ff8a70}
-.pill.rec.on{background:#c4452a;color:#fff8f3;border-color:#c4452a;animation:recpulse 1.1s ease-in-out infinite}
-@keyframes recpulse{50%{opacity:.62}}
-@media (prefers-reduced-motion:reduce){.pill.rec.on{animation:none}}
-.rectime{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
+.rectime{font-variant-numeric:tabular-nums;font-weight:700;color:#f4e2b0}
 .rechint{font-size:.8rem;color:var(--muted);margin:.5rem 0 0}
 .takes{display:grid;gap:.5rem;margin-top:.6rem}
-.eqwrap{position:relative;margin-top:.7rem}
-.eqcurve{display:block;width:100%;height:110px;background:#06110c;border-radius:10px}
-.eqcap{position:absolute;right:10px;bottom:7px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(198,247,176,.6)}
+.takes:empty{display:none}
+.eqwrap{position:relative;margin-top:.7rem;background:#06110c;border-radius:10px}
+.eqcurve{position:relative;display:block;width:100%;height:110px;border-radius:10px}
+.eqlive{position:absolute;left:0;top:0;width:100%;height:110px;border-radius:10px;pointer-events:none}
+.eqcap{position:absolute;right:10px;bottom:7px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(198,247,176,.75)}
 .bench{margin-top:.6rem}
+
+/* ══ AOG-DJ-MIXER-V1 — the mixer: one channel strip a deck, the crossfader under them ══════════════ */
+.mixer{margin-top:1rem;border-radius:20px;padding:14px;color:#efe8dc;border:1px solid #0c0f13;
+  background:linear-gradient(180deg,#2b3139,#171c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 16px 36px rgba(0,0,0,.3);display:flex;flex-direction:column}
+.mixer h2{margin:.1rem 0 .5rem;font-size:1rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.strips{display:grid;gap:.6rem;grid-template-columns:minmax(0,1fr)}
+@media (min-width:701px){ .strips{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.strip{min-width:0;border-radius:14px;padding:.6rem .7rem .7rem;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.1)}
+.shead{display:flex;align-items:baseline;gap:.5rem;min-width:0}
+.shead .sid{font-size:1rem;letter-spacing:.14em;font-weight:800}
+.sname{font-size:.82rem;color:#c9bfae;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.eqk{display:flex;align-items:flex-end;gap:.4rem}
+.eqk .knob{flex:1 1 auto;min-width:0}
+.eqk .kill{flex:0 0 auto;margin-bottom:2px;font-size:.72rem;letter-spacing:.06em}
+.strip .ghost.sm.on[data-kill]{background:#ff8a70;color:#2a0c08;border-color:#ff8a70}
+.fxbox{margin-top:.45rem;padding-top:.35rem;border-top:1px solid rgba(255,255,255,.1)}
+.fxrow{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+.fxrow .dlab{margin-right:.2rem}
+.strip .ghost.sm.on[data-fxtype]{background:#7fc7f5;color:#08202e;border-color:#7fc7f5}
+.fxb{display:inline-flex;align-items:center;gap:.35rem;margin-top:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#c9bfae}
+.fxb select{min-height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:#20262e;color:#efe8dc;font:600 16px/1.2 var(--sans);padding:0 .4rem}
+.strip [data-flat]{margin-top:.45rem}
+.side{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;margin-top:.45rem}
+.side .dlab{flex:1 0 100%}
+.strip .ghost.sm.on[data-side]{background:#efe8dc;color:#1a140e;border-color:#efe8dc}
+.xfade{order:2;margin-top:.8rem;padding:.6rem .7rem .7rem;border-radius:14px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.1)}
+.xfade .xends{display:flex;justify-content:space-between;gap:.5rem;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#c9bfae}
+.xfade .xends b:first-child,.xfade .xends b:last-child{color:#f4e2b0;min-width:3ch}
+.xfade .xends b:last-child{text-align:right}
+#xf{display:block;width:100%;margin:.55rem 0 0;height:36px;accent-color:#f4e2b0}
+.mixer .strips{order:1}
+.mixer .xrow,.mixer .eqwrap,.mixer .rechint{order:3}
+.mixer .pill{background:rgba(0,0,0,.28);color:#efe8dc;border-color:rgba(255,255,255,.18)}
+.mixer .pill.rec{border-color:#ff8a70;color:#ffb4a4;font-weight:700}
+.mixer .pill.rec.on{background:#c4452a;color:#fff8f3;border-color:#c4452a;animation:recpulse 1.1s ease-in-out infinite}
+@keyframes recpulse{50%{opacity:.62}}
+@media (prefers-reduced-motion:reduce){.mixer .pill.rec.on{animation:none}}
+.mixer .rechint{color:#c9bfae}
+/* on a phone the crossfader comes first in the mixer, so it is in reach without scrolling past three strips */
+@media (max-width:700px){ .xfade{order:0;margin:0 0 .7rem} }
+
 /* AOG-DECKS-CRATE-V1 */
+.cratecard{margin-top:1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
 .crate{display:grid;gap:.6rem;margin-top:.6rem}
+.crate:first-child{margin-top:0}
 .crate h3{margin:.2rem 0 0;font-size:.95rem}
 .crate .find{list-style:none;margin:0;padding:0;display:grid;gap:.4rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr))}
 .crate .find li{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .5rem;padding:.55rem .75rem;border-radius:12px;border:1px solid rgba(201,162,74,.45);min-height:44px}
@@ -190,6 +269,21 @@ footer a{color:inherit}
 .crate .starter li span{color:var(--muted);font-size:.85rem}
 .crate .starter-msg{margin:0;font-size:.95rem;color:var(--ink)}
 .crate label.ghost input{display:none}
+/* AOG-DJ-MADE-V1 — the four records made on the page */
+.made{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,12.5rem),1fr))}
+.mrec{display:grid;grid-template-columns:64px minmax(0,1fr);gap:.45rem .65rem;align-items:center;padding:.6rem;border-radius:12px;border:1px solid var(--line);background:var(--chip);min-width:0}
+.mrec>.onto{grid-column:1 / -1}
+.mrec .art{flex:0 0 64px;height:64px;border-radius:6px;position:relative;overflow:hidden;background:hsl(var(--h),45%,34%)}
+.mrec .art::before{content:"";position:absolute;width:86%;aspect-ratio:1;top:7%;right:-30%;border-radius:50%;
+  background:radial-gradient(circle,hsl(var(--h),60%,58%) 0 16%,#111 17% 19%,#1b1b1b 20% 100%);box-shadow:0 0 0 1px #000}
+.mrec .mi{min-width:0;flex:1 1 auto}
+.mrec .mi b{display:block;font-size:.95rem;color:var(--ink)}
+.mrec .mi span{display:block;font-size:.8rem;color:var(--muted)}
+.mrec .onto{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+.mrec .onto em{font-style:normal;font-size:.78rem;color:var(--muted);font-weight:600}
+.onto button,.take .onto button{min-width:44px;min-height:40px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;padding:0 .6rem}
+.take .onto{display:inline-flex;align-items:center;gap:.3rem}
+.take .onto em{font-style:normal;font-size:.82rem;color:var(--muted);font-weight:600}
 /* AOG-DECKS-CRATE-BOX-V1 — Up next is a real crate: sleeves standing in a wooden box */
 .cbox{position:relative;display:flex;gap:.7rem;overflow-x:auto;padding:1rem .9rem 1.3rem;border-radius:10px;
   background:linear-gradient(180deg,#8a5a32,#6b4424);border:3px solid #4a2d16;box-shadow:inset 0 -10px 0 #4a2d16, inset 0 2px 0 #a8744a;scroll-snap-type:x proximity}
@@ -207,7 +301,7 @@ footer a{color:inherit}
 .sleeve .sb button.x{flex:0 0 34px}
 .deck.dragover{outline:3px dashed var(--accent,#c45c26);outline-offset:4px}
 .bench .take.empty{color:var(--muted)}
-.take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem}
+.take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem;color:var(--ink)}
 .take .tlen{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem}
 .take audio{height:34px;max-width:min(320px,52vw)}
 .take .ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);min-height:40px;border-radius:999px;padding:0 .8rem;display:inline-flex;align-items:center;text-decoration:none;font-weight:700;font-size:.85rem}
@@ -239,7 +333,7 @@ body *{overscroll-behavior:contain}
 input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:max(16px,1em)}
 @media (hover:none){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} html{scroll-behavior:auto} }
 
-/* AOG-MUSIC-TOUCH-V1 (2026-09-25) — Jimmy: "For the turntables, sometimes it takes
+/* AOG-MUSIC-TOUCH-V1 (2025-09-25) — Jimmy: "For the turntables, sometimes it takes
    a few taps. And the copy or paste pops up when I am clicking." A held or dragged
    finger read as "select this text", so iOS raised its copy/paste callout and ate
    the tap. Nothing on the machine is text to select: selection and the callout are
@@ -248,7 +342,7 @@ input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
-.platter,canvas.wave,canvas.zoom{touch-action:none}
+.platter,.wave,.zoom,.pad{touch-action:none}
 
 /* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
 #lessonRow .ghost{background:var(--chip);color:var(--ink);border:1px solid var(--line)}
@@ -291,15 +385,24 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     </span>
   </div>
   </div>
-  <div class="decktabs no-print" role="tablist" id="decktabs">
-    <button type="button" class="pill on" data-decktab="A">Deck A</button>
-    <button type="button" class="pill" data-decktab="B">Deck B</button>
-    <button type="button" class="pill" data-decktab="mix" id="decktabMix">Mix</button>
+  <!-- AOG-DJ-LAYOUT-V1 — on a phone, one menu picks what the screen shows -->
+  <div class="viewpick no-print" id="viewpick">
+    <div class="decktabs" id="decktabs" data-aog-dropdown="Show|Mostrar">
+      <button type="button" class="pill on" data-decktab="A" id="decktabA">Deck A</button>
+      <button type="button" class="pill" data-decktab="B" id="decktabB">Deck B</button>
+      <button type="button" class="pill" data-decktab="C" id="decktabC">Deck C</button>
+      <button type="button" class="pill" data-decktab="mix" id="decktabMix">Mixer</button>
+    </div>
   </div>
   <div class="decks" id="decks"></div>
-  <div class="xfade no-print">
-    <span><b id="labA">A</b><b id="xfLabel"></b><b id="labB">B</b></span>
-    <input id="xf" type="range" min="0" max="1" step="0.01" value="0.5">
+  <p class="drophint no-print" id="padHint"></p>
+  <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
+    <h2 id="mixH">Mixer</h2>
+    <div class="strips" id="strips"></div>
+    <div class="xfade">
+      <span class="xends"><b id="labA">A</b><b id="xfLabel"></b><b id="labB">B</b></span>
+      <input id="xf" type="range" min="0" max="1" step="0.01" value="0.5" aria-labelledby="xfLabel">
+    </div>
     <div class="xrow">
       <button type="button" class="pill" id="curveBtn"></button>
       <button type="button" class="pill" id="noiseBtn"></button>
@@ -307,13 +410,16 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
       <button type="button" class="pill rec" id="recBtn"></button>
       <span class="rectime" id="recTime">0:00</span>
     </div>
-    <div class="eqwrap"><canvas id="eqCurve" class="eqcurve" aria-hidden="true"></canvas>
+    <div class="eqwrap"><canvas id="eqLive" class="eqlive" aria-hidden="true"></canvas><canvas id="eqCurve" class="eqcurve" aria-hidden="true"></canvas>
       <span class="eqcap" id="eqCap"></span></div>
     <p class="rechint" id="recHint"></p>
+  </section>
+  <div id="takes" class="takes no-print"></div>
+  <section class="cratecard no-print" id="cratecard" aria-label="Records">
+    <div id="made" class="crate"></div>
     <div id="crate" class="crate"></div>
     <div id="bench" class="bench"></div>
-    <div id="takes" class="takes"></div>
-  </div>
+  </section>
   <!-- AOG-DECKS-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card sits under the decks, not on top -->
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
     <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="decks-lessons.html#l1">Worksheet 1</a></div>
@@ -333,16 +439,19 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="/aog-dropdowns.js" defer></script>
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
+<script src="aog-dj.js"></script>
 <script>
-/* AOG-DECKS-V2 · AOG-VINYL-ENGINE-V1 (2026-09-22) — two decks with weight.
+/* AOG-DECKS-V2 · AOG-VINYL-ENGINE-V1 (2026-09-22) — decks with weight.
    The platter is dragged by ANGLE, not by sideways pixels, and the hand sets a
    velocity the playhead integrates sample by sample in aog-vinyl-worklet.js.
-   A song is a file the student picks; it is decoded here and never sent. */
+   A song is a file the student picks; it is decoded here and never sent.
+   AOG-DJ-V1 (2026-10-04) — a third deck, a mixer, pads, loops in beats, SYNC to a
+   MASTER, effects in beats, and four records made on the page (aog-dj.js). */
 const STR = {
   app:{en:"The Turntables",es:"Los tocadiscos"},
   eyebrow:{en:"Load a song. Spin it.",es:"Pon un disco. Gíralo."},
-  tag:{en:"Two decks with weight. Grab a platter and it follows your hand; let go and the motor takes it back.",es:"Dos platos con peso. Agarra un plato y sigue tu mano; suéltalo y el motor lo retoma."},
-  tagLong:{en:"Two decks with weight. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The crossfader mixes them, and Record keeps the take as a .wav you can save or drop back onto a platter. We do not provide songs, and a song never leaves this computer.",es:"Dos platos con peso. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El crossfader los mezcla, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. No damos canciones, y una canción nunca sale de esta computadora."},
+  tag:{en:"Three decks with weight. Grab a platter and it follows your hand; let go and the motor takes it back.",es:"Tres platos con peso. Agarra un plato y sigue tu mano; suéltalo y el motor lo retoma."},
+  tagLong:{en:"Three decks with weight and a mixer. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The mixer blends the decks, and Record keeps the take as a .wav you can save or drop back onto a platter. Play the four records made right here, or a song from this computer. A song never leaves this computer.",es:"Tres platos con peso y un mezclador. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El mezclador une los platos, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. Toca los cuatro discos hechos aquí mismo, o una canción de esta computadora. Una canción nunca sale de esta computadora."},
   load:{en:"Load a song",es:"Cargar una canción"},
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
@@ -356,8 +465,6 @@ const STR = {
   setCue:{en:"Set cue",es:"Marcar cue"},
   speed:{en:"Pitch",es:"Tono"},
   vol:{en:"Volume",es:"Volumen"},
-  bass:{en:"Bass",es:"Graves"},
-  treble:{en:"Treble",es:"Agudos"},
   nudge:{en:"Nudge",es:"Empuje"},
   mix:{en:"Crossfader",es:"Crossfader"},
   curve:{en:"Fader",es:"Fader"},
@@ -385,8 +492,10 @@ const STR = {
   rev:{en:"REV",es:"REV"},
   tap:{en:"TAP",es:"TAP"},
   echo:{en:"Echo",es:"Eco"},
+  reverb:{en:"Reverb",es:"Sala"},
+  flanger:{en:"Flanger",es:"Flanger"},
   cueHold:{en:"CUE",es:"CUE"},
-  hot:{en:"Hot cue",es:"Cue rápido"},
+  hot:{en:"Pad",es:"Pad"},
   loop:{en:"Loop",es:"Bucle"},
   sync:{en:"SYNC",es:"SYNC"},
   filter:{en:"Filter",es:"Filtro"},
@@ -414,7 +523,7 @@ const STR = {
   starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
   findH:{en:"Where to find acapellas and samples",es:"Dónde encontrar acapellas y samples"},
   findHint:{en:"Free sites. Download a file, then tap Load a song or Add songs. Each site says how you may use its sounds — check before you share a mix.",es:"Sitios gratis. Descarga un archivo y luego toca Cargar una canción o Agregar canciones. Cada sitio dice cómo puedes usar sus sonidos: revísalo antes de compartir una mezcla."},
-  crateHint:{en:"Drag a record out of the crate onto a deck, or press A or B.",es:"Arrastra un disco de la caja a un plato, o pulsa A o B."},
+  crateHint:{en:"Drag a record out of the crate onto a deck, or press A, B or C.",es:"Arrastra un disco de la caja a un plato, o pulsa A, B o C."},
   cratePrev:{en:"Previously spun",es:"Tocadas antes"},
   cratePrevNone:{en:"Every record you put on a platter shows up here.",es:"Cada disco que pones en un plato aparece aquí."},
   crateDrop:{en:"Remove",es:"Quitar"},
@@ -426,16 +535,49 @@ const STR = {
   wide:{en:"WIDE",es:"AMPLIO"},
   rec:{en:"● Record",es:"● Grabar"},
   recStop:{en:"■ Stop recording",es:"■ Parar grabación"},
-  recHint:{en:"Records the two decks — never a microphone. The take stays on this computer.",es:"Graba los dos platos — nunca un micrófono. La toma se queda en esta computadora."},
+  recHint:{en:"Records the mix — never a microphone. The take stays on this computer.",es:"Graba la mezcla — nunca un micrófono. La toma se queda en esta computadora."},
   takes:{en:"Takes",es:"Tomas"},
   take:{en:"Take",es:"Toma"},
   save:{en:"Save as .wav",es:"Guardar como .wav"},
   toA:{en:"Onto deck A",es:"Al plato A"},
   toB:{en:"Onto deck B",es:"Al plato B"},
+  toC:{en:"Onto deck C",es:"Al plato C"},
+  onto:{en:"Onto deck",es:"Al plato"},
   full:{en:"Ten minutes is the limit — recording stopped.",es:"Diez minutos es el límite — grabación detenida."},
   drums:{en:"Drum machine",es:"Caja de ritmos"},
   sci:{en:"Science door",es:"Puerta de ciencias"},
-  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  /* AOG-DJ-V1 */
+  deck:{en:"Deck",es:"Plato"},
+  master:{en:"MASTER",es:"MASTER"},
+  masterTip:{en:"The deck the others follow when they SYNC",es:"El plato que siguen los demás con SYNC"},
+  pads:{en:"Pads",es:"Pads"},
+  snap:{en:"Lands",es:"Cae"},
+  snap1:{en:"on the beat",es:"en el pulso"},
+  snap2:{en:"on ½ beat",es:"en ½ pulso"},
+  snap4:{en:"on ¼ beat",es:"en ¼ de pulso"},
+  snap0:{en:"right away",es:"al instante"},
+  chop:{en:"Chop 8",es:"Cortar 8"},
+  chopTip:{en:"Put the next 8 beats on the 8 pads",es:"Pon los 8 pulsos que siguen en los 8 pads"},
+  erase:{en:"Erase",es:"Borrar"},
+  eraseTip:{en:"Then tap the pad to empty",es:"Luego toca el pad que quieres vaciar"},
+  padHint:{en:"Pads: tap an empty pad to mark the spot. Tap it again and the record jumps there on the beat. With SLIP on, a pad plays while you hold it, then the song carries on where it would have been.",es:"Pads: toca un pad vacío para marcar el punto. Tócalo otra vez y el disco salta ahí en el pulso. Con SLIP encendido, el pad suena mientras lo mantienes y luego la canción sigue donde habría estado."},
+  loopN:{en:"Loop %n beats",es:"Bucle de %n pulsos"},
+  bars4:{en:"4 bars",es:"4 compases"},
+  bars4Tip:{en:"Repeat these 4 bars to make the groove last",es:"Repite estos 4 compases para que el ritmo dure"},
+  mixer:{en:"Mixer",es:"Mezclador"},
+  channel:{en:"Channel",es:"Canal"},
+  fx:{en:"Effect",es:"Efecto"},
+  beats:{en:"Beats",es:"Pulsos"},
+  amount:{en:"Amount",es:"Cantidad"},
+  side:{en:"Crossfader side",es:"Lado del crossfader"},
+  sideL:{en:"Left",es:"Izq."}, sideN:{en:"None",es:"Ninguno"}, sideR:{en:"Right",es:"Der."},
+  off:{en:"off",es:"apagado"},
+  showA:{en:"Deck A",es:"Plato A"}, showB:{en:"Deck B",es:"Plato B"}, showC:{en:"Deck C",es:"Plato C"},
+  making:{en:"Making the record …",es:"Haciendo el disco …"},
+  madeH:{en:"Made right here",es:"Hechos aquí mismo"},
+  madeLead:{en:"Four records this page makes with math. Nothing to download. Each one starts and ends with drums, so there is room to mix in and out.",es:"Cuatro discos que esta página hace con matemáticas. No hay nada que descargar. Cada uno empieza y termina con batería, así hay espacio para entrar y salir de la mezcla."},
+  madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."}
 };
 const S = { lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light" };
 function t(k){ return STR[k][S.lang]; }
@@ -444,9 +586,10 @@ function t(k){ return STR[k][S.lang]; }
    bridge between a hand on the platter and a place in the song. */
 const DEG_PER_SEC = 200;
 
-let actx, master, comp, workletReady = null, eqScope = null;
-const decks = [makeDeck("A"), makeDeck("B")];
-let curve = "smooth", noiseOn = true;
+let actx, master, comp, OUT = null, LIMIT = null, workletReady = null, eqScope = null;
+const IDS = ["A","B","C"];
+const decks = IDS.map(makeDeck);
+let curve = "smooth", noiseOn = true, masterId = null;
 /* AOG-DECKS-TOUCH-V1 (2026-09-23) — Jimmy: "when you're scratching it seems to
    be going a bit too fast, so when you try to slow it down to make the vocals
    sound interesting it is too fast."
@@ -462,6 +605,11 @@ if(!TOUCH[touch]) touch = "fine";
 /* the tape: what the decks are doing, caught on its way to the speakers */
 const TAPE = { node:null, sink:null, on:false, chunks:[], frames:0, t0:0, takes:[], n:0, timer:null };
 const TAPE_MAX_SEC = 600;
+/* AOG-DJ-LEVEL-V1 — every record is level-matched as it loads (measured in LUFS, the
+   way broadcasters measure loudness), so a quiet record and a loud one blend evenly. */
+const LEVEL_LUFS = -15;
+/* the platter stands still for anyone who asks the computer for less motion */
+const STILL = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 
 function ctx(){
   /* AOG-MUSIC-TOUCH-V1 — Safari suspends the engine between gestures; every call wakes it */
@@ -470,7 +618,7 @@ function ctx(){
     const AC = window.AudioContext||window.webkitAudioContext;
     actx = new AC({ latencyHint:"interactive" });
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
-       level with a real limiter behind it, so two loud songs at once still
+       level with a real limiter behind it, so three loud songs at once still
        cannot clip. The last 6% is deliberately left alone. */
     master = actx.createGain(); master.gain.value = 0.94;
     comp = actx.createDynamicsCompressor();
@@ -480,87 +628,112 @@ function ctx(){
     limiter.threshold.value = -3; limiter.knee.value = 0; limiter.ratio.value = 20;
     limiter.attack.value = 0.002; limiter.release.value = 0.09;
     comp.connect(makeup); makeup.connect(limiter); limiter.connect(master);
-    master.connect(actx.destination);
+    /* AOG-DJ-LIMIT-V1 — OUT is the very end: what the speakers, the tape and the curve all hear.
+       Once the worklet is in, a look-ahead wall sits just before it, so nothing leaves above -1 dBFS. */
+    OUT = actx.createGain(); master.connect(OUT); OUT.connect(actx.destination);
     if(actx.audioWorklet){
       workletReady = actx.audioWorklet
         .addModule(new URL("aog-vinyl-worklet.js", document.baseURI).href)
+        .then(()=>{ try{ const lim = new AudioWorkletNode(actx, "aog-djlimit", { numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[2] });
+                         master.disconnect(OUT); master.connect(lim); lim.connect(OUT); LIMIT = lim; }catch(e){} })
         .catch((err)=>{ workletReady = null; try{ console.warn("vinyl worklet unavailable — falling back", err); }catch(e){} });
     }
     eqScope = actx.createAnalyser(); eqScope.fftSize = 2048; eqScope.smoothingTimeConstant = 0.72;
-    master.connect(eqScope);
+    OUT.connect(eqScope);
     buildTape();   /* ⚠ AFTER workletReady exists, or the tape quietly falls back */
   }
   if(actx.state==="suspended") actx.resume();
   return actx;
 }
 function makeDeck(id){
-  return { id, buf:null, peaks:null, name:"", note:"", pos:0, cue:0, rate:0, motor:false,
-           pitch:1, rpm:1, vol:1, node:null, core:null, gain:null, low:null, high:null,
+  return { id, buf:null, peaks:null, zpk:null, name:"", note:"", pos:0, cue:0, rate:0, rr:0, frame:0, motor:false,
+           pitch:1, rpm:1, vol:1, node:null, core:null, gain:null, xg:null, trim:null, fx:null, lp:null, hp:null,
            rot:0, level:0, held:false, wide:false, pending:[],
-           bpm:0, beat0:0, bands:null, cues:[null,null,null], loopBars:0, loopOn:false,
-           loopA:0, loopB:0, filt:null, cueHeld:false,
-           keyOn:true, slipOn:true, syncLock:false, taps:[], echo:null, echoSend:null, trackKey:"" };
+           bpm:0, beat0:0, bands:null, cues:[null,null,null,null,null,null,null,null], loopBeats:0, loopOn:false,
+           loopA:0, loopB:0, cueHeld:false, revOn:false,
+           keyOn:true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
+           side: id==="A" ? "L" : id==="B" ? "R" : "N", eqv:{high:0,mid:0,low:0}, filtv:0,
+           fxType:"echo", fxBeats:{echo:0.75, reverb:2, flanger:16}, fxAmt:0, fxSent:"",
+           snap:1, erase:false, slipPos:0, div:false, pend:false, lastJump:null, jumps:0, wraps:0,
+           waveDirty:true, wcan:null, zcan:null, bend:1, padDown:{}, xgv:1 };
 }
 function send(d, m){
   if(d.node && d.node.port) d.node.port.postMessage(m, m.L ? [m.L.buffer, m.R.buffer] : []);
   else if(d.core) d.core.msg(m);
   else d.pending.push(m);
 }
+function ramp(p, v, tau){ const now = actx.currentTime; p.cancelScheduledValues(now); p.setTargetAtTime(v, now, tau || 0.01); }
+function biq(type, hz, q){ const b = actx.createBiquadFilter(); b.type = type; b.frequency.value = hz; b.Q.value = q; return b; }
 async function ensureNode(d){
   ctx();
   if(d.node || d.core) return;
-  if(workletReady){
-    try{
-      await workletReady;
-      const n = new AudioWorkletNode(actx, "aog-vinyl", { numberOfInputs:0, outputChannelCount:[2] });
-      n.port.onmessage = (e)=>{
-        const m = e.data; if(m.t!=="st") return;
-        d.pos = m.pos; d.level = m.level; d.rate = m.rate;
-        if(d.motor && m.ended) d.motor = false;
+  if(d._making) return d._making;   /* two taps at once must not build two decks */
+  d._making = (async ()=>{
+    if(workletReady){
+      try{
+        await workletReady;
+        const n = new AudioWorkletNode(actx, "aog-vinyl", { numberOfInputs:0, outputChannelCount:[2] });
+        n.port.onmessage = (e)=>{ hear(d, e.data); };
+        d.node = n;
+      }catch(e){ d.node = null; }
+    }
+    if(!d.node){
+      /* no AudioWorklet (old Safari): the same core, on the old processor */
+      d.core = new self.AOGVinylCore(actx.sampleRate);
+      const n = actx.createScriptProcessor(512, 0, 2);
+      n.onaudioprocess = (e)=>{
+        const o = e.outputBuffer, c = d.core;
+        c.frame = Math.round((e.playbackTime || actx.currentTime) * actx.sampleRate);
+        c.process(o.getChannelData(0), o.getChannelData(1), o.length);
+        hear(d, { t:"st", pos:c.pos, level:c.level, rate:c.rate/(c.srRatio||1), rr:c.rate, frame:c.frame, motor:c.motorOn, ended:c.ended,
+                  slip:c.slipPos, div:c.div, pend:!!c.pend, loopOn:c.loopOn, loopA:c.loopA, loopB:c.loopB, jumps:c.jumps, wraps:c.wraps, lastJump:c.lastJump });
       };
       d.node = n;
-    }catch(e){ d.node = null; }
-  }
-  if(!d.node){
-    /* no AudioWorklet (old Safari): the same core, on the old processor */
-    d.core = new self.AOGVinylCore(actx.sampleRate);
-    const n = actx.createScriptProcessor(512, 0, 2);
-    n.onaudioprocess = (e)=>{
-      const o = e.outputBuffer;
-      d.core.process(o.getChannelData(0), o.getChannelData(1), o.length);
-      d.pos = d.core.pos; d.level = d.core.level;
-      d.rate = d.core.rate / (d.core.srRatio||1);
-      if(d.motor && d.core.ended) d.motor = false;
-    };
-    d.node = n;
-  }
-  d.gain = actx.createGain(); d.gain.gain.value = d.vol;
-  /* AOG-DECKS-EQ-V1 (2026-09-23) — a mixer's three bands, in series, each with a
-     kill, exactly where a DJ mixer puts them: after the record, before the
-     fader, so a kill is a kill whatever the crossfader is doing. */
-  d.eq = AOGEq.dj(actx);
-  d.low = actx.createBiquadFilter(); d.low.type="lowshelf"; d.low.frequency.value=180;   /* kept: the old bass/treble API */
-  d.high = actx.createBiquadFilter(); d.high.type="highshelf"; d.high.frequency.value=5200;
-  /* one knob, two filters: left of center it closes down to a rumble, right of
-     center it opens up to a whisper. Center is out of the way entirely. */
-  d.filt = actx.createBiquadFilter(); d.filt.type="lowpass"; d.filt.frequency.value=20000; d.filt.Q.value=0.8;
-  d.node.connect(d.eq.input); d.eq.output.connect(d.filt); d.filt.connect(d.gain); d.gain.connect(comp);
-  /* AOG-DECKS-APEX-V1 — an echo that knows the tempo: a dotted eighth of the
-     track's own bar, feeding back on itself, sent from after the fader so it
-     rings on after you cut the deck out. */
-  d.echoSend = actx.createGain(); d.echoSend.gain.value = 0;
-  d.echo = actx.createDelay(2.0); d.echo.delayTime.value = 0.35;
-  const fb = actx.createGain(); fb.gain.value = 0.42;
-  const damp = actx.createBiquadFilter(); damp.type = "lowpass"; damp.frequency.value = 3600;
-  d.gain.connect(d.echoSend); d.echoSend.connect(d.echo);
-  d.echo.connect(damp); damp.connect(fb); fb.connect(d.echo);
-  damp.connect(comp);
-  send(d, { t:"noise", v: noiseOn ? 0.5 : 0 });
-  send(d, { t:"key", on:d.keyOn });
-  send(d, { t:"slip", on:d.slipOn });
-  const q = d.pending; d.pending = [];
-  q.forEach(m=>send(d, m));
-  setMix();
+    }
+    /* AOG-DJ-MIXER-V1 — the channel, in the order a club mixer has it:
+       level match → three-band isolator EQ (with kills) → the filter (low-pass
+       left, high-pass right) → the channel fader → the crossfader → the effect,
+       after both faders so an echo rings on once the record is cut. */
+    d.trim = actx.createGain(); d.trim.gain.value = d.gain0;
+    d.eq = AOGDJ.isolator(actx);
+    d.lp = biq("lowpass", Math.min(20000, actx.sampleRate*0.45), -3.01);
+    d.hp = biq("highpass", 10, -3.01);
+    d.gain = actx.createGain(); d.gain.gain.value = chanGain(d);
+    d.xg = actx.createGain(); d.xg.gain.value = 1;
+    d.fx = null;
+    if(workletReady){
+      try{ await workletReady; d.fx = new AudioWorkletNode(actx, "aog-djfx", { numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[2] });
+        d.fx.port.onmessage = (e)=>{ if(e.data && e.data.t==="fxst") d.fxState = e.data; }; }catch(e){ d.fx = null; }
+    }
+    if(!d.fx && self.AOGDJFxCore){
+      const core = new self.AOGDJFxCore(actx.sampleRate), n = actx.createScriptProcessor(512, 2, 2);
+      n.onaudioprocess = (e)=>{ const i = e.inputBuffer, o = e.outputBuffer; core.process(i.getChannelData(0), i.getChannelData(1), o.getChannelData(0), o.getChannelData(1), o.length); };
+      n.port = { postMessage:(m)=>{ if(m.t==="ask") d.fxState = core.state(); else core.msg(m); } };
+      d.fx = n;
+    }
+    d.node.connect(d.trim); d.trim.connect(d.eq.input); d.eq.output.connect(d.lp); d.lp.connect(d.hp);
+    d.hp.connect(d.gain); d.gain.connect(d.xg);
+    if(d.fx){ d.xg.connect(d.fx); d.fx.connect(comp); } else d.xg.connect(comp);
+    send(d, { t:"noise", v: noiseOn ? 0.5 : 0 });
+    send(d, { t:"key", on:d.keyOn });
+    send(d, { t:"slip", on:d.slipOn });
+    const q = d.pending; d.pending = [];
+    q.forEach(m=>send(d, m));
+    ["low","mid","high"].forEach(b=>{ d.eq.set(b, d.eqv[b]); });
+    applyFilter(d); fxSend(d, true);
+    setMix(); eqDirty = true;
+  })();
+  try{ await d._making; } finally { d._making = null; }
+}
+/* what the audio thread tells the page, about 60 times a second */
+function hear(d, m){
+  if(!m || m.t!=="st") return;
+  d.pos = m.pos; d.level = m.level; d.rate = m.rate; d.rr = m.rr; d.frame = m.frame;
+  d.slipPos = m.slip; d.div = m.div; d.pend = m.pend; d.lastJump = m.lastJump; d.jumps = m.jumps; d.wraps = m.wraps;
+  if(m.loopOn){ d.loopA = m.loopA; d.loopB = m.loopB; }
+  d.wLoopOn = m.loopOn;
+  if(d._startAt != null && m.frame >= d._startAt) d._startAt = null;   /* the booked start has happened */
+  if(d.motor && m.ended && d._startAt == null){ d.motor = false; }
 }
 async function loadFile(d, file, opts){
   d.note = t("loading").replace("%s", file.name); paintDeck(d);
@@ -571,33 +744,48 @@ async function loadFile(d, file, opts){
       const r = actx.decodeAudioData(arr.slice(0), ok, no);
       if(r && r.then) r.then(ok, no);
     });
-    d.buf = buf; d.name = file.name; d.note = ""; d.pos = 0; d.cue = 0; d.motor = false;
-    d.peaks = peaksOf(buf);
-    d.bpm = -1; d.bands = null; d.cues = [null,null,null];
-    d.loopOn = false; d.loopBars = 0; send(d, { t:"loop", on:false, a:0, b:0 });
-    d.trackKey = (file.name||"?") + "·" + (file.size||0) + "·" + Math.round(buf.duration*100);
-    if(!opts || !opts.restore) crateSpun(d, file, arr);
-    const known = marksLoad(d);
-    setTimeout(()=>{
-      try{ analyse(d); }catch(e){ d.bpm = 0; }
-      if(known){ d.bpm = known.bpm; d.beat0 = known.beat0; d.cues = known.cues || [null,null,null]; }
-      else {
-        /* a starter track: the tempo is exact and beat one is the very first sound */
-        const sb = starterBpm(file.name);
-        if(sb){ d.bpm = sb; const a0 = buf.getChannelData(0); let i0 = 0; while(i0 < a0.length && Math.abs(a0[i0]) < 0.05) i0++; d.beat0 = i0 < a0.length ? i0/buf.sampleRate : 0; }
-        marksSave(d);
-      }
-      paintDeck(d); drawWave(d); drawZoom(d);
-    }, 30);
     const L = Float32Array.from(buf.getChannelData(0));
     const R = Float32Array.from(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0));
-    send(d, { t:"buf", L:L, R:R, sr:buf.sampleRate });
-    if(opts && opts.pos > 0 && opts.pos < buf.length-3){ d.pos = d.cue = opts.pos; send(d, { t:"seek", v:d.pos }); }
-    drawWave(d); drawZoom(d); paintDeck(d);
+    putOn(d, buf, L, R, Object.assign({ name:file.name, key:(file.name||"?") + "·" + (file.size||0) + "·" + Math.round(buf.duration*100) }, opts||{}));
+    if(!opts || !opts.restore) crateSpun(d, file, arr);
   }catch(e){
     d.note = t("nope").replace("%s", file.name); paintDeck(d);
     setTimeout(()=>{ if(d.note){ d.note=""; paintDeck(d); } }, 9000);
   }
+}
+/* AOG-DJ-V1 — the one door every record comes in by: a song from the computer, a take,
+   a shelf from another tool, or a record made on this page. */
+function putOn(d, buf, L, R, o){
+  stopDeck(d, true);
+  d.buf = buf; d.name = o.name; d.note = ""; d.pos = 0; d.cue = 0; d.motor = false; d.made = o.made || "";
+  d.peaks = peaksOf(buf); d.zpk = zoomPeaks(buf); d.waveDirty = true;
+  d.bpm = -1; d.bands = null; d.cues = [null,null,null,null,null,null,null,null];
+  d.loopOn = false; d.loopBeats = 0; send(d, { t:"loop", on:false, keep:true });
+  d.trackKey = o.key;
+  d.lufs = o.lufs != null ? o.lufs : null;
+  send(d, { t:"buf", L:L, R:R, sr:buf.sampleRate });
+  if(o.pos > 0 && o.pos < buf.length-3){ d.pos = d.cue = o.pos; send(d, { t:"seek", v:d.pos, park:true }); }
+  const known = marksLoad(d);
+  setTimeout(()=>{
+    try{ analyse(d, { bpm:o.bpm, beat0:o.beat0, lufs:o.lufs }); }catch(e){ d.bpm = 0; }
+    if(known){ d.bpm = known.bpm; d.beat0 = known.beat0; d.cues = fill8(known.cues); }
+    else {
+      /* a starter track: the tempo is exact and beat one is the very first sound */
+      const sb = starterBpm(d.name);
+      if(sb){ d.bpm = sb; const a0 = buf.getChannelData(0); let i0 = 0; while(i0 < a0.length && Math.abs(a0[i0]) < 0.05) i0++; d.beat0 = i0 < a0.length ? i0/buf.sampleRate : 0; }
+      marksSave(d);
+    }
+    levelMatch(d);
+    d.waveDirty = true; paintDeck(d); drawWave(d); drawZoom(d); fxSend(d); paintStrips();
+  }, 30);
+  drawWave(d); drawZoom(d); paintDeck(d); paintStrips();
+}
+function fill8(c){ const o = [null,null,null,null,null,null,null,null]; (c||[]).forEach((v,i)=>{ if(i<8) o[i] = v; }); return o; }
+function levelMatch(d){
+  let db = 0;
+  if(d.lufs != null && isFinite(d.lufs) && d.lufs > -60) db = Math.max(-12, Math.min(9, LEVEL_LUFS - d.lufs));
+  d.gain0 = Math.pow(10, db/20);
+  if(d.trim) ramp(d.trim.gain, d.gain0, 0.02);
 }
 /* ══ AOG-DECKS-PRO-V1 (2026-09-23) — WHAT THE DECK KNOWS ABOUT THE RECORD ═════
    One pass over the song, once, at load. It gives three things no turntable can
@@ -614,7 +802,14 @@ function peaksOf(buf){
   }
   return out;
 }
-function analyse(d){
+/* the close-up's own picture: the loudest sample in every 32, worked out once */
+function zoomPeaks(buf){
+  const a = buf.getChannelData(0), Z = 32, n = Math.ceil(a.length/Z), out = new Float32Array(n);
+  for(let k=0;k<n;k++){ let m = 0; const e = Math.min(a.length, (k+1)*Z); for(let i=k*Z;i<e;i++){ const v = a[i]<0?-a[i]:a[i]; if(v>m) m=v; } out[k] = m; }
+  return out;
+}
+function analyse(d, known){
+  known = known || {};
   const buf = d.buf; if(!buf) return;
   const a = buf.getChannelData(0), sr = buf.sampleRate, n = a.length;
   const W = 1200, step = n/W;
@@ -638,33 +833,41 @@ function analyse(d){
     if(cnt===hop){ if(fi<frames) env[fi++] = Math.sqrt(acc/hop); acc = 0; cnt = 0; }
   }
   d.bands = { lo:lo, mid:mid, hi:hi };
+  /* how loud the record is, as an ear hears it — for the level match */
+  if(known.lufs == null){ try{ d.lufs = AOGDJ.loudness(buf.getChannelData(0), buf.numberOfChannels>1 ? buf.getChannelData(1) : null, sr); }catch(e){ d.lufs = null; } }
+  else d.lufs = known.lufs;
+  /* a record that knows its own tempo (made here, or bounced by another tool) skips the guessing */
+  if(known.bpm > 0 && known.beat0 != null){ d.bpm = known.bpm; d.beat0 = known.beat0; return; }
   /* the beat is where the sound GROWS: rising energy, lined up with itself */
   const on = new Float32Array(frames);
   for(let i=1;i<frames;i++){ const dv = env[i]-env[i-1]; on[i] = dv>0?dv:0; }
   const fps = sr/hop;
-  let best = 0, bestBpm = 0;
-  for(let bpm=72; bpm<=176; bpm+=0.25){
-    const lag = Math.round(60/bpm*fps);
-    if(lag < 2 || lag*3 >= frames) continue;
-    let sum = 0;
-    for(let i=0; i+lag<frames; i++) sum += on[i]*on[i+lag];
-    sum /= (frames - lag);
-    if(sum > best){ best = sum; bestBpm = bpm; }
+  let bestBpm = known.bpm > 0 ? known.bpm : 0;
+  if(!bestBpm){
+    let best = 0;
+    for(let bpm=72; bpm<=176; bpm+=0.25){
+      const lag = Math.round(60/bpm*fps);
+      if(lag < 2 || lag*3 >= frames) continue;
+      let sum = 0;
+      for(let i=0; i+lag<frames; i++) sum += on[i]*on[i+lag];
+      sum /= (frames - lag);
+      if(sum > best){ best = sum; bestBpm = bpm; }
+    }
+    if(!bestBpm || frames < 200){ d.bpm = 0; d.beat0 = 0; return; }
+    /* the coarse pass lands within a quarter of a beat per minute; this one walks
+       around that answer in fiftieths, because a tempo that is 0.6% out drifts a
+       tenth of a second across sixteen bars and the grid stops looking honest. */
+    let fine = bestBpm, fineBest = best;
+    for(let bpm=bestBpm-2; bpm<=bestBpm+2; bpm+=0.02){
+      const lagf = 60/bpm*fps, l0 = Math.floor(lagf), fr = lagf - l0;
+      if(l0 < 2 || l0*3 >= frames) continue;
+      let sum = 0;
+      for(let i=0; i+l0+1<frames; i++) sum += on[i]*(on[i+l0]*(1-fr) + on[i+l0+1]*fr);
+      sum /= (frames - l0);
+      if(sum > fineBest){ fineBest = sum; fine = bpm; }
+    }
+    bestBpm = fine;
   }
-  if(!bestBpm || frames < 200){ d.bpm = 0; d.beat0 = 0; return; }
-  /* the coarse pass lands within a quarter of a beat per minute; this one walks
-     around that answer in fiftieths, because a tempo that is 0.6% out drifts a
-     tenth of a second across sixteen bars and the grid stops looking honest. */
-  let fine = bestBpm, fineBest = best;
-  for(let bpm=bestBpm-2; bpm<=bestBpm+2; bpm+=0.02){
-    const lagf = 60/bpm*fps, l0 = Math.floor(lagf), fr = lagf - l0;
-    if(l0 < 2 || l0*3 >= frames) continue;
-    let sum = 0;
-    for(let i=0; i+l0+1<frames; i++) sum += on[i]*(on[i+l0]*(1-fr) + on[i+l0+1]*fr);
-    sum /= (frames - l0);
-    if(sum > fineBest){ fineBest = sum; fine = bpm; }
-  }
-  bestBpm = fine;
   const period = 60/bestBpm*fps;
   let bo = 0, bs = -1;
   for(let off=0; off<period; off+=1){
@@ -698,7 +901,7 @@ async function buildTape(){
   /* it hangs off the master and ends in silence: a node only runs if it is
      connected to the destination, and we are not playing the mix twice. */
   TAPE.sink = actx.createGain(); TAPE.sink.gain.value = 0;
-  master.connect(TAPE.node); TAPE.node.connect(TAPE.sink); TAPE.sink.connect(actx.destination);
+  OUT.connect(TAPE.node); TAPE.node.connect(TAPE.sink); TAPE.sink.connect(actx.destination);
 }
 function armTape(on){
   if(!TAPE.node) return;
@@ -750,6 +953,10 @@ function wavBlob(L, R, sr){
   }
   return new Blob([ab], { type:"audio/wav" });
 }
+/* "Onto deck A · B · C": one short label, three buttons that each say their deck to a screen reader */
+function ontoHTML(attr){
+  return `<span class="onto"><em>${t("onto")}</em>${IDS.map(id=>`<button type="button" ${attr(id)} aria-label="${t("to"+id)}">${id}</button>`).join("")}</span>`;
+}
 function paintTape(){
   const btn = document.getElementById("recBtn");
   if(btn){ btn.textContent = TAPE.on ? t("recStop") : t("rec"); btn.classList.toggle("on", TAPE.on); }
@@ -761,8 +968,7 @@ function paintTape(){
       <b>${t("take")} ${k.n}</b> <span class="tlen">${clock(k.sec)}</span>
       <audio controls preload="none" src="${k.url}"></audio>
       <a class="ghost" href="${k.url}" download="turntables-take-${k.n}.wav">${t("save")}</a>
-      <button type="button" class="ghost" data-totake="${k.n}" data-deck="A">${t("toA")}</button>
-      <button type="button" class="ghost" data-totake="${k.n}" data-deck="B">${t("toB")}</button>
+      ${ontoHTML(id=>`data-totake="${k.n}" data-deck="${id}"`)}
     </div>`).join("");
   box.querySelectorAll("a[download]").forEach(a=>{ a.addEventListener("click", ()=>{ LX.saved = true; }); });
   box.querySelectorAll("[data-totake]").forEach(b=>{
@@ -776,71 +982,55 @@ function paintTape(){
 /* ══ AOG-DECKS-FROM-BENCH-V1 (2026-09-23) ════════════════════════════════════
    The drum machine bounces its pattern onto a shelf both benches can reach
    (aog-handoff.js); here it is a beat you drop on a platter. So: your own beat
-   on deck B, a song on deck A, scratch over it, and Record keeps the lot. */
-let benchTake = null, keysTake = null, guitarTake = null, bassTake = null, bandTake = null, drumTake = null, studioTake = null;
+   on deck B, a song on deck A, scratch over it, and Record keeps the lot.
+   AOG-DJ-V1 — a shelf that says its tempo (and where beat one is) gives the deck
+   an exact grid, so SYNC with another tool's beat is exact too. */
+const SHELF = [
+  { key:"drumbench",  id:"drumbench", lab:"bench",     go:"benchGo",  href:"music-drums.html",  file:"drum-bench.wav" },
+  { key:"keysbench",  id:"keys",      lab:"keys",      go:"keysGo",   href:"music-piano.html",  file:"piano.wav" },   /* AOG-PIANO-V1 */
+  { key:"guitarbench",id:"guitar",    lab:"guitar",    go:"guitarGo", href:"music-guitar.html", file:"guitar.wav" },  /* AOG-STRINGS-V1 */
+  { key:"bassbench",  id:"bass",      lab:"bassT",     go:"bassGo",   href:"music-bass.html",   file:"bass.wav" },
+  { key:"bandbench",  id:"band",      lab:"bandT",     go:"bandGo",   href:"music-band.html",   file:"band.wav" },    /* AOG-BAND-V1 */
+  { key:"drumtake",   id:"drumtake",  lab:"drumTakeT", go:"benchGo",  href:"music-drums.html",  file:"drumtake.wav" },/* AOG-MUSIC-REC-V1: a take recorded on the drum machine */
+  { key:"studiobench",id:"studio",    lab:"studioT",   go:"studioGo", href:"music-studio.html", file:"studio.wav" }   /* AOG-STUDIO-V1: a song mixed in the studio */
+];
+const SHELVES = {};
 async function checkBench(){
-  try{ benchTake = await AOGHandoff.get("drumbench"); }catch(e){ benchTake = null; }
-  try{ keysTake = await AOGHandoff.get("keysbench"); }catch(e){ keysTake = null; }   /* AOG-PIANO-V1 */
-  try{ guitarTake = await AOGHandoff.get("guitarbench"); }catch(e){ guitarTake = null; }   /* AOG-STRINGS-V1 */
-  try{ bassTake = await AOGHandoff.get("bassbench"); }catch(e){ bassTake = null; }
-  try{ bandTake = await AOGHandoff.get("bandbench"); }catch(e){ bandTake = null; }   /* AOG-BAND-V1 */
-  try{ drumTake = await AOGHandoff.get("drumtake"); }catch(e){ drumTake = null; }    /* AOG-MUSIC-REC-V1: a take recorded on the drum machine */
-  try{ studioTake = await AOGHandoff.get("studiobench"); }catch(e){ studioTake = null; }    /* AOG-STUDIO-V1: a song mixed in the studio */
+  for(const s of SHELF){ try{ SHELVES[s.key] = await AOGHandoff.get(s.key); }catch(e){ SHELVES[s.key] = null; } }
   paintBench();
+}
+/* a bounce knows its tempo (and the drum machine and the studio know where beat one is);
+   a take of free playing does not, so the deck listens for it */
+function shelfGrid(tk){
+  if(!tk || !(tk.bpm > 0) || tk.take) return {};
+  return tk.offset != null ? { bpm:+tk.bpm, beat0:+tk.offset } : { bpm:+tk.bpm };
 }
 function paintBench(){
   const box = document.getElementById("bench");
   if(!box) return;
-  let html;
-  if(!benchTake || !benchTake.wav){
-    html = `<div class="take empty"><b>${t("bench")}</b> <span class="tlen">${t("benchNone")}</span>
-      <a class="ghost" href="music-drums.html">${t("benchGo")}</a></div>`;
-  } else {
-    html = `<div class="take">
-      <b>${t("bench")}</b> <span class="tlen">${benchTake.name||""}</span>
-      <button type="button" class="ghost" data-bench="A">${t("toA")}</button>
-      <button type="button" class="ghost" data-bench="B">${t("toB")}</button>
-      <a class="ghost" href="music-drums.html">${t("benchGo")}</a>
-    </div>`;
-  }
-  /* AOG-PIANO-V1 — the piano leaves its chords on the same shelf, under its own name */
-  if(keysTake && keysTake.wav){
+  let html = "";
+  SHELF.forEach(s=>{
+    const tk = SHELVES[s.key];
+    if(!tk || !tk.wav){
+      if(s.key === "drumbench") html += `<div class="take empty"><b>${t("bench")}</b> <span class="tlen">${t("benchNone")}</span>
+        <a class="ghost" href="music-drums.html">${t("benchGo")}</a></div>`;
+      return;
+    }
+    /* ⚠ the piano's buttons keep their old name (data-keys), the rest say which shelf they take */
+    const attr = s.id === "keys" ? (id=>`data-keys="${id}"`) : (id=>`data-take="${s.id}" data-deck="${id}"`);
     html += `<div class="take">
-      <b>${t("keys")}</b> <span class="tlen">${keysTake.name||""}</span>
-      <button type="button" class="ghost" data-keys="A">${t("toA")}</button>
-      <button type="button" class="ghost" data-keys="B">${t("toB")}</button>
-      <a class="ghost" href="music-piano.html">${t("keysGo")}</a>
-    </div>`;
-  }
-  /* AOG-STRINGS-V1 — the guitar and the bass leave theirs here too, each under its own name (and the band, AOG-BAND-V1) */
-  [["guitar", guitarTake, "guitar", "guitarGo", "music-guitar.html"], ["bass", bassTake, "bassT", "bassGo", "music-bass.html"], ["band", bandTake, "bandT", "bandGo", "music-band.html"], ["drumtake", drumTake, "drumTakeT", "benchGo", "music-drums.html"], ["studio", studioTake, "studioT", "studioGo", "music-studio.html"]].forEach(([id, tk, lab, go, href])=>{
-    if(!tk || !tk.wav) return;
-    html += `<div class="take">
-      <b>${t(lab)}</b> <span class="tlen">${tk.name||""}</span>
-      <button type="button" class="ghost" data-take="${id}" data-deck="A">${t("toA")}</button>
-      <button type="button" class="ghost" data-take="${id}" data-deck="B">${t("toB")}</button>
-      <a class="ghost" href="${href}">${t(go)}</a>
+      <b>${t(s.lab)}</b> <span class="tlen">${esc(tk.name||"")}</span>
+      ${ontoHTML(attr)}
+      <a class="ghost" href="${s.href}">${t(s.go)}</a>
     </div>`;
   });
   box.innerHTML = html;
+  const put = (s, d)=>{ const tk = SHELVES[s.key]; if(tk && tk.wav && d) loadFile(d, new File([tk.wav], s.file, { type:"audio/wav" }), shelfGrid(tk)); };
   box.querySelectorAll("[data-take]").forEach(b=>{
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-take"), tk = id==="guitar" ? guitarTake : id==="band" ? bandTake : id==="drumtake" ? drumTake : id==="studio" ? studioTake : bassTake;
-      const d = decks.find(x=>x.id===b.getAttribute("data-deck"));
-      if(tk && tk.wav) loadFile(d, new File([tk.wav], id+".wav", { type:"audio/wav" }));
-    };
-  });
-  box.querySelectorAll("[data-bench]").forEach(b=>{
-    b.onclick = ()=>{
-      const d = decks.find(x=>x.id===b.getAttribute("data-bench"));
-      loadFile(d, new File([benchTake.wav], "drum-bench.wav", { type:"audio/wav" }));
-    };
+    b.onclick = ()=>{ const s = SHELF.find(x=>x.id===b.getAttribute("data-take")); put(s, decks.find(x=>x.id===b.getAttribute("data-deck"))); };
   });
   box.querySelectorAll("[data-keys]").forEach(b=>{
-    b.onclick = ()=>{
-      const d = decks.find(x=>x.id===b.getAttribute("data-keys"));
-      loadFile(d, new File([keysTake.wav], "piano.wav", { type:"audio/wav" }));
-    };
+    b.onclick = ()=>{ put(SHELF[1], decks.find(x=>x.id===b.getAttribute("data-keys"))); };
   });
 }
 /* ══ AOG-DECKS-CRATE-V1 (2026-09-25) — THE RECORD CRATE ══════════════════════
@@ -848,7 +1038,7 @@ function paintBench(){
    closed) … a 'Previously spun' or a crate for upcoming music so it can go
    smoother." Three shelves, all in IndexedDB on this computer, never sent:
    · what is on each platter, and where the needle was, so a closed tab opens
-     with the same two records on, parked where you left them;
+     with the same records on, parked where you left them;
    · the last eight records you played, one tap to put any back on a deck;
    · UP NEXT — songs you line up before the set, played in order. ══════════ */
 const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], max:8 };
@@ -913,19 +1103,20 @@ async function crateOpen(){
   /* songs saved before the library existed join it */
   CRATE.next.concat(CRATE.prev).forEach(r=>{ if(r && r.blob && !CRATE.lib.some(x=>x.id===r.id)) CRATE.lib.push(r); });
   paintCrate(); paintDocks();
-  /* the two records that were on when the tab closed go back on, stopped */
+  /* the records that were on when the tab closed go back on, stopped */
   for(const d of decks){
     const r = await crateGet("deck-"+d.id);
-    if(!r || !r.blob || d.buf) continue;
+    if(!r || d.buf) continue;
     let pos = 0; try{ pos = +localStorage.getItem("aog.decks.pos."+d.id) || 0; }catch(e){}
+    if(r.made){ await loadMade(d, r.made, { restore:true, pos:pos }); continue; }
+    if(!r.blob) continue;
     await loadFile(d, crateFile(r), { restore:true, pos:pos });
   }
 }
 function crateRow(r, i, list){
   return `<div class="take">
       <span class="nm" title="${esc(r.name)}">${list==="next"?(i+1)+". ":""}${esc(r.name)}</span>
-      <button type="button" class="ghost" data-crate="${list}" data-i="${i}" data-deck="A">${t("toA")}</button>
-      <button type="button" class="ghost" data-crate="${list}" data-i="${i}" data-deck="B">${t("toB")}</button>
+      ${ontoHTML(id=>`data-crate="${list}" data-i="${i}" data-deck="${id}"`)}
       <button type="button" class="ghost" data-cratedrop="${list}" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
     </div>`;
 }
@@ -935,8 +1126,7 @@ function crateSleeve(r, i){
       <div class="art"><b>${i+1}</b></div>
       <span class="nm">${esc(r.name.replace(/\.[^.]+$/,""))}</span>
       <div class="sb">
-        <button type="button" data-crate="next" data-i="${i}" data-deck="A">A</button>
-        <button type="button" data-crate="next" data-i="${i}" data-deck="B">B</button>
+        ${IDS.map(id=>`<button type="button" data-crate="next" data-i="${i}" data-deck="${id}" aria-label="${t("to"+id)}">${id}</button>`).join("")}
         <button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
       </div>
     </div>`;
@@ -1020,7 +1210,7 @@ function paintCrate(){
   box.innerHTML = `
     <h3>${t("crateNext")}</h3>
     ${CRATE.next.length ? `<div class="cbox">${CRATE.next.map(crateSleeve).join("")}</div>` : `<div class="cbox empty">${t("crateNextNone")}</div>`}
-    ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
+    ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : `<p class="rechint" style="margin:0">${t("drop")}</p>`}
     <div class="take" style="background:none;border:0;padding:0">
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
@@ -1067,6 +1257,58 @@ function paintCrate(){
 window.addEventListener("pagehide", crateKeepPlace);
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden) crateKeepPlace(); });
 
+/* ══ AOG-DJ-MADE-V1 (2026-10-04) — THE RECORDS MADE RIGHT HERE ════════════════
+   Four records in the spirit of Jimmy's DJs, named by style, made by aog-dj.js
+   with math in a Worker the moment one is asked for (a second or two), so there
+   is nothing to download. Each knows its exact tempo and that beat one is the
+   very first sample, so its grid, its loops and SYNC are exact from the start. */
+const MADE = (window.AOGDJ && AOGDJ.list) || [];
+function madeTrack(id){
+  return new Promise((ok, no)=>{
+    let w = null;
+    try{ w = new Worker(new URL("aog-dj.js", document.baseURI).href); }catch(e){ w = null; }
+    if(!w){ try{ const r = AOGDJ.render(id); ok(r); }catch(e){ no(e); } return; }
+    w.onmessage = (e)=>{ const m = e.data; w.terminate(); if(m && m.t==="done") ok(m); else no(new Error(m && m.msg || "failed")); };
+    w.onerror = (e)=>{ w.terminate(); try{ ok(AOGDJ.render(id)); }catch(err){ no(err); } };
+    w.postMessage({ t:"render", id:id });
+  });
+}
+async function loadMade(d, id, opts){
+  const x = MADE.find(r=>r.id===id); if(!x || !d) return;
+  opts = opts || {};
+  d.note = t("making"); paintDeck(d);
+  try{
+    ctx(); await ensureNode(d);
+    let r, L, R;
+    /* the same record already on another deck is copied, not made again */
+    const twin = decks.find(o=>o!==d && o.made===id && o.buf);
+    if(twin){ L = Float32Array.from(twin.buf.getChannelData(0)); R = Float32Array.from(twin.buf.getChannelData(1)); r = { sr:twin.buf.sampleRate, bpm:x.bpm, beat0:0 }; }
+    else { r = await madeTrack(id); L = r.L; R = r.R; }
+    const buf = actx.createBuffer(2, L.length, r.sr);
+    buf.copyToChannel(L, 0); buf.copyToChannel(R, 1);
+    putOn(d, buf, L, R, { name: x[S.lang] || x.en, key:"made:"+id+":v1", bpm:x.bpm, beat0:0, lufs:-14, made:id, pos:opts.pos || 0 });
+    if(!opts.restore){ cratePut("deck-"+d.id, { made:id, name:x.en }); try{ localStorage.removeItem("aog.decks.pos."+d.id); }catch(e){} }
+    LX.made = true;
+  }catch(e){
+    d.note = t("madeFail"); paintDeck(d);
+    setTimeout(()=>{ if(d.note){ d.note=""; paintDeck(d); } }, 6000);
+  }
+}
+function paintMade(){
+  const box = document.getElementById("made"); if(!box) return;
+  const es = S.lang === "es";
+  box.innerHTML = `<h3>${t("madeH")}</h3>
+    <p class="rechint" style="margin:0">${t("madeLead")}</p>
+    <div class="made">${MADE.map(x=>`<div class="mrec" style="--h:${x.hue}">
+      <div class="art" aria-hidden="true"></div>
+      <div class="mi"><b>${esc(es?x.es:x.en)}</b><span>${x.bpm} BPM · ${esc(es?x.what_es:x.what_en)}</span></div>
+      ${ontoHTML(id=>`data-made="${x.id}" data-deck="${id}"`).replace('class="onto"','class="onto" role="group" aria-label="'+esc(es?x.es:x.en)+'"')}
+    </div>`).join("")}</div>`;
+  box.querySelectorAll("[data-made]").forEach(b=>{
+    b.onclick = ()=>loadMade(decks.find(x=>x.id===b.getAttribute("data-deck")), b.getAttribute("data-made"));
+  });
+}
+
 /* what a deck remembers about a record it has seen before: the tempo it worked
    out, where beat one is, and the marks you left on it. Kept by name and size,
    so the same file dropped tomorrow is ready the moment it loads. */
@@ -1098,96 +1340,262 @@ function pitchText(d){
 function touchLabel(){
   return t("touch")+": "+(touch==="fine"?t("touchFine"):touch==="normal"?t("touchNormal"):t("touchVinyl"));
 }
-function setMix(){
-  const x = +document.getElementById("xf").value;
-  let a = Math.cos(x*Math.PI/2), b = Math.sin(x*Math.PI/2);
-  if(curve==="sharp"){ a = Math.pow(a, 0.16); b = Math.pow(b, 0.16); }   /* a cut fader opens at once */
-  if(decks[0].gain) decks[0].gain.gain.value = decks[0].vol * a;
-  if(decks[1].gain) decks[1].gain.gain.value = decks[1].vol * b;
+
+/* ══ AOG-DJ-SYNC-V1 — the clock, the grid, the MASTER ═══════════════════════
+   Every deck reports where its needle is AND which frame of the audio clock that
+   was. So the page can say where any deck will be at any frame, and book a start
+   or a jump for the exact frame another deck crosses a beat. */
+function nowFrame(){ return actx ? Math.round(actx.currentTime * actx.sampleRate) : 0; }
+function heardFrame(){ return nowFrame() - Math.round(((actx && actx.baseLatency) || 0) * actx.sampleRate + ((actx && actx.outputLatency) || 0) * actx.sampleRate); }
+function posAt(d, F){ return d.pos + (F - d.frame) * (d.rr || 0); }
+function beatLen(d){ return d.buf && d.bpm > 0 ? 60/d.bpm*d.buf.sampleRate : 0; }
+function grid0(d){ return d.buf ? d.beat0*d.buf.sampleRate : 0; }
+function effBpm(d){ return d.bpm > 0 ? d.bpm*d.pitch*d.rpm : 0; }
+function masterDeck(){ const m = decks.find(x=>x.id===masterId); return m && m.buf && m.bpm > 0 ? m : null; }
+function setMaster(id){ masterId = id; paintMasters(); }
+function paintMasters(){
+  document.querySelectorAll("[data-master]").forEach(b=>{ const on = b.getAttribute("data-master")===masterId; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
 }
-function drawWave(d){
-  const cv = document.getElementById("wave"+d.id);
-  if(!cv) return;
-  const w = cv.width = (cv.clientWidth*2)||600, h = cv.height = 128;
-  const g = cv.getContext("2d");
-  g.fillStyle = "#06110c"; g.fillRect(0,0,w,h);
-  if(!d.buf || !d.peaks) return;
-  /* bass, middle and top in three colors: you can SEE the kick line up */
-  const B = d.bands;
-  for(let x=0;x<w;x++){
-    const i = Math.floor(x/w*(B?B.lo.length:d.peaks.length));
-    if(B){
-      const bars = [[B.hi[i]*2.2,"#7fc7f5"],[B.mid[i]*1.5,"#c6f7b0"],[B.lo[i],"#f0a35e"]];
-      for(let k=0;k<bars.length;k++){
-        const m = Math.min(1, bars[k][0]); if(m<=0.002) continue;
-        g.strokeStyle = bars[k][1]; g.beginPath();
-        g.moveTo(x+.5, h/2 - m*h*0.5); g.lineTo(x+.5, h/2 + m*h*0.5); g.stroke();
-      }
-    } else {
-      const m = d.peaks[i]||0;
-      g.strokeStyle = "#c6f7b0"; g.beginPath();
-      g.moveTo(x+.5, h/2 - m*h*0.5); g.lineTo(x+.5, h/2 + m*h*0.5); g.stroke();
+/* the master is the first deck to play with a beat; when it stops while another plays,
+   the playing one leads (stopDeck hands it over); a MASTER pressed by hand stays put */
+function autoMaster(){
+  if(masterDeck()) return;
+  const playing = decks.filter(x=>x.buf && x.bpm > 0 && x.motor);
+  const pick = playing.find(x=>!x.syncLock) || playing[0];
+  if(pick) setMaster(pick.id);
+}
+/* the speed that puts this deck on the master's tempo, half or double time allowed */
+function syncRatio(d, m){
+  const base = effBpm(m)/(d.bpm*d.rpm);
+  let best = base, f = 1;
+  [0.5, 2].forEach(k=>{ const w = base*k; if(Math.abs(Math.log(w)) < Math.abs(Math.log(best))){ best = w; f = 1/k; } });
+  return { want:best, f:f };   /* f: master beats per beat of this deck … in this deck's terms */
+}
+function setPitch(d, v, fromSync){
+  if(v < 0.92 || v > 1.08){ if(!d.wide){ d.wide = true; const wb = document.querySelector('[data-wide="'+d.id+'"]'); if(wb) wb.classList.add("on"); } }
+  v = Math.max(d.wide?0.5:0.92, Math.min(d.wide?1.5:1.08, v));
+  if(Math.abs(v - d.pitch) < 1e-7) return;
+  d.pitch = v; send(d, { t:"pitch", v:v });
+  const inp = document.querySelector('[data-speed="'+d.id+'"]');
+  if(inp){ if(d.wide){ inp.min="0.5"; inp.max="1.5"; inp.step="0.01"; } inp.value = String(v); }
+  const po = document.querySelector('[data-pitchout="'+d.id+'"]'); if(po) po.textContent = pitchText(d);
+  fxSend(d);
+  /* the master moved: everyone synced to it follows at once */
+  if(!fromSync && d.id === masterId) decks.forEach(o=>{ if(o!==d && o.syncLock && o.buf && o.bpm > 0) setPitch(o, syncRatio(o, d).want, true); });
+}
+/* where a synced deck's beat sits against the master's, in master beats (−0.5 … 0.5) */
+function phaseErr(d, m, F, f){
+  const pd = posAt(d, F), pm = posAt(m, F);
+  const is = (pd - grid0(d))/beatLen(d), im = (pm - grid0(m))/beatLen(m);
+  let e = (is*f) - im; e -= Math.round(e);
+  return e;
+}
+/* put a synced deck on the master's beat: a jump booked 60 ms ahead, to the sample */
+function realign(d, m, f){
+  const sr = actx.sampleRate, F = nowFrame() + Math.round(0.06*sr);
+  const pd = posAt(d, F), pm = posAt(m, F);
+  const im = (pm - grid0(m))/beatLen(m), is0 = (pd - grid0(d))/beatLen(d);
+  const fm = im - Math.floor(im), n = Math.round(is0*f - fm), is = (n + fm)/f;
+  send(d, { t:"sched", frame:F, m:{ t:"jump", v: grid0(d) + is*beatLen(d) } });
+  d._aligned = performance.now();
+}
+let lastLock = 0;
+function syncTick(now){
+  if(now - lastLock < 100) return;
+  lastLock = now;
+  autoMaster();
+  const m = masterDeck(); if(!m) return;
+  decks.forEach(d=>{
+    if(d === m || !d.syncLock || !d.buf || d.bpm <= 0){ if(d.bend !== 1){ d.bend = 1; send(d, { t:"bend", v:1 }); } return; }
+    const r = syncRatio(d, m);
+    setPitch(d, r.want, true);
+    let bend = 1;
+    if(d.motor && m.motor && !d.held && !m.held && !d.cueHeld && !d.revOn && !d.div && !d.pend && d._startAt == null
+       && now - (d._aligned||0) > 300 && Math.abs(d.rr) > 0.05 && Math.abs(m.rr) > 0.05){
+      const err = phaseErr(d, m, Math.max(d.frame, m.frame), r.f);
+      if(Math.abs(err) > 0.03) realign(d, m, r.f);
+      else if(Math.abs(err) > 0.003) bend = 1 - Math.max(-0.006, Math.min(0.006, err * 60/effBpm(m) / 1.2));
     }
-  }
-  const sr = d.buf.sampleRate, dur = d.buf.length;
-  if(d.bpm > 0){                              /* a bar line every four beats */
-    const barSec = 4*60/d.bpm;
-    g.strokeStyle = "rgba(244,226,176,.28)"; g.beginPath();
-    for(let tsec=d.beat0; tsec<d.buf.duration; tsec+=barSec){
-      const x = (tsec*sr/dur)*w; g.moveTo(x, 0); g.lineTo(x, h*0.14); g.moveTo(x, h*0.86); g.lineTo(x, h);
-    }
-    g.stroke();
-  }
-  if(d.loopOn && d.loopB > d.loopA){          /* the loop, lit */
-    const x1 = (d.loopA/dur)*w, x2 = (d.loopB/dur)*w;
-    g.fillStyle = "rgba(127,199,245,.16)"; g.fillRect(x1, 0, Math.max(2,x2-x1), h);
-  }
-  d.cues.forEach((c,i)=>{                      /* hot cues */
-    if(c==null) return;
-    const x = (c/dur)*w;
-    g.fillStyle = "#f4a3b0"; g.fillRect(x-1, 0, 3, h*0.2);
-    g.font = "bold 16px sans-serif"; g.fillText(String(i+1), x+4, h*0.2);
+    if(Math.abs(bend - d.bend) > 1e-5){ d.bend = bend; send(d, { t:"bend", v:bend }); }
   });
-  const px = (d.pos / dur) * w;
-  g.strokeStyle = "#fff"; g.lineWidth = 2; g.beginPath(); g.moveTo(px,0); g.lineTo(px,h); g.stroke(); g.lineWidth = 1;
 }
-/* the close-up: a second and a half of groove either side of the needle, which
-   is where you actually watch a scratch happen */
-function drawZoom(d){
-  const cv = document.getElementById("zoom"+d.id);
-  if(!cv) return;
-  const w = cv.width = (cv.clientWidth*2)||600, h = cv.height = 72;
-  const g = cv.getContext("2d");
-  g.fillStyle = "#0a1410"; g.fillRect(0,0,w,h);
-  if(!d.buf) return;
-  const a = d.buf.getChannelData(0), sr = d.buf.sampleRate;
-  const span = sr * 1.2, start = d.pos - span/2, per = span/w;
-  g.strokeStyle = "#7fd6a3"; g.beginPath();
-  for(let x=0;x<w;x++){
-    const o = Math.floor(start + x*per);
-    let m = 0;
-    for(let i=0;i<per;i+=3){ const j=o+i|0; if(j>=0&&j<a.length){ const v=a[j]<0?-a[j]:a[j]; if(v>m)m=v; } }
-    g.moveTo(x+.5, h/2 - m*h*0.48); g.lineTo(x+.5, h/2 + m*h*0.48);
-  }
-  g.stroke();
-  if(d.bpm > 0){                       /* every beat, with the downbeat brighter */
-    const beat = 60/d.bpm*sr;
-    const first = Math.ceil((start - d.beat0*sr)/beat);
-    for(let k=first; ; k++){
-      const posB = d.beat0*sr + k*beat;
-      const x = (posB - start)/per;
-      if(x > w) break;
-      if(x < 0) continue;
-      g.strokeStyle = (k%4===0) ? "rgba(244,226,176,.55)" : "rgba(244,226,176,.22)";
-      g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke();
+
+/* ══ AOG-DJ-MIXER-V1 — the channel strip's sound ═════════════════════════════ */
+/* the crossfader's two sides: Blend is constant-power (a long, even fade); Cut keeps
+   both sides full and slams shut in the last few millimetres, for scratching */
+function sideGains(x){
+  if(curve==="sharp") return [Math.max(0, Math.min(1, (0.985 - x)/0.035)), Math.max(0, Math.min(1, (x - 0.015)/0.035))];
+  return [Math.cos(x*Math.PI/2), Math.sin(x*Math.PI/2)];
+}
+function chanGain(d){ return d.vol*d.vol; }   /* a fader's travel, the way an ear hears loudness */
+function setMix(){
+  const xfv = +document.getElementById("xf").value, sg = sideGains(xfv);
+  decks.forEach(d=>{
+    d.xgv = d.side==="L" ? sg[0] : d.side==="R" ? sg[1] : 1;
+    if(!actx) return;
+    if(d.gain) ramp(d.gain.gain, chanGain(d), 0.008);
+    if(d.xg) ramp(d.xg.gain, d.xgv, curve==="sharp" ? 0.0012 : 0.004);
+  });
+  paintSides();
+}
+function paintSides(){
+  const L = decks.filter(d=>d.side==="L").map(d=>d.id).join(" "), R = decks.filter(d=>d.side==="R").map(d=>d.id).join(" ");
+  const a = document.getElementById("labA"), b = document.getElementById("labB");
+  if(a) a.textContent = L || "—"; if(b) b.textContent = R || "—";
+}
+/* one knob, two filters: left of center a low-pass closes down to a rumble, right of
+   center a high-pass opens up to a whisper. In the middle it is out of the way. */
+function applyFilter(d){
+  if(!d.lp || !actx) return;
+  const v = d.filtv, top = Math.min(20000, actx.sampleRate*0.45);
+  const lpF = v < -0.03 ? Math.max(60, top*Math.pow(60/top, Math.min(1, (-v-0.03)/0.97))) : top;
+  const hpF = v > 0.03 ? 18*Math.pow(9000/18, Math.min(1, (v-0.03)/0.97)) : 10;
+  const qdb = -3.01 + 7.5*Math.min(1, Math.abs(v)*2.5);   /* a little resonance as it moves: the DJ filter's "zing" */
+  ramp(d.lp.frequency, lpF, 0.012); ramp(d.hp.frequency, hpF, 0.012);
+  ramp(d.lp.Q, v < -0.03 ? qdb : -3.01, 0.02); ramp(d.hp.Q, v > 0.03 ? qdb : -3.01, 0.02);
+}
+/* the effect's tempo is this deck's tempo as it plays now (pitch and all) */
+function fxSend(d, force){
+  if(!d.fx) return;
+  const bpm = effBpm(d) || (masterDeck() ? effBpm(masterDeck()) : 120) || 120;
+  const m = { t:"fx", type:d.fxType, amt:d.fxAmt, beatSec:60/bpm, beats:d.fxBeats };
+  const sig = JSON.stringify(m);
+  if(!force && sig === d.fxSent) return;
+  d.fxSent = sig; d.fx.port.postMessage(m);
+}
+const FXBEATS = { echo:[0.25,0.5,0.75,1,2], reverb:[1,2,4,8], flanger:[4,8,16,32] };
+function beatsLabel(v){ return v===0.25?"¼":v===0.5?"½":v===0.75?"¾":String(v); }
+
+/* AOG-DJ-PERF-V1 — a canvas's width comes from a ResizeObserver, never read in the middle of
+   a frame: reading layout after the platters have turned makes the browser lay the page out
+   again, six times a frame on three decks. */
+const SIZE = new WeakMap();
+const RO = window.ResizeObserver ? new ResizeObserver(es=>{ es.forEach(e=>SIZE.set(e.target, e.contentRect.width)); decks.forEach(d=>{ d.waveDirty = true; d._drawn = -1; }); eqDirty = true; }) : null;
+function cssW(cv){ const w = RO ? SIZE.get(cv) : undefined; return w == null ? cv.clientWidth : w; }
+/* AOG-DJ-PERF-V2 — everything that moves (platters, arms, meters, the needles on the
+   waveforms, the close-up groove) moves by a paused animation whose time is set each
+   frame. The browser only slides finished pictures: nothing is drawn again, no element
+   changes, and the page's helpers that watch for changes stay asleep. */
+const KF = {
+  turn:  { k:[{transform:"rotate(0deg)"},{transform:"rotate(360deg)"}], t:360000, p:"transform", f:v=>"rotate("+(v/1000)+"deg)" },
+  fill:  { k:[{transform:"scaleX(0)"},{transform:"scaleX(1)"}], t:1000, p:"transform", f:v=>"scaleX("+(v/1000)+")" },
+  right: { k:[{transform:"translateX(0px)"},{transform:"translateX(100000px)"}], t:100000, p:"transform", f:v=>"translateX("+v+"px)" },
+  left:  { k:[{transform:"translateX(0px)"},{transform:"translateX(-100000px)"}], t:100000, p:"transform", f:v=>"translateX("+(-v)+"px)" },
+  show:  { k:[{opacity:0},{opacity:1}], t:1000, p:"opacity", f:v=>String(v/1000) }
+};
+function anim(el, kind){
+  if(!el) return null;
+  const K = KF[kind], m = { el, K, v:NaN, a:null };
+  if(el.animate){ try{ m.a = el.animate(K.k, { duration:K.t, fill:"both" }); m.a.pause(); }catch(e){ m.a = null; } }
+  return m;
+}
+function setA(m, v){
+  if(!m || m.v === v || !isFinite(v)) return;
+  m.v = v;
+  if(m.a) m.a.currentTime = v; else m.el.style[m.K.p] = m.K.f(v);
+}
+/* a record's pictures are drawn in a Worker where the browser allows it (AOGDJ.paintWave
+   and paintZoom, in aog-dj.js) and on the page where it does not. The old picture stays
+   up until the new one is ready to show, so nothing blinks. */
+let PICW = null, picN = 0;
+const PICWAIT = {};
+function picWorker(){
+  if(PICW !== null) return PICW || null;
+  PICW = false;
+  try{
+    if(window.Worker && typeof OffscreenCanvas === "function" && OffscreenCanvas.prototype.convertToBlob && new OffscreenCanvas(1,1).getContext("2d")){
+      const w = new Worker(new URL("aog-dj.js", document.baseURI).href);
+      w.onmessage = (e)=>{ const m = e.data || {}, cb = PICWAIT[m.req]; if(!cb) return; delete PICWAIT[m.req]; cb(m.t === "pic" ? m.blob : null); };
+      w.onerror = ()=>{ PICW = false; Object.keys(PICWAIT).forEach(k=>{ const cb = PICWAIT[k]; delete PICWAIT[k]; cb(null); }); };
+      PICW = w;
     }
+  }catch(e){ PICW = false; }
+  return PICW || null;
+}
+function picture(d, kind, o, img, then, fail){
+  const slot = kind === "zoom" ? "z" : "w";
+  const g = (d[slot+"Gen"] = (d[slot+"Gen"]||0) + 1), live = ()=>d[slot+"Gen"] === g;
+  const show = (blob)=>{
+    if(!live()) return;
+    if(!blob){ if(fail) fail(); return; }
+    const url = URL.createObjectURL(blob), pre = new Image();
+    const swap = ()=>{
+      if(!live()){ URL.revokeObjectURL(url); return; }
+      const old = img._blob; img.src = url; img._blob = url;
+      if(old) setTimeout(()=>URL.revokeObjectURL(old), 2000);
+      if(then) then();
+    };
+    pre.src = url;
+    if(pre.decode) pre.decode().then(swap, swap); else { pre.onload = swap; pre.onerror = swap; }
+  };
+  const here = ()=>{                                 /* drawn on the page itself */
+    if(!live()) return;
+    try{
+      const c = d[slot+"can"] || (d[slot+"can"] = document.createElement("canvas")), W = kind === "zoom" ? o.n : o.w;
+      if(c.width !== W) c.width = W; if(c.height !== o.h) c.height = o.h;
+      const x = c.getContext("2d");
+      if(kind === "zoom"){ o.zpk = d.zpk; AOGDJ.paintZoom(x, o); } else { o.peaks = d.peaks; o.bands = d.bands; AOGDJ.paintWave(x, o); }
+      c.toBlob(show);
+    }catch(e){ if(fail) fail(); }
+  };
+  const W = picWorker();
+  if(!W) return here();
+  if(d._picZ !== d.zpk || d._picB !== d.bands){       /* the record's numbers go over once */
+    d._picZ = d.zpk; d._picB = d.bands;
+    W.postMessage({ t:"picdata", deck:d.id, zpk:d.zpk, peaks:d.peaks, bands:d.bands });
   }
-  if(d.loopOn && d.loopB > d.loopA){
-    const x1 = (d.loopA - start)/per, x2 = (d.loopB - start)/per;
-    g.fillStyle = "rgba(127,199,245,.18)"; g.fillRect(x1, 0, Math.max(2, x2-x1), h);
+  const req = ++picN;
+  PICWAIT[req] = (blob)=>{ if(blob) show(blob); else here(); };
+  W.postMessage({ t:"pic", deck:d.id, kind, req, o });
+}
+function parts(d){ if(!d.$ || !d.$.el.isConnected) d.$ = deckParts(d); return d.$; }
+/* ══ the waveform: one picture per record; the needle, the loop and the slip mark sit on top ══ */
+function drawWave(d){
+  const P = parts(d); if(!P) return;
+  const cw = cssW(P.wave); if(!cw) return;
+  if(!d.buf || !d.peaks){
+    if(d._wkey !== "empty"){ d._wkey = "empty"; d.wGen = (d.wGen||0) + 1; P.wimg.removeAttribute("src"); setA(P.mv.head, 0); setA(P.mv.slipO, 0); }
+    if(d._lk){ d._lk = ""; P.wloop.style.width = "0"; }
+    return;
   }
-  g.strokeStyle = "#c4452a"; g.lineWidth = 2;
-  g.beginPath(); g.moveTo(w/2,0); g.lineTo(w/2,h); g.stroke(); g.lineWidth = 1;
+  const w = Math.round(cw*2), h = 128, dur = d.buf.length;
+  const key = d.trackKey + "|" + w + "|" + d.bpm + "|" + d.beat0 + "|" + d.cues.join(",") + "|" + (d.bands ? 3 : 1);
+  if(d.waveDirty || key !== d._wkey){
+    d._wkey = key; d.waveDirty = false;
+    picture(d, "wave", { w, h, len:dur, sr:d.buf.sampleRate, bpm:d.bpm, beat0:d.beat0, cues:d.cues.slice() }, P.wimg);
+  }
+  setA(P.mv.head, Math.round(d.pos/dur*cw*2)/2);
+  const slip = !!(d.div && d.slipOn);                /* the shadow needle, while it slips */
+  setA(P.mv.slipO, slip ? 1000 : 0);
+  if(slip) setA(P.mv.slip, Math.round(d.slipPos/dur*cw*2)/2);
+  const lk = d.loopOn && d.loopB > d.loopA            /* the loop, lit */
+    ? (d.loopA/dur*100).toFixed(2) + "%|" + Math.max(2/cw*100, (d.loopB - d.loopA)/dur*100).toFixed(2) + "%" : "";
+  if(lk !== (d._lk || "")){ d._lk = lk; const [l, wd] = lk ? lk.split("|") : ["0", "0"]; P.wloop.style.left = l; P.wloop.style.width = wd; }
+}
+const PADC = ["#f4a3b0","#f0c26e","#9fd4a0","#7fc7f5","#c9a7f5","#f5b97f","#8fe0d0","#f5e07f"];
+/* the close-up: a second and a half of groove either side of the needle, which
+   is where you actually watch a scratch happen. The groove is one picture seven
+   screens long that slides under the needle line; a fresh one is made while the
+   needle still has a screen and a half to go. */
+const ZN = 7;
+function drawZoom(d){
+  const P = parts(d); if(!P) return;
+  const cw = cssW(P.zoom); if(!cw) return;
+  if(!d.buf || !d.zpk){
+    if(d.zs || d.zNext){ d.zs = d.zNext = null; d.zGen = (d.zGen||0) + 1; P.zimg.removeAttribute("src"); }
+    return;
+  }
+  const w = Math.round(cw*2), h = 72, sr = d.buf.sampleRate, span = sr*1.2, per = span/w, start = d.pos - span/2;
+  const key = d.trackKey + "|" + w + "|" + (d.loopOn ? d.loopA + "-" + d.loopB : "") + "|" + d.bpm + "|" + d.beat0;
+  const zs = d.zs, edge = 1.5*w*per, now = performance.now();
+  if((!d.zNext || now - d.zNext.at > 3000) && now > (d.zWait || 0) &&
+     (!zs || zs.key !== key || start < zs.s0 + edge || start + span > zs.s0 + zs.n*per - edge)){
+    const nx = d.zNext = { s0: start - ((ZN-1)/2)*w*per, n: ZN*w, per, key, at: now };
+    picture(d, "zoom", { n:nx.n, h, s0:nx.s0, per, sr, bpm:d.bpm, beat0:d.beat0, loop: d.loopOn && d.loopB > d.loopA ? [d.loopA, d.loopB] : null }, P.zimg,
+      ()=>{ d.zs = nx; d.zNext = null; setA(P.mv.zoom, Math.round((d.pos - span/2 - nx.s0)/nx.per)/2); },
+      ()=>{ if(d.zNext === nx) d.zNext = null; d.zWait = performance.now() + 1000; });
+  }
+  if(d.zs) setA(P.mv.zoom, Math.round((start - d.zs.s0)/d.zs.per)/2);
 }
 function clock(sec){
   if(!isFinite(sec)||sec<0) sec=0;
@@ -1198,74 +1606,111 @@ function clock(sec){
    paintDeck runs every frame; rewriting the button's words 60 times a second
    swaps the text under a finger, and Safari drops the tap. Only write words
    when they change. */
-function setT(el, v){ if(el.textContent !== v) el.textContent = v; }
+function setT(el, v){
+  /* AOG-DJ-PERF-V1 — a clock that ticks rewrites only its text, not the element: the site's
+     readability and menu helpers re-check the page whenever elements change, not when words do */
+  const n = el.firstChild;
+  if(n && n.nodeType === 3 && !n.nextSibling){ if(n.nodeValue !== v) n.nodeValue = v; }
+  else if(el.textContent !== v) el.textContent = v;
+}
+function deckParts(d){
+  const el = document.getElementById("deck"+d.id); if(!el) return null;
+  const q = (s)=>el.querySelector(s), wave = document.getElementById("wave"+d.id), zoom = document.getElementById("zoom"+d.id);
+  const strip = document.getElementById("strip"+d.id), wq = (s)=>wave ? wave.querySelector(s) : null;
+  /* pictures still on their way to the old elements are dropped */
+  d.wGen = (d.wGen||0) + 1; d.zGen = (d.zGen||0) + 1; d._wkey = ""; d._lk = ""; d.zs = d.zNext = null; d.waveDirty = true;
+  const mv = { vinyl:anim(q(".vinyl"), "turn"), arm:anim(q(".arm"), "turn"), meter:anim(q(".meter i"), "fill"),
+               cmeter:anim(strip ? strip.querySelector(".meter i") : null, "fill"),
+               head:anim(wq(".whead"), "right"), slip:anim(wq(".wslip"), "right"), slipO:anim(wq(".wslip"), "show"),
+               zoom:anim(zoom ? zoom.querySelector(".zimg") : null, "left") };
+  setA(mv.arm, 16000);
+  return { el, song:q(".song"), go:q(".go"), time:q(".time"), bpm:q("[data-bpm]"), wave, zoom,
+           wimg:wq(".wimg"), wloop:wq(".wloop"), zimg:zoom ? zoom.querySelector(".zimg") : null, mv };
+}
 function paintDeck(d){
-  const el = document.getElementById("deck"+d.id);
-  if(!el) return;
-  const vinyl = el.querySelector(".vinyl");
-  if(vinyl) vinyl.style.setProperty("--rot", d.rot.toFixed(1)+"deg");
-  const arm = el.querySelector(".arm");
-  if(arm && d.buf) arm.style.transform = "rotate("+(16 + 13*Math.min(1, d.pos/d.buf.length)).toFixed(2)+"deg)";
-  const song = el.querySelector(".song");
+  if(!d.$ || !d.$.el.isConnected) d.$ = deckParts(d);
+  if(!d.$) return;
+  const el = d.$.el;
+  const M = d.$.mv;                                   /* turns in tenths of a degree */
+  setA(M.vinyl, STILL ? 0 : Math.round((((d.rot % 360) + 360) % 360)*10)*100);
+  setA(M.arm, d.buf ? Math.round((16 + 13*Math.min(1, d.pos/d.buf.length))*10)*100 : 16000);
+  if((FRAME & 1) === 0 || d.level === 0){            /* the meters, every other frame: the eye cannot tell */
+    setA(M.meter, Math.round(Math.min(1, d.level*1.4)*100)*10);
+    setA(M.cmeter, Math.round(Math.min(1, d.level*1.4*(d.vol*d.vol)*d.xgv)*100)*10);
+  }
+  const song = d.$.song;
   if(song) setT(song, d.note || d.name || t("none"));
-  const btn = el.querySelector(".go");
+  const btn = d.$.go;
   if(btn) setT(btn, d.motor ? t("stop") : t("play"));
-  const time = el.querySelector(".time");
+  const time = d.$.time;
   if(time) setT(time, d.buf ? (clock(d.pos/d.buf.sampleRate)+" / "+clock(d.buf.duration)) : "0:00");
-  const bar = el.querySelector(".meter i");
-  if(bar) bar.style.width = Math.min(100, d.level*140)+"%";
-  el.classList.toggle("spinning", Math.abs(d.rate) > 0.02);
-  const bp = el.querySelector("[data-bpm]");
-  if(bp) setT(bp, d.bpm > 0 ? (d.bpm*d.pitch*d.rpm).toFixed(1)+" BPM"
+  const spin = Math.abs(d.rate) > 0.02;
+  if(el.classList.contains("spinning") !== spin) el.classList.toggle("spinning", spin);
+  const bp = d.$.bpm;
+  if(bp) setT(bp, d.bpm > 0 ? effBpm(d).toFixed(1)+" BPM"
                         : d.bpm === -1 ? t("bpmWait") : (d.buf ? t("noBeat") : ""));
-  el.querySelectorAll("[data-hot]").forEach(b=>{
-    b.classList.toggle("on", d.cues[+b.getAttribute("data-i")] != null);
-  });
-  el.querySelectorAll("[data-loop]").forEach(b=>{
-    b.classList.toggle("on", d.loopOn && d.loopBars === +b.getAttribute("data-bars"));
-  });
+  const sig = d.cues.map(c=>c==null?0:1).join("") + (d.erase?"e":"") + (d.loopOn?d.loopBeats:0) + (d.syncLock?"s":"");
+  if(sig !== d._sig){
+    d._sig = sig;
+    el.querySelectorAll("[data-hot]").forEach(b=>{
+      const i = +b.getAttribute("data-i"), set = d.cues[i] != null;
+      b.classList.toggle("set", set); b.classList.toggle("erase", d.erase);
+      b.style.setProperty("--pc", PADC[i]);
+      b.setAttribute("aria-label", t("hot")+" "+(i+1)+(set?"":" · "+t("none").replace(/\.$/,"")));
+    });
+    el.querySelectorAll("[data-loop]").forEach(b=>{ const on = d.loopOn && d.loopBeats === +b.getAttribute("data-beats"); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
+    const sb = el.querySelector("[data-sync]"); if(sb){ sb.classList.toggle("on", d.syncLock); sb.setAttribute("aria-pressed", d.syncLock?"true":"false"); }
+    const er = el.querySelector("[data-erase]"); if(er){ er.classList.toggle("on", d.erase); er.setAttribute("aria-pressed", d.erase?"true":"false"); }
+  }
 }
-/* SYNC holds: every quarter second the locked deck is nudged a whisker in pitch
-   until its beat sits on the other deck's beat, then it is left alone. This is
-   what stops two records drifting apart after four bars. */
-let lastLock = 0;
-function syncTick(){
-  const now = performance.now();
-  if(now - lastLock < 250) return;
-  lastLock = now;
-  decks.forEach(d=>{
-    const o = decks.find(x=>x.id!==d.id);
-    if(!d.syncLock || !d.buf || !o.buf || d.bpm<=0 || o.bpm<=0) return;
-    if(!d.motor || !o.motor || d.held || o.held) return;
-    const want = (o.bpm*o.pitch*o.rpm) / (d.bpm*d.rpm);
-    let ratio = want; while(ratio>1.5) ratio/=2; while(ratio<0.6) ratio*=2;
-    const beat = 60/d.bpm*d.buf.sampleRate;
-    const beatO = 60/o.bpm*o.buf.sampleRate;
-    const phase = ((d.pos - d.beat0*d.buf.sampleRate)/beat) % 1;
-    const phaseO = ((o.pos - o.beat0*o.buf.sampleRate)/beatO) % 1;
-    let err = phase - phaseO;                 /* in beats, -0.5 … 0.5 */
-    if(err > 0.5) err -= 1; if(err < -0.5) err += 1;
-    const corrected = ratio * (1 - err*0.06); /* a whisper of pitch, never a jump */
-    const lo = d.wide?0.5:0.92, hi = d.wide?1.5:1.08;
-    const v = Math.max(lo, Math.min(hi, corrected));
-    if(Math.abs(v - d.pitch) > 0.0005){
-      d.pitch = v; send(d, { t:"pitch", v:v });
-      const inp = document.querySelector('[data-speed="'+d.id+'"]'); if(inp) inp.value = String(v);
-      const po = document.querySelector('[data-pitchout="'+d.id+'"]'); if(po) po.textContent = pitchText(d);
-    }
-  });
-}
+let EQP = null;
 function drawEq(){
   const cv = document.getElementById("eqCurve");
-  if(!cv || !AOGEq) return;
-  const curves = [];
-  decks.forEach((d,i)=>{ if(d.eq) curves.push({ filters: d.eq.filters.concat(d.filt?[d.filt]:[]),
-    color: i===0 ? "#f0c26e" : "#7fc7f5", label: "DECK "+d.id, labelY: 12+i*12 }); });
-  AOGEq.draw(cv, { curves: curves, analyser: eqScope, sampleRate: actx ? actx.sampleRate : 44100, range: 26 });
+  const cw = cv ? cssW(cv) : 0;
+  if(!cw || !window.AOGEq) return;
+  const cols = ["#f0c26e","#7fc7f5","#f4a3b0"], curves = [];
+  decks.forEach((d,i)=>{ if(d.eq) curves.push({ filters: d.eq.filters.concat(d.lp?[d.lp, d.hp]:[]), color: cols[i], label: "DECK "+d.id, labelY: 12+i*12 }); });
+  EQO.curves = curves; EQO.analyser = null; EQO.bg = "rgba(0,0,0,0)"; EQO.sampleRate = actx ? actx.sampleRate : 44100;
+  /* the shared drawing code asks the canvas for its size; this hands it the size we already know */
+  EQP = EQP || { getContext:(k)=>cv.getContext(k), get width(){ return cv.width; }, set width(v){ cv.width = v; }, get height(){ return cv.height; }, set height(v){ cv.height = v; } };
+  EQP.clientWidth = cw; EQP.clientHeight = 110;
+  AOGEq.draw(EQP, EQO);
 }
+const EQO = { range:26 };
+/* AOG-DJ-PERF-V2 — the live sound behind the curves is a small picture of its own, one pixel per
+   screen pixel (a soft shape needs no more): redrawing it while music plays costs a quarter of
+   redrawing the curves, which change only when a knob moves */
+let LIVE = null;
+function drawLive(){
+  const cv = document.getElementById("eqLive"), ref = document.getElementById("eqCurve");
+  const w = Math.round(ref ? cssW(ref) : 0), h = 110;
+  if(!cv || !w || !eqScope) return;
+  if(cv.width !== w) cv.width = w; if(cv.height !== h) cv.height = h;
+  const g = cv.getContext("2d"), bins = eqScope.frequencyBinCount;
+  if(!LIVE || LIVE.length !== bins) LIVE = new Uint8Array(bins);
+  eqScope.getByteFrequencyData(LIVE);
+  const ny = (actx ? actx.sampleRate : 44100)/2, lo = 30, hi = 18000, k = w/Math.log(hi/lo);
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = "rgba(127,199,245,.20)";               /* the shape and colour of the shared curve drawing */
+  g.beginPath(); g.moveTo(0, h);
+  for(let i=1;i<bins;i++){ const f = i/bins*ny; if(f < lo || f > hi) continue; g.lineTo(Math.log(f/lo)*k, h - (LIVE[i]/255)*h*0.92); }
+  g.lineTo(w, h); g.closePath(); g.fill();
+}
+let lastEq = 0, lastLive = 0, eqUntil = 0, liveUntil = 0, eqDirty = true, eqSeen = true, EQIO = null;
+let FRAME = 0;
 function loop(){
-  syncTick();
-  drawEq();
+  const now = performance.now(); FRAME++;
+  syncTick(now);
+  /* the curves are drawn again when a knob moves (and for a moment after, while the sound settles
+     on its new setting); the live sound behind them while music plays. Neither is drawn while the
+     mixer is off the screen. */
+  const playing = decks.some(d=>Math.abs(d.rate) > 0.01);
+  if(eqSeen){
+    if(eqDirty){ eqDirty = false; eqUntil = now + 400; }
+    if(eqUntil && now - lastEq > 33){ lastEq = now; if(now >= eqUntil) eqUntil = 0; try{ drawEq(); }catch(e){} }
+    if(playing) liveUntil = now + 1200;
+    if(now < liveUntil && now - lastLive > 80){ lastLive = now; try{ drawLive(); }catch(e){} }
+  }
   try{ tickLessons(); }catch(e){}
   decks.forEach(d=>{
     if(d.buf){
@@ -1274,20 +1719,39 @@ function loop(){
       if(d.held && performance.now() - d.lastMove > 55){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate }); d.lastMove = performance.now(); }
     }
     paintDeck(d);
-    if(d.buf && (d.motor || Math.abs(d.rate) > 0.01 || d.held)){ drawWave(d); drawZoom(d); }
+    const moving = d.buf && (d.motor || Math.abs(d.rate) > 0.01 || d.held);
+    if(moving || d._drawn !== d.pos){ d._drawn = d.pos; drawWave(d); drawZoom(d); }
   });
   requestAnimationFrame(loop);
 }
 function shell(){
-  document.getElementById("decks").innerHTML = decks.map(d=>`
-    <section class="deck" id="deck${d.id}">
-      <h2>Deck ${d.id}</h2>
-      <p class="song">${d.note||d.name||t("none")}</p>
-      <canvas class="wave" id="wave${d.id}" height="64"></canvas>
-      <canvas class="zoom" id="zoom${d.id}" height="36"></canvas>
+  document.getElementById("decks").innerHTML = decks.map(deckHTML).join("");
+  document.getElementById("strips").innerHTML = decks.map(stripHTML).join("");
+  decks.forEach(d=>{ d._sig = ""; d.waveDirty = true; d.$ = deckParts(d);
+    if(RO && d.$){ RO.observe(d.$.wave); RO.observe(d.$.zoom); } });
+  if(RO){ const eqc = document.getElementById("eqCurve"); if(eqc) RO.observe(eqc); }
+  /* the live curve is drawn only while it is on screen: nobody is watching it otherwise */
+  if(!EQIO && window.IntersectionObserver){ const eqc = document.getElementById("eqCurve");
+    if(eqc){ EQIO = new IntersectionObserver(es=>{ es.forEach(e=>{ eqSeen = e.isIntersecting; }); if(eqSeen) eqDirty = true; }); EQIO.observe(eqc); } }
+  bind();
+  paintMasters(); paintStrips(); paintSides();
+  decks.forEach(d=>{ paintDeck(d); drawWave(d); drawZoom(d); });
+}
+function deckHTML(d){
+  const id = d.id;
+  return `
+    <section class="deck" id="deck${id}" aria-label="${t("deck")} ${id}">
+      <div class="dhead">
+        <h2>${t("deck")} ${id}</h2>
+        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button>
+        <span class="bpm" data-bpm="${id}"></span>
+      </div>
+      <p class="song">${esc(d.note||d.name||t("none"))}</p>
+      <div class="wave" id="wave${id}" aria-hidden="true"><img class="wimg" alt="" draggable="false"><i class="wloop"></i><i class="wslip"></i><i class="whead"></i></div>
+      <div class="zoom" id="zoom${id}" aria-hidden="true"><img class="zimg" alt="" draggable="false"><i class="zhead"></i></div>
       <div class="platter-wrap">
-        <div class="platter" data-deck="${d.id}" role="slider" aria-label="${t("drag")}" tabindex="0">
-          <div class="vinyl" style="--rot:${d.rot}deg">
+        <div class="platter" data-deck="${id}" role="slider" aria-label="${t("drag")}" tabindex="0">
+          <div class="vinyl">
             <div class="strobe"></div>
             <div class="label"></div>
           </div>
@@ -1297,60 +1761,84 @@ function shell(){
       </div>
       <div class="meter" aria-hidden="true"><i></i></div>
       <div class="row">
-        <button type="button" class="file" data-dock="${d.id}" aria-expanded="false">${t("load")}</button>
-        <button type="button" class="ghost" data-eject="${d.id}">${t("eject")}</button>
-        <button type="button" class="go" data-play="${d.id}">${t("play")}</button>
-        <button type="button" class="ghost" data-cue="${d.id}">${t("cueHold")}</button>
-        <button type="button" class="ghost" data-setcue="${d.id}">${t("setCue")}</button>
+        <button type="button" class="file" data-dock="${id}" aria-expanded="false">${t("load")}</button>
+        <button type="button" class="ghost" data-eject="${id}">${t("eject")}</button>
+        <button type="button" class="go" data-play="${id}">${t("play")}</button>
+        <button type="button" class="ghost" data-cue="${id}">${t("cueHold")}</button>
+        <button type="button" class="ghost" data-setcue="${id}">${t("setCue")}</button>
         <span class="time">0:00</span>
       </div>
-      <div class="dock" id="dock${d.id}" hidden></div>
-      <div class="row tr">
-        <span class="grp" role="group" aria-label="${t("hot")}">
-          ${[0,1,2].map(i=>`<button type="button" class="ghost sm" data-hot="${d.id}" data-i="${i}">${i+1}</button>`).join("")}
-        </span>
-        <span class="grp" role="group" aria-label="${t("loop")}">
-          ${[1,2,4].map(n=>`<button type="button" class="ghost sm" data-loop="${d.id}" data-bars="${n}">${n}${S.lang==="es"?"c":"b"}</button>`).join("")}
-        </span>
-        <button type="button" class="ghost sm" data-sync="${d.id}">${t("sync")}</button>
-        <span class="bpm" data-bpm="${d.id}"></span>
+      <div class="dock" id="dock${id}" hidden></div>
+      <div class="pads">
+        <div class="padhead"><span class="dlab">${t("pads")}</span>
+          <label class="snap">${t("snap")} <select data-snap="${id}">${[1,0.5,0.25,0].map(v=>`<option value="${v}"${d.snap===v?" selected":""}>${t(v===1?"snap1":v===0.5?"snap2":v===0.25?"snap4":"snap0")}</option>`).join("")}</select></label>
+          <button type="button" class="ghost sm" data-chop="${id}" title="${t("chopTip")}">${t("chop")}</button>
+          <button type="button" class="ghost sm" data-erase="${id}" aria-pressed="false" title="${t("eraseTip")}">${t("erase")}</button>
+        </div>
+        <div class="padgrid" role="group" aria-label="${t("pads")} · ${t("deck")} ${id}">
+          ${[0,1,2,3,4,5,6,7].map(i=>`<button type="button" class="pad" data-hot="${id}" data-i="${i}" style="--pc:${PADC[i]}">${i+1}</button>`).join("")}
+        </div>
+      </div>
+      <div class="row tr loops" role="group" aria-label="${t("loop")}"><span class="dlab">${t("loop")}</span>
+        ${[1,2,4,8].map(n=>`<button type="button" class="ghost sm" data-loop="${id}" data-beats="${n}" aria-pressed="false" aria-label="${t("loopN").replace("%n", n)}">${n}</button>`).join("")}
+        <button type="button" class="ghost sm" data-loop="${id}" data-beats="16" aria-pressed="false" title="${t("bars4Tip")}">${t("bars4")}</button>
       </div>
       <div class="row tr">
-        <button type="button" class="ghost sm${d.keyOn?" on":""}" data-key="${d.id}">${t("key")}</button>
-        <button type="button" class="ghost sm${d.slipOn?" on":""}" data-slip="${d.id}">${t("slip")}</button>
-        <button type="button" class="ghost sm" data-rev="${d.id}">${t("rev")}</button>
-        <button type="button" class="ghost sm" data-tap="${d.id}">${t("tap")}</button>
-        <button type="button" class="ghost sm" data-half="${d.id}">½×</button>
-        <button type="button" class="ghost sm" data-double="${d.id}">2×</button>
+        <button type="button" class="ghost sm" data-sync="${id}" aria-pressed="false">${t("sync")}</button>
+        <button type="button" class="ghost sm${d.keyOn?" on":""}" data-key="${id}" aria-pressed="${d.keyOn}">${t("key")}</button>
+        <button type="button" class="ghost sm${d.slipOn?" on":""}" data-slip="${id}" aria-pressed="${d.slipOn}">${t("slip")}</button>
+        <button type="button" class="ghost sm" data-rev="${id}">${t("rev")}</button>
+        <button type="button" class="ghost sm" data-tap="${id}">${t("tap")}</button>
+        <button type="button" class="ghost sm" data-half="${id}">½×</button>
+        <button type="button" class="ghost sm" data-double="${id}">2×</button>
       </div>
-      <p class="drophint">${t("drop")}</p>
-      <div class="row">
-        <button type="button" class="ghost" data-nudge="${d.id}" data-dir="-1">− ${t("nudge")}</button>
-        <button type="button" class="ghost" data-nudge="${d.id}" data-dir="1">+ ${t("nudge")}</button>
+      <div class="row nud">
+        <button type="button" class="ghost" data-nudge="${id}" data-dir="-1">− ${t("nudge")}</button>
+        <button type="button" class="ghost" data-nudge="${id}" data-dir="1">+ ${t("nudge")}</button>
         <span class="rpm" role="group" aria-label="${t("rpm")}">
-          <button type="button" class="ghost rpmb on" data-rpm="${d.id}" data-v="1">33⅓</button>
-          <button type="button" class="ghost rpmb" data-rpm="${d.id}" data-v="1.35">45</button>
+          <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33⅓</button>
+          <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
         </span>
       </div>
       <label class="knob">${t("speed")}
-        <b class="readout" data-pitchout="${d.id}">${pitchText(d)}</b>
-        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${d.id}">${t("wide")}</button>
-        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${d.id}"></label>
-      <label class="knob">${t("filter")} <input type="range" min="-1" max="1" step="0.01" value="0" data-filter="${d.id}"></label>
-      <label class="knob">${t("echo")} <input type="range" min="0" max="1" step="0.01" value="0" data-echo="${d.id}"></label>
-      <label class="knob">${t("eqHigh")} <input type="range" min="-26" max="26" step="0.5" value="0" data-eq="${d.id}" data-band="high"></label>
-      <label class="knob">${t("eqMid")} <input type="range" min="-26" max="26" step="0.5" value="0" data-eq="${d.id}" data-band="mid"></label>
-      <label class="knob">${t("eqLow")} <input type="range" min="-26" max="26" step="0.5" value="0" data-eq="${d.id}" data-band="low"></label>
-      <div class="row tr">
-        <button type="button" class="ghost sm" data-kill="${d.id}" data-band="low">${t("killL")}</button>
-        <button type="button" class="ghost sm" data-kill="${d.id}" data-band="mid">${t("killM")}</button>
-        <button type="button" class="ghost sm" data-kill="${d.id}" data-band="high">${t("killH")}</button>
-        <button type="button" class="ghost sm" data-flat="${d.id}">${t("flat")}</button>
+        <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
+        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
+        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}"></label>
+    </section>`;
+}
+function eqText(v){ return (v>0?"+":"") + (Math.round(v*2)/2).toFixed(v%1?1:0) + " dB"; }
+/* an EQ knob turns about its middle: left takes the band down to -26 dB, right lifts it 6 dB, the middle is flat */
+function vToDb(v){ return v < 0 ? 26*v : 6*v; }
+function dbToV(db){ return db < 0 ? db/26 : db/6; }
+function filtText(v){ if(Math.abs(v) <= 0.03) return t("off"); return (v<0?"◀ ":"") + Math.round(Math.abs(v)*100) + "%" + (v>0?" ▶":""); }
+function stripHTML(d){
+  const id = d.id, B = {high:"H",mid:"M",low:"L"};
+  return `
+    <div class="strip" id="strip${id}" role="group" aria-label="${t("channel")} ${id}">
+      <div class="shead"><b class="sid">${id}</b><span class="sname" data-sname="${id}"></span></div>
+      ${["high","mid","low"].map(b=>`<div class="eqk">
+        <label class="knob">${t("eq"+b[0].toUpperCase()+b.slice(1))} <b class="readout" data-eqout="${id}" data-band="${b}">${eqText(d.eqv[b])}</b>
+          <input type="range" min="-1" max="1" step="0.01" value="${dbToV(d.eqv[b])}" data-eq="${id}" data-band="${b}"></label>
+        <button type="button" class="ghost sm kill" data-kill="${id}" data-band="${b}" aria-pressed="false">${t("kill"+B[b])}</button></div>`).join("")}
+      <label class="knob flt">${t("filter")} <b class="readout" data-fout="${id}">${filtText(d.filtv)}</b>
+        <input type="range" min="-1" max="1" step="0.01" value="${d.filtv}" data-filter="${id}"></label>
+      <div class="fxbox">
+        <div class="fxrow" role="group" aria-label="${t("fx")} · ${t("channel")} ${id}"><span class="dlab">${t("fx")}</span>
+          ${["echo","reverb","flanger"].map(x=>`<button type="button" class="ghost sm${d.fxType===x?" on":""}" data-fxtype="${id}" data-v="${x}" aria-pressed="${d.fxType===x}">${t(x)}</button>`).join("")}</div>
+        <label class="fxb">${t("beats")} <select data-fxbeats="${id}">${FXBEATS[d.fxType].map(v=>`<option value="${v}"${d.fxBeats[d.fxType]===v?" selected":""}>${beatsLabel(v)}</option>`).join("")}</select></label>
+        <label class="knob">${t("amount")} <input type="range" min="0" max="1" step="0.01" value="${d.fxAmt}" data-fxamt="${id}"></label>
       </div>
-      <label class="knob">${t("vol")} <input type="range" min="0" max="1" step="0.01" value="${d.vol}" data-vol="${d.id}"></label>
-    </section>`).join("");
-  bind();
-  decks.forEach(d=>{ drawWave(d); drawZoom(d); });
+      <button type="button" class="ghost sm" data-flat="${id}">${t("flat")}</button>
+      <label class="knob">${t("vol")} <input type="range" min="0" max="1" step="0.01" value="${d.vol}" data-vol="${id}"></label>
+      <div class="side" role="group" aria-label="${t("side")} · ${t("channel")} ${id}"><span class="dlab">${t("side")}</span>
+        ${["L","N","R"].map(s=>`<button type="button" class="ghost sm${d.side===s?" on":""}" data-side="${id}" data-v="${s}" aria-pressed="${d.side===s}">${t("side"+s)}</button>`).join("")}</div>
+      <div class="meter" aria-hidden="true"><i></i></div>
+    </div>`;
+}
+function paintStrips(){
+  decks.forEach(d=>{
+    const n = document.querySelector('[data-sname="'+d.id+'"]'); if(n) setT(n, d.name || t("none"));
+  });
 }
 function dockHTML(id){
   return `<p class="dockh">${t("dockH")}</p>
@@ -1381,6 +1869,111 @@ function paintDocks(){
     };
   });
 }
+const deckOf = (el, attr)=>decks.find(x=>x.id===el.getAttribute(attr));
+/* a button you HOLD (CUE, REV, nudge, a pad) answers a finger, a mouse, or the space and enter keys */
+function holdable(btn, down, up){
+  let on = false;
+  btn.addEventListener("pointerdown", (e)=>{ if(e.button > 0) return; e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){} on = true; down(e); });
+  const rel = (e)=>{ if(!on) return; on = false; up(e); };
+  btn.addEventListener("pointerup", rel); btn.addEventListener("pointercancel", rel); btn.addEventListener("lostpointercapture", rel);
+  btn.addEventListener("keydown", (e)=>{ if((e.key===" "||e.key==="Enter") && !e.repeat && !on){ e.preventDefault(); on = true; down(e); } });
+  btn.addEventListener("keyup", (e)=>{ if((e.key===" "||e.key==="Enter") && on){ e.preventDefault(); rel(e); } });
+  btn.addEventListener("click", (e)=>{ if(e.detail === 0 && !on){ down(e); up(e); } });   /* a screen reader's click */
+}
+/* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
+   starts at full speed on the master's next beat, booked to the exact frame. */
+async function startDeck(d, from){
+  if(!d.buf) return;
+  ctx(); await ensureNode(d);
+  const m = masterDeck();
+  if(from != null){ d.pos = from; }
+  if(d.syncLock && m && m !== d && m.motor && d.bpm > 0 && Math.abs(m.rr) > 0.05){
+    const r = syncRatio(d, m); setPitch(d, r.want, true);
+    const sr = actx.sampleRate, F0 = nowFrame() + Math.round(0.07*sr), bl = beatLen(m), g0 = grid0(m);
+    const im = (posAt(m, F0) - g0)/bl;
+    const kb = Math.ceil(im - 1e-6), Fb = m.frame + ((g0 + kb*bl) - m.pos)/m.rr;
+    const fm = kb - Math.floor(kb);   /* 0: the master's beat line */
+    const is0 = ((from != null ? from : d.pos) - grid0(d))/beatLen(d);
+    const is = (Math.round(is0*r.f - fm) + fm)/r.f;
+    const P = Math.max(1, grid0(d) + is*beatLen(d));
+    send(d, { t:"sched", frame:Math.round(Fb), m:{ t:"start", pos:P } });
+    d._startAt = Math.round(Fb); d._aligned = performance.now() + Math.max(0, (Fb - nowFrame())/sr*1000);
+    d.motor = true; LX.startPos[d.id] = P;
+  } else {
+    if(from != null) send(d, { t:"seek", v:from, park:true });
+    d.motor = true; LX.startPos[d.id] = d.pos;
+    send(d, { t:"motor", on:true, instant: from != null });
+  }
+  if(!masterId || !masterDeck()) setMaster(d.id);
+  paintDeck(d);
+}
+function stopDeck(d, quiet){
+  if(d._startAt != null){ send(d, { t:"unsched" }); d._startAt = null; }
+  if(d.motor){ d.motor = false; send(d, { t:"motor", on:false }); }
+  if(d.id === masterId){ const p = decks.find(o=>o!==d && o.motor && o.buf && o.bpm > 0); if(p) setMaster(p.id); }
+  if(!quiet) paintDeck(d);
+}
+/* ══ AOG-DJ-PADS-V1 — eight pads a deck: a chop each ════════════════════════
+   Empty pad: marks the spot (on the beat, when Lands says so). Full pad: the record
+   jumps there — on a playing deck, at the next beat line, so the chops play in time.
+   With SLIP on, the pad plays while it is held; let go and the song carries on
+   where it would have been (a quick tap plays one step of the chop). */
+function snapLen(d){ return d.snap > 0 && d.bpm > 0 ? beatLen(d)*d.snap : 0; }
+function padPress(d, i){
+  if(!d.buf) return;
+  d.padDown[i] = true;
+  const btn = document.querySelector('[data-hot="'+d.id+'"][data-i="'+i+'"]'); if(btn) btn.classList.add("hit");
+  if(d.erase){ d.cues[i] = null; d.erase = false; d._sig = ""; marksSave(d); d.waveDirty = true; paintDeck(d); drawWave(d); return; }
+  if(d.cues[i] == null){
+    let p = d.motor ? posAt(d, heardFrame()) : d.pos;
+    const q = snapLen(d), g0 = grid0(d);
+    if(q > 0) p = g0 + Math.round((p - g0)/q)*q;
+    d.cues[i] = Math.max(1, Math.min(d.buf.length-4, p));
+    marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d);
+    LX.padSet = true;
+    return;
+  }
+  ctx();
+  ensureNode(d).then(()=>{
+    if(d.loopOn){ d.loopOn = false; d.loopBeats = 0; d._sig = ""; }
+    if(d.motor && d._startAt == null){
+      const q = snapLen(d);
+      send(d, { t:"qjump", to:d.cues[i], b0:grid0(d), len:q, late: q ? Math.round(0.03*d.buf.sampleRate*Math.max(0.5,d.pitch)) : 0 });
+      LX.padHit = true;
+    } else {
+      startDeck(d, d.cues[i]);
+    }
+  });
+}
+function padRelease(d, i){
+  if(!d.padDown[i]) return;
+  d.padDown[i] = false;
+  const btn = document.querySelector('[data-hot="'+d.id+'"][data-i="'+i+'"]'); if(btn) btn.classList.remove("hit");
+  if(d.slipOn && d.motor && d.buf) send(d, { t:"qret", b0:grid0(d), len:snapLen(d) });
+}
+/* the next 8 beats, from the bar the needle is in, on pads 1 to 8 */
+function chop8(d){
+  if(!d.buf || !(d.bpm > 0)) return;
+  const bl = beatLen(d), g0 = grid0(d), p = d.motor ? posAt(d, heardFrame()) : d.pos;
+  const bar0 = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl;
+  for(let i=0;i<8;i++) d.cues[i] = Math.max(1, Math.min(d.buf.length-4, bar0 + i*bl));
+  marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d);
+  LX.padSet = true;
+}
+/* a loop in beats, measured on the audio thread from where the needle really is */
+function loopPress(d, beats){
+  if(!d.buf) return;
+  ctx();
+  ensureNode(d).then(()=>{
+    if(d.loopOn && d.loopBeats === beats){ d.loopOn = false; d.loopBeats = 0; send(d, { t:"loop", on:false }); }
+    else if(d.bpm > 0){
+      const keepA = d.loopOn && beats < 16 && d.loopBeats < 16;
+      d.loopOn = true; d.loopBeats = beats;
+      send(d, { t:"bloop", b0:grid0(d), len:beatLen(d), n:beats, align: beats >= 16 ? 4 : 1, keepA:keepA });
+    }
+    d._sig = ""; paintDeck(d);
+  });
+}
 function bind(){
   paintDocks();
   document.querySelectorAll("[data-dock]").forEach(b=>{
@@ -1389,13 +1982,6 @@ function bind(){
       box.hidden = !box.hidden; box.classList.remove("editing"); paintDocks();
       b.setAttribute("aria-expanded", box.hidden ? "false" : "true");
       if(b.getAttribute("data-dock") === "A") LX.dockA = true;
-    };
-  });
-  document.querySelectorAll("[data-load]").forEach(inp=>{
-    inp.onchange = async ()=>{
-      const file = inp.files && inp.files[0]; if(!file) return;
-      await loadFile(decks.find(x=>x.id===inp.getAttribute("data-load")), file);
-      inp.value = "";
     };
   });
   document.querySelectorAll(".deck").forEach(sec=>{
@@ -1418,154 +2004,107 @@ function bind(){
      and the tempo go with it. */
   document.querySelectorAll("[data-eject]").forEach(btn=>{
     btn.onclick = ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-eject"));
+      const d = deckOf(btn, "data-eject");
       if(!d) return;
-      d.motor = false; d.loopOn = false; d.loopBars = 0; d.syncLock = false; d.held = false;
-      send(d, { t:"motor", on:false });
-      send(d, { t:"loop", on:false, a:0, b:0 });
+      stopDeck(d, true);
+      d.loopOn = false; d.loopBeats = 0; d.syncLock = false; d.held = false;
+      send(d, { t:"loop", on:false, keep:true });
       send(d, { t:"rev", on:false });
       send(d, { t:"clear" });
-      d.buf = null; d.peaks = null; d.bands = null; d.name = ""; d.note = "";
-      d.pos = 0; d.cue = 0; d.rate = 0; d.level = 0; d.rot = 0; d.bpm = 0; d.beat0 = 0;
-      d.cues = [null,null,null]; d.trackKey = ""; d.taps = [];
+      d.buf = null; d.peaks = null; d.zpk = null; d.bands = null; d.name = ""; d.note = ""; d.made = "";
+      d.pos = 0; d.cue = 0; d.rate = 0; d.rr = 0; d.level = 0; d.rot = 0; d.bpm = 0; d.beat0 = 0;
+      d.cues = [null,null,null,null,null,null,null,null]; d.trackKey = ""; d.taps = []; d._sig = ""; d.waveDirty = true;
       crateForget(d);
-      const sb = document.querySelector('[data-sync="'+d.id+'"]'); if(sb) sb.classList.remove("on");
-      drawWave(d); drawZoom(d); paintDeck(d);
+      if(masterId === d.id) setMaster(null);
+      drawWave(d); drawZoom(d); paintDeck(d); paintStrips();
     };
   });
   document.querySelectorAll("[data-play]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-play"));
+      const d = deckOf(btn, "data-play");
       if(!d.buf) return;
-      ctx(); await ensureNode(d);
-      d.motor = !d.motor;
-      if(d.motor) LX.startPos[d.id] = d.pos;
-      send(d, { t:"motor", on:d.motor });
-      paintDeck(d);
+      if(d.motor) stopDeck(d); else await startDeck(d);
     };
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
   document.querySelectorAll("[data-cue]").forEach(btn=>{
-    const deck = ()=>decks.find(x=>x.id===btn.getAttribute("data-cue"));
-    btn.onpointerdown = async (e)=>{
+    const deck = ()=>deckOf(btn, "data-cue");
+    holdable(btn, async ()=>{
       const d = deck(); if(!d || !d.buf) return;
-      e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){}
       ctx(); await ensureNode(d);
       d.cueHeld = true; LX.cueHeld[d.id] = true;
-      d.pos = d.cue||0; send(d, { t:"seek", v:d.pos });
-      d.motor = true; send(d, { t:"motor", on:true });
+      d.pos = d.cue||0; send(d, { t:"seek", v:d.pos, park:true });
+      d.motor = true; send(d, { t:"motor", on:true, instant:true });
       paintDeck(d);
-    };
-    const release = ()=>{
+    }, ()=>{
       const d = deck(); if(!d || !d.cueHeld) return;
       d.cueHeld = false;
-      d.motor = false; send(d, { t:"motor", on:false });
-      d.pos = d.cue||0; send(d, { t:"seek", v:d.pos });
+      stopDeck(d, true);
+      d.pos = d.cue||0; send(d, { t:"seek", v:d.pos, park:true });
       drawWave(d); drawZoom(d); paintDeck(d);
-    };
-    btn.onpointerup = release; btn.onpointercancel = release; btn.onpointerleave = release;
+    });
   });
-  /* three hot cues a deck: empty one takes the spot you are on, a full one
-     jumps there, and a long press (or alt-click) clears it. */
   document.querySelectorAll("[data-hot]").forEach(btn=>{
-    const d = ()=>decks.find(x=>x.id===btn.getAttribute("data-hot"));
     const i = +btn.getAttribute("data-i");
-    let held = null;
-    btn.onpointerdown = ()=>{ held = setTimeout(()=>{ const k=d(); if(k){ k.cues[i]=null; paintDeck(k); drawWave(k); } held=null; }, 700); };
-    const stop = ()=>{ if(held){ clearTimeout(held); held=null; } };
-    btn.onpointerup = stop; btn.onpointerleave = stop; btn.onpointercancel = stop;
-    btn.onclick = async (e)=>{
-      const k = d(); if(!k || !k.buf) return;
-      if(e.altKey){ k.cues[i]=null; paintDeck(k); drawWave(k); return; }
-      ctx(); await ensureNode(k);
-      if(k.cues[i]==null){ k.cues[i] = k.pos; }
-      else { k.pos = k.cues[i]; send(k, { t:"seek", v:k.pos }); }
-      marksSave(k);
-      paintDeck(k); drawWave(k); drawZoom(k);
-    };
+    holdable(btn, (e)=>{ const d = deckOf(btn, "data-hot"); if(d){ if(e && e.altKey && d.cues[i]!=null){ d.erase = true; } padPress(d, i); } },
+                  ()=>{ const d = deckOf(btn, "data-hot"); if(d) padRelease(d, i); });
+    btn.addEventListener("keydown", (e)=>{ if(e.key==="Delete"||e.key==="Backspace"){ const d = deckOf(btn, "data-hot"); if(d && d.cues[i]!=null){ e.preventDefault(); d.cues[i] = null; marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d); } } });
   });
-  /* a beat loop is bars of the tempo we measured, snapped to the nearest beat */
-  document.querySelectorAll("[data-loop]").forEach(btn=>{
-    btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-loop"));
-      const bars = +btn.getAttribute("data-bars");
-      if(!d.buf) return;
-      ctx(); await ensureNode(d);
-      if(d.loopOn && d.loopBars === bars){
-        d.loopOn = false; d.loopBars = 0; send(d, { t:"loop", on:false, a:0, b:0 });
-      } else if(d.bpm > 0){
-        const sr = d.buf.sampleRate, beat = 60/d.bpm*sr;
-        const k = Math.round((d.pos - d.beat0*sr)/beat);
-        const a = Math.max(0, d.beat0*sr + k*beat);
-        const b = Math.min(d.buf.length-3, a + bars*4*beat);
-        d.loopA = a; d.loopB = b; d.loopBars = bars; d.loopOn = true;
-        send(d, { t:"loop", on:true, a:a, b:b });
-      }
-      paintDeck(d); drawWave(d); drawZoom(d);
-    };
+  document.querySelectorAll("[data-chop]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); }; });
+  document.querySelectorAll("[data-erase]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-erase"); if(d){ d.erase = !d.erase; d._sig = ""; paintDeck(d); } }; });
+  document.querySelectorAll("[data-snap]").forEach(sel=>{ sel.onchange = ()=>{ const d = deckOf(sel, "data-snap"); if(d) d.snap = +sel.value; }; });
+  document.querySelectorAll("[data-loop]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-loop"); if(d) loopPress(d, +btn.getAttribute("data-beats")); }; });
+  document.querySelectorAll("[data-master]").forEach(btn=>{
+    btn.onclick = ()=>{ const d = deckOf(btn, "data-master"); if(!d || !d.buf || !(d.bpm > 0)) return; setMaster(d.id);
+      if(d.syncLock){ d.syncLock = false; d._sig = ""; send(d, { t:"bend", v:1 }); d.bend = 1; paintDeck(d); } };
   });
-  /* SYNC: take the other deck's tempo, then land on its nearest beat */
+  /* SYNC: take the master's tempo, then land on its beat — and stay there */
   document.querySelectorAll("[data-sync]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-sync"));
-      if(d.syncLock){ d.syncLock = false; btn.classList.remove("on"); return; }
-      d.syncLock = true; btn.classList.add("on");
-      const o = decks.find(x=>x.id!==d.id);
-      if(!d.buf || !o.buf || d.bpm<=0 || o.bpm<=0) return;
+      const d = deckOf(btn, "data-sync");
+      if(d.syncLock){ d.syncLock = false; d.bend = 1; send(d, { t:"bend", v:1 }); d._sig = ""; paintDeck(d); return; }
+      d.syncLock = true; d._sig = ""; paintDeck(d);
+      if(!masterId || masterId === d.id){ const other = decks.find(o=>o!==d && o.buf && o.bpm > 0 && o.motor) || decks.find(o=>o!==d && o.buf && o.bpm > 0); if(other) setMaster(other.id); }
+      const m = masterDeck();
+      if(!d.buf || !m || m === d || d.bpm<=0) return;
       ctx(); await ensureNode(d);
-      let want = (o.bpm*o.pitch*o.rpm) / (d.bpm*d.rpm);
-      while(want > 1.5) want /= 2; while(want < 0.6) want *= 2;   /* half and double time count */
-      if(want < 0.92 || want > 1.08){ d.wide = true; }
-      d.pitch = Math.max(d.wide?0.5:0.92, Math.min(d.wide?1.5:1.08, want));
-      send(d, { t:"pitch", v:d.pitch });
-      const inp = document.querySelector('[data-speed="'+d.id+'"]');
-      if(inp){ if(d.wide){ inp.min="0.5"; inp.max="1.5"; inp.step="0.01"; } inp.value=String(d.pitch); }
-      const wb = document.querySelector('[data-wide="'+d.id+'"]'); if(wb) wb.classList.toggle("on", d.wide);
-      const po = document.querySelector('[data-pitchout="'+d.id+'"]'); if(po) po.textContent = pitchText(d);
-      /* phase: put this deck on the beat the other one is on */
-      const sr = d.buf.sampleRate, beat = 60/d.bpm*sr;
-      const k = Math.round((d.pos - d.beat0*sr)/beat);
-      d.pos = Math.max(0, Math.min(d.buf.length-3, d.beat0*sr + k*beat));
-      send(d, { t:"seek", v:d.pos });
-      paintDeck(d); drawWave(d); drawZoom(d);
+      setPitch(d, syncRatio(d, m).want, true);
+      d._aligned = performance.now() - 150;   /* line the beats up once the new speed has reached the audio */
     };
   });
   /* KEY — the pitch fader stops moving the voice. It steps aside for a hand on
      the platter, because a scratch is meant to change pitch. */
   document.querySelectorAll("[data-key]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-key"));
+      const d = deckOf(btn, "data-key");
       d.keyOn = !d.keyOn; ctx(); await ensureNode(d);
-      send(d, { t:"key", on:d.keyOn }); btn.classList.toggle("on", d.keyOn);
+      send(d, { t:"key", on:d.keyOn }); btn.classList.toggle("on", d.keyOn); btn.setAttribute("aria-pressed", d.keyOn);
     };
   });
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
      where the track would have been if you had never touched it. */
   document.querySelectorAll("[data-slip]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-slip"));
+      const d = deckOf(btn, "data-slip");
       d.slipOn = !d.slipOn; ctx(); await ensureNode(d);
-      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn);
+      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", d.slipOn);
     };
   });
   /* REV — backwards while you hold it; with SLIP on, letting go puts you back
-     on the beat, which is the whole trick. */
+     on the beat, which is the whole trick (a DJ calls it a censor). */
   document.querySelectorAll("[data-rev]").forEach(btn=>{
-    const deck = ()=>decks.find(x=>x.id===btn.getAttribute("data-rev"));
-    btn.onpointerdown = async (e)=>{
+    const deck = ()=>deckOf(btn, "data-rev");
+    holdable(btn, async ()=>{
       const d = deck(); if(!d || !d.buf) return;
-      e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){}
       ctx(); await ensureNode(d);
-      send(d, { t:"rev", on:true }); btn.classList.add("on");
-    };
-    const off = ()=>{ const d = deck(); if(!d) return; send(d, { t:"rev", on:false }); btn.classList.remove("on"); };
-    btn.onpointerup = off; btn.onpointercancel = off; btn.onpointerleave = off;
+      d.revOn = true; send(d, { t:"rev", on:true }); btn.classList.add("on");
+    }, ()=>{ const d = deck(); if(!d) return; d.revOn = false; send(d, { t:"rev", on:false }); btn.classList.remove("on"); });
   });
   /* TAP — four taps and the deck takes your tempo instead of its own guess */
   document.querySelectorAll("[data-tap]").forEach(btn=>{
     btn.onclick = ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-tap"));
+      const d = deckOf(btn, "data-tap");
       const now = performance.now();
       if(d.taps.length && now - d.taps[d.taps.length-1] > 2200) d.taps = [];
       d.taps.push(now);
@@ -1576,7 +2115,7 @@ function bind(){
         if(bpm > 60 && bpm < 200){
           d.bpm = Math.round(bpm*100)/100;
           d.beat0 = Math.max(0, d.pos/(d.buf?d.buf.sampleRate:44100)) % (60/d.bpm);
-          marksSave(d); paintDeck(d); drawWave(d); drawZoom(d);
+          marksSave(d); d.waveDirty = true; paintDeck(d); drawWave(d); drawZoom(d); fxSend(d);
         }
       }
     };
@@ -1584,30 +2123,12 @@ function bind(){
   document.querySelectorAll("[data-half],[data-double]").forEach(btn=>{
     const half = btn.hasAttribute("data-half");
     btn.onclick = ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute(half?"data-half":"data-double"));
+      const d = deckOf(btn, half?"data-half":"data-double");
       if(!d.bpm || d.bpm<=0) return;
       const b = half ? d.bpm/2 : d.bpm*2;
       if(b < 50 || b > 220) return;
       d.bpm = Math.round(b*100)/100; marksSave(d);
-      paintDeck(d); drawWave(d); drawZoom(d);
-    };
-  });
-  document.querySelectorAll("[data-echo]").forEach(inp=>{
-    inp.oninput = ()=>{
-      const d = decks.find(x=>x.id===inp.getAttribute("data-echo"));
-      LX.echo[d.id] = +inp.value;
-      if(!d.echoSend) return;
-      d.echoSend.gain.value = +inp.value * 0.8;
-      if(d.echo && d.bpm > 0) d.echo.delayTime.value = Math.min(1.8, (60/d.bpm)*0.75);   /* a dotted eighth */
-    };
-  });
-  document.querySelectorAll("[data-filter]").forEach(inp=>{
-    inp.oninput = ()=>{
-      const d = decks.find(x=>x.id===inp.getAttribute("data-filter"));
-      const v = +inp.value; LX.filt[d.id] = v; if(!d.filt) return;
-      if(v < -0.02){ d.filt.type="lowpass"; d.filt.frequency.value = 20000*Math.pow(0.008, -v); }
-      else if(v > 0.02){ d.filt.type="highpass"; d.filt.frequency.value = 20*Math.pow(180, v); }
-      else { d.filt.type="lowpass"; d.filt.frequency.value = 20000; }
+      d.waveDirty = true; paintDeck(d); drawWave(d); drawZoom(d); fxSend(d);
     };
   });
   /* the needle goes where you point it: click or drag either waveform */
@@ -1634,72 +2155,111 @@ function bind(){
     cv.style.cursor = "text";
   });
   document.querySelectorAll("[data-setcue]").forEach(btn=>{
-    btn.onclick = ()=>{ const d = decks.find(x=>x.id===btn.getAttribute("data-setcue")); if(d.buf){ d.cue = d.pos; LX.setcue[d.id] = true; } };
+    btn.onclick = ()=>{ const d = deckOf(btn, "data-setcue"); if(d.buf){ d.cue = d.motor ? posAt(d, heardFrame()) : d.pos; LX.setcue[d.id] = true; } };
   });
   document.querySelectorAll("[data-nudge]").forEach(btn=>{
-    const deck = ()=>decks.find(x=>x.id===btn.getAttribute("data-nudge"));
+    const deck = ()=>deckOf(btn, "data-nudge");
     const dir = btn.getAttribute("data-dir")==="1" ? 1.04 : 0.96;
-    const down = ()=>{ const d=deck(); if(!d) return; send(d, { t:"pitch", v:d.pitch*dir }); };
-    const up = ()=>{ const d=deck(); if(!d) return; send(d, { t:"pitch", v:d.pitch }); };
-    btn.onpointerdown = down; btn.onpointerup = up; btn.onpointerleave = up; btn.onpointercancel = up;
+    holdable(btn, ()=>{ const d=deck(); if(!d) return; send(d, { t:"pitch", v:d.pitch*dir }); },
+                  ()=>{ const d=deck(); if(!d) return; send(d, { t:"pitch", v:d.pitch }); });
   });
   document.querySelectorAll("[data-rpm]").forEach(btn=>{
     btn.onclick = ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-rpm"));
+      const d = deckOf(btn, "data-rpm");
       d.rpm = +btn.getAttribute("data-v");
       send(d, { t:"rpm", v:d.rpm });
       btn.parentNode.querySelectorAll(".rpmb").forEach(b=>b.classList.toggle("on", b===btn));
+      fxSend(d);
     };
   });
+  /* ── the mixer ─────────────────────────────────────────────────────────── */
   document.querySelectorAll("[data-eq]").forEach(inp=>{
     inp.oninput = async ()=>{
-      const d = decks.find(x=>x.id===inp.getAttribute("data-eq"));
-      ctx(); await ensureNode(d);
-      d.eq.set(inp.getAttribute("data-band"), +inp.value);
+      const d = deckOf(inp, "data-eq"), b = inp.getAttribute("data-band");
+      d.eqv[b] = Math.round(vToDb(+inp.value)*2)/2;
+      const o = document.querySelector('[data-eqout="'+d.id+'"][data-band="'+b+'"]'); if(o) o.textContent = eqText(d.eqv[b]);
+      ctx(); await ensureNode(d); d.eq.set(b, d.eqv[b]); eqDirty = true;
     };
   });
   document.querySelectorAll("[data-kill]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-kill"));
+      const d = deckOf(btn, "data-kill");
       ctx(); await ensureNode(d);
       const on = d.eq.kill(btn.getAttribute("data-band"), !d.eq.killed(btn.getAttribute("data-band")));
-      btn.classList.toggle("on", on);
+      btn.classList.toggle("on", on); btn.setAttribute("aria-pressed", on?"true":"false"); eqDirty = true;
     };
   });
   document.querySelectorAll("[data-flat]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-flat"));
+      const d = deckOf(btn, "data-flat");
       ctx(); await ensureNode(d);
-      d.eq.flat();
+      d.eq.flat(); d.eqv = { high:0, mid:0, low:0 };
       document.querySelectorAll('[data-eq="'+d.id+'"]').forEach(i=>{ i.value="0"; });
-      document.querySelectorAll('[data-kill="'+d.id+'"]').forEach(b=>b.classList.remove("on"));
+      document.querySelectorAll('[data-eqout="'+d.id+'"]').forEach(o=>{ o.textContent = eqText(0); });
+      document.querySelectorAll('[data-kill="'+d.id+'"]').forEach(b=>{ b.classList.remove("on"); b.setAttribute("aria-pressed","false"); });
       const f=document.querySelector('[data-filter="'+d.id+'"]');
       if(f){ f.value="0"; f.dispatchEvent(new Event("input")); }
     };
   });
+  document.querySelectorAll("[data-filter]").forEach(inp=>{
+    inp.oninput = async ()=>{
+      const d = deckOf(inp, "data-filter");
+      d.filtv = +inp.value; LX.filt[d.id] = d.filtv;
+      const o = document.querySelector('[data-fout="'+d.id+'"]'); if(o) o.textContent = filtText(d.filtv);
+      ctx(); await ensureNode(d); applyFilter(d); eqDirty = true;
+    };
+  });
+  document.querySelectorAll("[data-fxtype]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = deckOf(btn, "data-fxtype"), v = btn.getAttribute("data-v");
+      d.fxType = v;
+      document.querySelectorAll('[data-fxtype="'+d.id+'"]').forEach(b=>{ const on = b===btn; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
+      const sel = document.querySelector('[data-fxbeats="'+d.id+'"]');
+      if(sel) sel.innerHTML = FXBEATS[v].map(x=>`<option value="${x}"${d.fxBeats[v]===x?" selected":""}>${beatsLabel(x)}</option>`).join("");
+      LX.echo[d.id] = d.fxType==="echo" ? d.fxAmt : 0;
+      ctx(); await ensureNode(d); fxSend(d);
+    };
+  });
+  document.querySelectorAll("[data-fxbeats]").forEach(sel=>{
+    sel.onchange = async ()=>{ const d = deckOf(sel, "data-fxbeats"); d.fxBeats[d.fxType] = +sel.value; ctx(); await ensureNode(d); fxSend(d); };
+  });
+  document.querySelectorAll("[data-fxamt]").forEach(inp=>{
+    inp.oninput = async ()=>{
+      const d = deckOf(inp, "data-fxamt");
+      d.fxAmt = +inp.value; LX.echo[d.id] = d.fxType==="echo" ? d.fxAmt : 0;
+      ctx(); await ensureNode(d); fxSend(d);
+    };
+  });
+  document.querySelectorAll("[data-side]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const d = deckOf(btn, "data-side"); d.side = btn.getAttribute("data-v");
+      document.querySelectorAll('[data-side="'+d.id+'"]').forEach(b=>{ const on = b===btn; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
+      setMix();
+    };
+  });
   document.querySelectorAll("[data-speed]").forEach(inp=>{
     inp.oninput = ()=>{
-      const d=decks.find(x=>x.id===inp.getAttribute("data-speed"));
-      d.pitch=+inp.value; send(d, { t:"pitch", v:d.pitch });
-      const o=document.querySelector('[data-pitchout="'+d.id+'"]'); if(o) o.textContent = pitchText(d);
+      const d = deckOf(inp, "data-speed");
+      if(d.syncLock && d.id !== masterId){ d.syncLock = false; d.bend = 1; send(d, { t:"bend", v:1 }); d._sig = ""; }   /* moving a synced deck's pitch by hand lets go of SYNC */
+      setPitch(d, +inp.value);
     };
   });
   /* WIDE opens the pitch fader from a DJ's ±8% to half speed / one and a half,
      which is where a voice actually changes character. */
   document.querySelectorAll("[data-wide]").forEach(btn=>{
     btn.onclick = ()=>{
-      const d = decks.find(x=>x.id===btn.getAttribute("data-wide"));
+      const d = deckOf(btn, "data-wide");
       d.wide = !d.wide;
       const inp = document.querySelector('[data-speed="'+d.id+'"]');
       if(d.wide){ inp.min="0.5"; inp.max="1.5"; inp.step="0.01"; }
-      else { inp.min="0.92"; inp.max="1.08"; inp.step="0.005"; d.pitch = Math.max(0.92, Math.min(1.08, d.pitch)); send(d, { t:"pitch", v:d.pitch }); }
+      else { inp.min="0.92"; inp.max="1.08"; inp.step="0.005"; d.pitch = Math.max(0.92, Math.min(1.08, d.pitch)); send(d, { t:"pitch", v:d.pitch }); fxSend(d); }
       inp.value = String(d.pitch);
       btn.classList.toggle("on", d.wide);
       const o=document.querySelector('[data-pitchout="'+d.id+'"]'); if(o) o.textContent = pitchText(d);
     };
   });
   document.querySelectorAll("[data-vol]").forEach(inp=>{
-    inp.oninput = ()=>{ decks.find(x=>x.id===inp.getAttribute("data-vol")).vol = +inp.value; setMix(); };
+    inp.oninput = ()=>{ deckOf(inp, "data-vol").vol = +inp.value; setMix(); };
   });
 
   /* ── the hand on the record ──────────────────────────────────────────────
@@ -1768,8 +2328,8 @@ function bind(){
     p.onkeydown = async (e)=>{
       const deck = d(); if(!deck || !deck.buf) return;
       if(e.key === " " || e.key === "Enter"){
-        e.preventDefault(); ctx(); await ensureNode(deck);
-        deck.motor = !deck.motor; send(deck, { t:"motor", on:deck.motor }); paintDeck(deck);
+        e.preventDefault();
+        if(deck.motor) stopDeck(deck); else await startDeck(deck);
       } else if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
         e.preventDefault(); ctx(); await ensureNode(deck);
         const step = deck.buf.sampleRate * 0.1 * (e.key === "ArrowRight" ? 1 : -1);
@@ -1787,11 +2347,13 @@ function paintChrome(){
   document.getElementById("tag").textContent = t("tag");
   { const tl=document.getElementById("tagLong"); if(tl) tl.textContent = t("tagLong"); }
   document.getElementById("xfLabel").textContent = t("mix");
+  document.getElementById("mixH").textContent = t("mixer");
+  document.getElementById("padHint").textContent = t("padHint");
   document.getElementById("curveBtn").textContent = t("curve")+": "+(curve==="sharp"?t("sharp"):t("smooth"));
   document.getElementById("noiseBtn").textContent = noiseOn ? t("noiseOn") : t("noiseOff");
   document.getElementById("touchBtn").textContent = touchLabel();
   const cap = document.getElementById("eqCap"); if(cap) cap.textContent = t("eqTitle");
-  paintBench();
+  paintBench(); paintMade();
   document.getElementById("recHint").textContent = t("recHint");
   paintTape();
   document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
@@ -1817,27 +2379,29 @@ document.getElementById("langBtn").onclick = ()=>{ S.lang = S.lang==="en"?"es":"
 document.documentElement.lang = S.lang;
 document.getElementById("themeBtn").onclick = ()=>{ S.theme = S.theme==="dark"?"light":"dark"; try{localStorage.setItem("aog.interior.ws.v1.theme", S.theme);}catch(e){} paintChrome(); };
 document.addEventListener("visibilitychange", ()=>{
-  if(document.hidden) decks.forEach(d=>{ if(d.motor){ d.motor=false; send(d,{t:"motor",on:false}); } });
+  if(document.hidden) decks.forEach(d=>{ if(d.motor) stopDeck(d); });
 });
-/* AOG-DECKS-SIMPLE-V1 — the bench switch and the phone's deck tabs */
+/* AOG-DECKS-SIMPLE-V1 — the bench switch and the phone's view menu */
 (function(){
   let bench="simple", tab="A";
   try{ bench=localStorage.getItem("aog.decks.bench")||"simple"; }catch(e){}
   function paintSw(){
     document.body.classList.toggle("bench-simple", bench!=="full");
     document.body.setAttribute("data-decktab", tab);
-    document.querySelectorAll("[data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
-    document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",on?"true":"false"); });
+    document.querySelectorAll("#benchSwitch [data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
+    document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     const es=S.lang==="es";
-    const L={navDecks:["Bench","Mesa"],navDrums:["Drums","Ritmos"],navPiano:["Piano","Piano"],navGuitar:["Guitar","Guitarra"],navBass:["Bass","Bajo"],navBand:["Band","Banda"],navDecksTool:["Turntables","Tocadiscos"],navStudio:["Studio","Estudio"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
+    const L={navDecks:["Bench","Mesa"],navDrums:["Drums","Ritmos"],navPiano:["Piano","Piano"],navGuitar:["Guitar","Guitarra"],navBass:["Bass","Bajo"],navBand:["Band","Banda"],navDecksTool:["Turntables","Tocadiscos"],navStudio:["Studio","Estudio"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabA:["Deck A","Plato A"],decktabB:["Deck B","Plato B"],decktabC:["Deck C","Plato C"],decktabMix:["Mixer","Mezclador"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
     const SH={navGuide:["Guide","Guía"]};   /* AOG-BENCH-SHORT-V1: the short name a phone shows (the tools are in one menu: AOG-MUSIC-TOOLS-MENU-V1) */
     Object.keys(SH).forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=`<span class="lg">${L[id][es?1:0]}</span><span class="sh">${SH[id][es?1:0]}</span>`; });
+    decks.forEach(d=>{ d.waveDirty = true; drawWave(d); drawZoom(d); });
   }
-  document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
+  document.querySelectorAll("#benchSwitch [data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
   document.querySelectorAll("[data-decktab]").forEach(b=>b.onclick=()=>{ tab=b.getAttribute("data-decktab"); paintSw(); });
   const lb=document.getElementById("langBtn"); if(lb){ const o=lb.onclick; lb.onclick=function(){ if(o) o.apply(this,arguments); paintSw(); }; }
   paintSw();
+  window.addEventListener("resize", ()=>{ decks.forEach(d=>{ d.waveDirty = true; drawWave(d); drawZoom(d); }); });
 })();
 /* ══ AOG-DECKS-LESSONS-V1 (2026-09-27) — SEVENTEEN LESSONS ON THE BENCH ═══════
    Jimmy: "The bench tools should have their own missions or lessons with
@@ -1921,7 +2485,7 @@ const LSTEP = {
 };
 const LKEY = "aog.decks.lessons.v1";
 const LX = { dockA:false, setcue:{}, cueHeld:{}, transits:[], side:"", leftAt:0, from:"", crateTake:false, saved:false,
-             flips:{A:0,B:0}, filt:{A:0,B:0}, echo:{A:0,B:0}, startPos:{}, lastTick:0, sig:"" };
+             flips:{A:0,B:0,C:0}, filt:{A:0,B:0,C:0}, echo:{A:0,B:0,C:0}, startPos:{}, lastTick:0, sig:"" };
 S.lessons = {}; S.lessonSel = -1;
 try{ const raw = JSON.parse(localStorage.getItem(LKEY) || "null"); if(raw){ S.lessons = raw.done || {}; if(raw.sel >= 0) S.lessonSel = raw.sel; } }catch(e){}
 try{ const m = /[?&]lesson=(\d+)/.exec(location.search || ""); if(m) S.lessonSel = Math.max(0, Math.min(LESSONS.length-1, +m[1]-1)); }catch(e){}
@@ -1930,7 +2494,6 @@ function lessonDone(i){ return LESSONS[i].steps.every(id=>S.lessons[id]); }
 function lessonNow(){ for(let i=0;i<LESSONS.length;i++) if(!lessonDone(i)) return i; return LESSONS.length; }
 function lessonCur(){ return S.lessonSel >= 0 ? S.lessonSel : Math.min(lessonNow(), LESSONS.length-1); }
 function xfNow(){ const x = document.getElementById("xf"); return x ? +x.value : 0.5; }
-function effBpm(d){ return d.bpm > 0 ? d.bpm*d.pitch*d.rpm : 0; }
 function barsOn(d){ /* bars this deck has played without a stop, at its own tempo */
   if(!d.motor || !d.buf || !d._onAt || effBpm(d) <= 0) return 0;
   return ((performance.now() - d._onAt)/1000) / (240/effBpm(d));
@@ -1967,7 +2530,7 @@ const LCHK = {
   l11a:()=>{ const v=xfNow(); return v >= 0.35 && v <= 0.65; }, l11b:()=>A().held, l11c:()=>LX.flips.A >= 2,
   l12a:()=>curve === "sharp", l12b:()=>A().motor && B().motor && xfNow() < 0.1,
   l12c:()=>{ const q = LX.transits.filter(t=>t.dur <= 450); return q.length >= 2 && (q[q.length-1].at - q[q.length-2].at) <= 3000; },
-  l13a:()=>barsOn(A()) >= 8, l13b:()=>barsOn(A()) >= 16, l13c:()=>A().loopOn && A().loopBars === 4,
+  l13a:()=>barsOn(A()) >= 8, l13b:()=>barsOn(A()) >= 16, l13c:()=>A().loopOn && A().loopBeats === 16,
   l14a:()=>LX.filt.A <= -0.4, l14b:()=>LX.echo.A >= 0.3, l14c:()=>Math.abs(LX.filt.A) < 0.05 && LX.echo.A < 0.05,
   l15a:()=>CRATE.next.length >= 3, l15b:()=>LX.crateTake, l15c:()=>!!(A().buf && B().buf),
   l16a:()=>TAPE.on, l16b:()=>transit(t=>t.rec), l16c:()=>TAPE.on && (performance.now()-TAPE.t0)/1000 >= 120,
@@ -2019,7 +2582,7 @@ function paintLessons(){
 paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
-try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="keysbench" || key==="guitarbench" || key==="bassbench" || key==="bandbench" || key==="drumtake" || key==="studiobench") checkBench(); }); }catch(e){}
+try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}
 window.addEventListener("focus", checkBench);
 </script>
 <script>
