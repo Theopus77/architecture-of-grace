@@ -461,8 +461,9 @@ const CSS=`
 .aogamp.aa-flat .aa-band output{order:0;font-size:.82rem;text-align:right}
 .aogamp .aa-bands[data-off="1"]{opacity:.62}
 .aogamp .aa-foot{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
-.aogamp .aa-foot .aa-btn{background:var(--card,#fffcf7);color:var(--ink,#1a232c);border-color:var(--line,#ddd8cc)}
-.aogamp .aa-note{font-size:.9rem;color:var(--muted,#5c6670);margin:0}
+/* the panel sits on the page's dark board in both themes, so its own colours, not the page's */
+.aogamp .aa-foot .aa-btn{background:#fffcf7;color:#1a232c;border-color:#ddd8cc}
+.aogamp .aa-note{font-size:.9rem;color:#d7cbb8;margin:0}
 .aogamp :focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
 @media (min-width:760px){ .aogamp .aa-plate{grid-template-columns:repeat(7,1fr)} }
 `;
