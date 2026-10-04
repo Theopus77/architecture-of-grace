@@ -48,7 +48,21 @@ def env(x, win=0.01):
 
 
 def onset(x):
-    """the first sample above 2% of the loudest (the pick touching the string)"""
+    """the pluck: where the string starts to sound. A pick (or a nail) first presses the string for 10 to 40 ms, a quiet
+    scrape 22 to 45 dB under the note, before it lets the string go; a file that started there played its note that late.
+    So: the first millisecond as loud as 18 dB under the loudest sample of the first 300 ms, and in it the first sample
+    within 20 dB of that (the scrape's own peaks stay under it)"""
+    pk = np.max(np.abs(x[:int(0.3 * SR)]))
+    w = int(0.001 * SR)
+    cs = np.concatenate([[0.0], np.cumsum(x * x)])
+    e = np.sqrt((cs[w:] - cs[:-w]) / w)
+    k = int(np.argmax(e >= pk * 10 ** (-18 / 20)))
+    seg = np.abs(x[k:k + w])
+    return k + int(np.argmax(seg >= pk * 0.1))
+
+
+def first_sound(x):
+    """the first sample above 2% of the loudest"""
     pk = np.max(np.abs(x))
     return int(np.argmax(np.abs(x) > pk * 0.02))
 
@@ -94,11 +108,12 @@ def rms(x, a, b):
     return float(np.sqrt(np.mean(s * s) + 1e-24))
 
 
-def trim(x, cap, floor_db=-55.0, fade_in=0.0005):
+def trim(x, cap, floor_db=-55.0, fade_in=0.0005, at=None):
     """from 1.5 ms before the pluck to where the note has died away (floor_db under its loudest) or cap seconds, with a
     fade in over the quiet moment before the pluck (1 ms at most; fade_in seconds when a recording starts right on the
-    pluck, so its first sample is never a click) and a 30 ms fade out"""
-    o = onset(x)
+    pluck, so its first sample is never a click) and a 30 ms fade out. at: where the pluck is, when not found by onset()
+    (a release noise has no pluck: its first sound, 2% of its loudest)"""
+    o = onset(x) if at is None else at(x)
     a = max(0, o - int(0.0015 * SR))
     y = x[a:].copy()
     e = db(env(y) / np.max(env(y)))
@@ -232,7 +247,7 @@ def build_bg(src, color, out, name, rr_top=67):
     rel = []
     for r in (1, 2, 3, 4):
         p = os.path.join(src, "Samples", color, "rel", "release_%s_rr%d.wav" % (bg_name(50), r))
-        rel.append((trim(load(p), 0.7, -50.0, 0.004), os.path.basename(p)))
+        rel.append((trim(load(p), 0.7, -50.0, 0.004, at=first_sound), os.path.basename(p)))
     return finish(out, raw, stac, rel, name, vel=[0, 0.6],
                   source="Black And Green Guitars by Karoryfer Samples",
                   url="https://github.com/sfzinstruments/karoryfer.black-and-green-guitars")
