@@ -81,29 +81,10 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(JSON.stringify(await p.evaluate("__h"))==='["tom"]', "and it still plays");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close();
   }
-  /* AOG-KIT-BENCH-V1: the drum kit has its own bench (Go to, every music menu, /drum-kit); AOG-REC-DELETE-V1: a take can be deleted */
-  { const {c, p, errs}=await open({viewport:{width:390,height:844}, isMobile:true, hasTouch:true}, "#kit"); console.log("== drum kit bench · iPhone upright");
-    const kb=await p.evaluate(()=>({view:S.view, mast:document.getElementById("mastH").textContent, n:document.querySelectorAll("#kbKit [data-pad]").length, go:[...document.querySelectorAll("#navViews a")].map(a=>a.textContent).join("|"),
-      tools:[...document.querySelectorAll("#navTools a")].map(a=>a.getAttribute("href")).join(" "), opts:document.getElementById("kbKitSel").options.length, take:!!document.querySelector("#takeSlot #takeBtn")}));
-    ok(kb.view==="kit" && kb.mast==="The Drum Kit" && kb.n===8 && /Drum kit/.test(kb.go) && /music-drums\.html#kit/.test(kb.tools) && kb.opts>=25 && kb.take, "the drum kit's own bench: "+JSON.stringify(kb));
-    const sn=await p.evaluate(()=>{ const el=document.querySelector('#kbKit [data-pad="snare"] .glow > *'); el.scrollIntoView({block:"center"}); const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
-    await p.evaluate("__h=[]"); await p.touchscreen.tap(sn.x, sn.y); await p.waitForTimeout(80);
-    ok(JSON.stringify(await p.evaluate("__h"))==='["snare"]', "a tap on its snare plays the snare");
-    await p.selectOption("#kbKitSel","J"); await p.waitForTimeout(300);
-    ok(await p.evaluate("S.bank==='J' && document.getElementById('kbKitSel').value==='J'"), "its kit menu picks a kit");
-    /* record a take, then delete it, then bring it back */
-    await p.evaluate(()=>{ document.getElementById("takeBtn").click(); }); await p.waitForTimeout(400);
-    const sn2=await p.evaluate(()=>{ const el=document.querySelector('#kbKit [data-pad="snare"] .glow > *'); el.scrollIntoView({block:"center"}); const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
-    await p.touchscreen.tap(sn2.x, sn2.y); await p.waitForTimeout(300); await p.touchscreen.tap(sn2.x, sn2.y); await p.waitForTimeout(400);
-    await p.evaluate(()=>{ document.getElementById("takeBtn").click(); }); await p.waitForTimeout(1200);
-    const t1=await p.evaluate(()=>document.querySelectorAll("#takeList .aogrec-take").length);
-    if(!t1) console.log("no take: "+await p.evaluate(()=>document.getElementById("takeLine").textContent+" | "+document.getElementById("takeBtn").getAttribute("aria-pressed")+" | "+__h.join()));
-    await p.evaluate(()=>document.querySelector("#takeList [data-aogrec-del]").click()); await p.waitForTimeout(100);
-    const t2=await p.evaluate(()=>({n:document.querySelectorAll("#takeList .aogrec-take").length, line:document.getElementById("takeLine").textContent}));
-    await p.evaluate(()=>document.querySelector("#takeLine button").click()); await p.waitForTimeout(100);
-    const t3=await p.evaluate(()=>document.querySelectorAll("#takeList .aogrec-take").length);
-    ok(t1===1 && t2.n===0 && /deleted/.test(t2.line) && t3===1, `a take can be deleted (${t1} → ${t2.n}, "${t2.line}") and brought back (${t3})`);
-    ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
+  /* AOG-KIT-PAGE-V1: the drum kit is its own page now; an old link to the kit here goes there */
+  { const {c, p, errs}=await open({viewport:{width:390,height:844}, isMobile:true, hasTouch:true}, "#kit"); console.log("== drums · #kit");
+    ok(/music-kit\.html$/.test(p.url()), "an old link to the drum machine's kit opens the Drum Kit page: "+p.url().split("/").pop());
+    await c.close(); }
   { const {c, p, errs}=await open({viewport:{width:844,height:390}, isMobile:true, hasTouch:true}, "#lessons"); console.log("== drums · lessons sideways");
     ok(await p.evaluate("!DK.on && getComputedStyle(document.querySelector('.wrap')).display!=='none'"), "the Lessons view stays a page to read");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }

@@ -60,7 +60,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await p.goto(U + "music-piano.html"); await p.waitForTimeout(900);
   await p.selectOption("#soundSel", "epwarm");
   await record(p, async () => { await p.evaluate(() => noteOn("k", 60, 0.7)); await p.waitForTimeout(900); await p.evaluate(() => noteOff("k", 60)); });
-  ok(await acts(p, "takes") === "Save as .wav | Send to the turntables | Send to the drum machine | Send to the Studio", "the piano's take: " + await acts(p, "takes"));
+  ok(await acts(p, "takes") === "Save as .wav | Send to the turntables | Send to the drum machine | Send to the Studio | Delete", "the piano's take: " + await acts(p, "takes"));
   let ln = await toStudio(p, "takes", "recLine", 1);
   ok(ln.text === "Sent to the Studio. Open the Studio" && ln.href === "/studio", "the piano's line after sending: \"" + ln.text + "\" (" + ln.href + ")");
   await p.evaluate(() => paintText()); await p.waitForTimeout(100);
@@ -71,7 +71,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await p.goto(U + "music-drums.html"); await p.waitForTimeout(1300);
   await p.click('.sp-pad[data-pad="kick"]'); await p.waitForTimeout(1500);
   await record(p, async () => { for (const id of ["kick", "snare", "kick", "snare"]) { await p.click(`.sp-pad[data-pad="${id}"]`); await p.waitForTimeout(230); } await p.waitForTimeout(300); });
-  ok(await acts(p, "takeList") === "Save as .wav | Send to the turntables | Send to the Studio", "the drum machine's take: " + await acts(p, "takeList"));
+  ok(await acts(p, "takeList") === "Save as .wav | Send to the turntables | Send to the Studio | Delete", "the drum machine's take: " + await acts(p, "takeList"));
   ln = await toStudio(p, "takeList", "takeLine", 1);
   await p.evaluate(() => paint()); await p.waitForTimeout(100);
   ok(ln.text === "Sent to the Studio. Open the Studio" && (await p.textContent("#takeLine")).trim() === ln.text, "the drum machine's line, kept through a repaint: " + ln.text);
@@ -239,7 +239,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await r.goto(U + "music-guitar.html"); await r.waitForTimeout(900);
   await record(r, async () => { await r.evaluate(() => playChord(pads()[0], 0.8)); await r.waitForTimeout(900); });
   const esActs = await acts(r, "takes"); const esLn = await toStudio(r, "takes", "recLine", 1);
-  ok(esActs === "Guardar como .wav | Enviar a los platos | Enviar a la caja de ritmos | Enviar al estudio" && esLn.text === "Enviada al estudio. Abrir el estudio", "the guitar in Spanish: " + esActs + " → " + esLn.text);
+  ok(esActs === "Guardar como .wav | Enviar a los platos | Enviar a la caja de ritmos | Enviar al estudio | Borrar" && esLn.text === "Enviada al estudio. Abrir el estudio", "the guitar in Spanish: " + esActs + " → " + esLn.text);
   await r.evaluate(() => { try { localStorage.setItem("aog.lang", "en"); } catch (e) {} }); await r.close();
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();

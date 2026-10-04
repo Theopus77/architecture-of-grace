@@ -986,9 +986,9 @@ const OPEN={
   "0add9":[-1,3,2,0,3,0], "7add9":[3,-1,0,2,0,3], "2add9":[-1,-1,0,2,3,0], "5add9":[-1,-1,3,2,1,3]
 };
 const MOVABLE=[
-  {at:4, maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], dom7:[0,2,0,1,0,0], maj7:[0,-1,1,1,0,-1], m7:[0,2,0,0,0,0]},          /* E shape: root on the 6th string */
-  {at:9, maj:[-1,0,2,2,2,0], min:[-1,0,2,2,1,0], dom7:[-1,0,2,0,2,0], maj7:[-1,0,2,1,2,0], m7:[-1,0,2,0,1,0]},       /* A shape: root on the 5th */
-  {at:2, maj:[-1,-1,0,2,3,2], min:[-1,-1,0,2,3,1], dom7:[-1,-1,0,2,1,2], maj7:[-1,-1,0,2,2,2], m7:[-1,-1,0,2,1,1]}    /* D shape: root on the 4th */
+  {at:4, maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], dom7:[0,2,0,1,0,0], maj7:[0,-1,1,1,0,-1], m7:[0,2,0,0,0,0], add9:[0,2,4,1,0,0]},          /* E shape: root on the 6th string */
+  {at:9, maj:[-1,0,2,2,2,0], min:[-1,0,2,2,1,0], dom7:[-1,0,2,0,2,0], maj7:[-1,0,2,1,2,0], m7:[-1,0,2,0,1,0], add9:[-1,0,2,4,2,0]},       /* A shape: root on the 5th */
+  {at:2, maj:[-1,-1,0,2,3,2], min:[-1,-1,0,2,3,1], dom7:[-1,-1,0,2,1,2], maj7:[-1,-1,0,2,2,2], m7:[-1,-1,0,2,1,1], add9:[-1,-1,0,2,3,0]}    /* D shape: root on the 4th */
 ];
 function shapesFor(c){
   const root=((S.key+c.off)%12+12)%12, out=[], o=OPEN[root+c.q];
@@ -1043,7 +1043,7 @@ function shapeFor(c){
     sc+=Math.abs((fr.length?Math.min.apply(null,fr):a)-a)*0.5;
     sc+=(TUNING.length-sh.f.filter(x=>x>=0).length)*0.4;       /* fuller chords a little better */
     if(sc<bs){ bs=sc; best=sh.f; } });
-  if(!best) best=findVoicing(c, a, b) || TUNING.map(()=>-1);
+  if(!best) best=findVoicing(c, a, b) || (c.q==="add9" ? shapeFor({off:c.off, q:"maj"}) : null) || TUNING.map(()=>-1);   /* AOG-CHORDS-MORE-V1: an add9 the hand cannot reach here plays as the plain chord */
   VOICINGS.set(key, best);
   return best;
 }
@@ -2119,7 +2119,7 @@ async function sendPads(){
 const $=id=>document.getElementById(id);
 /* the six music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-drums.html#kit","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]===INST?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". ● Record on the

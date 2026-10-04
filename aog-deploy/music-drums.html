@@ -1476,8 +1476,9 @@ function stop(){
   paint();
 }
 
-function hash(){ if(!location.hash && /\/drum-kit\/?$/.test(location.pathname)) return "kit";   /* AOG-KIT-BENCH-V1: /drum-kit */
-  return (location.hash||"#home").slice(1) || "home"; }
+function hash(){ return (location.hash||"#home").slice(1) || "home"; }
+/* AOG-KIT-PAGE-V1: the drum kit has its own page (music-kit.html, /drum-kit); an old link to the kit here goes there */
+if(location.hash==="#kit") location.replace("music-kit.html");
 function go(v){ location.hash="#"+v; }
 
 function paintLang(){
@@ -1491,14 +1492,14 @@ function paintLang(){
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-drums.html#kit","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
+  const T=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(){
-  const items=[["home","homeNav"],["kit","kitNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
+  const items=[["home","homeNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
   /* AOG-BENCH-TOP-V1: five places to look, so one menu (aog-dropdowns.js reads the span) */
   return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+`</span>`+
-    `<span class="sisters"><a class="sep" href="/drums-guide"><span class="lg">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</span><span class="sh">${S.lang==="es"?"Guía":"Guide"}</span></a>${toolsMenu(S.view==="kit"?"kit":"drums", S.lang==="es")}</span>`;
+    `<span class="sisters"><a class="sep" href="/drums-guide"><span class="lg">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</span><span class="sh">${S.lang==="es"?"Guía":"Guide"}</span></a>${toolsMenu("drums", S.lang==="es")}</span>`;
 }
 
 function flashVoice(id){
@@ -1995,25 +1996,6 @@ function drum(id, cx, cy, r, label){
 }
 function kitSvg(){ return drawKit({pre:"mk", cls:"kit", label:t("meet")}); }   /* AOG-KIT-REAL-V1 */
 
-/* ══ AOG-KIT-BENCH-V1 (2026-10-04) — Jimmy: "The drum kit should not be hidden in the sampler. It should get its own lab
-   bench." The Drum Kit: its own place in Go to, in every music tool's menu, on the science hub and at /drum-kit. A real kit
-   to play with the fingers, every kit in one menu (each drawn as its kind), the beat, and a take to record (and delete).
-   It plays the drum machine's own voices, so both always sound alike; sideways it fills the screen. ══ */
-function kitBenchView(){
-  const made=kitMenu().filter(b=>!realKit(b)), rec=kitMenu().filter(b=>realKit(b)), op=b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`;
-  return `<div class="kb-row">
-      <label class="kb-field"><span>${S.lang==="es"?"Batería":"Drum kit"}</span><select id="kbKitSel">${rec.length ? `<optgroup label="${S.lang==="es"?"Cajas de ritmos":"Drum machine kits"}">${made.map(op).join("")}</optgroup><optgroup label="${S.lang==="es"?"Baterías grabadas":"Recorded drum kits"}">${rec.map(op).join("")}</optgroup>` : made.map(op).join("")}</select></label>
-      <button type="button" class="kb-run" id="kbRun" aria-pressed="${S.playing?"true":"false"}">${t(S.playing?"kitStop":"kitRun")}</button>
-    </div>
-    ${drawKit({pre:"bk", cls:"kit kb-kit", id:"kbKit", label:t("kitH")})}
-    <div id="takeSlot" style="margin-top:1rem"></div>`;
-}
-function bindKitBench(){
-  const ks=document.getElementById("kbKitSel"); if(!ks) return;
-  ks.onchange=()=>{ if(BANKS.indexOf(ks.value)<0) return; useBank(ks.value); paint(); };
-  const run=document.getElementById("kbRun"); if(run) run.onclick=()=>{ S.playing?stop():start(); setTimeout(paint, 30); };
-  const k=document.getElementById("kbKit"); if(k) k.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll */
-}
 function meetView(){
   return `<p class="kicker">${t("eyebrow")}</p>
     <h1>${t("meet")}</h1>
@@ -2616,10 +2598,10 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>limiter, lang:()=>S.lan
   label:{en:"● Record a take",es:"● Grabar una toma"}, ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 function paint(){
   S.view=hash();
-  if(!["home","kit","meet","words","print","lessons"].includes(S.view)) S.view="home";
+  if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
   try{ tickLessons(); }catch(e){}
   document.getElementById("brand").textContent=t("app");
-  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=hash()==="kit"; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); }
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); }
   document.getElementById("nav").innerHTML=navHtml();
   { const top=S.view==="home"||S.view==="lessons";                 /* AOG-BENCH-TOP-V1 */
     document.getElementById("benchSwitch").hidden=!top; document.getElementById("lessons").hidden=!top;
@@ -2629,7 +2611,7 @@ function paint(){
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.documentElement.lang=S.lang;   /* the top bar reads this; without it a Spanish visit was flipped back to English */
-  const map={home:homeView,kit:kitBenchView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
+  const map={home:homeView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
   { const vw=document.getElementById("view"), lb=document.getElementById("lessons"), tb=document.getElementById("takeBox");
     if(lb && vw.contains(lb)) vw.after(lb);                             /* AOG-DRUMS-LESSONS-BELOW-V1: keep the card safe … */
     if(tb && vw.contains(tb)) vw.after(tb);                             /* AOG-MUSIC-REC-V1: and the takes, so one playing back keeps playing */
@@ -2640,7 +2622,6 @@ function paint(){
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`+(window.AOGDrumKit?AOGDrumKit.creditHtml(S.lang):"");   /* AOG-DRUM-REAL-V1: where the recorded kits come from */
   if(typeof dkSync==="function") dkSync();   /* AOG-PLAY-V1: the kit sideways (before bind, which gives its pieces the pads' touch) */
   bind();
-  bindKitBench();   /* AOG-KIT-BENCH-V1 */
   REC.paint();
   paintLessonBox();
 }
@@ -3515,7 +3496,7 @@ function dkSvg(){
   const box=document.getElementById("dkKitBox"), asp=box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8;
   return drawKit({pre:"dk", cls:"dk-kit", id:"dkKit", VW:Math.round(Math.max(1000, Math.min(1400, 560*asp))), label:dkWords().region});
 }
-function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="kit" || S.view==="meet")); }
+function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="meet")); }
 function dkPaint(){
   const v=document.getElementById("kitView"); if(!v) return; const W=dkWords();
   v.setAttribute("aria-label", W.region);
@@ -3544,7 +3525,7 @@ function dkRecPaint(){
 }
 function dkTurn(W){
   const turn=document.getElementById("dkTurn");
-  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="kit"||S.view==="meet"); }
+  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="meet"); }
 }
 function dkSync(){
   const want=dkWanted();
