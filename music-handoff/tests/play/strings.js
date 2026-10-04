@@ -39,14 +39,14 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     const lay=await p.evaluate(()=>{ const fx=NECK.fx, w=fx.slice(1).map((x,i)=>x-fx[i]);
       return {on:PV.on, play:NECK.play, inView:!!document.querySelector("#playView #neckBox"), page:getComputedStyle(document.querySelector(".wrap")).display,
         zoom:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
-        w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)<neckY(5), nutLeft:NECK.fx[0]<NECK.sx,
+        w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)>neckY(5), nutLeft:NECK.fx[0]<NECK.sx,
         pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#playView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText) && /safe-area-inset-bottom/.test(r.cssText)); }catch(e){ return false; } }),
         ta:getComputedStyle(document.getElementById("neck")).touchAction, bar:document.getElementById("pvClose").textContent }; });
     ok(lay.on && lay.play && lay.inView && lay.page==="none", "turned sideways, the neck fills the screen and the page steps aside");
     ok(lay.zoom==="1", "the play view is not zoomed (zoom "+lay.zoom+")");
     ok(lay.sw<=lay.iw && lay.sh<=lay.ih+1, `nothing scrolls: ${lay.sw}×${lay.sh} in ${lay.iw}×${lay.ih}`);
     ok(lay.w.every((x,i)=>i===0||x<lay.w[i-1]) && lay.w[lay.w.length-1]>=44, `${lay.n} frets, closer together towards the body: ${lay.w.join(", ")} px`);
-    ok(lay.low && lay.nutLeft, "right-handed: the thick low string on top, the nut on the left, the strum strip on the right");
+    ok(lay.low && lay.nutLeft, "screen facing you: the low string at the bottom, the nut on the left, the strum strip on the right");
     ok(lay.pad, "the play view keeps clear of the notch and the home bar (safe-area padding)");
     ok(lay.ta==="none" && /Close/.test(lay.bar), "the neck takes the touch; the bar reads "+lay.bar);
 
@@ -144,6 +144,19 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     const lm=await p.evaluate("__v.map(x=>x.m)");
     ok(L.flip && L.strip===0 && L.x>L.W/2 && JSON.stringify(lm)==="[43]", `left-handed: the strip on the left, the low frets on the right, the same G (${lm})`);
     await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvMore");
+
+    /* AOG-PLAY-AWAY-V1: the screen turned away from the player: mirrored and upside down, so the strum is under the right
+       hand and the low string on top; the same notes. With Left-handed too, the strum goes back to the screen's right. */
+    await p.click("#pvMore"); await p.click("#pvAway"); await p.click("#pvMore");
+    const A=await p.evaluate(()=>({strip:neckStrum().x0, W:NECK.W, x:neckXY(0,3)[0], low:neckY(0)<neckY(5), pressed:document.getElementById("pvAway").getAttribute("aria-pressed")}));
+    await p.evaluate("muteAll(); __v=[]");
+    { const aq=await at(0,3), as=await at(0,"strum"); await T("touchStart",[{...aq,id:1}]); await T("touchStart",[{...aq,id:1},{...as,id:2}]); await p.waitForTimeout(60); await T("touchEnd",[]); }
+    const am=await p.evaluate("__v.map(x=>x.m)");
+    ok(A.pressed==="true" && A.strip===0 && A.x>A.W/2 && A.low && JSON.stringify(am)==="[43]", `screen faces away: the strip on the screen's left (your right), the low string on top, the same G (${am})`);
+    await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvMore");
+    const AL=await p.evaluate(()=>({strip:neckStrum().x0, sx:NECK.sx, low:neckY(0)<neckY(5)}));
+    ok(AL.strip===AL.sx && AL.low, "screen away and left-handed: the strip on the screen's right, the low string still on top");
+    await p.click("#pvMore"); await p.click("#pvLeft"); await p.click("#pvAway"); await p.click("#pvMore");
 
     /* Solo mode on the sideways neck: a touch plays at once; the strip is the whammy */
     await p.evaluate("AOGSolo.setMode('solo'); buildNeck(); muteAll(); __v=[]");
