@@ -162,7 +162,9 @@ const LICKS=(()=>{
 const LICK_ORDER=["blues","double","tap","shred","funk","bend"];
 
 /* the lead sounds this page has (another helper may add more; only the ones that are here are listed) */
-const LEADS=(GTR?["lead","classic","blues","crunch","metal","modern","thrash","fuzzwall","grunge","doom"]:["slap","finger","pick","fretless","rock","metal","fuzz","octave"]).filter(id=>SOUNDS[id]);
+/* the lead sounds made for solos (AOG-AMP-TONES-V1) come right after the first, then the older ones */
+const LEADS=(GTR?["lead","taplead","shred","singing","anthem","spacefuzz","groovelead","octfuzz","octup","classic","blues","crunch","metal","modern","thrash","fuzzwall","grunge","doom"]
+                :["slap","slaptap","funkslap","fretlead","finger","pick","fretless","rock","metal","fuzz","octave"]).filter(id=>SOUNDS[id]);
 const DEF_LEAD=LEADS[0]||S.sound;
 
 /* ══ what is kept between visits (this browser only) ═════════════════════════ */
