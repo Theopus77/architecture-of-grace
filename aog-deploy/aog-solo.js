@@ -481,7 +481,7 @@ function makeLead(s, m, v, when, o){
   o=o||{};
   const c=ctx(); const vg=gainAt(c, o.soft?0:1); vg.connect(soloIn());
   const chx=Object.create(LIVE_CH); chx.amp=vg;          /* the page's voice, played into this note's own gain */
-  const W0=whamAt(when), vc=makeVoice(c, chx, S.sound, m+W0, v, when, s);
+  const W0=whamAt(when), vc=makeVoice(c, chx, S.sound, m+W0, v, when, s, o.soft?{soft:true}:undefined);   /* AOG-STRINGS-REAL-V1: a tap starts a recorded note without its pick */
   if(!vc){ try{ vg.disconnect(); }catch(e){} return null; }
   if(o.soft){ vg.gain.setValueAtTime(0, when); vg.gain.linearRampToValueAtTime(1, when+0.006); }   /* a tap: no pick */
   const lv=new Lead(c, vc, vg, s, m, when); lv.lastT=m+W0;
