@@ -426,8 +426,17 @@ const STR={
   padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
   padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
   bars:{en:"bars",es:"compases"},
-  credit: GTR?{en:"Every guitar here is built on this page: a plucked string, made with math. Nothing to download.",es:"Cada guitarra aquí se crea en esta página: una cuerda pulsada, hecha con matemáticas. No hay nada que descargar."}
-             :{en:"Every bass here is built on this page: a plucked string, made with math. Nothing to download.",es:"Cada bajo aquí se crea en esta página: una cuerda pulsada, hecha con matemáticas. No hay nada que descargar."},
+  /* AOG-STRINGS-REAL-V1: the recorded guitars and basses */
+  credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. In Solo mode, the band's bass is Growlybass by Karoryfer Samples. All of them are free for everyone to use (CC0).",
+               es:"Las guitarras de aquí son guitarras de verdad, grabadas nota por nota: Black And Green Guitars de Karoryfer Samples, una guitarra Martin de cuerdas de acero grabada por Jeff Learman y una guitarra clásica española de FreePats. En el modo Solo, el bajo de la banda es Growlybass de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0)."}
+             :{en:"The basses here are real basses, recorded note by note: Growlybass by Karoryfer Samples, and a double bass recorded by D. Smolken (with Meatbass by Karoryfer Samples). In Solo mode, the band's guitar is Black And Green Guitars by Karoryfer Samples. All of them are free for everyone to use (CC0). The slap, fretless and synth sounds are made on this page.",
+               es:"Los bajos de aquí son bajos de verdad, grabados nota por nota: Growlybass de Karoryfer Samples y un contrabajo grabado por D. Smolken (con Meatbass de Karoryfer Samples). En el modo Solo, la guitarra de la banda es Black And Green Guitars de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0). Los sonidos de slap, sin trastes y sintetizador se crean en esta página."},
+  credits:{en:"Full credits",es:"Créditos completos"},
+  recLoading: GTR?{en:"Getting the recorded guitar ready…",es:"Preparando la guitarra grabada…"}:{en:"Getting the recorded bass ready…",es:"Preparando el bajo grabado…"},
+  recReady: GTR?{en:"This sound is a real guitar, recorded note by note.",es:"Este sonido es una guitarra de verdad, grabada nota por nota."}
+               :{en:"This sound is a real bass, recorded note by note.",es:"Este sonido es un bajo de verdad, grabado nota por nota."},
+  recFailed: GTR?{en:"The recorded guitar did not load. The guitar made on this page plays instead. Reload the page to try again.",es:"La guitarra grabada no se cargó. Suena la guitarra hecha en esta página. Vuelve a cargar la página para intentarlo otra vez."}
+                :{en:"The recorded bass did not load. The bass made on this page plays instead. Reload the page to try again.",es:"El bajo grabado no se cargó. Suena el bajo hecho en esta página. Vuelve a cargar la página para intentarlo otra vez."},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
 function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
@@ -472,135 +481,135 @@ const BSP={sr:44100, T0:6.5, fref:41, Texp:0.5, Tmin:2, Tmax:7.5, Thf:0.15, Thma
 const BS={sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]};
 const bsf=o=>Object.assign({}, BSF, o), bsp=o=>Object.assign({}, BSP, o), bs=o=>Object.assign({}, BS, o);
 const SOUNDS = GTR ? {
-  steel: {grp:"grpAcoustic", en:"Acoustic guitar · steel strings", es:"Guitarra acústica · cuerdas de acero", kind:"pluck", out:1.036, gain:1.02, rev:0.14, lp:2200, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
-  twelve:{grp:"grpAcoustic", en:"Twelve-string acoustic", es:"Guitarra acústica de doce cuerdas", kind:"pluck", out:1.088, twelve:true, gain:0.85, rev:0.16, lp:2400, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
-  nylon: {grp:"grpAcoustic", en:"Classical guitar · nylon strings", es:"Guitarra clásica · cuerdas de nailon", kind:"pluck", out:1.023, gain:1.28, rev:0.18, lp:1800, lpSpan:2.7, damp:0.04,
+  steel: {grp:"grpAcoustic", en:"Acoustic guitar · steel strings", es:"Guitarra acústica · cuerdas de acero", kind:"pluck", rec:"steel", out:1.036, rout:1.469, gain:1.02, rev:0.14, lp:2200, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
+  twelve:{grp:"grpAcoustic", en:"Twelve-string acoustic", es:"Guitarra acústica de doce cuerdas", kind:"pluck", rec:"steel", out:1.088, rout:1.385, twelve:true, gain:0.85, rev:0.16, lp:2400, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
+  nylon: {grp:"grpAcoustic", en:"Classical guitar · nylon strings", es:"Guitarra clásica · cuerdas de nailon", kind:"pluck", rec:"nylon", out:1.023, rout:1.132, gain:1.28, rev:0.18, lp:1800, lpSpan:2.7, damp:0.04,
           s:{sr:44100, T0:6, fref:82, Texp:0.6, Tmin:1.8, Tmax:7, Thf:0.3, Thmax:0.7, pos:0.2, bright:0.29, soft:0.33, edge:0.3, edgeHz:1500, edgeTop:3000, disp:8, dispA:-0.6, loop:0.05, pol2:0.28,
              atk:0.4, atkLp:0.35, atkHp:400, atkMs:3, glow:3, pick:0, durMax:5,
              body:[["highpass",70,0.7,0],["peaking",96,2.2,6],["peaking",192,2,4],["peaking",380,1.8,2.5],["highshelf",3000,0.7,-4]]}, rig:NO_AMP},
-  clean: {grp:"grpClean", en:"Electric guitar · clean", es:"Guitarra eléctrica · limpia", kind:"pluck", out:0.718, gain:1, rev:0.12, lp:2200, lpSpan:2.9, damp:0.03, s:EL, pick:PU.single,
+  clean: {grp:"grpClean", en:"Electric guitar · clean", es:"Guitarra eléctrica · limpia", kind:"pluck", rec:"green", out:0.718, rout:0.81, gain:1, rev:0.12, lp:2200, lpSpan:2.9, damp:0.03, s:EL, pick:PU.single,
           rig:R("clean","open212",{gain:3.5, bass:5, mid:5, treble:6, presence:5.5}, {bright:true, fx:{reverb:{on:true, type:"spring", mix:3, decay:4}}})},
-  funk:  {grp:"grpClean", en:"Funk · clean and snappy", es:"Funk · limpia y con chispa", kind:"pluck", out:0.967, gain:1, rev:0.08, lp:2400, lpSpan:2.9, damp:0.025, s:BR1, pick:PU.single,
+  funk:  {grp:"grpClean", en:"Funk · clean and snappy", es:"Funk · limpia y con chispa", kind:"pluck", rec:"green", out:0.967, rout:1.387, gain:1, rev:0.08, lp:2400, lpSpan:2.9, damp:0.025, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:3, bass:4.5, mid:4, treble:6.5, presence:6}, {bright:true, fx:{comp:{on:true, sus:6, att:2, lvl:5}}})},
-  pop:   {grp:"grpClean", en:"Pop · shimmering chorus", es:"Pop · coro brillante", kind:"pluck", out:0.878, gain:1, rev:0.12, lp:2300, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+  pop:   {grp:"grpClean", en:"Pop · shimmering chorus", es:"Pop · coro brillante", kind:"pluck", rec:"green", out:0.878, rout:1.177, gain:1, rev:0.12, lp:2300, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:3, treble:6}, {bright:true, fx:{comp:{on:true, sus:4, att:4, lvl:5}, chorus:{on:true, rate:3, depth:5, mix:5}, reverb:{on:true, type:"plate", mix:3, decay:4}}})},
-  jazz:  {grp:"grpClean", en:"Jazz guitar", es:"Guitarra de jazz", kind:"pluck", out:2.261, gain:1, rev:0.14, lp:1300, lpSpan:2.6, damp:0.04,
+  jazz:  {grp:"grpClean", en:"Jazz guitar", es:"Guitarra de jazz", kind:"pluck", rec:"green", out:2.261, rout:2.174, rlpSpan:2, rlp:450, gain:1, rev:0.14, lp:1300, lpSpan:2.6, damp:0.04,
           s:{sr:32000, T0:6, fref:82, Texp:0.55, Tmin:1.6, Tmax:7, Thf:0.25, Thmax:0.16, pos:0.2, bright:0.28, soft:0.32, noise:0.12, pol2:0.25, atk:0.04, atkLp:0.3, pick:0.27, durMax:5, body:[["highpass",70,0.7,0]]},
           pick:PU.neck, rig:R("clean","open112",{gain:3, bass:6, mid:5.5, treble:3.5, presence:4}, {fx:{reverb:{on:true, type:"room", mix:2.5, decay:4}}})},
-  country:{grp:"grpClean", en:"Country · twang and slapback", es:"Country · twang y eco corto", kind:"pluck", out:0.767, gain:1, rev:0.08, lp:2600, lpSpan:2.9, damp:0.028, s:BR1, pick:PU.single,
+  country:{grp:"grpClean", en:"Country · twang and slapback", es:"Country · twang y eco corto", kind:"pluck", rec:"green", out:0.767, rout:1.004, gain:1, rev:0.08, lp:2600, lpSpan:2.9, damp:0.028, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:4, bass:4.5, mid:5.5, treble:7, presence:6}, {bright:true, fx:{comp:{on:true, sus:5, att:3, lvl:5}, delay:{on:true, time:3.2, fb:1, mix:4, tone:6}}})},
-  surf:  {grp:"grpClean", en:"Surf · drenched in spring reverb", es:"Surf · empapada de reverb de muelle", kind:"pluck", out:0.696, gain:1, rev:0.06, lp:2500, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+  surf:  {grp:"grpClean", en:"Surf · drenched in spring reverb", es:"Surf · empapada de reverb de muelle", kind:"pluck", rec:"green", out:0.696, rout:0.784, gain:1, rev:0.06, lp:2500, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
           rig:R("clean","open212",{gain:4.5, bass:4, treble:7}, {bright:true, fx:{reverb:{on:true, type:"spring", mix:7, decay:6, tone:7}}})},
-  ambient:{grp:"grpClean", en:"Ambient · echoes and space", es:"Ambiental · ecos y espacio", kind:"pluck", out:1.332, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.05, s:NK1, pick:PU.single,
+  ambient:{grp:"grpClean", en:"Ambient · echoes and space", es:"Ambiental · ecos y espacio", kind:"pluck", rec:"green", out:1.332, rout:1.404, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.05, s:NK1, pick:PU.single,
           rig:R("clean","open212",{gain:3, treble:5}, {fx:{chorus:{on:true, rate:2, depth:4, mix:4}, delay:{on:true, time:6.3, fb:6, mix:5, tone:4}, reverb:{on:true, type:"hall", mix:6, decay:8, tone:5}}})},
-  blues: {grp:"grpRock", en:"Blues · warm breakup", es:"Blues · saturación cálida", kind:"pluck", out:0.797, gain:1, rev:0.10, lp:2100, lpSpan:2.9, damp:0.03, s:NK1, pick:PU.single,
+  blues: {grp:"grpRock", en:"Blues · warm breakup", es:"Blues · saturación cálida", kind:"pluck", rec:"green", out:0.797, rout:0.823, gain:1, rev:0.10, lp:2100, lpSpan:2.9, damp:0.03, s:NK1, pick:PU.single,
           rig:R("blues","open112",{gain:5.5, bass:5, mid:6, treble:5.5, master:6}, {fx:{reverb:{on:true, type:"spring", mix:2.5, decay:4}}})},
-  crunch:{grp:"grpRock", en:"Electric guitar · crunch", es:"Guitarra eléctrica · crujiente", kind:"pluck", out:0.821, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.03,
+  crunch:{grp:"grpRock", en:"Electric guitar · crunch", es:"Guitarra eléctrica · crujiente", kind:"pluck", rec:"green", out:0.821, rout:0.818, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.03,
           s:EL,
           pick:PU.humb, rig:R("crunch","green412",{gain:5, bass:5, mid:6, treble:6})},
-  chime: {grp:"grpRock", en:"British jangle", es:"Brillo británico", kind:"pluck", out:0.727, gain:1, rev:0.12, lp:2400, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+  chime: {grp:"grpRock", en:"British jangle", es:"Brillo británico", kind:"pluck", rec:"green", out:0.727, rout:0.794, gain:1, rev:0.12, lp:2400, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
           rig:R("chime","blue212",{gain:4.5, bass:4, mid:5, treble:6.5, master:6}, {fx:{reverb:{on:true, type:"room", mix:2.5, decay:4}}})},
-  classic:{grp:"grpRock", en:"Classic rock · cranked stack", es:"Rock clásico · amplificador a tope", kind:"pluck", out:0.533, gain:1, rev:0.08, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU.humb,
+  classic:{grp:"grpRock", en:"Classic rock · cranked stack", es:"Rock clásico · amplificador a tope", kind:"pluck", rec:"black", out:0.533, rrel:0.34, rout:0.56, gain:1, rev:0.08, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:7.5, bass:5.5, mid:7, treble:6, master:7}, {fx:{od:{on:true, drive:2.5, tone:5, lvl:7}}})},
-  punk:  {grp:"grpRock", en:"Punk · buzzing distortion", es:"Punk · distorsión zumbante", kind:"pluck", out:0.589, power:true, gain:1, rev:0.06, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
+  punk:  {grp:"grpRock", en:"Punk · buzzing distortion", es:"Punk · distorsión zumbante", kind:"pluck", rec:"black", out:0.589, rrel:0.101, rout:0.618, power:true, gain:1, rev:0.06, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:3, bass:6, mid:6, treble:6}, {fx:{ds:{on:true, dist:6, tone:5, lvl:5}}})},
-  grunge:{grp:"grpRock", en:"Grunge · fuzz and crunch", es:"Grunge · fuzz y crujido", kind:"pluck", out:0.686, gain:1, rev:0.08, lp:2300, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
+  grunge:{grp:"grpRock", en:"Grunge · fuzz and crunch", es:"Grunge · fuzz y crujido", kind:"pluck", rec:"green", out:0.686, rrel:0.109, rout:0.772, gain:1, rev:0.08, lp:2300, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:4, bass:6, mid:5, treble:5}, {fx:{fz:{on:true, sus:6, tone:4, lvl:6}}})},
-  lead:  {grp:"grpRock", en:"Lead · smooth and singing", es:"Solista · suave y cantante", kind:"pluck", out:0.83, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.04, s:NKH, pick:PU.neck,
+  lead:  {grp:"grpRock", en:"Lead · smooth and singing", es:"Solista · suave y cantante", kind:"pluck", rec:"green", out:0.83, rrel:0.456, rout:0.849, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.04, s:NKH, pick:PU.neck,
           rig:R("lead","v30_412",{gain:7, bass:5, mid:6.5, treble:5}, {fx:{delay:{on:true, time:5.2, fb:4, mix:3, tone:4}, reverb:{on:true, type:"hall", mix:3, decay:5}}})},
-  fuzzwall:{grp:"grpRock", en:"Fuzz wall · thick and dreamy", es:"Muro de fuzz · grueso y de ensueño", kind:"pluck", out:1.064, gain:1, rev:0.10, lp:2100, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
+  fuzzwall:{grp:"grpRock", en:"Fuzz wall · thick and dreamy", es:"Muro de fuzz · grueso y de ensueño", kind:"pluck", rec:"green", out:1.064, rrel:0.15, rout:1.016, gain:1, rev:0.10, lp:2100, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
           rig:R("clean","open212",{gain:4, treble:5}, {fx:{fz:{on:true, sus:9, tone:5, lvl:5}, chorus:{on:true, rate:2, depth:4, mix:3}, reverb:{on:true, type:"hall", mix:5, decay:7, tone:4}}})},
   /* AOG-GUITAR-METAL-V1, then AOG-AMP-V1: "There is NO distortion for the METAL guitar chords". Now the real thing: a solid-state
      high-gain head, the middle scooped, a gate for tight stops, a 4x12; power chords */
-  metal: {grp:"grpMetal", en:"Heavy metal · groove", es:"Metal pesado · groove", kind:"pluck", out:0.701, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+  metal: {grp:"grpMetal", en:"Heavy metal · groove", es:"Metal pesado · groove", kind:"pluck", rec:"black", out:0.701, rrel:0.278, rout:0.714, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("groove","v30_412",{gain:6.5, bass:6.5, mid:2.5, treble:6.5, presence:6.5, depth:7}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}}, eq:{on:true, db:[2,3,1,0,-3,-4,-1,2,0,0]}})},
-  modern:{grp:"grpMetal", en:"Modern metal · tight and heavy", es:"Metal moderno · firme y pesado", kind:"pluck", out:0.642, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+  modern:{grp:"grpMetal", en:"Modern metal · tight and heavy", es:"Metal moderno · firme y pesado", kind:"pluck", rec:"black", out:0.642, rrel:0.093, rout:0.63, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("high","v30_412",{gain:6, bass:5.5, mid:5.5, treble:6, presence:6, depth:6.5}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}, od:{on:true, drive:0, tone:6, lvl:8}}})},
-  thrash:{grp:"grpMetal", en:"Thrash · fast and biting", es:"Thrash · rápido y mordiente", kind:"pluck", out:0.647, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+  thrash:{grp:"grpMetal", en:"Thrash · fast and biting", es:"Thrash · rápido y mordiente", kind:"pluck", rec:"black", out:0.647, rrel:0.31, rout:0.662, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
           rig:R("crunch","green412",{gain:9, bass:5.5, mid:6, treble:7, presence:6.5, depth:6}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}, od:{on:true, drive:2, tone:6, lvl:8}}})},
-  doom:  {grp:"grpMetal", en:"Doom · slow and huge", es:"Doom · lento y enorme", kind:"pluck", out:0.889, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.05, s:BRH, pick:PU.humb,
+  doom:  {grp:"grpMetal", en:"Doom · slow and huge", es:"Doom · lento y enorme", kind:"pluck", rec:"green", out:0.889, rrel:0, rout:0.85, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.05, s:BRH, pick:PU.humb,
           rig:R("high","v30_412",{gain:4, bass:7, mid:4, treble:4, presence:4, depth:8}, {fx:{fz:{on:true, sus:8, tone:3, lvl:6}, reverb:{on:true, type:"room", mix:2, decay:5}}})},
   /* AOG-AMP-TONES-V1 (2026-10-04) — Jimmy: "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the
      sounds", then "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix … BLOW my mind". Named on
      screen by style and feel; what inspired each is in its comment. out is measured (the C chord as loud as the grand). */
   /* Jimmy Page: a humbucker into a cranked 100-watt British head with no master volume, a little tape echo; mid-rich, thick */
-  bigstack:{grp:"grpRock", en:"Classic rock · big stack and tape echo", es:"Rock clásico · gran cabezal y eco de cinta", kind:"pluck", out:0.663, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BRH, pick:PU2.paf,
+  bigstack:{grp:"grpRock", en:"Classic rock · big stack and tape echo", es:"Rock clásico · gran cabezal y eco de cinta", kind:"pluck", rec:"black", out:0.663, rout:0.707, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BRH, pick:PU2.paf,
           rig:R("plexi","green412",{gain:6.5, bass:5, mid:7, treble:6, presence:5.5, master:6}, {fx:{delay:{on:true, type:"tape", time:3.4, fb:2, mix:2.5, tone:4}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
   /* early Jimmy Page: a bright single coil by the bridge into a small combo turned all the way up */
-  smallamp:{grp:"grpRock", en:"Raw blues rock · small amp turned up", es:"Blues rock crudo · amplificador pequeño a tope", kind:"pluck", out:0.606, gain:1, rev:0.10, lp:2400, lpSpan:2.9, damp:0.03, s:TELE, pick:PU2.tele,
+  smallamp:{grp:"grpRock", en:"Raw blues rock · small amp turned up", es:"Blues rock crudo · amplificador pequeño a tope", kind:"pluck", rec:"black", out:0.606, rout:0.617, gain:1, rev:0.10, lp:2400, lpSpan:2.9, damp:0.03, s:TELE, pick:PU2.tele,
           rig:R("small","open112",{gain:7, bass:4.5, mid:6, treble:6, presence:5.5, master:7})},
   /* Joe Perry and Brad Whitford: a Les Paul into an American tweed head turned up, in an open-back cabinet: loose, dry, bluesy */
-  swagger:{grp:"grpRock", en:"Blues hard rock · swagger", es:"Hard rock bluesero · con actitud", kind:"pluck", out:0.516, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
+  swagger:{grp:"grpRock", en:"Blues hard rock · swagger", es:"Hard rock bluesero · con actitud", kind:"pluck", rec:"black", out:0.516, rout:0.487, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
           rig:R("blues","open212",{gain:6.5, bass:5, mid:7, treble:6.5, presence:6, master:7}, {fx:{reverb:{on:true, type:"spring", mix:1.5, decay:3}}})},
   /* Joe Perry's wah: a Les Paul, a wah that opens as you dig in, a British head */
-  wahrock:{grp:"grpRock", en:"Hard rock · talking wah", es:"Hard rock · wah que habla", kind:"pluck", out:0.519, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
+  wahrock:{grp:"grpRock", en:"Hard rock · talking wah", es:"Hard rock · wah que habla", kind:"pluck", rec:"black", out:0.519, rout:0.538, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
           rig:R("crunch","green412",{gain:6, bass:5, mid:6, treble:6, master:6}, {fx:{wah:{on:true, mode:"touch", sens:5, q:6}}})},
   /* Angus and Malcolm Young: a low-output humbucker into a loud British head at low gain and no pedals; open chords that bite
      when you dig in and clean up when you play softly */
-  openchords:{grp:"grpRock", en:"Hard rock · bright open chords", es:"Hard rock · acordes abiertos y brillantes", kind:"pluck", out:0.537, gain:1, rev:0.08, lp:2500, lpSpan:2.9, damp:0.03, s:SGH, pick:PU2.paf,
+  openchords:{grp:"grpRock", en:"Hard rock · bright open chords", es:"Hard rock · acordes abiertos y brillantes", kind:"pluck", rec:"green", out:0.537, rout:0.581, gain:1, rev:0.08, lp:2500, lpSpan:2.9, damp:0.03, s:SGH, pick:PU2.paf,
           rig:R("plexi","green412",{gain:3.5, bass:4.5, mid:6.5, treble:8, presence:7.5, master:7}, {bright:true})},
   /* Eddie Van Halen: a hot humbucker into a cranked 100-watt head at low voltage ("brown"), a phaser and a tape echo */
-  brown: {grp:"grpRock", en:"Eighties rock · warm and spongy, with phaser", es:"Rock de los ochenta · cálido y esponjoso, con phaser", kind:"pluck", out:0.642, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.035, s:HOT, pick:PU2.paf,
+  brown: {grp:"grpRock", en:"Eighties rock · warm and spongy, with phaser", es:"Rock de los ochenta · cálido y esponjoso, con phaser", kind:"pluck", rec:"black", out:0.642, rrel:0.803, rout:0.66, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.035, s:HOT, pick:PU2.paf,
           rig:R("brown","green412",{gain:6.5, bass:6, mid:6.5, treble:6.5, presence:6, master:7}, {fx:{phaser:{on:true, rate:2.5, depth:5, mix:4}, delay:{on:true, type:"tape", time:3.8, fb:2, mix:2.5, tone:4}, reverb:{on:true, type:"plate", mix:2, decay:4}}})},
   /* Tony Iommi: a treble booster into a cranked British head, the bass up and the treble down: dark, thick and heavy */
-  darkriff:{grp:"grpMetal", en:"Heavy riffs · dark and thick", es:"Riffs pesados · oscuros y gruesos", kind:"pluck", out:0.513, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.045, s:BRH, pick:PU2.p90,
+  darkriff:{grp:"grpMetal", en:"Heavy riffs · dark and thick", es:"Riffs pesados · oscuros y gruesos", kind:"pluck", rec:"green", out:0.513, rrel:0.603, rout:0.389, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.045, s:BRH, pick:PU2.p90,
           rig:R("plexi","green412",{gain:7, bass:9, mid:6, treble:2.5, presence:3, depth:7, master:7.5}, {fx:{tb:{on:true, boost:6, body:9}}, eq:{on:true, db:[0,4,6,3,0,-1,-3,-5,-6,-3]}})},
   /* Opeth's heavy riffs: a hot humbucker into a British high-gain head, tight and gated, the middle left in */
-  progheavy:{grp:"grpMetal", en:"Progressive metal · tight and focused", es:"Metal progresivo · firme y definido", kind:"pluck", out:0.64, power:true, gain:1, rev:0.06, lp:2600, lpSpan:2.6, damp:0.03, s:HOT, pick:PU2.hot,
+  progheavy:{grp:"grpMetal", en:"Progressive metal · tight and focused", es:"Metal progresivo · firme y definido", kind:"pluck", rec:"black", out:0.64, rrel:0.234, rout:0.652, power:true, gain:1, rev:0.06, lp:2600, lpSpan:2.6, damp:0.03, s:HOT, pick:PU2.hot,
           rig:R("brithigh","v30_412",{gain:6, bass:5.5, mid:6.5, treble:6, presence:6, depth:6}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}}})},
   /* Opeth's quiet passages: the neck humbucker, a clean amp, a slow deep chorus and a big reverb */
-  lushclean:{grp:"grpClean", en:"Clean · lush chorus and reverb", es:"Limpia · coro y reverb envolventes", kind:"pluck", out:1.371, gain:1, rev:0.12, lp:1900, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
+  lushclean:{grp:"grpClean", en:"Clean · lush chorus and reverb", es:"Limpia · coro y reverb envolventes", kind:"pluck", rec:"green", out:1.371, rout:1.336, gain:1, rev:0.12, lp:1900, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
           rig:R("clean","open212",{gain:3, bass:5.5, mid:5, treble:4.5, presence:4.5}, {fx:{chorus:{on:true, rate:1.5, depth:6, mix:5}, reverb:{on:true, type:"hall", mix:5, decay:7, tone:4}}})},
   /* Opeth's acoustic passages: a twelve-string, warm, with a little room around it */
-  warmtwelve:{grp:"grpAcoustic", en:"Twelve-string · warm, in a room", es:"Doce cuerdas · cálida, en una sala", kind:"pluck", out:1.258, twelve:true, gain:0.85, rev:0.14, lp:2200, lpSpan:2.8, damp:0.035, s:WARM12,
+  warmtwelve:{grp:"grpAcoustic", en:"Twelve-string · warm, in a room", es:"Doce cuerdas · cálida, en una sala", kind:"pluck", rec:"steel", out:1.258, rout:1.447, twelve:true, gain:0.85, rev:0.14, lp:2200, lpSpan:2.8, damp:0.035, s:WARM12,
           rig:R("none","off",{}, {fx:{reverb:{on:true, type:"room", mix:3, decay:4, tone:5}}, eq:{on:true, db:[0,1.5,1,0,0,-0.5,-1,-1.5,-2,-1]}})},
   /* Stevie Ray Vaughan: heavy strings and a single coil; a green overdrive with little drive and a lot of level into a loud
      clean American amp; a spring reverb */
-  texas: {grp:"grpBlues", en:"Texas blues · heavy strings, pushed", es:"Blues de Texas · cuerdas gruesas, empujadas", kind:"pluck", out:0.352, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
+  texas: {grp:"grpBlues", en:"Texas blues · heavy strings, pushed", es:"Blues de Texas · cuerdas gruesas, empujadas", kind:"pluck", rec:"green", out:0.352, rout:0.379, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
           rig:R("clean","open410",{gain:5, bass:5.5, mid:5.5, treble:6, presence:6, master:7.5}, {fx:{od:{on:true, drive:1.5, tone:5.5, lvl:8.5}, reverb:{on:true, type:"spring", mix:2.5, decay:4}}})},
   /* Stevie Ray Vaughan's "Cold Shot": the same strings through a spinning speaker */
-  spinblues:{grp:"grpBlues", en:"Blues · spinning speaker", es:"Blues · altavoz giratorio", kind:"pluck", out:0.683, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
+  spinblues:{grp:"grpBlues", en:"Blues · spinning speaker", es:"Blues · altavoz giratorio", kind:"pluck", rec:"green", out:0.683, rout:0.765, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
           rig:R("clean","open410",{gain:4.5, bass:5.5, mid:5.5, treble:5.5, presence:5.5, master:6.5}, {fx:{od:{on:true, drive:1, tone:5, lvl:6.5}, rotary:{on:true, mode:"slow", depth:7, mix:8}, reverb:{on:true, type:"spring", mix:2, decay:4}}})},
   /* Jimi Hendrix: a single coil into a vintage fuzz, a vibe, and a cranked British stack */
-  psych: {grp:"grpBlues", en:"Psychedelic rock · fuzz and vibe", es:"Rock psicodélico · fuzz y vibe", kind:"pluck", out:0.54, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
+  psych: {grp:"grpBlues", en:"Psychedelic rock · fuzz and vibe", es:"Rock psicodélico · fuzz y vibe", kind:"pluck", rec:"green", out:0.54, rrel:0.9, rout:0.566, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
           rig:R("plexi","green412",{gain:4.5, bass:5, mid:6, treble:6.5, presence:6, master:7}, {fx:{fz:{on:true, type:"vintage", sus:5.5, tone:5.5, lvl:5}, vibe:{on:true, mode:"throb", rate:3, depth:7}}})},
   /* Jimi Hendrix's octave fuzz: the neck pickup, the octave fuzz, the stack */
-  octfuzz:{grp:"grpBlues", en:"Psychedelic lead · octave fuzz", es:"Solo psicodélico · fuzz de octava", kind:"pluck", out:0.569, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:NK1, pick:PU2.strat,
+  octfuzz:{grp:"grpBlues", en:"Psychedelic lead · octave fuzz", es:"Solo psicodélico · fuzz de octava", kind:"pluck", rec:"green", out:0.569, rrel:0.7, rout:0.54, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:NK1, pick:PU2.strat,
           rig:R("plexi","green412",{gain:5, bass:5, mid:6, treble:6, presence:6, master:7}, {fx:{ofz:{on:true, fuzz:7, up:7, lvl:5}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
   /* Eddie Van Halen's tapping lead: the low-voltage stack with more gain, a slow flanger, a tape echo */
-  taplead:{grp:"grpLead", en:"Tapping lead · warm and singing", es:"Solo con tapping · cálido y cantante", kind:"pluck", out:0.638, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.paf,
+  taplead:{grp:"grpLead", en:"Tapping lead · warm and singing", es:"Solo con tapping · cálido y cantante", kind:"pluck", rec:"black", out:0.638, rrel:0.628, rout:0.683, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.paf,
           rig:R("brown","green412",{gain:8, bass:5.5, mid:7, treble:6, presence:5.5, master:7}, {fx:{flanger:{on:true, rate:1.5, depth:4, fb:4, mix:3}, delay:{on:true, type:"tape", time:4.5, fb:3, mix:3, tone:4}, reverb:{on:true, type:"plate", mix:2, decay:4}}})},
   /* Buckethead: a modern high-gain head pushed by a clean boost; smooth, a long sustain, a delay */
-  shred: {grp:"grpLead", en:"Shred lead · smooth, long sustain", es:"Solo shred · suave, sostenido largo", kind:"pluck", out:0.76, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.hot,
+  shred: {grp:"grpLead", en:"Shred lead · smooth, long sustain", es:"Solo shred · suave, sostenido largo", kind:"pluck", rec:"black", out:0.76, rrel:0.102, rout:0.767, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.hot,
           rig:R("high","v30_412",{gain:7, bass:5, mid:6.5, treble:5, presence:4, depth:6, master:6}, {fx:{od:{on:true, drive:0, tone:4, lvl:7}, delay:{on:true, time:5.5, fb:4, mix:3, tone:4}, reverb:{on:true, type:"hall", mix:2, decay:5}}, eq:{on:true, db:[0,0,0,0,1,1,-2,-3,-2,0]}})},
   /* Tom Morello and Buckethead: the pitch shifter an octave up into a British head */
-  octup: {grp:"grpLead", en:"Pitch-shift lead · an octave up", es:"Solo con cambio de altura · una octava arriba", kind:"pluck", out:0.62, gain:1, rev:0.08, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU2.paf,
+  octup: {grp:"grpLead", en:"Pitch-shift lead · an octave up", es:"Solo con cambio de altura · una octava arriba", kind:"pluck", rec:"green", out:0.62, rout:0.639, gain:1, rev:0.08, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU2.paf,
           rig:R("crunch","green412",{gain:6.5, bass:5, mid:6.5, treble:6, master:6}, {fx:{pitch:{on:true, mode:"up", amt:10, mix:10}}})},
   /* David Gilmour: a single coil into a thick fuzz, a loud clean amp, a long echo and a hall */
-  spacefuzz:{grp:"grpLead", en:"Space rock lead · big fuzz, long echoes", es:"Solo de rock espacial · gran fuzz, ecos largos", kind:"pluck", out:0.799, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.05, s:BR1, pick:PU2.strat,
+  spacefuzz:{grp:"grpLead", en:"Space rock lead · big fuzz, long echoes", es:"Solo de rock espacial · gran fuzz, ecos largos", kind:"pluck", rec:"green", out:0.799, rrel:0.247, rout:0.849, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.05, s:BR1, pick:PU2.strat,
           rig:R("clean","green412",{gain:3.5, bass:5, mid:5.5, treble:6, presence:5.5, master:6}, {fx:{fz:{on:true, sus:7, tone:5.5, lvl:5}, delay:{on:true, time:6.5, fb:5, mix:4, tone:5}, reverb:{on:true, type:"hall", mix:4, decay:6, tone:5}}})},
   /* Carlos Santana: the neck humbucker into a cascaded American lead amp, warm and vocal */
-  singing:{grp:"grpLead", en:"Latin rock lead · warm and vocal", es:"Solo de rock latino · cálido y vocal", kind:"pluck", out:0.697, gain:1, rev:0.12, lp:2000, lpSpan:2.8, damp:0.045, s:NKH, pick:PU.neck,
+  singing:{grp:"grpLead", en:"Latin rock lead · warm and vocal", es:"Solo de rock latino · cálido y vocal", kind:"pluck", rec:"green", out:0.697, rrel:0.682, rout:0.669, gain:1, rev:0.12, lp:2000, lpSpan:2.8, damp:0.045, s:NKH, pick:PU.neck,
           rig:R("cascade","open112",{gain:7, bass:4.5, mid:7, treble:5, presence:4.5, master:6}, {fx:{reverb:{on:true, type:"hall", mix:3, decay:5}}, eq:{on:true, db:[0,0,-1,0,2,3,1,-2,-3,0]}})},
   /* Brian May: a treble booster into a chiming British combo turned up, and echoes */
-  anthem:{grp:"grpLead", en:"Anthem rock lead · treble boost and echoes", es:"Solo de rock de himno · realce de agudos y ecos", kind:"pluck", out:0.449, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:BR1, pick:PU2.strat,
+  anthem:{grp:"grpLead", en:"Anthem rock lead · treble boost and echoes", es:"Solo de rock de himno · realce de agudos y ecos", kind:"pluck", rec:"green", out:0.449, rrel:0.39, rout:0.468, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:BR1, pick:PU2.strat,
           rig:R("chime","blue212",{gain:6.5, bass:4.5, mid:6, treble:6.5, presence:6, master:7.5}, {fx:{tb:{on:true, boost:7, body:4}, delay:{on:true, time:5, fb:4, mix:3.5, tone:5}, reverb:{on:true, type:"hall", mix:2, decay:5}}})},
   /* Dimebag Darrell's lead voice: the solid-state groove head, the middle less scooped than for riffs, the top lifted so
      pinched harmonics squeal, no gate (the notes ring on), an echo */
-  groovelead:{grp:"grpLead", en:"Groove metal lead · sharp and singing", es:"Solo de metal groove · afilado y cantante", kind:"pluck", out:0.465, gain:1, rev:0.08, lp:2600, lpSpan:2.7, damp:0.035, s:HOT, pick:PU2.hot,
+  groovelead:{grp:"grpLead", en:"Groove metal lead · sharp and singing", es:"Solo de metal groove · afilado y cantante", kind:"pluck", rec:"green", out:0.465, rrel:0.216, rout:0.545, gain:1, rev:0.08, lp:2600, lpSpan:2.7, damp:0.035, s:HOT, pick:PU2.hot,
           rig:R("groove","v30_412",{gain:7.5, bass:6, mid:5, treble:7, presence:7, depth:6.5, master:6}, {fx:{delay:{on:true, time:4.5, fb:3, mix:3, tone:5}, reverb:{on:true, type:"hall", mix:2, decay:4}}, eq:{on:true, db:[1,2,1,0,-1,-1,1,3,2,0]}})},
   /* Jimi Hendrix's wah: the vintage fuzz and a wah that opens as you dig in, into the cranked stack */
-  fuzzwah:{grp:"grpBlues", en:"Psychedelic wah · fuzz and wah", es:"Wah psicodélico · fuzz y wah", kind:"pluck", out:0.434, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
+  fuzzwah:{grp:"grpBlues", en:"Psychedelic wah · fuzz and wah", es:"Wah psicodélico · fuzz y wah", kind:"pluck", rec:"black", out:0.434, rout:0.447, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
           rig:R("plexi","green412",{gain:4.5, bass:5, mid:6, treble:6, presence:6, master:7}, {fx:{wah:{on:true, mode:"touch", sens:6, q:6}, fz:{on:true, type:"vintage", sus:5.5, tone:5.5, lvl:5}}})}
 } : {
-  finger:{grp:"grpBass", en:"Electric bass · fingers", es:"Bajo eléctrico · con los dedos", kind:"pluck", out:3.137, gain:1, rev:0.05, lp:600, lpSpan:2.8, damp:0.05,
+  finger:{grp:"grpBass", en:"Electric bass · fingers", es:"Bajo eléctrico · con los dedos", kind:"pluck", rec:"growly", out:3.137, rout:3.447, gain:1, rev:0.05, lp:600, lpSpan:2.8, damp:0.05,
           s:{sr:44100, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.6, pos:0.22, bright:0.16, soft:0.09, loop:0.02, pol2:0.25, atk:0, glow:0, rise:6, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:3, bass:6, mid:5, treble:4.5})},
-  pick:  {grp:"grpBass", en:"Electric bass · pick", es:"Bajo eléctrico · con púa", kind:"pluck", out:2.589, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.05,
+  pick:  {grp:"grpBass", en:"Electric bass · pick", es:"Bajo eléctrico · con púa", kind:"pluck", rec:"growly", out:2.589, rout:2.772, rclick:1, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.05,
           s:{sr:44100, T0:6.5, fref:41, Texp:0.5, Tmin:2, Tmax:7.5, Thf:0.15, Thmax:0.5, pos:0.12, bright:0.38, soft:0.43, edge:0.6, edgeHz:1200, edgeTop:2500, disp:20, dispA:-0.6, loop:0.04, pol2:0.25,
              atk:0.35, atkLp:0.43, atkHp:600, atkMs:1.6, glow:4, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:5, bass:5.5, mid:6, treble:6}, {fx:{comp:{on:true, sus:4, att:4, lvl:5}}})},
-  motown:{grp:"grpBass", en:"Vintage · warm and round", es:"Vintage · cálido y redondo", kind:"pluck", out:3.264, gain:1, rev:0.05, lp:500, lpSpan:2.4, damp:0.05,
+  motown:{grp:"grpBass", en:"Vintage · warm and round", es:"Vintage · cálido y redondo", kind:"pluck", rec:"growly", out:3.264, rout:3.808, rlpSpan:2, rlp:200, gain:1, rev:0.05, lp:500, lpSpan:2.4, damp:0.05,
           s:{sr:22050, T0:4, fref:41, Texp:0.5, Tmin:1.5, Tmax:5, Thf:0.08, Thmax:0.1, pos:0.2, bright:0.22, soft:0.12, noise:0.04, pol2:0.25, atk:0.04, atkLp:0.12, pick:0.22, durMax:4.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bvint","b115",{gain:3, bass:6, mid:5, treble:3})},
   slap:  {grp:"grpBass", en:"Slap · bright and punchy", es:"Slap · brillante y con pegada", kind:"pluck", out:3.342, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
@@ -609,24 +618,24 @@ const SOUNDS = GTR ? {
   fretless:{grp:"grpBass", en:"Fretless · smooth and singing", es:"Sin trastes · suave y cantante", kind:"pluck", out:3.889, gain:1, rev:0.07, lp:700, lpSpan:2.6, damp:0.06,
           s:{sr:22050, T0:9, fref:41, Texp:0.5, Tmin:2.2, Tmax:10, Thf:0.3, Thmax:0.5, pos:0.24, bright:0.35, soft:0.12, noise:0.02, pol2:0.35, atk:0.02, atkLp:0.1, pick:0.24, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b410",{gain:2.5, bass:5.5, mid:6, treble:5}, {fx:{chorus:{on:true, rate:2, depth:3, mix:3}}})},
-  dub:   {grp:"grpBass", en:"Dub · deep and dark", es:"Dub · profundo y oscuro", kind:"pluck", out:2.19, gain:1, rev:0.04, lp:420, lpSpan:2.2, damp:0.06,
+  dub:   {grp:"grpBass", en:"Dub · deep and dark", es:"Dub · profundo y oscuro", kind:"pluck", rec:"growly", out:2.19, rout:3.445, gain:1, rev:0.04, lp:420, lpSpan:2.2, damp:0.06,
           s:{sr:22050, T0:6, fref:41, Texp:0.5, Tmin:1.8, Tmax:7, Thf:0.1, Thmax:0.12, pos:0.24, bright:0.22, soft:0.12, noise:0.04, pol2:0.25, atk:0.03, atkLp:0.1, pick:0.24, durMax:5, body:[["highpass",28,0.7,0]]},
           pick:PU.bass, rig:R("bvint","b115",{gain:2, bass:7.5, mid:4, treble:2}, {eq:{on:true, db:[3,4,2,0,-2,-3,-3,-2,0,0]}})},
-  rock:  {grp:"grpHeavy", en:"Rock · gritty pick", es:"Rock · púa con aspereza", kind:"pluck", out:1.749, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.05,
+  rock:  {grp:"grpHeavy", en:"Rock · gritty pick", es:"Rock · púa con aspereza", kind:"pluck", rec:"growly", out:1.749, rout:1.876, rclick:1, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.25, Thmax:0.6, pos:0.12, bright:0.62, soft:0.38, noise:0.22, pol2:0.25, atk:0.14, atkLp:0.6, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:7.5, bass:5.5, mid:6.5, treble:6, master:7})},
   /* AOG-AMP-V1 — Jimmy: "I want a metal style sounds (like Pantera / lamb of god)" for the bass too: the lows stay clean and
      round under a driven middle (a blend, as metal bassists do), with the gate */
-  metal: {grp:"grpHeavy", en:"Heavy metal bass", es:"Bajo de metal pesado", kind:"pluck", out:1.941, gain:1, rev:0.04, lp:1100, lpSpan:2.8, damp:0.04,
+  metal: {grp:"grpHeavy", en:"Heavy metal bass", es:"Bajo de metal pesado", kind:"pluck", rec:"growly", out:1.941, rout:1.853, rclick:1, gain:1, rev:0.04, lp:1100, lpSpan:2.8, damp:0.04,
           s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.3, Thmax:0.7, pos:0.1, bright:0.75, soft:0.45, noise:0.25, pol2:0.25, atk:0.18, atkLp:0.65, pick:0.1, durMax:5.5, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bdrive","b410",{gain:6.5, bass:6, mid:6, treble:6.5, blend:5}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}}})},
-  fuzz:  {grp:"grpHeavy", en:"Fuzz bass", es:"Bajo con fuzz", kind:"pluck", out:1.394, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
+  fuzz:  {grp:"grpHeavy", en:"Fuzz bass", es:"Bajo con fuzz", kind:"pluck", rec:"growly", out:1.394, rout:1.398, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("bclean","b810",{gain:3, bass:6, mid:5, treble:5}, {fx:{fz:{on:true, sus:7, tone:5, lvl:5}}})},
-  octave:{grp:"grpHeavy", en:"Octave bass · extra deep", es:"Bajo con octava · muy profundo", kind:"pluck", out:3.009, gain:1, rev:0.04, lp:600, lpSpan:2.8, damp:0.05,
+  octave:{grp:"grpHeavy", en:"Octave bass · extra deep", es:"Bajo con octava · muy profundo", kind:"pluck", rec:"growly", out:3.009, rout:3.83, gain:1, rev:0.04, lp:600, lpSpan:2.8, damp:0.05,
           s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
           pick:PU.bass, rig:R("btube","b810",{gain:3, bass:6, mid:5, treble:4.5}, {fx:{oct:{on:true, sub:7, dry:7}}})},
-  upright:{grp:"grpOther", en:"Upright bass", es:"Contrabajo", kind:"pluck", out:1.058, gain:3.94, rev:0.09, lp:650, lpSpan:2.6, damp:0.06,
+  upright:{grp:"grpOther", en:"Upright bass", es:"Contrabajo", kind:"pluck", rec:"upright", out:1.058, rrel:0.5, rout:0.903, gain:3.94, rev:0.09, lp:650, lpSpan:2.6, damp:0.06,
           s:{sr:44100, T0:3.2, fref:41, Texp:0.4, Tmin:1.4, Tmax:3.8, Thf:0.12, Thmax:0.35, pos:0.25, bright:0.19, soft:0.07, loop:0.02, pol2:0.3, atk:0, thump:0.6, thumpHz:65, thumpMs:25, glow:0, rise:3, pick:0, durMax:3.8,
              body:[["highpass",35,0.7,0],["peaking",72,2.5,6],["peaking",145,2,3],["peaking",290,1.8,1.5],["highshelf",1200,0.7,-8]]}, rig:NO_AMP},
   synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", out:5.279, gain:1.41, rev:0.06, damp:0.035,
@@ -635,27 +644,27 @@ const SOUNDS = GTR ? {
           syn:{sq:0, q:13, fa:5, fv:2600, fb:1.2, fb0:110, tc:0.11}, rig:R("bclean","off",{gain:2}, {fx:{ds:{on:true, dist:3, tone:6, lvl:5}}})},
   /* AOG-AMP-TONES-V1 (2026-10-04) — the new basses, named by style and feel; what inspired each is in its comment */
   /* John Paul Jones: fingers, round, warm and melodic; a tube amp into one big speaker, a light compressor */
-  melodic:{grp:"grpBass", en:"Rock bass · round and melodic", es:"Bajo de rock · redondo y melódico", kind:"pluck", out:2.059, gain:1, rev:0.05, lp:650, lpSpan:2.7, damp:0.05,
+  melodic:{grp:"grpBass", en:"Rock bass · round and melodic", es:"Bajo de rock · redondo y melódico", kind:"pluck", rec:"growly", out:2.059, rout:2.133, gain:1, rev:0.05, lp:650, lpSpan:2.7, damp:0.05,
           s:bsf({Thf:0.2, Thmax:0.8, pos:0.2, bright:0.2, soft:0.106, pick:0.18}), pick:PU.bass,
           rig:R("btube","b115",{gain:4, bass:6, mid:7, treble:5}, {fx:{comp:{on:true, sus:3, att:5, lvl:5}}, eq:{on:true, db:[0,0,0,0,2,3,1,0,0,0]}})},
   /* Tom Hamilton: a pick, punchy: clean lows with a little hair from the drive in the upper middle */
-  punchy:{grp:"grpBass", en:"Hard rock bass · pick, punchy", es:"Bajo de hard rock · púa, con pegada", kind:"pluck", out:4.142, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.045,
+  punchy:{grp:"grpBass", en:"Hard rock bass · pick, punchy", es:"Bajo de hard rock · púa, con pegada", kind:"pluck", rec:"growly", out:4.142, rout:3.66, rclick:1, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.045,
           s:bsp({bright:0.42, atk:0.4}), pick:PU.bass,
           rig:R("bdrive","b410",{gain:3, bass:8, mid:6.5, treble:6.5, blend:0})},
   /* Cliff Williams: a pick, simple and solid eighth notes, deep and even */
-  eighths:{grp:"grpBass", en:"Driving rock bass · pick, solid eighths", es:"Bajo de rock constante · púa, corcheas sólidas", kind:"pluck", out:2.922, gain:1, rev:0.05, lp:800, lpSpan:2.7, damp:0.04,
+  eighths:{grp:"grpBass", en:"Driving rock bass · pick, solid eighths", es:"Bajo de rock constante · púa, corcheas sólidas", kind:"pluck", rec:"growly", out:2.922, rout:3.364, rclick:1, gain:1, rev:0.05, lp:800, lpSpan:2.7, damp:0.04,
           s:bsp({T0:7, Tmax:8, pos:0.14, bright:0.3, soft:0.35, edge:0.5, edgeTop:2000, atk:0.28, glow:3, pick:0.17}), pick:PU.bass,
           rig:R("btube","b810",{gain:4.5, bass:7, mid:5, treble:3.5}, {fx:{comp:{on:true, sus:6, att:4, lvl:5}}})},
   /* Martín Méndez: fingers, warm and clear, a little grit over the clean lows */
-  progbass:{grp:"grpBass", en:"Progressive bass · warm and clear, a little grit", es:"Bajo progresivo · cálido y claro, algo áspero", kind:"pluck", out:3.464, gain:1, rev:0.05, lp:750, lpSpan:2.8, damp:0.05,
+  progbass:{grp:"grpBass", en:"Progressive bass · warm and clear, a little grit", es:"Bajo progresivo · cálido y claro, algo áspero", kind:"pluck", rec:"growly", out:3.464, rout:2.855, gain:1, rev:0.05, lp:750, lpSpan:2.8, damp:0.05,
           s:bsf({Thf:0.22, Thmax:0.9, pos:0.18, bright:0.24, soft:0.13, loop:0.03, atk:0.1, atkLp:0.2, atkHp:400, atkMs:2.5, rise:4, pick:0.16}), pick:PU.bass,
           rig:R("bdrive","b410",{gain:2.5, bass:6, mid:5.5, treble:5.5, blend:2.5})},
   /* Geezer Butler: fingers into a cranked tube amp and a vintage fuzz, dark and heavy */
-  doombass:{grp:"grpHeavy", en:"Heavy bass · dark fuzz", es:"Bajo pesado · fuzz oscuro", kind:"pluck", out:1.072, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
+  doombass:{grp:"grpHeavy", en:"Heavy bass · dark fuzz", es:"Bajo pesado · fuzz oscuro", kind:"pluck", rec:"growly", out:1.072, rout:0.944, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
           s:bsf({pos:0.2, bright:0.225, soft:0.134, loop:0.03, pick:0.17}), pick:PU.bass,
           rig:R("btube","b810",{gain:7, bass:7, mid:6, treble:3.5, master:7}, {fx:{fz:{on:true, type:"vintage", sus:6, tone:4, lvl:5}}})},
   /* Geezer Butler's wah: the fuzz, and a wah left half open */
-  wahbass:{grp:"grpHeavy", en:"Heavy bass · fuzz and wah", es:"Bajo pesado · fuzz y wah", kind:"pluck", out:1.274, gain:1, rev:0.05, lp:800, lpSpan:2.8, damp:0.05,
+  wahbass:{grp:"grpHeavy", en:"Heavy bass · fuzz and wah", es:"Bajo pesado · fuzz y wah", kind:"pluck", rec:"growly", out:1.274, rrel:0.9, rout:1.258, gain:1, rev:0.05, lp:800, lpSpan:2.8, damp:0.05,
           s:bsf({pos:0.2, bright:0.225, soft:0.134, loop:0.03, pick:0.17}), pick:PU.bass,
           rig:R("btube","b810",{gain:6, bass:6, mid:6, treble:5, master:6}, {fx:{fz:{on:true, type:"vintage", sus:6, tone:5, lvl:5}, wah:{on:true, mode:"fixed", pos:5.5, q:5}}})},
   /* Les Claypool: slap and tap, bright and aggressive, the middle kept, a little drive */
@@ -667,7 +676,7 @@ const SOUNDS = GTR ? {
           s:bs({T0:6.5, Thf:0.3, Thmax:0.8, pos:0.08, bright:0.84, soft:0.58, noise:0.28, atk:0.28, atkLp:0.85, pick:0.11, durMax:5}), pick:PU.bass,
           rig:R("bclean","b410",{gain:3, bass:8, mid:3, treble:8, presence:6, depth:7}, {bright:true, fx:{comp:{on:true, sus:8, att:2, lvl:5}}, eq:{on:true, db:[2,3,1,-1,-3,-2,0,3,2,0]}})},
   /* Les Claypool and Flea: the envelope filter's funky quack, with the low notes kept under it */
-  envfunk:{grp:"grpFunk", en:"Funk bass · envelope filter", es:"Bajo funk · filtro de envolvente", kind:"pluck", out:3.917, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.04,
+  envfunk:{grp:"grpFunk", en:"Funk bass · envelope filter", es:"Bajo funk · filtro de envolvente", kind:"pluck", rec:"growly", out:3.917, rout:2.26, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.04,
           s:bsf({pos:0.16, bright:0.29, soft:0.163, loop:0.03, atk:0.12, atkLp:0.3, atkHp:400, atkMs:2, glow:2, rise:3, pick:0.14}), pick:PU.bass,
           rig:R("bclean","b410",{gain:3, bass:6, mid:5, treble:5}, {fx:{env:{on:true, mode:"deep", sens:6, q:6, mix:9}}})},
   /* Les Claypool's flanger: slap through a jet-plane swirl */
@@ -681,7 +690,7 @@ const SOUNDS = GTR ? {
           rig:R("bclean","b410",{gain:3, bass:5, mid:6.5, treble:6, presence:5.5}, {fx:{comp:{on:true, sus:5, att:4, lvl:5}, chorus:{on:true, rate:2, depth:3, mix:3}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
   /* James Jamerson: flatwound strings on a split-coil bass with a foam mute by the bridge, into a small tube combo: round,
      short, thumpy notes */
-  thump:{grp:"grpBass", en:"Sixties soul bass · round, short and thumpy", es:"Bajo soul de los sesenta · redondo, corto y con golpe", kind:"pluck", out:3.378, gain:1, rev:0.05, lp:450, lpSpan:2.2, damp:0.04,
+  thump:{grp:"grpBass", en:"Sixties soul bass · round, short and thumpy", es:"Bajo soul de los sesenta · redondo, corto y con golpe", kind:"pluck", rec:"growly", rstac:true, out:3.378, rout:5.318, rlpSpan:2, rlp:200, gain:1, rev:0.05, lp:450, lpSpan:2.2, damp:0.04,
           s:bsf({T0:1.3, Tmin:0.7, Tmax:1.6, Texp:0.3, Thf:0.12, Thmax:0.15, pos:0.2, bright:0.106, soft:0.051, loop:0.01, pol2:0.2, rise:5, thump:0.25, thumpHz:80, thumpMs:25, pick:0.22, durMax:2.2}), pick:PU.bass,
           rig:R("bvint","b115",{gain:3.5, bass:6.5, mid:5.5, treble:2.5})}
 };
@@ -1093,16 +1102,246 @@ function noteBuf(id, n){
   if(!st.buf[n]){ const P=SOUNDS[id].s; st.buf[n]=makeBuffer(renderNote(n, P, (n*7919)^idSeed(id)), NOTE_SR); }
   return st.buf[n];
 }
-/* the notes are made a few at a time after the page is up, so the first strum is already ready */
+/* the notes are made a few at a time after the page is up, so the first strum is already ready.
+   AOG-STRINGS-REAL-V1: a recorded sound's set starts downloading at once; its made notes are made too, but only while
+   the recordings are not in yet: they play until then (and if the recordings cannot load), so a strum is never silent */
 let prepJob=0;
 function prepare(id){
   const snd=SOUNDS[id]; clearTimeout(prepJob);
   litNeck();      /* a new sound can play the chord in the hand another way (a metal sound: a power chord), so the neck shows it now */
+  const r=recOf(id); if(r) recLoad(r);
+  if(r && snd && snd.rclick) setTimeout(()=>pickClick(id), 30);
+  recLine();
   if(!snd || snd.kind!=="pluck") return;
   Object.keys(SETS).forEach(k=>{ if(k!==id) delete SETS[k]; });     /* one instrument's notes at a time, kind to a phone */
   const todo=SAMPLE_NOTES.slice();
-  const step=()=>{ const t0=performance.now(); while(todo.length && performance.now()-t0<12) noteBuf(id, todo.shift()); if(todo.length) prepJob=setTimeout(step, 16); };
+  const step=()=>{ if(r && soundReady(id)) return;
+    const t0=performance.now(); while(todo.length && performance.now()-t0<12) noteBuf(id, todo.shift()); if(todo.length) prepJob=setTimeout(step, 16); };
   prepJob=setTimeout(step, 40);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE RECORDED STRINGS (AOG-STRINGS-REAL-V1, 2026-10-04) — Jimmy: "Can we get real instrument sounds for the guitar and
+   bass?" A sound that names a recorded set (rec:"green") plays a real instrument, recorded note by note: free (CC0)
+   recordings in audio/<guitar|bass>/<set>/, a set.json and mono MP3s (where each comes from: audio/<guitar|bass>/CREDITS.txt;
+   how they were made: music-handoff/tools/strings/).
+   · A set downloads only when a sound that uses it is picked, with one calm line while it gets ready; two sets stay in
+     memory, kind to a phone. Until it is in, and if it cannot load, the string made on the page plays (above).
+   · Each note plays the recording nearest it (on its own string when the set knows strings, else by pitch), sped up or
+     slowed to the note, its measured tuning (c) taken out. How hard it is played picks the layer (a soft pluck sounds
+     soft, not only quiet); the page's own loudness curve sets the level, the made string's, so the amp and pedals hear
+     what they were set up for. The takes of a note come in turn (round robin): a strum played twice is never a copy.
+   · The muted ways to play (chug, gallop, thrash, breakdown, the funk and pop slaps) play the short, muted recordings;
+     a hammer-on or a tap starts its note without the pick; letting go of a ringing note adds the sound of the hand.
+   · A bend, vibrato, a slide or the whammy glide the recording itself (its playback rate), as they glide the made string.
+   · Solo mode's band plays recorded sets too (aog-solo.js), only once Play is pressed. A set of the other instrument is
+     named with its folder ("bass/growly" on the guitar page, "guitar/green" on the bass page). While the band plays, its
+     sets stay (pin); room says how many sets a device keeps at once: 3 where it has the memory for them (4 GB or more,
+     or, where the browser does not say, a screen as big as a tablet's), else 2, and the band's bass plays the made string.
+   ══════════════════════════════════════════════════════════════════════════ */
+const REAL={base:"/audio/"+INST+"/", ver:"1", keep:2, on:true, sets:{}, order:[], pin:[],
+  room:(()=>{ try{ const dm=navigator.deviceMemory; if(typeof dm==="number") return dm>=4?3:2;
+    return Math.min(screen.width||0, screen.height||0)>=700?3:2; }catch(e){ return 2; } })()};
+/* where a set's files are: this instrument's folder, or the one its name says ("bass/growly") */
+function recPath(id){ return id.indexOf("/")>=0 ? "/audio/"+id+"/" : REAL.base+id+"/"; }
+/* how much memory a set's decoded notes take (bytes: 4 a sample) */
+function recBytes(R){ let n=0; Object.values((R&&R.buf)||{}).forEach(b=>{ n+=b.length*b.numberOfChannels*4; }); return n; }
+function recOf(id){ const s=SOUNDS[id]; return (REAL.on && s && s.rec) ? s.rec : ""; }
+function recSet(id){ return REAL.sets[id]||(REAL.sets[id]={id:id, state:"idle", meta:null, buf:{}, at:{}, lvl:null, job:null, rr:{}, done:0, total:0}); }
+/* is this sound ready to play its recordings (a sound made on the page always is); get it ready (for a recording made
+   offline: Send to the turntables, the chord pads) */
+function soundReady(id){ const r=recOf(id); return !r || !!(REAL.sets[r] && REAL.sets[r].state==="ready"); }
+async function loadSound(id){ const r=recOf(id); if(r){ try{ await recLoad(r); }catch(e){} } return soundReady(id); }
+/* Where each note starts in its decoded file, so a strum and the beat land on time in every browser. Every file starts
+   at its pluck. An MP3 carries a gapless header (Xing or Info, with LAME's encoder delay and padding): a decoder that reads
+   it gives frames×1152 − delay − padding samples, from the pluck; one that does not (possibly Safari) gives every frame,
+   and delay + 529 samples of lead-in come first, not silent (the pluck's own pre-echo is in it), so no level can find the
+   pluck there. The header says how long the lead-in is: the decoded length shows which kind of decoder this is. */
+function mp3Gapless(ab){
+  try{
+    const d=new Uint8Array(ab); let i=0;
+    if(d[0]===0x49 && d[1]===0x44 && d[2]===0x33) i=10+((d[6]&127)<<21|(d[7]&127)<<14|(d[8]&127)<<7|(d[9]&127));   /* an ID3 tag first */
+    for(const lim=Math.min(d.length-4, i+8192); i<lim && !(d[i]===0xFF && (d[i+1]&0xE0)===0xE0); i++);
+    const ver=(d[i+1]>>3)&3, mono=((d[i+3]>>6)&3)===3, t=i+4+(ver===3?(mono?17:32):(mono?9:17));
+    const tag=String.fromCharCode(d[t],d[t+1],d[t+2],d[t+3]); if(tag!=="Xing" && tag!=="Info") return null;
+    const fl=(d[t+4]<<24|d[t+5]<<16|d[t+6]<<8|d[t+7])>>>0; if(!(fl&1)) return null;
+    let o=t+8; const frames=(d[o]<<24|d[o+1]<<16|d[o+2]<<8|d[o+3])>>>0; o+=4;
+    if(fl&2) o+=4; if(fl&4) o+=100; if(fl&8) o+=4;
+    const rates=ver===3?[44100,48000,32000]:ver===2?[22050,24000,16000]:[11025,12000,8000], rate=rates[(d[i+2]>>2)&3]||44100;
+    return {frames:frames, spf:ver===3?1152:576, delay:(d[o+21]<<4)|(d[o+22]>>4), pad:((d[o+22]&15)<<8)|d[o+23], rate:rate};
+  }catch(e){ return null; }
+}
+function recLead(b, gl){
+  const sr=b.sampleRate; let from=0;
+  if(gl && gl.frames){
+    const k=sr/gl.rate, all=gl.frames*gl.spf, lead=gl.delay+529, extra=b.length/k-(all-gl.delay-gl.pad);
+    /* how the decoder treated the header: read it (nothing extra), trimmed only the start, kept every frame, or played the
+       header frame itself as silence too; the nearest explains this buffer */
+    const ways=[[0,0],[gl.pad-529,0],[gl.delay+gl.pad,lead],[gl.delay+gl.pad+gl.spf,lead+gl.spf]];
+    let best=ways[0]; ways.forEach(w=>{ if(Math.abs(extra-w[0])<Math.abs(extra-best[0])) best=w; });
+    if(Math.abs(extra-best[0])<gl.spf/2) from=Math.min(b.length-1, Math.round(best[1]*k));
+  }
+  /* then, from there, the pluck: the first sample within 40 dB of the loudest, 0.5 ms before it (without a header that
+     matches, this alone finds it) */
+  const d=b.getChannelData(0), n=Math.min(d.length, from+Math.floor(0.25*sr)); let pk=0;
+  for(let i=from;i<d.length;i++){ const a=d[i]<0?-d[i]:d[i]; if(a>pk) pk=a; }
+  let i=from; const thr=pk*0.01; while(i<n && Math.abs(d[i])<thr) i++;
+  return (i>=n ? from : Math.max(from, i-Math.round(0.0005*sr)))/sr;
+}
+function recLoad(id){
+  const R=recSet(id);
+  REAL.order=REAL.order.filter(x=>x!==id).concat([id]);
+  if(R.job) return R.job;
+  if(R.state==="ready") return Promise.resolve(R);
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  R.state="loading"; R.done=0; R.total=0; R.dropped=false;
+  const job=(async()=>{
+    try{
+      if(!OC || !window.fetch) throw new Error("no audio");
+      const r=await fetch(recPath(id)+"set.json?v="+REAL.ver); if(!r.ok) throw new Error(r.status);
+      const meta=await r.json(), dec=new OC(1, 1, 44100), files=meta.zones.map(z=>z.f).concat(recRel(meta).map(n=>n.f));
+      R.total=files.length; let i=0;
+      const lane=async()=>{ while(i<files.length && !R.dropped){ const f=files[i++];
+        try{ const q=await fetch(recPath(id)+f+"?v="+REAL.ver); if(!q.ok) throw new Error(q.status);
+          const ab=await q.arrayBuffer(), gl=mp3Gapless(ab), b=await decodeWith(dec, ab); R.buf[f]=b; R.at[f]=recLead(b, gl); }catch(e){}
+        R.done++; } };
+      await Promise.all([lane(), lane(), lane(), lane(), lane(), lane()]);
+      if(R.dropped) throw new Error("let go");
+      /* ready when every held note is in (a missing short note or noise is only skipped) */
+      if(!meta.zones.some(z=>(z.k||"sus")==="sus") || meta.zones.some(z=>(z.k||"sus")==="sus" && !R.buf[z.f])) throw new Error("missing");
+      recIndex(R, meta);
+      R.state="ready";
+    }catch(e){ R.state=R.dropped?"idle":"failed"; R.buf={}; R.at={}; }
+    recForget(); recLine(); recLive();
+    return R;
+  })();
+  R.job=job; job.then(()=>{ if(R.job===job) R.job=null; });
+  recLine();
+  return job;
+}
+/* the sound playing now: its level follows what plays (the recordings, once they are in) */
+function recLive(){ try{ if(ac && LIVE_CH) LIVE_CH.trim.gain.setTargetAtTime(recTrim(S.sound), ac.currentTime, 0.03); }catch(e){} }
+/* two sets stay: the ones picked last (the sound playing now always among them), and the band's while it plays */
+function recForget(){
+  const keep=REAL.order.slice(-REAL.keep), now=recOf(S.sound);
+  Object.keys(REAL.sets).forEach(k=>{ if(keep.indexOf(k)<0 && k!==now && REAL.pin.indexOf(k)<0){ const R=REAL.sets[k]; R.dropped=true; delete REAL.sets[k]; } });
+}
+/* the set's notes by kind, and the loudness each kind sits at, measured once it is in (so any set, made anywhere,
+   plays at the page's own level) */
+function recIndex(R, meta){
+  const by={}, lays=new Set();
+  meta.zones.forEach(z=>{ if(!R.buf[z.f]) return; const k=z.k||"sus"; (by[k]=by[k]||[]).push(z); if(k==="sus") lays.add(z.v||1); });
+  const rmsOf=(z,a,b)=>{ const B=R.buf[z.f], d=B.getChannelData(0), sr=B.sampleRate, s0=Math.floor((R.at[z.f]+a)*sr), s1=Math.min(d.length, Math.floor((R.at[z.f]+b)*sr));
+    let s=0; for(let i=s0;i<s1;i++) s+=d[i]*d[i]; return Math.sqrt(s/Math.max(1,s1-s0))*(z.g||1); };
+  const med=a=>{ const b=a.filter(x=>x>1e-6).sort((x,y)=>x-y); return b.length?b[b.length>>1]:1; };
+  const L={long:{}, short:{}, hammer:{}, mute:1};
+  lays.forEach(v=>{ const zs=by.sus.filter(z=>(z.v||1)===v); L.long[v]=med(zs.map(z=>rmsOf(z,0.01,0.26))); L.short[v]=med(zs.map(z=>rmsOf(z,0,0.06))); });
+  const mz=(by.mute||[]).concat(by.stac||[]); if(mz.length) L.mute=med(mz.map(z=>rmsOf(z,0,0.06)));
+  if(by.hammer) new Set(by.hammer.map(z=>z.v||1)).forEach(v=>{ L.hammer[v]=med(by.hammer.filter(z=>(z.v||1)===v).map(z=>rmsOf(z,0.01,0.26))); });
+  R.meta=meta; R.by=by; R.layers=[...lays].sort((a,b)=>a-b); R.top=R.layers[R.layers.length-1]; R.lvl=L;
+  R.noise=recRel(meta).filter(n=>R.buf[n.f]);
+}
+/* the noises a set plays: the hand's sound when a ringing note is let go (k "release"); its others are not used */
+function recRel(meta){ return (meta.noise||[]).filter(n=>(n.k||"release")==="release"); }
+/* the layer for how hard a note is played (vel holds each layer's lower bound), then the recording: the nearest note
+   (a tie goes to the one below), on its own string when the set knows strings; its takes in turn */
+function recLayer(R, v){ const vel=R.meta.vel||[0]; let lay=1; vel.forEach((b,i)=>{ if(v>=b) lay=i+1; }); return lay; }
+function recPick(R, kind, m, v, s){
+  const all=R.by[kind]; if(!all || !all.length) return null;
+  const want=recLayer(R, v), lays=[...new Set(all.map(z=>z.v||1))];
+  const lay=lays.reduce((a,b)=>{ const da=Math.abs(a-want), dbb=Math.abs(b-want); return dbb<da || (dbb===da && b<a) ? b : a; });
+  const max=R.meta.maxShift||3;
+  let list=all.filter(z=>(z.v||1)===lay);
+  if(s!=null){ const own=list.filter(z=>z.s===s && Math.abs(z.m-m)<=max); if(own.length) list=own; }
+  let d=1e9; list.forEach(z=>{ const x=Math.abs(z.m-m); if(x<d) d=x; });
+  if(d>max) return null;
+  const near=list.filter(z=>Math.abs(z.m-m)===d), zm=Math.min.apply(null, near.map(z=>z.m)), zs=near.find(z=>z.m===zm).s;
+  const takes=near.filter(z=>z.m===zm && z.s===zs).sort((a,b)=>(a.r||1)-(b.r||1));
+  const key=kind+"|"+lay+"|"+zm+"|"+zs, k=(R.rr[key]||0)%takes.length; R.rr[key]=k+1;
+  return {z:takes[k], lay:lay};
+}
+function recRate(z, m){ return Math.pow(2, (m-z.m)/12-(z.c||0)/1200); }
+/* a picked sound on a fingered recording (rclick: the recorded bass is played with the fingers): the made string's own
+   pick, its click (the burst renderNote adds at the pluck), laid on the recorded pluck at the level and tone it has on the
+   made string (rclick × that). Made once per sound when it is picked, from one note made with and without it; two of
+   them, taken in turn, so no two picks in a row are the same */
+const CLICKS={};
+function pickClick(id){
+  if(id in CLICKS) return CLICKS[id];
+  const P=(SOUNDS[id]||{}).s; if(!P || !(P.atk>0)) return (CLICKS[id]=null);
+  const m=GTR?52:36, list=[];
+  for(let k=0;k<2;k++){ const seed=((m*7919)^idSeed(id))+k, a=renderNote(m, Object.assign({}, P, {durMax:1.4}), seed), b=renderNote(m, Object.assign({}, P, {durMax:1.4, atk:0}), seed);
+    const n=Math.min(a.length, Math.ceil(0.016*NOTE_SR)), d=new Float32Array(n), fo=Math.ceil(0.003*NOTE_SR);
+    for(let i=0;i<n;i++) d[i]=(a[i]-b[i])*(i>=n-fo ? 0.5+0.5*Math.cos(Math.PI*(i-(n-fo))/fo) : 1);
+    list.push(makeBuffer(d, NOTE_SR)); }
+  return (CLICKS[id]=list);
+}
+/* one recorded note. o (optional): {art:"mute"} a muted note (the short recordings), {soft:true} a hammer-on or a tap */
+function recVoice(c, ch, id, m, v, when, s, o, R){
+  const snd=SOUNDS[id], vv=Math.max(0.05, Math.min(1, v)), soft=!!(o && o.soft), L=R.lvl, top=R.top, lift=snd.rg||snd.gain;
+  /* rstac: a sound whose every note is short (a muted, thumpy bass) plays the short recordings */
+  let kind=((o && o.art==="mute") || (snd.rstac && !soft)) ? (R.by.mute?"mute":R.by.stac?"stac":"sus") : (soft && R.by.hammer) ? "hammer" : "sus";
+  let pk=recPick(R, kind, m, vv, s);
+  if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, vv, s); }
+  if(!pk) return null;
+  const z=pk.z, buf=R.buf[z.f], base=0.2*velAmp(vv)*lift*(z.g||1);
+  /* the made string sits at 0.2 × the loudness curve over its first quarter second; a recording is brought there too
+     (a muted note: as loud at the pick as a held one) */
+  const amp = kind==="sus" ? base/L.long[pk.lay] : kind==="hammer" ? 0.7*base/(L.hammer[pk.lay]||L.long[top]) : base*(L.short[top]/L.long[top])/L.mute;
+  const rate=recRate(z, m), off=R.at[z.f]+(soft && kind==="sus" ? 0.03 : 0);
+  const src=c.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
+  const g=gainAt(c, amp), rel=gainAt(c, 1);
+  /* a hammer-on or a tap with no recording of one: the held note from just after its pick, coming in softer */
+  if(soft && kind==="sus"){ g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(amp*0.6, when+0.008); }
+  let head=src;
+  /* the sound's own tone, as on the made string: a softer pluck a little darker (jazz darkest), above the layer's own
+     (rlp, rlpSpan: a sound's tone for the recordings, where its made string's would leave a real one too bright) */
+  const lpHz=snd.rlp||snd.lp, lpSpan=snd.rlp?(snd.rlpSpan||snd.lpSpan):snd.lpSpan;
+  if(lpHz){ const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, lpHz*Math.pow(2, vv*lpSpan)); src.connect(lp); head=lp; }
+  head.connect(g);
+  let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  src.start(when, off);
+  const nodes=[src], pairs=[[src, z, 0, 1]];
+  if(snd.rclick && !soft){ const cbs=pickClick(id);
+    if(cbs){ const cs=c.createBufferSource(), cl=c.createBiquadFilter(), cg=gainAt(c, velAmp(vv)*lift*snd.rclick); R.rr.click=((R.rr.click||0)+1)%cbs.length; cs.buffer=cbs[R.rr.click];
+      cl.type="lowpass"; cl.Q.value=0.5; cl.frequency.value=Math.min(16000, snd.lp*Math.pow(2, vv*snd.lpSpan));
+      cs.connect(cl); cl.connect(cg); cg.connect(pan||rel); cs.start(when); nodes.push(cs); } }
+  /* a twelve-string's second string, a hair later: an octave up on the four low courses, the same note a few cents out on
+     the two high ones (as the made one) */
+  if(snd.twelve && s!=null){ const up=s<4?12:0, p2=recPick(R, "sus", m+up, vv, null);
+    if(p2){ const det=s<4?1:Math.pow(2,4/1200), s2=c.createBufferSource(); s2.buffer=R.buf[p2.z.f]; s2.playbackRate.value=recRate(p2.z, m+up)*det;
+      const a2=0.2*velAmp(vv)*lift*(p2.z.g||1)/L.long[p2.lay]*(s<4?0.5:0.7), g2=gainAt(c, a2/Math.max(1e-9, amp));
+      s2.connect(g2); g2.connect(head===src?g:head); s2.start(when+0.009, R.at[p2.z.f]+(soft?0.03:0)); nodes.push(s2); pairs.push([s2, p2.z, up, det]); } }
+  const vc=voiceShell(c, ch.bus, nodes, rel);
+  vc.tau=snd.damp; vc.natural=when+Math.max(0.05, buf.duration-off)/rate;
+  vc.rec={set:R.id, f:z.f, k:kind, v:pk.lay, r:z.r||1, m:z.m, c:z.c||0};
+  /* a recording that ends while it still rings fades over its last moments, never stops dead (a loud amp would show it) */
+  try{ rel.gain.setTargetAtTime(0, Math.max(when+0.05, vc.natural-0.4), 0.12); }catch(e){}
+  vc.glide=(m2, at)=>{ pairs.forEach(([sx, zz, up, det])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(recRate(zz, m2+up)*det, at, 0.012); }catch(e){} }); };
+  /* letting go of a ringing note (the mute, a short chord, a gap in a bass line): the sound of the hand on the string.
+     Only a held note: a muted one is already under the hand. A driven amp lifts that small sound as much as the notes, so
+     rrel keeps it under the note it stops (measured per sound through its own amp: 8 dB under it); rrel 0, none at all
+     (an amp so driven that even the faintest one comes out as loud as the note) */
+  const stop0=vc.stop, hand=lift*(snd.rrel!=null ? snd.rrel : 1);
+  vc.stop=function(t, tau, how){ const was=this.stopped; stop0.call(this, t, tau); if(!was && how && how.rel && hand>0 && (kind==="sus" || kind==="hammer")) recRelease(c, ch, R, hand, vv, when, Math.max(t, c.currentTime), s, this.natural); };
+  return vc;
+}
+function recRelease(c, ch, R, lift, vv, on, t, s, natural){
+  if(!R.noise.length || t>natural-0.05 || t-on<0.04) return;
+  R.rr.rel=((R.rr.rel||0)+1)%R.noise.length;
+  const n=R.noise[R.rr.rel], b=R.buf[n.f]; if(!b) return;
+  const amp=0.2*velAmp(vv)*lift*(n.g||1)/R.lvl.long[R.top]*(0.35+0.65*Math.exp(-(t-on)/1.5));
+  const src=c.createBufferSource(); src.buffer=b; const g=gainAt(c, amp); src.connect(g);
+  let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
+  tail.connect(ch.amp); src.start(t, R.at[n.f]);
+}
+/* the line under the sound menu: what this sound is, and while its recordings get ready, one calm line saying so */
+function recLine(){
+  const el=document.getElementById("loadLine"); if(!el) return;
+  const r=recOf(S.sound), R=r?REAL.sets[r]:null;
+  const k=!r ? "built" : (R && R.state==="ready") ? "recReady" : (R && R.state==="failed") ? "recFailed" : "recLoading";
+  if(el.getAttribute("data-k")!==k || el.getAttribute("data-l")!==S.lang){ el.setAttribute("data-k", k); el.setAttribute("data-l", S.lang); el.textContent=t(k); }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1151,7 +1390,7 @@ function makeChain(c){
   ch.bus=c.createGain(); ch.send=c.createGain(); ch.pre=c.createGain(); ch.amp=c.createGain();
   ch.rig=AOGAmp.create(c, {kind:GTR?"guitar":"bass", state:rigFor(S.sound)});
   /* out evens the sounds after the rig (measured, AOG-AMP-V1), so the pickup drives the amp as it would */
-  ch.post=gainAt(c,1); ch.amp.connect(ch.rig.input); ch.rig.output.connect(ch.post); ch.post.connect(ch.bus); ch.post.connect(ch.send);
+  ch.post=gainAt(c,1); ch.trim=gainAt(c,1); ch.amp.connect(ch.rig.input); ch.rig.output.connect(ch.trim); ch.trim.connect(ch.post); ch.post.connect(ch.bus); ch.post.connect(ch.send);
   /* the room */
   const cv=c.createConvolver(); cv.buffer=roomIR(c); ch.send.connect(cv);
   const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
@@ -1181,7 +1420,10 @@ function setEra(ch, e, at){
 }
 function volGain(v){ return Math.max(0,Math.min(1,v))*0.95; }
 function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
-function setSound(ch, id){ setSendLevel(ch, id); ch.rig.set(rigFor(id)); ch.post.gain.value=SOUNDS[id].out||1; }
+/* AOG-STRINGS-REAL-V1: a recorded sound has its own level after the amp (rout, measured: its C chord as loud as the grand
+   piano's), as the made string has out; trim carries the difference while the recordings play */
+function recTrim(id){ const s=SOUNDS[id]; return (s && s.rout && recOf(id) && soundReady(id)) ? s.rout/(s.out||1) : 1; }
+function setSound(ch, id){ setSendLevel(ch, id); ch.rig.set(rigFor(id)); ch.post.gain.value=SOUNDS[id].out||1; ch.trim.gain.value=recTrim(id); }
 
 /* a voice is a little chain that ends in a gain we can fade out: stop(t) lets go, kill(t) silences at once */
 function voiceShell(c, out, nodes, rel, endPad){
@@ -1251,9 +1493,16 @@ function synthVoice(c, ch, id, m, v, when, s){
   vc.glide=(m3, at)=>{ const ff=mtof(m3); [o1,o2].forEach(o=>{ try{ o.frequency.cancelScheduledValues(at); o.frequency.setTargetAtTime(ff, at, 0.02); }catch(e){} }); };
   return vc;
 }
-function makeVoice(c, ch, id, m, v, when, s){
+/* every note: makeVoice(c, ch, id, m, v, when, s) → a voice (voiceShell: stop, kill, glide, tau, natural). AOG-STRINGS-REAL-V1:
+   a recorded sound plays its recordings once they are in, the made string until then; o (optional) says how the note is
+   played: {art:"mute"} muted (chug, gallop …), {soft:true} without the pick (a hammer-on, a tap) */
+function makeVoice(c, ch, id, m, v, when, s, o){
   const snd=SOUNDS[id]; if(!snd || m<16 || m>100) return null;
-  return snd.kind==="synth" ? synthVoice(c, ch, id, m, v, when, s) : stringVoice(c, ch, id, m, v, when, s);
+  /* any sound can name a recorded set, a synth too (a recorded synth bass): its recordings once they are in */
+  const r=recOf(id), R=r && REAL.sets[r];
+  if(R && R.state==="ready"){ const vc=recVoice(c, ch, id, m, v, when, s, o, R); if(vc) return vc; }
+  if(snd.kind==="synth") return synthVoice(c, ch, id, m, v, when, s);
+  return stringVoice(c, ch, id, m, v, when, s);
 }
 
 /* ── the live engine ── */
@@ -1283,7 +1532,7 @@ function pluckCell(s, f, v, when){
   const vc=makeVoice(c, LIVE_CH, S.sound, m, v, at, s); if(!vc) return;
   STR_LIVE[s]={vc:vc, m:m, f:f}; track(vc); prune();
 }
-function dampString(s, when){ const old=STR_LIVE[s]; if(old && ac && !old.vc.stopped) old.vc.stop(Math.max(ac.currentTime, when||0), 0.03); STR_LIVE[s]=null; }
+function dampString(s, when){ const old=STR_LIVE[s]; if(old && ac && !old.vc.stopped) old.vc.stop(Math.max(ac.currentTime, when||0), 0.03, {rel:true}); STR_LIVE[s]=null; }   /* the hand on the string (a recording: its sound, AOG-STRINGS-REAL-V1) */
 function muteAll(){ for(let s=0;s<TUNING.length;s++) dampString(s); }
 function slideTo(s, f){
   const L=STR_LIVE[s]; if(!L || L.vc.stopped || !ac){ pluckCell(s, f, 0.62); return; }
@@ -1417,10 +1666,12 @@ function strumPlan(shp, rh, c){
     sp=Math.max(0.015, Math.min(0.04, sp));
     const at=busy[ev.t]!=null ? busy[ev.t]+0.015 : 0; let n=0;
     ss.forEach(h=>{ const cell=typeof h==="object", s=cell?h.s:h; if(seen[s+"@"+ev.t]) return; seen[s+"@"+ev.t]=1;
-      out.push({s:s, f:cell?h.f:null, role:cell&&h.role||"", t:ev.t, off:at+n*sp, v:ev.v*(1-0.035*n)*(ev.mute?0.7:1), chop:ev.chop||0}); n++; });
+      out.push({s:s, f:cell?h.f:null, role:cell&&h.role||"", t:ev.t, off:at+n*sp, v:ev.v*(1-0.035*n)*(ev.mute?0.7:1), chop:ev.chop||0, mute:!!ev.mute}); n++; });
     if(n) busy[ev.t]=at+(n-1)*sp;
   });
-  out.forEach(p=>{ let next=bpb; out.forEach(q=>{ if(q.s===p.s && q.t>p.t && q.t<next) next=q.t; }); p.end=p.chop ? Math.min(p.t+p.chop, next) : next; });
+  /* AOG-STRINGS-REAL-V1: free = the hand lets go of a short note before its string is played again (a recording adds
+     the sound of that) */
+  out.forEach(p=>{ let next=bpb; out.forEach(q=>{ if(q.s===p.s && q.t>p.t && q.t<next) next=q.t; }); p.end=p.chop ? Math.min(p.t+p.chop, next) : next; p.free=!!(p.chop && p.t+p.chop<next-0.05); });
   return out;
 }
 /* AOG-STRINGS-WAYS-V1: a note is in the hand when it has a place on the frets on screen */
@@ -1503,6 +1754,7 @@ function lineEvents(rh, c, next, k){
   if(rh==="bossa") return [E(0,R,1.4,.8), E(1.5,low5,.45,.62), E(2,low5,1.4,.74), E(3.5,R,.45,.62)];
   return [{t:0, m:R, d:3.9, v:.8}];
 }
+const BASS_SHORT={gallop:1, sixteen:1, funk:1, eighths:1};
 /* schedule bar k of the pattern on a context and chain; returns the voices it made */
 function scheduleBar(c, ch, k, t0, barSec, swing){
   const chord=S.prog[k%S.prog.length]; if(!chord) return [];
@@ -1516,19 +1768,23 @@ function scheduleBar(c, ch, k, t0, barSec, swing){
     strumPlan(shp, S.rhythm, chord).forEach(p=>{
       const f=p.f!=null?p.f:shp[p.s], when=t0+p.t*beat+lean(p.t)+p.off, endAt=Math.max(when+0.02, t0+p.end*beat+lean(p.end)), m=TUNING[p.s]+f;
       if(!fresh(p.s, when)) return;
-      const vc=makeVoice(c, ch, S.sound, m, p.v, when, p.s);
-      if(vc){ vc.stop(endAt, p.chop?0.02:SOUNDS[S.sound].damp); vc.m=m; vc.cell=p.s+":"+f; vc.on=when; vc.off=endAt; vc.role=p.role; out.push(vc); }
+      const vc=makeVoice(c, ch, S.sound, m, p.v, when, p.s, p.mute?{art:"mute"}:undefined);      /* a muted strum: the muted recordings (AOG-STRINGS-REAL-V1) */
+      if(vc){ vc.stop(endAt, p.chop?0.02:SOUNDS[S.sound].damp, p.free?{rel:true}:undefined); vc.m=m; vc.cell=p.s+":"+f; vc.on=when; vc.off=endAt; vc.role=p.role; out.push(vc); }
     });
   } else {
     const evs=lineEvents(S.rhythm, chord, S.prog[(k+1)%S.prog.length], k);
+    /* AOG-STRINGS-REAL-V1: the quick, short notes of the metal, funk and driving lines are played short and damped (a
+       recorded set's short notes) */
+    if(BASS_SHORT[S.rhythm]) evs.forEach(e=>{ if(e.d<=0.25) e.mute=true; });
     evs.forEach(ev=>{
       const when=t0+ev.t*beat+lean(ev.t), cl=cellFor(ev.m);
       /* a note lets go when the next one comes, even when the swing pulls the next one closer, and at the bar line (a note
          played early for the next chord rings on over it) */
       const nx=evs.filter(e=>e.t>ev.t).reduce((a,e)=>Math.min(a, t0+e.t*beat+lean(e.t)), ev.role==="ant"?Infinity:t0+barSec), endAt=Math.min(when+ev.d*beat, nx);
       if(!fresh(cl?cl.s:"", when)) return;
-      const vc=makeVoice(c, ch, S.sound, ev.m, ev.v, when, cl?cl.s:null);
-      if(vc){ vc.stop(endAt, SOUNDS[S.sound].damp); vc.m=ev.m; vc.cell=cl?cl.s+":"+cl.f:""; vc.on=when; vc.off=endAt; vc.role=ev.role||""; out.push(vc); }
+      const vc=makeVoice(c, ch, S.sound, ev.m, ev.v, when, cl?cl.s:null, ev.mute?{art:"mute"}:undefined);
+      /* a note let go before the next one: a recording adds the sound of the hand (AOG-STRINGS-REAL-V1) */
+      if(vc){ vc.stop(endAt, SOUNDS[S.sound].damp, when+ev.d*beat<nx-0.03?{rel:true}:undefined); vc.m=ev.m; vc.cell=cl?cl.s+":"+cl.f:""; vc.on=when; vc.off=endAt; vc.role=ev.role||""; out.push(vc); }
     });
   }
   return out;
@@ -1604,6 +1860,7 @@ async function bounce(){
   if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
   btn.disabled=true; line.textContent=t("sending");
   try{
+    await loadSound(S.sound);      /* AOG-STRINGS-REAL-V1: a recorded sound's notes are in before the recording is made */
     if(S.withDrums && DRUM.take && !DRUM.buf){ ctx(); try{ DRUM.buf=await decodeWith(ac, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
     const bpm=curBpm(), barSec=beatsPerBar()*60/bpm, L=S.prog.length;
     const reps=Math.max(1, Math.ceil((22/barSec)/L)), bars=L*reps;
@@ -1637,6 +1894,7 @@ async function sendPads(){
   const line=$("padsLine"), btn=$("padsBtn");
   btn.disabled=true; line.textContent=t("padsSending");
   try{
+    await loadSound(S.sound);      /* AOG-STRINGS-REAL-V1: a recorded sound's notes are in before the pads are made */
     const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
     for(const c of pads()){
       const oc=new OC(1, Math.ceil(LEN*SR), SR); await AOGAmp.load(oc); const ch=makeChain(oc), stopAt=LEN-0.3;
@@ -1690,8 +1948,8 @@ function paintText(){
   $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
-  $("foot").innerHTML=`<p>${t("credit")}</p>`;
-  $("loadLine").textContent=t("built");
+  $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
+  recLine();
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintDrums(); buildNeck();
 }

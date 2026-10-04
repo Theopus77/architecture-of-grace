@@ -146,6 +146,8 @@ The samples come from:
 
 On a new container, re-clone them only if you need new recordings. Every source is credited in `audio/*/CREDITS.txt`.
 
+The recorded guitars and basses (AOG-STRINGS-REAL-V1) are in `audio/guitar/<set>/` and `audio/bass/<set>/`: a `set.json` and mono MP3s each, built by `music-handoff/tools/strings/build_guitar_sets.py` and `music-handoff/tools/bass/build_bass_sets.py`. A sound plays one when it names it (`rec:"green"` in `_work/music/strings_page.html`); `rout` is its level on the recordings, `rrel` how loud the hand's sound is when a note is let go (measured through the sound's own amp), `rclick` the made pick's click on a fingered recording. The files are cached for a year (`_headers`): when any of them changes, bump `REAL.ver` in `strings_page.html`.
+
 ## 6. Tests
 
 `music-handoff/tests/` holds every suite, copied from the old session's and the helpers' scratchpads. Run them with:
@@ -159,6 +161,7 @@ node music-handoff/tests/amp/t3.js           # each amp's distortion and compres
 What the newer suites cover:
 - `amp/b1` (every sound's C chord within 0.5 dB of the grand, the panel, a reload), `amp/b2` (every pedal and amp model);
 - `strings/sfix` (the 44.1 kHz string: pitch, the pick click, steel against nylon, fingers against pick, the synth's thump, held pads), `strings/sways` (the ways to play), `strings/sdecks` (the tools menu on every music page, with the Studio);
+- `strings/real` (the recorded guitars and basses: a set loads only when picked, the made string plays until it is in, every note in tune, no clicks, layers, takes, mutes, bends, taps, the pick on the fingered bass, the hand's sound under the note on every sound, on time with any MP3 decoder, a phone), `strings/bassets` (the bass sets' files; Node and ffmpeg, no browser);
 - `solo/s1` (the panel and the lit scale on an iPhone, an iPad and a computer), `solo/s2` (bends, vibrato, hammer-ons, tap, squeal, whammy, kill, feedback, slap and pop, the keys), `solo/s3` (the backing band in time, the licks);
 - `realkit` (kits P to T: loading, every pad soft to accent, takes, levels against kit A, the era dial, TRIM, the starter beats, Send to the turntables, a reload, Spanish, a phone);
 - `ppat` (all 44 chord patterns on the piano, in five groups, in English and Spanish);
