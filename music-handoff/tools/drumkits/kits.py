@@ -104,7 +104,7 @@ KITS = {
   # ── D · dusty breaks: the found percussion of a breakbeat. A thumping kick through the old "retro" microphone, a
   #       cracking rimshot, a shaker, a tambourine, a clap (there is no free recording of a finger snap), a timbale,
   #       a woodblock and a triangle; a small dry room and a dusty top end.
-  "D": {"dir": "dusty", "pads": {
+  "D": {"dir": "dusty2", "was": "dusty", "pads": {
     "kick":  {"name": "THUMP", "s": L(G("ks", 2, 1, {"retro": 1.0, "oh": 0.3})), "m": L(G("ks", 4, 1, {"retro": 1.0, "oh": 0.3}), G("ks", 4, 2, {"retro": 1.0, "oh": 0.3})),
               "h": L(G("ks", 6, 1, {"retro": 1.0, "oh": 0.3}), G("ks", 6, 2, {"retro": 1.0, "oh": 0.3})),
               "eq": [("hp", 35, .7, 0), ("peak", 70, 1.0, 2), ("peak", 380, 1.0, -3), ("peak", 2800, 1.2, 3), ("lp", 9000, .7, 0)],
@@ -134,7 +134,7 @@ KITS = {
   # ── E · boom bap: the 1990s sampler sound. A hard kick and a fat 14x8 snare (Big Rusty Drums), squeezed and
   #       warmed, dark hats, a crowd's clap, a low tom, a cross-stick, and a scratch: a real voice on a record,
   #       pushed forward and pulled back by hand (the hand moves on the page; the voice is a recording).
-  "E": {"dir": "boombap", "pads": {
+  "E": {"dir": "boombap2", "was": "boombap", "pads": {
     "kick":  {"name": "KICK", "s": L(B("kick", 6)), "m": L(B("kick", 11, 1), B("kick", 11, 2)), "h": L(B("kick", 14, 1), B("kick", 14, 2)),
               "eq": [("hp", 32, .7, 0), ("peak", 58, 1.0, 3), ("peak", 400, 1.0, -5), ("peak", 2500, 1.0, 2), ("lp", 9000, .7, 0)],
               "comp": (-20, 4, 10, 110), "sat": 1.6, "shape": (0.16, 0.14), "len": 0.6, "fade": 0.3},
@@ -189,7 +189,7 @@ KITS = {
   }},
   # ── H · Latin percussion: a concert bass drum for the bombo, a 13-inch timbale, a güiro, a shaker, claves, a conga,
   #       a bongo and agogô bells (the low bell; an accent rings the high one). Dry, close and bright.
-  "H": {"dir": "latin", "pads": {
+  "H": {"dir": "latin2", "was": "latin", "pads": {
     "kick":  {"name": "BOMBO", "s": L(VC(MB + "Bass Drum 1/BDrumNew_hit_v2_rr1_Sum.wav")), "m": L(VC(MB + "Bass Drum 1/BDrumNew_hit_v3_rr1_Sum.wav"), VC(MB + "Bass Drum 1/BDrumNew_hit_v3_rr2_Sum.wav")),
               "h": L(VC(MB + "Bass Drum 1/BDrumNew_hit_v5_rr1_Sum.wav")),
               "eq": [("hp", 35, .7, 0), ("peak", 90, 1.0, 2), ("peak", 600, 1.0, -2), ("peak", 3000, 1.0, 3)], "shape": (0.3, 0.25), "len": 0.75, "fade": 0.35},
@@ -210,7 +210,7 @@ KITS = {
   }},
   # ── I · live drums: a real kit in a room (Virtuosity Drums, a Boston drum shop's club kit; close, overhead and room
   #       microphones): kick, snare, hats, cross-stick, floor tom, ride (its bell on an accent) and crash.
-  "I": {"dir": "live", "pads": {
+  "I": {"dir": "live2", "was": "live", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snon", 2, 1, {"kickmic": 1.0, "oh": 0.4, "room": 0.5})),
               "m": L(V("kick_snon", 3, 1, {"kickmic": 1.0, "oh": 0.4, "room": 0.5}), V("kick_snon", 3, 2, {"kickmic": 1.0, "oh": 0.4, "room": 0.5})),
               "h": L(V("kick_snon", 4, 1, {"kickmic": 1.0, "oh": 0.4, "room": 0.5}), V("kick_snon", 4, 2, {"kickmic": 1.0, "oh": 0.4, "room": 0.5})),
@@ -236,7 +236,7 @@ KITS = {
   # ── J · rock arena: a big open kick, a cracking snare in a huge room that a gate shuts (the 1980s gated sound), a crowd
   #       clapping, a big tom, a stomp (a foot pedal on a wooden box drum, a cajón: there is no free recording of a
   #       foot on a stage), and a crash, all in an arena.
-  "J": {"dir": "arena", "pads": {
+  "J": {"dir": "arena2", "was": "arena", "pads": {
     "kick":  {"name": "KICK", "s": L(B("kickN", 3)), "m": L(B("kickN", 5, 1), B("kickN", 5, 2)), "h": L(B("kickN", 6, 1), B("kickN", 6, 2)),
               "eq": [("hp", 30, .7, 0), ("peak", 65, 0.9, 3), ("peak", 320, 1.0, -3), ("peak", 2600, 1.0, 3)], "comp": (-20, 3, 12, 160),
               "room": (ROOM_ARENA, -13, (-24, 6)), "len": 1.1, "fade": 0.6},
@@ -260,7 +260,7 @@ KITS = {
   # ── K · jazz brushes: a jazz trio's drummer, close and quiet (Swirly Drums, played with brushes): a felt kick, the
   #       brush tapped on the snare, the hi-hat foot, a short sweep round the snare, a brush slapped into the head, a
   #       tom, the ride, and a real double bass plucked on a low G (VSCO 2 Community Edition).
-  "K": {"dir": "jazzbrush", "pads": {
+  "K": {"dir": "jazzbrush2", "was": "jazzbrush", "pads": {
     "kick":  {"name": "KICK", "s": L(SW2("marching_kick/marching_kick_vl3_rr1_beater.wav", 0.5, "marching_kick/marching_kick_vl3_rr1_reso.wav", 1.0)),
               "m": L(SW2("marching_kick/marching_kick_vl6_rr1_beater.wav", 0.5, "marching_kick/marching_kick_vl6_rr1_reso.wav", 1.0),
                      SW2("marching_kick/marching_kick_vl6_rr2_beater.wav", 0.5, "marching_kick/marching_kick_vl6_rr2_reso.wav", 1.0)),
@@ -293,7 +293,7 @@ KITS = {
   # ── M · reggae and dub: a round kick, a high snare with a dub echo (the echo made here, as on a mixing desk), hats, a
   #       synth tom (made on the page: a synth drum is electronic on the real instrument too), a tom, the one drop's
   #       cross-stick, and the skank: a real upright piano chord chopped short, with its echo.
-  "M": {"dir": "reggae", "pads": {
+  "M": {"dir": "reggae2", "was": "reggae", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snoff", 2, 1, {"kickmic": 1.0, "oh": 0.4})),
               "m": L(V("kick_snoff", 3, 1, {"kickmic": 1.0, "oh": 0.4}), V("kick_snoff", 3, 2, {"kickmic": 1.0, "oh": 0.4})),
               "h": L(V("kick_snoff", 4, 1, {"kickmic": 1.0, "oh": 0.4}), V("kick_snoff", 4, 2, {"kickmic": 1.0, "oh": 0.4})),
@@ -322,7 +322,7 @@ KITS = {
   }},
   # ── N · afrobeat: a tight funk kit, a cabasa (the modern shekere, a gourd of beads), hats, a djembe (there is no
   #       free recording of a talking drum), a quinto conga, two sticks (claves) and an iron cowbell.
-  "N": {"dir": "afrobeat", "pads": {
+  "N": {"dir": "afrobeat2", "was": "afrobeat", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snoff", 2, 1, {"kickmic": 1.0, "oh": 0.3})),
               "m": L(V("kick_snoff", 3, 1, {"kickmic": 1.0, "oh": 0.3}), V("kick_snoff", 3, 2, {"kickmic": 1.0, "oh": 0.3})),
               "h": L(V("kick_snoff", 4, 1, {"kickmic": 1.0, "oh": 0.3})),
@@ -347,7 +347,7 @@ KITS = {
   }},
   # ── O · marching band: a 20-inch marching bass drum, a marching snare, its sticks clicked, hand cymbals crashed, a
   #       snare roll that swells and lets go, a tenor drum, a rimshot, and the bells (a glockenspiel on a high G).
-  "O": {"dir": "marching", "pads": {
+  "O": {"dir": "marching2", "was": "marching", "pads": {
     "kick":  {"name": "BASS", "s": L(SW2("marching_kick/marching_kick_vl6_rr1_beater.wav", 0.7, "marching_kick/marching_kick_vl6_rr1_reso.wav", 1.0)),
               "m": L(SW2("marching_kick/marching_kick_vl10_rr1_beater.wav", 0.7, "marching_kick/marching_kick_vl10_rr1_reso.wav", 1.0),
                      SW2("marching_kick/marching_kick_vl10_rr2_beater.wav", 0.7, "marching_kick/marching_kick_vl10_rr2_reso.wav", 1.0)),
@@ -376,7 +376,7 @@ KITS = {
   }},
   # ── U · jazz club (Buddy Rich): Virtuosity Drums as recorded, a Boston drum shop's house kit set up for a club: a small
   #       kick for the "bombs", a crisp snare, hats, the hi-hat foot, a tom, the ride and a crash.
-  "U": {"dir": "jazzclub", "pads": {
+  "U": {"dir": "jazzclub2", "was": "jazzclub", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snon", 2, 1, {"kickmic": 0.8, "oh": 0.7, "room": 0.5})),
               "m": L(V("kick_snon", 3, 1, {"kickmic": 0.8, "oh": 0.7, "room": 0.5}), V("kick_snon", 3, 2, {"kickmic": 0.8, "oh": 0.7, "room": 0.5})),
               "h": L(V("kick_snon", 4, 1, {"kickmic": 0.8, "oh": 0.7, "room": 0.5}), V("kick_snon", 4, 2, {"kickmic": 0.8, "oh": 0.7, "room": 0.5})),
@@ -433,7 +433,7 @@ KITS = {
   # ── W · studio funk (Jeff Porcaro): the Virtuosity kit up close and dry: a tight kick, a snare made for ghost notes
   #       (a rimshot on the accent), crisp hats, the barking half-open hat, cross-stick, a tom, the ride (bell on the
   #       accent) and a crash.
-  "W": {"dir": "funk", "pads": {
+  "W": {"dir": "funk2", "was": "funk", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snoff", 2, 1, {"kickmic": 1.0, "oh": 0.25})),
               "m": L(V("kick_snoff", 3, 1, {"kickmic": 1.0, "oh": 0.25}), V("kick_snoff", 3, 2, {"kickmic": 1.0, "oh": 0.25})),
               "h": L(V("kick_snoff", 4, 1, {"kickmic": 1.0, "oh": 0.25}), V("kick_snoff", 4, 2, {"kickmic": 1.0, "oh": 0.25})),
@@ -461,7 +461,7 @@ KITS = {
   # ── X · 1970s vintage (John Bonham): Gogodze Phu Vol II, a kit tuned to sound like a 1973 record, through its close,
   #       front, overhead and window microphones, warm and a little worn: kick, snare, hats, a tom, a floor tom, the
   #       hi-hat foot, and a crash (from Big Rusty Drums, made darker to match).
-  "X": {"dir": "vintage70", "pads": {
+  "X": {"dir": "vintage70-2", "was": "vintage70", "pads": {
     "kick":  {"name": "KICK", "s": L(G("ks", 2, 1, {"kick": 1.0, "front": 0.6, "oh": 0.4})),
               "m": L(G("ks", 4, 1, {"kick": 1.0, "front": 0.6, "oh": 0.4}), G("ks", 4, 2, {"kick": 1.0, "front": 0.6, "oh": 0.4})),
               "h": L(G("ks", 6, 1, {"kick": 1.0, "front": 0.6, "oh": 0.4}), G("ks", 6, 2, {"kick": 1.0, "front": 0.6, "oh": 0.4})),
@@ -486,7 +486,7 @@ KITS = {
   # ── Y · hip-hop break: the same 1973-style kit through its "retro" microphone, the way a break sounds when it is
   #       sampled from an old record: squeezed, warm, a little dusty. Kick, snare, hats, cross-stick, a tom, a floor
   #       tom, and a crash (from Big Rusty Drums, through the same worn sound).
-  "Y": {"dir": "break", "pads": {
+  "Y": {"dir": "break2", "was": "break", "pads": {
     "kick":  {"name": "KICK", "s": L(G("ks", 2, 1, {"retro": 1.0})), "m": L(G("ks", 4, 1, {"retro": 1.0}), G("ks", 4, 2, {"retro": 1.0})),
               "h": L(G("ks", 6, 1, {"retro": 1.0}), G("ks", 6, 2, {"retro": 1.0})),
               "eq": [("hp", 40, .7, 0), ("peak", 90, 1.0, 2), ("lp", 8500, .7, 0)], "comp": (-18, 3, 8, 100), "sat": 1.3, "len": 0.6, "fade": 0.3},

@@ -1,7 +1,11 @@
 """Small DSP kit for the drum voicings: RBJ biquads, a feed-forward compressor, a synthetic room,
-tuning by band-limited resampling, envelopes and K-weighted loudness. Everything mono float64 at 44.1 kHz.
+tuning by band-limited resampling, envelopes and K-weighted loudness. Float64 at 44.1 kHz.
 (From the kits P to T, AOG-DRUM-REAL-V1; AOG-DRUM-REAL-V2 adds the dub echo, the gated room, the hand-moved
-record for a scratch, and mixing at an offset.)"""
+record for a scratch, and mixing at an offset.)
+AOG-DRUM-STEREO-V1 (2026-10-04): every function also takes a stereo sound, shape (n, 2). A mono sound (shape (n,))
+goes through exactly as before. On a stereo sound the two sides get the same treatment: the same filters, one
+compressor that listens to both sides (so the picture never leans), the same room, and loudness as the average
+of the two sides' power (a sound with two equal sides measures as its mono self)."""
 import numpy as np
 from scipy import signal
 
@@ -37,14 +41,15 @@ def eq(x, bands):
     y = np.asarray(x, dtype=np.float64)
     for kind, f, q, g in bands:
         b, a = _biquad(kind, f, q, g)
-        y = signal.lfilter(b, a, y)
+        y = signal.lfilter(b, a, y, axis=0)
     return y
 
 # ---------- dynamics ----------
 def comp(x, thr_db=-18.0, ratio=3.0, att_ms=5.0, rel_ms=100.0, knee_db=6.0, makeup_db=0.0):
     """feed-forward peak compressor with a soft knee; gain smoothing in dB"""
     x = np.asarray(x, dtype=np.float64)
-    lvl = 20 * np.log10(np.abs(x) + 1e-9)
+    det = np.max(np.abs(x), axis=1) if x.ndim == 2 else np.abs(x)     # stereo: the louder side at each moment
+    lvl = 20 * np.log10(det + 1e-9)
     over = lvl - thr_db
     gr = np.zeros_like(lvl)
     k = knee_db / 2
@@ -58,7 +63,7 @@ def comp(x, thr_db=-18.0, ratio=3.0, att_ms=5.0, rel_ms=100.0, knee_db=6.0, make
         t = gr[i]
         s = aa * s + (1 - aa) * t if t > s else ar * s + (1 - ar) * t
         g[i] = s
-    return x * 10 ** ((makeup_db - g) / 20)
+    return x * _col(x, 10 ** ((makeup_db - g) / 20))
 
 def sat(x, drive=1.0):
     """gentle tape-like saturation, level-matched at small signals"""
@@ -72,7 +77,7 @@ def env_shape(x, hold=0.1, decay=0.15, start=0.0):
     e = np.ones(n)
     m = t > start + hold
     e[m] = np.exp(-(t[m] - start - hold) / decay)
-    return x * e
+    return x * _col(x, e)
 
 def attack_boost(x, db=4.0, ms=12.0):
     """lift the first `ms` of the hit (a transient shaper), fading back to unity"""
@@ -80,7 +85,7 @@ def attack_boost(x, db=4.0, ms=12.0):
     g = np.ones(len(x))
     ramp = 10 ** (db / 20) - (10 ** (db / 20) - 1) * (np.arange(n) / max(1, n))
     g[:min(n, len(x))] = ramp[:min(n, len(x))]
-    return x * g
+    return x * _col(x, g)
 
 # ---------- room ----------
 def room_ir(rt60=1.2, pre_ms=12.0, damp_rt60_hi=None, er=8, length=None, seed=7, bright=0.0):
@@ -114,8 +119,13 @@ def room_ir(rt60=1.2, pre_ms=12.0, damp_rt60_hi=None, er=8, length=None, seed=7,
     return ir
 
 def add_room(x, ir, wet_db=-10.0, crush=None, hp=150.0, extra=0.0):
-    """x + its room. crush=(thr_db, ratio) squeezes the room the way a big rock record does"""
-    wet = signal.fftconvolve(np.concatenate([x, np.zeros(int(len(ir)))]), ir)[: len(x) + len(ir)]
+    """x + its room. crush=(thr_db, ratio) squeezes the room the way a big rock record does
+    (stereo: each side through the same room)"""
+    if x.ndim == 2:
+        wet = np.stack([signal.fftconvolve(np.concatenate([x[:, c], np.zeros(int(len(ir)))]), ir)[: len(x) + len(ir)]
+                        for c in range(x.shape[1])], axis=1)
+    else:
+        wet = signal.fftconvolve(np.concatenate([x, np.zeros(int(len(ir)))]), ir)[: len(x) + len(ir)]
     if hp:
         wet = eq(wet, [("hp", hp, 0.707, 0)])
     if crush:
@@ -125,7 +135,7 @@ def add_room(x, ir, wet_db=-10.0, crush=None, hp=150.0, extra=0.0):
     rd = np.sqrt(np.mean(x[:n] ** 2)) + 1e-12
     rw = np.sqrt(np.mean(wet[:n + int(0.2 * SR)] ** 2)) + 1e-12
     wet *= (rd / rw) * 10 ** (wet_db / 20)
-    y = np.concatenate([x, np.zeros(len(wet) - len(x))]) + wet
+    y = np.concatenate([x, np.zeros((len(wet) - len(x),) + x.shape[1:])]) + wet
     return y
 
 # ---------- tuning ----------
@@ -138,18 +148,18 @@ def tune(x, semis):
     # band-limited resample with a polyphase filter at a rational approximation
     from fractions import Fraction
     fr = Fraction(1 / r).limit_denominator(400)
-    return signal.resample_poly(x, fr.numerator, fr.denominator)[:n]
+    return signal.resample_poly(x, fr.numerator, fr.denominator, axis=0)[:n]
 
 # ---------- length and fades ----------
 def cut(x, length, fade):
     n = int(SR * length)
-    y = np.zeros(n)
+    y = np.zeros((n,) + x.shape[1:])
     m = min(n, len(x)); y[:m] = x[:m]
     f = int(SR * fade)
     if f > 0:
         w = np.ones(n)
         w[n - f:] = 0.5 * (1 + np.cos(np.linspace(0, np.pi, f)))
-        y *= w
+        y *= _col(y, w)
     return y
 
 # ---------- loudness ----------
@@ -164,8 +174,9 @@ def _k_sos(fs=SR):
 
 def momentary(x):
     """max K-weighted loudness over 400 ms windows (LUFS-like, no gating)"""
-    k = signal.sosfilt(_k_sos(), x)
-    cs = np.concatenate([[0], np.cumsum(k * k)])
+    k = signal.sosfilt(_k_sos(), x, axis=0)
+    p = np.mean(k * k, axis=1) if k.ndim == 2 else k * k     # stereo: the average of the two sides' power
+    cs = np.concatenate([[0], np.cumsum(p)])
     W = int(0.4 * SR)
     if len(k) <= W:
         ms = cs[-1] / W
@@ -181,7 +192,9 @@ def mix_at(base, x, at_s=0.0, gain=1.0):
     """base + x placed `at_s` seconds in (base grows if x runs past its end)"""
     k = int(round(at_s * SR))
     n = max(len(base), k + len(x))
-    y = np.zeros(n); y[:len(base)] += base
+    if base.ndim != x.ndim:           # a mono part laid into a stereo sound sits in the middle
+        base, x = as_stereo(base), as_stereo(x)
+    y = np.zeros((n,) + x.shape[1:]); y[:len(base)] += base
     y[k:k + len(x)] += x * gain
     return y
 
@@ -200,25 +213,28 @@ def gate(x, open_s=0.25, close_s=0.04, floor_db=-60.0):
     g = np.ones(n)
     m = t > open_s
     g[m] = np.maximum(10 ** (floor_db / 20), np.exp(-(t[m] - open_s) / max(1e-3, close_s / 6.91)))
-    return x * g
+    return x * _col(x, g)
 
 def varispeed(x, speed, start=0):
     """play x through a hand-moved record: speed[i] is the rate (1 = as recorded, negative = backwards) at output
     sample i, the needle starting `start` samples in. Linear interpolation; the needle stays inside the recording."""
     pos = start + np.cumsum(np.concatenate([[0.0], speed[:-1]]))
     pos = np.clip(pos, 0, len(x) - 2)
-    i = pos.astype(np.int64); f = pos - i
+    i = pos.astype(np.int64); f = _col(x, pos - i)
     return x[i] * (1 - f) + x[i + 1] * f
 
 def fade_in(x, ms=2.0):
     n = min(len(x), int(SR * ms / 1000))
     y = np.array(x, dtype=np.float64)
     if n > 1:
-        y[:n] *= 0.5 * (1 - np.cos(np.linspace(0, np.pi, n)))
+        w = 0.5 * (1 - np.cos(np.linspace(0, np.pi, n)))
+        y[:n] *= w[:, None] if y.ndim == 2 else w
     return y
 
 def pitch_hz(x, lo=30.0, hi=2000.0, start_s=0.03, dur_s=0.5):
     """the strongest spectral peak between lo and hi Hz, after the attack"""
+    if x.ndim == 2:
+        x = x.mean(axis=1)
     a = int(start_s * SR); seg = x[a:a + int(dur_s * SR)]
     if len(seg) < 256:
         seg = x
@@ -226,3 +242,14 @@ def pitch_hz(x, lo=30.0, hi=2000.0, start_s=0.03, dur_s=0.5):
     sp = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), nfft)); f = np.fft.rfftfreq(nfft, 1 / SR)
     m = (f > lo) & (f < hi)
     return float(f[m][np.argmax(sp[m])])
+
+
+# ---------- AOG-DRUM-STEREO-V1 helpers ----------
+def _col(x, g):
+    """a gain curve g (one value per sample) shaped to multiply x, mono or stereo"""
+    return g[:, None] if np.ndim(x) == 2 else g
+
+def as_stereo(x):
+    """a mono sound as two equal sides; a stereo sound as it is"""
+    x = np.asarray(x, dtype=np.float64)
+    return np.stack([x, x], axis=1) if x.ndim == 1 else x
