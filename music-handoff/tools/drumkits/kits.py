@@ -208,7 +208,7 @@ KITS = {
     "bell":  {"name": "AGOGO", "s": L(VC(ID + "Agogo Bells/Agogo_Low_v1_rr1_Mid.wav")), "m": L(VC(ID + "Agogo Bells/Agogo_Low_v2_rr1_Mid.wav")),
               "h": L(VC(ID + "Agogo Bells/Agogo_High_v3_rr1_Mid.wav")), "eq": [("hp", 400, .7, 0)], "len": 0.6, "fade": 0.35},
   }},
-  # ── I · live drums: a real kit in a room (the Boston club kit of Virtuosity Drums, close, overhead and room
+  # ── I · live drums: a real kit in a room (Virtuosity Drums, a Boston drum shop's club kit; close, overhead and room
   #       microphones): kick, snare, hats, cross-stick, floor tom, ride (its bell on an accent) and crash.
   "I": {"dir": "live", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snon", 2, 1, {"kickmic": 1.0, "oh": 0.4, "room": 0.5})),
@@ -374,7 +374,7 @@ KITS = {
     "bell":  {"name": "BELLS", "s": L(VC(ID + "Glockenspiel/glock_soft_G6_01.wav")), "m": L(VC(ID + "Glockenspiel/glock_medium_G6_01.wav")),
               "h": L(T(ID + "Glockenspiel/glock_loud_G#6_01.wav", tune=-1)), "eq": [("hp", 600, .7, 0)], "len": 1.3, "fade": 0.8},
   }},
-  # ── U · jazz club (Buddy Rich): Virtuosity Drums as recorded, the house kit of a Boston club with its room: a small
+  # ── U · jazz club (Buddy Rich): Virtuosity Drums as recorded, a Boston drum shop's house kit set up for a club: a small
   #       kick for the "bombs", a crisp snare, hats, the hi-hat foot, a tom, the ride and a crash.
   "U": {"dir": "jazzclub", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snon", 2, 1, {"kickmic": 0.8, "oh": 0.7, "room": 0.5})),

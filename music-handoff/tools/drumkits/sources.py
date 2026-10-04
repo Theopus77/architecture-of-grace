@@ -6,7 +6,7 @@ A file is looked for in the local clones first (LOCAL, set AOG_DRUM_SRC_<LIB> to
 to everyone under CC0 1.0 Universal (public domain); the LICENSE file of each was read in the clone:
 
   brd    Big Rusty Drums, Karoryfer Samples                     (kits P to T, and J)
-  virt   Virtuosity Drums, Versilian Studios + Karoryfer        (jazz club kit, Boston: Austin McMahon)
+  virt   Virtuosity Drums, Versilian Studios + Karoryfer        (a Boston drum shop's club kit: Austin McMahon)
   swirly Swirly Drums, Karoryfer Samples                        (a brush kit)
   gogo   Gogodze Phu Vol II, Karoryfer Samples                  (a kit tuned like a 1973 record)
   vcsl   Versilian Community Sample Library, Versilian Studios  (hand percussion, claps, marching drums, bells)
