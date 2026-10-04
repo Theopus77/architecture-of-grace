@@ -68,16 +68,16 @@
     drums: { en: "The drum machine", es: "La caja de ritmos" },
     fail: { en: "That did not work. Try again.", es: "No funcionó. Inténtalo otra vez." },
     /* AOG-STUDIO-SEND-V1 */
-    studio: { en: "Send to the Studio", es: "Enviar al estudio" },
-    studioSent: { en: "Sent to the Studio.", es: "Enviada al estudio." },
-    studioGo: { en: "Open the Studio", es: "Abrir el estudio" },
+    studio: { en: "Send to the Mixing Desk", es: "Enviar a la mesa de mezclas" },
+    studioSent: { en: "Sent to the Mixing Desk.", es: "Enviada a la mesa de mezclas." },
+    studioGo: { en: "Open the Mixing Desk", es: "Abrir la mesa de mezclas" },
     /* AOG-REC-DELETE-V1 — Jimmy: "There should be a delete button for the musical recording. I accidentally hit the record
        button when I was playing." Every take can be deleted; for a moment it can be brought back. */
     del: { en: "Delete", es: "Borrar" },
     delAria: { en: "Delete take {n}", es: "Borrar la toma {n}" },
     deleted: { en: "Take {n} is deleted.", es: "La toma {n} está borrada." },
     undo: { en: "Bring it back", es: "Recuperarla" },
-    noRoom: { en: "This device has no room left for takes. In the Studio, remove a take you do not need, then try again.", es: "Este dispositivo no tiene más espacio para tomas. En el estudio, quita una toma que no necesites y vuelve a intentarlo." }
+    noRoom: { en: "This device has no room left for takes. At the Mixing Desk, remove a take you do not need, then try again.", es: "Este dispositivo no tiene más espacio para tomas. En la mesa de mezclas, quita una toma que no necesites y vuelve a intentarlo." }
   };
   /* AOG-TAKE-TO-PADS-V1 — the tools whose takes can go to the drum machine, and what a take is called there */
   var TOOL = { keysbench: "piano", guitarbench: "guitar", bassbench: "bass", bandbench: "band" };

@@ -7,15 +7,15 @@
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
 try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
 </script>
-<title>The Studio — Architecture of Grace</title>
+<title>The Mixing Desk — Architecture of Grace</title>
 <meta name="description" content="Put what you made on the drum machine, piano, guitar, bass and band on eight tracks. Mix them, make your song, save it or send it to the turntables. Nothing leaves this device.">
 <link rel="canonical" href="https://architectureofgrace.org/studio">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
-<meta property="og:title" content="The Studio — Architecture of Grace">
+<meta property="og:title" content="The Mixing Desk — Architecture of Grace">
 <meta property="og:description" content="Eight tracks and a mixer for the songs you make on the site's instruments.">
 <meta property="og:url" content="https://architectureofgrace.org/studio">
-<meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
+<meta property="og:image" content="https://architectureofgrace.org/img/banners/music-mixdesk-pencil-1600.webp">
 <meta name="theme-color" content="#0A1E33">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -253,7 +253,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 </script>
 <div class="wrap">
   <header class="no-print">
-    <a class="brand" href="#" id="brand">The Studio</a>
+    <a class="brand" href="#" id="brand">The Mixing Desk</a>
     <div class="tools">
       <button type="button" class="pill" id="langBtn">ES</button>
       <button type="button" class="pill" id="themeBtn">Dark</button>
@@ -342,7 +342,7 @@ const SHELVES=[
   {key:"guitarbench",from:{en:"From the guitar",es:"De la guitarra"}, sh:{en:"Guitar",es:"Guitarra"}, tk:{en:"Guitar take",es:"Toma de guitarra"}},
   {key:"bassbench",  from:{en:"From the bass",es:"Del bajo"}, sh:{en:"Bass",es:"Bajo"}, tk:{en:"Bass take",es:"Toma de bajo"}},
   {key:"bandbench",  from:{en:"From the band",es:"De la banda"}, sh:{en:"Band",es:"Banda"}, tk:{en:"Band take",es:"Toma de la banda"}},
-  {key:"studiobench",from:{en:"Your last mix from the studio",es:"Tu última mezcla del estudio"}, sh:{en:"Mix",es:"Mezcla"}, tk:{en:"Mix",es:"Mezcla"}}
+  {key:"studiobench",from:{en:"Your last mix from the mixing desk",es:"Tu última mezcla de la mesa de mezclas"}, sh:{en:"Mix",es:"Mezcla"}, tk:{en:"Mix",es:"Mezcla"}}
 ];
 const SHELF_KEYS=SHELVES.map(s=>s.key);
 function shelfOf(k){ return SHELVES.find(s=>s.key===k)||null; }
@@ -358,10 +358,10 @@ const TOOLS={
 };
 
 const STR={
-  app:{en:"The Studio",es:"El estudio"},
+  app:{en:"The Mixing Desk",es:"La mesa de mezclas"},   /* AOG-MIXDESK-V1 (2026-10-04): The Studio is now the door to every instrument; this is its mixing desk */
   kicker:{en:"Put your song together.",es:"Arma tu canción."},
-  lead:{en:"Record on any instrument, press Send to the Studio, then come here.",es:"Graba en cualquier instrumento, pulsa Enviar al estudio y luego ven aquí."},
-  plate:{en:"THE STUDIO",es:"EL ESTUDIO"}, plateSub:{en:"EIGHT TRACKS · MIXER",es:"OCHO PISTAS · MEZCLADORA"},
+  lead:{en:"Record on any instrument, press Send to the Mixing Desk, then come here.",es:"Graba en cualquier instrumento, pulsa Enviar a la mesa de mezclas y luego ven aquí."},
+  plate:{en:"THE MIXING DESK",es:"LA MESA DE MEZCLAS"}, plateSub:{en:"EIGHT TRACKS · MIXER",es:"OCHO PISTAS · MEZCLADORA"},
   play:{en:"▶ Play",es:"▶ Tocar"}, stop:{en:"■ Stop",es:"■ Parar"},
   pos:{en:"Bar {b} · beat {n} · {t}",es:"Compás {b} · pulso {n} · {t}"},
   countIn:{en:"Get ready… {n}",es:"Prepárate… {n}"},
@@ -380,7 +380,7 @@ const STR={
   laneAria:{en:"Track {n}: {name}",es:"Pista {n}: {name}"}, laneBars:{en:"bars {a} to {b}",es:"compases {a} a {b}"},
   trackPick:{en:"Track",es:"Pista"},
   recsH:{en:"Put a recording on this track",es:"Pon una grabación en esta pista"},
-  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Studio.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar al estudio."},
+  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
   putFail:{en:"That recording could not be read. Try sending it again.",es:"No se pudo leer esa grabación. Intenta enviarla otra vez."},
@@ -419,9 +419,9 @@ const STR={
   newYes:{en:"Yes, clear it all",es:"Sí, borrar todo"}, newNo:{en:"Keep my song",es:"Conservar mi canción"},
   newDone:{en:"Your tracks are clear. Put a recording on a track to begin.",es:"Tus pistas están vacías. Pon una grabación en una pista para empezar."},
   gone:{en:"A recording could not be found, so its track is empty now.",es:"No se encontró una grabación, así que su pista quedó vacía."},
-  mixName:{en:"Studio · Your song · {bpm} BPM · {bars} bars",es:"Estudio · Tu canción · {bpm} BPM · {bars} compases"},
+  mixName:{en:"Mixing desk · Your song · {bpm} BPM · {bars} bars",es:"Mesa de mezclas · Tu canción · {bpm} BPM · {bars} compases"},
   file:{en:"my-song",es:"mi-cancion"},
-  foot:{en:"Your song and your takes stay on this device. The studio never uses a microphone.",es:"Tu canción y tus tomas se quedan en este aparato. El estudio nunca usa un micrófono."},
+  foot:{en:"Your song and your takes stay on this device. The mixing desk never uses a microphone.",es:"Tu canción y tus tomas se quedan en este aparato. La mesa de mezclas nunca usa un micrófono."},
   /* AOG-STUDIO-INBOX-V1 */
   grpTakes:{en:"Takes sent here",es:"Tomas enviadas aquí"}, grpShelves:{en:"Sent to the turntables",es:"Enviado a los platos"},
   inboxH:{en:"Takes sent here",es:"Tomas enviadas aquí"},
@@ -437,8 +437,8 @@ const STR={
   stays1:{en:"It stays on track {list}.",es:"Se queda en la pista {list}."}, staysN:{en:"It stays on tracks {list}.",es:"Se queda en las pistas {list}."},
   removeYes:{en:"Yes, remove it",es:"Sí, quitarla"}, removeNo:{en:"Keep it",es:"Conservarla"},
   removed:{en:"{name} is out of the list.",es:"{name} ya no está en la lista."},
-  goneOne:{en:"The Studio keeps {max} takes. To make room for a new one, the oldest went: {list}.",es:"El estudio guarda {max} tomas. Para hacer lugar a una nueva, se fue la más antigua: {list}."},
-  goneMany:{en:"The Studio keeps {max} takes. To make room for new ones, the oldest went: {list}.",es:"El estudio guarda {max} tomas. Para hacer lugar a las nuevas, se fueron las más antiguas: {list}."},
+  goneOne:{en:"The Mixing Desk keeps {max} takes. To make room for a new one, the oldest went: {list}.",es:"La mesa de mezclas guarda {max} tomas. Para hacer lugar a una nueva, se fue la más antigua: {list}."},
+  goneMany:{en:"The Mixing Desk keeps {max} takes. To make room for new ones, the oldest went: {list}.",es:"La mesa de mezclas guarda {max} tomas. Para hacer lugar a las nuevas, se fueron las más antiguas: {list}."},
   goneKept:{en:"A take already on a track stays there.",es:"Una toma que ya está en una pista se queda ahí."},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
@@ -1107,7 +1107,7 @@ async function newSong(){
    ══════════════════════════════════════════════════════════════════════════ */
 /* the music tools in one menu, as on the other tools (AOG-MUSIC-TOOLS-MENU-V1) */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Studio","Estudio"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="studio"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function trackName(i){
