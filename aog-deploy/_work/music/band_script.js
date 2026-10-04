@@ -239,7 +239,8 @@ const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n
 const PADS_MINOR=[{n:1,off:0,q:"min"},{n:2,off:3,q:"maj"},{n:3,off:5,q:"min"},{n:4,off:7,q:"min"},{n:5,off:8,q:"maj"},{n:6,off:10,q:"maj"}];
 function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
 const C=(off,q)=>({off:off,q:q||"maj"});
-/* the piano's eighteen patterns, in the same three groups (AOG-PIANO-PATTERNS-V2); the ids never change */
+/* the forty-four chord patterns, the same on the piano, the guitar and the bass (AOG-PIANO-PATTERNS-V2, AOG-STRINGS-WAYS-V1),
+   in five groups; the ids never change */
 const PRESETS=[
   {id:"pop",     g:"pop",  en:"Pop · 1 5 6 4",             es:"Pop · 1 5 6 4",              minor:false, chords:[C(0),C(7),C(9,"min"),C(5)]},
   {id:"fifties", g:"pop",  en:"Fifties · 1 6 4 5",         es:"Años 50 · 1 6 4 5",          minor:false, chords:[C(0),C(9,"min"),C(5),C(7)]},
@@ -251,16 +252,43 @@ const PRESETS=[
   {id:"rock",    g:"pop",  en:"Rock · 1 ♭7 4 1",           es:"Rock · 1 ♭7 4 1",            minor:false, chords:[C(0),C(10),C(5),C(0)]},
   {id:"hymn",    g:"pop",  en:"Hymn and gospel · 1 4 1 5", es:"Himno y góspel · 1 4 1 5",  minor:false, chords:[C(0),C(5),C(0),C(7)]},
   {id:"wheel",   g:"pop",  en:"Around the wheel · 3 6 2 5 1", es:"Por la rueda · 3 6 2 5 1", minor:false, chords:[C(4,"dom7"),C(9,"dom7"),C(2,"dom7"),C(7,"dom7"),C(0),C(0)]},
+  {id:"anthem",  g:"pop",  en:"Rock anthem · 1 4 6 5",     es:"Himno de rock · 1 4 6 5",    minor:false, chords:[C(0),C(5),C(9,"min"),C(7)]},
+  {id:"uplift",  g:"pop",  en:"Uplifting pop · 1 3 6 4",   es:"Pop alegre · 1 3 6 4",       minor:false, chords:[C(0),C(4,"min"),C(9,"min"),C(5)]},
+  {id:"folkrock",g:"pop",  en:"Folk rock · 1 5 2",         es:"Folk rock · 1 5 2",          minor:false, chords:[C(0),C(7),C(2,"min"),C(2,"min")]},
+  {id:"dreamy",  g:"pop",  en:"Dreamy · 1 3 4 4m",         es:"De ensueño · 1 3 4 4m",      minor:false, chords:[C(0),C(4),C(5),C(5,"min")]},
+  {id:"country", g:"pop",  en:"Country · 8 bars",          es:"Country · 8 compases",       minor:false, chords:[C(0),C(0),C(5),C(5),C(7),C(7),C(0),C(0)]},
+  {id:"arena",   g:"rock", en:"Arena rock · 1 5 4 4",      es:"Rock de estadio · 1 5 4 4",  minor:false, chords:[C(0),C(7),C(5),C(5)]},
+  {id:"mixo",    g:"rock", en:"Two-chord rock · 1 ♭7",     es:"Rock de dos acordes · 1 ♭7", minor:false, chords:[C(0),C(10),C(0),C(10)]},
+  {id:"grunge",  g:"rock", en:"Grunge · 1 4 ♭3 ♭6",        es:"Grunge · 1 4 ♭3 ♭6",         minor:false, chords:[C(0),C(5),C(3),C(8)]},
+  {id:"fifths",  g:"rock", en:"Walk round the wheel · ♭6 ♭3 ♭7 4 1", es:"Vuelta por la rueda · ♭6 ♭3 ♭7 4 1", minor:false, chords:[C(8),C(3),C(10),C(5),C(0)]},
+  {id:"metalmarch",g:"rock", en:"Metal march",             es:"Marcha metalera",  minor:true,  chords:[C(0,"min"),C(8),C(10),C(0,"min")]},
+  {id:"darkheavy",g:"rock", en:"Dark and heavy",           es:"Oscuro y pesado",  minor:true,  chords:[C(0,"min"),C(1),C(0,"min"),C(1)]},
+  {id:"doom",    g:"rock", en:"Doom",                      es:"Doom",             minor:true,  chords:[C(0,"min"),C(6),C(5,"min"),C(0,"min")]},
+  {id:"soul",    g:"soul", en:"Soul · 1 3 4 5",            es:"Soul · 1 3 4 5",             minor:false, chords:[C(0),C(4,"min"),C(5),C(7)]},
+  {id:"funk",    g:"soul", en:"Funk · 1 4 with sevenths",  es:"Funk · 1 4 con séptimas",    minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(0,"dom7")]},
+  {id:"groove2", g:"soul", en:"Two-chord groove · 1 4",    es:"Ritmo de dos acordes · 1 4", minor:false, chords:[C(0),C(5),C(0),C(5)]},
+  {id:"dance",   g:"soul", en:"Dance · 6 5 4 5",           es:"Baile · 6 5 4 5",            minor:false, chords:[C(9,"min"),C(7),C(5),C(7)]},
+  {id:"lofi",    g:"soul", en:"Lo-fi · 4 3 2 1",           es:"Lo-fi · 4 3 2 1",            minor:false, chords:[C(5,"maj7"),C(4,"m7"),C(2,"m7"),C(0,"maj7")]},
+  {id:"neosoul", g:"soul", en:"Neo-soul · 2 5 1 6",        es:"Neo-soul · 2 5 1 6",         minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(9,"m7")]},
   {id:"blues",   g:"jazz", en:"Blues · 12 bars",           es:"Blues · 12 compases",        minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
   {id:"jazz",    g:"jazz", en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(0,"maj7")]},
   {id:"turn",    g:"jazz", en:"Jazz turnaround · 1 6 2 5", es:"Vuelta de jazz · 1 6 2 5",   minor:false, chords:[C(0,"maj7"),C(9,"m7"),C(2,"m7"),C(7,"dom7")]},
   {id:"mblues",  g:"jazz", en:"Minor blues · 12 bars",     es:"Blues menor · 12 compases",  minor:true,  chords:[C(0,"m7"),C(0,"m7"),C(0,"m7"),C(0,"m7"),C(5,"m7"),C(5,"m7"),C(0,"m7"),C(0,"m7"),C(7,"dom7"),C(5,"m7"),C(0,"m7"),C(7,"dom7")]},
+  {id:"blues8",  g:"jazz", en:"Blues · 8 bars",            es:"Blues · 8 compases",         minor:false, chords:[C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"quick",   g:"jazz", en:"Quick-change blues · 12 bars", es:"Blues de cambio rápido · 12 compases", minor:false, chords:[C(0,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"jazzblues",g:"jazz", en:"Jazz blues · 12 bars",     es:"Blues de jazz · 12 compases", minor:false, chords:[C(0,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(9,"dom7"),C(2,"m7"),C(7,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"bossa",   g:"jazz", en:"Bossa nova · 1 2 5 1",      es:"Bossa nova · 1 2 5 1",       minor:false, chords:[C(0,"maj7"),C(2,"m7"),C(7,"dom7"),C(0,"maj7")]},
+  {id:"circle",  g:"jazz", en:"Circle · 6 2 5 1",          es:"Círculo · 6 2 5 1",          minor:false, chords:[C(9,"m7"),C(2,"m7"),C(7,"dom7"),C(0,"maj7")]},
   {id:"minor",   g:"min",  en:"Minor groove",              es:"Ritmo menor",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
   {id:"flamenco",g:"min",  en:"Flamenco",                  es:"Flamenco",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]},
   {id:"mfolk",   g:"min",  en:"Minor folk",                es:"Folk menor",       minor:true,  chords:[C(0,"min"),C(5,"min"),C(7),C(0,"min")]},
-  {id:"epic",    g:"min",  en:"Epic",                      es:"Épico",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]}
+  {id:"epic",    g:"min",  en:"Epic",                      es:"Épico",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]},
+  {id:"mballad", g:"min",  en:"Minor ballad",              es:"Balada menor",     minor:true,  chords:[C(0,"min"),C(5,"min"),C(10),C(3)]},
+  {id:"heroic",  g:"min",  en:"Heroic",                    es:"Heroico",          minor:true,  chords:[C(0,"min"),C(3),C(10),C(5)]},
+  {id:"latin",   g:"min",  en:"Latin rock",                es:"Rock latino",      minor:true,  chords:[C(0,"m7"),C(5,"dom7"),C(0,"m7"),C(5,"dom7")]}
 ];
-const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
+const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, rock:{en:"Rock and metal",es:"Rock y metal"}, soul:{en:"Soul, funk and dance",es:"Soul, funk y baile"},
+  jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
 const RHYTHM_WORDS={
   long:{en:"Long notes · one chord a bar",es:"Notas largas · un acorde por compás"},
   swell:{en:"Swell · soft to loud",es:"Crecer · de suave a fuerte"},

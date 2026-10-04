@@ -22,14 +22,14 @@ const NEW={J:["Kit J · rock arena","Kit J · rock de estadio","KICK,SNARE,HAT,O
   /* the menus */
   const kitSel=p.locator('.kit-src').locator('xpath=..').locator('.aogdd-sel');
   const opts=await kitSel.locator("option").allTextContents();
-  ok(opts.length===15 && opts[0]==="Kit A · the classic" && Object.keys(NEW).every(k=>opts.indexOf(NEW[k][0])>=0) && opts.slice(9).join("|")===Object.keys(NEW).map(k=>NEW[k][0]).join("|"),
+  ok(opts.length===20 && opts[0]==="Kit A · the classic" && Object.keys(NEW).every(k=>opts.indexOf(NEW[k][0])>=0) && opts.slice(9,15).join("|")===Object.keys(NEW).map(k=>NEW[k][0]).join("|"),
     "the Simple bench's Sounds menu lists A to O, the new ones last: "+opts.slice(9).join(", "));
   await p.evaluate(()=>{ S.lang="es"; paint(); }); await p.waitForTimeout(250);
   const esOpts=await p.locator('.kit-src').locator('xpath=..').locator('.aogdd-sel').locator("option").allTextContents();
-  ok(esOpts.slice(9).join("|")===Object.keys(NEW).map(k=>NEW[k][1]).join("|"), "and in Spanish: "+esOpts.slice(9).join(", "));
+  ok(esOpts.slice(9,15).join("|")===Object.keys(NEW).map(k=>NEW[k][1]).join("|"), "and in Spanish: "+esOpts.slice(9).join(", "));
   await p.evaluate(()=>{ S.lang="en"; S.bench="full"; paint(); }); await p.waitForTimeout(250);
   const fullOpts=await p.locator('.bank-src').locator('xpath=..').locator('.aogdd-sel').locator("option").allTextContents();
-  ok(fullOpts.length===15 && fullOpts.slice(9).join("|")===Object.keys(NEW).map(k=>NEW[k][0]).join("|"), "the Full bench's kit menu lists them too");
+  ok(fullOpts.length===20 && fullOpts.slice(9,15).join("|")===Object.keys(NEW).map(k=>NEW[k][0]).join("|"), "the Full bench's kit menu lists them too");
   await p.evaluate(()=>{ S.bench="simple"; paint(); });
   /* every new kit: picked from the menu, its pads named, its sounds rendered and level */
   await p.click('.sp-pad[data-pad="kick"]'); await p.waitForTimeout(3500);
@@ -88,7 +88,7 @@ const NEW={J:["Kit J · rock arena","Kit J · rock de estadio","KICK,SNARE,HAT,O
   await p.evaluate(()=>{ LS.kp={}; });
   for(const k of ["J","M","O"]){ await p.evaluate(k=>{ useBank(k); paint(); }, k); await p.keyboard.press("Space"); await p.waitForTimeout(250); await p.keyboard.press("Space"); }
   ok(await p.evaluate(()=>!!(LS.kp && LS.kp.J && LS.kp.M && LS.kp.O)), "playing a beat on kits J, M and O counts for the kits lesson");
-  ok(await p.evaluate(()=>LESSONS.find(m=>m.id==="lkits").en==="Same beat, new sounds: the kits" && /fifteen kits/.test(STR.tag.en) && /quince kits/.test(STR.tag.es) && /Kits C to O/.test(STR.hear.en)), "the words that count the kits say fifteen, or no number");
+  ok(await p.evaluate(()=>LESSONS.find(m=>m.id==="lkits").en==="Same beat, new sounds: the kits" && /twenty kits/.test(STR.tag.en) && /veinte kits/.test(STR.tag.es) && /Kits C to O/.test(STR.hear.en)), "the words that count the kits say fifteen, or no number");
   ok(errs.length===0, "no page errors "+errs.join(" | "));
   console.log(fails? fails+" FAILED":"ALL PASS"); await b.close(); srv.close(); process.exit(fails?1:0);
 })().catch(e=>{ console.log("CRASH", e.stack); process.exit(1); });
