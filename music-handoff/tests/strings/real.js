@@ -13,6 +13,10 @@
    7  every note lands on time whatever the decoder does with the MP3's gapless header (a decoder that keeps the encoder's
       lead-in, as one that ignores the header would: the note still starts at the same moment)
    8  a phone (390 px): no sideways scroll, the line fits
+  10  the slap sounds: a slap starts with a sharp low thump (the recorded thumb), a pop with a bright snap that dies fast
+      (the bass's own fret clank); a fretless slide sings over longer than a fretted one and lands in tune
+  11  the synth sounds on the recorded organ: every note in tune, a held note keeps sounding (its loop, with no click where
+      it comes round), the filter still closes (the growl) and the thump is there
    9  Solo mode's band: its sets come down only when Play is pressed, with one calm line; the made strings play until they
       are in; the guitar plays the green set, the bass (guitar page) the recorded bass, unless the device has room for two
       sets only and three would be needed (then the made bass); out of Solo mode its sets go; on the recordings the band is
@@ -96,7 +100,7 @@ async function open(b, inst, opt){
 const sets=a=>[...new Set(a)].sort().join(",");
 (async()=>{
   const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
-  const BY={guitar:{green:"clean", black:"metal", steel:"steel", nylon:"nylon"}, bass:{growly:"finger", upright:"upright"}};
+  const BY={guitar:{green:"clean", black:"metal", steel:"steel", nylon:"nylon"}, bass:{growly:"finger", upright:"upright", ergo:"fretless"}};
   for(const inst of ["guitar","bass"]){
     /* ── 1 · only when picked ── */
     { const {c, p, errs, audio}=await open(b, inst);
@@ -204,6 +208,50 @@ const sets=a=>[...new Set(a)].sort().join(",");
           const mean=a=>+(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1);
           return {id, pick:mean(A.tr), finger:mean(Fg.tr), soft:mean(Sf.tr), pickPk:mean(A.pk), softPk:mean(Sf.pk), rec, n:Object.keys(SOUNDS).filter(k=>SOUNDS[k].rclick).join(", ")}; });
         ok(pc && pc.rec && pc.pick>=pc.finger+6 && (pc.soft<=pc.pick-6 || pc.softPk<=pc.pickPk-6), `bass: a picked sound (${pc&&pc.n}) plays the fingered recordings with the pick's click at the pluck (the highs of the first 3 ms, fingers → pick: ${pc&&pc.finger} → ${pc&&pc.pick} dB), and a hammer-on on it without (${pc&&pc.soft} dB; the peak ${pc&&pc.pickPk} → ${pc&&pc.softPk} dB; four notes)`); }
+      /* 10 · the slap sounds and the fretless slide (bass) */
+      if(inst==="bass"){ const sl=await p.evaluate(async()=>{ const T=__T, out={};
+          const band=(d,a,b,lo,hi)=>{ const s0=Math.floor(a*44100), L=Math.floor((b-a)*44100), N=1<<Math.ceil(Math.log2(L)), re=new Float64Array(N), im=new Float64Array(N);
+            for(let i=0;i<L;i++) re[i]=(d[s0+i]||0)*(0.5-0.5*Math.cos(2*Math.PI*(i+0.5)/L)); T.fft(re,im,false);
+            let q=0; for(let k=1;k<N/2;k++){ const f=k*44100/N; if(f>=lo && f<hi) q+=re[k]*re[k]+im[k]*im[k]; } return 10*Math.log10(q/(L*L)+1e-30); };
+          const meas=async(id, m, s)=>{ await loadSound(id); let th=0, sn=0, fa=0, rec=true; for(let k=0;k<2;k++){ const n=await T.solo((oc,ch)=>makeVoice(oc,ch,id,m,0.8,0.05,s), 0.6, 44100); rec=rec && !!(n.out && n.out.rec);
+              th+=band(n.d,0.05,0.065,30,300)-band(n.d,0.08,0.13,30,300); sn+=band(n.d,0.05,0.08,2000,20000)-band(n.d,0.1,0.2,20,20000); fa+=band(n.d,0.08,0.11,2000,20000)-band(n.d,0.05,0.08,2000,20000); }
+            return {thump:+(th/2).toFixed(1), snap:+(sn/2).toFixed(1), fall:+(fa/2).toFixed(1), rec}; };
+          const ids=Object.keys(SOUNDS).filter(k=>SOUNDS[k].rslap);
+          out.ids=ids; out.finger={low:await meas("finger",36,0), high:await meas("finger",48,2)}; out.slap={};
+          for(const id of ids) out.slap[id]={low:await meas(id,36,0), high:await meas(id,48,2)};
+          /* a slide from A2 to D3 starting at 0.6 s: how far below the new note it still is 30 ms in, and where it lands */
+          const slide=async(id)=>{ await loadSound(id); const n=await T.solo((oc,ch)=>{ const vc=makeVoice(oc,ch,id,45,0.8,0.05,null); vc.glide(50, 0.6); return vc; }, 1.4, 44100), f0=440*Math.pow(2,(50-69)/12);
+            return {mid:+T.cents(n.d,44100,f0,0.625,0.635,0.005).toFixed(0), end:+T.cents(n.d,44100,f0,0.9,1.2,0.02).toFixed(1), rec:!!n.out.rec}; };
+          out.slide={fretless:await slide("fretless"), finger:await slide("finger")};
+          return out; });
+        const bad=sl.ids.filter(id=>{ const r=sl.slap[id]; return !(r.low.rec && r.high.rec && r.low.thump>=sl.finger.low.thump+5 && r.high.snap>=sl.finger.high.snap+8 && r.high.fall<=-8); });
+        ok(sl.ids.length===4 && !bad.length, `bass: the slap sounds (${sl.ids.join(", ")}) slap with a sharp low thump (the low end of the first 15 ms against what follows: fingers ${sl.finger.low.thump} dB, ${sl.ids.map(id=>id+" "+sl.slap[id].low.thump).join(", ")}) and pop with a bright snap that dies fast (the highs of the first 30 ms against the note: fingers ${sl.finger.high.snap} dB, ${sl.ids.map(id=>id+" "+sl.slap[id].high.snap+" then "+sl.slap[id].high.fall).join(", ")})${bad.length?" not: "+bad.join(" "):""}`);
+        ok(sl.slide.fretless.rec && Math.abs(sl.slide.fretless.end)<=8 && Math.abs(sl.slide.finger.end)<=8 && sl.slide.fretless.mid<=sl.slide.finger.mid-60,
+          `bass: a fretless slide sings over longer than a fretted one (30 ms in: ${sl.slide.fretless.mid} c from the new note, against ${sl.slide.finger.mid} c) and lands in tune (${sl.slide.fretless.end} c; fretted ${sl.slide.finger.end} c)`); }
+      /* 11 · the synth sounds on the recorded organ (bass) */
+      if(inst==="bass"){ const sy=await p.evaluate(async()=>{ const T=__T, out={tune:[]}; await loadSound("synth"); const R=REAL.sets.cosmo; if(!R || R.state!=="ready") return {err:1};
+          for(const z of R.meta.zones){ const buf=R.buf[z.f], f0=440*Math.pow(2,(z.m-69)/12);
+            const {d}=await T.solo((oc,ch)=>{ const s=oc.createBufferSource(); s.buffer=buf; s.playbackRate.value=recRate(z, z.m); s.connect(ch.amp); s.start(0, R.at[z.f]); }, Math.min(2.2, buf.duration), 44100);
+            out.tune.push({f:z.f, c:+T.centsB(d,44100,f0,"sus").toFixed(1)}); }
+          for(const id of ["synth","acid"]){ const m=36, n=await T.solo((oc,ch)=>{ const vc=makeVoice(oc,ch,id,m,0.8,0.05,null); vc.stop(6.2, 0.05); return vc; }, 6.6, 44100), d=n.d;
+            const zl=R.meta.zones.find(z=>z.f===n.out.rec.f), per=(zl.lp[1]-zl.lp[0])/recRate(zl, m), seams=[];
+            for(let t=0.05+(zl.lp[1]-R.at[zl.f]+R.lead[zl.f])/recRate(zl,m); t<6; t+=per) seams.push(t);
+            let own=0; for(let i=Math.round(2*44100);i<Math.round(2.5*44100);i++) own=Math.max(own, Math.abs(d[i]-d[i-1]));
+            let jump=0; seams.forEach(t=>{ const c=Math.round(t*44100); for(let i=c-30;i<c+30;i++) jump=Math.max(jump, Math.abs(d[i]-d[i-1])); });
+            const cen=(a,b)=>{ const s0=Math.floor(a*44100), L=Math.floor((b-a)*44100), N=1<<Math.ceil(Math.log2(L)), re=new Float64Array(N), im=new Float64Array(N); for(let i=0;i<L;i++) re[i]=d[s0+i]*(0.5-0.5*Math.cos(2*Math.PI*(i+0.5)/L)); T.fft(re,im,false); let q=0,w=0; for(let k=1;k<N/2;k++){ const e=re[k]*re[k]+im[k]*im[k]; q+=e; w+=e*k*44100/N; } return w/q; };
+            /* the thump: the octave under the note (G2), in the first 100 ms against later */
+            const band=(x,a,b,lo,hi)=>{ const s0=Math.floor(a*44100), L=Math.floor((b-a)*44100), N=1<<Math.ceil(Math.log2(L)), re=new Float64Array(N), im=new Float64Array(N);
+              for(let i=0;i<L;i++) re[i]=(x[s0+i]||0)*(0.5-0.5*Math.cos(2*Math.PI*(i+0.5)/L)); T.fft(re,im,false);
+              let q=0; for(let k=1;k<N/2;k++){ const f=k*44100/N; if(f>=lo && f<hi) q+=re[k]*re[k]+im[k]*im[k]; } return 10*Math.log10(q/(L*L)+1e-30); };
+            const g2=await T.solo((oc,ch)=>{ const vc=makeVoice(oc,ch,id,43,0.8,0.05,null); vc.stop(1.2,0.05); return vc; }, 1.4, 44100), fg=440*Math.pow(2,(43-69)/12);
+            const thump=+(band(g2.d,0.05,0.15,15,0.75*fg)-band(g2.d,0.4,0.5,15,0.75*fg)).toFixed(1);
+            out[id]={thump, rec:!!n.out.rec, loop:!!n.out.rec.loop, held:+T.db(T.rms(d,44100,4.8,5.8)/(T.rms(d,44100,0.8,1.8)||1e-9)).toFixed(1), seams:seams.length, jump:+(jump/(own||1e-9)).toFixed(2),
+              growl:+(cen(0.05,0.09)/cen(0.4,0.6)).toFixed(2), sub:+T.db(T.rms(d,44100,0.05,0.08)/(T.rms(d,44100,0.4,0.6)||1e-9)).toFixed(1)}; }
+          return out; });
+        const off=(sy.tune||[]).filter(x=>!(Math.abs(x.c)<=5));
+        ok(!sy.err && sy.tune.length===38 && !off.length, `bass cosmo: all ${sy.tune&&sy.tune.length} organ notes in tune within ±5 cents ${off.map(x=>x.f+" "+x.c).join(" ")}`);
+        for(const id of ["synth","acid"]){ const r=sy[id]||{};
+          ok(r.rec && r.loop && Math.abs(r.held)<=3 && r.seams>=1 && r.jump<=1.5 && r.growl>=1.2 && (id!=="synth" || r.thump>=10), `bass ${id}: plays the recorded organ, a held note keeps sounding (${r.held} dB at 5 s against 1 s), its loop comes round ${r.seams} times with no click (×${r.jump} of its own steps), and the filter still closes (the first 40 ms ×${r.growl} brighter)${id==="synth"?"; it thumps (the octave under the note "+r.thump+" dB stronger in its first 100 ms than later)":""}`); } }
       /* 6 · the hand's sound sits under the note it stops, through each sound's own amp (a driven amp lifts it as much as the
          notes; rrel keeps it down): the mean over the set's noises, the same take of the note each time */
       { const hs=await p.evaluate(async()=>{ const T=__T, out=[];
@@ -316,7 +364,7 @@ const sets=a=>[...new Set(a)].sort().join(",");
       const lv=await p.evaluate(async(inst)=>{ const X=AOGSolo._t, out={styles:{}, mem:{}};
         for(const style of ["straight","minor","rock","boogie","mblues","metal"]){ const a=await X.renderBand(2, {style}), r=await X.renderBand(2, {style, real:true});
           out.styles[style]={made:+__kw(a.buf).toFixed(2), rec:+__kw(r.buf).toFixed(2), recNotes:r.rec}; }
-        for(const id of inst==="guitar" ? ["green","black","steel","nylon","bass/growly"] : ["growly","upright"]){ await recLoad(id); const R=REAL.sets[id]; out.mem[id]=R && R.state==="ready" ? +(recBytes(R)/1048576).toFixed(1) : null; }
+        for(const id of inst==="guitar" ? ["green","black","steel","nylon","bass/growly"] : ["growly","upright","ergo","cosmo"]){ await recLoad(id); const R=REAL.sets[id]; out.mem[id]=R && R.state==="ready" ? +(recBytes(R)/1048576).toFixed(1) : null; }
         return out; }, inst);
       const bad=Object.entries(lv.styles).filter(([k,x])=>Math.abs(x.rec-x.made)>1 || !x.recNotes);
       ok(!bad.length, `${inst}: the band on the recordings is as loud as the made band, within 1 dB, in every style (${Object.entries(lv.styles).map(([k,x])=>k+" "+x.made+" → "+x.rec).join("; ")} dB)`);
