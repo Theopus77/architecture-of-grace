@@ -15,17 +15,17 @@ ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
 PAGES = {
     "guitar": {
         "TITLE": "The Guitar",
-        "DESC": "Acoustic, classical and electric guitars. Tap a chord, strum the strings, or play the frets. Works on a phone, a tablet and a computer.",
-        "OGDESC": "Acoustic, classical and electric guitars. Tap a chord, strum the strings, or play the frets.",
+        "DESC": "Acoustic, classical and electric guitars, with an amp and pedals. Tap a chord, strum the strings, or play the frets. Works on a phone, a tablet and a computer.",
+        "OGDESC": "Acoustic, classical and electric guitars, with an amp and pedals. Tap a chord, strum the strings, or play the frets.",
         "PLATE": "SIX-STRING GUITAR",
-        "PLATESMALL": "STEEL · NYLON · ELECTRIC · JAZZ",
+        "PLATESMALL": "ACOUSTIC · ELECTRIC · AMP · PEDALS",
     },
     "bass": {
         "TITLE": "The Bass",
-        "DESC": "Electric, upright and synth bass. Tap a chord to hear its low note, or play the frets. Works on a phone, a tablet and a computer.",
-        "OGDESC": "Electric, upright and synth bass. Tap a chord to hear its low note, or play the frets.",
+        "DESC": "Electric, upright and synth bass, with an amp and pedals. Tap a chord to hear its low note, or play the frets. Works on a phone, a tablet and a computer.",
+        "OGDESC": "Electric, upright and synth bass, with an amp and pedals. Tap a chord to hear its low note, or play the frets.",
         "PLATE": "FOUR-STRING BASS",
-        "PLATESMALL": "FINGERS · PICK · UPRIGHT · SYNTH",
+        "PLATESMALL": "FINGERS · PICK · AMP · PEDALS",
     },
 }
 

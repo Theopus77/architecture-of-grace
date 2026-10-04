@@ -1,0 +1,16 @@
+const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
+const http=require("http"),fs=require("fs"),path=require("path");
+const root="/home/user/architecture-of-grace/aog-deploy";const port=9271;
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);return r.end();}r.writeHead(200,{"content-type":{".html":"text/html",".js":"text/javascript",".css":"text/css"}[path.extname(f)]||"application/octet-stream"});r.end(d);});}).listen(port);
+(async()=>{const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
+ const c=await b.newContext({viewport:{width:1280,height:900}}); const p=await c.newPage();
+ await p.goto(`http://localhost:${port}/music-drums.html#home`); await p.waitForTimeout(1500);
+ await p.click('.sp-pad[data-pad="kick"]'); await p.waitForTimeout(2500);
+ await p.locator('.starter-row .aogdd-sel').selectOption({label:"Boom bap (90s hip-hop)"}); await p.waitForTimeout(500);
+ console.log("after load", await p.evaluate("JSON.stringify({st:LS.done.starter, loaded:!!S.loaded, focus:document.activeElement.tagName})"));
+ await p.keyboard.press("Space"); await p.waitForTimeout(300);
+ console.log("playing?", await p.evaluate("S.playing"));
+ await p.keyboard.press("Space");
+ await p.click('.cell[data-v="rim"][data-step="3"]'); await p.click('.cell[data-v="rim"][data-step="11"]'); await p.waitForTimeout(200);
+ console.log("remix", await p.evaluate("remixCount()"), await p.evaluate("JSON.stringify(LS.done)"));
+ await b.close(); srv.close();})();
