@@ -1,4 +1,5 @@
-/* The Band, more ways to sound (AOG-BAND-MORE-V1, -PERC-V1, -ORCH-V1), on an iPad:
+/* The Band, more ways to sound (AOG-BAND-MORE-V1, -PERC-V1, -ORCH-V1), on an iPad (AOG-BAND-SAX2-V1: the orchestra has
+   19 players now, the tenor and soprano saxophones with the alto):
    the orchestra loads lean with a players' count, a pad has a note from all five families, its waltz and oom-pah bars
    give each part its place, its C chord is as loud as the grand's, Send to the turntables and Record carry it; each
    percussion choice loads and plays, the section's beat follows a march and a waltz; every new sound plays a chord
@@ -7,7 +8,7 @@ const pw=require(require("child_process").execSync("npm root -g").toString().tri
 const srv=require("../srv.js")(9987);
 const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(__dirname+"/measure.inc","utf8").replace(/^const MEASURE=/,""));
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
-const FAM={brass:["tuba","trombone","horn","trumpet"], woodwinds:["flute","clarinet","oboe","bassoon","sax"], strings:["violins","violas","cellos","contrabass"], harp:["harp"], percussion:["timpani","glockenspiel"]};
+const FAM={brass:["tuba","trombone","horn","trumpet"], woodwinds:["flute","clarinet","oboe","bassoon","sax","tenor","soprano"], strings:["violins","violas","cellos","contrabass"], harp:["harp"], percussion:["timpani","glockenspiel"]};
 const NEW=["trumpet_vib","trumpet_harmon","trumpet_straight","trombone_vib","horn_mute","brass_mute","piccolo","flute_vib","oboe_vib","bassoon_vib","winds_choir",
   "violins","violins_pizz","violas","violas_pizz","cellos","cellos_pizz","contrabass","contrabass_pizz","harp","strings","strings_pizz",
   "timpani","marimba","xylophone","glockenspiel","percussion","bigband","marching","mariachi","orchestra","trumpet_bebop","sax_bebop","bebop","cooljazz"];
@@ -32,7 +33,7 @@ const NEW=["trumpet_vib","trumpet_harmon","trumpet_straight","trombone_vib","hor
     await p.waitForTimeout(150); }
   lines.add(await p.textContent("#loadLine"));
   const ls=[...lines], st=await p.evaluate(()=>({sets:Object.keys(SETS).length, files:Object.values(SETS).reduce((a,s)=>a+s.total,0), lean:Object.keys(SETS).every(k=>k.indexOf("lean:")===0)}));
-  ok(await p.evaluate(()=>soundReady("orchestra")) && st.lean && st.sets===17 && ls.some(l=>/· \d+ of 17 players/.test(l)) && /^Ready: every player in the band/.test(ls[ls.length-1]), "the orchestra loads lean, "+st.sets+" players, "+st.files+" files; the line: "+ls.slice(0,2).join(" / ")+" … "+ls[ls.length-1]);
+  ok(await p.evaluate(()=>soundReady("orchestra")) && st.lean && st.sets===19 && ls.some(l=>/· \d+ of 19 players/.test(l)) && /^Ready: every player in the band/.test(ls[ls.length-1]), "the orchestra loads lean, "+st.sets+" players, "+st.files+" files; the line: "+ls.slice(0,2).join(" / ")+" … "+ls[ls.length-1]);
   ok(!early || (early.real>0 && early.waiting>0), "while it loads, the ready players already play and the others wait (no stand-in): "+JSON.stringify(early));
   /* 2. one pad: a note from every family */
   await p.evaluate(()=>{ window.__v=[]; const mv=window.makeVoice; window.makeVoice=function(cx,ch,inst,m,v,when,art){ const r=mv.apply(this,arguments); if(cx===ac) window.__v.push({inst, m, real:!!(r&&r.natural)}); return r; }; });
@@ -48,7 +49,7 @@ const NEW=["trumpet_vib","trumpet_harmon","trumpet_straight","trombone_vib","hor
       v.forEach(x=>{ const bt=Math.round((x.on-0.05)/beat); (by[bt]=by[bt]||[]).push(x.kit?"*"+x.kit:x.inst+(x.held?"~":"")); });
       res[rh]={beats:beatsPerBar(), by}; }
     return res; });
-  const low=["contrabass","tuba","timpani","cellos","bassoon","harp"], mid=["trombone","horn","sax","clarinet","trumpet","oboe","flute","glockenspiel"];
+  const low=["contrabass","tuba","timpani","cellos","bassoon","harp"], mid=["trombone","horn","sax","tenor","soprano","clarinet","trumpet","oboe","flute","glockenspiel"];
   const has=(arr,list)=>list.every(x=>arr.indexOf(x)>=0), none=(arr,list)=>list.every(x=>arr.indexOf(x)<0);
   const w=bars.waltz.by, m=bars.march.by;
   ok(bars.waltz.beats===3 && has(w[0],low) && has(w[0],["violins~","violas~","*cy"]) && none(w[0],mid) && has(w[1],mid) && has(w[2],mid) && none(w[1],low) && none(w[2],low) && !w[3],
