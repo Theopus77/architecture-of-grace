@@ -500,6 +500,16 @@ window.AOG_ROOM_MAP = {
   "confidence": "high",
   "note": "A wind instrument plays a column of air: the longer the tube, the lower the note. A tuba's tube is about four times as long as a trumpet's, so it sounds two octaves lower."
  },
+ "music-studio": {
+  "subject": "Science",
+  "band": "6–8",
+  "unit": "sci-u28",
+  "unitTitle": "Unit 28 · Sound, Rhythm and Recorded Music",
+  "chapter": "Chapter 63 · Recording and Playing Back",
+  "course": "science-course",
+  "confidence": "high",
+  "note": "Multitrack recording and mixing: each track's level, EQ and echo, and a limiter that keeps the sum of the tracks under full scale."
+ },
  "music-decks": {
   "subject": "Science",
   "band": "6–8",

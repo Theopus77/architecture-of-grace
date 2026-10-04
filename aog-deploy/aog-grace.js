@@ -102,7 +102,7 @@
   try {
     var PR = { math:"#2F63B8", sci:"#2E8B57", ss:"#A8323E", ela:"#B87A12", spa:"#B8457A", facs:"#7B4FA0", eco:"#6E7C22", rel:"#3F4AA6" };
     var PR_FILES = { "concepts-and-data":"math", "interior-math":"math", "b10-interior-math":"math", "b12-sixth-grade-review":"math",
-      "b13-sixth-grade-practice":"math", "science-microscope":"sci", "telescope":"sci", "science-waves":"sci", "music-drums":"sci", "music-piano":"sci", "music-guitar":"sci", "music-bass":"sci", "music-band":"sci",
+      "b13-sixth-grade-practice":"math", "science-microscope":"sci", "telescope":"sci", "science-waves":"sci", "music-drums":"sci", "music-piano":"sci", "music-guitar":"sci", "music-bass":"sci", "music-band":"sci", "music-studio":"sci",
       "music-decks":"sci", "vocabulary-science":"sci", "us-history":"ss", "b9-new-nation":"ss", "social-quiz":"ss",
       "n1-the-outsiders":"ela", "wf-units":"ela", "word-foundry":"ela", "b11-grammar":"ela" };
     var prs = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
