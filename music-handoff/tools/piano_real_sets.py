@@ -181,6 +181,18 @@ def write_struck(path, y, max_cut=None):
             best = (head2, sh, on2)
         if 0.0003 <= on2 <= 0.00195 and head2 <= 0.006:
             return on2, head2
+    # last resort: the fade-in reaches a little into the strike (0.3, 0.6, then 0.9 ms past the onset), which
+    # rounds its very first instant and gives the MP3 less to smear forward
+    if best[0] > 0.008:
+        i = onset_of(y)
+        for extra in (0.0003, 0.0006, 0.0009):
+            k = i + int(extra * SR)
+            z = y.copy()
+            z[:k] *= np.sin(np.linspace(0, np.pi / 2, k)) ** 2
+            write_mp3(path, z)
+            on2, head2 = measure_mp3(path)
+            if 0.0003 <= on2 <= 0.00195 and head2 <= 0.008:
+                return on2, head2
     write_mp3(path, shifted(best[1]))
     return best[2], best[0]
 
@@ -968,6 +980,8 @@ def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.
         t = np.arange(len(y)) / SR
         y *= env(t) if env else attack_env(t, 0.008)
         y[0] = 0.0
+        y = trim_start(y)                             # starts 0.8 ms before the page hears it (a filtered or
+        y = np.concatenate([y, np.zeros(max(0, n_out - len(y)))])[:n_out]   # mixed start can cross late)
         y, rho, p0 = make_loop(y, P0, L, a, z)
         files[(n, "m")] = (y, {"components": used, "loop_cents": round(1200 * math.log2(fq / f), 2),
                                "seam_match": round(rho, 4)})
@@ -1076,7 +1090,7 @@ def build_brass():
     def vib(t):                                   # the scoop: 28 cents under, gone in about 0.1 s
         return 2 ** ((-28 * np.exp(-t / 0.025)) / 1200)
     held_set("brass", [("trompette", 0, 0.0), ("trombone", 12, -2.0)], P0=1.25, detune=spread_brass, post=post, vib=vib,
-             env=lambda t: attack_env(t, 0.03, pre=0.12, shape="lin"), pitch="centroid",
+             env=lambda t: attack_env(t, 0.03, pre=0.25, shape="lin"), pitch="centroid",
              describe="Caveman Cosmonaut 'trompette' voice and 'trombone' voice (a 16' reed, so taken from the key an "
                       "octave up), a few cents apart, with a low-pass that opens quickly and settles, and a small "
                       "scoop up into the pitch")
@@ -1205,8 +1219,8 @@ def build_accordion():
     regs = accordion_regions()
     reals = sorted(regs)
     notes = best_grid([reals])
-    L = 1.0
-    P0lo, P0hi = 0.22, 0.42
+    L = 2.0
+    P0lo, P0hi = 0.22, 0.6
     a = round(P0hi + LOOP_X + DEC_DELAY + 0.01, 2)
     z = round(a + L, 2)
     files, cache = {}, {}
@@ -1220,19 +1234,21 @@ def build_accordion():
         f = mtof(n)
         ratio = f / fm
         n_out = int(round((z + 0.1) * SR))
-        for _ in range(2):                 # measured again as the checker does, over the looped part
+
+        def make(ratio):
             y = sampler_read(x, ratio, ls, le, n_out)
             y = hp(y, 0.5 * f)
             if ratio > 2 ** (4 / 12):
                 y = lp(y, 14000.0)
             y = trim_start(y)
-            got = pitch_centroid(y, f, a, z - 0.6, ks=(1, 2, 3, 4), span_c=60)
-            res = 1200 * math.log2(got / f)
-            if abs(res) < 0.4:
+            y = np.concatenate([y, np.zeros(max(0, n_out - len(y)))])
+            return make_loop(y, P0lo, L, a, z, W=0.4, search=(P0lo, P0hi))
+        for _ in range(3):                 # the finished note measured as the checker measures it, and retuned
+            y, rho, p0 = make(ratio)
+            res = 1200 * math.log2(pitch_centroid(y, f, a, z - 0.6, ks=(1, 2, 3, 4), span_c=60) / f)
+            if abs(res) < 0.5:
                 break
             ratio *= 2 ** (-res / 1200)
-        y = np.concatenate([y, np.zeros(max(0, n_out - len(y)))])
-        y, rho, p0 = make_loop(y, P0lo, L, a, z, W=0.15, search=(P0lo, P0hi))
         files[(n, "m")] = (y, {"from": os.path.relpath(path, SRC_ROOT), "recorded": r,
                                "source_cents": round(1200 * math.log2(fm / mtof(r)), 1),
                                "shift_semitones": round(12 * math.log2(f / fm), 2), "seam_match": round(rho, 4),
@@ -1264,7 +1280,7 @@ def build_toy():
         return float(((n * 37) % 9) - 4)            # -4 to +4 cents, fixed per key
     struck_set("toy", {"m": hard}, fund_measure(),
                lambda n, l: 1.6 if n < 60 else 1.4 if n < 72 else 1.2 if n < 84 else 1.0,
-               note_opts=lambda n, l: {"fade_frac": 0.4, "shelf": (2500.0, 5.0), "detune_c": detune(n),
+               note_opts=lambda n, l: {"fade_frac": 0.4, "shelf": (2500.0, 5.0), "lp_hz": 12000.0, "detune_c": detune(n),
                                        "env": lambda t: np.exp(-3.5 * t)})
 
 
@@ -1414,9 +1430,9 @@ def build_choir():
     a = round(P0hi + LOOP_X + DEC_DELAY + 0.01, 2)
     z = round(a + L, 2)
     n_total = int(round((z + 0.06) * SR))
-    DET = [-5.0, -1.0, 2.0, 6.0]                    # a few cents apart (their own wobble does the rest)
+    DET = [-4.0, -1.0, 2.0, 5.0]                    # a few cents apart (their own wobble does the rest)
     DLY = [0.0, 0.009, 0.017, 0.026]
-    LVL = [0.0, -1.5, -3.0, -4.5]                   # not all equally loud, so they do not beat to silence
+    LVL = [0.0, -2.0, -4.0, -6.0]                   # not all equally loud, so they do not beat to silence
     files = {}
     for n in notes:
         f = mtof(n)
