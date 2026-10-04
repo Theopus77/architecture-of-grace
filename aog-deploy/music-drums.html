@@ -429,6 +429,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="aog-eq.js"></script>
+<script src="aog-drumkit.js"></script><!-- AOG-DRUM-REAL-V1: the recorded kits, P to T -->
 </head>
 <body>
 <script src="/aog-sound-handoff.js"></script>
@@ -553,7 +554,7 @@ const STARTERS = [
 const STR = {
   app:{en:"The Drum Machine",es:"La caja de ritmos"},
   eyebrow:{en:"A moving beat first.",es:"Primero, el ritmo."},
-  tag:{en:"The 1987 sampler, with fifteen kits and a dial that turns it into 2026. Pick a beat, play the pads, make it yours.",es:"El sampler de 1987, con quince kits y un dial que lo lleva a 2026. Elige un ritmo, toca los pads y hazlo tuyo."},
+  tag:{en:"The 1987 sampler, with twenty kits and a dial that turns it into 2026. Pick a beat, play the pads, make it yours.",es:"El sampler de 1987, con veinte kits y un dial que lo lleva a 2026. Elige un ritmo, toca los pads y hazlo tuyo."},   /* AOG-DRUM-REAL-V1: twenty kits, A to T */
   priv:{en:"Twelve bits. 26,040 samples a second. Ten seconds of memory, and no sample longer than 2.5. Save writes a file you can send. Open reads a file someone sent you. This computer also keeps the last session, so closing the page does not throw the work away.",es:"Doce bits. 26.040 muestras por segundo. Diez segundos de memoria, y ninguna muestra de más de 2.5. Guardar escribe un archivo que puedes enviar. Abrir lee un archivo que alguien te mandó. Esta computadora también guarda la última sesión, así que cerrar la página no tira el trabajo."},
   download:{en:"Download this page",es:"Descargar esta página"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
@@ -611,7 +612,7 @@ const STR = {
   q3:{en:"The low thump on beat 1 is usually the ________.",es:"El golpe grave en el pulso 1 suele ser el ________."},
   q4:{en:"The crack on beats 2 and 4 is usually the ________.",es:"El chasquido en los pulsos 2 y 4 suele ser la ________."},
   q5:{en:"Hats keep ________.",es:"Los charles marcan el ________."},
-  hear:{en:"This is built to the SP-1200 manual, not to the logo. Swing is 50, 54, 58, 63, 67 or 71. It waits on the second eighth note, not on every other sixteenth. Tune is plus or minus a fifth. The sliders are mix, tune, or decay — the switch above the pads. Kits C to O are newer sounds built for this page. What you sample is cut to 26,040 a second and twelve bits. This is not an E-mu, and it does not load that machine's disks.",es:"Esto está hecho según el manual del SP-1200, no según el logo. El swing es 50, 54, 58, 63, 67 o 71. Espera en la segunda corchea, no en cada semicorchea. La afinación es más o menos una quinta. Los deslizadores son mezcla, afinación o caída — el interruptor sobre las almohadillas. Los kits C a O son sonidos nuevos hechos para esta página. Lo que grabas se corta a 26.040 por segundo y doce bits. Esto no es un E-mu, y no carga los discos de esa máquina."},
+  hear:{en:"This is built to the SP-1200 manual, not to the logo. Swing is 50, 54, 58, 63, 67 or 71. It waits on the second eighth note, not on every other sixteenth. Tune is plus or minus a fifth. The sliders are mix, tune, or decay — the switch above the pads. Kits C to O are newer sounds built for this page. Kits P to T are a real drum kit, recorded. What you sample is cut to 26,040 a second and twelve bits. This is not an E-mu, and it does not load that machine's disks.",es:"Esto está hecho según el manual del SP-1200, no según el logo. El swing es 50, 54, 58, 63, 67 o 71. Espera en la segunda corchea, no en cada semicorchea. La afinación es más o menos una quinta. Los deslizadores son mezcla, afinación o caída — el interruptor sobre las almohadillas. Los kits C a O son sonidos nuevos hechos para esta página. Los kits P a T son una batería de verdad, grabada. Lo que grabas se corta a 26.040 por segundo y doce bits. Esto no es un E-mu, y no carga los discos de esa máquina."},   /* AOG-DRUM-REAL-V1: P to T are recorded */
   outF:{en:"Output filter",es:"Filtro de salida"},
   mix:{en:"Mix",es:"Mezcla"},
   foot:{en:"The Drum Machine · Architecture of Grace · twelve-bit school sampler, not a studio account",es:"La caja de ritmos · Architecture of Grace · sampler escolar de doce bits, no una cuenta de estudio"},
@@ -660,6 +661,8 @@ const SEGS = 8;
    built on this page, so nothing downloads and nothing needs a licence. */
 const BANKS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"];   /* AOG-DRUM-KITS-V3: and J to O */
 function bankObj(){ const o={}; BANKS.forEach(b=>o[b]={}); return o; }
+/* AOG-DRUM-REAL-V1 (2026-10-04) — the recorded kits (aog-drumkit.js) join the Sounds menu after the kits built here, each with a beat to start from */
+if(window.AOGDrumKit){ AOGDrumKit.ids.forEach(b=>{ if(BANKS.indexOf(b)<0) BANKS.push(b); }); AOGDrumKit.starters.forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); }); }
 const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench")||"simple"; }catch(e){ return "simple"; } })(), lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
   view:"home", bpm:96, swing:0.50, vol:0.8, outF:0.78, bit:true, sliderMode:"mix",
   playing:false, rec:false, metro:false, bank:"A", sel:"kick", step:0, grid: emptyGrid(), met:{}, chan: freshChans(),
@@ -894,6 +897,7 @@ const KIT_LABEL={A:["Kit A · the classic","Kit A · el clásico"],B:["Kit B · 
    onto pad 1 of bank A was playing in place of the kick. The Simple bench now says which pads hold
    your own samples and offers one tap to put the kit sounds back on that bank. */
 function userPads(){ const u=USER[S.bank]||{}; return VOICES.map(v=>v.id).filter(id=>!!u[id]); }
+if(window.AOGDrumKit) AOGDrumKit.ids.forEach(b=>{ KIT_NAME[b]=AOGDrumKit.padNames(b); KIT_LABEL[b]=AOGDrumKit.label(b); });   /* AOG-DRUM-REAL-V1: the recorded kits' pad and menu names */
 function kitKey(bank){ return bank==="B" ? "A" : bank; }       /* B is A, retuned */
 function romFor(bank){ return ROMK[kitKey(bank)] || {}; }
 function hiFor(bank){ return HIK[kitKey(bank)] || {}; }
@@ -1292,6 +1296,11 @@ registerProcessor('sp12', Sp12);
 const SSM_HZ = 8500;
 function padIndex(id){ for(let i=0;i<VOICES.length;i++){ if(VOICES[i].id===id) return i; } return 0; }
 function isRawOut(id){ return padIndex(id) < 2; }
+/* AOG-DRUM-REAL-V1 — a recorded kit plays like a sample: pads 1 and 2 leave raw, pads 3 to 8 pass the filter chip. Each hit
+   picks its recording (soft, normal or accent, and the next take in turn), and those recordings go to an engine with the pad's own. */
+function realKit(b){ return !!(window.AOGDrumKit && AOGDrumKit.has(b)); }
+function realRoute(m, id, accent){ return (realKit(S.bank) && !(USER[S.bank] && USER[S.bank][id])) ? AOGDrumKit.route(m, S.bank, id, accent) : m; }
+function realPush(port, id){ if(realKit(S.bank) && !(USER[S.bank] && USER[S.bank][id])) AOGDrumKit.post(port, S.bank, id, src=>cutPad(src, id)); }
 function chanMsg(id, when, accent){
   const ch=S.chan[id]||{level:0.8,tune:0,decay:0.85,cutoff:0.7};
   const extra = S.bank==="B" ? (BANK_B[id]||0) : 0;
@@ -1299,7 +1308,7 @@ function chanMsg(id, when, accent){
   const lvl = Math.max(0, Math.min(1, ch.level * (typeof accent === "number" ? velOf(accent) : (accent ? 1 : 0.75))));
   /* one hand cannot hold a hat open and shut it at the same time */
   const choke = (CHORDPAD[S.bank] && CHORDPAD[S.bank][id] && USER[S.bank] && USER[S.bank][id]) ? 2 : ((id==="ch" || id==="oh") ? 1 : 0);   /* AOG-CHORD-PADS-V1: a chord stops the chord before it */
-  const sampled = !!(USER[S.bank] && USER[S.bank][id]);
+  const sampled = !!(USER[S.bank] && USER[S.bank][id]) || realKit(S.bank);   /* AOG-DRUM-REAL-V1 */
   const raw = isRawOut(id);
   /* a sampled sound carries no built-in tone — only the output it leaves by */
   const hzOld = sampled ? SSM_HZ : Math.min(cutoffHz(ch.cutoff), SSM_HZ);
@@ -1307,8 +1316,8 @@ function chanMsg(id, when, accent){
   const era = Math.max(0, Math.min(1, S.era));
   const hzNew = sampled ? 18000 : Math.min(18000, cutoffHz(ch.cutoff)*2);
   const hz = Math.exp(Math.log(hzNew)*(1-era) + Math.log(hzOld)*era);
-  return {type:'hit', id:id, when:when, bit:S.bit&&!engineFailed, era:era, tune:tune, decay:ch.decay, level:lvl,
-          cutoff:hz, reso:0.22, choke:choke, raw: raw && sampled};
+  return realRoute({type:'hit', id:id, when:when, bit:S.bit&&!engineFailed, era:era, tune:tune, decay:ch.decay, level:lvl,
+          cutoff:hz, reso:0.22, choke:choke, raw: raw && sampled}, id, accent);   /* AOG-DRUM-REAL-V1 */
 }
 /* AOG-SP-BANKCD-V1 — a bank with nothing in any of its eight pads */
 function bankEmpty(){ return VOICES.every(v=>!padHasSound(v.id)) }
@@ -1356,6 +1365,7 @@ function pushPad(id){
   if(!engine) return;
   const m=kitMsg(id);
   engine.port.postMessage(m[0], m[1]);
+  realPush(engine.port, id);   /* AOG-DRUM-REAL-V1 */
 }
 function pushBank(){
   const b=S.bank;
@@ -1367,6 +1377,7 @@ const HI_RATE = 44100;
 const kitJobs = {};
 function ensureKit(bank){
   const k=kitKey(bank);
+  if(realKit(k)) return k===S.bank ? AOGDrumKit.load(k, ROMK, HIK, quantize12) : Promise.resolve();   /* AOG-DRUM-REAL-V1: a recorded kit downloads when it is picked */
   if(kitJobs[k]) return kitJobs[k];
   kitJobs[k]=(async()=>{
     const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
@@ -1418,7 +1429,7 @@ async function bootSampler(){
       engine=new AudioWorkletNode(c, "sp12", {numberOfInputs:0, numberOfOutputs:1, outputChannelCount:[2]});
       engine.connect(bus);
       await ensureKit("A");
-      await ensureKit(S.bank);
+      if(!realKit(S.bank)) await ensureKit(S.bank);   /* AOG-DRUM-REAL-V1: a recorded kit arrives on its own; the machine does not wait */
       kitReady=true;
       pushBank();
       /* the other kits, one at a time, so a later switch is instant */
@@ -1468,7 +1479,7 @@ function hit(id, time, fromSeq, accent){
   if(engine && kitReady){
     engine.port.postMessage(chanMsg(id, t0, accent));
   } else {
-    renderVoice(id, t0, bus, c, S.bank);
+    if(realKit(S.bank)) AOGDrumKit.playDirect(c, bus, S.bank, id, t0, accent); else renderVoice(id, t0, bus, c, S.bank);   /* AOG-DRUM-REAL-V1 */
     bootSampler();
   }
 }
@@ -1793,7 +1804,7 @@ function kitName(b){ return (KIT_LABEL[b]||["",""])[S.lang==="es"?1:0]; }
 function kitBackKeys(cls, full){
   const back=userPads().length ? `<button type="button" class="${cls}"${full?' id="kitBackBtn"':''} data-resetkit="1">${t("sReset")}</button>` : "";
   const undo=(S.kitUndo && S.kitUndo.bank===S.bank) ? `<button type="button" class="${cls}"${full?' id="kitUndoBtn"':''} data-kitundo="1">${t("sUndoKit")}</button>` : "";
-  return back+undo;
+  return back+undo+(window.AOGDrumKit?AOGDrumKit.lineHtml(S.bank, S.lang):"");   /* AOG-DRUM-REAL-V1: one calm line while a recorded kit gets ready */
 }
 /* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The piano, the guitar and the bass leave the six
    chords of their key on the shelf the music tools share, each one a short hit. One tap puts them on pads 3 to 8 of this kit,
@@ -2706,7 +2717,7 @@ function paint(){
     vw.innerHTML=(map[S.view]||homeView)();
     const kn=vw.querySelector(".knobs"), slot=vw.querySelector("#lessonsSlot"); if(lb && slot) slot.appendChild(lb); else if(lb && kn) kn.after(lb);
     if(tb){ if(kn){ kn.after(tb); tb.hidden=false; } else tb.hidden=true; } }   /* AOG-LESSONS-FOLD-V1 */  /* … then set it under Tempo and Volume */
-  document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`;
+  document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("backSci")}</a></p>`+(window.AOGDrumKit?AOGDrumKit.creditHtml(S.lang):"");   /* AOG-DRUM-REAL-V1: where the recorded kits come from */
   bind();
   REC.paint();
   paintLessonBox();
@@ -2779,7 +2790,7 @@ async function bounceToDecks(){
     node.connect(f); f.connect(glue); glue.connect(eq.input);
     eq.output.connect(g); g.connect(lim); lim.connect(off.destination);
     await ensureKit(S.bank);
-    VOICES.forEach(v=>{ const m=kitMsg(v.id); if(m[0].type==="kit") node.port.postMessage(m[0], m[1]); });
+    VOICES.forEach(v=>{ const m=kitMsg(v.id); if(m[0].type==="kit") node.port.postMessage(m[0], m[1]); realPush(node.port, v.id); });   /* AOG-DRUM-REAL-V1 */
     /* what gets bounced is what you would hear: the track if it is playing one,
        otherwise this segment, at its own length, with the accents and the feel */
     const order = (S.trackOn && S.track.length) ? S.track.slice() : [S.seg];
@@ -3051,6 +3062,7 @@ async function openWorkFile(file){
 function loadBeat(p){
   const sg=segNow();
   S.undo = hitsIn(sg.grid)>0 ? {seg:S.seg, grid:JSON.parse(JSON.stringify(sg.grid)), off:JSON.parse(JSON.stringify(sg.off||emptyOff())), len:sg.len||16, bpm:S.bpm, swing:S.swing, bank:S.bank} : null;
+  if(window.AOGDrumKit) AOGDrumKit.parts(p, {S:S, SEGS:SEGS, emptyGrid:emptyGrid, emptyOff:emptyOff, snapSwing:snapSwing, hitsIn:hitsIn});   /* AOG-DRUM-REAL-V1: a beat in two parts fills the next part too and plays them in turn */
   sg.grid=emptyGrid(); sg.off=emptyOff(); sg.len=16; useSeg(S.seg);
   Object.keys(p.map).forEach(k=>{ if(S.grid[k]) S.grid[k]=p.map[k].slice(); });
   if(typeof p.bpm==="number"){ S.bpm=p.bpm; sg.bpm=p.bpm; }
@@ -3067,6 +3079,7 @@ function undoBeat(){
   sg.grid=u.grid; sg.off=u.off; sg.len=u.len; sg.bpm=u.bpm; sg.swing=u.swing;
   S.seg=u.seg; useSeg(u.seg);
   useBank(u.bank);
+  if(window.AOGDrumKit) AOGDrumKit.unparts(u, S);   /* AOG-DRUM-REAL-V1: and the other part and the track, as they were */
   S.undo=null; S.starter=null;
   save(); paint();
 }
@@ -3341,6 +3354,7 @@ function bind(){
   document.querySelectorAll("[data-bank]").forEach(btn=>{
     btn.onclick=()=>{ useBank(btn.getAttribute("data-bank")); paint(); };
   });
+  if(window.AOGDrumKit) AOGDrumKit.decorate(document, S.lang);   /* AOG-DRUM-REAL-V1: the recorded kits under their own heading in the Sounds menu */
   const sampleIn=document.getElementById("sampleIn");
   if(sampleIn) sampleIn.onchange=()=>{ const f=sampleIn.files&&sampleIn.files[0]; if(f) takeSample(f); };
   const saveWork=document.getElementById("saveWork");
