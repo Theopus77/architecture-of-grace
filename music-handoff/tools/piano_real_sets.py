@@ -162,15 +162,23 @@ def write_struck(path, y):
     if head <= 0.006:
         return on, head
     best = (head, 0, on)
-    for sh in (4, 8, 12, 16, 20, 24, 28):
-        z = np.concatenate([np.zeros(sh), y])[:len(y)]
-        write_mp3(path, z)
+
+    def shifted(sh):
+        if sh >= 0:
+            return np.concatenate([np.zeros(sh), y])[:len(y)]
+        z = np.concatenate([y[-sh:], np.zeros(-sh)])
+        k = max(2, L + sh)
+        z[:k] *= np.sin(np.linspace(0, np.pi / 2, k)) ** 2
+        z[0] = 0.0
+        return z
+    for sh in (4, 8, -6, 12, 16, -12, 20, 24, 28, 32, 36, 40):
+        write_mp3(path, shifted(sh))
         on2, head2 = measure_mp3(path)
-        if on2 <= 0.0019 and head2 < best[0]:
+        if 0.0003 <= on2 <= 0.00195 and head2 < best[0]:
             best = (head2, sh, on2)
-        if on2 <= 0.0019 and head2 <= 0.006:
+        if 0.0003 <= on2 <= 0.00195 and head2 <= 0.006:
             return on2, head2
-    write_mp3(path, np.concatenate([np.zeros(best[1]), y])[:len(y)])
+    write_mp3(path, shifted(best[1]))
     return best[2], best[0]
 
 
@@ -291,12 +299,25 @@ def pitch_centroid(y, f_guess, t0, t1, ks=(1, 2, 3, 4), span_c=45):
         lo = int(k * f_guess * 2 ** (-span_c / 1200) * n / SR); hi = int(k * f_guess * 2 ** (span_c / 1200) * n / SR) + 1
         if hi >= len(P):
             break
-        fr = np.arange(lo, hi) * SR / n
-        pw = P[lo:hi]
+        fr = np.arange(lo, hi + 1) * SR / n
+        pw = P[lo:hi + 1]
         fk = np.sum(fr * pw) / np.sum(pw)
         num += np.sum(pw) * fk / k
         den += np.sum(pw)
     return float(num / den)
+
+
+def pitch_as_checked(y, n, method):
+    """the pitch of a finished struck note exactly as music-handoff/tests/pianosets.js measures it: from 30 ms
+    after the onset for 0.35 to 0.7 s (longer for low notes), by the set's method"""
+    on = onset_of(y)
+    a = on + int(round(0.03 * SR))
+    b = min(len(y) - int(round(0.05 * SR)), on + int(round(max(0.35, min(0.7, 60 / mtof(n))) * SR)))
+    seg = y[a:b]
+    if method == "centroid":
+        return pitch_centroid(seg, mtof(n), 0, len(seg) / SR, ks=(1, 2, 3, 4), span_c=60)
+    ks = (1,) if method == "fund" else (1, 2, 3, 4, 5, 6)
+    return pitch_harm(seg, mtof(n), 0, len(seg) / SR, ks=ks, span_c=60)
 
 
 def period_exact(y, f0, a, b):
@@ -454,7 +475,7 @@ def note_file(setname, n, layer, y, meta, struck=True):
     p = os.path.join(OUT, setname, "%d%s.mp3" % (n, layer))
     if struck:
         on, head = write_struck(p, y)
-        meta = dict(meta, onset_ms=round(1000 * on, 2))
+        meta = dict(meta, onset_ms=round(1000 * on, 2), first_samples=round(head, 4))
     else:
         write_mp3(p, y)
     REPORT.setdefault(setname, {"files": {}})["files"]["%d%s" % (n, layer)] = meta
@@ -478,27 +499,44 @@ def high_shelf(y, f, db, q=0.7):
     return lfilter(np.array(b) / a[0], np.array(a) / a[0], y)
 
 
-def decay_note(x, f_src, n, length, detune_c=0.0, extend=False, fade_frac=0.3, hp_frac=0.5, lp_hz=None, shelf=None):
-    """one recorded note (mono, at its own pitch f_src) → note n: retuned, trimmed, shortened and faded"""
+def decay_note(x, f_src, n, length, detune_c=0.0, extend=False, fade_frac=0.3, hp_frac=0.5, lp_hz=None, shelf=None,
+               method="harm", env=None):
+    """one recorded note (mono, at its own pitch f_src) → note n: retuned, trimmed, shortened and faded. Then
+    measured as the checker measures it and retuned once more if needed (a struck pan or bar glides a little in
+    pitch as it dies away, so where it is measured matters; this makes the builder and the checker agree)."""
     f_t = mtof(n) * 2 ** (detune_c / 1200)
     ratio = f_t / f_src
-    need = int((length + 0.3) * SR * ratio) + 64
-    y = resample(x[:need], ratio)
-    y = hp(y, max(20.0, hp_frac * f_t))                    # the filters first: they move the onset a little
-    if lp_hz:
-        y = lp(y, lp_hz)
-    if shelf:
-        y = high_shelf(y, *shelf)
-    y = trim_start(y)
-    if extend and len(y) < int(length * SR):
-        cut = len(y) - int(0.004 * SR)
-        rate = decay_rate(y, 0.45 * cut / SR, cut / SR - 0.02)
-        rate = min(-1.5, rate if rate is not None else -6.0)       # never let a note hang on forever
-        y = extend_decay(y, f_t, cut, length, rate)
-    y = y[:int(length * SR)]
-    if len(y) < int(length * SR):
-        y = np.concatenate([y, np.zeros(int(length * SR) - len(y))])
-    y = fade_out(y, max(0.15, fade_frac * length))
+
+    def make(ratio):
+        need = int((length + 0.3) * SR * ratio) + 64
+        y = resample(x[:need], ratio)
+        y = hp(y, max(20.0, hp_frac * f_t))                    # the filters first: they move the onset a little
+        if lp_hz:
+            y = lp(y, lp_hz)
+        if ratio > 2 ** (4 / 12):              # a note moved well up: its strike noise would land where a real
+            y = lp(y, 14000.0)                 # one has none, and an MP3 smears it before the note
+        if shelf:
+            y = high_shelf(y, *shelf)
+        y = trim_start(y)
+        if extend and len(y) < int(length * SR):
+            cut = len(y) - int(0.004 * SR)
+            rate = decay_rate(y, 0.45 * cut / SR, cut / SR - 0.02)
+            rate = min(-1.5, rate if rate is not None else -6.0)       # never let a note hang on forever
+            y = extend_decay(y, f_t, cut, length, rate)
+        y = y[:int(length * SR)]
+        if len(y) < int(length * SR):
+            y = np.concatenate([y, np.zeros(int(length * SR) - len(y))])
+        if env is not None:
+            y = y * env(np.arange(len(y)) / SR)
+        return fade_out(y, max(0.15, fade_frac * length))
+
+    y = make(ratio)
+    for _ in range(2):
+        res = 1200 * math.log2(pitch_as_checked(y, n, method) / f_t)
+        if abs(res) < 0.4:
+            break
+        ratio *= 2 ** (-res / 1200)
+        y = make(ratio)
     return y
 
 
@@ -560,7 +598,7 @@ def build_epreed():
             L = 4.0 if n <= 33 else 3.4 if n <= 45 else 2.8 if n <= 57 else 2.2 if n <= 69 else 1.7 if n <= 81 else 1.3
             if layer == "s":
                 L *= 0.85
-            y = decay_note(x, f, n, L, extend=True, fade_frac=0.35)
+            y = decay_note(x, f, n, L, extend=True, fade_frac=0.35, method="harm")
             files[(n, layer)] = (y, {"from": os.path.relpath(path, SRC_ROOT), "recorded": r,
                                      "source_cents": round(1200 * math.log2(f / mtof(r)), 1),
                                      "shift_semitones": round(12 * math.log2(mtof(n) / f), 2), "seconds": round(L, 2)})
@@ -568,8 +606,145 @@ def build_epreed():
     REPORT["epreed"]["pitch"] = "harm"
 
 
+def best_grid(real_sets):
+    """the every-third-key grid (of three possible) whose notes sit closest to the recordings of every layer"""
+    best = None
+    for off in (0, 1, 2):
+        g = grid(off)
+        cost = 0
+        for reals in real_sets:
+            lo, hi = min(reals), max(reals)
+            for n in g:
+                if lo - 1 <= n <= hi + 1:
+                    d = abs(nearest(reals, n) - n)
+                    cost += d + 3 * max(0, d - 2)
+        if best is None or cost < best[0]:
+            best = (cost, g)
+    return best[1]
+
+
+def struck_set(name, layer_src, measure, lengths, pitch="fund", grid_notes=None, note_opts=None, extra_meta=None):
+    """a set of struck or plucked notes. layer_src: {layer: {recorded midi: path}}; measure(x, r) → the
+    recording's true frequency; lengths(n, layer) → seconds; note_opts(n, layer) → extra decay_note options"""
+    notes = grid_notes or best_grid([sorted(v) for v in layer_src.values()])
+    files, cache = {}, {}
+    for layer, reals in layer_src.items():
+        rs = sorted(reals)
+        for n in notes:
+            r = nearest(rs, n)
+            path = reals[r]
+            if path not in cache:
+                x = to_mono(load(path))
+                cache[path] = (x, measure(x, r))
+            x, f = cache[path]
+            opts = note_opts(n, layer) if note_opts else {}
+            L = lengths(n, layer)
+            y = decay_note(x, f, n, L, method=pitch, **opts)
+            meta = {"from": os.path.relpath(path, SRC_ROOT), "recorded": r,
+                    "source_cents": round(1200 * math.log2(f / mtof(r)), 1),
+                    "shift_semitones": round(12 * math.log2(mtof(n) / f), 2), "seconds": round(L, 2)}
+            if opts.get("detune_c"):
+                meta["detune_c"] = opts["detune_c"]
+            if extra_meta:
+                meta.update(extra_meta(n, layer))
+            files[(n, layer)] = (y, meta)
+    finish_set(name, notes, sorted(layer_src, key="sml".index), files)
+    REPORT[name]["pitch"] = pitch
+
+
+def fund_measure(t0=0.04, t1=0.6):
+    """a struck bar or pan: its strongest, lowest partial is the note"""
+    def m(x, r):
+        i = onset_of(x)
+        return pitch_harm(x, mtof(r), i / SR + t0, min(len(x) / SR - 0.02, i / SR + t1), ks=(1,), span_c=70)
+    return m
+
+
+# ── celesta: stamperadam's celesta (Freesound pack 6166), as mapped by Virtual Playing Orchestra 3 ──
+CELESTA_FILES = {"c4": 60, "e4": 64, "g4": 68, "e5": 76, "g5": 80, "c6": 84, "e6": 88, "g6": 92, "c7": 96, "e7": 100,
+                 "g7": 105}   # the library's "g" notes sound G sharp (its top one, A); measured, as its own mapping has them
+
+
+def celesta_sources():
+    d = src("celesta", "libs", "stamperadam", "samples", "celesta")
+    out = {"soft": {}, "hard": {}}
+    for nm, midi in CELESTA_FILES.items():
+        for kind in ("soft", "hard"):
+            p = os.path.join(d, "%s-%s-PB.wav" % (nm, kind))
+            if os.path.exists(p):
+                out[kind][midi] = p
+    # the library has no soft C4; its own mapping plays the hard one there, and so does this set below E4
+    out["soft"][60] = out["hard"][60]
+    return out
+
+
+def build_celesta():
+    s = celesta_sources()
+    struck_set("celesta", {"m": s["soft"], "l": s["hard"]}, fund_measure(),
+               lambda n, l: 3.0 if n < 72 else 2.6 if n < 84 else 2.2,
+               note_opts=lambda n, l: {"fade_frac": 0.4})
+
+
+# ── steel drums: jSteelDrum v2, a Trinidad tenor pan (Jeff Learman) ──
+def steel_sources():
+    d = src("steel", "flac")
+    names = os.listdir(d)
+    out = {}
+    # its five strengths; this set keeps the 2nd, 3rd and 5th as soft, middle and hard, from the same files the
+    # instrument's own mapping plays: the newer recordings (jsdb_) for the lower octave's first three strengths,
+    # the first recordings (SteelDrum_, whose "4" is the top strength) for everything else
+    for layer, tag in (("s", "2"), ("m", "3"), ("l", "4")):
+        out[layer] = {}
+        for midi in range(60, 84):
+            pref = "jsdb_%03d_" % midi if (midi < 72 and layer != "l") else "SteelDrum_%03d_" % midi
+            out[layer][midi] = [os.path.join(d, f) for f in names
+                                if f.startswith(pref) and re.search(r"_%s(-\d+)?\.flac$" % tag, f)]
+    return out
+
+
+def typical_take(takes, r):
+    """of a note's takes, the one whose brightness is nearest the middle of them all"""
+    if len(takes) == 1:
+        return takes[0]
+    cs = []
+    for p in takes:
+        x = to_mono(load(p))
+        i = onset_of(x)
+        seg = x[i:i + int(0.3 * SR)]
+        S, n = spectrum(seg)
+        fr = np.arange(len(S)) * SR / n
+        cs.append(float(np.sum(fr * S ** 2) / np.sum(S ** 2)))
+    med = float(np.median(cs))
+    return takes[int(np.argmin([abs(c - med) for c in cs]))]
+
+
+def build_steel():
+    s = steel_sources()
+    layer_src = {layer: {m: typical_take(t, m) for m, t in d.items()} for layer, d in s.items()}
+    struck_set("steel", layer_src, fund_measure(0.04, 0.5),
+               lambda n, l: 2.2 if n < 60 else 2.4 if n < 72 else 2.0 if n < 84 else 1.6,
+               note_opts=lambda n, l: {"fade_frac": 0.4})
+
+
+# ── clav: the Yamaha TX81Z's "Clavisynth" patch, sampled from the hardware (VCSL) ──
+def build_clav():
+    d = src("clav", "Electrophones", "TX81Z", "Clavisynth")
+    layer_src = {"s": {}, "m": {}, "l": {}}
+    for fn in os.listdir(d):
+        m = re.match(r"^Clavisynth_([A-G]#?\d)_vl([123])\.wav$", fn)
+        if m:
+            # the files are named two octaves under the notes they sound ("8va", in Yamaha's octave numbering)
+            midi = name_midi(m.group(1)) + 24
+            layer_src["sml"[int(m.group(2)) - 1]][midi] = os.path.join(d, fn)
+    def measure(x, r):
+        i = onset_of(x)
+        return pitch_harm(x, mtof(r), i / SR + 0.03, min(len(x) / SR - 0.02, i / SR + 0.4), ks=(1, 2, 3))
+    struck_set("clav", layer_src, measure, lambda n, l: 2.0 if n < 48 else 1.6 if n < 72 else 1.1,
+               pitch="harm", note_opts=lambda n, l: {"fade_frac": 0.45})
+
+
 # ══════════════════════════════════════════════════════════════════════════
-BUILDERS = ["epreed"]
+BUILDERS = ["epreed", "celesta", "steel", "clav"]
 OUT = os.path.join(REPO, "aog-deploy", "audio", "piano")
 MANIFEST = os.path.join(HERE, "piano_real_sets.json")
 
