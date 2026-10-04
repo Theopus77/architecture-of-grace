@@ -1,4 +1,4 @@
-/* AOG-PIANO-REAL-V1 — the piano's sounds that became recordings (music-handoff/tools/piano_real_sets.py): the '80s electric
+/* AOG-PIANO-REAL-V1 — the piano's sounds that became recordings (music-handoff/tools/piano_vcsl_sets.py): the '80s electric
    piano, the church organ, the glockenspiel, the vibraphone, the bells, the harpsichord, the kalimba and the tape flute; and
    (AOG-PIANO-REAL-V2) the warm electric piano, whose notes' tails were made from their own loops.
    For each one:
@@ -22,7 +22,7 @@ const REAL={ep80:"fmpiano", church:"pipeorgan", glock:"glockenspiel", vibes:"vib
 /* how each set's pitch is measured, and over which part of the note (seconds after it starts) */
 const HOW={fmpiano:["harm",0.05,1.0], pipeorgan:["harm",0.6,2.6], harpsichord:["harm",0.05,0.8], flute:["harm",0.6,2.6],
   vibraphone:["bar",0.04,0.6], glockenspiel:["bar",0.04,0.6], kalimba:["bar",0.02,0.4], bells:["bell",0.05,1.0], rhodes:["harm",0.05,1.0]};
-/* where each warm electric piano note's own loop began in its recording (seconds; piano_real_sets.py prints them): from there
+/* where each warm electric piano note's own loop began in its recording (seconds; piano_vcsl_sets.py prints them): from there
    on, the note is that loop repeated, fading on */
 const RHODES_LOOP={29:4.92, 35:4.25, 40:5.85, 45:6.35, 50:5.39, 55:5.76, 59:4.84, 62:6.08, 65:5.34, 71:4.43, 76:3.09, 81:3.80, 86:3.53, 91:1.53, 96:0.65};
 /* the pitch meter, in the page: an FFT, a peak found to a fraction of a bin, and the three ways of reading a note */

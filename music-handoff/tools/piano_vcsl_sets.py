@@ -3,7 +3,10 @@
 # a note every few semitones, the quiet moment before the note trimmed, each note shortened and faded, the notes of an
 # instrument brought to one level, and each note's pitch measured and, if it is off, the note retuned (resampled).
 #
-#   python3 piano_real_sets.py <aog-deploy/audio/piano> <VCSL clone> <aog-deploy/audio/band/flute> [sets,…] [Discord-SFZ-GM-Bank clone]
+#   python3 piano_vcsl_sets.py <aog-deploy/audio/piano> <VCSL clone> <aog-deploy/audio/band/flute> [sets,…] [Discord-SFZ-GM-Bank clone]
+#
+# (The piano's other recorded sets, from the bright electric piano on, are made by piano_real_sets.py; the harp, the
+# marimba and the soft strings by piano_vsco_sets.py.)
 #
 # Sources (all CC0 1.0, except the Rhodes: CC0 as its author wrote it, "Creative Commons CC0, Jeff Learman"):
 #   Versilian Community Sample Library (VCSL), https://github.com/sgossner/VCSL — the harpsichord (the English one, a
