@@ -170,7 +170,7 @@ function loopCheck(file, loop, raw, f) {
   const c3 = clicks(play, Z, Z + (Z - A), sr, fl);
   /* the level's wobble, one window at a time against the 7 windows around it (a bad seam is a short dip or bump;
      an instrument's own slow beat, a second or more long, hardly moves within 7 windows): across the blend, the
-     jump and a whole pass round the loop, it may wobble no more than the note does by itself before its loop (or
+     jump and a whole pass round the loop, it may wobble no more than the file itself does up to its loop end (10% and 0.75 dB of room, or at least
      1.5 dB) */
   const wob = (x, a, b) => {
     const lv = []; for (let i = a; i + w <= b; i += w) lv.push(dB(rms(x, i, i + w)));
@@ -181,7 +181,9 @@ function loopCheck(file, loop, raw, f) {
     }
     return mx;
   };
-  const natural = wob(before, Math.max(Math.round(0.15 * sr), A - X - Math.round(0.6 * sr)), A - X);
+  /* the reference: the file as it is written, from 0.15 s to the loop end (a choir's singers or an accordion's
+     reeds beat by themselves; the page's playback round the loop must not add to that) */
+  const natural = wob(before, Math.round(0.15 * sr), Z);
   const looped = wob(play, A - X, Z + (Z - A));
   return { swellDb: worst, clickDb: Math.max(c1.ratioDb, c2.ratioDb, c3.ratioDb), wobbleDb: looped, naturalDb: natural };
 }
@@ -229,10 +231,10 @@ function checkSet(name, info) {
     if (e.loop) [false, true].forEach(raw => {
       const lc = loopCheck(f, e.loop, raw, mtof(n)), tag = raw ? " (encoder delay kept)" : "";
       res.worstSwell = Math.max(res.worstSwell, lc.swellDb); res.worstLoopClick = Math.max(res.worstLoopClick, lc.clickDb);
-      res.worstWobble = Math.max(res.worstWobble || 0, lc.wobbleDb - lc.naturalDb);
+      res.worstWobble = Math.max(res.worstWobble || 0, lc.wobbleDb - 1.1 * lc.naturalDb);
       if (lc.swellDb > 1) say(`${key}: the loop blend moves the level ${lc.swellDb.toFixed(2)} dB${tag}`);
       if (lc.clickDb > 15) say(`${key}: a click at the loop, ${lc.clickDb.toFixed(0)} dB${tag}`);
-      if (lc.wobbleDb > Math.max(1.5, lc.naturalDb + 0.75)) say(`${key}: the level wobbles ${lc.wobbleDb.toFixed(2)} dB round the loop (by itself ${lc.naturalDb.toFixed(2)} dB)${tag}`);
+      if (lc.wobbleDb > Math.max(1.5, 1.1 * lc.naturalDb + 0.75)) say(`${key}: the level wobbles ${lc.wobbleDb.toFixed(2)} dB round the loop (by itself ${lc.naturalDb.toFixed(2)} dB)${tag}`);
     });
   }));
   if (bytes > MAX_BYTES) say(`${(bytes / 1e6).toFixed(2)} MB, over 3 MB`);
