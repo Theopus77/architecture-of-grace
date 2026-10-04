@@ -75,7 +75,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     /* licks (guitar) */
     if(inst==="guitar"){
       await p.evaluate(()=>{ S.key=9; S.minor=true; S.bpm=100; S.fret0=1; buildNeck(); });
-      for(const id of ["blues","double","tap","shred","funk","bend"]){
+      for(const id of ["blues","double","tap","shred","funk","bend","groove","thrash"]){
         await p.selectOption("#soLickSel", id); await p.evaluate(()=>{ window.__v=[]; if(!window.__mv){ window.__mv=window.makeVoice; window.makeVoice=function(cx,ch,i,m,v,w,s){ if(cx===ac) __v.push(m); return __mv.apply(this,arguments); }; } });
         await press("#soLickBtn");
         const seen=[]; let on=true, t0=Date.now();
@@ -89,13 +89,31 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       }
       const tp=await p.evaluate(()=>AOGSolo._t.LICK.log.length);
       ok(true, "licks done");
+      /* AOG-SOLO-METAL-LICKS-V1: the metal licks squeal where they should, with the Pinch squeal switch off; named by style */
+      const mq=await p.evaluate(()=>({pinch:AOGSolo._t.P.pinch, groove:AOGSolo._t.LICKS.groove.filter(n=>n.q).length, thrash:AOGSolo._t.LICKS.thrash.filter(n=>n.q).length,
+        names:[...document.querySelectorAll("#soLickSel option")].map(o=>o.textContent).join(" | ")}));
+      ok(!mq.pinch && mq.groove===2 && mq.thrash===1 && /Groove metal lick/.test(mq.names) && /Thrash metal lick/.test(mq.names) && !/Dime|Darrell|Hammett|Pantera|Metallica/i.test(mq.names), "the metal licks: "+JSON.stringify(mq));
+      /* AOG-SOLO-LICKSPEED-V1: the speed slider slows the lick (and its bends) down; the next Play uses it; it is kept */
+      const gap=async(spd)=>{ await p.evaluate(v=>{ const r=document.getElementById("soLickSpd"); r.value=String(v); r.dispatchEvent(new Event("input",{bubbles:true})); }, spd);
+        await p.selectOption("#soLickSel","blues"); await press("#soLickBtn"); await p.waitForTimeout(150);
+        const r=await p.evaluate(()=>{ const L=AOGSolo._t.LICK, g=L.log[1].t-L.log[0].t; const o={gap:g, beat:L.beat, out:document.getElementById("soLickSpdOut").textContent, line:document.getElementById("soLickLine").textContent}; AOGSolo._t.lickStop(); o.after=document.getElementById("soLickLine").textContent; return o; });
+        return r; };
+      const g100=await gap(100), g50=await gap(50), g25=await gap(25);
+      const kept=await p.evaluate(()=>{ try{ return JSON.parse(localStorage.getItem("aog.guitar.solo.v1")).lspd; }catch(e){ return null; } });
+      ok(Math.abs(g100.gap-0.6)<0.01 && Math.abs(g50.gap-1.2)<0.01 && Math.abs(g25.gap-2.4)<0.01 && g100.out==="Full speed" && g50.out==="50% speed" && /Slow it down to learn it/.test(g50.after) && !/Slow it down/.test(g100.after),
+        "lick speed: full "+g100.gap.toFixed(3)+" s, half "+g50.gap.toFixed(3)+" s, a quarter "+g25.gap.toFixed(3)+" s between the first two notes; "+g50.out+"; "+g50.after);
+      await p.waitForTimeout(400);
+      const kept2=await p.evaluate(()=>{ try{ return JSON.parse(localStorage.getItem("aog.guitar.solo.v1")).lspd; }catch(e){ return null; } });
+      ok(kept2===25, "the speed is kept for the next visit: "+kept+" → "+kept2);
+      await p.evaluate(()=>{ const r=document.getElementById("soLickSpd"); r.value="100"; r.dispatchEvent(new Event("input",{bubbles:true})); });
       /* a major key: the lick comes home to its own note; Spanish */
       await p.evaluate(()=>{ S.key=0; S.minor=false; buildNeck(); }); await p.selectOption("#soLickSel","blues");
       const home=await p.evaluate(()=>{ const n=AOGSolo._t.lickNotes("blues"); const h=n[n.length-1]; return (TUNING[h.s]+h.f)%12; });
       ok(home===0, "in C major the blues lick comes home to C");
       await p.evaluate(()=>document.getElementById("langBtn").click());
       const es=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel option")].map(o=>o.textContent).join(" | ")+" / "+document.getElementById("soLickBtn").textContent);
-      ok(/Frase de blues/.test(es) && /Tocar esta frase/.test(es), "Spanish: "+es);
+      const es2=await p.evaluate(()=>document.querySelector('[data-so="lickSpeed"]').textContent+" / "+document.getElementById("soLickSpdOut").textContent);
+      ok(/Frase de blues/.test(es) && /Tocar esta frase/.test(es) && /Frase de groove metal/.test(es) && /Frase de thrash metal/.test(es) && es2==="Velocidad de la frase / Velocidad completa", "Spanish: "+es+" · "+es2);
       await p.evaluate(()=>document.getElementById("langBtn").click());
     }
     ok(errs.length===0, "no page errors "+errs.join(" | "));
