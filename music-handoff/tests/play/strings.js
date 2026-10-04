@@ -39,14 +39,14 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     const lay=await p.evaluate(()=>{ const fx=NECK.fx, w=fx.slice(1).map((x,i)=>x-fx[i]);
       return {on:PV.on, play:NECK.play, inView:!!document.querySelector("#playView #neckBox"), page:getComputedStyle(document.querySelector(".wrap")).display,
         zoom:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
-        w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)>neckY(5), nutLeft:NECK.fx[0]<NECK.sx,
+        w:w.map(x=>+x.toFixed(1)), n:NECK.n, rows:NECK.rows, low:neckY(0)<neckY(5), nutLeft:NECK.fx[0]<NECK.sx,
         pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#playView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText) && /safe-area-inset-bottom/.test(r.cssText)); }catch(e){ return false; } }),
         ta:getComputedStyle(document.getElementById("neck")).touchAction, bar:document.getElementById("pvClose").textContent }; });
     ok(lay.on && lay.play && lay.inView && lay.page==="none", "turned sideways, the neck fills the screen and the page steps aside");
     ok(lay.zoom==="1", "the play view is not zoomed (zoom "+lay.zoom+")");
     ok(lay.sw<=lay.iw && lay.sh<=lay.ih+1, `nothing scrolls: ${lay.sw}×${lay.sh} in ${lay.iw}×${lay.ih}`);
     ok(lay.w.every((x,i)=>i===0||x<lay.w[i-1]) && lay.w[lay.w.length-1]>=44, `${lay.n} frets, closer together towards the body: ${lay.w.join(", ")} px`);
-    ok(lay.low && lay.nutLeft, "the low string at the bottom, the nut on the left");
+    ok(lay.low && lay.nutLeft, "right-handed: the thick low string on top, the nut on the left, the strum strip on the right");
     ok(lay.pad, "the play view keeps clear of the notch and the home bar (safe-area padding)");
     ok(lay.ta==="none" && /Close/.test(lay.bar), "the neck takes the touch; the bar reads "+lay.bar);
 
@@ -79,14 +79,14 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     await p.evaluate("muteAll(); __v=[]");
     const C=[[1,3],[2,2],[4,1]]; const fing=[]; for(const [s,f] of C) fing.push({...(await at(s,f)), id:fing.length+1});
     await T("touchStart",fing); await p.waitForTimeout(50);
-    const s0=await at(0,"strum"), s5=await at(5,"strum"), sw={x:s0.x, y:s0.y+s0.row*0.45, id:9};
+    const s0=await at(0,"strum"), s5=await at(5,"strum"), dir=Math.sign(s5.y-s0.y), sw={x:s0.x, y:s0.y-dir*s0.row*0.45, id:9};   /* just past the low string, before it */
     await T("touchStart",[...fing, sw]);
-    for(let i=1;i<=8;i++){ await T("touchMove",[...fing, {...sw, y:sw.y+(s5.y-s0.row*0.45-sw.y)*i/8}]); await p.waitForTimeout(12); }
+    for(let i=1;i<=8;i++){ await T("touchMove",[...fing, {...sw, y:sw.y+(s5.y+dir*s0.row*0.45-sw.y)*i/8}]); await p.waitForTimeout(12); }
     await p.waitForTimeout(150);
     const ch=await p.evaluate("__v.map(x=>[x.s,x.m])");
-    ok(JSON.stringify(ch)===JSON.stringify([[0,40],[1,48],[2,52],[3,55],[4,60],[5,64]]), "the swipe up sounds E C E G C E, low to high: "+JSON.stringify(ch));
+    ok(JSON.stringify(ch)===JSON.stringify([[0,40],[1,48],[2,52],[3,55],[4,60],[5,64]]), "a swipe from the low string sounds E C E G C E, low to high: "+JSON.stringify(ch));
     /* and back down: high to low */
-    await p.evaluate("__v=[]"); const yTop=s5.y-s0.row*0.45;
+    await p.evaluate("__v=[]"); const yTop=s5.y+dir*s0.row*0.45;   /* just past the high string */
     for(let i=1;i<=3;i++){ await T("touchMove",[...fing, {...sw, y:yTop+(sw.y-yTop)*i/3}]); await p.waitForTimeout(8); }
     await p.waitForTimeout(120);
     const dn=await p.evaluate("__v.map(x=>[x.s,x.v,x.w])");

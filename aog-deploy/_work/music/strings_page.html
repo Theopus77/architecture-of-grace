@@ -2396,7 +2396,7 @@ function paintStrips(){
 /* ══ AOG-PLAY-V1 (2026-10-04) — the neck sideways ════════════════════════════════════════════════════════════════
    Jimmy: "When you turn the iPhone or iPad horizontally, you can play the guitar or bass like a real instrument."
    Turned on its side, a phone or tablet shows only the neck: the nut on the left, the frets closer together towards the
-   body, as a real neck's are; the low string at the bottom, as you see your own guitar when you look down at it.
+   body, as a real neck's are; the thick low string on top, as you see your own guitar when you look down at it.
    One hand holds the frets (silent, as on a real guitar); the other strums or plucks on the strip at the right: a swipe
    sounds each string it crosses, in that order and at that speed; a tap plucks one. A held finger slides along its string
    and bends across it (a small wiggle is vibrato); lifting it mutes the string, or pulls off to a finger still on it.
@@ -2411,7 +2411,7 @@ function pvSave(){ try{ localStorage.setItem(PVKEY, JSON.stringify({left:PV.left
 function fretD(k){ return 1-Math.pow(2,-k/12); }        /* where fret k sits, as a share of the string from the nut */
 function fretless(){ const d=SOUNDS[S.sound]; return !GTR && !!(d && (d.rec==="upright" || d.rec==="ergo")); }
 /* the neck's places, sideways or not (aog-solo.js draws with them too) */
-function neckY(s){ return NECK.top+(NECK.play ? NECK.rows-1-s : s)*NECK.rowH+NECK.rowH/2; }
+function neckY(s){ return NECK.top+s*NECK.rowH+NECK.rowH/2; }   /* the thick low string on top, as a right-handed player sees it (Jimmy: "It starts as a left handed guitar") */
 function neckXY(s, f){
   let x;
   if(f===0) x=(NECK.nut-4)/2;
@@ -2475,7 +2475,7 @@ function playHit(e){
   const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
   let x=(e.clientX-r.left)*NECK.W/r.width; const y=(e.clientY-r.top)*NECK.H/r.height;
   if(NECK.flip) x=NECK.W-x;
-  const row=Math.max(0, Math.min(NECK.rows-1, Math.floor((y-NECK.top)/NECK.rowH))), s=NECK.rows-1-row;
+  const s=Math.max(0, Math.min(NECK.rows-1, Math.floor((y-NECK.top)/NECK.rowH)));
   if(x>=NECK.sx-4) return {zone:"strum", s:s, y:y};
   if(x<NECK.nut-2) return {zone:"fret", s:s, f:0, fc:0, y:y};
   const a=S.fret0, n=NECK.n, fx=NECK.fx;
