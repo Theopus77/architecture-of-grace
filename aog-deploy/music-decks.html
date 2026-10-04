@@ -205,8 +205,9 @@ footer a{color:inherit}
 .rechint{font-size:.8rem;color:var(--muted);margin:.5rem 0 0}
 .takes{display:grid;gap:.5rem;margin-top:.6rem}
 .takes:empty{display:none}
-.eqwrap{position:relative;margin-top:.7rem}
-.eqcurve{display:block;width:100%;height:110px;background:#06110c;border-radius:10px}
+.eqwrap{position:relative;margin-top:.7rem;background:#06110c;border-radius:10px}
+.eqcurve{position:relative;display:block;width:100%;height:110px;border-radius:10px}
+.eqlive{position:absolute;left:0;top:0;width:100%;height:110px;border-radius:10px;pointer-events:none}
 .eqcap{position:absolute;right:10px;bottom:7px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(198,247,176,.75)}
 .bench{margin-top:.6rem}
 
@@ -409,7 +410,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
       <button type="button" class="pill rec" id="recBtn"></button>
       <span class="rectime" id="recTime">0:00</span>
     </div>
-    <div class="eqwrap"><canvas id="eqCurve" class="eqcurve" aria-hidden="true"></canvas>
+    <div class="eqwrap"><canvas id="eqLive" class="eqlive" aria-hidden="true"></canvas><canvas id="eqCurve" class="eqcurve" aria-hidden="true"></canvas>
       <span class="eqcap" id="eqCap"></span></div>
     <p class="rechint" id="recHint"></p>
   </section>
@@ -1669,21 +1670,47 @@ function drawEq(){
   if(!cw || !window.AOGEq) return;
   const cols = ["#f0c26e","#7fc7f5","#f4a3b0"], curves = [];
   decks.forEach((d,i)=>{ if(d.eq) curves.push({ filters: d.eq.filters.concat(d.lp?[d.lp, d.hp]:[]), color: cols[i], label: "DECK "+d.id, labelY: 12+i*12 }); });
-  EQO.curves = curves; EQO.analyser = eqScope; EQO.sampleRate = actx ? actx.sampleRate : 44100;
+  EQO.curves = curves; EQO.analyser = null; EQO.bg = "rgba(0,0,0,0)"; EQO.sampleRate = actx ? actx.sampleRate : 44100;
   /* the shared drawing code asks the canvas for its size; this hands it the size we already know */
   EQP = EQP || { getContext:(k)=>cv.getContext(k), get width(){ return cv.width; }, set width(v){ cv.width = v; }, get height(){ return cv.height; }, set height(v){ cv.height = v; } };
   EQP.clientWidth = cw; EQP.clientHeight = 110;
   AOGEq.draw(EQP, EQO);
 }
 const EQO = { range:26 };
-let lastEq = 0, eqDirty = true, eqSeen = true, EQIO = null;
+/* AOG-DJ-PERF-V2 — the live sound behind the curves is a small picture of its own, one pixel per
+   screen pixel (a soft shape needs no more): redrawing it while music plays costs a quarter of
+   redrawing the curves, which change only when a knob moves */
+let LIVE = null;
+function drawLive(){
+  const cv = document.getElementById("eqLive"), ref = document.getElementById("eqCurve");
+  const w = Math.round(ref ? cssW(ref) : 0), h = 110;
+  if(!cv || !w || !eqScope) return;
+  if(cv.width !== w) cv.width = w; if(cv.height !== h) cv.height = h;
+  const g = cv.getContext("2d"), bins = eqScope.frequencyBinCount;
+  if(!LIVE || LIVE.length !== bins) LIVE = new Uint8Array(bins);
+  eqScope.getByteFrequencyData(LIVE);
+  const ny = (actx ? actx.sampleRate : 44100)/2, lo = 30, hi = 18000, k = w/Math.log(hi/lo);
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = "rgba(127,199,245,.20)";               /* the shape and colour of the shared curve drawing */
+  g.beginPath(); g.moveTo(0, h);
+  for(let i=1;i<bins;i++){ const f = i/bins*ny; if(f < lo || f > hi) continue; g.lineTo(Math.log(f/lo)*k, h - (LIVE[i]/255)*h*0.92); }
+  g.lineTo(w, h); g.closePath(); g.fill();
+}
+let lastEq = 0, lastLive = 0, eqUntil = 0, liveUntil = 0, eqDirty = true, eqSeen = true, EQIO = null;
 let FRAME = 0;
 function loop(){
   const now = performance.now(); FRAME++;
   syncTick(now);
-  /* the curve and the live sound behind it: redrawn while music plays, or when a knob moved */
+  /* the curves are drawn again when a knob moves (and for a moment after, while the sound settles
+     on its new setting); the live sound behind them while music plays. Neither is drawn while the
+     mixer is off the screen. */
   const playing = decks.some(d=>Math.abs(d.rate) > 0.01);
-  if(eqSeen && ((eqDirty && now - lastEq > 33) || (playing && now - lastEq > 80))){ lastEq = now; eqDirty = false; try{ drawEq(); }catch(e){} }
+  if(eqSeen){
+    if(eqDirty){ eqDirty = false; eqUntil = now + 400; }
+    if(eqUntil && now - lastEq > 33){ lastEq = now; if(now >= eqUntil) eqUntil = 0; try{ drawEq(); }catch(e){} }
+    if(playing) liveUntil = now + 1200;
+    if(now < liveUntil && now - lastLive > 80){ lastLive = now; try{ drawLive(); }catch(e){} }
+  }
   try{ tickLessons(); }catch(e){}
   decks.forEach(d=>{
     if(d.buf){
