@@ -14,7 +14,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  ok(take && take.passSec>0 && take.loops>0 && take.offset===0.03 && take.swing===0.58, "the drum machine's bounce now says its pass length, passes, offset and swing: "+JSON.stringify(take));
  // 2 · the piano finds it
  const p=await c.newPage(); p.on("pageerror",e=>errs.push("piano: "+e.message));
- await p.goto("http://localhost:9908/music-piano.html"); await p.waitForFunction(()=>SETS.grand.ready, null, {timeout:30000}); await p.waitForTimeout(500);
+ await p.addInitScript(()=>{ window.AOG_FEEL_OFF=true; });   /* AOG-FEEL-V1: the grid itself (play/feel.js checks the feel) */ await p.goto("http://localhost:9908/music-piano.html"); await p.waitForFunction(()=>SETS.grand.ready, null, {timeout:30000}); await p.waitForTimeout(500);
  ok(await p.isVisible("#drumBtn"), "the piano shows Play with my drum beat");
  ok((await p.textContent("#drumBox")).includes("Drum machine · 90 BPM"), "and names the beat: "+(await p.textContent("#drumBox")).trim().slice(0,90));
  await p.click("#drumBtn"); await p.waitForTimeout(150);

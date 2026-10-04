@@ -194,6 +194,7 @@ body.pv-left #playView .cstrip.pv-chords{order:2;margin:0 0 20px 6px}
    the page steps aside and the neck fills the screen, clear of the notch and the home bar. Nothing moves on its own. The
    page is not zoomed while you play (aog-calm.css zooms a wide page; a finger must land on the string it touches). ══ */
 .pv{display:none}
+html{touch-action:manipulation}   /* AOG-PLAY-ZOOM-V1: a quick second tap plays, it does not zoom (pinching the page still does) */
 .pv-big{display:none}
 @media (pointer:fine){ .pv-big{display:inline-flex} }
 html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
@@ -2409,6 +2410,29 @@ function paintStrips(){
    An upright or fretless sound has no frets: the note is where the finger is, dots only where a player marks positions.
    Solo mode keeps its own hooks (aog-solo.js); the strip is its whammy bar. It is the page's own neck (#neckBox), moved
    here, so the lit notes, Record and the computer keys work the same. A computer gets it from "Play on the whole screen". */
+/* AOG-PLAY-ZOOM-V1 (2026-10-04) — Jimmy: "It zooms in occasionally. Also, when I turn it it ZOOMS in too much." On an
+   iPhone a quick second tap on the same spot zooms, two hands playing at once read as a pinch, and Safari keeps (or adds)
+   a zoom when the phone turns. While the instrument fills the screen the page holds still at its own size: the viewport
+   is held at 1, pinches and double taps on the instrument are kept, and when it is turned back the page returns to its
+   own size (the hold lets go a moment later, so a reader can zoom the page again). */
+const ZOOM={base:null, t:0};
+function playZoomLock(on){
+  const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  if(ZOOM.base==null) ZOOM.base=m.getAttribute("content")||"width=device-width, initial-scale=1";
+  clearTimeout(ZOOM.t);
+  m.setAttribute("content", ZOOM.base+", maximum-scale=1, user-scalable=no");
+  if(!on) ZOOM.t=setTimeout(()=>m.setAttribute("content", ZOOM.base), 600);
+}
+(function(){
+  const playing=()=>document.body && document.body.classList.contains("aog-play");
+  const keep=(e)=>{ if(playing() && e.cancelable) e.preventDefault(); };
+  ["gesturestart","gesturechange","gestureend","dblclick"].forEach(ev=>document.addEventListener(ev, keep, {passive:false}));
+  /* two fingers moving on the instrument are two hands playing, not a pinch */
+  document.addEventListener("touchmove",(e)=>{ if(playing() && e.touches.length>1 && e.cancelable && !(e.target.closest && e.target.closest("select,.pv-drawer"))) e.preventDefault(); },{passive:false});
+  /* a quick second tap is a second note, not a zoom */
+  let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
+    if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
+})();
 const PV={on:false, forced:false, closed:false, left:false, away:false, tap:true, alt:0, mq:null, back:null, y:0, seen:false};
 const PVKEY="aog."+INST+".play.v1";
 try{ const r=JSON.parse(localStorage.getItem(PVKEY)||"null"); if(r){ PV.left=!!r.left; PV.away=!!r.away; PV.seen=!!r.seen; if(typeof r.tap==="boolean") PV.tap=r.tap; } }catch(e){}
@@ -2583,13 +2607,13 @@ function pvEnter(){
   const box=$("neckBox"); if(!box || PV.on) return;
   PV.on=true; PV.y=window.scrollY||0;
   PV.back=document.createComment("neckBox"); box.parentNode.insertBefore(PV.back, box); $("pvNeck").appendChild(box);
-  document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", !!PV.left!==!!PV.away);
+  playZoomLock(true); document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", !!PV.left!==!!PV.away);
   NECK.play=true; FINGERS.clear(); pvText(); buildNeck();
   if(!PV.seen){ PV.seen=true; pvSave(); } $("pvTurn").hidden=true;
 }
 function pvExit(){
   if(!PV.on) return; PV.on=false; FINGERS.clear(); pvDrawer(false);
-  document.body.classList.remove("aog-play","pv-left");
+  document.body.classList.remove("aog-play","pv-left"); playZoomLock(false);
   const box=$("neckBox"); if(PV.back && PV.back.parentNode){ PV.back.parentNode.replaceChild(box, PV.back); } PV.back=null;
   NECK.play=false; buildNeck(); window.scrollTo(0, PV.y);
 }
