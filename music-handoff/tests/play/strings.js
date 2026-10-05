@@ -216,8 +216,8 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(!u.on && !u.play && u.inRig && u.rowFirst, "upright, the neck stays on the page as it was (thick string on top)");
     ok(/sideways/.test(u.turn), "one quiet line: "+u.turn);
     ok(u.big==="none" && u.sw<=390, "no computer button on a phone; no sideways scroll");
-    const cs=await p.evaluate(()=>{ const st=document.getElementById("chordStrip"), nk=document.getElementById("neckBox"); return {n:st.querySelectorAll(".cs").length, above:st.getBoundingClientRect().bottom<=nk.getBoundingClientRect().top+1 && nk.getBoundingClientRect().top-st.getBoundingClientRect().bottom<40, w:document.querySelector("#chordStrip .cs").getBoundingClientRect().width}; });
-    ok(cs.n===10 && cs.above && cs.w>=44, `upright, the six chords and the four more sit right on top of the neck (${Math.round(cs.w)} px each)`);
+    const cs=await p.evaluate(()=>{ const st=document.getElementById("chordStrip"), nk=document.getElementById("neckBox"); return {n:st.querySelectorAll(".cs").length, above:st.getBoundingClientRect().bottom<=nk.getBoundingClientRect().top+1 && nk.getBoundingClientRect().top-st.getBoundingClientRect().bottom<40+document.querySelector(".krow").getBoundingClientRect().height+12, w:document.querySelector("#chordStrip .cs").getBoundingClientRect().width}; });
+    ok(cs.n===10 && cs.above && cs.w>=44, `upright, the six chords and the four more sit just above the neck, only Lower and Higher between (AOG-KROW-NEAR-V1) (${Math.round(cs.w)} px each)`);
     await p.setViewportSize({width:844,height:390}); await p.waitForTimeout(300); await p.setViewportSize({width:390,height:844}); await p.waitForTimeout(300);
     ok(await p.evaluate("document.getElementById('pvTurn').hidden"), "once turned, the line does not come back");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
