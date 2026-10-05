@@ -25,7 +25,7 @@ const PAGE={D:[-25.9,-37.4,-54.8,-43.1,-44.7,-28.8,-36.7,-30.6],E:[-22.7,-35.6,-
 /* where each rebuilt pad was set (music-handoff/tools/drumkits/kits.py TARGET): the page-made level, except closed hats no
    quieter than -54 (the page-made ones were nearly silent), and J's hats, K's hi-hat foot and O's roll lifted so their normal hit
    still peaks at 0.05 or more in the 1987 memory */
-const LIFT={I:{ch:-54.0},J:{ch:-51.0,oh:-46.7},K:{ch:-49.0},L:{ch:-54.0,oh:-50.0,rim:-48.0},M:{ch:-54.0},O:{clap:-43.3}};
+const LIFT={I:{ch:-54.0},J:{ch:-51.0,oh:-46.7},K:{ch:-49.0},L:{ch:-51.5,oh:-45.5,rim:-41.5},M:{ch:-54.0},O:{clap:-43.3}};
 (async()=>{
   const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
   const c=await b.newContext({viewport:{width:1280,height:900}}); const p=await c.newPage();

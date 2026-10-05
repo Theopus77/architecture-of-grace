@@ -550,8 +550,9 @@ TARGET = {
   "J": {"kick": -21.5, "snare": -32.9, "ch": -51.0, "oh": -46.7, "clap": -38.8, "tom": -22.7, "rim": -27.1, "bell": -28.8},
   "K": {"kick": -23.7, "snare": -42.3, "ch": -49.0, "oh": -35.4, "clap": -37.5, "tom": -26.3, "rim": -38.5, "bell": -23.5},
   # L: the page-made 909 kit's levels (calib.js, 2026-10-05: kick -19.9, snare -38.8, ch -67.2, oh -56.3, clap -38.3,
-  # tom -25.3, ride -51.5); its nearly silent hats and quiet ride lifted, as on the other rebuilt kits
-  "L": {"kick": -19.9, "snare": -38.8, "ch": -54.0, "oh": -50.0, "clap": -38.3, "tom": -25.3, "rim": -48.0, "bell": None},
+  # tom -25.3, ride -51.5); its nearly silent hats and quiet ride lifted, as on the other rebuilt kits, so a normal hit
+  # still peaks at 0.05 or more in the 1987 memory
+  "L": {"kick": -19.9, "snare": -38.8, "ch": -51.5, "oh": -45.5, "clap": -38.3, "tom": -25.3, "rim": -41.5, "bell": None},
   "M": {"kick": -21.9, "snare": -38.5, "ch": -54.0, "oh": -48.0, "clap": None, "tom": -26.6, "rim": -40.0, "bell": -41.4},
   "N": {"kick": -24.6, "snare": -38.3, "ch": -46.3, "oh": -48.9, "clap": -25.6, "tom": -28.3, "rim": -36.4, "bell": -32.6},
   "O": {"kick": -20.6, "snare": -40.8, "ch": -42.6, "oh": -35.4, "clap": -43.3, "tom": -26.9, "rim": -40.2, "bell": -26.5},

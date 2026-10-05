@@ -141,14 +141,17 @@ def soft_attack(y, hz=7000.0, hold=0.004, ramp=0.006):
     return low + (y - low) * w
 
 
-def declick(y, at_from=0.02, hz=8000.0, cut_hz=4000.0, over_db=9.0, passes=3):
+def declick(y, at_from=0.02, hz=8000.0, cut_hz=2000.0, over_db=9.0, passes=4):
     """a music box's mechanism ticks now and then as the drum turns (a pin brushing a tooth, the stop): short bursts
     high above the note. A burst is found as pianosets.js listens for a click: a 1 ms window whose sound above 8 kHz
     is more than over_db louder than every window in the 70 ms around it (3 ms either side left out). There, and only
-    there, the sound above 4 kHz (a tick reaches down that far; a tooth's note is below 2.7 kHz) is brought down until
+    there, the sound above 2 kHz (a tick reaches down that far, more so on a tooth moved down in pitch) is brought down until
     the burst is no louder than its surroundings, smoothly. The note itself is left as recorded"""
     from scipy.signal import sosfiltfilt
-    det = y - sosfiltfilt(butter(4, hz / (SR / 2), "low", output="sos"), y)
+    det = y.copy()                                    # the checker's own filter: two RBJ high-pass biquads
+    for _ in range(2):
+        w0 = 2 * np.pi * hz / SR; cw = np.cos(w0); al = np.sin(w0) / (2 * np.sqrt(0.5)); a0 = 1 + al
+        det = lfilter([(1 + cw) / 2 / a0, -(1 + cw) / a0, (1 + cw) / 2 / a0], [1, -2 * cw / a0, (1 - al) / a0], det)
     low = sosfiltfilt(butter(4, cut_hz / (SR / 2), "low", output="sos"), y)
     high = y - low
     w = int(0.001 * SR)
