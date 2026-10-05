@@ -122,6 +122,12 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pad[data-kind="drum"]{border-color:#6a5a3e}
 .pad[data-kind="note"]{border-color:#3f6b78}
 .pad[data-kind="chop"]{border-color:#6b4f78}
+/* AOG-PADS-GUIDE-V1: a chord pattern's order shows as gold numbers on its pads; in the Notes bank, the notes of the
+   chord playing now get a gold bar. Both stay still: nothing blinks or moves. */
+.pad .po{position:absolute;top:4px;right:5px;font:800 11px/1 var(--sans);color:#1f1206;background:#ffd36b;border-radius:9px;padding:3px 6px}
+.pad.inpat{border-color:#ffd36b}
+.pad.fit{border-color:#ffd36b;box-shadow:inset 0 -5px 0 #ffd36b}
+.pad.hit .po{background:#1f1206;color:#ffd36b}
 
 /* the steps of the picked pad: 8 to a row on a phone, 16 on a wider screen */
 .steps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
@@ -192,6 +198,8 @@ details.pm-set[open]>summary::before{content:"▾"}
             <label class="pm-f wide"><span id="bankLab"></span><select class="pm-sel" id="bankSel"></select></label>
           </div>
           <div class="pm-row" id="setRow" style="margin-top:8px"></div>
+          <div class="pm-row" id="guideRow" style="margin-top:8px"></div>
+          <p class="pm-now" id="guideNow" aria-live="polite"></p>
           <p class="pm-line" id="line" aria-live="polite"></p>
           <div class="pads" id="pads" role="group"></div>
         </div>
@@ -301,7 +309,15 @@ const STR={
   undone:{en:"Taken back.",es:"Deshecho."}, nothingUndo:{en:"Nothing to take back.",es:"No hay nada que deshacer."},
   cleared:{en:"The loop is empty. Undo brings it back.",es:"El bucle está vacío. Deshacer lo recupera."},
   startedB:{en:"{name} is on bank A, on {kit}. Press Play to hear it.",es:"{name} está en el banco A, en {kit}. Pulsa Tocar para oírlo."},
-  chopN:{en:"Chop {n}",es:"Corte {n}"}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
+  chopN:{en:"Chop {n}",es:"Corte {n}"},
+  patLab:{en:"Chord pattern",es:"Patrón de acordes"}, patNone:{en:"Choose a pattern…",es:"Elige un patrón…"},
+  patLoop:{en:"Put it in the loop",es:"Ponlo en el bucle"}, patStep:{en:"step {n}",es:"paso {n}"},
+  patIntro:{en:"Not sure which chords? Pick a pattern. Pad 1 is home.",es:"¿No sabes qué acordes usar? Elige un patrón. El pad 1 es la casa."},
+  patHow:{en:"Play the gold numbers in order: pads {seq}. {each}",es:"Toca los números dorados en orden: pads {seq}. {each}"},
+  each1:{en:"One chord each bar.",es:"Un acorde por compás."}, each2:{en:"Two chords each bar.",es:"Dos acordes por compás."},
+  patDone:{en:"The pattern is in the loop, over 4 bars. Press Play.",es:"El patrón está en el bucle, en 4 compases. Pulsa Tocar."},
+  fitWait:{en:"Every note here fits the key. Play a chord in bank B, and the notes that match it get a gold bar.",es:"Cada nota aquí encaja con el tono. Toca un acorde en el banco B, y las notas que combinan llevan una barra dorada."},
+  fitNow:{en:"Gold notes fit <b>{name}</b>: {notes}.",es:"Las notas doradas encajan con <b>{name}</b>: {notes}."}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
   cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"}, cWord:{en:"Scripture",es:"Escrituras"},
@@ -596,7 +612,7 @@ const LIVE={c:null, dest:null, open:[[],[],[],[]], chop:[null,null,null,null]};
 function trigger(bi, pi, vel, when, T){
   if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
-  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
+  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; if(S.banks[bi].type==="chords") chordNow(d, when); }
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
   const B=S.banks[bi], trim=d.kind==="drum" ? trimOf("kit", kitFor(bi, pi, d.kit)||d.kit) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
@@ -885,6 +901,112 @@ function startBeat(id){
   say(t("startedB",{name:L(B), kit:kitName(A0.kitA)})+(B.about ? " "+L(B.about) : ""), 9000);
 }
 
+/* ══ AOG-PADS-GUIDE-V1 (2026-10-05) — Jimmy: "May something be put in here to help the producer pick the right chords or
+   notes like it is in the areas of the studio?" The piano's chord patterns (copied from music-piano.html, ids unchanged),
+   kept to the ones the sixteen chord pads can play: pads 1 to 7 are the scale's chords and pads 9 to 15 the same with a
+   seventh, so a pattern's numbers are its pad numbers. In the Notes bank, the notes of the chord playing now get a gold bar,
+   as the piano lights its keys. ══ */
+const PC=(off,q)=>({off:off,q:q||"maj"});
+const PRESETS=[
+  {id:"pop",     g:"pop",  en:"Pop · 1 5 6 4",             es:"Pop · 1 5 6 4",              minor:false, chords:[PC(0),PC(7),PC(9,"min"),PC(5)]},
+  {id:"fifties", g:"pop",  en:"Fifties · 1 6 4 5",         es:"Años 50 · 1 6 4 5",          minor:false, chords:[PC(0),PC(9,"min"),PC(5),PC(7)]},
+  {id:"sadpop",  g:"pop",  en:"Sad pop · 6 4 1 5",         es:"Pop triste · 6 4 1 5",       minor:false, chords:[PC(9,"min"),PC(5),PC(0),PC(7)]},
+  {id:"anime",   g:"pop",  en:"Anime and J-pop · 4 5 3 6", es:"Anime y J-pop · 4 5 3 6",    minor:false, chords:[PC(5),PC(7),PC(4,"min"),PC(9,"min")]},
+  {id:"canon",   g:"pop",  en:"Canon · 8 chords",          es:"Canon · 8 acordes",          minor:false, chords:[PC(0),PC(7),PC(9,"min"),PC(4,"min"),PC(5),PC(0),PC(5),PC(7)]},
+  {id:"three",   g:"pop",  en:"Three chords · 1 4 5 1",    es:"Tres acordes · 1 4 5 1",     minor:false, chords:[PC(0),PC(5),PC(7),PC(0)]},
+  {id:"fiesta",  g:"pop",  en:"Fiesta · 1 4 5 4",          es:"Fiesta · 1 4 5 4",           minor:false, chords:[PC(0),PC(5),PC(7),PC(5)]},
+  {id:"rock",    g:"pop",  en:"Rock · 1 ♭7 4 1",           es:"Rock · 1 ♭7 4 1",            minor:false, chords:[PC(0),PC(10),PC(5),PC(0)]},
+  {id:"hymn",    g:"pop",  en:"Hymn and gospel · 1 4 1 5", es:"Himno y góspel · 1 4 1 5",  minor:false, chords:[PC(0),PC(5),PC(0),PC(7)]},
+  {id:"wheel",   g:"pop",  en:"Around the wheel · 3 6 2 5 1", es:"Por la rueda · 3 6 2 5 1", minor:false, chords:[PC(4,"dom7"),PC(9,"dom7"),PC(2,"dom7"),PC(7,"dom7"),PC(0),PC(0)]},
+  {id:"anthem",  g:"pop",  en:"Rock anthem · 1 4 6 5",     es:"Himno de rock · 1 4 6 5",    minor:false, chords:[PC(0),PC(5),PC(9,"min"),PC(7)]},
+  {id:"uplift",  g:"pop",  en:"Uplifting pop · 1 3 6 4",   es:"Pop alegre · 1 3 6 4",       minor:false, chords:[PC(0),PC(4,"min"),PC(9,"min"),PC(5)]},
+  {id:"folkrock",g:"pop",  en:"Folk rock · 1 5 2",         es:"Folk rock · 1 5 2",          minor:false, chords:[PC(0),PC(7),PC(2,"min"),PC(2,"min")]},
+  {id:"dreamy",  g:"pop",  en:"Dreamy · 1 3 4 4m",         es:"De ensueño · 1 3 4 4m",      minor:false, chords:[PC(0),PC(4),PC(5),PC(5,"min")]},
+  {id:"country", g:"pop",  en:"Country · 8 bars",          es:"Country · 8 compases",       minor:false, chords:[PC(0),PC(0),PC(5),PC(5),PC(7),PC(7),PC(0),PC(0)]},
+  {id:"arena",   g:"rock", en:"Arena rock · 1 5 4 4",      es:"Rock de estadio · 1 5 4 4",  minor:false, chords:[PC(0),PC(7),PC(5),PC(5)]},
+  {id:"mixo",    g:"rock", en:"Two-chord rock · 1 ♭7",     es:"Rock de dos acordes · 1 ♭7", minor:false, chords:[PC(0),PC(10),PC(0),PC(10)]},
+  {id:"grunge",  g:"rock", en:"Grunge · 1 4 ♭3 ♭6",        es:"Grunge · 1 4 ♭3 ♭6",         minor:false, chords:[PC(0),PC(5),PC(3),PC(8)]},
+  {id:"fifths",  g:"rock", en:"Walk round the wheel · ♭6 ♭3 ♭7 4 1", es:"Vuelta por la rueda · ♭6 ♭3 ♭7 4 1", minor:false, chords:[PC(8),PC(3),PC(10),PC(5),PC(0)]},
+  {id:"metalmarch",g:"rock", en:"Metal march",             es:"Marcha metalera",  minor:true,  chords:[PC(0,"min"),PC(8),PC(10),PC(0,"min")]},
+  {id:"darkheavy",g:"rock", en:"Dark and heavy",           es:"Oscuro y pesado",  minor:true,  chords:[PC(0,"min"),PC(1),PC(0,"min"),PC(1)]},
+  {id:"doom",    g:"rock", en:"Doom",                      es:"Doom",             minor:true,  chords:[PC(0,"min"),PC(6),PC(5,"min"),PC(0,"min")]},
+  {id:"soul",    g:"soul", en:"Soul · 1 3 4 5",            es:"Soul · 1 3 4 5",             minor:false, chords:[PC(0),PC(4,"min"),PC(5),PC(7)]},
+  {id:"funk",    g:"soul", en:"Funk · 1 4 with sevenths",  es:"Funk · 1 4 con séptimas",    minor:false, chords:[PC(0,"dom7"),PC(0,"dom7"),PC(5,"dom7"),PC(0,"dom7")]},
+  {id:"groove2", g:"soul", en:"Two-chord groove · 1 4",    es:"Ritmo de dos acordes · 1 4", minor:false, chords:[PC(0),PC(5),PC(0),PC(5)]},
+  {id:"dance",   g:"soul", en:"Dance · 6 5 4 5",           es:"Baile · 6 5 4 5",            minor:false, chords:[PC(9,"min"),PC(7),PC(5),PC(7)]},
+  {id:"lofi",    g:"soul", en:"Lo-fi · 4 3 2 1",           es:"Lo-fi · 4 3 2 1",            minor:false, chords:[PC(5,"maj7"),PC(4,"m7"),PC(2,"m7"),PC(0,"maj7")]},
+  {id:"neosoul", g:"soul", en:"Neo-soul · 2 5 1 6",        es:"Neo-soul · 2 5 1 6",         minor:false, chords:[PC(2,"m7"),PC(7,"dom7"),PC(0,"maj7"),PC(9,"m7")]},
+  {id:"blues",   g:"jazz", en:"Blues · 12 bars",           es:"Blues · 12 compases",        minor:false, chords:[PC(0,"dom7"),PC(0,"dom7"),PC(0,"dom7"),PC(0,"dom7"),PC(5,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(0,"dom7"),PC(7,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(7,"dom7")]},
+  {id:"jazz",    g:"jazz", en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[PC(2,"m7"),PC(7,"dom7"),PC(0,"maj7"),PC(0,"maj7")]},
+  {id:"turn",    g:"jazz", en:"Jazz turnaround · 1 6 2 5", es:"Vuelta de jazz · 1 6 2 5",   minor:false, chords:[PC(0,"maj7"),PC(9,"m7"),PC(2,"m7"),PC(7,"dom7")]},
+  {id:"mblues",  g:"jazz", en:"Minor blues · 12 bars",     es:"Blues menor · 12 compases",  minor:true,  chords:[PC(0,"m7"),PC(0,"m7"),PC(0,"m7"),PC(0,"m7"),PC(5,"m7"),PC(5,"m7"),PC(0,"m7"),PC(0,"m7"),PC(7,"dom7"),PC(5,"m7"),PC(0,"m7"),PC(7,"dom7")]},
+  {id:"blues8",  g:"jazz", en:"Blues · 8 bars",            es:"Blues · 8 compases",         minor:false, chords:[PC(0,"dom7"),PC(7,"dom7"),PC(5,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(7,"dom7"),PC(0,"dom7"),PC(7,"dom7")]},
+  {id:"quick",   g:"jazz", en:"Quick-change blues · 12 bars", es:"Blues de cambio rápido · 12 compases", minor:false, chords:[PC(0,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(0,"dom7"),PC(5,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(0,"dom7"),PC(7,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(7,"dom7")]},
+  {id:"jazzblues",g:"jazz", en:"Jazz blues · 12 bars",     es:"Blues de jazz · 12 compases", minor:false, chords:[PC(0,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(0,"dom7"),PC(5,"dom7"),PC(5,"dom7"),PC(0,"dom7"),PC(9,"dom7"),PC(2,"m7"),PC(7,"dom7"),PC(0,"dom7"),PC(7,"dom7")]},
+  {id:"bossa",   g:"jazz", en:"Bossa nova · 1 2 5 1",      es:"Bossa nova · 1 2 5 1",       minor:false, chords:[PC(0,"maj7"),PC(2,"m7"),PC(7,"dom7"),PC(0,"maj7")]},
+  {id:"circle",  g:"jazz", en:"Circle · 6 2 5 1",          es:"Círculo · 6 2 5 1",          minor:false, chords:[PC(9,"m7"),PC(2,"m7"),PC(7,"dom7"),PC(0,"maj7")]},
+  {id:"minor",   g:"min",  en:"Minor groove",              es:"Ritmo menor",      minor:true,  chords:[PC(0,"min"),PC(8),PC(3),PC(10)]},
+  {id:"flamenco",g:"min",  en:"Flamenco",                  es:"Flamenco",         minor:true,  chords:[PC(0,"min"),PC(10),PC(8),PC(7)]},
+  {id:"mfolk",   g:"min",  en:"Minor folk",                es:"Folk menor",       minor:true,  chords:[PC(0,"min"),PC(5,"min"),PC(7),PC(0,"min")]},
+  {id:"epic",    g:"min",  en:"Epic",                      es:"Épico",            minor:true,  chords:[PC(0,"min"),PC(10),PC(8),PC(10)]},
+  {id:"mballad", g:"min",  en:"Minor ballad",              es:"Balada menor",     minor:true,  chords:[PC(0,"min"),PC(5,"min"),PC(10),PC(3)]},
+  {id:"heroic",  g:"min",  en:"Heroic",                    es:"Heroico",          minor:true,  chords:[PC(0,"min"),PC(3),PC(10),PC(5)]},
+  {id:"latin",   g:"min",  en:"Latin rock",                es:"Rock latino",      minor:true,  chords:[PC(0,"m7"),PC(5,"dom7"),PC(0,"m7"),PC(5,"dom7")]}
+];
+const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, rock:{en:"Rock and metal",es:"Rock y metal"}, soul:{en:"Soul, funk and dance",es:"Soul, funk y baile"},
+  jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
+
+const TRI={major:["maj","min","min","maj","maj","min","dim"], minor:["min","dim","maj","min","min","maj","maj"]};
+const SEV={major:["maj7","m7","m7","maj7","dom7","m7","m7b5"], minor:["m7","m7b5","maj7","m7","m7","maj7","dom7"]};
+function patPads(P){   /* the pads that play a pattern, or null when one of its chords is not on the pads */
+  const sc=P.minor?"minor":"major", deg=SCALES[sc], out=[];
+  for(const c of P.chords){ const d=deg.indexOf(((c.off%12)+12)%12); if(d<0) return null;
+    if(TRI[sc][d]===c.q) out.push(d); else if(SEV[sc][d]===c.q) out.push(8+d); else return null; }
+  return 16%out.length===0 && out.length>=2 && out.length<=8 ? out : null;
+}
+const PATS=PRESETS.filter(P=>patPads(P));
+function patOf(B){ const P=PATS.find(x=>x.id===B.pat), mn=B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues";
+  return P && !!P.minor===mn ? P : null; }   /* a pattern stays only while the bank's scale is the pattern's */
+function paintGuide(){
+  const B=S.banks[S.bank], row=$("guideRow"), now=$("guideNow");
+  if(B.type==="chords"){
+    const cur=patOf(B);
+    let o=opt("", esc(t("patNone")), cur?cur.id:"");
+    Object.keys(PRESET_GROUPS).forEach(g=>{ const ps=PATS.filter(P=>P.g===g); if(ps.length) o+=`<optgroup label="${esc(L(PRESET_GROUPS[g]))}">`+ps.map(P=>opt(P.id, esc(L(P)), cur?cur.id:"")).join("")+`</optgroup>`; });
+    row.innerHTML=field("fPat", t("patLab"), o, true)+(cur?`<button type="button" class="pm-b" id="fPatLoop">${esc(t("patLoop"))}</button>`:"");
+    row.hidden=false;
+    $("fPat").onchange=()=>{ const P=PATS.find(x=>x.id===$("fPat").value); B.pat=P?P.id:"";
+      if(P){ const sc=P.minor?"minor":"major"; if(B.scale!==sc){ B.scale=sc; prep(S.bank); }
+        /* the Notes bank follows, so every note of every chord in the pattern has a pad */
+        const N=S.banks.find(x=>x.type==="notes"), ok={major:["major","pmaj"], minor:["minor","pmin","blues","dorian"]}[sc];
+        if(N && (N.key!==B.key || ok.indexOf(N.scale)<0)){ N.key=B.key; if(ok.indexOf(N.scale)<0) N.scale=sc; } }
+      save(); paintAll(); };
+    const lb=$("fPatLoop"); if(lb) lb.onclick=()=>patToLoop(B);
+    if(cur){ const pp=patPads(cur); now.innerHTML=esc(t("patHow",{seq:pp.map(i=>i+1).join(", "), each:t(pp.length>4?"each2":"each1")})); }
+    else now.textContent=t("patIntro");
+  } else if(B.type==="notes"){
+    row.innerHTML=""; row.hidden=true; paintFit();
+  } else { row.innerHTML=""; row.hidden=true; now.textContent=""; }
+}
+function patToLoop(B){
+  const P=patOf(B); if(!P) return; const pp=patPads(P), bi=S.banks.indexOf(B);
+  snapshot();
+  S.bars=4; const slot=loopLen()/pp.length;
+  S.ev=S.ev.filter(e=>e.b!==bi).concat(pp.map((p,i)=>({b:bi, p:p, t:i*slot, v:0.8, len:slot-12})));
+  prep(bi); changed(); paintAll(); say(t("patDone"), 6000);
+}
+let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
+function chordNow(d, when){
+  const go=()=>{ NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name, notes:d.notes.map(m=>keyName(m)).join(" ")}; paintFit(); };
+  const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
+}
+function paintFit(){
+  const B=S.banks[S.bank]; if(B.type!=="notes") return;
+  const defs=padDefs(S.bank);
+  document.querySelectorAll("#pads .pad").forEach(el=>{ const d=defs[+el.dataset.p]; el.classList.toggle("fit", !!(NOWCH && d && d.notes && NOWCH.pcs.has(d.notes[0]%12))); });
+  $("guideNow").innerHTML=NOWCH ? t("fitNow",{name:esc(NOWCH.name), notes:esc(NOWCH.notes)}) : esc(t("fitWait"));
+}
+
 /* ══ the page ══ */
 function say(s, ms){ $("line").textContent=s; LINE_HOLD=Date.now()+Math.max(0, (ms||2500)-2500); }
 let LINE_HOLD=0;
@@ -934,9 +1056,11 @@ function paintSetRow(){
 }
 function paintPads(){
   const defs=padDefs(S.bank), fine=matchMedia("(pointer: fine)").matches;
+  const PO={}, cp=S.banks[S.bank].type==="chords" && patOf(S.banks[S.bank]);   /* AOG-PADS-GUIDE-V1: a pattern's order, on its pads */
+  if(cp) patPads(cp).forEach((p,k)=>{ PO[p]=PO[p] ? PO[p]+"·"+(k+1) : String(k+1); });
   const order=[12,13,14,15,8,9,10,11,4,5,6,7,0,1,2,3];
   $("pads").innerHTML=order.map(i=>{ const d=defs[i];
-    return `<button type="button" class="pad${i===S.sel?" sel":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name)}"><span class="pi">${i+1}</span><span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
+    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
   $("pads").classList.toggle("waiting", !isReady(S.bank));
   $("pads").setAttribute("aria-label", t("padsLab"));
 }
@@ -1010,7 +1134,7 @@ function paintText(){
   $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a> · <a href="/audio/crate/CREDITS.txt">${esc(t("cWord"))}</a></p>`;
   REC.paint(); paintBounce(); LES.paint();
 }
-function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintSel(); paintTransport(); }
+function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintGuide(); paintSel(); paintTransport(); }
 
 /* ══ AOG-LESSONS-V1 — the Beat Lab's lessons: each step ticks itself as it happens (the words: _work/music/lessons_pads.py) ══ */
 const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S0.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
