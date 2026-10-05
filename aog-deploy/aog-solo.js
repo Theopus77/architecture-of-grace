@@ -43,6 +43,58 @@ const WD={
   sc_dorian:{en:"Dorian · minor, a little brighter",es:"Dórica · menor, un poco más brillante"},
   sc_mixo:{en:"Mixolydian · major with a bluesy 7th",es:"Mixolidia · mayor con una 7.ª de blues"},
   sc_harmin:{en:"Harmonic minor · dark and Spanish",es:"Menor armónica · oscura y española"},
+  sc_majblues:{en:"Major blues · major pentatonic with the blue note",es:"Blues mayor · pentatónica mayor con la nota blue"}, nm_majblues:{en:"major blues",es:"de blues mayor"},
+  sc_mixblues:{en:"Mixed blues · both blues scales together",es:"Blues mixto · las dos escalas de blues juntas"}, nm_mixblues:{en:"mixed blues",es:"de blues mixto"},
+  sc_dompent:{en:"Dominant pentatonic · bright with a bluesy 7th",es:"Pentatónica dominante · brillante con una 7.ª de blues"}, nm_dompent:{en:"dominant pentatonic",es:"pentatónica dominante"},
+  sc_min6pent:{en:"Minor 6 pentatonic · minor with a sweet 6th",es:"Pentatónica menor 6 · menor con una 6.ª dulce"}, nm_min6pent:{en:"minor 6 pentatonic",es:"pentatónica menor 6"},
+  sc_suspent:{en:"Suspended pentatonic · open, neither major nor minor",es:"Pentatónica suspendida · abierta, ni mayor ni menor"}, nm_suspent:{en:"suspended pentatonic",es:"pentatónica suspendida"},
+  sg_pent:{en:"Pentatonic and blues",es:"Pentatónicas y blues"},
+  sc_phryg:{en:"Phrygian · minor with a dark half step",es:"Frigia · menor con un semitono oscuro"}, nm_phryg:{en:"Phrygian",es:"frigia"},
+  sc_lydian:{en:"Lydian · major that floats",es:"Lidia · mayor que flota"}, nm_lydian:{en:"Lydian",es:"lidia"},
+  sc_locrian:{en:"Locrian · the darkest mode",es:"Locria · el modo más oscuro"}, nm_locrian:{en:"Locrian",es:"locria"},
+  sg_modes:{en:"The seven modes",es:"Los siete modos"},
+  sc_melmin:{en:"Melodic minor · minor that climbs bright",es:"Menor melódica · menor que sube brillante"}, nm_melmin:{en:"melodic minor",es:"menor melódica"},
+  sc_hungmin:{en:"Hungarian minor · gypsy minor",es:"Menor húngara · menor gitana"}, nm_hungmin:{en:"Hungarian minor",es:"menor húngara"},
+  sc_neapmin:{en:"Neapolitan minor · dark and dramatic",es:"Menor napolitana · oscura y dramática"}, nm_neapmin:{en:"Neapolitan minor",es:"menor napolitana"},
+  sc_romanian:{en:"Romanian minor · Dorian with a raised 4th",es:"Menor rumana · dórica con la 4.ª alta"}, nm_romanian:{en:"Romanian minor",es:"menor rumana"},
+  sg_minor:{en:"More minor colors",es:"Más colores menores"},
+  sc_harmaj:{en:"Harmonic major · major with a sad 6th",es:"Mayor armónica · mayor con una 6.ª triste"}, nm_harmaj:{en:"harmonic major",es:"mayor armónica"},
+  sc_lyddom:{en:"Lydian dominant · bright and bluesy",es:"Lidia dominante · brillante y con blues"}, nm_lyddom:{en:"Lydian dominant",es:"lidia dominante"},
+  sc_mixob6:{en:"Mixolydian ♭6 · major that turns sad",es:"Mixolidia ♭6 · mayor que se vuelve triste"}, nm_mixob6:{en:"Mixolydian flat 6",es:"mixolidia bemol 6"},
+  sc_neapmaj:{en:"Neapolitan major · bright with a dark start",es:"Mayor napolitana · brillante con un inicio oscuro"}, nm_neapmaj:{en:"Neapolitan major",es:"mayor napolitana"},
+  sc_hungmaj:{en:"Hungarian major · bold and unusual",es:"Mayor húngara · atrevida y poco común"}, nm_hungmaj:{en:"Hungarian major",es:"mayor húngara"},
+  sg_major:{en:"More major colors",es:"Más colores mayores"},
+  sc_bebopdom:{en:"Bebop dominant · Mixolydian plus a passing note",es:"Bebop dominante · mixolidia con una nota de paso"}, nm_bebopdom:{en:"bebop dominant",es:"bebop dominante"},
+  sc_bebopmaj:{en:"Bebop major · major plus a passing note",es:"Bebop mayor · mayor con una nota de paso"}, nm_bebopmaj:{en:"bebop major",es:"bebop mayor"},
+  sc_bebopmin:{en:"Bebop minor · Dorian plus a passing note",es:"Bebop menor · dórica con una nota de paso"}, nm_bebopmin:{en:"bebop minor",es:"bebop menor"},
+  sc_altered:{en:"Altered · full of tension, for the 5 chord",es:"Alterada · llena de tensión, para el acorde 5"}, nm_altered:{en:"altered",es:"alterada"},
+  sc_lydaug:{en:"Lydian augmented · dreamy and wide",es:"Lidia aumentada · soñadora y amplia"}, nm_lydaug:{en:"Lydian augmented",es:"lidia aumentada"},
+  sc_halfdim:{en:"Half-diminished · Locrian with a natural 2nd",es:"Semidisminuida · locria con la 2.ª natural"}, nm_halfdim:{en:"half-diminished",es:"semidisminuida"},
+  sc_dorb2:{en:"Dorian ♭2 · dark jazz minor",es:"Dórica ♭2 · menor oscura de jazz"}, nm_dorb2:{en:"Dorian flat 2",es:"dórica bemol 2"},
+  sg_jazz:{en:"Jazz and bebop",es:"Jazz y bebop"},
+  sc_whole:{en:"Whole tone · every step the same, like a dream",es:"Tonos enteros · todos los pasos iguales, como un sueño"}, nm_whole:{en:"whole tone",es:"de tonos enteros"},
+  sc_dimhw:{en:"Diminished · half step, then whole step",es:"Disminuida · semitono, luego tono"}, nm_dimhw:{en:"half-whole diminished",es:"disminuida semitono-tono"},
+  sc_dimwh:{en:"Diminished · whole step, then half step",es:"Disminuida · tono, luego semitono"}, nm_dimwh:{en:"whole-half diminished",es:"disminuida tono-semitono"},
+  sc_augsc:{en:"Augmented · six notes, two triads",es:"Aumentada · seis notas, dos tríadas"}, nm_augsc:{en:"augmented",es:"aumentada"},
+  sc_tritone:{en:"Tritone · two chords a tritone apart",es:"Tritono · dos acordes a un tritono"}, nm_tritone:{en:"tritone",es:"de tritono"},
+  sc_prometheus:{en:"Prometheus · mysterious and floating",es:"Prometeo · misteriosa y flotante"}, nm_prometheus:{en:"Prometheus",es:"de Prometeo"},
+  sc_chrom:{en:"Chromatic · every note, for runs",es:"Cromática · todas las notas, para carreras"}, nm_chrom:{en:"chromatic",es:"cromática"},
+  sg_sym:{en:"Symmetric and unusual",es:"Simétricas y poco comunes"},
+  sc_phrydom:{en:"Phrygian dominant · Spanish, flamenco and klezmer",es:"Frigia dominante · española, flamenca y klezmer"}, nm_phrydom:{en:"Phrygian dominant",es:"frigia dominante"},
+  sc_dblharm:{en:"Double harmonic · Arabic and Indian",es:"Doble armónica · árabe e india"}, nm_dblharm:{en:"double harmonic",es:"doble armónica"},
+  sc_persian:{en:"Persian · rich and ancient",es:"Persa · rica y antigua"}, nm_persian:{en:"Persian",es:"persa"},
+  sc_majloc:{en:"Major Locrian · Arabian",es:"Locria mayor · arábiga"}, nm_majloc:{en:"major Locrian",es:"locria mayor"},
+  sc_spanish8:{en:"Spanish eight-tone · flamenco runs",es:"Española de ocho notas · carreras flamencas"}, nm_spanish8:{en:"Spanish eight-tone",es:"española de ocho notas"},
+  sc_enigma:{en:"Enigmatic · strange and searching",es:"Enigmática · extraña e inquieta"}, nm_enigma:{en:"enigmatic",es:"enigmática"},
+  sc_hirajoshi:{en:"Hirajoshi · Japanese, five notes",es:"Hirajoshi · japonesa, cinco notas"}, nm_hirajoshi:{en:"Hirajoshi",es:"hirajoshi"},
+  sc_insen:{en:"In-sen · Japanese, quiet and spare",es:"In-sen · japonesa, tranquila y sencilla"}, nm_insen:{en:"In-sen",es:"in-sen"},
+  sc_iwato:{en:"Iwato · Japanese, dark",es:"Iwato · japonesa, oscura"}, nm_iwato:{en:"Iwato",es:"iwato"},
+  sc_kumoi:{en:"Kumoi · Japanese, gentle",es:"Kumoi · japonesa, suave"}, nm_kumoi:{en:"Kumoi",es:"kumoi"},
+  sc_yo:{en:"Yo · Japanese folk, bright",es:"Yo · folclórica japonesa, brillante"}, nm_yo:{en:"Yo",es:"yo"},
+  sc_pelog:{en:"Pelog · Balinese gamelan",es:"Pelog · gamelán de Bali"}, nm_pelog:{en:"Pelog",es:"pelog"},
+  sc_todi:{en:"Raga Todi · Indian, serious and deep",es:"Raga Todi · india, seria y profunda"}, nm_todi:{en:"Raga Todi",es:"raga Todi"},
+  sc_chinese:{en:"Chinese · bright, five notes",es:"China · brillante, cinco notas"}, nm_chinese:{en:"Chinese",es:"china"},
+  sg_world:{en:"Around the world",es:"Alrededor del mundo"},
   nm_minpent:{en:"minor pentatonic",es:"pentatónica menor"}, nm_blues:{en:"blues",es:"de blues"}, nm_bluesm:{en:"minor blues",es:"de blues menor"},
   nm_majpent:{en:"major pentatonic",es:"pentatónica mayor"}, nm_natmin:{en:"natural minor",es:"menor natural"}, nm_major:{en:"major",es:"mayor"},
   nm_dorian:{en:"Dorian",es:"dórica"}, nm_mixo:{en:"Mixolydian",es:"mixolidia"}, nm_harmin:{en:"harmonic minor",es:"menor armónica"},
@@ -222,9 +274,33 @@ function w(k, vars){ const e=WD[k]; let s=e?(e[S.lang]||e.en):k; if(vars) Object
 /* ══ scales: steps above the key's own note; the blue note is the flat fifth ═══════════════════════════════════ */
 const SCALES={
   minpent:{iv:[0,3,5,7,10]}, blues:{iv:[0,3,5,6,7,10], blue:6}, majpent:{iv:[0,2,4,7,9]}, natmin:{iv:[0,2,3,5,7,8,10]},
-  major:{iv:[0,2,4,5,7,9,11]}, dorian:{iv:[0,2,3,5,7,9,10]}, mixo:{iv:[0,2,4,5,7,9,10]}, harmin:{iv:[0,2,3,5,7,8,11]}
+  major:{iv:[0,2,4,5,7,9,11]}, dorian:{iv:[0,2,3,5,7,9,10]}, mixo:{iv:[0,2,4,5,7,9,10]}, harmin:{iv:[0,2,3,5,7,8,11]},
+  /* AOG-SOLO-SCALES-MORE-V1 (Jimmy, 2026-10-05: "MORE SCALES for all"): 43 more, 51 in all, in seven groups */
+  majblues:{iv:[0, 2, 3, 4, 7, 9], blue:3}, mixblues:{iv:[0, 2, 3, 4, 5, 6, 7, 9, 10], blue:6}, dompent:{iv:[0, 2, 4, 7, 10]},
+  min6pent:{iv:[0, 3, 5, 7, 9]}, suspent:{iv:[0, 2, 5, 7, 10]}, phryg:{iv:[0, 1, 3, 5, 7, 8, 10]},
+  lydian:{iv:[0, 2, 4, 6, 7, 9, 11]}, locrian:{iv:[0, 1, 3, 5, 6, 8, 10]}, melmin:{iv:[0, 2, 3, 5, 7, 9, 11]},
+  hungmin:{iv:[0, 2, 3, 6, 7, 8, 11]}, neapmin:{iv:[0, 1, 3, 5, 7, 8, 11]}, romanian:{iv:[0, 2, 3, 6, 7, 9, 10]},
+  harmaj:{iv:[0, 2, 4, 5, 7, 8, 11]}, lyddom:{iv:[0, 2, 4, 6, 7, 9, 10]}, mixob6:{iv:[0, 2, 4, 5, 7, 8, 10]},
+  neapmaj:{iv:[0, 1, 3, 5, 7, 9, 11]}, hungmaj:{iv:[0, 3, 4, 6, 7, 9, 10]}, bebopdom:{iv:[0, 2, 4, 5, 7, 9, 10, 11]},
+  bebopmaj:{iv:[0, 2, 4, 5, 7, 8, 9, 11]}, bebopmin:{iv:[0, 2, 3, 4, 5, 7, 9, 10]}, altered:{iv:[0, 1, 3, 4, 6, 8, 10]},
+  lydaug:{iv:[0, 2, 4, 6, 8, 9, 11]}, halfdim:{iv:[0, 2, 3, 5, 6, 8, 10]}, dorb2:{iv:[0, 1, 3, 5, 7, 9, 10]},
+  whole:{iv:[0, 2, 4, 6, 8, 10]}, dimhw:{iv:[0, 1, 3, 4, 6, 7, 9, 10]}, dimwh:{iv:[0, 2, 3, 5, 6, 8, 9, 11]},
+  augsc:{iv:[0, 3, 4, 7, 8, 11]}, tritone:{iv:[0, 1, 4, 6, 7, 10]}, prometheus:{iv:[0, 2, 4, 6, 9, 10]},
+  chrom:{iv:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}, phrydom:{iv:[0, 1, 4, 5, 7, 8, 10]}, dblharm:{iv:[0, 1, 4, 5, 7, 8, 11]},
+  persian:{iv:[0, 1, 4, 5, 6, 8, 11]}, majloc:{iv:[0, 2, 4, 5, 6, 8, 10]}, spanish8:{iv:[0, 1, 3, 4, 5, 6, 8, 10]},
+  enigma:{iv:[0, 1, 4, 6, 8, 10, 11]}, hirajoshi:{iv:[0, 2, 3, 7, 8]}, insen:{iv:[0, 1, 5, 7, 10]},
+  iwato:{iv:[0, 1, 5, 6, 10]}, kumoi:{iv:[0, 2, 3, 7, 9]}, yo:{iv:[0, 2, 5, 7, 9]},
+  pelog:{iv:[0, 1, 3, 7, 8]}, todi:{iv:[0,1,3,6,7,8,11]}, chinese:{iv:[0,4,6,7,11]}
 };
-const SC_ORDER=["minpent","blues","majpent","natmin","major","dorian","mixo","harmin"];
+const SC_GROUPS=[
+  ["pent",["minpent", "blues", "majpent", "majblues", "mixblues", "dompent", "min6pent", "suspent"]],
+  ["modes",["major", "dorian", "phryg", "lydian", "mixo", "natmin", "locrian"]],
+  ["minor",["harmin", "melmin", "hungmin", "neapmin", "romanian"]],
+  ["major",["harmaj", "lyddom", "mixob6", "neapmaj", "hungmaj"]],
+  ["jazz",["bebopdom", "bebopmaj", "bebopmin", "altered", "lydaug", "halfdim", "dorb2"]],
+  ["sym",["whole", "dimhw", "dimwh", "augsc", "tritone", "prometheus", "chrom"]],
+  ["world",["phrydom", "dblharm", "persian", "majloc", "spanish8", "enigma", "hirajoshi", "insen", "iwato", "kumoi", "yo", "pelog", "todi", "chinese"]]];
+const SC_ORDER=[].concat.apply([], SC_GROUPS.map(g=>g[1]));
 
 /* ══ licks: t = when (beats), s = string (0 = the thick one), f = fret above the box's low root, d = how long (beats);
    k = how: p pick (the usual), h hammer-on, o pull-off, t tap (no pick), g a ghost note (muted);
@@ -597,7 +673,7 @@ function paintMode(){
 }
 function paintScaleSel(){
   const sel=$q("soScaleSel"); if(!sel) return;
-  sel.innerHTML=SC_ORDER.map(id=>`<option value="${id}"${id===scaleId()?" selected":""}>${esc(w("sc_"+id))}</option>`).join("");
+  sel.innerHTML=SC_GROUPS.map(([g,ids])=>`<optgroup label="${esc(w("sg_"+g))}">`+ids.map(id=>`<option value="${id}"${id===scaleId()?" selected":""}>${esc(w("sc_"+id))}</option>`).join("")+`</optgroup>`).join("");
 }
 function paintSoundSel(){
   const sel=$q("soSoundSel"); if(!sel) return;

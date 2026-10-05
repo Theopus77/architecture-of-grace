@@ -122,3 +122,9 @@ Tests: `music-handoff/tests/play/strings.js` (9965), `play/drums.js` (9967), `pl
 - **AOG-NECK-PATTERN-V1** (2026-10-05, Jimmy: "Can the chord patterns also be by the fret board (it allows me to understand the theory of it)"): under the key row by the neck, the pattern picker (`#progSel2`) and Play (`#playBtn2`), which press the ones in the Chords block, then the pattern as chords with their number in the key (`#prog2`, `degreeOf()`: 1, ♭2 … 7 counted from the key's home note), the playing one lit (they are `.slot`s, so `paintNow()` lights them), and one line on what the numbers mean.
 - **AOG-PATTERNS-MORE-V1**: fifteen more patterns, 59 in all (film score, pop climb, campfire; power chords, classic rock; gospel, Motown, disco; backdoor, minor jazz, modal jazz; cinematic, tango, spy theme, Dorian groove). Minor ones go by name, as before. `strings/sways.js` expects 59.
 
+## 14. More scales (2026-10-05, Jimmy: "MORE SCALES for all")
+
+- **AOG-SOLO-SCALES-MORE-V1** (`aog-solo.js`): Solo mode on the guitar and the bass, in major and minor keys, has 53 scales (45 new) in seven groups (`SC_GROUPS`, `<optgroup>`s, `sg_*`): Pentatonic and blues 8, The seven modes 7, More minor colors 5, More major colors 5, Jazz and bebop 7, Symmetric and unusual 7, Around the world 14. Each has `iv` (steps from the key's home note), a menu label `sc_*` (name · what it sounds like) and a name for the spoken line `nm_*`, in English and Spanish; the blues ones mark their blue note. No two scales have the same notes.
+- The ids of the first eight never change (what a visitor picked is kept). The licks still play in the minor box, whatever scale is lit.
+- `tests/solo/s1.js` picks every scale on both pages and checks that exactly its notes light and that the spoken line names it.
+
