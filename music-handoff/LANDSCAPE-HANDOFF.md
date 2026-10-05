@@ -114,3 +114,9 @@ Tests: `music-handoff/tests/play/strings.js` (9965), `play/drums.js` (9967), `pl
 - Rules every lick keeps: frets 0 to 5 above the box's low root only (a phone held upright shows six frets), only the key's notes and the blue note (bends land on key notes too), slides only across frets in the key (a slide lights every fret it passes), and it ends on the home note (`home:1`, moved to the key's own note in a major key). `run(t0, step, list)` writes a run of even notes.
 - `tests/solo/s3.js` plays every lick in the menu (not a fixed list) and checks there are at least 34 in eight groups.
 - **AOG-SOLO-MORE-LICKS-V2** (2026-10-05, Jimmy: "LOVE IT. Make more"): 23 more, 57 in all: Blues 6, Rock 7, Metal 8, Shred and tapping 8, Funk and soul 6, Country 9, Jazz and fusion 7, Slow and singing 6. Same rules. New helpers: `mel()` (notes one after another, each its own length), `swing()` (long-short pairs), `pair()` (two strings at once).
+
+## 13. The key by the neck (2026-10-05, Jimmy: "Can the chords selection be close to the fret board so when a lick is being played or chords, I can switch the key")
+
+- **AOG-NECK-KEY-V1**: on the guitar and bass, a second Key picker and Major/Minor switch (`#keySel2`, `#majBtn2`, `#minBtn2`, row `.nk-key`) sit right above the chord buttons by the neck. They press the ones in the Chords block (`#keySel`, `#majBtn`, `#minBtn`), and `paintKeySel()`/`paintMood()` keep both in step. The chords already follow a key change from the next bar; the band follows too.
+- `aog-solo.js`: a lick remembers its key (`LICK.mk`); if the key changes while it plays, `lickFrame()` starts it again in the new key. Tested in `tests/solo/s3.js`.
+
