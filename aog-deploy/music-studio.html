@@ -347,7 +347,7 @@ const COLORS=["#f0c26e","#9fd4a0","#f4a37a","#7fc7f5","#e6a3d8","#c9b8f0","#a8e0
 /* the shelves the music tools fill (aog-handoff.js); each holds the newest {name, bpm, bars, at, wav, take?} */
 const SHELVES=[
   {key:"drumbench",  from:{en:"From the drum machine",es:"De la caja de ritmos"}, sh:{en:"Drums",es:"Ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
-  {key:"padbench",   from:{en:"From the pad machine",es:"De la máquina de pads"}, sh:{en:"Pad machine",es:"Máquina de pads"}, tk:{en:"Pad take",es:"Toma de pads"}},   /* AOG-PADS-STUDIO-V1 */
+  {key:"padbench",   from:{en:"From the Beat Lab",es:"Del laboratorio de ritmos"}, sh:{en:"Beat Lab",es:"Laboratorio de ritmos"}, tk:{en:"Beat Lab take",es:"Toma del laboratorio de ritmos"}},   /* AOG-PADS-STUDIO-V1 */
   {key:"drumtake",   from:{en:"A take from the drum machine",es:"Una toma de la caja de ritmos"}, sh:{en:"Drum take",es:"Toma de ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
   {key:"keysbench",  from:{en:"From the piano",es:"Del piano"}, sh:{en:"Piano",es:"Piano"}, tk:{en:"Piano take",es:"Toma de piano"}},
   {key:"guitarbench",from:{en:"From the guitar",es:"De la guitarra"}, sh:{en:"Guitar",es:"Guitarra"}, tk:{en:"Guitar take",es:"Toma de guitarra"}},
@@ -366,7 +366,7 @@ const TOOLS={
   bass:{from:{en:"From the bass",es:"Del bajo"}, take:{en:"Bass take",es:"Toma de bajo"}},
   band:{from:{en:"From the band",es:"De la banda"}, take:{en:"Band take",es:"Toma de la banda"}},
   decks:{from:{en:"From the turntables",es:"De los tocadiscos"}, take:{en:"Turntables take",es:"Toma de los tocadiscos"}},
-  pads:{from:{en:"From the pad machine",es:"De la máquina de pads"}, take:{en:"Pad take",es:"Toma de pads"}}   /* AOG-PADS-V1 */
+  pads:{from:{en:"From the Beat Lab",es:"Del laboratorio de ritmos"}, take:{en:"Beat Lab take",es:"Toma del laboratorio de ritmos"}}   /* AOG-PADS-V1 */
 };
 
 const STR={
@@ -1135,7 +1135,7 @@ async function putOn(srcId, ti){
       if(!it || !it.wav || !(it.wav.size>44)) throw new Error("gone");
       info=await wavInfo(it.wav); if(!info) throw new Error("not a wav");
       blob=it.wav;
-      /* AOG-PADS-BOUNCE-V1: a loop made on the pad machine says its exact length, so it starts on the bar and loops whole bars */
+      /* AOG-PADS-BOUNCE-V1: a loop made on the Beat Lab says its exact length, so it starts on the bar and loops whole bars */
       rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0};
       from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now()};
     }
@@ -1282,7 +1282,7 @@ async function newSong(){
    ══════════════════════════════════════════════════════════════════════════ */
 /* the music tools in one menu, as on the other tools (AOG-MUSIC-TOOLS-MENU-V1) */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Pad machine","Máquina de pads"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="studio"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function trackName(i){
