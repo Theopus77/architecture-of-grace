@@ -906,7 +906,7 @@ function paintSetRow(){
   if(B.type==="drums"){ const ks=KITS(); h=field("fKitA", t("kitA"), ks.map(k=>opt(k, esc(kitName(k)), B.kitA)).join(""))+field("fKitB", t("kitB"), ks.map(k=>opt(k, esc(kitName(k)), B.kitB)).join("")); }
   else if(B.type==="chops"){
     const R=recInfo(B.rec);
-    let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? "KJV" : c.bpm), B.rec)).join("")+`</optgroup>`;
+    let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? (c.version||"KJV") : c.bpm), B.rec)).join("")+`</optgroup>`;
     o+=`<optgroup label="${esc(t("g_inbox"))}">`+(INBOX.length ? INBOX.map(x=>{ const r=recInfo("t:"+x.id); return opt("t:"+x.id, esc(r?L(r.name):"…")+(x.bpm>0?" · "+Math.round(x.bpm):""), B.rec); }).join("") : `<option disabled>${esc(t("noTakes"))}</option>`)+`</optgroup>`;
     h=field("fRec", t("record"), o, true);
     const bars=R ? R.bars : 0, starts=[]; for(let b=1;b+3<=bars;b+=4) starts.push(b);

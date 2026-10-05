@@ -32,3 +32,15 @@ music crate keeps these records.
 Licensing: KJV text and LibriVox recordings are public domain. If the ESV is used
 later, the official ESV audio may not be chopped; someone must record the reading,
 and the Crossway notice must be shown (up to 500 verses may be quoted).
+
+## The Lord's Prayer (AOG-SCRIPTURE-V2, 2026-10-05)
+
+Jimmy: "The Lord's prayers in English and Spanish."
+
+- `14-the-lords-prayer.mp3`: Matthew 6:9–13, KJV, read by Michael Packard.
+- `15-el-padrenuestro.mp3`: Mateo 6:9–13, Reina-Valera 1909, read by Joyfull.
+
+`prayer.py` makes both. Each is one take, cut into sixteen lines at the reader's pauses
+(each cut snaps to the quietest 10 ms within 0.25 s), with eight cues for the decks.
+There is no Spanish speech model here, so the Spanish cuts were placed by matching
+the reading's sounds and pauses line by line, then checked to sit in silence.
