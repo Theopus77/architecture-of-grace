@@ -77,7 +77,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const st=await p.evaluate(()=>({on:PV.on, z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, ih:innerHeight, iw:innerWidth,
       bar:[...document.querySelectorAll("#kitView .dk-bar button")].filter(b=>!b.hidden).map(b=>b.id).join(" "), meta:document.querySelector('meta[name=viewport]').content}));
     ok(st.on && st.z==="1" && st.sw<=st.iw && st.sh<=st.ih+1 && /maximum-scale=1/.test(st.meta), "sideways, the kit fills the screen: not zoomed, nothing scrolls, the page held at its size");
-    ok(st.bar==="dkMore", "the bar keeps ☰ Menu and the kit menu only");
+    ok(st.bar==="dkMore dkBeat", "the bar keeps ☰ Menu, ▶ Beat (AOG-KIT-BEATS-V1) and the kit menu only");
     const w=await where("sideKit");
     await p.evaluate("__h=[]"); await T("touchStart",[w.snare]); await p.waitForTimeout(40);
     const slip=await p.evaluate(()=>{ document.getElementById("dkMore").click(); return !document.getElementById("dkDrawer").hidden; });

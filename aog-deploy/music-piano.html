@@ -1603,9 +1603,34 @@ function noteOn(tag, m, v){
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
   if(!vc) return;
-  vc.down=true; LIVE.set(key, vc); track(vc); prune();
+  vc.down=true; vc.vel=v; LIVE.set(key, vc); track(vc); prune();
   litKeys();
   if(tag!=="p") onNote(m, v);   /* AOG-PIANO-LESSONS-V1 */
+}
+/* AOG-PIANO-CHORD-MOVE-V1 (2026-10-05) — Jimmy: "It would be awesome if while holding a chord down on the keyboard you could
+   move up or down the board" (he chose: the chord jumps with ◀ ▶). While a chord is held (fingers on the keys, the
+   computer's keys, or a chord pad), ◀ Lower and Higher ▶ (and Z, X) move the board an octave and the held notes with it:
+   each starts again an octave down or up, under the same finger, and still stops when that finger lifts. Notes only
+   ringing on the pedal stay where they are. */
+function shiftHeld(d){
+  if(!d || !ac) return;
+  const move=[]; LIVE.forEach((vc,key)=>{ const tg=key.charAt(0); if(vc.down && (tg==="k"||tg==="c"||tg==="p")) move.push(key); });
+  if(!move.length) return;
+  POINTERS.forEach((m,id)=>{ if(m!=null) POINTERS.set(id, m+d); });
+  HELD_KEYS.forEach((m,code)=>HELD_KEYS.set(code, m+d));
+  const pads=Object.keys(padHeld); pads.forEach(i=>{ padHeld[i]=padHeld[i].map(m=>m+d); });
+  if(pads.length && lastVoicing) lastVoicing=lastVoicing.map(m=>m+d);   /* the next chord pad stays near the moved chord */
+  const now=ac.currentTime, again=move.map(key=>{ const vc=LIVE.get(key); vc.stop(now, 0.05); LIVE.delete(key); return [key.charAt(0), +key.slice(1)+d, vc.vel||0.7]; });
+  again.forEach(a=>noteOn(a[0], a[1], a[2]));
+}
+function octMove(dir){ const o=S.oct; S.oct+=dir; buildKeys(); save(); if(S.oct!==o) shiftHeld(12*(S.oct-o)); return S.oct-o; }
+function chordHeld(){ let h=false; LIVE.forEach((vc,key)=>{ if(vc.down && "kcp".indexOf(key.charAt(0))>=0) h=true; }); return h; }
+/* a phone sends no click for a tap made while other fingers are down, so with a chord held ◀ ▶ answer the finger landing */
+function bindOctHeld(){
+  [["downBtn",-1],["upBtn",1],["bpDown",-1],["bpUp",1]].forEach(([id,dir])=>{ const b=$(id); if(!b) return;
+    b.addEventListener("pointerdown",(e)=>{ if(e.button>0 || b.disabled || !chordHeld()) return; e.preventDefault();
+      b._held=Date.now(); octMove(dir); onOct(dir); });
+    b.addEventListener("click",(e)=>{ if(Date.now()-(b._held||0)<1500){ b._held=0; e.stopImmediatePropagation(); e.preventDefault(); } },true); });
 }
 function noteOff(tag, m){
   const key=tag+m, vc=LIVE.get(key); if(!vc) return;
@@ -2294,7 +2319,7 @@ document.addEventListener("keydown",(e)=>{
   if(KEYMAP[e.code]!=null){ e.preventDefault(); if(e.repeat||HELD_KEYS.has(e.code)) return;
     const m=KB.lo+KEYMAP[e.code]; HELD_KEYS.set(e.code, m); noteOn("c", m, 0.7); return; }
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
-  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat){ const o=S.oct; S.oct+= e.code==="KeyZ"?-1:1; buildKeys(); save(); if(S.oct!==o) onOct(S.oct-o); } return; }
+  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat){ const n=octMove(e.code==="KeyZ"?-1:1); if(n) onOct(n); } return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
     if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
@@ -2361,8 +2386,8 @@ function bind(){
   $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
     if(S.playing && !drumsLive()){ const next=PLAY.t0+PLAY.bar*PLAY.barSec, nb=beatsPerBar()*60/S.bpm; PLAY.t0=next-PLAY.bar*nb; PLAY.barSec=nb; }
     clearTimeout(bind.lt); bind.lt=setTimeout(lessonsChanged,250); };
-  $("downBtn").onclick=()=>{ S.oct--; buildKeys(); save(); onOct(-1); };
-  $("upBtn").onclick=()=>{ S.oct++; buildKeys(); save(); onOct(1); };
+  $("downBtn").onclick=()=>{ octMove(-1); onOct(-1); }; bindOctHeld();
+  $("upBtn").onclick=()=>{ octMove(1); onOct(1); };
   $("susBtn").onclick=()=>setSus(!S.sus);
   if(navigator.requestMIDIAccess){ $("midiBtn").hidden=false; $("midiBtn").onclick=useMidi; }
   $("era").oninput=()=>{ S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
