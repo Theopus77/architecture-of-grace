@@ -118,6 +118,13 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 .kp-sl output{min-width:9rem;color:var(--ink)}
 .kp-step{min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:800 1.1rem/1 var(--sans)}
 .kp-reset{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 .9rem/1.2 var(--sans);padding:0 .9rem}
+@media (max-width:640px){   /* a phone: the name and the number on one line, the slider (with − and +) under them */
+  .kp-sl{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:.3rem .6rem;align-items:center}
+  .kp-sl>label{grid-column:1/-1;grid-row:1;justify-self:start;min-width:0}
+  .kp-sl output{grid-column:1/-1;grid-row:1;justify-self:end;min-width:0;text-align:right}
+  .kp-sl input[type=range]{grid-column:1/-1;grid-row:2;min-width:0;width:100%}
+  #tempoDn{grid-column:1;grid-row:2} #tempoR{grid-column:2} #tempoUp{grid-column:3;grid-row:2}
+}
 .dk-tempo{display:inline-flex;align-items:center;min-height:40px;padding:0 .4rem;font:700 15px/1.1 var(--sans);color:#f6efdf}
 .dk-drawer .dk-sel{flex:1 1 14rem}
 </style>
