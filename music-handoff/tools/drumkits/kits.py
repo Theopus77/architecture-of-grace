@@ -70,6 +70,10 @@ def B(piece, vl, rr=1, mics=None):
     m = dict(BR_MICS[piece]); m.update(mics or {})
     return T(*[(brd(BR[piece], vl, rr, mic), w) for mic, w in m.items() if w > 0])
 
+def F909(name, sid):
+    """AOG-DRUM-909-V1: one hit of the TR-909 JGB pack on Freesound (altemark, user 19852; CC BY 4.0)"""
+    return T("fs:altemark/%d_19852" % sid, name=name)
+
 def V(art, vl, rr=None, mics=None):
     """Virtuosity Drums; rr only for the kick, hats, ride and crash"""
     m = mics or {"oh": 1.0}
@@ -293,6 +297,29 @@ KITS = {
   # ── M · reggae and dub: a round kick, a high snare with a dub echo (the echo made here, as on a mixing desk), hats, a
   #       synth tom (made on the page: a synth drum is electronic on the real instrument too), a tom, the one drop's
   #       cross-stick, and the skank: a real upright piano chord chopped short, with its echo.
+  # AOG-DRUM-909-V1 (2026-10-05) — kit L, "909 house", is a real Roland TR-909 now: "TR-909 JGB pack" (Freesound pack
+  # 1643), sampled by Janne G:son Berg from his own machine, posted by altemark, CC BY 4.0 (sources.py). The pack holds
+  # each voice at many knob settings; a pad's takes are neighbouring settings (so a pad played twice is not a copy), its
+  # soft and accent layers the settings either side. The machine has no chord: STAB stays made on the page (made), like
+  # kit M's synth tom. Takes (Freesound sound ids): kick bd08-bd12, snare sn32-sn35 (the snappy ones), hats ch07-ch10,
+  # open hat oh02-oh05, clap clp04-clp07 (the dry ones), tom lt09-lt12 (the low tom near the old 130 Hz), ride ride01-04.
+  "L": {"dir": "house909", "pads": {
+    "kick":  {"name": "909", "s": L(F909("bd08", 26494)), "m": L(F909("bd10", 26496), F909("bd11", 26497)), "h": L(F909("bd12", 26498)),
+              "eq": [("hp", 25, .7, 0)], "len": 0.7, "fade": 0.3},
+    "snare": {"name": "SNARE", "s": L(F909("sn32", 26705)), "m": L(F909("sn33", 26706), F909("sn34", 26707)), "h": L(F909("sn35", 26708)),
+              "eq": [("hp", 90, .7, 0)], "len": 0.45, "fade": 0.2},
+    "ch":    {"name": "HAT", "s": L(F909("ch07", 26526)), "m": L(F909("ch08", 26527), F909("ch09", 26528)), "h": L(F909("ch10", 26529)),
+              "eq": [("hp", 300, .7, 0)], "len": 0.25, "fade": 0.12},
+    "oh":    {"name": "OPEN", "s": L(F909("oh04", 26646)), "m": L(F909("oh03", 26645)), "h": L(F909("oh02", 26644)),
+              "eq": [("hp", 300, .7, 0)], "len": 0.8, "fade": 0.4},
+    "clap":  {"name": "CLAP", "s": L(F909("clp04", 26555)), "m": L(F909("clp05", 26556), F909("clp06", 26557)), "h": L(F909("clp07", 26558)),
+              "eq": [("hp", 150, .7, 0)], "len": 0.5, "fade": 0.25},
+    "tom":   {"name": "TOM", "s": L(F909("lt09", 26604)), "m": L(F909("lt10", 26605)), "h": L(F909("lt11", 26606)),
+              "eq": [("hp", 45, .7, 0)], "len": 0.7, "fade": 0.35},
+    "rim":   {"name": "RIDE", "s": L(F909("ride01", 26658)), "m": L(F909("ride02", 26659), F909("ride03", 26660)), "h": L(F909("ride04", 26661)),
+              "eq": [("hp", 300, .7, 0)], "len": 1.4, "fade": 0.6},
+    "bell":  {"name": "STAB", "made": True},
+  }},
   "M": {"dir": "reggae2", "was": "reggae", "pads": {
     "kick":  {"name": "KICK", "s": L(V("kick_snoff", 2, 1, {"kickmic": 1.0, "oh": 0.4})),
               "m": L(V("kick_snoff", 3, 1, {"kickmic": 1.0, "oh": 0.4}), V("kick_snoff", 3, 2, {"kickmic": 1.0, "oh": 0.4})),
@@ -522,6 +549,9 @@ TARGET = {
   "I": {"kick": -22.8, "snare": -33.7, "ch": -54.0, "oh": -47.5, "clap": -40.8, "tom": -23.1, "rim": -42.0, "bell": -31.3},
   "J": {"kick": -21.5, "snare": -32.9, "ch": -51.0, "oh": -46.7, "clap": -38.8, "tom": -22.7, "rim": -27.1, "bell": -28.8},
   "K": {"kick": -23.7, "snare": -42.3, "ch": -49.0, "oh": -35.4, "clap": -37.5, "tom": -26.3, "rim": -38.5, "bell": -23.5},
+  # L: the page-made 909 kit's levels (calib.js, 2026-10-05: kick -19.9, snare -38.8, ch -67.2, oh -56.3, clap -38.3,
+  # tom -25.3, ride -51.5); its nearly silent hats and quiet ride lifted, as on the other rebuilt kits
+  "L": {"kick": -19.9, "snare": -38.8, "ch": -54.0, "oh": -50.0, "clap": -38.3, "tom": -25.3, "rim": -48.0, "bell": None},
   "M": {"kick": -21.9, "snare": -38.5, "ch": -54.0, "oh": -48.0, "clap": None, "tom": -26.6, "rim": -40.0, "bell": -41.4},
   "N": {"kick": -24.6, "snare": -38.3, "ch": -46.3, "oh": -48.9, "clap": -25.6, "tom": -28.3, "rim": -36.4, "bell": -32.6},
   "O": {"kick": -20.6, "snare": -40.8, "ch": -42.6, "oh": -35.4, "clap": -43.3, "tom": -26.9, "rim": -40.2, "bell": -26.5},

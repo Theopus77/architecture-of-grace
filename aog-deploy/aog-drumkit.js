@@ -78,6 +78,14 @@
     K: { dir: "jazzbrush2", en: "Kit K · jazz brushes", es: "Kit K · jazz con escobillas",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("SWISH", [1, 2, 1]),
               clap: P("SLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("BASS", [1, 2, 1]) } },
+    /* AOG-DRUM-909-V1 (2026-10-05) — Jimmy: "REAL EVERYTHING if possible". Kit L is a real drum machine now: a Roland
+       TR-909 sampled by Janne G:son Berg from his own machine (the "TR-909 JGB pack" on Freesound, posted by altemark,
+       CC BY 4.0). Each pad sits where its page-made sound sat (its hats and ride a little louder, so they are heard). The
+       machine has no chord, so STAB is still drawn by the page. machine:1 = a drum machine, recorded: it stays under the
+       drum machine heading in the Sounds menu. */
+    L: { dir: "house909", en: "Kit L · 909 house", es: "Kit L · house 909", machine: 1,
+      pads: { kick: P("909", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("CLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("STAB", null, { made: 1 }) } },
     M: { dir: "reggae2", en: "Kit M · reggae and dub", es: "Kit M · reggae y dub",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("SYNTOM", null, { made: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("XSTICK", [1, 2, 1]), bell: P("SKANK", [1, 2, 1]) } },
@@ -119,7 +127,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["D", "E", "G", "H", "I", "J", "K", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
+  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -187,13 +195,14 @@
     loading: { en: "Getting the recorded drums ready…", es: "Preparando la batería grabada…" },
     failed:  { en: "The recorded drums did not load. Check the internet, then pick the kit again.",
                es: "La batería grabada no se cargó. Revisa el internet y vuelve a elegir el kit." },
-    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman.",
-               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman." },
+    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0).",
+               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0)." },
     credits: { en: "Full credits", es: "Créditos completos" }
   };
   function w(k, lang) { var o = WORDS[k]; return o ? (lang === "es" ? o.es : o.en) : k; }
 
   function has(b) { return Object.prototype.hasOwnProperty.call(KITS, b); }
+  function machine(b) { return !!(has(b) && KITS[b].machine); }   /* AOG-DRUM-909-V1: a drum machine, recorded */
   function label(b) { var k = KITS[b]; return k ? [k.en, k.es] : ["", ""]; }
   function padNames(b) { var k = KITS[b], o = {}; if (!k) return o; for (var id in k.pads) o[id] = k.pads[id].name; return o; }
   function files(b, id) {
@@ -387,7 +396,7 @@
     var g = w("group", LANG);
     Array.prototype.forEach.call((doc || root.document).querySelectorAll("[data-bank],[data-simple-bank]"), function (el) {
       var b = el.getAttribute("data-bank") || el.getAttribute("data-simple-bank");
-      if (has(b)) el.setAttribute("data-aog-group", g);
+      if (has(b) && !machine(b)) el.setAttribute("data-aog-group", g);
     });
     paintLines();
   }
@@ -405,7 +414,7 @@
   try { style(); } catch (e) {}
 
   root.AOGDrumKit = {
-    ids: IDS.slice(), starters: STARTERS, parts: parts, unparts: unparts, has: has, made: made, label: label, padNames: padNames, files: files,
+    ids: IDS.slice(), starters: STARTERS, parts: parts, unparts: unparts, has: has, machine: machine, made: made, label: label, padNames: padNames, files: files,
     load: load, post: post, route: route, playDirect: playDirect, state: function (b) { return STATE[b] || null; },
     ready: function (b) { return !!DATA[b]; }, lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
   };
