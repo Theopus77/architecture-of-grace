@@ -87,7 +87,7 @@ function needed(iv){ const top=Math.max(...iv); return iv.filter(i=>!((i===7 && 
     for(const [root, id] of [[2,"m7b5"],[7,"thirteenb9"],[9,"sus4"],[0,"maj"],[10,"dom7s5s9"],[4,"five"]]){
       await p.evaluate(()=>{ window.__v=[]; });
       await p.selectOption("#anyRoot", String(root)); await p.selectOption("#anyKind", id); await p.waitForTimeout(120);
-      const r=await p.evaluate(()=>({hand:S.hand, key:S.key, fit:[...document.querySelectorAll("#neck .dot.fit, #neck .dot.now")].map(g=>g.getAttribute("data-c")),
+      const r=await p.evaluate(()=>({hand:S.hand, key:S.key, fit:[...document.querySelectorAll("#neck .dot.fit, #neck .dot.now")].map(g=>g.getAttribute("data-c")), pale:[...document.querySelectorAll("#neck .dot.fit")].map(g=>g.getAttribute("data-c")),
         roots:[...document.querySelectorAll("#neck .dot.root")].map(g=>g.getAttribute("data-c")), shp:GTR?shapeFor(S.hand):null, played:window.__v.slice(),
         line:document.getElementById("anyLine").textContent, f0:S.fret0, n:NECK.n}));
       const pcs=lib.kinds[id].map(i=>(root+i)%12), tun=TUN[inst], cellPc=c=>{ const [s,f]=c.split(":").map(Number); return (tun[s]+f)%12; };
@@ -100,7 +100,8 @@ function needed(iv){ const top=Math.max(...iv); return iv.filter(i=>!((i===7 && 
         const last=r.played.slice(-r.shp.filter(f=>f>=0).length);
         ok(last.join()===r.shp.map((f,s)=>f>=0?tun[s]+f:null).filter(x=>x!=null).join(), "  and strums it: "+last.join(","));
       } else {
-        ok(r.fit.length>0 && r.fit.every(c=>pcs.indexOf(cellPc(c))>=0) && new Set(r.fit.map(cellPc)).size===new Set(pcs).size, `  every note of it lights on the neck (${r.fit.length} places)`);
+        /* pale = the chord's places; orange = what is ringing now, which may still be the last chord's notes (AOG-HAND-LIT-V1) */
+        ok(r.pale.length>0 && r.pale.every(c=>pcs.indexOf(cellPc(c))>=0) && pcs.every(pc=>r.fit.some(c=>cellPc(c)===pc)), `  every note of it lights on the neck (${r.fit.length} places)`);
         ok(r.roots.length>0 && r.roots.every(c=>cellPc(c)===root), "  its root marked as the root");
         const last=r.played.slice(-new Set(pcs).size);
         ok(last.length && last[0]%12===root && last.every((m,i)=>!i || m>last[0]) && new Set(last.map(m=>m%12)).size===new Set(pcs).size, "  and plays the root, then each note above it: "+last.join(","));
