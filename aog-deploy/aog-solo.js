@@ -523,8 +523,8 @@ class Lead{
     this.until=t-STEP;
   }
   glide(m2, at){ this.base=m2; this.bend=0; this.bendFn=null; this.replan(Math.max(at, this.c.currentTime)); }   /* the page's slideTo */
-  stop(t, tau){ if(this.vc.stopped) return; this.vc.stop(t, tau); for(const p of this.parts) p.stop(t, tau); this.retire(); }
-  kill(t){ this.vc.kill(t); for(const p of this.parts) p.kill(t); this.retire(); }
+  stop(t, tau){ if(this.vc.stopped) return; this.vc.stop(t, tau); this.retire(); }   /* the voice's stop stops its parts (makeLead) */
+  kill(t){ this.vc.kill(t); this.retire(); }
   retire(){ if(!this.planAll) DYN.delete(this); const c=this.c, e=(this.vc.end||c.currentTime)+0.4, vg=this.vg;
     setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, Math.max(0, e-c.currentTime)*1000+250); }
 }
@@ -536,6 +536,11 @@ function makeLead(s, m, v, when, o){
   if(!vc){ try{ vg.disconnect(); }catch(e){} return null; }
   if(o.soft){ vg.gain.setValueAtTime(0, when); vg.gain.linearRampToValueAtTime(1, when+0.006); }   /* a tap: no pick */
   const lv=new Lead(c, vc, vg, s, m, when); lv.lastT=m+W0;
+  /* AOG-SOLO-PINCH-STOP-V1: however the note is stopped (a new pick on its string, Mute, the page damping it, a lick),
+     its squeal and feedback stop with it */
+  const vStop=vc.stop.bind(vc), vKill=vc.kill.bind(vc);
+  vc.stop=function(t, tau, o2){ const was=vc.stopped; vStop(t, tau, o2); if(!was) lv.parts.forEach(p=>{ try{ p.stop(t, tau); }catch(e){} }); };
+  vc.kill=function(t){ vKill(t); lv.parts.forEach(p=>{ try{ p.kill(t); }catch(e){} }); };
   if(o.pinch) lv.parts.push(pinchPart(c, lv, m+W0, when));
   if(o.snap && !(vc.rec && SOUNDS[S.sound] && SOUNDS[S.sound].rslap)) snapPart(c, lv, when);   /* a recorded slap sound pops with its own snap */
   track(lv);
@@ -554,9 +559,12 @@ function pinchPart(c, lv, m, when){
   const f0=mtof(m); let h=8; for(const k of [8,6,5,4,3]){ h=k; if(f0*k<=2400) break; }
   const o=c.createOscillator(); o.type="sine"; o.frequency.value=f0*h;
   const g=gainAt(c,0); o.connect(g); g.connect(lv.vg);
-  const A=0.13; g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(A, when+0.005); g.gain.setTargetAtTime(A*0.4, when+0.005, 0.5);
-  o.start(when); SO.pinches=(SO.pinches||0)+1;
-  const part={h, kind:"pinch",
+  /* AOG-SOLO-PINCH-STOP-V1 (Jimmy: "The pitch squeal won't stop after you hit it"): the squeal dies away with the string
+     (it used to hold at 40 % for as long as its note was never stopped one particular way), and never outlives 8 s */
+  const A=0.13; g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(A, when+0.005); g.gain.setTargetAtTime(A*0.4, when+0.005, 0.35);
+  g.gain.setTargetAtTime(0, when+0.6, 1.1);
+  o.start(when); o.stop(when+8); SO.pinches=(SO.pinches||0)+1;
+  const part={h, kind:"pinch", g:g,
     follow(T,at){ try{ o.frequency.cancelScheduledValues(at); o.frequency.setTargetAtTime(mtof(T)*h, at, 0.012); }catch(e){} },
     stop(t,tau){ try{ const tt=Math.max(0.01,tau||0.03); g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0, t, tt); o.stop(t+tt*8+0.05); }catch(e){} },
     kill(t){ part.stop(t, 0.01); }};
