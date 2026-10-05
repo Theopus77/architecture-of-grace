@@ -565,15 +565,15 @@ const STR={
   pvHow:{en:"How the neck plays",es:"Cómo suena el mástil"},
   pvChords:{en:"Chords",es:"Acordes"}, pvSolo:{en:"Solo",es:"Solo"},
   pvLeft:{en:"Left-handed",es:"Para zurdos"}, pvAway:{en:"Screen faces away",es:"Pantalla hacia fuera"},
-  pvSay: GTR?{en:"♪ Notes: a fret plays when you touch it. ✋ Hold + strum: hold the frets, then strum on the strip, as on a real guitar. Push a held finger across its string to bend it.",es:"♪ Notas: un traste suena al tocarlo. ✋ Pisar + rasguear: pisa los trastes y rasguea en la franja, como en una guitarra de verdad. Empuja un dedo pisado a lo ancho de la cuerda para estirarla."}
-            :{en:"♪ Notes: a fret plays when you touch it. ✋ Hold + strum: hold the frets, then pluck on the strip with two fingers in turn. Push a held finger across its string to bend it.",es:"♪ Notas: un traste suena al tocarlo. ✋ Pisar + rasguear: pisa los trastes y pulsa en la franja con dos dedos, uno y otro. Empuja un dedo pisado a lo ancho de la cuerda para estirarla."},
+  pvSay: GTR?{en:"♪ Notes: a fret plays when you touch it. ✋ Hold + strum: hold the frets, then strum on the strip, as on a real guitar. Push a held finger across its string to bend it. While a style plays, it plays the frets you hold.",es:"♪ Notas: un traste suena al tocarlo. ✋ Pisar + rasguear: pisa los trastes y rasguea en la franja, como en una guitarra de verdad. Empuja un dedo pisado a lo ancho de la cuerda para estirarla. Mientras suena un estilo, toca los trastes que pisas."}
+            :{en:"♪ Notes: a fret plays when you touch it. ✋ Hold + strum: hold the frets, then pluck on the strip with two fingers in turn. Push a held finger across its string to bend it. While a style plays, it plays the note you hold.",es:"♪ Notas: un traste suena al tocarlo. ✋ Pisar + rasguear: pisa los trastes y pulsa en la franja con dos dedos, uno y otro. Empuja un dedo pisado a lo ancho de la cuerda para estirarla. Mientras suena un estilo, toca la nota que pisas."},
   pvRegion:{en:"The neck, on the whole screen",es:"El mástil, en toda la pantalla"},
   neckGroup: GTR?{en:"Guitar neck, six strings. Tap a fret to play it.",es:"Mástil de la guitarra, seis cuerdas. Toca un traste para tocarlo."}
                 :{en:"Bass neck, four strings. Tap a fret to play it.",es:"Mástil del bajo, cuatro cuerdas. Toca un traste para tocarlo."},
   litLine: GTR?{en:"Pale dots show where fingers go for the chord. × means skip that string. Orange notes are playing now.",es:"Los puntos claros muestran dónde van los dedos para el acorde. × significa no tocar esa cuerda. Las notas naranjas suenan ahora."}
               :{en:"Pale dots fit the chord. The ringed dot is its root, the chord's home note. Orange notes are playing now.",es:"Los puntos claros van con el acorde. El punto con anillo es su raíz, la nota casa del acorde. Las notas naranjas suenan ahora."},
-  touchLine: GTR?{en:"Tap a fret to play one string. Slide a finger across the strings on the right to strum.",es:"Toca un traste para tocar una cuerda. Desliza un dedo por las cuerdas de la derecha para rasguear."}
-                :{en:"Tap a fret to play a note. Slide along a string to glide to the next note.",es:"Toca un traste para tocar una nota. Desliza el dedo por una cuerda para pasar a la siguiente nota."},
+  touchLine: GTR?{en:"Tap a fret to play one string. Slide a finger across the strings on the right to strum. While a style plays, hold frets and it plays them.",es:"Toca un traste para tocar una cuerda. Desliza un dedo por las cuerdas de la derecha para rasguear. Mientras suena un estilo, pisa trastes y los toca."}
+                :{en:"Tap a fret to play a note. Slide along a string to glide to the next note. While a style plays, hold a fret and the line follows it.",es:"Toca un traste para tocar una nota. Desliza el dedo por una cuerda para pasar a la siguiente nota. Mientras suena un estilo, pisa un traste y la línea lo sigue."},
   keysLine: GTR?{en:"On a computer, 1 to 6 strum the chord pads, and A S D F G H play the six strings, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 6 rasguean los pads, y A S D F G H tocan las seis cuerdas, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."}
                :{en:"On a computer, 1 to 6 play the chord pads, and A S D F G H J K play the scale of the key, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 6 tocan los pads, y A S D F G H J K tocan la escala del tono, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."},
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
@@ -2147,26 +2147,70 @@ const BASS_SHORT={gallop:1, sixteen:1, funk:1, eighths:1};
    hit a few milliseconds early or late (less on the beat), a little softer or louder, a chord's notes not quite together.
    Seeded by the bar and the hit, so no two bars are the same and a test can still play the same bar twice. */
 function feel(k, i){ if(window.AOG_FEEL_OFF) return ()=>0; const r=seeded((k+1)*7919+(i+1)*104729); r(); return r; }   /* the pattern tests check the grid itself with AOG_FEEL_OFF */
-function scheduleBar(c, ch, k, t0, barSec, swing){
-  const chord=S.prog[k%S.prog.length]; if(!chord) return [];
+/* ══ AOG-HAND-STYLE-V1 (2026-10-05) — Jimmy: "does the guitar and bass allow me to pick or strum along in the fret board in its
+   various styles?" While a style plays, hold frets on the neck and the style plays your notes, in time:
+   · the guitar: your shape. A string you hold plays your highest finger on it, a string you do not hold rings open, as
+     on a real guitar (pvFret, the whole-screen neck's rule). Every strum and picking pattern plays that shape.
+   · the bass: your lowest held note is the root, your other fingers say major or minor (else the chord playing, if it
+     has that root, else major), and the line (walking, root and fifth, octaves …) is played in your octave.
+   A change of fingers is heard at once: what was planned of the bar from 25 ms on is planned again with your notes, and a
+   string whose note changed lets go, as a hand moving does. Let go of every fret and the style plays the chords again.
+   Never in Solo mode, where your fingers play a lead over the style. ══ */
+function handHeld(){
+  if(!S.playing || (window.AOGSolo && AOGSolo.isOn())) return null;
+  const on=[]; FINGERS.forEach(p=>{ if(p.zone==="fret") on.push(p); }); if(!on.length) return null;
+  const top=s=>on.filter(p=>p.s===s).reduce((a,p)=>!a || pvAt(p)>pvAt(a) ? p : a, null);
+  const notes=[], shp=TUNING.map((o,s)=>{ const t=top(s); const f=t ? Math.round(pvAt(t)) : (GTR ? 0 : -1); if(f>=0 && (GTR || t)) notes.push(o+f); return f; });
+  if(!notes.length) return null;
+  const low=Math.min.apply(null, notes), pcs=new Set(notes.map(m=>((m%12)+12)%12));
+  /* the root: the note a major or minor triad stands on (an A minor shape over the open low E is still A minor), else the lowest */
+  const lowPc=((low%12)+12)%12, roots=[lowPc].concat([...pcs].filter(x=>x!==lowPc));
+  const pc=GTR ? roots.find(r=>pcs.has((r+7)%12) && (pcs.has((r+4)%12) || pcs.has((r+3)%12))) : lowPc; const R0=pc!=null ? pc : lowPc;
+  const iv=new Set([...pcs].map(x=>((x-R0)%12+12)%12));
+  const cur=S.prog.length ? S.prog[Math.max(0, PLAY.cur)%S.prog.length] : null, curPc=cur ? ((S.key+cur.off)%12+12)%12 : -1;
+  let q = iv.has(4) ? (iv.has(10) ? "dom7" : iv.has(11) ? "maj7" : "maj") : iv.has(3) ? (iv.has(10) ? "m7" : "min")
+        : (cur && curPc===R0 && Q6.indexOf(cur.q)>=0) ? cur.q : "maj";
+  /* the bass plays its line from your lowest note: its root is that note */
+  return {shp:shp, low:low, chord:{off:((R0-S.key)%12+12)%12, q:q}};
+}
+function handSig(h){ return h ? h.shp.join(",") : ""; }
+function handChanged(){
+  if(!S.playing || !ac) return;
+  const h=handHeld(), sig=handSig(h); if(sig===(PLAY.hand||"")) return;
+  PLAY.hand=sig;
+  const now=ac.currentTime, cut=now+0.025, newShp=h ? h.shp : null;
+  /* what has not started yet is planned again; a ringing string whose note changed lets go */
+  PLAY.voices.forEach(v=>{
+    if(v.on!=null && v.on>=cut){ v.kill(now); v.gone=true; return; }
+    if(v.cell && (v.off==null || v.off>cut)){ const s=+String(v.cell).split(":")[0], f=+String(v.cell).split(":")[1];
+      const nf=newShp ? newShp[s] : null; if(!GTR || nf==null || nf!==f){ v.kill(cut); v.gone=true; } } });
+  PLAY.voices=PLAY.voices.filter(v=>!v.gone);
+  const b0=Math.max(0, Math.floor((cut-PLAY.t0)/PLAY.barSec));
+  for(let b=b0; b<PLAY.bar; b++) PLAY.voices=PLAY.voices.concat(scheduleBar(ac, LIVE_CH, b, PLAY.t0+b*PLAY.barSec, PLAY.barSec, curSwing(), cut));
+}
+function scheduleBar(c, ch, k, t0, barSec, swing, from){
+  const hh=c===ac ? handHeld() : null;   /* only the live player follows the hand; a take sent away plays the chords */
+  const chord=hh ? hh.chord : S.prog[k%S.prog.length]; if(!chord) return [];
   const bpb=beatsPerBar(), beat=barSec/bpb, out=[], started={};
   /* the second half of each beat leans back with the swing, as on the drum machine (its third and fourth sixteenths move
      together); a note after the fourth sixteenth (the tremolo's) is fitted into what is left of the beat, so it stays in order */
   const lean=x=>{ const fr=x-Math.floor(x), L=(swing-0.5)*beat; return (x>=bpb || fr<0.499) ? 0 : fr<0.749 ? L : L*(1-fr)*4; };
   const fresh=(s, when)=>{ const id=s+"@"+Math.round(when*1000); if(started[id]) return false; started[id]=1; return true; };   /* never the same string twice at once */
   if(GTR){
-    const shp=shapeFor(chord);
+    const shp=hh ? hh.shp : shapeFor(chord);
     const hand={};   /* AOG-FEEL-V1: one strum moves as one hand: early or late together, a little faster or slower, harder or softer */
     strumPlan(shp, S.rhythm, chord).forEach(p=>{
       const hk=p.t.toFixed(3), h=hand[hk]||(hand[hk]=(r=>({dt:r()*(p.t%1===0?0.0025:0.005), sp:1+0.12*r(), v:1+0.06*r()}))(feel(k, Math.round(p.t*48))));
       const f=p.f!=null?p.f:shp[p.s], when=Math.max(t0, t0+p.t*beat+lean(p.t)+p.off*h.sp+h.dt), endAt=Math.max(when+0.02, t0+p.end*beat+lean(p.end)+h.dt), m=TUNING[p.s]+f;
       p={...p, v:Math.min(1, p.v*h.v*(1+0.025*feel(k, p.s*97+Math.round(p.t*48))()))};
+      if(from && when<from) return;   /* AOG-HAND-STYLE-V1: the part of the bar already played */
       if(!fresh(p.s, when)) return;
       const vc=makeVoice(c, ch, S.sound, m, p.v, when, p.s, p.mute?{art:"mute"}:undefined);      /* a muted strum: the muted recordings (AOG-STRINGS-REAL-V1) */
       if(vc){ vc.stop(endAt, p.chop?0.02:SOUNDS[S.sound].damp, p.free?{rel:true}:undefined); vc.m=m; vc.cell=p.s+":"+f; vc.on=when; vc.off=endAt; vc.role=p.role; out.push(vc); }
     });
   } else {
-    const evs=lineEvents(S.rhythm, chord, S.prog[(k+1)%S.prog.length], k);
+    const evs=lineEvents(S.rhythm, chord, hh ? chord : S.prog[(k+1)%S.prog.length], k);
+    if(hh){ const d=hh.low-bassRoot(chord); if(d) evs.forEach(e=>{ e.m+=d; }); }   /* AOG-HAND-STYLE-V1: in your octave */
     /* AOG-STRINGS-REAL-V1: the quick, short notes of the metal, funk and driving lines are played short and damped (a
        recorded set's short notes) */
     if(BASS_SHORT[S.rhythm]) evs.forEach(e=>{ if(e.d<=0.25) e.mute=true; });
@@ -2176,6 +2220,7 @@ function scheduleBar(c, ch, k, t0, barSec, swing){
       /* a note lets go when the next one comes, even when the swing pulls the next one closer, and at the bar line (a note
          played early for the next chord rings on over it) */
       const nx=evs.filter(e=>e.t>ev.t).reduce((a,e)=>Math.min(a, t0+e.t*beat+lean(e.t)), ev.role==="ant"?Infinity:t0+barSec), endAt=Math.min(when+ev.d*beat, nx);
+      if(from && when<from) return;   /* AOG-HAND-STYLE-V1 */
       if(!fresh(cl?cl.s:"", when)) return;
       const vc=makeVoice(c, ch, S.sound, ev.m, ev.v, when, cl?cl.s:null, ev.mute?{art:"mute"}:undefined);
       /* a note let go before the next one: a recording adds the sound of the hand (AOG-STRINGS-REAL-V1) */
@@ -2193,7 +2238,7 @@ async function start(){
   const c=ctx();
   if(S.withDrums && DRUM.take && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
   stop(true);
-  S.playing=true;
+  S.playing=true; PLAY.hand=handSig(handHeld());   /* AOG-HAND-STYLE-V1 */
   const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.cur=-1;
   const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
   if(drumsLive() && DRUM.buf){
@@ -2212,7 +2257,7 @@ function stop(quiet){
   if(ac){ const now=ac.currentTime; PLAY.voices.forEach(v=>v.kill(now)); }
   PLAY.voices=[];
   if(PLAY.drum){ try{ PLAY.drum.stop(); }catch(e){} PLAY.drum=null; }
-  S.playing=false; PLAY.cur=-1;
+  S.playing=false; PLAY.cur=-1; PLAY.hand="";
   litNeck(); paintNow();
   if(!quiet) paintPlay();
 }
@@ -2313,7 +2358,7 @@ async function sendPads(){
 const $=id=>document.getElementById(id);
 /* the six music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]===INST?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". ● Record on the
@@ -2564,6 +2609,7 @@ function litNeck(){
   paintWheelState();
   if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
   paintAnyLine();   /* AOG-ANYCHORD-V1: its line only while that chord is in the hand */
+  handChanged();    /* AOG-HAND-STYLE-V1: the style follows the frets you hold */
 }
 function neckHit(e){
   if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
