@@ -235,9 +235,9 @@ const CSS=`
 #rig .so-band{align-items:center}
 #rig .so-band .pbtn.play{min-width:12rem}
 @media (max-width:520px){ #rig .so-band .pbtn.play{flex:1 1 100%} }
-#rig.aog-solo-on .neck .dot.fit{display:none}
-#rig.aog-solo-on .neck .nk-x{display:none!important}
-#rig.aog-solo-on .neck .nk-strumlab{display:none}
+#rig.aog-solo-on .neck .dot.fit,body.aog-solo-on #playView .neck .dot.fit{display:none}
+#rig.aog-solo-on .neck .nk-x,body.aog-solo-on #playView .neck .nk-x{display:none!important}
+#rig.aog-solo-on .neck .nk-strumlab,body.aog-solo-on #playView .neck .nk-strumlab{display:none}   /* the strip is the whammy bar: its own word only (AOG-SOLO-PV-V1: the sideways view too) */
 #rig.aog-solo-on [data-t="touchLine"],#rig.aog-solo-on [data-t="keysLine"],#rig.aog-solo-on #litLine{display:none!important}
 #neck .so-c circle{fill:#9cc6d8;stroke:#0c0d10;stroke-width:1.5}
 #neck .so-c text{fill:#0f2430}
@@ -328,6 +328,8 @@ function paintWords(){
 }
 function paintMode(){
   const rig=$q("rig"); if(rig) rig.classList.toggle("aog-solo-on", SO.on);
+  document.body.classList.toggle("aog-solo-on", SO.on);   /* AOG-SOLO-PV-V1: the sideways play view's neck sits outside #rig */
+  if(typeof window.pvHintPaint==="function") window.pvHintPaint();
   $q("soloTop").hidden=!SO.on; $q("soloBottom").hidden=!SO.on;
   $q("soloMode").querySelectorAll("[data-so-mode]").forEach(b=>b.setAttribute("aria-pressed", String((b.getAttribute("data-so-mode")==="solo")===SO.on)));
 }
