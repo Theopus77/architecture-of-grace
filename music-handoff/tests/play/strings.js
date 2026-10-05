@@ -36,7 +36,7 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     /* after the drawer closes the neck is laid out again; a hand only lands once it has settled */
     const menu=async(...sels)=>{ await press("#pvMore"); for(const x of sels) await p.click(x); if(sels.length){ await press("#pvMore"); await p.waitForTimeout(400); } };
     /* AOG-PLAY-TABLET-V1: a tablet starts in the normal page; the big button opens the whole-screen view */
-    if(await p.evaluate(()=>Math.min(screen.width,screen.height)>=600)){
+    if(await p.evaluate(()=>Math.min(screen.width,screen.height)>=600 && matchMedia("(pointer: coarse)").matches)){
       const a=await p.evaluate(()=>({on:PV.on, big:getComputedStyle(document.getElementById("pvBig")).display!=="none"}));
       ok(!a.on && a.big, "a tablet held sideways starts in the normal page, with Play on the whole screen to open it: "+JSON.stringify(a));
       await p.evaluate(()=>{ if(typeof GUARD!=="undefined"){ GUARD.last=0; GUARD.down.clear(); } document.getElementById("pvBig").click(); }); await p.waitForTimeout(400); }
@@ -203,7 +203,8 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(!cl.on && cl.back && cl.page!=="none" && !cl.play, "Close puts the page back, with its neck");
     await p.setViewportSize({width:opt.viewport.height, height:opt.viewport.width}); await p.waitForTimeout(250);
     await p.setViewportSize(opt.viewport); await p.waitForTimeout(250);
-    ok(await p.evaluate("PV.on && NECK.play"), "turned upright and back, it plays sideways again");
+    if(dev==="iPad sideways") ok(await p.evaluate("!PV.on && !NECK.play"), "an iPad turned upright and back stays on the page (AOG-PLAY-TABLET-V1)");
+    else ok(await p.evaluate("PV.on && NECK.play"), "turned upright and back, it plays sideways again");
     ok(errs.length===0, "no page errors "+errs.join(" | "));
     await c.close();
   }
