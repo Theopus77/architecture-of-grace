@@ -31,6 +31,8 @@ const HOW={fmpiano:["harm",0.05,1.0], pipeorgan:["harm",0.6,2.6], harpsichord:["
    max(0.35, min(0.7, 60/f)) s after the note starts (z 0), or over a held set's loop. Every one within 5 cents */
 const path=require("path"), ROOT=process.env.AOG_ROOT||path.resolve(__dirname,"../../aog-deploy");
 const MADE_SETS=JSON.parse(fs.readFileSync(path.join(ROOT,"..","music-handoff","tools","piano_real_sets.json"),"utf8")).sets;
+/* AOG-PIANO-SYNTH-V1: and the four real analog synthesizer sets (music-handoff/tools/piano_synth_sets.py), checked the same way */
+Object.assign(MADE_SETS, JSON.parse(fs.readFileSync(path.join(ROOT,"..","music-handoff","tools","piano_synth_sets.json"),"utf8")).sets);
 Object.keys(MADE_SETS).forEach(s=>{ const e=MADE_SETS[s].sets_entry, m=MADE_SETS[s].pitch||"harm"; REAL[s]=s;
   HOW[s] = [m==="fund"?"bar":m, e.loop?e.loop[0]:0.03, e.loop?e.loop[1]-0.6:0]; });
 /* where each warm electric piano note's own loop began in its recording (seconds; piano_vcsl_sets.py prints them): from there

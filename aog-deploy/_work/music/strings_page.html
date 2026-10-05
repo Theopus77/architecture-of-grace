@@ -537,13 +537,13 @@ const STR={
   /* AOG-STRINGS-REAL-V1: the recorded guitars and basses */
   credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. In Solo mode, the band's bass is Growlybass by Karoryfer Samples. All of them are free for everyone to use (CC0).",
                es:"Las guitarras de aquí son guitarras de verdad, grabadas nota por nota: Black And Green Guitars de Karoryfer Samples, una guitarra Martin de cuerdas de acero grabada por Jeff Learman y una guitarra clásica española de FreePats. En el modo Solo, el bajo de la banda es Growlybass de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0)."}
-             :{en:"Every bass here is a real recording, note by note: Growlybass and Swagbass by Karoryfer Samples, and a double bass and an Ergo fretless upright bass played by D. Smolken (with Meatbass by Karoryfer Samples). The synth sounds play a real organ's low notes: Caveman Cosmonaut by Karoryfer Samples. In Solo mode, the band's guitar is Black And Green Guitars by Karoryfer Samples. All of them are free for everyone to use (CC0).",
-               es:"Cada bajo de aquí es una grabación de verdad, nota por nota: Growlybass y Swagbass de Karoryfer Samples, y un contrabajo y un contrabajo eléctrico Ergo sin trastes tocados por D. Smolken (con Meatbass de Karoryfer Samples). Los sonidos de sintetizador tocan las notas graves de un órgano de verdad: Caveman Cosmonaut de Karoryfer Samples. En el modo Solo, la guitarra de la banda es Black And Green Guitars de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0)."},
+             :{en:"Every bass here is a real recording, note by note: Growlybass and Swagbass by Karoryfer Samples, and a double bass and an Ergo fretless upright bass played by D. Smolken (with Meatbass by Karoryfer Samples). The synth sounds are a real analog synthesizer from 1979, a Roland SH-2, recorded by Modular Samples. In Solo mode, the band's guitar is Black And Green Guitars by Karoryfer Samples. All of them are free for everyone to use (CC0 or public domain).",
+               es:"Cada bajo de aquí es una grabación de verdad, nota por nota: Growlybass y Swagbass de Karoryfer Samples, y un contrabajo y un contrabajo eléctrico Ergo sin trastes tocados por D. Smolken (con Meatbass de Karoryfer Samples). Los sonidos de sintetizador son un sintetizador analógico de verdad de 1979, un Roland SH-2, grabado por Modular Samples. En el modo Solo, la guitarra de la banda es Black And Green Guitars de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0 o dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
   recLoading: GTR?{en:"Getting the recorded guitar ready…",es:"Preparando la guitarra grabada…"}:{en:"Getting the recorded bass ready…",es:"Preparando el bajo grabado…"},
   recReady: GTR?{en:"This sound is a real guitar, recorded note by note.",es:"Este sonido es una guitarra de verdad, grabada nota por nota."}
                :{en:"This sound is a real bass, recorded note by note.",es:"Este sonido es un bajo de verdad, grabado nota por nota."},
-  recReadyOrgan:{en:"This sound plays a real organ's low notes, recorded note by note.",es:"Este sonido toca las notas graves de un órgano de verdad, grabadas nota por nota."},
+  recReadySynth:{en:"This sound is a real analog synthesizer, recorded note by note.",es:"Este sonido es un sintetizador analógico de verdad, grabado nota por nota."},
   recFailed: GTR?{en:"The recorded guitar did not load. The guitar made on this page plays instead. Reload the page to try again.",es:"La guitarra grabada no se cargó. Suena la guitarra hecha en esta página. Vuelve a cargar la página para intentarlo otra vez."}
                 :{en:"The recorded bass did not load. The bass made on this page plays instead. Reload the page to try again.",es:"El bajo grabado no se cargó. Suena el bajo hecho en esta página. Vuelve a cargar la página para intentarlo otra vez."},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
@@ -747,9 +747,9 @@ const SOUNDS = GTR ? {
   upright:{grp:"grpOther", en:"Upright bass", es:"Contrabajo", kind:"pluck", rec:"upright", out:1.058, rout:0.903, rrel:0.5, gain:3.94, rev:0.09, lp:650, lpSpan:2.6, damp:0.06,
           s:{sr:44100, T0:3.2, fref:41, Texp:0.4, Tmin:1.4, Tmax:3.8, Thf:0.12, Thmax:0.35, pos:0.25, bright:0.19, soft:0.07, loop:0.02, pol2:0.3, atk:0, thump:0.6, thumpHz:65, thumpMs:25, glow:0, rise:3, pick:0, durMax:3.8,
              body:[["highpass",35,0.7,0],["peaking",72,2.5,6],["peaking",145,2,3],["peaking",290,1.8,1.5],["highshelf",1200,0.7,-8]]}, rig:NO_AMP},
-  synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", rec:"cosmo", out:5.279, rout:4.654, rdrive:4, gain:1.41, rev:0.06, damp:0.035,
+  synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", rec:"synthbass", out:5.279, rout:4.654, gain:1.41, rev:0.06, damp:0.035,
           syn:{sq:0.45, det:3, q:1.5, fa:4, fv:1500, fb:2.2, fb0:160, tc:0.12, sub:0.35, subMs:50, sus:0.62, st:0.22}, rig:R("bclean","off",{gain:2})},
-  acid:  {grp:"grpOther", en:"Synth bass · acid squelch", es:"Bajo de sintetizador · ácido", kind:"synth", rec:"cosmo", out:0.868, rout:0.857, rdrive:4, gain:1, rev:0.05, damp:0.03,
+  acid:  {grp:"grpOther", en:"Synth bass · acid squelch", es:"Bajo de sintetizador · ácido", kind:"synth", rec:"acidbass", out:0.868, rout:0.857, gain:1, rev:0.05, damp:0.03,
           syn:{sq:0, q:13, fa:5, fv:2600, fb:1.2, fb0:110, tc:0.11}, rig:R("bclean","off",{gain:2}, {fx:{ds:{on:true, dist:3, tone:6, lvl:5}}})},
   /* AOG-AMP-TONES-V1 (2026-10-04) — the new basses, named by style and feel; what inspired each is in its comment */
   /* John Paul Jones: fingers, round, warm and melodic; a tube amp into one big speaker, a light compressor */
@@ -1248,7 +1248,7 @@ function prepare(id){
      sets stay (pin); room says how many sets a device keeps at once: 3 where it has the memory for them (4 GB or more,
      or, where the browser does not say, a screen as big as a tablet's), else 2, and the band's bass plays the made string.
    ══════════════════════════════════════════════════════════════════════════ */
-const REAL={base:"/audio/"+INST+"/", ver:"1", keep:2, on:true, sets:{}, order:[], pin:[],
+const REAL={base:"/audio/"+INST+"/", ver:"2", keep:2, on:true, sets:{}, order:[], pin:[],
   room:(()=>{ try{ const dm=navigator.deviceMemory; if(typeof dm==="number") return dm>=4?3:2;
     return Math.min(screen.width||0, screen.height||0)>=700?3:2; }catch(e){ return 2; } })()};
 /* where a set's files are: this instrument's folder, or the one its name says ("bass/growly") */
@@ -1471,7 +1471,7 @@ function recRelease(c, ch, R, lift, vv, on, t, s, natural){
 function recLine(){
   const el=document.getElementById("loadLine"); if(!el) return;
   const r=recOf(S.sound), R=r?REAL.sets[r]:null;
-  const k=!r ? "built" : (R && R.state==="ready") ? (SOUNDS[S.sound].kind==="synth" ? "recReadyOrgan" : "recReady") : (R && R.state==="failed") ? "recFailed" : "recLoading";
+  const k=!r ? "built" : (R && R.state==="ready") ? (SOUNDS[S.sound].kind==="synth" ? "recReadySynth" : "recReady") : (R && R.state==="failed") ? "recFailed" : "recLoading";
   if(el.getAttribute("data-k")!==k || el.getAttribute("data-l")!==S.lang){ el.setAttribute("data-k", k); el.setAttribute("data-l", S.lang); el.textContent=t(k); }
 }
 
@@ -1624,7 +1624,7 @@ function synthVoice(c, ch, id, m, v, when, s){
   vc.glide=(m3, at)=>{ const ff=mtof(m3); [o1,o2].forEach(o=>{ try{ o.frequency.cancelScheduledValues(at); o.frequency.setTargetAtTime(ff, at, 0.02); }catch(e){} }); };
   return vc;
 }
-/* AOG-STRINGS-REAL-V1: the synth bass on a recorded organ (cosmo): the organ's full bass voice (layer 2) for the saw and
+/* AOG-STRINGS-REAL-V1 (a set without "play":"straight"; the synth sounds were once on the recorded organ, cosmo): the organ's full bass voice (layer 2) for the saw and
    its hollow one (layer 1) for the square, a hair apart, each looped while the note is held, through the synth's own
    filter and envelope (above), from the steady part of each note (the synth's envelope makes the start); the thump is
    the hollow voice an octave down, for a moment. The organ's bass voices are
@@ -1632,6 +1632,7 @@ function synthVoice(c, ch, id, m, v, when, s){
    (rdrive: how hard, into a soft clip), as a synth's oscillator is, which gives them the highs the filter growls with */
 const DRIVE=(()=>{ const n=2048, d=new Float32Array(n), k=Math.tanh(2.5); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; d[i]=Math.tanh(2.5*x)/k; } return d; })();
 function recSynthVoice(c, ch, id, m, v, when, s, R){
+  if(R.meta && R.meta.play==="straight") return recSynthStraight(c, ch, id, m, v, when, s, R);
   const snd=SOUNDS[id], f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), peak=0.2*velAmp(vv), sy=snd.syn||{}, L=R.lvl, sq=sy.sq==null?0.5:sy.sq;
   const fa=Math.min(9000, f*(sy.fa||3)+(sy.fv||1800)*vv), fb=Math.min(fa, f*(sy.fb||1.6)+(sy.fb0==null?240:sy.fb0)), q=sy.q==null?5:sy.q;
   let lpf; try{ lpf=new BiquadFilterNode(c,{type:"lowpass", frequency:fa, Q:q}); }catch(e){ lpf=filt(c,"lowpass",fa,q); }
@@ -1658,6 +1659,27 @@ function recSynthVoice(c, ch, id, m, v, when, s, R){
   const vc=voiceShell(c, ch.bus, nodes, rel); vc.tau=snd.damp;
   vc.rec={set:R.id, f:z0.f, k:"sus", v:2, r:1, m:z0.m, c:z0.c||0, loop:!!z0.lp};
   vc.glide=(m3, at)=>{ pairs.forEach(([sx, zz, det, d12])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(recRate(zz, m3+d12)*Math.pow(2, det/1200), at, 0.02); }catch(e){} }); };
+  return vc;
+}
+/* AOG-BASS-SYNTH-V1 (2026-10-04) — Jimmy: "REAL EVERYTHING if possible". A set recorded from a real synthesizer
+   (set.json "play":"straight": the analog SH-2 sets) already carries the synth's own filter and envelope, so it plays as
+   recorded: the strength picks the layer (the harder, the wider the synth's filter opened), the note keeps sounding
+   through its loop while held, or dies away by itself where the recording does */
+function recSynthStraight(c, ch, id, m, v, when, s, R){
+  const snd=SOUNDS[id], vv=Math.max(0.05,Math.min(1,v)), pk=recPick(R, "sus", m, vv, null); if(!pk) return null;
+  const z=pk.z, b=R.buf[z.f], src=c.createBufferSource(); src.buffer=b; src.playbackRate.value=recRate(z, m);
+  if(z.lp){ src.loop=true; src.loopStart=(R.lead[z.f]||0)+z.lp[0]; src.loopEnd=(R.lead[z.f]||0)+z.lp[1]; }
+  const peak=0.2*velAmp(vv), amp=gainAt(c, peak*(z.g||1)/R.lvl.long[pk.lay]);
+  amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak*(z.g||1)/R.lvl.long[pk.lay], when+0.003);
+  src.connect(amp);
+  const lvl=gainAt(c, snd.gain), rel=gainAt(c,1); amp.connect(lvl);
+  let tail=lvl; const pan=panFor(c, s); if(pan){ lvl.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  src.start(when, R.at[z.f]);
+  const vc=voiceShell(c, ch.bus, [src], rel); vc.tau=snd.damp;
+  if(!z.lp) vc.natural=when+Math.max(0.05, b.duration-R.at[z.f])/src.playbackRate.value;
+  vc.rec={set:R.id, f:z.f, k:"sus", v:pk.lay, r:z.r||1, m:z.m, c:z.c||0, loop:!!z.lp};
+  vc.glide=(m3, at)=>{ try{ src.playbackRate.cancelScheduledValues(at); src.playbackRate.setTargetAtTime(recRate(z, m3), at, 0.02); }catch(e){} };
   return vc;
 }
 /* every note: makeVoice(c, ch, id, m, v, when, s) → a voice (voiceShell: stop, kill, glide, tau, natural). AOG-STRINGS-REAL-V1:
