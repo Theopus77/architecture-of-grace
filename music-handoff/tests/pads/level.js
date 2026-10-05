@@ -9,14 +9,14 @@
      node music-handoff/tests/pads/level.js --table    also prints the trims to paste into music-pads.html (LEVEL)
    Exit code 1 if a sound is more than 1 dB from the grand with its trim in place. */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
-const srv=require("../srv.js")(9987);
+const srv=require("../srv.js")(9937);
 const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(__dirname+"/../bandt/measure.inc","utf8").replace(/^const MEASURE=/,""));
 const TABLE=process.argv.includes("--table");
 (async()=>{
   const b=await pw.chromium.launch();
   let ref;
   { const p=await b.newPage(); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
-    await p.goto("http://localhost:9987/music-piano.html"); await p.waitForTimeout(600); await p.addScriptTag({content:MEASURE});
+    await p.goto("http://localhost:9937/music-piano.html"); await p.waitForTimeout(600); await p.addScriptTag({content:MEASURE});
     ref=await p.evaluate(async()=>{ await loadSet("grand");
       const oc=new OfflineAudioContext(2, 44100*2.5, 44100), ch=makeChain(oc); ch.master.gain.value=volGain(0.8); setSendLevel(ch,"grand"); setEra(ch,0,0);
       [60,64,67,48].forEach((m,j)=>{ const vc=makeVoice(oc,ch,"grand",m,0.74*(j===3?0.85:1),0.05); vc.stop(2.05, vc.tau); });
@@ -24,7 +24,7 @@ const TABLE=process.argv.includes("--table");
     await p.close(); }
   const p=await b.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message)); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   await p.addInitScript(()=>{ try{ localStorage.removeItem("aog.pads.v1"); }catch(e){} });
-  await p.goto("http://localhost:9987/music-pads.html"); await p.waitForTimeout(800); await p.addScriptTag({content:MEASURE});
+  await p.goto("http://localhost:9937/music-pads.html"); await p.waitForTimeout(800); await p.addScriptTag({content:MEASURE});
   await p.waitForFunction(()=>window.isReady && CRATE.length>0, null, {timeout:60000});
   const out=await p.evaluate(async()=>{
     const wait=bi=>new Promise((ok,no)=>{ const t0=Date.now(); const c=()=>{ if(isReady(bi)) ok(); else if(READY[bi].state==="failed" || Date.now()-t0>60000) no(new Error("not ready "+bi)); else setTimeout(c,30); }; prep(bi); c(); });
