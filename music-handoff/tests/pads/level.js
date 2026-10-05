@@ -67,12 +67,15 @@ const TABLE=process.argv.includes("--table");
      of a hit (up to 1.25 before it, about 4 dB on the sharpest kits, too short to hear); without that, the kits with the
      sharpest hits stayed 11 dB under and the kits were 8 dB apart */
   const KIT_UNDER=6, KIT_CLEAN=1.25;
+  /* a plucked, struck or chopped sound (its loudest moment is the attack): the ceiling may round that tip by up to 2 dB */
+  const TIP_CLEAN=1.05;
   const TARGET=ref-2;   /* two dB under the grand: room for a beat's hits and a bass under the same ceiling */
   const line=(grp, k, db)=>{ const kit=grp==="kit", off=db-TARGET+(kit?KIT_UNDER:0), cur=(out.trim && out.trim[grp] && out.trim[grp][k]) || 0, p=out.pk[grp][k]||0;
-    const room=p>0 ? 20*Math.log10((kit?KIT_CLEAN:CLEAN)/p) : 99, want=-off, step=Math.min(want, room);
+    const lim=kit ? KIT_CLEAN : TIP_CLEAN;
+    const room=p>0 ? 20*Math.log10(lim/p) : 99, want=-off, step=Math.min(want, room);
     table[grp][k]=Math.round((cur+step)*10)/10;
     const held=want>room+0.3 && room<0.6, flag=Math.abs(off)>1 && !held ? "  OFF" : held ? "  held (peak "+p.toFixed(2)+")" : "";
-    const clips=p>(kit?KIT_CLEAN:CLEAN)+0.03;
+    const clips=p>lim+0.03;
     if(flag==="  OFF") bad++; if(clips) bad++;
     console.log(`${grp.padEnd(5)} ${k.padEnd(24)} ${db.toFixed(2)} dB; to the target${kit?" (6 dB under, a kit)":""} ${off>=0?"+":""}${off.toFixed(2)} dB; peak ${p.toFixed(2)}${flag}${clips?"  CLIPS":""}`); };
   console.log(`grand C chord (piano page): ${ref.toFixed(2)} dB; the target, 2 dB under it: ${(ref-2).toFixed(2)} dB`);
