@@ -141,31 +141,37 @@ def soft_attack(y, hz=7000.0, hold=0.004, ramp=0.006):
     return low + (y - low) * w
 
 
-def declick(y, at_from=0.02, hz=6000.0, over_db=8.0):
+def declick(y, at_from=0.02, hz=8000.0, cut_hz=4000.0, over_db=9.0, passes=3):
     """a music box's mechanism ticks now and then as the drum turns (a pin brushing a tooth, the stop): short bursts
-    high above the note. Only the part of the sound above 6 kHz is touched, and only in a burst: where a 1 ms window
-    there is more than over_db louder than the median of the 70 ms around it, that band is brought down to the
-    median, smoothly. The note itself is left as recorded"""
+    high above the note. A burst is found as pianosets.js listens for a click: a 1 ms window whose sound above 8 kHz
+    is more than over_db louder than every window in the 70 ms around it (3 ms either side left out). There, and only
+    there, the sound above 4 kHz (a tick reaches down that far; a tooth's note is below 2.7 kHz) is brought down until
+    the burst is no louder than its surroundings, smoothly. The note itself is left as recorded"""
     from scipy.signal import sosfiltfilt
-    sos = butter(4, hz / (SR / 2), "low", output="sos")
-    low = sosfiltfilt(sos, y)
+    det = y - sosfiltfilt(butter(4, hz / (SR / 2), "low", output="sos"), y)
+    low = sosfiltfilt(butter(4, cut_hz / (SR / 2), "low", output="sos"), y)
     high = y - low
     w = int(0.001 * SR)
     nw = len(y) // w
-    e = np.sqrt(np.mean(high[:nw * w].reshape(nw, w) ** 2, axis=1)) + 1e-12
-    g = np.ones(nw)
-    for i in range(int(at_from * SR) // w, nw):
-        nb = np.concatenate([e[max(0, i - 35):max(0, i - 3)], e[i + 4:i + 36]])
-        if len(nb) < 10:
-            continue
-        med = np.median(nb)
-        if e[i] > med * 10 ** (over_db / 20):
-            g[i] = med / e[i]
-    gp = np.pad(g, 2, mode="edge")                    # the cut widened by 2 ms each side first, then smoothed, so
-    g = np.min([gp[i:i + nw] for i in range(5)], axis=0)  # the smoothing never lifts the tick back up
-    g = np.convolve(np.pad(g, 2, mode="edge"), np.hanning(5) / np.hanning(5).sum(), mode="valid")
-    gs = np.interp(np.arange(len(y)), np.arange(nw) * w + w / 2, g)
-    return low + high * gs
+    for _ in range(passes):
+        e = np.sqrt(np.mean(det[:nw * w].reshape(nw, w) ** 2, axis=1)) + 1e-12
+        g = np.ones(nw)
+        for i in range(int(at_from * SR) // w, nw):
+            nb = np.concatenate([e[max(0, i - 35):max(0, i - 3)], e[i + 4:i + 36]])
+            if len(nb) < 10:
+                continue
+            ref = np.max(nb)
+            if e[i] > ref * 10 ** (over_db / 20):
+                g[i] = ref / e[i]
+        if np.all(g == 1):
+            break
+        gp = np.pad(g, 2, mode="edge")                    # the cut widened by 2 ms each side first, then smoothed, so
+        g = np.min([gp[i:i + nw] for i in range(5)], axis=0)  # the smoothing never lifts the tick back up
+        g = np.convolve(np.pad(g, 2, mode="edge"), np.hanning(5) / np.hanning(5).sum(), mode="valid")
+        gs = np.interp(np.arange(len(y)), np.arange(nw) * w + w / 2, g)
+        high = high * gs
+        det = det * gs
+    return low + high
 
 
 def fetch_freesound(root):
