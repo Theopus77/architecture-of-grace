@@ -1095,10 +1095,12 @@ class Sp12 extends AudioWorkletProcessor {
     this.active = [];
     this.pending = [];
     this.dc = 0;
+    this.dcR = 0;
     this.port.onmessage = (e) => {
       const m = e.data;
       if(m.type === 'kit'){
-        this.kit[m.id] = { v:new Float32Array(m.samples), h:(m.hi ? new Float32Array(m.hi) : null), hr:m.hiRate||44100 };
+        this.kit[m.id] = { v:new Float32Array(m.samples), h:(m.hi ? new Float32Array(m.hi) : null), hr:m.hiRate||44100,
+          v2:(m.samples2 ? new Float32Array(m.samples2) : null), h2:(m.hi2 ? new Float32Array(m.hi2) : null) };   /* AOG-DRUM-STEREO-V1: a stereo recording's right side */
         if(m.rate) this.rate = m.rate;
       } else if(m.type === 'clear'){
         delete this.kit[m.id];
@@ -1119,6 +1121,32 @@ class Sp12 extends AudioWorkletProcessor {
     a.z4 += f * (a.z3 - a.z4);
     return a.z4;
   }
+  /* AOG-DRUM-STEREO-V1: the same filter chip for the right side of a stereo recording, with its own memory */
+  ladderR(a, x){
+    const fc = Math.min(a.cutoff, sampleRate * 0.45);
+    const f = Math.min(0.92, 1 - Math.exp(-2 * Math.PI * fc / sampleRate));
+    const k = Math.min(3.1, a.reso * 3.2);
+    x = Math.tanh(x * (1.05 + a.reso) - k * a.r4);
+    a.r1 += f * (x - a.r1);
+    a.r2 += f * (a.r1 - a.r2);
+    a.r3 += f * (a.r2 - a.r3);
+    a.r4 += f * (a.r3 - a.r4);
+    return a.r4;
+  }
+  /* one side of a voice at its position: the twelve-bit memory (1987) and the clean copy (2026), blended by the era dial */
+  side(a, data, hi, i0, e){
+    let old = 0, now = 0;
+    if(e > 0) old = Math.round(data[i0] * 2048) / 2048;
+    if(e < 1){
+      if(hi){
+        const hp = a.pos * a.hk, j = hp | 0;
+        if(j < hi.length - 1){ const fr = hp - j; now = hi[j] + (hi[j+1] - hi[j]) * fr; }
+      } else {
+        const fr = a.pos - i0; now = data[i0] + (data[i0+1] - data[i0]) * fr;
+      }
+    }
+    return e * old + (1 - e) * now;
+  }
   start(m){
     const k = this.kit[m.id];
     if(!k) return;
@@ -1129,6 +1157,7 @@ class Sp12 extends AudioWorkletProcessor {
     const ratio = Math.pow(2, (m.tune||0)/12);
     this.active.push({
       id:m.id, data:data, hi:k.h, hk:k.hr/this.rate, pos:0,
+      data2:k.v2, hi2:k.h2, r1:0, r2:0, r3:0, r4:0,
       era: Math.max(0, Math.min(1, m.era==null ? (m.bit ? 1 : 0) : m.era)),
       step: ratio * (this.rate / sampleRate),
       bit: !!m.bit,
@@ -1151,7 +1180,7 @@ class Sp12 extends AudioWorkletProcessor {
     for(let i=0;i<n;i++){
       const horizon = t + dt * 0.5;
       while(this.pending.length && this.pending[0].when <= horizon) this.start(this.pending.shift());
-      let mix = 0;
+      let mix = 0, mixR = 0;
       for(let v=this.active.length-1; v>=0; v--){
         const a = this.active[v];
         const i0 = a.pos | 0;
@@ -1159,23 +1188,19 @@ class Sp12 extends AudioWorkletProcessor {
         /* AOG-DRUM-ERA-V1 — 1987 is the twelve-bit memory read with no smoothing; 2026 is the
            same sound rendered clean and read smoothly. The dial blends the two. */
         const e = a.era;
-        let old = 0, now = 0;
-        if(e > 0) old = Math.round(a.data[i0] * 2048) / 2048;
-        if(e < 1){
-          if(a.hi){
-            const hp = a.pos * a.hk, j = hp | 0;
-            if(j < a.hi.length - 1){ const fr = hp - j; now = a.hi[j] + (a.hi[j+1] - a.hi[j]) * fr; }
-          } else {
-            const fr = a.pos - i0; now = a.data[i0] + (a.data[i0+1] - a.data[i0]) * fr;
-          }
-        }
-        let s = e * old + (1 - e) * now;
+        let s = this.side(a, a.data, a.hi, i0, e);
+        /* AOG-DRUM-STEREO-V1: a stereo recording plays its right side on the right; a mono one plays on both */
+        const two = !!(a.data2 && i0 < a.data2.length - 1);
+        let r = two ? this.side(a, a.data2, a.hi2, i0, e) : 0;
         a.age += 1;
         const tau = Math.max(32, (a.data.length / a.step) * a.decay * 0.42);
-        s *= Math.exp(-a.age / tau) * a.level;
+        const g = Math.exp(-a.age / tau) * a.level;
+        s *= g;
         if(!a.raw) s = this.ladder(a, s);   /* outs 1-2 never met a filter chip */
-        if(a.out){ s *= a.out; a.out *= 0.965; }
+        if(two){ r *= g; if(!a.raw) r = this.ladderR(a, r); }
+        if(a.out){ s *= a.out; r *= a.out; a.out *= 0.965; }
         mix += s;
+        mixR += two ? r : s;
         a.pos += a.step;
         if(a.out && a.out < 0.004) this.active.splice(v,1);
       }
@@ -1183,7 +1208,11 @@ class Sp12 extends AudioWorkletProcessor {
       this.dc += 0.002 * (mix - this.dc);
       const y = mix - this.dc;
       L[i] = y;
-      if(R !== L) R[i] = y;
+      if(R !== L){
+        mixR = Math.tanh(mixR * 1.25);
+        this.dcR += 0.002 * (mixR - this.dcR);
+        R[i] = mixR - this.dcR;
+      }
       t += dt;
     }
     return true;

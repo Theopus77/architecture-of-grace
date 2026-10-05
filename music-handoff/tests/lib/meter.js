@@ -1,6 +1,9 @@
 /* Offline meter for the drum machine: renders hits through the page's own engine (the sp12 worklet and the
    same chain as Send to the turntables: output filter, glue compressor, desk EQ, makeup, limiter) and measures
-   peak and K-weighted loudness (BS.1770 filters, no gating). Injected into music-drums.html by the test scripts. */
+   peak and K-weighted loudness (BS.1770 filters, no gating). Injected into music-drums.html by the test scripts.
+   AOG-DRUM-STEREO-V1: the machine now plays stereo recordings in stereo, so both channels are measured: loudness is the
+   average of the two channels' K-weighted power (with two equal channels, the same number as one channel alone, as
+   before) and the peak is the louder channel's. */
 (function(){
   function kCoefs(fs){
     let f0=1681.974450955533, G=3.999843853973347, Q=0.7071752369554196;
@@ -21,9 +24,10 @@
   function lufs(ms){ return -0.691+10*Math.log10(Math.max(1e-12, ms)); }
   function metrics(x, fs, from){
     from=from||0;
-    let pk=0; for(let i=from;i<x.length;i++){ const a=Math.abs(x[i]); if(a>pk) pk=a; }
-    const k=kweight(x, fs);
-    const cs=new Float64Array(k.length+1); for(let i=0;i<k.length;i++) cs[i+1]=cs[i]+k[i]*k[i];
+    const chans=Array.isArray(x) ? x : [x];
+    let pk=0; chans.forEach(c=>{ for(let i=from;i<c.length;i++){ const a=Math.abs(c[i]); if(a>pk) pk=a; } });
+    const ks=chans.map(c=>kweight(c, fs)), k={length:ks[0].length};
+    const cs=new Float64Array(k.length+1); for(let i=0;i<k.length;i++){ let p=0; for(const kc of ks) p+=kc[i]*kc[i]; cs[i+1]=cs[i]+p/ks.length; }
     const W=Math.round(0.4*fs), hop=Math.round(0.01*fs);
     let mmax=0; for(let s=from; s+W<=k.length; s+=hop){ const m=(cs[s+W]-cs[s])/W; if(m>mmax) mmax=m; }
     const integ=(cs[k.length]-cs[from])/Math.max(1,k.length-from);
@@ -51,7 +55,7 @@
       hits.forEach(h=>node.port.postMessage(chanMsg(h.id, h.t, h.v)));
       await new Promise(r=>setTimeout(r,80));
       const buf=await off.startRendering();
-      return buf.getChannelData(0);
+      return [buf.getChannelData(0), buf.getChannelData(buf.numberOfChannels>1?1:0)];
     } finally { S.bank=oldBank; S.era=oldEra; S.bit=oldBit; }
   }
   async function hit(bank, id, vel, era){
