@@ -115,13 +115,14 @@ def fs_files(key):
 def fs_prepped(key):
     """{midi: path} of a Freesound pack's notes, ready to build from: each file starts right on the strike (it was cut
     there before upload), so an MP3 made from it smears a little of the strike in front. Each gets 5 ms of silence
-    before it and its first millisecond eased in, kept as a WAV beside the download"""
+    before it and its first 3 milliseconds eased in (too short to hear on a struck rod or tooth), kept as a WAV
+    beside the download"""
     out = {}
     for m, path in fs_files(key).items():
-        wav = path[:-4] + ".lead.wav"
+        wav = path[:-4] + ".lead3.wav"
         if not os.path.exists(wav):
             x = load(path)
-            k = int(0.001 * SR)
+            k = int(0.003 * SR)
             x[:k] *= (np.sin(np.linspace(0, np.pi / 2, k)) ** 2)[:, None]
             x = np.concatenate([np.zeros((int(0.005 * SR), x.shape[1])), x])
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", str(x.shape[1]),
