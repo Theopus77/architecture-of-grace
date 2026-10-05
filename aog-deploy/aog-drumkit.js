@@ -9,7 +9,7 @@
    R big-band swing (a small kick tuned up, a crisp snare, the hi-hat foot, a dark ride and a sizzle), S prog rock
    (three toms tuned a fourth apart on pads 5 to 7), T groove metal (a clicky kick for double-kick runs, a big snare).
 
-   · A kit downloads only when it is picked (0.4 to 0.7 MB), with one calm line while it gets ready.
+   · A kit downloads only when it is picked (0.3 to 1.3 MB since AOG-DRUM-STEREO-V1), with one calm line while it gets ready.
    · Every pad has three ways to be hit (soft, normal, accent), each its own recording, and a second take of the
      sounds a beat uses most, so a pad played twice in a row does not sound copied. On kits P, Q and T an accent on
      the ride plays its bell; on Q, R, S and T an accent on the snare is a rimshot.
@@ -35,7 +35,17 @@
    The libraries, all CC0 (public domain): Big Rusty Drums, Swirly Drums and Gogodze Phu Vol II (Karoryfer Samples),
    Virtuosity Drums (Versilian Studios and Karoryfer), the Versilian Community Sample Library and VS Chamber
    Orchestra 2 Community Edition (Versilian Studios), jRhodes GM (Jeff Learman) and the "a" of Hadzi-Fia (Karoryfer).
-   Credits: audio/drums/CREDITS.txt. ══════════════════════════════════════════════════════════════════════════════ */
+   Credits: audio/drums/CREDITS.txt. ══════════════════════════════════════════════════════════════════════════════
+
+   ══ AOG-DRUM-STEREO-V1 (2026-10-04) — THE CYMBALS, HATS AND HAND DRUMS IN TRUE STEREO ══════════════════════════════════
+   Jimmy: "REAL EVERYTHING if possible". Many of these recordings were made with two microphones standing apart (the
+   overheads, the room, the hand percussion). Their two sides hear a cymbal a little differently, so adding them into
+   one channel cancelled some pitches and not others: a hollow, phasey sound. Every pad whose two sides differ is now
+   built again in stereo from the same takes, as loud as before (music-handoff/tools/drumkits, AOG-DRUM-STEREO-V1);
+   pads recorded with one microphone stay mono. A kit with stereo pads moved to a new folder (dir ending in 2), since
+   the old files stay cached for a year. Here: a stereo file keeps both sides (hi2 and lo2 beside hi and lo), they are
+   cut and turned round together, and the engine plays the left side on the left and the right on the right; a mono
+   file plays as before. ════════════════════════════════════════════════════════════════════════════════════════ */
 (function (root) {
   "use strict";
   var BASE = "/audio/drums/", VER = "3";   /* 3: Kit T's kick made again with its body, so it is a drum, not a stick (Jimmy, 2026-10-04) (2 was its two hard kicks brought under full scale) */
@@ -47,65 +57,65 @@
   /* the recorded kits. P to T and U to Y follow the drummers Jimmy named; on screen they go by style, never by player */
   var KITS = {
     /* AOG-DRUM-REAL-V2: the kits that used to be made on the page, now recorded (same letter, name and character) */
-    D: { dir: "dusty", en: "Kit D · dusty breaks", es: "Kit D · breaks polvorientos",
+    D: { dir: "dusty2", en: "Kit D · dusty breaks", es: "Kit D · breaks polvorientos",
       pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TIMBAL", [1, 2, 1]), rim: P("BLOCK", [1, 2, 1]), bell: P("TRIANG", [1, 1, 1]) } },
-    E: { dir: "boombap", en: "Kit E · boom bap", es: "Kit E · boom bap",
+    E: { dir: "boombap2", en: "Kit E · boom bap", es: "Kit E · boom bap",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAP", [1, 2, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("STICK", [1, 1, 1]), bell: P("SCRTCH", [1, 2, 1]) } },
     G: { dir: "lofi", en: "Kit G · lo-fi", es: "Kit G · lo-fi",
       pads: { kick: P("SOFT", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("TICK", [1, 2, 1]), oh: P("SIZZLE", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIM", [1, 1, 1]), bell: P("KEYS", [1, 1, 1]) } },
-    H: { dir: "latin", en: "Kit H · Latin percussion", es: "Kit H · percusión latina",
+    H: { dir: "latin2", en: "Kit H · Latin percussion", es: "Kit H · percusión latina",
       pads: { kick: P("BOMBO", [1, 2, 1]), snare: P("TIMBAL", [1, 2, 1]), ch: P("GUIRO", [1, 1, 1]), oh: P("SHAKER", [1, 1, 1]),
               clap: P("CLAVE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("BONGO", [1, 2, 1]), bell: P("AGOGO", [1, 1, 1]) } },
-    I: { dir: "live", en: "Kit I · live drums", es: "Kit I · batería en vivo",
+    I: { dir: "live2", en: "Kit I · live drums", es: "Kit I · batería en vivo",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    J: { dir: "arena", en: "Kit J · rock arena", es: "Kit J · rock de estadio",
+    J: { dir: "arena2", en: "Kit J · rock arena", es: "Kit J · rock de estadio",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAPS", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("STOMP", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    K: { dir: "jazzbrush", en: "Kit K · jazz brushes", es: "Kit K · jazz con escobillas",
+    K: { dir: "jazzbrush2", en: "Kit K · jazz brushes", es: "Kit K · jazz con escobillas",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("SWISH", [1, 2, 1]),
               clap: P("SLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("BASS", [1, 2, 1]) } },
-    M: { dir: "reggae", en: "Kit M · reggae and dub", es: "Kit M · reggae y dub",
+    M: { dir: "reggae2", en: "Kit M · reggae and dub", es: "Kit M · reggae y dub",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("SYNTOM", null, { made: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("XSTICK", [1, 2, 1]), bell: P("SKANK", [1, 2, 1]) } },
-    N: { dir: "afrobeat", en: "Kit N · afrobeat", es: "Kit N · afrobeat",
+    N: { dir: "afrobeat2", en: "Kit N · afrobeat", es: "Kit N · afrobeat",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("SHAKER", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("DJEMBE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("STICKS", [1, 1, 1]), bell: P("BELL", [1, 1, 1]) } },
-    O: { dir: "marching", en: "Kit O · marching band", es: "Kit O · banda de marcha",
+    O: { dir: "marching2", en: "Kit O · marching band", es: "Kit O · banda de marcha",
       pads: { kick: P("BASS", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("CLICK", [1, 1, 1]), oh: P("CYMBAL", [1, 1, 1]),
               clap: P("ROLL", [1, 2, 1]), tom: P("TENOR", [1, 2, 1]), rim: P("RIM", [1, 1, 1]), bell: P("BELLS", [1, 1, 1]) } },
-    P: { dir: "studio", en: "Kit P · studio session, dry", es: "Kit P · sesión de estudio, seca",
+    P: { dir: "studio2", en: "Kit P · studio session, dry", es: "Kit P · sesión de estudio, seca",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    Q: { dir: "bigroom", en: "Kit Q · big room rock", es: "Kit Q · rock en sala grande",
+    Q: { dir: "bigroom2", en: "Kit Q · big room rock", es: "Kit Q · rock en sala grande",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("HITOM", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    R: { dir: "bigband", en: "Kit R · big-band swing", es: "Kit R · swing de big band",
+    R: { dir: "bigband2", en: "Kit R · big-band swing", es: "Kit R · swing de big band",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("PEDAL", [1, 2, 1], { hat: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("SIZZLE", [1, 1, 1]) } },
-    S: { dir: "prog", en: "Kit S · prog rock, many toms", es: "Kit S · rock progresivo, muchos toms",
+    S: { dir: "prog2", en: "Kit S · prog rock, many toms", es: "Kit S · rock progresivo, muchos toms",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("HITOM", [1, 1, 1]), tom: P("MIDTOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } },
     T: { dir: "groovemetal", en: "Kit T · groove metal", es: "Kit T · groove metal",
       pads: { kick: P("KICK", [1, 4, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CHINA", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
     /* AOG-DRUM-REAL-V2: five more kits after Jimmy's drummers (U Buddy Rich, W Jeff Porcaro, X John Bonham) */
-    U: { dir: "jazzclub", en: "Kit U · jazz club", es: "Kit U · club de jazz",
+    U: { dir: "jazzclub2", en: "Kit U · jazz club", es: "Kit U · club de jazz",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("PEDAL", [1, 2, 1], { hat: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
     V: { dir: "brushes", en: "Kit V · brush ballad", es: "Kit V · balada con escobillas",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("STIR", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("FLUTTR", [1, 1, 1]) } },
-    W: { dir: "funk", en: "Kit W · studio funk", es: "Kit W · funk de estudio",
+    W: { dir: "funk2", en: "Kit W · studio funk", es: "Kit W · funk de estudio",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    X: { dir: "vintage70", en: "Kit X · 1970s vintage", es: "Kit X · vintage de los años 70",
+    X: { dir: "vintage70-2", en: "Kit X · 1970s vintage", es: "Kit X · vintage de los años 70",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("TOM", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("PEDAL", [1, 2, 1], { hat: 1 }), bell: P("CRASH", [1, 1, 1]) } },
-    Y: { dir: "break", en: "Kit Y · hip-hop break", es: "Kit Y · break de hip-hop",
+    Y: { dir: "break2", en: "Kit Y · hip-hop break", es: "Kit Y · break de hip-hop",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
@@ -209,11 +219,12 @@
   function decodeWith(dec, ab) {
     return new Promise(function (ok, no) { var r = dec.decodeAudioData(ab, ok, no); if (r && r.then) r.then(ok, no); });
   }
-  function onsetAt(d, sr) {           /* the hit, 2 ms early: whatever silence the decoder added in front is dropped */
-    var pk = 0, i;
-    for (i = 0; i < d.length; i++) { var a = d[i] < 0 ? -d[i] : d[i]; if (a > pk) pk = a; }
+  function onsetAt(d, sr, d2) {       /* the hit, 2 ms early: whatever silence the decoder added in front is dropped */
+    var pk = 0, i, a;                 /* AOG-DRUM-STEREO-V1: a stereo hit starts where either side starts */
+    for (i = 0; i < d.length; i++) { a = d[i] < 0 ? -d[i] : d[i]; if (a > pk) pk = a; }
+    if (d2) for (i = 0; i < d2.length; i++) { a = d2[i] < 0 ? -d2[i] : d2[i]; if (a > pk) pk = a; }
     var thr = pk * 0.01; i = 0;
-    while (i < d.length && Math.abs(d[i]) < thr) i++;
+    while (i < d.length && Math.abs(d[i]) < thr && !(d2 && Math.abs(d2[i]) >= thr)) i++;
     return Math.max(0, i - Math.round(0.002 * sr)) / sr;
   }
   function slice(d, sr, t, len) {
@@ -248,7 +259,12 @@
       return fetch(BASE + kit.dir + "/" + jb.name + ".mp3?v=" + VER)
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
         .then(function (ab) { return Promise.all([decodeWith(decHi, ab.slice(0)), decodeWith(decLo, ab)]); })
-        .then(function (two) { got[jb.id + "/" + jb.lay + "/" + jb.j] = { h: two[0].getChannelData(0), l: two[1].getChannelData(0) }; })
+        .then(function (two) {
+          var o = { h: two[0].getChannelData(0), l: two[1].getChannelData(0) };
+          /* AOG-DRUM-STEREO-V1: a stereo recording keeps its right side too */
+          if (two[0].numberOfChannels > 1 && two[1].numberOfChannels > 1) { o.h2 = two[0].getChannelData(1); o.l2 = two[1].getChannelData(1); }
+          got[jb.id + "/" + jb.lay + "/" + jb.j] = o;
+        })
         .catch(function () { bad++; })
         .then(function () { n++; if (STATE[b]) STATE[b].got = n; return worker(); });
     }
@@ -266,12 +282,14 @@
       Object.keys(kit.pads).forEach(function (id) {
         if (kit.pads[id].made) return;
         var f = files(b, id), first = got[id + "/m/0"];
-        var len = first.h.length / HI - onsetAt(first.h, HI);          /* every take of a pad is as long as its first normal one */
+        var len = first.h.length / HI - onsetAt(first.h, HI, first.h2);          /* every take of a pad is as long as its first normal one */
         data[id] = {};
         LAYERS.forEach(function (lay) {
           data[id][lay] = f[lay].map(function (name, j) {
-            var g = got[id + "/" + lay + "/" + j], t = onsetAt(g.h, HI);
-            return { hi: slice(g.h, HI, t, len), lo: q12(slice(g.l, LO, t, len)) };
+            var g = got[id + "/" + lay + "/" + j], t = onsetAt(g.h, HI, g.h2);
+            var tk = { hi: slice(g.h, HI, t, len), lo: q12(slice(g.l, LO, t, len)) };
+            if (g.h2) { tk.hi2 = slice(g.h2, HI, t, len); tk.lo2 = q12(slice(g.l2, LO, t, len)); }   /* AOG-DRUM-STEREO-V1 */
+            return tk;
           });
         });
         r[id] = data[id].m[0].lo; h[id] = data[id].m[0].hi;
@@ -298,7 +316,12 @@
     LAYERS.forEach(function (lay) {
       DATA[b][id][lay].forEach(function (tk, j) {
         var lo = cut(tk.lo), hi = cut(tk.hi), v = vid(b, id, lay, j);
-        port.postMessage({ type: "kit", id: v, rate: LO, samples: lo.buffer, hi: hi.buffer, hiRate: HI }, [lo.buffer, hi.buffer]);
+        var m = { type: "kit", id: v, rate: LO, samples: lo.buffer, hi: hi.buffer, hiRate: HI }, move = [lo.buffer, hi.buffer];
+        if (tk.hi2 && tk.lo2) {           /* AOG-DRUM-STEREO-V1: the right side, cut (and turned round) the same way */
+          var lo2 = cut(tk.lo2), hi2 = cut(tk.hi2);
+          m.samples2 = lo2.buffer; m.hi2 = hi2.buffer; move.push(lo2.buffer, hi2.buffer);
+        }
+        port.postMessage(m, move);
         sent[v] = 1;
       });
     });
@@ -324,7 +347,8 @@
     var d = DATA[b] && DATA[b][id]; if (!d || d.made || !ac || !dest) return;
     var k = pick(b, id, accent), tk = d[k.lay] && d[k.lay][k.j]; if (!tk) return;
     try {
-      var buf = ac.createBuffer(1, tk.hi.length, HI); buf.getChannelData(0).set(tk.hi);
+      var buf = ac.createBuffer(tk.hi2 ? 2 : 1, tk.hi.length, HI); buf.getChannelData(0).set(tk.hi);
+      if (tk.hi2) buf.getChannelData(1).set(tk.hi2);                 /* AOG-DRUM-STEREO-V1 */
       var s = ac.createBufferSource(), g = ac.createGain();
       s.buffer = buf; g.gain.value = Math.max(0, Math.min(1, level == null ? 0.46 : level));
       s.connect(g); g.connect(dest); s.start(Math.max(t0 || 0, ac.currentTime));
