@@ -404,15 +404,30 @@ let dctx=null;
 function decoder(){ if(!dctx){ const O=window.OfflineAudioContext||window.webkitOfflineAudioContext; dctx=new O(2, 1, 44100); } return dctx; }
 function decode(ab){ const d=decoder(); return new Promise((ok, no)=>{ const p=d.decodeAudioData(ab, ok, no); if(p && p.catch) p.catch(no); }); }
 /* a note's recording: the quiet in front is cut (2 ms kept), and its peak set to one level, so every instrument plays as loud */
+/* AOG-BAND-BREATH-V1: the band's wind players open with a breath before the tone; skip it, as the Band page does */
+function breathEnd(d, sr, i0, pk){
+  const W=Math.round(0.01*sr), zc=(a)=>{ let z=0; for(let k=a+1;k<a+W && k<d.length;k++) if((d[k]>0)!==(d[k-1]>0)) z++; return z; },
+    rms=(a)=>{ let e=0; for(let k=a;k<a+W && k<d.length;k++) e+=d[k]*d[k]; return Math.sqrt(e/W); };
+  const ss=[]; for(let a=i0+Math.round(0.4*sr); a<i0+Math.round(0.9*sr) && a+W<d.length; a+=W) ss.push(zc(a));
+  if(ss.length<5) return i0;
+  ss.sort((x,y)=>x-y); const steady=ss[ss.length>>1], lim=Math.max(2*steady, steady+5);
+  const tonal=a=>rms(a)>=0.15*pk || zc(a)<=lim;
+  const cap=i0+Math.round(0.3*sr);
+  for(let a=i0; a<cap && a+3*W<d.length; a+=W){ if(tonal(a) && tonal(a+W) && tonal(a+2*W)) return a; }
+  return i0;
+}
 function tidy(b){
   const ch=[]; for(let i=0;i<b.numberOfChannels;i++) ch.push(b.getChannelData(i));
-  let st=0, pk=0; const n=b.length;
+  let st=0, pk=0, fade=0; const n=b.length;
   outer: for(let i=0;i<n;i++){ for(const d of ch){ if(Math.abs(d[i])>0.004){ st=i; break outer; } } }
+  { const d0=ch[0]; let p0=0; for(let i=0;i<n;i++){ const a=Math.abs(d0[i]); if(a>p0) p0=a; }
+    let i0=st; while(i0<n && Math.abs(d0[i0])<p0*0.03) i0++;
+    const j=breathEnd(d0, b.sampleRate, i0, p0); if(j>i0){ st=j-Math.round(0.003*b.sampleRate); fade=Math.round(0.008*b.sampleRate); } }
   st=Math.max(0, st-Math.round(0.002*b.sampleRate));
   for(const d of ch) for(let i=st;i<n;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
   const g=pk>0 ? 0.7/pk : 1, len=Math.max(1, n-st);
   const o=decoder().createBuffer(ch.length, len, b.sampleRate);
-  ch.forEach((d,i)=>{ const out=o.getChannelData(i); for(let j=0;j<len;j++) out[j]=d[st+j]*g; });
+  ch.forEach((d,i)=>{ const out=o.getChannelData(i); for(let j=0;j<len;j++) out[j]=d[st+j]*g*(j<fade ? j/fade : 1); });
   return o;
 }
 const BUF=new Map(), BUFV=new Map();

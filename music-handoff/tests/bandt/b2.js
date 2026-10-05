@@ -94,7 +94,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
         groups:[...document.querySelectorAll("#soundSel optgroup")].map(o=>o.label).join("|"), menu:[...document.querySelectorAll(".bench-bar select option")].map(o=>o.textContent).join("|"),
         rh:[...document.querySelectorAll("#rhythmSel option")].map(o=>o.textContent).join("|"), load:document.getElementById("loadLine").textContent, lang:document.documentElement.lang}));
       ok(es.lang==="es" && es.h==="La banda" && /Do/.test(es.pad) && /Trompeta/.test(es.sounds) && es.groups==="Metales|Maderas|Cuerdas|Percusión|Jazz|Bandas|Todos" && /Orquesta · todos tocan/.test(es.sounds), "Spanish: "+JSON.stringify(es));
-      ok(/Ritmos\|Batería\|Máquina de pads\|Piano\|Guitarra\|Bajo\|Banda\|Tocadiscos/.test(es.menu), "the tools menu in Spanish: "+es.menu);
+      ok(/Ritmos\|Batería\|Laboratorio de ritmos\|Piano\|Guitarra\|Bajo\|Banda\|Tocadiscos/.test(es.menu), "the tools menu in Spanish: "+es.menu);
       await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(200);
       /* 10. saving */
       await p.selectOption("#soundSel","oboe"); await p.selectOption("#keySel","2"); await p.selectOption("#rhythmSel","fanfare");
