@@ -33,7 +33,11 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
      whole band as one orchestra (band_script.js).
      AOG-BAND-SAX2-V1 (2026-10-04) — Jimmy's list of influences: a tenor and a soprano saxophone, recorded (Versilian
      Community Sample Library, CC0), beside the alto, with three jazz styles; the tenor joins the big band's saxophones,
-     and both join the orchestra (band_script.js). -->
+     and both join the orchestra (band_script.js).
+     AOG-BAND-SCALES-V1 (2026-10-05) — Jimmy: "scales, modes and chords" on every instrument. A Scale menu over the keys
+     (154 scales and modes, aog-scales.js; Off until one is picked) marks the scale's notes on the keys, the bars and the
+     harp's strings, the home note ringed and the blue note dark blue; an Any chord row under the keys plays any of 45
+     chord kinds (aog-chords.js) on any root (band_script.js). -->
 <style>
 :root{
   --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
@@ -239,10 +243,36 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 #playView .pv-bars .wk.down,#playView .pv-bars .bk.down,#playView .pv-bars .wk.now,#playView .pv-bars .bk.now{background:linear-gradient(#ffe39a,#efb94e);color:#1f1206}
 #playView .pv-bars .wk.out,#playView .pv-bars .bk.out{background:linear-gradient(#6b6760,#4a4741);color:#efe9dc}
 #playView .pv-bars .nm small{color:inherit}
+/* AOG-BAND-SCALES-V1: a scale's notes get a dot above their letter (never on it): plain = in the scale, a ring = the home
+   note, dark blue = the blue note. Hidden while the Scale menu is Off. */
+.scd{display:none;pointer-events:none}
+#kbd .sc>.scd{display:block;flex:none;width:14px;height:14px;border-radius:50%;margin:0 0 5px;border:1.5px solid #0c0d10;background:#9cc6d8;position:relative;z-index:1}
+#kbd .bk.sc>.scd{width:12px;height:12px;border-color:#f1e9d6}
+#kbd .sc.sc-home>.scd{box-shadow:inset 0 0 0 3px #d0661f}
+#kbd .sc.sc-blue>.scd{background:#2f63c9}
+#playView #kbd .sc>.scd{width:16px;height:16px}
+.sc-row{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:flex-end;margin:0 0 .7rem}
+.sc-row .field{flex:1 1 15rem}
+.sc-say{margin:.1rem 0 .7rem;display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:center}
+.sc-say b{color:#ffd9a8;font-weight:800}
+.sc-say span{display:inline-flex;align-items:center;gap:.4rem}
+.sc-dot{width:16px;height:16px;border-radius:50%;display:inline-block;flex:none;border:1.5px solid #0c0d10;background:#9cc6d8}
+.sc-dot.home{box-shadow:inset 0 0 0 3px #d0661f}
+.sc-dot.blue{background:#2f63c9}
+.any{margin:.9rem 0 0}
+.any>.plab{color:#e3dac9;margin:0 0 .6rem}
+.any .row{align-items:flex-end}
+.any .field.root{flex:0 1 8rem}
+.any .pbtn{flex:0 0 auto}
+@media (max-width:520px){ .any .pbtn{flex:1 1 100%} }
+.sc-row[hidden],.sc-say[hidden],.any[hidden],.bp-sel[hidden]{display:none}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
+<!-- AOG-BAND-SCALES-V1: the scale and chord libraries every instrument shares (read when the page is up) -->
+<script src="/aog-scales.js" defer></script>
+<script src="/aog-chords.js" defer></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -326,6 +356,10 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 
       <div class="blk">
         <h2 data-t="keysH"></h2>
+        <div class="sc-row" id="scaleRow"><!-- AOG-BAND-SCALES-V1 -->
+          <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
+        </div>
+        <p class="line sc-say" id="scaleSay" aria-live="polite"></p>
         <div class="krow">
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="rangeOut" aria-live="polite"></span>
@@ -335,6 +369,15 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         </div>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the keys -->
         <div class="kbd" id="kbd" role="group"></div>
+        <div class="any" id="anyBox"><!-- AOG-BAND-SCALES-V1: any chord, on any root -->
+          <span class="plab" data-t="anyH"></span>
+          <div class="row">
+            <label class="field root"><span class="plab" data-t="anyRoot"></span><select id="anyRoot"></select></label>
+            <label class="field"><span class="plab" data-t="anyKind"></span><select id="anyKind"></select></label>
+            <button type="button" class="pbtn" id="anyPlay"></button>
+          </div>
+          <p class="line" id="anyLine" aria-live="polite"></p>
+        </div>
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line" id="bpTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
@@ -383,6 +426,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="bp-drawer" id="bpDrawer" hidden>
     <div class="bp-row"><button type="button" class="bp-b" id="bpClose"></button><button type="button" class="bp-b" id="bpRecGo" aria-pressed="false"></button></div>
     <select class="bp-sel" id="bpSound"></select>
+    <select class="bp-sel" id="bpScale"></select>
   </div>
   <div class="cstrip" id="pvStrip" role="group"></div>
   <div class="bp-main" id="bpMain"></div>
