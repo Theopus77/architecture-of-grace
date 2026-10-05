@@ -156,6 +156,22 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
 .bk.now .kc{color:#1f1206}
 .kc{display:none}
+/* AOG-PIANO-SCALES-V1 (2026-10-05): a key in the chosen scale shows a soft dot above its letter (never on it).
+   Blue-grey dot = in the scale; orange ring = the home note; deep blue = the blue note. A dark edge reads on a white
+   key, a pale halo on a black key, and both on a lit or orange key. */
+.sd{display:none;flex:none;width:14px;height:14px;border-radius:50%;margin:0 0 6px;pointer-events:none;
+  border:1.5px solid #0c0d10;background:#9cc6d8;box-shadow:0 0 0 1.5px rgba(255,250,238,.9)}
+.sc-in>.sd{display:block}
+.sc-home>.sd{width:18px;height:18px;background:#fff3d1;box-shadow:inset 0 0 0 4px #d0661f,0 0 0 1.5px rgba(255,250,238,.9)}
+.sc-blue>.sd{background:#2f63c9}
+.bk>.sd{margin-bottom:5px}
+.sc-row{margin-top:.8rem}
+.sc-row .field.small{min-width:7.5rem}
+.sc-say:empty,#anyLine:empty{display:none}
+.sc-lg{display:inline-flex;align-items:center;gap:.4rem;margin-right:1rem;white-space:nowrap}
+.sc-lg .sd{display:inline-block;margin:0}
+#anyPlay{min-width:9rem}
+@media (max-width:520px){ #anyPlay{flex:1 1 100%} }
 @media (hover:hover) and (pointer:fine){
   .wk .kc,.bk .kc{display:block;font:700 .66rem/1 var(--sans);margin-bottom:5px;letter-spacing:0}
   .wk .kc{color:#6b6355} .bk .kc{color:#cfc6b5}
@@ -296,6 +312,8 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <body>
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
+<script src="/aog-scales.js" defer></script>
+<script src="/aog-chords.js" defer></script>
 <script>
 (function(){
   function add(src){
@@ -391,6 +409,18 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the keys -->
         <div class="kbd" id="kbd" role="group"></div>
         <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
+        <!-- AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: more scales, modes and chords on every instrument. A scale shows on
+             the keys; any chord of 45 kinds plays from any root. The six pads above stay as they are. -->
+        <div class="row sc-row">
+          <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
+        </div>
+        <p class="line sc-say" id="scaleSay" aria-live="polite"></p>
+        <div class="row sc-row" id="anyRow">
+          <label class="field small"><span class="plab" data-t="anyRootLab"></span><select id="anyRoot"></select></label>
+          <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
+          <button type="button" class="pbtn" id="anyPlay"></button>
+        </div>
+        <p class="line" id="anyLine" aria-live="polite"></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line" id="bpTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
         <p class="line keys-line" data-t="keysLine1"></p>
@@ -587,7 +617,17 @@ const STR={
   pk3:{en:"Color the three keys of a C major chord.",es:"Colorea las tres teclas de un acorde de Do mayor."},
   pk4:{en:"Circle a group of two black keys and a group of three.",es:"Encierra en un círculo un grupo de dos teclas negras y uno de tres."},
   pKbAria:{en:"Two octaves of piano keys, with a blank box under each white key",es:"Dos octavas de teclas de piano, con un cuadro en blanco debajo de cada tecla blanca"},
-  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  /* AOG-PIANO-SCALES-V1 */
+  scaleLab:{en:"Show a scale on the keys",es:"Mostrar una escala en las teclas"},
+  scaleOff:{en:"Off · no scale",es:"Apagada · sin escala"},
+  scaleSay:{en:"{root} {name} scale",es:"Escala {name} de {root}"},
+  lgHome:{en:"{root}, the home note",es:"{root}, la nota casa"},
+  lgBlue:{en:"the blue note",es:"la nota blue"},
+  anyRootLab:{en:"Any chord · root",es:"Cualquier acorde · raíz"},
+  anyKindLab:{en:"Kind of chord",es:"Tipo de acorde"},
+  anyPlay:{en:"▶ Play this chord",es:"▶ Tocar este acorde"},
+  anyNotes:{en:"{chord}: {notes}",es:"{chord}: {notes}"}
 };
 function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
 
@@ -1811,6 +1851,7 @@ function paintText(){
   $("era").setAttribute("aria-label", t("eraAria"));
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/piano/CREDITS.txt">${t("credits")}</a></p><p><a href="music-drums.html">${t("drums")}</a> · <a href="music-decks.html">${t("decks")}</a> · <a href="piano-lessons.html">${t("sheets")}</a></p>`;
   $("pgLab").textContent=t("guide"); $("pgSub").textContent=t("pgSub"); $("pgFoot").innerHTML=t("pgFoot");
+  paintScaleSel(); paintAnySel();   /* AOG-PIANO-SCALES-V1 */
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); buildKeys();
   paintView(); bpText();
@@ -1841,7 +1882,7 @@ function paintPads(){
   });
   paintWheel();   /* key, mood or words changed: the wheel is drawn again */
   paintNow();
-  paintStrips();   /* AOG-CHORDSTRIP-V1 */
+  paintStrips();   /* AOG-CHORDSTRIP-V1 */  paintScale();   /* AOG-PIANO-SCALES-V1: the key or the mood moved */
 }
 function paintProg(){
   const box=$("prog");
@@ -1985,10 +2026,10 @@ function buildKeys(){
   for(let m=lo; m<=hi; m++){
     const pc=m%12; if(WHITE.indexOf(pc)<0) continue;
     const cap=CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"";
-    html+=`<div class="wk" data-m="${m}" aria-label="${noteLabel(m)}">${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
+    html+=`<div class="wk" data-m="${m}" aria-label="${noteLabel(m)}"><i class="sd" aria-hidden="true"></i>${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
     if(BLACK_AFTER[pc]!=null && m+1<=hi){
       const bm=m+1, bcap=CAP[bm-lo]!=null?`<span class="kc">${CAP[bm-lo]}</span>`:"";
-      html+=`<div class="bk" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%">${bcap}</div>`;
+      html+=`<div class="bk" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%"><i class="sd" aria-hidden="true"></i>${bcap}</div>`;
     }
     wi++;
   }
@@ -1996,7 +2037,7 @@ function buildKeys(){
   $("rangeOut").textContent=t("rangeOut",{a:noteLabel(lo), b:noteLabel(hi)});
   $("downBtn").disabled=S.oct<=1; $("upBtn").disabled=S.oct>=7-oc;
   if($("bpRange")){ $("bpRange").textContent=$("rangeOut").textContent; $("bpDown").disabled=S.oct<=1; $("bpUp").disabled=S.oct>=7-oc; }
-  litKeys();
+  litKeys();  paintScale();   /* AOG-PIANO-SCALES-V1 */
 }
 /* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
    single notes." The six chord pads sat a long scroll above the keys. The same six chords now sit in one row right on
@@ -2131,6 +2172,84 @@ function litKeys(){
     el.classList.toggle("down", d); el.classList.toggle("now", n); el.classList.toggle("lit", !d&&!n&&fit.has(((m%12)+12)%12)); });
   paintWheelState();   /* AOG-PIANO-WHEEL-V2: a chord held on the keys lights its wedge */
 }
+/* ══ AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: "more scales, modes and chords" on every instrument ══════════════════
+   Scale: 154 scales and modes from aog-scales.js (the same list as Solo mode on the guitar). Off at first, so the piano
+   looks as before. The scale follows the key and the mood; one choice is kept for major and one for minor. A key in the
+   scale gets a soft dot above its letter; the home note a ring; on a blues scale the blue note a deep blue dot.
+   Any chord: 45 kinds from aog-chords.js, from any root, played like a pad (held while pressed) and lit on the keys. */
+const SCKEY="aog.piano.scales.v1";
+const SC={maj:"off", min:"off", root:null, kind:"maj"};
+try{ const r=JSON.parse(localStorage.getItem(SCKEY)||"null");
+  if(r){ if(typeof r.maj==="string") SC.maj=r.maj; if(typeof r.min==="string") SC.min=r.min;
+    if(r.root>=0 && r.root<12) SC.root=r.root|0; if(typeof r.kind==="string") SC.kind=r.kind; } }catch(e){}
+function scSave(){ try{ localStorage.setItem(SCKEY, JSON.stringify(SC)); }catch(e){} }
+function scLib(){ return window.AOGScales||null; }
+function chLib(){ return window.AOGChords||null; }
+function scWord(k){ const L=scLib(), x=L&&L.WORDS[k]; return x ? (x[S.lang]||x.en) : k; }
+function scaleId(){ const L=scLib(), id=S.minor?SC.min:SC.maj; return (L && L.SCALES[id]) ? id : "off"; }
+function scaleTitle(){ const id=scaleId(); if(id==="off") return "";
+  return t("scaleSay",{root:pcName(S.key), name:scWord("nm_"+id)}).replace(/^./, ch=>ch.toUpperCase()); }
+function paintScaleSel(){
+  const sel=$("scaleSel"), L=scLib(); if(!sel) return;
+  sel.innerHTML=`<option value="off">${escH(t("scaleOff"))}</option>`+(L ? L.GROUPS.map(([g,ids])=>`<optgroup label="${escH(scWord("sg_"+g))}">`
+    +ids.map(id=>`<option value="${id}">${escH(scWord("sc_"+id))}</option>`).join("")+`</optgroup>`).join("") : "");
+  sel.value=scaleId();
+}
+function paintScale(){
+  const kb=$("kbd"), L=scLib(), id=scaleId(), sc=id!=="off" ? L.SCALES[id] : null;
+  const sel=$("scaleSel"); if(sel && sel.options.length && sel.value!==id) sel.value=id;
+  const ar=$("anyRoot"); if(ar && ar.options.length && ar.value!==String(anyRoot())) ar.value=String(anyRoot());   /* not picked yet: it follows the key */
+  const pcs=new Set(sc ? sc.iv.map(i=>(S.key+i)%12) : []), blue=(sc && sc.blue!=null) ? (S.key+sc.blue)%12 : -1;
+  if(kb) kb.querySelectorAll("[data-m]").forEach(el=>{ const pc=(+el.getAttribute("data-m"))%12, on=pcs.has(pc);
+    el.classList.toggle("sc-in", on); el.classList.toggle("sc-home", on && pc===S.key); el.classList.toggle("sc-blue", on && pc===blue && pc!==S.key); });
+  const say=$("scaleSay"); if(!say) return;
+  const html=sc ? `<span class="sc-lg"><b id="scaleName">${escH(scaleTitle())}</b></span><span class="sc-lg sc-home"><i class="sd" aria-hidden="true"></i>${escH(t("lgHome",{root:pcName(S.key)}))}</span>`
+    +(blue>=0 ? `<span class="sc-lg sc-blue"><i class="sd" aria-hidden="true"></i>${escH(t("lgBlue"))}</span>` : "") : "";
+  if(say.innerHTML!==html) say.innerHTML=html;
+}
+/* any chord */
+function anyRoot(){ return SC.root==null ? S.key : SC.root; }
+function anyKind(){ const L=chLib(); return (L && L.KINDS[SC.kind]) ? SC.kind : "maj"; }
+function paintAnySel(){
+  const r=$("anyRoot"), k=$("anyKind"), L=chLib(); if(!r || !k) return;
+  r.innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
+  r.value=String(anyRoot());
+  k.innerHTML=L ? L.GROUPS.map(([g,ids])=>`<optgroup label="${escH(L.group(g,S.lang))}">`+ids.map(id=>`<option value="${id}">${escH(L.label(id,S.lang))}</option>`).join("")+`</optgroup>`).join("") : "";
+  if(L) k.value=anyKind();
+  $("anyPlay").textContent=t("anyPlay");
+  $("anyLine").textContent="";
+}
+/* the notes: the root where the keys show it (between C3 and B4), the rest above it, within about an octave and a half */
+function anyNotes(){
+  const L=chLib(), k=L && L.KINDS[anyKind()]; if(!k) return [];
+  let base=KB.lo+anyRoot(); while(base<48) base+=12; while(base>71) base-=12;
+  return [...new Set(k.iv.map(i=>i>19?i-12:i))].sort((a,b)=>a-b).map(i=>base+i);
+}
+const ANY={at:0, tm:0};
+function anyDown(v){
+  const notes=anyNotes(); if(!notes.length) return;
+  clearTimeout(ANY.tm); padUp("any");
+  padHeld.any=notes; ANY.at=performance.now();
+  notes.forEach(m=>noteOn("p", m, v||0.72));
+  const L=chLib(), root=anyRoot(), id=anyKind(), sym=L.sym(id);
+  $("anyLine").textContent=t("anyNotes",{chord:KEY_NAMES[S.lang][root]+(sym?(S.lang==="es"?" ":"")+sym:""), notes:L.pcs(root,id).map(pc=>KEY_NAMES[S.lang][pc]).join(" · ")});
+}
+function anyUp(){ if(!padHeld.any) return; const held=performance.now()-ANY.at; clearTimeout(ANY.tm);
+  if(held<700) ANY.tm=setTimeout(()=>padUp("any"), 700-held); else padUp("any"); }   /* a quick tap still rings long enough to hear */
+function bindScales(){
+  $("scaleSel").onchange=()=>{ const v=$("scaleSel").value, L=scLib(); if(v!=="off" && !(L && L.SCALES[v])) return;
+    if(S.minor) SC.min=v; else SC.maj=v; scSave(); paintScale(); };
+  $("anyRoot").onchange=()=>{ const v=+$("anyRoot").value; if(v>=0 && v<12){ SC.root=v; scSave(); } };
+  $("anyKind").onchange=()=>{ const v=$("anyKind").value, L=chLib(); if(L && L.KINDS[v]){ SC.kind=v; scSave(); } };
+  const b=$("anyPlay"); let downAt=0;
+  b.onpointerdown=(e)=>{ if(e.button>0) return; if(e.pointerType==="mouse") e.preventDefault(); downAt=performance.now();
+    try{ b.setPointerCapture(e.pointerId); }catch(err){} anyDown(0.74); };
+  b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>anyUp();
+  b.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } anyDown(0.74); anyUp(); };
+  b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier on a long press */
+}
+/* the two libraries load with defer, after this script: fill the menus once they are here */
+document.addEventListener("DOMContentLoaded",()=>{ paintScaleSel(); paintAnySel(); paintScale(); });
 /* fingers: each pointer plays the key under it, and sliding moves to the next key */
 const POINTERS=new Map();
 function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.closest && el.closest("#kbd [data-m]"); return k||null; }
@@ -2248,9 +2367,10 @@ function bind(){
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of
      reopening the menu; a keyboard user keeps focus on the menu as usual */
-  ["soundSel","keySel","progSel","rhythmSel"].forEach(id=>{ const el=$(id);
+  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
+  bindScales();   /* AOG-PIANO-SCALES-V1 */
   bindKeyboard();
   let rt=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const before=KB.whites; if(7*octaves()+1!==before) buildKeys(); },150); });
 }
