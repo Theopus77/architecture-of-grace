@@ -30,6 +30,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
     await p.goto("http://localhost:9944/music-guitar.html"); await p.waitForTimeout(1500); console.log("== guitar · Solo mode, iPad upright");
     await p.evaluate(()=>document.querySelector('#soloMode [data-so-mode="solo"]').click()); await p.waitForTimeout(400);
+    await p.evaluate(()=>document.getElementById("neckBox").scrollIntoView({block:"center"})); await p.waitForTimeout(200);
     const q=await p.evaluate(()=>{ const r=document.getElementById("neck").getBoundingClientRect(), k=r.width/NECK.W, [x,y]=neckXY(3,7); return {x:r.left+x*k, y:r.top+y*k}; });
     await p.touchscreen.tap(q.x, q.y); await p.waitForTimeout(150);
     const one=await lit(p), shown=await p.evaluate(()=>{ const g=document.querySelector('#neck .dot.now[data-c="3:7"]'); return !!g && getComputedStyle(g).display!=="none"; });
