@@ -87,7 +87,7 @@ function needed(iv){ const top=Math.max(...iv); return iv.filter(i=>!((i===7 && 
     for(const [root, id] of [[2,"m7b5"],[7,"thirteenb9"],[9,"sus4"],[0,"maj"],[10,"dom7s5s9"],[4,"five"]]){
       await p.evaluate(()=>{ window.__v=[]; });
       await p.selectOption("#anyRoot", String(root)); await p.selectOption("#anyKind", id); await p.waitForTimeout(120);
-      const r=await p.evaluate(()=>({hand:S.hand, key:S.key, fit:[...document.querySelectorAll("#neck .dot.fit")].map(g=>g.getAttribute("data-c")),
+      const r=await p.evaluate(()=>({hand:S.hand, key:S.key, fit:[...document.querySelectorAll("#neck .dot.fit, #neck .dot.now")].map(g=>g.getAttribute("data-c")),
         roots:[...document.querySelectorAll("#neck .dot.root")].map(g=>g.getAttribute("data-c")), shp:GTR?shapeFor(S.hand):null, played:window.__v.slice(),
         line:document.getElementById("anyLine").textContent, f0:S.fret0, n:NECK.n}));
       const pcs=lib.kinds[id].map(i=>(root+i)%12), tun=TUN[inst], cellPc=c=>{ const [s,f]=c.split(":").map(Number); return (tun[s]+f)%12; };
