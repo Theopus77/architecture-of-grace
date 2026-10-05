@@ -1,0 +1,18 @@
+T={
+"lev20_7":"Santificaos, pues, y sed santos, porque yo Jehová soy vuestro Dios.",
+"ps51_10":"Crea en mí, oh Dios, un corazón limpio; Y renueva un espíritu recto dentro de mí.",
+"ezk36_26":"Y os daré corazón nuevo, y pondré espíritu nuevo dentro de vosotros; y quitaré de vuestra carne el corazón de piedra, y os daré corazón de carne.",
+"jn17_17":"Santifícalos en tu verdad: tu palabra es verdad.",
+"1th4_7":"Porque no nos ha llamado Dios á inmundicia, sino á santificación.",
+"1th5_23":"Y el Dios de paz os santifique en todo; para que vuestro espíritu y alma y cuerpo sea guardado entero sin reprensión para la venida de nuestro Señor Jesucristo.",
+"heb10_10":"En la cual voluntad somos santificados por la ofrenda del cuerpo de Jesucristo hecha una sola vez.",
+"1pe1_16":"Porque escrito está: Sed santos, porque yo soy santo.",
+"isa43_11":"Yo, yo Jehová, y fuera de mí no hay quien salve.",
+"isa45_22":"Mirad á mí, y sed salvos, todos los términos de la tierra: porque yo soy Dios, y no hay más.",
+"isa53_5":"Mas él herido fué por nuestras rebeliones, molido por nuestros pecados: el castigo de nuestra paz sobre él; y por su llaga fuimos nosotros curados.",
+"jn14_6":"Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.",
+"jn10_9":"Yo soy la puerta: el que por mí entrare, será salvo; y entrará, y saldrá, y hallará pastos.",
+"acts4_12":"Y en ningún otro hay salud; porque no hay otro nombre debajo del cielo, dado á los hombres, en que podamos ser salvos.",
+"1tim2_5":"Porque hay un Dios, asimismo un mediador entre Dios y los hombres, Jesucristo hombre;",
+"jn3_16":"Porque de tal manera amó Dios al mundo, que ha dado á su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",
+}

@@ -3,7 +3,7 @@ R=json.load(open("w/refined.json")); SP=json.load(open("w/split.json"))
 SP["jn10_9"]["cut"]=None
 SR=44100
 REC=[
- ("12-be-ye-holy","Be Ye Holy","Sed santos",[
+ ("12-be-ye-holy","Be Ye Holy","Sed santos (en inglés)",[
   ("lev20_7","Leviticus 20:7","Levítico 20:7","Sanctify yourselves","I am the LORD"),
   ("ps51_10","Psalm 51:10","Salmo 51:10","Create in me","Renew a right spirit"),
   ("ezk36_26","Ezekiel 36:26","Ezequiel 36:26","A new heart","An heart of flesh"),
@@ -12,7 +12,7 @@ REC=[
   ("1th5_23","1 Thessalonians 5:23","1 Tesalonicenses 5:23","The very God of peace","Spirit and soul and body"),
   ("heb10_10","Hebrews 10:10","Hebreos 10:10","We are sanctified","Once for all"),
   ("1pe1_16","1 Peter 1:16","1 Pedro 1:16","Be ye holy","For I am holy")]),
- ("13-the-only-way","The Only Way","El único camino",[
+ ("13-the-only-way","The Only Way","El único camino (en inglés)",[
   ("isa43_11","Isaiah 43:11","Isaías 43:11","I, even I, am the LORD","There is no saviour"),
   ("isa45_22","Isaiah 45:22","Isaías 45:22","Look unto me","There is none else"),
   ("isa53_5","Isaiah 53:5","Isaías 53:5","He was wounded","With his stripes"),
