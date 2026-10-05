@@ -143,3 +143,7 @@ Built by this session and four helpers in parallel, each in its own worktree, th
 - **AOG-PLAY-TABLET-V1**: a tablet is a screen whose short side is 600 or more (`pvTablet()`/`bpTablet()`/`dkTablet()`: `Math.min(screen.width, screen.height)>=600`; every iPad, no iPhone). On a tablet, turning sideways no longer opens the whole-screen instrument. The page starts as it is; "⤢ Play on the whole screen" (`#pvBig` guitar and bass, `#bpBig` piano and The Band, `#kpBig` the Drum Kit; shown by `@media (pointer:coarse) and (min-width:600px) and (min-height:600px)`) opens it (`forced`), and Close comes back. The one-time hint on a tablet now says so. The drum machine on a tablet simply stays put (its whole-screen kit is the Drum Kit page). A phone turned sideways still opens the view by itself.
 - The play/* tests check that a sideways iPad starts in the page, then press the button.
 
+## 17. The notes you play light up (2026-10-05, Jimmy: "When I am playing a chord on the guitar, I am unsure what notes are playing. Can they be highlighted like the piano?")
+
+- **AOG-HAND-LIT-V1** (`_work/music/strings_page.html`): `STR_LIVE` (the note ringing on each string, played by hand) now keeps when it started; `handNow()` gives the cells ringing now (until damped, or until the sound has died away, at most 2.5 s); `litNeck()` adds them to the orange "now" dots the pattern already uses. `handLitSoon()` repaints while something rings, then stops (no endless timer). Works upright and sideways, guitar and bass. Test: `strings/handlit` (port 9944).
+

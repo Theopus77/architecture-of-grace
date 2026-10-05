@@ -1819,13 +1819,30 @@ function pluckCell(s, f, v, when, o){
   const c=ctx(), at=Math.max(c.currentTime, when||0), m=TUNING[s]+f;
   const old=STR_LIVE[s]; if(old && !old.vc.stopped) old.vc.stop(at, SOUNDS[S.sound].damp);
   const vc=makeVoice(c, LIVE_CH, S.sound, m, v, at, s, o); if(!vc) return;
-  STR_LIVE[s]={vc:vc, m:m, f:f}; track(vc); prune();
+  STR_LIVE[s]={vc:vc, m:m, f:f, at:at}; track(vc); prune(); handLitSoon(at);
 }
-function dampString(s, when){ const old=STR_LIVE[s]; if(old && ac && !old.vc.stopped) old.vc.stop(Math.max(ac.currentTime, when||0), 0.03, {rel:true}); STR_LIVE[s]=null; }   /* the hand on the string (a recording: its sound, AOG-STRINGS-REAL-V1) */
+/* AOG-HAND-LIT-V1 (Jimmy, 2026-10-05: "When I am playing a chord on the guitar, I am unsure what notes are playing. Can they
+   be highlighted like the piano?"): a string you play by hand (a chord button, a strum, a fret) lights orange on the neck
+   while it rings, as the pattern's notes do and the piano's keys do; it goes dark when it is damped or has died away. A
+   timer looks again only while something rings, then stops. */
+function handNow(){
+  const out=new Set(); if(!ac) return out; const t=ac.currentTime;
+  STR_LIVE.forEach((L,s)=>{ if(!L || L.vc.stopped || L.at>t+0.01) return;
+    const end=Math.min(L.vc.natural||Infinity, L.at+2.5); if(t<end) out.add(s+":"+(L.f!=null?L.f:0)); });
+  return out;
+}
+let handLitT=0;
+function handLitSoon(at){
+  clearTimeout(handLitT);
+  const tick=()=>{ litNeck(); const on=handNow().size>0, ahead=ac && STR_LIVE.some(L=>L && !L.vc.stopped && L.at>ac.currentTime);
+    if(on || ahead) handLitT=setTimeout(tick, 90); };
+  handLitT=setTimeout(tick, Math.max(0, ((at||0)-(ac?ac.currentTime:0))*1000)+10);
+}
+function dampString(s, when){ const old=STR_LIVE[s]; if(old && ac && !old.vc.stopped) old.vc.stop(Math.max(ac.currentTime, when||0), 0.03, {rel:true}); STR_LIVE[s]=null; if(old) handLitSoon(when); }   /* the hand on the string (a recording: its sound, AOG-STRINGS-REAL-V1) */
 function muteAll(){ for(let s=0;s<TUNING.length;s++) dampString(s); }
 function slideTo(s, f){
   const L=STR_LIVE[s]; if(!L || L.vc.stopped || !ac){ pluckCell(s, f, 0.62); return; }
-  L.vc.glide(TUNING[s]+f, ac.currentTime); L.m=TUNING[s]+f; L.f=f;
+  L.vc.glide(TUNING[s]+f, ac.currentTime); L.m=TUNING[s]+f; L.f=f; handLitSoon();
 }
 /* the chord in your hand: the one playing, or the last one you tapped */
 function curChord(){ return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog[PLAY.cur%S.prog.length] : null; }
@@ -2523,6 +2540,7 @@ function litNeck(){
   /* AOG-STRINGS-V2: a pad held down shows its own shape, even while the pattern plays (a metal sound: its power chord) */
   const held=Object.keys(padHeld).length ? S.hand : null;
   const now=S.playing?sounding():new Set(), down=new Set(), fit=new Map(), cc=held||shapeChord();
+  handNow().forEach(c=>now.add(c));   /* AOG-HAND-LIT-V1: what your hand is sounding */
   FINGERS.forEach(p=>{ if(p.zone==="fret") down.add(p.s+":"+p.f); });
   KEYCELLS.forEach(cell=>down.add(cell));
   let shp=null;
