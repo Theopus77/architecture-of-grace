@@ -898,7 +898,8 @@ function pickString(s, f, v, o){
   const c=ctx(), now=c.currentTime, old=STR_LIVE[s];
   if(old && old.vc && !old.vc.stopped) old.vc.stop(now, o&&o.soft?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.03));
   const lv=makeLead(s, TUNING[s]+f, v, now, o); if(!lv) return null;
-  STR_LIVE[s]={vc:lv, m:TUNING[s]+f, f:f}; prune();
+  STR_LIVE[s]={vc:lv, m:TUNING[s]+f, f:f, at:now}; prune();
+  if(typeof window.handLitSoon==="function") window.handLitSoon(now);   /* AOG-HAND-LIT-V1: the note you play lights orange while it rings */
   return lv;
 }
 /* the pinch squeal: a high harmonic of the note (about 1 to 2.4 kHz), into the amp, following every bend */
@@ -1060,6 +1061,7 @@ function strike(fs, o){
 function legato(lv, fs, kind){
   const now=lv.c.currentTime; lv.base=TUNING[fs.s]+fs.f; lv.bend=0; lv.bendFn=null; fs.lv=lv; fs.since=now; SOUNDING[fs.s]=fs; LAST=lv;
   const L=STR_LIVE[fs.s]; if(L){ L.f=fs.f; L.m=lv.base; }
+  if(typeof window.handLitSoon==="function") window.handLitSoon();   /* the light moves with a hammer-on or pull-off */
   if(kind==="o"){ const g=lv.vg.gain; try{ g.cancelScheduledValues(now); g.setTargetAtTime(1.3, now, 0.004); g.setTargetAtTime(1, now+0.03, 0.25); }catch(e){} }
   SO.legatos=(SO.legatos||0)+1;
   lv.replan(now); clearBend(fs.s);
@@ -1073,7 +1075,7 @@ function release(fs){
   const others=fingersOn(s, fs);
   if(others.length){ const top=others.reduce((a,x)=>x.f>a.f?x:a); legato(lv, top, "o"); return; }
   if(lv.vb){ lv.vb.off=now; }
-  if(Math.abs(fs.bend)>0.08){ lv.stop(now, 0.05); clearBend(s); return; }   /* a bent string let go: the finger mutes it */
+  if(Math.abs(fs.bend)>0.08){ lv.stop(now, 0.05); clearBend(s); if(typeof window.handLitSoon==="function") window.handLitSoon(); return; }   /* a bent string let go: the finger mutes it */
   if(lv.vb) lv.replan(now);
 }
 /* how far a push across the string bends it: a whole step at about four fifths of the space between two strings, never
