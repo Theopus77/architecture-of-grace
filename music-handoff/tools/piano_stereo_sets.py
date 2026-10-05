@@ -446,21 +446,25 @@ def tick_gain(seg, crest_db=9.0):
     return g
 
 
-def loop_end2(x, a, lmin, lmax, xw=0.5):
+def loop_end2(x, a, lmin, lmax, xw=0.5, rule="joint"):
     """piano_vcsl_sets.py's loop_end, for both channels at once: the end, from a+lmin to a+lmax, whose half second before
     it matches the half second before a best (the two channels' correlations added, weighted by their energy). Returns the
     end (s), the joint match, and each channel's own match there"""
     A = int(round(a * SR)); X = int(round(xw * SR))
     lo, hi = A + int(round(lmin * SR)), A + int(round(lmax * SR))
-    num = 0; den_ref = 0; e2 = 0
+    num = 0; den_ref = 0; e2 = 0; each = []
     for c in range(x.shape[1]):
         seg = x[:, c]; ref = seg[A - X:A]; reg = seg[lo - X:hi]
         n = 1 << int(np.ceil(np.log2(len(reg) + X)))
         cc = np.fft.irfft(np.fft.rfft(reg, n) * np.conj(np.fft.rfft(ref, n)), n)[:len(reg) - X + 1]
         num = num + cc
-        e2 = e2 + np.maximum(np.convolve(reg ** 2, np.ones(X), "valid"), 1e-20)
+        ec = np.maximum(np.convolve(reg ** 2, np.ones(X), "valid"), 1e-20)
+        e2 = e2 + ec
         den_ref += float(np.dot(ref, ref))
+        each.append(cc / (np.sqrt(ec * np.dot(ref, ref)) + 1e-12))
     rho = num / (np.sqrt(e2 * den_ref) + 1e-12)
+    if rule == "min":          # the end where the channel that matches worse matches best
+        rho = np.minimum(*each)
     i = int(np.argmax(rho)); p = 0.0
     if 0 < i < len(rho) - 1:
         al, be, ga = rho[i - 1], rho[i], rho[i + 1]
@@ -505,7 +509,7 @@ def build_vcsl(name):
         fi = int(0.005 * SR); seg[:fi] *= (np.sin(np.linspace(0, np.pi / 2, fi)) ** 2)[:, None]
         info = {"src": src, "shift_cents": round(shift, 1)}
         if kind == "hold":
-            e, c, own = loop_end2(seg, *spec["loop"])
+            e, c, own = loop_end2(seg, *spec["loop"], rule=os.environ.get("AOG_LOOP_RULE", spec.get("rule", "joint")))
             ends[target] = round(e, 5)
             seg = seg[:int((e + 0.25) * SR)]
             info["note"] = "loop %.1f-%.5f s (match %.3f; left %.3f, right %.3f)" % (spec["loop"][0], e, c, own[0], own[1])
