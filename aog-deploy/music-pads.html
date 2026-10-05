@@ -762,7 +762,7 @@ function bindBounce(){
     catch(e){ BOUNCE.msg=e && e.name==="QuotaExceededError" ? "bNoRoom" : "bFail"; }
     $("bStudio").disabled=false; paintBounce(); };
   $("bDecks").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bDecks").disabled=true;
-    try{ await AOGHandoff.put("drumtake", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0}); BOUNCE.msg="decks"; }
+    try{ await AOGHandoff.put("padbench", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0}); BOUNCE.msg="decks"; }
     catch(e){ BOUNCE.msg="bFail"; }
     $("bDecks").disabled=false; paintBounce(); };
 }
@@ -895,7 +895,7 @@ function paintText(){
 function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintSel(); paintTransport(); }
 
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S0.lang, what:{en:"the pad machine",es:"la máquina de pads"},
-  prefix:{en:"Pad machine",es:"Máquina de pads"}, file:{en:"pad-machine-take",es:"maquina-de-pads-toma"}, shelf:"drumtake", tool:"pads", bpm:()=>S.bpm,
+  prefix:{en:"Pad machine",es:"Máquina de pads"}, file:{en:"pad-machine-take",es:"maquina-de-pads-toma"}, shelf:"padbench", tool:"pads", bpm:()=>S.bpm,
   label:{en:"● Record a take to keep",es:"● Grabar una toma para guardar"},
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 
