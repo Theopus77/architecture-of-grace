@@ -657,7 +657,7 @@ def finish_set(name, notes, layers, files, targets=LAYER_DB, extra=None):
     os.makedirs(os.path.join(OUT, FOLDER.get(name, name)), exist_ok=True)
     for fn in os.listdir(os.path.join(OUT, FOLDER.get(name, name))):
         if fn.endswith(".mp3"):
-            os.unlink(os.path.join(OUT, name, fn))
+            os.unlink(os.path.join(OUT, FOLDER.get(name, name), fn))
     REPORT[name] = {"files": {}}
     for (n, layer), (y, meta) in sorted(files.items()):
         y, lvl = level_to(y, targets[layer])
