@@ -247,7 +247,12 @@
     if (STORES) { delete STORES.rom[b]; delete STORES.hi[b]; }
   }
   /* make(id), from the page: a made:1 pad drawn by the page, as {lo: twelve-bit 26,040 Hz, hi: 44,100 Hz} (or a promise of it) */
-  function load(b, rom, hi, q12, make) {
+  /* AOG-DRUM-QUICK-V2 (2026-10-05) — Jimmy: "There is such a delay when I am trying to add my own beats. I picked a drum kit
+     … my goodness it was delayed a lot." opts.hiOnly (the Beat Lab and the Drum Kit play only the 44.1 kHz recordings):
+     the 1987 copy at 26,040 Hz is not decoded or cut. And a kit's pads are made ready one at a time, letting the page
+     breathe in between, so a tap or a playing loop never waits behind a kit that is getting ready. */
+  function load(b, rom, hi, q12, make, opts) {
+    var hiOnly = !!(opts && opts.hiOnly);
     if (!has(b)) return Promise.resolve();
     STORES = { rom: rom, hi: hi, q12: q12 };
     var at = ORDER.indexOf(b); if (at >= 0) ORDER.splice(at, 1); ORDER.push(b);
@@ -259,7 +264,7 @@
     });
     var OC = root.OfflineAudioContext || root.webkitOfflineAudioContext;
     if (!OC || !root.fetch) { setState(b, { state: "failed", got: 0, total: jobs.length }); return Promise.resolve(); }
-    var decHi = new OC(1, 1, HI), decLo = new OC(1, 1, LO);
+    var decHi = new OC(1, 1, HI), decLo = hiOnly ? null : new OC(1, 1, LO);
     var got = {}, n = 0, bad = 0, idx = 0;
     setState(b, { state: "loading", got: 0, total: jobs.length });
     function worker() {
@@ -267,11 +272,12 @@
       var jb = jobs[idx++];
       return fetch(BASE + kit.dir + "/" + jb.name + ".mp3?v=" + VER)
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
-        .then(function (ab) { return Promise.all([decodeWith(decHi, ab.slice(0)), decodeWith(decLo, ab)]); })
+        .then(function (ab) { return hiOnly ? decodeWith(decHi, ab).then(function (x) { return [x, null]; }) : Promise.all([decodeWith(decHi, ab.slice(0)), decodeWith(decLo, ab)]); })
         .then(function (two) {
-          var o = { h: two[0].getChannelData(0), l: two[1].getChannelData(0) };
+          var o = { h: two[0].getChannelData(0), l: two[1] ? two[1].getChannelData(0) : null };
           /* AOG-DRUM-STEREO-V1: a stereo recording keeps its right side too */
-          if (two[0].numberOfChannels > 1 && two[1].numberOfChannels > 1) { o.h2 = two[0].getChannelData(1); o.l2 = two[1].getChannelData(1); }
+          if (two[0].numberOfChannels > 1) o.h2 = two[0].getChannelData(1);
+          if (two[1] && two[1].numberOfChannels > 1) o.l2 = two[1].getChannelData(1);
           got[jb.id + "/" + jb.lay + "/" + jb.j] = o;
         })
         .catch(function () { bad++; })
@@ -283,30 +289,33 @@
       var mine = Object.keys(kit.pads).filter(function (id) { return kit.pads[id].made; });
       return Promise.all(mine.map(function (id) {
         return Promise.resolve(make ? make(id) : null).catch(function () { return null; }).then(function (o) { return [id, o]; });
-      })).then(function (drawn) { ready(drawn); });
+      })).then(function (drawn) { return ready(drawn); });
     });
     function ready(drawn) {
       var data = {}, r = rom[b] || (rom[b] = {}), h = hi[b] || (hi[b] = {});
       drawn.forEach(function (d) { data[d[0]] = { made: true }; if (d[1] && d[1].lo && d[1].hi) { r[d[0]] = d[1].lo; h[d[0]] = d[1].hi; } });
-      Object.keys(kit.pads).forEach(function (id) {
-        if (kit.pads[id].made) return;
+      var ids = Object.keys(kit.pads).filter(function (id) { return !kit.pads[id].made; });
+      var breathe = function () { return new Promise(function (ok) { setTimeout(ok, 0); }); };
+      var one = function (id) {
         var f = files(b, id), first = got[id + "/m/0"];
         var len = first.h.length / HI - onsetAt(first.h, HI, first.h2);          /* every take of a pad is as long as its first normal one */
         data[id] = {};
         LAYERS.forEach(function (lay) {
           data[id][lay] = f[lay].map(function (name, j) {
             var g = got[id + "/" + lay + "/" + j], t = onsetAt(g.h, HI, g.h2);
-            var tk = { hi: slice(g.h, HI, t, len), lo: q12(slice(g.l, LO, t, len)) };
-            if (g.h2) { tk.hi2 = slice(g.h2, HI, t, len); tk.lo2 = q12(slice(g.l2, LO, t, len)); }   /* AOG-DRUM-STEREO-V1 */
+            var tk = { hi: slice(g.h, HI, t, len), lo: g.l ? q12(slice(g.l, LO, t, len)) : null };
+            if (g.h2) { tk.hi2 = slice(g.h2, HI, t, len); tk.lo2 = g.l2 ? q12(slice(g.l2, LO, t, len)) : null; }   /* AOG-DRUM-STEREO-V1 */
             return tk;
           });
         });
         r[id] = data[id].m[0].lo; h[id] = data[id].m[0].hi;
+      };
+      return ids.reduce(function (p, id) { return p.then(function () { one(id); return breathe(); }); }, Promise.resolve()).then(function () {
+        DATA[b] = data;
+        setState(b, { state: "ready", got: n, total: jobs.length });
+        var keep = ORDER.slice(-KEEP);                 /* the two kits asked for last stay; an older one is let go */
+        Object.keys(DATA).forEach(function (k) { if (k !== b && keep.indexOf(k) < 0) forget(k); });
       });
-      DATA[b] = data;
-      setState(b, { state: "ready", got: n, total: jobs.length });
-      var keep = ORDER.slice(-KEEP);                 /* the two kits asked for last stay; an older one is let go */
-      Object.keys(DATA).forEach(function (k) { if (k !== b && keep.indexOf(k) < 0) forget(k); });
     }
     JOBS[b] = job;
     return job;

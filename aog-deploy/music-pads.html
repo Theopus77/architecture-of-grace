@@ -423,24 +423,25 @@ function breathEnd(d, sr, i0, pk){
   for(let a=i0; a<cap && a+3*W<d.length; a+=W){ if(tonal(a) && tonal(a+W) && tonal(a+2*W)) return a; }
   return i0;
 }
-function tidy(b){
+/* AOG-PADS-QUICK-V2 (2026-10-05) — Jimmy: "There is such a delay when I am trying to add my own beats. I picked a drum kit,
+   and I picked an instrument, but my goodness it was delayed a lot." A note's recording is no longer copied to trim it and
+   set its level (a stall of up to half a second on a phone, while the loop and your taps waited): its start and its level
+   are found once and used when it plays. The scan reads every fourth sample, enough to find the loudest. */
+function tidy(b, winds){
   const ch=[]; for(let i=0;i<b.numberOfChannels;i++) ch.push(b.getChannelData(i));
-  let st=0, pk=0, fade=0; const n=b.length;
+  let st=0, pk=0, fade=0; const n=b.length, sr=b.sampleRate;
   outer: for(let i=0;i<n;i++){ for(const d of ch){ if(Math.abs(d[i])>0.004){ st=i; break outer; } } }
-  { const d0=ch[0]; let p0=0; for(let i=0;i<n;i++){ const a=Math.abs(d0[i]); if(a>p0) p0=a; }
+  { const d0=ch[0]; let p0=0; for(let i=0;i<n;i+=4){ const a=Math.abs(d0[i]); if(a>p0) p0=a; }
     let i0=st; while(i0<n && Math.abs(d0[i0])<p0*0.03) i0++;
-    const j=breathEnd(d0, b.sampleRate, i0, p0); if(j>i0){ st=j-Math.round(0.003*b.sampleRate); fade=Math.round(0.008*b.sampleRate); } }
-  st=Math.max(0, st-Math.round(0.002*b.sampleRate));
-  for(const d of ch) for(let i=st;i<n;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
-  const g=pk>0 ? 0.7/pk : 1, len=Math.max(1, n-st);
-  const o=decoder().createBuffer(ch.length, len, b.sampleRate);
-  ch.forEach((d,i)=>{ const out=o.getChannelData(i); for(let j=0;j<len;j++) out[j]=d[st+j]*g*(j<fade ? j/fade : 1); });
-  return o;
+    const j=winds ? breathEnd(d0, sr, i0, p0) : i0; if(j>i0){   /* only the band's winds and bows breathe before a note */ st=j-Math.round(0.003*sr); fade=0.008; } }
+  st=Math.max(0, st-Math.round(0.002*sr));
+  for(const d of ch) for(let i=st;i<n;i+=4){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
+  return {b:b, off:st/sr, g:pk>0 ? 0.7/pk : 1, fade:fade};
 }
 const BUF=new Map(), BUFV=new Map();
 function getBuf(url, raw){
   const k=(raw?"raw:":"")+url;
-  if(!BUF.has(k)) BUF.set(k, fetch(url).then(r=>{ if(!r.ok) throw new Error("http"); return r.arrayBuffer(); }).then(decode).then(b=>{ b=raw ? b : tidy(b); BUFV.set(k, b); return b; }).catch(e=>{ BUF.delete(k); throw e; }));
+  if(!BUF.has(k)) BUF.set(k, fetch(url).then(r=>{ if(!r.ok) throw new Error("http"); return r.arrayBuffer(); }).then(decode).then(b=>{ b=raw ? b : tidy(b, url.indexOf("/audio/band/")>=0); BUFV.set(k, b); return b; }).catch(e=>{ BUF.delete(k); throw e; }));
   return BUF.get(k);
 }
 /* an instrument's notes: [{m, c (cents off), url}] */
@@ -525,17 +526,28 @@ function prep(bi){
   let p;
   if(B.type==="drums"){
     const kits=[B.kitA, B.kitB].filter((k,i,a)=>a.indexOf(k)===i); st.total=kits.length;
-    p=Promise.all(kits.map(k=>AOGDrumKit.load(k, {}, {}, x=>x, null).then(()=>{ st.got++; paintLine(); })));
+    p=Promise.all(kits.map(k=>AOGDrumKit.load(k, {}, {}, x=>x, null, {hiOnly:true}).then(()=>{ st.got++; paintLine(); })));
   } else if(B.type==="chops"){
     st.total=1; p=recBuf(B.rec).then(b=>{ st.got=1; st.buf=b; st.chops=chopsOf(B, b); });
   } else {
     p=zonesOf(B.inst).then(zs=>{ st.zones=zs; const need=new Set(); padDefs(bi).forEach(d=>d.notes.forEach(m=>need.add(nearest(zs,m).url)));
       st.total=need.size; paintLine(); return Promise.all([...need].map(u=>getBuf(u).then(()=>{ st.got++; paintLine(); }))); });
   }
-  st.p=p.then(()=>{ if(READY[bi]===st){ st.state="ready"; paintAll(); } }).catch(()=>{ if(READY[bi]===st){ st.state="failed"; st.p=null; paintAll(); } });
+  st.p=p.then(()=>{ if(READY[bi]===st){ st.state="ready"; if(B.type==="drums") KIT_WAS[bi]=[B.kitA, B.kitB]; paintAll(); } }).catch(()=>{ if(READY[bi]===st){ st.state="failed"; st.p=null; paintAll(); } });
   return st.p;
 }
 function isReady(bi){ const R=READY[bi]; return R && R.sig===sigOf(S.banks[bi]) && R.state==="ready"; }
+/* AOG-PADS-QUICK-V2: a bank plays while it gets ready — notes and chords as each recording arrives, drums from the kit
+   the pads had before until the new one is ready — so a change is never a silence */
+const KIT_WAS=[null,null,null,null];
+function kitReady(k){ const st=window.AOGDrumKit && AOGDrumKit.state(k); return !!(st && st.state==="ready"); }
+function kitFor(bi, pi, k){ if(kitReady(k)) return k; const w=KIT_WAS[bi]; const o=w && (pi<8 ? w[0] : w[1]); return o && kitReady(o) ? o : null; }
+function canPlay(bi){
+  if(isReady(bi)) return true;
+  const B=S.banks[bi], R=READY[bi];
+  if(B.type==="drums") return !!(kitFor(bi, 0, B.kitA) || kitFor(bi, 8, B.kitB));
+  return (B.type==="notes" || B.type==="chords") && !!(R && R.sig===sigOf(B) && R.zones);
+}
 
 /* ══ playing one pad ══ */
 function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0}; }
@@ -543,7 +555,7 @@ function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
 const LIVE={c:null, dest:null, open:[[],[],[],[]], chop:[null,null,null,null]};
 function trigger(bi, pi, vel, when, T){
-  if(!isReady(bi)) return null;
+  if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
   if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
@@ -552,10 +564,11 @@ function trigger(bi, pi, vel, when, T){
   if(c.createStereoPanner){ const pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
   const rate=Math.pow(2, P.tune/12);
   if(d.kind==="drum"){
-    const n=(AOGDrumKit.padNames(d.kit)||{})[d.id];
+    const n=(AOGDrumKit.padNames(kitFor(bi, pi, d.kit)||d.kit)||{})[d.id];
     if(n==="HAT"||n==="PEDAL"){ OPEN[bi].splice(0).forEach(o=>{ try{ o.gain.gain.setTargetAtTime(0, when, 0.012); o.src.stop(when+0.1); }catch(e){} }); }
     const acc=vel>0.88 ? 2 : vel<0.62 ? 3 : 0;
-    const o=AOGDrumKit.playDirect(c, out, d.kit, d.id, when, acc, clamp(0.25+0.4*vel, 0, 1));
+    const kit=T===LIVE ? kitFor(bi, pi, d.kit) : d.kit; if(!kit) return null;
+    const o=AOGDrumKit.playDirect(c, out, kit, d.id, when, acc, clamp(0.25+0.4*vel, 0, 1));
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); }
     return {stop(){}};
   }
@@ -573,11 +586,11 @@ function trigger(bi, pi, vel, when, T){
   /* a note or a chord: it rings while the pad is held */
   const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
   d.notes.forEach(m=>{
-    const z=nearest(zs, m), b=BUFV.get(z.url); if(!b) return;
+    const z=nearest(zs, m), tb=BUFV.get(z.url); if(!tb) return;   /* a note not here yet stays quiet; the others play */
     const s=c.createBufferSource(), g=c.createGain();
-    s.buffer=b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
-    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv, when+0.005);
-    s.connect(g); g.connect(out); s.start(when); vs.push({s:s, g:g});
+    s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
+    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g, when+Math.max(0.005, tb.fade));
+    s.connect(g); g.connect(out); s.start(when, tb.off); vs.push({s:s, g:g});
   });
   return {stop(at){ const t0=Math.max(at||0, c.currentTime);
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }};
@@ -682,7 +695,7 @@ function selectSoon(pi){ if(S.sel===pi) return; S.sel=pi; cancelAnimationFrame(s
 function outLat(){ return ac ? Math.min(0.3, Math.max(0, (ac.outputLatency||0)+(ac.baseLatency||0))) : 0; }
 function press(id, pi, vel){
   const bi=S.bank, c=ctx();
-  if(!isReady(bi)){ selectSoon(pi); prep(bi); return; }
+  if(!canPlay(bi)){ selectSoon(pi); prep(bi); return; }
   if(S.rpt){
     const ticks=S.rate, step=ticks*spt(), now=c.currentTime;
     hitPad(bi, pi, vel, now, true);
