@@ -101,7 +101,17 @@ const STR={
   bars:{en:"bars",es:"compases"},
   credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. All three are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. Las tres colecciones son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
-  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  /* AOG-BAND-SCALES-V1 */
+  scaleLab:{en:"Scale",es:"Escala"}, scaleOff:{en:"Off",es:"Apagada"},
+  scaleHint:{en:"Pick a scale to see its notes on the keys.",es:"Elige una escala para ver sus notas en las teclas."},
+  scaleSay:{en:"{root} {name} scale",es:"Escala {name} de {root}"},
+  scaleHome:{en:"{root}, the home note",es:"{root}, la nota casa"},
+  scaleBlue:{en:"the blue note",es:"la nota blue"},
+  harpScale:{en:"Sweep a finger across the strings. The harp is tuned to the {scale}.",es:"Pasa un dedo por las cuerdas. El arpa está afinada en la {scale}."},
+  anyH:{en:"Any chord",es:"Cualquier acorde"}, anyRoot:{en:"Root",es:"Raíz"}, anyKind:{en:"Kind",es:"Tipo"},
+  anyPlay:{en:"▶ Play the chord",es:"▶ Tocar el acorde"},
+  anyNotes:{en:"{chord}: {notes}",es:"{chord}: {notes}"}
 };
 function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
 
@@ -242,6 +252,15 @@ function soundRange(id){ let lo=999, hi=0; partsOf(id).forEach(p=>{ const r=rang
 
 /* ── music: keys, chords (the piano's) ── */
 const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10]};
+/* AOG-BAND-SCALES-V1: a chord's steps above its root, within one octave: the five above, or any of the 45 kinds in
+   aog-chords.js (Any chord). Each pitch once, in the library's order (an add9's 9th after its fifth) */
+function ivs(q){
+  if(Q[q]) return Q[q];
+  const k=window.AOGChords && AOGChords.KINDS[q]; if(!k) return Q.maj;
+  const out=[]; k.iv.forEach(i=>{ const x=((i%12)+12)%12; if(out.indexOf(x)<0) out.push(x); }); return out;
+}
+/* the chord's own fifth: perfect, or the flat or sharp one it has (none in a chord without one) */
+function fifthOf(c){ const iv=ivs(c.q); return iv.indexOf(7)>=0 ? 7 : iv.indexOf(6)>=0 ? 6 : iv.indexOf(8)>=0 ? 8 : null; }
 const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7"};
 const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7"};
 const NAMES={sharp:["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"], flat:["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"]};
@@ -327,7 +346,7 @@ const RHYTHM_WORDS={
 /* a chord's notes in the middle of the keyboard, moved as little as possible from the last chord (the piano's) */
 let lastVoicing=null;
 function voicing(c, prev){
-  const root=((S.key+c.off)%12+12)%12, pcs=Q[c.q].map(i=>(root+i)%12), out=[];
+  const root=((S.key+c.off)%12+12)%12, pcs=ivs(c.q).map(i=>(root+i)%12), out=[];
   for(let inv=0; inv<pcs.length; inv++){
     const order=pcs.slice(inv).concat(pcs.slice(0,inv));
     for(let lo=52; lo<=66; lo++){
@@ -339,12 +358,13 @@ function voicing(c, prev){
   const mid=v=>v.reduce((a,b)=>a+b,0)/v.length;
   const cost=v=>prev ? v.reduce((s,n)=>s+Math.min.apply(null, prev.map(m=>Math.abs(n-m))),0)+0.3*Math.abs(mid(v)-63) : Math.abs(mid(v)-62);
   out.sort((a,b)=>cost(a)-cost(b));
+  if(!out.length){ const v=[52+((pcs[0]-52)%12+12)%12]; for(let j=1;j<pcs.length;j++){ let n=v[j-1]+1; while(n%12!==pcs[j]) n++; v.push(n); } return v; }
   return out[0];
 }
 function bassOf(c){ return 36+(((S.key+c.off)%12)+12)%12; }
 function mtof(m){ return 440*Math.pow(2,(m-69)/12); }
 function noteLabel(m){ return pcName(m)+(Math.floor(m/12)-1); }
-function chordPcs(c){ return Q[c.q].map(i=>((S.key+c.off+i)%12+12)%12); }
+function chordPcs(c){ return ivs(c.q).map(i=>((S.key+c.off+i)%12+12)%12); }
 /* a note moved by octaves into a player's reach (null when it cannot be) */
 function fitIn(m, inst){
   const r=rangeOf(inst);
@@ -360,7 +380,8 @@ function fitIn(m, inst){
 function chordParts(c, vo){
   const parts=lineup(S.sound), bass=bassOf(c), out=[];
   const has={}, add=(inst, m, bs, fifth)=>{ if(m==null || has[inst+":"+m]) return; has[inst+":"+m]=1; const p={inst:inst, m:m}; if(bs) p.bass=true; if(fifth) p.fifth=true; out.push(p); };
-  if(parts.length===1 && SOUNDS[S.sound] && SOUNDS[S.sound].roots){ const inst=parts[0]; add(inst, fitIn(bass, inst), true); add(inst, fitIn(bass+7, inst), true, true); return out; }
+  const f5=fifthOf(c);   /* the timpani's second drum: the chord's own fifth (AOG-BAND-SCALES-V1: Any chord has some without a perfect one) */
+  if(parts.length===1 && SOUNDS[S.sound] && SOUNDS[S.sound].roots){ const inst=parts[0]; add(inst, fitIn(bass, inst), true); if(f5!=null) add(inst, fitIn(bass+f5, inst), true, true); return out; }
   if(parts.length===1){
     const inst=parts[0], seen={};
     vo.forEach(m=>{ const x=fitIn(m, inst); if(x!=null && !seen[x]){ seen[x]=1; out.push({inst:inst, m:x}); } });
@@ -371,7 +392,8 @@ function chordParts(c, vo){
   add(parts[0], fitIn(bass, parts[0]), true);
   vo.forEach((m,i)=>{ const inst=parts[Math.min(1+i, parts.length-1)]; add(inst, fitIn(m, inst)); });
   ((SOUNDS[S.sound]||{}).dbl||[]).forEach(([inst, w, up])=>{
-    const src = w==="b" ? bass : w==="b5" ? bass+7 : w==="lo" ? vo[0] : w==="mid" ? vo[Math.max(0, vo.length-2)] : vo[vo.length-1];
+    if(w==="b5" && f5==null) return;
+    const src = w==="b" ? bass : w==="b5" ? bass+f5 : w==="lo" ? vo[0] : w==="mid" ? vo[Math.max(0, vo.length-2)] : vo[vo.length-1];
     add(inst, fitIn(src+(up||0), inst), w==="b"||w==="b5", w==="b5");
   });
   return out;
@@ -958,7 +980,7 @@ function paintText(){
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
-  paintDial(); paintLoad(); paintDrums(); buildKeys(); bpText();
+  paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText();
 }
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
 const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpJazz","grpBands","grpAll"];
@@ -1103,6 +1125,86 @@ function paintDrums(){
   paintTempo();
 }
 
+/* ══ AOG-BAND-SCALES-V1 (2026-10-05) — Jimmy: "scales, modes and chords" on every instrument ═════════════════════
+   The Scale menu (aog-scales.js: 154 scales and modes in 13 groups) starts Off. A scale picked marks its notes on the
+   keys, the bars and the harp's strings, wherever the keys are (upright or sideways): a dot above the note's letter, a
+   ring on the home note, dark blue on a blues scale's blue note; the harp is tuned to it. It follows the key and the
+   mood, and each mood keeps its own choice (this browser only). Any chord (aog-chords.js: 45 kinds) plays a chord on
+   any root with the instrument picked, as a pad does, its notes lit gold on the keys. ══ */
+const SKEY="aog.band.scales.v1";
+const SC={maj:"", min:"", root:null, kind:"maj", hold:null, tm:0};
+try{ const r=JSON.parse(localStorage.getItem(SKEY)||"null");
+  if(r && typeof r==="object"){ if(typeof r.maj==="string") SC.maj=r.maj; if(typeof r.min==="string") SC.min=r.min;
+    if(r.root>=0 && r.root<12) SC.root=r.root|0; if(typeof r.kind==="string") SC.kind=r.kind; } }catch(e){}
+function scSave(){ try{ localStorage.setItem(SKEY, JSON.stringify({maj:SC.maj, min:SC.min, root:SC.root, kind:SC.kind})); }catch(e){} }
+const SCD=`<i class="scd" aria-hidden="true"></i>`;
+function libsIn(){ return !!(window.AOGScales && window.AOGChords); }
+function esc(x){ return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+function scW(k){ const x=window.AOGScales && AOGScales.WORDS[k]; return x ? (S.lang==="es"?x.es:x.en) : k; }
+function scaleId(){ const id=S.minor?SC.min:SC.maj; return (id && window.AOGScales && AOGScales.SCALES[id]) ? id : ""; }
+function scaleOn(){ const id=scaleId(); return id ? AOGScales.SCALES[id] : null; }
+function scalePcs(){ const sc=scaleOn(); return sc ? sc.iv.map(i=>(S.key+i)%12) : []; }
+function bluePc(){ const sc=scaleOn(); return (sc && sc.blue!=null) ? (S.key+sc.blue)%12 : -1; }
+/* "D Dorian scale" / "Escala dórica de Re"; lower case inside a sentence (the harp's line) */
+function scaleWords(inner){ const id=scaleId(); if(!id) return "";
+  const s=t("scaleSay",{root:pcName(S.key), name:scW("nm_"+id)});
+  return (inner && S.lang==="es") ? s.replace(/^./, ch=>ch.toLowerCase()) : s.replace(/^./, ch=>ch.toUpperCase()); }
+function markScale(){
+  const kb=$("kbd"); if(!kb) return;
+  const pcs=scalePcs(), home=scaleOn() ? S.key : -1, blue=bluePc();
+  kb.querySelectorAll("[data-m]").forEach(el=>{ const pc=((+el.getAttribute("data-m"))%12+12)%12, on=pcs.indexOf(pc)>=0;
+    el.classList.toggle("sc", on); el.classList.toggle("sc-home", on && pc===home); el.classList.toggle("sc-blue", on && pc===blue); });
+}
+/* the key, the mood or the scale changed: the harp is tuned again, the dots move */
+function scaleMoved(){ if(bpMode()==="harp") buildKeys(); else markScale(); if(BP.on) bpText(); }
+function paintScaleUI(){
+  const sel=$("scaleSel"), say=$("scaleSay"); if(!sel) return;
+  $("scaleRow").hidden=!libsIn(); say.hidden=!libsIn();
+  if(!libsIn()){ sel.innerHTML=""; return; }
+  const cur=scaleId();
+  sel.innerHTML=`<option value=""${cur?"":" selected"}>${esc(t("scaleOff"))}</option>`+AOGScales.GROUPS.map(([g,ids])=>`<optgroup label="${esc(scW("sg_"+g))}">`
+    +ids.map(id=>`<option value="${id}"${id===cur?" selected":""}>${esc(scW("sc_"+id))}</option>`).join("")+`</optgroup>`).join("");
+  if(!cur){ say.textContent=t("scaleHint"); }
+  else say.innerHTML=`<b>${esc(scaleWords(false))}.</b> <span><i class="sc-dot home" aria-hidden="true"></i>${esc(t("scaleHome",{root:pcName(S.key)}))}</span>`
+    +(bluePc()>=0 ? ` <span><i class="sc-dot blue" aria-hidden="true"></i>${esc(t("scaleBlue"))}</span>` : "");
+  if($("bpScale")){ $("bpScale").innerHTML=sel.innerHTML; $("bpScale").value=cur; }
+}
+function pickScale(v){
+  if(v && !(window.AOGScales && AOGScales.SCALES[v])) return;
+  if(S.minor) SC.min=v; else SC.maj=v; scSave();
+  paintScaleUI(); scaleMoved();
+}
+function anyRoot(){ return SC.root==null ? S.key : SC.root; }
+function anyKind(){ return (window.AOGChords && AOGChords.KINDS[SC.kind]) ? SC.kind : "maj"; }
+function anyName(){ return pcName(anyRoot())+AOGChords.sym(anyKind()); }
+function paintAny(){
+  const box=$("anyBox"); if(!box) return;
+  box.hidden=!libsIn(); if(!libsIn()) return;
+  const r=anyRoot(), k=anyKind();
+  $("anyRoot").innerHTML=[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<option value="${i}"${i===r?" selected":""}>${esc(pcName(i))}</option>`).join("");
+  $("anyKind").innerHTML=AOGChords.GROUPS.map(([g,ids])=>`<optgroup label="${esc(AOGChords.group(g,S.lang))}">`
+    +ids.map(id=>`<option value="${id}"${id===k?" selected":""}>${esc(AOGChords.label(id,S.lang))}</option>`).join("")+`</optgroup>`).join("");
+  $("anyPlay").textContent=t("anyPlay");
+  $("anyLine").textContent=t("anyNotes",{chord:anyName(), notes:ivs(k).map(i=>pcName(r+i)).join(" ")});
+}
+function anyRelease(){ clearTimeout(SC.tm); const keys=SC.hold; SC.hold=null; if(keys) keys.forEach(k=>noteOff(k)); }
+/* the chord the pads play, on any root: its notes near the middle, moved little from the last chord, the root under them */
+function anyPlay(){
+  if(!libsIn()) return;
+  anyRelease();
+  const c={off:((anyRoot()-S.key)%12+12)%12, q:anyKind()};
+  SC.hold=holdChord("a", c, 0.74);
+  SC.tm=setTimeout(anyRelease, 1600);
+}
+function bindScales(){
+  $("scaleSel").onchange=()=>pickScale($("scaleSel").value);
+  $("anyRoot").onchange=()=>{ SC.root=+$("anyRoot").value; scSave(); paintAny(); };
+  $("anyKind").onchange=()=>{ SC.kind=$("anyKind").value; scSave(); paintAny(); };
+  $("anyPlay").onclick=()=>anyPlay();
+}
+/* the two libraries come in just after this script (defer): the menus fill in then */
+function scalesReady(){ paintScaleUI(); paintAny(); markScale(); if(bpMode()==="harp") buildKeys(); if(BP.on) bpText(); }
+
 /* ══ the keys (the piano's): as many octaves as fit, white keys at least 40 px wide; the ones the instrument cannot
    reach are grey and silent; Lower and Higher stay within its reach ══ */
 const WHITE=[0,2,4,5,7,9,11], BLACK_AFTER={0:1,2:3,5:6,7:8,9:10};
@@ -1125,14 +1227,15 @@ function buildKeys(){
   else for(let m=lo; m<=hi; m++){
     const pc=m%12; if(WHITE.indexOf(pc)<0) continue;
     const cap=CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"", out=playerFor(m)?"":" out";
-    html+=`<div class="wk${out}" data-m="${m}" aria-label="${noteLabel(m)}">${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
+    html+=`<div class="wk${out}" data-m="${m}" aria-label="${noteLabel(m)}">${SCD}${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
     if(BLACK_AFTER[pc]!=null && m+1<=hi){
       const bm=m+1, bcap=CAP[bm-lo]!=null?`<span class="kc">${CAP[bm-lo]}</span>`:"", bout=playerFor(bm)?"":" out";
-      html+=`<div class="bk${bout}" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%">${bcap}</div>`;
+      html+=`<div class="bk${bout}" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%">${SCD}${bcap}</div>`;
     }
     wi++;
   }
   kb.innerHTML=html;
+  markScale();
   $("rangeOut").textContent=t("rangeOut",{a:noteLabel(lo), b:noteLabel(hi)});
   $("downBtn").disabled=S.oct<=oa; $("upBtn").disabled=S.oct>=ob;
   if($("bpRange")){ $("bpRange").textContent=$("rangeOut").textContent; $("bpDown").disabled=S.oct<=oa; $("bpUp").disabled=S.oct>=ob; }
@@ -1237,26 +1340,27 @@ function playZoomLock(on){
 const BP={on:false, closed:false, mq:null, back:null, y:0, seen:false};
 try{ BP.seen=localStorage.getItem("aog.band.play.v1")==="1"; }catch(e){}
 function bpMode(){ if(!BP.on) return ""; return S.sound==="harp" ? "harp" : ["marimba","xylophone","glockenspiel"].indexOf(S.sound)>=0 ? "bars" : "keys"; }
-function bpScale(){ const iv=S.minor?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]; return iv.map(i=>(S.key+i)%12); }
+function bpScale(){ const sc=scaleOn(); if(sc) return sc.iv.map(i=>(S.key+i)%12);   /* AOG-BAND-SCALES-V1: a picked scale tunes the harp to it */
+  const iv=S.minor?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]; return iv.map(i=>(S.key+i)%12); }
 /* the harp's strings and the bars, from lo to hi (the keyboard keeps buildKeys' own) */
 function bpHtml(lo, hi){
   const mode=bpMode(), out=m=>playerFor(m)?"":" out";
   if(mode==="harp"){
     const pcs=bpScale(), set=NAMES[flats()?"flat":"sharp"], list=[]; for(let m=lo; m<=hi; m++) if(pcs.indexOf(m%12)>=0) list.push(m);
     return list.map((m,i)=>{ const L=set[m%12][0], cls=L==="C"?" c":L==="F"?" f":"", sw=(3.2-2.2*i/Math.max(1,list.length-1)).toFixed(1);
-      return `<div class="hs${cls}${out(m)}" data-m="${m}" style="--sw:${sw}px" aria-label="${noteLabel(m)}"><span class="nm">${pcName(m)}</span></div>`; }).join("");
+      return `<div class="hs${cls}${out(m)}" data-m="${m}" style="--sw:${sw}px" aria-label="${noteLabel(m)}">${SCD}<span class="nm">${pcName(m)}</span></div>`; }).join("");
   }
   const whites=[]; for(let m=lo; m<=hi; m++) if(WHITE.indexOf(m%12)>=0) whites.push(m);
   const n=whites.length, w=100/n, g=0.5; let html="";
   whites.forEach((m,i)=>{ const f=i/Math.max(1,n-1), h=58-20*f;
-    html+=`<div class="wk${out(m)}" data-m="${m}" aria-label="${noteLabel(m)}" style="left:${(i*w+g/2).toFixed(2)}%;width:${(w-g).toFixed(2)}%;top:${(70-h/2).toFixed(1)}%;height:${h.toFixed(1)}%"><span class="nm">${pcName(m)}${m%12===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
+    html+=`<div class="wk${out(m)}" data-m="${m}" aria-label="${noteLabel(m)}" style="left:${(i*w+g/2).toFixed(2)}%;width:${(w-g).toFixed(2)}%;top:${(70-h/2).toFixed(1)}%;height:${h.toFixed(1)}%">${SCD}<span class="nm">${pcName(m)}${m%12===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
     const pc=m%12; if(BLACK_AFTER[pc]!=null && m+1<=hi){ const bh=36-12*f;
-      html+=`<div class="bk${out(m+1)}" data-m="${m+1}" aria-label="${noteLabel(m+1)}" style="left:${((i+1)*w-w*0.36).toFixed(2)}%;width:${(w*0.72).toFixed(2)}%;top:${(20-bh/2).toFixed(1)}%;height:${bh.toFixed(1)}%"><span class="nm">${pcName(m+1)}</span></div>`; } });
+      html+=`<div class="bk${out(m+1)}" data-m="${m+1}" aria-label="${noteLabel(m+1)}" style="left:${((i+1)*w-w*0.36).toFixed(2)}%;width:${(w*0.72).toFixed(2)}%;top:${(20-bh/2).toFixed(1)}%;height:${bh.toFixed(1)}%">${SCD}<span class="nm">${pcName(m+1)}</span></div>`; } });
   return html;
 }
 function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen.height||0)>=900, m=bpMode(); return {
   close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu",
-  hint: m==="harp" ? (es?"Pasa un dedo por las cuerdas. El arpa está afinada en el tono de la canción.":"Sweep a finger across the strings. The harp is tuned to the song's key.")
+  hint: m==="harp" ? (scaleOn() ? t("harpScale",{scale:scaleWords(true)}) : es?"Pasa un dedo por las cuerdas. El arpa está afinada en el tono de la canción.":"Sweep a finger across the strings. The harp is tuned to the song's key.")
       : m==="bars" ? (es?"Toca las láminas. Las de atrás son los sostenidos y bemoles.":"Tap the bars. The ones at the back are the sharps and flats.")
       : (es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like."),
   turn: tab ? (es?"Gira tu tableta de lado para tocar en toda la pantalla.":"Turn your tablet sideways to play on the whole screen.")
@@ -1268,6 +1372,7 @@ function bpText(){
   $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint; $("bpMore").textContent=W.menu;
   $("bpDown").setAttribute("aria-label", W.lower); $("bpUp").setAttribute("aria-label", W.higher);
   $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
+  $("bpScale").innerHTML=$("scaleSel").innerHTML; $("bpScale").value=scaleId(); $("bpScale").setAttribute("aria-label", t("scaleLab")); $("bpScale").hidden=!libsIn();
   bpRecPaint();
   $("bpTurn").textContent=W.turn;
   $("bpTurn").hidden=BP.seen || BP.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
@@ -1312,6 +1417,7 @@ function bpInit(){
   const lift=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
   document.addEventListener("pointerup",lift,true); document.addEventListener("pointercancel",lift,true);
   $("playView").querySelector(".bp-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
+  $("bpScale").onchange=()=>{ pickScale($("bpScale").value); setTimeout(()=>$("bpScale").blur(),0); };
   $("bpSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("bpSound").value; ss.onchange(); bpText(); setTimeout(()=>$("bpSound").blur(),0); };
   /* touch on the strings, the bars and the keys: no magnifier, no scroll */
   $("playView").addEventListener("touchstart",(e)=>{ if(e.cancelable && !(e.target.closest && e.target.closest("button,select"))) e.preventDefault(); },{passive:false});
@@ -1343,12 +1449,12 @@ function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; S.oct=null; save();
     allOff(); if(ac) setSendLevel(LIVE_CH, id);
     loadSound(id, paintLoad); paintLoad(); buildKeys(); if(BP.on) bpText(); };
-  $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); paintPads(); paintProg(); buildKeys(); };
-  $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; save(); paintMood(); paintPads(); paintProg(); };
-  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; save(); paintMood(); paintPads(); paintProg(); };
+  $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); paintPads(); paintProg(); paintScaleUI(); paintAny(); buildKeys(); if(BP.on) bpText(); };
+  $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; save(); paintScaleUI(); paintMood(); paintPads(); paintProg(); scaleMoved(); };
+  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; save(); paintScaleUI(); paintMood(); paintPads(); paintProg(); scaleMoved(); };
   $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
     S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; lastVoicing=null; save();
-    paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } };
+    paintScaleUI(); paintMood(); scaleMoved(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } };
   $("rhythmSel").onchange=()=>{ const was=beatsPerBar(); S.rhythm=$("rhythmSel").value; save();
     if(beatsPerBar()!==was){ paintDrums(); if(S.playing){ stop(true); start(); } } };   /* a waltz's bar is shorter: start it on its own count */
   { const W=$("wheel");
@@ -1376,7 +1482,8 @@ function bind(){
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening the menu */
-  ["soundSel","keySel","progSel","rhythmSel"].forEach(id=>{ const el=$(id);
+  bindScales();
+  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
   bindKeyboard();
@@ -1387,6 +1494,7 @@ loadState();
 bind();
 paintText();
 bpInit();
+if(libsIn()) scalesReady(); else document.addEventListener("DOMContentLoaded", scalesReady);
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ stop(); allOff(); } });
 window.addEventListener("pagehide",()=>{ stop(true); allOff(); });
 /* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */

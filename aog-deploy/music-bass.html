@@ -182,7 +182,11 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 @media (max-width:520px){
   .rig{padding:14px 10px 16px;border-radius:14px}
   .pbtn.play{min-width:0;flex:1 1 100%}
+  .nk-any .pbtn{flex:1 1 100%}
 }
+/* AOG-ANYCHORD-V1: any chord, under the pattern by the neck */
+.nk-any{margin-top:.2rem} .nk-any .field.small{min-width:6.5rem} .nk-anyline{margin:.45rem 0 .8rem;font-weight:700}
+.nk-anyline:empty{display:none}
 @media print{ .rig,.bench-bar,header{display:none!important} }
 /* AOG-CHORDSTRIP-V1: the six chords in one row, right on top of the instrument */
 .cstrip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:.1rem 0 .6rem}
@@ -251,6 +255,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-amp.js"></script>
+<script src="/aog-chords.js"></script><!-- AOG-ANYCHORD-V1: the shared chord library, read as the page's own script starts -->
+<script src="/aog-scales.js" defer></script><!-- AOG-SCALES-LIB-V1: the shared scale library -->
 <script src="/aog-solo.js" defer></script><!-- AOG-SOLO-V1: Solo mode on the neck (aog-solo.js) -->
 </head>
 <body>
@@ -357,6 +363,12 @@ body.pv-left .pv-drawer{left:auto;right:0}
         </div>
         <div class="prog nk-prog" id="prog2"></div>
         <p class="line nk-theory" data-t="theoryLine"></p>
+        <div class="row nk-any" id="anyRow"><!-- AOG-ANYCHORD-V1 (Jimmy, 2026-10-05): any chord at all, from the shared library (aog-chords.js); it lights on the neck as a chord button does -->
+          <label class="field small"><span class="plab" data-t="anyRootLab"></span><select id="anyRoot"></select></label>
+          <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
+          <button type="button" class="pbtn" id="anyBtn" data-t="anyBtn"></button>
+        </div>
+        <p class="line nk-anyline" id="anyLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the neck -->
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
@@ -505,6 +517,11 @@ const STR={
   rhythmLab: GTR?{en:"How the chords play",es:"Cómo suenan los acordes"}:{en:"How the bass plays",es:"Cómo suena el bajo"},
   yourPattern:{en:"Your chord pattern · one chord for each bar",es:"Tu patrón de acordes · un acorde por compás"},
   theoryLine:{en:"The small number is where each chord sits in the key: 1 is home, 4 and 5 pull away, and the music comes back to 1. The lit chord is playing now.",es:"El número pequeño dice dónde está cada acorde en la tonalidad: 1 es casa, 4 y 5 se alejan, y la música vuelve al 1. El acorde iluminado suena ahora."},
+  /* AOG-ANYCHORD-V1 */
+  anyRootLab:{en:"Any chord: root",es:"Cualquier acorde: raíz"}, anyKindLab:{en:"Kind of chord",es:"Tipo de acorde"},
+  anyBtn:{en:"▶ Play this chord",es:"▶ Tocar este acorde"},
+  anyLine:{en:"{name}: the notes {notes}.",es:"{name}: las notas {notes}."},
+  anyMoved:{en:"The neck moved to fret {n} so your hand can reach it.",es:"El mástil pasó al traste {n} para que tu mano llegue."},
   progEmpty:{en:"Pick a pattern above, or press Make my own.",es:"Elige un patrón arriba, o pulsa Hacer el mío."},
   ownOn:{en:"Tap the chord pads or the wheel in the order you want. Up to 8.",es:"Toca los pads o la rueda en el orden que quieras. Hasta 8."},
   play:{en:"▶ Play the chords",es:"▶ Tocar los acordes"}, stop:{en:"■ Stop",es:"■ Parar"},
@@ -846,6 +863,14 @@ function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) 
 const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10], add9:[0,4,7,14]};
 const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7", add9:"add9"};
 const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7", add9:" add9"};
+/* AOG-ANYCHORD-V1 (Jimmy, 2026-10-05: "scales, modes and chords and all that"): every kind in the shared chord library
+   (aog-chords.js, 45 kinds) joins the six above, which stay exactly as they are. Steps above the root; 14 = the 9th.
+   The patterns, the pads and the ways to play (the bass lines, the strums) are written for the six, so a listing of Q
+   (Object.keys) still gives only those six; the others are there by name, for the Any chord menu */
+const AC=window.AOGChords||null;
+if(AC) AC.ids().forEach(id=>{ if(Q[id]) return; Object.defineProperty(Q, id, {value:AC.KINDS[id].iv.slice(), enumerable:false});
+  const y=AC.sym(id); SUF[id]=y; SUF_ES[id]=/^[a-z]/i.test(y)?" "+y:y; });
+const Q6=Object.keys(Q);
 const NAMES={sharp:["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"], flat:["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"]};
 const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"], flat:["Do","Re♭","Re","Mi♭","Mi","Fa","Sol♭","Sol","La♭","La","Si♭","Si"]};
 const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
@@ -1018,12 +1043,13 @@ const OPEN={
   "0dom7":[-1,3,2,3,1,0], "9dom7":[-1,0,2,0,2,0], "7dom7":[3,2,0,0,0,1], "4dom7":[0,2,0,1,0,0], "2dom7":[-1,-1,0,2,1,2], "11dom7":[-1,2,1,2,0,2],
   "0maj7":[-1,3,2,0,0,0], "9maj7":[-1,0,2,1,2,0], "7maj7":[3,2,0,0,0,2], "4maj7":[0,2,1,1,0,0], "2maj7":[-1,-1,0,2,2,2], "5maj7":[-1,-1,3,2,1,0],
   "9m7":[-1,0,2,0,1,0], "4m7":[0,2,0,0,0,0], "2m7":[-1,-1,0,2,1,1], "11m7":[-1,2,0,2,0,2],
-  "0add9":[-1,3,2,0,3,0], "7add9":[3,-1,0,2,0,3], "2add9":[-1,-1,0,2,3,0], "5add9":[-1,-1,3,2,1,3]
+  "0add9":[-1,3,2,0,3,0], "7add9":[3,-1,0,2,0,3], "5add9":[-1,-1,3,2,1,3]
+  /* AOG-ANYCHORD-V1: "2add9" (x x 0 2 3 0) left: it is D A D E, a Dsus2 with no F♯. findVoicing finds a D add9 with its 3rd */
 };
 const MOVABLE=[
   {at:4, maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], dom7:[0,2,0,1,0,0], maj7:[0,-1,1,1,0,-1], m7:[0,2,0,0,0,0], add9:[0,2,4,1,0,0]},          /* E shape: root on the 6th string */
   {at:9, maj:[-1,0,2,2,2,0], min:[-1,0,2,2,1,0], dom7:[-1,0,2,0,2,0], maj7:[-1,0,2,1,2,0], m7:[-1,0,2,0,1,0], add9:[-1,0,2,4,2,0]},       /* A shape: root on the 5th */
-  {at:2, maj:[-1,-1,0,2,3,2], min:[-1,-1,0,2,3,1], dom7:[-1,-1,0,2,1,2], maj7:[-1,-1,0,2,2,2], m7:[-1,-1,0,2,1,1], add9:[-1,-1,0,2,3,0]}    /* D shape: root on the 4th */
+  {at:2, maj:[-1,-1,0,2,3,2], min:[-1,-1,0,2,3,1], dom7:[-1,-1,0,2,1,2], maj7:[-1,-1,0,2,2,2], m7:[-1,-1,0,2,1,1]}    /* D shape: root on the 4th (AOG-ANYCHORD-V1: its add9, x x 0 2 3 0, had no 3rd: a sus2; gone) */
 ];
 function shapesFor(c){
   const root=((S.key+c.off)%12+12)%12, out=[], o=OPEN[root+c.q];
@@ -1070,7 +1096,7 @@ function powerFor(c, a, b){
 function shapeFor(c){
   const [a,b]=win(), pw=!!(SOUNDS[S.sound]&&SOUNDS[S.sound].power), key=[S.key,c.off,c.q,a,b,pw?"p":""].join("|");
   if(VOICINGS.has(key)) return VOICINGS.get(key);
-  if(pw){ const p=powerFor(c, a, b); if(p){ VOICINGS.set(key, p); return p; } }
+  if(pw && Q[c.q].indexOf(7)>=0){ const p=powerFor(c, a, b);   /* AOG-ANYCHORD-V1: a power chord only for a chord with a plain 5th */ if(p){ VOICINGS.set(key, p); return p; } }
   let best=null, bs=1e9;
   shapesFor(c).forEach(sh=>{ if(!fits(sh.f, a, b)) return;
     const fr=sh.f.filter(x=>x>0); let sc=0;
@@ -1078,7 +1104,8 @@ function shapeFor(c){
     sc+=Math.abs((fr.length?Math.min.apply(null,fr):a)-a)*0.5;
     sc+=(TUNING.length-sh.f.filter(x=>x>=0).length)*0.4;       /* fuller chords a little better */
     if(sc<bs){ bs=sc; best=sh.f; } });
-  if(!best) best=findVoicing(c, a, b) || (c.q==="add9" ? shapeFor({off:c.off, q:"maj"}) : null) || TUNING.map(()=>-1);   /* AOG-CHORDS-MORE-V1: an add9 the hand cannot reach here plays as the plain chord */
+  if(!best) best=findVoicing(c, a, b) || (c.q==="add9" ? shapeFor({off:c.off, q:"maj"}) : null)   /* AOG-CHORDS-MORE-V1: an add9 the hand cannot reach here plays as the plain chord */
+    || (Q6.indexOf(c.q)<0 ? findVoicing(c, a, b, true) : null) || TUNING.map(()=>-1);   /* AOG-ANYCHORD-V1: a big chord the hand cannot reach here plays its root, its third and what fits (the Any chord menu moves the neck to where it all fits) */
   VOICINGS.set(key, best);
   return best;
 }
@@ -1086,21 +1113,33 @@ function shapeFor(c){
    the chord. Kept only if a strum catches all its strings (side by side), it has the root and the third (and the seventh),
    it fits a hand (four fingers, one of them can lie across a fret, no more than four frets apart); then the fullest wins,
    with the root at the bottom and the fifth in it if it can be. */
-function findVoicing(c, a, b){
-  const pcs=chordPcs(c), cur=[];
+function findVoicing(c, a, b, loose){
+  const pcs=chordPcs(c), cur=[], nd=chordNeeds(c, loose);
   const opts=TUNING.map(o=>{ const l=[-1]; if(a<=2 && pcs.indexOf(o%12)>=0) l.push(0); for(let f=a; f<=b; f++) if(pcs.indexOf((o+f)%12)>=0) l.push(f); return l; });
   let best=null, bs=1e9;
-  (function walk(s){
-    if(s===TUNING.length){ const sc=voicingScore(cur, pcs); if(sc<bs){ bs=sc; best=cur.slice(); } return; }
-    opts[s].forEach(f=>{ cur[s]=f; walk(s+1); });
-  })(0);
+  /* AOG-ANYCHORD-V1: on a wide window (an iPad shows up to twelve frets) the walk drops, as it goes, every shape already
+     more than four frets wide; the shapes kept, and the one chosen, are the same as before */
+  (function walk(s, lo, hi){
+    if(s===TUNING.length){ const sc=voicingScore(cur, nd); if(sc<bs){ bs=sc; best=cur.slice(); } return; }
+    opts[s].forEach(f=>{ const l=f>0?Math.min(lo,f):lo, h=f>0?Math.max(hi,f):hi; if(h-l>3) return; cur[s]=f; walk(s+1, l, h); });
+  })(0, 99, -99);
   return best;
 }
-function voicingScore(f, pcs){
+/* AOG-ANYCHORD-V1: the notes a chord's shape must have, and the ones it may leave out. Always the root, the third (or the
+   sus note), the seventh and the chord's own colour (the 6th, the 9th, ♭9, ♯11, 13, ♭5, ♯5 …). The 5th may go, as jazz
+   players leave it; on a chord with an 11th or a 13th the 9th may go too, and under a 13th the 11th. For the first six
+   kinds that is what it always was: the root, the third, and the seventh or the 9th; the 5th when it fits. */
+function chordNeeds(c, loose){
+  const iv=Q[c.q], root=((S.key+c.off)%12+12)%12, top=Math.max.apply(null,iv), need=[], opt=[];
+  iv.forEach((i,j)=>{ const pc=(root+i)%12, w=(i===7 && iv.length>2) ? 1.5 : (i===14 && top>14) ? 1.2 : (i===17 && top>17) ? 1 : (loose && j>1) ? 1 : 0;   /* loose: the root and the next note only */
+    if(w) opt.push([pc, w]); else if(need.indexOf(pc)<0) need.push(pc); });
+  return {root:root, need:need, opt:opt};
+}
+function voicingScore(f, nd){
   const on=[]; f.forEach((x,s)=>{ if(x>=0) on.push(s); });
   if(on.length<3 || on[on.length-1]-on[0]+1!==on.length) return 1e9;
   const notes=on.map(s=>TUNING[s]+f[s]), have=new Set(notes.map(m=>m%12));
-  if(!have.has(pcs[0]) || !have.has(pcs[1]) || (pcs.length>3 && !have.has(pcs[3]))) return 1e9;
+  if(nd.need.some(pc=>!have.has(pc))) return 1e9;
   const fr=on.map(s=>f[s]).filter(x=>x>0);
   if(fr.length){
     const lo=Math.min.apply(null,fr), hi=Math.max.apply(null,fr); if(hi-lo>3) return 1e9;
@@ -1109,8 +1148,8 @@ function voicingScore(f, pcs){
     if(fingers>4) return 1e9;
   }
   let sc=-2*on.length;
-  if(Math.min.apply(null,notes)%12!==pcs[0]) sc+=6;
-  if(!have.has(pcs[2])) sc+=1.5;
+  if(Math.min.apply(null,notes)%12!==nd.root) sc+=6;
+  nd.opt.forEach(o=>{ if(!have.has(o[0])) sc+=o[1]; });
   if(fr.length) sc+=0.3*(Math.max.apply(null,fr)-Math.min.apply(null,fr));
   return sc;
 }
@@ -1803,6 +1842,84 @@ function playChord(c, v){
   else { const cl=cellFor(bassRoot(c)); if(cl) pluckCell(cl.s, cl.f, v, now); }
 }
 
+/* ══ AOG-ANYCHORD-V1 (2026-10-05) — any chord ══════════════════════════════════════════════════════════════════════
+   Jimmy: "scales, modes and chords and all that". Under the pattern by the neck: a root, one of the library's 45 kinds
+   (aog-chords.js), and a button. Choosing one puts it in the hand, as a chord button does: it lights on the neck and
+   plays (the guitar strums it; the bass plays the root, then the chord's notes one after another). When the hand
+   cannot reach it on the frets on screen, the neck moves to the nearest place where it can. */
+const ANY={root:null, id:"maj"};
+function anyChord(){ const r=ANY.root==null?S.key:ANY.root; return {off:((r-S.key)%12+12)%12, q:Q[ANY.id]?ANY.id:"maj"}; }
+/* a guitar shape the hand can play: every note in the chord, the notes it needs, at most four frets apart, on screen */
+function shapeOK(f, c){
+  const pcs=chordPcs(c), on=f.filter(x=>x>=0), fr=on.filter(x=>x>0);
+  if(on.length<2 || !on.every(x=>inReach(x))) return false;
+  if(fr.length && Math.max.apply(null,fr)-Math.min.apply(null,fr)>4) return false;   /* the chord charts' widest (an E-shape add9) */
+  const have=new Set(); f.forEach((x,s)=>{ if(x>=0) have.add((TUNING[s]+x)%12); });
+  if([...have].some(pc=>pcs.indexOf(pc)<0)) return false;
+  const pw=!!(SOUNDS[S.sound]&&SOUNDS[S.sound].power) && Q[c.q].indexOf(7)>=0;   /* a metal sound plays the root and the 5th */
+  return pw ? have.has(pcs[0]) : chordNeeds(c).need.every(pc=>have.has(pc));
+}
+/* the bass: every note of the chord within reach, above the root */
+function anyHere(c){
+  if(GTR) return shapeOK(shapeFor(c), c);
+  const R=bassRoot(c), ns=anyBassNotes(c), cl=cellFor(R);
+  return !!cl && inReach(cl.f) && new Set(ns.map(m=>m%12)).size===new Set(chordPcs(c)).size && ns.every((m,i)=>!i || m>R);
+}
+/* where the hand goes for chord c: here if it can, else the nearest window of frets that works (lower first) */
+function anyPlace(c){
+  const was=S.fret0, hi=Math.max(1, MAXF-NECK.n+1), order=[was];
+  for(let d=1; d<=hi; d++){ if(was-d>=1) order.push(was-d); if(was+d<=hi) order.push(was+d); }
+  for(const f0 of order){ S.fret0=f0; if(anyHere(c)) return f0; }
+  S.fret0=was; return was;
+}
+/* the bass's arpeggio: the root, then each note of the chord upward, every one where the hand is */
+function anyBassNotes(c){
+  const R=bassRoot(c), out=[]; let prev=-1;
+  Q[c.q].slice().sort((x,y)=>x-y).forEach(i=>{
+    const m=R+i, cands=[m, m-12, m+12, m-24, m+24].filter(x=>{ const cl=cellFor(x); return cl && inReach(cl.f); });
+    /* upward from the last note; a high 9th or 13th the hand cannot reach up there comes in lower, still above the root */
+    const up=cands.filter(x=>x>prev).sort((x,y)=>x-y), over=cands.filter(x=>x>R).sort((x,y)=>x-y), pick=up.length ? up[0] : over.length ? over[0] : cands[0];
+    if(pick!=null && out.indexOf(pick)<0){ out.push(pick); prev=pick; } });
+  return out;
+}
+function playAny(c){
+  if(GTR){ playChord(c, 0.74); return; }
+  const now=ctx().currentTime;
+  anyBassNotes(c).forEach((m,k)=>{ const cl=cellFor(m); if(cl) pluckCell(cl.s, cl.f, k?0.68:0.76, now+k*0.24); });
+}
+function anyName(){ const r=ANY.root==null?S.key:ANY.root, y=AC?AC.sym(ANY.id):SUF[ANY.id]||"";
+  return KEY_NAMES[S.lang][r]+(S.lang==="es" && /^[a-z]/i.test(y) ? " " : "")+y; }
+function paintAnyLine(){
+  const el=$("anyLine"); if(!el) return;
+  const c=anyChord(), held=ANY.shown && S.hand && S.hand.q===c.q && S.hand.off===c.off;
+  /* each note spelled as the chord says it: a ♭3, ♭5, ♭7, ♭9 or ♭13 with a flat, a ♯5, ♯9 or ♯11 with a sharp, the
+     others as the root is spelled (C7: C E G B♭; Cm7♭5: C E♭ G♭ B♭; D: D F♯ A) */
+  const root=((S.key+c.off)%12+12)%12, rootFlat=[1,3,5,8,10].indexOf(root)>=0, set=S.lang==="es"?SOLFA:NAMES, seen=[];
+  const notes=Q[c.q].map(i=>{ const pc=(root+i)%12; if(seen.indexOf(pc)>=0) return null; seen.push(pc);
+    const fl=[1,3,6,10,13,20].indexOf(i)>=0 ? true : [8,15,18].indexOf(i)>=0 ? false : rootFlat;
+    return i===0 ? KEY_NAMES[S.lang][root] : set[fl?"flat":"sharp"][pc]; }).filter(Boolean);
+  const s=held ? t("anyLine",{name:anyName(), notes:notes.join(" · ")})
+    +(ANY.moved ? " "+t("anyMoved",{n:ANY.moved}) : "") : "";
+  if(el.textContent!==s) el.textContent=s;
+}
+function pickAny(play){
+  if(ANY.root==null) ANY.root=S.key;
+  const c=anyChord(), was=S.fret0, f0=anyPlace(c);
+  S.hand={off:c.off, q:c.q};
+  ANY.shown=true; ANY.moved=f0!==was ? f0 : 0;
+  if(f0!==was){ buildNeck(); save(); }
+  if(play) playAny(c);
+  litNeck(); paintAnyLine();
+}
+function paintAny(){
+  const r=$("anyRoot"), k=$("anyKind"); if(!r || !k) return;
+  const root=ANY.root==null?S.key:ANY.root;
+  r.innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===root?" selected":""}>${n}</option>`).join("");
+  const opt=id=>{ const y=AC?AC.sym(id):SUF[id]; return `<option value="${id}"${id===ANY.id?" selected":""}>${(y?y+" · ":"")+(AC?AC.label(id,S.lang):id)}</option>`; };
+  k.innerHTML=AC ? AC.GROUPS.map(g=>`<optgroup label="${AC.group(g[0],S.lang)}">`+g[1].map(opt).join("")+`</optgroup>`).join("") : Object.keys(SUF).map(opt).join("");
+  paintAnyLine();
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    CHORDS — pads, the pattern, and the player
    ══════════════════════════════════════════════════════════════════════════ */
@@ -2209,7 +2326,7 @@ function paintText(){
   $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
   recLine();
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
-  paintDial(); paintDrums(); buildNeck(); pvText();
+  paintDial(); paintDrums(); paintAny(); buildNeck(); pvText();
 }
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
@@ -2229,7 +2346,8 @@ function paintProgSel(){
 const DEGREE=["1","♭2","2","♭3","3","4","♭5","5","♭6","6","♭7","7"];
 function degreeOf(c){ return DEGREE[((c.off%12)+12)%12]; }
 function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }   /* AOG-STRINGS-WAYS-V1: in groups, as the piano's */
-function paintMood(){ ["","2"].forEach(x=>{ const a=$("majBtn"+x), b=$("minBtn"+x); if(a) a.setAttribute("aria-pressed", S.minor?"false":"true"); if(b) b.setAttribute("aria-pressed", S.minor?"true":"false"); }); const k2=$("keySel2"); if(k2) k2.value=String(S.key); }
+function paintMood(){ ["","2"].forEach(x=>{ const a=$("majBtn"+x), b=$("minBtn"+x); if(a) a.setAttribute("aria-pressed", S.minor?"false":"true"); if(b) b.setAttribute("aria-pressed", S.minor?"true":"false"); }); const k2=$("keySel2"); if(k2) k2.value=String(S.key);
+  const ar=$("anyRoot"); if(ar && ANY.root==null) ar.value=String(S.key); }   /* AOG-ANYCHORD-V1: its root follows the key until one is chosen */
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
@@ -2424,6 +2542,7 @@ function litNeck(){
   const ll=$("litLine"); if(ll) ll.hidden=!(cc || S.playing);
   paintWheelState();
   if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
+  paintAnyLine();   /* AOG-ANYCHORD-V1: its line only while that chord is in the hand */
 }
 function neckHit(e){
   if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
@@ -2819,6 +2938,9 @@ function bind(){
   $("majBtn2").onclick=()=>$("majBtn").onclick(); $("minBtn2").onclick=()=>$("minBtn").onclick();
   $("progSel2").onchange=()=>{ const ps=$("progSel"); ps.value=$("progSel2").value; ps.onchange(); };
   $("playBtn2").onclick=()=>$("playBtn").onclick();
+  $("anyRoot").onchange=()=>{ ANY.root=+$("anyRoot").value; pickAny(true); };   /* AOG-ANYCHORD-V1 */
+  $("anyKind").onchange=()=>{ if(Q[$("anyKind").value]) ANY.id=$("anyKind").value; pickAny(true); };
+  $("anyBtn").onclick=()=>pickAny(true);
   $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
     S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; save();
     paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } litNeck(); };
@@ -2850,7 +2972,7 @@ function bind(){
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening the menu */
-  ["soundSel","keySel","keySel2","progSel","progSel2","rhythmSel"].forEach(id=>{ const el=$(id);
+  ["soundSel","keySel","keySel2","progSel","progSel2","rhythmSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
   bindNeck();

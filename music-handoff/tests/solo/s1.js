@@ -53,7 +53,7 @@ const DEVS=[["iPhone 13",null],["iPad (gen 7)",null],["Desktop",{viewport:{width
         const exp=[]; TUNING.forEach((o,s2)=>fr.forEach(f=>{ if(want.has((o+f)%12)) exp.push(s2+":"+f); }));
         return {ok:lit.length===exp.length && lit.every(x=>exp.indexOf(x)>=0), say:document.getElementById("soSay").textContent, n:want.size}; });
       if(!r.ok || !/ scale, frets /.test(r.say) || /nm_|sc_/.test(r.say)) scBad.push(id+": "+r.say); }
-    ok(allsc.ids.length>=53 && allsc.groups>=7 && new Set(allsc.ids).size===allsc.ids.length && scBad.length===0, `${allsc.ids.length} scales in ${allsc.groups} groups, each lights exactly its own notes and is named`+(scBad.length?": "+scBad.slice(0,4).join(" | "):""));
+    ok(allsc.ids.length>=150 && allsc.groups>=12 && new Set(allsc.ids).size===allsc.ids.length && scBad.length===0, `${allsc.ids.length} scales in ${allsc.groups} groups, each lights exactly its own notes and is named`+(scBad.length?": "+scBad.slice(0,4).join(" | "):""));
     await p.selectOption("#soScaleSel","majpent");
     if(inst==="bass") ok(await p.evaluate(()=>document.querySelectorAll("#neck #soScale .so-five").length>0), "the bass shows root–fifth–octave shapes");
     else ok(await p.evaluate(()=>!!document.querySelector("#neck #soWham[role=slider]")), "the guitar shows the whammy bar (a slider) at the strum strip");
