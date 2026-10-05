@@ -301,6 +301,10 @@ const SC_GROUPS=[
   ["sym",["whole", "dimhw", "dimwh", "augsc", "tritone", "prometheus", "chrom"]],
   ["world",["phrydom", "dblharm", "persian", "majloc", "spanish8", "enigma", "hirajoshi", "insen", "iwato", "kumoi", "yo", "pelog", "todi", "chinese"]]];
 const SC_ORDER=[].concat.apply([], SC_GROUPS.map(g=>g[1]));
+/* AOG-SCALES-LIB-V1 (2026-10-05): the shared library (aog-scales.js, 150 and more, grouped by parent scale) replaces the
+   list above when it is loaded; the list above stays as the fallback. */
+if(window.AOGScales && AOGScales.SCALES){ Object.assign(SCALES, AOGScales.SCALES); Object.assign(WD, AOGScales.WORDS||{});
+  SC_GROUPS.splice(0, SC_GROUPS.length, ...AOGScales.GROUPS); SC_ORDER.splice(0, SC_ORDER.length, ...[].concat(...SC_GROUPS.map(g=>g[1]))); }
 
 /* ══ licks: t = when (beats), s = string (0 = the thick one), f = fret above the box's low root, d = how long (beats);
    k = how: p pick (the usual), h hammer-on, o pull-off, t tap (no pick), g a ghost note (muted);
