@@ -375,7 +375,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </script>
 <div class="wrap">
   <header class="no-print">
-    <a class="brand" href="music-drums.html" id="brand">The Turntables</a>
+    <a class="brand" href="music-pads.html" id="brand">The Turntables</a>
     <div class="tools">
       <a class="pill" href="/decks-guide" style="text-decoration:none">Picture guide</a>
       <button type="button" class="pill" id="langBtn">ES</button>
@@ -385,7 +385,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
   <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
-  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><span class="sisters"><a class="sep" href="/decks-guide" id="navGuide"><span class="lg">Picture guide</span><span class="sh">Guide</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos"><a href="music-drums.html" id="navDrums">Drums</a><a href="music-kit.html" id="navKit">Drum kit</a><a href="music-pads.html" id="navPads">Beat Lab</a><a href="music-piano.html" id="navPiano">Piano</a><a href="music-guitar.html" id="navGuitar">Guitar</a><a href="music-bass.html" id="navBass">Bass</a><a href="music-band.html" id="navBand">Band</a><a href="music-decks.html" class="on" id="navDecksTool">Turntables</a><a href="music-studio.html" id="navStudio">Mixing desk</a></span></span></nav>
+  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><span class="sisters"><a class="sep" href="/decks-guide" id="navGuide"><span class="lg">Picture guide</span><span class="sh">Guide</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos"><a href="music-pads.html" id="navPads">Drum machine</a><a href="music-kit.html" id="navKit">Drum kit</a><a href="music-piano.html" id="navPiano">Piano</a><a href="music-guitar.html" id="navGuitar">Guitar</a><a href="music-bass.html" id="navBass">Bass</a><a href="music-band.html" id="navBand">Band</a><a href="music-decks.html" class="on" id="navDecksTool">Turntables</a><a href="music-studio.html" id="navStudio">Mixing desk</a></span></span></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
@@ -512,17 +512,17 @@ const STR = {
   filter:{en:"Filter",es:"Filtro"},
   bpmWait:{en:"listening…",es:"escuchando…"},
   noBeat:{en:"no steady beat",es:"sin pulso claro"},
-  bench:{en:"From the drum machine",es:"De la caja de ritmos"},
+  bench:{en:"From the classic drum machine",es:"De la caja de ritmos clásica"},
   benchNone:{en:"Bounce a pattern from the drum machine and it lands here.",es:"Rebota un patrón de la caja de ritmos y aparece aquí."},
-  benchGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
+  benchGo:{en:"Open the classic drum machine",es:"Abrir la caja de ritmos clásica"},
   keys:{en:"From the piano",es:"Del piano"},
   keysGo:{en:"Open the piano",es:"Abrir el piano"},
   guitar:{en:"From the guitar",es:"De la guitarra"}, guitarGo:{en:"Open the guitar",es:"Abrir la guitarra"},   /* AOG-STRINGS-V1 */
   bassT:{en:"From the bass",es:"Del bajo"}, bassGo:{en:"Open the bass",es:"Abrir el bajo"},
   bandT:{en:"From the band",es:"De la banda"}, bandGo:{en:"Open the band",es:"Abrir la banda"},   /* AOG-BAND-V1 */
   studioT:{en:"From the mixing desk",es:"De la mesa de mezclas"}, studioGo:{en:"Open the mixing desk",es:"Abrir la mesa de mezclas"},   /* AOG-STUDIO-V1 */
-  drumTakeT:{en:"A take from the drum machine",es:"Una toma de la caja de ritmos"},   /* AOG-MUSIC-REC-V1 */
-  padsT:{en:"From the Beat Lab",es:"Del laboratorio de ritmos"}, padsGo:{en:"Open the Beat Lab",es:"Abrir el laboratorio de ritmos"},   /* AOG-PADS-STUDIO-V1 */
+  drumTakeT:{en:"A take from the classic drum machine",es:"Una toma de la caja de ritmos clásica"},   /* AOG-MUSIC-REC-V1 */
+  padsT:{en:"From the drum machine",es:"De la caja de ritmos"}, padsGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},   /* AOG-PADS-STUDIO-V1 */
   crateNext:{en:"Up next",es:"Lo que sigue"},
   crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
@@ -1041,12 +1041,12 @@ function paintTakeLine(){
    AOG-DJ-V1 — a shelf that says its tempo (and where beat one is) gives the deck
    an exact grid, so SYNC with another tool's beat is exact too. */
 const SHELF = [
+  { key:"padbench",   id:"padbench",  lab:"padsT",     go:"padsGo",   href:"music-pads.html",   file:"beat-lab.wav" }, /* AOG-PADS-STUDIO-V1: a loop or take from the Beat Lab */
   { key:"drumbench",  id:"drumbench", lab:"bench",     go:"benchGo",  href:"music-drums.html",  file:"drum-bench.wav" },
   { key:"keysbench",  id:"keys",      lab:"keys",      go:"keysGo",   href:"music-piano.html",  file:"piano.wav" },   /* AOG-PIANO-V1 */
   { key:"guitarbench",id:"guitar",    lab:"guitar",    go:"guitarGo", href:"music-guitar.html", file:"guitar.wav" },  /* AOG-STRINGS-V1 */
   { key:"bassbench",  id:"bass",      lab:"bassT",     go:"bassGo",   href:"music-bass.html",   file:"bass.wav" },
   { key:"bandbench",  id:"band",      lab:"bandT",     go:"bandGo",   href:"music-band.html",   file:"band.wav" },    /* AOG-BAND-V1 */
-  { key:"padbench",   id:"padbench",  lab:"padsT",     go:"padsGo",   href:"music-pads.html",   file:"beat-lab.wav" }, /* AOG-PADS-STUDIO-V1: a loop or take from the Beat Lab */
   { key:"drumtake",   id:"drumtake",  lab:"drumTakeT", go:"benchGo",  href:"music-drums.html",  file:"drumtake.wav" },/* AOG-MUSIC-REC-V1: a take recorded on the drum machine */
   { key:"studiobench",id:"studio",    lab:"studioT",   go:"studioGo", href:"music-studio.html", file:"studio.wav" }   /* AOG-STUDIO-V1: a song mixed in the studio */
 ];
@@ -1084,7 +1084,7 @@ function paintBench(){
     b.onclick = ()=>{ const s = SHELF.find(x=>x.id===b.getAttribute("data-take")); put(s, decks.find(x=>x.id===b.getAttribute("data-deck"))); };
   });
   box.querySelectorAll("[data-keys]").forEach(b=>{
-    b.onclick = ()=>{ put(SHELF[1], decks.find(x=>x.id===b.getAttribute("data-keys"))); };
+    b.onclick = ()=>{ put(SHELF.find(x=>x.id==="keys"), decks.find(x=>x.id===b.getAttribute("data-keys"))); };
   });
 }
 /* ══ AOG-DECKS-CRATE-V1 (2026-09-25) — THE RECORD CRATE ══════════════════════
@@ -2454,7 +2454,7 @@ function paintChrome(){
   paintTape();
   document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");
-  document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-drums.html">${t("drums")}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("sci")}</a></p>`;
+  document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-pads.html">${t("drums")}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("sci")}</a></p>`;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
 }
@@ -2487,7 +2487,7 @@ document.addEventListener("visibilitychange", ()=>{
     document.querySelectorAll("#benchSwitch [data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     const es=S.lang==="es";
-    const L={navDecks:["Bench","Mesa"],navDrums:["Drums","Ritmos"],navKit:["Drum kit","Batería"],navPads:["Beat Lab","Laboratorio de ritmos"],navPiano:["Piano","Piano"],navGuitar:["Guitar","Guitarra"],navBass:["Bass","Bajo"],navBand:["Band","Banda"],navDecksTool:["Turntables","Tocadiscos"],navStudio:["Mixing desk","Mesa de mezclas"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabA:["Deck A","Plato A"],decktabB:["Deck B","Plato B"],decktabC:["Deck C","Plato C"],decktabMix:["Mixer","Mezclador"]};
+    const L={navDecks:["Bench","Mesa"],navKit:["Drum kit","Batería"],navPads:["Drum machine","Caja de ritmos"],navPiano:["Piano","Piano"],navGuitar:["Guitar","Guitarra"],navBass:["Bass","Bajo"],navBand:["Band","Banda"],navDecksTool:["Turntables","Tocadiscos"],navStudio:["Mixing desk","Mesa de mezclas"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabA:["Deck A","Plato A"],decktabB:["Deck B","Plato B"],decktabC:["Deck C","Plato C"],decktabMix:["Mixer","Mezclador"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
     const SH={navGuide:["Guide","Guía"]};   /* AOG-BENCH-SHORT-V1: the short name a phone shows (the tools are in one menu: AOG-MUSIC-TOOLS-MENU-V1) */
     Object.keys(SH).forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=`<span class="lg">${L[id][es?1:0]}</span><span class="sh">${SH[id][es?1:0]}</span>`; });

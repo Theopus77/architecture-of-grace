@@ -7,14 +7,14 @@
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
 try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
 </script>
-<title>The Beat Lab — Architecture of Grace</title>
+<title>The Drum Machine — Architecture of Grace</title>
 <meta name="description" content="Sixteen pads that play every sound on this site: the recorded drum kits, the pianos and organs, the guitars, the basses, the band, and records to chop. Make a loop, then send it to the Mixing Desk. Works on a phone, a tablet and a computer.">
-<link rel="canonical" href="https://architectureofgrace.org/beat-lab">
+<link rel="canonical" href="https://architectureofgrace.org/drum-machine">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
-<meta property="og:title" content="The Beat Lab — Architecture of Grace">
+<meta property="og:title" content="The Drum Machine — Architecture of Grace">
 <meta property="og:description" content="Sixteen pads. Every sound on the site. Make a loop. No login.">
-<meta property="og:url" content="https://architectureofgrace.org/beat-lab">
+<meta property="og:url" content="https://architectureofgrace.org/drum-machine">
 <meta property="og:image" content="https://architectureofgrace.org/og-drum-kit.png?v=1">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,6 +26,9 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
 <link rel="stylesheet" href="/aog-calm.css">
 <!-- AOG-BEATLAB-NAME-V1 (2026-10-05) — Jimmy: "I don't like the name the pad machine". It is The Beat Lab (El laboratorio de
      ritmos), at /beat-lab; /pads and /pad-machine still open it. The file keeps its name.
+     AOG-DRUM-MACHINE-V2 (2026-10-05) — Jimmy: "The drum machine should be retired not deleted, and the beat pad should take
+     over this name." It is The Drum Machine (La caja de ritmos), at /drum-machine; /beat-lab still opens it. The first drum
+     machine (music-drums.html) stays at /drums and /classic-drum-machine for the lessons that use it, off the lab doors.
      AOG-PADS-V1 (2026-10-05) — Jimmy: "A drum pad should be made that incorporates everything in one. This could be the 1%
      drum pad machine that kills it compared to everything else out there. Everything is basically built."
      The Beat Lab, /pads: sixteen pads, four banks (A to D), and every sound the site already has.
@@ -170,7 +173,7 @@ details.pm-set[open]>summary::before{content:"▾"}
 </script>
 <div class="wrap">
   <header class="no-print">
-    <a class="brand" href="#" id="brand">The Beat Lab</a>
+    <a class="brand" href="#" id="brand">The Drum Machine</a>
     <div class="tools">
       <button type="button" class="pill" id="langBtn">ES</button>
       <button type="button" class="pill" id="themeBtn">Dark</button>
@@ -181,7 +184,7 @@ details.pm-set[open]>summary::before{content:"▾"}
     <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
   </div>
   <main id="view">
-    <p class="pm-guide"><a href="/beat-lab-guide" id="guideLink"></a></p>
+    <p class="pm-guide"><a href="/drum-machine-guide" id="guideLink"></a></p>
     <div class="pm">
       <div class="pm-cols">
         <div>
@@ -259,7 +262,7 @@ details.pm-set[open]>summary::before{content:"▾"}
 "use strict";
 const $=id=>document.getElementById(id);
 const STR={
-  app:{en:"The Beat Lab",es:"El laboratorio de ritmos"}, kicker:{en:"Every sound on sixteen pads",es:"Todos los sonidos en dieciséis pads"},
+  app:{en:"The Drum Machine",es:"La caja de ritmos"}, kicker:{en:"Every sound on sixteen pads",es:"Todos los sonidos en dieciséis pads"},
   lead:{en:"Drums, keys, guitar, bass, the band and records to chop. Tap a pad.",es:"Batería, teclados, guitarra, bajo, banda y discos para cortar. Toca un pad."},
   bankLab:{en:"Bank",es:"Banco"},
   t_drums:{en:"Drums",es:"Batería"}, t_notes:{en:"Notes",es:"Notas"}, t_chords:{en:"Chords",es:"Acordes"}, t_chops:{en:"Chops of a record",es:"Cortes de un disco"},
@@ -311,7 +314,7 @@ const STR={
   bStudioGo:{en:"Open the Mixing Desk",es:"Abrir la mesa de mezclas"}, bDecksSent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los tocadiscos para tocarlo."}, bDecksGo:{en:"The turntables",es:"Los tocadiscos"},
   bFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
   bNoRoom:{en:"This device has no room left. At the Mixing Desk, remove a take you do not need, then try again.",es:"Este dispositivo no tiene más espacio. En la mesa de mezclas, quita una toma que no necesites y vuelve a intentarlo."},
-  bName:{en:"Beat Lab loop · {bars} · {bpm} BPM",es:"Bucle del laboratorio de ritmos · {bars} · {bpm} BPM"},
+  bName:{en:"Drum machine loop · {bars} · {bpm} BPM",es:"Bucle de la caja de ritmos · {bars} · {bpm} BPM"},
   bankA:{en:"A",es:"A"}, padsLab:{en:"The sixteen pads",es:"Los dieciséis pads"}, stepN:{en:"Step {n}",es:"Paso {n}"}
 };
 const S0={lang:"en"};
@@ -840,7 +843,7 @@ function bounceName(o){ return {en:STR.bName.en.replace("{bars}", o.bars===1?STR
 function bindBounce(){
   $("bounceBtn").onclick=makeBounce;
   $("bSave").onclick=()=>{ const o=BOUNCE.out; if(!o) return; LES.mark("bsave"); const a=document.createElement("a"), u=URL.createObjectURL(o.blob);
-    a.href=u; a.download=(S0.lang==="es"?"bucle-laboratorio-de-ritmos-":"beat-lab-loop-")+o.bpm+"bpm-"+o.bars+(S0.lang==="es"?"compases":"bars")+".wav";
+    a.href=u; a.download=(S0.lang==="es"?"bucle-caja-de-ritmos-":"drum-machine-loop-")+o.bpm+"bpm-"+o.bars+(S0.lang==="es"?"compases":"bars")+".wav";
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000); };
   /* the Mixing Desk is told the loop's exact length (passSec), so it lines it up on the bar and loops whole bars */
   $("bStudio").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bStudio").disabled=true;
@@ -849,7 +852,7 @@ function bindBounce(){
     catch(e){ BOUNCE.msg=e && e.name==="QuotaExceededError" ? "bNoRoom" : "bFail"; }
     $("bStudio").disabled=false; paintBounce(); };
   $("bDecks").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bDecks").disabled=true;
-    try{ await AOGHandoff.put("padbench", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0}); BOUNCE.msg="decks"; LES.mark("bdecks"); }
+    try{ await AOGHandoff.put("padbench", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0, swing:S.swing/100}); BOUNCE.msg="decks"; LES.mark("bdecks"); }
     catch(e){ BOUNCE.msg="bFail"; }
     $("bDecks").disabled=false; paintBounce(); };
 }
@@ -995,8 +998,8 @@ function paintBeatPick(){
   else now.textContent=t("nowBeat",{name:L(cur), bpm:S.bpm, kit:kitName(S.banks[0].kitA)});
 }
 function navHtml(){
-  const es=S0.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
-  return `<span class="sisters"><a class="sep" href="/beat-lab-guide"><span class="lg">${es?"Haz una canción":"Make a song"}</span><span class="sh">${es?"Guía":"Guide"}</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="pads"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
+  const es=S0.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  return `<span class="sisters"><a class="sep" href="/drum-machine-guide"><span class="lg">${es?"Haz una canción":"Make a song"}</span><span class="sh">${es?"Guía":"Guide"}</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="pads"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function paintText(){
   document.documentElement.setAttribute("lang", S0.lang);
@@ -1027,8 +1030,8 @@ function lessonTap(bi, pi, vel){
   if(bi===2){ LT.up.push(pi); LT.up=LT.up.slice(-8); if(LT.up.join(",")==="0,1,2,3,4,5,6,7") LES.mark("nup"); }
   if(bi===3){ LT.chops.add(pi); if(LT.chops.size>=4) LES.mark("chop4"); }
 }
-const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang, what:{en:"the Beat Lab",es:"el laboratorio de ritmos"},
-  prefix:{en:"Beat Lab",es:"Laboratorio de ritmos"}, file:{en:"beat-lab-take",es:"laboratorio-de-ritmos-toma"}, shelf:"padbench", tool:"pads", bpm:()=>S.bpm,
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang, what:{en:"the drum machine",es:"la caja de ritmos"},
+  prefix:{en:"Drum machine",es:"Caja de ritmos"}, file:{en:"drum-machine-take",es:"caja-de-ritmos-toma"}, shelf:"padbench", tool:"pads", bpm:()=>S.bpm,
   label:{en:"● Record a take to keep",es:"● Grabar una toma para guardar"},
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 

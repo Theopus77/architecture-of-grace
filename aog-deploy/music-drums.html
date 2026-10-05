@@ -13,13 +13,13 @@ details.all-lessons .ladder-group,details.all-lessons .lgroup{font-weight:700;ma
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
 </script>
-<title>The Drum Machine — Architecture of Grace</title>
+<title>The Classic Drum Machine — Architecture of Grace</title>
 <meta name="description" content="Meet a beat first. Sixteen steps, eight classroom voices, a kind volume. Patterns stay on this computer. Print the sheet.">
 <link rel="canonical" href="https://architectureofgrace.org/drums">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="The Drum Machine — Architecture of Grace">
+<meta property="og:title" content="The Classic Drum Machine — Architecture of Grace">
 <meta property="og:description" content="A moving beat first. Names after you tap. Sixteen steps. School voices only.">
 <meta property="og:url" content="https://architectureofgrace.org/drums">
 <meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
@@ -486,7 +486,7 @@ svg.kb-kit{border-radius:16px;touch-action:none;-webkit-user-select:none;user-se
 </script>
 <div class="wrap">
   <header class="no-print">
-    <a class="brand" href="#home" id="brand">The Drum Machine</a>
+    <a class="brand" href="#home" id="brand">The Classic Drum Machine</a>
     <div class="tools">
       <a class="pill" href="/drums-guide" style="text-decoration:none">Picture guide</a>
       <button type="button" class="pill" id="langBtn">ES</button>
@@ -496,7 +496,7 @@ svg.kb-kit{border-radius:16px;touch-action:none;-webkit-user-select:none;user-se
   <!-- AOG-TOOL-MAST-V1 (2026-09-26) — Jimmy: "I like the header on the turntables page … it should be applied to
        the other tools." A static masthead outside #view, so aog-grace paints it navy like the turntables and a
        re-render of the view never wipes it. paint() keeps its words in the current language. -->
-  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p><p class="lead" id="mastR"><a href="/drum-machine" id="mastRa" style="color:inherit;font-weight:700"></a></p></section>
   <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
   <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
   <!-- AOG-BENCH-TOP-V1 (2026-09-27): the same control row and Lessons card as the Turntables -->
@@ -879,7 +879,10 @@ const BEATS = [
    map:{kick:[2,0,0,0,0,0,1,0,2,0,0,0,0,0,1,0], tom:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0], clap:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]}}
 ];
 const STR = {
-  app:{en:"The Drum Machine",es:"La caja de ritmos"},
+  app:{en:"The Classic Drum Machine",es:"La caja de ritmos clásica"},
+  /* AOG-DRUM-MACHINE-V2 (Jimmy, 2026-10-05: "The drum machine should be retired not deleted"): the first drum machine stays
+     here, at /drums, for the lessons, units and courses that use it; the lab doors lead to the new one */
+  retired:{en:"The new Drum Machine is here →",es:"La nueva caja de ritmos está aquí →"},
   eyebrow:{en:"A moving beat first.",es:"Primero, el ritmo."},
   tag:{en:"The 1987 sampler, with twenty-five kits and a dial that turns it into 2026. Pick a beat, play the pads, make it yours.",es:"El sampler de 1987, con veinticinco kits y un dial que lo lleva a 2026. Elige un ritmo, toca los pads y hazlo tuyo."},   /* AOG-DRUM-REAL-V2: twenty-five kits, A to Y */
   priv:{en:"Twelve bits. 26,040 samples a second. Ten seconds of memory, and no sample longer than 2.5. Save writes a file you can send. Open reads a file someone sent you. This computer also keeps the last session, so closing the page does not throw the work away.",es:"Doce bits. 26.040 muestras por segundo. Diez segundos de memoria, y ninguna muestra de más de 2.5. Guardar escribe un archivo que puedes enviar. Abrir lee un archivo que alguien te mandó. Esta computadora también guarda la última sesión, así que cerrar la página no tira el trabajo."},
@@ -1824,7 +1827,7 @@ function paintLang(){
    at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
    this tool is the one shown */
 function toolsMenu(cur, es){
-  const T=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const T=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
 }
 function navHtml(){
@@ -2934,7 +2937,7 @@ function paint(){
   if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
   try{ tickLessons(); }catch(e){}
   document.getElementById("brand").textContent=t("app");
-  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); }
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); const ra=document.getElementById("mastRa"); if(ra) ra.textContent=t("retired"); }
   document.getElementById("nav").innerHTML=navHtml();
   { const top=S.view==="home"||S.view==="lessons";                 /* AOG-BENCH-TOP-V1 */
     document.getElementById("benchSwitch").hidden=!top; document.getElementById("lessons").hidden=!top;

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""The Beat Lab's lessons (music-pads.html). Built by make_lab_lessons.py. Every text is (English, Spanish).
+"""The Drum Machine's lessons (music-pads.html). Built by make_lab_lessons.py. Every text is (English, Spanish).
 The page marks each step as it happens (AOG-LESSONS-V1 hooks in music-pads.html)."""
 
 LAB = {
   "lab": "pads",
   "key": "aog.pads.lessons.v1",
-  "page": "/beat-lab",
+  "page": "/drum-machine",
   "sheet": "beat-lab-lessons.html",
-  "name": ("The Beat Lab", "El laboratorio de ritmos"),
+  "name": ("The Drum Machine", "La caja de ritmos"),
   "steps": {
     "tap1": ("Tap any pad", "Toca cualquier pad"),
     "vloud": ("Tap a pad right in the middle: a loud hit", "Toca un pad justo en el centro: un golpe fuerte"),

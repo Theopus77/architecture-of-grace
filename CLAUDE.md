@@ -77,9 +77,15 @@ call moving forward." On the Educator Dashboard and every page after it:
 - Rows of actions (Save, Copy, Download) stay as buttons; only choices of
   *where to look* become menus.
 - Exception (Jimmy, 2026-10-05): the music labs' picture doors. Every music
-  lab shows the nine labs as small picture doors across the top
+  lab shows the eight labs as small picture doors across the top
   (`aog-labdoors.js`), so moving from room to room is one tap. A new music lab
-  joins LABS there and loads the script.
+  joins LABS there and loads the script. The order makes a song: Drum Machine,
+  Drum Kit, Piano, Guitar, Bass, Band, Turntables, Mixing Desk. Menus that list
+  the music labs use the same order.
+- The Drum Machine is `music-pads.html` (/drum-machine; it was the Beat Lab).
+  The first drum machine, `music-drums.html`, is retired, not deleted (Jimmy,
+  2026-10-05): it stays at /drums and /classic-drum-machine for the lessons,
+  units and courses that use it, and is called the classic drum machine.
 - Say a thing once. One short line per screen, not the same description in
   three places.
 

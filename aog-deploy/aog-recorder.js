@@ -63,9 +63,9 @@
     sent: { en: "Sent. Open the turntables to play it.", es: "Enviado. Abre los platos para tocarlo." },
     decks: { en: "The turntables", es: "Los tocadiscos" },
     /* AOG-TAKE-TO-PADS-V1 */
-    drum: { en: "Send to the drum machine", es: "Enviar a la caja de ritmos" },
-    drumSent: { en: "Sent. On the drum machine, pick a pad for it.", es: "Enviada. En la caja de ritmos, elige un pad para la toma." },
-    drums: { en: "The drum machine", es: "La caja de ritmos" },
+    drum: { en: "Send to the classic drum machine", es: "Enviar a la caja de ritmos clásica" },
+    drumSent: { en: "Sent. On the classic drum machine, pick a pad for it.", es: "Enviada. En la caja de ritmos clásica, elige un pad para la toma." },
+    drums: { en: "The classic drum machine", es: "La caja de ritmos clásica" },
     fail: { en: "That did not work. Try again.", es: "No funcionó. Inténtalo otra vez." },
     /* AOG-STUDIO-SEND-V1 */
     studio: { en: "Send to the Mixing Desk", es: "Enviar a la mesa de mezclas" },
