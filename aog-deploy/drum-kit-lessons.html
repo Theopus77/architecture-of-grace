@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Drum Kit &mdash; Lessons and worksheets</title>
+<meta name="description" content="Every lesson for The Drum Kit, one worksheet each: what to do, a question to think about, and your turn. Print it or use it on screen.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-LESSONS-V1 (2026-10-05) — The Drum Kit: one worksheet per lesson, English and Spanish. MADE BY
+     _work/music/make_lab_lessons.py FROM _work/music/lessons_kit.py: edit there, then run it. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+/* four picture steps */
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; align-items:start; }
+@media (max-width:700px){ .steps { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg, .step img { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:150px; border-radius:6px; }
+.step img { max-width:100%; }
+.states { margin:0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.states img { display:block; width:100%; max-width:420px; height:auto; border-radius:6px; }
+.states figcaption { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; max-width:420px; margin-top:.45rem; }
+.states figcaption span { text-align:center; color:var(--muted); font-size:.82rem; line-height:1.25; }
+.states figcaption b { display:block; color:var(--ink); font-size:.92rem; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* the 16 boxes */
+.gridwrap { overflow-x:auto; }
+.g { display:grid; grid-template-columns:78px repeat(16, minmax(20px,1fr)); gap:3px; align-items:center; margin-bottom:3px; min-width:440px; }
+.gl { font-size:.78rem; font-weight:700; color:var(--muted); text-align:right; padding-right:.35rem; white-space:nowrap; }
+.gn { font-size:.72rem; font-weight:700; color:var(--muted); text-align:center; }
+.gn.st { color:var(--ink); font-size:.85rem; }
+.gs { height:26px; border:1.5px solid var(--line); border-radius:5px; background:transparent; }
+.gs.st { border-color:var(--muted); }
+.gs.on { background:var(--c); border-color:rgb(0 0 0 / .35);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.recipe { margin:0 0 1.1rem; padding:.85rem .9rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  break-inside:avoid; page-break-inside:avoid; }
+.recipe figcaption { margin:0 0 .6rem; }
+.recipe figcaption b { font-size:1.05rem; }
+.recipe figcaption span { display:block; color:var(--muted); font-size:.88rem; }
+.recipe figcaption span.bpm { display:inline-block; width:auto; color:var(--muted); }
+.bpm { display:inline-block; margin-left:.5rem; padding:.05rem .5rem; border-radius:999px; background:var(--chip); color:var(--muted);
+  font-size:.72rem; font-weight:800; letter-spacing:.06em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* banks + sounds */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.kits { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; align-items:stretch; }
+@media (max-width:820px){ .kits { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .kits { grid-template-columns:1fr; } }
+.kits .bank { padding:.65rem .75rem; gap:.65rem; }
+.kits .bank .letter { width:2.2rem; height:2.2rem; font-size:1.1rem; }
+.kits .bank span { font-size:.86rem; line-height:1.35; display:block; }
+.note { margin:.8rem 0 0; color:var(--muted); font-size:.92rem; }
+.bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
+  break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
+.bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font:800 1.3rem/1 var(--sans); background:var(--steel); color:#f4f8f9; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.bank.empty .letter { background:transparent; color:var(--muted); border:2px dashed var(--muted); }
+.bank b { display:block; }
+.bank span { color:var(--muted); font-size:.9rem; }
+
+.sounds { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem .8rem; }
+.padn { display:inline-flex; align-items:center; justify-content:center; width:1.5rem; height:1.5rem; border-radius:5px;
+  background:#2b2620; color:#f0ebe0; font:800 .8rem/1 var(--sans); flex:0 0 auto;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media (max-width:700px){ .sounds { grid-template-columns:repeat(2,1fr); } }
+.sounds li { display:flex; align-items:center; gap:.5rem; font-weight:600; font-size:.95rem; }
+.dot { width:1.15rem; height:1.15rem; border-radius:6px; background:var(--c); border:1px solid rgb(0 0 0 / .3);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* stuck */
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; align-self:center; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.panel, svg.dial { min-width:0; }
+  .figwrap, .gridwrap { overflow:visible; }
+  .g { min-width:0; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  .recipe, .step, .bank, .fix li { box-shadow:none; }
+  .kits { grid-template-columns:repeat(3,1fr); gap:.4rem; }
+  .kits .bank { padding:.4rem .55rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .fix { gap:.35rem; }
+  .fix li { padding:.35rem .6rem; }
+  .fix img { max-width:90px; }
+  a { text-decoration:none; color:inherit; }
+}
+
+.ws { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1rem 1.1rem 1.1rem; margin:0 0 1.2rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.ws h2 { margin:0 0 .2rem; }
+.ws .kind { margin:0; font:800 .72rem/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.ws .blurb { margin:.1rem 0 .6rem; }
+.ws ol { list-style:none; margin:0 0 .6rem; padding:0; display:grid; gap:.4rem; }
+.ws li { display:grid; grid-template-columns:auto 1fr; gap:.6rem; align-items:start; }
+.ws .box { width:1.3rem; height:1.3rem; border:2px solid var(--ink); border-radius:4px; margin-top:.1rem; }
+.ws .try { margin:.4rem 0 .6rem; padding:.45rem .7rem; border-left:4px solid var(--play); background:var(--chip); border-radius:0 8px 8px 0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.ws h3 { margin:.7rem 0 .2rem; font-size:1rem; }
+.ws .line { border-bottom:1.5px solid var(--line); height:1.9rem; }
+.toc { columns:2 14rem; margin:0 0 1.6rem; padding-left:1.2rem; }
+.toc a { color:var(--ink); }
+@media print { .ws { border-color:#bbb; } .toc { display:none; } }
+</style>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/drum-kit"><span data-en="← The Drum Kit" data-es="← La batería">← The Drum Kit</span></a>
+    <button class="btn go" type="button" onclick="window.print()"><span data-en="Print this" data-es="Imprimir">Print this</span></button>
+  </div>
+</header>
+
+<h1><span data-en="The Drum Kit · lessons" data-es="La batería · lecciones">The Drum Kit · lessons</span></h1>
+<p class="lede"><span data-en="15 lessons, then 6 songs to make. Do the steps on the lab: they tick themselves there. This page is for writing and printing." data-es="15 lecciones y luego 6 canciones para hacer. Haz los pasos en el laboratorio: allí se marcan solos. Esta página es para escribir e imprimir.">15 lessons, then 6 songs to make. Do the steps on the lab: they tick themselves there. This page is for writing and printing.</span></p>
+<ol class="toc noprint">
+  <li><a href="#l1"><span data-en="Meet the kit" data-es="Conoce la batería">Meet the kit</span></a></li>
+  <li><a href="#l2"><span data-en="Loud and soft" data-es="Fuerte y suave">Loud and soft</span></a></li>
+  <li><a href="#l3"><span data-en="Every kit has a style" data-es="Cada batería tiene su estilo">Every kit has a style</span></a></li>
+  <li><a href="#l4"><span data-en="Crash and ride" data-es="Crash y ride">Crash and ride</span></a></li>
+  <li><a href="#l5"><span data-en="The hi-hat: open and closed" data-es="El charles: abierto y cerrado">The hi-hat: open and closed</span></a></li>
+  <li><a href="#l6"><span data-en="The hi-hat pedal" data-es="El pedal del charles">The hi-hat pedal</span></a></li>
+  <li><a href="#l7"><span data-en="The toms" data-es="Los toms">The toms</span></a></li>
+  <li><a href="#l8"><span data-en="A rock beat with your fingers" data-es="Un ritmo de rock con los dedos">A rock beat with your fingers</span></a></li>
+  <li><a href="#l9"><span data-en="The beat player" data-es="El reproductor de ritmos">The beat player</span></a></li>
+  <li><a href="#l10"><span data-en="Fast and slow" data-es="Rápido y lento">Fast and slow</span></a></li>
+  <li><a href="#l11"><span data-en="Swing" data-es="El swing">Swing</span></a></li>
+  <li><a href="#l12"><span data-en="Play along: the backbeat" data-es="Toca encima: el contratiempo">Play along: the backbeat</span></a></li>
+  <li><a href="#l13"><span data-en="Fills and the crash on 1" data-es="Redobles y el crash en el 1">Fills and the crash on 1</span></a></li>
+  <li><a href="#l14"><span data-en="Record a take" data-es="Graba una toma">Record a take</span></a></li>
+  <li><a href="#l15"><span data-en="The whole screen" data-es="Toda la pantalla">The whole screen</span></a></li>
+  <li><a href="#l16"><span data-en="Song: Rock out" data-es="Canción: A rockear">Song: Rock out</span></a></li>
+  <li><a href="#l17"><span data-en="Song: Funk groove" data-es="Canción: Groove de funk">Song: Funk groove</span></a></li>
+  <li><a href="#l18"><span data-en="Song: Jazz with brushes" data-es="Canción: Jazz con escobillas">Song: Jazz with brushes</span></a></li>
+  <li><a href="#l19"><span data-en="Song: Latin groove" data-es="Canción: Groove latino">Song: Latin groove</span></a></li>
+  <li><a href="#l20"><span data-en="Song: March" data-es="Canción: Marcha">Song: March</span></a></li>
+  <li><a href="#l21"><span data-en="Song: Your own groove" data-es="Canción: Tu propio groove">Song: Your own groove</span></a></li>
+</ol>
+<section class="ws" id="l1">
+  <p class="kind"><span data-en="Lesson 1" data-es="Lección 1">Lesson 1</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Meet the kit" data-es="Conoce la batería">Meet the kit</span></h2>
+  <p class="blurb"><span data-en="A drum kit is many drums and cymbals played by one person. Start with the three you hear most." data-es="Una batería son muchos tambores y platillos que toca una sola persona. Empieza con los tres que más se oyen.">A drum kit is many drums and cymbals played by one person. Start with the three you hear most.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap any drum" data-es="Toca cualquier tambor">Tap any drum</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the kick, the big drum at the bottom" data-es="Toca el bombo, el tambor grande de abajo">Tap the kick, the big drum at the bottom</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the snare" data-es="Toca la caja">Tap the snare</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the closed hi-hat" data-es="Toca el charles cerrado">Tap the closed hi-hat</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Say each name out loud as you tap it: kick, snare, hi-hat." data-es="Di cada nombre en voz alta al tocarlo: bombo, caja, charles.">Say each name out loud as you tap it: kick, snare, hi-hat.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which drum sounds the deepest? Which sounds the brightest?" data-es="¿Qué tambor suena más grave? ¿Cuál suena más brillante?">Which drum sounds the deepest? Which sounds the brightest?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Draw the kit and label the kick, the snare and the hi-hat." data-es="Dibuja la batería y escribe dónde están el bombo, la caja y el charles.">Draw the kit and label the kick, the snare and the hi-hat.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l2">
+  <p class="kind"><span data-en="Lesson 2" data-es="Lección 2">Lesson 2</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Loud and soft" data-es="Fuerte y suave">Loud and soft</span></h2>
+  <p class="blurb"><span data-en="Where you tap changes the sound. The middle plays loud. The edge plays soft." data-es="Donde tocas cambia el sonido. El centro suena fuerte. El borde suena suave.">Where you tap changes the sound. The middle plays loud. The edge plays soft.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap right in the middle of a drum: a loud hit" data-es="Toca justo en el centro de un tambor: un golpe fuerte">Tap right in the middle of a drum: a loud hit</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap near the edge of a drum: a soft hit" data-es="Toca cerca del borde de un tambor: un golpe suave">Tap near the edge of a drum: a soft hit</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the snare softly, near its edge: a ghost note" data-es="Toca la caja suave, cerca del borde: una nota fantasma">Tap the snare softly, near its edge: a ghost note</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play the snare loud, soft, loud, soft. Can you hear the difference?" data-es="Toca la caja fuerte, suave, fuerte, suave. ¿Oyes la diferencia?">Play the snare loud, soft, loud, soft. Can you hear the difference?</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why would a drummer want to play softly sometimes?" data-es="¿Por qué un baterista querría tocar suave a veces?">Why would a drummer want to play softly sometimes?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write a pattern of four hits. Mark each one L for loud or S for soft." data-es="Escribe un patrón de cuatro golpes. Marca cada uno con F de fuerte o S de suave.">Write a pattern of four hits. Mark each one L for loud or S for soft.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l3">
+  <p class="kind"><span data-en="Lesson 3" data-es="Lección 3">Lesson 3</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Every kit has a style" data-es="Cada batería tiene su estilo">Every kit has a style</span></h2>
+  <p class="blurb"><span data-en="Each kit is a real recording of a different drum set. Some are for rock, some for jazz, some for Latin music." data-es="Cada batería es una grabación de verdad de un set distinto. Unas son para rock, otras para jazz, otras para música latina.">Each kit is a real recording of a different drum set. Some are for rock, some for jazz, some for Latin music.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick another kit in Drum kit" data-es="Elige otra batería en Batería">Pick another kit in Drum kit</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Try three different kits" data-es="Prueba tres baterías distintas">Try three different kits</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play the same three taps on each kit. Which one do you like best?" data-es="Toca los mismos tres golpes en cada batería. ¿Cuál te gusta más?">Play the same three taps on each kit. Which one do you like best?</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How does the kit change the feeling of the music?" data-es="¿Cómo cambia la batería lo que se siente en la música?">How does the kit change the feeling of the music?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Name your favorite kit. Write three words for how it sounds." data-es="Escribe tu batería favorita y tres palabras de cómo suena.">Name your favorite kit. Write three words for how it sounds.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l4">
+  <p class="kind"><span data-en="Lesson 4" data-es="Lección 4">Lesson 4</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Crash and ride" data-es="Crash y ride">Crash and ride</span></h2>
+  <p class="blurb"><span data-en="Two big cymbals. The crash is for big moments. The ride keeps a steady beat." data-es="Dos platillos grandes. El crash es para los momentos grandes. El ride lleva un pulso parejo.">Two big cymbals. The crash is for big moments. The ride keeps a steady beat.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the crash cymbal" data-es="Toca el platillo crash">Tap the crash cymbal</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the ride cymbal" data-es="Toca el platillo ride">Tap the ride cymbal</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the ride 8 times in a row, steady" data-es="Toca el ride 8 veces seguidas, parejo">Tap the ride 8 times in a row, steady</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Tap the ride like a clock: tick, tick, tick, tick. Keep it even." data-es="Toca el ride como un reloj: tic, tic, tic, tic. Mantenlo parejo.">Tap the ride like a clock: tick, tick, tick, tick. Keep it even.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="When in a song would you hit the crash?" data-es="¿En qué momento de una canción tocarías el crash?">When in a song would you hit the crash?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write a place in a song you know where a crash would sound great." data-es="Escribe un momento de una canción que conozcas donde un crash sonaría genial.">Write a place in a song you know where a crash would sound great.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l5">
+  <p class="kind"><span data-en="Lesson 5" data-es="Lección 5">Lesson 5</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="The hi-hat: open and closed" data-es="El charles: abierto y cerrado">The hi-hat: open and closed</span></h2>
+  <p class="blurb"><span data-en="The hi-hat is two cymbals. Closed, it ticks. Open, it rings. A closed tap stops the ring, like on a real kit." data-es="El charles son dos platillos. Cerrado, hace tic. Abierto, suena largo. Un toque cerrado para el sonido, como en una batería de verdad.">The hi-hat is two cymbals. Closed, it ticks. Open, it rings. A closed tap stops the ring, like on a real kit.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the closed hi-hat" data-es="Toca el charles cerrado">Tap the closed hi-hat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the open hi-hat and let it ring" data-es="Toca el charles abierto y déjalo sonar">Tap the open hi-hat and let it ring</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the open hat, then the closed hat to stop it" data-es="Toca el charles abierto y luego el cerrado para pararlo">Tap the open hat, then the closed hat to stop it</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play tick, tick, tick, open, then close it. Do it again." data-es="Toca tic, tic, tic, abierto, y luego ciérralo. Hazlo otra vez.">Play tick, tick, tick, open, then close it. Do it again.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why does a closed hat stop an open one?" data-es="¿Por qué el charles cerrado para al abierto?">Why does a closed hat stop an open one?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write a hi-hat pattern with x for closed and o for open." data-es="Escribe un patrón de charles con x para cerrado y o para abierto.">Write a hi-hat pattern with x for closed and o for open.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l6">
+  <p class="kind"><span data-en="Lesson 6" data-es="Lección 6">Lesson 6</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="The hi-hat pedal" data-es="El pedal del charles">The hi-hat pedal</span></h2>
+  <p class="blurb"><span data-en="A drummer closes the hi-hat with a foot pedal. It makes a soft chick and stops an open hat." data-es="El baterista cierra el charles con un pedal. Hace un chic suave y para el charles abierto.">A drummer closes the hi-hat with a foot pedal. It makes a soft chick and stops an open hat.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a kit with a hi-hat pedal: Kit R, U or X" data-es="Elige una batería con pedal de charles: Kit R, U o X">Pick a kit with a hi-hat pedal: Kit R, U or X</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the hi-hat pedal" data-es="Toca el pedal del charles">Tap the hi-hat pedal</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the open hat, then stop it with the pedal" data-es="Toca el charles abierto y luego páralo con el pedal">Tap the open hat, then stop it with the pedal</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Tap the pedal on every other beat while your other hand plays the ride." data-es="Toca el pedal cada dos pulsos mientras la otra mano toca el ride.">Tap the pedal on every other beat while your other hand plays the ride.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="A drummer uses both hands and both feet. Which part does each foot play?" data-es="Un baterista usa las dos manos y los dos pies. ¿Qué toca cada pie?">A drummer uses both hands and both feet. Which part does each foot play?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write which fingers you use for the pedal and for the ride." data-es="Escribe qué dedos usas para el pedal y para el ride.">Write which fingers you use for the pedal and for the ride.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l7">
+  <p class="kind"><span data-en="Lesson 7" data-es="Lección 7">Lesson 7</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="The toms" data-es="Los toms">The toms</span></h2>
+  <p class="blurb"><span data-en="Toms are the round drums that sing a note. Small toms sound high. The floor tom sounds low." data-es="Los toms son los tambores redondos que cantan una nota. Los pequeños suenan agudo. El tom de piso suena grave.">Toms are the round drums that sing a note. Small toms sound high. The floor tom sounds low.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap a tom" data-es="Toca un tom">Tap a tom</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick Kit S · prog rock, many toms" data-es="Elige Kit S · rock progresivo, muchos toms">Pick Kit S · prog rock, many toms</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="On Kit S, tap the high tom, the middle tom, then the floor tom" data-es="En el Kit S, toca el tom agudo, el tom medio y luego el tom de piso">On Kit S, tap the high tom, the middle tom, then the floor tom</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Go high, middle, low, then low, middle, high." data-es="Ve de agudo a medio a grave, y luego de grave a medio a agudo.">Go high, middle, low, then low, middle, high.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why is a bigger drum lower?" data-es="¿Por qué un tambor más grande suena más grave?">Why is a bigger drum lower?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Draw the three toms from smallest to biggest." data-es="Dibuja los tres toms del más pequeño al más grande.">Draw the three toms from smallest to biggest.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l8">
+  <p class="kind"><span data-en="Lesson 8" data-es="Lección 8">Lesson 8</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="A rock beat with your fingers" data-es="Un ritmo de rock con los dedos">A rock beat with your fingers</span></h2>
+  <p class="blurb"><span data-en="The rock beat: kick, snare, kick, snare, with the hi-hat ticking in between. Use both hands." data-es="El ritmo de rock: bombo, caja, bombo, caja, con el charles marcando en medio. Usa las dos manos.">The rock beat: kick, snare, kick, snare, with the hi-hat ticking in between. Use both hands.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the hi-hat and the kick at the same time, with two fingers" data-es="Toca el charles y el bombo a la vez, con dos dedos">Tap the hi-hat and the kick at the same time, with two fingers</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play kick, snare, kick, snare, with hi-hat taps in between" data-es="Toca bombo, caja, bombo, caja, con toques de charles en medio">Play kick, snare, kick, snare, with hi-hat taps in between</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Go slowly. Count 1, 2, 3, 4: kick on 1 and 3, snare on 2 and 4." data-es="Ve despacio. Cuenta 1, 2, 3, 4: bombo en el 1 y el 3, caja en el 2 y el 4.">Go slowly. Count 1, 2, 3, 4: kick on 1 and 3, snare on 2 and 4.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why do so many songs use this beat?" data-es="¿Por qué tantas canciones usan este ritmo?">Why do so many songs use this beat?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the beat: K for kick, S for snare, H for hi-hat." data-es="Escribe el ritmo: B para bombo, C para caja, H para charles.">Write the beat: K for kick, S for snare, H for hi-hat.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l9">
+  <p class="kind"><span data-en="Lesson 9" data-es="Lección 9">Lesson 9</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="The beat player" data-es="El reproductor de ritmos">The beat player</span></h2>
+  <p class="blurb"><span data-en="Under the kit is a beat that plays by itself on the kit you picked. It starts only when you press Play." data-es="Debajo de la batería hay un ritmo que suena solo en la batería que elegiste. Empieza solo cuando pulsas Tocar.">Under the kit is a beat that plays by itself on the kit you picked. It starts only when you press Play.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a beat in Beat" data-es="Elige un ritmo en Ritmo">Pick a beat in Beat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ▶ Play the beat" data-es="Pulsa ▶ Tocar el ritmo">Press ▶ Play the beat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ■ Stop the beat" data-es="Pulsa ■ Parar el ritmo">Press ■ Stop the beat</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Watch the drums light up as the beat plays. Which ones does it use?" data-es="Mira cómo se encienden los tambores con el ritmo. ¿Cuáles usa?">Watch the drums light up as the beat plays. Which ones does it use?</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Pick a beat from a style you have never heard. What did you notice?" data-es="Elige un ritmo de un estilo que nunca oíste. ¿Qué notaste?">Pick a beat from a style you have never heard. What did you notice?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the names of three beats you liked." data-es="Escribe los nombres de tres ritmos que te gustaron.">Write the names of three beats you liked.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l10">
+  <p class="kind"><span data-en="Lesson 10" data-es="Lección 10">Lesson 10</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Fast and slow" data-es="Rápido y lento">Fast and slow</span></h2>
+  <p class="blurb"><span data-en="Speed is how many beats play in one minute. The same beat feels new when it is faster or slower." data-es="La velocidad es cuántos pulsos suenan en un minuto. El mismo ritmo se siente nuevo más rápido o más lento.">Speed is how many beats play in one minute. The same beat feels new when it is faster or slower.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Change the Speed" data-es="Cambia la Velocidad">Change the Speed</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make it fast: 140 or more" data-es="Hazlo rápido: 140 o más">Make it fast: 140 or more</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make it slow: 70 or less" data-es="Hazlo lento: 70 o menos">Make it slow: 70 or less</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ↺ to get the beat&#x27;s own speed back" data-es="Pulsa ↺ para volver a la velocidad del ritmo">Press ↺ to get the beat&#x27;s own speed back</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Tap your foot to the beat at 70, then at 140." data-es="Marca el pulso con el pie a 70 y luego a 140.">Tap your foot to the beat at 70, then at 140.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which speed feels calm? Which feels exciting?" data-es="¿Qué velocidad se siente tranquila? ¿Cuál emociona?">Which speed feels calm? Which feels exciting?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Find the speed you like best for one beat. Write it down." data-es="Busca la velocidad que más te gusta para un ritmo. Escríbela.">Find the speed you like best for one beat. Write it down.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l11">
+  <p class="kind"><span data-en="Lesson 11" data-es="Lección 11">Lesson 11</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Swing" data-es="El swing">Swing</span></h2>
+  <p class="blurb"><span data-en="Swing makes every second note a little late. Straight sounds even. Swing sounds bouncy." data-es="El swing hace que cada segunda nota llegue un poco tarde. Recto suena parejo. Con swing suena saltarín.">Swing makes every second note a little late. Straight sounds even. Swing sounds bouncy.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Set Swing to 60 % or more" data-es="Pon el Swing en 60 % o más">Set Swing to 60 % or more</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a beat with swing on" data-es="Toca un ritmo con el swing puesto">Play a beat with swing on</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Bring Swing back to 50 %: straight" data-es="Vuelve a poner el Swing en 50 %: recto">Bring Swing back to 50 %: straight</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play the same beat straight, then with swing. Say &quot;ta-ta&quot; and then &quot;taa-ta&quot;." data-es="Toca el mismo ritmo recto y luego con swing. Di &quot;ta-ta&quot; y luego &quot;taa-ta&quot;.">Play the same beat straight, then with swing. Say &quot;ta-ta&quot; and then &quot;taa-ta&quot;.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What kinds of music swing?" data-es="¿Qué tipos de música tienen swing?">What kinds of music swing?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the swing number that sounds best to you, and why." data-es="Escribe el número de swing que mejor te suena y por qué.">Write the swing number that sounds best to you, and why.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l12">
+  <p class="kind"><span data-en="Lesson 12" data-es="Lección 12">Lesson 12</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Play along: the backbeat" data-es="Toca encima: el contratiempo">Play along: the backbeat</span></h2>
+  <p class="blurb"><span data-en="Now you join the band. Turn the beat down, then add your own hits on top." data-es="Ahora entras a la banda. Baja el ritmo y luego toca tus golpes encima.">Now you join the band. Turn the beat down, then add your own hits on top.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Change the Beat volume" data-es="Cambia el Volumen del ritmo">Change the Beat volume</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap 8 hits while the beat plays" data-es="Toca 8 golpes mientras suena el ritmo">Tap 8 hits while the beat plays</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the snare on 2 and 4 with the beat, four times" data-es="Toca la caja en el 2 y el 4 con el ritmo, cuatro veces">Tap the snare on 2 and 4 with the beat, four times</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Count 1, 2, 3, 4 out loud. Tap the snare on 2 and 4." data-es="Cuenta 1, 2, 3, 4 en voz alta. Toca la caja en el 2 y el 4.">Count 1, 2, 3, 4 out loud. Tap the snare on 2 and 4.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How do you know where 1 is in the beat?" data-es="¿Cómo sabes dónde está el 1 en el ritmo?">How do you know where 1 is in the beat?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write which beat was easiest to play along with." data-es="Escribe con qué ritmo fue más fácil tocar encima.">Write which beat was easiest to play along with.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l13">
+  <p class="kind"><span data-en="Lesson 13" data-es="Lección 13">Lesson 13</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Fills and the crash on 1" data-es="Redobles y el crash en el 1">Fills and the crash on 1</span></h2>
+  <p class="blurb"><span data-en="A fill is a short run on the toms at the end of a part. It often lands on a crash, right on 1." data-es="Un redoble es una corrida corta en los toms al final de una parte. Muchas veces cae en un crash, justo en el 1.">A fill is a short run on the toms at the end of a part. It often lands on a crash, right on 1.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play four tom hits in a row, quickly" data-es="Toca cuatro golpes de tom seguidos, rápido">Play four tom hits in a row, quickly</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a tom fill, then a crash right after" data-es="Toca un redoble en los toms y justo después un crash">Play a tom fill, then a crash right after</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the crash on 1, while the beat plays" data-es="Toca el crash en el 1 mientras suena el ritmo">Tap the crash on 1, while the beat plays</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Count 1, 2, 3, 4. Play the fill on 4. Crash on the next 1." data-es="Cuenta 1, 2, 3, 4. Toca el redoble en el 4. Crash en el siguiente 1.">Count 1, 2, 3, 4. Play the fill on 4. Crash on the next 1.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why does a crash on 1 feel like a new start?" data-es="¿Por qué un crash en el 1 se siente como un nuevo comienzo?">Why does a crash on 1 feel like a new start?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Make up a fill. Write the toms you use, in order." data-es="Inventa un redoble. Escribe los toms que usas, en orden.">Make up a fill. Write the toms you use, in order.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l14">
+  <p class="kind"><span data-en="Lesson 14" data-es="Lección 14">Lesson 14</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Record a take" data-es="Graba una toma">Record a take</span></h2>
+  <p class="blurb"><span data-en="A take is a recording of you playing. You can listen back, keep it or delete it." data-es="Una toma es una grabación de lo que tocas. Puedes escucharla, guardarla o borrarla.">A take is a recording of you playing. You can listen back, keep it or delete it.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ● Record a take" data-es="Pulsa ● Grabar una toma">Press ● Record a take</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play, then stop recording" data-es="Toca y luego para la grabación">Play, then stop recording</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Listen to your take. What would you play the same next time? What would you change?" data-es="Escucha tu toma. ¿Qué tocarías igual la próxima vez? ¿Qué cambiarías?">Listen to your take. What would you play the same next time? What would you change?</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why do musicians record themselves?" data-es="¿Por qué los músicos se graban?">Why do musicians record themselves?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write one thing you liked in your take." data-es="Escribe algo que te gustó de tu toma.">Write one thing you liked in your take.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l15">
+  <p class="kind"><span data-en="Lesson 15" data-es="Lección 15">Lesson 15</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="The whole screen" data-es="Toda la pantalla">The whole screen</span></h2>
+  <p class="blurb"><span data-en="The kit can fill the whole screen, so every drum is bigger under your fingers." data-es="La batería puede llenar toda la pantalla, así cada tambor queda más grande bajo tus dedos.">The kit can fill the whole screen, so every drum is bigger under your fingers.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Open the whole-screen kit: turn your phone sideways, or press ⤢" data-es="Abre la batería en toda la pantalla: gira el teléfono de lado o pulsa ⤢">Open the whole-screen kit: turn your phone sideways, or press ⤢</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a drum on the whole-screen kit" data-es="Toca un tambor en la batería de pantalla completa">Play a drum on the whole-screen kit</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ✕ Close in ☰ Menu" data-es="Pulsa ✕ Cerrar en ☰ Menú">Press ✕ Close in ☰ Menu</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Hold the phone or tablet with both hands. Play with your thumbs." data-es="Sostén el teléfono o la tableta con las dos manos. Toca con los pulgares.">Hold the phone or tablet with both hands. Play with your thumbs.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Is it easier to play big or small? Why?" data-es="¿Es más fácil tocar en grande o en pequeño? ¿Por qué?">Is it easier to play big or small? Why?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write which fingers play which drums." data-es="Escribe qué dedos tocan qué tambores.">Write which fingers play which drums.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l16">
+  <p class="kind"><span data-en="Lesson 16" data-es="Lección 16">Lesson 16</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Rock out" data-es="Canción: A rockear">Song: Rock out</span></h2>
+  <p class="blurb"><span data-en="A big rock groove on a big kit, with a crash to start each part." data-es="Un groove de rock grande en una batería grande, con un crash al empezar cada parte.">A big rock groove on a big kit, with a crash to start each part.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a beat from Rock on Kit J, Q, S or T" data-es="Toca un ritmo de Rock en el Kit J, Q, S o T">Play a beat from Rock on Kit J, Q, S or T</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play along: 16 hits with the rock beat" data-es="Toca encima: 16 golpes con el ritmo de rock">Play along: 16 hits with the rock beat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the crash on 1 with the rock beat" data-es="Toca el crash en el 1 con el ritmo de rock">Tap the crash on 1 with the rock beat</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play along for four bars, then a tom fill, then crash on 1." data-es="Toca encima cuatro compases, luego un redoble en los toms y un crash en el 1.">Play along for four bars, then a tom fill, then crash on 1.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What makes rock drums sound big?" data-es="¿Qué hace que la batería de rock suene grande?">What makes rock drums sound big?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Name your rock song. Write which beat and kit you used." data-es="Ponle nombre a tu canción de rock. Escribe qué ritmo y qué batería usaste.">Name your rock song. Write which beat and kit you used.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l17">
+  <p class="kind"><span data-en="Lesson 17" data-es="Lección 17">Lesson 17</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Funk groove" data-es="Canción: Groove de funk">Song: Funk groove</span></h2>
+  <p class="blurb"><span data-en="Funk is tight and bouncy. Soft ghost notes on the snare fill the gaps." data-es="El funk es ajustado y saltarín. Las notas fantasma suaves en la caja llenan los huecos.">Funk is tight and bouncy. Soft ghost notes on the snare fill the gaps.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a beat from Funk and soul on Kit W · studio funk" data-es="Toca un ritmo de Funk y soul en el Kit W · funk de estudio">Play a beat from Funk and soul on Kit W · studio funk</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap 4 ghost notes on the snare with the funk beat" data-es="Toca 4 notas fantasma en la caja con el ritmo de funk">Tap 4 ghost notes on the snare with the funk beat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play along: 16 hits with the funk beat" data-es="Toca encima: 16 golpes con el ritmo de funk">Play along: 16 hits with the funk beat</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Keep the loud snare on 2 and 4. Put soft ghost notes between them." data-es="Deja la caja fuerte en el 2 y el 4. Pon notas fantasma suaves entre ellas.">Keep the loud snare on 2 and 4. Put soft ghost notes between them.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How do soft notes make a groove feel better?" data-es="¿Cómo hacen las notas suaves que un groove se sienta mejor?">How do soft notes make a groove feel better?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write where your ghost notes go in the bar." data-es="Escribe dónde van tus notas fantasma en el compás.">Write where your ghost notes go in the bar.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l18">
+  <p class="kind"><span data-en="Lesson 18" data-es="Lección 18">Lesson 18</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Jazz with brushes" data-es="Canción: Jazz con escobillas">Song: Jazz with brushes</span></h2>
+  <p class="blurb"><span data-en="Jazz drummers swing on the ride and close the hi-hat on 2 and 4. Brushes make it soft and warm." data-es="Los bateristas de jazz llevan el swing en el ride y cierran el charles en el 2 y el 4. Las escobillas lo hacen suave y cálido.">Jazz drummers swing on the ride and close the hi-hat on 2 and 4. Brushes make it soft and warm.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a beat from Jazz and swing on Kit K or Kit V, the brush kits" data-es="Toca un ritmo de Jazz y swing en el Kit K o el Kit V, las de escobillas">Play a beat from Jazz and swing on Kit K or Kit V, the brush kits</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the ride 8 times with the jazz beat" data-es="Toca el ride 8 veces con el ritmo de jazz">Tap the ride 8 times with the jazz beat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the hi-hat on 2 and 4 with the jazz beat, four times" data-es="Toca el charles en el 2 y el 4 con el ritmo de jazz, cuatro veces">Tap the hi-hat on 2 and 4 with the jazz beat, four times</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Ride pattern: ding, ding-a, ding, ding-a. Say it while you tap." data-es="Patrón de ride: din, din-ga, din, din-ga. Dilo mientras tocas.">Ride pattern: ding, ding-a, ding, ding-a. Say it while you tap.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How are brushes different from sticks?" data-es="¿En qué se diferencian las escobillas de las baquetas?">How are brushes different from sticks?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the ride pattern with words or marks." data-es="Escribe el patrón del ride con palabras o marcas.">Write the ride pattern with words or marks.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l19">
+  <p class="kind"><span data-en="Lesson 19" data-es="Lección 19">Lesson 19</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Latin groove" data-es="Canción: Groove latino">Song: Latin groove</span></h2>
+  <p class="blurb"><span data-en="Latin music has many drums talking together: congas, bongos, clave and more." data-es="La música latina tiene muchos tambores conversando: congas, bongós, clave y más.">Latin music has many drums talking together: congas, bongos, clave and more.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play a beat from Latin on Kit H · Latin percussion" data-es="Toca un ritmo de Latino en el Kit H · percusión latina">Play a beat from Latin on Kit H · Latin percussion</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the conga or the bongo 8 times with the beat" data-es="Toca la conga o el bongó 8 veces con el ritmo">Tap the conga or the bongo 8 times with the beat</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the clave 8 times with the beat" data-es="Toca la clave 8 veces con el ritmo">Tap the clave 8 times with the beat</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="The clave pattern: 1, 2, 3 ... 1, 2. Tap it over the beat." data-es="El patrón de clave: 1, 2, 3 ... 1, 2. Tócalo sobre el ritmo.">The clave pattern: 1, 2, 3 ... 1, 2. Tap it over the beat.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why do Latin bands have so many drummers?" data-es="¿Por qué las bandas latinas tienen tantos percusionistas?">Why do Latin bands have so many drummers?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the names of the Latin drums you played." data-es="Escribe los nombres de los tambores latinos que tocaste.">Write the names of the Latin drums you played.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l20">
+  <p class="kind"><span data-en="Lesson 20" data-es="Lección 20">Lesson 20</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: March" data-es="Canción: Marcha">Song: March</span></h2>
+  <p class="blurb"><span data-en="A marching band walks to the drums. The snare keeps everyone in step." data-es="Una banda de marcha camina al ritmo de los tambores. La caja mantiene a todos al paso.">A marching band walks to the drums. The snare keeps everyone in step.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play Military march, March or Parade on Kit O · marching band" data-es="Toca Marcha militar, Marcha o Desfile en el Kit O · banda de marcha">Play Military march, March or Parade on Kit O · marching band</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the snare roll with the march" data-es="Toca el redoble con la marcha">Tap the snare roll with the march</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Tap the snare 8 times with the march" data-es="Toca la caja 8 veces con la marcha">Tap the snare 8 times with the march</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="March in place while you tap: left, right, left, right." data-es="Marcha en tu lugar mientras tocas: izquierda, derecha, izquierda, derecha.">March in place while you tap: left, right, left, right.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Where have you heard a marching band?" data-es="¿Dónde has oído una banda de marcha?">Where have you heard a marching band?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write a short snare part for your own march." data-es="Escribe una parte corta de caja para tu propia marcha.">Write a short snare part for your own march.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l21">
+  <p class="kind"><span data-en="Lesson 21" data-es="Lección 21">Lesson 21</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Your own groove" data-es="Canción: Tu propio groove">Song: Your own groove</span></h2>
+  <p class="blurb"><span data-en="Pick any kit and any beat. Play your own part on top and record it." data-es="Elige cualquier batería y cualquier ritmo. Toca tu parte encima y grábala.">Pick any kit and any beat. Play your own part on top and record it.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Start ● Record a take while a beat plays" data-es="Empieza ● Grabar una toma mientras suena un ritmo">Start ● Record a take while a beat plays</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play 16 hits while it records" data-es="Toca 16 golpes mientras graba">Play 16 hits while it records</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play, then stop recording" data-es="Toca y luego para la grabación">Play, then stop recording</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Plan it first: a groove, a fill, a crash, then the groove again." data-es="Planéalo primero: un groove, un redoble, un crash y otra vez el groove.">Plan it first: a groove, a fill, a crash, then the groove again.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What would you change if you played it again?" data-es="¿Qué cambiarías si lo tocaras otra vez?">What would you change if you played it again?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write your groove&#x27;s name, its kit, its beat and its speed." data-es="Escribe el nombre de tu groove, su batería, su ritmo y su velocidad.">Write your groove&#x27;s name, its kit, its beat and its speed.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<footer><span data-en="The Drum Kit · Architecture of Grace · your progress stays on this device" data-es="La batería · Architecture of Grace · tu progreso se queda en este dispositivo">The Drum Kit · Architecture of Grace · your progress stays on this device</span></footer>
+</div>
+<script src="/aog-topbar.js"></script>
+</body>
+</html>
