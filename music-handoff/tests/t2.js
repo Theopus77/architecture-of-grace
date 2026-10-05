@@ -24,7 +24,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await p.evaluate(()=>{const pm=engine.port.postMessage.bind(engine.port); engine.port.postMessage=(m,t)=>{window.__msgs.push(m); return pm(m,t);};});
  // starter via the dropdown select
  const sel=p.locator('.starter-row .aogdd-sel'); ok(await sel.count()===1, "Start-from-a-beat is a drop-down");
- const opts=await sel.locator("option").allTextContents(); ok(opts.length===1+18+10 && opts[0].startsWith("Choose"), "menu: placeholder + 18 styles (10 of them came with recorded kits P to Y) + 10 classroom patterns ("+opts.length+")");   /* AOG-DRUM-REAL-V2: five new kits, a beat each */
+ const opts=await sel.locator("option").allTextContents(); ok(opts.length===1+18+87+10 && opts[0].startsWith("Choose"), "menu: placeholder + 18 styles (10 of them came with recorded kits P to Y) + 87 beats in ten groups (drumbeats.js) + 10 classroom patterns ("+opts.length+")");   /* AOG-DRUM-REAL-V2: five new kits, a beat each */
  await sel.selectOption({label:"Trap"}); await p.waitForTimeout(700);
  ok(await p.evaluate("S.bank==='F' && S.bpm===140 && S.grid.clap[8]===2"), "Trap loads kit F, 140 BPM, clap on beat 3");
  ok(await p.isHidden('#undoBeat'), "no undo when the part was empty");
