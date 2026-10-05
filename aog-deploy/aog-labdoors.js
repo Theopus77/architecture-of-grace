@@ -2,7 +2,8 @@
    Jimmy: "maybe for the different labs, small doors should be across the top of the page … moving from room to room
    easier." Nine small doors, each the lab's own pencil drawing (the Studio door's pictures) and its name, in the Studio's
    order; the lab you are in is marked (aria-current) and the others are one tap away. On a phone the row slides
-   sideways inside itself (the page stays still); on a wide screen all nine fit. It sits just above the lab's bar.
+   sideways inside itself (the page stays still) as a slim row of small pictures beside their names, a finger
+   high, so the lab below stays on the screen; on a wide screen all nine fit, as picture doors. It sits just above the lab's bar.
    An exception to the drop-down rule (CLAUDE.md, "Drop-down menus"), asked for by Jimmy on 2026-10-05.
    A lab loads it with  <script src="/aog-labdoors.js" defer></script>. ═════════════════════════════════════════════ */
 (function () {
@@ -31,6 +32,11 @@
     ".labdoors a[aria-current=page] .ld-n{font-weight:800}",
     ".labdoors a:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}",
     "@media (min-width:900px){.labdoors ul{overflow:visible;grid-auto-flow:row;grid-template-columns:repeat(9,minmax(0,1fr))}}",
+    /* a phone: one slim row, a small picture beside the name, a finger high, so the lab below stays on the screen */
+    "@media (max-width:699px){.labdoors{margin:.1rem 0 .3rem}.labdoors ul{grid-auto-columns:max-content;gap:6px;padding:2px 2px 4px}.labdoors a{flex-direction:row;align-items:center;gap:6px;padding:3px 10px 3px 3px;min-height:44px}.labdoors .ld-pic{width:44px;height:34px;aspect-ratio:auto;flex:0 0 auto}.labdoors .ld-n{white-space:nowrap;font-size:.86rem}}",
+    /* the doors say where the labs are, so the old Music tools menu (aog-dropdowns.js, drawn just before #navTools) steps
+       aside: said once (CLAUDE.md). It stays in the page, so anything that still reaches for it works. */
+    "html.has-labdoors label.aogdd:has(+ #navTools),html.has-labdoors .sisters>label.aogdd:last-child{display:none!important}",
     "@media print{.labdoors{display:none}}"
   ].join("\n");
   function here() {
@@ -60,6 +66,7 @@
     if (!D.getElementById("labdoors-css")) { var st = D.createElement("style"); st.id = "labdoors-css"; st.textContent = CSS; D.head.appendChild(st); }
     var nav = D.createElement("nav"); nav.id = "labdoors"; nav.className = "labdoors no-print";
     bar.parentNode.insertBefore(nav, bar);
+    D.documentElement.classList.add("has-labdoors");
     paint(nav);
     var last = lang();
     try { new MutationObserver(function () { if (lang() !== last) { last = lang(); paint(nav); } }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
