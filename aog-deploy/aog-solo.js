@@ -134,6 +134,7 @@ const WD={
   drumsUser:{en:"Drums: your beat from the drum machine.",es:"Batería: tu ritmo de la caja de ritmos."},
   drumsOwn:{en:"Drums: a simple beat made here.",es:"Batería: un ritmo sencillo hecho aquí."},
   useBeat:{en:"Play with my drum beat",es:"Tocar con mi ritmo de batería"},
+  /* AOG-SOLO-DRUMFEELS-V1 */ drumLab:{en:"Drums",es:"Batería"}, drumsFeel:{en:"Drums: {feel}, made here.",es:"Batería: {feel}, hecha aquí."},
   bassBand:{en:"The band is a rhythm guitar and drums. You are the bass.",es:"La banda es una guitarra rítmica y batería. Tú eres el bajo."},
   bandLoading:{en:"Getting the recorded band ready…",es:"Preparando la banda grabada…"},
   bandFailed:{en:"The recorded band did not load. The band made on this page plays instead.",es:"La banda grabada no se cargó. Suena la banda hecha en esta página."},
@@ -544,6 +545,7 @@ try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null");
     P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(LICKS[r.lick]) P.lick=r.lick; if(r.lspd>=25 && r.lspd<=100) P.lspd=Math.round(r.lspd/5)*5;
     if(typeof r.prev==="string" && SOUNDS[r.prev]) P.prev=r.prev; if(typeof r.auto==="string") P.auto=r.auto; if(r.beat===false) P.beat=false;
   } }catch(e){}
+P.dfeel="auto"; try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null"); if(r && typeof r.dfeel==="string" && /^[a-z0-9]+$/.test(r.dfeel)) P.dfeel=r.dfeel; }catch(e){}   /* AOG-SOLO-DRUMFEELS-V1 */
 function keep(){ try{ localStorage.setItem(PKEY, JSON.stringify(P)); }catch(e){} }
 
 const SO={on:false, lang:"", sig:"", say:"", killed:false, hot:false, blooms:0, pops:0, built:false};
@@ -635,6 +637,7 @@ function build(){
       <button type="button" class="pbtn play" id="soBand"></button>
       <span id="soBeatBox"></span>
     </div>
+    <div class="row" id="soDrumRow"><label class="field"><span class="plab" data-so="drumLab"></span><select id="soDrumSel"></select></label></div>
     <div class="tempo" style="margin-top:.8rem"><span class="plab" style="margin:0" data-so="tempo"></span><input type="range" id="soBpm" min="50" max="180" step="1"><b id="soBpmOut"></b></div>
     <p class="line" id="soBandLine"></p>
     <p class="line" id="soBandLoad" aria-live="polite" hidden></p>
@@ -740,7 +743,9 @@ function wire(){
       const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc(); });
   }
   /* a pick from a menu gives the focus back, so Space plays the band instead of reopening the menu (as the page does) */
-  ["soScaleSel","soSoundSel","soLickSel"].forEach(id=>{ const el=$q(id); if(!el) return;
+  $q("soDrumSel").addEventListener("change",(e)=>{ if(!DRUM_FEELS.some(x=>x.id===e.target.value)) return; P.dfeel=e.target.value; keep();   /* AOG-SOLO-DRUMFEELS-V1 */
+    const was=BAND.on; if(was) bandStop(); paintBand(); if(was) bandStart(); });
+  ["soScaleSel","soSoundSel","soLickSel","soDrumSel"].forEach(id=>{ const el=$q(id); if(!el) return;
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
   const ss=$q("soundSel"); if(ss) ss.addEventListener("change",()=>{ paintSoundSel(); wahApply(); if(BAND.on) bandReplan(); });
@@ -1183,6 +1188,31 @@ function releaseAll(){
    take both; it sits about 6 dB under the lead. */
 const BAND={on:false, c:null, ch:null, mix:null, bass:null, drums:null, t0:0, bar:0, barSec:2.5, bpm:90, voices:[], loop:null, cur:-1, chord:null, log:[], style:"straight", swing:0.5, beat:false};
 const BAND_LVL=0.5;
+/* AOG-SOLO-DRUMFEELS-V1 (2026-10-05) — Jimmy: "a plethora of drum beats". The band's drums made here can play a feel
+   picked from this list. "auto" is the band's own beat, as before (it follows the song). The rest: one bar of sixteen
+   boxes for the kick, snare and hi-hat (X loud, x normal, o soft, . rest); sw swings the band's eighth notes. New
+   feels go at the end with new ids. The drum machine's beat, when it plays, still takes the place of all of these. */
+const DRUM_FEELS=[
+  {id:"auto", en:"The band's own beat (fits the song)", es:"El ritmo propio de la banda (va con la canción)"},
+  {id:"rock", en:"Rock", es:"Rock", k:"X.......X.X.....", s:"....X.......X...", h:"x.x.x.x.x.x.x.x."},
+  {id:"halftime", en:"Half time", es:"Medio tiempo", k:"X.....x...x.....", s:"........X.......", h:"x.x.x.x.x.x.x.x."},
+  {id:"shuffle", en:"Shuffle", es:"Shuffle", sw:0.64, k:"X.......X.......", s:"....X.......X...", h:"x.x.x.x.x.x.x.x."},
+  {id:"funk", en:"Funk", es:"Funk", k:"X.x.......x..x..", s:"....X..o.o..X..o", h:"xxxxxxxxxxxxxxxx"},
+  {id:"disco", en:"Disco", es:"Disco", k:"X...X...X...X...", s:"....X.......X...", h:"..x...x...x...x."},
+  {id:"motown", en:"Motown", es:"Motown", k:"X...x...X...x...", s:"o...X...o...X...", h:"x.x.x.x.x.x.x.x."},
+  {id:"hiphop", en:"Hip-hop", es:"Hip-hop", sw:0.58, k:"X......x..x.....", s:"....X.......X...", h:"x.x.x.x.x.x.x.x."},
+  {id:"trap", en:"Trap (half time)", es:"Trap (medio tiempo)", k:"X......x..X.....", s:"........X.......", h:"x.x.x.xxx.x.xxxx"},
+  {id:"onedrop", en:"Reggae one drop", es:"Reggae one drop", k:"........X.......", s:"........X.......", h:"..x...x...x...x."},
+  {id:"bossa", en:"Bossa nova", es:"Bossa nova", k:"X..xX..xX..xX..x", s:"o..o..o...o..o..", h:"x.x.x.x.x.x.x.x."},
+  {id:"cumbia", en:"Cumbia", es:"Cumbia", k:"X.......X.......", s:"....o.......o...", h:"x.xxx.xxx.xxx.xx"},
+  {id:"jazz", en:"Jazz swing", es:"Swing de jazz", sw:0.67, k:"o...o...o...o...", s:"..........o.....", h:"x...X.x.x...X.x."},
+  {id:"secondline", en:"New Orleans second line", es:"Second line de Nueva Orleans", sw:0.58, k:"X.....x.X.....x.", s:"...xX..x..xx.X.x", h:"................"},
+  {id:"train", en:"Country train beat", es:"Ritmo de tren country", k:"X.......X.......", s:"oxoXoxoXoxoXoxoX", h:"................"},
+  {id:"afrobeat", en:"Afrobeat", es:"Afrobeat", k:"X.....x...x.....", s:"....X..o.o..X...", h:"xxxxxxxxxxxxxxxx"},
+  {id:"punk", en:"Skate punk (polka beat)", es:"Punk de patineta (ritmo polka)", k:"X...X...X...X...", s:"..X...X...X...X.", h:"x.x.x.x.x.x.x.x."},
+  {id:"metal", en:"Double kick metal", es:"Metal con doble bombo", k:"xxxxxxxxxxxxxxxx", s:"....X.......X...", h:"x...x...x...x..."}
+];
+function dfeel(id){ const f=DRUM_FEELS.find(x=>x.id===id); return f && f.k ? f : null; }
 /* the rhythm guitar is the page's own electric string (EL); the bass line is the finger bass's string (AOG-STRINGS-V2 numbers,
    tuned at 44.1 kHz), both cut short: a backing note never needs more than a couple of seconds */
 function gtrP(){ return Object.assign({}, typeof EL!=="undefined" ? EL : {sr:44100, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.2, pos:0.12, bright:0.58, soft:0.4, pol2:0.25, atk:0.3, atkLp:0.5, body:[["highpass",80,0.7,0]]}, {pick:0.15, durMax:2.4}); }
@@ -1375,7 +1405,12 @@ function bandBar(c, B, k, t0, barSec){
     line.forEach(([x,m,d,v])=>{ const w0=at(x); bandNote(c, B, "bass", m, v, w0, w0+d*beat, 0.04); blog(B,"bass",w0,m); });
   }
   /* the drums made here (the drum machine's beat loops on its own) */
-  if(!B.beat && !skip.drums){
+  if(!B.beat && !skip.drums && B.feel){   /* AOG-SOLO-DRUMFEELS-V1: a feel from the list, one bar of sixteen boxes */
+    const F=B.feel, vel={X:1, x:0.85, o:0.45};
+    if(k%chords.length===0){ drumHit(c, B, "crash", at(0), 0.5); blog(B,"crash",at(0)); }
+    [["kick",F.k,0.95],["snare",F.s,0.62],["hat",F.h,0.42]].forEach(([d,row,v])=>{ for(let i=0;i<16;i++){ const ch=row[i]; if(!vel[ch]) continue;
+      const x=i/4; drumHit(c, B, d, at(x), v*vel[ch]); blog(B,d,at(x)); } });
+  } else if(!B.beat && !skip.drums){
     const kick=st==="boogie"||st==="mblues"?[0,2]:st==="metal"?[0,0.5,2,2.5]:[0,2,2.5], snare=[1,3];
     if(k%chords.length===0){ drumHit(c, B, "crash", at(0), 0.5); blog(B,"crash",at(0)); }
     kick.forEach(x=>{ drumHit(c, B, "kick", at(x), 0.95); blog(B,"kick",at(x)); });
@@ -1392,6 +1427,7 @@ async function bandStart(){
   if(BAND.on) return;
   const pr=bandProg(); BAND.style=bandStyle(pr);
   BAND.swing=BAND.beat ? ((typeof DRUM.take.swing==="number")?DRUM.take.swing:0.5) : ((BAND.style==="boogie"||BAND.style==="mblues")?0.64:0.5);
+  BAND.feel=BAND.beat ? null : dfeel(P.dfeel); if(BAND.feel && BAND.feel.sw) BAND.swing=BAND.feel.sw;   /* AOG-SOLO-DRUMFEELS-V1 */
   bandSetup(BAND);
   BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n)); drumBufs(c);
   BAND.plan=bandPlan(BAND.style);
@@ -1431,7 +1467,8 @@ function paintTempo(){
 function paintBandLine(){
   const el=$q("soBandLine"); if(!el) return; const pr=bandProg(), locked=!!(P.beat && DRUM.take && DRUM.take.bpm);
   const bpm=locked?Math.round(DRUM.take.bpm):S.bpm;
-  el.textContent=w("bandLine",{prog:pr.name, key:keyWord(), n:bpm})+" "+w(locked?"drumsUser":"drumsOwn")+(GTR?"":" "+w("bassBand"));
+  const f=dfeel(P.dfeel);   /* AOG-SOLO-DRUMFEELS-V1 */
+  el.textContent=w("bandLine",{prog:pr.name, key:keyWord(), n:bpm})+" "+(locked?w("drumsUser"):f?w("drumsFeel",{feel:S.lang==="es"?f.es:f.en}):w("drumsOwn"))+(GTR?"":" "+w("bassBand"));
 }
 function paintBandProg(){
   const box=$q("soBandProg"); if(!box) return; const pr=bandProg(), k=BAND.on && BAND.cur>=0 ? BAND.cur%pr.chords.length : -1;
@@ -1445,7 +1482,15 @@ function paintBand(){
   if(DRUM.take && DRUM.take.wav){ bx.innerHTML=`<button type="button" class="pbtn" id="soBeat" aria-pressed="${P.beat?"true":"false"}">${esc(w("useBeat"))}</button>`;
     $q("soBeat").onclick=()=>{ P.beat=!P.beat; keep(); const was=BAND.on; if(was) bandStop(); paintBand(); if(was) bandStart(); }; }
   else bx.innerHTML="";
-  paintTempo(); paintBandLine(); paintBandProg();
+  paintDrumSel(); paintTempo(); paintBandLine(); paintBandProg();
+}
+/* AOG-SOLO-DRUMFEELS-V1: the band's drum feels; while the drum machine's beat plays, this menu waits */
+function paintDrumSel(){
+  const sel=$q("soDrumSel"); if(!sel) return; const es=S.lang==="es";
+  if(!DRUM_FEELS.some(x=>x.id===P.dfeel)) P.dfeel="auto";
+  const html=DRUM_FEELS.map(f=>`<option value="${f.id}"${f.id===P.dfeel?" selected":""}>${esc(es?f.es:f.en)}</option>`).join("");
+  if(sel.__html!==html){ sel.innerHTML=html; sel.__html=html; } sel.value=P.dfeel;
+  sel.disabled=!!(P.beat && DRUM.take && DRUM.take.wav);
 }
 
 /* ══ licks: played into the lead's own chain with the same notes a finger makes, each note lit as it plays ══ */
@@ -1568,6 +1613,7 @@ async function renderBand(bars, o){
   const lead=makeChain(oc); setSound(lead, S.sound); lead.master.gain.value=volGain(S.vol); setEra(lead, 0, 0);
   if(o.real){ B.plan=Object.assign(bandPlan(B.style), o.plan||{}); for(const id of [B.plan.gtr, B.plan.bass]) if(id) await recLoad(id); }
   if(o.skip) B.skip=o.skip;
+  if(o.feel){ B.feel=dfeel(o.feel); if(B.feel && B.feel.sw) B.swing=B.feel.sw; }   /* AOG-SOLO-DRUMFEELS-V1 */
   if(o.band!==false){ bandParts(oc, B, lead.lim); if(o.noRoom) try{ B.ch.send.disconnect(); }catch(e){} bandSetup(B); BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n));
     for(let k=0;k<bars;k++) bandBar(oc, B, k, 0.1+k*barSec, barSec); }
   if(o.lead){ const m=o.lead, s=TUNING.reduce((b,x,i)=>(m-x>=0 && m-x<=MAXF)?i:b, 0); const vc=makeVoice(oc, lead, S.sound, m, 0.76, 0.2, s); if(vc) vc.stop(dur-0.6, 0.05); }
@@ -1591,7 +1637,7 @@ function init(){
 window.AOGSolo={
   paint:soPaint, down:down, move:move, up:up, key:key,
   setMode:setMode, isOn:()=>SO.on,
-  _t:{P, SO, BAND, LICK, LICKS, FING, KEYF, SOUNDING, WH, Lead, bendFrom, boxRoot, keyCells, lickNotes, renderBand, scalePcs, bluePc,
+  _t:{DRUM_FEELS, P, SO, BAND, LICK, LICKS, FING, KEYF, SOUNDING, WH, Lead, bendFrom, boxRoot, keyCells, lickNotes, renderBand, scalePcs, bluePc,
       leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, bandPlan, BAND_SET, BAND_RT, get LAST(){ return LAST; }}
 };
 init();
