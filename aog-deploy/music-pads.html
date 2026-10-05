@@ -133,6 +133,8 @@ details.pm-set[open]>summary::before{content:"▾"}
 .kp-b{min-height:44px;border-radius:12px;border:1px solid #c4452a;background:linear-gradient(#3a3e44,#1c1f23);color:#ffb1a4;font:800 .95rem/1.2 var(--sans);padding:0 1rem}
 .pm-rec .aogrec-line{color:#f1e9da}
 .pm-rec .aogrec-line a{color:#ffd36b}
+.pm-guide{margin:.6rem 0 0;font-weight:700}
+.pm-guide a{color:var(--ink);text-underline-offset:3px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -168,6 +170,7 @@ details.pm-set[open]>summary::before{content:"▾"}
     <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
   </div>
   <main id="view">
+    <p class="pm-guide"><a href="/beat-lab-guide" id="guideLink"></a></p>
     <div class="pm">
       <div class="pm-cols">
         <div>
@@ -257,6 +260,7 @@ const STR={
   sw:{en:"Swing",es:"Swing"}, swOff:{en:"Straight",es:"Recto"}, swN:{en:"{n}%",es:"{n} %"},
   rpt:{en:"Repeat",es:"Repetir"}, rate:{en:"Repeat speed",es:"Velocidad de repetición"}, click:{en:"Click",es:"Clic"}, full:{en:"Every hit full",es:"Todo a tope"},
   start:{en:"Start from a beat (bank A)",es:"Empieza con un ritmo (banco A)"}, startPick:{en:"Pick a beat…",es:"Elige un ritmo…"},
+  guide:{en:"New here? How to make a killer song, step by step →",es:"¿Eres nuevo? Cómo hacer una canción increíble, paso a paso →"},   /* AOG-BEATLAB-GUIDE-V1 */
   bgFirst:{en:"First beats",es:"Primeros ritmos"}, bgStyles:{en:"Famous styles",es:"Estilos famosos"},
   stepsH:{en:"Steps for pad {n}: {name}. Tap a step to add or take away a hit.",es:"Pasos del pad {n}: {name}. Toca un paso para poner o quitar un golpe."},
   padSet:{en:"Pad {n}: volume, pitch, left and right",es:"Pad {n}: volumen, tono, izquierda y derecha"},
@@ -914,14 +918,14 @@ function paintControls(){
 }
 function navHtml(){
   const es=S0.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
-  return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="pads"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
+  return `<span class="sisters"><a class="sep" href="/beat-lab-guide"><span class="lg">${es?"Haz una canción":"Make a song"}</span><span class="sh">${es?"Guía":"Guide"}</span></a><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="pads"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function paintText(){
   document.documentElement.setAttribute("lang", S0.lang);
   $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
   $("langBtn").textContent=S0.lang==="es"?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
-  $("nav").innerHTML=navHtml();
+  $("nav").innerHTML=navHtml(); $("guideLink").textContent=t("guide");
   $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a></p>`;
   REC.paint(); paintBounce();
 }
