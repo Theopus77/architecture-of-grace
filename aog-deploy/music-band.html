@@ -576,7 +576,7 @@ const SOUNDS={
      straight tone (touch > 1 leans on the loud recording, a small room); jazz fusion: Wayne Shorter's soprano with
      Weather Report and on "Native Dancer" (1975), light and airy (touch < 1 leans on the soft recording, a larger room) */
   tenor_vib:{grp:"grpJazz", en:"Tenor sax · ballad, warm with vibrato", es:"Saxo tenor · balada, cálido con vibrato", gain:1.256, rev:0.18, stand:"wind"},
-  tenor_modal:{grp:"grpJazz", en:"Tenor sax · modal jazz, big and strong", es:"Saxo tenor · jazz modal, grande y fuerte", parts:["tenor"], touch:1.3, gain:1.09, rev:0.1, stand:"wind"},
+  tenor_modal:{grp:"grpJazz", en:"Tenor sax · modal jazz, big and strong", es:"Saxo tenor · jazz modal, grande y fuerte", parts:["tenor"], touch:1.3, gain:1.0, rev:0.1, stand:"wind"},
   soprano_fusion:{grp:"grpJazz", en:"Soprano sax · jazz fusion, light and airy", es:"Saxo soprano · jazz fusión, ligero y aireado", parts:["soprano"], touch:0.45, gain:2.946, rev:0.22, stand:"wind"},
   bebop:   {grp:"grpJazz", en:"Bebop quintet",     es:"Quinteto de bebop", parts:["contrabass_pizz","trombone","sax","trumpet"], dbl:[["sax","top",0]], kit:["bd","sn","cy"], touch:1.2, mono:true, gain:1.116, rev:0.12, stand:"brass",
     who:{en:"trumpet and alto sax on the tune, trombone, a plucked double bass and drums",es:"trompeta y saxo alto en la melodía, trombón, un contrabajo pulsado y batería"}},
@@ -613,10 +613,10 @@ const SOUNDS={
   /* AOG-BAND-SAX-V1 (2026-10-03) — Jimmy: "You can add the Saxophone after everything else is deployed". An alto saxophone
      from Weresax by Karoryfer Samples (CC0), recorded on every note; held notes only, so its short notes are held ones let go */
   sax:     {grp:"grpWinds", en:"Alto saxophone",   es:"Saxofón alto",    gain:1.4, rev:0.14, stand:"wind"},
-  tenor:   {grp:"grpWinds", en:"Tenor saxophone",  es:"Saxofón tenor",   gain:1.364, rev:0.14, stand:"wind"},
+  tenor:   {grp:"grpWinds", en:"Tenor saxophone",  es:"Saxofón tenor",   gain:1.193, rev:0.14, stand:"wind"},
   winds:   {grp:"grpWinds", en:"Woodwinds · all four", es:"Maderas · las cuatro", parts:["bassoon","clarinet","oboe","flute"], mono:true, gain:1.21, rev:0.17, stand:"wind",
     who:{en:"bassoon, clarinet, oboe and flute",es:"fagot, clarinete, oboe y flauta"}},
-  winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], mono:true, gain:1.148, rev:0.18, stand:"wind",
+  winds_choir:{grp:"grpWinds", en:"Woodwind choir · with piccolo", es:"Coro de maderas · con flautín", parts:["bassoon","clarinet","oboe_vib","flute_vib"], dbl:[["piccolo","top",12]], mono:true, gain:1.244, rev:0.18, stand:"wind",
     who:{en:"bassoon, clarinet, oboe, flute and piccolo",es:"fagot, clarinete, oboe, flauta y flautín"}},
   violins: {grp:"grpStrings", en:"Violins",        es:"Violines",        gain:1.295, rev:0.18, stand:"string"},
   violins_pizz:{grp:"grpStrings", en:"Violins · plucked", es:"Violines · pulsados", gain:1.49, rev:0.2, stand:"pluck"},
@@ -657,9 +657,13 @@ const SOUNDS={
   orchestra:{grp:"grpAll", en:"Orchestra · everyone plays", es:"Orquesta · todos tocan", parts:["contrabass","trombone","horn","trumpet"],
     dbl:[["tuba","b",0],["timpani","b",0],["cellos","b",12],["bassoon","b",12],["harp","b",24],["violas","lo",0],["tenor","lo",0],["sax","mid",0],["clarinet","mid",0],
          ["oboe","top",0],["soprano","top",0],["violins","top",0],["violins","top",12],["flute","top",12],["glockenspiel","top",12]],
-    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.59, rev:0.2, stand:"string",
+    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.35, kit:2.5}, lean:true, gain:0.491, rev:0.2, stand:"string",
     who:{en:"every player in the band",es:"todos los músicos de la banda"}}
 };
+/* AOG-BAND-BREATH-V1: with the breath in front of a wind or bowed note skipped, a chord's players reach their tone together,
+   so its loudest moment is louder: the orchestra (0.59 to 0.491), the tenor sax (1.364 to 1.193) and the modal tenor
+   (1.09 to 1.0) were brought back to the grand's level, and the woodwind choir, a
+   little quieter now, went up (1.148 to 1.244), as bandt/b4 and bandt/sax2 measure. */
 /* AOG-BAND-STEREO-ALL-V1: in stereo, a few sounds' C chords came out more than 0.5 dB from the grand's (the two microphones
    added together had changed the tone, and so how loud it sounds); their gains were measured again (bandt/level): trumpet,
    trumpet bebop, trombone with vibrato, French horn, tuba, flute, bassoon (0.5 dB, on the edge), violins and cellos
@@ -969,11 +973,32 @@ function mainOf(key){ const inst=instOf(key), m=MAN[inst];
 function fileUrl(key, f){ const inst=instOf(key), p=(f.slice(-1)==="t" && MAN[inst].stacDir) || inst; return "/audio/band/"+((MAN[p]&&MAN[p].dir)||p)+"/"+f+".mp3"; }
 function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
 /* where the sound starts in a decoded file (an MP3 can carry a little silence in front) */
-function onsetOf(buf){
+/* AOG-BAND-BREATH-V1 (2026-10-05) — Jimmy: "While playing the clarinet, every note / chord starts with an odd breath." Many
+   wind recordings open with 50 to 150 ms of air before the reed or the lips make a note: quiet (under 15 % of the note's
+   peak) and noisy (its zero crossings far more often than the note's own). The note now starts where the tone does: the
+   first 10 ms window from which three in a row cross zero no more than twice as often as the held note, or a loud one.
+   At most 0.3 s is skipped, and a skipped start fades in over 8 ms (breathAt), so it does not click. A recording with
+   no breath in front (a piano-like hit, a pluck) starts where it did. */
+function breathEnd(d, sr, i0, pk){
+  const W=Math.round(0.01*sr), zc=(a)=>{ let z=0; for(let k=a+1;k<a+W && k<d.length;k++) if((d[k]>0)!==(d[k-1]>0)) z++; return z; },
+    rms=(a)=>{ let e=0; for(let k=a;k<a+W && k<d.length;k++) e+=d[k]*d[k]; return Math.sqrt(e/W); };
+  const ss=[]; for(let a=i0+Math.round(0.4*sr); a<i0+Math.round(0.9*sr) && a+W<d.length; a+=W) ss.push(zc(a));
+  if(ss.length<5) return i0;
+  ss.sort((x,y)=>x-y); const steady=ss[ss.length>>1], lim=Math.max(2*steady, steady+5);
+  const tonal=a=>rms(a)>=0.15*pk || zc(a)<=lim;
+  const cap=i0+Math.round(0.3*sr);
+  for(let a=i0; a<cap && a+3*W<d.length; a+=W){ if(tonal(a) && tonal(a+W) && tonal(a+2*W)) return a; }
+  return i0;
+}
+function onsetOf(buf, winds){
   const d=buf.getChannelData(0); let pk=0; for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
   let i=0; const thr=pk*0.03; while(i<d.length && Math.abs(d[i])<thr) i++;
+  const j=winds ? breathEnd(d, buf.sampleRate, i, pk) : i;   /* never on the unpitched kit */
+  if(j>i){ const at=Math.max(0, j-Math.floor(0.003*buf.sampleRate))/buf.sampleRate; BREATH.add(buf); return at; }
   return Math.max(0, i-Math.floor(0.002*buf.sampleRate))/buf.sampleRate;
 }
+const BREATH=new WeakSet();   /* the recordings whose breath is skipped; a voice starting one fades in over 8 ms */
+function breathAt(set, key){ return !!set.buf[key] && BREATH.has(set.buf[key]); }
 /* one microphone of a stereo recording (leftOnly), brought to the loudness of the two together, so the note is as loud
    in a big group as on its own */
 function leftOf(dec, b){
@@ -998,7 +1023,7 @@ function loadInst(key, onStep, lanes){
         const r=await fetch(fileUrl(key, f)); if(!r.ok) throw new Error(r.status);
         let b=await decodeWith(dec, await r.arrayBuffer());
         if(b.numberOfChannels>1 && leftOnly(key)) b=leftOf(dec, b);
-        set.buf[f]=b; set.start[f]=onsetOf(b);
+        set.buf[f]=b; set.start[f]=onsetOf(b, instOf(key)!=="kit");
       }catch(e){}
       set.done++;
       if(!set.ready && main.every(x=>set.buf[x])) set.ready=true;
@@ -1059,6 +1084,7 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
     s.playbackRate.value=Math.pow(2, (m-n)/12 - (man.tune[key]||0)/1200);
     const gn=gainAt(c, g);
     if(gTo!=null){ gn.gain.setValueAtTime(g, when); gn.gain.linearRampToValueAtTime(gTo, when+swellDur); }
+    else if(breathAt(set, key)){ gn.gain.setValueAtTime(0, when); gn.gain.linearRampToValueAtTime(g, when+0.008); }   /* AOG-BAND-BREATH-V1 */
     s.connect(gn); gn.connect(out); s.start(when, set.start[key]||0); srcs.push(s);
     return {buf:buf, key:key, rate:s.playbackRate.value};
   };
