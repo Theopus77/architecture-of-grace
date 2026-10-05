@@ -551,6 +551,14 @@ function canPlay(bi){
 
 /* ══ playing one pad ══ */
 function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0}; }
+/* AOG-PADS-LEVEL-V1 (2026-10-05) — Jimmy: "all the instruments don't start at the same volume." Each sound is brought to the
+   grand piano's level on the piano page (the level every music tool is set to), measured as the ear hears it (K-weighted,
+   loudest 400 ms, through the Beat Lab's own limiter): each instrument's C chord (a basses' low C), each kit playing one
+   bar of a plain beat, each record's first chops. The trims (dB) are made by music-handoff/tests/pads/level.js --table;
+   run it again after a sound is added or changed. A take from the Mixing Desk is not trimmed: it already is at its
+   tool's level. */
+const LEVEL={"inst":{},"kit":{},"rec":{}};
+function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.pow(10, v/20) : 1; }
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
 const LIVE={c:null, dest:null, open:[[],[],[],[]], chop:[null,null,null,null]};
@@ -560,7 +568,8 @@ function trigger(bi, pi, vel, when, T){
   if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
-  const out=c.createGain(); out.gain.value=P.vol/100;
+  const B=S.banks[bi], trim=d.kind==="drum" ? trimOf("kit", kitFor(bi, pi, d.kit)||d.kit) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
+  const out=c.createGain(); out.gain.value=P.vol/100*trim;
   if(c.createStereoPanner){ const pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
   const rate=Math.pow(2, P.tune/12);
   if(d.kind==="drum"){
