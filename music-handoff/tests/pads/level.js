@@ -31,7 +31,8 @@ const TABLE=process.argv.includes("--table");
     /* the Beat Lab's whole sound, as ctx() makes it: the bus at 0.9 into the limiter */
     const render=async(sec, fn)=>{ const oc=new OfflineAudioContext(2, Math.round(44100*sec), 44100), g=oc.createGain(), l=oc.createDynamicsCompressor();
       l.threshold.value=-3; l.knee.value=2; l.ratio.value=20; l.attack.value=0.002; l.release.value=0.12;
-      const cl=ceiling(oc); g.gain.value=0.9; g.connect(l); l.connect(cl); cl.connect(oc.destination);
+      /* measured before the ceiling: its true loudest moment; held at CLEAN, the ceiling never has to touch it */
+      g.gain.value=0.9; g.connect(l); l.connect(oc.destination);
       fn({c:oc, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}); const buf=await oc.startRendering();
       let pk=0; for(let c=0;c<buf.numberOfChannels;c++){ const d=buf.getChannelData(c); for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; } }
       PEAK=Math.max(PEAK, pk); LASTPK=pk; return __kw(buf); };
@@ -61,7 +62,7 @@ const TABLE=process.argv.includes("--table");
   const r=out.res; let bad=0; const table={inst:{}, kit:{}, rec:{}};
   /* as loud as the grand, but never lifted past a clean loudest moment (0.9 of full scale): a sound held back by its
      peak is "held" and counts as level (it is as loud as it can be without crackling) */
-  const CLEAN=0.86;   /* after the ceiling (music-pads.html), which starts rounding at 0.8: only a light touch of it */
+  const CLEAN=0.8;   /* where the ceiling (music-pads.html) starts rounding: below it, nothing is rounded */
   const TARGET=ref-2;   /* two dB under the grand: room for a beat's hits and a bass under the same ceiling */
   const line=(grp, k, db)=>{ const off=db-TARGET, cur=(out.trim && out.trim[grp] && out.trim[grp][k]) || 0, p=out.pk[grp][k]||0;
     const room=p>0 ? 20*Math.log10(CLEAN/p) : 99, want=-off, step=Math.min(want, room);
