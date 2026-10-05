@@ -139,6 +139,7 @@ details.pm-set[open]>summary::before{content:"▾"}
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="aog-drumkit.js"></script>
+<script src="aog-beats.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -256,8 +257,7 @@ const STR={
   sw:{en:"Swing",es:"Swing"}, swOff:{en:"Straight",es:"Recto"}, swN:{en:"{n}%",es:"{n} %"},
   rpt:{en:"Repeat",es:"Repetir"}, rate:{en:"Repeat speed",es:"Velocidad de repetición"}, click:{en:"Click",es:"Clic"}, full:{en:"Every hit full",es:"Todo a tope"},
   start:{en:"Start from a beat (bank A)",es:"Empieza con un ritmo (banco A)"}, startPick:{en:"Pick a beat…",es:"Elige un ritmo…"},
-  b_boombap:{en:"Boom bap · 90",es:"Boom bap · 90"}, b_house:{en:"Four on the floor · 120",es:"Cuatro en el piso · 120"}, b_onedrop:{en:"Reggae one drop · 80",es:"Reggae one drop · 80"},
-  b_funk:{en:"Funk · 100",es:"Funk · 100"}, b_rock:{en:"Rock · 110",es:"Rock · 110"}, b_shuffle:{en:"Shuffle · 96",es:"Shuffle · 96"},
+  bgFirst:{en:"First beats",es:"Primeros ritmos"}, bgStyles:{en:"Famous styles",es:"Estilos famosos"},
   stepsH:{en:"Steps for pad {n}: {name}. Tap a step to add or take away a hit.",es:"Pasos del pad {n}: {name}. Toca un paso para poner o quitar un golpe."},
   padSet:{en:"Pad {n}: volume, pitch, left and right",es:"Pad {n}: volumen, tono, izquierda y derecha"},
   vol:{en:"Volume",es:"Volumen"}, tune:{en:"Pitch",es:"Tono"}, pan:{en:"Left and right",es:"Izquierda y derecha"},
@@ -271,7 +271,7 @@ const STR={
   recOff:{en:"Your loop is kept on this device.",es:"Tu bucle se guarda en este dispositivo."},
   undone:{en:"Taken back.",es:"Deshecho."}, nothingUndo:{en:"Nothing to take back.",es:"No hay nada que deshacer."},
   cleared:{en:"The loop is empty. Undo brings it back.",es:"El bucle está vacío. Deshacer lo recupera."},
-  started:{en:"The beat is on bank A. Press Play to hear it.",es:"El ritmo está en el banco A. Pulsa Tocar para oírlo."},
+  startedB:{en:"{name} is on bank A, on {kit}. Press Play to hear it.",es:"{name} está en el banco A, en {kit}. Pulsa Tocar para oírlo."},
   chopN:{en:"Chop {n}",es:"Corte {n}"}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
@@ -788,27 +788,35 @@ function bindBounce(){
 }
 
 /* ══ beats to start from: bank A, pads 1 to 8 (kick, snare, hat, open hat, clap, tom, rim, bell) ══ */
-const BEATS={
-  boombap:{bpm:90, sw:58, p:{0:"x.......x.x.....",1:"....x.......x...",2:"x.x.x.x.x.x.x.x.",3:"..............x."}},
-  house:{bpm:120, sw:50, p:{0:"x...x...x...x...",4:"....x.......x...",2:"x.x.x.x.x.x.x.x.",3:"..x...x...x...x."}},
-  onedrop:{bpm:80, sw:58, p:{0:"........x.......",6:"........x.......",2:"x.x.x.x.x.x.x.x.",3:"..............x."}},
-  funk:{bpm:100, sw:54, p:{0:"x.....x...x..x..",1:"....x..x.x..x..x",2:"xxxxxxxxxxxxxxxx"}},
-  rock:{bpm:110, sw:50, p:{0:"x.......x.x.....",1:"....x.......x...",2:"x.x.x.x.x.x.x.x."}},
-  shuffle:{bpm:96, sw:66, p:{0:"x.....x.x.......",1:"....x.......x...",2:"x.xxx.xxx.xxx.xx",3:"..............x."}}
-};
-function startBeat(k){
-  const B=BEATS[k]; if(!B) return;
+/* AOG-PADS-BEATS-V1 (Jimmy, 2026-10-05: "Can more beat options be opened in the beat pad?") — every beat the drum machine
+   knows (aog-beats.js: 10 first beats, 8 styles, 87 beats in ten groups), on bank A's pads 1 to 8 (kick, snare, hat, open
+   hat, clap, tom, rim, bell, the drum machine's own order). A hit is 0.8, an accent 1, a soft hit 0.45. The beat brings its
+   tempo and swing, and its own kit when that kit is a recorded one here; its line says what it is. */
+function beatList(){
+  const A=window.AOGBeats; if(!A) return [];
+  const out=[{g:t("bgFirst"), items:A.classroom}, {g:t("bgStyles"), items:A.styles}];
+  Object.keys(A.groups).forEach(g=>out.push({g:L(A.groups[g]), items:A.beats.filter(b=>b.grp===g)}));
+  return out.filter(x=>x.items.length);
+}
+function beatById(id){ const A=window.AOGBeats; return A ? [].concat(A.classroom, A.styles, A.beats).find(b=>b.id===id) : null; }
+function startBeat(id){
+  const B=beatById(id); if(!B) return;
   snapshot();
   S.ev=S.ev.filter(e=>e.b!==0);
-  for(let bar=0;bar<S.bars;bar++) Object.keys(B.p).forEach(pi=>{ const s=B.p[pi]; for(let i=0;i<16;i++) if(s[i]==="x"){
-    const v=+pi===2 ? (i%4===0?0.85:0.6) : +pi===1 ? (i%8===4?0.95:0.4) : 0.9;
-    S.ev.push({b:0, p:+pi, t:bar*384+i*24, v:v, len:24}); } });
-  S.swing=B.sw; retime(B.bpm); S.bank=0; S.sel=0;
-  changed(); paintAll(); prep(0); say(t("started"));
+  const V={1:0.8, 2:1, 3:0.45};
+  for(let bar=0;bar<S.bars;bar++) DRUM_IDS.forEach((pid, pi)=>{ const row=B.map[pid]; if(!row) return;
+    for(let i=0;i<16;i++) if(row[i]) S.ev.push({b:0, p:pi, t:bar*384+i*24, v:V[row[i]]||0.8, len:24}); });
+  if(B.swing){ const sw=B.swing*100; S.swing=[50,54,58,62,66].reduce((a,b)=>Math.abs(b-sw)<Math.abs(a-sw)?b:a, 50); }
+  if(B.bpm) retime(B.bpm);
+  const A0=S.banks[0];
+  if(B.kit && KITS().indexOf(B.kit)>=0) A0.kitA=B.kit;
+  S.bank=0; S.sel=0;
+  changed(); paintAll(); prep(0);
+  say(t("startedB",{name:L(B), kit:kitName(A0.kitA)})+(B.about ? " "+L(B.about) : ""), 9000);
 }
 
 /* ══ the page ══ */
-function say(s){ $("line").textContent=s; LINE_HOLD=Date.now(); }
+function say(s, ms){ $("line").textContent=s; LINE_HOLD=Date.now()+Math.max(0, (ms||2500)-2500); }
 let LINE_HOLD=0;
 function paintLine(){
   if(Date.now()-LINE_HOLD<2500) return;
@@ -892,7 +900,7 @@ function paintControls(){
   $("rptBtn").textContent=t("rpt"); $("rateLab").textContent=t("rate");
   $("rateSel").innerHTML=[[48,"1/8"],[32,"1/8T"],[24,"1/16"],[16,"1/16T"],[12,"1/32"]].map(([v,k])=>opt(v, k, S.rate)).join("");
   $("clickBtn").textContent=t("click"); $("fullBtn").textContent=t("full");
-  $("startLab").textContent=t("start"); $("startSel").innerHTML=`<option value="">${esc(t("startPick"))}</option>`+Object.keys(BEATS).map(k=>opt(k, esc(t("b_"+k)), "")).join("");
+  $("startLab").textContent=t("start"); $("startSel").innerHTML=`<option value="">${esc(t("startPick"))}</option>`+beatList().map(x=>`<optgroup label="${esc(x.g)}">`+x.items.map(b=>opt(b.id, esc(L(b))+(b.bpm?" · "+b.bpm:""), "")).join("")+`</optgroup>`).join("");
   $("undoBtn").textContent=t("undo"); $("clearBtn").textContent=t("clear");
   $("volLab").textContent=t("vol"); $("tuneLab").textContent=t("tune"); $("panLab").textContent=t("pan");
   $("padReset").textContent=t("padReset"); $("padClear").textContent=t("padClear");
