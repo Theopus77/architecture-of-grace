@@ -74,7 +74,7 @@ const over = p => p.evaluate(() => document.documentElement.scrollWidth - innerW
         rec: document.getElementById("recBtn").textContent, hint: document.getElementById("padHint").textContent, onto: document.querySelector("#made .onto em").textContent,
         song: document.querySelector("#deckA .song").textContent, lang: document.documentElement.lang };
     });
-    const want = es.decks.join() === "Plato A,Plato B,Plato C" && es.mixer === "Mezclador" && es.made === "Hechos aquí mismo" && es.fx.join() === "Eco,Sala,Flanger" &&
+    const want = es.decks.join() === "Plato A,Plato B,Plato C" && es.mixer === "Mezclador" && es.made === "Discos" && es.fx.join() === "Eco,Sala,Flanger" &&
       es.kills.join() === "CORTA AGUDOS,CORTA MEDIOS,CORTA GRAVES" && es.side.join() === "Izq.,Ninguno,Der." && es.go === "Arrancar" && es.load === "Cargar una canción" &&
       es.chop === "Cortar 8" && es.erase === "Borrar" && es.bars === "4 compases" && es.snap.join() === "en el pulso,en ½ pulso,en ¼ de pulso,al instante" &&
       /Grabar/.test(es.rec) && /^Pads: toca/.test(es.hint) && es.onto === "Al plato" && es.madeNames.join() === "House de Chicago,Techno con empuje,Break trip-hop polvoriento,Edit de disco" && es.lang === "es";

@@ -283,8 +283,13 @@ footer a{color:inherit}
 .mrec .mi{min-width:0;flex:1 1 auto}
 .mrec .mi b{display:block;font-size:.95rem;color:var(--ink)}
 .mrec .mi span{display:block;font-size:.8rem;color:var(--muted)}
-.mrec .onto{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
-.mrec .onto em{font-style:normal;font-size:.78rem;color:var(--muted);font-weight:600}
+.mrec .onto{display:flex;align-items:center;gap:.35rem;flex-wrap:nowrap}
+.mrec .onto button{flex:1 1 0;min-width:0;padding:0}   /* AOG-DECKS-CALM-V1: A, B and C always in one row */
+.mrec .onto em{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.crate details.more{margin:0}
+.crate details.more>summary{cursor:pointer;display:list-item;padding:.65rem 0;font-size:.9rem;font-weight:700;color:var(--ink)}
+.crate details.more[open]>summary{margin-bottom:.3rem}
+.crate details.find-box>summary{font-size:.95rem;font-family:var(--display,Georgia,serif)}
 .onto button,.take .onto button{min-width:44px;min-height:40px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;padding:0 .6rem}
 .take .onto{display:inline-flex;align-items:center;gap:.3rem}
 .take .onto em{font-style:normal;font-size:.82rem;color:var(--muted);font-weight:600}
@@ -518,23 +523,24 @@ const STR = {
   studioT:{en:"From the mixing desk",es:"De la mesa de mezclas"}, studioGo:{en:"Open the mixing desk",es:"Abrir la mesa de mezclas"},   /* AOG-STUDIO-V1 */
   drumTakeT:{en:"A take from the drum machine",es:"Una toma de la caja de ritmos"},   /* AOG-MUSIC-REC-V1 */
   padsT:{en:"From the Beat Lab",es:"Del laboratorio de ritmos"}, padsGo:{en:"Open the Beat Lab",es:"Abrir el laboratorio de ritmos"},   /* AOG-PADS-STUDIO-V1 */
-  crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
-  crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
+  crateNext:{en:"Up next",es:"Lo que sigue"},
+  crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
   starterH:{en:"Starter crate",es:"Caja inicial"},
-  starterLead:{en:"Eleven short tracks we made for you, from 80 to 128 BPM. Each one keeps a steady beat, so they are good for practice. Press the button to put them in Up next.",es:"Once pistas cortas que hicimos para ti, de 80 a 128 BPM. Cada una lleva un pulso fijo, así que sirven para practicar. Pulsa el botón para ponerlas en Lo que sigue."},
+  starterLead:{en:"Eleven practice tracks, 80 to 128 BPM.",es:"Once pistas para practicar, de 80 a 128 BPM."},
   starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
   starterBusy:{en:"Loading %n of %t…",es:"Cargando %n de %t…"},
   starterDone:{en:"Done. The starter tracks are in Up next.",es:"Listo. Las pistas iniciales están en Lo que sigue."},
   starterFail:{en:"Some tracks did not load. Check the internet and try again.",es:"Algunas pistas no cargaron. Revisa el internet y vuelve a intentarlo."},
   wordH:{en:"Scripture records",es:"Discos de Escrituras"},
-  wordLead:{en:"Bible verses read aloud, King James Version. Each verse waits on its own pad, 1 to 8.",es:"Versículos de la Biblia leídos en voz alta, versión King James (en inglés). Cada versículo espera en su propio pad, del 1 al 8."},
+  wordLead:{en:"Bible verses read aloud (King James). One verse on each pad.",es:"Versículos de la Biblia en voz alta (King James, en inglés). Un versículo en cada pad."},
   wordGo:{en:"Load the scripture records",es:"Cargar los discos de Escrituras"},
   wordDone:{en:"Done. The scripture records are in Up next.",es:"Listo. Los discos de Escrituras están en Lo que sigue."},
+  showList:{en:"See the tracks",es:"Ver las pistas"},
   starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
-  findH:{en:"Where to find acapellas and samples",es:"Dónde encontrar acapellas y samples"},
-  findHint:{en:"Free sites. Download a file, then tap Load a song or Add songs. Each site says how you may use its sounds — check before you share a mix.",es:"Sitios gratis. Descarga un archivo y luego toca Cargar una canción o Agregar canciones. Cada sitio dice cómo puedes usar sus sonidos: revísalo antes de compartir una mezcla."},
-  crateHint:{en:"Drag a record out of the crate onto a deck, or press A, B or C.",es:"Arrastra un disco de la caja a un plato, o pulsa A, B o C."},
+  findH:{en:"Free songs and samples online",es:"Canciones y samples gratis en internet"},
+  findHint:{en:"Download a file, then tap Add songs. Check each site's rules before you share a mix.",es:"Descarga un archivo y toca Agregar canciones. Revisa las reglas de cada sitio antes de compartir una mezcla."},
+  crateHint:{en:"Press A, B or C, or drag a record onto a deck.",es:"Pulsa A, B o C, o arrastra un disco a un plato."},
   cratePrev:{en:"Previously spun",es:"Tocadas antes"},
   cratePrevNone:{en:"Every record you put on a platter shows up here.",es:"Cada disco que pones en un plato aparece aquí."},
   crateDrop:{en:"Remove",es:"Quitar"},
@@ -592,8 +598,8 @@ const STR = {
   off:{en:"off",es:"apagado"},
   showA:{en:"Deck A",es:"Plato A"}, showB:{en:"Deck B",es:"Plato B"}, showC:{en:"Deck C",es:"Plato C"},
   making:{en:"Making the record …",es:"Haciendo el disco …"},
-  madeH:{en:"Made right here",es:"Hechos aquí mismo"},
-  madeLead:{en:"Four records this page makes with math. Nothing to download. Each one starts and ends with drums, so there is room to mix in and out.",es:"Cuatro discos que esta página hace con matemáticas. No hay nada que descargar. Cada uno empieza y termina con batería, así hay espacio para entrar y salir de la mezcla."},
+  madeH:{en:"Records",es:"Discos"},
+  madeLead:{en:"Ready to play. Nothing to download.",es:"Listos para tocar. Nada que descargar."},
   madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."}
 };
 const S = { lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light" };
@@ -1062,9 +1068,7 @@ function paintBench(){
   SHELF.forEach(s=>{
     const tk = SHELVES[s.key];
     if(!tk || !tk.wav){
-      if(s.key === "drumbench") html += `<div class="take empty"><b>${t("bench")}</b> <span class="tlen">${t("benchNone")}</span>
-        <a class="ghost" href="music-drums.html">${t("benchGo")}</a></div>`;
-      return;
+      return;   /* AOG-DECKS-CALM-V1: an empty shelf says nothing; the lab doors at the top lead to each lab */
     }
     /* ⚠ the piano's buttons keep their old name (data-keys), the rest say which shelf they take */
     const attr = s.id === "keys" ? (id=>`data-keys="${id}"`) : (id=>`data-take="${s.id}" data-deck="${id}"`);
@@ -1201,7 +1205,7 @@ const FIND = [
   {u:"https://sound-effects.bbcrewind.co.uk/", n:"BBC Sound Effects", en:"sound effects", es:"efectos de sonido"}
 ];
 function findLinks(){
-  return `<h3>${t("findH")}</h3><ul class="find">${FIND.map(f=>`<li><a href="${f.u}" target="_blank" rel="noopener noreferrer">${f.n}</a> <span>${f[S.lang]||f.en}</span></li>`).join("")}</ul><p class="rechint" style="margin:0">${t("findHint")}</p><p class="rechint" style="margin:0"><a href="decks-tracks.html" id="starterList" style="color:inherit;font-weight:700">${t("starterList")}</a></p>`;
+  return `<details class="more find-box"><summary>${t("findH")}</summary><ul class="find">${FIND.map(f=>`<li><a href="${f.u}" target="_blank" rel="noopener noreferrer">${f.n}</a> <span>${f[S.lang]||f.en}</span></li>`).join("")}</ul><p class="rechint" style="margin:0">${t("findHint")}</p><p class="rechint" style="margin:0"><a href="decks-tracks.html" id="starterList" style="color:inherit;font-weight:700">${t("starterList")}</a></p></details>`;
 }
 /* AOG-DECKS-STARTER-V1 (2026-09-27) — Jimmy: "Could the team gather tracks for the
    turntables to set up in advance?" Eleven short tracks made for the site (see
@@ -1278,7 +1282,7 @@ function wordHtml(){
   const es = S.lang === "es";
   return `<h3>${t("wordH")}</h3>
     <p class="rechint" style="margin:0">${t("wordLead")}</p>
-    <ul class="starter">${WORD.map(x=>`<li><b>${esc(es?(x.title_es||x.title):x.title)}</b> <span>${esc(es?(x.line_es||x.line||""):(x.line||""))}</span></li>`).join("")}</ul>
+    <details class="more"><summary>${t("showList")}</summary><ul class="starter">${WORD.map(x=>`<li><b>${esc(es?(x.title_es||x.title):x.title)}</b> <span>${esc(es?(x.line_es||x.line||""):(x.line||""))}</span></li>`).join("")}</ul></details>
     <div class="take" style="background:none;border:0;padding:0">
       <button type="button" class="ghost" id="wordGo">${t("wordGo")}</button>
     </div>
@@ -1288,7 +1292,7 @@ function starterHtml(){
   const es = S.lang === "es";
   return `<h3>${t("starterH")}</h3>
     <p class="rechint" style="margin:0">${t("starterLead")}</p>
-    <ul class="starter">${STARTER.map(x=>`<li><b>${esc(es?x[2]:x[1])}</b> <span>${x[3]} BPM · ${esc(es?x[5]:x[4])}</span></li>`).join("")}</ul>
+    <details class="more"><summary>${t("showList")}</summary><ul class="starter">${STARTER.map(x=>`<li><b>${esc(es?x[2]:x[1])}</b> <span>${x[3]} BPM · ${esc(es?x[5]:x[4])}</span></li>`).join("")}</ul></details>
     <div class="take" style="background:none;border:0;padding:0">
       <button type="button" class="ghost" id="starterGo">${t("starterGo")}</button>
     </div>
@@ -1299,7 +1303,7 @@ function paintCrate(){
   box.innerHTML = `
     <h3>${t("crateNext")}</h3>
     ${CRATE.next.length ? `<div class="cbox">${CRATE.next.map(crateSleeve).join("")}</div>` : `<div class="cbox empty">${t("crateNextNone")}</div>`}
-    ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : `<p class="rechint" style="margin:0">${t("drop")}</p>`}
+    ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
     <div class="take" style="background:none;border:0;padding:0">
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
@@ -1307,8 +1311,8 @@ function paintCrate(){
     ${starterHtml()}
     ${wordHtml()}
     ${findLinks()}
-    <h3>${t("cratePrev")}</h3>
-    ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("") || `<div class="take empty">${t("cratePrevNone")}</div>`}
+    ${CRATE.prev.length ? `<h3>${t("cratePrev")}</h3>` : ""}
+    ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("")}
     ${CRATE.prev.length?`<div class="take" style="background:none;border:0;padding:0"><button type="button" class="ghost" data-crateclear="prev">${t("crateClear")}</button></div>`:""}`;
   const sg = document.getElementById("starterGo");
   if(sg) sg.onclick = ()=>starterLoad(sg);
@@ -1393,7 +1397,7 @@ function paintMade(){
     <p class="rechint" style="margin:0">${t("madeLead")}</p>
     <div class="made">${MADE.map(x=>`<div class="mrec" style="--h:${x.hue}">
       <div class="art" aria-hidden="true"></div>
-      <div class="mi"><b>${esc(es?x.es:x.en)}</b><span>${x.bpm} BPM · ${esc(es?x.what_es:x.what_en)}</span></div>
+      <div class="mi"><b>${esc(es?x.es:x.en)}</b><span>${x.bpm} BPM</span></div>
       ${ontoHTML(id=>`data-made="${x.id}" data-deck="${id}"`).replace('class="onto"','class="onto" role="group" aria-label="'+esc(es?x.es:x.en)+'"')}
     </div>`).join("")}</div>`;
   box.querySelectorAll("[data-made]").forEach(b=>{
