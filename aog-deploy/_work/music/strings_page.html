@@ -2710,25 +2710,30 @@ function bindNeck(){
     const h=neckHit(e); if(!h) return;
     try{ svg.setPointerCapture(e.pointerId); }catch(err){}
     FINGERS.set(e.pointerId, h);
-    if(window.AOGSolo && AOGSolo.down(e, h)){ litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch */
-    if(NECK.play && pvDown(e, h)){ litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
-    if(h.zone==="strum") pluckShape(h.s, 0.72); else pluckCell(h.s, h.f, 0.76);
+    if(window.AOGSolo && AOGSolo.down(e, h)){ if(h.zone==="fret"){ lessonNote(h.s, h.f); if(LES.count("solo")>=8) LES.mark("solo8"); } litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch (AOG-LESSONS-V1: a lit note) */
+    if(NECK.play && pvDown(e, h)){ if(h.zone==="fret" && (e.pointerType==="mouse" || PV.tap)) lessonNote(h.s, h.f); litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
+    if(h.zone==="strum") pluckShape(h.s, 0.72); else { pluckCell(h.s, h.f, 0.76); lessonNote(h.s, h.f); }
     litNeck();
   });
   svg.addEventListener("pointermove",(e)=>{
     const p=FINGERS.get(e.pointerId); if(!p) return;
     const h=neckHit(e); if(!h) return;
+    if(window.AOGSolo && AOGSolo.isOn()){ const f0=p.f, pops=AOGSolo._t.SO.pops||0;   /* AOG-LESSONS-V1: a Solo bend, slide or pop */
+      if(AOGSolo.move(e, p, h)){ const fs=AOGSolo._t.FING.get(e.pointerId);
+        if(fs && fs.bend>0.4) LES.mark("bend"); if(p.zone==="fret" && p.f!==f0) LES.mark("slide"); if((AOGSolo._t.SO.pops||0)>pops) LES.mark("pop"); return; } }
     if(window.AOGSolo && AOGSolo.move(e, p, h)) return;   /* AOG-SOLO-V1: bends, slides, the whammy */
     if(NECK.play && pvMove(e, p, h)) return;   /* AOG-PLAY-V1: strums, slides, bends */
     if(p.zone==="strum"){
       if(h.zone!=="strum" || h.s===p.s) return;
       /* every string crossed sounds, one after another, as a strum does */
       const dir=h.s>p.s?1:-1, now=ac?ac.currentTime:0; let k=0;
-      for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006); k++; }
+      const crossed=[]; for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006); crossed.push(s); k++; }
+      if(!p.lset) p.lset=new Set([p.s]); lessonStrum(p, crossed, dir>0);   /* AOG-LESSONS-V1 */
       p.s=h.s;
     } else {
       if(h.zone!=="fret" || (h.s===p.s && h.f===p.f)) return;
-      if(h.s===p.s) slideTo(h.s, h.f); else pluckCell(h.s, h.f, 0.7);
+      if(h.s===p.s){ slideTo(h.s, h.f); LES.mark("slide"); } else pluckCell(h.s, h.f, 0.7);
+      lessonNote(h.s, h.f);   /* AOG-LESSONS-V1 */
       p.s=h.s; p.f=h.f;
     }
     litNeck();
@@ -2881,6 +2886,7 @@ function playHit(e){
 }
 /* the fingers holding a string, and the note it gives: the highest finger, else open; with no finger anywhere on the
    frets, the guitar's chord in your hand */
+function pvHolding(){ let n=0; FINGERS.forEach(p=>{ if(p.zone==="fret") n++; }); return n>0; }   /* AOG-LESSONS-V1: a hand on the frets */
 function pvOn(s){ const out=[]; FINGERS.forEach(p=>{ if(p.zone==="fret" && p.s===s) out.push(p); }); return out; }
 function pvAt(p){ return NECK.fl && p.fc!=null ? p.fc : p.f; }
 function pvTop(s){ return pvOn(s).reduce((a,p)=>!a || pvAt(p)>pvAt(a) ? p : a, null); }
@@ -2912,6 +2918,8 @@ function pvDown(e, h){
     /* a tap plucks the string under it; the bass's two fingers take turns (a little softer, a little louder) */
     Object.assign(p, {y:h.y, last:h.s, fresh:true, t:performance.now()});
     PV.alt^=1; pvPluck(h.s, GTR?0.72:(PV.alt?0.78:0.7));
+    if(!PV.tap && pvHolding()) LES.mark("holdstrum");   /* AOG-LESSONS-V1 */
+    p.lset=new Set([h.s]);
     return true;
   }
   Object.assign(p, {y0:h.y, bend:0, fc:h.fc});
@@ -2929,6 +2937,7 @@ function pvMove(e, p, h){
     p.fresh=false;
     if(list.length){
       list.sort((a,b)=>down ? neckY(a)-neckY(b) : neckY(b)-neckY(a));
+      lessonStrum(p, list, list.length>1 ? list[list.length-1]>list[0] : list[0]>p.last); if(!PV.tap && pvHolding()) LES.mark("holdstrum");   /* AOG-LESSONS-V1 */
       const nowMs=performance.now(), dt=Math.max(4, nowMs-p.t), speed=(hi-lo)/dt;   /* svg px a millisecond */
       const v=Math.max(0.46, Math.min(0.9, 0.46+speed*0.09)), sp=Math.max(0.002, Math.min(0.02, dt/1000/list.length)), now=ac?ac.currentTime:0;
       list.forEach((s,k)=>pvPluck(s, v*(1-0.02*k), now+k*sp));
@@ -2943,7 +2952,7 @@ function pvMove(e, p, h){
   if(ringing){
     /* across the string: a bend (the same push as Solo mode's), a small wiggle is vibrato */
     const dy=h.y-p.y0; p.bend=Math.abs(dy)>3 ? pvBend(dy) : 0;
-    pvRetune(s0);
+    pvRetune(s0); if(p.bend>0.4) LES.mark("bend"); if(moved) LES.mark("slide");   /* AOG-LESSONS-V1 */
   } else if(h.s!==p.s && Math.abs(h.y-p.y0)>NECK.rowH*0.6){
     /* a quiet string: the finger simply moves to the next one */
     p.s=h.s; p.y0=h.y; p.bend=0; moved=true;
@@ -3062,8 +3071,8 @@ document.addEventListener("keydown",(e)=>{
   if(window.AOGSolo && AOGSolo.key(e, true)) return;   /* AOG-SOLO-V1: the Solo mode keys */
   const si=STRING_KEYS.indexOf(e.code);
   if(si>=0){ e.preventDefault(); if(e.repeat||KEYCELLS.has(e.code)) return;
-    if(GTR){ const c=shapeChord(), f=c?shapeFor(c)[si]:0; pluckShape(si, 0.72); if(f>=0) KEYCELLS.set(e.code, si+":"+f); }
-    else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); } }
+    if(GTR){ const c=shapeChord(), f=c?shapeFor(c)[si]:0; pluckShape(si, 0.72); if(f>=0){ KEYCELLS.set(e.code, si+":"+f); lessonNote(si, f); } }
+    else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
     litNeck(); return; }
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
   if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat) moveNeck(e.code==="KeyZ"?-1:1); return; }
