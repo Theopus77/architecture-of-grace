@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Beat Lab &mdash; Make a Song</title>
+<meta name="description" content="How to make a killer song on the Beat Lab, in eight steps with pictures: a beat, chords, bass, chops, the mix and the song.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-BEATLAB-GUIDE-V1 (2026-10-05) — Jimmy: "May instructions be made for the beat pad on how to make killer
+     songs!" Eight steps in pictures, from a beat to a whole song, in English and Spanish, pictures included.
+     Built by _work/music/make_beat_lab_guide.py. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+/* four picture steps */
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; align-items:start; }
+@media (max-width:700px){ .steps { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg, .step img { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:150px; border-radius:6px; }
+.step img { max-width:100%; }
+.states { margin:0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.states img { display:block; width:100%; max-width:420px; height:auto; border-radius:6px; }
+.states figcaption { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; max-width:420px; margin-top:.45rem; }
+.states figcaption span { text-align:center; color:var(--muted); font-size:.82rem; line-height:1.25; }
+.states figcaption b { display:block; color:var(--ink); font-size:.92rem; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* the 16 boxes */
+.gridwrap { overflow-x:auto; }
+.g { display:grid; grid-template-columns:78px repeat(16, minmax(20px,1fr)); gap:3px; align-items:center; margin-bottom:3px; min-width:440px; }
+.gl { font-size:.78rem; font-weight:700; color:var(--muted); text-align:right; padding-right:.35rem; white-space:nowrap; }
+.gn { font-size:.72rem; font-weight:700; color:var(--muted); text-align:center; }
+.gn.st { color:var(--ink); font-size:.85rem; }
+.gs { height:26px; border:1.5px solid var(--line); border-radius:5px; background:transparent; }
+.gs.st { border-color:var(--muted); }
+.gs.on { background:var(--c); border-color:rgb(0 0 0 / .35);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.recipe { margin:0 0 1.1rem; padding:.85rem .9rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  break-inside:avoid; page-break-inside:avoid; }
+.recipe figcaption { margin:0 0 .6rem; }
+.recipe figcaption b { font-size:1.05rem; }
+.recipe figcaption span { display:block; color:var(--muted); font-size:.88rem; }
+.recipe figcaption span.bpm { display:inline-block; width:auto; color:var(--muted); }
+.bpm { display:inline-block; margin-left:.5rem; padding:.05rem .5rem; border-radius:999px; background:var(--chip); color:var(--muted);
+  font-size:.72rem; font-weight:800; letter-spacing:.06em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* banks + sounds */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.kits { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; align-items:stretch; }
+@media (max-width:820px){ .kits { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .kits { grid-template-columns:1fr; } }
+.kits .bank { padding:.65rem .75rem; gap:.65rem; }
+.kits .bank .letter { width:2.2rem; height:2.2rem; font-size:1.1rem; }
+.kits .bank span { font-size:.86rem; line-height:1.35; display:block; }
+.note { margin:.8rem 0 0; color:var(--muted); font-size:.92rem; }
+.bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
+  break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
+.bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font:800 1.3rem/1 var(--sans); background:var(--steel); color:#f4f8f9; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.bank.empty .letter { background:transparent; color:var(--muted); border:2px dashed var(--muted); }
+.bank b { display:block; }
+.bank span { color:var(--muted); font-size:.9rem; }
+
+.sounds { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem .8rem; }
+.padn { display:inline-flex; align-items:center; justify-content:center; width:1.5rem; height:1.5rem; border-radius:5px;
+  background:#2b2620; color:#f0ebe0; font:800 .8rem/1 var(--sans); flex:0 0 auto;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media (max-width:700px){ .sounds { grid-template-columns:repeat(2,1fr); } }
+.sounds li { display:flex; align-items:center; gap:.5rem; font-weight:600; font-size:.95rem; }
+.dot { width:1.15rem; height:1.15rem; border-radius:6px; background:var(--c); border:1px solid rgb(0 0 0 / .3);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* stuck */
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; align-self:center; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.panel, svg.dial { min-width:0; }
+  .figwrap, .gridwrap { overflow:visible; }
+  .g { min-width:0; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  .recipe, .step, .bank, .fix li { box-shadow:none; }
+  .kits { grid-template-columns:repeat(3,1fr); gap:.4rem; }
+  .kits .bank { padding:.4rem .55rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .fix { gap:.35rem; }
+  .fix li { padding:.35rem .6rem; }
+  .fix img { max-width:90px; }
+  a { text-decoration:none; color:inherit; }
+}
+
+/* AOG-PIANOPIC-V1 — the piano's own pieces */
+.whole img { max-width:560px; }
+.whole.letters img { max-width:720px; }
+.whole.lessons img { max-width:440px; }
+.part img { width:100%; max-width:460px; }
+/* the step boxes hold real close-ups, so they get room: two across, one across on a phone */
+.steps { grid-template-columns:repeat(2,1fr); }
+@media (max-width:700px){ .steps { grid-template-columns:1fr; } }
+.step img { max-width:100%; }
+.draw { margin:0 0 .4rem; break-inside:avoid; page-break-inside:avoid; }
+.draw.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .9rem .9rem; }
+.draw figcaption { color:var(--muted); font-size:.92rem; margin-top:.45rem; }
+.draw figcaption b { color:var(--ink); }
+svg.kb { display:block; width:100%; max-width:640px; height:auto; }
+svg.kb .kl { font:700 15px var(--sans); fill:#1a232c; }
+svg.kb .kg { font:800 16px var(--sans); fill:#2f5c6b; }
+svg.kb.big .kl { font-size:26px; }
+svg.kb.big .kg { font-size:28px; }
+svg.onekey { display:block; width:100%; max-width:240px; height:auto; }
+svg.onekey .kz { font:800 15px var(--sans); fill:#1a232c; }
+svg.onekey .kd { font:italic 700 18px var(--display); fill:#1a232c; }
+[data-theme="dark"] svg.kb .kl, .dark svg.kb .kl { fill:#edeae2; }
+[data-theme="dark"] svg.kb .kg, .dark svg.kb .kg { fill:#7fb4c7; }
+[data-theme="dark"] svg.onekey .kd, .dark svg.onekey .kd { fill:#edeae2; }
+.padlist { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:.55rem; }
+@media (max-width:700px){ .padlist { grid-template-columns:1fr; } }
+.padlist li { display:flex; gap:.7rem; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.55rem .7rem; break-inside:avoid; }
+.pn { flex:0 0 auto; width:2.4rem; height:2.4rem; border-radius:10px; display:flex; align-items:center; justify-content:center; font:800 1.2rem/1 var(--display);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.pn.maj { background:#f2d58f; color:#2a1a08; }
+.pn.min { background:#bcd6e8; color:#10273a; }
+.padlist li > span:last-child { font-size:.92rem; }
+.keys { list-style:none; margin:.8rem 0 0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem .9rem; }
+@media (max-width:700px){ .keys { grid-template-columns:1fr; } }
+.keys li { display:flex; gap:.6rem; align-items:center; font-size:.95rem; }
+.keys kbd { flex:0 0 auto; min-width:4.6rem; text-align:center; font:700 .85rem/1 var(--sans); padding:.4rem .5rem; border:1px solid var(--line); border-bottom-width:3px; border-radius:7px; background:var(--card); color:var(--ink); }
+.step svg.ico { max-width:90px; }
+.fix .q { flex:0 0 auto; width:2rem; height:2rem; border-radius:50%; background:var(--chip); color:var(--ink); display:flex; align-items:center; justify-content:center; font:800 1rem/1 var(--sans); }
+
+/* AOG-BEATLAB-GUIDE-V1 */
+.how { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:1rem; align-items:start; background:var(--card);
+  border:1px solid var(--line); border-radius:12px; padding:.9rem; break-inside:avoid; page-break-inside:avoid; }
+.how img { display:block; width:100%; max-width:390px; height:auto; border-radius:8px; margin:0 auto; }
+.how ol { margin:0; padding-left:1.25rem; }
+.how li { margin:0 0 .45rem; }
+.try { margin:.7rem 0 0; padding:.55rem .75rem; border-left:4px solid var(--play); background:var(--chip); border-radius:0 8px 8px 0;
+  font-size:.93rem; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.try b { color:var(--ink); }
+@media (max-width:700px){ .how { grid-template-columns:1fr; } }
+.secrets { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(14rem,1fr)); gap:.6rem; }
+.secrets li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.secrets b { display:block; font-size:1rem; margin-bottom:.15rem; }
+.secrets span { color:var(--muted); font-size:.92rem; }
+.shape { display:grid; grid-template-columns:repeat(auto-fit,minmax(6.5rem,1fr)); gap:.4rem; margin:.6rem 0 0; }
+.shape div { border-radius:8px; padding:.45rem .5rem; text-align:center; font-weight:700; font-size:.9rem; color:#1a232c;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.shape small { display:block; font-weight:600; font-size:.78rem; color:#3c4650; }
+.s-in { background:#d9e6ee; } .s-ve { background:#f1dfb8; } .s-ch { background:#f4c7b4; }
+@media print { .how img { max-width:260px; } }
+</style>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/beat-lab"><span data-en="← The Beat Lab" data-es="← El laboratorio de ritmos">← The Beat Lab</span></a>
+    <button class="btn go" type="button" onclick="window.print()"><span data-en="Print this" data-es="Imprimir">Print this</span></button>
+  </div>
+</header>
+
+<h1><span data-en="Make a killer song on the Beat Lab" data-es="Haz una canción increíble en el laboratorio de ritmos">Make a killer song on the Beat Lab</span></h1>
+<p class="lede"><span data-en="Eight steps, from a beat to a whole song. Every picture is the real Beat Lab." data-es="Ocho pasos, de un ritmo a una canción entera. Cada imagen es el laboratorio de ritmos de verdad.">Eight steps, from a beat to a whole song. Every picture is the real Beat Lab.</span></p>
+<section>
+  <h2><span class="n">&#9733;</span><span data-en="Start here · the Beat Lab" data-es="Empieza aquí · el laboratorio de ritmos">Start here · the Beat Lab</span></h2>
+  <p class="sub"><span data-en="Four banks of sixteen pads. Each bank has one job." data-es="Cuatro bancos de dieciséis pads. Cada banco tiene un trabajo.">Four banks of sixteen pads. Each bank has one job.</span></p>
+  <figure class="whole"><img src="/bl-whole.png" data-en-src="/bl-whole.png" data-es-src="/bl-whole-es.png" alt="The whole Beat Lab: the bank, the sixteen pads, Play, Record the loop, tempo, swing, and the steps." data-en-alt="The whole Beat Lab: the bank, the sixteen pads, Play, Record the loop, tempo, swing, and the steps." data-es-alt="Todo el laboratorio de ritmos: el banco, los dieciséis pads, Tocar, Grabar el bucle, tempo, swing y los pasos." loading="lazy" style="max-width:330px"><figcaption><span data-en="The whole Beat Lab on a phone." data-es="Todo el laboratorio de ritmos en un teléfono.">The whole Beat Lab on a phone.</span></figcaption></figure>
+  <div class="parts">
+    <div class="part ">
+      <img src="/bl-bank.png" data-en-src="/bl-bank.png" data-es-src="/bl-bank-es.png" alt="The Bank menu." data-en-alt="The Bank menu." data-es-alt="El menú Banco." loading="lazy">
+      <b><span data-en="Bank" data-es="Banco">Bank</span></b><span><span data-en="A drums · B chords · C notes · D chops of a record." data-es="A batería · B acordes · C notas · D cortes de un disco.">A drums · B chords · C notes · D chops of a record.</span></span>
+    </div>
+    <div class="part ">
+      <img src="/bl-pads.png" data-en-src="/bl-pads.png" data-es-src="/bl-pads-es.png" alt="The sixteen pads." data-en-alt="The sixteen pads." data-es-alt="Los dieciséis pads." loading="lazy">
+      <b><span data-en="The pads" data-es="Los pads">The pads</span></b><span><span data-en="Tap one. The middle is loud, the edge is soft." data-es="Toca uno. El centro suena fuerte, el borde suave.">Tap one. The middle is loud, the edge is soft.</span></span>
+    </div>
+    <div class="part ">
+      <img src="/bl-play.png" data-en-src="/bl-play.png" data-es-src="/bl-play-es.png" alt="Play, Record the loop, Undo and Clear the loop." data-en-alt="Play, Record the loop, Undo and Clear the loop." data-es-alt="Tocar, Grabar el bucle, Deshacer y Borrar el bucle." loading="lazy">
+      <b><span data-en="Play and record" data-es="Tocar y grabar">Play and record</span></b><span><span data-en="Record the loop keeps what you tap. Undo takes it back." data-es="Grabar el bucle guarda lo que tocas. Deshacer lo quita.">Record the loop keeps what you tap. Undo takes it back.</span></span>
+    </div>
+    <div class="part ">
+      <img src="/bl-tempo.png" data-en-src="/bl-tempo.png" data-es-src="/bl-tempo-es.png" alt="Tempo, Loop length, Line up taps to, and Swing." data-en-alt="Tempo, Loop length, Line up taps to, and Swing." data-es-alt="Tempo, Largo del bucle, Alinear los toques a y Swing." loading="lazy">
+      <b><span data-en="The feel" data-es="La sensación">The feel</span></b><span><span data-en="How fast, how long, and how much it bounces." data-es="Qué tan rápido, qué tan largo y cuánto rebota.">How fast, how long, and how much it bounces.</span></span>
+    </div>
+    <div class="part ">
+      <img src="/bl-repeat.png" data-en-src="/bl-repeat.png" data-es-src="/bl-repeat-es.png" alt="Repeat, Repeat speed, Click and Every hit full." data-en-alt="Repeat, Repeat speed, Click and Every hit full." data-es-alt="Repetir, Velocidad de repetición, Clic y Todo a tope." loading="lazy">
+      <b><span data-en="Helpers" data-es="Ayudas">Helpers</span></b><span><span data-en="Repeat plays a held pad in time. Click counts the beats." data-es="Repetir toca un pad sostenido a tiempo. Clic cuenta los tiempos.">Repeat plays a held pad in time. Click counts the beats.</span></span>
+    </div>
+    <div class="part ">
+      <img src="/bl-file.png" data-en-src="/bl-file.png" data-es-src="/bl-file-es.png" alt="Make the loop into a file, with Save, Send to the Mixing Desk and Send to the turntables." data-en-alt="Make the loop into a file, with Save, Send to the Mixing Desk and Send to the turntables." data-es-alt="Convertir el bucle en un archivo, con Guardar, Enviar a la mesa de mezclas y Enviar a los tocadiscos." loading="lazy">
+      <b><span data-en="Keep it" data-es="Guárdalo">Keep it</span></b><span><span data-en="Your loop as one file, with no gap." data-es="Tu bucle en un archivo, sin pausa.">Your loop as one file, with no gap.</span></span>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">1</span><span data-en="Pick a beat" data-es="Elige un ritmo">Pick a beat</span></h2>
+  <p class="sub"><span data-en="Bank A. There are 105 beats to start from." data-es="Banco A. Hay 105 ritmos para empezar.">Bank A. There are 105 beats to start from.</span></p>
+  <div class="how">
+    <img src="/bl-start.png" data-en-src="/bl-start.png" data-es-src="/bl-start-es.png" alt="The Start from a beat menu." data-en-alt="The Start from a beat menu." data-es-alt="El menú Empieza con un ritmo." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Open Start from a beat. Pick one." data-es="Abre Empieza con un ritmo. Elige uno.">Open Start from a beat. Pick one.</span></li>
+      <li><span data-en="Press ▶ Play." data-es="Pulsa ▶ Tocar.">Press ▶ Play.</span></li>
+      <li><span data-en="Does your head nod? Keep it. If not, pick another." data-es="¿Mueves la cabeza? Quédatelo. Si no, elige otro.">Does your head nod? Keep it. If not, pick another.</span></li>
+    </ol>
+    <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Boom bap · 90 and Lo-fi study beat are great first beats." data-es="Boom bap · 90 y Lo-fi para estudiar son buenos primeros ritmos.">Boom bap · 90 and Lo-fi study beat are great first beats.</span></p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">2</span><span data-en="Make the beat yours" data-es="Haz tuyo el ritmo">Make the beat yours</span></h2>
+  <p class="sub"><span data-en="Change one or two hits. Not more." data-es="Cambia uno o dos golpes. No más.">Change one or two hits. Not more.</span></p>
+  <div class="how">
+    <img src="/bl-steps.png" data-en-src="/bl-steps.png" data-es-src="/bl-steps-es.png" alt="The steps for pad 2, the snare: a hit on every second beat." data-en-alt="The steps for pad 2, the snare: a hit on every second beat." data-es-alt="Los pasos del pad 2, la caja: un golpe cada dos tiempos." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Tap a pad to pick it. Its steps show below." data-es="Toca un pad para elegirlo. Sus pasos salen abajo.">Tap a pad to pick it. Its steps show below.</span></li>
+      <li><span data-en="Tap a step to add a hit. Tap it again to take it away." data-es="Toca un paso para poner un golpe. Tócalo otra vez para quitarlo.">Tap a step to add a hit. Tap it again to take it away.</span></li>
+      <li><span data-en="Listen. Keep what makes it better." data-es="Escucha. Quédate con lo que lo mejora.">Listen. Keep what makes it better.</span></li>
+    </ol>
+    <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Turn on Record the loop. Tap the snare near its edge, just before beat 2. A soft “ghost” hit makes it groove." data-es="Activa Grabar el bucle. Toca la caja cerca del borde, justo antes del tiempo 2. Un golpe suave “fantasma” le da groove.">Turn on Record the loop. Tap the snare near its edge, just before beat 2. A soft “ghost” hit makes it groove.</span></p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">3</span><span data-en="Set the feel" data-es="Ajusta la sensación">Set the feel</span></h2>
+  <p class="sub"><span data-en="Tempo, length and swing." data-es="Tempo, largo y swing.">Tempo, length and swing.</span></p>
+  <div class="how">
+    <img src="/bl-tempo.png" data-en-src="/bl-tempo.png" data-es-src="/bl-tempo-es.png" alt="Tempo 90, Loop length 2 bars, Line up taps to 16th notes, Swing 58 %." data-en-alt="Tempo 90, Loop length 2 bars, Line up taps to 16th notes, Swing 58 %." data-es-alt="Tempo 90, Largo del bucle 2 compases, Alinear a semicorcheas, Swing 58 %." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Tempo: 85 to 95 for hip-hop. 120 to 128 for dance." data-es="Tempo: 85 a 95 para hip-hop. 120 a 128 para baile.">Tempo: 85 to 95 for hip-hop. 120 to 128 for dance.</span></li>
+      <li><span data-en="Loop length: 4 bars. That gives room for chords." data-es="Largo del bucle: 4 compases. Así caben los acordes.">Loop length: 4 bars. That gives room for chords.</span></li>
+      <li><span data-en="Swing: 54 to 58 % makes it bounce." data-es="Swing: 54 a 58 % lo hace rebotar.">Swing: 54 to 58 % makes it bounce.</span></li>
+    </ol>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">4</span><span data-en="Add chords" data-es="Agrega acordes">Add chords</span></h2>
+  <p class="sub"><span data-en="Bank B. Four chords, one a bar." data-es="Banco B. Cuatro acordes, uno por compás.">Bank B. Four chords, one a bar.</span></p>
+  <div class="how">
+    <img src="/bl-chords.png" data-en-src="/bl-chords.png" data-es-src="/bl-chords-es.png" alt="Bank B, Chords: the electric piano in C major. Pad 1 is C, 5 is G, 6 is Am, 4 is F." data-en-alt="Bank B, Chords: the electric piano in C major. Pad 1 is C, 5 is G, 6 is Am, 4 is F." data-es-alt="Banco B, Acordes: el piano eléctrico en Do mayor. El pad 1 es Do, el 5 es Sol, el 6 es La m, el 4 es Fa." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Pick Bank B. Pick an instrument and a key." data-es="Elige el Banco B. Elige un instrumento y un tono.">Pick Bank B. Pick an instrument and a key.</span></li>
+      <li><span data-en="Turn on Record the loop." data-es="Activa Grabar el bucle.">Turn on Record the loop.</span></li>
+      <li><span data-en="On the first beat of each bar, tap pads 1, 5, 6, 4." data-es="En el primer tiempo de cada compás, toca los pads 1, 5, 6, 4.">On the first beat of each bar, tap pads 1, 5, 6, 4.</span></li>
+      <li><span data-en="Hold each pad for the whole bar." data-es="Sostén cada pad todo el compás.">Hold each pad for the whole bar.</span></li>
+    </ol>
+    <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Those are the chords of a thousand hit songs. For a sad song, pick Minor." data-es="Son los acordes de mil canciones famosas. Para una canción triste, elige Menor.">Those are the chords of a thousand hit songs. For a sad song, pick Minor.</span></p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">5</span><span data-en="Add the bass" data-es="Agrega el bajo">Add the bass</span></h2>
+  <p class="sub"><span data-en="Bank C. Same key as the chords." data-es="Banco C. El mismo tono que los acordes.">Bank C. Same key as the chords.</span></p>
+  <div class="how">
+    <img src="/bl-notes.png" data-en-src="/bl-notes.png" data-es-src="/bl-notes-es.png" alt="Bank C, Notes: a bass in a key, sixteen notes from low to high." data-en-alt="Bank C, Notes: a bass in a key, sixteen notes from low to high." data-es-alt="Banco C, Notas: un bajo en un tono, dieciséis notas de grave a agudo." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Pick Bank C. Set Key and Scale the same as bank B (C, Major)." data-es="Elige el Banco C. Pon Tono y Escala igual que el banco B (Do, Mayor).">Pick Bank C. Set Key and Scale the same as bank B (C, Major).</span></li>
+      <li><span data-en="Now pads 1, 5, 6, 4 are the chords&#x27; own low notes." data-es="Ahora los pads 1, 5, 6, 4 son las notas graves de los acordes.">Now pads 1, 5, 6, 4 are the chords&#x27; own low notes.</span></li>
+      <li><span data-en="Record them with the kick: same bars, same pads as the chords." data-es="Grábalas con el bombo: los mismos compases y pads que los acordes.">Record them with the kick: same bars, same pads as the chords.</span></li>
+    </ol>
+    <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Kick and bass together hit hardest. Let the bass rest when the kick rests." data-es="El bombo y el bajo juntos golpean más fuerte. Deja descansar el bajo cuando descansa el bombo.">Kick and bass together hit hardest. Let the bass rest when the kick rests.</span></p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">6</span><span data-en="Sprinkle chops" data-es="Espolvorea cortes">Sprinkle chops</span></h2>
+  <p class="sub"><span data-en="Bank D. A record, cut in sixteen." data-es="Banco D. Un disco, cortado en dieciséis.">Bank D. A record, cut in sixteen.</span></p>
+  <div class="how">
+    <img src="/bl-chops.png" data-en-src="/bl-chops.png" data-es-src="/bl-chops-es.png" alt="Bank D, Chops of a record: Paper Kites, starting at bar 1." data-en-alt="Bank D, Chops of a record: Paper Kites, starting at bar 1." data-es-alt="Banco D, Cortes de un disco: Cometas de papel, desde el compás 1." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Pick Bank D. Pick a record." data-es="Elige el Banco D. Elige un disco.">Pick Bank D. Pick a record.</span></li>
+      <li><span data-en="Tap the chops to find a sound you like." data-es="Toca los cortes para encontrar un sonido que te guste.">Tap the chops to find a sound you like.</span></li>
+      <li><span data-en="Record one in the gaps, near the end of bar 2 and bar 4." data-es="Graba uno en los huecos, cerca del final del compás 2 y del 4.">Record one in the gaps, near the end of bar 2 and bar 4.</span></li>
+    </ol>
+    <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="A little goes a long way. One chop every two bars is plenty." data-es="Un poco rinde mucho. Un corte cada dos compases basta.">A little goes a long way. One chop every two bars is plenty.</span></p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">7</span><span data-en="Mix it" data-es="Mézclalo">Mix it</span></h2>
+  <p class="sub"><span data-en="Each pad has its own volume, pitch and place." data-es="Cada pad tiene su volumen, tono y lugar.">Each pad has its own volume, pitch and place.</span></p>
+  <div class="how">
+    <img src="/bl-padset.png" data-en-src="/bl-padset.png" data-es-src="/bl-padset-es.png" alt="The pad settings: Volume, Pitch, Left and right, and Clear this pad&#x27;s hits." data-en-alt="The pad settings: Volume, Pitch, Left and right, and Clear this pad&#x27;s hits." data-es-alt="Los ajustes del pad: Volumen, Tono, Izquierda y derecha, y Borrar los golpes de este pad." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Kick and snare loudest. Hi-hats softer, about 70 %." data-es="Bombo y caja más fuertes. Charles más suave, unos 70 %.">Kick and snare loudest. Hi-hats softer, about 70 %.</span></li>
+      <li><span data-en="Move the hi-hats a little left, the chops a little right." data-es="Mueve el charles un poco a la izquierda y los cortes un poco a la derecha.">Move the hi-hats a little left, the chops a little right.</span></li>
+      <li><span data-en="Pitch a chop down 3 to 5 steps for a deep, dark sound." data-es="Baja un corte 3 a 5 semitonos para un sonido grave y oscuro.">Pitch a chop down 3 to 5 steps for a deep, dark sound.</span></li>
+    </ol>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">8</span><span data-en="Build the song" data-es="Arma la canción">Build the song</span></h2>
+  <p class="sub"><span data-en="A song is your loop in parts: quiet, fuller, then everything." data-es="Una canción es tu bucle en partes: suave, más lleno, y luego todo.">A song is your loop in parts: quiet, fuller, then everything.</span></p>
+  <div class="how">
+    <img src="/bl-file.png" data-en-src="/bl-file.png" data-es-src="/bl-file-es.png" alt="Make the loop into a file: your loop is ready, with Save as .wav, Send to the Mixing Desk and Send to the turntables." data-en-alt="Make the loop into a file: your loop is ready, with Save as .wav, Send to the Mixing Desk and Send to the turntables." data-es-alt="Convertir el bucle en un archivo: tu bucle está listo, con Guardar como .wav, Enviar a la mesa de mezclas y Enviar a los tocadiscos." loading="lazy">
+    <div>
+    <ol>
+      <li><span data-en="Chorus: with everything playing, press Make the loop into a file, then Send to the Mixing Desk." data-es="Coro: con todo sonando, pulsa Convertir el bucle en un archivo y luego Enviar a la mesa de mezclas.">Chorus: with everything playing, press Make the loop into a file, then Send to the Mixing Desk.</span></li>
+      <li><span data-en="Verse: on bank D, Clear this pad&#x27;s hits on the chops. Make a file and send it." data-es="Estrofa: en el banco D, Borrar los golpes de este pad en los cortes. Haz un archivo y envíalo.">Verse: on bank D, Clear this pad&#x27;s hits on the chops. Make a file and send it.</span></li>
+      <li><span data-en="Intro: clear the drums and the bass too, so only chords play. Make a file and send it." data-es="Intro: borra también la batería y el bajo, así solo suenan los acordes. Haz un archivo y envíalo.">Intro: clear the drums and the bass too, so only chords play. Make a file and send it.</span></li>
+      <li><span data-en="Undo brings every part back." data-es="Deshacer recupera cada parte.">Undo brings every part back.</span></li>
+      <li><span data-en="On the Mixing Desk, put each part on its own track. Set where it Starts at bar and how many times it Plays." data-es="En la mesa de mezclas, pon cada parte en su pista. Elige en qué compás Empieza y cuántas veces Suena.">On the Mixing Desk, put each part on its own track. Set where it Starts at bar and how many times it Plays.</span></li>
+    </ol>
+    <div class="shape">
+      <div class="s-in"><span data-en="Intro" data-es="Intro">Intro</span><small><span data-en="4 bars" data-es="4 compases">4 bars</span></small></div>
+      <div class="s-ve"><span data-en="Verse" data-es="Estrofa">Verse</span><small><span data-en="8 bars" data-es="8 compases">8 bars</span></small></div>
+      <div class="s-ch"><span data-en="Chorus" data-es="Coro">Chorus</span><small><span data-en="8 bars" data-es="8 compases">8 bars</span></small></div>
+      <div class="s-ve"><span data-en="Verse" data-es="Estrofa">Verse</span><small><span data-en="8 bars" data-es="8 compases">8 bars</span></small></div>
+      <div class="s-ch"><span data-en="Chorus" data-es="Coro">Chorus</span><small><span data-en="8 bars" data-es="8 compases">8 bars</span></small></div>
+      <div class="s-in"><span data-en="Ending" data-es="Final">Ending</span><small><span data-en="4 bars" data-es="4 compases">4 bars</span></small></div>
+    </div>
+    </div>
+  </div>
+</section>
+<section>
+  <h2><span class="n">&#9889;</span><span data-en="Five secrets of killer songs" data-es="Cinco secretos de las canciones increíbles">Five secrets of killer songs</span></h2>
+  <ul class="secrets">
+    <li><b><span data-en="Leave space." data-es="Deja espacio.">Leave space.</span></b><span><span data-en="The quiet gaps are part of the groove." data-es="Los silencios son parte del groove.">The quiet gaps are part of the groove.</span></span></li>
+    <li><b><span data-en="Kick and bass together." data-es="Bombo y bajo juntos.">Kick and bass together.</span></b><span><span data-en="They hit as one, so the song feels strong." data-es="Golpean como uno, así la canción se siente fuerte.">They hit as one, so the song feels strong.</span></span></li>
+    <li><b><span data-en="Soft and loud." data-es="Suave y fuerte.">Soft and loud.</span></b><span><span data-en="Soft hits between loud ones make it move. Tap near the edge." data-es="Golpes suaves entre los fuertes le dan movimiento. Toca cerca del borde.">Soft hits between loud ones make it move. Tap near the edge.</span></span></li>
+    <li><b><span data-en="Change something every 4 or 8 bars." data-es="Cambia algo cada 4 u 8 compases.">Change something every 4 or 8 bars.</span></b><span><span data-en="Add a sound, take one away, or add a fill." data-es="Agrega un sonido, quita uno o pon un relleno.">Add a sound, take one away, or add a fill.</span></span></li>
+    <li><b><span data-en="Stop before the chorus." data-es="Para antes del coro.">Stop before the chorus.</span></b><span><span data-en="One beat of silence, then everything at once." data-es="Un tiempo de silencio y luego todo a la vez.">One beat of silence, then everything at once.</span></span></li>
+  </ul>
+</section>
+<section>
+  <h2><span class="n">?</span><span data-en="Nothing is happening?" data-es="¿No pasa nada?">Nothing is happening?</span></h2>
+  <ul class="fix">
+    <li><span class="q">?</span><div><b><span data-en="No sound" data-es="No hay sonido">No sound</span></b><span><span data-en="Tap a pad once. A phone wakes its sound on the first tap. Turn the phone&#x27;s volume up." data-es="Toca un pad una vez. El teléfono despierta su sonido con el primer toque. Sube el volumen del teléfono.">Tap a pad once. A phone wakes its sound on the first tap. Turn the phone&#x27;s volume up.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="The pads look grey" data-es="Los pads se ven grises">The pads look grey</span></b><span><span data-en="The sounds are on their way. Wait for “Ready”." data-es="Los sonidos están en camino. Espera a que diga “Listo”.">The sounds are on their way. Wait for “Ready”.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="The chords and bass clash" data-es="Los acordes y el bajo chocan">The chords and bass clash</span></b><span><span data-en="Bank C needs the same Key and Scale as bank B." data-es="El banco C necesita el mismo Tono y Escala que el banco B.">Bank C needs the same Key and Scale as bank B.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="I played, but it did not stay" data-es="Toqué, pero no se quedó">I played, but it did not stay</span></b><span><span data-en="Turn on Record the loop first. It turns red." data-es="Primero activa Grabar el bucle. Se pone rojo.">Turn on Record the loop first. It turns red.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="My beat is gone" data-es="Mi ritmo desapareció">My beat is gone</span></b><span><span data-en="Press Undo. Press it again to go back further." data-es="Pulsa Deshacer. Púlsalo otra vez para volver más atrás.">Press Undo. Press it again to go back further.</span></span></div></li>
+    <li><span class="q">?</span><div><b><span data-en="The pads feel late" data-es="Los pads se sienten tarde">The pads feel late</span></b><span><span data-en="Bluetooth headphones add a delay. Use the phone&#x27;s speaker or wired headphones." data-es="Los audífonos Bluetooth agregan retraso. Usa el altavoz del teléfono o audífonos con cable.">Bluetooth headphones add a delay. Use the phone&#x27;s speaker or wired headphones.</span></span></div></li>
+  </ul>
+</section>
+<footer>
+  <span data-en="The Beat Lab · Architecture of Grace · your loops stay on this device" data-es="El laboratorio de ritmos · Architecture of Grace · tus bucles se quedan en este dispositivo">The Beat Lab · Architecture of Grace · your loops stay on this device</span>
+</footer>
+
+</div>
+<script>
+/* AOG-PIANOPIC-V1 — each picture has a Spanish twin; it follows the page language (the EN/ES switch in the top bar) */
+(function(){
+  function swap(){
+    var es=(document.documentElement.getAttribute("lang")||"").indexOf("es")===0;
+    document.querySelectorAll("img[data-es-src]").forEach(function(im){
+      var src=im.getAttribute(es?"data-es-src":"data-en-src"), alt=im.getAttribute(es?"data-es-alt":"data-en-alt");
+      if(src && im.getAttribute("src")!==src) im.setAttribute("src", src);
+      if(alt) im.setAttribute("alt", alt);
+    });
+  }
+  try{ new MutationObserver(swap).observe(document.documentElement, {attributes:true, attributeFilter:["lang"]}); }catch(e){}
+  swap();
+})();
+</script>
+<script src="/aog-topbar.js"></script>
+</body>
+</html>
