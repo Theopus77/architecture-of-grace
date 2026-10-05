@@ -521,6 +521,9 @@ const STR={
              :{en:"Hold the frets with one hand. Pluck on the right with the other.",es:"Pisa los trastes con una mano. Pulsa a la derecha con la otra."},
   pvHintL: GTR?{en:"Hold the frets with one hand. Strum on the left with the other.",es:"Pisa los trastes con una mano. Rasguea a la izquierda con la otra."}
               :{en:"Hold the frets with one hand. Pluck on the left with the other.",es:"Pisa los trastes con una mano. Pulsa a la izquierda con la otra."},
+  /* AOG-SOLO-PV-V1: in Solo mode the strip is the whammy bar (guitar), so the hint says so */
+  pvHintSolo: GTR?{en:"Tap a fret to play it. Push up or down to bend. Drag the bar to dive.",es:"Toca un traste para tocarlo. Empuja arriba o abajo para estirar. Arrastra la barra para bajar el tono."}
+                 :{en:"Tap a string to slap it. Flick up fast to pop it. Push up or down to bend.",es:"Toca una cuerda para hacer slap. Sube rápido el dedo para hacer pop. Empuja arriba o abajo para estirar."},
   pvFretless:{en:"No frets: the note is right under your finger. Slide, and the sound follows.",es:"Sin trastes: la nota está justo bajo tu dedo. Desliza el dedo y el sonido lo sigue."},
   pvMute:{en:"Mute the strings",es:"Apagar las cuerdas"}, pvMuteW:{en:"Mute",es:"Apagar"},
   pvLower:{en:"Lower frets",es:"Trastes más graves"}, pvHigher:{en:"Higher frets",es:"Trastes más agudos"},
@@ -2461,6 +2464,10 @@ function playZoomLock(on){
 const PV={on:false, forced:false, closed:false, left:false, away:false, tap:true, alt:0, mq:null, back:null, y:0, seen:false};
 const PVKEY="aog."+INST+".play.v1";
 try{ const r=JSON.parse(localStorage.getItem(PVKEY)||"null"); if(r){ PV.left=!!r.left; PV.away=!!r.away; PV.seen=!!r.seen; if(typeof r.tap==="boolean") PV.tap=r.tap; } }catch(e){}
+/* the one line at the top of the play view: what your hands do here */
+function pvHintPaint(){ const el=$("pvHint"); if(!el) return; const flip=!!PV.left!==!!PV.away, solo=!!(window.AOGSolo && AOGSolo.isOn());
+  el.textContent=t(fretless()?"pvFretless":solo?"pvHintSolo":PV.tap?"pvHintTap":flip?"pvHintL":"pvHint"); }
+window.pvHintPaint=pvHintPaint;
 function pvSave(){ try{ localStorage.setItem(PVKEY, JSON.stringify({left:PV.left, away:PV.away, seen:PV.seen, tap:PV.tap})); }catch(e){} }
 function fretD(k){ return 1-Math.pow(2,-k/12); }        /* where fret k sits, as a share of the string from the nut */
 function fretless(){ const d=SOUNDS[S.sound]; return !GTR && !!(d && (d.rec==="upright" || d.rec==="ergo")); }
@@ -2525,7 +2532,7 @@ function buildPlayNeck(){
   $("downBtn").disabled=a<=1; $("upBtn").disabled=a>=MAXF-n+1;
   $("pvFrets").textContent=t("pvFrets",{a:a, b:a+n-1});
   $("pvDown").disabled=a<=1; $("pvUp").disabled=a>=MAXF-n+1;
-  $("pvHint").textContent=t(fl?"pvFretless":PV.tap?"pvHintTap":flip?"pvHintL":"pvHint");
+  pvHintPaint();
   document.body.classList.toggle("pv-left", flip && PV.on);   /* the drawer opens over the frets, away from the strum */
   litNeck();
 }
