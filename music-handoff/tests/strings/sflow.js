@@ -105,7 +105,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const es=await p.evaluate(()=>({h:document.getElementById("mastH").textContent, pad:document.querySelector(".pad").textContent, open:[...document.querySelectorAll("#neck .nk-name")].map(e=>e.textContent).join(" "),
       menu:[...document.querySelectorAll(".bench-bar select option")].map(o=>o.textContent).join("|"), rh:document.getElementById("rhythmSel").selectedOptions[0].textContent, neckH:document.querySelector("[data-t=neckH]").textContent, lang:document.documentElement.lang}));
     ok(es.lang==="es" && /La guitarra|El bajo/.test(es.h) && /Do/.test(es.pad) && /Mi La Re Sol/.test(es.open), `Spanish: ${es.h}; pad ${es.pad.replace(/\s+/g," ").trim()}; strings ${es.open}`);
-    ok(/Trastes y cuerdas/.test(es.neckH) && es.menu==="Ritmos|Piano|Guitarra|Bajo|Banda|Tocadiscos|Estudio", `the words and the tools menu change too: ${es.menu}`);
+    ok(/Trastes y cuerdas/.test(es.neckH) && es.menu==="Ritmos|Batería|Piano|Guitarra|Bajo|Banda|Tocadiscos|Mesa de mezclas", `the words and the tools menu change too: ${es.menu}`);
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(200);
     /* 8. saving */
     await p.selectOption("#soundSel", inst==="guitar"?"nylon":"upright"); await p.selectOption("#keySel", "7"); await p.keyboard.press("KeyX");
@@ -119,4 +119,4 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
   console.log(fails? fails+" FAILED":"ALL PASS");
   await b.close(); srv.close();
 })().catch(e=>{ console.log("CRASH", e.stack); process.exit(1); });
-function PRESET_COUNT(inst){ return 44*(inst==="guitar"?21:19); }   /* AOG-STRINGS-WAYS-V1: 44 patterns; 21 ways on the guitar, 19 on the bass */
+function PRESET_COUNT(inst){ return 59*(inst==="guitar"?21:19); }   /* AOG-STRINGS-WAYS-V1: 59 patterns; 21 ways on the guitar, 19 on the bass */
