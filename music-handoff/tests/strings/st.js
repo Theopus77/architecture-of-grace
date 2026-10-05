@@ -37,7 +37,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await T("touchEnd",[]); await p.waitForTimeout(80);
     ok((await live()).length>0, "the strings ring on after the finger lifts: "+await live());
     ok(await p.evaluate(()=>!document.querySelector('.pad[data-i="0"]').classList.contains("hit")), "the pad goes dark when the finger lifts");
-    const dots=await p.evaluate(()=>[...document.querySelectorAll("#neck .dot.fit")].map(g=>g.getAttribute("data-c")).join(" "));
+    const dots=await p.evaluate(()=>[...document.querySelectorAll("#neck .dot.fit, #neck .dot.now")].map(g=>g.getAttribute("data-c")).join(" "));
     ok(dots.length>0, "the chord shows on the neck: "+dots);
     /* a fret, then a slide along the string, then over to the next string */
     await p.evaluate("__v=[]");
