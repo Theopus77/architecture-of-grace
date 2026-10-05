@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""AOG-BEATLAB-GUIDE-V1 (2026-10-05) — beat-lab-guide.html: how to make a killer song on the Beat Lab, in pictures.
+"""AOG-BEATLAB-GUIDE-V1 (2026-10-05) — beat-lab-guide.html: how to make a killer song on the Drum Machine, in pictures.
 
 Jimmy: "May instructions be made for the beat pad on how to make killer songs!" The piano's picture guide is the model
 (make_piano_guide.py, whose helpers and styles this reuses): few words, real pictures, prints on letter, English and
-Spanish (each picture has a Spanish twin, bl-*-es.png). The pictures are parts of the real Beat Lab (music-pads.html),
+Spanish (each picture has a Spanish twin, bl-*-es.png). The pictures are parts of the real Drum Machine (music-pads.html),
 taken in a browser at phone width. The song steps use the Mixing Desk's own words (Starts at bar, Plays … times).
 
   python3 _work/music/make_beat_lab_guide.py        (from aog-deploy/)
@@ -52,16 +52,16 @@ BODY.append("""<div class="wrap">
 <header>
   <a class="brand" href="/">Architecture of Grace</a>
   <div class="tools">
-    <a class="btn" href="/beat-lab">%s</a>
+    <a class="btn" href="/drum-machine">%s</a>
     <button class="btn go" type="button" onclick="window.print()">%s</button>
   </div>
 </header>
 
 <h1>%s</h1>
-<p class="lede">%s</p>""" % (sp("← The Beat Lab", "← El laboratorio de ritmos"), sp("Print this", "Imprimir"),
-                              sp("Make a killer song on the Beat Lab", "Haz una canción increíble en el laboratorio de ritmos"),
-                              sp("Eight steps, from a beat to a whole song. Every picture is the real Beat Lab.",
-                                 "Ocho pasos, de un ritmo a una canción entera. Cada imagen es el laboratorio de ritmos de verdad.")))
+<p class="lede">%s</p>""" % (sp("← The Drum Machine", "← La caja de ritmos"), sp("Print this", "Imprimir"),
+                              sp("Make a killer song on the Drum Machine", "Haz una canción increíble en la caja de ritmos"),
+                              sp("Eight steps, from a beat to a whole song. Every picture is the real Drum Machine.",
+                                 "Ocho pasos, de un ritmo a una canción entera. Cada imagen es la caja de ritmos de verdad.")))
 
 # ★ the machine
 BODY.append("""<section>
@@ -72,11 +72,11 @@ BODY.append("""<section>
 %s
   </div>
 </section>""" % (
-    sp("Start here · the Beat Lab", "Empieza aquí · el laboratorio de ritmos"),
+    sp("Start here · the Drum Machine", "Empieza aquí · la caja de ritmos"),
     sp("Four banks of sixteen pads. Each bank has one job.", "Cuatro bancos de dieciséis pads. Cada banco tiene un trabajo."),
-    img("bl-whole", "The whole Beat Lab: the bank, the sixteen pads, Play, Record the loop, tempo, swing, and the steps.",
-        "Todo el laboratorio de ritmos: el banco, los dieciséis pads, Tocar, Grabar el bucle, tempo, swing y los pasos.", "max-width:330px"),
-    sp("The whole Beat Lab on a phone.", "Todo el laboratorio de ritmos en un teléfono."),
+    img("bl-whole", "The whole Drum Machine: the bank, the sixteen pads, Play, Record the loop, tempo, swing, and the steps.",
+        "Toda la caja de ritmos: el banco, los dieciséis pads, Tocar, Grabar el bucle, tempo, swing y los pasos.", "max-width:330px"),
+    sp("The whole Drum Machine on a phone.", "Toda la caja de ritmos en un teléfono."),
     "\n".join([
         part("", "bl-bank", ("The Bank menu.", "El menú Banco."), ("Bank", "Banco"),
              ("A drums · B chords · C notes · D chops of a record.", "A batería · B acordes · C notas · D cortes de un disco.")),
@@ -229,16 +229,16 @@ BODY.append("""<section>
         (("My beat is gone", "Mi ritmo desapareció"), ("Press Undo. Press it again to go back further.", "Pulsa Deshacer. Púlsalo otra vez para volver más atrás.")),
         (("The pads feel late", "Los pads se sienten tarde"), ("Bluetooth headphones add a delay. Use the phone's speaker or wired headphones.",
                                                                "Los audífonos Bluetooth agregan retraso. Usa el altavoz del teléfono o audífonos con cable.")),
-    ]), sp("The Beat Lab · Architecture of Grace · your loops stay on this device",
-           "El laboratorio de ritmos · Architecture of Grace · tus bucles se quedan en este dispositivo")))
+    ]), sp("The Drum Machine · Architecture of Grace · your loops stay on this device",
+           "La caja de ritmos · Architecture of Grace · tus bucles se quedan en este dispositivo")))
 
 
 def build():
     src = open(os.path.join(ROOT, "drums-guide.html"), encoding="utf-8").read()
     head = src.split("</head>", 1)[0]
-    rep = [("<title>The Drum Machine &mdash; Picture Guide</title>", "<title>The Beat Lab &mdash; Make a Song</title>"),
+    rep = [("<title>The Drum Machine &mdash; Picture Guide</title>", "<title>The Drum Machine &mdash; Make a Song</title>"),
            ('<meta name="description" content="The drum machine in pictures. Almost no reading. Print it and keep it next to the machine.">',
-            '<meta name="description" content="How to make a killer song on the Beat Lab, in eight steps with pictures: a beat, chords, bass, chops, the mix and the song.">')]
+            '<meta name="description" content="How to make a killer song on the Drum Machine, in eight steps with pictures: a beat, chords, bass, chops, the mix and the song.">')]
     for a, b in rep:
         assert head.count(a) == 1, a
         head = head.replace(a, b)

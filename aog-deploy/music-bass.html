@@ -589,9 +589,9 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  padsBtn: GTR?{en:"Send chords to the drum machine",es:"Enviar acordes a la caja de ritmos"}:{en:"Send the low notes to the drum machine",es:"Enviar las notas graves a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsBtn: GTR?{en:"Send chords to the classic drum machine",es:"Enviar acordes a la caja de ritmos clásica"}:{en:"Send the low notes to the classic drum machine",es:"Enviar las notas graves a la caja de ritmos clásica"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
-  padsSent:{en:"Sent. On the drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos, pulsa Ponerlos en los pads 3 a 8."},
+  padsSent:{en:"Sent. On the classic drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos clásica, pulsa Ponerlos en los pads 3 a 8."}, drumsOld:{en:"The classic drum machine",es:"La caja de ritmos clásica"},
   bars:{en:"bars",es:"compases"},
   /* AOG-STRINGS-REAL-V1: the recorded guitars and basses */
   credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. In Solo mode, the band's bass is Growlybass by Karoryfer Samples. All of them are free for everyone to use (CC0).",
@@ -2283,7 +2283,10 @@ function tick(){
 /* ── the drum machine's beat, from the shelf the music tools share ── */
 const DRUM={take:null, buf:null};
 async function checkDrums(){
-  try{ DRUM.take=await AOGHandoff.get("drumbench"); }catch(e){ DRUM.take=null; }
+  /* AOG-DRUM-MACHINE-V2: the newest beat from either drum machine (a loop sent from the new one, padbench, or a bounce
+     from the classic one, drumbench); a take of free playing has no steady tempo, so it is left out */
+  const beatOf=async k=>{ try{ const x=await AOGHandoff.get(k); return x && x.wav && x.bpm>0 && !x.take ? x : null; }catch(e){ return null; } };
+  { const a=await beatOf("drumbench"), b=await beatOf("padbench"); DRUM.take=(a && b) ? ((b.at||0)>(a.at||0) ? b : a) : (a||b); }
   if(DRUM.take && !(DRUM.take.wav && DRUM.take.bpm)) DRUM.take=null;
   DRUM.buf=null;
   paintDrums();
@@ -2352,7 +2355,7 @@ async function sendPads(){
       out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
     }
     await AOGHandoff.put("chordpads", {from:INST, name:soundName(S.sound), at:Date.now(), pads:out});
-    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drums")}</a>`;
+    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drumsOld")}</a>`;
   }catch(e){ line.textContent=t("sendFail"); }
   btn.disabled=false;
 }
@@ -2435,7 +2438,7 @@ function lessonPlaying(){
 }
 /* the six music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]===INST?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". ● Record on the
@@ -2601,7 +2604,7 @@ function paintDial(){
 function paintDrums(){
   const box=$("drumBox"); if(!box) return;
   if(!DRUM.take){
-    box.innerHTML=`<p class="line">${t("drumNone")} <a href="music-drums.html">${t("drumGo")}</a></p>`;
+    box.innerHTML=`<p class="line">${t("drumNone")} <a href="music-pads.html">${t("drumGo")}</a></p>`;
     if(S.withDrums){ S.withDrums=false; }
   } else {
     box.innerHTML=`<div class="row" style="margin-top:.7rem"><button type="button" class="pbtn" id="drumBtn" aria-pressed="${S.withDrums?"true":"false"}">${t("drumOn")}</button></div>
@@ -3153,7 +3156,7 @@ window.addEventListener("pagehide",()=>{ stop(true); muteAll(); });
 /* the strings are made once the page is up; the drum beat is looked up on the shared shelf */
 window.addEventListener("load",()=>{ prepare(S.sound); });
 checkDrums();
-try{ AOGHandoff.listen(function(key){ if(key==="drumbench") checkDrums(); }); }catch(e){}
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="padbench") checkDrums(); }); }catch(e){}
 window.addEventListener("focus", checkDrums);
 </script>
 </body>

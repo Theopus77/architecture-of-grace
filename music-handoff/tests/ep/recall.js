@@ -42,7 +42,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
   const p=await c.newPage(); await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   await p.goto("http://localhost:9993/music-decks.html"); await p.waitForTimeout(1500);
   const rows=await p.evaluate(()=>[...document.querySelectorAll("#bench .take")].map(d=>d.querySelector("b").textContent+" — "+((d.querySelector(".tlen")||{}).textContent||"")));
-  ok(["From the piano — Piano · my playing","From the guitar — Guitar · my playing","From the bass — Bass · my playing","From the band — Band · my playing","A take from the drum machine — Drums · my playing"].every(s=>rows.some(r=>r.indexOf(s)===0)), "the turntables show every take:\n   "+rows.join("\n   "));
+  ok(["From the piano — Piano · my playing","From the guitar — Guitar · my playing","From the bass — Bass · my playing","From the band — Band · my playing","A take from the classic drum machine — Drums · my playing"].every(s=>rows.some(r=>r.indexOf(s)===0)), "the turntables show every take:\n   "+rows.join("\n   "));
   await p.evaluate(()=>{ const bn=document.querySelector('#bench [data-take="drumtake"][data-deck="A"]'); bn.click(); }); await p.waitForTimeout(1200);
   const dA=await p.evaluate(()=>{ const d=decks.find(x=>x.id==="A"); return {buf:!!(d.buffer||d.buf), name:d.name||""}; });
   ok(dA.buf && /drumtake/.test(dA.name), "the drum take goes onto deck A: "+JSON.stringify(dA));

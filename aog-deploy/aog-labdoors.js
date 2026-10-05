@@ -1,23 +1,25 @@
 /* ══ AOG-LABDOORS-V1 (2026-10-05) — the music labs' doors, across the top of every lab ══════════════════════════════════
    Jimmy: "maybe for the different labs, small doors should be across the top of the page … moving from room to room
-   easier." Nine small doors, each the lab's own pencil drawing (the Studio door's pictures) and its name, in the Studio's
+   easier." Eight small doors, each the lab's own pencil drawing (the Studio door's pictures) and its name, in the Studio's
    order; the lab you are in is marked (aria-current) and the others are one tap away. On a phone the row slides
    sideways inside itself (the page stays still) as a slim row of small pictures beside their names, a finger
-   high, so the lab below stays on the screen; on a wide screen all nine fit, as picture doors. It sits just above the lab's bar.
+   high, so the lab below stays on the screen; on a wide screen all eight fit, as picture doors. It sits just above the lab's bar.
    An exception to the drop-down rule (CLAUDE.md, "Drop-down menus"), asked for by Jimmy on 2026-10-05.
    A lab loads it with  <script src="/aog-labdoors.js" defer></script>. ═════════════════════════════════════════════ */
 (function () {
   "use strict";
   var D = document;
+  /* AOG-LABDOORS-V2 (Jimmy, 2026-10-05): the old drum machine is retired (it stays at /drums for the lessons that use it,
+     off the doors); the Beat Lab is now The Drum Machine. The order makes a song: a beat, the instruments, the band, the
+     records, then the mix. */
   var LABS = [
-    { id: "drums", href: "/drums", pic: "music-drums", en: "Drum Machine", es: "Caja de ritmos", m: /^(music-drums|drums|drum-machine)$/ },
+    { id: "pads", href: "/drum-machine", pic: "music-pads", en: "Drum Machine", es: "Caja de ritmos", m: /^(music-pads|drum-machine|beat-lab|beatlab|pads|pad-machine)$/ },
     { id: "kit", href: "/drum-kit", pic: "music-kit", en: "Drum Kit", es: "Batería", m: /^(music-kit|drum-kit|kit)$/ },
-    { id: "pads", href: "/beat-lab", pic: "music-pads", en: "Beat Lab", es: "Lab. de ritmos", m: /^(music-pads|beat-lab|beatlab|pads|pad-machine)$/ },
-    { id: "decks", href: "/turntables", pic: "music-decks", en: "Turntables", es: "Tocadiscos", m: /^(music-decks|turntables|decks)$/ },
     { id: "piano", href: "/piano", pic: "music-piano", en: "Piano", es: "Piano", m: /^(music-piano|piano|keys)$/ },
     { id: "guitar", href: "/guitar", pic: "music-guitar", en: "Guitar", es: "Guitarra", m: /^(music-guitar|guitar)$/ },
     { id: "bass", href: "/bass", pic: "music-bass", en: "Bass", es: "Bajo", m: /^(music-bass|bass)$/ },
     { id: "band", href: "/band", pic: "music-band", en: "Band", es: "Banda", m: /^(music-band|band)$/ },
+    { id: "decks", href: "/turntables", pic: "music-decks", en: "Turntables", es: "Tocadiscos", m: /^(music-decks|turntables|decks)$/ },
     { id: "studio", href: "/mixing-desk", pic: "music-mixdesk", en: "Mixing Desk", es: "Mesa de mezclas", m: /^(music-studio|studio|mixing-desk)$/ }
   ];
   var CSS = [
@@ -31,7 +33,7 @@
     ".labdoors a[aria-current=page]{border:2px solid #c9a24b;box-shadow:inset 0 0 0 1px #c9a24b}",
     ".labdoors a[aria-current=page] .ld-n{font-weight:800}",
     ".labdoors a:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}",
-    "@media (min-width:900px){.labdoors ul{overflow:visible;grid-auto-flow:row;grid-template-columns:repeat(9,minmax(0,1fr))}}",
+    "@media (min-width:900px){.labdoors ul{overflow:visible;grid-auto-flow:row;grid-template-columns:repeat(8,minmax(0,1fr))}}",
     /* a phone: one slim row, a small picture beside the name, a finger high, so the lab below stays on the screen */
     "@media (max-width:699px){.labdoors{margin:.1rem 0 .3rem}.labdoors ul{grid-auto-columns:max-content;gap:6px;padding:2px 2px 4px}.labdoors a{flex-direction:row;align-items:center;gap:6px;padding:3px 10px 3px 3px;min-height:44px}.labdoors .ld-pic{width:44px;height:34px;aspect-ratio:auto;flex:0 0 auto}.labdoors .ld-n{white-space:nowrap;font-size:.86rem}}",
     /* the doors say where the labs are, so the old Music tools menu (aog-dropdowns.js, drawn just before #navTools) steps

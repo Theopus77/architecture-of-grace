@@ -42,7 +42,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  const t=await c.newPage(); t.on("pageerror",e=>errs.push("decks: "+e.message));
  await t.goto("http://localhost:9908/music-decks.html"); await t.waitForTimeout(1500);
  const rows=await t.locator("#bench .take b").allTextContents();
- ok(rows.join("|")==="From the drum machine|From the piano", "the turntables list both: "+rows.join(" + "));
+ ok(rows.join("|")==="From the classic drum machine|From the piano", "the turntables list both: "+rows.join(" + "));
  ok(await t.isVisible('#navPiano'), "the turntables link to the piano");
  await t.click('[data-keys="A"]'); await t.waitForTimeout(1500);
  ok(errs.length===0, "loading the piano onto deck A works, and no errors on any page "+errs.join(" | "));

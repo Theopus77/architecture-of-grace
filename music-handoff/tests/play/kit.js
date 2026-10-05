@@ -35,7 +35,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       tools:[...document.querySelectorAll("#navTools a")].map(a=>a.getAttribute("href")).join(" "), turn:document.getElementById("kpTurn").hidden?"":document.getElementById("kpTurn").textContent}));
     ok(st.mast==="The Drum Kit" && st.ready==="ready" && st.sw<=390, "its own page, the kit ready, nothing scrolls sideways");
     ok(st.kits.length>=15 && !st.made && st.opts===st.kits.length && st.kits.indexOf("A")<0, `${st.kits.length} recorded kits, every pad a recording (the drum machine's made kits stay there)`);
-    ok(/music-kit\.html/.test(st.tools) && /music-drums\.html/.test(st.tools), "the music tools menu has both: the drum machine and the drum kit");
+    ok(/music-kit\.html/.test(st.tools) && /music-pads\.html/.test(st.tools), "the music tools menu has both: the drum machine and the drum kit");
     ok(/sideways/.test(st.turn), "one quiet line: "+st.turn);
     const w=await where("pageKit");
     ok(Object.keys(w).length===8 && Object.values(w).every(q=>Math.min(q.w,q.h)>=44), "eight pieces, each at least a finger wide");
