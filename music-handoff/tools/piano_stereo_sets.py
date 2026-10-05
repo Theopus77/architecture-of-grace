@@ -75,8 +75,17 @@ def encode(x, dst):
                    input=np.clip(x, -1, 1).astype(np.float32).tobytes(), check=True)
 
 
+OLD_REV = "7804f700"     # the repo before the stereo sets: where an old file is read from once its folder is gone
+
+
 def old_file(name, key):
-    return decode(os.path.join(PIANO, name, key + ".mp3"), ch=1)[:, 0]
+    """the one-channel file a note replaces (from the repo's history once its folder has been removed)"""
+    p = os.path.join(PIANO, name, key + ".mp3")
+    if os.path.exists(p):
+        return decode(p, ch=1)[:, 0]
+    rel = "aog-deploy/audio/piano/%s/%s.mp3" % (name, key)
+    raw = subprocess.run(["git", "-C", ROOT, "show", "%s:%s" % (OLD_REV, rel)], capture_output=True, check=True).stdout
+    return decode(raw, ch=1)[:, 0]
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -136,7 +145,10 @@ def match_and_write(name, key, y, info, write=None):
         if abs(k - 1) < 1e-4:
             break
         y = y * k; g *= k
-        encode(y, dst)
+        if write:
+            y = write(dst, y)
+        else:
+            encode(y, dst)
         back = decode(dst)
     a, b = back[:, 0], back[:, 1]
     n = min(len(a), int(2.0 * SR))
@@ -608,9 +620,10 @@ def three(path):
 
 
 def trim_like(chs, lead=0.0008):
-    """piano_real_sets.trim_start, its cut found on the mix (the last of chs) and made in every channel"""
-    R = rs()
-    i = R.onset_of(chs[-1]); Ld = int(lead * SR)
+    """piano_real_sets.trim_start in every channel alike: the file starts 0.8 ms before the note's onset as the page finds
+    it (3 % of the peak, in either the left or the right channel; chs: left, right, mix)"""
+    a = np.maximum(np.abs(chs[0]), np.abs(chs[1]))
+    i = int(np.argmax(a > 0.03 * a.max())); Ld = int(lead * SR)
     out = []
     for y in chs:
         if i < Ld:
@@ -621,6 +634,16 @@ def trim_like(chs, lead=0.0008):
         y[0] = 0.0
         out.append(y)
     return out
+
+
+NOTE_NOW = [None]
+# (set, note): a cycle start, where the search's best leaves a seam the checker hears: the accordion's D6 (75) from its
+# best, 0.401 s, moved the right channel's level 1.01 dB through the page's loop blend (pianosets.js allows 1.0); from
+# 0.52 s, 0.76 dB
+P0_SET = {("accordion", 75): 0.52}
+for _x in os.environ.get("AOG_P0", "").split(","):     # set:note:seconds, to try one
+    if _x:
+        _s, _n, _p = _x.split(":"); P0_SET[(_s, int(_n))] = float(_p)
 
 
 def loop_like(chs, P0, L, a, z, W, search):
@@ -636,6 +659,8 @@ def loop_like(chs, P0, L, a, z, W, search):
         if best is None or r > best[0]:
             best = (r, p)
     p0 = best[1] / SR
+    if P0_SET.get(NOTE_NOW[0]) is not None:        # a cycle start chosen by hand for this note (see P0_SET)
+        p0 = P0_SET[NOTE_NOW[0]]
     outs, rhos = [], []
     for y in chs[:2]:
         o, rho, _ = R.make_loop(y, p0, L, a, z, W=W, search=None)
@@ -656,6 +681,8 @@ def write_held(dst, y, max_cut=0.002):
     for _ in range(3):
         encode(y, dst)
         on, head = meas()
+        if os.environ.get("AOG_DEBUG"):
+            print("  write_held: start %.2f ms, first samples %.4f, cut budget %d" % (on * 1000, head, budget))
         if on <= 0.0016 or budget <= 0:
             break
         cut = min(budget, int((on - 0.0009) * SR))
@@ -709,7 +736,11 @@ def build_theatre(name):
             f0 = R.pitch_harm(chs[2], R.mtof(r), 1.5, 6.0, ks=(1, 2, 3))
             cache[r] = (chs, SR / R.period_exact(chs[2], f0, 1.5, 8.0))
         return cache[r]
+    only = [int(x) for x in os.environ.get("AOG_ONLY_NOTES", "").split(",") if x]
     for n in notes:
+        if only and n not in only:
+            continue
+        NOTE_NOW[0] = (name, n)
         f = R.mtof(n)
         N = D * round(f * L / D)
         n_out = int(round((P0hi + L + 0.15) * SR))
@@ -745,7 +776,11 @@ def build_accordion(name):
     a = round(P0hi + R.LOOP_X + R.DEC_DELAY + 0.01, 2)
     z = round(a + L, 2)
     cache = {}
+    only = [int(x) for x in os.environ.get("AOG_ONLY_NOTES", "").split(",") if x]
     for n in notes:
+        if only and n not in only:
+            continue
+        NOTE_NOW[0] = (name, n)
         r = R.nearest(reals, n)
         path, ls, le = regs[r]
         if path not in cache:
