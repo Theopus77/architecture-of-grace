@@ -37,6 +37,10 @@ sys.path.insert(0, HERE)
 import sources, dsp
 from dsp import SR
 from kits import KITS, TARGET
+try:
+    from kits import STEREO_TRIM
+except ImportError:
+    STEREO_TRIM = {}
 
 OUT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "aog-deploy", "audio", "drums"))
 LEVELS = os.path.join(HERE, "levels.json")
@@ -209,10 +213,11 @@ def decode(path):
     return a.reshape(-1, 2) if ch == 2 else a
 
 
-def write_matched(x, path, old, limit, write):
+def write_matched(x, path, old, limit, write, trim_db=0.0):
     """AOG-DRUM-STEREO-V1: write x (stereo), then move its level until it decodes as loud as the old file it replaces
-    (K-weighted, loudest 400 ms; stereo: the average of the two sides' power). Returns (x, old dB, new dB)."""
-    want = dsp.momentary(decode(old))
+    (K-weighted, loudest 400 ms; stereo: the average of the two sides' power), plus trim_db (STEREO_TRIM in kits.py).
+    Returns (x, old dB, new dB)."""
+    want = dsp.momentary(decode(old)) + trim_db
     got = None
     for _ in range(4):
         write(x, path)
@@ -290,7 +295,8 @@ def build_kit(kid, out, lv, wav=None, match_old=None):
                 nm = f"{base}-{lay}{i + 1 if len(takes) > 1 else ''}"
                 old = os.path.join(match_old, kit.get("was", kit["dir"]), nm + ".mp3") if match_old else None
                 if st and old and os.path.exists(old):
-                    x, was_db, now_db = write_matched(x, os.path.join(d, nm + ".mp3"), old, lambda y: safety(y, ceil), write_mp3)
+                    x, was_db, now_db = write_matched(x, os.path.join(d, nm + ".mp3"), old, lambda y: safety(y, ceil), write_mp3,
+                                                            STEREO_TRIM.get(kid, {}).get(pid, 0.0))
                     rep.append(f"{kid} {pid:5s} {nm:12s} stereo, as loud as the old file: {was_db:6.2f} -> {now_db:6.2f} LU")
                 else:
                     write_mp3(x, os.path.join(d, nm + ".mp3"))

@@ -32,6 +32,10 @@ sys.path.insert(0, os.path.dirname(HERE))
 import sources, dsp
 from dsp import SR
 from recipes import KITS
+try:
+    from recipes import STEREO_TRIM
+except ImportError:
+    STEREO_TRIM = {}
 
 OUT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", "aog-deploy", "audio", "drums"))
 GAINS = os.path.join(HERE, "gains.json")          # per kit, per pad, dB — from the engine calibration
@@ -240,7 +244,7 @@ def main():
                     nm = f"{base}-{lay}{i+1 if len(rendered[lay]) > 1 else ''}"
                     old = os.path.join(a.match_old, kit.get("was", kit["dir"]), nm + ".mp3") if a.match_old else None
                     if stereo and old and os.path.exists(old):
-                        x, was_db, now_db = write_matched(x, os.path.join(d, nm + ".mp3"), old, safety, write_mp3)
+                        x, was_db, now_db = write_matched(x, os.path.join(d, nm + ".mp3"), old, safety, write_mp3, STEREO_TRIM.get(kid, {}).get(pid, 0.0))
                         report.append(f"{kid} {pid:5s} {nm:12s} stereo, as loud as the old file: {was_db:6.2f} -> {now_db:6.2f} LU")
                     else:
                         write_mp3(x, os.path.join(d, nm + ".mp3"))

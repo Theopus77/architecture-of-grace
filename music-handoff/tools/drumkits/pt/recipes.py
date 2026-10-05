@@ -135,3 +135,7 @@ KITS = {
               "mics": {"cl": 0.5, "oh": 1.0}, "eq": [("hp", 200, .7, 0)], "len": 2.0, "fade": 1.3},
   }},
 }
+
+# AOG-DRUM-STEREO-V1: pads that, once in stereo, measured louder through the machine than before (see ../kits.py):
+# each stereo file sits this many dB under the old file's level, so the pad plays as loud as before
+STEREO_TRIM = {"P": {"ch": -0.7}, "R": {"ch": -0.8, "clap": -1.1}}

@@ -531,3 +531,9 @@ TARGET = {
   "X": {"kick": -22.3, "snare": -34.0, "ch": -52.0, "oh": -46.0, "clap": -26.0, "tom": -26.0, "rim": -50.0, "bell": -31.0},
   "Y": {"kick": -22.3, "snare": -34.5, "ch": -52.0, "oh": -46.0, "clap": -40.0, "tom": -26.0, "rim": -26.0, "bell": -32.0},
 }
+
+# AOG-DRUM-STEREO-V1: pads that, once in stereo, measured louder through the machine than before (its 8.5 kHz filter
+# chip, pads 3 to 8, kept more of a stereo cymbal or hat than of the old one-channel mix, whose low partials had
+# partly cancelled). Each stereo file of the pad sits this many dB under the old file's level, so the pad plays as
+# loud as before (calib.js, a normal hit, 1987; every other pad moved less than 0.5 dB).
+STEREO_TRIM = {"D": {"bell": -1.7}, "M": {"ch": -0.6}, "N": {"ch": -0.8}, "U": {"clap": -0.6, "rim": -0.6}, "W": {"ch": -0.7}}
