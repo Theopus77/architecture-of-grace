@@ -65,7 +65,19 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.evaluate("muteAll(); document.getElementById('soPinch').click()");
     q=await cell(3,7); await T("touchStart",[q]); await p.waitForTimeout(80);
     ok(await p.evaluate(()=>STR_LIVE[3].vc.parts.some(x=>x.kind==="pinch")), "Pinch squeal adds the high harmonic to the next note");
-    await T("touchEnd",[]); await p.evaluate("document.getElementById('soPinch').click()");
+    await T("touchEnd",[]);
+    /* AOG-SOLO-PINCH-STOP-V1 (Jimmy: "The pitch squeal won't stop after you hit it"): the squeal stops when its string is
+       picked again, when Mute is pressed, and dies away by itself with the string */
+    await p.evaluate(()=>{ window.__pq=STR_LIVE[3].vc.parts.find(x=>x.kind==="pinch"); });
+    await T("touchStart",[q]); await p.waitForTimeout(60); await T("touchEnd",[]); await p.waitForTimeout(400);
+    const pq1=await p.evaluate(()=>({old:__pq.g.gain.value, now:(STR_LIVE[3].vc.parts.find(x=>x.kind==="pinch")||{g:{gain:{value:-1}}}).g.gain.value}));
+    await p.evaluate(()=>{ window.__pq=STR_LIVE[3].vc.parts.find(x=>x.kind==="pinch"); document.getElementById("muteBtn").click(); }); await p.waitForTimeout(400);
+    const pq2=await p.evaluate(()=>__pq.g.gain.value);
+    await T("touchStart",[q]); await p.waitForTimeout(60); await T("touchEnd",[]);
+    await p.evaluate(()=>{ window.__pq=STR_LIVE[3].vc.parts.find(x=>x.kind==="pinch"); }); await p.waitForTimeout(4200);
+    const pq3=await p.evaluate(()=>__pq.g.gain.value);
+    ok(pq1.old<0.003 && pq1.now>0.02 && pq2<0.003 && pq3<0.006, `the squeal stops: picked again ${pq1.old.toFixed(4)} (the new note's ${pq1.now.toFixed(3)}), Mute ${pq2.toFixed(4)}, by itself after 4 s ${pq3.toFixed(4)}`);
+    await p.evaluate("muteAll(); document.getElementById('soPinch').click()");
     /* the whammy: a ringing note dives with the bar and comes back */
     await p.evaluate("muteAll()"); q=await cell(3,7); await T("touchStart",[q]); await p.waitForTimeout(60); await T("touchEnd",[]); await p.waitForTimeout(120);
     const w0=await p.evaluate("__rate(3)"), bar=await cell(1,"strum");
