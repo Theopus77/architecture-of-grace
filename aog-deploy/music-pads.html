@@ -38,6 +38,8 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
        The steps show the picked pad's hits; tap a step to add or take one away.
      · Each pad has its own volume, pitch and left/right. Everything stays on this device (aog.pads.v1).
      · ● Record keeps a take (aog-recorder.js) to save as .wav or send to the Mixing Desk or the turntables.
+     · AOG-PADS-BOUNCE-V1: Make the loop into a file plays the loop offline and keeps one exact, seamless pass, to save
+       as .wav or send to the Mixing Desk (with its exact length, so it starts on the bar) or the turntables.
      · Calm: nothing sounds until a pad is touched, the loop plays only after Play, the click is off until it is
        turned on, and the loop stops when the page is hidden. Keys: Z X C V, A S D F, Q W E R, 1 2 3 4; space plays. -->
 <style>
@@ -127,6 +129,8 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pm-rec{margin-top:1rem;background:#181a1e;border-radius:16px;padding:.8rem 1rem;color:#d7cbb8}
 .pm-rec .aogrec-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
 .kp-b{min-height:44px;border-radius:12px;border:1px solid #c4452a;background:linear-gradient(#3a3e44,#1c1f23);color:#ffb1a4;font:800 .95rem/1.2 var(--sans);padding:0 1rem}
+.pm-rec .aogrec-line{color:#f1e9da}
+.pm-rec .aogrec-line a{color:#ffd36b}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -217,7 +221,10 @@ details.pm-set[open]>summary::before{content:"▾"}
       </div>
     </div>
     <div class="pm-rec">
-      <div class="aogrec-row"><button type="button" class="kp-b" id="takeBtn" aria-pressed="false"></button><span id="takeTime" hidden>0:00</span></div>
+      <div class="aogrec-row"><button type="button" class="pm-b" id="bounceBtn"></button></div>
+      <p class="aogrec-line" id="bounceLine" aria-live="polite"></p>
+      <div class="aogrec-row" id="bounceAct" hidden><button type="button" class="pm-b" id="bSave"></button><button type="button" class="pm-b" id="bStudio"></button><button type="button" class="pm-b" id="bDecks"></button></div>
+      <div class="aogrec-row pm-sec"><button type="button" class="kp-b" id="takeBtn" aria-pressed="false"></button><span id="takeTime" hidden>0:00</span></div>
       <p class="aogrec-line" id="takeLine" aria-live="polite"></p>
       <div id="takeList"></div>
     </div>
@@ -268,6 +275,16 @@ const STR={
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
   cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"},
+  /* AOG-PADS-BOUNCE-V1 */
+  bounce:{en:"Make the loop into a file",es:"Convertir el bucle en un archivo"}, bMaking:{en:"Making the loop…",es:"Haciendo el bucle…"},
+  bNone:{en:"The loop is empty. Turn on Record the loop and tap some pads first.",es:"El bucle está vacío. Activa Grabar el bucle y toca algunos pads primero."},
+  bReady:{en:"Your loop is ready: {bars}, {sec} seconds, at {bpm} beats a minute. It repeats with no gap.",es:"Tu bucle está listo: {bars}, {sec} segundos, a {bpm} pulsos por minuto. Se repite sin pausa."},
+  bSave:{en:"Save as .wav",es:"Guardar como .wav"}, bStudio:{en:"Send to the Mixing Desk",es:"Enviar a la mesa de mezclas"}, bDecks:{en:"Send to the turntables",es:"Enviar a los tocadiscos"},
+  bStudioSent:{en:"Sent. On the Mixing Desk it starts right on the bar and is exactly one loop long.",es:"Enviado. En la mesa de mezclas empieza justo en el compás y dura exactamente un bucle."},
+  bStudioGo:{en:"Open the Mixing Desk",es:"Abrir la mesa de mezclas"}, bDecksSent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los tocadiscos para tocarlo."}, bDecksGo:{en:"The turntables",es:"Los tocadiscos"},
+  bFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  bNoRoom:{en:"This device has no room left. At the Mixing Desk, remove a take you do not need, then try again.",es:"Este dispositivo no tiene más espacio. En la mesa de mezclas, quita una toma que no necesites y vuelve a intentarlo."},
+  bName:{en:"Pad loop · {bars} · {bpm} BPM",es:"Bucle de pads · {bars} · {bpm} BPM"},
   bankA:{en:"A",es:"A"}, padsLab:{en:"The sixteen pads",es:"Los dieciséis pads"}, stepN:{en:"Step {n}",es:"Paso {n}"}
 };
 const S0={lang:"en"};
@@ -393,10 +410,10 @@ function tidy(b){
   ch.forEach((d,i)=>{ const out=o.getChannelData(i); for(let j=0;j<len;j++) out[j]=d[st+j]*g; });
   return o;
 }
-const BUF=new Map();
+const BUF=new Map(), BUFV=new Map();
 function getBuf(url, raw){
   const k=(raw?"raw:":"")+url;
-  if(!BUF.has(k)) BUF.set(k, fetch(url).then(r=>{ if(!r.ok) throw new Error("http"); return r.arrayBuffer(); }).then(decode).then(b=>raw ? b : tidy(b)).catch(e=>{ BUF.delete(k); throw e; }));
+  if(!BUF.has(k)) BUF.set(k, fetch(url).then(r=>{ if(!r.ok) throw new Error("http"); return r.arrayBuffer(); }).then(decode).then(b=>{ b=raw ? b : tidy(b); BUFV.set(k, b); return b; }).catch(e=>{ BUF.delete(k); throw e; }));
   return BUF.get(k);
 }
 /* an instrument's notes: [{m, c (cents off), url}] */
@@ -495,14 +512,17 @@ function isReady(bi){ const R=READY[bi]; return R && R.sig===sigOf(S.banks[bi]) 
 
 /* ══ playing one pad ══ */
 function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0}; }
-const OPEN=[[],[],[],[]], CHOP=[null,null,null,null];
-function trigger(bi, pi, vel, when){
+/* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
+   open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
+const LIVE={c:null, dest:null, open:[[],[],[],[]], chop:[null,null,null,null]};
+function trigger(bi, pi, vel, when, T){
   if(!isReady(bi)) return null;
   const d=padDefs(bi)[pi]; if(!d) return null;
-  const c=ctx(), P=padSet(bi, pi), R=READY[bi];
+  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
+  const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
   const out=c.createGain(); out.gain.value=P.vol/100;
-  if(c.createStereoPanner){ const pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(bus); } else out.connect(bus);
+  if(c.createStereoPanner){ const pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
   const rate=Math.pow(2, P.tune/12);
   if(d.kind==="drum"){
     const n=(AOGDrumKit.padNames(d.kit)||{})[d.id];
@@ -524,18 +544,16 @@ function trigger(bi, pi, vel, when){
     return {stop(){}};
   }
   /* a note or a chord: it rings while the pad is held */
-  const zs=R.zones||[], vs=[], ps=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
+  const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
   d.notes.forEach(m=>{
-    const z=nearest(zs, m), bp=BUF.get(z.url); if(!bp) return;
-    ps.push(bp.then(b=>{
-      const s=c.createBufferSource(), g=c.createGain(), at=Math.max(when, c.currentTime);
-      s.buffer=b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
-      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(lv, at+0.005);
-      s.connect(g); g.connect(out); s.start(at); vs.push({s:s, g:g});
-    }).catch(()=>{}));
+    const z=nearest(zs, m), b=BUFV.get(z.url); if(!b) return;
+    const s=c.createBufferSource(), g=c.createGain();
+    s.buffer=b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
+    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv, when+0.005);
+    s.connect(g); g.connect(out); s.start(when); vs.push({s:s, g:g});
   });
-  return {stop(at){ Promise.all(ps).then(()=>{ const t0=Math.max(at||0, c.currentTime);
-    vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }); }};
+  return {stop(at){ const t0=Math.max(at||0, c.currentTime);
+    vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }};
 }
 function flash(bi, pi, when){
   if(bi!==S.bank) return;
@@ -554,7 +572,7 @@ function evMap(){
   S.ev.forEach(e=>{ if(e.t>=L) return; const tt=(sw && e.t%48===24) ? e.t+sw : e.t; if(!m.has(tt)) m.set(tt, []); m.get(tt).push(e); });
   SEQ.map=m; return m;
 }
-function changed(){ SEQ.map=null; save(); paintSteps(); }
+function changed(){ SEQ.map=null; save(); paintSteps(); if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); } }
 function snapshot(){ SEQ.undo.push(JSON.stringify(S.ev.map(e=>({b:e.b,p:e.p,t:e.t,v:e.v,len:e.len||0})))); if(SEQ.undo.length>30) SEQ.undo.shift(); }
 function gated(bi){ const ty=S.banks[bi].type; return ty==="notes"||ty==="chords"; }
 function blip(when, top){
@@ -607,6 +625,7 @@ function recordHit(bi, pi, vel, when){
   const sw=Math.round((S.swing/100-0.5)*48), playAt=a+(sw && tk%48===24 ? sw : 0);
   if(playAt>=SEQ.abs) e._skip=Math.floor(a/L);
   S.ev.push(e); SEQ.map=null; save(); if(bi===S.bank && pi===S.sel) paintSteps();
+  if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); }
   return e;
 }
 const RPT=new Map();   /* pads held while Repeat is on */
@@ -673,6 +692,80 @@ document.addEventListener("keydown",(e)=>{
   press("k"+k, KEYMAP[k], S.full?1:0.8);
 });
 document.addEventListener("keyup",(e)=>{ const k=e.key.toLowerCase(); if(KEYMAP[k]!=null) release("k"+k); });
+
+/* ══ AOG-PADS-BOUNCE-V1 — the loop as one exact file ════════════════════════════════════════════════════════════════
+   Jimmy: "Make it" (a loop that goes to the Mixing Desk exactly, not a live take). The loop is played offline, never
+   out loud, several times over, and the last time round is kept: exactly one loop long, starting on the downbeat. A
+   note still ringing when the loop ends is already in its first beat, as it would be in a loop playing over and over,
+   so the file repeats with no gap and no click. Nothing goes anywhere until Save or Send is pressed. ═══════════════ */
+const BOUNCE={busy:false, out:null, msg:"", html:""};
+function barsWord(n){ return n===1 ? t("bar1") : t("barsN",{n:n}); }
+function wavBlob(L, R, sr){
+  const n=L.length, bytes=44+n*4, ab=new ArrayBuffer(bytes), v=new DataView(ab);
+  const str=(o,x)=>{ for(let i=0;i<x.length;i++) v.setUint8(o+i, x.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4,bytes-8,true); str(8,"WAVEfmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*4,true); v.setUint16(32,4,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,n*4,true);
+  for(let i=0,o=44;i<n;i++,o+=4){ const l=clamp(L[i],-1,1), r=clamp(R[i],-1,1); v.setInt16(o, l<0?l*32768:l*32767, true); v.setInt16(o+2, r<0?r*32768:r*32767, true); }
+  return new Blob([ab], {type:"audio/wav"});
+}
+async function renderLoop(){
+  const L=loopLen(), sp=spt(), sec=L*sp, sr=44100;
+  const evs=S.ev.filter(e=>e.t<L && e.b>=0 && e.b<4); if(!evs.length) return null;
+  const used=[...new Set(evs.map(e=>e.b))];
+  await Promise.all(used.map(b=>prep(b)));
+  if(used.some(b=>!isReady(b))) throw new Error("not ready");
+  const passes=Math.min(12, 1+Math.ceil(6/sec));          /* enough times round for the longest ring to settle */
+  const O=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const off=new O(2, Math.ceil(passes*sec*sr)+16, sr);
+  const lim2=off.createDynamicsCompressor(); lim2.threshold.value=-3; lim2.knee.value=2; lim2.ratio.value=20; lim2.attack.value=0.002; lim2.release.value=0.12;
+  const g=off.createGain(); g.gain.value=0.9; g.connect(lim2); lim2.connect(off.destination);
+  const T={c:off, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}, m=evMap(), ticks=[...m.keys()].sort((a,b)=>a-b);
+  for(let pass=0;pass<passes;pass++) ticks.forEach(tk=>m.get(tk).forEach(e=>{
+    if(e.b<0 || e.b>3) return;
+    const when=(pass*L+tk)*sp, v=trigger(e.b, e.p, e.v, when, T);
+    if(v && gated(e.b)) v.stop(when+Math.max(12, e.len||48)*sp);
+  }));
+  const buf=await new Promise((ok, no)=>{ off.oncomplete=ev=>ok(ev.renderedBuffer); const p=off.startRendering(); if(p && p.then) p.then(ok, no); });
+  const st=Math.round((passes-1)*sec*sr), n=Math.round(sec*sr);
+  const cut=ch=>{ const d=buf.getChannelData(ch), o=new Float32Array(n); o.set(d.subarray(st, Math.min(d.length, st+n))); return o; };
+  const Lc=cut(0), Rc=cut(1);
+  return {blob:wavBlob(Lc, Rc, sr), sec:n/sr, bpm:S.bpm, bars:S.bars, at:Date.now()};
+}
+function paintBounce(){
+  $("bounceBtn").textContent=BOUNCE.busy ? t("bMaking") : t("bounce"); $("bounceBtn").disabled=BOUNCE.busy;
+  $("bSave").textContent=t("bSave"); $("bStudio").textContent=t("bStudio"); $("bDecks").textContent=t("bDecks");
+  $("bounceAct").hidden=!BOUNCE.out || BOUNCE.busy;
+  const o=BOUNCE.out, l=$("bounceLine");
+  if(BOUNCE.msg==="ready" && o) l.textContent=t("bReady",{bars:barsWord(o.bars), sec:o.sec.toFixed(2), bpm:o.bpm});
+  else if(BOUNCE.msg==="studio") l.innerHTML=esc(t("bStudioSent"))+' <a href="/studio">'+esc(t("bStudioGo"))+"</a>";
+  else if(BOUNCE.msg==="decks") l.innerHTML=esc(t("bDecksSent"))+' <a href="music-decks.html">'+esc(t("bDecksGo"))+"</a>";
+  else l.textContent=BOUNCE.msg ? t(BOUNCE.msg) : "";
+}
+async function makeBounce(){
+  if(BOUNCE.busy) return;
+  BOUNCE.busy=true; BOUNCE.out=null; BOUNCE.msg="bMaking"; paintBounce();
+  try{ const o=await renderLoop(); BOUNCE.out=o; BOUNCE.msg=o ? "ready" : "bNone"; }
+  catch(e){ BOUNCE.msg="bFail"; }
+  BOUNCE.busy=false; paintBounce();
+}
+function bounceName(o){ return {en:STR.bName.en.replace("{bars}", o.bars===1?STR.bar1.en:STR.barsN.en.replace("{n}",o.bars)).replace("{bpm}",o.bpm),
+  es:STR.bName.es.replace("{bars}", o.bars===1?STR.bar1.es:STR.barsN.es.replace("{n}",o.bars)).replace("{bpm}",o.bpm)}; }
+function bindBounce(){
+  $("bounceBtn").onclick=makeBounce;
+  $("bSave").onclick=()=>{ const o=BOUNCE.out; if(!o) return; const a=document.createElement("a"), u=URL.createObjectURL(o.blob);
+    a.href=u; a.download=(S0.lang==="es"?"bucle-de-pads-":"pad-loop-")+o.bpm+"bpm-"+o.bars+(S0.lang==="es"?"compases":"bars")+".wav";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000); };
+  /* the Mixing Desk is told the loop's exact length (passSec), so it lines it up on the bar and loops whole bars */
+  $("bStudio").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bStudio").disabled=true;
+    try{ await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:0, name:bounceName(o), sec:Math.round(o.sec*1000)/1000, bpm:o.bpm, bars:o.bars, at:o.at,
+        passSec:o.sec, loops:1, offset:0, loop:true, wav:o.blob}, {key:"pads|loop|"+o.at}); BOUNCE.msg="studio"; }
+    catch(e){ BOUNCE.msg=e && e.name==="QuotaExceededError" ? "bNoRoom" : "bFail"; }
+    $("bStudio").disabled=false; paintBounce(); };
+  $("bDecks").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bDecks").disabled=true;
+    try{ await AOGHandoff.put("drumtake", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0}); BOUNCE.msg="decks"; }
+    catch(e){ BOUNCE.msg="bFail"; }
+    $("bDecks").disabled=false; paintBounce(); };
+}
 
 /* ══ beats to start from: bank A, pads 1 to 8 (kick, snare, hat, open hat, clap, tom, rim, bell) ══ */
 const BEATS={
@@ -797,7 +890,7 @@ function paintText(){
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a></p>`;
-  REC.paint();
+  REC.paint(); paintBounce();
 }
 function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintSel(); paintTransport(); }
 
@@ -809,7 +902,7 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S0.lang, 
 function init(){
   if(KITS().indexOf(S.banks[0].kitA)<0 && KITS().length){ S.banks.forEach(B=>{ if(KITS().indexOf(B.kitA)<0) B.kitA=KITS()[0]; if(KITS().indexOf(B.kitB)<0) B.kitB=KITS()[Math.min(1, KITS().length-1)]; }); }
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; });
-  bindPads();
+  bindPads(); bindBounce();
   $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; save(); paintAll(); prep(S.bank); };
   $("typeSel").onchange=()=>{ S.banks[S.bank].type=$("typeSel").value; save(); paintAll(); prep(S.bank); };
   $("playBtn").onclick=()=>{ SEQ.on ? stop() : play(); };

@@ -1133,7 +1133,9 @@ async function putOn(srcId, ti){
       const it=await AOGHandoff.item(INBOX_KEY, src.x.id);
       if(!it || !it.wav || !(it.wav.size>44)) throw new Error("gone");
       info=await wavInfo(it.wav); if(!info) throw new Error("not a wav");
-      blob=it.wav; rec={take:true, bpm:it.bpm, bars:0};
+      blob=it.wav;
+      /* AOG-PADS-BOUNCE-V1: a loop made on the pad machine says its exact length, so it starts on the bar and loops whole bars */
+      rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0};
       from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now()};
     }
     const meta=analyse(rec, info);
