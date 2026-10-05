@@ -137,6 +137,12 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pm-rec .aogrec-line a{color:#ffd36b}
 .pm-guide{margin:.6rem 0 0;font-weight:700}
 .pm-guide a{color:var(--ink);text-underline-offset:3px}
+.pm-beat{margin-top:10px}
+.pm-beatrow{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:end}
+@media (max-width:520px){ .pm-beatrow{grid-template-columns:auto minmax(0,1fr) auto} .pm-beatrow .pm-f:nth-of-type(2){grid-column:1 / -1;grid-row:2} }
+.pm-step{min-width:52px;font-size:1.15rem}
+.pm-now{margin:.45rem 0 0;color:#f1e9da;font-size:.95rem}
+.pm-now b{color:#ffd36b}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -150,6 +156,7 @@ details.pm-set[open]>summary::before{content:"▾"}
 <body>
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
+<script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
 <script>
 (function(){
   function add(src){
@@ -207,8 +214,15 @@ details.pm-set[open]>summary::before{content:"▾"}
             <button type="button" class="pm-b" id="clickBtn" aria-pressed="false"></button>
             <button type="button" class="pm-b" id="fullBtn" aria-pressed="false"></button>
           </div>
-          <div class="pm-row" style="margin-top:8px">
-            <label class="pm-f wide"><span id="startLab"></span><select class="pm-sel" id="startSel"></select></label>
+          <div class="pm-beat"><!-- AOG-PADS-BEATPICK-V1: a style, then its beats; ◀ ▶ step through every beat -->
+            <p class="pm-h" id="startLab"></p>
+            <div class="pm-beatrow">
+              <button type="button" class="pm-b pm-step" id="beatPrev"></button>
+              <label class="pm-f"><span class="sr" id="grpLab"></span><select class="pm-sel" id="grpSel"></select></label>
+              <label class="pm-f"><span class="sr" id="beatLab"></span><select class="pm-sel" id="startSel"></select></label>
+              <button type="button" class="pm-b pm-step" id="beatNext"></button>
+            </div>
+            <p class="pm-now" id="beatNow" aria-live="polite"></p>
           </div>
           <div class="pm-sec">
             <p class="pm-h" id="stepsH"></p>
@@ -264,7 +278,10 @@ const STR={
   q:{en:"Line up taps to",es:"Alinear los toques a"}, qOff:{en:"Exactly as played",es:"Tal como se tocó"}, q8:{en:"Eighth notes",es:"Corcheas"}, q16:{en:"16th notes",es:"Semicorcheas"}, q32:{en:"32nd notes",es:"Fusas"}, q16t:{en:"16th triplets",es:"Tresillos de semicorchea"},
   sw:{en:"Swing",es:"Swing"}, swOff:{en:"Straight",es:"Recto"}, swN:{en:"{n}%",es:"{n} %"},
   rpt:{en:"Repeat",es:"Repetir"}, rate:{en:"Repeat speed",es:"Velocidad de repetición"}, click:{en:"Click",es:"Clic"}, full:{en:"Every hit full",es:"Todo a tope"},
-  start:{en:"Start from a beat (bank A)",es:"Empieza con un ritmo (banco A)"}, startPick:{en:"Pick a beat…",es:"Elige un ritmo…"},
+  start:{en:"Beat (bank A)",es:"Ritmo (banco A)"}, grpLab:{en:"Style",es:"Estilo"}, beatLab:{en:"Beat",es:"Ritmo"},
+  beatPrev:{en:"Previous beat",es:"Ritmo anterior"}, beatNext:{en:"Next beat",es:"Ritmo siguiente"}, ownBeat:{en:"Your own beat",es:"Tu propio ritmo"},
+  nowBeat:{en:"Now: {name} · {bpm} beats a minute · {kit}",es:"Ahora: {name} · {bpm} pulsos por minuto · {kit}"},
+  nowChanged:{en:"Now: {name}, changed by you",es:"Ahora: {name}, cambiado por ti"}, nowOwn:{en:"Now: your own beat. Pick a style to start from one.",es:"Ahora: tu propio ritmo. Elige un estilo para empezar con uno."},
   guide:{en:"New here? How to make a killer song, step by step →",es:"¿Eres nuevo? Cómo hacer una canción increíble, paso a paso →"},   /* AOG-BEATLAB-GUIDE-V1 */
   bgFirst:{en:"First beats",es:"Primeros ritmos"}, bgStyles:{en:"Famous styles",es:"Estilos famosos"},
   stepsH:{en:"Steps for pad {n}: {name}. Tap a step to add or take away a hit.",es:"Pasos del pad {n}: {name}. Toca un paso para poner o quitar un golpe."},
@@ -568,7 +585,7 @@ function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?
    bar of a plain beat, each record's first chops. The trims (dB) are made by music-handoff/tests/pads/level.js --table;
    run it again after a sound is added or changed. A take from the Mixing Desk is not trimmed: it already is at its
    tool's level. */
-const LEVEL={"inst":{"k:grand":6.9,"k:upright":4.9,"k:epwarm":4.5,"k:epreed":4.6,"k:ep80":7.5,"k:clav":7.3,"k:harpsi":6.7,"k:organ":4.8,"k:church":4.4,"k:gospel":4.1,"k:rockorgan":4.1,"k:theatre":3,"k:accordion":5.6,"k:celesta":3.3,"k:musicbox":5.9,"k:toy":12.9,"k:bells":5.1,"k:glock":6.1,"k:vibes":3.7,"k:marimba":4.7,"k:kalimba":4.4,"k:steel":10.2,"k:harp":4.7,"k:strings":5.5,"k:choir":6.8,"k:flute":2.7,"k:strsynth":5.1,"k:pad":6.7,"k:brass":7.3,"k:lead":3.2,"g:steel":10.9,"g:nylon":8.3,"g:black":17,"g:green":11,"a:upright":12.3,"a:growly":15.2,"a:ergo":15.4,"a:synthbass":15.1,"a:acidbass":14.9,"b:trumpet":4,"b:trumpet_vib":3.9,"b:trumpet_harmon":3.5,"b:trombone":4.3,"b:horn":1.9,"b:tuba":2.3,"b:piccolo":2.5,"b:clarinet":0.5,"b:oboe":4.1,"b:bassoon":2.4,"b:soprano":4.4,"b:sax":4.3,"b:tenor":3.4,"b:tenor_vib":3.8,"b:violins":6.7,"b:violins_pizz":11.2,"b:violas":6.4,"b:cellos":6.7,"b:cellos_pizz":9.5,"b:contrabass":2.7,"b:contrabass_pizz":7.9,"b:timpani":10.4,"b:xylophone":10.4},"kit":{"D":14.1,"E":17.2,"G":14.5,"H":11.7,"I":10,"J":10.6,"K":14.5,"N":12.9,"O":11.6,"P":18.4,"Q":12.1,"R":12.5,"S":15.9,"T":16,"U":9.7,"V":14.5,"W":11.8,"X":12.6,"Y":11.5},"rec":{"01-paper-kites.mp3":10.5,"02-porch-light.mp3":11.1,"03-island-morning.mp3":10,"04-sunday-clap.mp3":11,"05-practice-pair.mp3":10.4,"06-brass-bus.mp3":8.7,"07-bell-garden.mp3":7.4,"08-rooftop-break.mp3":7.8,"09-blue-lamp.mp3":12.4,"10-night-market.mp3":11.6,"11-fast-lane.mp3":10.5}};
+const LEVEL={"inst":{"k:grand":6.9,"k:upright":4.9,"k:epwarm":4.5,"k:epreed":4.6,"k:ep80":7.5,"k:clav":7.3,"k:harpsi":6.7,"k:organ":4.8,"k:church":4.4,"k:gospel":4.1,"k:rockorgan":4.1,"k:theatre":3,"k:accordion":5.6,"k:celesta":3.3,"k:musicbox":5.9,"k:toy":12.9,"k:bells":5.1,"k:glock":6.1,"k:vibes":3.7,"k:marimba":4.7,"k:kalimba":4.4,"k:steel":10.2,"k:harp":4.7,"k:strings":5.5,"k:choir":6.8,"k:flute":2.7,"k:strsynth":5.1,"k:pad":6.7,"k:brass":7.3,"k:lead":3.2,"g:steel":10.9,"g:nylon":8.3,"g:black":17,"g:green":11,"a:upright":12.3,"a:growly":16,"a:ergo":15.9,"a:synthbass":15.7,"a:acidbass":15.5,"b:trumpet":4,"b:trumpet_vib":3.9,"b:trumpet_harmon":3.5,"b:trombone":4.3,"b:horn":1.9,"b:tuba":2.3,"b:piccolo":2.5,"b:clarinet":0.5,"b:oboe":4.1,"b:bassoon":2.4,"b:soprano":4.4,"b:sax":4.3,"b:tenor":3.4,"b:tenor_vib":3.8,"b:violins":6.7,"b:violins_pizz":11.2,"b:violas":6.4,"b:cellos":6.7,"b:cellos_pizz":9.5,"b:contrabass":2.7,"b:contrabass_pizz":7.9,"b:timpani":10.4,"b:xylophone":11.1},"kit":{"D":14.1,"E":17.3,"G":14.5,"H":11.7,"I":10,"J":10.6,"K":14.5,"N":12.9,"O":11.6,"P":18.4,"Q":12.1,"R":12.5,"S":15.9,"T":16,"U":9.7,"V":14.5,"W":11.8,"X":12.6,"Y":11.5},"rec":{"01-paper-kites.mp3":11.3,"02-porch-light.mp3":12,"03-island-morning.mp3":10.8,"04-sunday-clap.mp3":12,"05-practice-pair.mp3":10.7,"06-brass-bus.mp3":8.7,"07-bell-garden.mp3":7.4,"08-rooftop-break.mp3":7.7,"09-blue-lamp.mp3":13.2,"10-night-market.mp3":11.6,"11-fast-lane.mp3":10.6,"12-be-ye-holy.mp3":8.9,"13-the-only-way.mp3":7.7}};
 function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.pow(10, v/20) : 1; }
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
@@ -632,7 +649,7 @@ function evMap(){
   S.ev.forEach(e=>{ if(e.t>=L) return; const tt=(sw && e.t%48===24) ? e.t+sw : e.t; if(!m.has(tt)) m.set(tt, []); m.get(tt).push(e); });
   SEQ.map=m; return m;
 }
-function changed(){ SEQ.map=null; save(); paintSteps(); lessonSongs(); if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); } }
+function changed(){ SEQ.map=null; save(); paintSteps(); lessonSongs(); if($("beatNow")) paintBeatPick(); if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); } }
 function snapshot(){ SEQ.undo.push(JSON.stringify(S.ev.map(e=>({b:e.b,p:e.p,t:e.t,v:e.v,len:e.len||0})))); if(SEQ.undo.length>30) SEQ.undo.shift(); }
 function gated(bi){ const ty=S.banks[bi].type; return ty==="notes"||ty==="chords"; }
 function blip(when, top){
@@ -675,7 +692,7 @@ function retime(bpm){
   LES.mark("tempo1"); if(bpm>=120) LES.mark("tfast"); if(bpm<=80) LES.mark("tslow");
   if(SEQ.on && ac){ const now=ac.currentTime, pos=(now-SEQ.t0)/spt(); S.bpm=bpm; SEQ.t0=now-pos*spt(); } else S.bpm=bpm;
   RPT.forEach(r=>{ r.step=r.ticks*spt(); });
-  save(); $("tempo").value=S.bpm;
+  save(); $("tempo").value=S.bpm; if($("beatNow")) paintBeatPick();
 }
 /* a live tap, kept in the loop: lined up, and not played again on this pass (it was just heard) */
 function recordHit(bi, pi, vel, when){
@@ -685,7 +702,7 @@ function recordHit(bi, pi, vel, when){
   const e={b:bi, p:pi, t:tk, v:Math.round(vel*100)/100, len:0};
   const sw=Math.round((S.swing/100-0.5)*48), playAt=a+(sw && tk%48===24 ? sw : 0);
   if(playAt>=SEQ.abs) e._skip=Math.floor(a/L);
-  S.ev.push(e); SEQ.map=null; save(); if(bi===S.bank && pi===S.sel) paintSteps(); lessonSongs();
+  S.ev.push(e); SEQ.map=null; save(); if(bi===S.bank && pi===S.sel) paintSteps(); lessonSongs(); if(bi===0) paintBeatPick();
   if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); }
   return e;
 }
@@ -842,12 +859,11 @@ function bindBounce(){
    knows (aog-beats.js: 10 first beats, 8 styles, 87 beats in ten groups), on bank A's pads 1 to 8 (kick, snare, hat, open
    hat, clap, tom, rim, bell, the drum machine's own order). A hit is 0.8, an accent 1, a soft hit 0.45. The beat brings its
    tempo and swing, and its own kit when that kit is a recorded one here; its line says what it is. */
-function beatList(){
-  const A=window.AOGBeats; if(!A) return [];
-  const out=[{g:t("bgFirst"), items:A.classroom}, {g:t("bgStyles"), items:A.styles}];
-  Object.keys(A.groups).forEach(g=>out.push({g:L(A.groups[g]), items:A.beats.filter(b=>b.grp===g)}));
-  return out.filter(x=>x.items.length);
-}
+function beatFlat(){ const A=window.AOGBeats; if(!A) return [];
+  const out=[]; A.classroom.forEach(b=>out.push({g:"first", b:b})); A.styles.forEach(b=>out.push({g:"styles", b:b}));
+  Object.keys(A.groups).forEach(g=>A.beats.filter(b=>b.grp===g).forEach(b=>out.push({g:g, b:b}))); return out; }
+function grpName(g){ const A=window.AOGBeats; return g==="first" ? t("bgFirst") : g==="styles" ? t("bgStyles") : L(A.groups[g]); }
+function bankASig(){ return S.ev.filter(e=>e.b===0).map(e=>e.p+":"+e.t+":"+e.v).sort().join(","); }
 function beatById(id){ const A=window.AOGBeats; return A ? [].concat(A.classroom, A.styles, A.beats).find(b=>b.id===id) : null; }
 function startBeat(id){
   const B=beatById(id); if(!B) return;
@@ -862,7 +878,7 @@ function startBeat(id){
   const A0=S.banks[0];
   if(B.kit && KITS().indexOf(B.kit)>=0) A0.kitA=B.kit;
   S.bank=0; S.sel=0;
-  changed(); paintAll(); prep(0);
+  changed(); S.beat={id:B.id, sig:bankASig(), g:(beatFlat().find(x=>x.b.id===B.id)||{}).g||""}; save(); paintAll(); prep(0);
   say(t("startedB",{name:L(B), kit:kitName(A0.kitA)})+(B.about ? " "+L(B.about) : ""), 9000);
 }
 
@@ -953,10 +969,30 @@ function paintControls(){
   $("rptBtn").textContent=t("rpt"); $("rateLab").textContent=t("rate");
   $("rateSel").innerHTML=[[48,"1/8"],[32,"1/8T"],[24,"1/16"],[16,"1/16T"],[12,"1/32"]].map(([v,k])=>opt(v, k, S.rate)).join("");
   $("clickBtn").textContent=t("click"); $("fullBtn").textContent=t("full");
-  $("startLab").textContent=t("start"); $("startSel").innerHTML=`<option value="">${esc(t("startPick"))}</option>`+beatList().map(x=>`<optgroup label="${esc(x.g)}">`+x.items.map(b=>opt(b.id, esc(L(b))+(b.bpm?" · "+b.bpm:""), "")).join("")+`</optgroup>`).join("");
+  paintBeatPick();
   $("undoBtn").textContent=t("undo"); $("clearBtn").textContent=t("clear");
   $("volLab").textContent=t("vol"); $("tuneLab").textContent=t("tune"); $("panLab").textContent=t("pan");
   $("padReset").textContent=t("padReset"); $("padClear").textContent=t("padClear");
+}
+/* AOG-PADS-BEATPICK-V1 (Jimmy, 2026-10-05: "Is there a better way to pick a beat? The scroll down list is exhausting, plus I
+   don't like how it stays on 'Pick a beat'; it should show the person what they are using"): two short menus, a style (12)
+   and its beats (8 to 11), and ◀ ▶ that step through every beat, one tap each (the loop keeps playing, so each is heard
+   at once). The menus show the beat in use, and the line under them says its name, tempo and kit, or that you changed it. */
+function paintBeatPick(){
+  const F=beatFlat(); if(!F.length) return;
+  const cur=S.beat && beatById(S.beat.id), g=(S.beat && S.beat.g) || "first";
+  const groups=[...new Set(F.map(x=>x.g))];
+  $("startLab").textContent=t("start"); $("grpLab").textContent=t("grpLab"); $("beatLab").textContent=t("beatLab");
+  $("grpSel").setAttribute("aria-label", t("grpLab")); $("startSel").setAttribute("aria-label", t("beatLab"));
+  $("grpSel").innerHTML=groups.map(k=>opt(k, esc(grpName(k)), cur ? g : "")).join("") + (cur ? "" : `<option value="" selected disabled>${esc(t("grpLab"))}…</option>`);
+  const items=F.filter(x=>x.g===(cur ? g : "first"));
+  $("startSel").innerHTML=(cur ? "" : `<option value="" selected disabled>${esc(t("ownBeat"))}</option>`)+items.map(x=>opt(x.b.id, esc(L(x.b))+(x.b.bpm?" · "+x.b.bpm:""), cur ? cur.id : "")).join("");
+  $("beatPrev").textContent="◀"; $("beatNext").textContent="▶";
+  $("beatPrev").setAttribute("aria-label", t("beatPrev")); $("beatNext").setAttribute("aria-label", t("beatNext"));
+  const now=$("beatNow");
+  if(!cur) now.textContent=t("nowOwn");
+  else if(S.beat.sig!==bankASig()) now.textContent=t("nowChanged",{name:L(cur)});
+  else now.textContent=t("nowBeat",{name:L(cur), bpm:S.bpm, kit:kitName(S.banks[0].kitA)});
 }
 function navHtml(){
   const es=S0.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
@@ -1016,7 +1052,11 @@ function init(){
   $("rateSel").onchange=()=>{ S.rate=+$("rateSel").value; LES.mark("rate1"); save(); };
   $("clickBtn").onclick=()=>{ S.click=!S.click; if(S.click) LES.mark("click1"); save(); paintTransport(); };
   $("fullBtn").onclick=()=>{ S.full=!S.full; if(S.full) LES.mark("full1"); save(); paintTransport(); };
-  $("startSel").onchange=()=>{ const k=$("startSel").value; $("startSel").value=""; if(k) startBeat(k); };
+  $("startSel").onchange=()=>{ const k=$("startSel").value; if(k) startBeat(k); };
+  /* a style picked: its first beat plays (Undo brings the last beat back) */
+  $("grpSel").onchange=()=>{ const g=$("grpSel").value, f=beatFlat().find(x=>x.g===g); if(f) startBeat(f.b.id); };
+  const stepBeat=d=>{ const F=beatFlat(), cur=S.beat && S.beat.id, i=F.findIndex(x=>x.b.id===cur); const j=i<0 ? (d>0?0:F.length-1) : (i+d+F.length)%F.length; startBeat(F[j].b.id); };
+  $("beatPrev").onclick=()=>stepBeat(-1); $("beatNext").onclick=()=>stepBeat(1);
   $("steps").addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest(".st"); if(!b) return;
     const i=+b.dataset.s, bi=S.bank, pi=S.sel, lo=i*24, hi=lo+24; snapshot();
     const had=S.ev.some(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);

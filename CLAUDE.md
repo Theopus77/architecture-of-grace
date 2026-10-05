@@ -76,6 +76,10 @@ call moving forward." On the Educator Dashboard and every page after it:
   the page and the menu presses them, so nothing else has to change.
 - Rows of actions (Save, Copy, Download) stay as buttons; only choices of
   *where to look* become menus.
+- Exception (Jimmy, 2026-10-05): the music labs' picture doors. Every music
+  lab shows the nine labs as small picture doors across the top
+  (`aog-labdoors.js`), so moving from room to room is one tap. A new music lab
+  joins LABS there and loads the script.
 - Say a thing once. One short line per screen, not the same description in
   three places.
 

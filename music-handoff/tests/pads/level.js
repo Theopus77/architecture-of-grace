@@ -54,8 +54,11 @@ const TABLE=process.argv.includes("--table");
     }
     for(const c of CRATE){
       Object.assign(S.banks[3], {type:"chops", rec:"c:"+c.file, bar:1}); await wait(3);
-      const beat=60/c.bpm;
-      res.rec[c.file]=await render(4*beat+0.5, T=>{ for(let i=0;i<4;i++) trigger(3, i, 0.8, 0.05+i*beat, T); }); pk.rec[c.file]=LASTPK;
+      /* a record with a beat: its first four chops a beat apart; a reading (no beat, its chops are its phrases): its first
+         four phrases one after another */
+      const ch=READY[3].chops||[], at=[]; let t0=0.05;
+      for(let i=0;i<4 && i<ch.length;i++){ at.push(t0); t0+=c.bpm>0 ? 60/c.bpm : ch[i][1]+0.1; }
+      res.rec[c.file]=await render(t0+0.5, T=>{ at.forEach((t,i)=>trigger(3, i, 0.8, t, T)); }); pk.rec[c.file]=LASTPK;
     }
     return {res, pk, peak:PEAK, trim:(typeof LEVEL!=="undefined") ? LEVEL : null};
   });
