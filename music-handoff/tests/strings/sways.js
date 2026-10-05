@@ -50,8 +50,8 @@ const OLD18=[{"id":"pop","g":"pop","en":"Pop · 1 5 6 4","es":"Pop · 1 5 6 4","
         minorNames:PRESETS.filter(x=>x.minor && /[♭♯]?\d+m? [♭♯]?\d/.test(x.en+" "+x.es)).map(x=>x.id), words:fresh.filter(x=>!(x.en && x.es)).map(x=>x.id),
         chords:PRESETS.every(x=>x.chords.length>0 && x.chords.every(c=>Q[c.q] && c.off>=0 && c.off<12)),
         groups:PRESETS.map(x=>x.g).filter((g,i,a)=>i===0||a[i-1]!==g).join(",")}; }, OLD18);
-    ok(pm.n===44 && pm.ids===44 && pm.fresh===26 && pm.same && pm.opts===44 && pm.labels.join(" | ")==="Pop, rock and folk | Rock and metal | Soul, funk and dance | Blues and jazz | Minor and moody" && pm.groups==="pop,rock,soul,jazz,min",
-      `44 chord patterns in 5 groups (${pm.sizes.join("/")}): ${pm.labels.join(" | ")}; the 18 old ones unchanged`);
+    ok(pm.n===59 && pm.ids===59 && pm.fresh===41 && pm.same && pm.opts===59 && pm.labels.join(" | ")==="Pop, rock and folk | Rock and metal | Soul, funk and dance | Blues and jazz | Minor and moody" && pm.groups==="pop,rock,soul,jazz,min",
+      `59 chord patterns in 5 groups (${pm.sizes.join("/")}): ${pm.labels.join(" | ")}; the 18 old ones unchanged`);
     ok(pm.minorNames.length===0 && pm.words.length===0 && pm.chords, "minor patterns go by name, not chord numbers; every new one has English and Spanish; every chord is one of the five kinds"+(pm.minorNames.length?": numbered "+pm.minorNames.join(","):"")+(pm.words.length?": words missing "+pm.words.join(","):""));
 
     /* 2. every way × every pattern, scheduled */
