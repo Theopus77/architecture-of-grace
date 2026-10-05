@@ -31,6 +31,8 @@ const HOW={fmpiano:["harm",0.05,1.0], pipeorgan:["harm",0.6,2.6], harpsichord:["
    max(0.35, min(0.7, 60/f)) s after the note starts (z 0), or over a held set's loop. Every one within 5 cents */
 const path=require("path"), ROOT=process.env.AOG_ROOT||path.resolve(__dirname,"../../aog-deploy");
 const MADE_SETS=JSON.parse(fs.readFileSync(path.join(ROOT,"..","music-handoff","tools","piano_real_sets.json"),"utf8")).sets;
+/* AOG-PIANO-SYNTH-V1: and the four real analog synthesizer sets (music-handoff/tools/piano_synth_sets.py), checked the same way */
+Object.assign(MADE_SETS, JSON.parse(fs.readFileSync(path.join(ROOT,"..","music-handoff","tools","piano_synth_sets.json"),"utf8")).sets);
 Object.keys(MADE_SETS).forEach(s=>{ const e=MADE_SETS[s].sets_entry, m=MADE_SETS[s].pitch||"harm"; REAL[s]=s;
   HOW[s] = [m==="fund"?"bar":m, e.loop?e.loop[0]:0.03, e.loop?e.loop[1]-0.6:0]; });
 /* where each warm electric piano note's own loop began in its recording (seconds; piano_vcsl_sets.py prints them): from there
@@ -70,6 +72,13 @@ window.__note=async function(id, m, v, dur){
   const ch={c:oc, bus:bus, org:bus, send:oc.createGain()}, snd=Object.assign({}, SOUNDS[id], {bus:null, tape:0});
   const vc=sampleVoice(oc, ch, snd, m, v, 0.02); if(!vc) return null;
   return (await oc.startRendering()).getChannelData(0); };
+/* AOG-PIANO-STEREO-V1: the same, in two channels (a recording that keeps both its microphones plays each on its own side;
+   a one-channel recording plays the same on both) */
+window.__note2=async function(id, m, v, dur){
+  const oc=new OfflineAudioContext(2, Math.ceil(44100*dur), 44100), bus=oc.createGain(); bus.connect(oc.destination);
+  const ch={c:oc, bus:bus, org:bus, send:oc.createGain()}, snd=Object.assign({}, SOUNDS[id], {bus:null, tape:0});
+  const vc=sampleVoice(oc, ch, snd, m, v, 0.02); if(!vc) return null;
+  const b=await oc.startRendering(); return [b.getChannelData(0), b.getChannelData(1)]; };
 /* which kind of voice the page made: a recording's, or a built one */
 window.__calls={sample:0, made:0};
 { const sv=sampleVoice, bv=buildVoice, yv=synthVoice;
@@ -84,9 +93,12 @@ window.__calls={sample:0, made:0};
   const p=await c.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
   await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   /* every request for a piano recording, by folder */
+  /* AOG-PIANO-STEREO-V1: a set's folder can have a new name (strings2/: rebuilt in stereo, the old name stays cached for a
+     year), so every request is counted under the set the page's SETS gives that folder */
+  const DIR={}, SET_OF={}; for(const m of fs.readFileSync(path.join(ROOT,"music-piano.html"),"utf8").matchAll(/(\w+):\s*\{dir:"\/audio\/piano\/([a-z0-9]+)\/"/g)){ DIR[m[1]]=m[2]; SET_OF[m[2]]=m[1]; }
   const got={}; let slow=null;
-  p.on("request", r=>{ const m=r.url().match(/\/audio\/piano\/([a-z0-9]+)\//); if(m) got[m[1]]=(got[m[1]]||0)+1; });
-  await p.route(/\/audio\/piano\/[a-z]+\/\d+m\.mp3$/, async r=>{ if(slow && r.request().url().indexOf("/audio/piano/"+slow+"/")>=0) await new Promise(x=>setTimeout(x,180)); r.continue(); });
+  p.on("request", r=>{ const m=r.url().match(/\/audio\/piano\/([a-z0-9]+)\//); if(m){ const k=SET_OF[m[1]]||m[1]; got[k]=(got[k]||0)+1; } });
+  await p.route(/\/audio\/piano\/[a-z0-9]+\/\d+m\.mp3$/, async r=>{ if(slow && r.request().url().indexOf("/audio/piano/"+(DIR[slow]||slow)+"/")>=0) await new Promise(x=>setTimeout(x,180)); r.continue(); });
   await p.goto(U); await p.waitForTimeout(2500);
   await p.addScriptTag({content:PITCH}); await p.addScriptTag({content:MEASURE});
 
@@ -172,16 +184,24 @@ window.__calls={sample:0, made:0};
         const mid=lv.slice().sort((u,v)=>u-v)[lv.length>>1]; return Math.max(...lv.map(v=>Math.abs(v-mid))); };
       for(const m of ms){
         const n=SETS[s].notes.reduce((best,x)=>Math.abs(x-m)<Math.abs(best-m)?x:best), rate=Math.pow(2,(m-n)/12), st=SETS[s].start[n+"m"], lp=SETS[s].lp[n+"m"]||[SETS[s].loop[0], loopEnd(SETS[s],n)], A=lp[0], Z=lp[1];
-        const T=Math.max(7.0, 0.02+(Z-st+2.2*(Z-A))/rate+0.3), d=await __note(id, m, 0.74, T+0.3), sr=44100;
-        const raw=SETS[s].buf[n+"m"], o0=Z-0.5-1.0>=0.5 ? 1.0 : 0.3, own=swing(raw.getChannelData(0), raw.sampleRate, o0, Z-0.5);   /* the recording before its loop's blend */
-        /* the sharpest step around every pass through the loop's seam, against the sharpest in the held part before the first */
-        const step=(a,z)=>{ let x=0; for(let i=Math.max(1,Math.floor(a*sr));i<Math.min(d.length,Math.floor(z*sr));i++) x=Math.max(x,Math.abs(d[i]-d[i-1])); return x; };
-        const first=0.02+(Z-st)/rate; let seam=0, k=0; for(let t=first; t<T; t+=(Z-A)/rate, k++) seam=Math.max(seam, step(t-0.01,t+0.01));
-        out.push({m:m, T:+T.toFixed(1), all:swing(d, sr, o0, T), own:own, seam:seam, held:step(o0, first-0.05), seams:k});
+        /* AOG-PIANO-STEREO-V1: each channel on its own: the left side of the loop against the left microphone's own
+           recording, the right against the right (a one-channel recording: both sides the same) */
+        const T=Math.max(7.0, 0.02+(Z-st+2.2*(Z-A))/rate+0.3), dd=await __note2(id, m, 0.74, T+0.3), sr=44100;
+        const raw=SETS[s].buf[n+"m"], o0=Z-0.5-1.0>=0.5 ? 1.0 : 0.3;
+        const first=0.02+(Z-st)/rate, sides=[];
+        dd.forEach((d,c)=>{
+          const own=swing(raw.getChannelData(Math.min(c, raw.numberOfChannels-1)), raw.sampleRate, o0, Z-0.5);   /* the recording before its loop's blend */
+          /* the sharpest step around every pass through the loop's seam, against the sharpest in the held part before the first */
+          const step=(a,z)=>{ let x=0; for(let i=Math.max(1,Math.floor(a*sr));i<Math.min(d.length,Math.floor(z*sr));i++) x=Math.max(x,Math.abs(d[i]-d[i-1])); return x; };
+          let seam=0, k=0; for(let t=first; t<T; t+=(Z-A)/rate, k++) seam=Math.max(seam, step(t-0.01,t+0.01));
+          sides.push({all:swing(d, sr, o0, T), own:own, seam:seam, held:step(o0, first-0.05), seams:k}); });
+        /* the side that comes nearest to failing speaks for the note */
+        const worst=sides.reduce((w,x)=>Math.max(x.all-x.own-1.0, x.seam/Math.max(1e-12,x.held)-1.05)>Math.max(w.all-w.own-1.0, w.seam/Math.max(1e-12,w.held)-1.05) ? x : w);
+        out.push(Object.assign({m:m, T:+T.toFixed(1), sides:sides.length, allok:sides.every(x=>x.all<=x.own+1.0), seamok:sides.every(x=>x.seam<=x.held*1.05)}, worst));
       }
       return out; }, [id,set,ms]);
-    for(const x of r) ok((only==="seam" || x.all<=x.own+1.0) && x.seam<=x.held*1.05 && x.seams>=2,
-      `${id} ${x.m} held ${x.T} s, ${x.seams} loops: its loudness moves ${x.all.toFixed(2)} dB (the recording itself ${x.own.toFixed(2)}); the seam's sharpest step ${x.seam.toFixed(4)} (before it: ${x.held.toFixed(4)})`+(only==="seam"?" (seam checked; the swell is the strings' own loop points)":""));
+    for(const x of r) ok((only==="seam" || x.allok) && x.seamok && x.seams>=2,
+      `${id} ${x.m} held ${x.T} s, ${x.seams} loops (each side): its loudness moves ${x.all.toFixed(2)} dB (the recording itself ${x.own.toFixed(2)}); the seam's sharpest step ${x.seam.toFixed(4)} (before it: ${x.held.toFixed(4)})`+(only==="seam"?" (seam checked; the swell is the strings' own loop points)":""));
   }
 
   /* ── 4b · the warm electric piano: each note's tail, made from its own loop, fades smoothly (no click at a repeat, no
