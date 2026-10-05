@@ -259,6 +259,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-chords.js"></script><!-- AOG-ANYCHORD-V1: the shared chord library, read as the page's own script starts -->
 <script src="/aog-scales.js" defer></script><!-- AOG-SCALES-LIB-V1: the shared scale library -->
 <script src="/aog-solo.js" defer></script><!-- AOG-SOLO-V1: Solo mode on the neck (aog-solo.js) -->
+<script src="/aog-lessons.js"></script><!-- AOG-LESSONS-V1: the shared lesson card -->
+<script src="/aog-lessons-bass.js"></script><!-- AOG-LESSONS-V1: this lab's lessons (made from _work/music/lessons_bass.py) -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -287,6 +289,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
     <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
   </div>
   <main id="view">
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: this lab's lessons (aog-lessons.js) -->
     <section class="rig" id="rig" aria-labelledby="mastH">
       <div class="plate" aria-hidden="true"><b>FOUR-STRING BASS</b><small>FINGERS · PICK · AMP · PEDALS</small></div>
 
@@ -1928,7 +1931,7 @@ function pickAny(play){
   S.hand={off:c.off, q:c.q};
   ANY.shown=true; ANY.moved=f0!==was ? f0 : 0;
   if(f0!==was){ buildNeck(); save(); }
-  if(play) playAny(c);
+  if(play){ playAny(c); LES.mark("anyplay"); lessonChord(c); }
   litNeck(); paintAnyLine();
 }
 function paintAny(){
@@ -1951,6 +1954,7 @@ function padDown(i, v){
   padHeld[i]=true;
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  LES.mark("pad1"); if(i>=6) LES.mark("seven"); else { LT.pads.add(i); if(LT.pads.size>=6) LES.mark("padall"); } lessonChord(c);   /* AOG-LESSONS-V1 */
   litNeck();
 }
 function padUp(i){
@@ -2177,7 +2181,7 @@ function handSig(h){ return h ? h.shp.join(",") : ""; }
 function handChanged(){
   if(!S.playing || !ac) return;
   const h=handHeld(), sig=handSig(h); if(sig===(PLAY.hand||"")) return;
-  PLAY.hand=sig;
+  PLAY.hand=sig; if(h) LES.mark("handstyle");   /* AOG-LESSONS-V1 */
   const now=ac.currentTime, cut=now+0.025, newShp=h ? h.shp : null;
   /* what has not started yet is planned again; a ringing string whose note changed lets go */
   PLAY.voices.forEach(v=>{
@@ -2250,7 +2254,7 @@ async function start(){
     PLAY.drum=s; PLAY.t0=t1+off;
   } else PLAY.t0=t1;
   tick();
-  paintPlay();
+  paintPlay(); lessonPlaying();   /* AOG-LESSONS-V1 */
 }
 function stop(quiet){
   if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
@@ -2321,7 +2325,7 @@ async function bounce(){
     const blob=wavBlob(buf.getChannelData(0), buf.getChannelData(1), sr);
     const name=(GTR?(S.lang==="es"?"Guitarra":"Guitar"):(S.lang==="es"?"Bajo":"Bass"))+" · "+soundName(S.sound)+" · "+Math.round(bpm)+" BPM · "+bars+" "+t("bars");
     await AOGHandoff.put(SHELF, {name:name, bpm:bpm, bars:bars, at:Date.now(), wav:blob});
-    line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`;
+    line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`; LES.mark("decks");
   }catch(e){ line.textContent=t("sendFail"); }
   btn.disabled=false;
 }
@@ -2356,6 +2360,78 @@ async function sendPads(){
    THE PAGE
    ══════════════════════════════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
+/* ══ AOG-LESSONS-V1 (2026-10-05) — this lab's lessons: each step ticks itself as it really happens on the page (the words:
+   _work/music/lessons_guitar.py and lessons_bass.py; the card: aog-lessons.js). An id the lab's lessons do not use is
+   ignored by LES.mark, so one set of hooks serves both instruments. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={pads:new Set(), last:null, sigs:new Set()};
+/* a note a hand just played (a fret, an open string, a key): open strings, frets, octaves and fifths */
+function lessonNote(s, f){
+  f=Math.round(f); const m=TUNING[s]+f, now=performance.now();
+  if(f===0) LES.mark("open"+s); else LES.mark("fret1");
+  if(f>=5) LES.mark("fret5"); if(f===12) LES.mark("fret12");
+  if(!GTR && /^(fretless|upright|fretlead)$/.test(S.sound)) LES.mark("flnote");
+  const L=LT.last;
+  if(L && now-L.at<4000){ const d=m-L.m; if(d===12) LES.mark("octave"); if(d===7) LES.mark("fifth"); if(d===-5) LES.mark("fifthlow"); }
+  LT.last={m:m, at:now};
+}
+/* a chord a hand just played (a pad, the wheel, Any chord): its name, and a power chord on a heavy sound */
+function lessonChord(c){
+  const pc=((S.key+c.off)%12+12)%12, id={"7maj":"chG","0maj":"chC","2maj":"chD","4maj":"chE","9maj":"chA","4min":"chEm","9min":"chAm"}[pc+c.q];
+  if(id) LES.mark(id);
+  if(GTR && SOUNDS[S.sound] && SOUNDS[S.sound].power && Q[c.q] && Q[c.q].indexOf(7)>=0) LES.mark("power");
+  if(S.own && S.prog.length>=4) LES.mark("own4");
+}
+/* a strum across the strings: which way, and every string in one swipe */
+function lessonStrum(p, list, low2high){
+  if(!list.length) return;
+  LES.mark(low2high ? "strumdn" : "strumup");
+  if(!p.lset) p.lset=new Set(); list.forEach(x=>p.lset.add(x)); if(p.lset.size>=TUNING.length) LES.mark("strum6");
+}
+function recOn(){ const b=$("recBtn"); return !!(b && b.getAttribute("aria-pressed")==="true"); }
+/* the songs: the pattern, the style and the sound that make each one */
+function lessonSongs(){
+  const p=S.preset, r=S.rhythm, snd=SOUNDS[S.sound]||{}, out=[], blues=/^(blues|blues8|quick|jazzblues)$/.test(p);
+  if(GTR){
+    if(p==="pop" && r==="folk" && S.key===7) out.push("camp");
+    if(blues && r==="shuffle") out.push("blues");
+    if(p==="minor" && r==="reggae") out.push("reggae");
+    if(p==="power" && snd.power && /^(rock|punk|chug)$/.test(r)) out.push("rock");
+    if(p==="bossa" && r==="bossa" && S.sound==="nylon") out.push("bossa");
+  } else {
+    if(blues && r==="walk") out.push("walk");
+    if(p==="disco" && r==="octave") out.push("disco");
+    if(p==="minor" && r==="reggae") out.push("reggae");
+    if(p==="funk" && r==="funk") out.push("funk");
+  }
+  if(!p && S.prog.length>=4) out.push("own");
+  return out;
+}
+/* a sound picked in Instrument (or the lead sound menu) */
+function lessonSound(id){
+  const g=(SOUNDS[id]||{}).grp||"";
+  LES.mark("snd1"); if(g!=="grpAcoustic") LES.mark("selec"); if(g==="grpMetal") LES.mark("smetal"); if(id==="nylon") LES.mark("snylon");
+  if(/^(fretless|upright|fretlead)$/.test(id)) LES.mark("sfretless"); if(id==="dub") LES.mark("sdub"); if(g==="grpFunk" || id==="slap") LES.mark("sslap");
+}
+/* the parts drawn by the shared scripts (the recorder, Solo mode) are listened to from outside, before their own handlers */
+function lessonListen(){
+  document.addEventListener("click",(e)=>{
+    const el=e.target.closest ? e.target.closest("button") : null; if(!el) return;
+    if(el.id==="recBtn"){ if(recOn()) LES.mark("take2"); else { LES.mark("take1"); if(S.playing) lessonSongs().forEach(k=>LES.mark("tk_"+k)); } return; }   /* pressed = it is about to stop */
+    if(el.hasAttribute("data-aogrec-studio")){ LES.mark("studio"); if(LES.count("studio")>=2) LES.mark("studio2"); return; }
+    const mode=el.getAttribute("data-so-mode") || (el.id==="pvSolo" ? "solo" : el.id==="pvChords" ? "chords" : "");
+    if(mode==="solo") LES.mark("solo1"); else if(mode==="chords" && window.AOGSolo && AOGSolo.isOn()) LES.mark("chordsback");
+    if(el.id==="soLickBtn") LES.mark("lick");
+    if(el.id==="soBand") LES.mark("band");
+  }, true);
+  document.addEventListener("change",(e)=>{ if(e.target && e.target.id==="soScaleSel") LES.mark("scale1"); }, true);
+}
+/* the chords are playing: the style, the drum beat, a song, and a take of it if one is recording */
+function lessonPlaying(){
+  if(!S.playing) return;
+  LES.mark("play"); LES.mark("p_"+S.rhythm); if(drumsLive()) LES.mark("drumplay");
+  lessonSongs().forEach(k=>{ LES.mark("sg_"+k); if(recOn()) LES.mark("tk_"+k); });
+}
 /* the six music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
 function navHtml(){
   const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
@@ -2372,7 +2448,10 @@ let AMPUI=null;
 function applyRig(){ if(ac && LIVE_CH) LIVE_CH.rig.set(rigFor(S.sound)); }
 function paintAmp(){
   if(!AMPUI) AMPUI=AOGAmp.ui($("ampBox"), {kind:GTR?"guitar":"bass", lang:()=>S.lang, get:()=>rigFor(S.sound),
-    set:(st)=>{ const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); delete o.pickup; RIGS[S.sound]=o; clearTimeout(paintAmp.t); paintAmp.t=setTimeout(saveRigs, 300); applyRig(); },
+    set:(st)=>{ const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); delete o.pickup;
+      { const was=rigFor(S.sound), on=(r,k)=>!!(r.fx && r.fx[k] && r.fx[k].on); LES.mark("amp1");   /* AOG-LESSONS-V1 */
+        if(Object.keys(Object.assign({}, was.fx||{}, o.fx||{})).some(k=>on(was,k)!==on(o,k))) LES.mark("pedal"); }
+      RIGS[S.sound]=o; clearTimeout(paintAmp.t); paintAmp.t=setTimeout(saveRigs, 300); applyRig(); },
     reset:()=>{ delete RIGS[S.sound]; saveRigs(); applyRig(); }});
   else AMPUI.paint();
 }
@@ -2391,7 +2470,7 @@ function paintText(){
   $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
   recLine();
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
-  paintDial(); paintDrums(); paintAny(); buildNeck(); pvText();
+  paintDial(); paintDrums(); paintAny(); buildNeck(); pvText(); LES.paint();
 }
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
@@ -2502,6 +2581,7 @@ function wheelDown(key){
   S.hand={off:c.off, q:c.q}; WHEEL.press=key;
   playChord(c, 0.74);
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  LES.mark("wheel1"); lessonChord(c);   /* AOG-LESSONS-V1 */
   litNeck();
 }
 function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
@@ -2525,7 +2605,7 @@ function paintDrums(){
   } else {
     box.innerHTML=`<div class="row" style="margin-top:.7rem"><button type="button" class="pbtn" id="drumBtn" aria-pressed="${S.withDrums?"true":"false"}">${t("drumOn")}</button></div>
       <p class="line">${t("drumFrom",{name:(DRUM.take.name||"").replace(/</g,"&lt;")})}${S.withDrums?" "+t(beatsPerBar()===4?"drumTempo":"drumThree"):""}</p>`;
-    $("drumBtn").onclick=()=>{ S.withDrums=!S.withDrums; save(); const was=S.playing; if(was) stop(true); paintDrums(); paintTempo(); if(was) start(); };
+    $("drumBtn").onclick=()=>{ S.withDrums=!S.withDrums; save(); if(S.withDrums) LES.mark("drums"); const was=S.playing; if(was) stop(true); paintDrums(); paintTempo(); if(was) start(); };
   }
   paintTempo();
 }
@@ -2630,25 +2710,30 @@ function bindNeck(){
     const h=neckHit(e); if(!h) return;
     try{ svg.setPointerCapture(e.pointerId); }catch(err){}
     FINGERS.set(e.pointerId, h);
-    if(window.AOGSolo && AOGSolo.down(e, h)){ litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch */
-    if(NECK.play && pvDown(e, h)){ litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
-    if(h.zone==="strum") pluckShape(h.s, 0.72); else pluckCell(h.s, h.f, 0.76);
+    if(window.AOGSolo && AOGSolo.down(e, h)){ if(h.zone==="fret"){ lessonNote(h.s, h.f); if(LES.count("solo")>=8) LES.mark("solo8"); } litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch (AOG-LESSONS-V1: a lit note) */
+    if(NECK.play && pvDown(e, h)){ if(h.zone==="fret" && (e.pointerType==="mouse" || PV.tap)) lessonNote(h.s, h.f); litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
+    if(h.zone==="strum") pluckShape(h.s, 0.72); else { pluckCell(h.s, h.f, 0.76); lessonNote(h.s, h.f); }
     litNeck();
   });
   svg.addEventListener("pointermove",(e)=>{
     const p=FINGERS.get(e.pointerId); if(!p) return;
     const h=neckHit(e); if(!h) return;
+    if(window.AOGSolo && AOGSolo.isOn()){ const f0=p.f, pops=AOGSolo._t.SO.pops||0;   /* AOG-LESSONS-V1: a Solo bend, slide or pop */
+      if(AOGSolo.move(e, p, h)){ const fs=AOGSolo._t.FING.get(e.pointerId);
+        if(fs && fs.bend>0.4) LES.mark("bend"); if(p.zone==="fret" && p.f!==f0) LES.mark("slide"); if((AOGSolo._t.SO.pops||0)>pops) LES.mark("pop"); return; } }
     if(window.AOGSolo && AOGSolo.move(e, p, h)) return;   /* AOG-SOLO-V1: bends, slides, the whammy */
     if(NECK.play && pvMove(e, p, h)) return;   /* AOG-PLAY-V1: strums, slides, bends */
     if(p.zone==="strum"){
       if(h.zone!=="strum" || h.s===p.s) return;
       /* every string crossed sounds, one after another, as a strum does */
       const dir=h.s>p.s?1:-1, now=ac?ac.currentTime:0; let k=0;
-      for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006); k++; }
+      const crossed=[]; for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006); crossed.push(s); k++; }
+      if(!p.lset) p.lset=new Set([p.s]); lessonStrum(p, crossed, dir>0);   /* AOG-LESSONS-V1 */
       p.s=h.s;
     } else {
       if(h.zone!=="fret" || (h.s===p.s && h.f===p.f)) return;
-      if(h.s===p.s) slideTo(h.s, h.f); else pluckCell(h.s, h.f, 0.7);
+      if(h.s===p.s){ slideTo(h.s, h.f); LES.mark("slide"); } else pluckCell(h.s, h.f, 0.7);
+      lessonNote(h.s, h.f);   /* AOG-LESSONS-V1 */
       p.s=h.s; p.f=h.f;
     }
     litNeck();
@@ -2657,7 +2742,7 @@ function bindNeck(){
     const p=FINGERS.get(e.pointerId); FINGERS.delete(e.pointerId); if(NECK.play) pvUp(e, p); /* AOG-PLAY-V1: a lifted finger */ litNeck(); };
   svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up); svg.addEventListener("lostpointercapture",up);
 }
-function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fret0!==was) save(); }
+function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fret0!==was){ save(); LES.mark(step>0?"higher":"lower"); } }
 
 /* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
    single notes." The six chord pads sat a long scroll above the neck. The same six chords now sit in one row right on
@@ -2801,6 +2886,7 @@ function playHit(e){
 }
 /* the fingers holding a string, and the note it gives: the highest finger, else open; with no finger anywhere on the
    frets, the guitar's chord in your hand */
+function pvHolding(){ let n=0; FINGERS.forEach(p=>{ if(p.zone==="fret") n++; }); return n>0; }   /* AOG-LESSONS-V1: a hand on the frets */
 function pvOn(s){ const out=[]; FINGERS.forEach(p=>{ if(p.zone==="fret" && p.s===s) out.push(p); }); return out; }
 function pvAt(p){ return NECK.fl && p.fc!=null ? p.fc : p.f; }
 function pvTop(s){ return pvOn(s).reduce((a,p)=>!a || pvAt(p)>pvAt(a) ? p : a, null); }
@@ -2832,6 +2918,8 @@ function pvDown(e, h){
     /* a tap plucks the string under it; the bass's two fingers take turns (a little softer, a little louder) */
     Object.assign(p, {y:h.y, last:h.s, fresh:true, t:performance.now()});
     PV.alt^=1; pvPluck(h.s, GTR?0.72:(PV.alt?0.78:0.7));
+    if(!PV.tap && pvHolding()) LES.mark("holdstrum");   /* AOG-LESSONS-V1 */
+    p.lset=new Set([h.s]);
     return true;
   }
   Object.assign(p, {y0:h.y, bend:0, fc:h.fc});
@@ -2849,6 +2937,7 @@ function pvMove(e, p, h){
     p.fresh=false;
     if(list.length){
       list.sort((a,b)=>down ? neckY(a)-neckY(b) : neckY(b)-neckY(a));
+      lessonStrum(p, list, list.length>1 ? list[list.length-1]>list[0] : list[0]>p.last); if(!PV.tap && pvHolding()) LES.mark("holdstrum");   /* AOG-LESSONS-V1 */
       const nowMs=performance.now(), dt=Math.max(4, nowMs-p.t), speed=(hi-lo)/dt;   /* svg px a millisecond */
       const v=Math.max(0.46, Math.min(0.9, 0.46+speed*0.09)), sp=Math.max(0.002, Math.min(0.02, dt/1000/list.length)), now=ac?ac.currentTime:0;
       list.forEach((s,k)=>pvPluck(s, v*(1-0.02*k), now+k*sp));
@@ -2863,7 +2952,7 @@ function pvMove(e, p, h){
   if(ringing){
     /* across the string: a bend (the same push as Solo mode's), a small wiggle is vibrato */
     const dy=h.y-p.y0; p.bend=Math.abs(dy)>3 ? pvBend(dy) : 0;
-    pvRetune(s0);
+    pvRetune(s0); if(p.bend>0.4) LES.mark("bend"); if(moved) LES.mark("slide");   /* AOG-LESSONS-V1 */
   } else if(h.s!==p.s && Math.abs(h.y-p.y0)>NECK.rowH*0.6){
     /* a quiet string: the finger simply moves to the next one */
     p.s=h.s; p.y0=h.y; p.bend=0; moved=true;
@@ -2892,7 +2981,7 @@ function pvEnter(){
   PV.on=true; PV.y=window.scrollY||0;
   PV.back=document.createComment("neckBox"); box.parentNode.insertBefore(PV.back, box); $("pvNeck").appendChild(box);
   playZoomLock(true); document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", !!PV.left!==!!PV.away);
-  NECK.play=true; FINGERS.clear(); pvText(); buildNeck();
+  NECK.play=true; FINGERS.clear(); pvText(); buildNeck(); LES.mark("pvbig");
   if(!PV.seen){ PV.seen=true; pvSave(); } $("pvTurn").hidden=true;
 }
 function pvExit(){
@@ -2946,9 +3035,9 @@ function pvInit(){
   $("pvBig").onclick=()=>{ PV.forced=true; PV.closed=false; pvSync(); };
   $("pvMore").onclick=()=>pvDrawer($("pvDrawer").hidden);
   $("pvDown").onclick=()=>moveNeck(-1); $("pvUp").onclick=()=>moveNeck(1);
-  $("pvMute").onclick=muteAll;
+  $("pvMute").onclick=()=>{ muteAll(); LES.mark("mute"); };
   const mode=(tap)=>{ PV.tap=tap; pvSave(); FINGERS.clear(); pvText(); if(PV.on) buildNeck(); };
-  $("pvTap").onclick=()=>mode(true); $("pvHold").onclick=()=>mode(false);
+  $("pvTap").onclick=()=>mode(true); $("pvHold").onclick=()=>{ mode(false); LES.mark("pvhold"); };
   $("pvRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
   $("pvRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) pvDrawer(false); };   /* start, then play */
   try{ const mo=new MutationObserver(pvRecPaint); mo.observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true});
@@ -2982,15 +3071,15 @@ document.addEventListener("keydown",(e)=>{
   if(window.AOGSolo && AOGSolo.key(e, true)) return;   /* AOG-SOLO-V1: the Solo mode keys */
   const si=STRING_KEYS.indexOf(e.code);
   if(si>=0){ e.preventDefault(); if(e.repeat||KEYCELLS.has(e.code)) return;
-    if(GTR){ const c=shapeChord(), f=c?shapeFor(c)[si]:0; pluckShape(si, 0.72); if(f>=0) KEYCELLS.set(e.code, si+":"+f); }
-    else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); } }
+    if(GTR){ const c=shapeChord(), f=c?shapeFor(c)[si]:0; pluckShape(si, 0.72); if(f>=0){ KEYCELLS.set(e.code, si+":"+f); lessonNote(si, f); } }
+    else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
     litNeck(); return; }
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
   if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat) moveNeck(e.code==="KeyZ"?-1:1); return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
     if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
-    e.preventDefault(); if(!e.repeat){ S.playing?stop():start(); }
+    e.preventDefault(); if(!e.repeat){ if(S.playing){ stop(); LES.mark("stop"); } else start(); }
   }
 });
 document.addEventListener("keyup",(e)=>{
@@ -3001,12 +3090,12 @@ document.addEventListener("keyup",(e)=>{
 window.addEventListener("blur",()=>{ if(KEYCELLS.size){ KEYCELLS.clear(); litNeck(); } });
 
 function bind(){
-  $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save();
+  $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save(); lessonSound(id);
     muteAll(); if(ac) setSound(LIVE_CH, id); prepare(id); paintAmp(); if(NECK.play) buildNeck(); };   /* AOG-PLAY-V1: an upright or fretless sound has no frets */
-  $("keySel").onchange=()=>{ S.key=+$("keySel").value; S.hand=null; save(); paintPads(); paintProg(); buildNeck(); paintMood(); };
+  $("keySel").onchange=()=>{ S.key=+$("keySel").value; S.hand=null; save(); LES.mark("key1"); if(S.key===7) LES.mark("keyG"); paintPads(); paintProg(); buildNeck(); paintMood(); };
   $("keySel2").onchange=()=>{ const ks=$("keySel"); ks.value=$("keySel2").value; ks.onchange(); };
   $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
-  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
+  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; S.hand=null; save(); LES.mark("minor"); paintMood(); paintPads(); paintProg(); buildNeck(); };
   $("majBtn2").onclick=()=>$("majBtn").onclick(); $("minBtn2").onclick=()=>$("minBtn").onclick();
   $("progSel2").onchange=()=>{ const ps=$("progSel"); ps.value=$("progSel2").value; ps.onchange(); };
   $("playBtn2").onclick=()=>$("playBtn").onclick();
@@ -3014,10 +3103,10 @@ function bind(){
   $("anyKind").onchange=()=>{ if(Q[$("anyKind").value]) ANY.id=$("anyKind").value; pickAny(true); };
   $("anyBtn").onclick=()=>pickAny(true);
   $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
-    S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; save();
+    S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; save(); LES.mark("pat1"); LES.mark("pat_"+p.id);
     paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } litNeck(); };
   $("rhythmSel").onchange=()=>{ const was=beatsPerBar(); S.rhythm=$("rhythmSel").value; save();
-    if(beatsPerBar()!==was){ paintDrums(); if(S.playing){ stop(true); start(); } } };   /* a waltz's bar is shorter: start it on its own count (AOG-STRINGS-WAYS-V1) */
+    if(beatsPerBar()!==was){ paintDrums(); if(S.playing){ stop(true); start(); } } lessonPlaying(); };   /* a waltz's bar is shorter: start it on its own count (AOG-STRINGS-WAYS-V1) */
   { const W=$("wheel");
     W.addEventListener("pointerdown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(!g || e.button>0) return; e.preventDefault();
       try{ W.setPointerCapture(e.pointerId); }catch(err){} WHEEL.ptr=e.pointerId; wheelDown(g.getAttribute("data-k")); });
@@ -3026,16 +3115,16 @@ function bind(){
     W.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll from the wheel */
     W.addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(!e.repeat) wheelDown(g.getAttribute("data-k")); } });
     W.addEventListener("keyup",(e)=>{ if((e.key==="Enter"||e.key===" ") && WHEEL.ptr==null && WHEEL.press) wheelRelease(); }); }
-  $("turnL").onclick=()=>turnWheel(5); $("turnR").onclick=()=>turnWheel(7);
-  $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); };
+  $("turnL").onclick=()=>{ turnWheel(5); LES.mark("turn"); }; $("turnR").onclick=()=>{ turnWheel(7); LES.mark("turn"); };
+  $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own) LES.mark("own1"); if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); };
   $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); };
-  $("playBtn").onclick=()=>{ S.playing?stop():start(); };
-  $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
+  $("playBtn").onclick=()=>{ if(S.playing){ stop(); LES.mark("stop"); } else start(); };   /* AOG-LESSONS-V1: the Stop you press */
+  $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; LES.mark("tempo"); $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
     if(S.playing && !drumsLive()){ const next=PLAY.t0+PLAY.bar*PLAY.barSec, nb=beatsPerBar()*60/S.bpm; PLAY.t0=next-PLAY.bar*nb; PLAY.barSec=nb; } };
   $("downBtn").onclick=()=>moveNeck(-1);
   $("upBtn").onclick=()=>moveNeck(1);
-  $("muteBtn").onclick=muteAll;
-  $("era").oninput=()=>{ S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
+  $("muteBtn").onclick=()=>{ muteAll(); LES.mark("mute"); };
+  $("era").oninput=()=>{ LES.mark("era"); S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=bounce;
@@ -3053,6 +3142,7 @@ function bind(){
 
 loadState();
 bind();
+lessonListen();   /* AOG-LESSONS-V1 */
 paintText();
 pvInit();
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ stop(); muteAll(); } });

@@ -246,6 +246,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
+<script src="/aog-lessons.js"></script>
+<script src="/aog-lessons-studio.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -274,6 +276,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
     <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
   </div>
   <main id="view">
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js) -->
     <section class="st-desk" id="desk" aria-labelledby="mastH">
       <div class="st-plate" aria-hidden="true"><b id="plateB">THE STUDIO</b><small id="plateS">EIGHT TRACKS · MIXER</small></div>
 
@@ -496,6 +499,40 @@ function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false,
 function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80},
   sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false}; }
 let SONG=blankSong();
+/* ══ AOG-LESSONS-V1 (2026-10-05) — the Mixing Desk's lessons: each step ticks itself as it happens (the words:
+   _work/music/lessons_studio.py, built by make_lab_lessons.py into aog-lessons-studio.js and mixing-desk-lessons.html).
+   LES.mark(id) is called at the real events below; the songs are checked from the arrangement (lessonSong) and at
+   Make the mix (lessonMix). The Mixing Desk records nothing itself, so step 1 ticks when a take has arrived here. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={remix:false};
+const INST_OF={drumbench:"drums", drumtake:"drums", padbench:"pads", keysbench:"piano", guitarbench:"guitar", bassbench:"bass", bandbench:"band", studiobench:"mix"};
+function instOf(c){ return c.src===INBOX_KEY ? (c.from||"take") : (INST_OF[c.src]||c.src); }
+function reordered(c){ const P=pcs(c); return P.some(p=>P.some(q=>p.a<q.a-1e-6 && p.at>q.at+1e-6)); }
+function bedOK(i){ const x=SONG.tracks[i], c=x.clip; return !!(c && x.vol<=40 && c.fadeIn>0 && c.fadeOut>0); }
+function lessonSong(){
+  const all=clips(); if(!all.length) return;
+  if(all.length>=4) LES.mark("tracks4");
+  if(all.some(x=>pcs(x.c).some(p=>p.at>=8-1e-6))) LES.mark("enter");
+  if(songBars()>=8) LES.mark("bars8");
+  if(all.some(x=>reordered(x.c))) LES.mark("swap");
+  if(all.some(x=>bedOK(x.i))) LES.mark("bedFade");
+  if(new Set(all.map(x=>instOf(x.c))).size>=3) LES.mark("own3");
+  if(songBars()>=16) LES.mark("ownLong");
+}
+function lessonMix(){
+  const aud=clips().filter(x=>audible(x.i)); if(!aud.length) return;
+  LES.mark("mix1");
+  const inst=new Set(aud.map(x=>instOf(x.c)));
+  if(inst.size>=2) LES.mark("mixInst2");
+  if(aud.length>=2 && aud.some(x=>SONG.tracks[x.i].vol!==SONG.tracks[aud[0].i].vol)) LES.mark("mixBal");
+  if(aud.length>=4) LES.mark("mixBand");
+  LT.remix=aud.some(x=>reordered(x.c)); if(LT.remix) LES.mark("mixRemix");
+  if(aud.some(x=>bedOK(x.i))) LES.mark("mixBed");
+  if(inst.size>=3 && songBars()>=16) LES.mark("mixOwn");
+}
+const ACT_STEP={"start+":"later1", "start-":"earlier1", "loops+":"more1", "loops-":"fewer1", copy:"copy1", cut:"cut1", drop:"drop1", keep:"keep1",
+  "in+beat":"trimIn", "in+bar":"trimIn", "out+beat":"trimOut", "out+bar":"trimOut"};
+function playStop(){ if(PLAY.on){ stop(); LES.mark("stop1"); } else play(); }
 function cleanClip(c){
   if(!c || typeof c!=="object" || typeof c.id!=="string" || !/^c[a-z0-9]{4,40}$/.test(c.id)) return null;
   const o={ id:c.id, src:(SHELF_KEYS.indexOf(c.src)>=0 || c.src===INBOX_KEY)?c.src:"", name:String(c.name||"").slice(0,200), at:num(c.at,0,1e15,0),
@@ -942,6 +979,7 @@ function play(){
   meterReset();
   PLAY.raf=requestAnimationFrame(frame);
   paintPlay();
+  LES.mark("play1"); if(clips().length>=2) LES.mark("play2"); if(PLAY.loop) LES.mark("loopPlay");   /* AOG-LESSONS-V1 */
 }
 /* a click for the count-in: short, soft, never in the mix */
 function click(c, when, first){
@@ -979,7 +1017,7 @@ function stop(){
   end();
 }
 /* the song played to its end: the last notes have rung out already */
-function finish(){ end(); }
+function finish(){ end(); LES.mark("end1"); }
 function end(){
   PLAY.on=false; clearInterval(PLAY.timer); PLAY.timer=0;
   if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
@@ -1074,6 +1112,7 @@ async function refreshShelves(){
     } else SHELF[s.key]=null;
   }
   paintRecs();
+  if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
 }
 /* AOG-STUDIO-INBOX-V1 — the takes sent here: the list's index (no audio), newest first; the audio is read when a take
    goes on a track */
@@ -1085,6 +1124,7 @@ async function refreshInbox(){
   INBOX.gone=((r && r.gone) || []).filter(x=>x && typeof x.id==="string");
   if(S.ask && !INBOX.items.some(x=>x.id===S.ask)) S.ask="";
   paintInbox(); paintRecs();
+  if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
 }
 /* every recording that can go on a track: the takes sent here, then the newest thing each tool sent to the turntables */
 function sources(){
@@ -1150,6 +1190,7 @@ async function putOn(srcId, ti){
     $("recLine").textContent="";
     S.busy=false;
     songChanged();
+    LES.mark("put1"); if(clips().length>=2) LES.mark("put2");   /* AOG-LESSONS-V1 */
   }catch(e){ S.busy=false; paintRecs(); $("recLine").textContent=t("putFail"); }
 }
 /* out of the list: asked once first; a copy on a track stays */
@@ -1171,6 +1212,7 @@ function songChanged(){
   liveApply(applyAll);
   reschedule();
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox();
+  lessonSong();
 }
 /* a reload: every recording comes back from this browser */
 async function restore(){
@@ -1247,6 +1289,7 @@ async function makeMix(){
     setMix({wav:blob, sec:frames/MIX_SR, bars:songBars(), bpm:songBpm(), body:songEndMusic(), at:Date.now()});
     try{ await sput("mix", {wav:blob, sec:MIX.sec, bars:MIX.bars, bpm:MIX.bpm, body:MIX.body, at:MIX.at}); }catch(e){}
     const out=leftOut();
+    lessonMix();   /* AOG-LESSONS-V1 */
     line.textContent=t("mixReady")+(out.length ? " "+t("mixLeft",{list:out.map(i=>t("trackLow",{n:i+1})).join(", ")}) : "");
   }catch(e){ line.textContent=t("fail"); }
   btn.disabled=false;
@@ -1262,6 +1305,7 @@ async function sendMix(){
     const name=t("mixName",{bpm:Math.round(MIX.bpm), bars:MIX.bars});
     await AOGHandoff.put("studiobench", {name:name, bpm:MIX.bpm, bars:MIX.bars, at:Date.now(), wav:MIX.wav, offset:0, passSec:MIX.body||MIX.sec, loops:1});
     line.innerHTML=esc(t("sent"))+` <a href="music-decks.html">${esc(t("decks"))}</a>`;
+    LES.mark("send1"); if(LT.remix) LES.mark("sendRemix");   /* AOG-LESSONS-V1 */
   }catch(e){ line.textContent=t("fail"); }
 }
 async function newSong(){
@@ -1479,7 +1523,7 @@ function undo(){
       const u=UNDO.pop(), x=SONG.tracks[u.i];
       if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){ x.clip=back; done=u.i; } }
     }
-    if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; songChanged(); stretchAll(); return; }
+    if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; LES.mark("undo1"); songChanged(); stretchAll(); return; }
   }
   paintTrack();
 }
@@ -1523,6 +1567,7 @@ function clipAct(act){
     if(p.b-p.a<1 && p.b<full-1e-6) p.b=Math.min(full, p.a+1);
   }
   tidyPieces(c);
+  if(ACT_STEP[act]) LES.mark(ACT_STEP[act]);   /* AOG-LESSONS-V1 */
   songChanged();
   stretchAll();
 }
@@ -1532,13 +1577,13 @@ function speedInput(el){ const c=SONG.tracks[SONG.sel].clip; if(!c) return; cons
 function speedChange(el){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   const v=clampSpeed(Math.round(+el.value)/100); if(Math.abs(v-spd(c))<1e-3) return;
-  remember(i, ++UG); c.speed=v; S.edMsg=""; S.edAt="spd";
+  remember(i, ++UG); c.speed=v; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
   songChanged(); stretchAll();
 }
 function fadeChange(el){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   const v=+el.value; if(FADES.indexOf(v)<0) return;
-  remember(i, ++UG); if(el.id==="fiSel") c.fadeIn=v; else c.fadeOut=v; S.edMsg="";
+  remember(i, ++UG); if(el.id==="fiSel") c.fadeIn=v; else c.fadeOut=v; S.edMsg=""; if(v>0) LES.mark(el.id==="fiSel" ? "fadeIn1" : "fadeOut1");
   songChanged();
 }
 function paintRecs(){
@@ -1651,16 +1696,16 @@ function paintMixOut(){
 /* ══ wiring ══ */
 function selectTrack(i){
   i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
-  SONG.sel=i; saveSoon(); $("recLine").textContent="";
+  SONG.sel=i; saveSoon(); $("recLine").textContent=""; LES.mark("track2");
   paintTimeline(); paintTrack(); paintMixer();
 }
 function bind(){
-  $("playBtn").onclick=()=>{ PLAY.on ? stop() : play(); };
-  $("startSel").onchange=()=>{ SONG.startBar=+$("startSel").value; save(); paintTimeline(); paintPlay(); };
-  $("loopBtn").onclick=()=>{ SONG.loopOn=!SONG.loopOn; if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save();
+  $("playBtn").onclick=playStop;
+  $("startSel").onchange=()=>{ SONG.startBar=+$("startSel").value; LES.mark("startAt"); save(); paintTimeline(); paintPlay(); };
+  $("loopBtn").onclick=()=>{ SONG.loopOn=!SONG.loopOn; if(SONG.loopOn) LES.mark("loopOn"); if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save();
     if(PLAY.on){ stop(); play(); } paintTransport(); paintTimeline(); };
-  $("loopFrom").onchange=()=>{ SONG.loopFrom=+$("loopFrom").value; if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save(); reschedule(); paintTransport(); paintTimeline(); };
-  $("loopTo").onchange=()=>{ SONG.loopTo=+$("loopTo").value; if(SONG.loopFrom>SONG.loopTo) SONG.loopFrom=SONG.loopTo; save(); reschedule(); paintTransport(); paintTimeline(); };
+  $("loopFrom").onchange=()=>{ SONG.loopFrom=+$("loopFrom").value; LES.mark("loopSet"); if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save(); reschedule(); paintTransport(); paintTimeline(); };
+  $("loopTo").onchange=()=>{ SONG.loopTo=+$("loopTo").value; LES.mark("loopSet"); if(SONG.loopFrom>SONG.loopTo) SONG.loopFrom=SONG.loopTo; save(); reschedule(); paintTransport(); paintTimeline(); };
   $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
   $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
   $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
@@ -1669,7 +1714,7 @@ function bind(){
   $("clipBox").addEventListener("change", e=>{ const el=e.target;
     if(el.id==="spdR") speedChange(el);
     else if(el.id==="fiSel" || el.id==="foSel") fadeChange(el);
-    else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
+    else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; LES.mark("piece1"); S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
   $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
   /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
   $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
@@ -1688,6 +1733,7 @@ function bind(){
     const ms=e.target.closest("[data-ms]"); if(!ms) return;
     const i=+ms.closest(".st-strip").getAttribute("data-tr"), k=ms.getAttribute("data-ms");
     SONG.tracks[i][k]=!SONG.tracks[i][k]; save();
+    LES.mark(k==="mute" ? (SONG.tracks[i][k] ? "mute1" : "unmute1") : (SONG.tracks[i][k] ? "solo1" : "unsolo1"));   /* AOG-LESSONS-V1 */
     liveApply(E=>{ for(let j=0;j<NT;j++) applyTrack(E,j); });
     paintMixer(); paintTimeline();
   });
@@ -1695,17 +1741,26 @@ function bind(){
     const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
     const i=+r.closest(".st-strip").getAttribute("data-tr"), k=r.getAttribute("data-k"), v=+r.value;
     SONG.tracks[i][k]=v; syncSlider(r, v); liveApply(E=>applyTrack(E,i)); saveSoon();
+    /* AOG-LESSONS-V1 */
+    if(k==="vol"){ LES.mark("vol1"); if(v<=50) LES.mark("volLow"); lessonSong(); }
+    else if(k==="pan"){ if(v<0) LES.mark("panL"); if(v>0) LES.mark("panR"); }
+    else if(k==="low") LES.mark("eqLow"); else if(k==="mid") LES.mark("eqMid"); else if(k==="high") LES.mark("eqHigh");
+    else LES.mark("fx1");
   });
   $("master").addEventListener("input", e=>{
     const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
     const k=r.getAttribute("data-k"), v=+r.value;
     SONG.master[k]=v; syncSlider(r, v); liveApply(applyMaster); saveSoon();
+    LES.mark(k==="glue" ? "mGlue" : k==="vol" ? "mVol" : "mEq");   /* AOG-LESSONS-V1 */
   });
   $("mixBtn").onclick=makeMix;
+  /* AOG-LESSONS-V1: Save as .wav, and the mix played in its player */
+  $("mixOut").addEventListener("click", e=>{ if(e.target.closest && e.target.closest("a[download]")) LES.mark("save1"); });
+  $("mixOut").addEventListener("play", ()=>LES.mark("listen1"), true);
   $("newBtn").onclick=()=>{ $("newAsk").hidden=false; $("newNo").focus(); };
   $("newNo").onclick=()=>{ $("newAsk").hidden=true; $("newBtn").focus(); };
   $("newYes").onclick=newSong;
-  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintAll(); };
+  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintAll(); LES.paint(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening it */
@@ -1719,7 +1774,7 @@ function bind(){
     if(tg==="INPUT" || tg==="SELECT" || tg==="TEXTAREA" || (el && el.isContentEditable)) return;
     const b=el && el.closest && el.closest("button,a,summary,[role=button],audio");
     if(b && b.id!=="playBtn") return;
-    e.preventDefault(); if(!e.repeat){ PLAY.on ? stop() : play(); }
+    e.preventDefault(); if(!e.repeat) playStop();
   });
   let rt=0; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PLAY.on) meterStill(); }, 150); });
 }

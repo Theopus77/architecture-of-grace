@@ -142,6 +142,8 @@ details.pm-set[open]>summary::before{content:"▾"}
 <script src="/aog-recorder.js"></script>
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
+<script src="/aog-lessons.js"></script>
+<script src="/aog-lessons-pads.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -225,6 +227,7 @@ details.pm-set[open]>summary::before{content:"▾"}
         </div>
       </div>
     </div>
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Beat Lab's lessons (aog-lessons.js) -->
     <div class="pm-rec">
       <div class="aogrec-row"><button type="button" class="pm-b" id="bounceBtn"></button></div>
       <p class="aogrec-line" id="bounceLine" aria-live="polite"></p>
@@ -391,14 +394,21 @@ function save(){ clearTimeout(saveT); saveT=setTimeout(()=>{ try{ localStorage.s
 function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
 /* ══ sound ══ */
-let ac=null, bus=null, lim=null;
+let ac=null, bus=null, lim=null, clip=null;
+/* AOG-PADS-LEVEL-V1: the last stage, a ceiling. The limiter cannot catch a sharp hit in time; this rounds anything above
+   0.8 of full scale smoothly towards 1, so nothing ever crackles on a phone's speaker. Below 0.8 it changes nothing. */
+function ceiling(c){
+  const w=c.createWaveShaper(), n=2048, cv=new Float32Array(n);
+  for(let i=0;i<n;i++){ const x=(i/(n-1))*3-1.5, a=Math.abs(x); cv[i]=Math.sign(x)*(a<0.8 ? a : 0.8+0.2*Math.tanh((a-0.8)/0.2)); }
+  w.curve=cv; w.oversample="2x"; return w;
+}
 function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
     ac=new AC({latencyHint:"interactive"});
     lim=ac.createDynamicsCompressor(); lim.threshold.value=-3; lim.knee.value=2; lim.ratio.value=20; lim.attack.value=0.002; lim.release.value=0.12;
-    bus=ac.createGain(); bus.gain.value=0.9; bus.connect(lim); lim.connect(ac.destination);
+    bus=ac.createGain(); bus.gain.value=0.9; clip=ceiling(ac); bus.connect(lim); lim.connect(clip); clip.connect(ac.destination);
   }
   if(ac.state==="suspended") ac.resume();
   return ac;
@@ -420,24 +430,25 @@ function breathEnd(d, sr, i0, pk){
   for(let a=i0; a<cap && a+3*W<d.length; a+=W){ if(tonal(a) && tonal(a+W) && tonal(a+2*W)) return a; }
   return i0;
 }
-function tidy(b){
+/* AOG-PADS-QUICK-V2 (2026-10-05) — Jimmy: "There is such a delay when I am trying to add my own beats. I picked a drum kit,
+   and I picked an instrument, but my goodness it was delayed a lot." A note's recording is no longer copied to trim it and
+   set its level (a stall of up to half a second on a phone, while the loop and your taps waited): its start and its level
+   are found once and used when it plays. The scan reads every fourth sample, enough to find the loudest. */
+function tidy(b, winds){
   const ch=[]; for(let i=0;i<b.numberOfChannels;i++) ch.push(b.getChannelData(i));
-  let st=0, pk=0, fade=0; const n=b.length;
+  let st=0, pk=0, fade=0; const n=b.length, sr=b.sampleRate;
   outer: for(let i=0;i<n;i++){ for(const d of ch){ if(Math.abs(d[i])>0.004){ st=i; break outer; } } }
-  { const d0=ch[0]; let p0=0; for(let i=0;i<n;i++){ const a=Math.abs(d0[i]); if(a>p0) p0=a; }
+  { const d0=ch[0]; let p0=0; for(let i=0;i<n;i+=4){ const a=Math.abs(d0[i]); if(a>p0) p0=a; }
     let i0=st; while(i0<n && Math.abs(d0[i0])<p0*0.03) i0++;
-    const j=breathEnd(d0, b.sampleRate, i0, p0); if(j>i0){ st=j-Math.round(0.003*b.sampleRate); fade=Math.round(0.008*b.sampleRate); } }
-  st=Math.max(0, st-Math.round(0.002*b.sampleRate));
-  for(const d of ch) for(let i=st;i<n;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
-  const g=pk>0 ? 0.7/pk : 1, len=Math.max(1, n-st);
-  const o=decoder().createBuffer(ch.length, len, b.sampleRate);
-  ch.forEach((d,i)=>{ const out=o.getChannelData(i); for(let j=0;j<len;j++) out[j]=d[st+j]*g*(j<fade ? j/fade : 1); });
-  return o;
+    const j=winds ? breathEnd(d0, sr, i0, p0) : i0; if(j>i0){   /* only the band's winds and bows breathe before a note */ st=j-Math.round(0.003*sr); fade=0.008; } }
+  st=Math.max(0, st-Math.round(0.002*sr));
+  for(const d of ch) for(let i=st;i<n;i+=4){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
+  return {b:b, off:st/sr, g:pk>0 ? 0.7/pk : 1, fade:fade};
 }
 const BUF=new Map(), BUFV=new Map();
 function getBuf(url, raw){
   const k=(raw?"raw:":"")+url;
-  if(!BUF.has(k)) BUF.set(k, fetch(url).then(r=>{ if(!r.ok) throw new Error("http"); return r.arrayBuffer(); }).then(decode).then(b=>{ b=raw ? b : tidy(b); BUFV.set(k, b); return b; }).catch(e=>{ BUF.delete(k); throw e; }));
+  if(!BUF.has(k)) BUF.set(k, fetch(url).then(r=>{ if(!r.ok) throw new Error("http"); return r.arrayBuffer(); }).then(decode).then(b=>{ b=raw ? b : tidy(b, url.indexOf("/audio/band/")>=0); BUFV.set(k, b); return b; }).catch(e=>{ BUF.delete(k); throw e; }));
   return BUF.get(k);
 }
 /* an instrument's notes: [{m, c (cents off), url}] */
@@ -522,37 +533,58 @@ function prep(bi){
   let p;
   if(B.type==="drums"){
     const kits=[B.kitA, B.kitB].filter((k,i,a)=>a.indexOf(k)===i); st.total=kits.length;
-    p=Promise.all(kits.map(k=>AOGDrumKit.load(k, {}, {}, x=>x, null).then(()=>{ st.got++; paintLine(); })));
+    p=Promise.all(kits.map(k=>AOGDrumKit.load(k, {}, {}, x=>x, null, {hiOnly:true}).then(()=>{ st.got++; paintLine(); })));
   } else if(B.type==="chops"){
     st.total=1; p=recBuf(B.rec).then(b=>{ st.got=1; st.buf=b; st.chops=chopsOf(B, b); });
   } else {
     p=zonesOf(B.inst).then(zs=>{ st.zones=zs; const need=new Set(); padDefs(bi).forEach(d=>d.notes.forEach(m=>need.add(nearest(zs,m).url)));
       st.total=need.size; paintLine(); return Promise.all([...need].map(u=>getBuf(u).then(()=>{ st.got++; paintLine(); }))); });
   }
-  st.p=p.then(()=>{ if(READY[bi]===st){ st.state="ready"; paintAll(); } }).catch(()=>{ if(READY[bi]===st){ st.state="failed"; st.p=null; paintAll(); } });
+  st.p=p.then(()=>{ if(READY[bi]===st){ st.state="ready"; if(B.type==="drums") KIT_WAS[bi]=[B.kitA, B.kitB]; paintAll(); } }).catch(()=>{ if(READY[bi]===st){ st.state="failed"; st.p=null; paintAll(); } });
   return st.p;
 }
 function isReady(bi){ const R=READY[bi]; return R && R.sig===sigOf(S.banks[bi]) && R.state==="ready"; }
+/* AOG-PADS-QUICK-V2: a bank plays while it gets ready — notes and chords as each recording arrives, drums from the kit
+   the pads had before until the new one is ready — so a change is never a silence */
+const KIT_WAS=[null,null,null,null];
+function kitReady(k){ const st=window.AOGDrumKit && AOGDrumKit.state(k); return !!(st && st.state==="ready"); }
+function kitFor(bi, pi, k){ if(kitReady(k)) return k; const w=KIT_WAS[bi]; const o=w && (pi<8 ? w[0] : w[1]); return o && kitReady(o) ? o : null; }
+function canPlay(bi){
+  if(isReady(bi)) return true;
+  const B=S.banks[bi], R=READY[bi];
+  if(B.type==="drums") return !!(kitFor(bi, 0, B.kitA) || kitFor(bi, 8, B.kitB));
+  return (B.type==="notes" || B.type==="chords") && !!(R && R.sig===sigOf(B) && R.zones);
+}
 
 /* ══ playing one pad ══ */
 function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0}; }
+/* AOG-PADS-LEVEL-V1 (2026-10-05) — Jimmy: "all the instruments don't start at the same volume." Each sound is brought to the
+   grand piano's level on the piano page (the level every music tool is set to), measured as the ear hears it (K-weighted,
+   loudest 400 ms, through the Beat Lab's own limiter): each instrument's C chord (a basses' low C), each kit playing one
+   bar of a plain beat, each record's first chops. The trims (dB) are made by music-handoff/tests/pads/level.js --table;
+   run it again after a sound is added or changed. A take from the Mixing Desk is not trimmed: it already is at its
+   tool's level. */
+const LEVEL={"inst":{"k:grand":6.9,"k:upright":4.9,"k:epwarm":4.5,"k:epreed":4.6,"k:ep80":7.5,"k:clav":7.3,"k:harpsi":6.7,"k:organ":4.8,"k:church":4.4,"k:gospel":4.1,"k:rockorgan":4.1,"k:theatre":3,"k:accordion":5.6,"k:celesta":3.3,"k:musicbox":5.9,"k:toy":12.9,"k:bells":5.1,"k:glock":6.1,"k:vibes":3.7,"k:marimba":4.7,"k:kalimba":4.4,"k:steel":10.2,"k:harp":4.7,"k:strings":5.5,"k:choir":6.8,"k:flute":2.7,"k:strsynth":5.1,"k:pad":6.7,"k:brass":7.3,"k:lead":3.2,"g:steel":10.9,"g:nylon":8.3,"g:black":17,"g:green":11,"a:upright":12.3,"a:growly":15.2,"a:ergo":15.4,"a:synthbass":15.1,"a:acidbass":14.9,"b:trumpet":4,"b:trumpet_vib":3.9,"b:trumpet_harmon":3.5,"b:trombone":4.3,"b:horn":1.9,"b:tuba":2.3,"b:piccolo":2.5,"b:clarinet":0.5,"b:oboe":4.1,"b:bassoon":2.4,"b:soprano":4.4,"b:sax":4.3,"b:tenor":3.4,"b:tenor_vib":3.8,"b:violins":6.7,"b:violins_pizz":11.2,"b:violas":6.4,"b:cellos":6.7,"b:cellos_pizz":9.5,"b:contrabass":2.7,"b:contrabass_pizz":7.9,"b:timpani":10.4,"b:xylophone":10.4},"kit":{"D":14.1,"E":17.2,"G":14.5,"H":11.7,"I":10,"J":10.6,"K":14.5,"N":12.9,"O":11.6,"P":18.4,"Q":12.1,"R":12.5,"S":15.9,"T":16,"U":9.7,"V":14.5,"W":11.8,"X":12.6,"Y":11.5},"rec":{"01-paper-kites.mp3":10.5,"02-porch-light.mp3":11.1,"03-island-morning.mp3":10,"04-sunday-clap.mp3":11,"05-practice-pair.mp3":10.4,"06-brass-bus.mp3":8.7,"07-bell-garden.mp3":7.4,"08-rooftop-break.mp3":7.8,"09-blue-lamp.mp3":12.4,"10-night-market.mp3":11.6,"11-fast-lane.mp3":10.5}};
+function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.pow(10, v/20) : 1; }
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
 const LIVE={c:null, dest:null, open:[[],[],[],[]], chop:[null,null,null,null]};
 function trigger(bi, pi, vel, when, T){
-  if(!isReady(bi)) return null;
+  if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
   if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
-  const out=c.createGain(); out.gain.value=P.vol/100;
+  const B=S.banks[bi], trim=d.kind==="drum" ? trimOf("kit", kitFor(bi, pi, d.kit)||d.kit) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
+  const out=c.createGain(); out.gain.value=P.vol/100*trim;
   if(c.createStereoPanner){ const pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
   const rate=Math.pow(2, P.tune/12);
   if(d.kind==="drum"){
-    const n=(AOGDrumKit.padNames(d.kit)||{})[d.id];
+    const n=(AOGDrumKit.padNames(kitFor(bi, pi, d.kit)||d.kit)||{})[d.id];
     if(n==="HAT"||n==="PEDAL"){ OPEN[bi].splice(0).forEach(o=>{ try{ o.gain.gain.setTargetAtTime(0, when, 0.012); o.src.stop(when+0.1); }catch(e){} }); }
     const acc=vel>0.88 ? 2 : vel<0.62 ? 3 : 0;
-    const o=AOGDrumKit.playDirect(c, out, d.kit, d.id, when, acc, clamp(0.25+0.4*vel, 0, 1));
+    const kit=T===LIVE ? kitFor(bi, pi, d.kit) : d.kit; if(!kit) return null;
+    const o=AOGDrumKit.playDirect(c, out, kit, d.id, when, acc, clamp(0.25+0.4*vel, 0, 1));
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); }
     return {stop(){}};
   }
@@ -570,11 +602,11 @@ function trigger(bi, pi, vel, when, T){
   /* a note or a chord: it rings while the pad is held */
   const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
   d.notes.forEach(m=>{
-    const z=nearest(zs, m), b=BUFV.get(z.url); if(!b) return;
+    const z=nearest(zs, m), tb=BUFV.get(z.url); if(!tb) return;   /* a note not here yet stays quiet; the others play */
     const s=c.createBufferSource(), g=c.createGain();
-    s.buffer=b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
-    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv, when+0.005);
-    s.connect(g); g.connect(out); s.start(when); vs.push({s:s, g:g});
+    s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
+    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g, when+Math.max(0.005, tb.fade));
+    s.connect(g); g.connect(out); s.start(when, tb.off); vs.push({s:s, g:g});
   });
   return {stop(at){ const t0=Math.max(at||0, c.currentTime);
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }};
@@ -596,7 +628,7 @@ function evMap(){
   S.ev.forEach(e=>{ if(e.t>=L) return; const tt=(sw && e.t%48===24) ? e.t+sw : e.t; if(!m.has(tt)) m.set(tt, []); m.get(tt).push(e); });
   SEQ.map=m; return m;
 }
-function changed(){ SEQ.map=null; save(); paintSteps(); if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); } }
+function changed(){ SEQ.map=null; save(); paintSteps(); lessonSongs(); if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); } }
 function snapshot(){ SEQ.undo.push(JSON.stringify(S.ev.map(e=>({b:e.b,p:e.p,t:e.t,v:e.v,len:e.len||0})))); if(SEQ.undo.length>30) SEQ.undo.shift(); }
 function gated(bi){ const ty=S.banks[bi].type; return ty==="notes"||ty==="chords"; }
 function blip(when, top){
@@ -626,16 +658,17 @@ function pump(){
       SEQ.abs++;
     }
   }
-  RPT.forEach(r=>{ while(r.next<horizon){ hitPad(r.bi, r.pi, r.vel, r.next, true); r.next+=r.step; } });
+  RPT.forEach(r=>{ while(r.next<horizon){ hitPad(r.bi, r.pi, r.vel, r.next, true); r.next+=r.step; if(++r.n>=4) LES.mark("rptroll"); } });
   if(!SEQ.on && !RPT.size) stopTimer();
 }
 function startTimer(){ if(!SEQ.timer) SEQ.timer=setInterval(pump, 25); pump(); }
 function stopTimer(){ clearInterval(SEQ.timer); SEQ.timer=0; }
 function prepUsed(){ new Set(S.ev.map(e=>e.b)).forEach(b=>{ if(b>=0 && b<4) prep(b); }); }
-function play(){ prepUsed(); const c=ctx(); SEQ.on=true; SEQ.t0=c.currentTime+0.08; SEQ.abs=0; SEQ.map=null; startTimer(); paintTransport(); }
-function stop(){ SEQ.on=false; if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); paintTransport(); }
+function play(){ LES.mark("play1"); if(S.swing>50) LES.mark("playsw"); prepUsed(); const c=ctx(); SEQ.on=true; SEQ.t0=c.currentTime+0.08; SEQ.abs=0; SEQ.map=null; startTimer(); paintTransport(); }
+function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); paintTransport(); }
 function retime(bpm){
   bpm=clamp(Math.round(+bpm||90), 60, 180); if(bpm===S.bpm) return;
+  LES.mark("tempo1"); if(bpm>=120) LES.mark("tfast"); if(bpm<=80) LES.mark("tslow");
   if(SEQ.on && ac){ const now=ac.currentTime, pos=(now-SEQ.t0)/spt(); S.bpm=bpm; SEQ.t0=now-pos*spt(); } else S.bpm=bpm;
   RPT.forEach(r=>{ r.step=r.ticks*spt(); });
   save(); $("tempo").value=S.bpm;
@@ -648,12 +681,13 @@ function recordHit(bi, pi, vel, when){
   const e={b:bi, p:pi, t:tk, v:Math.round(vel*100)/100, len:0};
   const sw=Math.round((S.swing/100-0.5)*48), playAt=a+(sw && tk%48===24 ? sw : 0);
   if(playAt>=SEQ.abs) e._skip=Math.floor(a/L);
-  S.ev.push(e); SEQ.map=null; save(); if(bi===S.bank && pi===S.sel) paintSteps();
+  S.ev.push(e); SEQ.map=null; save(); if(bi===S.bank && pi===S.sel) paintSteps(); lessonSongs();
   if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); }
   return e;
 }
 const RPT=new Map();   /* pads held while Repeat is on */
 function hitPad(bi, pi, vel, when, fromRepeat){
+  if(SEQ.on && SEQ.rec){ if(++LT.recN>=4) LES.mark("rechit"); if(fromRepeat) LES.mark("rptrec"); }
   const v=trigger(bi, pi, vel, when); flash(bi, pi, when);
   let e=null; if(SEQ.on && SEQ.rec) e=recordHit(bi, pi, vel, fromRepeat ? when : when-outLat());   /* AOG-PADS-QUICK-V1 */
   if(fromRepeat && v && gated(bi)){ const len=Math.max(6, Math.round(S.rate*0.8)); v.stop(when+len*spt()); if(e) e.len=len; }
@@ -677,18 +711,19 @@ function selectSoon(pi){ if(S.sel===pi) return; S.sel=pi; cancelAnimationFrame(s
 function outLat(){ return ac ? Math.min(0.3, Math.max(0, (ac.outputLatency||0)+(ac.baseLatency||0))) : 0; }
 function press(id, pi, vel){
   const bi=S.bank, c=ctx();
-  if(!isReady(bi)){ selectSoon(pi); prep(bi); return; }
+  if(!canPlay(bi)){ selectSoon(pi); prep(bi); return; }
   if(S.rpt){
     const ticks=S.rate, step=ticks*spt(), now=c.currentTime;
     hitPad(bi, pi, vel, now, true);
     let next=now+step;
     if(SEQ.on){ const pos=(now-SEQ.t0)/spt(); next=SEQ.t0+Math.ceil(pos/ticks)*ticks*spt(); if(next-now<step*0.5) next+=step; }
-    RPT.set(id, {bi:bi, pi:pi, vel:vel, ticks:ticks, step:step, next:next}); startTimer(); DOWN.set(id, {bi:bi, pi:pi, v:null, e:null});
+    RPT.set(id, {bi:bi, pi:pi, vel:vel, ticks:ticks, step:step, next:next, n:1}); startTimer(); DOWN.set(id, {bi:bi, pi:pi, v:null, e:null});
+    lessonTap(bi, pi, vel);
     selectSoon(pi); return;
   }
   const h=hitPad(bi, pi, vel, c.currentTime, false);
   DOWN.set(id, {bi:bi, pi:pi, v:h.v, e:h.e, at:c.currentTime});
-  selectSoon(pi);
+  selectSoon(pi); lessonTap(bi, pi, vel);
 }
 function release(id){
   RPT.delete(id);
@@ -749,7 +784,7 @@ async function renderLoop(){
   const O=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const off=new O(2, Math.ceil(passes*sec*sr)+16, sr);
   const lim2=off.createDynamicsCompressor(); lim2.threshold.value=-3; lim2.knee.value=2; lim2.ratio.value=20; lim2.attack.value=0.002; lim2.release.value=0.12;
-  const g=off.createGain(); g.gain.value=0.9; g.connect(lim2); lim2.connect(off.destination);
+  const g=off.createGain(), cl2=ceiling(off); g.gain.value=0.9; g.connect(lim2); lim2.connect(cl2); cl2.connect(off.destination);
   const T={c:off, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}, m=evMap(), ticks=[...m.keys()].sort((a,b)=>a-b);
   for(let pass=0;pass<passes;pass++) ticks.forEach(tk=>m.get(tk).forEach(e=>{
     if(e.b<0 || e.b>3) return;
@@ -775,7 +810,7 @@ function paintBounce(){
 async function makeBounce(){
   if(BOUNCE.busy) return;
   BOUNCE.busy=true; BOUNCE.out=null; BOUNCE.msg="bMaking"; paintBounce();
-  try{ const o=await renderLoop(); BOUNCE.out=o; BOUNCE.msg=o ? "ready" : "bNone"; }
+  try{ const o=await renderLoop(); BOUNCE.out=o; BOUNCE.msg=o ? "ready" : "bNone"; if(o) LES.mark("bounce"); }
   catch(e){ BOUNCE.msg="bFail"; }
   BOUNCE.busy=false; paintBounce();
 }
@@ -783,17 +818,17 @@ function bounceName(o){ return {en:STR.bName.en.replace("{bars}", o.bars===1?STR
   es:STR.bName.es.replace("{bars}", o.bars===1?STR.bar1.es:STR.barsN.es.replace("{n}",o.bars)).replace("{bpm}",o.bpm)}; }
 function bindBounce(){
   $("bounceBtn").onclick=makeBounce;
-  $("bSave").onclick=()=>{ const o=BOUNCE.out; if(!o) return; const a=document.createElement("a"), u=URL.createObjectURL(o.blob);
+  $("bSave").onclick=()=>{ const o=BOUNCE.out; if(!o) return; LES.mark("bsave"); const a=document.createElement("a"), u=URL.createObjectURL(o.blob);
     a.href=u; a.download=(S0.lang==="es"?"bucle-laboratorio-de-ritmos-":"beat-lab-loop-")+o.bpm+"bpm-"+o.bars+(S0.lang==="es"?"compases":"bars")+".wav";
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000); };
   /* the Mixing Desk is told the loop's exact length (passSec), so it lines it up on the bar and loops whole bars */
   $("bStudio").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bStudio").disabled=true;
     try{ await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:0, name:bounceName(o), sec:Math.round(o.sec*1000)/1000, bpm:o.bpm, bars:o.bars, at:o.at,
-        passSec:o.sec, loops:1, offset:0, loop:true, wav:o.blob}, {key:"pads|loop|"+o.at}); BOUNCE.msg="studio"; }
+        passSec:o.sec, loops:1, offset:0, loop:true, wav:o.blob}, {key:"pads|loop|"+o.at}); BOUNCE.msg="studio"; LES.mark("bstudio"); if(LES.count("sends")>=3) LES.mark("sparts3"); }
     catch(e){ BOUNCE.msg=e && e.name==="QuotaExceededError" ? "bNoRoom" : "bFail"; }
     $("bStudio").disabled=false; paintBounce(); };
   $("bDecks").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bDecks").disabled=true;
-    try{ await AOGHandoff.put("padbench", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0}); BOUNCE.msg="decks"; }
+    try{ await AOGHandoff.put("padbench", {name:L(bounceName(o)), bpm:o.bpm, bars:o.bars, at:o.at, wav:o.blob, passSec:o.sec, loops:1, offset:0}); BOUNCE.msg="decks"; LES.mark("bdecks"); }
     catch(e){ BOUNCE.msg="bFail"; }
     $("bDecks").disabled=false; paintBounce(); };
 }
@@ -819,6 +854,7 @@ function startBeat(id){
     for(let i=0;i<16;i++) if(row[i]) S.ev.push({b:0, p:pi, t:bar*384+i*24, v:V[row[i]]||0.8, len:24}); });
   if(B.swing){ const sw=B.swing*100; S.swing=[50,54,58,62,66].reduce((a,b)=>Math.abs(b-sw)<Math.abs(a-sw)?b:a, 50); }
   if(B.bpm) retime(B.bpm);
+  LES.mark("beat1"); const song={boombap:"sbb", lofi:"slofi", house:"shouse", trap:"strap"}[B.id]; if(song) LES.mark(song);
   const A0=S.banks[0];
   if(B.kit && KITS().indexOf(B.kit)>=0) A0.kitA=B.kit;
   S.bank=0; S.sel=0;
@@ -866,10 +902,12 @@ function paintSetRow(){
   }
   $("setRow").innerHTML=h;
   const on=(id, fn)=>{ const el=$(id); if(el) el.onchange=()=>{ fn(el.value); save(); paintAll(); prep(S.bank); }; };
-  on("fKitA", v=>{ B.kitA=v; }); on("fKitB", v=>{ B.kitB=v; });
-  on("fInst", v=>{ B.inst=v; }); on("fKey", v=>{ B.key=+v; }); on("fScale", v=>{ B.scale=v; }); on("fOct", v=>{ B.oct=+v; });
-  on("fRec", v=>{ B.rec=v; B.bar=1; }); on("fBar", v=>{ B.bar=+v; });
-  const m=$("fMatch"); if(m) m.onclick=()=>{ const R=recInfo(B.rec); if(R && R.bpm>0) retime(R.bpm); };
+  on("fKitA", v=>{ B.kitA=v; LES.mark("kitA"); }); on("fKitB", v=>{ B.kitB=v; LES.mark("kitB"); });
+  const bk=S.bank;   /* AOG-LESSONS-V1 */
+  on("fInst", v=>{ B.inst=v; LES.mark(bk===1?"cinst":"ninst"); }); on("fKey", v=>{ B.key=+v; if(bk===1) LES.mark("ckey"); });
+  on("fScale", v=>{ B.scale=v; if(bk===1 && v==="minor") LES.mark("cminor"); if(bk===2) LES.mark("nscale"); lessonSongs(); }); on("fOct", v=>{ B.oct=+v; LES.mark("nrange"); });
+  on("fRec", v=>{ B.rec=v; B.bar=1; LES.mark("crec"); }); on("fBar", v=>{ B.bar=+v; LES.mark("cbar"); });
+  const m=$("fMatch"); if(m) m.onclick=()=>{ const R=recInfo(B.rec); if(R && R.bpm>0) retime(R.bpm); LES.mark("cmatch"); };
 }
 function paintPads(){
   const defs=padDefs(S.bank), fine=matchMedia("(pointer: fine)").matches;
@@ -927,11 +965,29 @@ function paintText(){
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
   $("nav").innerHTML=navHtml(); $("guideLink").textContent=t("guide");
   $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a></p>`;
-  REC.paint(); paintBounce();
+  REC.paint(); paintBounce(); LES.paint();
 }
 function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintSel(); paintTransport(); }
 
-const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S0.lang, what:{en:"the Beat Lab",es:"el laboratorio de ritmos"},
+/* ══ AOG-LESSONS-V1 — the Beat Lab's lessons: each step ticks itself as it happens (the words: _work/music/lessons_pads.py) ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S0.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={drums:new Set(), seq:[], up:[], chops:new Set(), recN:0, hold:{}};
+function lessonSongs(){
+  const n=b=>S.ev.filter(e=>e.b===b).length;
+  if(n(1)>=4) LES.mark("schords");
+  if(n(2)>=4) LES.mark("sbass");
+  if(n(3)>=1) LES.mark("schop");
+  if(n(1)>=4 && S.banks[1].scale==="minor") LES.mark("sminor");
+  if(S.bars===4) LES.mark("bars4");
+}
+function lessonTap(bi, pi, vel){
+  LES.mark("tap1"); if(vel>=0.9) LES.mark("vloud"); if(vel<=0.62) LES.mark("vsoft");
+  if(bi===0){ if(pi<8){ LT.drums.add(pi); if(LT.drums.size>=8) LES.mark("drum8"); } else LES.mark("pad916"); }
+  if(bi===1){ LT.seq.push(pi); LT.seq=LT.seq.slice(-4); if(LT.seq.join(",")==="0,4,5,3") LES.mark("c1564"); if(pi>=8 && pi<=14) LES.mark("c7"); }
+  if(bi===2){ LT.up.push(pi); LT.up=LT.up.slice(-8); if(LT.up.join(",")==="0,1,2,3,4,5,6,7") LES.mark("nup"); }
+  if(bi===3){ LT.chops.add(pi); if(LT.chops.size>=4) LES.mark("chop4"); }
+}
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang, what:{en:"the Beat Lab",es:"el laboratorio de ritmos"},
   prefix:{en:"Beat Lab",es:"Laboratorio de ritmos"}, file:{en:"beat-lab-take",es:"laboratorio-de-ritmos-toma"}, shelf:"padbench", tool:"pads", bpm:()=>S.bpm,
   label:{en:"● Record a take to keep",es:"● Grabar una toma para guardar"},
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
@@ -940,30 +996,33 @@ function init(){
   if(KITS().indexOf(S.banks[0].kitA)<0 && KITS().length){ S.banks.forEach(B=>{ if(KITS().indexOf(B.kitA)<0) B.kitA=KITS()[0]; if(KITS().indexOf(B.kitB)<0) B.kitB=KITS()[Math.min(1, KITS().length-1)]; }); }
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; });
   bindPads(); bindBounce();
-  $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; save(); paintAll(); prep(S.bank); };
+  $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
+  $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
+  $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; LES.mark(["","bankB","bankC","bankD"][S.bank]); save(); paintAll(); prep(S.bank); };
   $("playBtn").onclick=()=>{ SEQ.on ? stop() : play(); };
-  $("loopRec").onclick=()=>{ if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); paintTransport(); return; } snapshot(); SEQ.rec=true; if(!SEQ.on) play(); LINE_HOLD=0; paintTransport(); };
-  $("undoBtn").onclick=()=>{ const u=SEQ.undo.pop(); if(u==null){ say(t("nothingUndo")); return; } S.ev=JSON.parse(u); changed(); say(t("undone")); };
-  $("clearBtn").onclick=()=>{ if(!S.ev.length) return; snapshot(); S.ev=[]; changed(); say(t("cleared")); };
+  $("loopRec").onclick=()=>{ if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); paintTransport(); return; } snapshot(); SEQ.rec=true; LES.mark("rec1"); LT.recN=0; if(!SEQ.on) play(); LINE_HOLD=0; paintTransport(); };
+  $("undoBtn").onclick=()=>{ const u=SEQ.undo.pop(); if(u==null){ say(t("nothingUndo")); return; } S.ev=JSON.parse(u); changed(); LES.mark("undo1"); say(t("undone")); };
+  $("clearBtn").onclick=()=>{ if(!S.ev.length) return; snapshot(); S.ev=[]; changed(); LES.mark("clear1"); say(t("cleared")); };
   $("tempo").onchange=()=>retime($("tempo").value);
   $("tDown").onclick=()=>retime(S.bpm-1); $("tUp").onclick=()=>retime(S.bpm+1);
   $("barsSel").onchange=()=>{ S.bars=+$("barsSel").value; changed(); };
-  $("qSel").onchange=()=>{ S.q=+$("qSel").value; save(); };
-  $("swSel").onchange=()=>{ S.swing=+$("swSel").value; SEQ.map=null; save(); };
-  $("rptBtn").onclick=()=>{ S.rpt=!S.rpt; save(); paintTransport(); };
-  $("rateSel").onchange=()=>{ S.rate=+$("rateSel").value; save(); };
-  $("clickBtn").onclick=()=>{ S.click=!S.click; save(); paintTransport(); };
-  $("fullBtn").onclick=()=>{ S.full=!S.full; save(); paintTransport(); };
+  $("qSel").onchange=()=>{ S.q=+$("qSel").value; if(S.q===24) LES.mark("q16"); if(S.q===0) LES.mark("qoff"); save(); };
+  $("swSel").onchange=()=>{ S.swing=+$("swSel").value; if(S.swing>=54) LES.mark("sw54"); if(S.swing>50 && SEQ.on) LES.mark("playsw"); SEQ.map=null; save(); };
+  $("rptBtn").onclick=()=>{ S.rpt=!S.rpt; if(S.rpt) LES.mark("rpt1"); save(); paintTransport(); };
+  $("rateSel").onchange=()=>{ S.rate=+$("rateSel").value; LES.mark("rate1"); save(); };
+  $("clickBtn").onclick=()=>{ S.click=!S.click; if(S.click) LES.mark("click1"); save(); paintTransport(); };
+  $("fullBtn").onclick=()=>{ S.full=!S.full; if(S.full) LES.mark("full1"); save(); paintTransport(); };
   $("startSel").onchange=()=>{ const k=$("startSel").value; $("startSel").value=""; if(k) startBeat(k); };
   $("steps").addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest(".st"); if(!b) return;
     const i=+b.dataset.s, bi=S.bank, pi=S.sel, lo=i*24, hi=lo+24; snapshot();
     const had=S.ev.some(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);
+    LES.mark(had ? "stepdel" : "stepadd");
     if(had) S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi && x.t>=lo && x.t<hi));
     else { S.ev.push({b:bi, p:pi, t:lo, v:0.8, len:24}); if(!SEQ.on && isReady(bi)){ const v=trigger(bi, pi, 0.8, ctx().currentTime); flash(bi, pi, 0); if(v && gated(bi)) v.stop(ctx().currentTime+0.25); } }
     changed(); });
-  const setPad=(k, v)=>{ const key=S.bank+":"+S.sel, o=Object.assign({}, S.pads[key]||{}); o[k]=+v; S.pads[key]=o; save(); paintPadSet(); };
+  const setPad=(k, v)=>{ const key=S.bank+":"+S.sel, o=Object.assign({}, S.pads[key]||{}); o[k]=+v; S.pads[key]=o; LES.mark({vol:"pvol", tune:"ptune", pan:"ppan"}[k]); save(); paintPadSet(); };
   $("vol").oninput=()=>setPad("vol", $("vol").value); $("tune").oninput=()=>setPad("tune", $("tune").value); $("pan").oninput=()=>setPad("pan", $("pan").value);
-  $("padReset").onclick=()=>{ delete S.pads[S.bank+":"+S.sel]; save(); paintPadSet(); };
+  $("padReset").onclick=()=>{ delete S.pads[S.bank+":"+S.sel]; LES.mark("preset"); save(); paintPadSet(); };
   $("padClear").onclick=()=>{ const bi=S.bank, pi=S.sel; if(!S.ev.some(x=>x.b===bi && x.p===pi)) return; snapshot(); S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi)); changed(); };
   $("langBtn").onclick=()=>{ S0.lang=S0.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S0.lang); }catch(e){} paintAll(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";

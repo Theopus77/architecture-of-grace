@@ -133,6 +133,8 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-recorder.js"></script>
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
+<script src="/aog-lessons.js"></script>
+<script src="/aog-lessons-kit.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -180,6 +182,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
       <p class="aogrec-line" id="takeLine" aria-live="polite"></p>
       <div id="takeList"></div>
     </div>
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Drum Kit's lessons (aog-lessons.js) -->
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
@@ -469,8 +472,9 @@ function beatText(){
   beatPaint();
 }
 function pickBeat(key){ if(!beatAt(key)) return; S.beat=key; beatOwn(beatAt(key)); save(); $("beatSel").value=key; $("dkBeatSel").value=key;
-  if(BT.on){ BT.step=0; BT.part=0; } beatPaint(); }
-function setTempo(n){ S.bpm=Math.max(40, Math.min(220, Math.round(n))); save(); beatPaint(); }
+  if(BT.on){ BT.step=0; BT.part=0; } beatPaint(); LES.mark("beat1"); lessonSong(); }
+function setTempo(n){ S.bpm=Math.max(40, Math.min(220, Math.round(n))); save(); beatPaint();
+  LES.mark("tempo1"); if(S.bpm>=140) LES.mark("tfast"); if(S.bpm<=70) LES.mark("tslow"); }
 /* how hard: the middle of a drum hard, the edge soft */
 function accentAt(g, e){
   const sh=g.querySelector(".glow > *"); if(!sh) return 0; const r=sh.getBoundingClientRect(); if(!r.width) return 0;
@@ -485,7 +489,7 @@ function bindKit(svg){
     const g=e.target.closest && e.target.closest("[data-pad]"); if(!g || e.button>0) return;
     e.preventDefault(); GUARD.down.add(e.pointerId); GUARD.last=Date.now();
     if(!ready()){ ctx(); return; }
-    hit(S.bank, g.getAttribute("data-pad"), accentAt(g, e));
+    const id=g.getAttribute("data-pad"), acc=accentAt(g, e); hit(S.bank, id, acc); lessonTap(id, acc, svg.id==="sideKit");
   });
   const up=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
   svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up);
@@ -504,6 +508,95 @@ function loadKit(b){
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S.lang, what:{en:"the drum kit",es:"la batería"},
   prefix:{en:"Drum kit",es:"Batería"}, file:{en:"drum-kit-take",es:"bateria-toma"}, shelf:"drumtake", tool:"drums",
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
+/* ══ AOG-LESSONS-V1 (2026-10-05) — the Drum Kit's lessons: each step ticks itself as it happens (the words, and the
+   worksheets page drum-kit-lessons.html: _work/music/lessons_kit.py, built by make_lab_lessons.py). The hooks:
+     a tap on a drawn drum (bindKit → lessonTap): which piece by its recorded name (kick, snare, hi-hat, crash, ride,
+       toms, pedal, conga, clave, roll), how hard (accentAt: 2 the middle, 3 the edge), the order of the last taps (rock
+       beat by hand, fills, high-middle-floor toms, open hat then closed hat or pedal), and, while a beat plays, where in
+       the bar it landed (beatPos: on 1, on 2 and 4) — and on the whole-screen kit (sideKit);
+     pickKit → lessonKit (a kit picked, three kits, the pedal kits, Kit S); pickBeat, setTempo, Swing, Beat volume, ↺;
+     ▶/■ (the page's and the whole-screen bar's) → lessonBeat; ● Record a take (before the recorder sees the click) →
+     lessonTake; the whole screen opening (pvSync) and ✕ Close; the language switch → LES.paint().
+   The songs tick when their kit and their kind of beat are on together (lessonSong). Nothing here sounds or moves. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, marked(){ return false; }, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={log:[], openAt:0, ride:0, along:0, bb:0, rec:0, song:{}};
+const TOMS={TOM:1, FLOOR:1, HITOM:1, MIDTOM:1, LOWTOM:1, TENOR:1};
+function beatKind(key){
+  const k=key||"", id=k.slice(2), b=k.charAt(0)==="b" ? ((window.AOGBeats||{}).beats||[]).find(x=>x.id===id) : null, g=b ? b.grp : "";
+  if(g==="rock" || k==="k:rock70s" || k==="k:bigroom") return "rock";
+  if(g==="funk" || k==="s:funk" || k==="k:funkghost") return "funk";
+  if(g==="jazz" || k==="k:bigband" || k==="k:bebop" || k==="k:brushballad") return "jazz";
+  if(g==="latin" || k==="s:latin" || k==="c:clave") return "latin";
+  if(k==="b:militarymarch" || k==="c:march" || k==="c:parade") return "march";
+  return "";
+}
+/* the song whose kit and kind of beat are both on now, while the beat plays */
+function songNow(){
+  if(!BT.on) return "";
+  const kind=beatKind(S.beat), K={rock:"JQST", funk:"W", jazz:"KV", latin:"H", march:"O"}[kind];
+  return K && K.indexOf(S.bank)>=0 ? kind : "";
+}
+function lessonSong(){ const s=songNow(); if(s) LES.mark({rock:"srock", funk:"sfunk", jazz:"sjazz", latin:"slatin", march:"smarch"}[s]); }
+/* where in the bar the beat is right now, in sixteenth notes (0 = the 1, 4 = the 2, 8 = the 3, 12 = the 4) */
+function beatPos(){
+  if(!BT.on || !ac) return null;
+  const b=beatNow(); if(!b) return null;
+  const parts=beatParts(b), p=parts[BT.part%parts.length], len=p.len||16, six=60/S.bpm/4;
+  let pos=BT.step-(BT.next-ac.currentTime)/six; while(pos<0) pos+=len;
+  return {pos:pos%len, len:len};
+}
+function onStep(want){ const q=beatPos(); if(!q || q.len!==16) return false;
+  return want.some(w=>{ const d=Math.abs(q.pos-w); return Math.min(d, q.len-d)<=1.1; }); }
+function lessonKit(b){
+  LES.mark("kit1");
+  if(!LES.counted("kit:"+b)){ LES.count("kit:"+b); if(LES.count("kits")>=3) LES.mark("kits3"); }
+  if("RUX".indexOf(b)>=0) LES.mark("kitped");
+  if(b==="S") LES.mark("kitS");
+  lessonSong();
+}
+function lessonBeat(on){
+  if(on){ beatStart(); LES.mark("play1"); if(S.swing>0.5) LES.mark("playsw"); LT.along=0; LT.bb=0; LT.song={};
+    if($("takeBtn").getAttribute("aria-pressed")==="true") LES.mark("stake"); lessonSong(); }
+  else { beatStop(); LES.mark("stop1"); }
+}
+function lessonTake(starting){
+  if(starting){ LES.mark("take1"); LT.rec=0; if(BT.on) LES.mark("stake"); }
+  else LES.mark("take2");
+}
+function lessonTap(id, acc, side){
+  const n=padName(S.bank, id), now=Date.now(), crash=n==="CRASH", tom=!!TOMS[n], hat=n==="HAT"||n==="CHICK";
+  LES.mark("tap1"); if(side) LES.mark("sidetap");
+  if(id==="kick") LES.mark("kick"); if(id==="snare") LES.mark("snare"); if(hat) LES.mark("hat");
+  if(acc===2) LES.mark("loud"); if(acc===3) LES.mark("soft"); if(id==="snare" && acc===3) LES.mark("ghost");
+  if(crash) LES.mark("crash"); if(n==="RIDE") LES.mark("ride"); if(tom) LES.mark("tom"); if(n==="PEDAL") LES.mark("pedal");
+  LT.ride = n==="RIDE" ? LT.ride+1 : 0; if(LT.ride>=8) LES.mark("ride8");
+  if(n==="OPEN") LES.mark("open");
+  if((hat || n==="PEDAL") && LT.openAt && now-LT.openAt<4000){ LES.mark(n==="PEDAL" ? "pchoke" : "choke"); LT.openAt=0; }
+  if(n==="OPEN") LT.openAt=now;
+  /* the last taps, for the patterns */
+  const L=LT.log; L.push({id:id, n:n, t:now}); while(L.length>24) L.shift();
+  const prev=L.length>1 ? L[L.length-2] : null;
+  if(prev && now-prev.t<90 && ((id==="kick" && (prev.n==="HAT"||prev.n==="CHICK")) || (hat && prev.id==="kick"))) LES.mark("hatkick");
+  { const ks=L.filter(x=>now-x.t<10000), kk=ks.filter(x=>x.id==="kick"||x.id==="snare");   /* kick, snare, kick, snare, hats between */
+    if(kk.length>=4){ const four=kk.slice(-4);
+      if(four.map(x=>x.id).join(",")==="kick,snare,kick,snare" && ks.filter(x=>x.t>=four[0].t && (x.n==="HAT"||x.n==="CHICK")).length>=3) LES.mark("rockhand"); } }
+  if(S.bank==="S" && L.length>=3 && L.slice(-3).map(x=>x.n).join(",")==="HITOM,MIDTOM,FLOOR") LES.mark("tom3");
+  if(L.length>=4 && L.slice(-4).every(x=>TOMS[x.n]) && now-L[L.length-4].t<3000) LES.mark("fill4");
+  if(crash && L.length>=4 && L.slice(-4,-1).every(x=>TOMS[x.n]) && now-L[L.length-2].t<1500) LES.mark("fillcrash");
+  /* with the beat */
+  if(BT.on){
+    if(++LT.along>=8) LES.mark("along8");
+    if(id==="snare" && onStep([4,12]) && ++LT.bb>=4) LES.mark("backbeat");
+    if(crash && onStep([0])) LES.mark("crash1");
+    const s=songNow(), c=k=>(LT.song[k]=(LT.song[k]||0)+1);
+    if(s==="rock"){ if(c("rock")>=16) LES.mark("srock16"); if(crash && onStep([0])) LES.mark("scrash"); }
+    if(s==="funk"){ if(c("funk")>=16) LES.mark("sfunk16"); if(id==="snare" && acc===3 && c("ghost")>=4) LES.mark("sghost"); }
+    if(s==="jazz"){ if(n==="RIDE" && c("ride")>=8) LES.mark("sride"); if(hat && onStep([4,12]) && c("chick")>=4) LES.mark("schick"); }
+    if(s==="latin"){ if((n==="CONGA"||n==="BONGO") && c("conga")>=8) LES.mark("sconga"); if(n==="CLAVE" && c("clave")>=8) LES.mark("sclave"); }
+    if(s==="march"){ if(n==="ROLL") LES.mark("sroll"); if(id==="snare" && c("snare")>=8) LES.mark("ssnare8"); }
+  }
+  if($("takeBtn").getAttribute("aria-pressed")==="true" && ++LT.rec>=16) LES.mark("staketap");
+}
 function navHtml(){
   const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Beat Lab","Laboratorio de ritmos"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="kit"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
@@ -530,7 +623,7 @@ function paintText(){
   REC.paint(); recPaint(); beatText(); paintKit();
   const st=AOGDrumKit.state(S.bank); $("kitLine").textContent = st && st.state==="ready" ? t("ready") : st && st.state==="failed" ? t("failed") : t("loading",{a:(st&&st.got)||0, b:(st&&st.total)||"…"});
 }
-function pickKit(b){ if(KITS().indexOf(b)<0) return; S.bank=b; save(); $("kitSel").value=b; $("dkKitSel").value=b; paintKit(); loadKit(b).then(paintKit); }
+function pickKit(b){ if(KITS().indexOf(b)<0) return; S.bank=b; save(); $("kitSel").value=b; $("dkKitSel").value=b; paintKit(); loadKit(b).then(paintKit); lessonKit(b); }
 /* ══ sideways: the kit fills the screen; the bar keeps ☰ Menu and the kit (AOG-PLAY-GUARD-V1) ══ */
 const PV={on:false, closed:false, forced:false, mq:null};
 /* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens
@@ -546,27 +639,29 @@ function recPaint(){
 }
 function pvSync(){
   const want=PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed && !pvTablet());
-  if(want!==PV.on){ PV.on=want; document.body.classList.toggle("aog-play", want); playZoomLock(want); if(!want){ drawer(false); $("dkKitBox").innerHTML=""; } }
+  if(want!==PV.on){ PV.on=want; document.body.classList.toggle("aog-play", want); playZoomLock(want); if(!want){ drawer(false); $("dkKitBox").innerHTML=""; } if(want) LES.mark("big1"); }
   paintText();
 }
 function init(){
   $("kitSel").onchange=()=>{ pickKit($("kitSel").value); };
   $("dkKitSel").onchange=()=>{ pickKit($("dkKitSel").value); setTimeout(()=>$("dkKitSel").blur(),0); };
-  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
+  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); LES.paint(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   $("dkMore").onclick=()=>drawer($("dkDrawer").hidden);
-  $("dkClose").onclick=()=>{ drawer(false); PV.forced=false; PV.closed=true; pvSync(); };
+  $("dkClose").onclick=()=>{ drawer(false); PV.forced=false; PV.closed=true; LES.mark("sideclose"); pvSync(); };
   $("beatSel").onchange=()=>pickBeat($("beatSel").value);
   $("dkBeatSel").onchange=()=>{ pickBeat($("dkBeatSel").value); setTimeout(()=>$("dkBeatSel").blur(),0); };
-  $("beatPlay").onclick=()=>{ BT.on ? beatStop() : beatStart(); };
-  $("dkBeat").onclick=()=>{ BT.on ? beatStop() : beatStart(); };
+  $("beatPlay").onclick=()=>{ BT.on ? lessonBeat(false) : lessonBeat(true); };
+  $("dkBeat").onclick=()=>{ BT.on ? lessonBeat(false) : lessonBeat(true); };
   $("tempoR").oninput=()=>setTempo(+$("tempoR").value);
   $("tempoDn").onclick=()=>setTempo(S.bpm-1); $("tempoUp").onclick=()=>setTempo(S.bpm+1);
   $("dkSlow").onclick=()=>setTempo(S.bpm-2); $("dkFast").onclick=()=>setTempo(S.bpm+2);
-  $("swingR").oninput=()=>{ S.swing=Math.max(0.5, Math.min(0.75, (+$("swingR").value)/100)); save(); beatPaint(); };
-  $("beatVol").oninput=()=>{ S.bvol=Math.max(0.1, Math.min(1, (+$("beatVol").value)/100)); save(); beatPaint(); };
-  $("beatReset").onclick=()=>{ const b=beatNow(); if(b){ beatOwn(b); save(); beatPaint(); } };
+  $("swingR").oninput=()=>{ S.swing=Math.max(0.5, Math.min(0.75, (+$("swingR").value)/100)); save(); beatPaint();
+    if(S.swing>=0.6) LES.mark("sw60"); if(S.swing<=0.5 && LES.marked("sw60")) LES.mark("sw50"); if(S.swing>0.5 && BT.on) LES.mark("playsw"); };
+  $("beatVol").oninput=()=>{ S.bvol=Math.max(0.1, Math.min(1, (+$("beatVol").value)/100)); save(); beatPaint(); LES.mark("vol1"); };
+  $("beatReset").onclick=()=>{ const b=beatNow(); if(b){ beatOwn(b); save(); beatPaint(); LES.mark("reset1"); } };
+  $("takeBtn").addEventListener("click",()=>{ lessonTake($("takeBtn").getAttribute("aria-pressed")!=="true"); }, true);   /* before the recorder: not pressed = it is about to start */
   $("kpBig").onclick=()=>{ PV.forced=true; PV.closed=false; pvSync(); paintKit(); };
   $("dkTake").onclick=()=>{ const was=$("takeBtn").getAttribute("aria-pressed")==="true"; $("takeBtn").click(); if(!was) drawer(false); };
   $("dkRec").onclick=()=>$("takeBtn").click();

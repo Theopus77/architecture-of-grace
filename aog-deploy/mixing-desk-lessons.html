@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Mixing Desk &mdash; Lessons and worksheets</title>
+<meta name="description" content="Every lesson for The Mixing Desk, one worksheet each: what to do, a question to think about, and your turn. Print it or use it on screen.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-LESSONS-V1 (2026-10-05) — The Mixing Desk: one worksheet per lesson, English and Spanish. MADE BY
+     _work/music/make_lab_lessons.py FROM _work/music/lessons_studio.py: edit there, then run it. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+/* four picture steps */
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; align-items:start; }
+@media (max-width:700px){ .steps { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg, .step img { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:150px; border-radius:6px; }
+.step img { max-width:100%; }
+.states { margin:0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.states img { display:block; width:100%; max-width:420px; height:auto; border-radius:6px; }
+.states figcaption { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; max-width:420px; margin-top:.45rem; }
+.states figcaption span { text-align:center; color:var(--muted); font-size:.82rem; line-height:1.25; }
+.states figcaption b { display:block; color:var(--ink); font-size:.92rem; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* the 16 boxes */
+.gridwrap { overflow-x:auto; }
+.g { display:grid; grid-template-columns:78px repeat(16, minmax(20px,1fr)); gap:3px; align-items:center; margin-bottom:3px; min-width:440px; }
+.gl { font-size:.78rem; font-weight:700; color:var(--muted); text-align:right; padding-right:.35rem; white-space:nowrap; }
+.gn { font-size:.72rem; font-weight:700; color:var(--muted); text-align:center; }
+.gn.st { color:var(--ink); font-size:.85rem; }
+.gs { height:26px; border:1.5px solid var(--line); border-radius:5px; background:transparent; }
+.gs.st { border-color:var(--muted); }
+.gs.on { background:var(--c); border-color:rgb(0 0 0 / .35);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.recipe { margin:0 0 1.1rem; padding:.85rem .9rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  break-inside:avoid; page-break-inside:avoid; }
+.recipe figcaption { margin:0 0 .6rem; }
+.recipe figcaption b { font-size:1.05rem; }
+.recipe figcaption span { display:block; color:var(--muted); font-size:.88rem; }
+.recipe figcaption span.bpm { display:inline-block; width:auto; color:var(--muted); }
+.bpm { display:inline-block; margin-left:.5rem; padding:.05rem .5rem; border-radius:999px; background:var(--chip); color:var(--muted);
+  font-size:.72rem; font-weight:800; letter-spacing:.06em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* banks + sounds */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.kits { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; align-items:stretch; }
+@media (max-width:820px){ .kits { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .kits { grid-template-columns:1fr; } }
+.kits .bank { padding:.65rem .75rem; gap:.65rem; }
+.kits .bank .letter { width:2.2rem; height:2.2rem; font-size:1.1rem; }
+.kits .bank span { font-size:.86rem; line-height:1.35; display:block; }
+.note { margin:.8rem 0 0; color:var(--muted); font-size:.92rem; }
+.bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
+  break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
+.bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font:800 1.3rem/1 var(--sans); background:var(--steel); color:#f4f8f9; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.bank.empty .letter { background:transparent; color:var(--muted); border:2px dashed var(--muted); }
+.bank b { display:block; }
+.bank span { color:var(--muted); font-size:.9rem; }
+
+.sounds { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem .8rem; }
+.padn { display:inline-flex; align-items:center; justify-content:center; width:1.5rem; height:1.5rem; border-radius:5px;
+  background:#2b2620; color:#f0ebe0; font:800 .8rem/1 var(--sans); flex:0 0 auto;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media (max-width:700px){ .sounds { grid-template-columns:repeat(2,1fr); } }
+.sounds li { display:flex; align-items:center; gap:.5rem; font-weight:600; font-size:.95rem; }
+.dot { width:1.15rem; height:1.15rem; border-radius:6px; background:var(--c); border:1px solid rgb(0 0 0 / .3);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* stuck */
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; align-self:center; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.panel, svg.dial { min-width:0; }
+  .figwrap, .gridwrap { overflow:visible; }
+  .g { min-width:0; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  .recipe, .step, .bank, .fix li { box-shadow:none; }
+  .kits { grid-template-columns:repeat(3,1fr); gap:.4rem; }
+  .kits .bank { padding:.4rem .55rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .fix { gap:.35rem; }
+  .fix li { padding:.35rem .6rem; }
+  .fix img { max-width:90px; }
+  a { text-decoration:none; color:inherit; }
+}
+
+.ws { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1rem 1.1rem 1.1rem; margin:0 0 1.2rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.ws h2 { margin:0 0 .2rem; }
+.ws .kind { margin:0; font:800 .72rem/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.ws .blurb { margin:.1rem 0 .6rem; }
+.ws ol { list-style:none; margin:0 0 .6rem; padding:0; display:grid; gap:.4rem; }
+.ws li { display:grid; grid-template-columns:auto 1fr; gap:.6rem; align-items:start; }
+.ws .box { width:1.3rem; height:1.3rem; border:2px solid var(--ink); border-radius:4px; margin-top:.1rem; }
+.ws .try { margin:.4rem 0 .6rem; padding:.45rem .7rem; border-left:4px solid var(--play); background:var(--chip); border-radius:0 8px 8px 0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.ws h3 { margin:.7rem 0 .2rem; font-size:1rem; }
+.ws .line { border-bottom:1.5px solid var(--line); height:1.9rem; }
+.toc { columns:2 14rem; margin:0 0 1.6rem; padding-left:1.2rem; }
+.toc a { color:var(--ink); }
+@media print { .ws { border-color:#bbb; } .toc { display:none; } }
+</style>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/mixing-desk"><span data-en="← The Mixing Desk" data-es="← La mesa de mezclas">← The Mixing Desk</span></a>
+    <button class="btn go" type="button" onclick="window.print()"><span data-en="Print this" data-es="Imprimir">Print this</span></button>
+  </div>
+</header>
+
+<h1><span data-en="The Mixing Desk · lessons" data-es="La mesa de mezclas · lecciones">The Mixing Desk · lessons</span></h1>
+<p class="lede"><span data-en="16 lessons, then 5 songs to make. Do the steps on the lab: they tick themselves there. This page is for writing and printing." data-es="16 lecciones y luego 5 canciones para hacer. Haz los pasos en el laboratorio: allí se marcan solos. Esta página es para escribir e imprimir.">16 lessons, then 5 songs to make. Do the steps on the lab: they tick themselves there. This page is for writing and printing.</span></p>
+<ol class="toc noprint">
+  <li><a href="#l1"><span data-en="Where recordings come from" data-es="De dónde vienen las grabaciones">Where recordings come from</span></a></li>
+  <li><a href="#l2"><span data-en="Play and stop" data-es="Tocar y parar">Play and stop</span></a></li>
+  <li><a href="#l3"><span data-en="A song in layers" data-es="Una canción en capas">A song in layers</span></a></li>
+  <li><a href="#l4"><span data-en="Volume and balance" data-es="Volumen y equilibrio">Volume and balance</span></a></li>
+  <li><a href="#l5"><span data-en="Left and right" data-es="Izquierda y derecha">Left and right</span></a></li>
+  <li><a href="#l6"><span data-en="Mute and solo" data-es="Silenciar y solo">Mute and solo</span></a></li>
+  <li><a href="#l7"><span data-en="Shape the sound: low, middle, high" data-es="Da forma al sonido: graves, medios, agudos">Shape the sound: low, middle, high</span></a></li>
+  <li><a href="#l8"><span data-en="Move a recording in time" data-es="Mueve una grabación en el tiempo">Move a recording in time</span></a></li>
+  <li><a href="#l9"><span data-en="Repeat a loop" data-es="Repite un bucle">Repeat a loop</span></a></li>
+  <li><a href="#l10"><span data-en="Cut into pieces" data-es="Corta en partes">Cut into pieces</span></a></li>
+  <li><a href="#l11"><span data-en="Trim and fade" data-es="Recorta y suaviza">Trim and fade</span></a></li>
+  <li><a href="#l12"><span data-en="Speed" data-es="Velocidad">Speed</span></a></li>
+  <li><a href="#l13"><span data-en="Loop bars while you work" data-es="Repite compases mientras trabajas">Loop bars while you work</span></a></li>
+  <li><a href="#l14"><span data-en="The whole song: Glue and Song volume" data-es="Toda la canción: Unión y Volumen de la canción">The whole song: Glue and Song volume</span></a></li>
+  <li><a href="#l15"><span data-en="Make your song into a file" data-es="Haz de tu canción un archivo">Make your song into a file</span></a></li>
+  <li><a href="#l16"><span data-en="Send to the turntables" data-es="Envía a los platos">Send to the turntables</span></a></li>
+  <li><a href="#l17"><span data-en="Song: Drums and piano" data-es="Canción: Batería y piano">Song: Drums and piano</span></a></li>
+  <li><a href="#l18"><span data-en="Song: The band arrangement" data-es="Canción: El arreglo de banda">Song: The band arrangement</span></a></li>
+  <li><a href="#l19"><span data-en="Song: Remix" data-es="Canción: Remezcla">Song: Remix</span></a></li>
+  <li><a href="#l20"><span data-en="Song: Music under a story" data-es="Canción: Música debajo de una historia">Song: Music under a story</span></a></li>
+  <li><a href="#l21"><span data-en="Song: Your own, start to finish" data-es="Canción: La tuya, de principio a fin">Song: Your own, start to finish</span></a></li>
+</ol>
+<section class="ws" id="l1">
+  <p class="kind"><span data-en="Lesson 1" data-es="Lección 1">Lesson 1</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Where recordings come from" data-es="De dónde vienen las grabaciones">Where recordings come from</span></h2>
+  <p class="blurb"><span data-en="A mixing desk puts recordings together into one song. You make the recordings on the site&#x27;s instruments: the piano, the guitar, the bass, the drums, the Beat Lab or the band." data-es="Una mesa de mezclas junta grabaciones en una sola canción. Las grabaciones las haces en los instrumentos del sitio: el piano, la guitarra, el bajo, la batería, el laboratorio de ritmos o la banda.">A mixing desk puts recordings together into one song. You make the recordings on the site&#x27;s instruments: the piano, the guitar, the bass, the drums, the Beat Lab or the band.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Record on any instrument, then press Send to the Mixing Desk. Your take shows up here." data-es="Graba en cualquier instrumento y pulsa Enviar a la mesa de mezclas. Tu toma aparece aquí.">Record on any instrument, then press Send to the Mixing Desk. Your take shows up here.</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Put it on track" data-es="Pulsa Ponla en la pista">Press Put it on track</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Open the Music tools menu at the top to find an instrument. Come back here when you have sent a take." data-es="Abre el menú Instrumentos de arriba para encontrar un instrumento. Vuelve aquí cuando hayas enviado una toma.">Open the Music tools menu at the top to find an instrument. Come back here when you have sent a take.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which instrument did you record first? Why that one?" data-es="¿Qué instrumento grabaste primero? ¿Por qué ese?">Which instrument did you record first? Why that one?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the names of two instruments you want in your song." data-es="Escribe los nombres de dos instrumentos que quieres en tu canción.">Write the names of two instruments you want in your song.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l2">
+  <p class="kind"><span data-en="Lesson 2" data-es="Lección 2">Lesson 2</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Play and stop" data-es="Tocar y parar">Play and stop</span></h2>
+  <p class="blurb"><span data-en="Play starts your song from the start. Stop ends it at once. Space does the same on a keyboard." data-es="Tocar empieza tu canción desde el principio. Parar la detiene enseguida. La barra espaciadora hace lo mismo en un teclado.">Play starts your song from the start. Stop ends it at once. Space does the same on a keyboard.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ▶ Play" data-es="Pulsa ▶ Tocar">Press ▶ Play</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ■ Stop" data-es="Pulsa ■ Parar">Press ■ Stop</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Play again and let it play to the end" data-es="Pulsa Tocar otra vez y deja que suene hasta el final">Press Play again and let it play to the end</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Watch the bar number move while it plays." data-es="Mira cómo cambia el número de compás mientras suena.">Watch the bar number move while it plays.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How long is your song right now, in bars?" data-es="¿Cuántos compases dura tu canción ahora?">How long is your song right now, in bars?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Draw a line for your song. Mark where each bar starts." data-es="Dibuja una línea para tu canción. Marca dónde empieza cada compás.">Draw a line for your song. Mark where each bar starts.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l3">
+  <p class="kind"><span data-en="Lesson 3" data-es="Lección 3">Lesson 3</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="A song in layers" data-es="Una canción en capas">A song in layers</span></h2>
+  <p class="blurb"><span data-en="There are eight tracks. Each track holds one recording. They all play at the same time." data-es="Hay ocho pistas. Cada pista guarda una grabación. Todas suenan al mismo tiempo.">There are eight tracks. Each track holds one recording. They all play at the same time.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick another track in the Track menu" data-es="Elige otra pista en el menú Pista">Pick another track in the Track menu</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Put a recording on a second track" data-es="Pon una grabación en una segunda pista">Put a recording on a second track</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Play to hear both tracks together" data-es="Pulsa Tocar para oír las dos pistas juntas">Press Play to hear both tracks together</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Put the same take on two tracks. It sounds bigger." data-es="Pon la misma toma en dos pistas. Suena más grande.">Put the same take on two tracks. It sounds bigger.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What changes when two recordings play together?" data-es="¿Qué cambia cuando dos grabaciones suenan juntas?">What changes when two recordings play together?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Plan four tracks: write what goes on each one." data-es="Planea cuatro pistas: escribe qué va en cada una.">Plan four tracks: write what goes on each one.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l4">
+  <p class="kind"><span data-en="Lesson 4" data-es="Lección 4">Lesson 4</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Volume and balance" data-es="Volumen y equilibrio">Volume and balance</span></h2>
+  <p class="blurb"><span data-en="Volume makes a track louder or quieter. A good mix lets you hear every part." data-es="El Volumen hace una pista más fuerte o más suave. Una buena mezcla deja oír cada parte.">Volume makes a track louder or quieter. A good mix lets you hear every part.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move a track&#x27;s Volume" data-es="Mueve el Volumen de una pista">Move a track&#x27;s Volume</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Turn one track down to 50 or less" data-es="Baja una pista a 50 o menos">Turn one track down to 50 or less</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play the song. Move one Volume until the two tracks feel even." data-es="Toca la canción. Mueve un Volumen hasta que las dos pistas se sientan parejas.">Play the song. Move one Volume until the two tracks feel even.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which part should be the loudest in your song?" data-es="¿Qué parte debe sonar más fuerte en tu canción?">Which part should be the loudest in your song?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write each track and the volume you picked for it." data-es="Escribe cada pista y el volumen que elegiste.">Write each track and the volume you picked for it.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l5">
+  <p class="kind"><span data-en="Lesson 5" data-es="Lección 5">Lesson 5</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Left and right" data-es="Izquierda y derecha">Left and right</span></h2>
+  <p class="blurb"><span data-en="Side moves a track to your left ear or your right ear. Headphones make it easy to hear." data-es="Lado mueve una pista a tu oído izquierdo o derecho. Con audífonos se oye fácil.">Side moves a track to your left ear or your right ear. Headphones make it easy to hear.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move a track&#x27;s Side to the left" data-es="Mueve el Lado de una pista a la izquierda">Move a track&#x27;s Side to the left</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move a track&#x27;s Side to the right" data-es="Mueve el Lado de una pista a la derecha">Move a track&#x27;s Side to the right</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Put one track a little left and one a little right. Keep drums and bass in the middle." data-es="Pon una pista un poco a la izquierda y otra un poco a la derecha. Deja la batería y el bajo en el centro.">Put one track a little left and one a little right. Keep drums and bass in the middle.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why might a band put the guitar on one side?" data-es="¿Por qué una banda pondría la guitarra a un lado?">Why might a band put the guitar on one side?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Draw a stage. Put each of your tracks where it stands." data-es="Dibuja un escenario. Pon cada pista donde está.">Draw a stage. Put each of your tracks where it stands.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l6">
+  <p class="kind"><span data-en="Lesson 6" data-es="Lección 6">Lesson 6</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Mute and solo" data-es="Silenciar y solo">Mute and solo</span></h2>
+  <p class="blurb"><span data-en="Mute turns one track off. Solo lets you hear only that track. Both help you listen closely." data-es="Silenciar apaga una pista. Solo te deja oír solo esa pista. Las dos te ayudan a escuchar con atención.">Mute turns one track off. Solo lets you hear only that track. Both help you listen closely.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Mute on a track" data-es="Pulsa Silenciar en una pista">Press Mute on a track</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Mute again to bring it back" data-es="Pulsa Silenciar otra vez para que vuelva">Press Mute again to bring it back</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Solo on a track" data-es="Pulsa Solo en una pista">Press Solo on a track</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Solo again to hear everything" data-es="Pulsa Solo otra vez para oír todo">Press Solo again to hear everything</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play the song and Solo each track, one at a time." data-es="Toca la canción y pon Solo en cada pista, una por una.">Play the song and Solo each track, one at a time.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What did you hear in Solo that you missed before?" data-es="¿Qué oíste con Solo que antes no notabas?">What did you hear in Solo that you missed before?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write one thing you like about each track." data-es="Escribe algo que te guste de cada pista.">Write one thing you like about each track.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l7">
+  <p class="kind"><span data-en="Lesson 7" data-es="Lección 7">Lesson 7</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Shape the sound: low, middle, high" data-es="Da forma al sonido: graves, medios, agudos">Shape the sound: low, middle, high</span></h2>
+  <p class="blurb"><span data-en="Low is the deep part of a sound. High is the bright part. Middle is in between. Punch, Room and Echo add more color." data-es="Graves es la parte profunda de un sonido. Agudos es la parte brillante. Medios está en el centro. Pegada, Sala y Eco le dan más color.">Low is the deep part of a sound. High is the bright part. Middle is in between. Punch, Room and Echo add more color.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move a track&#x27;s Low" data-es="Mueve los Graves de una pista">Move a track&#x27;s Low</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move a track&#x27;s Middle" data-es="Mueve los Medios de una pista">Move a track&#x27;s Middle</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move a track&#x27;s High" data-es="Mueve los Agudos de una pista">Move a track&#x27;s High</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Try Punch, Room or Echo on a track" data-es="Prueba Pegada, Sala o Eco en una pista">Try Punch, Room or Echo on a track</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Take a little Low off the piano so the bass has room." data-es="Quita un poco de Graves al piano para que el bajo tenga espacio.">Take a little Low off the piano so the bass has room.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which instrument sounds best with more High? Why?" data-es="¿Qué instrumento suena mejor con más Agudos? ¿Por qué?">Which instrument sounds best with more High? Why?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Pick words for your mix: warm, bright, deep, big. Which fit?" data-es="Elige palabras para tu mezcla: cálida, brillante, profunda, grande. ¿Cuáles encajan?">Pick words for your mix: warm, bright, deep, big. Which fit?</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l8">
+  <p class="kind"><span data-en="Lesson 8" data-es="Lección 8">Lesson 8</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Move a recording in time" data-es="Mueve una grabación en el tiempo">Move a recording in time</span></h2>
+  <p class="blurb"><span data-en="Starts at bar says when a track begins. A part that comes in later makes the song grow." data-es="Empieza en el compás dice cuándo empieza una pista. Una parte que entra después hace crecer la canción.">Starts at bar says when a track begins. A part that comes in later makes the song grow.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Under Starts at bar, press Later +" data-es="En Empieza en el compás, pulsa Después +">Under Starts at bar, press Later +</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press − Earlier to bring it back" data-es="Pulsa − Antes para traerla de vuelta">Press − Earlier to bring it back</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Let the drums start alone. Bring the piano in at bar 3." data-es="Deja que la batería empiece sola. Haz entrar el piano en el compás 3.">Let the drums start alone. Bring the piano in at bar 3.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why do many songs start with just one instrument?" data-es="¿Por qué muchas canciones empiezan con un solo instrumento?">Why do many songs start with just one instrument?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the bar where each of your tracks comes in." data-es="Escribe el compás en que entra cada pista.">Write the bar where each of your tracks comes in.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l9">
+  <p class="kind"><span data-en="Lesson 9" data-es="Lección 9">Lesson 9</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Repeat a loop" data-es="Repite un bucle">Repeat a loop</span></h2>
+  <p class="blurb"><span data-en="Plays says how many times a recording plays in a row. A short loop can fill a whole song." data-es="Suena dice cuántas veces seguidas suena una grabación. Un bucle corto puede llenar toda una canción.">Plays says how many times a recording plays in a row. A short loop can fill a whole song.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Under Plays, press More +" data-es="En Suena, pulsa Más +">Under Plays, press More +</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press − Fewer" data-es="Pulsa − Menos">Press − Fewer</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Copy this piece" data-es="Pulsa Copiar esta parte">Press Copy this piece</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Make a drum loop play 4 times under everything else." data-es="Haz que un bucle de batería suene 4 veces debajo de todo.">Make a drum loop play 4 times under everything else.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How many times can a loop repeat before you want a change?" data-es="¿Cuántas veces puede repetirse un bucle antes de que quieras un cambio?">How many times can a loop repeat before you want a change?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Count the bars: loop length × times = song length." data-es="Cuenta los compases: largo del bucle × veces = largo de la canción.">Count the bars: loop length × times = song length.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l10">
+  <p class="kind"><span data-en="Lesson 10" data-es="Lección 10">Lesson 10</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Cut into pieces" data-es="Corta en partes">Cut into pieces</span></h2>
+  <p class="blurb"><span data-en="Cut splits a recording in two. Each piece can move, repeat or go away on its own. Undo always brings it back." data-es="Cortar divide una grabación en dos. Cada parte puede moverse, repetirse o quitarse sola. Deshacer siempre la trae de vuelta.">Cut splits a recording in two. Each piece can move, repeat or go away on its own. Undo always brings it back.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a place in Cut at, then press ✂ Cut here" data-es="Elige un lugar en Cortar en y pulsa ✂ Cortar aquí">Pick a place in Cut at, then press ✂ Cut here</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a piece in the Piece menu" data-es="Elige una parte en el menú Parte">Pick a piece in the Piece menu</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Remove this piece" data-es="Pulsa Quitar esta parte">Press Remove this piece</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press ↶ Undo to bring it back" data-es="Pulsa ↶ Deshacer para traerla de vuelta">Press ↶ Undo to bring it back</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Cut out your favorite bar and copy it three times." data-es="Corta tu compás favorito y cópialo tres veces.">Cut out your favorite bar and copy it three times.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which part of your take is the best part?" data-es="¿Cuál es la mejor parte de tu toma?">Which part of your take is the best part?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write your pieces in the order you want them." data-es="Escribe tus partes en el orden que quieres.">Write your pieces in the order you want them.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l11">
+  <p class="kind"><span data-en="Lesson 11" data-es="Lección 11">Lesson 11</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Trim and fade" data-es="Recorta y suaviza">Trim and fade</span></h2>
+  <p class="blurb"><span data-en="Trim cuts quiet bits or mistakes off the start and end. A fade lets a track come in or go out gently." data-es="Recortar quita silencios o errores del principio y del final. Una entrada o salida suave deja que una pista entre o se vaya despacio.">Trim cuts quiet bits or mistakes off the start and end. A fade lets a track come in or go out gently.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Under Cut from the start, press +1 beat or +1 bar" data-es="En Recortar el principio, pulsa +1 pulso o +1 compás">Under Cut from the start, press +1 beat or +1 bar</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Under Cut from the end, press +1 beat or +1 bar" data-es="En Recortar el final, pulsa +1 pulso o +1 compás">Under Cut from the end, press +1 beat or +1 bar</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a Fade in" data-es="Elige una Entrada suave">Pick a Fade in</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a Fade out" data-es="Elige una Salida suave">Pick a Fade out</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Give the last track in your song a long fade out." data-es="Ponle una salida suave larga a la última pista de tu canción.">Give the last track in your song a long fade out.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="When is a fade better than a sudden stop?" data-es="¿Cuándo es mejor una salida suave que un final de golpe?">When is a fade better than a sudden stop?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Mark on your song line where each fade goes." data-es="Marca en la línea de tu canción dónde va cada salida suave.">Mark on your song line where each fade goes.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l12">
+  <p class="kind"><span data-en="Lesson 12" data-es="Lección 12">Lesson 12</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Speed" data-es="Velocidad">Speed</span></h2>
+  <p class="blurb"><span data-en="Speed makes a recording slower or faster. Keep the pitch keeps the notes in tune. Off, it works like a tape." data-es="Velocidad hace una grabación más lenta o más rápida. Mantener el tono deja las notas afinadas. Sin él, funciona como una cinta.">Speed makes a recording slower or faster. Keep the pitch keeps the notes in tune. Off, it works like a tape.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Slide Speed below 100 %" data-es="Desliza la Velocidad por debajo de 100 %">Slide Speed below 100 %</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Slide Speed above 100 %" data-es="Desliza la Velocidad por encima de 100 %">Slide Speed above 100 %</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Keep the pitch to hear the difference" data-es="Pulsa Mantener el tono para oír la diferencia">Press Keep the pitch to hear the difference</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Slow a take to 75 % with Keep the pitch off. It sounds deep and dreamy." data-es="Pon una toma al 75 % sin Mantener el tono. Suena grave y como un sueño.">Slow a take to 75 % with Keep the pitch off. It sounds deep and dreamy.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why do the notes go lower when a tape plays slower?" data-es="¿Por qué las notas bajan cuando una cinta suena más lenta?">Why do the notes go lower when a tape plays slower?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the speed you liked best, and why." data-es="Escribe la velocidad que más te gustó y por qué.">Write the speed you liked best, and why.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l13">
+  <p class="kind"><span data-en="Lesson 13" data-es="Lección 13">Lesson 13</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Loop bars while you work" data-es="Repite compases mientras trabajas">Loop bars while you work</span></h2>
+  <p class="blurb"><span data-en="Loop plays the same few bars again and again. You can fix one spot while you listen." data-es="Repetir toca los mismos compases una y otra vez. Puedes arreglar una parte mientras escuchas.">Loop plays the same few bars again and again. You can fix one spot while you listen.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Loop under Loop bars" data-es="Pulsa Repetir en Repetir compases">Press Loop under Loop bars</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick the bars to loop in the two menus" data-es="Elige los compases que se repiten en los dos menús">Pick the bars to loop in the two menus</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Play with Loop on" data-es="Pulsa Tocar con Repetir puesto">Press Play with Loop on</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Pick a bar in Start at bar" data-es="Elige un compás en Empezar en el compás">Pick a bar in Start at bar</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Loop bars 1 to 2 and move a Volume while it plays." data-es="Repite los compases 1 a 2 y mueve un Volumen mientras suena.">Loop bars 1 to 2 and move a Volume while it plays.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which part of your song needs the most care?" data-es="¿Qué parte de tu canción necesita más cuidado?">Which part of your song needs the most care?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the bars you looped and what you changed." data-es="Escribe los compases que repetiste y qué cambiaste.">Write the bars you looped and what you changed.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l14">
+  <p class="kind"><span data-en="Lesson 14" data-es="Lección 14">Lesson 14</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="The whole song: Glue and Song volume" data-es="Toda la canción: Unión y Volumen de la canción">The whole song: Glue and Song volume</span></h2>
+  <p class="blurb"><span data-en="The whole song has its own controls. Glue holds the parts together. Song volume sets how loud it all is." data-es="Toda la canción tiene sus propios controles. Unión mantiene las partes juntas. Volumen de la canción decide qué tan fuerte suena todo.">The whole song has its own controls. Glue holds the parts together. Song volume sets how loud it all is.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="In The whole song, move Low, Middle or High" data-es="En Toda la canción, mueve Graves, Medios o Agudos">In The whole song, move Low, Middle or High</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move Glue" data-es="Mueve Unión">Move Glue</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Move Song volume" data-es="Mueve Volumen de la canción">Move Song volume</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Turn Glue up and down while it plays. Listen to the drums." data-es="Sube y baja Unión mientras suena. Escucha la batería.">Turn Glue up and down while it plays. Listen to the drums.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What does it mean for a song to sound together?" data-es="¿Qué significa que una canción suene unida?">What does it mean for a song to sound together?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write your Glue and Song volume numbers." data-es="Escribe tus números de Unión y Volumen de la canción.">Write your Glue and Song volume numbers.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l15">
+  <p class="kind"><span data-en="Lesson 15" data-es="Lección 15">Lesson 15</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Make your song into a file" data-es="Haz de tu canción un archivo">Make your song into a file</span></h2>
+  <p class="blurb"><span data-en="Make the mix turns every track into one recording. Save as .wav keeps it on your device." data-es="Hacer la mezcla convierte todas las pistas en una sola grabación. Guardar como .wav la guarda en tu aparato.">Make the mix turns every track into one recording. Save as .wav keeps it on your device.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Make the mix" data-es="Pulsa Hacer la mezcla">Press Make the mix</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Play your mix in the player" data-es="Toca tu mezcla en el reproductor">Play your mix in the player</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Save as .wav" data-es="Pulsa Guardar como .wav">Press Save as .wav</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Change one thing, make the mix again and compare." data-es="Cambia una cosa, haz la mezcla otra vez y compara.">Change one thing, make the mix again and compare.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Who would you like to play your song for?" data-es="¿Para quién te gustaría tocar tu canción?">Who would you like to play your song for?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Give your song a name." data-es="Ponle un nombre a tu canción.">Give your song a name.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l16">
+  <p class="kind"><span data-en="Lesson 16" data-es="Lección 16">Lesson 16</span> · <span data-en="Skill" data-es="Habilidad">Skill</span></p>
+  <h2><span data-en="Send to the turntables" data-es="Envía a los platos">Send to the turntables</span></h2>
+  <p class="blurb"><span data-en="Your mix can go to the turntables. There you can scratch it, mix it with a record or loop it." data-es="Tu mezcla puede ir a los platos. Allí puedes rayarla, mezclarla con un disco o repetirla.">Your mix can go to the turntables. There you can scratch it, mix it with a record or loop it.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Send to the turntables" data-es="Pulsa Enviar a los platos">Press Send to the turntables</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Open the turntables from the Music tools menu and play your song there." data-es="Abre los platos desde el menú Instrumentos y toca tu canción allí.">Open the turntables from the Music tools menu and play your song there.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What would a DJ do with your song?" data-es="¿Qué haría un DJ con tu canción?">What would a DJ do with your song?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write one idea for your song on the turntables." data-es="Escribe una idea para tu canción en los platos.">Write one idea for your song on the turntables.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l17">
+  <p class="kind"><span data-en="Lesson 17" data-es="Lección 17">Lesson 17</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Drums and piano" data-es="Canción: Batería y piano">Song: Drums and piano</span></h2>
+  <p class="blurb"><span data-en="Two instruments, two tracks, one song. Record a drum beat and a piano part, then mix them." data-es="Dos instrumentos, dos pistas, una canción. Graba un ritmo de batería y una parte de piano, luego mézclalos.">Two instruments, two tracks, one song. Record a drum beat and a piano part, then mix them.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make a mix with two instruments in it" data-es="Haz una mezcla con dos instrumentos">Make a mix with two instruments in it</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="In that mix, one track is quieter than the other" data-es="En esa mezcla, una pista suena más bajo que la otra">In that mix, one track is quieter than the other</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Press Save as .wav" data-es="Pulsa Guardar como .wav">Press Save as .wav</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Keep the drums a little quieter than the piano, so the tune comes through." data-es="Deja la batería un poco más baja que el piano, para que se oiga la melodía.">Keep the drums a little quieter than the piano, so the tune comes through.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Which track did you make louder, and why?" data-es="¿Qué pista subiste más y por qué?">Which track did you make louder, and why?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the two volumes you picked." data-es="Escribe los dos volúmenes que elegiste.">Write the two volumes you picked.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l18">
+  <p class="kind"><span data-en="Lesson 18" data-es="Lección 18">Lesson 18</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: The band arrangement" data-es="Canción: El arreglo de banda">Song: The band arrangement</span></h2>
+  <p class="blurb"><span data-en="Build an intro, a verse and a chorus from Beat Lab loops and other takes. Parts come in one by one." data-es="Arma una intro, una estrofa y un coro con bucles del laboratorio de ritmos y otras tomas. Las partes entran una por una.">Build an intro, a verse and a chorus from Beat Lab loops and other takes. Parts come in one by one.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Put recordings on four tracks" data-es="Pon grabaciones en cuatro pistas">Put recordings on four tracks</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make one track start at bar 3 or later" data-es="Haz que una pista empiece en el compás 3 o después">Make one track start at bar 3 or later</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make the song 8 bars long or longer" data-es="Haz que la canción dure 8 compases o más">Make the song 8 bars long or longer</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make the mix with four tracks playing" data-es="Haz la mezcla con cuatro pistas sonando">Make the mix with four tracks playing</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Intro: drums alone. Verse: add bass. Chorus: add chords and a tune." data-es="Intro: batería sola. Estrofa: suma el bajo. Coro: suma acordes y una melodía.">Intro: drums alone. Verse: add bass. Chorus: add chords and a tune.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="How does a listener know the chorus has started?" data-es="¿Cómo sabe quien escucha que empezó el coro?">How does a listener know the chorus has started?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write your song&#x27;s parts and the bar where each starts." data-es="Escribe las partes de tu canción y el compás en que empieza cada una.">Write your song&#x27;s parts and the bar where each starts.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l19">
+  <p class="kind"><span data-en="Lesson 19" data-es="Lección 19">Lesson 19</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Remix" data-es="Canción: Remezcla">Song: Remix</span></h2>
+  <p class="blurb"><span data-en="Same takes, new order. Cut a recording into pieces and play them in a new way." data-es="Las mismas tomas, en otro orden. Corta una grabación en partes y tócalas de otra manera.">Same takes, new order. Cut a recording into pieces and play them in a new way.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Cut a recording and move a later piece in front of an earlier one" data-es="Corta una grabación y pon una parte de después delante de una de antes">Cut a recording and move a later piece in front of an earlier one</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make the mix of your remix" data-es="Haz la mezcla de tu remezcla">Make the mix of your remix</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Send your remix to the turntables" data-es="Envía tu remezcla a los platos">Send your remix to the turntables</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Change the speed of one track too. Remixes often do." data-es="Cambia también la velocidad de una pista. Las remezclas lo hacen a menudo.">Change the speed of one track too. Remixes often do.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What stays the same in your remix? What is new?" data-es="¿Qué sigue igual en tu remezcla? ¿Qué es nuevo?">What stays the same in your remix? What is new?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the order of your pieces, before and after." data-es="Escribe el orden de tus partes, antes y después.">Write the order of your pieces, before and after.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l20">
+  <p class="kind"><span data-en="Lesson 20" data-es="Lección 20">Lesson 20</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Music under a story" data-es="Canción: Música debajo de una historia">Song: Music under a story</span></h2>
+  <p class="blurb"><span data-en="Podcasts and videos use soft music under a voice. Make a quiet bed of music you could talk over." data-es="Los pódcasts y los videos usan música suave debajo de una voz. Haz una base de música tranquila sobre la que puedas hablar.">Podcasts and videos use soft music under a voice. Make a quiet bed of music you could talk over.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Turn a music track down to 40 or less and give it a fade in and a fade out" data-es="Baja una pista de música a 40 o menos y ponle entrada y salida suaves">Turn a music track down to 40 or less and give it a fade in and a fade out</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make the mix with that quiet track in it" data-es="Haz la mezcla con esa pista suave">Make the mix with that quiet track in it</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Play your mix and tell a short story out loud over it. Is the music quiet enough?" data-es="Toca tu mezcla y cuenta una historia corta en voz alta encima. ¿La música está lo bastante suave?">Play your mix and tell a short story out loud over it. Is the music quiet enough?</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="Why should music under a voice be quiet and simple?" data-es="¿Por qué la música debajo de una voz debe ser suave y sencilla?">Why should music under a voice be quiet and simple?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write the first two lines of the story you would tell." data-es="Escribe las dos primeras frases de la historia que contarías.">Write the first two lines of the story you would tell.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<section class="ws" id="l21">
+  <p class="kind"><span data-en="Lesson 21" data-es="Lección 21">Lesson 21</span> · <span data-en="A song to make" data-es="Una canción para hacer">A song to make</span></p>
+  <h2><span data-en="Song: Your own, start to finish" data-es="Canción: La tuya, de principio a fin">Song: Your own, start to finish</span></h2>
+  <p class="blurb"><span data-en="A whole song, your way: three or more instruments, 16 bars or more, mixed and finished." data-es="Una canción entera, a tu manera: tres instrumentos o más, 16 compases o más, mezclada y terminada.">A whole song, your way: three or more instruments, 16 bars or more, mixed and finished.</span></p>
+  <ol>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Use recordings from three or more instruments" data-es="Usa grabaciones de tres instrumentos o más">Use recordings from three or more instruments</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make the song 16 bars long or longer" data-es="Haz que la canción dure 16 compases o más">Make the song 16 bars long or longer</span></span></li>
+    <li><span class="box" aria-hidden="true"></span><span><span data-en="Make the mix of your song" data-es="Haz la mezcla de tu canción">Make the mix of your song</span></span></li>
+  </ol>
+  <p class="try"><b><span data-en="Try this:" data-es="Prueba esto:">Try this:</span></b> <span data-en="Use everything you learned: balance, sides, a part that comes in later, a fade out." data-es="Usa todo lo que aprendiste: equilibrio, lados, una parte que entra después, una salida suave.">Use everything you learned: balance, sides, a part that comes in later, a fade out.</span></p>
+  <h3><span data-en="Think about it" data-es="Piénsalo">Think about it</span></h3><p><span data-en="What would you change if you made it again?" data-es="¿Qué cambiarías si la hicieras otra vez?">What would you change if you made it again?</span></p><div class="line"></div><div class="line"></div>
+  <h3><span data-en="Your turn" data-es="Tu turno">Your turn</span></h3><p><span data-en="Write your song&#x27;s name, its instruments and its parts in order." data-es="Escribe el nombre de tu canción, sus instrumentos y sus partes en orden.">Write your song&#x27;s name, its instruments and its parts in order.</span></p><div class="line"></div><div class="line"></div>
+</section>
+<footer><span data-en="The Mixing Desk · Architecture of Grace · your progress stays on this device" data-es="La mesa de mezclas · Architecture of Grace · tu progreso se queda en este dispositivo">The Mixing Desk · Architecture of Grace · your progress stays on this device</span></footer>
+</div>
+<script src="/aog-topbar.js"></script>
+</body>
+</html>

@@ -272,6 +272,10 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
+<!-- AOG-LESSONS-V1 (2026-10-05): the Band's lessons, the shared card (aog-lessons.js) and its words (aog-lessons-band.js,
+     made by _work/music/make_lab_lessons.py from _work/music/lessons_band.py) -->
+<script src="/aog-lessons.js"></script>
+<script src="/aog-lessons-band.js"></script>
 <!-- AOG-BAND-SCALES-V1: the scale and chord libraries every instrument shares (read when the page is up) -->
 <script src="/aog-scales.js" defer></script>
 <script src="/aog-chords.js" defer></script>
@@ -303,6 +307,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
     <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
   </div>
   <main id="view">
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Band's lessons (aog-lessons.js) -->
     <section class="rig" id="rig" aria-labelledby="mastH">
       <div class="plate" aria-hidden="true"><b>THE BAND</b><small>BRASS · WOODWINDS · STRINGS · PERCUSSION</small></div>
 
@@ -1216,6 +1221,7 @@ function padDown(i, v){
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
   paintWheelState();
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  lessonPad(i);
 }
 function padUp(i){
   const keys=padHeld[i]; if(!keys) return;
@@ -1304,7 +1310,7 @@ async function start(){
   const c=ctx();
   if(drumsLive() && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
   stop(true);
-  S.playing=true;
+  S.playing=true; lessonPlay();
   const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.prev={v:lastVoicing}; PLAY.cur=-1;
   const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
   if(drumsLive() && DRUM.buf){
@@ -1319,6 +1325,7 @@ async function start(){
   paintPlay();
 }
 function stop(quiet){
+  if(S.playing && !quiet) LES.mark("stop1");
   if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
   if(ac){ const now=ac.currentTime; PLAY.voices.forEach(v=>v.kill(now)); }
   PLAY.voices=[];
@@ -1387,6 +1394,7 @@ async function bounce(){
     const blob=wavBlob(buf.getChannelData(0), buf.getChannelData(1), sr);
     const name=(S.lang==="es"?"Banda":"Band")+" · "+soundName(S.sound)+" · "+Math.round(bpm)+" BPM · "+bars+" "+t("bars");
     await AOGHandoff.put("bandbench", {name:name, bpm:bpm, bars:bars, at:Date.now(), wav:blob});
+    if(S.sound==="mariachi") LES.mark("mariDecks");   /* AOG-LESSONS-V1 */
     line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`;
   }catch(e){ line.textContent=t("sendFail"); }
   btn.disabled=false;
@@ -1443,7 +1451,7 @@ function paintText(){
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
-  paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText();
+  paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
 }
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
 const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpJazz","grpBands","grpAll"];
@@ -1552,6 +1560,7 @@ function wheelDown(key){
   WHEEL.held=holdChord("w", c, 0.74); WHEEL.press=key;
   paintWheelState();
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  lessonUse("wheel1");
 }
 function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
 function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); $("litLine").hidden=!S.playing; }
@@ -1583,7 +1592,7 @@ function paintDrums(){
   } else {
     box.innerHTML=`<div class="row" style="margin-top:.7rem"><button type="button" class="pbtn" id="drumBtn" aria-pressed="${S.withDrums?"true":"false"}">${t("drumOn")}</button></div>
       <p class="line">${t("drumFrom",{name:(DRUM.take.name||"").replace(/</g,"&lt;")})}${S.withDrums?" "+t(beatsPerBar()===4?"drumTempo":"drumThree"):""}</p>`;
-    $("drumBtn").onclick=()=>{ S.withDrums=!S.withDrums; save(); const was=S.playing; if(was) stop(true); paintDrums(); paintTempo(); if(was) start(); };
+    $("drumBtn").onclick=()=>{ S.withDrums=!S.withDrums; if(S.withDrums) LES.mark("drumOn"); save(); const was=S.playing; if(was) stop(true); paintDrums(); paintTempo(); if(was) start(); };
   }
   paintTempo();
 }
@@ -1634,7 +1643,7 @@ function paintScaleUI(){
 }
 function pickScale(v){
   if(v && !(window.AOGScales && AOGScales.SCALES[v])) return;
-  if(S.minor) SC.min=v; else SC.maj=v; scSave();
+  if(S.minor) SC.min=v; else SC.maj=v; scSave(); if(v) LES.mark("scale1");
   paintScaleUI(); scaleMoved();
 }
 function anyRoot(){ return SC.root==null ? S.key : SC.root; }
@@ -1656,7 +1665,7 @@ function anyPlay(){
   if(!libsIn()) return;
   anyRelease();
   const c={off:((anyRoot()-S.key)%12+12)%12, q:anyKind()};
-  SC.hold=holdChord("a", c, 0.74);
+  SC.hold=holdChord("a", c, 0.74); lessonUse("");
   SC.tm=setTimeout(anyRelease, 1600);
 }
 function bindScales(){
@@ -1728,8 +1737,8 @@ function litKeys(){
 const POINTERS=new Map();
 function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.closest && el.closest("#kbd [data-m]"); return k||null; }
 function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
-function keyOn(m, v){ noteOn("k"+m, playerFor(m), m, v); }
-function keyOff(m){ noteOff("k"+m); }
+function keyOn(m, v){ noteOn("k"+m, playerFor(m), m, v); lessonKey(m, v); }
+function keyOff(m){ noteOff("k"+m); lessonKeyUp(m); }
 function bindKeyboard(){
   const kb=$("kbd");
   /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
@@ -1760,7 +1769,7 @@ function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; ret
    chord is held (fingers on the keys, the computer's keys, a chord pad or the wheel), ◀ Lower and Higher ▶ (and Z, X)
    move the board an octave and the held notes with it, still ringing, under the same fingers. A key's note goes to
    whichever player reaches it there; a chord's part stays with its player, moved only as far as that player can go. */
-function moveOct(step){ const was=S.oct; S.oct+=step; buildKeys(); if(S.oct!==was){ save(); shiftHeld(12*(S.oct-was)); } return S.oct-was; }
+function moveOct(step){ const was=S.oct; S.oct+=step; buildKeys(); if(S.oct!==was){ save(); shiftHeld(12*(S.oct-was)); LES.mark(S.oct<was?"lower1":"higher1"); } return S.oct-was; }
 function shiftHeld(d){
   if(!d || !ac) return;
   const now=ac.currentTime, again=[];
@@ -1946,15 +1955,15 @@ window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>keyOff(m)); HELD_KEYS.
 
 function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; S.oct=null; save();
-    allOff(); if(ac) setSendLevel(LIVE_CH, id);
+    allOff(); if(ac) setSendLevel(LIVE_CH, id); LES.mark("snd1"); if(S.playing) lessonPlay();
     loadSound(id, paintLoad); paintLoad(); buildKeys(); if(BP.on) bpText(); };
-  $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); paintPads(); paintProg(); paintScaleUI(); paintAny(); buildKeys(); if(BP.on) bpText(); };
+  $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); LES.mark("key1"); paintPads(); paintProg(); paintScaleUI(); paintAny(); buildKeys(); if(BP.on) bpText(); };
   $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; save(); paintScaleUI(); paintMood(); paintPads(); paintProg(); scaleMoved(); };
-  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; save(); paintScaleUI(); paintMood(); paintPads(); paintProg(); scaleMoved(); };
+  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; LES.mark("minor1"); save(); paintScaleUI(); paintMood(); paintPads(); paintProg(); scaleMoved(); };
   $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
-    S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; lastVoicing=null; save();
+    S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; lastVoicing=null; save(); lessonPreset(p.id);
     paintScaleUI(); paintMood(); scaleMoved(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } };
-  $("rhythmSel").onchange=()=>{ const was=beatsPerBar(); S.rhythm=$("rhythmSel").value; save();
+  $("rhythmSel").onchange=()=>{ const was=beatsPerBar(); S.rhythm=$("rhythmSel").value; save(); if(S.playing) lessonPlay();
     if(beatsPerBar()!==was){ paintDrums(); if(S.playing){ stop(true); start(); } } };   /* a waltz's bar is shorter: start it on its own count */
   { const W=$("wheel");
     W.addEventListener("pointerdown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(!g || e.button>0) return; e.preventDefault();
@@ -1965,10 +1974,10 @@ function bind(){
     W.addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(!e.repeat) wheelDown(g.getAttribute("data-k")); } });
     W.addEventListener("keyup",(e)=>{ if((e.key==="Enter"||e.key===" ") && WHEEL.ptr==null && WHEEL.held) wheelRelease(); }); }
   $("turnL").onclick=()=>turnWheel(5); $("turnR").onclick=()=>turnWheel(7);
-  $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); };
+  $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own) LES.mark("own1"); if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); };
   $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); };
   $("playBtn").onclick=()=>{ S.playing?stop():start(); };
-  $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
+  $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; $("bpmOut").textContent=t("bpm",{n:S.bpm}); save(); LES.mark("tempo1"); if(S.playing) lessonPlay();
     if(S.playing && !drumsLive()){ const next=PLAY.t0+PLAY.bar*PLAY.barSec, nb=beatsPerBar()*60/S.bpm; PLAY.t0=next-PLAY.bar*nb; PLAY.barSec=nb; } };
   $("downBtn").onclick=()=>moveOct(-1);
   $("upBtn").onclick=()=>moveOct(1); bindOctHeld();
@@ -1989,8 +1998,74 @@ function bind(){
   let rt=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const before=KB.whites; if(7*octaves()+1!==before) buildKeys(); },150); });
 }
 
+/* ══ AOG-LESSONS-V1 (2026-10-05) — the Band's lessons: each step ticks itself as it happens (the words:
+   _work/music/lessons_band.py; the card: aog-lessons.js). Jimmy: "make sure all music labs have lessons galore".
+   A step ticks only on the real thing: a key or pad played with that instrument, a pattern playing in that way,
+   a take recorded with it. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={keys:new Set(), pads:new Set(), pcs:new Set(), harp:0, tenor:0, down:{}, take:new Set()};
+const LES_SOUND={trumpet:["sTrumpet","vibPlain"], trombone:["sTrombone","vibPlain"], horn:["sHorn"], brass:["sBrassSec"],
+  flute:["sFlute","vibPlain"], clarinet:["sClarinet"], oboe:["sOboe","vibPlain"], bassoon:["vibPlain"], winds:["sWindsSec"],
+  violins:["sViolins","sBowed"], violas:["sBowed"], cellos:["sCellos","sBowed"], contrabass:["sDbass","sBowed"], strings:["sStringsSec","sBowed"],
+  timpani:["sTimpani"], marimba:["sMallet"], xylophone:["sMallet"], glockenspiel:["sMallet"], harp:["sHarp"],
+  trumpet_straight:["muteOn"], trumpet_harmon:["muteOn","sJazzSolo"], horn_mute:["muteOn"], brass_mute:["muteOn"],
+  trumpet_vib:["sJazzSolo"], trumpet_bebop:["sJazzSolo"], sax_bebop:["sJazzSolo"], tenor_vib:["sJazzSolo"], tenor_modal:["sJazzSolo"], soprano_fusion:["sJazzSolo"]};
+function lessonRec(x){ if(REC.on) LT.take.add(x); }
+/* the instrument picked was heard: from a key, a pad, the wheel, Any chord or a pattern */
+function lessonSound(){ const id=S.sound; (LES_SOUND[id]||[]).forEach(k=>LES.mark(k)); if(/_pizz$/.test(id)) LES.mark("sPizz"); lessonRec("u:"+id); }
+function lessonUse(step){ if(step) LES.mark(step); lessonSound(); if(S.sound==="orchestra") LES.mark("orchKey"); if(S.own && S.prog.length>=4) LES.mark("own4"); }
+function lessonPad(i){ LES.mark("pad1"); LT.pads.add(i); if(LT.pads.size>=6) LES.mark("pads6"); lessonUse(""); }
+function lessonKey(m, v){
+  if(!playerFor(m)) return;                                   /* a grey key: no player reaches it */
+  LES.mark("tap1"); lessonUse("");
+  LT.keys.add(m); if(LT.keys.size>=5) LES.mark("keys5");
+  if(v<=0.45) LES.mark("kSoft"); if(v>=0.85) LES.mark("kLoud");
+  if(S.sound==="tuba" && m<=40) LES.mark("loTuba");
+  if(S.sound==="piccolo" && m>=96) LES.mark("hiPicc");
+  const pcs=scalePcs(); if(pcs.indexOf(m%12)>=0){ LT.pcs.add(m%12); if(LT.pcs.size>=3) LES.mark("scale3"); }
+  if(S.sound==="harp" && ++LT.harp>=8) LES.mark("lulHarp");
+  if(S.sound==="tenor_vib" && ++LT.tenor>=8) LES.mark("balKeys");
+  LT.down[m]={at:performance.now(), s:S.sound};
+}
+function lessonKeyUp(m){ const d=LT.down[m]; delete LT.down[m]; if(d && /_vib$/.test(d.s) && performance.now()-d.at>=2000) LES.mark("vibHold"); }
+function lessonPreset(id){ LES.mark("pat1"); LES.mark({three:"fanPat", jazz:"balPat", turn:"balPat", circle:"balPat", fiesta:"mariPat", epic:"orchPat"}[id]||""); }
+/* the band is playing a pattern: this sound, this way of playing, this tempo */
+function lessonPlay(){
+  if(!S.playing) return;
+  const id=S.sound, rh=S.rhythm, bpm=curBpm(), is=(a, r)=>id===a && (!r || rh===r);
+  LES.mark("play1"); lessonSound(); LES.mark("rh_"+rh);
+  if(!S.preset && S.prog.length) LES.mark("ownPlay");
+  LES.mark({percussion:"percPlay", bebop:"bebopPlay", cooljazz:"coolPlay", bigband:"bigPlay"}[id]||"");
+  if(drumsLive()) LES.mark("drumPlay");
+  if(is("brass","fanfare")) LES.mark("fanPlay");
+  if(is("marching","march")){ LES.mark("marPlay"); if(bpm>=110) LES.mark("marFast"); }
+  if(is("strings","waltz")){ LES.mark("lulPlay"); if(bpm<=72) LES.mark("lulSlow"); }
+  if(is("tenor_vib") && (rh==="long" || rh==="swell")) LES.mark("balPlay");
+  if(is("mariachi") && S.preset==="fiesta") LES.mark("mariPlay");
+  if(is("mariachi","waltz")) LES.mark("mariWaltz");
+  if(is("orchestra","swell")) LES.mark("orchSwell");
+  lessonRec("p:"+id+"|"+rh);
+}
+/* a take: ● Record (pressed = it is about to stop), what was played while it ran, listening, and the Mixing Desk */
+function lessonTakes(){
+  $("recBtn").addEventListener("click",()=>{
+    if(REC.closing) return;
+    if(!REC.on){ LES.mark("rec1"); LT.take=new Set(); let n=0; const on=()=>{ if(REC.on){ if(S.playing) lessonRec("p:"+S.sound+"|"+S.rhythm); } else if(++n<20) setTimeout(on, 100); }; on(); return; }
+    LES.mark("rec2"); const has=x=>LT.take.has(x), any=w=>[...LT.take].some(x=>x.indexOf(w)>=0);
+    if(has("p:brass|fanfare")) LES.mark("fanTake");
+    if(has("p:marching|march")) LES.mark("marTake");
+    if(any(":tenor_vib")) LES.mark("balTake");
+    if(any(":orchestra")) LES.mark("orchTake");
+  }, true);
+  const box=$("takes");
+  box.addEventListener("play",(e)=>{ if(e.target && e.target.tagName==="AUDIO") LES.mark("takeHear"); }, true);
+  box.addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest("[data-aogrec-studio]"); if(!b) return;
+    let n=0; const look=()=>{ if(REC.studioLine){ LES.mark("studio1"); return; } if(++n<40) setTimeout(look, 150); }; setTimeout(look, 150); }, true);
+}
+
 loadState();
 bind();
+lessonTakes();
 paintText();
 bpInit();
 if(libsIn()) scalesReady(); else document.addEventListener("DOMContentLoaded", scalesReady);

@@ -170,7 +170,9 @@
      reading page gets highlights and notes (aog-markup.js). Tool pages opt out below. */
   try {
     var ms = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
-    if (!/^(|index|dashboard|turn-ins|today|404|offline|daily-drops|music-drums|music-decks|music-piano|music-guitar|music-bass|music-band|science-waves|science-microscope|science-telescope|quiet-space)$/.test(ms)) {
+    /* AOG-MARKUP-TOOLS-V2 (2026-10-05): every music lab is a tool, by its file name and by its short address (/beat-lab,
+       /piano …, which is how they are reached): "My notes" sat over the Beat Lab's sixteenth pad and caught its taps */
+    if (!/^(|index|dashboard|turn-ins|today|404|offline|daily-drops|music-drums|music-decks|music-piano|music-guitar|music-bass|music-band|music-kit|music-pads|music-studio|science-waves|science-microscope|science-telescope|quiet-space|drums|drum-machine|drum-kit|kit|beat-lab|beatlab|pads|pad-machine|piano|keys|guitar|bass|band|turntables|decks|studio|mixing-desk|microscope|telescope|waves|oscilloscope)$/.test(ms)) {
       var mc = D.createElement("link"); mc.rel = "stylesheet"; mc.href = "/aog-markup.css"; (D.head || H).appendChild(mc);
       var mj = D.createElement("script"); mj.src = "/aog-markup.js"; mj.defer = true; (D.head || H).appendChild(mj);
     }
