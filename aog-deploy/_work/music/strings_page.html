@@ -342,6 +342,11 @@ body.pv-left .pv-drawer{left:auto;right:0}
           <button type="button" class="pbtn pv-big" id="pvBig"></button><!-- AOG-PLAY-V1: the neck on the whole screen (a computer) -->
         </div>
         <p class="line pv-turn" id="pvTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
+        <div class="row nk-key"><!-- AOG-NECK-KEY-V1 (Jimmy, 2026-10-05): the key and mood again, right by the neck, so the key can change while a lick or the chords play; they follow the ones above -->
+          <label class="field"><span class="plab" data-t="keyLab"></span><select id="keySel2"></select></label>
+          <div class="field small"><span class="plab" data-t="moodLab"></span>
+            <div class="seg" role="group"><button type="button" class="pbtn" id="majBtn2"></button><button type="button" class="pbtn" id="minBtn2"></button></div></div>
+        </div>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the neck -->
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
@@ -2168,7 +2173,7 @@ function paintText(){
   $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
   $("langBtn").textContent=S.lang==="es"?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
-  $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
+  $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW"); $("majBtn2").textContent=t("major"); $("minBtn2").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
   $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp();
@@ -2185,7 +2190,7 @@ function paintSounds(){
   const opt=id=>`<option value="${id}"${id===S.sound?" selected":""}>${soundName(id)}</option>`;
   sel.innerHTML=order.map(g=>g ? `<optgroup label="${t(g)}">`+groups[g].map(opt).join("")+`</optgroup>` : groups[g].map(opt).join("")).join("");
 }
-function paintKeySel(){ $("keySel").innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===S.key?" selected":""}>${n}</option>`).join(""); }
+function paintKeySel(){ $("keySel").innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===S.key?" selected":""}>${n}</option>`).join(""); const k2=$("keySel2"); if(k2){ k2.innerHTML=$("keySel").innerHTML; k2.value=String(S.key); } }
 function paintProgSel(){
   let html=`<option value="">${t(S.prog.length&&!S.preset?"myOwn":"pickPattern")}</option>`, g=null;
   PRESETS.forEach(p=>{ if(p.g!==g){ if(g) html+="</optgroup>"; g=p.g; html+=`<optgroup label="${PRESET_GROUPS[g][S.lang]}">`; }
@@ -2193,7 +2198,7 @@ function paintProgSel(){
   $("progSel").innerHTML=html+(g?"</optgroup>":"");
 }
 function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }   /* AOG-STRINGS-WAYS-V1: in groups, as the piano's */
-function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
+function paintMood(){ ["","2"].forEach(x=>{ const a=$("majBtn"+x), b=$("minBtn"+x); if(a) a.setAttribute("aria-pressed", S.minor?"false":"true"); if(b) b.setAttribute("aria-pressed", S.minor?"true":"false"); }); const k2=$("keySel2"); if(k2) k2.value=String(S.key); }
 const PAD_KEYS=["1","2","3","4","5","6"];
 function paintPads(){
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
@@ -2773,9 +2778,11 @@ window.addEventListener("blur",()=>{ if(KEYCELLS.size){ KEYCELLS.clear(); litNec
 function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save();
     muteAll(); if(ac) setSound(LIVE_CH, id); prepare(id); paintAmp(); if(NECK.play) buildNeck(); };   /* AOG-PLAY-V1: an upright or fretless sound has no frets */
-  $("keySel").onchange=()=>{ S.key=+$("keySel").value; S.hand=null; save(); paintPads(); paintProg(); buildNeck(); };
+  $("keySel").onchange=()=>{ S.key=+$("keySel").value; S.hand=null; save(); paintPads(); paintProg(); buildNeck(); paintMood(); };
+  $("keySel2").onchange=()=>{ const ks=$("keySel"); ks.value=$("keySel2").value; ks.onchange(); };
   $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
   $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
+  $("majBtn2").onclick=()=>$("majBtn").onclick(); $("minBtn2").onclick=()=>$("minBtn").onclick();
   $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
     S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; save();
     paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } litNeck(); };
@@ -2807,7 +2814,7 @@ function bind(){
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening the menu */
-  ["soundSel","keySel","progSel","rhythmSel"].forEach(id=>{ const el=$(id);
+  ["soundSel","keySel","keySel2","progSel","rhythmSel"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
   bindNeck();

@@ -75,7 +75,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     /* licks (guitar) */
     if(inst==="guitar"){
       await p.evaluate(()=>{ S.key=9; S.minor=true; S.bpm=100; S.fret0=1; buildNeck(); });
-      for(const id of ["blues","double","tap","shred","funk","bend","groove","thrash"]){
+      /* AOG-SOLO-MORE-LICKS-V1: eight groups in the menu, a few licks in each, every lick played below */
+      const grp=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel optgroup")].map(g=>({l:g.label, n:g.querySelectorAll("option").length})));
+      const ids=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel option")].map(o=>o.value));
+      ok(grp.length>=8 && grp.every(g=>g.n>=2) && ids.length>=57 && new Set(ids).size===ids.length, `${ids.length} licks in ${grp.length} groups: `+grp.map(g=>g.l+" "+g.n).join(", "));
+      for(const id of ids){
         await p.selectOption("#soLickSel", id); await p.evaluate(()=>{ window.__v=[]; if(!window.__mv){ window.__mv=window.makeVoice; window.makeVoice=function(cx,ch,i,m,v,w,s){ if(cx===ac) __v.push(m); return __mv.apply(this,arguments); }; } });
         await press("#soLickBtn");
         const seen=[]; let on=true, t0=Date.now();
@@ -106,6 +110,14 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       const kept2=await p.evaluate(()=>{ try{ return JSON.parse(localStorage.getItem("aog.guitar.solo.v1")).lspd; }catch(e){ return null; } });
       ok(kept2===25, "the speed is kept for the next visit: "+kept+" → "+kept2);
       await p.evaluate(()=>{ const r=document.getElementById("soLickSpd"); r.value="100"; r.dispatchEvent(new Event("input",{bubbles:true})); });
+      /* AOG-NECK-KEY-V1: the key picker by the neck; changing the key while a lick plays starts it again in the new key */
+      await p.evaluate(()=>{ S.key=9; S.minor=true; buildNeck(); paintKeySel(); paintMood(); });
+      await p.selectOption("#soLickSel","pedal"); await press("#soLickBtn"); await p.waitForTimeout(400);
+      const k0=await p.evaluate(()=>AOGSolo._t.LICK.log[0].m);
+      await p.selectOption("#keySel2","2"); await p.waitForTimeout(400);
+      const nk=await p.evaluate(()=>({on:AOGSolo._t.LICK.on, mk:AOGSolo._t.LICK.mk, m:AOGSolo._t.LICK.log[0].m, top:document.getElementById("keySel").value, near:!!document.querySelector(".nk-key + #chordStrip")}));
+      await p.evaluate(()=>AOGSolo._t.lickStop());
+      ok(nk.on && nk.mk==="2m" && nk.m-k0===5 && nk.top==="2" && nk.near, "the key by the neck: A minor to D minor while the lick plays, it starts again five steps up; the top picker follows: "+JSON.stringify(nk));
       /* a major key: the lick comes home to its own note; Spanish */
       await p.evaluate(()=>{ S.key=0; S.minor=false; buildNeck(); }); await p.selectOption("#soLickSel","blues");
       const home=await p.evaluate(()=>{ const n=AOGSolo._t.lickNotes("blues"); const h=n[n.length-1]; return (TUNING[h.s]+h.f)%12; });
