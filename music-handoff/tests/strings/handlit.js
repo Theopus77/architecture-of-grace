@@ -25,6 +25,19 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       ok((await lit(p))==="", "Mute darkens it at once");
       ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
   }
+  /* Solo mode (what Jimmy was using): a note played lights orange over the lit scale; a chord button too */
+  { const c=await b.newContext({viewport:{width:820,height:1180}, isMobile:true, hasTouch:true}); const p=await c.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
+    await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
+    await p.goto("http://localhost:9944/music-guitar.html"); await p.waitForTimeout(1500); console.log("== guitar · Solo mode, iPad upright");
+    await p.evaluate(()=>document.querySelector('#soloMode [data-so-mode="solo"]').click()); await p.waitForTimeout(400);
+    const q=await p.evaluate(()=>{ const r=document.getElementById("neck").getBoundingClientRect(), k=r.width/NECK.W, [x,y]=neckXY(3,7); return {x:r.left+x*k, y:r.top+y*k}; });
+    await p.touchscreen.tap(q.x, q.y); await p.waitForTimeout(150);
+    const one=await lit(p), shown=await p.evaluate(()=>{ const g=document.querySelector('#neck .dot.now[data-c="3:7"]'); return !!g && getComputedStyle(g).display!=="none"; });
+    ok(one==="3:7" && shown, "in Solo mode the note you play lights orange: "+one);
+    await p.evaluate(()=>muteAll()); await p.waitForTimeout(200);
+    const pad=await p.$('#chordStrip .cs[data-i="4"]'); await pad.scrollIntoViewIfNeeded(); await pad.tap(); await p.waitForTimeout(150);
+    ok((await lit(p)).split(" ").length===6, "in Solo mode a chord button lights its six notes: "+await lit(p));
+    ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
   /* sideways on a phone: a strum lights every string it sounds */
   { const c=await b.newContext({viewport:{width:844,height:390}, isMobile:true, hasTouch:true}); const p=await c.newPage(); const errs=[]; p.on("pageerror",e=>errs.push(e.message));
     await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());

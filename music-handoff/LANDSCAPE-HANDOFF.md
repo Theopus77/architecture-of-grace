@@ -146,4 +146,4 @@ Built by this session and four helpers in parallel, each in its own worktree, th
 ## 17. The notes you play light up (2026-10-05, Jimmy: "When I am playing a chord on the guitar, I am unsure what notes are playing. Can they be highlighted like the piano?")
 
 - **AOG-HAND-LIT-V1** (`_work/music/strings_page.html`): `STR_LIVE` (the note ringing on each string, played by hand) now keeps when it started; `handNow()` gives the cells ringing now (until damped, or until the sound has died away, at most 2.5 s); `litNeck()` adds them to the orange "now" dots the pattern already uses. `handLitSoon()` repaints while something rings, then stops (no endless timer). Works upright and sideways, guitar and bass. Test: `strings/handlit` (port 9944).
-
+- Solo mode too (Jimmy: "I was in solo mode which is what I referring to"): `pickString()` in `aog-solo.js` marks when its note started and calls `handLitSoon()`; a Solo lead note stays lit while `alive()`, and the light moves with a hammer-on or pull-off (`legato()`).

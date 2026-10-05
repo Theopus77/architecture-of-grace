@@ -1827,8 +1827,10 @@ function pluckCell(s, f, v, when, o){
    timer looks again only while something rings, then stops. */
 function handNow(){
   const out=new Set(); if(!ac) return out; const t=ac.currentTime;
-  STR_LIVE.forEach((L,s)=>{ if(!L || L.vc.stopped || L.at>t+0.01) return;
-    const end=Math.min(L.vc.natural||Infinity, L.at+2.5); if(t<end) out.add(s+":"+(L.f!=null?L.f:0)); });
+  STR_LIVE.forEach((L,s)=>{ if(!L || !L.vc || L.vc.stopped || (L.at||0)>t+0.01) return;
+    /* Solo mode's lead note rings as long as it is alive (a held note can sing on); a strummed note at most 2.5 s */
+    const on=typeof L.vc.alive==="function" ? L.vc.alive(t) : t<Math.min(L.vc.natural||Infinity, (L.at||0)+2.5);
+    if(on) out.add(s+":"+(L.f!=null?L.f:0)); });
   return out;
 }
 let handLitT=0;
