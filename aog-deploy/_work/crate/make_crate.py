@@ -228,6 +228,10 @@ def main():
         listing.append(dict(file=os.path.basename(p), title=T["title"], title_es=T["title_es"], bpm=T["bpm"],
                             style=T["style"], style_es=T["style_es"], bars=bars, seconds=round(sec, 1), bytes=size))
         print(f'{os.path.basename(p):24s} {T["bpm"]:4d} BPM  {bars} bars  {sec:5.1f}s  {size/1024:6.0f} KB  {T["style"]}')
+    # the scripture records (KJV readings from LibriVox, cut by _work/scripture/build.py) stay in the crate
+    sp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripture", "scripture.json")
+    if os.path.exists(sp):
+        with open(sp) as f: listing += json.load(f)
     with open(os.path.join(OUT, "crate.json"), "w") as f:
         json.dump(listing, f, ensure_ascii=False, indent=1)
     print("total", round(sum(x["bytes"] for x in listing) / 1048576, 2), "MB")
