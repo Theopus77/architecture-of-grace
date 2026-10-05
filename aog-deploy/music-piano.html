@@ -140,6 +140,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 
 /* the keys */
 .krow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .7rem;margin:0 0 .6rem}
+.pv-big{display:none}
+@media (pointer:coarse) and (min-width:600px) and (min-height:600px){ .pv-big{display:inline-flex} }   /* AOG-PLAY-TABLET-V1: a tablet opens the whole-screen keys itself */
 .krow .range{font:800 1rem/1 var(--display);color:#f1ebdf;min-width:6.5rem;text-align:center}
 .kbd{position:relative;display:flex;height:178px;border-top:7px solid #7a1e22;border-radius:4px;background:#0b0c0e;padding:0 2px 2px;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -404,6 +406,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <button type="button" class="pbtn" id="midiBtn" hidden></button>
           <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
           <span id="recTime" hidden>0:00</span>
+          <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the keys -->
@@ -2082,12 +2085,13 @@ function playZoomLock(on){
   let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
     if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
 })();
-const BP={on:false, closed:false, mq:null, back:null, y:0, seen:false};
+const BP={on:false, closed:false, forced:false, mq:null, back:null, y:0, seen:false};
 try{ BP.seen=localStorage.getItem("aog.piano.play.v1")==="1"; }catch(e){}
-function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen.height||0)>=900; return {
+function bpWords(){ const es=S.lang==="es", tab=bpTablet(); return {
+  big: es?"⤢ Tocar en toda la pantalla":"⤢ Play on the whole screen",
   close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu",
   hint: es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like.",
-  turn: tab ? (es?"Gira tu tableta de lado para tocar en toda la pantalla.":"Turn your tablet sideways to play on the whole screen.")
+  turn: tab ? (es?"Pulsa ⤢ Tocar en toda la pantalla para tocar las teclas en grande. Cerrar vuelve a esta página.":"Press ⤢ Play on the whole screen to play big keys. Close brings this page back.")
             : (es?"Gira tu teléfono de lado para tocar en toda la pantalla.":"Turn your phone sideways to play on the whole screen."),
   lower:es?"Más grave":"Lower", higher:es?"Más agudo":"Higher", region:es?"El instrumento, en toda la pantalla":"The instrument, on the whole screen" }; }
 function bpText(){
@@ -2097,10 +2101,13 @@ function bpText(){
   $("bpDown").setAttribute("aria-label", W.lower); $("bpUp").setAttribute("aria-label", W.higher);
   $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
   bpRecPaint();
-  $("bpTurn").textContent=W.turn;
-  $("bpTurn").hidden=BP.seen || BP.on || hashView()!=="home" || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
+  $("bpTurn").textContent=W.turn; $("bpBig").textContent=W.big;
+  $("bpTurn").hidden=BP.seen || BP.on || hashView()!=="home" || !matchMedia("(pointer: coarse)").matches || (!bpTablet() && !matchMedia("(orientation: portrait)").matches);
 }
-function bpWanted(){ return !!(BP.mq && BP.mq.matches && !BP.closed && hashView()==="home"); }
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens
+   the whole-screen keys by itself; a tablet (its short side 600 or more) starts in the page and opens them with ⤢. */
+function bpTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+function bpWanted(){ return hashView()==="home" && (BP.forced || !!(BP.mq && BP.mq.matches && !BP.closed && !bpTablet())); }
 function bpSync(){
   const w=bpWanted(); if(w===BP.on) return;
   const kb=$("kbd"); POINTERS.forEach(m=>{ if(m!=null) noteOff("k", m); }); POINTERS.clear();
@@ -2128,7 +2135,8 @@ function bpInit(){
   BP.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
   const ch=()=>{ BP.closed=false; bpSync(); bpText(); };
   if(BP.mq.addEventListener) BP.mq.addEventListener("change", ch); else if(BP.mq.addListener) BP.mq.addListener(ch);
-  $("bpClose").onclick=()=>{ bpDrawer(false); BP.closed=true; bpSync(); };
+  $("bpClose").onclick=()=>{ bpDrawer(false); BP.forced=false; BP.closed=true; bpSync(); };
+  $("bpBig").onclick=()=>{ BP.forced=true; BP.closed=false; bpSync(); };
   $("bpDown").onclick=()=>$("downBtn").click(); $("bpUp").onclick=()=>$("upBtn").click();   /* the page's own, so a lesson hears about it */
   $("bpRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
   $("bpRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) bpDrawer(false); };

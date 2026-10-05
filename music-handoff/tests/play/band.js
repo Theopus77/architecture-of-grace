@@ -18,6 +18,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const key=(m)=>p.evaluate(m=>{ const el=document.querySelector(`#kbd [data-m="${m}"]`); if(!el) return null; const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height*0.8, top:r.y, h:r.height, w:r.width}; }, m);
     const pick=(id)=>p.evaluate(id=>{ const s=document.getElementById("bpSound"); s.value=id; s.onchange(); }, id);
     const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    /* AOG-PLAY-TABLET-V1: a tablet starts in the normal page; the big button opens the whole-screen view */
+    if(await p.evaluate(()=>Math.min(screen.width,screen.height)>=600)){
+      const a=await p.evaluate(()=>({on:BP.on, big:getComputedStyle(document.getElementById("bpBig")).display!=="none"}));
+      ok(!a.on && a.big, "a tablet held sideways starts in the normal page, with Play on the whole screen to open it: "+JSON.stringify(a));
+      await p.evaluate(()=>{ if(typeof GUARD!=="undefined"){ GUARD.last=0; GUARD.down.clear(); } document.getElementById("bpBig").click(); }); await p.waitForTimeout(400); }
     return {c, p, errs, T, key, pick, press};
   };
   for(const [dev, vp, oc] of [["iPhone sideways",{width:844,height:390},2],["iPad sideways",{width:1180,height:820},3]]){

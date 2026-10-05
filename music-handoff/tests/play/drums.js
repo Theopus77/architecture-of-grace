@@ -21,6 +21,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
   };
   for(const [dev, vp] of [["iPhone sideways",{width:844,height:390}],["iPad sideways",{width:1180,height:820}]]){
     const {c, p, errs, T, where, press}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}); console.log("== drums · "+dev);
+    /* AOG-PLAY-TABLET-V1: a tablet stays on the drum machine when turned sideways (its whole-screen kit is the Drum Kit page) */
+    if(dev==="iPad sideways"){ ok(await p.evaluate("!DK.on && getComputedStyle(document.querySelector('.wrap')).display!=='none' && document.getElementById('dkTurn').hidden"), "an iPad held sideways stays on the drum machine"); ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); continue; }
     const st=await p.evaluate(()=>({on:DK.on, shown:getComputedStyle(document.getElementById("kitView")).display, page:getComputedStyle(document.querySelector(".wrap")).display,
       z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
       pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#kitView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText)); }catch(e){ return false; } })}));

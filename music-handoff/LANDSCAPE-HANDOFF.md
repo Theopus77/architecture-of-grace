@@ -138,3 +138,8 @@ Built by this session and four helpers in parallel, each in its own worktree, th
 - **The Band** (`band_head.html`, `band_script.js`): the same two pickers; scale marks on the keys, bars and harp strings, also in the sideways view; with a scale on, the harp is tuned to it; timpani play the chord's own fifth. Test: `bandt/scales`.
 - **Drums**: `music-drums.html` gains 87 beats in ten groups (`BEAT_GROUPS`, `BEATS`, shown as `<optgroup>`s; a "what it is" line; 12-step bars via `p.len`); only added to the other session's list. Solo mode's band gains a Drums menu (`DRUM_FEELS`, 17 feels; "the band's own beat" first and default). Test: `drumbeats`; `t2` counts the new menu.
 
+## 16. A tablet starts in the normal page (2026-10-05, Jimmy: "I don't like how it starts in instrument mode on the iPad automatically as I use it in horizontal mode to begin with. Make it an option to toggle between but let us start in the normal mode")
+
+- **AOG-PLAY-TABLET-V1**: a tablet is a screen whose short side is 600 or more (`pvTablet()`/`bpTablet()`/`dkTablet()`: `Math.min(screen.width, screen.height)>=600`; every iPad, no iPhone). On a tablet, turning sideways no longer opens the whole-screen instrument. The page starts as it is; "⤢ Play on the whole screen" (`#pvBig` guitar and bass, `#bpBig` piano and The Band, `#kpBig` the Drum Kit; shown by `@media (pointer:coarse) and (min-width:600px) and (min-height:600px)`) opens it (`forced`), and Close comes back. The one-time hint on a tablet now says so. The drum machine on a tablet simply stays put (its whole-screen kit is the Drum Kit page). A phone turned sideways still opens the view by itself.
+- The play/* tests check that a sideways iPad starts in the page, then press the button.
+

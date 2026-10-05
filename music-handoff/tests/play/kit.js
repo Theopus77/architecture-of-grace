@@ -21,6 +21,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const where=(svg)=>p.evaluate(svg=>{ const o={}, k=document.getElementById(svg), kb=k.getBoundingClientRect(); k.querySelectorAll("[data-pad]").forEach(g=>{ const r=g.querySelector(".glow > *").getBoundingClientRect();
       o[g.getAttribute("data-pad")]={x:r.x+r.width/2, y:Math.min(r.y+r.height/2, kb.bottom-25), w:r.width, h:r.height, edge:r.x+r.width*0.07}; }); return o; }, svg);
     const press=async(sel)=>{ await p.evaluate("GUARD.last=0; GUARD.down.clear()"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    /* AOG-PLAY-TABLET-V1: a tablet starts in the normal page; the big button opens the whole-screen view */
+    if(await p.evaluate(()=>Math.min(screen.width,screen.height)>=600)){
+      const a=await p.evaluate(()=>({on:PV.on, big:getComputedStyle(document.getElementById("kpBig")).display!=="none"}));
+      ok(!a.on && a.big, "a tablet held sideways starts in the normal page, with Play on the whole screen to open it: "+JSON.stringify(a));
+      await p.evaluate(()=>{ if(typeof GUARD!=="undefined"){ GUARD.last=0; GUARD.down.clear(); } document.getElementById("kpBig").click(); }); await p.waitForTimeout(400); }
     return {c, p, errs, T, where, press};
   };
   /* an iPhone held upright */

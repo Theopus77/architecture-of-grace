@@ -35,6 +35,11 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
     /* after the drawer closes the neck is laid out again; a hand only lands once it has settled */
     const menu=async(...sels)=>{ await press("#pvMore"); for(const x of sels) await p.click(x); if(sels.length){ await press("#pvMore"); await p.waitForTimeout(400); } };
+    /* AOG-PLAY-TABLET-V1: a tablet starts in the normal page; the big button opens the whole-screen view */
+    if(await p.evaluate(()=>Math.min(screen.width,screen.height)>=600)){
+      const a=await p.evaluate(()=>({on:PV.on, big:getComputedStyle(document.getElementById("pvBig")).display!=="none"}));
+      ok(!a.on && a.big, "a tablet held sideways starts in the normal page, with Play on the whole screen to open it: "+JSON.stringify(a));
+      await p.evaluate(()=>{ if(typeof GUARD!=="undefined"){ GUARD.last=0; GUARD.down.clear(); } document.getElementById("pvBig").click(); }); await p.waitForTimeout(400); }
     return {c, p, errs, T, at, press, menu};
   };
 
