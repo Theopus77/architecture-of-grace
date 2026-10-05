@@ -533,7 +533,7 @@ const STR = {
   starterDone:{en:"Done. The starter tracks are in Up next.",es:"Listo. Las pistas iniciales están en Lo que sigue."},
   starterFail:{en:"Some tracks did not load. Check the internet and try again.",es:"Algunas pistas no cargaron. Revisa el internet y vuelve a intentarlo."},
   wordH:{en:"Scripture records",es:"Discos de Escrituras"},
-  wordLead:{en:"Bible verses read aloud (King James). One verse on each pad.",es:"Versículos de la Biblia en voz alta (King James, en inglés). Un versículo en cada pad."},
+  wordLead:{en:"The Bible read aloud, in English and Spanish. One verse or line on each pad.",es:"La Biblia en voz alta, en inglés y en español. Un versículo o una línea en cada pad."},
   wordGo:{en:"Load the scripture records",es:"Cargar los discos de Escrituras"},
   wordDone:{en:"Done. The scripture records are in Up next.",es:"Listo. Los discos de Escrituras están en Lo que sigue."},
   showList:{en:"See the tracks",es:"Ver las pistas"},
@@ -1256,7 +1256,7 @@ async function starterLoad(btn){
    1 to 8. Speech has no tempo, so the deck keeps none (no beat snapping). */
 let WORD = [], wordMsg = "";
 fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"); paintCrate(); }).catch(()=>{});
-const wordName = x => x.title + " - KJV.mp3";
+const wordName = x => x.title + " - " + (x.version||"KJV") + ".mp3";
 function wordOf(name){ return WORD.find(x=>wordName(x)===name) || null; }
 async function wordLoad(btn){
   if(btn) btn.disabled = true;

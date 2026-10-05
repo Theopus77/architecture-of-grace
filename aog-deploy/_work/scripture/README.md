@@ -32,3 +32,31 @@ music crate keeps these records.
 Licensing: KJV text and LibriVox recordings are public domain. If the ESV is used
 later, the official ESV audio may not be chopped; someone must record the reading,
 and the Crossway notice must be shown (up to 500 verses may be quoted).
+
+## The Lord's Prayer (AOG-SCRIPTURE-V2, 2026-10-05)
+
+Jimmy: "The Lord's prayers in English and Spanish."
+
+- `14-the-lords-prayer.mp3`: Matthew 6:9–13, KJV, read by Michael Packard.
+- `15-el-padrenuestro.mp3`: Mateo 6:9–13, Reina-Valera 1909, read by Joyfull.
+
+`prayer.py` makes both. Each is one take, cut into sixteen lines at the reader's pauses
+(each cut snaps to the quietest 10 ms within 0.25 s), with eight cues for the decks.
+There is no Spanish speech model here, so the Spanish cuts were placed by matching
+the reading's sounds and pauses line by line, then checked to sit in silence.
+
+## Sed santos and El único camino (AOG-SCRIPTURE-V3, 2026-10-05)
+
+Jimmy: "You can do the other version in Spanish as well."
+
+- `16-sed-santos.mp3` and `17-el-unico-camino.mp3`: the same sixteen verses as Be Ye Holy and
+  The Only Way, Reina-Valera 1909, read mostly by Joyfull (LibriVox). Scripts in `es/`.
+
+There is no Spanish speech model here, so `es/esfind.py` turns each verse's Spanish spelling into
+speech sounds (ARPAbet), recognizes the reading's sounds with pocketsphinx's phone recognizer, and
+finds the best local match (Smith-Waterman). `es/rvsplit.py` cuts each verse in two at the
+pause nearest its phrase break. Every start, end and cut was then checked against the loudness of
+each 10 ms (`es/emap.py`): a verse must begin and end in a pause, and its cut must fall where the
+text says. Four matches ran into the next verse (John 3:16, Isaiah 45:22, Isaiah 53:5) or began a
+phrase early (1 Peter 1:16, checked by finding the end of verse 15); their fixed times are in
+`es/final.json`. Isaiah 43:11 is short, so it was found together with verse 10.
