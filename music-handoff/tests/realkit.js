@@ -12,20 +12,20 @@ const URL0="http://localhost:9915/music-drums.html#home";
 const NAMES={P:"Kit P · studio session, dry",Q:"Kit Q · big room rock",R:"Kit R · big-band swing",S:"Kit S · prog rock, many toms",T:"Kit T · groove metal",
   /* AOG-DRUM-REAL-V2 */
   D:"Kit D · dusty breaks",E:"Kit E · boom bap",G:"Kit G · lo-fi",H:"Kit H · Latin percussion",I:"Kit I · live drums",J:"Kit J · rock arena",K:"Kit K · jazz brushes",
-  M:"Kit M · reggae and dub",N:"Kit N · afrobeat",O:"Kit O · marching band",
+  L:"Kit L · 909 house",M:"Kit M · reggae and dub",N:"Kit N · afrobeat",O:"Kit O · marching band",
   U:"Kit U · jazz club",V:"Kit V · brush ballad",W:"Kit W · studio funk",X:"Kit X · 1970s vintage",Y:"Kit Y · hip-hop break"};
-const REAL=["D","E","G","H","I","J","K","M","N","O","P","Q","R","S","T","U","V","W","X","Y"];
+const REAL=["D","E","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y"];
 const NEWKITS=["P","Q","R","S","T","U","V","W","X","Y"];          /* made new as recordings: kick and snare at kit A's level */
-const REBUILT=["D","E","G","H","I","J","K","M","N","O"];            /* were made on the page: each pad where the page-made pad sat */
+const REBUILT=["D","E","G","H","I","J","K","L","M","N","O"];   /* AOG-DRUM-909-V1: and L, a real TR-909 */            /* were made on the page: each pad where the page-made pad sat */
 /* the page-made kits through the same meter, the day they were rebuilt (K-weighted, era 1987, a normal hit) */
 const PAGE={D:[-25.9,-37.4,-54.8,-43.1,-44.7,-28.8,-36.7,-30.6],E:[-22.7,-35.6,-56.4,-46.5,-39.5,-24.6,-41.9,-42.7],G:[-23.7,-37.6,-46.4,-44.6,-44.3,-26.7,-37.9,-28.7],
   H:[-21.9,-30.0,-44.0,-49.4,-36.1,-26.6,-32.5,-31.7],I:[-22.8,-33.7,-65.5,-47.5,-40.8,-23.1,-42.0,-31.3],J:[-21.5,-32.9,-65.7,-48.0,-38.8,-22.7,-27.1,-28.8],
-  K:[-23.7,-42.3,-63.4,-35.4,-37.5,-26.3,-38.5,-23.5],M:[-21.9,-38.5,-59.2,-48.0,-26.7,-26.6,-40.0,-41.4],N:[-24.6,-38.3,-46.3,-48.9,-25.6,-28.3,-36.4,-32.6],
+  K:[-23.7,-42.3,-63.4,-35.4,-37.5,-26.3,-38.5,-23.5],L:[-19.9,-38.8,-67.2,-56.3,-38.3,-25.3,-51.5,-33.8],M:[-21.9,-38.5,-59.2,-48.0,-26.7,-26.6,-40.0,-41.4],N:[-24.6,-38.3,-46.3,-48.9,-25.6,-28.3,-36.4,-32.6],
   O:[-20.6,-40.8,-42.6,-35.4,-47.4,-26.9,-40.2,-26.5]};
 /* where each rebuilt pad was set (music-handoff/tools/drumkits/kits.py TARGET): the page-made level, except closed hats no
    quieter than -54 (the page-made ones were nearly silent), and J's hats, K's hi-hat foot and O's roll lifted so their normal hit
    still peaks at 0.05 or more in the 1987 memory */
-const LIFT={I:{ch:-54.0},J:{ch:-51.0,oh:-46.7},K:{ch:-49.0},M:{ch:-54.0},O:{clap:-43.3}};
+const LIFT={I:{ch:-54.0},J:{ch:-51.0,oh:-46.7},K:{ch:-49.0},L:{ch:-54.0,oh:-50.0,rim:-48.0},M:{ch:-54.0},O:{clap:-43.3}};
 (async()=>{
   const b=await pw.chromium.launch({args:["--autoplay-policy=no-user-gesture-required"]});
   const c=await b.newContext({viewport:{width:1280,height:900}}); const p=await c.newPage();

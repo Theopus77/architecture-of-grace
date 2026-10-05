@@ -131,6 +131,16 @@ def fs_prepped(key):
     return out
 
 
+def soft_attack(y, hz=7000.0, hold=0.004, ramp=0.006):
+    """the first 4 ms of a strike without its top above 7 kHz, coming back over the next 6 ms: a recording cut right on
+    the strike otherwise makes the MP3 smear a little of it before the note"""
+    from scipy.signal import sosfiltfilt
+    low = sosfiltfilt(butter(4, hz / (SR / 2), "low", output="sos"), y)
+    t = (np.arange(len(y)) - onset_of(y)) / SR
+    w = np.sin(np.clip((t - hold) / ramp, 0, 1) * np.pi / 2) ** 2
+    return low + (y - low) * w
+
+
 def declick(y, at_from=0.02, hz=6000.0, over_db=8.0):
     """a music box's mechanism ticks now and then as the drum turns (a pin brushing a tooth, the stop): short bursts
     high above the note. Only the part of the sound above 6 kHz is touched, and only in a burst: where a 1 ms window
@@ -151,6 +161,8 @@ def declick(y, at_from=0.02, hz=6000.0, over_db=8.0):
         med = np.median(nb)
         if e[i] > med * 10 ** (over_db / 20):
             g[i] = med / e[i]
+    gp = np.pad(g, 2, mode="edge")                    # the cut widened by 2 ms each side first, then smoothed, so
+    g = np.min([gp[i:i + nw] for i in range(5)], axis=0)  # the smoothing never lifts the tick back up
     g = np.convolve(np.pad(g, 2, mode="edge"), np.hanning(5) / np.hanning(5).sum(), mode="valid")
     gs = np.interp(np.arange(len(y)), np.arange(nw) * w + w / 2, g)
     return low + high * gs
@@ -216,13 +228,19 @@ def to_mono(x):
     return 0.5 * (a + b)
 
 
+# AOG-PIANO-TOYBOX-V1: the toy piano's and the music box's strikes are sharper than any other set's; at 96 kbps the MP3's
+# noise in the block of the strike reaches 2% of the peak, before the note starts. At 160 kbps it stays under 0.5%
+KBPS = {"toy": 160, "musicbox": 160}
+_KBPS = [96]
+
+
 def write_mp3(path, y):
     """mono, 44,100 Hz, 96 kbps MP3 (LAME's most careful mode), with the gapless header browsers use to drop the
     encoder delay"""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     y = np.clip(y, -1, 1).astype(np.float32)
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-",
-                    "-codec:a", "libmp3lame", "-b:a", "96k", "-compression_level", "0", "-ar", str(SR), "-ac", "1",
+                    "-codec:a", "libmp3lame", "-b:a", "%dk" % _KBPS[0], "-compression_level", "0", "-ar", str(SR), "-ac", "1",
                     path], input=y.tobytes(), check=True)
 
 
@@ -278,7 +296,8 @@ def write_struck(path, y, max_cut=None):
     # rounds its very first instant and gives the MP3 less to smear forward
     if best[0] > 0.008:
         i = onset_of(y)
-        for extra in (0.0003, 0.0006, 0.0009):
+        # AOG-PIANO-TOYBOX-V1: a recording cut right on its strike may need a little longer (up to 4 ms, still a strike)
+        for extra in (0.0003, 0.0006, 0.0009, 0.0015, 0.0025, 0.004):
             k = i + int(extra * SR)
             z = y.copy()
             z[:k] *= np.sin(np.linspace(0, np.pi / 2, k)) ** 2
@@ -583,6 +602,7 @@ def record(setname, info):
 
 def note_file(setname, n, layer, y, meta, struck=True):
     p = os.path.join(OUT, FOLDER.get(setname, setname), "%d%s.mp3" % (n, layer))
+    _KBPS[0] = KBPS.get(setname, 96)
     on, head = write_struck(p, y, max_cut=None if struck else 0.002)
     meta = dict(meta, onset_ms=round(1000 * on, 2), first_samples=round(head, 4))
     REPORT.setdefault(setname, {"files": {}})["files"]["%d%s" % (n, layer)] = meta
@@ -1277,7 +1297,7 @@ def build_musicbox():
     above the note are taken out (declick)"""
     struck_set("musicbox", {"m": fs_prepped("musicbox")}, fund_measure(),
                lambda n, l: 3.0 if n < 74 else 2.6 if n < 86 else 2.2 if n < 98 else 1.8,
-               note_opts=lambda n, l: {"fade_frac": 0.45, "post": declick})
+               note_opts=lambda n, l: {"fade_frac": 0.45, "post": lambda y: soft_attack(declick(y))})
     REPORT["musicbox"]["made_from"] = ("folkman, 'Music Box In the Key of D' (Freesound pack 4540, CC0): 16 teeth, "
                                        "D5 to E7, D major")
 
@@ -1298,7 +1318,7 @@ def build_toy():
         return float(max(-4.0, min(4.0, round(own[r]))))
     struck_set("toy", {"m": files}, meas,
                lambda n, l: 2.4 if n < 60 else 2.0 if n < 72 else 1.7 if n < 84 else 1.4,
-               note_opts=lambda n, l: {"fade_frac": 0.4, "detune_c": detune(n)})
+               note_opts=lambda n, l: {"fade_frac": 0.4, "detune_c": detune(n), "post": soft_attack})
     REPORT["toy"]["made_from"] = ("beskhu, 'Michelsonne piano toy' (Freesound pack 4565, CC BY 4.0): a 1950s "
                                   "Michelsonne toy piano, 30 keys, C4 to F6")
 
