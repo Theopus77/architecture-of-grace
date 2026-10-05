@@ -352,12 +352,25 @@
     return m;
   }
   /* without the sampler engine (a very old browser, or the first tap before it starts): play the recording directly */
+  /* AOG-DRUM-QUICK-V1 (2026-10-05) — Jimmy: "When the drum kits are playing in the beat pad, when I hit the pads they are
+     delayed." Every hit made a new buffer and copied its recording into it (a cymbal is ~half a million samples), on the
+     same thread that hears the tap. Each recording is now made into a buffer once per sound engine and reused: a source
+     may share a buffer, and the same hit sounds the same. */
+  var BUFS = typeof WeakMap !== "undefined" ? new WeakMap() : null;
+  function bufFor(ac, tk) {
+    var m = BUFS ? BUFS.get(ac) : null;
+    if (BUFS && !m) { m = new WeakMap(); BUFS.set(ac, m); }
+    var buf = m ? m.get(tk) : null; if (buf) return buf;
+    buf = ac.createBuffer(tk.hi2 ? 2 : 1, tk.hi.length, HI); buf.getChannelData(0).set(tk.hi);
+    if (tk.hi2) buf.getChannelData(1).set(tk.hi2);                   /* AOG-DRUM-STEREO-V1 */
+    if (m) m.set(tk, buf);
+    return buf;
+  }
   function playDirect(ac, dest, b, id, t0, accent, level) {
     var d = DATA[b] && DATA[b][id]; if (!d || d.made || !ac || !dest) return;
     var k = pick(b, id, accent), tk = d[k.lay] && d[k.lay][k.j]; if (!tk) return;
     try {
-      var buf = ac.createBuffer(tk.hi2 ? 2 : 1, tk.hi.length, HI); buf.getChannelData(0).set(tk.hi);
-      if (tk.hi2) buf.getChannelData(1).set(tk.hi2);                 /* AOG-DRUM-STEREO-V1 */
+      var buf = bufFor(ac, tk);
       var s = ac.createBufferSource(), g = ac.createGain();
       s.buffer = buf; g.gain.value = Math.max(0, Math.min(1, level == null ? 0.46 : level));
       s.connect(g); g.connect(dest); s.start(Math.max(t0 || 0, ac.currentTime));
