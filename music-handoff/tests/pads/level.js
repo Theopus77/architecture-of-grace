@@ -31,7 +31,7 @@ const TABLE=process.argv.includes("--table");
     /* the Beat Lab's whole sound, as ctx() makes it: the bus at 0.9 into the limiter */
     const render=async(sec, fn)=>{ const oc=new OfflineAudioContext(2, Math.round(44100*sec), 44100), g=oc.createGain(), l=oc.createDynamicsCompressor();
       l.threshold.value=-3; l.knee.value=2; l.ratio.value=20; l.attack.value=0.002; l.release.value=0.12;
-      g.gain.value=0.9; g.connect(l); l.connect(oc.destination);
+      const cl=ceiling(oc); g.gain.value=0.9; g.connect(l); l.connect(cl); cl.connect(oc.destination);
       fn({c:oc, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}); const buf=await oc.startRendering();
       let pk=0; for(let c=0;c<buf.numberOfChannels;c++){ const d=buf.getChannelData(c); for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; } }
       PEAK=Math.max(PEAK, pk); LASTPK=pk; return __kw(buf); };
@@ -61,20 +61,21 @@ const TABLE=process.argv.includes("--table");
   const r=out.res; let bad=0; const table={inst:{}, kit:{}, rec:{}};
   /* as loud as the grand, but never lifted past a clean loudest moment (0.9 of full scale): a sound held back by its
      peak is "held" and counts as level (it is as loud as it can be without crackling) */
-  const CLEAN=0.9;
-  const line=(grp, k, db)=>{ const off=db-ref, cur=(out.trim && out.trim[grp] && out.trim[grp][k]) || 0, p=out.pk[grp][k]||0;
+  const CLEAN=0.86;   /* after the ceiling (music-pads.html), which starts rounding at 0.8: only a light touch of it */
+  const TARGET=ref-2;   /* two dB under the grand: room for a beat's hits and a bass under the same ceiling */
+  const line=(grp, k, db)=>{ const off=db-TARGET, cur=(out.trim && out.trim[grp] && out.trim[grp][k]) || 0, p=out.pk[grp][k]||0;
     const room=p>0 ? 20*Math.log10(CLEAN/p) : 99, want=-off, step=Math.min(want, room);
     table[grp][k]=Math.round((cur+step)*10)/10;
     const held=want>room+0.3 && room<0.6, flag=Math.abs(off)>1 && !held ? "  OFF" : held ? "  held (peak "+p.toFixed(2)+")" : "";
     if(flag==="  OFF") bad++; if(p>0.98) { bad++; }
-    console.log(`${grp.padEnd(5)} ${k.padEnd(24)} ${db.toFixed(2)} dB; to the grand ${off>=0?"+":""}${off.toFixed(2)} dB; peak ${p.toFixed(2)}${flag}${p>0.98?"  CLIPS":""}`); };
-  console.log(`grand C chord (piano page): ${ref.toFixed(2)} dB`);
+    console.log(`${grp.padEnd(5)} ${k.padEnd(24)} ${db.toFixed(2)} dB; to the target ${off>=0?"+":""}${off.toFixed(2)} dB; peak ${p.toFixed(2)}${flag}${p>0.98?"  CLIPS":""}`); };
+  console.log(`grand C chord (piano page): ${ref.toFixed(2)} dB; the target, 2 dB under it: ${(ref-2).toFixed(2)} dB`);
   Object.keys(r.inst).forEach(k=>line("inst", k, r.inst[k]));
   Object.keys(r.kit).forEach(k=>line("kit", k, r.kit[k]));
   Object.keys(r.rec).forEach(k=>line("rec", k, r.rec[k]));
   if(TABLE) console.log("LEVEL="+JSON.stringify(table)+";");
   console.log("loudest sample of all: "+out.peak.toFixed(3)+" (1 is full scale)");
   console.log(errs.length ? "page errors: "+errs.join("; ") : "no page errors");
-  console.log(bad ? `FAIL ${bad} sound(s) more than 1 dB from the grand` : "PASS every sound within 1 dB of the grand");
+  console.log(bad ? `FAIL ${bad} sound(s) more than 1 dB from the target` : "PASS every sound within 1 dB of the target, or as loud as it can be without crackling");
   await b.close(); srv.close(); process.exit(bad||errs.length ? 1 : 0);
 })();
