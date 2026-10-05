@@ -109,6 +109,60 @@ const WD={
   ld_bend:{en:"Bend slowly up a whole step, hold it, and let it sing.",es:"Estira despacio un tono entero, sostenlo y deja que cante."},
   ld_groove:{en:"A heavy low riff with the blue note, then a squealing bend with a wide vibrato. It ends on a low squeal.",es:"Un riff grave y pesado con la nota blue, luego un estirón que chilla con un vibrato ancho. Termina con un chillido grave."},
   ld_thrash:{en:"Fast groups of three on the top strings, again and again, down the box. Then a screaming bend. Try it with Wah on.",es:"Grupos rápidos de tres en las cuerdas agudas, una y otra vez, bajando por la caja. Luego un estirón que grita. Pruébala con Wah encendido."},
+  lg_blues:{en:"Blues",es:"Blues"}, lg_rock:{en:"Rock",es:"Rock"}, lg_metal:{en:"Metal",es:"Metal"}, lg_shred:{en:"Shred and tapping",es:"Velocidad y tapping"},
+  lg_funk:{en:"Funk and soul",es:"Funk y soul"}, lg_country:{en:"Country",es:"Country"}, lg_jazz:{en:"Jazz and fusion",es:"Jazz y fusión"}, lg_slow:{en:"Slow and singing",es:"Lentas y cantadas"},
+  lk_turn:{en:"Blues turnaround",es:"Vuelta de blues"},
+  lk_shuffle:{en:"Shuffle lick",es:"Frase de shuffle"},
+  lk_call:{en:"Call and answer",es:"Pregunta y respuesta"},
+  lk_rockrun:{en:"Rock run up the box",es:"Carrera de rock subiendo la caja"},
+  lk_repeat:{en:"Repeating rock lick",es:"Frase de rock que se repite"},
+  lk_unison:{en:"Unison bends",es:"Estirones al unísono"},
+  lk_rnr:{en:"Rock and roll double stops",es:"Dos cuerdas de rock and roll"},
+  lk_gallop:{en:"Galloping metal riff",es:"Riff de metal al galope"},
+  lk_tremolo:{en:"Tremolo-picked melody",es:"Melodía con púa en trémolo"},
+  lk_chug:{en:"Chug and squeal",es:"Golpes apagados y chillido"},
+  lk_doom:{en:"Slow doom lick",es:"Frase lenta de doom"},
+  lk_legato:{en:"Smooth legato climb",es:"Subida ligada y suave"},
+  lk_sweep:{en:"Sweep arpeggio",es:"Arpegio de barrido"},
+  lk_fours:{en:"Groups of four down the box",es:"Grupos de cuatro bajando la caja"},
+  lk_taparp:{en:"Tapping triplets",es:"Tresillos con tapping"},
+  lk_scratch:{en:"Scratchy sixteenths",es:"Semicorcheas rasgadas"},
+  lk_soul:{en:"Soul slide lick",es:"Frase de soul con deslizamiento"},
+  lk_stabs:{en:"Funky double-stop stabs",es:"Golpes funky a dos cuerdas"},
+  lk_chicken:{en:"Chicken picking",es:"Chicken picking"},
+  lk_steel:{en:"Steel guitar bends",es:"Estirones de steel guitar"},
+  lk_roll:{en:"Three-string rolls",es:"Rodadas en tres cuerdas"},
+  lk_swing:{en:"Swing line",es:"Línea de swing"},
+  lk_fusion:{en:"Fusion legato line",es:"Línea ligada de fusión"},
+  lk_ballad:{en:"Ballad melody",es:"Melodía de balada"},
+  lk_anthem:{en:"Big anthem melody",es:"Gran melodía de himno"},
+  lk_cry:{en:"Crying bends",es:"Estirones que lloran"},
+  ld_turn:{en:"Triplets down the box from the top string, two notes on each string, to the low home note.",es:"Tresillos bajando por la caja desde la cuerda aguda, dos notas en cada cuerda, hasta la nota casa grave."},
+  ld_shuffle:{en:"Long, short, long, short: a swing feel, with a little bend to the blue note.",es:"Largo, corto, largo, corto: un aire de swing, con un estirón pequeño hasta la nota blue."},
+  ld_call:{en:"A short question up high, a rest, then a low answer that comes home.",es:"Una pregunta corta arriba, un silencio y luego una respuesta grave que vuelve a casa."},
+  ld_rockrun:{en:"Two notes on every string, up the box fast, then a big bend at the top.",es:"Dos notas en cada cuerda, subiendo rápido por la caja, y un gran estirón arriba."},
+  ld_repeat:{en:"Bend, then two notes on the strings above. Play it four times in a row.",es:"Estira y luego dos notas en las cuerdas de arriba. Tócala cuatro veces seguidas."},
+  ld_unison:{en:"Bend one string up to the same note as the string beside it. Two notes become one big sound.",es:"Estira una cuerda hasta la misma nota que la cuerda de al lado. Dos notas suenan como una grande."},
+  ld_rnr:{en:"Two strings at once, eight times, then a little bend down to the home note.",es:"Dos cuerdas a la vez, ocho veces, y luego un estirón pequeño hacia la nota casa."},
+  ld_gallop:{en:"One long note, two short ones, like a horse running. Low and heavy.",es:"Una nota larga y dos cortas, como un caballo que corre. Grave y pesado."},
+  ld_tremolo:{en:"Pick each note very fast, again and again, so the melody shimmers.",es:"Toca cada nota muy rápido, una y otra vez, para que la melodía brille."},
+  ld_chug:{en:"Muted chugs on the low string with the blue note, then a squealing bend.",es:"Golpes apagados en la cuerda grave con la nota blue, y luego un estirón que chilla."},
+  ld_doom:{en:"Very slow and heavy. A slow bend, long notes and a wide vibrato.",es:"Muy lenta y pesada. Un estirón lento, notas largas y un vibrato ancho."},
+  ld_legato:{en:"Three notes on each string, up the box. Pick only the first; hammer on the rest.",es:"Tres notas en cada cuerda, subiendo por la caja. Púa solo en la primera; ligado en las demás."},
+  ld_sweep:{en:"One note on each string, up and back down, in one smooth sweep of the pick.",es:"Una nota en cada cuerda, subiendo y bajando, con un barrido suave de la púa."},
+  ld_fours:{en:"Four notes down, step back, four notes down again, all the way down the box.",es:"Cuatro notas hacia abajo, un paso atrás, otras cuatro hacia abajo, hasta el fondo de la caja."},
+  ld_taparp:{en:"Tap high, pull off, hammer on. Three notes on one string, then the next string.",es:"Golpea arriba, suelta, liga. Tres notas en una cuerda, luego la siguiente cuerda."},
+  ld_scratch:{en:"Notes with muted scratches between them. Keep your hand moving all the time.",es:"Notas con rasgueos apagados entre ellas. Mantén la mano moviéndose todo el tiempo."},
+  ld_soul:{en:"Slide into the first note, then a smooth, singing line to the home note.",es:"Desliza hacia la primera nota y luego una línea suave y cantada hasta la nota casa."},
+  ld_stabs:{en:"Two strings at once, short and sharp, with muted hits between.",es:"Dos cuerdas a la vez, cortas y secas, con golpes apagados entre ellas."},
+  ld_chicken:{en:"A muted click, then the note, short and bright. It sounds a bit like a chicken.",es:"Un clic apagado y luego la nota, corta y brillante. Suena un poco como una gallina."},
+  ld_steel:{en:"Bend one string slowly while the string beside it rings, like a steel guitar.",es:"Estira una cuerda despacio mientras suena la de al lado, como una steel guitar."},
+  ld_roll:{en:"Three strings, one after another, round and round, like a banjo roll.",es:"Tres cuerdas, una tras otra, una y otra vez, como un banjo."},
+  ld_swing:{en:"Long, short, long, short. Up the chord's notes and back down.",es:"Largo, corto, largo, corto. Sube por las notas del acorde y vuelve a bajar."},
+  ld_fusion:{en:"Hammer up, pull back down, a slide, then home. Smooth and fast.",es:"Liga hacia arriba, suelta hacia abajo, un deslizamiento y a casa. Suave y rápida."},
+  ld_ballad:{en:"A slow melody on two strings. Let each note sing before the next.",es:"Una melodía lenta en dos cuerdas. Deja cantar cada nota antes de la siguiente."},
+  ld_anthem:{en:"A big melody on the top string that climbs to a held bend, then comes home.",es:"Una gran melodía en la cuerda aguda que sube hasta un estirón sostenido y vuelve a casa."},
+  ld_cry:{en:"Bend up and let it fall back, twice, like crying. Then a last bend and home.",es:"Estira y deja que baje, dos veces, como un llanto. Luego un último estirón y a casa."},
   lickSpeed:{en:"Lick speed",es:"Velocidad de la frase"},
   spdFull:{en:"Full speed",es:"Velocidad completa"},
   spdPart:{en:"{n}% speed",es:"{n} % de velocidad"},
@@ -186,9 +240,103 @@ const LICKS=(()=>{
     L.thrash=c1.notes.concat(c2.notes, c3.notes, [
       {t:c3.t, s:4, f:3, d:1.5, b:[2,0.02,0.18], v:0.35, vw:1.5, q:1},
       {t:c3.t+1.75, s:2, f:2, d:1.5, v:0.3, home:1}]); }
+  /* AOG-SOLO-MORE-LICKS-V1 (Jimmy, 2026-10-05: "another dozen or so more licks … a few for each category plus a plethora
+     more"): 26 more, in eight groups. Every one stays in the box (frets 0 to 5 above its low root, so a phone held upright
+     shows it all), uses only the key's notes and the blue note, and slides only across frets that are in the key. */
+  const run=(t0, step, list)=>list.map(([ss,ff,kk,x],i)=>Object.assign({t:+(t0+i*step).toFixed(4), s:ss, f:ff, d:step}, kk&&kk!=="p"?{k:kk}:{}, x||{}));
+  const tri=1/3, six=1/6, sx=1/4;
+  /* blues */
+  L.turn=run(0, tri, [[5,3],[5,0,"o"],[4,3],[4,0,"o"],[3,2],[3,0,"o"],[2,2],[2,0,"o"],[1,2],[1,1,"o"],[1,0,"o"],[0,3]])
+    .concat([{t:4, s:0, f:0, d:2, v:0.4, home:1}]);
+  L.shuffle=[
+    {t:0, s:4, f:3, d:0.6}, {t:0.67, s:3, f:2, d:0.33, b:[1,0,0.15]}, {t:1, s:3, f:0, d:0.6}, {t:1.67, s:2, f:2, d:0.33},
+    {t:2, s:3, f:2, d:0.6}, {t:2.67, s:3, f:3, d:0.33, k:"h"}, {t:3, s:3, f:2, d:0.6, k:"o"}, {t:3.67, s:3, f:0, d:0.33, k:"o"},
+    {t:4, s:2, f:2, d:1.75, v:0.4, home:1}];
+  L.call=[
+    {t:0, s:5, f:3, d:0.75, b:[2,0.05,0.25], v:0.4}, {t:1, s:5, f:0, d:0.5}, {t:1.5, s:4, f:3, d:0.75, v:0.3},
+    {t:3, s:1, f:0, d:0.25}, {t:3.25, s:1, f:1, d:0.25, k:"h"}, {t:3.5, s:1, f:2, d:0.5, k:"h"}, {t:4, s:0, f:3, d:0.5},
+    {t:4.5, s:2, f:0, d:0.5}, {t:5, s:2, f:2, d:1.75, v:0.4, home:1}];
+  /* rock */
+  L.rockrun=run(0, sx, [[0,0],[0,3],[1,0],[1,2,"h"],[2,0],[2,2,"h"],[3,0],[3,2,"h"],[4,0],[4,3,"h"],[5,0],[5,3,"h"]])
+    .concat([{t:3, s:5, f:3, d:1, b:[2,0.05,0.25], v:0.45}, {t:4, s:5, f:0, d:1.75, v:0.35, home:1}]);
+  L.repeat=[]; for(let r=0;r<4;r++){ const t=r*1; L.repeat.push({t, s:3, f:2, d:tri, b:[2,0,0.12]}, {t:t+tri, s:4, f:0, d:tri}, {t:t+2*tri, s:5, f:0, d:tri}); }
+  L.repeat.push({t:4, s:2, f:2, d:1.75, v:0.4, home:1});
+  L.unison=[
+    {t:0, s:3, f:2, d:0.9, b:[2,0.05,0.3]}, {t:0, s:4, f:0, d:0.9},
+    {t:1, s:3, f:2, d:0.9, b:[2,0.05,0.3]}, {t:1, s:4, f:0, d:0.9},
+    {t:2, s:4, f:3, d:1.5, b:[2,0.05,0.35], v:0.6}, {t:2, s:5, f:0, d:1.5},
+    {t:4, s:4, f:3, d:0.5}, {t:4.5, s:4, f:0, d:0.5, k:"o"}, {t:5, s:3, f:2, d:0.5},
+    {t:5.5, s:2, f:2, d:1.75, v:0.4, home:1}];
+  L.rnr=[]; for(let r=0;r<6;r++){ const t=r*0.5; L.rnr.push({t, s:4, f:3, d:0.4}, {t, s:5, f:3, d:0.4}); }
+  L.rnr.push({t:3, s:3, f:2, d:0.5, b:[1,0,0.15]}, {t:3, s:4, f:3, d:0.5}, {t:3.5, s:3, f:0, d:0.5}, {t:3.5, s:4, f:1, d:0.5},
+    {t:4, s:2, f:2, d:1.75, v:0.4, home:1});
+  /* metal */
+  L.gallop=[]; [[0,0],[0,0],[0,3],[1,1]].forEach(([ss,ff],b)=>{ L.gallop.push({t:b, s:ss, f:ff, d:0.4}, {t:b+0.5, s:ss, f:ff, d:0.2}, {t:b+0.75, s:ss, f:ff, d:0.2}); });
+  L.gallop.push({t:4, s:1, f:0, d:0.5}, {t:4.5, s:0, f:0, d:2, v:0.3, vw:1.6, home:1});
+  L.tremolo=[]; [[5,0],[5,3],[5,2],[5,0],[4,3],[4,5]].forEach(([ss,ff],i)=>{ for(let j=0;j<8;j++) L.tremolo.push({t:+(i+j/8).toFixed(4), s:ss, f:ff, d:1/8}); });
+  L.tremolo.push({t:6, s:5, f:0, d:1.75, v:0.2, vw:1.4, home:1});
+  L.chug=run(0, sx, [[0,0,"g"],[0,0,"g"],[0,0],[0,0,"g"],[1,1],[1,0,"o"],[0,3],[0,0,"g"],[0,0,"g"],[0,0,"g"],[0,0],[0,0,"g"],[1,2],[1,1,"o"],[1,0,"o"],[0,3]])
+    .concat([{t:4, s:2, f:2, d:1.5, b:[2,0.02,0.2], v:0.35, vw:1.7, q:1}, {t:5.75, s:0, f:0, d:1.75, v:0.3, vw:1.6, home:1}]);
+  L.doom=[
+    {t:0, s:1, f:0, d:2, b:[1,0.2,0.8], v:1.2, vw:1.6}, {t:2, s:0, f:3, d:2, v:0.8, vw:1.8},
+    {t:4, s:1, f:1, d:1}, {t:5, s:0, f:0, d:3, v:1, vw:2, home:1}];
+  /* shred and tapping */
+  L.legato=run(0, six, [[0,0],[0,2,"h"],[0,3,"h"],[1,0],[1,2,"h"],[1,3,"h"],[2,0],[2,2,"h"],[2,4,"h"],[3,2],[3,4,"h"],[3,5,"h"],[4,0],[4,1,"h"],[4,3,"h"],[5,0],[5,2,"h"],[5,3,"h"]])
+    .concat([{t:3, s:5, f:5, d:0.75, v:0.3}, {t:3.75, s:4, f:5, d:1.75, v:0.35, home:1}]);
+  { const up=[[1,2],[2,2],[3,0],[4,0],[5,0],[5,3,"h"],[5,0,"o"],[4,0],[3,0],[2,2],[1,2],[1,2]]; L.sweep=run(0, six, up.slice(0,11).concat(up.slice(0,11),[[1,2],[2,2],[3,0],[4,0],[5,0],[5,3,"h"]]))
+    .concat([{t:28*six, s:5, f:0, d:0.5, k:"o"}, {t:28*six+0.5, s:2, f:2, d:1.5, v:0.35, home:1}]); }
+  { const box=[[0,0],[0,3],[1,0],[1,2],[2,0],[2,2],[3,0],[3,2],[4,0],[4,3],[5,0],[5,3]], seq=[];
+    for(let st=11; st>=3; st-=2) for(let j=0;j<4;j++) seq.push(box[st-j]);
+    L.fours=run(0, sx, seq).concat([{t:seq.length*sx, s:0, f:3, d:0.5}, {t:seq.length*sx+0.5, s:0, f:0, d:1.75, v:0.35, home:1}]); }
+  L.taparp=run(0, six, [[5,5,"t"],[5,0,"o"],[5,3,"h"],[5,5,"t"],[5,0,"o"],[5,3,"h"],[4,5,"t"],[4,0,"o"],[4,3,"h"],[4,5,"t"],[4,0,"o"],[4,3,"h"],
+    [3,5,"t"],[3,0,"o"],[3,4,"h"],[3,5,"t"],[3,0,"o"],[3,4,"h"]]).concat([{t:3, s:4, f:5, d:0.33, k:"t"}, {t:3.33, s:4, f:5, d:1.75, v:0.3, home:1}]);
+  /* funk and soul */
+  L.scratch=run(0, sx, [[1,2],[1,2,"g"],[1,2,"g"],[2,0],[2,0,"g"],[2,2],[2,2,"g"],[1,2],[1,2,"g"],[1,2],[1,3,"h"],[1,2,"o"],[1,0],[1,0,"g"],[0,3],[0,3,"g"]])
+    .concat([{t:4, s:2, f:2, d:0.9, home:1}]);
+  L.soul=[
+    {t:0, s:3, f:2, d:0.75, sl:[4,0.15,0.3]}, {t:1, s:4, f:3, d:0.5}, {t:1.5, s:4, f:5, d:0.5, k:"h"}, {t:2, s:4, f:3, d:0.5, k:"o"},
+    {t:2.5, s:3, f:4, d:0.5}, {t:3, s:3, f:2, d:0.5}, {t:3.5, s:3, f:2, d:0.6, b:[1,0.05,0.2,0.4,0.15]},
+    {t:4.25, s:4, f:5, d:1.75, v:0.4, home:1}];
+  L.stabs=[]; [[0,[3,2],[4,3]],[0.75,[3,2],[4,3]],[1.5,[3,0],[4,1]],[2,[3,0],[4,1]],[2.75,[3,2],[4,3]],[3.25,[3,4],[4,5]]].forEach(([t,a,b2])=>{ L.stabs.push({t, s:a[0], f:a[1], d:0.18}, {t, s:b2[0], f:b2[1], d:0.18}); });
+  [0.5,1.25,2.5].forEach(t=>L.stabs.push({t, s:3, f:2, d:0.06, k:"g"}, {t, s:4, f:3, d:0.06, k:"g"}));
+  L.stabs.push({t:4, s:2, f:2, d:1.25, home:1});
+  /* country */
+  L.chicken=[]; [[4,3],[4,1],[4,0],[3,4],[3,2],[3,0],[2,4],[2,2]].forEach(([ss,ff],i)=>{ const t=i*0.5; L.chicken.push({t, s:ss, f:ff, d:0.06, k:"g"}, {t:t+0.25, s:ss, f:ff, d:0.2}); });
+  L.chicken.push({t:4, s:2, f:2, d:1.5, home:1});
+  L.steel=[
+    {t:0, s:3, f:2, d:2, b:[2,0.3,0.7], v:1.4}, {t:0, s:4, f:3, d:2},
+    {t:2, s:3, f:4, d:1.5, b:[1,0.2,0.4], v:0.9}, {t:2, s:4, f:5, d:1.5},
+    {t:3.75, s:3, f:2, d:0.5}, {t:4.25, s:2, f:2, d:1.75, v:0.5, home:1}];
+  L.roll=run(0, tri, [[3,0],[4,1],[5,0],[3,0],[4,1],[5,0],[3,2],[4,3],[5,3],[3,2],[4,3],[5,3],[3,0],[4,1],[5,0]]).concat([{t:5, s:5, f:0, d:1.5, v:0.4, home:1}]);
+  /* jazz and fusion */
+  L.swing=[[2,2],[3,0],[3,4],[4,3],[4,5],[4,3],[4,1],[3,4],[3,2],[3,0],[2,4],[2,2]].map(([ss,ff],i)=>({t:+(Math.floor(i/2)+(i%2?0.67:0)).toFixed(4), s:ss, f:ff, d:i%2?0.33:0.6}))
+    .concat([{t:6, s:2, f:2, d:1.5, v:0.6, home:1}]);
+  L.fusion=run(0, six, [[3,2],[3,4,"h"],[3,5,"h"],[4,0],[4,1,"h"],[4,3,"h"],[5,0],[5,2,"h"],[5,3,"h"],[5,5,"h"],[5,3,"o"],[5,2,"o"],[5,0,"o"],[4,3],[4,1,"o"],[4,0,"o"]])
+    .concat([{t:16*six, s:4, f:0, d:0.75, sl:[1,0.2,0.3]}, {t:16*six+0.75, s:4, f:3, d:0.5}, {t:16*six+1.25, s:4, f:5, d:1.75, v:0.4, home:1}]);
+  /* melodic and slow */
+  L.ballad=[
+    {t:0, s:4, f:0, d:1}, {t:1, s:4, f:1, d:0.5}, {t:1.5, s:4, f:3, d:1.5, v:0.6}, {t:3, s:4, f:1, d:0.5}, {t:3.5, s:4, f:0, d:0.5},
+    {t:4, s:3, f:2, d:1}, {t:5, s:3, f:0, d:1, v:0.5}, {t:6, s:2, f:2, d:2.5, v:0.8, home:1}];
+  L.anthem=[
+    {t:0, s:5, f:0, d:0.5}, {t:0.5, s:5, f:2, d:0.5}, {t:1, s:5, f:3, d:1, v:0.5}, {t:2, s:5, f:5, d:2, b:[2,0.1,0.4], v:0.8, vw:1.3},
+    {t:4, s:5, f:3, d:0.5}, {t:4.5, s:5, f:2, d:0.5}, {t:5, s:5, f:0, d:2.5, v:0.7, home:1}];
+  L.cry=[
+    {t:0, s:4, f:3, d:1.5, b:[2,0,0.35,0.9,0.35]}, {t:1.5, s:4, f:0, d:0.5, k:"o"},
+    {t:2, s:4, f:3, d:1.5, b:[2,0,0.35,0.9,0.35]}, {t:3.5, s:3, f:4, d:0.5},
+    {t:4, s:3, f:2, d:1.25, b:[2,0.05,0.4], v:0.6}, {t:5.5, s:2, f:2, d:2.25, v:0.6, home:1}];
   return L;
 })();
-const LICK_ORDER=["blues","double","tap","shred","funk","bend","groove","thrash"];
+/* the groups in the Lick menu, each with a few licks */
+const LICK_GROUPS=[
+  ["blues",["blues","turn","shuffle","call"]],
+  ["rock",["double","rockrun","repeat","unison","rnr"]],
+  ["metal",["groove","thrash","gallop","tremolo","chug","doom"]],
+  ["shred",["shred","tap","legato","sweep","fours","taparp"]],
+  ["funk",["funk","scratch","soul","stabs"]],
+  ["country",["chicken","steel","roll"]],
+  ["jazz",["swing","fusion"]],
+  ["slow",["bend","ballad","anthem","cry"]]];
+const LICK_ORDER=[].concat.apply([], LICK_GROUPS.map(g=>g[1]));
 
 /* the lead sounds this page has (another helper may add more; only the ones that are here are listed) */
 /* the lead sounds made for solos (AOG-AMP-TONES-V1) come right after the first, then the older ones */
@@ -353,7 +501,7 @@ function paintLickSpd(){
 }
 function paintLickSel(){
   const sel=$q("soLickSel"); if(!sel) return;
-  sel.innerHTML=LICK_ORDER.map(id=>`<option value="${id}"${id===P.lick?" selected":""}>${esc(w("lk_"+id))}</option>`).join("");
+  sel.innerHTML=LICK_GROUPS.map(([g,ids])=>`<optgroup label="${esc(w("lg_"+g))}">`+ids.map(id=>`<option value="${id}"${id===P.lick?" selected":""}>${esc(w("lk_"+id))}</option>`).join("")+`</optgroup>`).join("");
   const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc();
 }
 function paintSwitches(){

@@ -33,7 +33,8 @@ const cents=(a,b)=>1200*Math.log2(a/b);
       return {x:r.left+(x+(dx||0))*k, y:r.top+y*k, row:NECK.rowH*k}; }, [s,f,dx||0]);
     /* the bar ignores a tap while a hand plays or just after (AOG-PLAY-GUARD-V1); a test's own presses wait it out */
     const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
-    const menu=async(...sels)=>{ await press("#pvMore"); for(const x of sels) await p.click(x); if(sels.length) await press("#pvMore"); };
+    /* after the drawer closes the neck is laid out again; a hand only lands once it has settled */
+    const menu=async(...sels)=>{ await press("#pvMore"); for(const x of sels) await p.click(x); if(sels.length){ await press("#pvMore"); await p.waitForTimeout(400); } };
     return {c, p, errs, T, at, press, menu};
   };
 
