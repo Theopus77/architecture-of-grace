@@ -1,4 +1,4 @@
-/* AOG-STRINGS-WAYS-V1: the guitar's 21 ways and the bass's 19, and the 44 chord patterns, on both pages (an iPhone 13):
+/* AOG-STRINGS-WAYS-V1: the guitar's 21 ways and the bass's 19, and the 59 chord patterns, on both pages (an iPhone 13):
    1. the menus: the ways in four groups, the patterns in five (pop, rock, soul, jazz, minor), English and Spanish; the 18 old
       patterns unchanged; minor patterns go by name;
    2. every way with every pattern, scheduled (straight and swung, the hand at frets 1 and 5): notes in every bar, each in the
@@ -98,7 +98,7 @@ const OLD18=[{"id":"pop","g":"pop","en":"Pop · 1 5 6 4","es":"Pop · 1 5 6 4","
       [S.preset,S.prog,S.minor,S.rhythm,S.key,S.fret0]=keep;
       return {pairs, notes, out};
     });
-    ok(mx.pairs===44*W.n*2 && mx.out.length===0, `${mx.pairs} plays (44 patterns × ${W.n} ways × at fret 1 straight and fret 5 swung), ${mx.notes} notes: all in place`+(mx.out.length?"\n   "+mx.out.slice(0,8).join("\n   "):""));
+    ok(mx.pairs===59*W.n*2 && mx.out.length===0, `${mx.pairs} plays (59 patterns × ${W.n} ways × at fret 1 straight and fret 5 swung), ${mx.notes} notes: all in place`+(mx.out.length?"\n   "+mx.out.slice(0,8).join("\n   "):""));
 
     /* 3. every chord, every place the hand can be, every way (worked out, not played) */
     const sweep=await p.evaluate(()=>{
@@ -155,7 +155,7 @@ const OLD18=[{"id":"pop","g":"pop","en":"Pop · 1 5 6 4","es":"Pop · 1 5 6 4","
               const reach=shp.every(f=>f<0 || (f===0 ? f0<=2 : (f>=f0 && f<=f0+n-1)));
               if(notes.length<3 || !reach || notes.some(m=>pcs.indexOf(m%12)<0)) bad.push(`n${n} at ${f0} ${pr.id} key ${key}: ${chordName(c)} ${shp.join(",")}`); }); } }
         [NECK.n,S.fret0,S.key,S.minor,S.sound]=keep; VOICINGS.clear(); return {n0, bad}; });
-      ok(ks.bad.length===0, `every chord of the 44 patterns, in all 12 keys, at frets 1, 3, 5 and 8 on a phone and a computer: ${ks.n0} shapes, each reachable, three strings or more, every note in the chord`+(ks.bad.length?"\n   "+ks.bad.slice(0,6).join("\n   "):""));
+      ok(ks.bad.length===0, `every chord of the 59 patterns, in all 12 keys, at frets 1, 3, 5 and 8 on a phone and a computer: ${ks.n0} shapes, each reachable, three strings or more, every note in the chord`+(ks.bad.length?"\n   "+ks.bad.slice(0,6).join("\n   "):""));
     }
 
     if(inst==="guitar"){
