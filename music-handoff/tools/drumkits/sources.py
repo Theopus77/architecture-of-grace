@@ -13,6 +13,14 @@ to everyone under CC0 1.0 Universal (public domain); the LICENSE file of each wa
   vsco   VS Chamber Orchestra 2: Community Edition, Versilian   (the double bass, the upright piano)
   gm     Discord SFZ GM Bank: jRhodes GM by Jeff Learman (CC0)  (a 1977 Rhodes Mark I)
   voice  legato_vocal_tutorial: the "a" of Hadzi-Fia, Karoryfer (one singer)
+
+AOG-DRUM-909-V1 (2026-10-05): one more kind of source, not CC0 but CC BY 4.0 (credit given):
+  fs     a sound on Freesound, "fs:<user>/<sound id>_<user id>": Freesound's high-quality MP3 copy of it (the original
+         WAV needs a login), from cdn.freesound.org. Used for kit L: "TR-909 JGB pack" (pack 1643), sampled by Janne
+         G:son Berg from his own Roland TR-909 and posted by altemark under Creative Commons Attribution 4.0
+         (https://creativecommons.org/licenses/by/4.0/). Its sound pages say: "Sampled by Janne G:son Berg from his old
+         909. Cut up and organized by me. Here his the original readme.txt Janne distributed with the wav: Sampled in
+         one session from my (now sold) 909. 24 bit, 44.1 kHz. Feel free to use the samples for whatever you like."
 """
 import os, subprocess, urllib.request, urllib.parse
 import numpy as np
@@ -47,6 +55,15 @@ CACHE = os.environ.get("AOG_DRUM_CACHE", SCR + "/drumsreal/cache")
 def path_of(src):
     """the local file for a source, fetched into the cache the first time"""
     lib, rel = src.split(":", 1)
+    if lib == "fs":
+        sid, uid = rel.split("/")[1].split("_")
+        c = os.path.join(CACHE, "fs", rel + ".mp3")
+        if not (os.path.isfile(c) and os.path.getsize(c) > 200):
+            os.makedirs(os.path.dirname(c), exist_ok=True)
+            url = "https://cdn.freesound.org/previews/%d/%s_%s-hq.mp3" % (int(sid) // 1000, sid, uid)
+            subprocess.run(["curl", "-sSLf", "--retry", "4", "-o", c + ".part", url], check=True)
+            os.replace(c + ".part", c)
+        return c
     p = os.path.join(LOCAL[lib], rel)
     if os.path.isfile(p) and os.path.getsize(p) > 200:
         return p
@@ -85,7 +102,7 @@ def load2(src):
         return _cache2[src]
     p = path_of(src)
     ch = int(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=channels", "-of", "csv=p=0", p],
-                            capture_output=True, text=True, check=True).stdout.strip().split("\n")[0])
+                            capture_output=True, text=True, check=True).stdout.strip().split("\n")[0].split(",")[0])
     if ch == 1:
         a = load(src)
         a = np.stack([a, a], axis=1)
@@ -100,7 +117,7 @@ def load2(src):
 def channels(src):
     p = path_of(src)
     return int(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=channels", "-of", "csv=p=0", p],
-                              capture_output=True, text=True, check=True).stdout.strip().split("\n")[0])
+                              capture_output=True, text=True, check=True).stdout.strip().split("\n")[0].split(",")[0])
 
 
 def exists(src):

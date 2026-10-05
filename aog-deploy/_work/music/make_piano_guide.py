@@ -202,7 +202,7 @@ for letter, en, es, how_en, how_es in [
     ("2", "Electric pianos", "Pianos eléctricos", "Metal tines, reeds or a computer chip. And the funky clavinet.", "Varillas, lengüetas o un chip de computadora. Y el clavinet del funk."),
     ("3", "Organs and accordion", "Órganos y acordeón", "Spinning wheels or air through pipes. Never fades.", "Ruedas que giran o aire por tubos. Nunca se apaga."),
     ("4", "Mallets and bells", "Láminas y campanas", "Celesta, glockenspiel, vibraphone, marimba, steel drums, bells.", "Celesta, glockenspiel, vibráfono, marimba, tambores de acero, campanas."),
-    ("5", "Plucked", "Pulsados", "Harpsichord, harp, kalimba, celesta music box.", "Clavecín, arpa, kalimba, celesta de caja de música."),
+    ("5", "Plucked", "Pulsados", "Harpsichord, harp, kalimba, music box.", "Clavecín, arpa, kalimba, caja de música."),
     ("6", "Strings and voices", "Cuerdas y voces", "Soft strings, recorded. A choir.", "Cuerdas suaves, grabadas. Un coro."),
     ("7", "Tape keyboards", "Teclados de cinta", "Strings and flute on tape, for prog rock.", "Cuerdas y flauta en cinta, para el rock progresivo."),
     ("8", "Synths", "Sintetizadores", "String synth, warm synth, synth brass, synth lead.", "Sintetizador de cuerdas, cálido, de metales y solista.")]:

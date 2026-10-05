@@ -1510,6 +1510,7 @@ function isRawOut(id){ return padIndex(id) < 2; }
 /* AOG-DRUM-REAL-V1 — a recorded kit plays like a sample: pads 1 and 2 leave raw, pads 3 to 8 pass the filter chip. Each hit
    picks its recording (soft, normal or accent, and the next take in turn), and those recordings go to an engine with the pad's own. */
 function realKit(b){ return !!(window.AOGDrumKit && AOGDrumKit.has(b)); }
+function recGroup(b){ return realKit(b) && !(AOGDrumKit.machine && AOGDrumKit.machine(b)); }   /* AOG-DRUM-909-V1: kit L is recorded, but a drum machine: it stays with the drum machine kits */
 function madePad(b, id){ return !!(window.AOGDrumKit && AOGDrumKit.made && AOGDrumKit.made(b, id)); }   /* AOG-DRUM-REAL-V2: drawn here inside a recorded kit (kit M's synth tom) */
 function realRoute(m, id, accent){ return (realKit(S.bank) && !(USER[S.bank] && USER[S.bank][id])) ? AOGDrumKit.route(m, S.bank, id, accent) : m; }
 function realPush(port, id){ if(realKit(S.bank) && !(USER[S.bank] && USER[S.bank][id])) AOGDrumKit.post(port, S.bank, id, src=>cutPad(src, id)); }
@@ -2021,7 +2022,7 @@ function trimOf(id){
 }
 function kitName(b){ return (KIT_LABEL[b]||["",""])[S.lang==="es"?1:0]; }
 /* AOG-DRUM-REAL-V2 — the Sounds menu: the drum-machine kits made here first, then every recorded kit under its own heading */
-function kitMenu(){ return BANKS.filter(b=>!realKit(b)).concat(BANKS.filter(b=>realKit(b))); }
+function kitMenu(){ return BANKS.filter(b=>!recGroup(b)).concat(BANKS.filter(b=>recGroup(b))); }   /* AOG-DRUM-909-V1: kit L, a recorded drum machine, stays with the drum machine kits */
 /* AOG-DRUM-KITBACK-V2 (2026-10-03) — Jimmy: "add it to full bench." Put the kit sounds back now sits
    on both benches, next to the Sounds menu, whenever this kit holds your own sounds. It takes them all
    off this kit in one tap, so Put my sounds back undoes it, until you load another sound. */
@@ -3809,7 +3810,7 @@ function dkPaint(){
   document.getElementById("dkClose").textContent=W.close; document.getElementById("dkMore").textContent=W.menu;
   document.getElementById("dkHint").textContent=W.hint;
   /* the kits, as the page's Sounds menu: the drum machine's own, then the recorded kits */
-  const ks=document.getElementById("dkKitSel"), made=kitMenu().filter(b=>!realKit(b)), rec=kitMenu().filter(b=>realKit(b)), op=b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`;
+  const ks=document.getElementById("dkKitSel"), made=kitMenu().filter(b=>!recGroup(b)), rec=kitMenu().filter(b=>recGroup(b)), op=b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`;
   ks.innerHTML=(rec.length ? `<optgroup label="${S.lang==="es"?"Cajas de ritmos":"Drum machine kits"}">${made.map(op).join("")}</optgroup><optgroup label="${S.lang==="es"?"Baterías grabadas":"Recorded drum kits"}">${rec.map(op).join("")}</optgroup>` : made.map(op).join(""));
   ks.setAttribute("aria-label", S.lang==="es"?"Batería":"Drum kit");
   const run=document.getElementById("dkRun");

@@ -27,8 +27,9 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       z:getComputedStyle(document.body).zoom, sw:document.documentElement.scrollWidth, sh:document.scrollingElement.scrollHeight, iw:innerWidth, ih:innerHeight,
       pad:[...document.styleSheets].some(ss=>{ try{ return [...ss.cssRules].some(r=>/#kitView/.test(r.selectorText||"") && /safe-area-inset-left/.test(r.cssText)); }catch(e){ return false; } })}));
     ok(st.on && st.shown==="flex" && st.page==="none", "turned sideways, the kit fills the screen");
-    /* AOG-KIT-REAL-V1's drawing once took the name realKit, so every made kit played as a recorded one ("new noise") */
-    ok(await p.evaluate("realKit('A')===false && realKit('L')===false && realKit('P')===true && typeof drawKit==='function'"), "the made kits play as made kits again (realKit is the page's own)");
+    /* AOG-KIT-REAL-V1's drawing once took the name realKit, so every made kit played as a recorded one ("new noise").
+     AOG-DRUM-909-V1: kit L is a recorded 909 now, so F stands for the made kits here */
+    ok(await p.evaluate("realKit('A')===false && realKit('F')===false && realKit('L')===true && realKit('P')===true && typeof drawKit==='function'"), "the made kits play as made kits again (realKit is the page's own)");
     /* AOG-PLAY-ZOOM-V1: the page holds still while the kit fills the screen */
     ok(await p.evaluate("/maximum-scale=1/.test(document.querySelector('meta[name=viewport]').content) && getComputedStyle(document.documentElement).touchAction==='manipulation'"), "sideways, the page cannot zoom (viewport held at 1, no double-tap zoom)");
     /* AOG-KIT-LOOKS-V1: every kit in one menu, each drawn as its own kind of kit */

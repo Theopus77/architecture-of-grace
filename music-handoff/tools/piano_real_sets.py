@@ -34,8 +34,12 @@ What each set is made from (all real recordings; licenses checked in each reposi
              stopped flutes at 16', 8' and 4'
   choir      one singer on "ah" (Karoryfer Hadzi-Fia, from sfzinstruments/legato_vocal_tutorial, CC0), four takes
              layered per note
-  musicbox, toy
-             the celesta above (soft and short; hard, short and a little out of tune)
+  toy        AOG-PIANO-TOYBOX-V1: a real 1950s Michelsonne toy piano (Freesound pack 4565 by beskhu, CC BY 4.0),
+             30 keys one after another, C4 to F6, each key keeping up to 4 cents of its own tuning
+  musicbox   AOG-PIANO-TOYBOX-V1: a real music box's comb (Freesound pack 4540 by folkman, CC0), 16 notes of D major,
+             D5 to E7, each tooth plucked on its own
+             (both were the celesta, voiced another way, until 2026-10-05; Freesound's own MP3 copies are used,
+             the files anyone can download without an account; see FREESOUND below)
 
 usage:
   python3 music-handoff/tools/piano_real_sets.py --sources <dir with the clones> [--fetch] [--only a,b] [--out DIR]
@@ -76,6 +80,113 @@ SOURCES = {
 }
 SRC_ROOT = None
 
+# AOG-PIANO-TOYBOX-V1 (2026-10-05): sources on Freesound. Each pack's license, as its sound pages state it:
+#   beskhu, "Michelsonne piano toy" (https://freesound.org/people/beskhu/packs/4565/): "Attribution 4.0. You are free
+#     to share (to copy, distribute and transmit) and to remix (to adapt and modify) as long as you credit the author
+#     of the sound." (https://creativecommons.org/licenses/by/4.0/). The pack: "multisample pack of a collection
+#     piano toy from the 50's (MICHELSONNE)"; mono, 44,100 Hz, 24 bit.
+#   folkman, "Music Box In the Key of D" (https://freesound.org/people/folkman/packs/4540/): Creative Commons 0
+#     (https://creativecommons.org/publicdomain/zero/1.0/). "I recorded 16 notes from a music box. I waited for the
+#     motor to loose juice then I wound it forward manually so I could record each separate note chromatically.
+#     There are two octaves plus one note." Mono, 44,100 Hz, 16 bit.
+# The files are Freesound's high-quality MP3 previews (the same recordings; the original WAV/AIFF needs a login),
+# fetched by --fetch from cdn.freesound.org. key: (folder, pack page, author, license, user id, {midi: sound id})
+FREESOUND = {
+    "michelsonne": ("freesound.beskhu.michelsonne", "https://freesound.org/people/beskhu/packs/4565/", "beskhu",
+                    "https://creativecommons.org/licenses/by/4.0/", 1031833,
+                    {60 + i: 70700 + i for i in range(30)}),      # "Michelsonne 60 C3 f" … "Michelsonne 89 F5 f":
+                                                                   # the number is the MIDI note it sounds
+    "musicbox": ("freesound.folkman.musicbox", "https://freesound.org/people/folkman/packs/4540/", "folkman",
+                 "https://creativecommons.org/publicdomain/zero/1.0/", 1022894,
+                 {74: 70181, 76: 70184, 78: 70173, 79: 70174, 81: 70175, 83: 70177, 85: 70179, 86: 70182,
+                  88: 70185, 90: 70187, 91: 70188, 93: 70176, 95: 70178, 97: 70180, 98: 70183, 100: 70186}),
+    # folkman's names go "MUSIC BOX D 1" … "MUSIC BOX E 3" up the D major scale; measured, they sound D5 to E7
+}
+# a set rebuilt from new recordings gets a new folder (the old files stay cached for a year)
+FOLDER = {"toy": "toy2", "musicbox": "musicbox2"}
+
+
+def fs_files(key):
+    """{midi: path} of a Freesound pack's notes"""
+    folder, _, _, _, uid, ids = FREESOUND[key]
+    return {m: os.path.join(SRC_ROOT, folder, "%d.mp3" % i) for m, i in ids.items()}
+
+
+def fs_prepped(key):
+    """{midi: path} of a Freesound pack's notes, ready to build from: each file starts right on the strike (it was cut
+    there before upload), so an MP3 made from it smears a little of the strike in front. Each gets 5 ms of silence
+    before it and its first 3 milliseconds eased in (too short to hear on a struck rod or tooth), kept as a WAV
+    beside the download"""
+    out = {}
+    for m, path in fs_files(key).items():
+        wav = path[:-4] + ".lead3.wav"
+        if not os.path.exists(wav):
+            x = load(path)
+            k = int(0.003 * SR)
+            x[:k] *= (np.sin(np.linspace(0, np.pi / 2, k)) ** 2)[:, None]
+            x = np.concatenate([np.zeros((int(0.005 * SR), x.shape[1])), x])
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", str(x.shape[1]),
+                            "-i", "-", "-c:a", "pcm_f32le", wav], input=x.astype(np.float32).tobytes(), check=True)
+        out[m] = wav
+    return out
+
+
+def soft_attack(y, hz=7000.0, hold=0.004, ramp=0.006):
+    """the first 4 ms of a strike without its top above 7 kHz, coming back over the next 6 ms: a recording cut right on
+    the strike otherwise makes the MP3 smear a little of it before the note"""
+    from scipy.signal import sosfiltfilt
+    low = sosfiltfilt(butter(4, hz / (SR / 2), "low", output="sos"), y)
+    t = (np.arange(len(y)) - onset_of(y)) / SR
+    w = np.sin(np.clip((t - hold) / ramp, 0, 1) * np.pi / 2) ** 2
+    return low + (y - low) * w
+
+
+def declick(y, at_from=0.02, hz=8000.0, cut_hz=2000.0, over_db=9.0, passes=4):
+    """a music box's mechanism ticks now and then as the drum turns (a pin brushing a tooth, the stop): short bursts
+    high above the note. A burst is found as pianosets.js listens for a click: a 1 ms window whose sound above 8 kHz
+    is more than over_db louder than every window in the 70 ms around it (3 ms either side left out). There, and only
+    there, the sound above 2 kHz (a tick reaches down that far, more so on a tooth moved down in pitch) is brought down until
+    the burst is no louder than its surroundings, smoothly. The note itself is left as recorded"""
+    from scipy.signal import sosfiltfilt
+    det = y.copy()                                    # the checker's own filter: two RBJ high-pass biquads
+    for _ in range(2):
+        w0 = 2 * np.pi * hz / SR; cw = np.cos(w0); al = np.sin(w0) / (2 * np.sqrt(0.5)); a0 = 1 + al
+        det = lfilter([(1 + cw) / 2 / a0, -(1 + cw) / a0, (1 + cw) / 2 / a0], [1, -2 * cw / a0, (1 - al) / a0], det)
+    low = sosfiltfilt(butter(4, cut_hz / (SR / 2), "low", output="sos"), y)
+    high = y - low
+    w = int(0.001 * SR)
+    nw = len(y) // w
+    for _ in range(passes):
+        e = np.sqrt(np.mean(det[:nw * w].reshape(nw, w) ** 2, axis=1)) + 1e-12
+        g = np.ones(nw)
+        for i in range(int(at_from * SR) // w, nw):
+            nb = np.concatenate([e[max(0, i - 35):max(0, i - 3)], e[i + 4:i + 36]])
+            if len(nb) < 10:
+                continue
+            ref = np.max(nb)
+            if e[i] > ref * 10 ** (over_db / 20):
+                g[i] = ref / e[i]
+        if np.all(g == 1):
+            break
+        gp = np.pad(g, 2, mode="edge")                    # the cut widened by 2 ms each side first, then smoothed, so
+        g = np.min([gp[i:i + nw] for i in range(5)], axis=0)  # the smoothing never lifts the tick back up
+        g = np.convolve(np.pad(g, 2, mode="edge"), np.hanning(5) / np.hanning(5).sum(), mode="valid")
+        gs = np.interp(np.arange(len(y)), np.arange(nw) * w + w / 2, g)
+        high = high * gs
+        det = det * gs
+    return low + high
+
+
+def fetch_freesound(root):
+    for key, (folder, page, author, lic, uid, ids) in FREESOUND.items():
+        d = os.path.join(root, folder)
+        os.makedirs(d, exist_ok=True)
+        for m, i in ids.items():
+            p = os.path.join(d, "%d.mp3" % i)
+            if not os.path.exists(p):
+                url = "https://cdn.freesound.org/previews/%d/%d_%d-hq.mp3" % (i // 1000, i, uid)
+                subprocess.run(["curl", "-sSLf", "--retry", "4", "-o", p, url], check=True)
+
 
 def src(key, *parts):
     return os.path.join(SRC_ROOT, SOURCES[key][0], *parts)
@@ -92,6 +203,7 @@ def fetch(root):
         if paths:
             subprocess.run(["git", "-C", d, "sparse-checkout", "set", "--no-cone"] + paths, check=True)
         subprocess.run(["git", "-C", d, "checkout", "-q", commit], check=True)
+    fetch_freesound(root)
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -125,13 +237,19 @@ def to_mono(x):
     return 0.5 * (a + b)
 
 
+# AOG-PIANO-TOYBOX-V1: the toy piano's and the music box's strikes are sharper than any other set's; at 96 kbps the MP3's
+# noise in the block of the strike reaches 2% of the peak, before the note starts. At 160 kbps it stays under 0.5%
+KBPS = {"toy": 160, "musicbox": 160}
+_KBPS = [96]
+
+
 def write_mp3(path, y):
     """mono, 44,100 Hz, 96 kbps MP3 (LAME's most careful mode), with the gapless header browsers use to drop the
     encoder delay"""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     y = np.clip(y, -1, 1).astype(np.float32)
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-",
-                    "-codec:a", "libmp3lame", "-b:a", "96k", "-compression_level", "0", "-ar", str(SR), "-ac", "1",
+                    "-codec:a", "libmp3lame", "-b:a", "%dk" % _KBPS[0], "-compression_level", "0", "-ar", str(SR), "-ac", "1",
                     path], input=y.tobytes(), check=True)
 
 
@@ -187,7 +305,8 @@ def write_struck(path, y, max_cut=None):
     # rounds its very first instant and gives the MP3 less to smear forward
     if best[0] > 0.008:
         i = onset_of(y)
-        for extra in (0.0003, 0.0006, 0.0009):
+        # AOG-PIANO-TOYBOX-V1: a recording cut right on its strike may need a little longer (up to 4 ms, still a strike)
+        for extra in (0.0003, 0.0006, 0.0009, 0.0015, 0.0025, 0.004):
             k = i + int(extra * SR)
             z = y.copy()
             z[:k] *= np.sin(np.linspace(0, np.pi / 2, k)) ** 2
@@ -491,7 +610,8 @@ def record(setname, info):
 
 
 def note_file(setname, n, layer, y, meta, struck=True):
-    p = os.path.join(OUT, setname, "%d%s.mp3" % (n, layer))
+    p = os.path.join(OUT, FOLDER.get(setname, setname), "%d%s.mp3" % (n, layer))
+    _KBPS[0] = KBPS.get(setname, 96)
     on, head = write_struck(p, y, max_cut=None if struck else 0.002)
     meta = dict(meta, onset_ms=round(1000 * on, 2), first_samples=round(head, 4))
     REPORT.setdefault(setname, {"files": {}})["files"]["%d%s" % (n, layer)] = meta
@@ -516,7 +636,7 @@ def high_shelf(y, f, db, q=0.7):
 
 
 def decay_note(x, f_src, n, length, detune_c=0.0, extend=False, fade_frac=0.3, hp_frac=0.5, lp_hz=None, shelf=None,
-               method="harm", env=None):
+               method="harm", env=None, post=None):
     """one recorded note (mono, at its own pitch f_src) → note n: retuned, trimmed, shortened and faded. Then
     measured as the checker measures it and retuned once more if needed (a struck pan or bar glides a little in
     pitch as it dies away, so where it is measured matters; this makes the builder and the checker agree)."""
@@ -544,6 +664,8 @@ def decay_note(x, f_src, n, length, detune_c=0.0, extend=False, fade_frac=0.3, h
             y = np.concatenate([y, np.zeros(int(length * SR) - len(y))])
         if env is not None:
             y = y * env(np.arange(len(y)) / SR)
+        if post is not None:
+            y = post(y)
         return fade_out(y, max(0.15, fade_frac * length))
 
     y = make(ratio)
@@ -562,10 +684,10 @@ LAYER_DB = {"s": -26.0, "m": -21.0, "l": -17.0}      # the soft and loud layers 
 def finish_set(name, notes, layers, files, targets=LAYER_DB, extra=None):
     """bring every file of a set to its layer's level (K-weighted, loudest 400 ms), keep the peaks under 0.93,
     write the MP3s and the manifest entry"""
-    os.makedirs(os.path.join(OUT, name), exist_ok=True)
-    for fn in os.listdir(os.path.join(OUT, name)):
+    os.makedirs(os.path.join(OUT, FOLDER.get(name, name)), exist_ok=True)
+    for fn in os.listdir(os.path.join(OUT, FOLDER.get(name, name))):
         if fn.endswith(".mp3"):
-            os.unlink(os.path.join(OUT, name, fn))
+            os.unlink(os.path.join(OUT, FOLDER.get(name, name), fn))
     REPORT[name] = {"files": {}}
     for (n, layer), (y, meta) in sorted(files.items()):
         y, lvl = level_to(y, targets[layer])
@@ -575,11 +697,11 @@ def finish_set(name, notes, layers, files, targets=LAYER_DB, extra=None):
         meta = dict(meta, level_db=round(lvl, 1), peak=round(min(pk, PEAK_MAX), 3),
                     trimmed_db=round(20 * math.log10(min(1.0, PEAK_MAX / pk)), 1))
         note_file(name, n, layer, y, meta, struck=not (extra and "loop" in extra))
-    entry = {"dir": "/audio/piano/%s/" % name, "layers": layers, "even": True, "notes": notes}
+    entry = {"dir": "/audio/piano/%s/" % FOLDER.get(name, name), "layers": layers, "even": True, "notes": notes}
     if extra:
         entry.update(extra)
     REPORT[name]["sets_entry"] = entry
-    size = sum(os.path.getsize(os.path.join(OUT, name, f)) for f in os.listdir(os.path.join(OUT, name)))
+    size = sum(os.path.getsize(os.path.join(OUT, FOLDER.get(name, name), f)) for f in os.listdir(os.path.join(OUT, FOLDER.get(name, name))))
     REPORT[name]["bytes"] = size
     print("%-10s %d notes x %d layers  %.2f MB" % (name, len(notes), len(layers), size / 1e6))
 
@@ -1176,30 +1298,38 @@ def build_accordion():
     REPORT["accordion"]["made_from"] = "FreePats Button Accordion HN (a Hohner), its one register"
 
 
-# ── music box and toy piano: the celesta, voiced another way ──
+# ── AOG-PIANO-TOYBOX-V1: the music box and the toy piano, real ones (they were the celesta, voiced another way) ──
 def build_musicbox():
-    """music box: the celesta's soft strokes, short and bright; from C5 up every note comes from the celesta's top
-    octave (C6 to A7), its thinnest, most tine-like plates"""
-    soft = celesta_sources()["soft"]
-    top = {k: v for k, v in soft.items() if k >= 84}
-    def pick(layer, n, reals):
-        return nearest(sorted(top), n) if n >= 72 else nearest(reals, n)
-    struck_set("musicbox", {"m": soft}, fund_measure(),
-               lambda n, l: 2.0 if n < 60 else 1.7 if n < 72 else 1.4 if n < 84 else 1.2, pick=pick,
-               note_opts=lambda n, l: {"fade_frac": 0.4, "shelf": (3000.0, 3.0),
-                                       "env": lambda t: np.exp(-2.5 * t)})
+    """music box: a real music box's comb (folkman, Freesound pack 4540, CC0), one tooth at a time, sixteen notes of D
+    major from D5 to E7, so no key is more than a semitone from a tooth; the keys below D5 and above E7 are its lowest
+    and highest teeth moved in pitch. Each tooth rings as long as it did, gently faded; the mechanism's little ticks
+    above the note are taken out (declick)"""
+    struck_set("musicbox", {"m": fs_prepped("musicbox")}, fund_measure(),
+               lambda n, l: 3.0 if n < 74 else 2.6 if n < 86 else 2.2 if n < 98 else 1.8,
+               note_opts=lambda n, l: {"fade_frac": 0.45, "post": lambda y: soft_attack(declick(y))})
+    REPORT["musicbox"]["made_from"] = ("folkman, 'Music Box In the Key of D' (Freesound pack 4540, CC0): 16 teeth, "
+                                       "D5 to E7, D major")
 
 
 def build_toy():
-    """toy piano: the celesta's hard strokes, short, harder in tone, each note a few cents out of tune (as a toy
-    piano's rods are)"""
-    hard = celesta_sources()["hard"]
+    """toy piano: a real 1950s Michelsonne toy piano (beskhu, Freesound pack 4565, CC BY 4.0), every key from C4 to
+    F6; the keys below and above are its own end keys moved in pitch. Each key is brought within 4 cents of true:
+    a toy piano's rods are never quite in tune, so each keeps what it had, up to 4 cents either way"""
+    files = fs_prepped("michelsonne")
+    meas = fund_measure()
+    own = {}
+
     def detune(n):
-        return float(((n * 37) % 9) - 4)            # -4 to +4 cents, fixed per key
-    struck_set("toy", {"m": hard}, fund_measure(),
-               lambda n, l: 1.6 if n < 60 else 1.4 if n < 72 else 1.2 if n < 84 else 1.0,
-               note_opts=lambda n, l: {"fade_frac": 0.4, "shelf": (2500.0, 5.0), "lp_hz": 12000.0, "detune_c": detune(n),
-                                       "env": lambda t: np.exp(-3.5 * t)})
+        r = nearest(sorted(files), n)
+        if r not in own:
+            x = to_mono(load(files[r]))
+            own[r] = 1200 * math.log2(meas(x, r) / mtof(r))
+        return float(max(-4.0, min(4.0, round(own[r]))))
+    struck_set("toy", {"m": files}, meas,
+               lambda n, l: 2.4 if n < 60 else 2.0 if n < 72 else 1.7 if n < 84 else 1.4,
+               note_opts=lambda n, l: {"fade_frac": 0.4, "detune_c": detune(n), "post": soft_attack})
+    REPORT["toy"]["made_from"] = ("beskhu, 'Michelsonne piano toy' (Freesound pack 4565, CC BY 4.0): a 1950s "
+                                  "Michelsonne toy piano, 30 keys, C4 to F6")
 
 
 # ── choir: one singer on "ah" (Karoryfer Hadzi-Fia), four of his takes per note, as four singers ──
