@@ -163,6 +163,52 @@ const WD={
   ld_ballad:{en:"A slow melody on two strings. Let each note sing before the next.",es:"Una melodía lenta en dos cuerdas. Deja cantar cada nota antes de la siguiente."},
   ld_anthem:{en:"A big melody on the top string that climbs to a held bend, then comes home.",es:"Una gran melodía en la cuerda aguda que sube hasta un estirón sostenido y vuelve a casa."},
   ld_cry:{en:"Bend up and let it fall back, twice, like crying. Then a last bend and home.",es:"Estira y deja que baje, dos veces, como un llanto. Luego un último estirón y a casa."},
+  lk_slowblues:{en:"Slow blues lick",es:"Frase de blues lento"},
+  ld_slowblues:{en:"A slow quarter bend to the blue note, then down the box to the low home note.",es:"Un estirón lento de un cuarto hasta la nota blue, y luego baja por la caja hasta la nota casa grave."},
+  lk_boogie:{en:"Minor boogie",es:"Boogie menor"},
+  ld_boogie:{en:"Two strings at once, long-short, the top note climbing and falling. Keep it rolling.",es:"Dos cuerdas a la vez, largo-corto, la nota de arriba sube y baja. Que no pare."},
+  lk_riff70:{en:"Seventies riff",es:"Riff de los setenta"},
+  ld_riff70:{en:"A low riff on the two thick strings, with a quick hammer to the blue note.",es:"Un riff grave en las dos cuerdas gruesas, con un ligado rápido a la nota blue."},
+  lk_pedalrock:{en:"Rock pedal lick",es:"Frase de rock con pedal"},
+  ld_pedalrock:{en:"High notes that keep coming back to the open home note between them.",es:"Notas agudas que vuelven una y otra vez a la nota casa entre ellas."},
+  lk_harm:{en:"Pinch harmonic riff",es:"Riff con armónicos"},
+  ld_harm:{en:"A low riff where every long note squeals.",es:"Un riff grave en el que cada nota larga chilla."},
+  lk_breakdown:{en:"Heavy breakdown",es:"Parte pesada"},
+  ld_breakdown:{en:"Slow, heavy hits with space between. Let the silence hit too.",es:"Golpes lentos y pesados con espacio entre ellos. Que el silencio también golpee."},
+  lk_pedalshred:{en:"Pedal-point shred",es:"Velocidad con nota pedal"},
+  ld_pedalshred:{en:"One high note again and again, with the notes below it in between. Pick once, then let it flow.",es:"Una nota aguda una y otra vez, con las de abajo entre medio. Púa una vez y deja que fluya."},
+  lk_sixes:{en:"Groups of six down the box",es:"Grupos de seis bajando la caja"},
+  ld_sixes:{en:"Three notes on a string, three on the next, then step down and do it again.",es:"Tres notas en una cuerda, tres en la siguiente; luego baja un paso y repítelo."},
+  lk_octfunk:{en:"Funky octaves",es:"Octavas funky"},
+  ld_octfunk:{en:"The same note on two strings at once, short, with muted hits between.",es:"La misma nota en dos cuerdas a la vez, corta, con golpes apagados entre medio."},
+  lk_wah:{en:"Wah-wah scratch line",es:"Línea rasgada con wah"},
+  ld_wah:{en:"Short notes and scratches. Turn Wah on and play harder to make it talk.",es:"Notas cortas y rasgueos. Enciende Wah y toca más fuerte para que hable."},
+  lk_pedal:{en:"Banjo pedal roll",es:"Rodada de banjo con pedal"},
+  ld_pedal:{en:"Notes walk down while the open high note rings between each one.",es:"Las notas bajan mientras la nota aguda al aire suena entre cada una."},
+  lk_twang:{en:"Twangy double-stop slides",es:"Deslizamientos a dos cuerdas"},
+  ld_twang:{en:"Two strings at once: slide the lower one up while the top one rings.",es:"Dos cuerdas a la vez: desliza la de abajo hacia arriba mientras suena la de arriba."},
+  lk_bgrun:{en:"Bluegrass run",es:"Carrera de bluegrass"},
+  ld_bgrun:{en:"A quick run down to the low home note, like the end of a bluegrass song.",es:"Una carrera rápida hasta la nota casa grave, como el final de una canción de bluegrass."},
+  lk_bendrel:{en:"Bend and release",es:"Estira y suelta"},
+  ld_bendrel:{en:"Bend up, let it fall back, then a bend under a ringing note.",es:"Estira, deja que baje y luego un estirón bajo una nota que suena."},
+  lk_train:{en:"Train beat lick",es:"Frase de tren"},
+  ld_train:{en:"Muted chugs like a train, with notes on the strong beats.",es:"Golpes apagados como un tren, con notas en los tiempos fuertes."},
+  lk_walk:{en:"Walking bass line",es:"Línea de bajo que camina"},
+  ld_walk:{en:"One note on every beat, walking up the low strings and back home.",es:"Una nota en cada tiempo, caminando por las cuerdas graves y de vuelta a casa."},
+  lk_bebop:{en:"Bebop line",es:"Línea de bebop"},
+  ld_bebop:{en:"Long-short: up the chord's notes, then down the scale to home.",es:"Largo-corto: sube por las notas del acorde y baja por la escala hasta casa."},
+  lk_arpjazz:{en:"Seventh-chord arpeggios",es:"Arpegios de séptima"},
+  ld_arpjazz:{en:"Four chords, four notes each, one after another, all going up.",es:"Cuatro acordes, cuatro notas cada uno, uno tras otro, siempre subiendo."},
+  lk_octaves:{en:"Jazz octaves",es:"Octavas de jazz"},
+  ld_octaves:{en:"A smooth melody played on two strings at once, the same note an octave apart.",es:"Una melodía suave en dos cuerdas a la vez, la misma nota a una octava."},
+  lk_jazzblues:{en:"Jazz blues line",es:"Línea de jazz blues"},
+  ld_jazzblues:{en:"Long-short, with a hammer up through the blue note and a pull back down.",es:"Largo-corto, con un ligado que pasa por la nota blue y vuelve soltando."},
+  lk_fusslide:{en:"Sliding fusion lick",es:"Frase de fusión con deslizamientos"},
+  ld_fusslide:{en:"Slides and hammers that flow from string to string.",es:"Deslizamientos y ligados que fluyen de cuerda en cuerda."},
+  lk_lullaby:{en:"Gentle lullaby",es:"Canción de cuna"},
+  ld_lullaby:{en:"A soft, slow melody. Play it quietly and let each note ring.",es:"Una melodía suave y lenta. Tócala bajito y deja sonar cada nota."},
+  lk_sunset:{en:"Sunset melody",es:"Melodía del atardecer"},
+  ld_sunset:{en:"Slide into the first note, then a slow melody with one bend near the end.",es:"Desliza hacia la primera nota y luego una melodía lenta con un estirón al final."},
   lickSpeed:{en:"Lick speed",es:"Velocidad de la frase"},
   spdFull:{en:"Full speed",es:"Velocidad completa"},
   spdPart:{en:"{n}% speed",es:"{n} % de velocidad"},
@@ -324,18 +370,86 @@ const LICKS=(()=>{
     {t:0, s:4, f:3, d:1.5, b:[2,0,0.35,0.9,0.35]}, {t:1.5, s:4, f:0, d:0.5, k:"o"},
     {t:2, s:4, f:3, d:1.5, b:[2,0,0.35,0.9,0.35]}, {t:3.5, s:3, f:4, d:0.5},
     {t:4, s:3, f:2, d:1.25, b:[2,0.05,0.4], v:0.6}, {t:5.5, s:2, f:2, d:2.25, v:0.6, home:1}];
+  /* AOG-SOLO-MORE-LICKS-V2 (Jimmy, 2026-10-05: "LOVE IT. Make more"): 23 more, the most for country and jazz.
+     mel() writes notes one after another, each with its own length; swing() writes long-short pairs. */
+  const mel=(t0, list)=>{ let t=t0; return list.map(([ss,ff,dd,x,kk])=>{ const n=Object.assign({t:+t.toFixed(4), s:ss, f:ff, d:dd}, kk?{k:kk}:{}, x||{}); t+=dd; return n; }); };
+  const swing=(list)=>list.map(([ss,ff,kk],i)=>Object.assign({t:+(Math.floor(i/2)+(i%2?0.67:0)).toFixed(4), s:ss, f:ff, d:i%2?0.33:0.6}, kk?{k:kk}:{}));
+  const pair=(t, a, b2, d, x)=>[Object.assign({t, s:a[0], f:a[1], d}, x||{}), {t, s:b2[0], f:b2[1], d}];
+  /* blues */
+  L.slowblues=[
+    {t:0, s:3, f:2, d:1.5, b:[1,0.2,0.5], v:0.8}, {t:1.5, s:3, f:0, d:0.5}, {t:2, s:2, f:2, d:0.5}, {t:2.5, s:2, f:0, d:0.5},
+    {t:3, s:1, f:1, d:0.5}, {t:3.5, s:1, f:0, d:0.5, k:"o"}, {t:4, s:0, f:3, d:0.5}, {t:4.5, s:0, f:0, d:2.25, v:0.6, home:1}];
+  L.boogie=[]; [[1,2],[1,3],[1,5],[1,3]].forEach((q,i)=>{ L.boogie.push(...pair(i, [0,0], q, 0.55), ...pair(i+0.67, [0,0], q, 0.3)); });
+  L.boogie.push({t:4, s:0, f:0, d:1.75, v:0.4, home:1});
+  /* rock */
+  L.riff70=run(0, 0.5, [[0,0],[0,3],[1,0],[1,1,"h"],[1,0,"o"],[0,3],[0,0],[0,3]]).concat([{t:4, s:1, f:0, d:0.5}, {t:4.5, s:0, f:0, d:1.75, v:0.4, home:1}]);
+  L.pedalrock=run(0, sx, [[5,5],[5,0,"o"],[5,3],[5,0,"o"],[5,2],[5,0,"o"],[5,3],[5,0,"o"],[5,5],[5,0,"o"],[5,3],[5,0,"o"],[5,2],[5,0,"o"],[4,3],[4,5,"h"]])
+    .concat([{t:4, s:5, f:0, d:1.75, v:0.4, home:1}]);
+  /* metal */
+  L.harm=[
+    {t:0, s:0, f:0, d:0.25}, {t:0.25, s:0, f:0, d:0.1, k:"g"}, {t:0.5, s:0, f:3, d:0.5, q:1, v:0.2, vw:1.6},
+    {t:1, s:0, f:0, d:0.25}, {t:1.25, s:0, f:0, d:0.1, k:"g"}, {t:1.5, s:1, f:1, d:0.5, q:1, b:[1,0.05,0.15]},
+    {t:2, s:0, f:0, d:0.25}, {t:2.25, s:0, f:0, d:0.1, k:"g"}, {t:2.5, s:1, f:0, d:0.5, q:1, v:0.2, vw:1.6},
+    {t:3, s:0, f:3, d:0.25}, {t:3.25, s:0, f:2, d:0.25, k:"o"}, {t:3.5, s:0, f:0, d:1.75, q:1, v:0.3, vw:2, home:1}];
+  L.breakdown=[
+    {t:0, s:0, f:0, d:0.9}, {t:1.5, s:0, f:0, d:0.2}, {t:1.75, s:0, f:0, d:0.2}, {t:2, s:0, f:3, d:0.9},
+    {t:3, s:1, f:1, d:0.45}, {t:3.5, s:1, f:0, d:0.45}, {t:4, s:0, f:0, d:0.1, k:"g"}, {t:4.25, s:0, f:0, d:0.1, k:"g"},
+    {t:4.5, s:0, f:0, d:2, v:0.5, vw:1.8, home:1}];
+  /* shred and tapping */
+  L.pedalshred=run(0, six, [[4,5],[4,3,"o"],[4,5,"h"],[4,1,"o"],[4,5,"h"],[4,0,"o"],[4,5],[4,3,"o"],[4,5,"h"],[4,1,"o"],[4,5,"h"],[4,0,"o"],
+    [5,5],[5,3,"o"],[5,5,"h"],[5,2,"o"],[5,5,"h"],[5,0,"o"],[5,5],[5,3,"o"],[5,5,"h"],[5,2,"o"],[5,5,"h"],[5,0,"o"]])
+    .concat([{t:4, s:5, f:3, d:0.5}, {t:4.5, s:5, f:0, d:1.75, v:0.35, home:1}]);
+  L.sixes=run(0, six, [[5,3],[5,2,"o"],[5,0,"o"],[4,3],[4,1,"o"],[4,0,"o"],[4,3],[4,1,"o"],[4,0,"o"],[3,4],[3,2,"o"],[3,0,"o"],
+    [3,4],[3,2,"o"],[3,0,"o"],[2,4],[2,2,"o"],[2,0,"o"],[2,4],[2,2,"o"],[2,0,"o"],[1,3],[1,2,"o"],[1,0,"o"]])
+    .concat([{t:4, s:0, f:3, d:0.5}, {t:4.5, s:0, f:0, d:1.75, v:0.35, home:1}]);
+  /* funk and soul */
+  L.octfunk=[]; [[[0,0],[2,2]],[[0,0],[2,2]],[[0,3],[2,5]],[[1,0],[3,2]]].forEach(([a,b2],i)=>{
+    L.octfunk.push(...pair(i, a, b2, 0.2), ...pair(i+0.25, a, b2, 0.06, {k:"g"}), ...pair(i+0.75, a, b2, 0.2)); });
+  L.octfunk.filter(n=>n.t%1===0.25).forEach(n=>{ n.k="g"; });   /* both strings of each muted hit */
+  L.octfunk.push({t:4, s:0, f:0, d:0.6}, {t:4, s:2, f:2, d:0.6, home:1});
+  L.wah=run(0, sx, [[3,2],[3,2,"g"],[4,3],[4,3,"g"],[3,2],[3,0],[3,2,"g"],[4,1],[4,3],[4,3,"g"],[3,4],[3,4,"g"],[3,2],[3,2,"g"],[3,0],[3,0,"g"]])
+    .concat([{t:4, s:2, f:2, d:1, home:1}]);
+  /* country */
+  L.pedal=run(0, sx, [[4,3],[5,0],[4,1],[5,0],[4,0],[5,0],[3,4],[5,0],[3,2],[5,0],[3,0],[5,0],[2,4],[5,0],[2,2],[5,0]])
+    .concat([{t:4, s:4, f:3, d:0.5}, {t:4.5, s:5, f:0, d:1.5, v:0.4, home:1}]);
+  L.twang=[].concat(pair(0,[3,2],[4,5],0.9,{sl:[4,0.05,0.2]}), pair(1,[3,2],[4,5],0.9,{sl:[4,0.05,0.2]}),
+    pair(2,[3,0],[4,1],0.45), pair(2.5,[3,2],[4,3],0.45), pair(3,[3,4],[4,5],0.9,{v:0.4}), [{t:4, s:2, f:2, d:1.75, v:0.4, home:1}]);
+  L.bgrun=run(0, 0.5, [[2,2],[2,0,"o"],[1,2],[1,1,"o"],[1,0,"o"],[0,3],[0,2,"o"]]).concat([{t:3.5, s:0, f:0, d:2, home:1}]);
+  L.bendrel=[
+    {t:0, s:4, f:3, d:1, b:[2,0,0.2,0.6,0.3]}, {t:1, s:4, f:1, d:0.5}, {t:1.5, s:4, f:0, d:0.5, k:"o"},
+    {t:2, s:3, f:2, d:1.75, b:[2,0.1,0.35], v:0.9}, {t:2, s:4, f:3, d:1.75},
+    {t:4, s:4, f:5, d:1.75, v:0.4, home:1}];
+  L.train=run(0, sx, [[0,0,"g"],[0,0,"g"],[0,0],[0,0,"g"],[1,2],[1,2,"g"],[0,0],[0,0,"g"],[0,0,"g"],[0,0,"g"],[0,3],[0,0,"g"],[1,0],[1,0,"g"],[0,3],[0,2]])
+    .concat([{t:4, s:0, f:0, d:1.5, home:1}]);
+  L.walk=mel(0, [[0,0,0.9],[0,2,1],[0,3,1],[1,0,1],[1,2,1],[1,0,1],[0,3,1],[0,2,1],[0,0,2,{v:0.4,home:1}]]);
+  /* jazz and fusion */
+  L.bebop=swing([[2,2],[3,0],[3,4],[4,3],[5,0],[5,3],[5,2],[5,0],[4,3],[4,1],[4,0],[3,2],[3,0],[2,4]]).concat([{t:7, s:2, f:2, d:1.5, v:0.6, home:1}]);
+  L.arpjazz=run(0, sx, [[2,2],[3,0],[3,4],[4,3],[3,0],[3,4],[4,3],[5,2],[3,2],[4,1],[5,0],[5,3],[3,4],[4,3],[5,2],[5,5]])
+    .concat(run(4, 0.5, [[5,3],[5,2]]), [{t:5, s:5, f:0, d:1.75, v:0.5, home:1}]);
+  L.octaves=[].concat(...[[[0,0],[2,2]],[[0,3],[2,5]],[[1,0],[3,2]],[[1,2],[3,4]],[[1,3],[3,5]],[[1,2],[3,4]],[[1,0],[3,2]],[[0,3],[2,5]]].map(([a,b2],i)=>pair(i*0.5+(i%2?0.17:0), a, b2, i%2?0.3:0.45)),
+    pair(4,[0,0],[2,2],1.75,{v:0.6}));
+  L.octaves[L.octaves.length-1].home=1;
+  L.jazzblues=swing([[3,2],[3,3,"h"],[3,4,"h"],[4,3],[4,1],[4,0],[3,4],[3,3,"o"],[3,2,"o"],[3,0],[2,4],[2,2]]).concat([{t:6, s:2, f:0, d:0.5}, {t:6.5, s:2, f:2, d:1.5, v:0.6, home:1}]);
+  L.fusslide=[
+    {t:0, s:3, f:2, d:0.5, sl:[4,0.05,0.2]}, {t:0.5, s:4, f:0, d:0.25}, {t:0.75, s:4, f:1, d:0.25, k:"h"}, {t:1, s:4, f:3, d:0.25, k:"h"},
+    {t:1.25, s:5, f:0, d:0.25}, {t:1.5, s:5, f:2, d:0.25, k:"h"}, {t:1.75, s:5, f:3, d:0.5, k:"h", sl:[2,0.25,0.15]},
+    {t:2.5, s:4, f:3, d:0.5}, {t:3, s:4, f:1, d:0.5, sl:[0,0.2,0.15]}, {t:3.5, s:3, f:4, d:0.5}, {t:4, s:3, f:2, d:0.5},
+    {t:4.5, s:2, f:2, d:1.75, v:0.5, home:1}];
+  /* slow and singing */
+  L.lullaby=mel(0, [[4,0,1],[5,0,1],[5,2,0.5],[5,3,1.5,{v:0.7}],[5,2,0.5],[5,0,0.5],[4,3,1],[4,0,1],[4,3,0.5],[4,5,2.5,{v:0.8,home:1}]]);
+  L.sunset=mel(0, [[3,2,1,{sl:[4,0.1,0.3]}],[4,0,1],[4,1,0.5],[4,3,1.5,{v:0.6}],[4,1,0.5],[4,0,0.5],[3,4,1],[3,2,1,{b:[2,0.1,0.3]}],[2,2,2.5,{v:0.6,home:1}]]);
   return L;
 })();
 /* the groups in the Lick menu, each with a few licks */
 const LICK_GROUPS=[
-  ["blues",["blues","turn","shuffle","call"]],
-  ["rock",["double","rockrun","repeat","unison","rnr"]],
-  ["metal",["groove","thrash","gallop","tremolo","chug","doom"]],
-  ["shred",["shred","tap","legato","sweep","fours","taparp"]],
-  ["funk",["funk","scratch","soul","stabs"]],
-  ["country",["chicken","steel","roll"]],
-  ["jazz",["swing","fusion"]],
-  ["slow",["bend","ballad","anthem","cry"]]];
+  ["blues",["blues","turn","shuffle","call","slowblues","boogie"]],
+  ["rock",["double","rockrun","repeat","unison","rnr","riff70","pedalrock"]],
+  ["metal",["groove","thrash","gallop","tremolo","chug","doom","harm","breakdown"]],
+  ["shred",["shred","tap","legato","sweep","fours","taparp","pedalshred","sixes"]],
+  ["funk",["funk","scratch","soul","stabs","octfunk","wah"]],
+  ["country",["chicken","steel","roll","pedal","twang","bgrun","bendrel","train","walk"]],
+  ["jazz",["swing","fusion","bebop","arpjazz","octaves","jazzblues","fusslide"]],
+  ["slow",["bend","ballad","anthem","cry","lullaby","sunset"]]];
 const LICK_ORDER=[].concat.apply([], LICK_GROUPS.map(g=>g[1]));
 
 /* the lead sounds this page has (another helper may add more; only the ones that are here are listed) */

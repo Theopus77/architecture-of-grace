@@ -78,7 +78,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       /* AOG-SOLO-MORE-LICKS-V1: eight groups in the menu, a few licks in each, every lick played below */
       const grp=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel optgroup")].map(g=>({l:g.label, n:g.querySelectorAll("option").length})));
       const ids=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel option")].map(o=>o.value));
-      ok(grp.length>=8 && grp.every(g=>g.n>=2) && ids.length>=34 && new Set(ids).size===ids.length, `${ids.length} licks in ${grp.length} groups: `+grp.map(g=>g.l+" "+g.n).join(", "));
+      ok(grp.length>=8 && grp.every(g=>g.n>=2) && ids.length>=57 && new Set(ids).size===ids.length, `${ids.length} licks in ${grp.length} groups: `+grp.map(g=>g.l+" "+g.n).join(", "));
       for(const id of ids){
         await p.selectOption("#soLickSel", id); await p.evaluate(()=>{ window.__v=[]; if(!window.__mv){ window.__mv=window.makeVoice; window.makeVoice=function(cx,ch,i,m,v,w,s){ if(cx===ac) __v.push(m); return __mv.apply(this,arguments); }; } });
         await press("#soLickBtn");
