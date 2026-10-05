@@ -27,9 +27,9 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
 <!-- AOG-PADS-V1 (2026-10-05) — Jimmy: "A drum pad should be made that incorporates everything in one. This could be the 1%
      drum pad machine that kills it compared to everything else out there. Everything is basically built."
      The Pad Machine, /pads: sixteen pads, four banks (A to D), and every sound the site already has.
-     · A bank is one of four kinds: Drums (two recorded kits, eight pads each, aog-drumkit.js), Notes (any recorded
-       instrument from the piano, the guitar, the bass and the band, in a key and a scale), Chords (the key's chords
-       and their sevenths on that instrument), or Chops (a record from the turntables' crate, or a take waiting at
+     · Each bank has one job (AOG-PADS-KINDS-V1): A Drums (two recorded kits, eight pads each, aog-drumkit.js), C Notes (any recorded
+       instrument from the piano, the guitar, the bass and the band, in a key and a scale), B Chords (the key's chords
+       and their sevenths on that instrument), D Chops (a record from the turntables' crate, or a take waiting at
        the Mixing Desk, cut into sixteen beats).
      · Near the middle of a pad plays louder, near the edge softer (a drum plays its soft, normal or hard recording).
        Notes and chords ring while the pad is held. A closed hi-hat stops the open one; a new chop stops the last.
@@ -169,8 +169,7 @@ details.pm-set[open]>summary::before{content:"▾"}
       <div class="pm-cols">
         <div>
           <div class="pm-row">
-            <label class="pm-f"><span id="bankLab"></span><select class="pm-sel" id="bankSel"></select></label>
-            <label class="pm-f"><span id="typeLab"></span><select class="pm-sel" id="typeSel"></select></label>
+            <label class="pm-f wide"><span id="bankLab"></span><select class="pm-sel" id="bankSel"></select></label>
           </div>
           <div class="pm-row" id="setRow" style="margin-top:8px"></div>
           <p class="pm-line" id="line" aria-live="polite"></p>
@@ -237,7 +236,7 @@ const $=id=>document.getElementById(id);
 const STR={
   app:{en:"The Pad Machine",es:"La máquina de pads"}, kicker:{en:"Every sound on sixteen pads",es:"Todos los sonidos en dieciséis pads"},
   lead:{en:"Drums, keys, guitar, bass, the band and records to chop. Tap a pad.",es:"Batería, teclados, guitarra, bajo, banda y discos para cortar. Toca un pad."},
-  bankLab:{en:"Bank",es:"Banco"}, typeLab:{en:"This bank plays",es:"Este banco toca"},
+  bankLab:{en:"Bank",es:"Banco"},
   t_drums:{en:"Drums",es:"Batería"}, t_notes:{en:"Notes",es:"Notas"}, t_chords:{en:"Chords",es:"Acordes"}, t_chops:{en:"Chops of a record",es:"Cortes de un disco"},
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
@@ -377,6 +376,10 @@ const DEF={v:1, bank:0, sel:0, banks:[
 let S=JSON.parse(JSON.stringify(DEF));
 try{ S0.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
 try{ const r=JSON.parse(localStorage.getItem("aog.pads.v1")||"null"); if(r && r.v===1 && Array.isArray(r.banks) && r.banks.length===4){ S=Object.assign(S, r); S.banks=r.banks.map((b,i)=>Object.assign({}, DEF.banks[i], b)); if(!Array.isArray(S.ev)) S.ev=[]; } }catch(e){}
+/* AOG-PADS-KINDS-V1 (Jimmy, 2026-10-05: "This is missing chords, as it has notes doubled"): each bank has one job, always:
+   A drums, B chords, C notes, D chops. A bank saved with another job gets its own settings back (its hits stay). */
+const KINDS=["drums","chords","notes","chops"];
+S.banks.forEach((B,i)=>{ if(B.type!==KINDS[i]) S.banks[i]=Object.assign({}, DEF.banks[i]); });
 let saveT=0;
 function save(){ clearTimeout(saveT); saveT=setTimeout(()=>{ try{ localStorage.setItem("aog.pads.v1", JSON.stringify(Object.assign({}, S, {ev:S.ev.map(e=>({b:e.b,p:e.p,t:e.t,v:e.v,len:e.len||0}))}))); }catch(e){} }, 250); }
 function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
@@ -779,7 +782,6 @@ const BEATS={
 function startBeat(k){
   const B=BEATS[k]; if(!B) return;
   snapshot();
-  if(S.banks[0].type!=="drums"){ S.banks[0].type="drums"; }
   S.ev=S.ev.filter(e=>e.b!==0);
   for(let bar=0;bar<S.bars;bar++) Object.keys(B.p).forEach(pi=>{ const s=B.p[pi]; for(let i=0;i<16;i++) if(s[i]==="x"){
     const v=+pi===2 ? (i%4===0?0.85:0.6) : +pi===1 ? (i%8===4?0.95:0.4) : 0.9;
@@ -864,9 +866,8 @@ function paintTransport(){
   paintLine();
 }
 function paintControls(){
-  $("bankLab").textContent=t("bankLab"); $("typeLab").textContent=t("typeLab");
+  $("bankLab").textContent=t("bankLab");
   $("bankSel").innerHTML=[0,1,2,3].map(i=>opt(i, esc(bankLabel(i)), S.bank)).join("");
-  $("typeSel").innerHTML=["drums","notes","chords","chops"].map(k=>opt(k, esc(t("t_"+k)), S.banks[S.bank].type)).join("");
   $("tempoLab").textContent=t("tempo"); $("tempo").value=S.bpm; $("tDown").setAttribute("aria-label", "−1"); $("tUp").setAttribute("aria-label", "+1");
   $("barsLab").textContent=t("bars"); $("barsSel").innerHTML=[1,2,4].map(n=>opt(n, esc(n===1?t("bar1"):t("barsN",{n:n})), S.bars)).join("");
   $("qLab").textContent=t("q"); $("qSel").innerHTML=[[0,"qOff"],[48,"q8"],[24,"q16"],[16,"q16t"],[12,"q32"]].map(([v,k])=>opt(v, esc(t(k)), S.q)).join("");
@@ -904,7 +905,6 @@ function init(){
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; });
   bindPads(); bindBounce();
   $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; save(); paintAll(); prep(S.bank); };
-  $("typeSel").onchange=()=>{ S.banks[S.bank].type=$("typeSel").value; save(); paintAll(); prep(S.bank); };
   $("playBtn").onclick=()=>{ SEQ.on ? stop() : play(); };
   $("loopRec").onclick=()=>{ if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); paintTransport(); return; } snapshot(); SEQ.rec=true; if(!SEQ.on) play(); LINE_HOLD=0; paintTransport(); };
   $("undoBtn").onclick=()=>{ const u=SEQ.undo.pop(); if(u==null){ say(t("nothingUndo")); return; } S.ev=JSON.parse(u); changed(); say(t("undone")); };
