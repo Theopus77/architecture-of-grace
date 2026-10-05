@@ -297,6 +297,33 @@ KITS = {
   # ── M · reggae and dub: a round kick, a high snare with a dub echo (the echo made here, as on a mixing desk), hats, a
   #       synth tom (made on the page: a synth drum is electronic on the real instrument too), a tom, the one drop's
   #       cross-stick, and the skank: a real upright piano chord chopped short, with its echo.
+  # AOG-DRUM-CR78-V1 (2026-10-05) — Jimmy: kits A, B, C, F and L "sound crappy in comparison to the real drum kits".
+  # Kit A, "the classic", is the machine's own built-in kit (its sounds sit in the 10 seconds of memory, and kit B is
+  # kit A retuned), so it stays the page's kit: the page now fills its memory from these recordings instead of making
+  # the sounds (music-drums.html, A_REC), and makes them only if the files cannot be fetched. A real 1978 rhythm
+  # machine, the Roland CR-78, recorded from the machine by two people on Freesound, both CC0: wikter ("Roland CR78
+  # Sounds", pack 40417: "Collection of Samples registered using a Midiman MAudio Delta44 & a Roland CR78") and
+  # oceansonmars ("CR78 Drum Kit", pack 39611: "One-shot samples from Roland CR-78"). Their stereo files are the same
+  # on both sides (correlation 1.000), so one channel loses nothing. One recording a pad, as a sampler's memory holds.
+  # The CR-78 has no hand clap, and the free recordings have no cowbell and only a 4 ms rimshot (cut short), so the
+  # clap, rim and bell pads stay made on the page.
+  "A": {"dir": "classic78", "pads": {
+    "kick":  {"name": "KICK", "s": [], "m": L(T("fs:wikter/723610_95338", name="CR78_Bassdrum")), "h": [],
+              "eq": [("hp", 25, .7, 0)], "len": 0.6, "fade": 0.3},
+    "snare": {"name": "SNARE", "s": [], "m": L(T("fs:wikter/723619_95338", name="CR78_Snare drum")), "h": [],
+              "eq": [("hp", 90, .7, 0), ("lp", 15000, .7, 0)], "comp": (-14, 6, 0.1, 30), "len": 0.3, "fade": 0.1},
+              # its first instant is a sharp spike: held down, and the top above 15 kHz (which the MP3 drops anyway)
+              # taken off first, so the hit can be as loud as the old snare without clipping
+    "ch":    {"name": "HAT", "s": [], "m": L(T("fs:oceansonmars/708812_15225418", name="CR78ClosedHat")), "h": [],
+              "eq": [("hp", 300, .7, 0)], "len": 0.2, "fade": 0.08},
+    "oh":    {"name": "OPEN", "s": [], "m": L(T("fs:oceansonmars/708814_15225418", name="CR78OpenHat")), "h": [],
+              "eq": [("hp", 300, .7, 0)], "len": 0.6, "fade": 0.2},
+    "clap":  {"name": "CLAP", "made": True},
+    "tom":   {"name": "TOM", "s": [], "m": L(T("fs:oceansonmars/708817_15225418", name="CR78Tom")), "h": [],
+              "eq": [("hp", 40, .7, 0)], "len": 0.6, "fade": 0.3},
+    "rim":   {"name": "RIM", "made": True},
+    "bell":  {"name": "BELL", "made": True},
+  }},
   # AOG-DRUM-909-V1 (2026-10-05) — kit L, "909 house", is a real Roland TR-909 now: "TR-909 JGB pack" (Freesound pack
   # 1643), sampled by Janne G:son Berg from his own machine, posted by altemark, CC BY 4.0 (sources.py). The pack holds
   # each voice at many knob settings; a pad's takes are neighbouring settings (so a pad played twice is not a copy), its
@@ -549,6 +576,9 @@ TARGET = {
   "I": {"kick": -22.8, "snare": -33.7, "ch": -54.0, "oh": -47.5, "clap": -40.8, "tom": -23.1, "rim": -42.0, "bell": -31.3},
   "J": {"kick": -21.5, "snare": -32.9, "ch": -51.0, "oh": -46.7, "clap": -38.8, "tom": -22.7, "rim": -27.1, "bell": -28.8},
   "K": {"kick": -23.7, "snare": -42.3, "ch": -49.0, "oh": -35.4, "clap": -37.5, "tom": -26.3, "rim": -38.5, "bell": -23.5},
+  # A: the page-made classic kit's levels (calib.js, 2026-10-05), kept exactly: kit A is the level every other kit is
+  # set against
+  "A": {"kick": -22.3, "snare": -35.2, "ch": -65.3, "oh": -50.5, "clap": None, "tom": -26.4, "rim": None, "bell": None},
   # L: the page-made 909 kit's levels (calib.js, 2026-10-05: kick -19.9, snare -38.8, ch -67.2, oh -56.3, clap -38.3,
   # tom -25.3, ride -51.5); its nearly silent hats and quiet ride lifted, as on the other rebuilt kits, so a normal hit
   # still peaks at 0.05 or more in the 1987 memory
