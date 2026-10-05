@@ -184,24 +184,27 @@ window.__calls={sample:0, made:0};
         const mid=lv.slice().sort((u,v)=>u-v)[lv.length>>1]; return Math.max(...lv.map(v=>Math.abs(v-mid))); };
       for(const m of ms){
         const n=SETS[s].notes.reduce((best,x)=>Math.abs(x-m)<Math.abs(best-m)?x:best), rate=Math.pow(2,(m-n)/12), st=SETS[s].start[n+"m"], lp=SETS[s].lp[n+"m"]||[SETS[s].loop[0], loopEnd(SETS[s],n)], A=lp[0], Z=lp[1];
-        /* AOG-PIANO-STEREO-V1: each channel on its own: the left side of the loop against the left microphone's own
-           recording, the right against the right (a one-channel recording: both sides the same) */
+        /* AOG-PIANO-STEREO-V1: rendered in two channels. The loudness is both sides' power together (what the ear hears
+           from two speakers), the loop's against the recording's own (a one-channel recording: the same as before); the
+           seam is checked on each side */
         const T=Math.max(7.0, 0.02+(Z-st+2.2*(Z-A))/rate+0.3), dd=await __note2(id, m, 0.74, T+0.3), sr=44100;
         const raw=SETS[s].buf[n+"m"], o0=Z-0.5-1.0>=0.5 ? 1.0 : 0.3;
         const first=0.02+(Z-st)/rate, sides=[];
+        const pw=chs=>{ const n=chs[0].length, o=new Float32Array(n); for(let i=0;i<n;i++){ let q=0; for(const c of chs) q+=c[i]*c[i]; o[i]=Math.sqrt(q/chs.length); } return o; };
+        const rawChs=[]; for(let c=0;c<raw.numberOfChannels;c++) rawChs.push(raw.getChannelData(c));
+        const all=swing(pw(dd), sr, o0, T), own=swing(pw(rawChs), raw.sampleRate, o0, Z-0.5);   /* the recording before its loop's blend */
         dd.forEach((d,c)=>{
-          const own=swing(raw.getChannelData(Math.min(c, raw.numberOfChannels-1)), raw.sampleRate, o0, Z-0.5);   /* the recording before its loop's blend */
           /* the sharpest step around every pass through the loop's seam, against the sharpest in the held part before the first */
           const step=(a,z)=>{ let x=0; for(let i=Math.max(1,Math.floor(a*sr));i<Math.min(d.length,Math.floor(z*sr));i++) x=Math.max(x,Math.abs(d[i]-d[i-1])); return x; };
           let seam=0, k=0; for(let t=first; t<T; t+=(Z-A)/rate, k++) seam=Math.max(seam, step(t-0.01,t+0.01));
-          sides.push({all:swing(d, sr, o0, T), own:own, seam:seam, held:step(o0, first-0.05), seams:k}); });
-        /* the side that comes nearest to failing speaks for the note */
-        const worst=sides.reduce((w,x)=>Math.max(x.all-x.own-1.0, x.seam/Math.max(1e-12,x.held)-1.05)>Math.max(w.all-w.own-1.0, w.seam/Math.max(1e-12,w.held)-1.05) ? x : w);
-        out.push(Object.assign({m:m, T:+T.toFixed(1), sides:sides.length, allok:sides.every(x=>x.all<=x.own+1.0), seamok:sides.every(x=>x.seam<=x.held*1.05)}, worst));
+          sides.push({seam:seam, held:step(o0, first-0.05), seams:k}); });
+        /* the side whose seam comes nearest to failing speaks for the note */
+        const worst=sides.reduce((w,x)=>x.seam/Math.max(1e-12,x.held)>w.seam/Math.max(1e-12,w.held) ? x : w);
+        out.push(Object.assign({m:m, T:+T.toFixed(1), all:all, own:own, allok:all<=own+1.0, seamok:sides.every(x=>x.seam<=x.held*1.05)}, worst));
       }
       return out; }, [id,set,ms]);
     for(const x of r) ok((only==="seam" || x.allok) && x.seamok && x.seams>=2,
-      `${id} ${x.m} held ${x.T} s, ${x.seams} loops (each side): its loudness moves ${x.all.toFixed(2)} dB (the recording itself ${x.own.toFixed(2)}); the seam's sharpest step ${x.seam.toFixed(4)} (before it: ${x.held.toFixed(4)})`+(only==="seam"?" (seam checked; the swell is the strings' own loop points)":""));
+      `${id} ${x.m} held ${x.T} s, ${x.seams} loops: its loudness (both sides) moves ${x.all.toFixed(2)} dB (the recording itself ${x.own.toFixed(2)}); the seam's sharpest step ${x.seam.toFixed(4)} (before it: ${x.held.toFixed(4)})`+(only==="seam"?" (seam checked; the swell is the strings' own loop points)":""));
   }
 
   /* ── 4b · the warm electric piano: each note's tail, made from its own loop, fades smoothly (no click at a repeat, no

@@ -1,3 +1,5 @@
+# AOG-PIANO-STEREO-V1 (2026-10-04): the sets this made in one channel are now made in stereo, from the same takes, by
+# piano_stereo_sets.py (into audio/piano/<set>2/); this program is kept as the record of how each note is cut.
 # Harp, marimba and soft strings for the piano bench, from VS Chamber Orchestra: Community Edition (CC0).
 # Made the way the piano sets were made: mono, 44,100 Hz, 96 kbps MP3, a note every few semitones,
 # the quiet moment before the note trimmed, each note shortened and faded, the notes brought to one level.
