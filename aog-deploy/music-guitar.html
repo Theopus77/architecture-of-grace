@@ -214,6 +214,7 @@ body.pv-left #playView .cstrip.pv-chords{order:2;margin:0 0 20px 18px}
 html{touch-action:manipulation}   /* AOG-PLAY-ZOOM-V1: a quick second tap plays, it does not zoom (pinching the page still does) */
 .pv-big{display:none}
 @media (pointer:fine){ .pv-big{display:inline-flex} }
+@media (pointer:coarse) and (min-width:600px) and (min-height:600px){ .pv-big{display:inline-flex} }   /* AOG-PLAY-TABLET-V1: a tablet chooses the whole screen itself */
 html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
 body.aog-play>*:not(#playView){display:none !important}
 body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
@@ -542,8 +543,8 @@ const STR={
   pluck:{en:"PLUCK",es:"PULSA"},
   pvTurnPhone: GTR?{en:"Turn your phone sideways to play the neck like a real guitar.",es:"Gira tu teléfono de lado para tocar el mástil como una guitarra de verdad."}
                  :{en:"Turn your phone sideways to play the neck like a real bass.",es:"Gira tu teléfono de lado para tocar el mástil como un bajo de verdad."},
-  pvTurnTablet: GTR?{en:"Turn your tablet sideways to play the neck like a real guitar.",es:"Gira tu tableta de lado para tocar el mástil como una guitarra de verdad."}
-                  :{en:"Turn your tablet sideways to play the neck like a real bass.",es:"Gira tu tableta de lado para tocar el mástil como un bajo de verdad."},
+  pvTurnTablet: GTR?{en:"Press ⤢ Play on the whole screen to play the neck like a real guitar. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para tocar el mástil como una guitarra de verdad. Cerrar vuelve a esta página."}
+                  :{en:"Press ⤢ Play on the whole screen to play the neck like a real bass. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para tocar el mástil como un bajo de verdad. Cerrar vuelve a esta página."},
   pvBig:{en:"⤢ Play on the whole screen",es:"⤢ Tocar en toda la pantalla"},
   pvClose:{en:"✕ Close",es:"✕ Cerrar"},
   pvMore:{en:"☰ Menu",es:"☰ Menú"}, pvWay:{en:"How you play",es:"Cómo tocas"}, pvStop:{en:"■ Stop",es:"■ Parar"},
@@ -2813,7 +2814,12 @@ function pvUp(e, p){
 }
 /* in and out */
 function pvTouch(){ return !!(window.matchMedia && matchMedia("(pointer: coarse)").matches); }
-function pvWanted(){ return PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed); }
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "I don't like how it starts in instrument mode on the iPad automatically as I use it
+   in horizontal mode to begin with. Make it an option to toggle between but let us start in the normal mode"): a phone
+   turned sideways still opens the instrument view by itself; a tablet (its short side 600 or more) starts in the normal
+   page, and "Play on the whole screen" opens the view, Close goes back. */
+function pvTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+function pvWanted(){ return PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed && !pvTablet()); }
 function pvSync(){ const w=pvWanted(); if(w===PV.on){ if(w) buildNeck(); return; } if(w) pvEnter(); else pvExit(); }
 function pvEnter(){
   const box=$("neckBox"); if(!box || PV.on) return;
@@ -2851,9 +2857,9 @@ function pvText(){
   $("pvChords").textContent=t("pvChords"); $("pvSolo").textContent=t("pvSolo"); $("pvLeft").textContent=t("pvLeft"); $("pvAway").textContent=t("pvAway");
   $("pvSay").textContent=t("pvSay"); $("pvBig").textContent=t("pvBig");
   pvRecPaint();
-  const tablet=Math.max(screen.width||0, screen.height||0)>=900;
+  const tablet=pvTablet();
   $("pvTurn").textContent=t(tablet?"pvTurnTablet":"pvTurnPhone");
-  $("pvTurn").hidden=PV.seen || PV.on || !pvTouch() || !(window.matchMedia && matchMedia("(orientation: portrait)").matches);
+  $("pvTurn").hidden=PV.seen || PV.on || !pvTouch() || (!tablet && !(window.matchMedia && matchMedia("(orientation: portrait)").matches));
   if(!$("pvDrawer").hidden) pvPaintDrawer();
 }
 const GUARD={down:new Set(), last:0};

@@ -18,6 +18,11 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const key=(m)=>p.evaluate(m=>{ const el=document.querySelector(`#kbd [data-m="${m}"]`); if(!el) return null; const r=el.getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height*0.8, top:r.y, h:r.height, w:r.width}; }, m);
     const pick=(id)=>p.evaluate(id=>{ const s=document.getElementById("bpSound"); s.value=id; s.onchange(); }, id);
     const press=async(sel)=>{ await p.evaluate("if(typeof GUARD!==\"undefined\"){ GUARD.last=0; GUARD.down.clear(); }"); await p.evaluate(s=>document.querySelector(s).click(), sel); };
+    /* AOG-PLAY-TABLET-V1: a tablet starts in the normal page; the big button opens the whole-screen view */
+    if(await p.evaluate(()=>Math.min(screen.width,screen.height)>=600 && matchMedia("(pointer: coarse)").matches)){
+      const a=await p.evaluate(()=>({on:BP.on, big:getComputedStyle(document.getElementById("bpBig")).display!=="none"}));
+      ok(!a.on && a.big, "a tablet held sideways starts in the normal page, with Play on the whole screen to open it: "+JSON.stringify(a));
+      await p.evaluate(()=>{ if(typeof GUARD!=="undefined"){ GUARD.last=0; GUARD.down.clear(); } document.getElementById("bpBig").click(); }); await p.waitForTimeout(400); }
     return {c, p, errs, T, key, pick, press};
   };
   for(const [dev, vp, oc] of [["iPhone sideways",{width:844,height:390},2],["iPad sideways",{width:1180,height:820},3]]){
@@ -82,7 +87,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.click("#bpClose"); await p.waitForTimeout(100);
     ok(await p.evaluate(()=>!BP.on && !!document.querySelector("#rig #kbd, .blk #kbd") && getComputedStyle(document.querySelector(".wrap")).display!=="none"), "Close gives the page back, with its keys");
     await p.setViewportSize({width:vp.height, height:vp.width}); await p.waitForTimeout(250); await p.setViewportSize(vp); await p.waitForTimeout(250);
-    ok(await p.evaluate("BP.on"), "turned upright and back, it plays sideways again");
+    const tabl=dev==="iPad sideways";   /* AOG-PLAY-TABLET-V1: an iPad stays on the page until ⤢ is pressed */
+    ok(await p.evaluate("BP.on")!==tabl, tabl?"an iPad turned upright and back stays on the page":"turned upright and back, it plays sideways again");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close();
   }
   { const {c, p, errs}=await open({viewport:{width:390,height:844}, isMobile:true, hasTouch:true}); console.log("== band · iPhone upright");

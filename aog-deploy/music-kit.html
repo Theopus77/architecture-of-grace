@@ -78,6 +78,8 @@ svg.kit{display:block;width:100%;height:auto;border-radius:16px;touch-action:non
 .kit.waiting [data-pad]{opacity:.55}
 .kp-rec{margin-top:1rem;background:#181a1e;border-radius:16px;padding:.8rem 1rem;color:#d7cbb8}
 .kp-rec .aogrec-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.kp-big{display:none;min-height:44px;border-radius:12px;border:1px solid #6b7480;background:linear-gradient(#3a3e44,#1c1f23);color:#f3ead8;font:800 .95rem/1.2 var(--sans);padding:0 1rem;align-self:flex-end}
+@media (pointer:coarse) and (min-width:600px) and (min-height:600px){ .kp-big{display:inline-flex;align-items:center} }   /* AOG-PLAY-TABLET-V1 */
 .kp-b{min-height:44px;border-radius:12px;border:1px solid #c4452a;background:linear-gradient(#3a3e44,#1c1f23);color:#ffb1a4;font:800 .95rem/1.2 var(--sans);padding:0 1rem}
 .foot{color:var(--muted);font-size:.9rem;margin:1.5rem 0 1rem}
 .foot a{color:var(--ink)}
@@ -137,7 +139,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <main id="view">
     <p class="kp-turn" id="kpTurn" hidden></p>
-    <div class="kp-row"><label class="kp-field"><span id="kitLab"></span><select id="kitSel"></select></label></div>
+    <div class="kp-row"><label class="kp-field"><span id="kitLab"></span><select id="kitSel"></select></label><button type="button" class="kp-big" id="kpBig"></button></div>
     <p class="kp-line" id="kitLine" aria-live="polite"></p>
     <div id="kitBox"></div>
     <div class="kp-rec">
@@ -176,7 +178,8 @@ const STR={
   failed:{en:"The kit did not load. Check the internet, then pick the kit again.",es:"La batería no se cargó. Revisa internet y vuelve a elegirla."},
   ready:{en:"Ready. Tap a drum. Near the middle plays louder, near the edge softer.",es:"Lista. Toca un tambor. Cerca del centro suena más fuerte, cerca del borde más suave."},
   turnPhone:{en:"Turn your phone sideways for a bigger kit.",es:"Gira el teléfono de lado para una batería más grande."},
-  turnTablet:{en:"Turn your tablet sideways for a bigger kit.",es:"Gira la tableta de lado para una batería más grande."},
+  turnTablet:{en:"Press ⤢ Play on the whole screen for a bigger kit. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para una batería más grande. Cerrar vuelve a esta página."},
+  big:{en:"⤢ Play on the whole screen",es:"⤢ Tocar en toda la pantalla"},
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every drum here is a real recording.",es:"Cada tambor aquí es una grabación de verdad."}, credits:{en:"Who made them",es:"Quién las hizo"},
   machine:{en:"The drum machine has its own kits and a beat to build.",es:"La caja de ritmos tiene sus propias baterías y un ritmo para construir."}, machineGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
@@ -395,14 +398,17 @@ function paintText(){
   $("kitLab").textContent=t("kitLab"); $("kitSel").innerHTML=kitOptions(); $("dkKitSel").innerHTML=kitOptions(); $("dkKitSel").setAttribute("aria-label", t("kitLab"));
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/drums/CREDITS.txt">${t("credits")}</a></p><p>${t("machine")} <a href="music-drums.html">${t("machineGo")}</a></p>`;
   $("dkMore").textContent=t("menu"); $("dkClose").textContent=t("close"); $("dkHint").textContent=t("hint"); $("kitView").setAttribute("aria-label", t("region"));
-  const tab=Math.max(screen.width||0, screen.height||0)>=900; $("kpTurn").textContent=t(tab?"turnTablet":"turnPhone");
-  $("kpTurn").hidden=PV.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
+  const tab=pvTablet(); $("kpTurn").textContent=t(tab?"turnTablet":"turnPhone"); $("kpBig").textContent=t("big");
+  $("kpTurn").hidden=PV.on || !matchMedia("(pointer: coarse)").matches || (!tab && !matchMedia("(orientation: portrait)").matches);
   REC.paint(); recPaint(); paintKit();
   const st=AOGDrumKit.state(S.bank); $("kitLine").textContent = st && st.state==="ready" ? t("ready") : st && st.state==="failed" ? t("failed") : t("loading",{a:(st&&st.got)||0, b:(st&&st.total)||"…"});
 }
 function pickKit(b){ if(KITS().indexOf(b)<0) return; S.bank=b; save(); $("kitSel").value=b; $("dkKitSel").value=b; paintKit(); loadKit(b).then(paintKit); }
 /* ══ sideways: the kit fills the screen; the bar keeps ☰ Menu and the kit (AOG-PLAY-GUARD-V1) ══ */
-const PV={on:false, closed:false, mq:null};
+const PV={on:false, closed:false, forced:false, mq:null};
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens
+   the whole-screen kit by itself; a tablet (its short side 600 or more) starts in the page and opens it with ⤢. */
+function pvTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
 const GUARD={down:new Set(), last:0};
 function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
 function drawer(open){ $("dkDrawer").hidden=!open; $("dkMore").setAttribute("aria-expanded", open?"true":"false"); }
@@ -412,7 +418,7 @@ function recPaint(){
   $("dkRec").hidden=!on; $("dkRec").textContent=t("stop")+" "+($("takeTime").textContent||"");
 }
 function pvSync(){
-  const want=!!(PV.mq && PV.mq.matches && !PV.closed);
+  const want=PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed && !pvTablet());
   if(want!==PV.on){ PV.on=want; document.body.classList.toggle("aog-play", want); playZoomLock(want); if(!want){ drawer(false); $("dkKitBox").innerHTML=""; } }
   paintText();
 }
@@ -423,7 +429,8 @@ function init(){
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   $("dkMore").onclick=()=>drawer($("dkDrawer").hidden);
-  $("dkClose").onclick=()=>{ drawer(false); PV.closed=true; pvSync(); };
+  $("dkClose").onclick=()=>{ drawer(false); PV.forced=false; PV.closed=true; pvSync(); };
+  $("kpBig").onclick=()=>{ PV.forced=true; PV.closed=false; pvSync(); paintKit(); };
   $("dkTake").onclick=()=>{ const was=$("takeBtn").getAttribute("aria-pressed")==="true"; $("takeBtn").click(); if(!was) drawer(false); };
   $("dkRec").onclick=()=>$("takeBtn").click();
   try{ const mo=new MutationObserver(recPaint); mo.observe($("takeBtn"), {childList:true, characterData:true, subtree:true, attributes:true}); mo.observe($("takeTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}

@@ -137,6 +137,8 @@ const APART=()=>{ let n=0; const over=[];
   for(const [dev, vp] of [["iPhone sideways",{width:844,height:390}],["iPad sideways",{width:1180,height:820}]]){
     console.log("== "+dev);
     const {c, p}=await open({viewport:vp, isMobile:true, hasTouch:true, deviceScaleFactor:2}, dev);
+    /* AOG-PLAY-TABLET-V1: an iPad starts on the page; Play on the whole screen opens the sideways view */
+    if(dev==="iPad sideways"){ ok(await p.evaluate("!BP.on"), "an iPad held sideways starts on the page"); await p.evaluate(()=>{ if(typeof GUARD!=="undefined"){ GUARD.last=0; GUARD.down.clear(); } document.getElementById("bpBig").click(); }); await p.waitForTimeout(400); }
     await p.evaluate(()=>{ const k=document.getElementById("keySel"); k.value="9"; k.onchange(); });
     const pick=(id)=>p.evaluate(id=>{ const s=document.getElementById("bpSound"); s.value=id; s.onchange(); }, id);
     const ds=await p.evaluate(()=>{ const s=document.getElementById("bpScale"); return {on:BP.on, n:s.options.length, g:s.querySelectorAll("optgroup").length, v:s.value}; });

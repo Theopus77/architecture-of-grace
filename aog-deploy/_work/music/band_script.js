@@ -1337,7 +1337,7 @@ function playZoomLock(on){
   let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
     if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
 })();
-const BP={on:false, closed:false, mq:null, back:null, y:0, seen:false};
+const BP={on:false, closed:false, forced:false, mq:null, back:null, y:0, seen:false};
 try{ BP.seen=localStorage.getItem("aog.band.play.v1")==="1"; }catch(e){}
 function bpMode(){ if(!BP.on) return ""; return S.sound==="harp" ? "harp" : ["marimba","xylophone","glockenspiel"].indexOf(S.sound)>=0 ? "bars" : "keys"; }
 function bpScale(){ const sc=scaleOn(); if(sc) return sc.iv.map(i=>(S.key+i)%12);   /* AOG-BAND-SCALES-V1: a picked scale tunes the harp to it */
@@ -1358,12 +1358,13 @@ function bpHtml(lo, hi){
       html+=`<div class="bk${out(m+1)}" data-m="${m+1}" aria-label="${noteLabel(m+1)}" style="left:${((i+1)*w-w*0.36).toFixed(2)}%;width:${(w*0.72).toFixed(2)}%;top:${(20-bh/2).toFixed(1)}%;height:${bh.toFixed(1)}%">${SCD}<span class="nm">${pcName(m+1)}</span></div>`; } });
   return html;
 }
-function bpWords(){ const es=S.lang==="es", tab=Math.max(screen.width||0, screen.height||0)>=900, m=bpMode(); return {
+function bpWords(){ const es=S.lang==="es", tab=bpTablet(), m=bpMode(); return {
+  big: es?"⤢ Tocar en toda la pantalla":"⤢ Play on the whole screen",
   close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu",
   hint: m==="harp" ? (scaleOn() ? t("harpScale",{scale:scaleWords(true)}) : es?"Pasa un dedo por las cuerdas. El arpa está afinada en el tono de la canción.":"Sweep a finger across the strings. The harp is tuned to the song's key.")
       : m==="bars" ? (es?"Toca las láminas. Las de atrás son los sostenidos y bemoles.":"Tap the bars. The ones at the back are the sharps and flats.")
       : (es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like."),
-  turn: tab ? (es?"Gira tu tableta de lado para tocar en toda la pantalla.":"Turn your tablet sideways to play on the whole screen.")
+  turn: tab ? (es?"Pulsa ⤢ Tocar en toda la pantalla para tocar el instrumento en grande. Cerrar vuelve a esta página.":"Press ⤢ Play on the whole screen to play the instrument big. Close brings this page back.")
             : (es?"Gira tu teléfono de lado para tocar en toda la pantalla.":"Turn your phone sideways to play on the whole screen."),
   lower:es?"Más grave":"Lower", higher:es?"Más agudo":"Higher", region:es?"El instrumento, en toda la pantalla":"The instrument, on the whole screen" }; }
 function bpText(){
@@ -1374,10 +1375,13 @@ function bpText(){
   $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
   $("bpScale").innerHTML=$("scaleSel").innerHTML; $("bpScale").value=scaleId(); $("bpScale").setAttribute("aria-label", t("scaleLab")); $("bpScale").hidden=!libsIn();
   bpRecPaint();
-  $("bpTurn").textContent=W.turn;
-  $("bpTurn").hidden=BP.seen || BP.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches;
+  $("bpTurn").textContent=W.turn; $("bpBig").textContent=W.big;
+  $("bpTurn").hidden=BP.seen || BP.on || !matchMedia("(pointer: coarse)").matches || (!bpTablet() && !matchMedia("(orientation: portrait)").matches);
 }
-function bpWanted(){ return !!(BP.mq && BP.mq.matches && !BP.closed); }
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens
+   the whole-screen instrument by itself; a tablet (its short side 600 or more) starts in the page and opens it with ⤢. */
+function bpTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+function bpWanted(){ return BP.forced || !!(BP.mq && BP.mq.matches && !BP.closed && !bpTablet()); }
 function bpSync(){
   const w=bpWanted(); if(w===BP.on) return;
   const kb=$("kbd"); POINTERS.forEach(m=>{ if(m!=null) keyOff(m); }); POINTERS.clear();
@@ -1405,7 +1409,8 @@ function bpInit(){
   BP.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
   const ch=()=>{ BP.closed=false; bpSync(); bpText(); };
   if(BP.mq.addEventListener) BP.mq.addEventListener("change", ch); else if(BP.mq.addListener) BP.mq.addListener(ch);
-  $("bpClose").onclick=()=>{ bpDrawer(false); BP.closed=true; bpSync(); };
+  $("bpClose").onclick=()=>{ bpDrawer(false); BP.forced=false; BP.closed=true; bpSync(); };
+  $("bpBig").onclick=()=>{ BP.forced=true; BP.closed=false; bpSync(); };
   $("bpDown").onclick=()=>moveOct(-1); $("bpUp").onclick=()=>moveOct(1);
   $("bpRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
   $("bpRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) bpDrawer(false); };

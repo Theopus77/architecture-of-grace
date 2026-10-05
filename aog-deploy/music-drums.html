@@ -3799,7 +3799,10 @@ function dkSvg(){
   const box=document.getElementById("dkKitBox"), asp=box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8;
   return drawKit({pre:"dk", cls:"dk-kit", id:"dkKit", VW:Math.round(Math.max(1000, Math.min(1400, 560*asp))), label:dkWords().region});
 }
-function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && (S.view==="home" || S.view==="meet")); }
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a tablet (its short side 600 or
+   more) stays on the drum machine when turned sideways; its whole-screen kit is the Drum Kit page (music-kit.html, ⤢). */
+function dkTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+function dkWanted(){ return !!(DK.mq && DK.mq.matches && !DK.closed && !dkTablet() && (S.view==="home" || S.view==="meet")); }
 function dkPaint(){
   const v=document.getElementById("kitView"); if(!v) return; const W=dkWords();
   v.setAttribute("aria-label", W.region);
@@ -3828,7 +3831,7 @@ function dkRecPaint(){
 }
 function dkTurn(W){
   const turn=document.getElementById("dkTurn");
-  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="meet"); }
+  if(turn){ turn.textContent=W.turn; turn.hidden=DK.seen || DK.on || dkTablet() || !matchMedia("(pointer: coarse)").matches || !matchMedia("(orientation: portrait)").matches || !(S.view==="home"||S.view==="meet"); }
 }
 function dkSync(){
   const want=dkWanted();
