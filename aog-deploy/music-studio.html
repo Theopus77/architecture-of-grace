@@ -146,6 +146,15 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-clip{position:absolute;top:4px;bottom:4px;border-radius:6px;background:var(--c);color:#1a1408;font:800 .8rem/34px var(--sans);
   padding:0 .4rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:8px}
 .st-clip.off{background:#3a3e44;color:#ece6da}
+/* AOG-STUDIO-WAVES-V1: the sound, drawn in each block of the song and large in the track's panel */
+.st-clip .wv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.st-clip .wv path{fill:rgba(26,20,8,.30)}
+.st-clip.off .wv path{fill:rgba(236,230,218,.22)}
+.st-clip .st-cnm{position:relative}
+.st-wave{margin-top:.9rem}
+.st-wave canvas{display:block;width:100%;height:150px;border-radius:10px;background:#0f1114;border:1px solid #2f3339;touch-action:pan-y;cursor:pointer}
+.st-wave .st-line{margin:.45rem 0 0}
+@media (max-width:699px){ .st-wave canvas{height:120px} }
 .st-empty{position:absolute;left:.6rem;top:0;bottom:0;display:flex;align-items:center;font-size:.86rem;color:#c3bbad}
 
 /* ── 3 · the track: its recording and where it plays ── */
@@ -463,6 +472,11 @@ const STR={
   pieceN:{en:"Piece {n} · bars {a} to {b}",es:"Parte {n} · compases {a} a {b}"}, pieceN1:{en:"Piece {n} · bar {a}",es:"Parte {n} · compás {a}"},
   posBeat:{en:"Bar {b} · beat {n}",es:"Compás {b} · pulso {n}"},
   cutH:{en:"Cut it up",es:"Córtala en partes"},
+  /* AOG-STUDIO-WAVES-V1 */
+  waveHint:{en:"Tap the wave where you want to cut. Drag an edge to trim.",es:"Toca la onda donde quieres cortar. Arrastra un borde para recortar."},
+  waveAria:{en:"The sound of track {n}. The bright part plays.",es:"El sonido de la pista {n}. La parte clara es la que suena."},
+  waveCut:{en:"The cut goes at {w}. Press Cut here.",es:"El corte va en {w}. Pulsa Cortar aquí."},
+  waveTrim:{en:"Trimmed.",es:"Recortada."},
   cutAt:{en:"Cut at",es:"Cortar en"}, cutBtn:{en:"✂ Cut here",es:"✂ Cortar aquí"},
   cutShort:{en:"This piece is too short to cut.",es:"Esta parte es muy corta para cortarla."},
   cutDone:{en:"Cut in two. Now there are {n} pieces.",es:"Cortada en dos. Ahora hay {n} partes."},
@@ -1205,7 +1219,7 @@ async function removeTake(id){
   /* the keyboard lands on the take that moved into its place */
   const btns=$("inbox").querySelectorAll("[data-drop]"), next=btns[Math.min(at, btns.length-1)] || $("trackSel"); if(next) next.focus();
 }
-function dropClip(id){ BUF.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
+function dropClip(id){ BUF.delete(id); PEAKS.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
 function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const id=x.clip.id; x.clip=null; dropClip(id); songChanged(); }
 /* after any change to what plays where */
 function songChanged(){
@@ -1386,6 +1400,107 @@ function paintTransport(){
 }
 
 /* ── 2 · the song ── */
+/* ══ AOG-STUDIO-WAVES-V1 (2026-10-05) — Jimmy: "On the studio, I would like to see the sounds waves, which is a super easy
+   way to cut and paste sound." Each recording's loudness, measured once (the loudest sample in every 512), is drawn in its
+   blocks on the song and large in the track's panel: the bright part plays, tap the wave to put the cut there, drag an
+   edge to trim. Nothing on it moves by itself. ══ */
+const PEAKS=new Map();
+function peaksOf(c){
+  const b=BUF.get(c.id); if(!b) return null;
+  let P=PEAKS.get(c.id); if(P && P.b===b) return P;
+  const step=512, n=Math.ceil(b.length/step), pk=new Float32Array(n); let top=0;
+  for(let ch=0; ch<b.numberOfChannels; ch++){ const d=b.getChannelData(ch);
+    for(let i=0;i<n;i++){ let m=pk[i]; const e=Math.min(d.length, (i+1)*step); for(let j=i*step;j<e;j++){ const v=d[j]<0?-d[j]:d[j]; if(v>m) m=v; } pk[i]=m; } }
+  for(let i=0;i<n;i++) if(pk[i]>top) top=pk[i];
+  P={b:b, pk:pk, per:step/b.sampleRate, top:top||1}; PEAKS.set(c.id, P); return P;
+}
+/* the loudness from second s0 to s1 of the recording, in cols columns, 0 to 1 */
+function waveCols(P, s0, s1, cols){
+  const out=new Float32Array(cols), span=(s1-s0)/cols;
+  for(let x=0;x<cols;x++){ const a=Math.max(0, Math.floor((s0+x*span)/P.per)), e=Math.min(P.pk.length, Math.max(a+1, Math.ceil((s0+(x+1)*span)/P.per)));
+    let m=0; for(let i=a;i<e;i++) if(P.pk[i]>m) m=P.pk[i]; out[x]=Math.min(1, m/P.top); }
+  return out;
+}
+function recSec(c, beat){ return c.head+beat*beatOf(c); }   /* where a beat of the recording is, in its seconds */
+function waveSvg(c, p){
+  const P=peaksOf(c); if(!P) return "";
+  const per=Math.max(8, Math.min(90, Math.round(240/p.n))), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
+  let top="", bot="";
+  for(let x=0;x<cols;x++){ const h=(0.06+0.9*v[x%per]).toFixed(2); top+=`L${x} ${(1-h).toFixed(2)}L${x+1} ${(1-h).toFixed(2)}`; bot=`L${x+1} ${(1+ +h).toFixed(2)}L${x} ${(1+ +h).toFixed(2)}`+bot; }
+  return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 1${top}${bot}Z"/></svg>`;
+}
+/* the large wave in the track's panel */
+const WV={drag:null, val:0};
+function waveGeo(cv, c){ const r=cv.getBoundingClientRect(), pad=10, full=fullBeats(c); return {r:r, pad:pad, w:Math.max(10, r.width-2*pad), full:full}; }
+function drawWave(){
+  const cv=$("waveC"), i=SONG.sel, c=SONG.tracks[i].clip; if(!cv || !c) return;
+  const P=peaksOf(c), g=waveGeo(cv, c), dpr=Math.min(3, window.devicePixelRatio||1), W=Math.round(g.r.width), H=Math.round(g.r.height);
+  if(!(W>0 && H>0)) return;
+  if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
+  const x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
+  const p=pcs(c)[pSel(c)], bpb=c.bpb||4;
+  let a=p.a, b=p.b; if(WV.drag==="a") a=WV.val; if(WV.drag==="b") b=WV.val;
+  const X=beat=>g.pad+beat/g.full*g.w, top=18, mid=top+(H-top-8)/2, amp=(H-top-8)/2;
+  /* the part that plays */
+  x.fillStyle="#23272d"; x.fillRect(X(a), top, X(b)-X(a), H-top-4);
+  /* bars: a line and its number; beats: a short tick */
+  x.font="700 11px system-ui, sans-serif"; x.textBaseline="top";
+  for(let k=0;k<=Math.floor(g.full+1e-6);k++){ const px=Math.round(X(k))+0.5;
+    if(k%bpb===0){ x.fillStyle="#3a3f47"; x.fillRect(px-0.5, top, 1, H-top-4); if(g.w/g.full*bpb>=22){ x.fillStyle="#cfc6b6"; x.fillText(String(k/bpb+1), px+3, 3); } }
+    else { x.fillStyle="#30343b"; x.fillRect(px-0.5, H-12, 1, 8); } }
+  /* the wave: bright where it plays, grey where it is cut away */
+  if(P){ const cols=Math.max(10, Math.round(g.w)), v=waveCols(P, recSec(c,0), recSec(c,g.full), cols);
+    for(let k=0;k<cols;k++){ const bt=k/cols*g.full, on=bt>=a-1e-6 && bt<b-1e-6, h=Math.max(1, v[k]*amp);
+      x.fillStyle=on ? COLORS[i] : "#4a4f57"; x.fillRect(g.pad+k, mid-h, 1, 2*h); } }
+  /* the cut, where it will go */
+  const cs=$("cutSel"); if(cs && !WV.drag){ const kc=+cs.value; if(kc>a && kc<b){ const px=Math.round(X(kc));
+    x.fillStyle="#f4a37a"; x.fillRect(px-1.5, top, 3, H-top-4);
+    const bx=Math.max(2, Math.min(W-24, px-11)); x.fillRect(bx, H-26, 22, 20); x.fillStyle="#07080a"; x.font="700 14px system-ui, sans-serif"; x.fillText("✂", bx+4, H-24); } }
+  /* the two edges, to drag */
+  [a,b].forEach(v=>{ const px=Math.round(X(v)); x.fillStyle="#fffaf0"; x.fillRect(px-1.5, top, 3, H-top-4);
+    x.fillStyle="#fffaf0"; x.fillRect(px-6, mid-16, 12, 32); x.fillStyle="#07080a"; x.fillRect(px-2, mid-9, 1, 18); x.fillRect(px+1, mid-9, 1, 18); });
+}
+function bindWave(){
+  const cv=$("waveC"); if(!cv) return;
+  let down=null;
+  const beatAt=e=>{ const c=SONG.tracks[SONG.sel].clip, g=waveGeo(cv, c); return {beat:Math.max(0, Math.min(g.full, (e.clientX-g.r.left-g.pad)/g.w*g.full)), px:e.clientX-g.r.left, g:g, c:c}; };
+  cv.onpointerdown=e=>{
+    const o=beatAt(e); if(!o.c) return;
+    const p=pcs(o.c)[pSel(o.c)], X=v=>o.g.pad+v/o.g.full*o.g.w, near=Math.max(18, e.pointerType==="mouse" ? 10 : 22);
+    const da=Math.abs(o.px-X(p.a)), db=Math.abs(o.px-X(p.b));
+    down={x:e.clientX, y:e.clientY, mode:(da<=near || db<=near) ? (da<=db ? "a" : "b") : "tap", moved:false, id:e.pointerId};
+    if(down.mode!=="tap"){ WV.drag=down.mode; WV.val=down.mode==="a" ? p.a : p.b; try{ cv.setPointerCapture(e.pointerId); }catch(er){} e.preventDefault(); drawWave(); }
+  };
+  cv.onpointermove=e=>{
+    if(!down) return;
+    if(Math.abs(e.clientX-down.x)>6 || Math.abs(e.clientY-down.y)>6) down.moved=true;
+    if(down.mode==="tap") return;
+    const o=beatAt(e), p=pcs(o.c)[pSel(o.c)];
+    let v=Math.round(o.beat); if(o.g.full-o.beat<0.5) v=o.g.full;
+    WV.val = down.mode==="a" ? Math.max(0, Math.min(v, p.b-1)) : Math.min(o.g.full, Math.max(v, p.a+1));
+    drawWave();
+  };
+  const up=e=>{
+    if(!down) return; const d=down; down=null;
+    const o=beatAt(e), c=o.c, i=SONG.sel;
+    if(d.mode==="tap"){
+      WV.drag=null; if(d.moved) return;
+      const p=pcs(c)[pSel(c)], cuts=cutPlaces(c, p), cs=$("cutSel"); if(!cuts.length || !cs) return;
+      const best=cuts.reduce((m,x)=>Math.abs(x.k-o.beat)<Math.abs(m.k-o.beat) ? x : m, cuts[0]);
+      cs.value=String(best.k); S.edMsg=t("waveCut",{w:best.label}); S.edAt="cut"; paintEditLine(); drawWave(); LES.mark("wave1"); return;
+    }
+    const val=WV.val, which=WV.drag; WV.drag=null;
+    const p0=pcs(c)[pSel(c)];
+    if(Math.abs((which==="a" ? p0.a : p0.b)-val)<1e-6){ drawWave(); return; }
+    remember(i, ++UG); const P=own(c), p=P[pSel(c)];
+    if(which==="a") p.a=val; else p.b=val;
+    tidyPieces(c); S.edMsg=t("waveTrim"); S.edAt="cut"; LES.mark("wave1");
+    songChanged(); stretchAll();
+  };
+  cv.onpointerup=up;
+  cv.onpointercancel=()=>{ down=null; WV.drag=null; drawWave(); };
+}
+
 let RULER=[];
 function paintTimeline(){
   const n=tlBars(), step=n>32 ? 8 : 4, bs=barSec(), es=S.lang==="es";
@@ -1405,7 +1520,7 @@ function paintTimeline(){
       inner=P.map((p,j)=>{
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${esc(nm)}</span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p)}<span class="st-cnm">${esc(nm)}</span></span>`;
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
@@ -1467,6 +1582,7 @@ function paintTrack(){
       ${lineAt("top")}
     </div>
     ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
+    <div class="st-wave"><canvas id="waveC" role="img" aria-label="${esc(t("waveAria",{n:i+1}))}"></canvas><p class="st-line">${esc(t("waveHint"))}</p></div>
     <div class="st-steps">
       <div class="st-stp"><span class="st-lab">${esc(t("startsAt"))}</span><span class="st-val">${esc(posWords(p.at))}</span>
         <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<0.5?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div></div>
@@ -1498,6 +1614,8 @@ function paintTrack(){
       <label class="st-field"><span class="st-lab">${esc(t("fadeOut"))}</span><select id="foSel">${fadeOpts(c.fadeOut||0)}</select></label>
     </div>`;
   paintEditLine();
+  const csel=$("cutSel"); if(csel) csel.addEventListener("change", drawWave);
+  bindWave(); drawWave();
   if(keepF){ const el=box.querySelector(keepF.charAt(0)==="[" ? keepF : "#"+keepF); if(el && !el.disabled) try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
   paintRecs();
 }
@@ -1777,7 +1895,7 @@ function bind(){
     if(b && b.id!=="playBtn") return;
     e.preventDefault(); if(!e.repeat) playStop();
   });
-  let rt=0; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PLAY.on) meterStill(); }, 150); });
+  let rt=0; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PLAY.on) meterStill(); drawWave(); }, 150); });
 }
 
 load();
@@ -1797,7 +1915,7 @@ window.addEventListener("pagehide", ()=>{ stop(); });
 try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
 window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
-window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, songBars:songBars,
+window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
   INBOX:INBOX, refreshInbox:refreshInbox, sources:sources, putOn:putOn, get S(){ return S; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
