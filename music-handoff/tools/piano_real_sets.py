@@ -26,8 +26,10 @@ What each set is made from (all real recordings; licenses checked in each reposi
   celesta    stamperadam's celesta (Freesound pack 6166, via Virtual Playing Orchestra 3; CC0): soft as m, hard as l
   steel      jSteelDrum v2, a Trinidad tenor pan (Jeff Learman; Unlicense, public domain): layers 2, 3 and 5 of 5
   clav       Yamaha TX81Z "Clavisynth" patch, sampled from the hardware (VCSL, CC0): vl1, vl2, vl3 as s, m, l
-  organ, gospel, rockorgan, strsynth, pad, brass, lead
+  organ, gospel, rockorgan
              Unitra B-11 transistor organ (Karoryfer Caveman Cosmonaut, CC0), voices chosen and mixed per set
+             (strsynth, pad, brass and lead were made here from it too; since AOG-PIANO-SYNTH-V1 they are real analog
+             synthesizers, made by piano_synth_sets.py)
   theatre    the Quiet manual of Simon Dalzell's pipe organ (VS Chamber Orchestra: Community Edition, CC0),
              stopped flutes at 16', 8' and 4'
   choir      one singer on "ah" (Karoryfer Hadzi-Fia, from sfzinstruments/legato_vocal_tutorial, CC0), four takes
@@ -993,30 +995,6 @@ def held_set(name, comps, lengths=None, env=None, post=None, P0=0.25, Lrange=(3.
         REPORT[name]["made_from"] = describe
 
 
-def spread(n, L):
-    """two voices a little apart: one step (1/L Hz, about 0.24 Hz) down and up, so they beat slowly (about twice
-    in four seconds) at every pitch, as two detuned synth oscillators set by ear; none where a step would be more
-    than 4 cents (below A2)"""
-    k = 1 if 1200 * math.log2(1 + 1 / (L * mtof(n))) <= 4.0 else 0
-    return [-k, k]
-
-
-def spread_brass(n, L):
-    """as spread(); the trombone voice is taken from the key an octave up, so its step is two of that key's"""
-    s = spread(n, L)
-    return [s[0], 2 * s[1]]
-
-
-def settle(t, start, end, v0, v1, tau):
-    """v0 → v1 with time constant tau from `start`, made to arrive exactly at `end` (so the loop that follows is
-    steady)"""
-    e = np.exp(-np.clip(t - start, 0, None) / tau)
-    v = v1 + (v0 - v1) * e
-    k = np.clip((t - 0.7 * end) / (0.3 * end), 0, 1)
-    k = np.sin(k * np.pi / 2) ** 2
-    return v * (1 - k) + v1 * k
-
-
 # The B-11's 'flutes' and 'all' voices beat slowly inside one recording (the first holds a tempered 2 2/3' quint a
 # cent from the 8' tone's own third harmonic, the second celeste voices 21 cents either side), so no loop can repeat
 # them seamlessly. Its other voices are perfectly steady ('trombone' is a 16' reed: it sounds an octave under its
@@ -1054,66 +1032,6 @@ def build_rockorgan():
              + [("trompette", 0, -12.0)],
              describe="Caveman Cosmonaut 'clarinet' voice on five keys at once like drawbars 16', 5 1/3', 8', 4' and a "
                       "little 2 2/3', with the 'trompette' voice")
-
-
-def build_strsynth():
-    """the '70s string synth: the violin voice and its octave, swelling in (the page's ensemble makes it a
-    string machine)"""
-    held_set("strsynth", [("violin", 0, 0.0), ("violin", 12, -9.0)],
-             env=lambda t: attack_env(t, 0.14, pre=0.15, shape="lin"),
-             describe="Caveman Cosmonaut 'violin' voice, with the same voice an octave up, swelling in over 0.14 s")
-
-
-def build_pad():
-    """warm synth: the clarinet and violin voices a few cents apart (a slow beat), darkened, the tone opening and
-    the sound swelling in"""
-    def post(y, n):
-        top = 2000.0 + 1.5 * mtof(n)
-        return tv_lowpass(y, lambda s: float(settle(np.array([s]), 0.0, 1.15, 0.45 * top, top, 0.35)[0]), q=0.9)
-    held_set("pad", [("clarinet", 0, 0.0), ("violin", 0, -4.0)], P0=1.25, detune=spread, post=post,
-             env=lambda t: attack_env(t, 0.38, pre=0.15, shape="lin"), pitch="centroid",
-             describe="Caveman Cosmonaut 'clarinet' and 'violin' voices, a few cents apart, through a low-pass that "
-                      "opens as the sound swells in over 0.38 s")
-
-
-def build_brass():
-    """'80s synth brass: the trumpet and trombone voices a few cents apart; the tone opens fast and bright, then
-    settles, and the pitch scoops up into the note"""
-    def post(y, n):
-        f = mtof(n)
-        lo, hi, sus = 1.3 * f + 250, 5 * f + 3600, 3 * f + 1800
-        def fc(s):
-            if s < 0.07:
-                return lo + (hi - lo) * s / 0.07
-            return float(settle(np.array([s]), 0.07, 1.15, hi, sus, 0.28)[0])
-        return tv_lowpass(y, fc, q=1.4)
-    def vib(t):                                   # the scoop: 28 cents under, gone in about 0.1 s
-        return 2 ** ((-28 * np.exp(-t / 0.025)) / 1200)
-    held_set("brass", [("trompette", 0, 0.0), ("trombone", 12, -2.0)], P0=1.25, detune=spread_brass, post=post, vib=vib,
-             env=lambda t: attack_env(t, 0.03, pre=0.25, shape="lin"), pitch="centroid",
-             describe="Caveman Cosmonaut 'trompette' voice and 'trombone' voice (a 16' reed, so taken from the key an "
-                      "octave up), a few cents apart, with a low-pass that opens quickly and settles, and a small "
-                      "scoop up into the pitch")
-
-
-def build_lead():
-    """synth lead: the clarinet voice (hollow) with a little of the trumpet voice (buzzy), bright, and a singer's
-    vibrato that grows in while the note is held"""
-    holder = {}
-    def post(y, n):
-        return sosfilt(butter(2, min(0.45 * SR, max(3 * mtof(n), 4650.0)), "lowpass", fs=SR, output="sos"), y)
-    def vib(t):
-        L = holder["L"]
-        fv = round(5.6 * L) / L                   # a whole number of wobbles per loop
-        depth = np.clip((t - 0.35) / 0.45, 0, 1)
-        depth = np.sin(depth * np.pi / 2) ** 2
-        return 2 ** (14 * depth * np.sin(2 * np.pi * fv * t) / 1200)
-    comps = [("clarinet", 0, 0.0), ("trompette", 0, -8.0)]
-    divs = [(mtof(n), 1) for n in grid(0)]
-    holder["L"] = pick_loop_len(divs, 3.0, 4.5)[0]
-    held_set("lead", comps, P0=1.0, post=post, vib=vib, env=lambda t: attack_env(t, 0.006), pitch="centroid",
-             describe="Caveman Cosmonaut 'clarinet' voice with a little 'trompette', bright, with a vibrato (14 "
-                      "cents, 5.6 a second) that grows in from 0.35 s to 0.8 s")
 
 
 # ── theatre: the Quiet manual of Simon Dalzell's pipe organ (VS Chamber Orchestra: Community Edition) ──
@@ -1479,7 +1397,8 @@ def build_choir():
 
 
 # ══════════════════════════════════════════════════════════════════════════
-BUILDERS = ["epreed", "celesta", "steel", "clav", "organ", "gospel", "rockorgan", "strsynth", "pad", "brass", "lead",
+# AOG-PIANO-SYNTH-V1 (2026-10-04): strsynth, pad, brass and lead are real analog synthesizers now: piano_synth_sets.py
+BUILDERS = ["epreed", "celesta", "steel", "clav", "organ", "gospel", "rockorgan",
             "theatre", "accordion", "choir", "musicbox", "toy"]
 OUT = os.path.join(REPO, "aog-deploy", "audio", "piano")
 MANIFEST = os.path.join(HERE, "piano_real_sets.json")

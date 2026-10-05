@@ -1,3 +1,6 @@
+# AOG-PIANO-STEREO-V1 (2026-10-04): the harpsichord, church organ, glockenspiel, bells, kalimba and flute this made in one
+# channel are now made in stereo, from the same takes, by piano_stereo_sets.py (into audio/piano/<set>2/); this program
+# still makes the vibraphone and the '80s electric piano, and is the record of how each note is cut.
 # AOG-PIANO-REAL-V1 (2026-10-04) — Jimmy: "Also are ALL instruments sounds real?" Eight more of the piano's sounds become
 # recordings, made the way piano_vsco_sets.py made the harp, the marimba and the soft strings: mono, 44,100 Hz, 96 kbps MP3,
 # a note every few semitones, the quiet moment before the note trimmed, each note shortened and faded, the notes of an
