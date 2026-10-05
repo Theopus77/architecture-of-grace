@@ -65,7 +65,8 @@ def path_of(src):
 
 _cache = {}
 def load(src):
-    """a source as mono float64 at 44.1 kHz (stereo pairs are averaged; 48 kHz files resampled with soxr)"""
+    """a source as mono float64 at 44.1 kHz (stereo pairs are averaged; 48 kHz files resampled with soxr). Used only
+    for the pads whose microphones are mono or nearly identical on both sides (see build.py, AOG-DRUM-STEREO-V1)"""
     if src in _cache:
         return _cache[src]
     p = path_of(src)
@@ -74,6 +75,32 @@ def load(src):
     a = np.frombuffer(raw, dtype=np.float32).astype(np.float64)
     _cache[src] = a
     return a
+
+
+_cache2 = {}
+def load2(src):
+    """AOG-DRUM-STEREO-V1: a source in two channels, float64 (n, 2) at 44.1 kHz: a stereo pair as recorded (left and
+    right never added together), a mono microphone as two equal sides (it sits in the middle)"""
+    if src in _cache2:
+        return _cache2[src]
+    p = path_of(src)
+    ch = int(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=channels", "-of", "csv=p=0", p],
+                            capture_output=True, text=True, check=True).stdout.strip().split("\n")[0])
+    if ch == 1:
+        a = load(src)
+        a = np.stack([a, a], axis=1)
+    else:
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", p, "-af", "aresample=resampler=soxr:precision=28",
+                              "-f", "f32le", "-ac", "2", "-ar", str(SR), "-"], capture_output=True, check=True).stdout
+        a = np.frombuffer(raw, dtype=np.float32).astype(np.float64).reshape(-1, 2)
+    _cache2[src] = a
+    return a
+
+
+def channels(src):
+    p = path_of(src)
+    return int(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=channels", "-of", "csv=p=0", p],
+                              capture_output=True, text=True, check=True).stdout.strip().split("\n")[0])
 
 
 def exists(src):
