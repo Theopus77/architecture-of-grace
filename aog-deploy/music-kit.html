@@ -95,7 +95,9 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 .dk-b[hidden]{display:none}
 .dk-recnow{border-color:#c4452a;color:#ffb1a4}
 .dk-sel{flex:0 1 18rem;min-width:8rem;min-height:40px;font:600 16px/1.2 var(--sans);color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:10px;padding:0 .4rem}
-.dk-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 var(--sans);color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+/* the hint takes the room that is left and wraps onto a second line if it must, never cut mid-word (Jimmy, 2026-10-05: Safari
+   on an iPad showed "Play the kit with y": a one-line clip measured too narrow) */
+.dk-hint{flex:1 1 0;min-width:0;font:600 14px/1.25 var(--sans);color:#e3dac9;white-space:normal;overflow-wrap:break-word;padding:0 .3rem}
 @media (max-width:900px){ .dk-hint{display:none} }
 .dk-drawer{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 52px);left:max(env(safe-area-inset-left,0px),8px);background:#1a1c21;border:1px solid #5b5446;border-radius:12px;padding:.7rem .8rem;display:flex;flex-wrap:wrap;gap:6px;max-width:80vw;touch-action:manipulation}
 .dk-drawer[hidden]{display:none}
