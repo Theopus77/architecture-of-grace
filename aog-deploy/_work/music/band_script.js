@@ -721,7 +721,7 @@ function noteOn(key, inst, m, v){
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, inst, m, v, now, "sus");
   if(!vc) return;
-  vc.m=m; vc.down=true; LIVE.set(key, vc); track(vc); prune();
+  vc.m=m; vc.inst=inst; vc.vel=v; vc.down=true; LIVE.set(key, vc); track(vc); prune();
   litKeys();
 }
 function noteOff(key){
@@ -958,7 +958,7 @@ async function sendPads(){
 const $=id=>document.getElementById(id);
 /* the music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1) */
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Pad machine","Máquina de pads"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="band"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the band plays as a take (aog-recorder.js, the one recorder
@@ -1292,7 +1292,38 @@ function bindKeyboard(){
 /* computer keys: by position, so other keyboard layouts work too */
 const HELD_KEYS=new Map();
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
-function moveOct(step){ const was=S.oct; S.oct+=step; buildKeys(); if(S.oct!==was) save(); }
+/* AOG-BAND-CHORD-MOVE-V1 (2026-10-05) — Jimmy, for the piano: "It would be awesome if while holding a chord down on the
+   keyboard you could move up or down the board" (the chord jumps with ◀ ▶), and then "Do it up" for The Band. While a
+   chord is held (fingers on the keys, the computer's keys, a chord pad or the wheel), ◀ Lower and Higher ▶ (and Z, X)
+   move the board an octave and the held notes with it, still ringing, under the same fingers. A key's note goes to
+   whichever player reaches it there; a chord's part stays with its player, moved only as far as that player can go. */
+function moveOct(step){ const was=S.oct; S.oct+=step; buildKeys(); if(S.oct!==was){ save(); shiftHeld(12*(S.oct-was)); } return S.oct-was; }
+function shiftHeld(d){
+  if(!d || !ac) return;
+  const now=ac.currentTime, again=[];
+  /* the keys held (fingers and the computer's keys): each one's note an octave along, played by whoever reaches it there,
+     even one that no player could reach before */
+  const keys=new Set(); POINTERS.forEach(m=>{ if(m!=null) keys.add(m); }); HELD_KEYS.forEach(m=>keys.add(m));
+  keys.forEach(m=>{ const vc=LIVE.get("k"+m), v=vc ? (vc.vel||0.7) : 0.7; if(vc){ vc.stop(now, 0.05); LIVE.delete("k"+m); } again.push(()=>keyOn(m+d, v)); });
+  POINTERS.forEach((m,id)=>{ if(m!=null) POINTERS.set(id, m+d); });
+  HELD_KEYS.forEach((m,code)=>HELD_KEYS.set(code, m+d));
+  /* the chords held by a pad or the wheel: each part with its own player */
+  const moveList=(list)=>list ? list.map(key=>{
+    const vc=LIVE.get(key); if(!vc || !vc.down) return key;
+    const i=key.lastIndexOf(":"), tag=key.slice(0, key.indexOf(":")), inst=vc.inst, m=+key.slice(i+1), x=fitIn(m+d, inst);
+    if(x==null || x===m) return key;
+    const nk=tag+":"+inst+":"+x; vc.stop(now, 0.05); LIVE.delete(key); again.push(()=>noteOn(nk, inst, x, vc.vel||0.74)); return nk; }) : list;
+  Object.keys(padHeld).forEach(i=>{ padHeld[i]=moveList(padHeld[i]); });
+  if(WHEEL.held) WHEEL.held=moveList(WHEEL.held);
+  again.forEach(f=>f());
+}
+function chordHeld(){ let h=POINTERS.size>0 || HELD_KEYS.size>0; LIVE.forEach(vc=>{ if(vc.down) h=true; }); return h; }
+/* a phone sends no click for a tap made while other fingers are down, so with a chord held ◀ ▶ answer the finger landing */
+function bindOctHeld(){
+  [["downBtn",-1],["upBtn",1],["bpDown",-1],["bpUp",1]].forEach(([id,dir])=>{ const b=$(id); if(!b) return;
+    b.addEventListener("pointerdown",(e)=>{ if(e.button>0 || b.disabled || !chordHeld()) return; e.preventDefault(); b._held=Date.now(); moveOct(dir); });
+    b.addEventListener("click",(e)=>{ if(Date.now()-(b._held||0)<1500){ b._held=0; e.stopImmediatePropagation(); e.preventDefault(); } },true); });
+}
 /* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
    single notes." The six chord pads sat a long scroll above the keys. The same six chords now sit in one row right on
    top of it, upright and sideways: a chord with one finger, a single note with the next, nothing to switch. They are the
@@ -1477,7 +1508,7 @@ function bind(){
   $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
     if(S.playing && !drumsLive()){ const next=PLAY.t0+PLAY.bar*PLAY.barSec, nb=beatsPerBar()*60/S.bpm; PLAY.t0=next-PLAY.bar*nb; PLAY.barSec=nb; } };
   $("downBtn").onclick=()=>moveOct(-1);
-  $("upBtn").onclick=()=>moveOct(1);
+  $("upBtn").onclick=()=>moveOct(1); bindOctHeld();
   $("era").oninput=()=>{ S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
