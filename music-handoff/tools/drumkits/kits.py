@@ -576,9 +576,10 @@ TARGET = {
   "I": {"kick": -22.8, "snare": -33.7, "ch": -54.0, "oh": -47.5, "clap": -40.8, "tom": -23.1, "rim": -42.0, "bell": -31.3},
   "J": {"kick": -21.5, "snare": -32.9, "ch": -51.0, "oh": -46.7, "clap": -38.8, "tom": -22.7, "rim": -27.1, "bell": -28.8},
   "K": {"kick": -23.7, "snare": -42.3, "ch": -49.0, "oh": -35.4, "clap": -37.5, "tom": -26.3, "rim": -38.5, "bell": -23.5},
-  # A: the page-made classic kit's levels (calib.js, 2026-10-05), kept exactly: kit A is the level every other kit is
-  # set against
-  "A": {"kick": -22.3, "snare": -35.2, "ch": -65.3, "oh": -50.5, "clap": None, "tom": -26.4, "rim": None, "bell": None},
+  # A: the page-made classic kit's levels (calib.js, 2026-10-05: kick -22.3, snare -35.2, ch -65.3, oh -50.5, tom
+  # -26.4), kept for the kick, snare and tom (kit A is the level the new kits are set against); its nearly silent hats
+  # lifted, as on the other rebuilt kits, so each still peaks at 0.05 or more in the memory
+  "A": {"kick": -22.3, "snare": -35.2, "ch": -49.0, "oh": -41.5, "clap": None, "tom": -26.4, "rim": None, "bell": None},
   # L: the page-made 909 kit's levels (calib.js, 2026-10-05: kick -19.9, snare -38.8, ch -67.2, oh -56.3, clap -38.3,
   # tom -25.3, ride -51.5); its nearly silent hats and quiet ride lifted, as on the other rebuilt kits, so a normal hit
   # still peaks at 0.05 or more in the 1987 memory
