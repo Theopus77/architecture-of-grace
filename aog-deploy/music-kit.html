@@ -505,7 +505,7 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S.lang, w
   prefix:{en:"Drum kit",es:"Batería"}, file:{en:"drum-kit-take",es:"bateria-toma"}, shelf:"drumtake", tool:"drums",
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 function navHtml(){
-  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const es=S.lang==="es", tools=[["drums","music-drums.html","Drums","Ritmos"],["kit","music-kit.html","Drum kit","Batería"],["pads","music-pads.html","Pad machine","Máquina de pads"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="kit"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function kitOptions(){ return KITS().map(b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`).join(""); }
