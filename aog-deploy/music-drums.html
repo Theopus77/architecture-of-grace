@@ -1589,10 +1589,38 @@ function pushBank(){
 const HI_RATE = 44100;
 const kitJobs = {};
 /* one voice made here, rendered once into the twelve-bit 26,040 Hz memory and once clean at 44,100 Hz */
+/* AOG-DRUM-CR78-V1 (2026-10-05) — Jimmy: kits A, B, C, F and L "sound crappy in comparison to the real drum kits".
+   Kit A is the machine's own kit: its sounds fill the memory (and kit B is kit A retuned), so it stays the page's kit,
+   but five of its pads are now a real 1978 rhythm machine, recorded (audio/drums/classic78/, CC0; credits in
+   audio/drums/CREDITS.txt). The memory is filled from those recordings, one each, as a sampler holds them. The clap,
+   rim and bell have no free recording from that machine and are still made here, as is any pad whose file does not
+   arrive within six seconds (so the machine always plays, even offline). Built by music-handoff/tools/drumkits. */
+const A_REC={dir:"/audio/drums/classic78/", ver:"1", pads:{kick:"kick-m", snare:"snare-m", ch:"hat-m", oh:"open-m", tom:"tom-m"}};
+const A_BYTES={};
+function aRecBytes(id){
+  if(!A_REC.pads[id] || !window.fetch) return Promise.resolve(null);
+  if(!A_BYTES[id]) A_BYTES[id]=Promise.race([
+    fetch(A_REC.dir+A_REC.pads[id]+".mp3?v="+A_REC.ver).then(r=>{ if(!r.ok) throw new Error(r.status); return r.arrayBuffer(); }),
+    new Promise((ok,no)=>setTimeout(()=>no(new Error("slow")), 6000))]).catch(()=>null);
+  return A_BYTES[id];
+}
+function decodeOn(off, ab){ return new Promise((ok,no)=>{ const r=off.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
+async function renderRec(OC, ab, tail){
+  const out={};
+  for(const [rate, key] of [[26040,"lo"],[HI_RATE,"hi"]]){
+    const off=new OC(1, Math.ceil(tail*rate), rate), buf=await decodeOn(off, ab.slice(0));
+    const src=off.createBufferSource(); src.buffer=buf;
+    const g=off.createGain(); g.gain.value=0.72; src.connect(g); g.connect(off.destination); src.start(0.004);
+    const d=(await off.startRendering()).getChannelData(0);
+    out[key]=key==="lo" ? quantize12(d) : d;
+  }
+  return out;
+}
 async function renderPad(k, id){
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   if(!OC) return null;
   const tail=KIT_TAIL[k]||0.62, out={};
+  if(k==="A"){ const ab=await aRecBytes(id); if(ab){ try{ return await renderRec(OC, ab, tail); }catch(e){} } }
   const off=new OC(1, Math.ceil(tail*26040), 26040);
   const dest=off.createGain(); dest.gain.value=0.72; dest.connect(off.destination);
   renderVoice(id, 0.004, dest, off, k);
