@@ -5,7 +5,7 @@ let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m)
 (async()=>{
   const b=await pw.chromium.launch();
   for(const rhythm of ["broken","hold","pulse"]){
-    const c=await b.newContext({viewport:{width:1024,height:768}, deviceScaleFactor:2, isMobile:true, hasTouch:true, colorScheme:"dark"});
+    const c=await b.newContext({viewport:{width:768,height:1024}, deviceScaleFactor:2, isMobile:true, hasTouch:true, colorScheme:"dark"});   /* an iPad held upright: sideways, a touch screen opens the play view (AOG-PLAY-V1), tested in play/piano */
     await c.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
     await c.addInitScript(r=>{ localStorage.setItem("aog.lang","en");
       localStorage.setItem("aog.piano.v1", JSON.stringify({sound:"epwarm",key:9,minor:false,prog:[{off:0,q:"maj"},{off:7,q:"maj"},{off:9,q:"min"},{off:4,q:"min"},{off:5,q:"maj"},{off:0,q:"maj"},{off:5,q:"maj"},{off:7,q:"maj"}],preset:"canon",rhythm:r,bpm:97,oct:3,era:0,vol:0.8})); }, rhythm);

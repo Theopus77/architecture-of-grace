@@ -4,7 +4,7 @@ const srv=require("./srv.js")(9980);
 let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m); } else { fails++; console.log("FAIL "+m); } }
 (async()=>{
   const b=await pw.chromium.launch();
-  const c=await b.newContext({viewport:{width:1024,height:768}, deviceScaleFactor:1, hasTouch:true});
+  const c=await b.newContext({viewport:{width:768,height:1024}, deviceScaleFactor:1, hasTouch:true});
   await c.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   await c.addInitScript(()=>{ if(!sessionStorage.getItem("seeded")){ sessionStorage.setItem("seeded","1"); localStorage.setItem("aog.lang","en");
     localStorage.setItem("aog.piano.v1", JSON.stringify({sound:"epwarm",key:0,minor:false,prog:[{off:0,q:"maj"},{off:7,q:"maj"},{off:9,q:"min"},{off:5,q:"maj"}],preset:"pop",rhythm:"hold",bpm:120,oct:3,era:0,vol:0.8})); } });
