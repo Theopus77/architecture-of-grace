@@ -37,7 +37,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const opts=await p.evaluate(s=>[...s.options].map(o=>o.text).join(","), sel);
     const shown=await p.evaluate(s=>s.options[s.selectedIndex].text, sel);
     await Promise.all([p.waitForNavigation({timeout:8000}), p.evaluate(([s,label])=>{ s.selectedIndex=[...s.options].findIndex(o=>o.text===label); s.dispatchEvent(new Event("change")); }, [sel, pick])]);
-    ok(p.url().endsWith(want) && opts==="Drums,Drum kit,Piano,Guitar,Bass,Band,Turntables,Mixing desk", `${pg}: the tools menu (${opts}, showing ${shown}) → ${pick} opens ${p.url().split("/").pop()}`);
+    ok(p.url().endsWith(want) && opts==="Drums,Drum kit,Beat Lab,Piano,Guitar,Bass,Band,Turntables,Mixing desk", `${pg}: the tools menu (${opts}, showing ${shown}) → ${pick} opens ${p.url().split("/").pop()}`);
   }
   ok(errs.length===0, "no page errors "+errs.join(" | "));
   console.log(fails? fails+" FAILED":"ALL PASS");
