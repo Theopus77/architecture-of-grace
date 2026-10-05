@@ -107,3 +107,10 @@ Tests: `music-handoff/tests/play/strings.js` (9965), `play/drums.js` (9967), `pl
   - The guitar and the bass stand on a guitar stand; the bass has a coiled cable. The Drum Kit is a five-piece kit with hi-hat, crash, ride and stool. The Mixing Desk has twelve channel strips, a master section, a meter bridge with needle meters, a studio speaker and headphones. The Studio door shows the guitar on its stand, a snare with sticks and a microphone on a boom.
   - Framing: the home page's cards zoom in on the drawing, so the group sits in y 10%–85% of the frame (not the course banners' 6%–64%), or the cards cut off the headstocks and cymbals. Fit with `python3 pencil/frame.py music-guitar --box 0.44,0.10,0.90,0.85`.
   - Make one: `node kit/gbuf.js music-guitar-still OUT 1600 560`, copy the four pngs to `OUT/music-guitar-{n,d,photo,t}.png`, then `python3 pencil/pencil.py music-guitar --gbuf OUT --out OUT --params pencil/params_music.json --final` (from `_work/art`; needs pillow, numpy, scipy and scikit-image).
+
+## 12. More licks (2026-10-05, Jimmy: "Can at least another dozen or so more licks be embedded? Have a few for each category plus a plethora of more")
+
+- **AOG-SOLO-MORE-LICKS-V1** (`aog-solo.js`): 26 more licks, 34 in all, under eight headings in the Lick menu (`LICK_GROUPS`, `<optgroup>`s; `LICK_ORDER` is built from it): Blues 4, Rock 5, Metal 6, Shred and tapping 6, Funk and soul 4, Country 3, Jazz and fusion 2, Slow and singing 4. Each has a name and a one-line "what to do" in English and Spanish (`lk_*`, `ld_*`, the headings `lg_*`). No players' or bands' names.
+- Rules every lick keeps: frets 0 to 5 above the box's low root only (a phone held upright shows six frets), only the key's notes and the blue note (bends land on key notes too), slides only across frets in the key (a slide lights every fret it passes), and it ends on the home note (`home:1`, moved to the key's own note in a major key). `run(t0, step, list)` writes a run of even notes.
+- `tests/solo/s3.js` plays every lick in the menu (not a fixed list) and checks there are at least 34 in eight groups.
+
