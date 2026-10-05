@@ -1428,7 +1428,7 @@ function playLick(id){
   voices.forEach(v=>{ const lv=v.lv, stopAt=v.cut!=null?Math.min(v.cut, v.end):v.end;
     lv.fn=lickFn(v.list, beat); lv.planAll=true; lv.planEnd=stopAt; lv.until=lv.born-STEP; lv.lastT=NaN; lv.plan(c.currentTime);
     DYN.add(lv); lv.stop(stopAt, v.ghost?0.012:(v.cut!=null?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.04)*1.5)); });
-  LICK.voices=voices; LICK.lights=lights; LICK.end=Math.max.apply(null, lights.map(L=>L.t1)); LICK.on=true; LICK.id=id; LICK.key=""; LICK.t0=T0;
+  LICK.voices=voices; LICK.lights=lights; LICK.end=Math.max.apply(null, lights.map(L=>L.t1)); LICK.on=true; LICK.id=id; LICK.key=""; LICK.t0=T0; LICK.mk=S.key+(S.minor?"m":"");
   LICK.log=notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, k:n.k||"p", q:!!n.q}));
   LICK.beat=beat; LICK.spd=spd;
   const ln=$q("soLickLine"); if(ln) ln.textContent=w("playing",{name:w("lk_"+id)})+" "+w("lickNow");
@@ -1447,6 +1447,8 @@ function lickFrame(){
   if(!LICK.on || !ac) return;
   const now=ac.currentTime;
   if(now>LICK.end+0.06){ lickStop(true); return; }
+  /* AOG-NECK-KEY-V1: the key changed while the lick plays: it starts again in the new key */
+  if(LICK.mk && LICK.mk!==S.key+(S.minor?"m":"")){ playLick(LICK.id); return; }
   const act=[]; LICK.lights.forEach(L=>{ if(now>=L.t0 && now<L.t1){ const st=lickState(L, now); act.push({s:L.s, f:st.f, bend:st.bend, tag:st.tag}); } });
   const key=act.map(a=>a.s+":"+a.f+":"+a.tag+":"+Math.round(a.bend*24)).join("|");
   if(key!==LICK.key){ LICK.key=key; drawLickNow(act); }
