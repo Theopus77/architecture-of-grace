@@ -106,6 +106,8 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pad{position:relative;aspect-ratio:1/1;min-height:64px;border-radius:12px;border:1px solid #4a4f58;background:linear-gradient(#2e3238,#1f2227);color:#f3ead8;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;text-align:center;box-shadow:inset 0 -3px 0 rgba(0,0,0,.35);touch-action:none}
 .pad .pn{font:800 clamp(13px,3.6vw,17px)/1.1 var(--sans);overflow-wrap:anywhere}
+/* AOG-SCRIPTURE-V1: a phrase of scripture is a longer name — smaller, whole words, clear of the pad number */
+.pad .pn.long{font-size:clamp(10.5px,2.8vw,15px);overflow-wrap:normal;margin-top:9px}
 .pad .pk{font:700 11px/1 var(--sans);color:#c9bfae;letter-spacing:.08em}
 .pad .pi{position:absolute;top:5px;left:7px;font:700 11px/1 var(--sans);color:#c9bfae}
 .pad.sel{border-color:#ffd36b;box-shadow:inset 0 0 0 2px #ffd36b}
@@ -299,7 +301,7 @@ const STR={
   chopN:{en:"Chop {n}",es:"Corte {n}"}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
-  cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"},
+  cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"}, cWord:{en:"Scripture",es:"Escrituras"},
   /* AOG-PADS-BOUNCE-V1 */
   bounce:{en:"Make the loop into a file",es:"Convertir el bucle en un archivo"}, bMaking:{en:"Making the loop…",es:"Haciendo el bucle…"},
   bNone:{en:"The loop is empty. Turn on Record the loop and tap some pads first.",es:"El bucle está vacío. Activa Grabar el bucle y toca algunos pads primero."},
@@ -495,7 +497,7 @@ function loadLists(){
   return Promise.all([a,b]);
 }
 function recInfo(rec){
-  if(/^c:/.test(rec)){ const f=rec.slice(2), c=CRATE.find(x=>x.file===f); return c ? {kind:"crate", name:{en:c.title, es:c.title_es||c.title}, bpm:c.bpm, bars:c.bars||16, url:"/audio/crate/"+f} : null; }
+  if(/^c:/.test(rec)){ const f=rec.slice(2), c=CRATE.find(x=>x.file===f); return c ? {kind:"crate", name:{en:c.title, es:c.title_es||c.title}, bpm:c.bpm, bars:c.bars||16, url:"/audio/crate/"+f, phrases:c.phrases||null} : null; }
   if(/^t:/.test(rec)){ const id=rec.slice(2), x=INBOX.find(y=>y.id===id); if(!x) return null;
     const nm=x.name && typeof x.name==="object" ? x.name : {en:String(x.name||"Take"), es:String(x.name||"Toma")};
     const bars=x.bpm>0 && x.sec>0 ? Math.floor(x.sec*x.bpm/60/4) : 0; return {kind:"take", id:id, name:nm, bpm:x.bpm>0?x.bpm:0, bars:bars, sec:x.sec||0}; }
@@ -508,10 +510,12 @@ function recBuf(rec){
   if(!BUF.has(k)) BUF.set(k, AOGHandoff.item(AOGHandoff.INBOX, R.id).then(it=>{ if(!it || !it.wav) throw new Error("gone"); return it.wav.arrayBuffer(); }).then(decode).catch(e=>{ BUF.delete(k); throw e; }));
   return BUF.get(k);
 }
-/* sixteen chops: one beat each from the bar picked, or the take cut in sixteen equal parts when its tempo is not known */
+/* sixteen chops: one beat each from the bar picked, or the take cut in sixteen equal parts when its tempo is not known.
+   AOG-SCRIPTURE-V1: a scripture record brings its own sixteen chops, one phrase each, cut at the reader's pauses. */
 function chopsOf(B, buf){
   const R=recInfo(B.rec); if(!R || !buf) return [];
   const out=[];
+  if(R.phrases){ R.phrases.forEach(p=>{ if(p[0]<buf.duration) out.push([p[0], Math.min(p[1], buf.duration-p[0])]); }); return out; }
   if(R.bpm>0 && R.bars>=4){ const beat=60/R.bpm, st=(Math.max(1, B.bar)-1)*4*beat; for(let i=0;i<16;i++){ const a=st+i*beat; if(a<buf.duration) out.push([a, Math.min(beat, buf.duration-a)]); } }
   else { const d=buf.duration/16; for(let i=0;i<16;i++) out.push([i*d, d]); }
   return out;
@@ -537,7 +541,7 @@ function padDefs(bi){
   if(B.type==="drums"){ [B.kitA, B.kitB].forEach(k=>DRUM_IDS.forEach(id=>out.push({kind:"drum", kit:k, id:id, name:window.AOGDrumKit?drumWord(k,id):id}))); }
   else if(B.type==="notes"){ scaleNotes(B).forEach(m=>out.push({kind:"note", notes:[m], name:noteName(m)})); }
   else if(B.type==="chords"){ chordList(B).forEach(c=>out.push({kind:"note", notes:c.notes, name:c.name})); }
-  else { for(let i=0;i<16;i++) out.push({kind:"chop", i:i, name:t("chopN",{n:i+1})}); }
+  else { const R=recInfo(B.rec), ph=R && R.phrases; for(let i=0;i<16;i++) out.push({kind:"chop", i:i, name:ph && ph[i] ? ph[i][2] : t("chopN",{n:i+1})}); }
   return out;
 }
 /* getting a bank ready: only what its sixteen pads play is fetched */
@@ -902,11 +906,11 @@ function paintSetRow(){
   if(B.type==="drums"){ const ks=KITS(); h=field("fKitA", t("kitA"), ks.map(k=>opt(k, esc(kitName(k)), B.kitA)).join(""))+field("fKitB", t("kitB"), ks.map(k=>opt(k, esc(kitName(k)), B.kitB)).join("")); }
   else if(B.type==="chops"){
     const R=recInfo(B.rec);
-    let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+c.bpm, B.rec)).join("")+`</optgroup>`;
+    let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? "KJV" : c.bpm), B.rec)).join("")+`</optgroup>`;
     o+=`<optgroup label="${esc(t("g_inbox"))}">`+(INBOX.length ? INBOX.map(x=>{ const r=recInfo("t:"+x.id); return opt("t:"+x.id, esc(r?L(r.name):"…")+(x.bpm>0?" · "+Math.round(x.bpm):""), B.rec); }).join("") : `<option disabled>${esc(t("noTakes"))}</option>`)+`</optgroup>`;
     h=field("fRec", t("record"), o, true);
     const bars=R ? R.bars : 0, starts=[]; for(let b=1;b+3<=bars;b+=4) starts.push(b);
-    h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
+    if(!(R && R.phrases)) h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
@@ -929,7 +933,7 @@ function paintPads(){
   const defs=padDefs(S.bank), fine=matchMedia("(pointer: fine)").matches;
   const order=[12,13,14,15,8,9,10,11,4,5,6,7,0,1,2,3];
   $("pads").innerHTML=order.map(i=>{ const d=defs[i];
-    return `<button type="button" class="pad${i===S.sel?" sel":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name)}"><span class="pi">${i+1}</span><span class="pn">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
+    return `<button type="button" class="pad${i===S.sel?" sel":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name)}"><span class="pi">${i+1}</span><span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
   $("pads").classList.toggle("waiting", !isReady(S.bank));
   $("pads").setAttribute("aria-label", t("padsLab"));
 }
@@ -1000,7 +1004,7 @@ function paintText(){
   $("langBtn").textContent=S0.lang==="es"?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
   $("nav").innerHTML=navHtml(); $("guideLink").textContent=t("guide");
-  $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a></p>`;
+  $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a> · <a href="/audio/crate/CREDITS.txt">${esc(t("cWord"))}</a></p>`;
   REC.paint(); paintBounce(); LES.paint();
 }
 function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintSel(); paintTransport(); }
