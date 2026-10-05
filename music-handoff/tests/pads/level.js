@@ -34,34 +34,40 @@ const TABLE=process.argv.includes("--table");
       g.gain.value=0.9; g.connect(l); l.connect(oc.destination);
       fn({c:oc, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}); const buf=await oc.startRendering();
       let pk=0; for(let c=0;c<buf.numberOfChannels;c++){ const d=buf.getChannelData(c); for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; } }
-      PEAK=Math.max(PEAK, pk); return __kw(buf); };
+      PEAK=Math.max(PEAK, pk); LASTPK=pk; return __kw(buf); };
+    let LASTPK=0; const pk={inst:{}, kit:{}, rec:{}};
     let PEAK=0;
     const res={inst:{}, kit:{}, rec:{}};
     for(const id of Object.keys(INST)){
       const low=INST[id].g==="bass";
       if(low){ Object.assign(S.banks[2], {type:"notes", inst:id, key:0, scale:"major", oct:2}); await wait(2);
-        res.inst[id]=await render(2.6, T=>{ const v=trigger(2, 0, 0.8, 0.05, T); if(v) v.stop(2.05); }); }
+        res.inst[id]=await render(2.6, T=>{ const v=trigger(2, 0, 0.8, 0.05, T); if(v) v.stop(2.05); }); pk.inst[id]=LASTPK; }
       else { Object.assign(S.banks[1], {type:"chords", inst:id, key:0, scale:"major"}); await wait(1);
-        res.inst[id]=await render(2.6, T=>{ const v=trigger(1, 0, 0.8, 0.05, T); if(v) v.stop(2.05); }); }
+        res.inst[id]=await render(2.6, T=>{ const v=trigger(1, 0, 0.8, 0.05, T); if(v) v.stop(2.05); }); pk.inst[id]=LASTPK; }
     }
     for(const k of KITS()){
       Object.assign(S.banks[0], {type:"drums", kitA:k, kitB:k}); await wait(0);
       const e=60/90/2;   /* an eighth note at 90 */
       res.kit[k]=await render(8*e+0.6, T=>{ for(let i=0;i<8;i++){ const t=0.05+i*e; trigger(0, 2, i%2?0.6:0.8, t, T);
-        if(i===0||i===5) trigger(0, 0, 0.8, t, T); if(i===2||i===6) trigger(0, 1, 0.8, t, T); } });
+        if(i===0||i===5) trigger(0, 0, 0.8, t, T); if(i===2||i===6) trigger(0, 1, 0.8, t, T); } }); pk.kit[k]=LASTPK;
     }
     for(const c of CRATE){
       Object.assign(S.banks[3], {type:"chops", rec:"c:"+c.file, bar:1}); await wait(3);
       const beat=60/c.bpm;
-      res.rec[c.file]=await render(4*beat+0.5, T=>{ for(let i=0;i<4;i++) trigger(3, i, 0.8, 0.05+i*beat, T); });
+      res.rec[c.file]=await render(4*beat+0.5, T=>{ for(let i=0;i<4;i++) trigger(3, i, 0.8, 0.05+i*beat, T); }); pk.rec[c.file]=LASTPK;
     }
-    return {res, peak:PEAK, trim:(typeof LEVEL!=="undefined") ? LEVEL : null};
+    return {res, pk, peak:PEAK, trim:(typeof LEVEL!=="undefined") ? LEVEL : null};
   });
   const r=out.res; let bad=0; const table={inst:{}, kit:{}, rec:{}};
-  const line=(grp, k, db)=>{ const off=db-ref, has=out.trim && out.trim[grp] && out.trim[grp][k]!=null;
-    table[grp][k]=Math.round(-(off - (has ? out.trim[grp][k] : 0))*10)/10;
-    const flag=Math.abs(off)>1 ? "  OFF" : ""; if(flag) bad++;
-    console.log(`${grp.padEnd(5)} ${k.padEnd(24)} ${db.toFixed(2)} dB; to the grand ${off>=0?"+":""}${off.toFixed(2)} dB${flag}`); };
+  /* as loud as the grand, but never lifted past a clean loudest moment (0.9 of full scale): a sound held back by its
+     peak is "held" and counts as level (it is as loud as it can be without crackling) */
+  const CLEAN=0.9;
+  const line=(grp, k, db)=>{ const off=db-ref, cur=(out.trim && out.trim[grp] && out.trim[grp][k]) || 0, p=out.pk[grp][k]||0;
+    const room=p>0 ? 20*Math.log10(CLEAN/p) : 99, want=-off, step=Math.min(want, room);
+    table[grp][k]=Math.round((cur+step)*10)/10;
+    const held=want>room+0.3 && room<0.6, flag=Math.abs(off)>1 && !held ? "  OFF" : held ? "  held (peak "+p.toFixed(2)+")" : "";
+    if(flag==="  OFF") bad++; if(p>0.98) { bad++; }
+    console.log(`${grp.padEnd(5)} ${k.padEnd(24)} ${db.toFixed(2)} dB; to the grand ${off>=0?"+":""}${off.toFixed(2)} dB; peak ${p.toFixed(2)}${flag}${p>0.98?"  CLIPS":""}`); };
   console.log(`grand C chord (piano page): ${ref.toFixed(2)} dB`);
   Object.keys(r.inst).forEach(k=>line("inst", k, r.inst[k]));
   Object.keys(r.kit).forEach(k=>line("kit", k, r.kit[k]));
