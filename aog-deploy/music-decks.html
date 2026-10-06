@@ -162,6 +162,10 @@ button.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-f
 .dsong.rm{border-color:#c0523a;background:#3a1e16}
 .dsong.rm span::before{content:"";display:inline-block;width:.9em;height:.9em;margin-right:.3em;vertical-align:-.1em;background:url(/img/sketch/2715.webp) center/contain no-repeat;filter:invert(1) brightness(1.9)} /* pencil cross */
 .dockrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.ithelp{margin-top:.7rem;color:#efe8dc;font-size:.92rem;line-height:1.45}
+.ithelp summary{cursor:pointer;min-height:44px;display:list-item;padding:.6rem 0;font-weight:700;color:#f5ead8}
+.ithelp p{margin:0 0 .4rem}
+.ithelp ul{margin:0;padding-left:1.2rem;display:grid;gap:.35rem}
 .song{font-size:.85rem;color:#c9bfae;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 .3rem}
 .knob{display:block;margin-top:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c9bfae}
 .knob input{width:100%;height:36px}
@@ -496,6 +500,14 @@ const STR = {
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
+  /* AOG-DECKS-ITUNES-V1 (2026-10-06) — Jimmy: "can a section to grab music from iTunes be accessible?" A web page cannot open
+     the Music app or an iTunes library (Apple keeps it to the device), so this says how to bring a song in as a file. */
+  itH:{en:"Songs from iTunes",es:"Canciones de iTunes"},
+  it1:{en:"This page can't open your Music app, but a song file works.",es:"Esta página no puede abrir tu app Música, pero un archivo de canción sí funciona."},
+  it2:{en:"On a computer: open Music (or iTunes) and drag a song you bought onto a deck.",es:"En una computadora: abre Música (o iTunes) y arrastra una canción que compraste a un plato."},
+  it3:{en:"On an iPad or iPhone: first save the song to iCloud Drive from a computer. Then tap + From this device, then Browse, then iCloud Drive.",es:"En un iPad o iPhone: primero guarda la canción en iCloud Drive desde una computadora. Luego toca + De este aparato, luego Explorar y luego iCloud Drive."},
+  it4:{en:"Apple Music songs you stream can't play here. Apple locks them to the Music app.",es:"Las canciones de Apple Music que escuchas en línea no pueden sonar aquí. Apple las deja solo en la app Música."},
+  locked:{en:"%s is locked to the Music app (Apple Music), so it can't play here. A song you bought on iTunes works.",es:"%s está bloqueada en la app Música (Apple Music), así que no puede sonar aquí. Una canción que compraste en iTunes sí funciona."},
   dockEdit:{en:"Remove songs",es:"Quitar canciones"},
   dockClose:{en:"Close",es:"Cerrar"},
   dockDone:{en:"Done",es:"Listo"},
@@ -807,7 +819,7 @@ async function loadFile(d, file, opts){
     putOn(d, buf, L, R, Object.assign({ name:file.name, key:(file.name||"?") + "·" + (file.size||0) + "·" + Math.round(buf.duration*100) }, opts||{}));
     if(!opts || !opts.restore) crateSpun(d, file, arr);
   }catch(e){
-    d.note = t("nope").replace("%s", file.name); paintDeck(d);
+    d.note = (/\.m4p$/i.test(file.name) ? t("locked") : t("nope")).replace("%s", file.name); paintDeck(d);
     setTimeout(()=>{ if(d.note){ d.note=""; paintDeck(d); } }, 9000);
   }
 }
@@ -2018,7 +2030,8 @@ function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
     <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
-    ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>`;
+    ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>
+    <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }
 /* close a deck's song list; back to its Load a song button when asked */
 function dockShut(id, focus){
