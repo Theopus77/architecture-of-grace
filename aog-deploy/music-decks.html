@@ -152,6 +152,9 @@ label.file input{display:none}
 button.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-flex;align-items:center;background:#efe8dc;color:#1a140e;font-weight:700;border:0}
 .dock{margin:.6rem 0;padding:.8rem;border-radius:14px;background:#1a140e;border:1px solid #5a4630}
 .dock[hidden]{display:none}
+.dockhd{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem}
+.dockhd .dockh{flex:1}
+.dockx{flex:none;min-height:44px;padding:.4rem .9rem;border-radius:999px;border:1px solid #8a6d4a;background:#2a2016;color:#f5ead8;font:inherit;font-weight:700;cursor:pointer}
 .dockh,.dockempty{margin:0 0 .5rem;color:#efe8dc;font-size:.95rem}
 .docklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.45rem;max-height:260px;overflow-y:auto;overscroll-behavior:contain}
 .dsong{min-height:44px;border-radius:10px;border:1px solid #5a4630;background:#2a2016;color:#f4ecdc;font-weight:700;text-align:left;padding:.4rem .7rem;overflow:hidden}
@@ -494,6 +497,7 @@ const STR = {
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
   dockEdit:{en:"Remove songs",es:"Quitar canciones"},
+  dockClose:{en:"Close",es:"Cerrar"},
   dockDone:{en:"Done",es:"Listo"},
   none:{en:"No song yet.",es:"Aún no hay canción."},
   play:{en:"Start",es:"Arrancar"},
@@ -2011,11 +2015,22 @@ function paintStrips(){
   });
 }
 function dockHTML(id){
-  return `<p class="dockh">${t("dockH")}</p>
+  return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
     <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
     ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>`;
 }
+/* close a deck's song list; back to its Load a song button when asked */
+function dockShut(id, focus){
+  const box = document.getElementById("dock"+id); if(!box || box.hidden) return;
+  box.hidden = true; box.classList.remove("editing");
+  const tg = document.querySelector(`[data-dock="${id}"]`);
+  if(tg){ tg.setAttribute("aria-expanded","false"); if(focus) tg.focus(); }
+}
+document.addEventListener("keydown", ev=>{
+  if(ev.key !== "Escape") return;
+  document.querySelectorAll(".dock:not([hidden])").forEach(box=>dockShut(box.id.slice(4), true));
+});
 function paintDocks(){
   document.querySelectorAll(".dock").forEach(box=>{
     const id = box.id.slice(4), editing = box.classList.contains("editing");
@@ -2029,6 +2044,8 @@ function paintDocks(){
         loadFile(decks.find(x=>x.id===id), crateFile(r));
       };
     });
+    const cl = box.querySelector("[data-dockclose]");
+    if(cl) cl.onclick = ()=>dockShut(id, true);
     const ed = box.querySelector("[data-dockedit]");
     if(ed){ ed.textContent = editing ? t("dockDone") : t("dockEdit"); ed.onclick = ()=>{ box.classList.toggle("editing"); paintDocks(); }; }
     const inp = box.querySelector("[data-dockload]");
