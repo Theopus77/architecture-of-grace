@@ -108,7 +108,12 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 .wave .wloop{width:0;background:rgba(127,199,245,.22)}
 .wave .whead{width:2px;margin-left:-1px;background:#fff;will-change:transform}
 .wave .wslip{width:0;margin-left:-1px;border-left:2px dashed rgba(159,212,160,.9);opacity:0;will-change:transform,opacity}
-.platter-wrap{display:flex;justify-content:center;margin:.7rem 0}
+.platter-wrap{display:flex;justify-content:center;margin:.7rem 0;position:relative}
+/* AOG-DECKS-REV-CORNER-V1 (2026-10-06) — Jimmy: "Can the Rev button be on bottom right of the turn table?" Held, it plays the
+   record backwards; it sits in the platter's bottom-right corner, beside the record, where a hand already is. */
+.deck .platter-wrap{margin-bottom:1.1rem}
+.deck .platter-wrap .revc{position:absolute;right:0;bottom:-16px;z-index:2;min-height:44px;min-width:58px}
+@media (min-width:700px) and (max-width:1000px){ .deck .platter-wrap{margin-bottom:2rem} .deck .platter-wrap .revc{bottom:-34px} }   /* three narrow decks: the record fills the deck, so REV sits just under its corner */
 .platter{
   width:min(240px,52vw);aspect-ratio:1;border-radius:50%;position:relative;
   background:radial-gradient(circle at 50% 50%, #2a241c 62%, #c4a574 63%, #c4a574 66%, #1a140e 67%);
@@ -1854,6 +1859,7 @@ function deckHTML(d){
           <div class="hole"></div>
           <div class="arm"></div>
         </div>
+        <button type="button" class="ghost sm revc" data-rev="${id}">${t("rev")}</button>
       </div>
       <div class="meter" aria-hidden="true"><i></i></div>
       <div class="row">
@@ -1883,7 +1889,6 @@ function deckHTML(d){
         <button type="button" class="ghost sm" data-sync="${id}" aria-pressed="false">${t("sync")}</button>
         <button type="button" class="ghost sm${d.keyOn?" on":""}" data-key="${id}" aria-pressed="${d.keyOn}">${t("key")}</button>
         <button type="button" class="ghost sm${d.slipOn?" on":""}" data-slip="${id}" aria-pressed="${d.slipOn}">${t("slip")}</button>
-        <button type="button" class="ghost sm" data-rev="${id}">${t("rev")}</button>
         <button type="button" class="ghost sm" data-tap="${id}">${t("tap")}</button>
         <button type="button" class="ghost sm" data-half="${id}">½×</button>
         <button type="button" class="ghost sm" data-double="${id}">2×</button>
