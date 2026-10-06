@@ -48,7 +48,7 @@
    file plays as before. ════════════════════════════════════════════════════════════════════════════════════════ */
 (function (root) {
   "use strict";
-  var BASE = "/audio/drums/", VER = "4";   /* 4: the snare-wire buzz in eight kits' kicks quieted (music-handoff/tools/drumkits/kick_rattle.py; Jimmy, 2026-10-06: "a spring before the snare") · 3: Kit T's kick made again with its body, so it is a drum, not a stick (Jimmy, 2026-10-04) (2 was its two hard kicks brought under full scale) */
+  var BASE = "/audio/drums/", VER = "5";   /* 5: Kit Y's kicks stop ringing low into the next beat (kick_rattle.py --tail; Jimmy, 2026-10-06: "it sounds like a wind up") · 4: the snare-wire buzz in eight kits' kicks quieted (music-handoff/tools/drumkits/kick_rattle.py; Jimmy, 2026-10-06: "a spring before the snare") · 3: Kit T's kick made again with its body, so it is a drum, not a stick (Jimmy, 2026-10-04) (2 was its two hard kicks brought under full scale) */
   var HI = 44100, LO = 26040;
   /* A pad: the name it shows, the file it plays (name-s / name-m / name-h, numbered when there are two or more takes),
      and how many takes each layer has: [soft, normal, hard]. hat:1 = it shuts the open hat, as a foot does.
