@@ -65,10 +65,11 @@ const over = p => p.evaluate(() => document.documentElement.scrollWidth - innerW
     const { b, p, errs } = await open(9933, { bench: "full" });
     await load(p, { A: "house", B: "disco", C: "techno" });
     await p.evaluate(() => document.getElementById("langBtn").click()); await p.waitForTimeout(600);
+    await p.evaluate(() => document.querySelector('#made [data-spine="made:0"]').click()); await p.waitForTimeout(200);
     const es = await p.evaluate(() => {
       const q = s => [...document.querySelectorAll(s)].map(e => e.textContent.trim());
       return { decks: q(".deck h2"), mixer: document.getElementById("mixH").textContent, made: document.querySelector("#made h3").textContent,
-        madeNames: q("#made .sleeve .nm"), fx: q('[data-fxtype="A"]'), kills: q('[data-kill="A"]'), side: q('[data-side="A"]'), go: document.querySelector('[data-play="A"]').textContent,
+        madeNames: q("#made .spine .sp-t"), fx: q('[data-fxtype="A"]'), kills: q('[data-kill="A"]'), side: q('[data-side="A"]'), go: document.querySelector('[data-play="A"]').textContent,
         load: document.querySelector('[data-dock="A"]').textContent, chop: document.querySelector('[data-chop="A"]').textContent, erase: document.querySelector('[data-erase="A"]').textContent,
         bars: document.querySelector('[data-loop="A"][data-beats="16"]').textContent, snap: [...document.querySelector('[data-snap="A"]').options].map(o => o.text),
         rec: document.getElementById("recBtn").textContent, hint: document.getElementById("padHint").textContent, onto: document.querySelector("#made .sleeve .sb button").getAttribute("aria-label"),
