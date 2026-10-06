@@ -285,6 +285,15 @@ footer a{color:inherit}
 .crate .starter li span{color:var(--muted);font-size:.85rem}
 .crate .starter-msg{margin:0;font-size:.95rem;color:var(--ink)}
 .crate label.ghost input{display:none}
+/* AOG-DECKS-BARS-V1 (2026-10-06) — Jimmy: "some of the best quick bars that are hilarious and edgy" */
+.bars-top{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
+.bars-top label{font-size:.9rem;color:var(--muted)}
+.bars-top select{font:inherit;font-size:16px;min-height:44px;padding:.3rem .6rem;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.barcard{margin:0;padding:1rem 1.1rem;border-radius:14px;border:1px solid #C9A24A;background:#fff8e8;color:#1d1a16;font-size:1.2rem;line-height:1.5;font-weight:700}
+.barcard span{display:block}
+.bars-nav{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.bars-nav .ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);min-height:44px;border-radius:999px;padding:0 1.1rem;font-weight:700;font-size:1rem}
+.bars-nav .n{font-size:.9rem;color:var(--muted);margin-left:auto}
 /* AOG-DJ-MADE-V1 — the four records made on the page */
 .made{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,12.5rem),1fr))}
 .mrec{display:grid;grid-template-columns:64px minmax(0,1fr);gap:.45rem .65rem;align-items:center;padding:.6rem;border-radius:12px;border:1px solid var(--line);background:var(--chip);min-width:0}
@@ -461,6 +470,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <section class="cratecard no-print" id="cratecard" aria-label="Records">
     <div id="made" class="crate"></div>
     <div id="crate" class="crate"></div>
+    <div id="bars" class="crate"></div>
     <div id="bench" class="bench"></div>
   </section>
   <!-- AOG-DECKS-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card sits under the decks, not on top -->
@@ -510,6 +520,12 @@ const STR = {
   locked:{en:"%s is locked to the Music app (Apple Music), so it can't play here. A song you bought on iTunes works.",es:"%s está bloqueada en la app Música (Apple Music), así que no puede sonar aquí. Una canción que compraste en iTunes sí funciona."},
   dockEdit:{en:"Remove songs",es:"Quitar canciones"},
   dockClose:{en:"Close",es:"Cerrar"},
+  barsH:{en:"Bars to rap",es:"Rimas para rapear"},
+  barsLead:{en:"Short, funny bars to rap over a beat. Tap Next for another.",es:"Rimas cortas y chistosas para rapear sobre un ritmo. Toca Siguiente para otra."},
+  barsKind:{en:"Kind",es:"Tipo"},
+  barsBack:{en:"Back",es:"Atrás"},
+  barsNext:{en:"Next",es:"Siguiente"},
+  barsOf:{en:"%i of %n",es:"%i de %n"},
   dockDone:{en:"Done",es:"Listo"},
   none:{en:"No song yet.",es:"Aún no hay canción."},
   play:{en:"Start",es:"Arrancar"},
@@ -1338,6 +1354,92 @@ function starterHtml(){
     </div>
     <p class="starter-msg" id="starterMsg" role="status" aria-live="polite">${starterMsg}</p>`;
 }
+/* AOG-DECKS-BARS-V1: quick bars to rap over the beats, written for this site. Each card is two lines. */
+const BARS = {
+  en: [
+    { k:"roast", name:"Roast", list:[
+      ["Your flow's so slow it needs a hall pass,","I'm on lap ten and you're still looking for the gas."],
+      ["You rap like Wi-Fi in the back of the bus:","one bar, then nothing, then a whole lot of fuss."],
+      ["Your mixtape's so cold it came with a scarf,","played it at the party and the speakers just laughed."],
+      ["You left your verse on read like a group chat at three,","everybody saw it, nobody replied, not even me."],
+      ["I don't need autotune, I was born in key,","you need a search party to find the melody."],
+      ["Your style's a rerun nobody asked for,","even the remote got up and walked out the door."],
+      ["I spit so hot the smoke alarm went off,","you spit so cold the mic caught a cough."],
+      ["I'm on two percent and I still outlast you,","your whole verse is buffering, loading, past due."] ]},
+    { k:"brag", name:"Brag", list:[
+      ["I'm the plot twist, the cheat code, the final boss,","you're the tutorial level everybody skips across."],
+      ["My verses got layers like Abuela's lasagna,","your verse is a cracker: dry, no sauce, no drama."],
+      ["They said stay in your lane, so I built a highway,","eight lanes wide and every lane goes my way."],
+      ["My brain works different, that's my secret sauce,","I see the angles that the straight lines lost."],
+      ["Crown on my head? That's a thinking cap,","I don't do homework, homework does my rap."],
+      ["Cool as the pillow on the other side,","smooth as a moonwalk, no slip, just glide."],
+      ["I don't flex muscles, I flex vocabulary,","words so big they need their own dictionary."],
+      ["Knock me down once, I bounce like a ball in gym,","back on my feet before you even swing again."] ]},
+    { k:"life", name:"Every day", list:[
+      ["Mom said “clean your room,” so I dropped a remix,","swept on the one, folded clothes on the six."],
+      ["Pop quiz on a Monday? That's a villain arc,","I studied in my dreams, so I'm acing in the dark."],
+      ["Teacher said “show your work,” so I brought a mic,","now the whole class knows what the answer's like."],
+      ["Bedtime's at nine but my flow stays awake,","counting no sheep, just the bars that I make."],
+      ["Little brother took my seat and my last fry,","now he's in my verse and he's never gonna hide."],
+      ["Group project? I carried it like groceries,","four bags, one trip, no help, no apologies."],
+      ["Alarm went off, I hit snooze like a drum,","five more minutes turned into a whole new album."],
+      ["Lunch line long like a Monday in June,","I freestyled the wait and got served by noon."] ]},
+    { k:"faith", name:"Faith", list:[
+      ["Goliath talked big, he was nine feet tall,","one kid, one stone, now who's taking the fall?"],
+      ["Walls of Jericho? We just turned up the bass,","seven laps, one shout, wall fell flat on its face."],
+      ["Jonah ran from God and got swallowed whole,","three days in a fish? Now that's a bad stroll."],
+      ["Threw me in the fire like Shadrach's crew,","walked out with no smoke, not one hair touched, true."],
+      ["The enemy tried to stop me, forgot my name,","I'm a child of the King, I don't play his game."],
+      ["Armor from Ephesians and my helmet on tight,","shield of faith up, bring on the whole night."],
+      ["I don't need a hype man, I got grace on my side,","the Lord's in my corner, I don't run, I don't hide."],
+      ["Lions in the den looking hungry and mean,","Daniel took a nap like the cleanest routine."] ]}
+  ],
+  es: [
+    { k:"roast", name:"Batalla", list:[
+      ["Tu flow es tan lento que pide permiso,","yo ya di diez vueltas y tú sigues en el piso."],
+      ["Tus rimas tan frías que traen bufanda,","la bocina las oyó y se fue de la banda."],
+      ["Tú rapeas como el wifi en el autobús:","una barra, se corta, y después ni la luz."],
+      ["No necesito autotune, yo nací afinado,","tú buscas el ritmo como celular extraviado."] ]},
+    { k:"brag", name:"Presumir", list:[
+      ["Soy el giro en la trama, el jefe final,","tú eres el tutorial que todos saltan igual."],
+      ["Mis versos tienen capas como lasaña de abuela,","los tuyos son galleta: secos, sin salsa, sin canela."],
+      ["Me dijeron “quédate en tu carril”, hice una autopista,","ocho carriles anchos y todos van a mi pista."],
+      ["Mi mente es distinta, esa es mi salsa secreta,","veo los ángulos que pierde la línea recta."] ]},
+    { k:"life", name:"Día a día", list:[
+      ["Mamá dijo “limpia el cuarto”, yo le metí ritmo,","barrí en el uno y en el cuatro lo mismo."],
+      ["¿Examen sorpresa un lunes? Qué villano,","estudié en mis sueños y saqué diez temprano."],
+      ["Sonó la alarma, la apagué como tambor,","cinco minutos más y salió un disco mejor."],
+      ["La fila del almuerzo larga como semana,","rapeé la espera y comí con más ganas."] ]},
+    { k:"faith", name:"Fe", list:[
+      ["Goliat hablaba fuerte, medía tres metros,","un niño, una piedra, y se acabaron sus cuentos."],
+      ["¿Murallas de Jericó? Subimos el bajo,","siete vueltas, un grito, y el muro pa' abajo."],
+      ["Jonás huyó de Dios y se lo tragó un pez,","tres días en la panza: ¡qué mala vez!"],
+      ["Escudo de la fe arriba, casco bien puesto,","la armadura de Efesios, y voy listo pa' esto."] ]}
+  ]
+};
+let BARSAT = (()=>{ try{ return JSON.parse(localStorage.getItem("aog.decks.bars")) || {k:"roast", i:0}; }catch(e){ return {k:"roast", i:0}; } })();
+function paintBars(){
+  const box = document.getElementById("bars"); if(!box) return;
+  const sets = BARS[S.lang] || BARS.en, set = sets.find(x=>x.k===BARSAT.k) || sets[0];
+  const n = set.list.length, i = ((BARSAT.i % n) + n) % n, b = set.list[i];
+  box.innerHTML = `
+    <h3>${t("barsH")}</h3>
+    <p class="rechint" style="margin:0">${t("barsLead")}</p>
+    <div class="bars-top"><label for="barsKind">${t("barsKind")}</label>
+      <select id="barsKind">${sets.map(x=>`<option value="${x.k}"${x.k===set.k?" selected":""}>${esc(x.name)}</option>`).join("")}</select></div>
+    <p class="barcard" aria-live="polite"><span>${esc(b[0])}</span><span>${esc(b[1])}</span></p>
+    <div class="bars-nav">
+      <button type="button" class="ghost" id="barsBack">${t("barsBack")}</button>
+      <button type="button" class="ghost" id="barsNext">${t("barsNext")}</button>
+      <span class="n">${t("barsOf").replace("%i", i+1).replace("%n", n)}</span>
+    </div>`;
+  const save = ()=>{ try{ localStorage.setItem("aog.decks.bars", JSON.stringify(BARSAT)); }catch(e){} };
+  const go = (d, focus)=>{ BARSAT = {k:set.k, i:i+d}; save(); paintBars(); const f=document.getElementById(focus); if(f) f.focus(); };
+  document.getElementById("barsBack").onclick = ()=>go(-1, "barsBack");
+  document.getElementById("barsNext").onclick = ()=>go(1, "barsNext");
+  document.getElementById("barsKind").onchange = e=>{ BARSAT = {k:e.target.value, i:0}; save(); paintBars(); const f=document.getElementById("barsKind"); if(f) f.focus(); };
+}
+paintBars();
 function paintCrate(){
   const box = document.getElementById("crate"); if(!box) return;
   box.innerHTML = `
@@ -2575,7 +2677,7 @@ document.getElementById("noiseBtn").onclick = ()=>{
   decks.forEach(d=>send(d, { t:"noise", v: noiseOn?0.5:0 }));
   paintChrome();
 };
-document.getElementById("langBtn").onclick = ()=>{ S.lang = S.lang==="en"?"es":"en"; try{localStorage.setItem("aog.lang", S.lang);}catch(e){} document.documentElement.lang = S.lang; paintChrome(); shell(); paintCrate(); paintLessons(); };
+document.getElementById("langBtn").onclick = ()=>{ S.lang = S.lang==="en"?"es":"en"; try{localStorage.setItem("aog.lang", S.lang);}catch(e){} document.documentElement.lang = S.lang; paintChrome(); shell(); paintCrate(); paintBars(); paintLessons(); };
 document.documentElement.lang = S.lang;
 document.getElementById("themeBtn").onclick = ()=>{ S.theme = S.theme==="dark"?"light":"dark"; try{localStorage.setItem("aog.interior.ws.v1.theme", S.theme);}catch(e){} paintChrome(); };
 document.addEventListener("visibilitychange", ()=>{
