@@ -541,6 +541,10 @@ const STR = {
   wordLead:{en:"The Bible read aloud, in English and Spanish. One verse or line on each pad.",es:"La Biblia en voz alta, en inglés y en español. Un versículo o una línea en cada pad."},
   wordGo:{en:"Load the scripture records",es:"Cargar los discos de Escrituras"},
   wordDone:{en:"Done. The scripture records are in Up next.",es:"Listo. Los discos de Escrituras están en Lo que sigue."},
+  speechH:{en:"Speeches",es:"Discursos"},
+  speechLead:{en:"Famous words in the speaker's own voice. One line on each pad.",es:"Palabras famosas en la voz de quien las dijo (en inglés). Una línea en cada pad."},
+  speechGo:{en:"Load the speeches",es:"Cargar los discursos"},
+  speechDone:{en:"Done. The speeches are in Up next.",es:"Listo. Los discursos están en Lo que sigue."},
   showList:{en:"See the tracks",es:"Ver las pistas"},
   starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
   findH:{en:"Free songs and samples online",es:"Canciones y samples gratis en internet"},
@@ -1259,17 +1263,20 @@ async function starterLoad(btn){
    verses read by LibriVox volunteers (public domain; audio/crate/CREDITS.txt). They
    are listed in audio/crate/crate.json with each verse's start: those land on pads
    1 to 8. Speech has no tempo, so the deck keeps none (no beat snapping). */
-let WORD = [], wordMsg = "";
-fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"); paintCrate(); }).catch(()=>{});
+/* AOG-FDR-V1 (2026-10-06): speeches (kind "speech", e.g. FDR's own recordings) get their own box, made the same way */
+let WORD = [], wordMsg = {scripture:"", speech:""};
+fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"||x.kind==="speech"); paintCrate(); }).catch(()=>{});
 const wordName = x => x.title + " - " + (x.version||"KJV") + ".mp3";
 function wordOf(name){ return WORD.find(x=>wordName(x)===name) || null; }
-async function wordLoad(btn){
+const WORDKEY = {scripture:"word", speech:"speech"};
+async function wordLoad(btn, kind){
   if(btn) btn.disabled = true;
+  const list = WORD.filter(x=>x.kind===kind), id = WORDKEY[kind]+"Msg";
   let bad = 0;
-  for(let i=0;i<WORD.length;i++){
-    const x = WORD[i];
-    wordMsg = t("starterBusy").replace("%n", i+1).replace("%t", WORD.length);
-    const m = document.getElementById("wordMsg"); if(m) m.textContent = wordMsg;
+  for(let i=0;i<list.length;i++){
+    const x = list[i];
+    wordMsg[kind] = t("starterBusy").replace("%n", i+1).replace("%t", list.length);
+    const m = document.getElementById(id); if(m) m.textContent = wordMsg[kind];
     try{
       const r = await fetch("audio/crate/" + x.file);
       if(!r.ok) throw new Error(r.status);
@@ -1279,19 +1286,20 @@ async function wordLoad(btn){
     }catch(e){ bad++; }
   }
   cratePut("next", CRATE.next);
-  wordMsg = bad ? t("starterFail") : t("wordDone");
+  wordMsg[kind] = bad ? t("starterFail") : t(WORDKEY[kind]+"Done");
   paintCrate();
 }
-function wordHtml(){
-  if(!WORD.length) return "";
+function wordHtml(kind){
+  const list = WORD.filter(x=>x.kind===kind), k = WORDKEY[kind];
+  if(!list.length) return "";
   const es = S.lang === "es";
-  return `<h3>${t("wordH")}</h3>
-    <p class="rechint" style="margin:0">${t("wordLead")}</p>
-    <details class="more"><summary>${t("showList")}</summary><ul class="starter">${WORD.map(x=>`<li><b>${esc(es?(x.title_es||x.title):x.title)}</b> <span>${esc(es?(x.line_es||x.line||""):(x.line||""))}</span></li>`).join("")}</ul></details>
+  return `<h3>${t(k+"H")}</h3>
+    <p class="rechint" style="margin:0">${t(k+"Lead")}</p>
+    <details class="more"><summary>${t("showList")}</summary><ul class="starter">${list.map(x=>`<li><b>${esc(es?(x.title_es||x.title):x.title)}</b> <span>${esc(es?(x.line_es||x.line||""):(x.line||""))}</span></li>`).join("")}</ul></details>
     <div class="take" style="background:none;border:0;padding:0">
-      <button type="button" class="ghost" id="wordGo">${t("wordGo")}</button>
+      <button type="button" class="ghost" id="${k}Go">${t(k+"Go")}</button>
     </div>
-    <p class="starter-msg" id="wordMsg" role="status" aria-live="polite">${wordMsg}</p>`;
+    <p class="starter-msg" id="${k}Msg" role="status" aria-live="polite">${wordMsg[kind]}</p>`;
 }
 function starterHtml(){
   const es = S.lang === "es";
@@ -1314,7 +1322,8 @@ function paintCrate(){
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
     ${starterHtml()}
-    ${wordHtml()}
+    ${wordHtml("scripture")}
+    ${wordHtml("speech")}
     ${findLinks()}
     ${CRATE.prev.length ? `<h3>${t("cratePrev")}</h3>` : ""}
     ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("")}
@@ -1322,7 +1331,9 @@ function paintCrate(){
   const sg = document.getElementById("starterGo");
   if(sg) sg.onclick = ()=>starterLoad(sg);
   const wg = document.getElementById("wordGo");
-  if(wg) wg.onclick = ()=>wordLoad(wg);
+  if(wg) wg.onclick = ()=>wordLoad(wg, "scripture");
+  const sg2 = document.getElementById("speechGo");
+  if(sg2) sg2.onclick = ()=>wordLoad(sg2, "speech");
   const add = document.getElementById("crateAdd");
   add.onchange = ()=>{
     const fs = Array.from(add.files||[]); if(!fs.length) return;
