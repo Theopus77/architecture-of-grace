@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Studio &mdash; Architecture of Grace</title>
+<meta name="description" content="Every music room in one place: the drum machine, drum kit, piano, guitar, bass, band, turntables and mixing desk.">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-STUDIO-PAGE-V1 (2026-10-06) — The Studio. MADE BY _work/music/make_studio_page.py: edit there, then run it. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+/* four picture steps */
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; align-items:start; }
+@media (max-width:700px){ .steps { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg, .step img { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:150px; border-radius:6px; }
+.step img { max-width:100%; }
+.states { margin:0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.states img { display:block; width:100%; max-width:420px; height:auto; border-radius:6px; }
+.states figcaption { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; max-width:420px; margin-top:.45rem; }
+.states figcaption span { text-align:center; color:var(--muted); font-size:.82rem; line-height:1.25; }
+.states figcaption b { display:block; color:var(--ink); font-size:.92rem; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* the 16 boxes */
+.gridwrap { overflow-x:auto; }
+.g { display:grid; grid-template-columns:78px repeat(16, minmax(20px,1fr)); gap:3px; align-items:center; margin-bottom:3px; min-width:440px; }
+.gl { font-size:.78rem; font-weight:700; color:var(--muted); text-align:right; padding-right:.35rem; white-space:nowrap; }
+.gn { font-size:.72rem; font-weight:700; color:var(--muted); text-align:center; }
+.gn.st { color:var(--ink); font-size:.85rem; }
+.gs { height:26px; border:1.5px solid var(--line); border-radius:5px; background:transparent; }
+.gs.st { border-color:var(--muted); }
+.gs.on { background:var(--c); border-color:rgb(0 0 0 / .35);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.recipe { margin:0 0 1.1rem; padding:.85rem .9rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  break-inside:avoid; page-break-inside:avoid; }
+.recipe figcaption { margin:0 0 .6rem; }
+.recipe figcaption b { font-size:1.05rem; }
+.recipe figcaption span { display:block; color:var(--muted); font-size:.88rem; }
+.recipe figcaption span.bpm { display:inline-block; width:auto; color:var(--muted); }
+.bpm { display:inline-block; margin-left:.5rem; padding:.05rem .5rem; border-radius:999px; background:var(--chip); color:var(--muted);
+  font-size:.72rem; font-weight:800; letter-spacing:.06em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* banks + sounds */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.kits { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; align-items:stretch; }
+@media (max-width:820px){ .kits { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .kits { grid-template-columns:1fr; } }
+.kits .bank { padding:.65rem .75rem; gap:.65rem; }
+.kits .bank .letter { width:2.2rem; height:2.2rem; font-size:1.1rem; }
+.kits .bank span { font-size:.86rem; line-height:1.35; display:block; }
+.note { margin:.8rem 0 0; color:var(--muted); font-size:.92rem; }
+.bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
+  break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
+.bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font:800 1.3rem/1 var(--sans); background:var(--steel); color:#f4f8f9; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.bank.empty .letter { background:transparent; color:var(--muted); border:2px dashed var(--muted); }
+.bank b { display:block; }
+.bank span { color:var(--muted); font-size:.9rem; }
+
+.sounds { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem .8rem; }
+.padn { display:inline-flex; align-items:center; justify-content:center; width:1.5rem; height:1.5rem; border-radius:5px;
+  background:#2b2620; color:#f0ebe0; font:800 .8rem/1 var(--sans); flex:0 0 auto;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media (max-width:700px){ .sounds { grid-template-columns:repeat(2,1fr); } }
+.sounds li { display:flex; align-items:center; gap:.5rem; font-weight:600; font-size:.95rem; }
+.dot { width:1.15rem; height:1.15rem; border-radius:6px; background:var(--c); border:1px solid rgb(0 0 0 / .3);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* stuck */
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; align-self:center; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.panel, svg.dial { min-width:0; }
+  .figwrap, .gridwrap { overflow:visible; }
+  .g { min-width:0; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  .recipe, .step, .bank, .fix li { box-shadow:none; }
+  .kits { grid-template-columns:repeat(3,1fr); gap:.4rem; }
+  .kits .bank { padding:.4rem .55rem; }
+  .step { padding:.5rem .5rem .6rem; }
+  .fix { gap:.35rem; }
+  .fix li { padding:.35rem .6rem; }
+  .fix img { max-width:90px; }
+  a { text-decoration:none; color:inherit; }
+}
+
+/* AOG-STUDIO-PAGE-V1 */
+.rooms { list-style:none; margin:1.2rem 0 1.6rem; padding:0; display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(min(100%,15.5rem),1fr)); }
+.room { display:flex; flex-direction:column; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; color:var(--ink); }
+.room a.go { display:flex; flex-direction:column; text-decoration:none; color:var(--ink); }
+.room .pic { display:block; aspect-ratio:2/1; background:#f3eee2; overflow:hidden; }
+.room .pic img { display:block; width:100%; height:100%; object-fit:cover; object-position:68% 42%; }
+.room h2 { margin:.7rem .9rem .15rem; font-size:1.15rem; }
+.room p { margin:0 .9rem .6rem; color:var(--muted); font-size:.95rem; line-height:1.4; }
+.room .acts { margin:auto .9rem .9rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
+.room .acts a, .room .acts button { min-height:44px; display:inline-flex; align-items:center; padding:0 .9rem; border-radius:999px; border:1px solid var(--line);
+  background:var(--card); color:var(--ink); font:700 .92rem/1.2 var(--sans); text-decoration:none; cursor:pointer; }
+.room .addr { display:block; margin:0 .9rem .5rem; font:600 .85rem/1.3 var(--sans); color:var(--steel); overflow-wrap:anywhere; }
+.copied { min-height:1.4em; margin:0; font-weight:700; color:var(--ink); }
+@media print { .room .acts { display:none; } }
+</style>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+</header>
+
+<h1><span data-en="The Studio" data-es="El estudio">The Studio</span></h1>
+<p class="lede"><span data-en="Every music room in one place. Each has its own address, so you can link straight to it." data-es="Todas las salas de música en un solo lugar. Cada una tiene su propia dirección, para enlazarla directamente.">Every music room in one place. Each has its own address, so you can link straight to it.</span></p>
+<p class="copied" id="copied" role="status" aria-live="polite"></p>
+<ul class="rooms">
+  <li class="room"><a class="go" href="/drum-machine"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-pads-pencil-900.webp"><img src="/img/banners/music-pads-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Drum Machine" data-es="La caja de ritmos">The Drum Machine</span></h2><p><span data-en="Sixteen pads and every sound here. Make a beat." data-es="Dieciséis pads y todos los sonidos de aquí. Haz un ritmo.">Sixteen pads and every sound here. Make a beat.</span></p></a><span class="addr">architectureofgrace.org/drum-machine</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/drum-machine"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/drum-machine-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/drum-kit"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-kit-pencil-900.webp"><img src="/img/banners/music-kit-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Drum Kit" data-es="La batería">The Drum Kit</span></h2><p><span data-en="A real drum kit to play with your fingers." data-es="Una batería de verdad para tocar con los dedos.">A real drum kit to play with your fingers.</span></p></a><span class="addr">architectureofgrace.org/drum-kit</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/drum-kit"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/drum-kit-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/piano"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-piano-pencil-900.webp"><img src="/img/banners/music-piano-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Piano" data-es="El piano">The Piano</span></h2><p><span data-en="Chords and keys, with your beat or on their own." data-es="Acordes y teclas, con tu ritmo o solos.">Chords and keys, with your beat or on their own.</span></p></a><span class="addr">architectureofgrace.org/piano</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/piano"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/piano-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/guitar"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-guitar-pencil-900.webp"><img src="/img/banners/music-guitar-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Guitar" data-es="La guitarra">The Guitar</span></h2><p><span data-en="Strum or pick along with your beat." data-es="Rasguea o puntea con tu ritmo.">Strum or pick along with your beat.</span></p></a><span class="addr">architectureofgrace.org/guitar</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/guitar"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/guitar-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/bass"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-bass-pencil-900.webp"><img src="/img/banners/music-bass-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Bass" data-es="El bajo">The Bass</span></h2><p><span data-en="The low notes that hold a song together." data-es="Las notas graves que sostienen la canción.">The low notes that hold a song together.</span></p></a><span class="addr">architectureofgrace.org/bass</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/bass"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/bass-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/band"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-band-pencil-900.webp"><img src="/img/banners/music-band-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Band" data-es="La banda">The Band</span></h2><p><span data-en="Brass, winds and strings play your chords." data-es="Metales, vientos y cuerdas tocan tus acordes.">Brass, winds and strings play your chords.</span></p></a><span class="addr">architectureofgrace.org/band</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/band"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/band-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/turntables"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-decks-pencil-900.webp"><img src="/img/banners/music-decks-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Turntables" data-es="Los tocadiscos">The Turntables</span></h2><p><span data-en="Three decks. Scratch, loop and mix records." data-es="Tres platos. Raya, repite y mezcla discos.">Three decks. Scratch, loop and mix records.</span></p></a><span class="addr">architectureofgrace.org/turntables</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/turntables"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/decks-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+  <li class="room"><a class="go" href="/mixing-desk"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2><span data-en="The Mixing Desk" data-es="La mesa de mezclas">The Mixing Desk</span></h2><p><span data-en="Put your recordings together into one song." data-es="Junta tus grabaciones en una sola canción.">Put your recordings together into one song.</span></p></a><span class="addr">architectureofgrace.org/mixing-desk</span><span class="acts"><button type="button" data-copy="https://architectureofgrace.org/mixing-desk"><span data-en="Copy link" data-es="Copiar enlace">Copy link</span></button><a href="/mixing-desk-lessons"><span data-en="Lessons" data-es="Lecciones">Lessons</span></a></span></li>
+</ul>
+<footer><span data-en="The Studio · Architecture of Grace" data-es="El estudio · Architecture of Grace">The Studio · Architecture of Grace</span></footer>
+</div>
+<script>
+/* AOG-STUDIO-PAGE-V1 — Copy link: the room's address, ready to paste into a message or a lesson plan */
+document.querySelectorAll("[data-copy]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var url = b.getAttribute("data-copy"), es = (document.documentElement.lang || "en").indexOf("es") === 0;
+    var say = document.getElementById("copied"), done = function (ok) {
+      say.textContent = ok ? (es ? "Copiado: " : "Copied: ") + url : (es ? "Mantén pulsada la dirección para copiarla: " : "Press and hold the address to copy it: ") + url; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  });
+});
+</script>
+<script src="/aog-topbar.js"></script>
+</body>
+</html>
