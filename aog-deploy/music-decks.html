@@ -319,6 +319,21 @@ footer a{color:inherit}
 .sleeve.still{cursor:default}
 .sleeve .sub{font-size:.74rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-.25rem}
 .cbox.shelf{margin-top:.5rem}
+/* AOG-DECKS-SPINES-V1 (2026-10-06) — Jimmy: "It is still the face and not the side sleeve." Records stand in a crate
+   edge on: only their spines show, each with its name down it. Tap a spine and that record comes up out of the crate;
+   its cover shows beside the crate with A, B and C. Nothing moves until it is tapped. */
+.cbox.spines{gap:5px;align-items:flex-end;padding:1.1rem .8rem .9rem}
+.spine{flex:0 0 46px;height:188px;position:relative;writing-mode:vertical-rl;display:flex;align-items:center;justify-content:flex-start;
+  padding:12px 0 10px;border-radius:3px;border:1px solid #00000080;color:#fff;cursor:pointer;
+  background-color:hsl(var(--h),42%,27%);background-image:linear-gradient(90deg,hsl(var(--h),40%,22%),hsl(var(--h),46%,33%) 45%,hsl(var(--h),40%,24%));
+  box-shadow:inset -3px 0 0 #00000045,inset 2px 0 0 #ffffff1f,0 2px 4px #0006;font:700 14px/1 var(--sans);letter-spacing:.02em;text-shadow:0 1px 1px #000}
+.spine .sp-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:100%}
+.spine .sp-n{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);writing-mode:horizontal-tb;font-size:11px;opacity:.85}
+.spine.out{transform:translateY(-18px);box-shadow:0 0 0 3px #ffd36b,0 6px 10px #0008}
+.pulled{display:flex;gap:.9rem;align-items:center;margin:.6rem 0 .2rem;min-height:2.6rem}
+.pulled .sleeve{flex:0 0 156px}
+.pulled .hint{color:var(--muted);font-size:.9rem;margin:0}
+.pulled .what{margin:0;color:var(--ink);font-size:.9rem;max-width:34ch}
 .deck.dragover{outline:3px dashed var(--accent,#c45c26);outline-offset:4px}
 .bench .take.empty{color:var(--muted)}
 .take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem;color:var(--ink)}
@@ -552,6 +567,7 @@ const STR = {
   speechGo:{en:"Load the speeches",es:"Cargar los discursos"},
   speechDone:{en:"Done. The speeches are in Up next.",es:"Listo. Los discursos están en Lo que sigue."},
   showList:{en:"See the tracks",es:"Ver las pistas"},
+  pullHint:{en:"Tap a spine to pull that record out.",es:"Toca el lomo de un disco para sacarlo."},
   starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
   findH:{en:"Free songs and samples online",es:"Canciones y samples gratis en internet"},
   findHint:{en:"Download a file, then tap Add songs. Check each site's rules before you share a mix.",es:"Descarga un archivo y toca Agregar canciones. Revisa las reglas de cada sitio antes de compartir una mezcla."},
@@ -1189,17 +1205,6 @@ function crateRow(r, i, list){
       <button type="button" class="ghost" data-cratedrop="${list}" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
     </div>`;
 }
-function crateSleeve(r, i){
-  let h = 0; for(const c of r.name) h = (h*31 + c.charCodeAt(0)) % 360;
-  return `<div class="sleeve" draggable="true" data-sleeve="${i}" style="--h:${h}" title="${esc(r.name)}">
-      <div class="art"><b>${i+1}</b></div>
-      <span class="nm">${esc(r.name.replace(/\.[^.]+$/,""))}</span>
-      <div class="sb">
-        ${IDS.map(id=>`<button type="button" data-crate="next" data-i="${i}" data-deck="${id}" aria-label="${t("to"+id)}">${id}</button>`).join("")}
-        <button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
-      </div>
-    </div>`;
-}
 function crateTake(i, d){
   const r = CRATE.next[i]; if(!r || !d) return;
   CRATE.next.splice(i,1); cratePut("next", CRATE.next);
@@ -1301,7 +1306,7 @@ function wordHtml(kind){
   const es = S.lang === "es";
   return `<h3>${t(k+"H")}</h3>
     <p class="rechint" style="margin:0">${t(k+"Lead")}</p>
-    <div class="cbox shelf">${list.map(x=>sleeveCard(es?(x.title_es||x.title):x.title, x.version||"", hueOf(x.title), id=>`data-pick="w:${x.file}" data-deck="${id}"`)).join("")}</div>
+    ${spineBox(kind, list.map(x=>({ name:es?(x.title_es||x.title):x.title, sub:x.version||"", hue:hueOf(x.title), what:es?(x.line_es||x.line||""):(x.line||""), on:id=>`data-pick="w:${x.file}" data-deck="${id}"` })))}
     <div class="take" style="background:none;border:0;padding:0">
       <button type="button" class="ghost" id="${k}Go">${t(k+"Go")}</button>
     </div>
@@ -1311,7 +1316,7 @@ function starterHtml(){
   const es = S.lang === "es";
   return `<h3>${t("starterH")}</h3>
     <p class="rechint" style="margin:0">${t("starterLead")}</p>
-    <div class="cbox shelf">${STARTER.map((x,i)=>sleeveCard(es?x[2]:x[1], x[3]+" BPM · "+(es?x[5]:x[4]), hueOf(x[1]), id=>`data-pick="s:${i}" data-deck="${id}"`)).join("")}</div>
+    ${spineBox("starter", STARTER.map((x,i)=>({ name:es?x[2]:x[1], sub:x[3]+" BPM · "+(es?x[5]:x[4]), hue:hueOf(x[1]), on:id=>`data-pick="s:${i}" data-deck="${id}"` })))}
     <div class="take" style="background:none;border:0;padding:0">
       <button type="button" class="ghost" id="starterGo">${t("starterGo")}</button>
     </div>
@@ -1321,7 +1326,8 @@ function paintCrate(){
   const box = document.getElementById("crate"); if(!box) return;
   box.innerHTML = `
     <h3>${t("crateNext")}</h3>
-    ${CRATE.next.length ? `<div class="cbox">${CRATE.next.map(crateSleeve).join("")}</div>` : `<div class="cbox empty">${t("crateNextNone")}</div>`}
+    ${CRATE.next.length ? spineBox("next", CRATE.next.map((r,i)=>({ name:r.name.replace(/\.[^.]+$/,""), sub:"", hue:hueOf(r.name), n:i+1, drag:i,
+        on:id=>`data-crate="next" data-i="${i}" data-deck="${id}"`, x:`<button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>` }))) : `<div class="cbox empty">${t("crateNextNone")}</div>`}
     ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
     <div class="take" style="background:none;border:0;padding:0">
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
@@ -1341,6 +1347,7 @@ function paintCrate(){
   const sg2 = document.getElementById("speechGo");
   if(sg2) sg2.onclick = ()=>wordLoad(sg2, "speech");
   wirePicks(box);
+  wireSpines(box, paintCrate);
   const add = document.getElementById("crateAdd");
   add.onchange = ()=>{
     const fs = Array.from(add.files||[]); if(!fs.length) return;
@@ -1414,13 +1421,35 @@ async function loadMade(d, id, opts){
   }
 }
 /* AOG-DECKS-SLEEVES-V1: one sleeve, for any record; `on(id)` gives the A/B/C button its data */
-function sleeveCard(name, sub, hue, on){
+function sleeveCard(name, sub, hue, on, extra){
   return `<div class="sleeve still" style="--h:${hue}">
       <div class="art" aria-hidden="true"></div>
       <span class="nm" title="${esc(name)}">${esc(name)}</span>
       <span class="sub">${esc(sub)}</span>
-      <div class="sb" role="group" aria-label="${esc(name)}">${IDS.map(id=>`<button type="button" ${on(id)} aria-label="${esc(name)} · ${t("to"+id)}">${id}</button>`).join("")}</div>
+      <div class="sb" role="group" aria-label="${esc(name)}">${IDS.map(id=>`<button type="button" ${on(id)} aria-label="${esc(name)} · ${t("to"+id)}">${id}</button>`).join("")}${extra||""}</div>
     </div>`;
+}
+/* AOG-DECKS-SPINES-V1: a crate of spines, and the record pulled out of it.
+   items: { name, sub, hue, on(id) → the A/B/C button's data, x → extra buttons (✕), drag → Up next's index } */
+const PULL = {};
+function spineBox(key, items, line){
+  const at = PULL[key] != null && PULL[key] < items.length ? PULL[key] : null;
+  const it = at == null ? null : items[at];
+  return `<div class="cbox shelf spines" data-box="${key}">${items.map((x,i)=>`<button type="button" class="spine${i===at?" out":""}" style="--h:${x.hue}" data-spine="${key}:${i}" aria-pressed="${i===at}" aria-label="${esc(x.name)}${x.sub?" · "+esc(x.sub):""}"${x.drag!=null?` draggable="true" data-sleeve="${x.drag}"`:""}><span class="sp-t">${esc(x.name)}</span>${x.n?`<span class="sp-n">${x.n}</span>`:""}</button>`).join("")}</div>
+    <div class="pulled">${it ? sleeveCard(it.name, it.sub, it.hue, it.on, it.x) + (it.what?`<p class="what">${esc(it.what)}</p>`:"") : `<p class="hint">${t("pullHint")}</p>`}</div>`;
+}
+/* a spine tapped: that record comes out (tap it again and it goes back); the crates keep where they were scrolled */
+function wireSpines(box, repaint){
+  box.querySelectorAll("[data-spine]").forEach(b=>{
+    b.onclick = ()=>{
+      const [k, i] = b.getAttribute("data-spine").split(":"), n = +i;
+      PULL[k] = PULL[k] === n ? null : n;
+      const keep = {}; document.querySelectorAll(".cbox[data-box]").forEach(c=>{ keep[c.getAttribute("data-box")] = c.scrollLeft; });
+      repaint();
+      document.querySelectorAll(".cbox[data-box]").forEach(c=>{ const v = keep[c.getAttribute("data-box")]; if(v) c.scrollLeft = v; });
+      const again = document.querySelector(`[data-spine="${k}:${n}"]`); if(again) again.focus({ preventScroll:true });
+    };
+  });
 }
 function hueOf(str){ let h = 0; for(const ch of String(str)) h = (h*31 + ch.charCodeAt(0)) % 360; return h; }
 /* a sleeve from the starter crate (s:index) or the scripture and speech shelves (w:file) goes straight onto a deck */
@@ -1443,10 +1472,11 @@ function paintMade(){
   const es = S.lang === "es";
   box.innerHTML = `<h3>${t("madeH")}</h3>
     <p class="rechint" style="margin:0">${t("madeLead")}</p>
-    <div class="cbox shelf">${MADE.map(x=>sleeveCard(es?x.es:x.en, x.bpm+" BPM", x.hue, id=>`data-made="${x.id}" data-deck="${id}"`)).join("")}</div>`;
+    ${spineBox("made", MADE.map(x=>({ name:es?x.es:x.en, sub:x.bpm+" BPM", hue:x.hue, what:es?x.what_es:x.what_en, on:id=>`data-made="${x.id}" data-deck="${id}"` })))}`;
   box.querySelectorAll("[data-made]").forEach(b=>{
     b.onclick = ()=>loadMade(decks.find(x=>x.id===b.getAttribute("data-deck")), b.getAttribute("data-made"));
   });
+  wireSpines(box, paintMade);
 }
 
 /* what a deck remembers about a record it has seen before: the tempo it worked
