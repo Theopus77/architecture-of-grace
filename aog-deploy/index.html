@@ -1899,7 +1899,11 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
       @media (min-width:1100px){ #aog-thresholds .aogdn-grid.aogau-three > .aogdn-door:not(.aogdn-today){ flex-basis:calc((100% - 44px) / 3); } }
       #aog-thresholds .aogdn-grid > .aogdn-grp{ flex:0 0 100%; margin:22px 0 0; font:800 13px/1.2 var(--font-sans,Inter,sans-serif); letter-spacing:.14em; text-transform:uppercase; color:#D5DCE6; }
       #aog-thresholds .aogdn-grid > .aogdn-grp:first-child{ margin-top:0; }
-      #aog-thresholds .aogau-more{ max-width:1120px; margin:18px auto 0; text-align:center; }
+      #aog-thresholds .aogau-more{ max-width:1120px; margin:18px auto 0; text-align:center; position:relative; z-index:3; }
+      /* AOG-MORE-DOORS-V1 (2026-10-06) — Jimmy: "The load more button is hidden." The table of doors leans back (rotateX), so its
+         last row is drawn lower than the room it takes, and Safari paints the leaning doors over what comes next: on an iPad
+         the doors covered More doors. Below the table there is room for the lean, and the button stays on top. */
+      @media screen and (min-width:768px){ #aog-thresholds .aogau-more{ margin-top:64px; transform:translateZ(1px); } }
       #aog-thresholds .aogau-more[hidden]{ display:none; }
       #aog-thresholds .aogau-moreb{ min-height:44px; padding:0 18px; border:1px solid rgba(242,201,100,.6); border-radius:999px; background:transparent; color:#F4EEE2; font:600 16px var(--font-sans,Inter,sans-serif); cursor:pointer; }
       #aog-thresholds .aogau-moreb:focus-visible{ outline:3px solid #F2C964; outline-offset:2px; }
