@@ -5,6 +5,9 @@ Jimmy: "Can the studio and all of its components get its own address? So I can l
 the website." Each room already has its own (/drum-machine, /drum-kit, /piano …); the Studio itself had none (it was a door
 on the home page, and /studio opens the Mixing Desk). This page is the Studio: the eight rooms in song order (CLAUDE.md),
 each with its picture, one line, its lessons, and Copy link, which copies the room's address to send to someone.
+Jimmy, then: "I want to be able to have multiple tabs open and work on them on their own page." Each room opens in its own
+tab (target=_blank; a link opened that way gets no window.opener in today's browsers), and the rooms already hear each
+other across tabs (aog-handoff.js, BroadcastChannel "aog-music").
 
   python3 _work/music/make_studio_page.py        (from aog-deploy/)
 """
@@ -62,15 +65,15 @@ def build():
     i = head.rfind("</style>"); head = head[:i] + CSS + head[i:]
     out = ['<div class="wrap">', "", "<header>", '  <a class="brand" href="/">Architecture of Grace</a>', "</header>", "",
            "<h1>%s</h1>" % sp(("The Studio", "El estudio")),
-           '<p class="lede">%s</p>' % sp(("Every music room in one place. Each has its own address, so you can link straight to it.",
-                                          "Todas las salas de música en un solo lugar. Cada una tiene su propia dirección, para enlazarla directamente.")),
+           '<p class="lede">%s</p>' % sp(("Every music room in one place. Each opens in its own tab, so you can keep several open and move between them. What you send from one room shows up in the others right away.",
+                                          "Todas las salas de música en un solo lugar. Cada una se abre en su propia pestaña, así puedes tener varias abiertas y pasar de una a otra. Lo que envías desde una sala aparece en las otras enseguida.")),
            '<p class="copied" id="copied" role="status" aria-live="polite"></p>',
            '<ul class="rooms">']
     for href, pic, name, line, les in ROOMS:
         url = SITE + href
-        out.append('  <li class="room"><a class="go" href="%s"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/%s-pencil-900.webp">'
+        out.append('  <li class="room"><a class="go" href="%s" target="_blank"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/%s-pencil-900.webp">'
                    '<img src="/img/banners/%s-pencil-900.jpg" alt="" width="900" height="315" loading="lazy" decoding="async"></picture></span><h2>%s</h2><p>%s</p></a>'
-                   '<span class="addr">%s</span><span class="acts"><button type="button" data-copy="%s">%s</button><a href="%s">%s</a></span></li>'
+                   '<span class="addr">%s</span><span class="acts"><button type="button" data-copy="%s">%s</button><a href="%s" target="_blank">%s</a></span></li>'
                    % (href, pic, pic, sp(name), sp(line), esc(url.replace("https://", "")), esc(url), sp(("Copy link", "Copiar enlace")), les, sp(("Lessons", "Lecciones"))))
     out.append("</ul>")
     out.append("<footer>%s</footer>" % sp(("The Studio · Architecture of Grace", "El estudio · Architecture of Grace")))
