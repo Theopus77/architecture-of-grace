@@ -60,3 +60,22 @@ each 10 ms (`es/emap.py`): a verse must begin and end in a pause, and its cut mu
 text says. Four matches ran into the next verse (John 3:16, Isaiah 45:22, Isaiah 53:5) or began a
 phrase early (1 Peter 1:16, checked by finding the end of verse 15); their fixed times are in
 `es/final.json`. Isaiah 43:11 is short, so it was found together with verse 10.
+
+## More scripture, and a new Lord's Prayer (AOG-SCRIPTURE-V4, 2026-10-06)
+
+Jimmy: "I'll take more scripture (I don't like the Lord's Prayer version that you provided)." He chose all four
+themes, both languages, and "find a better reading" for the prayer.
+
+- The Lord's Prayer is now Luke 11:2-4 (KJV, a different LibriVox reader; the only KJV Matthew on LibriVox is the
+  one he did not like), starting at "Our Father". El Padrenuestro is now Lucas 11:2-4 (Reina-Valera 1909, "El pan
+  nuestro de cada día, dánoslo hoy"), starting at "Padre nuestro". Files 14 and 15 were replaced.
+- New, each in English (KJV) and Spanish (RV 1909): Psalms of Praise / Salmos de alabanza (Ps 23:1, 4, 6; 46:1, 10;
+  100:1, 4; 150:6), Charity Never Faileth / La caridad nunca deja de ser (1 Cor 13:1, 4-8, 12, 13), Promises /
+  Promesas (Josh 1:9; Prov 3:5, 6; Isa 40:31; Jer 29:11; Rom 8:28, 38-39; Phil 4:13), Faith and the Armour of God /
+  La fe y la armadura de Dios (Heb 11:1, 6; Eph 6:10, 11, 14-17). Files 18-25.
+
+Scripts in `v4/`: `en2.py` finds English verses (ASR + fuzzy match), `en2fix.py` holds the hand-placed ones,
+`es2.py` + `es2texts.py` find Spanish verses (sounds match), `chunks.py` lists a reading's stretches of speech so
+verse and phrase edges sit in the reader's pauses, `records3.py` builds all ten records, `verify3.py` checks them.
+Positions are in `v4/en_pos.json` and `v4/es_pos.json`. The Spanish words were placed by sound and pauses, not
+recognised as words. Trims for the Drum Machine were measured with music-handoff/tests/pads/level.js.
