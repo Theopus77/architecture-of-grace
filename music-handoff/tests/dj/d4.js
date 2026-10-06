@@ -68,16 +68,16 @@ const over = p => p.evaluate(() => document.documentElement.scrollWidth - innerW
     const es = await p.evaluate(() => {
       const q = s => [...document.querySelectorAll(s)].map(e => e.textContent.trim());
       return { decks: q(".deck h2"), mixer: document.getElementById("mixH").textContent, made: document.querySelector("#made h3").textContent,
-        madeNames: q("#made .mi b"), fx: q('[data-fxtype="A"]'), kills: q('[data-kill="A"]'), side: q('[data-side="A"]'), go: document.querySelector('[data-play="A"]').textContent,
+        madeNames: q("#made .sleeve .nm"), fx: q('[data-fxtype="A"]'), kills: q('[data-kill="A"]'), side: q('[data-side="A"]'), go: document.querySelector('[data-play="A"]').textContent,
         load: document.querySelector('[data-dock="A"]').textContent, chop: document.querySelector('[data-chop="A"]').textContent, erase: document.querySelector('[data-erase="A"]').textContent,
         bars: document.querySelector('[data-loop="A"][data-beats="16"]').textContent, snap: [...document.querySelector('[data-snap="A"]').options].map(o => o.text),
-        rec: document.getElementById("recBtn").textContent, hint: document.getElementById("padHint").textContent, onto: document.querySelector("#made .onto em").textContent,
+        rec: document.getElementById("recBtn").textContent, hint: document.getElementById("padHint").textContent, onto: document.querySelector("#made .sleeve .sb button").getAttribute("aria-label"),
         song: document.querySelector("#deckA .song").textContent, lang: document.documentElement.lang };
     });
     const want = es.decks.join() === "Plato A,Plato B,Plato C" && es.mixer === "Mezclador" && es.made === "Discos" && es.fx.join() === "Eco,Sala,Flanger" &&
       es.kills.join() === "CORTA AGUDOS,CORTA MEDIOS,CORTA GRAVES" && es.side.join() === "Izq.,Ninguno,Der." && es.go === "Arrancar" && es.load === "Cargar una canción" &&
       es.chop === "Cortar 8" && es.erase === "Borrar" && es.bars === "4 compases" && es.snap.join() === "en el pulso,en ½ pulso,en ¼ de pulso,al instante" &&
-      /Grabar/.test(es.rec) && /^Pads: toca/.test(es.hint) && es.onto === "Al plato" && es.madeNames.join() === "House de Chicago,Techno con empuje,Break trip-hop polvoriento,Edit de disco" && es.lang === "es";
+      /Grabar/.test(es.rec) && /^Pads: toca/.test(es.hint) && es.onto === "House de Chicago · Al plato A" && es.madeNames.join() === "House de Chicago,Techno con empuje,Break trip-hop polvoriento,Edit de disco,Trip-hop ahumado,Trip-hop de medianoche,Trip-hop de ventana con lluvia,Boom bap del sótano,Boom bap de la era dorada,Boom bap de cypher" && es.lang === "es";
     ok(want, "in Spanish: " + [es.decks.join("/"), es.mixer, es.made, es.fx.join("/"), es.kills.join("/"), es.side.join("/"), es.go, es.load, es.chop, es.erase, es.bars, es.snap.join("/"), es.rec, es.onto, es.madeNames.join("/")].join(" · "));
     /* and no English left on the decks, the mixer or the crate (hardware words such as SYNC, KEY, SLIP, CUE, MASTER stay as printed) */
     const left = await p.evaluate(() => {

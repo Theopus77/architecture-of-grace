@@ -1,4 +1,4 @@
-/* The turntables' sound engine and their four records, in Node (no browser, no port): the deck core in
+/* The turntables' sound engine and their records, in Node (no browser, no port): the deck core in
    aog-vinyl-worklet.js (loops, pads on the beat, slip), the effects (echo, flanger and reverb in beats), the
    brickwall limiter, and the crate made in aog-dj.js (tempo by style, length, level, clean loop points). */
 const path = require("path");
@@ -85,8 +85,10 @@ function maxStep(y, from, to) { let m = 0; for (let i = Math.max(1, from); i < M
   ok(flat < 3, `no squared-off, clipped peaks (${flat})`);
 }
 { /* 6 · the crate made on the page */
-  const RANGE = { house: [120, 128], techno: [128, 135], triphop: [85, 95], disco: [115, 125] };
-  const STEADY = { house: true, techno: true, triphop: false, disco: true };   /* a trip-hop break swings across two bars */
+  const RANGE = { house: [120, 128], techno: [128, 135], triphop: [85, 95], disco: [115, 125],
+    smoky: [70, 90], midnight: [70, 90], rainy: [70, 90], basement: [84, 100], golden: [84, 100], cypher: [84, 100] };
+  /* a trip-hop or boom-bap break swings across two bars */
+  const STEADY = { house: true, techno: true, triphop: false, disco: true, smoky: false, midnight: false, rainy: false, basement: false, golden: false, cypher: false };
   for (const x of DJ.list) {
     const t0 = Date.now(), r = DJ.render(x.id), ms = Date.now() - t0, sr = r.sr, N = Math.round(4 * 60 / r.bpm * sr), sec = r.L.length / sr;
     let pk = 0; for (let i = 0; i < r.L.length; i++) pk = Math.max(pk, Math.abs(r.L[i]), Math.abs(r.R[i]));

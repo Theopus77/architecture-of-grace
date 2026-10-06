@@ -647,6 +647,142 @@
     return T.finish(-14);
   }
 
+  /* ══ AOG-DJ-DUSTY-V1 (2026-10-06) — Jimmy: "I want more and more DIRTY TRIP HOP BEATS and BOOM BAP records."
+     Six more, made by one recipe with each record's own drums, swing, grit, chords and "sample". The sample
+     (keys, strings or horn stabs) is played as if lifted off a worn record: a waver once a bar, a dark top and an
+     old sampler's crunch; the drums go through the same sampler; the record's dust loops every two bars.
+     Bars 1-8 drums · 9-16 + bass · 17-32 the sample · 33-36 the drop (no drums) · 37-44 everything · 45-48 drums.
+     Inside a part the first eight bars repeat every two, so a loop over the intro comes round clean. ══ */
+  function dusty(c) {
+    var BARS = 48, T = new Track(c.bpm, BARS, 1.6), sw = c.swing, bits = c.bits, hz = c.hz;
+    function grit(x, lp) { return crunch(x, bits, hz, lp || c.lp || 8500); }
+    var K = grit(room(kick(c.kick), 0.45, 0.1));
+    var SN = grit(room(snare(c.snare), c.snRoom || 0.9, c.snWet || 0.32, { size: 1.15 }));
+    var GH = grit(room(snare({ body: c.snare.body, bdec: 0.05, dec: 0.07, wire: 0.9, peak: 0.45, seed: 26 }), 0.5, 0.18), 7500);
+    var HH = grit(room(metal({ dec: c.hatDec || 0.035, tune: c.hatTune || 1.3, bp: 7200, hp: 5200, noise: 0.6, peak: 0.42 }), 0.35, 0.12));
+    var HO = grit(room(metal({ dec: 0.22, tune: c.hatTune || 1.3, bp: 6800, hp: 4800, noise: 0.6, peak: 0.42, seed: 34 }), 0.5, 0.18));
+    var RM = c.rim ? grit(room(rim({ f: c.rim, peak: 0.45 }), 0.6, 0.25)) : null;
+    var SH = c.shaker ? grit(noiseHit({ f: 7000, dec: 0.03, peak: 0.25, seed: 77 })) : null;
+    var bc = {}, kc = {};
+    function bn(m, st) { var k = m + ":" + st; return bc[k] || (bc[k] = bassNote(m, st * T.step, c.bass)); }
+    function keyOf(ci, st) {
+      var k = ci + ":" + st; if (kc[k]) return kc[k];
+      var ch = c.chords[ci], len = st * T.step, x;
+      if (c.keys === "ep") x = epiano(ch, len);
+      else if (c.keys === "piano") x = room(piano(ch, len * 0.9, { dec: c.keyDec || 0.6, bright: 0.85, seed: 41 + ci }), 1.0, 0.22, { hp: 200 });
+      else if (c.keys === "strings") x = strings(ch, len, { att: 0.3, rel: 0.5, cut: c.keyCut || 2200, seed: 43 + ci });
+      else x = synthStab(ch, { len: Math.min(len, 0.24), reps: 0, rt: 0.9, wet: 0.25, seed: 53 + ci });
+      return (kc[k] = x);
+    }
+    var keys = T.bus(), pad = c.pad ? T.bus() : null, VX = c.vox ? room(vox(c.vox, T.beat * 1.5), 2.2, 0.45, { hp: 300, size: 1.3 }) : null;
+    for (var b = 0; b < BARS; b++) {
+      var drop = b >= 32 && b < 36, ci = b % c.chords.length, two = b % 2;
+      var full = (b >= 16 && b < 32) || (b >= 36 && b < 44), hasBass = b >= 8 && b < 44;
+      if (!drop) {
+        c.kicks[two].forEach(function (x) { T.add(K, T.t(b, x[0], sw), 0.9 * x[1]); });
+        c.snares.forEach(function (st) { T.add(SN, T.t(b, st, sw), 0.82); });
+        c.ghosts[two].forEach(function (x) { T.add(GH, T.t(b, x[0], sw), x[1] * 1.4); });
+        for (var s = 0; s < 16; s += c.hat16 ? 1 : 2) {
+          var open = s === 14 && two && c.openHat !== false;
+          T.add(open ? HO : HH, T.t(b, s, sw), open ? 0.26 : (s % 4 === 0 ? 0.32 : s % 2 ? 0.12 : 0.2), 0.2);
+        }
+        if (RM) c.rims[two].forEach(function (st) { T.add(RM, T.t(b, st, sw), 0.5, -0.25); });
+        if (SH) for (var q = 1; q < 16; q += 2) T.add(SH, T.t(b, q, sw), 0.16, -0.35);
+      }
+      if (hasBass) {
+        var root = c.roots[ci];
+        if (drop) T.add(bn(root, 16), T.t(b, 0), 0.7);
+        else c.bassLine.forEach(function (x) { T.add(bn(root + x[2], x[1]), T.t(b, x[0], sw), x[3]); });
+      }
+      if (full || drop) {
+        c.keyHits.forEach(function (x) { T.add(keyOf(ci, x[1]), T.t(b, x[0], c.keySwing ? sw : 0), x[2], 0, keys); });
+        if (pad) T.add(strings(c.chords[ci].map(function (m) { return m - 12; }), T.bar * 0.97, { att: 0.6, rel: 0.8, cut: 1500, seed: 90 + ci }), T.t(b, 0), c.pad, 0, pad);
+        if (VX && b % 8 === 0) T.add(VX, T.t(b, 0), 0.5, -0.1);
+      }
+    }
+    /* the sample, off a worn record: the waver (once a bar), a dark top, the sampler */
+    var wl = Float32Array.from(keys.L), wr = Float32Array.from(keys.R), wob = c.wobble || 0.0016;
+    for (var i = 0; i < T.n; i++) {
+      var ph = (i % T.barN) / T.barN, d = (wob * 1.3 + wob * Math.sin(TAU * ph) + wob * 0.3 * Math.sin(TAU * 8 * ph)) * SR, p = i - d;
+      if (p < 1) { keys.L[i] = keys.R[i] = 0; continue; }
+      var j = p | 0, f = p - j;
+      keys.L[i] = wl[j] + (wl[j + 1] - wl[j]) * f; keys.R[i] = wr[j] + (wr[j + 1] - wr[j]) * f;
+    }
+    filt(keys.L, "lp", c.keyLp || 5000, 0.7); filt(keys.R, "lp", c.keyLp || 5000, 0.7);
+    crunch(keys, bits, hz, c.keyLp ? c.keyLp + 1500 : 6800, T.barN);
+    T.mixIn(keys, c.keyGain || 1);
+    if (pad) { crunch(pad, bits, hz, 5000, T.barN); T.mixIn(pad, 1); }
+    /* the dust: two bars of hiss and pops, looped */
+    var cr = rand(c.seed || 71), hl = 0, hr = 0, dust = St(2 * T.barN), lvl = c.dust || 0.008;
+    for (var z0 = 0; z0 < dust.L.length; z0++) {
+      hl += 0.1 * ((cr() * 2 - 1) - hl); hr += 0.1 * ((cr() * 2 - 1) - hr);
+      dust.L[z0] += hl * lvl; dust.R[z0] += hr * lvl;
+      if (cr() < (c.pops || 0.00016)) { var a = (cr() * 2 - 1) * lvl * 11; for (var z = 0; z < 24; z++) { var v = a * Math.exp(-z / 4), cz = (z0 + z) % dust.L.length; dust.L[cz] += v; dust.R[cz] += v * 0.8; } }
+    }
+    for (var db = 0; db < BARS; db += 2) T.add(dust, T.t(db, 0), 1);
+    return T.finish(-14);
+  }
+  /* SMOKY TRIP-HOP · 80 BPM · C minor. A slow, heavy break, a sub that sits under it, a worn electric piano. */
+  function smoky() { return dusty({ bpm: 80, swing: 0.6, bits: 10, hz: 22050, lp: 7500, seed: 81,
+    kick: { f0: 105, f1: 46, pt: 0.03, dec: 0.26, hold: 0.014, drive: 1.5, click: 0.18, cf: 1500, len: 0.55 },
+    snare: { body: 170, bdec: 0.11, dec: 0.22, wire: 1.5, peak: 0.9 }, snRoom: 1.3, snWet: 0.42,
+    kicks: [[[0, 1], [7, 0.6], [10, 0.85]], [[0, 1], [3, 0.5], [10, 0.8], [13, 0.45]]], snares: [4, 12],
+    ghosts: [[[6, 0.2], [15, 0.26]], [[9, 0.2], [14, 0.28]]], rim: 1600, rims: [[11], [7]], shaker: true,
+    roots: [36, 32, 39, 34], chords: [[51, 55, 58, 62], [56, 60, 63, 67], [51, 55, 58, 63], [53, 58, 62, 65]],
+    bass: { cut: 110, env: 200, edec: 0.2, res: 0.1, att: 0.012, dec: 0.7, sus: 0.8, saw: 0.2, sq: 0.1, sub: 0.85, drive: 1.25, rel: 0.06 },
+    bassLine: [[0, 11, 0, 0.78], [11, 3, 12, 0.4], [14, 2, 7, 0.38]],
+    keys: "ep", keyHits: [[0, 8, 1.0], [10, 5, 0.75]], keyLp: 4200, wobble: 0.0021, dust: 0.011, pops: 0.00022, vox: 60 }); }
+  /* MIDNIGHT TRIP-HOP · 75 BPM · F minor. Darker: a lazy half-time break, dusty strings, a voice in the distance. */
+  function midnight() { return dusty({ bpm: 75, swing: 0.56, bits: 9, hz: 18900, lp: 7000, seed: 83,
+    kick: { f0: 98, f1: 43, pt: 0.035, dec: 0.3, hold: 0.016, drive: 1.6, click: 0.15, cf: 1300, len: 0.6 },
+    snare: { body: 160, bdec: 0.12, dec: 0.26, wire: 1.4, peak: 0.88 }, snRoom: 1.6, snWet: 0.48,
+    kicks: [[[0, 1], [10, 0.8]], [[0, 1], [6, 0.55], [11, 0.75]]], snares: [8],
+    ghosts: [[[5, 0.18], [13, 0.22]], [[3, 0.16], [14, 0.24]]], rim: 1450, rims: [[4, 12], [4, 12, 15]], openHat: false,
+    roots: [29, 25, 32, 27], chords: [[56, 60, 63, 67], [53, 56, 60, 63], [55, 60, 63, 67], [51, 55, 58, 62]],
+    bass: { cut: 95, env: 160, edec: 0.25, res: 0.08, att: 0.015, dec: 0.9, sus: 0.85, saw: 0.15, sq: 0.05, sub: 0.95, drive: 1.3, rel: 0.08 },
+    bassLine: [[0, 14, 0, 0.82], [14, 2, -2, 0.35]],
+    keys: "strings", keyCut: 1900, keyHits: [[0, 16, 1.1]], keyLp: 3600, keyGain: 1.15, wobble: 0.0028, dust: 0.013, pops: 0.00026, vox: 65, pad: 0 }); }
+  /* RAINY WINDOW TRIP-HOP · 72 BPM · A minor. A soft, swaying break, piano chords and strings under them. */
+  function rainy() { return dusty({ bpm: 72, swing: 0.62, bits: 11, hz: 24000, lp: 8000, seed: 85,
+    kick: { f0: 110, f1: 48, pt: 0.028, dec: 0.22, hold: 0.012, drive: 1.35, click: 0.2, cf: 1700, len: 0.5 },
+    snare: { body: 185, bdec: 0.09, dec: 0.19, wire: 1.3, peak: 0.85 }, snRoom: 1.2, snWet: 0.4,
+    kicks: [[[0, 1], [7, 0.55], [9, 0.8]], [[0, 1], [10, 0.85], [15, 0.4]]], snares: [4, 12],
+    ghosts: [[[11, 0.22]], [[6, 0.2], [13, 0.24]]], shaker: true,
+    roots: [33, 29, 36, 31], chords: [[57, 60, 64, 67], [53, 57, 60, 64], [55, 60, 64, 67], [55, 59, 62, 65]],
+    bass: { cut: 120, env: 220, edec: 0.2, res: 0.1, att: 0.01, dec: 0.6, sus: 0.75, saw: 0.25, sq: 0.1, sub: 0.75, drive: 1.2, rel: 0.05 },
+    bassLine: [[0, 10, 0, 0.75], [10, 4, 7, 0.42], [14, 2, 12, 0.36]],
+    keys: "piano", keyDec: 0.9, keyHits: [[0, 6, 0.9], [6, 4, 0.6], [12, 4, 0.7]], keyLp: 4800, keySwing: true, wobble: 0.0018, dust: 0.01, pad: 0.55 }); }
+  /* BASEMENT BOOM BAP · 96 BPM · G minor. A hard kick, a cracking snare, swung hats and a chopped piano. */
+  function basement() { return dusty({ bpm: 96, swing: 0.62, bits: 12, hz: 26040, lp: 9000, seed: 87,
+    kick: { f0: 150, f1: 52, pt: 0.025, dec: 0.22, hold: 0.014, drive: 2.0, click: 0.35, cf: 2400, len: 0.45 },
+    snare: { body: 200, bdec: 0.08, dec: 0.17, wire: 1.8, peak: 0.95, bodyAmt: 1.0 }, snRoom: 0.8, snWet: 0.3,
+    kicks: [[[0, 1], [7, 0.65], [10, 0.95]], [[0, 1], [2, 0.7], [10, 0.9], [13, 0.5]]], snares: [4, 12],
+    ghosts: [[[15, 0.22]], [[9, 0.2], [15, 0.24]]],
+    roots: [31, 27, 34, 26], chords: [[58, 62, 65, 69], [55, 58, 63, 67], [58, 62, 65, 70], [54, 57, 62, 66]],
+    bass: { cut: 140, env: 380, edec: 0.12, res: 0.15, att: 0.006, dec: 0.35, sus: 0.6, saw: 0.35, sq: 0.15, sub: 0.7, drive: 1.5, rel: 0.04 },
+    bassLine: [[0, 3, 0, 0.8], [7, 2, 0, 0.6], [10, 3, 0, 0.75], [13, 2, -2, 0.5]],
+    keys: "piano", keyDec: 0.45, keyHits: [[0, 3, 1.0], [3, 3, 0.85], [6, 2, 0.7], [10, 4, 0.9]], keyLp: 5600, keySwing: true, wobble: 0.0012, dust: 0.007 }); }
+  /* GOLDEN ERA BOOM BAP · 90 BPM · E minor. A dusty break with a heavy swing and horn stabs off an old soul record. */
+  function golden() { return dusty({ bpm: 90, swing: 0.64, bits: 12, hz: 26040, lp: 8500, seed: 89,
+    kick: { f0: 140, f1: 50, pt: 0.027, dec: 0.24, hold: 0.014, drive: 1.9, click: 0.3, cf: 2200, len: 0.48 },
+    snare: { body: 195, bdec: 0.09, dec: 0.19, wire: 1.7, peak: 0.95 }, snRoom: 0.9, snWet: 0.34,
+    kicks: [[[0, 1], [3, 0.55], [10, 0.9]], [[0, 1], [8, 0.7], [11, 0.85]]], snares: [4, 12],
+    ghosts: [[[7, 0.24], [14, 0.2]], [[6, 0.2], [15, 0.26]]], hat16: true,
+    roots: [28, 24, 31, 26], chords: [[64, 67, 71, 74], [60, 64, 67, 71], [62, 67, 71, 74], [62, 66, 69, 72]],
+    bass: { cut: 150, env: 420, edec: 0.1, res: 0.18, att: 0.005, dec: 0.3, sus: 0.55, saw: 0.4, sq: 0.2, sub: 0.6, drive: 1.6, rel: 0.04 },
+    bassLine: [[0, 4, 0, 0.8], [6, 2, 7, 0.5], [10, 4, 0, 0.75], [14, 2, 10, 0.45]],
+    keys: "horn", keyHits: [[0, 2, 0.9], [3, 2, 0.75], [10, 2, 0.85]], keyLp: 5200, keySwing: true, wobble: 0.0014, dust: 0.009, pops: 0.0002 }); }
+  /* CYPHER BOOM BAP · 84 BPM · D minor. Laid back for rhyming over: a fat kick, a rim on the off beats, jazzy keys. */
+  function cypher() { return dusty({ bpm: 84, swing: 0.6, bits: 12, hz: 26040, lp: 8800, seed: 91,
+    kick: { f0: 135, f1: 48, pt: 0.03, dec: 0.27, hold: 0.016, drive: 1.8, click: 0.28, cf: 2000, len: 0.5 },
+    snare: { body: 190, bdec: 0.1, dec: 0.2, wire: 1.6, peak: 0.92 }, snRoom: 1.0, snWet: 0.36,
+    kicks: [[[0, 1], [8, 0.6], [10, 0.9]], [[0, 1], [3, 0.6], [7, 0.5], [10, 0.85]]], snares: [4, 12],
+    ghosts: [[[13, 0.22]], [[7, 0.2], [15, 0.22]]], rim: 1750, rims: [[6], [14]],
+    roots: [38, 31, 34, 33], chords: [[60, 65, 69, 72], [59, 62, 65, 69], [58, 62, 65, 69], [57, 61, 64, 67]],
+    bass: { cut: 130, env: 300, edec: 0.14, res: 0.12, att: 0.008, dec: 0.45, sus: 0.65, saw: 0.3, sq: 0.1, sub: 0.75, drive: 1.4, rel: 0.05 },
+    bassLine: [[0, 6, 0, 0.8], [6, 2, 7, 0.5], [8, 2, 12, 0.45], [10, 4, 0, 0.7], [14, 2, 5, 0.45]],
+    keys: "ep", keyHits: [[0, 4, 0.9], [6, 3, 0.7], [11, 4, 0.8]], keyLp: 5000, keySwing: true, wobble: 0.0015, dust: 0.008 }); }
+
   var LIST = [
     { id: "house", make: chicago, bpm: 125, bars: 72, key: "A minor", hue: 28,
       en: "Chicago House", es: "House de Chicago", what_en: "Warehouse drums, piano stabs and a bassline", what_es: "Batería de bodega, acordes de piano y un bajo" },
@@ -655,7 +791,19 @@
     { id: "triphop", make: triphop, bpm: 90, bars: 48, key: "D minor", hue: 150,
       en: "Dusty Trip-Hop Break", es: "Break trip-hop polvoriento", what_en: "A heavy break off an old record, keys and a voice", what_es: "Un break pesado de un disco viejo, teclado y una voz" },
     { id: "disco", make: disco, bpm: 120, bars: 72, key: "E minor", hue: 320,
-      en: "Disco Edit", es: "Edit de disco", what_en: "Four on the floor, octave bass, funk guitar, strings", what_es: "Bombo en cada pulso, bajo en octavas, guitarra funk, cuerdas" }
+      en: "Disco Edit", es: "Edit de disco", what_en: "Four on the floor, octave bass, funk guitar, strings", what_es: "Bombo en cada pulso, bajo en octavas, guitarra funk, cuerdas" },
+    { id: "smoky", make: smoky, bpm: 80, bars: 48, key: "C minor", hue: 168,
+      en: "Smoky Trip-Hop", es: "Trip-hop ahumado", what_en: "A slow heavy break, deep sub, a worn electric piano", what_es: "Un break lento y pesado, bajo profundo, un piano eléctrico gastado" },
+    { id: "midnight", make: midnight, bpm: 75, bars: 48, key: "F minor", hue: 250,
+      en: "Midnight Trip-Hop", es: "Trip-hop de medianoche", what_en: "A lazy half-time break, dusty strings, a far-off voice", what_es: "Un break lento a medio tiempo, cuerdas polvorientas, una voz lejana" },
+    { id: "rainy", make: rainy, bpm: 72, bars: 48, key: "A minor", hue: 195,
+      en: "Rainy Window Trip-Hop", es: "Trip-hop de ventana con lluvia", what_en: "A swaying break, piano chords, strings underneath", what_es: "Un break que se mece, acordes de piano, cuerdas debajo" },
+    { id: "basement", make: basement, bpm: 96, bars: 48, key: "G minor", hue: 12,
+      en: "Basement Boom Bap", es: "Boom bap del sótano", what_en: "A hard kick, a cracking snare, a chopped piano", what_es: "Un bombo duro, una caja que truena, un piano cortado" },
+    { id: "golden", make: golden, bpm: 90, bars: 48, key: "E minor", hue: 45,
+      en: "Golden Era Boom Bap", es: "Boom bap de la era dorada", what_en: "A swung dusty break and horn stabs off an old soul record", what_es: "Un break polvoriento con swing y golpes de metales de un disco soul viejo" },
+    { id: "cypher", make: cypher, bpm: 84, bars: 48, key: "D minor", hue: 290,
+      en: "Cypher Boom Bap", es: "Boom bap de cypher", what_en: "Laid back for rhyming: a fat kick, a rim, jazzy keys", what_es: "Relajado para rimar: un bombo gordo, un aro, teclados de jazz" }
   ];
   function render(id) {
     var x = LIST.filter(function (r) { return r.id === id; })[0];

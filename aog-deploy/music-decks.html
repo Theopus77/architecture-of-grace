@@ -313,6 +313,12 @@ footer a{color:inherit}
 .sleeve .sb{display:flex;gap:.3rem}
 .sleeve .sb button{flex:1;min-height:34px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-weight:700;font-size:.8rem;cursor:pointer}
 .sleeve .sb button.x{flex:0 0 34px}
+/* AOG-DECKS-SLEEVES-V1 (2026-10-06) — Jimmy: "Can we have all the vinyl look like they are in crates so we only
+   see their sleeves?" Every record on the page stands in a crate as its sleeve: the ones made here, the starter
+   crate, the scripture records and the speeches. A, B or C puts it straight onto that deck. */
+.sleeve.still{cursor:default}
+.sleeve .sub{font-size:.74rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-.25rem}
+.cbox.shelf{margin-top:.5rem}
 .deck.dragover{outline:3px dashed var(--accent,#c45c26);outline-offset:4px}
 .bench .take.empty{color:var(--muted)}
 .take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem;color:var(--ink)}
@@ -467,7 +473,7 @@ const STR = {
   app:{en:"The Turntables",es:"Los tocadiscos"},
   eyebrow:{en:"Load a song. Spin it.",es:"Pon un disco. Gíralo."},
   tag:{en:"Three decks with weight. Grab a platter and it follows your hand; let go and the motor takes it back.",es:"Tres platos con peso. Agarra un plato y sigue tu mano; suéltalo y el motor lo retoma."},
-  tagLong:{en:"Three decks with weight and a mixer. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The mixer blends the decks, and Record keeps the take as a .wav you can save or drop back onto a platter. Play the four records made right here, or a song from this computer. A song never leaves this computer.",es:"Tres platos con peso y un mezclador. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El mezclador une los platos, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. Toca los cuatro discos hechos aquí mismo, o una canción de esta computadora. Una canción nunca sale de esta computadora."},
+  tagLong:{en:"Three decks with weight and a mixer. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The mixer blends the decks, and Record keeps the take as a .wav you can save or drop back onto a platter. Play the records made right here, or a song from this computer. A song never leaves this computer.",es:"Tres platos con peso y un mezclador. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El mezclador une los platos, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. Toca los discos hechos aquí mismo, o una canción de esta computadora. Una canción nunca sale de esta computadora."},
   load:{en:"Load a song",es:"Cargar una canción"},
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
@@ -541,6 +547,10 @@ const STR = {
   wordLead:{en:"The Bible read aloud, in English and Spanish. One verse or line on each pad.",es:"La Biblia en voz alta, en inglés y en español. Un versículo o una línea en cada pad."},
   wordGo:{en:"Load the scripture records",es:"Cargar los discos de Escrituras"},
   wordDone:{en:"Done. The scripture records are in Up next.",es:"Listo. Los discos de Escrituras están en Lo que sigue."},
+  speechH:{en:"Speeches",es:"Discursos"},
+  speechLead:{en:"Famous words in the speaker's own voice. One line on each pad.",es:"Palabras famosas en la voz de quien las dijo (en inglés). Una línea en cada pad."},
+  speechGo:{en:"Load the speeches",es:"Cargar los discursos"},
+  speechDone:{en:"Done. The speeches are in Up next.",es:"Listo. Los discursos están en Lo que sigue."},
   showList:{en:"See the tracks",es:"Ver las pistas"},
   starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
   findH:{en:"Free songs and samples online",es:"Canciones y samples gratis en internet"},
@@ -1259,17 +1269,20 @@ async function starterLoad(btn){
    verses read by LibriVox volunteers (public domain; audio/crate/CREDITS.txt). They
    are listed in audio/crate/crate.json with each verse's start: those land on pads
    1 to 8. Speech has no tempo, so the deck keeps none (no beat snapping). */
-let WORD = [], wordMsg = "";
-fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"); paintCrate(); }).catch(()=>{});
+/* AOG-FDR-V1 (2026-10-06): speeches (kind "speech", e.g. FDR's own recordings) get their own box, made the same way */
+let WORD = [], wordMsg = {scripture:"", speech:""};
+fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"||x.kind==="speech"); paintCrate(); }).catch(()=>{});
 const wordName = x => x.title + " - " + (x.version||"KJV") + ".mp3";
 function wordOf(name){ return WORD.find(x=>wordName(x)===name) || null; }
-async function wordLoad(btn){
+const WORDKEY = {scripture:"word", speech:"speech"};
+async function wordLoad(btn, kind){
   if(btn) btn.disabled = true;
+  const list = WORD.filter(x=>x.kind===kind), id = WORDKEY[kind]+"Msg";
   let bad = 0;
-  for(let i=0;i<WORD.length;i++){
-    const x = WORD[i];
-    wordMsg = t("starterBusy").replace("%n", i+1).replace("%t", WORD.length);
-    const m = document.getElementById("wordMsg"); if(m) m.textContent = wordMsg;
+  for(let i=0;i<list.length;i++){
+    const x = list[i];
+    wordMsg[kind] = t("starterBusy").replace("%n", i+1).replace("%t", list.length);
+    const m = document.getElementById(id); if(m) m.textContent = wordMsg[kind];
     try{
       const r = await fetch("audio/crate/" + x.file);
       if(!r.ok) throw new Error(r.status);
@@ -1279,25 +1292,26 @@ async function wordLoad(btn){
     }catch(e){ bad++; }
   }
   cratePut("next", CRATE.next);
-  wordMsg = bad ? t("starterFail") : t("wordDone");
+  wordMsg[kind] = bad ? t("starterFail") : t(WORDKEY[kind]+"Done");
   paintCrate();
 }
-function wordHtml(){
-  if(!WORD.length) return "";
+function wordHtml(kind){
+  const list = WORD.filter(x=>x.kind===kind), k = WORDKEY[kind];
+  if(!list.length) return "";
   const es = S.lang === "es";
-  return `<h3>${t("wordH")}</h3>
-    <p class="rechint" style="margin:0">${t("wordLead")}</p>
-    <details class="more"><summary>${t("showList")}</summary><ul class="starter">${WORD.map(x=>`<li><b>${esc(es?(x.title_es||x.title):x.title)}</b> <span>${esc(es?(x.line_es||x.line||""):(x.line||""))}</span></li>`).join("")}</ul></details>
+  return `<h3>${t(k+"H")}</h3>
+    <p class="rechint" style="margin:0">${t(k+"Lead")}</p>
+    <div class="cbox shelf">${list.map(x=>sleeveCard(es?(x.title_es||x.title):x.title, x.version||"", hueOf(x.title), id=>`data-pick="w:${x.file}" data-deck="${id}"`)).join("")}</div>
     <div class="take" style="background:none;border:0;padding:0">
-      <button type="button" class="ghost" id="wordGo">${t("wordGo")}</button>
+      <button type="button" class="ghost" id="${k}Go">${t(k+"Go")}</button>
     </div>
-    <p class="starter-msg" id="wordMsg" role="status" aria-live="polite">${wordMsg}</p>`;
+    <p class="starter-msg" id="${k}Msg" role="status" aria-live="polite">${wordMsg[kind]}</p>`;
 }
 function starterHtml(){
   const es = S.lang === "es";
   return `<h3>${t("starterH")}</h3>
     <p class="rechint" style="margin:0">${t("starterLead")}</p>
-    <details class="more"><summary>${t("showList")}</summary><ul class="starter">${STARTER.map(x=>`<li><b>${esc(es?x[2]:x[1])}</b> <span>${x[3]} BPM · ${esc(es?x[5]:x[4])}</span></li>`).join("")}</ul></details>
+    <div class="cbox shelf">${STARTER.map((x,i)=>sleeveCard(es?x[2]:x[1], x[3]+" BPM · "+(es?x[5]:x[4]), hueOf(x[1]), id=>`data-pick="s:${i}" data-deck="${id}"`)).join("")}</div>
     <div class="take" style="background:none;border:0;padding:0">
       <button type="button" class="ghost" id="starterGo">${t("starterGo")}</button>
     </div>
@@ -1314,7 +1328,8 @@ function paintCrate(){
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
     ${starterHtml()}
-    ${wordHtml()}
+    ${wordHtml("scripture")}
+    ${wordHtml("speech")}
     ${findLinks()}
     ${CRATE.prev.length ? `<h3>${t("cratePrev")}</h3>` : ""}
     ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("")}
@@ -1322,7 +1337,10 @@ function paintCrate(){
   const sg = document.getElementById("starterGo");
   if(sg) sg.onclick = ()=>starterLoad(sg);
   const wg = document.getElementById("wordGo");
-  if(wg) wg.onclick = ()=>wordLoad(wg);
+  if(wg) wg.onclick = ()=>wordLoad(wg, "scripture");
+  const sg2 = document.getElementById("speechGo");
+  if(sg2) sg2.onclick = ()=>wordLoad(sg2, "speech");
+  wirePicks(box);
   const add = document.getElementById("crateAdd");
   add.onchange = ()=>{
     const fs = Array.from(add.files||[]); if(!fs.length) return;
@@ -1395,16 +1413,37 @@ async function loadMade(d, id, opts){
     setTimeout(()=>{ if(d.note){ d.note=""; paintDeck(d); } }, 6000);
   }
 }
+/* AOG-DECKS-SLEEVES-V1: one sleeve, for any record; `on(id)` gives the A/B/C button its data */
+function sleeveCard(name, sub, hue, on){
+  return `<div class="sleeve still" style="--h:${hue}">
+      <div class="art" aria-hidden="true"></div>
+      <span class="nm" title="${esc(name)}">${esc(name)}</span>
+      <span class="sub">${esc(sub)}</span>
+      <div class="sb" role="group" aria-label="${esc(name)}">${IDS.map(id=>`<button type="button" ${on(id)} aria-label="${esc(name)} · ${t("to"+id)}">${id}</button>`).join("")}</div>
+    </div>`;
+}
+function hueOf(str){ let h = 0; for(const ch of String(str)) h = (h*31 + ch.charCodeAt(0)) % 360; return h; }
+/* a sleeve from the starter crate (s:index) or the scripture and speech shelves (w:file) goes straight onto a deck */
+async function pickOnto(key, d){
+  if(!d) return;
+  let url, name;
+  if(key.startsWith("s:")){ const x = STARTER[+key.slice(2)]; if(!x) return; url = "audio/crate/" + x[0] + ".mp3"; name = starterName(x); }
+  else { const x = WORD.find(w=>w.file===key.slice(2)); if(!x) return; url = "audio/crate/" + x.file; name = wordName(x); }
+  d.note = t("making"); paintDeck(d);
+  try{
+    const r = await fetch(url); if(!r.ok) throw new Error(r.status);
+    await loadFile(d, new File([await r.blob()], name, { type:"audio/mpeg" }));
+  }catch(e){ d.note = t("starterFail"); paintDeck(d); setTimeout(()=>{ if(d.note){ d.note = ""; paintDeck(d); } }, 6000); }
+}
+function wirePicks(box){
+  box.querySelectorAll("[data-pick]").forEach(b=>{ b.onclick = ()=>pickOnto(b.getAttribute("data-pick"), decks.find(x=>x.id===b.getAttribute("data-deck"))); });
+}
 function paintMade(){
   const box = document.getElementById("made"); if(!box) return;
   const es = S.lang === "es";
   box.innerHTML = `<h3>${t("madeH")}</h3>
     <p class="rechint" style="margin:0">${t("madeLead")}</p>
-    <div class="made">${MADE.map(x=>`<div class="mrec" style="--h:${x.hue}">
-      <div class="art" aria-hidden="true"></div>
-      <div class="mi"><b>${esc(es?x.es:x.en)}</b><span>${x.bpm} BPM</span></div>
-      ${ontoHTML(id=>`data-made="${x.id}" data-deck="${id}"`).replace('class="onto"','class="onto" role="group" aria-label="'+esc(es?x.es:x.en)+'"')}
-    </div>`).join("")}</div>`;
+    <div class="cbox shelf">${MADE.map(x=>sleeveCard(es?x.es:x.en, x.bpm+" BPM", x.hue, id=>`data-made="${x.id}" data-deck="${id}"`)).join("")}</div>`;
   box.querySelectorAll("[data-made]").forEach(b=>{
     b.onclick = ()=>loadMade(decks.find(x=>x.id===b.getAttribute("data-deck")), b.getAttribute("data-made"));
   });

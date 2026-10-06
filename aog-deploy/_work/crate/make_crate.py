@@ -232,6 +232,10 @@ def main():
     sp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripture", "scripture.json")
     if os.path.exists(sp):
         with open(sp) as f: listing += json.load(f)
+    # and FDR's speeches (_work/fdr/fdrbuild.py)
+    fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "fdr", "fdr.json")
+    if os.path.exists(fp):
+        with open(fp) as f: listing += json.load(f)
     with open(os.path.join(OUT, "crate.json"), "w") as f:
         json.dump(listing, f, ensure_ascii=False, indent=1)
     print("total", round(sum(x["bytes"] for x in listing) / 1048576, 2), "MB")
