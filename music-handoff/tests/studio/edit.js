@@ -115,7 +115,7 @@ async function put(p, take, track) {
   await act(p, "out+bar");
   r = await mixBars(p, 5);
   const ce = await p.evaluate(() => [...document.querySelectorAll("#clipBox .st-stp .st-val")].map(x => x.textContent));
-  ok(shape(r, [220, 0, 0, 440, 550]) && ce[3] === "3 bars", "piece 1, a bar cut from its end: " + say(r) + " · " + ce.join(" | "));
+  ok(shape(r, [220, 0, 0, 440, 550]) && ce[ce.length - 1] === "3 bars", "piece 1, a bar cut from its end: " + say(r) + " · " + ce.join(" | "));
   await act(p, "undo"); await act(p, "undo"); await act(p, "undo");
   const back = await p.evaluate(() => __aogStudio.pcs(__aogStudio.SONG.tracks[0].clip).map(q => [q.a, q.b, q.at, q.n].join()).join(" / "));
   ok(back === "0,16,0,1", "Undo, three times: one piece again, as it came in (" + back + ")");
