@@ -1,3 +1,5 @@
+/* RETIRED (2026-10-07, AOG-SEND-TO-PADS-V1): the music tools now send to the new Drum Machine (music-pads), not the classic one;
+   ep/send2pads.js tests that. Kept for the record; not in run.sh. */
 /* AOG-TAKE-TO-PADS-V1 — a take goes from a music tool to a drum pad. In one browser context: record a take on the guitar
    (Record, a chord with playChord, Stop), press Send to the drum machine, open the drum machine, put it on pad 5. Then: USER
    holds it in twelve bits, the pad is named after it, the memory counts it, the pad sounds (the engine gets it, and the

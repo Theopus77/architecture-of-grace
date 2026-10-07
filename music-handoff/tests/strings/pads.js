@@ -1,3 +1,5 @@
+/* RETIRED (2026-10-07, AOG-SEND-TO-PADS-V1): the music tools now send to the new Drum Machine (music-pads), not the classic one;
+   ep/send2pads.js tests that. Kept for the record; not in run.sh. */
 /* Chord pads: the piano, the guitar and the bass send the six chords of their key; the drum machine puts them on pads 3 to 8,
    they choke each other, Put my sounds back undoes it, and a reload keeps them. */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");

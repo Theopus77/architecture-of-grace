@@ -590,9 +590,9 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  padsBtn:{en:"Send chords to the classic drum machine",es:"Enviar acordes a la caja de ritmos clásica"},   /* AOG-CHORD-PADS-V1 */
+  padsBtn:{en:"Send chords to the Drum Machine",es:"Enviar acordes a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
-  padsSent:{en:"Sent. On the classic drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos clásica, pulsa Ponerlos en los pads 3 a 8."}, drumsOld:{en:"The classic drum machine",es:"La caja de ritmos clásica"},
+  padsSent:{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
   credit:{en:"Grand and bright piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright, honky-tonk and felt piano: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). Harp, marimba, soft strings, tape strings and tape flute: VS Chamber Orchestra: Community Edition by Versilian Studios (CC0). Harpsichord, church organ (recorded by Simon Dalzell of Ivy Audio), vibraphone, glockenspiel, bells, kalimba, '80s electric piano and synth clavinet: Versilian Community Sample Library by Versilian Studios (CC0). Warm electric piano: jRhodes3d by Jeff Learman (CC BY-NC 4.0, for non-commercial use). Bright electric piano: Wurlitzer EP200 samples by Greg Sullivan (sullivang.net), SFZ by kinwie / sfzinstruments, CC BY 3.0. Celesta: stamperadam, via Virtual Playing Orchestra 3 (CC0). Steel drums: jSteelDrum by Jeff Learman (public domain). Rock and jazz, gospel and '70s rock organs: a Unitra B-11 transistor organ, recorded by Karoryfer Samples as Caveman Cosmonaut (CC0). '70s string synth and warm synth: a Roland Jupiter-4; '80s synth brass and synth lead: a Roland JX-3P; both recorded by Modular Samples (public domain, the Unlicense). Cinema organ: VS Chamber Orchestra: Community Edition by Versilian Studios, recorded by Simon Dalzell of Ivy Audio (CC0). Toy piano: a 1950s Michelsonne, recorded by beskhu on Freesound (CC BY 4.0). Music box: recorded by folkman on Freesound (CC0). Accordion: Button Accordion HN, a Hohner recorded by Jeff Stauffer for FreePats (CC0). Choir: one singer from Hadzi-Fia by Karoryfer Samples (CC0).",
           es:"Piano de cola y piano brillante: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical, honky-tonk y piano de fieltro: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Arpa, marimba, cuerdas suaves, cuerdas de cinta y flauta de cinta: VS Chamber Orchestra: Community Edition de Versilian Studios (CC0). Clavecín, órgano de iglesia (grabado por Simon Dalzell de Ivy Audio), vibráfono, glockenspiel, campanas, kalimba, piano eléctrico de los 80 y clavinet de sintetizador: Versilian Community Sample Library de Versilian Studios (CC0). Piano eléctrico cálido: jRhodes3d de Jeff Learman (CC BY-NC 4.0, para uso no comercial). Piano eléctrico brillante: muestras de Wurlitzer EP200 de Greg Sullivan (sullivang.net), SFZ de kinwie / sfzinstruments, CC BY 3.0. Celesta: stamperadam, en Virtual Playing Orchestra 3 (CC0). Tambores de acero: jSteelDrum de Jeff Learman (dominio público). Órganos de rock y jazz, góspel y de rock de los 70: un órgano de transistores Unitra B-11, grabado por Karoryfer Samples como Caveman Cosmonaut (CC0). Sintetizador de cuerdas de los 70 y sintetizador cálido: un Roland Jupiter-4; metales de sintetizador de los 80 y sintetizador solista: un Roland JX-3P; los dos grabados por Modular Samples (dominio público, Unlicense). Órgano de cine: VS Chamber Orchestra: Community Edition de Versilian Studios, grabado por Simon Dalzell de Ivy Audio (CC0). Piano de juguete: un Michelsonne de los años 50, grabado por beskhu en Freesound (CC BY 4.0). Caja de música: grabada por folkman en Freesound (CC0). Acordeón: Button Accordion HN, un Hohner grabado por Jeff Stauffer para FreePats (CC0). Coro: un cantante de Hadzi-Fia de Karoryfer Samples (CC0)."},
@@ -1842,25 +1842,14 @@ async function bounce(){
    the way a pad plays it, go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
    at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
 function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(c.q==="min"?"m":""); }
+/* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The Drum Machine's
+   chords bank (the bass: its notes bank) takes this instrument, key and mood; it makes the chords itself. */
 async function sendPads(){
   const line=$("padsLine"), btn=$("padsBtn");
-  btn.disabled=true; line.textContent=t("padsSending");
+  btn.disabled=true;
   try{
-    const snd=SOUNDS[S.sound];
-    if(snd.kind==="sample") await loadSet(snd.set, paintLoad);
-    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
-    for(const c of pads()){
-      const oc=new OC(1, Math.ceil(LEN*SR), SR), ch=makeChain(oc);
-      ch.master.gain.value=volGain(0.8); setSendLevel(ch, S.sound); setEra(ch, 0, 0);
-      const notes=voicing(c, null).concat([bassOf(c)]);
-      notes.forEach((m,j)=>{ const vc=makeVoice(oc, ch, S.sound, m, 0.74*(j===notes.length-1?0.85:1), 0.004); if(vc) vc.stop(LEN-0.3, Math.min(vc.tau, 0.12)); });
-      const d=(await oc.startRendering()).getChannelData(0);
-      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
-      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
-      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
-    }
-    await AOGHandoff.put("chordpads", {from:"piano", name:soundName(S.sound), at:Date.now(), pads:out});
-    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drumsOld")}</a>`;
+    await AOGHandoff.put("padschords", {from:"piano", bank:"chords", inst:"k:"+S.sound, key:S.key, minor:!!S.minor, at:Date.now()});
+    line.innerHTML=t("padsSent")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
   }catch(e){ line.textContent=t("sendFail"); }
   btn.disabled=false;
 }

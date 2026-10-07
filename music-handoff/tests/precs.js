@@ -249,10 +249,11 @@ window.__calls={sample:0, made:0};
     await p.evaluate(()=>{ __calls.sample=0; __calls.made=0; });
     await p.click("#padsBtn");
     await p.waitForFunction(()=>/Sent|did not/.test(document.getElementById("padsLine").textContent), null, {timeout:120000});
-    const pads=await p.evaluate(async()=>{ const x=await AOGHandoff.get("chordpads"); return x && {n:x.pads.length, rms:Math.min(...x.pads.map(q=>{ let s=0; for(const v of q.pcm) s+=v*v; return Math.sqrt(s/q.pcm.length); })), calls:{...__calls}}; });
+    /* AOG-SEND-TO-PADS-V1: the chords now go to the Drum Machine (music-pads) as its instrument, key and mood */
+    const pads=await p.evaluate(async()=>{ const x=await AOGHandoff.get("padschords"); return x && {inst:x.inst, bank:x.bank, key:x.key, minor:x.minor, line:document.getElementById("padsLine").textContent}; });
     ok(send && send.sec>=22 && send.peak>0.05 && send.peak<1 && !send.nan && send.calls.sample>0 && send.calls.made===0,
       `${id}: Send to the turntables renders the recordings (${send&&send.calls.sample} recorded voices, ${send&&send.calls.made} built) — "${send&&send.name}", ${send&&send.sec.toFixed(1)} s`);
-    ok(pads && pads.n===6 && pads.rms>0.02 && pads.calls.sample>0 && pads.calls.made===0, `${id}: Send chords to the drum machine renders the recordings (${pads&&pads.calls.sample} recorded voices, ${pads&&pads.calls.made} built)`);
+    ok(pads && pads.inst==="k:"+id && pads.bank==="chords" && /^Sent/.test(pads.line), `${id}: Send chords to the Drum Machine hands over its sound, key and mood (${JSON.stringify(pads)})`);
   }
   /* ● Record keeps what the recordings play */
   for(const id of ["harpsi","church"]){

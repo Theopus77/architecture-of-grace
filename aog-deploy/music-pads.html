@@ -201,6 +201,7 @@ details.pm-set[open]>summary::before{content:"▾"}
           <div class="pm-row" id="guideRow" style="margin-top:8px"></div>
           <p class="pm-now" id="guideNow" aria-live="polite"></p>
           <p class="pm-line" id="line" aria-live="polite"></p>
+          <p class="pm-line" id="inLine" aria-live="polite"></p>
           <div class="pads" id="pads" role="group"></div>
         </div>
         <div>
@@ -318,6 +319,7 @@ const STR={
   patDone:{en:"The pattern is in the loop, over 4 bars. Press Play.",es:"El patrón está en el bucle, en 4 compases. Pulsa Tocar."},
   fitWait:{en:"Every note here fits the key. Play a chord in bank B, and the notes that match it get a gold bar.",es:"Cada nota aquí encaja con el tono. Toca un acorde en el banco B, y las notas que combinan llevan una barra dorada."},
   fitNow:{en:"Gold notes fit <b>{name}</b>: {notes}.",es:"Las notas doradas encajan con <b>{name}</b>: {notes}."}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
+  inChords:{en:"From {from}: its chords are on bank {bank}.",es:"De {from}: sus acordes están en el banco {bank}."}, inNotes:{en:"From {from}: its notes are on bank {bank}.",es:"De {from}: sus notas están en el banco {bank}."}, inTake:{en:"Your take is on bank {bank}, cut across the pads.",es:"Tu toma está en el banco {bank}, cortada en los pads."},
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
   cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"}, cWord:{en:"Scripture",es:"Escrituras"},
@@ -1203,9 +1205,30 @@ function init(){
   /* a hidden page goes quiet: the loop stops and held pads let go */
   document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(SEQ.on) stop(); [...DOWN.keys()].forEach(release); RPT.clear(); } });
   window.addEventListener("blur",()=>{ [...DOWN.keys()].forEach(release); RPT.clear(); });
-  if(window.AOGHandoff && AOGHandoff.listen) AOGHandoff.listen((k)=>{ if(k===AOGHandoff.INBOX) loadLists().then(()=>{ if(S.banks[S.bank].type==="chops") paintSetRow(); }); });
+  if(window.AOGHandoff && AOGHandoff.listen) AOGHandoff.listen((k)=>{ if(k===AOGHandoff.INBOX) loadLists().then(()=>{ if(S.banks[S.bank].type==="chops") paintSetRow(); }); else if(k==="padschords"||k==="padstake") takeIn(); });
   paintAll();
-  loadLists().then(()=>{ S.banks.forEach(B=>{ if(B.type==="chops" && !recInfo(B.rec) && CRATE.length) B.rec="c:"+CRATE[0].file; }); paintAll(); prep(S.bank); prepUsed(); });
+  loadLists().then(()=>{ S.banks.forEach(B=>{ if(B.type==="chops" && !recInfo(B.rec) && CRATE.length) B.rec="c:"+CRATE[0].file; }); paintAll(); prep(S.bank); prepUsed(); takeIn(); });
+}
+/* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The piano, the guitar, the
+   band and the bass send their chords (the bass: its low notes), and every tool's takes come here too. Each send is used once. */
+const FROM_NAME={piano:{en:"the piano",es:"el piano"}, guitar:{en:"the guitar",es:"la guitarra"}, bass:{en:"the bass",es:"el bajo"}, band:{en:"the band",es:"la banda"}};
+async function takeIn(){
+  if(!window.AOGHandoff) return;
+  let a=null, b=null; try{ a=await AOGHandoff.get("padschords"); }catch(e){} try{ b=await AOGHandoff.get("padstake"); }catch(e){}
+  const seen=S.inAt||0; let newest=seen, go=-1, msg="";
+  if(a && a.at>seen){
+    const ty=a.bank==="notes"?"notes":"chords", bi=S.banks.findIndex(x=>x.type===ty);
+    if(bi>=0){ const B=S.banks[bi]; B.inst=INST[a.inst] ? a.inst : ({k:"k:grand", g:"g:steel", a:"a:upright", b:"b:trumpet"}[String(a.inst||"").charAt(0)]||B.inst); B.key=((a.key|0)%12+12)%12; B.scale=a.minor?"minor":"major"; if(ty==="notes") B.oct=2;
+      go=bi; msg=t(ty==="notes"?"inNotes":"inChords", {from:L(FROM_NAME[a.from]||FROM_NAME.piano), bank:"ABCD"[bi]}); }
+    newest=Math.max(newest, a.at);
+  }
+  if(b && b.at>seen){
+    await loadLists();
+    const bi=S.banks.findIndex(x=>x.type==="chops");
+    if(bi>=0 && INBOX.some(x=>x.id===b.id)){ S.banks[bi].rec="t:"+b.id; S.banks[bi].bar=1; if(!(a && a.at>seen && a.at>b.at)) go=bi; msg=(msg?msg+" ":"")+t("inTake", {bank:"ABCD"[bi]}); }
+    newest=Math.max(newest, b.at);
+  }
+  if(newest>seen){ S.inAt=newest; if(go>=0) S.bank=go; save(); paintAll(); prep(S.bank); const l=$("inLine"); if(l && msg) l.textContent=msg; }
 }
 init();
 </script>

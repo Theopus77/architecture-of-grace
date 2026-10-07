@@ -149,8 +149,8 @@ window.__bright=function(d,SR){ let e=0, s=0; for(let i=1;i<d.length;i++){ e+=d[
     return {name:x.name, bars:x.bars, secs:+buf.duration.toFixed(1), peak:+pk.toFixed(2), rmsDb:+(10*Math.log10(ss/d.length)).toFixed(1), hot}; });
   ok(sh && /Tenor sax · modal jazz/.test(sh.name) && sh.secs>15 && sh.peak>0.2 && sh.hot<50 && sh.rmsDb>-35, "Send to the turntables renders the modal tenor offline: "+JSON.stringify(sh));
   await pick("soprano"); await p.click("#padsBtn"); await p.waitForFunction(()=>/Sent|did not/.test(document.getElementById("padsLine").textContent), null, {timeout:60000});
-  const cp=await p.evaluate(async()=>{ const x=await AOGHandoff.get("chordpads"); return x && {name:x.name, n:x.pads.length, peaks:x.pads.map(q=>{ let m=0; for(const v of q.pcm) m=Math.max(m,Math.abs(v)); return +m.toFixed(2); })}; });
-  ok(cp && cp.name==="Soprano saxophone" && cp.n===6 && cp.peaks.every(x=>x===0.8), "six chord pads from the soprano, rendered offline: "+JSON.stringify(cp));
+  const cp=await p.evaluate(async()=>{ const x=await AOGHandoff.get("padschords"); return x && {from:x.from, inst:x.inst, bank:x.bank}; });   /* AOG-SEND-TO-PADS-V1 */
+  ok(cp && cp.from==="band" && cp.inst==="b:soprano" && cp.bank==="chords", "the soprano's chords go to the Drum Machine as the soprano: "+JSON.stringify(cp));
 
   /* 8. Spanish */
   await pick("bigband");

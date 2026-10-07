@@ -63,9 +63,9 @@
     sent: { en: "Sent. Open the turntables to play it.", es: "Enviado. Abre los platos para tocarlo." },
     decks: { en: "The turntables", es: "Los tocadiscos" },
     /* AOG-TAKE-TO-PADS-V1 */
-    drum: { en: "Send to the classic drum machine", es: "Enviar a la caja de ritmos clásica" },
-    drumSent: { en: "Sent. On the classic drum machine, pick a pad for it.", es: "Enviada. En la caja de ritmos clásica, elige un pad para la toma." },
-    drums: { en: "The classic drum machine", es: "La caja de ritmos clásica" },
+    drum: { en: "Send to the Drum Machine", es: "Enviar a la caja de ritmos" },
+    drumSent: { en: "Sent. It is on bank D of the Drum Machine, cut across the pads.", es: "Enviada. Está en el banco D de la caja de ritmos, cortada en los pads." },
+    drums: { en: "Open the Drum Machine", es: "Abrir la caja de ritmos" },
     fail: { en: "That did not work. Try again.", es: "No funcionó. Inténtalo otra vez." },
     /* AOG-STUDIO-SEND-V1 */
     studio: { en: "Send to the Mixing Desk", es: "Enviar a la mesa de mezclas" },
@@ -289,13 +289,18 @@
       if (!k || !from) return;
       R.studioLine = false;
       if (btn) btn.disabled = true;
+      /* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The take joins the
+         Studio's inbox (where the Drum Machine finds takes to chop) and a note on the shelf "padstake" tells the Drum
+         Machine to put it on its chops bank. */
       try {
-        var pcm = await toPad(k.blob); if (!pcm || pcm.length < 64) throw new Error("no sound");
-        var nm = TAKE_NAME[from];
-        await AOGHandoff.put("drumsample", { from: from, name: { en: nm.en + k.n, es: nm.es + k.n }, seconds: Math.round(pcm.length / PAD_RATE * 100) / 100,
-          at: Date.now(), rate: PAD_RATE, pcm: pcm });
-        if (line) line.innerHTML = w("drumSent") + ' <a href="music-drums.html">' + w("drums") + "</a>";
-      } catch (e) { if (line) line.textContent = w("fail"); }
+        if (!window.AOGHandoff || !AOGHandoff.add) throw new Error("no inbox");
+        var tool = studioTool(o), bpm = k.bpm > 0 ? k.bpm : 0;
+        if (!(bpm > 0)) { try { bpm = o.bpm ? +o.bpm() || 0 : 0; } catch (e) { bpm = 0; } }
+        var r = await AOGHandoff.add(AOGHandoff.INBOX, { from: tool, n: k.n, name: studioName(o, tool, k.n), sec: Math.round(k.sec * 1000) / 1000,
+          bpm: Math.round(bpm * 100) / 100, at: k.at || Date.now(), take: true, wav: k.blob }, { key: tool + "|" + (k.at || 0) + "|" + k.n });
+        await AOGHandoff.put("padstake", { id: r.id, from: from, at: Date.now() });
+        if (line) line.innerHTML = w("drumSent") + ' <a href="music-pads.html">' + w("drums") + "</a>";
+      } catch (e) { if (line) line.textContent = w(e && e.name === "QuotaExceededError" ? "noRoom" : "fail"); }
       if (btn) btn.disabled = false;
     };
     /* AOG-STUDIO-SEND-V1 — Send to the Studio: the take joins the Studio's inbox, beside the others */
