@@ -22,6 +22,9 @@ Jimmy picked "JFK and Reagan" for the next speech records. Four records, sixteen
   golden age of America has only just begun". White House video on archive.org (`youtube-XkFKNkAEzQ8`). Jimmy asked for
   "any President Trump"; these two were the White House's own recordings reachable from here (whitehouse.gov,
   trumplibrary.gov and YouTube are not). `trump.py` holds their lines.
+- `34-famous-quotables.mp3`: the best-known line from each speech above (FDR, JFK, Reagan, Trump), plus Eisenhower's
+  "military-industrial complex" (Farewell Address, Eisenhower Library 734622-138) and Reagan's "my opponent's youth and
+  inexperience" (Kansas City debate, 1984, National Archives ID 32621580). `quotables.py` holds the lines.
 
 The presidential libraries' own sites are not reachable from the build machine; the National Archives catalog
 (catalog.archives.gov/proxy/records/search) and archive.org are. Each line was placed from pocketsphinx word times
