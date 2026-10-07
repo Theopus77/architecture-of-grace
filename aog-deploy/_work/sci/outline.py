@@ -274,7 +274,7 @@ UNITS = [
 # Rooms already on the site that belong to each unit — nothing gets deleted.
 LINKS = {
  1: [("/b26", "Pushes and pulls — cards, quiz and lab"), ("/b31", "Materials and how they change — cards, quiz and lab")],
- 2: [("/b30", "Light and sound — cards, quiz and lab"), ("/drums", "The drum bench"), ("/waves", "The wave bench"), ("/telescope", "The telescope")],
+ 2: [("/b30", "Light and sound — cards, quiz and lab"), ("/drum-machine", "The drum bench"), ("/waves", "The wave bench"), ("/telescope", "The telescope")],
  3: [("/b28", "What living things need — cards, quiz and lab"), ("/microscope", "The microscope")],
  4: [("/b29", "Weather and seasons — cards, quiz and lab"), ("/b27", "Sun, moon and sky — cards, quiz and lab"), ("/telescope", "The telescope")],
  5: [("/b18", "Forces and motion — cards, quiz and lab"), ("/b21", "Energy — cards, quiz and lab")],
@@ -284,7 +284,7 @@ LINKS = {
  9: [("/b20", "Weather and climate — cards, quiz and lab"), ("/b22", "Earth's changing surface — cards, quiz and lab"), ("/b25", "Earth in space — cards, quiz and lab"), ("/telescope", "The telescope")],
  10: [("/b14", "Matter and its interactions — cards, quiz and lab"), ("/microscope", "The microscope")],
  11: [("/b15", "Forces, energy and waves — cards, quiz and lab")],
- 12: [("/b15", "Forces, energy and waves — cards, quiz and lab"), ("/waves", "The wave bench"), ("/drums", "The drum bench"), ("/decks", "The turntables"), ("/telescope", "The telescope")],
+ 12: [("/b15", "Forces, energy and waves — cards, quiz and lab"), ("/waves", "The wave bench"), ("/drum-machine", "The drum bench"), ("/decks", "The turntables"), ("/telescope", "The telescope")],
  13: [("/b2", "The cell system — cards, quiz and lab"), ("/b3", "Body systems — cards, quiz and lab"), ("/b4", "Reproduction — cards, quiz and lab"), ("/microscope", "The microscope")],
  14: [("/b1", "Living things in the biosphere"), ("/b5", "Ecosystems"), ("/b6", "Populations"), ("/b7", "Heredity"), ("/vocab", "Science words, five ways")],
  15: [("/b16", "Earth's systems — cards, quiz and lab"), ("/b17", "Space systems — cards, quiz and lab"), ("/telescope", "The telescope")],
@@ -297,8 +297,8 @@ LINKS = {
  22: [("/b38", "Chemistry: atoms, bonding, reactions — cards, quiz and lab")],
  23: [("/b39", "Chemistry: stoichiometry and solutions — cards, quiz and lab")],
  24: [("/b40", "Physics: motion and forces — cards, quiz and lab")],
- 25: [("/b41", "Physics: energy, waves, electricity — cards, quiz and lab"), ("/waves", "The wave bench"), ("/decks", "The turntables"), ("/drums", "The drum bench")],
+ 25: [("/b41", "Physics: energy, waves, electricity — cards, quiz and lab"), ("/waves", "The wave bench"), ("/decks", "The turntables"), ("/drum-machine", "The drum bench")],
  26: [("/b42", "Environmental science — cards, quiz and lab")],
- 28: [("/drums", "The Drum Machine"), ("/decks", "The turntables"), ("/waves", "The oscilloscope"), ("/b15", "Forces, energy and waves — cards, quiz and lab")],
+ 28: [("/drum-machine", "The Drum Machine"), ("/decks", "The turntables"), ("/waves", "The oscilloscope"), ("/b15", "Forces, energy and waves — cards, quiz and lab")],
  27: [("/b43", "Capstone: argue from evidence — cards, quiz and lab"), ("/microscope", "The microscope"), ("/telescope", "The telescope")],
 }

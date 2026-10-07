@@ -25,7 +25,7 @@ def think(title, text, prompt): return {"type": "think", "title": title, "text":
 def data(title, rows, unit, cite, prompt): return {"type": "data", "title": title, "rows": rows, "unit": unit, "cite": cite, "prompt": prompt}
 def source(title, text, cite, prompt, paraphrase=True): return {"type": "source", "title": title, "text": text, "cite": cite, "paraphrase": paraphrase, "prompt": prompt}
 
-DRUMS = {"href": "/drums", "en": "Try it on the Drum Machine", "es": "Pruébalo en la caja de ritmos"}
+DRUMS = {"href": "/drum-machine", "en": "Try it on the Drum Machine", "es": "Pruébalo en la caja de ritmos"}
 DECKS = {"href": "/turntables", "en": "Try it on the Turntables", "es": "Pruébalo en los tocadiscos"}
 WAVES = {"href": "/waves", "en": "Try it on the Oscilloscope", "es": "Pruébalo en el osciloscopio"}
 

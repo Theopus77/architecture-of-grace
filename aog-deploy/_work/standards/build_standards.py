@@ -62,7 +62,7 @@ COURSES = [
 ]
 HUB_FALLBACK = {"eco": "economics-hub.html", "rel": "religions-hub.html", "fcs": "facs-hub.html", "spa": "spanish-hub.html"}
 UNIT_PREFIX = {c[5].split("-u")[0]: c[0] for c in COURSES}          # "ssc" -> "ss"
-BENCH_SLUGS = {"/microscope", "/telescope", "/waves", "/drums", "/decks", "/turntables", "/kitchen"}
+BENCH_SLUGS = {"/microscope", "/telescope", "/waves", "/drums", "/drum-machine", "/decks", "/turntables", "/kitchen"}
 
 
 def exists(rel):
