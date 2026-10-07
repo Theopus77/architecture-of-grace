@@ -1747,6 +1747,10 @@ function aogToggleBand(e, b){
   @media screen and (min-width:768px){
     #aog-thresholds .aogdn-stage{ perspective:2400px; perspective-origin:50% 50%; }
     #aog-thresholds .aogdn-grid{ transform:rotateX(9deg); transform-origin:50% 0; }   /* AOG-FRONT-DOOR-V2b (2026-10-03): from the top edge, not the middle — a tall table sank 140px below the role buttons on an iPad */
+    /* AOG-HOME-FLAT-V1 (2026-10-07) — Jimmy, on an iPad: the Show everything page "needs to be fixed". Tilted 9°, a table
+       that tall brings its last rows toward the eye: each row grew wider than the last until the cards ran off both
+       sides and into the footer. Show everything (and More doors) lays the table flat; the short tables keep the tilt. */
+    #aog-thresholds .aogdn-grid.aogau-flat{ transform:none; }
     #aog-thresholds .aogdn-door{ box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 1px 0 rgba(0,0,0,.45), 0 3px 2px -1px rgba(0,0,0,.35), 0 18px 26px -16px rgba(0,0,0,.8); }
   }
   @media print{
@@ -2093,6 +2097,7 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         /* five doors under Today would leave one alone on a computer's row of four; they go three across instead */
         var shown = [].filter.call(grid.querySelectorAll(":scope > .aogdn-door"), function(d){ return !d.hidden && d.getAttribute("data-door") !== "today"; }).length;
         grid.classList.toggle("aogau-three", k !== "all" && shown === 5);
+        grid.classList.toggle("aogau-flat", k === "all" || more);   /* AOG-HOME-FLAT-V1: a long table lies flat, so its far rows stay on the screen */
         if(panel) grid.appendChild(panel);
         document.querySelectorAll("#aogAudRow button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-aud") === k ? "true" : "false"); });
         document.querySelectorAll("#aogAud .aogau-tip").forEach(function(t){ t.hidden = t.getAttribute("data-aud") !== k; });
