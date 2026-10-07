@@ -239,7 +239,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   await r.goto(U + "music-guitar.html"); await r.waitForTimeout(900);
   await record(r, async () => { await r.evaluate(() => playChord(pads()[0], 0.8)); await r.waitForTimeout(900); });
   const esActs = await acts(r, "takes"); const esLn = await toStudio(r, "takes", "recLine", 1);
-  ok(esActs === "Guardar como .wav | Enviar a los platos | Enviar a la caja de ritmos clásica | Enviar a la mesa de mezclas | Borrar" && esLn.text === "Enviada a la mesa de mezclas. Abrir la mesa de mezclas", "the guitar in Spanish: " + esActs + " → " + esLn.text);
+  ok(esActs === "Guardar como .wav | Enviar a los platos | Enviar a la caja de ritmos | Enviar a la mesa de mezclas | Borrar" && esLn.text === "Enviada a la mesa de mezclas. Abrir la mesa de mezclas", "the guitar in Spanish: " + esActs + " → " + esLn.text);
   await r.evaluate(() => { try { localStorage.setItem("aog.lang", "en"); } catch (e) {} }); await r.close();
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();
