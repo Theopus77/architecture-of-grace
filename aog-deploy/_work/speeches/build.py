@@ -62,4 +62,5 @@ make("30-reagan-challenger", [(F,11.60,13.89,"A day for mourning and remembering
  {R:"Discurso sobre el Challenger, 28 de enero de 1986"})
 exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"berlin.py")).read())
 exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"trump.py")).read())
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"quotables.py")).read())
 json.dump(meta,open("out/speeches.json","w"),indent=1,ensure_ascii=False)
