@@ -404,6 +404,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="sendPadsBtn"></button>
           <button type="button" class="pbtn send" id="padsBtn"></button>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
@@ -589,9 +590,10 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  padsBtn: GTR?{en:"Send chords to the classic drum machine",es:"Enviar acordes a la caja de ritmos clásica"}:{en:"Send the low notes to the classic drum machine",es:"Enviar las notas graves a la caja de ritmos clásica"},   /* AOG-CHORD-PADS-V1 */
+  sendPadsBtn:{en:"Send to the Drum Machine",es:"Enviar a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn: GTR?{en:"Send chords to the Drum Machine",es:"Enviar acordes a la caja de ritmos"}:{en:"Send the low notes to the Drum Machine",es:"Enviar las notas graves a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
-  padsSent:{en:"Sent. On the classic drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos clásica, pulsa Ponerlos en los pads 3 a 8."}, drumsOld:{en:"The classic drum machine",es:"La caja de ritmos clásica"},
+  padsSent: GTR?{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}:{en:"Sent. The low notes are waiting on the Drum Machine.",es:"Enviado. Las notas graves te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
   /* AOG-STRINGS-REAL-V1: the recorded guitars and basses */
   credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. In Solo mode, the band's bass is Growlybass by Karoryfer Samples. All of them are free for everyone to use (CC0).",
@@ -2303,8 +2305,8 @@ function wavBlob(L, R, sr){
   return new Blob([ab],{type:"audio/wav"});
 }
 const SHELF=GTR?"guitarbench":"bassbench";
-async function bounce(){
-  const line=document.getElementById("sendLine"), btn=document.getElementById("sendBtn");
+async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole recording to the Drum Machine */
+  const toPads=dest==="pads", line=document.getElementById("sendLine"), btn=document.getElementById(toPads?"sendPadsBtn":"sendBtn");
   if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
   btn.disabled=true; line.textContent=t("sending");
   try{
@@ -2328,6 +2330,12 @@ async function bounce(){
     const buf=await oc.startRendering();
     const blob=wavBlob(buf.getChannelData(0), buf.getChannelData(1), sr);
     const name=(GTR?(S.lang==="es"?"Guitarra":"Guitar"):(S.lang==="es"?"Bajo":"Bass"))+" · "+soundName(S.sound)+" · "+Math.round(bpm)+" BPM · "+bars+" "+t("bars");
+    if(toPads){
+      const r=await AOGHandoff.add(AOGHandoff.INBOX, {from:INST, n:0, name:{en:name, es:name}, sec:Math.round(buf.duration*1000)/1000, bpm:bpm, at:Date.now(), take:true, wav:blob});
+      await AOGHandoff.put("padstake", {id:r.id, from:INST, at:Date.now()});
+      line.innerHTML=t("sentPads")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
+      btn.disabled=false; return;
+    }
     await AOGHandoff.put(SHELF, {name:name, bpm:bpm, bars:bars, at:Date.now(), wav:blob});
     line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`; LES.mark("decks");
   }catch(e){ line.textContent=t("sendFail"); }
@@ -2338,24 +2346,14 @@ async function bounce(){
    the way a pad plays it (on the bass, the chord's low note), go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
    at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
 function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(GTR&&c.q==="min"?"m":""); }
+/* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The Drum Machine's
+   chords bank (the bass: its notes bank) takes this instrument, key and mood; it makes the chords itself. */
 async function sendPads(){
   const line=$("padsLine"), btn=$("padsBtn");
-  btn.disabled=true; line.textContent=t("padsSending");
+  btn.disabled=true;
   try{
-    await loadSound(S.sound);      /* AOG-STRINGS-REAL-V1: a recorded sound's notes are in before the pads are made */
-    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
-    for(const c of pads()){
-      const oc=new OC(1, Math.ceil(LEN*SR), SR); await AOGAmp.load(oc); const ch=makeChain(oc), stopAt=LEN-0.3;
-      ch.master.gain.value=volGain(0.8); setSound(ch, S.sound); setEra(ch, 0, 0);
-      if(GTR){ const shp=shapeFor(c); let k=0; shp.forEach((f,s)=>{ if(f<0) return; const vc=makeVoice(oc, ch, S.sound, TUNING[s]+f, 0.74*(1-0.03*k), 0.004+k*0.014, s); if(vc) vc.stop(stopAt, Math.max(0.04, vc.tau)); k++; }); }
-      else { const m=bassRoot(c), cl=cellFor(m), vc=makeVoice(oc, ch, S.sound, m, 0.8, 0.004, cl?cl.s:null); if(vc) vc.stop(stopAt, Math.max(0.04, vc.tau)); }
-      const d=(await oc.startRendering()).getChannelData(0);
-      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
-      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
-      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
-    }
-    await AOGHandoff.put("chordpads", {from:INST, name:soundName(S.sound), at:Date.now(), pads:out});
-    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drumsOld")}</a>`;
+    await AOGHandoff.put("padschords", {from:INST, bank:(GTR?"chords":"notes"), inst:(GTR?"g:":"a:")+((SOUNDS[S.sound]&&SOUNDS[S.sound].rec)||S.sound), key:S.key, minor:!!S.minor, at:Date.now()});
+    line.innerHTML=t("padsSent")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
   }catch(e){ line.textContent=t("sendFail"); }
   btn.disabled=false;
 }
@@ -2468,7 +2466,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW"); $("majBtn2").textContent=t("major"); $("minBtn2").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
-  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp();
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
@@ -3131,7 +3129,7 @@ function bind(){
   $("era").oninput=()=>{ LES.mark("era"); S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
-  $("sendBtn").onclick=bounce;
+  $("sendBtn").onclick=()=>bounce(); $("sendPadsBtn").onclick=()=>bounce("pads");
   $("padsBtn").onclick=sendPads;
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";

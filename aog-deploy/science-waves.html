@@ -181,6 +181,7 @@ body:has(.aogtop) header .tools { display:none; }
 </head>
 <body>
 <script src="/aog-sound-handoff.js"></script>
+<script src="/aog-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
 <script>
@@ -839,8 +840,17 @@ async function recordSound(where){
   if(!REC.take) return;
   const blob=REC.take.blob, name=REC.take.name;
   if(where==="saveWav"){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); return; }
+  /* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "The old machine is obsolete. THE DRUM MACHINE IS WHERE IT IS AT!!!"
+     The sound goes on the Drum Machine's chops bank, through the Studio's inbox, as every music tool's takes do. */
+  if(where==="toDrums" && window.AOGHandoff && AOGHandoff.add){
+    try{
+      const r=await AOGHandoff.add(AOGHandoff.INBOX, {from:"waves", n:1, name:{en:"Oscilloscope · "+name, es:"Osciloscopio · "+name}, sec:Math.round((REC.take.dur||0)*1000)/1000, bpm:0, at:Date.now(), take:true, wav:blob});
+      await AOGHandoff.put("padstake", {id:r.id, from:"waves", at:Date.now()});
+      location.href="/drum-machine"; return;
+    }catch(e){}
+  }
   await window.aogHandoffPut({ name:name, blob:blob, at:Date.now() });
-  location.href = where==="toDrums" ? "/music-drums.html?take=1" : "/music-decks.html?take=1";
+  location.href = "/music-decks.html?take=1";
 }
 function hear(){
   try{

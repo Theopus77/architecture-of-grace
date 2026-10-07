@@ -409,6 +409,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <button type="button" class="pbtn send" id="sendPadsBtn"></button>
           <button type="button" class="pbtn send" id="padsBtn"></button>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
@@ -538,9 +539,10 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  padsBtn:{en:"Send chords to the classic drum machine",es:"Enviar acordes a la caja de ritmos clásica"},   /* AOG-CHORD-PADS-V1 */
+  sendPadsBtn:{en:"Send to the Drum Machine",es:"Enviar a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn:{en:"Send chords to the Drum Machine",es:"Enviar acordes a la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
-  padsSent:{en:"Sent. On the classic drum machine, press Put them on pads 3 to 8.",es:"Enviado. En la caja de ritmos clásica, pulsa Ponerlos en los pads 3 a 8."}, drumsOld:{en:"The classic drum machine",es:"La caja de ritmos clásica"},
+  padsSent:{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
   credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. All three are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. Las tres colecciones son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
@@ -1371,8 +1373,8 @@ function wavBlob(L, R, sr){
     v.setInt16(o,l<0?l*0x8000:l*0x7fff,true); v.setInt16(o+2,r<0?r*0x8000:r*0x7fff,true); o+=4; }
   return new Blob([ab],{type:"audio/wav"});
 }
-async function bounce(){
-  const line=document.getElementById("sendLine"), btn=document.getElementById("sendBtn");
+async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole recording to the Drum Machine */
+  const toPads=dest==="pads", line=document.getElementById("sendLine"), btn=document.getElementById(toPads?"sendPadsBtn":"sendBtn");
   if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
   btn.disabled=true; line.textContent=t("sending");
   try{
@@ -1397,6 +1399,12 @@ async function bounce(){
     const buf=await oc.startRendering();
     const blob=wavBlob(buf.getChannelData(0), buf.getChannelData(1), sr);
     const name=(S.lang==="es"?"Banda":"Band")+" · "+soundName(S.sound)+" · "+Math.round(bpm)+" BPM · "+bars+" "+t("bars");
+    if(toPads){
+      const r=await AOGHandoff.add(AOGHandoff.INBOX, {from:"band", n:0, name:{en:name, es:name}, sec:Math.round(buf.duration*1000)/1000, bpm:bpm, at:Date.now(), take:true, wav:blob});
+      await AOGHandoff.put("padstake", {id:r.id, from:"band", at:Date.now()});
+      line.innerHTML=t("sentPads")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
+      btn.disabled=false; return;
+    }
     await AOGHandoff.put("bandbench", {name:name, bpm:bpm, bars:bars, at:Date.now(), wav:blob});
     if(S.sound==="mariachi") LES.mark("mariDecks");   /* AOG-LESSONS-V1 */
     line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`;
@@ -1406,23 +1414,14 @@ async function bounce(){
 /* AOG-CHORD-PADS-V1 — the six chords of the key, each a short hit made the way a pad plays it, for the drum machine's
    pads 3 to 8; made at its own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch */
 function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(c.q==="min"?"m":""); }
+/* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The Drum Machine's
+   chords bank (the bass: its notes bank) takes this instrument, key and mood; it makes the chords itself. */
 async function sendPads(){
   const line=$("padsLine"), btn=$("padsBtn");
-  btn.disabled=true; line.textContent=t("padsSending");
+  btn.disabled=true;
   try{
-    await loadSound(S.sound, paintLoad);
-    const SR=26040, LEN=1.4, OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, out=[];
-    for(const c of pads()){
-      const oc=new OC(1, Math.ceil(LEN*SR), SR), ch=makeChain(oc);
-      ch.master.gain.value=volGain(0.8); setSendLevel(ch, S.sound); setEra(ch, 0, 0);
-      chordParts(c, voicing(c, null)).filter(p=>!p.dup).forEach(p=>{ const vc=makeVoice(oc, ch, p.inst, p.m, 0.74*(p.bass?0.85:1), 0.004, "sus"); if(vc) vc.stop(LEN-0.3, 0.1); });
-      const d=(await oc.startRendering()).getChannelData(0);
-      let pk=0; for(let i=0;i<d.length;i++) pk=Math.max(pk, Math.abs(d[i]));
-      const g=pk>0?0.8/pk:1; for(let i=0;i<d.length;i++) d[i]*=g;
-      out.push({en:padLabel(c,false), es:padLabel(c,true), pcm:d});
-    }
-    await AOGHandoff.put("chordpads", {from:"band", name:soundName(S.sound), at:Date.now(), pads:out});
-    line.innerHTML=t("padsSent")+` <a href="music-drums.html">${t("drumsOld")}</a>`;
+    await AOGHandoff.put("padschords", {from:"band", bank:"chords", inst:"b:"+S.sound, key:S.key, minor:!!S.minor, at:Date.now()});
+    line.innerHTML=t("padsSent")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
   }catch(e){ line.textContent=t("sendFail"); }
   btn.disabled=false;
 }
@@ -1450,7 +1449,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher");
-  $("sendBtn").textContent=t("send"); $("padsBtn").textContent=t("padsBtn"); REC.paint();
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
@@ -1988,7 +1987,7 @@ function bind(){
   $("era").oninput=()=>{ S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
-  $("sendBtn").onclick=bounce;
+  $("sendBtn").onclick=()=>bounce(); $("sendPadsBtn").onclick=()=>bounce("pads");
   $("padsBtn").onclick=sendPads;
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";

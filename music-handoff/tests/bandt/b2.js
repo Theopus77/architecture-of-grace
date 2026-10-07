@@ -47,9 +47,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       /* 4. chords for the drum machine */
       await p.click("#padsBtn");
       await p.waitForFunction(()=>/Sent|did not/.test(document.getElementById("padsLine").textContent), null, {timeout:60000});
-      const cp=await p.evaluate(async()=>{ const x=await AOGHandoff.get("chordpads"); if(!x) return null;
-        return {from:x.from, name:x.name, n:x.pads.length, en:x.pads.map(q=>q.en).join(" "), es:x.pads.map(q=>q.es).join(" "), len:x.pads.map(q=>q.pcm.length), peaks:x.pads.map(q=>{ let m=0; for(const v of q.pcm) m=Math.max(m,Math.abs(v)); return +m.toFixed(2); })}; });
-      ok(cp && cp.from==="band" && cp.n===6 && cp.len.every(l=>l===Math.ceil(1.4*26040)) && cp.peaks.every(x=>x===0.8), "six chord pads go to the drum machine, from the band: "+JSON.stringify(cp));
+      const cp=await p.evaluate(async()=>{ const x=await AOGHandoff.get("padschords"); return x && {from:x.from, bank:x.bank, inst:x.inst, key:x.key, minor:x.minor}; });   /* AOG-SEND-TO-PADS-V1 */
+      ok(cp && cp.from==="band" && cp.bank==="chords" && /^b:/.test(cp.inst) && cp.key>=0, "the band's chords go to the Drum Machine: "+JSON.stringify(cp));
       await p.selectOption("#soundSel","trumpet"); await p.waitForFunction(()=>soundReady("trumpet"), null, {timeout:60000});
     }
     /* 5. the computer keys */
