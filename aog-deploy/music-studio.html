@@ -166,6 +166,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-cc .st-btn{justify-self:start}
 .st-steps{display:grid;gap:.9rem 1.2rem;margin-top:.9rem;grid-template-columns:minmax(0,1fr)}
 .st-val{display:block;font:800 1rem/1.25 var(--sans);color:#f1ebdf;margin:0 0 .4rem;font-variant-numeric:tabular-nums}
+.st-vf{display:block;margin:0 0 .4rem}
+.st-vf select{width:100%}
 .st-sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .st-sg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .st-sg .st-btn{padding:0 .25rem;font-size:.9rem;min-width:0;min-height:46px}
@@ -361,7 +363,7 @@ const COLORS=["#f0c26e","#9fd4a0","#f4a37a","#7fc7f5","#e6a3d8","#c9b8f0","#a8e0
 const SHELVES=[
   {key:"padbench",   from:{en:"From the drum machine",es:"De la caja de ritmos"}, sh:{en:"Drum machine",es:"Caja de ritmos"}, tk:{en:"Drum machine take",es:"Toma de la caja de ritmos"}},   /* AOG-PADS-STUDIO-V1; AOG-DRUM-MACHINE-V2: the Beat Lab is The Drum Machine */
   {key:"drumbench",  from:{en:"From the classic drum machine",es:"De la caja de ritmos clásica"}, sh:{en:"Drums",es:"Ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
-  {key:"drumtake",   from:{en:"A take from the classic drum machine",es:"Una toma de la caja de ritmos clásica"}, sh:{en:"Drum take",es:"Toma de ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
+  {key:"drumtake",   from:{en:"A take from the drums",es:"Una toma de la batería"}, sh:{en:"Drum take",es:"Toma de ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
   {key:"keysbench",  from:{en:"From the piano",es:"Del piano"}, sh:{en:"Piano",es:"Piano"}, tk:{en:"Piano take",es:"Toma de piano"}},
   {key:"guitarbench",from:{en:"From the guitar",es:"De la guitarra"}, sh:{en:"Guitar",es:"Guitarra"}, tk:{en:"Guitar take",es:"Toma de guitarra"}},
   {key:"bassbench",  from:{en:"From the bass",es:"Del bajo"}, sh:{en:"Bass",es:"Bajo"}, tk:{en:"Bass take",es:"Toma de bajo"}},
@@ -373,7 +375,7 @@ function shelfOf(k){ return SHELVES.find(s=>s.key===k)||null; }
 /* AOG-STUDIO-INBOX-V1 — the takes sent here (aog-handoff.js, the list "studioinbox"), and the tools they come from */
 const INBOX_KEY=(window.AOGHandoff && AOGHandoff.INBOX) || "studioinbox", INBOX_MAX=(window.AOGHandoff && AOGHandoff.INBOX_MAX) || 16;
 const TOOLS={
-  drums:{from:{en:"From the classic drum machine",es:"De la caja de ritmos clásica"}, take:{en:"Drum take",es:"Toma de ritmos"}},
+  drums:{from:{en:"From the drums",es:"De la batería"}, take:{en:"Drum take",es:"Toma de ritmos"}},   /* the Drum Kit and the classic drum machine both send as "drums" */
   piano:{from:{en:"From the piano",es:"Del piano"}, take:{en:"Piano take",es:"Toma de piano"}},
   guitar:{from:{en:"From the guitar",es:"De la guitarra"}, take:{en:"Guitar take",es:"Toma de guitarra"}},
   bass:{from:{en:"From the bass",es:"Del bajo"}, take:{en:"Bass take",es:"Toma de bajo"}},
@@ -418,7 +420,7 @@ const STR={
   cutStart:{en:"Cut from the start",es:"Recortar el principio"}, cutEnd:{en:"Cut from the end",es:"Recortar el final"},
   cutNone:{en:"Nothing cut",es:"Nada recortado"},
   mBar:{en:"−1 bar",es:"−1 compás"}, mBeat:{en:"−1 beat",es:"−1 pulso"}, pBeat:{en:"+1 beat",es:"+1 pulso"}, pBar:{en:"+1 bar",es:"+1 compás"},
-  plays:{en:"Plays",es:"Suena"}, times1:{en:"1 time",es:"1 vez"}, timesN:{en:"{n} times",es:"{n} veces"},
+  plays:{en:"Plays",es:"Suena"}, untilBar:{en:"to bar {b}",es:"hasta el compás {b}"}, times1:{en:"1 time",es:"1 vez"}, timesN:{en:"{n} times",es:"{n} veces"},
   fewer:{en:"− Fewer",es:"− Menos"}, more:{en:"More +",es:"Más +"},
   bpmDiff:{en:"This recording is at {a} beats a minute and your song is at {b}, so they may not line up.",es:"Esta grabación va a {a} pulsos por minuto y tu canción a {b}, así que puede que no coincidan."},
   mixerH:{en:"Mixer",es:"Mezcladora"},
@@ -1559,6 +1561,25 @@ function spdWords(c, pct){
 function fadeOpts(v){
   return FADES.map(b=>`<option value="${b}"${b===v?" selected":""}>${esc(b===0 ? t("fadeNone") : b<4 ? t("beat1") : b===4 ? t("bar1") : t("barsN",{n:b/4}))}</option>`).join("");
 }
+/* AOG-STUDIO-LONG-V1 (2026-10-07) — Jimmy: "How do I make it go more than 8 bars? What if I want to make a 2, 3, 4 minute
+   song?" A song could already be 128 bars (5 minutes at 90 a minute), but a piece moved one bar a tap and played at most 16
+   times. Now Starts at bar is a menu of every bar, and Plays is a menu that says where each number of times ends and how
+   long the song is then: a 4-minute song is two picks. A piece may play as many times as fit before bar 128. */
+function maxN(c, p){ const len=(p.b-p.a)*ratio(c); return Math.max(1, Math.floor((MAX_BARS*4-p.at)/Math.max(0.25, len)+1e-6)); }
+function atOpts(p){
+  let h=""; const onBar=Math.abs(p.at/4-Math.round(p.at/4))<1e-6;
+  if(!onBar) h+=`<option value="" selected>${esc(posWords(p.at))}</option>`;
+  for(let b=1;b<=MAX_BARS;b++) h+=`<option value="${(b-1)*4}"${onBar && Math.round(p.at/4)===b-1?" selected":""}>${esc(t("barN",{n:b}))}</option>`;
+  return h;
+}
+function untilOpts(c, p){
+  const len=(p.b-p.a)*ratio(c), top=maxN(c,p); let h="";
+  for(let k=1;k<=top;k++){
+    const end=p.at+k*len, bar=Math.ceil(end/4-1e-6)+1, sec=end*songBeat();
+    h+=`<option value="${k}"${k===p.n?" selected":""}>${esc((k===1?t("times1"):t("timesN",{n:k}))+" · "+t("untilBar",{b:bar})+" · "+clockLen(sec))}</option>`;
+  }
+  return h;
+}
 function paintTrack(){
   const sel=$("trackSel"), i=SONG.sel;
   sel.innerHTML=SONG.tracks.map((x,k)=>`<option value="${k}"${k===i?" selected":""}>${esc(t("trackN",{n:k+1})+" · "+trackName(k))}</option>`).join("");
@@ -1570,7 +1591,6 @@ function paintTrack(){
   const meta=(inb ? [TOOLS[c.from] ? L(TOOLS[c.from].from) : "", clockLen(c.sec)] : [bareName(c.name), clockLen(c.sec)]).filter(Boolean).join(" · ");
   const head=inb ? esc(trackName(i)) : esc(s ? L(s.from) : "")+(c.take ? " · "+esc(t("aTake")) : "");
   const P=pcs(c), k=pSel(c), p=P[k], many=P.length>1, bpb=c.bpb||4, full=fullBeats(c);
-  const lenTxt=clockLen(p.n*pLen(c,p));
   const diff=c.bpm>0 && Math.abs(effBpm(c)-songBpm())>0.5, isTempo=tempoTrack()===i;
   const cuts=cutPlaces(c, p), mid=cuts.length ? cuts[Math.floor((cuts.length-1)/2)] : null;
   const pct=Math.round(spd(c)*100), keep=c.keep!==false;
@@ -1584,10 +1604,10 @@ function paintTrack(){
     ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
     <div class="st-wave"><canvas id="waveC" role="img" aria-label="${esc(t("waveAria",{n:i+1}))}"></canvas><p class="st-line">${esc(t("waveHint"))}</p></div>
     <div class="st-steps">
-      <div class="st-stp"><span class="st-lab">${esc(t("startsAt"))}</span><span class="st-val">${esc(posWords(p.at))}</span>
+      <div class="st-stp"><span class="st-lab" id="atLab">${esc(t("startsAt"))}</span><label class="st-field st-vf"><select id="atSel" aria-labelledby="atLab">${atOpts(p)}</select></label>
         <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<0.5?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div></div>
-      <div class="st-stp"><span class="st-lab">${esc(t("plays"))}</span><span class="st-val">${esc(p.n===1 ? t("times1") : t("timesN",{n:p.n}))} · ${esc(lenTxt)}</span>
-        <div class="st-sg two"><button type="button" class="st-btn" data-act="loops-" aria-label="${esc(t("plays")+": "+t("fewer"))}"${p.n<=1?" disabled":""}>${esc(t("fewer"))}</button><button type="button" class="st-btn" data-act="loops+" aria-label="${esc(t("plays")+": "+t("more"))}"${p.n>=16?" disabled":""}>${esc(t("more"))}</button></div></div>
+      <div class="st-stp"><span class="st-lab" id="untilLab">${esc(t("plays"))}</span><label class="st-field st-vf"><select id="untilSel" aria-labelledby="untilLab">${untilOpts(c,p)}</select></label>
+        <div class="st-sg two"><button type="button" class="st-btn" data-act="loops-" aria-label="${esc(t("plays")+": "+t("fewer"))}"${p.n<=1?" disabled":""}>${esc(t("fewer"))}</button><button type="button" class="st-btn" data-act="loops+" aria-label="${esc(t("plays")+": "+t("more"))}"${p.n>=maxN(c,p)?" disabled":""}>${esc(t("more"))}</button></div></div>
       ${trimHtml("in", t("cutStart"), Math.round(p.a), p.b-p.a>1+1e-6, bpb)}
       ${trimHtml("out", t("cutEnd"), Math.round(full-p.b), p.b-p.a>1+1e-6, bpb)}
     </div>
@@ -1656,7 +1676,9 @@ function clipAct(act){
   if(act==="start-") p.at=Math.max(0, p.at-4);
   else if(act==="start+") p.at=Math.min((MAX_BARS-1)*4, p.at+4);
   else if(act==="loops-") p.n=Math.max(1, p.n-1);
-  else if(act==="loops+") p.n=Math.min(16, p.n+1);
+  else if(act==="loops+") p.n=Math.min(maxN(c,p), p.n+1);
+  else if(/^at:\d+$/.test(act)) p.at=Math.min((MAX_BARS-1)*4, Math.max(0, +act.slice(3)));      /* AOG-STUDIO-LONG-V1 */
+  else if(/^n:\d+$/.test(act)) p.n=Math.max(1, Math.min(maxN(c,p), +act.slice(2)));
   else if(act==="cut"){
     const el=$("cutSel"), kk=el ? +el.value : NaN;
     if(!(kk>p.a+0.5 && kk<p.b-0.5)){ UNDO.pop(); return; }
@@ -1833,6 +1855,8 @@ function bind(){
   $("clipBox").addEventListener("change", e=>{ const el=e.target;
     if(el.id==="spdR") speedChange(el);
     else if(el.id==="fiSel" || el.id==="foSel") fadeChange(el);
+    else if(el.id==="atSel"){ if(el.value!=="") clipAct("at:"+el.value); }
+    else if(el.id==="untilSel") clipAct("n:"+el.value);
     else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; LES.mark("piece1"); S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
   $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
   /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
