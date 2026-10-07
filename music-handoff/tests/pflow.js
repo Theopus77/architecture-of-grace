@@ -12,6 +12,9 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await d.evaluate("bounceToDecks()"); await d.waitForTimeout(3000);
  const take=await d.evaluate("AOGHandoff.get('drumbench').then(x=>x&&({bpm:x.bpm,bars:x.bars,passSec:x.passSec,loops:x.loops,offset:x.offset,swing:x.swing,size:x.wav.size}))");
  ok(take && take.passSec>0 && take.loops>0 && take.offset===0.03 && take.swing===0.58, "the drum machine's bounce now says its pass length, passes, offset and swing: "+JSON.stringify(take));
+ // AOG-SEND-TO-PADS-V1 (2026-10-07): the classic machine is retired; the Drum Machine's own bounce lands on "padbench".
+ // The same beat goes there (the shelf the turntables and the instruments read), and the old shelf is emptied.
+ await d.evaluate("AOGHandoff.get('drumbench').then(x=>AOGHandoff.put('padbench', Object.assign({}, x, {at:Date.now()}))).then(()=>AOGHandoff.put('drumbench', null))");
  // 2 · the piano finds it
  const p=await c.newPage(); p.on("pageerror",e=>errs.push("piano: "+e.message));
  await p.addInitScript(()=>{ window.AOG_FEEL_OFF=true; });   /* AOG-FEEL-V1: the grid itself (play/feel.js checks the feel) */ await p.goto("http://localhost:9908/music-piano.html"); await p.waitForFunction(()=>SETS.grand.ready, null, {timeout:30000}); await p.waitForTimeout(500);
@@ -42,7 +45,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  const t=await c.newPage(); t.on("pageerror",e=>errs.push("decks: "+e.message));
  await t.goto("http://localhost:9908/music-decks.html"); await t.waitForTimeout(1500);
  const rows=await t.locator("#bench .take b").allTextContents();
- ok(rows.join("|")==="From the classic drum machine|From the piano", "the turntables list both: "+rows.join(" + "));
+ ok(rows.join("|")==="From the drum machine|From the piano", "the turntables list both: "+rows.join(" + "));
  ok(await t.isVisible('#navPiano'), "the turntables link to the piano");
  await t.click('[data-keys="A"]'); await t.waitForTimeout(1500);
  ok(errs.length===0, "loading the piano onto deck A works, and no errors on any page "+errs.join(" | "));

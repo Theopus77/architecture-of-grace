@@ -360,8 +360,6 @@ const COLORS=["#f0c26e","#9fd4a0","#f4a37a","#7fc7f5","#e6a3d8","#c9b8f0","#a8e0
 /* the shelves the music tools fill (aog-handoff.js); each holds the newest {name, bpm, bars, at, wav, take?} */
 const SHELVES=[
   {key:"padbench",   from:{en:"From the drum machine",es:"De la caja de ritmos"}, sh:{en:"Drum machine",es:"Caja de ritmos"}, tk:{en:"Drum machine take",es:"Toma de la caja de ritmos"}},   /* AOG-PADS-STUDIO-V1; AOG-DRUM-MACHINE-V2: the Beat Lab is The Drum Machine */
-  {key:"drumbench",  from:{en:"From the classic drum machine",es:"De la caja de ritmos clásica"}, sh:{en:"Drums",es:"Ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
-  {key:"drumtake",   from:{en:"A take from the classic drum machine",es:"Una toma de la caja de ritmos clásica"}, sh:{en:"Drum take",es:"Toma de ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
   {key:"keysbench",  from:{en:"From the piano",es:"Del piano"}, sh:{en:"Piano",es:"Piano"}, tk:{en:"Piano take",es:"Toma de piano"}},
   {key:"guitarbench",from:{en:"From the guitar",es:"De la guitarra"}, sh:{en:"Guitar",es:"Guitarra"}, tk:{en:"Guitar take",es:"Toma de guitarra"}},
   {key:"bassbench",  from:{en:"From the bass",es:"Del bajo"}, sh:{en:"Bass",es:"Bajo"}, tk:{en:"Bass take",es:"Toma de bajo"}},
@@ -373,12 +371,13 @@ function shelfOf(k){ return SHELVES.find(s=>s.key===k)||null; }
 /* AOG-STUDIO-INBOX-V1 — the takes sent here (aog-handoff.js, the list "studioinbox"), and the tools they come from */
 const INBOX_KEY=(window.AOGHandoff && AOGHandoff.INBOX) || "studioinbox", INBOX_MAX=(window.AOGHandoff && AOGHandoff.INBOX_MAX) || 16;
 const TOOLS={
-  drums:{from:{en:"From the classic drum machine",es:"De la caja de ritmos clásica"}, take:{en:"Drum take",es:"Toma de ritmos"}},
+  drums:{from:{en:"From the drum machine",es:"De la caja de ritmos"}, take:{en:"Drum take",es:"Toma de ritmos"}},
   piano:{from:{en:"From the piano",es:"Del piano"}, take:{en:"Piano take",es:"Toma de piano"}},
   guitar:{from:{en:"From the guitar",es:"De la guitarra"}, take:{en:"Guitar take",es:"Toma de guitarra"}},
   bass:{from:{en:"From the bass",es:"Del bajo"}, take:{en:"Bass take",es:"Toma de bajo"}},
   band:{from:{en:"From the band",es:"De la banda"}, take:{en:"Band take",es:"Toma de la banda"}},
   decks:{from:{en:"From the turntables",es:"De los tocadiscos"}, take:{en:"Turntables take",es:"Toma de los tocadiscos"}},
+  waves:{from:{en:"From the oscilloscope",es:"Del osciloscopio"}, take:{en:"Oscilloscope take",es:"Toma del osciloscopio"}},   /* AOG-SEND-TO-PADS-V1 */
   pads:{from:{en:"From the drum machine",es:"De la caja de ritmos"}, take:{en:"Drum machine take",es:"Toma de la caja de ritmos"}}   /* AOG-PADS-V1 */
 };
 

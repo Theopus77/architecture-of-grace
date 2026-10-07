@@ -82,10 +82,13 @@ call moving forward." On the Educator Dashboard and every page after it:
   joins LABS there and loads the script. The order makes a song: Drum Machine,
   Drum Kit, Piano, Guitar, Bass, Band, Turntables, Mixing Desk. Menus that list
   the music labs use the same order.
-- The Drum Machine is `music-pads.html` (/drum-machine; it was the Beat Lab).
-  The first drum machine, `music-drums.html`, is retired, not deleted (Jimmy,
-  2026-10-05): it stays at /drums and /classic-drum-machine for the lessons,
-  units and courses that use it, and is called the classic drum machine.
+- The Drum Machine is `music-pads.html` (/drum-machine; it was the Beat Lab). It is
+  where it is at (Jimmy, 2026-10-07: "The old machine is obsolete. THE DRUM MACHINE IS
+  WHERE IT IS AT!!!"). The first drum machine, `music-drums.html`, is retired: /drums,
+  /classic-drum-machine, /music-drums.html and its guide and lessons redirect to the
+  Drum Machine (`_redirects`). Every music tool sends to the Drum Machine: chords to its
+  chords bank, the bass's low notes to its notes bank, takes and whole recordings to its
+  chops bank (`padschords`, `padstake`). Never link or send to the classic machine again.
 - Say a thing once. One short line per screen, not the same description in
   three places.
 

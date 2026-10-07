@@ -46,6 +46,16 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   await bd.evaluate(()=>{ S.key=5; S.minor=false; S.sound="soprano"; document.getElementById("padsBtn").click(); }); await bd.waitForTimeout(1200);
   s=await st();
   ok(s.bank===1 && s.B.inst==="b:soprano" && s.B.key===5 && /band/.test(s.line), "the band's chords go to bank B as the soprano sax: "+JSON.stringify(s.B));
+  /* 3b. the whole recording, from the piano's Send to the Drum Machine (next to Send to the turntables) */
+  await pi.evaluate(()=>{ S.prog=[{off:0,q:"maj"},{off:7,q:"maj"},{off:9,q:"min"},{off:5,q:"maj"}]; S.sound="grand"; });
+  const pb=await pi.locator("#sendPadsBtn").textContent();
+  await pi.evaluate(()=>document.getElementById("sendPadsBtn").click());
+  await pi.waitForFunction(()=>/bank D|did not|No se/.test(document.getElementById("sendLine").textContent), null, {timeout:120000});
+  const pline=await pi.locator("#sendLine").innerText(); await pads.waitForTimeout(1500);
+  s=await st();
+  const rec=await pads.evaluate(async()=>{ const R=recInfo(S.banks[3].rec); const buf=await recBuf(S.banks[3].rec); return {R:R&&{bpm:R.bpm,bars:R.bars,kind:R.kind}, chops:chopsOf(S.banks[3], buf).length, sec:+buf.duration.toFixed(1)}; });
+  ok(pb==="Send to the Drum Machine" && /bank D/.test(pline) && s.bank===3 && rec.R && rec.R.kind==="take" && rec.R.bpm>0 && rec.R.bars>=4 && rec.chops===16,
+    `the piano's whole recording: "${pb}" → bank D, chopped on the beat: `+JSON.stringify({pline, rec}));
   /* 4. once only; Spanish; the pads play */
   await pads.reload(); await pads.waitForTimeout(2000);
   s=await st(); ok(s.line==="", "a reload does not send them again: "+JSON.stringify(s.line));
