@@ -39,7 +39,8 @@ for l in open("_redirects", encoding="utf-8"):
 def title(f):
     try: t = re.search(r"<title>([^<]*)</title>", open(f, encoding="utf-8").read())
     except Exception: return None
-    return re.sub(r"\s*[—|–·-]\s*Architecture of Grace.*$", "", t.group(1)).strip() if t else None
+    import html as _h   # a title written with entities (&mdash;) is shown as text
+    return re.sub(r"\s*[—|–·-]\s*Architecture of Grace.*$", "", _h.unescape(t.group(1))).strip() if t else None
 def resolve(h):
     h = h.split("#")[0].split("?")[0]
     if not h or h.startswith(("http", "mailto", "tel", "javascript")): return None
@@ -77,7 +78,7 @@ sel += sorted(x for x in G.glob("w[0-9]*-*.html") if not re.match(r"w(12|18|36|1
 group("sel", "SEL lessons and worksheets", "Lecciones y hojas SEL", sel)
 group("nov", "Novels", "Novelas", ["room-12-novel.html","room-18-novel.html","room-36-novel.html","room-104-novel.html","room-207-novel.html","the-dwelling.html"] + sorted(G.glob("n[0-9]*-*.html")))
 group("bench", "Bench tools and their lessons", "Herramientas y sus lecciones",
-      ["science-microscope.html","science-telescope.html","science-waves.html","waves-lessons.html","music-drums.html","drums-lessons.html","music-decks.html","decks-lessons.html","music-piano.html","music-guitar.html","music-bass.html","music-band.html","piano-lessons.html","mastering-drums.html","mastering-turntables.html","mastering-piano.html"])
+      ["science-microscope.html","science-telescope.html","science-waves.html","waves-lessons.html","music-pads.html","beat-lab-lessons.html","music-decks.html","decks-lessons.html","music-piano.html","music-guitar.html","music-bass.html","music-band.html","piano-lessons.html","mastering-drums.html","mastering-turntables.html","mastering-piano.html"])
 p = "dashboard.html"; s = open(p, encoding="utf-8").read()
 m = re.search(r'const CAT=(\{.*?\});\n', s, re.S); cat = json.loads(m.group(1)); cat["units"] = units
 s = s[:m.start(1)] + json.dumps(cat, ensure_ascii=False) + s[m.end(1):]
