@@ -73,5 +73,32 @@
     var last = lang();
     try { new MutationObserver(function () { if (lang() !== last) { last = lang(); paint(nav); } }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
   }
+  /* AOG-STUDIO-SHELL-V1 (2026-10-09, STUDIO-HANDOFF §04–§05) — inside the Studio (/the-studio holds this lab in its
+     frame) the Studio draws the doors and the site bar, so the lab hides its own; a link to another lab changes the room
+     in the Studio instead of opening a page inside the page, and any other page opens over the Studio. A lab opened on
+     its own address is untouched. */
+  var shell = null;
+  try { if (window.parent && window.parent !== window && window.parent.AOGStudioShell) shell = window.parent.AOGStudioShell; } catch (e) { shell = null; }
+  if (shell) {
+    D.documentElement.classList.add("in-studio");
+    var ss = D.createElement("style"); ss.id = "in-studio-css";
+    /* on a phone the Studio's doors already name the room, so the room's own banner steps aside and the instrument
+       gets the screen; a bigger screen keeps the banner */
+    ss.textContent = "html.in-studio .labdoors,html.in-studio .aogtop,html.in-studio .aogtop-spacer{display:none!important}" +
+      "@media (max-width:699px){html.in-studio [data-aog-hero]{display:none!important}}";
+    (D.head || D.documentElement).appendChild(ss);
+    D.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (!a || e.defaultPrevented || a.hasAttribute("download") || (a.target && a.target !== "_self") || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+      var u; try { u = new URL(a.getAttribute("href"), location.href); } catch (err) { return; }
+      if (u.origin !== location.origin || !/^https?:$/.test(u.protocol)) return;
+      if (u.pathname === location.pathname) return;   /* a place on this page */
+      var f = (u.pathname.split("/").pop() || "").replace(/\.html$/, "");
+      e.preventDefault();
+      for (var i = 0; i < LABS.length; i++) if (LABS[i].m.test(f)) { shell.go(LABS[i].id); return; }
+      window.top.location.href = u.href;
+    });
+    try { shell.arrived(here()); } catch (e) {}
+  }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
 })();
