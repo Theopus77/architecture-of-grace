@@ -239,10 +239,10 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
 }
 /* AOG-DJ-RECORD-ART-V1 (2026-10-09) — Jimmy: "On the vinyl pad do something with the name or a logo or the company!!!
    … It could be colored vinyl EXCiting". A record on a deck is pressed in colour: the colour of its sleeve in the
-   crate, in one of three pressings (see-through colour, splatter, swirl). Its label prints the record company
+   crate, in one of two pressings (see-through colour or swirl; the splatter spots went, Jimmy 2026-10-09). Its label prints the record company
    (Grace Records, this site's own), the record's name and the deck's side. The label turns with the record, so
    the words go round when it plays and stand upright when it is put on. An empty deck keeps the black record. */
-.vinyl.v-solid,.vinyl.v-splat,.vinyl.v-swirl{
+.vinyl.v-solid,.vinyl.v-swirl{
   --c1:hsl(var(--vh),78%,52%);--c2:hsl(var(--vh),72%,34%);--c3:hsl(calc(var(--vh) + 150),80%,62%);
   background:
     radial-gradient(circle closest-side, transparent 0 41%, rgba(255,255,255,.14) 41.5% 43.5%, transparent 44%),
@@ -253,13 +253,6 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
     var(--press);
 }
 .vinyl.v-solid{--press:radial-gradient(circle closest-side, var(--c1), var(--c2) 100%)}
-.vinyl.v-splat{--press:
-  radial-gradient(circle at 28% 24%, #f6efdf 0 3.2%, transparent 3.6%),radial-gradient(circle at 71% 30%, #111 0 2.4%, transparent 2.8%),
-  radial-gradient(circle at 80% 62%, var(--c3) 0 4.2%, transparent 4.6%),radial-gradient(circle at 35% 78%, #f6efdf 0 2.2%, transparent 2.6%),
-  radial-gradient(circle at 18% 52%, var(--c3) 0 3%, transparent 3.4%),radial-gradient(circle at 60% 85%, #111 0 3.4%, transparent 3.8%),
-  radial-gradient(circle at 52% 14%, var(--c3) 0 2%, transparent 2.4%),radial-gradient(circle at 88% 44%, #f6efdf 0 1.8%, transparent 2.2%),
-  radial-gradient(circle at 24% 36%, #111 0 1.6%, transparent 2%),radial-gradient(circle at 74% 78%, #f6efdf 0 1.6%, transparent 2%),
-  radial-gradient(circle closest-side, var(--c1), var(--c2) 100%)}
 .vinyl.v-swirl{--press:conic-gradient(from 20deg, var(--c1), var(--c3) 14%, var(--c2) 30%, var(--c1) 46%, var(--c3) 60%, var(--c2) 78%, var(--c1))}
 .label.printed{background:#f6efdf;box-shadow:inset 0 0 0 3px hsl(var(--vh),70%,40%),inset 0 0 0 5px #f6efdf,inset 0 0 0 6px hsl(var(--vh),60%,30%);
   container-type:inline-size;overflow:hidden}
@@ -2451,14 +2444,14 @@ function stripHTML(d){
 function recLook(d){
   if(!d.buf) return null;
   const m = d.made && MADE.find(x=>x.id===d.made), h = m && m.hue != null ? m.hue : hueOf(d.name || "");
-  return { h, style:["solid","splat","swirl"][h % 3] };
+  return { h, style:["solid","swirl"][Math.floor(h / 15) % 2] };
 }
 function paintRecord(d){
   const el = document.getElementById("deck"+d.id); if(!el) return;
   const v = el.querySelector(".vinyl"), lab = el.querySelector(".label"); if(!v || !lab) return;
   const L = recLook(d), key = L ? [L.h, L.style, d.name, S.lang].join("|") : "";
   if(v._rk === key) return; v._rk = key;
-  v.classList.remove("v-solid","v-splat","v-swirl"); lab.classList.toggle("printed", !!L);
+  v.classList.remove("v-solid","v-swirl"); lab.classList.toggle("printed", !!L);
   if(!L){ v.style.removeProperty("--vh"); lab.style.removeProperty("--vh"); lab.innerHTML = ""; return; }
   v.classList.add("v-"+L.style); v.style.setProperty("--vh", L.h); lab.style.setProperty("--vh", L.h);
   lab.innerHTML = `<div class="rl" aria-hidden="true"><span class="rl-logo"><i>G</i><span>GRACE<small>RECORDS</small></span></span>
