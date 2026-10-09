@@ -1,5 +1,5 @@
 /* AOG-STUDIO-CUT-V2 + AOG-DESK-SLIP-V2 + AOG-DESK-REST-V1 — Jimmy: "The lesson sheet needs to move and The cutting needs
-   to be better and the whole studio has not reached the ceiling!!!" A tap on the big wave puts ✂ Cut here on the wave and
+   to be better and the whole studio has not reached the ceiling!!!" Two VU meters over the mixer and walnut cheeks on the console (AOG-DESK-VU-V1, AOG-DESK-WOOD-V1). A tap on the big wave puts ✂ Cut here on the wave and
    pressing it cuts there; a tap on another piece picks that piece; ▶ Hear this piece plays the piece and stops; the lesson
    is a note beside play (at the foot of the console on a phone); the menus are dark with gold type. Spanish; an iPhone and
    an iPad: readable, calm, nothing sideways. No page errors. Port 9259. */
@@ -78,6 +78,21 @@ const pieces = p => p.evaluate(() => __aogStudio.pcs(__aogStudio.SONG.tracks[0].
   await p.click('#clipBox [data-act="hear"]'); await p.waitForTimeout(200);
   const h2 = await p.evaluate(() => { const b = document.querySelector('#clipBox [data-act="hear"]'); return [b.textContent, b.getAttribute("aria-pressed")]; });
   ok(/Hear this piece/.test(h0) && h1[1] === "true" && h2[1] === "false" && /Hear this piece/.test(h2[0]), `▶ Hear this piece plays and stops: ${h0} → ${h1.join(" ")} → ${h2.join(" ")}`);
+
+  /* AOG-DESK-VU-V1: two VU meters over the mixer; the needles swing while the song plays and rest when it stops */
+  const vuShot = () => p.evaluate(() => { const a = document.getElementById("vuL"), b = document.getElementById("vuR"); return a.toDataURL().length + ":" + a.toDataURL().slice(-200) + "|" + b.toDataURL().slice(-200); });
+  const vuBox = await p.evaluate(() => { const v = document.getElementById("vuBridge"), r = v.getBoundingClientRect(), f = document.getElementById("chFaders").getBoundingClientRect();
+    return { w: Math.round(r.width), h: Math.round(r.height), over: r.bottom <= f.top + 2 && r.left >= f.left - 2, aria: v.getAttribute("aria-label") }; });
+  ok(vuBox.w > 200 && vuBox.h > 50 && vuBox.over && vuBox.aria === "How loud the song is", "the meter bridge sits over the mixer: " + JSON.stringify(vuBox));
+  const rest = await vuShot();
+  await p.click("#playBtn"); await p.waitForTimeout(1500);
+  const live = await vuShot();
+  await p.click("#playBtn"); await p.waitForTimeout(400);
+  const back = await vuShot();
+  ok(live !== rest && back === rest, `the needles swing while the song plays (${live !== rest}) and rest when it stops (${back === rest})`);
+  /* walnut cheeks on both sides of the console */
+  const wood = await p.evaluate(() => { const c = document.querySelector(".st-cp"); return [getComputedStyle(c, "::before").width, getComputedStyle(c, "::after").width, getComputedStyle(c, "::before").backgroundColor].join(" "); });
+  ok(/^16px 16px rgb\(74, 44, 23\)$/.test(wood), "walnut cheeks on the console: " + wood);
 
   /* Spanish */
   await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); }); await p.waitForTimeout(500);

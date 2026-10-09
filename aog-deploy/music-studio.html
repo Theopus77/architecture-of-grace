@@ -615,6 +615,33 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-rest .st-btn:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 0 #08090a}
 .st-rest .st-go,.st-rest .st-btn[aria-pressed="true"]{background-color:#e6b65a;background-image:radial-gradient(120% 140% at 35% 20%,#fbe6b0 0%,#e2b85e 45%,#b8862f 100%);color:#22170a;border-color:#5e4512}
 @media (prefers-reduced-motion:reduce){ .st-rest .st-btn:active{transform:none} }
+/* AOG-DESK-VU-V1: the meter bridge over the mixer (beside the channel strip on a wide screen) */
+.st-vub{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px 4px;min-width:0}
+.st-vu{display:block;width:100%;height:auto;aspect-ratio:2/1.08;max-height:118px;border-radius:7px;box-shadow:0 2px 0 rgba(255,255,255,.05),0 3px 8px rgba(0,0,0,.6)}
+@media (min-width:900px){
+  .st-cons{grid-template-rows:auto 1fr}
+  .st-ch{grid-column:1;grid-row:1 / 3}
+  .st-vub{grid-column:2;grid-row:1;border-left:1px solid #050506;box-shadow:inset 1px 0 0 rgba(255,255,255,.04);padding:14px 16px 0}
+  .st-fd{grid-column:2;grid-row:2}
+}
+@media (max-width:699px){ .st-vub{padding:10px 8px 2px;gap:8px} }
+/* AOG-DESK-WOOD-V1: walnut end cheeks on the console and the desk below, as on the consoles in Jimmy's drawings */
+.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:hidden}
+.st-chassis::before,.st-chassis::after{content:"";position:absolute;top:0;bottom:0;width:var(--cheek);pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 22px,#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
+    radial-gradient(circle at 50% calc(100% - 22px),#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='400'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .05  0 0 0 0 .02  0 0 0 .55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>"),
+    linear-gradient(90deg,#3a2213 0%,#5c3820 35%,#6a4226 55%,#4a2c17 80%,#2c190c 100%);
+  background-color:#4a2c17;background-size:auto,auto,40px 400px,auto}
+.st-chassis::before{left:0;border-radius:15px 0 0 15px;box-shadow:inset 1px 0 0 rgba(255,214,160,.22),inset -1px 0 0 #050506,inset -3px 0 5px rgba(0,0,0,.45)}
+.st-chassis::after{right:0;border-radius:0 15px 15px 0;box-shadow:inset -1px 0 0 rgba(255,214,160,.18),inset 1px 0 0 #050506,inset 3px 0 5px rgba(0,0,0,.45)}
+.st-cp{padding-left:calc(var(--cheek) + 20px);padding-right:calc(var(--cheek) + 20px)}
+@media (max-width:699px){
+  .st-chassis{--cheek:7px;padding-left:calc(var(--cheek) + 9px);padding-right:calc(var(--cheek) + 9px)}
+  .st-cp{padding-left:calc(var(--cheek) + 10px);padding-right:calc(var(--cheek) + 10px)}
+  .st-chassis::before,.st-chassis::after{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='400'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .05  0 0 0 0 .02  0 0 0 .55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>"),linear-gradient(90deg,#3a2213 0%,#5c3820 35%,#6a4226 55%,#4a2c17 80%,#2c190c 100%);background-size:40px 400px,auto}
+}
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -674,6 +701,8 @@ html.aog-keys .st-cp .st-keys{display:block}
            a paper slip. They drive the mixer below (the same values, the same rules); nothing new happens to the sound. -->
       <div class="st-blk st-cons" id="console">
         <div class="st-ch" id="chStrip"></div>
+        <!-- AOG-DESK-VU-V1: the meter bridge, two VU meters over the mixer, as on a real console -->
+        <div class="st-vub" id="vuBridge" role="img"><canvas class="st-vu" id="vuL" aria-hidden="true"></canvas><canvas class="st-vu" id="vuR" aria-hidden="true"></canvas></div>
         <div class="st-fd" id="chFaders"></div>
       </div>
       <p class="st-line st-keys" data-t="deskKeys"></p><!-- AOG-DESK-KEYS-V1 -->
@@ -1587,6 +1616,7 @@ function meterSize(){
   if(cv.width!==w || cv.height!==h){ cv.width=w; cv.height=h; }
 }
 function drawMeter(levels, peak){
+  try{ vuPaint(levels, peak); }catch(e){}
   const cv=$("meter"); if(!cv || !cv.getContext) return;
   MET.draws++;
   meterSize();
@@ -1601,6 +1631,58 @@ function drawMeter(levels, peak){
   g.fillStyle="rgba(255,255,255,.16)";
   for(let d=-42; d<0; d+=6){ g.fillRect(Math.round(W*dbx(d)), 0, 1, H); }
   if(peak>-48){ const x=Math.round(W*dbx(peak)); g.fillStyle="#fff3d1"; g.fillRect(Math.max(0,x-2), 0, 3, H); }
+}
+/* ══ AOG-DESK-VU-V1 (Jimmy, 2026-10-09: "Any way we can still reach for the ceiling?") — the meter bridge: two analog VU
+   meters, left and right, over the mixer. Cream faces lit warm from below, the scale in true VU steps (−20 to +3, red past
+   0), a black needle under a dark hood, glass on top. They follow the same rule as the level bar: while the song plays the
+   needles swing with it; on a touch screen or with "reduce motion" set they step to the loudest point so far and stay
+   there; stopped, they rest. 0 VU is −8 dB below the top of the file. ══ */
+const VU_MARKS=[-20,-10,-7,-5,-3,-2,-1,0,1,2,3];
+function vuPos(vu){ const lo=Math.pow(10,-20/20), hi=Math.pow(10,3/20); return Math.max(-0.03, Math.min(1.04, (Math.pow(10, Math.max(-40, Math.min(4, vu))/20)-lo)/(hi-lo))); }
+function vuDraw(cv, db, side){
+  if(!cv || !cv.getContext) return;
+  const r=cv.getBoundingClientRect(); if(!(r.width>0 && r.height>0)) return;
+  const dpr=Math.min(3, window.devicePixelRatio||1), W=Math.round(r.width), H=Math.round(r.height);
+  if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
+  const g=cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+  const rr=(x,y,w,h,k)=>{ g.beginPath(); if(g.roundRect) g.roundRect(x,y,w,h,k); else g.rect(x,y,w,h); };
+  /* the bezel and the face, lit warm from below */
+  rr(0,0,W,H,7); g.fillStyle="#08090a"; g.fill();
+  const fx=4, fy=4, fw=W-8, fh=H-8;
+  const face=g.createRadialGradient(W/2, fy+fh*1.05, fh*0.1, W/2, fy+fh*0.9, fw*0.75);
+  face.addColorStop(0,"#fff4d2"); face.addColorStop(0.55,"#f3e2b4"); face.addColorStop(1,"#d9c08a");
+  rr(fx,fy,fw,fh,4); g.fillStyle=face; g.fill();
+  /* the scale */
+  const cx=W/2, cy=fy+fh*1.08, R=fh*0.76, A=0.86;   /* ±47° */
+  const ang=p=>-Math.PI/2-A+p*2*A, at=(p,rad)=>[cx+Math.cos(ang(p))*rad, cy+Math.sin(ang(p))*rad];
+  g.lineCap="round";
+  g.strokeStyle="#2a2116"; g.lineWidth=1.1; g.beginPath(); g.arc(cx,cy,R,ang(0),ang(vuPos(0))); g.stroke();
+  g.strokeStyle="#b8321e"; g.lineWidth=3; g.beginPath(); g.arc(cx,cy,R+1.5,ang(vuPos(0)),ang(1)); g.stroke();
+  const fs=Math.max(8, Math.min(11, fh*0.14));
+  g.font=`500 ${fs}px Fraunces, Georgia, serif`; g.textAlign="center"; g.textBaseline="middle";
+  VU_MARKS.forEach(m=>{ const p=vuPos(m), red=m>0, [x1,y1]=at(p,R), [x2,y2]=at(p,R+(m===0||m===-20||m===3?7:5)), [tx,ty]=at(p,R+fs*1.25);
+    g.strokeStyle=red?"#b8321e":"#2a2116"; g.lineWidth=m===0?1.6:1; g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke();
+    if(m===-20||m===-10||m===-5||m===0||m===3||(W>200 && (m===-7||m===-3||m===-1))){ g.fillStyle=red?"#a52a17":"#2a2116"; g.fillText(m===-20?"−20":m===3?"+3":String(Math.abs(m)), tx, ty); } });
+  g.fillStyle="#2a2116"; g.font=`400 ${Math.round(fs*1.7)}px Fraunces, Georgia, serif`; g.fillText("VU", cx, fy+fh*0.64);
+  g.font=`700 ${Math.round(fs*0.85)}px system-ui, sans-serif`; g.fillStyle="#6b5a3a"; g.textAlign="left"; g.fillText(side, fx+7, fy+fh-9); g.textAlign="center";
+  /* the needle */
+  const p=db==null ? -0.03 : vuPos(db+8), [nx,ny]=at(p, R+6), [bx,by]=at(p, fh*0.32);
+  g.strokeStyle="rgba(0,0,0,.18)"; g.lineWidth=2; g.beginPath(); g.moveTo(bx+1.5,by+2); g.lineTo(nx+1.5,ny+2); g.stroke();
+  g.strokeStyle="#16110a"; g.lineWidth=1.3; g.beginPath(); g.moveTo(bx,by); g.lineTo(nx,ny); g.stroke();
+  /* the hood over the pivot, and the glass */
+  const hood=g.createLinearGradient(0, fy+fh*0.78, 0, fy+fh);
+  hood.addColorStop(0,"#2b2d31"); hood.addColorStop(1,"#141518");
+  g.save(); rr(fx,fy,fw,fh,4); g.clip();
+  g.fillStyle=hood; g.beginPath(); g.ellipse(cx, fy+fh+fh*0.1, fw*0.3, fh*0.3, 0, Math.PI, 2*Math.PI); g.fill();
+  const glass=g.createLinearGradient(fx, fy, fx+fw*0.6, fy+fh);
+  glass.addColorStop(0,"rgba(255,255,255,.38)"); glass.addColorStop(0.35,"rgba(255,255,255,.06)"); glass.addColorStop(0.36,"rgba(255,255,255,0)");
+  g.fillStyle=glass; g.fillRect(fx,fy,fw,fh);
+  g.strokeStyle="rgba(0,0,0,.35)"; g.lineWidth=2; rr(fx+1,fy+1,fw-2,fh-2,4); g.stroke();
+  g.restore();
+}
+function vuPaint(levels, peak){
+  const v = levels ? levels : (PLAY.on && peak>-90 ? [peak, peak] : null);
+  vuDraw($("vuL"), v ? v[0] : null, "L"); vuDraw($("vuR"), v ? v[1] : null, "R");
 }
 function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); }
 function meterTick(){
@@ -2443,7 +2525,7 @@ function paintText(){
   $("plateB").textContent=t("plate"); $("plateS").textContent=t("plateSub");
   $("langBtn").textContent=S.lang==="es"?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
-  $("meter").setAttribute("aria-label", t("meterAria"));
+  $("meter").setAttribute("aria-label", t("meterAria")); $("vuBridge").setAttribute("aria-label", t("meterAria"));
   $("loopFrom").setAttribute("aria-label", t("loopFromAria")); $("loopTo").setAttribute("aria-label", t("loopToAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${esc(t("foot"))}</p>`;
@@ -3180,6 +3262,9 @@ paintAll();
 if(lockJoined) $("lockLine").textContent=t("lockJoined");
 if(CARRY.lock) lockList(true);
 meterStill();
+/* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */
+try{ new ResizeObserver(()=>{ if(!PLAY.on) meterStill(); }).observe($("vuBridge")); }catch(e){}
+try{ document.fonts && document.fonts.ready.then(()=>{ if(!PLAY.on) meterStill(); }); }catch(e){}
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden) stop(); });
 window.addEventListener("pagehide", ()=>{ stop(); });
 /* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */
