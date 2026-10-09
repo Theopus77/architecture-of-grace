@@ -1,7 +1,8 @@
 /* The turntables on a phone, an iPad and a computer; in Spanish; readable in every state; every control labelled
    and usable from the keyboard.
    · iPhone: one menu (Show) picks Deck A, B, C or the Mixer; one at a time; nothing wider than the screen.
-   · iPad and computer: the three decks side by side, the mixer's three channels side by side under them.
+   · iPad and computer: two decks on the desk (A · B, A · C, B · C), the third waiting with everything it had; from 960 px the
+     two decks and the mixer bay are one chassis, below that the mixer is one row under them.
    · Spanish: the decks, the mixer and the crate all speak Spanish (hardware words like SYNC stay as printed on decks).
    · Contrast: the site's own probe (tools/check-contrast.js), run with records on, buttons lit, both benches, both themes. */
 const fs = require("fs"), path = require("path");
@@ -44,20 +45,64 @@ const over = p => p.evaluate(() => document.documentElement.scrollWidth - innerW
     ok(errs.length === 0, "phone: no page errors " + errs.join(" | "));
     await b.close();
   }
-  /* ── 2 · iPad and computer: side by side ── */
-  for (const [name, dev] of [["iPad", pw.devices["iPad (gen 7)"]], ["computer", { viewport: { width: 1280, height: 900 } }]]) {
-    const { b, p, errs } = await open(9933, { device: dev, bench: "full" });
-    const lay = await p.evaluate(() => {
-      const r = id => document.getElementById(id).getBoundingClientRect();
-      const d = ["deckA", "deckB", "deckC"].map(r), s = ["stripA", "stripB", "stripC"].map(r), m = r("mixer");
-      return { tops: d.map(x => Math.round(x.top)), lefts: d.map(x => Math.round(x.left)), widths: d.map(x => Math.round(x.width)), stops: s.map(x => Math.round(x.top)), slefts: s.map(x => Math.round(x.left)),
-               mixerBelow: m.top >= Math.max(...d.map(x => x.bottom)) - 1, pick: getComputedStyle(document.getElementById("viewpick")).display, w: innerWidth };
+  /* ── 2 · iPad and computer: two decks on the desk (AOG-DJ-DESK-V1), the third one tap away ── */
+  for (const [name, dev, bench] of [["iPad", pw.devices["iPad (gen 7)"], "full"], ["iPad landscape", { viewport: { width: 1080, height: 810 }, hasTouch: true }, "simple"], ["computer", { viewport: { width: 1280, height: 900 } }, "full"], ["computer", { viewport: { width: 1280, height: 900 } }, "simple"]]) {
+    const { b, p, errs } = await open(9933, { device: dev, bench });
+    await load(p, { A: "house", B: "disco", C: "techno" });
+    const lay = () => p.evaluate(() => {
+      const r = id => document.getElementById(id).getBoundingClientRect(), vis = id => document.getElementById(id).getClientRects().length > 0;
+      const bay = document.getElementById("bay"), bayOn = !!bay && bay.getClientRects().length > 0, br = bayOn ? bay.getBoundingClientRect() : null;
+      const shown = ["deckA", "deckB", "deckC"].filter(vis), d = shown.map(r);
+      const rev = r("deckA").width ? document.querySelector("#" + shown[0] + " .revc").getBoundingClientRect() : null, pl = document.querySelector("#" + shown[0] + " .platter").getBoundingClientRect();
+      const strips = ["stripA", "stripB", "stripC"].filter(vis), sr = strips.map(r), x = document.getElementById("xf").getBoundingClientRect();
+      const sync = document.querySelector("#" + shown[0] + " [data-sync]").getBoundingClientRect(), key = document.querySelector("#" + shown[0] + " [data-key]").getBoundingClientRect();
+      const pads = [...document.querySelectorAll("#" + shown[0] + " .pad")].map(e => e.getBoundingClientRect());
+      return { shown, tops: d.map(x => Math.round(x.top)), lefts: d.map(x => Math.round(x.left)), rights: d.map(x => Math.round(x.right)), bay: br && [Math.round(br.left), Math.round(br.right)], strips,
+        stripRow: sr.length === 2 && Math.abs(sr[0].top - sr[1].top) <= 2 && sr[0].right <= x.left + 1 && x.right <= sr[1].left + 1, xfInBay: !!document.querySelector("#bay #xf"),
+        revClear: rev.top >= pl.bottom - 0.5 || rev.right <= pl.left || rev.left >= pl.right, platRound: Math.abs(pl.width - pl.height) < 1, platW: Math.round(pl.width),
+        syncLeftOfKey: sync.right <= key.left && Math.abs(sync.top - key.top) < 2, syncAbovePads: sync.bottom <= Math.min(...pads.map(e => e.top)),
+        padMin: Math.min(...pads.map(e => Math.min(e.width, e.height))), padRows: new Set(pads.map(e => Math.round(e.top))).size,
+        pairOn: [...document.querySelectorAll("#pairs [data-pair]")].filter(e => e.classList.contains("on")).map(e => e.textContent), waiting: document.getElementById("waiting").textContent,
+        pick: getComputedStyle(document.getElementById("viewpick")).display, w: innerWidth };
     });
-    const same = a => Math.max(...a) - Math.min(...a) <= 2;
-    ok(same(lay.tops) && lay.lefts[0] < lay.lefts[1] && lay.lefts[1] < lay.lefts[2] && same(lay.widths) && lay.pick === "none",
-      `${name} (${lay.w} px): the three decks side by side, ${lay.widths[0]} px each, no menu needed`);
-    ok(same(lay.stops) && lay.slefts[0] < lay.slefts[1] && lay.slefts[1] < lay.slefts[2] && lay.mixerBelow && (await over(p)) <= 1, `${name}: the mixer's three channels side by side under the decks; nothing sideways`);
+    const L = await lay();
+    const wide = L.w >= 960;
+    ok(L.shown.join() === "deckA,deckB" && Math.abs(L.tops[0] - L.tops[1]) <= 2 && L.lefts[0] < L.lefts[1] && L.pick === "none" && L.pairOn.join() === "A · B" && /^C is waiting · Driving Techno$/.test(L.waiting),
+      `${name} (${L.w} px, ${bench}): two decks on the desk (${L.shown}), A · B lit, "${L.waiting}"`);
+    if (wide) ok(L.bay && L.bay[0] === L.rights[0] && L.bay[1] === L.lefts[1] && L.xfInBay, `${name}: one chassis, deck A ${L.lefts[0]}–${L.rights[0]}, the bay ${L.bay}, deck B from ${L.lefts[1]}: no paper between them; the crossfader is in the bay`);
+    else ok(!L.bay && L.stripRow, `${name}: under the decks one mixer row: channel ${L.strips[0].slice(-1)}, the crossfader, channel ${L.strips[1].slice(-1)}`);
+    ok(L.revClear && L.platRound && L.syncLeftOfKey && L.syncAbovePads && L.padMin >= 44 && (await over(p)) <= 1,
+      `${name}: REV under the record, never on it; the platter round (${L.platW} px); SYNC left of KEY, above the pads; pads ${L.padMin.toFixed(0)} px, ${L.padRows} row(s); nothing sideways`);
+    if (name === "iPad landscape") {
+      /* the deck scrolled to the top of the screen: SYNC and all eight pads on screen at 1080 × 810 */
+      await p.evaluate(() => { const d = document.getElementById("decks"); scrollTo(0, d.getBoundingClientRect().top + scrollY - 56); }); await p.waitForTimeout(200);
+      const fit = await p.evaluate(() => { const pads = [...document.querySelectorAll("#deckA .pad")].map(e => e.getBoundingClientRect()), s = document.querySelector("#deckA [data-sync]").getBoundingClientRect();
+        return { sync: s.bottom <= innerHeight, pads: pads.every(e => e.top >= 0 && e.bottom <= innerHeight), bottom: Math.round(Math.max(...pads.map(e => e.bottom))), h: innerHeight }; });
+      ok(fit.sync && fit.pads, `1080 × 810: SYNC and the eight pads fully on screen with the desk in view (pads end at ${fit.bottom} of ${fit.h} px)`);
+    }
+    /* A · C: C comes up; B is parked, its song, cues and pitch untouched */
+    await p.evaluate(() => { const d = decks[1]; d.cues[2] = 4410; const i = document.querySelector('[data-speed="B"]'); i.value = "1.03"; i.dispatchEvent(new Event("input")); });
+    const before = await p.evaluate(() => ({ buf: decks[1].buf, cue: decks[1].cues[2], pitch: decks[1].pitch, name: decks[1].name }));
+    await p.click('[data-pair="AC"]'); await p.waitForTimeout(200);
+    const L2 = await lay();
+    const after = await p.evaluate(() => ({ same: !!decks[1].buf && decks[1].buf.length > 0, cue: decks[1].cues[2], pitch: decks[1].pitch, name: decks[1].name, sides: decks.map(d => d.side).join("") }));
+    ok(L2.shown.join() === "deckA,deckC" && L2.pairOn.join() === "A · C" && /^B is waiting · Disco Edit$/.test(L2.waiting) && after.same && after.cue === before.cue && after.pitch === before.pitch && after.name === before.name && after.sides.startsWith("L") && after.sides.endsWith("R"),
+      `${name}: A · C puts C on the desk; B waits with its song, pad 3 and pitch ${after.pitch} untouched ("${L2.waiting}"; sides ${after.sides})`);
     ok(errs.length === 0, `${name}: no page errors ` + errs.join(" | "));
+    await b.close();
+  }
+  /* the bay's channel fader is the mixer's volume */
+  {
+    const { b, p, errs } = await open(9933, { bench: "simple", ctx: { viewport: { width: 1280, height: 900 } } });
+    await load(p, { A: "house" });
+    await p.evaluate(() => document.querySelector('#bay [data-bfader="A"]').scrollIntoView({ block: "end" })); await p.waitForTimeout(200);
+    const f = await p.locator('#bay [data-bfader="A"]').boundingBox();
+    await p.mouse.move(f.x + f.width / 2, f.y + f.height - 60); await p.mouse.down(); await p.mouse.move(f.x + f.width / 2, f.y + f.height - 2, { steps: 4 }); await p.mouse.up();
+    const v1 = await p.evaluate(() => ({ vol: decks[0].vol, strip: +document.querySelector('#strips [data-vol="A"]').value }));
+    await p.focus('#bay [data-bvol="A"]'); await p.keyboard.press("End");
+    const v2 = await p.evaluate(() => decks[0].vol);
+    ok(v1.vol < 0.05 && v1.strip === v1.vol && v2 === 1, `the bay's fader A drags the channel down (${v1.vol}, the mixer's slider follows: ${v1.strip}) and the keyboard brings it up (${v2})`);
+    ok(errs.length === 0, "bay: no page errors " + errs.join(" | "));
     await b.close();
   }
   /* ── 3 · Spanish shows Spanish ── */
@@ -101,6 +146,7 @@ const over = p => p.evaluate(() => document.documentElement.scrollWidth - innerW
     /* light every kind of button: master, sync, loop, kill, effect, side, erase, a set pad, record */
     await p.evaluate(() => { document.querySelector('[data-sync="B"]').click(); document.querySelector('[data-kill="A"][data-band="low"]').click();
       document.querySelector('[data-fxtype="C"][data-v="flanger"]').click(); document.querySelector('[data-side="C"][data-v="R"]').click(); document.querySelector('[data-erase="C"]').click(); });
+    await p.evaluate(() => document.querySelectorAll(".dmore").forEach(x => { x.open = true; }));   /* the rest of each deck, opened: read too */
     await p.click('[data-play="A"]'); await p.waitForTimeout(400);
     await p.click('[data-loop="A"][data-beats="4"]'); await p.click('[data-chop="A"]'); await p.click("#recBtn"); await p.waitForTimeout(700);
     const bad = await p.evaluate(PROBE);
