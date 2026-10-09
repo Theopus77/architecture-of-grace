@@ -854,6 +854,14 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · Voice on track 8 (§10), fifth in Jimmy's order.** (`AOG-STUDIO-VOICE-V1` in `music-studio.html`)
+  - Track 8 is **Your voice**: its panel says plainly that adding your voice needs the microphone and that the recording stays on this device, and shows **● Record your voice** in place of the menu of instrument recordings.
+  - The microphone opens only on that press (never on load, Play or in the background) and is let go the moment you press Stop. Record plays the song once from the start bar (the count-in when it is on) while you sing; the take lands on track 8 lined up with the start bar, allowing for the speakers' and the microphone's delay (`outputLatency`, `baseLatency`, the input's own latency). It is captured by a small AudioWorklet (a ScriptProcessor on an older browser).
+  - It is kept like every track (IndexedDB `aog-studio`, the arrangement at `aog.studio.v1`), not in `studioinbox`, never uploaded. Mix, mute, solo, cut it like any track. Delete, then **Bring it back** until the next delete.
+  - A refused or missing microphone keeps the slot, says so plainly, offers Try again; the desk still plays.
+  - My Track's Voice mark reads track 8 from the desk's own save. **Send it out** offers **Your voice on its own**.
+  - ⚠ `_headers`: `Permissions-Policy` was `microphone=()` on every page, which blocks it outright. It is now `microphone=(self)`: the site's own pages may ask, on a press; other sites and embeds still may not. The Studio's frame allows `microphone`.
+  - Test: `music-handoff/tests/studio/voice.js` (Chromium's fake microphone fed a 330 Hz tone; the mix carries it).
 - **2026-10-09 · My Track and Add a layer (§06, §11), fourth in Jimmy's order.** (`AOG-MYTRACK-V1`)
   - In the Studio, My Track's marks are marks, not links (CLAUDE.md: four or more places is a menu). **+ Add a layer** is that menu: the rooms in song order, a ✓ beside the ones already there; picking one changes the room.
   - Inside the Studio, every take's "Send to the Mixing Desk" reads **+ Add to My Track** and its line says "Added to My Track." (`aog-recorder.js`; the Turntables' own takes too). It is the same send, through `studioinbox`; on its own address a room still says "Send to the Mixing Desk".
