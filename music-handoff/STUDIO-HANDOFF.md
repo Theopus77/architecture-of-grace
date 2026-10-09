@@ -855,8 +855,5 @@ Play. Make. Listen. Change. Mix. Create.
 ## 33 — SINCE THIS WAS WRITTEN
 
 - **2026-10-09 · the drawings (§00b).** The eight room banners and the Studio's door are Jimmy's pencil drawings.
-- **2026-10-07 · a song on the iPhone, the iPad and the computer (PR #347).** Jimmy asked to go back and forth between his devices with no account. The Mixing Desk now has "Your song on your other devices":
-  - **Save song file / Open a song file:** one `.aogsong` file holds the arrangement, the mixer and every track's recording. It is a file he owns; nothing is uploaded. This is a first step toward §12 Send it out.
-  - **Your locker in Google Drive:** opt-in. Jimmy deploys `aog-deploy/AoG-Studio-Locker.gs` once in his OWN Google account; songs go to a folder in his Drive, reached with that script's address and a key. The site still has no account and no backend of its own.
-  - **Read this against §30**, which puts "cloud save, or a backend" out of scope. The locker is the owner's own Drive, off until he connects it, and it never touches `aog.sync.*`. Keep it opt-in, and do not make My Track depend on it.
-  - The test: `music-handoff/tests/studio/carry.js` (in `run.sh`).
+- **2026-10-07 · a song on the iPhone, the iPad and the computer (PR #347).** Jimmy asked to go back and forth between his devices with no account. The Mixing Desk has "Your song on your other devices": **Save song file / Open a song file**. One `.aogsong` file holds the arrangement, the mixer and every track's recording. It is a file he owns; nothing is uploaded. Move it with AirDrop, iCloud Drive or Files. This is a first step toward §12 Send it out. Test: `music-handoff/tests/studio/carry.js` (in `run.sh`).
+  - A Google Drive "locker" (an Apps Script in his own Drive) was built and then dropped (Jimmy, 2026-10-09: "Pass on the lockerroom"). Do not bring it back unless he asks; §30 stands.

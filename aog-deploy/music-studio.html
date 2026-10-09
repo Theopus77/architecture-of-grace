@@ -8,7 +8,7 @@
 try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
 </script>
 <title>The Mixing Desk — Architecture of Grace</title>
-<meta name="description" content="Put what you made on the drum machine, piano, guitar, bass and band on eight tracks. Mix them, make your song, save it or send it to the turntables. Nothing leaves this device unless you save it to your own Google Drive.">
+<meta name="description" content="Put what you made on the drum machine, piano, guitar, bass and band on eight tracks. Mix them, make your song, save it or send it to the turntables. Nothing is uploaded.">
 <link rel="canonical" href="https://architectureofgrace.org/studio">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
@@ -229,17 +229,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-take b{color:#f1ebdf}
 .st-take audio{height:40px;max-width:100%;flex:1 1 14rem;min-width:0}
 .st-new{margin-top:1.2rem}
-/* ── 6 · AOG-STUDIO-CARRY-V1: a song file, and your locker in Google Drive ── */
+/* ── 6 · AOG-STUDIO-CARRY-V1: a song file ── */
 .st-name{max-width:30rem}
-.st-desk input[type=text],.st-desk input[type=url],.st-desk input[type=password]{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);
+.st-desk input[type=text]{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);
   color:#0A1E33;background:#FFFDF8;border:1.5px solid #C9A24A;border-radius:12px;padding:8px 14px}
-.st-lk{display:grid;gap:.6rem;max-width:44rem}
-.st-lk .st-row .st-btn{flex:0 1 auto}
-.st-qr{display:inline-block;justify-self:start;padding:12px;background:#fff;border-radius:12px;line-height:0}
-.st-qr[hidden]{display:none}
-.st-help{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:0;padding-left:1.3rem}
-.st-help li{margin:.2rem 0}
-.st-help a,.st-lk a{color:#cfe2ff}
 .st-ask{margin-top:.7rem;padding:.75rem;border:1px solid #c4452a;border-radius:12px;background:#22140f}
 .st-ask[hidden]{display:none}
 .st-ask p{margin:0 0 .6rem;color:#f6dcd4;font-weight:700}
@@ -363,13 +356,9 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         <h2 class="st-h" data-t="carryH"></h2>
         <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
         <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
-        <h3 class="st-h3" data-t="fileH"></h3>
         <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
         <input type="file" id="fileIn" hidden>
         <p class="st-line" id="fileLine" aria-live="polite"></p>
-        <h3 class="st-h3" data-t="lockH"></h3>
-        <div id="locker"></div>
-        <p class="st-line" id="lockLine" aria-live="polite"></p>
         <div class="st-ask" id="openAsk" hidden>
           <p id="openAskT"></p>
           <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
@@ -481,9 +470,8 @@ const STR={
   file:{en:"my-song",es:"mi-cancion"},
   /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
   carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
-  carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
+  carryLine:{en:"Save your song as a file. Open it on your iPhone, iPad or computer and keep working.",es:"Guarda tu canción como un archivo. Ábrelo en tu iPhone, iPad o computadora y sigue trabajando."},
   songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
-  fileH:{en:"With a song file",es:"Con un archivo de canción"},
   fileSave:{en:"Save song file",es:"Guardar archivo de canción"}, fileOpen:{en:"Open a song file",es:"Abrir un archivo de canción"},
   fileMaking:{en:"Making your song file…",es:"Haciendo tu archivo de canción…"},
   fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open a song file.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir un archivo de canción."},
@@ -493,43 +481,7 @@ const STR={
   opened:{en:"{name} is on the desk.",es:"{name} está en la mesa."},
   openAsk:{en:"Open {name}? It takes the place of the song on the desk now. Save that one first if you want to keep it.",es:"¿Abrir {name}? Toma el lugar de la canción que está en la mesa. Guarda esa primero si quieres conservarla."},
   openYes:{en:"Yes, open it",es:"Sí, abrirla"}, openNo:{en:"Not now",es:"Ahora no"},
-  lockH:{en:"With your locker in Google Drive",es:"Con tu casillero en Google Drive"},
-  lockAbout:{en:"Your locker keeps your songs in your own Google Drive. Set it up once, then every device you connect sees the same songs. Nobody signs in on the devices.",es:"Tu casillero guarda tus canciones en tu propio Google Drive. Prepáralo una vez y cada aparato que conectes verá las mismas canciones. Nadie inicia sesión en los aparatos."},
-  lockSteps:{en:"How to set it up (about 5 minutes)",es:"Cómo prepararlo (unos 5 minutos)"},
-  lockS1:{en:"Open script.google.com and press New project.",es:"Abre script.google.com y pulsa Nuevo proyecto."},
-  lockS2:{en:"Paste in the locker script and press Save.",es:"Pega el script del casillero y pulsa Guardar."},
-  lockScript:{en:"the locker script",es:"el script del casillero"},
-  lockS3:{en:"Pick setup and press Run. Allow it to use your Drive. Copy the key it shows.",es:"Elige setup y pulsa Ejecutar. Permite que use tu Drive. Copia la clave que muestra."},
-  lockS4:{en:"Press Deploy, then New deployment, then Web app. Execute as: Me. Who has access: Anyone. Copy the web address.",es:"Pulsa Implementar, luego Nueva implementación, luego Aplicación web. Ejecutar como: Yo. Quién tiene acceso: Cualquier persona. Copia la dirección web."},
-  lockS5:{en:"Paste both here and press Connect.",es:"Pega las dos aquí y pulsa Conectar."},
-  lockUrl:{en:"Web address",es:"Dirección web"}, lockKey:{en:"Locker key",es:"Clave del casillero"},
-  connect:{en:"Connect",es:"Conectar"}, connecting:{en:"Connecting…",es:"Conectando…"},
-  lockBadUrl:{en:"The web address should start with https://script.google.com and end with /exec.",es:"La dirección web debe empezar con https://script.google.com y terminar en /exec."},
-  lockNoKey:{en:"Paste the locker key too.",es:"Pega también la clave del casillero."},
-  lockWrongKey:{en:"The locker said no to that key. Check it and try again.",es:"El casillero no aceptó esa clave. Revísala e inténtalo otra vez."},
-  lockNoReach:{en:"The locker could not be reached. Check the internet and the web address, then try again.",es:"No se pudo llegar al casillero. Revisa el internet y la dirección web, y vuelve a intentarlo."},
-  lockOn:{en:"This device is connected to your locker.",es:"Este aparato está conectado a tu casillero."},
-  lockSave:{en:"Save to my locker",es:"Guardar en mi casillero"},
-  lockSaving:{en:"Saving to your locker… {a} of {b}",es:"Guardando en tu casillero… {a} de {b}"},
-  lockSaved:{en:"{name} is in your locker.",es:"{name} está en tu casillero."},
-  lockLoading:{en:"Getting your song… {a} of {b}",es:"Trayendo tu canción… {a} de {b}"},
-  lockList:{en:"Songs in your locker",es:"Canciones en tu casillero"},
-  lockEmpty:{en:"No songs in your locker yet.",es:"Aún no hay canciones en tu casillero."},
-  lockRefresh:{en:"Check for new songs",es:"Buscar canciones nuevas"},
-  lockChecking:{en:"Looking in your locker…",es:"Buscando en tu casillero…"},
-  open:{en:"Open",es:"Abrir"}, openAria:{en:"Open {name}",es:"Abrir {name}"},
-  lockRemoveAsk:{en:"Take {name} out of your locker? It goes to the trash in your Google Drive for 30 days.",es:"¿Sacar {name} de tu casillero? Va a la papelera de tu Google Drive por 30 días."},
-  lockRemoved:{en:"{name} went to the trash in your Google Drive.",es:"{name} fue a la papelera de tu Google Drive."},
-  lockPair:{en:"Send the link to my other devices",es:"Enviar el enlace a mis otros aparatos"},
-  lockQr:{en:"Show a QR code",es:"Mostrar un código QR"}, lockQrHide:{en:"Hide the QR code",es:"Ocultar el código QR"},
-  lockQrAlt:{en:"QR code that connects another device to your locker",es:"Código QR que conecta otro aparato a tu casillero"},
-  lockPairLine:{en:"Open the link on your other device, or scan the code with its camera. Keep the link private: it opens your locker.",es:"Abre el enlace en tu otro aparato o escanea el código con su cámara. No compartas el enlace: abre tu casillero."},
-  lockCopied:{en:"Link copied. Paste it into a message to yourself.",es:"Enlace copiado. Pégalo en un mensaje para ti."},
-  lockJoined:{en:"Your locker is connected on this device.",es:"Tu casillero está conectado en este aparato."},
-  lockOff:{en:"Disconnect this device",es:"Desconectar este aparato"},
-  lockOffDone:{en:"This device is not connected any more. Your songs stay in your Google Drive.",es:"Este aparato ya no está conectado. Tus canciones se quedan en tu Google Drive."},
-  mbN:{en:"{n} MB",es:"{n} MB"},
-  foot:{en:"Your song and your takes stay on this device, unless you save a song file or save to your own locker. The mixing desk never uses a microphone.",es:"Tu canción y tus tomas se quedan en este aparato, a menos que guardes un archivo de canción o guardes en tu propio casillero. La mesa de mezclas nunca usa un micrófono."},
+  foot:{en:"Your song and your takes stay on this device. A song file you save is yours to keep. The mixing desk never uses a microphone.",es:"Tu canción y tus tomas se quedan en este aparato. Un archivo de canción que guardas es tuyo. La mesa de mezclas nunca usa un micrófono."},
   /* AOG-STUDIO-INBOX-V1 */
   grpTakes:{en:"Takes sent here",es:"Tomas enviadas aquí"}, grpShelves:{en:"Sent to the turntables",es:"Enviado a los platos"},
   inboxH:{en:"Takes sent here",es:"Tomas enviadas aquí"},
@@ -1423,17 +1375,12 @@ async function newSong(){
 
 /* ══════════════════════════════════════════════════════════════════════════
    AOG-STUDIO-CARRY-V1 (2026-10-07) — Jimmy: "go back and forth between my iPhone, iPad and computer without setting up an
-   account". Two ways, both the same file:
-   - a song file (.aogsong): "AOGSONG1", the header's length (4 bytes, little-endian), the header (JSON: the arrangement and
-     each recording's id and size), then each track's .wav one after another. Saved with a download; opened with a file box.
-   - your locker: the same file, sent in pieces to a Google Apps Script the owner deploys in their OWN Google account
-     (AoG-Studio-Locker.gs), which keeps it in a Drive folder. This device keeps the script's address and key at
-     aog.studio.locker.v1 (never the Sheet's aog.sync.*). A link /studio#locker=<address>&k=<key> connects another device;
-     the part after # never reaches a server, and the page takes it out of the address bar at once.
-   Opening a song asks first when the desk already holds one.
+   account". A song file (.aogsong): "AOGSONG1", the header's length (4 bytes, little-endian), the header (JSON: the
+   arrangement and each recording's id and size), then each track's .wav one after another. Saved with a download; opened
+   with a file box. Nothing is uploaded. Opening a song asks first when the desk already holds one.
    ══════════════════════════════════════════════════════════════════════════ */
-const SONG_MAGIC="AOGSONG1", LOCK_KEY="aog.studio.locker.v1", LOCK_PART=4*1024*1024;
-const CARRY={ask:null, busy:false, lock:null, songs:null, rmAsk:"", qr:false};
+const SONG_MAGIC="AOGSONG1";
+const CARRY={ask:null};
 function songTitle(){ const n=(SONG.name||"").trim(); return n || t("myName"); }
 function fileSlug(){ const n=songTitle().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||t("file");
   const d=new Date(), z=x=>String(x).padStart(2,"0");
@@ -1525,148 +1472,11 @@ async function openFile(file){
     try{ await applySong(r); line.textContent=t("opened",{name:name}); }catch(e){ line.textContent=t("fail"); } });
 }
 
-/* ── your locker ── */
-const LOCK_URL_RE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
-const LOCK_KEY_RE=/^[A-Za-z0-9_-]{8,100}$/;
-function lockGet(){ try{ const o=JSON.parse(localStorage.getItem(LOCK_KEY)||"null"); if(o && LOCK_URL_RE.test(o.url) && LOCK_KEY_RE.test(o.key)) return {url:o.url, key:o.key}; }catch(e){} return null; }
-function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; }
-async function lockPost(body, lk){
-  lk=lk||CARRY.lock; if(!lk) throw new Error("none");
-  let r;
-  try{ r=await fetch(lk.url, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(Object.assign({key:lk.key}, body))}).then(x=>x.json()); }
-  catch(e){ const err=new Error("reach"); err.reach=true; throw err; }
-  if(!r || !r.ok){ const err=new Error(r && r.error || "fail"); err.key=r && r.error==="key"; throw err; }
-  return r;
-}
-function lockErr(e){ return e && e.key ? t("lockWrongKey") : e && e.reach ? t("lockNoReach") : (e && e.message && !/^(fail|none)$/.test(e.message) ? e.message : t("fail")); }
-function b64Of(blob){ return new Promise((ok,no)=>{ const fr=new FileReader(); fr.onload=()=>{ const s=String(fr.result); ok(s.slice(s.indexOf(",")+1)); }; fr.onerror=()=>no(fr.error); fr.readAsDataURL(blob); }); }
-function blobOfB64(b64){ const bin=atob(b64), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new Blob([u]); }
-function pairLink(){ const lk=CARRY.lock; return lk ? location.origin+location.pathname+"#locker="+encodeURIComponent(lk.url)+"&k="+encodeURIComponent(lk.key) : ""; }
-/* a link from another device: #locker=<address>&k=<key> */
-function lockFromHash(){
-  const h=location.hash||""; if(h.indexOf("#locker=")!==0) return false;
-  const q=new URLSearchParams(h.slice(1)), url=q.get("locker")||"", key=q.get("k")||"";
-  try{ history.replaceState(null, "", location.pathname+location.search); }catch(e){}
-  if(!LOCK_URL_RE.test(url) || !LOCK_KEY_RE.test(key)) return false;
-  lockSet({url:url, key:key}); return true;
-}
-async function lockConnect(){
-  const line=$("lockLine"), url=($("lkUrl").value||"").trim(), key=($("lkKey").value||"").trim();
-  if(!LOCK_URL_RE.test(url)){ line.textContent=t("lockBadUrl"); $("lkUrl").focus(); return; }
-  if(!LOCK_KEY_RE.test(key)){ line.textContent=t("lockNoKey"); $("lkKey").focus(); return; }
-  line.textContent=t("connecting"); CARRY.busy=true; paintLocker();
-  try{ await lockPost({action:"hello"}, {url:url, key:key}); lockSet({url:url, key:key}); line.textContent=t("lockOn"); CARRY.busy=false; await lockList(true); }
-  catch(e){ line.textContent=lockErr(e); CARRY.busy=false; }
-  paintLocker();
-}
-async function lockList(quiet){
-  const line=$("lockLine");
-  if(!quiet) line.textContent=t("lockChecking");
-  try{ const r=await lockPost({action:"list"}); CARRY.songs=Array.isArray(r.songs) ? r.songs : []; if(!quiet) line.textContent=""; }
-  catch(e){ line.textContent=lockErr(e); }
-  paintLocker();
-}
-async function lockSave(){
-  const line=$("lockLine");
-  if(!hasClips()){ line.textContent=t("fileNeed"); return; }
-  CARRY.busy=true; paintLocker(); line.textContent=t("fileMaking");
-  try{
-    const blob=await songFile(); if(!blob) throw new Error("fail");
-    const n=Math.ceil(blob.size/LOCK_PART), name=songTitle();
-    const b=await lockPost({action:"begin", name:name, size:blob.size, parts:n});
-    for(let i=0;i<n;i++){
-      line.textContent=t("lockSaving",{a:i+1, b:n});
-      await lockPost({action:"part", id:b.id, n:i, data:await b64Of(blob.slice(i*LOCK_PART, (i+1)*LOCK_PART))});
-    }
-    await lockPost({action:"finish", id:b.id});
-    line.textContent=t("lockSaved",{name:name});
-    CARRY.busy=false; await lockList(true);
-  }catch(e){ line.textContent=lockErr(e); CARRY.busy=false; }
-  paintLocker();
-}
-async function lockOpen(id){
-  const line=$("lockLine"), sg=(CARRY.songs||[]).find(x=>x.id===id); if(!sg) return;
-  askOpen(sg.name, async ()=>{
-    CARRY.busy=true; paintLocker();
-    try{
-      const parts=[];
-      for(let i=0;i<sg.parts;i++){ line.textContent=t("lockLoading",{a:i+1, b:sg.parts}); parts.push(blobOfB64((await lockPost({action:"get", id:id, n:i})).data)); }
-      const r=await readSongFile(new Blob(parts));
-      if(!r){ line.textContent=t("fileBad"); }
-      else { line.textContent=t("reading"); await applySong(r); line.textContent=t("opened",{name:sg.name}); }
-    }catch(e){ line.textContent=lockErr(e); }
-    CARRY.busy=false; paintLocker();
-  });
-}
-async function lockRemove(id){
-  const line=$("lockLine"), sg=(CARRY.songs||[]).find(x=>x.id===id); CARRY.rmAsk="";
-  if(!sg){ paintLocker(); return; }
-  CARRY.busy=true; paintLocker();
-  try{ await lockPost({action:"remove", id:id}); CARRY.songs=CARRY.songs.filter(x=>x.id!==id); line.textContent=t("lockRemoved",{name:sg.name}); }
-  catch(e){ line.textContent=lockErr(e); }
-  CARRY.busy=false; paintLocker();
-}
-async function lockPair(){
-  const line=$("lockLine"), url=pairLink(); if(!url) return;
-  try{ if(navigator.share){ await navigator.share({title:t("app"), url:url}); line.textContent=t("lockPairLine"); return; } }
-  catch(e){ if(e && e.name==="AbortError") return; }
-  try{ await navigator.clipboard.writeText(url); line.textContent=t("lockCopied"); }
-  catch(e){ line.textContent=url; }
-}
-function lockQr(){ CARRY.qr=!CARRY.qr; paintLocker(); }
-/* the code is drawn by qrcodejs (as on the dashboard), fetched the first time it is asked for */
-function drawQr(){
-  const draw=()=>{ const box=$("lkQr"); if(!box || !CARRY.qr || !window.QRCode) return; box.innerHTML="";
-    new QRCode(box, {text:pairLink(), width:220, height:220, colorDark:"#000000", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
-    const img=box.querySelector("img"); if(img) img.alt=t("lockQrAlt"); box.setAttribute("aria-label", t("lockQrAlt")); };
-  if(window.QRCode){ draw(); return; }
-  if(drawQr.loading) return; drawQr.loading=true;
-  const sc=document.createElement("script");
-  sc.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; sc.onload=draw;
-  sc.onerror=()=>{ drawQr.loading=false; $("lockLine").textContent=t("lockNoReach"); CARRY.qr=false; paintLocker(); };
-  document.head.appendChild(sc);
-}
-function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone"); paintLocker(); }
-function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)}); }
-function paintLocker(){
-  const box=$("locker"), lk=CARRY.lock, dis=CARRY.busy ? " disabled" : "";
-  if(!lk){
-    const keepU=$("lkUrl") ? $("lkUrl").value : "", keepK=$("lkKey") ? $("lkKey").value : "";
-    box.innerHTML=`<div class="st-lk"><p class="st-info">${esc(t("lockAbout"))}</p>
-      <details><summary class="st-lab" style="min-height:44px;display:flex;align-items:center;cursor:pointer">${esc(t("lockSteps"))}</summary>
-      <ol class="st-help"><li>${esc(t("lockS1"))}</li><li>${esc(t("lockS2")).replace(esc(t("lockScript")), `<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${esc(t("lockScript"))}</a>`)}</li>
-        <li>${esc(t("lockS3"))}</li><li>${esc(t("lockS4"))}</li><li>${esc(t("lockS5"))}</li></ol></details>
-      <label class="st-field"><span class="st-lab">${esc(t("lockUrl"))}</span><input type="url" id="lkUrl" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
-      <label class="st-field"><span class="st-lab">${esc(t("lockKey"))}</span><input type="password" id="lkKey" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
-      <div class="st-row"><button type="button" class="st-btn st-go" id="lkConnect"${dis}>${esc(t("connect"))}</button></div></div>`;
-    $("lkUrl").value=keepU; $("lkKey").value=keepK;
-    return;
-  }
-  const songs=CARRY.songs;
-  const list=songs==null ? "" : !songs.length ? `<p class="st-info">${esc(t("lockEmpty"))}</p>` : songs.map(x=>{
-    const sub=[esc(madeWords(x.at)), esc(sizeWords(x.size))].join(" · ");
-    const ask=CARRY.rmAsk===x.id ? `<div class="st-q" role="group" aria-label="${esc(t("lockRemoveAsk",{name:x.name}))}"><p>${esc(t("lockRemoveAsk",{name:x.name}))}</p>`+
-      `<button type="button" class="st-btn st-clear" data-lkrmyes="${esc(x.id)}"${dis}>${esc(t("removeYes"))}</button><button type="button" class="st-btn" data-lkrmno="${esc(x.id)}">${esc(t("removeNo"))}</button></div>` : "";
-    return `<div class="st-rec"><div class="st-rtx"><b>${esc(x.name)}</b><span class="st-cn">${sub}</span></div>`+
-      `<button type="button" class="st-btn st-go" data-lkopen="${esc(x.id)}" aria-label="${esc(t("openAria",{name:x.name}))}"${dis}>${esc(t("open"))}</button>`+
-      (CARRY.rmAsk===x.id ? "" : `<button type="button" class="st-btn st-clear" data-lkrm="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:x.name}))}"${dis}>${esc(t("remove"))}</button>`)+ask+`</div>`;
-  }).join("");
-  box.innerHTML=`<div class="st-lk"><p class="st-on">${esc(t("lockOn"))}</p>
-    <div class="st-row"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button><button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t("lockRefresh"))}</button></div>
-    <h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("lockList"))}</h3>
-    <div class="st-inb">${list}</div>
-    <div class="st-row"><button type="button" class="st-btn" id="lkPair">${esc(t("lockPair"))}</button><button type="button" class="st-btn" id="lkQrBtn" aria-expanded="${CARRY.qr}">${esc(t(CARRY.qr ? "lockQrHide" : "lockQr"))}</button></div>
-    <div class="st-qr" id="lkQr" role="img" aria-label="${esc(t("lockQrAlt"))}"${CARRY.qr ? "" : " hidden"}></div>
-    ${CARRY.qr ? `<p class="st-info">${esc(t("lockPairLine"))}</p>` : ""}
-    <div class="st-row"><button type="button" class="st-btn st-clear" id="lkOff">${esc(t("lockOff"))}</button></div></div>`;
-  if(CARRY.qr) drawQr();
-}
 function paintCarry(){
   const nm=$("songName"); if(document.activeElement!==nm) nm.value=SONG.name||"";
   nm.placeholder=t("myName");
   $("fileSave").textContent=t("fileSave"); $("fileOpen").textContent=t("fileOpen");
   $("openYes").textContent=t("openYes"); $("openNo").textContent=t("openNo");
-  paintLocker();
 }
 function bindCarry(){
   $("songName").addEventListener("input", e=>{ SONG.name=String(e.target.value||"").slice(0,80); saveSoon(); });
@@ -1676,20 +1486,6 @@ function bindCarry(){
   $("fileIn").onchange=e=>{ const f=e.target.files && e.target.files[0]; openFile(f); };
   $("openNo").onclick=()=>{ closeAsk(); $("fileLine").textContent=""; };
   $("openYes").onclick=()=>{ const go=CARRY.ask; closeAsk(); if(go) go(); };
-  $("locker").addEventListener("click", e=>{
-    const el=e.target.closest && e.target.closest("button"); if(!el || el.disabled) return;
-    if(el.id==="lkConnect") lockConnect();
-    else if(el.id==="lkSave") lockSave();
-    else if(el.id==="lkRefresh") lockList();
-    else if(el.id==="lkPair") lockPair();
-    else if(el.id==="lkQrBtn") lockQr();
-    else if(el.id==="lkOff") lockOff();
-    else if(el.hasAttribute("data-lkopen")) lockOpen(el.getAttribute("data-lkopen"));
-    else if(el.hasAttribute("data-lkrm")){ CARRY.rmAsk=el.getAttribute("data-lkrm"); paintLocker(); const k=$("locker").querySelector("[data-lkrmno]"); if(k) k.focus(); }
-    else if(el.hasAttribute("data-lkrmno")){ CARRY.rmAsk=""; paintLocker(); }
-    else if(el.hasAttribute("data-lkrmyes")) lockRemove(el.getAttribute("data-lkrmyes"));
-  });
-  $("locker").addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="lkUrl" || e.target.id==="lkKey")){ e.preventDefault(); lockConnect(); } });
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2278,12 +2074,8 @@ function bind(){
 }
 
 load();
-CARRY.lock=lockGet();
-const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another device */
 bind();
 paintAll();
-if(lockJoined) $("lockLine").textContent=t("lockJoined");
-if(CARRY.lock) lockList(true);
 meterStill();
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden) stop(); });
 window.addEventListener("pagehide", ()=>{ stop(); });
@@ -2300,7 +2092,7 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; },
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, sources:sources, putOn:putOn, get S(){ return S; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
 </script>
 </body>
