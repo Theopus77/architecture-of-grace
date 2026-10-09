@@ -122,6 +122,7 @@
       var blk = function (sel) { var e = rig.querySelector(sel); while (e && e.parentNode !== rig) e = e.parentNode; return e; };
       var choose = blk("#soundSel"), chords = blk("#pads"), wheel = D.getElementById("wheelBlk"), out = blk("#era"),
         play = blk("h2[data-t=keysH]") || blk("h2[data-t=neckH]"), amp = D.getElementById("ampBlk"), live = D.getElementById("liveBlk");
+      if (choose === play || choose === chords) choose = null;   /* AOG-SOUNDPICK-V1: the instrument choice already sits by the instrument */
       var order = id === "piano" ? [play, chords, choose, wheel, out]
         : id === "band" ? [choose, chords, play, wheel, out]
         : (id === "guitar" || id === "bass") ? [chords, play, choose, wheel, amp, live, out] : null;

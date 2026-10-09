@@ -24,8 +24,8 @@ async function routes(ctx) {
 }
 const FILE = { pads: "music-pads.html", kit: "music-kit.html", piano: "music-piano.html", guitar: "music-guitar.html", bass: "music-bass.html", band: "music-band.html", decks: "music-decks.html", studio: "music-studio.html" };
 /* the thing you play in each room */
-/* the Band opens on its section, then the pads, as Jimmy's drawing has it ("Pick a section, then play the tune") */
-const HERO = { pads: "#pads", kit: "#kitBox", piano: "#chordStrip", guitar: "#rig #pads", bass: "#rig #pads", band: "#soundSel", decks: "#decks", studio: "#desk" };
+/* the Band opens on its chord pads; its section and instrument sit with its keys (AOG-SOUNDPICK-V1) */
+const HERO = { pads: "#pads", kit: "#kitBox", piano: "#chordStrip", guitar: "#rig #pads", bass: "#rig #pads", band: "#rig #pads", decks: "#decks", studio: "#desk" };
 const inner = p => p.frames().find(f => f.parentFrame() === p.mainFrame());
 async function arrived(p, id) {
   await p.waitForFunction(f => { const fr = document.getElementById("room"), d = fr.contentDocument;
@@ -64,7 +64,6 @@ const lay = f => f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.cl
       const f = inner(p), s = await surface(f, HERO[id]);
       /* the instrument starts high on the room's screen (a phone: in the top 70%, so a whole row shows; an iPad: the top half); nothing that teaches is above it */
       let first = s.top < s.ih * (dev.startsWith("iPhone") ? 0.7 : 0.5) && !s.above.length;   /* a phone: a whole row of it shows */
-      if (id === "band") { const pt = await f.evaluate(() => document.querySelector("#rig #pads").getBoundingClientRect().top + scrollY); first = first && pt < s.ih - 70; }   /* and a row of pads */
       const pc = await f.evaluate(`(${PROBE})()`), pk = await f.evaluate(`(${CALM})()`), sw = await f.evaluate(() => document.scrollingElement.scrollWidth <= innerWidth + 1);
       ok(first && sw && !pc.length && !pk.length, `${dev}, ${theme}, ${id}: the instrument comes first (at ${s.top} of ${s.ih}${s.above.length ? "; above it: " + s.above.join(", ") : ""}), nothing sideways, reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and is calm (${pk.join("; ") || "ok"})`);
       if (dev === "iPhone 13" && theme === "light") {
@@ -91,8 +90,9 @@ const lay = f => f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.cl
   {
     const c = await b.newContext({ ...pw.devices["iPhone 13"] }); watch(c); await routes(c);
     const p = await c.newPage(); await p.goto(U + "music-guitar.html"); await p.waitForTimeout(3000);
-    const s = await p.evaluate(() => ({ learn: !!document.getElementById("aogLearn"), first: (document.querySelector("#rig > .blk") || {}).querySelector ? !!document.querySelector("#rig > .blk").querySelector("#soundSel") : false }));
-    ok(!s.learn && s.first, "the guitar on its own address keeps its own order and has no Lessons and more: " + JSON.stringify(s));
+    const s = await p.evaluate(() => ({ learn: !!document.getElementById("aogLearn"), first: !!document.querySelector("#rig > .blk:not([hidden])").querySelector("#pads"),
+      menus: (document.querySelector(".sp-wrap") || {}).previousElementSibling === document.getElementById("neckBox") }));
+    ok(!s.learn && s.first && s.menus, "the guitar on its own address has no Lessons and more; it opens on its chords, its instrument menus under the neck: " + JSON.stringify(s));
     await c.close();
   }
 

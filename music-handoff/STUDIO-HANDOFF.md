@@ -854,6 +854,11 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · The instrument choice sits by the instrument (`aog-soundpick.js`, `AOG-SOUNDPICK-V1`).** Jimmy: "Can the instrument choice also sit right above or below the instruments itself, what ever looks better and makes more sense. (Perhaps two drop down menus work as well)".
+  - The long menu (`#soundSel`, up to sixty sounds in groups) becomes two short ones: the kind (the menu's own groups) and the sound in that kind. Piano: Kind · Sound, under its keys (as in Jimmy's piano drawing). Guitar and Bass: Style · Sound, under the neck. Band: Section · Instrument, above its keys (his band drawing: "Pick a section, then play the tune"). The ready line ("Ready. Every note is a real player.") sits under them. The old Instrument row at the top is gone.
+  - Picking a kind picks its first sound. The page's own menu stays in the page out of sight and still makes the sound; the two menus set it and follow it when anything else does (a lesson, a reload, the other language). Nothing in the sound engines changed.
+  - Loaded by `music-piano.html`, `_work/music/strings_page.html` (Guitar, Bass) and `_work/music/band_head.html` (Band), before `aog-labdoors.js`; the Studio's first-screen order no longer moves the instrument choice (`aog-labdoors.js`).
+  - Test: `music-handoff/tests/play/soundpick.js` (port 9258).
 - **2026-10-09 · The guitar's and the bass's keys, made plain (`AOG-STRINGS-KEYS-V2` in `_work/music/strings_page.html`, then `make_strings.py`).** Jimmy: "I don't really understand the keyboard for the guitar and bass."
   - Before: on the guitar A S D F G H picked the six strings of the chord; on the bass the same letters played the scale; nothing on the screen said which key did what, only one long sentence.
   - Now one rule, the same as the Piano and the Band: **numbers play chords, letters play notes.** 1 to 6 are the chord pads (their numbers are on them). A S D F G H J K are the notes of the key, going up, on both instruments. The guitar's strings, picked one by one in the chord you hold, are the row above: Q W E R T Y, low to high. Z and X move along the neck; Space starts and stops.
