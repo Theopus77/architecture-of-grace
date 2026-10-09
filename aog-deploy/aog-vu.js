@@ -34,6 +34,7 @@
       orig.call(g, sp); orig.call(sp, a0, 0); orig.call(sp, a1, 1); orig.call(a0, z); orig.call(a1, z); orig.call(z, ctx.destination);
       b = { ctx: ctx, g: g, a: [a0, a1], d: new Float32Array(2048) };
       BUSMAP.set(ctx, b); BUSES.push(b);
+      if (window.AOGRecorder) setTimeout(function () { try { ROOM.live(ctx, g); } catch (e) {} }, 0);   /* AOG-STUDIO-ROOM-SOUND-V1: an instrument room plays in the room */
     } catch (e) { return null; }
     return b;
   }
@@ -147,6 +148,89 @@
     return M;
   }
   window.AOGVU = { levels: levels, mount: mount, draw: draw };
+
+  /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
+     every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and
+     darkens, with a few early reflections), added to the room's sound after its Volume, and to its takes (the recorder
+     feeds the same room into what it keeps), so a take carries the room to the turntables, the Drum Machine and the
+     Mixing Desk. It starts Dry, so nothing changes until the knob is turned; the choice is kept on this device
+     ("aog.room.v1") and every room and the Studio follow it at once. The turntables and the desk stay as they are. ══ */
+  var PRE = [{ id: "dry", en: "Dry", es: "Seco" }, { id: "small", en: "Small room", es: "Sala pequeña", sec: 0.7, wet: 0.38, pre: 0.006, dark: 0.35 },
+    { id: "studio", en: "Studio", es: "Estudio", sec: 1.4, wet: 0.55, pre: 0.014, dark: 0.5 }, { id: "hall", en: "Hall", es: "Sala grande", sec: 2.8, wet: 0.6, pre: 0.026, dark: 0.62 }];
+  var KEY = "aog.room.v1", CH = [], IRS = typeof WeakMap === "function" ? new WeakMap() : null, KNOBS = [];
+  function cur() { var v = 0; try { v = +localStorage.getItem(KEY) || 0; } catch (e) {} return Math.max(0, Math.min(PRE.length - 1, v | 0)); }
+  function ir(ctx, i) {
+    var per = IRS && IRS.get(ctx); if (!per) { per = {}; if (IRS) IRS.set(ctx, per); }
+    if (per[i]) return per[i];
+    var P = PRE[i], sr = ctx.sampleRate, n = Math.round(sr * (P.sec + P.pre)), buf = ctx.createBuffer(2, n, sr), seed = 1234567 + i;
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647 * 2 - 1; }
+    for (var ch = 0; ch < 2; ch++) {
+      var d = buf.getChannelData(ch), y = 0, e2 = 0, p0 = Math.round(P.pre * sr);
+      for (var k = p0; k < n; k++) {
+        var t = (k - p0) / sr, env = Math.exp(-6.9 * t / P.sec), a = Math.max(0.04, 1 - P.dark * Math.min(1, t / P.sec * 1.6));
+        y += a * (rnd() - y); d[k] = y * env; e2 += d[k] * d[k];
+      }
+      /* a few early reflections, a little different left and right */
+      for (var r = 0; r < 6; r++) { var at = p0 + Math.round(sr * (0.004 + r * 0.011 + (ch ? 0.003 : 0)) * (1 + P.sec * 0.3)); if (at < n) d[at] += (0.5 - r * 0.07) * (r % 2 ? -1 : 1); }
+      var g = 1 / Math.sqrt(e2 + 1e-9); for (var q = 0; q < n; q++) d[q] *= g;
+    }
+    per[i] = buf; return buf;
+  }
+  /* one chain: what goes in, a convolver, a wet gain, where it goes; nothing runs while the room is Dry */
+  function chain(ctx, from, to) {
+    var c = { ctx: ctx, from: from, to: to, conv: own(ctx.createConvolver()), wet: own(ctx.createGain()), on: false, at: -1 };
+    c.conv.normalize = false; orig.call(c.conv, c.wet); orig.call(c.wet, to);
+    CH.push(c); apply(c); return c;
+  }
+  function apply(c) {
+    var i = cur(), P = PRE[i];
+    if (!P.sec) { if (c.on) { try { origDis.call(c.from, c.conv); } catch (e) {} c.on = false; } c.wet.gain.value = 0; return; }
+    if (c.at !== i) { c.conv.buffer = ir(c.ctx, i); c.at = i; }
+    c.wet.gain.setTargetAtTime(P.wet, c.ctx.currentTime, 0.05);
+    if (!c.on) { orig.call(c.from, c.conv); c.on = true; }
+  }
+  function set(i) {
+    i = Math.max(0, Math.min(PRE.length - 1, i | 0));
+    try { localStorage.setItem(KEY, String(i)); } catch (e) {}
+    CH.forEach(apply); KNOBS.forEach(function (k) { k.paint(); });
+  }
+  window.addEventListener("storage", function (e) { if (e.key === KEY) { CH.forEach(apply); KNOBS.forEach(function (k) { k.paint(); }); } });
+  var ROOM = {
+    presets: PRE, get: cur, set: set, chains: CH,
+    live: function (ctx, g) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, ctx.destination); } return ctx.__aogRoomLive; },
+    rec: function (ctx, tap, node) { if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
+    /* the knob: a small black knob with a gold line; a tap turns it one step (Dry → Small room → Studio → Hall → Dry);
+       ← → and ↑ ↓ turn it too. Its name shows beside it. */
+    knob: function (el, opts) {
+      if (!el) return null; opts = opts || {};
+      if (!document.getElementById("aogroom-css")) { var st = document.createElement("style"); st.id = "aogroom-css";
+        st.textContent = ".aogroom{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 10px 0 4px;border:1px solid #050506;border-radius:22px;cursor:pointer;" +
+          "background-color:#1f2024;background-image:linear-gradient(#2c2e33,#1b1c20);color:#efe5cf;font:600 .86rem/1.1 var(--sans,system-ui,sans-serif);vertical-align:middle;" +
+          "box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 2px 0 #08090a}.aogroom[hidden]{display:none}" +
+          ".aogroom i{position:relative;display:block;width:34px;height:34px;border-radius:50%;flex:0 0 auto;background:radial-gradient(circle at 38% 30%,#4a4c52 0,#1b1c20 58%,#0d0e10 100%);" +
+          "box-shadow:0 2px 4px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.18),0 0 0 2px #0a0a0b,0 0 0 3px #3a3326}" +
+          ".aogroom i::after{content:'';position:absolute;left:50%;top:4px;width:2px;height:11px;margin-left:-1px;border-radius:1px;background:#e9bf62;box-shadow:0 0 4px rgba(233,191,98,.6);" +
+          "transform-origin:50% 13px;transform:rotate(var(--r,-120deg))}.aogroom b{font-weight:600;white-space:nowrap}.aogroom small{display:block;font:700 .56rem/1 var(--sans,system-ui,sans-serif);" +
+          "letter-spacing:.16em;text-transform:uppercase;color:#b9ad95;margin-bottom:2px}.aogroom:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}";
+        (document.head || document.documentElement).appendChild(st); }
+      var b = document.createElement("button"); b.type = "button"; b.className = "aogroom";
+      b.innerHTML = '<i aria-hidden="true"></i><span><small></small><b></b></span>';
+      if (opts.before) el.insertBefore(b, opts.before); else el.appendChild(b);
+      var K = { b: b, paint: function () {
+        var i = cur(), e = es() ? "es" : "en", P = PRE[i];
+        b.querySelector("i").style.setProperty("--r", (-120 + i * 80) + "deg");
+        b.querySelector("small").textContent = e === "es" ? "Sala" : "Room"; b.querySelector("b").textContent = P[e];
+        b.setAttribute("aria-label", (e === "es" ? "Sonido de sala: " : "Room sound: ") + P[e] + (e === "es" ? ". Toca para cambiarlo." : ". Tap to change it."));
+      } };
+      b.addEventListener("click", function () { set((cur() + 1) % PRE.length); });
+      b.addEventListener("keydown", function (e) {
+        var k = e.key; if (k === "ArrowRight" || k === "ArrowUp") { set(Math.min(PRE.length - 1, cur() + 1)); e.preventDefault(); e.stopPropagation(); }
+        else if (k === "ArrowLeft" || k === "ArrowDown") { set(Math.max(0, cur() - 1)); e.preventDefault(); e.stopPropagation(); } });
+      try { new MutationObserver(K.paint).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
+      KNOBS.push(K); K.paint(); return K;
+    }
+  };
+  window.AOGRoom = ROOM;
   /* a room's own page: the pair beside its Record button (not inside the Recording Studio, where the shell shows them) */
   function inStudio() { try { return !!(window.frameElement && window.frameElement.id === "room") || (window.top !== window && /\/the-studio/.test(window.top.location.pathname)); } catch (e) { return false; } }
   function placeRoom() {
@@ -155,6 +239,7 @@
     var rb = document.getElementById("recBtn") || document.getElementById("takeBtn"); if (!rb || !rb.parentNode || document.querySelector(".aogvu")) return;
     var t = document.getElementById("recTime") || document.getElementById("takeTime"), at = t && t.parentNode === rb.parentNode ? t.nextSibling : rb.nextSibling;
     mount(rb.parentNode, { before: at });
+    if (window.AOGRecorder) ROOM.knob(rb.parentNode, { before: at });   /* AOG-STUDIO-ROOM-SOUND-V1 */
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(placeRoom, 0); }); else setTimeout(placeRoom, 0);
 })();

@@ -124,12 +124,28 @@
         play = blk("h2[data-t=keysH]") || blk("h2[data-t=neckH]"), amp = D.getElementById("ampBlk"), live = D.getElementById("liveBlk");
       if (choose === play || choose === chords) choose = null;   /* AOG-SOUNDPICK-V1: the instrument choice already sits by the instrument */
       var order = id === "piano" ? [play, chords, choose, wheel, out]
-        : id === "band" ? [choose, chords, play, wheel, out]
-        : (id === "guitar" || id === "bass") ? [chords, play, choose, wheel, amp, live, out] : null;
+        : id === "band" ? [choose, play, chords, wheel, out]
+        : (id === "guitar" || id === "bass") ? [play, chords, choose, wheel, amp, live, out] : null;   /* AOG-STUDIO-FIRST-V2: the instrument first */
       if (order && order.every(function (e) { return !e || e.parentNode === rig; })) {
         order.forEach(function (e) { if (e) rig.appendChild(e); });
         rig.setAttribute("data-first", "1");
       }
+    }
+    /* AOG-STUDIO-FIRST-V2 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 4: each room's first screen like the drawings). Inside the
+       Studio a room opens on the thing you play: the keys or the neck right under the room's name, its sound menus by it
+       (the Band's above its keys, as in its drawing), then the room's one line on how to play it as a paper slip, then the
+       chord pads and the buttons. The line is the room's own (the touch line on a tablet, the keys line on a computer). */
+    var inst = (id === "guitar" || id === "bass") ? D.getElementById("neckBox") : (id === "piano" || id === "band") ? D.getElementById("kbd") : null,
+      pblk = inst && inst.parentNode;
+    if (inst && pblk && pblk.parentNode === rig && !inst.hasAttribute("data-first2")) {
+      var kid = function (sel) { return [].filter.call(pblk.children, function (e) { return e.matches(sel); }); };
+      var sp0 = kid(".sp-wrap")[0], slips = kid(".touch-line,.keys-line"), lead = id === "band" && !(window.matchMedia && matchMedia("(max-width:699px)").matches) ? [sp0, inst] : [inst, sp0];   /* on a phone the keys come first, the menus under them */
+      var seq = lead.concat(slips, [D.getElementById("chordStrip"), kid(".krow")[0]]).filter(function (e) { return e && e.parentNode === pblk; });
+      var h2 = kid("h2")[0], mark = D.createComment("first");
+      pblk.insertBefore(mark, h2 ? h2.nextSibling : pblk.firstChild);
+      seq.forEach(function (e) { pblk.insertBefore(e, mark); }); pblk.removeChild(mark);
+      slips.forEach(function (e) { e.classList.add("aog-slip"); });
+      inst.setAttribute("data-first2", "1");
     }
     /* the chord pads straight under their one line; the key and the mood under the pads */
     var cpads = rig && rig.querySelector("#pads"), keySel = D.getElementById("keySel"), keyRow = keySel && keySel.closest(".row");
@@ -177,10 +193,56 @@
      don't work using the iPad keyboard"). After a menu is used (the sound, the key, a pattern), an iPad leaves the keyboard
      with that menu, and the instruments rightly ignore keys typed into a menu, so no key played. Once a choice is made the
      menu lets go, and the next key plays the instrument. (Tab still carries on from the menu.) */
+  /* Someone stepping through a menu with the arrow keys on a computer keeps it: the change came from a key pressed on the
+     menu itself, so it is left alone. */
+  var selKeyAt = 0;
+  D.addEventListener("keydown", function (e) { var t = e.target; if (t && t.tagName === "SELECT") selKeyAt = Date.now(); }, true);
   D.addEventListener("change", function (e) {
     var t = e.target; if (!t || t.tagName !== "SELECT" || t.multiple) return;
+    if (Date.now() - selKeyAt < 600) return;
     setTimeout(function () { if (D.activeElement === t) t.blur(); }, 0);
   }, true);
+  /* ══ AOG-ROOMS-ROOM-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — first, every room in the control room). Inside the Recording
+     Studio a room sits in the same dim, warm room as the Mixing Desk, not on paper: its page takes the room's colour and the
+     instrument is the lit thing in it. And in every room, on its own page too, a menu on a dark panel is the desk's dark
+     window with gold type (class aog-hw), not a cream box. A menu on a light card keeps its own look. ══ */
+  if (shell) ss.textContent += "html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}" +
+    "html.in-studio .aog-learn{border-color:#3a2c1c!important;box-shadow:0 10px 24px rgba(0,0,0,.45)}" +
+    /* AOG-STUDIO-FIRST-V2: the room's how-to line on a paper slip under the instrument */
+    "html.in-studio .aog-slip{max-width:36rem;margin:.9rem 0 .8rem;padding:.75rem 1.1rem;border-radius:2px;background-color:#f7f0e1;" +
+    "background-image:linear-gradient(#fbf6ea,#f1e7d1);color:#1f1a12!important;font:italic 400 1.02rem/1.4 Fraunces,Georgia,serif!important;" +
+    "box-shadow:0 8px 16px rgba(0,0,0,.45),0 1px 1px rgba(0,0,0,.2);transform:rotate(-.4deg)}" +
+    "@media (prefers-reduced-motion:reduce){html.in-studio .aog-slip{transform:none}}";
+  var HW = D.createElement("style"); HW.id = "aog-hw-css";
+  HW.textContent = "html select.aog-hw{color:#f6e3b4!important;background-color:#121316!important;border:1px solid #5b4a24!important;border-radius:9px!important;" +
+    "background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0b25a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"),linear-gradient(#0b0c0e,#17181c)!important;" +
+    "background-repeat:no-repeat,no-repeat!important;background-position:right 12px center,0 0!important;background-size:16px,100% 100%!important;" +
+    "box-shadow:inset 0 2px 5px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.07)!important;-webkit-appearance:none;appearance:none;padding-right:38px!important}" +
+    "html select.aog-hw:focus-visible{border-color:#f0c26e!important}html select.aog-hw option,html select.aog-hw optgroup{background:#17181c;color:#f1ebdf}";
+  (D.head || D.documentElement).appendChild(HW);
+  function rgbOf(str) { var m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(str || ""); return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] == null ? 1 : +m[4] } : null; }
+  function lum(c) { var f = function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); }
+  /* what is behind an element: the first ancestor with a solid colour, or the first colour of its gradient */
+  function behind(el) {
+    for (var n = el.parentElement; n && n !== D.documentElement; n = n.parentElement) {
+      var cs = getComputedStyle(n), c = rgbOf(cs.backgroundColor);
+      if (c && c.a > 0.5) return c;
+      if (cs.backgroundImage && cs.backgroundImage !== "none") { var g = rgbOf(cs.backgroundImage); if (g && g.a > 0.5) return g; }
+    }
+    var hb = rgbOf(getComputedStyle(D.documentElement).backgroundColor);   /* the page itself, or paper when it is see-through */
+    return hb && hb.a > 0.5 ? hb : { r: 247, g: 242, b: 230, a: 1 };
+  }
+  function hardware() {
+    [].forEach.call(D.querySelectorAll("select:not(.aog-hw):not(.aog-hw-no)"), function (s) {
+      if (!s.offsetParent && s.getClientRects().length === 0) return;   /* not drawn yet: looked at again later */
+      if (s.closest(".sp-keep,.aogtop,.aog-learn")) { s.classList.add("aog-hw-no"); return; }
+      s.classList.add(lum(behind(s)) < 0.12 ? "aog-hw" : "aog-hw-no");
+    });
+  }
+  var hwT = 0, hwSoon = function () { clearTimeout(hwT); hwT = setTimeout(hardware, 120); };
+  function hwStart() { hardware(); try { new MutationObserver(hwSoon).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden", "open"] }); } catch (e) {} window.addEventListener("load", hwSoon); }
+  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", hwStart); else hwStart();
+
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
   /* after the doors and the menus are drawn; the course box arrives later (aog-grace.js), so it is watched for a while */
   if (shell) {

@@ -230,6 +230,7 @@
       /* it ends in silence: a node only runs when it reaches the speakers, and the take is not played twice */
       R.sink = c.createGain(); R.sink.gain.value = 0;
       o.tap().connect(R.node); R.node.connect(R.sink); R.sink.connect(c.destination);
+      try { if (window.AOGRoom) AOGRoom.rec(c, o.tap(), R.node); } catch (e) {}   /* AOG-STUDIO-ROOM-SOUND-V1: a take carries the room */
     }
     function arm(on) { R.on = on; if (R.node && R.node.port) R.node.port.postMessage({ t: "arm", on: on }); }
     function finish() {
