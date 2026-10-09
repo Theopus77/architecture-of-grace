@@ -153,6 +153,15 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pm-now{margin:.45rem 0 0;color:#f1e9da;font-size:.95rem}
 .pm-now b{color:#ffd36b}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* ══ AOG-FINISH-PADS-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 2: each instrument its own finish). The pads as rubber: matte,
+   a soft dish in the middle, a dark gap around each one as if set into the panel; a hit lights the pad from underneath in
+   gold, only while your finger is on it. Nothing glows on its own. ══ */
+#pads .pad:not(.hit){background-color:#25282d;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23r)'/></svg>"),
+  radial-gradient(120% 120% at 50% 40%,#30343a 0%,#272a30 55%,#1d2024 100%)}
+#pads .pad{border-radius:10px;box-shadow:0 0 0 3px #0b0c0e,0 0 0 4px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.1),inset 0 -3px 6px rgba(0,0,0,.45)}
+#pads .pad.sel:not(.hit){box-shadow:0 0 0 3px #0b0c0e,0 0 0 4px rgba(255,211,107,.5),inset 0 0 0 2px #ffd36b,inset 0 -3px 6px rgba(0,0,0,.45)}
+#pads .pad.hit{background-color:#ffd36b;background-image:radial-gradient(90% 90% at 50% 55%,#fff1c4 0%,#ffd36b 50%,#e8a93a 100%);
+  box-shadow:0 0 0 3px #0b0c0e,0 0 16px 2px rgba(255,200,90,.55),inset 0 2px 5px rgba(120,70,0,.35)}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->

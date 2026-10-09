@@ -1,6 +1,8 @@
 /* The rooms reach for the ceiling (Jimmy, 2026-10-09: "1, 3, 2, 4").
    1 · AOG-ROOMS-ROOM-V1: inside the Recording Studio every room sits in the dim control room (its page takes the room's
        colour), and a menu on a dark panel is the desk's dark window with gold type (class aog-hw), on a room's own page too.
+   2 · AOG-FINISH-*-V1: the piano's lacquer, gold name, velvet and keys that go down; the guitar's and bass's rosewood, pearl,
+       bone and wound strings; the Drum Machine's rubber pads that glow when hit; the Band's keys like the piano's.
    3 · AOG-STUDIO-ROOM-SOUND-V1: one Room knob (Dry, Small room, Studio, Hall), beside Record and in the Studio's bar; the
        room adds a tail to what you hear and to your takes; it starts Dry; the turntables stay dry.
    Readable and calm on an iPad and an iPhone, light and dark; nothing sideways. No page errors. Port 9261. */
@@ -48,6 +50,27 @@ async function inRoom(m, room) {
     }
     await cx.close();
   }
+  /* 2 · each instrument its own finish */
+  const fc = await b.newContext({ viewport: { width: 1280, height: 900 } }); watch(fc); await routes(fc);
+  const fp = await fc.newPage();
+  await fp.goto(U + "music-piano.html"); await fp.waitForTimeout(1500);
+  const pf = await fp.evaluate(async () => { const w = document.querySelector("#kbd .wk"), plate = getComputedStyle(document.querySelector(".plate b"));
+    w.classList.add("down"); await new Promise(r => setTimeout(r, 300)); const t = getComputedStyle(w).transform; w.classList.remove("down");
+    return { felt: getComputedStyle(document.getElementById("kbd"), "::before").backgroundImage.includes("gradient"), gold: plate.color, serif: /Fraunces/.test(plate.fontFamily), down: t }; });
+  ok(pf.felt && pf.gold === "rgb(231, 199, 126)" && pf.serif && /matrix\(1, 0, 0, 1, 0, 2\)/.test(pf.down), "the piano: velvet over the keys, its name in gold leaf, a pressed key goes down: " + JSON.stringify(pf));
+  for (const g of ["music-guitar.html", "music-bass.html"]) {
+    await fp.goto(U + g); await fp.waitForTimeout(1500);
+    const nf = await fp.evaluate(() => { const q = s => document.querySelector("#neckBox " + s); return { wood: getComputedStyle(q(".nk-wood")).fill, pearl: getComputedStyle(q(".nk-inlay")).fill, nut: q(".nk-nut") ? getComputedStyle(q(".nk-nut")).fill : "url(#aogBone)", wound: getComputedStyle(q(".nk-str:not(.plain)")).strokeDasharray }; });
+    ok(/aogRose/.test(nf.wood) && /aogPearl/.test(nf.pearl) && /aogBone/.test(nf.nut) && nf.wound !== "none", `${g}: a rosewood board, pearl dots, a bone nut, wound strings: ${JSON.stringify(nf)}`);
+  }
+  await fp.goto(U + "music-pads.html"); await fp.waitForTimeout(1500);
+  const pd = await fp.evaluate(async () => { const p = document.querySelector("#pads .pad"); const a = getComputedStyle(p).backgroundImage; p.classList.add("hit"); await new Promise(r => setTimeout(r, 400)); const h = getComputedStyle(p).boxShadow; p.classList.remove("hit"); return { rubber: /radial-gradient/.test(a), glow: /255, 200, 90/.test(h) }; });
+  ok(pd.rubber && pd.glow, "the Drum Machine: rubber pads that glow gold from underneath when hit: " + JSON.stringify(pd));
+  await fp.goto(U + "music-band.html"); await fp.waitForTimeout(1500);
+  const bd = await fp.evaluate(() => { const o = document.querySelector("#kbd .wk.out"), w = document.querySelector("#kbd .wk:not(.out):not(.lit)"); return { ivory: getComputedStyle(w).backgroundColor, grey: o ? getComputedStyle(o).backgroundImage : "" }; });
+  ok(bd.ivory === "rgb(246, 240, 226)" && /207, 202, 192/.test(bd.grey), "the Band: ivory keys like the piano's, out-of-range keys still grey: " + JSON.stringify(bd));
+  await fc.close();
+
   /* on its own page a room keeps its paper, and its menus on dark panels are dark too */
   const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); watch(c); await routes(c);
   const p = await c.newPage();
