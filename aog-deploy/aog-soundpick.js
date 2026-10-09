@@ -29,10 +29,17 @@
     if (!src || !id || D.getElementById("spRow")) return;
     var oldBlk = src.closest(".blk"), line = D.getElementById("loadLine");
     /* where the two menus go */
+    /* an instrument already moved into its whole-screen view (a phone turned sideways) has left a marker where it lives in
+       the page (a comment named after it); the menus go by that, so they stay in the page and out of the play view */
+    function home(el) {
+      if (!el) return null; if (!el.closest("#pvNeck, #bpMain")) return el;
+      var w = D.createTreeWalker(D.body, NodeFilter.SHOW_COMMENT), n; while ((n = w.nextNode())) if (n.nodeValue === el.id) return n;
+      return null;
+    }
     var at, before = false;
-    if (id === "piano") at = D.getElementById("kbd");
-    else if (id === "band") { var kb = D.getElementById("kbd"); at = kb && kb.closest(".blk") && kb.closest(".blk").querySelector("h2"); }
-    else at = D.getElementById("neckBox");
+    if (id === "piano") at = home(D.getElementById("kbd"));
+    else if (id === "band") { var kb = home(D.getElementById("kbd")), kbb = kb && (kb.nodeType === 8 ? kb.parentNode : kb).closest(".blk"); at = kbb && kbb.querySelector("h2"); }
+    else at = home(D.getElementById("neckBox"));
     if (!at || !at.parentNode) return;
     var row = D.createElement("div");
     row.id = "spRow"; row.className = "row sp-row";
