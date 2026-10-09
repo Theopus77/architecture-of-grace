@@ -126,7 +126,13 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }
   /* the computer keys */
   { const {c, p, errs}=await open("guitar", "Desktop", {viewport:{width:1280,height:900}}); console.log("== guitar · keys");
+    /* AOG-SOLO-KEYS-CHOICE-V1: by default the letters play like the piano (A is C) */
     await p.evaluate(()=>{ document.activeElement.blur(); __v=[]; });
+    await p.keyboard.down("KeyA"); await p.waitForTimeout(120);
+    { const c0=await p.evaluate(()=>{ const [s,f]=[...KEYCELLS.values()][0].split(":").map(Number); return (TUNING[s]+f)%12; }); ok(c0===0, "by default A plays C, as on the piano: "+c0); }
+    await p.keyboard.up("KeyA"); await p.waitForTimeout(120);
+    /* "Only the scale": A plays the lowest lit note, as before */
+    await p.click('[data-so-keys="scale"]'); await p.evaluate(()=>{ document.activeElement.blur(); __v=[]; });
     await p.keyboard.down("KeyA"); await p.waitForTimeout(120);
     const k=await p.evaluate(()=>({n:__v.length, cells:[...KEYCELLS.values()], first:AOGSolo._t.keyCells()[0]}));
     ok(k.n===1 && k.cells.length===1 && k.cells[0]===k.first.s+":"+k.first.f, "A plays the lowest lit note, lit gold: "+k.cells[0]);
