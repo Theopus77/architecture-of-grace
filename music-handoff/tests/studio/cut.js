@@ -55,6 +55,9 @@ const pieces = p => p.evaluate(() => __aogStudio.pcs(__aogStudio.SONG.tracks[0].
   const sel = await p.evaluate(() => { const cs = getComputedStyle(document.getElementById("trackSel")); return cs.backgroundColor + " " + cs.color; });
   ok(/rgb\(18, 19, 22\) rgb\(246, 227, 180\)/.test(sel), "the desk's menus are dark with gold type: " + sel);
 
+  /* AOG-DESK-MIXFIRST-V1: below the console, the mixer comes first, then the track */
+  const order = await p.evaluate(() => [...document.querySelectorAll(".st-rest > .st-blk")].map(b => b.id || "").slice(0, 2).join(","));
+  ok(order === "mixerBlk,trackBlk", "below the console the mixer comes first, then the track: " + order);
   /* a tap on the wave puts ✂ Cut here on the wave; pressing it cuts there */
   ok(await p.evaluate(() => document.getElementById("cutNow").hidden), "before a tap there is no Cut here on the wave");
   await tapWave(p, 0.8);
