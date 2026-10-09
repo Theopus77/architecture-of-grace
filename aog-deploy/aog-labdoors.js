@@ -139,8 +139,11 @@
       pblk = inst && inst.parentNode;
     if (inst && pblk && pblk.parentNode === rig && !inst.hasAttribute("data-first2")) {
       var kid = function (sel) { return [].filter.call(pblk.children, function (e) { return e.matches(sel); }); };
-      var sp0 = kid(".sp-wrap")[0], slips = kid(".touch-line,.keys-line"), lead = id === "band" && !(window.matchMedia && matchMedia("(max-width:699px)").matches) ? [sp0, inst] : [inst, sp0];   /* on a phone the keys come first, the menus under them */
-      var seq = lead.concat(slips, [D.getElementById("chordStrip"), kid(".krow")[0]]).filter(function (e) { return e && e.parentNode === pblk; });
+      /* AOG-CHORDS-BY-NECK-V1 (Jimmy, 2026-10-09: "I want to be able to see / press the chords — they should sit above or
+         below the neck"): the chord buttons sit right above the instrument, so they show with it on the first screen */
+      var sp0 = kid(".sp-wrap")[0], slips = kid(".touch-line,.keys-line"), strip = D.getElementById("chordStrip"),
+        lead = id === "band" && !(window.matchMedia && matchMedia("(max-width:699px)").matches) ? [sp0, strip, inst] : [strip, inst, sp0];   /* on a phone the keys come first, the menus under them */
+      var seq = lead.concat(slips, [kid(".krow")[0]]).filter(function (e) { return e && e.parentNode === pblk; });
       var h2 = kid("h2")[0], mark = D.createComment("first");
       pblk.insertBefore(mark, h2 ? h2.nextSibling : pblk.firstChild);
       seq.forEach(function (e) { pblk.insertBefore(e, mark); }); pblk.removeChild(mark);
