@@ -854,6 +854,11 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · The console as a made thing (`AOG-DESK-ART-V1` in `music-studio.html`, `AOG-STUDIO-ART-V1` in `make_studio_page.py`).** Jimmy: "It looks like it is in the basement. THE CEILING IS MUCH MUCH higher in the quality of artistry and details."
+  - The Mixing Desk's console: a fine grain in the chassis (an SVG noise, no image file) and a soft bevel on the paper; engraved small capitals; a polished gold ▶ in a bezel; the readout in a recessed window, in Fraunces; a gold hairline with a ◆ under the top line; a ruler with bars numbered and beats ticked; the bars lined faintly behind the lanes; a light in each track's colour beside its name; waves bright at their heart and softly lit; Mute and Solo as hardware buttons with their own lights; fader caps with grip ridges and a centre line, over an engraved decibel scale; each channel named on a cream scribble strip (a computer and an iPad); the open channel's wave has its own playhead while the song is inside that recording; Shape the sound says "closed" or "open", as the drawing does.
+  - The lesson slip is deckled paper with a grain, held by a strip of tape.
+  - The Studio's bar is a strip of the same console: hardware buttons (● Record glows red while it records), My Track's layers on cream scribble strips with a green light when a take is there, a transport message on a small paper slip; the name in Fraunces.
+  - Paper and tape carry a plain cream colour under their grain, so the contrast check measures them.
 - **2026-10-09 · The room gets the screen (`AOG-STUDIO-ROOMY-V1`).** Jimmy, on his iPad in the Turntables: "With the two even three bars the user loses a huge portion of the screen."
   - `/the-studio`: the name, the doors and Own tab share one slim line; on an iPad or a computer the transport and My Track share one bar (a phone keeps two slim rows); a message from the transport ("Added to My Track.") floats just above the bar instead of adding a line; the tag line is kept for screen readers only (the transport says it). Made by `make_studio_page.py`.
   - Inside the Studio a room's own banner steps aside on every screen, not only on a phone (`aog-labdoors.js`): the doors already show its name and its drawing.

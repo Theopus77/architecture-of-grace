@@ -133,6 +133,45 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   .sh-top h1 { flex:1 1 auto; }
   .sh-top .sh-doors { order:3; flex:1 1 100%; }
 }
+/* AOG-STUDIO-ART-V1 (Jimmy, 2026-10-09: "THE CEILING IS MUCH MUCH higher in the quality of artistry and details"). The
+   Studio's bar is a strip of the same console as the Mixing Desk: a fine grain, buttons like hardware with their own lights,
+   My Track's layers named on cream scribble strips, a message on a small paper slip. Dark in light and dark themes alike. */
+.sh-top h1 { font-family:"Fraunces", var(--display); font-weight:500; font-size:1.32rem; letter-spacing:-.005em; }
+.mt { margin:0 -.35rem; padding:.55rem .7rem max(.55rem, env(safe-area-inset-bottom)); border-radius:16px 16px 0 0; border:1px solid #040405; border-bottom:0;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .055 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"), linear-gradient(180deg,#26282c 0%,#17181b 70%,#121316 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09), 0 -8px 22px -10px rgba(40,28,8,.45); }
+.tp-b { border:1px solid #050506; border-radius:8px; background:linear-gradient(#36383d,#25262a 60%,#1e1f22); color:#efe6d2;
+  font:600 .95rem/1.1 "Fraunces", var(--serif, Georgia, serif); letter-spacing:.01em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13), 0 2px 0 #08090a, 0 3px 7px rgba(0,0,0,.5); }
+.tp-b:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 #08090a; }
+.tp-rec { background:linear-gradient(#4a2620,#331a16 60%,#2a1512); color:#ffd9cf; }
+.tp-rec[aria-pressed="true"] { background:linear-gradient(#7a2a1c,#561b12); color:#fff3ee; box-shadow:inset 0 1px 0 rgba(255,255,255,.13), 0 2px 0 #08090a, 0 0 14px rgba(255,90,60,.45); }
+.tp-add { background:linear-gradient(#f6e3ad,#e0b85e 60%,#c99a3e); color:#2a1c06; border-color:#5e4512; }
+.tp-out { background:linear-gradient(#e9c271,#cf9f45 60%,#b58630); color:#241703; border-color:#5e4512; }
+.mt a.tp-b { min-height:44px; padding:0 .95rem; gap:.35rem; border:1px solid #050506; border-radius:8px; background:linear-gradient(#36383d,#25262a 60%,#1e1f22);
+  color:#efe6d2; font:600 .95rem/1.1 "Fraunces", var(--serif, Georgia, serif); white-space:nowrap; }
+.tp-back { color:#efe6d2; }
+.tp-line { background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#fbf6ea,#f3ead6); color:#1f1a12; border:0; border-radius:2px;
+  font:italic 400 .98rem/1.3 "Fraunces", var(--serif, Georgia, serif); box-shadow:0 6px 14px rgba(40,28,8,.28), 0 1px 1px rgba(0,0,0,.15); transform:rotate(-.5deg); background-color:#f7f0e1; }
+#mtH { color:#c2b8a3 !important; text-shadow:0 -1px 0 rgba(0,0,0,.85); }
+.mt select { background:#1b1c20; color:#f3d38e; border:1px solid #4b4130; border-radius:8px; font-family:"Fraunces", var(--serif, Georgia, serif); font-weight:500;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.7); }
+.mt select option { color:#0A1E33; background:#FFFDF8; }
+@media (min-width:700px) { .mtrow { border-left-color:#050506 !important; box-shadow:inset 1px 0 0 rgba(255,255,255,.05); } }
+.mt .lay { min-height:44px; gap:.4rem; padding:0 .7rem; border:0; border-radius:2px; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#ece3cf,#dfd3b9); color:#3b3326;
+  font:italic 500 .92rem/1 "Fraunces", var(--serif, Georgia, serif); box-shadow:0 1px 2px rgba(0,0,0,.55); background-color:#e6dcc5; }
+.mt li:nth-child(odd) .lay { transform:rotate(-.6deg); }
+.mt li:nth-child(even) .lay { transform:rotate(.5deg); }
+.mt .lay .mk { font:700 .8rem/1 var(--sans); color:#5e5544; }
+.mt .lay:not(.on) { background-color:#d2c7ad; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#d8cdb3,#cbbfa3); color:#3d3527; }
+.mt .lay.on { opacity:1; background-color:#f6ecd2; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#fbf3dc,#f0e2bf); color:#1f1a12; }
+.mt .lay.on .mk { color:#1d6b3f; }
+.mt .lay.on::before { content:""; width:7px; height:7px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#fff 0,#3fbf6f 45%); box-shadow:0 0 6px #3fbf6f; }
+:root[data-theme="dark"] .mt .on { border-color:transparent; }
+:root[data-theme="dark"] .mt .on .mk { color:#1d6b3f; }
+.mt .lay { background-color:#e6dcc5; } .mt .lay:not(.on) { background-color:#d2c7ad; } .mt .lay.on { background-color:#f6ecd2; }   /* the paper's own colour, under its grain */
+.mt ul { padding:4px 2px; }
+@media (max-width:699px) { .mt { margin:0 -.5rem; padding:.45rem .55rem max(.45rem, env(safe-area-inset-bottom)); border-radius:14px 14px 0 0; } .mt a.tp-b { padding:0 .55rem; font-size:.88rem; } }
 @media print { .sh-doors, .mt, .sh-room { display:none; } }
 """
 JS = r"""<script src="/aog-handoff.js"></script>
