@@ -674,6 +674,15 @@ html.aog-keys .st-cp .st-keys{display:block}
 /* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
 html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
 html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
+/* AOG-DESK-SONGS-BTN-V1: Your songs, a hardware button with the locker's light */
+.st-desk .st-songs{flex:0 0 auto;display:inline-flex;align-items:center;gap:.6rem;min-height:48px;padding:.35rem .95rem .35rem .75rem;border-radius:8px;border:1px solid #050506;cursor:pointer;
+  background-color:#26282c;background-image:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#efe7d6;text-align:left;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
+.st-desk .st-songs b{display:block;font:500 1rem/1.15 "Fraunces",var(--serif,Georgia,serif);color:#f3e6c6}
+.st-desk .st-songs small{display:block;font:700 .62rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#b9ad95;margin-top:2px}
+.st-desk .st-songs .st-led.on{background:radial-gradient(circle at 35% 30%,#fff 0,#3fbf6f 45%);box-shadow:0 0 7px #3fbf6f}
+.st-desk .st-songs:active{transform:translateY(1px)}
+@media (prefers-reduced-motion:reduce){ .st-desk .st-songs:active{transform:none} }
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -716,7 +725,9 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       <div class="st-blk" id="transport">
         <div class="st-top">
           <button type="button" class="st-btn st-play" id="playBtn"></button>
+          <!-- AOG-DESK-SONGS-BTN-V1 (Jimmy, 2026-10-09: "yes so I can work between machines"): one tap to saving and opening songs -->
           <div class="st-read"><b id="posOut" class="st-posw">&nbsp;</b><!-- AOG-DESK-COUNTER-V1: the tape counter (its words stay in #posOut for a screen reader) --><div class="st-ctr" id="ctr" aria-hidden="true"></div><div class="st-ctl" id="ctrLab" aria-hidden="true" hidden></div><span id="tempoOut"></span></div>
+          <button type="button" class="st-songs" id="songsBtn"><i class="st-led" id="songsLed" aria-hidden="true"></i><span><b data-t="songsBtn"></b><small id="songsSay"></small></span></button>
           <!-- AOG-DESK-SLIP-V2 (Jimmy, 2026-10-09: "The lesson sheet needs to move"): the lesson is a note taped to the console,
                in the empty corner beside play; on a phone it moves to the foot of the console (placeSlip) -->
           <div class="st-slipbox" id="slipBox"><span class="st-tapeh" aria-hidden="true"></span><div class="st-slip" id="slip" aria-live="polite"></div></div>
@@ -959,6 +970,7 @@ const STR={
   voiceReplace:{en:"Recording again takes the place of the take on track 8.",es:"Grabar otra vez reemplaza la toma de la pista 8."},
   /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
   carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
+  songsBtn:{en:"Your songs",es:"Tus canciones"}, songsOn:{en:"Locker on",es:"Casillero activo"}, songsOff:{en:"Save or open",es:"Guardar o abrir"},
   carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
   songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
   fileH:{en:"With a song file",es:"Con un archivo de canción"},
@@ -2205,7 +2217,16 @@ function drawQr(){
 }
 function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone"); paintLocker(); }
 function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)}); }
+/* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
+function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
+function goSongs(){
+  const b=$("carryBlk"); if(!b) return; b.scrollIntoView({block:"start"});
+  const h=b.querySelector("h2"); if(h){ h.setAttribute("tabindex","-1"); try{ h.focus({preventScroll:true}); }catch(e){} }
+  if(CARRY.lock){ try{ lockList(true); }catch(e){} }
+  else { const d=b.querySelector("#locker details"); if(d) d.open=true; }
+}
 function paintLocker(){
+  try{ paintSongsBtn(); }catch(e){}
   const box=$("locker"), lk=CARRY.lock, dis=CARRY.busy ? " disabled" : "";
   if(!lk){
     const keepU=$("lkUrl") ? $("lkUrl").value : "", keepK=$("lkKey") ? $("lkKey").value : "";
@@ -2605,7 +2626,7 @@ function paintText(){
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
   $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
 }
-function paintAll(){ paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); }
+function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); }
 
 /* ── 1 · play ── */
 function paintPlay(){
@@ -3230,6 +3251,7 @@ function bind(){
     if(PLAY.on){ stop(); play(); } paintTransport(); paintTimeline(); };
   $("loopFrom").onchange=()=>{ SONG.loopFrom=+$("loopFrom").value; LES.mark("loopSet"); if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save(); reschedule(); paintTransport(); paintTimeline(); };
   $("loopTo").onchange=()=>{ SONG.loopTo=+$("loopTo").value; LES.mark("loopSet"); if(SONG.loopFrom>SONG.loopTo) SONG.loopFrom=SONG.loopTo; save(); reschedule(); paintTransport(); paintTimeline(); };
+  $("songsBtn").onclick=goSongs;   /* AOG-DESK-SONGS-BTN-V1 */
   $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
   $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
   $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });

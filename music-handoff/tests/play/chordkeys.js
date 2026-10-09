@@ -1,7 +1,8 @@
 /* AOG-CHORD-KEYS-10-V1 — Jimmy: "I have only use 6 keys for the chords. There are 10, 1 through 0 should be used and the other
    keys if needed." On the guitar and the bass, 1 to 0 play the ten chord buttons in order; − and = would play an eleventh and
    a twelfth (there are ten, so they do nothing); each button shows its key once a key is pressed; the picture of the keys
-   says so, English and Spanish; the same inside the Recording Studio. No page errors. Port 9262. */
+   says so, English and Spanish; the same inside the Recording Studio. Solo: the letters start like the piano, with "Only the scale" as a choice (AOG-SOLO-KEYS-CHOICE-V1). The desk's Your songs
+   button (AOG-DESK-SONGS-BTN-V1). No page errors. Port 9262. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const path = require("path");
 const PORT = 9262, U = "http://localhost:" + PORT + "/";
@@ -31,6 +32,25 @@ const spy = f => f.evaluate(() => { window.__pd = []; if (!window.padDown.__spy)
     ok(await p.evaluate(() => document.querySelector("#keyMap .km-row .km-say").textContent) === "los acordes", inst + ": in Spanish too");
     await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); });
   }
+  /* AOG-SOLO-KEYS-CHOICE-V1: in Solo the letters play every note as on the piano, unless "Only the scale" is chosen */
+  await p.goto(U + "music-guitar.html"); await p.evaluate(() => { try { localStorage.removeItem("aog.guitar.solo.v1"); } catch (e) {} }); await p.reload(); await p.waitForTimeout(1500);
+  await p.click('[data-so-mode="solo"]'); await p.waitForTimeout(600); await p.mouse.click(5, 300);
+  const held = async code => { await p.keyboard.down(code); await p.waitForTimeout(100); const r = await p.evaluate(() => [...KEYCELLS.values()].map(c => { const [s, f] = c.split(":").map(Number); return (TUNING[s] + f) % 12; }).join(",")); await p.keyboard.up(code); return r; };
+  const pianoMode = await p.evaluate(() => document.querySelector('[data-so-keys="piano"]').getAttribute("aria-pressed"));
+  const a1 = await held("KeyA"), w1 = await held("KeyW");
+  ok(pianoMode === "true" && a1 === "0" && w1 === "1", `Solo starts like the piano: A plays C (${a1}), W plays C♯ (${w1})`);
+  await p.click('[data-so-keys="scale"]'); await p.mouse.click(5, 300);
+  const w2 = (await held("KeyW")).split(",").filter(x => ["1","3","6","8","10"].includes(x)).join(""), kept = await p.evaluate(() => JSON.parse(localStorage.getItem("aog.guitar.solo.v1")).keys);
+  ok(w2 === "" && kept === "scale", `"Only the scale": W plays no note between the white keys, and the choice is kept (${kept})`);
+  await p.click('[data-so-keys="piano"]');
+
+  /* AOG-DESK-SONGS-BTN-V1: Your songs on the console goes straight to saving and opening */
+  await p.goto(U + "music-studio.html"); await p.waitForTimeout(1200);
+  const sb = await p.evaluate(() => { const b = document.getElementById("songsBtn"); return { inTop: !!b.closest("#transport .st-top"), text: b.textContent }; });
+  await p.click("#songsBtn"); await p.waitForTimeout(400);
+  const at = await p.evaluate(() => { const r = document.getElementById("carryBlk").getBoundingClientRect(); return { top: Math.round(r.top), save: !!document.getElementById("fileSave"), lockOpen: !!document.querySelector("#locker details[open]") }; });
+  ok(sb.inTop && /Your songs/.test(sb.text) && /Save or open/.test(sb.text) && at.top >= -2 && at.top < 200 && at.lockOpen, "Your songs sits on the console and opens Save, Open and the locker: " + JSON.stringify({ sb, at }));
+
   /* inside the Recording Studio: the keys reach the room */
   await p.goto(U + "the-studio#guitar");
   await p.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && /guitar/.test(d.location.pathname); }, null, { timeout: 20000 });
