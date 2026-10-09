@@ -620,11 +620,12 @@ const STR={
   kmH:{en:"Play it on a keyboard",es:"Tócala con un teclado"},
   kmChords:{en:"the chords",es:"los acordes"},
   kmStrings:{en:"the six strings of the chord, low to high (on the strum strip)",es:"las seis cuerdas del acorde, de grave a aguda (en la franja de rasgueo)"},
-  kmNotes:{en:"the notes of the key, going up (the letters on the neck)",es:"las notas del tono, subiendo (las letras en el mástil)"},
+  kmNotes:{en:"the notes, like the piano's white keys: C D E F G A B C D E F",es:"las notas, como las teclas blancas del piano: Do Re Mi Fa Sol La Si Do Re Mi Fa"},
+  kmSharps:{en:"the notes in between (♯), like the black keys",es:"las notas de en medio (♯), como las teclas negras"},
   kmMove:{en:"move along the neck",es:"moverse por el mástil"},
   kmSpaceKey:{en:"Space",es:"Espacio"}, kmSpace:{en:"start and stop",es:"empezar y parar"},
-  keysLine: GTR?{en:"On a computer, 1 to 0 strum the ten chords, Q W E R T Y pluck the six strings, and A to K play the notes of the key. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 rasguean los diez acordes, Q W E R T Y puntean las seis cuerdas, y de la A a la K tocan las notas del tono. Z y X se mueven por el mástil. La barra espaciadora empieza y para."}
-               :{en:"On a computer, 1 to 0 play the ten chords, and A to K play the notes of the key, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 tocan los diez acordes, y de la A a la K tocan las notas del tono, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."},
+  keysLine: GTR?{en:"On a computer, 1 to 0 strum the ten chords, the letters play notes as on the piano, and Z X C V B N pluck the six strings. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 rasguean los diez acordes, las letras tocan notas como en el piano, y Z X C V B N puntean las seis cuerdas. ← y → se mueven por el mástil. La barra espaciadora empieza y para."}
+               :{en:"On a computer, 1 to 0 play the ten chords, and the letters play notes as on the piano. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 tocan los diez acordes, y las letras tocan notas como en el piano. ← y → se mueven por el mástil. La barra espaciadora empieza y para."},
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
   era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
   eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
@@ -2510,9 +2511,10 @@ function paintKeyMap(){
   const box=$("keyMap"); if(!box) return;
   const caps=a=>a.map(k=>`<kbd>${k}</kbd>`).join("");
   const rows=[[caps(PAD_KEYS.slice(0, allPads().length)), t("kmChords")]];
-  if(GTR) rows.push([caps(["Q","W","E","R","T","Y"]), t("kmStrings")]);
-  rows.push([caps(["A","S","D","F","G","H","J","K"]), t("kmNotes")]);
-  rows.push([caps(["Z"])+caps(["X"]), t("kmMove")]);
+  rows.push([caps(["A","S","D","F","G","H","J","K","L",";","'"]), t("kmNotes")]);
+  rows.push([caps(["W","E","T","Y","U","O","P"]), t("kmSharps")]);
+  if(GTR) rows.push([caps(["Z","X","C","V","B","N"]), t("kmStrings")]);
+  rows.push([caps(["←"])+caps(["→"]), t("kmMove")]);
   rows.push([`<kbd class="km-space">${t("kmSpaceKey")}</kbd>`, t("kmSpace")]);
   const q=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   box.innerHTML=`<p class="km-h">${q(t("kmH"))}</p>`+rows.map(([k,w])=>`<div class="km-row"><span class="km-caps">${k}</span><span class="km-say">${q(w)}</span></div>`).join("");
@@ -3134,19 +3136,22 @@ function pvInit(){
   window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
   pvText(); pvSync();
 }
-/* computer keys: by position, so other keyboard layouts work too.
-   AOG-STRINGS-KEYS-V2 (Jimmy, 2026-10-09: "I don't really understand the keyboard for the guitar and bass"). One rule, the
-   same as the Piano and the Band: numbers play chords, letters play notes. 1 to 6 are the six chord pads (their numbers
-   are on them). A S D F G H J K are the notes of the key, going up (do re mi … do), on the guitar and the bass alike, and
-   each one's letter is drawn on the neck where it plays. The guitar's six strings, picked one by one in the chord you
-   hold, are the row above: Q W E R T Y, low to high, drawn on the strum strip beside each string. */
-const STRING_KEYS=["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"];
-const PICK_KEYS=GTR?["KeyQ","KeyW","KeyE","KeyR","KeyT","KeyY"]:[];
+/* AOG-STRINGS-KEYS-V3 (Jimmy, 2026-10-09: "the wiring for the keys for the notes on the guitar and bass MAKES no sense").
+   The letters play notes the same way in every room, as on the piano: A S D F G H J K L ; ' are the white keys (C D E F G A
+   B C D E F) and W E T Y U O P the black keys between them. On the guitar they start at the C below middle C, on the bass an
+   octave lower; each note plays at its place on the neck nearest the frets in view, and lights there. 1 to 0 are the ten
+   chords (AOG-CHORD-KEYS-10-V1). The guitar's six strings, picked one by one in the chord you hold, are the bottom row:
+   Z X C V B N, low to high, drawn on the strum strip beside each string. ← and → move along the neck. Solo mode keeps its
+   own keys (aog-solo.js). */
+const NOTE_KEYS={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
+const NOTE_BASE=GTR?48:36;
+const STRING_KEYS=Object.keys(NOTE_KEYS);
+const PICK_KEYS=GTR?["KeyZ","KeyX","KeyC","KeyV","KeyB","KeyN"]:[];
 function keysShown(){ try{ return document.documentElement.classList.contains("aog-keys") || matchMedia("(hover:hover) and (pointer:fine)").matches; }catch(e){ return false; } }
 /* the letters on the neck: each note's key beside the spot it plays; the guitar's pick keys on the strum strip */
 function keyLetters(){
   const on=keysShown() && !(window.AOGSolo && AOGSolo.isOn());
-  const cells=on ? STRING_KEYS.map((k,i)=>{ const cl=cellFor(scaleNote(i)); return cl ? cl.s+":"+cl.f : ""; }) : [];
+  const cells=[];   /* AOG-STRINGS-KEYS-V3: the notes follow the piano's layout (the picture of the keys shows it), so the neck stays clear */
   const sig=[on, cells.join(","), NECK.W, NECK.n, S.fret0].join("|");
   document.querySelectorAll("svg").forEach(svg=>{
     if(!svg.querySelector(".dot")) return;
@@ -3172,10 +3177,10 @@ document.addEventListener("keydown",(e)=>{
   if(si>=0 || pk>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); }
     if(e.repeat||KEYCELLS.has(e.code)) return;
     if(pk>=0){ const c=shapeChord(), f=c?shapeFor(c)[pk]:0; pluckShape(pk, 0.72); if(f>=0){ KEYCELLS.set(e.code, pk+":"+f); lessonNote(pk, f); } }
-    else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
+    else { const cl=cellFor(NOTE_BASE+NOTE_KEYS[e.code]); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
     litNeck(); return; }
   const pi=padKey(e); if(pi>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); } if(!e.repeat) padDown(pi, 0.74); return; }
-  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat) moveNeck(e.code==="KeyZ"?-1:1); return; }
+  if(e.code==="ArrowLeft"||e.code==="ArrowRight"){ if(e.target && e.target.closest && e.target.closest("input,select")) return; e.preventDefault(); if(!e.repeat) moveNeck(e.code==="ArrowLeft"?-1:1); return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
     if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
