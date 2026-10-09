@@ -360,8 +360,11 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
      plays. What stays with the Studio: typing in a box or a menu, Tab to move around, and Space or Enter on one of the
      Studio's own buttons. */
   function keyOn(e) {
-    if (e.metaKey || e.ctrlKey || e.altKey || e.key === "Tab") return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
     var t = e.target, tag = t && t.tagName;
+    /* AOG-STRING-TAB-V1: Tab goes on to the room only when nothing in the Studio has the keyboard (the guitar and the bass
+       pick a string with it); on one of the Studio's own buttons it moves to the next, as always */
+    if (e.key === "Tab" && t && t !== D.body && t !== D.documentElement) return;
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || (t && t.isContentEditable)) return;
     if ((e.key === " " || e.key === "Enter") && t && t.closest && t.closest("button, summary, select" + (e.key === "Enter" ? ", a" : ""))) return;
     var w, d; try { w = fr.contentWindow; d = fr.contentDocument; } catch (err) { return; }
