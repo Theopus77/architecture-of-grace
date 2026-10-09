@@ -229,6 +229,11 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-take b{color:#f1ebdf}
 .st-take audio{height:40px;max-width:100%;flex:1 1 14rem;min-width:0}
 .st-new{margin-top:1.2rem}
+/* AOG-STUDIO-SENDOUT-V1: the file that leaves the Studio */
+.st-out b,.st-out .st-len{flex:1 1 100%}
+.st-out .st-len{margin-top:-.4rem;overflow-wrap:anywhere}
+.st-out .st-btn{flex:0 1 auto;min-width:9rem}
+.st-out .st-info{flex:1 1 100%}
 /* ── 6 · AOG-STUDIO-CARRY-V1: a song file, and your locker in Google Drive ── */
 .st-name{max-width:30rem}
 .st-desk input[type=text],.st-desk input[type=url],.st-desk input[type=password]{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);
@@ -348,9 +353,11 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 
       <div class="st-blk">
         <h2 class="st-h" data-t="finishH"></h2>
-        <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button></div>
+        <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
         <p class="st-line" id="mixLine" aria-live="polite"></p>
         <div id="mixOut"></div>
+        <p class="st-line" id="outLine" aria-live="polite"></p>
+        <div id="outBox"></div>
         <p class="st-line" id="sendLine" aria-live="polite"></p>
         <div class="st-row st-new"><button type="button" class="st-btn st-clear" id="newBtn"></button></div>
         <div class="st-ask" id="newAsk" hidden>
@@ -479,6 +486,20 @@ const STR={
   gone:{en:"A recording could not be found, so its track is empty now.",es:"No se encontró una grabación, así que su pista quedó vacía."},
   mixName:{en:"Mixing desk · Your song · {bpm} BPM · {bars} bars",es:"Mesa de mezclas · Tu canción · {bpm} BPM · {bars} compases"},
   file:{en:"my-song",es:"mi-cancion"},
+  /* AOG-STUDIO-SENDOUT-V1 (STUDIO-HANDOFF §12: "Send it out … leaves the Studio as a file") */
+  outBtn:{en:"Send it out",es:"Compártela"},
+  outMaking:{en:"Making your file…",es:"Haciendo tu archivo…"},
+  outSilent:{en:"Your song is silent, so there is nothing to send. Turn a track up first.",es:"Tu canción está en silencio, así que no hay nada que enviar. Primero sube una pista."},
+  outReady:{en:"Your file is ready",es:"Tu archivo está listo"},
+  outYours:{en:"This file stays yours. Nothing is uploaded.",es:"Este archivo es tuyo. No se sube nada."},
+  outShare:{en:"Share…",es:"Compartir…"}, outShareAria:{en:"Share {name}",es:"Compartir {name}"},
+  outDownload:{en:"Download",es:"Descargar"}, outDownloadAria:{en:"Download {name}",es:"Descargar {name}"},
+  outStems:{en:"Each track on its own (.zip)",es:"Cada pista sola (.zip)"},
+  outStemsMaking:{en:"Making each track… {a} of {b}",es:"Haciendo cada pista… {a} de {b}"},
+  outStemsReady:{en:"Each track on its own: {n} files in one .zip",es:"Cada pista sola: {n} archivos en un .zip"},
+  outShared:{en:"Sent.",es:"Enviado."}, outSaved:{en:"Saved: {name}.",es:"Guardado: {name}."},
+  outLeft:{en:"Not in the file: {list}.",es:"No están en el archivo: {list}."},
+  trackFile:{en:"track",es:"pista"},
   /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
   carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
   carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
@@ -1339,15 +1360,17 @@ async function restore(){
 
 /* ══ Make the mix: the same engine in an OfflineAudioContext, then a 16-bit .wav ══ */
 let MIX=null;
-function wavBlob(Lc, Rc, sr){
+function wavBlob(Lc, Rc, sr, g){ return new Blob([wavBuf(Lc, Rc, sr, g)],{type:"audio/wav"}); }
+function wavBuf(Lc, Rc, sr, g){
+  g=g>0 ? g : 1;
   const n=Lc.length, ab=new ArrayBuffer(44+n*4), v=new DataView(ab);
   const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
   str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
   v.setUint32(24,sr,true); v.setUint32(28,sr*4,true); v.setUint16(32,4,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,n*4,true);
   let o=44;
-  for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,Lc[i])), r=Math.max(-1,Math.min(1,Rc[i]));
+  for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,Lc[i]*g)), r=Math.max(-1,Math.min(1,Rc[i]*g));
     v.setInt16(o, l<0?l*0x8000:l*0x7fff, true); v.setInt16(o+2, r<0?r*0x8000:r*0x7fff, true); o+=4; }
-  return new Blob([ab],{type:"audio/wav"});
+  return ab;
 }
 function render(oc){ return new Promise((ok,no)=>{ oc.oncomplete=e=>ok(e.renderedBuffer); const p=oc.startRendering(); if(p && p.then) p.then(ok,no); }); }
 /* ⚠ every compressor looks 6 ms ahead, so it hands the sound on 6 ms late; every path through the chain passes three
@@ -1377,13 +1400,7 @@ async function makeMix(){
   if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("mixQuiet"); return; }
   btn.disabled=true; line.textContent=t("mixing");
   try{
-    await stretchAll();             /* AOG-STUDIO-EDIT-V1: every slower or faster track ready first */
-    const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat=await chainLatency();
-    const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
-    const oc=new OC(2, frames+lat, MIX_SR), E=makeEngine(oc, false);
-    schedule(E, 0, end, 0);
-    const buf=await render(oc);
-    const Lc=buf.getChannelData(0).subarray(lat, lat+frames), Rc=(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames);
+    const {Lc, Rc, frames}=await renderSong(null);
     const blob=wavBlob(Lc, Rc, MIX_SR);
     setMix({wav:blob, sec:frames/MIX_SR, bars:songBars(), bpm:songBpm(), body:songEndMusic(), at:Date.now()});
     try{ await sput("mix", {wav:blob, sec:MIX.sec, bars:MIX.bars, bpm:MIX.bpm, body:MIX.body, at:MIX.at}); }catch(e){}
@@ -1392,6 +1409,18 @@ async function makeMix(){
     line.textContent=t("mixReady")+(out.length ? " "+t("mixLeft",{list:out.map(i=>t("trackLow",{n:i+1})).join(", ")}) : "");
   }catch(e){ line.textContent=t("fail"); }
   btn.disabled=false;
+}
+/* the song through the whole desk, as a mix (only: null) or one track alone through its own strip and the master
+   (only: its number; its mute and solo are set aside, so a stem is that track as the mix hears it) */
+async function renderSong(only){
+  await stretchAll();             /* AOG-STUDIO-EDIT-V1: every slower or faster track ready first */
+  const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat=await chainLatency();
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const oc=new OC(2, frames+lat, MIX_SR), E=makeEngine(oc, false);
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? volGain(SONG.tracks[j].vol) : 0; });
+  schedule(E, 0, end, 0);
+  const buf=await render(oc);
+  return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
 }
 function setMix(m){
   if(MIX && MIX.url) URL.revokeObjectURL(MIX.url);
@@ -1690,6 +1719,118 @@ function bindCarry(){
     else if(el.hasAttribute("data-lkrmyes")) lockRemove(el.getAttribute("data-lkrmyes"));
   });
   $("locker").addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="lkUrl" || e.target.id==="lkKey")){ e.preventDefault(); lockConnect(); } });
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-STUDIO-SENDOUT-V1 (2026-10-09) — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a
+   file". Send it out makes the song through the whole desk, as it is now, and hands over one stereo .wav:
+   - loud enough to hear and never clipped: its loudest moment is set to −1 dB (by at most 12 dB up or down);
+   - a silent song is told plainly, and nothing is made;
+   - Share… opens the device's share sheet (Messages, Mail, AirDrop, Files) where there is one; Download everywhere.
+     Share is its own tap: Safari only opens the sheet straight from a tap, not seconds later;
+   - Each track on its own: one .zip, a .wav for every track heard in the mix, at the very level of the file sent,
+     so they line up and add back to the song. Only once the song's file is made (the file is never held up by them).
+   The voice take and the chops from your own records join this when they exist (§10, §9). Nothing is uploaded.
+   ══════════════════════════════════════════════════════════════════════════ */
+const OUT={song:null, stems:null, busy:false};
+function slugOf(x){ return String(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40); }
+function songSlug(){ return slugOf(songTitle()) || t("file"); }
+function peakOf(Lc, Rc){ let pk=0; for(let i=0;i<Lc.length;i++){ const a=Lc[i]<0?-Lc[i]:Lc[i], b=Rc[i]<0?-Rc[i]:Rc[i]; if(a>pk) pk=a; if(b>pk) pk=b; } return pk; }
+/* the gain that puts the loudest moment at −1 dB, never more than 12 dB either way */
+function outGain(pk){ if(!(pk>0)) return 1; return Math.max(dbGain(-12), Math.min(dbGain(12), dbGain(-1)/pk)); }
+function shareable(f){ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } }
+function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
+function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
+async function sendOut(){
+  const line=$("outLine"), btn=$("outBtn");
+  if(OUT.busy) return;
+  if(!hasClips()){ line.textContent=t("mixNeed"); return; }
+  if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("outSilent"); return; }
+  OUT.busy=true; btn.disabled=true; line.textContent=t("outMaking");
+  try{
+    const {Lc, Rc}=await renderSong(null), pk=peakOf(Lc, Rc);
+    if(pk<dbGain(-60)){ line.textContent=t("outSilent"); }
+    else {
+      dropOut("song"); dropOut("stems");
+      const g=outGain(pk), name=songSlug()+".wav";
+      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut()});
+      line.textContent="";
+    }
+  }catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; btn.disabled=false; paintOut();
+}
+async function sendStems(){
+  const line=$("outLine"); if(OUT.busy || !OUT.song) return;
+  const list=SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && audible(i) && BUF.has(SONG.tracks[i].clip.id));
+  if(!list.length) return;
+  OUT.busy=true; paintOut();
+  try{
+    const files=[];
+    for(let k=0;k<list.length;k++){
+      line.textContent=t("outStemsMaking",{a:k+1, b:list.length});
+      const i=list[k], {Lc, Rc}=await renderSong(i);
+      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g))});
+    }
+    dropOut("stems");
+    OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
+    line.textContent="";
+  }catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; paintOut();
+}
+/* a .zip that stores each file as it is (no squeezing: a .wav hardly shrinks), so any phone or computer opens it */
+const CRC=(()=>{ const T=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1 ? 0xEDB88320^(c>>>1) : c>>>1; T[n]=c>>>0; } return T; })();
+function crc32(u){ let c=0xFFFFFFFF; for(let i=0;i<u.length;i++) c=CRC[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){
+  const parts=[], cen=[], d=new Date(), enc=new TextEncoder();
+  const dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF, dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+  let off=0;
+  files.forEach(f=>{
+    const nm=enc.encode(f.name), crc=crc32(f.data), n=f.data.length;
+    const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true); h.setUint16(10,dt,true); h.setUint16(12,dd,true);
+    h.setUint32(14,crc,true); h.setUint32(18,n,true); h.setUint32(22,n,true); h.setUint16(26,nm.length,true); h.setUint16(28,0,true);
+    parts.push(h.buffer, nm, f.data);
+    const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true); c.setUint16(12,dt,true); c.setUint16(14,dd,true);
+    c.setUint32(16,crc,true); c.setUint32(20,n,true); c.setUint32(24,n,true); c.setUint16(28,nm.length,true); c.setUint32(42,off,true);
+    cen.push(c.buffer, nm);
+    off+=30+nm.length+n;
+  });
+  const cs=cen.reduce((a,b)=>a+(b.byteLength!=null ? b.byteLength : b.length),0), e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,cs,true); e.setUint32(16,off,true);
+  return new Blob(parts.concat(cen,[e.buffer]), {type:"application/zip"});
+}
+async function shareOut(k){
+  const o=OUT[k], line=$("outLine"); if(!o) return;
+  try{ await navigator.share({files:[o.file], title:songTitle()}); line.textContent=t("outShared"); }
+  catch(e){ if(!(e && e.name==="AbortError")) line.textContent=t("fail"); }
+}
+function outRow(k, label){
+  const o=OUT[k], nm=o.file.name;
+  return `<div class="st-take st-out"><b>${esc(label)}</b> <span class="st-len">${esc(nm)}</span>`+
+    (shareable(o.file) ? `<button type="button" class="st-btn st-go" data-outshare="${k}" aria-label="${esc(t("outShareAria",{name:nm}))}">${esc(t("outShare"))}</button>` : "")+
+    `<a class="st-btn" href="${o.url}" download="${esc(nm)}" data-outdl="${k}" aria-label="${esc(t("outDownloadAria",{name:nm}))}">${esc(t("outDownload"))}</a></div>`;
+}
+function paintOut(){
+  const box=$("outBox"), o=OUT.song;
+  $("outBtn").textContent=t("outBtn"); $("outBtn").disabled=OUT.busy || !hasClips() || !!S.decoding;
+  if(!o){ box.innerHTML=""; return; }
+  const left=o.left.filter(i=>SONG.tracks[i].clip);
+  box.innerHTML=outRow("song", t("outReady")+" · "+madeWords(o.at))+
+    (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
+    (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
+    `<p class="st-line">${esc(t("outYours"))}</p>`;
+}
+function bindOut(){
+  $("outBtn").onclick=sendOut;
+  $("outBox").addEventListener("click", e=>{
+    const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
+    if(el.id==="stemBtn") sendStems();
+    else if(el.hasAttribute("data-outshare")) shareOut(el.getAttribute("data-outshare"));
+    else if(el.hasAttribute("data-outdl")){ const o=OUT[el.getAttribute("data-outdl")]; if(o) $("outLine").textContent=t("outSaved",{name:o.file.name}); }
+  });
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2174,7 +2315,7 @@ function syncSlider(r, v){
 }
 
 /* ── 5 · finish ── */
-function paintFinish(){ $("mixBtn").disabled=!hasClips() || !!S.decoding; paintMixOut(); }
+function paintFinish(){ $("mixBtn").disabled=!hasClips() || !!S.decoding; paintMixOut(); paintOut(); }
 function paintMixOut(){
   const box=$("mixOut");
   if(!MIX){ box.innerHTML=""; return; }
@@ -2261,6 +2402,7 @@ function bind(){
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   bindCarry();   /* AOG-STUDIO-CARRY-V1 */
+  bindOut();     /* AOG-STUDIO-SENDOUT-V1 */
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening it */
   ["startSel","loopFrom","loopTo","trackSel"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
@@ -2300,7 +2442,7 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; },
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
 </script>
 </body>
