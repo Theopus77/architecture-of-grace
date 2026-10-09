@@ -1,7 +1,8 @@
 /* AOG-PADS-PAT-ANYSCALE-V1 — Jimmy: "I don't get the chords golden light up when I switch to minor keys in the chord bank.
    That needs to be fixed." On the Drum Machine's chord bank: Anime and J-pop · 4 5 3 6 lights pads 4, 5, 3, 6 in gold in
    C major; switching the scale to Minor keeps the pattern picked and the same four pads gold (now C minor's chords), and
-   says so in one plain line; a minor pattern picked in minor lights its pads, and stays lit in major; Choose a pattern…
+   says so in one plain line; with the bank already in Minor, picking Anime and J-pop keeps it in Minor (it used to flip
+   back to Major) and lights the same pads; a minor pattern picked in minor lights its pads, and stays lit in major; Choose a pattern…
    clears the gold; Spanish; a reload keeps it; an iPad and an iPhone, light and dark: readable and calm; no page errors.
    Port 9254. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
@@ -42,6 +43,14 @@ async function chordsBank(p) { const bi = await p.evaluate(() => S.banks.findInd
   /* a reload keeps it */
   await p.reload(); await p.waitForTimeout(1500); await chordsBank(p);
   ok(await gold(p) === g && await p.inputValue("#fScale") === "minor", "a reload keeps the pattern and its gold in minor");
+
+  /* 1b · everything set first: Minor, then the pattern. The scale stays Minor and the pads light */
+  await p.selectOption("#fPat", ""); await p.selectOption("#fScale", "minor"); await p.waitForTimeout(200);
+  await p.selectOption("#fPat", "anime"); await p.waitForTimeout(300);
+  ok(await p.inputValue("#fScale") === "minor" && await gold(p) === "3=3:E♭ 4=1:Fm 5=2:Gm 6=4:A♭", "Minor first, then Anime and J-pop: it stays Minor and pads 4, 5, 3, 6 are gold: " + await gold(p));
+  await p.selectOption("#fKey", "9"); await p.waitForTimeout(300);
+  ok(await p.inputValue("#fScale") === "minor" && await gold(p) === "3=3:C 4=1:Dm 5=2:Em 6=4:F", "in A minor too: " + await gold(p));
+  await p.selectOption("#fKey", "0"); await p.waitForTimeout(200);
 
   /* 2 · a minor pattern, in minor and then in major */
   await p.selectOption("#fPat", "minor"); await p.waitForTimeout(300);

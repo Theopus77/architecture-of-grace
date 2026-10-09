@@ -970,8 +970,8 @@ function patPads(P){   /* the pads that play a pattern, or null when one of its 
 const PATS=PRESETS.filter(P=>patPads(P));
 /* AOG-PADS-PAT-ANYSCALE-V1 (2026-10-09) — Jimmy: "I don't get the chords golden light up when I switch to minor keys in
    the chord bank." A pattern is its steps ("4 5 3 6"): it stays when the scale changes, on the same pads, which now hold
-   this key's chords. (It used to be dropped the moment the scale left the pattern's own.) Picking a pattern still sets
-   the scale it was written in. */
+   this key's chords. (It used to be dropped the moment the scale left the pattern's own.) Picking a pattern leaves your
+   key and scale as they are (it used to flip a minor bank back to major). */
 function patOf(B){ return PATS.find(x=>x.id===B.pat) || null; }
 function patMinor(B){ return B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues"; }
 function paintGuide(){
@@ -983,7 +983,9 @@ function paintGuide(){
     row.innerHTML=field("fPat", t("patLab"), o, true)+(cur?`<button type="button" class="pm-b" id="fPatLoop">${esc(t("patLoop"))}</button>`:"");
     row.hidden=false;
     $("fPat").onchange=()=>{ const P=PATS.find(x=>x.id===$("fPat").value); B.pat=P?P.id:"";
-      if(P){ const sc=P.minor?"minor":"major"; if(B.scale!==sc){ B.scale=sc; prep(S.bank); }
+      /* AOG-PADS-PAT-ANYSCALE-V1: picking a pattern never changes your key or scale (it used to flip a minor bank back to
+         major); its steps light up in the chords you chose */
+      if(P){ const sc=patMinor(B)?"minor":"major";
         /* the Notes bank follows, so every note of every chord in the pattern has a pad */
         const N=S.banks.find(x=>x.type==="notes"), ok={major:["major","pmaj"], minor:["minor","pmin","blues","dorian"]}[sc];
         if(N && (N.key!==B.key || ok.indexOf(N.scale)<0)){ N.key=B.key; if(ok.indexOf(N.scale)<0) N.scale=sc; } }
