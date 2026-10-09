@@ -173,6 +173,22 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 .mt ul { padding:4px 2px; }
 @media (max-width:699px) { .mt { margin:0 -.5rem; padding:.45rem .55rem max(.45rem, env(safe-area-inset-bottom)); border-radius:14px 14px 0 0; } .mt a.tp-b { padding:0 .55rem; font-size:.88rem; } }
 @media print { .sh-doors, .mt, .sh-room { display:none; } }
+/* ══ AOG-STUDIO-ROOM-V1 (Jimmy, 2026-10-09: "DO all three") — the Recording Studio is a control room: dim and warm, a
+   lamp's glow from above, faint acoustic slats on the walls. The doors hang like framed drawings; the room you are in is a
+   lit window; the transport sits on the dark desk below. The same in light and dark. Nothing moves. ══ */
+html, html[data-theme="dark"] { background:#17110c; }
+html:root:root body { --room:#17110c; background-color:#17110c !important;
+  background-image:radial-gradient(ellipse 80% 38% at 50% -6%, rgba(255,196,122,.20), rgba(255,196,122,0) 70%),
+    repeating-linear-gradient(90deg, rgba(255,232,200,.022) 0 1px, rgba(0,0,0,0) 1px 6px, rgba(0,0,0,.10) 6px 7px, rgba(0,0,0,0) 7px 72px),
+    linear-gradient(#221a13, #150f0b 60%, #120d09) !important;
+  background-attachment:fixed; color:#efe5cf; }
+.sh-top h1 { color:#f6e9cc; text-shadow:0 1px 0 rgba(0,0,0,.6); }
+.sh-tag { color:#cdbfa3; }
+.sh-own { color:#f0c26e; }
+.sh-doors a { background-color:#f1e8d5; color:#1f1a12; border-color:#3a2c1c; box-shadow:0 1px 0 rgba(255,236,200,.08), 0 6px 14px rgba(0,0,0,.45); }
+.sh-doors a[aria-current="true"] { border-color:#e0b25a; box-shadow:0 0 0 1px #e0b25a, 0 0 18px rgba(240,194,110,.35), 0 6px 14px rgba(0,0,0,.45); }
+.sh-room { background:#17110c; border:1px solid #050403; box-shadow:0 0 0 1px rgba(255,214,160,.06), 0 24px 60px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.5); }
+.mt { background:#120d09; box-shadow:0 -1px 0 rgba(255,214,160,.08), 0 -12px 28px rgba(0,0,0,.55); }
 """
 JS = r"""<script src="/aog-handoff.js"></script>
 <script>

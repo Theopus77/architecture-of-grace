@@ -1,5 +1,5 @@
 /* AOG-STUDIO-CUT-V2 + AOG-DESK-SLIP-V2 + AOG-DESK-REST-V1 — Jimmy: "The lesson sheet needs to move and The cutting needs
-   to be better and the whole studio has not reached the ceiling!!!" Two VU meters over the mixer and walnut cheeks on the console (AOG-DESK-VU-V1, AOG-DESK-WOOD-V1). A tap on the big wave puts ✂ Cut here on the wave and
+   to be better and the whole studio has not reached the ceiling!!!" The Studio a dim control room (AOG-STUDIO-ROOM-V1). Two VU meters over the mixer and walnut cheeks on the console (AOG-DESK-VU-V1, AOG-DESK-WOOD-V1); a tape counter and a glowing playhead (AOG-DESK-COUNTER-V1, AOG-DESK-GLOW-V1). A tap on the big wave puts ✂ Cut here on the wave and
    pressing it cuts there; a tap on another piece picks that piece; ▶ Hear this piece plays the piece and stops; the lesson
    is a note beside play (at the foot of the console on a phone); the menus are dark with gold type. Spanish; an iPhone and
    an iPad: readable, calm, nothing sideways. No page errors. Port 9259. */
@@ -90,6 +90,22 @@ const pieces = p => p.evaluate(() => __aogStudio.pcs(__aogStudio.SONG.tracks[0].
   await p.click("#playBtn"); await p.waitForTimeout(400);
   const back = await vuShot();
   ok(live !== rest && back === rest, `the needles swing while the song plays (${live !== rest}) and rest when it stops (${back === rest})`);
+  /* AOG-DESK-COUNTER-V1 + AOG-DESK-GLOW-V1: the tape counter reads what the words say; the playhead glows while playing */
+  const ctr = () => p.evaluate(() => ({ d: [...document.querySelectorAll("#ctr .st-cs")].map(e => { const m = /translateY\((-?[\d.]+)em\)/.exec(e.style.transform || ""); return m ? Math.round(-parseFloat(m[1])) % 10 : 0; }).join(""),
+    words: document.getElementById("posOut").textContent, live: document.getElementById("timeline").classList.contains("ph-live"), lab: document.getElementById("ctrLab").hidden ? "" : document.getElementById("ctrLab").textContent }));
+  const said = w => { const m = /Bar (\d+) · beat (\d) · (\d+):(\d\d)/.exec(w); return m ? String(m[1]).padStart(3, "0") + m[2] + String(m[3]).padStart(2, "0") + m[4] : "?"; };
+  let k0 = await ctr();
+  ok(k0.d === said(k0.words) && !k0.live, `stopped, the counter reads ${k0.d} as the words say (${k0.words}), and the playhead is plain`);
+  await p.click("#playBtn"); await p.waitForTimeout(1700);
+  const k1 = await ctr();
+  ok(k1.d === said(k1.words) && k1.d !== k0.d && k1.live, `playing, the counter rolls with the song (${k1.d} = ${k1.words}) and the playhead glows`);
+  await p.click("#playBtn"); await p.waitForTimeout(400);
+  ok(!(await ctr()).live, "stopped again, the glow goes out");
+  await p.evaluate(() => document.getElementById("countBtn").click()); await p.click("#playBtn"); await p.waitForTimeout(250);
+  const k2 = await ctr();
+  ok(/^Get ready… \d$/.test(k2.lab), "during the count-in the counter says so: " + k2.lab);
+  await p.click("#playBtn"); await p.evaluate(() => document.getElementById("countBtn").click()); await p.waitForTimeout(300);
+  ok((await ctr()).lab === "", "after it, the words go away");
   /* walnut cheeks on both sides of the console */
   const wood = await p.evaluate(() => { const c = document.querySelector(".st-cp"); return [getComputedStyle(c, "::before").width, getComputedStyle(c, "::after").width, getComputedStyle(c, "::before").backgroundColor].join(" "); });
   ok(/^16px 16px rgb\(74, 44, 23\)$/.test(wood), "walnut cheeks on the console: " + wood);
@@ -109,6 +125,21 @@ const pieces = p => p.evaluate(() => __aogStudio.pcs(__aogStudio.SONG.tracks[0].
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
     const want = dev.startsWith("iPhone") ? r.foot : r.top;
     ok(want && r.sw && !pc.length && !pk.length, `${dev}, ${theme}: the slip is ${dev.startsWith("iPhone") ? "at the foot of the console" : "beside play"}, nothing sideways, readable (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and calm (${pk.join("; ") || "ok"})`);
+    await cx.close();
+  }
+  /* AOG-STUDIO-ROOM-V1: the Recording Studio is a dim control room; everything in it, and the desk inside it, stays readable */
+  for (const [dev, theme] of [["iPad (gen 7) landscape", "light"], ["iPad (gen 7) landscape", "dark"], ["iPhone 13", "light"]]) {
+    const cx = await b.newContext({ ...pw.devices[dev], colorScheme: theme }); watch(cx); await routes(cx);
+    await cx.route(/\/the-studio(\?[^#]*)?$/, r => r.fulfill({ path: path.join(ROOT, "the-studio.html"), contentType: "text/html" }));
+    await cx.addInitScript(th => { try { localStorage.setItem("aog.theme", th); localStorage.setItem("aog.theme.lightstart.v1", "1"); } catch (e) {} }, theme);
+    const m = await cx.newPage(); await m.goto(U + "the-studio#studio");
+    await m.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && /studio/.test(d.location.pathname); }, null, { timeout: 20000 });
+    await m.waitForTimeout(1500);
+    const f = m.frames().find(x => x.parentFrame() === m.mainFrame());
+    const room = await m.evaluate(() => getComputedStyle(document.body).backgroundColor), desk = await f.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    const pc = await m.evaluate(`(${PROBE})()`), fc = await f.evaluate(`(${PROBE})()`), fk = await f.evaluate(`(${CALM})()`);
+    ok(room === "rgb(23, 17, 12)" && desk === "rgb(23, 17, 12)" && !pc.length && !fc.length && !fk.length,
+      `${dev}, ${theme}: the Studio is a dim room (${room}), the desk sits in it (${desk}), all readable (${pc.length + fc.length} ${JSON.stringify(pc.concat(fc).slice(0, 2))}) and calm (${fk.join("; ") || "ok"})`);
     await cx.close();
   }
   ok(errs.length === 0, "no page errors on the phone " + errs.join(" | "));
