@@ -70,8 +70,8 @@ async function inRoom(m, room) {
   ok(pf.felt && pf.gold === "rgb(231, 199, 126)" && pf.serif && /matrix\(1, 0, 0, 1, 0, 2\)/.test(pf.down), "the piano: velvet over the keys, its name in gold leaf, a pressed key goes down: " + JSON.stringify(pf));
   for (const g of ["music-guitar.html", "music-bass.html"]) {
     await fp.goto(U + g); await fp.waitForTimeout(1500);
-    const nf = await fp.evaluate(() => { const q = s => document.querySelector("#neckBox " + s); return { wood: getComputedStyle(q(".nk-wood")).fill, pearl: getComputedStyle(q(".nk-inlay")).fill, nut: q(".nk-nut") ? getComputedStyle(q(".nk-nut")).fill : "url(#aogBone)", wound: getComputedStyle(q(".nk-str:not(.plain)")).strokeDasharray }; });
-    ok(/aogRose/.test(nf.wood) && /aogPearl/.test(nf.pearl) && /aogBone/.test(nf.nut) && nf.wound !== "none", `${g}: a rosewood board, pearl dots, a bone nut, wound strings: ${JSON.stringify(nf)}`);
+    const nf = await fp.evaluate(() => { const q = s => document.querySelector("#neckBox " + s); return { wood: getComputedStyle(q(".nk-wood")).fill, pearl: getComputedStyle(q(".nk-inlay")).fill, nut: q(".nk-nut") ? getComputedStyle(q(".nk-nut")).fill : "url(#aogBone)", wound: getComputedStyle(q(".nk-str:not(.plain)")).stroke }; });
+    ok(/aogRose/.test(nf.wood) && /aogPearl/.test(nf.pearl) && /aogBone/.test(nf.nut) && /aogWound/.test(nf.wound), `${g}: a rosewood board, pearl dots, a bone nut, wound strings: ${JSON.stringify(nf)}`);
   }
   await fp.goto(U + "music-pads.html"); await fp.waitForTimeout(1500);
   const pd = await fp.evaluate(async () => { const p = document.querySelector("#pads .pad"); const a = getComputedStyle(p).backgroundImage; p.classList.add("hit"); await new Promise(r => setTimeout(r, 400)); const h = getComputedStyle(p).boxShadow; p.classList.remove("hit"); return { rubber: /radial-gradient/.test(a), glow: /255, 200, 90/.test(h) }; });
