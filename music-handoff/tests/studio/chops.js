@@ -76,6 +76,7 @@ async function putRecord(p, deck, name, bpm, atSec) {
   const nt = await p.evaluate(async () => { const x = (await AOGHandoff.list(AOGHandoff.INBOX)).items[0]; return { bpm: x.bpm, sec: x.sec, name: x.name.en }; });
   ok(nt.bpm === 0 && Math.abs(nt.sec - 8) < 0.01 && nt.name === "no-tempo · chops", "no known tempo: 8 seconds, cut in 16 equal parts on the pads: " + JSON.stringify(nt));
   await putRecord(p, "C", "short.wav", 120, 30.5);
+  if (await p.$('[data-pair="AC"]') && await p.isVisible('[data-pair="AC"]')) await p.click('[data-pair="AC"]');   /* deck C shows beside A */
   await p.click('[data-chopsend="C"]'); await p.waitForTimeout(400);
   ok(await p.textContent("#chopLineC") === "Too close to the end of the record. Move back a little and try again.", "too close to the end is told plainly");
   ok(outside.length === 0, "nothing left the computer " + outside.join(" | "));
