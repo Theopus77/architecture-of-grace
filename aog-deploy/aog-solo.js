@@ -118,6 +118,15 @@ const WD={
               es:"Toca un traste para tocar. Empuja arriba o abajo para estirar la nota. Desliza por una cuerda para deslizar el sonido. Pon otro dedo más arriba en una cuerda que suena para ligar; levántalo para soltar. Baja la palanca de la derecha para hundir el sonido."}
             :{en:"Tap a string to slap it. Flick up fast to pop it. Push up or down to bend. Slide along a string to glide.",
               es:"Toca una cuerda para darle un golpe. Sube el dedo rápido para hacer pop. Empuja arriba o abajo para estirar. Desliza por una cuerda para deslizar el sonido."},
+  /* AOG-SOLO-KEYS-CHOICE-V1 (Jimmy, 2026-10-09: "I give the option, but start in matching mode"): the letters play every note
+     as on the piano (A to ' the white keys, W E T Y U O P the black keys), the way they do outside Solo; or, by choice, only
+     the notes of the scale, low to high. The choice is kept on this device. */
+  keysLab:{en:"The letters play",es:"Las letras tocan"},
+  keysPiano:{en:"Every note, like the piano",es:"Cada nota, como el piano"}, keysScale:{en:"Only the scale",es:"Solo la escala"},
+  keysP: GTR?{en:"On a computer, the letters play every note as on the piano: A to ' the white keys, W E T Y U O P the black ones. The lit notes fit. Hold B to bend, V for vibrato, N for the whammy bar and M to cut the sound. Space starts and stops the band.",
+             es:"En la computadora, las letras tocan cada nota como en el piano: de la A a la ' las teclas blancas, W E T Y U O P las negras. Las notas iluminadas encajan. Mantén B para estirar, V para el vibrato, N para la palanca y M para cortar el sonido. La barra espaciadora empieza y para la banda."}
+           :{en:"On a computer, the letters play every note as on the piano: A to ' the white keys, W E T Y U O P the black ones; hold Shift to pop. The lit notes fit. Hold B to bend, V for vibrato and M to cut the sound. Space starts and stops the band.",
+             es:"En la computadora, las letras tocan cada nota como en el piano: de la A a la ' las teclas blancas, W E T Y U O P las negras; mantén Mayús para hacer pop. Las notas iluminadas encajan. Mantén B para estirar, V para el vibrato y M para cortar el sonido. La barra espaciadora empieza y para la banda."},
   keys: GTR?{en:"On a computer, A S D F G H J K L ; play the scale, low to high. Hold B to bend, V for vibrato, N for the whammy bar and M to cut the sound. Space starts and stops the band.",
              es:"En la computadora, A S D F G H J K L Ñ tocan la escala, de grave a aguda. Mantén B para estirar, V para el vibrato, N para la palanca y M para cortar el sonido. La barra espaciadora empieza y para la banda."}
            :{en:"On a computer, A S D F G H J K L ; play the scale, low to high; hold Shift to pop. Hold B to bend, V for vibrato and M to cut the sound. Space starts and stops the band.",
@@ -541,13 +550,13 @@ const DEF_LEAD=LEADS[0]||S.sound;
 
 /* ══ what is kept between visits (this browser only) ═════════════════════════ */
 const PKEY="aog."+INST+".solo.v1";
-const P={mode:"chords", scMin:"blues", scMaj:"majpent", tap:false, pinch:false, wah:false, vib:false, lick:"blues", prev:"", auto:"", beat:true, lspd:100};
+const P={mode:"chords", scMin:"blues", scMaj:"majpent", tap:false, pinch:false, wah:false, vib:false, lick:"blues", prev:"", auto:"", beat:true, lspd:100, keys:"piano"};
 try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null");
   if(r && typeof r==="object"){
     if(r.mode==="solo") P.mode="solo";
     if(SCALES[r.scMin]) P.scMin=r.scMin; if(SCALES[r.scMaj]) P.scMaj=r.scMaj;
     P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(LICKS[r.lick]) P.lick=r.lick; if(r.lspd>=25 && r.lspd<=100) P.lspd=Math.round(r.lspd/5)*5;
-    if(typeof r.prev==="string" && SOUNDS[r.prev]) P.prev=r.prev; if(typeof r.auto==="string") P.auto=r.auto; if(r.beat===false) P.beat=false;
+    if(typeof r.prev==="string" && SOUNDS[r.prev]) P.prev=r.prev; if(r.keys==="scale") P.keys="scale"; if(typeof r.auto==="string") P.auto=r.auto; if(r.beat===false) P.beat=false;
   } }catch(e){}
 P.dfeel="auto"; try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null"); if(r && typeof r.dfeel==="string" && /^[a-z0-9]+$/.test(r.dfeel)) P.dfeel=r.dfeel; }catch(e){}   /* AOG-SOLO-DRUMFEELS-V1 */
 function keep(){ try{ localStorage.setItem(PKEY, JSON.stringify(P)); }catch(e){} }
@@ -558,6 +567,7 @@ const SO={on:false, lang:"", sig:"", say:"", killed:false, hot:false, blooms:0, 
 const CSS=`
 #rig .so-mode{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 .8rem}
 #rig .so-mode .pbtn{flex:0 1 9rem}
+#rig .so-keys{margin:.5rem 0 0}#rig .so-keys .plab{margin:0 0 .35rem}#rig .so-keys .seg .pbtn{min-height:44px}
 #rig .so-panel{margin:0 0 .75rem}
 #rig #soloTop{margin:0 0 .6rem}
 #rig .so-panel[hidden]{display:none!important}
@@ -631,7 +641,8 @@ function build(){
     </div>
     <p class="line" data-so="techHelp"></p>
     <p class="line touch-line" data-so="touch"></p>
-    <p class="line keys-line" data-so="keys"></p>
+    <p class="line keys-line" id="soKeysLine"></p>
+    <div class="keys-line so-keys" id="soKeys" role="group"><span class="plab" data-so="keysLab"></span><span class="seg"><button type="button" class="pbtn" data-so-keys="piano"></button><button type="button" class="pbtn" data-so-keys="scale"></button></span></div>
     <div class="row" style="margin-top:.9rem">
       <label class="field"><span class="plab" data-so="scaleLab"></span><select id="soScaleSel"></select></label>
       <label class="field"><span class="plab" data-so="soundLab"></span><select id="soSoundSel"></select></label>
@@ -663,13 +674,18 @@ function paintWords(){
   const mode=$q("soloMode"); mode.setAttribute("aria-label", w("modeGroup"));
   mode.querySelectorAll("[data-so-mode]").forEach(b=>{ b.textContent=w(b.getAttribute("data-so-mode")); });
   document.querySelectorAll("#soloTop [data-so], #soloBottom [data-so]").forEach(el=>{ el.textContent=w(el.getAttribute("data-so")); });
-  $q("soSw").setAttribute("aria-label", w("techGroup"));
+  $q("soSw").setAttribute("aria-label", w("techGroup")); paintKeysChoice();
   $q("soTap").textContent=w("tap"); $q("soVib").textContent=w("vib"); $q("soKill").textContent=w("kill");
   if($q("soPinch")) $q("soPinch").textContent=w("pinch");
   if($q("soWah")) $q("soWah").textContent=w("wah");
   $q("soBpm").setAttribute("aria-label", w("tempo"));
   paintScaleSel(); paintSoundSel(); paintLickSel(); paintLickSpd(); paintSwitches(); paintMode(); paintLegend(); paintBand(); paintLickBtn();
   SO.say=""; sayIt();
+}
+function paintKeysChoice(){
+  const box=$q("soKeys"); if(!box) return; box.setAttribute("aria-label", w("keysLab"));
+  box.querySelectorAll("[data-so-keys]").forEach(b=>{ const k=b.getAttribute("data-so-keys"); b.textContent=w(k==="scale"?"keysScale":"keysPiano"); b.setAttribute("aria-pressed", String(P.keys===k)); });
+  const l=$q("soKeysLine"); if(l) l.textContent=w(P.keys==="scale"?"keys":"keysP");
 }
 function paintMode(){
   const rig=$q("rig"); if(rig) rig.classList.toggle("aog-solo-on", SO.on);
@@ -724,6 +740,7 @@ function setSoundId(id){
 }
 function wire(){
   $q("soloMode").querySelectorAll("[data-so-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.getAttribute("data-so-mode"))));
+  $q("soKeys").querySelectorAll("[data-so-keys]").forEach(b=>b.addEventListener("click",()=>{ P.keys=b.getAttribute("data-so-keys")==="scale"?"scale":"piano"; keep(); paintKeysChoice(); }));
   $q("soScaleSel").addEventListener("change",(e)=>{ const v=e.target.value; if(!SCALES[v]) return; if(S.minor) P.scMin=v; else P.scMaj=v; keep(); SO.sig=""; paintLegend(); soPaint(); });
   $q("soSoundSel").addEventListener("change",(e)=>{ setSoundId(e.target.value); if(SO.on && P.auto && e.target.value!==P.auto) P.auto=""; keep(); });
   $q("soTap").addEventListener("click",()=>{ P.tap=!P.tap; keep(); paintSwitches(); });
@@ -1148,12 +1165,15 @@ function key(e, isDown){
     whamTo(e.key==="Home"?0:e.key==="End"?-12:WH.to+st, 0.02); return true;
   }
   if(!isDown && e.target && e.target.closest && e.target.closest("#soWham") && /^Arrow(Up|Down)$|^(PageDown|PageUp)$/.test(e.key)){ whamTo(0, 0.04); return true; }
-  const si=SCALE_KEYS.indexOf(code);
-  if(si>=0){
+  /* AOG-SOLO-KEYS-CHOICE-V1: every note as on the piano (the page's NOTE_KEYS, AOG-STRINGS-KEYS-V3), or only the scale */
+  const piano=P.keys!=="scale" && typeof NOTE_KEYS!=="undefined" && NOTE_KEYS[code]!=null;
+  const si=piano ? -1 : SCALE_KEYS.indexOf(code);
+  if(!piano && si<0 && typeof NOTE_KEYS!=="undefined" && NOTE_KEYS[code]!=null){ e.preventDefault(); return true; }   /* "Only the scale": a letter outside it stays quiet */
+  if(piano || si>=0){
     e.preventDefault();
     if(isDown){
       if(e.repeat || KEYF.has(code)) return true;
-      const cell=keyCells()[si]; if(!cell) return true;
+      const cell=piano ? cellFor(NOTE_BASE+NOTE_KEYS[code]) : keyCells()[si]; if(!cell) return true;
       const fs={s:cell.s, f:cell.f, since:0, bend:0, lv:null, dir:1, key:true};
       KEYF.set(code, fs); strike(fs, {pop:!GTR && e.shiftKey && !P.tap}); wake();
       if(typeof KEYCELLS!=="undefined") KEYCELLS.set(code, cell.s+":"+cell.f);

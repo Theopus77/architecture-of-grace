@@ -183,7 +183,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .neck .nk-key rect{fill:#f6efe0;stroke:#0b0b0c;stroke-width:1}
 .neck .nk-key text{fill:#1a1408}
 html.aog-keys .keys-line{display:block}
-html.aog-keys .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+html.aog-keys .cs kbd,html.aog-keys .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
 .touch-line{display:block}
 @media (hover:hover) and (pointer:fine){
   .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
@@ -618,13 +618,14 @@ const STR={
   touchLine: GTR?{en:"Tap a fret to play one string. Slide a finger across the strings on the right to strum. While a style plays, hold frets and it plays them.",es:"Toca un traste para tocar una cuerda. Desliza un dedo por las cuerdas de la derecha para rasguear. Mientras suena un estilo, pisa trastes y los toca."}
                 :{en:"Tap a fret to play a note. Slide along a string to glide to the next note. While a style plays, hold a fret and the line follows it.",es:"Toca un traste para tocar una nota. Desliza el dedo por una cuerda para pasar a la siguiente nota. Mientras suena un estilo, pisa un traste y la línea lo sigue."},
   kmH:{en:"Play it on a keyboard",es:"Tócala con un teclado"},
-  kmChords:{en:"the chord pads",es:"los pads de acordes"},
+  kmChords:{en:"the chords",es:"los acordes"},
   kmStrings:{en:"the six strings of the chord, low to high (on the strum strip)",es:"las seis cuerdas del acorde, de grave a aguda (en la franja de rasgueo)"},
-  kmNotes:{en:"the notes of the key, going up (the letters on the neck)",es:"las notas del tono, subiendo (las letras en el mástil)"},
+  kmNotes:{en:"the notes, like the piano's white keys: C D E F G A B C D E F",es:"las notas, como las teclas blancas del piano: Do Re Mi Fa Sol La Si Do Re Mi Fa"},
+  kmSharps:{en:"the notes in between (♯), like the black keys",es:"las notas de en medio (♯), como las teclas negras"},
   kmMove:{en:"move along the neck",es:"moverse por el mástil"},
   kmSpaceKey:{en:"Space",es:"Espacio"}, kmSpace:{en:"start and stop",es:"empezar y parar"},
-  keysLine: GTR?{en:"On a computer, 1 to 6 strum the chord pads, and A S D F G H play the six strings, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 6 rasguean los pads, y A S D F G H tocan las seis cuerdas, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."}
-               :{en:"On a computer, 1 to 6 play the chord pads, and A S D F G H J K play the scale of the key, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 6 tocan los pads, y A S D F G H J K tocan la escala del tono, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."},
+  keysLine: GTR?{en:"On a computer, 1 to 0 strum the ten chords, the letters play notes as on the piano, and Z X C V B N pluck the six strings. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 rasguean los diez acordes, las letras tocan notas como en el piano, y Z X C V B N puntean las seis cuerdas. ← y → se mueven por el mástil. La barra espaciadora empieza y para."}
+               :{en:"On a computer, 1 to 0 play the ten chords, and the letters play notes as on the piano. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 tocan los diez acordes, y las letras tocan notas como en el piano. ← y → se mueven por el mástil. La barra espaciadora empieza y para."},
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
   era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
   eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
@@ -2509,10 +2510,11 @@ function paintAmp(){
 function paintKeyMap(){
   const box=$("keyMap"); if(!box) return;
   const caps=a=>a.map(k=>`<kbd>${k}</kbd>`).join("");
-  const rows=[[caps(["1","2","3","4","5","6"]), t("kmChords")]];
-  if(GTR) rows.push([caps(["Q","W","E","R","T","Y"]), t("kmStrings")]);
-  rows.push([caps(["A","S","D","F","G","H","J","K"]), t("kmNotes")]);
-  rows.push([caps(["Z"])+caps(["X"]), t("kmMove")]);
+  const rows=[[caps(PAD_KEYS.slice(0, allPads().length)), t("kmChords")]];
+  rows.push([caps(["A","S","D","F","G","H","J","K","L",";","'"]), t("kmNotes")]);
+  rows.push([caps(["W","E","T","Y","U","O","P"]), t("kmSharps")]);
+  if(GTR) rows.push([caps(["Z","X","C","V","B","N"]), t("kmStrings")]);
+  rows.push([caps(["←"])+caps(["→"]), t("kmMove")]);
   rows.push([`<kbd class="km-space">${t("kmSpaceKey")}</kbd>`, t("kmSpace")]);
   const q=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   box.innerHTML=`<p class="km-h">${q(t("kmH"))}</p>`+rows.map(([k,w])=>`<div class="km-row"><span class="km-caps">${k}</span><span class="km-say">${q(w)}</span></div>`).join("");
@@ -2556,7 +2558,11 @@ function degreeOf(c){ return DEGREE[((c.off%12)+12)%12]; }
 function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }   /* AOG-STRINGS-WAYS-V1: in groups, as the piano's */
 function paintMood(){ ["","2"].forEach(x=>{ const a=$("majBtn"+x), b=$("minBtn"+x); if(a) a.setAttribute("aria-pressed", S.minor?"false":"true"); if(b) b.setAttribute("aria-pressed", S.minor?"true":"false"); }); const k2=$("keySel2"); if(k2) k2.value=String(S.key);
   const ar=$("anyRoot"); if(ar && ANY.root==null) ar.value=String(S.key); }   /* AOG-ANYCHORD-V1: its root follows the key until one is chosen */
-const PAD_KEYS=["1","2","3","4","5","6"];
+/* AOG-CHORD-KEYS-10-V1 (Jimmy, 2026-10-09: "I have only use 6 keys for the chords. There are 10, 1 through 0 should be used and
+   the other keys if needed"): 1 to 0 play the ten chord buttons in order (the six of the key, then the four with sevenths);
+   − and = would play an eleventh and a twelfth. A key plays its chord by where it is on the keyboard (e.code). */
+const PAD_KEYS=["1","2","3","4","5","6","7","8","9","0","−","="], PAD_CODES=["Digit1","Digit2","Digit3","Digit4","Digit5","Digit6","Digit7","Digit8","Digit9","Digit0","Minus","Equal"];
+function padKey(e){ const i=PAD_CODES.indexOf(e.code); return i>=0 && i<allPads().length && !e.metaKey && !e.ctrlKey && !e.altKey ? i : -1; }
 function paintPads(){
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
@@ -2820,7 +2826,7 @@ function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fre
 function paintStrips(){
   document.querySelectorAll(".cstrip").forEach(box=>{
     box.setAttribute("aria-label", t("chordsH"));
-    box.innerHTML=allPads().map((c,i)=>`<button type="button" class="cs${i>=6?" more":""}" data-i="${i}">${chordName(c)}</button>`).join("");   /* AOG-CHORDS-MORE-V1 */
+    box.innerHTML=allPads().map((c,i)=>`<button type="button" class="cs${i>=6?" more":""}" data-i="${i}">${chordName(c)}${PAD_KEYS[i]?`<kbd aria-hidden="true">${PAD_KEYS[i]}</kbd>`:""}</button>`).join("");   /* AOG-CHORDS-MORE-V1; AOG-CHORD-KEYS-10-V1: its key */
     box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
       b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
       b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
@@ -3130,19 +3136,22 @@ function pvInit(){
   window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
   pvText(); pvSync();
 }
-/* computer keys: by position, so other keyboard layouts work too.
-   AOG-STRINGS-KEYS-V2 (Jimmy, 2026-10-09: "I don't really understand the keyboard for the guitar and bass"). One rule, the
-   same as the Piano and the Band: numbers play chords, letters play notes. 1 to 6 are the six chord pads (their numbers
-   are on them). A S D F G H J K are the notes of the key, going up (do re mi … do), on the guitar and the bass alike, and
-   each one's letter is drawn on the neck where it plays. The guitar's six strings, picked one by one in the chord you
-   hold, are the row above: Q W E R T Y, low to high, drawn on the strum strip beside each string. */
-const STRING_KEYS=["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"];
-const PICK_KEYS=GTR?["KeyQ","KeyW","KeyE","KeyR","KeyT","KeyY"]:[];
+/* AOG-STRINGS-KEYS-V3 (Jimmy, 2026-10-09: "the wiring for the keys for the notes on the guitar and bass MAKES no sense").
+   The letters play notes the same way in every room, as on the piano: A S D F G H J K L ; ' are the white keys (C D E F G A
+   B C D E F) and W E T Y U O P the black keys between them. On the guitar they start at the C below middle C, on the bass an
+   octave lower; each note plays at its place on the neck nearest the frets in view, and lights there. 1 to 0 are the ten
+   chords (AOG-CHORD-KEYS-10-V1). The guitar's six strings, picked one by one in the chord you hold, are the bottom row:
+   Z X C V B N, low to high, drawn on the strum strip beside each string. ← and → move along the neck. Solo mode keeps its
+   own keys (aog-solo.js). */
+const NOTE_KEYS={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
+const NOTE_BASE=GTR?48:36;
+const STRING_KEYS=Object.keys(NOTE_KEYS);
+const PICK_KEYS=GTR?["KeyZ","KeyX","KeyC","KeyV","KeyB","KeyN"]:[];
 function keysShown(){ try{ return document.documentElement.classList.contains("aog-keys") || matchMedia("(hover:hover) and (pointer:fine)").matches; }catch(e){ return false; } }
 /* the letters on the neck: each note's key beside the spot it plays; the guitar's pick keys on the strum strip */
 function keyLetters(){
   const on=keysShown() && !(window.AOGSolo && AOGSolo.isOn());
-  const cells=on ? STRING_KEYS.map((k,i)=>{ const cl=cellFor(scaleNote(i)); return cl ? cl.s+":"+cl.f : ""; }) : [];
+  const cells=[];   /* AOG-STRINGS-KEYS-V3: the notes follow the piano's layout (the picture of the keys shows it), so the neck stays clear */
   const sig=[on, cells.join(","), NECK.W, NECK.n, S.fret0].join("|");
   document.querySelectorAll("svg").forEach(svg=>{
     if(!svg.querySelector(".dot")) return;
@@ -3168,10 +3177,10 @@ document.addEventListener("keydown",(e)=>{
   if(si>=0 || pk>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); }
     if(e.repeat||KEYCELLS.has(e.code)) return;
     if(pk>=0){ const c=shapeChord(), f=c?shapeFor(c)[pk]:0; pluckShape(pk, 0.72); if(f>=0){ KEYCELLS.set(e.code, pk+":"+f); lessonNote(pk, f); } }
-    else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
+    else { const cl=cellFor(NOTE_BASE+NOTE_KEYS[e.code]); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
     litNeck(); return; }
-  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); } if(!e.repeat) padDown(pi, 0.74); return; }
-  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat) moveNeck(e.code==="KeyZ"?-1:1); return; }
+  const pi=padKey(e); if(pi>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); } if(!e.repeat) padDown(pi, 0.74); return; }
+  if(e.code==="ArrowLeft"||e.code==="ArrowRight"){ if(e.target && e.target.closest && e.target.closest("input,select")) return; e.preventDefault(); if(!e.repeat) moveNeck(e.code==="ArrowLeft"?-1:1); return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
     if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
@@ -3181,7 +3190,7 @@ document.addEventListener("keydown",(e)=>{
 document.addEventListener("keyup",(e)=>{
   if(window.AOGSolo && AOGSolo.key(e, false)) return;   /* AOG-SOLO-V1 */
   if(KEYCELLS.has(e.code)){ KEYCELLS.delete(e.code); litNeck(); return; }
-  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
+  const pi=padKey(e); if(pi>=0) padUp(pi);
 });
 window.addEventListener("blur",()=>{ if(KEYCELLS.size){ KEYCELLS.clear(); litNeck(); } });
 

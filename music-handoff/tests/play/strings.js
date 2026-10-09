@@ -64,7 +64,7 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(lay.ta==="none" && /Close/.test(lay.bar), "the neck takes the touch; the bar reads "+lay.bar);
 
     /* AOG-CHORDSTRIP-V1: ♪ Notes (the first way): a fret plays the moment it is touched; the chord strip plays a chord */
-    const md=await p.evaluate(()=>({tap:PV.tap, notes:document.getElementById("pvTap").getAttribute("aria-pressed"), strip:[...document.querySelectorAll("#pvStrip .cs")].map(b=>b.textContent)}));
+    const md=await p.evaluate(()=>({tap:PV.tap, notes:document.getElementById("pvTap").getAttribute("aria-pressed"), strip:[...document.querySelectorAll("#pvStrip .cs")].map(b=>{ const k=b.querySelector("kbd"); return k ? b.textContent.slice(0, -k.textContent.length) : b.textContent; })   /* its key (AOG-CHORD-KEYS-10-V1) is not part of the name */}));
     ok(md.tap && md.notes==="true" && md.strip.join(" ")==="C Dm Em F G Am G7 Cadd9 D7 Em7", "♪ Notes is on, and the chords sit by the neck (the six, then G7 Cadd9 D7 Em7): "+md.strip.join(" "));
     await p.evaluate("muteAll(); __v=[]"); { const q=await at(2,5); await T("touchStart",[q]); await p.waitForTimeout(60); await T("touchEnd",[]); }
     ok(JSON.stringify(await p.evaluate("__v.map(x=>x.m)"))==="[55]", "♪ Notes: a touch on a fret plays it at once (G)");
