@@ -326,6 +326,25 @@ JS = r"""<script src="/aog-handoff.js"></script>
     fr.style.height = Math.max(window.innerHeight < 760 ? 300 : 420, Math.floor(window.innerHeight - top - mt - 4)) + "px";   /* a phone: the room takes what is left */
   }
   /* a room inside the frame says hello (aog-labdoors.js) and asks for another room by its id */
+  /* AOG-STUDIO-KEYS-V1 (Jimmy, 2026-10-09: "At the moment nothing works with the keyboard"). Inside the Studio a tap on a
+     door or on the transport leaves the keyboard with the Studio, not with the room in the frame, so no key reached any
+     instrument. Now every key goes on to the room, as if the room had been tapped: the room's own keys decide what it
+     plays. What stays with the Studio: typing in a box or a menu, Tab to move around, and Space or Enter on one of the
+     Studio's own buttons. */
+  function keyOn(e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.key === "Tab") return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || (t && t.isContentEditable)) return;
+    if ((e.key === " " || e.key === "Enter") && t && t.closest && t.closest("button, summary, select" + (e.key === "Enter" ? ", a" : ""))) return;
+    var w, d; try { w = fr.contentWindow; d = fr.contentDocument; } catch (err) { return; }
+    if (!w || !d || !d.body) return;
+    var KE = w.KeyboardEvent || KeyboardEvent;
+    var ev = new KE(e.type, { key: e.key, code: e.code, repeat: e.repeat, shiftKey: e.shiftKey, bubbles: true, cancelable: true });
+    d.body.dispatchEvent(ev);
+    if (ev.defaultPrevented) e.preventDefault();
+  }
+  D.addEventListener("keydown", keyOn);
+  D.addEventListener("keyup", keyOn);
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
     arrived: function (id) { if (room(id) && id !== cur) { TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); } size(); }
