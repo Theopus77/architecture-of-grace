@@ -50,9 +50,10 @@ async function inRoom(m, room) {
         const fs2 = await f.evaluate(r => { const inst = document.getElementById(r === "guitar" || r === "bass" ? "neckBox" : "kbd"), blk = inst && inst.parentNode,
           h2 = blk && [...blk.children].find(e => e.tagName === "H2"), kids = blk ? [...blk.children] : [], slip = [...document.querySelectorAll(".aog-slip")].find(e => e.getClientRects().length);
           const strip = document.getElementById("chordStrip");
-          return { top: kids.indexOf(inst) <= kids.indexOf(h2) + 2, slip: !!slip && kids.indexOf(slip) > kids.indexOf(inst) && (!strip || kids.indexOf(slip) < kids.indexOf(strip)),
+          /* AOG-CHORDS-BY-NECK-V1: the chord buttons sit right above the instrument */
+          return { top: kids.indexOf(inst) <= kids.indexOf(h2) + 3, chords: !!strip && strip.getClientRects().length > 0 && kids.indexOf(strip) === kids.indexOf(inst) - 1, slip: !!slip && kids.indexOf(slip) > kids.indexOf(inst),
             paper: slip ? getComputedStyle(slip).backgroundColor : "" }; }, room);
-        ok(fs2.top && fs2.slip && fs2.paper === "rgb(247, 240, 225)", `${dev}, ${theme}, ${room}: the instrument opens the room, its line on a paper slip under it: ${JSON.stringify(fs2)}`);
+        ok(fs2.top && fs2.chords && fs2.slip && fs2.paper === "rgb(247, 240, 225)", `${dev}, ${theme}, ${room}: the instrument opens the room, its chords right above it, its line on a paper slip under it: ${JSON.stringify(fs2)}`);
       }
       const needHw = dev.startsWith("iPad") && room !== "kit";
       ok(r.bg === "rgb(23, 17, 12)" && !r.wrong && (!needHw || r.hw > 0) && r.sw && !pc.length && !sp.length && !pk.length,
