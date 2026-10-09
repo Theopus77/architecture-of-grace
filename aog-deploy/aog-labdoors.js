@@ -208,7 +208,8 @@
       if (c && c.a > 0.5) return c;
       if (cs.backgroundImage && cs.backgroundImage !== "none") { var g = rgbOf(cs.backgroundImage); if (g && g.a > 0.5) return g; }
     }
-    return rgbOf(getComputedStyle(D.body).backgroundColor) || { r: 255, g: 255, b: 255, a: 1 };
+    var hb = rgbOf(getComputedStyle(D.documentElement).backgroundColor);   /* the page itself, or paper when it is see-through */
+    return hb && hb.a > 0.5 ? hb : { r: 247, g: 242, b: 230, a: 1 };
   }
   function hardware() {
     [].forEach.call(D.querySelectorAll("select:not(.aog-hw):not(.aog-hw-no)"), function (s) {

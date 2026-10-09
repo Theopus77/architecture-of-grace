@@ -1,6 +1,8 @@
 /* The rooms reach for the ceiling (Jimmy, 2026-10-09: "1, 3, 2, 4").
    1 · AOG-ROOMS-ROOM-V1: inside the Recording Studio every room sits in the dim control room (its page takes the room's
        colour), and a menu on a dark panel is the desk's dark window with gold type (class aog-hw), on a room's own page too.
+   3 · AOG-STUDIO-ROOM-SOUND-V1: one Room knob (Dry, Small room, Studio, Hall), beside Record and in the Studio's bar; the
+       room adds a tail to what you hear and to your takes; it starts Dry; the turntables stay dry.
    Readable and calm on an iPad and an iPhone, light and dark; nothing sideways. No page errors. Port 9261. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const fs = require("fs"), path = require("path");
@@ -52,7 +54,44 @@ async function inRoom(m, room) {
   await p.goto(U + "music-piano.html"); await p.waitForTimeout(1800);
   const own = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, kind: document.getElementById("spKind").classList.contains("aog-hw") }));
   ok(own.bg !== "rgb(23, 17, 12)" && own.kind, "the piano on its own page keeps its paper; its Kind menu is the dark window: " + JSON.stringify(own));
+
+  /* 3 · AOG-STUDIO-ROOM-SOUND-V1: one room knob; Dry to start; the room adds a tail to what you hear and to your takes */
+  const knob = () => p.evaluate(() => { const k = document.querySelector(".aogroom"), rb = document.getElementById("recBtn"); return { here: !!k && k.parentNode === rb.parentNode, name: k && k.querySelector("b").textContent, lab: k && k.getAttribute("aria-label") }; });
+  let k0 = await knob();
+  ok(k0.here && k0.name === "Dry" && /^Room sound: Dry\. Tap to change it\.$/.test(k0.lab), "the room knob sits beside Record and starts Dry: " + JSON.stringify(k0));
+  await p.click(".aogroom"); k0 = await knob();
+  ok(k0.name === "Small room" && await p.evaluate(() => localStorage.getItem("aog.room.v1")) === "1", "a tap turns it one step: " + k0.name);
+  const tail = async () => {
+    await p.mouse.click(5, 400).catch(() => {});
+    await p.evaluate(() => { window.__wl = []; for (const ch of AOGRoom.chains) { const a = ch.ctx.createAnalyser(); a.fftSize = 2048; ch.wet.connect(a); const d = new Float32Array(2048);
+      (function f() { a.getFloatTimeDomainData(d); let m = 0; for (const v of d) m = Math.max(m, Math.abs(v)); window.__wl.push(m); if (window.__wl.length < 400) requestAnimationFrame(f); })(); } });
+    await p.keyboard.down("KeyA"); await p.waitForTimeout(150); await p.keyboard.up("KeyA"); await p.waitForTimeout(900);
+    return p.evaluate(() => ({ wet: Math.max(0, ...window.__wl), on: AOGRoom.chains.map(c => c.on).join() }));
+  };
+  await p.evaluate(() => AOGRoom.set(0)); const dry = await tail();
+  await p.evaluate(() => AOGRoom.set(3)); const hall = await tail();
+  ok(dry.wet === 0 && /^false/.test(dry.on) && hall.wet > 0.05 && /^true/.test(hall.on), `Dry adds nothing (${dry.wet}); the Hall rings on (${hall.wet.toFixed(3)})`);
+  /* a take carries the room: the recorder hears the same room */
+  await p.evaluate(() => AOGStudioRec.toggle()); await p.waitForTimeout(400);
+  await p.keyboard.down("KeyA"); await p.waitForTimeout(150); await p.keyboard.up("KeyA"); await p.waitForTimeout(800);
+  await p.evaluate(() => AOGStudioRec.toggle()); await p.waitForTimeout(1500);
+  const rc = await p.evaluate(() => ({ n: AOGRoom.chains.length, on: AOGRoom.chains.map(c => c.on).join(), take: AOGStudioRec.last() }));
+  ok(rc.n === 2 && rc.on === "true,true" && rc.take && rc.take.sec > 0.5, "a take is recorded through the same room: " + JSON.stringify(rc));
+  /* Spanish, and the Studio's bar has the same knob, in step with the room */
+  await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); }); await p.waitForTimeout(500);
+  ok((await knob()).name === "Sala grande", "in Spanish: " + (await knob()).name);
+  await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); AOGRoom.set(0); });
   await c.close();
+  const s2 = await b.newContext({ viewport: { width: 1280, height: 900 } }); watch(s2); await routes(s2);
+  const q = await s2.newPage(); const f = await inRoom(q, "piano");
+  const bar = await q.evaluate(() => { const k = document.querySelector("#tpVu .aogroom"); return k && !k.hidden && k.querySelector("b").textContent; });
+  await q.click("#tpVu .aogroom"); await q.click("#tpVu .aogroom"); await q.waitForTimeout(400);
+  const roomNow = await f.evaluate(() => AOGRoom.presets[AOGRoom.get()].en);
+  ok(bar === "Dry" && roomNow === "Studio", `the Studio's bar has the knob (${bar}); turning it there turns the room's (${roomNow})`);
+  await q.click('.sh-doors a[data-room="decks"]'); await q.waitForTimeout(2500);
+  ok(await q.evaluate(() => document.querySelector("#tpVu .aogroom").hidden), "the turntables stay dry, so the knob steps aside there");
+  await q.evaluate(() => localStorage.setItem("aog.room.v1", "0"));
+  await s2.close();
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });

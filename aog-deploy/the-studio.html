@@ -319,7 +319,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 .sh-doors a[aria-current="true"] { border-color:#e0b25a; box-shadow:0 0 0 1px #e0b25a, 0 0 18px rgba(240,194,110,.35), 0 6px 14px rgba(0,0,0,.45); }
 .sh-room { background:#17110c; border:1px solid #050403; box-shadow:0 0 0 1px rgba(255,214,160,.06), 0 24px 60px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.5); }
 .mt { background:#120d09; box-shadow:0 -1px 0 rgba(255,214,160,.08), 0 -12px 28px rgba(0,0,0,.55); }
-.tp-vu { display:inline-flex; flex:0 0 auto; align-items:center; }
+.tp-vu { display:inline-flex; flex:0 0 auto; align-items:center; gap:.5rem; }
 .tp-vu[hidden] { display:none; }
 @media (max-width:699px) { .tp-vu { display:none !important; } }   /* a phone's bar has no room for them; the room's own page shows them */
 </style>
@@ -375,6 +375,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
   function paint() {
     var r = room(cur), e = es(); if (!r) return;
     var vb = D.getElementById("tpVu"); if (vb) vb.hidden = cur === "studio";   /* AOG-ROOM-VU-V1: the desk has its own, large */
+    var rk = D.querySelector("#tpVu .aogroom"); if (rk) rk.hidden = cur === "decks";
     TP.line = ""; if (typeof paintTp === "function") try { paintTp(); } catch (err) {}
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
@@ -491,6 +492,8 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
     var a = null, b = null; try { var w = fr.contentWindow; a = w && w.AOGVU ? w.AOGVU.levels() : null; } catch (e) {}
     try { b = AOGVU.levels(); } catch (e) {}
     return a && b ? [Math.max(a[0], b[0]), Math.max(a[1], b[1])] : a || b; } });
+  /* AOG-STUDIO-ROOM-SOUND-V1: the room knob, shared with every instrument room (the turntables and the desk stay dry) */
+  var roomKnob = window.AOGRoom ? AOGRoom.knob(D.getElementById("tpVu")) : null;
   D.getElementById("tpOut").addEventListener("click", function () {
     TP.line = "";
     atDesk(function (w) { var b = w.document.getElementById("outBtn"); if (!b) return; try { b.scrollIntoView({ block: "center" }); } catch (e) {} if (!b.disabled) b.click(); else b.focus(); });
