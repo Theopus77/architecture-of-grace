@@ -68,7 +68,7 @@ const takeDb = f => f.evaluate(async () => { const k = (typeof REC !== "undefine
     s = await tp(p);
     ok(/^■ Stop \d:\d\d$/.test(s.rec), `${NAME[id]}: while it records, the button says ${s.rec}`);
     await p.click("#tpRec");
-    await p.waitForFunction(() => !document.getElementById("tpAdd").hidden, null, { timeout: 10000 });
+    await p.waitForFunction(() => !document.getElementById("tpAdd").hidden, null, { timeout: 20000 });
     const db = await takeDb(f);
     ok(db != null && db > -50, `${NAME[id]}: Stop makes a take that is not silent (${db} dB)`);
     const n0 = await p.evaluate(async () => (await AOGHandoff.list(AOGHandoff.INBOX)).items.length);

@@ -256,6 +256,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-amp.js"></script>
+<script src="/aog-liveinput.js"></script><!-- AOG-LIVEINPUT-V1: your real bass through a cable, and the tuner -->
 <script src="/aog-chords.js"></script><!-- AOG-ANYCHORD-V1: the shared chord library, read as the page's own script starts -->
 <script src="/aog-scales.js" defer></script><!-- AOG-SCALES-LIB-V1: the shared scale library -->
 <script src="/aog-solo.js" defer></script><!-- AOG-SOLO-V1: Solo mode on the neck (aog-solo.js) -->
@@ -388,6 +389,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
         <p class="line" style="margin-top:0" data-t="ampLine"></p>
         <div id="ampBox"></div>
       </div>
+
+      <div class="blk" id="liveBlk"><div id="liveBox"></div></div><!-- AOG-LIVEINPUT-V1 (STUDIO-HANDOFF §10b, §10c): the one in your hands, and a tuner -->
 
       <div class="blk">
         <div class="dial">
@@ -1660,7 +1663,8 @@ function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
 /* AOG-STRINGS-REAL-V1: a recorded sound has its own level after the amp (rout, measured: its C chord as loud as the grand
    piano's), as the made string has out; trim carries the difference while the recordings play */
 function recTrim(id){ const s=SOUNDS[id]; return (s && s.rout && recOf(id) && soundReady(id)) ? s.rout/(s.out||1) : 1; }
-function setSound(ch, id){ setSendLevel(ch, id); ch.rig.set(rigFor(id)); ch.post.gain.value=SOUNDS[id].out||1; ch.trim.gain.value=recTrim(id); }
+function setSound(ch, id){ setSendLevel(ch, id); ch.rig.set(rigFor(id)); ch.post.gain.value=SOUNDS[id].out||1; ch.trim.gain.value=recTrim(id);
+  if(ch===LIVE_CH && window.AOGLive) AOGLive.setRig(rigFor(id)); }
 
 /* a voice is a little chain that ends in a gain we can fade out: stop(t) lets go, kill(t) silences at once */
 function voiceShell(c, out, nodes, rel, endPad){
@@ -2447,7 +2451,10 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
 /* AOG-AMP-V1: the amp panel. aog-amp.js draws it; the page keeps what is changed, with the sound it was changed on */
 let AMPUI=null;
-function applyRig(){ if(ac && LIVE_CH) LIVE_CH.rig.set(rigFor(S.sound)); }
+function applyRig(){ if(ac && LIVE_CH) LIVE_CH.rig.set(rigFor(S.sound)); if(window.AOGLive) AOGLive.setRig(rigFor(S.sound)); }   /* the real one hears the same amp */
+/* AOG-LIVEINPUT-V1 — your real guitar or bass, through the same amp, and a free tuner (aog-liveinput.js) */
+const LIVEIN=window.AOGLive ? AOGLive.attach({mount:"liveBox", kind:GTR?"guitar":"bass", tool:INST, context:()=>ctx(), out:()=>{ ctx(); return LIVE_CH.bus; },
+  rig:()=>rigFor(S.sound), lang:()=>S.lang, bpm:()=>curBpm()}) : null;
 function paintAmp(){
   if(!AMPUI) AMPUI=AOGAmp.ui($("ampBox"), {kind:GTR?"guitar":"bass", lang:()=>S.lang, get:()=>rigFor(S.sound),
     set:(st)=>{ const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); delete o.pickup;
@@ -2466,7 +2473,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW"); $("majBtn2").textContent=t("major"); $("minBtn2").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
-  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp();
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp(); if(LIVEIN) LIVEIN.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
