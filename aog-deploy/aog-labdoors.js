@@ -82,10 +82,11 @@
   if (shell) {
     D.documentElement.classList.add("in-studio");
     var ss = D.createElement("style"); ss.id = "in-studio-css";
-    /* on a phone the Studio's doors already name the room, so the room's own banner steps aside and the instrument
-       gets the screen; a bigger screen keeps the banner */
+    /* the Studio's doors already name the room (and show its drawing), so the room's own banner steps aside and the
+       instrument gets the screen: on a phone first, and since AOG-STUDIO-ROOMY-V1 on an iPad and a computer too (Jimmy,
+       2026-10-09: the bars were taking "a huge portion of the screen") */
     ss.textContent = "html.in-studio .labdoors,html.in-studio .aogtop,html.in-studio .aogtop-spacer{display:none!important}" +
-      "@media (max-width:699px){html.in-studio [data-aog-hero]{display:none!important}}";
+      "html.in-studio [data-aog-hero]{display:none!important}";
     (D.head || D.documentElement).appendChild(ss);
     D.addEventListener("click", function (e) {
       var a = e.target.closest && e.target.closest("a[href]");

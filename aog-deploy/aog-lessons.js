@@ -89,6 +89,7 @@
           return '<li class="' + (d ? "ok" : "") + '"><span class="aogl-ck" aria-hidden="true">' + (d ? "✓" : "") + '</span><span>' + (d ? '<span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">✓ </span>' : "") + esc(L2(s[0], s[1])) + "</span></li>"; }).join("") + "</ol>" +
         (m.ten ? '<p class="aogl-try"><b>' + esc(w("tryit")) + "</b> " + esc(L2(m.ten, m.tes)) + "</p>" : "") +
         (ok ? '<p class="aogl-ok" aria-live="polite">' + esc(all ? w("alldone") : w("done")) + (p < LES.length - 1 ? ' <button type="button" class="aogl-next" data-aogl-next>' + esc(w("next")) + "</button>" : "") + "</p>" : "");
+      if (o.onPaint) try { o.onPaint(); } catch (e) {}   /* AOG-DESK-FACE-V1: the page's own slip follows the lesson */
       if (box.__h === html) return;
       var f = document.activeElement, keep = f && box.contains(f) && f.matches && f.matches("[data-aogl-pick]");
       box.innerHTML = html; box.__h = html;
@@ -108,6 +109,12 @@
       counted: function (k) { return st.n[k] || 0; },
       paint: paint,
       picked: function () { return LES[picked()]; },
+      /* AOG-DESK-FACE-V1: the lesson on screen and its next step, in the page's language, for a paper slip */
+      next: function () {
+        if (!LES.length) return null;
+        var p = picked(), m = LES[p], id = m.steps.filter(function (k) { return !st.done[k]; })[0], s = id ? (STEPS[id] || [id, id]) : null;
+        return { n: p + 1, of: LES.length, title: L2(m.en, m.es), step: s ? L2(s[0], s[1]) : "", done: !id };
+      },
       reset: function () { st.done = {}; st.pick = 0; st.n = {}; save(); paint(); }
     };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", paint); else paint();
