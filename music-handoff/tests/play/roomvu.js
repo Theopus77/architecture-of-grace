@@ -88,9 +88,11 @@ async function play(f, kb, keys, m, sel, rest) {
       ok(r.fit && r.sw && !pc.length && !pk.length, `${dev}, ${theme}, ${file}: the meters fit, nothing sideways, readable (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and calm (${pk.join("; ") || "ok"})`);
     }
     await m.goto(U + "the-studio#guitar"); await m.waitForTimeout(3000);
-    const t = await m.evaluate(() => { const v = document.querySelector("#tpVu .aogvu"), b = v && v.getBoundingClientRect(); return { fit: !!b && b.right <= innerWidth + 1, sw: document.scrollingElement.scrollWidth <= innerWidth + 1 }; });
+    const phone = dev.startsWith("iPhone");
+    const t = await m.evaluate(ph => { const v = document.querySelector("#tpVu .aogvu"), b = v && v.getBoundingClientRect(), shown = !!b && b.width > 0;
+      return { fit: ph ? !shown : shown && b.right <= innerWidth + 1, sw: document.scrollingElement.scrollWidth <= innerWidth + 1 }; }, phone);
     const pc = await m.evaluate(`(${PROBE})()`);
-    ok(t.fit && t.sw && !pc.length, `${dev}, ${theme}: in the Studio the bar's meters fit, nothing sideways, readable (${pc.length})`);
+    ok(t.fit && t.sw && !pc.length, `${dev}, ${theme}: in the Studio the bar's meters ${phone ? "step aside on a phone" : "fit"}, nothing sideways, readable (${pc.length})`);
     await cx.close();
   }
   ok(errs.length === 0, "no page errors on the phone or the iPad " + errs.join(" | "));

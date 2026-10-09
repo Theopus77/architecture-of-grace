@@ -177,10 +177,50 @@
      don't work using the iPad keyboard"). After a menu is used (the sound, the key, a pattern), an iPad leaves the keyboard
      with that menu, and the instruments rightly ignore keys typed into a menu, so no key played. Once a choice is made the
      menu lets go, and the next key plays the instrument. (Tab still carries on from the menu.) */
+  /* Someone stepping through a menu with the arrow keys on a computer keeps it: the change came from a key pressed on the
+     menu itself, so it is left alone. */
+  var selKeyAt = 0;
+  D.addEventListener("keydown", function (e) { var t = e.target; if (t && t.tagName === "SELECT") selKeyAt = Date.now(); }, true);
   D.addEventListener("change", function (e) {
     var t = e.target; if (!t || t.tagName !== "SELECT" || t.multiple) return;
+    if (Date.now() - selKeyAt < 600) return;
     setTimeout(function () { if (D.activeElement === t) t.blur(); }, 0);
   }, true);
+  /* ══ AOG-ROOMS-ROOM-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — first, every room in the control room). Inside the Recording
+     Studio a room sits in the same dim, warm room as the Mixing Desk, not on paper: its page takes the room's colour and the
+     instrument is the lit thing in it. And in every room, on its own page too, a menu on a dark panel is the desk's dark
+     window with gold type (class aog-hw), not a cream box. A menu on a light card keeps its own look. ══ */
+  if (shell) ss.textContent += "html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}" +
+    "html.in-studio .aog-learn{border-color:#3a2c1c!important;box-shadow:0 10px 24px rgba(0,0,0,.45)}";
+  var HW = D.createElement("style"); HW.id = "aog-hw-css";
+  HW.textContent = "html select.aog-hw{color:#f6e3b4!important;background-color:#121316!important;border:1px solid #5b4a24!important;border-radius:9px!important;" +
+    "background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0b25a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"),linear-gradient(#0b0c0e,#17181c)!important;" +
+    "background-repeat:no-repeat,no-repeat!important;background-position:right 12px center,0 0!important;background-size:16px,100% 100%!important;" +
+    "box-shadow:inset 0 2px 5px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.07)!important;-webkit-appearance:none;appearance:none;padding-right:38px!important}" +
+    "html select.aog-hw:focus-visible{border-color:#f0c26e!important}html select.aog-hw option,html select.aog-hw optgroup{background:#17181c;color:#f1ebdf}";
+  (D.head || D.documentElement).appendChild(HW);
+  function rgbOf(str) { var m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(str || ""); return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] == null ? 1 : +m[4] } : null; }
+  function lum(c) { var f = function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); }
+  /* what is behind an element: the first ancestor with a solid colour, or the first colour of its gradient */
+  function behind(el) {
+    for (var n = el.parentElement; n && n !== D.documentElement; n = n.parentElement) {
+      var cs = getComputedStyle(n), c = rgbOf(cs.backgroundColor);
+      if (c && c.a > 0.5) return c;
+      if (cs.backgroundImage && cs.backgroundImage !== "none") { var g = rgbOf(cs.backgroundImage); if (g && g.a > 0.5) return g; }
+    }
+    return rgbOf(getComputedStyle(D.body).backgroundColor) || { r: 255, g: 255, b: 255, a: 1 };
+  }
+  function hardware() {
+    [].forEach.call(D.querySelectorAll("select:not(.aog-hw):not(.aog-hw-no)"), function (s) {
+      if (!s.offsetParent && s.getClientRects().length === 0) return;   /* not drawn yet: looked at again later */
+      if (s.closest(".sp-keep,.aogtop,.aog-learn")) { s.classList.add("aog-hw-no"); return; }
+      s.classList.add(lum(behind(s)) < 0.12 ? "aog-hw" : "aog-hw-no");
+    });
+  }
+  var hwT = 0, hwSoon = function () { clearTimeout(hwT); hwT = setTimeout(hardware, 120); };
+  function hwStart() { hardware(); try { new MutationObserver(hwSoon).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden", "open"] }); } catch (e) {} window.addEventListener("load", hwSoon); }
+  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", hwStart); else hwStart();
+
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
   /* after the doors and the menus are drawn; the course box arrives later (aog-grace.js), so it is watched for a while */
   if (shell) {
