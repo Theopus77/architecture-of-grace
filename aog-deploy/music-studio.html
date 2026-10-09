@@ -1863,6 +1863,13 @@ async function voiceStop(){
   }catch(e){ VOICE.state="fail"; }
   VOICE.busy=false; paintVoice();
 }
+/* AOG-STUDIO-TRANSPORT-V1 — at the Mixing Desk, the Recording Studio's ● Record (/the-studio) records your voice on track 8;
+   the take is on My Track the moment it stops, so there is nothing to add */
+window.AOGStudioRec={
+  on:()=>VOICE.rec, busy:()=>VOICE.busy,
+  toggle:()=>{ if(VOICE.rec){ voiceStop(); return; } if(SONG.sel!==VOICE_T) selectTrack(VOICE_T); voiceStart(); },
+  last:()=>null, sent:()=>true, add:()=>Promise.resolve()
+};
 function paintVoice(){
   const box=$("voiceBox"), on=SONG.sel===VOICE_T, c=SONG.tracks[VOICE_T].clip;
   $("recsH").hidden=on; $("recs").hidden=on;

@@ -371,6 +371,15 @@
       R.msg = ""; R.paint();
     };
     document.addEventListener("visibilitychange", function () { if (document.hidden && R.on) R.toggle(); });
+    /* AOG-STUDIO-TRANSPORT-V1 (2026-10-09) — the Recording Studio's transport (/the-studio) drives this room's recorder:
+       ● Record presses this room's own Record button, + Add to My Track sends the newest take the usual way */
+    window.AOGStudioRec = {
+      on: function () { return !!R.on; }, busy: function () { return !!R.closing; },
+      toggle: function () { var b = el("btn"); if (b && !b.disabled) b.click(); else R.toggle(); },
+      last: function () { var k = R.takes[0]; return k ? { n: k.n, sec: k.sec } : null; },
+      sent: function () { return !!R.studioLine; },
+      add: function () { var k = R.takes[0]; return k ? R.toStudio(k.n) : Promise.resolve(); }
+    };
     style();
     return R;
   }
