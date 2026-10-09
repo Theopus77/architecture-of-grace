@@ -115,8 +115,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 /* ── 1 · play ── */
 .st-top{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center}
 .st-read{display:grid;gap:.15rem;min-width:0;flex:1 1 13rem}
-.st-read b{font:800 1.3rem/1.15 var(--sans);font-variant-numeric:tabular-nums;color:#ffe2a8}
-.st-read span{font-size:.92rem;color:#d7cbb8}
+.st-read>b{font:800 1.3rem/1.15 var(--sans);font-variant-numeric:tabular-nums;color:#ffe2a8}
+.st-read>span{font-size:.92rem;color:#d7cbb8}
 .st-mrow{display:flex;align-items:center;gap:.6rem;margin-top:.8rem}
 .st-mrow .st-lab{margin:0;flex:0 0 auto}
 .st-meter{display:block;flex:1 1 auto;min-width:0;width:100%;height:22px;border-radius:6px;background:#0b0c0e}
@@ -311,8 +311,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-desk .st-play.on::before{width:17px;height:17px;margin:0;border:0;border-radius:2px;background:#20170a}
 .st-desk .st-play:disabled{opacity:.55}
 .st-desk .st-read{gap:.1rem}
-.st-desk .st-read b{font:400 1.12rem/1.2 var(--serif,Georgia,serif);color:#efe7d6;letter-spacing:.02em}
-.st-desk .st-read span{font-size:.84rem;color:#b9b0a1}
+.st-desk .st-read>b{font:400 1.12rem/1.2 var(--serif,Georgia,serif);color:#efe7d6;letter-spacing:.02em}
+.st-desk .st-read>span{font-size:.84rem;color:#b9b0a1}
 /* the song: a thin ruler, slim lanes, each recording drawn as fine lines */
 .st-tl{position:relative;--lab:6.2rem;gap:0}
 .st-desk .st-ruler,.st-desk .st-lane{grid-template-columns:var(--lab) minmax(0,1fr);gap:0}
@@ -456,8 +456,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-desk .st-play::before{filter:drop-shadow(0 1px 0 rgba(255,236,190,.55))}
 /* the readout, in a recessed window */
 .st-desk .st-read{padding:.45rem .85rem .5rem;border-radius:8px;background:linear-gradient(#0a0b0d,#121317);box-shadow:inset 0 2px 5px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.06);flex:0 1 auto}
-.st-desk .st-read b{font:400 1.18rem/1.15 "Fraunces",var(--serif,Georgia,serif);color:#f6e7c3;letter-spacing:.03em;font-variant-numeric:lining-nums tabular-nums;text-shadow:0 0 10px rgba(240,194,110,.25)}
-.st-desk .st-read span{font:600 .72rem/1.2 var(--sans);letter-spacing:.06em;color:#a89f8f}
+.st-desk .st-read>b{font:400 1.18rem/1.15 "Fraunces",var(--serif,Georgia,serif);color:#f6e7c3;letter-spacing:.03em;font-variant-numeric:lining-nums tabular-nums;text-shadow:0 0 10px rgba(240,194,110,.25)}
+.st-desk .st-read>span{font:600 .72rem/1.2 var(--sans);letter-spacing:.06em;color:#a89f8f}
 .st-desk .st-top{position:relative;padding-bottom:12px;margin-bottom:12px}
 .st-desk .st-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(208,168,82,.55) 18%,rgba(208,168,82,.55) 82%,transparent)}
 .st-desk .st-top::before{content:"\25C6";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-size:9px;line-height:12px;color:#d0a852;background:#1d1e22;padding:0 6px}
@@ -565,7 +565,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .st-fds{grid-template-columns:repeat(8,minmax(0,1fr))}
   .st-fsc{display:none}
   .st-tape{display:none}
-  .st-desk .st-read b{font-size:1.05rem}
+  .st-desk .st-read>b{font-size:1.05rem}
   .st-chn{font-size:1.5rem}
 }
 /* AOG-DESK-KEYS-V1: the keys line shows on a computer with a mouse, and anywhere once a key has been pressed */
@@ -642,6 +642,38 @@ html.aog-keys .st-cp .st-keys{display:block}
   .st-cp{padding-left:calc(var(--cheek) + 10px);padding-right:calc(var(--cheek) + 10px)}
   .st-chassis::before,.st-chassis::after{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='400'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .05  0 0 0 0 .02  0 0 0 .55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>"),linear-gradient(90deg,#3a2213 0%,#5c3820 35%,#6a4226 55%,#4a2c17 80%,#2c190c 100%);background-size:40px 400px,auto}
 }
+/* ══ AOG-DESK-GLOW-V1 — the playhead glows while the song plays: a warm line with a soft bloom and a faint light behind it,
+   a lit diamond on the ruler. Stopped, it is the plain line. ══ */
+.st-tl.ph-live .st-ph{width:2px;margin-left:-.5px;background:linear-gradient(#fffaf0,#ffe6b0 70%,rgba(255,230,176,.6));
+  box-shadow:0 0 6px 1px rgba(255,214,140,.75),0 0 18px 4px rgba(240,180,90,.35)}
+.st-tl.ph-live .st-ph::after{content:"";position:absolute;top:0;bottom:0;right:2px;width:72px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,214,140,0),rgba(255,214,140,.10))}
+.st-tl.ph-live .st-ph::before{border-top-color:#ffe6a8;filter:drop-shadow(0 0 4px rgba(255,214,140,.95)) drop-shadow(0 1px 1px rgba(0,0,0,.7))}
+/* ══ AOG-DESK-COUNTER-V1 — the tape counter ══ */
+.st-posw{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.st-ctr{display:flex;align-items:flex-start;gap:12px;font:700 1.9rem/1 var(--sans);font-variant-numeric:tabular-nums;padding:3px 0 2px}
+.st-cg{display:inline-flex;align-items:center;gap:2px;padding:3px 4px;border-radius:4px;
+  background:linear-gradient(#bfc3c9,#8e939a 45%,#6d7178);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.6)}
+.st-cgt{background:linear-gradient(#e8c47a,#c79a45 45%,#9c742c)}
+.st-cw{display:inline-block;position:relative;width:.72em;height:1em;overflow:hidden;border-radius:2px;background-color:#0b0b0c;
+  box-shadow:inset 0 0 0 1px #000}
+.st-cw::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,0) 32%,rgba(255,255,255,.06) 50%,rgba(0,0,0,0) 68%,rgba(0,0,0,.85))}
+.st-cs{display:block;transition:transform .22s cubic-bezier(.3,.7,.4,1)}
+.st-cs.st-snap{transition:none}
+.st-cs i{display:block;height:1em;line-height:1em;text-align:center;font-style:normal;color:#f4efe4;background-color:#0b0b0c}
+.st-cgt .st-cs i{color:#fff3d4}
+.st-colon{color:#1a1a1a;font-size:.8em;line-height:1;margin:0 1px;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.st-cgw{display:inline-grid;justify-items:center;gap:3px}
+.st-cgw small{font:700 .58rem/1 var(--sans);margin-top:2px;letter-spacing:.18em;text-transform:uppercase;color:#a89f8f}
+.st-ctl{margin:3px 0 1px;font:700 .82rem/1.2 var(--sans);color:#ffe2a8}
+.st-ctl[hidden]{display:none}
+@media (max-width:699px){ .st-ctr{font-size:1.45rem;gap:7px} .st-desk .st-read>span{letter-spacing:.01em} }
+@media (prefers-reduced-motion:reduce){ .st-cs{transition:none} }
+@media (hover:none){ .st-cs{transition:none} }
+/* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
+html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
+html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -684,7 +716,7 @@ html.aog-keys .st-cp .st-keys{display:block}
       <div class="st-blk" id="transport">
         <div class="st-top">
           <button type="button" class="st-btn st-play" id="playBtn"></button>
-          <div class="st-read"><b id="posOut">&nbsp;</b><span id="tempoOut"></span></div>
+          <div class="st-read"><b id="posOut" class="st-posw">&nbsp;</b><!-- AOG-DESK-COUNTER-V1: the tape counter (its words stay in #posOut for a screen reader) --><div class="st-ctr" id="ctr" aria-hidden="true"></div><div class="st-ctl" id="ctrLab" aria-hidden="true" hidden></div><span id="tempoOut"></span></div>
           <!-- AOG-DESK-SLIP-V2 (Jimmy, 2026-10-09: "The lesson sheet needs to move"): the lesson is a note taped to the console,
                in the empty corner beside play; on a phone it moves to the foot of the console (placeSlip) -->
           <div class="st-slipbox" id="slipBox"><span class="st-tapeh" aria-hidden="true"></span><div class="st-slip" id="slip" aria-live="polite"></div></div>
@@ -822,6 +854,7 @@ const STR={
   play:{en:"▶ Play",es:"▶ Tocar"}, stop:{en:"■ Stop",es:"■ Parar"},
   pos:{en:"Bar {b} · beat {n} · {t}",es:"Compás {b} · pulso {n} · {t}"},
   countIn:{en:"Get ready… {n}",es:"Prepárate… {n}"},
+  ctrBar:{en:"Bar",es:"Compás"}, ctrBeat:{en:"Beat",es:"Pulso"}, ctrTime:{en:"Time",es:"Tiempo"},
   tempo:{en:"{n} beats a minute, from track {k}",es:"{n} pulsos por minuto, de la pista {k}"},
   tempoNone:{en:"The tempo comes from your first recording.",es:"El tempo viene de tu primera grabación."},
   readying:{en:"Getting your tracks ready…",es:"Preparando tus pistas…"},
@@ -1593,11 +1626,12 @@ function frame(){
   if(!PLAY.on){ PLAY.raf=0; return; }
   const now=ac.currentTime, pos=songPos(now);
   let sig;
-  if(pos==null){ const n=Math.max(1, Math.min(4, Math.floor((now-PLAY.countAt)/PLAY.beat)+1)); sig="c"+n; if(sig!==PLAY.sig) posText(t("countIn",{n:n})); }
+  if(pos==null){ const n=Math.max(1, Math.min(4, Math.floor((now-PLAY.countAt)/PLAY.beat)+1)); sig="c"+n; if(sig!==PLAY.sig){ posText(t("countIn",{n:n})); ctrCount(n); } }
   else {
     const bar=Math.floor(pos/PLAY.bar+1e-6), beat=Math.floor((pos-bar*PLAY.bar)/PLAY.beat+1e-6);
     sig=bar+"."+beat;
-    if(sig!==PLAY.sig){ posText(t("pos",{b:bar+1, n:Math.min(4,beat+1), t:clockPos(pos)})); paintNowBar(bar); playhead(bar*PLAY.bar+beat*PLAY.beat); }
+    if(sig!==PLAY.sig){ posText(t("pos",{b:bar+1, n:Math.min(4,beat+1), t:clockPos(pos)})); ctrSet(bar+1, Math.min(4,beat+1), pos); paintNowBar(bar); playhead(bar*PLAY.bar+beat*PLAY.beat); }
+    else if(!stillMeter()) playhead(pos);   /* AOG-DESK-GLOW-V1: on a computer the playhead sweeps smoothly; on a touch screen it steps with the beat */
   }
   PLAY.sig=sig;
   meterTick();
@@ -2517,6 +2551,44 @@ function beatsWords(n, bpb){
   return out.join(", ");
 }
 let posNode=null;
+/* ══ AOG-DESK-COUNTER-V1 (Jimmy, 2026-10-09: "DO all three") — the readout is a tape counter: number wheels for the bar,
+   the beat and the time, white on black drums in a metal frame. On a computer a wheel rolls to its next number; on a touch
+   screen or with "reduce motion" set it simply shows it. During the count-in the words under it say "Get ready… 3". ══ */
+const CTR={w:[], built:false};
+function ctrBuild(){
+  const box=$("ctr"); if(!box || CTR.built) return; CTR.built=true;
+  const strip='<span class="st-cs">'+"01234567890".split("").map(d=>"<i>"+d+"</i>").join("")+"</span>";
+  const wheel='<span class="st-cw">'+strip+"</span>";
+  const grp=(cls, inner, key)=>'<span class="st-cgw"><span class="st-cg '+cls+'">'+inner+'</span><small data-t="'+key+'">'+esc(t(key))+"</small></span>";
+  box.innerHTML=grp("st-cgb", wheel+wheel+wheel, "ctrBar")+grp("st-cgt", wheel, "ctrBeat")+grp("st-cgc", wheel+wheel+'<b class="st-colon">:</b>'+wheel+wheel, "ctrTime");
+  CTR.w=[...box.querySelectorAll(".st-cw")].map(el=>({el:el, s:el.firstChild, d:0}));
+}
+function ctrRoll(k, d){
+  const w=CTR.w[k]; if(!w || w.d===d) return;
+  const moving=!stillMeter();
+  if(moving && w.d===9 && d===0){   /* 9 → 0 rolls forward onto the second 0, then quietly back to the first */
+    w.s.style.transform="translateY(-10em)";
+    const done=()=>{ w.s.removeEventListener("transitionend", done); w.s.classList.add("st-snap"); w.s.style.transform="translateY(0)"; void w.s.offsetWidth; w.s.classList.remove("st-snap"); };
+    w.s.addEventListener("transitionend", done); setTimeout(done, 400);
+  } else {
+    if(!moving) w.s.classList.add("st-snap");
+    w.s.style.transform="translateY("+(-d)+"em)";
+    if(!moving){ void w.s.offsetWidth; w.s.classList.remove("st-snap"); }
+  }
+  w.d=d;
+}
+function ctrSet(bar, beat, sec){
+  ctrBuild(); if(!CTR.w.length) return;
+  const b=String(Math.max(0, Math.min(999, bar|0))).padStart(3,"0"), s=Math.max(0, Math.floor(sec+1e-6)), m=Math.min(99, Math.floor(s/60)), ss=s%60;
+  const digs=(b+String(beat|0).slice(-1)+String(m).padStart(2,"0")+String(ss).padStart(2,"0")).split("").map(Number);
+  digs.forEach((d,k)=>ctrRoll(k,d));
+  const lab=$("ctrLab"); if(lab && !lab.hidden){ lab.hidden=true; lab.textContent=""; }
+}
+function ctrCount(n){
+  ctrBuild(); if(!CTR.w.length) return;
+  [0,1,2].forEach(k=>ctrRoll(k,0)); ctrRoll(3, n);
+  const lab=$("ctrLab"); if(lab){ lab.hidden=false; lab.textContent=t("countIn",{n:n}); }
+}
 function posText(s){ if(!posNode){ const b=$("posOut"); b.textContent=""; posNode=document.createTextNode(""); b.appendChild(posNode); } posNode.nodeValue=s; }
 function paintText(){
   document.documentElement.setAttribute("lang", S.lang);
@@ -2541,7 +2613,7 @@ function paintPlay(){
   b.classList.toggle("on", PLAY.on);
   b.disabled=!PLAY.on && !can;
   b.setAttribute("aria-pressed", PLAY.on ? "true" : "false");
-  if(!PLAY.on){ const bs=barSec(), from=SONG.loopOn ? SONG.loopFrom : SONG.startBar; posText(t("pos",{b:from, n:1, t:clockPos((from-1)*bs)})); playhead((from-1)*bs); }
+  if(!PLAY.on){ const bs=barSec(), from=SONG.loopOn ? SONG.loopFrom : SONG.startBar; posText(t("pos",{b:from, n:1, t:clockPos((from-1)*bs)})); ctrSet(from, 1, (from-1)*bs); playhead((from-1)*bs); }
   const pl=$("playLine");
   pl.textContent = S.decoding ? t("readying") : (SONG.loopOn && hasClips() ? t("loopOn",{a:SONG.loopFrom, b:SONG.loopTo}) : "");
 }
@@ -3064,7 +3136,7 @@ function laneName(i){
 function playhead(sec){
   const tl=$("timeline"); if(!tl) return;
   const n=tlBars(), bs=barSec(), f=n>0 && bs>0 ? Math.max(0, Math.min(1, sec/(n*bs))) : 0;
-  tl.style.setProperty("--ph", f.toFixed(4));
+  tl.style.setProperty("--ph", f.toFixed(4)); tl.classList.toggle("ph-live", PLAY.on);   /* AOG-DESK-GLOW-V1 */
   /* AOG-DESK-ART-V1: the open channel's wave has its own playhead, while the song is inside that recording */
   const ch=$("chStrip"), c=SONG.tracks[SONG.sel].clip;
   if(ch){ let g=-1; if(c){ const a=clipStart(c), e=clipEnd(c,false); if(e>a && sec>=a && sec<=e) g=(sec-a)/(e-a); }
