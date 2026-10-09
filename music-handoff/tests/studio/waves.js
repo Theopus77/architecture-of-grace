@@ -74,7 +74,7 @@ async function drag(p, from, to){ const a=await waveXY(p, from), z=await waveXY(
   const look = await p.evaluate(() => { const cv=document.getElementById("waveC"), x=cv.getContext("2d"), d=x.getImageData(0,0,cv.width,cv.height).data;
     let lit=0; for(let i=0;i<d.length;i+=4) if(d[i]>200 && d[i+1]>150 && d[i+2]<160) lit++;
     return { svg: document.querySelectorAll("#timeline .st-lane")[0].querySelectorAll(".st-clip svg.wv path").length, w: cv.width, lit: lit,
-      hint: cv.nextElementSibling.textContent, aria: cv.getAttribute("aria-label") }; });
+      hint: cv.closest(".st-wave").querySelector(".st-line").textContent, aria: cv.getAttribute("aria-label") }; });
   ok(look.svg === 1 && look.w > 1000 && look.lit > 2000 && look.hint === "Tap the wave where you want to cut. Drag an edge to trim.", "the wave shows on the song and large in the panel: " + JSON.stringify(look));
   /* tap in bar 2, beat 3 (the 7th beat counted from 0 is 6) */
   const at = await waveXY(p, 6.1); await p.mouse.click(at.x, at.y); await p.waitForTimeout(100);

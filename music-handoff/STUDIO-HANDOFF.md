@@ -854,6 +854,12 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · Better cutting, the lesson slip moves, the whole desk made like the console (`AOG-STUDIO-CUT-V2`, `AOG-DESK-SLIP-V2`, `AOG-DESK-REST-V1` in `music-studio.html`).** Jimmy, with three iPad pictures of the desk: "The lesson sheet needs to move and The cutting needs to be better and the whole studio has not reached the ceiling!!!"
+  - **Cutting.** The big wave sits in a recessed window: bars numbered, beats ticked, the piece you are working on bright on a gold band between two gold edges with grips, the other pieces numbered on small tabs, what is cut away hatched. A tap puts a dashed line and **✂ Cut here** on the wave itself (`#cutNow`); pressing it cuts there. A tap on another piece picks that piece ("Piece 1 is picked."). Dragging an edge shows where it is (`#edgeTip`). **▶ Hear this piece** plays only the piece you are on, once, to check a cut (`hearPiece`).
+  - **The lesson slip** is a note taped into the console's empty corner beside play on an iPad or a computer; on a phone it sits at the foot of the console (`placeSlip`). No more cream gap between the console and the rest.
+  - **Names:** the lanes' labels are wider on an iPad or a computer (8.4rem, two lines if needed), so "Empty", "Turntables" and "Guitarra en vivo" show whole.
+  - **The rest of the desk:** every menu is a dark window with gold type; headings engraved in the console's serif; the open recording, each take and each mixer strip a tray set into the metal; buttons are hardware caps that press; sections parted by a fine gold line with a diamond.
+  - Test: `music-handoff/tests/studio/cut.js` (port 9259, in `run.sh`). `studio/waves.js` now reads the hint under the wave's window.
 - **2026-10-09 · A menu lets go of the keyboard (`AOG-KEYS-AFTER-MENU-V1` in `aog-labdoors.js`; the Studio's own menu in `make_studio_page.py`).** Jimmy, on his iPad: "The keys are unable to be used on the piano. I am trying the church organs and other instruments and they don't work using the iPad keyboard."
   - Why: after a menu is used (the sound, the key, a pattern) an iPad leaves the keyboard with that menu, and every room rightly ignores keys typed into a menu, so no key played until the page was tapped.
   - Now, once a choice is made, the menu lets go (it is blurred; Tab still carries on from it), in every music room (all ten load `aog-labdoors.js`) and in the Studio (+ Add a layer). The next key plays the instrument.

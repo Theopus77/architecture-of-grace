@@ -156,6 +156,16 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-wave canvas{display:block;width:100%;height:150px;border-radius:10px;background:#0f1114;border:1px solid #2f3339;touch-action:pan-y;cursor:pointer}
 .st-wave .st-line{margin:.45rem 0 0}
 @media (max-width:699px){ .st-wave canvas{height:120px} }
+/* AOG-STUDIO-CUT-V2: the wave sits in a recessed glass window; a tap shows a Cut here button under the line, and the edge being moved shows its time */
+.st-wwin{position:relative;border-radius:12px;padding:5px;background:linear-gradient(#08090b,#16181c);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.06)}
+.st-wwin canvas{height:170px!important;border-radius:8px;border-color:#25282d}
+@media (max-width:699px){ .st-wwin canvas{height:136px!important} }
+.st-cutnow{position:absolute;bottom:12px;transform:translateX(-50%);min-height:44px;padding:0 1rem;border-radius:22px;border:1px solid #6b4a12;
+  background:#f0c26e;background-image:linear-gradient(#ffe08a,#e09a2a);color:#2a1a08;font:800 .95rem/1 var(--sans);white-space:nowrap;cursor:pointer;
+  box-shadow:0 3px 10px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+.st-cutnow[hidden],.st-edgetip[hidden]{display:none}
+.st-edgetip{position:absolute;top:10px;transform:translateX(-50%);padding:.2rem .55rem;border-radius:6px;background:#1a1408;color:#ffe2a8;border:1px solid #f0c26e;
+  font:800 .85rem/1.3 var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
 .st-empty{position:absolute;left:.6rem;top:0;bottom:0;display:flex;align-items:center;font-size:.86rem;color:#c3bbad}
 
 /* ── 3 · the track: its recording and where it plays ── */
@@ -317,6 +327,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   color:#e6decd;font:400 .98rem/1.1 var(--serif,Georgia,serif);min-width:0;box-shadow:inset 3px 0 0 transparent}
 .st-lnn{font:700 .66rem/1 var(--sans);color:#8f877a;flex:0 0 auto}
 .st-lnm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* AOG-DESK-SLIP-V2: room for the whole name (Turntables, Live guitar, Guitarra en vivo) */
+@media (min-width:700px){ .st-tl{--lab:8.4rem} .st-lnm{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.05} }
 .st-desk .st-lt{min-height:40px;border-radius:0;border:0;background:#111214}
 .st-desk .st-lane[aria-current="true"] .st-ln{background:#25231f;color:#f3d38e;box-shadow:inset 3px 0 0 #e0b25a}
 .st-desk .st-lane[aria-current="true"] .st-lnn{color:#d9a94c}
@@ -561,6 +573,48 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 @media (hover:hover) and (pointer:fine){ .st-cp .st-keys{display:block} }
 html.aog-keys .st-cp .st-keys{display:block}
 @media (prefers-reduced-motion:reduce){ .st-slip{transform:none} }
+/* AOG-DESK-SLIP-V2: the slip is a small note taped into the console's top corner; on a phone, at the foot of the console */
+.st-desk .st-top .st-slipbox{flex:0 1 25rem;width:auto;margin:6px 0 0 auto;align-self:center;min-width:15rem}
+.st-desk .st-slipbox .st-slip{padding:14px 18px 11px;text-align:left;transform:rotate(.7deg)}
+.st-desk .st-slipbox .st-slipt{font-size:1rem;line-height:1.3;margin:.2rem 0 .25rem!important}
+.st-desk .st-slipbox .st-slipk{font-size:.6rem}
+.st-desk .st-slipbox .st-slip a{font-size:.8rem;display:inline-flex;align-items:center;min-height:32px}
+.st-desk .st-slipbox .st-slip::after{display:none}
+.st-desk .st-slipbox .st-tapeh{left:auto;right:18px;transform:rotate(4deg);width:70px;height:18px}
+.st-cp>.st-slipbox{width:auto;margin:14px 4px 2px}
+.st-cp>.st-slipbox .st-slip{transform:rotate(-.4deg)}
+@media (prefers-reduced-motion:reduce){ .st-desk .st-slipbox .st-slip{transform:none} }
+/* ══ AOG-DESK-REST-V1 (Jimmy, 2026-10-09: "the whole studio has not reached the ceiling!!!") — the rest of the desk is made
+   like the console: every menu a dark window with gold type, every heading engraved, each card a tray set into the metal,
+   the buttons hardware with a soft press, the sections parted by a fine gold line. Nothing moves by itself. ══ */
+.st-desk select{color:#f6e3b4;background-color:#121316;border:1px solid #5b4a24;border-radius:9px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0b25a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),linear-gradient(#0b0c0e,#17181c);
+  background-repeat:no-repeat,no-repeat;background-position:right 12px center,0 0;background-size:16px,100% 100%;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.07);font-weight:600}
+.st-desk select:focus-visible{border-color:#f0c26e}
+.st-desk select option,.st-desk select optgroup{background:#17181c;color:#f1ebdf}
+#desk .st-rest h2.st-h,#desk .st-rest h3.st-h3{font:400 1.12rem/1.2 "Fraunces",var(--serif,Georgia,serif)!important;letter-spacing:.02em!important;text-transform:none!important;color:#efe5cf;
+  text-shadow:0 -1px 0 rgba(0,0,0,.85)}
+#desk .st-rest h3.st-h3{font-size:1.02rem!important;margin:1.3rem 0 .6rem}
+.st-rest .st-lab{font:700 .64rem/1.2 var(--sans);letter-spacing:.2em;color:#c2b8a3;text-shadow:0 -1px 0 rgba(0,0,0,.8)}
+.st-rest>.st-blk{border-top:0;position:relative;padding-top:24px;margin-top:10px}
+.st-rest>.st-blk:first-of-type{padding-top:4px;margin-top:0}
+.st-rest>.st-blk+.st-blk::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(208,168,82,.5) 18%,rgba(208,168,82,.5) 82%,transparent)}
+.st-rest>.st-blk+.st-blk::after{content:"\25C6";position:absolute;left:50%;top:-6px;transform:translateX(-50%);font-size:9px;line-height:12px;color:#d0a852;background:#1b1c20;padding:0 6px}
+/* trays: the open recording, each take, each mixer strip */
+.st-cc,.st-rec,.st-strip{background-color:#15161a;background-image:linear-gradient(#111215,#191a1e);border:1px solid #0a0a0c;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.06)}
+.st-cc{border-left:4px solid var(--c);border-radius:10px;padding:.85rem .95rem}
+.st-cc b{font:400 1.2rem/1.2 "Fraunces",var(--serif,Georgia,serif);color:#f6e7c3}
+.st-strip.sel{border-color:#c9a24a;box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 0 0 1px #c9a24a,0 0 14px rgba(240,194,110,.18)}
+/* hardware buttons: a raised cap that presses down */
+.st-rest .st-btn{border-radius:8px;border:1px solid #050506;font-weight:700;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
+.st-rest .st-btn:not(.st-go):not(.st-clear):not(.st-send):not(.st-rec-on):not([aria-pressed="true"]){background-color:#26282c;background-image:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#efe7d6}
+.st-rest .st-clear{background-color:#2a1715;background-image:linear-gradient(#3a2320,#261614);border-color:#050506}
+.st-rest .st-btn:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 0 #08090a}
+.st-rest .st-go,.st-rest .st-btn[aria-pressed="true"]{background-color:#e6b65a;background-image:radial-gradient(120% 140% at 35% 20%,#fbe6b0 0%,#e2b85e 45%,#b8862f 100%);color:#22170a;border-color:#5e4512}
+@media (prefers-reduced-motion:reduce){ .st-rest .st-btn:active{transform:none} }
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -604,6 +658,9 @@ html.aog-keys .st-cp .st-keys{display:block}
         <div class="st-top">
           <button type="button" class="st-btn st-play" id="playBtn"></button>
           <div class="st-read"><b id="posOut">&nbsp;</b><span id="tempoOut"></span></div>
+          <!-- AOG-DESK-SLIP-V2 (Jimmy, 2026-10-09: "The lesson sheet needs to move"): the lesson is a note taped to the console,
+               in the empty corner beside play; on a phone it moves to the foot of the console (placeSlip) -->
+          <div class="st-slipbox" id="slipBox"><span class="st-tapeh" aria-hidden="true"></span><div class="st-slip" id="slip" aria-live="polite"></div></div>
         </div>
         <p class="st-line" id="playLine" aria-live="polite"></p>
       </div>
@@ -633,7 +690,6 @@ html.aog-keys .st-cp .st-keys{display:block}
         <p class="st-line" data-t="songLen" style="margin:.6rem 0 0"></p>
         </details>
       </div>
-      <div class="st-slipbox"><span class="st-tapeh" aria-hidden="true"></span><div class="st-slip" id="slip" aria-live="polite"></div></div>
       <div class="st-chassis st-rest">
 
       <div class="st-blk" id="trackBlk">
@@ -920,6 +976,8 @@ const STR={
   waveCut:{en:"The cut goes at {w}. Press Cut here.",es:"El corte va en {w}. Pulsa Cortar aquí."},
   waveTrim:{en:"Trimmed.",es:"Recortada."},
   cutAt:{en:"Cut at",es:"Cortar en"}, cutBtn:{en:"✂ Cut here",es:"✂ Cortar aquí"},
+  hear:{en:"▶ Hear this piece",es:"▶ Escuchar esta parte"}, hearStop:{en:"■ Stop",es:"■ Parar"},   /* AOG-STUDIO-CUT-V2 */
+  pieceTap:{en:"Tap a piece to pick it.",es:"Toca una parte para elegirla."}, piecePicked:{en:"Piece {n} is picked.",es:"Elegiste la parte {n}."},
   cutShort:{en:"This piece is too short to cut.",es:"Esta parte es muy corta para cortarla."},
   cutDone:{en:"Cut in two. Now there are {n} pieces.",es:"Cortada en dos. Ahora hay {n} partes."},
   copyP:{en:"Copy this piece",es:"Copiar esta parte"}, copied:{en:"The copy plays right after it.",es:"La copia suena justo después."},
@@ -2457,35 +2515,74 @@ function waveSvg(c, p, fine){
   return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 1${top}${bot}Z"/></svg>`;
 }
 /* the large wave in the track's panel */
-const WV={drag:null, val:0};
+const WV={drag:null, val:0, tap:""};
 function waveGeo(cv, c){ const r=cv.getBoundingClientRect(), pad=10, full=fullBeats(c); return {r:r, pad:pad, w:Math.max(10, r.width-2*pad), full:full}; }
 function drawWave(){
+  /* AOG-STUDIO-CUT-V2 (Jimmy, 2026-10-09: "The cutting needs to be better"). A recessed window: the recording across it,
+     its bars numbered and its beats ticked. The piece you are working on is bright on a soft gold band between two gold
+     edges with grips; the other pieces show in their colour, numbered, ready to be tapped; what is cut away is dim and
+     hatched. A tap puts the scissors there, with ✂ Cut here on the wave itself; dragging an edge shows where it is. */
   const cv=$("waveC"), i=SONG.sel, c=SONG.tracks[i].clip; if(!cv || !c) return;
   const P=peaksOf(c), g=waveGeo(cv, c), dpr=Math.min(3, window.devicePixelRatio||1), W=Math.round(g.r.width), H=Math.round(g.r.height);
   if(!(W>0 && H>0)) return;
   if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
   const x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
-  const p=pcs(c)[pSel(c)], bpb=c.bpb||4;
+  const PS=pcs(c), k=pSel(c), p=PS[k], bpb=c.bpb||4, col=COLORS[i];
   let a=p.a, b=p.b; if(WV.drag==="a") a=WV.val; if(WV.drag==="b") b=WV.val;
-  const X=beat=>g.pad+beat/g.full*g.w, top=18, mid=top+(H-top-8)/2, amp=(H-top-8)/2;
-  /* the part that plays */
-  x.fillStyle="#23272d"; x.fillRect(X(a), top, X(b)-X(a), H-top-4);
+  const X=beat=>g.pad+beat/g.full*g.w, top=22, bot=H-6, mid=top+(bot-top)/2, amp=(bot-top)/2-2;
+  /* what is cut away: dim and hatched */
+  x.save(); x.beginPath(); x.rect(g.pad, top, g.w, bot-top); x.clip();
+  x.strokeStyle="rgba(207,190,150,.07)"; x.lineWidth=1;
+  for(let hx=g.pad-H; hx<g.pad+g.w; hx+=9){ x.beginPath(); x.moveTo(hx, bot); x.lineTo(hx+(bot-top), top); x.stroke(); }
+  x.restore();
+  /* the other pieces: their colour, faintly, and their number */
+  PS.forEach((q,j)=>{ if(j===k) return; x.fillStyle="rgba(255,255,255,.035)"; x.fillRect(X(q.a), top, X(q.b)-X(q.a), bot-top); });
+  /* the piece you are working on: a soft gold band */
+  x.fillStyle="rgba(240,194,110,.09)"; x.fillRect(X(a), top, X(b)-X(a), bot-top);
+  x.fillStyle="rgba(240,194,110,.55)"; x.fillRect(X(a), top, X(b)-X(a), 1); x.fillRect(X(a), bot-1, X(b)-X(a), 1);
   /* bars: a line and its number; beats: a short tick */
-  x.font="700 11px system-ui, sans-serif"; x.textBaseline="top";
-  for(let k=0;k<=Math.floor(g.full+1e-6);k++){ const px=Math.round(X(k))+0.5;
-    if(k%bpb===0){ x.fillStyle="#3a3f47"; x.fillRect(px-0.5, top, 1, H-top-4); if(g.w/g.full*bpb>=22){ x.fillStyle="#cfc6b6"; x.fillText(String(k/bpb+1), px+3, 3); } }
-    else { x.fillStyle="#30343b"; x.fillRect(px-0.5, H-12, 1, 8); } }
-  /* the wave: bright where it plays, grey where it is cut away */
-  if(P){ const cols=Math.max(10, Math.round(g.w)), v=waveCols(P, recSec(c,0), recSec(c,g.full), cols);
-    for(let k=0;k<cols;k++){ const bt=k/cols*g.full, on=bt>=a-1e-6 && bt<b-1e-6, h=Math.max(1, v[k]*amp);
-      x.fillStyle=on ? COLORS[i] : "#4a4f57"; x.fillRect(g.pad+k, mid-h, 1, 2*h); } }
-  /* the cut, where it will go */
-  const cs=$("cutSel"); if(cs && !WV.drag){ const kc=+cs.value; if(kc>a && kc<b){ const px=Math.round(X(kc));
-    x.fillStyle="#f4a37a"; x.fillRect(px-1.5, top, 3, H-top-4);
-    const bx=Math.max(2, Math.min(W-24, px-11)); x.fillRect(bx, H-26, 22, 20); x.fillStyle="#07080a"; x.font="700 14px system-ui, sans-serif"; x.fillText("✂", bx+4, H-24); } }
-  /* the two edges, to drag */
-  [a,b].forEach(v=>{ const px=Math.round(X(v)); x.fillStyle="#fffaf0"; x.fillRect(px-1.5, top, 3, H-top-4);
-    x.fillStyle="#fffaf0"; x.fillRect(px-6, mid-16, 12, 32); x.fillStyle="#07080a"; x.fillRect(px-2, mid-9, 1, 18); x.fillRect(px+1, mid-9, 1, 18); });
+  x.font="500 12px Fraunces, Georgia, serif"; x.textBaseline="top";
+  for(let kb=0;kb<=Math.floor(g.full+1e-6);kb++){ const px=Math.round(X(kb))+0.5;
+    if(kb%bpb===0){ x.fillStyle="rgba(207,190,150,.28)"; x.fillRect(px-0.5, top, 1, bot-top); if(g.w/g.full*bpb>=22){ x.fillStyle="#d8ccb2"; x.fillText(String(kb/bpb+1), px+4, 4); } }
+    else { x.fillStyle="rgba(207,190,150,.22)"; x.fillRect(px-0.5, bot-7, 1, 6); x.fillRect(px-0.5, top, 1, 5); } }
+  /* the wave: bright where this piece plays, its colour where another piece plays, grey where it is cut away */
+  if(P){ const cols=Math.max(10, Math.round(g.w/2)), v=waveCols(P, recSec(c,0), recSec(c,g.full), cols), cw=g.w/cols;
+    for(let kk=0;kk<cols;kk++){ const bt=(kk+0.5)/cols*g.full, on=bt>=a-1e-6 && bt<b-1e-6, other=!on && PS.some((q,j)=>j!==k && bt>=q.a && bt<q.b), h=Math.max(1, v[kk]*amp);
+      x.globalAlpha=on ? 1 : other ? 0.5 : 1; x.fillStyle=on || other ? col : "#4a4e55"; x.fillRect(g.pad+kk*cw, mid-h, Math.max(1, cw-0.6), 2*h); }
+    x.globalAlpha=1; }
+  /* the pieces' numbers, on small tabs along the top */
+  if(PS.length>1) PS.forEach((q,j)=>{ const cx=(X(q.a)+X(q.b))/2, on=j===k; if(X(q.b)-X(q.a)<20) return;
+    x.fillStyle=on ? "#f0c26e" : "rgba(236,227,207,.85)"; const tw=18; x.beginPath(); x.roundRect ? x.roundRect(cx-tw/2, top+3, tw, 15, 4) : x.rect(cx-tw/2, top+3, tw, 15); x.fill();
+    x.fillStyle="#1a1408"; x.font="700 11px system-ui, sans-serif"; x.textAlign="center"; x.fillText(String(j+1), cx, top+5); x.textAlign="start"; });
+  /* the scissors, where the tap put them, with ✂ Cut here on the wave */
+  const cs=$("cutSel"), cn=$("cutNow"), tapped=WV.tap===c.id+":"+k;
+  let showCut=false;
+  if(cs && !WV.drag && tapped){ const kc=+cs.value; if(kc>a && kc<b){ const px=Math.round(X(kc))+0.5; showCut=true;
+    x.save(); x.setLineDash([5,4]); x.strokeStyle="#ffd9c9"; x.lineWidth=2; x.beginPath(); x.moveTo(px, top); x.lineTo(px, bot); x.stroke(); x.restore();
+    if(cn){ cn.style.left=Math.max(56, Math.min(W-56, px))+"px"; } } }
+  if(cn) cn.hidden=!showCut;
+  /* the two edges: gold, with a grip to take hold of */
+  [a,b].forEach((v,e)=>{ const px=Math.round(X(v)); x.fillStyle="#e0b25a"; x.fillRect(px-1, top, 2, bot-top);
+    const gy=mid-20; x.fillStyle="#e0b25a"; x.beginPath(); x.roundRect ? x.roundRect(px-8, gy, 16, 40, 5) : x.rect(px-8, gy, 16, 40); x.fill();
+    x.fillStyle="rgba(60,40,8,.55)"; for(let r=0;r<4;r++) x.fillRect(px-4, gy+11+r*6, 8, 1.5); });
+  /* while an edge is dragged, where it is */
+  const tip=$("edgeTip");
+  if(tip){ if(WV.drag){ tip.hidden=false; tip.textContent=posWords(WV.val); tip.style.left=Math.max(50, Math.min(W-50, X(WV.val)))+"px"; } else tip.hidden=true; }
+}
+/* AOG-STUDIO-CUT-V2: ▶ Hear this piece — the piece you are working on, once, on its own, to check a cut before keeping it */
+const HEAR={src:null};
+function paintHear(){ const b=document.querySelector('#clipBox [data-act="hear"]'); if(b){ b.textContent=t(HEAR.src?"hearStop":"hear"); b.setAttribute("aria-pressed", HEAR.src?"true":"false"); } }
+function hearStop(){ const s0=HEAR.src; HEAR.src=null; if(s0){ try{ s0.onended=null; s0.stop(); }catch(e){} } paintHear(); }
+function hearPiece(){
+  if(HEAR.src){ hearStop(); return; }
+  const c=SONG.tracks[SONG.sel].clip, buf=c && BUF.get(c.id); if(!buf) return;
+  if(PLAY.on) stop();
+  const p=pcs(c)[pSel(c)], a=Math.max(0, recSec(c,p.a)), b=Math.min(buf.duration, recSec(c,p.b)), cx=live();
+  try{ if(cx.state!=="running") cx.resume(); }catch(e){}
+  const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(c.keep===false) src.playbackRate.value=spd(c);
+  g.gain.value=volGain(SONG.tracks[SONG.sel].vol); src.connect(g); g.connect(cx.destination);
+  src.onended=()=>{ if(HEAR.src===src){ HEAR.src=null; paintHear(); } };
+  src.start(cx.currentTime+0.03, a, Math.max(0.05, b-a)); HEAR.src=src; paintHear(); LES.mark("hear1");
 }
 function bindWave(){
   const cv=$("waveC"); if(!cv) return;
@@ -2512,11 +2609,17 @@ function bindWave(){
     const o=beatAt(e), c=o.c, i=SONG.sel;
     if(d.mode==="tap"){
       WV.drag=null; if(d.moved) return;
-      const p=pcs(c)[pSel(c)], cuts=cutPlaces(c, p), cs=$("cutSel"); if(!cuts.length || !cs) return;
+      const PS=pcs(c), k=pSel(c), p=PS[k];
+      if(!(o.beat>=p.a && o.beat<p.b)){   /* AOG-STUDIO-CUT-V2: a tap on another piece picks that piece */
+        const j=PS.findIndex((q,jj)=>jj!==k && o.beat>=q.a && o.beat<q.b), ps=$("pieceSel");
+        if(j>=0 && ps){ ps.value=String(j); ps.dispatchEvent(new Event("change", {bubbles:true})); S.edMsg=t("piecePicked",{n:j+1}); S.edAt="cut"; paintEditLine(); }
+        return; }
+      const cuts=cutPlaces(c, p), cs=$("cutSel"); if(!cuts.length || !cs) return;
+      WV.tap=c.id+":"+k;
       const best=cuts.reduce((m,x)=>Math.abs(x.k-o.beat)<Math.abs(m.k-o.beat) ? x : m, cuts[0]);
       cs.value=String(best.k); S.edMsg=t("waveCut",{w:best.label}); S.edAt="cut"; paintEditLine(); drawWave(); LES.mark("wave1"); return;
     }
-    const val=WV.val, which=WV.drag; WV.drag=null;
+    const val=WV.val, which=WV.drag; WV.drag=null; WV.tap="";
     const p0=pcs(c)[pSel(c)];
     if(Math.abs((which==="a" ? p0.a : p0.b)-val)<1e-6){ drawWave(); return; }
     remember(i, ++UG); const P=own(c), p=P[pSel(c)];
@@ -2625,11 +2728,13 @@ function paintTrack(){
     `<div class="st-cc" style="--c:${COLORS[i]}">
       <div><b>${head}</b></div>
       <div class="st-cn">${esc(meta)}</div>
-      <div class="st-row"><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button></div>
+      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button></div>
       ${lineAt("top")}
     </div>
     ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
-    <div class="st-wave"><canvas id="waveC" role="img" aria-label="${esc(t("waveAria",{n:i+1}))}"></canvas><p class="st-line">${esc(t("waveHint"))}</p></div>
+    <div class="st-wave"><div class="st-wwin"><canvas id="waveC" role="img" aria-label="${esc(t("waveAria",{n:i+1}))}"></canvas>
+      <button type="button" class="st-cutnow" id="cutNow" data-act="cutnow" hidden>${esc(t("cutBtn"))}</button><span class="st-edgetip" id="edgeTip" aria-hidden="true" hidden></span></div>
+      <p class="st-line">${esc(t("waveHint"))}${many ? " "+esc(t("pieceTap")) : ""}</p></div>
     <div class="st-steps">
       <div class="st-stp"><span class="st-lab" id="atLab">${esc(t("startsAt"))}</span><label class="st-field st-vf"><select id="atSel" aria-labelledby="atLab">${atOpts(p)}</select></label>
         <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<0.5?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div></div>
@@ -2938,7 +3043,17 @@ function bindConsole(){
   $("chFaders").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
   $("mixer").addEventListener("input", ()=>paintConsole());   /* a slider moved on the mixer itself */
 }
+/* AOG-DESK-SLIP-V2: beside play on an iPad or a computer; at the foot of the console on a phone */
+const SLIP_MQ=window.matchMedia ? matchMedia("(min-width:700px)") : null;
+function placeSlip(){
+  const box=$("slipBox"), top=document.querySelector("#transport .st-top"), cp=document.querySelector(".st-desk .st-cp"); if(!box || !top || !cp) return;
+  const wide=!SLIP_MQ || SLIP_MQ.matches;
+  if(wide && box.parentNode!==top) top.appendChild(box);
+  else if(!wide && box.parentNode!==cp) cp.appendChild(box);
+}
+if(SLIP_MQ){ try{ SLIP_MQ.addEventListener("change", placeSlip); }catch(e){ try{ SLIP_MQ.addListener(placeSlip); }catch(e2){} } }
 function paintSlip(){
+  placeSlip();
   const el=$("slip"); if(!el) return;
   let m=null; try{ m=LES && LES.next ? LES.next() : null; }catch(e){ m=null; }
   if(!m){ el.hidden=true; return; }
@@ -2963,7 +3078,11 @@ function bind(){
   $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
   $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
   $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
-  $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(b && !b.disabled) clipAct(b.getAttribute("data-act")); });
+  $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(!b || b.disabled) return;
+    let act=b.getAttribute("data-act"); if(act==="hear"){ hearPiece(); return; }   /* AOG-STUDIO-CUT-V2 */
+    if(act==="cutnow") act="cut";   /* ✂ Cut here, on the wave */
+    if(act==="cut"){ WV.tap=""; hearStop(); }
+    clipAct(act); });
   $("clipBox").addEventListener("input", e=>{ if(e.target.id==="spdR") speedInput(e.target); });
   $("clipBox").addEventListener("change", e=>{ const el=e.target;
     if(el.id==="spdR") speedChange(el);
