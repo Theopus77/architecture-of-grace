@@ -18,7 +18,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       ok(a.length>0 && a===want, `a chord button lights the notes it plays, orange: ${a} (${want})`);
       await p.waitForTimeout(3300);
       ok((await lit(p))==="", "once they have died away, the neck is quiet again");
-      const q=await p.evaluate(()=>{ const r=document.getElementById("neck").getBoundingClientRect(), k=r.width/NECK.W, [x,y]=neckXY(1,3); return {x:r.left+x*k, y:r.top+y*k}; });
+      const q=await p.evaluate(()=>{ document.getElementById("neck").scrollIntoView({block:"center"}); const r=document.getElementById("neck").getBoundingClientRect(), k=r.width/NECK.W, [x,y]=neckXY(1,3); return {x:r.left+x*k, y:r.top+y*k}; });
       await p.evaluate(()=>{ S.hand=null; litNeck(); }); await p.touchscreen.tap(q.x, q.y); await p.waitForTimeout(150);
       ok((await lit(p))==="1:3", "one fret tapped lights that note: "+await lit(p));
       await p.evaluate(()=>muteAll()); await p.waitForTimeout(250);
