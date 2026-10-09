@@ -582,7 +582,7 @@ const CSS=`
 #rig.aog-solo-on .neck .dot.fit,body.aog-solo-on #playView .neck .dot.fit{display:none}
 #rig.aog-solo-on .neck .nk-x,body.aog-solo-on #playView .neck .nk-x{display:none!important}
 #rig.aog-solo-on .neck .nk-strumlab,body.aog-solo-on #playView .neck .nk-strumlab{display:none}   /* the strip is the whammy bar: its own word only (AOG-SOLO-PV-V1: the sideways view too) */
-#rig.aog-solo-on [data-t="touchLine"],#rig.aog-solo-on [data-t="keysLine"],#rig.aog-solo-on #litLine{display:none!important}
+#rig.aog-solo-on [data-t="touchLine"],#rig.aog-solo-on [data-t="keysLine"],#rig.aog-solo-on #keyMap,#rig.aog-solo-on #litLine{display:none!important}
 #neck .so-c circle{fill:#9cc6d8;stroke:#0c0d10;stroke-width:1.5}
 #neck .so-c text{fill:#0f2430}
 #neck .so-c.land circle{fill:#e6f5fb}

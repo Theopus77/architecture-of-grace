@@ -94,10 +94,14 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     await p.keyboard.press("Digit5"); await p.waitForTimeout(50);
     ok((await p.evaluate("__v.length"))>=1 && (await p.evaluate("S.hand.off"))===7, "key 5 plays pad 5 (G)");
     await p.evaluate("__v=[]");
-    if(inst==="guitar"){ for(const k of ["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH"]) await p.keyboard.press(k);
-      ok(JSON.stringify(await p.evaluate("__v"))===JSON.stringify(await p.evaluate("shapeFor(S.hand).map((f,s)=>f>=0?TUNING[s]+f:null).filter(x=>x!=null)")), "A S D F G H play the six strings of the G chord: "+await p.evaluate("__v.join(',')")); }
-    else { for(const k of ["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"]) await p.keyboard.press(k);
-      const v=await p.evaluate("__v"); ok(v.length===8 && v[7]-v[0]===12 && v.map(m=>m%12).join()==="0,2,4,5,7,9,11,0", "A to K play the C major scale: "+v.join(",")); }
+    /* AOG-STRINGS-KEYS-V2: one rule on both, numbers chords, letters notes; the guitar picks its strings on the row above */
+    if(inst==="guitar"){ for(const k of ["KeyQ","KeyW","KeyE","KeyR","KeyT","KeyY"]) await p.keyboard.press(k);
+      ok(JSON.stringify(await p.evaluate("__v"))===JSON.stringify(await p.evaluate("shapeFor(S.hand).map((f,s)=>f>=0?TUNING[s]+f:null).filter(x=>x!=null)")), "Q W E R T Y play the six strings of the G chord: "+await p.evaluate("__v.join(',')"));
+      await p.evaluate("__v=[]"); }
+    for(const k of ["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"]) await p.keyboard.press(k);
+    { const v=await p.evaluate("__v"); ok(v.length===8 && v[7]-v[0]===12 && v.map(m=>m%12).join()==="0,2,4,5,7,9,11,0", "A to K play the C major scale: "+v.join(",")); }
+    { const kl=await p.evaluate(()=>({ caps:[...document.querySelectorAll("#neck .nk-key text")].map(t=>t.textContent).join(""), map:getComputedStyle(document.getElementById("keyMap")).display!=="none" && /Play it on a keyboard/i.test(document.getElementById("keyMap").textContent) }));
+      ok(kl.map && kl.caps===(inst==="guitar" ? "ASDFGHJKQWERTY" : "ASDFGHJK"), "the keys are drawn: a small keyboard picture, and each note's letter on the neck"+(inst==="guitar" ? ", Q to Y on the strum strip" : "")+": "+kl.caps); }
     await p.keyboard.press("KeyX"); ok((await p.evaluate("S.fret0"))===2, "X moves up the neck"); await p.keyboard.press("KeyZ");
     await p.keyboard.press("Space"); await p.waitForTimeout(200); ok(await p.evaluate("S.playing"), "Space starts"); await p.keyboard.press("Space"); await p.waitForTimeout(50); ok(await p.evaluate("!S.playing"), "and stops");
     /* 7. Spanish */

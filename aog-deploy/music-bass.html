@@ -171,6 +171,19 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .neck .dot.now circle{fill:#ef9a4a} .neck .dot.now text{fill:#1f1206}
 .neck .dot.down circle{fill:#ffd36b} .neck .dot.down text{fill:#1f1206}
 .keys-line{display:none}
+/* AOG-STRINGS-KEYS-V2: the keys as a picture; each letter on the neck as a small keycap */
+.keymap{margin:.6rem 0 0;padding:.6rem .75rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#17191c}
+.km-h{margin:0 0 .45rem;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf}
+.km-row{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .7rem;margin:.3rem 0}
+.km-caps{display:inline-flex;flex-wrap:wrap;gap:3px}
+.keymap kbd{display:inline-grid;place-items:center;min-width:1.7rem;height:1.7rem;padding:0 .3rem;border-radius:5px;border:1px solid #0b0b0c;
+  background:linear-gradient(#f6efe0,#e2d6bd);color:#1a1408;font:800 .82rem/1 var(--sans);box-shadow:0 2px 0 #0b0b0c}
+.keymap kbd.km-space{min-width:4.2rem}
+.km-say{color:#e3dac9;font-size:.92rem}
+.neck .nk-key rect{fill:#f6efe0;stroke:#0b0b0c;stroke-width:1}
+.neck .nk-key text{fill:#1a1408}
+html.aog-keys .keys-line{display:block}
+html.aog-keys .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
 .touch-line{display:block}
 @media (hover:hover) and (pointer:fine){
   .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
@@ -379,7 +392,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
-        <p class="line keys-line" data-t="keysLine"></p>
+        <div class="keys-line keymap" id="keyMap"></div><!-- AOG-STRINGS-KEYS-V2: a small picture of the keys -->
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
       </div>
@@ -582,6 +595,12 @@ const STR={
               :{en:"Pale dots fit the chord. The ringed dot is its root, the chord's home note. Orange notes are playing now.",es:"Los puntos claros van con el acorde. El punto con anillo es su raíz, la nota casa del acorde. Las notas naranjas suenan ahora."},
   touchLine: GTR?{en:"Tap a fret to play one string. Slide a finger across the strings on the right to strum. While a style plays, hold frets and it plays them.",es:"Toca un traste para tocar una cuerda. Desliza un dedo por las cuerdas de la derecha para rasguear. Mientras suena un estilo, pisa trastes y los toca."}
                 :{en:"Tap a fret to play a note. Slide along a string to glide to the next note. While a style plays, hold a fret and the line follows it.",es:"Toca un traste para tocar una nota. Desliza el dedo por una cuerda para pasar a la siguiente nota. Mientras suena un estilo, pisa un traste y la línea lo sigue."},
+  kmH:{en:"Play it on a keyboard",es:"Tócala con un teclado"},
+  kmChords:{en:"the chord pads",es:"los pads de acordes"},
+  kmStrings:{en:"the six strings of the chord, low to high (on the strum strip)",es:"las seis cuerdas del acorde, de grave a aguda (en la franja de rasgueo)"},
+  kmNotes:{en:"the notes of the key, going up (the letters on the neck)",es:"las notas del tono, subiendo (las letras en el mástil)"},
+  kmMove:{en:"move along the neck",es:"moverse por el mástil"},
+  kmSpaceKey:{en:"Space",es:"Espacio"}, kmSpace:{en:"start and stop",es:"empezar y parar"},
   keysLine: GTR?{en:"On a computer, 1 to 6 strum the chord pads, and A S D F G H play the six strings, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 6 rasguean los pads, y A S D F G H tocan las seis cuerdas, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."}
                :{en:"On a computer, 1 to 6 play the chord pads, and A S D F G H J K play the scale of the key, low to high. Z and X move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 6 tocan los pads, y A S D F G H J K tocan la escala del tono, de grave a aguda. Z y X se mueven por el mástil. La barra espaciadora empieza y para."},
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
@@ -2464,8 +2483,22 @@ function paintAmp(){
     reset:()=>{ delete RIGS[S.sound]; saveRigs(); applyRig(); }});
   else AMPUI.paint();
 }
+/* AOG-STRINGS-KEYS-V2: the keys as a picture, one row a job */
+function paintKeyMap(){
+  const box=$("keyMap"); if(!box) return;
+  const caps=a=>a.map(k=>`<kbd>${k}</kbd>`).join("");
+  const rows=[[caps(["1","2","3","4","5","6"]), t("kmChords")]];
+  if(GTR) rows.push([caps(["Q","W","E","R","T","Y"]), t("kmStrings")]);
+  rows.push([caps(["A","S","D","F","G","H","J","K"]), t("kmNotes")]);
+  rows.push([caps(["Z"])+caps(["X"]), t("kmMove")]);
+  rows.push([`<kbd class="km-space">${t("kmSpaceKey")}</kbd>`, t("kmSpace")]);
+  const q=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  box.innerHTML=`<p class="km-h">${q(t("kmH"))}</p>`+rows.map(([k,w])=>`<div class="km-row"><span class="km-caps">${k}</span><span class="km-say">${q(w)}</span></div>`).join("");
+  try{ keyLetters(); }catch(e){}
+}
 function paintText(){
   document.documentElement.setAttribute("lang", S.lang);
+  paintKeyMap();
   document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });
   $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
   $("langBtn").textContent=S.lang==="es"?"EN":"ES";
@@ -2673,6 +2706,7 @@ const FINGERS=new Map();      /* each finger (pointer) on the neck → where it 
 const KEYCELLS=new Map();     /* each computer key held → the place it plays */
 function litNeck(){
   const svg=$("neck"); if(!svg) return;
+  try{ keyLetters(); }catch(e){}   /* AOG-STRINGS-KEYS-V2 */
   /* AOG-STRINGS-V2: a pad held down shows its own shape, even while the pattern plays (a metal sound: its power chord) */
   const held=Object.keys(padHeld).length ? S.hand : null;
   const now=S.playing?sounding():new Set(), down=new Set(), fit=new Map(), cc=held||shapeChord();
@@ -3070,20 +3104,47 @@ function pvInit(){
   window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
   pvText(); pvSync();
 }
-/* computer keys: by position, so other keyboard layouts work too */
-const STRING_KEYS=GTR?["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH"]:["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"];
+/* computer keys: by position, so other keyboard layouts work too.
+   AOG-STRINGS-KEYS-V2 (Jimmy, 2026-10-09: "I don't really understand the keyboard for the guitar and bass"). One rule, the
+   same as the Piano and the Band: numbers play chords, letters play notes. 1 to 6 are the six chord pads (their numbers
+   are on them). A S D F G H J K are the notes of the key, going up (do re mi … do), on the guitar and the bass alike, and
+   each one's letter is drawn on the neck where it plays. The guitar's six strings, picked one by one in the chord you
+   hold, are the row above: Q W E R T Y, low to high, drawn on the strum strip beside each string. */
+const STRING_KEYS=["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK"];
+const PICK_KEYS=GTR?["KeyQ","KeyW","KeyE","KeyR","KeyT","KeyY"]:[];
+function keysShown(){ try{ return document.documentElement.classList.contains("aog-keys") || matchMedia("(hover:hover) and (pointer:fine)").matches; }catch(e){ return false; } }
+/* the letters on the neck: each note's key beside the spot it plays; the guitar's pick keys on the strum strip */
+function keyLetters(){
+  const on=keysShown() && !(window.AOGSolo && AOGSolo.isOn());
+  const cells=on ? STRING_KEYS.map((k,i)=>{ const cl=cellFor(scaleNote(i)); return cl ? cl.s+":"+cl.f : ""; }) : [];
+  const sig=[on, cells.join(","), NECK.W, NECK.n, S.fret0].join("|");
+  document.querySelectorAll("svg").forEach(svg=>{
+    if(!svg.querySelector(".dot")) return;
+    if(svg.__ksig===sig && (!on || svg.querySelector(".nk-key"))) return;
+    svg.__ksig=sig; svg.querySelectorAll(".nk-key").forEach(e=>e.remove()); if(!on) return;
+    const cap=(x, y, h, letter)=>{ const g=document.createElementNS("http://www.w3.org/2000/svg","g"); g.setAttribute("class","nk-key"); g.setAttribute("aria-hidden","true");
+      g.innerHTML=`<rect x="${(x-h*0.55).toFixed(1)}" y="${(y-h/2).toFixed(1)}" width="${(h*1.1).toFixed(1)}" height="${h.toFixed(1)}" rx="${(h*0.22).toFixed(1)}"/><text x="${x.toFixed(1)}" y="${(y+0.5).toFixed(1)}" style="font-size:${(h*0.66).toFixed(1)}px">${letter}</text>`;
+      svg.appendChild(g); };
+    cells.forEach((c,i)=>{ if(!c) return; const ci=svg.querySelector(`.dot[data-c="${c}"] circle`); if(!ci) return;
+      const x=+ci.getAttribute("cx"), y=+ci.getAttribute("cy"), r=+ci.getAttribute("r");
+      const h=Math.max(13, r*1.1); cap(x+r+h*0.6, y, h, STRING_KEYS[i].slice(3)); });   /* on its own string, just after the spot */
+    if(GTR && svg.id==="neck" && NECK.n){ const sx=NECK.nut+NECK.n*NECK.cw+6, cx=sx+(NECK.W-sx-1)/2;
+      PICK_KEYS.forEach((k,r)=>cap(cx, NECK.top+r*NECK.rowH+NECK.rowH/2, Math.min(18, NECK.rowH*0.62), k.slice(3))); }
+  });
+}
 function scaleNote(i){ const iv=S.minor?[0,2,3,5,7,8,10,12]:[0,2,4,5,7,9,11,12]; return bassRoot({off:0, q:S.minor?"min":"maj"})+iv[i]; }
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   if(e.target && e.target.tagName==="SELECT") return;
   if(window.AOGSolo && AOGSolo.key(e, true)) return;   /* AOG-SOLO-V1: the Solo mode keys */
-  const si=STRING_KEYS.indexOf(e.code);
-  if(si>=0){ e.preventDefault(); if(e.repeat||KEYCELLS.has(e.code)) return;
-    if(GTR){ const c=shapeChord(), f=c?shapeFor(c)[si]:0; pluckShape(si, 0.72); if(f>=0){ KEYCELLS.set(e.code, si+":"+f); lessonNote(si, f); } }
+  const si=STRING_KEYS.indexOf(e.code), pk=PICK_KEYS.indexOf(e.code);
+  if(si>=0 || pk>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); }
+    if(e.repeat||KEYCELLS.has(e.code)) return;
+    if(pk>=0){ const c=shapeChord(), f=c?shapeFor(c)[pk]:0; pluckShape(pk, 0.72); if(f>=0){ KEYCELLS.set(e.code, pk+":"+f); lessonNote(pk, f); } }
     else { const cl=cellFor(scaleNote(si)); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
     litNeck(); return; }
-  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
+  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); } if(!e.repeat) padDown(pi, 0.74); return; }
   if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat) moveNeck(e.code==="KeyZ"?-1:1); return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
