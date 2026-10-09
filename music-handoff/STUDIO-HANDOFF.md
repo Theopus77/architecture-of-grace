@@ -854,6 +854,10 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · A menu lets go of the keyboard (`AOG-KEYS-AFTER-MENU-V1` in `aog-labdoors.js`; the Studio's own menu in `make_studio_page.py`).** Jimmy, on his iPad: "The keys are unable to be used on the piano. I am trying the church organs and other instruments and they don't work using the iPad keyboard."
+  - Why: after a menu is used (the sound, the key, a pattern) an iPad leaves the keyboard with that menu, and every room rightly ignores keys typed into a menu, so no key played until the page was tapped.
+  - Now, once a choice is made, the menu lets go (it is blurred; Tab still carries on from it), in every music room (all ten load `aog-labdoors.js`) and in the Studio (+ Add a layer). The next key plays the instrument.
+  - Test: `play/soundpick.js` focuses each menu as an iPad does, picks, then presses A: it plays in the Piano, the Guitar, the Bass and the Band, and after the key menu too (it fails with the fix taken out).
 - **2026-10-09 · The instrument choice sits by the instrument (`aog-soundpick.js`, `AOG-SOUNDPICK-V1`).** Jimmy: "Can the instrument choice also sit right above or below the instruments itself, what ever looks better and makes more sense. (Perhaps two drop down menus work as well)".
   - The long menu (`#soundSel`, up to sixty sounds in groups) becomes two short ones: the kind (the menu's own groups) and the sound in that kind. Piano: Kind · Sound, under its keys (as in Jimmy's piano drawing). Guitar and Bass: Style · Sound, under the neck. Band: Section · Instrument, above its keys (his band drawing: "Pick a section, then play the tune"). The ready line ("Ready. Every note is a real player.") sits under them. The old Instrument row at the top is gone.
   - Picking a kind picks its first sound. The page's own menu stays in the page out of sight and still makes the sound; the two menus set it and follow it when anything else does (a lesson, a reload, the other language). Nothing in the sound engines changed.

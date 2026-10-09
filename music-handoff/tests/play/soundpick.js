@@ -54,8 +54,19 @@ const state = p => p.evaluate(() => ({ kind: document.getElementById("spKind").s
     s = await state(p);
     ok(first && s.kind === R.pickKind && s.src === first.v && s.s === first.v && s.n === first.n, `${R.id}: picking ${R.pickKind} picks its first sound (${s.soundName}) and lists only its ${first && first.n} sounds`);
     const second = await p.evaluate(() => document.getElementById("spSound").options[1] && document.getElementById("spSound").options[1].value);
-    if (second) { await p.selectOption("#spSound", second); await p.waitForTimeout(700); s = await state(p);
-      ok(s.src === second && s.s === second, `${R.id}: picking a sound plays it: ${s.soundName}`); }
+    if (second) {
+      /* as on an iPad: the menu has the keyboard while it is used (AOG-KEYS-AFTER-MENU-V1) */
+      await p.evaluate(() => { window.__h = []; for (const n of ["noteOn", "keyOn", "pluckCell", "pluckShape"]) { if (typeof window[n] === "function" && !window[n].__spy) { const o = window[n]; window[n] = function () { window.__h.push(n); return o.apply(this, arguments); }; window[n].__spy = 1; } } });
+      await p.focus("#spSound"); await p.selectOption("#spSound", second); await p.waitForTimeout(700); s = await state(p);
+      ok(s.src === second && s.s === second, `${R.id}: picking a sound plays it: ${s.soundName}`);
+      const foc = await p.evaluate(() => document.activeElement && document.activeElement.id);
+      await p.keyboard.down("KeyA"); await p.waitForTimeout(150); await p.keyboard.up("KeyA"); await p.waitForTimeout(150);
+      const hh = await p.evaluate(() => window.__h.length);
+      ok(foc !== "spSound" && hh > 0, `${R.id}: after a sound is picked the menu lets go of the keyboard, and A plays ${s.soundName} (focus: ${foc || "the page"}, ${hh} notes)`);
+      await p.focus("#keySel").catch(() => {}); if (await p.$("#keySel")) { await p.selectOption("#keySel", { index: 2 }).catch(() => {}); await p.waitForTimeout(300);
+        await p.evaluate(() => { window.__h = []; }); await p.keyboard.press("KeyS"); await p.waitForTimeout(200);
+        ok(await p.evaluate(() => window.__h.length > 0 && document.activeElement.id !== "keySel"), `${R.id}: the same after the key menu is used`); }
+    }
     await p.selectOption("#soundSel", R.other); await p.waitForTimeout(900);
     s = await state(p);
     ok(s.sound === R.other && s.src === R.other, `${R.id}: a sound set any other way shows in both menus: ${s.kind} · ${s.soundName}`);

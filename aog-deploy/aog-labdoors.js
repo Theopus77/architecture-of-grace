@@ -173,6 +173,14 @@
     var inn = box.lastChild;
     parts.forEach(function (e) { inn.appendChild(e); });
   }
+  /* AOG-KEYS-AFTER-MENU-V1 (Jimmy, 2026-10-09, on his iPad: "I am trying the church organs and other instruments and they
+     don't work using the iPad keyboard"). After a menu is used (the sound, the key, a pattern), an iPad leaves the keyboard
+     with that menu, and the instruments rightly ignore keys typed into a menu, so no key played. Once a choice is made the
+     menu lets go, and the next key plays the instrument. (Tab still carries on from the menu.) */
+  D.addEventListener("change", function (e) {
+    var t = e.target; if (!t || t.tagName !== "SELECT" || t.multiple) return;
+    setTimeout(function () { if (D.activeElement === t) t.blur(); }, 0);
+  }, true);
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
   /* after the doors and the menus are drawn; the course box arrives later (aog-grace.js), so it is watched for a while */
   if (shell) {

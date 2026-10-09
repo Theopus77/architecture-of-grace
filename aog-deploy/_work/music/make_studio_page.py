@@ -343,6 +343,8 @@ JS = r"""<script src="/aog-handoff.js"></script>
     d.body.dispatchEvent(ev);
     if (ev.defaultPrevented) e.preventDefault();
   }
+  /* a menu of the Studio (+ Add a layer) lets go of the keyboard once a choice is made, so the next key plays the room */
+  D.addEventListener("change", function (e) { var t = e.target; if (t && t.tagName === "SELECT") setTimeout(function () { if (D.activeElement === t) t.blur(); }, 0); }, true);
   D.addEventListener("keydown", keyOn);
   D.addEventListener("keyup", keyOn);
   window.AOGStudioShell = {
