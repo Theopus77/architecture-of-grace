@@ -854,6 +854,14 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · The Mixing Desk looks like Jimmy's drawing (§10's approved face).** Jimmy sent the drawing again with his phone drawing: "May the recording studio look something this amazing?" (`AOG-DESK-FACE-V1` in `music-studio.html`):
+  - one dark console: a round gold ▶ (■ while it plays) beside where the song is; the level, then **Where it starts, the loop and the count-in** one tap away (closed);
+  - the song's lanes are named for their instrument (Drums, Kit, Piano, Guitar, Bass, Band, Turntables, Voice, Live guitar, Live bass; Empty), and each recording is drawn as its wave in its track's colour, fine and smooth, with no block behind it (`waveSvg(c, p, fine)`); an empty lane is a quiet dotted line. A playhead steps across the lanes with the beat while it plays (nothing slides) and rests where the song starts;
+  - **the open channel**: the chosen track's name in gold, its wave, Mute and Solo, its volume, and **Shape the sound** (pan, low, mid, high, punch, room, echo) one tap away; beside it (under it on a phone) **eight short faders**, the chosen one gold, its number picks the track;
+  - every console control moves the mixer's own slider or button below (`consoleTo`), so the sound, the save, the lessons and the full mixer follow the same rules; the full mixer, the track's editor, the takes, Make the mix, Send it out and the song file all stay below, unchanged;
+  - the lesson is a **paper slip** under the console: the lesson on screen and its next step, with All lessons › (`AOGLessons … next()` and `onPaint`, added to `aog-lessons.js`);
+  - a phone stacks the same pieces (his phone drawing); the chassis stays dark (§10: one dark chassis).
+  - Test: `music-handoff/tests/studio/face.js` (port 9256).
 - **2026-10-09 · Simpler first screens (§08) and Listen (§12b), the last two in Jimmy's order ("3" and "9").**
   - **The first screen** (`AOG-STUDIO-FIRST-V1` in `aog-labdoors.js`, inside the Studio only; a room on its own address is untouched):
     - every room opens on its instrument. Piano: the keys first. Guitar and Bass: the chord pads, then the neck. Band: the section, then the pads (Jimmy's drawing). Drum Machine: the pads, with the bank, kit and pattern menus under them (his drawing has the banks along the bottom). Drum Kit: the kit, with its menu under it;

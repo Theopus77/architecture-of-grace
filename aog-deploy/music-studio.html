@@ -275,6 +275,98 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .st-sh{font-size:.84rem;padding:0 .4rem}
 }
 @media (max-width:520px){ .st-desk{padding:14px 10px 16px;border-radius:14px} }
+
+/* ══ AOG-DESK-FACE-V1 (2026-10-09) — Jimmy's drawing of the Mixing Desk: "May the recording studio look something this
+   amazing?" One dark console: a round gold play and where the song is; the song's lanes named for their instrument, each
+   recording drawn as its wave in its own colour, a playhead that steps with the beat; the open channel (its name in gold,
+   its wave, Mute, Solo, its fader, Shape the sound one tap away) beside eight short faders, the chosen one gold; the lesson
+   on a paper slip. On a phone the same pieces stack (his phone drawing). Everything else on the desk stays below. ══ */
+.st-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0!important}
+.st-desk .st-top{flex-wrap:nowrap;gap:.9rem}
+.st-desk .st-play{flex:0 0 64px!important;width:64px;min-width:64px;height:64px;min-height:64px;padding:0;border-radius:50%;font-size:0;
+  display:inline-grid;place-items:center;border:1px solid #6b4f16;background:radial-gradient(circle at 36% 30%,#f8dc9a,#d3a447 58%,#a8782a);
+  box-shadow:0 2px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4)}
+.st-desk .st-play::before{content:"";width:0;height:0;margin-left:6px;border-left:21px solid #1b1408;border-top:13px solid transparent;border-bottom:13px solid transparent}
+.st-desk .st-play.on{background:radial-gradient(circle at 36% 30%,#f8dc9a,#d3a447 58%,#a8782a)}
+.st-desk .st-play.on::before{width:20px;height:20px;margin:0;border:0;border-radius:3px;background:#1b1408}
+.st-desk .st-play:disabled{opacity:.6}
+.st-read b{font:600 1.25rem/1.2 var(--serif,Georgia,serif);color:#f3ead8;letter-spacing:.01em}
+.st-more{margin:.7rem 0 0;border:1px solid #2f3339;border-radius:12px;background:#17191c}
+.st-more>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 12px;cursor:pointer;font:700 .95rem/1.2 var(--sans);color:#ece6da;list-style:none}
+.st-more>summary::-webkit-details-marker{display:none}
+.st-more>summary::before{content:"\25B8";font-size:.8em;color:#f0c26e}.st-more[open]>summary::before{content:"\25BE"}
+.st-more>.st-row,.st-more>.st-line,.st-more>.st-sls{padding:0 12px 12px}
+/* the song: lanes named for their instrument, the wave in the track's colour, no block behind it */
+.st-song{margin-top:.4rem}
+.st-tl{position:relative;--lab:5.6rem}
+.st-desk .st-ruler,.st-desk .st-lane{grid-template-columns:var(--lab) minmax(0,1fr)}
+.st-ln{justify-content:flex-start;gap:.4rem;padding:0 .55rem;background:#202328;color:#ece6da;font:500 .95rem/1.1 var(--serif,Georgia,serif);min-width:0}
+.st-lnn{font:800 .68rem/1 var(--sans);color:#b9b0a1;flex:0 0 auto}
+.st-lnm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.st-lane[aria-current="true"] .st-lnn{color:#2a1a08}
+.st-lt{background:#15171a;border-color:#2a2e33}
+.st-desk .st-clip{background:transparent;border-radius:4px}
+.st-desk .st-clip .wv path{fill:var(--c)}
+.st-desk .st-clip.off{background:transparent}
+.st-desk .st-clip.off .wv path{fill:#5d6168}
+.st-desk .st-clip .st-cnm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.st-desk .st-clip .wv{top:10%;height:80%}
+/* an empty lane is a quiet dotted line; its name is already on the left */
+.st-desk .st-empty{left:.6rem;right:.6rem;font-size:0;background:radial-gradient(circle,#3c4048 1px,transparent 1.4px) 0 50%/8px 4px repeat-x}
+.st-desk .st-clip.pk{box-shadow:inset 0 0 0 2px #f3ead8}
+.st-rt i.now{background:#3b3220;color:#ffe2a8}
+.st-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#f3ead8;pointer-events:none;z-index:2;
+  left:calc(var(--lab) + 6px + (100% - var(--lab) - 6px) * var(--ph,0))}
+.st-ph::before{content:"";position:absolute;top:-1px;left:-6px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #f3ead8}
+/* the open channel and the eight short faders */
+.st-cons{display:grid;gap:12px;grid-template-columns:minmax(0,1fr);margin-top:.9rem}
+.st-ch,.st-fd{border:1px solid #2f3339;border-radius:14px;background:#1b1d21;padding:10px 12px 12px;min-width:0}
+.st-chh{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2rem .7rem}
+.st-chn{font:500 1.5rem/1.15 var(--serif,Georgia,serif);color:#f0c26e}
+.st-chs{font-size:.86rem;color:#c9c0b0}
+.st-chw{height:64px;margin:.5rem 0;border-bottom:1px solid #3a3320;position:relative}
+.st-chw .wv{display:block;width:100%;height:100%}
+.st-chw .wv path{fill:var(--c)}
+.st-chw0{margin:.6rem 0}
+.st-chc{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.st-chc .st-ms{margin:0;flex:0 0 auto;grid-template-columns:repeat(2,5.4rem)}
+.st-vf{display:flex;align-items:center;gap:.6rem;flex:1 1 12rem;min-width:0;margin:0}
+.st-vf .st-lab{margin:0}
+.st-vf output{font:800 .9rem/1 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums;min-width:2ch}
+.st-vf input[type=range]{flex:1 1 auto;min-width:6rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
+.st-shape{margin-top:.7rem;background:#15171a}
+.st-shape .st-sls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.st-fdh{display:block;text-align:center;margin:0 0 .3rem}
+.st-fds{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:0;justify-items:center}
+.st-f1{display:grid;justify-items:center;gap:4px;min-width:0;width:100%}
+.st-vert{writing-mode:vertical-lr;direction:rtl;width:44px;height:118px;margin:0;padding:0;accent-color:#bdb6a8;touch-action:none}
+.st-f1.sel .st-vert{accent-color:#f0c26e}
+.st-f1.off .st-vert{opacity:.55}
+.st-fn{min-width:44px;width:100%;max-width:48px;min-height:44px;border-radius:10px;border:1px solid #33373d;background:#22252a;color:#ece6da;font:800 .95rem/1 var(--sans);cursor:pointer}
+.st-f1.sel .st-fn{background:#f0c26e;border-color:#f0c26e;color:#2a1a08}
+.st-fn:focus-visible,.st-more>summary:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}
+/* the lesson, on a paper slip below the console */
+.st-slip{position:relative;max-width:30rem;margin:-6px auto 0;padding:14px 18px 16px;background:#f6f0e2;color:#1a232c;text-align:center;
+  border:1px solid #e2d8c2;border-radius:3px;box-shadow:0 6px 14px rgba(0,0,0,.28);transform:rotate(-.4deg)}
+.st-slip[hidden]{display:none}
+.st-slip p{margin:0}
+.st-slipk{font:800 .72rem/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#6b5a3a}
+.st-slipt{font:500 1.15rem/1.35 var(--serif,Georgia,serif);color:#1a232c;margin:.25rem 0 .35rem!important}
+.st-slip a{color:#1d4f8a;font-weight:700;font-size:.92rem}
+.st-slip::after{content:"\25C6";display:block;color:#b8902f;font-size:.7rem;margin-top:.35rem}
+@media (min-width:900px){
+  .st-cons{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+  .st-chc{flex-wrap:nowrap}
+}
+@media (max-width:699px){
+  .st-desk .st-top{gap:.7rem}
+  .st-desk .st-play{flex-basis:56px!important;width:56px;min-width:56px;height:56px;min-height:56px}
+  .st-tl{--lab:4.4rem}
+  .st-ln{font-size:.82rem;padding:0 .4rem}
+  .st-lnn{display:none}
+  .st-vert{height:104px}
+}
+@media (prefers-reduced-motion:reduce){ .st-slip{transform:none} }
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -319,6 +411,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <div class="st-read"><b id="posOut">&nbsp;</b><span id="tempoOut"></span></div>
         </div>
         <div class="st-mrow"><span class="st-lab" data-t="level"></span><canvas class="st-meter" id="meter" role="img"></canvas></div>
+        <!-- AOG-DESK-FACE-V1: where it starts, the loop and the count-in, one tap away -->
+        <details class="st-more" id="playMore"><summary data-t="playMore"></summary>
         <div class="st-row st-ctl">
           <label class="st-field st-f-start"><span class="st-lab" data-t="startAt"></span><select id="startSel"></select></label>
           <div class="st-field st-f-loop"><span class="st-lab" data-t="loopBars"></span>
@@ -326,14 +420,23 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           </div>
           <button type="button" class="st-btn st-count" id="countBtn" aria-pressed="false"></button>
         </div>
+        <p class="st-line" data-t="songLen" style="margin:.6rem 0 0"></p>
+        </details>
         <p class="st-line" id="playLine" aria-live="polite"></p>
       </div>
 
-      <div class="st-blk">
-        <h2 class="st-h" data-t="songH"></h2>
-        <p class="st-line" data-t="songLen" style="margin:0 0 .6rem"></p>
+      <div class="st-blk st-song">
+        <h2 class="st-h st-sr" data-t="songH"></h2>
         <div class="st-tl" id="timeline"></div>
       </div>
+
+      <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
+           a paper slip. They drive the mixer below (the same values, the same rules); nothing new happens to the sound. -->
+      <div class="st-blk st-cons" id="console">
+        <div class="st-ch" id="chStrip"></div>
+        <div class="st-fd" id="chFaders"></div>
+      </div>
+      <div class="st-slip" id="slip" aria-live="polite"></div>
 
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
@@ -445,6 +548,14 @@ const STR={
   count:{en:"4 clicks before it starts",es:"4 clics antes de empezar"},
   level:{en:"Level",es:"Nivel"}, meterAria:{en:"How loud the song is",es:"Qué tan fuerte suena la canción"},
   songH:{en:"Your song",es:"Tu canción"},
+  /* AOG-DESK-FACE-V1 */
+  playMore:{en:"Where it starts, the loop and the count-in",es:"Dónde empieza, el bucle y la cuenta"},
+  chH:{en:"Channel strip",es:"Canal"}, fdH:{en:"Mixer",es:"Mezcladora"}, volume:{en:"Volume",es:"Volumen"},
+  shape:{en:"Shape the sound",es:"Dale forma al sonido"},
+  fdAria:{en:"Track {n} · {name} · volume",es:"Pista {n} · {name} · volumen"}, fdPick:{en:"Track {n} · {name}",es:"Pista {n} · {name}"},
+  chEmpty:{en:"Nothing on this track yet. Pick a recording below.",es:"Todavía no hay nada en esta pista. Elige una grabación abajo."},
+  slipK:{en:"Lesson {n}",es:"Lección {n}"}, slipAll:{en:"All lessons ›",es:"Todas las lecciones ›"}, slipDone:{en:"Lesson done. Pick the next one when you are ready.",es:"Lección terminada. Elige la siguiente cuando quieras."},
+  laneNames:{en:["Drums","Kit","Piano","Guitar","Bass","Band","Turntables","Voice","Live guitar","Live bass","Mix","Empty"],es:["Ritmos","Batería","Piano","Guitarra","Bajo","Banda","Tocadiscos","Voz","Guitarra en vivo","Bajo en vivo","Mezcla","Vacía"]},
   /* AOG-STUDIO-LONG-V1 — Jimmy: "I had no idea I could play 128 bars. I thought it ended after 8." */
   songLen:{en:"A song can be up to 128 bars, about 5 minutes. It grows as you add parts: pick a track, then use Plays to make it longer.",es:"Una canción puede tener hasta 128 compases, unos 5 minutos. Crece al agregar partes: elige una pista y usa Suena para alargarla."},
   trackN:{en:"Track {n}",es:"Pista {n}"}, trackLow:{en:"track {n}",es:"pista {n}"},
@@ -649,7 +760,7 @@ let SONG=blankSong();
    _work/music/lessons_studio.py, built by make_lab_lessons.py into aog-lessons-studio.js and mixing-desk-lessons.html).
    LES.mark(id) is called at the real events below; the songs are checked from the arrangement (lessonSong) and at
    Make the mix (lessonMix). The Mixing Desk records nothing itself, so step 1 ticks when a take has arrived here. ══ */
-const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang, onPaint:()=>{ try{ paintSlip(); }catch(e){} }}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
 const LT={remix:false};
 const INST_OF={drumbench:"drums", drumtake:"drums", padbench:"pads", keysbench:"piano", guitarbench:"guitar", bassbench:"bass", bandbench:"band", studiobench:"mix"};
 function instOf(c){ return c.src===INBOX_KEY ? (c.from||"take") : (INST_OF[c.src]||c.src); }
@@ -1199,7 +1310,7 @@ function frame(){
   else {
     const bar=Math.floor(pos/PLAY.bar+1e-6), beat=Math.floor((pos-bar*PLAY.bar)/PLAY.beat+1e-6);
     sig=bar+"."+beat;
-    if(sig!==PLAY.sig){ posText(t("pos",{b:bar+1, n:Math.min(4,beat+1), t:clockPos(pos)})); paintNowBar(bar); }
+    if(sig!==PLAY.sig){ posText(t("pos",{b:bar+1, n:Math.min(4,beat+1), t:clockPos(pos)})); paintNowBar(bar); playhead(bar*PLAY.bar+beat*PLAY.beat); }
   }
   PLAY.sig=sig;
   meterTick();
@@ -2081,7 +2192,7 @@ function paintText(){
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
   $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
 }
-function paintAll(){ paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); }
+function paintAll(){ paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); }
 
 /* ── 1 · play ── */
 function paintPlay(){
@@ -2090,7 +2201,7 @@ function paintPlay(){
   b.classList.toggle("on", PLAY.on);
   b.disabled=!PLAY.on && !can;
   b.setAttribute("aria-pressed", PLAY.on ? "true" : "false");
-  if(!PLAY.on){ const bs=barSec(), from=SONG.loopOn ? SONG.loopFrom : SONG.startBar; posText(t("pos",{b:from, n:1, t:clockPos((from-1)*bs)})); }
+  if(!PLAY.on){ const bs=barSec(), from=SONG.loopOn ? SONG.loopFrom : SONG.startBar; posText(t("pos",{b:from, n:1, t:clockPos((from-1)*bs)})); playhead((from-1)*bs); }
   const pl=$("playLine");
   pl.textContent = S.decoding ? t("readying") : (SONG.loopOn && hasClips() ? t("loopOn",{a:SONG.loopFrom, b:SONG.loopTo}) : "");
 }
@@ -2131,8 +2242,15 @@ function waveCols(P, s0, s1, cols){
   return out;
 }
 function recSec(c, beat){ return c.head+beat*beatOf(c); }   /* where a beat of the recording is, in its seconds */
-function waveSvg(c, p){
+function waveSvg(c, p, fine){
   const P=peaksOf(c); if(!P) return "";
+  /* AOG-DESK-FACE-V1: a fine, smooth wave (the console's lanes and its open channel), mirrored about the middle */
+  if(fine){
+    const per=Math.max(8, Math.round(fine/p.n)), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
+    let top="", bot="";
+    for(let x=0;x<cols;x++){ const h=0.03+0.94*v[x%per], cx=(x+0.5).toFixed(1); top+=`L${cx} ${(1-h).toFixed(3)}`; bot=`L${cx} ${(1+h).toFixed(3)}`+bot; }
+    return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 1${top}L${cols} 1${bot}Z"/></svg>`;
+  }
   const per=Math.max(8, Math.min(90, Math.round(240/p.n))), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
   let top="", bot="";
   for(let x=0;x<cols;x++){ const h=(0.06+0.9*v[x%per]).toFixed(2); top+=`L${x} ${(1-h).toFixed(2)}L${x+1} ${(1-h).toFixed(2)}`; bot=`L${x+1} ${(1+ +h).toFixed(2)}L${x} ${(1+ +h).toFixed(2)}`+bot; }
@@ -2229,14 +2347,14 @@ function paintTimeline(){
       inner=P.map((p,j)=>{
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p)}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.max(24, Math.round(w*4)))}<span class="st-cnm">${esc(nm)}</span></span>`;
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
     } else { inner=`<span class="st-empty">${esc(t("empty"))}</span>`; label=t("laneAria",{n:i+1, name:t("emptyL")}); }
-    lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln">${i+1}</span><span class="st-lt">${inner}</span></button>`;
+    lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln"><span class="st-lnn">${i+1}</span><span class="st-lnm">${esc(laneName(i))}</span></span><span class="st-lt">${inner}</span></button>`;
   }
-  $("timeline").innerHTML=rh+lanes;
+  $("timeline").innerHTML=rh+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 */
   RULER=[...$("timeline").querySelectorAll(".st-rt i")];
   PLAY.nowBar=-1;
 }
@@ -2520,6 +2638,7 @@ function paintMixer(rebuild){
     el.querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, x[r.getAttribute("data-k")]));
   });
   $("master").querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, SONG.master[r.getAttribute("data-k")]));
+  paintConsole();   /* AOG-DESK-FACE-V1 */
 }
 function syncSlider(r, v){
   const k=r.getAttribute("data-k");
@@ -2541,6 +2660,80 @@ function paintMixOut(){
     <a class="st-btn" href="${MIX.url}" download="${t("file")}.wav">${esc(t("save"))}</a>
     <button type="button" class="st-btn st-send" id="sendBtn">${esc(t("send"))}</button></div>`;
   $("sendBtn").onclick=sendMix;
+}
+
+/* ══ AOG-DESK-FACE-V1 — the console of Jimmy's drawing: each lane named for its instrument, the playhead, the open
+   channel, eight short faders and the lesson slip. They change nothing by themselves: every change goes through the
+   mixer's own sliders and buttons below, so the sound, the save and the lessons follow the same rules. ══ */
+const LANE_IX={pads:0, drums:1, piano:2, guitar:3, bass:4, band:5, decks:6, "guitar:live":8, "bass:live":9};
+function laneName(i){
+  const N=STR.laneNames[S.lang]||STR.laneNames.en, c=SONG.tracks[i].clip;
+  if(!c) return i===VOICE_T ? N[7] : N[11];
+  if(c.voice) return N[7];
+  if(c.src==="studiobench") return N[10];
+  const k=layerOfClip(c); return Object.prototype.hasOwnProperty.call(LANE_IX, k) ? N[LANE_IX[k]] : t("trackN",{n:i+1});
+}
+function playhead(sec){
+  const tl=$("timeline"); if(!tl) return;
+  const n=tlBars(), bs=barSec(), f=n>0 && bs>0 ? Math.max(0, Math.min(1, sec/(n*bs))) : 0;
+  tl.style.setProperty("--ph", f.toFixed(4));
+}
+const CONS={sig:"", open:false};
+function paintConsole(){
+  const box=$("chStrip"), fd=$("chFaders"); if(!box || !fd) return;
+  const i=SONG.sel, x=SONG.tracks[i], c=x.clip;
+  const sig=[S.lang, i, laneName(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : ""].join("|");
+  if(CONS.sig!==sig){
+    CONS.sig=sig;
+    const wave=c ? `<div class="st-chw" style="--c:${COLORS[i]}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 420)}</div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
+    box.innerHTML=`<div class="st-chh"><span class="st-lab">${esc(t("chH"))}</span><b class="st-chn">${esc(laneName(i))}</b><span class="st-chs">${esc(t("trackN",{n:i+1}))}${c ? " · "+esc(trackName(i)) : ""}</span></div>`+wave+
+      `<div class="st-chc"><div class="st-ms"><button type="button" class="st-btn st-mute" data-cms="mute" aria-pressed="false">${esc(t("mute"))}</button>`+
+      `<button type="button" class="st-btn st-solo" data-cms="solo" aria-pressed="false">${esc(t("solo"))}</button></div>`+
+      `<label class="st-vf" for="cv-vol"><span class="st-lab">${esc(t("volume"))}</span><input type="range" id="cv-vol" data-k="vol" min="0" max="100" step="1" value="${x.vol}"><output id="cv-vol-o">${esc(fmtV("vol", x.vol))}</output></label></div>`+
+      `<details class="st-more st-shape" id="chShape"${CONS.open ? " open" : ""}><summary>${esc(t("shape"))}</summary>`+
+      `<div class="st-sls">${KNOBS.filter(k=>k[0]!=="vol").map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,x[k],"cs")).join("")}</div></details>`;
+  }
+  box.querySelector("[data-cms=mute]").setAttribute("aria-pressed", x.mute ? "true" : "false");
+  box.querySelector("[data-cms=solo]").setAttribute("aria-pressed", x.solo ? "true" : "false");
+  box.querySelectorAll("input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); });
+  const fsig=S.lang+"|"+SONG.tracks.map((y,j)=>laneName(j)).join(",");
+  if(fd._sig!==fsig){
+    fd._sig=fsig;
+    fd.innerHTML=`<span class="st-lab st-fdh">${esc(t("fdH"))}</span><div class="st-fds">`+SONG.tracks.map((y,j)=>
+      `<div class="st-f1" data-tr="${j}"><input type="range" class="st-vert" id="fv${j}" data-fv="${j}" min="0" max="100" step="1" value="${y.vol}" aria-label="${esc(t("fdAria",{n:j+1, name:laneName(j)}))}">`+
+      `<button type="button" class="st-fn" data-sel="${j}" aria-label="${esc(t("fdPick",{n:j+1, name:laneName(j)}))}">${j+1}</button></div>`).join("")+`</div>`;
+  }
+  fd.querySelectorAll(".st-f1").forEach(el=>{
+    const j=+el.getAttribute("data-tr"), y=SONG.tracks[j], r=el.querySelector("input");
+    el.classList.toggle("sel", j===SONG.sel); el.classList.toggle("off", !audible(j));
+    el.querySelector("button").setAttribute("aria-pressed", j===SONG.sel ? "true" : "false");
+    if(document.activeElement!==r && +r.value!==y.vol) r.value=String(y.vol);
+    r.setAttribute("aria-valuetext", ariaV("vol", y.vol));
+  });
+}
+/* a console control moves the mixer's own slider, so the mixer's rules do the rest */
+function consoleTo(i, k, v){
+  const r=$("t"+i+"-"+k); if(!r) return;
+  r.value=String(v); r.dispatchEvent(new Event("input", {bubbles:true}));
+  paintConsole();
+}
+function bindConsole(){
+  $("chStrip").addEventListener("input", e=>{ const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
+    const k=r.getAttribute("data-k"); consoleTo(SONG.sel, k, +r.value); syncSlider(r, +r.value); });
+  $("chStrip").addEventListener("click", e=>{ const b=e.target.closest("[data-cms]"); if(!b) return;
+    const m=document.querySelector(`#mixer .st-strip[data-tr="${SONG.sel}"] [data-ms="${b.getAttribute("data-cms")}"]`); if(m) m.click(); });
+  $("chStrip").addEventListener("toggle", e=>{ if(e.target.id==="chShape") CONS.open=e.target.open; }, true);
+  $("chFaders").addEventListener("input", e=>{ const r=e.target; if(!r.matches || !r.matches("[data-fv]")) return; consoleTo(+r.getAttribute("data-fv"), "vol", +r.value); });
+  $("chFaders").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
+  $("mixer").addEventListener("input", ()=>paintConsole());   /* a slider moved on the mixer itself */
+}
+function paintSlip(){
+  const el=$("slip"); if(!el) return;
+  let m=null; try{ m=LES && LES.next ? LES.next() : null; }catch(e){ m=null; }
+  if(!m){ el.hidden=true; return; }
+  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessons">${esc(t("slipAll"))}</a>`;
+  if(el._h!==h){ el._h=h; el.innerHTML=h; }
+  el.hidden=false;
 }
 
 /* ══ wiring ══ */
@@ -2637,6 +2830,7 @@ load();
 CARRY.lock=lockGet();
 const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another device */
 bind();
+bindConsole();   /* AOG-DESK-FACE-V1 */
 paintAll();
 if(lockJoined) $("lockLine").textContent=t("lockJoined");
 if(CARRY.lock) lockList(true);
