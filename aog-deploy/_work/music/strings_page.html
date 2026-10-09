@@ -2677,6 +2677,10 @@ function paintDrums(){
 /* ══ the neck (AOG-STRINGS-V1): as many frets as fit (at least 43 px wide on a phone, 50 on bigger screens); the thick string on top ══ */
 function buildNeck(){
   const svg=$("neck"); if(!svg) return;
+  /* AOG-NECK-FIT-V1 (Jimmy, 2026-10-09, on his iPad turned sideways: "In the horizontal mode it is a bit too wide!"): on a
+     wide screen the neck stops at twelve frets of a natural width and sits in the middle, rather than stretching every fret;
+     the whole-screen view (sideways on a phone) still fills the screen. */
+  const nb=$("neckBox"); if(nb){ nb.style.maxWidth=NECK.play ? "" : (GTR ? "840px" : "760px"); nb.style.marginLeft=nb.style.marginRight=NECK.play ? "" : "auto"; }
   if(NECK.play){ buildPlayNeck(); return; }   /* AOG-PLAY-V1: sideways, the neck fills the screen */
   const w=Math.max(280, Math.round($("neckBox").clientWidth||330));
   const rows=TUNING.length, rowH=GTR?44:52, nut=46, top=8, strW=GTR?(w<360?50:w<600?58:120):0;
