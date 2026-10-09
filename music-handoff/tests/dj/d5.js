@@ -10,6 +10,7 @@ const srv = require("../srv.js")(9934);
   await load(p, { A: "house", B: "disco", C: "techno" });
   await p.click('[data-play="A"]'); await p.waitForTimeout(500);
   await p.click('[data-sync="B"]'); await p.click('[data-play="B"]');
+  await p.click('[data-pair="AC"]');   /* AOG-DJ-DESK-V1: C comes onto the desk; B keeps playing off it */
   await p.click('[data-sync="C"]'); await p.click('[data-play="C"]');
   await p.evaluate(() => { const set = (sel, v, ev) => { const i = document.querySelector(sel); i.value = v; i.dispatchEvent(new Event(ev || "input")); };
     document.querySelector('[data-fxtype="B"][data-v="reverb"]').click(); set('[data-fxamt="B"]', "0.5"); set('[data-fxamt="A"]', "0.4");
