@@ -72,7 +72,7 @@ window.__bright=function(d,SR){ let e=0, s=0; for(let i=1;i<d.length;i++){ e+=d[
   ok(["tenor_vib","tenor_modal","soprano_fusion"].every(id=>jz.indexOf(id)>=0), "Jazz has the three new styles: "+jz.join(" "));
   ok(names.join("|")==="Soprano saxophone|Tenor saxophone|Tenor sax · ballad, warm with vibrato|Tenor sax · modal jazz, big and strong|Soprano sax · jazz fusion, light and airy"
     && !/Coltrane|Shorter|Brett/.test(await p.evaluate(()=>document.body.innerText)), "named by style and instrument, never by a player: "+names.join(" | "));
-  ok(await p.evaluate(()=>Object.keys(SOUNDS).length)===51, "The Band has 51 sounds: "+await p.evaluate(()=>Object.keys(SOUNDS).length));
+  ok(await p.evaluate(()=>Object.keys(SOUNDS).length)===53, "The Band has 53 sounds (51, then the bagpipes' two): "+await p.evaluate(()=>Object.keys(SOUNDS).length));
 
   /* 2. loaded only when picked */
   ok(sax().length===0, "the page opens on the trumpet and fetches no saxophone: "+sax().slice(0,3).join(", "));
@@ -165,7 +165,7 @@ window.__bright=function(d,SR){ let e=0, s=0; for(let i=1;i<d.length;i++){ e+=d[
   let w=await p.evaluate(()=>({sw:document.scrollingElement.scrollWidth, iw:innerWidth})); ok(w.sw<=w.iw, "in Spanish on a phone, nothing sticks out sideways "+JSON.stringify(w));
   await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(250);
   w=await p.evaluate(()=>({sw:document.scrollingElement.scrollWidth, iw:innerWidth})); ok(w.sw<=w.iw, "and in English "+JSON.stringify(w));
-  const foot=await p.textContent("#foot"); ok(/The tenor and soprano saxophones come from their Versilian Community Sample Library/.test(foot) && /All three are given to everyone/.test(foot), "the credits name the library: "+foot.slice(0,80)+"…");
+  const foot=await p.textContent("#foot"); ok(/The tenor and soprano saxophones come from their Versilian Community Sample Library/.test(foot) && /All four are given to everyone/.test(foot), "the credits name the library: "+foot.slice(0,80)+"…");
   await p.evaluate(()=>scrollTo(0,0)); await p.screenshot({path:"sax2-phone.png", fullPage:true});
   /* 10. a reload keeps the tenor and fetches only its files */
   await p.reload(); await p.waitForTimeout(600);
