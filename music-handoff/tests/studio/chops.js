@@ -90,7 +90,7 @@ async function putRecord(p, deck, name, bpm, atSec) {
   const f = q.frames().find(x => x.parentFrame() === q.mainFrame());
   await putRecord(f, "A", "my-record.wav", 120, 4.7);
   await f.click('[data-chopsend="A"]');
-  await q.waitForFunction(() => !!document.querySelector('#mtList a.on[data-room="decks"]'), null, { timeout: 10000 });
+  await q.waitForFunction(() => !!document.querySelector('#mtList .lay.on[data-layer="decks"]'), null, { timeout: 10000 });
   ok(true, "My Track marks the Turntables once the chops are sent");
   await f.click("#chopLineA a");
   await q.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return location.hash === "#pads" && d && d.readyState === "complete" && /music-pads/.test(d.location.pathname); }, null, { timeout: 20000 });

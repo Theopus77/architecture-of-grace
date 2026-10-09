@@ -78,13 +78,15 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 /* an ID, so the site's serif heading rule (aog-grace.css) leaves this small label alone */
 #mtH { margin:0; flex:0 0 auto; font:800 .74rem/1.2 var(--sans) !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--muted); }
 .mt ul { list-style:none; margin:0; padding:2px; display:flex; gap:6px; overflow-x:auto; overscroll-behavior-x:contain; flex:1 1 auto; min-width:0; }
-.mt a, .mt .off { display:inline-flex; align-items:center; gap:.35rem; min-height:44px; padding:0 .8rem; border-radius:999px; border:1px solid var(--line);
+.mt a, .mt .lay { display:inline-flex; align-items:center; gap:.35rem; min-height:44px; padding:0 .8rem; border-radius:999px; border:1px solid var(--line);
   background:var(--card); color:var(--ink); font:700 .88rem/1 var(--sans); text-decoration:none; white-space:nowrap; }
 .mt .mk { font-weight:800; color:var(--muted); }
 .mt .on { border-color:#2c7a4e; }
 .mt .on .mk { color:#2c7a4e; }
 :root[data-theme="dark"] .mt .on { border-color:#6fbf8b; }
 :root[data-theme="dark"] .mt .on .mk { color:#6fbf8b; }
+.mt select { flex:0 0 auto; min-height:44px; max-width:11.5rem; font:700 16px/1.2 var(--sans); color:#0A1E33; background:#FFFDF8; border:1.5px solid #C9A24A;
+  border-radius:999px; padding:0 .8rem; cursor:pointer; }
 .mt a.mix { background:var(--steel); border-color:var(--steel); color:#f4f8f9; }
 :root[data-theme="dark"] .mt a.mix { color:#14181e; }
 /* a phone: one slim line above the doors, so the room gets the screen */
@@ -150,10 +152,14 @@ JS = r"""<script src="/aog-handoff.js"></script>
     ul.innerHTML = LAYERS.map(function (l) {
       var on = !!HAVE[l.id], nm = e ? l.name[1] : l.name[0];
       var say = nm + ": " + (on ? (e ? "hay una toma" : "a take is ready") : (e ? "todavía nada" : "nothing yet"));
-      var inner = '<span>' + nm + '</span><span class="mk" aria-hidden="true">' + (on ? "✓" : "—") + "</span>";
-      return "<li>" + (room(l.id) ? '<a href="#' + l.id + '" data-room="' + l.id + '" class="' + (on ? "on" : "") + '" aria-label="' + say + '">' + inner + "</a>"
-        : '<span class="off" role="img" aria-label="' + say + '">' + inner + "</span>") + "</li>";
+      /* a mark, not a link: the doors and Add a layer are the ways to a room (CLAUDE.md: four or more places, a menu) */
+      return '<li><span class="lay' + (on ? " on" : "") + '" data-layer="' + l.id + '" role="img" aria-label="' + say + '"><span>' + nm + '</span><span class="mk" aria-hidden="true">' + (on ? "✓" : "—") + "</span></span></li>";
     }).join("");
+    /* + Add a layer: the rooms in song order; a layer already there says so */
+    var sel = D.getElementById("mtAdd");
+    sel.innerHTML = '<option value="">' + (e ? "+ Añadir una capa" : "+ Add a layer") + "</option>" + LAYERS.filter(function (l) { return room(l.id); }).map(function (l) {
+      var R = room(l.id); return '<option value="' + l.id + '">' + (e ? R.name[1] : R.name[0]) + (HAVE[l.id] ? " ✓" : "") + "</option>"; }).join("");
+    sel.setAttribute("aria-label", e ? "Añadir una capa: elige una sala" : "Add a layer: pick a room");
   }
   async function refresh() {
     var A = window.AOGHandoff, next = {}; if (!A) return;
@@ -239,6 +245,7 @@ JS = r"""<script src="/aog-handoff.js"></script>
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault(); go(a.getAttribute("data-room"), true);
   });
+  D.getElementById("mtAdd").addEventListener("change", function () { var v = this.value; this.value = ""; if (v) go(v, true); });
   window.addEventListener("popstate", function () { var h = (location.hash || "").slice(1); if (room(h)) go(h, false); });
   window.addEventListener("hashchange", function () { var h = (location.hash || "").slice(1); if (room(h)) go(h, false); });
   /* the language or the light changes here: the room inside follows (it reads both when it opens) */
@@ -288,7 +295,7 @@ def build():
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-out" id="tpOut"></button>'
             '<span class="tp-line" id="tpLine" aria-live="polite"></span></div>'
-            '<div class="mtrow"><h2 id="mtH">%s</h2><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
+            '<div class="mtrow"><h2 id="mtH">%s</h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
             "</div>"]
     rooms = [{"id": r[0], "href": r[1], "file": r[2], "name": list(r[4]), "from": r[6], "shelf": r[7]} for r in ROOMS]
     layers = [{"id": l[0], "name": list(l[1])} for l in LAYERS]

@@ -58,13 +58,29 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
     w(0, "RIFF"); v.setUint32(4, 36 + n * 4, true); w(8, "WAVE"); w(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true); v.setUint32(24, 44100, true); v.setUint32(28, 176400, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 4, true);
     for (let i = 0; i < n; i++) { const x = Math.round(8000 * Math.sin(i / 20)); v.setInt16(44 + i * 4, x, true); v.setInt16(46 + i * 4, x, true); }
     await AOGHandoff.add(AOGHandoff.INBOX, { from: "piano", n: 1, name: { en: "Piano take 1", es: "Toma de piano 1" }, sec: 1, bpm: 100, at: Date.now(), take: true, wav: new Blob([ab], { type: "audio/wav" }) }, { key: "shell|1" }); });
-  await p.waitForFunction(() => !!document.querySelector('#mtList a.on[data-room="piano"]'), null, { timeout: 8000 });
+  await p.waitForFunction(() => !!document.querySelector('#mtList .lay.on[data-layer="piano"]'), null, { timeout: 8000 });
   ok(true, "a take sent from the piano marks Piano ✓ at once");
+  /* AOG-MYTRACK-V1: a take recorded on the piano inside the Studio is added with + Add to My Track */
+  f = inner(p);
+  await f.evaluate(async () => { await REC.toggle(); });
+  await p.waitForTimeout(250);
+  await f.evaluate(() => noteOn("k", 60, 0.7)); await p.waitForTimeout(700); await f.evaluate(() => noteOff("k", 60));
+  await f.evaluate(() => REC.toggle());
+  await f.waitForFunction(() => REC.takes.length && !REC.closing, null, { timeout: 8000 });
+  const add = await f.evaluate(() => { const b = document.querySelector("[data-aogrec-studio]"); return b && b.textContent; });
+  ok(add === "+ Add to My Track", "inside the Studio, a take's send reads: " + add);
+  const nIn = await p.evaluate(async () => (await AOGHandoff.list(AOGHandoff.INBOX)).items.length);
+  await f.click("[data-aogrec-studio]");
+  await f.waitForFunction(() => /Added to My Track/.test(document.getElementById("recLine").textContent), null, { timeout: 8000 });
+  ok((await f.textContent("#recLine")).trim() === "Added to My Track. Open the Mixing Desk" && await p.evaluate(async () => (await AOGHandoff.list(AOGHandoff.INBOX)).items.length) === nIn + 1,
+    "+ Add to My Track writes through the Mixing Desk's list, and says so");
+  ok(await p.evaluate(() => [...document.querySelectorAll("#mtAdd option")].map(o => o.textContent).join(" | ")) === "+ Add a layer | The Drum Machine | The Drum Kit | The Piano ✓ | The Guitar | The Bass | The Band | The Turntables",
+    "+ Add a layer lists the rooms in song order, and marks the ones already there");
 
   /* 3 · moving to the Bass keeps My Track; Back goes to the piano */
-  await p.click('.sh-doors a[data-room="bass"]'); await arrived(p, "music-bass.html");
+  await p.selectOption("#mtAdd", "bass"); await arrived(p, "music-bass.html");
   s = await state(p);
-  ok(s.hash === "#bass" && s.cur === "Bass" && /Piano ✓/.test(s.marks) && s.own === "/bass", "on the Bass, Piano is still marked: " + s.marks);
+  ok(s.hash === "#bass" && s.cur === "Bass" && /Piano ✓/.test(s.marks) && s.own === "/bass" && await p.inputValue("#mtAdd") === "", "+ Add a layer › The Bass goes to the Bass, and Piano is still marked: " + s.marks);
   await p.goBack(); await arrived(p, "music-piano.html");
   ok((await state(p)).hash === "#piano", "Back goes to the piano");
 
@@ -107,7 +123,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
     const file = { bass: "music-bass.html", pads: "music-pads.html", studio: "music-studio.html", piano: "music-piano.html", decks: "music-decks.html" }[room];
     await arrived(m, file); await m.waitForTimeout(800);
     const fit = await m.evaluate(() => { const r = el => el.getBoundingClientRect(), fr = document.getElementById("room"), mt = document.getElementById("mt"),
-      btn = [...document.querySelectorAll(".sh-doors a, #mtList a, #own")].filter(x => x.offsetParent);
+      btn = [...document.querySelectorAll(".sh-doors a, #mtList a, #mtList .lay, #mtAdd, #own")].filter(x => x.offsetParent);
       return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, frame: Math.round(r(fr).height), mtBottom: Math.round(r(mt).bottom),
         minBtn: Math.min(...btn.map(x => Math.round(r(x).height))), cur: !!document.querySelector(".sh-doors a[aria-current]") && r(document.querySelector(".sh-doors a[aria-current]")).right <= innerWidth + 1 }; });
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
