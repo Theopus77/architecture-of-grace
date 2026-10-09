@@ -556,6 +556,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .st-desk .st-read b{font-size:1.05rem}
   .st-chn{font-size:1.5rem}
 }
+/* AOG-DESK-KEYS-V1: the keys line shows on a computer with a mouse, and anywhere once a key has been pressed */
+.st-cp .st-keys{display:none;margin:.7rem 4px 0;font-size:.86rem;color:#b9b0a1}
+@media (hover:hover) and (pointer:fine){ .st-cp .st-keys{display:block} }
+html.aog-keys .st-cp .st-keys{display:block}
 @media (prefers-reduced-motion:reduce){ .st-slip{transform:none} }
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
@@ -615,6 +619,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         <div class="st-ch" id="chStrip"></div>
         <div class="st-fd" id="chFaders"></div>
       </div>
+      <p class="st-line st-keys" data-t="deskKeys"></p><!-- AOG-DESK-KEYS-V1 -->
       <!-- AOG-DESK-FACE-V1: the level, where it starts, the loop and the count-in, one tap away -->
         <details class="st-more" id="playMore"><summary data-t="playMore"></summary>
         <div class="st-mrow"><span class="st-lab" data-t="level"></span><canvas class="st-meter" id="meter" role="img"></canvas></div>
@@ -743,6 +748,7 @@ const STR={
   level:{en:"Level",es:"Nivel"}, meterAria:{en:"How loud the song is",es:"Qué tan fuerte suena la canción"},
   songH:{en:"Your song",es:"Tu canción"},
   /* AOG-DESK-FACE-V1 */
+  deskKeys:{en:"On a keyboard: 1 to 8 pick a track, M mutes it, S solos it, ↑ and ↓ move its fader, Space plays and stops.",es:"Con un teclado: del 1 al 8 eligen una pista, M la silencia, S la deja sola, ↑ y ↓ mueven su fader, la barra espaciadora toca y para."},
   playMore:{en:"Where it starts, the loop and the level",es:"Dónde empieza, el bucle y el nivel"},
   chH:{en:"Channel strip",es:"Canal"}, fdH:{en:"Mixer",es:"Mezcladora"}, volume:{en:"Volume",es:"Volumen"},
   shape:{en:"Shape the sound",es:"Dale forma al sonido"}, shapeOpen:{en:"open",es:"abierto"}, shapeClosed:{en:"closed",es:"cerrado"},
@@ -3027,6 +3033,21 @@ function bind(){
     const b=el && el.closest && el.closest("button,a,summary,[role=button],audio");
     if(b && b.id!=="playBtn") return;
     e.preventDefault(); if(!e.repeat) playStop();
+  });
+  /* AOG-DESK-KEYS-V1 (Jimmy, 2026-10-09: the keyboard for every instrument, in ways that make sense). At the desk: 1 to 8
+     pick a track; M mutes it and S solos it; ↑ and ↓ move its fader a step; Space plays and stops.
+     A key moves the same button or slider a finger would, so the mixer's rules and the lessons follow. */
+  document.addEventListener("keydown", e=>{
+    if(e.metaKey || e.ctrlKey || e.altKey) return;
+    const el=e.target, tg=el && el.tagName;
+    if(tg==="INPUT" || tg==="SELECT" || tg==="TEXTAREA" || (el && el.isContentEditable)) return;
+    const d=/^Digit([1-8])$/.exec(e.code);
+    if(d){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); if(!e.repeat) selectTrack(+d[1]-1); return; }
+    if(e.code==="KeyM" || e.code==="KeyS"){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); if(e.repeat) return;
+      const m=document.querySelector(`#mixer .st-strip[data-tr="${SONG.sel}"] [data-ms="${e.code==="KeyM" ? "mute" : "solo"}"]`); if(m) m.click(); return; }
+    if(e.code==="ArrowUp" || e.code==="ArrowDown"){ e.preventDefault(); document.documentElement.classList.add("aog-keys");
+      const v=SONG.tracks[SONG.sel].vol, nv=Math.max(0, Math.min(100, v+(e.code==="ArrowUp" ? 4 : -4)));
+      if(nv!==v) consoleTo(SONG.sel, "vol", nv); return; }
   });
   let rt=0; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PLAY.on) meterStill(); drawWave(); }, 150); });
 }
