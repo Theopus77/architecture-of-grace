@@ -124,12 +124,28 @@
         play = blk("h2[data-t=keysH]") || blk("h2[data-t=neckH]"), amp = D.getElementById("ampBlk"), live = D.getElementById("liveBlk");
       if (choose === play || choose === chords) choose = null;   /* AOG-SOUNDPICK-V1: the instrument choice already sits by the instrument */
       var order = id === "piano" ? [play, chords, choose, wheel, out]
-        : id === "band" ? [choose, chords, play, wheel, out]
-        : (id === "guitar" || id === "bass") ? [chords, play, choose, wheel, amp, live, out] : null;
+        : id === "band" ? [choose, play, chords, wheel, out]
+        : (id === "guitar" || id === "bass") ? [play, chords, choose, wheel, amp, live, out] : null;   /* AOG-STUDIO-FIRST-V2: the instrument first */
       if (order && order.every(function (e) { return !e || e.parentNode === rig; })) {
         order.forEach(function (e) { if (e) rig.appendChild(e); });
         rig.setAttribute("data-first", "1");
       }
+    }
+    /* AOG-STUDIO-FIRST-V2 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 4: each room's first screen like the drawings). Inside the
+       Studio a room opens on the thing you play: the keys or the neck right under the room's name, its sound menus by it
+       (the Band's above its keys, as in its drawing), then the room's one line on how to play it as a paper slip, then the
+       chord pads and the buttons. The line is the room's own (the touch line on a tablet, the keys line on a computer). */
+    var inst = (id === "guitar" || id === "bass") ? D.getElementById("neckBox") : (id === "piano" || id === "band") ? D.getElementById("kbd") : null,
+      pblk = inst && inst.parentNode;
+    if (inst && pblk && pblk.parentNode === rig && !inst.hasAttribute("data-first2")) {
+      var kid = function (sel) { return [].filter.call(pblk.children, function (e) { return e.matches(sel); }); };
+      var sp0 = kid(".sp-wrap")[0], slips = kid(".touch-line,.keys-line"), lead = id === "band" && !(window.matchMedia && matchMedia("(max-width:699px)").matches) ? [sp0, inst] : [inst, sp0];   /* on a phone the keys come first, the menus under them */
+      var seq = lead.concat(slips, [D.getElementById("chordStrip"), kid(".krow")[0]]).filter(function (e) { return e && e.parentNode === pblk; });
+      var h2 = kid("h2")[0], mark = D.createComment("first");
+      pblk.insertBefore(mark, h2 ? h2.nextSibling : pblk.firstChild);
+      seq.forEach(function (e) { pblk.insertBefore(e, mark); }); pblk.removeChild(mark);
+      slips.forEach(function (e) { e.classList.add("aog-slip"); });
+      inst.setAttribute("data-first2", "1");
     }
     /* the chord pads straight under their one line; the key and the mood under the pads */
     var cpads = rig && rig.querySelector("#pads"), keySel = D.getElementById("keySel"), keyRow = keySel && keySel.closest(".row");
@@ -191,7 +207,12 @@
      instrument is the lit thing in it. And in every room, on its own page too, a menu on a dark panel is the desk's dark
      window with gold type (class aog-hw), not a cream box. A menu on a light card keeps its own look. ══ */
   if (shell) ss.textContent += "html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}" +
-    "html.in-studio .aog-learn{border-color:#3a2c1c!important;box-shadow:0 10px 24px rgba(0,0,0,.45)}";
+    "html.in-studio .aog-learn{border-color:#3a2c1c!important;box-shadow:0 10px 24px rgba(0,0,0,.45)}" +
+    /* AOG-STUDIO-FIRST-V2: the room's how-to line on a paper slip under the instrument */
+    "html.in-studio .aog-slip{max-width:36rem;margin:.9rem 0 .8rem;padding:.75rem 1.1rem;border-radius:2px;background-color:#f7f0e1;" +
+    "background-image:linear-gradient(#fbf6ea,#f1e7d1);color:#1f1a12!important;font:italic 400 1.02rem/1.4 Fraunces,Georgia,serif!important;" +
+    "box-shadow:0 8px 16px rgba(0,0,0,.45),0 1px 1px rgba(0,0,0,.2);transform:rotate(-.4deg)}" +
+    "@media (prefers-reduced-motion:reduce){html.in-studio .aog-slip{transform:none}}";
   var HW = D.createElement("style"); HW.id = "aog-hw-css";
   HW.textContent = "html select.aog-hw{color:#f6e3b4!important;background-color:#121316!important;border:1px solid #5b4a24!important;border-radius:9px!important;" +
     "background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0b25a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"),linear-gradient(#0b0c0e,#17181c)!important;" +

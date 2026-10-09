@@ -24,8 +24,8 @@ async function routes(ctx) {
 }
 const FILE = { pads: "music-pads.html", kit: "music-kit.html", piano: "music-piano.html", guitar: "music-guitar.html", bass: "music-bass.html", band: "music-band.html", decks: "music-decks.html", studio: "music-studio.html" };
 /* the thing you play in each room */
-/* the Band opens on its chord pads; its section and instrument sit with its keys (AOG-SOUNDPICK-V1) */
-const HERO = { pads: "#pads", kit: "#kitBox", piano: "#chordStrip", guitar: "#rig #pads", bass: "#rig #pads", band: "#rig #pads", decks: "#decks", studio: "#desk" };
+/* AOG-STUDIO-FIRST-V2: every room opens on the thing you play; the Band's section and instrument sit above its keys (under them on a phone) */
+const HERO = { pads: "#pads", kit: "#kitBox", piano: "#kbd", guitar: "#neckBox", bass: "#neckBox", band: "#kbd", decks: "#decks", studio: "#desk" };   /* AOG-STUDIO-FIRST-V2: the thing you play */
 const inner = p => p.frames().find(f => f.parentFrame() === p.mainFrame());
 async function arrived(p, id) {
   await p.waitForFunction(f => { const fr = document.getElementById("room"), d = fr.contentDocument;

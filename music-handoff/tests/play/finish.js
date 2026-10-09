@@ -3,6 +3,7 @@
        colour), and a menu on a dark panel is the desk's dark window with gold type (class aog-hw), on a room's own page too.
    2 · AOG-FINISH-*-V1: the piano's lacquer, gold name, velvet and keys that go down; the guitar's and bass's rosewood, pearl,
        bone and wound strings; the Drum Machine's rubber pads that glow when hit; the Band's keys like the piano's.
+   4 · AOG-STUDIO-FIRST-V2: in the Studio the piano, guitar, bass and band open on the instrument, its line on a paper slip.
    3 · AOG-STUDIO-ROOM-SOUND-V1: one Room knob (Dry, Small room, Studio, Hall), beside Record and in the Studio's bar; the
        room adds a tail to what you hear and to your takes; it starts Dry; the turntables stay dry.
    Readable and calm on an iPad and an iPhone, light and dark; nothing sideways. No page errors. Port 9261. */
@@ -44,6 +45,15 @@ async function inRoom(m, room) {
         return { bg, menus: shown.length, hw: shown.filter(s => s.classList.contains("aog-hw")).length, wrong, sw: document.scrollingElement.scrollWidth <= innerWidth + 1 };
       });
       const pc = await f.evaluate(`(${PROBE})()`), pk = await f.evaluate(`(${CALM})()`), sp = await m.evaluate(`(${PROBE})()`);
+      /* 4 · AOG-STUDIO-FIRST-V2: the keyboard and string rooms open on their instrument, with their line on a paper slip under it */
+      if (["piano", "guitar", "bass", "band"].includes(room)) {
+        const fs2 = await f.evaluate(r => { const inst = document.getElementById(r === "guitar" || r === "bass" ? "neckBox" : "kbd"), blk = inst && inst.parentNode,
+          h2 = blk && [...blk.children].find(e => e.tagName === "H2"), kids = blk ? [...blk.children] : [], slip = [...document.querySelectorAll(".aog-slip")].find(e => e.getClientRects().length);
+          const strip = document.getElementById("chordStrip");
+          return { top: kids.indexOf(inst) <= kids.indexOf(h2) + 2, slip: !!slip && kids.indexOf(slip) > kids.indexOf(inst) && (!strip || kids.indexOf(slip) < kids.indexOf(strip)),
+            paper: slip ? getComputedStyle(slip).backgroundColor : "" }; }, room);
+        ok(fs2.top && fs2.slip && fs2.paper === "rgb(247, 240, 225)", `${dev}, ${theme}, ${room}: the instrument opens the room, its line on a paper slip under it: ${JSON.stringify(fs2)}`);
+      }
       const needHw = dev.startsWith("iPad") && room !== "kit";
       ok(r.bg === "rgb(23, 17, 12)" && !r.wrong && (!needHw || r.hw > 0) && r.sw && !pc.length && !sp.length && !pk.length,
         `${dev}, ${theme}, ${room}: in the control room (${r.bg}), ${r.hw} of ${r.menus} menus dark with gold type, readable (${pc.length + sp.length} ${JSON.stringify(pc.concat(sp).slice(0, 2))}), calm (${pk.join("; ") || "ok"}), nothing sideways (${r.sw})`);
