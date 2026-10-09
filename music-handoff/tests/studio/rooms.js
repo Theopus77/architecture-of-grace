@@ -3,7 +3,7 @@
    Guitar, the Bass, the Band, the Turntables), inside the Studio and using only the Studio's own transport: ● Record turns
    to ■ Stop with a running time, something is played, Stop makes a take that is not silent, + Add to My Track sends it
    the usual way (the Mixing Desk's list) and My Track marks that room; no page errors in any room. At the Mixing Desk:
-   ● Record says to pick a room; ▶ Listen with nothing on the tracks says what to do; with a take on a track it plays and
+   ● Record says to pick a room; ▶ Listen puts each room's take on a track by itself and plays it (AOG-STUDIO-LISTEN-V1); with a take on a track it plays and
    becomes ■ Stop listening; Send it out makes the song's file. From any room, ▶ Listen and Send it out go to the Mixing
    Desk first. A phone on its side gives the room the whole screen. The name in the Studio, the site bar's Explore menu
    and the home page; Spanish; an iPhone and an iPad, light and dark: the transport fits, reads and is calm. Port 9253. */
@@ -83,9 +83,13 @@ const takeDb = f => f.evaluate(async () => { const k = (typeof REC !== "undefine
   /* 2 · the Mixing Desk: Listen and Send it out */
   await p.click('.sh-doors a[data-room="studio"]'); await arrived(p, "studio");
   let s = await tp(p);
-  await p.click("#tpListen"); await p.waitForTimeout(1200);
-  ok((await tp(p)).line === "Nothing is on the tracks yet. At the Mixing Desk, put a take on a track, then press Listen.", "▶ Listen with nothing on the tracks says what to do");
+  /* AOG-STUDIO-LISTEN-V1: ▶ Listen puts each room's take from My Track on an empty track by itself, and plays */
+  await p.click("#tpListen");
   const f = inner(p);
+  await f.waitForFunction(() => __aogStudio.PLAY.on, null, { timeout: 30000 });
+  const lay = await f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.clip.layer + (x.clip.auto ? "*" : "") : "-").join(" "));
+  ok(lay === "pads* drums* piano* guitar* bass* band* decks* -", "▶ Listen puts the seven rooms' takes on tracks 1 to 7 by itself and plays them: " + lay);
+  await p.click("#tpListen"); await p.waitForTimeout(300);
   /* AOG-STUDIO-VOICE-V1: at the Mixing Desk, ● Record records your voice on track 8 */
   ok(!s.recOff, "at the Mixing Desk, ● Record is ready for your voice");
   await p.click("#tpRec"); await f.waitForFunction(() => __aogStudio.VOICE.rec, null, { timeout: 10000 });
@@ -109,7 +113,11 @@ const takeDb = f => f.evaluate(async () => { const k = (typeof REC !== "undefine
   await p.waitForFunction(() => location.hash === "#studio", null, { timeout: 8000 }); await arrived(p, "studio");
   await inner(p).waitForFunction(() => __aogStudio.PLAY.on, null, { timeout: 12000 });
   ok(true, "from the piano, ▶ Listen goes to the Mixing Desk and plays");
+  const bk = await p.evaluate(() => ({ back: document.getElementById("tpBack").hidden ? "" : document.getElementById("tpBack").textContent, mix: !document.getElementById("tpMix").hidden }));
+  ok(bk.back === "‹ Piano" && !bk.mix, "at the desk, ‹ Piano takes the place of Mix ›: " + JSON.stringify(bk));
   await p.click("#tpListen");
+  await p.click("#tpBack"); await arrived(p, "piano");
+  ok(await p.evaluate(() => document.getElementById("tpBack").hidden && !document.getElementById("tpMix").hidden), "‹ Piano goes back to the piano, and Mix › is back");
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();
 

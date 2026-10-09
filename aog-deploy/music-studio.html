@@ -691,7 +691,8 @@ function cleanClip(c){
     speed:Math.round(num(c.speed,0.5,1.5,1)*1000)/1000, keep:c.keep!==false,
     fadeIn:FADES.indexOf(+c.fadeIn)>=0 ? +c.fadeIn : 0, fadeOut:FADES.indexOf(+c.fadeOut)>=0 ? +c.fadeOut : 0,
     pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)),
-    voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)) };   /* AOG-STUDIO-VOICE-V1 */
+    voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)),   /* AOG-STUDIO-VOICE-V1 */
+    layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto };   /* AOG-STUDIO-LISTEN-V1 */
   if(!(o.sec>0) || !(o.body>0)) return null;
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
@@ -1317,7 +1318,7 @@ async function putOn(srcId, ti){
     const id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
     let rec, info, blob, from;
     if(src.kind==="shelf"){ rec=src.v.rec; info=src.v.info; blob=rec.wav;
-      from={src:src.s.key, name:String(rec.name||"").slice(0,200), at:rec.at||Date.now()}; }
+      from={src:src.s.key, name:String(rec.name||"").slice(0,200), at:rec.at||Date.now(), layer:SHELF_LAYER[src.s.key]||""}; }
     else {
       const it=await AOGHandoff.item(INBOX_KEY, src.x.id);
       if(!it || !it.wav || !(it.wav.size>44)) throw new Error("gone");
@@ -1325,7 +1326,7 @@ async function putOn(srcId, ti){
       blob=it.wav;
       /* AOG-PADS-BOUNCE-V1: a loop made on the Beat Lab says its exact length, so it starts on the bar and loops whole bars */
       rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0};
-      from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now()};
+      from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"") : ""};
     }
     const meta=analyse(rec, info);
     const buf=await decodeWav(blob, info.sr);
@@ -1340,6 +1341,37 @@ async function putOn(srcId, ti){
     songChanged();
     LES.mark("put1"); if(clips().length>=2) LES.mark("put2");   /* AOG-LESSONS-V1 */
   }catch(e){ S.busy=false; paintRecs(); $("recLine").textContent=t("putFail"); }
+}
+/* AOG-STUDIO-LISTEN-V1 (STUDIO-HANDOFF §12b, Jimmy's "9") — ▶ Listen in the Recording Studio plays My Track. A take that
+   is in My Track but on no track yet goes on the first empty track by itself (the newest from each room), so a student can
+   make something, press Listen and hear it, with no stop in the desk's menus first. A track filled by hand is the student's:
+   Listen never changes it. A take Listen placed gives way to that room's newer take, on the same track. Track 8 is the voice. */
+const SHELF_LAYER={padbench:"pads", drumtake:"drums", keysbench:"piano", guitarbench:"guitar", bassbench:"bass", bandbench:"band"};
+const LAYER_FROM=["pads","drums","piano","guitar","bass","band","decks"];
+function layerOfSrc(o){
+  if(o.kind==="take"){ const x=o.x; if(!x || x.chops || !(x.sec>0) || LAYER_FROM.indexOf(x.from)<0) return ""; return x.from+(x.live?":live":""); }
+  return SHELF_LAYER[o.s.key]||"";
+}
+function layerOfClip(c){ if(!c || c.voice) return ""; if(c.layer) return c.layer; if(c.src===INBOX_KEY) return LAYER_FROM.indexOf(c.from)>=0 ? c.from : ""; return SHELF_LAYER[c.src]||""; }
+function srcOnTrack(o){ return SONG.tracks.some(x=>x.clip && (o.kind==="take" ? (x.clip.src===INBOX_KEY && x.clip.tid===o.x.id) : (x.clip.src===o.s.key && x.clip.at===(o.v.rec.at||0)))); }
+async function listenFill(){
+  try{ await refreshInbox(); await refreshShelves(); }catch(e){}
+  const best={};
+  sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
+    if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
+  let n=0;
+  for(const k of Object.keys(best).sort((a,b)=>LAYER_FROM.indexOf(a.split(":")[0])-LAYER_FROM.indexOf(b.split(":")[0]) || a.length-b.length)){
+    const o=best[k].o; if(srcOnTrack(o)) continue;
+    const mine=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k);
+    let ti=-1;
+    if(mine>=0){ if(!SONG.tracks[mine].clip.auto) continue; ti=mine; }
+    else ti=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
+    if(ti<0) continue;
+    await putOn(o.id, ti);
+    const c=SONG.tracks[ti].clip; if(c && srcOnTrack(o)){ c.auto=true; n++; }
+  }
+  if(n) songChanged();
+  return n;
 }
 /* out of the list: asked once first; a copy on a track stays */
 async function removeTake(id){
@@ -2329,7 +2361,8 @@ function trimHtml(which, label, v, room, bpb){
 }
 /* ── undo: each change to a track's pieces, speed or fades can be taken back (a change to several tracks at once is one step) ── */
 const UNDO=[]; let UG=0;
-function remember(i, g){ const c=SONG.tracks[i].clip; if(!c) return; UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c)}); if(UNDO.length>60) UNDO.shift(); }
+function remember(i, g){ const c=SONG.tracks[i].clip; if(!c) return; UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c)}); if(UNDO.length>60) UNDO.shift();
+  c.auto=false; }   /* AOG-STUDIO-LISTEN-V1: a take you change is yours; Listen leaves it alone */
 function canUndo(){ return UNDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
 function undo(){
   while(UNDO.length){
@@ -2623,7 +2656,7 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; },
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get AC(){ return ac; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
 </script>
 </body>

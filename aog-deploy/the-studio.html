@@ -257,14 +257,14 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   <li><a href="#studio" data-room="studio"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Mixing Desk" data-es="Mesa de mezclas">Mixing Desk</span></a></li>
 </ul></nav>
 <main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>
-<section class="mt" id="mt" aria-label="The studio"><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-out" id="tpOut"></button><span class="tp-line" id="tpLine" aria-live="polite"></span></div><div class="mtrow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>
+<section class="mt" id="mt" aria-label="The studio"><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button><button type="button" class="tp-b tp-out" id="tpOut"></button><span class="tp-line" id="tpLine" aria-live="polite"></span></div><div class="mtrow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>
 </div>
 <script src="/aog-handoff.js"></script>
 <script>
 /* AOG-STUDIO-SHELL-V1 — the doors change the room; My Track marks what each room has sent (see make_studio_page.py) */
 (function () {
   "use strict";
-  var D = document, ROOMS = [{"id": "pads", "href": "/drum-machine", "file": "music-pads.html", "name": ["The Drum Machine", "La caja de ritmos"], "from": "pads", "shelf": "padbench"}, {"id": "kit", "href": "/drum-kit", "file": "music-kit.html", "name": ["The Drum Kit", "La batería"], "from": "drums", "shelf": "drumtake"}, {"id": "piano", "href": "/piano", "file": "music-piano.html", "name": ["The Piano", "El piano"], "from": "piano", "shelf": "keysbench"}, {"id": "guitar", "href": "/guitar", "file": "music-guitar.html", "name": ["The Guitar", "La guitarra"], "from": "guitar", "shelf": "guitarbench"}, {"id": "bass", "href": "/bass", "file": "music-bass.html", "name": ["The Bass", "El bajo"], "from": "bass", "shelf": "bassbench"}, {"id": "band", "href": "/band", "file": "music-band.html", "name": ["The Band", "La banda"], "from": "band", "shelf": "bandbench"}, {"id": "decks", "href": "/turntables", "file": "music-decks.html", "name": ["The Turntables", "Los tocadiscos"], "from": "decks", "shelf": ""}, {"id": "studio", "href": "/mixing-desk", "file": "music-studio.html", "name": ["The Mixing Desk", "La mesa de mezclas"], "from": "", "shelf": ""}], LAYERS = [{"id": "pads", "name": ["Drums", "Ritmos"]}, {"id": "kit", "name": ["Kit", "Batería"]}, {"id": "piano", "name": ["Piano", "Piano"]}, {"id": "guitar", "name": ["Guitar", "Guitarra"]}, {"id": "bass", "name": ["Bass", "Bajo"]}, {"id": "band", "name": ["Band", "Banda"]}, {"id": "decks", "name": ["Turntables", "Tocadiscos"]}, {"id": "voice", "name": ["Voice", "Voz"]}, {"id": "liveguitar", "name": ["Live guitar", "Guitarra en vivo"]}, {"id": "livebass", "name": ["Live bass", "Bajo en vivo"]}];
+  var D = document, ROOMS = [{"id": "pads", "href": "/drum-machine", "file": "music-pads.html", "name": ["The Drum Machine", "La caja de ritmos"], "short": ["Drum Machine", "Caja de ritmos"], "from": "pads", "shelf": "padbench"}, {"id": "kit", "href": "/drum-kit", "file": "music-kit.html", "name": ["The Drum Kit", "La batería"], "short": ["Drum Kit", "Batería"], "from": "drums", "shelf": "drumtake"}, {"id": "piano", "href": "/piano", "file": "music-piano.html", "name": ["The Piano", "El piano"], "short": ["Piano", "Piano"], "from": "piano", "shelf": "keysbench"}, {"id": "guitar", "href": "/guitar", "file": "music-guitar.html", "name": ["The Guitar", "La guitarra"], "short": ["Guitar", "Guitarra"], "from": "guitar", "shelf": "guitarbench"}, {"id": "bass", "href": "/bass", "file": "music-bass.html", "name": ["The Bass", "El bajo"], "short": ["Bass", "Bajo"], "from": "bass", "shelf": "bassbench"}, {"id": "band", "href": "/band", "file": "music-band.html", "name": ["The Band", "La banda"], "short": ["Band", "Banda"], "from": "band", "shelf": "bandbench"}, {"id": "decks", "href": "/turntables", "file": "music-decks.html", "name": ["The Turntables", "Los tocadiscos"], "short": ["Turntables", "Tocadiscos"], "from": "decks", "shelf": ""}, {"id": "studio", "href": "/mixing-desk", "file": "music-studio.html", "name": ["The Mixing Desk", "La mesa de mezclas"], "short": ["Mixing Desk", "Mesa de mezclas"], "from": "", "shelf": ""}], LAYERS = [{"id": "pads", "name": ["Drums", "Ritmos"]}, {"id": "kit", "name": ["Kit", "Batería"]}, {"id": "piano", "name": ["Piano", "Piano"]}, {"id": "guitar", "name": ["Guitar", "Guitarra"]}, {"id": "bass", "name": ["Bass", "Bajo"]}, {"id": "band", "name": ["Band", "Banda"]}, {"id": "decks", "name": ["Turntables", "Tocadiscos"]}, {"id": "voice", "name": ["Voice", "Voz"]}, {"id": "liveguitar", "name": ["Live guitar", "Guitarra en vivo"]}, {"id": "livebass", "name": ["Live bass", "Bajo en vivo"]}];
   var fr = D.getElementById("room"), own = D.getElementById("own"), cur = "", KEY = "aog.studio.room";
   function es() { return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   function room(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return null; }
@@ -276,6 +276,7 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
+    TP.back = id === "studio" ? (cur && cur !== "studio" ? cur : TP.back) : "";   /* AOG-STUDIO-LISTEN-V1: the way back from the desk */
     cur = id;
     try { localStorage.setItem(KEY, id); } catch (e) {}
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
@@ -330,7 +331,7 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
     HAVE = next; paintTrack();
   }
   /* ── AOG-STUDIO-TRANSPORT-V1: the transport drives the room you are in ── */
-  var TP = { t0: 0, want: "", line: "" };
+  var TP = { t0: 0, want: "", line: "", back: "" };
   function recOf() { try { return fr.contentWindow && fr.contentWindow.AOGStudioRec || null; } catch (e) { return null; } }
   function deskOf() { try { var w = fr.contentWindow; return cur === "studio" && w && w.__aogStudio ? w : null; } catch (e) { return null; } }
   function clock(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
@@ -339,7 +340,8 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
     rec: ["● Record", "● Grabar"], stop: ["■ Stop", "■ Parar"], add: ["+ Add to My Track", "+ Añadir a mi pista"],
     listen: ["▶ Listen", "▶ Escuchar"], listenStop: ["■ Stop listening", "■ Dejar de escuchar"], mix: ["Mix ›", "Mezclar ›"], out: ["Send it out", "Compártela"],
     added: ["Added to My Track.", "Añadida a mi pista."], noRec: ["Pick a room to record in.", "Elige una sala para grabar."],
-    empty: ["Nothing is on the tracks yet. At the Mixing Desk, put a take on a track, then press Listen.", "Todavía no hay nada en las pistas. En la mesa de mezclas, pon una toma en una pista y luego pulsa Escuchar."],
+    empty: ["Nothing to hear yet. Record in a room, then press + Add to My Track.", "Todavía no hay nada que escuchar. Graba en una sala y luego pulsa + Añadir a mi pista."],
+    tap: ["Tap anywhere on the desk to hear it.", "Toca en cualquier parte de la mesa para oírla."],
     fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."]
   };
   function tw(k) { return TPW[k][es() ? 1 : 0]; }
@@ -355,6 +357,12 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
     D.getElementById("tpMix").textContent = tw("mix"); D.getElementById("tpOut").textContent = tw("out");
+    /* AOG-STUDIO-LISTEN-V1: at the desk, Mix › has nowhere to go; the way back to your room takes its place */
+    var bk = D.getElementById("tpBack"), br = cur === "studio" && TP.back ? room(TP.back) : null;
+    D.getElementById("tpMix").hidden = cur === "studio"; bk.hidden = !br;
+    if (br) { var bn = es() ? br.short[1] : br.short[0], bt = "‹ " + bn; if (bk.textContent !== bt) bk.textContent = bt;
+      bk.setAttribute("aria-label", (es() ? "Volver a: " : "Back to the ") + bn); }
+    if (TP.line === "tap" && w && w.__aogStudio.AC && w.__aogStudio.AC.state === "running") TP.line = "";
     var ln = TP.line ? tw(TP.line) : ""; var el = D.getElementById("tpLine"); if (el.textContent !== ln) el.textContent = ln;
   }
   /* an action that needs the Mixing Desk: go there, then do it once the desk has its song back */
@@ -372,15 +380,25 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
     var R = recOf(), b = this; if (!R) return; b.disabled = true;
     Promise.resolve(R.add()).then(function () { b.disabled = false; say(R.sent() ? "added" : "fail"); refresh(); }, function () { b.disabled = false; say("fail"); });
   });
+  /* AOG-STUDIO-LISTEN-V1 (STUDIO-HANDOFF §12b): ▶ Listen plays My Track. The takes in My Track that are on no track yet
+     go on the desk's empty tracks by themselves (listenFill), so make something, press Listen, hear it; ‹ takes you back. */
   D.getElementById("tpListen").addEventListener("click", function () {
     TP.line = "";
-    atDesk(function (w) {
+    var w0 = deskOf();
+    if (w0 && w0.__aogStudio.PLAY.on) { w0.__aogStudio.stop(); paintTp(); return; }
+    /* still inside the tap: wake the desk's sound now, as an iPhone wants */
+    try { var a0 = w0 && w0.__aogStudio.AC; if (a0 && a0.state !== "running") a0.resume(); } catch (e) {}
+    atDesk(async function (w) {
       var st = w.__aogStudio;
-      if (st.PLAY.on) { st.stop(); return; }
+      if (st.PLAY.on) return;
+      try { if (st.listenFill) await st.listenFill(); } catch (e) {}
       if (!st.SONG.tracks.some(function (x) { return x.clip; })) { say("empty"); return; }
-      st.play();
+      st.play(); paintTp();
+      /* a desk opened by Listen may not have its sound yet (iPhone): one tap on it brings it */
+      setTimeout(function () { var c = st.AC; if (st.PLAY.on && c && c.state !== "running") say("tap"); }, 500);
     });
   });
+  D.getElementById("tpBack").addEventListener("click", function () { var b = TP.back; if (room(b)) go(b, true); });
   D.getElementById("tpOut").addEventListener("click", function () {
     TP.line = "";
     atDesk(function (w) { var b = w.document.getElementById("outBtn"); if (!b) return; try { b.scrollIntoView({ block: "center" }); } catch (e) {} if (!b.disabled) b.click(); else b.focus(); });
@@ -395,7 +413,7 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   /* a room inside the frame says hello (aog-labdoors.js) and asks for another room by its id */
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
-    arrived: function (id) { if (room(id) && id !== cur) { cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); } size(); }
+    arrived: function (id) { if (room(id) && id !== cur) { TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); } size(); }
   };
   D.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;

@@ -124,6 +124,7 @@ JS = r"""<script src="/aog-handoff.js"></script>
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
+    TP.back = id === "studio" ? (cur && cur !== "studio" ? cur : TP.back) : "";   /* AOG-STUDIO-LISTEN-V1: the way back from the desk */
     cur = id;
     try { localStorage.setItem(KEY, id); } catch (e) {}
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
@@ -178,7 +179,7 @@ JS = r"""<script src="/aog-handoff.js"></script>
     HAVE = next; paintTrack();
   }
   /* ── AOG-STUDIO-TRANSPORT-V1: the transport drives the room you are in ── */
-  var TP = { t0: 0, want: "", line: "" };
+  var TP = { t0: 0, want: "", line: "", back: "" };
   function recOf() { try { return fr.contentWindow && fr.contentWindow.AOGStudioRec || null; } catch (e) { return null; } }
   function deskOf() { try { var w = fr.contentWindow; return cur === "studio" && w && w.__aogStudio ? w : null; } catch (e) { return null; } }
   function clock(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
@@ -187,7 +188,8 @@ JS = r"""<script src="/aog-handoff.js"></script>
     rec: ["● Record", "● Grabar"], stop: ["■ Stop", "■ Parar"], add: ["+ Add to My Track", "+ Añadir a mi pista"],
     listen: ["▶ Listen", "▶ Escuchar"], listenStop: ["■ Stop listening", "■ Dejar de escuchar"], mix: ["Mix ›", "Mezclar ›"], out: ["Send it out", "Compártela"],
     added: ["Added to My Track.", "Añadida a mi pista."], noRec: ["Pick a room to record in.", "Elige una sala para grabar."],
-    empty: ["Nothing is on the tracks yet. At the Mixing Desk, put a take on a track, then press Listen.", "Todavía no hay nada en las pistas. En la mesa de mezclas, pon una toma en una pista y luego pulsa Escuchar."],
+    empty: ["Nothing to hear yet. Record in a room, then press + Add to My Track.", "Todavía no hay nada que escuchar. Graba en una sala y luego pulsa + Añadir a mi pista."],
+    tap: ["Tap anywhere on the desk to hear it.", "Toca en cualquier parte de la mesa para oírla."],
     fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."]
   };
   function tw(k) { return TPW[k][es() ? 1 : 0]; }
@@ -203,6 +205,12 @@ JS = r"""<script src="/aog-handoff.js"></script>
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
     D.getElementById("tpMix").textContent = tw("mix"); D.getElementById("tpOut").textContent = tw("out");
+    /* AOG-STUDIO-LISTEN-V1: at the desk, Mix › has nowhere to go; the way back to your room takes its place */
+    var bk = D.getElementById("tpBack"), br = cur === "studio" && TP.back ? room(TP.back) : null;
+    D.getElementById("tpMix").hidden = cur === "studio"; bk.hidden = !br;
+    if (br) { var bn = es() ? br.short[1] : br.short[0], bt = "‹ " + bn; if (bk.textContent !== bt) bk.textContent = bt;
+      bk.setAttribute("aria-label", (es() ? "Volver a: " : "Back to the ") + bn); }
+    if (TP.line === "tap" && w && w.__aogStudio.AC && w.__aogStudio.AC.state === "running") TP.line = "";
     var ln = TP.line ? tw(TP.line) : ""; var el = D.getElementById("tpLine"); if (el.textContent !== ln) el.textContent = ln;
   }
   /* an action that needs the Mixing Desk: go there, then do it once the desk has its song back */
@@ -220,15 +228,25 @@ JS = r"""<script src="/aog-handoff.js"></script>
     var R = recOf(), b = this; if (!R) return; b.disabled = true;
     Promise.resolve(R.add()).then(function () { b.disabled = false; say(R.sent() ? "added" : "fail"); refresh(); }, function () { b.disabled = false; say("fail"); });
   });
+  /* AOG-STUDIO-LISTEN-V1 (STUDIO-HANDOFF §12b): ▶ Listen plays My Track. The takes in My Track that are on no track yet
+     go on the desk's empty tracks by themselves (listenFill), so make something, press Listen, hear it; ‹ takes you back. */
   D.getElementById("tpListen").addEventListener("click", function () {
     TP.line = "";
-    atDesk(function (w) {
+    var w0 = deskOf();
+    if (w0 && w0.__aogStudio.PLAY.on) { w0.__aogStudio.stop(); paintTp(); return; }
+    /* still inside the tap: wake the desk's sound now, as an iPhone wants */
+    try { var a0 = w0 && w0.__aogStudio.AC; if (a0 && a0.state !== "running") a0.resume(); } catch (e) {}
+    atDesk(async function (w) {
       var st = w.__aogStudio;
-      if (st.PLAY.on) { st.stop(); return; }
+      if (st.PLAY.on) return;
+      try { if (st.listenFill) await st.listenFill(); } catch (e) {}
       if (!st.SONG.tracks.some(function (x) { return x.clip; })) { say("empty"); return; }
-      st.play();
+      st.play(); paintTp();
+      /* a desk opened by Listen may not have its sound yet (iPhone): one tap on it brings it */
+      setTimeout(function () { var c = st.AC; if (st.PLAY.on && c && c.state !== "running") say("tap"); }, 500);
     });
   });
+  D.getElementById("tpBack").addEventListener("click", function () { var b = TP.back; if (room(b)) go(b, true); });
   D.getElementById("tpOut").addEventListener("click", function () {
     TP.line = "";
     atDesk(function (w) { var b = w.document.getElementById("outBtn"); if (!b) return; try { b.scrollIntoView({ block: "center" }); } catch (e) {} if (!b.disabled) b.click(); else b.focus(); });
@@ -243,7 +261,7 @@ JS = r"""<script src="/aog-handoff.js"></script>
   /* a room inside the frame says hello (aog-labdoors.js) and asks for another room by its id */
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
-    arrived: function (id) { if (room(id) && id !== cur) { cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); } size(); }
+    arrived: function (id) { if (room(id) && id !== cur) { TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); } size(); }
   };
   D.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
@@ -298,11 +316,12 @@ def build():
             '<section class="mt" id="mt" aria-label="The studio">'
             '<div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button>'
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
-            '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-out" id="tpOut"></button>'
+            '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
+            '<button type="button" class="tp-b tp-out" id="tpOut"></button>'
             '<span class="tp-line" id="tpLine" aria-live="polite"></span></div>'
             '<div class="mtrow"><h2 id="mtH">%s</h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
             "</div>"]
-    rooms = [{"id": r[0], "href": r[1], "file": r[2], "name": list(r[4]), "from": r[6], "shelf": r[7]} for r in ROOMS]
+    rooms = [{"id": r[0], "href": r[1], "file": r[2], "name": list(r[4]), "short": list(r[5]), "from": r[6], "shelf": r[7]} for r in ROOMS]
     layers = [{"id": l[0], "name": list(l[1])} for l in LAYERS]
     js = JS.replace("__ROOMS__", json.dumps(rooms, ensure_ascii=False)).replace("__LAYERS__", json.dumps(layers, ensure_ascii=False))
     page = head + "</head>\n<body>\n<script src=\"/aog-grace.js\" defer></script>\n" + "\n".join(out) + "\n" + js + "\n<script src=\"/aog-topbar.js\"></script>\n</body>\n</html>\n"

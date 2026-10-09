@@ -99,6 +99,87 @@
       window.top.location.href = u.href;
     });
     try { shell.arrived(here()); } catch (e) {}
+    /* AOG-STUDIO-FIRST-V1 (STUDIO-HANDOFF §08, Jimmy's "3"): inside the Studio a room opens on its instrument. What
+       teaches about the room (the course box, the guide, the lesson menu, the bench switch) waits in one closed
+       "Lessons and more" below the instrument, and the sound and kit menus sit under the thing you play. Nothing is
+       taken out: every control is still in the page, one tap away. A room on its own address is untouched. */
+    ss.textContent += "html.in-studio .aog-learn{margin:1rem 0;border:1px solid var(--line,#ddd8cc);border-radius:12px;background:var(--card,#fffcf7);color:var(--ink,#1a232c)}" +
+      "html.in-studio .aog-learn>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 14px;cursor:pointer;font:700 1rem/1.2 var(--sans,system-ui,sans-serif);color:var(--ink,#1a232c);list-style:none}" +
+      "html.in-studio .aog-learn>summary::-webkit-details-marker{display:none}" +
+      "html.in-studio .aog-learn>summary::before{content:'\\25B8';font-size:.85em}html.in-studio .aog-learn[open]>summary::before{content:'\\25BE'}" +
+      "html.in-studio .pm #pads+.pm-row,html.in-studio #rig #pads+.row{margin-top:.8rem}" +
+      "html.in-studio .aog-learn>.aog-learn-in{padding:0 12px 12px}html.in-studio .aog-learn .bench-bar{margin:0;position:static}" +
+      /* the course box and the guide line wait out of sight until they are in Lessons and more (no jump on the screen) */
+      "html.in-studio .aog-course-band:not(.aog-learn *),html.in-studio .pm-guide:not(.aog-learn *),html.in-studio .bench-bar[data-empty]{display:none!important}";
+  }
+  function firstSurface() {
+    var view = D.getElementById("view"), id = here();
+    if (!D.body) return;
+    /* 1 · the instrument first: rooms with a rig put the playing blocks before the sound menu and the chord wheel */
+    var rig = D.getElementById("rig");
+    if (rig && !rig.hasAttribute("data-first")) {
+      var blk = function (sel) { var e = rig.querySelector(sel); while (e && e.parentNode !== rig) e = e.parentNode; return e; };
+      var choose = blk("#soundSel"), chords = blk("#pads"), wheel = D.getElementById("wheelBlk"), out = blk("#era"),
+        play = blk("h2[data-t=keysH]") || blk("h2[data-t=neckH]"), amp = D.getElementById("ampBlk"), live = D.getElementById("liveBlk");
+      var order = id === "piano" ? [play, chords, choose, wheel, out]
+        : id === "band" ? [choose, chords, play, wheel, out]
+        : (id === "guitar" || id === "bass") ? [chords, play, choose, wheel, amp, live, out] : null;
+      if (order && order.every(function (e) { return !e || e.parentNode === rig; })) {
+        order.forEach(function (e) { if (e) rig.appendChild(e); });
+        rig.setAttribute("data-first", "1");
+      }
+    }
+    /* the chord pads straight under their one line; the key and the mood under the pads */
+    var cpads = rig && rig.querySelector("#pads"), keySel = D.getElementById("keySel"), keyRow = keySel && keySel.closest(".row");
+    if (cpads && keyRow && keyRow.parentNode === cpads.parentNode && !keyRow.hasAttribute("data-first")) {
+      cpads.parentNode.insertBefore(keyRow, cpads.nextSibling); keyRow.setAttribute("data-first", "1");
+    }
+    /* the Drum Machine: the pads first, the bank and the kit menus under them (as Jimmy's drawing has the banks along the
+       bottom); the Drum Kit's kit menu under the kit */
+    var pads = D.getElementById("pads"), bankSel = D.getElementById("bankSel"), bankRow = bankSel && bankSel.closest(".pm-row");
+    if (id === "pads" && pads && bankRow && bankRow.parentNode === pads.parentNode && !bankRow.hasAttribute("data-first")) {
+      var at = pads.nextSibling;
+      [bankRow, D.getElementById("setRow"), D.getElementById("guideRow")].forEach(function (e) { if (e && e.parentNode === pads.parentNode) pads.parentNode.insertBefore(e, at); });
+      bankRow.setAttribute("data-first", "1");
+    }
+    var kitBox = D.getElementById("kitBox"), kitSel = D.getElementById("kitSel"), kitRow = kitSel && kitSel.closest(".kp-row");
+    if (id === "kit" && kitBox && kitRow && !kitRow.hasAttribute("data-first") && kitRow.parentNode === kitBox.parentNode) {
+      kitBox.parentNode.insertBefore(kitRow, kitBox.nextSibling); kitRow.setAttribute("data-first", "1");
+    }
+    /* 2 · Lessons and more: one closed row below the instrument */
+    /* a bench bar is worth a place only when something in it can still be used (the doors replace the old tools menu) */
+    var usable = function (bar) { return [].some.call(bar.querySelectorAll("a[href],button,select"), function (c) {
+      if (c.closest(".aogdd-src")) return false;   /* the buttons a drop-down presses (aog-dropdowns.js) are out of sight */
+      for (var e = c; e && e !== bar; e = e.parentNode) if (e.hidden || getComputedStyle(e).display === "none") return false; return true; }); };
+    var parts = [].slice.call(D.querySelectorAll("body .bench-bar, body .aog-course-band, body .pm-guide")).filter(function (e) {
+      if (e.closest(".aog-learn")) return false;
+      if (e.classList.contains("bench-bar") && !usable(e)) { e.setAttribute("data-empty", "1"); return false; }
+      return true; });
+    if (!parts.length) return;
+    var box = D.getElementById("aogLearn");
+    if (!box) {
+      box = D.createElement("details"); box.id = "aogLearn"; box.className = "aog-learn no-print";
+      box.innerHTML = '<summary></summary><div class="aog-learn-in"></div>';
+      var les = D.getElementById("lessons");
+      if (view && view.parentNode) view.parentNode.insertBefore(box, view.nextSibling);
+      else if (les && les.parentNode) les.parentNode.insertBefore(box, les);
+      else { var w = D.querySelector(".wrap") || D.body; w.appendChild(box); }
+      var say = function () { var s = box.firstChild, t = lang() === "es" ? "Lecciones y más" : "Lessons and more"; if (s.textContent !== t) s.textContent = t; };
+      say();
+      try { new MutationObserver(say).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
+    }
+    var inn = box.lastChild;
+    parts.forEach(function (e) { inn.appendChild(e); });
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
+  /* after the doors and the menus are drawn; the course box arrives later (aog-grace.js), so it is watched for a while */
+  if (shell) {
+    var later = function () {
+      firstSurface();
+      try { var mo = new MutationObserver(function () { if (D.querySelector(".aog-course-band:not(.aog-learn *),.pm-guide:not(.aog-learn *)")) firstSurface(); });
+        mo.observe(D.body, { childList: true, subtree: true }); setTimeout(function () { mo.disconnect(); }, 15000); } catch (e) {}
+      window.addEventListener("load", firstSurface);
+    };
+    if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", later); else later();
+  }
 })();
