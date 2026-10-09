@@ -854,6 +854,14 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · A real guitar or bass (§10b) and a free tuner (§10c), sixth and seventh in Jimmy's order.** `aog-liveinput.js` (`AOG-LIVEINPUT-V1`), loaded by the Guitar and the Bass (`_work/music/strings_page.html`, then `make_strings.py`), draws **Plug in your guitar / bass** under the amp:
+  - says once that a browser can't see a cable: a USB interface, a USB guitar cable, or a microphone in front of an amp; and that the recording stays on this device;
+  - **Turn on the input** asks for it with `echoCancellation`, `noiseSuppression` and `autoGainControl` off; a menu when there is more than one input, remembered (`aog.<guitar|bass>.live.input.v1`); nothing opens it on load;
+  - you hear it through a second rig with the on-screen guitar's own amp, cabinet and pedals (`AOGAmp.create`, kept in step by `AOGLive.setRig` from `applyRig`/`setSound`); **Hear it through the amp** can be turned off; the delay through the page is shown, with direct monitoring named as the no-delay way;
+  - **● Record my guitar** counts in four clicks at the page's tempo, keeps the clean and the toned take, starts them 0.05 s before beat one (allowing for the delay), and sends the toned one into `studioinbox` marked `live` with the clean one riding along (`dry`): My Track's **Live guitar / Live bass** marks it (not the on-screen Guitar). Save either as .wav; Delete and Bring it back;
+  - **Tune**: the note, cents sharp or flat (in plain words: loosen / tighten), a calm needle, green within 5 cents; standard, drop D and half a step down behind one menu (the bass: E A D G); A = 440 unless set (remembered, `aog.tuner.a.v1`). A small YIN; a soft sound is ignored, and a new string must be heard three times running before the needle moves to it. Tune records nothing and leaves the input as it was;
+  - a missing interface or a refused input is told plainly with Try again; the on-screen guitar plays on. Not yet: a measured round-trip latency (the delay shown is what the browser reports).
+  - Test: `music-handoff/tests/studio/live.js` (fake input at 330, 112 and 55 Hz).
 - **2026-10-09 · Voice on track 8 (§10), fifth in Jimmy's order.** (`AOG-STUDIO-VOICE-V1` in `music-studio.html`)
   - Track 8 is **Your voice**: its panel says plainly that adding your voice needs the microphone and that the recording stays on this device, and shows **● Record your voice** in place of the menu of instrument recordings.
   - The microphone opens only on that press (never on load, Play or in the background) and is let go the moment you press Stop. Record plays the song once from the start bar (the count-in when it is on) while you sing; the take lands on track 8 lined up with the start bar, allowing for the speakers' and the microphone's delay (`outputLatency`, `baseLatency`, the input's own latency). It is captured by a small AudioWorklet (a ScriptProcessor on an older browser).

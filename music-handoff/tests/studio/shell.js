@@ -46,7 +46,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
   const pads = await f.evaluate(() => ({ pads: document.querySelectorAll(".pads button.pad[data-p]").length,
     bar: [...document.querySelectorAll(".aogtop,.labdoors")].map(e => getComputedStyle(e).display) }));
   ok(pads.pads >= 16 && pads.bar.every(d => d === "none"), "the pads are there to play, and the room's own bar and doors step aside: " + JSON.stringify(pads));
-  ok(s.marks === "Drums — | Kit — | Piano — | Guitar — | Bass — | Band — | Turntables — | Voice — | Mix ›", "My Track starts empty: " + s.marks);
+  ok(s.marks === "Drums — | Kit — | Piano — | Guitar — | Bass — | Band — | Turntables — | Voice — | Live guitar — | Live bass — | Mix ›", "My Track starts empty: " + s.marks);
   ok(s.own === "/drum-machine", "Open in its own tab points at /drum-machine");
 
   /* 2 · a take sent from inside the piano marks Piano at once */

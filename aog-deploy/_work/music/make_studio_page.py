@@ -34,7 +34,8 @@ ROOMS = [
 ]
 # My Track: the layers, in song order, then Voice (STUDIO-HANDOFF §05). Voice has no room yet: it stays "nothing yet".
 LAYERS = [("pads", ("Drums", "Ritmos")), ("kit", ("Kit", "Batería")), ("piano", ("Piano", "Piano")), ("guitar", ("Guitar", "Guitarra")),
-          ("bass", ("Bass", "Bajo")), ("band", ("Band", "Banda")), ("decks", ("Turntables", "Tocadiscos")), ("voice", ("Voice", "Voz"))]
+          ("bass", ("Bass", "Bajo")), ("band", ("Band", "Banda")), ("decks", ("Turntables", "Tocadiscos")), ("voice", ("Voice", "Voz")),
+          ("liveguitar", ("Live guitar", "Guitarra en vivo")), ("livebass", ("Live bass", "Bajo en vivo"))]   # AOG-LIVEINPUT-V1: the one in your hands
 def esc(t): return html.escape(t, quote=True)
 def sp(pair): return '<span data-en="%s" data-es="%s">%s</span>' % (esc(pair[0]), esc(pair[1]), esc(pair[0]))
 CSS = """
@@ -140,8 +141,9 @@ JS = r"""<script src="/aog-handoff.js"></script>
     var items = [];
     try { var r = await A.list(A.INBOX); items = (r && r.items) || []; } catch (e) {}
     for (var i = 0; i < LAYERS.length; i++) {
-      var l = LAYERS[i], R = room(l.id), from = R ? R.from : l.id, shelf = R ? R.shelf : "";
-      var got = items.some(function (x) { return x && x.from === from && x.sec > 0; });
+      var l = LAYERS[i], R = room(l.id), live = /^live/.test(l.id), from = R ? R.from : live ? l.id.slice(4) : l.id, shelf = R ? R.shelf : "";
+      /* a take from the real instrument (aog-liveinput.js, "live") marks Live guitar or Live bass, not the on-screen one */
+      var got = items.some(function (x) { return x && x.from === from && x.sec > 0 && !!x.live === live; });
       /* Voice: the take on the Mixing Desk's track 8 (AOG-STUDIO-VOICE-V1), read from the desk's own save */
       if (l.id === "voice") { try { var sg = JSON.parse(localStorage.getItem("aog.studio.v1") || "null"), v = sg && sg.tracks && sg.tracks[7] && sg.tracks[7].clip; got = !!(v && v.voice); } catch (e) { got = false; } }
       if (!got && shelf) { try { var s = await A.get(shelf); got = !!(s && s.wav && s.wav.size > 44); } catch (e) {} }
