@@ -257,15 +257,16 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
 .label.printed{background:#f6efdf;box-shadow:inset 0 0 0 3px hsl(var(--vh),70%,40%),inset 0 0 0 5px #f6efdf,inset 0 0 0 6px hsl(var(--vh),60%,30%);
   container-type:inline-size;overflow:hidden}
 .label.printed .rl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-  padding:11% 12% 9%;text-align:center;line-height:1.05;pointer-events:none}
-.rl-logo small{display:block;font:800 5.4cqw/1.1 var(--sans);letter-spacing:.16em}
+  padding:13% 17% 12%;text-align:center;line-height:1.05;pointer-events:none}
+.rl-logo small{display:block;font:800 4.6cqw/1.1 var(--sans);letter-spacing:.14em}
 .rl-logo>span{text-align:left}
-.rl-logo{display:flex;align-items:center;gap:2.5cqw;font:800 9cqw/1 var(--display);letter-spacing:.06em;color:hsl(var(--vh),65%,26%);white-space:nowrap}
-.rl-logo i{font-style:normal;display:inline-grid;place-items:center;width:12cqw;height:12cqw;border-radius:50%;
-  background:hsl(var(--vh),65%,26%);color:#f6efdf;font:800 8.5cqw/1 var(--display)}
-.rl-name{font:800 10cqw/1.05 var(--sans);color:#1a140e;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
-.rl-side{font:700 6.5cqw/1 var(--sans);letter-spacing:.1em;color:hsl(var(--vh),65%,26%);margin-top:3%}
+.rl-logo{display:flex;align-items:center;gap:2cqw;font:800 7.6cqw/1 var(--display);letter-spacing:.05em;color:hsl(var(--vh),65%,26%);white-space:nowrap}
+.rl-logo i{font-style:normal;display:inline-grid;place-items:center;width:10cqw;height:10cqw;border-radius:50%;
+  background:hsl(var(--vh),65%,26%);color:#f6efdf;font:800 7cqw/1 var(--display)}
+.rl-name{font:800 8.4cqw/1.05 var(--sans);color:#1a140e;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.rl-side{font:700 5.4cqw/1 var(--sans);letter-spacing:.08em;color:hsl(var(--vh),65%,26%);margin-top:3%}
 .rl-low{display:flex;flex-direction:column;align-items:center;max-width:100%}
+/* Jimmy, 2026-10-09: "Some of the text falls off the vinyl. It needs to be a TAD smaller": smaller words, kept off the label's round edge */
 /* the lamp on the record: two soft bands of light across the grooves, still while the record turns under them */
 .sheen{position:absolute;inset:7%;border-radius:50%;pointer-events:none;z-index:1;
   background:conic-gradient(from 0deg, transparent 0 18deg, rgba(255,255,255,.22) 38deg, rgba(255,255,255,.07) 52deg, transparent 66deg,
@@ -759,7 +760,7 @@ const STR = {
   wordGo:{en:"Load the scripture records",es:"Cargar los discos de Escrituras"},
   wordDone:{en:"Done. The scripture records are in Up next.",es:"Listo. Los discos de Escrituras están en Lo que sigue."},
   speechH:{en:"Speeches",es:"Discursos"},
-  speechLead:{en:"Famous words in the speaker's own voice. One line on each pad.",es:"Palabras famosas en la voz de quien las dijo (en inglés). Una línea en cada pad."},
+  speechLead:{en:"Famous words, spoken aloud. One line on each pad.",es:"Palabras famosas, dichas en voz alta. Una línea en cada pad."},
   speechGo:{en:"Load the speeches",es:"Cargar los discursos"},
   speechDone:{en:"Done. The speeches are in Up next.",es:"Listo. Los discursos están en Lo que sigue."},
   showList:{en:"See the tracks",es:"Ver las pistas"},
@@ -1692,7 +1693,7 @@ function paintCrate(){
         on:id=>`data-crate="next" data-i="${i}" data-deck="${id}"`, x:`<button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>` }))) : `<div class="cbox empty">${t("crateNextNone")}</div>`}
     ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
     <div class="take" style="background:none;border:0;padding:0">
-      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
+      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
     ${starterHtml()}
@@ -2480,10 +2481,13 @@ function paintStrips(){
   });
   paintPair();
 }
+/* AOG-DECKS-FILES-ONLY-V1 (2026-10-09) — Jimmy: "Can we only have upload a file. There is no point to have load a photo or
+   take video here." A picker that takes video files makes an iPad offer Photo Library and Take Video; these take sound
+   files only, so it goes straight to Files. (A song dragged onto a deck still loads as before.) */
 function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
-    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
+    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"></label>
     ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>
     <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }
