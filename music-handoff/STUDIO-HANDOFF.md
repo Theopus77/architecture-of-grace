@@ -854,6 +854,12 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · chops from your record to the Drum Machine (§9), third in Jimmy's order.** Each Turntables deck has **Chops to the Drum Machine** beside its pads (`AOG-CHOPS-TO-PADS-V1` in `music-decks.html`):
+  - it takes 16 beats of the record on that deck from the start of the bar the needle is in (8 seconds from the needle when the record's tempo is not known), and sends them the way every take goes: into `studioinbox` (from `decks`, named "<record> · chops") with a note on `padstake`. No new shelf;
+  - the Drum Machine puts them on its chops bank, one beat a pad (16 equal parts when the tempo is not known), and says "16 chops from <record> are on bank D"; the line on the deck links to the Drum Machine (in the Studio, that link changes the room);
+  - My Track marks the Turntables. Nothing is uploaded.
+  - Not yet: renaming the chops (they carry the record's name), and the chops as their own files in Send it out.
+  - Test: `music-handoff/tests/studio/chops.js`.
 - **2026-10-09 · the Studio shell (§04–§06), Jimmy's second pick.** `/the-studio` (`the-studio.html`, made by `_work/music/make_studio_page.py`; `AOG-STUDIO-SHELL-V1`) is one house:
   - the eight rooms as small picture doors (song order); the room you are in plays inside a frame of its own page; the address says the room (`/the-studio#bass`), so Back, bookmarks and shared links land right. The frame swaps rooms in place, so it adds no Back steps of its own;
   - a room inside the Studio (`aog-labdoors.js`) hides its own site bar and doors, and on a phone its banner too (the doors already name it); a link to another room changes the room in the Studio; any other page opens over the Studio. A room on its own address is untouched;
