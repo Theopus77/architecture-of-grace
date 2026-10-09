@@ -50,6 +50,21 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
   ok(await p.evaluate(()=>/IowaSpaceWizard/.test(STR.credit.en) && /IowaSpaceWizard/.test(STR.credit.es)), "the credit names the recording, in English and Spanish");
   await p.evaluate(()=>{ const b=document.getElementById("langBtn"); if(b) b.click(); }); await p.waitForTimeout(600);
   ok(await p.evaluate(()=>document.getElementById("spSound").selectedOptions[0].textContent)==="Gaita · el puntero", "in Spanish: Gaita · el puntero");
+  /* the Drum Machine plays them too (AOG-PADS-BAGPIPES-V1): in its sound list, tuned as the Band tunes them, every file there,
+     and brought to the Drum Machine's level (pads/level.js measures it) */
+  { const q=await b.newPage(); q.on("pageerror",e=>errs.push("pads: "+e.message)); await q.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
+    await q.goto("http://localhost:9263/music-pads.html"); await q.waitForTimeout(1200);
+    const pr=await q.evaluate(async()=>{ const man=await (await fetch("/audio/band/manifest.json")).json(), o={};
+      for(const inst of ["bagpipe","bagpipe_drones"]){ const I=INST["b:"+inst], M=man[inst]; if(!I){ o[inst]="missing"; continue; }
+        const zs=await zonesOf("b:"+inst); let bad=[];
+        if(JSON.stringify(I.n)!==JSON.stringify(M.sus)) bad.push("notes");
+        zs.forEach(z=>{ if(z.c!==(M.tune[z.m+"s"]||0)) bad.push("tune "+z.m); });
+        for(const z of zs){ const r=await fetch(z.url); if(!r.ok) bad.push("file "+z.m); }
+        if(!(LEVEL.inst["b:"+inst]>0)) bad.push("level");
+        o[inst]=bad.length?bad.join(", "):"ok"; }
+      return o; });
+    ok(pr.bagpipe==="ok" && pr.bagpipe_drones==="ok", "the Drum Machine has both, tuned as the Band, every file there, levelled: "+JSON.stringify(pr));
+    await q.close(); }
   ok(errs.length===0, "no page errors "+errs.join(" | "));
   console.log(fails?fails+" FAILED":"ALL PASS"); await b.close(); srv.close(); process.exit(fails?1:0);
 })().catch(e=>{ console.log("CRASH",e.stack); process.exit(1); });
