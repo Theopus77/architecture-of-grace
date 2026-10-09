@@ -189,8 +189,11 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 .sh-doors a[aria-current="true"] { border-color:#e0b25a; box-shadow:0 0 0 1px #e0b25a, 0 0 18px rgba(240,194,110,.35), 0 6px 14px rgba(0,0,0,.45); }
 .sh-room { background:#17110c; border:1px solid #050403; box-shadow:0 0 0 1px rgba(255,214,160,.06), 0 24px 60px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.5); }
 .mt { background:#120d09; box-shadow:0 -1px 0 rgba(255,214,160,.08), 0 -12px 28px rgba(0,0,0,.55); }
+.tp-vu { display:inline-flex; flex:0 0 auto; align-items:center; }
+.tp-vu[hidden] { display:none; }
+@media (max-width:699px) { .tp-vu .aogvu canvas { width:50px; height:28px; } }
 """
-JS = r"""<script src="/aog-handoff.js"></script>
+JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></script>
 <script>
 /* AOG-STUDIO-SHELL-V1 — the doors change the room; My Track marks what each room has sent (see make_studio_page.py) */
 (function () {
@@ -219,6 +222,7 @@ JS = r"""<script src="/aog-handoff.js"></script>
   }
   function paint() {
     var r = room(cur), e = es(); if (!r) return;
+    var vb = D.getElementById("tpVu"); if (vb) vb.hidden = cur === "studio";   /* AOG-ROOM-VU-V1: the desk has its own, large */
     TP.line = ""; if (typeof paintTp === "function") try { paintTp(); } catch (err) {}
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
@@ -330,6 +334,11 @@ JS = r"""<script src="/aog-handoff.js"></script>
     });
   });
   D.getElementById("tpBack").addEventListener("click", function () { var b = TP.back; if (room(b)) go(b, true); });
+  /* AOG-ROOM-VU-V1: the small VU meters show the room you are in (its own page's levels), and anything the shell plays */
+  if (window.AOGVU) AOGVU.mount(D.getElementById("tpVu"), { source: function () {
+    var a = null, b = null; try { var w = fr.contentWindow; a = w && w.AOGVU ? w.AOGVU.levels() : null; } catch (e) {}
+    try { b = AOGVU.levels(); } catch (e) {}
+    return a && b ? [Math.max(a[0], b[0]), Math.max(a[1], b[1])] : a || b; } });
   D.getElementById("tpOut").addEventListener("click", function () {
     TP.line = "";
     atDesk(function (w) { var b = w.document.getElementById("outBtn"); if (!b) return; try { b.scrollIntoView({ block: "center" }); } catch (e) {} if (!b.disabled) b.click(); else b.focus(); });
@@ -422,6 +431,7 @@ def build():
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
             '<button type="button" class="tp-b tp-out" id="tpOut"></button>'
+            '<span class="tp-vu" id="tpVu"></span>'   # AOG-ROOM-VU-V1: the room's small VU meters
             '<span class="tp-line" id="tpLine" aria-live="polite"></span></div>'
             '<div class="mtrow"><h2 id="mtH">%s</h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
             "</div>"]

@@ -24,7 +24,7 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   const btn=await pi.locator("#padsBtn").textContent();
   await pi.evaluate(()=>{ S.key=7; S.minor=true; S.sound="epwarm"; document.getElementById("padsBtn").click(); }); await pi.waitForTimeout(800);
   const pl=await pi.locator("#padsLine").innerText(), href=await pi.locator("#padsLine a").getAttribute("href");
-  ok(btn==="Send chords to the Drum Machine" && /^Sent\./.test(pl) && href==="music-pads.html", `the piano: "${btn}" → "${pl}" (${href})`);
+  ok(btn==="Put these chords on the Drum Machine pads" && /^Sent\./.test(pl) && href==="music-pads.html", `the piano: "${btn}" → "${pl}" (${href})`);
   let s=await st();
   ok(s.bank===1 && s.B.inst==="k:epwarm" && s.B.key===7 && s.B.scale==="minor" && /piano.*bank B/.test(s.line), "the Drum Machine puts them on bank B, in G minor, warm electric piano: "+JSON.stringify(s));
   /* 2. a guitar take */
@@ -41,7 +41,7 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   const bb=await bs.locator("#padsBtn").textContent();
   await bs.evaluate(()=>{ S.key=2; S.minor=false; document.getElementById("padsBtn").click(); }); await bs.waitForTimeout(1200);
   s=await st();
-  ok(bb==="Send the low notes to the Drum Machine" && s.bank===2 && s.C.inst==="a:growly" && s.C.key===2 && s.C.scale==="major" && s.C.oct===2, `the bass: "${bb}" → bank C, D major, low, fingered bass: `+JSON.stringify(s.C));
+  ok(bb==="Put these low notes on the Drum Machine pads" && s.bank===2 && s.C.inst==="a:growly" && s.C.key===2 && s.C.scale==="major" && s.C.oct===2, `the bass: "${bb}" → bank C, D major, low, fingered bass: `+JSON.stringify(s.C));
   const bd=await page("music-band.html");
   await bd.evaluate(()=>{ S.key=5; S.minor=false; S.sound="soprano"; document.getElementById("padsBtn").click(); }); await bd.waitForTimeout(1200);
   s=await st();
@@ -54,7 +54,7 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   const pline=await pi.locator("#sendLine").innerText(); await pads.waitForTimeout(1500);
   s=await st();
   const rec=await pads.evaluate(async()=>{ const R=recInfo(S.banks[3].rec); const buf=await recBuf(S.banks[3].rec); return {R:R&&{bpm:R.bpm,bars:R.bars,kind:R.kind}, chops:chopsOf(S.banks[3], buf).length, sec:+buf.duration.toFixed(1)}; });
-  ok(pb==="Send to the Drum Machine" && /bank D/.test(pline) && s.bank===3 && rec.R && rec.R.kind==="take" && rec.R.bpm>0 && rec.R.bars>=4 && rec.chops===16,
+  ok(pb==="Send my take to the Drum Machine" && /bank D/.test(pline) && s.bank===3 && rec.R && rec.R.kind==="take" && rec.R.bpm>0 && rec.R.bars>=4 && rec.chops===16,
     `the piano's whole recording: "${pb}" → bank D, chopped on the beat: `+JSON.stringify({pline, rec}));
   /* 4. once only; Spanish; the pads play */
   await pads.reload(); await pads.waitForTimeout(2000);
@@ -62,7 +62,7 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   await pi.evaluate(()=>{ document.getElementById("langBtn").click(); }); await pi.waitForTimeout(300);
   const es=await pi.evaluate(()=>{ document.getElementById("padsBtn").click(); return document.getElementById("padsBtn").textContent; }); await pi.waitForTimeout(1000);
   const esl=await pi.locator("#padsLine").innerText();
-  ok(es==="Enviar acordes a la caja de ritmos" && /^Enviado\./.test(esl), `in Spanish: "${es}" → "${esl}"`);
+  ok(es==="Poner estos acordes en los pads de la caja de ritmos" && /^Enviado\./.test(esl), `in Spanish: "${es}" → "${esl}"`);
   const played=await pads.evaluate(async()=>{ S.bank=1; await prep(1); let n=0; const o=window.playPad||null; return isReady(1); });
   ok(played, "bank B is ready to play");
   ok(errs.length===0, "no page errors "+errs.join(" | "));
