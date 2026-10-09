@@ -1684,7 +1684,7 @@ function paintCrate(){
         on:id=>`data-crate="next" data-i="${i}" data-deck="${id}"`, x:`<button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>` }))) : `<div class="cbox empty">${t("crateNextNone")}</div>`}
     ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
     <div class="take" style="background:none;border:0;padding:0">
-      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
+      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
     ${starterHtml()}
@@ -2472,10 +2472,13 @@ function paintStrips(){
   });
   paintPair();
 }
+/* AOG-DECKS-FILES-ONLY-V1 (2026-10-09) — Jimmy: "Can we only have upload a file. There is no point to have load a photo or
+   take video here." A picker that takes video files makes an iPad offer Photo Library and Take Video; these take sound
+   files only, so it goes straight to Files. (A song dragged onto a deck still loads as before.) */
 function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
-    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
+    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"></label>
     ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>
     <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }
