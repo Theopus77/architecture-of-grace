@@ -6,7 +6,7 @@
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
 </script>
-<title>The Studio &mdash; Architecture of Grace</title>
+<title>The Recording Studio &mdash; Architecture of Grace</title>
 <meta name="description" content="Every music room in one studio: the drum machine, drum kit, piano, guitar, bass, band, turntables and mixing desk. Play, make, mix and send it out. No account.">
 <meta name="theme-color" content="#0A1E33">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -191,7 +191,21 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 .sh-doors a:focus-visible, .mt a:focus-visible, .sh-own:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
 @media (min-width:1100px) { .sh-doors ul { grid-auto-flow:row; grid-template-columns:repeat(8,minmax(0,1fr)); overflow:visible; } .sh-doors a { white-space:normal; } }
 .sh-room { display:block; width:100%; height:70vh; border:1px solid var(--line); border-radius:14px; background:var(--bg); }
-.mt { margin:0; position:sticky; bottom:0; z-index:5; display:flex; align-items:center; gap:.5rem; padding:.4rem 0 max(.4rem, env(safe-area-inset-bottom)); background:var(--bg); }
+.mt { margin:0; position:sticky; bottom:0; z-index:5; display:grid; gap:.3rem; padding:.4rem 0 max(.4rem, env(safe-area-inset-bottom)); background:var(--bg); }
+.mtrow { display:flex; align-items:center; gap:.5rem; min-width:0; }
+/* AOG-STUDIO-TRANSPORT-V1: the studio's transport, the same for every room */
+.tp { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.tp-b { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 .95rem; border-radius:12px;
+  border:1px solid #0a0b0d; background:linear-gradient(#3a3e44,#1c1f23); color:#f3efe6; font:800 .95rem/1.1 var(--sans); text-decoration:none; cursor:pointer; white-space:nowrap; }
+.tp-b:disabled { opacity:.55; cursor:default; }
+.tp-b[hidden] { display:none; }
+.tp-rec { background:linear-gradient(#ffe08a,#e09020); color:#2a1a08; min-width:7.2rem; }
+.tp-rec[aria-pressed="true"] { background:linear-gradient(#ffb1a4,#c4452a); color:#2a0c08; }
+.tp-add { background:linear-gradient(#bfe7c9,#6fbf8b); color:#0d2614; }
+.tp-out { border-color:#5b8fd6; }
+.tp-line { flex:1 1 12rem; min-width:0; color:var(--ink); font-weight:700; font-size:.92rem; }
+.tp-line:empty { display:none; }
+.tp-b:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
 /* an ID, so the site's serif heading rule (aog-grace.css) leaves this small label alone */
 #mtH { margin:0; flex:0 0 auto; font:800 .74rem/1.2 var(--sans) !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--muted); }
 .mt ul { list-style:none; margin:0; padding:2px; display:flex; gap:6px; overflow-x:auto; overscroll-behavior-x:contain; flex:1 1 auto; min-width:0; }
@@ -212,6 +226,13 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   .sh-own { white-space:nowrap; }
 }
 @media (min-width:700px) { .sh-own .short { display:none; } }
+/* a phone on its side: the room gets the whole screen, as its own sideways play view expects (LANDSCAPE-HANDOFF.md) */
+@media (orientation:landscape) and (max-height:500px) {
+  .aogtop, .aogtop-spacer, .sh-top, .sh-doors, .mt { display:none !important; }
+  .shell { padding:0; }
+  .sh-room { border:0; border-radius:0; }
+}
+@media (max-width:699px) { .tp { gap:5px; } .tp-b { padding:0 .55rem; font-size:.88rem; } .tp-rec { min-width:5.9rem; } }
 @media print { .sh-doors, .mt, .sh-room { display:none; } }
 </style>
 </head>
@@ -219,8 +240,8 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 <script src="/aog-grace.js" defer></script>
 <div class="shell">
 <div class="sh-top">
-  <h1><span data-en="The Studio" data-es="El estudio">The Studio</span></h1>
-  <p class="sh-tag"><span data-en="Play · Make · Listen · Change · Mix" data-es="Toca · Crea · Escucha · Cambia · Mezcla">Play · Make · Listen · Change · Mix</span></p>
+  <h1><span data-en="The Recording Studio" data-es="El estudio de grabación">The Recording Studio</span></h1>
+  <p class="sh-tag"><span data-en="Play · Record · Listen · Mix · Send it out" data-es="Toca · Graba · Escucha · Mezcla · Compártela">Play · Record · Listen · Mix · Send it out</span></p>
   <a class="sh-own" id="own" href="/drum-machine" target="_blank"><span class="long"><span data-en="Open this room in its own tab ↗" data-es="Abrir esta sala en su propia pestaña ↗">Open this room in its own tab ↗</span></span><span class="short"><span data-en="Own tab ↗" data-es="Otra pestaña ↗">Own tab ↗</span></span></a>
 </div>
 <nav class="sh-doors" aria-label="Rooms"><ul>
@@ -234,7 +255,7 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   <li><a href="#studio" data-room="studio"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Mixing Desk" data-es="Mesa de mezclas">Mixing Desk</span></a></li>
 </ul></nav>
 <main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write"></iframe></main>
-<section class="mt" id="mt" aria-labelledby="mtH"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><ul id="mtList"></ul></section>
+<section class="mt" id="mt" aria-label="The studio"><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-out" id="tpOut"></button><span class="tp-line" id="tpLine" aria-live="polite"></span></div><div class="mtrow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><ul id="mtList"></ul></div></section>
 </div>
 <script src="/aog-handoff.js"></script>
 <script>
@@ -264,9 +285,10 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   }
   function paint() {
     var r = room(cur), e = es(); if (!r) return;
+    TP.line = ""; if (typeof paintTp === "function") try { paintTp(); } catch (err) {}
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
-    D.title = (e ? "El estudio · " : "The Studio · ") + name + " — Architecture of Grace";
+    D.title = (e ? "El estudio de grabación · " : "The Recording Studio · ") + name + " — Architecture of Grace";
     own.href = r.href;
     [].forEach.call(D.querySelectorAll(".sh-doors a"), function (a) {
       if (a.getAttribute("data-room") === cur) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
@@ -284,7 +306,7 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
       var inner = '<span>' + nm + '</span><span class="mk" aria-hidden="true">' + (on ? "✓" : "—") + "</span>";
       return "<li>" + (room(l.id) ? '<a href="#' + l.id + '" data-room="' + l.id + '" class="' + (on ? "on" : "") + '" aria-label="' + say + '">' + inner + "</a>"
         : '<span class="off" role="img" aria-label="' + say + '">' + inner + "</span>") + "</li>";
-    }).join("") + '<li><a href="#studio" data-room="studio" class="mix">' + (e ? "Mezclar ›" : "Mix ›") + "</a></li>";
+    }).join("");
   }
   async function refresh() {
     var A = window.AOGHandoff, next = {}; if (!A) return;
@@ -298,10 +320,68 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
     }
     HAVE = next; paintTrack();
   }
+  /* ── AOG-STUDIO-TRANSPORT-V1: the transport drives the room you are in ── */
+  var TP = { t0: 0, want: "", line: "" };
+  function recOf() { try { return fr.contentWindow && fr.contentWindow.AOGStudioRec || null; } catch (e) { return null; } }
+  function deskOf() { try { var w = fr.contentWindow; return cur === "studio" && w && w.__aogStudio ? w : null; } catch (e) { return null; } }
+  function clock(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  function say(k) { TP.line = k; paintTp(); }
+  var TPW = {
+    rec: ["● Record", "● Grabar"], stop: ["■ Stop", "■ Parar"], add: ["+ Add to My Track", "+ Añadir a mi pista"],
+    listen: ["▶ Listen", "▶ Escuchar"], listenStop: ["■ Stop listening", "■ Dejar de escuchar"], mix: ["Mix ›", "Mezclar ›"], out: ["Send it out", "Compártela"],
+    added: ["Added to My Track.", "Añadida a mi pista."], noRec: ["Pick a room to record in.", "Elige una sala para grabar."],
+    empty: ["Nothing is on the tracks yet. At the Mixing Desk, put a take on a track, then press Listen.", "Todavía no hay nada en las pistas. En la mesa de mezclas, pon una toma en una pista y luego pulsa Escuchar."],
+    fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."]
+  };
+  function tw(k) { return TPW[k][es() ? 1 : 0]; }
+  function paintTp() {
+    var R = recOf(), on = !!(R && R.on()), rb = D.getElementById("tpRec"), ab = D.getElementById("tpAdd"), lb = D.getElementById("tpListen");
+    if (on && !TP.t0) TP.t0 = Date.now(); if (!on) TP.t0 = 0;
+    var rt = on ? tw("stop") + " " + clock((Date.now() - TP.t0) / 1000) : tw("rec");
+    if (rb.textContent !== rt) rb.textContent = rt;
+    rb.setAttribute("aria-pressed", on ? "true" : "false");
+    rb.disabled = !R || !!(R.busy && R.busy());
+    var last = R && !on ? R.last() : null, showAdd = !!(last && !R.sent());
+    ab.hidden = !showAdd; if (ab.textContent !== tw("add")) ab.textContent = tw("add");
+    var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
+    if (lb.textContent !== lt) lb.textContent = lt;
+    D.getElementById("tpMix").textContent = tw("mix"); D.getElementById("tpOut").textContent = tw("out");
+    var ln = TP.line ? tw(TP.line) : ""; var el = D.getElementById("tpLine"); if (el.textContent !== ln) el.textContent = ln;
+  }
+  /* an action that needs the Mixing Desk: go there, then do it once the desk has its song back */
+  function atDesk(fn) {
+    var moved = cur !== "studio"; if (moved) go("studio", true);
+    var t0 = Date.now(), k = setInterval(function () {
+      var w = deskOf();
+      /* a desk just opened gets a moment to put its song back; one already open acts at once */
+      if (w && w.document.readyState === "complete" && !w.__aogStudio.S.decoding && (!moved || Date.now() - t0 > 600)) { clearInterval(k); fn(w); paintTp(); }
+      else if (Date.now() - t0 > 12000) clearInterval(k);
+    }, 150);
+  }
+  D.getElementById("tpRec").addEventListener("click", function () { var R = recOf(); if (!R) { say("noRec"); return; } TP.line = ""; R.toggle(); setTimeout(paintTp, 60); });
+  D.getElementById("tpAdd").addEventListener("click", function () {
+    var R = recOf(), b = this; if (!R) return; b.disabled = true;
+    Promise.resolve(R.add()).then(function () { b.disabled = false; say(R.sent() ? "added" : "fail"); refresh(); }, function () { b.disabled = false; say("fail"); });
+  });
+  D.getElementById("tpListen").addEventListener("click", function () {
+    TP.line = "";
+    atDesk(function (w) {
+      var st = w.__aogStudio;
+      if (st.PLAY.on) { st.stop(); return; }
+      if (!st.SONG.tracks.some(function (x) { return x.clip; })) { say("empty"); return; }
+      st.play();
+    });
+  });
+  D.getElementById("tpOut").addEventListener("click", function () {
+    TP.line = "";
+    atDesk(function (w) { var b = w.document.getElementById("outBtn"); if (!b) return; try { b.scrollIntoView({ block: "center" }); } catch (e) {} if (!b.disabled) b.click(); else b.focus(); });
+  });
+  setInterval(function () { if (!D.hidden) paintTp(); }, 250);
+
   /* the frame fills the screen between the doors and My Track */
   function size() {
     var top = fr.getBoundingClientRect().top + (window.scrollY || 0), mt = D.getElementById("mt").offsetHeight;
-    fr.style.height = Math.max(420, Math.floor(window.innerHeight - top - mt - 4)) + "px";
+    fr.style.height = Math.max(window.innerHeight < 760 ? 300 : 420, Math.floor(window.innerHeight - top - mt - 4)) + "px";   /* a phone: the room takes what is left */
   }
   /* a room inside the frame says hello (aog-labdoors.js) and asks for another room by its id */
   window.AOGStudioShell = {
