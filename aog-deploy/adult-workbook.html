@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition · My workbook — Architecture of Grace</title>
+<meta name="description" content="The participant workbook for the Adult Edition: twelve pages, one per session. It saves on your own device. Nothing is sent unless you choose to send it.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://architectureofgrace.org/adult/workbook">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-ADULT-WORKBOOK-V1 (2026-10-09) · the participant workbook at /adult/workbook.
+     Pass three of the Adult Edition. Every prompt is the manual's own practice, verbatim
+     (AoG_Book6, each session's PRACTICE box); only the buttons and help lines are new.
+
+     · Saves as you type, in this browser only: localStorage "aog.adult.wb.v1".
+     · The Backpack Inventory (Session 5) is one list, and it flows into Sessions 6, 7, 11
+       and 12 — choose an item, sort it G / R / B, place it in the Audit's three columns.
+     · The Arrival Letter (Session 1) can be sealed; it reopens on the Session 12 page.
+     · Sessions 7–12 open with a word the facilitator gives in the room, after the
+       re-screen. It paces the work; it is not a lock on private data.
+     · Sending is a choice, page by page and answer by answer, and only when the
+       facilitator's own link carries their Sheet (?dest=). No fallback to any other
+       Sheet, ever: adult work never lands in a school's Sheet by accident. The Arrival
+       Letter and the Backpack lines are never sent ("not collected" — the manual).
+     ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+.tools{position:sticky; top:calc(var(--aogbar-h,52px) + 4px); z-index:20; background:var(--ground); padding:10px 0; border-bottom:1px solid var(--rule); display:flex; gap:8px; align-items:center; flex-wrap:nowrap; margin-top:16px}
+.tools .btn{flex:none; width:48px; padding:0 !important}
+.tools select{flex:1 1 auto; width:auto !important; min-width:0; max-width:none; min-height:48px; padding:8px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font-weight:700}
+.page[hidden]{display:none}
+.ph{margin-top:18px; padding:16px 18px 14px; border-radius:16px; background:var(--field); border:1px solid var(--rule); border-left:7px solid var(--rule); box-shadow:var(--lift-sm)}
+.page.p1 .ph{border-left-color:var(--p1)} .page.p2 .ph{border-left-color:var(--p2)} .page.p3 .ph{border-left-color:var(--p3)} .page.p4 .ph{border-left-color:var(--p4)}
+.ph .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800}
+.ph h2{margin:.15em 0 .2em; font-size:1.55rem}
+.ph .anc{font-family:"Fraunces",Georgia,serif; font-size:1.1rem; line-height:1.5; margin:.4em 0 0}
+.ph .pname{display:inline-block; margin-top:10px; font-weight:800; font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; color:var(--good)}
+.prompt{margin-top:16px; padding:12px 16px; border-left:5px solid var(--good); background:var(--good-wash); border-radius:12px}
+.prompt p{margin:.3em 0}
+.priv{display:flex; gap:10px; align-items:flex-start; margin-top:12px; padding:10px 14px; border-radius:12px; background:var(--lock-wash); border:1px solid var(--rule-soft); font-size:.95rem}
+.priv b{color:var(--lock)}
+.fld{margin-top:16px}
+.fld > label,.fld > .lab{display:block; font-weight:800; margin-bottom:.3em}
+.fld .hint{display:block; font-weight:400; color:var(--ink-soft); font-size:.94rem; margin:.1em 0 .4em}
+.fld .tm{font-weight:700; color:var(--ink-faint); font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; margin-left:.4em}
+.fld textarea,.fld input[type=text],.fld select{width:100%; padding:11px 13px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); line-height:1.5}
+.fld textarea{min-height:110px; resize:vertical}
+.fld textarea.big{min-height:300px}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin:.2em 0 .5em}
+.chips .chip{font-weight:600}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; padding:12px; border-radius:14px; border:1px solid var(--rule); background:var(--field)}
+@media (max-width:640px){ .pair{grid-template-columns:1fr} }
+.pair .fld{margin-top:0}
+.vcard{margin-top:14px; padding:14px 16px; border-radius:16px; background:var(--field); border:1px solid var(--rule); border-top:6px solid var(--rule)}
+.vcard.red{border-top-color:var(--caution)} .vcard.green{border-top-color:var(--good)}
+.vcard h3{margin:0}
+/* the backpack */
+.inv{list-style:none; margin:12px 0 0; padding:0; counter-reset:i}
+.inv li{display:flex; gap:8px; align-items:center; padding:6px 0; border-bottom:1px solid var(--rule-soft)}
+.inv li::before{counter-increment:i; content:counter(i); flex:none; width:2em; text-align:right; font-weight:800; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+.inv li input{flex:1; min-width:0; padding:9px 11px; border:1.5px solid var(--rule); border-radius:10px; background:var(--field); color:var(--ink)}
+.inv li .x{flex:none; min-width:44px; min-height:44px; border:1.5px solid var(--rule); border-radius:999px; background:var(--field); color:var(--ink-soft); font-weight:800; cursor:pointer}
+.addrow{display:flex; gap:8px; margin-top:12px}
+.addrow input{flex:1; min-width:0; padding:11px 13px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink)}
+.count{margin-top:8px; font-weight:700; color:var(--ink-soft)}
+/* sort rows (7, 12) */
+.sort{margin-top:12px}
+.srow{padding:10px 12px; border:1px solid var(--rule); border-radius:12px; background:var(--field); margin-top:8px}
+.srow .it{font-family:"Fraunces",Georgia,serif; font-size:1.06rem; margin:0 0 6px}
+.srow .chips{margin:0}
+.srow .sub{margin-top:6px; padding-top:6px; border-top:1px dashed var(--rule)}
+.srow .sub .lab{font-size:.86rem; color:var(--ink-soft); font-weight:700; margin-right:6px}
+.cols{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px}
+@media (max-width:700px){ .cols{grid-template-columns:1fr} }
+.col{border:1px solid var(--rule); border-radius:14px; padding:10px 12px; background:var(--field); min-height:80px}
+.col h4{margin:0 0 6px; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase}
+.col ul{margin:0; padding-left:1.1em} .col li{margin:.25em 0}
+.col .pri{font-weight:800}
+.empty{color:var(--ink-soft); font-style:italic}
+/* the seal */
+.seal{margin-top:16px; padding:22px 18px; border-radius:16px; border:2px dashed var(--gold); background:var(--field); text-align:center}
+.seal .env{font-size:2.6rem; line-height:1}
+.seal h3{margin:.3em 0 .2em; font-family:"Fraunces",Georgia,serif; font-size:1.3rem}
+.letter-open{margin-top:12px; padding:16px 18px; border-radius:14px; background:var(--field); border:1px solid var(--gold); white-space:pre-wrap; font-family:"Fraunces",Georgia,serif; font-size:1.08rem; line-height:1.6}
+/* genogram */
+.geno{display:grid; gap:8px; margin-top:12px}
+.geno .gr{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
+.geno .me{display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:8px; align-items:center}
+@media (max-width:560px){ .geno .me{grid-template-columns:1fr} }
+.geno .g{border:1px solid var(--rule); border-radius:12px; padding:8px 10px; background:var(--field)}
+.geno .g label{display:block; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; font-weight:800; color:var(--ink-faint)}
+.geno .g textarea{width:100%; min-height:60px; border:0; background:transparent; color:var(--ink); padding:4px 0; resize:vertical}
+.geno .g.you{border:2px solid var(--p3); text-align:center; font-family:"Fraunces",Georgia,serif; font-size:1.2rem; padding:16px}
+.shame{margin-top:10px; padding:12px; border:1px solid var(--rule); border-radius:12px; background:var(--field)}
+.shame input[type=text]{width:100%; padding:10px 12px; border:1.5px solid var(--rule); border-radius:10px; background:var(--field); color:var(--ink)}
+.shame .qs{margin-top:8px; display:grid; gap:4px}
+.cb{display:flex; align-items:center; gap:10px; min-height:44px; font-weight:500}
+.cb input{width:22px; height:22px; flex:none; accent-color:var(--good)}
+/* the gate */
+.gatecard{margin-top:16px; padding:18px; border-radius:16px; background:var(--field); border:1px solid var(--rule); box-shadow:var(--lift-sm)}
+.gatecard input{width:100%; max-width:320px; min-height:48px; padding:10px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink)}
+.gatecard .err{color:var(--caution); font-weight:700; min-height:1.4em; margin:.4em 0 0}
+/* page foot: saved line, print, send */
+.pfoot{margin-top:22px; padding-top:14px; border-top:1px solid var(--rule); display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.pfoot .saved{flex:1 1 200px; color:var(--ink-soft); font-size:.94rem}
+.send{margin-top:16px; padding:16px; border-radius:16px; border:2px solid var(--navy); background:var(--field)}
+.send h3{margin-top:0}
+.send .pick{display:grid; gap:2px; margin:8px 0}
+.send .pick .cb span{overflow:hidden; text-overflow:ellipsis}
+.send input[type=text]{width:100%; max-width:340px; min-height:48px; padding:10px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink)}
+.send .st{font-weight:700; margin:.5em 0 0; min-height:1.3em}
+.endrow{margin-top:26px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+@media print{
+  .tools,.pfoot,.send,.endrow,.gatecard,.addrow,.inv li .x,.chips .chip:not([aria-pressed="true"]){display:none !important}
+  .page{break-before:auto}
+  .fld textarea,.fld input[type=text],.inv li input{border:1px solid #999; background:#fff}
+  .ph,.prompt,.pair,.vcard,.srow,.shame,.col{break-inside:avoid; box-shadow:none}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="k">The Adult Edition · participant</div>
+  <h1>My workbook</h1>
+  <p class="deck">One page for each session. It saves on this device as you write. Nobody sees it unless you choose to send it.</p>
+  <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
+</header>
+
+<main id="main">
+
+<div class="tools no-print" id="wbTools">
+  <button class="btn" id="prevBtn" type="button" aria-label="Previous session">←</button>
+  <select id="jump" aria-label="Go to a session"></select>
+  <button class="btn" id="nextBtn" type="button" aria-label="Next session">→</button>
+</div>
+<div class="prog no-print" id="wbProg"><span class="bar"><i></i></span><span class="lab"></span></div>
+
+<div id="pages"></div>
+
+<div class="endrow no-print">
+  <button type="button" class="btn" id="eraseAll">Erase my workbook from this device</button>
+  <span class="small mut" id="eraseNote">On a shared phone or tablet, erase it when you are done.</span>
+</div>
+
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">If something you write brings up more than you can hold, stop and reach out. Free, private, any time.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+
+<div class="lock">
+  <b>Nothing is sent unless you send it.</b> No account, no sign-in, no tracking. Your writing stays in this browser. Your Arrival Letter and your Backpack list are never sent.
+</div>
+
+</main>
+
+<footer class="foot">
+<p>Architecture of Grace · The Adult Edition · participant workbook. You may pass on any prompt, at any time. The work is between you and the page.</p>
+</footer>
+
+</div>
+
+<script>
+/* ══ AOG-ADULT-WORKBOOK-V1 — the twelve pages ══ */
+(function(){
+"use strict";
+var D=document, $=function(id){return D.getElementById(id);};
+var KEY="aog.adult.wb.v1";
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function load(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||"null"); if(o&&o.v===1) return o; }catch(e){} return {v:1,f:{},inv:[],seal:null,open:false,who:"",last:1}; }
+var st=load();
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); return true; }catch(e){ return false; } }
+function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function uid(){ return "i"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+/* ── where sending goes: ONLY the facilitator's own link (?dest=). Never a default. ── */
+var DEST=null;
+try{
+  var dm=/[?&]dest=([^&]+)/.exec(location.search||"");
+  if(dm){ var t=decodeURIComponent(dm[1]).replace(/-/g,"+").replace(/_/g,"/"); while(t.length%4) t+="="; var o=JSON.parse(atob(t));
+    if(o&&typeof o.u==="string"&&/^https:\/\/script\.google\.com\/[^\s]*\/exec$/.test(o.u)) DEST={url:o.u,key:(typeof o.k==="string"?o.k:"")}; }
+}catch(e){}
+
+/* ── the gate word for Sessions 7–12 (given by the facilitator after the re-screen) ── */
+function h32(s){ var h=5381; s=String(s).toLowerCase().replace(/[^a-z]/g,""); for(var i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36); }
+var GATE="sqzfnd";
+
+/* ── the twelve. a = the anchor's own opening words; pr = the practice's name. ── */
+var PH=["","Phase I · Foundation","Phase II · Interior","Phase III · Repair","Phase IV · Legacy"];
+var S=[null,
+ {p:1,t:"Arrival & The Group Compact",a:"The Compact is the agreement we make about how this room will work. It is not a list of rules. It is the relational contract that makes the rest of the work possible.",pr:"The Arrival Letter",priv:1},
+ {p:1,t:"Identity Is Not Behavior",a:"The mistake is something I did. It is not who I am. What I did matters. The harm was real. The accountability is real. And — none of it exhausts who I am or determines what I am capable of.",pr:"The I → B Translation"},
+ {p:1,t:"The Two Voices",a:"Both voices speak. Always. We do not get to silence either one. We do get to choose which one we listen to. Naming the voices makes them visible. Visible self-talk is workable self-talk.",pr:"Naming Your Voices"},
+ {p:2,t:"Feelings as Messengers",a:"Every feeling carries information. Naming a feeling makes it workable. No feeling is bad — although what we do with a feeling can be helpful or unhelpful.",pr:"Sensation → Naming → Message"},
+ {p:2,t:"Carrying Too Much — The Backpack Inventory",a:"Everyone is carrying a backpack. We cannot decide what to do with what we are carrying until we have seen what is in there. Today, we open the backpack.",pr:"The Backpack Inventory",priv:1},
+ {p:2,t:"The Compassionate Witness",a:"Honest. Fair. Kind. Without punishment. Not a cheerleader. The Witness says, accurately, what was true — and says it without contempt for the person it is naming.",pr:"The First Witness Letter"},
+ {p:3,t:"Grief vs. Resentment",a:"Grief says: “I wish things had been different.” It is a response to loss. Resentment says: “I blame.” Both can be appropriate. Both can be painful. They require different tools.",pr:"Grief / Resentment / Both",gate:1},
+ {p:3,t:"Forgiving the Younger Self",a:"The younger self knew what they knew at the time. They did not know what you know now. They did not have what you have now. Self-forgiveness is not the same as self-excuse.",pr:"The Letter to the Younger Self",gate:1},
+ {p:3,t:"Inherited Shame",a:"Some of what is in your backpack is not yours. It was placed in you — by a family, by a community, by a culture — before you were old enough to refuse it.",pr:"The Genogram of Shame",gate:1},
+ {p:3,t:"The Living Amend",a:"An apology is a statement about the past. A living amend is a sustained behavioral commitment that addresses the pattern.",pr:"The Living Amend",gate:1},
+ {p:4,t:"Forgiveness Is Not Reconciliation",a:"Forgiveness is internal. Reconciliation is interpersonal. Forgiveness can happen without reconciliation. Reconciliation, to be real, requires more than forgiveness.",pr:"The Two-Column Sort",gate:1},
+ {p:4,t:"The Final Backpack Audit & Closure",a:"The Audit does not solve anything. It names what you have decided. The decision is the work.",pr:"The Audit",gate:1}];
+
+/* ── small builders ── */
+var LABELS={};   /* field id → its label, for the send list */
+function v(id){ return st.f[id]||""; }
+function tm(t){ return t?'<span class="tm">'+esc(t)+'</span>':""; }
+function ta(id,label,hint,time,big){ LABELS[id]=label; return '<div class="fld"><label for="f_'+id+'">'+esc(label)+tm(time)+'</label>'+(hint?'<span class="hint">'+esc(hint)+'</span>':"")+'<textarea id="f_'+id+'" data-f="'+id+'"'+(big?' class="big"':"")+'>'+esc(v(id))+'</textarea></div>'; }
+function inp(id,label,hint,time){ LABELS[id]=label; return '<div class="fld"><label for="f_'+id+'">'+esc(label)+tm(time)+'</label>'+(hint?'<span class="hint">'+esc(hint)+'</span>':"")+'<input type="text" autocomplete="off" id="f_'+id+'" data-f="'+id+'" value="'+esc(v(id))+'"></div>'; }
+/* chips: single choice (stored as the label) or many (joined by " | "); fill: tapping writes into a field instead */
+function chips(id,opts,multi,label){
+  if(label) LABELS[id]=label;
+  var cur=multi?(v(id)?v(id).split(" | "):[]):[v(id)];
+  return '<div class="chips" role="group"'+(label?' aria-label="'+esc(label)+'"':"")+'>'+opts.map(function(o){ return '<button type="button" class="chip" data-chip="'+id+'" data-multi="'+(multi?1:0)+'" data-val="'+esc(o)+'" aria-pressed="'+(cur.indexOf(o)>-1?"true":"false")+'">'+esc(o)+'</button>'; }).join("")+'</div>';
+}
+function fill(target,opts,label){ return '<div class="chips" role="group" aria-label="'+esc(label)+'">'+opts.map(function(o){ return '<button type="button" class="chip" data-fill="'+target+'" data-val="'+esc(o)+'" aria-pressed="false">'+esc(o)+'</button>'; }).join("")+'</div>'; }
+function P(t){ return '<p>'+esc(t)+'</p>'; }
+function prompt(lines){ return '<div class="prompt"><span class="who" style="color:var(--good)">The practice</span>'+lines.map(P).join("")+'</div>'; }
+function invList(){ return st.inv.filter(function(x){return x.t&&x.t.trim();}); }
+function pick(id,label,hint){
+  LABELS[id]=label;
+  var items=invList(), cur=v(id);
+  var o='<option value="">Choose a line from your Backpack…</option>'+items.map(function(x){ return '<option value="'+x.id+'"'+(cur===x.id?" selected":"")+'>'+esc(x.t)+'</option>'; }).join("")+'<option value="other"'+(cur==="other"?" selected":"")+'>Something else (type it below)</option>';
+  return '<div class="fld"><label for="f_'+id+'">'+esc(label)+'</label>'+(hint?'<span class="hint">'+esc(hint)+'</span>':"")+'<select id="f_'+id+'" data-f="'+id+'">'+o+'</select>'+
+    (items.length?"":'<span class="hint">Your Backpack list is empty. Write it on the Session 5 page, or choose “Something else”.</span>')+
+    '<div data-show="'+id+'=other"'+(cur==="other"?"":" hidden")+'><input type="text" autocomplete="off" aria-label="The item, in a few words" data-f="'+id+'.x" value="'+esc(v(id+".x"))+'" style="margin-top:8px"></div></div>';
+}
+function itemText(id){ var c=v(id); if(c==="other") return v(id+".x"); var x=st.inv.filter(function(i){return i.id===c;})[0]; return x?x.t:""; }
+
+/* ── the twelve pages' bodies ── */
+var BODY={
+1:function(){
+  var h=prompt(["Write a letter to yourself — to the version of you who is sitting in this room right now, on Day One of this program. Tell that person what brought you here. Tell them what you are hoping for, even if you are afraid to hope. Tell them what you are afraid of. Tell them anything you want them to know on Day One that they may forget by Session 12.","This letter is sealed today and reopened in twelve weeks. No one but you will read it. Tell the truth."]);
+  h+='<div class="priv"><span aria-hidden="true">🔒</span><span><b>Private.</b> This letter is never sent and never collected.</span></div>';
+  if(st.seal){
+    h+='<div class="seal"><div class="env" aria-hidden="true">✉</div><h3>Sealed on '+esc(st.seal.at)+'</h3><p class="mut">It opens on the Session 12 page. It stays saved on this device until then.</p></div>';
+  } else {
+    h+=ta("s1.letter","Dear me, on Day One —","Twenty minutes of writing. Private.","20 min",1);
+    h+='<div class="row" style="margin-top:12px"><button type="button" class="btn primary" data-act="seal">Seal my letter</button><span class="small mut">You will not see it again until Session 12.</span></div>';
+  }
+  return h;
+},
+2:function(){
+  var h=prompt(["Three I-statements — three sentences that begin with ‘I am — ’ that name something you have been telling yourself about who you are. The harder ones. Not ‘I am tired.’ Closer to ‘I am a failure as a parent.’ ‘I am someone who can’t be trusted.’ ‘I am damaged goods.’","For each I-statement, a B-statement. The behavior or experience underneath, named specifically, in its actual shape, without the identity collapse. ‘I am a failure as a parent’ becomes — for example — ‘I missed my daughter’s 14th and 15th birthdays. I have apologized twice. I have not changed the pattern.’"]);
+  for(var i=1;i<=3;i++){
+    h+='<div class="pair">'+inp("s2.i"+i,"I-statement "+i,"I am —",i===1?"5 min":"")+ta("s2.b"+i,"B-statement "+i,"What happened, in its actual shape.",i===1?"5 min each":"")+'</div>';
+  }
+  h+=ta("s2.poss","What the B-statement makes possible that the I-statement does not — is —");
+  return h;
+},
+3:function(){
+  var h=prompt(["Write the name you give to the Punisher in your own internal life. The name is yours. Underneath the name: what does this voice typically say? Three sentences in its actual language. Not paraphrased — the actual words it uses.","Write the name you give to the Witness in your own internal life. Yours. Underneath: what does this voice typically say — when it gets to speak? If it does not get to speak much, write what you imagine it might say if you let it."]);
+  h+='<div class="vcard red"><h3>Card 1 · the Punisher</h3>'+fill("s3.pn",["The Punisher","The Critic","The Verdict","My Father’s Voice","The Drill Sergeant","That Voice From Eighth Grade"],"Name ideas")+inp("s3.pn","Its name","Tap an idea, or write your own.","5 min")+ta("s3.ps","What it says — three sentences, in its actual words")+'</div>';
+  h+='<div class="vcard green"><h3>Card 2 · the Witness</h3>'+fill("s3.wn",["The Witness","The Honest One","The Coach","My Grandmother’s Voice","The Adult"],"Name ideas")+inp("s3.wn","Its name","Tap an idea, or write your own.","5 min")+ta("s3.ws","What it says — three sentences, in its actual words")+'</div>';
+  h+='<h3 style="margin-top:22px">One situation from the last 7 days <span class="tm">10 min</span></h3><p class="mut">Pick one where the Punisher spoke loudly. Both versions.</p>';
+  h+=ta("s3.sit","The situation, briefly");
+  h+='<div class="pair">'+ta("s3.psaid","What the Punisher said")+ta("s3.wsaid","What the Witness — the honest, fair, kind voice — would have said")+'</div>';
+  return h;
+},
+4:function(){
+  var h=prompt(["Pick one moment from the last 7 days when you noticed a strong feeling. It does not have to be a hard moment. A small one is fine."]);
+  h+=ta("s4.sit","What was the situation?","Two or three sentences.","5 min");
+  h+='<h3 style="margin-top:22px">Step 1 — Sensation</h3><p class="mut">Close your eyes briefly if you can. Re-call the moment. Where in your body did you feel it?</p>';
+  h+=fill("s4.sens",["My chest got tight","My stomach dropped","My shoulders came up","My face went hot"],"Examples")+ta("s4.sens","The specific sensation",null,"5 min");
+  h+='<h3 style="margin-top:22px">Step 2 — Naming</h3><p class="mut">Try to find the most specific word — not ‘upset,’ not ‘fine.’ Tap a word to add it, or write your own.</p>';
+  h+=fill("s4.name",["afraid","anxious","ashamed","guilty","embarrassed","lonely","grieving","hurt","angry","resentful","betrayed","jealous","disappointed","overwhelmed","exhausted","numb","relieved","hopeful","grateful","proud","tender"],"Feeling words")+ta("s4.name","The feeling",null,"5 min");
+  h+=ta("s4.under","Is this the whole feeling, or is something underneath?","If something is underneath, name that too.");
+  h+='<h3 style="margin-top:22px">Step 3 — Message</h3>';
+  h+=ta("s4.msg","What was the feeling telling you?","Not what you should have done. What was it informing you about?","5 min");
+  h+=ta("s4.final","“What changes when I treat this feeling as a messenger rather than as a problem?”","One sentence.","5 min");
+  return h;
+},
+5:function(){
+  var h=prompt(["Each item gets one line. The line names the item specifically enough that you will recognize it when you see it again next week — but not so specifically that the line itself reads like a story.","“My father’s funeral and what I did not say” is a line.","There is no minimum number of items. There is no maximum. The number is not the measure. The truth of each line is the measure. If you finish before the time is up, sit with the list. Read it once, slowly. Do not edit yet. Just see what is there."]);
+  h+='<div class="priv"><span aria-hidden="true">🔒</span><span><b>Private.</b> Your Backpack is never sent and never collected. Sessions 6, 7, 11 and 12 bring it back to you.</span></div>';
+  h+='<ol class="inv" id="invList">'+st.inv.map(function(x){ return '<li data-id="'+x.id+'"><input type="text" autocomplete="off" aria-label="Backpack line" data-inv="'+x.id+'" value="'+esc(x.t)+'"><button type="button" class="x" data-act="invdel" data-id="'+x.id+'" aria-label="Remove this line">✕</button></li>'; }).join("")+'</ol>';
+  h+='<div class="addrow"><input type="text" id="invNew" autocomplete="off" aria-label="A new line for your Backpack" placeholder="One line…"><button type="button" class="btn primary" data-act="invadd">Add</button></div>';
+  var n=invList().length; h+='<p class="count">'+(n?n+(n===1?" line":" lines")+" in your Backpack.":"Your Backpack is empty so far.")+'</p>';
+  return h;
+},
+6:function(){
+  var h=prompt(["Read the list. Pick one item — not necessarily the heaviest. Pick one where the Punisher is loud, but where you have some sense that the Witness might be able to speak."]);
+  h+=pick("s6.item","The item","5 min");
+  h+=ta("s6.pun","In the Punisher’s voice","Two or three sentences in its actual language — what it says when it talks about this. This is not to feed the Punisher. It is to make its voice visible so the Witness has something to respond to.","5 min");
+  h+=ta("s6.wit","A letter from the Compassionate Witness to your past self, about the same item","Honest. Fair. Kind. Without punishment. Aim for at least one full paragraph; longer is welcome.","12 min",1);
+  h+='<div class="fld"><span class="lab">Read your letter. Tap each one that holds true.</span><span class="hint">Does this sentence feel honest? Is it fair? Is it kind? Is there punishment in it? Edit the punishment out.</span>'+chips("s6.check",["Honest","Fair","Kind","Without punishment"],1,"The four words")+'</div>';
+  h+=ta("s6.final","“What changes in my body when the Witness speaks instead of the Punisher?”","One sentence.");
+  return h;
+},
+7:function(){
+  var h=prompt(["Read the list once, slowly. For each item, mark: G if grief, R if resentment, B if both.","Is there a wish that things had been different? (G) Is there a verdict — a blame, an unresolved ‘how could you’ or ‘how could I’? (R) Most heavy items will be B. Mark them honestly.","For items marked B: which is louder right now — the grief or the resentment?"]);
+  var items=invList();
+  if(!items.length) h+='<p class="empty">Your Backpack list is empty. Add your lines on the Session 5 page, then come back.</p>';
+  h+='<div class="sort">'+items.map(function(x){
+    return '<div class="srow"><p class="it">'+esc(x.t)+'</p>'+chips("s7.g."+x.id,["G · grief","R · resentment","B · both"],0)+
+      (v("s7.g."+x.id)==="B · both"?'<div class="sub"><span class="lab">Louder right now:</span>'+chips("s7.l."+x.id,["G+","R+"],0)+'</div>':"")+'</div>';
+  }).join("")+'</div>';
+  h+='<h3 style="margin-top:22px">One item, a paragraph <span class="tm">12 min</span></h3><p class="mut">Pick one where you suspect you have been applying the wrong tool, or where the sorting itself reveals something you had not seen.</p>';
+  h+=pick("s7.item","The item");
+  h+=ta("s7.para","What did you previously think this item was? What does the sorting reveal? What might change about how you address it now?",null,null,1);
+  return h;
+},
+8:function(){
+  var h=prompt(["Address the letter: “To the version of me who …” Identify the younger self specifically enough that you know who you are writing to.","The four moves are the structure — Name what happened. Name what the younger self did not yet know. Speak in the Witness’s voice. Release the verdict. The structure is a guide; let the letter take its own shape if it wants to."]);
+  h+=inp("s8.to","To the version of me who —","“who was twenty-three in the spring of —,” “who could not speak at the funeral.”","3 min");
+  h+=ta("s8.letter","The letter",null,"22 min",1);
+  h+='<div class="fld"><span class="lab">The four moves — tap each one your letter makes</span>'+chips("s8.moves",["Named what happened","Named what they did not yet know","Spoke in the Witness’s voice","Released the verdict"],1,"The four moves")+'</div>';
+  h+='<div class="pair">'+inp("s8.sign","Sign it — your present-day name")+'<div class="fld" style="margin-top:0"><label for="f_s8.date">Today’s date</label><input type="text" autocomplete="off" id="f_s8.date" data-f="s8.date" value="'+esc(v("s8.date"))+'"><button type="button" class="chip" style="margin-top:8px" data-act="today" data-for="s8.date">Use today</button></div></div>';
+  LABELS["s8.date"]="Date";
+  h+='<p class="mut" style="margin-top:12px">Then read the letter once, silently, slowly. <span class="tm">5 min</span></p>';
+  return h;
+},
+9:function(){
+  var h=prompt(["The structure is simple: you are at the center. Above you, the people who raised you. Above them, their parents. To the sides: siblings, important community figures. The genogram is a quick map — not a complete family tree."]);
+  function g(id,lab){ LABELS[id]=lab; return '<div class="g"><label for="f_'+id+'">'+esc(lab)+'</label><textarea id="f_'+id+'" data-f="'+id+'">'+esc(v(id))+'</textarea></div>'; }
+  h+='<p class="mut" style="margin-top:12px">The map <span class="tm">8 min</span></p><div class="geno" aria-label="Your genogram"><div class="gr">'+g("s9.gp1","Grandparents")+g("s9.gp2","Grandparents")+'</div><div class="gr">'+g("s9.par1","Who raised me")+g("s9.par2","Who raised me")+'</div><div class="me">'+g("s9.sib","Siblings")+'<div class="g you">You</div>'+g("s9.com","Community figures")+'</div></div>';
+  h+='<h3 style="margin-top:22px">Two to four pieces of shame from your inventory <span class="tm">3 + 5 min</span></h3><p class="mut">A brief phrase each — “shame about being from where I’m from,” “shame about my body,” “shame about money.” Then ask the three questions, and mark each one.</p>';
+  for(var r=1;r<=4;r++){
+    var id="s9.r"+r; LABELS[id+".t"]="Piece of shame "+r;
+    h+='<div class="shame"><input type="text" autocomplete="off" aria-label="Piece of shame '+r+'" placeholder="Piece of shame '+r+'" data-f="'+id+'.t" value="'+esc(v(id+".t"))+'"><div class="qs">'+
+      [["q1","It pre-dates my earliest memory of authoring it."],["q2","It is shame about who I am, not what I did."],["q3","Others in my family or community carry it in the same shape."]].map(function(q){ return '<label class="cb"><input type="checkbox" data-f="'+id+'.'+q[0]+'"'+(v(id+"."+q[0])?" checked":"")+'> '+esc(q[1])+'</label>'; }).join("")+
+      '</div>'+chips(id+".m",["I · inherited","A · authored","M · mixed"],0)+'</div>';
+  }
+  var im=[]; for(var k=1;k<=4;k++){ var m=v("s9.r"+k+".m"); if(v("s9.r"+k+".t")&&(m==="I · inherited"||m==="M · mixed")) im.push(v("s9.r"+k+".t")); }
+  h+='<h3 style="margin-top:22px">One piece marked I or M <span class="tm">9 min</span></h3>'+(im.length?'<p class="mut">Marked I or M: '+im.map(esc).join(" · ")+'</p>':"");
+  h+=ta("s9.para","Where, in your genogram, does this piece of shame seem to have begun? Who else has carried it? What did it cost them? What has it cost you to keep carrying it?",null,null,1);
+  return h;
+},
+10:function(){
+  var h=prompt(["Look at your inventory. Identify one pattern in your life that has produced repeated apologies — to others, to yourself, or both. Not a single incident. A pattern."]);
+  h+=ta("s10.pat","The pattern",null,"5 min");
+  h+=ta("s10.apol","The apology you have made (or have been making to yourself) about this pattern","Two or three sentences in the actual language. This is to make the apology visible — to see what you have been doing instead of changing the pattern.","3 min");
+  h+='<h3 style="margin-top:22px">Design the living amend <span class="tm">12 min</span></h3>';
+  h+=ta("s10.a","(a) The specific behavioral change","What you will start or stop doing, in language specific enough that you can answer ‘did I do it today?’");
+  h+='<div class="fld"><span class="lab">(b) The duration</span><span class="hint">How long you commit to sustain it — twelve months is suggested for a first living amend; never less than three.</span>'+chips("s10.b",["3 months","6 months","12 months","18 months","24 months"],0,"(b) The duration")+'</div>';
+  h+=ta("s10.c","(c) The sustainability question","What will you do when this gets hard, when you are tired, when something in your life makes the commitment seem reasonable to abandon?");
+  h+=ta("s10.d","Optional: if the amend is to a specific person — why this amend will be silent","Why you are not announcing it to them. The discipline of silence is itself part of the practice.","5 min");
+  return h;
+},
+11:function(){
+  var h=prompt(["Identify three items where another person caused harm — or where you caused harm to another person.","Left column: forgiveness — the inward release. Right column: reconciliation — the outward restoration. Be honest. The Witness can hold not-yet-ready as a complete answer."]);
+  for(var r=1;r<=3;r++){
+    var id="s11.r"+r;
+    h+='<div class="vcard" style="border-top-color:var(--p4)"><h3>Item '+r+'</h3>'+pick(id+".item","The item")+
+      '<div class="pair" style="border:0;padding:0;background:none"><div><span class="lab" style="font-weight:800;display:block;margin-top:10px">Forgiveness · the inward release</span>'+chips(id+".f",["Done","In the middle","Not yet begun","I do not want to"],0,"Item "+r+" · forgiveness")+ta(id+".fn","Where am I with it?")+'</div>'+
+      '<div><span class="lab" style="font-weight:800;display:block;margin-top:10px">Reconciliation · the outward restoration</span>'+chips(id+".r",["On the table","Not on the table"],0,"Item "+r+" · reconciliation")+
+      (v(id+".r")==="Not on the table"?'<span class="hint">Name what is true:</span>'+chips(id+".why",["The person is unreachable","The person has died","The person has not acknowledged","The person has not changed","The relationship is unsafe","I do not want it"],1,"Item "+r+" · what is true"):"")+ta(id+".rn","Is it actually on the table?")+'</div></div></div>';
+  }
+  h+=ta("s11.final","“What changes when I separate the inward question from the outward question?”","One sentence.");
+  return h;
+},
+12:function(){
+  var h=prompt(["Item by item, place each on your inventory into one of the three columns: PUT DOWN · CARRY DIFFERENTLY · CHOOSE TO CARRY. The column placement is the operative decision.","Some items will go in more than one column, and that is fine. The first column you tap is the primary one (★)."]);
+  var C=["Put down","Carry differently","Choose to carry"], items=invList();
+  if(!items.length) h+='<p class="empty">Your Backpack list is empty. Add your lines on the Session 5 page, then come back.</p>';
+  h+='<div class="sort">'+items.map(function(x){ return '<div class="srow"><p class="it">'+esc(x.t)+'</p>'+chips("s12.c."+x.id,C,1)+'</div>'; }).join("")+'</div>';
+  var cols=[[],[],[]];
+  items.forEach(function(x){ var a=v("s12.c."+x.id); if(!a) return; a.split(" | ").forEach(function(c,i){ var k=C.indexOf(c); if(k>-1) cols[k].push((i===0&&a.indexOf(" | ")>-1?"★ ":"")+x.t); }); });
+  h+='<h3 style="margin-top:22px">Your three columns</h3><p class="mut">Without changing anything, read them slowly, all the way through.</p><div class="cols">'+C.map(function(c,k){ return '<div class="col"><h4 class="p'+(k+2)+'c">'+esc(c)+'</h4>'+(cols[k].length?'<ul>'+cols[k].map(function(t){return '<li>'+esc(t)+'</li>';}).join("")+'</ul>':'<p class="empty small">Nothing here yet.</p>')+'</div>'; }).join("")+'</div>';
+  h+=ta("s12.why1","“The reason I am putting these down is —”");
+  h+=ta("s12.why2","“The reason I am carrying these differently is —”");
+  h+=ta("s12.why3","“The reason I am choosing to carry these is —”");
+  h+='<h3 style="margin-top:26px">The Arrival Letter</h3><p class="mut">The version of you on Day One, met by the version of you twelve weeks later.</p>';
+  if(st.seal&&st.seal.read) h+='<div class="letter-open">'+esc(v("s1.letter"))+'</div>';
+  else if(st.seal) h+='<button type="button" class="btn primary" data-act="unseal">Open my Arrival Letter</button>';
+  else if(v("s1.letter")) h+='<div class="letter-open">'+esc(v("s1.letter"))+'</div>';
+  else h+='<p class="empty">There is no Arrival Letter on this device.</p>';
+  return h;
+}};
+
+/* ── which pages have been started ── */
+function started(n){
+  if(n===5) return invList().length>0;
+  if(n===1&&st.seal) return true;
+  var pre="s"+n+".";
+  for(var k in st.f) if(k.indexOf(pre)===0&&st.f[k]) return true;
+  return false;
+}
+function progress(){
+  var c=0; for(var n=1;n<=12;n++) if(started(n)) c++;
+  var pr=$("wbProg"); pr.querySelector("i").style.setProperty("--p",Math.round(100*c/12)); pr.querySelector(".bar").style.setProperty("--p",Math.round(100*c/12));
+  pr.querySelector(".lab").textContent=c+" of 12 pages started";
+  var o=$("jump").options; for(var i=0;i<o.length;i++){ var m=+o[i].value; o[i].textContent=(started(m)?"✓ ":"")+m+" · "+S[m].t+(S[m].gate&&!st.open?" (opens in the room)":""); }
+}
+
+/* ── draw one page ── */
+var cur=1;
+function draw(n){
+  LABELS={};
+  var s=S[n], h='<article class="page p'+s.p+'" data-n="'+n+'">';
+  h+='<div class="ph"><div class="k p'+s.p+'c">Session '+n+' · '+PH[s.p]+'</div><h2>'+esc(s.t)+'</h2><p class="anc">'+esc(s.a)+'</p><span class="pname">On the page · '+esc(s.pr)+'</span></div>';
+  if(s.gate&&!st.open){
+    h+='<div class="gatecard"><h3 style="margin-top:0">Your facilitator opens this in the room</h3><p>Sessions 7 to 12 begin after a short check-in with your facilitator. They will give you a word. Type it here.</p><label for="gateIn" style="font-weight:800;display:block;margin:.6em 0 .3em">The word</label><input type="text" id="gateIn" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-act="gate">Open Sessions 7–12</button></div><p class="err" id="gateErr" aria-live="polite"></p></div>';
+  } else {
+    h+=BODY[n]();
+    h+='<div class="pfoot no-print"><span class="saved" id="savedLine" aria-live="polite">'+(started(n)?"Saved on this device.":"Saves on this device as you write.")+'</span><button type="button" class="btn" data-act="print">Print this page</button></div>';
+    if(DEST&&!s.priv) h+=sendPanel(n);
+  }
+  h+='</article>';
+  $("pages").innerHTML=h;
+  $("jump").value=String(n); $("prevBtn").disabled=(n===1); $("nextBtn").disabled=(n===12);
+}
+function show(n,keepScroll){
+  n=Math.max(1,Math.min(12,n|0)); cur=n; st.last=n; save();
+  draw(n); progress();
+  if(!keepScroll) try{ var top=$("wbTools").getBoundingClientRect().top+window.pageYOffset-70; if(window.pageYOffset>top) window.scrollTo(0,top); }catch(e){}
+}
+
+/* ── send: page by page, answer by answer, nothing ticked until the writer ticks it ── */
+function sendable(n){
+  var out=[], pre="s"+n+".";
+  Object.keys(LABELS).forEach(function(id){
+    if(id.indexOf(pre)!==0) return;
+    var val=v(id); if(!val) return;
+    if(/\.item$/.test(id)) return;                         /* Backpack lines stay home */
+    if(/^s1\./.test(id)) return;                           /* the Arrival Letter stays home */
+    out.push({id:id,label:LABELS[id],answer:val});
+  });
+  return out;
+}
+function sendPanel(n){
+  var list=sendable(n);
+  return '<div class="send no-print" id="sendBox"><h3>Send to my facilitator</h3><p class="small mut">Choose what to send. Nothing is ticked until you tick it. Your Backpack lines are never included.</p>'+
+    '<div id="sendPick">'+pickHtml(list,{})+'</div>'+
+    '<label for="whoIn" style="font-weight:800;display:block;margin:.6em 0 .3em">Your first name or group code</label><input type="text" id="whoIn" autocomplete="off" maxlength="60" value="'+esc(st.who)+'">'+
+    '<div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-act="send">Send what I ticked</button></div><p class="st" id="sendSt" aria-live="polite"></p></div>';
+}
+function pickHtml(list,on){
+  return list.length?'<div class="pick">'+list.map(function(x){ return '<label class="cb"><input type="checkbox" data-send="'+x.id+'"'+(on[x.id]?" checked":"")+'> <span>'+esc(x.label)+'</span></label>'; }).join("")+'</div>':'<p class="empty">Write something on this page first.</p>';
+}
+function refreshSend(){
+  var box=$("sendPick"); if(!box) return; var on={};
+  Array.prototype.forEach.call(box.querySelectorAll("input[data-send]"),function(c){ if(c.checked) on[c.getAttribute("data-send")]=1; });
+  var list=sendable(cur), key=list.map(function(x){return x.id;}).join(",");
+  if(box.getAttribute("data-k")===key) return;
+  box.setAttribute("data-k",key); box.innerHTML=pickHtml(list,on);
+}
+var busy=false;
+function send(){
+  if(busy||!DEST) return;
+  var who=($("whoIn").value||"").trim(), stl=$("sendSt");
+  var ids=Array.prototype.map.call(D.querySelectorAll("#sendBox input[data-send]:checked"),function(c){return c.getAttribute("data-send");});
+  if(!ids.length){ stl.textContent="Tick at least one answer to send."; return; }
+  if(!who){ stl.textContent="Add your first name or group code, so your facilitator knows it is yours."; $("whoIn").focus(); return; }
+  st.who=who; save();
+  var resp=ids.map(function(id){ return {prompt:LABELS[id],answer:v(id)}; });
+  var payload={action:"checkin",checkinType:"practice",_backendAuth:DEST.key,studentId:who,timestamp:new Date().toISOString(),date:today(),
+    activityId:"adult-s"+cur,activityName:"Adult Edition · Session "+cur+" · "+S[cur].pr,skill:"Adult Edition · "+S[cur].t,
+    setNo:"",itemsTotal:"",independent:"",supported:"",hintsUsed:"",confidence:"",source:"link",
+    extra:JSON.stringify({series:"adult-workbook",build:"adult wb v1",session:cur,responses:resp})};
+  var body=JSON.stringify(payload); busy=true; stl.textContent="Sending…";
+  function done(){ busy=false; stl.textContent="Sent to your facilitator ✓ ("+ids.length+(ids.length===1?" answer)":" answers)"); }
+  function fail(){ busy=false; stl.textContent="That didn’t go through. Check the internet, then tap Send again."; }
+  fetch(DEST.url,{method:"POST",mode:"cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
+    .then(function(r){return r.json();}).then(function(j){ if(j&&j.ok) done(); else fail(); })
+    .catch(function(){ fetch(DEST.url,{method:"POST",mode:"no-cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body}).then(done).catch(fail); });
+}
+
+/* ── events ── */
+var saveT=null;
+function saved(){ var s=$("savedLine"); if(s) s.textContent=save()?"Saved on this device.":"This browser is not letting the page save. Print your page to keep it."; progress(); refreshSend(); }
+D.addEventListener("input",function(e){
+  var el=e.target;
+  if(el.getAttribute&&el.hasAttribute("data-f")){ st.f[el.getAttribute("data-f")]=(el.type==="checkbox")?(el.checked?"1":""):el.value; clearTimeout(saveT); saveT=setTimeout(saved,250); }
+  if(el.getAttribute&&el.hasAttribute("data-inv")){ var x=st.inv.filter(function(i){return i.id===el.getAttribute("data-inv");})[0]; if(x){ x.t=el.value; clearTimeout(saveT); saveT=setTimeout(saved,250); } }
+});
+D.addEventListener("change",function(e){
+  var el=e.target;
+  if(el.tagName==="SELECT"&&el.hasAttribute("data-f")){ st.f[el.getAttribute("data-f")]=el.value; saved();
+    var w=D.querySelector('[data-show="'+el.getAttribute("data-f")+'=other"]'); if(w) w.hidden=(el.value!=="other"); }
+  if(el.type==="checkbox"&&el.hasAttribute("data-f")){ st.f[el.getAttribute("data-f")]=el.checked?"1":""; saved(); }
+});
+D.addEventListener("keydown",function(e){
+  if(e.key!=="Enter") return;
+  if(e.target.id==="invNew"){ e.preventDefault(); addInv(); }
+  if(e.target.id==="gateIn"){ e.preventDefault(); gate(); }
+});
+function addInv(){
+  var i=$("invNew"), t=(i.value||"").trim(); if(!t) return;
+  st.inv.push({id:uid(),t:t}); save(); draw(cur); progress(); var ni=$("invNew"); if(ni) ni.focus();
+}
+function gate(){
+  var w=$("gateIn").value;
+  if(h32(w)===GATE){ st.open=true; save(); show(cur,true); }
+  else { $("gateErr").textContent="That word didn’t open it. Ask your facilitator."; }
+}
+$("pages").addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest("button"); if(!b) return;
+  /* chips that store a choice */
+  if(b.hasAttribute("data-chip")){
+    var id=b.getAttribute("data-chip"), val=b.getAttribute("data-val");
+    if(b.getAttribute("data-multi")==="1"){ var a=v(id)?v(id).split(" | "):[]; var k=a.indexOf(val); if(k>-1) a.splice(k,1); else a.push(val); st.f[id]=a.join(" | "); }
+    else st.f[id]=(v(id)===val)?"":val;
+    saved();
+    /* pages whose layout depends on a choice redraw; others just repaint the chips */
+    if(/^s7\.g\.|^s11\.r\d\.r$|^s12\.c\./.test(id)){ var y=window.pageYOffset; draw(cur); window.scrollTo(0,y); }
+    else { var grp=b.parentNode.querySelectorAll('[data-chip="'+id+'"]'); var cur2=b.getAttribute("data-multi")==="1"?(v(id)?v(id).split(" | "):[]):[v(id)]; for(var g=0;g<grp.length;g++) grp[g].setAttribute("aria-pressed",cur2.indexOf(grp[g].getAttribute("data-val"))>-1?"true":"false"); }
+    return;
+  }
+  /* chips that write into a field */
+  if(b.hasAttribute("data-fill")){
+    var fid=b.getAttribute("data-fill"), f=D.querySelector('[data-f="'+fid+'"]'), w=b.getAttribute("data-val");
+    if(f){ if(f.tagName==="INPUT") f.value=w; else f.value=(f.value.trim()?f.value.replace(/\s+$/,"")+(fid==="s4.name"?", ":"\n"):"")+w; st.f[fid]=f.value; saved(); }
+    return;
+  }
+  var act=b.getAttribute("data-act");
+  if(act==="print") window.print();
+  if(act==="invadd") addInv();
+  if(act==="invdel"){ var did=b.getAttribute("data-id"); st.inv=st.inv.filter(function(x){return x.id!==did;}); save(); draw(cur); progress(); }
+  if(act==="seal"){
+    if(!v("s1.letter").trim()){ b.textContent="Write your letter first"; return; }
+    if(b.getAttribute("data-armed")!=="1"){ b.setAttribute("data-armed","1"); b.textContent="Tap again to seal it until Session 12"; return; }
+    st.seal={at:today(),read:false}; save(); draw(cur); progress();
+  }
+  if(act==="unseal"){ st.seal.read=true; save(); draw(cur); }
+  if(act==="today"){ var tf=b.getAttribute("data-for"); st.f[tf]=today(); saved(); var ti=$("f_"+tf); if(ti) ti.value=today(); }
+  if(act==="gate") gate();
+  if(act==="send") send();
+});
+$("jump").addEventListener("change",function(){ show(+this.value); });
+$("prevBtn").addEventListener("click",function(){ show(cur-1); });
+$("nextBtn").addEventListener("click",function(){ show(cur+1); });
+$("eraseAll").addEventListener("click",function(){
+  var b=this;
+  if(b.getAttribute("data-armed")!=="1"){ b.setAttribute("data-armed","1"); b.textContent="Tap again to erase everything on this device"; $("eraseNote").textContent="This cannot be undone. Your sealed letter goes too."; return; }
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  st=load(); b.removeAttribute("data-armed"); b.textContent="Erase my workbook from this device"; $("eraseNote").textContent="Erased. This device holds nothing from your workbook now."; show(1);
+});
+
+/* ── start ── */
+var opts=""; for(var n=1;n<=12;n++){ if(n===1||n===4||n===7||n===11) opts+=(n>1?"</optgroup>":"")+'<optgroup label="'+PH[S[n].p]+'">'; opts+='<option value="'+n+'"></option>'; } opts+="</optgroup>";
+$("jump").innerHTML=opts;
+var q=/[?&]s=(\d+)/.exec(location.search);
+show(q?+q[1]:(st.last||1),true);
+})();
+</script>
+</body>
+</html>
