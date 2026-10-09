@@ -95,8 +95,8 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  sendPadsBtn:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
-  padsBtn:{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  toPadsLab:{en:"Send to the Drum Machine:",es:"Enviar a la caja de ritmos:"}, sendPadsBtn:{en:"My take",es:"Mi toma"}, sendPadsAria:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn:{en:"These chords",es:"Estos acordes"}, padsAria:{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
@@ -1005,7 +1005,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher");
-  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint();
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
