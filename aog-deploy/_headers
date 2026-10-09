@@ -3,11 +3,13 @@
 # iframes, blob: print windows, fetch to script.google.com, Google Fonts,
 # cdnjs, jsdelivr and api.qrserver.com. https: + data: + blob: cover all of
 # those; frame-ancestors keeps the site out of other people's iframes.
+# microphone=(self) (2026-10-09, STUDIO-HANDOFF §10, §10b, §10c): the site's own pages may ask for it, only when a person
+# presses Record your voice, Record my guitar or Tune; nothing opens it on load. Other sites and embeds still may not.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(self), geolocation=()
   Content-Security-Policy: default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://script.google.com;
 
 # ⚠ ADDED .4302 — sw.js IS THE ONE FILE THAT MUST NEVER COME FROM CACHE.

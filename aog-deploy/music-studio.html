@@ -27,7 +27,8 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
      looped. A mixer: volume, side, mute, solo, three-band EQ, Punch, and sends to one shared Room and one shared Echo;
      the whole song gets an EQ, Glue, a limiter and a volume. Make the mix renders the song through the very same chain
      in an OfflineAudioContext, to save as .wav or send to the turntables (shelf "studiobench").
-     Every sound comes from the site's own instruments: no microphone, ever. The arrangement is kept at aog.studio.v1;
+     Every sound comes from the site's own instruments; the one exception is your voice on track 8 (AOG-STUDIO-VOICE-V1),
+     and the microphone opens only when you press Record your voice. The arrangement is kept at aog.studio.v1;
      a copy of each recording on a track is kept in IndexedDB ("aog-studio"), so a new bounce on an instrument never
      changes a song already made. Phone first: one track's controls at a time; a row of channel strips on a bigger
      screen. Nothing moves or sounds until Play is pressed. -->
@@ -229,6 +230,11 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-take b{color:#f1ebdf}
 .st-take audio{height:40px;max-width:100%;flex:1 1 14rem;min-width:0}
 .st-new{margin-top:1.2rem}
+/* AOG-STUDIO-VOICE-V1: track 8, your voice */
+.st-voice{display:grid;gap:.6rem;max-width:44rem}
+.st-recs[hidden],#recsH[hidden]{display:none}
+.st-voice .st-row .st-btn{flex:0 1 auto}
+.st-rec-on{background:linear-gradient(#ffb1a4,#c4452a)!important;color:#2a0c08!important}
 /* AOG-STUDIO-SENDOUT-V1: the file that leaves the Studio */
 .st-out b,.st-out .st-len{flex:1 1 100%}
 .st-out .st-len{margin-top:-.4rem;overflow-wrap:anywhere}
@@ -334,6 +340,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         <div id="clipBox"></div>
         <h3 class="st-h3" data-t="recsH" id="recsH"></h3>
         <div class="st-recs" id="recs"></div>
+        <div id="voiceBox"></div><!-- AOG-STUDIO-VOICE-V1: track 8 is your voice -->
         <p class="st-line" id="recLine" aria-live="polite"></p>
       </div>
 
@@ -500,6 +507,26 @@ const STR={
   outShared:{en:"Sent.",es:"Enviado."}, outSaved:{en:"Saved: {name}.",es:"Guardado: {name}."},
   outLeft:{en:"Not in the file: {list}.",es:"No están en el archivo: {list}."},
   trackFile:{en:"track",es:"pista"},
+  outVoice:{en:"Your voice on its own",es:"Tu voz sola"}, outVoiceMaking:{en:"Making your voice's file…",es:"Haciendo el archivo de tu voz…"},
+  outVoiceReady:{en:"Your voice on its own",es:"Tu voz sola"}, voiceFile:{en:"voice",es:"voz"},
+  /* AOG-STUDIO-VOICE-V1 (STUDIO-HANDOFF §10): track 8 is your voice; the microphone opens only when you press Record */
+  voiceH:{en:"Your voice",es:"Tu voz"},
+  voiceTrack:{en:"Voice",es:"Voz"},
+  voiceN:{en:"Your voice {n}",es:"Tu voz {n}"},
+  voiceAsk:{en:"To add your voice, this page needs the microphone. The recording stays on this device.",es:"Para añadir tu voz, esta página necesita el micrófono. La grabación se queda en este aparato."},
+  voiceHow:{en:"Record plays your song from the start bar and records you singing along. Press Stop when you are done.",es:"Grabar toca tu canción desde el compás de inicio y te graba cantando. Pulsa Parar cuando termines."},
+  voiceRec:{en:"● Record your voice",es:"● Grabar tu voz"}, voiceAgain:{en:"● Record again",es:"● Grabar otra vez"},
+  voiceStop:{en:"■ Stop",es:"■ Parar"},
+  voiceOpening:{en:"Opening the microphone…",es:"Abriendo el micrófono…"},
+  voiceOn:{en:"Recording. Sing along, then press Stop.",es:"Grabando. Canta y luego pulsa Parar."},
+  voiceDone:{en:"Your voice is on track 8.",es:"Tu voz está en la pista 8."},
+  voiceShort:{en:"That was very short. Try again.",es:"Fue muy corto. Inténtalo otra vez."},
+  voiceDenied:{en:"The microphone is not allowed on this page. To add your voice, allow it in your browser's settings, then try again. Everything else here still works.",es:"El micrófono no está permitido en esta página. Para añadir tu voz, permítelo en la configuración del navegador y vuelve a intentarlo. Todo lo demás aquí sigue funcionando."},
+  voiceNone:{en:"No microphone was found. Plug one in, or try another device. Everything else here still works.",es:"No se encontró un micrófono. Conecta uno o prueba otro aparato. Todo lo demás aquí sigue funcionando."},
+  voiceTry:{en:"Try again",es:"Intentar otra vez"},
+  voiceGone:{en:"Your voice take is deleted.",es:"Tu toma de voz está borrada."},
+  voiceBack:{en:"Bring it back",es:"Recuperarla"},
+  voiceReplace:{en:"Recording again takes the place of the take on track 8.",es:"Grabar otra vez reemplaza la toma de la pista 8."},
   /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
   carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
   carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
@@ -550,7 +577,7 @@ const STR={
   lockOff:{en:"Disconnect this device",es:"Desconectar este aparato"},
   lockOffDone:{en:"This device is not connected any more. Your songs stay in your Google Drive.",es:"Este aparato ya no está conectado. Tus canciones se quedan en tu Google Drive."},
   mbN:{en:"{n} MB",es:"{n} MB"},
-  foot:{en:"Your song and your takes stay on this device, unless you save a song file or save to your own locker. The mixing desk never uses a microphone.",es:"Tu canción y tus tomas se quedan en este aparato, a menos que guardes un archivo de canción o guardes en tu propio casillero. La mesa de mezclas nunca usa un micrófono."},
+  foot:{en:"Your song and your takes stay on this device, unless you save a song file or save to your own locker. The microphone opens only when you press Record your voice.",es:"Tu canción y tus tomas se quedan en este aparato, a menos que guardes un archivo de canción o guardes en tu propio casillero. El micrófono solo se abre cuando pulsas Grabar tu voz."},
   /* AOG-STUDIO-INBOX-V1 */
   grpTakes:{en:"Takes sent here",es:"Tomas enviadas aquí"}, grpShelves:{en:"Sent to the turntables",es:"Enviado a los platos"},
   inboxH:{en:"Takes sent here",es:"Tomas enviadas aquí"},
@@ -663,7 +690,8 @@ function cleanClip(c){
     /* AOG-STUDIO-EDIT-V1 */
     speed:Math.round(num(c.speed,0.5,1.5,1)*1000)/1000, keep:c.keep!==false,
     fadeIn:FADES.indexOf(+c.fadeIn)>=0 ? +c.fadeIn : 0, fadeOut:FADES.indexOf(+c.fadeOut)>=0 ? +c.fadeOut : 0,
-    pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)) };
+    pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)),
+    voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)) };   /* AOG-STUDIO-VOICE-V1 */
   if(!(o.sec>0) || !(o.body>0)) return null;
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
@@ -1325,7 +1353,9 @@ async function removeTake(id){
   const btns=$("inbox").querySelectorAll("[data-drop]"), next=btns[Math.min(at, btns.length-1)] || $("trackSel"); if(next) next.focus();
 }
 function dropClip(id){ BUF.delete(id); PEAKS.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
-function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const id=x.clip.id; x.clip=null; dropClip(id); songChanged(); }
+function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const old=x.clip, id=old.id;
+  if(old.voice) voiceKeep(old);   /* AOG-STUDIO-VOICE-V1: Bring it back, until the next delete */
+  x.clip=null; dropClip(id); songChanged(); }
 /* after any change to what plays where */
 function songChanged(){
   save();
@@ -1722,6 +1752,142 @@ function bindCarry(){
 }
 
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-STUDIO-VOICE-V1 (2026-10-09) — STUDIO-HANDOFF §10, the fifth of Jimmy's order. Track 8 is your voice.
+   - The microphone opens only when you press Record your voice; never on load, on Play, or in the background. The
+     first time, the browser asks; the line above the button says why, plainly, and that the recording stays here.
+   - Record plays the song from the start bar (the count-in too, when it is on; never looped) and records you singing
+     along; Stop ends it, and the microphone is let go at once. A song with nothing on it yet records you on your own.
+   - The take lands on track 8, lined up with the song: the time the speakers and the microphone take is allowed for
+     (the context's output latency and the input's own). It is kept like every track (IndexedDB "aog-studio", the
+     arrangement at aog.studio.v1), never in a list another tool reads, never uploaded. Mix, mute and solo as any track.
+   - Delete works as on any track, and Bring it back returns it until the next delete.
+   - A refused or missing microphone leaves the slot, a plain line and Try again; the rest of the desk is untouched.
+   ══════════════════════════════════════════════════════════════════════════ */
+const VOICE_T=7;
+const VOICE={rec:false, busy:false, state:"", stream:null, node:null, src:null, sink:null, chunks:[], t0:-1, T0:0, lat:0, withSong:false, keep:null, gone:null, wk:null};
+const VOICE_WK=`class AogVoiceCap extends AudioWorkletProcessor{constructor(){super();this.on=true;this.b=[];this.n=0;this.t=-1;
+this.port.onmessage=e=>{if(e.data==="stop"){this.flush();this.on=false;this.port.postMessage({end:true});}};}
+flush(){if(!this.n)return;const o=new Float32Array(this.n);let k=0;for(const x of this.b){o.set(x,k);k+=x.length;}this.port.postMessage({t:this.t,d:o},[o.buffer]);this.b=[];this.n=0;this.t=-1;}
+process(ins){if(!this.on)return false;const c=ins[0]&&ins[0][0];if(c&&c.length){if(this.t<0)this.t=currentTime;this.b.push(c.slice(0));this.n+=c.length;if(this.n>=sampleRate/4)this.flush();}return true;}}
+registerProcessor("aog-voice-cap",AogVoiceCap);`;
+function voiceKeep(clip){ sget(clip.id).then(v=>{ VOICE.gone=(v && v.wav) ? {clip:Object.assign({}, clip), wav:v.wav} : null; paintVoice(); }, ()=>{}); }
+async function voiceBack(){
+  const g=VOICE.gone; if(!g || VOICE.busy) return;
+  VOICE.busy=true;
+  try{
+    const info=await wavInfo(g.wav), buf=await decodeWav(g.wav, info ? info.sr : MIX_SR);
+    await sput(g.clip.id, {wav:g.wav}); BUF.set(g.clip.id, buf);
+    const x=SONG.tracks[VOICE_T], old=x.clip;
+    x.clip=cleanClip(g.clip); VOICE.gone=null;
+    if(old){ if(old.voice) voiceKeep(old); dropClip(old.id); }
+    VOICE.state=""; songChanged();
+  }catch(e){ VOICE.state="fail"; }
+  VOICE.busy=false; paintVoice();
+}
+async function voiceStart(){
+  if(VOICE.rec || VOICE.busy) return;
+  VOICE.busy=true; VOICE.state="opening"; paintVoice();
+  const c=live();
+  let stream=null;
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error("none"), {name:"NotFoundError"});
+    stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:false, autoGainControl:false}});
+  }catch(e){
+    VOICE.busy=false; VOICE.state=(e && (e.name==="NotFoundError" || e.name==="OverconstrainedError")) ? "nomic" : "denied"; paintVoice(); return;
+  }
+  try{
+    stop();
+    VOICE.stream=stream; VOICE.chunks=[]; VOICE.t0=-1;
+    VOICE.src=c.createMediaStreamSource(stream);
+    VOICE.sink=c.createGain(); VOICE.sink.gain.value=0; VOICE.sink.connect(c.destination);
+    if(c.audioWorklet && window.AudioWorkletNode){
+      if(!VOICE.wk) VOICE.wk=c.audioWorklet.addModule(URL.createObjectURL(new Blob([VOICE_WK], {type:"text/javascript"})));
+      await VOICE.wk;
+      VOICE.node=new AudioWorkletNode(c, "aog-voice-cap", {numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[1]});
+      VOICE.node.port.onmessage=e=>{ const m=e.data; if(m && m.d){ if(VOICE.t0<0) VOICE.t0=m.t; VOICE.chunks.push(m.d); } if(m && m.end && VOICE.onEnd) VOICE.onEnd(); };
+    } else {
+      /* an older browser: the same, a block at a time */
+      const N=4096, sp=c.createScriptProcessor(N, 1, 1);
+      sp.onaudioprocess=e=>{ if(!VOICE.rec) return; if(VOICE.t0<0) VOICE.t0=e.playbackTime-N/c.sampleRate; VOICE.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0))); };
+      VOICE.node=sp;
+    }
+    VOICE.src.connect(VOICE.node); VOICE.node.connect(VOICE.sink);
+    let inLat=0; try{ const st=stream.getAudioTracks()[0].getSettings(); inLat=st && st.latency>0 ? st.latency : 0; }catch(e){}
+    VOICE.lat=(c.outputLatency>0 ? c.outputLatency : 0)+(c.baseLatency>0 ? c.baseLatency : 0)+inLat;
+    VOICE.rec=true;
+    /* the song plays from the start bar, once, while you sing; your own take on track 8 stays quiet meanwhile */
+    VOICE.withSong=SONG.tracks.some((x,i)=>i!==VOICE_T && x.clip && BUF.has(x.clip.id));
+    if(VOICE.withSong){
+      const lp=SONG.loopOn, vm=SONG.tracks[VOICE_T].mute; VOICE.keep={loop:lp, mute:vm};
+      SONG.loopOn=false; SONG.tracks[VOICE_T].mute=true; liveApply(E=>applyTrack(E, VOICE_T));
+      play();
+      SONG.loopOn=lp;
+      VOICE.T0=PLAY.on ? PLAY.T0 : c.currentTime;
+      VOICE.watch=setInterval(()=>{ if(VOICE.rec && !PLAY.on) voiceStop(); }, 120);   /* the song ended: so does the take */
+    } else VOICE.T0=0;
+    VOICE.state="on"; VOICE.busy=false; paintVoice();
+  }catch(e){ voiceRelease(); VOICE.busy=false; VOICE.state="fail"; paintVoice(); }
+}
+function voiceRelease(){
+  VOICE.rec=false; clearInterval(VOICE.watch); VOICE.watch=0;
+  try{ if(VOICE.src) VOICE.src.disconnect(); }catch(e){} try{ if(VOICE.node) VOICE.node.disconnect(); }catch(e){} try{ if(VOICE.sink) VOICE.sink.disconnect(); }catch(e){}
+  if(VOICE.stream){ VOICE.stream.getTracks().forEach(tr=>{ try{ tr.stop(); }catch(e){} }); }   /* the microphone is let go at once */
+  VOICE.src=VOICE.node=VOICE.sink=VOICE.stream=null;
+  if(VOICE.keep){ SONG.tracks[VOICE_T].mute=VOICE.keep.mute; VOICE.keep=null; liveApply(E=>applyTrack(E, VOICE_T)); }
+}
+async function voiceStop(){
+  if(!VOICE.rec || VOICE.busy) return;
+  VOICE.busy=true; VOICE.rec=false;
+  const c=ac, node=VOICE.node;
+  if(node && node.port){ await new Promise(ok=>{ VOICE.onEnd=ok; try{ node.port.postMessage("stop"); }catch(e){ ok(); } setTimeout(ok, 600); }); VOICE.onEnd=null; }
+  if(VOICE.withSong) stop();
+  voiceRelease();
+  try{
+    const sr=c.sampleRate, n=VOICE.chunks.reduce((a,x)=>a+x.length, 0), L=new Float32Array(n); let o=0;
+    VOICE.chunks.forEach(x=>{ L.set(x, o); o+=x.length; }); VOICE.chunks=[];
+    const sec=n/sr;
+    /* where the start bar falls in the take: when it played, plus the time to the ear and back through the microphone */
+    let head=VOICE.withSong ? (VOICE.T0+VOICE.lat)-VOICE.t0 : Math.min(0.05, sec/4);
+    if(!(head>=0)) head=0;
+    if(sec-head<0.3){ VOICE.state="short"; VOICE.busy=false; paintVoice(); return; }
+    const blob=wavBlob(L, L, sr), id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+    const buf=await decodeWav(blob, sr);
+    await sput(id, {wav:blob}); BUF.set(id, buf);
+    const x=SONG.tracks[VOICE_T], old=x.clip, vn=1+Math.max(0, ...SONG.tracks.map(y=>y.clip && y.clip.voice ? y.clip.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
+    x.clip=cleanClip({id:id, src:"", name:t("voiceN",{n:vn}), at:Date.now(), voice:true, vn:vn, take:true, sec:sec, bpm:0, bars:0,
+      head:head, body:sec-head, tail:0, bpb:4, startBar:SONG.startBar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
+    if(old){ if(old.voice) voiceKeep(old); dropClip(old.id); }
+    VOICE.state="done"; songChanged();
+  }catch(e){ VOICE.state="fail"; }
+  VOICE.busy=false; paintVoice();
+}
+/* AOG-STUDIO-TRANSPORT-V1 — at the Mixing Desk, the Recording Studio's ● Record (/the-studio) records your voice on track 8;
+   the take is on My Track the moment it stops, so there is nothing to add */
+window.AOGStudioRec={
+  on:()=>VOICE.rec, busy:()=>VOICE.busy,
+  toggle:()=>{ if(VOICE.rec){ voiceStop(); return; } if(SONG.sel!==VOICE_T) selectTrack(VOICE_T); voiceStart(); },
+  last:()=>null, sent:()=>true, add:()=>Promise.resolve()
+};
+function paintVoice(){
+  const box=$("voiceBox"), on=SONG.sel===VOICE_T, c=SONG.tracks[VOICE_T].clip;
+  $("recsH").hidden=on; $("recs").hidden=on;
+  if(!on){ if(box.innerHTML) box.innerHTML=""; return; }
+  const st=VOICE.state;
+  const line=st==="opening" ? t("voiceOpening") : st==="on" ? t("voiceOn") : st==="done" ? t("voiceDone") : st==="short" ? t("voiceShort") :
+    st==="denied" ? t("voiceDenied") : st==="nomic" ? t("voiceNone") : st==="fail" ? t("fail") : "";
+  const btn=VOICE.rec ? `<button type="button" class="st-btn st-rec-on" id="voiceStop">${esc(t("voiceStop"))}</button>` :
+    `<button type="button" class="st-btn st-go" id="voiceRec"${VOICE.busy ? " disabled" : ""}>${esc(st==="denied" || st==="nomic" ? t("voiceTry") : c ? t("voiceAgain") : t("voiceRec"))}</button>`;
+  box.innerHTML=`<div class="st-voice"><h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("voiceH"))}</h3>
+    <p class="st-info">${esc(t("voiceAsk"))}</p>
+    <p class="st-info">${esc(t("voiceHow"))}${c && !VOICE.rec ? " "+esc(t("voiceReplace")) : ""}</p>
+    <div class="st-row">${btn}</div>
+    <p class="st-line" id="voiceLine" aria-live="polite">${esc(line)}</p>
+    ${VOICE.gone && !c ? `<div class="st-row"><span class="st-line" style="margin:0">${esc(t("voiceGone"))}</span><button type="button" class="st-btn" id="voiceBack">${esc(t("voiceBack"))}</button></div>` : ""}</div>`;
+  const r=$("voiceRec"), s=$("voiceStop"), b=$("voiceBack");
+  if(r) r.onclick=voiceStart; if(s){ s.onclick=voiceStop; } if(b) b.onclick=voiceBack;
+}
 /* ══════════════════════════════════════════════════════════════════════════
    AOG-STUDIO-SENDOUT-V1 (2026-10-09) — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a
    file". Send it out makes the song through the whole desk, as it is now, and hands over one stereo .wav:
@@ -1733,7 +1899,7 @@ function bindCarry(){
      so they line up and add back to the song. Only once the song's file is made (the file is never held up by them).
    The voice take and the chops from your own records join this when they exist (§10, §9). Nothing is uploaded.
    ══════════════════════════════════════════════════════════════════════════ */
-const OUT={song:null, stems:null, busy:false};
+const OUT={song:null, stems:null, voice:null, busy:false};
 function slugOf(x){ return String(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40); }
 function songSlug(){ return slugOf(songTitle()) || t("file"); }
 function peakOf(Lc, Rc){ let pk=0; for(let i=0;i<Lc.length;i++){ const a=Lc[i]<0?-Lc[i]:Lc[i], b=Rc[i]<0?-Rc[i]:Rc[i]; if(a>pk) pk=a; if(b>pk) pk=b; } return pk; }
@@ -1752,7 +1918,7 @@ async function sendOut(){
     const {Lc, Rc}=await renderSong(null), pk=peakOf(Lc, Rc);
     if(pk<dbGain(-60)){ line.textContent=t("outSilent"); }
     else {
-      dropOut("song"); dropOut("stems");
+      dropOut("song"); dropOut("stems"); dropOut("voice");
       const g=outGain(pk), name=songSlug()+".wav";
       OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut()});
       line.textContent="";
@@ -1776,6 +1942,16 @@ async function sendStems(){
     OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
     line.textContent="";
   }catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; paintOut();
+}
+/* AOG-STUDIO-VOICE-V1: your voice on its own, lined up with the song and at the level of the file sent (§12) */
+function voiceHeard(){ const c=SONG.tracks[VOICE_T].clip; return !!(c && c.voice && audible(VOICE_T) && BUF.has(c.id)); }
+async function sendVoiceOut(){
+  const line=$("outLine"); if(OUT.busy || !OUT.song || !voiceHeard()) return;
+  OUT.busy=true; paintOut(); line.textContent=t("outVoiceMaking");
+  try{ const {Lc, Rc}=await renderSong(VOICE_T); dropOut("voice");
+    OUT.voice=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, OUT.song.g)], songSlug()+"-"+t("voiceFile")+".wav", {type:"audio/wav"})}); line.textContent=""; }
+  catch(e){ line.textContent=t("fail"); }
   OUT.busy=false; paintOut();
 }
 /* a .zip that stores each file as it is (no squeezing: a .wav hardly shrinks), so any phone or computer opens it */
@@ -1821,6 +1997,8 @@ function paintOut(){
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
+    (OUT.voice ? outRow("voice", t("outVoiceReady")) : voiceHeard() ?
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="voiceOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outVoice"))}</button></div>` : "")+
     `<p class="st-line">${esc(t("outYours"))}</p>`;
 }
 function bindOut(){
@@ -1828,6 +2006,7 @@ function bindOut(){
   $("outBox").addEventListener("click", e=>{
     const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
     if(el.id==="stemBtn") sendStems();
+    else if(el.id==="voiceOutBtn") sendVoiceOut();
     else if(el.hasAttribute("data-outshare")) shareOut(el.getAttribute("data-outshare"));
     else if(el.hasAttribute("data-outdl")){ const o=OUT[el.getAttribute("data-outdl")]; if(o) $("outLine").textContent=t("outSaved",{name:o.file.name}); }
   });
@@ -1842,7 +2021,8 @@ function navHtml(){
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="studio"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function trackName(i){
-  const c=SONG.tracks[i].clip; if(!c) return t("emptyL");
+  const c=SONG.tracks[i].clip; if(!c) return i===VOICE_T ? t("voiceTrack") : t("emptyL");
+  if(c.voice) return t("voiceN",{n:c.vn||1});
   if(c.src===INBOX_KEY) return takeLabel({from:c.from, n:c.tn, name:c.name});
   const s=shelfOf(c.src); return s ? L(c.take ? s.tk : s.sh) : (c.name||"");
 }
@@ -2079,12 +2259,13 @@ function paintTrack(){
   const sel=$("trackSel"), i=SONG.sel;
   sel.innerHTML=SONG.tracks.map((x,k)=>`<option value="${k}"${k===i?" selected":""}>${esc(t("trackN",{n:k+1})+" · "+trackName(k))}</option>`).join("");
   const c=SONG.tracks[i].clip, box=$("clipBox");
+  paintVoice();
   if(!c){ box.innerHTML=""; paintRecs(); return; }
   /* the keyboard stays on the button or menu it was on */
   const fa=document.activeElement, keepF=fa && box.contains(fa) ? (fa.id || (fa.getAttribute("data-act") ? "[data-act='"+fa.getAttribute("data-act")+"']" : "")) : "";
   const s=shelfOf(c.src), inb=c.src===INBOX_KEY;
-  const meta=(inb ? [TOOLS[c.from] ? L(TOOLS[c.from].from) : "", clockLen(c.sec)] : [bareName(c.name), clockLen(c.sec)]).filter(Boolean).join(" · ");
-  const head=inb ? esc(trackName(i)) : esc(s ? L(s.from) : "")+(c.take ? " · "+esc(t("aTake")) : "");
+  const meta=(inb ? [TOOLS[c.from] ? L(TOOLS[c.from].from) : "", clockLen(c.sec)] : c.voice ? [clockLen(c.sec)] : [bareName(c.name), clockLen(c.sec)]).filter(Boolean).join(" · ");
+  const head=(inb || c.voice) ? esc(trackName(i)) : esc(s ? L(s.from) : "")+(c.take ? " · "+esc(t("aTake")) : "");
   const P=pcs(c), k=pSel(c), p=P[k], many=P.length>1, bpb=c.bpb||4, full=fullBeats(c);
   const diff=c.bpm>0 && Math.abs(effBpm(c)-songBpm())>0.5, isTempo=tempoTrack()===i;
   const cuts=cutPlaces(c, p), mid=cuts.length ? cuts[Math.floor((cuts.length-1)/2)] : null;
@@ -2442,7 +2623,7 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; },
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
 </script>
 </body>

@@ -49,7 +49,7 @@ const takeDb = f => f.evaluate(async () => { const k = (typeof REC !== "undefine
   return +(10 * Math.log10(e / n + 1e-12)).toFixed(1); });
 
 (async () => {
-  const b = await pw.chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
+  const b = await pw.chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
   const c = await b.newContext({ viewport: { width: 1366, height: 900 } }); watch(c); await routes(c);
   const p = await c.newPage(); await p.goto(U + "the-studio#pads"); await arrived(p, "pads");
   ok(await p.textContent("h1") === "The Recording Studio" && /^The Recording Studio · The Drum Machine/.test(await p.title()) && (await p.textContent(".sh-tag")) === "Play · Record · Listen · Mix · Send it out",
@@ -83,11 +83,18 @@ const takeDb = f => f.evaluate(async () => { const k = (typeof REC !== "undefine
   /* 2 · the Mixing Desk: Listen and Send it out */
   await p.click('.sh-doors a[data-room="studio"]'); await arrived(p, "studio");
   let s = await tp(p);
-  ok(s.recOff, "at the Mixing Desk, ● Record waits for a room");
   await p.click("#tpListen"); await p.waitForTimeout(1200);
   ok((await tp(p)).line === "Nothing is on the tracks yet. At the Mixing Desk, put a take on a track, then press Listen.", "▶ Listen with nothing on the tracks says what to do");
   const f = inner(p);
+  /* AOG-STUDIO-VOICE-V1: at the Mixing Desk, ● Record records your voice on track 8 */
+  ok(!s.recOff, "at the Mixing Desk, ● Record is ready for your voice");
+  await p.click("#tpRec"); await f.waitForFunction(() => __aogStudio.VOICE.rec, null, { timeout: 10000 });
+  await p.waitForTimeout(1500); await p.click("#tpRec");
+  await f.waitForFunction(() => !__aogStudio.VOICE.rec && !__aogStudio.VOICE.busy && __aogStudio.SONG.tracks[7].clip, null, { timeout: 10000 });
+  ok(await f.evaluate(() => __aogStudio.SONG.tracks[7].clip.voice && __aogStudio.SONG.sel === 7) && (await tp(p)).rec === "● Record" && !(await tp(p)).add,
+    "● Record, then Stop, puts your voice on track 8 (nothing more to add)");
   await f.evaluate(() => __aogStudio.refreshInbox()); await p.waitForTimeout(400);
+  await f.selectOption("#trackSel", "0"); await p.waitForTimeout(200);
   await f.click("#putBtn"); await f.waitForFunction(() => __aogStudio.SONG.tracks[0].clip && !__aogStudio.S.busy, null, { timeout: 15000 });
   await p.click("#tpListen"); await p.waitForTimeout(500);
   ok(await f.evaluate(() => __aogStudio.PLAY.on) && (await tp(p)).listen === "■ Stop listening", "▶ Listen plays My Track, and becomes ■ Stop listening");

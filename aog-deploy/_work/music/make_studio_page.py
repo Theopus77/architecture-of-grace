@@ -168,6 +168,8 @@ JS = r"""<script src="/aog-handoff.js"></script>
     for (var i = 0; i < LAYERS.length; i++) {
       var l = LAYERS[i], R = room(l.id), from = R ? R.from : l.id, shelf = R ? R.shelf : "";
       var got = items.some(function (x) { return x && x.from === from && x.sec > 0; });
+      /* Voice: the take on the Mixing Desk's track 8 (AOG-STUDIO-VOICE-V1), read from the desk's own save */
+      if (l.id === "voice") { try { var sg = JSON.parse(localStorage.getItem("aog.studio.v1") || "null"), v = sg && sg.tracks && sg.tracks[7] && sg.tracks[7].clip; got = !!(v && v.voice); } catch (e) { got = false; } }
       if (!got && shelf) { try { var s = await A.get(shelf); got = !!(s && s.wav && s.wav.size > 44); } catch (e) {} }
       next[l.id] = got;
     }
@@ -261,6 +263,7 @@ JS = r"""<script src="/aog-handoff.js"></script>
   } catch (e) {}
   try { if (window.AOGHandoff) AOGHandoff.listen(function () { refresh(); }); } catch (e) {}
   window.addEventListener("focus", refresh);
+  window.addEventListener("storage", function (e) { if (!e.key || e.key === "aog.studio.v1") refresh(); });
   window.addEventListener("resize", size);
   go(first(), false);
   size(); refresh();
@@ -289,7 +292,7 @@ def build():
                    '<img src="/img/banners/%s-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span>%s</a></li>'
                    % (rid, rid, pic, pic, sp(short)))
     out += ["</ul></nav>",
-            '<main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write"></iframe></main>',
+            '<main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>',
             '<section class="mt" id="mt" aria-label="The studio">'
             '<div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button>'
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
