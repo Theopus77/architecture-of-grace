@@ -1085,11 +1085,19 @@ async function tapeToStudio(n, btn){
     if(!window.AOGHandoff || !AOGHandoff.add) throw new Error("no inbox");
     await AOGHandoff.add(AOGHandoff.INBOX, { from:"decks", n:k.n, name:{ en:"Turntables take "+k.n, es:"Toma de los tocadiscos "+k.n },
       sec:Math.round(k.sec*1000)/1000, bpm:k.bpm || 0, at:k.at || Date.now(), take:true, wav:k.blob }, { key:"decks|"+(k.at||0)+"|"+k.n });
-    TAPE.msg = "studioSent";
+    TAPE.msg = "studioSent"; TAPE.sentN = n;
   }catch(e){ TAPE.msg = (e && e.name === "QuotaExceededError") ? "noRoom" : "studioFail"; }
   if(btn) btn.disabled = false;
   paintTakeLine();
 }
+/* AOG-STUDIO-TRANSPORT-V1 (2026-10-09) — the Recording Studio's transport (/the-studio) drives this page's Record */
+window.AOGStudioRec = {
+  on: ()=>!!TAPE.on, busy: ()=>false,
+  toggle: ()=>{ const b = document.getElementById("recBtn"); if(b) b.click(); },
+  last: ()=>TAPE.takes[0] ? { n:TAPE.takes[0].n, sec:TAPE.takes[0].sec } : null,
+  sent: ()=>!!(TAPE.takes[0] && TAPE.sentN === TAPE.takes[0].n),
+  add: ()=>TAPE.takes[0] ? tapeToStudio(TAPE.takes[0].n) : Promise.resolve()
+};
 function paintTakeLine(){
   const el = document.getElementById("takeLine"); if(!el) return;
   if(TAPE.msg === "studioSent") el.innerHTML = `${t("studioSent")} <a href="/studio">${t("studioGo")}</a>`;

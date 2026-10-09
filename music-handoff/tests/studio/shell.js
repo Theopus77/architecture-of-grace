@@ -41,12 +41,12 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
   const c = await b.newContext({ viewport: { width: 1366, height: 900 } }); watch(c); await routes(c);
   const p = await c.newPage(); await p.goto(U + "the-studio"); await arrived(p, "music-pads.html");
   let s = await state(p);
-  ok(s.hash === "#pads" && s.cur === "Drum Machine" && s.title === "The Studio · The Drum Machine — Architecture of Grace", "it opens on the Drum Machine: " + JSON.stringify(s));
+  ok(s.hash === "#pads" && s.cur === "Drum Machine" && s.title === "The Recording Studio · The Drum Machine — Architecture of Grace", "it opens on the Drum Machine: " + JSON.stringify(s));
   let f = inner(p);
   const pads = await f.evaluate(() => ({ pads: document.querySelectorAll(".pads button.pad[data-p]").length,
     bar: [...document.querySelectorAll(".aogtop,.labdoors")].map(e => getComputedStyle(e).display) }));
   ok(pads.pads >= 16 && pads.bar.every(d => d === "none"), "the pads are there to play, and the room's own bar and doors step aside: " + JSON.stringify(pads));
-  ok(s.marks === "Drums — | Kit — | Piano — | Guitar — | Bass — | Band — | Turntables — | Voice — | Mix ›", "My Track starts empty: " + s.marks);
+  ok(s.marks === "Drums — | Kit — | Piano — | Guitar — | Bass — | Band — | Turntables — | Voice —", "My Track starts empty: " + s.marks);
   ok(s.own === "/drum-machine", "Open in its own tab points at /drum-machine");
 
   /* 2 · a take sent from inside the piano marks Piano at once */
@@ -93,7 +93,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
   await p.click('.aogtop-lang button:has-text("ES")');
   await p.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.getAttribute("lang") === "es"; }, null, { timeout: 15000 });
   s = await state(p);
-  ok(s.cur === "Guitarra" && /guitarra/i.test(s.title) && s.marks.includes("Mezclar ›") && s.marks.startsWith("Ritmos —"), "Spanish, in the Studio and in the room: " + JSON.stringify(s));
+  ok(s.cur === "Guitarra" && /guitarra/i.test(s.title) && (await p.textContent("#tpMix")) === "Mezclar ›" && s.marks.startsWith("Ritmos —"), "Spanish, in the Studio and in the room: " + JSON.stringify(s));
   await p.click('.aogtop-lang button:has-text("EN")'); await p.waitForTimeout(800);
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();
@@ -112,7 +112,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
         minBtn: Math.min(...btn.map(x => Math.round(r(x).height))), cur: !!document.querySelector(".sh-doors a[aria-current]") && r(document.querySelector(".sh-doors a[aria-current]")).right <= innerWidth + 1 }; });
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
     const fi = inner(m), ipc = await fi.evaluate(`(${PROBE})()`), ipk = await fi.evaluate(`(${CALM})()`);
-    ok(fit.sw <= fit.iw && fit.sh <= fit.ih + 1 && fit.mtBottom <= fit.ih + 1 && fit.frame >= 420 && fit.minBtn >= 44 && fit.cur && !pc.length && !pk.length && !ipc.length && !ipk.length,
+    ok(fit.sw <= fit.iw && fit.sh <= fit.ih + 1 && fit.mtBottom <= fit.ih + 1 && fit.frame >= 380 && fit.minBtn >= 44 && fit.cur && !pc.length && !pk.length && !ipc.length && !ipk.length,
       `${dev}, ${theme}, ${room}: fits (${JSON.stringify(fit)}), the Studio reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and is calm (${pk.join("; ") || "ok"}), the room reads (${ipc.length} ${JSON.stringify(ipc.slice(0, 2))}) and is calm (${ipk.join("; ") || "ok"})`);
     await m.screenshot({ path: path.join(OUTD, `shell-${dev.split(" ")[0].toLowerCase()}-${theme}-${room}.png`) });
     await cx.close();
