@@ -833,6 +833,14 @@ const STR = {
   keysHint:{en:"On a keyboard, the left hand plays the left deck and the right hand the right: Q and P start and stop, W and O cue, E and I sync, A S D F Z X C V and H J K L N M , . are the pads. ← and → move the crossfader.",es:"Con un teclado, la mano izquierda toca el plato de la izquierda y la derecha el de la derecha: Q y P ponen y paran, W y O marcan el cue, E e I sincronizan, A S D F Z X C V y H J K L N M , . son los pads. ← y → mueven el crossfader."},
   padHint:{en:"Pads: tap an empty pad to mark the spot. Tap it again and the record jumps there on the beat. With SLIP on, a pad plays while you hold it, then the song carries on where it would have been.",es:"Pads: toca un pad vacío para marcar el punto. Tócalo otra vez y el disco salta ahí en el pulso. Con SLIP encendido, el pad suena mientras lo mantienes y luego la canción sigue donde habría estado."},
   loopN:{en:"Loop %n beats",es:"Bucle de %n pulsos"},
+  /* AOG-DECKS-SAY-V1 (Jimmy, 2026-10-09: "The loops option and the taps don't work on the turn table"): every press says what it did */
+  sayLoad:{en:"Load a song on this deck first.",es:"Primero pon una canción en este plato."},
+  sayNoBeat:{en:"This record has no beat yet. Tap TAP in time with the music, then pick a loop.",es:"Este disco aún no tiene pulso. Toca TAP al ritmo de la música y luego elige un bucle."},
+  sayLoop:{en:"Looping %n beats. Tap it again to let go.",es:"En bucle %n pulsos. Tócalo otra vez para soltarlo."},
+  sayLoopOff:{en:"Loop off. The record plays on.",es:"Bucle apagado. El disco sigue."},
+  sayTap:{en:"Tap %n · keep tapping in time with the beat.",es:"Toque %n · sigue tocando al ritmo."},
+  sayTapSet:{en:"Tempo set: %n beats a minute.",es:"Tempo listo: %n pulsos por minuto."},
+  sayPadSet:{en:"Pad %n marks this spot. Tap it again to jump back here.",es:"El pad %n marca este punto. Tócalo otra vez para volver aquí."},
   bars4:{en:"4 bars",es:"4 compases"},
   bars4Tip:{en:"Repeat these 4 bars to make the groove last",es:"Repite estos 4 compases para que el ritmo dure"},
   mixer:{en:"Mixer",es:"Mezclador"},
@@ -2600,7 +2608,7 @@ function stopDeck(d, quiet){
    where it would have been (a quick tap plays one step of the chop). */
 function snapLen(d){ return d.snap > 0 && d.bpm > 0 ? beatLen(d)*d.snap : 0; }
 function padPress(d, i){
-  if(!d.buf) return;
+  if(!d.buf){ deckSay(d, "sayLoad"); return; }
   d.padDown[i] = true;
   const btn = document.querySelector('[data-hot="'+d.id+'"][data-i="'+i+'"]'); if(btn) btn.classList.add("hit");
   if(d.erase){ d.cues[i] = null; d.erase = false; d._sig = ""; marksSave(d); d.waveDirty = true; paintDeck(d); drawWave(d); return; }
@@ -2610,7 +2618,7 @@ function padPress(d, i){
     if(q > 0) p = g0 + Math.round((p - g0)/q)*q;
     d.cues[i] = Math.max(1, Math.min(d.buf.length-4, p));
     marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d);
-    LX.padSet = true;
+    LX.padSet = true; deckSay(d, "sayPadSet", i+1);
     return;
   }
   ctx();
@@ -2677,15 +2685,19 @@ async function chopsToPads(d, btn){
   if(btn) btn.disabled = false;
 }
 /* a loop in beats, measured on the audio thread from where the needle really is */
+function deckSay(d, k, n){ const line = document.getElementById("chopLine"+d.id), h = t(k).replace("%n", n); d.chopMsg = esc(h); if(line) line.textContent = h; }
 function loopPress(d, beats){
-  if(!d.buf) return;
+  if(!d.buf){ deckSay(d, "sayLoad"); return; }
+  if(!(d.bpm > 0)){ deckSay(d, "sayNoBeat"); return; }
   ctx();
   ensureNode(d).then(()=>{
-    if(d.loopOn && d.loopBeats === beats){ d.loopOn = false; d.loopBeats = 0; send(d, { t:"loop", on:false }); }
-    else if(d.bpm > 0){
+    if(d.loopOn && d.loopBeats === beats){ d.loopOn = false; d.loopBeats = 0; send(d, { t:"loop", on:false }); deckSay(d, "sayLoopOff"); }
+    else {
       const keepA = d.loopOn && beats < 16 && d.loopBeats < 16;
       d.loopOn = true; d.loopBeats = beats;
       send(d, { t:"bloop", b0:grid0(d), len:beatLen(d), n:beats, align: beats >= 16 ? 4 : 1, keepA:keepA });
+      deckSay(d, "sayLoop", beats);
+      if(!d.motor) startDeck(d);   /* a stopped record starts, so the loop is heard */
     }
     d._sig = ""; paintDeck(d);
   });
@@ -2822,6 +2834,8 @@ function bind(){
   document.querySelectorAll("[data-tap]").forEach(btn=>{
     btn.onclick = ()=>{
       const d = deckOf(btn, "data-tap");
+      if(!d) return;
+      if(!d.buf){ deckSay(d, "sayLoad"); return; }
       const now = performance.now();
       if(d.taps.length && now - d.taps[d.taps.length-1] > 2200) d.taps = [];
       d.taps.push(now);
@@ -2833,8 +2847,9 @@ function bind(){
           d.bpm = Math.round(bpm*100)/100;
           d.beat0 = Math.max(0, d.pos/(d.buf?d.buf.sampleRate:44100)) % (60/d.bpm);
           marksSave(d); d.waveDirty = true; paintDeck(d); drawWave(d); drawZoom(d); fxSend(d);
+          deckSay(d, "sayTapSet", Math.round(d.bpm));
         }
-      }
+      } else deckSay(d, "sayTap", d.taps.length);
     };
   });
   document.querySelectorAll("[data-half],[data-double]").forEach(btn=>{
