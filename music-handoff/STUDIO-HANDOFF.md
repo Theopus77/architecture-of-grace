@@ -854,6 +854,11 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · The meter bridge and the walnut (`AOG-DESK-VU-V1`, `AOG-DESK-WOOD-V1` in `music-studio.html`).** Jimmy: "Any way we can still reach for the ceiling? I don't think we have reached it yet."
+  - **Two analog VU meters, left and right,** sit over the mixer's faders (beside the channel strip on a wide screen, under it on a phone): cream faces lit warm from below, the scale in true VU steps (−20 to +3, red past 0), a black needle under a dark hood, glass on top. 0 VU is 8 dB under the top of the file.
+  - They keep the meter's calm rule: while the song plays the needles swing with it; on a touch screen or with "reduce motion" they step to the loudest point so far and stay; stopped, they rest. Drawn on canvas (`vuDraw`, called from `drawMeter`); redrawn when their size changes or the serif type arrives.
+  - **Walnut end cheeks** with brass screws frame the console and the desk below (16px; 7px on a phone), as on the consoles in Jimmy's drawings.
+  - Test: `studio/cut.js` (the bridge sits over the mixer; the needles move while playing and rest after; the cheeks are there).
 - **2026-10-09 · Better cutting, the lesson slip moves, the whole desk made like the console (`AOG-STUDIO-CUT-V2`, `AOG-DESK-SLIP-V2`, `AOG-DESK-REST-V1` in `music-studio.html`).** Jimmy, with three iPad pictures of the desk: "The lesson sheet needs to move and The cutting needs to be better and the whole studio has not reached the ceiling!!!"
   - **Cutting.** The big wave sits in a recessed window: bars numbered, beats ticked, the piece you are working on bright on a gold band between two gold edges with grips, the other pieces numbered on small tabs, what is cut away hatched. A tap puts a dashed line and **✂ Cut here** on the wave itself (`#cutNow`); pressing it cuts there. A tap on another piece picks that piece ("Piece 1 is picked."). Dragging an edge shows where it is (`#edgeTip`). **▶ Hear this piece** plays only the piece you are on, once, to check a cut (`hearPiece`).
   - **The lesson slip** is a note taped into the console's empty corner beside play on an iPad or a computer; on a phone it sits at the foot of the console (`placeSlip`). No more cream gap between the console and the rest.
