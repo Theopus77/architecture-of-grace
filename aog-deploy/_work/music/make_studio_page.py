@@ -105,6 +105,34 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   .sh-room { border:0; border-radius:0; }
 }
 @media (max-width:699px) { .tp { gap:5px; } .tp-b { padding:0 .55rem; font-size:.88rem; } .tp-rec { min-width:5.9rem; } }
+/* AOG-STUDIO-ROOMY-V1 (Jimmy, 2026-10-09, on his iPad: "With the two even three bars the user loses a huge portion of the
+   screen"). The name, the doors and Own tab share one slim line; on an iPad or a computer the transport and My Track share
+   one bar; a message from the transport floats just above it instead of adding a line. The tag line is said by the transport
+   itself, so it is kept for screen readers only. A phone keeps the name on its own slim line, the doors under it. */
+.sh-tag { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; margin:0; }
+.sh-top { flex-wrap:nowrap; align-items:center; gap:.75rem; padding:.3rem 0; }
+.sh-top h1 { flex:0 0 auto; font-size:1.2rem; white-space:nowrap; }
+.sh-top .sh-doors { flex:1 1 auto; min-width:0; }
+.sh-doors ul { padding:2px; }
+.sh-doors a { padding:2px 10px 2px 2px; font-size:.86rem; }
+.sh-doors .pic { width:42px; height:32px; }
+@media (min-width:1100px) { .sh-doors ul { grid-auto-flow:column; grid-template-columns:none; overflow-x:auto; } .sh-doors a { white-space:nowrap; } }
+.sh-own { flex:0 0 auto; white-space:nowrap; }
+.sh-own .long { display:none; }
+.sh-own .short { display:inline; }
+.tp-line { position:absolute; left:0; bottom:100%; margin:0 0 6px; max-width:min(38rem, 100%); padding:.45rem .8rem; border-radius:10px;
+  background:var(--card); color:var(--ink); border:1px solid var(--line); box-shadow:0 4px 12px rgba(0,0,0,.14); }
+.tp-line:empty { display:none; }
+@media (min-width:700px) {
+  .mt { display:flex; align-items:center; gap:.75rem; }
+  .tp { flex:0 0 auto; flex-wrap:nowrap; }
+  .mtrow { flex:1 1 auto; min-width:0; border-left:1px solid var(--line); padding-left:.75rem; }
+}
+@media (max-width:699px) {
+  .sh-top { flex-wrap:wrap; row-gap:.15rem; }
+  .sh-top h1 { flex:1 1 auto; }
+  .sh-top .sh-doors { order:3; flex:1 1 100%; }
+}
 @media print { .sh-doors, .mt, .sh-room { display:none; } }
 """
 JS = r"""<script src="/aog-handoff.js"></script>
@@ -304,14 +332,14 @@ def build():
            '<div class="sh-top">',
            "  <h1>%s</h1>" % sp(("The Recording Studio", "El estudio de grabación")),
            '  <p class="sh-tag">%s</p>' % sp(("Play · Record · Listen · Mix · Send it out", "Toca · Graba · Escucha · Mezcla · Compártela")),
-           '  <a class="sh-own" id="own" href="/drum-machine" target="_blank"><span class="long">%s</span><span class="short">%s</span></a>' % (sp(("Open this room in its own tab ↗", "Abrir esta sala en su propia pestaña ↗")), sp(("Own tab ↗", "Otra pestaña ↗"))),
-           "</div>",
            '<nav class="sh-doors" aria-label="Rooms"><ul>']
     for rid, href, f, pic, name, short, frm, shelf in ROOMS:
         out.append('  <li><a href="#%s" data-room="%s"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/%s-pencil-900.webp">'
                    '<img src="/img/banners/%s-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span>%s</a></li>'
                    % (rid, rid, pic, pic, sp(short)))
     out += ["</ul></nav>",
+            '  <a class="sh-own" id="own" href="/drum-machine" target="_blank"><span class="long">%s</span><span class="short">%s</span></a>' % (sp(("Open this room in its own tab ↗", "Abrir esta sala en su propia pestaña ↗")), sp(("Own tab ↗", "Otra pestaña ↗"))),
+            "</div>",
             '<main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>',
             '<section class="mt" id="mt" aria-label="The studio">'
             '<div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button>'

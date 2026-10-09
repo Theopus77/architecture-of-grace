@@ -854,6 +854,10 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · The room gets the screen (`AOG-STUDIO-ROOMY-V1`).** Jimmy, on his iPad in the Turntables: "With the two even three bars the user loses a huge portion of the screen."
+  - `/the-studio`: the name, the doors and Own tab share one slim line; on an iPad or a computer the transport and My Track share one bar (a phone keeps two slim rows); a message from the transport ("Added to My Track.") floats just above the bar instead of adding a line; the tag line is kept for screen readers only (the transport says it). Made by `make_studio_page.py`.
+  - Inside the Studio a room's own banner steps aside on every screen, not only on a phone (`aog-labdoors.js`): the doors already show its name and its drawing.
+  - The room's share of the screen (iPad on its side, 1080×810): 65% → 78% of the screen, and the banner is gone from inside that; an iPad upright: 74% → 84%.
 - **2026-10-09 · The Mixing Desk looks like Jimmy's drawing (§10's approved face).** Jimmy sent the drawing again with his phone drawing: "May the recording studio look something this amazing?", and after the first try, "still meh". (`AOG-DESK-FACE-V1` in `music-studio.html`):
   - the console is its own slim chassis (`.st-cp`); the rest of the desk (the track's editor, the takes, the full mixer, Make the mix, Send it out, the song file) sits unchanged in a second panel below (`.st-rest`);
   - the top line: a round gold ▶ (■ while it plays) beside where the song is, in the serif; then a thin bar ruler (the loop is a gold underline) and the playhead, which steps with the beat while it plays (nothing slides) and rests where the song starts;
