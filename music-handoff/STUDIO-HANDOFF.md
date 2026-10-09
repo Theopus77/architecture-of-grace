@@ -854,12 +854,14 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
-- **2026-10-09 · The Mixing Desk looks like Jimmy's drawing (§10's approved face).** Jimmy sent the drawing again with his phone drawing: "May the recording studio look something this amazing?" (`AOG-DESK-FACE-V1` in `music-studio.html`):
-  - one dark console: a round gold ▶ (■ while it plays) beside where the song is; the level, then **Where it starts, the loop and the count-in** one tap away (closed);
-  - the song's lanes are named for their instrument (Drums, Kit, Piano, Guitar, Bass, Band, Turntables, Voice, Live guitar, Live bass; Empty), and each recording is drawn as its wave in its track's colour, fine and smooth, with no block behind it (`waveSvg(c, p, fine)`); an empty lane is a quiet dotted line. A playhead steps across the lanes with the beat while it plays (nothing slides) and rests where the song starts;
-  - **the open channel**: the chosen track's name in gold, its wave, Mute and Solo, its volume, and **Shape the sound** (pan, low, mid, high, punch, room, echo) one tap away; beside it (under it on a phone) **eight short faders**, the chosen one gold, its number picks the track;
-  - every console control moves the mixer's own slider or button below (`consoleTo`), so the sound, the save, the lessons and the full mixer follow the same rules; the full mixer, the track's editor, the takes, Make the mix, Send it out and the song file all stay below, unchanged;
-  - the lesson is a **paper slip** under the console: the lesson on screen and its next step, with All lessons › (`AOGLessons … next()` and `onPaint`, added to `aog-lessons.js`);
+- **2026-10-09 · The Mixing Desk looks like Jimmy's drawing (§10's approved face).** Jimmy sent the drawing again with his phone drawing: "May the recording studio look something this amazing?", and after the first try, "still meh". (`AOG-DESK-FACE-V1` in `music-studio.html`):
+  - the console is its own slim chassis (`.st-cp`); the rest of the desk (the track's editor, the takes, the full mixer, Make the mix, Send it out, the song file) sits unchanged in a second panel below (`.st-rest`);
+  - the top line: a round gold ▶ (■ while it plays) beside where the song is, in the serif; then a thin bar ruler (the loop is a gold underline) and the playhead, which steps with the beat while it plays (nothing slides) and rests where the song starts;
+  - slim lanes named for their instrument (Drums, Kit, Piano, Guitar, Bass, Band, Turntables, Voice, Live guitar, Live bass; Empty), the chosen one marked gold at its edge; each recording is drawn as fine vertical lines in its track's colour (`waveSvg(c, p, fine)`); an empty lane is a quiet dotted line;
+  - **the open channel**: the chosen track's name in gold, its wave, Mute and Solo, its fader with the decibels beside it (80 is 0 dB, as recorded; `volDb`, `DB_MARKS`), and **Shape the sound** (pan, low, mid, high, punch, room, echo) one tap away; beside it (under it on a phone) **the mixer's eight short faders**: a dark slot with tick marks and a silver cap, the chosen track's cap gold, its number picks the track. A fader is a range drawn sideways and turned upright, so every browser draws it alike;
+  - every console control moves the mixer's own slider or button below (`consoleTo`), so the sound, the save, the lessons and the full mixer follow the same rules;
+  - **Where it starts, the loop and the level** is one quiet row under the console (closed);
+  - the lesson hangs from the console on a **paper slip**: the lesson on screen and its next step, with All lessons › (`AOGLessons … next()` and `onPaint`, added to `aog-lessons.js`);
   - a phone stacks the same pieces (his phone drawing); the chassis stays dark (§10: one dark chassis).
   - Test: `music-handoff/tests/studio/face.js` (port 9256).
 - **2026-10-09 · Simpler first screens (§08) and Listen (§12b), the last two in Jimmy's order ("3" and "9").**

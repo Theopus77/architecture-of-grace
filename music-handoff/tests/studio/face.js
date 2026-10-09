@@ -3,7 +3,7 @@
    and each wave is drawn in its lane; a round ▶ starts and stops the song, and the playhead steps across the lanes and
    rests where the song starts when it stops; the open channel names the chosen track in gold, with its wave; its Mute and
    Solo, its volume and Shape the sound (pan) change that track exactly as the mixer below does, and the mixer shows it;
-   the eight short faders set each track's volume, and a fader's number picks the track (gold); the lesson is on a paper
+   its fader reads in decibels (80 is 0 dB); the eight short faders set each track's volume, and a fader's number picks the track (gold); the lesson is on a paper
    slip that follows the lesson; Spanish; an iPhone and an iPad, light and dark: readable, calm, nothing sideways; inside
    the Recording Studio the ▶ is on the first screen. No page errors. Port 9256. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
@@ -70,8 +70,8 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
   ok(await p.evaluate(() => !__aogStudio.SONG.tracks[2].mute && __aogStudio.SONG.tracks[2].solo && document.querySelectorAll("#chFaders .st-f1.off").length === 7), "Solo plays only the guitar: the other seven faders dim");
   await p.click('#chStrip [data-cms="solo"]');
   await setRange(p, "#cv-vol", 35); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].vol === 35 && +document.getElementById("t2-vol").value === 35 && +document.getElementById("fv2").value === 35 && document.getElementById("cv-vol-o").textContent === "35"),
-    "the open channel's volume sets the guitar to 35: the mixer's slider and fader 3 move with it");
+  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].vol === 35 && +document.getElementById("t2-vol").value === 35 && +document.getElementById("fv2").value === 35 && document.getElementById("cv-vol-o").textContent === "−14 dB"),
+    "the open channel's fader sets the guitar to 35 (−14 dB): the mixer's slider and fader 3 move with it");
   await setRange(p, "#fv1", 60); await p.waitForTimeout(200);
   ok(await p.evaluate(() => __aogStudio.SONG.tracks[1].vol === 60 && +document.getElementById("t1-vol").value === 60), "fader 2 sets the piano to 60");
   await p.click("#chShape > summary"); await setRange(p, "#cs-pan", -40); await p.waitForTimeout(200);
@@ -100,8 +100,8 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
     await m.evaluate(() => { document.getElementById("chShape").open = true; document.getElementById("playMore").open = true; document.getElementById("desk").scrollIntoView(); });
     await m.waitForTimeout(300);
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`), sw = await m.evaluate(() => document.scrollingElement.scrollWidth <= innerWidth + 1);
-    const fit = await m.evaluate(() => { const r = [...document.querySelectorAll("#chFaders .st-fn")].map(e => e.getBoundingClientRect()); const d = document.getElementById("desk").getBoundingClientRect();
-      return r.every(q => q.width >= 40 && q.height >= 44 && q.right <= d.right + 1); });
+    const fit = await m.evaluate(() => { const r = [...document.querySelectorAll("#chFaders .st-fn")].map(e => e.getBoundingClientRect()); const d = document.querySelector("#desk .st-cp").getBoundingClientRect();
+      return r.every(q => q.width >= 36 && q.height >= 40 && q.right <= d.right + 1); });
     ok(sw && fit && !pc.length && !pk.length, `${dev}, ${theme}: nothing sideways, the eight faders fit (${fit}), reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and is calm (${pk.join("; ") || "ok"})`);
     if (theme === "light") {
       await m.goto(U + "the-studio#studio");

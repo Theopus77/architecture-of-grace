@@ -274,97 +274,151 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   .st-strip{padding:.5rem .45rem .6rem}
   .st-sh{font-size:.84rem;padding:0 .4rem}
 }
-@media (max-width:520px){ .st-desk{padding:14px 10px 16px;border-radius:14px} }
+@media (max-width:520px){ .st-desk{padding:0;border-radius:0} }
 
 /* ══ AOG-DESK-FACE-V1 (2026-10-09) — Jimmy's drawing of the Mixing Desk: "May the recording studio look something this
-   amazing?" One dark console: a round gold play and where the song is; the song's lanes named for their instrument, each
-   recording drawn as its wave in its own colour, a playhead that steps with the beat; the open channel (its name in gold,
-   its wave, Mute, Solo, its fader, Shape the sound one tap away) beside eight short faders, the chosen one gold; the lesson
-   on a paper slip. On a phone the same pieces stack (his phone drawing). Everything else on the desk stays below. ══ */
+   amazing?", then "still meh". One slim console: a round gold play beside where the song is, a thin bar ruler with the
+   playhead, the song's lanes named for their instrument with each recording drawn as fine lines in its colour; below, the
+   open channel (its name in gold, its wave, Mute and Solo, a fader with its decibels, Shape the sound) and the mixer's
+   eight short faders with silver caps, the chosen one gold. The lesson hangs from the console on a paper slip. A phone
+   stacks the same pieces (his phone drawing). The rest of the desk sits in its own panel below. ══ */
 .st-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0!important}
-.st-desk .st-top{flex-wrap:nowrap;gap:.9rem}
-.st-desk .st-play{flex:0 0 64px!important;width:64px;min-width:64px;height:64px;min-height:64px;padding:0;border-radius:50%;font-size:0;
-  display:inline-grid;place-items:center;border:1px solid #6b4f16;background:radial-gradient(circle at 36% 30%,#f8dc9a,#d3a447 58%,#a8782a);
-  box-shadow:0 2px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4)}
-.st-desk .st-play::before{content:"";width:0;height:0;margin-left:6px;border-left:21px solid #1b1408;border-top:13px solid transparent;border-bottom:13px solid transparent}
-.st-desk .st-play.on{background:radial-gradient(circle at 36% 30%,#f8dc9a,#d3a447 58%,#a8782a)}
-.st-desk .st-play.on::before{width:20px;height:20px;margin:0;border:0;border-radius:3px;background:#1b1408}
-.st-desk .st-play:disabled{opacity:.6}
-.st-read b{font:600 1.25rem/1.2 var(--serif,Georgia,serif);color:#f3ead8;letter-spacing:.01em}
-.st-more{margin:.7rem 0 0;border:1px solid #2f3339;border-radius:12px;background:#17191c}
-.st-more>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 12px;cursor:pointer;font:700 .95rem/1.2 var(--sans);color:#ece6da;list-style:none}
-.st-more>summary::-webkit-details-marker{display:none}
-.st-more>summary::before{content:"\25B8";font-size:.8em;color:#f0c26e}.st-more[open]>summary::before{content:"\25BE"}
-.st-more>.st-row,.st-more>.st-line,.st-more>.st-sls{padding:0 12px 12px}
-/* the song: lanes named for their instrument, the wave in the track's colour, no block behind it */
-.st-song{margin-top:.4rem}
-.st-tl{position:relative;--lab:5.6rem}
-.st-desk .st-ruler,.st-desk .st-lane{grid-template-columns:var(--lab) minmax(0,1fr)}
-.st-ln{justify-content:flex-start;gap:.4rem;padding:0 .55rem;background:#202328;color:#ece6da;font:500 .95rem/1.1 var(--serif,Georgia,serif);min-width:0}
-.st-lnn{font:800 .68rem/1 var(--sans);color:#b9b0a1;flex:0 0 auto}
+.st-desk{background:none;border:0;box-shadow:none;padding:0;border-radius:0}
+.st-chassis{position:relative;border-radius:16px;padding:16px 18px 18px;border:1px solid #050607;color:#ece6da;
+  background:linear-gradient(180deg,#26282c 0%,#1a1c1f 12%,#141518 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 14px 30px rgba(20,16,8,.30),0 2px 4px rgba(0,0,0,.25)}
+.st-rest{margin-top:1.6rem}
+.st-cp .st-plate{display:none}
+.st-cp .st-blk{border-top:0;padding:0}
+/* the top line: the round gold play and where the song is */
+.st-desk .st-top{flex-wrap:nowrap;gap:1rem;align-items:center;margin:0 0 .7rem}
+.st-desk .st-play{flex:0 0 58px!important;width:58px;min-width:58px;height:58px;min-height:58px;padding:0;border-radius:50%;font-size:0;
+  display:inline-grid;place-items:center;border:1px solid #5e4512;
+  background:radial-gradient(circle at 38% 30%,#fbe6b0 0%,#e2b85e 38%,#b8862f 78%,#8e6420 100%);
+  box-shadow:0 3px 8px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.55),inset 0 -2px 3px rgba(80,50,10,.45)}
+.st-desk .st-play::before{content:"";width:0;height:0;margin-left:5px;border-left:18px solid #20170a;border-top:11px solid transparent;border-bottom:11px solid transparent}
+.st-desk .st-play.on{background:radial-gradient(circle at 38% 30%,#fbe6b0 0%,#e2b85e 38%,#b8862f 78%,#8e6420 100%)}
+.st-desk .st-play.on::before{width:17px;height:17px;margin:0;border:0;border-radius:2px;background:#20170a}
+.st-desk .st-play:disabled{opacity:.55}
+.st-desk .st-read{gap:.1rem}
+.st-desk .st-read b{font:400 1.12rem/1.2 var(--serif,Georgia,serif);color:#efe7d6;letter-spacing:.02em}
+.st-desk .st-read span{font-size:.84rem;color:#b9b0a1}
+/* the song: a thin ruler, slim lanes, each recording drawn as fine lines */
+.st-tl{position:relative;--lab:6.2rem;gap:0}
+.st-desk .st-ruler,.st-desk .st-lane{grid-template-columns:var(--lab) minmax(0,1fr);gap:0}
+.st-desk .st-rt{height:24px;background:transparent;border-radius:0;border-bottom:1px solid #3a3d42}
+.st-desk .st-rt i{border-left:1px solid #2c2f33;color:#b9b0a1;font:600 .7rem/24px var(--sans);padding-left:4px}
+.st-desk .st-rt i.lp{background:transparent;color:#f3d38e;box-shadow:inset 0 -2px 0 #d9a94c}
+.st-desk .st-rt i.st0{background:transparent;color:#efe7d6}
+.st-desk .st-rt i.now{background:transparent;color:#f3d38e}
+.st-desk .st-lane{min-height:40px;border-bottom:1px solid #24272b}
+.st-desk .st-lane:last-of-type{border-bottom:0}
+.st-desk .st-ln{justify-content:flex-start;gap:.45rem;padding:0 .6rem;min-height:40px;border-radius:0;background:#1d1f23;border-right:1px solid #2c2f33;
+  color:#e6decd;font:400 .98rem/1.1 var(--serif,Georgia,serif);min-width:0;box-shadow:inset 3px 0 0 transparent}
+.st-lnn{font:700 .66rem/1 var(--sans);color:#8f877a;flex:0 0 auto}
 .st-lnm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.st-lane[aria-current="true"] .st-lnn{color:#2a1a08}
-.st-lt{background:#15171a;border-color:#2a2e33}
-.st-desk .st-clip{background:transparent;border-radius:4px}
-.st-desk .st-clip .wv path{fill:var(--c)}
-.st-desk .st-clip.off{background:transparent}
-.st-desk .st-clip.off .wv path{fill:#5d6168}
+.st-desk .st-lt{min-height:40px;border-radius:0;border:0;background:#111214}
+.st-desk .st-lane[aria-current="true"] .st-ln{background:#25231f;color:#f3d38e;box-shadow:inset 3px 0 0 #e0b25a}
+.st-desk .st-lane[aria-current="true"] .st-lnn{color:#d9a94c}
+.st-desk .st-lane[aria-current="true"] .st-lt{border:0;box-shadow:none;background:#16171a}
+.st-desk .st-clip{background:transparent;border-radius:0;top:3px;bottom:3px}
+.st-desk .st-clip .wv{top:0;height:100%}
+.st-desk .st-clip .wv path,.st-chw .wv path{fill:none;stroke:var(--c);stroke-width:1.15;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.st-desk .st-clip.off .wv path{stroke:#4e5258}
 .st-desk .st-clip .st-cnm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.st-desk .st-clip .wv{top:10%;height:80%}
-/* an empty lane is a quiet dotted line; its name is already on the left */
-.st-desk .st-empty{left:.6rem;right:.6rem;font-size:0;background:radial-gradient(circle,#3c4048 1px,transparent 1.4px) 0 50%/8px 4px repeat-x}
-.st-desk .st-clip.pk{box-shadow:inset 0 0 0 2px #f3ead8}
-.st-rt i.now{background:#3b3220;color:#ffe2a8}
-.st-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#f3ead8;pointer-events:none;z-index:2;
-  left:calc(var(--lab) + 6px + (100% - var(--lab) - 6px) * var(--ph,0))}
-.st-ph::before{content:"";position:absolute;top:-1px;left:-6px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #f3ead8}
-/* the open channel and the eight short faders */
-.st-cons{display:grid;gap:12px;grid-template-columns:minmax(0,1fr);margin-top:.9rem}
-.st-ch,.st-fd{border:1px solid #2f3339;border-radius:14px;background:#1b1d21;padding:10px 12px 12px;min-width:0}
-.st-chh{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2rem .7rem}
-.st-chn{font:500 1.5rem/1.15 var(--serif,Georgia,serif);color:#f0c26e}
-.st-chs{font-size:.86rem;color:#c9c0b0}
-.st-chw{height:64px;margin:.5rem 0;border-bottom:1px solid #3a3320;position:relative}
+.st-desk .st-clip.pk{box-shadow:inset 0 0 0 1px #efe7d6}
+.st-desk .st-empty{left:.6rem;right:.6rem;font-size:0;background:radial-gradient(circle,#34373d 1px,transparent 1.3px) 0 50%/7px 4px repeat-x}
+.st-song .st-tl{border:1px solid #26292d;border-radius:10px;overflow:hidden;background:#111214}
+.st-ph{position:absolute;top:0;bottom:0;width:1px;background:#efe7d6;pointer-events:none;z-index:2;opacity:.9;
+  left:calc(var(--lab) + (100% - var(--lab)) * var(--ph,0))}
+.st-ph::before{content:"";position:absolute;top:0;left:-6px;border-left:6.5px solid transparent;border-right:6.5px solid transparent;border-top:9px solid #efe7d6}
+/* the open channel and the mixer */
+.st-cons{display:grid;gap:0;grid-template-columns:minmax(0,1fr);margin-top:14px;border:1px solid #26292d;border-radius:10px;background:#16171a;overflow:hidden}
+.st-ch,.st-fd{min-width:0;padding:12px 14px}
+.st-fd{border-top:1px solid #26292d}
+.st-ch{display:grid;gap:10px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name vol" "wave vol" "ms vol" "shape shape"}
+.st-chh{grid-area:name;display:grid;gap:.1rem;min-width:0}
+.st-chh .st-lab{margin:0;color:#b9b0a1;font-size:.66rem}
+.st-chn{font:400 1.55rem/1.1 var(--serif,Georgia,serif);color:#f0c26e}
+.st-chs{font-size:.82rem;color:#a9a091;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-chw{grid-area:wave;height:70px;position:relative;border-top:1px solid #e0b25a55;border-bottom:1px solid #2a2d31}
 .st-chw .wv{display:block;width:100%;height:100%}
-.st-chw .wv path{fill:var(--c)}
-.st-chw0{margin:.6rem 0}
-.st-chc{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
-.st-chc .st-ms{margin:0;flex:0 0 auto;grid-template-columns:repeat(2,5.4rem)}
-.st-vf{display:flex;align-items:center;gap:.6rem;flex:1 1 12rem;min-width:0;margin:0}
-.st-vf .st-lab{margin:0}
-.st-vf output{font:800 .9rem/1 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums;min-width:2ch}
-.st-vf input[type=range]{flex:1 1 auto;min-width:6rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
-.st-shape{margin-top:.7rem;background:#15171a}
+.st-chw0{grid-area:wave;margin:0}
+.st-chc{grid-area:ms;display:flex;gap:8px;align-self:start;align-items:flex-start}
+.st-chc .st-ms{display:flex;gap:8px;margin:0}
+.st-desk .st-chc .st-btn{min-height:40px;min-width:5.2rem;padding:0 .9rem;border-radius:8px;background:#1d1f23;border:1px solid #4a4e55;color:#ece6da;
+  font:600 .9rem/1 var(--serif,Georgia,serif);box-shadow:none}
+.st-desk .st-chc .st-mute[aria-pressed="true"]{background:#5b2a22;border-color:#e08f7a;color:#ffe4dc}
+.st-desk .st-chc .st-solo[aria-pressed="true"]{background:#4a3a16;border-color:#e0b25a;color:#ffe9b8}
+.st-vfw{grid-area:vol;display:grid;justify-items:center;align-content:start;gap:4px;min-width:5.6rem}
+.st-vfw .st-lab{margin:0;font-size:.62rem;color:#b9b0a1}
+.st-vfw output{font:600 .82rem/1 var(--sans);color:#f3d38e;font-variant-numeric:tabular-nums}
+.st-shape{grid-area:shape;margin:0}
 .st-shape .st-sls{grid-template-columns:repeat(2,minmax(0,1fr))}
-.st-fdh{display:block;text-align:center;margin:0 0 .3rem}
+.st-fdh{display:block;text-align:center;margin:0 0 .4rem;font:400 1rem/1.2 var(--serif,Georgia,serif);color:#e6decd;letter-spacing:.02em;text-transform:none}
 .st-fds{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:0;justify-items:center}
-.st-f1{display:grid;justify-items:center;gap:4px;min-width:0;width:100%}
-.st-vert{writing-mode:vertical-lr;direction:rtl;width:44px;height:118px;margin:0;padding:0;accent-color:#bdb6a8;touch-action:none}
-.st-f1.sel .st-vert{accent-color:#f0c26e}
-.st-f1.off .st-vert{opacity:.55}
-.st-fn{min-width:44px;width:100%;max-width:48px;min-height:44px;border-radius:10px;border:1px solid #33373d;background:#22252a;color:#ece6da;font:800 .95rem/1 var(--sans);cursor:pointer}
-.st-f1.sel .st-fn{background:#f0c26e;border-color:#f0c26e;color:#2a1a08}
+.st-f1{display:grid;justify-items:center;gap:2px;min-width:0;width:100%}
+/* a fader: a dark slot with tick marks, a silver cap; the chosen track's cap is gold. The range is drawn sideways and
+   turned upright, so every browser draws it the same way. */
+.st-fw{position:relative;width:44px;height:132px;touch-action:none;
+  background:repeating-linear-gradient(to bottom,#3a3d42 0 1px,transparent 1px 13px) 6px 8px/8px calc(100% - 16px) no-repeat,
+             repeating-linear-gradient(to bottom,#3a3d42 0 1px,transparent 1px 13px) calc(100% - 6px) 8px/8px calc(100% - 16px) no-repeat}
+.st-fw input{position:absolute;left:50%;top:50%;width:132px;height:44px;margin:0;padding:0;transform:translate(-50%,-50%) rotate(-90deg);
+  -webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;touch-action:none}
+.st-fw input:focus-visible{outline:3px solid #c9a24b;outline-offset:-6px}
+.st-fw input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#07080a;box-shadow:inset 0 1px 2px #000,0 0 0 1px #30333a}
+.st-fw input::-moz-range-track{height:6px;border-radius:3px;background:#07080a;box-shadow:inset 0 1px 2px #000,0 0 0 1px #30333a}
+.st-fw input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:30px;margin-top:-12px;border-radius:3px;border:1px solid #1b1b1b;
+  background:linear-gradient(90deg,#f6f3ec 0%,#cfcac0 42%,#6f6b64 50%,#cfcac0 58%,#a9a49a 100%);box-shadow:0 2px 4px rgba(0,0,0,.7)}
+.st-fw input::-moz-range-thumb{width:16px;height:30px;border-radius:3px;border:1px solid #1b1b1b;
+  background:linear-gradient(90deg,#f6f3ec 0%,#cfcac0 42%,#6f6b64 50%,#cfcac0 58%,#a9a49a 100%);box-shadow:0 2px 4px rgba(0,0,0,.7)}
+.st-f1.sel .st-fw input::-webkit-slider-thumb,.st-vfw .st-fw input::-webkit-slider-thumb{background:linear-gradient(90deg,#fff1c6 0%,#e6bd62 42%,#7a5516 50%,#e6bd62 58%,#c2913a 100%)}
+.st-f1.sel .st-fw input::-moz-range-thumb,.st-vfw .st-fw input::-moz-range-thumb{background:linear-gradient(90deg,#fff1c6 0%,#e6bd62 42%,#7a5516 50%,#e6bd62 58%,#c2913a 100%)}
+.st-f1.off .st-fw{opacity:.5}
+.st-fn{min-width:40px;min-height:40px;border:0;border-radius:8px;background:transparent;color:#cfc6b6;font:600 .95rem/1 var(--sans);cursor:pointer}
+.st-f1.sel .st-fn{color:#f3d38e;box-shadow:inset 0 -2px 0 #e0b25a}
 .st-fn:focus-visible,.st-more>summary:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}
-/* the lesson, on a paper slip below the console */
-.st-slip{position:relative;max-width:30rem;margin:-6px auto 0;padding:14px 18px 16px;background:#f6f0e2;color:#1a232c;text-align:center;
-  border:1px solid #e2d8c2;border-radius:3px;box-shadow:0 6px 14px rgba(0,0,0,.28);transform:rotate(-.4deg)}
+/* the channel's fader carries its decibels (80 is 0 dB, as recorded) */
+.st-db{position:relative;width:5.6rem;height:132px;display:flex;justify-content:center}
+.st-db .st-fw{margin-left:1.6rem}
+.st-db ol{position:absolute;left:0;top:8px;bottom:8px;margin:0;padding:0;list-style:none;width:1.9rem}
+.st-db li{position:absolute;right:0;transform:translateY(50%);font:600 .62rem/1 var(--sans);color:#9c9486;font-variant-numeric:tabular-nums}
+/* the quiet row: where it starts, the loop and the level */
+.st-cp .st-more{margin:10px 0 0;border:0;background:transparent}
+.st-cp .st-more>summary{min-height:40px;padding:0 4px;font:600 .9rem/1.2 var(--sans);color:#cfc6b6}
+.st-more{border:1px solid #2f3339;border-radius:10px;background:#17191c}
+.st-more>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 12px;cursor:pointer;font:600 .95rem/1.2 var(--sans);color:#ece6da;list-style:none}
+.st-more>summary::-webkit-details-marker{display:none}
+.st-more>summary::before{content:"\25B8";font-size:.8em;color:#e0b25a}.st-more[open]>summary::before{content:"\25BE"}
+.st-more>.st-row,.st-more>.st-line,.st-more>.st-sls,.st-more>.st-mrow{padding:0 12px 12px}
+.st-cp .st-more>.st-row,.st-cp .st-more>.st-line,.st-cp .st-more>.st-mrow{padding:0 4px 10px}
+/* the lesson, on a paper slip that hangs from the console */
+.st-slip{position:relative;z-index:3;width:min(24rem,86%);margin:-12px auto 0 12%;padding:14px 20px 12px;background:#f7f1e3;color:#1a232c;text-align:center;
+  border:1px solid #e3d9c3;border-radius:2px;box-shadow:0 8px 16px rgba(40,30,10,.22),0 1px 2px rgba(0,0,0,.12);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.5),rgba(0,0,0,0) 40%)}
 .st-slip[hidden]{display:none}
 .st-slip p{margin:0}
-.st-slipk{font:800 .72rem/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#6b5a3a}
-.st-slipt{font:500 1.15rem/1.35 var(--serif,Georgia,serif);color:#1a232c;margin:.25rem 0 .35rem!important}
-.st-slip a{color:#1d4f8a;font-weight:700;font-size:.92rem}
-.st-slip::after{content:"\25C6";display:block;color:#b8902f;font-size:.7rem;margin-top:.35rem}
+.st-slipk{font:700 .66rem/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#6b5a3a}
+.st-slipt{font:400 1.12rem/1.35 var(--serif,Georgia,serif);color:#1a232c;margin:.3rem 0 .3rem!important}
+.st-slip a{color:#1d4f8a;font-weight:700;font-size:.86rem}
+.st-slip::after{content:"\25C6";display:block;color:#b8902f;font-size:.62rem;margin-top:.3rem}
 @media (min-width:900px){
-  .st-cons{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
-  .st-chc{flex-wrap:nowrap}
+  .st-cons{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  .st-fd{border-top:0;border-left:1px solid #26292d}
+  .st-ch{grid-template-columns:8.5rem minmax(0,1fr) auto;grid-template-areas:"name wave vol" "ms ms vol" "shape shape shape"}
+  .st-chc{justify-content:flex-start}
 }
 @media (max-width:699px){
-  .st-desk .st-top{gap:.7rem}
-  .st-desk .st-play{flex-basis:56px!important;width:56px;min-width:56px;height:56px;min-height:56px}
-  .st-tl{--lab:4.4rem}
-  .st-ln{font-size:.82rem;padding:0 .4rem}
+  .st-chassis{padding:12px 10px 14px;border-radius:14px}
+  .st-desk .st-top{gap:.8rem}
+  .st-desk .st-play{flex-basis:54px!important;width:54px;min-width:54px;height:54px;min-height:54px}
+  .st-tl{--lab:4.6rem}
+  .st-desk .st-ln{font-size:.86rem;padding:0 .45rem}
   .st-lnn{display:none}
-  .st-vert{height:104px}
+  .st-ch{padding:12px 10px}
+  .st-fd{padding:10px 4px}
+  .st-fw{height:118px}.st-fw input{width:118px}.st-db{height:118px}
+  .st-slip{margin-left:auto;margin-right:auto;width:88%}
 }
 @media (prefers-reduced-motion:reduce){ .st-slip{transform:none} }
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
@@ -403,6 +457,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   </div>
   <main id="view">
     <section class="st-desk" id="desk" aria-labelledby="mastH">
+      <div class="st-chassis st-cp"><!-- AOG-DESK-FACE-V1: the console of Jimmy's drawing -->
       <div class="st-plate" aria-hidden="true"><b id="plateB">THE STUDIO</b><small id="plateS">EIGHT TRACKS · MIXER</small></div>
 
       <div class="st-blk" id="transport">
@@ -410,18 +465,6 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <button type="button" class="st-btn st-play" id="playBtn"></button>
           <div class="st-read"><b id="posOut">&nbsp;</b><span id="tempoOut"></span></div>
         </div>
-        <div class="st-mrow"><span class="st-lab" data-t="level"></span><canvas class="st-meter" id="meter" role="img"></canvas></div>
-        <!-- AOG-DESK-FACE-V1: where it starts, the loop and the count-in, one tap away -->
-        <details class="st-more" id="playMore"><summary data-t="playMore"></summary>
-        <div class="st-row st-ctl">
-          <label class="st-field st-f-start"><span class="st-lab" data-t="startAt"></span><select id="startSel"></select></label>
-          <div class="st-field st-f-loop"><span class="st-lab" data-t="loopBars"></span>
-            <div class="st-loop"><button type="button" class="st-btn" id="loopBtn" aria-pressed="false"></button><select id="loopFrom"></select><span data-t="to"></span><select id="loopTo"></select></div>
-          </div>
-          <button type="button" class="st-btn st-count" id="countBtn" aria-pressed="false"></button>
-        </div>
-        <p class="st-line" data-t="songLen" style="margin:.6rem 0 0"></p>
-        </details>
         <p class="st-line" id="playLine" aria-live="polite"></p>
       </div>
 
@@ -436,7 +479,21 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
         <div class="st-ch" id="chStrip"></div>
         <div class="st-fd" id="chFaders"></div>
       </div>
+      <!-- AOG-DESK-FACE-V1: the level, where it starts, the loop and the count-in, one tap away -->
+        <details class="st-more" id="playMore"><summary data-t="playMore"></summary>
+        <div class="st-mrow"><span class="st-lab" data-t="level"></span><canvas class="st-meter" id="meter" role="img"></canvas></div>
+        <div class="st-row st-ctl">
+          <label class="st-field st-f-start"><span class="st-lab" data-t="startAt"></span><select id="startSel"></select></label>
+          <div class="st-field st-f-loop"><span class="st-lab" data-t="loopBars"></span>
+            <div class="st-loop"><button type="button" class="st-btn" id="loopBtn" aria-pressed="false"></button><select id="loopFrom"></select><span data-t="to"></span><select id="loopTo"></select></div>
+          </div>
+          <button type="button" class="st-btn st-count" id="countBtn" aria-pressed="false"></button>
+        </div>
+        <p class="st-line" data-t="songLen" style="margin:.6rem 0 0"></p>
+        </details>
+      </div>
       <div class="st-slip" id="slip" aria-live="polite"></div>
+      <div class="st-chassis st-rest">
 
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
@@ -491,6 +548,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
           <p id="openAskT"></p>
           <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
         </div>
+      </div>
       </div>
     </section>
     <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
@@ -549,7 +607,7 @@ const STR={
   level:{en:"Level",es:"Nivel"}, meterAria:{en:"How loud the song is",es:"Qué tan fuerte suena la canción"},
   songH:{en:"Your song",es:"Tu canción"},
   /* AOG-DESK-FACE-V1 */
-  playMore:{en:"Where it starts, the loop and the count-in",es:"Dónde empieza, el bucle y la cuenta"},
+  playMore:{en:"Where it starts, the loop and the level",es:"Dónde empieza, el bucle y el nivel"},
   chH:{en:"Channel strip",es:"Canal"}, fdH:{en:"Mixer",es:"Mezcladora"}, volume:{en:"Volume",es:"Volumen"},
   shape:{en:"Shape the sound",es:"Dale forma al sonido"},
   fdAria:{en:"Track {n} · {name} · volume",es:"Pista {n} · {name} · volumen"}, fdPick:{en:"Track {n} · {name}",es:"Pista {n} · {name}"},
@@ -2247,9 +2305,9 @@ function waveSvg(c, p, fine){
   /* AOG-DESK-FACE-V1: a fine, smooth wave (the console's lanes and its open channel), mirrored about the middle */
   if(fine){
     const per=Math.max(8, Math.round(fine/p.n)), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
-    let top="", bot="";
-    for(let x=0;x<cols;x++){ const h=0.03+0.94*v[x%per], cx=(x+0.5).toFixed(1); top+=`L${cx} ${(1-h).toFixed(3)}`; bot=`L${cx} ${(1+h).toFixed(3)}`+bot; }
-    return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 1${top}L${cols} 1${bot}Z"/></svg>`;
+    let d="";
+    for(let x=0;x<cols;x++){ const h=0.02+0.9*v[x%per], cx=(x+0.5).toFixed(1); d+=`M${cx} ${(1-h).toFixed(3)}V${(1+h).toFixed(3)}`; }
+    return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
   }
   const per=Math.max(8, Math.min(90, Math.round(240/p.n))), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
   let top="", bot="";
@@ -2347,7 +2405,7 @@ function paintTimeline(){
       inner=P.map((p,j)=>{
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.max(24, Math.round(w*4)))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.max(16, Math.round(w*3.2)))}<span class="st-cnm">${esc(nm)}</span></span>`;
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
@@ -2685,22 +2743,25 @@ function paintConsole(){
   const sig=[S.lang, i, laneName(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : ""].join("|");
   if(CONS.sig!==sig){
     CONS.sig=sig;
-    const wave=c ? `<div class="st-chw" style="--c:${COLORS[i]}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 420)}</div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
+    const wave=c ? `<div class="st-chw" style="--c:${COLORS[i]}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 260)}</div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
     box.innerHTML=`<div class="st-chh"><span class="st-lab">${esc(t("chH"))}</span><b class="st-chn">${esc(laneName(i))}</b><span class="st-chs">${esc(t("trackN",{n:i+1}))}${c ? " · "+esc(trackName(i)) : ""}</span></div>`+wave+
       `<div class="st-chc"><div class="st-ms"><button type="button" class="st-btn st-mute" data-cms="mute" aria-pressed="false">${esc(t("mute"))}</button>`+
-      `<button type="button" class="st-btn st-solo" data-cms="solo" aria-pressed="false">${esc(t("solo"))}</button></div>`+
-      `<label class="st-vf" for="cv-vol"><span class="st-lab">${esc(t("volume"))}</span><input type="range" id="cv-vol" data-k="vol" min="0" max="100" step="1" value="${x.vol}"><output id="cv-vol-o">${esc(fmtV("vol", x.vol))}</output></label></div>`+
+      `<button type="button" class="st-btn st-solo" data-cms="solo" aria-pressed="false">${esc(t("solo"))}</button></div></div>`+
+      `<div class="st-vfw"><label class="st-lab" for="cv-vol">${esc(t("volume"))}</label><div class="st-db"><ol aria-hidden="true">${DB_MARKS.map(([v,w])=>`<li style="bottom:${v}%">${w}</li>`).join("")}</ol>`+
+      `<div class="st-fw"><input type="range" id="cv-vol" data-k="vol" min="0" max="100" step="1" value="${x.vol}"></div></div><output id="cv-vol-o">${esc(volDb(x.vol))}</output></div>`+
       `<details class="st-more st-shape" id="chShape"${CONS.open ? " open" : ""}><summary>${esc(t("shape"))}</summary>`+
       `<div class="st-sls">${KNOBS.filter(k=>k[0]!=="vol").map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,x[k],"cs")).join("")}</div></details>`;
   }
   box.querySelector("[data-cms=mute]").setAttribute("aria-pressed", x.mute ? "true" : "false");
   box.querySelector("[data-cms=solo]").setAttribute("aria-pressed", x.solo ? "true" : "false");
-  box.querySelectorAll("input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); });
+  box.querySelectorAll(".st-shape input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); });
+  const cv=$("cv-vol"); if(cv){ if(document.activeElement!==cv && +cv.value!==x.vol) cv.value=String(x.vol);
+    cv.setAttribute("aria-valuetext", volDb(x.vol)); const o=$("cv-vol-o"); if(o.textContent!==volDb(x.vol)) o.textContent=volDb(x.vol); }
   const fsig=S.lang+"|"+SONG.tracks.map((y,j)=>laneName(j)).join(",");
   if(fd._sig!==fsig){
     fd._sig=fsig;
     fd.innerHTML=`<span class="st-lab st-fdh">${esc(t("fdH"))}</span><div class="st-fds">`+SONG.tracks.map((y,j)=>
-      `<div class="st-f1" data-tr="${j}"><input type="range" class="st-vert" id="fv${j}" data-fv="${j}" min="0" max="100" step="1" value="${y.vol}" aria-label="${esc(t("fdAria",{n:j+1, name:laneName(j)}))}">`+
+      `<div class="st-f1" data-tr="${j}"><div class="st-fw"><input type="range" id="fv${j}" data-fv="${j}" min="0" max="100" step="1" value="${y.vol}" aria-label="${esc(t("fdAria",{n:j+1, name:laneName(j)}))}"></div>`+
       `<button type="button" class="st-fn" data-sel="${j}" aria-label="${esc(t("fdPick",{n:j+1, name:laneName(j)}))}">${j+1}</button></div>`).join("")+`</div>`;
   }
   fd.querySelectorAll(".st-f1").forEach(el=>{
@@ -2708,9 +2769,12 @@ function paintConsole(){
     el.classList.toggle("sel", j===SONG.sel); el.classList.toggle("off", !audible(j));
     el.querySelector("button").setAttribute("aria-pressed", j===SONG.sel ? "true" : "false");
     if(document.activeElement!==r && +r.value!==y.vol) r.value=String(y.vol);
-    r.setAttribute("aria-valuetext", ariaV("vol", y.vol));
+    r.setAttribute("aria-valuetext", volDb(y.vol));
   });
 }
+/* the fader's decibels: 80 is the take as recorded (0 dB); the gain is (v/80)² (volGain) */
+function volDb(v){ if(!(v>0)) return "−∞ dB"; const d=Math.round(40*Math.log10(v/80)); return (d>0 ? "+"+d : d<0 ? "−"+(-d) : "0")+" dB"; }
+const DB_MARKS=[[100,"+4"],[80,"0"],[56.6,"−6"],[40,"−12"],[20,"−24"],[0,"−∞"]];
 /* a console control moves the mixer's own slider, so the mixer's rules do the rest */
 function consoleTo(i, k, v){
   const r=$("t"+i+"-"+k); if(!r) return;
@@ -2719,7 +2783,7 @@ function consoleTo(i, k, v){
 }
 function bindConsole(){
   $("chStrip").addEventListener("input", e=>{ const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
-    const k=r.getAttribute("data-k"); consoleTo(SONG.sel, k, +r.value); syncSlider(r, +r.value); });
+    const k=r.getAttribute("data-k"); consoleTo(SONG.sel, k, +r.value); if(r.id!=="cv-vol") syncSlider(r, +r.value); });
   $("chStrip").addEventListener("click", e=>{ const b=e.target.closest("[data-cms]"); if(!b) return;
     const m=document.querySelector(`#mixer .st-strip[data-tr="${SONG.sel}"] [data-ms="${b.getAttribute("data-cms")}"]`); if(m) m.click(); });
   $("chStrip").addEventListener("toggle", e=>{ if(e.target.id==="chShape") CONS.open=e.target.open; }, true);
