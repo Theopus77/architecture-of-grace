@@ -854,6 +854,19 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · Simpler first screens (§08) and Listen (§12b), the last two in Jimmy's order ("3" and "9").**
+  - **The first screen** (`AOG-STUDIO-FIRST-V1` in `aog-labdoors.js`, inside the Studio only; a room on its own address is untouched):
+    - every room opens on its instrument. Piano: the keys first. Guitar and Bass: the chord pads, then the neck. Band: the section, then the pads (Jimmy's drawing). Drum Machine: the pads, with the bank, kit and pattern menus under them (his drawing has the banks along the bottom). Drum Kit: the kit, with its menu under it;
+    - inside the chord block, the pads sit straight under their one line; the key and the mood come after them. The sound menu and the chord wheel come after the playing (piano, guitar, bass); the amp and pedals after the neck;
+    - what teaches waits in one closed **Lessons and more** (`#aogLearn`) below the instrument: the course box ("Practises: Unit 28…"), the guide link, the lesson menu, and the Turntables' Simple / Full bench. Nothing is taken out; a bench bar with nothing left to use (the doors replaced the old tools menu) steps aside. A room with nothing to put there (the Drum Kit) has no Lessons and more;
+    - the piano on an iPhone still opens on the chord keys (C Dm Em F G Am) with Lower / Higher right above the keys (Jimmy, 2026-10-05); the keyboard itself is under them.
+  - **▶ Listen** (`AOG-STUDIO-LISTEN-V1`, `listenFill` in `music-studio.html`; the transport in `the-studio.html`):
+    - it plays My Track. A take in My Track that is on no track yet goes on the first empty track by itself (each room's newest: its take in `studioinbox`, or the recording on its shelf), then the song plays. No stop in the desk's menus first. Chops (they are for the Drum Machine) and the oscilloscope are left out; track 8 stays the voice;
+    - a track filled by hand is the student's, and so is a placed take once it is changed (trimmed, moved, cut; `remember()` clears the mark): Listen never changes those. A take Listen placed (`clip.auto`) gives way to that room's newer take, on the same track. Each clip now remembers its room (`clip.layer`, e.g. `guitar`, `guitar:live`);
+    - at the desk, **‹ <room>** takes the place of Mix › and goes back to the room you came from (Create → Listen → Revise → Send);
+    - with nothing in My Track: "Nothing to hear yet. Record in a room, then press + Add to My Track.";
+    - ⚠ An iPhone may hold back a desk's sound when Listen opened the desk (the tap was in the Studio, not on the desk). Then the line says "Tap anywhere on the desk to hear it.", and one tap starts it. Not tried in real Safari.
+  - Test: `music-handoff/tests/studio/first.js` (port 9255); `studio/rooms.js` now checks that Listen fills tracks 1 to 7 from the seven rooms.
 - **2026-10-09 · A real guitar or bass (§10b) and a free tuner (§10c), sixth and seventh in Jimmy's order.** `aog-liveinput.js` (`AOG-LIVEINPUT-V1`), loaded by the Guitar and the Bass (`_work/music/strings_page.html`, then `make_strings.py`), draws **Plug in your guitar / bass** under the amp:
   - says once that a browser can't see a cable: a USB interface, a USB guitar cable, or a microphone in front of an amp; and that the recording stays on this device;
   - **Turn on the input** asks for it with `echoCancellation`, `noiseSuppression` and `autoGainControl` off; a menu when there is more than one input, remembered (`aog.<guitar|bass>.live.input.v1`); nothing opens it on load;
