@@ -854,6 +854,9 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · My Track and Add a layer (§06, §11), fourth in Jimmy's order.** (`AOG-MYTRACK-V1`)
+  - In the Studio, My Track's marks are marks, not links (CLAUDE.md: four or more places is a menu). **+ Add a layer** is that menu: the rooms in song order, a ✓ beside the ones already there; picking one changes the room.
+  - Inside the Studio, every take's "Send to the Mixing Desk" reads **+ Add to My Track** and its line says "Added to My Track." (`aog-recorder.js`; the Turntables' own takes too). It is the same send, through `studioinbox`; on its own address a room still says "Send to the Mixing Desk".
 - **2026-10-09 · chops from your record to the Drum Machine (§9), third in Jimmy's order.** Each Turntables deck has **Chops to the Drum Machine** beside its pads (`AOG-CHOPS-TO-PADS-V1` in `music-decks.html`):
   - it takes 16 beats of the record on that deck from the start of the bar the needle is in (8 seconds from the needle when the record's tempo is not known), and sends them the way every take goes: into `studioinbox` (from `decks`, named "<record> · chops") with a note on `padstake`. No new shelf;
   - the Drum Machine puts them on its chops bank, one beat a pad (16 equal parts when the tempo is not known), and says "16 chops from <record> are on bank D"; the line on the deck links to the Drum Machine (in the Studio, that link changes the room);

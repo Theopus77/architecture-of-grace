@@ -623,6 +623,7 @@ const STR = {
   /* AOG-STUDIO-SEND-V1 */
   toStudio:{en:"Send to the Mixing Desk",es:"Enviar a la mesa de mezclas"},
   studioSent:{en:"Sent to the Mixing Desk.",es:"Enviada a la mesa de mezclas."},
+  layer:{en:"+ Add to My Track",es:"+ Añadir a mi pista"}, layerSent:{en:"Added to My Track.",es:"Añadida a mi pista."},   /* AOG-MYTRACK-V1: inside the Studio */
   studioGo:{en:"Open the Mixing Desk",es:"Abrir la mesa de mezclas"},
   studioFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
   noRoom:{en:"This device has no room left for takes. At the Mixing Desk, remove a take you do not need, then try again.",es:"Este aparato no tiene más espacio para tomas. En la mesa de mezclas, quita una toma que no necesites y vuelve a intentarlo."},
@@ -1068,7 +1069,7 @@ function paintTape(){
       <audio controls preload="none" src="${k.url}"></audio>
       <a class="ghost" href="${k.url}" download="turntables-take-${k.n}.wav">${t("save")}</a>
       ${ontoHTML(id=>`data-totake="${k.n}" data-deck="${id}"`)}
-      <button type="button" class="ghost" data-tostudio="${k.n}">${t("toStudio")}</button>
+      <button type="button" class="ghost" data-tostudio="${k.n}">${t(inStudioNow() ? "layer" : "toStudio")}</button>
     </div>`).join("");
   box.querySelectorAll("a[download]").forEach(a=>{ a.addEventListener("click", ()=>{ LX.saved = true; }); });
   box.querySelectorAll("[data-totake]").forEach(b=>{
@@ -1101,9 +1102,10 @@ async function tapeToStudio(n, btn){
   if(btn) btn.disabled = false;
   paintTakeLine();
 }
+function inStudioNow(){ return document.documentElement.classList.contains("in-studio"); }   /* aog-labdoors.js, AOG-STUDIO-SHELL-V1 */
 function paintTakeLine(){
   const el = document.getElementById("takeLine"); if(!el) return;
-  if(TAPE.msg === "studioSent") el.innerHTML = `${t("studioSent")} <a href="/studio">${t("studioGo")}</a>`;
+  if(TAPE.msg === "studioSent") el.innerHTML = `${t(inStudioNow() ? "layerSent" : "studioSent")} <a href="/studio">${t("studioGo")}</a>`;
   else el.textContent = TAPE.msg ? t(TAPE.msg) : "";
 }
 /* ══ AOG-DECKS-FROM-BENCH-V1 (2026-09-23) ════════════════════════════════════

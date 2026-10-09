@@ -71,6 +71,9 @@
     studio: { en: "Send to the Mixing Desk", es: "Enviar a la mesa de mezclas" },
     studioSent: { en: "Sent to the Mixing Desk.", es: "Enviada a la mesa de mezclas." },
     studioGo: { en: "Open the Mixing Desk", es: "Abrir la mesa de mezclas" },
+    /* AOG-MYTRACK-V1 (STUDIO-HANDOFF §06, §11) — inside the Studio the same send is "Add to My Track" */
+    layer: { en: "+ Add to My Track", es: "+ Añadir a mi pista" },
+    layerSent: { en: "Added to My Track.", es: "Añadida a mi pista." },
     /* AOG-REC-DELETE-V1 — Jimmy: "There should be a delete button for the musical recording. I accidentally hit the record
        button when I was playing." Every take can be deleted; for a moment it can be brought back. */
     del: { en: "Delete", es: "Borrar" },
@@ -304,7 +307,8 @@
       if (btn) btn.disabled = false;
     };
     /* AOG-STUDIO-SEND-V1 — Send to the Studio: the take joins the Studio's inbox, beside the others */
-    function studioHtml() { return w("studioSent") + ' <a href="/studio">' + w("studioGo") + "</a>"; }
+    function inStudio() { return document.documentElement.classList.contains("in-studio"); }   /* aog-labdoors.js, AOG-STUDIO-SHELL-V1 */
+    function studioHtml() { return w(inStudio() ? "layerSent" : "studioSent") + ' <a href="/studio">' + w("studioGo") + "</a>"; }
     R.toStudio = async function (n, btn) {
       var k = R.takes.find(function (x) { return x.n === n; }), line = el("line");
       if (!k) return;
@@ -342,7 +346,7 @@
           '<a class="aogrec-b" href="' + k.url + '" download="' + o.file[L()] + "-" + k.n + '.wav">' + w("save") + "</a>" +
           '<button type="button" class="aogrec-b send" data-aogrec-send="' + k.n + '">' + w("send") + "</button>" +
           (drums ? '<button type="button" class="aogrec-b send" data-aogrec-drum="' + k.n + '">' + w("drum") + "</button>" : "") +
-          '<button type="button" class="aogrec-b send" data-aogrec-studio="' + k.n + '">' + w("studio") + "</button>" +
+          '<button type="button" class="aogrec-b send" data-aogrec-studio="' + k.n + '">' + w(inStudio() ? "layer" : "studio") + "</button>" +
           '<button type="button" class="aogrec-b del" data-aogrec-del="' + k.n + '" aria-label="' + w("delAria").split("{n}").join(k.n) + '">' + w("del") + "</button></div>";
       }).join("");
       Array.prototype.forEach.call(list.querySelectorAll("[data-aogrec-send]"), function (b) { b.onclick = function () { R.send(+b.getAttribute("data-aogrec-send")); }; });
