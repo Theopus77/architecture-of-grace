@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition · Facilitator console — Architecture of Grace</title>
+<meta name="description" content="The twelve sessions of the Adult Edition for the two facilitators. Opens with a facilitator key.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://architectureofgrace.org/adult/sessions">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-ADULT-CONSOLE-V2 · The facilitator console at /adult/sessions.
+     Built by adult-build/build_sessions.py (repo root, not published) from book6.json — never hand-edit.
+     THE CONSOLE IS ENCRYPTED IN THIS FILE (AES-256-GCM; key derived from the
+     facilitator key by PBKDF2-SHA256, 200,000 rounds). View-source shows the
+     salt and the ciphertext, nothing readable. The key is never written to
+     this device: it is held for the tab and gone when the tab closes — the
+     AOG-DD-KEYGATE rule, because the next person to pick up a shared iPad
+     must not find the scripts open. The reflection log at the foot of each
+     session saves in localStorage only; nothing is sent anywhere. ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0; overflow-x:clip; touch-action:pan-y}
+body{background:var(--ground); color:var(--ink); font:17px/1.55 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; -webkit-text-size-adjust:100%}
+.wrap{max-width:900px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3,h4{line-height:1.15; margin:0 0 .3em}
+h1{font-size:1.9rem} h2{font-size:1.4rem} h3{font-size:1.08rem} h4{font-size:1rem; margin-top:1em}
+h1,h2{font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-weight:600; letter-spacing:-.01em}
+p{margin:.45em 0}
+a{color:var(--a)}
+button,input,select,textarea{font:inherit; color:inherit}
+input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or iOS zooms */
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.mast .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); font-weight:700}
+.deck{color:var(--ink-soft); max-width:64ch}
+.hubline{margin:.5em 0 0; font-weight:700} .hubline a{text-decoration:none}
+.mut{color:var(--ink-soft)} .small{font-size:.92rem}
+.btn{min-height:48px; padding:10px 18px; border:1px solid var(--rule); border-radius:12px; background:var(--field); cursor:pointer; font-weight:700; touch-action:manipulation}
+.btn.primary{background:var(--navy); border-color:var(--navy); color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#12161C}
+
+/* ── the gate ── */
+.gate{max-width:520px; margin:26px auto 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:22px 22px 18px; box-shadow:var(--lift-sm)}
+.gate h2{margin-top:0}
+.gate label{display:block; font-weight:700; margin:.8em 0 .3em}
+.gate input{width:100%; min-height:48px; padding:10px 12px; border:1px solid var(--rule); border-radius:12px; background:var(--field-2)}
+.gate .row{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; align-items:center}
+.gate .err{color:var(--caution); font-weight:700; min-height:1.4em; margin:.5em 0 0}
+.gate .fine{font-size:.9rem; color:var(--ink-soft); margin-top:12px}
+
+/* ── the rail: jump + prev/next, sticky under the bar ── */
+.rail{position:sticky; top:calc(var(--aogbar-h,52px) + 6px); z-index:20; background:var(--ground); padding:8px 0 10px; border-bottom:1px solid var(--rule); display:flex; gap:8px; align-items:center; flex-wrap:nowrap; margin-top:14px}
+.rail select{flex:1 1 auto; width:auto !important; min-width:0; max-width:none; min-height:48px; padding:8px 12px; border:1px solid var(--rule); border-radius:12px; background:var(--field)}
+.rail .btn{flex:none; padding:8px 14px}
+#prevBtn,#nextBtn{width:48px; padding:0}
+.rail .where{font-weight:700; color:var(--ink-soft); font-size:.9rem}
+
+/* ── sessions ── */
+.sess[hidden]{display:none}
+.sh2{margin-top:18px; padding:14px 16px 12px; border-radius:14px; background:var(--field); border:1px solid var(--rule); border-left:6px solid var(--rule); box-shadow:var(--lift-sm)}
+.sess.p1 .sh2{border-left-color:var(--p1)} .sess.p2 .sh2{border-left-color:var(--p2)} .sess.p3 .sh2{border-left-color:var(--p3)} .sess.p4 .sh2{border-left-color:var(--p4)}
+.sh2 .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); font-weight:700}
+.sh2 h2{margin:.15em 0 .1em}
+.sh2 .num{display:inline-block; font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-weight:800; font-size:1rem; color:var(--ink-faint); margin-right:.4em; vertical-align:middle}
+.sh2 .fl{font-size:1.05rem}
+.flag{display:inline-block; font-weight:800; white-space:nowrap; color:var(--caution)} .flag.gate{color:var(--navy)}
+.connects{font-size:.95rem; color:var(--ink-soft); margin:12px 0 0}
+.meta{width:100%; border-collapse:collapse; margin-top:12px; font-size:.95rem; background:var(--field); border:1px solid var(--rule); border-radius:12px; overflow:hidden}
+.meta th{text-align:left; width:9.5em; padding:8px 10px; vertical-align:top; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); border-bottom:1px solid var(--rule-soft)}
+.meta td{padding:8px 10px; vertical-align:top; border-bottom:1px solid var(--rule-soft)}
+.card{background:var(--field); border:1px solid var(--rule); border-radius:14px; padding:16px 18px 14px; box-shadow:var(--lift-sm); margin-top:14px}
+.card h3{margin-top:0}
+.tbl{width:100%; border-collapse:collapse; font-size:.95rem}
+.tbl th,.tbl td{text-align:left; padding:7px 8px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+.tbl th{font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint)}
+.tbl .t{white-space:nowrap; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.who{display:block; font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; font-weight:800; margin-bottom:.35em}
+.contra{border-left:5px solid var(--caution); background:var(--caution-wash); border-radius:10px; padding:12px 14px; margin-top:14px}
+.contra > b{display:block; color:var(--caution); margin-bottom:.25em}
+.anchor{border:2px solid var(--gold); background:var(--field); border-radius:12px; padding:12px 16px; margin-top:14px; font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-size:1.1rem; line-height:1.5}
+.anchor .who{color:var(--gold-deep); font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.prep{margin-top:14px; padding:14px 16px 10px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.prep h3{margin-top:0; color:var(--ink)}
+.flowh{margin:24px 0 4px; padding-bottom:.3em; border-bottom:2px solid var(--rule)}
+/* the timed step — 01 | Arrival & grounding | 8 min, the Book 3 step-table typography */
+.step{margin-top:14px; background:var(--field); border:1px solid var(--rule); border-radius:14px; padding:0 16px 12px; box-shadow:var(--lift-sm)}
+.step .sh{display:flex; align-items:baseline; gap:12px; padding:12px 0 8px; border-bottom:1px solid var(--rule-soft); margin-bottom:6px}
+.step .n{font-variant-numeric:tabular-nums; font-weight:800; color:var(--ink-faint); flex:none; margin-right:10px}
+.step .t{font-weight:800; flex:1; letter-spacing:.01em}
+.step .m{color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums; flex:none}
+.step .cue{color:var(--ink-soft); font-style:italic}
+.step .board{margin:.25em 0 .25em 1em; padding:8px 12px; border-left:3px solid var(--navy); background:var(--field-2); border-radius:0 8px 8px 0; font-size:.98rem}
+.say{border-left:5px solid var(--a); background:var(--a-wash); border-radius:10px; padding:11px 15px; margin:10px 0; font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-size:1.1rem; line-height:1.5}
+.say .who{color:var(--a); font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.scan{border:1.5px dashed var(--scan); background:var(--scan-wash); border-radius:10px; padding:11px 14px; margin:10px 0; font-size:.95rem}
+.scan .who{color:var(--scan)}
+.scrow{display:grid; grid-template-columns:7.5em 1fr; gap:6px 10px; margin:.3em 0}
+.scrow b{font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--scan); padding-top:.2em}
+@media (max-width:520px){ .scrow{grid-template-columns:1fr} }
+.practice{border-left:5px solid var(--good); background:var(--good-wash); border-radius:10px; padding:11px 15px; margin:10px 0}
+.practice .who{color:var(--good)}
+.scenario{border:1.5px solid var(--gold); background:var(--field); border-radius:10px; padding:11px 15px; margin:10px 0; font-size:.97rem}
+.scenario .who{color:var(--gold-deep)}
+.integ{border-left:5px solid var(--navy); background:var(--field-2); border-radius:10px; padding:11px 15px; margin:10px 0}
+.integ .who{color:var(--navy)}
+.box{border:1px solid var(--rule); background:var(--field-2); border-radius:10px; padding:11px 15px; margin:10px 0}
+.box .who{color:var(--ink-faint)}
+.between{margin-top:16px; border-left:5px solid var(--gold); background:var(--field-2); border-radius:10px; padding:12px 15px}
+.between .who{color:var(--gold-deep)}
+.refl{margin-top:14px; border:1px solid var(--rule); background:var(--field); border-radius:12px; padding:12px 15px; font-size:.97rem}
+.refl .who{color:var(--ink-faint)}
+/* V2: the Done tick, the workbook card */
+.step .done{flex:none; min-height:40px; padding:4px 14px; border:1.5px solid var(--rule); border-radius:999px; background:var(--field); color:var(--ink); font-weight:800; font-size:.88rem; cursor:pointer; touch-action:manipulation}
+.step .done[aria-pressed="true"]{background:var(--good); border-color:var(--good); color:var(--on-navy)}
+.step.isdone .sh .t{color:var(--ink-soft)}
+.stepprog .btn.small{min-height:40px; padding:4px 14px; font-size:.88rem}
+.gateword{font-size:1.1rem} .gateword b{font-family:"Fraunces",Georgia,serif; font-size:1.3rem; color:var(--gold-deep)}
+.lk{display:block; font-weight:700; margin:.7em 0 .2em}
+.lk input{display:block; width:100%; margin-top:4px; padding:10px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font-weight:400}
+.lkout{word-break:break-all; font-size:.95rem; margin-top:10px}
+/* the log */
+.log{margin-top:18px; background:var(--field); border:2px solid var(--lock); border-radius:14px; padding:16px 18px 14px}
+.log h3{margin-top:0; color:var(--lock)}
+.log label{display:block; font-weight:700; margin:.7em 0 .2em; font-size:.95rem}
+.log input[type=text],.log textarea{width:100%; padding:9px 11px; border:1px solid var(--rule); border-radius:10px; background:var(--field-2); font-weight:400}
+.log textarea{min-height:76px; resize:vertical; line-height:1.45}
+.lg2{display:grid; grid-template-columns:repeat(4,1fr); gap:10px} @media (max-width:640px){ .lg2{grid-template-columns:1fr 1fr} }
+.log fieldset{border:1px solid var(--rule); border-radius:10px; margin:.8em 0 0; padding:8px 12px 10px}
+.log legend{font-weight:700; font-size:.92rem; padding:0 6px}
+.chk{display:grid; grid-template-columns:repeat(2,1fr); gap:4px 14px} @media (max-width:520px){ .chk{grid-template-columns:1fr} }
+.cb{font-weight:500 !important; display:flex !important; align-items:center; gap:8px; min-height:40px; margin:0 !important}
+.cb input{width:22px; height:22px; accent-color:var(--lock)}
+.lgact{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px}
+.lgact .saved{flex:1; font-size:.9rem; color:var(--ink-soft)}
+/* crisis + lock + foot */
+.crisis{border:2px solid var(--caution); border-radius:14px; padding:14px 16px; margin-top:22px; background:var(--field)}
+.crisis h3{color:var(--caution); margin-top:0}
+.crisis ul{margin:.3em 0 0; padding-left:1.1em} .crisis li{margin:.3em 0} .crisis b{white-space:nowrap}
+.lock{margin-top:18px; border-left:5px solid var(--lock); background:var(--lock-wash); border-radius:10px; padding:12px 14px; font-size:.95rem} .lock b{color:var(--lock)}
+.foot{margin-top:30px; padding-top:14px; border-top:1px solid var(--rule); color:var(--ink-faint); font-size:.85rem}
+@media print{
+  body{background:#fff; color:#111; font-size:10.5pt}
+  .wrap{max-width:none; padding:0}
+  .no-print,.rail,.gate,.lgact{display:none !important}
+  .sess[hidden]{display:none !important}
+  .step,.say,.scan,.practice,.scenario,.integ,.box,.contra,.anchor,.prep,.between,.refl,.card,.meta tr,.log fieldset{break-inside:avoid; page-break-inside:avoid; box-shadow:none}
+  .log{break-before:page}
+  .log input[type=text],.log textarea{border:1px solid #999; background:#fff; min-height:60px}
+  a{color:inherit; text-decoration:none}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+
+<header class="mast">
+  <div class="k">The Adult Edition · for the two facilitators</div>
+  <h1>Facilitator console</h1>
+  <p class="deck">The twelve sessions as the manual writes them: what to prepare, each timed step with its scripts and safety checks, and a private log that stays on this device.</p>
+  <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
+</header>
+
+<main id="main">
+
+<section class="gate no-print" id="gate">
+  <h2>Opens with a facilitator key</h2>
+  <p class="mut">This page is for the two facilitators, not for participants.</p>
+  <label for="fkey">Facilitator key</label>
+  <input id="fkey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+  <div class="row"><button class="btn primary" id="openBtn" type="button">Open the console</button><span class="err" id="gateErr" aria-live="polite"></span></div>
+  <p class="fine">The key works for this tab only and is never saved. The next person to pick up this device will not find the console open. No key? Ask the program director who runs your group.</p>
+</section>
+
+<div class="rail no-print" id="rail" hidden>
+  <button class="btn" id="prevBtn" type="button" aria-label="Previous session">←</button>
+  <select id="jump" aria-label="Jump to a session">
+    <option value="0">Before you begin — flags, anatomy, the protocol</option>
+    <optgroup label="Phase I · Foundation"><option value="1">1 · Arrival &amp; The Group Compact</option><option value="2">2 · Identity Is Not Behavior</option><option value="3">3 · The Two Voices</option></optgroup>
+    <optgroup label="Phase II · Interior"><option value="4">4 · Feelings as Messengers</option><option value="5">5 · The Backpack Inventory ★</option><option value="6">6 · The Compassionate Witness ★</option></optgroup>
+    <optgroup label="Phase III · Repair"><option value="7">7 · Grief vs. Resentment ★★ ◆</option><option value="8">8 · Forgiving the Younger Self ★★ ◆</option><option value="9">9 · Inherited Shame ★ ◆</option><option value="10">10 · The Living Amend ★</option></optgroup>
+    <optgroup label="Phase IV · Legacy"><option value="11">11 · Forgiveness Is Not Reconciliation ★</option><option value="12">12 · The Final Backpack Audit ★★ ◆</option></optgroup>
+  </select>
+  <button class="btn" id="nextBtn" type="button" aria-label="Next session">→</button>
+  <button class="btn" id="lockBtn" type="button" title="Close the console">Lock</button>
+</div>
+
+<div id="console"></div>
+
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">National baseline — post these alongside your local mobile-crisis line and your institution’s emergency contacts.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+
+<div class="lock">
+  <b>Nothing is sent unless you send it.</b> The console is decrypted in this browser and shown here; the reflection log saves in this browser only. No account, no sign-in, no tracking. Disclosure is optional; insight is not.
+</div>
+
+</main>
+<footer class="foot"><p id="footNet">Architecture of Grace · The Adult Edition · facilitator console. This page loads no fonts, scripts, or images from the internet and works with the network off once opened. It carries no district or institutional endorsement.</p></footer>
+</div>
+
+<script id="aogAdultPayload" type="application/json">@@PAYLOAD@@</script>
+<script>
+(function(){
+"use strict";
+var D=document, $=function(id){return D.getElementById(id);};
+var P=JSON.parse($("aogAdultPayload").textContent);
+var K_TAB="aog.adult.fkey", K_LOG="aog.adult.reflect.v1.";
+function b64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+async function decrypt(pass){
+  var enc=new TextEncoder();
+  var km=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]);
+  var key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(P.salt),iterations:P.it,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]);
+  var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(P.iv)},key,b64(P.ct));
+  return new TextDecoder().decode(pt);
+}
+var cur=0, N=12;
+function show(n, push){
+  n=Math.max(0,Math.min(N,n|0)); cur=n;
+  var all=D.querySelectorAll("#console .sess");
+  for(var i=0;i<all.length;i++) all[i].hidden = (+all[i].getAttribute("data-n")!==n);
+  $("jump").value=String(n); $("prevBtn").disabled=(n===0); $("nextBtn").disabled=(n===N);
+  try{ if(push!==false) history.replaceState(null,"",n?("?s="+n):location.pathname); }catch(e){}
+  try{ window.scrollTo(0,0); }catch(e){}
+  loadLog(n); loadSteps(n);
+}
+/* V2 — the Done ticks, on this device only */
+var K_STEP="aog.adult.steps.v1.";
+function sess(n){return D.querySelector('#console .sess[data-n="'+n+'"]');}
+function loadSteps(n){
+  var a=sess(n); if(!a) return; var o={};
+  try{ o=JSON.parse(localStorage.getItem(K_STEP+n)||"{}")||{}; }catch(e){}
+  var st=a.querySelectorAll(".step"), done=0, mins=0, all=0;
+  for(var i=0;i<st.length;i++){
+    var k=st[i].getAttribute("data-step"), on=!!o[k], m=parseInt(st[i].getAttribute("data-min"),10)||0;
+    st[i].classList.toggle("isdone",on); var b=st[i].querySelector(".done"); if(b){ b.setAttribute("aria-pressed",on?"true":"false"); b.textContent=on?"Done ✓":"Done"; }
+    all+=m; if(on){ done++; mins+=m; }
+  }
+  var pg=a.querySelector(".stepprog"); if(pg){ pg.querySelector("i").style.setProperty("--p",st.length?Math.round(100*done/st.length):0); pg.querySelector(".lab").textContent=done+" of "+st.length+" steps · "+mins+" of "+all+" min"; }
+}
+function tick(n,k){
+  var o={}; try{ o=JSON.parse(localStorage.getItem(K_STEP+n)||"{}")||{}; }catch(e){}
+  if(k===null) o={}; else o[k]=!o[k];
+  try{ localStorage.setItem(K_STEP+n,JSON.stringify(o)); }catch(e){}
+  loadSteps(n);
+}
+function mkLink(){
+  var u=($("lkUrl").value||"").trim(), k=($("lkKey").value||"").trim(), out=$("lkOut"), cp=D.querySelector('[data-act="cplink"]');
+  if(!/^https:\/\/script\.google\.com\/[^\s]*\/exec$/.test(u)){ out.textContent="That address should start with https://script.google.com/ and end with /exec."; if(cp) cp.hidden=true; return; }
+  var t=btoa(JSON.stringify({u:u,k:k})).replace(/=+$/,"").replace(/\+/g,"-").replace(/\//g,"_");
+  out.textContent="https://architectureofgrace.org/adult/workbook?dest="+t; if(cp) cp.hidden=false;
+}
+/* the reflection log — on this device only */
+function logKey(n){return K_LOG+n;}
+function form(n){return D.querySelector('#console form.log[data-n="'+n+'"]');}
+function loadLog(n){
+  var f=form(n); if(!f) return; var raw=null;
+  try{ raw=localStorage.getItem(logKey(n)); }catch(e){}
+  var o=raw?JSON.parse(raw):{};
+  Array.prototype.forEach.call(f.elements,function(el){ if(!el.name) return; if(el.type==="checkbox") el.checked=!!o[el.name]; else el.value=o[el.name]||""; });
+  var s=f.querySelector(".saved"); if(s) s.textContent=raw?"Saved on this device.":"";
+}
+function saveLog(f){
+  var o={}; Array.prototype.forEach.call(f.elements,function(el){ if(!el.name) return; o[el.name]=(el.type==="checkbox")?el.checked:el.value; });
+  try{ localStorage.setItem(logKey(f.getAttribute("data-n")),JSON.stringify(o)); }catch(e){}
+  var s=f.querySelector(".saved"); if(s) s.textContent="Saved on this device.";
+}
+function wire(){
+  $("jump").addEventListener("change",function(){ show(+this.value); });
+  $("prevBtn").addEventListener("click",function(){ show(cur-1); });
+  $("nextBtn").addEventListener("click",function(){ show(cur+1); });
+  $("lockBtn").addEventListener("click",function(){ try{sessionStorage.removeItem(K_TAB);}catch(e){} location.replace(location.pathname); });
+  var c=$("console");
+  c.addEventListener("input",function(e){ var f=e.target.closest&&e.target.closest("form.log"); if(f) saveLog(f); });
+  c.addEventListener("change",function(e){ var f=e.target.closest&&e.target.closest("form.log"); if(f) saveLog(f); });
+  c.addEventListener("click",function(e){
+    var dn=e.target.closest&&e.target.closest("button[data-done]");
+    if(dn){ tick(cur,dn.getAttribute("data-done")); return; }
+    var b=e.target.closest&&e.target.closest("button[data-act]"); if(!b) return;
+    if(b.getAttribute("data-act")==="clearsteps"){ tick(cur,null); return; }
+    if(b.getAttribute("data-act")==="mklink"){ mkLink(); return; }
+    if(b.getAttribute("data-act")==="cplink"){ try{ navigator.clipboard.writeText($("lkOut").textContent).then(function(){ b.textContent="Copied ✓"; }); }catch(err){} return; }
+    var f=b.closest("form.log");
+    if(b.getAttribute("data-act")==="print"){ window.print(); }
+    if(b.getAttribute("data-act")==="clear"){
+      if(b.getAttribute("data-armed")!=="1"){ b.setAttribute("data-armed","1"); b.textContent="Tap again to erase this session's log"; return; }
+      try{ localStorage.removeItem(logKey(f.getAttribute("data-n"))); }catch(e){}
+      loadLog(+f.getAttribute("data-n")); b.removeAttribute("data-armed"); b.textContent="Erase this log";
+    }
+  });
+}
+async function open(pass, remember){
+  var err=$("gateErr"); err.textContent="";
+  if(!pass){ err.textContent="Enter the facilitator key."; return; }
+  if(!(window.crypto&&crypto.subtle)){ err.textContent="This browser can't open the console (no WebCrypto). Try Safari or Chrome over https."; return; }
+  $("openBtn").disabled=true; $("openBtn").textContent="Opening…";
+  try{
+    var html=await decrypt(pass);
+    $("console").innerHTML=html;
+    if(remember!==false){ try{ sessionStorage.setItem(K_TAB,pass); }catch(e){} }
+    $("gate").hidden=true; $("rail").hidden=false;
+    var q=/[?&]s=(\d+)/.exec(location.search); show(q?+q[1]:0,false);
+  }catch(e){
+    err.textContent="That key didn't open it. Check it and try again.";
+    $("openBtn").disabled=false; $("openBtn").textContent="Open the console";
+  }
+}
+$("openBtn").addEventListener("click",function(){ open($("fkey").value.trim()); });
+$("fkey").addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); open(this.value.trim()); } });
+wire();
+/* held for the tab only: a reload keeps the console open; a closed tab forgets */
+var held=null; try{ held=sessionStorage.getItem(K_TAB); }catch(e){}
+if(held) open(held,false);
+})();
+</script>
+</body>
+</html>

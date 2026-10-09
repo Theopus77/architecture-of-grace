@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition — Architecture of Grace</title>
+<meta name="description" content="A twelve-session group program in forgiveness, grace and self-compassion for adults in recovery, after trauma, or carrying old shame. Led by two trained facilitators. Built on the same four ideas the K–12 rooms teach.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
+<link rel="canonical" href="https://architectureofgrace.org/adult">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Adult Edition — Architecture of Grace">
+<meta property="og:description" content="A twelve-session group program in forgiveness, grace and self-compassion for adults in recovery, after trauma, or carrying old shame.">
+<meta property="og:url" content="https://architectureofgrace.org/adult">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png?v=3">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace — a complete social-emotional system for every classroom.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Adult Edition — Architecture of Grace">
+<meta name="twitter:description" content="A twelve-session group program in forgiveness, grace and self-compassion for adults in recovery, after trauma, or carrying old shame.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png?v=3">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- ═══ AOG-ADULT-DOOR-V2 (2026-10-09) · The Adult Edition — the door at /adult.
+     Source of truth: AoG_Book6_Adult_Edition_ENHANCED.docx (Sections I–IV, Appendices
+     B and C). V2: the site's own skin (aog-grace.js + aog-calm.css + aog-adult.css), plain
+     words, and the page is now something to use, not only read — tap a stone to open a
+     session, tap a stretch of the 90 minutes to see what happens there, and try two of
+     the four distinctions the way the SEL workbooks do. The workbook and the anchor
+     cards are open; the facilitator side still sits behind a key. "Reentry" stays off the
+     public copy (Jimmy, 2026-09-17). ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+/* ── the building: twelve stones, four courses; each stone is a button ── */
+.build{margin-top:18px; background:var(--field); border:1px solid var(--rule); border-radius:18px; padding:14px 14px 10px; box-shadow:var(--lift-sm)}
+.build svg{display:block; width:100%; height:auto; max-width:760px; margin:0 auto}
+.build .cap{text-align:center; color:var(--ink-soft); font-size:.95rem; margin:.4em 0 .2em}
+.legend{display:flex; flex-wrap:wrap; justify-content:center; font-size:.9rem; color:var(--ink-soft); margin:.3em 0 .2em}
+.legend span{margin:2px 10px}
+.stone{cursor:pointer; outline:none}
+.stone rect{stroke:var(--ink-soft); stroke-width:1.6}
+.stone:hover rect,.stone:focus-visible rect{stroke:var(--gold); stroke-width:3}
+.stone.on rect{stroke:var(--ink); stroke-width:3.2}
+.c1{fill:var(--p1-wash)} .c2{fill:var(--p2-wash)} .c3{fill:var(--p3-wash)} .c4{fill:var(--p4-wash)}
+.num{font:800 13px "Inter",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; fill:var(--ink)}
+.nm{font:600 12.5px "Fraunces",Georgia,serif; fill:var(--ink)}
+.phl{font:800 11px "Inter",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; letter-spacing:.12em; text-transform:uppercase}
+.l1{fill:var(--p1)} .l2{fill:var(--p2)} .l3{fill:var(--p3)} .l4{fill:var(--p4)}
+.fl{font:800 12px "Inter",-apple-system,Arial,sans-serif; fill:var(--caution)}
+.gt{font:800 12px "Inter",-apple-system,Arial,sans-serif; fill:var(--navy)}
+.grd{stroke:var(--ink-soft); stroke-width:2.2}
+/* on a phone the drawing is too small to read: the same building, as rows of big stones */
+.hbuild{display:none}
+@media (max-width:600px){
+  .build svg{display:none}
+  .hbuild{display:block}
+}
+.hrow{margin-top:10px}
+.hrow .lab{font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800; margin:0 0 4px}
+.hrow .ss{display:grid; grid-template-columns:repeat(var(--c),1fr); gap:6px}
+.hst{min-height:58px; padding:6px 8px; border:1.6px solid var(--ink-soft); border-radius:8px; color:var(--ink); text-align:left; font:600 .9rem/1.2 "Fraunces",Georgia,serif; cursor:pointer; touch-action:manipulation}
+.hst b{display:block; font:800 .8rem "Inter",-apple-system,Arial,sans-serif}
+.hst b .flag{float:right}
+.hst.c1{background:var(--p1-wash)} .hst.c2{background:var(--p2-wash)} .hst.c3{background:var(--p3-wash)} .hst.c4{background:var(--p4-wash)}
+.hst[aria-pressed="true"]{border-color:var(--ink); border-width:3px}
+.hground{height:0; border-top:2.2px solid var(--ink-soft); margin-top:10px}
+/* the open session, under the building */
+.sesscard{margin-top:12px; border-radius:14px; padding:14px 16px; background:var(--field-2); border-left:6px solid var(--rule)}
+.sesscard.p1{border-left-color:var(--p1)} .sesscard.p2{border-left-color:var(--p2)} .sesscard.p3{border-left-color:var(--p3)} .sesscard.p4{border-left-color:var(--p4)}
+.sesscard .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800}
+.sesscard h3{font-family:"Fraunces",Georgia,serif; font-size:1.3rem; margin:.15em 0 .3em}
+.sesscard .pr{font-weight:700}
+.sesscard .nav{display:flex; gap:8px; margin-top:10px}
+/* phases */
+.phases{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px}
+@media (max-width:820px){ .phases{grid-template-columns:1fr 1fr} }
+@media (max-width:440px){ .phases{grid-template-columns:1fr} }
+.ph-c{border-radius:14px; padding:14px 14px 12px; border:1px solid var(--rule); background:var(--field); border-top:5px solid var(--rule)}
+.ph-c.p1{border-top-color:var(--p1)} .ph-c.p2{border-top-color:var(--p2)} .ph-c.p3{border-top-color:var(--p3)} .ph-c.p4{border-top-color:var(--p4)}
+.ph-c .ss{font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:700}
+.ph-c h3{margin:.15em 0 .3em}
+.ph-c p{font-size:.95rem; color:var(--ink-soft); margin:0}
+/* the 90 minutes, drawn to scale; each stretch is a button */
+.clock{display:flex; width:100%; margin-top:14px; border-radius:12px; overflow:hidden; border:1px solid var(--rule)}
+.clock button{flex:var(--m) 1 0; min-width:0; min-height:56px; border:0; border-right:1px solid var(--ground); padding:4px 2px; background:var(--field); color:var(--ink); font-weight:800; font-size:.9rem; cursor:pointer; touch-action:manipulation; font-variant-numeric:tabular-nums}
+.clock button:last-child{border-right:0}
+.clock button.k1{background:var(--p1-wash)} .clock button.k2{background:var(--p2-wash)} .clock button.k3{background:var(--good-wash)} .clock button.k4{background:var(--p4-wash)}
+.clock button[aria-pressed="true"]{background:var(--navy); color:var(--on-navy)}
+.clockcap{display:flex; justify-content:space-between; font-size:.82rem; color:var(--ink-faint); margin-top:4px; font-weight:700}
+.stepcard{margin-top:12px; padding:12px 16px; border-radius:12px; background:var(--field); border:1px solid var(--rule)}
+.stepcard .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); font-weight:800}
+.stepcard h3{margin:.1em 0 .2em}
+/* try it: the distinctions */
+.tryhead{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+.tally{font-weight:800; color:var(--good); margin-top:10px}
+/* the compact */
+.compact{counter-reset:c; list-style:none; padding:0; margin:.4em 0 0}
+.compact li{position:relative; padding:9px 0 9px 2.5em; border-bottom:1px solid var(--rule-soft); font-family:"Fraunces",Georgia,serif; font-size:1.1rem}
+.compact li::before{counter-increment:c; content:counter(c); position:absolute; left:0; top:9px; width:1.75em; height:1.75em; border-radius:50%; background:var(--navy); color:var(--on-navy); font-family:"Inter",-apple-system,Arial,sans-serif; font-size:.85rem; font-weight:800; display:grid; place-items:center}
+.compact li .x{display:block; font-family:"Inter",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:.92rem; color:var(--ink-soft); margin-top:.2em}
+/* the doors */
+.doors{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px}
+@media (max-width:820px){ .doors{grid-template-columns:1fr} }
+a.door{text-decoration:none; color:inherit}
+a.door:hover{border-color:var(--gold)}
+.door{border:1px solid var(--rule); border-radius:16px; padding:14px 16px 14px; background:var(--field); box-shadow:var(--lift-sm); display:flex; flex-direction:column; gap:6px}
+.door h3{margin:0; font-family:"Fraunces",Georgia,serif; font-size:1.2rem}
+.door p{margin:0; font-size:.95rem; color:var(--ink-soft); flex:1}
+.door .st{font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase}
+.door .st.key{color:var(--gold-deep)}
+.door .st.open{color:var(--good)}
+.door .go{font-weight:800; color:var(--a)}
+details.more{margin-top:12px}
+details.more summary{cursor:pointer; font-weight:700; color:var(--a); min-height:44px; display:flex; align-items:center}
+@media print{
+  .build,.clock,.clockcap,.stepcard,#try{display:none !important}
+  .two,.phases,.doors{display:block}
+  .two > *,.phases > *,.doors > *{margin-top:10px}
+  .ph-c,.door,.compact li{break-inside:avoid}
+  details.more{display:block} details.more > *{display:block}
+}
+.ptbl{width:100%; border-collapse:collapse; font-size:.95rem}
+.ptbl th,.ptbl td{text-align:left; padding:6px; border-bottom:1px solid #ccc; vertical-align:top}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="k">The Curriculum · Book 6</div>
+  <h1>The Adult Edition</h1>
+  <p class="deck">Twelve weekly group sessions in forgiveness, grace and self-compassion. For adults in recovery, after trauma, or carrying old shame. Two trained facilitators lead every session.</p>
+  <p class="hubline no-print"><a href="/#curriculum">← The Curriculum · all six books</a></p>
+</header>
+
+<main id="main">
+
+<!-- ═══ THE BUILDING ═══ drawn first, named second. Each stone opens its session below. -->
+<section id="build" style="margin-top:22px">
+  <h2>Twelve sessions, one building</h2>
+  <p class="lede">The program builds like a house: the ground floor first, the top floor last. Tap a stone to see what happens in that session.</p>
+  <div class="build">
+    <svg viewBox="0 0 760 330" role="group" aria-label="The twelve sessions drawn as stones in four rows: Foundation, Interior, Repair, Legacy. Each stone is a button.">
+      <line x1="30" y1="312" x2="730" y2="312" class="grd"/>
+      <text x="30" y="298" class="phl l1">Foundation · sessions 1–3</text>
+      <g class="stone" data-n="1" tabindex="0" role="button" aria-label="Session 1: Arrival and the Compact"><rect x="60" y="240" width="200" height="48" rx="6" class="c1"/><text x="72" y="259" class="num">1</text><text x="72" y="278" class="nm">Arrival &amp; the Compact</text></g>
+      <g class="stone" data-n="2" tabindex="0" role="button" aria-label="Session 2: Identity is not behavior"><rect x="280" y="240" width="200" height="48" rx="6" class="c1"/><text x="292" y="259" class="num">2</text><text x="292" y="278" class="nm">Identity ≠ behavior</text></g>
+      <g class="stone" data-n="3" tabindex="0" role="button" aria-label="Session 3: The Two Voices"><rect x="500" y="240" width="200" height="48" rx="6" class="c1"/><text x="512" y="259" class="num">3</text><text x="512" y="278" class="nm">The Two Voices</text></g>
+      <text x="30" y="224" class="phl l2">Interior · sessions 4–6</text>
+      <g class="stone" data-n="4" tabindex="0" role="button" aria-label="Session 4: Feelings as messengers"><rect x="100" y="166" width="200" height="48" rx="6" class="c2"/><text x="112" y="185" class="num">4</text><text x="112" y="204" class="nm">Feelings as messengers</text></g>
+      <g class="stone" data-n="5" tabindex="0" role="button" aria-label="Session 5: The Backpack Inventory. Elevated care."><rect x="320" y="166" width="200" height="48" rx="6" class="c2"/><text x="332" y="185" class="num">5</text><text x="508" y="185" class="fl" text-anchor="end">★</text><text x="332" y="204" class="nm">The Backpack Inventory</text></g>
+      <g class="stone" data-n="6" tabindex="0" role="button" aria-label="Session 6: The Witness. Elevated care."><rect x="540" y="166" width="160" height="48" rx="6" class="c2"/><text x="552" y="185" class="num">6</text><text x="688" y="185" class="fl" text-anchor="end">★</text><text x="552" y="204" class="nm">The Witness</text></g>
+      <text x="30" y="150" class="phl l3">Repair · sessions 7–10</text>
+      <g class="stone" data-n="7" tabindex="0" role="button" aria-label="Session 7: Grief and resentment. High care, re-screen first."><rect x="60" y="92" width="150" height="48" rx="6" class="c3"/><text x="72" y="111" class="num">7</text><text x="180" y="111" class="fl" text-anchor="end">★★</text><text x="198" y="111" class="gt" text-anchor="end">◆</text><text x="72" y="130" class="nm">Grief vs. resentment</text></g>
+      <g class="stone" data-n="8" tabindex="0" role="button" aria-label="Session 8: The younger self. High care, re-screen first."><rect x="228" y="92" width="150" height="48" rx="6" class="c3"/><text x="240" y="111" class="num">8</text><text x="348" y="111" class="fl" text-anchor="end">★★</text><text x="366" y="111" class="gt" text-anchor="end">◆</text><text x="240" y="130" class="nm">The younger self</text></g>
+      <g class="stone" data-n="9" tabindex="0" role="button" aria-label="Session 9: Inherited shame. Elevated care, re-screen first."><rect x="396" y="92" width="150" height="48" rx="6" class="c3"/><text x="408" y="111" class="num">9</text><text x="516" y="111" class="fl" text-anchor="end">★</text><text x="534" y="111" class="gt" text-anchor="end">◆</text><text x="408" y="130" class="nm">Inherited shame</text></g>
+      <g class="stone" data-n="10" tabindex="0" role="button" aria-label="Session 10: The Living Amend. Elevated care."><rect x="564" y="92" width="136" height="48" rx="6" class="c3"/><text x="576" y="111" class="num">10</text><text x="688" y="111" class="fl" text-anchor="end">★</text><text x="576" y="130" class="nm">The Living Amend</text></g>
+      <text x="30" y="76" class="phl l4">Legacy · sessions 11–12</text>
+      <g class="stone" data-n="11" tabindex="0" role="button" aria-label="Session 11: Forgiveness is not reconciliation. Elevated care."><rect x="140" y="18" width="240" height="48" rx="6" class="c4"/><text x="152" y="37" class="num">11</text><text x="368" y="37" class="fl" text-anchor="end">★</text><text x="152" y="56" class="nm">Forgiveness ≠ reconciliation</text></g>
+      <g class="stone" data-n="12" tabindex="0" role="button" aria-label="Session 12: The Final Backpack Audit. High care, re-screen first."><rect x="400" y="18" width="200" height="48" rx="6" class="c4"/><text x="412" y="37" class="num">12</text><text x="570" y="37" class="fl" text-anchor="end">★★</text><text x="588" y="37" class="gt" text-anchor="end">◆</text><text x="412" y="56" class="nm">The Final Backpack Audit</text></g>
+    </svg>
+    <div class="hbuild" id="hbuild" role="group" aria-label="The twelve sessions, top floor first"></div>
+    <p class="legend"><span><b class="flag">★</b> extra care: a second facilitator in the room and a clinician on call that day</span><span><b class="flag">★★</b> high care: a clinician consulted before and after</span><span><b class="flag gate">◆</b> a safety check-in before it starts</span></p>
+    <div class="sesscard p1" id="sessCard" aria-live="polite"></div>
+  </div>
+  <p class="small mut">Each session builds on the one before, so the order never changes. Missed Session 2, 6, 7, 8 or 12? Meet one-to-one with a facilitator before the group meets again. New members join only before Session 2.</p>
+
+  <!-- for paper: the whole list, since a stone cannot be tapped on a page -->
+  <table class="ptbl print-only" aria-hidden="true">
+    <thead><tr><th>#</th><th>Session</th><th>Anchor idea</th><th>Care</th></tr></thead>
+    <tbody id="printList"></tbody>
+  </table>
+</section>
+
+<!-- ═══ WHAT IT IS ═══ -->
+<section id="what">
+  <h2>What it is, and what it is not</h2>
+  <p class="lede">Twelve sessions of ninety minutes, once a week. One closed group of six to ten adults. Every week has the same shape and ends with the same words. It grows out of Books 1–5 of the K–12 curriculum.</p>
+  <div class="two">
+    <div class="card">
+      <h3>It is</h3>
+      <ul>
+        <li>A structured group for adults, run in clinics and community programs.</li>
+        <li>A good partner to trauma therapy, medication-assisted treatment and recovery programs, once a person is stable.</li>
+        <li>Practice, not treatment. The work happens between you and the page. The group listens; it never pulls a story out of you.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>It is not</h3>
+      <ul>
+        <li>A self-help book to work through alone.</li>
+        <li>A replacement for trauma therapy, medication-assisted treatment, or psychiatric care for active suicidal thinking, psychosis or severe dissociation.</li>
+        <li>A religious program. It is taught without religion and sits well beside a chaplain’s own work.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHO IT IS FOR ═══ -->
+<section id="who">
+  <h2>Who it is for</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Adults who</h3>
+      <ul>
+        <li>carry shame or blame toward themselves that has become how they see themselves — in recovery, after harm they caused, or after a loss they blame themselves for;</li>
+        <li>hold a long resentment toward someone, when making up is not possible, not safe, or not wanted;</li>
+        <li>carry shame that a family, culture or community handed them before they could say no;</li>
+        <li>cannot tell taking responsibility apart from punishing themselves.</li>
+      </ul>
+      <p class="small mut">Good settings: recovery after about sixty days of stability; trauma recovery after first treatment; the months after leaving incarceration, once housing and work are steady; chaplaincy; grief groups where the grief carries self-blame.</p>
+    </div>
+    <div class="card">
+      <h3>Before anyone joins</h3>
+      <ul>
+        <li>Eighteen or older, and here by choice.</li>
+        <li>Has at least one way to calm down that has worked in the last thirty days.</li>
+        <li>Thirty days on a steady medication plan, and no hospital stay in the last fourteen days.</li>
+        <li>In trauma therapy? Their therapist agrees in writing that this group fits alongside it.</li>
+      </ul>
+      <p class="small mut">Being steady comes first. Too early, looking inward can shake someone whose supports are still forming. At the right time, it locks in the gains they have already made.</p>
+    </div>
+  </div>
+  <div class="warn">
+    <b>Not now, and not without care</b>
+    The wrong group at the wrong time can do harm, so facilitators screen at the start and again if anything changes. The group does not go ahead with active suicidal thinking with a plan, intent or a recent attempt; active psychosis or untreated severe mental illness; intoxication or a relapse in the last thirty days; or dissociation strong enough to stop the work.
+  </div>
+</section>
+
+<!-- ═══ THE FOUR PHASES ═══ -->
+<section id="phases">
+  <h2>The four phases</h2>
+  <p class="lede">The phases come in this order for a reason. Sessions are never skipped, swapped or shortened.</p>
+  <div class="phases">
+    <div class="ph-c p1"><div class="ss">Sessions 1–3</div><h3 class="p1c">Foundation</h3><p>The group, its promises, and four big ideas. Shared words come first, and the inside voice becomes something you can hear.</p></div>
+    <div class="ph-c p2"><div class="ss">Sessions 4–6</div><h3 class="p2c">Interior</h3><p>Looking inward. Feelings carry messages. The Backpack: what you carry, written down. The Witness: an honest, fair, kind inner voice.</p></div>
+    <div class="ph-c p3"><div class="ss">Sessions 7–10</div><h3 class="p3c">Repair</h3><p>The heart of it. Telling grief from resentment. Forgiving the younger self. Giving back shame that was never yours. The Living Amend.</p></div>
+    <div class="ph-c p4"><div class="ss">Sessions 11–12</div><h3 class="p4c">Legacy</h3><p>Forgiveness is not the same as making up. Then the Final Audit: put down, carry differently, or choose to carry.</p></div>
+  </div>
+</section>
+
+<!-- ═══ HOW A SESSION RUNS ═══ the 90 minutes drawn to scale -->
+<section id="anatomy">
+  <h2>Ninety minutes, the same shape each week</h2>
+  <p class="lede">The same steps in the same order help people settle. Tap a stretch of the session to see what happens there.</p>
+  <div class="clock" id="clock" role="group" aria-label="The ninety minutes of a session"></div>
+  <div class="clockcap"><span>0 min</span><span>45</span><span>90 min</span></div>
+  <div class="stepcard" id="stepCard" aria-live="polite"></div>
+  <div class="say"><span class="who">The closing words · the same every week</span>“What we did in this room stays in this room. What you carry out of this room is yours. The work continues — quietly — between now and next session. There is nothing you have to do with it. There is no homework. Just notice what stays with you. We meet again next week.”</div>
+</section>
+
+<!-- ═══ TRY IT ═══ two of the four distinctions, the SEL way: tap, then see why -->
+<section id="try" class="no-print">
+  <h2>Try two of the ideas</h2>
+  <p class="lede">The whole program rests on telling things apart. Tap an answer to see why. Nothing here is saved or sent.</p>
+  <div class="tryhead" role="group" aria-label="Pick an idea">
+    <button type="button" class="chip" data-set="ib" aria-pressed="true">Who I am, or what I did?</button>
+    <button type="button" class="chip" data-set="gr" aria-pressed="false">Grief, or resentment?</button>
+  </div>
+  <div id="tryBox"></div>
+  <p class="tally" id="tryTally" aria-live="polite"></p>
+</section>
+
+<!-- ═══ WHAT THE ROOM PROMISES ═══ -->
+<section id="compact">
+  <h2>What the group promises</h2>
+  <p class="lede">The group writes these five promises together in Session 1, and they stay on the wall for all twelve.</p>
+  <ol class="compact">
+    <li>What is said here, stays here.<span class="x">Except where the law says otherwise: immediate danger to yourself or others, abuse of a child or vulnerable adult, or a court order. These are named on day one. The group never promises more privacy than the law allows.</span></li>
+    <li>You may pass at any time, at any prompt, without explanation.<span class="x">Passing is part of the work. It is you choosing for yourself.</span></li>
+    <li>We do not give advice unless asked. We listen.</li>
+    <li>We do not narrate other people’s stories. We speak only to our own.</li>
+    <li>The work is between you and the page. The room witnesses; it does not extract.</li>
+  </ol>
+  <div class="note">
+    <b>You never have to tell your story</b>
+    Nobody is asked to say what happened. A person can finish all twelve sessions without naming their trauma, their history with substances, or harm they caused. The work happens on the page.
+  </div>
+</section>
+
+<!-- ═══ WHO FACILITATES ═══ -->
+<section id="facilitators">
+  <h2>Who leads it</h2>
+  <p class="lede">Two facilitators are in the room every session. One person alone cannot run this program, whatever their training.</p>
+  <div class="two">
+    <div class="card">
+      <h3>The lead facilitator · the voice</h3>
+      <ul>
+        <li>A master’s-level mental-health license (LCSW, LMHC, LMFT, LPC, LPCC, psychologist or equal), or a credentialed addiction counselor with three years of leading groups after licensing.</li>
+        <li>At least twelve hours of trauma-informed training and forty hours of co-leading groups first.</li>
+        <li>Two private hours doing the participant’s own work before Session 1.</li>
+        <li>Clinical supervision every week.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>The co-facilitator · the eyes</h3>
+      <ul>
+        <li>A credentialed peer recovery or peer mental-health specialist, a master’s-level intern supervised by the lead, or a licensed clinician.</li>
+        <li>In the room the whole session, and at the twenty-minute debrief after.</li>
+        <li>Watches for distress and responds without stopping the session.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small mut">Faith-based, peer-led and community programs for people returning from incarceration can run it only with a licensed clinical consultant who has read the manual and can be reached the same day, lighter content in the high-care sessions, and referral paths in place before Session 1. Facilitator certification is coming to this site.</p>
+</section>
+
+<!-- ═══ THE DOORS ═══ -->
+<section id="doors">
+  <h2>Inside the program</h2>
+  <div class="doors">
+    <a class="door" href="/adult/workbook">
+      <span class="st open">Open · for participants</span>
+      <h3>The workbook</h3>
+      <p>Twelve pages, one per session. It saves on your own device as you write. Your facilitator opens Sessions 7–12 in the room.</p>
+      <span class="go">Open the workbook →</span>
+    </a>
+    <a class="door" href="/adult/anchors">
+      <span class="st open">Open · print and post</span>
+      <h3>The anchor cards</h3>
+      <p>The twelve big ideas, one card per session. Tap a card to turn it over. Print them for the wall.</p>
+      <span class="go">See the cards →</span>
+    </a>
+    <a class="door" href="/adult/sessions">
+      <span class="st key">Facilitators · needs a key</span>
+      <h3>The sessions</h3>
+      <p>All twelve sessions for the two facilitators: timed steps, scripts, safety checks, and a private log.</p>
+      <span class="go">Open with a key →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ CRISIS & SAFETY ═══ on every Adult page, verbatim from the manual -->
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">Free, private, any time. Every group also posts its local crisis line and its own emergency contacts.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+
+<div class="lock">
+  <b>Nothing is sent unless you send it.</b> No account, no sign-in, no tracking. The workbook saves on your own device. Sending a page to your facilitator is always your choice, one page at a time.
+</div>
+
+</main>
+
+<footer class="foot">
+<p>Architecture of Grace · The Adult Edition. This page describes a group program led by clinicians. It is not therapy, and it carries no district or institutional endorsement.</p>
+</footer>
+
+</div>
+
+<script>
+/* AOG-ADULT-DOOR-V2 — the stones, the ninety minutes, and the two practice sets. Nothing saved, nothing sent. */
+(function(){
+"use strict";
+var D=document, $=function(id){return D.getElementById(id);};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+
+/* the twelve: title, anchor, phase, care, and what a participant does — plain words */
+var S=[null,
+ {t:"Arrival & The Group Compact",a:"The Compact",p:1,c:"",d:"The group meets, learns how the twelve weeks work, and writes its five promises together. Everyone speaks at least once.",w:"The Arrival Letter — a sealed letter to yourself, opened in Session 12."},
+ {t:"Identity Is Not Behavior",a:"Identity is not behavior",p:1,c:"",d:"What I did matters. It is not all of who I am. Owning a mistake without turning it into a life sentence.",w:"The I → B Translation — turn three “I am …” sentences into what actually happened."},
+ {t:"The Two Voices",a:"The Two Voices",p:1,c:"",d:"Two voices speak inside: a harsh one and a fair one. You cannot silence either. You can choose which one you follow.",w:"Naming Your Voices — give each voice a name and write what it says."},
+ {t:"Feelings as Messengers",a:"Feelings as messengers",p:2,c:"",d:"Every feeling carries information. Naming a feeling makes it workable. Even numbness is telling you something.",w:"Sensation → Naming → Message — one moment from the past week, step by step."},
+ {t:"Carrying Too Much — The Backpack Inventory",a:"The Backpack",p:2,c:"★",d:"What have you been carrying? Some of it is yours. Some was never yours. You see it before you decide anything.",w:"The Backpack Inventory — one line for each thing you carry. Private."},
+ {t:"The Compassionate Witness",a:"The Compassionate Witness",p:2,c:"★",d:"The Witness is honest, fair and kind, without punishment. Not a cheerleader. It is built, week by week.",w:"The First Witness Letter — answer the harsh voice in the Witness’s voice."},
+ {t:"Grief vs. Resentment",a:"Grief vs. resentment",p:3,c:"★★ ◆",d:"Grief says “I wish things had been different.” Resentment says “I blame.” They need different tools.",w:"Grief / Resentment / Both — sort each line of your Backpack."},
+ {t:"Forgiving the Younger Self",a:"Forgiving the younger self",p:3,c:"★★ ◆",d:"The younger you knew what they knew then. Letting go of the verdict without pretending nothing happened.",w:"The Letter to the Younger Self — four moves, in the Witness’s voice."},
+ {t:"Inherited Shame",a:"Inherited shame",p:3,c:"★ ◆",d:"Some shame was placed in you before you could refuse it. Naming where it began, so you can stop carrying it as yours.",w:"The Genogram of Shame — a quick family map and where each shame began."},
+ {t:"The Living Amend",a:"The Living Amend",p:3,c:"★",d:"An apology is about the past. A living amend changes the pattern, and keeps changing it.",w:"The Living Amend — one pattern, one change, how long, and what you will do when it gets hard."},
+ {t:"Forgiveness Is Not Reconciliation",a:"Forgiveness is not reconciliation",p:4,c:"★",d:"Forgiveness happens inside you. Making up takes two people and has to be safe. One can happen without the other.",w:"The Two-Column Sort — the inward question and the outward question, apart."},
+ {t:"The Final Backpack Audit & Closure",a:"The Audit",p:4,c:"★★ ◆",d:"Deciding what to put down, what to carry differently, and what to choose to carry. Then the Arrival Letter is opened.",w:"The Audit — every line of the Backpack goes into one of three columns."}];
+var PH=["","Foundation","Interior","Repair","Legacy"];
+function care(c){
+  var out=[];
+  if(c.indexOf("★★")>-1) out.push('<span class="flag">★★</span> high care');
+  else if(c.indexOf("★")>-1) out.push('<span class="flag">★</span> extra care');
+  if(c.indexOf("◆")>-1) out.push('<span class="flag gate">◆</span> safety check-in first');
+  return out.length?out.join(" · "):"Standard care";
+}
+var cur=1;
+function open(n){
+  n=Math.max(1,Math.min(12,n)); cur=n; var s=S[n];
+  var card=$("sessCard"); card.className="sesscard p"+s.p;
+  card.innerHTML='<div class="k p'+s.p+'c">Session '+n+' · '+PH[s.p]+'</div><h3>'+esc(s.t)+'</h3><p>'+esc(s.d)+'</p><p><span class="pr">On the page:</span> '+esc(s.w)+'</p><p class="small mut">'+care(s.c)+'</p>'+
+    '<div class="nav no-print"><button type="button" class="btn" data-go="-1"'+(n===1?' disabled':'')+'>← Session '+(n-1||1)+'</button><button type="button" class="btn" data-go="1"'+(n===12?' disabled':'')+'>Session '+(n<12?n+1:12)+' →</button></div>';
+  var hb=D.querySelectorAll(".hst"); for(var j=0;j<hb.length;j++) hb[j].setAttribute("aria-pressed",+hb[j].getAttribute("data-n")===n?"true":"false");
+  var st=D.querySelectorAll(".stone");
+  for(var i=0;i<st.length;i++){ var on=+st[i].getAttribute("data-n")===n; st[i].classList.toggle("on",on); st[i].setAttribute("aria-pressed",on?"true":"false"); }
+}
+D.querySelector(".build svg").addEventListener("click",function(e){ var g=e.target.closest&&e.target.closest(".stone"); if(g) open(+g.getAttribute("data-n")); });
+D.querySelector(".build svg").addEventListener("keydown",function(e){ var g=e.target.closest&&e.target.closest(".stone"); if(g&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); open(+g.getAttribute("data-n")); } });
+/* the phone building: Legacy on top, Foundation on the ground */
+(function(){
+  var rows=[[4,[11,12]],[3,[7,8,9,10]],[2,[4,5,6]],[1,[1,2,3]]], SH={1:"Arrival & the Compact",2:"Identity ≠ behavior",3:"The Two Voices",4:"Feelings as messengers",5:"The Backpack",6:"The Witness",7:"Grief vs. resentment",8:"The younger self",9:"Inherited shame",10:"The Living Amend",11:"Forgiveness ≠ reconciliation",12:"The Final Audit"};
+  var h="";
+  rows.forEach(function(r){
+    h+='<div class="hrow"><p class="lab p'+r[0]+'c">'+PH[r[0]]+' · sessions '+r[1][0]+'–'+r[1][r[1].length-1]+'</p><div class="ss" style="--c:'+(r[1].length===4?2:Math.min(r[1].length,3))+'">';
+    r[1].forEach(function(n){ var c=S[n].c, f=(c.indexOf("★★")>-1?"★★":c.indexOf("★")>-1?"★":""), g=c.indexOf("◆")>-1; h+='<button type="button" class="hst c'+r[0]+'" data-n="'+n+'" aria-pressed="false"><b>'+n+(g?'<span class="flag gate">&nbsp;◆</span>':"")+(f?'<span class="flag">'+f+'</span>':"")+'</b>'+esc(SH[n])+'</button>'; });
+    h+='</div></div>';
+  });
+  $("hbuild").innerHTML=h+'<div class="hground"></div>';
+  $("hbuild").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest(".hst"); if(b) open(+b.getAttribute("data-n")); });
+})();
+$("sessCard").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("button[data-go]"); if(b) open(cur+(+b.getAttribute("data-go"))); });
+open(1);
+/* the paper list */
+var pl="";
+for(var n=1;n<=12;n++) pl+='<tr><td>'+n+'</td><td>'+esc(S[n].t)+'</td><td>'+esc(S[n].a)+'</td><td>'+esc(S[n].c||"—")+'</td></tr>';
+$("printList").innerHTML=pl;
+
+/* the ninety minutes */
+var STEPS=[
+ ["Arrival & grounding",8,"8 min","Settling in. The same short grounding each week. One word from each person, around the circle — no stories.","k1"],
+ ["Opening review",5,"5 min","A bridge from last week: the big idea, and one connection someone noticed.","k1"],
+ ["Anchor idea",8,"8 min","Today’s big idea, named, defined and posted on the wall. By Session 12 all twelve are up.","k2"],
+ ["Teaching, part 1",9,"8–10 min","Short, numbered, timed teaching. The order is part of the help.","k2"],
+ ["Teaching, part 2",8,"5–10 min","Usually: what to do when the idea meets a real moment.","k2"],
+ ["Practice",25,"25 min","Writing, work in pairs, or a body practice. This is where change happens.","k3"],
+ ["Discussion",15,"15 min","Short scenarios and shared themes. Sharing what you wrote is always your choice.","k1"],
+ ["Integration",7,"7 min","What we did. What we did not do. One sentence each, around the circle.","k4"],
+ ["Closing words",2,"2 min","The same words at every session.","k4"]];
+var clock=$("clock"), h="";
+STEPS.forEach(function(s,i){ h+='<button type="button" class="'+s[4]+'" style="--m:'+s[1]+'" data-i="'+i+'" aria-pressed="false" aria-label="Step '+(i+1)+': '+esc(s[0])+', '+esc(s[2])+'">'+(i+1)+'</button>'; });
+clock.innerHTML=h;
+function step(i){
+  var s=STEPS[i];
+  $("stepCard").innerHTML='<div class="k">Step '+(i+1)+' of 9 · '+esc(s[2])+'</div><h3>'+esc(s[0])+'</h3><p>'+esc(s[3])+'</p>';
+  var b=clock.querySelectorAll("button"); for(var k=0;k<b.length;k++) b[k].setAttribute("aria-pressed",k===i?"true":"false");
+}
+clock.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("button"); if(b) step(+b.getAttribute("data-i")); });
+step(5);
+
+/* try it — the I→B translation (Session 2) and the two questions (Session 7) */
+var SETS={
+ ib:{a:["Who I am","What I did"],items:[
+  ["“I am a failure as a parent.”",0,"This names who you are. It closes the door on change. Session 2 turns it into what happened."],
+  ["“I missed my daughter’s 14th and 15th birthdays. I have apologized twice. I have not changed the pattern.”",1,"This names what happened, in its real shape. It can be owned, and it can change."],
+  ["“I am someone who can’t be trusted.”",0,"A verdict about the whole person. The behavior underneath is what can be named and repaired."],
+  ["“I broke two promises to my brother this spring.”",1,"Specific and owned. It does not say what kind of person you are."],
+  ["“I am damaged goods.”",0,"This sentence leaves nothing to work with. The next step is: what happened, in fact?"]]},
+ gr:{a:["Grief","Resentment","Both"],items:[
+  ["“I wish I had more time with her before she died.”",0,"A wish that things had been different, and no verdict. That is grief. It moves with mourning, time and witness."],
+  ["“How could he do that to us?”",1,"A verdict, an unresolved “how could you.” That is resentment. It moves with the work of forgiveness."],
+  ["“I miss the brother I had, and I still can’t believe what he did.”",2,"A wish and a verdict at once. Most heavy items are both — the work is noticing which is louder right now."],
+  ["“How could I have let that happen?”",1,"A verdict aimed at yourself. Resentment can point inward too."],
+  ["“I wish my childhood had been different.”",0,"A wish without blame. Grief, and it needs to be mourned, not argued with."]]}};
+var set="ib", got={};
+function render(){
+  var S2=SETS[set], h="";
+  S2.items.forEach(function(it,i){
+    h+='<div class="q" data-i="'+i+'"><p class="qt">'+esc(it[0])+'</p><div class="opts">';
+    S2.a.forEach(function(lab,j){ h+='<button type="button" class="opt" data-j="'+j+'">'+esc(lab)+'</button>'; });
+    h+='</div><p class="why" hidden></p></div>';
+  });
+  $("tryBox").innerHTML=h; got={}; tally();
+}
+function tally(){ var n=Object.keys(got).length, tot=SETS[set].items.length; $("tryTally").textContent=n?(n+" of "+tot+" answered"+(n===tot?" — well done.":"")):""; }
+$("tryBox").addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest(".opt"); if(!b) return;
+  var q=b.closest(".q"), i=+q.getAttribute("data-i"), it=SETS[set].items[i], j=+b.getAttribute("data-j");
+  var why=q.querySelector(".why");
+  if(j===it[1]){
+    b.classList.add("right"); why.innerHTML='<b>Yes — '+esc(SETS[set].a[it[1]].toLowerCase())+'.</b> '+esc(it[2]); why.hidden=false;
+    var ops=q.querySelectorAll(".opt"); for(var k=0;k<ops.length;k++) ops[k].disabled=true;
+    got[i]=1; tally();
+  } else {
+    b.classList.add("wrong"); b.disabled=true; why.innerHTML='Look again. '+(set==="ib"?"Does it name a whole person, or something that happened?":"Is there a wish, a verdict, or both?"); why.hidden=false;
+  }
+});
+D.querySelector(".tryhead").addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest(".chip"); if(!b) return;
+  set=b.getAttribute("data-set");
+  var cs=D.querySelectorAll(".tryhead .chip"); for(var k=0;k<cs.length;k++) cs[k].setAttribute("aria-pressed",cs[k]===b?"true":"false");
+  render();
+});
+render();
+})();
+</script>
+</body>
+</html>
