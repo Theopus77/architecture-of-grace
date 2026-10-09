@@ -9,6 +9,8 @@ The site owner is Jimmy, a special-education teacher. The site is static and liv
 
 This file is for a NEW session taking over the music work. Everything below can be checked in the repo.
 
+> **The Studio's product direction is `STUDIO-HANDOFF.md` (2026-10-08).** Read this file for how the bench works, then that one for where it goes next. Its §00b holds Jimmy's drawings and the room mockups.
+
 > **State of the helper branches:** the session that wrote this file merged all of them into `claude/drum-pads-touch-keys` and deployed them together (see §1 and §4). Check with `git log --oneline -12 origin/main`. Start new work from `main`.
 
 ---
