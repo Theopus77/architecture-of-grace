@@ -217,19 +217,34 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
   -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 63%, #000 63% 66%, transparent 66%);
   mask:radial-gradient(circle at 50% 50%, transparent 0 63%, #000 63% 66%, transparent 66%)}
 .platter:active{cursor:grabbing}
+/* AOG-DJ-VINYL-LOOK-V1 (2026-10-09) — Jimmy: "I want the turn tables to look like they have VINYL on it." A 12-inch
+   record: glossy black, fine grooves, the quiet gaps between songs, a smooth lead-in at the edge and a run-out by
+   the label, which is a third of the record across. The light on it stays still while it turns (.sheen, outside
+   the vinyl), the way a real record catches a lamp. */
 .vinyl{
   position:absolute;inset:7%;border-radius:50%;
-  background:repeating-radial-gradient(circle at 50% 50%, #161616 0 1px, #0c0c0c 2px 4px);
-  box-shadow:inset 0 0 10px 2px rgba(0,0,0,.7);   /* even all round, so it reads the same at any turn: the record sits in the well */
+  background:
+    radial-gradient(circle closest-side, transparent 0 41%, rgba(255,255,255,.05) 41.5% 43.5%, transparent 44%),
+    radial-gradient(circle closest-side, transparent 0 56%, #1f1f1f 56.4% 57.6%, transparent 58%,
+      transparent 0 69%, #1f1f1f 69.4% 70.4%, transparent 70.8%, transparent 0 82%, #1f1f1f 82.4% 83.2%, transparent 83.6%),
+    radial-gradient(circle closest-side, #121212 0 44%, transparent 44% 95%, #1c1c1c 95.5% 98.2%, #060606 99%, transparent 100%),
+    repeating-radial-gradient(circle at 50% 50%, #0a0a0a 0 1px, #171717 1px 2px, #0d0d0d 2px 3px);
+  box-shadow:inset 0 0 10px 2px rgba(0,0,0,.7),0 0 0 1px #050505;   /* even all round, so it reads the same at any turn */
   will-change:transform;
 }
 .label{
-  position:absolute;inset:27%;border-radius:50%;
+  position:absolute;inset:32%;border-radius:50%;
   background:conic-gradient(#e7d3a1, #8a6230, #f3e6c8, #6e4a22, #e7d3a1);
-  box-shadow:inset 0 0 0 6px rgba(0,0,0,.35);
+  box-shadow:inset 0 0 0 5px rgba(0,0,0,.35),inset 0 0 0 9px rgba(255,255,255,.08);
 }
+/* the lamp on the record: two soft bands of light across the grooves, still while the record turns under them */
+.sheen{position:absolute;inset:7%;border-radius:50%;pointer-events:none;z-index:1;
+  background:conic-gradient(from 0deg, transparent 0 18deg, rgba(255,255,255,.22) 38deg, rgba(255,255,255,.07) 52deg, transparent 66deg,
+    transparent 198deg, rgba(255,255,255,.16) 218deg, rgba(255,255,255,.05) 232deg, transparent 246deg);
+  -webkit-mask:radial-gradient(circle closest-side, transparent 0 37%, #000 44% 97%, transparent 99%);
+  mask:radial-gradient(circle closest-side, transparent 0 37%, #000 44% 97%, transparent 99%)}
 /* the light on the label: over it, not part of the record, so it stays put while the label turns under it */
-.dome{position:absolute;inset:30.22%;border-radius:50%;pointer-events:none;z-index:1;
+.dome{position:absolute;inset:34.52%;border-radius:50%;pointer-events:none;z-index:1;
   background:radial-gradient(circle at 30% 26%, rgba(255,255,255,.42), rgba(255,255,255,.08) 34%, rgba(255,255,255,0) 58%)}
 .hole{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#0b0d10;z-index:2}
 .arm{
@@ -281,10 +296,12 @@ footer a{color:inherit}
 .zoom{position:relative;overflow:hidden;width:100%;height:36px;background:#0a1410;border-radius:8px;display:block;margin-top:.3rem;touch-action:none}
 .zoom .zimg{height:36px;width:auto;will-change:transform}
 .zoom .zhead{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#c4452a;pointer-events:none}
-.strobe{position:absolute;inset:2%;border-radius:50%;pointer-events:none;
+/* AOG-DJ-VINYL-LOOK-V1: the strobe dots are on the platter's edge, outside the record, as on a real deck. They turn
+   with the record (a platter turns under its record), so they still show the spin and the speed. */
+.strobe{position:absolute;inset:-8.14%;border-radius:50%;pointer-events:none;
   background:repeating-conic-gradient(from 0deg,#f0dfae 0deg 2.2deg,transparent 2.2deg 9deg);
-  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);
-  mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);opacity:.8}
+  -webkit-mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);
+  mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);opacity:.8}
 .deck.spinning .platter{box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a,0 0 0 2px rgba(244,226,176,.18)}
 .rpm{display:inline-flex;gap:.25rem}
 .rpmb{min-height:44px;padding:0 .7rem}
@@ -2302,6 +2319,7 @@ function deckHTML(d){
             <div class="strobe"></div>
             <div class="label"></div>
           </div>
+          <div class="sheen"></div>
           <div class="dome"></div>
           <div class="hole"></div>
           <div class="arm"></div>
