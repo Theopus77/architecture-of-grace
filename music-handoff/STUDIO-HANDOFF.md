@@ -854,6 +854,18 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-09 · the Studio shell (§04–§06), Jimmy's second pick.** `/the-studio` (`the-studio.html`, made by `_work/music/make_studio_page.py`; `AOG-STUDIO-SHELL-V1`) is one house:
+  - the eight rooms as small picture doors (song order); the room you are in plays inside a frame of its own page; the address says the room (`/the-studio#bass`), so Back, bookmarks and shared links land right. The frame swaps rooms in place, so it adds no Back steps of its own;
+  - a room inside the Studio (`aog-labdoors.js`) hides its own site bar and doors, and on a phone its banner too (the doors already name it); a link to another room changes the room in the Studio; any other page opens over the Studio. A room on its own address is untouched;
+  - **My Track** along the bottom: Drums, Kit, Piano, Guitar, Bass, Band, Turntables, Voice, then Mix ›. A mark means that room has a take in `studioinbox` or a recording on its shelf (pads→`padbench`, drums→`drumtake`, piano→`keysbench`, guitar→`guitarbench`, bass→`bassbench`, band→`bandbench`); visiting marks nothing. Voice waits for §10;
+  - "Open this room in its own tab ↗" keeps Jimmy's 2026-10-06 ask (several rooms in several tabs);
+  - the shell draws at full size (no 85% zoom): the rooms inside draw on canvases. Language and light follow into the room.
+  - Test: `music-handoff/tests/studio/shell.js`.
+- **2026-10-09 · The Recording Studio.** Jimmy: "After the studio shell, make sure it all works, before you move into 4. I want the studio to be the RECORDING STUDIO." (`AOG-STUDIO-TRANSPORT-V1`)
+  - `/the-studio` is **The Recording Studio** ("Play · Record · Listen · Mix · Send it out"), in its own title, the site bar's Explore menu (`aog-topbar.js`) and the home page (`index.html`), whose studio lists now open with it.
+  - One **transport** along the bottom, above My Track, for whatever room you are in: **● Record** (the room's own recorder, through `window.AOGStudioRec`, which `aog-recorder.js` and the Turntables set; it presses the room's own Record button), **+ Add to My Track** once a take is made, **▶ Listen** (My Track at the Mixing Desk; it goes there first), **Mix ›**, **Send it out** (the Mixing Desk's). At the Mixing Desk ● Record waits for a room until the voice slot (§10) gives it something to record.
+  - A phone on its side gives the room the whole screen (the shell's bar, doors and transport step aside), so the rooms' sideways play views keep working.
+  - Checked room by room, inside the Studio, with only the transport: `music-handoff/tests/studio/rooms.js` (every room records a take that is not silent and lands on My Track; Listen and Send it out at the desk).
 - **2026-10-09 · Send it out (§12), Jimmy's first pick of the build order.** His order: 8 Send it out, 1 the shell, then chops (§9), My Track (§6), voice (§10), a real guitar (§10b), the tuner (§10c), then simpler first screens (§08) and Listen (§12b). On the Mixing Desk, **Send it out** sits beside Make the mix (`AOG-STUDIO-SENDOUT-V1` in `music-studio.html`):
   - it makes the song through the whole desk as it is now, one stereo .wav named after the song, its loudest moment at −1 dB (at most 12 dB up or down); a silent song is told plainly and nothing is made;
   - **Share…** (the device's share sheet, a second tap: Safari only opens it straight from a tap) and **Download**; "This file stays yours. Nothing is uploaded.";
