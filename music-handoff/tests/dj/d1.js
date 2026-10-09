@@ -20,6 +20,8 @@ const srv = require("../srv.js")(9930);
   ok(st.motor && st.master === "A" && Math.abs(realBpm(a1, a2) - 125) < 0.1 && /Stop/.test(st.label), `deck A plays at ${realBpm(a1, a2).toFixed(3)} BPM and leads (MASTER): ` + JSON.stringify(st));
   /* 3 · B and C SYNC to A and start: they land on A's tempo and on its beat */
   await p.click('[data-sync="B"]'); await p.click('[data-play="B"]');
+  /* AOG-DJ-DESK-V1: two decks on the desk; A · C brings C up, and B keeps playing off the desk */
+  await p.click('[data-pair="AC"]');
   await p.click('[data-sync="C"]'); await p.click('[data-play="C"]');
   await p.waitForTimeout(2500);
   const s1 = await Promise.all(["A", "B", "C"].map(id => snap(p, id)));

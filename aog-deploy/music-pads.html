@@ -315,6 +315,7 @@ const STR={
   patLoop:{en:"Put it in the loop",es:"Ponlo en el bucle"}, patStep:{en:"step {n}",es:"paso {n}"},
   patIntro:{en:"Not sure which chords? Pick a pattern. Pad 1 is home.",es:"¿No sabes qué acordes usar? Elige un patrón. El pad 1 es la casa."},
   patHow:{en:"Play the gold numbers in order: pads {seq}. {each}",es:"Toca los números dorados en orden: pads {seq}. {each}"},
+  patSame:{en:"The same steps, with this key's chords.",es:"Los mismos pasos, con los acordes de este tono."},
   each1:{en:"One chord each bar.",es:"Un acorde por compás."}, each2:{en:"Two chords each bar.",es:"Dos acordes por compás."},
   patDone:{en:"The pattern is in the loop, over 4 bars. Press Play.",es:"El patrón está en el bucle, en 4 compases. Pulsa Tocar."},
   fitWait:{en:"Every note here fits the key. Play a chord in bank B, and the notes that match it get a gold bar.",es:"Cada nota aquí encaja con el tono. Toca un acorde en el banco B, y las notas que combinan llevan una barra dorada."},
@@ -968,8 +969,12 @@ function patPads(P){   /* the pads that play a pattern, or null when one of its 
   return 16%out.length===0 && out.length>=2 && out.length<=8 ? out : null;
 }
 const PATS=PRESETS.filter(P=>patPads(P));
-function patOf(B){ const P=PATS.find(x=>x.id===B.pat), mn=B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues";
-  return P && !!P.minor===mn ? P : null; }   /* a pattern stays only while the bank's scale is the pattern's */
+/* AOG-PADS-PAT-ANYSCALE-V1 (2026-10-09) — Jimmy: "I don't get the chords golden light up when I switch to minor keys in
+   the chord bank." A pattern is its steps ("4 5 3 6"): it stays when the scale changes, on the same pads, which now hold
+   this key's chords. (It used to be dropped the moment the scale left the pattern's own.) Picking a pattern leaves your
+   key and scale as they are (it used to flip a minor bank back to major). */
+function patOf(B){ return PATS.find(x=>x.id===B.pat) || null; }
+function patMinor(B){ return B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues"; }
 function paintGuide(){
   const B=S.banks[S.bank], row=$("guideRow"), now=$("guideNow");
   if(B.type==="chords"){
@@ -979,13 +984,15 @@ function paintGuide(){
     row.innerHTML=field("fPat", t("patLab"), o, true)+(cur?`<button type="button" class="pm-b" id="fPatLoop">${esc(t("patLoop"))}</button>`:"");
     row.hidden=false;
     $("fPat").onchange=()=>{ const P=PATS.find(x=>x.id===$("fPat").value); B.pat=P?P.id:"";
-      if(P){ const sc=P.minor?"minor":"major"; if(B.scale!==sc){ B.scale=sc; prep(S.bank); }
+      /* AOG-PADS-PAT-ANYSCALE-V1: picking a pattern never changes your key or scale (it used to flip a minor bank back to
+         major); its steps light up in the chords you chose */
+      if(P){ const sc=patMinor(B)?"minor":"major";
         /* the Notes bank follows, so every note of every chord in the pattern has a pad */
         const N=S.banks.find(x=>x.type==="notes"), ok={major:["major","pmaj"], minor:["minor","pmin","blues","dorian"]}[sc];
         if(N && (N.key!==B.key || ok.indexOf(N.scale)<0)){ N.key=B.key; if(ok.indexOf(N.scale)<0) N.scale=sc; } }
       save(); paintAll(); };
     const lb=$("fPatLoop"); if(lb) lb.onclick=()=>patToLoop(B);
-    if(cur){ const pp=patPads(cur); now.innerHTML=esc(t("patHow",{seq:pp.map(i=>i+1).join(", "), each:t(pp.length>4?"each2":"each1")})); }
+    if(cur){ const pp=patPads(cur); now.innerHTML=esc(t("patHow",{seq:pp.map(i=>i+1).join(", "), each:t(pp.length>4?"each2":"each1")})+(!!cur.minor!==patMinor(B) ? " "+t("patSame") : "")); }
     else now.textContent=t("patIntro");
   } else if(B.type==="notes"){
     row.innerHTML=""; row.hidden=true; paintFit();

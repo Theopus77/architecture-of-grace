@@ -87,12 +87,103 @@ body.bench-simple .deck .row .ghost{min-height:48px}
   body[data-decktab="mix"] .decks{display:none}
   body[data-decktab="mix"] #mixer{margin-top:.8rem}
 }
+/* ══ AOG-DJ-DESK-V1 (2026-10-08) — Jimmy: "There is a LOT of stuff going on." "I like the option of have the fader in
+   the middle and the different options for the two records but using three." An iPad or a computer now shows TWO decks,
+   the third one tap away (A · B, A · C, B · C). The deck that is off the desk keeps playing, with its song, cues, loop
+   and pitch: it is the same deck, just not on the desk. From 960 px the two decks and a mixer bay are one chassis.
+   The phone keeps its Show menu (AOG-DJ-LAYOUT-V1). ═══════════════════════════════════════════════════════════ */
+.pairbar{display:none;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;margin:.8rem 0 0}
+.pairbar .pairs{display:inline-flex;gap:.4rem}
+.pairbar .pill{min-width:72px;justify-content:center;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.pairbar .pill.on{background:#f0c26e;color:#2a1a08;border-color:#f0c26e}   /* the Simple bench's gold pill */
+.pairbar .waiting{margin:0;color:var(--muted);font-size:.92rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 12rem}
+.pairbar .waiting b{color:var(--ink);font-weight:700}
+.bay{display:none}
+.dmore{margin-top:.55rem;border-top:1px solid rgba(255,255,255,.1)}
+.dmore>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;color:#c9bfae;list-style:none}
+.dmore>summary::-webkit-details-marker{display:none}
+.dmore>summary::marker{content:""}
+.dmore>summary::before{content:"\25B8";font-size:.8rem}
+.dmore[open]>summary::before{content:"\25BE"}
+.dmore .padhead{margin:.1rem 0 0}
+.deck .row.perf{gap:.35rem}
+.deck{container-type:inline-size}
+@container (min-width:380px){ .deck .padgrid{grid-template-columns:repeat(8,minmax(0,1fr));gap:4px} }   /* eight across while a pad is still 44 px wide */
 @media (min-width:701px){
-  .decks{grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
-  .deck{padding:11px}
-  .platter{width:min(190px,19vw)}
+  .pairbar{display:flex}
+  .decks{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+  body[data-pair="AB"] #deckC,body[data-pair="AC"] #deckB,body[data-pair="BC"] #deckA,
+  body[data-pair="AB"] #stripC,body[data-pair="AC"] #stripB,body[data-pair="BC"] #stripA{display:none}
+  .decks .deck{padding:11px}
   .deck .row{gap:.35rem}
+  /* the record: a wrap of up to 200 px, REV in the flow under its bottom-right edge, never on the vinyl */
+  .decks .deck .platter-wrap{width:min(200px,100%);margin:.6rem auto .5rem;flex-direction:column;align-items:stretch}
+  .decks .deck .platter{width:100%}
+  .decks .deck .platter-wrap .revc{position:static;align-self:flex-end;margin-top:8px}
+  /* the mixer under the two decks, one row: left channel, the crossfader, right channel */
+  #mixer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:.6rem;align-items:start}
+  .mixer>*{grid-column:1 / -1}
+  .mixer .strips{display:contents}
+  .mixer .strip{grid-row:2}
+  .mixer .xfade{grid-column:2;grid-row:2;margin:0;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+  body[data-pair="AB"] #stripA,body[data-pair="AC"] #stripA,body[data-pair="BC"] #stripB{grid-column:1}
+  body[data-pair="AB"] #stripB,body[data-pair="AC"] #stripC,body[data-pair="BC"] #stripC{grid-column:3}
+  .mixer>h2{grid-row:1}
+  .mixer .xrow,.mixer .eqwrap,.mixer .rechint{grid-row:auto}
+  body.bench-simple #mixH,body.bench-simple .strip .side{display:none}
 }
+@media (min-width:701px) and (max-height:860px){ .deck .wave{height:48px} }
+@media (min-width:960px){
+  /* one chassis: the two decks and the mixer bay are one object, no paper between them */
+  .decks.stage{
+    display:grid;grid-template-columns:minmax(0,1fr) 168px minmax(0,1fr);gap:0;align-items:stretch;
+    background:radial-gradient(140% 80% at 50% -30%,#4a545f,#171c22 64%);
+    border:1px solid #0c0f13;border-radius:22px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 18px 40px rgba(0,0,0,.28);overflow:hidden;
+  }
+  .decks.stage .deck{background:transparent;border:0;box-shadow:none;border-radius:0;grid-row:1;padding:14px 13px}
+  body[data-pair="AB"] #deckA,body[data-pair="AC"] #deckA,body[data-pair="BC"] #deckB{grid-column:1}
+  body[data-pair="AB"] #deckB,body[data-pair="AC"] #deckC,body[data-pair="BC"] #deckC{grid-column:3}
+  .decks.stage .deck>.meter{display:none}            /* the bay's meters show each channel's level */
+  .decks.stage .bay{display:grid}
+  /* the bay holds the volumes and the crossfader, so the mixer under the chassis keeps Record (and, on the
+     Full bench, the EQ, kills, filter and effects of the two decks on the desk) */
+  .mixer .xfade{display:none}
+  body.bench-simple .mixer .strip{display:none}
+  body:not(.bench-simple) .mixer .strip [data-vol]{accent-color:#f4efe4}
+}
+
+/* ── the mixer bay: a recess in the chassis, the height of the decks ── */
+.bay{grid-column:2;grid-row:1;grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:6px 4px;
+  padding:92px 8px 16px;background:rgba(0,0,0,.34);
+  box-shadow:inset 1px 0 0 rgba(255,255,255,.1),inset -1px 0 0 rgba(255,255,255,.1),inset 2px 0 6px rgba(0,0,0,.45),inset -2px 0 6px rgba(0,0,0,.45);color:#f4e2b0}
+.bch{display:contents}
+.bch .blet{grid-row:1;text-align:center;font-size:1rem;font-weight:800;letter-spacing:.16em;padding-left:.16em;color:#f4e2b0;line-height:48px;height:48px}
+.bfw{grid-row:2;display:flex;justify-content:center;align-items:stretch;gap:4px;min-height:160px}
+body[data-pair="AB"] [data-bch="A"]>*,body[data-pair="AC"] [data-bch="A"]>*,body[data-pair="BC"] [data-bch="B"]>*{grid-column:1}
+body[data-pair="AB"] [data-bch="B"]>*,body[data-pair="AC"] [data-bch="C"]>*,body[data-pair="BC"] [data-bch="C"]>*{grid-column:2}
+body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[data-pair="BC"] [data-bch="A"]{display:none}
+.bticks{flex:0 0 14px;margin:9px 0;background:repeating-linear-gradient(180deg,#f4e2b0 0 1px,transparent 1px 10%);opacity:.75}
+.bfader{flex:0 0 40px;position:relative;touch-action:none;cursor:ns-resize}
+.bfader::before{content:"";position:absolute;left:16px;width:8px;top:4px;bottom:4px;border-radius:4px;background:#050607;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
+.bcap{position:absolute;left:0;width:40px;height:18px;border-radius:3px;bottom:calc(var(--v,.8) * (100% - 18px));pointer-events:none;
+  background:linear-gradient(180deg,transparent 8px,#2a2622 8px 10px,transparent 10px),linear-gradient(180deg,#f7f3ea,#c4bdb0 50%,#eee8dc);
+  box-shadow:0 3px 4px rgba(0,0,0,.6),inset 0 1px 0 #fff}
+.bfader input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;pointer-events:none}
+.bfader:has(input:focus-visible) .bcap{outline:3px solid #f4e2b0;outline-offset:2px}
+.bmeter{flex:0 0 6px;margin:4px 0;border-radius:3px;background:#0b0e12;overflow:hidden;display:flex;align-items:flex-end}
+.bmeter i{display:block;width:100%;height:100%;background:linear-gradient(0deg,#6fbf8b,#d9a84e 70%,#c4452a);transform-origin:50% 100%;transform:scaleY(0);will-change:transform}
+.bxf{grid-row:3;grid-column:1 / -1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;margin-top:8px}
+.bxf b{color:#f4e2b0;font-weight:800;letter-spacing:.16em;font-size:.9rem}
+.bxf #xf{height:44px;margin:0;width:100%;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
+.bxf #xf::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:#050607;box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
+.bxf #xf::-moz-range-track{height:8px;border-radius:4px;background:#050607}
+.bxf #xf::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:40px;margin-top:-16px;border-radius:3px;border:0;
+  background:linear-gradient(90deg,transparent 8px,#2a2622 8px 10px,transparent 10px),linear-gradient(90deg,#f7f3ea,#c4bdb0 50%,#eee8dc);box-shadow:0 3px 4px rgba(0,0,0,.6)}
+.bxf #xf::-moz-range-thumb{width:18px;height:40px;border-radius:3px;border:0;
+  background:linear-gradient(90deg,transparent 8px,#2a2622 8px 10px,transparent 10px),linear-gradient(90deg,#f7f3ea,#c4bdb0 50%,#eee8dc)}
+.bxf #xf:focus-visible{outline:3px solid #f4e2b0;outline-offset:2px;border-radius:6px}
 .deck{
   background:radial-gradient(140% 90% at 50% -10%,#4a545f,#171c22 70%);
   border-radius:20px;padding:14px;color:#efe8dc;border:1px solid #0c0f13;
@@ -113,31 +204,87 @@ body.bench-simple .deck .row .ghost{min-height:48px}
    record backwards; it sits in the platter's bottom-right corner, beside the record, where a hand already is. */
 .deck .platter-wrap{margin-bottom:1.1rem}
 .deck .platter-wrap .revc{position:absolute;right:0;bottom:-16px;z-index:2;min-height:44px;min-width:58px}
-@media (min-width:700px) and (max-width:1000px){ .deck .platter-wrap{margin-bottom:2rem} .deck .platter-wrap .revc{bottom:-34px} }   /* three narrow decks: the record fills the deck, so REV sits just under its corner */
 .platter{
   width:min(240px,52vw);aspect-ratio:1;border-radius:50%;position:relative;
-  background:radial-gradient(circle at 50% 50%, #2a241c 62%, #c4a574 63%, #c4a574 66%, #1a140e 67%);
-  box-shadow:0 12px 28px rgba(0,0,0,.5);
+  /* AOG-DJ-DESK-V1 §6: the gold ring stays at 63–66%; past it the platter's own dark sidewall, so the disc has an edge */
+  background:radial-gradient(circle at 50% 50%, #2a241c 62%, #c4a574 63%, #c4a574 66%, #1a140e 67%, #2e261d 69.2%, #0a0806 70.6%);
+  box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a;
   cursor:grab;touch-action:none;
 }
+/* the lamp on the metal ring: masked to the gold ring only, outside the vinyl, so it never turns */
+.platter::before{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 50% 8%, rgba(255,255,255,.75), rgba(255,255,255,0) 46%);
+  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 63%, #000 63% 66%, transparent 66%);
+  mask:radial-gradient(circle at 50% 50%, transparent 0 63%, #000 63% 66%, transparent 66%)}
 .platter:active{cursor:grabbing}
+/* AOG-DJ-VINYL-LOOK-V1 (2026-10-09) — Jimmy: "I want the turn tables to look like they have VINYL on it." A 12-inch
+   record: glossy black, fine grooves, the quiet gaps between songs, a smooth lead-in at the edge and a run-out by
+   the label, which is a third of the record across. The light on it stays still while it turns (.sheen, outside
+   the vinyl), the way a real record catches a lamp. */
 .vinyl{
   position:absolute;inset:7%;border-radius:50%;
-  background:repeating-radial-gradient(circle at 50% 50%, #161616 0 1px, #0c0c0c 2px 4px);
+  background:
+    radial-gradient(circle closest-side, transparent 0 41%, rgba(255,255,255,.05) 41.5% 43.5%, transparent 44%),
+    radial-gradient(circle closest-side, transparent 0 56%, #1f1f1f 56.4% 57.6%, transparent 58%,
+      transparent 0 69%, #1f1f1f 69.4% 70.4%, transparent 70.8%, transparent 0 82%, #1f1f1f 82.4% 83.2%, transparent 83.6%),
+    radial-gradient(circle closest-side, #121212 0 44%, transparent 44% 95%, #1c1c1c 95.5% 98.2%, #060606 99%, transparent 100%),
+    repeating-radial-gradient(circle at 50% 50%, #0a0a0a 0 1px, #171717 1px 2px, #0d0d0d 2px 3px);
+  box-shadow:inset 0 0 10px 2px rgba(0,0,0,.7),0 0 0 1px #050505;   /* even all round, so it reads the same at any turn */
   will-change:transform;
 }
 .label{
-  position:absolute;inset:27%;border-radius:50%;
+  position:absolute;inset:30%;border-radius:50%;
   background:conic-gradient(#e7d3a1, #8a6230, #f3e6c8, #6e4a22, #e7d3a1);
-  box-shadow:inset 0 0 0 6px rgba(0,0,0,.35);
+  box-shadow:inset 0 0 0 5px rgba(0,0,0,.35),inset 0 0 0 9px rgba(255,255,255,.08);
 }
+/* AOG-DJ-RECORD-ART-V1 (2026-10-09) — Jimmy: "On the vinyl pad do something with the name or a logo or the company!!!
+   … It could be colored vinyl EXCiting". A record on a deck is pressed in colour: the colour of its sleeve in the
+   crate, in one of two pressings (see-through colour or swirl; the splatter spots went, Jimmy 2026-10-09). Its label prints the record company
+   (Grace Records, this site's own), the record's name and the deck's side. The label turns with the record, so
+   the words go round when it plays and stand upright when it is put on. An empty deck keeps the black record. */
+.vinyl.v-solid,.vinyl.v-swirl{
+  --c1:hsl(var(--vh),78%,52%);--c2:hsl(var(--vh),72%,34%);--c3:hsl(calc(var(--vh) + 150),80%,62%);
+  background:
+    radial-gradient(circle closest-side, transparent 0 41%, rgba(255,255,255,.14) 41.5% 43.5%, transparent 44%),
+    radial-gradient(circle closest-side, transparent 0 56%, rgba(0,0,0,.35) 56.4% 57.6%, transparent 58%,
+      transparent 0 69%, rgba(0,0,0,.35) 69.4% 70.4%, transparent 70.8%, transparent 0 82%, rgba(0,0,0,.35) 82.4% 83.2%, transparent 83.6%),
+    radial-gradient(circle closest-side, rgba(255,255,255,.18) 0 44%, transparent 44% 95%, rgba(255,255,255,.22) 95.5% 98.2%, rgba(0,0,0,.55) 99%, transparent 100%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.26) 0 1px, rgba(255,255,255,.06) 1px 2px, rgba(0,0,0,.12) 2px 3px),
+    var(--press);
+}
+.vinyl.v-solid{--press:radial-gradient(circle closest-side, var(--c1), var(--c2) 100%)}
+.vinyl.v-swirl{--press:conic-gradient(from 20deg, var(--c1), var(--c3) 14%, var(--c2) 30%, var(--c1) 46%, var(--c3) 60%, var(--c2) 78%, var(--c1))}
+.label.printed{background:#f6efdf;box-shadow:inset 0 0 0 3px hsl(var(--vh),70%,40%),inset 0 0 0 5px #f6efdf,inset 0 0 0 6px hsl(var(--vh),60%,30%);
+  container-type:inline-size;overflow:hidden}
+.label.printed .rl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:11% 12% 9%;text-align:center;line-height:1.05;pointer-events:none}
+.rl-logo small{display:block;font:800 5.4cqw/1.1 var(--sans);letter-spacing:.16em}
+.rl-logo>span{text-align:left}
+.rl-logo{display:flex;align-items:center;gap:2.5cqw;font:800 9cqw/1 var(--display);letter-spacing:.06em;color:hsl(var(--vh),65%,26%);white-space:nowrap}
+.rl-logo i{font-style:normal;display:inline-grid;place-items:center;width:12cqw;height:12cqw;border-radius:50%;
+  background:hsl(var(--vh),65%,26%);color:#f6efdf;font:800 8.5cqw/1 var(--display)}
+.rl-name{font:800 10cqw/1.05 var(--sans);color:#1a140e;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.rl-side{font:700 6.5cqw/1 var(--sans);letter-spacing:.1em;color:hsl(var(--vh),65%,26%);margin-top:3%}
+.rl-low{display:flex;flex-direction:column;align-items:center;max-width:100%}
+/* the lamp on the record: two soft bands of light across the grooves, still while the record turns under them */
+.sheen{position:absolute;inset:7%;border-radius:50%;pointer-events:none;z-index:1;
+  background:conic-gradient(from 0deg, transparent 0 18deg, rgba(255,255,255,.22) 38deg, rgba(255,255,255,.07) 52deg, transparent 66deg,
+    transparent 198deg, rgba(255,255,255,.16) 218deg, rgba(255,255,255,.05) 232deg, transparent 246deg);
+  -webkit-mask:radial-gradient(circle closest-side, transparent 0 40%, #000 46% 97%, transparent 99%);
+  mask:radial-gradient(circle closest-side, transparent 0 40%, #000 46% 97%, transparent 99%)}
+/* the light on the label: over it, not part of the record, so it stays put while the label turns under it */
+.dome{position:absolute;inset:32.8%;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle at 30% 26%, rgba(255,255,255,.42), rgba(255,255,255,.08) 34%, rgba(255,255,255,0) 58%)}
 .hole{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#0b0d10;z-index:2}
 .arm{
   position:absolute;right:8%;top:10%;width:8px;height:46%;border-radius:8px;
-  background:linear-gradient(#d9d3c6,#6e675c);transform-origin:50% 0;transform:rotate(16deg);
+  background:linear-gradient(90deg,#5d564c,#f2ede3 42%,#b3ab9c 68%,#5a5349);transform-origin:50% 0;transform:rotate(16deg);
   pointer-events:none;z-index:3;will-change:transform;
 }
-.arm::after{content:"";position:absolute;left:-3px;bottom:-6px;width:14px;height:10px;border-radius:2px;background:#c4452a}
+.arm::before{content:"";position:absolute;left:50%;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, #f7f4ee, #9b9385 48%, #2a2622);box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.arm::after{content:"";position:absolute;left:-4px;bottom:-7px;width:16px;height:11px;border-radius:2px;   /* the red cartridge on a metal headshell */
+  background:linear-gradient(#c4452a,#c4452a) 50% 100%/12px 8px no-repeat,linear-gradient(90deg,#8a8376,#efe9dd 45%,#9a9385)}
 .meter{height:8px;border-radius:99px;background:#0b0e12;margin-top:.45rem;overflow:hidden}
 .meter i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#6fbf8b,#d9a84e,#c4452a);transform-origin:0 50%;transform:scaleX(0);will-change:transform}
 .time{font-variant-numeric:tabular-nums;color:#f4e2b0;font-weight:700;margin-left:auto}
@@ -178,11 +325,13 @@ footer a{color:inherit}
 .zoom{position:relative;overflow:hidden;width:100%;height:36px;background:#0a1410;border-radius:8px;display:block;margin-top:.3rem;touch-action:none}
 .zoom .zimg{height:36px;width:auto;will-change:transform}
 .zoom .zhead{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#c4452a;pointer-events:none}
-.strobe{position:absolute;inset:2%;border-radius:50%;pointer-events:none;
+/* AOG-DJ-VINYL-LOOK-V1: the strobe dots are on the platter's edge, outside the record, as on a real deck. They turn
+   with the record (a platter turns under its record), so they still show the spin and the speed. */
+.strobe{position:absolute;inset:-8.14%;border-radius:50%;pointer-events:none;
   background:repeating-conic-gradient(from 0deg,#f0dfae 0deg 2.2deg,transparent 2.2deg 9deg);
-  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);
-  mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);opacity:.8}
-.deck.spinning .platter{box-shadow:0 12px 28px rgba(0,0,0,.5),0 0 0 2px rgba(244,226,176,.18)}
+  -webkit-mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);
+  mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);opacity:.8}
+.deck.spinning .platter{box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a,0 0 0 2px rgba(244,226,176,.18)}
 .rpm{display:inline-flex;gap:.25rem}
 .rpmb{min-height:44px;padding:0 .7rem}
 .rpmb.on{background:#efe8dc;color:#1a140e;border-color:#efe8dc}
@@ -349,6 +498,14 @@ footer a{color:inherit}
 .spine .sp-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:100%}
 .spine .sp-n{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);writing-mode:horizontal-tb;font-size:11px;opacity:.85}
 .spine.out{transform:translateY(-18px);box-shadow:0 0 0 3px #ffd36b,0 6px 10px #0008}
+/* AOG-DECKS-THIN-SLEEVES-V1 (2026-10-09) — Jimmy: "Can the records sleeves be thinner? They look more like books." A record
+   sleeve is a thin square of card: a narrow edge, square corners, packed tight. The site's practice-room glass also
+   styles any ".spine" (rounded corners, a thick border, a coloured band on top); that is for its own pages, not this crate. */
+.cbox.spines{gap:2px;padding:1.1rem .8rem .9rem}
+.cbox.spines .spine{flex:0 0 30px!important;height:206px!important;padding:8px 0 22px!important;border:1px solid rgba(0,0,0,.6)!important;border-radius:1px!important;
+  box-shadow:inset -2px 0 0 rgba(0,0,0,.3),inset 1px 0 0 rgba(255,255,255,.14),1px 0 2px rgba(0,0,0,.45)!important;font-size:13px;letter-spacing:.03em}
+.cbox.spines .spine .sp-n{font-size:10px;bottom:5px}
+.cbox.spines .spine.out{box-shadow:0 0 0 2px #ffd36b,0 6px 10px #0008!important}
 .pulled{display:flex;gap:.9rem;align-items:center;margin:.6rem 0 .2rem;min-height:2.6rem}
 .pulled .sleeve{flex:0 0 156px}
 .pulled .hint{color:var(--muted);font-size:.9rem;margin:0}
@@ -448,7 +605,16 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
       <button type="button" class="pill" data-decktab="mix" id="decktabMix">Mixer</button>
     </div>
   </div>
-  <div class="decks" id="decks"></div>
+  <!-- AOG-DJ-DESK-V1 — on an iPad or a computer: which two decks are on the desk, and the one that is waiting -->
+  <div class="pairbar no-print" id="pairbar">
+    <span class="pairs" role="group" id="pairs">
+      <button type="button" class="pill" data-pair="AB">A · B</button>
+      <button type="button" class="pill" data-pair="AC">A · C</button>
+      <button type="button" class="pill" data-pair="BC">B · C</button>
+    </span>
+    <p class="waiting" id="waiting" aria-live="polite"></p>
+  </div>
+  <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
     <h2 id="mixH">Mixer</h2>
@@ -673,7 +839,12 @@ const STR = {
   making:{en:"Making the record …",es:"Haciendo el disco …"},
   madeH:{en:"Records",es:"Discos"},
   madeLead:{en:"Ready to play. Nothing to download.",es:"Listos para tocar. Nada que descargar."},
-  madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."}
+  madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."},
+  /* AOG-DJ-DESK-V1 */
+  pairLab:{en:"Decks on the desk",es:"Platos en la mesa"},
+  waiting:{en:"%d is waiting · ",es:"%d espera · "},
+  more:{en:"Loops, tap and more",es:"Bucles, tap y más"},
+  recSide:{en:"SIDE %d · 33⅓",es:"CARA %d · 33⅓"}
 };
 const S = { lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light" };
 function t(k){ return STR[k][S.lang]; }
@@ -1810,7 +1981,7 @@ function setMix(){
     if(d.gain) ramp(d.gain.gain, chanGain(d), 0.008);
     if(d.xg) ramp(d.xg.gain, d.xgv, curve==="sharp" ? 0.0012 : 0.004);
   });
-  paintSides();
+  paintSides(); paintBay();
 }
 function paintSides(){
   const L = decks.filter(d=>d.side==="L").map(d=>d.id).join(" "), R = decks.filter(d=>d.side==="R").map(d=>d.id).join(" ");
@@ -1853,6 +2024,7 @@ function cssW(cv){ const w = RO ? SIZE.get(cv) : undefined; return w == null ? c
 const KF = {
   turn:  { k:[{transform:"rotate(0deg)"},{transform:"rotate(360deg)"}], t:360000, p:"transform", f:v=>"rotate("+(v/1000)+"deg)" },
   fill:  { k:[{transform:"scaleX(0)"},{transform:"scaleX(1)"}], t:1000, p:"transform", f:v=>"scaleX("+(v/1000)+")" },
+  fillY: { k:[{transform:"scaleY(0)"},{transform:"scaleY(1)"}], t:1000, p:"transform", f:v=>"scaleY("+(v/1000)+")" },
   right: { k:[{transform:"translateX(0px)"},{transform:"translateX(100000px)"}], t:100000, p:"transform", f:v=>"translateX("+v+"px)" },
   left:  { k:[{transform:"translateX(0px)"},{transform:"translateX(-100000px)"}], t:100000, p:"transform", f:v=>"translateX("+(-v)+"px)" },
   show:  { k:[{opacity:0},{opacity:1}], t:1000, p:"opacity", f:v=>String(v/1000) }
@@ -1995,6 +2167,7 @@ function deckParts(d){
   d.wGen = (d.wGen||0) + 1; d.zGen = (d.zGen||0) + 1; d._wkey = ""; d._lk = ""; d.zs = d.zNext = null; d.waveDirty = true;
   const mv = { vinyl:anim(q(".vinyl"), "turn"), arm:anim(q(".arm"), "turn"), meter:anim(q(".meter i"), "fill"),
                cmeter:anim(strip ? strip.querySelector(".meter i") : null, "fill"),
+               bmeter:anim(document.querySelector(`#bay [data-bch="${d.id}"] .bmeter i`), "fillY"),
                head:anim(wq(".whead"), "right"), slip:anim(wq(".wslip"), "right"), slipO:anim(wq(".wslip"), "show"),
                zoom:anim(zoom ? zoom.querySelector(".zimg") : null, "left") };
   setA(mv.arm, 16000);
@@ -2011,6 +2184,7 @@ function paintDeck(d){
   if((FRAME & 1) === 0 || d.level === 0){            /* the meters, every other frame: the eye cannot tell */
     setA(M.meter, Math.round(Math.min(1, d.level*1.4)*100)*10);
     setA(M.cmeter, Math.round(Math.min(1, d.level*1.4*(d.vol*d.vol)*d.xgv)*100)*10);
+    setA(M.bmeter, M.cmeter ? M.cmeter.v : Math.round(Math.min(1, d.level*1.4*(d.vol*d.vol)*d.xgv)*100)*10);
   }
   const song = d.$.song;
   if(song) setT(song, d.note || d.name || t("none"));
@@ -2098,9 +2272,84 @@ function loop(){
   });
   requestAnimationFrame(loop);
 }
+/* ══ AOG-DJ-DESK-V1 (2026-10-08) — two decks on the desk, the third one tap away ══════════════════════════
+   The pair (A · B, A · C or B · C) puts its two decks on the desk, the first on the crossfader's left, the
+   second on its right. The deck that is off the desk is only hidden: its song, cues, loop and pitch stay, and
+   if it is playing it keeps playing. From 960 px the mixer bay sits between the two decks: their two volume
+   faders (the same volume as the mixer's [data-vol]) and the page's one crossfader (#xf), moved into the bay. */
+const PAIRS = ["AB","AC","BC"];
+let PAIR = "AB";
+try{ const v = localStorage.getItem("aog.decks.pair"); if(PAIRS.indexOf(v) >= 0) PAIR = v; }catch(e){}
+function setPair(p, quiet){
+  if(PAIRS.indexOf(p) < 0) return;
+  PAIR = p;
+  document.body.setAttribute("data-pair", p);
+  decks.forEach(d=>{ if(d.id === p[0]) d.side = "L"; else if(d.id === p[1]) d.side = "R"; });
+  if(!quiet){ try{ localStorage.setItem("aog.decks.pair", p); }catch(e){} }
+  /* the side buttons on the Full bench's channel strips show the new sides */
+  document.querySelectorAll("[data-side]").forEach(b=>{ const d = deckOf(b, "data-side"), on = d && d.side === b.getAttribute("data-v"); b.classList.toggle("on", !!on); b.setAttribute("aria-pressed", on?"true":"false"); });
+  setMix(); paintPair();
+  decks.forEach(d=>{ d.waveDirty = true; });
+}
+function paintPair(){
+  document.querySelectorAll("[data-pair]").forEach(b=>{ if(b === document.body) return; const on = b.getAttribute("data-pair") === PAIR; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
+  const g = document.getElementById("pairs"); if(g) g.setAttribute("aria-label", t("pairLab"));
+  const off = IDS.find(x=>PAIR.indexOf(x) < 0), d = decks.find(x=>x.id === off), w = document.getElementById("waiting");
+  if(w && d){ const html = esc(t("waiting").replace("%d", off)) + "<b>" + esc(d.name || t("none")) + "</b>"; if(w.innerHTML !== html) w.innerHTML = html; }
+  const xl = document.querySelector("#bay .xl"), xr = document.querySelector("#bay .xr");
+  if(xl) xl.textContent = PAIR[0]; if(xr) xr.textContent = PAIR[1];
+}
+function bayHTML(){
+  return `<div class="bay" id="bay" role="group" aria-label="${t("mixer")}">
+    ${decks.map(d=>`<div class="bch" data-bch="${d.id}">
+      <b class="blet" aria-hidden="true">${d.id}</b>
+      <div class="bfw"><span class="bticks" aria-hidden="true"></span>
+        <div class="bfader" data-bfader="${d.id}" style="--v:${d.vol}"><span class="bcap"></span>
+          <input type="range" min="0" max="1" step="0.01" value="${d.vol}" data-bvol="${d.id}" aria-label="${t("vol")} · ${t("channel")} ${d.id}"></div>
+        <span class="bmeter" aria-hidden="true"><i></i></span></div>
+    </div>`).join("")}
+    <div class="bxf"><b class="xl" aria-hidden="true">${PAIR[0]}</b><b class="xr" aria-hidden="true">${PAIR[1]}</b></div>
+  </div>`;
+}
+/* one crossfader: in the bay from 960 px, in the mixer below that */
+const WIDE = window.matchMedia ? matchMedia("(min-width:960px)") : { matches:false };
+function placeXf(){
+  const xf = document.getElementById("xf"), home = document.querySelector("#mixer .xfade"), bay = document.querySelector("#bay .bxf");
+  if(!xf || !home) return;
+  if(WIDE.matches && bay){ const xr = bay.querySelector(".xr"); if(xf.parentNode !== bay) bay.insertBefore(xf, xr); xf.setAttribute("aria-label", t("mix")); }
+  else { if(xf.parentNode !== home) home.appendChild(xf); xf.removeAttribute("aria-label"); }
+}
+if(WIDE.addEventListener) WIDE.addEventListener("change", placeXf); else if(WIDE.addListener) WIDE.addListener(placeXf);
+function setVol(d, v){
+  v = Math.max(0, Math.min(1, Math.round(v*100)/100));
+  d.vol = v;
+  const si = document.querySelector(`#strips [data-vol="${d.id}"]`); if(si) si.value = v;
+  setMix();
+}
+function paintBay(){
+  decks.forEach(d=>{
+    const f = document.querySelector(`#bay [data-bfader="${d.id}"]`); if(!f) return;
+    if(f.style.getPropertyValue("--v") !== String(d.vol)) f.style.setProperty("--v", d.vol);
+    const i = f.querySelector("input"); if(i && +i.value !== d.vol) i.value = d.vol;
+  });
+}
+function bindBay(){
+  document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
+    const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
+    const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
+    f.onpointerdown = (ev)=>{ if(ev.button > 0) return; ev.preventDefault(); ctx(); try{ f.setPointerCapture(ev.pointerId); }catch(e){} f._drag = true; at(ev); };
+    f.onpointermove = (ev)=>{ if(f._drag) at(ev); };
+    f.onpointerup = f.onpointercancel = ()=>{ f._drag = false; };
+    inp.oninput = ()=>setVol(d, +inp.value);
+  });
+  paintBay();
+}
+document.querySelectorAll("#pairs [data-pair]").forEach(b=>b.onclick=()=>setPair(b.getAttribute("data-pair")));
 function shell(){
-  document.getElementById("decks").innerHTML = decks.map(deckHTML).join("");
+  { const xf = document.getElementById("xf"), home = document.querySelector("#mixer .xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
+  document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
   document.getElementById("strips").innerHTML = decks.map(stripHTML).join("");
+  placeXf(); bindBay(); paintPair();
   decks.forEach(d=>{ d._sig = ""; d.waveDirty = true; d.$ = deckParts(d);
     if(RO && d.$){ RO.observe(d.$.wave); RO.observe(d.$.zoom); } });
   if(RO){ const eqc = document.getElementById("eqCurve"); if(eqc) RO.observe(eqc); }
@@ -2129,6 +2378,8 @@ function deckHTML(d){
             <div class="strobe"></div>
             <div class="label"></div>
           </div>
+          <div class="sheen"></div>
+          <div class="dome"></div>
           <div class="hole"></div>
           <div class="arm"></div>
         </div>
@@ -2138,48 +2389,57 @@ function deckHTML(d){
       <div class="row">
         <button type="button" class="file" data-dock="${id}" aria-expanded="false">${t("load")}</button>
         <button type="button" class="ghost" data-eject="${id}">${t("eject")}</button>
+      </div>
+      <div class="dock" id="dock${id}" hidden></div>
+      <div class="row">
         <button type="button" class="go" data-play="${id}">${t("play")}</button>
         <button type="button" class="ghost" data-cue="${id}">${t("cueHold")}</button>
         <button type="button" class="ghost" data-setcue="${id}">${t("setCue")}</button>
         <span class="time">0:00</span>
       </div>
-      <div class="dock" id="dock${id}" hidden></div>
+      <label class="knob">${t("speed")}
+        <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
+        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
+        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}"></label>
+      <!-- AOG-DJ-DESK-V1 — the row Jimmy could not find, above the pads: SYNC, KEY, SLIP, Chop 8 -->
+      <div class="row tr perf">
+        <button type="button" class="ghost sm" data-sync="${id}" aria-pressed="false">${t("sync")}</button>
+        <button type="button" class="ghost sm${d.keyOn?" on":""}" data-key="${id}" aria-pressed="${d.keyOn}">${t("key")}</button>
+        <button type="button" class="ghost sm${d.slipOn?" on":""}" data-slip="${id}" aria-pressed="${d.slipOn}">${t("slip")}</button>
+        <button type="button" class="ghost sm" data-chop="${id}" title="${t("chopTip")}">${t("chop")}</button>
+        <button type="button" class="ghost sm" data-chopsend="${id}" title="${t("chopsTip")}">${t("chopsSend")}</button>
+      </div>
       <div class="pads">
-        <div class="padhead"><span class="dlab">${t("pads")}</span>
-          <label class="snap">${t("snap")} <select data-snap="${id}">${[1,0.5,0.25,0].map(v=>`<option value="${v}"${d.snap===v?" selected":""}>${t(v===1?"snap1":v===0.5?"snap2":v===0.25?"snap4":"snap0")}</option>`).join("")}</select></label>
-          <button type="button" class="ghost sm" data-chop="${id}" title="${t("chopTip")}">${t("chop")}</button>
-          <button type="button" class="ghost sm" data-erase="${id}" aria-pressed="false" title="${t("eraseTip")}">${t("erase")}</button>
-          <button type="button" class="ghost sm" data-chopsend="${id}" title="${t("chopsTip")}">${t("chopsSend")}</button>
-        </div>
         <div class="padgrid" role="group" aria-label="${t("pads")} · ${t("deck")} ${id}">
           ${[0,1,2,3,4,5,6,7].map(i=>`<button type="button" class="pad" data-hot="${id}" data-i="${i}" style="--pc:${PADC[i]}">${i+1}</button>`).join("")}
         </div>
         <p class="chopline" id="chopLine${id}" aria-live="polite">${d.chopMsg||""}</p>
       </div>
-      <div class="row tr loops" role="group" aria-label="${t("loop")}"><span class="dlab">${t("loop")}</span>
-        ${[1,2,4,8].map(n=>`<button type="button" class="ghost sm" data-loop="${id}" data-beats="${n}" aria-pressed="false" aria-label="${t("loopN").replace("%n", n)}">${n}</button>`).join("")}
-        <button type="button" class="ghost sm" data-loop="${id}" data-beats="16" aria-pressed="false" title="${t("bars4Tip")}">${t("bars4")}</button>
-      </div>
-      <div class="row tr">
-        <button type="button" class="ghost sm" data-sync="${id}" aria-pressed="false">${t("sync")}</button>
-        <button type="button" class="ghost sm${d.keyOn?" on":""}" data-key="${id}" aria-pressed="${d.keyOn}">${t("key")}</button>
-        <button type="button" class="ghost sm${d.slipOn?" on":""}" data-slip="${id}" aria-pressed="${d.slipOn}">${t("slip")}</button>
-        <button type="button" class="ghost sm" data-tap="${id}">${t("tap")}</button>
-        <button type="button" class="ghost sm" data-half="${id}">½×</button>
-        <button type="button" class="ghost sm" data-double="${id}">2×</button>
-      </div>
-      <div class="row nud">
-        <button type="button" class="ghost" data-nudge="${id}" data-dir="-1">− ${t("nudge")}</button>
-        <button type="button" class="ghost" data-nudge="${id}" data-dir="1">+ ${t("nudge")}</button>
-        <span class="rpm" role="group" aria-label="${t("rpm")}">
-          <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33⅓</button>
-          <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
-        </span>
-      </div>
-      <label class="knob">${t("speed")}
-        <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
-        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
-        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}"></label>
+      <!-- the rest of the deck, one tap away (open on the Full bench): Lands, Erase, loops, TAP, ½×, 2×, nudge -->
+      <details class="dmore"${document.body.classList.contains("bench-simple")?"":" open"}>
+        <summary>${t("more")}</summary>
+        <div class="padhead">
+          <label class="snap">${t("snap")} <select data-snap="${id}">${[1,0.5,0.25,0].map(v=>`<option value="${v}"${d.snap===v?" selected":""}>${t(v===1?"snap1":v===0.5?"snap2":v===0.25?"snap4":"snap0")}</option>`).join("")}</select></label>
+          <button type="button" class="ghost sm" data-erase="${id}" aria-pressed="false" title="${t("eraseTip")}">${t("erase")}</button>
+        </div>
+        <div class="row tr loops" role="group" aria-label="${t("loop")}"><span class="dlab">${t("loop")}</span>
+          ${[1,2,4,8].map(n=>`<button type="button" class="ghost sm" data-loop="${id}" data-beats="${n}" aria-pressed="false" aria-label="${t("loopN").replace("%n", n)}">${n}</button>`).join("")}
+          <button type="button" class="ghost sm" data-loop="${id}" data-beats="16" aria-pressed="false" title="${t("bars4Tip")}">${t("bars4")}</button>
+        </div>
+        <div class="row tr">
+          <button type="button" class="ghost sm" data-tap="${id}">${t("tap")}</button>
+          <button type="button" class="ghost sm" data-half="${id}">½×</button>
+          <button type="button" class="ghost sm" data-double="${id}">2×</button>
+        </div>
+        <div class="row nud">
+          <button type="button" class="ghost" data-nudge="${id}" data-dir="-1">− ${t("nudge")}</button>
+          <button type="button" class="ghost" data-nudge="${id}" data-dir="1">+ ${t("nudge")}</button>
+          <span class="rpm" role="group" aria-label="${t("rpm")}">
+            <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33⅓</button>
+            <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
+          </span>
+        </div>
+      </details>
     </section>`;
 }
 function eqText(v){ return (v>0?"+":"") + (Math.round(v*2)/2).toFixed(v%1?1:0) + " dB"; }
@@ -2211,10 +2471,29 @@ function stripHTML(d){
       <div class="meter" aria-hidden="true"><i></i></div>
     </div>`;
 }
+/* AOG-DJ-RECORD-ART-V1 — the pressing and the label of the record on a deck */
+function recLook(d){
+  if(!d.buf) return null;
+  const m = d.made && MADE.find(x=>x.id===d.made), h = m && m.hue != null ? m.hue : hueOf(d.name || "");
+  return { h, style:["solid","swirl"][Math.floor(h / 15) % 2] };
+}
+function paintRecord(d){
+  const el = document.getElementById("deck"+d.id); if(!el) return;
+  const v = el.querySelector(".vinyl"), lab = el.querySelector(".label"); if(!v || !lab) return;
+  const L = recLook(d), key = L ? [L.h, L.style, d.name, S.lang].join("|") : "";
+  if(v._rk === key) return; v._rk = key;
+  v.classList.remove("v-solid","v-swirl"); lab.classList.toggle("printed", !!L);
+  if(!L){ v.style.removeProperty("--vh"); lab.style.removeProperty("--vh"); lab.innerHTML = ""; return; }
+  v.classList.add("v-"+L.style); v.style.setProperty("--vh", L.h); lab.style.setProperty("--vh", L.h);
+  lab.innerHTML = `<div class="rl" aria-hidden="true"><span class="rl-logo"><i>G</i><span>GRACE<small>RECORDS</small></span></span>
+    <span class="rl-low"><span class="rl-name">${esc((d.name || "").replace(/\.[^.]+$/,""))}</span><span class="rl-side">${esc(t("recSide").replace("%d", d.id))}</span></span></div>`;
+}
 function paintStrips(){
   decks.forEach(d=>{
     const n = document.querySelector('[data-sname="'+d.id+'"]'); if(n) setT(n, d.name || t("none"));
+    paintRecord(d);
   });
+  paintPair();
 }
 function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
@@ -2814,6 +3093,7 @@ document.addEventListener("visibilitychange", ()=>{
   try{ bench=localStorage.getItem("aog.decks.bench")||"simple"; }catch(e){}
   function paintSw(){
     document.body.classList.toggle("bench-simple", bench!=="full");
+    document.querySelectorAll(".dmore").forEach(x=>{ x.open = bench==="full"; });   /* AOG-DJ-DESK-V1: the Full bench opens each deck's rest */
     document.body.setAttribute("data-decktab", tab);
     document.querySelectorAll("#benchSwitch [data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
@@ -3006,7 +3286,7 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
+setPair(PAIR, true); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}
