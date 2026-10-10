@@ -6460,15 +6460,35 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
         return panel.id + "|" + (h ? h.textContent.trim().slice(0, 40) : "") + "|" + ord;
       }
 
+      /* AOG-FOLD-QUIET-V1 (2026-10-10) — Jimmy: "I want the whole website not to lag". Every pass used to write every
+         class, attribute and label again, even when nothing had changed. Each write counted as a change to the page,
+         which asked for another pass 90ms later (and woke aog-dash-grace.js too): the front page never rested and kept
+         a phone fully busy. Now a pass writes only what is different, so once the cards are folded the page is still. */
+      function cls(el, c, on){ if (el.classList.contains(c) !== !!on) el.classList.toggle(c, !!on); }
+      function att(el, k, v){
+        if (v === null){ if (el.hasAttribute(k)) el.removeAttribute(k); }
+        else if (el.getAttribute(k) !== v) el.setAttribute(k, v);
+      }
+      function txt(el, v){ if (el.textContent !== v) el.textContent = v; }
+      /* the words of a heading, with an emoji already drawn in pencil (aog-sketch.js) read as the emoji it stands for */
+      function words(el){
+        var s = "", w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null), n;
+        while ((n = w.nextNode())){
+          if (n.nodeType === 3) s += n.nodeValue;
+          else if (n.tagName === "IMG" && n.classList.contains("aog-sk")) s += n.alt || "";
+        }
+        return s;
+      }
+
       function ensureCard(panel, el, ord){
         var key = keyFor(panel, el, ord);
-        el.setAttribute("data-aogfold", key);
-        el.classList.add("aogfold-host");
+        att(el, "data-aogfold", key);
+        cls(el, "aogfold-host", true);
         var open = openFor(key);
-        el.classList.toggle("aogfold-closed", !open);
+        cls(el, "aogfold-closed", !open);
         var cr = open ? 0 : cropFor(el);
-        if (cr) el.style.setProperty("--aogfold-h", cr + "px");
-        else el.style.removeProperty("--aogfold-h");
+        if (cr){ if (el.style.getPropertyValue("--aogfold-h") !== cr + "px") el.style.setProperty("--aogfold-h", cr + "px"); }
+        else if (el.style.getPropertyValue("--aogfold-h")) el.style.removeProperty("--aogfold-h");
         if (open && !el.querySelector(":scope > .aogfold-x")){
           var b = document.createElement("button");
           b.type = "button"; b.className = "aogfold-x";
@@ -6485,7 +6505,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
         if (!open){
           var oldX = el.querySelector(":scope > .aogfold-x");
           if (oldX) oldX.parentNode.removeChild(oldX);
-          el.removeAttribute("role"); el.removeAttribute("tabindex"); el.removeAttribute("aria-expanded");
+          att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null);
           var ob = el.querySelector(":scope > .aogfold-o");
           if (!ob){
             ob = document.createElement("button"); ob.type = "button"; ob.className = "aogfold-o";
@@ -6493,27 +6513,27 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
           }
           var hd = headOf(el); var es2 = false;
           try { es2 = (typeof dashLang !== "undefined" && dashLang === "es"); } catch(e){}
-          ob.textContent = (hd ? hd.textContent.trim().slice(0, 80) : "");
-          ob.setAttribute("aria-label", ob.textContent + (es2 ? " — abrir" : " — open")); /* AOG-DASH-FACELIFT-V1: the arrow says open; the words don't need to */
-          ob.setAttribute("aria-expanded", "false");
-          for (var ci = 0; ci < el.children.length; ci++){ var ch = el.children[ci]; if (ch !== ob && ch.tagName !== "STYLE" && ch.tagName !== "SCRIPT") ch.setAttribute("inert", ""); }
+          var name = hd ? words(hd).trim().slice(0, 80) : "";
+          if (words(ob) !== name) ob.textContent = name;
+          att(ob, "aria-label", name + (es2 ? " — abrir" : " — open")); /* AOG-DASH-FACELIFT-V1: the arrow says open; the words don't need to */
+          att(ob, "aria-expanded", "false");
+          for (var ci = 0; ci < el.children.length; ci++){ var ch = el.children[ci]; if (ch !== ob && ch.tagName !== "STYLE" && ch.tagName !== "SCRIPT") att(ch, "inert", ""); }
         } else {
           var ob2 = el.querySelector(":scope > .aogfold-o"); if (ob2) ob2.parentNode.removeChild(ob2);
-          el.removeAttribute("role"); el.removeAttribute("tabindex"); el.removeAttribute("aria-expanded");
-          for (var ci2 = 0; ci2 < el.children.length; ci2++) el.children[ci2].removeAttribute("inert");
+          att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null);
+          for (var ci2 = 0; ci2 < el.children.length; ci2++) att(el.children[ci2], "inert", null);
         }
       }
 
       function ensureSection(panel, sh, members, ord){
         var key = keyFor(panel, sh, ord);
-        sh.setAttribute("data-aogfold-sh", key);
-        sh.classList.add("aogfold-sh");
+        att(sh, "data-aogfold-sh", key);
+        cls(sh, "aogfold-sh", true);
         var open = !!state[key];
-        if (open) sh.removeAttribute("data-aogfold-closed");
-        else sh.setAttribute("data-aogfold-closed", "1");
-        sh.setAttribute("aria-expanded", open ? "true" : "false");
-        sh.setAttribute("role", "button"); sh.setAttribute("tabindex", "0");
-        members.forEach(function(m){ m.classList.toggle("aogfold-hidden", !open); });
+        att(sh, "data-aogfold-closed", open ? null : "1");
+        att(sh, "aria-expanded", open ? "true" : "false");
+        att(sh, "role", "button"); att(sh, "tabindex", "0");
+        members.forEach(function(m){ cls(m, "aogfold-hidden", !open); });
       }
 
       /* ⚠ RECONCILE, EVERY PASS. A block can change kind between scans —
@@ -6521,22 +6541,22 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
          early pass filed it as a section member (display:none) and a later
          pass as a card (max-height) and it wore BOTH. Classes this pass does
          not assert are removed before the pass asserts anything. */
-      function unCard(el){
-        el.classList.remove("aogfold-closed", "aogfold-host");
-        el.style.removeProperty("--aogfold-h");
-        el.removeAttribute("data-aogfold");
-        el.removeAttribute("role"); el.removeAttribute("tabindex"); el.removeAttribute("aria-expanded");
+      function unCard(el, keepRole){   /* keepRole: a section head, whose role it sets again at once */
+        cls(el, "aogfold-closed", false); cls(el, "aogfold-host", false);
+        if (el.style.getPropertyValue("--aogfold-h")) el.style.removeProperty("--aogfold-h");
+        att(el, "data-aogfold", null);
+        if (!keepRole){ att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null); }
         var x = el.querySelector(":scope > .aogfold-x");
         if (x) x.parentNode.removeChild(x);
         var o = el.querySelector(":scope > .aogfold-o");
         if (o) o.parentNode.removeChild(o);
-        for (var ci = 0; ci < el.children.length; ci++) el.children[ci].removeAttribute("inert");
+        for (var ci = 0; ci < el.children.length; ci++) att(el.children[ci], "inert", null);
       }
       function unSection(el){
-        el.classList.remove("aogfold-sh");
-        el.removeAttribute("data-aogfold-sh");
-        el.removeAttribute("data-aogfold-closed");
-        el.removeAttribute("role"); el.removeAttribute("tabindex"); el.removeAttribute("aria-expanded");
+        cls(el, "aogfold-sh", false);
+        att(el, "data-aogfold-sh", null);
+        att(el, "data-aogfold-closed", null);
+        att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null);
       }
       function scan(){
         document.querySelectorAll("#screen-admin .tab-panel").forEach(function(panel){
@@ -6564,9 +6584,9 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
           plan.forEach(function(p){ if (p.kind === "sh" && !p.members.length) p.kind = "plain"; });
           /* reconcile: strip everything this pass does not assert */
           plan.forEach(function(p){
-            if (p.kind !== "card") unCard(p.el);
+            if (p.kind !== "card") unCard(p.el, p.kind === "sh");
             if (p.kind !== "sh") unSection(p.el);
-            if (p.kind !== "member") p.el.classList.remove("aogfold-hidden");
+            if (p.kind !== "member") cls(p.el, "aogfold-hidden", false);
           });
           /* assert */
           plan.forEach(function(p){

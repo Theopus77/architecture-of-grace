@@ -21,7 +21,10 @@
   /* any row of more than six name chips (e.g. the exit-slip student filter) becomes a menu */
   function chipRows() {
     var out = [];
-    D.querySelectorAll("#screen-admin div, #screen-admin span").forEach(function (el) {
+    /* AOG-DROPDOWNS-QUIET-V1: a row of chips is the parent of a button, so only those parents are looked at, not every
+       box on the page */
+    D.querySelectorAll("#screen-admin div > button:first-child, #screen-admin span > button:first-child").forEach(function (b) {
+      var el = b.parentNode;
       if (el.__aogChip || el.classList.contains("aogdd-src") || el.closest(".aogdd, .aogtop")) return;
       var bs = Array.prototype.filter.call(el.children, function (k) { return k.tagName === "BUTTON"; });
       if (bs.length < 7 || bs.length !== el.children.length) return;
@@ -40,6 +43,10 @@
     });
   }
   function es() { return /^es/i.test(D.documentElement.lang || ""); }
+  /* AOG-DROPDOWNS-QUIET-V1 (2026-10-10) — Jimmy: "I want the whole website not to lag". Words are written only when they
+     change. Writing the same words again counted as a change to the page, which ran this file again, which wrote them
+     again: on the front page that never stopped and kept a phone fully busy. */
+  function put(el, v) { if (el && el.textContent !== v) el.textContent = v; }
   function shown(el) {
     if (el.hidden || el.closest("[hidden]:not(.tab-more-menu)")) return false;
     return getComputedStyle(el).display !== "none";
@@ -85,9 +92,9 @@
     if (sel.__html !== html) { sel.innerHTML = html; sel.__html = html; }
     if (on >= 0) sel.selectedIndex = on;
     var lab = es() ? cfg.es : cfg.en;
-    sel.setAttribute("aria-label", lab);
+    if (sel.getAttribute("aria-label") !== lab) sel.setAttribute("aria-label", lab);
     /* a visible label only where the page has none of its own nearby */
-    box.querySelector(".aogdd-lab").textContent = lab;
+    put(box.querySelector(".aogdd-lab"), lab);
     box.hidden = list.length < 2;
   }
   var t = 0;
@@ -142,11 +149,11 @@
       D.head.appendChild(st);
     }
     var isOn = /clear/i.test(real.textContent || "");
-    bar.querySelector("button").textContent = isOn ? (es() ? "Quitar los datos de demostración" : "Clear demo data")
-                                                    : (es() ? "Probar con datos de demostración" : "Try demo data");
-    bar.querySelector(".aogdd-demo-tx").textContent = isOn
+    put(bar.querySelector("button"), isOn ? (es() ? "Quitar los datos de demostración" : "Clear demo data")
+                                          : (es() ? "Probar con datos de demostración" : "Try demo data"));
+    put(bar.querySelector(".aogdd-demo-tx"), isOn
       ? (es() ? "Estás viendo estudiantes de ejemplo. Tus datos reales vuelven al quitar la demostración." : "You are seeing sample students. Your real data comes back when you clear the demo.")
-      : (es() ? "Llena esta página con estudiantes de ejemplo para ver cómo se ve." : "Fill this page with sample students to see what it can show.");
+      : (es() ? "Llena esta página con estudiantes de ejemplo para ver cómo se ve." : "Fill this page with sample students to see what it can show."));
   }
 
   /* AOG-IEP-PICK-V1 (2026-09-26) — Jimmy: "The student list needs to be in a drop
@@ -177,7 +184,7 @@
     var box = strip.previousElementSibling && strip.previousElementSibling.classList.contains("aogdd-iep") ? strip.previousElementSibling : null;
     if (!box) { box = D.createElement("label"); box.className = "aogdd aogdd-iep no-print"; box.innerHTML = '<span class="aogdd-lab"></span><select class="aogdd-sel"></select>'; strip.parentNode.insertBefore(box, strip); }
     strip.classList.add("aogdd-src");
-    box.querySelector(".aogdd-lab").textContent = es() ? "Estudiante" : "Student";
+    put(box.querySelector(".aogdd-lab"), es() ? "Estudiante" : "Student");
     var sel = box.querySelector("select"), h = "", on = 0;
     function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
     h += '<optgroup label="' + (es() ? "Con metas" : "With IEP goals") + '">';
@@ -193,7 +200,7 @@
       extra.forEach(function (n) { h += '<option value="n' + esc(n) + '">＋ ' + esc(n) + "</option>"; });
       h += "</optgroup>";
     }
-    sel.innerHTML = h; sel.selectedIndex = on;
+    if (sel.__html !== h) { sel.innerHTML = h; sel.__html = h; } sel.selectedIndex = on;
     sel.onchange = function () {
       var v = sel.value;
       if (v.charAt(0) === "t") { var b = tabs[+v.slice(1)]; if (b) b.click(); }
@@ -257,9 +264,13 @@
   function start() {
     D.head.appendChild(css); refresh();
     new MutationObserver(function (list) {
+      /* AOG-DROPDOWNS-QUIET-V1: a new row can only arrive with new elements, so only then is the whole page searched
+         for one (on the front page that search ran on every change and cost a phone seconds) */
+      var mine = true, added = false;
       for (var i = 0; i < list.length; i++) { var n = list[i].target; if (n.closest && n.closest(".aogdd")) continue;
-        if (fresh()) { if (t) { clearTimeout(t); t = 0; } pass(); } else refresh();
-        return; }
+        mine = false; if (list[i].type === "childList" && list[i].addedNodes.length) { added = true; break; } }
+      if (mine) return;
+      if (added && fresh()) { if (t) { clearTimeout(t); t = 0; } pass(); } else refresh();
     }).observe(D.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "hidden", "style", "aria-selected"] });
     D.addEventListener("click", function () { setTimeout(refresh, 80); }, true);
     new MutationObserver(refresh).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] });

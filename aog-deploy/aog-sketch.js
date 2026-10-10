@@ -98,13 +98,24 @@
      boxes, crosses, the pencil) become small pencil drawings that sit in the line like a letter. */
   var MARK = { "2605":1, "2606":1, "2b50":1, "2713":1, "2714":1, "2717":1, "2718":1, "2715":1, "2716":1, "2610":1, "2611":1, "2612":1, "270e":1, "2726":1, "2304":1, "23cf":1, "1f5ce":1 };
   var INLINE = (ME && ME.getAttribute("data-inline")) || "body";   /* every page: emoji and typed marks in its text become drawings */
+  /* AOG-SKETCH-QUIET-V1 (2026-10-10, Jimmy: "I want the whole website not to lag"): a text is tested for a symbol first
+     (quick) and only then for where it sits (slow); and after the first look, only what was just added is looked at,
+     not every word on the page again */
+  var NOT = "textarea,script,style,select,option,code,pre,svg,[contenteditable],title,noscript";
+  function wants(t) { var r = RUN.test(t.nodeValue); RUN.lastIndex = 0; var pe = t.parentElement; return r && !!pe && !pe.closest(NOT); }
   function inline(root) {
     if (!INLINE) return;
     var hosts = root.querySelectorAll ? root.querySelectorAll(INLINE) : [];
-    for (var i = 0; i < hosts.length; i++) {
-      var w = D.createTreeWalker(hosts[i], NodeFilter.SHOW_TEXT, null), t, todo = [];
-      while ((t = w.nextNode())) { var pe = t.parentElement; if (pe && !pe.closest("textarea,script,style,select,option,code,pre,svg,[contenteditable],title,noscript") && RUN.test(t.nodeValue)) todo.push(t); RUN.lastIndex = 0; }
+    for (var i = 0; i < hosts.length; i++) inlineIn(hosts[i]);
+  }
+  function inlineIn(host) {
+    var w = D.createTreeWalker(host, NodeFilter.SHOW_TEXT, null), t, todo = [];
+    while ((t = w.nextNode())) if (wants(t)) todo.push(t);
+    swapText(todo);
+  }
+  function swapText(todo) {
       todo.forEach(function (tn) {
+        if (!tn.parentNode) return;   /* already swapped */
         var v = tn.nodeValue, frag = D.createDocumentFragment(), last = 0, m, hit = false;
         RUN.lastIndex = 0;
         while ((m = RUN.exec(v))) {
@@ -116,7 +127,6 @@
         if (!hit) return;
         frag.appendChild(D.createTextNode(v.slice(last))); tn.parentNode.replaceChild(frag, tn);
       });
-    }
   }
   CSS += "\n.aog-sk-in{ width:2em; height:2em; margin:0 .15em .1em 0; }";
   /* the fire mark the books put before a hard question (CSS content, so it is drawn here) */
@@ -124,7 +134,11 @@
   CSS += "\n.aog-sk-in.aog-sk-mark{ width:1.05em; height:1.05em; margin:0 .08em .12em; vertical-align:middle; }";
   /* a mark on dark ground (the navy masthead, the dark theme) is drawn in light pencil so it stays readable */
   function lum(c) { var m = (c || "").match(/\d+(\.\d+)?/g); if (!m) return 0; return (0.3 * m[0] + 0.59 * m[1] + 0.11 * m[2]) / 255; }
-  function tone() { var n = D.querySelectorAll("img.aog-sk-mark"); for (var i = 0; i < n.length; i++) { var pe = n[i].parentElement; if (pe) n[i].classList.toggle("aog-sk-lt", lum(getComputedStyle(pe).color) > .55); } }
+  function tone(list) {
+    var n = list || D.querySelectorAll("img.aog-sk-mark"), v = [], i;
+    for (i = 0; i < n.length; i++) { var pe = n[i].parentElement; v.push(pe ? lum(getComputedStyle(pe).color) > .55 : null); }   /* look at all, then mark */
+    for (i = 0; i < n.length; i++) if (v[i] !== null && n[i].classList.contains("aog-sk-lt") !== v[i]) n[i].classList.toggle("aog-sk-lt", v[i]);
+  }
   CSS += "\n.aog-sk-mark.aog-sk-lt{ filter:invert(1) brightness(1.9) !important; }";
   /* marks inside drawn diagrams (SVG text): a pencil picture is laid exactly over the mark, and the
      mark itself goes see-through, so screen readers and copy still get it */
@@ -183,7 +197,43 @@
     D.addEventListener("click", function () { setTimeout(function () { try { svgMarks(); } catch (e) {} }, 120); }, true);
     if (window.MutationObserver) { new MutationObserver(function () { setTimeout(tone, 60); }).observe(D.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] }); }
     try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { setTimeout(tone, 60); }); } catch (e) {}
-    if (window.MutationObserver) { var sT; new MutationObserver(function () { clearTimeout(sT); sT = setTimeout(sweep, 30); }).observe(D.body, { childList: true, subtree: true }); }
+    D.addEventListener("aog-recolored", function () { setTimeout(function () { tone(); }, 0); });   /* aog-dash-grace.js painted the dashboard */
+    if (window.MutationObserver) {
+      var sT, ADD = [];
+      new MutationObserver(function (list) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].type === "characterData") { ADD.push(list[i].target); continue; }   /* a word changed in place */
+          for (var j = 0; j < list[i].addedNodes.length; j++) ADD.push(list[i].addedNodes[j]);
+        }
+        if (!sT) sT = setTimeout(added, 30);   /* at most once every 30ms, so a ticking clock never holds it back */
+      }).observe(D.body, { childList: true, subtree: true, characterData: true });
+      /* AOG-SKETCH-QUIET-V1: what was added since the last look, and only that */
+      var added = function () {
+        sT = 0; var nodes = ADD; ADD = [];
+        var texts = [], marks = [], pics = [], i, n;
+        for (i = 0; i < nodes.length; i++) {
+          n = nodes[i]; if (!n.isConnected) continue;
+          if (n.nodeType === 3) {
+            var pe = n.parentElement; if (!pe) continue;
+            if (INLINE && pe.closest(INLINE) && wants(n) && texts.indexOf(n) < 0) texts.push(n);
+            if (pe.matches(PICS)) pics.push(pe);
+            continue;
+          }
+          if (n.nodeType !== 1) continue;
+          if (INLINE) { if (n.closest(INLINE)) inlineIn(n); else { var hs = n.querySelectorAll(INLINE); for (var h = 0; h < hs.length; h++) inlineIn(hs[h]); } }
+          if (n.matches("img.aog-sk-mark")) marks.push(n);
+          [].push.apply(marks, n.querySelectorAll("img.aog-sk-mark"));
+          if (n.matches(PICS)) pics.push(n);
+          [].push.apply(pics, n.querySelectorAll(PICS));
+          /* a word changed inside a picture's box (its emoji came back) */
+          if (n.parentElement && n.parentElement.matches(PICS)) pics.push(n.parentElement);
+        }
+        swapText(texts);
+        if (marks.length) tone(marks);
+        try { svgMarks(); } catch (e) {}
+        for (i = 0; i < pics.length; i++) swap(pics[i]);
+      };
+    }
   }
   if (D.body) boot(); else D.addEventListener("DOMContentLoaded", boot);
   /* ── AOG-MAST-SKETCH-V1 — a pencil drawing in the navy masthead of the rooms (exam prep, tests,

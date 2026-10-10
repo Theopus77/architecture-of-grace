@@ -50,6 +50,27 @@
       return r;
     };
   }
+  /* AOG-VU-SLEEP-V1 (2026-10-10) — Jimmy: the Studio was "lagging … a horrific experience". The meters used to look at
+     the sound on every frame, forever, even in silence, and kept the phone busy. Now they sleep while it is quiet and
+     wake the moment any sound starts (a note, a hit, a take: they all start a sound source) or anything is heard on the
+     slow check below (a microphone or a cable has no start). The page they sit in is told too, so the Studio's pair
+     wakes for the room's sound. */
+  var WAKE = [];
+  function wake() {
+    for (var i = 0; i < WAKE.length; i++) try { WAKE[i](); } catch (e) {}
+    try { if (window.parent !== window && window.parent.AOGVU && window.parent.AOGVU.wake) window.parent.AOGVU.wake(); } catch (e) {}
+  }
+  try {
+    /* a recording (AudioBufferSourceNode) has a start of its own, so each kind of source is told */
+    ["AudioScheduledSourceNode", "AudioBufferSourceNode", "OscillatorNode", "ConstantSourceNode"].forEach(function (k) {
+      var P = window[k] && window[k].prototype;
+      if (!P || !Object.prototype.hasOwnProperty.call(P, "start")) return;
+      var o = P.start;
+      P.start = function () { if (!(OWN && OWN.has(this))) wake(); return o.apply(this, arguments); };
+    });
+    var MED = window.HTMLMediaElement && window.HTMLMediaElement.prototype, origPlay = MED && MED.play;
+    if (origPlay) MED.play = function () { wake(); return origPlay.apply(this, arguments); };
+  } catch (e) {}
   function levels() {
     var best = null;
     for (var i = 0; i < BUSES.length; i++) {
@@ -105,7 +126,10 @@
     g.strokeStyle = "rgba(0,0,0,.35)"; g.lineWidth = small ? 1 : 2; rr(fx + 1, fy + 1, fw - 2, fh - 2, small ? 2.5 : 4); g.stroke();
     g.restore();
   }
-  function still() { try { return matchMedia("(hover: none)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
+  var MQ = null;
+  function still() {
+    try { if (!MQ) MQ = [matchMedia("(hover: none)"), matchMedia("(prefers-reduced-motion: reduce)")]; return MQ[0].matches || MQ[1].matches; } catch (e) { return false; }
+  }
   function es() { return (document.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   var CSS = ".aogvu{display:inline-flex;gap:4px;align-items:center;vertical-align:middle;padding:3px;border-radius:7px;background:#121316;" +
     "box-shadow:inset 0 1px 3px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.08)}.aogvu[hidden]{display:none}" +
@@ -117,37 +141,52 @@
     box.innerHTML = '<canvas aria-hidden="true"></canvas><canvas aria-hidden="true"></canvas>';
     if (opts.before) el.insertBefore(box, opts.before); else el.appendChild(box);
     var cv = box.querySelectorAll("canvas"), src = opts.source || levels, cal = opts.cal == null ? 3 : opts.cal;
-    var M = { box: box, n: [null, null], peak: null, quietAt: 0, raf: 0, last: 0, shown: "" };
+    var M = { box: box, n: [null, null], peak: null, quietAt: 0, raf: 0, last: 0, shown: "", until: 0 };
     function label() { var t = es() ? "Qué tan fuerte suena, izquierda y derecha" : "How loud it is, left and right"; if (box.getAttribute("aria-label") !== t) box.setAttribute("aria-label", t); }
     function show(v) { var k = v ? v[0].toFixed(1) + "," + v[1].toFixed(1) : "rest"; if (k === M.shown) return; M.shown = k; draw(cv[0], v ? v[0] : null, "L", cal); draw(cv[1], v ? v[1] : null, "R", cal); }
     function read() { var v = null; try { v = src(); } catch (e) {} return v; }
-    /* every frame, so a short drum hit is caught; it draws only when a needle moves */
+    /* every frame while there is sound, so a short drum hit is caught; it draws only when a needle moves.
+       AOG-VU-SLEEP-V1: once the needles rest and nothing has started for a moment, the frames stop until wake() */
+    function seen() { return !document.hidden && !box.hidden && box.isConnected && box.getClientRects().length > 0; }
     function frame(t) {
-      M.raf = requestAnimationFrame(frame);
-      if (document.hidden || box.hidden) return;
-      var v = read(), now = Date.now(), loud = v && Math.max(v[0], v[1]) > -50;
+      M.raf = 0;
+      if (!seen()) return;
+      var v = read(), now = Date.now(), loud = v && Math.max(v[0], v[1]) > -50, rest;
+      if (loud) M.until = now + 1500;
       if (still()) {
         if (loud) { M.quietAt = now; if (!M.peak || v[0] > M.peak[0] + 0.5 || v[1] > M.peak[1] + 0.5) M.peak = [Math.max(v[0], M.peak ? M.peak[0] : -90), Math.max(v[1], M.peak ? M.peak[1] : -90)]; }
         else if (M.peak && now - M.quietAt > 3000) M.peak = null;
-        M.last = 0; show(M.peak); return;
+        M.last = 0; show(M.peak); rest = !M.peak;
+      } else {
+        var dt = M.last ? Math.min(0.1, (t - M.last) / 1000) : 0.016; M.last = t;
+        var k = 1 - Math.exp(-dt / 0.09);
+        if (!loud && M.n[0] == null) { show(null); rest = true; }
+        else {
+          M.n = [0, 1].map(function (ch) { var tgt = v ? v[ch] : -90, o = M.n[ch] == null ? -60 : M.n[ch]; return tgt > o ? o + (tgt - o) * Math.min(1, k * 2.2) : o + (tgt - o) * k; });
+          if (!loud && Math.max(M.n[0], M.n[1]) < -36) { M.n = [null, null]; show(null); rest = true; } else show(M.n);
+        }
       }
-      var dt = M.last ? Math.min(0.1, (t - M.last) / 1000) : 0.016; M.last = t;
-      var k = 1 - Math.exp(-dt / 0.09);
-      if (!loud && M.n[0] == null) { show(null); return; }
-      M.n = [0, 1].map(function (ch) { var tgt = v ? v[ch] : -90, o = M.n[ch] == null ? -60 : M.n[ch]; return tgt > o ? o + (tgt - o) * Math.min(1, k * 2.2) : o + (tgt - o) * k; });
-      if (!loud && Math.max(M.n[0], M.n[1]) < -36) { M.n = [null, null]; show(null); return; }
-      show(M.n);
+      if (rest && now > M.until) { M.last = 0; return; }   /* asleep */
+      M.raf = requestAnimationFrame(frame);
     }
-    function tick() { if (!document.hidden && !box.hidden) label(); }
+    function rouse() { M.until = Date.now() + 1500; if (!M.raf) M.raf = requestAnimationFrame(frame); }
+    WAKE.push(rouse);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) { M.shown = ""; rouse(); } });
+    /* the slow check: twice a second, look once; any sound wakes the frames */
+    function tick() {
+      if (!seen()) return;
+      label();
+      if (!M.raf) { var v = read(); if (v && Math.max(v[0], v[1]) > -50) rouse(); }
+    }
     show(null); M.shown = ""; label();
     setTimeout(function () { M.shown = ""; show(null); }, 300);
     try { new ResizeObserver(function () { M.shown = ""; show(still() ? M.peak : (M.n[0] == null ? null : M.n)); }).observe(box); } catch (e) {}
     try { document.fonts && document.fonts.ready.then(function () { M.shown = ""; show(still() ? M.peak : null); }); } catch (e) {}
-    M.timer = setInterval(tick, 1000); M.raf = requestAnimationFrame(frame);
-    M.stop = function () { clearInterval(M.timer); if (M.raf) cancelAnimationFrame(M.raf); };
+    M.timer = setInterval(tick, 500); rouse();
+    M.stop = function () { clearInterval(M.timer); if (M.raf) cancelAnimationFrame(M.raf); M.raf = 0; var i = WAKE.indexOf(rouse); if (i >= 0) WAKE.splice(i, 1); };
     return M;
   }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw };
+  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and

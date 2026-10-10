@@ -73,7 +73,10 @@
   ].join("");
   function start() {
     D.head.appendChild(css); decorate();
-    new MutationObserver(function () { decorate(); }).observe(D.body, { childList: true, subtree: true });
+    /* AOG-FORMS-QUIET-V1 (2026-10-10, Jimmy: "I want the whole website not to lag"): many changes in a row ask for one
+       look, just before the screen is drawn, instead of one look over the whole page per change */
+    var raf = 0;
+    new MutationObserver(function () { if (!raf) raf = requestAnimationFrame(function () { raf = 0; decorate(); }); }).observe(D.body, { childList: true, subtree: true });
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
 })();

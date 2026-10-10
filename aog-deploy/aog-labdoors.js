@@ -199,10 +199,13 @@
     var usable = function (bar) { return [].some.call(bar.querySelectorAll("a[href],button,select"), function (c) {
       if (c.closest(".aogdd-src")) return false;   /* the buttons a drop-down presses (aog-dropdowns.js) are out of sight */
       for (var e = c; e && e !== bar; e = e.parentNode) if (e.hidden || getComputedStyle(e).display === "none") return false; return true; }); };
-    var parts = [].slice.call(D.querySelectorAll("body .bench-bar, body .aog-course-band, body .pm-guide")).filter(function (e) {
+    /* AOG-STUDIO-SMOOTH-V1: look at every bar first, then mark the empty ones; a mark made between two looks makes the
+       whole page work its styles out again, and these pages are big */
+    var empty = [], parts = [].slice.call(D.querySelectorAll("body .bench-bar, body .aog-course-band, body .pm-guide")).filter(function (e) {
       if (e.closest(".aog-learn")) return false;
-      if (e.classList.contains("bench-bar") && !usable(e)) { e.setAttribute("data-empty", "1"); return false; }
+      if (e.classList.contains("bench-bar") && !usable(e)) { empty.push(e); return false; }
       return true; });
+    empty.forEach(function (e) { if (e.getAttribute("data-empty") !== "1") e.setAttribute("data-empty", "1"); });
     if (!parts.length) return;
     var box = D.getElementById("aogLearn");
     if (!box) {
@@ -263,11 +266,14 @@
     return hb && hb.a > 0.5 ? hb : { r: 247, g: 242, b: 230, a: 1 };
   }
   function hardware() {
+    /* AOG-STUDIO-SMOOTH-V1: every menu is looked at first and marked after, so the page works its styles out once */
+    var marks = [];
     [].forEach.call(D.querySelectorAll("select:not(.aog-hw):not(.aog-hw-no)"), function (s) {
+      if (s.closest(".sp-keep,.aogtop,.aog-learn")) { marks.push([s, "aog-hw-no"]); return; }
       if (!s.offsetParent && s.getClientRects().length === 0) return;   /* not drawn yet: looked at again later */
-      if (s.closest(".sp-keep,.aogtop,.aog-learn")) { s.classList.add("aog-hw-no"); return; }
-      s.classList.add(lum(behind(s)) < 0.12 ? "aog-hw" : "aog-hw-no");
+      marks.push([s, lum(behind(s)) < 0.12 ? "aog-hw" : "aog-hw-no"]);
     });
+    marks.forEach(function (m) { m[0].classList.add(m[1]); });
   }
   var hwT = 0, hwSoon = function () { clearTimeout(hwT); hwT = setTimeout(hardware, 120); };
   function hwStart() { hardware(); try { new MutationObserver(hwSoon).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden", "open"] }); } catch (e) {} window.addEventListener("load", hwSoon); }
@@ -276,9 +282,12 @@
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();
   /* after the doors and the menus are drawn; the course box arrives later (aog-grace.js), so it is watched for a while */
   if (shell) {
+    /* AOG-STUDIO-SMOOTH-V1: a burst of changes while the room loads asks once, just before the screen is drawn again,
+       not once per change (and never shows the room half moved) */
+    var fsT = 0, fsSoon = function () { if (!fsT) fsT = requestAnimationFrame(function () { fsT = 0; firstSurface(); }); };
     var later = function () {
       firstSurface();
-      try { var mo = new MutationObserver(function () { if (D.querySelector(".aog-course-band:not(.aog-learn *),.pm-guide:not(.aog-learn *)")) firstSurface(); });
+      try { var mo = new MutationObserver(function () { if (!fsT && D.querySelector(".aog-course-band:not(.aog-learn *),.pm-guide:not(.aog-learn *)")) fsSoon(); });
         mo.observe(D.body, { childList: true, subtree: true }); setTimeout(function () { mo.disconnect(); }, 15000); } catch (e) {}
       window.addEventListener("load", firstSurface);
     };

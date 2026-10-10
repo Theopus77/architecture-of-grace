@@ -8,7 +8,9 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.10.m7451'   // JIMMY: "I WANT IT ON THE STUDENT PAGE. ITS OWN DRAWING, DOOR ETC." AND "I HAVE A RUBRIC CUBE THAT HAS BEEN ALTERED. I HAVE NO IDEA HOW TO MAKE IT RIGHT": THE CUBE GETS ITS OWN FRONT-PAGE DOOR ON STUDENT, WITH THREE PENCIL DRAWINGS (LEARN, SOLVE WITH ME, FIX MY REAL CUBE); MY CUBE NOW FINDS A CUBE THAT WAS PUT BACK WRONG (A TWISTED CORNER, A FLIPPED EDGE, TWO SWAPPED PIECES, MOVED STICKERS) AND SHOWS HOW TO FIX IT BY HAND
+const CACHE = 'aog-cache-2026.10.10.m7453'   // JIMMY: "I WANT THE WHOLE WEBSITE NOT TO LAG": THE FRONT PAGE NO LONGER RUNS NONSTOP (THE DROP-DOWNS AND THE CARD FOLDS REWROTE THE SAME WORDS FOREVER; NOW THEY WRITE ONLY CHANGES), THE HIDDEN DASHBOARD IS COLOURED WHEN IT IS OPENED, THE PENCIL DRAWINGS LOOK ONLY AT WHAT IS NEW, THE STUDENT FORMS LOOK ONCE PER FRAME, AND THE EXPLORE MENU IS BUILT THE FIRST TIME IT IS OPENED (previous: m7452)
+// const CACHE = 'aog-cache-2026.10.10.m7452'   // JIMMY: THE STUDIO WAS "LAGGING … A HORRIFIC EXPERIENCE": ROOMS OPEN ABOUT 4X FASTER ON A PHONE. TOUCH SCREENS TURN TRANSITIONS OFF WITH "NONE" INSTEAD OF .01MS (AOG-CALM-FAST-V1), THE VU METERS SLEEP IN SILENCE, THE STUDIO BAR WRITES ONLY WHAT CHANGED, THE ROOM DOORS LOOK FIRST AND MARK AFTER, AND THE SITE'S OWN SCRIPTS COME FROM THIS VERSION'S STORE ONCE FETCHED (AOG-SW-CODE-FAST-V1) (previous: m7451)
+// const CACHE = 'aog-cache-2026.10.10.m7451'   // JIMMY: "I WANT IT ON THE STUDENT PAGE. ITS OWN DRAWING, DOOR ETC." AND "I HAVE A RUBRIC CUBE THAT HAS BEEN ALTERED. I HAVE NO IDEA HOW TO MAKE IT RIGHT": THE CUBE GETS ITS OWN FRONT-PAGE DOOR ON STUDENT, WITH THREE PENCIL DRAWINGS (LEARN, SOLVE WITH ME, FIX MY REAL CUBE); MY CUBE NOW FINDS A CUBE THAT WAS PUT BACK WRONG (A TWISTED CORNER, A FLIPPED EDGE, TWO SWAPPED PIECES, MOVED STICKERS) AND SHOWS HOW TO FIX IT BY HAND
 // const CACHE = 'aog-cache-2026.10.10.m7450'   // JIMMY: "A STEP BY STEP 3D INTERACTIVE ENGINE ... INSTRUCTIONS ON HOW TO MAKE AND FINISH A RUBRIC CUBE": NEW /CUBE, THE CUBE LAB ON THE LAB BENCH - A 3D RUBIK'S CUBE YOU TURN BY DRAGGING A ROW, TEN STEPS (DAISY TO YELLOW EDGES), SOLVE WITH ME (ANY MIXED CUBE, ONE MOVE AT A TIME, WITH THE MOVES THE STEPS TEACH) AND MY CUBE (PAINT A REAL CUBE IN, THEN FINISH IT)
 // const CACHE = 'aog-cache-2026.10.10.m7449'   // JIMMY: "IT IS .COM NOT .ORG!": every address on the site now says architectureofgrace.com - canonical links, link-preview (og/twitter) tags, the sitemap, robots.txt, the printed address, the Adult workbook link maker, and the build scripts in _work and adult-build (4,846 mentions in 1,011 files; no .org left).
 // const CACHE = 'aog-cache-2026.10.10.m7448'   // JIMMY: "I DONT SEE ANY INTERACTIVE ANCHOR CHARTS OR LESSON PAGES ON THE ADULT SEL ... IN THE DROP DOWN MENU I DON'T SEE ANYTHING EITHER": NEW adult-lessons.html (/adult/lessons, AOG-ADULT-LESSONS-V1) - the twelve lessons one at a time under each phase's pencil drawing, taught ticks on the device; NEW adult-charts.html (/adult/charts, AOG-ADULT-CHARTS-V1) - twelve interactive anchor charts (skeleton/complete, reveal next or R, the group's words kept on the device, print), verbatim; NEW aog-adult.js puts 'Jump to another room' on every Adult page; aog-sel.js adds the Adult Edition's lessons to every SEL room menu; door, Explore menu and SEL door link both pages.
@@ -858,15 +860,27 @@ self.addEventListener('fetch', function (e) {
      visited once kept printing with an old aog-topbar.js after a drag. Jimmy's
      Mac Safari still split "What people get wrong" onto the foot of a page after
      4313 went live, while his phone had the fix. */
+  /* AOG-SW-CODE-FAST-V1 (2026-10-10) — Jimmy: the Studio was "lagging … a horrific experience". Every room asks for
+     about twenty of these files, one after another, and each one waited on the network, every time, even when nothing
+     had changed. Now the first time this version of the site asks for a file it comes from the network, as before, and
+     is kept in this version's own store (CACHE); after that it comes straight from the store. A new version (a new
+     CACHE line, bumped with every change) starts with an empty store, so a changed file still lands at once and an old
+     one can never stick (the trouble 4314 fixed). Offline, any saved copy is used. */
   if (/\/aog-[^\/?#]*\.(js|css)(\?|#|$)/.test(req.url)) {
     e.respondWith(
-      fetch(req).then(function (r) {
-        if (r && r.status === 200) {
-          var copy = r.clone();
-          caches.open(KEEP).then(function (c) { c.put(req, copy); });
-        }
-        return r;
-      }).catch(function () { return caches.match(req); })
+      caches.open(CACHE).then(function (c) { return c.match(req); }).then(function (hit) {
+        if (hit) return hit;
+        return fetch(req).then(function (r) {
+          if (r && r.status === 200 && r.type === 'basic') {
+            var a = r.clone(), b = r.clone();
+            e.waitUntil(Promise.all([
+              caches.open(CACHE).then(function (c) { return c.put(req, a); }),
+              caches.open(KEEP).then(function (c) { return c.put(req, b); })
+            ]).catch(function () {}));
+          }
+          return r;
+        }).catch(function () { return caches.match(req); });
+      }, function () { return fetch(req); })
     );
     return;
   }

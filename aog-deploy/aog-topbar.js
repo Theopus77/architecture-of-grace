@@ -454,8 +454,13 @@
     menu("aogbarExBtn", "aogbarExMenu");
     menu("aogbarA11yBtn", "aogbarA11yMenu");
 
-    /* AOG-EXPLORE-PENCIL-V1 — the doors, their lists and their folds live in buildExplore() */
-    buildExplore();
+    /* AOG-EXPLORE-PENCIL-V1 — the doors, their lists and their folds live in buildExplore().
+       AOG-EXPLORE-LATER-V1 (2026-10-10, Jimmy: "I want the whole website not to lag"): the menu is about 1,300 parts,
+       and every page used to build it on arrival though most visits never open it. It is built the first time
+       Explore is pressed (or reached by keyboard), just before it opens. */
+    var exb = $("aogbarExBtn");
+    if (exb) { exb.addEventListener("click", buildExplore, true); exb.addEventListener("focus", buildExplore); exb.addEventListener("pointerenter", buildExplore); }
+    else buildExplore();
 
     D.addEventListener("click", function (e) {
       if (e.target.closest && e.target.closest(".aogtop-wrap")) return;
