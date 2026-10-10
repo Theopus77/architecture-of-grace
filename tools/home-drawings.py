@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Jimmy's front-page drawings (2026-10-09) as the site's banners.
+"""Jimmy's pencil drawings (2026-10-09 and 10-10) as the site's banners.
 
     python3 tools/home-drawings.py
 
-Each drawing in home-handoff/drawings/ replaces the banner its front-page door
-used (the check-in slips and Quiet Space get banners of their own, wired by wire()), under the same names (img/banners/<banner>-pencil-{1600.webp,900.webp,900.jpg}),
-so every page that shows that banner gets the new drawing. The drawing's paper is
+Two sets. home-handoff/drawings/ holds the front page's: its doors (and the
+Explore menu), the check-in slips and Quiet Space. home-handoff/drawings/pages/
+holds the pages': each page's own banner (the title banner aog-sketch.js picks,
+the front page's room cards, the hubs). Where a door and its page share a
+subject, each has its own drawing (Jimmy, 2026-10-10: the doors keep theirs).
+Banners are img/banners/<banner>-pencil-{1600.webp,900.webp,900.jpg}. The drawing's paper is
 matched to the site's paper (#F6F2E8), it fills the banner's height, sits 64%
 across like the music rooms, and its edges fade into the paper.
 """
@@ -19,23 +22,24 @@ BAN = os.path.join(HERE, "..", "aog-deploy", "img", "banners")
 PAPER = np.array([0xF6, 0xF2, 0xE8], np.float32)
 W, H = 1600, 560
 
-# drawing -> the banner the door (and every other page) already uses
+# The front page's drawings -> banner. Twelve doors have a banner of their own
+# (door-*), so the page with the same subject can show its own drawing.
 MAP = {
-    "today-open-book": "page-selfreflect",
-    "daily-drafts-calendar": "page-daily-drops",
-    "recording-studio-mixer": "music-studio",
-    "lab-bench-microscope": "page-microscope",
+    "today-open-book": "door-today",
+    "daily-drafts-calendar": "door-drafts",
+    "recording-studio-mixer": "door-studio",
+    "lab-bench-microscope": "door-bench",
     "checkin-watering-can": "sel12-u2",
-    "conversation-starters-tea": "page-door-talk",
+    "conversation-starters-tea": "door-talk",
     "courses-arch-microscope": "page-door-atrium",
     "sel-mirror": "sel12-u1",
-    "faith-texts": "page-door-faith",
-    "families-plant-lantern": "page-door-porch",
-    "educator-dashboard": "page-dashboard",
-    "standards-crosswalk": "page-door-crosswalk",
-    "professional-development": "page-door-pd",
-    "privacy-locked-book": "page-door-privacy",
-    "contact-ink-bottle": "page-door-contact",
+    "faith-texts": "door-faith",
+    "families-plant-lantern": "door-families",
+    "educator-dashboard": "door-dashboard",
+    "standards-crosswalk": "door-crosswalk",
+    "professional-development": "door-pd",
+    "privacy-locked-book": "door-privacy",
+    "contact-ink-bottle": "door-contact",
     # These had borrowed other pages' banners, so they get banners of their own.
     "weekly-checkin": "slip-weekly",
     "end-of-class": "slip-endclass",
@@ -54,6 +58,31 @@ MAP = {
     "bedtime-checklist": "slip-bedtime",
     "quiet-space": "quiet-space",
 }
+
+# The pages' drawings (drawings/pages/) -> the banner each page already uses.
+PAGES = {
+    "self-reflect": "page-selfreflect",
+    "daily-drafts": "page-daily-drops",
+    "recording-studio": "music-studio",
+    "lab-bench": "page-microscope",
+    "conversation-starters": "page-door-talk",
+    "faith-texts": "page-door-faith",
+    "families-porch": "page-door-porch",
+    "educator-dashboard": "page-dashboard",
+    "standards-crosswalk": "page-door-crosswalk",
+    "professional-development": "page-door-pd",
+    "privacy": "page-door-privacy",
+    "contact": "page-door-contact",
+    "english-hub": "page-english-hub",
+    "math-hub": "page-math-hub",
+    "science-hub": "page-science-hub",
+    "social-studies-hub": "page-social-studies-hub",
+    "worksheets": "page-worksheets",
+}
+
+# The doors (front page and Explore menu) that show a door-* banner.
+DOORS = {d: "door-" + d for d in ("today drafts studio bench talk faith families "
+                                  "dashboard crosswalk pd privacy contact").split()}
 
 # Where the front page shows those own banners: each check-in slip's card (by its
 # link) and the Quiet Space door. The grace point sheet serves school and home.
@@ -77,7 +106,20 @@ def wire():
                    r"\g<1>/img/banners/quiet-space-pencil-900.", s, count=1)
     if not n:
         print("  no Quiet Space door")
+    for d, name in DOORS.items():
+        s, n = re.subn(r'(data-door="%s"[^>]*><span class="aogdn-pic"[^>]*><img src=")/img/banners/[a-z0-9-]+-pencil-900\.' % d,
+                       r"\g<1>/img/banners/%s-pencil-900." % name, s, count=1)
+        if not n:
+            print("  no door", d)
     open(idx, "w", encoding="utf-8").write(s)
+    top = os.path.join(HERE, "..", "aog-deploy", "aog-topbar.js")
+    s = open(top, encoding="utf-8").read()
+    for d, name in DOORS.items():
+        s, n = re.subn(r'(\{"id":"%s",[^{}]*?"img":")/img/banners/[a-z0-9-]+-pencil-900\.' % d,
+                       r"\g<1>/img/banners/%s-pencil-900." % name, s, count=1)
+        if not n and d != "today":                      # Today is not in the Explore menu
+            print("  Explore: no door", d)
+    open(top, "w", encoding="utf-8").write(s)
 
 
 def ramp(n, edge):
@@ -104,7 +146,7 @@ def banner(path):
     return Image.fromarray(out.clip(0, 255).astype(np.uint8))
 
 
-for src, name in MAP.items():
+for src, name in [(s_, n_) for s_, n_ in MAP.items()] + [("pages/" + s_, n_) for s_, n_ in PAGES.items()]:
     img = banner(os.path.join(SRC, src + ".jpg"))
     base = os.path.join(BAN, name + "-pencil-")
     img.save(base + "1600.webp", quality=86, method=6)
