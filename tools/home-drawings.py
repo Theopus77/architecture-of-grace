@@ -96,6 +96,21 @@ PAGES = {
     "unseen-realm-hub": "unseen-realm-hub",
     "hindu-texts-hub": "hindu-texts-hub",
     "buddhist-texts-hub": "buddhist-texts-hub",
+    # the continuing batch (2026-10-10); the five generic "unit" drawings wait
+    # in drawings/held/ until Jimmy says where they go
+    "capstone": "e24-capstone",
+    "job-to-the-end": "fc16-job-to-the-end",
+    "mtss-crosswalk": "page-xw-mtss",
+    "scarcity-choice": "ec1-scarcity-and-choice",
+    "sun-moon-sky": "b27-sun-moon-sky",
+    "the-outsiders": "n1-the-outsiders",
+    "the-paragraph": "e12-the-paragraph",
+    "world-regions": "s14-world-regions",
+    "medicine-unit": "med-u2",
+    "religion-and-world": "r10-religion-and-the-world",
+    "door-faith": "page-door-faith",          # the pages' third version; the doors keep theirs
+    "door-porch": "page-door-porch",
+    "door-talk": "page-door-talk",
 }
 
 # The doors (front page and Explore menu) that show a door-* banner.
