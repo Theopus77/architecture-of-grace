@@ -2076,10 +2076,15 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
        Show everything lays the whole table out in three labelled groups. The choice is kept for this visit (sessionStorage).
        Replaces AOG-AUDIENCE-V1, which only reordered the doors (V2 removed the gold links under the switch). */
     (function(){
+      /* AOG-AUDIENCE-START-V1 (Jimmy, 2026-10-10: "I don't like how the main page starts on show everything … it overwhelms
+         me. I believe it should start on STUDENT. Student should not have the check-in link and the teacher should have the
+         dashboard, the two curriculums plus daily drafts … The parent should have the most"). The page opens on Student;
+         Show everything is still one tap away. Teacher leads with the Dashboard, then the two curricula (The Courses and
+         SEL), then Daily Drafts. Parent holds the most doors. */
       var SETS = {
-        teacher: ["today","drafts","studio","bench","courses","dashboard","crosswalk"],   /* AOG-SHOWCASE-V1 */   /* Jimmy, 2026-10-03: "Courses should be on the home page of teachers." */
-        family:  ["drafts","studio","bench","talk","checkin","families"],
-        student: ["drafts","studio","bench","checkin","quiet"]
+        teacher: ["dashboard","courses","sel","drafts","today","studio","bench","crosswalk"],
+        family:  ["today","drafts","talk","checkin","families","sel","courses","studio","bench","faith","quiet","privacy"],
+        student: ["drafts","studio","bench","quiet"]
       };
       var GROUPS = [
         ["This week","Esta semana",["today","drafts","studio","bench","checkin","talk"]],
@@ -2110,7 +2115,7 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         /* five doors under Today would leave one alone on a computer's row of four; they go three across instead */
         var shown = [].filter.call(grid.querySelectorAll(":scope > .aogdn-door"), function(d){ return !d.hidden && d.getAttribute("data-door") !== "today"; }).length;
         grid.classList.toggle("aogau-three", k !== "all" && shown === 5);
-        grid.classList.toggle("aogau-flat", k === "all" || more);   /* AOG-HOME-FLAT-V1: a long table lies flat, so its far rows stay on the screen */
+        grid.classList.toggle("aogau-flat", k === "all" || more || shown > 7);   /* AOG-HOME-FLAT-V1: a long table lies flat, so its far rows stay on the screen */
         if(panel) grid.appendChild(panel);
         document.querySelectorAll("#aogAudRow button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-aud") === k ? "true" : "false"); });
         document.querySelectorAll("#aogAud .aogau-tip").forEach(function(t){ t.hidden = t.getAttribute("data-aud") !== k; });
@@ -2118,13 +2123,13 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         if(mb){ mb.parentNode.hidden = (k === "all"); mb.setAttribute("aria-expanded", more ? "true" : "false");
           mb.textContent = more ? (es() ? "Menos puertas" : "Fewer doors") : (es() ? "Más puertas" : "More doors"); }
       }
-      window.aogAudPick = function(k){ more = false; try{ if(k === "all") sessionStorage.removeItem(KEY); else sessionStorage.setItem(KEY, k); }catch(e){} apply(k); };
+      window.aogAudPick = function(k){ more = false; try{ sessionStorage.setItem(KEY, k); }catch(e){} apply(k); };
       window.aogAudMore = function(){ more = !more; apply(cur); };
       /* opening a door the filter has put away first brings the rest of the table back */
       window.aogAudDoor = function(name){ var d = document.querySelector('#aogdnGrid .aogdn-door[data-door="'+name+'"]'); if(!d) return;
         if(d.hidden){ more = true; apply(cur); }
         if(d.getAttribute("aria-expanded") !== "true") d.click(); try{ d.scrollIntoView({block:"start", behavior:"instant"}); }catch(e){} };
-      var k = "all"; try{ k = sessionStorage.getItem(KEY) || "all"; }catch(e){}
+      var k = "student"; try{ k = sessionStorage.getItem(KEY) || "student"; }catch(e){}
       apply(k);
       /* the group labels and the More button follow the language switch */
       try{ new MutationObserver(function(){ apply(cur); }).observe(document.documentElement, { attributes:true, attributeFilter:["lang"] }); }catch(e){}

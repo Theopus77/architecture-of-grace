@@ -105,9 +105,20 @@ layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-stud
 - Design and fix a room as it looks inside the Studio (`html.in-studio`), not on
   its own. There is no "own tab" link.
 - The site's checks still open each room on its own; that is expected.
+- The Studio has no site top bar (Jimmy, 2026-10-10). Its own line carries Back
+  and EN | ES; Back leaves the Studio (the page before, or the front page when it
+  was opened from its icon). It is its own Home Screen app: `studio.webmanifest`,
+  `studio-icon-*.png`, start `/the-studio`.
 - `the-studio.html` is built by `_work/music/make_studio_page.py`; the Guitar and
   Bass by `make_strings.py` (`strings_page.html`), the Band by `make_band.py`
   (`band_head.html`). Change the source, then build.
+
+## The front page starts on Student (standing order from Jimmy, 2026-10-10)
+
+"Show everything … overwhelms me." `index.html` opens on Student (Daily Drafts,
+the Studio, the Lab Bench, Quiet Space; no Check-in). Teacher leads with the
+Dashboard, The Courses, SEL and Daily Drafts. Parent has the most doors. Show
+everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 
 ## The Adult Edition (Book 6)
 

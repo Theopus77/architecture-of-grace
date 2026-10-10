@@ -8,7 +8,7 @@
 </script>
 <title>The Recording Studio &mdash; Architecture of Grace</title>
 <meta name="description" content="Every music room in one studio: the drum machine, drum kit, piano, guitar, bass, band, turntables and mixing desk. Play, make, mix and send it out. No account.">
-<meta name="theme-color" content="#0A1E33">
+<meta name="theme-color" content="#14110d">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <!-- AOG-STUDIO-PAGE-V1 (2026-10-06) · AOG-STUDIO-SHELL-V1 (2026-10-09) — The Studio. MADE BY _work/music/make_studio_page.py: edit there, then run it. -->
 <style>
@@ -315,6 +315,19 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 .sh-top h1 { color:#f6e9cc; text-shadow:0 1px 0 rgba(0,0,0,.6); }
 .sh-tag { color:#cdbfa3; }
 .sh-own { color:#f0c26e; }
+/* AOG-STUDIO-APP-V1 (Jimmy, 2026-10-10: "In the studio we should get rid of the AOG top bar menu. Allow a back button"):
+   the site bar steps aside (its code stays, so the saved language, theme and reading settings still apply); the Studio's
+   own line carries Back and EN | ES. Back leaves the Studio: to the page you came from, or the front page when the
+   Studio was opened from its Home Screen icon. */
+.aogtop, .aogtop-spacer { display:none !important; }
+.sh-back { flex:0 0 auto; display:inline-flex; align-items:center; gap:.3rem; min-height:44px; padding:0 .8rem 0 .55rem; border-radius:999px;
+  border:1px solid rgba(240,194,110,.55); background:rgba(0,0,0,.28); color:#f6e9cc; font:700 1rem/1 var(--sans); cursor:pointer; }
+.sh-back:hover { background:rgba(240,194,110,.14); }
+.sh-lang { flex:0 0 auto; display:inline-flex; gap:2px; padding:3px; border-radius:999px; border:1px solid rgba(240,194,110,.4); background:rgba(0,0,0,.28); }
+.sh-lang button { min-height:38px; min-width:44px; padding:0 .7rem; border:0; border-radius:999px; background:transparent; color:#e6d8bb; font:700 .9rem/1 var(--sans); cursor:pointer; }
+.sh-lang button[aria-pressed="true"] { background:#f0c26e; color:#1d1608; }
+.sh-back:focus-visible, .sh-lang button:focus-visible { outline:3px solid #f0c26e; outline-offset:2px; }
+@media (max-width:699px) { .sh-back { padding:0 .6rem 0 .4rem; } .sh-lang button { min-width:40px; padding:0 .5rem; } }
 .sh-doors a { background-color:#f1e8d5; color:#1f1a12; border-color:#3a2c1c; box-shadow:0 1px 0 rgba(255,236,200,.08), 0 6px 14px rgba(0,0,0,.45); }
 .sh-doors a[aria-current="true"] { border-color:#e0b25a; box-shadow:0 0 0 1px #e0b25a, 0 0 18px rgba(240,194,110,.35), 0 6px 14px rgba(0,0,0,.45); }
 .sh-room { background:#17110c; border:1px solid #050403; box-shadow:0 0 0 1px rgba(255,214,160,.06), 0 24px 60px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.5); }
@@ -323,11 +336,18 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 .tp-vu[hidden] { display:none; }
 @media (max-width:699px) { .tp-vu { display:none !important; } }   /* a phone's bar has no room for them; the room's own page shows them */
 </style>
+<link rel="manifest" href="/studio.webmanifest">
+<link rel="apple-touch-icon" href="/studio-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Studio">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
 <div class="shell">
 <div class="sh-top">
+  <button type="button" class="sh-back" id="shBack"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span data-en="Back" data-es="Atrás">Back</span></button>
   <h1><span data-en="The Recording Studio" data-es="El estudio de grabación">The Recording Studio</span></h1>
   <p class="sh-tag"><span data-en="Play · Record · Listen · Mix · Send it out" data-es="Toca · Graba · Escucha · Mezcla · Compártela">Play · Record · Listen · Mix · Send it out</span></p>
 <nav class="sh-doors" aria-label="Rooms"><ul>
@@ -340,6 +360,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
   <li><a href="#decks" data-room="decks"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-decks-pencil-900.webp"><img src="/img/banners/music-decks-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Turntables" data-es="Tocadiscos">Turntables</span></a></li>
   <li><a href="#studio" data-room="studio"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Mixing Desk" data-es="Mesa de mezclas">Mixing Desk</span></a></li>
 </ul></nav>
+  <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>
 </div>
 <main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>
 <section class="mt" id="mt" aria-label="The studio"><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button><button type="button" class="tp-b tp-out" id="tpOut"></button><span class="tp-vu" id="tpVu"></span><span class="tp-line" id="tpLine" aria-live="polite"></span></div><div class="mtrow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>
@@ -371,9 +392,11 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
     try { var s = localStorage.getItem(KEY); if (room(s)) return s; } catch (e) {}
     return "pads";
   }
+  var steps = 0;   /* rooms walked through inside the Studio, so Back can leave it in one tap */
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
+    if (push) steps++;
     TP.back = id === "studio" ? (cur && cur !== "studio" ? cur : TP.back) : "";   /* AOG-STUDIO-LISTEN-V1: the way back from the desk */
     cur = id;
     try { localStorage.setItem(KEY, id); } catch (e) {}
@@ -570,6 +593,19 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
   window.addEventListener("resize", size);
   go(first(), false);
   size(); refresh();
+  /* AOG-STUDIO-APP-V1: Back leaves the Studio; EN | ES works the site's own language switch (in the hidden bar) */
+  window.addEventListener("popstate", function () { if (steps > 0) steps--; });
+  D.getElementById("shBack").addEventListener("click", function () {
+    var same = false; try { same = !!D.referrer && new URL(D.referrer).origin === location.origin && new URL(D.referrer).pathname !== location.pathname; } catch (e) {}
+    if (same && history.length > steps + 1) history.go(-(steps + 1)); else location.href = "/";
+  });
+  function paintLang() { var l = es() ? "es" : "en";
+    [].forEach.call(D.querySelectorAll(".sh-lang button"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false"); }); }
+  [].forEach.call(D.querySelectorAll(".sh-lang button"), function (b) { b.addEventListener("click", function () {
+    var v = b.getAttribute("data-lang"), sw = D.getElementById(v === "es" ? "aogLangEs" : "aogLangEn");
+    if (sw) sw.click(); else { try { localStorage.setItem("aog.lang", v); } catch (e) {} location.reload(); } }); });
+  paintLang();
+  try { new MutationObserver(paintLang).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
   /* the site bar and the fonts arrive a moment later and move the frame down: fit it again whenever the page moves */
   try { new ResizeObserver(function () { size(); }).observe(D.body); } catch (e) { setTimeout(size, 600); setTimeout(size, 2000); }
   window.addEventListener("load", size);
