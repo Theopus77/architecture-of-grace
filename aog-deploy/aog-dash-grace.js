@@ -109,7 +109,11 @@
   }
   var SKIP = { SCRIPT: 1, STYLE: 1, SVG: 1, PATH: 1, CANVAS: 1, IMG: 1, OPTION: 1, VIDEO: 1, IFRAME: 1 };
   function hasText(el) {
-    for (var n = el.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && /\S/.test(n.nodeValue)) return true;
+    for (var n = el.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType === 3 && /\S/.test(n.nodeValue)) return true;
+      /* an emoji already drawn in pencil (aog-sketch.js) is still a word in the line: its colour decides the pencil's */
+      if (n.nodeType === 1 && n.tagName === "IMG" && n.classList.contains("aog-sk")) return true;
+    }
     return false;
   }
   function tint(root) {
@@ -187,12 +191,27 @@
 
   /* ── wiring ──────────────────────────────────────────────────────────── */
   var root = null, timer = null, writing = false;
+  /* AOG-DASH-GRACE-LATER-V1 (2026-10-10) — Jimmy: "I want the whole website not to lag". The front page carries the
+     whole dashboard, out of sight, and looking at the colours of its 2,800 parts cost a phone seconds on every visit.
+     Now they are looked at when the dashboard is shown: the moment it gets a size, before it is drawn, so it never
+     appears untinted. */
+  var watching = false;
+  function later() {
+    if (watching || !window.ResizeObserver) return false;
+    watching = true;
+    new ResizeObserver(function () { if (root.getClientRects().length) run(); }).observe(root);
+    return true;
+  }
   function run() {
     timer = null;
     if (!root) root = D.getElementById("screen-admin");
     if (!root) return;
+    if (!root.getClientRects().length && (watching || later())) return;   /* out of sight: when it is shown */
     writing = true;
-    try { tint(root); flushPseudo(); } catch (e) {}
+    var made = 0;
+    try { made = tint(root); flushPseudo(); } catch (e) {}
+    /* the colours changed: the pencil marks (aog-sketch.js) look again, so a mark on navy is drawn in light pencil */
+    if (made) try { D.dispatchEvent(new Event("aog-recolored")); } catch (e) {}
     /* the observer sees our writes on the next tick; let it ignore them */
     setTimeout(function () { writing = false; }, 0);
   }
