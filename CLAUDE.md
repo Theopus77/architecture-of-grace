@@ -133,7 +133,8 @@ Show everything keeps the full words. There is no gold button under the title.
 
 "Make a direct link icon" to each of these, each at its own address: the Studio
 (/the-studio), Daily Practice (/drops), SEL (/sel), The Courses (/courses), Adult
-SEL (/adult), the Educator Dashboard (/dashboard) and the calm tools (/calm). Each page links its own
+SEL (/adult), the Educator Dashboard (/dashboard), the calm tools (/calm), the
+Microscope Lab (/microscope) and the Oscilloscope (/oscilloscope, also /waves). Each page links its own
 `<name>.webmanifest` and `app-<name>-touch.png` (the Studio: `studio.*`), so Add to
 Home Screen opens that place, full screen.
 
