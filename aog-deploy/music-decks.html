@@ -158,12 +158,12 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 }
 
 /* ── the mixer bay: a recess in the chassis, the height of the decks ── */
-.bay{grid-column:2;grid-row:1;grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:6px 4px;
-  padding:92px 8px 16px;background:rgba(0,0,0,.34);
+.bay{grid-column:2;grid-row:1;grid-template-columns:1fr 1fr;grid-template-rows:auto auto minmax(0,1fr);gap:6px 4px;
+  padding:14px 8px 16px;background:rgba(0,0,0,.34);
   box-shadow:inset 1px 0 0 rgba(255,255,255,.1),inset -1px 0 0 rgba(255,255,255,.1),inset 2px 0 6px rgba(0,0,0,.45),inset -2px 0 6px rgba(0,0,0,.45);color:#f4e2b0}
 .bch{display:contents}
-.bch .blet{grid-row:1;text-align:center;font-size:1rem;font-weight:800;letter-spacing:.16em;padding-left:.16em;color:#f4e2b0;line-height:48px;height:48px}
-.bfw{grid-row:2;display:flex;justify-content:center;align-items:stretch;gap:4px;min-height:160px}
+.bch .blet{grid-row:2;text-align:center;font-size:1rem;font-weight:800;letter-spacing:.16em;padding-left:.16em;color:#f4e2b0;line-height:48px;height:48px}
+.bfw{grid-row:3;display:flex;justify-content:center;align-items:stretch;gap:4px;min-height:160px}
 body[data-pair="AB"] [data-bch="A"]>*,body[data-pair="AC"] [data-bch="A"]>*,body[data-pair="BC"] [data-bch="B"]>*{grid-column:1}
 body[data-pair="AB"] [data-bch="B"]>*,body[data-pair="AC"] [data-bch="C"]>*,body[data-pair="BC"] [data-bch="C"]>*{grid-column:2}
 body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[data-pair="BC"] [data-bch="A"]{display:none}
@@ -178,7 +178,9 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
 .bfader:has(input:focus-visible) .bcap{outline:3px solid #f4e2b0;outline-offset:2px}
 .bmeter{flex:0 0 6px;margin:4px 0;border-radius:3px;background:#0b0e12;overflow:hidden;display:flex;align-items:flex-end}
 .bmeter i{display:block;width:100%;height:100%;background:linear-gradient(0deg,#6fbf8b,#d9a84e 70%,#c4452a);transform-origin:50% 100%;transform:scaleY(0);will-change:transform}
-.bxf{grid-row:3;grid-column:1 / -1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;margin-top:8px}
+/* AOG-DJ-XF-TOP-V1 (Jimmy, 2026-10-10: "I would like the cross fader in screen, I don't want to scroll down to it"):
+   the crossfader sits at the top of the bay, level with the deck names, the volume faders under it */
+.bxf{grid-row:1;grid-column:1 / -1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;margin:0 0 4px}
 .bxf b{color:#f4e2b0;font-weight:800;letter-spacing:.16em;font-size:.9rem}
 .bxf #xf{height:44px;margin:0;width:100%;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
 .bxf #xf::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:#050607;box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
@@ -423,6 +425,10 @@ footer a{color:inherit}
 .mixer .rechint{color:#c9bfae}
 /* on a phone the crossfader comes first in the mixer, so it is in reach without scrolling past three strips */
 @media (max-width:700px){ .xfade{order:0;margin:0 0 .7rem} }
+/* AOG-DJ-XF-TOP-V1: an iPad held upright puts the crossfader right above the two decks */
+.xfade.xf-top{margin:0 0 .7rem}
+#mixer.xf-out{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#mixer.xf-out .strip{grid-column:auto!important}
 
 /* AOG-DECKS-CRATE-V1 */
 .cratecard{margin-top:1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
@@ -2330,11 +2336,18 @@ function bayHTML(){
 /* one crossfader: in the bay from 960 px, in the mixer below that */
 const WIDE = window.matchMedia ? matchMedia("(min-width:960px)") : { matches:false };
 function placeXf(){
-  const xf = document.getElementById("xf"), home = document.querySelector("#mixer .xfade"), bay = document.querySelector("#bay .bxf");
+  const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"), bay = document.querySelector("#bay .bxf");
   if(!xf || !home) return;
   if(WIDE.matches && bay){ const xr = bay.querySelector(".xr"); if(xf.parentNode !== bay) bay.insertBefore(xf, xr); xf.setAttribute("aria-label", t("mix")); }
   else { if(xf.parentNode !== home) home.appendChild(xf); xf.removeAttribute("aria-label"); }
+  /* AOG-DJ-XF-TOP-V1: from 701 to 959 px the crossfader's box sits right above the decks, so it is on the first screen */
+  const dk = document.getElementById("decks"), mx = document.getElementById("mixer"), mid = MID.matches && !WIDE.matches;
+  if(mid && dk && home.nextElementSibling !== dk){ dk.parentNode.insertBefore(home, dk); home.classList.add("xf-top"); }
+  if(mx) mx.classList.toggle("xf-out", !!(mid && dk));
+  else if(!mid && mx && home.parentNode !== mx){ const st = document.getElementById("strips"); mx.insertBefore(home, st ? st.nextSibling : null); home.classList.remove("xf-top"); }
 }
+const MID = window.matchMedia ? matchMedia("(min-width:701px)") : { matches:false };
+if(MID.addEventListener) MID.addEventListener("change", placeXf); else if(MID.addListener) MID.addListener(placeXf);
 if(WIDE.addEventListener) WIDE.addEventListener("change", placeXf); else if(WIDE.addListener) WIDE.addListener(placeXf);
 function setVol(d, v){
   v = Math.max(0, Math.min(1, Math.round(v*100)/100));
@@ -2362,7 +2375,7 @@ function bindBay(){
 }
 document.querySelectorAll("#pairs [data-pair]").forEach(b=>b.onclick=()=>setPair(b.getAttribute("data-pair")));
 function shell(){
-  { const xf = document.getElementById("xf"), home = document.querySelector("#mixer .xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
+  { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
   document.getElementById("strips").innerHTML = decks.map(stripHTML).join("");
   placeXf(); bindBay(); paintPair();
