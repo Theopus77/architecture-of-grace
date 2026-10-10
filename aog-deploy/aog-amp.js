@@ -43,6 +43,7 @@ const WORDS={
            es:"La ganancia añade aspereza. Graves, Medios y Agudos dan forma al tono. Master es cuánto trabajan las válvulas de potencia."},
   brightHelp:{en:"Bright adds sparkle. Tight keeps low notes firm when the gain is high.",es:"Brillo añade chispa. Ajustado mantiene firmes las notas graves con mucha ganancia."},
   pedalHelp:{en:"Press On to use a pedal. Its knobs appear when it is on.",es:"Pulsa Encendido para usar un pedal. Sus perillas aparecen cuando está encendido."},
+  pedalsOn:{en:"Pedals on",es:"Pedales encendidos"}, pedalsOnLine:{en:"Their knobs, right by the neck. Turn pedals on or off in Amp and pedals below.",es:"Sus perillas, junto al mástil. Enciende o apaga pedales en Amplificador y pedales, más abajo."},
   before:{en:"Before the amp",es:"Antes del amplificador"}, after:{en:"After the amp",es:"Después del amplificador"},
   mode:{en:"Mode",es:"Modo"}, type:{en:"Type",es:"Tipo"},
   touch:{en:"Touch",es:"Toque"}, fixed:{en:"Fixed",es:"Fijo"}, sine:{en:"Smooth",es:"Suave"}, square:{en:"Choppy",es:"Cortado"},
@@ -603,6 +604,11 @@ const CSS=`
 .aogamp .aa-note{font-size:.9rem;color:#d7cbb8;margin:0}
 .aogamp :focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
 @media (min-width:760px){ .aogamp .aa-plate{grid-template-columns:repeat(7,1fr)} }
+/* AOG-AMP-NEAR-V1: the pedals that are on, by the neck */
+.aogamp.aa-near{margin:.7rem 0 .2rem;padding:.7rem .75rem .8rem;border:1px solid #3a3f46;border-radius:14px;background:#15171a}
+.aogamp.aa-near .aa-nearh{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;margin:0 0 .5rem}
+.aogamp.aa-near .aa-nearh b{color:#f1ebdf;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
+.aogamp.aa-near .aa-nearh span{color:#d7cbb8;font-size:.9rem}
 `;
 /* can this browser stand a slider up (writing-mode on a range, Safari 17.4 and later, every current browser)? */
 let VERT=null;
@@ -621,6 +627,11 @@ function ui(host, opt){
   const kind=opt.kind==="bass"?"bass":"guitar";
   const L=()=>(opt.lang&&opt.lang())==="es"?"es":"en";
   let note="";
+  /* AOG-AMP-NEAR-V1 (Jimmy, 2026-10-10: "Once a pedal is chosen for guitar and bass, it should move closer to the neck so it
+     is easier to adjust instead of scrolling down"): opt.near, when given, shows the pedals that are on, with their knobs,
+     by the neck. The pedalboard below still turns them on and off; both show the same settings. */
+  const near=opt.near||null;
+  const qa=sel=>[host, near].filter(Boolean).reduce((a,h)=>a.concat([].slice.call(h.querySelectorAll(sel))), []);
   function paint(){
     const lang=L(), st=normalize(opt.get(), kind), M=MODELS[st.model];
     const models=Object.keys(MODELS).filter(id=>MODELS[id].kind===kind||MODELS[id].kind==="both");
@@ -657,27 +668,38 @@ function ui(host, opt){
       </div>
       <div class="aa-foot"><button type="button" class="aa-btn" data-aa="back">${word("back",lang)}</button><p class="aa-note" aria-live="polite">${note?word(note,lang):word("kept",lang)}</p></div>
     </div>`;
+    if(near){
+      const on=pedals.filter(p=>st.fx[p.id].on);
+      near.hidden=!on.length;
+      near.innerHTML=on.length?`<div class="aogamp aa-near${vertOK()?"":" aa-flat"}" data-kind="${kind}" role="group" aria-label="${esc(word("pedalsOn",lang))}">
+        <div class="aa-nearh"><b>${word("pedalsOn",lang)}</b><span>${word("pedalsOnLine",lang)}</span></div>
+        <div class="aa-row">${on.map(pedal).join("")}</div></div>`:"";
+    }
     wire();
   }
   function change(fn, repaint){ const st=normalize(opt.get(), kind); fn(st); note=""; opt.set(st); if(repaint) paint(); }
   function wire(){
-    host.querySelectorAll('select[data-aa="model"]').forEach(s=>s.onchange=()=>change(st=>{ st.model=s.value; const cab=MODELS[s.value].cab; if(cab) st.cab=cab; }, true));
-    host.querySelectorAll('select[data-aa="cab"]').forEach(s=>s.onchange=()=>change(st=>{ st.cab=s.value; }, false));
-    host.querySelectorAll("input[data-k]").forEach(inp=>{
+    qa('select[data-aa="model"]').forEach(s=>s.onchange=()=>change(st=>{ st.model=s.value; const cab=MODELS[s.value].cab; if(cab) st.cab=cab; }, true));
+    qa('select[data-aa="cab"]').forEach(s=>s.onchange=()=>change(st=>{ st.cab=s.value; }, false));
+    qa("input[data-k]").forEach(inp=>{
       const show=()=>{ const kn=inp.closest(".aa-knob"); kn.querySelector(".aa-dial").style.setProperty("--r", dialDeg(inp.value)+"deg");
         kn.querySelector("output").textContent=inp.hasAttribute("data-ms")?delayMs(inp.value)+" ms":(+inp.value).toFixed(1); };
-      inp.oninput=()=>{ show(); change(st=>{ const sc=inp.dataset.scope, k=inp.dataset.k, v=+inp.value; if(sc==="amp") st.k[k]=v; else st.fx[sc.slice(4)][k]=v; }, false); };
+      inp.oninput=()=>{ show();
+        qa('input[data-scope="'+inp.dataset.scope+'"][data-k="'+inp.dataset.k+'"]').forEach(tw=>{ if(tw===inp) return; tw.value=inp.value;
+          const kn=tw.closest(".aa-knob"); kn.querySelector(".aa-dial").style.setProperty("--r", dialDeg(tw.value)+"deg");
+          kn.querySelector("output").textContent=tw.hasAttribute("data-ms")?delayMs(tw.value)+" ms":(+tw.value).toFixed(1); });
+        change(st=>{ const sc=inp.dataset.scope, k=inp.dataset.k, v=+inp.value; if(sc==="amp") st.k[k]=v; else st.fx[sc.slice(4)][k]=v; }, false); };
     });
-    host.querySelectorAll("button[data-sw]").forEach(b=>b.onclick=()=>change(st=>{ st[b.dataset.sw]=!st[b.dataset.sw]; }, true));
-    host.querySelectorAll("button[data-fs]").forEach(b=>b.onclick=()=>{ const id=b.dataset.fs; change(st=>{ st.fx[id].on=!st.fx[id].on; }, true);
-      const again=host.querySelector('button[data-fs="'+id+'"]'); if(again) again.focus(); });
-    host.querySelectorAll("button[data-mode]").forEach(b=>b.onclick=()=>change(st=>{ st.fx[b.dataset.ped].mode=b.dataset.mode; }, true));
-    host.querySelectorAll("select[data-type]").forEach(s=>s.onchange=()=>change(st=>{ st.fx[s.dataset.ped].type=s.value; }, false));
-    host.querySelectorAll("input[data-band]").forEach(inp=>inp.oninput=()=>{ const v=+inp.value; inp.nextElementSibling.textContent=(v>0?"+":"")+v; inp.setAttribute("aria-valuetext", (v>0?"+":"")+v+" dB");
+    qa("button[data-sw]").forEach(b=>b.onclick=()=>change(st=>{ st[b.dataset.sw]=!st[b.dataset.sw]; }, true));
+    qa("button[data-fs]").forEach(b=>b.onclick=()=>{ const id=b.dataset.fs, inNear=!!(near&&near.contains(b)); change(st=>{ st.fx[id].on=!st.fx[id].on; }, true);
+      const root=inNear?near:host, again=root.querySelector('button[data-fs="'+id+'"]')||host.querySelector('button[data-fs="'+id+'"]'); if(again) again.focus(); });
+    qa("button[data-mode]").forEach(b=>b.onclick=()=>change(st=>{ st.fx[b.dataset.ped].mode=b.dataset.mode; }, true));
+    qa("select[data-type]").forEach(s=>s.onchange=()=>change(st=>{ st.fx[s.dataset.ped].type=s.value; }, false));
+    qa("input[data-band]").forEach(inp=>inp.oninput=()=>{ const v=+inp.value; inp.nextElementSibling.textContent=(v>0?"+":"")+v; inp.setAttribute("aria-valuetext", (v>0?"+":"")+v+" dB");
       change(st=>{ st.eq.db[+inp.dataset.band]=v; if(!st.eq.on){ st.eq.on=true; const b=host.querySelector('button[data-eq="on"]'); if(b) b.setAttribute("aria-pressed","true"); host.querySelector(".aa-bands").dataset.off="0"; } }, false); });
-    host.querySelectorAll('button[data-eq="on"]').forEach(b=>b.onclick=()=>change(st=>{ st.eq.on=!st.eq.on; }, true));
-    host.querySelectorAll('button[data-eq="flat"]').forEach(b=>b.onclick=()=>change(st=>{ st.eq.db=st.eq.db.map(()=>0); }, true));
-    host.querySelectorAll('button[data-aa="back"]').forEach(b=>b.onclick=()=>{ if(opt.reset) opt.reset(); note="backDone"; paint(); const nb=host.querySelector('button[data-aa="back"]'); if(nb) nb.focus(); });
+    qa('button[data-eq="on"]').forEach(b=>b.onclick=()=>change(st=>{ st.eq.on=!st.eq.on; }, true));
+    qa('button[data-eq="flat"]').forEach(b=>b.onclick=()=>change(st=>{ st.eq.db=st.eq.db.map(()=>0); }, true));
+    qa('button[data-aa="back"]').forEach(b=>b.onclick=()=>{ if(opt.reset) opt.reset(); note="backDone"; paint(); const nb=host.querySelector('button[data-aa="back"]'); if(nb) nb.focus(); });
   }
   paint();
   return {paint:paint};
