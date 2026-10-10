@@ -21,7 +21,7 @@
 <meta property="og:title" content="The Cube Lab — Architecture of Grace">
 <meta property="og:description" content="Turn a 3D Rubik's Cube and learn to solve it, one step at a time.">
 <meta property="og:url" content="https://architectureofgrace.com/cube">
-<meta property="og:image" content="https://architectureofgrace.com/img/banners/bench-cube-pencil-1600.webp">
+<meta property="og:image" content="https://architectureofgrace.com/img/banners/door-cube-pencil-1600.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -111,6 +111,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .face i b { position:absolute; inset:0; background:#000; opacity:0; pointer-events:none; }
 .face i span { position:relative; font:800 calc(var(--s,64px) * .34)/1 var(--sans); color:var(--lc,#14161a); pointer-events:none; }
 .stage.painting .face i { cursor:pointer; }
+.face i.flag { box-shadow:inset 0 0 0 calc(var(--s,64px) * .07) #111, inset 0 0 0 calc(var(--s,64px) * .11) #fff; }
+.fixbox { border:2px solid var(--steel); border-radius:12px; padding:.75rem .9rem; margin:.7rem 0; background:var(--steel-soft); }
+.fixbox h3 { margin:.1rem 0 .4rem; }
+.fixbox ul { margin:.3rem 0 .5rem; padding-left:1.2rem; }
 .stage-hint { text-align:center; margin:.1rem 0 0; font-size:.92rem; color:var(--muted); }
 .view-row { display:flex; flex-wrap:wrap; justify-content:center; gap:.4rem; }
 .view-row .pill { min-height:44px; font-size:.9rem; }
@@ -237,7 +241,7 @@ const T={
   solvedIn:["You solved it in {t}, with {m} moves.","Lo resolviste en {t}, con {m} movimientos."],
   mixFirst:["Tap Mix it up to get a mixed cube. Then follow along, one move at a time.","Toca Mézclalo para tener un cubo mezclado. Luego sigue, un movimiento a la vez."],
   stagesH:["The steps","Los pasos"],
-  mineIntro:["Have a real cube? Paint its colors here and get help to finish it.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo."],
+  mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
   mine1:["Hold your cube with the yellow center on top and the green center facing you.","Sostén tu cubo con el centro amarillo arriba y el centro verde hacia ti."],
   mine2:["Pick a color. Tap the matching squares on the screen.","Elige un color. Toca los cuadros que coinciden en la pantalla."],
   mine3:["Tap Turn around. Turn your cube the same way and paint the other three sides.","Toca Dale la vuelta. Gira tu cubo igual y pinta los otros tres lados."],
@@ -246,6 +250,19 @@ const T={
   errCount:["{c}: {n} squares painted. Each color needs 9.","{c}: {n} cuadros pintados. Cada color necesita 9."],
   errPiece:["One piece has colors that can't go together. Check the squares that light up dark.","Una pieza tiene colores que no van juntos. Revisa los cuadros oscuros."],
   errTwist:["The colors are all there, but this cube can't be solved as painted. A corner may be twisted or two squares swapped. Check again, square by square.","Están todos los colores, pero este cubo no se puede resolver así. Puede haber una esquina girada o dos cuadros cambiados. Revisa otra vez, cuadro por cuadro."],
+  errStickers:["Some stickers were moved. The squares marked on the screen show colors that no real piece has together. First check that you painted them right. If you did, someone peeled stickers off and put them back in the wrong places. Move them so each piece has colors that belong together, then paint again.","Alguien movió algunas pegatinas. Los cuadros marcados en la pantalla tienen colores que ninguna pieza real tiene juntos. Primero revisa que los pintaste bien. Si es así, alguien despegó pegatinas y las puso en otro lugar. Muévelas para que cada pieza tenga colores que van juntos y vuelve a pintar."],
+  fixH:["Your cube was put back together wrong","Tu cubo se armó mal"],
+  fixWhy:["No turning can solve it, and that's not your fault. It happens when a cube comes apart and is put back, or when a corner gets twisted by a bump. Fix it with your hands first. It takes a minute.","Ningún giro lo puede resolver, y no es tu culpa. Pasa cuando un cubo se desarma y se vuelve a armar, o cuando un golpe tuerce una esquina. Arréglalo primero con las manos. Toma un minuto."],
+  fixN:["Fix {i} of {n}","Arreglo {i} de {n}"],
+  fix_twist:["Twist one corner: the top-front-right corner, marked on the screen.","Gira una esquina: la de arriba, al frente, a la derecha, marcada en la pantalla."],
+  fix_flip:["Flip one edge: the top-front edge, marked on the screen.","Voltea una arista: la de arriba al frente, marcada en la pantalla."],
+  fix_swap:["Swap two edges: the top-front edge and the top-right edge, marked on the screen.","Cambia dos aristas: la de arriba al frente y la de arriba a la derecha, marcadas en la pantalla."],
+  how_twist:["Many cubes let you twist a corner with your fingers: grip it and turn it. If yours won't, turn the top layer halfway (about 45°), pop out an edge next to it with your thumb, and the corner comes out. Put it back turned so it shows:","Muchos cubos dejan girar una esquina con los dedos: tómala y gírala. Si el tuyo no, gira la capa de arriba hasta la mitad (unos 45°), saca con el pulgar una arista de al lado y la esquina saldrá. Vuelve a ponerla girada para que muestre:"],
+  how_flip:["Turn the top layer halfway (about 45°). Pop that edge out with your thumb. Put it back the other way round, so it shows:","Gira la capa de arriba hasta la mitad (unos 45°). Saca esa arista con el pulgar. Vuelve a ponerla al revés, para que muestre:"],
+  how_swap:["Turn the top layer halfway (about 45°). Pop both edges out with your thumb. Put each one back in the other's place, so they show:","Gira la capa de arriba hasta la mitad (unos 45°). Saca las dos aristas con el pulgar. Pon cada una en el lugar de la otra, para que muestren:"],
+  shows:["{spot}: {list}","{spot}: {list}"],
+  spot_ufr:["Top-front-right corner","Esquina de arriba, al frente, a la derecha"], spot_uf:["Top-front edge","Arista de arriba al frente"], spot_ur:["Top-right edge","Arista de arriba a la derecha"],
+  fixDone:["I did it","Ya lo hice"], fixPeek:["Show the fixed colors","Mostrar los colores arreglados"], fixPeekOff:["Show my cube as it is","Mostrar mi cubo como está"],
   allGood:["Your cube is ready. Let's solve it together.","Tu cubo está listo. Vamos a resolverlo juntos."],
   did:["Did {m}","Hecho: {m}"],
   sideName:{U:["top","arriba"],D:["bottom","abajo"],F:["front","frente"],B:["back","atrás"],R:["right","derecha"],L:["left","izquierda"]}
@@ -420,7 +437,10 @@ function render(anim){
       F.sh.style.opacity=painting ? "0" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
       if(anim) continue;
       const wf=C.faceOf(n.map(Math.round));
-      const col=painting ? (p.kind===1 ? p.cols[f] : (S.paint[cube.pos(p).join(",")+"|"+wf]||"?")) : p.cols[f];
+      const pk=cube.pos(p).join(","), src=(painting && peek && doctor) ? doctor.fixed : S.paint;
+      const col=painting ? (p.kind===1 ? p.cols[f] : (src[pk+"|"+wf]||"?")) : p.cols[f];
+      const flag=painting && p.kind>1 && flags.some(q => q.join(",")===pk);
+      if(F.flag!==flag){ F.st.classList.toggle("flag", flag); F.flag=flag; }
       if(F.col!==col){ F.st.style.setProperty("--c", COL[col]); F.st.style.setProperty("--lc", INK[col]); F.col=col; }
       if(F.lab){ const txt=(S.letters && !painting) ? wf : ""; if(F.lab.textContent!==txt) F.lab.textContent=txt; }
     }
@@ -550,9 +570,22 @@ function mineHtml(){
     <div class="palette" role="group" aria-label="${esc(t("hintPaint"))}">`+"WYGBOR".split("").map(c=>`<button type="button" data-brush="${c}" class="${S.brush===c?"on":""}" aria-pressed="${S.brush===c}"><span class="sw" style="background:${COL[c]}"></span>${esc(cn(c))}<span class="n">${(count[c]||0)+1}/9</span></button>`).join("")+`</div>
     <div class="btn-row"><button type="button" class="btn btn-steel" data-act="checkMine">${esc(t("check"))}</button><button type="button" class="btn" data-act="clearMine">${esc(t("clear"))}</button><button type="button" class="btn" data-act="copyMine">${esc(t("fromScreen"))}</button></div>`;
   if(mineMsg) h+=`<p class="state ${mineMsg.ok?"ok":"warn"}">${esc(mineMsg.text)}</p>`;
+  if(doctor) h+=fixHtml();
   return h;
 }
-let mineMsg=null;
+let mineMsg=null, doctor=null, flags=[], peek=false;
+/* the cube doctor's card: one hand fix at a time, with what each face of the piece should show */
+const SPOT={"1,1,1":"spot_ufr","0,1,1":"spot_uf","1,1,0":"spot_ur"};
+function fixHtml(){
+  const f=doctor.fixes[doctor.i], by={};
+  f.edits.forEach(e => { const k=e.pos.join(","); (by[k]=by[k]||[]).push(e); });
+  const list=Object.keys(by).map(k => `<li>${esc(t("shows",{spot:t(SPOT[k]), list:by[k].map(e => tx(T.sideName[e.f])+" "+cn(e.to)).join(", ")}))}</li>`).join("");
+  return `<div class="fixbox"><h3>${esc(t("fixH"))}</h3>${doctor.i===0?`<p>${esc(t("fixWhy"))}</p>`:""}
+    <p class="kicker">${esc(t("fixN",{i:doctor.i+1, n:doctor.fixes.length}))}</p><p class="say"><strong>${esc(t("fix_"+f.kind))}</strong></p>
+    <p>${esc(t("how_"+f.kind))}</p><ul>${list}</ul>
+    <div class="btn-row"><button type="button" class="btn btn-good" data-act="fixDone">${esc(t("fixDone"))}</button>
+    <button type="button" class="btn" data-act="fixPeek" aria-pressed="${peek}">${esc(t(peek?"fixPeekOff":"fixPeek"))}</button></div></div>`;
+}
 function clock(ms){ const s=Math.round(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
 
 function panel(){
@@ -582,17 +615,29 @@ function act(a){
   else if(a==="gpart"){ const n=guideNow(); if(n && !busy && !queue.length){ const rest=n.g.flat.slice(n.g.i, n.g.i+n.left).map(x=>x.tok); runner={left:rest.length}; enqueue(rest,"guide"); panel(); } }
   else if(a==="stop"){ stopQueue(); panel(); }
   else if(a==="undo"){ if(!busy && !queue.length && S.hist.length) enqueue([C.invert(S.hist[S.hist.length-1])],"undo"); }
-  else if(a==="clearMine"){ S.paint={}; mineMsg=null; save(); render(); panel(); }
-  else if(a==="copyMine"){ S.paint={}; const held=heldWhiteDown(cube); C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos,dir]) => { if(Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])>1) S.paint[pos.join(",")+"|"+f]=held.colorAt(pos,dir); })); mineMsg=null; save(); render(); panel(); }
+  else if(a==="clearMine"){ S.paint={}; mineMsg=null; doctor=null; flags=[]; save(); render(); panel(); }
+  else if(a==="copyMine"){ doctor=null; flags=[]; S.paint={}; const held=heldWhiteDown(cube); C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos,dir]) => { if(Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])>1) S.paint[pos.join(",")+"|"+f]=held.colorAt(pos,dir); })); mineMsg=null; save(); render(); panel(); }
   else if(a==="checkMine"){ checkMine(); }
+  else if(a==="fixPeek"){ peek=!peek; render(); panel(); }
+  else if(a==="fixDone" && doctor){
+    doctor.fixes[doctor.i].edits.forEach(e => { S.paint[e.pos.join(",")+"|"+e.f]=e.to; });
+    save(); peek=false;
+    if(++doctor.i<doctor.fixes.length){ flags=doctor.fixes[doctor.i].spots; render(); panel(); }
+    else { doctor=null; flags=[]; checkMine(); }
+  }
 }
 /* the screen cube, turned so its centres sit like a fresh one (yellow up, green in front) */
 function heldWhiteDown(c){ for(const a of ["","x","x'","x2","z","z'"]) for(const b of ["","y","y2","y'"]){ const t=c.clone().run(a+" "+b); if(t.center("U")==="Y" && t.center("F")==="G") return t; } return c.clone(); }
 function checkMine(){
   const cols={}; C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos]) => { const k=pos.join(",")+"|"+f; const isC=Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])===1; cols[k]= isC ? C.HOME_COLOR[f] : (S.paint[k]||"?"); }));
+  doctor=null; flags=[]; peek=false;
+  const d=C.diagnose(cols);
+  if(d.error==="count"){ mineMsg={ok:false, text:t("errCount",{c:cn(d.col).replace(/^./,x=>x.toUpperCase()), n:d.n})}; render(); panel(); return; }
+  if(d.error==="stickers"){ mineMsg={ok:false, text:t("errStickers")}; flags=d.spots; ax=-26; ay=-38; render(); panel(); return; }
+  if(d.fixes.length){ mineMsg=null; doctor={fixes:d.fixes, fixed:d.fixed, i:0}; flags=d.fixes[0].spots; ax=-26; ay=-38; render(); panel();
+    const box=document.querySelector("#panel .fixbox"); if(box && box.scrollIntoView) box.scrollIntoView({block:"nearest"}); return; }
   const r=C.fromFacelets(cols);
-  if(r.error==="count") mineMsg={ok:false, text:t("errCount",{c:cn(r.col).replace(/^./,x=>x.toUpperCase()), n:r.n})};
-  else if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
+  if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
   else if(r.error) mineMsg={ok:false, text:t("errPiece")};
   else { mineMsg={ok:true, text:t("allGood")}; cube=r.cube; cubeBeforePaint=null; painting=false; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; guide=null; save(); location.hash="solve"; return; }
   panel();
@@ -751,7 +796,7 @@ stage.addEventListener("pointercancel", e => { if(drag && drag.mode==="turn"){ d
 function paintAt(fc){
   const p=cube.P[fc.i]; if(p.kind===1) return;
   const wf=C.faceOf(C.mulV(p.M, C.FACES[fc.f])), k=cube.pos(p).join(",")+"|"+wf;
-  S.paint[k]=S.brush; mineMsg=null; save(); render(); panel();
+  S.paint[k]=S.brush; mineMsg=null; doctor=null; flags=[]; peek=false; save(); render(); panel();
 }
 
 /* keys on a computer: the letter turns that side, Shift turns it back; Ctrl+Z undoes */
@@ -772,7 +817,7 @@ $("themeBtn").onclick=()=>{
   try{ localStorage.setItem("aog.interior.ws.v1.theme",next); }catch(e){}
   paintAll();
 };
-window.addEventListener("hashchange", () => { mineMsg=null; paintAll(); });
+window.addEventListener("hashchange", () => { mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); });
 window.addEventListener("resize", fit);
 if(window.ResizeObserver) new ResizeObserver(fit).observe(stage);
 if(!location.hash && S.view && S.view!=="learn") history.replaceState(null,"","#"+S.view);

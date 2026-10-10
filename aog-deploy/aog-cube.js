@@ -380,8 +380,77 @@ function fromFacelets(colors){
   return {cube:out};
 }
 
+/* ── the cube doctor: an "altered" cube ──
+   A cube that was taken apart and put back wrong, or had a corner twisted by a bump, or had stickers peeled and
+   moved, can't be solved by any moves. Three things tell: the corners' twist must add up to a whole turn, the
+   edges' flips must pair up, and the corners and edges must be swapped an even-matching number of times.
+   diagnose(colours) says which is broken and gives a fix done by hand, at a spot that is easy to reach. */
+const OPP = {W:"Y", Y:"W", G:"B", B:"G", O:"R", R:"O"};
+const key = (pos,f) => pos.join(",")+"|"+f;
+const facesAt = pos => FACE_NAMES.filter(f => dot(pos, FACES[f])===1);
+const det3 = (a,b,c) => a[0]*(b[1]*c[2]-b[2]*c[1]) - a[1]*(b[0]*c[2]-b[2]*c[0]) + a[2]*(b[0]*c[1]-b[1]*c[0]);
+/* a corner's three faces, the top or bottom one first, then turning the same way round every corner */
+function cornerOrder(pos){
+  const fs=facesAt(pos), ud=fs.find(f => f==="U"||f==="D"), rest=fs.filter(f => f!==ud);
+  return det3(FACES[ud], FACES[rest[0]], FACES[rest[1]])>0 ? [ud,rest[0],rest[1]] : [ud,rest[1],rest[0]];
+}
+function spotsOf(n){ const out=[]; for(let x=-1;x<=1;x++) for(let y=-1;y<=1;y++) for(let z=-1;z<=1;z++){ if(Math.abs(x)+Math.abs(y)+Math.abs(z)===n) out.push([x,y,z]); } return out; }
+const CORNERS=spotsOf(3), EDGES=spotsOf(2);
+const homeOf = cols => { const v=[0,0,0]; cols.forEach(c => { const f=FACE_NAMES.find(g => HOME_COLOR[g]===c); v[0]+=FACES[f][0]; v[1]+=FACES[f][1]; v[2]+=FACES[f][2]; }); return v; };
+function parity(perm){ const seen=new Array(perm.length).fill(false); let p=0;
+  for(let i=0;i<perm.length;i++){ if(seen[i]) continue; let j=i, len=0; while(!seen[j]){ seen[j]=true; j=perm[j]; len++; } p+=len-1; } return p%2; }
+/* read the pieces off the stickers: bad spots, or the three numbers that must all be zero */
+function readPieces(cols){
+  const bad=[], used={}, cPerm=[], ePerm=[]; let twist=0, flip=0;
+  CORNERS.forEach((pos,i) => {
+    const ord=cornerOrder(pos), seen=ord.map(f => cols[key(pos,f)]);
+    const set=new Set(seen);
+    if(set.size<3 || seen.some(c => !OPP[c]) || seen.some(c => set.has(OPP[c]))){ bad.push(pos); return; }
+    const home=homeOf(seen), hk=home.join();
+    if(used[hk]){ bad.push(pos, used[hk]); return; } used[hk]=pos;
+    /* the same piece, read at home, must go round in the same order (else two of its stickers were swapped) */
+    const hord=cornerOrder(home).map(f => HOME_COLOR[f]), k=seen.findIndex(c => c==="W"||c==="Y");
+    const rot=[0,1,2].map(j => seen[(k+j)%3]);
+    if(rot.join()!==hord.join()){ bad.push(pos); return; }
+    twist+=k; cPerm[i]=CORNERS.findIndex(q => eqV(q,home));
+  });
+  EDGES.forEach((pos,i) => {
+    const fs=facesAt(pos), seen=fs.map(f => cols[key(pos,f)]);
+    if(seen[0]===seen[1] || !OPP[seen[0]] || !OPP[seen[1]] || OPP[seen[0]]===seen[1]){ bad.push(pos); return; }
+    const home=homeOf(seen), hk=home.join();
+    if(used[hk]){ bad.push(pos, used[hk]); return; } used[hk]=pos;
+    const refFace=fs.find(f => f==="U"||f==="D") || fs.find(f => f==="F"||f==="B");
+    const refCol=seen.find(c => c==="W"||c==="Y") || seen.find(c => c==="G"||c==="B");
+    flip += cols[key(pos,refFace)]===refCol ? 0 : 1;
+    ePerm[i]=EDGES.findIndex(q => eqV(q,home));
+  });
+  if(bad.length) return {bad};
+  return {twist:twist%3, flip:flip%2, swap:(parity(cPerm)+parity(ePerm))%2};
+}
+/* the fixes, each a change of stickers at named spots: what each face shows now, and what it should show */
+const UFR=[1,1,1], UF=[0,1,1], UR=[1,1,0];
+function change(cols, edits){ const out=Object.assign({}, cols); edits.forEach(e => { out[key(e.pos,e.f)]=e.to; }); return out; }
+function twistFix(cols, pos, k){ const ord=cornerOrder(pos); return ord.map((f,i) => ({pos, f, from:cols[key(pos,f)], to:cols[key(pos, ord[(i+k)%3])]})); }
+function flipFix(cols, pos){ const fs=facesAt(pos); return fs.map((f,i) => ({pos, f, from:cols[key(pos,f)], to:cols[key(pos,fs[1-i])]})); }
+function swapFix(cols, a, b){ const fa=facesAt(a), fb=facesAt(b);
+  /* the top stickers trade places, and so do the side stickers */
+  const ua=fa.find(f => f==="U"), sa=fa.find(f => f!=="U"), ub=fb.find(f => f==="U"), sb=fb.find(f => f!=="U");
+  return [{pos:a,f:ua,from:cols[key(a,ua)],to:cols[key(b,ub)]},{pos:a,f:sa,from:cols[key(a,sa)],to:cols[key(b,sb)]},
+          {pos:b,f:ub,from:cols[key(b,ub)],to:cols[key(a,ua)]},{pos:b,f:sb,from:cols[key(b,sb)],to:cols[key(a,sa)]}]; }
+function diagnose(colors){
+  const count={}; Object.values(colors).forEach(v => { count[v]=(count[v]||0)+1; });
+  for(const col of "WYGBOR"){ if((count[col]||0)!==9) return {error:"count", col, n:count[col]||0}; }
+  let cols=Object.assign({}, colors), r=readPieces(cols);
+  if(r.bad) return {error:"stickers", spots:r.bad};
+  const fixes=[];
+  if(r.swap){ const e=swapFix(cols, UF, UR); fixes.push({kind:"swap", spots:[UF,UR], edits:e}); cols=change(cols,e); r=readPieces(cols); }
+  if(r.twist){ const e=twistFix(cols, UFR, r.twist); fixes.push({kind:"twist", spots:[UFR], edits:e}); cols=change(cols,e); r=readPieces(cols); }
+  if(r.flip){ const e=flipFix(cols, UF); fixes.push({kind:"flip", spots:[UF], edits:e}); cols=change(cols,e); r=readPieces(cols); }
+  return {fixes, fixed:cols, ok:!fixes.length};
+}
+
 const api = {FACES, HOME_COLOR, FACE_NAMES, Cube, parse, invert, invertSeq, simplify, split, rot, rotQ, mulV, mulM, ID,
-             MOVES, ALG, GOALS, STAGES, stageOf, plan, scramble, facelets, fromFacelets, faceOf, eqV, dot};
+             MOVES, ALG, GOALS, STAGES, stageOf, plan, scramble, facelets, fromFacelets, diagnose, faceOf, eqV, dot};
 if(typeof module!=="undefined" && module.exports) module.exports=api;
 else root.AOGCube=api;
 
@@ -412,6 +481,33 @@ if(typeof module!=="undefined" && require.main===module && process.argv[2]==="te
       if(c.center("U")==="Y" && c.center("F")==="G"){ const back=fromFacelets(cols); check(back.cube && back.cube.faceletKey()===c.faceletKey(), "paint round trip"); }
     }
   }
+  /* the cube doctor: alter a good cube by hand (twist a corner, flip an edge, swap two pieces, any mix),
+     and its fixes must make it solvable again; a good cube needs no fix */
+  const colsOf = c => { const o={}; FACE_NAMES.forEach(f => facelets(f).forEach(([pos,dir]) => { o[pos.join(",")+"|"+f]=c.colorAt(pos,dir); })); return o; };
+  const allC=[], allE=[]; for(let x=-1;x<=1;x++) for(let y=-1;y<=1;y++) for(let z=-1;z<=1;z++){ const n=Math.abs(x)+Math.abs(y)+Math.abs(z); if(n===3) allC.push([x,y,z]); if(n===2) allE.push([x,y,z]); }
+  const fz = pos => FACE_NAMES.filter(f => dot(pos,FACES[f])===1);
+  const kinds={};
+  for(let i=0;i<1500;i++){
+    const cols=colsOf(new Cube().run(scramble(25,rnd)));
+    check(diagnose(cols).ok, "a good cube needs no fix");
+    const alter=[]; const k=1+Math.floor(rnd()*3);
+    for(let a=0;a<k;a++){
+      const what=Math.floor(rnd()*4);
+      if(what===0){ const p=allC[Math.floor(rnd()*8)], fs=fz(p), v=fs.map(f => cols[p.join(",")+"|"+f]); const s=1+Math.floor(rnd()*2); fs.forEach((f,j) => { cols[p.join(",")+"|"+f]=v[(j+s)%3]; }); alter.push("twist"); }
+      if(what===1){ const p=allE[Math.floor(rnd()*12)], fs=fz(p), v=fs.map(f => cols[p.join(",")+"|"+f]); cols[p.join(",")+"|"+fs[0]]=v[1]; cols[p.join(",")+"|"+fs[1]]=v[0]; alter.push("flip"); }
+      if(what===2){ let a1=Math.floor(rnd()*12), b1=Math.floor(rnd()*11); if(b1>=a1) b1++; const A=allE[a1], B=allE[b1], fa=fz(A), fb=fz(B); const va=fa.map(f => cols[A.join(",")+"|"+f]), vb=fb.map(f => cols[B.join(",")+"|"+f]); fa.forEach((f,j) => { cols[A.join(",")+"|"+f]=vb[j]; }); fb.forEach((f,j) => { cols[B.join(",")+"|"+f]=va[j]; }); alter.push("swapE"); }
+      if(what===3){ let a1=Math.floor(rnd()*8), b1=Math.floor(rnd()*7); if(b1>=a1) b1++; const A=allC[a1], B=allC[b1], fa=fz(A), fb=fz(B); const va=fa.map(f => cols[A.join(",")+"|"+f]), vb=fb.map(f => cols[B.join(",")+"|"+f]); fa.forEach((f,j) => { cols[A.join(",")+"|"+f]=vb[j]; }); fb.forEach((f,j) => { cols[B.join(",")+"|"+f]=va[j]; }); alter.push("swapC"); }
+    }
+    const d=diagnose(cols);
+    if(d.error==="stickers"){ kinds.mirror=(kinds.mirror||0)+1; continue; }   /* swapping corners by stickers can mirror one: told as moved stickers */
+    check(!d.error, "doctor error "+d.error+" after "+alter);
+    const back=fromFacelets(d.fixed);
+    check(back.cube, "fixed cube is solvable after "+alter.join("+")+" ("+d.fixes.map(f=>f.kind).join("+")+")");
+    d.fixes.forEach(f => { kinds[f.kind]=(kinds[f.kind]||0)+1; });
+  }
+  /* a piece with colours no real piece has, or two of the same piece, is told as moved stickers */
+  { const cols=colsOf(new Cube()); cols["1,1,1|U"]="W"; cols["-1,-1,1|D"]="Y"; const d=diagnose(cols); check(d.error==="stickers" && d.spots.length>=2, "moved stickers caught"); }
+  console.log("doctor:", JSON.stringify(kinds));
   /* a twisted corner can't be solved, and the reader says so */
   const bad=new Cube(); const p=bad.P.find(q => q.kind===3 && eqV(q.home,[1,1,1]));
   const cols={}; FACE_NAMES.forEach(f => facelets(f).forEach(([pos,dir]) => { cols[pos.join(",")+"|"+f]=bad.colorAt(pos,dir); }));
