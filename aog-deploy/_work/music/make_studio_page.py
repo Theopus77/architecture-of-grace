@@ -322,7 +322,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     ab.hidden = !showAdd; if (ab.textContent !== tw("add")) ab.textContent = tw("add");
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
-    D.getElementById("tpMix").textContent = tw("mix"); D.getElementById("tpOut").textContent = tw("out");
+    /* AOG-STUDIO-SMOOTH-V1: this runs four times a second, so it writes only what changed (a write makes the page lay out again) */
+    [["tpMix", "mix"], ["tpOut", "out"]].forEach(function (p) { var b = D.getElementById(p[0]), t = tw(p[1]); if (b.textContent !== t) b.textContent = t; });
     /* AOG-STUDIO-LISTEN-V1: at the desk, Mix › has nowhere to go; the way back to your room takes its place */
     var bk = D.getElementById("tpBack"), br = cur === "studio" && TP.back ? room(TP.back) : null;
     D.getElementById("tpMix").hidden = cur === "studio"; bk.hidden = !br;
@@ -494,7 +495,14 @@ def build():
     rooms = [{"id": r[0], "href": r[1], "file": r[2], "name": list(r[4]), "short": list(r[5]), "from": r[6], "shelf": r[7]} for r in ROOMS]
     layers = [{"id": l[0], "name": list(l[1])} for l in LAYERS]
     js = JS.replace("__ROOMS__", json.dumps(rooms, ensure_ascii=False)).replace("__LAYERS__", json.dumps(layers, ensure_ascii=False))
-    page = head + "</head>\n<body>\n<script src=\"/aog-grace.js\" defer></script>\n" + "\n".join(out) + "\n" + js + "\n<script src=\"/aog-topbar.js\"></script>\n</body>\n</html>\n"
+    # AOG-STUDIO-SW-V1 (2026-10-10, Jimmy: the Studio was "lagging … a horrific experience"): the Studio is its own Home
+    # Screen app, so it starts the site's helper (sw.js) itself, as the front page does. Without it, a Studio opened only
+    # from its icon fetched every shared script from the network on every room.
+    SW_REG = ('<script>\n/* AOG-STUDIO-SW-V1: the site helper (sw.js) keeps the shared scripts on this device, so each room opens quickly */\n'
+              'if ("serviceWorker" in navigator) window.addEventListener("load", function () {\n'
+              '  navigator.serviceWorker.register("/sw.js").catch(function () {});\n'
+              '});\n</script>\n')
+    page = head + "</head>\n<body>\n<script src=\"/aog-grace.js\" defer></script>\n" + "\n".join(out) + "\n" + js + "\n<script src=\"/aog-topbar.js\"></script>\n" + SW_REG + "</body>\n</html>\n"
     open(os.path.join(ROOT, "the-studio.html"), "w", encoding="utf-8").write(page)
     print("the-studio.html written")
 if __name__ == "__main__":

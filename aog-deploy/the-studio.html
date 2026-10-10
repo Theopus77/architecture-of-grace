@@ -479,7 +479,8 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
     ab.hidden = !showAdd; if (ab.textContent !== tw("add")) ab.textContent = tw("add");
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
-    D.getElementById("tpMix").textContent = tw("mix"); D.getElementById("tpOut").textContent = tw("out");
+    /* AOG-STUDIO-SMOOTH-V1: this runs four times a second, so it writes only what changed (a write makes the page lay out again) */
+    [["tpMix", "mix"], ["tpOut", "out"]].forEach(function (p) { var b = D.getElementById(p[0]), t = tw(p[1]); if (b.textContent !== t) b.textContent = t; });
     /* AOG-STUDIO-LISTEN-V1: at the desk, Mix › has nowhere to go; the way back to your room takes its place */
     var bk = D.getElementById("tpBack"), br = cur === "studio" && TP.back ? room(TP.back) : null;
     D.getElementById("tpMix").hidden = cur === "studio"; bk.hidden = !br;
@@ -612,5 +613,11 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 })();
 </script>
 <script src="/aog-topbar.js"></script>
+<script>
+/* AOG-STUDIO-SW-V1: the site helper (sw.js) keeps the shared scripts on this device, so each room opens quickly */
+if ("serviceWorker" in navigator) window.addEventListener("load", function () {
+  navigator.serviceWorker.register("/sw.js").catch(function () {});
+});
+</script>
 </body>
 </html>

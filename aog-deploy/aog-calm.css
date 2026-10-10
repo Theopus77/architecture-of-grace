@@ -26,10 +26,14 @@ select, textarea { font-size: max(16px, 1em) !important; }
    never pushes its box past the edge; it shrinks to fit (the turntables did). */
 canvas, img, video, svg:not([width]) { max-width: 100%; }
 
+/* AOG-CALM-FAST-V1 (2026-10-10) — Jimmy: the Studio was "lagging … a horrific experience". A transition of .01ms is
+   still a transition: every element on the page watched its properties for a change, and every change on a phone
+   cost about twice the work. "transition: none" turns them off, so nothing is watched and the page looks exactly
+   the same: still. (The one script that waits for a transition to end, the Mixing Desk's, has its own timer.) */
 @media (hover: none) {
   *:not(.aog-fade), *::before, *::after {
     animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important; transition-delay: 0s !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
   html { scroll-behavior: auto !important; }
@@ -37,7 +41,7 @@ canvas, img, video, svg:not([width]) { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important; transition-delay: 0s !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
   html { scroll-behavior: auto !important; }
