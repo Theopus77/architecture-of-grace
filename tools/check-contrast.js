@@ -16,7 +16,7 @@ const MIN = 3;
 const args = process.argv.slice(2);
 /* The home file holds many rooms behind #addresses; each is checked on its own too
    (Jimmy, 2026-09-26: cream words on cream boxes in rooms the check never opened). */
-const ROOMS = ["family/hard-day","family/what-can-i-say","family/conversation","student","checkin","framework","workplace","guide","family","eco-parents","eco-educators","ecosystem","starthere","about","library","adult","dashboard"];
+const ROOMS = ["family/hard-day","family/what-can-i-say","family/conversation","student","checkin","framework","workplace","guide","family","eco-parents","eco-educators","ecosystem","starthere","about","library","adult","dashboard","tools"];
 /* The music tools also show other places behind #addresses (their Go to menu): Lessons, Meet, Name it, Print.
    Each is checked on its own too (AOG-PIANO-LESSONS-V1, 2026-10-03). */
 const VIEWS = ["music-drums.html#lessons","music-drums.html#meet","music-drums.html#words","music-drums.html#print",
