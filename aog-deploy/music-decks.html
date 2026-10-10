@@ -1370,6 +1370,10 @@ function paintBench(){
    · the last eight records you played, one tap to put any back on a deck;
    · UP NEXT — songs you line up before the set, played in order. ══════════ */
 const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], max:8 };
+/* AOG-DJ-AUDIO-ONLY-V1 (Jimmy, 2026-10-10: "The photo and video is suppose to be gone … I am uploading music"): on an
+   iPhone or iPad, .m4a, .m4b, .aac and .amr count as MPEG-4 video, so Safari offered Photo Library and Take Video.
+   There the song boxes ask for audio only; audio/* still takes .m4a, .mp3, .wav and the rest from Files. */
+const AUDIO_ONLY = (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) ? "audio/*" : "";
 function crateDb(){
   return new Promise((ok, no)=>{
     if(!window.indexedDB){ no(new Error("no indexedDB")); return; }
@@ -1727,7 +1731,7 @@ function paintCrate(){
         on:id=>`data-crate="next" data-i="${i}" data-deck="${id}"`, x:`<button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>` }))) : `<div class="cbox empty">${t("crateNextNone")}</div>`}
     ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
     <div class="take" style="background:none;border:0;padding:0">
-      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac"></label>
+      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac"}"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
     ${starterHtml()}
@@ -2530,7 +2534,7 @@ function paintStrips(){
 function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
-    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"></label>
+    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"}"></label>
     ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>
     <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }
