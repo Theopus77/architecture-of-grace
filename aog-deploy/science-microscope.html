@@ -1920,89 +1920,139 @@ function bakeGrain(){
   ctx.putImageData(img,0,0); return c;
 }
 function bakeLetterE(){
-  const W=1600,H=1140,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xe1e1);
-  ctx.fillStyle="#d4c7a4"; ctx.fillRect(0,0,W,H);
-  for(let i=0;i<14000;i++){
-    ctx.fillStyle=`rgba(${190+rng()*40|0},${170+rng()*30|0},${120+rng()*30|0},${.03+rng()*.07})`;
-    ctx.fillRect(rng()*W,rng()*H,1+rng()*5,.5+rng()*1.6);
+  /* AOG-SCOPE-SLIDE-V3 (2026-10-10) — Jimmy's realism pass on the letter e and the onion peel:
+     multi-scale paper grain, branching cellulose, ink feathering and show-through; onion with
+     clear vacuoles, peripheral nuclei with envelope and nucleoli, middle lamella. The ink map
+     (SLIDE.eMask) is kept, and eInkAt reads the slide's own size, so 40x/100x line up with 4x/10x. */
+  const W=1800,H=1280,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xe1e1);
+  // Base paper with multi-scale grain
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,"#e8dcc0"); bg.addColorStop(1,"#d4c6a2");
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  // Fine paper grain
+  for(let i=0;i<22000;i++){
+    const a = 0.02 + rng()*0.08;
+    ctx.fillStyle=`rgba(${175+rng()*50|0},${155+rng()*40|0},${110+rng()*40|0},${a})`;
+    ctx.fillRect(rng()*W, rng()*H, 1+rng()*4, 0.4+rng()*1.2);
   }
-  ctx.strokeStyle="rgba(150,138,112,.28)"; ctx.lineWidth=1;
-  for(let y=28;y<H-20;y+=16){ ctx.beginPath(); ctx.moveTo(20,y+rng()*2.4); ctx.lineTo(W-20,y+rng()*2.4); ctx.stroke(); }
-  /* felted cellulose — the 40× money shot is fibers, not type */
-  for(let i=0;i<520;i++){
-    const x=rng()*W, y=rng()*H, len=40+rng()*180, a=(rng()-.5)*Math.PI, w=.6+rng()*1.8;
-    ctx.strokeStyle=`rgba(${200+rng()*40|0},${180+rng()*30|0},${140+rng()*30|0},${.18+rng()*.35})`;
-    ctx.lineWidth=w; ctx.beginPath();
+  // Cellulose fibers - branching, varying thickness
+  ctx.lineCap="round"; ctx.lineJoin="round";
+  for(let i=0;i<780;i++){
+    const x=rng()*W, y=rng()*H;
+    const len=30+rng()*220;
+    const a=(rng()-0.5)*Math.PI;
+    const w=0.4+rng()*2.4;
+    const alpha=0.12+rng()*0.42;
+    ctx.strokeStyle=`rgba(${195+rng()*45|0},${175+rng()*35|0},${135+rng()*35|0},${alpha})`;
+    ctx.lineWidth=w;
+    ctx.beginPath();
     ctx.moveTo(x,y);
-    ctx.quadraticCurveTo(x+Math.cos(a)*len*.5+rng()*18, y+Math.sin(a)*len*.5+(rng()-.5)*22, x+Math.cos(a)*len, y+Math.sin(a)*len);
+    const midX=x+Math.cos(a)*len*0.5+(rng()-0.5)*24;
+    const midY=y+Math.sin(a)*len*0.5+(rng()-0.5)*24;
+    ctx.quadraticCurveTo(midX, midY, x+Math.cos(a)*len, y+Math.sin(a)*len);
+    ctx.stroke();
+    // occasional branch
+    if(rng()<0.18){
+      const ba=a+(rng()-0.5)*1.4;
+      const bl=len*0.35;
+      ctx.lineWidth=w*0.6;
+      ctx.beginPath();
+      ctx.moveTo(midX, midY);
+      ctx.lineTo(midX+Math.cos(ba)*bl, midY+Math.sin(ba)*bl);
+      ctx.stroke();
+    }
+  }
+  // Horizontal laid lines (paper making)
+  ctx.strokeStyle="rgba(140,125,95,0.22)";
+  ctx.lineWidth=0.8;
+  for(let y=20;y<H-20;y+=14+rng()*4){
+    ctx.beginPath();
+    ctx.moveTo(10, y+rng()*1.5);
+    ctx.bezierCurveTo(W*0.3, y+rng()*3, W*0.7, y-rng()*3, W-10, y+rng()*1.5);
     ctx.stroke();
   }
-  ctx.fillStyle="rgba(28,28,30,.16)";
-  ctx.font="500 20px Georgia,'Times New Roman',serif";
-  const bits=["the","and","of","a","to","in","was","for","on","with","as","that","from","his","her"];
-  for(let i=0;i<36;i++){
+  // Faint background type
+  ctx.fillStyle="rgba(30,28,24,0.11)";
+  ctx.font="480 18px Georgia,serif";
+  const bits=["the","and","of","a","to","in","was","for","on","with","as","that","from","his","her","which","by"];
+  for(let i=0;i<48;i++){
     ctx.save();
-    ctx.translate(50+rng()*(W-100), 40+rng()*(H-80));
-    ctx.rotate((rng()-.5)*.03);
+    ctx.translate(40+rng()*(W-80), 30+rng()*(H-60));
+    ctx.rotate((rng()-0.5)*0.04);
     ctx.fillText(bits[i%bits.length],0,0);
     ctx.restore();
   }
+  // Main letter with realistic ink
   const letter=mkCan(W,H), ltx=letter.getContext("2d");
-  ltx.translate(W*.52, H*.52);
-  ltx.font="700 460px Georgia,'Times New Roman','Liberation Serif',serif";
+  ltx.translate(W*0.52, H*0.52);
+  ltx.font="700 520px Georgia,'Times New Roman',serif";
   ltx.textAlign="center"; ltx.textBaseline="middle";
-  ltx.shadowColor="rgba(20,14,8,.65)"; ltx.shadowBlur=14;
-  ltx.fillStyle="rgba(28,18,12,.55)";
-  ltx.fillText("e", 3, 4);
+  // Ink shadow / absorption
+  ltx.shadowColor="rgba(20,12,6,0.7)";
+  ltx.shadowBlur=18;
+  ltx.fillStyle="rgba(24,16,10,0.6)";
+  ltx.fillText("e", 4, 5);
   ltx.shadowBlur=0;
-  ltx.fillStyle="#16120e";
+  // Core ink
+  ltx.fillStyle="#12100c";
   ltx.fillText("e", 0, 0);
-  { /* where the ink is, at a coarse scale, for the high-power fibre view */
+  { /* where the ink is, at a coarse scale, for the high-power fibre view (eInkAt) */
     const m=mkCan(400,285), mc=m.getContext("2d",{willReadFrequently:true}); mc.drawImage(letter,0,0,400,285);
     try{ SLIDE.eMask={w:400,h:285,d:mc.getImageData(0,0,400,285).data}; }catch(e){}
   }
+  // Ink feathering into paper
   ltx.globalCompositeOperation="destination-out";
-  for(let i=0;i<2400;i++){
-    const x=-280+rng()*560, y=-300+rng()*600, a=rng()*Math.PI, len=16+rng()*70;
-    ltx.strokeStyle=`rgba(0,0,0,${.55+rng()*.45})`;
-    ltx.lineWidth=1.1+rng()*3.2;
-    ltx.beginPath(); ltx.moveTo(x,y); ltx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len); ltx.stroke();
+  for(let i=0;i<3200;i++){
+    const x=-320+rng()*640, y=-340+rng()*680;
+    const a=rng()*Math.PI*2, len=12+rng()*90;
+    ltx.strokeStyle=`rgba(0,0,0,${0.4+rng()*0.55})`;
+    ltx.lineWidth=0.8+rng()*3.5;
+    ltx.beginPath();
+    ltx.moveTo(x,y);
+    ltx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len);
+    ltx.stroke();
   }
+  // Fiber show-through in ink areas
   ltx.globalCompositeOperation="source-atop";
-  for(let i=0;i<260;i++){
-    const x=-240+rng()*480, y=-260+rng()*520, a=rng()*Math.PI, len=14+rng()*80;
-    ltx.strokeStyle=`rgba(${200+rng()*40|0},${180+rng()*30|0},${130+rng()*30|0},${.22+rng()*.4})`;
-    ltx.lineWidth=.7+rng()*1.6;
+  for(let i=0;i<340;i++){
+    const x=-280+rng()*560, y=-300+rng()*600;
+    const a=rng()*Math.PI, len=10+rng()*70;
+    ltx.strokeStyle=`rgba(${190+rng()*50|0},${170+rng()*40|0},${120+rng()*40|0},${0.18+rng()*0.45})`;
+    ltx.lineWidth=0.5+rng()*1.8;
     ltx.beginPath(); ltx.moveTo(x,y); ltx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len); ltx.stroke();
   }
   ctx.drawImage(letter,0,0);
-  for(let i=0;i<220;i++){
-    const x=rng()*W, y=rng()*H, a=rng()*Math.PI, len=16+rng()*90;
-    ctx.strokeStyle=`rgba(${200+rng()*35|0},${185+rng()*25|0},${140+rng()*25|0},${.12+rng()*.22})`;
-    ctx.lineWidth=.5+rng()*1.3;
+  // Additional surface fibers
+  for(let i=0;i<280;i++){
+    const x=rng()*W, y=rng()*H, a=rng()*Math.PI, len=14+rng()*80;
+    ctx.strokeStyle=`rgba(${185+rng()*40|0},${165+rng()*30|0},${125+rng()*30|0},${0.08+rng()*0.2})`;
+    ctx.lineWidth=0.4+rng()*1.2;
     ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len); ctx.stroke();
   }
-  for(let i=0;i<90;i++){
-    ctx.fillStyle=`rgba(20,22,24,${.04+rng()*.1})`;
-    ctx.beginPath(); ctx.arc(rng()*W,rng()*H,.4+rng()*1.3,0,Math.PI*2); ctx.fill();
+  // Dust and micro particles
+  for(let i=0;i<120;i++){
+    ctx.fillStyle=`rgba(20,22,20,${0.03+rng()*0.12})`;
+    ctx.beginPath(); ctx.arc(rng()*W,rng()*H,0.3+rng()*1.6,0,Math.PI*2); ctx.fill();
   }
-  return {c, w:680, h:485};
+  return {c, w:720, h:510};
 }
 function bakeOnion(){
-  const W=2200,H=1680,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x0e10);
-  const bg=ctx.createLinearGradient(0,0,W,H);
-  bg.addColorStop(0,"#efe6c6"); bg.addColorStop(1,"#e2d2a4");
+  const W=2400,H=1800,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x0e10);
+  // Warm, slightly uneven cytoplasm background
+  const bg=ctx.createRadialGradient(W*0.5,H*0.45,0,W*0.5,H*0.5,Math.max(W,H)*0.7);
+  bg.addColorStop(0,"#f2ead2"); bg.addColorStop(1,"#e0d0a8");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-  for(let i=0;i<9000;i++){
-    ctx.fillStyle=`rgba(140,110,50,${.012+rng()*.03})`;
-    ctx.fillRect(rng()*W,rng()*H,1+rng()*3,1);
+  // Fine cytoplasmic grain
+  for(let i=0;i<14000;i++){
+    ctx.fillStyle=`rgba(130,100,40,${0.008+rng()*0.035})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*2.5,1);
   }
-  const cols=14, rows=24, cw=W/cols, ch=H/rows;
+  const cols=16, rows=28, cw=W/cols, ch=H/rows;
   const pts=[];
   for(let r=0;r<=rows;r++){
     pts[r]=[];
     for(let col=0;col<=cols;col++){
-      pts[r][col]={x:col*cw+(rng()-.5)*cw*.42, y:r*ch+(rng()-.5)*ch*.48};
+      pts[r][col]={x:col*cw+(rng()-0.5)*cw*0.38, y:r*ch+(rng()-0.5)*ch*0.44};
     }
   }
   ctx.lineJoin="round"; ctx.lineCap="round";
@@ -2010,74 +2060,84 @@ function bakeOnion(){
   for(let r=0;r<rows;r++){
     for(let col=0;col<cols;col++){
       const a=pts[r][col], b=pts[r][col+1], d=pts[r+1][col+1], e=pts[r+1][col];
-      cells.push({a,b,d,e, r, col});
+      cells.push({a,b,d,e,r,col});
     }
   }
+  // Cytoplasm fills with subtle variation
   cells.forEach(cell=>{
     const {a,b,d,e}=cell;
     ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineTo(d.x,d.y); ctx.lineTo(e.x,e.y); ctx.closePath();
-    const tint=196+rng()*28|0;
-    ctx.fillStyle=`rgba(${tint},${tint-18|0},${tint-70|0},${.42+rng()*.18})`;
+    const tint=188+rng()*32|0;
+    ctx.fillStyle=`rgba(${tint},${tint-16|0},${tint-62|0},${0.38+rng()*0.22})`;
     ctx.fill();
+    // Vacuole - clear central region
     const mx=(a.x+b.x+d.x+e.x)/4, my=(a.y+b.y+d.y+e.y)/4;
-    ctx.beginPath(); ctx.ellipse(mx,my,cw*.28,ch*.32,0,0,Math.PI*2);
-    ctx.fillStyle=`rgba(236,226,186,${.28+rng()*.2})`; ctx.fill();
-    for(let i=0;i<26;i++){
-      ctx.fillStyle=`rgba(120,82,28,${.05+rng()*.1})`;
-      ctx.beginPath(); ctx.arc(mx+(rng()-.5)*cw*.62, my+(rng()-.5)*ch*.62, .6+rng()*1.4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(mx,my,cw*0.26,ch*0.30,0,0,Math.PI*2);
+    ctx.fillStyle=`rgba(242,234,198,${0.32+rng()*0.22})`; ctx.fill();
+    // Cytoplasmic granules
+    for(let i=0;i<18;i++){
+      ctx.fillStyle=`rgba(110,72,24,${0.04+rng()*0.12})`;
+      ctx.beginPath(); ctx.arc(mx+(rng()-0.5)*cw*0.55, my+(rng()-0.5)*ch*0.55, 0.5+rng()*1.6, 0, Math.PI*2); ctx.fill();
     }
   });
-  /* walls: dark pair with a pale middle lamella */
+  // Walls with middle lamella
   cells.forEach(cell=>{
     const {a,b,d,e}=cell;
     ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineTo(d.x,d.y); ctx.lineTo(e.x,e.y); ctx.closePath();
-    ctx.strokeStyle="rgba(78,48,14,.72)"; ctx.lineWidth=4.2; ctx.stroke();
-    ctx.strokeStyle="rgba(228,206,140,.7)"; ctx.lineWidth=1.35; ctx.stroke();
+    ctx.strokeStyle="rgba(68,40,12,0.78)"; ctx.lineWidth=4.8; ctx.stroke();
+    ctx.strokeStyle="rgba(230,208,145,0.75)"; ctx.lineWidth=1.5; ctx.stroke();
   });
+  // Nuclei - more realistic, peripheral
   cells.forEach(cell=>{
-    if(rng()<.14) return;
+    if(rng()<0.12) return;
     const {a,b,d,e}=cell;
     const mx=(a.x+b.x+d.x+e.x)/4, my=(a.y+b.y+d.y+e.y)/4;
     const edge=rng()*4|0;
     const walls=[[a,b],[b,d],[d,e],[e,a]];
     const [p,q]=walls[edge];
-    const t=.25+rng()*.5;
+    const t=0.22+rng()*0.56;
     const nx=p.x+(q.x-p.x)*t, ny=p.y+(q.y-p.y)*t;
     const vx=mx-nx, vy=my-ny, vlen=Math.hypot(vx,vy)||1;
-    const nr=7.5+rng()*5.5;
-    const cxn=nx+vx/vlen*(nr*1.15), cyn=ny+vy/vlen*(nr*1.15);
-    const g=ctx.createRadialGradient(cxn-nr*.2,cyn-nr*.2,nr*.12,cxn,cyn,nr);
-    /* AOG-SCOPE-REALISM-V1 — an unstained onion nucleus is pale and grey, seen mostly by its refractile rim,
-       with a fine granular inside and one to three darker nucleoli; iodine later turns it brown */
-    g.addColorStop(0,"rgba(214,204,176,.75)"); g.addColorStop(.7,"rgba(184,172,140,.8)"); g.addColorStop(1,"rgba(120,104,72,.55)");
-    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,rng(),0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
-    for(let k=0;k<30;k++){ ctx.fillStyle=`rgba(90,78,52,${.12+rng()*.18})`; ctx.fillRect(cxn+(rng()-.5)*nr*1.4,cyn+(rng()-.5)*nr*1.2,.9,.9); }
-    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,0,0,Math.PI*2);
-    ctx.strokeStyle="rgba(70,58,36,.6)"; ctx.lineWidth=1.3; ctx.stroke();
-    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr*.9,nr*.78,0,0,Math.PI*2); ctx.strokeStyle="rgba(250,244,220,.5)"; ctx.lineWidth=.7; ctx.stroke();
-    const nn=1+(rng()*2.2|0);
-    for(let k=0;k<nn;k++){ ctx.beginPath(); ctx.arc(cxn+(rng()-.5)*nr*.7,cyn+(rng()-.5)*nr*.6,nr*(.13+rng()*.08),0,Math.PI*2); ctx.fillStyle="rgba(70,56,34,.7)"; ctx.fill(); }
-    if(rng()>.6){
-      ctx.strokeStyle="rgba(110,72,24,.28)"; ctx.lineWidth=.9;
-      for(let s=0;s<3;s++){
+    const nr=8.2+rng()*6.2;
+    const cxn=nx+vx/vlen*(nr*1.2), cyn=ny+vy/vlen*(nr*1.2);
+    const g=ctx.createRadialGradient(cxn-nr*0.25,cyn-nr*0.2,nr*0.1, cxn,cyn,nr);
+    g.addColorStop(0,"rgba(220,210,185,0.82)");
+    g.addColorStop(0.65,"rgba(178,164,132,0.85)");
+    g.addColorStop(1,"rgba(108,90,60,0.6)");
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*0.84,rng()*0.4,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    // Nuclear envelope refraction
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*0.84,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(60,48,28,0.65)"; ctx.lineWidth=1.4; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr*0.88,nr*0.74,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(250,246,225,0.55)"; ctx.lineWidth=0.8; ctx.stroke();
+    // Nucleoli
+    const nn=1+(rng()*2|0);
+    for(let k=0;k<nn;k++){
+      ctx.beginPath();
+      ctx.arc(cxn+(rng()-0.5)*nr*0.65, cyn+(rng()-0.5)*nr*0.55, nr*(0.12+rng()*0.09), 0, Math.PI*2);
+      ctx.fillStyle="rgba(62,48,28,0.75)"; ctx.fill();
+    }
+    // Occasional cytoplasmic strands
+    if(rng()>0.55){
+      ctx.strokeStyle="rgba(100,64,20,0.25)"; ctx.lineWidth=0.9;
+      for(let s=0;s<2;s++){
         ctx.beginPath(); ctx.moveTo(cxn,cyn);
-        ctx.quadraticCurveTo((cxn+mx)/2+(rng()-.5)*8, (cyn+my)/2, mx+(rng()-.5)*cw*.25, my+(rng()-.5)*ch*.25);
+        ctx.quadraticCurveTo((cxn+mx)/2+(rng()-0.5)*10, (cyn+my)/2, mx+(rng()-0.5)*cw*0.2, my+(rng()-0.5)*ch*0.2);
         ctx.stroke();
       }
     }
   });
-  /* peel fold */
-  ctx.strokeStyle="rgba(40,24,8,.4)"; ctx.lineWidth=6;
-  ctx.beginPath(); ctx.moveTo(W*.06,H*.2); ctx.quadraticCurveTo(W*.42,H*.52,W*.94,H*.7); ctx.stroke();
-  ctx.strokeStyle="rgba(210,180,110,.35)"; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.moveTo(W*.06,H*.2); ctx.quadraticCurveTo(W*.42,H*.52,W*.94,H*.7); ctx.stroke();
-  /* torn edge */
-  ctx.fillStyle="rgba(236,228,204,.55)";
-  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(W*.12,0);
-  ctx.quadraticCurveTo(W*.08,H*.3, W*.04, H*.55); ctx.lineTo(0,H*.55); ctx.closePath(); ctx.fill();
-  airBubble(ctx, W*.8, H*.2, 18);
-  airBubble(ctx, W*.16, H*.82, 12);
-  return {c, w:188, h:144};
+  // Peel fold and torn edge
+  ctx.strokeStyle="rgba(36,20,6,0.45)"; ctx.lineWidth=7;
+  ctx.beginPath(); ctx.moveTo(W*0.05,H*0.18); ctx.quadraticCurveTo(W*0.45,H*0.55,W*0.96,H*0.72); ctx.stroke();
+  ctx.strokeStyle="rgba(215,185,115,0.4)"; ctx.lineWidth=2.2;
+  ctx.beginPath(); ctx.moveTo(W*0.05,H*0.18); ctx.quadraticCurveTo(W*0.45,H*0.55,W*0.96,H*0.72); ctx.stroke();
+  ctx.fillStyle="rgba(240,232,208,0.6)";
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(W*0.14,0);
+  ctx.quadraticCurveTo(W*0.09,H*0.28, W*0.03, H*0.58); ctx.lineTo(0,H*0.58); ctx.closePath(); ctx.fill();
+  airBubble(ctx, W*0.82, H*0.18, 22);
+  airBubble(ctx, W*0.14, H*0.84, 14);
+  return {c, w:200, h:150};
 }
 function bakeBlood(){
   /* Wright-Giemsa monolayer: salmon biconcave discs, central pallor, a few real WBCs, platelets.
@@ -5166,7 +5226,7 @@ function drawDNA(ctx,L){
 /* ── the letter e at high power: cellulose and pigment ─ */
 function eInkAt(x,y){
   const m=SLIDE.eMask; if(!m) return 0;
-  const px=Math.round((x+340)/680*m.w), py=Math.round((y+242.5)/485*m.h);
+  const sw=(SLIDE.e&&SLIDE.e.w)||680, sh=(SLIDE.e&&SLIDE.e.h)||485, px=Math.round((x+sw/2)/sw*m.w), py=Math.round((y+sh/2)/sh*m.h);
   if(px<0||py<0||px>=m.w||py>=m.h) return 0;
   return m.d[(py*m.w+px)*4+3]/255;
 }
