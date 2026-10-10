@@ -115,8 +115,8 @@ layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-stud
 
 ## The front page starts on Student (standing order from Jimmy, 2026-10-10)
 
-"Show everything … overwhelms me." `index.html` opens on Student (Daily Drafts,
-the Studio, the Lab Bench, Quiet Space; no Check-in). Teacher leads with the
+"Show everything … overwhelms me." `index.html` opens on Student (the Studio,
+the Lab Bench, Quiet Space; no Daily Drafts, no Check-in). Teacher leads with the
 Dashboard, The Courses, SEL and Daily Drafts. Parent has the most doors. Show
 everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 
