@@ -31,7 +31,7 @@ MAP = {
     "lab-bench-microscope": "door-bench",
     "checkin-watering-can": "sel12-u2",
     "conversation-starters-tea": "door-talk",
-    "courses-arch-microscope": "page-door-atrium",
+    "courses-arch-microscope": "door-courses",
     "sel-mirror": "sel12-u1",
     "faith-texts": "door-faith",
     "families-plant-lantern": "door-families",
@@ -78,10 +78,28 @@ PAGES = {
     "science-hub": "page-science-hub",
     "social-studies-hub": "page-social-studies-hub",
     "worksheets": "page-worksheets",
+    # the next batch (2026-10-10)
+    "door-atrium": "page-door-atrium",
+    "facs-hub": "page-facs-hub",
+    "spanish-hub": "page-spanish-hub",
+    "telescope": "page-telescope",
+    "turn-ins": "page-turn-ins",
+    "illinois-sel-crosswalk": "page-xw-illinois-sel",
+    "word-foundry": "word-foundry",
+    "sports-hub": "sports-hub",
+    "martial-arts-hub": "martial-arts-hub",
+    "secret-societies-hub": "secret-societies-hub",
+    "bible-hub": "bible-hub",
+    "quran-hub": "quran-hub",
+    "talmud-hub": "talmud-hub",
+    "chinese-classics-hub": "chinese-classics-hub",
+    "unseen-realm-hub": "unseen-realm-hub",
+    "hindu-texts-hub": "hindu-texts-hub",
+    "buddhist-texts-hub": "buddhist-texts-hub",
 }
 
 # The doors (front page and Explore menu) that show a door-* banner.
-DOORS = {d: "door-" + d for d in ("today drafts studio bench talk faith families "
+DOORS = {d: "door-" + d for d in ("today drafts studio bench talk courses faith families "
                                   "dashboard crosswalk pd privacy contact").split()}
 
 # Where the front page shows those own banners: each check-in slip's card (by its
