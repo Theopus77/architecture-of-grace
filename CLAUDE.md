@@ -133,12 +133,18 @@ Show everything keeps the full words. There is no gold button under the title.
 
 "Make a direct link icon" to each of these, each at its own address: the Studio
 (/the-studio), Daily Practice (/drops), SEL (/sel), The Courses (/courses), Adult
-SEL (/adult) and the Educator Dashboard (/dashboard). Each page links its own
+SEL (/adult), the Educator Dashboard (/dashboard) and the calm tools (/calm). Each page links its own
 `<name>.webmanifest` and `app-<name>-touch.png` (the Studio: `studio.*`), so Add to
 Home Screen opens that place, full screen.
 
 - `/sel` and `/courses` are built from the front page's SEL and Courses panels by
   `_work/home/make_door_pages.py`. Change a panel in index.html, then run it.
+- `/calm` is index.html opening on the Calm & regulation tools (`#tools`); a script
+  at the top of index.html swaps in `calm.webmanifest` and its icon there.
+- The calm tools screen has its own quiet look (Jimmy, 2026-10-10: "I don't think it
+  is very calming"): `#aog-calm-facelift` at the end of index.html, warm paper (dark:
+  muted green-grey), one sage accent, one kind of card, no glows, stripes or lifts.
+  It is not one of `aog-chapel.js`'s navy rooms. Keep it so.
 
 ## The Adult Edition (Book 6)
 

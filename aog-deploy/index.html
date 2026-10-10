@@ -38,6 +38,14 @@
 <!-- ===== END LINK PREVIEW + ICONS ===================================== -->
 <!-- ===== PWA ===== -->
 <link rel="manifest" href="/manifest.json">
+<script>/* AOG-CALM-APP-V1 (Jimmy, 2026-10-10: "Can an icon and direct link be made for the regulation tools page"): at /calm
+   this page is the Calm app. Its own icon and name for Add to Home Screen, and it opens on the calm tools (#tools). */
+(function(){try{if(!/^\/calm\/?$/.test(location.pathname))return;var D=document;
+var m=D.querySelector('link[rel="manifest"]');if(m)m.href="/calm.webmanifest";
+var sw=function(){[].forEach.call(D.querySelectorAll('link[rel="apple-touch-icon"]'),function(l){l.href="/app-calm-touch.png";});
+[].forEach.call(D.querySelectorAll('meta[name="apple-mobile-web-app-title"]'),function(t){t.content="Calm";});};
+if(D.readyState==="loading")D.addEventListener("DOMContentLoaded",sw);else sw();
+if(!location.hash||location.hash==="#")history.replaceState(null,"","/calm#tools");}catch(e){}})();</script>
 <meta name="theme-color" content="#0A1E33">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -93364,6 +93372,92 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
   var n=0,t=setInterval(function(){ if(typeof window.toolOpen==="function"){ clearInterval(t); try{ history.replaceState(null,"","#tools"); }catch(e){} window.toolOpen(m[1]); } else if(++n>60) clearInterval(t); },100); }
   go(); window.addEventListener("hashchange",go); })();
 </script>
+<style id="aog-calm-facelift">
+/* ══ AOG-CALM-FACELIFT-V1 (Jimmy, 2026-10-10: "can that page itself get a facelift!!! I don't think it is very calming").
+   The Calm & regulation tools screen, made quiet: warm paper (dark: a muted green-grey), one soft sage accent, one kind of
+   card, no glows, no stripes, nothing that lifts on hover. Every tool, button and setting is the same; only the look
+   changes. Scoped to #screen-teacher-tools, last in the page so it wins. ══ */
+#screen-teacher-tools{
+  --cf-bg:#F4F1EA; --cf-card:#FFFFFF; --cf-line:#E2DCCF; --cf-ink:#1F2A30; --cf-soft:#4F5B5A; --cf-accent:#3F6E58; --cf-accent-ink:#FFFFFF; --cf-wash:#E7EFEA;
+}
+:root[data-theme="dark"] #screen-teacher-tools{
+  --cf-bg:#131A19; --cf-card:#1B2422; --cf-line:#2D3A37; --cf-ink:#E9EFEC; --cf-soft:#B3C1BC; --cf-accent:#8FC4A8; --cf-accent-ink:#0F1A16; --cf-wash:#21302B;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) #screen-teacher-tools{
+  --cf-bg:#131A19; --cf-card:#1B2422; --cf-line:#2D3A37; --cf-ink:#E9EFEC; --cf-soft:#B3C1BC; --cf-accent:#8FC4A8; --cf-accent-ink:#0F1A16; --cf-wash:#21302B; } }
+html:root:root body #screen-teacher-tools#screen-teacher-tools, html:root:root body #screen-teacher-tools#screen-teacher-tools.active{ background:var(--cf-bg) !important; background-image:none !important; color:var(--cf-ink) !important; }
+html:root:root body.tool-screen-open{ background:var(--cf-bg) !important; background-image:none !important; }
+html:root:root body.tool-screen-open::before, html:root:root body.tool-screen-open::after{ display:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools::before, html:root:root body #screen-teacher-tools#screen-teacher-tools::after,
+html:root:root body #screen-teacher-tools#screen-teacher-tools h1::before, html:root:root body #screen-teacher-tools#screen-teacher-tools h1::after{ display:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .container{ padding-top:28px !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools h1, html:root:root body #screen-teacher-tools#screen-teacher-tools h2, html:root:root body #screen-teacher-tools#screen-teacher-tools h3,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-title, html:root:root body #screen-teacher-tools#screen-teacher-tools .tools-row-header{ color:var(--cf-ink) !important; text-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools h1{ font-weight:600 !important; letter-spacing:-.01em; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .lede, html:root:root body #screen-teacher-tools#screen-teacher-tools .sub, html:root:root body #screen-teacher-tools#screen-teacher-tools p,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-desc, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-sub, html:root:root body #screen-teacher-tools#screen-teacher-tools figcaption{ color:var(--cf-soft) !important; text-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .eyebrow, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-need{ color:var(--cf-soft) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-need::before, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-need::after{ background:var(--cf-line) !important; }
+/* For grown-ups | For students */
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog2-seg{ background:var(--cf-card) !important; border:1px solid var(--cf-line) !important; box-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog2-seg button{ color:var(--cf-ink) !important; background:transparent !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog2-seg button.on{ background:var(--cf-accent) !important; color:var(--cf-accent-ink) !important; }
+/* every card, one kind: white (dark: green-grey), a hairline, soft corners, no stripe, no glow, no lift */
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-card, html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-card,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-corner-panel, html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-glref, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-helps,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-top-pair .tool-card{
+  background:var(--cf-card) !important; background-image:none !important; color:var(--cf-ink) !important;
+  border:1px solid var(--cf-line) !important; border-radius:16px !important; box-shadow:0 1px 2px rgba(20,30,28,.05) !important; transform:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door::before, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door::after,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-card::before, html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-card::after,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-corner-panel::before, html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-glref::before{ display:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door:hover, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-card:hover, html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-card:hover{ transform:none !important; border-color:var(--cf-accent) !important; box-shadow:0 1px 2px rgba(20,30,28,.05) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door *, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-card *{ color:inherit; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door > span:first-child, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door b, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door strong{ color:var(--cf-ink) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door span + span, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-card span:last-child{ color:var(--cf-soft) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door-notsure{ border-style:dashed !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door[aria-pressed="true"], html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door.on, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door.active{ border-color:var(--cf-accent) !important; box-shadow:inset 0 0 0 1px var(--cf-accent) !important; background:var(--cf-wash) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-ic, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-ic *{ color:var(--cf-accent) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-icon.aog2-ic{ background:var(--cf-wash) !important; }
+/* the quiet buttons under the cards */
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-pick, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-lowstim, html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-chip,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .gg-reset-btn, html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-corner-secondary, html:root:root body #screen-teacher-tools#screen-teacher-tools .btn.btn-secondary{
+  background:var(--cf-card) !important; background-image:none !important; color:var(--cf-ink) !important; border:1px solid var(--cf-line) !important; box-shadow:none !important; transform:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-pick *, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-lowstim *{ color:inherit !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-all{ color:var(--cf-accent) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-chip.active, html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-corner-primary,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tool-card .btn.btn-secondary{ background:var(--cf-accent) !important; background-image:none !important; color:var(--cf-accent-ink) !important; border-color:var(--cf-accent) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-helps summary, html:root:root body #screen-teacher-tools#screen-teacher-tools details summary{ color:var(--cf-ink) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools h3 *, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door b,
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-card b{ color:var(--cf-ink) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-door span, html:root:root body #screen-teacher-tools#screen-teacher-tools .tt-sense-card span:not(.tt-sense-ic){ color:var(--cf-soft) !important; }
+/* a word of grace on this screen (#aogGraceWord): the same quiet card */
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord{ background:var(--cf-card) !important; background-image:none !important; border:1px solid var(--cf-line) !important; box-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord::before, html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord::after{ display:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord .agw-text{ color:var(--cf-ink) !important; text-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord .agw-eyebrow, html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord .agw-cog{ color:var(--cf-soft) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWord .agw-dot{ background:var(--cf-accent) !important; box-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-glref-card{ background:var(--cf-wash) !important; border:0 !important; color:var(--cf-ink) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-glref-card *{ color:var(--cf-ink) !important; }
+/* the bright row of eight doorways at the bottom steps aside: the eight choices are already at the top */
+html:root:root body #screen-teacher-tools#screen-teacher-tools .aog-tools-hero{ display:none !important; }
+/* a word of grace: the same quiet card, its words in the page's ink */
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero{ background:var(--cf-card) !important; background-image:none !important; border:1px solid var(--cf-line) !important; box-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero::before, html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero::after{ display:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero .agwh-text{ color:var(--cf-ink) !important; text-shadow:none !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero .agwh-eyebrow, html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero .agwh-cog{ color:var(--cf-soft) !important; }
+html:root:root body #screen-teacher-tools#screen-teacher-tools #aogGraceWordHero .agwh-dot{ background:var(--cf-accent) !important; box-shadow:none !important; }
+/* the pop-up a choice opens (#toolModal, moved to the end of the page while open): the same quiet frame. Only its frame
+   changes; the tools inside keep their own words and colours. */
+#toolModal{ --cf-card:#FFFFFF; --cf-line:#E2DCCF; --cf-accent:#3F6E58; --cf-wash:#F1F5F2; }
+:root[data-theme="dark"] #toolModal{ --cf-card:#1B2422; --cf-line:#2D3A37; --cf-accent:#8FC4A8; --cf-wash:#21302B; }
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) #toolModal{ --cf-card:#1B2422; --cf-line:#2D3A37; --cf-accent:#8FC4A8; --cf-wash:#21302B; } }
+html:root:root body #toolModal#toolModal{ background:rgba(28,36,34,.42) !important; backdrop-filter:none !important; }
+html:root:root body #toolModal#toolModal .tool-modal{ background:var(--cf-card) !important; background-image:none !important; border:1px solid var(--cf-line) !important; border-radius:20px !important; box-shadow:0 12px 32px rgba(15,25,22,.18) !important; }
+html:root:root body #toolModal#toolModal .ttx-opt{ background:var(--cf-card) !important; border:1px solid var(--cf-line) !important; border-left:1px solid var(--cf-line) !important; box-shadow:none !important; transform:none !important; }
+html:root:root body #toolModal#toolModal .ttx-opt:hover, html:root:root body #toolModal#toolModal .ttx-opt:focus-visible{ background:var(--cf-wash) !important; border-color:var(--cf-accent) !important; }
+html:root:root body #toolModal#toolModal .ttx-opt-d{ border-color:var(--cf-line) !important; background:transparent !important; }
+</style>
 </body>
 <script id="aog-sketch-js" src="/aog-sketch.js" defer></script>
 </html>

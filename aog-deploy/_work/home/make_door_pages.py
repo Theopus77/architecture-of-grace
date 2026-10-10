@@ -36,7 +36,7 @@ def panel(src, k):
 def body_of(blk):
     ul = blk[blk.index("<ul"):blk.rindex("</ul>") + 5]
     ul = re.sub(r'\sonclick="[^"]*"', "", ul)
-    ul = ul.replace('href="#tools"', 'href="/#tools"')          # the calm tools live on the front page
+    ul = ul.replace('href="#tools"', 'href="/calm"')            # the calm tools: their own address (AOG-CALM-APP-V1)
     ul = ul.replace('aria-controls="aogdnBand', 'aria-controls="dpBand').replace('id="aogdnBand', 'id="dpBand')
     return ul
 

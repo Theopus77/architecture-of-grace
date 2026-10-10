@@ -13,7 +13,9 @@
 (function () {
   "use strict";
   var D = document, H = D.documentElement;
-  var ROOMS = "#screen-framework, #screen-checkin, #screen-choose, #aog-origin, #screen-workplace, #screen-adult, #screen-starthere, #screen-ecosystem, #screen-words, #screen-eco-home, #screen-eco-bridge, #screen-eco-parents, #screen-eco-educators, #screen-eco-adult, #screen-eco-overview, #screen-about, #screen-guide, #screen-library, #screen-curriculum, #screen-teacher-tools, #screen-myresults, #screen-thanks, #screen-closing, #screen-farewell";
+  /* AOG-CALM-FACELIFT-V1 (Jimmy, 2026-10-10): the Calm & regulation tools screen left the chapel; it has its own quiet
+     look now (index.html, #aog-calm-facelift) */
+  var ROOMS = "#screen-framework, #screen-checkin, #screen-choose, #aog-origin, #screen-workplace, #screen-adult, #screen-starthere, #screen-ecosystem, #screen-words, #screen-eco-home, #screen-eco-bridge, #screen-eco-parents, #screen-eco-educators, #screen-eco-adult, #screen-eco-overview, #screen-about, #screen-guide, #screen-library, #screen-curriculum, #screen-myresults, #screen-thanks, #screen-closing, #screen-farewell";
   var BANDS = ["#2F63B8", "#B8457A", "#2E8B57", "#B87A12", "#7B4FA0", "#1F8080"];
   function es() { return /^es/i.test(H.lang || ""); }
   function lum(s) {
