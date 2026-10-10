@@ -5,8 +5,7 @@
 <script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Adult Edition · Facilitator console — Architecture of Grace</title>
-<meta name="description" content="The twelve sessions of the Adult Edition for the two facilitators. Opens with a facilitator key.">
-<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Run the Adult Edition one session at a time: each timed step with its lesson and safety checks, a Done tick per step, and a private reflection log. Free.">
 <link rel="canonical" href="https://architectureofgrace.org/adult/sessions">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -14,15 +13,10 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A1E33">
-<!-- ═══ AOG-ADULT-CONSOLE-V2 · The facilitator console at /adult/sessions.
+<!-- ═══ AOG-ADULT-CONSOLE-V3 · The facilitator console at /adult/sessions.
      Built by adult-build/build_sessions.py (repo root, not published) from book6.json — never hand-edit.
-     THE CONSOLE IS ENCRYPTED IN THIS FILE (AES-256-GCM; key derived from the
-     facilitator key by PBKDF2-SHA256, 200,000 rounds). View-source shows the
-     salt and the ciphertext, nothing readable. The key is never written to
-     this device: it is held for the tab and gone when the tab closes — the
-     AOG-DD-KEYGATE rule, because the next person to pick up a shared iPad
-     must not find the scripts open. The reflection log at the foot of each
-     session saves in localStorage only; nothing is sent anywhere. ═══ -->
+     V3 (2026-10-10, Jimmy: "ITS ALL FREE ... Nothing is locked"): open, no key, no encryption. The
+     reflection log at the foot of each session saves in localStorage only; nothing is sent anywhere. ═══ -->
 <link rel="stylesheet" href="/aog-adult.css">
 <style>
 *{box-sizing:border-box}
@@ -45,14 +39,6 @@ input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or i
 .btn.primary{background:var(--navy); border-color:var(--navy); color:#fff}
 :root[data-theme="dark"] .btn.primary{color:#12161C}
 
-/* ── the gate ── */
-.gate{max-width:520px; margin:26px auto 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:22px 22px 18px; box-shadow:var(--lift-sm)}
-.gate h2{margin-top:0}
-.gate label{display:block; font-weight:700; margin:.8em 0 .3em}
-.gate input{width:100%; min-height:48px; padding:10px 12px; border:1px solid var(--rule); border-radius:12px; background:var(--field-2)}
-.gate .row{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; align-items:center}
-.gate .err{color:var(--caution); font-weight:700; min-height:1.4em; margin:.5em 0 0}
-.gate .fine{font-size:.9rem; color:var(--ink-soft); margin-top:12px}
 
 /* ── the rail: jump + prev/next, sticky under the bar ── */
 .rail{position:sticky; top:calc(var(--aogbar-h,52px) + 6px); z-index:20; background:var(--ground); padding:8px 0 10px; border-bottom:1px solid var(--rule); display:flex; gap:8px; align-items:center; flex-wrap:nowrap; margin-top:14px}
@@ -120,7 +106,6 @@ input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or i
 .step .done[aria-pressed="true"]{background:var(--good); border-color:var(--good); color:var(--on-navy)}
 .step.isdone .sh .t{color:var(--ink-soft)}
 .stepprog .btn.small{min-height:40px; padding:4px 14px; font-size:.88rem}
-.gateword{font-size:1.1rem} .gateword b{font-family:"Fraunces",Georgia,serif; font-size:1.3rem; color:var(--gold-deep)}
 .lk{display:block; font-weight:700; margin:.7em 0 .2em}
 .lk input{display:block; width:100%; margin-top:4px; padding:10px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font-weight:400}
 .lkout{word-break:break-all; font-size:.95rem; margin-top:10px}
@@ -147,7 +132,7 @@ input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or i
 @media print{
   body{background:#fff; color:#111; font-size:10.5pt}
   .wrap{max-width:none; padding:0}
-  .no-print,.rail,.gate,.lgact{display:none !important}
+  .no-print,.rail,.lgact{display:none !important}
   .sess[hidden]{display:none !important}
   .step,.say,.scan,.practice,.scenario,.integ,.box,.contra,.anchor,.prep,.between,.refl,.card,.meta tr,.log fieldset{break-inside:avoid; page-break-inside:avoid; box-shadow:none}
   .log{break-before:page}
@@ -164,22 +149,14 @@ input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or i
 <header class="mast">
   <div class="k">The Adult Edition · for the two facilitators</div>
   <h1>Facilitator console</h1>
-  <p class="deck">The twelve sessions as the manual writes them: what to prepare, each timed step with its scripts and safety checks, and a private log that stays on this device.</p>
+  <p class="deck">Run a session from here, one at a time: what to prepare, each timed step with its lesson and safety checks, a Done tick for each step, and a private log that stays on this device.</p>
   <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
 </header>
 
 <main id="main">
 
-<section class="gate no-print" id="gate">
-  <h2>Opens with a facilitator key</h2>
-  <p class="mut">This page is for the two facilitators, not for participants.</p>
-  <label for="fkey">Facilitator key</label>
-  <input id="fkey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
-  <div class="row"><button class="btn primary" id="openBtn" type="button">Open the console</button><span class="err" id="gateErr" aria-live="polite"></span></div>
-  <p class="fine">The key works for this tab only and is never saved. The next person to pick up this device will not find the console open. No key? Ask the program director who runs your group.</p>
-</section>
 
-<div class="rail no-print" id="rail" hidden>
+<div class="rail no-print" id="rail">
   <button class="btn" id="prevBtn" type="button" aria-label="Previous session">←</button>
   <select id="jump" aria-label="Jump to a session">
     <option value="0">Before you begin — flags, anatomy, the protocol</option>
@@ -189,10 +166,9 @@ input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or i
     <optgroup label="Phase IV · Legacy"><option value="11">11 · Forgiveness Is Not Reconciliation ★</option><option value="12">12 · The Final Backpack Audit ★★ ◆</option></optgroup>
   </select>
   <button class="btn" id="nextBtn" type="button" aria-label="Next session">→</button>
-  <button class="btn" id="lockBtn" type="button" title="Close the console">Lock</button>
 </div>
 
-<div id="console"></div>
+<div id="console">@@CONSOLE@@</div>
 
 <div class="crisis" id="crisis">
   <h3>Crisis &amp; safety resources</h3>
@@ -207,28 +183,18 @@ input,select,textarea{font-size:16px} /* AOG-DD-STILL-V1: never under 16px, or i
 </div>
 
 <div class="lock">
-  <b>Nothing is sent unless you send it.</b> The console is decrypted in this browser and shown here; the reflection log saves in this browser only. No account, no sign-in, no tracking. Disclosure is optional; insight is not.
+  <b>Nothing is sent unless you send it.</b> The reflection log saves in this browser only. No account, no sign-in, no tracking. Disclosure is optional; insight is not.
 </div>
 
 </main>
 <footer class="foot"><p id="footNet">Architecture of Grace · The Adult Edition · facilitator console. This page loads no fonts, scripts, or images from the internet and works with the network off once opened. It carries no district or institutional endorsement.</p></footer>
 </div>
 
-<script id="aogAdultPayload" type="application/json">@@PAYLOAD@@</script>
 <script>
 (function(){
 "use strict";
 var D=document, $=function(id){return D.getElementById(id);};
-var P=JSON.parse($("aogAdultPayload").textContent);
-var K_TAB="aog.adult.fkey", K_LOG="aog.adult.reflect.v1.";
-function b64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
-async function decrypt(pass){
-  var enc=new TextEncoder();
-  var km=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]);
-  var key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(P.salt),iterations:P.it,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]);
-  var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(P.iv)},key,b64(P.ct));
-  return new TextDecoder().decode(pt);
-}
+var K_LOG="aog.adult.reflect.v1.";
 var cur=0, N=12;
 function show(n, push){
   n=Math.max(0,Math.min(N,n|0)); cur=n;
@@ -284,7 +250,6 @@ function wire(){
   $("jump").addEventListener("change",function(){ show(+this.value); });
   $("prevBtn").addEventListener("click",function(){ show(cur-1); });
   $("nextBtn").addEventListener("click",function(){ show(cur+1); });
-  $("lockBtn").addEventListener("click",function(){ try{sessionStorage.removeItem(K_TAB);}catch(e){} location.replace(location.pathname); });
   var c=$("console");
   c.addEventListener("input",function(e){ var f=e.target.closest&&e.target.closest("form.log"); if(f) saveLog(f); });
   c.addEventListener("change",function(e){ var f=e.target.closest&&e.target.closest("form.log"); if(f) saveLog(f); });
@@ -304,28 +269,8 @@ function wire(){
     }
   });
 }
-async function open(pass, remember){
-  var err=$("gateErr"); err.textContent="";
-  if(!pass){ err.textContent="Enter the facilitator key."; return; }
-  if(!(window.crypto&&crypto.subtle)){ err.textContent="This browser can't open the console (no WebCrypto). Try Safari or Chrome over https."; return; }
-  $("openBtn").disabled=true; $("openBtn").textContent="Opening…";
-  try{
-    var html=await decrypt(pass);
-    $("console").innerHTML=html;
-    if(remember!==false){ try{ sessionStorage.setItem(K_TAB,pass); }catch(e){} }
-    $("gate").hidden=true; $("rail").hidden=false;
-    var q=/[?&]s=(\d+)/.exec(location.search); show(q?+q[1]:0,false);
-  }catch(e){
-    err.textContent="That key didn't open it. Check it and try again.";
-    $("openBtn").disabled=false; $("openBtn").textContent="Open the console";
-  }
-}
-$("openBtn").addEventListener("click",function(){ open($("fkey").value.trim()); });
-$("fkey").addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); open(this.value.trim()); } });
 wire();
-/* held for the tab only: a reload keeps the console open; a closed tab forgets */
-var held=null; try{ held=sessionStorage.getItem(K_TAB); }catch(e){}
-if(held) open(held,false);
+var q=/[?&]s=(\d+)/.exec(location.search); show(q?+q[1]:0,false);
 })();
 </script>
 </body>

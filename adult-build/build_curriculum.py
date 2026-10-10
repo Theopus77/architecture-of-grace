@@ -1,31 +1,25 @@
 # -*- coding: utf-8 -*-
-"""build_curriculum.py — adult-curriculum.html (/adult/curriculum), the open curriculum (AOG-ADULT-CURRICULUM-V1).
+"""build_curriculum.py — adult-curriculum.html (/adult/curriculum), the whole curriculum (AOG-ADULT-CURRICULUM-V2).
 
-    python3 adult-build/build_curriculum.py /path/to/book6.json [--scripts]
+    python3 adult-build/build_curriculum.py /path/to/book6.json
 
-Jimmy (2026-10-10): "This has ABSOLUTELY no curriculum behind it." He chose: the twelve sessions open to
-anyone, laid out like a K-12 room's curriculum, with the safety material kept behind the facilitator key.
+Jimmy (2026-10-10): "This has ABSOLUTELY no curriculum behind it." Then: "ITS ALL FREE. Provide the direct
+instruction lessons as well just like the SEL. Nothing is locked."
 
-PUBLIC, verbatim from the manual: objective, duration, phase, care level, key vocabulary, prerequisites,
-materials, the K-12 connection, the anchor concept, every timed step (title + minutes) with the
-facilitator's notes, the practice, the scenario cards, the integration box, and the between-session
-actions.
-KEPT IN THE CONSOLE: word-for-word scripts (unless --scripts), in-session safety scans, contraindication
-("do not proceed") boxes, the disclosure & distress protocol, facilitator preparation, the reflection,
-and any note or between-session line that is about risk, escalation or safety (SAFE_RE below).
+So this page is the manual, verbatim, open to anyone, the way a K-12 room's curriculum is: before you begin
+(the care flags, the session anatomy, the disclosure & distress protocol), then each of the twelve sessions
+with its objective, time, key words, prerequisites, materials, care level, K-12 connection, the
+do-not-proceed box, facilitator preparation, the anchor idea, every timed step with its script (the direct
+instruction), facilitator notes, in-session safety checks, practice, scenario cards and integration, the
+between-session actions and the facilitator reflection. Then the closing words.
 
-book6.json is never committed (the repo is public); it travels in the Adult Edition zip.
+book6.json is never committed; it travels in the Adult Edition zip.
 """
 import json, io, os, re, sys, html
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
-args = [a for a in sys.argv[1:] if not a.startswith("--")]
-SCRIPTS = "--scripts" in sys.argv
-D = json.load(io.open(args[0], encoding="utf-8"))
+D = json.load(io.open(sys.argv[1], encoding="utf-8"))
+X = D["extra"]
 E = lambda s: html.escape(s, quote=True)
-
-# a note or a between-session line that is about risk or safety stays in the console
-SAFE_RE = re.compile(r"tier\s*[123]|flag|re-?screen|activat|escalat|suicid|protocol|clinic|crisis|disclos|distress|"
-                     r"scan|fragil|dissociat|self-harm|harm to|emergency|safety|watch carefully|steps? out|consult|risk", re.I)
 
 PH = {1:(1,"I","Foundation"),2:(1,"I","Foundation"),3:(1,"I","Foundation"),4:(2,"II","Interior"),5:(2,"II","Interior"),
       6:(2,"II","Interior"),7:(3,"III","Repair"),8:(3,"III","Repair"),9:(3,"III","Repair"),10:(3,"III","Repair"),
@@ -41,34 +35,38 @@ def care(fl):
 def title_case(t):
     t = t.title()
     for a, b in ((" And ", " and "), (" Of ", " of "), (" The ", " the "), (" To ", " to "), (" A ", " a "), (" In ", " in "),
-                 (" Vs. ", " vs. "), (" For ", " for "), (" As ", " as "), (" On ", " on "), ("→", "→")):
+                 (" Vs. ", " vs. "), (" For ", " for "), (" As ", " as "), (" On ", " on ")):
         t = t.replace(a, b)
     return t
 
 def ps(lst): return "".join("<p>%s</p>" % E(t) for t in lst)
 
+def scan_box(b):
+    rows = ""
+    for k in ["lead", "OBSERVE", "MAY INDICATE", "ACTION", "RESPONSE", "DO", "DO NOT"]:
+        if k in b["parts"]:
+            lab = "" if k == "lead" else ("May indicate" if k == "MAY INDICATE" else k.title())
+            rows += '<div class="scrow"><b>%s</b><span>%s</span></div>' % (E(lab), E(b["parts"][k]))
+    return '<div class="scan"><span class="who">In-session check · %s</span>%s</div>' % (E(title_case(b["label"])), rows)
+
 def step_html(st):
-    body, held = "", 0
-    bl = st["blocks"]
-    for i, b in enumerate(bl):
+    body, board = "", False
+    for b in st["blocks"]:
         k = b["k"]
         if k == "p":
-            if SAFE_RE.search(b["t"]): held += 1; continue
-            nxt = bl[i + 1]["k"] if i + 1 < len(bl) else None
-            # a lead-in ("After seven minutes:") whose script is held in the console would dangle
-            if b["t"].rstrip().endswith(":") and nxt in ("script", "scan") and not SCRIPTS: held += 1; continue
-            body += '<p class="note">%s</p>' % E(b["t"])
-        elif k == "script":
-            if SCRIPTS: body += '<div class="say"><span class="who">Facilitator</span>%s</div>' % E(b["t"])
-            else: held += 1
-        elif k == "scan": held += 1
+            t = b["t"]
+            if re.match(r"^(Write (each )?on (the|a) (board|flipchart)|Write on the board)", t):
+                body += '<p class="cue">%s</p>' % E(t); board = True; continue
+            if board and re.match(r"^([A-Z][A-Z \-/']{3,}:|\d\.\s|STEP \d\.|SIGN \d\.|MOVE \d\.|THE [A-Z]+:)", t):
+                body += '<p class="board">%s</p>' % E(t); continue
+            board = False
+            body += '<p class="note">%s</p>' % E(t)
+        elif k == "script": body += '<div class="say"><span class="who">The lesson · say it or adapt it</span>%s</div>' % E(b["t"])
+        elif k == "scan": body += scan_box(b)
         elif k == "practice": body += '<div class="practice"><span class="who">The practice · %s</span>%s</div>' % (E(title_case(b["label"])), ps(b["ps"]))
         elif k == "scenario": body += '<div class="scenario"><span class="who">%s</span>%s</div>' % (E(b["label"].replace("SCENARIO CARD · ", "Scenario card · ")), ps(b["ps"]))
         elif k == "integration": body += '<div class="integ"><span class="who">Integration · what was done · what was not done</span>%s</div>' % ps(b["ps"])
-        else: held += 1
-    if held:
-        body += '<p class="held">%s</p>' % ("The facilitator&#8217;s words and safety checks for this step are in the facilitator sessions." if not SCRIPTS
-                                            else "The safety checks for this step are in the facilitator sessions.")
+        else: body += '<div class="box"><span class="who">%s</span>%s</div>' % (E(b.get("label", "")), ps(b.get("ps", [])))
     return ('<li class="step"><div class="sh"><span class="n">%s</span><span class="t">%s</span><span class="m">%s</span></div>%s</li>'
             % (E(st["n"]), E(title_case(st["title"])), E(st["min"]), body))
 
@@ -77,33 +75,40 @@ def session_html(s):
     m = s["meta"]
     rows = ""
     for key, lab in (("Objective", "Objective"), ("Duration", "Time"), ("Key Vocabulary", "Key words"),
-                     ("Prerequisites", "Before this session"), ("Materials", "Materials")):
+                     ("Prerequisites", "Before this session"), ("Materials", "Materials"), ("Risk Profile", "Care")):
         if m.get(key): rows += "<tr><th>%s</th><td>%s</td></tr>" % (lab, E(m[key]))
-    rows += "<tr><th>Care</th><td>%s</td></tr>" % care(s.get("flagline"))
     out = '<section class="sess p%d" id="s%d" data-n="%d">' % (p, n, n)
-    out += ('<header class="shd"><div class="k p%dc">Session %d · Phase %s · %s</div><h2>%s</h2></header>'
-            % (p, n, rom, nm, E(s["title"])))
+    out += ('<header class="shd"><div class="k p%dc">Session %d · Phase %s · %s</div><h2>%s</h2><p class="care">%s</p></header>'
+            % (p, n, rom, nm, E(s["title"]), care(s.get("flagline"))))
     if s.get("connects"): out += '<p class="connects"><b>From the K–12 rooms.</b> %s</p>' % E(s["connects"])
     out += '<table class="meta">%s</table>' % rows
+    if s.get("contra"): out += '<div class="contra"><b>%s</b>%s</div>' % (E(s["contra"]["label"]), ps(s["contra"]["ps"]))
     if s.get("anchor"):
-        out += ('<div class="anchor"><span class="who">Anchor idea · %s</span>%s</div>'
+        out += ('<div class="anchor"><span class="who">Anchor idea · post it · %s</span>%s</div>'
                 % (E(title_case(s.get("anchor_title") or "")), ps(s["anchor"])))
+    if s.get("prep"): out += '<div class="prep"><h3>Before the session · facilitator preparation</h3>%s</div>' % ps(s["prep"])
     out += '<h3 class="flowh">The ninety minutes</h3><ol class="steps">%s</ol>' % "".join(step_html(st) for st in s["steps"])
-    # each between-session paragraph keeps its own sentences together; a sentence about risk or safety
-    # stays in the console, and so does a short tail that only finished it ("Required.")
-    btw = []
-    for t in s.get("between") or []:
-        keep, dropped = [], False
-        for sent in re.split(r"(?<=[.!?])\s+(?=[A-Z0-9])", t):
-            sent = sent.strip()
-            if not sent: continue
-            if SAFE_RE.search(sent) or (dropped and len(sent) < 11): dropped = True; continue
-            dropped = False; keep.append(sent)
-        if keep: btw.append(" ".join(keep))
-    if btw:
-        out += '<div class="between"><span class="who">Between sessions · facilitators</span>%s</div>' % "".join("<p>%s</p>" % E(x) for x in btw)
-    out += '<p class="tofac no-print"><a href="/adult/sessions?s=%d">Facilitators: open Session %d with the key →</a></p>' % (n, n)
+    if s.get("between"): out += '<div class="between"><span class="who">Between sessions · facilitators</span>%s</div>' % ps(s["between"])
+    if s.get("reflection"):
+        rt = (s.get("reflection_title") or "").replace("FACILITATOR REFLECTION — ", "")
+        out += '<div class="refl"><span class="who">Facilitator reflection · %s</span>%s</div>' % (E(title_case(rt)), ps(s["reflection"]))
+    out += '<p class="tofac no-print"><a href="/adult/sessions?s=%d">Run Session %d in the facilitator console →</a></p>' % (n, n)
     out += "</section>"
+    return out
+
+def before_html():
+    out = '<section class="sess" id="before"><header class="shd"><div class="k">Before you begin</div><h2>Care levels, the session shape, and the protocol</h2></header>'
+    out += '<div class="card"><h3>Reading the care flags</h3>%s</div>' % ps(X["flags"][:3])
+    out += ('<div class="card"><h3>Every session, the same order</h3><table class="tbl"><thead><tr><th>Part</th><th>Time</th><th>Purpose</th></tr></thead><tbody>%s</tbody></table>'
+            '<p class="small mut">90 minutes in all; the co-facilitators debrief afterward for at least 20 minutes.</p></div>'
+            % "".join('<tr><td>%s</td><td class="t">%s</td><td>%s</td></tr>' % tuple(E(c) for c in r) for r in X["anatomy"]))
+    out += '<div class="card" id="protocol"><h3>3.5 Disclosure &amp; distress protocol</h3>'
+    for b in X["s35"]:
+        if b["k"] == "h":
+            if not b["t"].startswith("3.5"): out += "<h4>%s</h4>" % E(b["t"])
+        elif b["k"] == "p": out += "<p>%s</p>" % E(b["t"])
+        else: out += '<div class="contra"><b>%s</b>%s</div>' % (E(b["label"]), ps(b["ps"]))
+    out += "</div></section>"
     return out
 
 def crosswalk():
@@ -115,7 +120,7 @@ def crosswalk():
                  % (p, n, n, n, E(s["title"]), E(title_case(s.get("anchor_title") or "")), E(title_case(pr[0]) if pr else "—"), care(s.get("flagline"))))
     return rows
 
-opts = ""
+opts = '<option value="before">Before you begin · care, shape, protocol</option>'
 for s in D["sessions"]:
     n = s["n"]
     if n in (1, 4, 7, 11): opts += ("</optgroup>" if n > 1 else "") + '<optgroup label="Phase %s · %s">' % (PH[n][1], PH[n][2])
@@ -125,7 +130,7 @@ opts += "</optgroup>"
 tpl = io.open(os.path.join(HERE, "curriculum_shell.html"), encoding="utf-8").read()
 fp = io.open(os.path.join(HERE, "head_firstpaint.txt"), encoding="utf-8").read().rstrip("\n")
 out = (tpl.replace("@@FIRSTPAINT@@", fp).replace("@@OPTIONS@@", opts).replace("@@CROSSWALK@@", crosswalk())
-          .replace("@@SESSIONS@@", "\n".join(session_html(s) for s in D["sessions"]))
-          .replace("@@CLOSING@@", E(D["extra"].get("closing_exit") or "")))
+          .replace("@@SESSIONS@@", before_html() + "\n" + "\n".join(session_html(s) for s in D["sessions"]))
+          .replace("@@CLOSING@@", E(X.get("closing_exit") or "")))
 io.open(os.path.join(ROOT, "aog-deploy", "adult-curriculum.html"), "w", encoding="utf-8").write(out)
-print("built adult-curriculum.html", len(out), "bytes; scripts", "public" if SCRIPTS else "kept in the console")
+print("built adult-curriculum.html", len(out), "bytes")

@@ -5,7 +5,7 @@
 <script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Adult Edition · The curriculum — Architecture of Grace</title>
-<meta name="description" content="The twelve sessions of the Adult Edition, in full: objectives, key words, anchor ideas, every timed step, the practices and the scenario cards.">
+<meta name="description" content="The Adult Edition in full and free: twelve sessions with every lesson, timed step, practice, scenario card and safety check.">
 <link rel="canonical" href="https://architectureofgrace.org/adult/curriculum">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -15,8 +15,8 @@
 <meta name="theme-color" content="#0A1E33">
 <!-- ═══ AOG-ADULT-CURRICULUM-V1 (2026-10-10) · /adult/curriculum. Built by adult-build/build_curriculum.py from
      the manual, verbatim — never hand-edit the sessions. Jimmy: "This has ABSOLUTELY no curriculum behind it."
-     The twelve sessions are open here, like a room's curriculum; the scripts, the in-session safety scans,
-     the do-not-proceed boxes and the distress protocol stay in the facilitator sessions (key). ═══ -->
+     V2: "ITS ALL FREE ... Nothing is locked." The whole manual is here, like a room's curriculum: the
+     direct-instruction lessons, the safety checks, the do-not-proceed boxes and the distress protocol. ═══ -->
 <link rel="stylesheet" href="/aog-adult.css">
 <style>
 .jumpbar{position:sticky; top:calc(var(--aogbar-h,52px) + 4px); z-index:20; background:var(--ground); padding:10px 0; border-bottom:1px solid var(--rule); margin-top:16px; display:flex; gap:8px; align-items:center}
@@ -51,7 +51,26 @@
 .step .t{font-weight:800; flex:1}
 .step .m{color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums; flex:none}
 .step .note{margin:.4em 0}
-.step .held{color:var(--ink-soft); font-size:.9rem; font-style:italic; margin:.5em 0 .2em}
+.step .cue{color:var(--ink-soft); font-style:italic}
+.step .board{margin:.25em 0 .25em 1em; padding:8px 12px; border-left:3px solid var(--navy); background:var(--field-2); border-radius:0 8px 8px 0}
+.shd .care{margin:.3em 0 0; font-size:.92rem; color:var(--ink-soft)}
+.say{margin:10px 0}
+.scan{border:1.5px dashed var(--navy); background:var(--field-2); border-radius:12px; padding:11px 14px; margin:10px 0; font-size:.96rem}
+.scan .who{color:var(--navy)}
+.scrow{display:grid; grid-template-columns:7.5em 1fr; gap:6px 10px; margin:.3em 0}
+.scrow b{font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--navy); padding-top:.2em}
+@media (max-width:520px){ .scrow{grid-template-columns:1fr} }
+.contra{border-left:5px solid var(--caution); background:var(--caution-wash); border-radius:12px; padding:12px 14px; margin-top:14px}
+.contra > b{display:block; color:var(--caution); margin-bottom:.25em}
+.prep{margin-top:14px; padding:14px 16px 10px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.prep h3{margin-top:0}
+.refl{margin-top:14px; border:1px solid var(--rule); background:var(--field); border-radius:12px; padding:12px 15px; font-size:.97rem}
+.refl .who{color:var(--ink-faint)}
+.box{border:1px solid var(--rule); background:var(--field-2); border-radius:12px; padding:11px 15px; margin:10px 0}
+.tbl{width:100%; border-collapse:collapse; font-size:.95rem}
+.tbl th,.tbl td{text-align:left; padding:7px 8px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+.tbl th{font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint)}
+.tbl .t{white-space:nowrap; color:var(--ink-soft)}
 .practice{border-left:5px solid var(--good); background:var(--good-wash); border-radius:12px; padding:11px 15px; margin:10px 0}
 .practice .who{color:var(--good)}
 .scenario{border:1.5px solid var(--gold); background:var(--field); border-radius:12px; padding:11px 15px; margin:10px 0}
@@ -66,7 +85,7 @@
 @media print{
   .jumpbar,.tofac{display:none !important}
   .sess{break-before:page}
-  .step,.anchor,.practice,.scenario,.integ,.between,.meta tr{break-inside:avoid; box-shadow:none}
+  .step .say,.scan,.contra,.prep,.refl,.anchor,.practice,.scenario,.integ,.between,.meta tr,.card{break-inside:avoid; box-shadow:none}
   .xw-wrap{overflow:visible}
 }
 </style>
@@ -78,14 +97,14 @@
 <header class="mast">
   <div class="k">The Adult Edition · Book 6</div>
   <h1>The curriculum</h1>
-  <p class="deck">All twelve sessions: what each one sets out to do, its big idea, its ninety minutes step by step, and the practice on the page.</p>
+  <p class="deck">The whole program, free: all twelve sessions with every lesson, every timed step, the practices and the safety checks.</p>
   <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
 </header>
 <main id="main">
 
 <div class="jumpbar no-print">
   <label for="jump">Go to</label>
-  <select id="jump"><option value="xw">All twelve at a glance</option>@@OPTIONS@@</select>
+  <select id="jump"><option value="xw">All twelve at a glance</option>@@OPTIONS@@<option value="closing">The closing words</option></select>
 </div>
 
 <section id="xw" style="margin-top:22px">
@@ -96,8 +115,8 @@
     <tbody>@@CROSSWALK@@</tbody>
   </table></div>
   <div class="note">
-    <b>What is here, and what is with the facilitators</b>
-    This page is the manual&#8217;s own words for each session. The facilitators&#8217; scripts, the safety checks they run in the room, the &#8220;do not go ahead&#8221; boxes and the distress protocol are in the facilitator sessions, which open with a key.
+    <b>Free, and led by two trained facilitators</b>
+    Everything here is free to read, print and use. It is written to be led in a group by two trained facilitators, with the safety checks in place. It is not a program to work through alone.
   </div>
 </section>
 
@@ -120,7 +139,7 @@
   </ul>
 </div>
 </main>
-<footer class="foot"><p>Architecture of Grace · The Adult Edition · the curriculum. A group program led by two trained facilitators. It is not therapy, and it is not for use alone.</p></footer>
+<footer class="foot"><p>Architecture of Grace · The Adult Edition · the curriculum. Free to use. A group program led by two trained facilitators; it is not therapy, and it is not for use alone.</p></footer>
 </div>
 <script>
 (function(){
@@ -129,7 +148,7 @@
   function barBottom(){ var b=document.querySelector(".jumpbar"); return (parseFloat(getComputedStyle(b).top)||0)+b.offsetHeight; }
   j.addEventListener("change",function(){ var t=document.getElementById(j.value); if(t){ window.scrollTo(0, window.pageYOffset+t.getBoundingClientRect().top-barBottom()-12); try{ history.replaceState(null,"","#"+j.value); }catch(e){} } });
   /* the menu follows the reader, so it always names the session on screen */
-  var secs=[].slice.call(document.querySelectorAll("#xw, .sess"));
+  var secs=[].slice.call(document.querySelectorAll("#xw, .sess, #closing"));
   var tick=null;
   window.addEventListener("scroll",function(){ if(tick) return; tick=setTimeout(function(){ tick=null; var cur="xw";
     var line=barBottom()+60; for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top<line) cur=secs[i].id; } if(j.value!==cur) j.value=cur; },120); },{passive:true});
