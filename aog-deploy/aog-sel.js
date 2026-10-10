@@ -163,6 +163,16 @@
         }
       }
     } catch (e) {}
+    /* 2a — AOG-ADULT-IN-ROOMMENU-V1 (2026-10-10): Jimmy, "in the drop down menu I don't see anything" for the
+       Adult Edition. Wherever the rooms' menu lists the five rooms' lessons, the Adult Edition's lessons follow. */
+    try {
+      var rsel = D.getElementById("roomSel");
+      var r207 = rsel && rsel.querySelector('option[value="room-207-lessons.html"]');
+      if (r207 && !rsel.querySelector('option[value="/adult/lessons"]')) {
+        var ao = D.createElement("option"); ao.value = "/adult/lessons"; ao.textContent = "The Adult Edition · The Lessons";
+        r207.parentNode.insertBefore(ao, r207.nextSibling);
+      }
+    } catch (e) {}
     /* 2 — the novel in the room menu */
     try {
       if (room && NOVELS[room]) {

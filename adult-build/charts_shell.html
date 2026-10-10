@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+@@FIRSTPAINT@@
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition · Anchor Charts — Architecture of Grace</title>
+<meta name="description" content="The twelve Adult Edition anchor charts, built live with the group: a skeleton first, then the reveals, then what the group says. Free.">
+<link rel="canonical" href="https://architectureofgrace.org/adult/charts">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-ADULT-CHARTS-V1 (2026-10-10) · /adult/charts. Built by adult-build/build_charts.py from the manual —
+     never hand-edit the charts. Like the rooms' anchor charts: Skeleton / Complete, Reveal next (or R),
+     Reset, Print; ← → move between charts; what the group says is kept on this device only. ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+.ctools{position:sticky; top:calc(var(--aogbar-h,52px) + 4px); z-index:20; background:var(--ground); padding:10px 0; border-bottom:1px solid var(--rule); margin-top:16px}
+.ctools .row1{display:flex; gap:8px; align-items:center; flex-wrap:nowrap}
+.ctools .row1 .btn{flex:none; width:48px; padding:0 !important}
+.ctools select{flex:1 1 auto; min-width:0; width:auto !important; min-height:48px; padding:8px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font-weight:700}
+.ctools .row2{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px}
+.seg{display:inline-flex; border:1.5px solid var(--rule); border-radius:999px; overflow:hidden}
+.seg button{min-height:44px; padding:0 16px; border:0; background:var(--field); color:var(--ink); font-weight:800; cursor:pointer; touch-action:manipulation}
+.seg button[aria-pressed="true"]{background:var(--navy); color:var(--on-navy)}
+.ctools .row2 .btn{min-height:44px; padding:0 16px}
+@media (max-width:600px){
+  .ctools .row2{flex-wrap:nowrap; gap:6px}
+  .ctools .row2 .btn,.seg button{padding:0 11px; font-size:.95rem}
+  .ctools .wide{display:none}
+  .seg{flex:none}
+}
+@media (max-width:440px){ #printBtn{display:none} }
+.board{margin-top:18px; background:var(--field); border:1px solid var(--rule); border-top:8px solid var(--rule); border-radius:18px; padding:20px 22px 18px; box-shadow:var(--lift-sm)}
+.board.p1{border-top-color:var(--p1)} .board.p2{border-top-color:var(--p2)} .board.p3{border-top-color:var(--p3)} .board.p4{border-top-color:var(--p4)}
+.board .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800}
+.board h2{font-size:clamp(1.6rem,4vw,2.4rem); margin:.15em 0 .1em; border:0; padding:0}
+.board .sub{font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); font-weight:700; padding-bottom:12px; border-bottom:3px solid var(--navy); margin:0}
+.panels{display:grid; grid-template-columns:1fr; gap:14px; margin-top:16px}
+@media (min-width:900px){ .panels.two{grid-template-columns:1.15fr 1fr} }
+.pan{border:2px solid var(--rule); border-radius:14px; padding:14px 16px}
+.pan h3{margin:0 0 8px; font-size:1rem; letter-spacing:.06em; text-transform:uppercase}
+.pan.idea{border-color:var(--navy)} .pan.idea h3{color:var(--navy)}
+.pan.onb{border-color:var(--good)} .pan.onb h3{color:var(--good)}
+.pan.grp{border-color:var(--gold); border-style:dashed} .pan.grp h3{color:var(--gold-deep)}
+.lines{list-style:none; margin:0; padding:0}
+.lines li{position:relative; padding:6px 0 6px 18px; border-bottom:1px solid var(--rule-soft); font-family:"Fraunces",Georgia,serif; font-size:1.08rem; line-height:1.5}
+.lines li::before{content:"–"; position:absolute; left:0; color:var(--ink-soft)}
+.lines li.hid{color:transparent; user-select:none}
+.lines li.hid::after{content:""; position:absolute; left:18px; right:0; top:50%; border-bottom:2px solid var(--rule)}
+.items{list-style:none; margin:0; padding:0}
+.items li{padding:8px 0; border-bottom:1px solid var(--rule-soft)}
+.items li b{display:block; font-weight:800}
+.items li .r{display:block; color:var(--ink-soft); font-size:.97rem; margin-top:2px}
+.items li .r.hid{color:transparent; user-select:none; position:relative; min-height:1.4em}
+.items li .r.hid::after{content:""; position:absolute; left:0; right:0; top:50%; border-bottom:2px solid var(--rule)}
+.add{display:flex; gap:8px; margin-top:6px}
+.add input{flex:1; min-width:0; min-height:48px; padding:10px 12px; border:1.5px dashed var(--rule); border-radius:12px; background:var(--field-2); color:var(--ink)}
+.said{list-style:none; margin:10px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px}
+.said li{display:inline-flex; align-items:center; gap:6px; padding:6px 8px 6px 12px; border-radius:999px; background:var(--field-2); border:1px solid var(--rule); font-weight:600}
+.said li button{min-width:32px; min-height:32px; border:0; border-radius:999px; background:transparent; color:var(--ink-soft); font-weight:800; cursor:pointer}
+.empty{color:var(--ink-soft); font-style:italic; margin:.4em 0 0}
+.cfoot{display:flex; flex-wrap:wrap; gap:6px 28px; margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); font-size:.86rem; color:var(--ink-soft)}
+.cfoot b{display:block; font-size:.74rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint)}
+.clinks{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
+@media print{
+  .ctools,.add,.said li button,.clinks{display:none !important}
+  .lines li.hid,.items li .r.hid{color:inherit} .lines li.hid::after,.items li .r.hid::after{display:none}
+  .board{box-shadow:none; break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-adult.js" defer></script>
+<div class="wrap">
+<header class="mast">
+  <div class="k">The Adult Edition · Book 6</div>
+  <h1>Anchor Charts</h1>
+  <p class="deck">Build each session&#8217;s chart with the group: start with the skeleton, reveal a line at a time, and add what the group says.</p>
+  <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
+</header>
+<main id="main">
+
+<div class="ctools no-print">
+  <div class="row1">
+    <button class="btn" id="prevBtn" type="button" aria-label="Previous chart">←</button>
+    <select id="pick" aria-label="Choose a chart">@@OPTIONS@@</select>
+    <button class="btn" id="nextBtn" type="button" aria-label="Next chart">→</button>
+  </div>
+  <div class="row2">
+    <span class="seg" role="group" aria-label="How much to show"><button type="button" id="skelBtn" aria-pressed="true">Skeleton</button><button type="button" id="fullBtn" aria-pressed="false">Complete</button></span>
+    <button type="button" class="btn" id="revealBtn" aria-label="Reveal next">Reveal<span class="wide"> next</span></button>
+    <button type="button" class="btn" id="resetBtn">Reset</button>
+    <button type="button" class="btn" id="printBtn" aria-label="Print this chart">Print<span class="wide"> this chart</span></button>
+  </div>
+</div>
+
+<div id="chart" aria-live="polite"></div>
+
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">Free, private, any time.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+</main>
+<footer class="foot"><p>Architecture of Grace · The Adult Edition · anchor charts. Free to use. What the group says stays on this device.</p></footer>
+</div>
+<script id="chartData" type="application/json">@@DATA@@</script>
+<script>
+(function(){
+"use strict";
+var D=document, $=function(id){return D.getElementById(id);};
+var C=JSON.parse($("chartData").textContent), KEY="aog.adult.charts.v1";
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function said(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ return {}; } }
+function keep(o){ try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+var cur=0, full=false, shown=0;   /* shown: how many hidden pieces have been revealed on the current chart */
+function pieces(c){ return Math.max(0,c.lines.length-1)+c.board.length; }
+function draw(){
+  var c=C[cur], k=0, h="";
+  h+='<article class="board p'+c.p+'"><div class="k p'+c.p+'c">Session '+c.n+' · '+esc(c.phase)+' · anchor chart</div><h2>'+esc(c.title)+'</h2>'+(c.words?'<p class="sub">'+esc(c.words)+'</p>':'');
+  h+='<div class="panels'+(c.board.length?' two':'')+'"><section class="pan idea"><h3>The idea</h3><ul class="lines">';
+  c.lines.forEach(function(t,i){ var hid=!full&&i>0&&(k++>=shown); h+='<li'+(hid?' class="hid" aria-label="Hidden line"':'')+'>'+(hid?'&nbsp;':esc(t))+'</li>'; });
+  h+='</ul></section>';
+  if(c.board.length){
+    h+='<section class="pan onb"><h3>On the board</h3><ul class="items">';
+    c.board.forEach(function(b){ var hid=!full&&b.r&&(k++>=shown); h+='<li><b>'+esc(b.l)+'</b>'+(b.r?'<span class="r'+(hid?' hid':'')+'">'+(hid?'&nbsp;':esc(b.r))+'</span>':'')+'</li>'; });
+    h+='</ul></section>';
+  }
+  var g=(said()[c.n]||[]);
+  h+='</div><section class="pan grp" style="margin-top:14px"><h3>What the group says</h3><div class="add"><input type="text" id="addIn" autocomplete="off" aria-label="Add what the group says" placeholder="Type what someone says, then press Enter"><button type="button" class="btn" id="addBtn">Add</button></div>';
+  h+=g.length?'<ul class="said">'+g.map(function(t,i){ return '<li>'+esc(t)+'<button type="button" data-del="'+i+'" aria-label="Remove">✕</button></li>'; }).join("")+'</ul>':'<p class="empty">Nothing yet. Words the group offers go here.</p>';
+  h+='</section><div class="cfoot"><span><b>Post</b>Session '+c.n+', at the anchor idea. It stays up through Session 12.</span>'+(c.practice?'<span><b>The practice</b>'+esc(c.practice)+'</span>':'')+'</div>';
+  h+='<div class="clinks no-print"><a class="btn" href="/adult/lessons#s'+c.n+'">The lesson →</a><a class="btn" href="/adult/workbook?s='+c.n+'">The participant page →</a></div></article>';
+  $("chart").innerHTML=h;
+  $("pick").value=String(c.n); $("prevBtn").disabled=(cur===0); $("nextBtn").disabled=(cur===C.length-1);
+  $("skelBtn").setAttribute("aria-pressed",full?"false":"true"); $("fullBtn").setAttribute("aria-pressed",full?"true":"false");
+  $("revealBtn").disabled=full||shown>=pieces(c);
+  try{ history.replaceState(null,"","#s"+c.n); }catch(e){}
+}
+function go(i){ cur=Math.max(0,Math.min(C.length-1,i)); shown=0; full=false; draw(); }
+function reveal(){ if(!full&&shown<pieces(C[cur])){ shown++; draw(); } }
+function add(){
+  var i=$("addIn"), t=(i.value||"").trim(); if(!t) return;
+  var o=said(), n=C[cur].n; (o[n]=o[n]||[]).push(t.slice(0,200)); keep(o); draw(); var ni=$("addIn"); if(ni) ni.focus();
+}
+$("pick").addEventListener("change",function(){ go(+this.value-1); });
+$("prevBtn").addEventListener("click",function(){ go(cur-1); });
+$("nextBtn").addEventListener("click",function(){ go(cur+1); });
+$("skelBtn").addEventListener("click",function(){ full=false; draw(); });
+$("fullBtn").addEventListener("click",function(){ full=true; draw(); });
+$("revealBtn").addEventListener("click",reveal);
+$("resetBtn").addEventListener("click",function(){ full=false; shown=0; draw(); });
+$("printBtn").addEventListener("click",function(){ window.print(); });
+$("chart").addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest("button"); if(!b) return;
+  if(b.id==="addBtn") add();
+  if(b.hasAttribute("data-del")){ var o=said(), n=C[cur].n; (o[n]||[]).splice(+b.getAttribute("data-del"),1); keep(o); draw(); }
+});
+D.addEventListener("keydown",function(e){
+  var t=e.target, typing=t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.tagName==="SELECT");
+  if(t&&t.id==="addIn"&&e.key==="Enter"){ e.preventDefault(); add(); return; }
+  if(typing) return;
+  if(e.key==="ArrowRight") go(cur+1); else if(e.key==="ArrowLeft") go(cur-1); else if(e.key==="r"||e.key==="R") reveal();
+});
+window.addEventListener("beforeprint",function(){ full=true; draw(); });
+var m=/^#s(\d+)$/.exec(location.hash||""); go(m?+m[1]-1:0);
+})();
+</script>
+</body>
+</html>

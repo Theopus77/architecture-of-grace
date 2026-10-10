@@ -7,6 +7,8 @@ This folder sits outside `aog-deploy/`, so Netlify never serves it.
 | `adult-edition.html` | `/adult` | Hand-written. Run `stamp.py` after editing a copy that still has `@@FIRSTPAINT@@`. |
 | `adult-workbook.html` | `/adult/workbook` | Hand-written (same stamp). Every page is open; Sessions 7–12 say to check in first. |
 | `adult-curriculum.html` | `/adult/curriculum` | `python3 adult-build/build_curriculum.py /path/to/book6.json` — the whole manual, open |
+| `adult-lessons.html` | `/adult/lessons` | `python3 adult-build/build_lessons.py /path/to/book6.json` — one lesson at a time |
+| `adult-charts.html` | `/adult/charts` | `python3 adult-build/build_charts.py /path/to/book6.json` — interactive anchor charts |
 | `adult-anchors.html` | `/adult/anchors` | `python3 adult-build/build_anchors.py /path/to/book6.json` |
 | `adult-sessions.html` | `/adult/sessions` | `python3 adult-build/build_sessions.py --book /path/to/book6.json` — open, no key |
 

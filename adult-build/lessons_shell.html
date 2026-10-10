@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+@@FIRSTPAINT@@
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition · The Lessons — Architecture of Grace</title>
+<meta name="description" content="The twelve Adult Edition lessons, one at a time: the words to say, every timed step, the safety checks and the practice. Free.">
+<link rel="canonical" href="https://architectureofgrace.org/adult/lessons">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-ADULT-LESSONS-V1 (2026-10-10) · /adult/lessons. Built by adult-build/build_lessons.py from the manual,
+     verbatim — never hand-edit the lessons. Jimmy: "I dont see any interactive anchor charts or lesson pages on
+     the Adult SEL." One lesson at a time, like the rooms' lessons pages; "I taught this" stays on the device
+     (localStorage aog.adult.taught.v1). The lesson menu is a drop-down (the standing drop-down order). ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+@@SESSIONCSS@@
+/* ── the lessons page ── */
+.ltools{position:sticky; top:calc(var(--aogbar-h,52px) + 4px); z-index:20; background:var(--ground); padding:10px 0; border-bottom:1px solid var(--rule); margin-top:16px; display:flex; gap:8px; align-items:center; flex-wrap:nowrap}
+.ltools .btn{flex:none; width:48px; padding:0 !important}
+.ltools select{flex:1 1 auto; min-width:0; width:auto !important; min-height:48px; padding:8px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font-weight:700}
+.lesson[hidden]{display:none}
+.hero{position:relative; margin:18px 0 0; border-radius:18px; overflow:hidden; background:#F4EFE3; border:1px solid var(--rule); box-shadow:var(--lift-sm)}
+.hero picture,.hero img{display:block; width:100%; height:auto}
+.hero .hcap{position:absolute; left:0; top:0; bottom:0; width:52%; display:flex; flex-direction:column; justify-content:center; gap:6px; padding:18px 22px; color:#1D2733}
+.hero .hk{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800}
+.hero.p1 .hk{color:#1F6F6B} .hero.p2 .hk{color:#5B3A78} .hero.p3 .hk{color:#9A4A2E} .hero.p4 .hk{color:#7E611C}
+.hero .ht{font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:clamp(1.3rem,3.2vw,2.1rem); line-height:1.12; color:#1D2733}
+.hero .hc{font-size:.9rem; color:#4F5A67}
+.hero .hc .flag{color:#9A3412} .hero .hc .flag.gate{color:#1B3A5F}
+.hero .hc .flag{display:inline-flex; white-space:nowrap}
+.hero .halt{position:absolute; right:12px; bottom:8px; font-size:.72rem; font-style:italic; color:#5A6673}
+@media (max-width:640px){
+  .hero .hcap{position:static; width:auto; padding:12px 16px 14px; border-top:1px solid rgba(29,39,51,.12)}
+  .hero .halt{display:none}
+}
+.prog{margin-top:12px}
+.lfoot{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; padding-top:16px; border-top:1px solid var(--rule)}
+.lfoot .taught[aria-pressed="true"]{background:var(--good); border-color:var(--good); color:var(--on-navy)}
+.lnav{display:flex; justify-content:space-between; gap:10px; margin-top:14px}
+@media print{ .ltools,.lfoot,.lnav,.prog{display:none !important} .lesson[hidden]{display:none !important} .hero{break-inside:avoid} }
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-adult.js" defer></script>
+<div class="wrap">
+<header class="mast">
+  <div class="k">The Adult Edition · Book 6</div>
+  <h1>The Lessons</h1>
+  <p class="deck">Twelve lessons, one at a time: the words to say, every timed step, the safety checks and the practice. Free to teach.</p>
+  <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
+</header>
+<main id="main">
+
+<div class="ltools no-print">
+  <button class="btn" id="prevBtn" type="button" aria-label="Previous lesson">←</button>
+  <select id="pick" aria-label="Choose a lesson">@@OPTIONS@@</select>
+  <button class="btn" id="nextBtn" type="button" aria-label="Next lesson">→</button>
+</div>
+<div class="prog no-print" id="lprog"><span class="bar"><i></i></span><span class="lab"></span></div>
+
+@@LESSONS@@
+
+<div class="lnav no-print"><button type="button" class="btn" id="prev2">← Lesson before</button><button type="button" class="btn" id="next2">Next lesson →</button></div>
+
+<section id="closing">
+  <h2>The closing words</h2>
+  <div class="say"><span class="who">The same at every session</span>@@CLOSING@@</div>
+</section>
+
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">Free, private, any time.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+</main>
+<footer class="foot"><p>Architecture of Grace · The Adult Edition · the lessons. Free to use. A group program led by two trained facilitators; it is not therapy, and it is not for use alone.</p></footer>
+</div>
+<script>
+(function(){
+"use strict";
+var D=document, $=function(id){return D.getElementById(id);}, KEY="aog.adult.taught.v1", cur=1;
+function taught(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ return {}; } }
+function paint(){
+  var t=taught(), c=0, o=$("pick").options;
+  for(var i=0;i<o.length;i++){ var n=+o[i].value; if(t[n]) c++; o[i].textContent=(t[n]?"✓ ":"")+o[i].textContent.replace(/^✓ /,""); }
+  var pr=$("lprog"); pr.querySelector("i").style.setProperty("--p",Math.round(100*c/12)); pr.querySelector(".lab").textContent=c+" of 12 lessons taught";
+  var bs=D.querySelectorAll("button[data-taught]");
+  for(var k=0;k<bs.length;k++){ var on=!!t[bs[k].getAttribute("data-taught")]; bs[k].setAttribute("aria-pressed",on?"true":"false"); bs[k].textContent=on?"Taught ✓":"I taught this lesson"; }
+}
+function show(n,scroll){
+  n=Math.max(1,Math.min(12,n|0)); cur=n;
+  var ls=D.querySelectorAll(".lesson"); for(var i=0;i<ls.length;i++) ls[i].hidden=(+ls[i].getAttribute("data-n")!==n);
+  $("pick").value=String(n); $("prevBtn").disabled=$("prev2").disabled=(n===1); $("nextBtn").disabled=$("next2").disabled=(n===12);
+  /* only when the reader picks a lesson: on load another site script would scroll to #sN, past the masthead and the menu */
+  if(scroll!==false){ try{ history.replaceState(null,"","#s"+n); }catch(e){} }
+  if(scroll!==false){ try{ var top=D.querySelector(".ltools").getBoundingClientRect().top+window.pageYOffset-60; if(window.pageYOffset>top) window.scrollTo(0,top); }catch(e){} }
+}
+$("pick").addEventListener("change",function(){ show(+this.value); });
+$("prevBtn").addEventListener("click",function(){ show(cur-1); }); $("prev2").addEventListener("click",function(){ show(cur-1); });
+$("nextBtn").addEventListener("click",function(){ show(cur+1); }); $("next2").addEventListener("click",function(){ show(cur+1); });
+D.addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest("button[data-taught]"); if(!b) return;
+  var t=taught(), n=b.getAttribute("data-taught"); if(t[n]) delete t[n]; else t[n]=1;
+  try{ localStorage.setItem(KEY,JSON.stringify(t)); }catch(err){}
+  paint();
+});
+var m=/^#s(\d+)$/.exec(location.hash||""); show(m?+m[1]:1,false); paint();
+})();
+</script>
+</body>
+</html>

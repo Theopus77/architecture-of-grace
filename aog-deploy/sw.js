@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.10.m7447'   // JIMMY: "THE MICROSCOPE AND NOISE MAKER SHOULD GET THEIR OWN DIRECT LINKS AND ICONS": HOME SCREEN ICONS FOR THE MICROSCOPE LAB (/MICROSCOPE) AND THE OSCILLOSCOPE (/OSCILLOSCOPE) (previous: m7446)
+const CACHE = 'aog-cache-2026.10.10.m7448'   // JIMMY: "I DONT SEE ANY INTERACTIVE ANCHOR CHARTS OR LESSON PAGES ON THE ADULT SEL ... IN THE DROP DOWN MENU I DON'T SEE ANYTHING EITHER": NEW adult-lessons.html (/adult/lessons, AOG-ADULT-LESSONS-V1) - the twelve lessons one at a time under each phase's pencil drawing, taught ticks on the device; NEW adult-charts.html (/adult/charts, AOG-ADULT-CHARTS-V1) - twelve interactive anchor charts (skeleton/complete, reveal next or R, the group's words kept on the device, print), verbatim; NEW aog-adult.js puts 'Jump to another room' on every Adult page; aog-sel.js adds the Adult Edition's lessons to every SEL room menu; door, Explore menu and SEL door link both pages.
+// const CACHE = 'aog-cache-2026.10.10.m7447'   // JIMMY: "THE MICROSCOPE AND NOISE MAKER SHOULD GET THEIR OWN DIRECT LINKS AND ICONS": HOME SCREEN ICONS FOR THE MICROSCOPE LAB (/MICROSCOPE) AND THE OSCILLOSCOPE (/OSCILLOSCOPE) (previous: m7446)
 // const CACHE = 'aog-cache-2026.10.10.m7446'   // JIMMY: "CAN AN ICON AND DIRECT LINK BE MADE FOR THE REGULATION TOOLS PAGE (AND CAN THAT PAGE ITSELF GET A FACELIFT!!!) I DON'T THINK IT IS VERY CALMING": /CALM WITH ITS OWN ICON; THE CALM TOOLS SCREEN IN WARM PAPER, ONE SAGE ACCENT, ONE KIND OF CARD (previous: m7444)
 // const CACHE = 'aog-cache-2026.10.10.m7445'   // JIMMY: "A DROP DOWN MENU … WITH ALL THE PEDALS AND EFFECT MODULES SHOULD BE RIGHT THERE … I DON'T LIKE HOW ONCE YOU TURN ONE OFF IT SCROLLS DOWN": THE STRIP UNDER THE NECK ALWAYS SHOWS, WITH AN ADD A PEDAL OR EFFECT MENU; TURNING ONE OFF STAYS PUT (previous: m7444)
 // const CACHE = 'aog-cache-2026.10.10.m7444'   // JIMMY: "ONCE A PEDAL IS CHOSEN FOR GUITAR AND BASS, IT SHOULD MOVE CLOSER TO THE NECK": A PEDALS ON STRIP UNDER THE NECK CARRIES THE KNOBS OF EVERY PEDAL THAT IS ON (previous: m7443)
@@ -607,7 +608,7 @@ const PRECACHE_LESSONS = [
   './AoG-Interior-Worksheets.html', './AoG-Anchor-Charts.html',
   './room-36-curriculum.html',  // .30fu — the Room 36 teacher curriculum page; a planning-period read with no Wi-Fi promise, same rule
   './room-36-workbook.html',    // .30fu amended — the companion workbook rides beside it
-  './adult-edition.html', './adult-curriculum.html', './adult-workbook.html', './adult-anchors.html', './adult-sessions.html', './aog-adult.css',   // AOG-ADULT (2026-10-09) — Book 6, the Adult Edition
+  './adult-edition.html', './adult-curriculum.html', './adult-lessons.html', './adult-charts.html', './adult-workbook.html', './adult-anchors.html', './adult-sessions.html', './aog-adult.css', './aog-adult.js',   // AOG-ADULT (2026-10-09) — Book 6, the Adult Edition
   './room-36-lessons.html',     // .30fv — all 28 lessons; the planning-period read continues
   './room-207-curriculum.html', './room-207-lessons.html', './room-207-workbook.html',   // Room 207 · Grades 11–12 — same planning-period rule as Room 36
   './AoG-Anchor-Charts-207.html',   // Room 207 anchor charts

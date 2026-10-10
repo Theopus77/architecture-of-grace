@@ -17,8 +17,12 @@ book6.json is never committed; it travels in the Adult Edition zip.
 """
 import json, io, os, re, sys, html
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
-D = json.load(io.open(sys.argv[1], encoding="utf-8"))
-X = D["extra"]
+D = X = None
+def load(path):
+    """Read book6.json; build_lessons.py and build_charts.py import this module and call it."""
+    global D, X
+    D = json.load(io.open(path, encoding="utf-8")); X = D["extra"]
+    return D
 E = lambda s: html.escape(s, quote=True)
 
 PH = {1:(1,"I","Foundation"),2:(1,"I","Foundation"),3:(1,"I","Foundation"),4:(2,"II","Interior"),5:(2,"II","Interior"),
@@ -120,17 +124,22 @@ def crosswalk():
                  % (p, n, n, n, E(s["title"]), E(title_case(s.get("anchor_title") or "")), E(title_case(pr[0]) if pr else "—"), care(s.get("flagline"))))
     return rows
 
-opts = '<option value="before">Before you begin · care, shape, protocol</option>'
-for s in D["sessions"]:
-    n = s["n"]
-    if n in (1, 4, 7, 11): opts += ("</optgroup>" if n > 1 else "") + '<optgroup label="Phase %s · %s">' % (PH[n][1], PH[n][2])
-    opts += '<option value="s%d">%d · %s</option>' % (n, n, E(s["title"]))
-opts += "</optgroup>"
+def main(path):
+    load(path)
+    opts = '<option value="before">Before you begin · care, shape, protocol</option>'
+    for s in D["sessions"]:
+        n = s["n"]
+        if n in (1, 4, 7, 11): opts += ("</optgroup>" if n > 1 else "") + '<optgroup label="Phase %s · %s">' % (PH[n][1], PH[n][2])
+        opts += '<option value="s%d">%d · %s</option>' % (n, n, E(s["title"]))
+    opts += "</optgroup>"
 
-tpl = io.open(os.path.join(HERE, "curriculum_shell.html"), encoding="utf-8").read()
-fp = io.open(os.path.join(HERE, "head_firstpaint.txt"), encoding="utf-8").read().rstrip("\n")
-out = (tpl.replace("@@FIRSTPAINT@@", fp).replace("@@OPTIONS@@", opts).replace("@@CROSSWALK@@", crosswalk())
-          .replace("@@SESSIONS@@", before_html() + "\n" + "\n".join(session_html(s) for s in D["sessions"]))
-          .replace("@@CLOSING@@", E(X.get("closing_exit") or "")))
-io.open(os.path.join(ROOT, "aog-deploy", "adult-curriculum.html"), "w", encoding="utf-8").write(out)
-print("built adult-curriculum.html", len(out), "bytes")
+    tpl = io.open(os.path.join(HERE, "curriculum_shell.html"), encoding="utf-8").read()
+    fp = io.open(os.path.join(HERE, "head_firstpaint.txt"), encoding="utf-8").read().rstrip("\n")
+    out = (tpl.replace("@@FIRSTPAINT@@", fp).replace("@@OPTIONS@@", opts).replace("@@CROSSWALK@@", crosswalk())
+              .replace("@@SESSIONS@@", before_html() + "\n" + "\n".join(session_html(s) for s in D["sessions"]))
+              .replace("@@CLOSING@@", E(X.get("closing_exit") or "")))
+    io.open(os.path.join(ROOT, "aog-deploy", "adult-curriculum.html"), "w", encoding="utf-8").write(out)
+    print("built adult-curriculum.html", len(out), "bytes")
+
+if __name__ == "__main__":
+    main(sys.argv[1])
