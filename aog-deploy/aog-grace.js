@@ -482,7 +482,7 @@
     }
   }
 
-  /* ── 4b ── the lede, two lines ────────────────────────────────────────── */
+  /* ── 4b ── the lede, one line (AOG-THIN-MAST-V1) ────────────────────────────────────────── */
   var LEDE = ".deck, .tag, .tagline, .lede, .say, p.sub, p"; /* AOG-HERO-TRIM-V1 (2026-09-27): any long paragraph in the masthead, at any depth */
   function clampLedes() {
     if (!hero) return;
@@ -491,7 +491,7 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       if (el.closest("[data-aog-card]") || el.querySelector("input, button, select") || el.classList.contains("aog-clamp") || el.hasAttribute("data-aog-fits")) continue;
-      if ((el.textContent || "").replace(/\s+/g, " ").trim().length < 140) continue;
+      if ((el.textContent || "").replace(/\s+/g, " ").trim().length < 60) continue;   /* AOG-THIN-MAST-V1: one line now, so a shorter lede can need More too */
       el.classList.add("aog-clamp");
       var more = D.createElement("button");
       more.type = "button"; more.className = "aog-more no-print";
