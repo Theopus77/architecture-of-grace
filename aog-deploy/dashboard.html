@@ -855,9 +855,9 @@ function dangerCard(){
   return '<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("This device","Este aparato")+'</p><p class="s">'+t2("Save a copy of everything on this device, or clear it all. Your Sheet is not touched either way.","Guarda una copia de todo lo que hay en este aparato, o bórralo todo. Tu Hoja no se toca.")+'</p>'
    +'<div class="row"><button class="btn" type="button" id="bkUp">⬇ '+t2("Download a backup","Descargar copia")+'</button><button class="btn danger" type="button" id="delAll">'+t2("Delete everything on this device","Borrar todo en este aparato")+'</button></div><p class="s" id="delMsg" style="margin:10px 0 0" aria-live="polite"></p></section>';
 }
-const PV_KEEP=/^(aog\.a11y|aog\.theme|aog\.dash\.(role|mode)|aog\.ov\.|aog\.qs\.|aog\.esbanner|aog\.seenNudge|aog\.fv\.|aog\.internal|aog\.lang|aog\.sync\.(url|key|writekey))/;
+const PV_KEEP=/^(aog\.a11y|aog\.theme|aog\.dash\.(role|mode)|aog\.ov\.|aog\.qs\.|aog\.esbanner|aog\.seenNudge|aog\.fv\.|aog\.internal|aog\.lang|aog\.sync\.(url|key|writekey)|aog\.studio\.locker\.v1)/;
 function backup(){
-  const device={}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k||!/^(aog|grace)/i.test(k)) continue; const v=localStorage.getItem(k); try{ device[k]=JSON.parse(v); }catch(e){ device[k]=v; } } }catch(e){}
+  const device={}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k||!/^(aog|grace)/i.test(k)||k==="aog.studio.locker.v1") continue; const v=localStorage.getItem(k);   /* the Studio locker's key opens your songs: it never goes into a file */ try{ device[k]=JSON.parse(v); }catch(e){ device[k]=v; } } }catch(e){}
   const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),note:"Architecture of Grace — everything this device holds. Made on your computer, sent nowhere.",device:device},null,1)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="aog-backup-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
 }

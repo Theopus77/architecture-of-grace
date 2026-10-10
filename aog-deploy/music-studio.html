@@ -256,6 +256,23 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
   color:#0A1E33;background:#FFFDF8;border:1.5px solid #C9A24A;border-radius:12px;padding:8px 14px}
 .st-lk{display:grid;gap:.6rem;max-width:44rem}
 .st-lk .st-row .st-btn{flex:0 1 auto}
+/* AOG-STUDIO-LOCKER-LIGHTS-V1: a small light that says whether the locker is connected, as on the dashboard */
+.st-lkl{display:flex;gap:.7rem;align-items:flex-start;margin:0;padding:.7rem .85rem;border:1px solid #2f3339;border-radius:12px;background:#181a1e}
+.st-lkl i{flex:none;width:12px;height:12px;border-radius:50%;margin-top:.3rem;background:#8A93A0}
+.st-lkl.ok i{background:#3fbf6f;box-shadow:0 0 0 4px rgba(63,191,111,.22)}
+.st-lkl.warn i{background:#e0a030;box-shadow:0 0 0 4px rgba(224,160,48,.22)}
+.st-lkl.wait i{box-shadow:0 0 0 4px rgba(138,147,160,.22)}
+.st-lkl span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.st-lkl b{color:#f1ebdf;font-size:1rem}
+.st-lkl.ok b{color:#c8f5d0}
+.st-lkl.warn b{color:#ffe2a8}
+.st-lkl small{color:#d7cbb8;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
+/* the set-up steps open from a button that looks like one */
+.st-steps{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;border:1.5px solid #C9A24A;border-radius:12px;background:#1d2024;color:#ffe2a8;font:800 1rem/1.2 var(--sans);cursor:pointer;list-style:none}
+.st-steps::-webkit-details-marker{display:none}
+.st-steps::before{content:"▸";transition:none}
+details[open]>.st-steps::before{content:"▾"}
+details[open]>.st-steps{margin-bottom:.5rem}
 .st-qr{display:inline-block;justify-self:start;padding:12px;background:#fff;border-radius:12px;line-height:0}
 .st-qr[hidden]{display:none}
 .st-help{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:0;padding-left:1.3rem}
@@ -985,7 +1002,7 @@ const STR={
   openYes:{en:"Yes, open it",es:"Sí, abrirla"}, openNo:{en:"Not now",es:"Ahora no"},
   lockH:{en:"With your locker in Google Drive",es:"Con tu casillero en Google Drive"},
   lockAbout:{en:"Your locker keeps your songs in your own Google Drive. Set it up once, then every device you connect sees the same songs. Nobody signs in on the devices.",es:"Tu casillero guarda tus canciones en tu propio Google Drive. Prepáralo una vez y cada aparato que conectes verá las mismas canciones. Nadie inicia sesión en los aparatos."},
-  lockSteps:{en:"How to set it up (about 5 minutes)",es:"Cómo prepararlo (unos 5 minutos)"},
+  lockSteps:{en:"Show me how to set it up (5 minutes)",es:"Muéstrame cómo prepararlo (5 minutos)"},
   lockS1:{en:"Open script.google.com and press New project.",es:"Abre script.google.com y pulsa Nuevo proyecto."},
   lockS2:{en:"Paste in the locker script and press Save.",es:"Pega el script del casillero y pulsa Guardar."},
   lockScript:{en:"the locker script",es:"el script del casillero"},
@@ -999,6 +1016,13 @@ const STR={
   lockWrongKey:{en:"The locker said no to that key. Check it and try again.",es:"El casillero no aceptó esa clave. Revísala e inténtalo otra vez."},
   lockNoReach:{en:"The locker could not be reached. Check the internet and the web address, then try again.",es:"No se pudo llegar al casillero. Revisa el internet y la dirección web, y vuelve a intentarlo."},
   lockOn:{en:"This device is connected to your locker.",es:"Este aparato está conectado a tu casillero."},
+  ltOff:{en:"Not connected yet",es:"Aún sin conexión"}, ltOffS:{en:"Paste your locker's web address and key, then press Connect.",es:"Pega la dirección web y la clave de tu casillero, y pulsa Conectar."},
+  ltWait:{en:"Checking your locker…",es:"Revisando tu casillero…"}, ltWaitS:{en:"Asking your Google Drive if the locker answers.",es:"Preguntando a tu Google Drive si el casillero responde."},
+  ltOk:{en:"Locker connected",es:"Casillero conectado"}, ltOkS:{en:"Locker script v{v}. Songs in it: {n}. Checked at {at}.",es:"Script del casillero v{v}. Canciones: {n}. Revisado a las {at}."},
+  ltSheet:{en:"That is your Sheet's address",es:"Esa es la dirección de tu Hoja"}, ltSheetS:{en:"This web address belongs to your IEP Sheet script, not the locker. The locker needs its own new project at script.google.com. Follow the steps below, then paste the new web address here.",es:"Esta dirección web es del script de tu Hoja del IEP, no del casillero. El casillero necesita su propio proyecto nuevo en script.google.com. Sigue los pasos de abajo y pega aquí la nueva dirección web."},
+  ltKey:{en:"The key did not match",es:"La clave no coincide"}, ltKeyS:{en:"Copy the key again from the locker script (Run setup shows it), then press Connect.",es:"Copia otra vez la clave del script del casillero (Ejecutar setup la muestra) y pulsa Conectar."},
+  ltReach:{en:"Can't reach your locker",es:"No se llega a tu casillero"}, ltReachS:{en:"Check the internet and the web address. Then press Check again.",es:"Revisa el internet y la dirección web. Luego pulsa Revisar otra vez."},
+  ltAgain:{en:"Check again",es:"Revisar otra vez"},
   lockSave:{en:"Save to my locker",es:"Guardar en mi casillero"},
   lockSaving:{en:"Saving to your locker… {a} of {b}",es:"Guardando en tu casillero… {a} de {b}"},
   lockSaved:{en:"{name} is in your locker.",es:"{name} está en tu casillero."},
@@ -2022,7 +2046,7 @@ async function newSong(){
    Opening a song asks first when the desk already holds one.
    ══════════════════════════════════════════════════════════════════════════ */
 const SONG_MAGIC="AOGSONG1", LOCK_KEY="aog.studio.locker.v1", LOCK_PART=4*1024*1024;
-const CARRY={ask:null, busy:false, lock:null, songs:null, rmAsk:"", qr:false};
+const CARRY={ask:null, busy:false, lock:null, songs:null, rmAsk:"", qr:false, st:"", ver:0, at:0};   /* st: the locker light: "", wait, ok, sheet, key, reach */
 function songTitle(){ const n=(SONG.name||"").trim(); return n || t("myName"); }
 function fileSlug(){ const n=songTitle().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||t("file");
   const d=new Date(), z=x=>String(x).padStart(2,"0");
@@ -2118,7 +2142,11 @@ async function openFile(file){
 const LOCK_URL_RE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
 const LOCK_KEY_RE=/^[A-Za-z0-9_-]{8,100}$/;
 function lockGet(){ try{ const o=JSON.parse(localStorage.getItem(LOCK_KEY)||"null"); if(o && LOCK_URL_RE.test(o.url) && LOCK_KEY_RE.test(o.key)) return {url:o.url, key:o.key}; }catch(e){} return null; }
-function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; }
+function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; if(o) lockKeep(); }
+/* AOG-STUDIO-LOCKER-KEEP-V1: ask the browser to keep this site's storage, so Safari does not clear the locker after a week away.
+   Only Disconnect removes it here; the front page's clear and reset buttons and the dashboard's Delete everything keep it, and the
+   dashboard's backup file leaves the key out. */
+function lockKeep(){ try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){} }
 async function lockPost(body, lk){
   lk=lk||CARRY.lock; if(!lk) throw new Error("none");
   let r;
@@ -2127,6 +2155,7 @@ async function lockPost(body, lk){
   if(!r || !r.ok){ const err=new Error(r && r.error || "fail"); err.key=r && r.error==="key"; throw err; }
   return r;
 }
+function lockState(e, hello){ return e && e.key ? "key" : e && e.reach ? "reach" : (e && e.sheet) || hello ? "sheet" : "reach"; }
 function lockErr(e){ return e && e.key ? t("lockWrongKey") : e && e.reach ? t("lockNoReach") : (e && e.message && !/^(fail|none)$/.test(e.message) ? e.message : t("fail")); }
 function b64Of(blob){ return new Promise((ok,no)=>{ const fr=new FileReader(); fr.onload=()=>{ const s=String(fr.result); ok(s.slice(s.indexOf(",")+1)); }; fr.onerror=()=>no(fr.error); fr.readAsDataURL(blob); }); }
 function blobOfB64(b64){ const bin=atob(b64), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new Blob([u]); }
@@ -2143,16 +2172,24 @@ async function lockConnect(){
   const line=$("lockLine"), url=($("lkUrl").value||"").trim(), key=($("lkKey").value||"").trim();
   if(!LOCK_URL_RE.test(url)){ line.textContent=t("lockBadUrl"); $("lkUrl").focus(); return; }
   if(!LOCK_KEY_RE.test(key)){ line.textContent=t("lockNoKey"); $("lkKey").focus(); return; }
-  line.textContent=t("connecting"); CARRY.busy=true; paintLocker();
-  try{ await lockPost({action:"hello"}, {url:url, key:key}); lockSet({url:url, key:key}); line.textContent=t("lockOn"); CARRY.busy=false; await lockList(true); }
-  catch(e){ line.textContent=lockErr(e); CARRY.busy=false; }
+  /* AOG-STUDIO-LOCKER-LIGHTS-V1: the IEP Sheet's own address is the usual mix-up; it answers "Unknown action" */
+  let sheet=""; try{ sheet=localStorage.getItem("aog.sync.url")||""; }catch(e){}
+  if(sheet && sheet.trim()===url){ CARRY.st="sheet"; line.textContent=""; paintLocker(); return; }
+  line.textContent=t("connecting"); CARRY.busy=true; CARRY.st="wait"; paintLocker();
+  try{
+    const r=await lockPost({action:"hello"}, {url:url, key:key});
+    if(!r.locker){ const err=new Error("sheet"); err.sheet=true; throw err; }
+    lockSet({url:url, key:key}); CARRY.ver=r.locker; line.textContent=""; CARRY.busy=false; await lockList(true);
+  }
+  catch(e){ CARRY.st=lockState(e, true); line.textContent=""; CARRY.busy=false; }
   paintLocker();
 }
 async function lockList(quiet){
   const line=$("lockLine");
   if(!quiet) line.textContent=t("lockChecking");
-  try{ const r=await lockPost({action:"list"}); CARRY.songs=Array.isArray(r.songs) ? r.songs : []; if(!quiet) line.textContent=""; }
-  catch(e){ line.textContent=lockErr(e); }
+  if(CARRY.st!=="ok"){ CARRY.st="wait"; paintLocker(); }
+  try{ const r=await lockPost({action:"list"}); CARRY.songs=Array.isArray(r.songs) ? r.songs : []; CARRY.st="ok"; CARRY.at=Date.now(); if(!quiet) line.textContent=""; }
+  catch(e){ CARRY.st=lockState(e); if(!quiet) line.textContent=""; }
   paintLocker();
 }
 async function lockSave(){
@@ -2215,7 +2252,7 @@ function drawQr(){
   sc.onerror=()=>{ drawQr.loading=false; $("lockLine").textContent=t("lockNoReach"); CARRY.qr=false; paintLocker(); };
   document.head.appendChild(sc);
 }
-function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone"); paintLocker(); }
+function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.st=""; CARRY.ver=0; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone"); paintLocker(); }
 function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)}); }
 /* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
 function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
@@ -2225,13 +2262,26 @@ function goSongs(){
   if(CARRY.lock){ try{ lockList(true); }catch(e){} }
   else { const d=b.querySelector("#locker details"); if(d) d.open=true; }
 }
+/* AOG-STUDIO-LOCKER-LIGHTS-V1: one light at the top of the locker, green when it answered, amber when something needs fixing */
+function lockLight(){
+  const st=CARRY.st, w=(c,h,s,x)=>`<p class="st-lkl ${c}"><i aria-hidden="true"></i><span><b>${esc(h)}</b><small>${esc(s)}</small>${x||""}</span></p>`;
+  if(st==="wait") return w("wait", t("ltWait"), t("ltWaitS"));
+  if(st==="sheet") return w("warn", t("ltSheet"), t("ltSheetS"));
+  if(st==="key") return w("warn", t("ltKey"), t("ltKeyS"));
+  if(st==="reach") return w("warn", t("ltReach"), t("ltReachS"));
+  if(st==="ok" && CARRY.lock){
+    let at=""; try{ at=new Date(CARRY.at).toLocaleTimeString(S.lang==="es"?"es":"en",{hour:"numeric",minute:"2-digit"}); }catch(e){}
+    return w("ok", t("ltOk"), t("ltOkS",{v:CARRY.ver||1, n:(CARRY.songs||[]).length, at:at}));
+  }
+  return CARRY.lock ? w("wait", t("ltWait"), t("ltWaitS")) : w("", t("ltOff"), t("ltOffS"));
+}
 function paintLocker(){
   try{ paintSongsBtn(); }catch(e){}
   const box=$("locker"), lk=CARRY.lock, dis=CARRY.busy ? " disabled" : "";
   if(!lk){
     const keepU=$("lkUrl") ? $("lkUrl").value : "", keepK=$("lkKey") ? $("lkKey").value : "";
-    box.innerHTML=`<div class="st-lk"><p class="st-info">${esc(t("lockAbout"))}</p>
-      <details><summary class="st-lab" style="min-height:44px;display:flex;align-items:center;cursor:pointer">${esc(t("lockSteps"))}</summary>
+    box.innerHTML=`<div class="st-lk">${lockLight()}<p class="st-info">${esc(t("lockAbout"))}</p>
+      <details${CARRY.st==="sheet" ? " open" : ""}><summary class="st-steps">${esc(t("lockSteps"))}</summary>
       <ol class="st-help"><li>${esc(t("lockS1"))}</li><li>${esc(t("lockS2")).replace(esc(t("lockScript")), `<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${esc(t("lockScript"))}</a>`)}</li>
         <li>${esc(t("lockS3"))}</li><li>${esc(t("lockS4"))}</li><li>${esc(t("lockS5"))}</li></ol></details>
       <label class="st-field"><span class="st-lab">${esc(t("lockUrl"))}</span><input type="url" id="lkUrl" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
@@ -2249,8 +2299,8 @@ function paintLocker(){
       `<button type="button" class="st-btn st-go" data-lkopen="${esc(x.id)}" aria-label="${esc(t("openAria",{name:x.name}))}"${dis}>${esc(t("open"))}</button>`+
       (CARRY.rmAsk===x.id ? "" : `<button type="button" class="st-btn st-clear" data-lkrm="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:x.name}))}"${dis}>${esc(t("remove"))}</button>`)+ask+`</div>`;
   }).join("");
-  box.innerHTML=`<div class="st-lk"><p class="st-on">${esc(t("lockOn"))}</p>
-    <div class="st-row"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button><button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t("lockRefresh"))}</button></div>
+  box.innerHTML=`<div class="st-lk">${lockLight()}
+    <div class="st-row"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button><button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t(CARRY.st==="ok" ? "lockRefresh" : "ltAgain"))}</button></div>
     <h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("lockList"))}</h3>
     <div class="st-inb">${list}</div>
     <div class="st-row"><button type="button" class="st-btn" id="lkPair">${esc(t("lockPair"))}</button><button type="button" class="st-btn" id="lkQrBtn" aria-expanded="${CARRY.qr}">${esc(t(CARRY.qr ? "lockQrHide" : "lockQr"))}</button></div>
@@ -3355,7 +3405,7 @@ bind();
 bindConsole();   /* AOG-DESK-FACE-V1 */
 paintAll();
 if(lockJoined) $("lockLine").textContent=t("lockJoined");
-if(CARRY.lock) lockList(true);
+if(CARRY.lock){ lockKeep(); lockList(true); }
 meterStill();
 /* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */
 try{ new ResizeObserver(()=>{ if(!PLAY.on) meterStill(); }).observe($("vuBridge")); }catch(e){}

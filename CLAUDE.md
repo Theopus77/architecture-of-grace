@@ -106,3 +106,6 @@ call moving forward." On the Educator Dashboard and every page after it:
   pick up the new version.
 - Never erase the saved Sheet connection (`aog.sync.url`, `aog.sync.key`,
   `aog.sync.writekey`) outside Disconnect and Delete everything.
+- Never erase the Studio's locker (`aog.studio.locker.v1`: its web address and
+  key) outside the Studio's own Disconnect. Every clear, reset or Delete
+  everything keeps it, and no backup file or Sheet send may carry it.
