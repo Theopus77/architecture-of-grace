@@ -108,11 +108,11 @@ def sitemap():
         miss = [u for u in BUILT if "/rel%d<" % u["n"] not in s]
         if not miss:
             print("sitemap: already listed"); return
-        rows = ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in miss]
+        rows = ['  <url><loc>https://architectureofgrace.com/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in miss]
         s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
         p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % len(miss)); return
-    rows = ['  <url><loc>https://architectureofgrace.org/religions-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
-    rows += ['  <url><loc>https://architectureofgrace.org/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in BUILT]
+    rows = ['  <url><loc>https://architectureofgrace.com/religions-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
+    rows += ['  <url><loc>https://architectureofgrace.com/rel%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in BUILT]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
     p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(BUILT) + 1))
 

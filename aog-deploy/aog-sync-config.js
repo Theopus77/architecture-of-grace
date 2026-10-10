@@ -112,7 +112,7 @@ window.AOG_SYNC_DEFAULTS = {
          why every link in the field went dark.
 
      WHAT THIS TURNS OFF, plainly: a device that opens an activity page with
-     no dest= on the link — typing architectureofgrace.org and working a
+     no dest= on the link — typing architectureofgrace.com and working a
      Daily Drafts sheet, the way the iPad did on 2026-09-08 — no longer has a
      destination, so the Send box is not added to the page at all. That is
      the point: another school's rows can no longer reach a Sheet we control.
@@ -146,7 +146,7 @@ window.AOG_SYNC_DEFAULTS = {
      So this line restores exactly the workflow that broke and leaves the
      check-in path tighter than ["*"] would.
 
-     WHAT IT STILL COSTS, plainly: someone who types architectureofgrace.org
+     WHAT IT STILL COSTS, plainly: someone who types architectureofgrace.com
      and works a Daily Drafts or Interior sheet can append rows to this Sheet.
      That is unavoidable while those pages gate on length alone — it is the
      price of Jimmy's own workflow, not an oversight.

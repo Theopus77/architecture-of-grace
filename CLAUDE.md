@@ -2,6 +2,12 @@
 
 The site is static and lives in `aog-deploy/` (Netlify publishes that folder).
 
+## The address is architectureofgrace.com (standing order from Jimmy, 2026-10-10)
+
+"IT will always be .com from now on unless other wise noted." Every link, canonical tag,
+link-preview tag, sitemap entry, printed address and message says **architectureofgrace.com**.
+Never write `.org`. Builders and templates (`aog-deploy/_work`, `adult-build`) use .com too.
+
 ## Readable text, always (standing order from Jimmy, 2026-09-25)
 
 Text must never be unreadable against what is behind it: no cream or light text

@@ -55,8 +55,8 @@ def sitemap():
     p = DEPLOY / "sitemap.xml"; s = p.read_text(encoding="utf-8")
     if "/sports-course<" in s:
         print("sitemap: already listed"); return
-    rows = ['  <url><loc>https://architectureofgrace.org/sports-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
-    rows += ['  <url><loc>https://architectureofgrace.org/spt%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in UNITS]
+    rows = ['  <url><loc>https://architectureofgrace.com/sports-course</loc><lastmod>%s</lastmod><priority>0.8</priority></url>' % TODAY]
+    rows += ['  <url><loc>https://architectureofgrace.com/spt%d</loc><lastmod>%s</lastmod><priority>0.7</priority></url>' % (u["n"], TODAY) for u in UNITS]
     s = s.replace("</urlset>", "\n".join(rows) + "\n</urlset>")
     p.write_text(s, encoding="utf-8"); print("sitemap: %d added" % (len(UNITS) + 1))
 
