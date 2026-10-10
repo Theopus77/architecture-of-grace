@@ -724,7 +724,7 @@ else document.documentElement.classList.add("aog-embed");</script>
                   qur:["The Qur’an","s-rel"], tal:["The Talmud","s-rel"], hin:["Hindu Texts","s-rel"], bud:["Buddhist Texts","s-rel"], chn:["Chinese Classics","s-rel"],
                   spt:["Sports History","s-soc"], mar:["The Measured Step","s-soc"], unr:["The Unseen Realm","s-rel"], sec:["Secret Societies","s-soc"] };
       if(CRS[cr[1]]) return CRS[cr[1]]; }
-    if(s==="daily-drops") return ["Daily Drafts","s-oth"];
+    if(s==="daily-drops") return ["Daily Practice","s-oth"];
     return ["Other","s-oth"];
   }
 
@@ -1203,7 +1203,7 @@ else document.documentElement.classList.add("aog-embed");</script>
   function workMatch(it,w){ if(it.kind!=="turnin") return false; var x=xparse(it.raw||{}), id=String((it.raw||{}).activityId||"");
     if(w==="dd") return x.series==="daily-drops"; if(w==="course") return x.series==="course";
     if(w==="checks") return x.series==="course" && /-chk-/.test(id); if(w==="tests") return x.series==="course" && ((it.raw||{}).assessment==="unit-test" || /-t\d+$/.test(id)); return true; }
-  function linkinNote(){ if(!URL_STU && !URL_WORK) return null; var WN={dd:"Daily Drafts sheets",checks:"lesson checks",tests:"unit tests",course:"course work"};
+  function linkinNote(){ if(!URL_STU && !URL_WORK) return null; var WN={dd:"Daily Practice sheets",checks:"lesson checks",tests:"unit tests",course:"course work"};
     var d=document.createElement("p"); d.className="pst no-print"; d.style.margin="0 0 12px";
     d.innerHTML="Showing "+(WN[URL_WORK]||"everything")+(URL_STU?" for <b>"+URL_STU_RAW.replace(/</g,"&lt;")+"</b>":"")+" · <a href=\"/turn-ins.html\">Show everything</a>"; return d; }
 
@@ -1638,7 +1638,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       var host=document.createElement("div"); host.className="ddsheet"; host.setAttribute("data-theme","light"); p.appendChild(host);
       return ddLoad(src.url, src.reviewed).then(function(res){
         if(!res || !host.attachShadow){
-          host.innerHTML=hasAns?ddAnswers(x):'<p class="honest">The sheet could not be rebuilt here. Open it from Daily Drafts: '+esc(info.subj)+', grade '+esc(info.grade)+', draft '+esc(info.sheet)+'.</p>';
+          host.innerHTML=hasAns?ddAnswers(x):'<p class="honest">The sheet could not be rebuilt here. Open it from Daily Practice: '+esc(info.subj)+', grade '+esc(info.grade)+', draft '+esc(info.sheet)+'.</p>';
           return p;
         }
         var root=host.attachShadow({mode:"open"});
@@ -1824,7 +1824,7 @@ else document.documentElement.classList.add("aog-embed");</script>
   /* ══ AOG-BLUEPRINT-V1 (2026-09-25) — MY BLUEPRINT ══════════════════════════
      Jimmy: "the student page in the dashboard should be able to build a
      beautiful mosaic for the child or the individual using these. Rockin'
-     Ramsden does not have an IEP, but has done a lot of these Daily Drafts."
+     Ramsden does not have an IEP, but has done a lot of these Daily Practice sheets."
      Every activity sent is one brick. The wall rises from the bottom, oldest
      first, in running bond. Colour is the subject; how solid a brick is, is how
      much was done without a hint; every 25th brick is a gold keystone. Nothing
@@ -2025,7 +2025,7 @@ else document.documentElement.classList.add("aog-embed");</script>
   function soloEmpty(){
     var d=document.createElement("div"); d.className="bp-card";
     d.innerHTML='<div class="bp-ey">My Blueprint</div><h2 style="font-family:var(--serif);margin:4px 0 8px">Your window is waiting</h2>'
-      +'<p style="color:var(--sub);margin:0">Every Daily Draft, worksheet or practice page you send on this device becomes one pane of stained glass. Send your first one and the window begins.</p>';
+      +'<p style="color:var(--sub);margin:0">Every Daily Practice sheet, worksheet or practice page you send on this device becomes one pane of stained glass. Send your first one and the window begins.</p>';
     return d;
   }
   function emptyState(){

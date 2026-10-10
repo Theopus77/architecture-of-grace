@@ -474,7 +474,7 @@ def region_glance(data, bs, ds, rs):
         ("sel", ("SEL lessons", "Lecciones SEL"), ("140 lessons · 75 Illinois SEL benchmarks", "140 lecciones · 75 estándares SEL de Illinois"), ("CASEL, Illinois SEL", "CASEL, SEL de Illinois")),
         ("faith", ("Faith & texts", "Fe y textos"), ("%d courses · %d units · %d standards" % (len(fc), fu, fcodes), "%d cursos · %d unidades · %d estándares" % (len(fc), fu, fcodes)),
          ("Common Core reading, C3, Illinois SS 9–12, teaching about religion", "Lectura Common Core, C3, Illinois SS 9–12, enseñar sobre religión")),
-        ("drafts", ("Daily Drafts", "Daily Drafts"), ("%d subjects · K–12" % len(ds), "%d materias · K–12" % len(ds)), ("The standards of each subject's course", "Los estándares del curso de cada materia")),
+        ("drafts", ("Daily Practice", "Práctica diaria"), ("%d subjects · K–12" % len(ds), "%d materias · K–12" % len(ds)), ("The standards of each subject's course", "Los estándares del curso de cada materia")),
         ("benches", ("Hands-on benches", "Mesas prácticas"), ("%d benches · %d lessons · %d standards" % (len(bs), blessons, bcodes), "%d mesas · %d lecciones · %d estándares" % (len(bs), blessons, bcodes)),
          ("NGSS, National Core Arts (Music), FCS", "NGSS, Artes (Música), FCS")),
         ("rooms", ("Practice rooms", "Salas de práctica"), ("%d rooms, each tied to its units" % len(rs), "%d salas, cada una unida a sus unidades" % len(rs)), ("The standards of the units they belong to", "Los estándares de sus unidades")),

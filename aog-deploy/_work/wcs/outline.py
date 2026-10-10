@@ -171,7 +171,7 @@ UNITS = [
 # Practice rooms per unit: the Daily Drafts "cultures" spiral at the matching grade, plus the
 # Social Studies and Economics courses that meet the same material.
 def _dd(grade, label):
-    return [("/drops/cultures/%s" % grade, "Daily Drafts — World Cultures, grades %s" % label)]
+    return [("/drops/cultures/%s" % grade, "Daily Practice — World Cultures, grades %s" % label)]
 LINKS = {
  1: _dd("K", "K–2") + [("/social-studies-course", "Social Studies — the course")],
  2: _dd("1", "K–2") + [("/social-studies-course", "Social Studies — the course")],

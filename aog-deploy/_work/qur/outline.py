@@ -172,7 +172,7 @@ UNITS = [
 # No hub of its own: the Daily Drafts "Qur'an" spiral for the band, the World
 # Religions Islam room (/r5), and the sister courses.
 def _dd(grade, label):
-    return [("/drops/quran/%s" % grade, "Daily Drafts — Qur'an, grades %s" % label)]
+    return [("/drops/quran/%s" % grade, "Daily Practice — Qur'an, grades %s" % label)]
 LINKS = {
  1: _dd("K", "K–2") + [("/bible", "The Bible — the course")],
  2: _dd("1", "K–2") + [("/religions-course", "World Religions — the course")],

@@ -197,26 +197,26 @@ function academics(input,T,C){
   var other=[], suggest=[], impact=[], dataList=[];
   Object.keys(groups).forEach(function(key){ var g=groups[key], L=[], sup=[], px=g.group==="ela"?"ela":g.group==="math"?"math":null, subjL=g.name;
     var dd=scoreStats(g.dd);
-    if(dd){ L.push("Daily Drafts: "+dd.n+" sheet"+(dd.n===1?"":"s")+", "+dd.items+" items; "+dd.pct+"% right on the first try"+(dd.trend?"; "+trendWords(dd.trend,true,"sheets"):"")+". "+src("Daily Drafts · "+subjL,dd.n,["sheet","sheets"],dd.rows));
-      if(dd.supRows){ sup.push("When they checked their work and fixed answers ("+dd.supRows+" sheet"+(dd.supRows===1?"":"s")+"): "+dd.supPctFirst+"% on the first try, "+dd.afterPct+"% after fixing. "+src("Daily Drafts · "+subjL+" · checked sheets",dd.supRows,["sheet","sheets"],dd.rows.filter(function(r){ return num(r.supported)!=null; }))); }
-      if(dd.hints) sup.push("Used hints on "+dd.hints+" of "+dd.n+" sheets. "+src("Daily Drafts · "+subjL,dd.n,["sheet","sheets"],dd.rows));
-      C.push({id:"dd-"+key,field:px?"d_"+px+"_data":"d_other",sec:"pl",caption:"Daily Drafts · "+subjL+" · first try, % right · "+dd.n+" sheets · "+fmtRange(spanOf(dd.rows).a,spanOf(dd.rows).b),min:0,max:100,
+    if(dd){ L.push("Daily Practice: "+dd.n+" sheet"+(dd.n===1?"":"s")+", "+dd.items+" items; "+dd.pct+"% right on the first try"+(dd.trend?"; "+trendWords(dd.trend,true,"sheets"):"")+". "+src("Daily Practice · "+subjL,dd.n,["sheet","sheets"],dd.rows));
+      if(dd.supRows){ sup.push("When they checked their work and fixed answers ("+dd.supRows+" sheet"+(dd.supRows===1?"":"s")+"): "+dd.supPctFirst+"% on the first try, "+dd.afterPct+"% after fixing. "+src("Daily Practice · "+subjL+" · checked sheets",dd.supRows,["sheet","sheets"],dd.rows.filter(function(r){ return num(r.supported)!=null; }))); }
+      if(dd.hints) sup.push("Used hints on "+dd.hints+" of "+dd.n+" sheets. "+src("Daily Practice · "+subjL,dd.n,["sheet","sheets"],dd.rows));
+      C.push({id:"dd-"+key,field:px?"d_"+px+"_data":"d_other",sec:"pl",caption:"Daily Practice · "+subjL+" · first try, % right · "+dd.n+" sheets · "+fmtRange(spanOf(dd.rows).a,spanOf(dd.rows).b),min:0,max:100,
         pts:dd.rows.map(function(r){ return {d:day(r),v:Math.round(100*Math.min(num(r.independent),num(r.itemsTotal))/num(r.itemsTotal))}; })});
-      dataList.push("Daily Drafts, "+subjL+": "+dd.n+" sheets, "+dd.pct+"% first try "+src("Daily Drafts · "+subjL,dd.n,["sheet","sheets"],dd.rows));
+      dataList.push("Daily Practice, "+subjL+": "+dd.n+" sheets, "+dd.pct+"% first try "+src("Daily Practice · "+subjL,dd.n,["sheet","sheets"],dd.rows));
       var sw=strongWeak(strandTable(dd.rows));
-      if(px&&sw.strong.length) T["d_"+px+"_strength"]=add(T["d_"+px+"_strength"],"Strongest skills on Daily Drafts: "+skillList(sw.strong)+". "+src("Daily Drafts · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
-      if(px&&sw.grow.length) T["d_"+px+"_diff"]=add(T["d_"+px+"_diff"],"Most room to grow on Daily Drafts: "+skillList(sw.grow)+". "+src("Daily Drafts · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
-      if(!px){ if(sw.strong.length) L.push("Strongest skills: "+skillList(sw.strong)+". "+src("Daily Drafts · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
-               if(sw.grow.length) L.push("Most room to grow: "+skillList(sw.grow)+". "+src("Daily Drafts · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows)); }
-      if(sw.grow.length) suggest.push(subjL+": "+skillList(sw.grow.slice(0,2))+" "+src("Daily Drafts · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
-      else if(dd.pct<70) suggest.push(subjL+": first-try accuracy on Daily Drafts, now "+dd.pct+"% "+src("Daily Drafts · "+subjL,dd.n,["sheet","sheets"],dd.rows));
-      if(dd.pct<70||sw.grow.length) impact.push(subjL+": "+dd.pct+"% right on the first try across "+dd.n+" Daily Drafts sheets"+(sw.grow.length?"; most room to grow in "+skillList(sw.grow.slice(0,2)):"")+". "+src("Daily Drafts · "+subjL,dd.n,["sheet","sheets"],dd.rows));
+      if(px&&sw.strong.length) T["d_"+px+"_strength"]=add(T["d_"+px+"_strength"],"Strongest skills on Daily Practice: "+skillList(sw.strong)+". "+src("Daily Practice · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
+      if(px&&sw.grow.length) T["d_"+px+"_diff"]=add(T["d_"+px+"_diff"],"Most room to grow on Daily Practice: "+skillList(sw.grow)+". "+src("Daily Practice · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
+      if(!px){ if(sw.strong.length) L.push("Strongest skills: "+skillList(sw.strong)+". "+src("Daily Practice · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
+               if(sw.grow.length) L.push("Most room to grow: "+skillList(sw.grow)+". "+src("Daily Practice · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows)); }
+      if(sw.grow.length) suggest.push(subjL+": "+skillList(sw.grow.slice(0,2))+" "+src("Daily Practice · "+subjL+" · per-box results",dd.n,["sheet","sheets"],dd.rows));
+      else if(dd.pct<70) suggest.push(subjL+": first-try accuracy on Daily Practice, now "+dd.pct+"% "+src("Daily Practice · "+subjL,dd.n,["sheet","sheets"],dd.rows));
+      if(dd.pct<70||sw.grow.length) impact.push(subjL+": "+dd.pct+"% right on the first try across "+dd.n+" Daily Practice sheets"+(sw.grow.length?"; most room to grow in "+skillList(sw.grow.slice(0,2)):"")+". "+src("Daily Practice · "+subjL,dd.n,["sheet","sheets"],dd.rows));
     }
     var wr=g.write.filter(function(r){ var x=xp(r); return num(x.rubricTotal)!=null&&num(x.rubricMax)>0; });
     if(wr.length){ var ws=byDate(wr), got=0, max=0; ws.forEach(function(r){ var x=xp(r); got+=num(x.rubricTotal); max+=num(x.rubricMax); });
       var wt=trend(ws.map(function(r){ var x=xp(r); return 100*num(x.rubricTotal)/num(x.rubricMax); }),5);
-      L.push("Writing: "+ws.length+" scored piece"+(ws.length===1?"":"s")+", "+pct(got,max)+"% of rubric points"+(wt?"; "+trendWords(wt,true,"pieces"):"")+". "+src("Daily Drafts · Writing rubric",ws.length,["piece","pieces"],ws));
-      dataList.push("Writing rubric: "+ws.length+" pieces, "+pct(got,max)+"% of points "+src("Daily Drafts · Writing rubric",ws.length,["piece","pieces"],ws)); }
+      L.push("Writing: "+ws.length+" scored piece"+(ws.length===1?"":"s")+", "+pct(got,max)+"% of rubric points"+(wt?"; "+trendWords(wt,true,"pieces"):"")+". "+src("Daily Practice · Writing rubric",ws.length,["piece","pieces"],ws));
+      dataList.push("Writing rubric: "+ws.length+" pieces, "+pct(got,max)+"% of points "+src("Daily Practice · Writing rubric",ws.length,["piece","pieces"],ws)); }
     var ck=scoreStats(g.check), ts=scoreStats(g.test);
     if(ck) L.push("Lesson checks: "+ck.n+", "+ck.pct+"% right on the first try. "+src("Course lessons · "+subjL+" · checks",ck.n,["check","checks"],ck.rows));
     if(ts){ L.push("Unit tests: "+ts.n+", "+ts.pct+"% right. "+src("Course lessons · "+subjL+" · unit tests",ts.n,["test","tests"],ts.rows));

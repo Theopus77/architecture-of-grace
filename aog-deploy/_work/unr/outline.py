@@ -175,7 +175,7 @@ UNITS = [
 # Practice rooms per unit: the Daily Drafts "unseen" book at the matching grade, plus the Bible
 # courses that read the same texts.
 def _dd(grade, label):
-    return [("/drops/unseen/%s" % grade, "Daily Drafts — The Unseen Realm, grades %s" % label)]
+    return [("/drops/unseen/%s" % grade, "Daily Practice — The Unseen Realm, grades %s" % label)]
 LINKS = {
  1: _dd("K", "K–2") + [("/bible", "The Bible — the course")],
  2: _dd("1", "K–2") + [("/bible", "The Bible — the course")],

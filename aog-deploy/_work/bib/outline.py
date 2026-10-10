@@ -180,7 +180,7 @@ UNITS = [
 # This course has no hub of its own: its practice rooms are the Daily Drafts
 # "The Bible" spiral for the band (/drops/bible/<grade>) and the sister courses.
 def _band_links(grade, band_label):
-    return [("/drops/bible/%s" % grade, "Daily Drafts — The Bible, grades %s" % band_label)]
+    return [("/drops/bible/%s" % grade, "Daily Practice — The Bible, grades %s" % band_label)]
 LINKS = {
  1: _band_links("K", "K–2") + [("/hebrew-bible", "The Hebrew Bible — the course")],
  2: _band_links("1", "K–2") + [("/hebrew-bible", "The Hebrew Bible — the course")],

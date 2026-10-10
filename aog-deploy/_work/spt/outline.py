@@ -154,7 +154,7 @@ UNITS = [
 
 # Practice rooms per unit: the Daily Drafts "sports" bank at the matching grade, plus related courses.
 def _dd(grade, label):
-    return [("/drops/sports/%s" % grade, "Daily Drafts — Sports History, grades %s" % label)]
+    return [("/drops/sports/%s" % grade, "Daily Practice — Sports History, grades %s" % label)]
 LINKS = {
  1: _dd('K', 'K–2') + [('/martial-arts-course', 'The Measured Step — martial arts history'), ('/social', 'Social Studies — every band')],
  2: _dd('1', 'K–2') + [('/martial-arts-course', 'The Measured Step — martial arts history'), ('/social', 'Social Studies — every band')],

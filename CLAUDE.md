@@ -64,6 +64,12 @@ buttons, instructions, help text and empty-state messages, in English and Spanis
 - Rewriting never changes a fact, a promise or a privacy claim.
 - Leave curriculum content alone (lessons, novels, worksheets, questions,
   crosswalks, quoted standards): those words are the teaching.
+- Daily Practice (Jimmy, 2026-10-10; it was "Daily Drafts", which said nothing
+  about what is behind the door). Spanish: Práctica diaria. Use the new name in
+  every word people read. Keep the old name where it is data: the Sheet's tab
+  names ("Practice · Daily Drafts · …", AoG-Sheet-Sync-Code.gs), the
+  dashboard's matching on them, and old saved rows. The page is still
+  `daily-drops.html` at /drops.
 
 ## Drop-down menus, not walls of tabs (standing order from Jimmy, 2026-09-26)
 
@@ -116,8 +122,8 @@ layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-stud
 ## The front page starts on Student (standing order from Jimmy, 2026-10-10)
 
 "Show everything … overwhelms me." `index.html` opens on Student (the Studio,
-the Lab Bench, Quiet Space; no Daily Drafts, no Check-in). Teacher leads with the
-Dashboard, The Courses, SEL and Daily Drafts. Parent has the most doors. Show
+the Lab Bench, Quiet Space; no Daily Practice, no Check-in). Teacher leads with the
+Dashboard, The Courses, SEL and Daily Practice. Parent has the most doors. Show
 everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 
 ## The Adult Edition (Book 6)

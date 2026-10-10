@@ -1355,9 +1355,9 @@ function meaningOf(st){var own=U.stems.filter(function(s){return s.s===st;})[0];
 (function(){var b=$("#themeBtn");function paint(){b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"Light mode":"Dark mode";}
  b.addEventListener("click",function(){var d=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",d);try{localStorage.setItem("aog.interior.ws.v1.theme",d);}catch(e){}paint();});paint();})();
 
-var TABS=[["learn","Learn"],["quiz","Quiz"],["find","Find the stems"],["draft","Daily Draft"],["test","Test rehearsal"],["guide","My study guide"]];
+var TABS=[["learn","Learn"],["quiz","Quiz"],["find","Find the stems"],["draft","Daily Practice"],["test","Test rehearsal"],["guide","My study guide"]];
 /* AOG-WFV-21-30: a vocabulary unit has no stem set to find, so it carries its own row. */
-var VTABS=[["learn","Learn"],["quiz","Quiz"],["draft","Daily Draft"],["test","Test rehearsal"],["guide","My study guide"]];
+var VTABS=[["learn","Learn"],["quiz","Quiz"],["draft","Daily Practice"],["test","Test rehearsal"],["guide","My study guide"]];
 function tabsFor(u){return u&&u.kind==="vocab"?VTABS:TABS;}
 function tabOK(){var ok=tabsFor(U).some(function(t){return t[0]===tab;});if(!ok)tab="learn";}
 function nav(){ $("#h1").textContent="Class Units · "+U.name;
@@ -1747,10 +1747,10 @@ function render(){ var base=U.__base||U; U=(cumul&&tab!=="draft")?merged(base):b
    itself is the Word Foundry subject in Daily Drafts, so it prints, checks, keys and
    sends exactly like every other Daily Draft. ?tab=draft still opens this tab. */
 function ddView(){var href="/drops?subject=foundry&grade=u"+U.n;
- return '<h2>Daily Draft</h2><p class="hint"><b>'+esc(U.name)+'</b> has a Daily Draft in <b>Daily Drafts</b>: ten boxes a day — '
+ return '<h2>Daily Practice</h2><p class="hint"><b>'+esc(U.name)+'</b> has its own sheet in <b>Daily Practice</b>: ten boxes a day — '
   +(U.stems?'eight on this unit’s stems and two that spiral back to earlier units':'eight on this list’s words and two that spiral back to an earlier list and to the stems these words are built from')
-  +'. Every student on the same draft number gets the same sheet, and it checks, prints and sends to your teacher like every other Daily Draft.</p>'
-  +'<div class="row"><a class="next" style="display:inline-block;text-decoration:none" href="'+href+'">Open '+esc(U.name)+'’s Daily Draft →</a></div>';}
+  +'. Every student on the same draft number gets the same sheet, and it checks, prints and sends to your teacher like every other Daily Practice sheet.</p>'
+  +'<div class="row"><a class="next" style="display:inline-block;text-decoration:none" href="'+href+'">Open '+esc(U.name)+'’s Daily Practice →</a></div>';}
 (function(){if(/[?&]tab=draft\b/.test(location.search||""))tab="draft";})();
 
 render();

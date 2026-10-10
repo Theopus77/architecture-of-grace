@@ -173,21 +173,21 @@ UNITS = [
 # No hub of its own: the Daily Drafts "The Bible" and "Talmud" spirals for the
 # band, the World Religions Hebrew Bible room (/r2), and the sister courses.
 def _dd(grade, label):
-    return [("/drops/bible/%s" % grade, "Daily Drafts — The Bible, grades %s" % label)]
+    return [("/drops/bible/%s" % grade, "Daily Practice — The Bible, grades %s" % label)]
 LINKS = {
  1: _dd("K", "K–2") + [("/bible", "The Bible — the course")],
  2: _dd("1", "K–2") + [("/bible", "The Bible — the course")],
- 3: _dd("2", "K–2") + [("/drops/talmud/2", "Daily Drafts — Talmud, grades K–2"), ("/talmud", "Talmud Study — the course")],
+ 3: _dd("2", "K–2") + [("/drops/talmud/2", "Daily Practice — Talmud, grades K–2"), ("/talmud", "Talmud Study — the course")],
  4: _dd("3", "3–5") + [("/bible", "The Bible — the course"), ("/religions-course", "World Religions — the course")],
  5: _dd("4", "3–5") + [("/bible", "The Bible — the course")],
  6: _dd("4", "3–5") + [("/bible", "The Bible — the course")],
- 7: _dd("5", "3–5") + [("/drops/talmud/5", "Daily Drafts — Talmud, grades 3–5")],
+ 7: _dd("5", "3–5") + [("/drops/talmud/5", "Daily Practice — Talmud, grades 3–5")],
  8: _dd("6", "6–8") + [("/r2", "The Hebrew Bible — the room"), ("/r1", "How to read a sacred text — the room")],
  9: _dd("6", "6–8") + [("/r2", "The Hebrew Bible — the room"), ("/bible", "The Bible — the course")],
  10: _dd("7", "6–8") + [("/r2", "The Hebrew Bible — the room"), ("/talmud", "Talmud Study — the course")],
  11: _dd("8", "6–8") + [("/r2", "The Hebrew Bible — the room")],
  12: _dd("9-10", "9–10") + [("/r2", "The Hebrew Bible — the room"), ("/bible", "The Bible — the course")],
- 13: _dd("9-10", "9–10") + [("/r2", "The Hebrew Bible — the room"), ("/drops/talmud/9-10", "Daily Drafts — Talmud, grades 9–10")],
+ 13: _dd("9-10", "9–10") + [("/r2", "The Hebrew Bible — the room"), ("/drops/talmud/9-10", "Daily Practice — Talmud, grades 9–10")],
  14: _dd("9-10", "9–10") + [("/r2", "The Hebrew Bible — the room")],
  15: _dd("11-12", "11–12") + [("/r1", "How to read a sacred text — the room"), ("/bible", "The Bible — the course")],
  16: _dd("11-12", "11–12") + [("/r4", "Judaism — the room"), ("/talmud", "Talmud Study — the course")],
