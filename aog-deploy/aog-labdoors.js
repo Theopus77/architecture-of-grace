@@ -104,11 +104,7 @@
        teaches about the room (the course box, the guide, the lesson menu, the bench switch) waits in one closed
        "Lessons and more" below the instrument, and the sound and kit menus sit under the thing you play. Nothing is
        taken out: every control is still in the page, one tap away. A room on its own address is untouched. */
-    ss.textContent += "html.in-studio .aog-keyshead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.4rem .6rem;margin:0 0 .6rem}" +
-      "html.in-studio .aog-keyshead>h2{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0!important}" +
-      "html.in-studio .aog-keyshead>.krow{margin:0;gap:.4rem;flex-wrap:wrap;max-width:100%}" +
-      "html.in-studio .aog-keyshead .pbtn{padding-left:.7rem;padding-right:.7rem;white-space:nowrap}" +
-      "html.in-studio .aog-keyshead .range{min-width:0;font-size:.95rem;white-space:nowrap}" +
+    ss.textContent += "html.in-studio .aog-krow-top .pbtn{white-space:nowrap}" +
       "html.in-studio .aog-learn{margin:1rem 0;border:1px solid var(--line,#ddd8cc);border-radius:12px;background:var(--card,#fffcf7);color:var(--ink,#1a232c)}" +
       "html.in-studio .aog-learn>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 14px;cursor:pointer;font:700 1rem/1.2 var(--sans,system-ui,sans-serif);color:var(--ink,#1a232c);list-style:none}" +
       "html.in-studio .aog-learn>summary::-webkit-details-marker{display:none}" +
@@ -148,8 +144,9 @@
          below the neck"): the chord buttons sit right above the instrument, so they show with it on the first screen */
       var sp0 = kid(".sp-wrap")[0], slips = kid(".touch-line,.keys-line"), strip = D.getElementById("chordStrip"),
         lead = id === "band" && !(window.matchMedia && matchMedia("(max-width:699px)").matches) ? [sp0, strip, inst] : [strip, inst, sp0];   /* on a phone the keys come first, the menus under them */
-      /* AOG-KROW-TOP-V1 (Jimmy, 2026-10-10: "Can the octave button be higher on the phone … where I highlighted it"):
-         Lower and Higher sit on the heading's line, above the chords and the keys, so they show on a phone held upright */
+      /* AOG-KROW-TOP-V1 (Jimmy, 2026-10-10: "Can the octave button be higher on the phone … The lower to higher should
+         sit right above the chords"): Lower and Higher get their own row right above the chords, so they show on a phone
+         held upright */
       var krow = kid(".krow")[0], recRow = null;
       if (krow) {   /* only Lower, the range and Higher (and a tablet's big-screen button) go up; the rest (the room's own
                        Record, the pedal, MIDI, mute) stay further down, so the keys stay near the top on a small phone */
@@ -162,9 +159,9 @@
       var h2 = kid("h2")[0], mark = D.createComment("first");
       pblk.insertBefore(mark, h2 ? h2.nextSibling : pblk.firstChild);
       seq.forEach(function (e) { pblk.insertBefore(e, mark); }); pblk.removeChild(mark);
-      if (krow && h2) {   /* the heading and Lower / Higher share one line */
-        var head = D.createElement("div"); head.className = "aog-keyshead";
-        pblk.insertBefore(head, h2); head.appendChild(h2); head.appendChild(krow);
+      if (krow) {   /* Lower / Higher on their own row, right above the chords (Jimmy, 2026-10-10) */
+        var top = strip && strip.parentNode === pblk ? strip : lead.filter(function (e) { return e && e.parentNode === pblk; })[0];
+        pblk.insertBefore(krow, top || (h2 ? h2.nextSibling : pblk.firstChild)); krow.classList.add("aog-krow-top");
       }
       slips.forEach(function (e) { e.classList.add("aog-slip"); });
       inst.setAttribute("data-first2", "1");
