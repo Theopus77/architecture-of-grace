@@ -793,6 +793,24 @@ function bakeMoon(){
   rayFan(8.1,-38,7,0.2,0.07,13);
   rayFan(23.7,-47.4,5,0.12,0.06,14);
   rayFan(16.1,46.8,6,0.14,0.08,15);
+  /* AOG-SCOPE-MOON-CRATERS-V1 (2026-10-10) — Jimmy: a denser crater field for the 90 mm refractor:
+     thousands of small craters, with depth and albedo darkening. Stamped before the sun pass, so
+     they cast shadows too. Its own rng (crng): this function already has one. */
+  const crng=mulberry32(0x4d00);
+  for(let k=0;k<3800;k++){
+    const ang=crng()*Math.PI*2, rad=Math.sqrt(crng())*R*0.97;
+    const x=cx+Math.cos(ang)*rad, y=cy+Math.sin(ang)*rad;
+    const sz=1.1+crng()*16*(1-rad/R*0.25);
+    const depth=(crng()>0.12?1:-0.35)*sz*0.16;
+    for(let dy=-sz;dy<=sz;dy++) for(let dx=-sz;dx<=sz;dx++){
+      const ix=x+dx|0, iy=y+dy|0; if(ix<1||iy<1||ix>=N-1||iy>=N-1) continue;
+      const d2=dx*dx+dy*dy; if(d2>sz*sz) continue;
+      const fall=1-Math.sqrt(d2)/sz;
+      const ii=iy*N+ix;
+      H[ii]+=depth*fall*fall;
+      if(fall>0.65) alb[ii]*=0.78+crng()*0.14;
+    }
+  }
   /* one sun. Ten days old, a waxing gibbous: the terminator runs down the west (left) at longitude −22°,
      so Copernicus, Plato, Clavius and the Apennines all stand in long morning shadow. */
   const phase=68*D2R, Lx=Math.sin(phase), Lz=Math.cos(phase);
