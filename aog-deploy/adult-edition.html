@@ -61,9 +61,15 @@
 .grd{stroke:var(--ink-soft); stroke-width:2.2}
 /* on a phone the drawing is too small to read: the same building, as rows of big stones */
 .hbuild{display:none}
-@media (max-width:600px){
+/* iPhone, iPad (either way up) and any narrow window get big stones; a computer keeps the drawing */
+@media (max-width:900px), (pointer:coarse){
   .build svg{display:none}
   .hbuild{display:block}
+}
+@media (min-width:601px){
+  .hbuild .hrow .ss{grid-template-columns:repeat(var(--cw),1fr)}
+  .hbuild .hst{min-height:64px; font-size:1.02rem; padding:8px 12px}
+  .hbuild .hst b{font-size:.88rem}
 }
 .hrow{margin-top:10px}
 .hrow .lab{font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800; margin:0 0 4px}
@@ -420,7 +426,7 @@ D.querySelector(".build svg").addEventListener("keydown",function(e){ var g=e.ta
   var rows=[[4,[11,12]],[3,[7,8,9,10]],[2,[4,5,6]],[1,[1,2,3]]], SH={1:"Arrival & the Compact",2:"Identity ≠ behavior",3:"The Two Voices",4:"Feelings as messengers",5:"The Backpack",6:"The Witness",7:"Grief vs. resentment",8:"The younger self",9:"Inherited shame",10:"The Living Amend",11:"Forgiveness ≠ reconciliation",12:"The Final Audit"};
   var h="";
   rows.forEach(function(r){
-    h+='<div class="hrow"><p class="lab p'+r[0]+'c">'+PH[r[0]]+' · sessions '+r[1][0]+'–'+r[1][r[1].length-1]+'</p><div class="ss" style="--c:'+(r[1].length===4?2:Math.min(r[1].length,3))+'">';
+    h+='<div class="hrow"><p class="lab p'+r[0]+'c">'+PH[r[0]]+' · sessions '+r[1][0]+'–'+r[1][r[1].length-1]+'</p><div class="ss" style="--c:'+(r[1].length===4?2:Math.min(r[1].length,3))+';--cw:'+r[1].length+'">';
     r[1].forEach(function(n){ var c=S[n].c, f=(c.indexOf("★★")>-1?"★★":c.indexOf("★")>-1?"★":""), g=c.indexOf("◆")>-1; h+='<button type="button" class="hst c'+r[0]+'" data-n="'+n+'" aria-pressed="false"><b>'+n+(g?'<span class="flag gate">&nbsp;◆</span>':"")+(f?'<span class="flag">'+f+'</span>':"")+'</b>'+esc(SH[n])+'</button>'; });
     h+='</div></div>';
   });
