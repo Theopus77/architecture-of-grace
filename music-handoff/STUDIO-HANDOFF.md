@@ -34,7 +34,7 @@ Optimize for the strongest possible version of what this product already is.
 
 ## 00 — WHAT ALREADY EXISTS. DO NOT REDISCOVER IT.
 
-The live site is https://architectureofgrace.org/
+The live site is https://architectureofgrace.com/
 
 These are distinct rooms, not sketches. Each already has its own engine, lessons, recorder, and sideways or touch behavior.
 

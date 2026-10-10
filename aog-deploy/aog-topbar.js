@@ -723,7 +723,7 @@
     mk.className = "mk";
     mk.textContent = "A";
     b.appendChild(mk);
-    b.appendChild(D.createTextNode(TXT + " · architectureofgrace.org"));
+    b.appendChild(D.createTextNode(TXT + " · architectureofgrace.com"));
     /* AOG-PRINTBRAND-WEBKIT-V1 — Blink repeats a position:fixed layer on every
        printed page, which is the whole point of this line. WebKit does not: it
        resolves the fixed box ONCE, against the document, so on an iPhone the

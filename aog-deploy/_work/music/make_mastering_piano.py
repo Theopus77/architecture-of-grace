@@ -325,7 +325,7 @@ def build():
     rep = [("<title>Mastering the Drum Machine · Architecture of Grace</title>", "<title>Mastering the Piano · Architecture of Grace</title>"),
            ('content="Twelve lessons on the SP-1200: your first beat, swing, the sliders, twenty-five kits, your own samples, the 1987-to-2026 Sound dial, and a whole song you can send to the turntables."',
             'content="Twelve lessons on the piano: the keys, chords by hand, the six pads, chord patterns, your own pattern, 34 sounds, playing along, the drum machine and the 1987-to-2026 Sound dial."'),
-           ('href="https://architectureofgrace.org/mastering-drums"', 'href="https://architectureofgrace.org/mastering-piano"')]
+           ('href="https://architectureofgrace.com/mastering-drums"', 'href="https://architectureofgrace.com/mastering-piano"')]
     for a, b in rep:
         assert head.count(a) == 1, a
         head = head.replace(a, b)

@@ -686,8 +686,8 @@ showBand(bandFrom(),false);
 /* ── the board beam: the short address, big enough for the back row ── */
 document.addEventListener("click",function(e){
   var btn=e.target.closest("[data-beam]"); if(!btn) return;
-  var host=location.hostname||"architectureofgrace.org";
-  if(host==="localhost"||host==="127.0.0.1"||!host) host="architectureofgrace.org";
+  var host=location.hostname||"architectureofgrace.com";
+  if(host==="localhost"||host==="127.0.0.1"||!host) host="architectureofgrace.com";
   var url=host.replace(/^www\./,"")+btn.getAttribute("data-beam");
   var nm=(lang==="es"&&btn.getAttribute("data-name-es"))?btn.getAttribute("data-name-es"):btn.getAttribute("data-name");
   var el=document.createElement("div"); el.id="beam"; el.setAttribute("role","dialog"); el.setAttribute("aria-label",url);

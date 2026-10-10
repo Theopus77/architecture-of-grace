@@ -4,7 +4,7 @@
    Nothing on the site erases aog.sync.url except Disconnect and Delete
    everything. The browser does:
    · Safari deletes a site's localStorage after 7 days without a visit (ITP);
-   · architectureofgrace.org, architectureofgrace.netlify.app and every Netlify
+   · architectureofgrace.com, architectureofgrace.netlify.app and every Netlify
      preview link are different sites to a browser, each with its own storage.
    So the connection now lives in three places — localStorage, IndexedDB and a
    cookie — and any one surviving puts the others back. And there is a restore

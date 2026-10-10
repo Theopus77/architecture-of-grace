@@ -287,7 +287,7 @@ def page_html(data, bs, today):
 <script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>Standards Crosswalk — Architecture of Grace</title>
 <meta name="description" content="Every Architecture of Grace course and hands-on bench mapped, unit by unit, to the standards it addresses: NGSS, the Illinois Learning Standards, C3, NHES, ACTFL, CEE, the National Core Arts Standards and the National FCS Standards.">
-<link rel="canonical" href="https://architectureofgrace.org/standards-crosswalk">
+<link rel="canonical" href="https://architectureofgrace.com/standards-crosswalk">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <meta name="theme-color" content="#0A1E33">
 <!-- AOG-STANDARDS-V2 — built by _work/standards/build_standards.py from _work/standards/*.json. Do not hand-edit; edit the JSON and re-run. -->
@@ -534,7 +534,7 @@ def main():
     sm = os.path.join(ROOT, "sitemap.xml")
     s = open(sm, encoding="utf-8").read()
     if "/standards-crosswalk</loc>" not in s:
-        s = s.replace("</urlset>", "  <url><loc>https://architectureofgrace.org/standards-crosswalk</loc><lastmod>%s</lastmod><priority>0.8</priority></url>\n</urlset>" % today)
+        s = s.replace("</urlset>", "  <url><loc>https://architectureofgrace.com/standards-crosswalk</loc><lastmod>%s</lastmod><priority>0.8</priority></url>\n</urlset>" % today)
         open(sm, "w", encoding="utf-8").write(s)
     nu, nc = sum(len(c["units"]) for c in data), sum(c["codes"] for c in data)
     print("wrote aog-standards-data.js, standards-crosswalk.html, standards.html hub — %d courses · %d units · %d standards cited · %d benches (%d codes) · %d rooms"

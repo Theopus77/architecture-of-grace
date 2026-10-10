@@ -337,10 +337,10 @@ def build_page():
         ("<title>Drum Machine Lessons — Architecture of Grace</title>", "<title>Piano Lessons — Architecture of Grace</title>"),
         ('content="Thirty-eight worksheets for the drum machine, one per lesson and song. Type it here or print it. Saves on this computer; turn it in to your teacher when you finish."',
          'content="Thirty-eight worksheets for the piano, one per lesson and song. Type it here or print it. Saves on this computer; turn it in to your teacher when you finish."'),
-        ('href="https://architectureofgrace.org/drums-lessons"', 'href="https://architectureofgrace.org/piano-lessons"'),
+        ('href="https://architectureofgrace.com/drums-lessons"', 'href="https://architectureofgrace.com/piano-lessons"'),
         ('content="Drum Machine Lessons — Architecture of Grace"', 'content="Piano Lessons — Architecture of Grace"'),
         ('content="Thirty-eight worksheets for the drum machine, one per lesson and song."', 'content="Thirty-eight worksheets for the piano, one per lesson and song."'),
-        ('content="https://architectureofgrace.org/drums-lessons"', 'content="https://architectureofgrace.org/piano-lessons"'),
+        ('content="https://architectureofgrace.com/drums-lessons"', 'content="https://architectureofgrace.com/piano-lessons"'),
     ]
     for a, b in rep:
         assert head.count(a) == 1, a

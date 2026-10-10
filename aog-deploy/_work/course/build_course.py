@@ -27,7 +27,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DEPLOY = HERE.parent.parent
 
-SITE = "https://architectureofgrace.org"
+SITE = "https://architectureofgrace.com"
 
 # ── the course being built: set by build(course); see _work/ush/build_ush.py
 #    and _work/sci/build_sci.py for the two configurations ──────────────────

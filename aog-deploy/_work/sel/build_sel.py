@@ -32,7 +32,7 @@ except Exception:
     BANNERS, CREDITS = {}, {}
 
 E = lambda s: html.escape(str(s if s is not None else ""), quote=True)
-SITE = "https://architectureofgrace.org"
+SITE = "https://architectureofgrace.com"
 
 ROOMS = [
  dict(n=12,  book=1, bookname="The Foundation", grades="K–2",   es="K–2",   level="Early childhood"),
