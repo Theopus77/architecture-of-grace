@@ -22,8 +22,8 @@
      · The Backpack Inventory (Session 5) is one list, and it flows into Sessions 6, 7, 11
        and 12 — choose an item, sort it G / R / B, place it in the Audit's three columns.
      · The Arrival Letter (Session 1) can be sealed; it reopens on the Session 12 page.
-     · Sessions 7–12 open with a word the facilitator gives in the room, after the
-       re-screen. It paces the work; it is not a lock on private data.
+     · Sessions 7–12 are open (Jimmy, 2026-10-10: "Nothing is locked"); each says to do the
+       check-in with the facilitator first. (The earlier word gate is gone.)
      · Sending is a choice, page by page and answer by answer, and only when the
        facilitator's own link carries their Sheet (?dest=). No fallback to any other
        Sheet, ever: adult work never lands in a school's Sheet by accident. The Arrival
@@ -102,10 +102,6 @@
 .shame .qs{margin-top:8px; display:grid; gap:4px}
 .cb{display:flex; align-items:center; gap:10px; min-height:44px; font-weight:500}
 .cb input{width:22px; height:22px; flex:none; accent-color:var(--good)}
-/* the gate */
-.gatecard{margin-top:16px; padding:18px; border-radius:16px; background:var(--field); border:1px solid var(--rule); box-shadow:var(--lift-sm)}
-.gatecard input{width:100%; max-width:320px; min-height:48px; padding:10px 12px; border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink)}
-.gatecard .err{color:var(--caution); font-weight:700; min-height:1.4em; margin:.4em 0 0}
 /* page foot: saved line, print, send */
 .pfoot{margin-top:22px; padding-top:14px; border-top:1px solid var(--rule); display:flex; flex-wrap:wrap; gap:10px; align-items:center}
 .pfoot .saved{flex:1 1 200px; color:var(--ink-soft); font-size:.94rem}
@@ -117,8 +113,7 @@
 .send .st{font-weight:700; margin:.5em 0 0; min-height:1.3em}
 .endrow{margin-top:26px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
 @media print{
-  .tools,.pfoot,.send,.endrow,.gatecard,.addrow,.inv li .x,.chips .chip:not([aria-pressed="true"]){display:none !important}
-  .page{break-before:auto}
+  .tools,.pfoot,.send,.endrow,  .page{break-before:auto}
   .fld textarea,.fld input[type=text],.inv li input{border:1px solid #999; background:#fff}
   .ph,.prompt,.pair,.vcard,.srow,.shame,.col{break-inside:avoid; box-shadow:none}
 }
@@ -198,9 +193,6 @@ try{
     if(o&&typeof o.u==="string"&&/^https:\/\/script\.google\.com\/[^\s]*\/exec$/.test(o.u)) DEST={url:o.u,key:(typeof o.k==="string"?o.k:"")}; }
 }catch(e){}
 
-/* ── the gate word for Sessions 7–12 (given by the facilitator after the re-screen) ── */
-function h32(s){ var h=5381; s=String(s).toLowerCase().replace(/[^a-z]/g,""); for(var i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36); }
-var GATE="sqzfnd";
 
 /* ── the twelve. a = the anchor's own opening words; pr = the practice's name. ── */
 var PH=["","Phase I · Foundation","Phase II · Interior","Phase III · Repair","Phase IV · Legacy"];
@@ -397,7 +389,7 @@ function progress(){
   var c=0; for(var n=1;n<=12;n++) if(started(n)) c++;
   var pr=$("wbProg"); pr.querySelector("i").style.setProperty("--p",Math.round(100*c/12)); pr.querySelector(".bar").style.setProperty("--p",Math.round(100*c/12));
   pr.querySelector(".lab").textContent=c+" of 12 pages started";
-  var o=$("jump").options; for(var i=0;i<o.length;i++){ var m=+o[i].value; o[i].textContent=(started(m)?"✓ ":"")+m+" · "+S[m].t+(S[m].gate&&!st.open?" (opens in the room)":""); }
+  var o=$("jump").options; for(var i=0;i<o.length;i++){ var m=+o[i].value; o[i].textContent=(started(m)?"✓ ":"")+m+" · "+S[m].t; }
 }
 
 /* ── draw one page ── */
@@ -406,9 +398,8 @@ function draw(n){
   LABELS={};
   var s=S[n], h='<article class="page p'+s.p+'" data-n="'+n+'">';
   h+='<div class="ph"><div class="k p'+s.p+'c">Session '+n+' · '+PH[s.p]+'</div><h2>'+esc(s.t)+'</h2><p class="anc">'+esc(s.a)+'</p><span class="pname">On the page · '+esc(s.pr)+'</span></div>';
-  if(s.gate&&!st.open){
-    h+='<div class="gatecard"><h3 style="margin-top:0">Your facilitator opens this in the room</h3><p>Sessions 7 to 12 begin after a short check-in with your facilitator. They will give you a word. Type it here.</p><label for="gateIn" style="font-weight:800;display:block;margin:.6em 0 .3em">The word</label><input type="text" id="gateIn" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-act="gate">Open Sessions 7–12</button></div><p class="err" id="gateErr" aria-live="polite"></p></div>';
-  } else {
+  {
+    if(s.gate) h+='<div class="priv" style="background:var(--caution-wash)"><span aria-hidden="true">◆</span><span><b>Check in first.</b> Sessions 7 to 12 are the heaviest. Do this page after the short check-in with your facilitator, in the group.</span></div>';
     h+=BODY[n]();
     h+='<div class="pfoot no-print"><span class="saved" id="savedLine" aria-live="polite">'+(started(n)?"Saved on this device.":"Saves on this device as you write.")+'</span><button type="button" class="btn" data-act="print">Print this page</button></div>';
     if(DEST&&!s.priv) h+=sendPanel(n);
@@ -490,16 +481,10 @@ D.addEventListener("change",function(e){
 D.addEventListener("keydown",function(e){
   if(e.key!=="Enter") return;
   if(e.target.id==="invNew"){ e.preventDefault(); addInv(); }
-  if(e.target.id==="gateIn"){ e.preventDefault(); gate(); }
 });
 function addInv(){
   var i=$("invNew"), t=(i.value||"").trim(); if(!t) return;
   st.inv.push({id:uid(),t:t}); save(); draw(cur); progress(); var ni=$("invNew"); if(ni) ni.focus();
-}
-function gate(){
-  var w=$("gateIn").value;
-  if(h32(w)===GATE){ st.open=true; save(); show(cur,true); }
-  else { $("gateErr").textContent="That word didn’t open it. Ask your facilitator."; }
 }
 $("pages").addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest("button"); if(!b) return;
@@ -531,7 +516,6 @@ $("pages").addEventListener("click",function(e){
   }
   if(act==="unseal"){ st.seal.read=true; save(); draw(cur); }
   if(act==="today"){ var tf=b.getAttribute("data-for"); st.f[tf]=today(); saved(); var ti=$("f_"+tf); if(ti) ti.value=today(); }
-  if(act==="gate") gate();
   if(act==="send") send();
 });
 $("jump").addEventListener("change",function(){ show(+this.value); });

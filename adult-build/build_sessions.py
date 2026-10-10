@@ -1,33 +1,19 @@
 # -*- coding: utf-8 -*-
-"""build_sessions.py — the facilitator console, adult-sessions.html (AOG-ADULT-CONSOLE-V2).
+"""build_sessions.py — the facilitator console, adult-sessions.html (AOG-ADULT-CONSOLE-V3).
 
-    python3 adult-build/build_sessions.py --key "the facilitator key" --gate "workbook word" --book /path/to/book6.json
+    python3 adult-build/build_sessions.py --book /path/to/book6.json
 
-book6.json is the whole manual and is NOT kept in this public repo; it travels in the Adult
-Edition zip. The --gate word must match the one the workbook checks (adult-workbook.html,
-GATE = h32(word)); it is shown to facilitators only inside the encrypted console.
-V2 (2026-10-09): the site's skin; a Done tick on each timed step with the session's minutes
-added up; the workbook card (the gate word + a link maker for the group's own Sheet).
+Jimmy (2026-10-10): "ITS ALL FREE ... Nothing is locked." The console is open: no key, no encryption,
+no workbook word. It is the manual verbatim, one session at a time, with Done ticks per step and the
+facilitator reflection log (Appendix E) saved on the device only. The reading/printing copy of the same
+manual is /adult/curriculum (build_curriculum.py).
 
-Reads _work/adult/book6.json (parse_book6.py) and renders every session verbatim —
-meta, connects, contraindication, anchor concept, preparation, the nine timed steps with
-every script / scan / practice / scenario / integration box, between-sessions, reflection —
-plus Section 3.5 (the disclosure & distress protocol), the flag legend, the anatomy, the
-closing exit and the crisis box. The console HTML is then ENCRYPTED (AES-256-GCM, key from
-PBKDF2-SHA256 over the facilitator key, 200,000 rounds) and written into the page as one
-base64 payload; the page decrypts it in the browser with WebCrypto. View-source shows
-nothing readable. The key is never stored on the device — it is held for the tab only.
-
-Change the key: re-run this script with a new --key and redeploy. There is no key in the
-shipped file, only the salt and the ciphertext.
+book6.json is never committed; it travels in the Adult Edition zip.
 """
 import json, os, io, re, sys, base64, html, argparse, secrets
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
-ap = argparse.ArgumentParser(); ap.add_argument("--key", required=True); ap.add_argument("--gate", required=True, help="the word that opens Sessions 7-12 of the participant workbook")
+ap = argparse.ArgumentParser()
 ap.add_argument("--book", default=os.path.join(HERE, "book6.json")); ap.add_argument("-o", default=os.path.join(ROOT, "aog-deploy", "adult-sessions.html"))
 A = ap.parse_args()
 D = json.load(io.open(A.book, encoding="utf-8"))
@@ -132,14 +118,12 @@ def reference_html():
     out += '<div class="card"><h3>Session anatomy — every session, the same order</h3><table class="tbl"><thead><tr><th>Component</th><th>Time</th><th>Purpose</th></tr></thead><tbody>%s</tbody></table><p class="small mut">Total 90 minutes; the co-facilitator debrief follows, 20 minutes minimum.</p></div>' % "".join('<tr><td>%s</td><td class="t">%s</td><td>%s</td></tr>' % tuple(E(c) for c in r) for r in X["anatomy"])
     if X.get("closing_exit"): out += '<div class="say"><span class="who">The closing exit · the same words at every session</span>%s</div>' % E(X["closing_exit"])
     out += ('<div class="card" id="wbcard"><h3>The participant workbook</h3>'
-            '<p>Participants write in <b>/adult/workbook</b> on their own phone. It saves on their device. Sessions 7–12 open with a word you give in the room, after the re-screen.</p>'
-            '<p class="gateword">The word for Sessions 7–12: <b>%s</b></p>'
-            '<p class="small mut">Say it aloud in the room. Do not post it or send it ahead.</p>'
+            '<p>Participants write in <b>/adult/workbook</b> on their own phone. It saves on their device. Every page is open; Sessions 7–12 remind them to do the check-in with you first.</p>'
             '<h4>Your group&#8217;s link</h4><p class="small">To let participants send pages to you, paste your Sheet&#8217;s Web App address and its write key. The link carries them; nothing is sent from here. Without them, the workbook simply has no Send button.</p>'
             '<label class="lk">Web App address<input type="text" id="lkUrl" autocomplete="off" placeholder="https://script.google.com/macros/s/&#8230;/exec"></label>'
             '<label class="lk">Write key<input type="text" id="lkKey" autocomplete="off"></label>'
             '<div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-act="mklink">Make the link</button><button type="button" class="btn" data-act="cplink" hidden>Copy</button></div>'
-            '<p class="lkout" id="lkOut" aria-live="polite"></p></div>') % E(A.gate)
+            '<p class="lkout" id="lkOut" aria-live="polite"></p></div>')
     # 3.5 whole
     out += '<div class="card" id="protocol"><h3>3.5 Disclosure &amp; distress protocol</h3>'
     for b in X["s35"]:
@@ -153,16 +137,8 @@ def reference_html():
 
 console = reference_html() + "".join(session_html(s) for s in D["sessions"])
 
-# ── encrypt ────────────────────────────────────────────────────────────────
-salt = secrets.token_bytes(16); iv = secrets.token_bytes(12)
-kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=200000)
-key = kdf.derive(A.key.encode("utf-8"))
-ct = AESGCM(key).encrypt(iv, console.encode("utf-8"), None)
-b64 = lambda b: base64.b64encode(b).decode("ascii")
-payload = json.dumps({"v": 1, "salt": b64(salt), "iv": b64(iv), "ct": b64(ct), "it": 200000})
-
 shell = io.open(os.path.join(HERE, "sessions_shell.html"), encoding="utf-8").read()
-assert "@@PAYLOAD@@" in shell and shell.count("@@PAYLOAD@@") == 1
-page = shell.replace("@@PAYLOAD@@", payload)
+assert shell.count("@@CONSOLE@@") == 1
+page = shell.replace("@@CONSOLE@@", console)
 io.open(A.o, "w", encoding="utf-8").write(page)
-print("built", A.o, len(page), "bytes; console", len(console), "chars ->", len(ct), "bytes encrypted")
+print("built", A.o, len(page), "bytes; open, no key")

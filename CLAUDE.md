@@ -94,10 +94,12 @@ call moving forward." On the Educator Dashboard and every page after it:
 
 ## The Adult Edition (Book 6)
 
-- Four pages: `/adult`, `/adult/workbook`, `/adult/anchors`, `/adult/sessions` (facilitator key).
+- Five pages: `/adult`, `/adult/curriculum` (the whole manual), `/adult/workbook`, `/adult/anchors`,
+  `/adult/sessions` (the console for running a session). It is all free and nothing is locked
+  (Jimmy, 2026-10-10: "ITS ALL FREE ... Nothing is locked"): no key, no encryption, no workbook word.
   Shared skin `aog-adult.css`. Build sources live in `adult-build/` at the repo root (not published);
-  read its README before changing the console or the workbook word.
-- Never commit `book6.json` (the whole manual; this repo is public). The crisis box goes on every
+  read its README before changing them.
+- Don't commit `book6.json` (the build source; it travels in the Adult Edition zip). The crisis box goes on every
   Adult page. The workbook sends only by the facilitator's own `?dest=` link, never a default Sheet.
 
 ## Housekeeping
