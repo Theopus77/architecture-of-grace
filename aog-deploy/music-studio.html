@@ -267,6 +267,12 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-lkl.ok b{color:#c8f5d0}
 .st-lkl.warn b{color:#ffe2a8}
 .st-lkl small{color:#d7cbb8;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
+/* the set-up steps open from a button that looks like one */
+.st-steps{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;border:1.5px solid #C9A24A;border-radius:12px;background:#1d2024;color:#ffe2a8;font:800 1rem/1.2 var(--sans);cursor:pointer;list-style:none}
+.st-steps::-webkit-details-marker{display:none}
+.st-steps::before{content:"▸";transition:none}
+details[open]>.st-steps::before{content:"▾"}
+details[open]>.st-steps{margin-bottom:.5rem}
 .st-qr{display:inline-block;justify-self:start;padding:12px;background:#fff;border-radius:12px;line-height:0}
 .st-qr[hidden]{display:none}
 .st-help{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:0;padding-left:1.3rem}
@@ -996,7 +1002,7 @@ const STR={
   openYes:{en:"Yes, open it",es:"Sí, abrirla"}, openNo:{en:"Not now",es:"Ahora no"},
   lockH:{en:"With your locker in Google Drive",es:"Con tu casillero en Google Drive"},
   lockAbout:{en:"Your locker keeps your songs in your own Google Drive. Set it up once, then every device you connect sees the same songs. Nobody signs in on the devices.",es:"Tu casillero guarda tus canciones en tu propio Google Drive. Prepáralo una vez y cada aparato que conectes verá las mismas canciones. Nadie inicia sesión en los aparatos."},
-  lockSteps:{en:"How to set it up (about 5 minutes)",es:"Cómo prepararlo (unos 5 minutos)"},
+  lockSteps:{en:"Show me how to set it up (5 minutes)",es:"Muéstrame cómo prepararlo (5 minutos)"},
   lockS1:{en:"Open script.google.com and press New project.",es:"Abre script.google.com y pulsa Nuevo proyecto."},
   lockS2:{en:"Paste in the locker script and press Save.",es:"Pega el script del casillero y pulsa Guardar."},
   lockScript:{en:"the locker script",es:"el script del casillero"},
@@ -2271,7 +2277,7 @@ function paintLocker(){
   if(!lk){
     const keepU=$("lkUrl") ? $("lkUrl").value : "", keepK=$("lkKey") ? $("lkKey").value : "";
     box.innerHTML=`<div class="st-lk">${lockLight()}<p class="st-info">${esc(t("lockAbout"))}</p>
-      <details${CARRY.st==="sheet" ? " open" : ""}><summary class="st-lab" style="min-height:44px;display:flex;align-items:center;cursor:pointer">${esc(t("lockSteps"))}</summary>
+      <details${CARRY.st==="sheet" ? " open" : ""}><summary class="st-steps">${esc(t("lockSteps"))}</summary>
       <ol class="st-help"><li>${esc(t("lockS1"))}</li><li>${esc(t("lockS2")).replace(esc(t("lockScript")), `<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${esc(t("lockScript"))}</a>`)}</li>
         <li>${esc(t("lockS3"))}</li><li>${esc(t("lockS4"))}</li><li>${esc(t("lockS5"))}</li></ol></details>
       <label class="st-field"><span class="st-lab">${esc(t("lockUrl"))}</span><input type="url" id="lkUrl" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
