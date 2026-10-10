@@ -155,6 +155,9 @@
         [].slice.call(krow.children).forEach(function (e) { if (!up.test(e.id || "")) recRow.appendChild(e); });
         if (!recRow.children.length) recRow = null;
       }
+      /* AOG-AMP-NEAR-V1: the guitar's and bass's "Pedals on" strip stays right under the neck */
+      var pn = D.getElementById("pedalsNear");
+      if (pn && pn.parentNode === pblk) { var at = lead.indexOf(inst); if (at >= 0) lead.splice(at + 1, 0, pn); }
       var seq = lead.concat(slips, [recRow]).filter(function (e) { return e && (e === recRow || e.parentNode === pblk); });
       var h2 = kid("h2")[0], mark = D.createComment("first");
       pblk.insertBefore(mark, h2 ? h2.nextSibling : pblk.firstChild);

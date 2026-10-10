@@ -415,6 +415,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
           <button type="button" class="pbtn pv-big" id="pvBig"></button><!-- AOG-PLAY-V1: the neck on the whole screen (a computer) -->
         </div>
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
+        <div id="pedalsNear" hidden></div><!-- AOG-AMP-NEAR-V1: the pedals that are on, with their knobs, by the neck (aog-amp.js) -->
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
@@ -2510,7 +2511,7 @@ function applyRig(){ if(ac && LIVE_CH) LIVE_CH.rig.set(rigFor(S.sound)); if(wind
 const LIVEIN=window.AOGLive ? AOGLive.attach({mount:"liveBox", kind:GTR?"guitar":"bass", tool:INST, context:()=>ctx(), out:()=>{ ctx(); return LIVE_CH.bus; },
   rig:()=>rigFor(S.sound), lang:()=>S.lang, bpm:()=>curBpm()}) : null;
 function paintAmp(){
-  if(!AMPUI) AMPUI=AOGAmp.ui($("ampBox"), {kind:GTR?"guitar":"bass", lang:()=>S.lang, get:()=>rigFor(S.sound),
+  if(!AMPUI) AMPUI=AOGAmp.ui($("ampBox"), {kind:GTR?"guitar":"bass", near:$("pedalsNear"), lang:()=>S.lang, get:()=>rigFor(S.sound),
     set:(st)=>{ const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); delete o.pickup;
       { const was=rigFor(S.sound), on=(r,k)=>!!(r.fx && r.fx[k] && r.fx[k].on); LES.mark("amp1");   /* AOG-LESSONS-V1 */
         if(Object.keys(Object.assign({}, was.fx||{}, o.fx||{})).some(k=>on(was,k)!==on(o,k))) LES.mark("pedal"); }
