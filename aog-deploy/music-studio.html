@@ -2142,7 +2142,11 @@ async function openFile(file){
 const LOCK_URL_RE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
 const LOCK_KEY_RE=/^[A-Za-z0-9_-]{8,100}$/;
 function lockGet(){ try{ const o=JSON.parse(localStorage.getItem(LOCK_KEY)||"null"); if(o && LOCK_URL_RE.test(o.url) && LOCK_KEY_RE.test(o.key)) return {url:o.url, key:o.key}; }catch(e){} return null; }
-function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; }
+function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; if(o) lockKeep(); }
+/* AOG-STUDIO-LOCKER-KEEP-V1: ask the browser to keep this site's storage, so Safari does not clear the locker after a week away.
+   Only Disconnect removes it here; the front page's clear and reset buttons and the dashboard's Delete everything keep it, and the
+   dashboard's backup file leaves the key out. */
+function lockKeep(){ try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){} }
 async function lockPost(body, lk){
   lk=lk||CARRY.lock; if(!lk) throw new Error("none");
   let r;
@@ -3401,7 +3405,7 @@ bind();
 bindConsole();   /* AOG-DESK-FACE-V1 */
 paintAll();
 if(lockJoined) $("lockLine").textContent=t("lockJoined");
-if(CARRY.lock) lockList(true);
+if(CARRY.lock){ lockKeep(); lockList(true); }
 meterStill();
 /* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */
 try{ new ResizeObserver(()=>{ if(!PLAY.on) meterStill(); }).observe($("vuBridge")); }catch(e){}

@@ -5751,7 +5751,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
          A teacher who taps this after a demo must not silently lose the read
          passcode. Only Disconnect and the red Delete-everything button, which
          both name the connection in their own confirm text, may remove it. */
-      var KEEP_SYNC = { "aog.sync.url": 1, "aog.sync.key": 1, "aog.sync.writekey": 1 };
+      var KEEP_SYNC = { "aog.sync.url": 1, "aog.sync.key": 1, "aog.sync.writekey": 1, "aog.studio.locker.v1": 1 };   /* the Studio's locker too: only its own Disconnect removes it */
       var rm = [];
       for (var i=0; i<localStorage.length; i++){ var k = localStorage.key(i); if (k && !KEEP_SYNC[k]){ var kl = k.toLowerCase(); if (kl.indexOf("aog")===0 || kl.indexOf("grace")===0) rm.push(k); } }
       rm.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
@@ -19071,7 +19071,7 @@ function clearLocalData() {
    (records, family, drafts, saved strategies, sync connection, demo data,
    accessibility + launch settings), then reload to a clean state. */
 function aogResetAll() {
-  var ok = confirm("Reset EVERYTHING on this device?\n\nThis wipes all Architecture of Grace data and settings here — self-reflections, family entries, saved strategies, demo data, and accessibility preferences. Intended for testing/demo. This cannot be undone.\n\nYour Sheet connection is KEPT. To remove that too, use Disconnect in Set up ▸ Connect & sync.");
+  var ok = confirm("Reset EVERYTHING on this device?\n\nThis wipes all Architecture of Grace data and settings here — self-reflections, family entries, saved strategies, demo data, and accessibility preferences. Intended for testing/demo. This cannot be undone.\n\nYour Sheet connection and your music locker are KEPT. To remove the Sheet connection too, use Disconnect in Set up ▸ Connect & sync.");
   if (!ok) return;
   /* THE SHEET CONNECTION SURVIVES THIS. A demo reset is not a disconnect.
      Wiping aog.sync.url / aog.sync.key here is what silently cost the read
@@ -19083,7 +19083,7 @@ function aogResetAll() {
         _keepSyncWrite = localStorage.getItem("aog.sync.writekey"); } catch (e) {}
   try {
     var kill = [];
-    for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && /^(aog|grace)/i.test(k) && k !== "aog.sync.url" && k !== "aog.sync.key" && k !== "aog.sync.writekey") kill.push(k); }
+    for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && /^(aog|grace)/i.test(k) && k !== "aog.sync.url" && k !== "aog.sync.key" && k !== "aog.sync.writekey" && k !== "aog.studio.locker.v1") kill.push(k); }   /* the Studio's locker survives too */
     kill.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
     if (_keepSyncUrl) localStorage.setItem("aog.sync.url", _keepSyncUrl);
     if (_keepSyncKey) localStorage.setItem("aog.sync.key", _keepSyncKey);
