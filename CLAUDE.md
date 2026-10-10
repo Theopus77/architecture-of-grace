@@ -126,6 +126,17 @@ the Lab Bench, Quiet Space; no Daily Practice, no Check-in). Teacher leads with 
 Dashboard, The Courses, SEL and Daily Practice. Parent has the most doors. Show
 everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 
+## Home Screen apps (standing order from Jimmy, 2026-10-10)
+
+"Make a direct link icon" to each of these, each at its own address: the Studio
+(/the-studio), Daily Practice (/drops), SEL (/sel), The Courses (/courses), Adult
+SEL (/adult) and the Educator Dashboard (/dashboard). Each page links its own
+`<name>.webmanifest` and `app-<name>-touch.png` (the Studio: `studio.*`), so Add to
+Home Screen opens that place, full screen.
+
+- `/sel` and `/courses` are built from the front page's SEL and Courses panels by
+  `_work/home/make_door_pages.py`. Change a panel in index.html, then run it.
+
 ## The Adult Edition (Book 6)
 
 - Five pages: `/adult`, `/adult/curriculum` (the whole manual), `/adult/workbook`, `/adult/anchors`,

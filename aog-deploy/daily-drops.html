@@ -1451,6 +1451,12 @@ body.packing .packsheet .tlines{color:#333}
    same for every subject and grade, and the pencil still lands exactly under the finger. */
 @media screen { html body { zoom: 1 !important; } }
 </style>
+<!-- AOG-HOME-APPS-V1 (Jimmy, 2026-10-10: "make a direct link icon"): Add to Home Screen gives this its own icon -->
+<link rel="manifest" href="/practice.webmanifest">
+<link rel="apple-touch-icon" href="/app-practice-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Practice">
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -1535,7 +1541,7 @@ body.packing .packsheet .tlines{color:#333}
     <select id="grade" style="min-width:180px"></select>
   </div>
   <div class="fg">
-    <span class="lbl" data-en="Draft" data-es="Borrador">Draft</span>
+    <span class="lbl" data-en="Sheet" data-es="Hoja">Sheet</span>
     <div class="step">
       <button id="prevS" type="button" aria-label="Previous sheet">&minus;</button>
       <input id="sheetIn" type="number" min="1" max="180" value="1" inputmode="numeric" aria-label="Sheet number">
@@ -1582,13 +1588,13 @@ body.packing .packsheet .tlines{color:#333}
      page, blank and ready to hand out. Nothing on screen is disturbed by it. -->
 <div class="packbar no-print" id="packBar" hidden>
   <!-- AOG-DD-PACK-V2 (2026-10-01): a start draft and a count; each page is the next draft number. The exact list still works. -->
-  <label class="lbl" for="packStart" data-en="Start at draft" data-es="Empezar en el borrador">Start at draft</label>
-  <input id="packStart" type="number" min="1" max="180" value="1" inputmode="numeric" autocomplete="off" aria-label="First draft to print">
+  <label class="lbl" for="packStart" data-en="Start at sheet" data-es="Empezar en la hoja">Start at sheet</label>
+  <input id="packStart" type="number" min="1" max="180" value="1" inputmode="numeric" autocomplete="off" aria-label="First sheet to print">
   <label class="lbl" for="packCount" data-en="How many" data-es="Cu&aacute;ntos">How many</label>
-  <input id="packCount" type="number" min="1" max="40" value="5" inputmode="numeric" autocomplete="off" aria-label="How many drafts to print">
-  <label class="lbl" for="packIn" data-en="Or exact drafts" data-es="O borradores exactos">Or exact drafts</label>
+  <input id="packCount" type="number" min="1" max="40" value="5" inputmode="numeric" autocomplete="off" aria-label="How many sheets to print">
+  <label class="lbl" for="packIn" data-en="Or exact sheets" data-es="O hojas exactas">Or exact sheets</label>
   <input id="packIn" type="text" inputmode="numeric" autocomplete="off" placeholder="10, 13, 176"
-         aria-label="Exact draft numbers to print">
+         aria-label="Exact sheet numbers to print">
   <button class="btn solid" id="packGo" type="button" data-en="Print these" data-es="Imprimir estos">Print these</button>
   <button class="btn" id="packX" type="button" data-en="Close" data-es="Cerrar">Close</button>
   <span class="packnote" id="packNote"></span>
@@ -18297,7 +18303,7 @@ function sheetHTML(pack){
   var h='<div class="shead"><div><h2>'+esc(subjName)+' &middot; '+
       esc(t(GLABEL[ST.grade][0],GLABEL[ST.grade][1]))+'</h2>'+
       '<div class="sub">'+t('Daily Practice &middot; Spiral Review','Práctica diaria &middot; Repaso en espiral')+'</div></div>'+
-      '<div class="snum"><b>'+ST.sheet+'</b><span>'+t('Draft','Borrador')+'</span></div></div>'+
+      '<div class="snum"><b>'+ST.sheet+'</b><span>'+t('Sheet','Hoja')+'</span></div></div>'+
     '<div class="smeta"><span>'+t('Score','Puntaje')+' <b class="sval"'+(pack?'':' id="mScore"')+'>\u2014</b>'+'<span class="dline" aria-hidden="true"></span></span>'+
     '<span>'+t('Date','Fecha')+' <b class="dval">'+new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
     '</b><span class="dline" aria-hidden="true"></span></span></div>'+
@@ -18392,7 +18398,7 @@ function writeHTML(pack){
       esc(t(GLABEL[ST.grade][0],GLABEL[ST.grade][1]))+'</h2>'+
       '<div class="sub">'+t('Daily Practice &middot; Thinking, communicating and writing',
                             'Práctica diaria &middot; Pensar, comunicar y escribir')+'</div></div>'+
-      '<div class="snum"><b>'+ST.sheet+'</b><span>'+t('Draft','Borrador')+'</span></div></div>'+
+      '<div class="snum"><b>'+ST.sheet+'</b><span>'+t('Sheet','Hoja')+'</span></div></div>'+
     '<div class="smeta"><span>'+t('Date','Fecha')+' <b class="dval">'+
       new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
       '</b><span class="dline" aria-hidden="true"></span></span></div>'+
@@ -19663,7 +19669,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
       +'<p class="sst" aria-live="polite"></p>'
       /* AOG-DD-ROOM-RETURN-V3 (2026-10-02) — Jimmy: "put it underneath." Its own row under "Sent to your teacher.",
          a plain link (not a .btn in .srow, which wears the envelope and wrapped on a phone). */
-      +'<a class="backroom" id="backRoom" href="/?room=drafts" hidden data-en="&larr; Back to the drafts" data-es="&larr; Volver a los borradores">&larr; Back to the drafts</a>';
+      +'<a class="backroom" id="backRoom" href="/?room=drafts" hidden data-en="&larr; Back to Daily Practice" data-es="&larr; Volver a la Práctica diaria">&larr; Back to Daily Practice</a>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
        The door sits directly above that row now, so signing and sending are
        the last thing on the page rather than something below the buttons. */

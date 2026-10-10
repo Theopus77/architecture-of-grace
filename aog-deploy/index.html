@@ -2136,7 +2136,8 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
       try{ new MutationObserver(function(){ apply(cur); }).observe(document.documentElement, { attributes:true, attributeFilter:["lang"] }); }catch(e){}
       /* AOG-DD-ROOM-RETURN-V1 (2026-10-02) — Jimmy: "once you press Send it should take you back to the home page
          with the drafts laid out." /drops sends the student to /?room=drafts; the room opens on arrival. */
-      try{ if(/[?&]room=drafts(&|$)/.test(location.search)){ setTimeout(function(){ if(typeof aogAudDoor==="function") aogAudDoor("drafts"); }, 120); } }catch(e){}
+      /* AOG-HOME-APPS-V1 (2026-10-10): any door opens the same way, so a Home Screen icon can land on it (/?room=sel, /?room=courses) */
+      try{ var rm=/[?&]room=([a-z]+)(&|$)/.exec(location.search); if(rm && document.querySelector('#aogdnGrid .aogdn-door[data-door="'+rm[1]+'"]')){ setTimeout(function(){ if(typeof aogAudDoor==="function") aogAudDoor(rm[1]); }, 120); } }catch(e){}
     })();
     </script>
     <!-- AOG-DOORS-ELEVEN-V1: the "For schools" line (Crosswalk, Privacy) is gone; both are doors now. -->
