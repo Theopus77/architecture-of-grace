@@ -10,12 +10,14 @@ The page is a frame, not a list of links:
   - the eight rooms as picture doors, in song order (CLAUDE.md, aog-labdoors.js);
   - the room you are in, playing inside the frame (an iframe of the room's own page). The room knows it is inside the
     Studio (aog-labdoors.js, AOG-STUDIO-SHELL-V1): it hides its own site bar and doors, and a link to another room
-    changes the room here instead of opening a page inside the page. Each room is still its own page at its own
-    address (/drum-machine, /bass …): nothing that links to a room breaks;
+    changes the room here instead of opening a page inside the page. A link to a room's own address (/drum-machine,
+    /bass …) opens the Studio in that room, so nothing that links to a room breaks;
   - My Track along the bottom: one mark per layer. A layer is there when that room has a take in the Mixing Desk's
     list ("studioinbox") or a recording on its shelf (aog-handoff.js); visiting a room marks nothing (§06).
-  - "Open in its own tab" keeps Jimmy's earlier ask (2026-10-06): "multiple tabs open and work on them on their own
-    page". The rooms still hear each other across tabs (aog-handoff.js, BroadcastChannel "aog-music").
+  - AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10): "one location for all the instruments … and that is the studio. Have two
+    designs and layouts seems sort of silly." A room opened on its own address (/piano, music-piano.html, an old link)
+    comes into the Studio, in that room (each room's head script, ?at=). The "own tab" link is gone. Two Studio tabs
+    still hear each other (aog-handoff.js, BroadcastChannel "aog-music").
 The address says the room (/the-studio#bass), so Back, a bookmark and a shared link all land in the right room.
 The page draws at full size on a computer (no 85% zoom): the rooms inside have canvases, and a pen must land under the
 finger (CLAUDE.md).
@@ -199,10 +201,23 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
 (function () {
   "use strict";
   var D = document, ROOMS = __ROOMS__, LAYERS = __LAYERS__;
-  var fr = D.getElementById("room"), own = D.getElementById("own"), cur = "", KEY = "aog.studio.room";
+  var fr = D.getElementById("room"), cur = "", KEY = "aog.studio.room";
   function es() { return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   function room(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return null; }
+  /* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): a room
+     opened on its own address comes here as ?at=/music-piano.html#lessons (its head script). The frame opens that exact
+     address once, so a lesson, a take or a locker link still lands, and the address bar goes back to /the-studio#room. */
+  var AT = null;
+  try {
+    var at = new URLSearchParams(location.search).get("at");
+    if (at) {
+      var u = new URL(at, location.href);
+      for (var i = 0; i < ROOMS.length; i++) if (u.origin === location.origin && u.pathname === "/" + ROOMS[i].file) AT = { id: ROOMS[i].id, url: u.pathname + u.search + u.hash };
+      history.replaceState(null, "", location.pathname + (AT ? "#" + AT.id : location.hash));
+    }
+  } catch (e) { AT = null; }
   function first() {
+    if (AT) return AT.id;
     var h = (location.hash || "").slice(1); if (room(h)) return h;
     try { var s = localStorage.getItem(KEY); if (room(s)) return s; } catch (e) {}
     return "pads";
@@ -216,6 +231,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
     /* the first room loads; after that the room is swapped in place, so the frame adds no step of its own to Back */
     var url = "/" + r.file; fr.setAttribute("data-file", url);
+    if (AT && AT.id === id) url = AT.url; AT = null;
     if (fr.getAttribute("src") && fr.contentWindow) { try { fr.contentWindow.location.replace(url); } catch (e) { fr.src = url; } }
     else fr.src = url;
     paint();
@@ -228,7 +244,6 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
     D.title = (e ? "El estudio de grabación · " : "The Recording Studio · ") + name + " — Architecture of Grace";
-    own.href = r.href;
     [].forEach.call(D.querySelectorAll(".sh-doors a"), function (a) {
       if (a.getAttribute("data-room") === cur) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
     var ul = D.querySelector(".sh-doors ul"), on = D.querySelector('.sh-doors a[aria-current]');   /* the room you are in, in view */
@@ -429,7 +444,6 @@ def build():
                    '<img src="/img/banners/%s-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span>%s</a></li>'
                    % (rid, rid, pic, pic, sp(short)))
     out += ["</ul></nav>",
-            '  <a class="sh-own" id="own" href="/drum-machine" target="_blank"><span class="long">%s</span><span class="short">%s</span></a>' % (sp(("Open this room in its own tab ↗", "Abrir esta sala en su propia pestaña ↗")), sp(("Own tab ↗", "Otra pestaña ↗"))),
             "</div>",
             '<main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>',
             '<section class="mt" id="mt" aria-label="The studio">'

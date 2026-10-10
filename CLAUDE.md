@@ -92,6 +92,23 @@ call moving forward." On the Educator Dashboard and every page after it:
 - Say a thing once. One short line per screen, not the same description in
   three places.
 
+## One home for the music rooms (standing order from Jimmy, 2026-10-10)
+
+"One location for all the instruments … and that is the studio. Two designs and
+layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-studio,
+/music) is the only place the eight rooms are used.
+
+- A room opened on its own address (/piano, `music-piano.html`, an old link or
+  bookmark) opens the Studio in that room. A line at the top of each room's
+  `<head>` (AOG-STUDIO-ONLY-V1) does it and carries the address along (`?at=`),
+  so a lesson, a take or a locker link still lands. A new room gets the same line.
+- Design and fix a room as it looks inside the Studio (`html.in-studio`), not on
+  its own. There is no "own tab" link.
+- The site's checks still open each room on its own; that is expected.
+- `the-studio.html` is built by `_work/music/make_studio_page.py`; the Guitar and
+  Bass by `make_strings.py` (`strings_page.html`), the Band by `make_band.py`
+  (`band_head.html`). Change the source, then build.
+
 ## The Adult Edition (Book 6)
 
 - Five pages: `/adult`, `/adult/curriculum` (the whole manual), `/adult/workbook`, `/adult/anchors`,

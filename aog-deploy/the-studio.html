@@ -340,7 +340,6 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
   <li><a href="#decks" data-room="decks"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-decks-pencil-900.webp"><img src="/img/banners/music-decks-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Turntables" data-es="Tocadiscos">Turntables</span></a></li>
   <li><a href="#studio" data-room="studio"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Mixing Desk" data-es="Mesa de mezclas">Mixing Desk</span></a></li>
 </ul></nav>
-  <a class="sh-own" id="own" href="/drum-machine" target="_blank"><span class="long"><span data-en="Open this room in its own tab ↗" data-es="Abrir esta sala en su propia pestaña ↗">Open this room in its own tab ↗</span></span><span class="short"><span data-en="Own tab ↗" data-es="Otra pestaña ↗">Own tab ↗</span></span></a>
 </div>
 <main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>
 <section class="mt" id="mt" aria-label="The studio"><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button><button type="button" class="tp-b tp-out" id="tpOut"></button><span class="tp-vu" id="tpVu"></span><span class="tp-line" id="tpLine" aria-live="polite"></span></div><div class="mtrow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>
@@ -351,10 +350,23 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 (function () {
   "use strict";
   var D = document, ROOMS = [{"id": "pads", "href": "/drum-machine", "file": "music-pads.html", "name": ["The Drum Machine", "La caja de ritmos"], "short": ["Drum Machine", "Caja de ritmos"], "from": "pads", "shelf": "padbench"}, {"id": "kit", "href": "/drum-kit", "file": "music-kit.html", "name": ["The Drum Kit", "La batería"], "short": ["Drum Kit", "Batería"], "from": "drums", "shelf": "drumtake"}, {"id": "piano", "href": "/piano", "file": "music-piano.html", "name": ["The Piano", "El piano"], "short": ["Piano", "Piano"], "from": "piano", "shelf": "keysbench"}, {"id": "guitar", "href": "/guitar", "file": "music-guitar.html", "name": ["The Guitar", "La guitarra"], "short": ["Guitar", "Guitarra"], "from": "guitar", "shelf": "guitarbench"}, {"id": "bass", "href": "/bass", "file": "music-bass.html", "name": ["The Bass", "El bajo"], "short": ["Bass", "Bajo"], "from": "bass", "shelf": "bassbench"}, {"id": "band", "href": "/band", "file": "music-band.html", "name": ["The Band", "La banda"], "short": ["Band", "Banda"], "from": "band", "shelf": "bandbench"}, {"id": "decks", "href": "/turntables", "file": "music-decks.html", "name": ["The Turntables", "Los tocadiscos"], "short": ["Turntables", "Tocadiscos"], "from": "decks", "shelf": ""}, {"id": "studio", "href": "/mixing-desk", "file": "music-studio.html", "name": ["The Mixing Desk", "La mesa de mezclas"], "short": ["Mixing Desk", "Mesa de mezclas"], "from": "", "shelf": ""}], LAYERS = [{"id": "pads", "name": ["Drums", "Ritmos"]}, {"id": "kit", "name": ["Kit", "Batería"]}, {"id": "piano", "name": ["Piano", "Piano"]}, {"id": "guitar", "name": ["Guitar", "Guitarra"]}, {"id": "bass", "name": ["Bass", "Bajo"]}, {"id": "band", "name": ["Band", "Banda"]}, {"id": "decks", "name": ["Turntables", "Tocadiscos"]}, {"id": "voice", "name": ["Voice", "Voz"]}, {"id": "liveguitar", "name": ["Live guitar", "Guitarra en vivo"]}, {"id": "livebass", "name": ["Live bass", "Bajo en vivo"]}];
-  var fr = D.getElementById("room"), own = D.getElementById("own"), cur = "", KEY = "aog.studio.room";
+  var fr = D.getElementById("room"), cur = "", KEY = "aog.studio.room";
   function es() { return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   function room(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return null; }
+  /* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): a room
+     opened on its own address comes here as ?at=/music-piano.html#lessons (its head script). The frame opens that exact
+     address once, so a lesson, a take or a locker link still lands, and the address bar goes back to /the-studio#room. */
+  var AT = null;
+  try {
+    var at = new URLSearchParams(location.search).get("at");
+    if (at) {
+      var u = new URL(at, location.href);
+      for (var i = 0; i < ROOMS.length; i++) if (u.origin === location.origin && u.pathname === "/" + ROOMS[i].file) AT = { id: ROOMS[i].id, url: u.pathname + u.search + u.hash };
+      history.replaceState(null, "", location.pathname + (AT ? "#" + AT.id : location.hash));
+    }
+  } catch (e) { AT = null; }
   function first() {
+    if (AT) return AT.id;
     var h = (location.hash || "").slice(1); if (room(h)) return h;
     try { var s = localStorage.getItem(KEY); if (room(s)) return s; } catch (e) {}
     return "pads";
@@ -368,6 +380,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
     /* the first room loads; after that the room is swapped in place, so the frame adds no step of its own to Back */
     var url = "/" + r.file; fr.setAttribute("data-file", url);
+    if (AT && AT.id === id) url = AT.url; AT = null;
     if (fr.getAttribute("src") && fr.contentWindow) { try { fr.contentWindow.location.replace(url); } catch (e) { fr.src = url; } }
     else fr.src = url;
     paint();
@@ -380,7 +393,6 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
     D.title = (e ? "El estudio de grabación · " : "The Recording Studio · ") + name + " — Architecture of Grace";
-    own.href = r.href;
     [].forEach.call(D.querySelectorAll(".sh-doors a"), function (a) {
       if (a.getAttribute("data-room") === cur) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
     var ul = D.querySelector(".sh-doors ul"), on = D.querySelector('.sh-doors a[aria-current]');   /* the room you are in, in view */
