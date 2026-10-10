@@ -23,7 +23,9 @@ const VIEWS = ["music-drums.html#lessons","music-drums.html#meet","music-drums.h
   "music-piano.html#lessons","music-piano.html#meet","music-piano.html#words","music-piano.html#print",
   /* the Adult Edition workbook's pages behind its Session menu (AOG-ADULT-WORKBOOK-V1, 2026-10-09); ?s=7 is the
      facilitator's-word card that stands in front of Sessions 7-12 */
-  "adult-workbook.html?s=2","adult-workbook.html?s=3","adult-workbook.html?s=4","adult-workbook.html?s=5","adult-workbook.html?s=6","adult-workbook.html?s=7"];
+  "adult-workbook.html?s=2","adult-workbook.html?s=3","adult-workbook.html?s=4","adult-workbook.html?s=5","adult-workbook.html?s=6","adult-workbook.html?s=7",
+  /* the Cube Lab's other two views (AOG-CUBE-LAB-V1, 2026-10-10) */
+  "cube-lab.html#solve","cube-lab.html#mine"];
 const pages = args.length ? args : fs.readdirSync(ROOT).filter(f => f.endsWith(".html")).concat(ROOMS.map(r => "index.html#" + r)).concat(VIEWS);
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".json": "application/json", ".jpg": "image/jpeg", ".webp": "image/webp" };
