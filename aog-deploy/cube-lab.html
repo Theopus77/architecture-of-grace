@@ -242,7 +242,7 @@ const T={
   mixFirst:["Tap Mix it up to get a mixed cube. Then follow along, one move at a time.","Toca Mézclalo para tener un cubo mezclado. Luego sigue, un movimiento a la vez."],
   stagesH:["The steps","Los pasos"],
   mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
-  mine1:["Hold your cube with the yellow center on top and the green center facing you.","Sostén tu cubo con el centro amarillo arriba y el centro verde hacia ti."],
+  mine1:["Hold your cube with yellow on top and green facing you. Not those colors? Hold it any way, and paint the six centers (the middle square of each side) to match first.","Sostén tu cubo con el amarillo arriba y el verde hacia ti. ¿No tiene esos colores? Sostenlo como quieras y pinta primero los seis centros (el cuadro del medio de cada lado) igual que el tuyo."],
   mine2:["Pick a color. Tap the matching squares on the screen.","Elige un color. Toca los cuadros que coinciden en la pantalla."],
   mine3:["Tap Turn around. Turn your cube the same way and paint the other three sides.","Toca Dale la vuelta. Gira tu cubo igual y pinta los otros tres lados."],
   mine4:["Tap Check my cube.","Toca Revisa mi cubo."],
@@ -250,6 +250,8 @@ const T={
   errCount:["{c}: {n} squares painted. Each color needs 9.","{c}: {n} cuadros pintados. Cada color necesita 9."],
   errPiece:["One piece has colors that can't go together. Check the squares that light up dark.","Una pieza tiene colores que no van juntos. Revisa los cuadros oscuros."],
   errTwist:["The colors are all there, but this cube can't be solved as painted. A corner may be twisted or two squares swapped. Check again, square by square.","Están todos los colores, pero este cubo no se puede resolver así. Puede haber una esquina girada o dos cuadros cambiados. Revisa otra vez, cuadro por cuadro."],
+  errCenters:["Two centers have the same color. Each center is a different color: paint them the way your cube has them.","Dos centros tienen el mismo color. Cada centro es de un color distinto: píntalos como los tiene tu cubo."],
+  errStray:["Some squares are {c}, but no center is. Paint the center that is {c} on your cube.","Algunos cuadros son {c}, pero ningún centro lo es. Pinta el centro que es {c} en tu cubo."],
   errStickers:["Some stickers were moved. The squares marked on the screen show colors that no real piece has together. First check that you painted them right. If you did, someone peeled stickers off and put them back in the wrong places. Move them so each piece has colors that belong together, then paint again.","Alguien movió algunas pegatinas. Los cuadros marcados en la pantalla tienen colores que ninguna pieza real tiene juntos. Primero revisa que los pintaste bien. Si es así, alguien despegó pegatinas y las puso en otro lugar. Muévelas para que cada pieza tenga colores que van juntos y vuelve a pintar."],
   fixH:["Your cube was put back together wrong","Tu cubo se armó mal"],
   fixWhy:["No turning can solve it, and that's not your fault. It happens when a cube comes apart and is put back, or when a corner gets twisted by a bump. Fix it with your hands first. It takes a minute.","Ningún giro lo puede resolver, y no es tu culpa. Pasa cuando un cubo se desarma y se vuelve a armar, o cuando un golpe tuerce una esquina. Arréglalo primero con las manos. Toma un minuto."],
@@ -267,7 +269,7 @@ const T={
   did:["Did {m}","Hecho: {m}"],
   sideName:{U:["top","arriba"],D:["bottom","abajo"],F:["front","frente"],B:["back","atrás"],R:["right","derecha"],L:["left","izquierda"]}
 };
-const COLN={W:["white","blanco"],Y:["yellow","amarillo"],G:["green","verde"],B:["blue","azul"],O:["orange","naranja"],R:["red","rojo"],"?":["not painted","sin pintar"]};
+const COLN={W:["white","blanco"],Y:["yellow","amarillo"],G:["green","verde"],B:["blue","azul"],O:["orange","naranja"],R:["red","rojo"],P:["purple","morado"],K:["pink","rosa"],"?":["not painted","sin pintar"]};
 const STAGE_NAMES={hold:["Hold it","Sostenlo"],cross:["The white cross","La cruz blanca"],corners:["The white corners","Las esquinas blancas"],middle:["The middle layer","La capa del medio"],
   ycross:["The yellow cross","La cruz amarilla"],yface:["The yellow top","La cara amarilla"],ycorners:["The yellow corners","Las esquinas amarillas"],done:["The yellow edges","Las aristas amarillas"]};
 const NOTES={
@@ -374,7 +376,7 @@ const L=[
 ];
 
 /* ── saved place ── */
-const S={lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null};
+const S={lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
@@ -388,13 +390,19 @@ const es=()=>S.lang==="es";
 const tx=a=>a?(es()?a[1]:a[0]):"";
 function t(k,v){ let s=tx(T[k])||k; if(v) Object.keys(v).forEach(n => { s=s.split("{"+n+"}").join(v[n]); }); return s; }
 const cn=c=>tx(COLN[c]);
+const cnd=c=>cn(disp(c));   /* a solver color, named as it looks on this learner's cube */
 const esc=s=>String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function note(p){ const v={}; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; v[k]= (k==="a"||k==="b"||k==="c") ? cn(x) : x; });
+function note(p){ const v={}; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; v[k]= (k==="a"||k==="b"||k==="c") ? cnd(x) : x; });
   let s=tx(NOTES[p.note])||""; Object.keys(v).forEach(n => { s=s.split("{"+n+"}").join(v[n]); }); return s; }
 
 /* ── drawing the cube ── */
-const COL={W:"#f4f3ee",Y:"#ffd43b",G:"#23a159",B:"#2a62c9",O:"#ff7e1f",R:"#d2303b","?":"#9aa1aa"};
-const INK={W:"#14161a",Y:"#14161a",G:"#0d1310",B:"#ffffff",O:"#14161a",R:"#ffffff","?":"#14161a"};
+const COL={W:"#f4f3ee",Y:"#ffd43b",G:"#23a159",B:"#2a62c9",O:"#ff7e1f",R:"#d2303b",P:"#7d3cc0",K:"#ff7eb6","?":"#9aa1aa"};
+const INK={W:"#14161a",Y:"#14161a",G:"#0d1310",B:"#ffffff",O:"#14161a",R:"#ffffff",P:"#ffffff",K:"#14161a","?":"#14161a"};
+/* AOG-CUBE-COLORS-V1 (2026-10-10) — Jimmy: "On this cube, I have yellow, green, purple, red, white, blue." Cubes come in
+   other colors. Inside, the solver always names a side by its home (U is "Y", R is "O" …); S.scheme says what color the
+   learner's own cube has on each side, and everything on screen is drawn and named in those colors. */
+const HOMEFACE={}; Object.keys(C.HOME_COLOR).forEach(f => { HOMEFACE[C.HOME_COLOR[f]]=f; });
+const disp=c => (c && HOMEFACE[c] && S.scheme && S.scheme[HOMEFACE[c]]) || c;
 const stage=$("stage"), viewEl=$("cubeView");
 let ax=-26, ay=-38, size=64, painting=false, cubeBeforePaint=null;
 const els=[];
@@ -437,8 +445,8 @@ function render(anim){
       F.sh.style.opacity=painting ? "0" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
       if(anim) continue;
       const wf=C.faceOf(n.map(Math.round));
-      const pk=cube.pos(p).join(","), src=(painting && peek && doctor) ? doctor.fixed : S.paint;
-      const col=painting ? (p.kind===1 ? p.cols[f] : (src[pk+"|"+wf]||"?")) : p.cols[f];
+      const pk=cube.pos(p).join(","), k2=pk+"|"+wf;
+      const col=!painting ? disp(p.cols[f]) : (peek && doctor) ? (doctor.raw[k2]||"?") : (S.paint[k2] || (p.kind===1 ? S.scheme[wf] : "?"));
       const flag=painting && p.kind>1 && flags.some(q => q.join(",")===pk);
       if(F.flag!==flag){ F.st.classList.toggle("flag", flag); F.flag=flag; }
       if(F.col!==col){ F.st.style.setProperty("--c", COL[col]); F.st.style.setProperty("--lc", INK[col]); F.col=col; }
@@ -565,9 +573,9 @@ function solveHtml(){
   return h;
 }
 function mineHtml(){
-  const count={}; Object.values(S.paint).forEach(c => { count[c]=(count[c]||0)+1; });
+  const count={}; Object.values(rawPaint()).forEach(c => { count[c]=(count[c]||0)+1; });
   let h=`<h2>${esc(t("vMine"))}</h2><p>${esc(t("mineIntro"))}</p><ol class="steps">${["mine1","mine2","mine3","mine4"].map(k=>`<li>${esc(t(k))}</li>`).join("")}</ol>
-    <div class="palette" role="group" aria-label="${esc(t("hintPaint"))}">`+"WYGBOR".split("").map(c=>`<button type="button" data-brush="${c}" class="${S.brush===c?"on":""}" aria-pressed="${S.brush===c}"><span class="sw" style="background:${COL[c]}"></span>${esc(cn(c))}<span class="n">${(count[c]||0)+1}/9</span></button>`).join("")+`</div>
+    <div class="palette" role="group" aria-label="${esc(t("hintPaint"))}">`+"WYGBORPK".split("").map(c=>`<button type="button" data-brush="${c}" class="${S.brush===c?"on":""}" aria-pressed="${S.brush===c}"><span class="sw" style="background:${COL[c]}"></span>${esc(cn(c))}<span class="n">${count[c]||0}/9</span></button>`).join("")+`</div>
     <div class="btn-row"><button type="button" class="btn btn-steel" data-act="checkMine">${esc(t("check"))}</button><button type="button" class="btn" data-act="clearMine">${esc(t("clear"))}</button><button type="button" class="btn" data-act="copyMine">${esc(t("fromScreen"))}</button></div>`;
   if(mineMsg) h+=`<p class="state ${mineMsg.ok?"ok":"warn"}">${esc(mineMsg.text)}</p>`;
   if(doctor) h+=fixHtml();
@@ -579,7 +587,7 @@ const SPOT={"1,1,1":"spot_ufr","0,1,1":"spot_uf","1,1,0":"spot_ur"};
 function fixHtml(){
   const f=doctor.fixes[doctor.i], by={};
   f.edits.forEach(e => { const k=e.pos.join(","); (by[k]=by[k]||[]).push(e); });
-  const list=Object.keys(by).map(k => `<li>${esc(t("shows",{spot:t(SPOT[k]), list:by[k].map(e => tx(T.sideName[e.f])+" "+cn(e.to)).join(", ")}))}</li>`).join("");
+  const list=Object.keys(by).map(k => `<li>${esc(t("shows",{spot:t(SPOT[k]), list:by[k].map(e => tx(T.sideName[e.f])+" "+cnd(e.to)).join(", ")}))}</li>`).join("");
   return `<div class="fixbox"><h3>${esc(t("fixH"))}</h3>${doctor.i===0?`<p>${esc(t("fixWhy"))}</p>`:""}
     <p class="kicker">${esc(t("fixN",{i:doctor.i+1, n:doctor.fixes.length}))}</p><p class="say"><strong>${esc(t("fix_"+f.kind))}</strong></p>
     <p>${esc(t("how_"+f.kind))}</p><ul>${list}</ul>
@@ -616,11 +624,11 @@ function act(a){
   else if(a==="stop"){ stopQueue(); panel(); }
   else if(a==="undo"){ if(!busy && !queue.length && S.hist.length) enqueue([C.invert(S.hist[S.hist.length-1])],"undo"); }
   else if(a==="clearMine"){ S.paint={}; mineMsg=null; doctor=null; flags=[]; save(); render(); panel(); }
-  else if(a==="copyMine"){ doctor=null; flags=[]; S.paint={}; const held=heldWhiteDown(cube); C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos,dir]) => { if(Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])>1) S.paint[pos.join(",")+"|"+f]=held.colorAt(pos,dir); })); mineMsg=null; save(); render(); panel(); }
+  else if(a==="copyMine"){ doctor=null; flags=[]; S.paint={}; const held=heldWhiteDown(cube); C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos,dir]) => { S.paint[pos.join(",")+"|"+f]=disp(held.colorAt(pos,dir)); })); mineMsg=null; save(); render(); panel(); }
   else if(a==="checkMine"){ checkMine(); }
   else if(a==="fixPeek"){ peek=!peek; render(); panel(); }
   else if(a==="fixDone" && doctor){
-    doctor.fixes[doctor.i].edits.forEach(e => { S.paint[e.pos.join(",")+"|"+e.f]=e.to; });
+    doctor.fixes[doctor.i].edits.forEach(e => { S.paint[e.pos.join(",")+"|"+e.f]=disp(e.to); });
     save(); peek=false;
     if(++doctor.i<doctor.fixes.length){ flags=doctor.fixes[doctor.i].spots; render(); panel(); }
     else { doctor=null; flags=[]; checkMine(); }
@@ -628,13 +636,23 @@ function act(a){
 }
 /* the screen cube, turned so its centres sit like a fresh one (yellow up, green in front) */
 function heldWhiteDown(c){ for(const a of ["","x","x'","x2","z","z'"]) for(const b of ["","y","y2","y'"]){ const t=c.clone().run(a+" "+b); if(t.center("U")==="Y" && t.center("F")==="G") return t; } return c.clone(); }
+/* every square of the painted cube, centres included (a centre not painted keeps this cube's color) */
+function rawPaint(){ const raw={}; C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos]) => { const k=pos.join(",")+"|"+f;
+  const isC=Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])===1; raw[k]=S.paint[k] || (isC ? S.scheme[f] : "?"); })); return raw; }
 function checkMine(){
-  const cols={}; C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos]) => { const k=pos.join(",")+"|"+f; const isC=Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])===1; cols[k]= isC ? C.HOME_COLOR[f] : (S.paint[k]||"?"); }));
   doctor=null; flags=[]; peek=false;
+  const raw=rawPaint(), centers={};
+  C.FACE_NAMES.forEach(f => { centers[f]=raw[C.FACES[f].join(",")+"|"+f]; });
+  if(new Set(Object.values(centers)).size<6){ mineMsg={ok:false, text:t("errCenters")}; render(); panel(); return; }
+  const toSolver={}; C.FACE_NAMES.forEach(f => { toSolver[centers[f]]=C.HOME_COLOR[f]; });
+  const stray=Object.values(raw).find(c => c!=="?" && !toSolver[c]);
+  if(stray){ mineMsg={ok:false, text:t("errStray",{c:cn(stray)})}; render(); panel(); return; }
+  S.scheme=centers; save();                                   /* from now on the lab draws this cube's own colors */
+  const cols={}; Object.keys(raw).forEach(k => { cols[k]=toSolver[raw[k]]||"?"; });
   const d=C.diagnose(cols);
-  if(d.error==="count"){ mineMsg={ok:false, text:t("errCount",{c:cn(d.col).replace(/^./,x=>x.toUpperCase()), n:d.n})}; render(); panel(); return; }
+  if(d.error==="count"){ mineMsg={ok:false, text:t("errCount",{c:cnd(d.col).replace(/^./,x=>x.toUpperCase()), n:d.n})}; render(); panel(); return; }
   if(d.error==="stickers"){ mineMsg={ok:false, text:t("errStickers")}; flags=d.spots; ax=-26; ay=-38; render(); panel(); return; }
-  if(d.fixes.length){ mineMsg=null; doctor={fixes:d.fixes, fixed:d.fixed, i:0}; flags=d.fixes[0].spots; ax=-26; ay=-38; render(); panel();
+  if(d.fixes.length){ mineMsg=null; doctor={fixes:d.fixes, raw:Object.fromEntries(Object.entries(d.fixed).map(([k,v]) => [k,disp(v)])), i:0}; flags=d.fixes[0].spots; ax=-26; ay=-38; render(); panel();
     const box=document.querySelector("#panel .fixbox"); if(box && box.scrollIntoView) box.scrollIntoView({block:"nearest"}); return; }
   const r=C.fromFacelets(cols);
   if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
@@ -794,7 +812,7 @@ function endDrag(e){
 stage.addEventListener("pointerup", endDrag);
 stage.addEventListener("pointercancel", e => { if(drag && drag.mode==="turn"){ drag.turn.th=0; } endDrag(e); });
 function paintAt(fc){
-  const p=cube.P[fc.i]; if(p.kind===1) return;
+  const p=cube.P[fc.i];
   const wf=C.faceOf(C.mulV(p.M, C.FACES[fc.f])), k=cube.pos(p).join(",")+"|"+wf;
   S.paint[k]=S.brush; mineMsg=null; doctor=null; flags=[]; peek=false; save(); render(); panel();
 }
