@@ -3426,28 +3426,70 @@ function papyrusTorn(ctx){ /* the sheet's outline: three cut edges, one torn */
   ctx.lineTo(-78,56); ctx.closePath();
 }
 function papyrusBg(ctx,polar,det){
-  ctx.fillStyle=polar?"#020203":"#d9d2c1"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
+  /* AOG-SCOPE-PAPYRUS-V2 (2026-10-10) — Jimmy: denser layered pith strips with organic edges, finer wavy
+     fibre cells, more pits and seams at high power, a fuller frayed edge. */
+  ctx.fillStyle=polar?"#010101":"#d8d0bc"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
   const rng=mulberry32(0x9a90);
   ctx.save(); papyrusTorn(ctx); ctx.clip();
-  ctx.fillStyle=polar?"#1b1608":"#cbb078"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
-  /* two layers of strips: horizontal on top, vertical showing through the gaps */
-  for(let y=-60;y<60;y+=4.2){ const w=3.6+rng()*.5, c=polar?`rgba(${120+rng()*80|0},${100+rng()*70|0},${30+rng()*30|0},.5)`:`rgba(${190+rng()*30|0},${150+rng()*30|0},${80+rng()*30|0},.85)`; ctx.fillStyle=c; ctx.fillRect(-90,y,180,w); }
-  for(let x=-90;x<90;x+=4.6){ const w=3.9+rng()*.5; ctx.fillStyle=polar?"rgba(90,70,20,.35)":"rgba(150,115,55,.28)"; ctx.fillRect(x,-70,w,140); }
-  /* fibre cells inside every strip — long, thin, slightly wavy */
-  ctx.lineWidth=.07; ctx.strokeStyle=polar?"rgba(230,210,150,.55)":"rgba(110,80,30,.28)";
-  ctx.beginPath();
-  for(let y=-62;y<62;y+=.55){ let x=-90; ctx.moveTo(x,y); while(x<90){ x+=6+rng()*8; ctx.lineTo(x,y+(rng()-.5)*.25); } }
-  ctx.stroke();
-  if(det){ /* pits in the fibre walls, dark seams between strips */
-    ctx.fillStyle=polar?"rgba(255,240,200,.35)":"rgba(80,55,20,.22)"; for(let i=0;i<9000;i++){ ctx.fillRect((rng()-.5)*180,(rng()-.5)*128,.09,.05); }
-    ctx.strokeStyle=polar?"rgba(0,0,0,.6)":"rgba(90,60,20,.35)"; ctx.lineWidth=.12; ctx.beginPath(); for(let y=-60;y<60;y+=4.2){ ctx.moveTo(-90,y); ctx.lineTo(90,y+(rng()-.5)*.4); } ctx.stroke();
+  // Base plant color with subtle variation
+  const base = polar?"#181408":"#c8a870";
+  ctx.fillStyle=base; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
+  // Horizontal strips (pith) with organic edges and fiber density
+  for(let y=-62;y<62;y+=3.8+rng()*0.6){
+    const w=3.2+rng()*0.9;
+    const shade = polar ? `rgba(${100+rng()*90|0},${80+rng()*70|0},${20+rng()*25|0},${0.45+rng()*0.2})` : `rgba(${185+rng()*35|0},${145+rng()*35|0},${70+rng()*30|0},${0.78+rng()*0.15})`;
+    ctx.fillStyle=shade;
+    ctx.beginPath();
+    ctx.moveTo(-92, y);
+    for(let x=-92;x<92;x+=4){
+      ctx.lineTo(x, y + (rng()-0.5)*0.35);
+    }
+    ctx.lineTo(92, y);
+    ctx.lineTo(92, y+w);
+    for(let x=92;x>-92;x-=4){
+      ctx.lineTo(x, y+w + (rng()-0.5)*0.4);
+    }
+    ctx.closePath();
+    ctx.fill();
   }
-  speckle(ctx,ANC_W,ANC_H,0x9a92,1800,[70,50,20],.03,.08,.25);
+  // Vertical strips showing through gaps
+  for(let x=-92;x<92;x+=4.2+rng()*0.5){
+    const w=3.4+rng()*0.8;
+    ctx.fillStyle=polar?"rgba(70,50,15,0.4)":"rgba(140,105,45,0.32)";
+    ctx.fillRect(x,-72,w,144);
+  }
+  // Fine fiber cells — long, wavy, multi-scale
+  ctx.lineWidth=0.06; ctx.strokeStyle=polar?"rgba(220,200,140,0.5)":"rgba(100,70,25,0.32)";
+  ctx.beginPath();
+  for(let y=-64;y<64;y+=0.42){
+    let x=-94; ctx.moveTo(x,y);
+    while(x<94){
+      x+=4+rng()*7;
+      ctx.lineTo(x, y+(rng()-0.5)*0.35);
+    }
+  }
+  ctx.stroke();
+  if(det){
+    // Pits and seams
+    ctx.fillStyle=polar?"rgba(255,240,200,0.4)":"rgba(70,45,15,0.25)";
+    for(let i=0;i<12000;i++) ctx.fillRect((rng()-0.5)*185,(rng()-0.5)*132,0.08,0.045);
+    ctx.strokeStyle=polar?"rgba(0,0,0,0.65)":"rgba(80,50,15,0.4)"; ctx.lineWidth=0.11;
+    ctx.beginPath();
+    for(let y=-62;y<62;y+=3.9){ ctx.moveTo(-92,y); ctx.lineTo(92,y+(rng()-0.5)*0.5); }
+    ctx.stroke();
+  }
+  speckle(ctx,ANC_W,ANC_H,0x9a92,2200,[60,40,15],0.025,0.09,0.28);
   ctx.restore();
-  /* the torn edge frays into loose fibres */
-  ctx.strokeStyle=polar?"rgba(220,200,140,.6)":"rgba(160,125,60,.7)"; ctx.lineWidth=.14; ctx.beginPath();
-  for(let x=-76;x<72;x+=1.3){ const y=56-Math.abs(Math.sin(x*.7))*9-rng()*4; ctx.moveTo(x,y); ctx.lineTo(x+(rng()-.5)*1.2,y+2+rng()*5); } ctx.stroke();
-  if(!polar){ papyrusTorn(ctx); ctx.strokeStyle="rgba(90,60,20,.5)"; ctx.lineWidth=.3; ctx.stroke(); }
+  // Frayed torn edge with loose fibers
+  ctx.strokeStyle=polar?"rgba(210,190,130,0.65)":"rgba(150,115,50,0.75)"; ctx.lineWidth=0.12;
+  ctx.beginPath();
+  for(let x=-78;x<74;x+=1.1){
+    const y=56-Math.abs(Math.sin(x*0.65))*9.5-rng()*5;
+    ctx.moveTo(x,y);
+    ctx.lineTo(x+(rng()-0.5)*1.4, y+1.5+rng()*6);
+  }
+  ctx.stroke();
+  if(!polar){ papyrusTorn(ctx); ctx.strokeStyle="rgba(80,50,15,0.55)"; ctx.lineWidth=0.28; ctx.stroke(); }
 }
 function papyrusInk(ctx,det){
   const rng=mulberry32(0x9a93), col=det?"rgba(22,18,14,.92)":"rgba(28,22,16,.9)";
