@@ -149,8 +149,10 @@ Home Screen opens that place, full screen.
 
 ## The Adult Edition (Book 6)
 
-- Five pages: `/adult`, `/adult/curriculum` (the whole manual), `/adult/workbook`, `/adult/anchors`,
-  `/adult/sessions` (the console for running a session). It is all free and nothing is locked
+- Seven pages: `/adult`, `/adult/curriculum` (the whole manual), `/adult/lessons` (one lesson at a time),
+  `/adult/charts` (interactive anchor charts), `/adult/workbook`, `/adult/anchors`, `/adult/sessions` (the
+  console). Every Adult page loads `aog-adult.js` (the "Jump to another room" menu); a new Adult page joins
+  ADULT there. `aog-sel.js` lists the Adult Edition's lessons in every SEL room menu. It is all free and nothing is locked
   (Jimmy, 2026-10-10: "ITS ALL FREE ... Nothing is locked"): no key, no encryption, no workbook word.
   Shared skin `aog-adult.css`. Build sources live in `adult-build/` at the repo root (not published);
   read its README before changing them.
