@@ -43,7 +43,8 @@ const WORDS={
            es:"La ganancia añade aspereza. Graves, Medios y Agudos dan forma al tono. Master es cuánto trabajan las válvulas de potencia."},
   brightHelp:{en:"Bright adds sparkle. Tight keeps low notes firm when the gain is high.",es:"Brillo añade chispa. Ajustado mantiene firmes las notas graves con mucha ganancia."},
   pedalHelp:{en:"Press On to use a pedal. Its knobs appear when it is on.",es:"Pulsa Encendido para usar un pedal. Sus perillas aparecen cuando está encendido."},
-  pedalsOn:{en:"Pedals on",es:"Pedales encendidos"}, pedalsOnLine:{en:"Their knobs, right by the neck. Turn pedals on or off in Amp and pedals below.",es:"Sus perillas, junto al mástil. Enciende o apaga pedales en Amplificador y pedales, más abajo."},
+  pedalsOn:{en:"Pedals",es:"Pedales"}, addPed:{en:"+ Add a pedal or effect",es:"+ Añadir un pedal o efecto"},
+  noPeds:{en:"No pedals on. Pick one from the menu.",es:"Ningún pedal encendido. Elige uno del menú."},
   before:{en:"Before the amp",es:"Antes del amplificador"}, after:{en:"After the amp",es:"Después del amplificador"},
   mode:{en:"Mode",es:"Modo"}, type:{en:"Type",es:"Tipo"},
   touch:{en:"Touch",es:"Toque"}, fixed:{en:"Fixed",es:"Fijo"}, sine:{en:"Smooth",es:"Suave"}, square:{en:"Choppy",es:"Cortado"},
@@ -606,9 +607,10 @@ const CSS=`
 @media (min-width:760px){ .aogamp .aa-plate{grid-template-columns:repeat(7,1fr)} }
 /* AOG-AMP-NEAR-V1: the pedals that are on, by the neck */
 .aogamp.aa-near{margin:.7rem 0 .2rem;padding:.7rem .75rem .8rem;border:1px solid #3a3f46;border-radius:14px;background:#15171a}
-.aogamp.aa-near .aa-nearh{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;margin:0 0 .5rem}
+.aogamp.aa-near .aa-nearh{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;margin:0 0 .5rem}
 .aogamp.aa-near .aa-nearh b{color:#f1ebdf;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
-.aogamp.aa-near .aa-nearh span{color:#d7cbb8;font-size:.9rem}
+.aogamp.aa-near .aa-nearh select{flex:0 1 20rem;min-width:0}
+.aogamp.aa-near .aa-none{margin:0;color:#d7cbb8;font-size:.95rem}
 `;
 /* can this browser stand a slider up (writing-mode on a range, Safari 17.4 and later, every current browser)? */
 let VERT=null;
@@ -669,11 +671,14 @@ function ui(host, opt){
       <div class="aa-foot"><button type="button" class="aa-btn" data-aa="back">${word("back",lang)}</button><p class="aa-note" aria-live="polite">${note?word(note,lang):word("kept",lang)}</p></div>
     </div>`;
     if(near){
-      const on=pedals.filter(p=>st.fx[p.id].on);
-      near.hidden=!on.length;
-      near.innerHTML=on.length?`<div class="aogamp aa-near${vertOK()?"":" aa-flat"}" data-kind="${kind}" role="group" aria-label="${esc(word("pedalsOn",lang))}">
-        <div class="aa-nearh"><b>${word("pedalsOn",lang)}</b><span>${word("pedalsOnLine",lang)}</span></div>
-        <div class="aa-row">${on.map(pedal).join("")}</div></div>`:"";
+      /* AOG-AMP-NEAR-V2 (Jimmy, 2026-10-10: "A drop down menu bar with all the pedals and effect modules should be right
+         there"): the strip is always there, with a menu of every pedal and effect that is off; picking one turns it on */
+      const on=pedals.filter(p=>st.fx[p.id].on), offPre=pre.filter(p=>!st.fx[p.id].on), offPost=post.filter(p=>!st.fx[p.id].on);
+      const grp=(h,a)=>a.length?`<optgroup label="${esc(word(h,lang))}">${a.map(p=>`<option value="${p.id}">${esc(p[lang])}</option>`).join("")}</optgroup>`:"";
+      near.hidden=false;
+      near.innerHTML=`<div class="aogamp aa-near${vertOK()?"":" aa-flat"}" data-kind="${kind}" role="group" aria-label="${esc(word("pedalsOn",lang))}">
+        <div class="aa-nearh"><b>${word("pedalsOn",lang)}</b>${offPre.length||offPost.length?`<select data-addped="1" aria-label="${esc(word("addPed",lang))}"><option value="">${esc(word("addPed",lang))}</option>${grp("before",offPre)}${grp("after",offPost)}</select>`:""}</div>
+        ${on.length?`<div class="aa-row">${on.map(pedal).join("")}</div>`:`<p class="aa-none">${word("noPeds",lang)}</p>`}</div>`;
     }
     wire();
   }
@@ -692,7 +697,11 @@ function ui(host, opt){
     });
     qa("button[data-sw]").forEach(b=>b.onclick=()=>change(st=>{ st[b.dataset.sw]=!st[b.dataset.sw]; }, true));
     qa("button[data-fs]").forEach(b=>b.onclick=()=>{ const id=b.dataset.fs, inNear=!!(near&&near.contains(b)); change(st=>{ st.fx[id].on=!st.fx[id].on; }, true);
-      const root=inNear?near:host, again=root.querySelector('button[data-fs="'+id+'"]')||host.querySelector('button[data-fs="'+id+'"]'); if(again) again.focus(); });
+      const again=inNear ? (near.querySelector('button[data-fs="'+id+'"]')||near.querySelector("select[data-addped]")) : host.querySelector('button[data-fs="'+id+'"]');
+      if(again){ try{ again.focus({preventScroll:true}); }catch(e){ again.focus(); } } });
+    qa("select[data-addped]").forEach(sel=>sel.onchange=()=>{ const id=sel.value; if(!id) return;
+      change(st=>{ st.fx[id].on=true; }, true);
+      const fs=near&&near.querySelector('button[data-fs="'+id+'"]'); if(fs){ try{ fs.focus({preventScroll:true}); }catch(e){} } });
     qa("button[data-mode]").forEach(b=>b.onclick=()=>change(st=>{ st.fx[b.dataset.ped].mode=b.dataset.mode; }, true));
     qa("select[data-type]").forEach(s=>s.onchange=()=>change(st=>{ st.fx[s.dataset.ped].type=s.value; }, false));
     qa("input[data-band]").forEach(inp=>inp.oninput=()=>{ const v=+inp.value; inp.nextElementSibling.textContent=(v>0?"+":"")+v; inp.setAttribute("aria-valuetext", (v>0?"+":"")+v+" dB");
