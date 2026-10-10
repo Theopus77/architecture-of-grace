@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
+</script>
+<title>The Cube Lab — Architecture of Grace</title>
+<!-- AOG-CUBE-LAB-V1 (2026-10-10) — Jimmy: "a step by step 3d interactive engine … instructions on how to make and
+     finish a rubric cube." A real 3D Rubik's Cube on the Lab Bench, drawn with CSS 3D (no canvas, no library):
+     drag a row to turn it, drag around the cube to look around. Ten short steps teach the layer-by-layer way
+     (daisy, white cross, white corners, middle, yellow cross, yellow top, yellow corners, yellow edges).
+     "Solve with me" solves any mixed cube with the very moves the steps teach (aog-cube.js), one move at a
+     time. "My cube" paints a real cube's colours in, then helps finish it. Nothing moves until it is tapped. -->
+<meta name="description" content="A 3D Rubik's Cube you can turn. Learn to solve it in ten short steps, or paint in your own cube and get help to finish it. English and Spanish.">
+<link rel="canonical" href="https://architectureofgrace.com/cube">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Cube Lab — Architecture of Grace">
+<meta property="og:description" content="Turn a 3D Rubik's Cube and learn to solve it, one step at a time.">
+<meta property="og:url" content="https://architectureofgrace.com/cube">
+<meta property="og:image" content="https://architectureofgrace.com/img/banners/door-cube-pencil-1600.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<link href="/fonts/aog-fonts.css" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-fg:#f4f8f9; --steel-soft:#e3eef2;
+  --good:#2c7a4e; --good-fg:#f3faf5; --good-soft:#e3f0e8;
+  --warn:#7a4e00; --warn-soft:#f6ecd6;
+  --chip:#efebe3; --stage-a:#fbf8f1; --stage-b:#e9e2d2;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --display:"Fraunces", Georgia, serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+  --good:#6fbf8b; --good-fg:#14181e; --good-soft:#1f3327;
+  --warn:#e8c27a; --warn-soft:#332a18;
+  --chip:#2a313c; --stage-a:#232b35; --stage-b:#161b22;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+    --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+    --good:#6fbf8b; --good-fg:#14181e; --good-soft:#1f3327;
+    --warn:#e8c27a; --warn-soft:#332a18;
+    --chip:#2a313c; --stage-a:#232b35; --stage-b:#161b22;
+  }
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.55 var(--sans); overflow-x:hidden; }
+h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.01em; text-wrap:balance; }
+h2 { font-size:1.35rem; margin:.1rem 0 .3rem; }
+h3 { font-size:1.05rem; margin:1rem 0 .35rem; }
+p, li { text-wrap:pretty; }
+a { color:inherit; }
+button, select { font:inherit; touch-action:manipulation; }
+button { cursor:pointer; }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; }
+.brand { font-weight:700; text-decoration:none; }
+.tools { display:flex; gap:.5rem; }
+.pill, .btn {
+  min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:600; font-size:.95rem; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+}
+.btn-steel { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.btn-good { background:var(--good); color:var(--good-fg); border-color:transparent; }
+.btn[disabled] { opacity:.55; cursor:default; }
+.nav { display:flex; gap:4px; }
+.nav a.on { color:var(--ink); border-color:var(--steel); }
+.muted { color:var(--muted); }
+.lead { max-width:66ch; }
+.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); margin:0; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
+
+/* the bench: the cube on the left, the words on the right; one column on a phone */
+.cube-bench { display:grid; gap:1rem; margin-top:1rem; }
+@media (min-width:900px){ .cube-bench { grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); align-items:start; }
+  .cube-side { position:sticky; top:.75rem; } }
+.cube-side { display:flex; flex-direction:column; gap:.6rem; min-width:0; }
+.panel { padding:1rem 1.1rem 1.2rem; min-width:0; }
+
+/* ── the 3D cube ── */
+.stage { position:relative; width:100%; max-width:560px; margin:0 auto; aspect-ratio:1/1; border-radius:18px; overflow:hidden;
+  background:radial-gradient(120% 95% at 50% 35%, var(--stage-a) 0%, var(--stage-b) 100%); border:1px solid var(--line);
+  perspective:1150px; /* PERSP in the script */ perspective-origin:50% 45%; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:grab; }
+.stage.grabbing { cursor:grabbing; }
+.stage .floor { position:absolute; left:20%; right:20%; bottom:7%; height:9%; border-radius:50%;
+  background:radial-gradient(closest-side, rgb(0 0 0 / .22), rgb(0 0 0 / 0)); pointer-events:none; }
+.cube-view { position:absolute; left:50%; top:48%; width:0; height:0; transform-style:preserve-3d; }
+.cubie { position:absolute; width:var(--s,64px); height:var(--s,64px); left:calc(var(--s,64px) / -2); top:calc(var(--s,64px) / -2); transform-style:preserve-3d; }
+.face { position:absolute; inset:0; background:#121418; border-radius:4%; pointer-events:none; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.face.fF { transform:translateZ(calc(var(--s,64px) / 2)); }
+.face.fB { transform:rotateY(180deg) translateZ(calc(var(--s,64px) / 2)); }
+.face.fR { transform:rotateY(90deg) translateZ(calc(var(--s,64px) / 2)); }
+.face.fL { transform:rotateY(-90deg) translateZ(calc(var(--s,64px) / 2)); }
+.face.fU { transform:rotateX(90deg) translateZ(calc(var(--s,64px) / 2)); }
+.face.fD { transform:rotateX(-90deg) translateZ(calc(var(--s,64px) / 2)); }
+.face i { position:absolute; inset:6.5%; border-radius:13%; background:var(--c); overflow:hidden; display:flex; align-items:center; justify-content:center;
+  box-shadow:inset 0 0 0 1px rgb(255 255 255 / .18), inset 0 -3px 6px rgb(0 0 0 / .12); }
+.face i b { position:absolute; inset:0; background:#000; opacity:0; pointer-events:none; }
+.face i span { position:relative; font:800 calc(var(--s,64px) * .34)/1 var(--sans); color:var(--lc,#14161a); pointer-events:none; }
+.stage.painting .face i { cursor:pointer; }
+.face i.flag { box-shadow:inset 0 0 0 calc(var(--s,64px) * .07) #111, inset 0 0 0 calc(var(--s,64px) * .11) #fff; }
+.fixbox { border:2px solid var(--steel); border-radius:12px; padding:.75rem .9rem; margin:.7rem 0; background:var(--steel-soft); }
+.fixbox h3 { margin:.1rem 0 .4rem; }
+.fixbox ul { margin:.3rem 0 .5rem; padding-left:1.2rem; }
+.stage-hint { text-align:center; margin:.1rem 0 0; font-size:.92rem; color:var(--muted); }
+.view-row { display:flex; flex-wrap:wrap; justify-content:center; gap:.4rem; }
+.view-row .pill { min-height:44px; font-size:.9rem; }
+.view-row select { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .8rem; font-size:16px; font-weight:600; }
+
+/* the turn pad: six faces, each way, and turning the whole cube */
+.pad { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.35rem; max-width:560px; margin:0 auto; width:100%; }
+.pad button { min-height:48px; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--ink); font:700 1.05rem/1 var(--mono); }
+.pad button.prime { background:var(--chip); }
+.pad .lbl { grid-column:1/-1; font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:.35rem 0 0; }
+.pad .whole { grid-column:span 3; font-family:var(--sans); font-size:.95rem; }
+.pad .act { grid-column:span 2; font-family:var(--sans); font-size:.95rem; }
+.pad .act.go { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+
+/* the arrow for the next move: a dark line with a light edge, so it reads on every color; it never moves */
+.stage .arrow { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+.arrow .halo { fill:#fff; stroke:#fff; stroke-width:11; stroke-linecap:round; stroke-linejoin:round; fill-opacity:1; }
+.arrow path.halo:first-child { fill:none; }
+.arrow .line { fill:none; stroke:#14161a; stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+.arrow .head { fill:#14161a; stroke:#14161a; stroke-width:2; stroke-linejoin:round; }
+.arrow .x2 { font:800 22px/1 var(--sans); fill:#14161a; paint-order:stroke; stroke:#fff; stroke-width:5px; }
+/* the calm card: the goal, the move in words, one button */
+.calm .aim { margin:.2rem 0 .6rem; color:var(--muted); font-size:1rem; }
+.calm .move-big { font:600 clamp(1.35rem, 1.2rem + 1vw, 1.75rem)/1.25 var(--display); margin:.2rem 0 .6rem; }
+.calm .move-big .tok { font:700 .95rem/1 var(--mono); color:var(--muted); background:var(--chip); border-radius:6px; padding:.2rem .4rem; vertical-align:middle; }
+.calm .chips .chip { font-size:.85rem; padding:.3rem .4rem; min-width:1.8rem; }
+.btn.big { min-height:54px; padding:0 1.5rem; font-size:1.08rem; }
+.calm details.more { margin-top:.7rem; color:var(--muted); }
+.calm details.more summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-weight:600; }
+.dots { display:flex; gap:.4rem; margin:.35rem 0 .9rem; }
+.dots .dot { width:.7rem; height:.7rem; border-radius:50%; border:2px solid var(--steel); }
+.dots .dot.done { background:var(--steel); }
+.dots .dot.now { background:var(--steel-soft); box-shadow:0 0 0 3px var(--steel-soft); }
+/* Solve with me: no turn pad (the steps say every move), and on a phone the card sits right under the cube */
+.cube-bench.solving .pad { display:none; }
+@media (max-width:899px){ .cube-bench { display:flex; flex-direction:column; } .cube-side { display:contents; }
+  .stage { order:1; } .stage-hint { order:2; } .cube-bench > .panel { order:3; } .view-row { order:4; } .pad { order:5; } }
+.btn-row.start { flex-direction:column; align-items:stretch; max-width:22rem; }
+.btn-row.quiet { margin-top:1.2rem; }
+.btn-row.quiet .btn { font-size:.9rem; color:var(--muted); }
+a.btn { text-decoration:none; }
+/* words */
+.steps { margin:.4rem 0 .2rem; padding-left:1.4rem; }
+.steps li { margin:.35rem 0; }
+.goal { background:var(--steel-soft); border-radius:10px; padding:.55rem .8rem; margin:.5rem 0; }
+.alg { margin:.7rem 0; padding:.7rem .8rem; border-radius:12px; border:1px solid var(--line); background:var(--bg); }
+.alg .name { font-weight:700; margin:0 0 .35rem; }
+.chips { display:flex; flex-wrap:wrap; gap:.3rem; margin:.2rem 0 .5rem; }
+.chip { font:700 1.02rem/1 var(--mono); padding:.45rem .55rem; border-radius:8px; background:var(--chip); color:var(--ink); border:1px solid transparent; min-width:2.2rem; text-align:center; }
+.chip.done { opacity:.5; }
+.chip.next { background:var(--steel); color:var(--steel-fg); }
+.btn-row { display:flex; flex-wrap:wrap; gap:.45rem; margin:.4rem 0; }
+.state { border-radius:10px; padding:.6rem .8rem; margin:.6rem 0; font-weight:600; }
+.state.ok { background:var(--good-soft); color:var(--ink); }
+.state.warn { background:var(--warn-soft); color:var(--ink); }
+.say { margin:.3rem 0 .4rem; font-size:1.02rem; }
+.stagelist { list-style:none; padding:0; margin:.4rem 0 .8rem; display:grid; gap:.2rem; }
+.stagelist li { display:flex; gap:.5rem; align-items:baseline; padding:.25rem .4rem; border-radius:8px; }
+.stagelist li.now { background:var(--steel-soft); font-weight:700; }
+.stagelist li .mk { width:1.2rem; flex:0 0 auto; color:var(--good); font-weight:800; }
+.palette { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:.5rem 0; }
+.palette button { min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--ink); display:flex; align-items:center; gap:.5rem; padding:0 .6rem; font-weight:600; font-size:.95rem; }
+.palette button.on { border-color:var(--steel); box-shadow:0 0 0 2px var(--steel); }
+.palette .sw { width:1.5rem; height:1.5rem; border-radius:6px; border:1px solid rgb(0 0 0 / .25); flex:0 0 auto; }
+.palette .n { margin-left:auto; font-variant-numeric:tabular-nums; color:var(--muted); font-size:.85rem; }
+.lesson-nav { display:flex; justify-content:space-between; gap:.5rem; margin-top:1rem; }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch; }
+@media print { .no-print { display:none !important; } }
+@media (max-width:420px){ .pad button { min-height:46px; } .panel { padding:.9rem .85rem 1.1rem; } }
+</style>
+<link rel="stylesheet" href="/aog-bench.css">
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="/cube" id="brand">The Cube Lab</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar">
+    <nav class="nav no-print" id="nav" aria-label="Cube Lab"></nav>
+    <div class="bench-switch no-print" role="group" aria-label="Step" id="benchSwitch">
+      <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Step|Paso"></div></span>
+    </div>
+  </div>
+  <main class="cube-bench" id="bench">
+    <div class="cube-side">
+      <div class="stage" id="stage" role="img" aria-label="A 3D Rubik's Cube">
+        <div class="floor"></div>
+        <div class="cube-view" id="cubeView"></div>
+        <svg class="arrow" id="arrow" aria-hidden="true"></svg>
+      </div>
+      <p class="stage-hint" id="hint"></p>
+      <div class="view-row no-print" id="viewRow"></div>
+      <div class="pad no-print" id="pad"></div>
+      <p class="sr" id="live" aria-live="polite"></p>
+    </div>
+    <section class="panel card" id="panel" aria-live="off"></section>
+  </main>
+  <footer><p id="foot"></p></footer>
+</div>
+<script src="/aog-cube.js"></script>
+<script>
+(function(){
+"use strict";
+const C=window.AOGCube, $=id=>document.getElementById(id);
+const KEY="aog.cube.v1";
+
+/* ── words (English · Spanish) ── */
+const T={
+  app:["The Cube Lab","El laboratorio del cubo"],
+  eyebrow:["The Lab Bench · puzzles","El banco de trabajo · rompecabezas"],
+  tag:["Learn to solve a Rubik's Cube, one step at a time.","Aprende a resolver un cubo de Rubik, paso a paso."],
+  foot:["Turn it on screen, or follow along with a real cube in your hands. Your place is saved on this device.","Gíralo en la pantalla o sigue con un cubo de verdad en tus manos. Tu avance se guarda en este aparato."],
+  vLearn:["Learn","Aprende"], vSolve:["Solve with me","Resuélvelo conmigo"], vMine:["My cube","Mi cubo"], micro:["Microscope","Microscopio"],
+  hint:["Drag a row to turn it. Drag the space around the cube to look around.","Arrastra una fila para girarla. Arrastra el espacio alrededor del cubo para mirarlo."],
+  hintPaint:["Pick a color, then tap a square to paint it.","Elige un color y toca un cuadro para pintarlo."],
+  faces:["Turn a side","Gira un lado"], whole:["Turn the whole cube","Gira el cubo entero"],
+  undo:["Undo","Deshacer"], mix:["Mix it up","Mézclalo"], fresh:["Solved cube","Cubo resuelto"],
+  look:["Front view","Vista de frente"], lookBack:["Turn around","Dale la vuelta"],
+  letters:["Letters","Letras"], on:["on","sí"], off:["off","no"],
+  speed:["Speed","Velocidad"], slow:["Slow","Lenta"], normal:["Normal","Normal"], instant:["No motion","Sin movimiento"],
+  step:["Step","Paso"], of:["of","de"], back:["Back","Atrás"], next:["Next step","Siguiente paso"],
+  goalW:["Your goal","Tu meta"], play:["Play the moves","Haz los movimientos"], one:["One move","Un movimiento"], stop:["Stop","Parar"],
+  setup:["Set up a cube for this step","Prepara un cubo para este paso"],
+  help:["Show me the next move","Muéstrame el siguiente movimiento"],
+  practice:["Practice","Práctica"],
+  earlier:["The steps before this one are mixed up right now. That's normal halfway through a set of moves. Finish the moves, or set up a new cube.","Los pasos anteriores están mezclados ahora. Es normal a mitad de una serie de movimientos. Termina los movimientos o prepara un cubo nuevo."],
+  stepDone:["Done! This step is finished. ✓","¡Listo! Este paso está terminado. ✓"],
+  ready:["I'm ready","Estoy listo"], gotIt:["You've got it. ✓","Ya lo tienes. ✓"],
+  movesTried:["Sides turned so far:","Lados girados hasta ahora:"],
+  nextMove:["Next move","Siguiente movimiento"], doPart:["Turn the rest of this part for me","Gira por mí el resto de esta parte"],
+  didIt:["I did it","Ya lo hice"], tellMore:["Tell me more","Cuéntame más"],
+  startH:["Let's solve your cube","Vamos a resolver tu cubo"], startLine:["One move at a time. Take your time.","Un movimiento a la vez. Tómate tu tiempo."],
+  useMine:["Use my real cube","Usar mi cubo de verdad"], practiceMixed:["Practice on a mixed cube","Practicar con un cubo mezclado"],
+  stepOf:["Step {i} of 7 · {name}","Paso {i} de 7 · {name}"], startOver:["Start over","Empezar de nuevo"], newMix:["Mix a new one","Mezclar otro"],
+  nextIs:["Next: {w}","Sigue: {w}"],
+  toGo:["About {n} moves to go.","Faltan unos {n} movimientos."],
+  solvedNow:["Solved! Every side is one color. ✓","¡Resuelto! Cada lado es de un solo color. ✓"],
+  solvedIn:["You solved it in {t}, with {m} moves.","Lo resolviste en {t}, con {m} movimientos."],
+  mixFirst:["Tap Mix it up to get a mixed cube. Then follow along, one move at a time.","Toca Mézclalo para tener un cubo mezclado. Luego sigue, un movimiento a la vez."],
+  stagesH:["The steps","Los pasos"],
+  mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
+  mine1:["Hold your cube with yellow on top and green facing you. Not those colors? Hold it any way, and paint the six centers (the middle square of each side) to match first.","Sostén tu cubo con el amarillo arriba y el verde hacia ti. ¿No tiene esos colores? Sostenlo como quieras y pinta primero los seis centros (el cuadro del medio de cada lado) igual que el tuyo."],
+  mine2:["Pick a color. Tap the matching squares on the screen.","Elige un color. Toca los cuadros que coinciden en la pantalla."],
+  mine3:["Tap Turn around. Turn your cube the same way and paint the other three sides.","Toca Dale la vuelta. Gira tu cubo igual y pinta los otros tres lados."],
+  mine4:["Tap Check my cube.","Toca Revisa mi cubo."],
+  check:["Check my cube","Revisa mi cubo"], clear:["Clear","Borrar"], fromScreen:["Copy the screen cube","Copiar el cubo de la pantalla"],
+  errCount:["{c}: {n} squares painted. Each color needs 9.","{c}: {n} cuadros pintados. Cada color necesita 9."],
+  errPiece:["One piece has colors that can't go together. Check the squares that light up dark.","Una pieza tiene colores que no van juntos. Revisa los cuadros oscuros."],
+  errTwist:["The colors are all there, but this cube can't be solved as painted. A corner may be twisted or two squares swapped. Check again, square by square.","Están todos los colores, pero este cubo no se puede resolver así. Puede haber una esquina girada o dos cuadros cambiados. Revisa otra vez, cuadro por cuadro."],
+  errCenters:["Two centers have the same color. Each center is a different color: paint them the way your cube has them.","Dos centros tienen el mismo color. Cada centro es de un color distinto: píntalos como los tiene tu cubo."],
+  errStray:["Some squares are {c}, but no center is. Paint the center that is {c} on your cube.","Algunos cuadros son {c}, pero ningún centro lo es. Pinta el centro que es {c} en tu cubo."],
+  errStickers:["Some stickers were moved. The squares marked on the screen show colors that no real piece has together. First check that you painted them right. If you did, someone peeled stickers off and put them back in the wrong places. Move them so each piece has colors that belong together, then paint again.","Alguien movió algunas pegatinas. Los cuadros marcados en la pantalla tienen colores que ninguna pieza real tiene juntos. Primero revisa que los pintaste bien. Si es así, alguien despegó pegatinas y las puso en otro lugar. Muévelas para que cada pieza tenga colores que van juntos y vuelve a pintar."],
+  fixH:["Your cube was put back together wrong","Tu cubo se armó mal"],
+  fixWhy:["No turning can solve it, and that's not your fault. It happens when a cube comes apart and is put back, or when a corner gets twisted by a bump. Fix it with your hands first. It takes a minute.","Ningún giro lo puede resolver, y no es tu culpa. Pasa cuando un cubo se desarma y se vuelve a armar, o cuando un golpe tuerce una esquina. Arréglalo primero con las manos. Toma un minuto."],
+  fixN:["Fix {i} of {n}","Arreglo {i} de {n}"],
+  fix_twist:["Twist one corner: the top-front-right corner, marked on the screen.","Gira una esquina: la de arriba, al frente, a la derecha, marcada en la pantalla."],
+  fix_flip:["Flip one edge: the top-front edge, marked on the screen.","Voltea una arista: la de arriba al frente, marcada en la pantalla."],
+  fix_swap:["Swap two edges: the top-front edge and the top-right edge, marked on the screen.","Cambia dos aristas: la de arriba al frente y la de arriba a la derecha, marcadas en la pantalla."],
+  how_twist:["Many cubes let you twist a corner with your fingers: grip it and turn it. If yours won't, turn the top layer halfway (about 45°), pop out an edge next to it with your thumb, and the corner comes out. Put it back turned so it shows:","Muchos cubos dejan girar una esquina con los dedos: tómala y gírala. Si el tuyo no, gira la capa de arriba hasta la mitad (unos 45°), saca con el pulgar una arista de al lado y la esquina saldrá. Vuelve a ponerla girada para que muestre:"],
+  how_flip:["Turn the top layer halfway (about 45°). Pop that edge out with your thumb. Put it back the other way round, so it shows:","Gira la capa de arriba hasta la mitad (unos 45°). Saca esa arista con el pulgar. Vuelve a ponerla al revés, para que muestre:"],
+  how_swap:["Turn the top layer halfway (about 45°). Pop both edges out with your thumb. Put each one back in the other's place, so they show:","Gira la capa de arriba hasta la mitad (unos 45°). Saca las dos aristas con el pulgar. Pon cada una en el lugar de la otra, para que muestren:"],
+  shows:["{spot}: {list}","{spot}: {list}"],
+  spot_ufr:["Top-front-right corner","Esquina de arriba, al frente, a la derecha"], spot_uf:["Top-front edge","Arista de arriba al frente"], spot_ur:["Top-right edge","Arista de arriba a la derecha"],
+  fixDone:["I did it","Ya lo hice"], fixPeek:["Show the fixed colors","Mostrar los colores arreglados"], fixPeekOff:["Show my cube as it is","Mostrar mi cubo como está"],
+  allGood:["Your cube is ready. Let's solve it together.","Tu cubo está listo. Vamos a resolverlo juntos."],
+  did:["Did {m}","Hecho: {m}"],
+  sideName:{U:["top","arriba"],D:["bottom","abajo"],F:["front","frente"],B:["back","atrás"],R:["right","derecha"],L:["left","izquierda"]}
+};
+const COLN={W:["white","blanco"],Y:["yellow","amarillo"],G:["green","verde"],B:["blue","azul"],O:["orange","naranja"],R:["red","rojo"],P:["purple","morado"],K:["pink","rosa"],"?":["not painted","sin pintar"]};
+const STAGE_NAMES={hold:["Hold it","Sostenlo"],cross:["The white cross","La cruz blanca"],corners:["The white corners","Las esquinas blancas"],middle:["The middle layer","La capa del medio"],
+  ycross:["The yellow cross","La cruz amarilla"],yface:["The yellow top","La cara amarilla"],ycorners:["The yellow corners","Las esquinas amarillas"],done:["The yellow edges","Las aristas amarillas"]};
+/* AOG-CUBE-CALM-V1 (2026-10-10) — Jimmy: "I just don't know how to solve it … I want the instructions to be supremely
+   simple and awesome in that it keeps the calmness that the website offers." Solve with me shows one move at a time, in
+   plain words ("Turn the right side up"), with an arrow drawn on the cube, one short line about the goal, and one
+   button: I did it. The longer note waits behind "Tell me more". */
+const MOVEWORDS={
+  "U":["Turn the top to the left","Gira la parte de arriba a la izquierda"], "U'":["Turn the top to the right","Gira la parte de arriba a la derecha"], "U2":["Turn the top twice","Gira la parte de arriba dos veces"],
+  "D":["Turn the bottom to the right","Gira la parte de abajo a la derecha"], "D'":["Turn the bottom to the left","Gira la parte de abajo a la izquierda"], "D2":["Turn the bottom twice","Gira la parte de abajo dos veces"],
+  "R":["Turn the right side up","Gira el lado derecho hacia arriba"], "R'":["Turn the right side down","Gira el lado derecho hacia abajo"], "R2":["Turn the right side twice","Gira el lado derecho dos veces"],
+  "L":["Turn the left side down","Gira el lado izquierdo hacia abajo"], "L'":["Turn the left side up","Gira el lado izquierdo hacia arriba"], "L2":["Turn the left side twice","Gira el lado izquierdo dos veces"],
+  "F":["Turn the front to the right, like a steering wheel","Gira el frente a la derecha, como un volante"], "F'":["Turn the front to the left, like a steering wheel","Gira el frente a la izquierda, como un volante"], "F2":["Turn the front twice","Gira el frente dos veces"],
+  "B":["Turn the back so its top goes left","Gira el lado de atrás para que su parte de arriba vaya a la izquierda"], "B'":["Turn the back so its top goes right","Gira el lado de atrás para que su parte de arriba vaya a la derecha"], "B2":["Turn the back twice","Gira el lado de atrás dos veces"],
+  "M":["Turn the middle column down","Gira la columna del medio hacia abajo"], "M'":["Turn the middle column up","Gira la columna del medio hacia arriba"], "M2":["Turn the middle column twice","Gira la columna del medio dos veces"],
+  "E":["Turn the middle row to the right","Gira la fila del medio a la derecha"], "E'":["Turn the middle row to the left","Gira la fila del medio a la izquierda"], "E2":["Turn the middle row twice","Gira la fila del medio dos veces"],
+  "S":["Turn the middle slice to the right, like a steering wheel","Gira la rebanada del medio a la derecha, como un volante"], "S'":["Turn the middle slice to the left","Gira la rebanada del medio a la izquierda"], "S2":["Turn the middle slice twice","Gira la rebanada del medio dos veces"],
+  "y":["Turn the whole cube to the left","Gira todo el cubo a la izquierda"], "y'":["Turn the whole cube to the right","Gira todo el cubo a la derecha"], "y2":["Turn the whole cube halfway around","Gira todo el cubo media vuelta"],
+  "x":["Tip the whole cube away from you","Inclina todo el cubo hacia atrás"], "x'":["Tip the whole cube toward you","Inclina todo el cubo hacia ti"], "x2":["Turn the whole cube upside down","Pon todo el cubo de cabeza"],
+  "z":["Tip the whole cube to the right","Inclina todo el cubo a la derecha"], "z'":["Tip the whole cube to the left","Inclina todo el cubo a la izquierda"], "z2":["Turn the whole cube upside down","Pon todo el cubo de cabeza"]
+};
+const AIM={
+  holdWhite:["Hold the cube with white on the bottom.","Sostén el cubo con el blanco abajo."],
+  daisy:["Bring the white and {c} edge up beside the yellow center, white facing up.","Sube la arista blanca y {c} junto al centro amarillo, con el blanco arriba."],
+  crossDown:["Bring the white and {c} edge down to the bottom, over its {c} side.","Baja la arista blanca y {c} a la base, junto a su lado {c}."],
+  cornerAbove:["Bring the white, {a} and {b} corner above its place.","Lleva la esquina blanca, {a} y {b} encima de su lugar."],
+  cornerIn:["Tuck the corner in, white facing down.","Mete la esquina, con el blanco abajo."],
+  cornerOut:["Lift this corner out, so it can go to its place.","Saca esta esquina, para que pueda ir a su lugar."],
+  midLine:["Bring the {a} and {b} edge above its {a} side.","Lleva la arista {a} y {b} encima de su lado {a}."],
+  midRight:["Slide the edge down into the middle.","Baja la arista al medio."], midLeft:["Slide the edge down into the middle.","Baja la arista al medio."],
+  midOut:["Lift this edge out, so it can go to its place.","Saca esta arista, para que pueda ir a su lugar."],
+  ycross_dot:["Make a yellow plus sign on top.","Haz un signo más amarillo arriba."], ycross_ell:["Make a yellow plus sign on top.","Haz un signo más amarillo arriba."], ycross_line:["Make a yellow plus sign on top.","Haz un signo más amarillo arriba."],
+  sune0:["Make the whole top yellow.","Haz toda la cara de arriba amarilla."], sune1:["Make the whole top yellow.","Haz toda la cara de arriba amarilla."], sune2:["Make the whole top yellow.","Haz toda la cara de arriba amarilla."],
+  aperm:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."], aperm0:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."],
+  lineUp:["Line the corners up with their sides.","Alinea las esquinas con sus lados."],
+  uperm:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."], uperm0:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."]
+};
+const NOTES={
+  holdWhite:["Turn the whole cube so the white center is on the bottom.","Gira el cubo entero para que el centro blanco quede abajo."],
+  daisy:["Make the daisy: bring the white–{c} edge to the top, white side up.","Haz la margarita: sube la arista blanca y {c}, con el blanco hacia arriba."],
+  crossDown:["Turn the top until the white–{c} edge is over the {c} center. Then turn that side twice ({f}2).","Gira la cara de arriba hasta que la arista blanca y {c} quede sobre el centro {c}. Luego gira ese lado dos veces ({f}2)."],
+  cornerAbove:["Turn the cube so the {a}–{b} spot is at the front-right, on the bottom. Turn the top until the corner with white, {a} and {b} sits right above it.","Gira el cubo para que el lugar {a} y {b} quede abajo, al frente a la derecha. Gira la cara de arriba hasta que la esquina blanca, {a} y {b} quede justo encima."],
+  cornerIn:["Do R U R' U' ({n}×). The corner drops in, white side down.","Haz R U R' U' ({n}×). La esquina baja a su lugar, con el blanco abajo."],
+  cornerOut:["This corner is stuck in the wrong spot. Hold it at the front-right and do R U R' U' once. It comes up to the top.","Esta esquina está atascada en otro lugar. Ponla al frente a la derecha y haz R U R' U' una vez. Sube a la cara de arriba."],
+  midLine:["Turn the cube so the {a} center faces you. Turn the top until the {a}–{b} edge is at the front, over the {a} center.","Gira el cubo para que el centro {a} quede hacia ti. Gira la cara de arriba hasta que la arista {a} y {b} quede al frente, sobre el centro {a}."],
+  midRight:["Its top color, {b}, matches the right side. Do the right-hand moves.","Su color de arriba, {b}, coincide con el lado derecho. Haz los movimientos a la derecha."],
+  midLeft:["Its top color, {b}, matches the left side. Do the left-hand moves.","Su color de arriba, {b}, coincide con el lado izquierdo. Haz los movimientos a la izquierda."],
+  midOut:["The {a}–{b} edge is in the middle, but in the wrong spot or flipped. Hold it at the front-right and do the right-hand moves. It comes up to the top.","La arista {a} y {b} está en el medio, pero en otro lugar o al revés. Ponla al frente a la derecha y haz los movimientos a la derecha. Sube a la cara de arriba."],
+  ycross_dot:["No yellow edges on top yet (a dot). Do F R U R' U' F'.","Aún no hay aristas amarillas arriba (un punto). Haz F R U R' U' F'."],
+  ycross_ell:["You see a yellow L. Turn the top so the L sits at the back-left. Do F R U R' U' F'.","Ves una L amarilla. Gira la cara de arriba para que la L quede atrás a la izquierda. Haz F R U R' U' F'."],
+  ycross_line:["You see a yellow line. Turn the top so it goes left to right. Do F R U R' U' F'.","Ves una línea amarilla. Gira la cara de arriba para que vaya de izquierda a derecha. Haz F R U R' U' F'."],
+  sune1:["One corner is yellow on top (a fish). Turn the top so it is at the front-left. Do R U R' U R U2 R'.","Una esquina tiene amarillo arriba (un pez). Gira la cara de arriba para que quede al frente a la izquierda. Haz R U R' U R U2 R'."],
+  sune0:["No corners are yellow on top. Turn the top until the front-left corner shows yellow on its left side. Do R U R' U R U2 R'.","Ninguna esquina tiene amarillo arriba. Gira la cara de arriba hasta que la esquina del frente a la izquierda muestre amarillo en su lado izquierdo. Haz R U R' U R U2 R'."],
+  sune2:["Two corners are yellow on top. Turn the top until the front-left corner shows yellow toward you. Do R U R' U R U2 R'.","Dos esquinas tienen amarillo arriba. Gira la cara de arriba hasta que la esquina del frente a la izquierda muestre amarillo hacia ti. Haz R U R' U R U2 R'."],
+  aperm:["Find the headlights: two top corners on one side with the same color. Turn the top so they are at the back. Do R' F R' B2 R F' R' B2 R2.","Busca los faros: dos esquinas de arriba, en un mismo lado, con el mismo color. Gira la cara de arriba para que queden atrás. Haz R' F R' B2 R F' R' B2 R2."],
+  aperm0:["No headlights yet. Do R' F R' B2 R F' R' B2 R2 once. Then look again.","Aún no hay faros. Haz R' F R' B2 R F' R' B2 R2 una vez. Luego mira otra vez."],
+  lineUp:["Turn the top until the corners match their sides.","Gira la cara de arriba hasta que las esquinas coincidan con sus lados."],
+  uperm:["One side is all done. Turn the whole cube so that side is at the back. Do R2 U R U R' U' R' U' R' U R'.","Un lado está terminado. Gira el cubo entero para que ese lado quede atrás. Haz R2 U R U R' U' R' U' R' U R'."],
+  uperm0:["No side is all done yet. Do R2 U R U R' U' R' U' R' U R' once. Then look again.","Aún no hay un lado terminado. Haz R2 U R U R' U' R' U' R' U R' una vez. Luego mira otra vez."]
+};
+
+/* ── the ten steps ── */
+const L=[
+ {id:"meet", t:["Meet the cube","Conoce el cubo"], kind:"ready",
+  goal:["Know the pieces before you turn.","Conoce las piezas antes de girar."],
+  steps:[["The middle square of each side is a center. Centers never move apart. A center tells you that side's color.","El cuadro del medio de cada lado es un centro. Los centros no se separan nunca. El centro te dice el color de ese lado."],
+    ["An edge piece has 2 colors. A corner piece has 3 colors.","Una arista tiene 2 colores. Una esquina tiene 3 colores."],
+    ["Solved means every side is one color.","Resuelto quiere decir que cada lado es de un solo color."],
+    ["We solve in layers: the white bottom first, then the middle, then the yellow top.","Lo resolvemos por capas: primero la base blanca, luego el medio y al final la cara amarilla."],
+    ["On the screen, drag a row to turn it. Drag the space around the cube to look at every side.","En la pantalla, arrastra una fila para girarla. Arrastra el espacio alrededor del cubo para ver cada lado."]]},
+ {id:"moves", t:["The moves","Los movimientos"], kind:"moves",
+  goal:["Read a move and do it.","Lee un movimiento y hazlo."],
+  steps:[["Each letter names a side: F front, B back, R right, L left, U up (the top), D down (the bottom).","Cada letra nombra un lado: F frente, B atrás, R derecha, L izquierda, U arriba, D abajo."],
+    ["A letter alone: turn that side clockwise, as if you were looking straight at it.","Una letra sola: gira ese lado como las agujas del reloj, como si lo miraras de frente."],
+    ["A letter with ' (say \"prime\"): turn it the other way.","Una letra con ' (se dice \"prima\"): gíralo al revés."],
+    ["A letter with 2: turn it twice.","Una letra con 2: gíralo dos veces."],
+    ["y turns the whole cube, like a globe. The top stays on top.","y gira el cubo entero, como un globo. La cara de arriba sigue arriba."],
+    ["Try all six sides on the pad. Do R, then R'. The cube goes back.","Prueba los seis lados en los botones. Haz R y luego R'. El cubo vuelve como estaba."]],
+  algs:[{n:["There and back","Ida y vuelta"], s:"R R' U U' F F'"}]},
+ {id:"cross", stage:0, t:["The white cross","La cruz blanca"],
+  goal:["A white plus sign on the bottom. Each white edge matches the center beside it.","Un signo más blanco abajo. Cada arista blanca coincide con el centro de al lado."],
+  steps:[["Hold the cube with the yellow center on top. White is on the bottom.","Sostén el cubo con el centro amarillo arriba. El blanco queda abajo."],
+    ["Make a daisy: bring the four white edges up around the yellow center, white side up.","Haz una margarita: sube las cuatro aristas blancas alrededor del centro amarillo, con el blanco hacia arriba."],
+    ["A petal in the way? Turn the top first to move it aside.","¿Un pétalo estorba? Gira primero la cara de arriba para apartarlo."],
+    ["Take one petal. Turn the top until its side color matches the center below it.","Toma un pétalo. Gira la cara de arriba hasta que su color de lado coincida con el centro de abajo."],
+    ["Turn that side twice (like F2). The white edge drops to the bottom.","Gira ese lado dos veces (como F2). La arista blanca baja."],
+    ["Do the same with all four petals.","Haz lo mismo con los cuatro pétalos."]]},
+ {id:"corners", stage:1, t:["The white corners","Las esquinas blancas"],
+  goal:["The whole white side is done, and the first row of every side matches.","Toda la cara blanca está hecha y la primera fila de cada lado coincide."],
+  steps:[["Keep white on the bottom.","Sigue con el blanco abajo."],
+    ["Find a corner on top that has white on it.","Busca una esquina de arriba que tenga blanco."],
+    ["Its other two colors tell you its home, between the two matching centers. Turn the top until the corner sits right above its home.","Sus otros dos colores te dicen dónde va, entre los dos centros que coinciden. Gira la cara de arriba hasta que la esquina quede justo encima de su lugar."],
+    ["Turn the whole cube so that spot is at the front-right.","Gira el cubo entero para que ese lugar quede al frente a la derecha."],
+    ["Do R U R' U' again and again until the corner drops in, white side down. It takes 1, 3 or 5 times.","Haz R U R' U' una y otra vez hasta que la esquina baje, con el blanco abajo. Toma 1, 3 o 5 veces."],
+    ["A white corner stuck on the bottom in the wrong spot? Hold it at the front-right and do R U R' U' once. It comes up.","¿Una esquina blanca atascada abajo en otro lugar? Ponla al frente a la derecha y haz R U R' U' una vez. Sube."]],
+  algs:[{n:["Corner moves","Movimientos de esquina"], s:"R U R' U'"}]},
+ {id:"middle", stage:2, t:["The middle layer","La capa del medio"],
+  goal:["The bottom two layers are done.","Las dos capas de abajo están hechas."],
+  steps:[["Keep white on the bottom. Look at the top layer.","Sigue con el blanco abajo. Mira la capa de arriba."],
+    ["Find an edge on top with no yellow on it.","Busca una arista de arriba que no tenga amarillo."],
+    ["Turn the whole cube so the center that matches its side color faces you. Turn the top until the edge is at the front, over that center.","Gira el cubo entero para que el centro que coincide con su color de lado quede hacia ti. Gira la cara de arriba hasta que la arista quede al frente, sobre ese centro."],
+    ["Look at the edge's top color. It matches the right side? Do the right-hand moves. The left side? Do the left-hand moves.","Mira el color de arriba de la arista. ¿Coincide con el lado derecho? Haz los movimientos a la derecha. ¿Con el izquierdo? Haz los de la izquierda."],
+    ["An edge stuck in the middle the wrong way? Hold it at the front-right and do the right-hand moves once. It comes up.","¿Una arista atascada en el medio al revés? Ponla al frente a la derecha y haz una vez los movimientos a la derecha. Sube."]],
+  algs:[{n:["Right-hand moves","Movimientos a la derecha"], s:"U R U' R' U' F' U F"},{n:["Left-hand moves","Movimientos a la izquierda"], s:"U' L' U L U F U' F'"}]},
+ {id:"ycross", stage:3, t:["The yellow cross","La cruz amarilla"],
+  goal:["A yellow plus sign on top.","Un signo más amarillo arriba."],
+  steps:[["Look only at the top. Find the yellow edges (not the corners).","Mira solo la cara de arriba. Busca las aristas amarillas (no las esquinas)."],
+    ["A dot (no yellow edges)? Do the moves. You'll see an L or a line.","¿Un punto (sin aristas amarillas)? Haz los movimientos. Verás una L o una línea."],
+    ["An L? Turn the top so the L sits at the back-left, like a clock from 9 to 12. Do the moves.","¿Una L? Gira la cara de arriba para que la L quede atrás a la izquierda, como un reloj de las 9 a las 12. Haz los movimientos."],
+    ["A line? Turn the top so it goes left to right. Do the moves.","¿Una línea? Gira la cara de arriba para que vaya de izquierda a derecha. Haz los movimientos."]],
+  algs:[{n:["Yellow cross moves","Movimientos de la cruz amarilla"], s:"F R U R' U' F'"}]},
+ {id:"yface", stage:4, t:["The yellow top","La cara amarilla"],
+  goal:["The whole top is yellow.","Toda la cara de arriba es amarilla."],
+  steps:[["Count the corners with yellow facing up.","Cuenta las esquinas que tienen amarillo hacia arriba."],
+    ["One (a fish)? Turn the top so that corner is at the front-left. Do the moves.","¿Una (un pez)? Gira la cara de arriba para que esa esquina quede al frente a la izquierda. Haz los movimientos."],
+    ["None? Turn the top until the front-left corner shows yellow on its left side. Do the moves.","¿Ninguna? Gira la cara de arriba hasta que la esquina del frente a la izquierda muestre amarillo en su lado izquierdo. Haz los movimientos."],
+    ["Two? Turn the top until the front-left corner shows yellow toward you. Do the moves.","¿Dos? Gira la cara de arriba hasta que la esquina del frente a la izquierda muestre amarillo hacia ti. Haz los movimientos."],
+    ["Look again. Repeat until the top is all yellow.","Mira otra vez. Repite hasta que toda la cara sea amarilla."]],
+  algs:[{n:["Yellow top moves","Movimientos de la cara amarilla"], s:"R U R' U R U2 R'"}]},
+ {id:"ycorners", stage:5, t:["The yellow corners","Las esquinas amarillas"],
+  goal:["Every top corner sits in its home.","Cada esquina de arriba está en su lugar."],
+  steps:[["Look at the sides of the top layer. Find headlights: two corners on one side with the same color.","Mira los lados de la capa de arriba. Busca los faros: dos esquinas en un mismo lado con el mismo color."],
+    ["Turn the top so the headlights are at the back. Do the moves.","Gira la cara de arriba para que los faros queden atrás. Haz los movimientos."],
+    ["No headlights? Do the moves once from any side. Headlights will show up.","¿No hay faros? Haz los movimientos una vez desde cualquier lado. Aparecerán los faros."]],
+  algs:[{n:["Corner swap moves","Movimientos para cambiar esquinas"], s:"R' F R' B2 R F' R' B2 R2"}]},
+ {id:"yedges", stage:6, t:["The yellow edges","Las aristas amarillas"],
+  goal:["Every side is one color. The cube is solved.","Cada lado es de un solo color. El cubo está resuelto."],
+  steps:[["Turn the top until the corners match their sides.","Gira la cara de arriba hasta que las esquinas coincidan con sus lados."],
+    ["Find a side that is all done, one solid color. Turn the whole cube so that side is at the back.","Busca un lado terminado, de un solo color. Gira el cubo entero para que ese lado quede atrás."],
+    ["Do the moves. Not done yet? Do them once more.","Haz los movimientos. ¿Aún no está? Hazlos una vez más."],
+    ["No side all done? Do the moves once from any side. Then one will be.","¿Ningún lado terminado? Haz los movimientos una vez desde cualquier lado. Luego habrá uno."]],
+  algs:[{n:["Edge cycle moves","Movimientos para girar aristas"], s:"R2 U R U R' U' R' U' R' U R'"}]},
+ {id:"all", t:["Solve it all","Resuélvelo todo"], kind:"all",
+  goal:["Solve a mixed cube from start to finish.","Resuelve un cubo mezclado de principio a fin."],
+  steps:[["Tap Mix it up.","Toca Mézclalo."],
+    ["Go through the steps in order: white cross, white corners, middle layer, yellow cross, yellow top, yellow corners, yellow edges.","Sigue los pasos en orden: cruz blanca, esquinas blancas, capa del medio, cruz amarilla, cara amarilla, esquinas amarillas, aristas amarillas."],
+    ["Stuck? Tap Show me the next move.","¿Te atoras? Toca Muéstrame el siguiente movimiento."],
+    ["The more you practice, the less you need the notes.","Mientras más practiques, menos necesitarás las notas."]]}
+];
+
+/* ── saved place ── */
+const S={lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+try{
+  const st=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
+  else { if(localStorage.getItem("aog.lang")==="es") S.lang="es"; if(matchMedia("(prefers-reduced-motion: reduce)").matches) S.speed="instant"; }
+}catch(e){}
+if(!Array.isArray(S.hist)) S.hist=[];
+let cube=(S.cube && C.Cube.fromJSON(S.cube)) || new C.Cube();
+function save(){ S.cube=((painting && cubeBeforePaint) || cube).toJSON(); if(S.hist.length>400) S.hist=S.hist.slice(-400);
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+const es=()=>S.lang==="es";
+const tx=a=>a?(es()?a[1]:a[0]):"";
+function t(k,v){ let s=tx(T[k])||k; if(v) Object.keys(v).forEach(n => { s=s.split("{"+n+"}").join(v[n]); }); return s; }
+const cn=c=>tx(COLN[c]);
+const cnd=c=>cn(disp(c));   /* a solver color, named as it looks on this learner's cube */
+const esc=s=>String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function aim(p){ let s=tx(AIM[p.note])||""; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; s=s.split("{"+k+"}").join((k==="a"||k==="b"||k==="c")?cnd(x):x); }); return s; }
+const words=tok => tx(MOVEWORDS[tok])||tok;
+function note(p){ const v={}; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; v[k]= (k==="a"||k==="b"||k==="c") ? cnd(x) : x; });
+  let s=tx(NOTES[p.note])||""; Object.keys(v).forEach(n => { s=s.split("{"+n+"}").join(v[n]); }); return s; }
+
+/* ── drawing the cube ── */
+const COL={W:"#f4f3ee",Y:"#ffd43b",G:"#23a159",B:"#2a62c9",O:"#ff7e1f",R:"#d2303b",P:"#7d3cc0",K:"#ff7eb6","?":"#9aa1aa"};
+const INK={W:"#14161a",Y:"#14161a",G:"#0d1310",B:"#ffffff",O:"#14161a",R:"#ffffff",P:"#ffffff",K:"#14161a","?":"#14161a"};
+/* AOG-CUBE-COLORS-V1 (2026-10-10) — Jimmy: "On this cube, I have yellow, green, purple, red, white, blue." Cubes come in
+   other colors. Inside, the solver always names a side by its home (U is "Y", R is "O" …); S.scheme says what color the
+   learner's own cube has on each side, and everything on screen is drawn and named in those colors. */
+const HOMEFACE={}; Object.keys(C.HOME_COLOR).forEach(f => { HOMEFACE[C.HOME_COLOR[f]]=f; });
+const disp=c => (c && HOMEFACE[c] && S.scheme && S.scheme[HOMEFACE[c]]) || c;
+const stage=$("stage"), viewEl=$("cubeView");
+let ax=-26, ay=-38, size=64, painting=false, cubeBeforePaint=null;
+const els=[];
+function build(){
+  viewEl.innerHTML=""; els.length=0;
+  cube.P.forEach((p,i) => {
+    const el=document.createElement("div"); el.className="cubie";
+    const faces={};
+    C.FACE_NAMES.forEach(f => {
+      const fe=document.createElement("div"); fe.className="face f"+f; fe.dataset.i=i; fe.dataset.f=f;
+      let st=null, sh=null, lab=null;
+      if(p.cols[f]){ st=document.createElement("i"); sh=document.createElement("b"); st.appendChild(sh);
+        if(p.kind===1){ lab=document.createElement("span"); st.appendChild(lab); }
+        fe.appendChild(st); }
+      el.appendChild(fe); faces[f]={fe, st, sh, lab};
+    });
+    viewEl.appendChild(el); els.push({el, faces});
+  });
+}
+const LIGHT=(()=>{ const v=[-0.35,-0.8,0.6], n=Math.hypot(...v); return v.map(x=>x/n); })();
+function toView(v){ /* model → CSS (y down) → the view's turn */
+  const x=v[0], y=-v[1], z=v[2], ry=ay*Math.PI/180, rx=ax*Math.PI/180;
+  const x1=x*Math.cos(ry)+z*Math.sin(ry), z1=-x*Math.sin(ry)+z*Math.cos(ry);
+  return [x1, y*Math.cos(rx)-z1*Math.sin(rx), y*Math.sin(rx)+z1*Math.cos(rx)];
+}
+const SG=[1,-1,1];
+function render(anim){
+  const g=size*1.015;
+  viewEl.style.transform=`rotateX(${ax}deg) rotateY(${ay}deg)`;
+  const R=anim ? C.rot(anim.a, anim.th) : null;
+  cube.P.forEach((p,i) => {
+    let M=p.M; if(anim && anim.set.has(i)) M=C.mulM(R, M);
+    const pos=C.mulV(M, p.home), m=[];
+    for(let r=0;r<3;r++) for(let c=0;c<3;c++) m[r*3+c]=M[r*3+c]*SG[r]*SG[c];
+    const E=els[i];
+    E.el.style.transform=`matrix3d(${m[0]},${m[3]},${m[6]},0,${m[1]},${m[4]},${m[7]},0,${m[2]},${m[5]},${m[8]},0,${pos[0]*g},${-pos[1]*g},${pos[2]*g},1)`;
+    for(const f in p.cols){
+      const F=E.faces[f]; const n=C.mulV(M, C.FACES[f]), nv=toView(n);
+      const lit=Math.max(0, nv[0]*LIGHT[0]+nv[1]*LIGHT[1]+nv[2]*LIGHT[2]);
+      F.sh.style.opacity=painting ? "0" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
+      if(anim) continue;
+      const wf=C.faceOf(n.map(Math.round));
+      const pk=cube.pos(p).join(","), k2=pk+"|"+wf;
+      const col=!painting ? disp(p.cols[f]) : (peek && doctor) ? (doctor.raw[k2]||"?") : (S.paint[k2] || (p.kind===1 ? S.scheme[wf] : "?"));
+      const flag=painting && p.kind>1 && flags.some(q => q.join(",")===pk);
+      if(F.flag!==flag){ F.st.classList.toggle("flag", flag); F.flag=flag; }
+      if(F.col!==col){ F.st.style.setProperty("--c", COL[col]); F.st.style.setProperty("--lc", INK[col]); F.col=col; }
+      if(F.lab){ const txt=(S.letters && !painting) ? wf : ""; if(F.lab.textContent!==txt) F.lab.textContent=txt; }
+    }
+  });
+  if(anim){ const svg=$("arrow"); if(svg && svg.innerHTML) svg.innerHTML=""; } else drawArrow();
+}
+/* the next move, drawn on the cube: a straight arrow along the row that turns, or a round one on the face you look at */
+function projector(){
+  const W=stage.clientWidth, H=stage.clientHeight, ox=W*.5, oy=H*.48, px=W*.5, py=H*.45, g=size*1.015;
+  return v => { const q=toView(v); const X=q[0]*g, Y=q[1]*g, Z=q[2]*g, s=PERSP/(PERSP-Z); return [px+(ox+X-px)*s, py+(oy+Y-py)*s]; };
+}
+function drawArrow(){
+  const svg=$("arrow"); if(!svg) return;
+  const mv=arrowTok && !painting && !busy && !drag ? C.parse(arrowTok) : null;
+  if(!mv){ if(svg.innerHTML) svg.innerHTML=""; return; }
+  const proj=projector(), n=mv.n, c0=mv.sel==="all"?0:mv.sel, sgn=mv.q<0?-1:1;
+  const add=(a,b,k)=>[a[0]+b[0]*k, a[1]+b[1]*k, a[2]+b[2]*k];
+  const facing=v => toView(v)[2];
+  let pts=[];
+  const nf=n.map(x => x*(c0||1));
+  if(mv.sel===1 && Math.abs(n[2])===1 && facing(n)>.3){
+    /* the face toward you: a round arrow on it, going the way it turns */
+    const e1=Math.abs(n[1])?[1,0,0]:[0,1,0], e2=[n[1]*e1[2]-n[2]*e1[1], n[2]*e1[0]-n[0]*e1[2], n[0]*e1[1]-n[1]*e1[0]];
+    for(let k=0;k<=24;k++){ const th=(sgn>0 ? 2.2-k*0.17 : -0.9+k*0.17); pts.push(add(add(n.map(x=>x*1.56), e1, .95*Math.cos(th)), e2, .95*Math.sin(th))); }
+  } else {
+    /* the row that turns, on the side that faces you most: an arrow across it */
+    const sides=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].filter(u => C.dot(u,n)===0).sort((a,b)=>facing(b)-facing(a));
+    const u=sides[0], v=[n[1]*u[2]-n[2]*u[1], n[2]*u[0]-n[0]*u[2], n[0]*u[1]-n[1]*u[0]].map(x => -x*sgn);
+    const base=add(n.map(x=>x*c0), u, 1.56);
+    for(let k=0;k<=12;k++) pts.push(add(base, v, -1.15+k*(2.3/12)));
+  }
+  const P=pts.map(proj), d=P.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  const a=P[P.length-2], b=P[P.length-1], ang=Math.atan2(b[1]-a[1], b[0]-a[0]), hs=Math.max(12, size*.3);
+  const tip=[b[0]+Math.cos(ang)*hs*.5, b[1]+Math.sin(ang)*hs*.5];
+  const l=[b[0]+Math.cos(ang+2.5)*hs, b[1]+Math.sin(ang+2.5)*hs], r=[b[0]+Math.cos(ang-2.5)*hs, b[1]+Math.sin(ang-2.5)*hs];
+  const head=`M${tip[0].toFixed(1)} ${tip[1].toFixed(1)} L${l[0].toFixed(1)} ${l[1].toFixed(1)} L${r[0].toFixed(1)} ${r[1].toFixed(1)} Z`;
+  const mid=P[Math.floor(P.length/2)], two=Math.abs(mv.q)===2 ? `<text x="${(mid[0]-Math.sin(ang)*22).toFixed(1)}" y="${(mid[1]+Math.cos(ang)*22+8).toFixed(1)}" text-anchor="middle" class="x2">×2</text>` : "";
+  svg.setAttribute("viewBox", `0 0 ${stage.clientWidth} ${stage.clientHeight}`);
+  svg.innerHTML=`<path d="${d}" class="halo"/><path d="${head}" class="halo"/><path d="${d}" class="line"/><path d="${head}" class="head"/>${two}`;
+}
+function fit(){ const w=stage.clientWidth||320; size=Math.max(30, Math.round(w/5.05)); stage.style.setProperty("--s", size+"px"); render(); }
+
+/* ── turning, one move at a time ── */
+const queue=[]; let busy=false, runner=null;
+const SPEED={slow:620, normal:300, instant:0};
+function layerSet(mv){ const s=new Set(); cube.P.forEach((p,i) => { const pos=cube.pos(p); if(mv.sel==="all" || C.dot(pos,mv.n)===mv.sel) s.add(i); }); return s; }
+function enqueue(tokens, src){ C.split(tokens).forEach(tok => queue.push({tok, src})); pump(); }
+function pump(){
+  while(!busy && queue.length){
+    const job=queue.shift(), mv=C.parse(job.tok); if(!mv) continue;
+    const dur=SPEED[S.speed]*(Math.abs(mv.q)===2?1.45:1);
+    if(!dur){ cube.move(mv); after(job); continue; }
+    busy=true;
+    const set=layerSet(mv), total=-mv.q*Math.PI/2, t0=performance.now();
+    const frame=now => {
+      const k=Math.min(1,(now-t0)/dur), e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+      if(k<1){ render({a:mv.n, set, th:total*e}); requestAnimationFrame(frame); }
+      else { cube.move(mv); busy=false; after(job); pump(); }
+    };
+    requestAnimationFrame(frame);
+    return;
+  }
+  render();
+}
+function stopQueue(){ queue.length=0; runner=null; }
+
+/* everything that follows a move */
+function after(job){
+  const tok=job.tok;
+  if(job.src==="undo") S.hist.pop(); else S.hist.push(tok);
+  const b=C.parse(tok).base; if("UDLRFB".includes(b)) S.tried[b]=1;
+  if(guide && guide.flat[guide.i] && guide.flat[guide.i].tok===tok){ guide.i++; guide.key=cube.toJSON(); } else guide=null;
+  if(runner){ runner.left--; if(runner.left<=0) runner=null; }
+  if(S.mix && !"xyz".includes(b)){ if(!S.mix.t0) S.mix.t0=Date.now(); S.mix.moves++; }
+  if(S.mix && cube.solved()){ S.result={ms:Date.now()-(S.mix.t0||Date.now()), moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
+  const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
+  if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
+  $("live").textContent=t("did",{m:tok});
+  save(); panel(); bar();
+}
+
+/* ── the teacher's plan for this cube ── */
+let guide=null;
+function getGuide(){
+  const key=cube.toJSON();
+  if(!guide || guide.key!==key){
+    const r=C.plan(cube), flat=[];
+    r.stages.forEach((st,si) => st.parts.forEach((p,pi) => p.moves.forEach((tok,mi) => flat.push({tok, si, pi, mi}))));
+    guide={r, flat, i:0, key};
+  }
+  return guide;
+}
+function guideNow(){ const g=getGuide(), f=g.flat[g.i]; if(!f) return null; const st=g.r.stages[f.si], p=st.parts[f.pi];
+  const left=g.flat.slice(g.i).filter(x => x.si===f.si && x.pi===f.pi).length; return {g, f, st, p, left}; }
+
+/* ── the words beside the cube ── */
+function chips(moves, at){ return `<div class="chips" aria-label="${esc(moves.join(" "))}">`+moves.map((m,i)=>`<span class="chip ${i<at?"done":i===at?"next":""}">${esc(m)}</span>`).join("")+`</div>`; }
+function partCard(onlyStage){
+  const n=guideNow(); if(!n) return "";
+  const stIdx=C.STAGES.indexOf(n.st.key);
+  if(onlyStage!==undefined && n.st.key!=="hold" && stIdx!==onlyStage) return "";
+  const at=n.p.moves.length-n.left, tok=n.f.tok;
+  arrowTok=tok;
+  return `<div class="calm"><p class="aim">${esc(aim(n.p))}</p>
+    <p class="move-big"><span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>
+    ${chips(n.p.moves, at)}
+    <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t("didIt"))}</button>
+    <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
+    <details class="more"><summary>${esc(t("tellMore"))}</summary><p>${esc(note(n.p))}</p>
+    <button type="button" class="btn" data-act="gpart">${esc(t("doPart"))}</button></details></div>`;
+}
+function algBox(a, k){
+  const moves=C.split(a.s), at=(algAt.k===k)?algAt.i:-1;
+  if(at>=0) arrowTok=moves[at];
+  return `<div class="alg"><p class="name">${esc(tx(a.n))}</p>${chips(moves, at<0?-1:at)}${at>=0?`<p class="say">${esc(t("nextIs",{w:words(moves[at])}))}</p>`:""}
+    <div class="btn-row"><button type="button" class="btn btn-steel" data-alg="${k}" data-how="all">${esc(t("play"))}</button>
+    <button type="button" class="btn" data-alg="${k}" data-how="one">${esc(t("one"))}</button></div></div>`;
+}
+let algAt={k:null,i:0};
+function learnHtml(){
+  const i=S.lesson, l=L[i];
+  let h=`<p class="kicker">${esc(t("step"))} ${i+1} ${esc(t("of"))} ${L.length}</p><h2>${esc(tx(l.t))}</h2>
+    <p class="goal"><strong>${esc(t("goalW"))}:</strong> ${esc(tx(l.goal))}</p>
+    <ol class="steps">${l.steps.map(s=>`<li>${esc(tx(s))}</li>`).join("")}</ol>`;
+  (l.algs||[]).forEach((a,k) => { h+=algBox(a, i+":"+k); });
+  if(l.kind==="ready"){
+    h+= S.done[i] ? `<p class="state ok">${esc(t("gotIt"))}</p>` : `<div class="btn-row"><button type="button" class="btn btn-good" data-act="ready">${esc(t("ready"))}</button></div>`;
+  } else if(l.kind==="moves"){
+    const tried="UDLRFB".split("").map(f => S.tried[f]?f+" ✓":f).join("  ");
+    h+=`<p class="muted">${esc(t("movesTried"))} <strong>${esc(tried)}</strong></p>`;
+    if(S.done[i]) h+=`<p class="state ok">${esc(t("gotIt"))}</p>`;
+  } else if(l.kind==="all"){
+    h+=`<div class="btn-row"><button type="button" class="btn btn-steel" data-act="mix">${esc(t("mix"))}</button>`
+      +(cube.solved()?"":`<button type="button" class="btn" data-act="hint">${esc(t("help"))}</button>`)+`</div>`;
+    if(S.showHint && !cube.solved()) h+=`<div class="alg">${partCard()}</div>`;
+    if(cube.solved() && S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{t:clock(S.result.ms), m:S.result.moves}))}</p>`;
+    else if(S.done[i]) h+=`<p class="state ok">${esc(t("gotIt"))}</p>`;
+  } else {
+    const at=C.stageOf(cube);
+    h+=`<h3>${esc(t("practice"))}</h3><div class="btn-row"><button type="button" class="btn btn-steel" data-act="setup">${esc(t("setup"))}</button>`
+      +(at===l.stage && !S.showHint?`<button type="button" class="btn" data-act="hint">${esc(t("help"))}</button>`:"")+`</div>`;
+    /* in the middle of a set of moves the layers below are mixed on purpose; keep the help on screen */
+    const n=(guide && guide.i>0) ? guideNow() : null, mid=n && n.left<n.p.moves.length;
+    if(at>l.stage) h+=`<p class="state ok">${esc(t("stepDone"))}</p>`;
+    else if(mid && S.showHint) h+=`<div class="alg">${partCard()}</div>`;
+    else if(at<l.stage) h+=`<p class="state warn">${esc(t("earlier"))}</p>`;
+    else if(S.showHint) h+=`<div class="alg">${partCard(l.stage)}</div>`;
+  }
+  h+=`<div class="lesson-nav"><button type="button" class="btn" data-act="prev" ${i===0?"disabled":""}>← ${esc(t("back"))}</button>
+    <button type="button" class="btn ${S.done[i]?"btn-good":""}" data-act="nextLesson" ${i===L.length-1?"disabled":""}>${esc(t("next"))} →</button></div>`;
+  return h;
+}
+function solveHtml(){
+  const at=C.stageOf(cube);
+  if(cube.solved()){
+    let h=`<h2>${esc(t("startH"))}</h2><p class="muted">${esc(t("startLine"))}</p>`;
+    if(S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{t:clock(S.result.ms), m:S.result.moves}))}</p>`;
+    return h+`<div class="btn-row start"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
+  }
+  const n=guideNow(), key=n ? n.st.key : "done", si=Math.max(0, C.STAGES.indexOf(key));
+  const dots=C.STAGES.map((k,i)=>`<span class="dot ${i<at?"done":i===si?"now":""}"></span>`).join("");
+  return `<p class="kicker">${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
+    <div class="dots" role="img" aria-label="${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}">${dots}</div>
+    ${partCard()}
+    <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button></div>`;
+}
+function mineHtml(){
+  const count={}; Object.values(rawPaint()).forEach(c => { count[c]=(count[c]||0)+1; });
+  let h=`<h2>${esc(t("vMine"))}</h2><p>${esc(t("mineIntro"))}</p><ol class="steps">${["mine1","mine2","mine3","mine4"].map(k=>`<li>${esc(t(k))}</li>`).join("")}</ol>
+    <div class="palette" role="group" aria-label="${esc(t("hintPaint"))}">`+"WYGBORPK".split("").map(c=>`<button type="button" data-brush="${c}" class="${S.brush===c?"on":""}" aria-pressed="${S.brush===c}"><span class="sw" style="background:${COL[c]}"></span>${esc(cn(c))}<span class="n">${count[c]||0}/9</span></button>`).join("")+`</div>
+    <div class="btn-row"><button type="button" class="btn btn-steel" data-act="checkMine">${esc(t("check"))}</button><button type="button" class="btn" data-act="clearMine">${esc(t("clear"))}</button><button type="button" class="btn" data-act="copyMine">${esc(t("fromScreen"))}</button></div>`;
+  if(mineMsg) h+=`<p class="state ${mineMsg.ok?"ok":"warn"}">${esc(mineMsg.text)}</p>`;
+  if(doctor) h+=fixHtml();
+  return h;
+}
+let mineMsg=null, doctor=null, flags=[], peek=false;
+/* the cube doctor's card: one hand fix at a time, with what each face of the piece should show */
+const SPOT={"1,1,1":"spot_ufr","0,1,1":"spot_uf","1,1,0":"spot_ur"};
+function fixHtml(){
+  const f=doctor.fixes[doctor.i], by={};
+  f.edits.forEach(e => { const k=e.pos.join(","); (by[k]=by[k]||[]).push(e); });
+  const list=Object.keys(by).map(k => `<li>${esc(t("shows",{spot:t(SPOT[k]), list:by[k].map(e => tx(T.sideName[e.f])+" "+cnd(e.to)).join(", ")}))}</li>`).join("");
+  return `<div class="fixbox"><h3>${esc(t("fixH"))}</h3>${doctor.i===0?`<p>${esc(t("fixWhy"))}</p>`:""}
+    <p class="kicker">${esc(t("fixN",{i:doctor.i+1, n:doctor.fixes.length}))}</p><p class="say"><strong>${esc(t("fix_"+f.kind))}</strong></p>
+    <p>${esc(t("how_"+f.kind))}</p><ul>${list}</ul>
+    <div class="btn-row"><button type="button" class="btn btn-good" data-act="fixDone">${esc(t("fixDone"))}</button>
+    <button type="button" class="btn" data-act="fixPeek" aria-pressed="${peek}">${esc(t(peek?"fixPeekOff":"fixPeek"))}</button></div></div>`;
+}
+function clock(ms){ const s=Math.round(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+
+let arrowTok=null;
+function panel(){
+  const el=$("panel"); arrowTok=null;
+  el.innerHTML = S.view==="solve" ? solveHtml() : S.view==="mine" ? mineHtml() : learnHtml();
+  el.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
+  el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
+  el.querySelectorAll("[data-brush]").forEach(b => b.onclick=()=>{ S.brush=b.getAttribute("data-brush"); save(); panel(); });
+  drawArrow();
+}
+function playAlg(k, how){
+  const [li,ai]=k.split(":").map(Number), moves=C.split(L[li].algs[ai].s);
+  if(algAt.k!==k){ algAt={k, i:0}; if(how==="one"){ panel(); return; } }   /* the first tap shows the first move and its arrow */
+  if(how==="all"){ const rest=moves.slice(algAt.i); algAt={k:null,i:0}; runner={left:rest.length}; enqueue(rest,"play"); }
+  else { const tok=moves[algAt.i]; algAt.i++; if(algAt.i>=moves.length) algAt={k:null,i:0}; enqueue([tok],"play"); }
+}
+
+function act(a){
+  const i=S.lesson;
+  if(a==="ready"){ S.done[i]=1; save(); panel(); bar(); }
+  else if(a==="prev"){ pick(i-1); }
+  else if(a==="nextLesson"){ pick(i+1); }
+  else if(a==="mix"){ stopQueue(); cube=new C.Cube().run(C.scramble()); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
+  else if(a==="fresh"){ stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
+  else if(a==="setup"){ setup(L[i].stage); }
+  else if(a==="hint"){ S.showHint=true; panel(); }
+  else if(a==="gnext"){ const n=guideNow(); if(n && !busy && !queue.length) enqueue([n.f.tok],"guide"); }
+  else if(a==="gpart"){ const n=guideNow(); if(n && !busy && !queue.length){ const rest=n.g.flat.slice(n.g.i, n.g.i+n.left).map(x=>x.tok); runner={left:rest.length}; enqueue(rest,"guide"); panel(); } }
+  else if(a==="stop"){ stopQueue(); panel(); }
+  else if(a==="undo"){ if(!busy && !queue.length && S.hist.length) enqueue([C.invert(S.hist[S.hist.length-1])],"undo"); }
+  else if(a==="clearMine"){ S.paint={}; mineMsg=null; doctor=null; flags=[]; save(); render(); panel(); }
+  else if(a==="copyMine"){ doctor=null; flags=[]; S.paint={}; const held=heldWhiteDown(cube); C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos,dir]) => { S.paint[pos.join(",")+"|"+f]=disp(held.colorAt(pos,dir)); })); mineMsg=null; save(); render(); panel(); }
+  else if(a==="checkMine"){ checkMine(); }
+  else if(a==="fixPeek"){ peek=!peek; render(); panel(); }
+  else if(a==="fixDone" && doctor){
+    doctor.fixes[doctor.i].edits.forEach(e => { S.paint[e.pos.join(",")+"|"+e.f]=disp(e.to); });
+    save(); peek=false;
+    if(++doctor.i<doctor.fixes.length){ flags=doctor.fixes[doctor.i].spots; render(); panel(); }
+    else { doctor=null; flags=[]; checkMine(); }
+  }
+}
+/* the screen cube, turned so its centres sit like a fresh one (yellow up, green in front) */
+function heldWhiteDown(c){ for(const a of ["","x","x'","x2","z","z'"]) for(const b of ["","y","y2","y'"]){ const t=c.clone().run(a+" "+b); if(t.center("U")==="Y" && t.center("F")==="G") return t; } return c.clone(); }
+/* every square of the painted cube, centres included (a centre not painted keeps this cube's color) */
+function rawPaint(){ const raw={}; C.FACE_NAMES.forEach(f => C.facelets(f).forEach(([pos]) => { const k=pos.join(",")+"|"+f;
+  const isC=Math.abs(pos[0])+Math.abs(pos[1])+Math.abs(pos[2])===1; raw[k]=S.paint[k] || (isC ? S.scheme[f] : "?"); })); return raw; }
+function checkMine(){
+  doctor=null; flags=[]; peek=false;
+  const raw=rawPaint(), centers={};
+  C.FACE_NAMES.forEach(f => { centers[f]=raw[C.FACES[f].join(",")+"|"+f]; });
+  if(new Set(Object.values(centers)).size<6){ mineMsg={ok:false, text:t("errCenters")}; render(); panel(); return; }
+  const toSolver={}; C.FACE_NAMES.forEach(f => { toSolver[centers[f]]=C.HOME_COLOR[f]; });
+  const stray=Object.values(raw).find(c => c!=="?" && !toSolver[c]);
+  if(stray){ mineMsg={ok:false, text:t("errStray",{c:cn(stray)})}; render(); panel(); return; }
+  S.scheme=centers; save();                                   /* from now on the lab draws this cube's own colors */
+  const cols={}; Object.keys(raw).forEach(k => { cols[k]=toSolver[raw[k]]||"?"; });
+  const d=C.diagnose(cols);
+  if(d.error==="count"){ mineMsg={ok:false, text:t("errCount",{c:cnd(d.col).replace(/^./,x=>x.toUpperCase()), n:d.n})}; render(); panel(); return; }
+  if(d.error==="stickers"){ mineMsg={ok:false, text:t("errStickers")}; flags=d.spots; ax=-26; ay=-38; render(); panel(); return; }
+  if(d.fixes.length){ mineMsg=null; doctor={fixes:d.fixes, raw:Object.fromEntries(Object.entries(d.fixed).map(([k,v]) => [k,disp(v)])), i:0}; flags=d.fixes[0].spots; ax=-26; ay=-38; render(); panel();
+    const box=document.querySelector("#panel .fixbox"); if(box && box.scrollIntoView) box.scrollIntoView({block:"nearest"}); return; }
+  const r=C.fromFacelets(cols);
+  if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
+  else if(r.error) mineMsg={ok:false, text:t("errPiece")};
+  else { mineMsg={ok:true, text:t("allGood")}; cube=r.cube; cubeBeforePaint=null; painting=false; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; guide=null; save(); location.hash="solve"; return; }
+  panel();
+}
+/* a cube with every step before this one done, and this one still to do */
+function setup(stageIdx){
+  stopQueue();
+  for(let tries=0; tries<40; tries++){
+    const c=new C.Cube().run(C.scramble()), r=C.plan(c);
+    r.stages.forEach(st => { if(st.key==="hold" || C.STAGES.indexOf(st.key)<stageIdx) st.parts.forEach(p => c.run(p.moves)); });
+    if(C.stageOf(c)===stageIdx){ cube=c; break; }
+  }
+  S.hist=[]; S.mix=null; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel();
+}
+function pick(i){ S.lesson=Math.max(0,Math.min(L.length-1,i)); S.showHint=false; algAt={k:null,i:0}; save(); if(S.view!=="learn") location.hash="learn"; else { paintAll(); window.scrollTo({top:0}); } }
+
+/* ── the pad, the view row, the bar ── */
+function padHtml(){
+  if(painting) return "";
+  const lab={U:"U",D:"D",L:"L",R:"R",F:"F",B:"B"};
+  const name=f=>tx(T.sideName[f]);
+  let h=`<p class="lbl">${esc(t("faces"))}</p>`;
+  "UDLRFB".split("").forEach(f => { h+=`<button type="button" data-mv="${f}" aria-label="${esc(f+" · "+name(f))}">${lab[f]}</button>`; });
+  "UDLRFB".split("").forEach(f => { h+=`<button type="button" class="prime" data-mv="${f}'" aria-label="${esc(f+"' · "+name(f))}">${lab[f]}'</button>`; });
+  h+=`<p class="lbl">${esc(t("whole"))}</p>`;
+  h+=`<button type="button" class="whole" data-mv="y'">◀ y'</button><button type="button" class="whole" data-mv="y">y ▶</button>`;
+  h+=`<button type="button" class="whole" data-mv="x">▲ x</button><button type="button" class="whole" data-mv="x'">x' ▼</button>`;
+  h+=`<button type="button" class="act" data-act="undo">↶ ${esc(t("undo"))}</button><button type="button" class="act go" data-act="mix">${esc(t("mix"))}</button><button type="button" class="act" data-act="fresh">${esc(t("fresh"))}</button>`;
+  return h;
+}
+function viewRowHtml(){
+  let h=`<button type="button" class="pill" data-look="front">${esc(t("look"))}</button><button type="button" class="pill" data-look="back">${esc(t("lookBack"))}</button>`;
+  if(!painting) h+=`<button type="button" class="pill" data-look="letters" aria-pressed="${S.letters}">${esc(t("letters"))}: ${esc(t(S.letters?"on":"off"))}</button>
+    <label class="sr" for="speedSel">${esc(t("speed"))}</label><select id="speedSel" aria-label="${esc(t("speed"))}">${["slow","normal","instant"].map(k=>`<option value="${k}" ${S.speed===k?"selected":""}>${esc(t("speed"))}: ${esc(t(k))}</option>`).join("")}</select>`;
+  return h;
+}
+function bar(){
+  $("nav").innerHTML=[["learn","vLearn"],["solve","vSolve"],["mine","vMine"]].map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}" ${S.view===id?'aria-current="page"':""}>${esc(t(k))}</a>`).join("")
+    +`<a class="sep" href="/microscope">${esc(t("micro"))}</a>`;
+  const row=$("lessonRow");
+  const html=L.map((l,i)=>`<button type="button" class="${i===S.lesson?"on":""}" data-lesson="${i}" aria-pressed="${i===S.lesson}">${i+1}${S.done[i]?" ✓":""} · ${esc(tx(l.t))}</button>`).join("");
+  if(row.__html!==html){ row.innerHTML=html; row.__html=html; row.querySelectorAll("[data-lesson]").forEach(b => b.onclick=()=>pick(+b.getAttribute("data-lesson"))); }
+}
+function paintAll(){
+  const h=(location.hash||"").replace("#","");
+  S.view = h==="solve" ? "solve" : h==="mine" ? "mine" : "learn";
+  painting = S.view==="mine";
+  if(painting){ cubeBeforePaint = cubeBeforePaint || cube; cube=new C.Cube(); }
+  else if(cubeBeforePaint){ if(cube.toJSON()===new C.Cube().toJSON()) cube=cubeBeforePaint; cubeBeforePaint=null; }
+  stage.classList.toggle("painting", painting);
+  $("bench").classList.toggle("solving", S.view==="solve");
+  document.documentElement.lang=S.lang;
+  document.title=t("app")+" — Architecture of Grace";
+  $("brand").textContent=t("app"); $("mastK").textContent=t("eyebrow"); $("mastH").textContent=t("app"); $("mastL").textContent=t("tag");
+  $("langBtn").textContent=es()?"EN":"ES";
+  $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?(es()?"Claro":"Light"):(es()?"Oscuro":"Dark");
+  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):t("hint");
+  stage.setAttribute("aria-label", es()?"Un cubo de Rubik en 3D":"A 3D Rubik's Cube");
+  $("pad").innerHTML=padHtml(); $("viewRow").innerHTML=viewRowHtml();
+  $("pad").querySelectorAll("[data-mv]").forEach(b => b.onclick=()=>{ if(!busy && !queue.length) enqueue([b.getAttribute("data-mv")],"pad"); });
+  $("pad").querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
+  $("viewRow").querySelectorAll("[data-look]").forEach(b => b.onclick=()=>{
+    const k=b.getAttribute("data-look");
+    if(k==="front"){ ax=-26; ay=-38; } else if(k==="back"){ ax=22; ay=142; } else { S.letters=!S.letters; save(); paintAll(); return; }
+    render();
+  });
+  const sel=$("speedSel"); if(sel) sel.onchange=()=>{ S.speed=sel.value; save(); };
+  build(); fit(); bar(); panel();
+  save();
+}
+
+/* ── hands on the cube: drag a row to turn it, drag around it to look ── */
+let drag=null;
+const AXES=[[1,0,0],[0,1,0],[0,0,1]];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+/* which sticker is under the finger: each sticker is projected the way the browser draws it (the stage's
+   perspective), and the nearest one facing us wins. Browsers' own hit-testing in 3D is not reliable enough. */
+const PERSP=1150;
+function pickSticker(cx, cy){
+  const r=stage.getBoundingClientRect(), W=stage.clientWidth, H=stage.clientHeight, k=r.width/(stage.offsetWidth||r.width);
+  const sx=(cx-r.left)/k-stage.clientLeft, sy=(cy-r.top)/k-stage.clientTop;
+  const ox=W*.5, oy=H*.48, px=W*.5, py=H*.45, g=size*1.015, cam=[px-ox, py-oy, PERSP];
+  const proj=v => { const q=toView(v); const X=q[0]*g, Y=q[1]*g, Z=q[2]*g, s=PERSP/(PERSP-Z); return [px+(ox+X-px)*s, py+(oy+Y-py)*s, Z, X, Y]; };
+  let best=null;
+  cube.P.forEach((p,i) => {
+    const pos=cube.pos(p);
+    for(const f in p.cols){
+      const n=C.mulV(p.M, C.FACES[f]), c=[pos[0]+n[0]*.5, pos[1]+n[1]*.5, pos[2]+n[2]*.5];
+      const cv=proj(c), nv=toView(n);
+      if(nv[0]*(cam[0]-cv[3])+nv[1]*(cam[1]-cv[4])+nv[2]*(cam[2]-cv[2])<=0) continue;
+      const [u,w]=AXES.filter(a => C.dot(a,n)===0);
+      const quad=[[1,1],[1,-1],[-1,-1],[-1,1]].map(([a,b]) => proj([c[0]+(u[0]*a+w[0]*b)*.5, c[1]+(u[1]*a+w[1]*b)*.5, c[2]+(u[2]*a+w[2]*b)*.5]));
+      let sign=0, inside=true;
+      for(let j=0;j<4;j++){ const A=quad[j], B=quad[(j+1)%4], z=(B[0]-A[0])*(sy-A[1])-(B[1]-A[1])*(sx-A[0]);
+        if(Math.abs(z)<1e-9) continue; const sg=z>0?1:-1; if(!sign) sign=sg; else if(sg!==sign){ inside=false; break; } }
+      if(inside && (!best || cv[2]>best.z)) best={i, f, z:cv[2]};
+    }
+  });
+  return best;
+}
+stage.addEventListener("pointerdown", e => {
+  if(e.button>0) return;
+  const hit=pickSticker(e.clientX, e.clientY);
+  drag={x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, ax0:ax, ay0:ay};
+  try{ stage.setPointerCapture(e.pointerId); }catch(_){}
+  stage.classList.add("grabbing");
+});
+stage.addEventListener("pointermove", e => {
+  if(!drag || e.pointerId!==drag.id) return;
+  const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+  if(!drag.mode){
+    if(Math.hypot(dx,dy)<9) return;
+    if(drag.face && !painting && !busy && !queue.length){
+      const p=cube.P[drag.face.i], n=C.mulV(p.M, C.FACES[drag.face.f]), pos=cube.pos(p);
+      const ps=[pos[0]+n[0]*.5, pos[1]+n[1]*.5, pos[2]+n[2]*.5];
+      let best=null;
+      AXES.filter(a => C.dot(a,n)===0).forEach(a => {
+        const v=toView(cross(a, ps)), len=Math.hypot(v[0],v[1]); if(len<1e-6) return;
+        const score=(dx*v[0]+dy*v[1])/(Math.hypot(dx,dy)*len);
+        if(!best || Math.abs(score)>Math.abs(best.score)) best={a, v, len, score};
+      });
+      if(best){ const layer=C.dot(pos,best.a); const set=new Set(); cube.P.forEach((q,i) => { if(C.dot(cube.pos(q),best.a)===layer) set.add(i); });
+        drag.mode="turn"; drag.turn={a:best.a, ux:best.v[0]/best.len, uy:best.v[1]/best.len, pxPerRad:best.len*size*1.015, layer, set, th:0}; }
+      else drag.mode="look";
+    } else drag.mode="look";
+  }
+  if(drag.mode==="look"){ ay=drag.ay0+dx*0.45; ax=Math.max(-85, Math.min(85, drag.ax0-dy*0.45)); render(); }
+  else if(drag.mode==="turn"){ const T2=drag.turn; T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad; render({a:T2.a, set:T2.set, th:T2.th}); }
+});
+function endDrag(e){
+  if(!drag || (e && e.pointerId!==drag.id)) return;
+  const d=drag; drag=null; stage.classList.remove("grabbing");
+  if(!d.mode && d.face && painting){ paintAt(d.face); return; }
+  if(d.mode!=="turn") return;
+  /* a short, clear drag is enough: past about 12° the row finishes the quarter turn in that direction */
+  const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*Math.max(1, Math.round(Math.abs(raw))), from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
+  busy=true;
+  const finish=() => {
+    busy=false;
+    const q=((quarters%4)+4)%4;
+    if(q){
+      let base;
+      if(T2.layer===0) base=["M","E","S"].find(b => Math.abs(C.dot(C.MOVES[b].n, T2.a))===1);
+      else base="UDRLFB".split("").find(b => C.eqV(C.MOVES[b].n, T2.a.map(x=>x*T2.layer)));
+      const sigma=C.dot(C.MOVES[base].n, T2.a), qq=(((-sigma*quarters)%4)+4)%4;
+      const tok=base+(qq===2?"2":qq===3?"'":"");
+      cube.move(tok); after({tok, src:"hand"});
+    }
+    render(); pump();
+  };
+  if(!dur){ finish(); return; }
+  const frame=now => { const k=Math.min(1,(now-t0)/dur); if(k<1){ render({a:T2.a, set:T2.set, th:from+(to-from)*k}); requestAnimationFrame(frame); } else finish(); };
+  requestAnimationFrame(frame);
+}
+stage.addEventListener("pointerup", endDrag);
+stage.addEventListener("pointercancel", e => { if(drag && drag.mode==="turn"){ drag.turn.th=0; } endDrag(e); });
+function paintAt(fc){
+  const p=cube.P[fc.i];
+  const wf=C.faceOf(C.mulV(p.M, C.FACES[fc.f])), k=cube.pos(p).join(",")+"|"+wf;
+  S.paint[k]=S.brush; mineMsg=null; doctor=null; flags=[]; peek=false; save(); render(); panel();
+}
+
+/* keys on a computer: the letter turns that side, Shift turns it back; Ctrl+Z undoes */
+document.addEventListener("keydown", e => {
+  if(painting || e.altKey || /input|select|textarea/i.test((e.target.tagName||""))) return;
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="z"){ e.preventDefault(); act("undo"); return; }
+  if(e.ctrlKey||e.metaKey) return;
+  const k=e.key.toLowerCase(), map={u:"U",d:"D",l:"L",r:"R",f:"F",b:"B",x:"x",y:"y",z:"z",m:"M",e:"E",s:"S"};
+  if(!map[k] || busy || queue.length) return;
+  e.preventDefault(); enqueue([map[k]+(e.shiftKey?"'":"")],"key");
+});
+
+window.AOGCubeLab={pick:pickSticker, get cube(){ return cube; }};   /* for the site's checks */
+$("langBtn").onclick=()=>{ S.lang=es()?"en":"es"; save(); paintAll(); };
+$("themeBtn").onclick=()=>{
+  const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next); document.documentElement.classList.toggle("dark",next==="dark");
+  try{ localStorage.setItem("aog.interior.ws.v1.theme",next); }catch(e){}
+  paintAll();
+};
+window.addEventListener("hashchange", () => { mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); });
+window.addEventListener("resize", fit);
+if(window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+if(!location.hash && S.view && S.view!=="learn") history.replaceState(null,"","#"+S.view);
+paintAll();
+})();
+</script>
+</body>
+</html>
