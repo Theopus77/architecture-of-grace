@@ -6,6 +6,7 @@ This folder sits outside `aog-deploy/`, so Netlify never serves it.
 |---|---|---|
 | `adult-edition.html` | `/adult` | Hand-written. Run `stamp.py` after editing a copy that still has `@@FIRSTPAINT@@`. |
 | `adult-workbook.html` | `/adult/workbook` | Hand-written (same stamp). The gate word is stored as a hash: `GATE = h32(word)`. |
+| `adult-curriculum.html` | `/adult/curriculum` | `python3 adult-build/build_curriculum.py /path/to/book6.json` (add `--scripts` to make the facilitator scripts public too) |
 | `adult-anchors.html` | `/adult/anchors` | `python3 adult-build/build_anchors.py /path/to/book6.json` |
 | `adult-sessions.html` | `/adult/sessions` | `python3 adult-build/build_sessions.py --key <key> --gate <word> --book /path/to/book6.json` |
 

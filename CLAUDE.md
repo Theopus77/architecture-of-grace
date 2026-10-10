@@ -94,7 +94,9 @@ call moving forward." On the Educator Dashboard and every page after it:
 
 ## The Adult Edition (Book 6)
 
-- Four pages: `/adult`, `/adult/workbook`, `/adult/anchors`, `/adult/sessions` (facilitator key).
+- Five pages: `/adult`, `/adult/curriculum` (the twelve sessions, open), `/adult/workbook`, `/adult/anchors`,
+  `/adult/sessions` (facilitator key). Scripts, safety scans, do-not-proceed boxes and the distress
+  protocol stay behind the key (Jimmy, 2026-10-10).
   Shared skin `aog-adult.css`. Build sources live in `adult-build/` at the repo root (not published);
   read its README before changing the console or the workbook word.
 - Never commit `book6.json` (the whole manual; this repo is public). The crisis box goes on every

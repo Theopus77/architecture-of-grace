@@ -109,7 +109,7 @@
 .compact li::before{counter-increment:c; content:counter(c); position:absolute; left:0; top:9px; width:1.75em; height:1.75em; border-radius:50%; background:var(--navy); color:var(--on-navy); font-family:"Inter",-apple-system,Arial,sans-serif; font-size:.85rem; font-weight:800; display:grid; place-items:center}
 .compact li .x{display:block; font-family:"Inter",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:.92rem; color:var(--ink-soft); margin-top:.2em}
 /* the doors */
-.doors{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px}
+.doors{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px}
 @media (max-width:820px){ .doors{grid-template-columns:1fr} }
 a.door{text-decoration:none; color:inherit}
 a.door:hover{border-color:var(--gold)}
@@ -151,7 +151,7 @@ details.more summary{cursor:pointer; font-weight:700; color:var(--a); min-height
 <!-- ═══ THE BUILDING ═══ drawn first, named second. Each stone opens its session below. -->
 <section id="build" style="margin-top:22px">
   <h2>Twelve sessions, one building</h2>
-  <p class="lede">The program builds like a house: the ground floor first, the top floor last. Tap a stone to see what happens in that session.</p>
+  <p class="lede">The program builds like a house: the ground floor first, the top floor last. Tap a stone to see what happens in that session. <a href="/adult/curriculum">The full curriculum</a> has every session in detail.</p>
   <div class="build">
     <svg viewBox="0 0 760 330" role="group" aria-label="The twelve sessions drawn as stones in four rows: Foundation, Interior, Repair, Legacy. Each stone is a button.">
       <line x1="30" y1="312" x2="730" y2="312" class="grd"/>
@@ -321,6 +321,12 @@ details.more summary{cursor:pointer; font-weight:700; color:var(--a); min-height
 <section id="doors">
   <h2>Inside the program</h2>
   <div class="doors">
+    <a class="door" href="/adult/curriculum">
+      <span class="st open">Open · the full program</span>
+      <h3>The curriculum</h3>
+      <p>All twelve sessions in the manual&#8217;s own words: the goal, the big idea, every timed step, and the practice on the page.</p>
+      <span class="go">Read the curriculum →</span>
+    </a>
     <a class="door" href="/adult/workbook">
       <span class="st open">Open · for participants</span>
       <h3>The workbook</h3>
@@ -401,6 +407,7 @@ function open(n){
   n=Math.max(1,Math.min(12,n)); cur=n; var s=S[n];
   var card=$("sessCard"); card.className="sesscard p"+s.p;
   card.innerHTML='<div class="k p'+s.p+'c">Session '+n+' · '+PH[s.p]+'</div><h3>'+esc(s.t)+'</h3><p>'+esc(s.d)+'</p><p><span class="pr">On the page:</span> '+esc(s.w)+'</p><p class="small mut">'+care(s.c)+'</p>'+
+    '<p class="no-print" style="margin:.6em 0 0;font-weight:800"><a href="/adult/curriculum#s'+n+'">Read Session '+n+' in full →</a></p>'+
     '<div class="nav no-print"><button type="button" class="btn" data-go="-1"'+(n===1?' disabled':'')+'>← Session '+(n-1||1)+'</button><button type="button" class="btn" data-go="1"'+(n===12?' disabled':'')+'>Session '+(n<12?n+1:12)+' →</button></div>';
   var hb=D.querySelectorAll(".hst"); for(var j=0;j<hb.length;j++) hb[j].setAttribute("aria-pressed",+hb[j].getAttribute("data-n")===n?"true":"false");
   var st=D.querySelectorAll(".stone");
