@@ -1320,9 +1320,7 @@ function aogToggleBand(e, b){
           <div class="ofh-lede" data-en-html="<p class='hl-ask'>How do we learn to live with ourselves&mdash;<br>and one another&mdash;when none of us gets it right?</p>" data-es-html="<p class='hl-ask'>&iquest;C&oacute;mo aprendemos a vivir con nosotros mismos&mdash;<br>y con los dem&aacute;s&mdash;cuando ninguno lo hace del todo bien?</p>"><p class="hl-ask">How do we learn to live with ourselves&mdash;<br>and one another&mdash;when none of us gets it right?</p></div>
 
           <!-- AOG-FRONT-DOOR-V2 — one gold action: it opens the Today door on the table below, nothing new. The "I'm a teacher — show me Monday" link was taken out (Jimmy, 2026-10-03): it repeated this button and the Teacher button. -->
-          <div class="ofh-go">
-            <button type="button" class="ofh-gold-btn" data-aog-card onclick="if(typeof aogAudDoor==='function'){aogAudDoor('today');}"><span data-en="Open today&rsquo;s practice" data-es="Abrir la práctica de hoy">Open today&rsquo;s practice</span></button>
-          </div>
+          <!-- AOG-HERO-AUDIENCE-V1 (Jimmy, 2026-10-10: "Get rid of the open daily practice"): the gold button is gone; the doors below are the way in. -->
 
 
           <div class="ofh-cta" data-aog-retired="1"><!-- .30ho — Jimmy: get rid of the other two doors. Retired, NOT deleted: markup, handlers and i18n intact. Neither is orphaned — the dashboard has its own line under the doors and Explore is still in the top bar. Drop this attribute to restore. -->
@@ -2120,9 +2118,34 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
         if(panel) grid.appendChild(panel);
         document.querySelectorAll("#aogAudRow button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-aud") === k ? "true" : "false"); });
         document.querySelectorAll("#aogAud .aogau-tip").forEach(function(t){ t.hidden = t.getAttribute("data-aud") !== k; });
+        try{ heroPaint(k); }catch(e){}
         var mb = document.getElementById("aogMoreBtn");
         if(mb){ mb.parentNode.hidden = (k === "all"); mb.setAttribute("aria-expanded", more ? "true" : "false");
           mb.textContent = more ? (es() ? "Menos puertas" : "Fewer doors") : (es() ? "Más puertas" : "More doors"); }
+      }
+      /* AOG-HERO-AUDIENCE-V1 (Jimmy, 2026-10-10: "the words underneath the hero for the student page should be shortened.
+         Realistically, each one should be catered to its specific audience. Students, parents / adults and teachers").
+         The lines under the title change with the choice; Show everything keeps the full words. null hides a line. The
+         privacy line always says the same promise: no accounts, nothing tracked. */
+      var HERO = {
+        student: { premise:["Make music. Explore. Take a calm break when you need one.","Haz música. Explora. Toma un descanso tranquilo cuando lo necesites."],
+                   priv:["No sign-in. Nothing about you is tracked.","Sin iniciar sesión. No se rastrea nada sobre ti."], moves:null, ask:false },
+        family:  { premise:["For parents, families and every grown-up.","Para padres, familias y todos los adultos."],
+                   moves:["Words for feelings and making things right. Questions for the dinner table. Calm tools. SEL for adults too.","Palabras para los sentimientos y para reparar. Preguntas para la mesa. Herramientas de calma. SEL también para adultos."], ask:true },
+        teacher: { moves:["Courses with pictures first. SEL lessons. Daily practice. A dashboard for your class.","Cursos con imágenes primero. Lecciones de SEL. Práctica diaria. Un panel para tu clase."], ask:true }
+      };
+      var HERO0 = null;
+      function heroPaint(k){
+        var els = { premise:document.querySelector(".ofh-premise"), priv:document.querySelector(".ofh-private"), moves:document.querySelector(".ofh-moves") },
+            ask = document.querySelector(".aog-of-head .ofh-lede"), L = es() ? 1 : 0;
+        if(!els.premise) return;
+        if(!HERO0){ HERO0 = {}; Object.keys(els).forEach(function(n){ var e = els[n]; if(e) HERO0[n] = [e.getAttribute("data-en"), e.getAttribute("data-es")]; }); }
+        var h = HERO[k] || {};
+        Object.keys(els).forEach(function(n){ var e = els[n]; if(!e) return;
+          var v = (n in h) ? h[n] : HERO0[n];
+          if(!v){ e.style.display = "none"; return; }
+          e.style.display = ""; e.setAttribute("data-en", v[0]); e.setAttribute("data-es", v[1]); if(e.textContent !== v[L]) e.textContent = v[L]; });
+        if(ask) ask.style.display = (h.ask === false) ? "none" : "";
       }
       window.aogAudPick = function(k){ more = false; try{ sessionStorage.setItem(KEY, k); }catch(e){} apply(k); };
       window.aogAudMore = function(){ more = !more; apply(cur); };
