@@ -6,7 +6,7 @@
 <!-- AOG-DD-STILL-V1: no zoom on focus (every input is 16px or larger, and the viewport is pinned), boxes clip instead of scrolling, the page never pans sideways. Jimmy: "the screen zooms in or out ... makes me sick." -->
 <script>/* begin in light. Dark only when this device chose it - the stored choice, never the OS setting, decides. Same key as every Interior page. */
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
-<title>Daily Drafts — K–12 Spiral Review — Architecture of Grace</title>
+<title>Daily Practice — K–12 Spiral Review — Architecture of Grace</title>
 <!-- AOG-DD-SUBJECTS-V2 + AOG-DD-DRAFTS-NAME: Science and Social Studies restored, and the page reads Daily Drafts (the N bank from .30j5, transplanted into the 4157 engine) -->
 <meta name="description" content="Ten small things a day. A page of spiral review in ten subjects — math, language arts, writing, science, social studies, Spanish, FACS, world religions, economics and the Word Foundry’s class units — for grades K–8 and two high-school bands, marked the moment it is finished. Private; nothing leaves the device.">
 <meta name="robots" content="noindex">
@@ -1472,7 +1472,7 @@ body.packing .packsheet .tlines{color:#333}
 <header class="mast">
   <div>
     <div class="k" data-en="The Resource Room — Daily Practice" data-es="La Sala de Recursos — Práctica diaria">The Resource Room — Daily Practice</div>
-    <h1 data-en="Daily Drafts — K–12 Spiral Review" data-es="Daily Drafts — Repaso en espiral K–12">Daily Drafts — K–12 Spiral Review</h1>
+    <h1 data-en="Daily Practice — K–12 Spiral Review" data-es="Práctica diaria — Repaso en espiral K–12">Daily Practice — K–12 Spiral Review</h1>
     <!-- AOG-DD-INTRO-TEN-V1 --><!-- AOG-DD-INTRO-SHORT-V1 (2026-09-26) — Jimmy: "too much words". --><p class="deck" data-en="Ten small things a day, checked the moment you finish. Pick a subject and a grade." data-es="Diez cosas pequeñas al día, revisadas en cuanto terminas. Elige una materia y un grado.">Ten small things a day, checked the moment you finish. Pick a subject and a grade.</p>
     <!-- the way out. THE HREF IS THE HUB'S FILENAME, not its short link — the
          filename resolves on the site, on localhost, and from a folder on disk. -->
@@ -18296,7 +18296,7 @@ function sheetHTML(pack){
   var sn=SUBJN[ST.subj]||SUBJN.math,subjName=t(sn[0],sn[1]);
   var h='<div class="shead"><div><h2>'+esc(subjName)+' &middot; '+
       esc(t(GLABEL[ST.grade][0],GLABEL[ST.grade][1]))+'</h2>'+
-      '<div class="sub">'+t('Daily Drafts &middot; Spiral Review','Daily Drafts &middot; Repaso en espiral')+'</div></div>'+
+      '<div class="sub">'+t('Daily Practice &middot; Spiral Review','Práctica diaria &middot; Repaso en espiral')+'</div></div>'+
       '<div class="snum"><b>'+ST.sheet+'</b><span>'+t('Draft','Borrador')+'</span></div></div>'+
     '<div class="smeta"><span>'+t('Score','Puntaje')+' <b class="sval"'+(pack?'':' id="mScore"')+'>\u2014</b>'+'<span class="dline" aria-hidden="true"></span></span>'+
     '<span>'+t('Date','Fecha')+' <b class="dval">'+new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
@@ -18390,8 +18390,8 @@ function writeBand(){
 function writeHTML(pack){
   return '<div class="shead"><div><h2>'+t('Writing','Escritura')+' &middot; '+
       esc(t(GLABEL[ST.grade][0],GLABEL[ST.grade][1]))+'</h2>'+
-      '<div class="sub">'+t('Daily Drafts &middot; Thinking, communicating and writing',
-                            'Daily Drafts &middot; Pensar, comunicar y escribir')+'</div></div>'+
+      '<div class="sub">'+t('Daily Practice &middot; Thinking, communicating and writing',
+                            'Práctica diaria &middot; Pensar, comunicar y escribir')+'</div></div>'+
       '<div class="snum"><b>'+ST.sheet+'</b><span>'+t('Draft','Borrador')+'</span></div></div>'+
     '<div class="smeta"><span>'+t('Date','Fecha')+' <b class="dval">'+
       new Date().toLocaleDateString(ST.lang==='es'?'es-US':'en-US')+
@@ -18934,7 +18934,7 @@ function fillReview(rv){
     +'<span><span class="k">'+t('Score','Puntaje')+'</span><br><b class="sc">'+esc(sc)+'</b></span>'
     +'<span class="legend"><span><i class="g"></i>'+t('right','correcta')+'</span><span><i class="r"></i>'+t('missed — the key is beside it','incorrecta — la clave está al lado')+'</span></span>';
   sh.parentNode.insertBefore(b,sh);
-  document.title=(rv.who?rv.who+' · ':'')+t('Daily Drafts — reviewed copy','Daily Drafts — copia revisada');
+  document.title=(rv.who?rv.who+' · ':'')+t('Daily Practice — reviewed copy','Práctica diaria — copia revisada');
   if(rv.print)setTimeout(function(){try{window.print()}catch(e){}},600)}
 
 function check(){
@@ -19549,7 +19549,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     var t=tally(),
         aid="dd-"+ST.subj+"-g"+ST.grade+"-s"+ST.sheet,
         subjEN=writing?"Writing":((SUBJN[ST.subj]||SUBJN.math)[0]),
-        nameEN="Daily Drafts — "+subjEN+" · "+GLABEL[ST.grade][0];
+        nameEN="Daily Practice — "+subjEN+" · "+GLABEL[ST.grade][0];
     /* ⚠ A writing row says THAT it was written and HOW MUCH. The words
        themselves are never in this payload and must never be. */
     var wStats=null;

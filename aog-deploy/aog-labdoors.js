@@ -167,6 +167,14 @@
       inst.setAttribute("data-first2", "1");
     }
     /* the chord pads straight under their one line; the key and the mood under the pads */
+    /* AOG-STUDIO-LESSONS-LAST-V1 (Jimmy, 2026-10-10, on the Drum Machine: "The worksheets lessons should not be above the
+       looping information and sending it over"): in every room the lessons card comes after the playing, recording and
+       sending, just above Lessons and more. A card already below it stays where it is. */
+    var lessons = D.getElementById("lessons"), learn = D.getElementById("aogLearn");
+    if (lessons && learn && learn.parentNode && !learn.contains(lessons) &&
+        (lessons.compareDocumentPosition(learn) & Node.DOCUMENT_POSITION_FOLLOWING) && lessons.nextElementSibling !== learn) {
+      learn.parentNode.insertBefore(lessons, learn);
+    }
     var cpads = rig && rig.querySelector("#pads"), keySel = D.getElementById("keySel"), keyRow = keySel && keySel.closest(".row");
     if (cpads && keyRow && keyRow.parentNode === cpads.parentNode && !keyRow.hasAttribute("data-first")) {
       cpads.parentNode.insertBefore(keyRow, cpads.nextSibling); keyRow.setAttribute("data-first", "1");

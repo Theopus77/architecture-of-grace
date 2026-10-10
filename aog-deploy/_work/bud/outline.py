@@ -175,7 +175,7 @@ UNITS = [
 # Practice rooms per unit: the Daily Drafts "buddhist" spiral at the matching grade, plus the
 # World Religions rooms and units that meet the same material.
 def _dd(grade, label):
-    return [("/drops/buddhist/%s" % grade, "Daily Drafts — Buddhist texts, grades %s" % label)]
+    return [("/drops/buddhist/%s" % grade, "Daily Practice — Buddhist texts, grades %s" % label)]
 LINKS = {
  1: _dd("K", "K–2") + [("/religions", "World Religions — every band")],
  2: _dd("1", "K–2") + [("/religions", "World Religions — every band")],

@@ -173,7 +173,7 @@ UNITS = [
 # Practice rooms per unit: the Daily Drafts "health" spiral at the matching grade, plus the
 # Science and FACS courses that meet the same material.
 def _dd(grade, label):
-    return [("/drops/health/%s" % grade, "Daily Drafts — Medicine and Health, grades %s" % label)]
+    return [("/drops/health/%s" % grade, "Daily Practice — Medicine and Health, grades %s" % label)]
 LINKS = {
  1: _dd("K", "K–2") + [("/science-course", "Science — the course")],
  2: _dd("1", "K–2") + [("/science-course", "Science — the course")],

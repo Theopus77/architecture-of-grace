@@ -10,12 +10,14 @@ The page is a frame, not a list of links:
   - the eight rooms as picture doors, in song order (CLAUDE.md, aog-labdoors.js);
   - the room you are in, playing inside the frame (an iframe of the room's own page). The room knows it is inside the
     Studio (aog-labdoors.js, AOG-STUDIO-SHELL-V1): it hides its own site bar and doors, and a link to another room
-    changes the room here instead of opening a page inside the page. Each room is still its own page at its own
-    address (/drum-machine, /bass …): nothing that links to a room breaks;
+    changes the room here instead of opening a page inside the page. A link to a room's own address (/drum-machine,
+    /bass …) opens the Studio in that room, so nothing that links to a room breaks;
   - My Track along the bottom: one mark per layer. A layer is there when that room has a take in the Mixing Desk's
     list ("studioinbox") or a recording on its shelf (aog-handoff.js); visiting a room marks nothing (§06).
-  - "Open in its own tab" keeps Jimmy's earlier ask (2026-10-06): "multiple tabs open and work on them on their own
-    page". The rooms still hear each other across tabs (aog-handoff.js, BroadcastChannel "aog-music").
+  - AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10): "one location for all the instruments … and that is the studio. Have two
+    designs and layouts seems sort of silly." A room opened on its own address (/piano, music-piano.html, an old link)
+    comes into the Studio, in that room (each room's head script, ?at=). The "own tab" link is gone. Two Studio tabs
+    still hear each other (aog-handoff.js, BroadcastChannel "aog-music").
 The address says the room (/the-studio#bass), so Back, a bookmark and a shared link all land in the right room.
 The page draws at full size on a computer (no 85% zoom): the rooms inside have canvases, and a pen must land under the
 finger (CLAUDE.md).
@@ -185,6 +187,19 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
 .sh-top h1 { color:#f6e9cc; text-shadow:0 1px 0 rgba(0,0,0,.6); }
 .sh-tag { color:#cdbfa3; }
 .sh-own { color:#f0c26e; }
+/* AOG-STUDIO-APP-V1 (Jimmy, 2026-10-10: "In the studio we should get rid of the AOG top bar menu. Allow a back button"):
+   the site bar steps aside (its code stays, so the saved language, theme and reading settings still apply); the Studio's
+   own line carries Back and EN | ES. Back leaves the Studio: to the page you came from, or the front page when the
+   Studio was opened from its Home Screen icon. */
+.aogtop, .aogtop-spacer { display:none !important; }
+.sh-back { flex:0 0 auto; display:inline-flex; align-items:center; gap:.3rem; min-height:44px; padding:0 .8rem 0 .55rem; border-radius:999px;
+  border:1px solid rgba(240,194,110,.55); background:rgba(0,0,0,.28); color:#f6e9cc; font:700 1rem/1 var(--sans); cursor:pointer; }
+.sh-back:hover { background:rgba(240,194,110,.14); }
+.sh-lang { flex:0 0 auto; display:inline-flex; gap:2px; padding:3px; border-radius:999px; border:1px solid rgba(240,194,110,.4); background:rgba(0,0,0,.28); }
+.sh-lang button { min-height:38px; min-width:44px; padding:0 .7rem; border:0; border-radius:999px; background:transparent; color:#e6d8bb; font:700 .9rem/1 var(--sans); cursor:pointer; }
+.sh-lang button[aria-pressed="true"] { background:#f0c26e; color:#1d1608; }
+.sh-back:focus-visible, .sh-lang button:focus-visible { outline:3px solid #f0c26e; outline-offset:2px; }
+@media (max-width:699px) { .sh-back { padding:0 .6rem 0 .4rem; } .sh-lang button { min-width:40px; padding:0 .5rem; } }
 .sh-doors a { background-color:#f1e8d5; color:#1f1a12; border-color:#3a2c1c; box-shadow:0 1px 0 rgba(255,236,200,.08), 0 6px 14px rgba(0,0,0,.45); }
 .sh-doors a[aria-current="true"] { border-color:#e0b25a; box-shadow:0 0 0 1px #e0b25a, 0 0 18px rgba(240,194,110,.35), 0 6px 14px rgba(0,0,0,.45); }
 .sh-room { background:#17110c; border:1px solid #050403; box-shadow:0 0 0 1px rgba(255,214,160,.06), 0 24px 60px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.5); }
@@ -199,23 +214,39 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
 (function () {
   "use strict";
   var D = document, ROOMS = __ROOMS__, LAYERS = __LAYERS__;
-  var fr = D.getElementById("room"), own = D.getElementById("own"), cur = "", KEY = "aog.studio.room";
+  var fr = D.getElementById("room"), cur = "", KEY = "aog.studio.room";
   function es() { return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   function room(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return null; }
+  /* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): a room
+     opened on its own address comes here as ?at=/music-piano.html#lessons (its head script). The frame opens that exact
+     address once, so a lesson, a take or a locker link still lands, and the address bar goes back to /the-studio#room. */
+  var AT = null;
+  try {
+    var at = new URLSearchParams(location.search).get("at");
+    if (at) {
+      var u = new URL(at, location.href);
+      for (var i = 0; i < ROOMS.length; i++) if (u.origin === location.origin && u.pathname === "/" + ROOMS[i].file) AT = { id: ROOMS[i].id, url: u.pathname + u.search + u.hash };
+      history.replaceState(null, "", location.pathname + (AT ? "#" + AT.id : location.hash));
+    }
+  } catch (e) { AT = null; }
   function first() {
+    if (AT) return AT.id;
     var h = (location.hash || "").slice(1); if (room(h)) return h;
     try { var s = localStorage.getItem(KEY); if (room(s)) return s; } catch (e) {}
     return "pads";
   }
+  var steps = 0;   /* rooms walked through inside the Studio, so Back can leave it in one tap */
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
+    if (push) steps++;
     TP.back = id === "studio" ? (cur && cur !== "studio" ? cur : TP.back) : "";   /* AOG-STUDIO-LISTEN-V1: the way back from the desk */
     cur = id;
     try { localStorage.setItem(KEY, id); } catch (e) {}
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
     /* the first room loads; after that the room is swapped in place, so the frame adds no step of its own to Back */
     var url = "/" + r.file; fr.setAttribute("data-file", url);
+    if (AT && AT.id === id) url = AT.url; AT = null;
     if (fr.getAttribute("src") && fr.contentWindow) { try { fr.contentWindow.location.replace(url); } catch (e) { fr.src = url; } }
     else fr.src = url;
     paint();
@@ -228,7 +259,6 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
     D.title = (e ? "El estudio de grabación · " : "The Recording Studio · ") + name + " — Architecture of Grace";
-    own.href = r.href;
     [].forEach.call(D.querySelectorAll(".sh-doors a"), function (a) {
       if (a.getAttribute("data-room") === cur) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
     var ul = D.querySelector(".sh-doors ul"), on = D.querySelector('.sh-doors a[aria-current]');   /* the room you are in, in view */
@@ -406,6 +436,19 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   window.addEventListener("resize", size);
   go(first(), false);
   size(); refresh();
+  /* AOG-STUDIO-APP-V1: Back leaves the Studio; EN | ES works the site's own language switch (in the hidden bar) */
+  window.addEventListener("popstate", function () { if (steps > 0) steps--; });
+  D.getElementById("shBack").addEventListener("click", function () {
+    var same = false; try { same = !!D.referrer && new URL(D.referrer).origin === location.origin && new URL(D.referrer).pathname !== location.pathname; } catch (e) {}
+    if (same && history.length > steps + 1) history.go(-(steps + 1)); else location.href = "/";
+  });
+  function paintLang() { var l = es() ? "es" : "en";
+    [].forEach.call(D.querySelectorAll(".sh-lang button"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false"); }); }
+  [].forEach.call(D.querySelectorAll(".sh-lang button"), function (b) { b.addEventListener("click", function () {
+    var v = b.getAttribute("data-lang"), sw = D.getElementById(v === "es" ? "aogLangEs" : "aogLangEn");
+    if (sw) sw.click(); else { try { localStorage.setItem("aog.lang", v); } catch (e) {} location.reload(); } }); });
+  paintLang();
+  try { new MutationObserver(paintLang).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
   /* the site bar and the fonts arrive a moment later and move the frame down: fit it again whenever the page moves */
   try { new ResizeObserver(function () { size(); }).observe(D.body); } catch (e) { setTimeout(size, 600); setTimeout(size, 2000); }
   window.addEventListener("load", size);
@@ -419,8 +462,15 @@ def build():
     head = head.replace('<meta name="robots" content="noindex">\n', "")
     head = re.sub(r"<!-- AOG-DRUMPIC-V1 .*?-->", "<!-- AOG-STUDIO-PAGE-V1 (2026-10-06) · AOG-STUDIO-SHELL-V1 (2026-10-09) — The Studio. MADE BY _work/music/make_studio_page.py: edit there, then run it. -->", head, count=1, flags=re.S)
     i = head.rfind("</style>"); head = head[:i] + CSS + head[i:]
+    # AOG-STUDIO-APP-V1 (Jimmy, 2026-10-10: "I also want a direct link … I don't like how I have to go through the main
+    # door"): the Studio is its own Home Screen app. Its icon opens /the-studio, full screen, any way up.
+    head = re.sub(r'<meta name="theme-color" content="[^"]*">', '<meta name="theme-color" content="#14110d">', head, count=1)
+    head += ('<link rel="manifest" href="/studio.webmanifest">\n<link rel="apple-touch-icon" href="/studio-touch-icon.png">\n'
+             '<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="mobile-web-app-capable" content="yes">\n'
+             '<meta name="apple-mobile-web-app-title" content="Studio">\n<meta name="apple-mobile-web-app-status-bar-style" content="black">\n')
     out = ['<div class="shell">',
            '<div class="sh-top">',
+           '  <button type="button" class="sh-back" id="shBack"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>%s</button>' % sp(("Back", "Atrás")),
            "  <h1>%s</h1>" % sp(("The Recording Studio", "El estudio de grabación")),
            '  <p class="sh-tag">%s</p>' % sp(("Play · Record · Listen · Mix · Send it out", "Toca · Graba · Escucha · Mezcla · Compártela")),
            '<nav class="sh-doors" aria-label="Rooms"><ul>']
@@ -429,7 +479,7 @@ def build():
                    '<img src="/img/banners/%s-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span>%s</a></li>'
                    % (rid, rid, pic, pic, sp(short)))
     out += ["</ul></nav>",
-            '  <a class="sh-own" id="own" href="/drum-machine" target="_blank"><span class="long">%s</span><span class="short">%s</span></a>' % (sp(("Open this room in its own tab ↗", "Abrir esta sala en su propia pestaña ↗")), sp(("Own tab ↗", "Otra pestaña ↗"))),
+            '  <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>',
             "</div>",
             '<main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>',
             '<section class="mt" id="mt" aria-label="The studio">'

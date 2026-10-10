@@ -64,6 +64,12 @@ buttons, instructions, help text and empty-state messages, in English and Spanis
 - Rewriting never changes a fact, a promise or a privacy claim.
 - Leave curriculum content alone (lessons, novels, worksheets, questions,
   crosswalks, quoted standards): those words are the teaching.
+- Daily Practice (Jimmy, 2026-10-10; it was "Daily Drafts", which said nothing
+  about what is behind the door). Spanish: Práctica diaria. Use the new name in
+  every word people read. Keep the old name where it is data: the Sheet's tab
+  names ("Practice · Daily Drafts · …", AoG-Sheet-Sync-Code.gs), the
+  dashboard's matching on them, and old saved rows. The page is still
+  `daily-drops.html` at /drops.
 
 ## Drop-down menus, not walls of tabs (standing order from Jimmy, 2026-09-26)
 
@@ -91,6 +97,34 @@ call moving forward." On the Educator Dashboard and every page after it:
   chops bank (`padschords`, `padstake`). Never link or send to the classic machine again.
 - Say a thing once. One short line per screen, not the same description in
   three places.
+
+## One home for the music rooms (standing order from Jimmy, 2026-10-10)
+
+"One location for all the instruments … and that is the studio. Two designs and
+layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-studio,
+/music) is the only place the eight rooms are used.
+
+- A room opened on its own address (/piano, `music-piano.html`, an old link or
+  bookmark) opens the Studio in that room. A line at the top of each room's
+  `<head>` (AOG-STUDIO-ONLY-V1) does it and carries the address along (`?at=`),
+  so a lesson, a take or a locker link still lands. A new room gets the same line.
+- Design and fix a room as it looks inside the Studio (`html.in-studio`), not on
+  its own. There is no "own tab" link.
+- The site's checks still open each room on its own; that is expected.
+- The Studio has no site top bar (Jimmy, 2026-10-10). Its own line carries Back
+  and EN | ES; Back leaves the Studio (the page before, or the front page when it
+  was opened from its icon). It is its own Home Screen app: `studio.webmanifest`,
+  `studio-icon-*.png`, start `/the-studio`.
+- `the-studio.html` is built by `_work/music/make_studio_page.py`; the Guitar and
+  Bass by `make_strings.py` (`strings_page.html`), the Band by `make_band.py`
+  (`band_head.html`). Change the source, then build.
+
+## The front page starts on Student (standing order from Jimmy, 2026-10-10)
+
+"Show everything … overwhelms me." `index.html` opens on Student (the Studio,
+the Lab Bench, Quiet Space; no Daily Practice, no Check-in). Teacher leads with the
+Dashboard, The Courses, SEL and Daily Practice. Parent has the most doors. Show
+everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 
 ## The Adult Edition (Book 6)
 

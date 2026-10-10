@@ -47,7 +47,7 @@ PANES = [  # id, English, Spanish, glass
  ("unit", "Units started", "Unidades empezadas", "#1F6B4A"),
  ("right", "Checks right", "Respuestas correctas", "#8A2A3A"),
  ("course", "Courses explored", "Cursos explorados", "#6A4A12"),
- ("streak", "Daily Drafts streak", "Racha de Daily Drafts", "#4A2F7A"),
+ ("streak", "Daily Practice streak", "Racha de Práctica diaria", "#4A2F7A"),
  ("write", "Pieces of writing", "Escritos", "#1F6363"),
 ]
 cells = "".join(
