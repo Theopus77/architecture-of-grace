@@ -4,7 +4,7 @@
     python3 tools/home-drawings.py
 
 Each drawing in home-handoff/drawings/ replaces the banner its front-page door
-used, under the same names (img/banners/<banner>-pencil-{1600.webp,900.webp,900.jpg}),
+used (the check-in slips and Quiet Space get banners of their own, wired by wire()), under the same names (img/banners/<banner>-pencil-{1600.webp,900.webp,900.jpg}),
 so every page that shows that banner gets the new drawing. The drawing's paper is
 matched to the site's paper (#F6F2E8), it fills the banner's height, sits 64%
 across like the music rooms, and its edges fade into the paper.
@@ -36,7 +36,48 @@ MAP = {
     "professional-development": "page-door-pd",
     "privacy-locked-book": "page-door-privacy",
     "contact-ink-bottle": "page-door-contact",
+    # These had borrowed other pages' banners, so they get banners of their own.
+    "weekly-checkin": "slip-weekly",
+    "end-of-class": "slip-endclass",
+    "before-a-test": "slip-test",
+    "after-a-test": "slip-posttest",
+    "goal-check": "slip-goal",
+    "group-work": "slip-team",
+    "end-of-unit": "slip-unit",
+    "after-hard-moment": "slip-repair",
+    "school-checklist": "slip-school",
+    "grace-point-sheet": "slip-points",
+    "evening-checkin-home": "slip-home",
+    "morning-note-home": "slip-morning",
+    "homework-note": "slip-homework",
+    "home-checklist": "slip-homecheck",
+    "bedtime-checklist": "slip-bedtime",
+    "quiet-space": "quiet-space",
 }
+
+# Where the front page shows those own banners: each check-in slip's card (by its
+# link) and the Quiet Space door. The grace point sheet serves school and home.
+SLIPS = {s: "slip-" + s for s in ("weekly endclass test posttest goal team unit repair "
+                                    "school points home morning homework homecheck bedtime").split()}
+SLIPS["homepoints"] = "slip-points"
+
+
+def wire():
+    import re
+    idx = os.path.join(HERE, "..", "aog-deploy", "index.html")
+    s = open(idx, encoding="utf-8").read()
+    for slip, name in SLIPS.items():
+        pat = r'(<li><a href="/slip\.html\?s=%s"><span class="aogdn-cpic"[^>]*><picture>.*?</picture>)' % slip
+        # Every card for this slip (the page lists them in more than one place).
+        s, n = re.subn(pat, lambda m: re.sub(r"/img/banners/[a-z0-9-]+-pencil-900\.",
+                                              "/img/banners/%s-pencil-900." % name, m.group(1)), s)
+        if not n:
+            print("  no card for slip", slip)
+    s, n = re.subn(r'(data-door="quiet"[^>]*><span class="aogdn-pic"[^>]*><img src=")/img/banners/[a-z0-9-]+-pencil-900\.',
+                   r"\g<1>/img/banners/quiet-space-pencil-900.", s, count=1)
+    if not n:
+        print("  no Quiet Space door")
+    open(idx, "w", encoding="utf-8").write(s)
 
 
 def ramp(n, edge):
@@ -71,3 +112,4 @@ for src, name in MAP.items():
     small.save(base + "900.webp", quality=84, method=6)
     small.save(base + "900.jpg", quality=88, optimize=True, progressive=True)
     print(src, "->", name)
+wire()
