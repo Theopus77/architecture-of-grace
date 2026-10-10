@@ -1,7 +1,7 @@
 /* AOG-CHORD-KEYS-10-V1 — Jimmy: "I have only use 6 keys for the chords. There are 10, 1 through 0 should be used and the other
    keys if needed." On the guitar and the bass, 1 to 0 play the ten chord buttons in order; − and = would play an eleventh and
    a twelfth (there are ten, so they do nothing); each button shows its key once a key is pressed; the picture of the keys
-   says so, English and Spanish; the same inside the Recording Studio. Solo: the letters start like the piano, with "Only the scale" as a choice (AOG-SOLO-KEYS-CHOICE-V1). The desk's Your songs
+   says so, English and Spanish; the same inside the Recording Studio. Tab picks the string the letters play on (AOG-STRING-TAB-V1). Solo: the letters start like the piano, with "Only the scale" as a choice (AOG-SOLO-KEYS-CHOICE-V1). The desk's Your songs
    button (AOG-DESK-SONGS-BTN-V1). No page errors. Port 9262. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const path = require("path");
@@ -32,6 +32,26 @@ const spy = f => f.evaluate(() => { window.__pd = []; if (!window.padDown.__spy)
     ok(await p.evaluate(() => document.querySelector("#keyMap .km-row .km-say").textContent) === "los acordes", inst + ": in Spanish too");
     await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); });
   }
+  /* AOG-STRING-TAB-V1: Tab picks the string the letters play on; it glows; past the last string the letters choose again */
+  for (const inst of ["guitar", "bass"]) {
+    await p.goto(U + "music-" + inst + ".html"); await p.waitForTimeout(1500); await p.mouse.click(5, 300);
+    const cellOf = async code => { await p.keyboard.down(code); await p.waitForTimeout(80); const r = await p.evaluate(() => [...KEYCELLS.values()][0] || ""); await p.keyboard.up(code); await p.waitForTimeout(60); return r; };
+    const auto = await cellOf("KeyA");
+    await p.keyboard.press("Tab");
+    const one = await p.evaluate(() => ({ pick: STRPICK.s, glow: [...document.querySelectorAll("#neck .nk-str.pick")].map(l => l.getAttribute("data-s")).join(), say: document.getElementById("strPickSay").textContent, focus: document.activeElement === document.body }));
+    const onFirst = await cellOf("KeyA");
+    await p.keyboard.press("Tab"); const onSecond = await cellOf("KeyA");
+    const n = await p.evaluate(() => TUNING.length);
+    for (let i = 2; i < n; i++) await p.keyboard.press("Tab");
+    await p.keyboard.press("Tab"); const back = await p.evaluate(() => STRPICK.s);
+    await p.keyboard.down("Shift"); await p.keyboard.press("Tab"); await p.keyboard.up("Shift"); const last = await p.evaluate(() => STRPICK.s);
+    ok(one.pick === 0 && one.glow === "0" && one.focus && /^The letters play on the (low )?E string\./.test(one.say) && /^0:/.test(onFirst) && /^1:/.test(onSecond) && back === -1 && last === n - 1,
+      `${inst}: Tab picks the strings low to high (${one.say}), A plays on the picked one (${onFirst}, then ${onSecond}; by itself ${auto}); past the last it goes back to the nearest; Shift+Tab steps back`);
+    await p.keyboard.press("Tab");
+    await p.focus('#chordStrip .cs'); await p.keyboard.press("Tab");
+    ok(await p.evaluate(() => STRPICK.s === -1 && document.activeElement && document.activeElement !== document.body), inst + ": on a button, Tab still moves to the next button");
+  }
+
   /* AOG-SOLO-KEYS-CHOICE-V1: in Solo the letters play every note as on the piano, unless "Only the scale" is chosen */
   await p.goto(U + "music-guitar.html"); await p.evaluate(() => { try { localStorage.removeItem("aog.guitar.solo.v1"); } catch (e) {} }); await p.reload(); await p.waitForTimeout(1500);
   await p.click('[data-so-mode="solo"]'); await p.waitForTimeout(600); await p.mouse.click(5, 300);
@@ -59,6 +79,10 @@ const spy = f => f.evaluate(() => { window.__pd = []; if (!window.padDown.__spy)
   await spy(f); await p.mouse.click(5, 120);
   for (const k of ["Digit7", "Digit0"]) { await p.keyboard.press(k); await p.waitForTimeout(80); }
   ok(await f.evaluate(() => window.__pd.join(",")) === "6,9", "in the Studio, 7 and 0 play the seventh and the tenth chord");
+  await p.evaluate(() => document.activeElement && document.activeElement.blur()); await p.keyboard.press("Tab");
+  ok(await f.evaluate(() => STRPICK.s) === 0, "in the Studio, Tab picks a string too");
+  await p.focus("#tpListen"); await p.keyboard.press("Tab");
+  ok(await f.evaluate(() => STRPICK.s) === 0 && await p.evaluate(() => document.activeElement && document.activeElement.id !== "tpListen"), "on the Studio's own buttons, Tab moves to the next one");
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });

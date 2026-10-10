@@ -20,7 +20,10 @@ const ROOMS = ["family/hard-day","family/what-can-i-say","family/conversation","
 /* The music tools also show other places behind #addresses (their Go to menu): Lessons, Meet, Name it, Print.
    Each is checked on its own too (AOG-PIANO-LESSONS-V1, 2026-10-03). */
 const VIEWS = ["music-drums.html#lessons","music-drums.html#meet","music-drums.html#words","music-drums.html#print",
-  "music-piano.html#lessons","music-piano.html#meet","music-piano.html#words","music-piano.html#print"];
+  "music-piano.html#lessons","music-piano.html#meet","music-piano.html#words","music-piano.html#print",
+  /* the Adult Edition workbook's pages behind its Session menu (AOG-ADULT-WORKBOOK-V1, 2026-10-09); ?s=7 is the
+     facilitator's-word card that stands in front of Sessions 7-12 */
+  "adult-workbook.html?s=2","adult-workbook.html?s=3","adult-workbook.html?s=4","adult-workbook.html?s=5","adult-workbook.html?s=6","adult-workbook.html?s=7"];
 const pages = args.length ? args : fs.readdirSync(ROOT).filter(f => f.endsWith(".html")).concat(ROOMS.map(r => "index.html#" + r)).concat(VIEWS);
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".json": "application/json", ".jpg": "image/jpeg", ".webp": "image/webp" };

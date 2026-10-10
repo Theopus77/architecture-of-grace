@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition · Anchor cards — Architecture of Grace</title>
+<meta name="description" content="The twelve anchor ideas of the Adult Edition, one card per session. Tap to turn a card over; print them for the wall.">
+<link rel="canonical" href="https://architectureofgrace.org/adult/anchors">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-ADULT-ANCHORS-V1 (2026-10-09) · /adult/anchors. Built by adult-build/build_anchors.py
+     from the manual's anchor boxes, verbatim — never hand-edit the cards. A card turns with
+     no motion: the back simply appears (Jimmy's no-motion rule). Print gives every card,
+     front and back together, one box never split. ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+.bar2{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px; align-items:start}
+@media (max-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+@media (max-width:560px){ .grid{grid-template-columns:1fr} }
+.acard{background:var(--field); border:1px solid var(--rule); border-top:7px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.acard.p1{border-top-color:var(--p1)} .acard.p2{border-top-color:var(--p2)} .acard.p3{border-top-color:var(--p3)} .acard.p4{border-top-color:var(--p4)}
+.turn{display:flex; flex-direction:column; align-items:flex-start; gap:6px; width:100%; min-height:150px; padding:16px 18px; border:0; background:transparent; color:var(--ink); text-align:left; cursor:pointer; touch-action:manipulation}
+.turn .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800}
+.turn .t{font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:1.45rem; line-height:1.2}
+.turn .hint{margin-top:auto; font-size:.85rem; color:var(--ink-soft); font-weight:700}
+.acard.on .turn{min-height:0; padding-bottom:4px}
+.back{padding:2px 18px 16px; font-family:"Fraunces",Georgia,serif; font-size:1.06rem; line-height:1.55}
+.back p{margin:.45em 0}
+@media print{
+  .grid{display:block}
+  .acard{break-inside:avoid; page-break-inside:avoid; margin:0 0 14px; box-shadow:none}
+  .back[hidden]{display:block !important}
+  .turn{min-height:0}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+<header class="mast">
+  <div class="k">The Adult Edition · for the wall</div>
+  <h1>The twelve anchor cards</h1>
+  <p class="deck">One big idea for each session. It goes up on the wall that week and stays there, so all twelve are up by the last session.</p>
+  <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
+</header>
+<main id="main">
+<div class="bar2 no-print">
+  <button type="button" class="btn" id="allBtn">Turn them all over</button>
+  <button type="button" class="btn" id="printBtn">Print the cards</button>
+</div>
+<div class="grid" id="grid">
+<article class="acard p1" data-n="1"><button type="button" class="turn" aria-expanded="false" aria-controls="ab1"><span class="k p1c">Session 1 · Foundation</span><span class="t">The Compact</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab1" hidden><p>The Compact is the agreement we make about how this room will work. It is not a list of rules. It is the relational contract that makes the rest of the work possible. Five clauses. Co-authored. Posted in the room for all twelve sessions.</p><p>1.  What is said here, stays here. The exceptions are the legal exceptions — imminent harm, abuse, court order — named at the start.</p><p>2.  You may pass at any time, at any prompt, without explanation.</p><p>3.  We do not give advice unless asked. We listen.</p><p>4.  We do not narrate other people&#x27;s stories. We speak only to our own.</p><p>5.  The work is between you and the page. The room witnesses; it does not extract.</p></div></article>
+<article class="acard p1" data-n="2"><button type="button" class="turn" aria-expanded="false" aria-controls="ab2"><span class="k p1c">Session 2 · Foundation</span><span class="t">Identity Is Not Behavior</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab2" hidden><p>The mistake is something I did. It is not who I am. What I did matters. The harm was real. The accountability is real. And — none of it exhausts who I am or determines what I am capable of. When identity collapses into behavior, two things go wrong at once: I cannot be honest about what I did (because honesty would mean I am a permanent monster), and I cannot change (because what is essential cannot be revised). The distinction is not a trick. It is the bedrock. Every other piece of work in this program rests on it.</p></div></article>
+<article class="acard p1" data-n="3"><button type="button" class="turn" aria-expanded="false" aria-controls="ab3"><span class="k p1c">Session 3 · Foundation</span><span class="t">The Two Voices</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab3" hidden><p>The voice that says &quot;You&#x27;ll never get this right.&quot; is not the only voice. The voice that says &quot;That was the wrong choice and I can do better starting now.&quot; is also a voice. Both voices speak. Always. We do not get to silence either one. We do get to choose which one we listen to. Naming the voices makes them visible. Visible self-talk is workable self-talk.</p></div></article>
+<article class="acard p2" data-n="4"><button type="button" class="turn" aria-expanded="false" aria-controls="ab4"><span class="k p2c">Session 4 · Interior</span><span class="t">Feelings as Messengers</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab4" hidden><p>Every feeling carries information. Naming a feeling makes it workable. No feeling is bad — although what we do with a feeling can be helpful or unhelpful. Anger is a messenger. Shame is a messenger. Grief is a messenger. Joy is a messenger. Even numbness is a messenger — it tells you something is being kept at a distance. The work is not to eliminate the feeling. It is to read what it is telling you, and then to choose what to do with the information.</p></div></article>
+<article class="acard p2" data-n="5"><button type="button" class="turn" aria-expanded="false" aria-controls="ab5"><span class="k p2c">Session 5 · Interior</span><span class="t">The Backpack</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab5" hidden><p>Everyone is carrying a backpack. The backpack contains everything you are carrying that is yours to carry — and some things that are not yours to carry but that you have been carrying anyway. Some of what is in the backpack is grief. Some is resentment. Some is shame. Some is unfinished apology. Some is unfinished mourning. Some is responsibility for things you did. Some is responsibility you have taken for things you did not do. We cannot decide what to do with what we are carrying until we have seen what is in there. Today, we open the backpack.</p></div></article>
+<article class="acard p2" data-n="6"><button type="button" class="turn" aria-expanded="false" aria-controls="ab6"><span class="k p2c">Session 6 · Interior</span><span class="t">The Compassionate Witness</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab6" hidden><p>Honest.  Fair.  Kind.  Without punishment. Not a cheerleader. The Witness does not say &quot;You are wonderful, you did nothing wrong.&quot; The Witness says, accurately, what was true — and says it without contempt for the person it is naming. The Witness is the voice that knows the difference between what you did and who you are. The Witness is built. Most adults do not arrive with one already developed. Building it is much of the work of this program.</p></div></article>
+<article class="acard p3" data-n="7"><button type="button" class="turn" aria-expanded="false" aria-controls="ab7"><span class="k p3c">Session 7 · Repair</span><span class="t">Grief vs. Resentment</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab7" hidden><p>Grief says: &quot;I wish things had been different.&quot; It is a response to loss. Resentment says: &quot;I blame.&quot; It is a response to perceived culpability — someone (sometimes me) is responsible, and the responsibility has not been resolved. Both can be appropriate. Both can be painful. They require different tools. Grief is moved through with mourning, time, witness, and ritual. Resentment is moved through with the work of forgiveness — which is different from reconciliation, and different from forgetting. When we apply the wrong tool — when we try to mourn what is actually resentment, or try to forgive what is actually grief — the work does not move. The weight does not lift. The distinction matters operationally, every day.</p></div></article>
+<article class="acard p3" data-n="8"><button type="button" class="turn" aria-expanded="false" aria-controls="ab8"><span class="k p3c">Session 8 · Repair</span><span class="t">Forgiving the Younger Self</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab8" hidden><p>The younger self is the version of you who did the thing — or to whom the thing was done — that you have not been able to forgive. The younger self knew what they knew at the time. They did not know what you know now. They did not have what you have now. Self-forgiveness is not the same as self-excuse. It does not mean what was done was acceptable. It means: the verdict you have been holding against the version of you who did it, or to whom it was done, is one you are choosing to release — without minimizing what happened, without denying what was real. The Compassionate Witness — honest, fair, kind, without punishment — is the voice you bring to this work. Self-forgiveness is the Witness applied inward, across time, to the self who needs what only you can give.</p></div></article>
+<article class="acard p3" data-n="9"><button type="button" class="turn" aria-expanded="false" aria-controls="ab9"><span class="k p3c">Session 9 · Repair</span><span class="t">Inherited Shame</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab9" hidden><p>Some of what is in your backpack is not yours. It was placed in you — by a family, by a community, by a culture — before you were old enough to refuse it. Inherited shame is shame about who you are, what your people are, what your body is, what your history is — that you did not author and could not have authored. It feels indistinguishable, from the inside, from shame you authored. The Compassionate Witness can tell the difference. The Witness asks: did I put this in me, or did someone else? Returning the weight to its origin does not mean blaming the people who carried it before you. It means accurately naming where it began — so that you can stop carrying it as if it were yours.</p></div></article>
+<article class="acard p3" data-n="10"><button type="button" class="turn" aria-expanded="false" aria-controls="ab10"><span class="k p3c">Session 10 · Repair</span><span class="t">The Living Amend</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab10" hidden><p>An apology is a statement about the past. A living amend is a sustained behavioral commitment that addresses the pattern. The apology says: I am sorry for what I did. The living amend says: I am changing the pattern that produced what I did, and I am sustaining the change. Some harms are addressed by an apology. Patterns of harm are not. Patterns require living amends. The most important living amend, for many people, is the one owed to the self. The sustained behavioral change you owe to the version of you who has been kept in the same condition by your own pattern.</p></div></article>
+<article class="acard p4" data-n="11"><button type="button" class="turn" aria-expanded="false" aria-controls="ab11"><span class="k p4c">Session 11 · Legacy</span><span class="t">Forgiveness Is Not Reconciliation</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab11" hidden><p>Forgiveness is internal. It is the release of the verdict you have been holding against another person — or against yourself. Reconciliation is interpersonal. It is the restoration of a relationship. It requires conditions forgiveness does not — including the consent and capacity of the other person, and the safety of both parties. Forgiveness can happen without reconciliation. Reconciliation, to be real, requires more than forgiveness. Conflating the two has cost many people their safety, their integrity, or their forgiveness itself. The distinction is the difference between an inward gift you can give yourself and an outward arrangement that is not yours alone to make.</p></div></article>
+<article class="acard p4" data-n="12"><button type="button" class="turn" aria-expanded="false" aria-controls="ab12"><span class="k p4c">Session 12 · Legacy</span><span class="t">The Audit</span><span class="hint no-print">Tap to turn over</span></button><div class="back" id="ab12" hidden><p>The Audit is the explicit, structured decision about what stays in the backpack going forward. Three categories: WHAT YOU PUT DOWN — items you are choosing not to carry the way you have been carrying them. WHAT YOU CARRY DIFFERENTLY — items you will continue to carry but in a changed form, with the Witness&#x27;s voice, in the company of the work you have done. WHAT YOU CHOOSE TO CARRY — items that are appropriately yours and that you carry consciously, going forward, with the tools you have built. The Audit does not solve anything. It names what you have decided. The decision is the work. The Audit is followed by the reopening of the Arrival Letter — the version of you on Day One, met by the version of you twelve weeks later.</p></div></article>
+
+</div>
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">Free, private, any time.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+</main>
+<footer class="foot"><p>Architecture of Grace · The Adult Edition · anchor cards. Nothing on this page is saved or sent.</p></footer>
+</div>
+<script>
+(function(){
+"use strict";
+var D=document;
+function set(card,on){ card.classList.toggle("on",on); card.querySelector(".back").hidden=!on; var b=card.querySelector(".turn"); b.setAttribute("aria-expanded",on?"true":"false"); var h=b.querySelector(".hint"); if(h) h.textContent=on?"Tap to turn back":"Tap to turn over"; }
+D.getElementById("grid").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest(".turn"); if(!b) return; var c=b.closest(".acard"); set(c,!c.classList.contains("on")); });
+var all=false;
+D.getElementById("allBtn").addEventListener("click",function(){ all=!all; Array.prototype.forEach.call(D.querySelectorAll(".acard"),function(c){ set(c,all); }); this.textContent=all?"Turn them all back":"Turn them all over"; });
+D.getElementById("printBtn").addEventListener("click",function(){ window.print(); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+@@FIRSTPAINT@@
+<script id="aog-sketch-js" src="/aog-sketch.js" data-inline="body" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Adult Edition · Anchor cards — Architecture of Grace</title>
+<meta name="description" content="The twelve anchor ideas of the Adult Edition, one card per session. Tap to turn a card over; print them for the wall.">
+<link rel="canonical" href="https://architectureofgrace.org/adult/anchors">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-ADULT-ANCHORS-V1 (2026-10-09) · /adult/anchors. Built by adult-build/build_anchors.py
+     from the manual's anchor boxes, verbatim — never hand-edit the cards. A card turns with
+     no motion: the back simply appears (Jimmy's no-motion rule). Print gives every card,
+     front and back together, one box never split. ═══ -->
+<link rel="stylesheet" href="/aog-adult.css">
+<style>
+.bar2{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px; align-items:start}
+@media (max-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+@media (max-width:560px){ .grid{grid-template-columns:1fr} }
+.acard{background:var(--field); border:1px solid var(--rule); border-top:7px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.acard.p1{border-top-color:var(--p1)} .acard.p2{border-top-color:var(--p2)} .acard.p3{border-top-color:var(--p3)} .acard.p4{border-top-color:var(--p4)}
+.turn{display:flex; flex-direction:column; align-items:flex-start; gap:6px; width:100%; min-height:150px; padding:16px 18px; border:0; background:transparent; color:var(--ink); text-align:left; cursor:pointer; touch-action:manipulation}
+.turn .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800}
+.turn .t{font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:1.45rem; line-height:1.2}
+.turn .hint{margin-top:auto; font-size:.85rem; color:var(--ink-soft); font-weight:700}
+.acard.on .turn{min-height:0; padding-bottom:4px}
+.back{padding:2px 18px 16px; font-family:"Fraunces",Georgia,serif; font-size:1.06rem; line-height:1.55}
+.back p{margin:.45em 0}
+@media print{
+  .grid{display:block}
+  .acard{break-inside:avoid; page-break-inside:avoid; margin:0 0 14px; box-shadow:none}
+  .back[hidden]{display:block !important}
+  .turn{min-height:0}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+<header class="mast">
+  <div class="k">The Adult Edition · for the wall</div>
+  <h1>The twelve anchor cards</h1>
+  <p class="deck">One big idea for each session. It goes up on the wall that week and stays there, so all twelve are up by the last session.</p>
+  <p class="hubline no-print"><a href="/adult">← The Adult Edition</a></p>
+</header>
+<main id="main">
+<div class="bar2 no-print">
+  <button type="button" class="btn" id="allBtn">Turn them all over</button>
+  <button type="button" class="btn" id="printBtn">Print the cards</button>
+</div>
+<div class="grid" id="grid">
+@@CARDS@@
+</div>
+<div class="crisis" id="crisis">
+  <h3>Crisis &amp; safety resources</h3>
+  <p class="small">Free, private, any time.</p>
+  <ul>
+    <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b>. 24/7, free, confidential.</li>
+    <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b>.</li>
+    <li><b>SAMHSA National Helpline</b> — <b>1-800-662-4357</b>. Free, confidential treatment referral and information, 24/7.</li>
+    <li><b>Veterans Crisis Line</b> — dial <b>988</b>, then press <b>1</b> (or text <b>838255</b>).</li>
+    <li><b>Immediate danger</b> — call <b>911</b> or your local emergency number.</li>
+  </ul>
+</div>
+</main>
+<footer class="foot"><p>Architecture of Grace · The Adult Edition · anchor cards. Nothing on this page is saved or sent.</p></footer>
+</div>
+<script>
+(function(){
+"use strict";
+var D=document;
+function set(card,on){ card.classList.toggle("on",on); card.querySelector(".back").hidden=!on; var b=card.querySelector(".turn"); b.setAttribute("aria-expanded",on?"true":"false"); var h=b.querySelector(".hint"); if(h) h.textContent=on?"Tap to turn back":"Tap to turn over"; }
+D.getElementById("grid").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest(".turn"); if(!b) return; var c=b.closest(".acard"); set(c,!c.classList.contains("on")); });
+var all=false;
+D.getElementById("allBtn").addEventListener("click",function(){ all=!all; Array.prototype.forEach.call(D.querySelectorAll(".acard"),function(c){ set(c,all); }); this.textContent=all?"Turn them all back":"Turn them all over"; });
+D.getElementById("printBtn").addEventListener("click",function(){ window.print(); });
+})();
+</script>
+</body>
+</html>

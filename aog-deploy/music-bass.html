@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}.tpads{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.5rem .6rem}.tpads .plab{margin:0;flex:0 0 auto}   /* AOG-ONE-DRUMSEND-V1 */
+</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
@@ -274,6 +275,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
 .neck .nk-nut{fill:url(#aogBone)}
 .neck .nk-str{stroke:url(#aogWound);filter:drop-shadow(0 1.6px .8px rgba(0,0,0,.7))}   /* the coil is a pattern on a solid string, so the whole string takes a tap */
 .neck .nk-str.plain{stroke:#eef0f2}
+.neck .nk-str.pick{stroke:#ffd36b;stroke-dasharray:none;filter:drop-shadow(0 0 3px rgba(255,211,107,.9))}
+.neck .nk-name.pick{fill:#ffd36b}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
@@ -414,7 +417,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
-        <div class="keys-line keymap" id="keyMap"></div><!-- AOG-STRINGS-KEYS-V2: a small picture of the keys -->
+        <div class="keys-line keymap" id="keyMap"></div>
+        <p class="line keys-line" id="strPickSay" aria-live="polite"></p><!-- AOG-STRING-TAB-V1 --><!-- AOG-STRINGS-KEYS-V2: a small picture of the keys -->
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
       </div>
@@ -442,8 +446,10 @@ body.pv-left .pv-drawer{left:auto;right:0}
         </div>
         <div class="row" style="margin-top:.8rem">
           <button type="button" class="pbtn send" id="sendBtn"></button>
+          <!-- AOG-ONE-DRUMSEND-V1 (Jimmy, 2026-10-09: "What is up with the double drum machines again?"): one Drum Machine, one label, two things to send -->
+          <span class="tpads" role="group" aria-labelledby="toPadsLab"><span class="plab" id="toPadsLab"></span>
           <button type="button" class="pbtn send" id="sendPadsBtn"></button>
-          <button type="button" class="pbtn send" id="padsBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button></span>
         </div>
         <p class="line" id="sendLine" aria-live="polite"></p>
         <p class="line" id="padsLine" aria-live="polite"></p>
@@ -494,6 +500,7 @@ const INST="bass", GTR=INST==="guitar";
 const LKEY="aog."+INST+".v1";
 /* the strings, low to high, as note numbers: a guitar E A D G B E, a bass E A D G */
 const TUNING=GTR?[40,45,50,55,59,64]:[28,33,38,43];
+const STRPICK={s:-1};   /* AOG-STRING-TAB-V1: the string the letters play on (-1: the nearest) */
 const MAXF=15;                                   /* the highest fret on the neck */
 /* AOG-STRINGS-WAYS-V1: the ways to play, in the menu's order (RHYTHM_GROUPS); the first stays first, the ids never change */
 const RHYTHMS=GTR?["hold","down","folk","pop","waltz","pick","travis","ballad","country","rock","punk","chug","gallop","thrash","breakdown","tremolo","reggae","funk","bossa","rumba","shuffle"]
@@ -623,6 +630,10 @@ const STR={
   kmNotes:{en:"the notes, like the piano's white keys: C D E F G A B C D E F",es:"las notas, como las teclas blancas del piano: Do Re Mi Fa Sol La Si Do Re Mi Fa"},
   kmSharps:{en:"the notes in between (♯), like the black keys",es:"las notas de en medio (♯), como las teclas negras"},
   kmMove:{en:"move along the neck",es:"moverse por el mástil"},
+  kmTab:{en:"pick a string for the letters (now: the nearest one)",es:"elegir una cuerda para las letras (ahora: la más cercana)"},
+  kmTabOn:{en:"pick a string for the letters (now: {s})",es:"elegir una cuerda para las letras (ahora: {s})"},
+  strAuto:{en:"The letters play on the nearest string.",es:"Las letras tocan en la cuerda más cercana."},
+  strOn:{en:"The letters play on {s}. Tab for the next one.",es:"Las letras tocan en {s}. Tab para la siguiente."},
   kmSpaceKey:{en:"Space",es:"Espacio"}, kmSpace:{en:"start and stop",es:"empezar y parar"},
   keysLine: GTR?{en:"On a computer, 1 to 0 strum the ten chords, the letters play notes as on the piano, and Z X C V B N pluck the six strings. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 rasguean los diez acordes, las letras tocan notas como en el piano, y Z X C V B N puntean las seis cuerdas. ← y → se mueven por el mástil. La barra espaciadora empieza y para."}
                :{en:"On a computer, 1 to 0 play the ten chords, and the letters play notes as on the piano. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 tocan los diez acordes, y las letras tocan notas como en el piano. ← y → se mueven por el mástil. La barra espaciadora empieza y para."},
@@ -635,8 +646,8 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  sendPadsBtn:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
-  padsBtn: GTR?{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"}:{en:"Put these low notes on the Drum Machine pads",es:"Poner estas notas graves en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  toPadsLab:{en:"Send to the Drum Machine:",es:"Enviar a la caja de ritmos:"}, sendPadsBtn:{en:"My take",es:"Mi toma"}, sendPadsAria:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn: GTR?{en:"These chords",es:"Estos acordes"}:{en:"These low notes",es:"Estas notas graves"}, padsAria: GTR?{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"}:{en:"Put these low notes on the Drum Machine pads",es:"Poner estas notas graves en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
   padsSent: GTR?{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}:{en:"Sent. The low notes are waiting on the Drum Machine.",es:"Enviado. Las notas graves te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
@@ -2514,6 +2525,7 @@ function paintKeyMap(){
   rows.push([caps(["A","S","D","F","G","H","J","K","L",";","'"]), t("kmNotes")]);
   rows.push([caps(["W","E","T","Y","U","O","P"]), t("kmSharps")]);
   if(GTR) rows.push([caps(["Z","X","C","V","B","N"]), t("kmStrings")]);
+  rows.push([`<kbd class="km-space">Tab</kbd>`, STRPICK.s<0 ? t("kmTab") : t("kmTabOn",{s:strName(STRPICK.s)})]);
   rows.push([caps(["←"])+caps(["→"]), t("kmMove")]);
   rows.push([`<kbd class="km-space">${t("kmSpaceKey")}</kbd>`, t("kmSpace")]);
   const q=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -2530,7 +2542,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW"); $("majBtn2").textContent=t("major"); $("minBtn2").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
-  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint(); paintAmp(); if(LIVEIN) LIVEIN.paint();
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint(); paintAmp(); if(LIVEIN) LIVEIN.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
@@ -2703,7 +2715,7 @@ function buildNeck(){
   s+= S.fret0===1 ? `<rect class="nk-nut" x="${bx-3}" y="${by-2}" width="7" height="${bh+4}" rx="2"/>` : `<line class="nk-fret" x1="${bx}" y1="${by}" x2="${bx}" y2="${by+bh}"/>`;
   if(GTR){ const sx=bx+bw+6; s+=`<rect class="nk-strum" x="${f(sx)}" y="${by}" width="${f(w-sx-1)}" height="${bh}" rx="10"/>`; }
   for(let r=0;r<rows;r++){ const st=r, wd=GTR?[2.8,2.3,1.9,1.4,1.1,0.9][st]:[3.6,3.1,2.6,2.1][st];
-    s+=`<line class="nk-str${GTR&&st>=3?" plain":""}" x1="${nut-10}" y1="${f(Y(r))}" x2="${w}" y2="${f(Y(r))}" style="stroke-width:${wd}px"/>`; }
+    s+=`<line class="nk-str${GTR&&st>=3?" plain":""}${STRPICK.s===st?" pick":""}" data-s="${st}" x1="${nut-10}" y1="${f(Y(r))}" x2="${w}" y2="${f(Y(r))}" style="stroke-width:${wd}px"/>`; }
   const R=Math.min(cw,rowH)*0.36;
   for(let r=0;r<rows;r++){ const st=r;
     s+=`<text class="nk-name" data-s="${st}" x="${f(ox)}" y="${f(Y(r))}" style="font-size:15px">${pcName(TUNING[st])}</text>`;
@@ -2919,7 +2931,7 @@ function buildPlayNeck(){
   o+= a===1 ? `<rect class="nk-nut" ${rx(nut-3,nut+4)} y="${by-2}" height="${f(bh+4)}" rx="2"/>` : `<line class="nk-fret" x1="${f(X(nut))}" y1="${by}" x2="${f(X(nut))}" y2="${f(by+bh)}"/>`;
   o+=`<rect class="nk-strum" ${rx(sx,W-1)} y="${by}" height="${f(bh)}" rx="10"/>`;
   for(let s=0;s<rows;s++){ const wd=GTR?[2.8,2.3,1.9,1.4,1.1,0.9][s]:[3.6,3.1,2.6,2.1][s];
-    o+=`<line class="nk-str${GTR&&s>=3?" plain":""}" x1="${f(X(nut-10))}" y1="${f(Y(s))}" x2="${f(X(W))}" y2="${f(Y(s))}" style="stroke-width:${wd}px"/>`; }
+    o+=`<line class="nk-str${GTR&&s>=3?" plain":""}${STRPICK.s===s?" pick":""}" data-s="${s}" x1="${f(X(nut-10))}" y1="${f(Y(s))}" x2="${f(X(W))}" y2="${f(Y(s))}" style="stroke-width:${wd}px"/>`; }
   const R=Math.max(10, Math.min(NECK.cw, rowH)*0.36);
   for(let s=0;s<rows;s++){
     o+=`<text class="nk-name" data-s="${s}" x="${f(X(ox))}" y="${f(Y(s))}" style="font-size:15px">${pcName(TUNING[s])}</text>`;
@@ -3145,6 +3157,32 @@ function pvInit(){
    own keys (aog-solo.js). */
 const NOTE_KEYS={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
 const NOTE_BASE=GTR?48:36;
+/* AOG-STRING-TAB-V1 (Jimmy, 2026-10-09: "How do I go about switching strings when using the keys?" … "Tab!"): Tab picks the
+   string the letters play on, low to high; Tab after the last string goes back to the nearest one (the letters choose for
+   themselves); Shift+Tab steps back. The picked string glows gold on the neck and its name lights. On it, a note sounds at
+   its own fret, an octave up or down if it is off the neck. Tab only does this while the page has the keys (nothing else
+   is in focus), so Tab still moves through the buttons for anyone who uses it that way. */
+function strName(s){
+  const nm=pcName(TUNING[s]), es=S.lang==="es";
+  if(GTR && (s===0 || s===TUNING.length-1)) return es ? `la cuerda ${nm} ${s===0?"grave":"aguda"}` : `the ${s===0?"low":"high"} ${nm} string`;
+  return es ? `la cuerda ${nm}` : `the ${nm} string`;
+}
+function noteCell(m){
+  if(STRPICK.s<0) return cellFor(m);
+  const o=TUNING[STRPICK.s];
+  for(const x of [m, m+12, m-12, m+24, m-24]){ const f=x-o; if(f>=0 && f<=MAXF) return {s:STRPICK.s, f:f}; }
+  return null;
+}
+window.noteCell=noteCell;
+function pickString(step){
+  const n=TUNING.length; let v=STRPICK.s+step;
+  if(v>=n) v=-1; else if(v<-1) v=n-1;
+  STRPICK.s=v;
+  document.querySelectorAll(".neck .nk-str").forEach(l=>l.classList.toggle("pick", +l.getAttribute("data-s")===v));
+  document.querySelectorAll(".neck .nk-name").forEach(l=>l.classList.toggle("pick", +l.getAttribute("data-s")===v));
+  const say=$("strPickSay"); if(say) say.textContent=v<0 ? t("strAuto") : t("strOn",{s:strName(v)});
+  paintKeyMap();
+}
 const STRING_KEYS=Object.keys(NOTE_KEYS);
 const PICK_KEYS=GTR?["KeyZ","KeyX","KeyC","KeyV","KeyB","KeyN"]:[];
 function keysShown(){ try{ return document.documentElement.classList.contains("aog-keys") || matchMedia("(hover:hover) and (pointer:fine)").matches; }catch(e){ return false; } }
@@ -3172,12 +3210,14 @@ function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; ret
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   if(e.target && e.target.tagName==="SELECT") return;
+  if(e.code==="Tab"){ const a=document.activeElement; if(!a || a===document.body || a===document.documentElement || (a.closest && a.closest("#neckBox,#playView svg"))){
+      e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")) document.documentElement.classList.add("aog-keys"); pickString(e.shiftKey?-1:1); return; } }   /* AOG-STRING-TAB-V1 */
   if(window.AOGSolo && AOGSolo.key(e, true)) return;   /* AOG-SOLO-V1: the Solo mode keys */
   const si=STRING_KEYS.indexOf(e.code), pk=PICK_KEYS.indexOf(e.code);
   if(si>=0 || pk>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); }
     if(e.repeat||KEYCELLS.has(e.code)) return;
     if(pk>=0){ const c=shapeChord(), f=c?shapeFor(c)[pk]:0; pluckShape(pk, 0.72); if(f>=0){ KEYCELLS.set(e.code, pk+":"+f); lessonNote(pk, f); } }
-    else { const cl=cellFor(NOTE_BASE+NOTE_KEYS[e.code]); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
+    else { const cl=noteCell(NOTE_BASE+NOTE_KEYS[e.code]); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
     litNeck(); return; }
   const pi=padKey(e); if(pi>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); } if(!e.repeat) padDown(pi, 0.74); return; }
   if(e.code==="ArrowLeft"||e.code==="ArrowRight"){ if(e.target && e.target.closest && e.target.closest("input,select")) return; e.preventDefault(); if(!e.repeat) moveNeck(e.code==="ArrowLeft"?-1:1); return; }

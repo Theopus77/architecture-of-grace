@@ -1173,7 +1173,7 @@ function key(e, isDown){
     e.preventDefault();
     if(isDown){
       if(e.repeat || KEYF.has(code)) return true;
-      const cell=piano ? cellFor(NOTE_BASE+NOTE_KEYS[code]) : keyCells()[si]; if(!cell) return true;
+      const cell=piano ? (window.noteCell||cellFor)(NOTE_BASE+NOTE_KEYS[code]) : keyCells()[si]; if(!cell) return true;
       const fs={s:cell.s, f:cell.f, since:0, bend:0, lv:null, dir:1, key:true};
       KEYF.set(code, fs); strike(fs, {pop:!GTR && e.shiftKey && !P.tap}); wake();
       if(typeof KEYCELLS!=="undefined") KEYCELLS.set(code, cell.s+":"+cell.f);

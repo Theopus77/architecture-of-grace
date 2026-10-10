@@ -95,12 +95,12 @@ const STR={
   sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
   sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
   sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
-  sendPadsBtn:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
-  padsBtn:{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  toPadsLab:{en:"Send to the Drum Machine:",es:"Enviar a la caja de ritmos:"}, sendPadsBtn:{en:"My take",es:"Mi toma"}, sendPadsAria:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn:{en:"These chords",es:"Estos acordes"}, padsAria:{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. All three are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. Las tres colecciones son regalos para todos (dominio público)."},
+  credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. The bagpipes are a Great Highland bagpipe recorded by IowaSpaceWizard (Freesound). All four are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. La gaita es una gaita escocesa grabada por IowaSpaceWizard (Freesound). Las cuatro colecciones son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
   /* AOG-BAND-SCALES-V1 */
@@ -169,6 +169,10 @@ const SOUNDS={
   oboe_vib:{grp:"grpWinds", en:"Oboe · with vibrato", es:"Oboe · con vibrato", gain:1.356, rev:0.15, stand:"wind"},
   bassoon: {grp:"grpWinds", en:"Bassoon",          es:"Fagot",           gain:1.175, rev:0.14, stand:"wind"},
   bassoon_vib:{grp:"grpWinds", en:"Bassoon · with vibrato", es:"Fagot · con vibrato", gain:1.279, rev:0.14, stand:"wind"},
+  /* AOG-BAND-BAGPIPES-V1 (Jimmy, 2026-10-09: "I don't believe we have the BAG PIPES as a musical option do we?"): a real
+     Great Highland bagpipe, its chanter (nine notes, Low G to High A) and its drones (held under a tune) */
+  bagpipe: {grp:"grpWinds", en:"Bagpipes · the chanter", es:"Gaita · el puntero", gain:1.498, rev:0.2, stand:"wind"},
+  bagpipe_drones:{grp:"grpWinds", en:"Bagpipes · the drones (hold the home note)", es:"Gaita · los roncones (mantén la nota de casa)", gain:1.345, rev:0.2, stand:"wind"},
   /* AOG-BAND-SAX2-V1 (2026-10-04) — Jimmy's list of influences: Wayne Shorter (soprano) and John Coltrane (tenor). A
      soprano saxophone (a saxello, the curved soprano) and a tenor saxophone from the Versilian Community Sample Library
      (VCSL, Versilian Studios, CC0): held notes without vibrato, soft and loud, and short notes of their own; beside the
@@ -239,6 +243,7 @@ const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, cla
   violins:1.097, violas:1.065, cellos:1.096, contrabass:1.389, violins_pizz:2.376, violas_pizz:2.539, cellos_pizz:2.118, contrabass_pizz:2.469, harp:1.821,
   timpani:1.299, marimba:1.881, xylophone:1.806, glockenspiel:1.692,
   tenor:1.152, tenor_vib:0.788, soprano:0.917,                     /* AOG-BAND-SAX2-V1 */
+  bagpipe:0.677, bagpipe_drones:1.34,                                  /* AOG-BAND-BAGPIPES-V1 */
   kit:5.07};  /* a bass drum stroke as loud as a player's note; the other pieces a little under it (KIT_MIX) */
 /* players whose note is struck or plucked: it rings out by itself, and a key let go lets it ring a moment longer */
 /* AOG-BAND-STEREO-STRINGS-V1: a bow lifted off the string lets it ring a moment longer than a breath stops */
@@ -1005,7 +1010,7 @@ function paintText(){
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
   $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher");
-  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); REC.paint();
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;

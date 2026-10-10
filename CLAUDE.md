@@ -92,6 +92,14 @@ call moving forward." On the Educator Dashboard and every page after it:
 - Say a thing once. One short line per screen, not the same description in
   three places.
 
+## The Adult Edition (Book 6)
+
+- Four pages: `/adult`, `/adult/workbook`, `/adult/anchors`, `/adult/sessions` (facilitator key).
+  Shared skin `aog-adult.css`. Build sources live in `adult-build/` at the repo root (not published);
+  read its README before changing the console or the workbook word.
+- Never commit `book6.json` (the whole manual; this repo is public). The crisis box goes on every
+  Adult page. The workbook sends only by the facilitator's own `?dest=` link, never a default Sheet.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
