@@ -1877,8 +1877,13 @@ function layerOfSrc(o){
 }
 function layerOfClip(c){ if(!c || c.voice) return ""; if(c.layer) return c.layer; if(c.src===INBOX_KEY) return LAYER_FROM.indexOf(c.from)>=0 ? c.from : ""; return SHELF_LAYER[c.src]||""; }
 function srcOnTrack(o){ return SONG.tracks.some(x=>x.clip && (o.kind==="take" ? (x.clip.src===INBOX_KEY && x.clip.tid===o.x.id) : (x.clip.src===o.s.key && x.clip.at===(o.v.rec.at||0)))); }
+/* AOG-LISTEN-FULL-V1 (2026-10-11): My Track has more layers (ten) than the desk has tracks for them (seven, and track 8 for
+   the voice). A layer with no free track used to be left out without a word; now LISTEN_LEFT names them, and the Recording
+   Studio says which are not playing and how to hear one. */
+let LISTEN_LEFT=[];
 async function listenFill(){
   try{ await refreshInbox(); await refreshShelves(); }catch(e){}
+  LISTEN_LEFT=[];
   const best={};
   sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
     if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
@@ -1889,7 +1894,7 @@ async function listenFill(){
     let ti=-1;
     if(mine>=0){ if(!SONG.tracks[mine].clip.auto) continue; ti=mine; }
     else ti=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
-    if(ti<0) continue;
+    if(ti<0){ LISTEN_LEFT.push(k); continue; }
     await putOn(o.id, ti);
     const c=SONG.tracks[ti].clip; if(c && srcOnTrack(o)){ c.auto=true; n++; }
   }
@@ -3426,7 +3431,7 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get AC(){ return ac; },
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, get AC(){ return ac; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
 </script>
 </body>
