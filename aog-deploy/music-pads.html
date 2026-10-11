@@ -118,6 +118,24 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pad.hit{background:#ffd36b;color:#1f1206}
 .pad.hit .pk,.pad.hit .pi{color:#3a2a0a}
 .pads.waiting .pad{opacity:.6}
+/* AOG-PADS-BIG-V1 (2026-10-11) — the pads on the whole screen; two banks side by side where there is room */
+.pm-bigrow{display:flex;justify-content:flex-end;margin:0 0 8px}
+#padView{display:none}
+html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body.aog-play>*:not(#padView){display:none !important}
+body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
+  background:#0e0f12;color:#f6efdf;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));box-sizing:border-box}
+#padView .pv-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex:0 0 auto;margin:0 0 8px}
+#padView .pv-bar .pm-sel{min-height:44px;flex:0 1 auto;max-width:15rem}
+#padView .pv-sp{flex:1 1 0}
+#padView .pv-grids{flex:1 1 auto;min-height:0;display:flex;gap:14px;align-items:center;justify-content:center}
+#padView .pv-side{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+#padView .pv-name{font:800 .8rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#c9bfae}
+#padView .pads{max-width:none;margin:0;width:min(calc(100vw - 28px),calc(100dvh - 110px))}
+#padView.two .pads{width:min(calc((100vw - 48px)/2),calc(100dvh - 110px))}
+#padView .pad{min-height:0}
+#padView .pad .pn{font-size:clamp(14px,2.4vmin,22px)}
+#padView:not(.two) .pv-two{display:none}
 .pad .pk.keyonly{display:none}
 @media (pointer:fine){ .pad .pk.keyonly{display:block} }
 .pad[data-kind="drum"]{border-color:#6a5a3e}
@@ -215,6 +233,7 @@ details.pm-set[open]>summary::before{content:"▾"}
           <p class="pm-now" id="guideNow" aria-live="polite"></p>
           <p class="pm-line" id="line" aria-live="polite"></p>
           <p class="pm-line" id="inLine" aria-live="polite"></p>
+          <div class="pm-bigrow"><button type="button" class="pm-b" id="bigBtn"></button></div><!-- AOG-PADS-BIG-V1 -->
           <div class="pads" id="pads" role="group"></div>
         </div>
         <div>
@@ -279,6 +298,20 @@ details.pm-set[open]>summary::before{content:"▾"}
     </div>
   </main>
   <footer class="foot" id="foot"></footer>
+</div>
+<div id="padView" role="region"><!-- AOG-PADS-BIG-V1: the pads on the whole screen; #pads moves in while it is open -->
+  <div class="pv-bar">
+    <button type="button" class="pm-b" id="pvClose"></button>
+    <select class="pm-sel" id="pvBankA"></select>
+    <select class="pm-sel pv-two" id="pvBankB"></select>
+    <span class="pv-sp"></span>
+    <button type="button" class="pm-b" id="pvPlay" aria-pressed="false"></button>
+    <button type="button" class="pm-b rec" id="pvRec" aria-pressed="false"></button>
+  </div>
+  <div class="pv-grids">
+    <div class="pv-side" id="pvSideA"><span class="pv-name" id="pvNameA"></span></div>
+    <div class="pv-side pv-two"><span class="pv-name" id="pvNameB"></span><div class="pads" id="pads2" role="group"></div></div>
+  </div>
 </div>
 <script>
 "use strict";
@@ -711,8 +744,9 @@ function trigger(bi, pi, vel, when, T){
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }};
 }
 function flash(bi, pi, when){
-  if(bi!==S.bank) return;
-  const go=()=>{ const el=document.querySelector(`.pad[data-p="${pi}"]`); if(!el) return; el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
+  const box=bi===S.bank ? $("pads") : (PV.on && PV.two && bi===S.bank2 ? $("pads2") : null);   /* AOG-PADS-BIG-V1: either grid */
+  if(!box) return;
+  const go=()=>{ const el=box.querySelector(`.pad[data-p="${pi}"]`); if(!el) return; el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
   const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
 }
 
@@ -806,10 +840,11 @@ function velAt(el, x, y){
    first hit sounds at once even while the loop plays, and the repeats then fall on the beat. A phone's own delay to the
    speaker cannot be taken away, so a recorded tap is moved back by it (outLat): it lands in the loop where you heard it. */
 let selT=0;
-function selectSoon(pi){ if(S.sel===pi) return; S.sel=pi; cancelAnimationFrame(selT); selT=requestAnimationFrame(()=>{ save(); paintSel(); }); }
+function selectPad(pi){ if(S.sel===pi) return; S.sel=pi; cancelAnimationFrame(selT); selT=requestAnimationFrame(()=>{ save(); paintSel(); }); }
 function outLat(){ return ac ? Math.min(0.3, Math.max(0, (ac.outputLatency||0)+(ac.baseLatency||0))) : 0; }
-function press(id, pi, vel){
-  const bi=S.bank, c=ctx();
+function press(id, pi, vel, bk){
+  const bi=bk==null ? S.bank : bk, c=ctx(), mine=bi===S.bank;   /* AOG-PADS-BIG-V1: the second grid plays its own bank */
+  const selectSoon=(p)=>{ if(mine) selectPad(p); };
   if(!canPlay(bi)){ selectSoon(pi); prep(bi); return; }
   if(S.rpt){
     const ticks=S.rate, step=ticks*spt(), now=c.currentTime;
@@ -831,20 +866,21 @@ function release(id){
   if(d.v) d.v.stop(now);
   if(d.e){ d.e.len=clamp(Math.round((now-d.at)/spt()), 6, loopLen()); save(); }
 }
-function bindPads(){
-  const box=$("pads");
+function bindPads(){ bindGrid($("pads"), ()=>null); bindGrid($("pads2"), ()=>S.bank2); }
+function bindGrid(box, bankOf){
+  if(!box) return;
   box.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});
   box.addEventListener("contextmenu",(e)=>e.preventDefault());
   box.addEventListener("pointerdown",(e)=>{
     const el=e.target.closest && e.target.closest(".pad"); if(!el || e.button>0) return;
     e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(x){}
-    press("p"+e.pointerId, +el.getAttribute("data-p"), velAt(el, e.clientX, e.clientY));
+    press("p"+e.pointerId, +el.getAttribute("data-p"), velAt(el, e.clientX, e.clientY), bankOf());
   });
   const up=(e)=>release("p"+e.pointerId);
   box.addEventListener("pointerup", up); box.addEventListener("pointercancel", up); box.addEventListener("lostpointercapture", up);
   /* a pad reached with Tab plays with Enter or Space */
-  box.addEventListener("keydown",(e)=>{ const el=e.target.closest && e.target.closest(".pad"); if(!el || e.repeat || (e.key!=="Enter" && e.key!==" ")) return; e.preventDefault(); e.stopPropagation(); press("kb"+el.dataset.p, +el.dataset.p, S.full?1:0.8); });
-  box.addEventListener("keyup",(e)=>{ const el=e.target.closest && e.target.closest(".pad"); if(!el || (e.key!=="Enter" && e.key!==" ")) return; e.stopPropagation(); release("kb"+el.dataset.p); });
+  box.addEventListener("keydown",(e)=>{ const el=e.target.closest && e.target.closest(".pad"); if(!el || e.repeat || (e.key!=="Enter" && e.key!==" ")) return; e.preventDefault(); e.stopPropagation(); press("kb"+box.id+el.dataset.p, +el.dataset.p, S.full?1:0.8, bankOf()); });
+  box.addEventListener("keyup",(e)=>{ const el=e.target.closest && e.target.closest(".pad"); if(!el || (e.key!=="Enter" && e.key!==" ")) return; e.stopPropagation(); release("kb"+box.id+el.dataset.p); });
 }
 const KEYMAP={z:0,x:1,c:2,v:3,a:4,s:5,d:6,f:7,q:8,w:9,e:10,r:11,"1":12,"2":13,"3":14,"4":15};
 const KEYCAP=["Z","X","C","V","A","S","D","F","Q","W","E","R","1","2","3","4"];
@@ -1146,16 +1182,21 @@ function paintSetRow(){
   const m=$("fMatch"); if(m) m.onclick=()=>{ const R=recInfo(B.rec); if(R && R.bpm>0) retime(R.bpm); LES.mark("cmatch"); };
 }
 function paintPads(){
-  const defs=padDefs(S.bank), fine=matchMedia("(pointer: fine)").matches;
-  const PO={}, cp=S.banks[S.bank].type==="chords" && patOf(S.banks[S.bank]);   /* AOG-PADS-GUIDE-V1: a pattern's order, on its pads */
+  paintGrid($("pads"), S.bank, true);
+  if(PV.on && PV.two) paintGrid($("pads2"), S.bank2, false);   /* AOG-PADS-BIG-V1: the second bank, on the whole screen */
+  pvPaint();
+}
+function paintGrid(box, bk, main){
+  const defs=padDefs(bk), fine=main && matchMedia("(pointer: fine)").matches;
+  const PO={}, cp=S.banks[bk].type==="chords" && patOf(S.banks[bk]);   /* AOG-PADS-GUIDE-V1: a pattern's order, on its pads */
   if(cp) patPads(cp).forEach((p,k)=>{ PO[p]=PO[p] ? PO[p]+"·"+(k+1) : String(k+1); });
   const order=[12,13,14,15,8,9,10,11,4,5,6,7,0,1,2,3];
-  $("pads").innerHTML=order.map(i=>{ const d=defs[i];
-    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
-  $("pads").classList.toggle("waiting", !isReady(S.bank));
-  $("pads").setAttribute("aria-label", t("padsLab"));
+  box.innerHTML=order.map(i=>{ const d=defs[i];
+    return `<button type="button" class="pad${main && i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
+  box.classList.toggle("waiting", !isReady(bk));
+  box.setAttribute("aria-label", main ? t("padsLab") : bankLabel(bk));
 }
-function paintSel(){ document.querySelectorAll(".pad").forEach(el=>el.classList.toggle("sel", +el.dataset.p===S.sel)); paintSteps(); paintPadSet(); }
+function paintSel(){ document.querySelectorAll("#pads .pad").forEach(el=>el.classList.toggle("sel", +el.dataset.p===S.sel)); paintSteps(); paintPadSet(); }
 function paintSteps(){
   const n=S.bars*16, bi=S.bank, pi=S.sel, on=new Set();
   S.ev.forEach(e=>{ if(e.b===bi && e.p===pi && e.t<loopLen()) on.add(Math.floor(e.t/24)); });
@@ -1175,7 +1216,7 @@ function paintTransport(){
   $("playBtn").textContent=SEQ.on ? t("stop") : t("play"); $("playBtn").setAttribute("aria-pressed", SEQ.on?"true":"false");
   $("loopRec").textContent=SEQ.rec ? t("loopRecOn") : t("loopRec"); $("loopRec").setAttribute("aria-pressed", SEQ.rec?"true":"false");
   $("rptBtn").setAttribute("aria-pressed", S.rpt?"true":"false"); $("clickBtn").setAttribute("aria-pressed", S.click?"true":"false"); $("fullBtn").setAttribute("aria-pressed", S.full?"true":"false");
-  paintLine();
+  paintLine(); if(PV.on) pvPaint();   /* AOG-PADS-BIG-V1: the whole screen's Play and Record follow */
 }
 function paintControls(){
   $("bankLab").textContent=t("bankLab");
@@ -1225,6 +1266,68 @@ function paintText(){
   $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a> · <a href="/audio/crate/CREDITS.txt">${esc(t("cWord"))}</a></p>`;
   REC.paint(); paintBounce(); LES.paint();
 }
+/* ══ AOG-PADS-BIG-V1 (2026-10-11) — Jimmy: "Can the drum pad be expanded" — "Both": bigger and more. ⤢ puts the pads on the
+   whole screen (the page's own #pads moves in, so every tap, the loop and a lesson work as before), with Close, Play and
+   Record. Where there is room (an iPad, a computer) a second bank sits beside the first: 32 pads at once, say the drums
+   under one hand and the chords under the other. Close, or Esc, brings the page back where it was. ══ */
+const PV={on:false, two:false, back:null, y:0};
+function pvWords(){ const es=S0.lang==="es"; return {big:es?"⤢ Tocar en toda la pantalla":"⤢ Play on the whole screen", close:es?"✕ Cerrar":"✕ Close",
+  region:es?"Los pads, en toda la pantalla":"The pads, on the whole screen", left:es?"Banco a la izquierda":"Bank on the left", right:es?"Banco a la derecha":"Bank on the right"}; }
+/* two banks when two fit at nearly the size one would have: a wide screen, or a phone on its side (its pads are as tall
+   as the screen allows either way); upright, one bank gets the whole width */
+function pvTwo(){ const w=window.innerWidth||0, h=window.innerHeight||0; return w>=900 || (w>=640 && (w-48)/2>=0.9*Math.min(w-28, h-110)); }
+function pvPaint(){
+  if(!$("padView")) return; const W=pvWords();
+  $("bigBtn").textContent=W.big; $("pvClose").textContent=W.close; $("padView").setAttribute("aria-label", W.region);
+  if(!PV.on) return;
+  $("padView").classList.toggle("two", PV.two);
+  const opts=(cur)=>[0,1,2,3].map(i=>opt(i, esc(bankLabel(i)), cur)).join("");
+  $("pvBankA").innerHTML=opts(S.bank); $("pvBankA").setAttribute("aria-label", PV.two ? W.left : t("bankLab"));
+  $("pvBankB").innerHTML=opts(S.bank2); $("pvBankB").setAttribute("aria-label", W.right);
+  $("pvNameA").textContent=PV.two ? bankLabel(S.bank) : ""; $("pvNameB").textContent=bankLabel(S.bank2);
+  $("pvPlay").textContent=$("playBtn").textContent; $("pvPlay").setAttribute("aria-pressed", $("playBtn").getAttribute("aria-pressed")||"false");
+  $("pvRec").textContent=$("loopRec").textContent; $("pvRec").setAttribute("aria-pressed", $("loopRec").getAttribute("aria-pressed")||"false");
+}
+function pvZoom(on){   /* as the piano does (AOG-PLAY-ZOOM-V1): the page holds still at its own size while the pads fill it */
+  const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  if(PV.base==null) PV.base=m.getAttribute("content")||"width=device-width, initial-scale=1";
+  clearTimeout(PV.zt); m.setAttribute("content", PV.base+", maximum-scale=1, user-scalable=no");
+  if(!on) PV.zt=setTimeout(()=>m.setAttribute("content", PV.base), 600);
+}
+function pvOpen(on){
+  if(on===PV.on) return;
+  const pads=$("pads"); [...DOWN.keys()].forEach(release);
+  if(on){
+    PV.on=true; PV.y=window.scrollY||0; PV.two=pvTwo();
+    if(S.bank2==null || S.bank2===S.bank) S.bank2=S.bank===0 ? 1 : 0;
+    PV.back=document.createComment("pads"); pads.parentNode.insertBefore(PV.back, pads); $("pvSideA").appendChild(pads);
+    pvZoom(true); document.body.classList.add("aog-play");
+    if(PV.two) prep(S.bank2);
+  } else {
+    PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
+    if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
+    $("pads2").innerHTML="";
+  }
+  paintPads();
+  if(on) $("pvClose").focus(); else { window.scrollTo(0, PV.y); $("bigBtn").focus(); }
+}
+function pvInit(){
+  if(!$("padView")) return;
+  $("bigBtn").onclick=()=>pvOpen(true);
+  $("pvClose").onclick=()=>pvOpen(false);
+  document.addEventListener("keydown",(e)=>{ if(PV.on && e.key==="Escape"){ e.preventDefault(); pvOpen(false); } });
+  $("pvPlay").onclick=()=>{ $("playBtn").click(); pvPaint(); };
+  $("pvRec").onclick=()=>{ $("loopRec").click(); pvPaint(); };
+  $("pvBankA").onchange=()=>{ const v=+$("pvBankA").value; if(v===S.bank2) S.bank2=S.bank;   /* the same bank twice: they swap */
+    const bs=$("bankSel"); bs.value=String(v); bs.onchange(); prep(S.bank2); };
+  $("pvBankB").onchange=()=>{ const v=+$("pvBankB").value; if(v===S.bank){ const a=S.bank2; S.bank2=v; const bs=$("bankSel"); bs.value=String(a); bs.onchange(); }
+    else { S.bank2=v; save(); paintPads(); } prep(S.bank2); };
+  /* touch on the pads: no magnifier, no scroll, no zoom */
+  $("padView").addEventListener("touchstart",(e)=>{ if(e.cancelable && !(e.target.closest && e.target.closest("button,select"))) e.preventDefault(); },{passive:false});
+  ["gesturestart","gesturechange","dblclick"].forEach(ev=>document.addEventListener(ev,(e)=>{ if(PV.on && e.cancelable) e.preventDefault(); },{passive:false}));
+  let rt=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PV.on) return; const two=pvTwo(); if(two!==PV.two){ PV.two=two; if(two) prep(S.bank2); else $("pads2").innerHTML=""; paintPads(); } }, 150); });
+  pvPaint();
+}
 function paintAll(){ paintText(); paintControls(); paintSetRow(); paintPads(); paintGuide(); paintSel(); paintTransport(); }
 
 /* ══ AOG-LESSONS-V1 — the Beat Lab's lessons: each step ticks itself as it happens (the words: _work/music/lessons_pads.py) ══ */
@@ -1253,7 +1356,7 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang,
 function init(){
   if(KITS().indexOf(S.banks[0].kitA)<0 && KITS().length){ S.banks.forEach(B=>{ if(KITS().indexOf(B.kitA)<0) B.kitA=KITS()[0]; if(KITS().indexOf(B.kitB)<0) B.kitB=KITS()[Math.min(1, KITS().length-1)]; }); }
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; });
-  bindPads(); bindBounce();
+  bindPads(); bindBounce(); pvInit();
   $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
   $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
   $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; LES.mark(["","bankB","bankC","bankD"][S.bank]); save(); paintAll(); prep(S.bank); };
