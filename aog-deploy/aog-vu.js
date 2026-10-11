@@ -93,6 +93,7 @@
     function rr(x, y, w, h, k) { g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, k); else g.rect(x, y, w, h); }
     rr(0, 0, W, H, small ? 4 : 7); g.fillStyle = "#08090a"; g.fill();
     var fx = inset, fy = inset, fw = W - 2 * inset, fh = H - 2 * inset;
+    if (fw < 4 || fh < 4) return;   /* a meter only a few pixels tall (a room still laying out) has no face to draw yet */
     var face = g.createRadialGradient(W / 2, fy + fh * 1.05, fh * 0.1, W / 2, fy + fh * 0.9, fw * 0.75);
     face.addColorStop(0, "#fff4d2"); face.addColorStop(0.55, "#f3e2b4"); face.addColorStop(1, "#d9c08a");
     rr(fx, fy, fw, fh, small ? 2.5 : 4); g.fillStyle = face; g.fill();

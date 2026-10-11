@@ -1390,7 +1390,7 @@ function paintText(){
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear"); $("susBtn").textContent=t("sus");
-  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("midiBtn").textContent=t("midi");
+  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("midiBtn").textContent=t("midi"); if(MIDI) MIDI.paint();
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria"));
   REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
@@ -1849,27 +1849,15 @@ document.addEventListener("keyup",(e)=>{
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
 });
 window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>noteOff("c",m)); HELD_KEYS.clear(); if(S.sus) setSus(false); });
-/* a MIDI keyboard (Chrome and Edge), only when asked, so no surprise permission box */
-let midiAccess=null;
-function midiMsg(e){
-  const [st,a,b]=e.data, cmd=st&0xf0;
-  if(cmd===0x90 && b>0) noteOn("m", a, b/127);
-  else if(cmd===0x80 || (cmd===0x90 && b===0)) noteOff("m", a);
-  else if(cmd===0xb0 && a===64) setSus(b>=64);
-}
-async function useMidi(){
-  const line=$("midiLine");
-  /* AOG-PIANO-MIDI-V2 (Jimmy, on an iPad: "nothing changes when you tap the MIDI keyboard"). The sound starts now, inside
-     the tap: an iPad will not start it later for a key on the MIDI keyboard. The answer shows at once, under the buttons. */
-  ctx();
-  line.textContent=t("midiWait");
-  try{
-    midiAccess=midiAccess||await navigator.requestMIDIAccess();
-    /* listen to every keyboard, and say so again when one is plugged in or taken out */
-    const hook=()=>{ const ins=[...midiAccess.inputs.values()]; ins.forEach(i=>{ i.onmidimessage=midiMsg; });
-      line.textContent= ins.length ? t("midiReady",{name:ins.map(i=>i.name).join(", ")}) : t("midiNone"); };
-    hook(); midiAccess.onstatechange=hook;
-  }catch(e){ line.textContent=t("midiNo"); }
+/* a MIDI keyboard (Chrome and Edge), only when asked, so no surprise permission box. AOG-MIDI-V1: the shared helper
+   (aog-midi.js) does the asking, the listening and the one-line answer for every music room; the piano keeps its words.
+   AOG-PIANO-MIDI-V2 (Jimmy, on an iPad: "nothing changes when you tap the MIDI keyboard"): the sound starts inside the tap. */
+var MIDI=null;   /* var: paintText may ask for it before this line runs */
+function bindMidi(){
+  if(!window.AOGMidi) return;
+  MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx,
+    on:(m, v)=>noteOn("m", m, v), off:(m)=>noteOff("m", m), sustain:(on)=>setSus(on),
+    words:{btn:STR.midi, ready:STR.midiReady, none:STR.midiNone, wait:STR.midiWait, no:STR.midiNo}});
 }
 
 function bind(){
@@ -1906,7 +1894,7 @@ function bind(){
   $("downBtn").onclick=()=>{ octMove(-1); onOct(-1); }; bindOctHeld();
   $("upBtn").onclick=()=>{ octMove(1); onOct(1); };
   $("susBtn").onclick=()=>setSus(!S.sus);
-  if(navigator.requestMIDIAccess){ $("midiBtn").hidden=false; $("midiBtn").onclick=useMidi; }
+  bindMidi();   /* AOG-MIDI-V1 */
   $("era").oninput=()=>{ S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
     if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(()=>{ save(); lessonsChanged(); },250); };
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };

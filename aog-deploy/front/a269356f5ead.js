@@ -2056,7 +2056,7 @@ function paintText(){
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW"); $("majBtn2").textContent=t("major"); $("minBtn2").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
-  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
+  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute"); if(MIDI) MIDI.paint();
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint(); paintAmp(); if(LIVEIN) LIVEIN.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
@@ -2723,6 +2723,47 @@ function keyLetters(){
 }
 function scaleNote(i){ const iv=S.minor?[0,2,3,5,7,8,10,12]:[0,2,4,5,7,9,11,12]; return bassRoot({off:0, q:S.minor?"min":"maj"})+iv[i]; }
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
+/* AOG-MIDI-V1 (2026-10-11) — Jimmy: "Play it from a real keyboard everywhere." A MIDI keyboard plays the neck: each key's
+   note at its place nearest the frets in view, on a string no other held key is using (so a chord lands on several
+   strings, as a hand would play it), as hard as it is struck, lit on the neck while held. Letting go damps the string, as
+   lifting a finger does; the keyboard's pedal (CC64) lets the notes ring until it is lifted; the pitch wheel bends the
+   held notes up to a whole step, as a push on the string does (the voice's own glide). The shared helper (aog-midi.js)
+   shows the button only where the browser has MIDI, and says when a keyboard comes or goes. */
+var MIDI=null;   /* var: paintText may ask for it first */
+const MIDI_HELD=new Map(), MIDI_RING=new Set(), MIDI_ST={sus:false, bend:0};
+function midiCell(m){
+  const busy=new Set(); MIDI_HELD.forEach(c=>busy.add(c.s));
+  let best=null, bs=1e9; const [a,b]=win();
+  TUNING.forEach((o,s)=>{ const f=m-o; if(f<0||f>MAXF) return;
+    const sc=(busy.has(s)?1000:0)+(inReach(f)?0:100+Math.min(Math.abs(f-a),Math.abs(f-b))*10)+s+Math.max(0,f-a)*0.5;
+    if(sc<bs){ bs=sc; best={s:s, f:f}; } });
+  return best;
+}
+function midiLetGo(cl){ const L=STR_LIVE[cl.s]; if(L && L.vc===cl.vc) dampString(cl.s); }   /* only if that string still plays this key's note */
+function midiOn(m, v){
+  const cl=midiCell(m); if(!cl) return;
+  MIDI_HELD.forEach((c,k)=>{ if(c.s===cl.s){ MIDI_HELD.delete(k); KEYCELLS.delete("midi"+k); } });   /* every string taken: this key takes it over */
+  const was=STR_LIVE[cl.s]; pluckCell(cl.s, cl.f, Math.max(0.08, v));
+  const L=STR_LIVE[cl.s]; if(!L || L===was) return;   /* the sound is not ready yet */
+  cl.vc=L.vc; MIDI_HELD.set(m, cl); KEYCELLS.set("midi"+m, cl.s+":"+cl.f);
+  if(MIDI_ST.bend){ try{ L.vc.glide(TUNING[cl.s]+cl.f+MIDI_ST.bend, ac.currentTime); }catch(e){} }
+  lessonNote(cl.s, cl.f); litNeck();
+}
+function midiOff(m){
+  const cl=MIDI_HELD.get(m); if(!cl) return;
+  MIDI_HELD.delete(m); KEYCELLS.delete("midi"+m);
+  if(MIDI_ST.sus) MIDI_RING.add(cl); else midiLetGo(cl);
+  litNeck();
+}
+function midiSus(on){ MIDI_ST.sus=!!on; if(!on){ MIDI_RING.forEach(midiLetGo); MIDI_RING.clear(); } }
+function midiBend(st){
+  MIDI_ST.bend=st; if(!ac) return;
+  MIDI_HELD.forEach(cl=>{ const L=STR_LIVE[cl.s]; if(L && L.vc===cl.vc && !L.vc.stopped){ try{ L.vc.glide(TUNING[cl.s]+cl.f+st, ac.currentTime); }catch(e){} } });
+}
+function bindMidi(){
+  if(!window.AOGMidi) return;
+  MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx, on:midiOn, off:midiOff, sustain:midiSus, bend:midiBend});
+}
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   if(e.target && e.target.tagName==="SELECT") return;
@@ -2790,6 +2831,7 @@ function bind(){
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=()=>bounce(); $("sendPadsBtn").onclick=()=>bounce("pads");
   $("padsBtn").onclick=sendPads;
+  bindMidi();   /* AOG-MIDI-V1 */
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
