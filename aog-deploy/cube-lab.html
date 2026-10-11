@@ -287,7 +287,7 @@ const T={
   tag:["Learn to solve a Rubik's Cube, one step at a time.","Aprende a resolver un cubo de Rubik, paso a paso."],
   foot:["Turn it on screen, or follow along with a real cube in your hands. Your place is saved on this device.","Gíralo en la pantalla o sigue con un cubo de verdad en tus manos. Tu avance se guarda en este aparato."],
   vLearn:["Learn","Aprende"], vSolve:["Solve with me","Resuélvelo conmigo"], vMine:["My cube","Mi cubo"], micro:["Microscope","Microscopio"],
-  hint:["Drag a row to turn it. Tap Back to see the other three sides.","Arrastra una fila para girarla. Toca Atrás para ver los otros tres lados."],
+  hint:["Drag a row to turn it. Circle a middle square to turn that whole side, like a steering wheel.","Arrastra una fila para girarla. Gira el dedo alrededor de un cuadro del medio para girar todo ese lado, como un volante."],
   hintSolve:["Follow the arrow with your finger, or tap Turn it.","Sigue la flecha con el dedo, o toca Girarlo."],
   hintSolveReal:["Follow the arrow on your cube, then tap I did it.","Sigue la flecha en tu cubo y luego toca Ya lo hice."],
   hintPaint:["Pick a color, then tap a square to paint it.","Elige un color y toca un cuadro para pintarlo."],
@@ -465,7 +465,8 @@ const L=[
     ["A letter with ' (say \"prime\"): turn it the other way.","Una letra con ' (se dice \"prima\"): gíralo al revés."],
     ["A letter with 2: turn it twice.","Una letra con 2: gíralo dos veces."],
     ["y turns the whole cube, like a globe. The top stays on top.","y gira el cubo entero, como un globo. La cara de arriba sigue arriba."],
-    ["Try all six sides on the pad. Do R, then R'. The cube goes back.","Prueba los seis lados en los botones. Haz R y luego R'. El cubo vuelve como estaba."]],
+    ["Try all six sides on the pad. Do R, then R'. The cube goes back.","Prueba los seis lados en los botones. Haz R y luego R'. El cubo vuelve como estaba."],
+    ["On the cube: put a finger on the front's middle square and circle it to the right. That is F, like a steering wheel.","En el cubo: pon un dedo en el cuadro del medio del frente y gíralo a la derecha. Eso es F, como un volante."]],
   algs:[{n:["There and back","Ida y vuelta"], s:"R R' U U' F F'"}]},
  {id:"cross", stage:0, t:["The white cross","La cruz blanca"],
   goal:["A white plus sign on the bottom. Each white edge matches the center beside it.","Un signo más blanco abajo. Cada arista blanca coincide con el centro de al lado."],
@@ -1142,6 +1143,15 @@ function onMove(e){
       const mv=arrowGeo.mv;
       drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, wheel:true, cx:RW.cx, cy:RW.cy,
         last:Math.atan2(drag.sy0-RW.cy, drag.sx0-RW.cx), acc:0};
+    } else if(drag.face && cube.P[drag.face.i].kind===1 && !(A && arrowGeo && Math.abs(along)>.55) && !painting && !busy && !queue.length){
+      /* AOG-CUBE-WHEEL-V2 (2026-10-11) — Jimmy: "I can't turn it like a steering wheel" (in Learn, with no arrow).
+         A finger on a side's middle square, going round it, turns that whole side like a steering wheel, on any
+         side you can see, anywhere in the lab. (The middle square used to turn the middle slice, which the
+         beginner's way never uses.) */
+      const n=C.mulV(cube.P[drag.face.i].M, C.FACES[drag.face.f]).map(Math.round), base=C.faceOf(n), mv=C.parse(base);
+      const c=projector()(n.map(x=>x*1.5));
+      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, wheel:true, cx:c[0], cy:c[1],
+        last:Math.hypot(drag.sy0-c[1], drag.sx0-c[0])>size*.25 ? Math.atan2(drag.sy0-c[1], drag.sx0-c[0]) : null, acc:0};
     } else if(A && arrowGeo && Math.abs(along)>.55 && !busy && !queue.length){
       /* following the arrow (or going back along it): that exact move, whatever piece the finger is on */
       const mv=arrowGeo.mv, qs=mv.q<0?-1:1;
@@ -1164,7 +1174,9 @@ function onMove(e){
     if(T2.wheel){
       const [sx,sy]=stageXY(e.clientX, e.clientY);
       if(Math.hypot(sx-T2.cx, sy-T2.cy)>size*.25){   /* too near the middle, the angle is not steady */
-        const a=Math.atan2(sy-T2.cy, sx-T2.cx); let d=a-T2.last; d=Math.atan2(Math.sin(d), Math.cos(d)); T2.acc+=d; T2.last=a; }
+        const a=Math.atan2(sy-T2.cy, sx-T2.cx);
+        if(T2.last!=null){ let d=a-T2.last; d=Math.atan2(Math.sin(d), Math.cos(d)); T2.acc+=d; }
+        T2.last=a; }   /* a finger that starts on the middle counts from where it first leaves it */
       T2.th=Math.max(-Math.PI/2, Math.min(Math.PI/2, -T2.acc));   /* round the screen clockwise = the face, toward you, turns clockwise; at most a quarter */
     } else if(T2.arrowMv){
       /* along the arrow itself, straight or round: the bead's place on the line, not the straight-line distance */
