@@ -675,8 +675,9 @@ function after(job){
   else guide=null;
   if(runner){ runner.left--; if(runner.left<=0) runner=null; }
   /* AOG-CUBE-TIME-V1 (2026-10-11) — Jimmy: "look at the seconds it took" (it said 128:05). The clock now counts only
-     time spent turning: a pause of more than a minute (a break, a chat, the page left open) adds nothing. */
-  if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(now-S.mix.last, 60000); S.mix.last=now; S.mix.moves++; }
+     time spent turning: a pause (a break, a chat, the page left open overnight) adds at most 30 seconds, the
+     longest a person thinks before a move. Jimmy's "about 3 minutes" solve, mixed two hours before, now reads so. */
+  if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(Math.max(0, now-S.mix.last), 30000); S.mix.last=now; S.mix.moves++; }
   if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
   if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
