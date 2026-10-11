@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:4e5290384772ba97 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:b2bb0e0b59dff237 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -98,6 +98,8 @@ main{padding:0 0 2rem}
 .pm-b.rec[aria-pressed="true"]{background:#ffb1a4;color:#3a0c05;border-color:#ffb1a4}
 .pm-b:disabled{opacity:.6;cursor:default}
 .pm-line{color:#f1e9da;font-size:.95rem;margin:.5rem 0 .2rem;min-height:1.4em}
+#midiLine:empty{display:none}   /* AOG-MIDI-V1: the MIDI answer takes room only when there is one */
+#midiBtn[hidden]{display:none!important}   /* AOG-MIDI-V1: no MIDI in this browser (an iPhone), no button: the button style must not bring it back */
 .pm-tempo{display:flex;gap:6px;align-items:center}
 .pm-sec{border-top:1px solid #3a3d44;padding-top:10px;margin-top:10px}
 .pm-h{font:800 .72rem/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#d9cfbd;margin:0 0 6px}
@@ -191,6 +193,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="aog-beats.js"></script>
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-pads.js"></script>
+<script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -232,6 +235,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
           <p class="pm-now" id="guideNow" aria-live="polite"></p>
           <p class="pm-line" id="line" aria-live="polite"></p>
           <p class="pm-line" id="inLine" aria-live="polite"></p>
+          <p class="pm-line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI pads' or keyboard's one-line answer -->
           <div class="pm-bigrow"><button type="button" class="pm-b" id="bigBtn"></button></div><!-- AOG-PADS-BIG-V1 -->
           <div class="pads" id="pads" role="group"></div>
         </div>
@@ -250,6 +254,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
             <label class="pm-f"><span id="rateLab"></span><select class="pm-sel" id="rateSel"></select></label>
             <button type="button" class="pm-b" id="clickBtn" aria-pressed="false"></button>
             <button type="button" class="pm-b" id="fullBtn" aria-pressed="false"></button>
+            <button type="button" class="pm-b" id="midiBtn" hidden></button><!-- AOG-MIDI-V1 -->
           </div>
           <!-- AOG-PADS-TRANSPORT-HERE-V1 (Jimmy, 2026-10-11: "The stop / Recording / undo need to sit above the beat bank a"):
                Play, Record the loop, Undo and Clear sit right above the beat and its steps, where the loop is made -->
@@ -310,6 +315,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/37133b3e58b4.js"></script>
+<script src="/front/9bd22ccbf324.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:10dee4ef7cbed897 · MADE BY tools/build-fast.py from music-guitar.html: edit music-guitar.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:ff841be4ff1f6cbb · MADE BY tools/build-fast.py from music-guitar.html: edit music-guitar.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -83,6 +83,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 #rig .blk>h2{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0 0 .6rem}
 .plab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
 .line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
+#midiLine:empty{display:none}   /* AOG-MIDI-V1: the MIDI answer takes room only when there is one */
+#midiBtn[hidden]{display:none!important}   /* AOG-MIDI-V1: no MIDI in this browser (an iPhone), no button: the button style must not bring it back */
 .line.note{color:#ffd9a8}
 .line a{color:#cfe2ff}
 .row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
@@ -290,6 +292,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-scales.js" defer></script><!-- AOG-SCALES-LIB-V1: the shared scale library -->
 <script src="/aog-solo.js" defer></script><!-- AOG-SOLO-V1: Solo mode on the neck (aog-solo.js) -->
 <script src="/aog-lessons.js"></script><!-- AOG-LESSONS-V1: the shared lesson card -->
+<script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
 <script src="/aog-lessons-guitar.js"></script><!-- AOG-LESSONS-V1: this lab's lessons (made from _work/music/lessons_guitar.py) -->
 </head>
 <body>
@@ -411,10 +414,12 @@ body.pv-left .pv-drawer{left:auto;right:0}
           <span class="range" id="fretsOut" aria-live="polite"></span>
           <button type="button" class="pbtn" id="upBtn"></button>
           <button type="button" class="pbtn" id="muteBtn"></button>
+          <button type="button" class="pbtn" id="midiBtn" hidden></button><!-- AOG-MIDI-V1 -->
           <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
           <span id="recTime" hidden>0:00</span>
           <button type="button" class="pbtn pv-big" id="pvBig"></button><!-- AOG-PLAY-V1: the neck on the whole screen (a computer) -->
         </div>
+        <p class="line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI keyboard's one-line answer -->
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
         <div id="pedalsNear" hidden></div><!-- AOG-AMP-NEAR-V1: the pedals that are on, with their knobs, by the neck (aog-amp.js) -->
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
@@ -494,6 +499,6 @@ body.pv-left .pv-drawer{left:auto;right:0}
   </div>
 </div>
 
-<script src="/front/fb0fc51bf13f.js"></script>
+<script src="/front/0ea0d36b7d93.js"></script>
 </body>
 </html>
