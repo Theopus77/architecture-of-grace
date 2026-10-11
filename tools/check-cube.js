@@ -123,6 +123,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     /* My cube: the camera button and the colors sit right under the cube (Jimmy, iPhone: "too much scrolling") */
     await p.evaluate(() => { location.hash = "mine"; scrollTo(0, 0); }); await p.waitForTimeout(400);
     const gap = await p.evaluate(() => { const s = document.getElementById("stage").getBoundingClientRect(), c = document.querySelector('#panel [data-act="camera"]').getBoundingClientRect(), pal = document.getElementById("paintBar").getBoundingClientRect(); return { cam: c.top - s.bottom, pal: pal.top - s.bottom }; });
+    /* painting: a drag turns the cube the way the finger goes and paints nothing; Side shows a side straight on */
+    { const fc = () => p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, i = c.P.findIndex(q => q.kind === 1 && C.eqV(c.pos(q), [0, 0, 1])); const r = document.querySelector(`.face[data-i="${i}"] i`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+      const n0 = await p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("aog.cube.v1")).paint || {}).length), a = await fc();
+      await p.tp("touchStart", [[a.x, a.y]]); for (let k = 1; k <= 10; k++) { await p.tp("touchMove", [[a.x + k * 7, a.y]]); await p.waitForTimeout(16); } await p.tp("touchEnd", []); await p.waitForTimeout(300);
+      const b1 = await fc(), n1 = await p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("aog.cube.v1")).paint || {}).length);
+      ok(b1.x - a.x > 15 && n1 === n0, `${name}: painting, a drag turns the cube the way the finger goes, and paints nothing`);
+      const faceOn = await p.evaluate(async () => { const out = []; for (const f of ["R", "B", "L", "U", "D", "F"]) { const sel = document.getElementById("sideSel"); sel.value = f; sel.dispatchEvent(new Event("change")); await new Promise(o => setTimeout(o, 450));
+        const C = AOGCube, c = AOGCubeLab.cube, M = document.getElementById("cubeView").style.transform.match(/-?[\d.e-]+/g).slice(1).map(Number);
+        const n = C.FACES[f], v = [n[0], -n[1], n[2]], z = M[2] * v[0] + M[6] * v[1] + M[10] * v[2]; out.push(z > .85); } return out.every(Boolean); });
+      ok(faceOn, `${name}: painting, Side shows each of the six sides nearly straight on`); }
     ok(gap.pal < 40 && gap.cam < 520, `${name}: in My cube the camera button and the colors are right under the cube (${Math.round(gap.cam)}px, ${Math.round(gap.pal)}px)`);
     ok(!p.errs.length, `${name}: no page errors (hands) ${p.errs.join("; ")}`);
     await p.ctx.close();

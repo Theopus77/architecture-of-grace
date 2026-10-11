@@ -272,7 +272,8 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 .paintbar .nm { flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .paintbar .n { font-variant-numeric:tabular-nums; color:var(--muted); font-size:.85rem; }
 .paintbar .n.over { color:var(--warn); font-weight:800; }
-@media (max-width:600px){ .paintbar button { flex-direction:column; justify-content:center; gap:.15rem; padding:.3rem .2rem; } .paintbar .nm { display:none; } }
+.paintbar { container-type:inline-size; }
+@container (max-width:600px){ .paintbar button { flex-direction:column; justify-content:center; gap:.15rem; padding:.3rem .2rem; } .paintbar .nm { display:none; } }
 .calm .kind { margin:.2rem 0 .35rem; font-weight:600; display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; }
 .calm .kind .tag { display:inline-block; border-radius:999px; padding:.25rem .7rem; font:800 .8rem/1.2 var(--sans); letter-spacing:.08em; text-transform:uppercase; }
 .calm .kind.whole .tag { background:var(--warn-soft); color:var(--ink); border:2px solid var(--warn); }
@@ -353,7 +354,8 @@ const T={
   hint:["Drag a row to turn it. Circle a middle square to turn that whole side, like a steering wheel.","Arrastra una fila para girarla. Gira el dedo alrededor de un cuadro del medio para girar todo ese lado, como un volante."],
   hintSolve:["Follow the arrow with your finger, or tap Turn it.","Sigue la flecha con el dedo, o toca Girarlo."],
   hintSolveReal:["Follow the arrow on your cube, then tap I did it.","Sigue la flecha en tu cubo y luego toca Ya lo hice."],
-  hintPaint:["Pick a color, then tap a square to paint it.","Elige un color y toca un cuadro para pintarlo."],
+  hintPaint:["Pick a color, then tap a square to paint it. Drag the cube to turn it.","Elige un color y toca un cuadro para pintarlo. Arrastra el cubo para girarlo."],
+  sideH:["Side","Lado"], sidePick:["Turned","Girado"],
   faces:["Turn a side","Gira un lado"], whole:["Turn the whole cube","Gira el cubo entero"],
   undo:["Undo","Deshacer"], mix:["Mix it up","Mézclalo"], fresh:["Solved cube","Cubo resuelto"],
   look:["Front view","Vista de frente"], lookH:["View","Vista"], viewFront:["Front","Frente"], viewBack:["Back","Atrás"],
@@ -402,7 +404,7 @@ const T={
   mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
   mine1:["Hold your cube with yellow on top and green facing you. Not those colors? Hold it any way, and paint the six centers (the middle square of each side) to match first.","Sostén tu cubo con el amarillo arriba y el verde hacia ti. ¿No tiene esos colores? Sostenlo como quieras y pinta primero los seis centros (el cuadro del medio de cada lado) igual que el tuyo."],
   mine2:["Pick a color. Tap the matching squares on the screen.","Elige un color. Toca los cuadros que coinciden en la pantalla."],
-  mine3:["Tap Back. Turn your cube the same way and paint the other three sides.","Toca Atrás. Gira tu cubo igual y pinta los otros tres lados."],
+  mine3:["Choose the next side under the cube, or drag the cube to turn it. Paint every side.","Elige el siguiente lado debajo del cubo, o arrastra el cubo para girarlo. Pinta todos los lados."],
   mine4:["Tap Check my cube.","Toca Revisa mi cubo."],
   check:["Check my cube","Revisa mi cubo"], clear:["Clear","Borrar"], fromScreen:["Copy the screen cube","Copiar el cubo de la pantalla"],
   errCount:["{c}: {n} squares painted. Each color needs 9.","{c}: {n} cuadros pintados. Cada color necesita 9."],
@@ -699,6 +701,7 @@ function build(){
     viewEl.appendChild(el); els.push({el, faces});
   });
 }
+const LOOKSIGN=[1,1,1];   /* the drag turns the cube the way the finger goes (checked by check-cube) */
 const LIGHT=(()=>{ const v=[-0.35,-0.8,0.6], n=Math.hypot(...v); return v.map(x=>x/n); })();
 function toView(v){ return C.mulV(VIEW, [v[0], -v[1], v[2]]); }   /* model → CSS (y down) → the view's turn */
 const viewCSS=() => { const V=VIEW; return `matrix3d(${V[0]},${V[3]},${V[6]},0,${V[1]},${V[4]},${V[7]},0,${V[2]},${V[5]},${V[8]},0,0,0,0,1)`; };
@@ -1219,7 +1222,19 @@ function padHtml(){
    each always the same: Front (top, front, right) and Back (bottom, back, left). Together they show all six sides,
    and Front is always home. Rows still turn by a drag on the cube or along the arrow. */
 const atBack=() => VIEW.every((x,i) => Math.abs(x-BACK_VIEW[i])<.02);
+/* a view that shows one side nearly straight on, its top up, tipped a little so it still looks like a cube */
+const SIDE_TILT=mul3(C.rot([1,0,0],-14*deg), C.rot([0,1,0],-18*deg));
+function sideView(f){
+  const n=C.FACES[f], up = f==="U" ? [0,0,-1] : f==="D" ? [0,0,1] : [0,1,0], right=cross(up, n), fl=v => [v[0],-v[1],v[2]];
+  const A=[fl(right), fl(up), fl(n)], E=[[1,0,0],[0,-1,0],[0,0,1]], B=[];
+  for(let r=0;r<3;r++) for(let c=0;c<3;c++) B[r*3+c]=E[0][r]*A[0][c]+E[1][r]*A[1][c]+E[2][r]*A[2][c];
+  return mul3(SIDE_TILT, B);
+}
+const atSide=f => VIEW.every((x,i) => Math.abs(x-sideView(f)[i])<.02);
+function wireSide(){ const sd=$("sideSel"); if(sd) sd.onchange=()=>{ if(sd.value) lookTurn(null,0,sideView(sd.value)); }; }
 function lookRowHtml(){
+  if(painting){ const cur=["F","R","B","L","U","D"].find(atSide)||"";
+    return `<label class="startat looks"><span class="lk">${esc(t("sideH"))}</span><select id="sideSel">${cur?"":`<option value="">${esc(t("sidePick"))}</option>`}${["F","R","B","L","U","D"].map(f => `<option value="${f}" ${cur===f?"selected":""}>${esc(tx(T.sideName[f]).replace(/^./,x=>x.toUpperCase()))}</option>`).join("")}</select></label>`; }
   const f=atHome(), b=atBack();
   return `<span class="looks" role="group" aria-label="${esc(t("lookH"))}"><span class="lk">${esc(t("lookH"))}</span>`
     +`<button type="button" class="pill lookb ${f?"on":""}" data-look="front" aria-pressed="${f}">${esc(t("viewFront"))}</button>`
@@ -1244,7 +1259,8 @@ function paintAll(){
   const h=(location.hash||"").replace("#","");
   S.view = h==="solve" ? "solve" : h==="mine" ? "mine" : "learn";
   painting = S.view==="mine";
-  if(painting){ cubeBeforePaint = cubeBeforePaint || cube; cube=new C.Cube(); }
+  if(painting){ cubeBeforePaint = cubeBeforePaint || cube; cube=new C.Cube(); if(!["F","R","B","L","U","D"].some(atSide)) VIEW=sideView("F"); }
+  else if(!atHome() && !atBack()) VIEW=HOME_VIEW.slice();
   else if(cubeBeforePaint){ if(cube.toJSON()===new C.Cube().toJSON()) cube=cubeBeforePaint; cubeBeforePaint=null; }
   stage.classList.toggle("painting", painting);
   stage.classList.toggle("symbols", !!S.symbols); stage.classList.toggle("letters", !!S.letters && !painting);
@@ -1268,6 +1284,7 @@ function paintAll(){
     render();
   });
   const sel=$("speedSel"); if(sel) sel.onchange=()=>{ S.speed=sel.value; save(); };
+  wireSide();
   build(); fit(); bar(); panel();
   save();
 }
@@ -1350,12 +1367,17 @@ function onMove(e){
   const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
   if(!drag.mode){
     if(Math.hypot(dx,dy)<9) return;
+    /* AOG-CUBE-PAINTLOOK-V1 (2026-10-11) — Jimmy, painting his cube: "I don't like how I can't move the cube at all!
+       Besides the front and back flips." While painting, a drag turns the cube any way, under the finger; a tap still
+       paints. (Elsewhere the cube holds still, so a learner turning rows never gets lost.) */
+
     /* a quick hand may start the next drag while the last turn is still gliding: wait for it, then follow the finger */
     if(busy || queue.length) return;
     if(!drag.arrow && arrowGeo){ const na=nearArrow(drag.sx0, drag.sy0); if(na && na.d<Math.max(30, size*.6)) drag.arrow=na; }
     const A=drag.arrow, along=A ? (dx*A.ux+dy*A.uy)/Math.hypot(dx,dy) : 0;
     const RW=arrowGeo && arrowGeo.round, inWheel=RW && Math.hypot(drag.sx0-RW.cx, drag.sy0-RW.cy)<RW.r*1.6;
-    if(inWheel && !busy && !queue.length){
+    if(painting){ drag.mode="look"; }
+    else if(inWheel && !busy && !queue.length){
       /* AOG-CUBE-WHEEL-V1 (2026-10-11) — Jimmy: "the 'steering wheel' sometimes screws up and a piece rotates
          horizontally." With the steering wheel showing, a finger going round anywhere on that face turns the face:
          how far the finger goes round the middle is how far the face turns, as with a real wheel. */
@@ -1389,6 +1411,9 @@ function onMove(e){
       else drag.mode="still";
     } else drag.mode="still";   /* AOG-CUBE-STILL-V1: the space around the cube never moves it */
   }
+  if(drag.mode==="look"){
+    const L=Math.hypot(dx,dy); if(L<1) return;
+    VIEW=mul3(C.rot([-dy/L, dx/L, 0].map((v,i) => v*LOOKSIGN[i]), L/(size*2.6)), drag.v0); render({viewOnly:true}); return; }
   if(drag.mode==="turn" && !drag.lit){ drag.lit=true; turnFocus=drag.turn.set; render(); }
   if(drag.mode==="turn"){ const T2=drag.turn;
     if(T2.wheel){
@@ -1428,7 +1453,7 @@ function endDrag(e){
   const d=drag; drag=null; stage.classList.remove("grabbing");
   if(moveRAF){ cancelAnimationFrame(moveRAF); moveRAF=0; } moveEv=null;
   if(!d.mode && d.face && painting){ paintAt(d.face); return; }
-  if(d.mode==="look"){ render(); return; }                               /* shading and the arrow, once the hand lets go */
+  if(d.mode==="look"){ render(); if(painting) $("lookRow").innerHTML=lookRowHtml(), wireSide(); return; }                               /* shading and the arrow, once the hand lets go */
   if(d.mode!=="turn") return;
   /* a short, clear drag is enough: past about 12° the row finishes the quarter turn in that direction */
   const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */ from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
