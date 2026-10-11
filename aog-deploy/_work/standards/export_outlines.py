@@ -15,7 +15,8 @@ META = {"sci": "Science, K–12", "ss": "Social Studies, K–12", "ela": "Englis
         "spt": "Sports History, K–12", "mar": "The Measured Step, K–12",
         "unr": "The Unseen Realm, K–12",
 
-        "sec": "Secret Societies, K–12"}
+        "sec": "Secret Societies, K–12",
+        "skt": "Skateboarding, K–12 and Adult"}
 out = {}
 for k, name in META.items():
     p = os.path.join(ROOT, "_work", k, "outline.py")

@@ -290,6 +290,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
      are kept on the device (aog-recorder.js, AOG-REC-KEEP-V1) or already on My Track. A room that cannot say stays open. */
   function safe(id) {
     var f = LIVE[id], R = null; if (!f) return true;
+    if (f.__rendering) return false;   /* AOG-NOTES-V1: playing notes for the desk */
     try { R = f.contentWindow && f.contentWindow.AOGStudioRec; } catch (e) { return true; }
     if (!R) return true;
     try {
@@ -558,6 +559,32 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
       }, 120);
     });
   }
+  /* AOG-NOTES-V1 (2026-10-11) — Jimmy: "fix a wrong note, change an instrument after recording, or tighten the timing."
+     The Mixing Desk's piano-roll (aog-pianoroll.js) plays edited notes through the room they were played in: the room is
+     opened out of sight if it is not open (as the desk is for My Track), and its AOGRoomRender makes the sound offline.
+     A room busy with that is never closed to make space. */
+  function roomFrame(id) {
+    var r = room(id); if (!r || id === "studio") return null;
+    if (LIVE[id]) return LIVE[id];
+    var n = fr.cloneNode(false); n.removeAttribute("id"); n.removeAttribute("src"); n.setAttribute("data-file", "/" + r.file); n.style.display = "none";
+    n.__new = Date.now(); fr.parentNode.appendChild(n); n.src = "/" + r.file; LIVE[id] = n; RECENT.unshift(id);
+    return n;
+  }
+  function withRoom(id, fn) {
+    var f = roomFrame(id); if (!f) return Promise.reject(new Error("no room"));
+    f.__rendering = (f.__rendering || 0) + 1;
+    var done = function () { f.__rendering = Math.max(0, (f.__rendering || 1) - 1); trim(); };
+    return new Promise(function (ok, no) {
+      var t0 = Date.now(), k = setInterval(function () {
+        var w = null; try { w = f.contentWindow; } catch (e) {}
+        var ready = w && w.AOGRoomRender && w.document.readyState === "complete" && (!f.__new || Date.now() - f.__new > 700);
+        if (ready) { clearInterval(k); f.__new = 0; Promise.resolve().then(function () { return fn(w.AOGRoomRender); }).then(ok, no); }
+        else if (Date.now() - t0 > 30000) { clearInterval(k); no(new Error("no room")); }
+      }, 120);
+    }).then(function (r) { done(); return r; }, function (e) { done(); throw e; });
+  }
+  function renderNotes(id, payload) { return withRoom(id, function (R) { return R.render(payload); }); }
+  function roomSounds(id) { return withRoom(id, function (R) { return R.sounds(); }); }
   /* AOG-SONG-V1 (2026-10-11) — Jimmy: "One tempo and key for the song. Set them once in the Studio, and every room opens
      there." ♩ Song opens a small panel: the tempo (− / a number / +) and the key (a home note, Major or Minor). Every room
      follows at once (aog-song.js); a room's own tempo or key changes it too. */
@@ -658,6 +685,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
     backing: backing, over: overGet,   /* AOG-OVERDUB-V1 */
+    renderNotes: renderNotes, roomSounds: roomSounds,   /* AOG-NOTES-V1 */
     arrived: function (id, w) { if (w && fr.contentWindow !== w) return;   /* AOG-STUDIO-KEEP-V1: a room out of sight never takes the screen */
       if (room(id) && id !== cur) {
         /* the room in sight opened another room in its own frame: the frame is now kept under that room's name */

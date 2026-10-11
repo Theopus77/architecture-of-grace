@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:930ad6222acfc2ad · MADE BY tools/build-fast.py from music-guitar.html: edit music-guitar.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:f78bf445fdfa8024 · MADE BY tools/build-fast.py from music-guitar.html: edit music-guitar.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -175,6 +175,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .neck .dot.root circle{stroke:#b4581a;stroke-width:4}
 .neck .dot.now circle{fill:#ef9a4a} .neck .dot.now text{fill:#1f1206}
 .neck .dot.down circle{fill:#ffd36b} .neck .dot.down text{fill:#1f1206}
+/* AOG-LEARN-V1: the frets Learn a song asks for (the chord's shape, or the notes to play): teal; the chord's root ringed */
+.neck .dot.lrn{display:inline}
+.neck .dot.lrn:not(.down):not(.now) circle{fill:#9fe0d6} .neck .dot.lrn:not(.down):not(.now) text{fill:#0f2421}
+.neck .dot.lrn circle{stroke:#1f7f78;stroke-width:3} .neck .dot.lrn.lroot circle{stroke:#0f4f49;stroke-width:5}
 .keys-line{display:none}
 /* AOG-STRINGS-KEYS-V2: the keys as a picture; each letter on the neck as a small keycap */
 .keymap{margin:.6rem 0 0;padding:.6rem .75rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#17191c}
@@ -311,6 +315,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
 <script>
 (function(){
   function add(src){
@@ -432,6 +437,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
         <div id="takes"></div>
       </div>
 
+      <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
+
       <div class="blk" id="ampBlk"><!-- AOG-AMP-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
         <p class="line" style="margin-top:0" data-t="ampLine"></p>
@@ -500,6 +507,6 @@ body.pv-left .pv-drawer{left:auto;right:0}
   </div>
 </div>
 
-<script src="/front/a269356f5ead.js"></script>
+<script src="/front/d115c05d2616.js"></script>
 </body>
 </html>

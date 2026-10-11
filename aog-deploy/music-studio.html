@@ -661,6 +661,8 @@ html.aog-keys .st-cp .st-keys{display:block}
 }
 /* AOG-DESK-BITS-V1 */
 .st-bits{max-width:24rem;margin:0 0 .7rem}
+.st-roomk{max-width:24rem;margin:.7rem 0 0}   /* AOG-REAL-ROOMS-V1 */
+.st-roomc{margin:.45rem 0 0;font-size:.9rem}
 /* AOG-DESK-WOOD-V1: walnut end cheeks on the console and the desk below, as on the consoles in Jimmy's drawings */
 .st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:hidden}
 .st-chassis::before,.st-chassis::after{content:"";position:absolute;top:0;bottom:0;width:var(--cheek);pointer-events:none;
@@ -759,6 +761,77 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 .st-pvol .st-lab{flex:1 1 100%;margin:0}
 .st-pvol input[type=range]{flex:1 1 12rem;min-width:8rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
 .st-pvol output{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums;min-width:4.2rem}
+/* ══ AOG-DESK-AUTO-V1 (2026-10-11) — Jimmy's 8: "Draw changes over time (automation)." A lane under a track's lane,
+   with the same bars, the same zoom and the same scroll; the line and its points in the track's colour. Nothing in it
+   moves by itself: a point moves only under a finger, a pen, the mouse or the keys. ══ */
+.st-desk .st-auto{display:grid;grid-template-columns:var(--lab) minmax(0,1fr);gap:0;border-bottom:1px solid #1f2125}
+.st-tl.zoomed>.st-auto{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
+.st-desk .st-aln{min-height:68px;font:700 .74rem/1.15 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#e9e0cc;
+  background:linear-gradient(90deg,#17181b,#1a1b1f);box-shadow:inset 3px 0 0 var(--c)}
+.st-alk{overflow-wrap:anywhere;min-width:0}
+.st-alt{position:relative;display:block;min-height:68px;touch-action:pan-y;cursor:crosshair;
+  background:linear-gradient(90deg,rgba(207,190,150,.09) 1px,transparent 1px) 0 0/calc(100%/var(--n,8)) 100% repeat-x,
+  linear-gradient(transparent 7.5%,rgba(207,190,150,.10) 7.5%,rgba(207,190,150,.10) calc(7.5% + 1px),transparent calc(7.5% + 1px),transparent 92%,rgba(207,190,150,.10) 92%,rgba(207,190,150,.10) calc(92% + 1px),transparent calc(92% + 1px)),#0b0c0e}
+.st-alt svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.st-alt .al{fill:none;stroke:var(--c);stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.st-alt .af{fill:var(--c);opacity:.12;stroke:none}
+.st-alt .ad{fill:none;stroke:#8c8473;stroke-width:1.5;stroke-dasharray:5 5;vector-effect:non-scaling-stroke}
+.st-apt{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;padding:0;border:0;border-radius:50%;background:transparent;cursor:grab;touch-action:none;z-index:2}
+.st-apt::before{content:"";position:absolute;left:50%;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #0b0c0e}
+.st-apt.on::before{width:17px;height:17px;margin:-8.5px 0 0 -8.5px;background:#fff6df;box-shadow:0 0 0 2px var(--c),0 0 0 4px #0b0c0e}
+.st-apt:focus-visible{outline:2px solid #f0c26e;outline-offset:2px}
+.st-apt.drag{cursor:grabbing}
+@media (pointer:coarse){ .st-apt{width:44px;height:44px;margin:-22px 0 0 -22px} }
+.st-autot .st-drw{flex:0 1 18rem}
+.st-autot .st-drw .st-lab{margin:0 0 .3rem}
+.st-autot{align-items:flex-end}
+.st-desk .st-sl input[type=range]:disabled,.st-desk .st-fw input[type=range]:disabled{opacity:.4;cursor:not-allowed}
+.st-arule:empty,#autoLine:empty{display:none}
+.st-arule{margin-top:.3rem;font-size:.88rem}
+/* ══ AOG-DESK-MORE-V1 (2026-10-11) — Jimmy's 2, 3, 9, 11, 12: effect slots, an Echo in beats, takes, sections, quick
+   edits and versions (aog-desk-more.js). The same console: dark trays, gold type, nothing that moves by itself. ══ */
+.st-desk .st-btn[hidden],.st-desk .st-hw[hidden]{display:none!important}
+/* the sections, a thin strip under the ruler; their edges are taken by the hand */
+.st-desk .st-secr{display:grid;grid-template-columns:var(--lab) minmax(0,1fr);border-bottom:1px solid #2a2d32}
+.st-tl.zoomed>.st-secr,.st-tl.zoomed>.st-tkr{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
+.st-desk .st-secn{min-height:36px;font:700 .68rem/1.1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#d8cfbf}
+.st-sect{position:relative;display:block;min-height:36px;background:#0d0e10}
+.st-sec{position:absolute;top:3px;bottom:3px;display:flex;align-items:center;min-width:0;padding:0 14px;border-radius:5px;border:1px solid #6a5a34;
+  background:linear-gradient(#2c2618,#221d12);color:#f3e6c6;font:600 .82rem/1 var(--sans);white-space:nowrap;overflow:hidden;cursor:pointer;touch-action:pan-y}
+.st-sec.on{border-color:#f0c26e;box-shadow:0 0 0 1px #f0c26e;color:#ffe9b8}
+.st-sec b{font-weight:700;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.st-seh{position:absolute;top:0;bottom:0;width:22px;cursor:ew-resize;touch-action:none;font-style:normal}
+.st-seh::before{content:"";position:absolute;top:22%;bottom:22%;left:50%;width:3px;margin-left:-1.5px;border-radius:2px;background:#d9a94c}
+.st-seh.a{left:-8px}.st-seh.b{right:-8px}
+/* the take lanes, under a track: the bits chosen bright, the rest dim */
+.st-desk .st-tkr{display:grid;grid-template-columns:var(--lab) minmax(0,1fr);border-bottom:1px solid #1f2125}
+.st-desk .st-tkn{min-height:38px;font:700 .74rem/1.15 var(--sans);color:#e9e0cc;background:linear-gradient(90deg,#17181b,#1a1b1f);box-shadow:inset 3px 0 0 var(--c)}
+.st-tkt{position:relative;display:block;min-height:38px;background:#0b0c0e;cursor:pointer;touch-action:pan-y}
+.st-tkb{position:absolute;top:3px;bottom:3px;opacity:.38;pointer-events:none}
+.st-tkb .wv{position:absolute;inset:0;width:100%;height:100%}
+.st-tkb .wv path{fill:none;stroke:var(--c);stroke-width:1.1;vector-effect:non-scaling-stroke}
+.st-tkon{position:absolute;top:1px;bottom:1px;border-top:2px solid var(--c);border-bottom:2px solid var(--c);background:rgba(240,194,110,.10);pointer-events:none}
+.st-tksel{position:absolute;top:0;bottom:0;background:rgba(243,211,142,.22);border-left:1px solid #f3d38e;border-right:1px solid #f3d38e;pointer-events:none}
+/* more for this track */
+.st-mt{display:grid;gap:.7rem;margin-top:1rem;max-width:52rem}
+.st-mt .st-pick{max-width:24rem}
+.st-fxs{display:grid;gap:.5rem;padding:.7rem .8rem;border-radius:10px;border:1px solid #0a0a0c;background:linear-gradient(#111215,#191a1e);box-shadow:inset 0 2px 6px rgba(0,0,0,.7)}
+.st-fxh{display:flex;flex-wrap:wrap;gap:.5rem .7rem;align-items:flex-end}
+.st-fxh .st-field{flex:1 1 13rem}
+.st-fxh .st-btn{flex:0 0 auto;min-height:48px}
+.st-fxk{display:grid;gap:.25rem .9rem;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr))}
+.st-fxk .st-sl input{accent-color:#7fc7f5}
+.st-gr{margin:0;font:700 .92rem/1.3 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
+.st-sw{display:inline-block;width:1.1rem;height:1.1rem;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #0b0c0e,0 0 0 3px #4a4e55;vertical-align:middle;margin-right:.4rem}
+.st-tkl{display:grid;gap:.45rem}
+.st-tkl .st-rec .st-btn{flex:0 0 auto}
+.st-clipb{padding:.6rem .7rem;border:1px solid #5b4a24;border-radius:12px;background:#181a1e}
+.st-pit{display:flex;align-items:center;gap:.5rem .8rem;flex-wrap:wrap;margin-top:.7rem}
+.st-pit .st-lab{flex:1 1 100%;margin:0}
+.st-pit input[type=range]{flex:1 1 12rem;min-width:8rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
+.st-pit output{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
+.st-et{margin-top:.5rem;max-width:22rem}
+.st-vab{display:flex;flex-wrap:wrap;gap:.5rem .7rem;align-items:center;margin-top:.6rem}
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -766,6 +839,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-studio.js"></script>
+<script src="/aog-pianoroll.js"></script><!-- AOG-PIANOROLL-V1: Edit the notes of a take from the Piano, Guitar, Bass or Band -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -817,6 +891,13 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <div class="st-tl" id="timeline"></div>
         <div class="st-tools" id="tlTools"></div><!-- AOG-DESK-HANDS-V1: zoom, snap, undo and redo, under the lanes -->
         <p class="st-line" id="tlLine" aria-live="polite"></p>
+        <!-- AOG-DESK-AUTO-V1: Draw changes, for the track you are on; its lane opens under that track's lane -->
+        <div class="st-tools st-autot" id="autoTools"></div>
+        <p class="st-line" id="autoLine" aria-live="polite"></p>
+        <p class="st-line st-arule" id="autoRule"></p>
+        <!-- AOG-DESK-SECTIONS-V1: the song's sections (Verse, Chorus …), marked on the ruler -->
+        <div class="st-tools st-autot" id="secTools"></div>
+        <p class="st-line" id="secLine" aria-live="polite"></p>
       </div>
 
       <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
@@ -865,6 +946,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
         <div id="clipBox"></div>
+        <div id="moreBox"></div><!-- AOG-DESK-MORE-V1: more for this track: effects, takes, name and colour, and the clipboard -->
         <h3 class="st-h3" data-t="recsH" id="recsH"></h3>
         <div class="st-recs" id="recs"></div>
         <div id="voiceBox"></div><!-- AOG-STUDIO-VOICE-V1: track 8 is your voice -->
@@ -894,6 +976,15 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         </div>
       </div>
 
+      <div class="st-blk" id="verBlk"><!-- AOG-DESK-VERSIONS-V1: versions of this song, on this device, and A/B -->
+        <h2 class="st-h" data-t="verH"></h2>
+        <p class="st-line" data-t="verLine" style="margin:0 0 .7rem"></p>
+        <div class="st-row"><label class="st-field st-name"><span class="st-lab" data-t="verName"></span><input type="text" id="verName" maxlength="40" autocomplete="off" enterkeyhint="done"></label><button type="button" class="st-btn st-go" id="verSave"></button></div>
+        <div id="verList"></div>
+        <div class="st-ask" id="verAsk" hidden><p id="verAskT"></p><div class="st-row"><button type="button" class="st-btn st-clear" id="verYes"></button><button type="button" class="st-btn" id="verNo"></button></div></div>
+        <p class="st-line" id="verMsg" aria-live="polite"></p>
+      </div>
+
       <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
         <h2 class="st-h" data-t="carryH"></h2>
         <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
@@ -916,6 +1007,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
+<script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════════════════════
@@ -924,6 +1016,8 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 const LKEY="aog.studio.v1", NT=8, MAX_BARS=128, MIX_TAIL=2, MIX_SR=44100;
 /* one colour per track, pale enough for dark words on it */
 const COLORS=["#f0c26e","#9fd4a0","#f4a37a","#7fc7f5","#e6a3d8","#c9b8f0","#a8e0d8","#f2d79a"];
+/* AOG-DESK-LOOK-V1: a track may have a colour of its own, from a small calm palette (aog-desk-more.js, DM_PAL) */
+function colOf(i){ const x=SONG.tracks[i], k=x && x.col; return DM_PAL[k] ? DM_PAL[k].c : COLORS[i]; }
 /* the shelves the music tools fill (aog-handoff.js); each holds the newest {name, bpm, bars, at, wav, take?} */
 const SHELVES=[
   {key:"padbench",   from:{en:"From the drum machine",es:"De la caja de ritmos"}, sh:{en:"Drum machine",es:"Caja de ritmos"}, tk:{en:"Drum machine take",es:"Toma de la caja de ritmos"}},   /* AOG-PADS-STUDIO-V1; AOG-DRUM-MACHINE-V2: the Beat Lab is The Drum Machine */
@@ -1007,7 +1101,8 @@ const STR={
   mute:{en:"Mute",es:"Silenciar"}, solo:{en:"Solo",es:"Solo"},
   low:{en:"Low",es:"Graves"}, mid:{en:"Middle",es:"Medios"}, high:{en:"High",es:"Agudos"},
   punch:{en:"Punch",es:"Pegada"}, room:{en:"Room",es:"Sala"}, echo:{en:"Echo",es:"Eco"},
-  masterH:{en:"The whole song",es:"Toda la canción"}, glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
+  masterH:{en:"The whole song",es:"Toda la canción"},
+  roomPick:{en:"Room sound",es:"Sonido de sala"}, rm_made:{en:"Smooth",es:"Suave"}, rm_small:{en:"Small room",es:"Sala pequeña"}, rm_studio:{en:"Studio",es:"Estudio"}, rm_hall:{en:"Hall",es:"Sala grande"}, rm_church:{en:"Church",es:"Iglesia"}, roomFrom:{en:"Where the rooms come from",es:"De dónde vienen las salas"},   /* AOG-REAL-ROOMS-V1 */ glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
   finishH:{en:"Finish your song",es:"Termina tu canción"},
   mixBtn:{en:"Make the mix",es:"Hacer la mezcla"}, mixing:{en:"Making the mix…",es:"Haciendo la mezcla…"},
   mixNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
@@ -1186,6 +1281,7 @@ const STR={
   edit:{en:"✎ Edit",es:"✎ Editar"}, editAria:{en:"Edit track {n}",es:"Editar la pista {n}"},
   /* AOG-DESK-HANDS-V1: drag, zoom, nudge, redo, a piece's volume, crossfades */
   redo:{en:"↷ Redo",es:"↷ Rehacer"}, redone:{en:"Done again.",es:"Hecho otra vez."},
+  notesEdit:{en:"Edit the notes",es:"Editar las notas"},   /* AOG-PIANOROLL-V1 */
   undoAria:{en:"Undo the last change",es:"Deshacer el último cambio"}, redoAria:{en:"Redo the change you undid",es:"Rehacer el cambio que deshiciste"},
   zoom:{en:"Zoom",es:"Zoom"}, zoomIn:{en:"Zoom in",es:"Acercar"}, zoomOut:{en:"Zoom out",es:"Alejar"},
   snapOn:{en:"Snap to the beat: On",es:"Ajustar al pulso: Sí"}, snapOff:{en:"Snap to the beat: Off",es:"Ajustar al pulso: No"},
@@ -1197,6 +1293,7 @@ const STR={
   pvolLab:{en:"Volume of this piece",es:"Volumen de esta parte"}, pvolAria:{en:"Volume of piece {n}",es:"Volumen de la parte {n}"},
   xfLab:{en:"Crossfade where pieces meet",es:"Fundido donde se juntan las partes"}, xfOff:{en:"Off",es:"No"}
 };
+Object.assign(STR, DM_STR);   /* AOG-DESK-MORE-V1: the words of aog-desk-more.js */
 const S={ lang:"en", decoding:0, busy:false, pick:"", picked:false, ask:"", stretching:0, edMsg:"", edAt:"cut" };
 try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
 function t(k, vars){ let s=(STR[k]||{})[S.lang]; if(s==null) s=k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
@@ -1212,7 +1309,8 @@ function num(v, lo, hi, d){ v=+v; return isFinite(v) ? Math.max(lo, Math.min(hi,
 
 /* ══ the song: what is on each track and how the mixer is set (localStorage aog.studio.v1) ══ */
 function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false, low:0, mid:0, high:0, punch:0, room:0, echo:0}; }
-function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80},
+const DESK_ROOMS=["made","small","studio","hall","church"];   /* AOG-REAL-ROOMS-V1: the Room return's choices */
+function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80, room:"hall"},
   sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false, name:""}; }
 let SONG=blankSong();
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Mixing Desk's lessons: each step ticks itself as it happens (the words:
@@ -1265,6 +1363,8 @@ function cleanClip(c){
     layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto, lead:!!c.lead };   /* AOG-STUDIO-LISTEN-V1 · AOG-SONG-V1 (lead) */
   if(!(o.sec>0) || !(o.body>0)) return null;
   if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
+  /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
+  if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
     o.tid=(typeof c.tid==="string" && /^t[a-z0-9]{4,40}$/.test(c.tid)) ? c.tid : ""; }
@@ -1282,6 +1382,7 @@ function cleanPieces(a){
     /* AOG-DESK-DRAG-V1: `at` may sit between beats (snap off, a nudge); it is kept as it is, never rounded to a beat */
     const q={a:num(p.a,0,1e5,0), b:num(p.b,0,1e5,0), at:num(p.at,0,MAX_BARS*4,0), n:Math.round(num(p.n,1,16,1))};
     const g=Math.round(num(p.g,PVOL_LO,PVOL_HI,0)*10)/10; if(g) q.g=g;
+    if(p.rev) q.rev=1;   /* AOG-DESK-REVERSE-V1: this piece plays backwards */
     if(q.b-q.a>=0.25) out.push(q); });
   return out.length ? out : null;
 }
@@ -1289,11 +1390,16 @@ function cleanSong(r){
   const s=blankSong();
   if(!r || typeof r!=="object") return s;
   if(Array.isArray(r.tracks)) r.tracks.slice(0,NT).forEach((x,i)=>{ if(!x||typeof x!=="object") return; const d=s.tracks[i];
-    d.clip=cleanClip(x.clip); d.vol=num(x.vol,0,100,80); d.pan=num(x.pan,-100,100,0); d.mute=!!x.mute; d.solo=!!x.solo;
+    d.clip=dmCleanClip(x.clip); d.vol=num(x.vol,0,100,80); d.pan=num(x.pan,-100,100,0); d.mute=!!x.mute; d.solo=!!x.solo;
     d.low=num(x.low,-12,12,0); d.mid=num(x.mid,-12,12,0); d.high=num(x.high,-12,12,0);
-    d.punch=num(x.punch,0,100,0); d.room=num(x.room,0,100,0); d.echo=num(x.echo,0,100,0); });
+    d.punch=num(x.punch,0,100,0); d.room=num(x.room,0,100,0); d.echo=num(x.echo,0,100,0);
+    const ln=cleanLines(x.lines); if(ln) d.lines=ln; if(AUTO_KEYS.indexOf(x.lane)>=0) d.lane=x.lane;   /* AOG-DESK-AUTO-V1 */
+    dmCleanTrack(x, d); });   /* AOG-DESK-MORE-V1: its name and colour, its effects, its takes */
   if(r.master && typeof r.master==="object"){ const m=r.master, d=s.master;
-    d.low=num(m.low,-12,12,0); d.mid=num(m.mid,-12,12,0); d.high=num(m.high,-12,12,0); d.glue=num(m.glue,0,100,30); d.vol=num(m.vol,0,100,80); }
+    d.low=num(m.low,-12,12,0); d.mid=num(m.mid,-12,12,0); d.high=num(m.high,-12,12,0); d.glue=num(m.glue,0,100,30); d.vol=num(m.vol,0,100,80);
+    if(ECHO_T[m.et]!=null && m.et!=="d8") d.et=m.et; }   /* AOG-DESK-ECHO-SYNC-V1: only when it is not the dotted eighth */
+  s.master.room=DESK_ROOMS.includes(r.master && r.master.room) ? r.master.room : "made";   /* AOG-REAL-ROOMS-V1: a song from before keeps its room */
+  dmCleanSong(r, s);   /* AOG-DESK-SECTIONS-V1 */
   s.sel=Math.round(num(r.sel,0,NT-1,0)); s.startBar=Math.round(num(r.startBar,1,MAX_BARS,1));
   s.loopOn=!!r.loopOn; s.loopFrom=Math.round(num(r.loopFrom,1,MAX_BARS,1)); s.loopTo=Math.round(num(r.loopTo,1,MAX_BARS,4));
   if(s.loopTo<s.loopFrom) s.loopTo=s.loopFrom;
@@ -1302,7 +1408,7 @@ function cleanSong(r){
   return s;
 }
 function load(){ try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r && r.v===1) SONG=cleanSong(r); }catch(e){} }
-function save(){ try{ localStorage.setItem(LKEY, JSON.stringify(SONG)); }catch(e){} }
+function save(){ if(dmNoSave()) return; try{ localStorage.setItem(LKEY, JSON.stringify(SONG)); }catch(e){} }   /* AOG-DESK-VERSIONS-V1: not while a saved version is being compared */
 let saveT=0; function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(save, 200); }
 
 /* ══ a copy of every recording on a track, in this browser (IndexedDB "aog-studio"), so a new bounce on an
@@ -1424,10 +1530,11 @@ function tidyPieces(c){
 }
 function clampSpeed(x){ return Math.round(Math.max(0.5, Math.min(1.5, x))*1000)/1000; }
 function clips(){ return SONG.tracks.map((x,i)=>({i:i, c:x.clip})).filter(x=>x.c); }
-function songEnd(){ let e=0; clips().forEach(x=>{ e=Math.max(e, clipEnd(x.c,true)); }); return e; }
-function songEndMusic(){ let e=0; clips().forEach(x=>{ e=Math.max(e, clipEnd(x.c,false)); }); return e; }
+/* AOG-DESK-TAKES-V1: a track's other takes count too */
+function songEnd(){ return dmSongEnd(true); }
+function songEndMusic(){ return dmSongEnd(false); }
 function songBars(){ return Math.max(1, Math.ceil(songEndMusic()/barSec()-1e-6)); }
-function tlBars(){ let n=Math.max(8, songBars()); if(SONG.loopOn) n=Math.max(n, SONG.loopTo); return Math.min(MAX_BARS, Math.ceil(n/4)*4); }
+function tlBars(){ let n=Math.max(8, songBars(), dmSecBars());   /* AOG-DESK-SECTIONS-V1: the sections too */ if(SONG.loopOn) n=Math.max(n, SONG.loopTo); return Math.min(MAX_BARS, Math.ceil(n/4)*4); }
 function anySolo(){ return SONG.tracks.some(x=>x.solo); }
 function audible(i){ const x=SONG.tracks[i]; return !x.mute && (!anySolo() || x.solo); }
 
@@ -1481,7 +1588,119 @@ function roomIR(c){
   }
   return ir;
 }
-function echoTime(){ return Math.min(1.9, 0.75*60/songBpm()); }          /* a dotted eighth, in time with the song */
+/* AOG-DESK-ECHO-SYNC-V1 (2026-10-11, Jimmy's 3: "Delay that locks to the song. Echo set in beats from the song's tempo"):
+   the Echo's time is a note value of the song's beat (SONG.master.et): a quarter (one beat), an eighth, a dotted eighth
+   (the desk's first and still its usual one, so a song made before sounds the same), an eighth triplet or a sixteenth.
+   It follows the song's tempo, also while it plays (AOGSong.on, below). */
+const ECHO_T={q:1, e:0.5, d8:0.75, t8:1/3, s:0.25}, ECHO_KEYS=["q","e","d8","t8","s"];
+function echoBeats(){ const k=SONG.master && SONG.master.et; return ECHO_T[k]!=null ? ECHO_T[k] : 0.75; }
+function echoTime(){ return Math.min(1.9, echoBeats()*60/songBpm()); }
+/* ══ AOG-DESK-AUTO-V1 (2026-10-11) — Jimmy's 8: "Draw changes over time (automation). Volume, pan, echo or filter changes
+   drawn on the track, for fades, swells and a filter that opens into the chorus."
+   Each track may hold a drawn line for its Volume, Side (pan), Room, Echo and a Filter (a low-pass, only on the track while
+   it has points: with none the track's sound never passes through it). A line is points [beat of the song, value in the
+   knob's own units], straight between them, held before the first and after the last. While a line has points it decides,
+   and its knob rests ("Drawn on the track"); with none the knob decides, as before. The line belongs to the track's
+   timeline, not to a recording: a piece moved, cut or put on in its place leaves it where it is.
+   The sound: schedule() lays each line on the strip's own AudioParams (setValueAtTime, then straight ramps; where the
+   knob's curve is not straight, as volume and the sends are (v/80)², the line is laid in short straight steps), so the
+   speakers (from any bar, looping, after a change while playing) and every bounce (the mix, Send it out, the stems, My
+   Track behind a recording) hear the same line. ══ */
+const AUTO_KEYS=["vol","pan","room","echo","filt"], AUTO_MAX=256;
+const FILT_LO=200, FILT_Q=2;      /* the Filter: 200 Hz at the bottom of its lane, open at the top; a gentle resonance (2 dB) */
+function filtHz(v, sr){ return Math.min(20000, 0.45*(sr||MIX_SR), FILT_LO*Math.pow(100, Math.max(0, Math.min(100, v))/100)); }
+const AUTO={
+  vol:{lo:0, hi:100, step:1, def:x=>x.vol, map:v=>volGain(v)},
+  pan:{lo:-100, hi:100, step:5, def:x=>x.pan, map:v=>v/100, lin:true},
+  room:{lo:0, hi:100, step:1, def:x=>x.room, map:v=>sendGain(v)},
+  echo:{lo:0, hi:100, step:1, def:x=>x.echo, map:v=>0.9*sendGain(v)},
+  filt:{lo:0, hi:100, step:2, def:()=>100, map:(v,sr)=>filtHz(v, sr)}
+};
+function cleanLines(o){
+  if(!o || typeof o!=="object") return null;
+  const out={}; let any=false;
+  AUTO_KEYS.forEach(k=>{ const a=o[k]; if(!Array.isArray(a)) return; const A=AUTO[k], L=[];
+    a.slice(0, AUTO_MAX).forEach(p=>{ if(!Array.isArray(p) || p.length<2) return; const b=+p[0], v=+p[1]; if(!isFinite(b) || !isFinite(v)) return;
+      L.push([Math.round(Math.max(0, Math.min(MAX_BARS*4, b))*1e6)/1e6, Math.round(Math.max(A.lo, Math.min(A.hi, v)))]); });
+    L.sort((p,q)=>p[0]-q[0]);
+    if(L.length){ out[k]=L; any=true; } });
+  return any ? out : null;
+}
+function lineOf(i, k){ const x=SONG.tracks[i], L=x && x.lines && x.lines[k]; return L && L.length ? L : null; }
+/* the line's value at a beat of the song; where two points share a beat, the later one holds from there on */
+function drawnAt(L, beat){
+  if(beat<L[0][0]) return L[0][1];
+  let k=0; while(k+1<L.length && L[k+1][0]<=beat) k++;
+  if(k>=L.length-1) return L[k][1];
+  const a=L[k], b=L[k+1]; return a[1]+(b[1]-a[1])*(beat-a[0])/(b[0]-a[0]);
+}
+/* the line between song times `from` and `to` as [time, value] corners: straight between them on the AudioParam */
+function autoCorners(L, from, to, lin){
+  const sb=songBeat(), ev=[[from, drawnAt(L, from/sb)]];
+  const add=(t,v)=>{ if(t>ev[ev.length-1][0]-1e-9) ev.push([t,v]); };
+  for(let k=0;k+1<L.length;k++){
+    const t0=L[k][0]*sb, t1=L[k+1][0]*sb, v0=L[k][1], v1=L[k+1][1];
+    if(t1<=from || t0>=to) continue;
+    if(t1-t0<1e-9){ add(t0, v0); add(t0, v1); continue; }                 /* a jump: two points on the same beat */
+    const s0=Math.max(t0, from), s1=Math.min(t1, to), at=t=>v0+(v1-v0)*(t-t0)/(t1-t0);
+    if(s0>from+1e-9) add(s0, v0);
+    const n=lin ? 1 : Math.max(1, Math.min(64, Math.ceil(Math.abs(at(s1)-at(s0))/2)));
+    for(let m=1;m<=n;m++){ const t=s0+(s1-s0)*m/n; add(t, at(t)); }
+  }
+  if(ev[ev.length-1][0]<to-1e-9) ev.push([to, drawnAt(L, to/sb)]);
+  return ev;
+}
+function autoParam(T, k){ return k==="vol" ? T.av.gain : k==="pan" ? (T.pan ? T.pan.pan : null) : k==="room" ? T.room.gain : k==="echo" ? T.echo.gain : T.filt.frequency; }
+/* lay one line on its AudioParam: song time `from` sounds at context time `at` */
+function autoLay(E, i, k, from, to, at){
+  const L=lineOf(i, k), p=L && autoParam(E.tr[i], k); if(!p || !(to>from)) return;
+  const A=AUTO[k], sr=E.c.sampleRate, ev=autoCorners(L, from, to, !!A.lin);
+  let last=-1;
+  ev.forEach(([tt, v], n)=>{ const w=at+(tt-from), y=A.map(v, sr);
+    if(n===0 || w-last<1e-9) p.setValueAtTime(y, w); else p.linearRampToValueAtTime(y, w); last=w; });
+}
+function autoSched(E, from, to, at){ for(let i=0;i<NT;i++){ if(!SONG.tracks[i].lines) continue; AUTO_KEYS.forEach(k=>autoLay(E, i, k, from, to, at)); } }
+/* what is laid ahead is taken back from `when` on, holding the value it has then (a new plan follows) */
+function autoHoldP(p, when){
+  try{ if(p.cancelAndHoldAtTime){ p.cancelAndHoldAtTime(when); return; } }catch(e){}
+  try{ const v=p.value; p.cancelScheduledValues(when); p.setValueAtTime(v, when); }catch(e){}
+}
+function autoHold(E, when, only){
+  for(let i=0;i<NT;i++){ if(only!=null && i!==only) continue;
+    AUTO_KEYS.forEach(k=>{ if(!lineOf(i,k)) return; const p=autoParam(E.tr[i], k); if(p) autoHoldP(p, when); }); }
+}
+/* the Filter is on the track only while it has points; without them the sound goes straight on, untouched */
+/* AOG-DESK-FX-V1: the sound comes on from the strip's last effect slot (T.tail), or from Punch when the slots are empty */
+function autoRoute(E, i){
+  const T=E.tr[i], on=!!lineOf(i, "filt"), src=T.tail||T.trim;
+  if(T.fOn===on && T.fSrc===src) return;
+  try{ src.disconnect(); }catch(e){}
+  if(on){ src.connect(T.filt); T.filt.connect(T.av); } else { try{ T.filt.disconnect(); }catch(e){} src.connect(T.av); }
+  T.fOn=on; T.fSrc=src;
+}
+/* the fader: as its knob says, or as drawn (the line is on its own gain, after the Filter) */
+function faderBase(i){ return lineOf(i, "vol") ? 1 : volGain(SONG.tracks[i].vol); }
+/* AOG-REAL-ROOMS-V1 (2026-10-11, Jimmy's 5: "Real rooms"): the Room return can be a real room (aog-realrooms.js, recordings of
+   real spaces, CC0), chosen under The whole song and saved with it (SONG.master.room). "made" is the room above, as every
+   song made before had it (a song without a choice keeps it); a new song starts in the Hall. A real room is evened to the
+   one above (a 16 ms pause before the first echoes, and as loud for music: AOGRooms.fit), so each track's Room is as wet as before. On the speakers the room above plays until the
+   recording has arrived; a mix waits for it, so the mix is always the same. The choices: DESK_ROOMS, by blankSong(). */
+function deskRoomsLib(){
+  const W=window; if(W.AOGRooms) return Promise.resolve(W.AOGRooms);
+  return W.__aogRoomsLib || (W.__aogRoomsLib=new Promise(res=>{
+    try{ const s=document.createElement("script"); s.src="/aog-realrooms.js"; s.async=true; s.onload=()=>res(W.AOGRooms||null);
+      s.onerror=()=>{ W.__aogRoomsLib=null; res(null); }; (document.head||document.documentElement).appendChild(s); }catch(e){ res(null); } }));
+}
+function deskRoomLoad(c, id){ return id && id!=="made" ? deskRoomsLib().then(L=>L && L.load(c, id)).catch(()=>null) : Promise.resolve(null); }
+function roomBuf(E){
+  const id=SONG.master.room||"made", L=window.AOGRooms;
+  if(id==="made") return E.madeIR;
+  const b=L && L.get(E.c, id) && L.fit(E.c, id, {match:E.madeIR, pre:0.016, key:"desk"});
+  if(b) return b;
+  if(E.live) deskRoomLoad(E.c, id).then(x=>{ if(x && LIVE===E) applyRoom(E); });
+  return E.madeIR;
+}
+function applyRoom(E){ const b=roomBuf(E); if(E.rev.buffer!==b){ try{ E.rev.buffer=b; }catch(e){} } }
 function makeEngine(c, live){
   const E={c:c, live:!!live, tr:[]};
   const G=v=>{ const g=c.createGain(); g.gain.value=v; return g; };
@@ -1489,7 +1708,7 @@ function makeEngine(c, live){
   const DC=(atk,rel)=>{ const d=c.createDynamicsCompressor(); d.knee.value=0; d.attack.value=atk; d.release.value=rel; d.threshold.value=0; d.ratio.value=1; return d; };
   E.sum=G(0.7);
   /* the Room */
-  E.revIn=G(1); E.rev=c.createConvolver(); E.rev.normalize=false; E.rev.buffer=roomIR(c); E.revRet=G(1);
+  E.revIn=G(1); E.rev=c.createConvolver(); E.rev.normalize=false; E.madeIR=roomIR(c); E.revRet=G(1);
   E.revIn.connect(E.rev); E.rev.connect(E.revRet); E.revRet.connect(E.sum);
   /* the Echo: each repeat a little darker and softer */
   E.dlyIn=G(1); E.dly=c.createDelay(2); E.dly.delayTime.value=echoTime();
@@ -1505,12 +1724,17 @@ function makeEngine(c, live){
   E.out.connect(c.destination);
   for(let i=0;i<NT;i++){
     const T={in:G(1), low:BQ("lowshelf",120), mid:BQ("peaking",1000,0.8), high:BQ("highshelf",7000), comp:DC(0.012,0.15), trim:G(1), fader:G(0),
-      pan:c.createStereoPanner ? c.createStereoPanner() : null, room:G(0), echo:G(0)};
-    T.in.connect(T.low); T.low.connect(T.mid); T.mid.connect(T.high); T.high.connect(T.comp); T.comp.connect(T.trim); T.trim.connect(T.fader);
+      pan:c.createStereoPanner ? c.createStereoPanner() : null, room:G(0), echo:G(0),
+      filt:BQ("lowpass",filtHz(100, c.sampleRate),FILT_Q), av:G(1), fOn:false};   /* AOG-DESK-AUTO-V1: the drawn Filter (on the track only while it has points) and the drawn volume */
+    T.in.connect(T.low); T.low.connect(T.mid); T.mid.connect(T.high); T.high.connect(T.comp); T.comp.connect(T.trim); T.trim.connect(T.av); T.av.connect(T.fader);
+    /* AOG-DESK-FX-V1: the track's effect slots go in here, after its EQ and Punch, before the drawn Filter, the drawn
+       volume and the fader (aog-desk-more.js, dmFxApply). Empty, the sound goes straight on as before. */
+    T.tail=T.trim; T.fSrc=T.trim; T.fxSig=""; T.fxN=[];
     if(T.pan){ T.fader.connect(T.pan); T.pan.connect(E.sum); } else T.fader.connect(E.sum);
     T.fader.connect(T.room); T.room.connect(E.revIn); T.fader.connect(T.echo); T.echo.connect(E.dlyIn);
     E.tr.push(T);
   }
+  E.fxLat=new Array(NT).fill(0); E.lag=0;   /* AOG-DESK-FX-V1: what each track's compressors hold it back, and the most of them */
   E.fresh=true; applyAll(E); E.fresh=false;
   return E;
 }
@@ -1522,11 +1746,16 @@ function setP(E, p, v){
 }
 function applyTrack(E, i){
   const T=E.tr[i], x=SONG.tracks[i], pu=punchSet(x);
-  setP(E, T.fader.gain, volGain(x.vol)*(audible(i)?1:0));
-  if(T.pan) setP(E, T.pan.pan, x.pan/100);
+  /* AOG-DESK-AUTO-V1: a knob whose line has points rests; schedule() lays the line instead */
+  setP(E, T.fader.gain, faderBase(i)*(audible(i)?1:0));
+  if(!lineOf(i,"vol")) setP(E, T.av.gain, 1);
+  if(T.pan && !lineOf(i,"pan")) setP(E, T.pan.pan, x.pan/100);
   setP(E, T.low.gain, x.low); setP(E, T.mid.gain, x.mid); setP(E, T.high.gain, x.high);
   setP(E, T.comp.threshold, pu.thr); setP(E, T.comp.ratio, pu.ratio); setP(E, T.trim.gain, pu.trim);
-  setP(E, T.room.gain, sendGain(x.room)); setP(E, T.echo.gain, 0.9*sendGain(x.echo));
+  if(!lineOf(i,"room")) setP(E, T.room.gain, sendGain(x.room));
+  if(!lineOf(i,"echo")) setP(E, T.echo.gain, 0.9*sendGain(x.echo));
+  dmFxApply(E, i);   /* AOG-DESK-FX-V1 */
+  autoRoute(E, i);
 }
 function applyMaster(E){
   const m=SONG.master, gl=glueSet(m);
@@ -1534,6 +1763,7 @@ function applyMaster(E){
   setP(E, E.glue.threshold, gl.thr); setP(E, E.glue.ratio, gl.ratio); setP(E, E.glueTrim.gain, gl.trim);
   setP(E, E.mVol.gain, volGain(m.vol));
   setP(E, E.dly.delayTime, echoTime());
+  applyRoom(E);   /* AOG-REAL-ROOMS-V1 */
 }
 function applyAll(E){ for(let i=0;i<NT;i++) applyTrack(E,i); applyMaster(E); }
 function liveApply(fn){ if(LIVE) fn(LIVE); }
@@ -1543,11 +1773,20 @@ function liveApply(fn){ if(LIVE) fn(LIVE); }
 const BUF=new Map();
 /* AOG-STUDIO-EDIT-V1: what a recording plays from at its speed. Keep the pitch: a stretched copy (made once, below),
    played as it is; like a tape (or while the copy is being made): the recording itself, played faster or slower */
+/* AOG-DESK-PITCH-V1 (Jimmy's 12: "shift pitch without changing speed"): a recording moved up or down by c.pitch semitones.
+   The copy made by the time-stretch (WSOLA, below) is longer or shorter by the pitch's factor q, and it is played q times
+   faster or slower, so the notes move and the time stays: stretched by stF(c) = speed/q (keep the pitch) or 1/q (like a
+   tape), played at rate q (or speed × q). Made once and kept, like a speed. */
+function pq(c){ return c && c.pitch ? Math.pow(2, c.pitch/12) : 1; }
+function stF(c){ return c.keep!==false ? spd(c)/pq(c) : 1/pq(c); }
 function playBuf(cl){
-  const b=BUF.get(cl.id); if(!b) return null;
+  const b=dmBase(cl); if(!b) return null;   /* AOG-DESK-TUNE-V1: a voice tuned by its slot plays from its tuned copy */
   const sp=spd(cl);
+  if(cl.pitch){ const rate=pq(cl)*(cl.keep!==false ? 1 : sp), f=stF(cl), st=STRETCH.get(cl.id);
+    if(Math.abs(f-1)<1e-6) return {buf:b, rate:rate, scale:rate/sp};
+    if(st && st.base===b && Math.abs(st.sp-f)<1e-6) return {buf:st.buf, rate:rate, scale:rate/sp}; }   /* not ready yet: as without the shift */
   if(Math.abs(sp-1)<1e-3) return {buf:b, rate:1, scale:1};
-  if(cl.keep!==false){ const st=STRETCH.get(cl.id); if(st && Math.abs(st.sp-sp)<1e-3) return {buf:st.buf, rate:1, scale:1/sp}; }
+  if(cl.keep!==false){ const st=STRETCH.get(cl.id); if(st && st.base===b && Math.abs(st.sp-sp)<1e-3) return {buf:st.buf, rate:1, scale:1/sp}; }
   return {buf:b, rate:sp, scale:1};
 }
 /* how loud a track is at song time t, from its fade in and fade out (1 = as recorded) */
@@ -1570,7 +1809,8 @@ function xfSec(cl){ const k=cl && cl.xf; return k==="10ms" ? 0.01 : k==="50ms" ?
 function piecePlays(cl, P){
   const sp=spd(cl), sb=beatOf(cl), full=fullBeats(cl), L=[];
   pcs(cl).forEach(p=>{
-    const s0=cl.head+p.a*sb, len=pLen(cl,p), tl=pTail(cl,p), st=pAt(p), whole=p.b>=full-1e-6, g=dbGain(p.g||0);
+    /* AOG-DESK-REVERSE-V1: a piece played backwards has no ring after it, and fades in and out where it is cut */
+    const s0=cl.head+p.a*sb, len=pLen(cl,p), tl=p.rev ? 0 : pTail(cl,p), st=pAt(p), whole=!p.rev && p.b>=full-1e-6, g=dbGain(p.g||0);
     for(let k=0;k<p.n;k++){ const p0=st+k*len; L.push({p:p, s0:s0, len:len, tl:tl, p0:p0, e:p0+len, whole:whole, g:g, inW:null, outW:null, cut:null}); }
   });
   const X=xfSec(cl); if(!(X>0) || L.length<2) return L;
@@ -1580,6 +1820,7 @@ function piecePlays(cl, P){
     const A=S2[k]; let B=null;
     for(let j=k+1;j<S2.length;j++){ if(S2[j].p0>A.p0+1e-6){ B=S2[j]; break; } }
     if(!B || B.p0>A.e+1e-3) continue;
+    if(A.p.rev || B.p.rev){ A.cut=B.p0; continue; }   /* AOG-DESK-REVERSE-V1: no handles to blend with: a plain cut */
     const m=B.p0, preB=Math.max(0, B.s0/sp), extA=Math.max(0, (recDur-rec(A,m))/sp);
     const Xe=Math.min(X, preB+extA, 0.5*A.len, 0.5*B.len);
     if(Xe<0.002){ A.cut=m; continue; }                    /* no sound on either side to blend: a plain cut, as before */
@@ -1596,51 +1837,71 @@ function xfGain(W, t, out){
   return out ? Math.cos(u*Math.PI/2) : Math.sin(u*Math.PI/2);
 }
 function schedule(E, from, to, at){
-  const c=E.c, out=[];
+  const out=[], lag=E.lag||0;   /* AOG-DESK-FX-V1: lag, the most a track's compressors hold its sound back (0 without them) */
+  autoSched(E, from, to, at+lag);   /* AOG-DESK-AUTO-V1: the drawn lines, on the same clock as the pieces */
   SONG.tracks.forEach((x,i)=>{
-    const cl=x.clip; if(!cl) return; const P=playBuf(cl); if(!P) return;
-    const sp=spd(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
-    const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
-    piecePlays(cl, P).forEach(q=>{
-      const p=q.p, s0=q.s0, p0=q.p0, inW=q.inW, outW=q.outW;
-      /* with no crossfade this is the old plan exactly: from the piece's start to its end and its ring */
-      const st0=inW ? inW.w0 : p0, p1=outW ? outW.w1 : q.cut!=null ? q.cut : q.e+q.tl;
-      const a0=Math.max(st0,from), a1=Math.min(p1,to);
+    if(!x.clip) return;
+    /* AOG-DESK-FX-V1: a track with fewer compressors in its slots starts that much later, so every track still lines up */
+    const sh=at+(lag-(E.fxLat ? E.fxLat[i]||0 : 0));
+    /* AOG-DESK-TAKES-V1: a track with takes plays each take where it is chosen (dmGates); without takes, as always */
+    const G=dmGates(x);
+    if(!G) schedClip(E, i, x.clip, from, to, sh, null, out);
+    else G.forEach(g=>schedClip(E, i, g.cl, from, to, sh, g, out));
+    dmFxSched(E, i, from, to, sh, out);   /* AOG-DESK-FX-V1: the Chorus and the Doubler sway in time with the song */
+  });
+  return out;
+}
+/* one recording of a track: every piece that sounds between song time `from` and `to`, started at context time `at`.
+   G (AOG-DESK-TAKES-V1): where this take is chosen; it fades in and out over a short crossfade (equal power) at each
+   switch, and plays nowhere else. Without G this is the plan as it always was. */
+function schedClip(E, i, cl, from, to, at, G, out){
+  const c=E.c, P=playBuf(cl); if(!P) return;
+  const sp=spd(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
+  const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
+  piecePlays(cl, P).forEach(q=>{
+    const p=q.p, s0=q.s0, p0=q.p0, inW=q.inW, outW=q.outW;
+    /* with no crossfade this is the old plan exactly: from the piece's start to its end and its ring */
+    const st0=inW ? inW.w0 : p0, p1=outW ? outW.w1 : q.cut!=null ? q.cut : q.e+q.tl;
+    const A0=Math.max(st0,from), A1=Math.min(p1,to);
+    if(A1-A0<0.003) return;
+    (G ? dmGateSpans(G, A0, A1) : [[A0, A1]]).forEach(([a0, a1])=>{
       if(a1-a0<0.003) return;
       const off=Math.max(0, (s0+(a0-p0)*sp)*P.scale), d=Math.min((a1-a0)*sp*P.scale, P.buf.duration-off);
       if(!(d>0.003)) return;
       const dur=d/(sp*P.scale), e1=a0+dur, when=at+(a0-from);       /* dur: seconds of the song */
-      const cutIn=inW ? a0>st0+1e-4 : (a0>p0+1e-4) || p.a>1e-6, cutOut=outW ? e1<p1-1e-4 : (e1<p1-1e-4) || !q.whole || q.cut!=null, edge=cutOut && dur>0.02;
-      const src=c.createBufferSource(); src.buffer=P.buf; if(P.rate!==1) src.playbackRate.value=P.rate;
+      const gIn=!!G && a0>A0+1e-9, gOut=!!G && a1<A1-1e-9 && e1>=a1-1e-4;   /* a take's own switch: its crossfade does the fading */
+      const cutIn=!gIn && (p.rev || (inW ? a0>st0+1e-4 : (a0>p0+1e-4) || p.a>1e-6)), cutOut=outW ? e1<p1-1e-4 : (e1<p1-1e-4) || !q.whole || q.cut!=null, edge=!gOut && cutOut && dur>0.02;
+      const R=p.rev ? dmRev(P.buf) : null;   /* AOG-DESK-REVERSE-V1: the same stretch of the sound, from its end to its start */
+      const src=c.createBufferSource(); src.buffer=R||P.buf; if(P.rate!==1) src.playbackRate.value=P.rate;
       const env=c.createGain(), g=q.g;
-      if(!cutIn && !edge && !fades && !inW && !outW) env.gain.value=g;
+      if(!cutIn && !edge && !fades && !inW && !outW && !G) env.gain.value=g;
       else {
         /* the 4 ms in and 8 ms out of a cut (no clicks), times the fades and the crossfades, as straight lines between
            their corners (a crossfade's curve in 24 short steps) */
         const val=t=>{ let v=g*(fades ? fadeAt(cl, t, cs, ce) : 1);
-          if(inW) v*=xfGain(inW, t, false); if(outW) v*=xfGain(outW, t, true);
+          if(inW) v*=xfGain(inW, t, false); if(outW) v*=xfGain(outW, t, true); if(G) v*=dmGateAt(G, t);
           if(cutIn) v*=Math.max(0, Math.min(1, (t-a0)/0.004)); if(edge) v*=Math.max(0, Math.min(1, (e1-t)/0.008)); return v; };
         const pts=[a0, e1]; if(cutIn) pts.push(a0+0.004); if(edge) pts.push(e1-0.008);
         if(fi>0) pts.push(cs+fi); if(fo>0) pts.push(ce-fo, ce);
         [inW, outW].forEach(W=>{ if(W) for(let s=0;s<=24;s++) pts.push(W.w0+(W.w1-W.w0)*s/24); });
+        if(G) dmGatePts(G, a0, e1, pts);
         const list=[...new Set(pts.filter(v=>v>=a0-1e-9 && v<=e1+1e-9))].sort((u,v)=>u-v);
         env.gain.value=val(a0); env.gain.setValueAtTime(val(a0), when);
         list.forEach(tp=>{ if(tp>a0+1e-9) env.gain.linearRampToValueAtTime(val(tp), when+(tp-a0)); });
       }
       src.connect(env); env.connect(E.tr[i].in);
-      src.start(when, off, d);
+      src.start(when, R ? Math.max(0, P.buf.duration-off-d) : off, d);
       out.push({src:src, env:env, end:when+dur});
     });
   });
-  return out;
 }
 
 /* ══ AOG-STUDIO-EDIT-V1 · a slower or faster copy that keeps the pitch (WSOLA): the recording cut into short windows
    (40 ms), each one laid down at the new pace, and each taken from where it best matches the sound before it, so
    nothing warbles. Made once per speed, a little at a time so the page stays easy to use. ══ */
 const STRETCH=new Map(), SJOB=new Map();
-function needStretch(c){ return c.keep!==false && Math.abs(spd(c)-1)>1e-3; }
-function stretchReady(c){ const st=STRETCH.get(c.id); return !!(st && Math.abs(st.sp-spd(c))<1e-3); }
+function needStretch(c){ return Math.abs(stF(c)-1)>1e-3; }   /* AOG-DESK-PITCH-V1: the same as before when there is no pitch shift */
+function stretchReady(c){ const st=STRETCH.get(c.id); return !!(st && st.base===dmBase(c) && Math.abs(st.sp-stF(c))<1e-6); }
 function newBuf(nch, len, sr){ try{ return new AudioBuffer({numberOfChannels:nch, length:len, sampleRate:sr}); }catch(e){ return live().createBuffer(nch, len, sr); } }
 async function wsola(buf, sp, cancelled){
   const sr=buf.sampleRate, nch=buf.numberOfChannels, n=buf.length;
@@ -1682,15 +1943,15 @@ async function wsola(buf, sp, cancelled){
 function ensureStretch(c){
   if(!needStretch(c)){ STRETCH.delete(c.id); SJOB.delete(c.id); return Promise.resolve(); }
   if(stretchReady(c)) return Promise.resolve();
-  const b=BUF.get(c.id); if(!b) return Promise.resolve();
-  const sp=spd(c), key=c.id+"@"+sp, run=SJOB.get(c.id);
+  const b=dmBase(c); if(!b) return Promise.resolve();
+  const sp=stF(c), key=c.id+"@"+sp+"@"+(b===BUF.get(c.id) ? "" : "tuned"), run=SJOB.get(c.id);
   if(run && run.key===key) return run.p;
   const job={key:key};
   job.p=(async()=>{
     S.stretching++; paintEditLine(); paintFinish();
     try{
       const out=await wsola(b, sp, ()=>{ const j=SJOB.get(c.id); return !j || j.key!==key; });
-      if(out && SJOB.get(c.id)===job){ STRETCH.set(c.id, {sp:sp, buf:out}); }
+      if(out && SJOB.get(c.id)===job){ STRETCH.set(c.id, {sp:sp, buf:out, base:b}); }
     }catch(e){}
     if(SJOB.get(c.id)===job) SJOB.delete(c.id);
     S.stretching--;
@@ -1699,7 +1960,7 @@ function ensureStretch(c){
   SJOB.set(c.id, job);
   return job.p;
 }
-function stretchAll(){ return Promise.all(clips().map(x=>ensureStretch(x.c))); }
+function stretchAll(){ return dmTuneAll().then(()=>Promise.all(dmAllClips().map(c=>ensureStretch(c)))); }   /* AOG-DESK-TAKES-V1: the takes too · AOG-DESK-TUNE-V1: a tuned voice first */
 
 /* ══ the speakers ══ */
 let ac=null, LIVE=null, AN=null;
@@ -1732,7 +1993,7 @@ function play(){
   PLAY.clicks=[];
   if(SONG.countIn){
     /* the clicks skip the chain, so they wait the chain's 18 ms too and land exactly on the song's beats */
-    const lag=NCOMP*0.006;
+    const lag=NCOMP*0.006+(LIVE.lag||0);   /* AOG-DESK-FX-V1: and what the effect slots' compressors add */
     for(let k=0;k<4;k++) PLAY.clicks.push(click(c, T+lag+k*beat, k===0));
     PLAY.countAt=T; T+=bs;
   } else PLAY.countAt=0;
@@ -1745,6 +2006,7 @@ function play(){
     const from=(SONG.startBar-1)*bs, end=songEnd();
     PLAY.wins=[{at:T, from:Math.min(from,end), to:end}];
   }
+  autoHold(LIVE, c.currentTime);   /* AOG-DESK-AUTO-V1: whatever was laid for the last play is taken back first */
   PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
   PLAY.on=true;
   pump();
@@ -1786,6 +2048,7 @@ function stop(){
   if(!PLAY.on) return;
   const now=ac.currentTime;
   silence(PLAY.srcs, now);
+  autoHold(LIVE, now);   /* AOG-DESK-AUTO-V1 */
   PLAY.clicks.forEach(o=>{ try{ o.stop(now); }catch(e){} });
   end();
 }
@@ -1803,6 +2066,7 @@ function reschedule(){
   const now=ac.currentTime, pos=songPos(now);
   if(pos==null) return;           /* still counting in: the new song is picked up when it starts */
   silence(PLAY.srcs, now);
+  autoHold(LIVE, now);   /* AOG-DESK-AUTO-V1: the lines are laid again from here, with the new song */
   const bs=barSec(), at=now+0.05; PLAY.beat=bs/4; PLAY.bar=bs;
   if(PLAY.loop){
     PLAY.A=(SONG.loopFrom-1)*bs; PLAY.B=SONG.loopTo*bs;
@@ -1813,6 +2077,15 @@ function reschedule(){
   }
   PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
   pump();
+}
+/* AOG-DESK-AUTO-V1: a line drawn while the song plays: that track's lines are laid again from a moment from now, over
+   the windows still to play (the pieces play on untouched; a line cleared went back to its knob in applyTrack) */
+function autoLive(i){
+  if(!PLAY.on || !LIVE) return;
+  const now=ac.currentTime+0.01;
+  autoHold(LIVE, now, i);
+  PLAY.wins.forEach(w=>{ const end=w.at+(w.to-w.from); if(end<=now) return;
+    const a=Math.max(w.at, now); AUTO_KEYS.forEach(k=>autoLay(LIVE, i, k, w.from+(a-w.at), w.to, a)); });
 }
 /* while it plays: where we are (once a beat), and the meter */
 function frame(){
@@ -1914,6 +2187,7 @@ function vuPaint(levels, peak){
 function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); lufsReset(); }
 function meterTick(){
   lufsTick();   /* AOG-DESK-LUFS-V1 */
+  dmFxTick();   /* AOG-DESK-FX-V1: how much a compressor holds back, a calm number */
   if(!AN) return;
   const now=performance.now(), dt=MET.last ? Math.min(0.1,(now-MET.last)/1000) : 0; MET.last=now;
   const lv=[0,1].map(ch=>{ const a=AN.a[ch]; a.getFloatTimeDomainData(AN.d); let pk=0; for(let i=0;i<AN.d.length;i++){ const v=AN.d[i]<0?-AN.d[i]:AN.d[i]; if(v>pk) pk=v; } return pk>0 ? 20*Math.log10(pk) : -90; });
@@ -1925,7 +2199,7 @@ function meterTick(){
   MET.lvl=MET.lvl.map((o,ch)=>Math.max(lv[ch], o-24*dt));
   drawMeter(MET.lvl, PLAY.peak);
 }
-function meterStill(){ drawMeter(null, PLAY.peak); lufsRest(); }
+function meterStill(){ drawMeter(null, PLAY.peak); lufsRest(); dmFxTick(true); }
 
 /* ══ AOG-DESK-LUFS-V1 (Jimmy, 2026-10-11: "Release-ready output. Add a loudness meter and the loudness streaming
    services use (−14 LUFS)") — loudness as ITU-R BS.1770-4 measures it (the meter of EBU R128 and of the streaming
@@ -2133,6 +2407,7 @@ async function putOn(srcId, ti){
       /* AOG-PADS-BOUNCE-V1: a loop made on the Beat Lab says its exact length, so it starts on the bar and loops whole bars */
       rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0, place:placeOf(it)};
       from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"")+(placeOf(it)?":over":"") : ""};
+      if(it.notes) from.notes=it.notes;   /* AOG-PIANOROLL-V1: the notes it was played with */
     }
     const meta=analyse(rec, info);
     const buf=await decodeWav(blob, info.sr);
@@ -2216,10 +2491,13 @@ async function removeTake(id){
   /* the keyboard lands on the take that moved into its place */
   const btns=$("inbox").querySelectorAll("[data-drop]"), next=btns[Math.min(at, btns.length-1)] || $("trackSel"); if(next) next.focus();
 }
-function dropClip(id){ BUF.delete(id); PEAKS.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
+/* AOG-DESK-MORE-V1: a recording still used (on a track, as a take, in a version being compared) stays; the copy a saved
+   version needs stays in this browser */
+function dropClip(id){ if(dmInUse(id)) return; BUF.delete(id); PEAKS.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!dmVerUses(id)) sdel(id); }
 function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const old=x.clip, id=old.id;
   if(old.voice) voiceKeep(old);   /* AOG-STUDIO-VOICE-V1: Bring it back, until the next delete */
-  x.clip=null; dropClip(id); songChanged(); }
+  x.clip=null; dmPromoteTake(x);   /* AOG-DESK-TAKES-V1: the next take takes its place */
+  dropClip(id); songChanged(); }
 /* after any change to what plays where */
 function songChanged(){
   save();
@@ -2235,23 +2513,26 @@ function songChanged(){
 }
 /* a reload: every recording comes back from this browser */
 async function restore(){
-  const list=clips();
+  const list=clips().concat(dmTakeRefs());   /* AOG-DESK-TAKES-V1: each take's recording too */
   if(list.length){ S.decoding++; paintPlay(); }
   let lost=false;
-  for(const {i, c} of list){
+  const gone=(i, c, tk)=>{ lost=true; if(tk) dmTakeLost(i, c.id); else SONG.tracks[i].clip=null; };
+  for(const {i, c, take} of list){
+    if(BUF.has(c.id)) continue;
     try{
       const v=await sget(c.id);
-      if(!v || !v.wav){ lost=true; SONG.tracks[i].clip=null; continue; }
+      if(!v || !v.wav){ gone(i, c, take); continue; }
       const info=await wavInfo(v.wav);
       const buf=await decodeWav(v.wav, info ? info.sr : MIX_SR);
       BUF.set(c.id, buf);
       if(c.peakDb==null) c.peakDb=peakDbOf(buf);
-    }catch(e){ lost=true; SONG.tracks[i].clip=null; }
+    }catch(e){ gone(i, c, take); }
   }
+  SONG.tracks.forEach(x=>{ if(!x.clip) dmPromoteTake(x); });
   if(list.length) S.decoding--;
   if(lost){ save(); $("recLine").textContent=t("gone"); }
-  /* tidy: copies no track uses any more */
-  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
+  /* tidy: copies no track uses any more (AOG-DESK-MORE-V1: the takes', and those a saved version needs, stay) */
+  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); dmKeepIds(keep); (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
   liveApply(applyAll);
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
   stretchAll();                    /* AOG-STUDIO-EDIT-V1: a track slowed or sped up, keeping its pitch, is made again */
@@ -2344,10 +2625,13 @@ async function makeMix(){
    (only: its number; its mute and solo are set aside, so a stem is that track as the mix hears it) */
 async function renderSong(only){
   await stretchAll();             /* AOG-STUDIO-EDIT-V1: every slower or faster track ready first */
-  const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat=await chainLatency();
+  const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat0=await chainLatency();
+  const lat=lat0+dmLagFrames(MIX_SR);   /* AOG-DESK-FX-V1: the effect slots' compressors hold the song back a little more (0 without them) */
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
-  const oc=new OC(2, frames+lat, MIX_SR), E=makeEngine(oc, false);
-  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? volGain(SONG.tracks[j].vol) : 0; });
+  const oc=new OC(2, frames+lat, MIX_SR); await dmFxReady(oc);   /* AOG-DESK-DUCK-V1: the ducking's own small processor, first */
+  await deskRoomLoad(oc, SONG.master.room);   /* AOG-REAL-ROOMS-V1: the real room first, so the mix is always the same */
+  const E=makeEngine(oc, false);
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain */
   schedule(E, 0, end, 0);
   const buf=await render(oc);
   return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
@@ -2367,11 +2651,11 @@ async function sendMix(){
   }catch(e){ line.textContent=t("fail"); }
 }
 async function newSong(){
-  stop();
-  const ids=clips().map(x=>x.c.id);
+  stop(); dmCmpEnd();
+  const ids=dmAllClips().map(c=>c.id);
   SONG=blankSong(); save();
-  ids.forEach(id=>{ BUF.delete(id); sdel(id); });
-  STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
+  ids.forEach(id=>{ BUF.delete(id); if(!dmVerUses(id)) sdel(id); });   /* AOG-DESK-VERSIONS-V1: a saved version keeps its sound */
+  STRETCH.clear(); SJOB.clear(); UNDO.length=0; REDO.length=0; S.edMsg="";
   sdel("mix"); setMix(null);
   $("newAsk").hidden=true;
   $("mixLine").textContent=t("newDone"); $("sendLine").textContent=""; $("recLine").textContent="";
@@ -2400,7 +2684,7 @@ function fileSlug(){ const n=songTitle().normalize("NFD").replace(/[̀-ͯ]/g,"")
 /* the whole song, as one file */
 async function songFile(){
   const parts=[], meta=[];
-  for(const {c} of clips()){
+  for(const c of dmAllClips()){   /* AOG-DESK-TAKES-V1: each take's recording too */
     const v=await sget(c.id); if(!v || !v.wav) continue;
     meta.push({id:c.id, size:v.wav.size}); parts.push(v.wav);
   }
@@ -2419,7 +2703,7 @@ async function readSongFile(blob){
     const hl=new DataView(pre.buffer).getUint32(8, true);
     if(!(hl>0 && hl<=4*1024*1024 && 12+hl<=blob.size)) return null;
     const h=JSON.parse(new TextDecoder().decode(await blobAB(blob.slice(12, 12+hl))));
-    if(!h || h.kind!=="aog-song" || h.v!==1 || !Array.isArray(h.clips) || h.clips.length>NT*4) return null;
+    if(!h || h.kind!=="aog-song" || h.v!==1 || !Array.isArray(h.clips) || h.clips.length>NT*(DM_MAX_TAKES+1)) return null;
     let o=12+hl; const wavs=new Map();
     for(const m of h.clips){
       const n=Math.floor(+(m && m.size));
@@ -2428,21 +2712,21 @@ async function readSongFile(blob){
     }
     if(o!==blob.size) return null;
     const song=cleanSong(h.song);
-    song.tracks.forEach(x=>{ if(x.clip && !wavs.has(x.clip.id)) x.clip=null; });
+    song.tracks.forEach(x=>{ if(x.clip && !wavs.has(x.clip.id)) x.clip=null; dmTakesHave(x, wavs); });
     if(!song.tracks.some(x=>x.clip)) return null;
     return {song:song, wavs:wavs};
   }catch(e){ return null; }
 }
 /* put a song on the desk, in place of the one there */
 async function applySong(r){
-  stop();
-  const old=clips().map(x=>x.c.id);
-  for(const x of r.song.tracks){ if(!x.clip) continue;
-    const ab=await blobAB(r.wavs.get(x.clip.id));                 /* the browser's own copy, not a piece of the file */
-    await sput(x.clip.id, {wav:new Blob([ab], {type:"audio/wav"})}); }
-  const keep=new Set(r.song.tracks.filter(x=>x.clip).map(x=>x.clip.id));
-  old.forEach(id=>{ if(!keep.has(id)) sdel(id); });
-  BUF.clear(); STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
+  stop(); dmCmpEnd();
+  const old=dmAllClips().map(c=>c.id), mine=dmSongClips(r.song);   /* AOG-DESK-TAKES-V1: the takes come too */
+  for(const c of mine){
+    const ab=await blobAB(r.wavs.get(c.id));                 /* the browser's own copy, not a piece of the file */
+    await sput(c.id, {wav:new Blob([ab], {type:"audio/wav"})}); }
+  const keep=new Set(mine.map(c=>c.id));
+  old.forEach(id=>{ if(!keep.has(id) && !dmVerUses(id)) sdel(id); });
+  BUF.clear(); STRETCH.clear(); SJOB.clear(); UNDO.length=0; REDO.length=0; S.edMsg="";
   sdel("mix"); setMix(null);
   SONG=r.song; save();
   $("mixLine").textContent=""; $("sendLine").textContent=""; $("recLine").textContent="";
@@ -2796,7 +3080,7 @@ async function voiceStop(){
     const x=SONG.tracks[VOICE_T], old=x.clip, vn=1+Math.max(0, ...SONG.tracks.map(y=>y.clip && y.clip.voice ? y.clip.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
     x.clip=cleanClip({id:id, src:"", name:t("voiceN",{n:vn}), at:Date.now(), voice:true, vn:vn, take:true, sec:sec, bpm:0, bars:0,
       head:head, body:sec-head, tail:0, bpb:4, startBar:SONG.startBar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
-    if(old){ if(old.voice) voiceKeep(old); dropClip(old.id); }
+    if(old){ if(old.voice) dmKeepAsTake(x, old); else dropClip(old.id); }   /* AOG-DESK-TAKES-V1: the earlier take stays, as a take lane */
     VOICE.state="done"; songChanged();
   }catch(e){ VOICE.state="fail"; }
   VOICE.busy=false; paintVoice();
@@ -3104,7 +3388,7 @@ function paintText(){
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
   $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
 }
-function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); }
+function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); dmPaintVer(); }
 
 /* ── 1 · play ── */
 function paintPlay(){
@@ -3158,12 +3442,12 @@ function waveSvg(c, p, fine){
   const P=peaksOf(c); if(!P) return "";
   /* AOG-DESK-FACE-V1: a fine, smooth wave (the console's lanes and its open channel), mirrored about the middle */
   if(fine){
-    const per=Math.max(8, Math.round(fine/p.n)), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
+    const per=Math.max(8, Math.round(fine/p.n)), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n; if(p.rev) v.reverse();   /* AOG-DESK-REVERSE-V1 */
     let d="";
     for(let x=0;x<cols;x++){ const h=0.02+0.9*v[x%per], cx=(x+0.5).toFixed(1); d+=`M${cx} ${(1-h).toFixed(3)}V${(1+h).toFixed(3)}`; }
     return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
   }
-  const per=Math.max(8, Math.min(90, Math.round(240/p.n))), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
+  const per=Math.max(8, Math.min(90, Math.round(240/p.n))), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n; if(p.rev) v.reverse();
   let top="", bot="";
   for(let x=0;x<cols;x++){ const h=(0.06+0.9*v[x%per]).toFixed(2); top+=`L${x} ${(1-h).toFixed(2)}L${x+1} ${(1-h).toFixed(2)}`; bot=`L${x+1} ${(1+ +h).toFixed(2)}L${x} ${(1+ +h).toFixed(2)}`+bot; }
   return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 1${top}${bot}Z"/></svg>`;
@@ -3181,7 +3465,7 @@ function drawWave(){
   if(!(W>0 && H>0)) return;
   if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
   const x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
-  const PS=pcs(c), k=pSel(c), p=PS[k], bpb=c.bpb||4, col=COLORS[i];
+  const PS=pcs(c), k=pSel(c), p=PS[k], bpb=c.bpb||4, col=colOf(i);
   let a=p.a, b=p.b; if(WV.drag==="a") a=WV.val; if(WV.drag==="b") b=WV.val;
   const X=beat=>g.pad+beat/g.full*g.w, top=22, bot=H-6, mid=top+(bot-top)/2, amp=(bot-top)/2-2;
   /* what is cut away: dim and hatched */
@@ -3234,7 +3518,8 @@ function hearPiece(){
   const p=pcs(c)[pSel(c)], a=Math.max(0, recSec(c,p.a)), b=Math.min(buf.duration, recSec(c,p.b)), cx=live();
   try{ if(cx.state!=="running") cx.resume(); }catch(e){}
   const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(c.keep===false) src.playbackRate.value=spd(c);
-  g.gain.value=volGain(SONG.tracks[SONG.sel].vol)*dbGain(p.g||0); src.connect(g);   /* AOG-DESK-CLIPVOL-V1 */ g.connect(cx.destination);
+  const lv=lineOf(SONG.sel, "vol");   /* AOG-DESK-AUTO-V1: a drawn volume, as it is where the piece starts */
+  g.gain.value=volGain(lv ? drawnAt(lv, p.at) : SONG.tracks[SONG.sel].vol)*dbGain(p.g||0); src.connect(g);   /* AOG-DESK-CLIPVOL-V1 */ g.connect(cx.destination);
   src.onended=()=>{ if(HEAR.src===src){ HEAR.src=null; paintHear(); } };
   src.start(cx.currentTime+0.03, a, Math.max(0.05, b-a)); HEAR.src=src; paintHear(); LES.mark("hear1");
 }
@@ -3306,19 +3591,23 @@ function paintTimeline(){
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
         /* AOG-DESK-DRAG-V1: data-pc, the piece a hand can take hold of */
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
     } else { inner=`<span class="st-empty">${esc(t("empty"))}</span>`; label=t("laneAria",{n:i+1, name:t("emptyL")}); }
-    lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln" style="--c:${COLORS[i]}"><span class="st-led${c ? " on" : ""}" aria-hidden="true"></span><span class="st-lnn">${i+1}</span><span class="st-lnm">${esc(laneName(i))}</span></span><span class="st-lt">${inner}</span></button>`;
+    lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln" style="--c:${colOf(i)}"><span class="st-led${c ? " on" : ""}" aria-hidden="true"></span><span class="st-lnn">${i+1}</span><span class="st-lnm">${esc(laneName(i))}</span></span><span class="st-lt">${inner}</span></button>`;
+    if(AUTO[x.lane]) lanes+=autoRowHtml(i);   /* AOG-DESK-AUTO-V1: its drawing lane, when one is open */
+    lanes+=dmTakeRows(i);   /* AOG-DESK-TAKES-V1: its take lanes */
   }
-  $("timeline").innerHTML=rh+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 */
+  $("timeline").innerHTML=rh+dmSecRow()+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 · AOG-DESK-SECTIONS-V1: the sections, under the ruler */
   $("timeline").style.setProperty("--n", String(n));   /* AOG-DESK-ART-V1: the bar lines behind the lanes */
   $("timeline").style.setProperty("--z", String(z)); $("timeline").classList.toggle("zoomed", z>1);   /* AOG-DESK-ZOOM-V1 */
   RULER=[...$("timeline").querySelectorAll(".st-rt i")];
   PLAY.nowBar=-1;
   paintTools();
+  paintAuto(); if(AUI.kb){ AUI.kb=false; autoFocusPt(); }   /* AOG-DESK-AUTO-V1 */
+  dmPaintSec();   /* AOG-DESK-SECTIONS-V1 */
 }
 /* ══ AOG-DESK-HANDS-V1 · hands on the desk ══ */
 /* how the desk is looked at on this device: how far it is zoomed in, and whether a dragged piece snaps to the beat */
@@ -3470,6 +3759,7 @@ function paintTrack(){
   sel.innerHTML=SONG.tracks.map((x,k)=>`<option value="${k}"${k===i?" selected":""}>${esc(t("trackN",{n:k+1})+" · "+trackName(k))}</option>`).join("");
   const c=SONG.tracks[i].clip, box=$("clipBox");
   paintVoice();
+  dmPaintMore();   /* AOG-DESK-MORE-V1: more for this track */
   if(!c){ box.innerHTML=""; paintRecs(); return; }
   /* the keyboard stays on the button or menu it was on */
   const fa=document.activeElement, keepF=fa && box.contains(fa) ? (fa.id || (fa.getAttribute("data-act") ? "[data-act='"+fa.getAttribute("data-act")+"']" : "")) : "";
@@ -3481,10 +3771,10 @@ function paintTrack(){
   const cuts=cutPlaces(c, p), mid=cuts.length ? cuts[Math.floor((cuts.length-1)/2)] : null;
   const pct=Math.round(spd(c)*100), keep=c.keep!==false;
   box.innerHTML=
-    `<div class="st-cc" style="--c:${COLORS[i]}">
+    `<div class="st-cc" style="--c:${colOf(i)}">
       <div><b>${head}</b></div>
       <div class="st-cn">${esc(meta)}</div>
-      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button><button type="button" class="st-btn" data-act="redo"${canRedo()?"":" disabled"}>${esc(t("redo"))}</button></div>
+      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button><button type="button" class="st-btn" data-act="redo"${canRedo()?"":" disabled"}>${esc(t("redo"))}</button>${c.notes && window.AOGPianoRoll ? `<button type="button" class="st-btn" data-act="notes">${esc(t("notesEdit"))}</button>` : ""}</div>
       ${lineAt("top")}
     </div>
     ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
@@ -3507,6 +3797,7 @@ function paintTrack(){
       <button type="button" class="st-btn" data-act="cut">${esc(t("cutBtn"))}</button>
     </div>` : `<p class="st-line" style="margin-top:0">${esc(t("cutShort"))}</p>`}
     <div class="st-row st-pr"><button type="button" class="st-btn" data-act="copy">${esc(t("copyP"))}</button>${many ? `<button type="button" class="st-btn st-clear" data-act="drop">${esc(t("dropP"))}</button>` : ""}</div>
+    ${dmPieceRow(c, p)}
     ${lineAt("cut")}
     <h3 class="st-h3">${esc(t("spdH"))}</h3>
     <div class="st-spd"><input type="range" id="spdR" min="50" max="150" step="5" value="${pct}" aria-label="${esc(t("spdAria",{n:i+1}))}" aria-valuetext="${esc(spdWords(c,pct))}"><b id="spdOut">${esc(spdWords(c,pct))}</b></div>
@@ -3518,6 +3809,7 @@ function paintTrack(){
     <p class="st-line">${esc(t(keep ? "keepOn" : "keepOff"))}${isTempo && clips().length>1 ? " "+esc(t("tempoSets")) : ""}</p>
     ${diff ? `<p class="st-line note">${esc(t("bpmDiff",{a:Math.round(effBpm(c)), b:Math.round(songBpm())}))}</p>` : ""}
     ${lineAt("spd")}
+    ${dmPitchRow(c)}
     <h3 class="st-h3">${esc(t("fadeH"))}</h3>
     <div class="st-row">
       <label class="st-field"><span class="st-lab">${esc(t("fadeIn"))}</span><select id="fiSel">${fadeOpts(c.fadeIn||0)}</select></label>
@@ -3558,15 +3850,26 @@ function remember(i, g, tag){ const c=SONG.tracks[i].clip; if(!c) return;
   if(tag && last && last.tag===tag && last.id===c.id && last.i===i && now-last.t<1500){ last.t=now; c.auto=false; return; }
   UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c), tag:tag||"", t:now}); if(UNDO.length>60) UNDO.shift();
   c.auto=false; }   /* AOG-STUDIO-LISTEN-V1: a take you change is yours; Listen leaves it alone */
-function canUndo(){ return UNDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
-function canRedo(){ return REDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
+/* AOG-DESK-AUTO-V1: a drawn line's change is a step too (k:"lines"): the track's lines as they were, whatever is on it */
+function rememberLines(i, g, tag, was){
+  const x=SONG.tracks[i], last=UNDO[UNDO.length-1], now=Date.now();
+  REDO.length=0;
+  if(tag && last && last.k==="lines" && last.tag===tag && last.i===i && now-last.t<1500){ last.t=now; return; }
+  UNDO.push({i:i, k:"lines", g:g, j:was!=null ? was : JSON.stringify(x.lines||null), tag:tag||"", t:now}); if(UNDO.length>60) UNDO.shift();
+}
+function stepLive(u){ if(u.k==="lines" || u.k==="snap") return true; const c=SONG.tracks[u.i].clip; return !!(c && c.id===u.id); }
+function canUndo(){ return UNDO.some(stepLive); }
+function canRedo(){ return REDO.some(stepLive); }
 /* one step from one list to the other: each track in the step goes back to how it was, and how it is now goes on the other list */
 function swapStep(from, to){
   while(from.length){
     const g=from[from.length-1].g; let done=-1;
     while(from.length && from[from.length-1].g===g){
       const u=from.pop(), x=SONG.tracks[u.i];
-      if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){
+      if(u.k==="snap"){ const sn=DM_SNAPS[u.what]; if(sn){ to.push({i:u.i, k:"snap", what:u.what, g:g, j:sn.get(u.i), tag:"", t:0}); sn.set(u.j, u.i); done=u.i; } continue; }   /* AOG-DESK-MORE-V1: the mixer, a track's takes and effects, the sections */
+      if(u.k==="lines"){ to.push({i:u.i, k:"lines", g:g, j:JSON.stringify(x.lines||null), tag:"", t:0});   /* AOG-DESK-AUTO-V1 */
+        const back=cleanLines(JSON.parse(u.j)); if(back) x.lines=back; else delete x.lines; AUI.j=-1; done=u.i; continue; }
+      if(x.clip && x.clip.id===u.id){ const back=dmCleanClip(JSON.parse(u.j)); if(back){
         to.push({i:u.i, id:u.id, g:g, j:JSON.stringify(x.clip), tag:"", t:0}); x.clip=back; done=u.i; } }
     }
     if(done>=0) return done;
@@ -3574,20 +3877,60 @@ function swapStep(from, to){
   return -1;
 }
 function undo(){
+  if(dmNoSave()) return;   /* AOG-DESK-VERSIONS-V1: not while a saved version is being compared */
   const done=swapStep(UNDO, REDO);
   if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; $("tlLine").textContent=""; LES.mark("undo1"); songChanged(); stretchAll(); return; }
   paintTrack();
 }
 function redo(){
+  if(dmNoSave()) return;
   const done=swapStep(REDO, UNDO);
   if(done>=0){ SONG.sel=done; S.edMsg=t("redone"); S.edAt="top"; $("tlLine").textContent=""; songChanged(); stretchAll(); return; }
   paintTrack();
+}
+/* ══ AOG-PIANOROLL-V1 (2026-10-11) — Jimmy: "fix a wrong note, change an instrument after recording, or tighten the timing."
+   A take from the Piano, Guitar, Bass or Band carries its notes (AOG-NOTES-V1); Edit the notes opens them in aog-pianoroll.js.
+   What the editor needs from the desk: the clip, its beat, the Snap setting, its sound (to hear the old one), the room that
+   plays the notes again (the Studio opens it out of sight: AOGStudioShell.renderNotes), and keepNotes, which puts the new
+   sound on the clip and keeps everything else (its track, its bar, its pieces, its fades). ══ */
+function studioShell(){ try{ return window.parent!==window && window.parent.AOGStudioShell || null; }catch(e){ return null; } }
+function openNotes(i){
+  if(!window.AOGPianoRoll) return;
+  if(PLAY.on) stop();
+  const id=SONG.tracks[i].clip && SONG.tracks[i].clip.id;
+  const cur=()=>{ const c=SONG.tracks[i].clip; return c && c.id===NOTES_AT.id ? c : null; };
+  NOTES_AT.id=id;
+  AOGPianoRoll.open({ lang:()=>S.lang, clip:cur, name:()=>trackName(i), beatSec:c=>beatOf(c), snap:()=>!!VIEW.snap,
+    firstBar:()=>{ const c=cur(), P=c ? pcs(c) : []; return P.length===1 && P[0].a<1e-6 ? Math.floor(P[0].at/4)+1 : 1; },
+    buffer:()=>{ const c=cur(); return c ? BUF.get(c.id)||null : null; },
+    render:(room, p)=>{ const sh=studioShell(); return sh && sh.renderNotes ? sh.renderNotes(room, p) : AOGPianoRoll.renderHere(room, p); },
+    sounds:(room)=>{ const sh=studioShell(); return sh && sh.roomSounds ? sh.roomSounds(room) : AOGPianoRoll.renderHere(room, null, true); },
+    keep:(out, notes)=>keepNotes(i, out, notes),
+    done:()=>{ NOTES_AT.id=""; const b=document.querySelector('#clipBox [data-act="notes"]'); if(b) try{ b.focus({preventScroll:true}); }catch(e){} } });
+}
+const NOTES_AT={id:""};
+async function keepNotes(i, out, notes){
+  const x=SONG.tracks[i], old=x.clip; if(!old) throw new Error("gone");
+  const n=out.L.length, sr=out.sr, buf=newBuf(2, n, sr);
+  buf.copyToChannel(Float32Array.from(out.L), 0); buf.copyToChannel(Float32Array.from(out.R||out.L), 1);
+  const id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7), blob=new Blob([wavBuf(buf.getChannelData(0), buf.getChannelData(1), sr, 1)], {type:"audio/wav"});
+  await sput(id, {wav:blob});
+  BUF.set(id, buf);
+  const sec=n/sr, head=old.head||0;
+  /* the same place, pieces and fades; only its sound (and so its length, never shorter) and its notes are new */
+  const c=cleanClip(Object.assign({}, old, {id:id, sec:sec, body:Math.max(old.body, sec-head-(old.tail||0)), notes:notes, peakDb:peakDbOf(buf), auto:false}));
+  if(!c) throw new Error("bad");
+  x.clip=c; NOTES_AT.id=id;
+  dropClip(old.id);
+  songChanged(); stretchAll();
+  return true;
 }
 function clipAct(act){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   if(act==="off"){ takeOff(i); return; }
   if(act==="undo"){ undo(); return; }
   if(act==="redo"){ redo(); return; }   /* AOG-DESK-REDO-V1 */
+  if(act==="notes"){ openNotes(i); return; }   /* AOG-PIANOROLL-V1 */
   /* AOG-DESK-NUDGE-V1: 10 ms earlier or later (the keyboard's , and .), or a beat (Shift); a run of them is one Undo */
   const moveBy=act==="nudge-" ? -0.01/songBeat() : act==="nudge+" ? 0.01/songBeat() : act==="beat-" ? -1 : act==="beat+" ? 1 : 0;
   const g=++UG; remember(i, g, moveBy ? "nudge" : "");
@@ -3682,11 +4025,12 @@ function paintRecs(){
         (shelves.length ? `<optgroup label="${esc(t("grpShelves"))}">${shelves.map(opt).join("")}</optgroup>` : "")+
         `</select>
       <p class="st-info" id="srcInfo"></p>
-      <div class="st-row"><button type="button" class="st-btn st-go" id="putBtn"></button></div></div>`;
+      <div class="st-row"><button type="button" class="st-btn st-go" id="putBtn"></button><button type="button" class="st-btn" id="takeBtn" hidden></button></div></div>`;
   }
   const sel=$("srcSel"); if(sel.value!==S.pick) sel.value=S.pick;
   sel.disabled=!!S.busy;
   const b=$("putBtn"); b.textContent=t("putOn",{n:i+1}); b.setAttribute("data-put", S.pick); b.disabled=!!S.busy;
+  dmTakeBtn(list.find(o=>o.id===S.pick), i);   /* AOG-DESK-TAKES-V1: Add as another take, for a take of the same room */
   $("srcInfo").textContent=srcInfo(list.find(o=>o.id===S.pick));
 }
 
@@ -3730,7 +4074,7 @@ function paintMixer(rebuild){
   if(rebuild || mixerLang!==S.lang || !box.children.length){
     mixerLang=S.lang;
     box.innerHTML=SONG.tracks.map((x,i)=>
-      `<div class="st-strip" data-tr="${i}" style="--c:${COLORS[i]}">
+      `<div class="st-strip" data-tr="${i}" style="--c:${colOf(i)}">
         <button type="button" class="st-sh" data-sel="${i}"><span class="st-dot" aria-hidden="true"></span><span class="st-shn"></span></button>
         <button type="button" class="st-btn st-ed" data-edit="${i}" aria-label="${esc(t("editAria",{n:i+1}))}" hidden>${esc(t("edit"))}</button>
         <div class="st-ms"><button type="button" class="st-btn st-mute" data-ms="mute" aria-pressed="false">${esc(t("mute"))}</button><button type="button" class="st-btn st-solo" data-ms="solo" aria-pressed="false">${esc(t("solo"))}</button></div>
@@ -3738,25 +4082,30 @@ function paintMixer(rebuild){
       </div>`).join("");
     const m=SONG.master;
     $("master").innerHTML=`<div class="st-strip st-mstrip"><div class="st-sh"><span>${esc(t("masterH"))}</span></div>
-      <div class="st-sls">${MKNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,m[k],"m")).join("")}</div></div>`;
+      <div class="st-sls">${MKNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,m[k],"m")).join("")}</div>${dmEchoHtml()}
+      <label class="st-field st-roomk"><span class="st-lab">${esc(t("roomPick"))}</span><select id="roomSel">${DESK_ROOMS.map(id=>`<option value="${id}"${id===m.room?" selected":""}>${esc(t("rm_"+id))}</option>`).join("")}</select></label>
+      <p class="st-line st-roomc"><a href="/audio/rooms/CREDITS.txt">${esc(t("roomFrom"))}</a></p></div>`;   /* AOG-DESK-ECHO-SYNC-V1: the Echo's time · AOG-REAL-ROOMS-V1: the room */
   }
   /* names, selection, mute and solo, and every slider's value (a reload or a new song) */
   [...box.querySelectorAll(".st-strip")].forEach(el=>{
     const i=+el.getAttribute("data-tr"), x=SONG.tracks[i];
-    el.classList.toggle("sel", i===SONG.sel);
+    el.classList.toggle("sel", i===SONG.sel); el.style.setProperty("--c", colOf(i));   /* AOG-DESK-LOOK-V1 */
     el.querySelector(".st-shn").textContent=(i+1)+" · "+trackName(i);
     el.querySelector(".st-sh").setAttribute("aria-pressed", i===SONG.sel ? "true" : "false");
     el.querySelector("[data-ms=mute]").setAttribute("aria-pressed", x.mute?"true":"false");
     el.querySelector("[data-ms=solo]").setAttribute("aria-pressed", x.solo?"true":"false");
     el.querySelector("[data-edit]").hidden=!x.clip;
-    el.querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, x[r.getAttribute("data-k")]));
+    el.querySelectorAll("input[type=range]").forEach(r=>{ syncSlider(r, x[r.getAttribute("data-k")]); markDrawn(r, i); });   /* AOG-DESK-AUTO-V1 */
   });
   $("master").querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, SONG.master[r.getAttribute("data-k")]));
+  const et=$("etSel"); if(et && et.value!==(SONG.master.et||"d8")) et.value=SONG.master.et||"d8";   /* AOG-DESK-ECHO-SYNC-V1 */
+  const rs=$("roomSel"); if(rs && rs.value!==SONG.master.room) rs.value=SONG.master.room;   /* AOG-REAL-ROOMS-V1 */
   paintConsole();   /* AOG-DESK-FACE-V1 */
 }
 function syncSlider(r, v){
   const k=r.getAttribute("data-k");
   if(+r.value!==v) r.value=String(v);
+  if(r._drawn) return;   /* AOG-DESK-AUTO-V1: drawn on the track; markDrawn says so */
   const o=$(r.id+"-o"); if(o && o.textContent!==fmtV(k,v)) o.textContent=fmtV(k,v);
   r.setAttribute("aria-valuetext", ariaV(k,v));
 }
@@ -3782,6 +4131,7 @@ function paintMixOut(){
 const LANE_IX={pads:0, drums:1, piano:2, guitar:3, bass:4, band:5, decks:6, "guitar:live":8, "bass:live":9};
 function laneName(i){
   const N=STR.laneNames[S.lang]||STR.laneNames.en, c=SONG.tracks[i].clip;
+  if(SONG.tracks[i].name) return SONG.tracks[i].name;   /* AOG-DESK-LOOK-V1: the name you gave it */
   if(!c) return i===VOICE_T ? N[7] : N[11];
   if(c.voice) return N[7];
   if(c.src==="studiobench") return N[10];
@@ -3801,10 +4151,10 @@ const CONS={sig:"", open:false};
 function paintConsole(){
   const box=$("chStrip"), fd=$("chFaders"); if(!box || !fd) return;
   const i=SONG.sel, x=SONG.tracks[i], c=x.clip;
-  const sig=[S.lang, i, laneName(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : ""].join("|");
+  const sig=[S.lang, i, laneName(i), colOf(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : ""].join("|");   /* AOG-DESK-LOOK-V1: its colour too */
   if(CONS.sig!==sig){
     CONS.sig=sig;
-    const wave=c ? `<div class="st-chw" style="--c:${COLORS[i]}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 260)}<span class="st-cph" aria-hidden="true"></span></div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
+    const wave=c ? `<div class="st-chw" style="--c:${colOf(i)}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 260)}<span class="st-cph" aria-hidden="true"></span></div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
     box.innerHTML=`<div class="st-chh"><span class="st-lab">${esc(t("chH"))}</span><b class="st-chn">${esc(laneName(i))}</b><span class="st-chs">${esc(t("trackN",{n:i+1}))}${c ? " · "+esc(trackName(i)) : ""}</span></div>`+wave+
       `<div class="st-chc"><div class="st-ms"><button type="button" class="st-btn st-mute" data-cms="mute" aria-pressed="false">${esc(t("mute"))}</button>`+
       `<button type="button" class="st-btn st-solo" data-cms="solo" aria-pressed="false">${esc(t("solo"))}</button></div></div>`+
@@ -3815,9 +4165,9 @@ function paintConsole(){
   }
   box.querySelector("[data-cms=mute]").setAttribute("aria-pressed", x.mute ? "true" : "false");
   box.querySelector("[data-cms=solo]").setAttribute("aria-pressed", x.solo ? "true" : "false");
-  box.querySelectorAll(".st-shape input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); });
+  box.querySelectorAll(".st-shape input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); markDrawn(r, i); });
   const cv=$("cv-vol"); if(cv){ if(document.activeElement!==cv && +cv.value!==x.vol) cv.value=String(x.vol);
-    cv.setAttribute("aria-valuetext", volDb(x.vol)); const o=$("cv-vol-o"); if(o.textContent!==volDb(x.vol)) o.textContent=volDb(x.vol); }
+    if(!cv._drawn){ cv.setAttribute("aria-valuetext", volDb(x.vol)); const o=$("cv-vol-o"); if(o.textContent!==volDb(x.vol)) o.textContent=volDb(x.vol); } markDrawn(cv, i); }
   const fsig=S.lang+"|"+SONG.tracks.map((y,j)=>laneName(j)).join(",");
   if(fd._sig!==fsig){
     fd._sig=fsig;
@@ -3830,7 +4180,7 @@ function paintConsole(){
     el.classList.toggle("sel", j===SONG.sel); el.classList.toggle("off", !audible(j));
     el.querySelector("button").setAttribute("aria-pressed", j===SONG.sel ? "true" : "false");
     if(document.activeElement!==r && +r.value!==y.vol) r.value=String(y.vol);
-    r.setAttribute("aria-valuetext", volDb(y.vol));
+    if(!r._drawn) r.setAttribute("aria-valuetext", volDb(y.vol)); markDrawn(r, j);   /* AOG-DESK-AUTO-V1 */
   });
 }
 /* the fader's decibels: 80 is the take as recorded (0 dB); the gain is (v/80)² (volGain) */
@@ -3838,7 +4188,7 @@ function volDb(v){ if(!(v>0)) return "−∞ dB"; const d=Math.round(40*Math.log
 const DB_MARKS=[[100,"+4"],[80,"0"],[56.6,"−6"],[40,"−12"],[20,"−24"],[0,"−∞"]];
 /* a console control moves the mixer's own slider, so the mixer's rules do the rest */
 function consoleTo(i, k, v){
-  const r=$("t"+i+"-"+k); if(!r) return;
+  const r=$("t"+i+"-"+k); if(!r || lineOf(i, k)) return;   /* AOG-DESK-AUTO-V1: a knob drawn on the track rests */
   r.value=String(v); r.dispatchEvent(new Event("input", {bubbles:true}));
   paintConsole();
 }
@@ -3871,6 +4221,199 @@ function paintSlip(){
   el.hidden=false;
 }
 
+/* ══ AOG-DESK-AUTO-V1 · Draw changes: a lane under a track's lane, its points, the menu, and the knobs that rest while
+   their line has points. A tap on the lane adds a point; a drag along it draws (a point on each beat with Snap to the
+   beat on, every few pixels with it off), in place of the points it passes over; a point is dragged to move it (Snap
+   puts it on a beat), or picked and moved with the arrow keys. Each tap, stroke, move, removal or clearing is one Undo. ══ */
+Object.assign(STR, {
+  drawLab:{en:"Draw changes on track {n}",es:"Dibujar cambios en la pista {n}"},
+  drawOff:{en:"Off",es:"No"}, drawPan:{en:"Side (pan)",es:"Lado (paneo)"}, drawFilt:{en:"Filter",es:"Filtro"},
+  drawHint:{en:"Tap the lane to add a point. Drag a point to move it.",es:"Toca la franja para añadir un punto. Arrastra un punto para moverlo."},
+  drawRule:{en:"While the lane has points, the line sets it and the knob rests. The line stays with the track when you move a piece.",
+    es:"Mientras la franja tiene puntos, manda la línea y la perilla descansa. La línea se queda en la pista cuando mueves una parte."},
+  filtHint:{en:"Lower is darker. At the top it is open.",es:"Más abajo suena más oscuro. Arriba está abierto."},
+  ptAdd:{en:"+ Add a point",es:"+ Añadir un punto"}, ptDel:{en:"Remove this point",es:"Quitar este punto"}, lnClear:{en:"Clear this lane",es:"Borrar esta franja"},
+  drawn:{en:"Drawn on the track",es:"Dibujado en la pista"}, drawnShort:{en:"✎ Drawn",es:"✎ Dibujado"},
+  ptSaid:{en:"Point {n}: {w}, {v}.",es:"Punto {n}: {w}, {v}."}, ptAria:{en:"Point {n}: {w}, {v}",es:"Punto {n}: {w}, {v}"},
+  lnAria:{en:"{what}, drawn on track {n}",es:"{what}, dibujado en la pista {n}"},
+  ptGone:{en:"Point removed.",es:"Punto quitado."}, lnGone:{en:"Lane cleared. The knob sets it again.",es:"Franja borrada. La perilla vuelve a mandar."},
+  filtOpenW:{en:"filter open",es:"filtro abierto"}, filtAt:{en:"filter at {f}",es:"filtro en {f}"}
+});
+const AUTO_WORD={vol:"vol", pan:"drawPan", room:"room", echo:"echo", filt:"drawFilt"};
+const AUI={i:-1, k:"", j:-1, msg:"", kb:false, op:null};
+const AY0=8, AY1=92;              /* the lane's top and bottom values sit 8% in from its edges, so a point is never cut off */
+function autoW(k){ return t(AUTO_WORD[k]); }
+function hzWords(f){ return f>=1000 ? (f/1000).toFixed(f>=9950 ? 0 : 1).replace(".", S.lang==="es" ? "," : ".")+" kHz" : Math.round(f)+" Hz"; }
+function autoVal(k, v){ v=Math.round(v); if(k==="vol") return volDb(v); if(k==="pan") return ariaV("pan", v);
+  if(k==="filt") return v>=100 ? t("filtOpenW") : t("filtAt",{f:hzWords(filtHz(v))}); return t(k)+" "+v; }
+function autoY(A, v){ return AY0+(AY1-AY0)*(1-(v-A.lo)/(A.hi-A.lo)); }
+function autoV(A, y){ return Math.max(A.lo, Math.min(A.hi, Math.round(A.lo+(A.hi-A.lo)*(1-(y-AY0)/(AY1-AY0))))); }
+function autoSel(i, k){ const L=lineOf(i,k); return AUI.i===i && AUI.k===k && L && AUI.j>=0 && AUI.j<L.length ? AUI.j : -1; }
+/* what is inside a track's drawing lane: the line (or, with no points, the knob's level as a dashed line) and the points */
+function autoInner(i){
+  const x=SONG.tracks[i], k=x.lane, A=AUTO[k], L=lineOf(i,k), W=tlBars()*4, X=b=>Math.max(0, Math.min(100, b/W*100));
+  let svg;
+  if(L){ const P=[[0, autoY(A,L[0][1])]].concat(L.map(p=>[X(p[0]), autoY(A,p[1])]), [[100, autoY(A,L[L.length-1][1])]]),
+      pts=P.map(q=>(q[0]*10).toFixed(2)+","+q[1].toFixed(2)).join(" ");
+    svg=(k==="pan" ? "" : `<polygon class="af" points="0,100 ${pts} 1000,100"/>`)+`<polyline class="al" points="${pts}"/>`; }
+  else { const y=autoY(A, A.def(x)).toFixed(2); svg=`<line class="ad" x1="0" x2="1000" y1="${y}" y2="${y}"/>`; }
+  const sel=autoSel(i,k);
+  return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">${svg}</svg>`+(L||[]).map((p,j)=>
+    `<button type="button" class="st-apt${j===sel?" on":""}" data-pt="${j}" style="left:${X(p[0]).toFixed(4)}%;top:${autoY(A,p[1]).toFixed(3)}%" aria-pressed="${j===sel?"true":"false"}" aria-label="${esc(t("ptAria",{n:j+1, w:posFine(p[0]), v:autoVal(k,p[1])}))}"></button>`).join("");
+}
+function autoRowHtml(i){
+  const k=SONG.tracks[i].lane, what=autoW(k);
+  return `<div class="st-auto" data-auto="${i}" style="--c:${colOf(i)}"><span class="st-ln st-aln"><span class="st-alk">${esc(what)}</span></span>`+
+    `<span class="st-alt" data-alt="${i}" role="group" aria-label="${esc(t("lnAria",{what:what, n:i+1}))}">${autoInner(i)}</span></div>`;
+}
+/* the row under the lanes for the track you are on: the menu, then Add, Remove and Clear while its lane is open */
+function paintAuto(){
+  const box=$("autoTools"); if(!box) return;
+  const i=SONG.sel, x=SONG.tracks[i], k=AUTO[x.lane] ? x.lane : "", L=k ? lineOf(i,k) : null, sel=k ? autoSel(i,k) : -1;
+  const sig=[S.lang, i, k, AUTO_KEYS.map(q=>lineOf(i,q) ? 1 : 0).join(""), L ? 1 : 0, sel].join("|");
+  if(box._sig!==sig){
+    box._sig=sig;
+    const fa=document.activeElement, keep=fa && box.contains(fa) ? fa.id : "";
+    const opt=(v,w)=>`<option value="${v}"${v===k?" selected":""}>${esc(w)}</option>`;
+    box.innerHTML=`<label class="st-field st-drw"><span class="st-lab">${esc(t("drawLab",{n:i+1}))}</span><select id="drawSel">`+opt("", t("drawOff"))+
+      AUTO_KEYS.map(q=>opt(q, autoW(q)+(lineOf(i,q) ? " ✎" : ""))).join("")+`</select></label>`+
+      (k ? `<button type="button" class="st-hw" id="ptAdd">${esc(t("ptAdd"))}</button><button type="button" class="st-hw" id="ptDel"${sel<0?" disabled":""}>${esc(t("ptDel"))}</button>`+
+        `<button type="button" class="st-hw" id="lnClear"${L?"":" disabled"}>${esc(t("lnClear"))}</button>` : "");
+    if(keep){ let el=$(keep); if(!el || el.disabled) el=$("ptAdd")||$("drawSel"); if(el) try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
+  }
+  const said=!k ? "" : sel>=0 ? t("ptSaid",{n:sel+1, w:posFine(L[sel][0]), v:autoVal(k, L[sel][1])}) : (AUI.msg || t("drawHint"));
+  const line=$("autoLine"), rule=$("autoRule"), r=k ? t("drawRule")+(k==="filt" ? " "+t("filtHint") : "") : "";
+  if(line.textContent!==said) line.textContent=said;
+  if(rule.textContent!==r) rule.textContent=r;
+}
+/* a knob whose line has points rests, and says so; it moves again when the lane is cleared */
+function markDrawn(r, i){
+  const k=r.getAttribute("data-k")||(r.hasAttribute("data-fv") ? "vol" : ""), on=(k==="vol"||k==="pan"||k==="room"||k==="echo") && !!lineOf(i,k), was=!!r._drawn, o=$(r.id+"-o");
+  r._drawn=on; if(r.disabled!==on) r.disabled=on;
+  /* the ✎ becomes the site's pencil drawing (aog-sketch.js), so the words are written once and then left alone */
+  if(on){ if(o && (!was || o._lang!==S.lang)){ o.textContent=t("drawnShort"); o._lang=S.lang; }
+    if(r.getAttribute("aria-valuetext")!==t("drawn")) r.setAttribute("aria-valuetext", t("drawn")); if(r.title!==t("drawn")) r.title=t("drawn"); }
+  else if(was){ r.removeAttribute("title"); if(o) o.textContent=r.id==="cv-vol" ? volDb(+r.value) : fmtV(k, +r.value); r.setAttribute("aria-valuetext", r.id==="cv-vol"||r.hasAttribute("data-fv") ? volDb(+r.value) : ariaV(k, +r.value)); }
+}
+/* a line changed: kept, heard (at once, while the song plays), and drawn */
+function lineChanged(i){
+  const x=SONG.tracks[i], c=cleanLines(x.lines); if(c) x.lines=c; else delete x.lines;
+  save(); liveApply(E=>applyTrack(E,i)); autoLive(i);
+  if(SONG.sel!==i){ SONG.sel=i; LES.mark("track2"); paintTrack(); }
+  paintTimeline(); paintMixer();
+}
+function autoInsert(L, p){ let j=0; while(j<L.length && L[j][0]<=p[0]) j++; L.splice(j, 0, p); return j; }
+function autoPos(o, cx, cy){
+  const r=o.alt.getBoundingClientRect(), W=tlBars()*4, A=AUTO[o.k];
+  let b=Math.max(0, Math.min(W, (cx-r.left)/Math.max(1, r.width)*W));
+  b=VIEW.snap ? Math.round(b) : Math.round(b*1000)/1000;
+  return {b:b, v:autoV(A, (cy-r.top)/Math.max(1, r.height)*100)};
+}
+function autoSet(i, k, L){ const x=SONG.tracks[i]; if(!x.lines) x.lines={}; if(L.length) x.lines[k]=L.slice(0, AUTO_MAX); else delete x.lines[k]; }
+/* a stroke: its points take the place of the line's points over the stretch it covers */
+function autoSample(o, cx, cy){
+  const q=autoPos(o, cx, cy);
+  if(!VIEW.snap && o.lastX!=null && Math.abs(cx-o.lastX)<6) o.samples.delete(o.lastB); else o.lastX=cx;
+  o.samples.delete(q.b); o.samples.set(q.b, q.v); o.lastB=q.b;
+  const keys=[...o.samples.keys()], lo=Math.min(...keys), hi=Math.max(...keys);
+  const L=o.orig.filter(p=>p[0]<lo-1e-9 || p[0]>hi+1e-9).map(p=>p.slice());
+  keys.sort((u,v)=>u-v).forEach(b=>autoInsert(L, [b, o.samples.get(b)]));
+  autoSet(o.i, o.k, L); o.last=q;
+}
+function autoMovePt(o, cx, cy){
+  const q=autoPos(o, cx, cy), L=o.orig.map(p=>p.slice()); L.splice(o.j, 1);
+  o.nj=autoInsert(L, [q.b, q.v]); autoSet(o.i, o.k, L); AUI.i=o.i; AUI.k=o.k; AUI.j=o.nj; o.last=q;
+}
+function autoPreview(o){
+  o.alt.innerHTML=autoInner(o.i);
+  if(o.last){ const tip=document.createElement("span"); tip.className="st-dtip"; tip.setAttribute("aria-hidden","true");
+    tip.style.left=Math.max(0, Math.min(100, o.last.b/(tlBars()*4)*100)).toFixed(3)+"%"; tip.textContent=posFine(o.last.b)+" · "+autoVal(o.k, o.last.v); o.alt.appendChild(tip); }
+}
+function autoFocusPt(){
+  const b=$("timeline").querySelector(`[data-alt="${AUI.i}"] [data-pt="${AUI.j}"]`);
+  if(b) try{ b.focus({preventScroll:true}); }catch(e){ b.focus(); }
+}
+function autoRemove(){
+  const i=AUI.i, k=AUI.k, L=lineOf(i,k), j=AUI.j; if(!L || !(j>=0 && j<L.length)) return;
+  rememberLines(i, ++UG); const M=L.map(p=>p.slice()); M.splice(j, 1); autoSet(i, k, M);
+  AUI.j=AUI.kb && M.length ? Math.min(j, M.length-1) : -1; AUI.msg=t("ptGone"); lineChanged(i);
+}
+function autoClear(){
+  const i=SONG.sel, k=SONG.tracks[i].lane; if(!lineOf(i,k)) return;
+  rememberLines(i, ++UG); autoSet(i, k, []); AUI.i=i; AUI.k=k; AUI.j=-1; AUI.msg=t("lnGone"); lineChanged(i);
+}
+/* + Add a point (the keys' way in): a bar after the point you are on, or after the last one, or where the song starts */
+function autoAdd(){
+  const i=SONG.sel, x=SONG.tracks[i], k=x.lane, A=AUTO[k]; if(!A) return;
+  const L=lineOf(i,k), s=autoSel(i,k);
+  let b=L ? (s>=0 ? L[s][0] : L[L.length-1][0])+4 : (SONG.startBar-1)*4; b=Math.max(0, Math.min(MAX_BARS*4, b));
+  const v=Math.round(L ? drawnAt(L, b) : A.def(x)), M=(L||[]).map(p=>p.slice());
+  rememberLines(i, ++UG); AUI.j=autoInsert(M, [b, v]); autoSet(i, k, M); AUI.i=i; AUI.k=k; AUI.msg=""; AUI.kb=true; lineChanged(i);
+}
+function bindAuto(){
+  const tl=$("timeline");
+  tl.addEventListener("pointerdown", e=>{
+    const alt=e.target.closest && e.target.closest(".st-alt[data-alt]"); if(!alt || (e.pointerType==="mouse" && e.button!==0)) return;
+    const i=+alt.getAttribute("data-alt"), x=SONG.tracks[i], k=x.lane; if(!AUTO[k]) return;
+    const pt=e.target.closest(".st-apt"), j=pt ? +pt.getAttribute("data-pt") : -1;
+    AUI.op={i:i, k:k, alt:alt, pid:e.pointerId, x0:e.clientX, y0:e.clientY, was:JSON.stringify(x.lines||null), orig:(lineOf(i,k)||[]).map(p=>p.slice()),
+      mode:pt ? "move" : "draw", j:j, nj:j, moved:false, samples:new Map(), lastX:null, lastB:null, last:null, touch:e.pointerType==="touch"};
+    /* a point is held at once; on a touch screen the empty lane waits to see whether the finger draws or scrolls the page */
+    if(pt || !AUI.op.touch){ e.preventDefault(); try{ alt.setPointerCapture(e.pointerId); }catch(er){} }
+  });
+  tl.addEventListener("pointermove", e=>{
+    const o=AUI.op; if(!o || e.pointerId!==o.pid) return;
+    if(!o.moved){ if(Math.abs(e.clientX-o.x0)<5 && Math.abs(e.clientY-o.y0)<5) return;
+      o.moved=true; try{ o.alt.setPointerCapture(e.pointerId); }catch(er){} if(o.mode==="draw") autoSample(o, o.x0, o.y0); }
+    e.preventDefault();
+    if(o.mode==="move") autoMovePt(o, e.clientX, e.clientY); else autoSample(o, e.clientX, e.clientY);
+    autoPreview(o);
+  });
+  const up=e=>{
+    const o=AUI.op; if(!o || e.pointerId!==o.pid) return; AUI.op=null;
+    const x=SONG.tracks[o.i];
+    if(e.type==="pointercancel"){ const back=cleanLines(JSON.parse(o.was)); if(back) x.lines=back; else delete x.lines; paintTimeline(); return; }
+    if(o.mode==="move" && !o.moved){ AUI.i=o.i; AUI.k=o.k; AUI.j=o.j; AUI.msg="";   /* a tap on a point picks it */
+      if(SONG.sel!==o.i){ SONG.sel=o.i; LES.mark("track2"); paintTrack(); paintMixer(); } paintTimeline(); return; }
+    if(o.mode==="draw" && !o.moved) autoSample(o, o.x0, o.y0);   /* a tap on the lane adds a point */
+    const c=cleanLines(x.lines); if(JSON.stringify(c)===o.was){ paintTimeline(); return; }
+    rememberLines(o.i, ++UG, "", o.was);
+    AUI.i=o.i; AUI.k=o.k; AUI.msg="";
+    if(o.mode==="move") AUI.j=o.nj;
+    else if(o.samples.size===1){ const L=lineOf(o.i,o.k)||[], b=o.last.b; AUI.j=L.findIndex(p=>Math.abs(p[0]-b)<1e-9 && p[1]===o.last.v); }
+    else AUI.j=-1;
+    lineChanged(o.i);
+  };
+  tl.addEventListener("pointerup", up); tl.addEventListener("pointercancel", up);
+  /* the keys: Enter or Space picks a point; ← → move it a beat (Shift: a bar), ↑ ↓ change it (Shift: more); Delete removes it */
+  tl.addEventListener("click", e=>{ const pt=e.target.closest && e.target.closest(".st-apt"); if(!pt || e.detail!==0) return;
+    const i=+pt.closest("[data-alt]").getAttribute("data-alt"); AUI.i=i; AUI.k=SONG.tracks[i].lane; AUI.j=+pt.getAttribute("data-pt"); AUI.msg=""; AUI.kb=true;
+    if(SONG.sel!==i){ SONG.sel=i; paintTrack(); paintMixer(); } paintTimeline(); });
+  tl.addEventListener("keydown", e=>{
+    const pt=e.target.closest && e.target.closest(".st-apt"); if(!pt || e.altKey || e.ctrlKey || e.metaKey) return;
+    const i=+pt.closest("[data-alt]").getAttribute("data-alt"), k=SONG.tracks[i].lane, A=AUTO[k], L=lineOf(i,k), j=+pt.getAttribute("data-pt"); if(!A || !L || !L[j]) return;
+    let db=0, dv=0;
+    if(e.key==="ArrowLeft" || e.key==="ArrowRight") db=(e.key==="ArrowLeft" ? -1 : 1)*(e.shiftKey ? 4 : 1);
+    else if(e.key==="ArrowUp" || e.key==="ArrowDown") dv=(e.key==="ArrowDown" ? -1 : 1)*A.step*(e.shiftKey ? 5 : 1);
+    else if(e.key==="Delete" || e.key==="Backspace"){ e.preventDefault(); e.stopPropagation(); AUI.i=i; AUI.k=k; AUI.j=j; AUI.kb=true; autoRemove(); return; }
+    else return;
+    e.preventDefault(); e.stopPropagation();
+    const M=L.map(p=>p.slice()), p=M.splice(j, 1)[0];
+    const nb=Math.round(Math.max(0, Math.min(MAX_BARS*4, p[0]+db))*1e6)/1e6, nv=Math.max(A.lo, Math.min(A.hi, p[1]+dv));
+    if(nb===p[0] && nv===p[1]) return;
+    rememberLines(i, ++UG, "ptkey"); AUI.j=autoInsert(M, [nb, nv]); autoSet(i, k, M); AUI.i=i; AUI.k=k; AUI.msg=""; AUI.kb=true; lineChanged(i);
+  });
+  const box=$("autoTools");
+  box.addEventListener("change", e=>{ if(e.target.id!=="drawSel") return; const x=SONG.tracks[SONG.sel], v=e.target.value;
+    if(AUTO[v]) x.lane=v; else delete x.lane; AUI.j=-1; AUI.msg=""; save(); paintTimeline();
+    if(e.target._ptr){ e.target._ptr=false; setTimeout(()=>{ const s=$("drawSel"); if(s) s.blur(); }, 0); } });
+  box.addEventListener("pointerdown", e=>{ if(e.target.id==="drawSel") e.target._ptr=true; });
+  box.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b || b.disabled) return;
+    if(b.id==="ptAdd") autoAdd();
+    else if(b.id==="ptDel"){ AUI.kb=false; autoRemove(); const a=$("ptAdd"); if(a) a.focus(); }
+    else if(b.id==="lnClear"){ autoClear(); const s=$("drawSel"); if(s) s.focus(); } });
+}
+
 /* ══ wiring ══ */
 function selectTrack(i){
   i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
@@ -3895,6 +4438,7 @@ function bind(){
     if(pc && c && pcs(c).length>1){ const j=+pc.getAttribute("data-pc"); if(c.psel!==j){ c.psel=j; saveSoon(); if(SONG.sel===i){ paintTimeline(); paintTrack(); } } }
     selectTrack(i); });
   bindDrag();   /* AOG-DESK-HANDS-V1 */
+  bindAuto();   /* AOG-DESK-AUTO-V1 */
   $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(!b || b.disabled) return;
     let act=b.getAttribute("data-act"); if(act==="hear"){ hearPiece(); return; }   /* AOG-STUDIO-CUT-V2 */
     if(act==="cutnow") act="cut";   /* ✂ Cut here, on the wave */
@@ -3934,6 +4478,7 @@ function bind(){
   $("mixer").addEventListener("input", e=>{
     const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
     const i=+r.closest(".st-strip").getAttribute("data-tr"), k=r.getAttribute("data-k"), v=+r.value;
+    if(lineOf(i, k)){ syncSlider(r, SONG.tracks[i][k]); markDrawn(r, i); return; }   /* AOG-DESK-AUTO-V1 */
     SONG.tracks[i][k]=v; syncSlider(r, v); liveApply(E=>applyTrack(E,i)); saveSoon();
     /* AOG-LESSONS-V1 */
     if(k==="vol"){ LES.mark("vol1"); if(v<=50) LES.mark("volLow"); lessonSong(); }
@@ -3946,6 +4491,10 @@ function bind(){
     const k=r.getAttribute("data-k"), v=+r.value;
     SONG.master[k]=v; syncSlider(r, v); liveApply(applyMaster); saveSoon();
     LES.mark(k==="glue" ? "mGlue" : k==="vol" ? "mVol" : "mEq");   /* AOG-LESSONS-V1 */
+  });
+  $("master").addEventListener("change", e=>{   /* AOG-REAL-ROOMS-V1: the room every track's Room goes to */
+    const r=e.target; if(!r || r.id!=="roomSel" || !DESK_ROOMS.includes(r.value)) return;
+    SONG.master.room=r.value; liveApply(applyRoom); saveSoon();
   });
   $("mixBtn").onclick=makeMix;
   /* AOG-LESSONS-V1: Save as .wav, and the mix played in its player */
@@ -4015,6 +4564,7 @@ CARRY.lock=lockGet();
 const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another device */
 bind();
 bindConsole();   /* AOG-DESK-FACE-V1 */
+dmInit();   /* AOG-DESK-MORE-V1 */
 paintAll();
 if(lockJoined) $("lockLine").textContent=t("lockJoined");
 if(CARRY.lock){ lockKeep(); lockList(true); }
@@ -4038,6 +4588,7 @@ window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 if(window.AOGSong) AOGSong.on(s=>{ try{
   /* a tempo set elsewhere (the Song panel, a room) is the song's now: the desk's first track no longer leads it */
   if(s && s.hasBpm && Math.abs(s.bpm-deskBpm())>0.005){ let ch=false; clips().forEach(x=>{ if(x.c.lead){ x.c.lead=false; ch=true; } }); if(ch) save(); }
+  liveApply(applyMaster);   /* AOG-DESK-ECHO-SYNC-V1: the Echo keeps to the new tempo, also while it plays */
   reschedule(); paintTransport(); paintTimeline(); paintTrack(); }catch(e){} });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
@@ -4045,9 +4596,16 @@ window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, ge
   INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, backing:backing, placeOf:placeOf, get AC(){ return ac; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO,
   redo:redo, REDO:REDO, VIEW:VIEW, zoomTo:zoomTo, makeEngine:makeEngine, posFine:posFine, piecePlays:piecePlays, playBuf:playBuf, tlBars:tlBars };   /* AOG-DESK-HANDS-V1 */
+Object.assign(window.__aogStudio, { DESK_ROOMS:DESK_ROOMS, roomBuf:roomBuf, applyRoom:applyRoom, deskRoomLoad:deskRoomLoad, roomIR:roomIR });   /* AOG-REAL-ROOMS-V1: for studio/rooms-real.js */
 /* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
+Object.assign(window.__aogStudio, { openNotes:openNotes, keepNotes:keepNotes, cleanClip:cleanClip, beatOf:beatOf });   /* AOG-PIANOROLL-V1 */
+/* AOG-DESK-AUTO-V1: for the tests (music-handoff/tests/studio/auto.js) */
+Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCorners:autoCorners, lineOf:lineOf, filtHz:filtHz, cleanLines:cleanLines,
+  lineChanged:lineChanged, reschedule:reschedule, live:live, get LAT(){ return LAT; } });
+/* AOG-DESK-MORE-V1: for the tests (music-handoff/tests/studio/more.js, more2.js) */
+Object.assign(window.__aogStudio, { echoTime:echoTime, songPos:songPos, songChanged:songChanged, selectTrack:selectTrack, paintAll:paintAll, restore:restore, sget:sget, skeys:skeys, chainLatency:chainLatency, ECHO_T:ECHO_T });
 </script>
 </body>
 </html>

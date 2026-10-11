@@ -128,7 +128,7 @@ layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-stud
 ## The front page starts on Student (standing order from Jimmy, 2026-10-10)
 
 "Show everything … overwhelms me." `index.html` opens on Student (the Studio,
-the Lab Bench, Quiet Space; no Daily Practice, no Check-in). Teacher leads with the
+the Lab Bench, the Cube, Skateboarding, Quiet Space; no Daily Practice, no Check-in). Teacher leads with the
 Dashboard, The Courses, SEL and Daily Practice. Parent has the most doors. Show
 everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 The words under the title follow the choice too (`HERO`, AOG-HERO-AUDIENCE-V1):
@@ -198,6 +198,22 @@ circling a middle square (the steering wheel) and two-finger swipes make the rig
 every Learn step reach the end; the three kinds of help, practising one step, the named moves, the camera's
 color reader, symbols, Read aloud (never on its own) and the move card. Do not push while it fails; add a
 check for anything new the hands can do.
+
+## Skateboarding and the Skate Lab (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
+
+- The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
+  Adult band), built like every other course; Daily Practice is the `skate` book (`_work/ddworld/skt.py`).
+  Unlike Sports History it **teaches technique**, always safety first (helmet, pads, a safe place, a grown-up near
+  children; never stairs, rails, traffic or holding onto a vehicle). Directions say front foot and back foot.
+- The Skate Lab is `skate-lab.html` (/skate) and its engine `aog-skate.js`. **Build a board is its mainstay** (Jimmy,
+  2026-10-11): /skate always opens on it, it is first in the room menu and on the front page's Skateboarding door; an
+  address naming a room (/skate#ollie) still opens that room. After any change to either, run
+
+      node tools/check-skate.js
+
+  It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
+  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
+  a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
 
 ## Housekeeping
 
