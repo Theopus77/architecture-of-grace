@@ -65,7 +65,19 @@
    first sample was heard at (the listening ear reports it), less the time the sound takes to reach your ears (the device's
    output delay, or half the round trip the Timing check measured, AOG-LATENCY-V1), counted from the bar My Track started
    on. The take is then cut to begin on the bar line of the bar its first note is in, and carries place {bar, bpm} to the
-   Mixing Desk, which puts it exactly there. The song's tempo is its tempo. */
+   Mixing Desk, which puts it exactly there. The song's tempo is its tempo.
+
+   AOG-NOTES-V1 (2026-10-11) — Jimmy's ceiling-breaker: "Record notes, not just sound … fix a wrong note, change an
+   instrument after recording, or tighten the timing." A room that says how (o.notes: () => {room, sound, set}) also keeps
+   which notes it played. Its voice maker tells this recorder about every voice that sounds on the live engine
+   (AOGRecorder.note(ctx, voice, {m, v, when, …})), whoever played it: a key, a chord pad, a pattern, MIDI, Solo, a strum.
+   The recorder watches that voice's stop, kill and glide, so a note's length is how long it really sounded (the pedal
+   is already in it; pedal moves are kept too, AOGRecorder.pedal). When the take is made, every note that starts inside
+   it is given in the take's own time: t = seconds from the take's first sample, the same cut the sound got (the quiet
+   start left out, or the bar line of a take over My Track). The take then carries
+     notes: {v:1, room, sound, set, sr, lag, ev:[{t, m, v, d, …}], ped:[{t, on}]}
+   (lag: how long after a note's time its sound begins, measured on this take; used to line notes up with the beat).
+   Kept with the take, sent with it to the Mixing Desk. Takes from a room that does not say how carry nothing new. */
 (function () {
   "use strict";
   var W = {
@@ -175,14 +187,19 @@
     return y;
   }
   /* the listening ear: it collects what passes through it in pieces of 4096 frames, only while it is armed */
+  /* AOG-NOTES-V1: a second input carries the room's note marks (noteOf: a tiny steady source made right after each voice,
+     each its own power of two): the frame where a mark begins is the frame where the sound engine took up that voice, so
+     a note played "now" gets the moment it really began, not the moment the page asked for it (the engine works ahead of
+     the page's clock, and a busy page can make a new voice wait a turn or two) */
   var SRC = [
     "class AogRec extends AudioWorkletProcessor{",
-    "  constructor(){ super(); this.on=false; this.n=0; this.f0=-1; this.L=new Float32Array(4096); this.R=new Float32Array(4096);",
-    "    this.port.onmessage=(e)=>{ if(e.data && e.data.t==='arm'){ if(!e.data.on) this.flush(); else this.f0=-1; this.on=!!e.data.on; } }; }",
+    "  constructor(){ super(); this.on=false; this.n=0; this.f0=-1; this.cv=NaN; this.L=new Float32Array(4096); this.R=new Float32Array(4096);",
+    "    this.port.onmessage=(e)=>{ if(e.data && e.data.t==='arm'){ if(!e.data.on) this.flush(); else { this.f0=-1; this.cv=NaN; } this.on=!!e.data.on; } }; }",
     "  flush(){ if(this.n){ this.port.postMessage({t:'chunk', L:this.L.slice(0,this.n), R:this.R.slice(0,this.n)}); this.n=0; } }",
     "  process(inputs){",
-    "    const i=inputs[0]; if(!this.on || !i || !i.length) return true;",
+    "    const i=inputs[0], q=inputs[1]; if(!this.on || !i || !i.length) return true;",
     "    if(this.f0<0){ this.f0=currentFrame; this.port.postMessage({t:'start', frame:currentFrame}); }",
+    "    if(q && q[0]){ const b=q[0]; if(!(b[0]===this.cv && b[b.length-1]===this.cv)){ let k=0; while(k<b.length && b[k]===this.cv) k++; this.cv=b[b.length-1]; this.port.postMessage({t:'cv', frame:currentFrame+k, v:this.cv}); } }",
     "    const a=i[0], b=i[1]||i[0];",
     "    for(let k=0;k<a.length;k++){",
     "      this.L[this.n]=a[k]; this.R[this.n]=b[k]; this.n++;",
@@ -214,18 +231,24 @@
     ".aogrec-box .aogrec-line a,.aogrec-take a:not(.aogrec-b){color:#cfe2ff}"
   ].join("\n");
   var url = null, styled = false;
+  /* AOG-NOTES-V1: the one recorder on this page that keeps notes (a page attaches one) */
+  var CAP = null;
+  function r4(x) { return Math.round(x * 10000) / 10000; }
+  function r3(x) { return Math.round(x * 1000) / 1000; }
   function style() { if (styled) return; styled = true; var s = document.createElement("style"); s.id = "aog-rec-css"; s.textContent = CSS; document.head.appendChild(s); }
   function clock(sec) { var s = Math.max(0, Math.floor(sec)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
 
   function attach(o) {
     var R = { on: false, closing: false, chunks: [], frames: 0, t0: 0, timer: 0, takes: [], n: 0, max: 300, msg: "", node: null, sink: null, sr: 44100,
-      bpm0: 0, studioLine: false, kept: true };
+      bpm0: 0, studioLine: false, kept: true, cnt: null, cntV: 0, cvs: [], cvT: [] };
     /* AOG-REC-KEEP-V1: this room's takes, kept on the device */
     var KEPT = "roomtakes/" + (o.shelf || studioTool(o) || location.pathname);
     function A() { return window.AOGHandoff && AOGHandoff.add ? AOGHandoff : null; }
     function store(k) {
       var H = A(); if (!H) { R.kept = false; return Promise.resolve(); }
-      return H.add(KEPT, { n: k.n, sec: k.sec, at: k.at, bpm: k.bpm, added: !!k.added, place: k.place || null, wav: k.blob }, { max: 3, key: "take|" + k.at + "|" + k.n })
+      var it = { n: k.n, sec: k.sec, at: k.at, bpm: k.bpm, added: !!k.added, place: k.place || null, wav: k.blob };
+      if (k.notes) it.notes = k.notes;   /* AOG-NOTES-V1 */
+      return H.add(KEPT, it, { max: 3, key: "take|" + k.at + "|" + k.n })
         .then(function (r) { k.hid = r.id; if (R.takes.indexOf(k) < 0) { unstore(k); return; }   /* deleted while it was being kept */
           R.kept = R.takes.every(function (x) { return !!x.hid; }); }, function () { R.kept = false; });
     }
@@ -238,7 +261,7 @@
           var m = ix.items[i], it = await H.item(KEPT, m.id);
           if (!it || !(it.wav instanceof Blob) || it.wav.size <= 44) continue;
           if (R.takes.some(function (x) { return x.at === it.at && x.n === it.n; })) continue;
-          got.push({ n: it.n, sec: it.sec, blob: it.wav, url: URL.createObjectURL(it.wav), at: it.at, bpm: it.bpm || 0, added: !!it.added, place: it.place || null, hid: m.id });
+          got.push({ n: it.n, sec: it.sec, blob: it.wav, url: URL.createObjectURL(it.wav), at: it.at, bpm: it.bpm || 0, added: !!it.added, place: it.place || null, notes: it.notes || null, hid: m.id });
         }
         if (!got.length) return;
         R.takes = R.takes.concat(got).sort(function (a, c) { return (c.at || 0) - (a.at || 0) || c.n - a.n; });
@@ -270,9 +293,12 @@
         if (!c.audioWorklet) throw new Error("no worklet");
         if (!url) url = URL.createObjectURL(new Blob([SRC], { type: "application/javascript" }));
         await c.audioWorklet.addModule(url);
-        var n = new AudioWorkletNode(c, "aog-rec", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2] });
-        n.port.onmessage = function (e) { if (!e.data) return; if (e.data.t === "chunk") keep(e.data.L, e.data.R); else if (e.data.t === "start") R.f0 = e.data.frame; };
+        var n = new AudioWorkletNode(c, "aog-rec", { numberOfInputs: 2, numberOfOutputs: 1, outputChannelCount: [2] });
+        n.port.onmessage = function (e) { if (!e.data) return; if (e.data.t === "chunk") keep(e.data.L, e.data.R); else if (e.data.t === "start") R.f0 = e.data.frame;
+          else if (e.data.t === "cv" && (R.on || R.closing)) R.cvs.push([e.data.v, e.data.frame]); };
         R.node = n;
+        /* AOG-NOTES-V1: the note count, into the second input */
+        R.cnt = typeof c.createConstantSource === "function" ? n : null;   /* the marks go into its second input (bump, below) */
       } catch (e) {                                   /* an older browser: the same, the old way */
         var sp = c.createScriptProcessor(4096, 2, 2);
         sp.onaudioprocess = function (ev) { if (!R.on && !R.closing) return; var ib = ev.inputBuffer;
@@ -314,17 +340,96 @@
       try { var c = O.g.context, now = c.currentTime; O.g.gain.setValueAtTime(O.g.gain.value, now); O.g.gain.linearRampToValueAtTime(0, now + 0.06); O.src.stop(now + 0.08); } catch (e) {}
       O.src = null;
     }
-    function arm(on) { if (on) R.f0 = -1; R.on = on; if (R.node && R.node.port) R.node.port.postMessage({ t: "arm", on: on }); }
+    function arm(on) { if (on) { R.f0 = -1; R.cvs = []; noteTrim(true); } R.on = on; if (R.node && R.node.port) R.node.port.postMessage({ t: "arm", on: on }); }
+    /* ── AOG-NOTES-V1: every voice the room makes on its live engine, and how long it really sounded ── */
+    R.nl = []; R.pl = [];
+    function isOff(c) { return !!(window.OfflineAudioContext && c instanceof OfflineAudioContext) || !!(window.webkitOfflineAudioContext && c instanceof window.webkitOfflineAudioContext); }
+    function noteTrim(arming) {
+      if (R.on || R.closing) { if (R.nl.length > 6000) R.nl.splice(0, R.nl.length - 6000); return; }
+      var c = R.node ? R.node.context : R.nctx, now = c ? c.currentTime : Infinity;
+      if (!c) { R.nl = R.nl.slice(-64); R.pl = R.pl.slice(-16); return; }
+      R.nl = R.nl.filter(function (x) { return x.w >= now - (arming ? 1 : 2); });
+      R.pl = R.pl.filter(function (x) { return x.w >= now - 2; });
+    }
+    function noteOf(c, vc, e) {
+      if (!o.notes || !vc || vc.__aogN || !e || !(e.m >= 0) || typeof e.when !== "number" || isOff(c)) return vc;
+      R.nctx = c;
+      /* the sound engine works a little ahead of the page's clock: a note asked for "now", or for a moment it has already
+         passed, starts when the engine next takes it up; the note count marks that moment (a note for later starts then) */
+      /* the mark: a tiny steady source made right after the voice, so the engine takes both up together; each mark is its own
+         power of two (23 in turn), so the sum the listening ear hears says which marks have begun */
+      var bump = function (t) {
+        if (!R.cnt || R.cnt.context !== c || !(t <= c.currentTime + 0.1)) return 0;
+        if (R.cntV > 1e7) R.cntV = 0; R.cntV++;
+        try { var cs = c.createConstantSource(); cs.offset.value = Math.pow(2, R.cntV % 23); cs.connect(R.cnt, 0, 1); cs.start(); cs.stop(c.currentTime + 0.15);
+          cs.onended = function () { try { cs.disconnect(); } catch (err) {} }; } catch (err) { return 0; }
+        R.cvT[R.cntV % 4096] = c.currentTime;
+        return R.cntV; };
+      var x = { w: Math.max(e.when, c.currentTime), e: e, vc: vc, off: null, r: null, k: null, g: null, cv: bump(e.when), ocv: 0 };
+      try { Object.defineProperty(vc, "__aogN", { value: x, enumerable: false, configurable: true }); } catch (err) { vc.__aogN = x; }
+      var st = vc.stop, kl = vc.kill, gl = vc.glide;
+      if (typeof st === "function") vc.stop = function (t, tau) {
+        if (!this.stopped && x.off == null) { x.off = Math.max(+t || 0, c.currentTime); x.r = +tau || 0; x.ocv = bump(+t || 0); if (arguments[2] && arguments[2].rel) x.rl = 1; }   /* rel: the hand's sound on the string */
+        return st.apply(this, arguments); };
+      if (typeof kl === "function") vc.kill = function (t) {
+        var T = Math.max(+t || 0, c.currentTime);
+        if (x.off == null || T < x.off) { x.off = T; x.r = -1; x.ocv = bump(+t || 0); } else if (x.r !== -1 && (x.k == null || T < x.k)) x.k = T;
+        return kl.apply(this, arguments); };
+      if (typeof gl === "function") vc.glide = function (m2, at) {
+        var T = Math.max(+at || 0, c.currentTime), g = x.g || (x.g = []), last = g[g.length - 1];
+        if (g.length < 600 && (!last || Math.abs(last[1] - m2) > 0.004)) g.push([T, +m2, (+at || 0) <= c.currentTime + 0.003 ? bump(+at || 0) : 0]);   /* a bend "now": its moment marked too */
+        return gl.apply(this, arguments); };
+      noteTrim(false);
+      R.nl.push(x);
+      return vc;
+    }
+    /* the notes that start inside the take, in its own time (T0: the take's first sample on the audio clock; first: when
+       its first sound is, in the take) */
+    function notesOf(T0, sec, first) {
+      if (!o.notes || !(T0 >= 0) || !R.nl.length) return null;
+      var info = {}; try { info = o.notes() || {}; } catch (err) { info = {}; }
+      var end = T0 + sec, ev = [], minT = Infinity, sr = R.sr;
+      /* the frame the sound engine took up note count v (the first change at or past it) */
+      var at = function (v, fall) {
+        if (!v) return fall;
+        var b = Math.pow(2, v % 23), from = ((R.cvT[v % 4096] || 0) - 0.05) * sr, to = from + 0.6 * sr, was = false;
+        for (var i = 0; i < R.cvs.length; i++) { var on = Math.floor(R.cvs[i][0] / b) % 2 === 1;
+          if (on && !was && R.cvs[i][1] >= from && R.cvs[i][1] <= to) return R.cvs[i][1] / sr; was = on; }
+        return fall; };
+      R.nl.forEach(function (x) {
+        var w = Math.max(x.e.when, at(x.cv, x.w));   /* asked for now: when it really began; asked for later: then, exactly */
+        var t = w - T0; if (t < -0.002 || t >= sec) return;
+        var nat = x.vc && x.vc.natural > w && isFinite(x.vc.natural) ? x.vc.natural : Infinity;
+        var off = x.off != null ? Math.max(x.off, at(x.ocv, x.off)) : Math.min(end, nat);
+        var e = { t: r4(Math.max(0, t)), m: r3(x.e.m), v: r3(Math.max(0, Math.min(1, +x.e.v || 0))), d: r4(Math.max(0.005, off - w)) };
+        if (x.off != null) e.r = x.r === -1 ? -1 : r4(x.r);
+        if (x.k != null && x.k > off) e.k = r4(x.k - w);
+        if (x.rl) e.rl = 1;
+        ["s", "o", "p", "a", "to", "sd", "kit", "kd", "z", "ck", "sl"].forEach(function (k) { if (x.e[k] != null) e[k] = x.e[k]; });
+        if (x.e.snd != null && x.e.snd !== info.sound) e.snd = x.e.snd;
+        if (x.g && x.g.length) e.g = x.g.map(function (q) { return [r4(Math.max(0, Math.max(q[0], at(q[2], q[0])) - w)), r3(q[1])]; });
+        if (t < minT) minT = t;
+        ev.push(e);
+      });
+      if (!ev.length) return null;
+      ev.sort(function (a, b) { return a.t - b.t || a.m - b.m; });
+      if (ev.length > 5000) ev.length = 5000;
+      var lag = first - Math.max(0, minT); lag = lag > 0 && lag < 0.05 ? r4(lag) : 0;
+      var ped = R.pl.filter(function (p) { return p.w - T0 >= -0.002 && p.w - T0 < sec; }).map(function (p) { return { t: r4(Math.max(0, p.w - T0)), on: p.on ? 1 : 0 }; });
+      var space = 0; try { space = window.AOGRoom ? AOGRoom.get() : 0; } catch (err) { space = 0; }   /* the room knob, which a take carries */
+      return { v: 1, room: String(info.room || studioTool(o) || ""), sound: String(info.sound || ""), set: info.set || {}, space: space, sr: R.sr, lag: lag, ev: ev, ped: ped };
+    }
+    if (o.notes) CAP = { note: noteOf, pedal: function (c, on) { if (isOff(c)) return; R.pl.push({ w: c.currentTime, on: !!on }); noteTrim(false); } };
     function finish() {
       var sr = R.sr, quiet = 66;                        /* about -54 dB: anything softer before the first sound is left out */
       var ci = 0, off = 0, found = false;
       for (ci = 0; ci < R.chunks.length; ci++) { var x = R.chunks[ci]; for (var i = 0; i < x.length; i++) { if (x[i] > quiet || x[i] < -quiet) { off = i; found = true; break; } } if (found) break; }
-      if (!found) { R.chunks = []; R.frames = 0; R.msg = "recNone"; R.over = null; R.paint(); return; }
-      var place = null;
+      if (!found) { R.chunks = []; R.frames = 0; R.msg = "recNone"; R.over = null; R.nl = []; R.pl = []; R.paint(); return; }
+      var place = null, startF = 0, preOf = function (k) { var s = 0; for (var q = 0; q < k; q++) s += R.chunks[q].length; return s; };
+      var firstF = (preOf(ci) + off) / 2;   /* the first sound's frame, from the first frame heard (AOG-NOTES-V1 measures lag by it) */
       if (R.over && R.f0 >= 0) {
         /* AOG-OVERDUB-V1: on the song's bars. The first note's moment in the song, then the bar line it follows */
-        var O = R.over, pre = 0; for (var q = 0; q < ci; q++) pre += R.chunks[q].length;
-        var firstF = (pre + off) / 2, Ts = (R.f0 + firstF) / sr - O.S0 - O.lat + (O.from - 1) * O.barSec;
+        var O = R.over, Ts = (R.f0 + firstF) / sr - O.S0 - O.lat + (O.from - 1) * O.barSec;
         /* the bar line just before the first note (3 ms to spare, so its attack is whole: a note a little early starts the
            take on the bar before, with nothing cut off), and the bar the note belongs to (up to 60 ms early counts) */
         var Bs = Math.max(1, Math.floor((Ts - 0.003) / O.barSec) + 1), nb = Math.max(1, Math.floor((Ts + 0.06) / O.barSec) + 1);
@@ -334,7 +439,7 @@
         if (Ts >= (O.from - 1) * O.barSec - 0.003 && cut < total - 1) place = { bar: Bs, bpm: O.bpm, note: nb };
       }
       if (place) {
-        var lead = [];
+        var lead = []; startF = cut;
         if (cut < 0) { lead.push(new Int16Array(-cut * 2)); ci = 0; off = 0; }
         else { var at = cut * 2; ci = 0; while (ci < R.chunks.length - 1 && at >= R.chunks[ci].length) { at -= R.chunks[ci].length; ci++; } off = Math.min(at, R.chunks[ci].length); }
         R.overLead = lead;
@@ -345,15 +450,21 @@
         else { back -= off; if (ci > 0) { ci--; off = R.chunks[ci].length; } else { off = 0; back = 0; } }
       }
       off -= off % 2;
+      if (!place) startF = (preOf(ci) + off) / 2;
       var parts = (place ? R.overLead : []).concat([R.chunks[ci].subarray(off)]); for (var j = ci + 1; j < R.chunks.length; j++) parts.push(R.chunks[j]);
       R.overLead = null; R.over = null;
       var bytes = 0; parts.forEach(function (p) { bytes += p.length * 2; });
+      /* AOG-NOTES-V1: the notes, in the take's own time: its first sample is frame startF of what was heard */
+      var notes = null;
+      try { notes = R.f0 >= 0 ? notesOf((R.f0 + startF) / sr, bytes / 4 / sr, (firstF - startF) / sr) : null; } catch (e) { notes = null; }
+      R.nl = []; R.pl = [];
       var h = new ArrayBuffer(44), v = new DataView(h), str = function (q, s) { for (var k = 0; k < s.length; k++) v.setUint8(q + k, s.charCodeAt(k)); };
       str(0, "RIFF"); v.setUint32(4, 36 + bytes, true); str(8, "WAVE"); str(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true);
       v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, bytes, true);
       var blob = new Blob([h].concat(parts), { type: "audio/wav" });
       R.chunks = []; R.frames = 0;
       var take = { n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: place ? place.bpm : R.bpm0, added: false, hid: "", place: place };
+      if (notes) take.notes = notes;
       if (place) { R.msg = "overDone"; R.fill = { n: take.n, b: place.note }; }
       R.takes.unshift(take);
       R.studioLine = false;
@@ -436,6 +547,7 @@
         var item = { from: tool, n: k.n, name: studioName(o, tool, k.n), sec: Math.round(k.sec * 1000) / 1000,
           bpm: Math.round(bpm * 100) / 100, at: k.at || Date.now(), take: true, wav: k.blob };
         if (k.place) item.place = k.place;   /* AOG-OVERDUB-V1: it goes on its bar */
+        if (k.notes) item.notes = k.notes;   /* AOG-NOTES-V1: the notes it was played with go along */
         await AOGHandoff.add(AOGHandoff.INBOX, item, { key: tool + "|" + (k.at || 0) + "|" + k.n });
         R.studioLine = true;
         if (!k.added) { k.added = true; store(k); }   /* AOG-REC-KEEP-V1: it stays known as added, after a reload too */
@@ -497,7 +609,7 @@
     window.AOGStudioRec = {
       on: function () { return !!R.on; }, busy: function () { return !!R.closing || !!R.prepping; },
       toggle: function () { var b = el("btn"); if (b && !b.disabled) b.click(); else R.toggle(); },
-      last: function () { var k = R.takes[0]; return k ? { n: k.n, sec: k.sec } : null; },
+      last: function () { var k = R.takes[0]; return k ? { n: k.n, sec: k.sec, notes: k.notes ? k.notes.ev.length : 0 } : null; },
       sent: function () { return !!(R.takes[0] && R.takes[0].added) || !!R.studioLine; },
       add: function () { var k = R.takes[0]; return k ? R.toStudio(k.n) : Promise.resolve(); },
       /* AOG-REC-KEEP-V1: true when every take here is safe in the device's storage, so the Studio may close this room */
@@ -507,5 +619,44 @@
     restore();
     return R;
   }
-  window.AOGRecorder = { attach: attach, clock: clock, toPad: toPad };
+  /* ── AOG-NOTES-V1: what every room's re-render of its notes shares (AOGRoomRender in the piano, strings and band) ── */
+  function ceilV(v) { var a = v < 0 ? -v : v; if (a <= 0.9) return v; var y = 0.9 + 0.1 * Math.tanh((a - 0.9) / 0.1); return v < 0 ? -y : y; }
+  var NOTES_KIT = {
+    /* the notes asked for, made safe to play: inside the room's reach, a time and a length that are numbers, a strength 0..1 */
+    events: function (list, lo, hi) {
+      return (Array.isArray(list) ? list : []).filter(function (e) { return e && isFinite(e.t) && e.t >= 0 && isFinite(e.m) && e.m >= lo && e.m <= hi; }).map(function (e) {
+        var x = {}; for (var k in e) x[k] = e[k];
+        x.v = isFinite(e.v) ? Math.max(0, Math.min(1, +e.v)) : 0.7; x.d = isFinite(e.d) && e.d > 0 ? +e.d : 0.25;
+        if (!(isFinite(e.r) && (e.r === -1 || e.r > 0))) delete x.r; if (!(isFinite(e.k) && e.k > 0)) delete x.k;
+        return x; });
+    },
+    /* how long a render of these notes needs: the take's length, or past the last note with room for it to ring */
+    sec: function (events, sec, tail) { var e = +sec || 0; (events || []).forEach(function (x) { e = Math.max(e, x.t + x.d + 0.05); }); return e + Math.max(0, +tail || 0); },
+    /* one captured note, played on the voice the room just made at its time: its glides, then its stop (or its cut) */
+    play: function (vc, e, T) {
+      if (!vc) return; T = T || 0;
+      if (e.g && typeof vc.glide === "function") e.g.forEach(function (q) { try { vc.glide(q[1], T + e.t + q[0]); } catch (x) {} });
+      var off = T + e.t + Math.max(0.005, e.d);
+      try { if (e.r === -1 && vc.kill) vc.kill(off); else if (vc.stop) vc.stop(off, e.r > 0 ? e.r : (vc.tau || 0.05), e.rl ? { rel: true } : undefined); } catch (x) {}
+      if (e.k > 0 && vc.kill) { try { vc.kill(T + e.t + e.k); } catch (x) {} }
+    },
+    /* the room knob's sound, as a take carries it (AOGRoom in aog-vu.js): from → the room → to */
+    space: function (oc, from, to, i) {
+      var G = window.AOGRoom; if (!G || !G.ir || !(i > 0) || !G.presets[i] || !G.presets[i].sec) return;
+      var cv = oc.createConvolver(); cv.normalize = false; cv.buffer = G.ir(oc, i);
+      var g = oc.createGain(); g.gain.value = G.presets[i].wet; from.connect(cv); cv.connect(g); g.connect(to);
+    },
+    /* the take's own last step: the rare peak past 90 % rounded gently, as keep() does */
+    out: function (buf) {
+      var L = Float32Array.from(buf.getChannelData(0)), Rr = Float32Array.from(buf.getChannelData(buf.numberOfChannels > 1 ? 1 : 0));
+      for (var i = 0; i < L.length; i++) { L[i] = ceilV(L[i]); Rr[i] = ceilV(Rr[i]); }
+      return { L: L, R: Rr, sr: buf.sampleRate };
+    },
+    context: function (sec, sr) { var OC = window.OfflineAudioContext || window.webkitOfflineAudioContext; return new OC(2, Math.max(1, Math.ceil(sec * sr)), sr); }
+  };
+  window.AOGRecorder = { attach: attach, clock: clock, toPad: toPad,
+    /* AOG-NOTES-V1: a room's voice maker says what it just made (live only); its pedal too */
+    note: function (c, vc, e) { if (CAP && vc) { try { CAP.note(c, vc, e); } catch (x) {} } return vc; },
+    pedal: function (c, on) { if (CAP && c) { try { CAP.pedal(c, on); } catch (x) {} } },
+    notes: NOTES_KIT };
 })();

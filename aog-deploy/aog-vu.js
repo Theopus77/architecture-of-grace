@@ -248,6 +248,7 @@
   window.addEventListener("storage", function (e) { if (e.key === KEY) { CH.forEach(apply); KNOBS.forEach(function (k) { k.paint(); }); } });
   var ROOM = {
     presets: PRE, get: cur, set: set, chains: CH,
+    ir: ir,   /* AOG-NOTES-V1: a room's re-render of its notes puts the same room on them (aog-recorder.js) */
     live: function (ctx, g) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, ctx.destination); } return ctx.__aogRoomLive; },
     rec: function (ctx, tap, node) { if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
     /* the knob: a small black knob with a gold line; a tap turns it one step (Dry → Small room → Studio → Hall → Dry);

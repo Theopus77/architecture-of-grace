@@ -1250,7 +1250,20 @@ function standVoice(c, ch, kind, m, v, when){
   const vc=voiceShell(c, ch.bus, [o], rel); vc.tau=0.06;
   return vc;
 }
+/* AOG-NOTES-V1 (2026-10-11) — Jimmy: "Record notes, not just sound." Every voice the live band makes (a key, a pad, the
+   wheel, a pattern, MIDI) is told to the recorder (aog-recorder.js) with its player, how it is played (held or short)
+   and its swell, so the notes can be played again just as they were; the beat section's strokes too */
 function makeVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
+  const vc=makeVoice0(c, ch, inst, m, v, when, art, swellTo, swellDur);
+  if(vc && c===ac && window.AOGRecorder && AOGRecorder.note){
+    const e={m:m, v:v, when:when, p:inst}; if(art && art!=="sus") e.a=art; if(swellTo!=null){ e.to=swellTo; e.sd=swellDur||0; }
+    AOGRecorder.note(c, vc, e);
+  }
+  return vc;
+}
+/* where a stroke of the beat section sits on a drum chart (General MIDI), so it has a row on the piano-roll */
+const KIT_NOTE={bd:36, sn:38, roll:40, tamb:54, cy:49, tri:81};
+function makeVoice0(c, ch, inst, m, v, when, art, swellTo, swellDur){
   if(m<20 || m>108) return null;
   const vc=windVoice(c, ch, inst, m, v, when, art||"sus", swellTo, swellDur);
   if(vc) return vc;
@@ -1271,6 +1284,7 @@ function kitVoice(c, ch, piece, v, when, dur){
   s.start(when, set.start[key]||0);
   const vc=voiceShell(c, ch.bus, [s], rel); vc.tau=0.15; vc.kit=piece;
   vc.natural=when+buf.duration-(set.start[key]||0);
+  if(c===ac && window.AOGRecorder && AOGRecorder.note) AOGRecorder.note(c, vc, {m:KIT_NOTE[piece]||38, v:v, when:when, kit:piece, kd:dur||0});   /* AOG-NOTES-V1 */
   return vc;
 }
 
@@ -1326,6 +1340,7 @@ function noteOff(key){
    player's note goes on, AOG-BAND-HOLD-V1); lifting it lets them go. */
 function setSus(on){
   on=!!on; if(S.sus===on) return;
+  if(ac && window.AOGRecorder && AOGRecorder.pedal) AOGRecorder.pedal(ac, on);   /* AOG-NOTES-V1 */
   S.sus=on;
   const b=document.getElementById("susBtn"); if(b) b.setAttribute("aria-pressed", on?"true":"false");
   if(!on && ac){ LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); } }); }
@@ -1574,7 +1589,38 @@ window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the band",es:"la banda"},
   prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
+  notes:()=>({room:"band", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the notes, who played them, the band's sound */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-NOTES-V1 — the notes of a take, played again through the band's own chain, offline: the Mixing Desk's piano-roll asks
+   for it through the Studio (AOGStudioShell.renderNotes). A note keeps its player; with another sound picked, each note goes
+   to the player of that sound who reaches it (playerFor), as a key would. The beat section's strokes stay strokes. */
+window.AOGRoomRender={
+  room:"band",
+  sounds(){ return Object.keys(SOUNDS).map(id=>({id:id, name:{en:SOUNDS[id].en, es:SOUNDS[id].es}})); },
+  async render(p){
+    p=p||{}; const K=AOGRecorder.notes, evs=K.events(p.events, 20, 108), id=SOUNDS[p.sound] ? p.sound : S.sound;
+    const sr=p.sr>=8000 && p.sr<=192000 ? p.sr : 44100, set=p.set||{}, era=typeof set.era==="number" ? Math.max(0, Math.min(1, set.era)) : S.era;
+    await loadSound(id);
+    const oc=K.context(K.sec(evs, p.sec, p.tail==null ? 1.5 : p.tail), sr);
+    if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the band has one */
+    const ch=makeChain(oc); await addCrunch(ch);
+    setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
+    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    const was=S.sound, parts=partsOf(id), kit=(SOUNDS[id]||{}).kit||[];
+    S.sound=id;   /* a player's level and touch are the sound's (windVoice reads them as each voice is made) */
+    try{
+      evs.forEach(e=>{
+        let vc=null;
+        if(e.kit){ if(kit.indexOf(e.kit)>=0) vc=kitVoice(oc, ch, e.kit, e.v, e.t, e.kd||0); }
+        else { const inst=e.p && parts.indexOf(e.p)>=0 ? e.p : playerFor(e.m, id); if(inst) vc=makeVoice(oc, ch, inst, e.m, e.v, e.t, e.a||"sus", e.to, e.sd||0); }
+        K.play(vc, e);
+      });
+    } finally { S.sound=was; }
+    const buf=await oc.startRendering();
+    if(id!==was) loadSound(was, paintLoad);   /* the band in your hands again */
+    return K.out(buf);
+  }
+};
 function paintText(){
   document.documentElement.setAttribute("lang", S.lang);
   document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });

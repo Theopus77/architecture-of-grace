@@ -1312,7 +1312,14 @@ function organWave(c){ return waveFrom(c,"organ",{1:DB(8),3:DB(8),2:DB(8),4:DB(6
 function churchWave(c){ return waveFrom(c,"church",{1:0.35,2:1,4:0.55,6:0.25,8:0.35,12:0.18,16:0.12}); }
 /* the stand-in while a recording loads: the warm electric piano, built here (its own settings, so it stays the same) */
 const STAND_IN={kind:"tine", gain:1.09};
+/* AOG-NOTES-V1 (2026-10-11) — Jimmy: "Record notes, not just sound." Every voice the live piano makes (a key, a chord pad,
+   a pattern, MIDI, the lessons) is told to the recorder, which keeps it with a take while ● Record runs (aog-recorder.js) */
 function makeVoice(c, ch, id, m, v, when){
+  const vc=makeVoice0(c, ch, id, m, v, when);
+  if(vc && c===ac && window.AOGRecorder && AOGRecorder.note) AOGRecorder.note(c, vc, {m:m, v:v, when:when, snd:id});
+  return vc;
+}
+function makeVoice0(c, ch, id, m, v, when){
   const snd=SOUNDS[id];
   if(snd.kind==="sample"){
     if(SETS[snd.set].ready){ const vc=sampleVoice(c, ch, snd, m, v, when); if(vc) return vc; }
@@ -1722,6 +1729,7 @@ function allOff(){
   litKeys();
 }
 function setSus(on){
+  if(ac && !!S.sus!==!!on && window.AOGRecorder && AOGRecorder.pedal) AOGRecorder.pedal(ac, !!on);   /* AOG-NOTES-V1 */
   S.sus=on;
   const b=document.getElementById("susBtn"); if(b) b.setAttribute("aria-pressed", on?"true":"false");
   if(!on && ac){ LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); } }); }
@@ -1883,7 +1891,31 @@ window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
   prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
+  notes:()=>({room:"piano", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the take keeps its notes, its sound and its era */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-NOTES-V1 — the notes of a take, played again through this piano's own chain, offline: the Mixing Desk's piano-roll
+   ("Play it with the changes") asks for it through the Studio (AOGStudioShell.renderNotes). The same voices and the same
+   chain as a take (the limiter's output, with the room knob's sound on it), so a render of the notes as played sounds
+   like the take. */
+window.AOGRoomRender={
+  room:"piano",
+  sounds(){ return Object.keys(SOUNDS).map(id=>({id:id, name:{en:SOUNDS[id].en, es:SOUNDS[id].es}})); },
+  async render(p){
+    p=p||{}; const K=AOGRecorder.notes, evs=K.events(p.events, 21, 108), id=SOUNDS[p.sound] ? p.sound : S.sound;
+    const sr=p.sr>=8000 && p.sr<=192000 ? p.sr : 44100, set=p.set||{}, era=typeof set.era==="number" ? Math.max(0, Math.min(1, set.era)) : S.era;
+    const ids=[...new Set([id].concat(evs.map(e=>e.snd).filter(x=>SOUNDS[x])))];
+    for(const k of ids){ const s=SOUNDS[k]; if(s.kind==="sample") await loadSet(s.set); }
+    const oc=K.context(K.sec(evs, p.sec, p.tail==null ? 1.5 : p.tail), sr);
+    if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the piano has one */
+    const ch=makeChain(oc); await addCrunch(ch);
+    setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
+    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    evs.forEach(e=>{ const vc=makeVoice(oc, ch, SOUNDS[e.snd] ? e.snd : id, e.m, e.v, e.t); K.play(vc, e); });
+    const buf=await oc.startRendering();
+    const live=SOUNDS[S.sound]; if(live && live.kind==="sample" && ids.some(k=>SOUNDS[k].kind==="sample" && SOUNDS[k].set!==live.set)) loadSet(live.set, paintLoad);   /* the piano in your hands again */
+    return K.out(buf);
+  }
+};
 
 async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole recording to the Drum Machine */
   const toPads=dest==="pads", line=document.getElementById("sendLine"), btn=document.getElementById(toPads?"sendPadsBtn":"sendBtn");

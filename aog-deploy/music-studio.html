@@ -766,6 +766,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-studio.js"></script>
+<script src="/aog-pianoroll.js"></script><!-- AOG-PIANOROLL-V1: Edit the notes of a take from the Piano, Guitar, Bass or Band -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -1186,6 +1187,7 @@ const STR={
   edit:{en:"✎ Edit",es:"✎ Editar"}, editAria:{en:"Edit track {n}",es:"Editar la pista {n}"},
   /* AOG-DESK-HANDS-V1: drag, zoom, nudge, redo, a piece's volume, crossfades */
   redo:{en:"↷ Redo",es:"↷ Rehacer"}, redone:{en:"Done again.",es:"Hecho otra vez."},
+  notesEdit:{en:"Edit the notes",es:"Editar las notas"},   /* AOG-PIANOROLL-V1 */
   undoAria:{en:"Undo the last change",es:"Deshacer el último cambio"}, redoAria:{en:"Redo the change you undid",es:"Rehacer el cambio que deshiciste"},
   zoom:{en:"Zoom",es:"Zoom"}, zoomIn:{en:"Zoom in",es:"Acercar"}, zoomOut:{en:"Zoom out",es:"Alejar"},
   snapOn:{en:"Snap to the beat: On",es:"Ajustar al pulso: Sí"}, snapOff:{en:"Snap to the beat: Off",es:"Ajustar al pulso: No"},
@@ -1265,6 +1267,8 @@ function cleanClip(c){
     layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto, lead:!!c.lead };   /* AOG-STUDIO-LISTEN-V1 · AOG-SONG-V1 (lead) */
   if(!(o.sec>0) || !(o.body>0)) return null;
   if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
+  /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
+  if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
     o.tid=(typeof c.tid==="string" && /^t[a-z0-9]{4,40}$/.test(c.tid)) ? c.tid : ""; }
@@ -2133,6 +2137,7 @@ async function putOn(srcId, ti){
       /* AOG-PADS-BOUNCE-V1: a loop made on the Beat Lab says its exact length, so it starts on the bar and loops whole bars */
       rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0, place:placeOf(it)};
       from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"")+(placeOf(it)?":over":"") : ""};
+      if(it.notes) from.notes=it.notes;   /* AOG-PIANOROLL-V1: the notes it was played with */
     }
     const meta=analyse(rec, info);
     const buf=await decodeWav(blob, info.sr);
@@ -3484,7 +3489,7 @@ function paintTrack(){
     `<div class="st-cc" style="--c:${COLORS[i]}">
       <div><b>${head}</b></div>
       <div class="st-cn">${esc(meta)}</div>
-      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button><button type="button" class="st-btn" data-act="redo"${canRedo()?"":" disabled"}>${esc(t("redo"))}</button></div>
+      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button><button type="button" class="st-btn" data-act="redo"${canRedo()?"":" disabled"}>${esc(t("redo"))}</button>${c.notes && window.AOGPianoRoll ? `<button type="button" class="st-btn" data-act="notes">${esc(t("notesEdit"))}</button>` : ""}</div>
       ${lineAt("top")}
     </div>
     ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
@@ -3583,11 +3588,49 @@ function redo(){
   if(done>=0){ SONG.sel=done; S.edMsg=t("redone"); S.edAt="top"; $("tlLine").textContent=""; songChanged(); stretchAll(); return; }
   paintTrack();
 }
+/* ══ AOG-PIANOROLL-V1 (2026-10-11) — Jimmy: "fix a wrong note, change an instrument after recording, or tighten the timing."
+   A take from the Piano, Guitar, Bass or Band carries its notes (AOG-NOTES-V1); Edit the notes opens them in aog-pianoroll.js.
+   What the editor needs from the desk: the clip, its beat, the Snap setting, its sound (to hear the old one), the room that
+   plays the notes again (the Studio opens it out of sight: AOGStudioShell.renderNotes), and keepNotes, which puts the new
+   sound on the clip and keeps everything else (its track, its bar, its pieces, its fades). ══ */
+function studioShell(){ try{ return window.parent!==window && window.parent.AOGStudioShell || null; }catch(e){ return null; } }
+function openNotes(i){
+  if(!window.AOGPianoRoll) return;
+  if(PLAY.on) stop();
+  const id=SONG.tracks[i].clip && SONG.tracks[i].clip.id;
+  const cur=()=>{ const c=SONG.tracks[i].clip; return c && c.id===NOTES_AT.id ? c : null; };
+  NOTES_AT.id=id;
+  AOGPianoRoll.open({ lang:()=>S.lang, clip:cur, name:()=>trackName(i), beatSec:c=>beatOf(c), snap:()=>!!VIEW.snap,
+    firstBar:()=>{ const c=cur(), P=c ? pcs(c) : []; return P.length===1 && P[0].a<1e-6 ? Math.floor(P[0].at/4)+1 : 1; },
+    buffer:()=>{ const c=cur(); return c ? BUF.get(c.id)||null : null; },
+    render:(room, p)=>{ const sh=studioShell(); return sh && sh.renderNotes ? sh.renderNotes(room, p) : AOGPianoRoll.renderHere(room, p); },
+    sounds:(room)=>{ const sh=studioShell(); return sh && sh.roomSounds ? sh.roomSounds(room) : AOGPianoRoll.renderHere(room, null, true); },
+    keep:(out, notes)=>keepNotes(i, out, notes),
+    done:()=>{ NOTES_AT.id=""; const b=document.querySelector('#clipBox [data-act="notes"]'); if(b) try{ b.focus({preventScroll:true}); }catch(e){} } });
+}
+const NOTES_AT={id:""};
+async function keepNotes(i, out, notes){
+  const x=SONG.tracks[i], old=x.clip; if(!old) throw new Error("gone");
+  const n=out.L.length, sr=out.sr, buf=newBuf(2, n, sr);
+  buf.copyToChannel(Float32Array.from(out.L), 0); buf.copyToChannel(Float32Array.from(out.R||out.L), 1);
+  const id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7), blob=new Blob([wavBuf(buf.getChannelData(0), buf.getChannelData(1), sr, 1)], {type:"audio/wav"});
+  await sput(id, {wav:blob});
+  BUF.set(id, buf);
+  const sec=n/sr, head=old.head||0;
+  /* the same place, pieces and fades; only its sound (and so its length, never shorter) and its notes are new */
+  const c=cleanClip(Object.assign({}, old, {id:id, sec:sec, body:Math.max(old.body, sec-head-(old.tail||0)), notes:notes, peakDb:peakDbOf(buf), auto:false}));
+  if(!c) throw new Error("bad");
+  x.clip=c; NOTES_AT.id=id;
+  dropClip(old.id);
+  songChanged(); stretchAll();
+  return true;
+}
 function clipAct(act){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   if(act==="off"){ takeOff(i); return; }
   if(act==="undo"){ undo(); return; }
   if(act==="redo"){ redo(); return; }   /* AOG-DESK-REDO-V1 */
+  if(act==="notes"){ openNotes(i); return; }   /* AOG-PIANOROLL-V1 */
   /* AOG-DESK-NUDGE-V1: 10 ms earlier or later (the keyboard's , and .), or a beat (Shift); a run of them is one Undo */
   const moveBy=act==="nudge-" ? -0.01/songBeat() : act==="nudge+" ? 0.01/songBeat() : act==="beat-" ? -1 : act==="beat+" ? 1 : 0;
   const g=++UG; remember(i, g, moveBy ? "nudge" : "");
@@ -4048,6 +4091,7 @@ window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, ge
 /* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
+Object.assign(window.__aogStudio, { openNotes:openNotes, keepNotes:keepNotes, cleanClip:cleanClip, beatOf:beatOf });   /* AOG-PIANOROLL-V1 */
 </script>
 </body>
 </html>
