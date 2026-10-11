@@ -166,6 +166,12 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .calm .move-big { font:600 clamp(1.35rem, 1.2rem + 1vw, 1.75rem)/1.25 var(--display); margin:.2rem 0 .6rem; }
 .calm .move-big { margin-bottom:.9rem; }
 .progress { margin:.1rem 0 .6rem; font-weight:600; color:var(--ink); }
+.calm .keys { display:none; margin:.4rem 0 0; font-size:.88rem; color:var(--muted); }
+@media (hover:hover) and (pointer:fine){ .calm .keys { display:block; } }
+.btn:active:not([disabled]) { transform:translateY(1px); filter:brightness(.92); }
+.startat { display:inline-flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+.startat span { font-size:.9rem; color:var(--muted); font-weight:600; }
+.startat select { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .8rem; font-size:16px; font-weight:600; }
 .calm .note { background:var(--steel-soft); border-radius:10px; padding:.45rem .7rem; margin:.2rem 0 .6rem; }
 .calm .btn.goal { margin-top:.2rem; }
 .calm ol.last { margin:.2rem 0 .6rem; padding-left:1.3rem; }
@@ -173,7 +179,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .calm .move-big .once { display:block; font:700 .95rem/1.2 var(--sans); color:var(--steel); margin-bottom:.2rem; }
 .calm .move-big .tok { font:700 .95rem/1 var(--mono); color:var(--muted); background:var(--chip); border-radius:6px; padding:.2rem .4rem; vertical-align:middle; }
 .calm .chips .chip { font-size:.85rem; padding:.3rem .4rem; min-width:1.8rem; }
-.btn.big { min-height:54px; padding:0 1.5rem; font-size:1.08rem; }
+.btn.big { min-height:60px; padding:0 1.5rem; font-size:1.1rem; }
 .calm details.more { margin-top:.7rem; color:var(--muted); }
 .calm details.more summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-weight:600; }
 .dots { display:flex; gap:.4rem; margin:.35rem 0 .9rem; }
@@ -305,6 +311,11 @@ const T={
   movesTried:["Sides turned so far:","Lados girados hasta ahora:"],
   nextMove:["Next move","Siguiente movimiento"], doPart:["Turn the rest of this part for me","Gira por mí el resto de esta parte"],
   didIt:["I did it","Ya lo hice"],
+  focusOn:["Dim the rest","Oscurecer lo demás"], focusOff:["Show all","Mostrar todo"],
+  startAtH:["Start from a step","Empezar desde un paso"], startAtPick:["Choose a step","Elige un paso"],
+  practiceTip:["Next, try {s} from memory. Then try a whole cube on your own.","Ahora prueba {s} de memoria. Luego prueba un cubo entero tú solo."],
+  bySteps:["Your solve, step by step","Tu solución, paso a paso"], nMoves:["{n} moves","{n} movimientos"],
+  keysLine:["Keys: Enter turns it · Backspace goes back · U D L R F B turn a side (Shift for the other way)","Teclas: Enter lo gira · Retroceso vuelve · U D L R F B giran un lado (Mayús para el otro sentido)"],
   didNext:["Done. Next: {w}.","Hecho. Sigue: {w}."], offPath:["Your cube changed, so the guide now starts from where it is.","Tu cubo cambió, así que la guía empieza desde donde está."],
   goalOn:["Show me the goal","Muéstrame la meta"], goalOff:["Back to my cube","Volver a mi cubo"], whyH:["Why:","Por qué:"], lastH:["Your last moves:","Tus últimos movimientos:"],
   repaint:["My cube looks different","Mi cubo se ve distinto"],
@@ -614,7 +625,8 @@ function render(anim){
     for(const f in p.cols){
       const F=E.faces[f]; const n=C.mulV(M, C.FACES[f]), nv=toView(n);
       const lit=Math.max(0, nv[0]*LIGHT[0]+nv[1]*LIGHT[1]+nv[2]*LIGHT[2]);
-      F.sh.style.opacity=painting ? "0" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
+      const dimmed=!painting && !anim && focusSet && !focusSet.has(i);
+      F.sh.style.opacity=painting ? "0" : dimmed ? "0.62" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
       if(anim) continue;
       const wf=C.faceOf(n.map(Math.round));
       const pk=SHOW.pos(p).join(","), k2=pk+"|"+wf;
@@ -725,8 +737,11 @@ function after(job){
   /* AOG-CUBE-TIME-V1 (2026-10-11) — Jimmy: "look at the seconds it took" (it said 128:05). The clock now counts only
      time spent turning: a pause (a break, a chat, the page left open overnight) adds at most 30 seconds, the
      longest a person thinks before a move. Jimmy's "about 3 minutes" solve, mixed two hours before, now reads so. */
+  if(S.mix && !"xyz".includes(b)){ const sn=C.stageOf(cube), k=Math.min(6, S.mix.stage!==undefined ? S.mix.stage : sn);
+    S.mix.by=S.mix.by||{}; S.mix.help=S.mix.help||{}; S.mix.by[k]=(S.mix.by[k]||0)+1; if(job.src==="guide") S.mix.help[k]=(S.mix.help[k]||0)+1;
+    S.mix.stage=Math.max(S.mix.stage||0, sn); }
   if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(Math.max(0, now-S.mix.last), 30000); S.mix.last=now; S.mix.moves++; }
-  if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
+  if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves, by:S.mix.by||{}, help:S.mix.help||{}}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
   if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
   save(); panel(); bar();
@@ -753,7 +768,14 @@ function chips(moves, at){ return `<div class="chips" aria-label="${esc(moves.jo
    outline, never a pulse), say why the moves work, show progress that names what it counts, show the finished step on
    request, list the last moves in words, say when the cube left the guided path, Enter / Backspace on a keyboard, and
    a quiet finish that hands over to solving alone. No sounds and nothing that moves on its own (CLAUDE.md). */
-let markIdx=-1, goalView=null, offPath=false;
+let markIdx=-1, goalView=null, offPath=false, focusSet=null;
+/* AOG-CUBE-FOCUS-V1 (2026-10-11) — "Dim the rest" (optional, S.focus): everything but the piece to watch is darkened;
+   with no single piece, the row about to turn stays bright. Still, never a pulse. */
+function focusOf(){
+  if(!S.focus || goalView || !arrowTok) return null;
+  if(markIdx>=0) return new Set([markIdx]);
+  const mv=C.parse(arrowTok); return mv && mv.sel!=="all" ? layerSet(mv) : null;
+}
 function pieceOf(p){
   const v=p.vars||{}, W="W";
   const cols = ["daisy","crossDown"].includes(p.note) ? [W,v.c]
@@ -790,7 +812,9 @@ function partCard(onlyStage){
     <!-- Jimmy: "Move 8 of 8 to me still makes no sense." The card says only the goal and the move. -->
     <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
-    <button type="button" class="btn goal" data-act="goal" aria-pressed="${!!goalView}">${esc(t(goalView?"goalOff":"goalOn"))}</button>
+    <p class="keys">${esc(t("keysLine"))}</p>
+    <div class="btn-row"><button type="button" class="btn goal" data-act="goal" aria-pressed="${!!goalView}">${esc(t(goalView?"goalOff":"goalOn"))}</button>
+    <button type="button" class="btn goal" data-act="focus" aria-pressed="${!!S.focus}">${esc(t(S.focus?"focusOff":"focusOn"))}</button></div>
     <details class="more"><summary>${esc(t("tellMore"))}</summary>
     <p><strong>${esc(t("whyH"))}</strong> ${esc(tx(WHY[n.p.note])||"")}</p><p>${esc(note(n.p))}</p>
     ${last.length?`<p><strong>${esc(t("lastH"))}</strong></p><ol class="last">${last.map(w=>`<li>${esc(w)}</li>`).join("")}</ol>`:""}
@@ -842,7 +866,12 @@ function solveHtml(){
   const at=C.stageOf(cube);
   if(cube.solved()){
     let h=`<h2>${esc(t("startH"))}</h2><p class="muted">${esc(t("startLine"))}</p>`;
-    if(S.result){ h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:S.result.moves}))}</p><p>${esc(t("nextPractice"))}</p>`;
+    if(S.result){ const R=S.result, by=R.by||{}, help=R.help||{};
+      /* the step where Turn it did the most: that is the one to practise from memory */
+      let tip=-1, most=0; Object.keys(help).forEach(k => { if(help[k]>most){ most=help[k]; tip=+k; } });
+      h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:R.moves}))}</p>`;
+      h+=`<p>${esc(tip>=0 ? t("practiceTip",{s:tx(STAGE_NAMES[C.STAGES[tip]]).toLowerCase()}) : t("nextPractice"))}</p>`;
+      if(Object.keys(by).length) h+=`<details class="more"><summary>${esc(t("bySteps"))}</summary><ol class="last">${C.STAGES.map((k,i)=>by[i]?`<li>${esc(tx(STAGE_NAMES[k]))}: ${esc(t("nMoves",{n:by[i]}))}</li>`:"").join("")}</ol></details>`;
       h+=`<div class="btn-row start"><button type="button" class="btn btn-good big" data-act="own">${esc(t("ownTry"))}</button></div>`; }
     return h+`<div class="btn-row start"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
   }
@@ -852,7 +881,8 @@ function solveHtml(){
     <div class="dots" role="img" aria-label="${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}">${dots}</div>
     ${(()=>{ const pr=stageProgress(key==="hold"?"cross":key); return pr?`<p class="progress">${esc(pr)}</p>`:""; })()}
     ${partCard()}
-    <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button></div>`;
+    <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button>
+    ${S.real?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${C.STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
 }
 function mineHtml(){
   const count={}; Object.values(rawPaint()).forEach(c => { count[c]=(count[c]||0)+1; });
@@ -887,11 +917,13 @@ function clock(ms){
 
 let arrowTok=null;
 function panel(){
-  const el=$("panel"); arrowTok=null; markIdx=-1;
+  const el=$("panel"); arrowTok=null; markIdx=-1; focusSet=null;
   el.innerHTML = S.view==="solve" ? solveHtml() : S.view==="mine" ? mineHtml() : learnHtml();
   el.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
   el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
+  const sa=el.querySelector("#startAt"); if(sa) sa.onchange=()=>{ if(sa.value!==""){ setup(+sa.value); S.real=false; S.mix={t0:null,moves:0}; S.result=null; save(); panel(); } };
   el.querySelectorAll("[data-brush]").forEach(b => b.onclick=()=>{ S.brush=b.getAttribute("data-brush"); save(); panel(); });
+  focusSet=focusOf();
   if(!busy) render(); else drawArrow();   /* the piece to watch and the arrow follow the card */
 }
 function playAlg(k, how){
@@ -912,6 +944,8 @@ function act(a){
   else if(a==="hint"){ S.showHint=true; panel(); }
   else if(a==="gnext"){ const n=guideNow(); if(n && !busy && !queue.length) enqueue([n.f.tok],"guide"); }
   else if(a==="gpart"){ const n=guideNow(); if(n && !busy && !queue.length){ const rest=n.g.flat.slice(n.g.i, n.g.i+n.left).map(x=>x.tok); runner={left:rest.length}; enqueue(rest,"guide"); panel(); } }
+  else if(a==="focus"){ S.focus=!S.focus; save(); panel(); }
+  else if(a==="startAt"){ /* handled by the select */ }
   else if(a==="goal"){ goalView = goalView ? null : goalOf(); render(); panel(); }
   else if(a==="repaint"){ act("copyMine"); location.hash="mine"; }
   else if(a==="own"){ S.lesson=9; S.showHint=false; save(); location.hash="learn"; act("mix"); }
