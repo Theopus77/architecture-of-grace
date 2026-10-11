@@ -35,11 +35,13 @@ const PLAY = {
   band: async f => { await f.waitForFunction(() => soundReady(S.sound), null, { timeout: 30000 }); await f.evaluate(() => padDown(0, 0.8)); await f.waitForTimeout(1200); await f.evaluate(() => padUp(0)); await f.waitForTimeout(300); },
   decks: async f => { await f.evaluate(() => loadMade(decks[0], "house")); await f.waitForFunction(() => decks[0].buf && decks[0].bpm > 0 && (decks[0].node || decks[0].core), null, { timeout: 60000 }); await f.click('[data-play="A"]'); await f.waitForTimeout(1800); await f.click('[data-play="A"]'); }
 };
-const inner = p => p.frames().find(f => f.parentFrame() === p.mainFrame());
+/* the room in sight (#room): the Studio keeps the last rooms open, out of sight, in frames of their own (AOG-STUDIO-KEEP-V1) */
+const inner = p => p.__room || p.frames().find(f => f.parentFrame() === p.mainFrame());
 async function arrived(p, id) {
   await p.waitForFunction(f => { const fr = document.getElementById("room"), d = fr.contentDocument;
     return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && d.location.pathname.endsWith(f); }, FILE[id], { timeout: 25000 });
   await p.waitForTimeout(1200);
+  p.__room = await (await p.$("#room")).contentFrame();
 }
 const tp = p => p.evaluate(() => ({ rec: document.getElementById("tpRec").textContent, pressed: document.getElementById("tpRec").getAttribute("aria-pressed"), recOff: document.getElementById("tpRec").disabled,
   add: !document.getElementById("tpAdd").hidden, listen: document.getElementById("tpListen").textContent, line: document.getElementById("tpLine").textContent }));

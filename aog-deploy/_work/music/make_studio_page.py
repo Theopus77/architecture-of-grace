@@ -253,6 +253,34 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     } catch (e) {}
   }
   function drop(id) { var f = LIVE[id]; delete LIVE[id]; if (f && f !== fr && f.parentNode) f.parentNode.removeChild(f); }
+  /* AOG-STUDIO-KEEP-TAKES-V1 (2026-10-11) — Jimmy: "Do the fixes first." Closing a room used to throw away a take you had
+     not added to My Track yet. A room is closed only when nothing in it can be lost: it is not recording, and its takes
+     are kept on the device (aog-recorder.js, AOG-REC-KEEP-V1) or already on My Track. A room that cannot say stays open. */
+  function safe(id) {
+    var f = LIVE[id], R = null; if (!f) return true;
+    try { R = f.contentWindow && f.contentWindow.AOGStudioRec; } catch (e) { return true; }
+    if (!R) return true;
+    try {
+      if ((R.on && R.on()) || (R.busy && R.busy())) return false;
+      if (R.kept) return !!R.kept();
+      var l = R.last && R.last(); return !l || !!(R.sent && R.sent());
+    } catch (e) { return false; }
+  }
+  function trim() {
+    for (var i = 0; RECENT.length > KEEP && i < RECENT.length;) {
+      var id = RECENT[i]; if (id !== cur && safe(id)) { RECENT.splice(i, 1); drop(id); } else i++;
+    }
+  }
+  /* a room left while it records ends the take first (it keeps it), then goes quiet */
+  function leave(f) {
+    var R = null; try { R = f.contentWindow && f.contentWindow.AOGStudioRec; } catch (e) {}
+    if (!R || !R.on || !R.on()) { hush(f, true); return; }
+    try { R.toggle(); } catch (e) {}
+    var t0 = Date.now(), k = setInterval(function () {
+      var done = true; try { done = !R.on() && !(R.busy && R.busy()); } catch (e) {}
+      if (done || Date.now() - t0 > 4000) { clearInterval(k); if (f !== fr) hush(f, true); trim(); refresh(); }
+    }, 120);
+  }
   /* a room kept from before, now in another language or light: it opens again, as it would have */
   function stale(f) {
     try { var d = f.contentDocument.documentElement, h = D.documentElement;
@@ -289,14 +317,16 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var url = "/" + r.file;
     if (AT && AT.id === id) { url = AT.url; drop(id); } AT = null;   /* a link to a place inside the room opens it there */
     var keep = LIVE[id];
-    if (fr.getAttribute("src")) hush(fr, true);
+    if (fr.getAttribute("src")) leave(fr);
     if (keep) fr = keep;
     else if (!fr.getAttribute("src")) { fr.setAttribute("data-file", "/" + r.file); fr.src = url; LIVE[id] = fr; }
     else { var n = fr.cloneNode(false); n.removeAttribute("id"); n.removeAttribute("src"); n.setAttribute("data-file", "/" + r.file);
       fr.parentNode.appendChild(n); n.src = url; fr = n; LIVE[id] = n; }
     for (var k in LIVE) LIVE[k].style.display = LIVE[k] === fr ? "" : "none";
+    /* the room in sight is always #room (anything that looks for the room finds the one you are in) */
+    [].forEach.call(D.querySelectorAll("iframe.sh-room"), function (f) { if (f !== fr && f.id === "room") f.removeAttribute("id"); }); fr.id = "room";
     RECENT = RECENT.filter(function (x) { return x !== id; }); RECENT.push(id);
-    while (RECENT.length > KEEP) drop(RECENT.shift());
+    trim();
     if (keep) {
       if (stale(fr)) { try { fr.contentWindow.location.reload(); } catch (e) {} }
       else { hush(fr, false); try { fr.contentWindow.dispatchEvent(new Event("focus")); } catch (e) {} }
@@ -349,7 +379,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     HAVE = next; paintTrack();
   }
   /* ── AOG-STUDIO-TRANSPORT-V1: the transport drives the room you are in ── */
-  var TP = { t0: 0, want: "", line: "", back: "" };
+  var TP = { t0: 0, want: "", line: "", back: "", fill: {} };
   function recOf() { try { return fr.contentWindow && fr.contentWindow.AOGStudioRec || null; } catch (e) { return null; } }
   function deskOf() { try { var w = fr.contentWindow; return cur === "studio" && w && w.__aogStudio ? w : null; } catch (e) { return null; } }
   function clock(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
@@ -360,9 +390,18 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     added: ["Added to My Track.", "Añadida a mi pista."], noRec: ["Pick a room to record in.", "Elige una sala para grabar."],
     empty: ["Nothing to hear yet. Record in a room, then press + Add to My Track.", "Todavía no hay nada que escuchar. Graba en una sala y luego pulsa + Añadir a mi pista."],
     tap: ["Tap anywhere on the desk to hear it.", "Toca en cualquier parte de la mesa para oírla."],
+    /* AOG-LISTEN-FULL-V1 */
+    full: ["Not playing, because the seven tracks are full: {names}. To hear one, put it on a track at the Mixing Desk.", "No suenan, porque las siete pistas están llenas: {names}. Para oír una, ponla en una pista de la mesa de mezclas."],
+    /* AOG-ADD-LAYER-TAKE-V1 */
+    layered: ["Your {room} take is on My Track.", "Tu toma de {room} está en mi pista."],
     fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."]
   };
-  function tw(k) { return TPW[k][es() ? 1 : 0]; }
+  function tw(k) { var x = TPW[k][es() ? 1 : 0]; for (var f in TP.fill) x = x.split("{" + f + "}").join(TP.fill[f]); return x; }
+  /* the name of a layer as My Track says it, from the desk's name for it ("drums" is the Drum Kit, "bass:live" the live bass) */
+  function layerName(k) {
+    var id = { drums: "kit", "guitar:live": "liveguitar", "bass:live": "livebass" }[k] || k, l = LAYERS.filter(function (x) { return x.id === id; })[0];
+    return l ? l.name[es() ? 1 : 0] : k;
+  }
   function att(el, k, v) { if (el.getAttribute(k) !== v) el.setAttribute(k, v); }   /* AOG-STUDIO-SMOOTH-V1: only what changed */
   function paintTp() {
     var R = recOf(), on = !!(R && R.on()), rb = D.getElementById("tpRec"), ab = D.getElementById("tpAdd"), lb = D.getElementById("tpListen");
@@ -414,6 +453,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
       try { if (st.listenFill) await st.listenFill(); } catch (e) {}
       if (!st.SONG.tracks.some(function (x) { return x.clip; })) { say("empty"); return; }
       st.play(); paintTp();
+      var left = (st.listenLeft || []).map(layerName);
+      if (left.length) { TP.fill = { names: left.join(", ") }; say("full"); }
       /* a desk opened by Listen may not have its sound yet (iPhone): one tap on it brings it */
       setTimeout(function () { var c = st.AC; if (st.PLAY.on && c && c.state !== "running") say("tap"); }, 500);
     });
@@ -478,7 +519,28 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault(); go(a.getAttribute("data-room"), true);
   });
-  D.getElementById("mtAdd").addEventListener("change", function () { var v = this.value; this.value = ""; if (v) go(v, true); });
+  /* AOG-ADD-LAYER-TAKE-V1 (2026-10-11, STUDIO-HANDOFF §06: "Add a layer sends the current take … then returns the student
+     to the project"): + Add a layer first puts the take you just made in this room on My Track (a take still recording is
+     ended first), then opens the room you picked for the next layer. A take already on My Track is not sent twice. */
+  function addCurrent() {
+    var R = recOf(); if (!R) return Promise.resolve(false);
+    var wait = new Promise(function (ok) {
+      if (!R.on()) { ok(); return; }
+      R.toggle(); var t0 = Date.now(), k = setInterval(function () { if ((!R.on() && !(R.busy && R.busy())) || Date.now() - t0 > 4000) { clearInterval(k); ok(); } }, 120);
+    });
+    return wait.then(function () {
+      var l = R.last && R.last(); if (!l || R.sent()) return false;
+      return Promise.resolve(R.add()).then(function () { return !!R.sent(); }, function () { return false; });
+    });
+  }
+  D.getElementById("mtAdd").addEventListener("change", function () {
+    var v = this.value, from = room(cur), sel = this; this.value = ""; if (!v) return;
+    sel.disabled = true;
+    addCurrent().then(function (added) {
+      sel.disabled = false; go(v, true);
+      if (added && from) { TP.fill = { room: es() ? from.short[1] : from.short[0] }; say("layered"); refresh(); }
+    });
+  });
   window.addEventListener("popstate", function () { var h = (location.hash || "").slice(1); if (room(h)) go(h, false); });
   window.addEventListener("hashchange", function () { var h = (location.hash || "").slice(1); if (room(h)) go(h, false); });
   /* the language or the light changes here: the room inside follows (it reads both when it opens) */
