@@ -1,0 +1,2585 @@
+
+"use strict";
+/* ══════════════════════════════════════════════════════════════════════════
+   THE STUDIO (AOG-STUDIO-V1) — eight tracks, a mixer, your song
+   ══════════════════════════════════════════════════════════════════════════ */
+const LKEY="aog.studio.v1", NT=8, MAX_BARS=128, MIX_TAIL=2, MIX_SR=44100;
+/* one colour per track, pale enough for dark words on it */
+const COLORS=["#f0c26e","#9fd4a0","#f4a37a","#7fc7f5","#e6a3d8","#c9b8f0","#a8e0d8","#f2d79a"];
+/* the shelves the music tools fill (aog-handoff.js); each holds the newest {name, bpm, bars, at, wav, take?} */
+const SHELVES=[
+  {key:"padbench",   from:{en:"From the drum machine",es:"De la caja de ritmos"}, sh:{en:"Drum machine",es:"Caja de ritmos"}, tk:{en:"Drum machine take",es:"Toma de la caja de ritmos"}},   /* AOG-PADS-STUDIO-V1; AOG-DRUM-MACHINE-V2: the Beat Lab is The Drum Machine */
+  {key:"drumtake",   from:{en:"A take from the drums",es:"Una toma de la batería"}, sh:{en:"Drum take",es:"Toma de ritmos"}, tk:{en:"Drum take",es:"Toma de ritmos"}},
+  {key:"keysbench",  from:{en:"From the piano",es:"Del piano"}, sh:{en:"Piano",es:"Piano"}, tk:{en:"Piano take",es:"Toma de piano"}},
+  {key:"guitarbench",from:{en:"From the guitar",es:"De la guitarra"}, sh:{en:"Guitar",es:"Guitarra"}, tk:{en:"Guitar take",es:"Toma de guitarra"}},
+  {key:"bassbench",  from:{en:"From the bass",es:"Del bajo"}, sh:{en:"Bass",es:"Bajo"}, tk:{en:"Bass take",es:"Toma de bajo"}},
+  {key:"bandbench",  from:{en:"From the band",es:"De la banda"}, sh:{en:"Band",es:"Banda"}, tk:{en:"Band take",es:"Toma de la banda"}},
+  {key:"studiobench",from:{en:"Your last mix from the mixing desk",es:"Tu última mezcla de la mesa de mezclas"}, sh:{en:"Mix",es:"Mezcla"}, tk:{en:"Mix",es:"Mezcla"}}
+];
+const SHELF_KEYS=SHELVES.map(s=>s.key);
+function shelfOf(k){ return SHELVES.find(s=>s.key===k)||null; }
+/* AOG-STUDIO-INBOX-V1 — the takes sent here (aog-handoff.js, the list "studioinbox"), and the tools they come from */
+const INBOX_KEY=(window.AOGHandoff && AOGHandoff.INBOX) || "studioinbox", INBOX_MAX=(window.AOGHandoff && AOGHandoff.INBOX_MAX) || 16;
+const TOOLS={
+  drums:{from:{en:"From the drums",es:"De la batería"}, take:{en:"Drum take",es:"Toma de ritmos"}},   /* the Drum Kit sends as "drums" */
+  piano:{from:{en:"From the piano",es:"Del piano"}, take:{en:"Piano take",es:"Toma de piano"}},
+  guitar:{from:{en:"From the guitar",es:"De la guitarra"}, take:{en:"Guitar take",es:"Toma de guitarra"}},
+  bass:{from:{en:"From the bass",es:"Del bajo"}, take:{en:"Bass take",es:"Toma de bajo"}},
+  band:{from:{en:"From the band",es:"De la banda"}, take:{en:"Band take",es:"Toma de la banda"}},
+  decks:{from:{en:"From the turntables",es:"De los tocadiscos"}, take:{en:"Turntables take",es:"Toma de los tocadiscos"}},
+  waves:{from:{en:"From the oscilloscope",es:"Del osciloscopio"}, take:{en:"Oscilloscope take",es:"Toma del osciloscopio"}},   /* AOG-SEND-TO-PADS-V1 */
+  pads:{from:{en:"From the drum machine",es:"De la caja de ritmos"}, take:{en:"Drum machine take",es:"Toma de la caja de ritmos"}}   /* AOG-PADS-V1 */
+};
+
+const STR={
+  app:{en:"The Mixing Desk",es:"La mesa de mezclas"},   /* AOG-MIXDESK-V1 (2026-10-04): The Studio is now the door to every instrument; this is its mixing desk */
+  kicker:{en:"Put your song together.",es:"Arma tu canción."},
+  lead:{en:"Record on any instrument, press Send to the Mixing Desk, then come here.",es:"Graba en cualquier instrumento, pulsa Enviar a la mesa de mezclas y luego ven aquí."},
+  plate:{en:"THE MIXING DESK",es:"LA MESA DE MEZCLAS"}, plateSub:{en:"EIGHT TRACKS · MIXER",es:"OCHO PISTAS · MEZCLADORA"},
+  play:{en:"▶ Play",es:"▶ Tocar"}, stop:{en:"■ Stop",es:"■ Parar"},
+  pos:{en:"Bar {b} · beat {n} · {t}",es:"Compás {b} · pulso {n} · {t}"},
+  countIn:{en:"Get ready… {n}",es:"Prepárate… {n}"},
+  ctrBar:{en:"Bar",es:"Compás"}, ctrBeat:{en:"Beat",es:"Pulso"}, ctrTime:{en:"Time",es:"Tiempo"},
+  tempo:{en:"{n} beats a minute, from track {k}",es:"{n} pulsos por minuto, de la pista {k}"},
+  tempoNone:{en:"The tempo comes from your first recording.",es:"El tempo viene de tu primera grabación."},
+  readying:{en:"Getting your tracks ready…",es:"Preparando tus pistas…"},
+  startAt:{en:"Start at bar",es:"Empezar en el compás"},
+  loopBars:{en:"Loop bars",es:"Repetir compases"}, loop:{en:"Loop",es:"Repetir"}, to:{en:"to",es:"a"},
+  loopFromAria:{en:"Loop from bar",es:"Repetir desde el compás"}, loopToAria:{en:"Loop to bar",es:"Repetir hasta el compás"},
+  loopOn:{en:"Bars {a} to {b} play again and again until you press Stop.",es:"Los compases {a} a {b} suenan una y otra vez hasta que pulses Parar."},
+  count:{en:"4 clicks before it starts",es:"4 clics antes de empezar"},
+  level:{en:"Level",es:"Nivel"}, meterAria:{en:"How loud the song is",es:"Qué tan fuerte suena la canción"},
+  songH:{en:"Your song",es:"Tu canción"},
+  /* AOG-DESK-FACE-V1 */
+  deskKeys:{en:"On a keyboard: 1 to 8 pick a track, M mutes it, S solos it, ↑ and ↓ move its fader, Space plays and stops.",es:"Con un teclado: del 1 al 8 eligen una pista, M la silencia, S la deja sola, ↑ y ↓ mueven su fader, la barra espaciadora toca y para."},
+  playMore:{en:"Where it starts, the loop and the level",es:"Dónde empieza, el bucle y el nivel"},
+  chH:{en:"Channel strip",es:"Canal"}, fdH:{en:"Mixer",es:"Mezcladora"}, volume:{en:"Volume",es:"Volumen"},
+  shape:{en:"Shape the sound",es:"Dale forma al sonido"}, shapeOpen:{en:"open",es:"abierto"}, shapeClosed:{en:"closed",es:"cerrado"},
+  fdAria:{en:"Track {n} · {name} · volume",es:"Pista {n} · {name} · volumen"}, fdPick:{en:"Track {n} · {name}",es:"Pista {n} · {name}"},
+  chEmpty:{en:"Nothing on this track yet. Pick a recording below.",es:"Todavía no hay nada en esta pista. Elige una grabación abajo."},
+  slipK:{en:"Lesson {n}",es:"Lección {n}"}, slipAll:{en:"All lessons ›",es:"Todas las lecciones ›"}, slipDone:{en:"Lesson done. Pick the next one when you are ready.",es:"Lección terminada. Elige la siguiente cuando quieras."},
+  laneNames:{en:["Drums","Kit","Piano","Guitar","Bass","Band","Turntables","Voice","Live guitar","Live bass","Mix","Empty"],es:["Ritmos","Batería","Piano","Guitarra","Bajo","Banda","Tocadiscos","Voz","Guitarra en vivo","Bajo en vivo","Mezcla","Vacía"]},
+  /* AOG-STUDIO-LONG-V1 — Jimmy: "I had no idea I could play 128 bars. I thought it ended after 8." */
+  songLen:{en:"A song can be up to 128 bars, about 5 minutes. It grows as you add parts: pick a track, then use Plays to make it longer.",es:"Una canción puede tener hasta 128 compases, unos 5 minutos. Crece al agregar partes: elige una pista y usa Suena para alargarla."},
+  trackN:{en:"Track {n}",es:"Pista {n}"}, trackLow:{en:"track {n}",es:"pista {n}"},
+  empty:{en:"Empty",es:"Vacía"}, emptyL:{en:"empty",es:"vacía"},
+  laneAria:{en:"Track {n}: {name}",es:"Pista {n}: {name}"}, laneBars:{en:"bars {a} to {b}",es:"compases {a} a {b}"},
+  trackPick:{en:"Track",es:"Pista"},
+  recsH:{en:"Put a recording on this track",es:"Pon una grabación en esta pista"},
+  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
+  putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
+  putting:{en:"Putting it on…",es:"Poniéndola…"},
+  putFail:{en:"That recording could not be read. Try sending it again.",es:"No se pudo leer esa grabación. Intenta enviarla otra vez."},
+  aTake:{en:"a take",es:"una toma"},
+  barsN:{en:"{n} bars",es:"{n} compases"}, bar1:{en:"1 bar",es:"1 compás"},
+  beatsN:{en:"{n} beats",es:"{n} pulsos"}, beat1:{en:"1 beat",es:"1 pulso"},
+  takeOff:{en:"Take it off this track",es:"Quitarla de esta pista"},
+  startsAt:{en:"Starts at bar",es:"Empieza en el compás"}, barN:{en:"Bar {n}",es:"Compás {n}"},
+  earlier:{en:"− Earlier",es:"− Antes"}, later:{en:"Later +",es:"Después +"},
+  cutStart:{en:"Cut from the start",es:"Recortar el principio"}, cutEnd:{en:"Cut from the end",es:"Recortar el final"},
+  cutNone:{en:"Nothing cut",es:"Nada recortado"},
+  mBar:{en:"−1 bar",es:"−1 compás"}, mBeat:{en:"−1 beat",es:"−1 pulso"}, pBeat:{en:"+1 beat",es:"+1 pulso"}, pBar:{en:"+1 bar",es:"+1 compás"},
+  plays:{en:"Plays",es:"Suena"}, untilBar:{en:"to bar {b}",es:"hasta el compás {b}"}, times1:{en:"1 time",es:"1 vez"}, timesN:{en:"{n} times",es:"{n} veces"},
+  fewer:{en:"− Fewer",es:"− Menos"}, more:{en:"More +",es:"Más +"},
+  bpmDiff:{en:"This recording is at {a} beats a minute and your song is at {b}, so they may not line up.",es:"Esta grabación va a {a} pulsos por minuto y tu canción a {b}, así que puede que no coincidan."},
+  mixerH:{en:"Mixer",es:"Mezcladora"},
+  mixerLine:{en:"Mute makes a track silent. Solo lets you hear only the tracks marked Solo.",es:"Silenciar apaga una pista. Solo deja oír solo las pistas marcadas con Solo."},
+  vol:{en:"Volume",es:"Volumen"}, side:{en:"Side",es:"Lado"}, middle:{en:"Middle",es:"Centro"},
+  leftN:{en:"Left {n}",es:"Izquierda {n}"}, rightN:{en:"Right {n}",es:"Derecha {n}"},
+  mute:{en:"Mute",es:"Silenciar"}, solo:{en:"Solo",es:"Solo"},
+  low:{en:"Low",es:"Graves"}, mid:{en:"Middle",es:"Medios"}, high:{en:"High",es:"Agudos"},
+  punch:{en:"Punch",es:"Pegada"}, room:{en:"Room",es:"Sala"}, echo:{en:"Echo",es:"Eco"},
+  masterH:{en:"The whole song",es:"Toda la canción"}, glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
+  finishH:{en:"Finish your song",es:"Termina tu canción"},
+  mixBtn:{en:"Make the mix",es:"Hacer la mezcla"}, mixing:{en:"Making the mix…",es:"Haciendo la mezcla…"},
+  mixNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
+  mixQuiet:{en:"Every track is muted, so the mix would be silent.",es:"Todas las pistas están silenciadas, así que la mezcla quedaría en silencio."},
+  mixReady:{en:"Your mix is ready.",es:"Tu mezcla está lista."},
+  mixLeft:{en:"Not in the mix: {list}.",es:"No están en la mezcla: {list}."},
+  yourMix:{en:"Your mix",es:"Tu mezcla"},
+  save:{en:"Save as .wav",es:"Guardar como .wav"}, send:{en:"Send to the turntables",es:"Enviar a los platos"},
+  sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."}, decks:{en:"The turntables",es:"Los tocadiscos"},
+  fail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  newSong:{en:"Start a new song",es:"Empezar una canción nueva"},
+  newAsk:{en:"Clear all eight tracks and the mixer? The takes sent here stay. This cannot be undone.",es:"¿Borrar las ocho pistas y la mezcladora? Las tomas enviadas aquí se quedan. No se puede deshacer."},
+  newYes:{en:"Yes, clear it all",es:"Sí, borrar todo"}, newNo:{en:"Keep my song",es:"Conservar mi canción"},
+  newDone:{en:"Your tracks are clear. Put a recording on a track to begin.",es:"Tus pistas están vacías. Pon una grabación en una pista para empezar."},
+  gone:{en:"A recording could not be found, so its track is empty now.",es:"No se encontró una grabación, así que su pista quedó vacía."},
+  mixName:{en:"Mixing desk · Your song · {bpm} BPM · {bars} bars",es:"Mesa de mezclas · Tu canción · {bpm} BPM · {bars} compases"},
+  file:{en:"my-song",es:"mi-cancion"},
+  /* AOG-STUDIO-SENDOUT-V1 (STUDIO-HANDOFF §12: "Send it out … leaves the Studio as a file") */
+  outBtn:{en:"Send it out",es:"Compártela"},
+  outMaking:{en:"Making your file…",es:"Haciendo tu archivo…"},
+  outSilent:{en:"Your song is silent, so there is nothing to send. Turn a track up first.",es:"Tu canción está en silencio, así que no hay nada que enviar. Primero sube una pista."},
+  outReady:{en:"Your file is ready",es:"Tu archivo está listo"},
+  outYours:{en:"This file stays yours. Nothing is uploaded.",es:"Este archivo es tuyo. No se sube nada."},
+  outShare:{en:"Share…",es:"Compartir…"}, outShareAria:{en:"Share {name}",es:"Compartir {name}"},
+  outDownload:{en:"Download",es:"Descargar"}, outDownloadAria:{en:"Download {name}",es:"Descargar {name}"},
+  outStems:{en:"Each track on its own (.zip)",es:"Cada pista sola (.zip)"},
+  outStemsMaking:{en:"Making each track… {a} of {b}",es:"Haciendo cada pista… {a} de {b}"},
+  outStemsReady:{en:"Each track on its own: {n} files in one .zip",es:"Cada pista sola: {n} archivos en un .zip"},
+  outShared:{en:"Sent.",es:"Enviado."}, outSaved:{en:"Saved: {name}.",es:"Guardado: {name}."},
+  outLeft:{en:"Not in the file: {list}.",es:"No están en el archivo: {list}."},
+  trackFile:{en:"track",es:"pista"},
+  outVoice:{en:"Your voice on its own",es:"Tu voz sola"}, outVoiceMaking:{en:"Making your voice's file…",es:"Haciendo el archivo de tu voz…"},
+  outVoiceReady:{en:"Your voice on its own",es:"Tu voz sola"}, voiceFile:{en:"voice",es:"voz"},
+  /* AOG-STUDIO-VOICE-V1 (STUDIO-HANDOFF §10): track 8 is your voice; the microphone opens only when you press Record */
+  voiceH:{en:"Your voice",es:"Tu voz"},
+  voiceTrack:{en:"Voice",es:"Voz"},
+  voiceN:{en:"Your voice {n}",es:"Tu voz {n}"},
+  voiceAsk:{en:"To add your voice, this page needs the microphone. The recording stays on this device.",es:"Para añadir tu voz, esta página necesita el micrófono. La grabación se queda en este aparato."},
+  voiceHow:{en:"Record plays your song from the start bar and records you singing along. Press Stop when you are done.",es:"Grabar toca tu canción desde el compás de inicio y te graba cantando. Pulsa Parar cuando termines."},
+  voiceRec:{en:"● Record your voice",es:"● Grabar tu voz"}, voiceAgain:{en:"● Record again",es:"● Grabar otra vez"},
+  voiceStop:{en:"■ Stop",es:"■ Parar"},
+  voiceOpening:{en:"Opening the microphone…",es:"Abriendo el micrófono…"},
+  voiceOn:{en:"Recording. Sing along, then press Stop.",es:"Grabando. Canta y luego pulsa Parar."},
+  voiceDone:{en:"Your voice is on track 8.",es:"Tu voz está en la pista 8."},
+  voiceShort:{en:"That was very short. Try again.",es:"Fue muy corto. Inténtalo otra vez."},
+  voiceDenied:{en:"The microphone is not allowed on this page. To add your voice, allow it in your browser's settings, then try again. Everything else here still works.",es:"El micrófono no está permitido en esta página. Para añadir tu voz, permítelo en la configuración del navegador y vuelve a intentarlo. Todo lo demás aquí sigue funcionando."},
+  voiceNone:{en:"No microphone was found. Plug one in, or try another device. Everything else here still works.",es:"No se encontró un micrófono. Conecta uno o prueba otro aparato. Todo lo demás aquí sigue funcionando."},
+  voiceTry:{en:"Try again",es:"Intentar otra vez"},
+  voiceGone:{en:"Your voice take is deleted.",es:"Tu toma de voz está borrada."},
+  voiceBack:{en:"Bring it back",es:"Recuperarla"},
+  voiceReplace:{en:"Recording again takes the place of the take on track 8.",es:"Grabar otra vez reemplaza la toma de la pista 8."},
+  /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
+  carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
+  songsBtn:{en:"Your songs",es:"Tus canciones"}, songsOn:{en:"Locker on",es:"Casillero activo"}, songsOff:{en:"Save or open",es:"Guardar o abrir"},
+  carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
+  songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
+  fileH:{en:"With a song file",es:"Con un archivo de canción"},
+  fileSave:{en:"Save song file",es:"Guardar archivo de canción"}, fileOpen:{en:"Open a song file",es:"Abrir un archivo de canción"},
+  fileMaking:{en:"Making your song file…",es:"Haciendo tu archivo de canción…"},
+  fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open a song file.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir un archivo de canción."},
+  fileNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
+  fileBad:{en:"That is not a song file from the Mixing Desk.",es:"Ese no es un archivo de canción de la mesa de mezclas."},
+  reading:{en:"Opening your song…",es:"Abriendo tu canción…"},
+  opened:{en:"{name} is on the desk.",es:"{name} está en la mesa."},
+  openAsk:{en:"Open {name}? It takes the place of the song on the desk now. Save that one first if you want to keep it.",es:"¿Abrir {name}? Toma el lugar de la canción que está en la mesa. Guarda esa primero si quieres conservarla."},
+  openYes:{en:"Yes, open it",es:"Sí, abrirla"}, openNo:{en:"Not now",es:"Ahora no"},
+  lockH:{en:"With your locker in Google Drive",es:"Con tu casillero en Google Drive"},
+  lockAbout:{en:"Your locker keeps your songs in your own Google Drive. Set it up once, then every device you connect sees the same songs. Nobody signs in on the devices.",es:"Tu casillero guarda tus canciones en tu propio Google Drive. Prepáralo una vez y cada aparato que conectes verá las mismas canciones. Nadie inicia sesión en los aparatos."},
+  lockSteps:{en:"Show me how to set it up (5 minutes)",es:"Muéstrame cómo prepararlo (5 minutos)"},
+  lockS1:{en:"Open script.google.com and press New project.",es:"Abre script.google.com y pulsa Nuevo proyecto."},
+  lockS2:{en:"Paste in the locker script and press Save.",es:"Pega el script del casillero y pulsa Guardar."},
+  lockScript:{en:"the locker script",es:"el script del casillero"},
+  lockS3:{en:"Pick setup and press Run. Allow it to use your Drive. Copy the key it shows.",es:"Elige setup y pulsa Ejecutar. Permite que use tu Drive. Copia la clave que muestra."},
+  lockS4:{en:"Press Deploy, then New deployment, then Web app. Execute as: Me. Who has access: Anyone. Copy the web address.",es:"Pulsa Implementar, luego Nueva implementación, luego Aplicación web. Ejecutar como: Yo. Quién tiene acceso: Cualquier persona. Copia la dirección web."},
+  lockS5:{en:"Paste both here and press Connect.",es:"Pega las dos aquí y pulsa Conectar."},
+  lockUrl:{en:"Web address",es:"Dirección web"}, lockKey:{en:"Locker key",es:"Clave del casillero"},
+  connect:{en:"Connect",es:"Conectar"}, connecting:{en:"Connecting…",es:"Conectando…"},
+  lockBadUrl:{en:"The web address should start with https://script.google.com and end with /exec.",es:"La dirección web debe empezar con https://script.google.com y terminar en /exec."},
+  lockNoKey:{en:"Paste the locker key too.",es:"Pega también la clave del casillero."},
+  lockWrongKey:{en:"The locker said no to that key. Check it and try again.",es:"El casillero no aceptó esa clave. Revísala e inténtalo otra vez."},
+  lockNoReach:{en:"The locker could not be reached. Check the internet and the web address, then try again.",es:"No se pudo llegar al casillero. Revisa el internet y la dirección web, y vuelve a intentarlo."},
+  lockOn:{en:"This device is connected to your locker.",es:"Este aparato está conectado a tu casillero."},
+  ltOff:{en:"Not connected yet",es:"Aún sin conexión"}, ltOffS:{en:"Paste your locker's web address and key, then press Connect.",es:"Pega la dirección web y la clave de tu casillero, y pulsa Conectar."},
+  ltWait:{en:"Checking your locker…",es:"Revisando tu casillero…"}, ltWaitS:{en:"Asking your Google Drive if the locker answers.",es:"Preguntando a tu Google Drive si el casillero responde."},
+  ltOk:{en:"Locker connected",es:"Casillero conectado"}, ltOkS:{en:"Locker script v{v}. Songs in it: {n}. Checked at {at}.",es:"Script del casillero v{v}. Canciones: {n}. Revisado a las {at}."},
+  ltSheet:{en:"That is your Sheet's address",es:"Esa es la dirección de tu Hoja"}, ltSheetS:{en:"This web address belongs to your IEP Sheet script, not the locker. The locker needs its own new project at script.google.com. Follow the steps below, then paste the new web address here.",es:"Esta dirección web es del script de tu Hoja del IEP, no del casillero. El casillero necesita su propio proyecto nuevo en script.google.com. Sigue los pasos de abajo y pega aquí la nueva dirección web."},
+  ltKey:{en:"The key did not match",es:"La clave no coincide"}, ltKeyS:{en:"Copy the key again from the locker script (Run setup shows it), then press Connect.",es:"Copia otra vez la clave del script del casillero (Ejecutar setup la muestra) y pulsa Conectar."},
+  ltReach:{en:"Can't reach your locker",es:"No se llega a tu casillero"}, ltReachS:{en:"Check the internet and the web address. Then press Check again.",es:"Revisa el internet y la dirección web. Luego pulsa Revisar otra vez."},
+  ltAgain:{en:"Check again",es:"Revisar otra vez"},
+  lockSave:{en:"Save to my locker",es:"Guardar en mi casillero"},
+  lockSaving:{en:"Saving to your locker… {a} of {b}",es:"Guardando en tu casillero… {a} de {b}"},
+  lockSaved:{en:"{name} is in your locker.",es:"{name} está en tu casillero."},
+  lockLoading:{en:"Getting your song… {a} of {b}",es:"Trayendo tu canción… {a} de {b}"},
+  lockList:{en:"Songs in your locker",es:"Canciones en tu casillero"},
+  lockEmpty:{en:"No songs in your locker yet.",es:"Aún no hay canciones en tu casillero."},
+  lockRefresh:{en:"Check for new songs",es:"Buscar canciones nuevas"},
+  lockChecking:{en:"Looking in your locker…",es:"Buscando en tu casillero…"},
+  open:{en:"Open",es:"Abrir"}, openAria:{en:"Open {name}",es:"Abrir {name}"},
+  lockRemoveAsk:{en:"Take {name} out of your locker? It goes to the trash in your Google Drive for 30 days.",es:"¿Sacar {name} de tu casillero? Va a la papelera de tu Google Drive por 30 días."},
+  lockRemoved:{en:"{name} went to the trash in your Google Drive.",es:"{name} fue a la papelera de tu Google Drive."},
+  lockPair:{en:"Send the link to my other devices",es:"Enviar el enlace a mis otros aparatos"},
+  lockQr:{en:"Show a QR code",es:"Mostrar un código QR"}, lockQrHide:{en:"Hide the QR code",es:"Ocultar el código QR"},
+  lockQrAlt:{en:"QR code that connects another device to your locker",es:"Código QR que conecta otro aparato a tu casillero"},
+  lockPairLine:{en:"Open the link on your other device, or scan the code with its camera. Keep the link private: it opens your locker.",es:"Abre el enlace en tu otro aparato o escanea el código con su cámara. No compartas el enlace: abre tu casillero."},
+  lockCopied:{en:"Link copied. Paste it into a message to yourself.",es:"Enlace copiado. Pégalo en un mensaje para ti."},
+  lockJoined:{en:"Your locker is connected on this device.",es:"Tu casillero está conectado en este aparato."},
+  lockOff:{en:"Disconnect this device",es:"Desconectar este aparato"},
+  lockOffDone:{en:"This device is not connected any more. Your songs stay in your Google Drive.",es:"Este aparato ya no está conectado. Tus canciones se quedan en tu Google Drive."},
+  mbN:{en:"{n} MB",es:"{n} MB"},
+  foot:{en:"Your song and your takes stay on this device, unless you save a song file or save to your own locker. The microphone opens only when you press Record your voice.",es:"Tu canción y tus tomas se quedan en este aparato, a menos que guardes un archivo de canción o guardes en tu propio casillero. El micrófono solo se abre cuando pulsas Grabar tu voz."},
+  /* AOG-STUDIO-INBOX-V1 */
+  grpTakes:{en:"Takes sent here",es:"Tomas enviadas aquí"}, grpShelves:{en:"Sent to the turntables",es:"Enviado a los platos"},
+  inboxH:{en:"Takes sent here",es:"Tomas enviadas aquí"},
+  inboxNone:{en:"Takes you send from an instrument wait here.",es:"Las tomas que envíes desde un instrumento esperan aquí."},
+  inboxCount:{en:"{n} of {max} takes, newest first.",es:"{n} de {max} tomas, la más nueva primero."},
+  takeN:{en:"Take {n}",es:"Toma {n}"},
+  bpmN:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
+  madeAt:{en:"made at {t}",es:"hecha a las {t}"}, madeOn:{en:"made {d} at {t}",es:"hecha el {d} a las {t}"},
+  onTrack1:{en:"On track {list}",es:"En la pista {list}"}, onTrackN:{en:"On tracks {list}",es:"En las pistas {list}"},
+  and:{en:"and",es:"y"},
+  remove:{en:"Remove",es:"Quitar"}, removeAria:{en:"Remove {name}",es:"Quitar {name}"},
+  removeAsk:{en:"Remove {name} from this list?",es:"¿Quitar {name} de esta lista?"},
+  stays1:{en:"It stays on track {list}.",es:"Se queda en la pista {list}."}, staysN:{en:"It stays on tracks {list}.",es:"Se queda en las pistas {list}."},
+  removeYes:{en:"Yes, remove it",es:"Sí, quitarla"}, removeNo:{en:"Keep it",es:"Conservarla"},
+  removed:{en:"{name} is out of the list.",es:"{name} ya no está en la lista."},
+  goneOne:{en:"The Mixing Desk keeps {max} takes. To make room for a new one, the oldest went: {list}.",es:"La mesa de mezclas guarda {max} tomas. Para hacer lugar a una nueva, se fue la más antigua: {list}."},
+  goneMany:{en:"The Mixing Desk keeps {max} takes. To make room for new ones, the oldest went: {list}.",es:"La mesa de mezclas guarda {max} tomas. Para hacer lugar a las nuevas, se fueron las más antiguas: {list}."},
+  goneKept:{en:"A take already on a track stays there.",es:"Una toma que ya está en una pista se queda ahí."},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  /* AOG-STUDIO-EDIT-V1: cut a track into pieces, change its speed, fade it, undo */
+  undo:{en:"↶ Undo",es:"↶ Deshacer"}, undone:{en:"Back to how it was.",es:"Volvió a como estaba."},
+  pieceLab:{en:"Piece",es:"Parte"},
+  pieceN:{en:"Piece {n} · bars {a} to {b}",es:"Parte {n} · compases {a} a {b}"}, pieceN1:{en:"Piece {n} · bar {a}",es:"Parte {n} · compás {a}"},
+  posBeat:{en:"Bar {b} · beat {n}",es:"Compás {b} · pulso {n}"},
+  cutH:{en:"Cut it up",es:"Córtala en partes"},
+  /* AOG-STUDIO-WAVES-V1 */
+  waveHint:{en:"Tap the wave where you want to cut. Drag an edge to trim.",es:"Toca la onda donde quieres cortar. Arrastra un borde para recortar."},
+  waveAria:{en:"The sound of track {n}. The bright part plays.",es:"El sonido de la pista {n}. La parte clara es la que suena."},
+  waveCut:{en:"The cut goes at {w}. Press Cut here.",es:"El corte va en {w}. Pulsa Cortar aquí."},
+  waveTrim:{en:"Trimmed.",es:"Recortada."},
+  cutAt:{en:"Cut at",es:"Cortar en"}, cutBtn:{en:"✂ Cut here",es:"✂ Cortar aquí"},
+  hear:{en:"▶ Hear this piece",es:"▶ Escuchar esta parte"}, hearStop:{en:"■ Stop",es:"■ Parar"},   /* AOG-STUDIO-CUT-V2 */
+  pieceTap:{en:"Tap a piece to pick it.",es:"Toca una parte para elegirla."}, piecePicked:{en:"Piece {n} is picked.",es:"Elegiste la parte {n}."},
+  cutShort:{en:"This piece is too short to cut.",es:"Esta parte es muy corta para cortarla."},
+  cutDone:{en:"Cut in two. Now there are {n} pieces.",es:"Cortada en dos. Ahora hay {n} partes."},
+  copyP:{en:"Copy this piece",es:"Copiar esta parte"}, copied:{en:"The copy plays right after it.",es:"La copia suena justo después."},
+  dropP:{en:"Remove this piece",es:"Quitar esta parte"}, dropped:{en:"Piece removed. Undo brings it back.",es:"Parte quitada. Deshacer la trae de vuelta."},
+  spdH:{en:"Speed",es:"Velocidad"}, spdAria:{en:"Speed of track {n}",es:"Velocidad de la pista {n}"},
+  spdNorm:{en:"Normal speed",es:"Velocidad normal"}, spdN:{en:"{n}% speed",es:"{n} % de velocidad"},
+  keep:{en:"Keep the pitch",es:"Mantener el tono"},
+  keepOn:{en:"Slower or faster, the notes stay in tune.",es:"Más lento o más rápido, las notas siguen afinadas."},
+  keepOff:{en:"Like a tape: slower sounds lower, faster sounds higher.",es:"Como una cinta: más lento suena más grave, más rápido suena más agudo."},
+  tempoSets:{en:"This track sets the song's tempo.",es:"Esta pista marca el tempo de la canción."},
+  match:{en:"Match the song's tempo",es:"Igualar el tempo de la canción"},
+  spdAll:{en:"Use this tempo on every track",es:"Usar este tempo en todas las pistas"},
+  spdAllDone:{en:"Every track now plays at {n} beats a minute.",es:"Todas las pistas suenan ahora a {n} pulsos por minuto."},
+  stretching:{en:"Getting the new speed ready…",es:"Preparando la nueva velocidad…"},
+  fadeH:{en:"Fade in and out",es:"Entrada y salida suaves"},
+  fadeIn:{en:"Fade in",es:"Entrada suave"}, fadeOut:{en:"Fade out",es:"Salida suave"}, fadeNone:{en:"None",es:"Ninguna"},
+  edit:{en:"✎ Edit",es:"✎ Editar"}, editAria:{en:"Edit track {n}",es:"Editar la pista {n}"}
+};
+const S={ lang:"en", decoding:0, busy:false, pick:"", picked:false, ask:"", stretching:0, edMsg:"", edAt:"cut" };
+try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
+function t(k, vars){ let s=(STR[k]||{})[S.lang]; if(s==null) s=k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
+function L(o){ return o ? (o[S.lang]||o.en) : ""; }
+const $=id=>document.getElementById(id);
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+/* lengths count whole seconds, as the Record button and the audio player do */
+function clockLen(sec){ const s=Math.max(0,Math.floor(sec+1e-6)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+const clockPos=clockLen;
+/* a take's name already ends with its length ("… · Take 1 · 0:06"); the length is shown on its own */
+function bareName(n){ return String(n||"").replace(/\s*·\s*\d+:\d\d$/, ""); }
+function num(v, lo, hi, d){ v=+v; return isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d; }
+
+/* ══ the song: what is on each track and how the mixer is set (localStorage aog.studio.v1) ══ */
+function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false, low:0, mid:0, high:0, punch:0, room:0, echo:0}; }
+function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80},
+  sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false, name:""}; }
+let SONG=blankSong();
+/* ══ AOG-LESSONS-V1 (2026-10-05) — the Mixing Desk's lessons: each step ticks itself as it happens (the words:
+   _work/music/lessons_studio.py, built by make_lab_lessons.py into aog-lessons-studio.js and mixing-desk-lessons.html).
+   LES.mark(id) is called at the real events below; the songs are checked from the arrangement (lessonSong) and at
+   Make the mix (lessonMix). The Mixing Desk records nothing itself, so step 1 ticks when a take has arrived here. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang, onPaint:()=>{ try{ paintSlip(); }catch(e){} }}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={remix:false};
+const INST_OF={drumbench:"drums", drumtake:"drums", padbench:"pads", keysbench:"piano", guitarbench:"guitar", bassbench:"bass", bandbench:"band", studiobench:"mix"};
+function instOf(c){ return c.src===INBOX_KEY ? (c.from||"take") : (INST_OF[c.src]||c.src); }
+function reordered(c){ const P=pcs(c); return P.some(p=>P.some(q=>p.a<q.a-1e-6 && p.at>q.at+1e-6)); }
+function bedOK(i){ const x=SONG.tracks[i], c=x.clip; return !!(c && x.vol<=40 && c.fadeIn>0 && c.fadeOut>0); }
+function lessonSong(){
+  const all=clips(); if(!all.length) return;
+  if(all.length>=4) LES.mark("tracks4");
+  if(all.some(x=>pcs(x.c).some(p=>p.at>=8-1e-6))) LES.mark("enter");
+  if(songBars()>=8) LES.mark("bars8");
+  if(all.some(x=>reordered(x.c))) LES.mark("swap");
+  if(all.some(x=>bedOK(x.i))) LES.mark("bedFade");
+  if(new Set(all.map(x=>instOf(x.c))).size>=3) LES.mark("own3");
+  if(songBars()>=16) LES.mark("ownLong");
+}
+function lessonMix(){
+  const aud=clips().filter(x=>audible(x.i)); if(!aud.length) return;
+  LES.mark("mix1");
+  const inst=new Set(aud.map(x=>instOf(x.c)));
+  if(inst.size>=2) LES.mark("mixInst2");
+  if(aud.length>=2 && aud.some(x=>SONG.tracks[x.i].vol!==SONG.tracks[aud[0].i].vol)) LES.mark("mixBal");
+  if(aud.length>=4) LES.mark("mixBand");
+  LT.remix=aud.some(x=>reordered(x.c)); if(LT.remix) LES.mark("mixRemix");
+  if(aud.some(x=>bedOK(x.i))) LES.mark("mixBed");
+  if(inst.size>=3 && songBars()>=16) LES.mark("mixOwn");
+}
+const ACT_STEP={"start+":"later1", "start-":"earlier1", "loops+":"more1", "loops-":"fewer1", copy:"copy1", cut:"cut1", drop:"drop1", keep:"keep1",
+  "in+beat":"trimIn", "in+bar":"trimIn", "out+beat":"trimOut", "out+bar":"trimOut"};
+function playStop(){ if(PLAY.on){ stop(); LES.mark("stop1"); } else play(); }
+function cleanClip(c){
+  if(!c || typeof c!=="object" || typeof c.id!=="string" || !/^c[a-z0-9]{4,40}$/.test(c.id)) return null;
+  const o={ id:c.id, src:(SHELF_KEYS.indexOf(c.src)>=0 || c.src===INBOX_KEY)?c.src:"", name:String(c.name||"").slice(0,200), at:num(c.at,0,1e15,0),
+    sec:num(c.sec,0,3600,0), bpm:num(c.bpm,0,400,0), bars:num(c.bars,0,10000,0), take:!!c.take,
+    head:num(c.head,0,10,0), body:num(c.body,0,3600,0), tail:num(c.tail,0,120,0), bpb:Math.round(num(c.bpb,2,7,4)),
+    peakDb:(typeof c.peakDb==="number" && isFinite(c.peakDb)) ? num(c.peakDb,-120,6,-6) : null,
+    startBar:Math.round(num(c.startBar,1,MAX_BARS,1)), trimIn:Math.round(num(c.trimIn,0,1e5,0)), trimOut:Math.round(num(c.trimOut,0,1e5,0)),
+    loops:Math.round(num(c.loops,1,16,1)),
+    /* AOG-STUDIO-EDIT-V1 */
+    speed:Math.round(num(c.speed,0.5,1.5,1)*1000)/1000, keep:c.keep!==false,
+    fadeIn:FADES.indexOf(+c.fadeIn)>=0 ? +c.fadeIn : 0, fadeOut:FADES.indexOf(+c.fadeOut)>=0 ? +c.fadeOut : 0,
+    pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)),
+    voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)),   /* AOG-STUDIO-VOICE-V1 */
+    layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto };   /* AOG-STUDIO-LISTEN-V1 */
+  if(!(o.sec>0) || !(o.body>0)) return null;
+  /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
+  if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
+    o.tid=(typeof c.tid==="string" && /^t[a-z0-9]{4,40}$/.test(c.tid)) ? c.tid : ""; }
+  return o;
+}
+const FADES=[0,1,4,8,16];        /* beats: none, 1 beat, 1 bar, 2 bars, 4 bars */
+function cleanPieces(a){
+  if(!Array.isArray(a)) return null;
+  const out=[];
+  a.slice(0,64).forEach(p=>{ if(!p || typeof p!=="object") return;
+    const q={a:num(p.a,0,1e5,0), b:num(p.b,0,1e5,0), at:num(p.at,0,MAX_BARS*4,0), n:Math.round(num(p.n,1,16,1))};
+    if(q.b-q.a>=0.25) out.push(q); });
+  return out.length ? out : null;
+}
+function cleanSong(r){
+  const s=blankSong();
+  if(!r || typeof r!=="object") return s;
+  if(Array.isArray(r.tracks)) r.tracks.slice(0,NT).forEach((x,i)=>{ if(!x||typeof x!=="object") return; const d=s.tracks[i];
+    d.clip=cleanClip(x.clip); d.vol=num(x.vol,0,100,80); d.pan=num(x.pan,-100,100,0); d.mute=!!x.mute; d.solo=!!x.solo;
+    d.low=num(x.low,-12,12,0); d.mid=num(x.mid,-12,12,0); d.high=num(x.high,-12,12,0);
+    d.punch=num(x.punch,0,100,0); d.room=num(x.room,0,100,0); d.echo=num(x.echo,0,100,0); });
+  if(r.master && typeof r.master==="object"){ const m=r.master, d=s.master;
+    d.low=num(m.low,-12,12,0); d.mid=num(m.mid,-12,12,0); d.high=num(m.high,-12,12,0); d.glue=num(m.glue,0,100,30); d.vol=num(m.vol,0,100,80); }
+  s.sel=Math.round(num(r.sel,0,NT-1,0)); s.startBar=Math.round(num(r.startBar,1,MAX_BARS,1));
+  s.loopOn=!!r.loopOn; s.loopFrom=Math.round(num(r.loopFrom,1,MAX_BARS,1)); s.loopTo=Math.round(num(r.loopTo,1,MAX_BARS,4));
+  if(s.loopTo<s.loopFrom) s.loopTo=s.loopFrom;
+  s.countIn=!!r.countIn;
+  s.name=String(typeof r.name==="string" ? r.name : "").replace(/[\u0000-\u001f]/g,"").slice(0,80);   /* AOG-STUDIO-CARRY-V1 */
+  return s;
+}
+function load(){ try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r && r.v===1) SONG=cleanSong(r); }catch(e){} }
+function save(){ try{ localStorage.setItem(LKEY, JSON.stringify(SONG)); }catch(e){} }
+let saveT=0; function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(save, 200); }
+
+/* ══ a copy of every recording on a track, in this browser (IndexedDB "aog-studio"), so a new bounce on an
+   instrument never changes a song already made ══ */
+const IDB={db:null, mem:new Map()};
+function idbOpen(){
+  if(IDB.db) return Promise.resolve(IDB.db);
+  return new Promise((ok,no)=>{
+    if(!window.indexedDB){ no(new Error("no indexedDB")); return; }
+    const r=indexedDB.open("aog-studio",1);
+    r.onupgradeneeded=()=>{ const d=r.result; if(!d.objectStoreNames.contains("clips")) d.createObjectStore("clips"); };
+    r.onsuccess=()=>{ IDB.db=r.result; IDB.db.onversionchange=()=>{ try{ IDB.db.close(); }catch(e){} IDB.db=null; }; ok(IDB.db); };
+    r.onerror=()=>no(r.error); r.onblocked=()=>no(new Error("blocked"));
+  });
+}
+function idbDo(mode, fn){
+  return idbOpen().then(db=>new Promise((ok,no)=>{
+    const tx=db.transaction("clips", mode), q=fn(tx.objectStore("clips")); let res;
+    if(q) q.onsuccess=()=>{ res=q.result; };
+    tx.oncomplete=()=>ok(res); tx.onerror=()=>no(tx.error); tx.onabort=()=>no(tx.error);
+  }));
+}
+function sput(k,v){ return idbDo("readwrite", st=>st.put(v,k)).then(()=>{ IDB.mem.delete(k); }, ()=>{ IDB.mem.set(k,v); }); }
+function sget(k){ return idbDo("readonly", st=>st.get(k)).then(v=>v||IDB.mem.get(k)||null, ()=>IDB.mem.get(k)||null); }
+function sdel(k){ IDB.mem.delete(k); return idbDo("readwrite", st=>st.delete(k)).catch(()=>{}); }
+function skeys(){ return idbDo("readonly", st=>st.getAllKeys ? st.getAllKeys() : null).then(v=>v||[], ()=>[]); }
+
+/* ══ reading a recording ══ */
+function blobAB(b){ return b.arrayBuffer ? b.arrayBuffer() : new Response(b).arrayBuffer(); }
+/* its length, from the .wav header, without decoding it */
+async function wavInfo(blob){
+  try{
+    const ab=await blobAB(blob.slice(0,4096)), v=new DataView(ab), n=ab.byteLength;
+    const s=(o,l)=>{ let r=""; for(let i=0;i<l && o+i<n;i++) r+=String.fromCharCode(v.getUint8(o+i)); return r; };
+    if(n<44 || s(0,4)!=="RIFF" || s(8,4)!=="WAVE") return null;
+    let p=12, sr=0, ch=0, bits=0, data=0;
+    while(p+8<=n){ const id=s(p,4), len=v.getUint32(p+4,true);
+      if(id==="fmt "){ ch=v.getUint16(p+10,true); sr=v.getUint32(p+12,true); bits=v.getUint16(p+22,true); }
+      else if(id==="data"){ data=Math.min(len, blob.size-(p+8)); break; }
+      p+=8+len+(len&1); }
+    if(!sr || !ch || !bits || !(data>0)) return null;
+    const frames=Math.floor(data/(ch*bits/8));
+    return {sr:sr, ch:ch, bits:bits, frames:frames, sec:frames/sr};
+  }catch(e){ return null; }
+}
+function decodeWav(blob, sr){
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const dec=new OC(2, 1, (sr>=8000 && sr<=96000) ? sr : MIX_SR);
+  return blobAB(blob).then(ab=>new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }));
+}
+function peakDbOf(buf){
+  let pk=0;
+  for(let c=0;c<buf.numberOfChannels;c++){ const d=buf.getChannelData(c); for(let i=0;i<d.length;i++){ const a=d[i]<0?-d[i]:d[i]; if(a>pk) pk=a; } }
+  return pk>0 ? 20*Math.log10(pk) : -120;
+}
+/* where the music starts and ends inside a recording. Each tool leaves a little silence before its first beat and
+   lets the last notes ring after its last bar; the studio lines up the first beat on the bar you pick, and loops
+   whole bars:
+   - the drum machine says so itself (offset, passSec × loops);
+   - the piano, guitar, bass and band start 0.05 s in (0.03 s when they played along with the drums) and ring 3 s;
+   - a take (● Record) keeps 0.05 s before its first sound. */
+function analyse(rec, info){
+  const sec=info.sec, bpm=(rec.bpm>0 && rec.bpm<400) ? +rec.bpm : 0, bars=(rec.bars>0) ? +rec.bars : 0;
+  let head=0, body=sec, tail=0, bpb=4;
+  if(rec.take){ head=Math.min(0.05, sec/4); body=sec-head; }
+  else if(rec.passSec>0 && rec.loops>0){
+    head=(typeof rec.offset==="number") ? Math.max(0, Math.min(rec.offset, sec/4)) : 0;
+    body=Math.min(sec-head, rec.passSec*rec.loops); tail=Math.max(0, sec-head-body);
+    if(bars && bpm) bpb=Math.round(Math.max(2, Math.min(7, body*bpm/60/bars)));
+  } else if(bars && bpm){
+    let best=null;
+    [0.03,0.05].forEach(h=>[4,3,6,2,5,7].forEach(b=>{ const e=Math.abs(sec-h-3-bars*b*60/bpm); if(!best || e<best.e) best={e:e, h:h, b:b}; }));
+    if(best && best.e<0.004){ head=best.h; bpb=best.b; body=bars*best.b*60/bpm; tail=Math.max(0, sec-head-body); }
+    else { head=Math.min(0.05, sec/4); body=Math.max(0.05, Math.min(sec-head, bars*4*60/bpm)); tail=Math.max(0, sec-head-body); }
+  }
+  return {sec:sec, bpm:bpm, bars:bars, take:!!rec.take, head:head, body:body, tail:tail, bpb:bpb};
+}
+
+/* ══ time: the song's bars come from its first recording's tempo ══ */
+function tempoTrack(){ for(let i=0;i<NT;i++){ const c=SONG.tracks[i].clip; if(c && c.bpm>0) return i; } return -1; }
+/* AOG-STUDIO-EDIT-V1 (Jimmy, 2026-10-04: "a way to edit the tracks that are in the mixer. Cut them up, slow or speed
+   them up"): each recording has a speed (50 % to 150 %); the track that sets the tempo sets it at its own speed */
+function spd(c){ return c && c.speed>0 ? c.speed : 1; }
+function songBpm(){ const i=tempoTrack(); return i>=0 ? SONG.tracks[i].clip.bpm*spd(SONG.tracks[i].clip) : 120; }
+function barSec(){ return 240/songBpm(); }
+function songBeat(){ return 60/songBpm(); }
+/* one beat of the recording as it was played, in seconds of the recording (one with no tempo counts the song's beats) */
+function beatOf(c){ return 60/(c.bpm>0 ? c.bpm : songBpm()); }
+function effBpm(c){ return c.bpm>0 ? c.bpm*spd(c) : 0; }
+function fullBeats(c){ return Math.max(0.5, c.body/beatOf(c)); }
+function ratio(c){ return beatOf(c)/spd(c)/songBeat(); }          /* song beats for one beat of the recording */
+/* the pieces of a track: a to b, the beats of the recording it plays (counted from its first beat); at, the song beat it
+   starts on (bar 1 is beat 0); n, how many times it plays. A recording never cut is one piece: its start bar, its two
+   cuts and its repeats */
+function pcs(c){
+  if(c.pieces && c.pieces.length) return c.pieces;
+  const full=fullBeats(c);
+  return [{a:c.trimIn, b:Math.max(c.trimIn+0.5, full-c.trimOut), at:(c.startBar-1)*4, n:c.loops}];
+}
+function own(c){ if(!c.pieces || !c.pieces.length){ c.pieces=pcs(c).map(p=>Object.assign({}, p)); c.psel=0; } return c.pieces; }
+function pSel(c){ return Math.max(0, Math.min(pcs(c).length-1, c.psel|0)); }
+function pLen(c, p){ return (p.b-p.a)*beatOf(c)/spd(c); }                         /* once through, in seconds of the song */
+function pTail(c, p){ return p.b>=fullBeats(c)-1e-6 ? c.tail/spd(c) : 0; }        /* the last notes ring on after the end */
+function pAt(p){ return p.at*songBeat(); }
+function clipStart(c){ return Math.min.apply(null, pcs(c).map(pAt)); }
+function clipEnd(c, withTail){ let e=0; pcs(c).forEach(p=>{ e=Math.max(e, pAt(p)+p.n*pLen(c,p)+(withTail ? pTail(c,p) : 0)); }); return e; }
+/* the pieces in song order, the chosen one still chosen; the start bar kept for anything that reads it */
+function tidyPieces(c){
+  if(!c.pieces) return;
+  const cur=c.pieces[pSel(c)];
+  c.pieces.sort((x,y)=>x.at-y.at || x.a-y.a);
+  c.psel=Math.max(0, c.pieces.indexOf(cur));
+  c.startBar=Math.max(1, Math.min(MAX_BARS, Math.floor(Math.min.apply(null, c.pieces.map(p=>p.at))/4+1e-6)+1));
+}
+function clampSpeed(x){ return Math.round(Math.max(0.5, Math.min(1.5, x))*1000)/1000; }
+function clips(){ return SONG.tracks.map((x,i)=>({i:i, c:x.clip})).filter(x=>x.c); }
+function songEnd(){ let e=0; clips().forEach(x=>{ e=Math.max(e, clipEnd(x.c,true)); }); return e; }
+function songEndMusic(){ let e=0; clips().forEach(x=>{ e=Math.max(e, clipEnd(x.c,false)); }); return e; }
+function songBars(){ return Math.max(1, Math.ceil(songEndMusic()/barSec()-1e-6)); }
+function tlBars(){ let n=Math.max(8, songBars()); if(SONG.loopOn) n=Math.max(n, SONG.loopTo); return Math.min(MAX_BARS, Math.ceil(n/4)*4); }
+function anySolo(){ return SONG.tracks.some(x=>x.solo); }
+function audible(i){ const x=SONG.tracks[i]; return !x.mute && (!anySolo() || x.solo); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE ENGINE — one chain, built the same way for the speakers and for Make the mix
+   each track:  recording → Low → Middle → High → Punch → Volume → Side ┬→ the whole song
+                                                          Volume ├→ Room send → one shared Room ┘
+                                                                 └→ Echo send → one shared Echo ┘
+   the whole song: Low → Middle → High → Glue → Song volume → limiter → safety ceiling → speakers
+   ══════════════════════════════════════════════════════════════════════════ */
+function dbGain(db){ return Math.pow(10, db/20); }
+function volGain(v){ const x=Math.max(0, Math.min(100, v))/80; return x*x; }        /* 80 is as recorded; 100 is a little more */
+function sendGain(v){ const x=Math.max(0, Math.min(100, v))/100; return x*x; }
+/* ⚠ a DynamicsCompressorNode quietly adds its own make-up gain: 0.6 × (−threshold) × (1 − 1/ratio) dB with a hard knee
+   (measured in the browser: −50 dB at 5:1 adds 24 dB). A quiet track would jump loud. Every compressor here has a hard
+   knee and a trim after it that takes that gain away again exactly, then adds back only what the studio chooses. */
+function autoMakeupDb(thr, ratio){ return -0.6*thr*(1-1/ratio); }
+/* Punch: a compressor set from the recording's own loudest point, so it works the same on a loud part and a quiet one;
+   it brings the loudest moments down and gives back half of that, never more than 6 dB */
+function punchSet(x){
+  const p=Math.max(0, Math.min(100, x.punch))/100;
+  if(p<=0) return {thr:0, ratio:1, trim:1};
+  const peak=(x.clip && typeof x.clip.peakDb==="number") ? Math.max(-60, Math.min(0, x.clip.peakDb)) : -6;
+  const thr=Math.max(-90, peak-20*p), ratio=1+4*p, cut=(peak-thr)*(1-1/ratio);
+  return {thr:thr, ratio:ratio, trim:dbGain(-autoMakeupDb(thr, ratio)+Math.min(6, 0.5*cut))};
+}
+/* Glue holds the parts together: gentle compression on the whole song */
+function glueSet(m){
+  const g=Math.max(0, Math.min(100, m.glue))/100;
+  if(g<=0) return {thr:0, ratio:1, trim:1};
+  const thr=-8-12*g, ratio=1.5+1.5*g, cut=Math.max(0, -6-thr)*(1-1/ratio);
+  return {thr:thr, ratio:ratio, trim:dbGain(-autoMakeupDb(thr, ratio)+0.5*cut)};
+}
+const LIM={thr:-2, ratio:20};
+/* the last stage: as it is below 85%; above, it rounds off toward 98%, so the song can never reach full scale */
+let SAFE=null;
+function safeCurve(){
+  if(SAFE) return SAFE;
+  const n=8193, c=new Float32Array(n);
+  for(let i=0;i<n;i++){ const s=2*((i/(n-1))*2-1), a=Math.abs(s), y=a<=0.85 ? a : 0.85+0.13*Math.tanh((a-0.85)/0.13); c[i]=s<0?-y:y; }
+  return (SAFE=c);
+}
+/* the same room every time (a fixed seed), as loud at any sample rate */
+function seeded(seed){ let x=seed|0||0x2f6b1a3d; return ()=>{ x^=x<<13; x^=x>>>17; x^=x<<5; return ((x>>>0)/4294967296)*2-1; }; }
+function roomIR(c){
+  const sr=c.sampleRate, len=Math.floor(sr*2.4), ir=c.createBuffer(2,len,sr);
+  for(let ch=0; ch<2; ch++){
+    const d=ir.getChannelData(ch), r=seeded(ch?0x51a7c3e1:0x2f6b1a3d), pre=Math.floor(sr*0.016); let lp=0, e=0;
+    for(let i=pre;i<len;i++){ const tt=(i-pre)/sr, k=0.25+0.65*Math.min(1,tt/1.6); lp+=(r()-lp)*(1-k*0.85); d[i]=lp*Math.exp(-6.9*tt/2.2); e+=d[i]*d[i]; }
+    const g=0.42/Math.sqrt(e||1); for(let i=0;i<len;i++) d[i]*=g;
+  }
+  return ir;
+}
+function echoTime(){ return Math.min(1.9, 0.75*60/songBpm()); }          /* a dotted eighth, in time with the song */
+function makeEngine(c, live){
+  const E={c:c, live:!!live, tr:[]};
+  const G=v=>{ const g=c.createGain(); g.gain.value=v; return g; };
+  const BQ=(type,f,q)=>{ const b=c.createBiquadFilter(); b.type=type; b.frequency.value=f; if(q!=null) b.Q.value=q; b.gain.value=0; return b; };
+  const DC=(atk,rel)=>{ const d=c.createDynamicsCompressor(); d.knee.value=0; d.attack.value=atk; d.release.value=rel; d.threshold.value=0; d.ratio.value=1; return d; };
+  E.sum=G(0.7);
+  /* the Room */
+  E.revIn=G(1); E.rev=c.createConvolver(); E.rev.normalize=false; E.rev.buffer=roomIR(c); E.revRet=G(1);
+  E.revIn.connect(E.rev); E.rev.connect(E.revRet); E.revRet.connect(E.sum);
+  /* the Echo: each repeat a little darker and softer */
+  E.dlyIn=G(1); E.dly=c.createDelay(2); E.dly.delayTime.value=echoTime();
+  E.fbHp=BQ("highpass",220,0.7); E.fbLp=BQ("lowpass",3400,0.7); E.fb=G(0.38); E.dlyRet=G(0.6);
+  E.dlyIn.connect(E.dly); E.dly.connect(E.fbHp); E.fbHp.connect(E.fbLp); E.fbLp.connect(E.fb); E.fb.connect(E.dly); E.fbLp.connect(E.dlyRet); E.dlyRet.connect(E.sum);
+  /* the whole song */
+  E.mLow=BQ("lowshelf",120); E.mMid=BQ("peaking",1000,0.8); E.mHigh=BQ("highshelf",7000);
+  E.glue=DC(0.02,0.25); E.glueTrim=G(1); E.mVol=G(1);
+  E.lim=DC(0.002,0.12); E.lim.threshold.value=LIM.thr; E.lim.ratio.value=LIM.ratio; E.limTrim=G(dbGain(-autoMakeupDb(LIM.thr, LIM.ratio)));
+  E.pre=G(0.5); E.safe=c.createWaveShaper(); E.safe.curve=safeCurve(); E.out=G(1);
+  E.sum.connect(E.mLow); E.mLow.connect(E.mMid); E.mMid.connect(E.mHigh); E.mHigh.connect(E.glue); E.glue.connect(E.glueTrim);
+  E.glueTrim.connect(E.mVol); E.mVol.connect(E.lim); E.lim.connect(E.limTrim); E.limTrim.connect(E.pre); E.pre.connect(E.safe); E.safe.connect(E.out);
+  E.out.connect(c.destination);
+  for(let i=0;i<NT;i++){
+    const T={in:G(1), low:BQ("lowshelf",120), mid:BQ("peaking",1000,0.8), high:BQ("highshelf",7000), comp:DC(0.012,0.15), trim:G(1), fader:G(0),
+      pan:c.createStereoPanner ? c.createStereoPanner() : null, room:G(0), echo:G(0)};
+    T.in.connect(T.low); T.low.connect(T.mid); T.mid.connect(T.high); T.high.connect(T.comp); T.comp.connect(T.trim); T.trim.connect(T.fader);
+    if(T.pan){ T.fader.connect(T.pan); T.pan.connect(E.sum); } else T.fader.connect(E.sum);
+    T.fader.connect(T.room); T.room.connect(E.revIn); T.fader.connect(T.echo); T.echo.connect(E.dlyIn);
+    E.tr.push(T);
+  }
+  E.fresh=true; applyAll(E); E.fresh=false;
+  return E;
+}
+/* a setting reaches the engine: at once in a mix being made, smoothly (no clicks) on the speakers */
+function setP(E, p, v){
+  if(!E.live || E.fresh){ p.value=v; return; }
+  const now=E.c.currentTime;
+  try{ p.cancelScheduledValues(now); p.setTargetAtTime(v, now, 0.015); }catch(e){ p.value=v; }
+}
+function applyTrack(E, i){
+  const T=E.tr[i], x=SONG.tracks[i], pu=punchSet(x);
+  setP(E, T.fader.gain, volGain(x.vol)*(audible(i)?1:0));
+  if(T.pan) setP(E, T.pan.pan, x.pan/100);
+  setP(E, T.low.gain, x.low); setP(E, T.mid.gain, x.mid); setP(E, T.high.gain, x.high);
+  setP(E, T.comp.threshold, pu.thr); setP(E, T.comp.ratio, pu.ratio); setP(E, T.trim.gain, pu.trim);
+  setP(E, T.room.gain, sendGain(x.room)); setP(E, T.echo.gain, 0.9*sendGain(x.echo));
+}
+function applyMaster(E){
+  const m=SONG.master, gl=glueSet(m);
+  setP(E, E.mLow.gain, m.low); setP(E, E.mMid.gain, m.mid); setP(E, E.mHigh.gain, m.high);
+  setP(E, E.glue.threshold, gl.thr); setP(E, E.glue.ratio, gl.ratio); setP(E, E.glueTrim.gain, gl.trim);
+  setP(E, E.mVol.gain, volGain(m.vol));
+  setP(E, E.dly.delayTime, echoTime());
+}
+function applyAll(E){ for(let i=0;i<NT;i++) applyTrack(E,i); applyMaster(E); }
+function liveApply(fn){ if(LIVE) fn(LIVE); }
+
+/* every piece of every recording that sounds between song time `from` and `to`, started at context time `at`.
+   A piece cut in the middle of a sound fades in or out over a few milliseconds, so nothing clicks. */
+const BUF=new Map();
+/* AOG-STUDIO-EDIT-V1: what a recording plays from at its speed. Keep the pitch: a stretched copy (made once, below),
+   played as it is; like a tape (or while the copy is being made): the recording itself, played faster or slower */
+function playBuf(cl){
+  const b=BUF.get(cl.id); if(!b) return null;
+  const sp=spd(cl);
+  if(Math.abs(sp-1)<1e-3) return {buf:b, rate:1, scale:1};
+  if(cl.keep!==false){ const st=STRETCH.get(cl.id); if(st && Math.abs(st.sp-sp)<1e-3) return {buf:st.buf, rate:1, scale:1/sp}; }
+  return {buf:b, rate:sp, scale:1};
+}
+/* how loud a track is at song time t, from its fade in and fade out (1 = as recorded) */
+function fadeAt(cl, t, cs, ce){
+  let g=1; const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
+  if(fi>0) g=Math.min(g, (t-cs)/fi);
+  if(fo>0) g=Math.min(g, (ce-t)/fo);
+  return Math.max(0, Math.min(1, g));
+}
+function schedule(E, from, to, at){
+  const c=E.c, out=[];
+  SONG.tracks.forEach((x,i)=>{
+    const cl=x.clip; if(!cl) return; const P=playBuf(cl); if(!P) return;
+    const sp=spd(cl), sb=beatOf(cl), full=fullBeats(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
+    const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
+    pcs(cl).forEach(p=>{
+      const s0=cl.head+p.a*sb, len=pLen(cl,p), tl=pTail(cl,p), st=pAt(p), whole=p.b>=full-1e-6;
+      for(let k=0;k<p.n;k++){
+        const p0=st+k*len, p1=p0+len+tl, a0=Math.max(p0,from), a1=Math.min(p1,to);
+        if(a1-a0<0.003) continue;
+        const off=(s0+(a0-p0)*sp)*P.scale, d=Math.min((a1-a0)*sp*P.scale, P.buf.duration-off);
+        if(!(d>0.003)) continue;
+        const dur=d/(sp*P.scale), e1=a0+dur, when=at+(a0-from);       /* dur: seconds of the song */
+        const cutIn=(a0>p0+1e-4) || p.a>1e-6, cutOut=(e1<p1-1e-4) || !whole, edge=cutOut && dur>0.02;
+        const src=c.createBufferSource(); src.buffer=P.buf; if(P.rate!==1) src.playbackRate.value=P.rate;
+        const env=c.createGain();
+        if(!cutIn && !edge && !fades) env.gain.value=1;
+        else {
+          /* the 4 ms in and 8 ms out of a cut (no clicks), times the fades, as straight lines between their corners */
+          const val=t=>{ let v=fades ? fadeAt(cl, t, cs, ce) : 1;
+            if(cutIn) v*=Math.max(0, Math.min(1, (t-a0)/0.004)); if(edge) v*=Math.max(0, Math.min(1, (e1-t)/0.008)); return v; };
+          const pts=[a0, e1]; if(cutIn) pts.push(a0+0.004); if(edge) pts.push(e1-0.008);
+          if(fi>0) pts.push(cs+fi); if(fo>0) pts.push(ce-fo, ce);
+          const list=[...new Set(pts.filter(v=>v>=a0-1e-9 && v<=e1+1e-9))].sort((u,v)=>u-v);
+          env.gain.value=val(a0); env.gain.setValueAtTime(val(a0), when);
+          list.forEach(tp=>{ if(tp>a0+1e-9) env.gain.linearRampToValueAtTime(val(tp), when+(tp-a0)); });
+        }
+        src.connect(env); env.connect(E.tr[i].in);
+        src.start(when, off, d);
+        out.push({src:src, env:env, end:when+dur});
+      }
+    });
+  });
+  return out;
+}
+
+/* ══ AOG-STUDIO-EDIT-V1 · a slower or faster copy that keeps the pitch (WSOLA): the recording cut into short windows
+   (40 ms), each one laid down at the new pace, and each taken from where it best matches the sound before it, so
+   nothing warbles. Made once per speed, a little at a time so the page stays easy to use. ══ */
+const STRETCH=new Map(), SJOB=new Map();
+function needStretch(c){ return c.keep!==false && Math.abs(spd(c)-1)>1e-3; }
+function stretchReady(c){ const st=STRETCH.get(c.id); return !!(st && Math.abs(st.sp-spd(c))<1e-3); }
+function newBuf(nch, len, sr){ try{ return new AudioBuffer({numberOfChannels:nch, length:len, sampleRate:sr}); }catch(e){ return live().createBuffer(nch, len, sr); } }
+async function wsola(buf, sp, cancelled){
+  const sr=buf.sampleRate, nch=buf.numberOfChannels, n=buf.length;
+  const H=Math.max(64, Math.round(0.02*sr)), N=2*H, tol=Math.round(0.012*sr), Ha=H*sp, outN=Math.max(1, Math.round(n/sp));
+  const X=[], Y=[]; for(let ch=0;ch<nch;ch++){ X.push(buf.getChannelData(ch)); Y.push(new Float32Array(outN+N)); }
+  const W=new Float32Array(N); for(let j=0;j<N;j++) W[j]=0.5-0.5*Math.cos(2*Math.PI*j/N);
+  /* the search listens to a quarter-rate mono copy, then looks again closely around the best place */
+  const Q=4, m=Math.floor(n/Q), D=new Float32Array(m+1);
+  for(let i=0;i<m;i++){ let v=0; const o=i*Q; for(let ch=0;ch<nch;ch++){ const x=X[ch]; v+=x[o]+x[o+1]+x[o+2]+x[o+3]; } D[i]=v; }
+  const Hq=Math.floor(H/Q), tq=Math.floor(tol/Q);
+  let prev=0, k=0;
+  for(let op=0; op<outN; op+=H, k++){
+    const nom=Math.round(k*Ha); let pos;
+    if(k===0) pos=0;
+    else {
+      const tgt=prev+H;
+      if(tgt+N>=n || nom+tol+N>=n){ pos=Math.max(0, Math.min(nom, n-N)); }   /* the last moments: no search */
+      else {
+        const tg=Math.floor(tgt/Q), lo=Math.max(0, Math.floor(nom/Q)-tq), hi=Math.min(m-Hq-1, Math.floor(nom/Q)+tq);
+        let best=-Infinity, bq=Math.floor(nom/Q);
+        for(let q=lo;q<=hi;q++){ let v=0; for(let j=0;j<Hq;j++) v+=D[tg+j]*D[q+j]; if(v>best){ best=v; bq=q; } }
+        let fb=-Infinity, fp=Math.max(0, Math.min(n-N-1, bq*Q));
+        for(let q=Math.max(0, bq*Q-Q); q<=Math.min(n-N-1, bq*Q+Q); q++){
+          let v=0; for(let j=0;j<H;j+=2){ let a=0, b=0; for(let ch=0;ch<nch;ch++){ a+=X[ch][tgt+j]; b+=X[ch][q+j]; } v+=a*b; }
+          if(v>fb){ fb=v; fp=q; } }
+        pos=fp;
+      }
+    }
+    for(let ch=0;ch<nch;ch++){ const x=X[ch], y=Y[ch], L=Math.min(N, n-pos);
+      if(k===0){ for(let j=0;j<L;j++) y[op+j]+=x[pos+j]*(j<H ? 1 : W[j]); }   /* the very start keeps its full strength */
+      else for(let j=0;j<L;j++) y[op+j]+=x[pos+j]*W[j]; }
+    prev=pos;
+    if((k&127)===127){ await new Promise(r=>setTimeout(r, 0)); if(cancelled()) return null; }
+  }
+  const out=newBuf(nch, outN, sr);
+  for(let ch=0;ch<nch;ch++) out.getChannelData(ch).set(Y[ch].subarray(0, outN));
+  return out;
+}
+function ensureStretch(c){
+  if(!needStretch(c)){ STRETCH.delete(c.id); SJOB.delete(c.id); return Promise.resolve(); }
+  if(stretchReady(c)) return Promise.resolve();
+  const b=BUF.get(c.id); if(!b) return Promise.resolve();
+  const sp=spd(c), key=c.id+"@"+sp, run=SJOB.get(c.id);
+  if(run && run.key===key) return run.p;
+  const job={key:key};
+  job.p=(async()=>{
+    S.stretching++; paintEditLine(); paintFinish();
+    try{
+      const out=await wsola(b, sp, ()=>{ const j=SJOB.get(c.id); return !j || j.key!==key; });
+      if(out && SJOB.get(c.id)===job){ STRETCH.set(c.id, {sp:sp, buf:out}); }
+    }catch(e){}
+    if(SJOB.get(c.id)===job) SJOB.delete(c.id);
+    S.stretching--;
+    reschedule(); paintEditLine(); paintFinish();
+  })();
+  SJOB.set(c.id, job);
+  return job.p;
+}
+function stretchAll(){ return Promise.all(clips().map(x=>ensureStretch(x.c))); }
+
+/* ══ the speakers ══ */
+let ac=null, LIVE=null, AN=null;
+function live(){
+  if(!ac){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    /* an iPhone on silent mutes web audio; a song is something you play, so it plays like music does */
+    try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+    ac=new AC({latencyHint:"interactive"});
+    LIVE=makeEngine(ac, true);
+    /* the meter listens after the safety ceiling, left and right */
+    try{
+      const sp=ac.createChannelSplitter(2), a0=ac.createAnalyser(), a1=ac.createAnalyser(), z=ac.createGain(); z.gain.value=0;
+      a0.fftSize=1024; a1.fftSize=1024; LIVE.out.connect(sp); sp.connect(a0,0); sp.connect(a1,1); a0.connect(z); a1.connect(z); z.connect(ac.destination);
+      AN={a:[a0,a1], d:new Float32Array(1024)};
+    }catch(e){ AN=null; }
+  }
+  if(ac.state!=="running"){ try{ ac.resume(); }catch(e){} }
+  return ac;
+}
+const PLAY={on:false, loop:false, A:0, B:0, wins:[], srcs:[], clicks:[], timer:0, raf:0, T0:0, beat:0, bar:0, sig:"", nowBar:-1, peak:-Infinity};
+function hasClips(){ return SONG.tracks.some(x=>x.clip && BUF.has(x.clip.id)); }
+function curWin(now){ let w=null; for(const x of PLAY.wins){ if(x.at<=now+1e-6) w=x; } return w; }
+function songPos(now){ const w=curWin(now); return w ? Math.min(w.to, w.from+(now-w.at)) : null; }
+function play(){
+  if(PLAY.on || S.decoding || !hasClips()) return;
+  const c=live(), bs=barSec(), beat=bs/4;
+  let T=c.currentTime+0.12;
+  PLAY.clicks=[];
+  if(SONG.countIn){
+    /* the clicks skip the chain, so they wait the chain's 18 ms too and land exactly on the song's beats */
+    const lag=NCOMP*0.006;
+    for(let k=0;k<4;k++) PLAY.clicks.push(click(c, T+lag+k*beat, k===0));
+    PLAY.countAt=T; T+=bs;
+  } else PLAY.countAt=0;
+  PLAY.T0=T; PLAY.beat=beat; PLAY.bar=bs; PLAY.peak=-Infinity; PLAY.sig=""; PLAY.nowBar=-1;
+  PLAY.loop=!!SONG.loopOn;
+  if(PLAY.loop){
+    PLAY.A=(SONG.loopFrom-1)*bs; PLAY.B=SONG.loopTo*bs;
+    PLAY.wins=[{at:T, from:PLAY.A, to:PLAY.B}];
+  } else {
+    const from=(SONG.startBar-1)*bs, end=songEnd();
+    PLAY.wins=[{at:T, from:Math.min(from,end), to:end}];
+  }
+  PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
+  PLAY.on=true;
+  pump();
+  PLAY.timer=setInterval(pump, 40);
+  meterReset();
+  PLAY.raf=requestAnimationFrame(frame);
+  paintPlay();
+  LES.mark("play1"); if(clips().length>=2) LES.mark("play2"); if(PLAY.loop) LES.mark("loopPlay");   /* AOG-LESSONS-V1 */
+}
+/* a click for the count-in: short, soft, never in the mix */
+function click(c, when, first){
+  const o=c.createOscillator(), g=c.createGain();
+  o.frequency.value=first?1760:1320; g.gain.value=0;
+  g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(0.22, when+0.002); g.gain.exponentialRampToValueAtTime(0.001, when+0.05);
+  o.connect(g); g.connect(c.destination); o.start(when); o.stop(when+0.06);
+  return o;
+}
+function pump(){
+  if(!PLAY.on) return;
+  const now=ac.currentTime;
+  if(PLAY.loop){
+    let w=PLAY.wins[PLAY.wins.length-1];
+    while(w.at+(w.to-w.from) < now+1.0){
+      const nw={at:w.at+(w.to-w.from), from:PLAY.A, to:PLAY.B};
+      PLAY.wins.push(nw); PLAY.srcs=PLAY.srcs.concat(schedule(LIVE, nw.from, nw.to, nw.at)); w=nw;
+    }
+    if(PLAY.wins.length>6) PLAY.wins.splice(0, PLAY.wins.length-6);
+  } else {
+    const w=PLAY.wins[PLAY.wins.length-1];
+    if(now > w.at+(w.to-w.from)+0.05){ finish(); return; }
+  }
+  PLAY.srcs=PLAY.srcs.filter(s=>s.end>now-0.25);
+}
+function silence(list, now){
+  list.forEach(s=>{ try{ s.env.gain.cancelScheduledValues(now); s.env.gain.setValueAtTime(s.env.gain.value, now); s.env.gain.linearRampToValueAtTime(0, now+0.03); }catch(e){}
+    try{ s.src.stop(now+0.05); }catch(e){} });
+}
+function stop(){
+  if(!PLAY.on) return;
+  const now=ac.currentTime;
+  silence(PLAY.srcs, now);
+  PLAY.clicks.forEach(o=>{ try{ o.stop(now); }catch(e){} });
+  end();
+}
+/* the song played to its end: the last notes have rung out already */
+function finish(){ end(); LES.mark("end1"); }
+function end(){
+  PLAY.on=false; clearInterval(PLAY.timer); PLAY.timer=0;
+  if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
+  PLAY.srcs=[]; PLAY.clicks=[]; PLAY.wins=[];
+  meterStill(); paintPlay(); paintNowBar(-1);
+}
+/* the song changed while it plays: carry on from the same place with the new arrangement */
+function reschedule(){
+  if(!PLAY.on) return;
+  const now=ac.currentTime, pos=songPos(now);
+  if(pos==null) return;           /* still counting in: the new song is picked up when it starts */
+  silence(PLAY.srcs, now);
+  const bs=barSec(), at=now+0.05; PLAY.beat=bs/4; PLAY.bar=bs;
+  if(PLAY.loop){
+    PLAY.A=(SONG.loopFrom-1)*bs; PLAY.B=SONG.loopTo*bs;
+    const from=(pos>=PLAY.A && pos<PLAY.B) ? pos : PLAY.A;
+    PLAY.wins=[{at:at, from:from, to:PLAY.B}];
+  } else {
+    const end=songEnd(); PLAY.wins=[{at:at, from:Math.min(pos,end), to:end}];
+  }
+  PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
+  pump();
+}
+/* while it plays: where we are (once a beat), and the meter */
+function frame(){
+  if(!PLAY.on){ PLAY.raf=0; return; }
+  const now=ac.currentTime, pos=songPos(now);
+  let sig;
+  if(pos==null){ const n=Math.max(1, Math.min(4, Math.floor((now-PLAY.countAt)/PLAY.beat)+1)); sig="c"+n; if(sig!==PLAY.sig){ posText(t("countIn",{n:n})); ctrCount(n); } }
+  else {
+    const bar=Math.floor(pos/PLAY.bar+1e-6), beat=Math.floor((pos-bar*PLAY.bar)/PLAY.beat+1e-6);
+    sig=bar+"."+beat;
+    if(sig!==PLAY.sig){ posText(t("pos",{b:bar+1, n:Math.min(4,beat+1), t:clockPos(pos)})); ctrSet(bar+1, Math.min(4,beat+1), pos); paintNowBar(bar); playhead(bar*PLAY.bar+beat*PLAY.beat); }
+    else if(!stillMeter()) playhead(pos);   /* AOG-DESK-GLOW-V1: on a computer the playhead sweeps smoothly; on a touch screen it steps with the beat */
+  }
+  PLAY.sig=sig;
+  meterTick();
+  PLAY.raf=requestAnimationFrame(frame);
+}
+
+/* ══ the meter: it moves only while the song plays. On a touch screen, or with "reduce motion" set, it shows one
+   still mark instead: the loudest point so far, which only ever steps up ══ */
+const MET={lvl:[-90,-90], drawn:-Infinity, last:0, draws:0};
+function stillMeter(){ try{ return matchMedia("(hover: none)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } }
+function dbx(db){ return Math.max(0, Math.min(1, (db+48)/48)); }
+function meterSize(){
+  const cv=$("meter"); if(!cv) return;
+  const r=cv.getBoundingClientRect(), dpr=Math.min(2, window.devicePixelRatio||1);
+  const w=Math.max(1, Math.round(r.width*dpr)), h=Math.max(1, Math.round(r.height*dpr));
+  if(cv.width!==w || cv.height!==h){ cv.width=w; cv.height=h; }
+}
+function drawMeter(levels, peak){
+  try{ vuPaint(levels, peak); }catch(e){}
+  const cv=$("meter"); if(!cv || !cv.getContext) return;
+  MET.draws++;
+  meterSize();
+  const g=cv.getContext("2d"), W=cv.width, H=cv.height;
+  g.fillStyle="#0b0c0e"; g.fillRect(0,0,W,H);
+  if(levels){
+    const grad=g.createLinearGradient(0,0,W,0);
+    grad.addColorStop(0,"#4f9e6a"); grad.addColorStop(dbx(-12),"#9fd4a0"); grad.addColorStop(dbx(-6),"#e8c860"); grad.addColorStop(dbx(-2),"#ec9a50"); grad.addColorStop(1,"#e0603f");
+    const bh=Math.max(1,(H-6)/2);
+    levels.forEach((db,ch)=>{ g.fillStyle=grad; g.fillRect(0, 2+ch*(bh+2), Math.round(W*dbx(db)), bh); });
+  }
+  g.fillStyle="rgba(255,255,255,.16)";
+  for(let d=-42; d<0; d+=6){ g.fillRect(Math.round(W*dbx(d)), 0, 1, H); }
+  if(peak>-48){ const x=Math.round(W*dbx(peak)); g.fillStyle="#fff3d1"; g.fillRect(Math.max(0,x-2), 0, 3, H); }
+}
+/* ══ AOG-DESK-VU-V1 (Jimmy, 2026-10-09: "Any way we can still reach for the ceiling?") — the meter bridge: two analog VU
+   meters, left and right, over the mixer. Cream faces lit warm from below, the scale in true VU steps (−20 to +3, red past
+   0), a black needle under a dark hood, glass on top. They follow the same rule as the level bar: while the song plays the
+   needles swing with it; on a touch screen or with "reduce motion" set they step to the loudest point so far and stay
+   there; stopped, they rest. 0 VU is −8 dB below the top of the file. ══ */
+const VU_MARKS=[-20,-10,-7,-5,-3,-2,-1,0,1,2,3];
+function vuPos(vu){ const lo=Math.pow(10,-20/20), hi=Math.pow(10,3/20); return Math.max(-0.03, Math.min(1.04, (Math.pow(10, Math.max(-40, Math.min(4, vu))/20)-lo)/(hi-lo))); }
+function vuDraw(cv, db, side){
+  if(!cv || !cv.getContext) return;
+  const r=cv.getBoundingClientRect(); if(!(r.width>0 && r.height>0)) return;
+  const dpr=Math.min(3, window.devicePixelRatio||1), W=Math.round(r.width), H=Math.round(r.height);
+  if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
+  const g=cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+  const rr=(x,y,w,h,k)=>{ g.beginPath(); if(g.roundRect) g.roundRect(x,y,w,h,k); else g.rect(x,y,w,h); };
+  /* the bezel and the face, lit warm from below */
+  rr(0,0,W,H,7); g.fillStyle="#08090a"; g.fill();
+  const fx=4, fy=4, fw=W-8, fh=H-8;
+  const face=g.createRadialGradient(W/2, fy+fh*1.05, fh*0.1, W/2, fy+fh*0.9, fw*0.75);
+  face.addColorStop(0,"#fff4d2"); face.addColorStop(0.55,"#f3e2b4"); face.addColorStop(1,"#d9c08a");
+  rr(fx,fy,fw,fh,4); g.fillStyle=face; g.fill();
+  /* the scale */
+  const cx=W/2, cy=fy+fh*1.08, R=fh*0.76, A=0.86;   /* ±47° */
+  const ang=p=>-Math.PI/2-A+p*2*A, at=(p,rad)=>[cx+Math.cos(ang(p))*rad, cy+Math.sin(ang(p))*rad];
+  g.lineCap="round";
+  g.strokeStyle="#2a2116"; g.lineWidth=1.1; g.beginPath(); g.arc(cx,cy,R,ang(0),ang(vuPos(0))); g.stroke();
+  g.strokeStyle="#b8321e"; g.lineWidth=3; g.beginPath(); g.arc(cx,cy,R+1.5,ang(vuPos(0)),ang(1)); g.stroke();
+  const fs=Math.max(8, Math.min(11, fh*0.14));
+  g.font=`500 ${fs}px Fraunces, Georgia, serif`; g.textAlign="center"; g.textBaseline="middle";
+  VU_MARKS.forEach(m=>{ const p=vuPos(m), red=m>0, [x1,y1]=at(p,R), [x2,y2]=at(p,R+(m===0||m===-20||m===3?7:5)), [tx,ty]=at(p,R+fs*1.25);
+    g.strokeStyle=red?"#b8321e":"#2a2116"; g.lineWidth=m===0?1.6:1; g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke();
+    if(m===-20||m===-10||m===-5||m===0||m===3||(W>200 && (m===-7||m===-3||m===-1))){ g.fillStyle=red?"#a52a17":"#2a2116"; g.fillText(m===-20?"−20":m===3?"+3":String(Math.abs(m)), tx, ty); } });
+  g.fillStyle="#2a2116"; g.font=`400 ${Math.round(fs*1.7)}px Fraunces, Georgia, serif`; g.fillText("VU", cx, fy+fh*0.64);
+  g.font=`700 ${Math.round(fs*0.85)}px system-ui, sans-serif`; g.fillStyle="#6b5a3a"; g.textAlign="left"; g.fillText(side, fx+7, fy+fh-9); g.textAlign="center";
+  /* the needle */
+  const p=db==null ? -0.03 : vuPos(db+8), [nx,ny]=at(p, R+6), [bx,by]=at(p, fh*0.32);
+  g.strokeStyle="rgba(0,0,0,.18)"; g.lineWidth=2; g.beginPath(); g.moveTo(bx+1.5,by+2); g.lineTo(nx+1.5,ny+2); g.stroke();
+  g.strokeStyle="#16110a"; g.lineWidth=1.3; g.beginPath(); g.moveTo(bx,by); g.lineTo(nx,ny); g.stroke();
+  /* the hood over the pivot, and the glass */
+  const hood=g.createLinearGradient(0, fy+fh*0.78, 0, fy+fh);
+  hood.addColorStop(0,"#2b2d31"); hood.addColorStop(1,"#141518");
+  g.save(); rr(fx,fy,fw,fh,4); g.clip();
+  g.fillStyle=hood; g.beginPath(); g.ellipse(cx, fy+fh+fh*0.1, fw*0.3, fh*0.3, 0, Math.PI, 2*Math.PI); g.fill();
+  const glass=g.createLinearGradient(fx, fy, fx+fw*0.6, fy+fh);
+  glass.addColorStop(0,"rgba(255,255,255,.38)"); glass.addColorStop(0.35,"rgba(255,255,255,.06)"); glass.addColorStop(0.36,"rgba(255,255,255,0)");
+  g.fillStyle=glass; g.fillRect(fx,fy,fw,fh);
+  g.strokeStyle="rgba(0,0,0,.35)"; g.lineWidth=2; rr(fx+1,fy+1,fw-2,fh-2,4); g.stroke();
+  g.restore();
+}
+function vuPaint(levels, peak){
+  const v = levels ? levels : (PLAY.on && peak>-90 ? [peak, peak] : null);
+  vuDraw($("vuL"), v ? v[0] : null, "L"); vuDraw($("vuR"), v ? v[1] : null, "R");
+}
+function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); }
+function meterTick(){
+  if(!AN) return;
+  const now=performance.now(), dt=MET.last ? Math.min(0.1,(now-MET.last)/1000) : 0; MET.last=now;
+  const lv=[0,1].map(ch=>{ const a=AN.a[ch]; a.getFloatTimeDomainData(AN.d); let pk=0; for(let i=0;i<AN.d.length;i++){ const v=AN.d[i]<0?-AN.d[i]:AN.d[i]; if(v>pk) pk=v; } return pk>0 ? 20*Math.log10(pk) : -90; });
+  lv.forEach(db=>{ if(db>PLAY.peak) PLAY.peak=db; });
+  if(stillMeter()){
+    if(PLAY.peak>MET.drawn+0.5){ MET.drawn=PLAY.peak; drawMeter(null, PLAY.peak); }
+    return;
+  }
+  MET.lvl=MET.lvl.map((o,ch)=>Math.max(lv[ch], o-24*dt));
+  drawMeter(MET.lvl, PLAY.peak);
+}
+function meterStill(){ drawMeter(null, PLAY.peak); }
+
+/* ══ the shelves the instruments fill ══ */
+const SHELF={};
+async function refreshShelves(){
+  for(const s of SHELVES){
+    let rec=null; try{ rec=await AOGHandoff.get(s.key); }catch(e){ rec=null; }
+    if(rec && rec.wav && typeof rec.wav.size==="number" && rec.wav.size>44){
+      const old=SHELF[s.key];
+      if(old && old.rec.at===rec.at && old.rec.wav.size===rec.wav.size){ old.rec=rec; continue; }
+      const info=await wavInfo(rec.wav);
+      SHELF[s.key]=info ? {rec:rec, info:info} : null;
+    } else SHELF[s.key]=null;
+  }
+  paintRecs();
+  if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
+}
+/* AOG-STUDIO-INBOX-V1 — the takes sent here: the list's index (no audio), newest first; the audio is read when a take
+   goes on a track */
+const INBOX={items:[], gone:[]};
+async function refreshInbox(){
+  let r=null;
+  try{ r=(window.AOGHandoff && AOGHandoff.list) ? await AOGHandoff.list(INBOX_KEY) : null; }catch(e){ r=null; }
+  INBOX.items=((r && r.items) || []).filter(x=>x && typeof x.id==="string" && x.sec>0).sort((a,b)=>(b.sent||0)-(a.sent||0));
+  INBOX.gone=((r && r.gone) || []).filter(x=>x && typeof x.id==="string");
+  if(S.ask && !INBOX.items.some(x=>x.id===S.ask)) S.ask="";
+  paintInbox(); paintRecs();
+  if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
+}
+/* every recording that can go on a track: the takes sent here, then the newest thing each tool sent to the turntables */
+function sources(){
+  const out=INBOX.items.map(x=>({id:"take:"+x.id, kind:"take", x:x}));
+  SHELVES.map(s=>({s:s, v:SHELF[s.key]})).filter(y=>y.v).sort((a,b)=>(b.v.rec.at||0)-(a.v.rec.at||0))
+    .forEach(y=>out.push({id:"shelf:"+y.s.key, kind:"shelf", s:y.s, v:y.v}));
+  return out;
+}
+/* a take is named by its tool and its number: "Guitar take 2" */
+function takeLabel(x){
+  const T=TOOLS[x.from], n=x.n!=null ? x.n : x.tn;
+  if(T && n>0) return L(T.take)+" "+n;
+  if(x.name && typeof x.name==="object") return L(x.name);
+  if(typeof x.name==="string" && x.name) return x.name;
+  return t("takeN",{n:n>0 ? n : "?"});
+}
+function andList(a){ return a.length<2 ? a.join("") : a.slice(0,-1).join(", ")+" "+t("and")+" "+a[a.length-1]; }
+function timeOf(d){ try{ return d.toLocaleTimeString(S.lang==="es"?"es":"en",{hour:"numeric", minute:"2-digit"}); }catch(e){ return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0"); } }
+function dayOf(d){ try{ return d.toLocaleDateString(S.lang==="es"?"es":"en",{month:"short", day:"numeric"}); }catch(e){ return (d.getMonth()+1)+"/"+d.getDate(); } }
+function sameDay(d){ return d.toDateString()===new Date().toDateString(); }
+function whenShort(at){ if(!(at>0)) return ""; const d=new Date(at); return sameDay(d) ? timeOf(d) : dayOf(d)+", "+timeOf(d); }
+function madeWords(at){ if(!(at>0)) return ""; const d=new Date(at); return sameDay(d) ? t("madeAt",{t:timeOf(d)}) : t("madeOn",{d:dayOf(d), t:timeOf(d)}); }
+function tracksOf(tid){ const out=[]; SONG.tracks.forEach((x,i)=>{ if(x.clip && x.clip.src===INBOX_KEY && x.clip.tid===tid) out.push(i+1); }); return out; }
+function shelfWhat(o){ const r=o.v.rec; return L(o.s.from)+(r.take && o.s.key!=="drumtake" ? " · "+t("aTake") : ""); }
+function srcLabel(o){
+  if(o.kind==="take") return [takeLabel(o.x), clockLen(o.x.sec), whenShort(o.x.at||o.x.sent)].filter(Boolean).join(" · ");
+  return shelfWhat(o)+" · "+clockLen(o.v.info.sec);
+}
+function srcInfo(o){
+  if(!o) return "";
+  if(o.kind==="take"){ const x=o.x, T=TOOLS[x.from];
+    return [T ? L(T.from) : "", clockLen(x.sec), x.bpm>0 ? t("bpmN",{n:Math.round(x.bpm)}) : "", madeWords(x.at||x.sent)].filter(Boolean).join(" · "); }
+  const nm=bareName(o.v.rec.name);
+  return [shelfWhat(o), nm, clockLen(o.v.info.sec)].filter(Boolean).join(" · ");
+}
+/* a recording onto a track: a copy is kept in this browser, decoded, and its loudest point measured */
+async function putOn(srcId, ti){
+  if(S.busy) return;
+  const src=sources().find(o=>o.id===srcId); if(!src) return;
+  S.busy=true; paintRecs(); $("recLine").textContent=t("putting");
+  try{
+    const id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+    let rec, info, blob, from;
+    if(src.kind==="shelf"){ rec=src.v.rec; info=src.v.info; blob=rec.wav;
+      from={src:src.s.key, name:String(rec.name||"").slice(0,200), at:rec.at||Date.now(), layer:SHELF_LAYER[src.s.key]||""}; }
+    else {
+      const it=await AOGHandoff.item(INBOX_KEY, src.x.id);
+      if(!it || !it.wav || !(it.wav.size>44)) throw new Error("gone");
+      info=await wavInfo(it.wav); if(!info) throw new Error("not a wav");
+      blob=it.wav;
+      /* AOG-PADS-BOUNCE-V1: a loop made on the Beat Lab says its exact length, so it starts on the bar and loops whole bars */
+      rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0};
+      from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"") : ""};
+    }
+    const meta=analyse(rec, info);
+    const buf=await decodeWav(blob, info.sr);
+    await sput(id, {wav:blob});
+    BUF.set(id, buf);
+    const x=SONG.tracks[ti], old=x.clip;
+    x.clip=Object.assign({id:id}, from, {startBar:old ? old.startBar : 1, trimIn:0, trimOut:0, loops:1}, meta, {peakDb:peakDbOf(buf)});
+    x.clip=cleanClip(x.clip);
+    if(old) dropClip(old.id);
+    $("recLine").textContent="";
+    S.busy=false;
+    songChanged();
+    LES.mark("put1"); if(clips().length>=2) LES.mark("put2");   /* AOG-LESSONS-V1 */
+  }catch(e){ S.busy=false; paintRecs(); $("recLine").textContent=t("putFail"); }
+}
+/* AOG-STUDIO-LISTEN-V1 (STUDIO-HANDOFF §12b, Jimmy's "9") — ▶ Listen in the Recording Studio plays My Track. A take that
+   is in My Track but on no track yet goes on the first empty track by itself (the newest from each room), so a student can
+   make something, press Listen and hear it, with no stop in the desk's menus first. A track filled by hand is the student's:
+   Listen never changes it. A take Listen placed gives way to that room's newer take, on the same track. Track 8 is the voice. */
+const SHELF_LAYER={padbench:"pads", drumtake:"drums", keysbench:"piano", guitarbench:"guitar", bassbench:"bass", bandbench:"band"};
+const LAYER_FROM=["pads","drums","piano","guitar","bass","band","decks"];
+function layerOfSrc(o){
+  if(o.kind==="take"){ const x=o.x; if(!x || x.chops || !(x.sec>0) || LAYER_FROM.indexOf(x.from)<0) return ""; return x.from+(x.live?":live":""); }
+  return SHELF_LAYER[o.s.key]||"";
+}
+function layerOfClip(c){ if(!c || c.voice) return ""; if(c.layer) return c.layer; if(c.src===INBOX_KEY) return LAYER_FROM.indexOf(c.from)>=0 ? c.from : ""; return SHELF_LAYER[c.src]||""; }
+function srcOnTrack(o){ return SONG.tracks.some(x=>x.clip && (o.kind==="take" ? (x.clip.src===INBOX_KEY && x.clip.tid===o.x.id) : (x.clip.src===o.s.key && x.clip.at===(o.v.rec.at||0)))); }
+async function listenFill(){
+  try{ await refreshInbox(); await refreshShelves(); }catch(e){}
+  const best={};
+  sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
+    if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
+  let n=0;
+  for(const k of Object.keys(best).sort((a,b)=>LAYER_FROM.indexOf(a.split(":")[0])-LAYER_FROM.indexOf(b.split(":")[0]) || a.length-b.length)){
+    const o=best[k].o; if(srcOnTrack(o)) continue;
+    const mine=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k);
+    let ti=-1;
+    if(mine>=0){ if(!SONG.tracks[mine].clip.auto) continue; ti=mine; }
+    else ti=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
+    if(ti<0) continue;
+    await putOn(o.id, ti);
+    const c=SONG.tracks[ti].clip; if(c && srcOnTrack(o)){ c.auto=true; n++; }
+  }
+  if(n) songChanged();
+  return n;
+}
+/* out of the list: asked once first; a copy on a track stays */
+async function removeTake(id){
+  const at=INBOX.items.findIndex(y=>y.id===id), x=INBOX.items[at]; if(!x) return;
+  const name=takeLabel(x);
+  S.ask="";
+  try{ await AOGHandoff.remove(INBOX_KEY, id); $("inboxLine").textContent=t("removed",{name:name}); }
+  catch(e){ $("inboxLine").textContent=t("fail"); }
+  await refreshInbox();
+  /* the keyboard lands on the take that moved into its place */
+  const btns=$("inbox").querySelectorAll("[data-drop]"), next=btns[Math.min(at, btns.length-1)] || $("trackSel"); if(next) next.focus();
+}
+function dropClip(id){ BUF.delete(id); PEAKS.delete(id); STRETCH.delete(id); SJOB.delete(id); if(!SONG.tracks.some(x=>x.clip && x.clip.id===id)) sdel(id); }
+function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const old=x.clip, id=old.id;
+  if(old.voice) voiceKeep(old);   /* AOG-STUDIO-VOICE-V1: Bring it back, until the next delete */
+  x.clip=null; dropClip(id); songChanged(); }
+/* after any change to what plays where */
+function songChanged(){
+  save();
+  liveApply(applyAll);
+  reschedule();
+  paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox();
+  lessonSong();
+}
+/* a reload: every recording comes back from this browser */
+async function restore(){
+  const list=clips();
+  if(list.length){ S.decoding++; paintPlay(); }
+  let lost=false;
+  for(const {i, c} of list){
+    try{
+      const v=await sget(c.id);
+      if(!v || !v.wav){ lost=true; SONG.tracks[i].clip=null; continue; }
+      const info=await wavInfo(v.wav);
+      const buf=await decodeWav(v.wav, info ? info.sr : MIX_SR);
+      BUF.set(c.id, buf);
+      if(c.peakDb==null) c.peakDb=peakDbOf(buf);
+    }catch(e){ lost=true; SONG.tracks[i].clip=null; }
+  }
+  if(list.length) S.decoding--;
+  if(lost){ save(); $("recLine").textContent=t("gone"); }
+  /* tidy: copies no track uses any more */
+  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
+  liveApply(applyAll);
+  paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
+  stretchAll();                    /* AOG-STUDIO-EDIT-V1: a track slowed or sped up, keeping its pitch, is made again */
+}
+
+/* ══ Make the mix: the same engine in an OfflineAudioContext, then a 16-bit .wav ══ */
+let MIX=null;
+function wavBlob(Lc, Rc, sr, g){ return new Blob([wavBuf(Lc, Rc, sr, g)],{type:"audio/wav"}); }
+function wavBuf(Lc, Rc, sr, g){
+  g=g>0 ? g : 1;
+  const n=Lc.length, ab=new ArrayBuffer(44+n*4), v=new DataView(ab);
+  const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*4,true); v.setUint16(32,4,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,n*4,true);
+  let o=44;
+  for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,Lc[i]*g)), r=Math.max(-1,Math.min(1,Rc[i]*g));
+    v.setInt16(o, l<0?l*0x8000:l*0x7fff, true); v.setInt16(o+2, r<0?r*0x8000:r*0x7fff, true); o+=4; }
+  return ab;
+}
+function render(oc){ return new Promise((ok,no)=>{ oc.oncomplete=e=>ok(e.renderedBuffer); const p=oc.startRendering(); if(p && p.then) p.then(ok,no); }); }
+/* ⚠ every compressor looks 6 ms ahead, so it hands the sound on 6 ms late; every path through the chain passes three
+   (Punch, Glue, the limiter). The same for every track, so nothing drifts apart; the mix is made that much longer and
+   the front is cut off, so its first beat is its first sample. Measured once in this browser. */
+const NCOMP=3; let LAT=null;
+async function chainLatency(){
+  if(LAT!=null) return LAT;
+  const guess=NCOMP*Math.floor(0.006*MIX_SR);
+  try{
+    const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, n=4096, oc=new OC(1, n, MIX_SR);
+    const b=oc.createBuffer(1, n, MIX_SR); b.getChannelData(0)[0]=0.001;
+    const s=oc.createBufferSource(); s.buffer=b; let node=s;
+    for(let k=0;k<NCOMP;k++){ const d=oc.createDynamicsCompressor(); d.knee.value=0; d.threshold.value=0; d.ratio.value=1; node.connect(d); node=d; }
+    node.connect(oc.destination); s.start(0);
+    const d=(await render(oc)).getChannelData(0); let at=0, pk=0;
+    for(let i=0;i<n;i++){ const a=d[i]<0?-d[i]:d[i]; if(a>pk){ pk=a; at=i; } }
+    LAT=(pk>0 && at<2000) ? at : guess;
+  }catch(e){ LAT=guess; }
+  return LAT;
+}
+function leftOut(){ return SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && !audible(i)); }
+async function makeMix(){
+  const line=$("mixLine"), btn=$("mixBtn");
+  $("sendLine").textContent="";
+  if(!hasClips()){ line.textContent=t("mixNeed"); return; }
+  if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("mixQuiet"); return; }
+  btn.disabled=true; line.textContent=t("mixing");
+  try{
+    const {Lc, Rc, frames}=await renderSong(null);
+    const blob=wavBlob(Lc, Rc, MIX_SR);
+    setMix({wav:blob, sec:frames/MIX_SR, bars:songBars(), bpm:songBpm(), body:songEndMusic(), at:Date.now()});
+    try{ await sput("mix", {wav:blob, sec:MIX.sec, bars:MIX.bars, bpm:MIX.bpm, body:MIX.body, at:MIX.at}); }catch(e){}
+    const out=leftOut();
+    lessonMix();   /* AOG-LESSONS-V1 */
+    line.textContent=t("mixReady")+(out.length ? " "+t("mixLeft",{list:out.map(i=>t("trackLow",{n:i+1})).join(", ")}) : "");
+  }catch(e){ line.textContent=t("fail"); }
+  btn.disabled=false;
+}
+/* the song through the whole desk, as a mix (only: null) or one track alone through its own strip and the master
+   (only: its number; its mute and solo are set aside, so a stem is that track as the mix hears it) */
+async function renderSong(only){
+  await stretchAll();             /* AOG-STUDIO-EDIT-V1: every slower or faster track ready first */
+  const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat=await chainLatency();
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const oc=new OC(2, frames+lat, MIX_SR), E=makeEngine(oc, false);
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? volGain(SONG.tracks[j].vol) : 0; });
+  schedule(E, 0, end, 0);
+  const buf=await render(oc);
+  return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
+}
+function setMix(m){
+  if(MIX && MIX.url) URL.revokeObjectURL(MIX.url);
+  MIX=m ? Object.assign({}, m, {url:URL.createObjectURL(m.wav)}) : null;
+  paintMixOut();
+}
+async function sendMix(){
+  const line=$("sendLine"); if(!MIX) return;
+  try{
+    const name=t("mixName",{bpm:Math.round(MIX.bpm), bars:MIX.bars});
+    await AOGHandoff.put("studiobench", {name:name, bpm:MIX.bpm, bars:MIX.bars, at:Date.now(), wav:MIX.wav, offset:0, passSec:MIX.body||MIX.sec, loops:1});
+    line.innerHTML=esc(t("sent"))+` <a href="music-decks.html">${esc(t("decks"))}</a>`;
+    LES.mark("send1"); if(LT.remix) LES.mark("sendRemix");   /* AOG-LESSONS-V1 */
+  }catch(e){ line.textContent=t("fail"); }
+}
+async function newSong(){
+  stop();
+  const ids=clips().map(x=>x.c.id);
+  SONG=blankSong(); save();
+  ids.forEach(id=>{ BUF.delete(id); sdel(id); });
+  STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
+  sdel("mix"); setMix(null);
+  $("newAsk").hidden=true;
+  $("mixLine").textContent=t("newDone"); $("sendLine").textContent=""; $("recLine").textContent="";
+  liveApply(applyAll);
+  paintAll();
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-STUDIO-CARRY-V1 (2026-10-07) — Jimmy: "go back and forth between my iPhone, iPad and computer without setting up an
+   account". Two ways, both the same file:
+   - a song file (.aogsong): "AOGSONG1", the header's length (4 bytes, little-endian), the header (JSON: the arrangement and
+     each recording's id and size), then each track's .wav one after another. Saved with a download; opened with a file box.
+   - your locker: the same file, sent in pieces to a Google Apps Script the owner deploys in their OWN Google account
+     (AoG-Studio-Locker.gs), which keeps it in a Drive folder. This device keeps the script's address and key at
+     aog.studio.locker.v1 (never the Sheet's aog.sync.*). A link /studio#locker=<address>&k=<key> connects another device;
+     the part after # never reaches a server, and the page takes it out of the address bar at once.
+   Opening a song asks first when the desk already holds one.
+   ══════════════════════════════════════════════════════════════════════════ */
+const SONG_MAGIC="AOGSONG1", LOCK_KEY="aog.studio.locker.v1", LOCK_PART=4*1024*1024;
+const CARRY={ask:null, busy:false, lock:null, songs:null, rmAsk:"", qr:false, st:"", ver:0, at:0};   /* st: the locker light: "", wait, ok, sheet, key, reach */
+function songTitle(){ const n=(SONG.name||"").trim(); return n || t("myName"); }
+function fileSlug(){ const n=songTitle().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||t("file");
+  const d=new Date(), z=x=>String(x).padStart(2,"0");
+  return n+"-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"-"+z(d.getHours())+z(d.getMinutes())+".aogsong"; }
+/* the whole song, as one file */
+async function songFile(){
+  const parts=[], meta=[];
+  for(const {c} of clips()){
+    const v=await sget(c.id); if(!v || !v.wav) continue;
+    meta.push({id:c.id, size:v.wav.size}); parts.push(v.wav);
+  }
+  if(!meta.length) return null;
+  const head=new TextEncoder().encode(JSON.stringify({kind:"aog-song", v:1, at:Date.now(), song:SONG, clips:meta}));
+  const pre=new Uint8Array(12); for(let i=0;i<8;i++) pre[i]=SONG_MAGIC.charCodeAt(i);
+  new DataView(pre.buffer).setUint32(8, head.length, true);
+  return new Blob([pre, head].concat(parts), {type:"application/octet-stream"});
+}
+/* a song file back into {song, wavs}; null when it is not one */
+async function readSongFile(blob){
+  try{
+    if(!blob || blob.size<12) return null;
+    const pre=new Uint8Array(await blobAB(blob.slice(0,12)));
+    for(let i=0;i<8;i++) if(pre[i]!==SONG_MAGIC.charCodeAt(i)) return null;
+    const hl=new DataView(pre.buffer).getUint32(8, true);
+    if(!(hl>0 && hl<=4*1024*1024 && 12+hl<=blob.size)) return null;
+    const h=JSON.parse(new TextDecoder().decode(await blobAB(blob.slice(12, 12+hl))));
+    if(!h || h.kind!=="aog-song" || h.v!==1 || !Array.isArray(h.clips) || h.clips.length>NT*4) return null;
+    let o=12+hl; const wavs=new Map();
+    for(const m of h.clips){
+      const n=Math.floor(+(m && m.size));
+      if(!m || typeof m.id!=="string" || !(n>44) || o+n>blob.size) return null;
+      wavs.set(m.id, blob.slice(o, o+n)); o+=n;
+    }
+    if(o!==blob.size) return null;
+    const song=cleanSong(h.song);
+    song.tracks.forEach(x=>{ if(x.clip && !wavs.has(x.clip.id)) x.clip=null; });
+    if(!song.tracks.some(x=>x.clip)) return null;
+    return {song:song, wavs:wavs};
+  }catch(e){ return null; }
+}
+/* put a song on the desk, in place of the one there */
+async function applySong(r){
+  stop();
+  const old=clips().map(x=>x.c.id);
+  for(const x of r.song.tracks){ if(!x.clip) continue;
+    const ab=await blobAB(r.wavs.get(x.clip.id));                 /* the browser's own copy, not a piece of the file */
+    await sput(x.clip.id, {wav:new Blob([ab], {type:"audio/wav"})}); }
+  const keep=new Set(r.song.tracks.filter(x=>x.clip).map(x=>x.clip.id));
+  old.forEach(id=>{ if(!keep.has(id)) sdel(id); });
+  BUF.clear(); STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
+  sdel("mix"); setMix(null);
+  SONG=r.song; save();
+  $("mixLine").textContent=""; $("sendLine").textContent=""; $("recLine").textContent="";
+  liveApply(applyAll);
+  paintAll();
+  await restore();
+  lessonSong();
+}
+/* ask first when the desk already holds a song; then open */
+function askOpen(name, go){
+  if(!hasClips()){ go(); return; }
+  CARRY.ask=go;
+  $("openAskT").textContent=t("openAsk",{name:name});
+  $("openAsk").hidden=false; $("openNo").focus();
+}
+function closeAsk(){ CARRY.ask=null; $("openAsk").hidden=true; }
+async function saveFile(){
+  const line=$("fileLine"), btn=$("fileSave");
+  if(!hasClips()){ line.textContent=t("fileNeed"); return; }
+  btn.disabled=true; line.textContent=t("fileMaking");
+  try{
+    const blob=await songFile(); if(!blob){ line.textContent=t("fileNeed"); btn.disabled=false; return; }
+    const name=fileSlug(), url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=name; a.hidden=true; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 60000);
+    line.textContent=t("fileSaved",{name:name});
+  }catch(e){ line.textContent=t("fail"); }
+  btn.disabled=false;
+}
+async function openFile(file){
+  const line=$("fileLine");
+  if(!file) return;
+  line.textContent=t("reading");
+  const r=await readSongFile(file);
+  if(!r){ line.textContent=t("fileBad"); return; }
+  const name=r.song.name || file.name.replace(/\.aogsong$/i,"");
+  line.textContent="";
+  askOpen(name, async ()=>{ line.textContent=t("reading");
+    try{ await applySong(r); line.textContent=t("opened",{name:name}); }catch(e){ line.textContent=t("fail"); } });
+}
+
+/* ── your locker ── */
+const LOCK_URL_RE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
+const LOCK_KEY_RE=/^[A-Za-z0-9_-]{8,100}$/;
+function lockGet(){ try{ const o=JSON.parse(localStorage.getItem(LOCK_KEY)||"null"); if(o && LOCK_URL_RE.test(o.url) && LOCK_KEY_RE.test(o.key)) return {url:o.url, key:o.key}; }catch(e){} return null; }
+function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; if(o) lockKeep(); }
+/* AOG-STUDIO-LOCKER-KEEP-V1: ask the browser to keep this site's storage, so Safari does not clear the locker after a week away.
+   Only Disconnect removes it here; the front page's clear and reset buttons and the dashboard's Delete everything keep it, and the
+   dashboard's backup file leaves the key out. */
+function lockKeep(){ try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){} }
+async function lockPost(body, lk){
+  lk=lk||CARRY.lock; if(!lk) throw new Error("none");
+  let r;
+  try{ r=await fetch(lk.url, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(Object.assign({key:lk.key}, body))}).then(x=>x.json()); }
+  catch(e){ const err=new Error("reach"); err.reach=true; throw err; }
+  if(!r || !r.ok){ const err=new Error(r && r.error || "fail"); err.key=r && r.error==="key"; throw err; }
+  return r;
+}
+function lockState(e, hello){ return e && e.key ? "key" : e && e.reach ? "reach" : (e && e.sheet) || hello ? "sheet" : "reach"; }
+function lockErr(e){ return e && e.key ? t("lockWrongKey") : e && e.reach ? t("lockNoReach") : (e && e.message && !/^(fail|none)$/.test(e.message) ? e.message : t("fail")); }
+function b64Of(blob){ return new Promise((ok,no)=>{ const fr=new FileReader(); fr.onload=()=>{ const s=String(fr.result); ok(s.slice(s.indexOf(",")+1)); }; fr.onerror=()=>no(fr.error); fr.readAsDataURL(blob); }); }
+function blobOfB64(b64){ const bin=atob(b64), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new Blob([u]); }
+function pairLink(){ const lk=CARRY.lock; return lk ? location.origin+location.pathname+"#locker="+encodeURIComponent(lk.url)+"&k="+encodeURIComponent(lk.key) : ""; }
+/* a link from another device: #locker=<address>&k=<key> */
+function lockFromHash(){
+  const h=location.hash||""; if(h.indexOf("#locker=")!==0) return false;
+  const q=new URLSearchParams(h.slice(1)), url=q.get("locker")||"", key=q.get("k")||"";
+  try{ history.replaceState(null, "", location.pathname+location.search); }catch(e){}
+  if(!LOCK_URL_RE.test(url) || !LOCK_KEY_RE.test(key)) return false;
+  lockSet({url:url, key:key}); return true;
+}
+async function lockConnect(){
+  const line=$("lockLine"), url=($("lkUrl").value||"").trim(), key=($("lkKey").value||"").trim();
+  if(!LOCK_URL_RE.test(url)){ line.textContent=t("lockBadUrl"); $("lkUrl").focus(); return; }
+  if(!LOCK_KEY_RE.test(key)){ line.textContent=t("lockNoKey"); $("lkKey").focus(); return; }
+  /* AOG-STUDIO-LOCKER-LIGHTS-V1: the IEP Sheet's own address is the usual mix-up; it answers "Unknown action" */
+  let sheet=""; try{ sheet=localStorage.getItem("aog.sync.url")||""; }catch(e){}
+  if(sheet && sheet.trim()===url){ CARRY.st="sheet"; line.textContent=""; paintLocker(); return; }
+  line.textContent=t("connecting"); CARRY.busy=true; CARRY.st="wait"; paintLocker();
+  try{
+    const r=await lockPost({action:"hello"}, {url:url, key:key});
+    if(!r.locker){ const err=new Error("sheet"); err.sheet=true; throw err; }
+    lockSet({url:url, key:key}); CARRY.ver=r.locker; line.textContent=""; CARRY.busy=false; await lockList(true);
+  }
+  catch(e){ CARRY.st=lockState(e, true); line.textContent=""; CARRY.busy=false; }
+  paintLocker();
+}
+async function lockList(quiet){
+  const line=$("lockLine");
+  if(!quiet) line.textContent=t("lockChecking");
+  if(CARRY.st!=="ok"){ CARRY.st="wait"; paintLocker(); }
+  try{ const r=await lockPost({action:"list"}); CARRY.songs=Array.isArray(r.songs) ? r.songs : []; CARRY.st="ok"; CARRY.at=Date.now(); if(!quiet) line.textContent=""; }
+  catch(e){ CARRY.st=lockState(e); if(!quiet) line.textContent=""; }
+  paintLocker();
+}
+async function lockSave(){
+  const line=$("lockLine");
+  if(!hasClips()){ line.textContent=t("fileNeed"); return; }
+  CARRY.busy=true; paintLocker(); line.textContent=t("fileMaking");
+  try{
+    const blob=await songFile(); if(!blob) throw new Error("fail");
+    const n=Math.ceil(blob.size/LOCK_PART), name=songTitle();
+    const b=await lockPost({action:"begin", name:name, size:blob.size, parts:n});
+    for(let i=0;i<n;i++){
+      line.textContent=t("lockSaving",{a:i+1, b:n});
+      await lockPost({action:"part", id:b.id, n:i, data:await b64Of(blob.slice(i*LOCK_PART, (i+1)*LOCK_PART))});
+    }
+    await lockPost({action:"finish", id:b.id});
+    line.textContent=t("lockSaved",{name:name});
+    CARRY.busy=false; await lockList(true);
+  }catch(e){ line.textContent=lockErr(e); CARRY.busy=false; }
+  paintLocker();
+}
+async function lockOpen(id){
+  const line=$("lockLine"), sg=(CARRY.songs||[]).find(x=>x.id===id); if(!sg) return;
+  askOpen(sg.name, async ()=>{
+    CARRY.busy=true; paintLocker();
+    try{
+      const parts=[];
+      for(let i=0;i<sg.parts;i++){ line.textContent=t("lockLoading",{a:i+1, b:sg.parts}); parts.push(blobOfB64((await lockPost({action:"get", id:id, n:i})).data)); }
+      const r=await readSongFile(new Blob(parts));
+      if(!r){ line.textContent=t("fileBad"); }
+      else { line.textContent=t("reading"); await applySong(r); line.textContent=t("opened",{name:sg.name}); }
+    }catch(e){ line.textContent=lockErr(e); }
+    CARRY.busy=false; paintLocker();
+  });
+}
+async function lockRemove(id){
+  const line=$("lockLine"), sg=(CARRY.songs||[]).find(x=>x.id===id); CARRY.rmAsk="";
+  if(!sg){ paintLocker(); return; }
+  CARRY.busy=true; paintLocker();
+  try{ await lockPost({action:"remove", id:id}); CARRY.songs=CARRY.songs.filter(x=>x.id!==id); line.textContent=t("lockRemoved",{name:sg.name}); }
+  catch(e){ line.textContent=lockErr(e); }
+  CARRY.busy=false; paintLocker();
+}
+async function lockPair(){
+  const line=$("lockLine"), url=pairLink(); if(!url) return;
+  try{ if(navigator.share){ await navigator.share({title:t("app"), url:url}); line.textContent=t("lockPairLine"); return; } }
+  catch(e){ if(e && e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(url); line.textContent=t("lockCopied"); }
+  catch(e){ line.textContent=url; }
+}
+function lockQr(){ CARRY.qr=!CARRY.qr; paintLocker(); }
+/* the code is drawn by qrcodejs (as on the dashboard), fetched the first time it is asked for */
+function drawQr(){
+  const draw=()=>{ const box=$("lkQr"); if(!box || !CARRY.qr || !window.QRCode) return; box.innerHTML="";
+    new QRCode(box, {text:pairLink(), width:220, height:220, colorDark:"#000000", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
+    const img=box.querySelector("img"); if(img) img.alt=t("lockQrAlt"); box.setAttribute("aria-label", t("lockQrAlt")); };
+  if(window.QRCode){ draw(); return; }
+  if(drawQr.loading) return; drawQr.loading=true;
+  const sc=document.createElement("script");
+  sc.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; sc.onload=draw;
+  sc.onerror=()=>{ drawQr.loading=false; $("lockLine").textContent=t("lockNoReach"); CARRY.qr=false; paintLocker(); };
+  document.head.appendChild(sc);
+}
+function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.st=""; CARRY.ver=0; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone"); paintLocker(); }
+function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)}); }
+/* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
+function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
+function goSongs(){
+  const b=$("carryBlk"); if(!b) return; b.scrollIntoView({block:"start"});
+  const h=b.querySelector("h2"); if(h){ h.setAttribute("tabindex","-1"); try{ h.focus({preventScroll:true}); }catch(e){} }
+  if(CARRY.lock){ try{ lockList(true); }catch(e){} }
+  else { const d=b.querySelector("#locker details"); if(d) d.open=true; }
+}
+/* AOG-STUDIO-LOCKER-LIGHTS-V1: one light at the top of the locker, green when it answered, amber when something needs fixing */
+function lockLight(){
+  const st=CARRY.st, w=(c,h,s,x)=>`<p class="st-lkl ${c}"><i aria-hidden="true"></i><span><b>${esc(h)}</b><small>${esc(s)}</small>${x||""}</span></p>`;
+  if(st==="wait") return w("wait", t("ltWait"), t("ltWaitS"));
+  if(st==="sheet") return w("warn", t("ltSheet"), t("ltSheetS"));
+  if(st==="key") return w("warn", t("ltKey"), t("ltKeyS"));
+  if(st==="reach") return w("warn", t("ltReach"), t("ltReachS"));
+  if(st==="ok" && CARRY.lock){
+    let at=""; try{ at=new Date(CARRY.at).toLocaleTimeString(S.lang==="es"?"es":"en",{hour:"numeric",minute:"2-digit"}); }catch(e){}
+    return w("ok", t("ltOk"), t("ltOkS",{v:CARRY.ver||1, n:(CARRY.songs||[]).length, at:at}));
+  }
+  return CARRY.lock ? w("wait", t("ltWait"), t("ltWaitS")) : w("", t("ltOff"), t("ltOffS"));
+}
+function paintLocker(){
+  try{ paintSongsBtn(); }catch(e){}
+  const box=$("locker"), lk=CARRY.lock, dis=CARRY.busy ? " disabled" : "";
+  if(!lk){
+    const keepU=$("lkUrl") ? $("lkUrl").value : "", keepK=$("lkKey") ? $("lkKey").value : "";
+    box.innerHTML=`<div class="st-lk">${lockLight()}<p class="st-info">${esc(t("lockAbout"))}</p>
+      <details${CARRY.st==="sheet" ? " open" : ""}><summary class="st-steps">${esc(t("lockSteps"))}</summary>
+      <ol class="st-help"><li>${esc(t("lockS1"))}</li><li>${esc(t("lockS2")).replace(esc(t("lockScript")), `<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${esc(t("lockScript"))}</a>`)}</li>
+        <li>${esc(t("lockS3"))}</li><li>${esc(t("lockS4"))}</li><li>${esc(t("lockS5"))}</li></ol></details>
+      <label class="st-field"><span class="st-lab">${esc(t("lockUrl"))}</span><input type="url" id="lkUrl" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
+      <label class="st-field"><span class="st-lab">${esc(t("lockKey"))}</span><input type="password" id="lkKey" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+      <div class="st-row"><button type="button" class="st-btn st-go" id="lkConnect"${dis}>${esc(t("connect"))}</button></div></div>`;
+    $("lkUrl").value=keepU; $("lkKey").value=keepK;
+    return;
+  }
+  const songs=CARRY.songs;
+  const list=songs==null ? "" : !songs.length ? `<p class="st-info">${esc(t("lockEmpty"))}</p>` : songs.map(x=>{
+    const sub=[esc(madeWords(x.at)), esc(sizeWords(x.size))].join(" · ");
+    const ask=CARRY.rmAsk===x.id ? `<div class="st-q" role="group" aria-label="${esc(t("lockRemoveAsk",{name:x.name}))}"><p>${esc(t("lockRemoveAsk",{name:x.name}))}</p>`+
+      `<button type="button" class="st-btn st-clear" data-lkrmyes="${esc(x.id)}"${dis}>${esc(t("removeYes"))}</button><button type="button" class="st-btn" data-lkrmno="${esc(x.id)}">${esc(t("removeNo"))}</button></div>` : "";
+    return `<div class="st-rec"><div class="st-rtx"><b>${esc(x.name)}</b><span class="st-cn">${sub}</span></div>`+
+      `<button type="button" class="st-btn st-go" data-lkopen="${esc(x.id)}" aria-label="${esc(t("openAria",{name:x.name}))}"${dis}>${esc(t("open"))}</button>`+
+      (CARRY.rmAsk===x.id ? "" : `<button type="button" class="st-btn st-clear" data-lkrm="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:x.name}))}"${dis}>${esc(t("remove"))}</button>`)+ask+`</div>`;
+  }).join("");
+  box.innerHTML=`<div class="st-lk">${lockLight()}
+    <div class="st-row"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button><button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t(CARRY.st==="ok" ? "lockRefresh" : "ltAgain"))}</button></div>
+    <h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("lockList"))}</h3>
+    <div class="st-inb">${list}</div>
+    <div class="st-row"><button type="button" class="st-btn" id="lkPair">${esc(t("lockPair"))}</button><button type="button" class="st-btn" id="lkQrBtn" aria-expanded="${CARRY.qr}">${esc(t(CARRY.qr ? "lockQrHide" : "lockQr"))}</button></div>
+    <div class="st-qr" id="lkQr" role="img" aria-label="${esc(t("lockQrAlt"))}"${CARRY.qr ? "" : " hidden"}></div>
+    ${CARRY.qr ? `<p class="st-info">${esc(t("lockPairLine"))}</p>` : ""}
+    <div class="st-row"><button type="button" class="st-btn st-clear" id="lkOff">${esc(t("lockOff"))}</button></div></div>`;
+  if(CARRY.qr) drawQr();
+}
+function paintCarry(){
+  const nm=$("songName"); if(document.activeElement!==nm) nm.value=SONG.name||"";
+  nm.placeholder=t("myName");
+  $("fileSave").textContent=t("fileSave"); $("fileOpen").textContent=t("fileOpen");
+  $("openYes").textContent=t("openYes"); $("openNo").textContent=t("openNo");
+  paintLocker();
+}
+function bindCarry(){
+  $("songName").addEventListener("input", e=>{ SONG.name=String(e.target.value||"").slice(0,80); saveSoon(); });
+  $("songName").addEventListener("keydown", e=>{ if(e.key==="Enter") e.target.blur(); });
+  $("fileSave").onclick=saveFile;
+  $("fileOpen").onclick=()=>{ closeAsk(); $("fileIn").value=""; $("fileIn").click(); };
+  $("fileIn").onchange=e=>{ const f=e.target.files && e.target.files[0]; openFile(f); };
+  $("openNo").onclick=()=>{ closeAsk(); $("fileLine").textContent=""; };
+  $("openYes").onclick=()=>{ const go=CARRY.ask; closeAsk(); if(go) go(); };
+  $("locker").addEventListener("click", e=>{
+    const el=e.target.closest && e.target.closest("button"); if(!el || el.disabled) return;
+    if(el.id==="lkConnect") lockConnect();
+    else if(el.id==="lkSave") lockSave();
+    else if(el.id==="lkRefresh") lockList();
+    else if(el.id==="lkPair") lockPair();
+    else if(el.id==="lkQrBtn") lockQr();
+    else if(el.id==="lkOff") lockOff();
+    else if(el.hasAttribute("data-lkopen")) lockOpen(el.getAttribute("data-lkopen"));
+    else if(el.hasAttribute("data-lkrm")){ CARRY.rmAsk=el.getAttribute("data-lkrm"); paintLocker(); const k=$("locker").querySelector("[data-lkrmno]"); if(k) k.focus(); }
+    else if(el.hasAttribute("data-lkrmno")){ CARRY.rmAsk=""; paintLocker(); }
+    else if(el.hasAttribute("data-lkrmyes")) lockRemove(el.getAttribute("data-lkrmyes"));
+  });
+  $("locker").addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="lkUrl" || e.target.id==="lkKey")){ e.preventDefault(); lockConnect(); } });
+}
+
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-STUDIO-VOICE-V1 (2026-10-09) — STUDIO-HANDOFF §10, the fifth of Jimmy's order. Track 8 is your voice.
+   - The microphone opens only when you press Record your voice; never on load, on Play, or in the background. The
+     first time, the browser asks; the line above the button says why, plainly, and that the recording stays here.
+   - Record plays the song from the start bar (the count-in too, when it is on; never looped) and records you singing
+     along; Stop ends it, and the microphone is let go at once. A song with nothing on it yet records you on your own.
+   - The take lands on track 8, lined up with the song: the time the speakers and the microphone take is allowed for
+     (the context's output latency and the input's own). It is kept like every track (IndexedDB "aog-studio", the
+     arrangement at aog.studio.v1), never in a list another tool reads, never uploaded. Mix, mute and solo as any track.
+   - Delete works as on any track, and Bring it back returns it until the next delete.
+   - A refused or missing microphone leaves the slot, a plain line and Try again; the rest of the desk is untouched.
+   ══════════════════════════════════════════════════════════════════════════ */
+const VOICE_T=7;
+const VOICE={rec:false, busy:false, state:"", stream:null, node:null, src:null, sink:null, chunks:[], t0:-1, T0:0, lat:0, withSong:false, keep:null, gone:null, wk:null};
+const VOICE_WK=`class AogVoiceCap extends AudioWorkletProcessor{constructor(){super();this.on=true;this.b=[];this.n=0;this.t=-1;
+this.port.onmessage=e=>{if(e.data==="stop"){this.flush();this.on=false;this.port.postMessage({end:true});}};}
+flush(){if(!this.n)return;const o=new Float32Array(this.n);let k=0;for(const x of this.b){o.set(x,k);k+=x.length;}this.port.postMessage({t:this.t,d:o},[o.buffer]);this.b=[];this.n=0;this.t=-1;}
+process(ins){if(!this.on)return false;const c=ins[0]&&ins[0][0];if(c&&c.length){if(this.t<0)this.t=currentTime;this.b.push(c.slice(0));this.n+=c.length;if(this.n>=sampleRate/4)this.flush();}return true;}}
+registerProcessor("aog-voice-cap",AogVoiceCap);`;
+function voiceKeep(clip){ sget(clip.id).then(v=>{ VOICE.gone=(v && v.wav) ? {clip:Object.assign({}, clip), wav:v.wav} : null; paintVoice(); }, ()=>{}); }
+async function voiceBack(){
+  const g=VOICE.gone; if(!g || VOICE.busy) return;
+  VOICE.busy=true;
+  try{
+    const info=await wavInfo(g.wav), buf=await decodeWav(g.wav, info ? info.sr : MIX_SR);
+    await sput(g.clip.id, {wav:g.wav}); BUF.set(g.clip.id, buf);
+    const x=SONG.tracks[VOICE_T], old=x.clip;
+    x.clip=cleanClip(g.clip); VOICE.gone=null;
+    if(old){ if(old.voice) voiceKeep(old); dropClip(old.id); }
+    VOICE.state=""; songChanged();
+  }catch(e){ VOICE.state="fail"; }
+  VOICE.busy=false; paintVoice();
+}
+async function voiceStart(){
+  if(VOICE.rec || VOICE.busy) return;
+  VOICE.busy=true; VOICE.state="opening"; paintVoice();
+  const c=live();
+  let stream=null;
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error("none"), {name:"NotFoundError"});
+    stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:false, autoGainControl:false}});
+  }catch(e){
+    VOICE.busy=false; VOICE.state=(e && (e.name==="NotFoundError" || e.name==="OverconstrainedError")) ? "nomic" : "denied"; paintVoice(); return;
+  }
+  try{
+    stop();
+    VOICE.stream=stream; VOICE.chunks=[]; VOICE.t0=-1;
+    VOICE.src=c.createMediaStreamSource(stream);
+    VOICE.sink=c.createGain(); VOICE.sink.gain.value=0; VOICE.sink.connect(c.destination);
+    if(c.audioWorklet && window.AudioWorkletNode){
+      if(!VOICE.wk) VOICE.wk=c.audioWorklet.addModule(URL.createObjectURL(new Blob([VOICE_WK], {type:"text/javascript"})));
+      await VOICE.wk;
+      VOICE.node=new AudioWorkletNode(c, "aog-voice-cap", {numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[1]});
+      VOICE.node.port.onmessage=e=>{ const m=e.data; if(m && m.d){ if(VOICE.t0<0) VOICE.t0=m.t; VOICE.chunks.push(m.d); } if(m && m.end && VOICE.onEnd) VOICE.onEnd(); };
+    } else {
+      /* an older browser: the same, a block at a time */
+      const N=4096, sp=c.createScriptProcessor(N, 1, 1);
+      sp.onaudioprocess=e=>{ if(!VOICE.rec) return; if(VOICE.t0<0) VOICE.t0=e.playbackTime-N/c.sampleRate; VOICE.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0))); };
+      VOICE.node=sp;
+    }
+    VOICE.src.connect(VOICE.node); VOICE.node.connect(VOICE.sink);
+    let inLat=0; try{ const st=stream.getAudioTracks()[0].getSettings(); inLat=st && st.latency>0 ? st.latency : 0; }catch(e){}
+    VOICE.lat=(c.outputLatency>0 ? c.outputLatency : 0)+(c.baseLatency>0 ? c.baseLatency : 0)+inLat;
+    VOICE.rec=true;
+    /* the song plays from the start bar, once, while you sing; your own take on track 8 stays quiet meanwhile */
+    VOICE.withSong=SONG.tracks.some((x,i)=>i!==VOICE_T && x.clip && BUF.has(x.clip.id));
+    if(VOICE.withSong){
+      const lp=SONG.loopOn, vm=SONG.tracks[VOICE_T].mute; VOICE.keep={loop:lp, mute:vm};
+      SONG.loopOn=false; SONG.tracks[VOICE_T].mute=true; liveApply(E=>applyTrack(E, VOICE_T));
+      play();
+      SONG.loopOn=lp;
+      VOICE.T0=PLAY.on ? PLAY.T0 : c.currentTime;
+      VOICE.watch=setInterval(()=>{ if(VOICE.rec && !PLAY.on) voiceStop(); }, 120);   /* the song ended: so does the take */
+    } else VOICE.T0=0;
+    VOICE.state="on"; VOICE.busy=false; paintVoice();
+  }catch(e){ voiceRelease(); VOICE.busy=false; VOICE.state="fail"; paintVoice(); }
+}
+function voiceRelease(){
+  VOICE.rec=false; clearInterval(VOICE.watch); VOICE.watch=0;
+  try{ if(VOICE.src) VOICE.src.disconnect(); }catch(e){} try{ if(VOICE.node) VOICE.node.disconnect(); }catch(e){} try{ if(VOICE.sink) VOICE.sink.disconnect(); }catch(e){}
+  if(VOICE.stream){ VOICE.stream.getTracks().forEach(tr=>{ try{ tr.stop(); }catch(e){} }); }   /* the microphone is let go at once */
+  VOICE.src=VOICE.node=VOICE.sink=VOICE.stream=null;
+  if(VOICE.keep){ SONG.tracks[VOICE_T].mute=VOICE.keep.mute; VOICE.keep=null; liveApply(E=>applyTrack(E, VOICE_T)); }
+}
+async function voiceStop(){
+  if(!VOICE.rec || VOICE.busy) return;
+  VOICE.busy=true; VOICE.rec=false;
+  const c=ac, node=VOICE.node;
+  if(node && node.port){ await new Promise(ok=>{ VOICE.onEnd=ok; try{ node.port.postMessage("stop"); }catch(e){ ok(); } setTimeout(ok, 600); }); VOICE.onEnd=null; }
+  if(VOICE.withSong) stop();
+  voiceRelease();
+  try{
+    const sr=c.sampleRate, n=VOICE.chunks.reduce((a,x)=>a+x.length, 0), L=new Float32Array(n); let o=0;
+    VOICE.chunks.forEach(x=>{ L.set(x, o); o+=x.length; }); VOICE.chunks=[];
+    const sec=n/sr;
+    /* where the start bar falls in the take: when it played, plus the time to the ear and back through the microphone */
+    let head=VOICE.withSong ? (VOICE.T0+VOICE.lat)-VOICE.t0 : Math.min(0.05, sec/4);
+    if(!(head>=0)) head=0;
+    if(sec-head<0.3){ VOICE.state="short"; VOICE.busy=false; paintVoice(); return; }
+    const blob=wavBlob(L, L, sr), id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+    const buf=await decodeWav(blob, sr);
+    await sput(id, {wav:blob}); BUF.set(id, buf);
+    const x=SONG.tracks[VOICE_T], old=x.clip, vn=1+Math.max(0, ...SONG.tracks.map(y=>y.clip && y.clip.voice ? y.clip.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
+    x.clip=cleanClip({id:id, src:"", name:t("voiceN",{n:vn}), at:Date.now(), voice:true, vn:vn, take:true, sec:sec, bpm:0, bars:0,
+      head:head, body:sec-head, tail:0, bpb:4, startBar:SONG.startBar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
+    if(old){ if(old.voice) voiceKeep(old); dropClip(old.id); }
+    VOICE.state="done"; songChanged();
+  }catch(e){ VOICE.state="fail"; }
+  VOICE.busy=false; paintVoice();
+}
+/* AOG-STUDIO-TRANSPORT-V1 — at the Mixing Desk, the Recording Studio's ● Record (/the-studio) records your voice on track 8;
+   the take is on My Track the moment it stops, so there is nothing to add */
+window.AOGStudioRec={
+  on:()=>VOICE.rec, busy:()=>VOICE.busy,
+  toggle:()=>{ if(VOICE.rec){ voiceStop(); return; } if(SONG.sel!==VOICE_T) selectTrack(VOICE_T); voiceStart(); },
+  last:()=>null, sent:()=>true, add:()=>Promise.resolve()
+};
+function paintVoice(){
+  const box=$("voiceBox"), on=SONG.sel===VOICE_T, c=SONG.tracks[VOICE_T].clip;
+  $("recsH").hidden=on; $("recs").hidden=on;
+  if(!on){ if(box.innerHTML) box.innerHTML=""; return; }
+  const st=VOICE.state;
+  const line=st==="opening" ? t("voiceOpening") : st==="on" ? t("voiceOn") : st==="done" ? t("voiceDone") : st==="short" ? t("voiceShort") :
+    st==="denied" ? t("voiceDenied") : st==="nomic" ? t("voiceNone") : st==="fail" ? t("fail") : "";
+  const btn=VOICE.rec ? `<button type="button" class="st-btn st-rec-on" id="voiceStop">${esc(t("voiceStop"))}</button>` :
+    `<button type="button" class="st-btn st-go" id="voiceRec"${VOICE.busy ? " disabled" : ""}>${esc(st==="denied" || st==="nomic" ? t("voiceTry") : c ? t("voiceAgain") : t("voiceRec"))}</button>`;
+  box.innerHTML=`<div class="st-voice"><h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("voiceH"))}</h3>
+    <p class="st-info">${esc(t("voiceAsk"))}</p>
+    <p class="st-info">${esc(t("voiceHow"))}${c && !VOICE.rec ? " "+esc(t("voiceReplace")) : ""}</p>
+    <div class="st-row">${btn}</div>
+    <p class="st-line" id="voiceLine" aria-live="polite">${esc(line)}</p>
+    ${VOICE.gone && !c ? `<div class="st-row"><span class="st-line" style="margin:0">${esc(t("voiceGone"))}</span><button type="button" class="st-btn" id="voiceBack">${esc(t("voiceBack"))}</button></div>` : ""}</div>`;
+  const r=$("voiceRec"), s=$("voiceStop"), b=$("voiceBack");
+  if(r) r.onclick=voiceStart; if(s){ s.onclick=voiceStop; } if(b) b.onclick=voiceBack;
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-STUDIO-SENDOUT-V1 (2026-10-09) — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a
+   file". Send it out makes the song through the whole desk, as it is now, and hands over one stereo .wav:
+   - loud enough to hear and never clipped: its loudest moment is set to −1 dB (by at most 12 dB up or down);
+   - a silent song is told plainly, and nothing is made;
+   - Share… opens the device's share sheet (Messages, Mail, AirDrop, Files) where there is one; Download everywhere.
+     Share is its own tap: Safari only opens the sheet straight from a tap, not seconds later;
+   - Each track on its own: one .zip, a .wav for every track heard in the mix, at the very level of the file sent,
+     so they line up and add back to the song. Only once the song's file is made (the file is never held up by them).
+   The voice take and the chops from your own records join this when they exist (§10, §9). Nothing is uploaded.
+   ══════════════════════════════════════════════════════════════════════════ */
+const OUT={song:null, stems:null, voice:null, busy:false};
+function slugOf(x){ return String(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40); }
+function songSlug(){ return slugOf(songTitle()) || t("file"); }
+function peakOf(Lc, Rc){ let pk=0; for(let i=0;i<Lc.length;i++){ const a=Lc[i]<0?-Lc[i]:Lc[i], b=Rc[i]<0?-Rc[i]:Rc[i]; if(a>pk) pk=a; if(b>pk) pk=b; } return pk; }
+/* the gain that puts the loudest moment at −1 dB, never more than 12 dB either way */
+function outGain(pk){ if(!(pk>0)) return 1; return Math.max(dbGain(-12), Math.min(dbGain(12), dbGain(-1)/pk)); }
+function shareable(f){ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } }
+function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
+function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
+async function sendOut(){
+  const line=$("outLine"), btn=$("outBtn");
+  if(OUT.busy) return;
+  if(!hasClips()){ line.textContent=t("mixNeed"); return; }
+  if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("outSilent"); return; }
+  OUT.busy=true; btn.disabled=true; line.textContent=t("outMaking");
+  try{
+    const {Lc, Rc}=await renderSong(null), pk=peakOf(Lc, Rc);
+    if(pk<dbGain(-60)){ line.textContent=t("outSilent"); }
+    else {
+      dropOut("song"); dropOut("stems"); dropOut("voice");
+      const g=outGain(pk), name=songSlug()+".wav";
+      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut()});
+      line.textContent="";
+    }
+  }catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; btn.disabled=false; paintOut();
+}
+async function sendStems(){
+  const line=$("outLine"); if(OUT.busy || !OUT.song) return;
+  const list=SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && audible(i) && BUF.has(SONG.tracks[i].clip.id));
+  if(!list.length) return;
+  OUT.busy=true; paintOut();
+  try{
+    const files=[];
+    for(let k=0;k<list.length;k++){
+      line.textContent=t("outStemsMaking",{a:k+1, b:list.length});
+      const i=list[k], {Lc, Rc}=await renderSong(i);
+      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g))});
+    }
+    dropOut("stems");
+    OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
+    line.textContent="";
+  }catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; paintOut();
+}
+/* AOG-STUDIO-VOICE-V1: your voice on its own, lined up with the song and at the level of the file sent (§12) */
+function voiceHeard(){ const c=SONG.tracks[VOICE_T].clip; return !!(c && c.voice && audible(VOICE_T) && BUF.has(c.id)); }
+async function sendVoiceOut(){
+  const line=$("outLine"); if(OUT.busy || !OUT.song || !voiceHeard()) return;
+  OUT.busy=true; paintOut(); line.textContent=t("outVoiceMaking");
+  try{ const {Lc, Rc}=await renderSong(VOICE_T); dropOut("voice");
+    OUT.voice=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, OUT.song.g)], songSlug()+"-"+t("voiceFile")+".wav", {type:"audio/wav"})}); line.textContent=""; }
+  catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; paintOut();
+}
+/* a .zip that stores each file as it is (no squeezing: a .wav hardly shrinks), so any phone or computer opens it */
+const CRC=(()=>{ const T=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1 ? 0xEDB88320^(c>>>1) : c>>>1; T[n]=c>>>0; } return T; })();
+function crc32(u){ let c=0xFFFFFFFF; for(let i=0;i<u.length;i++) c=CRC[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){
+  const parts=[], cen=[], d=new Date(), enc=new TextEncoder();
+  const dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF, dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+  let off=0;
+  files.forEach(f=>{
+    const nm=enc.encode(f.name), crc=crc32(f.data), n=f.data.length;
+    const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true); h.setUint16(10,dt,true); h.setUint16(12,dd,true);
+    h.setUint32(14,crc,true); h.setUint32(18,n,true); h.setUint32(22,n,true); h.setUint16(26,nm.length,true); h.setUint16(28,0,true);
+    parts.push(h.buffer, nm, f.data);
+    const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true); c.setUint16(12,dt,true); c.setUint16(14,dd,true);
+    c.setUint32(16,crc,true); c.setUint32(20,n,true); c.setUint32(24,n,true); c.setUint16(28,nm.length,true); c.setUint32(42,off,true);
+    cen.push(c.buffer, nm);
+    off+=30+nm.length+n;
+  });
+  const cs=cen.reduce((a,b)=>a+(b.byteLength!=null ? b.byteLength : b.length),0), e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,cs,true); e.setUint32(16,off,true);
+  return new Blob(parts.concat(cen,[e.buffer]), {type:"application/zip"});
+}
+async function shareOut(k){
+  const o=OUT[k], line=$("outLine"); if(!o) return;
+  try{ await navigator.share({files:[o.file], title:songTitle()}); line.textContent=t("outShared"); }
+  catch(e){ if(!(e && e.name==="AbortError")) line.textContent=t("fail"); }
+}
+function outRow(k, label){
+  const o=OUT[k], nm=o.file.name;
+  return `<div class="st-take st-out"><b>${esc(label)}</b> <span class="st-len">${esc(nm)}</span>`+
+    (shareable(o.file) ? `<button type="button" class="st-btn st-go" data-outshare="${k}" aria-label="${esc(t("outShareAria",{name:nm}))}">${esc(t("outShare"))}</button>` : "")+
+    `<a class="st-btn" href="${o.url}" download="${esc(nm)}" data-outdl="${k}" aria-label="${esc(t("outDownloadAria",{name:nm}))}">${esc(t("outDownload"))}</a></div>`;
+}
+function paintOut(){
+  const box=$("outBox"), o=OUT.song;
+  $("outBtn").textContent=t("outBtn"); $("outBtn").disabled=OUT.busy || !hasClips() || !!S.decoding;
+  if(!o){ box.innerHTML=""; return; }
+  const left=o.left.filter(i=>SONG.tracks[i].clip);
+  box.innerHTML=outRow("song", t("outReady")+" · "+madeWords(o.at))+
+    (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
+    (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
+    (OUT.voice ? outRow("voice", t("outVoiceReady")) : voiceHeard() ?
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="voiceOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outVoice"))}</button></div>` : "")+
+    `<p class="st-line">${esc(t("outYours"))}</p>`;
+}
+function bindOut(){
+  $("outBtn").onclick=sendOut;
+  $("outBox").addEventListener("click", e=>{
+    const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
+    if(el.id==="stemBtn") sendStems();
+    else if(el.id==="voiceOutBtn") sendVoiceOut();
+    else if(el.hasAttribute("data-outshare")) shareOut(el.getAttribute("data-outshare"));
+    else if(el.hasAttribute("data-outdl")){ const o=OUT[el.getAttribute("data-outdl")]; if(o) $("outLine").textContent=t("outSaved",{name:o.file.name}); }
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PAGE
+   ══════════════════════════════════════════════════════════════════════════ */
+/* the music tools in one menu, as on the other tools (AOG-MUSIC-TOOLS-MENU-V1) */
+function navHtml(){
+  const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="studio"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
+}
+function trackName(i){
+  const c=SONG.tracks[i].clip; if(!c) return i===VOICE_T ? t("voiceTrack") : t("emptyL");
+  if(c.voice) return t("voiceN",{n:c.vn||1});
+  if(c.src===INBOX_KEY) return takeLabel({from:c.from, n:c.tn, name:c.name});
+  const s=shelfOf(c.src); return s ? L(c.take ? s.tk : s.sh) : (c.name||"");
+}
+function beatsWords(n, bpb){
+  if(n<=0) return t("cutNone");
+  const b=Math.floor(n/bpb), r=n%bpb, out=[];
+  if(b) out.push(b===1 ? t("bar1") : t("barsN",{n:b}));
+  if(r) out.push(r===1 ? t("beat1") : t("beatsN",{n:r}));
+  return out.join(", ");
+}
+let posNode=null;
+/* ══ AOG-DESK-COUNTER-V1 (Jimmy, 2026-10-09: "DO all three") — the readout is a tape counter: number wheels for the bar,
+   the beat and the time, white on black drums in a metal frame. On a computer a wheel rolls to its next number; on a touch
+   screen or with "reduce motion" set it simply shows it. During the count-in the words under it say "Get ready… 3". ══ */
+const CTR={w:[], built:false};
+function ctrBuild(){
+  const box=$("ctr"); if(!box || CTR.built) return; CTR.built=true;
+  const strip='<span class="st-cs">'+"01234567890".split("").map(d=>"<i>"+d+"</i>").join("")+"</span>";
+  const wheel='<span class="st-cw">'+strip+"</span>";
+  const grp=(cls, inner, key)=>'<span class="st-cgw"><span class="st-cg '+cls+'">'+inner+'</span><small data-t="'+key+'">'+esc(t(key))+"</small></span>";
+  box.innerHTML=grp("st-cgb", wheel+wheel+wheel, "ctrBar")+grp("st-cgt", wheel, "ctrBeat")+grp("st-cgc", wheel+wheel+'<b class="st-colon">:</b>'+wheel+wheel, "ctrTime");
+  CTR.w=[...box.querySelectorAll(".st-cw")].map(el=>({el:el, s:el.firstChild, d:0}));
+}
+function ctrRoll(k, d){
+  const w=CTR.w[k]; if(!w || w.d===d) return;
+  const moving=!stillMeter();
+  if(moving && w.d===9 && d===0){   /* 9 → 0 rolls forward onto the second 0, then quietly back to the first */
+    w.s.style.transform="translateY(-10em)";
+    const done=()=>{ w.s.removeEventListener("transitionend", done); w.s.classList.add("st-snap"); w.s.style.transform="translateY(0)"; void w.s.offsetWidth; w.s.classList.remove("st-snap"); };
+    w.s.addEventListener("transitionend", done); setTimeout(done, 400);
+  } else {
+    if(!moving) w.s.classList.add("st-snap");
+    w.s.style.transform="translateY("+(-d)+"em)";
+    if(!moving){ void w.s.offsetWidth; w.s.classList.remove("st-snap"); }
+  }
+  w.d=d;
+}
+function ctrSet(bar, beat, sec){
+  ctrBuild(); if(!CTR.w.length) return;
+  const b=String(Math.max(0, Math.min(999, bar|0))).padStart(3,"0"), s=Math.max(0, Math.floor(sec+1e-6)), m=Math.min(99, Math.floor(s/60)), ss=s%60;
+  const digs=(b+String(beat|0).slice(-1)+String(m).padStart(2,"0")+String(ss).padStart(2,"0")).split("").map(Number);
+  digs.forEach((d,k)=>ctrRoll(k,d));
+  const lab=$("ctrLab"); if(lab && !lab.hidden){ lab.hidden=true; lab.textContent=""; }
+}
+function ctrCount(n){
+  ctrBuild(); if(!CTR.w.length) return;
+  [0,1,2].forEach(k=>ctrRoll(k,0)); ctrRoll(3, n);
+  const lab=$("ctrLab"); if(lab){ lab.hidden=false; lab.textContent=t("countIn",{n:n}); }
+}
+function posText(s){ if(!posNode){ const b=$("posOut"); b.textContent=""; posNode=document.createTextNode(""); b.appendChild(posNode); } posNode.nodeValue=s; }
+function paintText(){
+  document.documentElement.setAttribute("lang", S.lang);
+  document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });
+  $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
+  $("plateB").textContent=t("plate"); $("plateS").textContent=t("plateSub");
+  $("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
+  $("meter").setAttribute("aria-label", t("meterAria")); $("vuBridge").setAttribute("aria-label", t("meterAria"));
+  $("loopFrom").setAttribute("aria-label", t("loopFromAria")); $("loopTo").setAttribute("aria-label", t("loopToAria"));
+  $("nav").innerHTML=navHtml();
+  $("foot").innerHTML=`<p>${esc(t("foot"))}</p>`;
+  $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
+  $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
+}
+function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); }
+
+/* ── 1 · play ── */
+function paintPlay(){
+  const b=$("playBtn"), can=hasClips() && !S.decoding;
+  b.textContent=PLAY.on ? t("stop") : t("play");
+  b.classList.toggle("on", PLAY.on);
+  b.disabled=!PLAY.on && !can;
+  b.setAttribute("aria-pressed", PLAY.on ? "true" : "false");
+  if(!PLAY.on){ const bs=barSec(), from=SONG.loopOn ? SONG.loopFrom : SONG.startBar; posText(t("pos",{b:from, n:1, t:clockPos((from-1)*bs)})); ctrSet(from, 1, (from-1)*bs); playhead((from-1)*bs); }
+  const pl=$("playLine");
+  pl.textContent = S.decoding ? t("readying") : (SONG.loopOn && hasClips() ? t("loopOn",{a:SONG.loopFrom, b:SONG.loopTo}) : "");
+}
+function optList(n, sel){ let h=""; for(let i=1;i<=n;i++) h+=`<option value="${i}"${i===sel?" selected":""}>${i}</option>`; return h; }
+function paintTransport(){
+  const n=tlBars();
+  if(SONG.startBar>n) SONG.startBar=1;
+  $("startSel").innerHTML=optList(n, SONG.startBar); $("startSel").disabled=SONG.loopOn;
+  $("loopFrom").innerHTML=optList(n, SONG.loopFrom); $("loopTo").innerHTML=optList(n, SONG.loopTo);
+  $("loopFrom").disabled=!SONG.loopOn; $("loopTo").disabled=!SONG.loopOn;
+  const lb=$("loopBtn"); lb.textContent=t("loop"); lb.setAttribute("aria-pressed", SONG.loopOn?"true":"false");
+  const cb=$("countBtn"); cb.textContent=t("count"); cb.setAttribute("aria-pressed", SONG.countIn?"true":"false");
+  const ti=tempoTrack();
+  $("tempoOut").textContent = ti>=0 ? t("tempo",{n:Math.round(songBpm()), k:ti+1}) : t("tempoNone");
+  paintPlay();
+}
+
+/* ── 2 · the song ── */
+/* ══ AOG-STUDIO-WAVES-V1 (2026-10-05) — Jimmy: "On the studio, I would like to see the sounds waves, which is a super easy
+   way to cut and paste sound." Each recording's loudness, measured once (the loudest sample in every 512), is drawn in its
+   blocks on the song and large in the track's panel: the bright part plays, tap the wave to put the cut there, drag an
+   edge to trim. Nothing on it moves by itself. ══ */
+const PEAKS=new Map();
+function peaksOf(c){
+  const b=BUF.get(c.id); if(!b) return null;
+  let P=PEAKS.get(c.id); if(P && P.b===b) return P;
+  const step=512, n=Math.ceil(b.length/step), pk=new Float32Array(n); let top=0;
+  for(let ch=0; ch<b.numberOfChannels; ch++){ const d=b.getChannelData(ch);
+    for(let i=0;i<n;i++){ let m=pk[i]; const e=Math.min(d.length, (i+1)*step); for(let j=i*step;j<e;j++){ const v=d[j]<0?-d[j]:d[j]; if(v>m) m=v; } pk[i]=m; } }
+  for(let i=0;i<n;i++) if(pk[i]>top) top=pk[i];
+  P={b:b, pk:pk, per:step/b.sampleRate, top:top||1}; PEAKS.set(c.id, P); return P;
+}
+/* the loudness from second s0 to s1 of the recording, in cols columns, 0 to 1 */
+function waveCols(P, s0, s1, cols){
+  const out=new Float32Array(cols), span=(s1-s0)/cols;
+  for(let x=0;x<cols;x++){ const a=Math.max(0, Math.floor((s0+x*span)/P.per)), e=Math.min(P.pk.length, Math.max(a+1, Math.ceil((s0+(x+1)*span)/P.per)));
+    let m=0; for(let i=a;i<e;i++) if(P.pk[i]>m) m=P.pk[i]; out[x]=Math.min(1, m/P.top); }
+  return out;
+}
+function recSec(c, beat){ return c.head+beat*beatOf(c); }   /* where a beat of the recording is, in its seconds */
+function waveSvg(c, p, fine){
+  const P=peaksOf(c); if(!P) return "";
+  /* AOG-DESK-FACE-V1: a fine, smooth wave (the console's lanes and its open channel), mirrored about the middle */
+  if(fine){
+    const per=Math.max(8, Math.round(fine/p.n)), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
+    let d="";
+    for(let x=0;x<cols;x++){ const h=0.02+0.9*v[x%per], cx=(x+0.5).toFixed(1); d+=`M${cx} ${(1-h).toFixed(3)}V${(1+h).toFixed(3)}`; }
+    return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
+  }
+  const per=Math.max(8, Math.min(90, Math.round(240/p.n))), v=waveCols(P, recSec(c,p.a), recSec(c,p.b), per), cols=per*p.n;
+  let top="", bot="";
+  for(let x=0;x<cols;x++){ const h=(0.06+0.9*v[x%per]).toFixed(2); top+=`L${x} ${(1-h).toFixed(2)}L${x+1} ${(1-h).toFixed(2)}`; bot=`L${x+1} ${(1+ +h).toFixed(2)}L${x} ${(1+ +h).toFixed(2)}`+bot; }
+  return `<svg class="wv" viewBox="0 0 ${cols} 2" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 1${top}${bot}Z"/></svg>`;
+}
+/* the large wave in the track's panel */
+const WV={drag:null, val:0, tap:""};
+function waveGeo(cv, c){ const r=cv.getBoundingClientRect(), pad=10, full=fullBeats(c); return {r:r, pad:pad, w:Math.max(10, r.width-2*pad), full:full}; }
+function drawWave(){
+  /* AOG-STUDIO-CUT-V2 (Jimmy, 2026-10-09: "The cutting needs to be better"). A recessed window: the recording across it,
+     its bars numbered and its beats ticked. The piece you are working on is bright on a soft gold band between two gold
+     edges with grips; the other pieces show in their colour, numbered, ready to be tapped; what is cut away is dim and
+     hatched. A tap puts the scissors there, with ✂ Cut here on the wave itself; dragging an edge shows where it is. */
+  const cv=$("waveC"), i=SONG.sel, c=SONG.tracks[i].clip; if(!cv || !c) return;
+  const P=peaksOf(c), g=waveGeo(cv, c), dpr=Math.min(3, window.devicePixelRatio||1), W=Math.round(g.r.width), H=Math.round(g.r.height);
+  if(!(W>0 && H>0)) return;
+  if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
+  const x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
+  const PS=pcs(c), k=pSel(c), p=PS[k], bpb=c.bpb||4, col=COLORS[i];
+  let a=p.a, b=p.b; if(WV.drag==="a") a=WV.val; if(WV.drag==="b") b=WV.val;
+  const X=beat=>g.pad+beat/g.full*g.w, top=22, bot=H-6, mid=top+(bot-top)/2, amp=(bot-top)/2-2;
+  /* what is cut away: dim and hatched */
+  x.save(); x.beginPath(); x.rect(g.pad, top, g.w, bot-top); x.clip();
+  x.strokeStyle="rgba(207,190,150,.07)"; x.lineWidth=1;
+  for(let hx=g.pad-H; hx<g.pad+g.w; hx+=9){ x.beginPath(); x.moveTo(hx, bot); x.lineTo(hx+(bot-top), top); x.stroke(); }
+  x.restore();
+  /* the other pieces: their colour, faintly, and their number */
+  PS.forEach((q,j)=>{ if(j===k) return; x.fillStyle="rgba(255,255,255,.035)"; x.fillRect(X(q.a), top, X(q.b)-X(q.a), bot-top); });
+  /* the piece you are working on: a soft gold band */
+  x.fillStyle="rgba(240,194,110,.09)"; x.fillRect(X(a), top, X(b)-X(a), bot-top);
+  x.fillStyle="rgba(240,194,110,.55)"; x.fillRect(X(a), top, X(b)-X(a), 1); x.fillRect(X(a), bot-1, X(b)-X(a), 1);
+  /* bars: a line and its number; beats: a short tick */
+  x.font="500 12px Fraunces, Georgia, serif"; x.textBaseline="top";
+  for(let kb=0;kb<=Math.floor(g.full+1e-6);kb++){ const px=Math.round(X(kb))+0.5;
+    if(kb%bpb===0){ x.fillStyle="rgba(207,190,150,.28)"; x.fillRect(px-0.5, top, 1, bot-top); if(g.w/g.full*bpb>=22){ x.fillStyle="#d8ccb2"; x.fillText(String(kb/bpb+1), px+4, 4); } }
+    else { x.fillStyle="rgba(207,190,150,.22)"; x.fillRect(px-0.5, bot-7, 1, 6); x.fillRect(px-0.5, top, 1, 5); } }
+  /* the wave: bright where this piece plays, its colour where another piece plays, grey where it is cut away */
+  if(P){ const cols=Math.max(10, Math.round(g.w/2)), v=waveCols(P, recSec(c,0), recSec(c,g.full), cols), cw=g.w/cols;
+    for(let kk=0;kk<cols;kk++){ const bt=(kk+0.5)/cols*g.full, on=bt>=a-1e-6 && bt<b-1e-6, other=!on && PS.some((q,j)=>j!==k && bt>=q.a && bt<q.b), h=Math.max(1, v[kk]*amp);
+      x.globalAlpha=on ? 1 : other ? 0.5 : 1; x.fillStyle=on || other ? col : "#4a4e55"; x.fillRect(g.pad+kk*cw, mid-h, Math.max(1, cw-0.6), 2*h); }
+    x.globalAlpha=1; }
+  /* the pieces' numbers, on small tabs along the top */
+  if(PS.length>1) PS.forEach((q,j)=>{ const cx=(X(q.a)+X(q.b))/2, on=j===k; if(X(q.b)-X(q.a)<20) return;
+    x.fillStyle=on ? "#f0c26e" : "rgba(236,227,207,.85)"; const tw=18; x.beginPath(); x.roundRect ? x.roundRect(cx-tw/2, top+3, tw, 15, 4) : x.rect(cx-tw/2, top+3, tw, 15); x.fill();
+    x.fillStyle="#1a1408"; x.font="700 11px system-ui, sans-serif"; x.textAlign="center"; x.fillText(String(j+1), cx, top+5); x.textAlign="start"; });
+  /* the scissors, where the tap put them, with ✂ Cut here on the wave */
+  const cs=$("cutSel"), cn=$("cutNow"), tapped=WV.tap===c.id+":"+k;
+  let showCut=false;
+  if(cs && !WV.drag && tapped){ const kc=+cs.value; if(kc>a && kc<b){ const px=Math.round(X(kc))+0.5; showCut=true;
+    x.save(); x.setLineDash([5,4]); x.strokeStyle="#ffd9c9"; x.lineWidth=2; x.beginPath(); x.moveTo(px, top); x.lineTo(px, bot); x.stroke(); x.restore();
+    if(cn){ cn.style.left=Math.max(56, Math.min(W-56, px))+"px"; } } }
+  if(cn) cn.hidden=!showCut;
+  /* the two edges: gold, with a grip to take hold of */
+  [a,b].forEach((v,e)=>{ const px=Math.round(X(v)); x.fillStyle="#e0b25a"; x.fillRect(px-1, top, 2, bot-top);
+    const gy=mid-20; x.fillStyle="#e0b25a"; x.beginPath(); x.roundRect ? x.roundRect(px-8, gy, 16, 40, 5) : x.rect(px-8, gy, 16, 40); x.fill();
+    x.fillStyle="rgba(60,40,8,.55)"; for(let r=0;r<4;r++) x.fillRect(px-4, gy+11+r*6, 8, 1.5); });
+  /* while an edge is dragged, where it is */
+  const tip=$("edgeTip");
+  if(tip){ if(WV.drag){ tip.hidden=false; tip.textContent=posWords(WV.val); tip.style.left=Math.max(50, Math.min(W-50, X(WV.val)))+"px"; } else tip.hidden=true; }
+}
+/* AOG-STUDIO-CUT-V2: ▶ Hear this piece — the piece you are working on, once, on its own, to check a cut before keeping it */
+const HEAR={src:null};
+function paintHear(){ const b=document.querySelector('#clipBox [data-act="hear"]'); if(b){ b.textContent=t(HEAR.src?"hearStop":"hear"); b.setAttribute("aria-pressed", HEAR.src?"true":"false"); } }
+function hearStop(){ const s0=HEAR.src; HEAR.src=null; if(s0){ try{ s0.onended=null; s0.stop(); }catch(e){} } paintHear(); }
+function hearPiece(){
+  if(HEAR.src){ hearStop(); return; }
+  const c=SONG.tracks[SONG.sel].clip, buf=c && BUF.get(c.id); if(!buf) return;
+  if(PLAY.on) stop();
+  const p=pcs(c)[pSel(c)], a=Math.max(0, recSec(c,p.a)), b=Math.min(buf.duration, recSec(c,p.b)), cx=live();
+  try{ if(cx.state!=="running") cx.resume(); }catch(e){}
+  const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(c.keep===false) src.playbackRate.value=spd(c);
+  g.gain.value=volGain(SONG.tracks[SONG.sel].vol); src.connect(g); g.connect(cx.destination);
+  src.onended=()=>{ if(HEAR.src===src){ HEAR.src=null; paintHear(); } };
+  src.start(cx.currentTime+0.03, a, Math.max(0.05, b-a)); HEAR.src=src; paintHear(); LES.mark("hear1");
+}
+function bindWave(){
+  const cv=$("waveC"); if(!cv) return;
+  let down=null;
+  const beatAt=e=>{ const c=SONG.tracks[SONG.sel].clip, g=waveGeo(cv, c); return {beat:Math.max(0, Math.min(g.full, (e.clientX-g.r.left-g.pad)/g.w*g.full)), px:e.clientX-g.r.left, g:g, c:c}; };
+  cv.onpointerdown=e=>{
+    const o=beatAt(e); if(!o.c) return;
+    const p=pcs(o.c)[pSel(o.c)], X=v=>o.g.pad+v/o.g.full*o.g.w, near=Math.max(18, e.pointerType==="mouse" ? 10 : 22);
+    const da=Math.abs(o.px-X(p.a)), db=Math.abs(o.px-X(p.b));
+    down={x:e.clientX, y:e.clientY, mode:(da<=near || db<=near) ? (da<=db ? "a" : "b") : "tap", moved:false, id:e.pointerId};
+    if(down.mode!=="tap"){ WV.drag=down.mode; WV.val=down.mode==="a" ? p.a : p.b; try{ cv.setPointerCapture(e.pointerId); }catch(er){} e.preventDefault(); drawWave(); }
+  };
+  cv.onpointermove=e=>{
+    if(!down) return;
+    if(Math.abs(e.clientX-down.x)>6 || Math.abs(e.clientY-down.y)>6) down.moved=true;
+    if(down.mode==="tap") return;
+    const o=beatAt(e), p=pcs(o.c)[pSel(o.c)];
+    let v=Math.round(o.beat); if(o.g.full-o.beat<0.5) v=o.g.full;
+    WV.val = down.mode==="a" ? Math.max(0, Math.min(v, p.b-1)) : Math.min(o.g.full, Math.max(v, p.a+1));
+    drawWave();
+  };
+  const up=e=>{
+    if(!down) return; const d=down; down=null;
+    const o=beatAt(e), c=o.c, i=SONG.sel;
+    if(d.mode==="tap"){
+      WV.drag=null; if(d.moved) return;
+      const PS=pcs(c), k=pSel(c), p=PS[k];
+      if(!(o.beat>=p.a && o.beat<p.b)){   /* AOG-STUDIO-CUT-V2: a tap on another piece picks that piece */
+        const j=PS.findIndex((q,jj)=>jj!==k && o.beat>=q.a && o.beat<q.b), ps=$("pieceSel");
+        if(j>=0 && ps){ ps.value=String(j); ps.dispatchEvent(new Event("change", {bubbles:true})); S.edMsg=t("piecePicked",{n:j+1}); S.edAt="cut"; paintEditLine(); }
+        return; }
+      const cuts=cutPlaces(c, p), cs=$("cutSel"); if(!cuts.length || !cs) return;
+      WV.tap=c.id+":"+k;
+      const best=cuts.reduce((m,x)=>Math.abs(x.k-o.beat)<Math.abs(m.k-o.beat) ? x : m, cuts[0]);
+      cs.value=String(best.k); S.edMsg=t("waveCut",{w:best.label}); S.edAt="cut"; paintEditLine(); drawWave(); LES.mark("wave1"); return;
+    }
+    const val=WV.val, which=WV.drag; WV.drag=null; WV.tap="";
+    const p0=pcs(c)[pSel(c)];
+    if(Math.abs((which==="a" ? p0.a : p0.b)-val)<1e-6){ drawWave(); return; }
+    remember(i, ++UG); const P=own(c), p=P[pSel(c)];
+    if(which==="a") p.a=val; else p.b=val;
+    tidyPieces(c); S.edMsg=t("waveTrim"); S.edAt="cut"; LES.mark("wave1");
+    songChanged(); stretchAll();
+  };
+  cv.onpointerup=up;
+  cv.onpointercancel=()=>{ down=null; WV.drag=null; drawWave(); };
+}
+
+let RULER=[];
+function paintTimeline(){
+  const n=tlBars(), step=n>32 ? 8 : 4, bs=barSec(), es=S.lang==="es";
+  let rh=`<div class="st-ruler" aria-hidden="true"><span></span><span class="st-rt" style="--n:${n}">`;
+  for(let b=1;b<=n;b++){
+    const lp=SONG.loopOn && b>=SONG.loopFrom && b<=SONG.loopTo, st=!SONG.loopOn && b===SONG.startBar;
+    rh+=`<i class="${lp?"lp":""}${st?" st0":""}">${(b-1)%step===0 ? b : ""}</i>`;
+  }
+  rh+=`</span></div>`;
+  let lanes="";
+  for(let i=0;i<NT;i++){
+    const x=SONG.tracks[i], c=x.clip, cur=i===SONG.sel;
+    let inner, label;
+    if(c){
+      /* AOG-STUDIO-EDIT-V1: one block for each piece; the chosen piece of the chosen track is outlined */
+      const P=pcs(c), ks=pSel(c);
+      inner=P.map((p,j)=>{
+        const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
+        const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.max(16, Math.round(w*3.2)))}<span class="st-cnm">${esc(nm)}</span></span>`;
+      }).join("");
+      const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
+      label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
+    } else { inner=`<span class="st-empty">${esc(t("empty"))}</span>`; label=t("laneAria",{n:i+1, name:t("emptyL")}); }
+    lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln" style="--c:${COLORS[i]}"><span class="st-led${c ? " on" : ""}" aria-hidden="true"></span><span class="st-lnn">${i+1}</span><span class="st-lnm">${esc(laneName(i))}</span></span><span class="st-lt">${inner}</span></button>`;
+  }
+  $("timeline").innerHTML=rh+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 */
+  $("timeline").style.setProperty("--n", String(n));   /* AOG-DESK-ART-V1: the bar lines behind the lanes */
+  RULER=[...$("timeline").querySelectorAll(".st-rt i")];
+  PLAY.nowBar=-1;
+}
+function paintNowBar(bar){
+  if(bar===PLAY.nowBar) return;
+  if(PLAY.nowBar>=0 && RULER[PLAY.nowBar]) RULER[PLAY.nowBar].classList.remove("now");
+  PLAY.nowBar=bar;
+  if(bar>=0 && RULER[bar]) RULER[bar].classList.add("now");
+}
+
+/* ── 3 · the track: its recording, its pieces, its speed and its fades (AOG-STUDIO-EDIT-V1) ── */
+function posWords(beat){ const bi=Math.max(0, Math.round(beat)), b=Math.floor(bi/4)+1, n=bi%4+1; return n===1 ? t("barN",{n:b}) : t("posBeat",{b:b, n:n}); }
+function pieceName(c, p, j){
+  const a=Math.floor(p.at/4+1e-6)+1, b=Math.max(a, Math.ceil((p.at+p.n*(p.b-p.a)*ratio(c))/4-1e-6));
+  return a===b ? t("pieceN1",{n:j+1, a:a}) : t("pieceN",{n:j+1, a:a, b:b});
+}
+/* where a piece can be cut: on each beat of the recording at least one beat from either end, named by the bar it lands
+   on in the song (a long piece: on the bar lines only) */
+function cutPlaces(c, p){
+  const r=ratio(c), out=[];
+  for(let k=Math.ceil(p.a+1-1e-6); k<=p.b-1+1e-6; k++){ const at=p.at+(k-p.a)*r, bi=Math.round(at); out.push({k:k, bar:bi%4===0, label:posWords(at)}); }
+  const bars=out.filter(x=>x.bar);
+  return out.length>64 && bars.length ? bars : out;
+}
+function spdWords(c, pct){
+  const w=pct===100 ? t("spdNorm") : t("spdN",{n:pct});
+  return c.bpm>0 ? w+" · "+t("bpmN",{n:Math.round(c.bpm*pct/100)}) : w;
+}
+function fadeOpts(v){
+  return FADES.map(b=>`<option value="${b}"${b===v?" selected":""}>${esc(b===0 ? t("fadeNone") : b<4 ? t("beat1") : b===4 ? t("bar1") : t("barsN",{n:b/4}))}</option>`).join("");
+}
+/* AOG-STUDIO-LONG-V1 (2026-10-07) — Jimmy: "How do I make it go more than 8 bars? What if I want to make a 2, 3, 4 minute
+   song?" A song could already be 128 bars (5 minutes at 90 a minute), but a piece moved one bar a tap and played at most 16
+   times. Now Starts at bar is a menu of every bar, and Plays is a menu that says where each number of times ends and how
+   long the song is then: a 4-minute song is two picks. A piece may play as many times as fit before bar 128. */
+function maxN(c, p){ const len=(p.b-p.a)*ratio(c); return Math.max(1, Math.floor((MAX_BARS*4-p.at)/Math.max(0.25, len)+1e-6)); }
+function atOpts(p){
+  let h=""; const onBar=Math.abs(p.at/4-Math.round(p.at/4))<1e-6;
+  if(!onBar) h+=`<option value="" selected>${esc(posWords(p.at))}</option>`;
+  for(let b=1;b<=MAX_BARS;b++) h+=`<option value="${(b-1)*4}"${onBar && Math.round(p.at/4)===b-1?" selected":""}>${esc(t("barN",{n:b}))}</option>`;
+  return h;
+}
+function untilOpts(c, p){
+  const len=(p.b-p.a)*ratio(c), top=maxN(c,p); let h="";
+  for(let k=1;k<=top;k++){
+    const end=p.at+k*len, bar=Math.ceil(end/4-1e-6)+1, sec=end*songBeat();
+    h+=`<option value="${k}"${k===p.n?" selected":""}>${esc((k===1?t("times1"):t("timesN",{n:k}))+" · "+t("untilBar",{b:bar})+" · "+clockLen(sec))}</option>`;
+  }
+  return h;
+}
+function paintTrack(){
+  const sel=$("trackSel"), i=SONG.sel;
+  sel.innerHTML=SONG.tracks.map((x,k)=>`<option value="${k}"${k===i?" selected":""}>${esc(t("trackN",{n:k+1})+" · "+trackName(k))}</option>`).join("");
+  const c=SONG.tracks[i].clip, box=$("clipBox");
+  paintVoice();
+  if(!c){ box.innerHTML=""; paintRecs(); return; }
+  /* the keyboard stays on the button or menu it was on */
+  const fa=document.activeElement, keepF=fa && box.contains(fa) ? (fa.id || (fa.getAttribute("data-act") ? "[data-act='"+fa.getAttribute("data-act")+"']" : "")) : "";
+  const s=shelfOf(c.src), inb=c.src===INBOX_KEY;
+  const meta=(inb ? [TOOLS[c.from] ? L(TOOLS[c.from].from) : "", clockLen(c.sec)] : c.voice ? [clockLen(c.sec)] : [bareName(c.name), clockLen(c.sec)]).filter(Boolean).join(" · ");
+  const head=(inb || c.voice) ? esc(trackName(i)) : esc(s ? L(s.from) : "")+(c.take ? " · "+esc(t("aTake")) : "");
+  const P=pcs(c), k=pSel(c), p=P[k], many=P.length>1, bpb=c.bpb||4, full=fullBeats(c);
+  const diff=c.bpm>0 && Math.abs(effBpm(c)-songBpm())>0.5, isTempo=tempoTrack()===i;
+  const cuts=cutPlaces(c, p), mid=cuts.length ? cuts[Math.floor((cuts.length-1)/2)] : null;
+  const pct=Math.round(spd(c)*100), keep=c.keep!==false;
+  box.innerHTML=
+    `<div class="st-cc" style="--c:${COLORS[i]}">
+      <div><b>${head}</b></div>
+      <div class="st-cn">${esc(meta)}</div>
+      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button></div>
+      ${lineAt("top")}
+    </div>
+    ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
+    <div class="st-wave"><div class="st-wwin"><canvas id="waveC" role="img" aria-label="${esc(t("waveAria",{n:i+1}))}"></canvas>
+      <button type="button" class="st-cutnow" id="cutNow" data-act="cutnow" hidden>${esc(t("cutBtn"))}</button><span class="st-edgetip" id="edgeTip" aria-hidden="true" hidden></span></div>
+      <p class="st-line">${esc(t("waveHint"))}${many ? " "+esc(t("pieceTap")) : ""}</p></div>
+    <div class="st-steps">
+      <div class="st-stp"><span class="st-lab" id="atLab">${esc(t("startsAt"))}</span><label class="st-field st-vf"><select id="atSel" aria-labelledby="atLab">${atOpts(p)}</select></label>
+        <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<0.5?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div></div>
+      <div class="st-stp"><span class="st-lab" id="untilLab">${esc(t("plays"))}</span><label class="st-field st-vf"><select id="untilSel" aria-labelledby="untilLab">${untilOpts(c,p)}</select></label>
+        <div class="st-sg two"><button type="button" class="st-btn" data-act="loops-" aria-label="${esc(t("plays")+": "+t("fewer"))}"${p.n<=1?" disabled":""}>${esc(t("fewer"))}</button><button type="button" class="st-btn" data-act="loops+" aria-label="${esc(t("plays")+": "+t("more"))}"${p.n>=maxN(c,p)?" disabled":""}>${esc(t("more"))}</button></div></div>
+      ${trimHtml("in", t("cutStart"), Math.round(p.a), p.b-p.a>1+1e-6, bpb)}
+      ${trimHtml("out", t("cutEnd"), Math.round(full-p.b), p.b-p.a>1+1e-6, bpb)}
+    </div>
+    <h3 class="st-h3">${esc(t("cutH"))}</h3>
+    ${cuts.length ? `<div class="st-row">
+      <label class="st-field"><span class="st-lab">${esc(t("cutAt"))}</span><select id="cutSel">${cuts.map(x=>`<option value="${x.k}"${x===mid?" selected":""}>${esc(x.label)}</option>`).join("")}</select></label>
+      <button type="button" class="st-btn" data-act="cut">${esc(t("cutBtn"))}</button>
+    </div>` : `<p class="st-line" style="margin-top:0">${esc(t("cutShort"))}</p>`}
+    <div class="st-row st-pr"><button type="button" class="st-btn" data-act="copy">${esc(t("copyP"))}</button>${many ? `<button type="button" class="st-btn st-clear" data-act="drop">${esc(t("dropP"))}</button>` : ""}</div>
+    ${lineAt("cut")}
+    <h3 class="st-h3">${esc(t("spdH"))}</h3>
+    <div class="st-spd"><input type="range" id="spdR" min="50" max="150" step="5" value="${pct}" aria-label="${esc(t("spdAria",{n:i+1}))}" aria-valuetext="${esc(spdWords(c,pct))}"><b id="spdOut">${esc(spdWords(c,pct))}</b></div>
+    <div class="st-row st-pr">
+      <button type="button" class="st-btn" data-act="keep" aria-pressed="${keep?"true":"false"}">${esc(t("keep"))}</button>
+      ${diff && !isTempo ? `<button type="button" class="st-btn" data-act="match">${esc(t("match"))}</button>` : ""}
+      ${c.bpm>0 && clips().filter(x=>x.c.bpm>0 && x.c!==c).length ? `<button type="button" class="st-btn" data-act="spdall">${esc(t("spdAll"))}</button>` : ""}
+    </div>
+    <p class="st-line">${esc(t(keep ? "keepOn" : "keepOff"))}${isTempo && clips().length>1 ? " "+esc(t("tempoSets")) : ""}</p>
+    ${diff ? `<p class="st-line note">${esc(t("bpmDiff",{a:Math.round(effBpm(c)), b:Math.round(songBpm())}))}</p>` : ""}
+    ${lineAt("spd")}
+    <h3 class="st-h3">${esc(t("fadeH"))}</h3>
+    <div class="st-row">
+      <label class="st-field"><span class="st-lab">${esc(t("fadeIn"))}</span><select id="fiSel">${fadeOpts(c.fadeIn||0)}</select></label>
+      <label class="st-field"><span class="st-lab">${esc(t("fadeOut"))}</span><select id="foSel">${fadeOpts(c.fadeOut||0)}</select></label>
+    </div>`;
+  paintEditLine();
+  const csel=$("cutSel"); if(csel) csel.addEventListener("change", drawWave);
+  bindWave(); drawWave();
+  if(keepF){ const el=box.querySelector(keepF.charAt(0)==="[" ? keepF : "#"+keepF); if(el && !el.disabled) try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
+  paintRecs();
+}
+/* the panel's one message sits beside what it is about: Undo, the pieces, or the speed */
+function lineAt(where){ const at=S.edAt||"cut"; return where===at ? `<p class="st-line" id="editLine" aria-live="polite"></p>` : ""; }
+function paintEditLine(){ const c=SONG.tracks[SONG.sel].clip, busy=S.stretching && c && needStretch(c) && !stretchReady(c);
+  if(busy && S.edAt!=="spd"){ S.edAt="spd"; if($("editLine")){ paintTrack(); return; } }
+  const el=$("editLine"); if(!el) return;
+  const w=busy ? t("stretching") : S.edMsg;
+  if(el.textContent!==w) el.textContent=w; }
+function trimHtml(which, label, v, room, bpb){
+  const btn=(act, txt, off)=>`<button type="button" class="st-btn" data-act="${which}${act}" aria-label="${esc(label+": "+txt)}"${off?" disabled":""}>${esc(txt)}</button>`;
+  return `<div class="st-stp"><span class="st-lab">${esc(label)}</span><span class="st-val">${esc(beatsWords(v, bpb))}</span>
+    <div class="st-sg">${btn("-bar", t("mBar"), v<=0)}${btn("-beat", t("mBeat"), v<=0)}${btn("+beat", t("pBeat"), !room)}${btn("+bar", t("pBar"), !room)}</div></div>`;
+}
+/* ── undo: each change to a track's pieces, speed or fades can be taken back (a change to several tracks at once is one step) ── */
+const UNDO=[]; let UG=0;
+function remember(i, g){ const c=SONG.tracks[i].clip; if(!c) return; UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c)}); if(UNDO.length>60) UNDO.shift();
+  c.auto=false; }   /* AOG-STUDIO-LISTEN-V1: a take you change is yours; Listen leaves it alone */
+function canUndo(){ return UNDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
+function undo(){
+  while(UNDO.length){
+    const g=UNDO[UNDO.length-1].g; let done=-1;
+    while(UNDO.length && UNDO[UNDO.length-1].g===g){
+      const u=UNDO.pop(), x=SONG.tracks[u.i];
+      if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){ x.clip=back; done=u.i; } }
+    }
+    if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; LES.mark("undo1"); songChanged(); stretchAll(); return; }
+  }
+  paintTrack();
+}
+function clipAct(act){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
+  if(act==="off"){ takeOff(i); return; }
+  if(act==="undo"){ undo(); return; }
+  const g=++UG; remember(i, g);
+  const P=own(c), k=pSel(c), p=P[k], full=fullBeats(c), bpb=c.bpb||4;
+  S.edMsg=""; S.edAt=/^(keep|match|spdall)$/.test(act) ? "spd" : "cut";
+  if(act==="start-") p.at=Math.max(0, p.at-4);
+  else if(act==="start+") p.at=Math.min((MAX_BARS-1)*4, p.at+4);
+  else if(act==="loops-") p.n=Math.max(1, p.n-1);
+  else if(act==="loops+") p.n=Math.min(maxN(c,p), p.n+1);
+  else if(/^at:\d+$/.test(act)) p.at=Math.min((MAX_BARS-1)*4, Math.max(0, +act.slice(3)));      /* AOG-STUDIO-LONG-V1 */
+  else if(/^n:\d+$/.test(act)) p.n=Math.max(1, Math.min(maxN(c,p), +act.slice(2)));
+  else if(act==="cut"){
+    const el=$("cutSel"), kk=el ? +el.value : NaN;
+    if(!(kk>p.a+0.5 && kk<p.b-0.5)){ UNDO.pop(); return; }
+    const r=ratio(c), parts=[{a:p.a, b:kk, at:p.at, n:1}, {a:kk, b:p.b, at:p.at+(kk-p.a)*r, n:1}];
+    if(p.n>1) parts.push({a:p.a, b:p.b, at:p.at+(p.b-p.a)*r, n:p.n-1});     /* its other times through stay as they were */
+    P.splice(k, 1, ...parts); c.psel=k+1;
+    S.edMsg=t("cutDone",{n:P.length});
+  }
+  else if(act==="copy"){
+    const q={a:p.a, b:p.b, at:Math.min((MAX_BARS-1)*4, p.at+p.n*(p.b-p.a)*ratio(c)), n:p.n};
+    P.push(q); c.psel=P.length-1; S.edMsg=t("copied");
+  }
+  else if(act==="drop"){ if(P.length<2){ UNDO.pop(); return; } P.splice(k, 1); c.psel=Math.min(k, P.length-1); S.edMsg=t("dropped"); }
+  else if(act==="keep") c.keep=c.keep===false;
+  else if(act==="match"){ if(!(c.bpm>0)){ UNDO.pop(); return; } c.speed=clampSpeed(songBpm()/c.bpm); }
+  else if(act==="spdall"){
+    if(!(c.bpm>0)){ UNDO.pop(); return; }
+    const want=effBpm(c);
+    clips().forEach(x=>{ if(x.c!==c && x.c.bpm>0){ remember(x.i, g); x.c.speed=clampSpeed(want/x.c.bpm); } });
+    S.edMsg=t("spdAllDone",{n:Math.round(want)});
+  }
+  else {
+    const m=/^(in|out)([+-])(bar|beat)$/.exec(act); if(!m){ UNDO.pop(); return; }
+    const step=m[3]==="bar" ? bpb : 1;
+    if(m[1]==="in") p.a = m[2]==="+" ? Math.min(p.a+step, p.b-1) : Math.max(0, p.a-step);
+    else p.b = m[2]==="+" ? Math.max(p.b-step, p.a+1) : Math.min(full, p.b+step);
+    if(p.b-p.a<1 && p.b<full-1e-6) p.b=Math.min(full, p.a+1);
+  }
+  tidyPieces(c);
+  if(ACT_STEP[act]) LES.mark(ACT_STEP[act]);   /* AOG-LESSONS-V1 */
+  songChanged();
+  stretchAll();
+}
+/* the speed slider: its words follow the finger; the change is made when it is let go */
+function speedInput(el){ const c=SONG.tracks[SONG.sel].clip; if(!c) return; const v=Math.round(+el.value), w=spdWords(c, v);
+  const o=$("spdOut"); if(o) o.textContent=w; el.setAttribute("aria-valuetext", w); }
+function speedChange(el){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
+  const v=clampSpeed(Math.round(+el.value)/100); if(Math.abs(v-spd(c))<1e-3) return;
+  remember(i, ++UG); c.speed=v; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
+  songChanged(); stretchAll();
+}
+function fadeChange(el){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
+  const v=+el.value; if(FADES.indexOf(v)<0) return;
+  remember(i, ++UG); if(el.id==="fiSel") c.fadeIn=v; else c.fadeOut=v; S.edMsg=""; if(v>0) LES.mark(el.id==="fiSel" ? "fadeIn1" : "fadeOut1");
+  songChanged();
+}
+function paintRecs(){
+  const box=$("recs"), i=SONG.sel, list=sources();
+  if(!list.length){ const h=`<p class="st-line" style="margin:0">${esc(t("recsNone"))}</p>`; if(box._sig!=="none|"+S.lang){ box.innerHTML=h; box._sig="none|"+S.lang; } return; }
+  if(!S.picked || !list.some(o=>o.id===S.pick)){ S.pick=list[0].id; S.picked=false; }
+  const takes=list.filter(o=>o.kind==="take"), shelves=list.filter(o=>o.kind==="shelf");
+  const sig=S.lang+"|"+list.map(o=>o.id+"="+srcLabel(o)).join("|");
+  if(box._sig!==sig || !$("srcSel")){
+    box._sig=sig;
+    const opt=o=>`<option value="${esc(o.id)}">${esc(srcLabel(o))}</option>`;
+    box.innerHTML=`<div class="st-put"><select id="srcSel" aria-labelledby="recsH">`+
+        (takes.length ? `<optgroup label="${esc(t("grpTakes"))}">${takes.map(opt).join("")}</optgroup>` : "")+
+        (shelves.length ? `<optgroup label="${esc(t("grpShelves"))}">${shelves.map(opt).join("")}</optgroup>` : "")+
+        `</select>
+      <p class="st-info" id="srcInfo"></p>
+      <div class="st-row"><button type="button" class="st-btn st-go" id="putBtn"></button></div></div>`;
+  }
+  const sel=$("srcSel"); if(sel.value!==S.pick) sel.value=S.pick;
+  sel.disabled=!!S.busy;
+  const b=$("putBtn"); b.textContent=t("putOn",{n:i+1}); b.setAttribute("data-put", S.pick); b.disabled=!!S.busy;
+  $("srcInfo").textContent=srcInfo(list.find(o=>o.id===S.pick));
+}
+
+/* ── AOG-STUDIO-INBOX-V1 · the takes sent here ── */
+function paintInbox(){
+  const box=$("inbox"), gl=$("goneLine");
+  const gone=INBOX.gone.slice().sort((a,b)=>(a.sent||0)-(b.sent||0));
+  const note=gone.length ? t(gone.length===1 ? "goneOne" : "goneMany",{max:INBOX_MAX, list:andList(gone.map(x=>takeLabel(x)+" ("+madeWords(x.at||x.sent)+")"))})+
+    (gone.some(x=>tracksOf(x.id).length) ? " "+t("goneKept") : "") : "";
+  if(gl.textContent!==note) gl.textContent=note;   /* a live line: said once, not again at every repaint */
+  if(!INBOX.items.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxNone"))}</p>`; return; }
+  box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxCount",{n:INBOX.items.length, max:INBOX_MAX}))}</p>`+INBOX.items.map(x=>{
+    const name=takeLabel(x), T=TOOLS[x.from], on=tracksOf(x.id);
+    const sub=[T ? esc(L(T.from)) : "", `<span class="st-len">${clockLen(x.sec)}</span>`, esc(madeWords(x.at||x.sent))].filter(Boolean).join(" · ");
+    const onTxt=on.length ? t(on.length===1 ? "onTrack1" : "onTrackN",{list:andList(on.map(String))}) : "";
+    const ask=S.ask===x.id ? `<div class="st-q" role="group" aria-label="${esc(t("removeAsk",{name:name}))}"><p>${esc(t("removeAsk",{name:name}))}${on.length ? " "+esc(t(on.length===1 ? "stays1" : "staysN",{list:andList(on.map(String))})) : ""}</p>`+
+      `<button type="button" class="st-btn st-clear" data-dropyes="${esc(x.id)}">${esc(t("removeYes"))}</button><button type="button" class="st-btn" data-dropno="${esc(x.id)}">${esc(t("removeNo"))}</button></div>` : "";
+    return `<div class="st-rec" data-take="${esc(x.id)}"><div class="st-rtx"><b>${esc(name)}</b><span class="st-cn">${sub}</span>${onTxt ? `<span class="st-on">${esc(onTxt)}</span>` : ""}</div>`+
+      (S.ask===x.id ? "" : `<button type="button" class="st-btn st-clear" data-drop="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:name}))}">${esc(t("remove"))}</button>`)+ask+`</div>`;
+  }).join("");
+}
+
+/* ── 4 · the mixer ── */
+function fmtV(k, v){
+  if(k==="pan") return v===0 ? t("middle") : (v<0 ? "◀ "+(-v) : v+" ▶");
+  if(k==="low"||k==="mid"||k==="high") return v>0 ? "+"+v : v<0 ? "−"+(-v) : "0";
+  return String(Math.round(v));
+}
+function ariaV(k, v){ if(k==="pan") return v===0 ? t("middle") : (v<0 ? t("leftN",{n:-v}) : t("rightN",{n:v})); return fmtV(k, v); }
+const KNOBS=[["vol","vol","",0,100,1],["pan","side","",-100,100,5],["low","low","eq",-12,12,1],["mid","mid","eq",-12,12,1],["high","high","eq",-12,12,1],
+  ["punch","punch","pu",0,100,1],["room","room","fx",0,100,1],["echo","echo","fx",0,100,1]];
+const MKNOBS=[["low","low","eq",-12,12,1],["mid","mid","eq",-12,12,1],["high","high","eq",-12,12,1],["glue","glue","pu",0,100,1],["vol","songVol","ma",0,100,1]];
+function slHtml(k, lab, cls, lo, hi, step, v, idp){
+  const id=idp+"-"+k;
+  return `<label class="st-sl ${cls}" for="${id}"><span class="st-lab">${esc(t(lab))}</span><output id="${id}-o">${esc(fmtV(k,v))}</output>`+
+    `<input type="range" id="${id}" data-k="${k}" min="${lo}" max="${hi}" step="${step}" value="${v}" aria-valuetext="${esc(ariaV(k,v))}"></label>`;
+}
+let mixerLang="";
+function paintMixer(rebuild){
+  const box=$("mixer");
+  if(rebuild || mixerLang!==S.lang || !box.children.length){
+    mixerLang=S.lang;
+    box.innerHTML=SONG.tracks.map((x,i)=>
+      `<div class="st-strip" data-tr="${i}" style="--c:${COLORS[i]}">
+        <button type="button" class="st-sh" data-sel="${i}"><span class="st-dot" aria-hidden="true"></span><span class="st-shn"></span></button>
+        <button type="button" class="st-btn st-ed" data-edit="${i}" aria-label="${esc(t("editAria",{n:i+1}))}" hidden>${esc(t("edit"))}</button>
+        <div class="st-ms"><button type="button" class="st-btn st-mute" data-ms="mute" aria-pressed="false">${esc(t("mute"))}</button><button type="button" class="st-btn st-solo" data-ms="solo" aria-pressed="false">${esc(t("solo"))}</button></div>
+        <div class="st-sls">${KNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,x[k],"t"+i)).join("")}</div>
+      </div>`).join("");
+    const m=SONG.master;
+    $("master").innerHTML=`<div class="st-strip st-mstrip"><div class="st-sh"><span>${esc(t("masterH"))}</span></div>
+      <div class="st-sls">${MKNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,m[k],"m")).join("")}</div></div>`;
+  }
+  /* names, selection, mute and solo, and every slider's value (a reload or a new song) */
+  [...box.querySelectorAll(".st-strip")].forEach(el=>{
+    const i=+el.getAttribute("data-tr"), x=SONG.tracks[i];
+    el.classList.toggle("sel", i===SONG.sel);
+    el.querySelector(".st-shn").textContent=(i+1)+" · "+trackName(i);
+    el.querySelector(".st-sh").setAttribute("aria-pressed", i===SONG.sel ? "true" : "false");
+    el.querySelector("[data-ms=mute]").setAttribute("aria-pressed", x.mute?"true":"false");
+    el.querySelector("[data-ms=solo]").setAttribute("aria-pressed", x.solo?"true":"false");
+    el.querySelector("[data-edit]").hidden=!x.clip;
+    el.querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, x[r.getAttribute("data-k")]));
+  });
+  $("master").querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, SONG.master[r.getAttribute("data-k")]));
+  paintConsole();   /* AOG-DESK-FACE-V1 */
+}
+function syncSlider(r, v){
+  const k=r.getAttribute("data-k");
+  if(+r.value!==v) r.value=String(v);
+  const o=$(r.id+"-o"); if(o && o.textContent!==fmtV(k,v)) o.textContent=fmtV(k,v);
+  r.setAttribute("aria-valuetext", ariaV(k,v));
+}
+
+/* ── 5 · finish ── */
+function paintFinish(){ $("mixBtn").disabled=!hasClips() || !!S.decoding; paintMixOut(); paintOut(); }
+function paintMixOut(){
+  const box=$("mixOut");
+  if(!MIX){ box.innerHTML=""; return; }
+  const sig=S.lang+"|"+MIX.url;
+  if(box._sig===sig) return;
+  box._sig=sig;
+  box.innerHTML=`<div class="st-take"><b>${esc(t("yourMix"))}</b> <span class="st-len">${clockLen(MIX.sec)}</span>
+    <audio controls preload="metadata" src="${MIX.url}"></audio>
+    <a class="st-btn" href="${MIX.url}" download="${t("file")}.wav">${esc(t("save"))}</a>
+    <button type="button" class="st-btn st-send" id="sendBtn">${esc(t("send"))}</button></div>`;
+  $("sendBtn").onclick=sendMix;
+}
+
+/* ══ AOG-DESK-FACE-V1 — the console of Jimmy's drawing: each lane named for its instrument, the playhead, the open
+   channel, eight short faders and the lesson slip. They change nothing by themselves: every change goes through the
+   mixer's own sliders and buttons below, so the sound, the save and the lessons follow the same rules. ══ */
+const LANE_IX={pads:0, drums:1, piano:2, guitar:3, bass:4, band:5, decks:6, "guitar:live":8, "bass:live":9};
+function laneName(i){
+  const N=STR.laneNames[S.lang]||STR.laneNames.en, c=SONG.tracks[i].clip;
+  if(!c) return i===VOICE_T ? N[7] : N[11];
+  if(c.voice) return N[7];
+  if(c.src==="studiobench") return N[10];
+  const k=layerOfClip(c); return Object.prototype.hasOwnProperty.call(LANE_IX, k) ? N[LANE_IX[k]] : t("trackN",{n:i+1});
+}
+function playhead(sec){
+  const tl=$("timeline"); if(!tl) return;
+  const n=tlBars(), bs=barSec(), f=n>0 && bs>0 ? Math.max(0, Math.min(1, sec/(n*bs))) : 0;
+  tl.style.setProperty("--ph", f.toFixed(4)); tl.classList.toggle("ph-live", PLAY.on);   /* AOG-DESK-GLOW-V1 */
+  /* AOG-DESK-ART-V1: the open channel's wave has its own playhead, while the song is inside that recording */
+  const ch=$("chStrip"), c=SONG.tracks[SONG.sel].clip;
+  if(ch){ let g=-1; if(c){ const a=clipStart(c), e=clipEnd(c,false); if(e>a && sec>=a && sec<=e) g=(sec-a)/(e-a); }
+    ch.style.setProperty("--cph", g<0 ? "0" : g.toFixed(4)); ch.classList.toggle("ph-on", g>=0 && PLAY.on); }
+}
+const CONS={sig:"", open:false};
+function paintConsole(){
+  const box=$("chStrip"), fd=$("chFaders"); if(!box || !fd) return;
+  const i=SONG.sel, x=SONG.tracks[i], c=x.clip;
+  const sig=[S.lang, i, laneName(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : ""].join("|");
+  if(CONS.sig!==sig){
+    CONS.sig=sig;
+    const wave=c ? `<div class="st-chw" style="--c:${COLORS[i]}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 260)}<span class="st-cph" aria-hidden="true"></span></div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
+    box.innerHTML=`<div class="st-chh"><span class="st-lab">${esc(t("chH"))}</span><b class="st-chn">${esc(laneName(i))}</b><span class="st-chs">${esc(t("trackN",{n:i+1}))}${c ? " · "+esc(trackName(i)) : ""}</span></div>`+wave+
+      `<div class="st-chc"><div class="st-ms"><button type="button" class="st-btn st-mute" data-cms="mute" aria-pressed="false">${esc(t("mute"))}</button>`+
+      `<button type="button" class="st-btn st-solo" data-cms="solo" aria-pressed="false">${esc(t("solo"))}</button></div></div>`+
+      `<div class="st-vfw"><label class="st-lab" for="cv-vol">${esc(t("volume"))}</label><div class="st-db"><ol aria-hidden="true">${DB_MARKS.map(([v,w])=>`<li style="bottom:${v}%">${w}</li>`).join("")}</ol>`+
+      `<div class="st-fw"><input type="range" id="cv-vol" data-k="vol" min="0" max="100" step="1" value="${x.vol}"></div></div><output id="cv-vol-o">${esc(volDb(x.vol))}</output></div>`+
+      `<details class="st-more st-shape" id="chShape"${CONS.open ? " open" : ""}><summary><span>${esc(t("shape"))}</span><em data-o="${esc(t("shapeOpen"))}" data-c="${esc(t("shapeClosed"))}" aria-hidden="true"></em></summary>`+
+      `<div class="st-sls">${KNOBS.filter(k=>k[0]!=="vol").map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,x[k],"cs")).join("")}</div></details>`;
+  }
+  box.querySelector("[data-cms=mute]").setAttribute("aria-pressed", x.mute ? "true" : "false");
+  box.querySelector("[data-cms=solo]").setAttribute("aria-pressed", x.solo ? "true" : "false");
+  box.querySelectorAll(".st-shape input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); });
+  const cv=$("cv-vol"); if(cv){ if(document.activeElement!==cv && +cv.value!==x.vol) cv.value=String(x.vol);
+    cv.setAttribute("aria-valuetext", volDb(x.vol)); const o=$("cv-vol-o"); if(o.textContent!==volDb(x.vol)) o.textContent=volDb(x.vol); }
+  const fsig=S.lang+"|"+SONG.tracks.map((y,j)=>laneName(j)).join(",");
+  if(fd._sig!==fsig){
+    fd._sig=fsig;
+    fd.innerHTML=`<span class="st-lab st-fdh">${esc(t("fdH"))}</span><div class="st-fds"><div class="st-fsc" aria-hidden="true"><ol>${DB_MARKS.map(([v,w])=>`<li style="bottom:${v}%">${w}</li>`).join("")}</ol></div>`+SONG.tracks.map((y,j)=>
+      `<div class="st-f1" data-tr="${j}"><div class="st-fw"><input type="range" id="fv${j}" data-fv="${j}" min="0" max="100" step="1" value="${y.vol}" aria-label="${esc(t("fdAria",{n:j+1, name:laneName(j)}))}"></div>`+
+      `<button type="button" class="st-fn" data-sel="${j}" aria-label="${esc(t("fdPick",{n:j+1, name:laneName(j)}))}"><span class="st-fnn">${j+1}</span><span class="st-tape">${esc(laneName(j))}</span></button></div>`).join("")+`</div>`;
+  }
+  fd.querySelectorAll(".st-f1").forEach(el=>{
+    const j=+el.getAttribute("data-tr"), y=SONG.tracks[j], r=el.querySelector("input");
+    el.classList.toggle("sel", j===SONG.sel); el.classList.toggle("off", !audible(j));
+    el.querySelector("button").setAttribute("aria-pressed", j===SONG.sel ? "true" : "false");
+    if(document.activeElement!==r && +r.value!==y.vol) r.value=String(y.vol);
+    r.setAttribute("aria-valuetext", volDb(y.vol));
+  });
+}
+/* the fader's decibels: 80 is the take as recorded (0 dB); the gain is (v/80)² (volGain) */
+function volDb(v){ if(!(v>0)) return "−∞ dB"; const d=Math.round(40*Math.log10(v/80)); return (d>0 ? "+"+d : d<0 ? "−"+(-d) : "0")+" dB"; }
+const DB_MARKS=[[100,"+4"],[80,"0"],[56.6,"−6"],[40,"−12"],[20,"−24"],[0,"−∞"]];
+/* a console control moves the mixer's own slider, so the mixer's rules do the rest */
+function consoleTo(i, k, v){
+  const r=$("t"+i+"-"+k); if(!r) return;
+  r.value=String(v); r.dispatchEvent(new Event("input", {bubbles:true}));
+  paintConsole();
+}
+function bindConsole(){
+  $("chStrip").addEventListener("input", e=>{ const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
+    const k=r.getAttribute("data-k"); consoleTo(SONG.sel, k, +r.value); if(r.id!=="cv-vol") syncSlider(r, +r.value); });
+  $("chStrip").addEventListener("click", e=>{ const b=e.target.closest("[data-cms]"); if(!b) return;
+    const m=document.querySelector(`#mixer .st-strip[data-tr="${SONG.sel}"] [data-ms="${b.getAttribute("data-cms")}"]`); if(m) m.click(); });
+  $("chStrip").addEventListener("toggle", e=>{ if(e.target.id==="chShape") CONS.open=e.target.open; }, true);
+  $("chFaders").addEventListener("input", e=>{ const r=e.target; if(!r.matches || !r.matches("[data-fv]")) return; consoleTo(+r.getAttribute("data-fv"), "vol", +r.value); });
+  $("chFaders").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
+  $("mixer").addEventListener("input", ()=>paintConsole());   /* a slider moved on the mixer itself */
+}
+/* AOG-DESK-SLIP-V2: beside play on an iPad or a computer; at the foot of the console on a phone */
+const SLIP_MQ=window.matchMedia ? matchMedia("(min-width:700px)") : null;
+function placeSlip(){
+  const box=$("slipBox"), top=document.querySelector("#transport .st-top"), cp=document.querySelector(".st-desk .st-cp"); if(!box || !top || !cp) return;
+  const wide=!SLIP_MQ || SLIP_MQ.matches;
+  if(wide && box.parentNode!==top) top.appendChild(box);
+  else if(!wide && box.parentNode!==cp) cp.appendChild(box);
+}
+if(SLIP_MQ){ try{ SLIP_MQ.addEventListener("change", placeSlip); }catch(e){ try{ SLIP_MQ.addListener(placeSlip); }catch(e2){} } }
+function paintSlip(){
+  placeSlip();
+  const el=$("slip"); if(!el) return;
+  let m=null; try{ m=LES && LES.next ? LES.next() : null; }catch(e){ m=null; }
+  if(!m){ el.hidden=true; return; }
+  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessons">${esc(t("slipAll"))}</a>`;
+  if(el._h!==h){ el._h=h; el.innerHTML=h; }
+  el.hidden=false;
+}
+
+/* ══ wiring ══ */
+function selectTrack(i){
+  i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
+  SONG.sel=i; saveSoon(); $("recLine").textContent=""; LES.mark("track2");
+  paintTimeline(); paintTrack(); paintMixer();
+}
+function bind(){
+  $("playBtn").onclick=playStop;
+  $("startSel").onchange=()=>{ SONG.startBar=+$("startSel").value; LES.mark("startAt"); save(); paintTimeline(); paintPlay(); };
+  $("loopBtn").onclick=()=>{ SONG.loopOn=!SONG.loopOn; if(SONG.loopOn) LES.mark("loopOn"); if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save();
+    if(PLAY.on){ stop(); play(); } paintTransport(); paintTimeline(); };
+  $("loopFrom").onchange=()=>{ SONG.loopFrom=+$("loopFrom").value; LES.mark("loopSet"); if(SONG.loopTo<SONG.loopFrom) SONG.loopTo=SONG.loopFrom; save(); reschedule(); paintTransport(); paintTimeline(); };
+  $("loopTo").onchange=()=>{ SONG.loopTo=+$("loopTo").value; LES.mark("loopSet"); if(SONG.loopFrom>SONG.loopTo) SONG.loopFrom=SONG.loopTo; save(); reschedule(); paintTransport(); paintTimeline(); };
+  $("songsBtn").onclick=goSongs;   /* AOG-DESK-SONGS-BTN-V1 */
+  $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
+  $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
+  $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
+  $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(!b || b.disabled) return;
+    let act=b.getAttribute("data-act"); if(act==="hear"){ hearPiece(); return; }   /* AOG-STUDIO-CUT-V2 */
+    if(act==="cutnow") act="cut";   /* ✂ Cut here, on the wave */
+    if(act==="cut"){ WV.tap=""; hearStop(); }
+    clipAct(act); });
+  $("clipBox").addEventListener("input", e=>{ if(e.target.id==="spdR") speedInput(e.target); });
+  $("clipBox").addEventListener("change", e=>{ const el=e.target;
+    if(el.id==="spdR") speedChange(el);
+    else if(el.id==="fiSel" || el.id==="foSel") fadeChange(el);
+    else if(el.id==="atSel"){ if(el.value!=="") clipAct("at:"+el.value); }
+    else if(el.id==="untilSel") clipAct("n:"+el.value);
+    else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; LES.mark("piece1"); S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
+  $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
+  /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
+  $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
+  $("recs").addEventListener("pointerdown", e=>{ const el=e.target; if(el && el.id==="srcSel") el._ptr=true; });
+  $("inbox").addEventListener("click", e=>{
+    const d=e.target.closest("[data-drop]"), y=e.target.closest("[data-dropyes]"), n=e.target.closest("[data-dropno]");
+    if(d){ S.ask=d.getAttribute("data-drop"); $("inboxLine").textContent=""; paintInbox(); const k=$("inbox").querySelector("[data-dropno]"); if(k) k.focus(); }
+    else if(n){ const id=n.getAttribute("data-dropno"); S.ask=""; paintInbox(); const b=[...$("inbox").querySelectorAll("[data-drop]")].find(x=>x.getAttribute("data-drop")===id); if(b) b.focus(); }
+    else if(y){ removeTake(y.getAttribute("data-dropyes")); }
+  });
+  $("mixer").addEventListener("click", e=>{
+    const sh=e.target.closest("[data-sel]"); if(sh){ selectTrack(+sh.getAttribute("data-sel")); return; }
+    /* AOG-STUDIO-EDIT-V1: Edit opens that track's pieces, speed and fades, just above the mixer */
+    const ed=e.target.closest("[data-edit]"); if(ed){ selectTrack(+ed.getAttribute("data-edit")); const tb=$("trackBlk"); if(tb) tb.scrollIntoView({block:"start"});
+      try{ $("trackSel").focus({preventScroll:true}); }catch(err){} return; }
+    const ms=e.target.closest("[data-ms]"); if(!ms) return;
+    const i=+ms.closest(".st-strip").getAttribute("data-tr"), k=ms.getAttribute("data-ms");
+    SONG.tracks[i][k]=!SONG.tracks[i][k]; save();
+    LES.mark(k==="mute" ? (SONG.tracks[i][k] ? "mute1" : "unmute1") : (SONG.tracks[i][k] ? "solo1" : "unsolo1"));   /* AOG-LESSONS-V1 */
+    liveApply(E=>{ for(let j=0;j<NT;j++) applyTrack(E,j); });
+    paintMixer(); paintTimeline();
+  });
+  $("mixer").addEventListener("input", e=>{
+    const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
+    const i=+r.closest(".st-strip").getAttribute("data-tr"), k=r.getAttribute("data-k"), v=+r.value;
+    SONG.tracks[i][k]=v; syncSlider(r, v); liveApply(E=>applyTrack(E,i)); saveSoon();
+    /* AOG-LESSONS-V1 */
+    if(k==="vol"){ LES.mark("vol1"); if(v<=50) LES.mark("volLow"); lessonSong(); }
+    else if(k==="pan"){ if(v<0) LES.mark("panL"); if(v>0) LES.mark("panR"); }
+    else if(k==="low") LES.mark("eqLow"); else if(k==="mid") LES.mark("eqMid"); else if(k==="high") LES.mark("eqHigh");
+    else LES.mark("fx1");
+  });
+  $("master").addEventListener("input", e=>{
+    const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
+    const k=r.getAttribute("data-k"), v=+r.value;
+    SONG.master[k]=v; syncSlider(r, v); liveApply(applyMaster); saveSoon();
+    LES.mark(k==="glue" ? "mGlue" : k==="vol" ? "mVol" : "mEq");   /* AOG-LESSONS-V1 */
+  });
+  $("mixBtn").onclick=makeMix;
+  /* AOG-LESSONS-V1: Save as .wav, and the mix played in its player */
+  $("mixOut").addEventListener("click", e=>{ if(e.target.closest && e.target.closest("a[download]")) LES.mark("save1"); });
+  $("mixOut").addEventListener("play", ()=>LES.mark("listen1"), true);
+  $("newBtn").onclick=()=>{ $("newAsk").hidden=false; $("newNo").focus(); };
+  $("newNo").onclick=()=>{ $("newAsk").hidden=true; $("newBtn").focus(); };
+  $("newYes").onclick=newSong;
+  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintAll(); LES.paint(); };
+  $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
+    h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
+  bindCarry();   /* AOG-STUDIO-CARRY-V1 */
+  bindOut();     /* AOG-STUDIO-SENDOUT-V1 */
+  /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening it */
+  ["startSel","loopFrom","loopTo","trackSel"].forEach(id=>{ const el=$(id);
+    el.addEventListener("pointerdown",()=>{ el._ptr=true; });
+    el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
+  /* Space starts and stops, unless a box or another button has the keyboard */
+  document.addEventListener("keydown", e=>{
+    if(e.code!=="Space" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const el=e.target, tg=el && el.tagName;
+    if(tg==="INPUT" || tg==="SELECT" || tg==="TEXTAREA" || (el && el.isContentEditable)) return;
+    const b=el && el.closest && el.closest("button,a,summary,[role=button],audio");
+    if(b && b.id!=="playBtn") return;
+    e.preventDefault(); if(!e.repeat) playStop();
+  });
+  /* AOG-DESK-KEYS-V1 (Jimmy, 2026-10-09: the keyboard for every instrument, in ways that make sense). At the desk: 1 to 8
+     pick a track; M mutes it and S solos it; ↑ and ↓ move its fader a step; Space plays and stops.
+     A key moves the same button or slider a finger would, so the mixer's rules and the lessons follow. */
+  document.addEventListener("keydown", e=>{
+    if(e.metaKey || e.ctrlKey || e.altKey) return;
+    const el=e.target, tg=el && el.tagName;
+    if(tg==="INPUT" || tg==="SELECT" || tg==="TEXTAREA" || (el && el.isContentEditable)) return;
+    const d=/^Digit([1-8])$/.exec(e.code);
+    if(d){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); if(!e.repeat) selectTrack(+d[1]-1); return; }
+    if(e.code==="KeyM" || e.code==="KeyS"){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); if(e.repeat) return;
+      const m=document.querySelector(`#mixer .st-strip[data-tr="${SONG.sel}"] [data-ms="${e.code==="KeyM" ? "mute" : "solo"}"]`); if(m) m.click(); return; }
+    if(e.code==="ArrowUp" || e.code==="ArrowDown"){ e.preventDefault(); document.documentElement.classList.add("aog-keys");
+      const v=SONG.tracks[SONG.sel].vol, nv=Math.max(0, Math.min(100, v+(e.code==="ArrowUp" ? 4 : -4)));
+      if(nv!==v) consoleTo(SONG.sel, "vol", nv); return; }
+  });
+  let rt=0; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PLAY.on) meterStill(); drawWave(); }, 150); });
+}
+
+load();
+CARRY.lock=lockGet();
+const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another device */
+bind();
+bindConsole();   /* AOG-DESK-FACE-V1 */
+paintAll();
+if(lockJoined) $("lockLine").textContent=t("lockJoined");
+if(CARRY.lock){ lockKeep(); lockList(true); }
+meterStill();
+/* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */
+try{ new ResizeObserver(()=>{ if(!PLAY.on) meterStill(); }).observe($("vuBridge")); }catch(e){}
+try{ document.fonts && document.fonts.ready.then(()=>{ if(!PLAY.on) meterStill(); }); }catch(e){}
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden) stop(); });
+window.addEventListener("pagehide", ()=>{ stop(); });
+/* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */
+["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
+(async function(){
+  await restore();
+  try{ const m=await sget("mix"); if(m && m.wav) setMix({wav:m.wav, sec:m.sec, bars:m.bars, bpm:m.bpm, body:m.body, at:m.at}); }catch(e){}
+  await refreshShelves();
+  await refreshInbox();
+})();
+try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
+window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
+/* for the studio's own tests */
+window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
+  barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get AC(){ return ac; },
+  pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };

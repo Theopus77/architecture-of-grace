@@ -13,6 +13,10 @@
 const path = require("path"), fs = require("fs"), http = require("http");
 let pw; try { pw = require("playwright"); } catch (e) { pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright"); }
 const ROOT = path.join(__dirname, "..", "aog-deploy");
+/* AOG-FAST-BUILD-V1: the front page and the Studio rooms visitors get are made from their sources by
+   tools/build-fast.py. A made page older than its source would put an old page on the site, so the check stops first. */
+try { require("child_process").execSync("python3 " + JSON.stringify(path.join(__dirname, "build-fast.py")) + " --check", { stdio: "pipe" }); }
+catch (e) { console.error("✗ " + String(e.stdout || e.message).trim() + "   (then this check again)"); process.exit(1); }
 const MIN = 3;
 const args = process.argv.slice(2);
 const pages = args.length ? args : fs.readdirSync(ROOT).filter(f => f.endsWith(".html"));

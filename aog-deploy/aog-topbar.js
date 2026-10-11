@@ -2644,7 +2644,7 @@
   /* AOG-ROOM-BACK-V1 (2026-09-29) — Jimmy: "NOT all the sites have the back button … mostly the older
      pages within the framework." A room inside the home page (#framework, #workplace …) is a page of its
      own to the reader, so it gets Back too; the plain home page still has none. */
-  var isHome = (p === "/" || p === "/index.html") && !staffLink;
+  var isHome = (p === "/" || p === "/index.html" || p === "/front.html") && !staffLink;   /* front.html: the front page as visitors get it (AOG-FRONT-BUILD-V1) */
   function roomOpen() { var h = (location.hash || "").replace(/^#/, "").toLowerCase(); return !!h && h !== "home" && h !== "top"; }
   var moved = false;
   if (isHome) window.addEventListener("hashchange", function () { moved = true; var b = document.querySelector(".aogtop-back"); if (b) b.hidden = !roomOpen(); else if (roomOpen()) add(); });

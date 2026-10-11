@@ -1,0 +1,1 @@
+(function(){var e=document.getElementById('aogSkipLink');if(!e)return;function a(){var l=(document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';e.textContent=e.getAttribute('data-'+l);}try{new MutationObserver(a).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(x){}a();})();

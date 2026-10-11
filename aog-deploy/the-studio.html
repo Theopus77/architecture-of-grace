@@ -416,6 +416,24 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
       return (d.getAttribute("lang") || "en").slice(0, 2) !== (h.getAttribute("lang") || "en").slice(0, 2) || (d.getAttribute("data-theme") || "light") !== (h.getAttribute("data-theme") || "light");
     } catch (e) { return false; }
   }
+  /* AOG-STUDIO-WARM-V1 (2026-10-11) — Jimmy: "LIGHTING BOLT SPEED!" Once the Studio has been still for a few seconds,
+     the rooms not visited yet are fetched quietly, one file at a time with a pause between: each room's page and its
+     code (not its sounds, which are large, and nothing is run). The site's helper (sw.js) keeps them, so the first time
+     a door is opened nothing has to come over the network. Never on a phone saving data or on a slow connection. */
+  var WARM = {}, warmT = 0;
+  function warmSoon() { clearTimeout(warmT); warmT = setTimeout(warm, 5000); }
+  function warm() {
+    var c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ""))) return;
+    var next = ROOMS.filter(function (r) { return !WARM[r.id] && !LIVE[r.id]; })[0]; if (!next) return;
+    WARM[next.id] = 1;
+    var get = function (u) { return fetch(u, { priority: "low", credentials: "same-origin" }); };
+    get("/" + next.file).then(function (res) { return res.ok ? res.text() : ""; }).then(function (html) {
+      var urls = [], m, re = /<(?:script[^>]*\ssrc|link[^>]*rel="stylesheet"[^>]*\shref)="([^"]+)"/g;
+      while ((m = re.exec(html))) { var u = m[1]; if (!/^(https?:)?\/\//.test(u)) urls.push(new URL(u, location.origin + "/").pathname + (u.split("?")[1] ? "?" + u.split("?")[1] : "")); }
+      var i = 0, step = function () { if (i >= urls.length) { warmSoon(); return; } get(urls[i++]).then(function (x) { return x.blob(); }, function () {}).then(function () { setTimeout(step, 150); }); };
+      step();
+    }, function () {});
+  }
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
@@ -440,7 +458,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
       if (stale(fr)) { try { fr.contentWindow.location.reload(); } catch (e) {} }
       else { hush(fr, false); try { fr.contentWindow.dispatchEvent(new Event("focus")); } catch (e) {} }
     }
-    size(); paint();
+    size(); paint(); warmSoon();
   }
   function paint() {
     var r = room(cur), e = es(); if (!r) return;

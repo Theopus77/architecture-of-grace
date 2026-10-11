@@ -1,0 +1,2812 @@
+
+"use strict";
+/* ══════════════════════════════════════════════════════════════════════════
+   THE GUITAR AND THE BASS (AOG-STRINGS-V1) — one page, built twice
+   ══════════════════════════════════════════════════════════════════════════ */
+const INST="guitar", GTR=INST==="guitar";
+const LKEY="aog."+INST+".v1";
+/* the strings, low to high, as note numbers: a guitar E A D G B E, a bass E A D G */
+const TUNING=GTR?[40,45,50,55,59,64]:[28,33,38,43];
+const STRPICK={s:-1};   /* AOG-STRING-TAB-V1: the string the letters play on (-1: the nearest) */
+const MAXF=15;                                   /* the highest fret on the neck */
+/* AOG-STRINGS-WAYS-V1: the ways to play, in the menu's order (RHYTHM_GROUPS); the first stays first, the ids never change */
+const RHYTHMS=GTR?["hold","down","folk","pop","waltz","pick","travis","ballad","country","rock","punk","chug","gallop","thrash","breakdown","tremolo","reggae","funk","bossa","rumba","shuffle"]
+                 :["root","steady","eighths","fifth","waltz","walk","arpeggio","boogie","approach","motown","rock","gallop","sixteen","breakdown","octave","funk","reggae","tumbao","bossa"];
+const S={ lang:"en", sound:GTR?"steel":"finger", key:0, minor:false, preset:"", prog:[], own:false, rhythm:RHYTHMS[0], bpm:90,
+  fret0:1, era:0, vol:0.8, withDrums:false, playing:false, hand:null };
+try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
+function loadState(){
+  try{
+    const r=JSON.parse(localStorage.getItem(LKEY)||"null");
+    if(r){
+      if(SOUNDS[r.sound]) S.sound=r.sound;
+      if(r.key>=0 && r.key<12) S.key=r.key|0;
+      S.minor=!!r.minor;
+      if(Array.isArray(r.prog)) S.prog=r.prog.filter(c=>c && typeof c.off==="number" && Q[c.q]).slice(0,12);
+      if(typeof r.preset==="string") S.preset=r.preset;
+      if(RHYTHMS.indexOf(r.rhythm)>=0) S.rhythm=r.rhythm;
+      if(r.bpm>=50 && r.bpm<=180) S.bpm=r.bpm|0;
+      if(r.fret0>=1 && r.fret0<=MAXF) S.fret0=r.fret0|0;
+      if(typeof r.era==="number") S.era=Math.max(0,Math.min(1,r.era));
+      if(typeof r.vol==="number") S.vol=Math.max(0.05,Math.min(1,r.vol));
+      S.withDrums=!!r.withDrums;
+      return;
+    }
+    /* first visit: the same tempo as the drum machine */
+    const d=JSON.parse(localStorage.getItem("aog.drums.bench.v2")||"null");
+    if(d && d.bpm>=50 && d.bpm<=180) S.bpm=Math.round(d.bpm);
+  }catch(e){}
+}
+function save(){
+  try{ localStorage.setItem(LKEY, JSON.stringify({sound:S.sound,key:S.key,minor:S.minor,prog:S.prog,preset:S.preset,rhythm:S.rhythm,
+    bpm:S.bpm,fret0:S.fret0,era:S.era,vol:S.vol,withDrums:S.withDrums})); }catch(e){}
+}
+
+const STR={
+  app: GTR?{en:"The Guitar",es:"La guitarra"}:{en:"The Bass",es:"El bajo"},
+  kicker: GTR?{en:"Strum a song in two taps.",es:"Rasguea una canción en dos toques."}:{en:"The low notes that move a song.",es:"Las notas graves que mueven una canción."},
+  lead: GTR?{en:"Acoustic, classical and electric guitars, with an amp and pedals. Tap a chord, strum the strings, or play the frets.",es:"Guitarras acústicas, clásicas y eléctricas, con amplificador y pedales. Toca un acorde, rasguea las cuerdas o toca los trastes."}
+           :{en:"Electric, upright and synth bass, with an amp and pedals. Tap a chord to hear its low note, or play the frets.",es:"Bajo eléctrico, contrabajo y bajo de sintetizador, con amplificador y pedales. Toca un acorde para oír su nota grave, o toca los trastes."},
+  drums:{en:"The drum machine",es:"La caja de ritmos"}, piano:{en:"The piano",es:"El piano"}, guitar:{en:"The guitar",es:"La guitarra"},
+  bass:{en:"The bass",es:"El bajo"}, decks:{en:"The turntables",es:"Los tocadiscos"},
+  instrument:{en:"Instrument",es:"Instrumento"},
+  grpAcoustic:{en:"Acoustic",es:"Acústicas"}, grpElectric:{en:"Electric",es:"Eléctricas"},
+  /* AOG-AMP-V1: the sound menu's groups, and the amp block */
+  grpClean:{en:"Clean electric",es:"Eléctricas limpias"}, grpRock:{en:"Crunch and rock",es:"Crujientes y rock"}, grpMetal:{en:"Metal",es:"Metal"},
+  grpBass:{en:"Electric bass",es:"Bajo eléctrico"}, grpHeavy:{en:"Heavy and effects",es:"Pesados y con efectos"}, grpOther:{en:"Upright and synth",es:"Contrabajo y sintetizador"},
+  /* AOG-AMP-TONES-V1: the new sounds' groups */
+  grpBlues:{en:"Blues and psychedelic",es:"Blues y psicodelia"}, grpLead:{en:"Lead and solos",es:"Solistas"}, grpFunk:{en:"Funk and slap",es:"Funk y slap"},
+  ampH:{en:"Amp and pedals",es:"Amplificador y pedales"},
+  ampLine:{en:"Each sound comes with its own amp and pedals.",es:"Cada sonido trae su propio amplificador y pedales."},
+  built:{en:"This sound is built on the page. Nothing to download.",es:"Este sonido se crea en la página. No hay nada que descargar."},
+  chordsH:{en:"Chords",es:"Acordes"},
+  keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
+  major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
+  padsLine: GTR?{en:"Tap a pad to strum a chord. Every pad fits this key.",es:"Toca un pad para rasguear un acorde. Todos los pads van con este tono."}
+               :{en:"Tap a pad to play the chord's low note. Every pad fits this key.",es:"Toca un pad para tocar la nota grave del acorde. Todos los pads van con este tono."},
+  wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
+  wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
+  wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
+  wheelMajor:{en:"major",es:"mayor"}, wheelMinor:{en:"minor",es:"menor"},
+  wheelGroup:{en:"Chord wheel. Tap a chord to hear it.",es:"Rueda de acordes. Toca un acorde para oírlo."},
+  wheelChord:{en:"{c} chord",es:"Acorde {c}"}, wheelPad:{en:"pad {n}",es:"pad {n}"},
+  patternLab:{en:"Start from a chord pattern",es:"Empieza con un patrón de acordes"},
+  pickPattern:{en:"Choose a pattern…",es:"Elige un patrón…"}, myOwn:{en:"My own pattern",es:"Mi propio patrón"},
+  rhythmLab: GTR?{en:"How the chords play",es:"Cómo suenan los acordes"}:{en:"How the bass plays",es:"Cómo suena el bajo"},
+  yourPattern:{en:"Your chord pattern · one chord for each bar",es:"Tu patrón de acordes · un acorde por compás"},
+  theoryLine:{en:"The small number is where each chord sits in the key: 1 is home, 4 and 5 pull away, and the music comes back to 1. The lit chord is playing now.",es:"El número pequeño dice dónde está cada acorde en la tonalidad: 1 es casa, 4 y 5 se alejan, y la música vuelve al 1. El acorde iluminado suena ahora."},
+  /* AOG-ANYCHORD-V1 */
+  anyRootLab:{en:"Any chord: root",es:"Cualquier acorde: raíz"}, anyKindLab:{en:"Kind of chord",es:"Tipo de acorde"},
+  anyBtn:{en:"▶ Play this chord",es:"▶ Tocar este acorde"},
+  anyLine:{en:"{name}: the notes {notes}.",es:"{name}: las notas {notes}."},
+  anyMoved:{en:"The neck moved to fret {n} so your hand can reach it.",es:"El mástil pasó al traste {n} para que tu mano llegue."},
+  progEmpty:{en:"Pick a pattern above, or press Make my own.",es:"Elige un patrón arriba, o pulsa Hacer el mío."},
+  ownOn:{en:"Tap the chord pads or the wheel in the order you want. Up to 8.",es:"Toca los pads o la rueda en el orden que quieras. Hasta 8."},
+  play:{en:"▶ Play the chords",es:"▶ Tocar los acordes"}, stop:{en:"■ Stop",es:"■ Parar"},
+  own:{en:"Make my own",es:"Hacer el mío"}, clear:{en:"Clear",es:"Borrar"},
+  tempoLab:{en:"Tempo",es:"Tempo"}, bpm:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
+  drumOn:{en:"Play with my drum beat",es:"Tocar con mi ritmo de batería"},
+  drumFrom:{en:"From the drum machine: {name}",es:"De la caja de ritmos: {name}"},
+  drumTempo:{en:"The tempo comes from your drum beat.",es:"El tempo viene de tu ritmo de batería."},
+  drumThree:{en:"A waltz counts in threes, so it plays without your four-beat drum beat.",es:"Un vals cuenta de tres en tres, así que suena sin tu ritmo de batería de cuatro."},   /* AOG-STRINGS-WAYS-V1 */
+  drumNone:{en:"Make a beat on the drum machine and press Send to the turntables. It shows up here too.",es:"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. También aparece aquí."},
+  drumGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
+  neckH:{en:"Frets and strings",es:"Trastes y cuerdas"},
+  lower:{en:"◀ Lower",es:"◀ Más grave"}, higher:{en:"Higher ▶",es:"Más agudo ▶"},
+  fretsOut:{en:"Frets {a} to {b}",es:"Trastes {a} a {b}"},
+  mute:{en:"✋ Mute the strings",es:"✋ Apagar las cuerdas"},
+  strum:{en:"STRUM",es:"RASGUEA"},
+  /* AOG-PLAY-V1: the neck sideways */
+  pluck:{en:"PLUCK",es:"PULSA"},
+  pvTurnPhone: GTR?{en:"Turn your phone sideways to play the neck like a real guitar.",es:"Gira tu teléfono de lado para tocar el mástil como una guitarra de verdad."}
+                 :{en:"Turn your phone sideways to play the neck like a real bass.",es:"Gira tu teléfono de lado para tocar el mástil como un bajo de verdad."},
+  pvTurnTablet: GTR?{en:"Press ⤢ Play on the whole screen to play the neck like a real guitar. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para tocar el mástil como una guitarra de verdad. Cerrar vuelve a esta página."}
+                  :{en:"Press ⤢ Play on the whole screen to play the neck like a real bass. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para tocar el mástil como un bajo de verdad. Cerrar vuelve a esta página."},
+  pvBig:{en:"⤢ Play on the whole screen",es:"⤢ Tocar en toda la pantalla"},
+  pvClose:{en:"✕ Close",es:"✕ Cerrar"},
+  pvMore:{en:"☰ Menu",es:"☰ Menú"}, pvWay:{en:"How you play",es:"Cómo tocas"}, pvStop:{en:"■ Stop",es:"■ Parar"},
+  pvTap:{en:"♪ Notes",es:"♪ Notas"}, pvHoldW:{en:"✋ Hold + strum",es:"✋ Pisar + rasguear"},
+  pvHintTap: GTR?{en:"Tap a fret to play it. Tap a chord, or strum on the strip.",es:"Toca un traste para tocarlo. Toca un acorde o rasguea en la franja."}
+                :{en:"Tap a fret to play it. Tap a chord to hear its low note.",es:"Toca un traste para tocarlo. Toca un acorde para oír su nota grave."},
+  pvHint: GTR?{en:"Hold the frets with one hand. Strum on the right with the other.",es:"Pisa los trastes con una mano. Rasguea a la derecha con la otra."}
+             :{en:"Hold the frets with one hand. Pluck on the right with the other.",es:"Pisa los trastes con una mano. Pulsa a la derecha con la otra."},
+  pvHintL: GTR?{en:"Hold the frets with one hand. Strum on the left with the other.",es:"Pisa los trastes con una mano. Rasguea a la izquierda con la otra."}
+              :{en:"Hold the frets with one hand. Pluck on the left with the other.",es:"Pisa los trastes con una mano. Pulsa a la izquierda con la otra."},
+  /* AOG-SOLO-PV-V1: in Solo mode the strip is the whammy bar (guitar), so the hint says so */
+  pvHintSolo: GTR?{en:"Tap a fret to play it. Push up or down to bend. Drag the bar to dive.",es:"Toca un traste para tocarlo. Empuja arriba o abajo para estirar. Arrastra la barra para bajar el tono."}
+                 :{en:"Tap a string to slap it. Flick up fast to pop it. Push up or down to bend.",es:"Toca una cuerda para hacer slap. Sube rápido el dedo para hacer pop. Empuja arriba o abajo para estirar."},
+  pvFretless:{en:"No frets: the note is right under your finger. Slide, and the sound follows.",es:"Sin trastes: la nota está justo bajo tu dedo. Desliza el dedo y el sonido lo sigue."},
+  pvMute:{en:"Mute the strings",es:"Apagar las cuerdas"}, pvMuteW:{en:"Mute",es:"Apagar"},
+  pvLower:{en:"Lower frets",es:"Trastes más graves"}, pvHigher:{en:"Higher frets",es:"Trastes más agudos"},
+  pvFrets:{en:"Frets {a}–{b}",es:"Trastes {a}–{b}"},
+  pvHow:{en:"How the neck plays",es:"Cómo suena el mástil"},
+  pvChords:{en:"Chords",es:"Acordes"}, pvSolo:{en:"Solo",es:"Solo"},
+  pvLeft:{en:"Left-handed",es:"Para zurdos"}, pvAway:{en:"Screen faces away",es:"Pantalla hacia fuera"},
+  pvSay: GTR?{en:"♪ Notes: a fret plays when you touch it. ✋ Hold + strum: hold the frets, then strum on the strip, as on a real guitar. Push a held finger across its string to bend it. While a style plays, it plays the frets you hold.",es:"♪ Notas: un traste suena al tocarlo. ✋ Pisar + rasguear: pisa los trastes y rasguea en la franja, como en una guitarra de verdad. Empuja un dedo pisado a lo ancho de la cuerda para estirarla. Mientras suena un estilo, toca los trastes que pisas."}
+            :{en:"♪ Notes: a fret plays when you touch it. ✋ Hold + strum: hold the frets, then pluck on the strip with two fingers in turn. Push a held finger across its string to bend it. While a style plays, it plays the note you hold.",es:"♪ Notas: un traste suena al tocarlo. ✋ Pisar + rasguear: pisa los trastes y pulsa en la franja con dos dedos, uno y otro. Empuja un dedo pisado a lo ancho de la cuerda para estirarla. Mientras suena un estilo, toca la nota que pisas."},
+  pvRegion:{en:"The neck, on the whole screen",es:"El mástil, en toda la pantalla"},
+  neckGroup: GTR?{en:"Guitar neck, six strings. Tap a fret to play it.",es:"Mástil de la guitarra, seis cuerdas. Toca un traste para tocarlo."}
+                :{en:"Bass neck, four strings. Tap a fret to play it.",es:"Mástil del bajo, cuatro cuerdas. Toca un traste para tocarlo."},
+  litLine: GTR?{en:"Pale dots show where fingers go for the chord. × means skip that string. Orange notes are playing now.",es:"Los puntos claros muestran dónde van los dedos para el acorde. × significa no tocar esa cuerda. Las notas naranjas suenan ahora."}
+              :{en:"Pale dots fit the chord. The ringed dot is its root, the chord's home note. Orange notes are playing now.",es:"Los puntos claros van con el acorde. El punto con anillo es su raíz, la nota casa del acorde. Las notas naranjas suenan ahora."},
+  touchLine: GTR?{en:"Tap a fret to play one string. Slide a finger across the strings on the right to strum. While a style plays, hold frets and it plays them.",es:"Toca un traste para tocar una cuerda. Desliza un dedo por las cuerdas de la derecha para rasguear. Mientras suena un estilo, pisa trastes y los toca."}
+                :{en:"Tap a fret to play a note. Slide along a string to glide to the next note. While a style plays, hold a fret and the line follows it.",es:"Toca un traste para tocar una nota. Desliza el dedo por una cuerda para pasar a la siguiente nota. Mientras suena un estilo, pisa un traste y la línea lo sigue."},
+  kmH:{en:"Play it on a keyboard",es:"Tócala con un teclado"},
+  kmChords:{en:"the chords",es:"los acordes"},
+  kmStrings:{en:"the six strings of the chord, low to high (on the strum strip)",es:"las seis cuerdas del acorde, de grave a aguda (en la franja de rasgueo)"},
+  kmNotes:{en:"the notes, like the piano's white keys: C D E F G A B C D E F",es:"las notas, como las teclas blancas del piano: Do Re Mi Fa Sol La Si Do Re Mi Fa"},
+  kmSharps:{en:"the notes in between (♯), like the black keys",es:"las notas de en medio (♯), como las teclas negras"},
+  kmMove:{en:"move along the neck",es:"moverse por el mástil"},
+  kmTab:{en:"pick a string for the letters (now: the nearest one)",es:"elegir una cuerda para las letras (ahora: la más cercana)"},
+  kmTabOn:{en:"pick a string for the letters (now: {s})",es:"elegir una cuerda para las letras (ahora: {s})"},
+  strAuto:{en:"The letters play on the nearest string.",es:"Las letras tocan en la cuerda más cercana."},
+  strOn:{en:"The letters play on {s}. Tab for the next one.",es:"Las letras tocan en {s}. Tab para la siguiente."},
+  kmSpaceKey:{en:"Space",es:"Espacio"}, kmSpace:{en:"start and stop",es:"empezar y parar"},
+  keysLine: GTR?{en:"On a computer, 1 to 0 strum the ten chords, the letters play notes as on the piano, and Z X C V B N pluck the six strings. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 rasguean los diez acordes, las letras tocan notas como en el piano, y Z X C V B N puntean las seis cuerdas. ← y → se mueven por el mástil. La barra espaciadora empieza y para."}
+               :{en:"On a computer, 1 to 0 play the ten chords, and the letters play notes as on the piano. ← and → move along the neck. Space starts and stops.",es:"En la computadora, del 1 al 0 tocan los diez acordes, y las letras tocan notas como en el piano. ← y → se mueven por el mástil. La barra espaciadora empieza y para."},
+  eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
+  era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
+  eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
+  volLab:{en:"Volume",es:"Volumen"},
+  send:{en:"Send to the turntables",es:"Enviar a los platos"},
+  sending:{en:"Making the recording…",es:"Haciendo la grabación…"},
+  sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
+  sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
+  sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  toPadsLab:{en:"Send to the Drum Machine:",es:"Enviar a la caja de ritmos:"}, sendPadsBtn:{en:"My take",es:"Mi toma"}, sendPadsAria:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn: GTR?{en:"These chords",es:"Estos acordes"}:{en:"These low notes",es:"Estas notas graves"}, padsAria: GTR?{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"}:{en:"Put these low notes on the Drum Machine pads",es:"Poner estas notas graves en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsSending:{en:"Making the pads…",es:"Haciendo los pads…"},
+  padsSent: GTR?{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}:{en:"Sent. The low notes are waiting on the Drum Machine.",es:"Enviado. Las notas graves te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
+  bars:{en:"bars",es:"compases"},
+  /* AOG-STRINGS-REAL-V1: the recorded guitars and basses */
+  credit: GTR?{en:"The guitars here are real guitars, recorded note by note: Black And Green Guitars by Karoryfer Samples, a Martin steel-string guitar recorded by Jeff Learman, and a Spanish classical guitar from FreePats. In Solo mode, the band's bass is Growlybass by Karoryfer Samples. All of them are free for everyone to use (CC0).",
+               es:"Las guitarras de aquí son guitarras de verdad, grabadas nota por nota: Black And Green Guitars de Karoryfer Samples, una guitarra Martin de cuerdas de acero grabada por Jeff Learman y una guitarra clásica española de FreePats. En el modo Solo, el bajo de la banda es Growlybass de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0)."}
+             :{en:"Every bass here is a real recording, note by note: Growlybass and Swagbass by Karoryfer Samples, and a double bass and an Ergo fretless upright bass played by D. Smolken (with Meatbass by Karoryfer Samples). The synth sounds are a real analog synthesizer from 1979, a Roland SH-2, recorded by Modular Samples. In Solo mode, the band's guitar is Black And Green Guitars by Karoryfer Samples. All of them are free for everyone to use (CC0 or public domain).",
+               es:"Cada bajo de aquí es una grabación de verdad, nota por nota: Growlybass y Swagbass de Karoryfer Samples, y un contrabajo y un contrabajo eléctrico Ergo sin trastes tocados por D. Smolken (con Meatbass de Karoryfer Samples). Los sonidos de sintetizador son un sintetizador analógico de verdad de 1979, un Roland SH-2, grabado por Modular Samples. En el modo Solo, la guitarra de la banda es Black And Green Guitars de Karoryfer Samples. Todas estas grabaciones se pueden usar libremente (CC0 o dominio público)."},
+  credits:{en:"Full credits",es:"Créditos completos"},
+  recLoading: GTR?{en:"Getting the recorded guitar ready…",es:"Preparando la guitarra grabada…"}:{en:"Getting the recorded bass ready…",es:"Preparando el bajo grabado…"},
+  recReady: GTR?{en:"This sound is a real guitar, recorded note by note.",es:"Este sonido es una guitarra de verdad, grabada nota por nota."}
+               :{en:"This sound is a real bass, recorded note by note.",es:"Este sonido es un bajo de verdad, grabado nota por nota."},
+  recReadySynth:{en:"This sound is a real analog synthesizer, recorded note by note.",es:"Este sonido es un sintetizador analógico de verdad, grabado nota por nota."},
+  recFailed: GTR?{en:"The recorded guitar did not load. The guitar made on this page plays instead. Reload the page to try again.",es:"La guitarra grabada no se cargó. Suena la guitarra hecha en esta página. Vuelve a cargar la página para intentarlo otra vez."}
+                :{en:"The recorded bass did not load. The bass made on this page plays instead. Reload the page to try again.",es:"El bajo grabado no se cargó. Suena el bajo hecho en esta página. Vuelve a cargar la página para intentarlo otra vez."},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
+};
+function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
+
+/* the instruments. s = how the string is made (see THE PLUCKED STRING below); pick = the pickup's own resonance; rig = the
+   amp, cabinet and pedals it comes with (aog-amp.js, AOG-AMP-V1: change any of it on the page, and it stays with the sound);
+   gain levels them, so the same chord comes out about equally loud on each (measured, AOG-STRINGS-V1, AOG-AMP-V1);
+   rev = the room. AOG-AMP-V1 (2026-10-03) — Jimmy: "Can all instruments have MULTIPLE VERSIONS OF HOW THEY SOUND? Like a
+   lot more than they all currently have!?" Twenty-two guitars and thirteen basses, each a string, a pickup and a rig. */
+/* AOG-STRINGS-V2: the numbers are for 44.1 kHz. atk/atkLp/atkHp/atkMs = the pick's click (how loud, its top, its low cut,
+   how fast it dies); glow = how much brighter the first 40 ms are (dB); loop = the noise left inside the string; thump = an
+   upright's knock; rise = how slowly the note comes in (ms) */
+const EL={sr:44100, T0:11, fref:82, Texp:0.5, Tmin:2, Tmax:12, Thf:0.5, Thmax:1.2, pos:0.12, bright:0.58, soft:0.4, edge:0.8, edgeHz:1200, edgeTop:4000, disp:20, dispA:-0.6, noise:0.3, pol2:0.25,
+          atk:0.4, atkLp:0.5, atkHp:700, atkMs:1.6, pick:0.16, durMax:6, body:[["highpass",80,0.7,0]]};
+const el=o=>Object.assign({}, EL, o);
+const BR1=el({pos:0.10, bright:0.645, pick:0.12}), NK1=el({pos:0.17, bright:0.486, pick:0.24, noise:0.25, atk:0.3});
+const BRH=el({T0:12, Tmin:2.5, Thmax:1.5, pos:0.09, bright:0.689, soft:0.44, edge:1, noise:0.35, pol2:0.22, atk:0.45, atkLp:0.44, pick:0.09});
+const NKH=el({pos:0.18, bright:0.395, soft:0.352, noise:0.2, atk:0.25, pick:0.26});
+const PU={single:{f:4300, q:1.8, db:5}, humb:{f:2700, q:1.3, db:4}, neck:{f:2200, q:1.1, db:3}, bass:{f:2400, q:1.0, db:2}};
+/* a rig: the amp, its cabinet and knobs (0 to 10), then whatever else differs from AOGAmp.defaults (pedals that are on, the EQ) */
+function R(model, cab, k, more){ return Object.assign({model:model, cab:cab, k:k||{}}, more||{}); }
+const NO_AMP=R("none","off");
+/* steel strings and a pick: struck near the bridge, a bright click, the highs gone sooner on the thin strings */
+const STEEL_S={sr:44100, T0:8, fref:82, Texp:0.7, Tmin:1.6, Tmax:9, Thf:0.3, Thmax:1.2, pos:0.12, bright:0.6, soft:0.68, edge:1, edgeHz:850, edgeTop:3500, disp:24, dispA:-0.6, loop:0.1, pol2:0.32,
+             atk:0.8, atkLp:0.55, atkHp:1000, atkMs:1.8, glow:6, pick:0, durMax:5.5,
+             body:[["highpass",70,0.7,0],["peaking",102,2.2,6],["peaking",205,2,4],["peaking",410,1.8,2],["highshelf",5000,0.7,3]]};
+/* AOG-AMP-TONES-V1 — the new sounds' strings and pickups, in the 44.1 kHz numbers of AOG-STRINGS-V2. BIG: heavy strings (a
+   13 on top), the neck and middle single coils, dug in hard; TELE: a bright single coil right by the bridge, a snappy pick;
+   SGH: a low-output humbucker, open and bright, for open chords; HOT: the bridge humbucker with a longer sustain, for leads;
+   WARM12: the steel string, a touch softer and darker, for a twelve-string in a room. The bass: bsf, fingers (as the
+   fingers sound: round, no click, a slower start); bsp, a pick (as the pick sound); bs, the slap family (22 kHz numbers,
+   as the slap sound keeps). */
+const BIG=el({T0:13, Tmax:13, Tmin:2.6, pos:0.12, bright:0.543, soft:0.395, edge:1, noise:0.28, pol2:0.22, atk:0.5, pick:0.2});
+const TELE=el({pos:0.085, bright:0.712, soft:0.44, edge:1, noise:0.33, atk:0.45, pick:0.07});
+const SGH=el({T0:11.5, pos:0.1, bright:0.667, soft:0.413, edge:0.9, noise:0.32, pick:0.1});
+const HOT=Object.assign({}, BRH, {T0:13, Tmin:2.8, Tmax:13});
+const WARM12=Object.assign({}, STEEL_S, {bright:0.53, soft:0.71, edgeTop:3000, atk:0.6, glow:4, body:[["highpass",70,0.7,0],["peaking",100,2.2,6.5],["peaking",200,2,4.5],["peaking",400,1.8,2],["highshelf",5000,0.7,1]]});
+const PU2={paf:{f:3100, q:1.4, db:4.5}, p90:{f:3300, q:1.6, db:5}, tele:{f:5200, q:2.2, db:6}, hot:{f:2500, q:1.2, db:4}, strat:{f:3900, q:1.7, db:4.5}};
+const BSF={sr:44100, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.6, pos:0.22, bright:0.16, soft:0.09, loop:0.02, pol2:0.25, atk:0, glow:0, rise:6, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]};
+const BSP={sr:44100, T0:6.5, fref:41, Texp:0.5, Tmin:2, Tmax:7.5, Thf:0.15, Thmax:0.5, pos:0.12, bright:0.38, soft:0.43, edge:0.6, edgeHz:1200, edgeTop:2500, disp:20, dispA:-0.6, loop:0.04, pol2:0.25,
+           atk:0.35, atkLp:0.43, atkHp:600, atkMs:1.6, glow:4, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]};
+const BS={sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]};
+const bsf=o=>Object.assign({}, BSF, o), bsp=o=>Object.assign({}, BSP, o), bs=o=>Object.assign({}, BS, o);
+const SOUNDS = GTR ? {
+  steel: {grp:"grpAcoustic", en:"Acoustic guitar · steel strings", es:"Guitarra acústica · cuerdas de acero", kind:"pluck", rec:"steel", out:1.036, rout:1.469, gain:1.02, rev:0.14, lp:2200, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
+  twelve:{grp:"grpAcoustic", en:"Twelve-string acoustic", es:"Guitarra acústica de doce cuerdas", kind:"pluck", rec:"steel", out:1.088, rout:1.385, twelve:true, gain:0.85, rev:0.16, lp:2400, lpSpan:2.9, damp:0.035, s:STEEL_S, rig:NO_AMP},
+  nylon: {grp:"grpAcoustic", en:"Classical guitar · nylon strings", es:"Guitarra clásica · cuerdas de nailon", kind:"pluck", rec:"nylon", out:1.023, rout:1.132, gain:1.28, rev:0.18, lp:1800, lpSpan:2.7, damp:0.04,
+          s:{sr:44100, T0:6, fref:82, Texp:0.6, Tmin:1.8, Tmax:7, Thf:0.3, Thmax:0.7, pos:0.2, bright:0.29, soft:0.33, edge:0.3, edgeHz:1500, edgeTop:3000, disp:8, dispA:-0.6, loop:0.05, pol2:0.28,
+             atk:0.4, atkLp:0.35, atkHp:400, atkMs:3, glow:3, pick:0, durMax:5,
+             body:[["highpass",70,0.7,0],["peaking",96,2.2,6],["peaking",192,2,4],["peaking",380,1.8,2.5],["highshelf",3000,0.7,-4]]}, rig:NO_AMP},
+  clean: {grp:"grpClean", en:"Electric guitar · clean", es:"Guitarra eléctrica · limpia", kind:"pluck", rec:"green", out:0.718, rout:0.81, gain:1, rev:0.12, lp:2200, lpSpan:2.9, damp:0.03, s:EL, pick:PU.single,
+          rig:R("clean","open212",{gain:3.5, bass:5, mid:5, treble:6, presence:5.5}, {bright:true, fx:{reverb:{on:true, type:"spring", mix:3, decay:4}}})},
+  funk:  {grp:"grpClean", en:"Funk · clean and snappy", es:"Funk · limpia y con chispa", kind:"pluck", rec:"green", out:0.967, rout:1.387, gain:1, rev:0.08, lp:2400, lpSpan:2.9, damp:0.025, s:BR1, pick:PU.single,
+          rig:R("clean","open212",{gain:3, bass:4.5, mid:4, treble:6.5, presence:6}, {bright:true, fx:{comp:{on:true, sus:6, att:2, lvl:5}}})},
+  pop:   {grp:"grpClean", en:"Pop · shimmering chorus", es:"Pop · coro brillante", kind:"pluck", rec:"green", out:0.878, rout:1.177, gain:1, rev:0.12, lp:2300, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+          rig:R("clean","open212",{gain:3, treble:6}, {bright:true, fx:{comp:{on:true, sus:4, att:4, lvl:5}, chorus:{on:true, rate:3, depth:5, mix:5}, reverb:{on:true, type:"plate", mix:3, decay:4}}})},
+  jazz:  {grp:"grpClean", en:"Jazz guitar", es:"Guitarra de jazz", kind:"pluck", rec:"green", out:2.261, rout:2.174, rlpSpan:2, rlp:450, gain:1, rev:0.14, lp:1300, lpSpan:2.6, damp:0.04,
+          s:{sr:32000, T0:6, fref:82, Texp:0.55, Tmin:1.6, Tmax:7, Thf:0.25, Thmax:0.16, pos:0.2, bright:0.28, soft:0.32, noise:0.12, pol2:0.25, atk:0.04, atkLp:0.3, pick:0.27, durMax:5, body:[["highpass",70,0.7,0]]},
+          pick:PU.neck, rig:R("clean","open112",{gain:3, bass:6, mid:5.5, treble:3.5, presence:4}, {fx:{reverb:{on:true, type:"room", mix:2.5, decay:4}}})},
+  country:{grp:"grpClean", en:"Country · twang and slapback", es:"Country · twang y eco corto", kind:"pluck", rec:"green", out:0.767, rout:1.004, gain:1, rev:0.08, lp:2600, lpSpan:2.9, damp:0.028, s:BR1, pick:PU.single,
+          rig:R("clean","open212",{gain:4, bass:4.5, mid:5.5, treble:7, presence:6}, {bright:true, fx:{comp:{on:true, sus:5, att:3, lvl:5}, delay:{on:true, time:3.2, fb:1, mix:4, tone:6}}})},
+  surf:  {grp:"grpClean", en:"Surf · drenched in spring reverb", es:"Surf · empapada de reverb de muelle", kind:"pluck", rec:"green", out:0.696, rout:0.784, gain:1, rev:0.06, lp:2500, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+          rig:R("clean","open212",{gain:4.5, bass:4, treble:7}, {bright:true, fx:{reverb:{on:true, type:"spring", mix:7, decay:6, tone:7}}})},
+  ambient:{grp:"grpClean", en:"Ambient · echoes and space", es:"Ambiental · ecos y espacio", kind:"pluck", rec:"green", out:1.332, rout:1.404, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.05, s:NK1, pick:PU.single,
+          rig:R("clean","open212",{gain:3, treble:5}, {fx:{chorus:{on:true, rate:2, depth:4, mix:4}, delay:{on:true, time:6.3, fb:6, mix:5, tone:4}, reverb:{on:true, type:"hall", mix:6, decay:8, tone:5}}})},
+  blues: {grp:"grpRock", en:"Blues · warm breakup", es:"Blues · saturación cálida", kind:"pluck", rec:"green", out:0.797, rout:0.823, gain:1, rev:0.10, lp:2100, lpSpan:2.9, damp:0.03, s:NK1, pick:PU.single,
+          rig:R("blues","open112",{gain:5.5, bass:5, mid:6, treble:5.5, master:6}, {fx:{reverb:{on:true, type:"spring", mix:2.5, decay:4}}})},
+  crunch:{grp:"grpRock", en:"Electric guitar · crunch", es:"Guitarra eléctrica · crujiente", kind:"pluck", rec:"green", out:0.821, rout:0.818, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.03,
+          s:EL,
+          pick:PU.humb, rig:R("crunch","green412",{gain:5, bass:5, mid:6, treble:6})},
+  chime: {grp:"grpRock", en:"British jangle", es:"Brillo británico", kind:"pluck", rec:"green", out:0.727, rout:0.794, gain:1, rev:0.12, lp:2400, lpSpan:2.9, damp:0.03, s:BR1, pick:PU.single,
+          rig:R("chime","blue212",{gain:4.5, bass:4, mid:5, treble:6.5, master:6}, {fx:{reverb:{on:true, type:"room", mix:2.5, decay:4}}})},
+  classic:{grp:"grpRock", en:"Classic rock · cranked stack", es:"Rock clásico · amplificador a tope", kind:"pluck", rec:"black", out:0.533, rrel:0.34, rout:0.56, gain:1, rev:0.08, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU.humb,
+          rig:R("crunch","green412",{gain:7.5, bass:5.5, mid:7, treble:6, master:7}, {fx:{od:{on:true, drive:2.5, tone:5, lvl:7}}})},
+  punk:  {grp:"grpRock", en:"Punk · buzzing distortion", es:"Punk · distorsión zumbante", kind:"pluck", rec:"black", out:0.589, rrel:0.101, rout:0.618, power:true, gain:1, rev:0.06, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
+          rig:R("crunch","green412",{gain:3, bass:6, mid:6, treble:6}, {fx:{ds:{on:true, dist:6, tone:5, lvl:5}}})},
+  grunge:{grp:"grpRock", en:"Grunge · fuzz and crunch", es:"Grunge · fuzz y crujido", kind:"pluck", rec:"green", out:0.686, rrel:0.109, rout:0.772, gain:1, rev:0.08, lp:2300, lpSpan:2.8, damp:0.03, s:BRH, pick:PU.humb,
+          rig:R("crunch","green412",{gain:4, bass:6, mid:5, treble:5}, {fx:{fz:{on:true, sus:6, tone:4, lvl:6}}})},
+  lead:  {grp:"grpRock", en:"Lead · smooth and singing", es:"Solista · suave y cantante", kind:"pluck", rec:"green", out:0.83, rrel:0.456, rout:0.849, gain:1, rev:0.10, lp:2000, lpSpan:2.8, damp:0.04, s:NKH, pick:PU.neck,
+          rig:R("lead","v30_412",{gain:7, bass:5, mid:6.5, treble:5}, {fx:{delay:{on:true, time:5.2, fb:4, mix:3, tone:4}, reverb:{on:true, type:"hall", mix:3, decay:5}}})},
+  fuzzwall:{grp:"grpRock", en:"Fuzz wall · thick and dreamy", es:"Muro de fuzz · grueso y de ensueño", kind:"pluck", rec:"green", out:1.064, rrel:0.15, rout:1.016, gain:1, rev:0.10, lp:2100, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
+          rig:R("clean","open212",{gain:4, treble:5}, {fx:{fz:{on:true, sus:9, tone:5, lvl:5}, chorus:{on:true, rate:2, depth:4, mix:3}, reverb:{on:true, type:"hall", mix:5, decay:7, tone:4}}})},
+  /* AOG-GUITAR-METAL-V1, then AOG-AMP-V1: "There is NO distortion for the METAL guitar chords". Now the real thing: a solid-state
+     high-gain head, the middle scooped, a gate for tight stops, a 4x12; power chords */
+  metal: {grp:"grpMetal", en:"Heavy metal · groove", es:"Metal pesado · groove", kind:"pluck", rec:"black", out:0.701, rrel:0.278, rout:0.714, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+          rig:R("groove","v30_412",{gain:6.5, bass:6.5, mid:2.5, treble:6.5, presence:6.5, depth:7}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}}, eq:{on:true, db:[2,3,1,0,-3,-4,-1,2,0,0]}})},
+  modern:{grp:"grpMetal", en:"Modern metal · tight and heavy", es:"Metal moderno · firme y pesado", kind:"pluck", rec:"black", out:0.642, rrel:0.093, rout:0.63, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+          rig:R("high","v30_412",{gain:6, bass:5.5, mid:5.5, treble:6, presence:6, depth:6.5}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}, od:{on:true, drive:0, tone:6, lvl:8}}})},
+  thrash:{grp:"grpMetal", en:"Thrash · fast and biting", es:"Thrash · rápido y mordiente", kind:"pluck", rec:"black", out:0.647, rrel:0.31, rout:0.662, power:true, gain:1, rev:0.05, lp:2600, lpSpan:2.6, damp:0.03, s:BRH, pick:PU.humb,
+          rig:R("crunch","green412",{gain:9, bass:5.5, mid:6, treble:7, presence:6.5, depth:6}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}, od:{on:true, drive:2, tone:6, lvl:8}}})},
+  doom:  {grp:"grpMetal", en:"Doom · slow and huge", es:"Doom · lento y enorme", kind:"pluck", rec:"green", out:0.889, rrel:0, rout:0.85, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.05, s:BRH, pick:PU.humb,
+          rig:R("high","v30_412",{gain:4, bass:7, mid:4, treble:4, presence:4, depth:8}, {fx:{fz:{on:true, sus:8, tone:3, lvl:6}, reverb:{on:true, type:"room", mix:2, decay:5}}})},
+  /* AOG-AMP-TONES-V1 (2026-10-04) — Jimmy: "Think about Led Zeppelin, Aerosmith, AC/DC, Black Sabbath, Opeth, when making the
+     sounds", then "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix … BLOW my mind". Named on
+     screen by style and feel; what inspired each is in its comment. out is measured (the C chord as loud as the grand). */
+  /* Jimmy Page: a humbucker into a cranked 100-watt British head with no master volume, a little tape echo; mid-rich, thick */
+  bigstack:{grp:"grpRock", en:"Classic rock · big stack and tape echo", es:"Rock clásico · gran cabezal y eco de cinta", kind:"pluck", rec:"black", out:0.663, rout:0.707, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BRH, pick:PU2.paf,
+          rig:R("plexi","green412",{gain:6.5, bass:5, mid:7, treble:6, presence:5.5, master:6}, {fx:{delay:{on:true, type:"tape", time:3.4, fb:2, mix:2.5, tone:4}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
+  /* early Jimmy Page: a bright single coil by the bridge into a small combo turned all the way up */
+  smallamp:{grp:"grpRock", en:"Raw blues rock · small amp turned up", es:"Blues rock crudo · amplificador pequeño a tope", kind:"pluck", rec:"black", out:0.606, rout:0.617, gain:1, rev:0.10, lp:2400, lpSpan:2.9, damp:0.03, s:TELE, pick:PU2.tele,
+          rig:R("small","open112",{gain:7, bass:4.5, mid:6, treble:6, presence:5.5, master:7})},
+  /* Joe Perry and Brad Whitford: a Les Paul into an American tweed head turned up, in an open-back cabinet: loose, dry, bluesy */
+  swagger:{grp:"grpRock", en:"Blues hard rock · swagger", es:"Hard rock bluesero · con actitud", kind:"pluck", rec:"black", out:0.516, rout:0.487, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
+          rig:R("blues","open212",{gain:6.5, bass:5, mid:7, treble:6.5, presence:6, master:7}, {fx:{reverb:{on:true, type:"spring", mix:1.5, decay:3}}})},
+  /* Joe Perry's wah: a Les Paul, a wah that opens as you dig in, a British head */
+  wahrock:{grp:"grpRock", en:"Hard rock · talking wah", es:"Hard rock · wah que habla", kind:"pluck", rec:"black", out:0.519, rout:0.538, gain:1, rev:0.09, lp:2300, lpSpan:2.9, damp:0.03, s:BRH, pick:PU2.paf,
+          rig:R("crunch","green412",{gain:6, bass:5, mid:6, treble:6, master:6}, {fx:{wah:{on:true, mode:"touch", sens:5, q:6}}})},
+  /* Angus and Malcolm Young: a low-output humbucker into a loud British head at low gain and no pedals; open chords that bite
+     when you dig in and clean up when you play softly */
+  openchords:{grp:"grpRock", en:"Hard rock · bright open chords", es:"Hard rock · acordes abiertos y brillantes", kind:"pluck", rec:"green", out:0.537, rout:0.581, gain:1, rev:0.08, lp:2500, lpSpan:2.9, damp:0.03, s:SGH, pick:PU2.paf,
+          rig:R("plexi","green412",{gain:3.5, bass:4.5, mid:6.5, treble:8, presence:7.5, master:7}, {bright:true})},
+  /* Eddie Van Halen: a hot humbucker into a cranked 100-watt head at low voltage ("brown"), a phaser and a tape echo */
+  brown: {grp:"grpRock", en:"Eighties rock · warm and spongy, with phaser", es:"Rock de los ochenta · cálido y esponjoso, con phaser", kind:"pluck", rec:"black", out:0.642, rrel:0.803, rout:0.66, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.035, s:HOT, pick:PU2.paf,
+          rig:R("brown","green412",{gain:6.5, bass:6, mid:6.5, treble:6.5, presence:6, master:7}, {fx:{phaser:{on:true, rate:2.5, depth:5, mix:4}, delay:{on:true, type:"tape", time:3.8, fb:2, mix:2.5, tone:4}, reverb:{on:true, type:"plate", mix:2, decay:4}}})},
+  /* Tony Iommi: a treble booster into a cranked British head, the bass up and the treble down: dark, thick and heavy */
+  darkriff:{grp:"grpMetal", en:"Heavy riffs · dark and thick", es:"Riffs pesados · oscuros y gruesos", kind:"pluck", rec:"green", out:0.513, rrel:0.603, rout:0.389, power:true, gain:1, rev:0.08, lp:2200, lpSpan:2.6, damp:0.045, s:BRH, pick:PU2.p90,
+          rig:R("plexi","green412",{gain:7, bass:9, mid:6, treble:2.5, presence:3, depth:7, master:7.5}, {fx:{tb:{on:true, boost:6, body:9}}, eq:{on:true, db:[0,4,6,3,0,-1,-3,-5,-6,-3]}})},
+  /* Opeth's heavy riffs: a hot humbucker into a British high-gain head, tight and gated, the middle left in */
+  progheavy:{grp:"grpMetal", en:"Progressive metal · tight and focused", es:"Metal progresivo · firme y definido", kind:"pluck", rec:"black", out:0.64, rrel:0.234, rout:0.652, power:true, gain:1, rev:0.06, lp:2600, lpSpan:2.6, damp:0.03, s:HOT, pick:PU2.hot,
+          rig:R("brithigh","v30_412",{gain:6, bass:5.5, mid:6.5, treble:6, presence:6, depth:6}, {tight:true, fx:{gate:{on:true, thr:4.5, rel:2}}})},
+  /* Opeth's quiet passages: the neck humbucker, a clean amp, a slow deep chorus and a big reverb */
+  lushclean:{grp:"grpClean", en:"Clean · lush chorus and reverb", es:"Limpia · coro y reverb envolventes", kind:"pluck", rec:"green", out:1.371, rout:1.336, gain:1, rev:0.12, lp:1900, lpSpan:2.8, damp:0.05, s:NKH, pick:PU.neck,
+          rig:R("clean","open212",{gain:3, bass:5.5, mid:5, treble:4.5, presence:4.5}, {fx:{chorus:{on:true, rate:1.5, depth:6, mix:5}, reverb:{on:true, type:"hall", mix:5, decay:7, tone:4}}})},
+  /* Opeth's acoustic passages: a twelve-string, warm, with a little room around it */
+  warmtwelve:{grp:"grpAcoustic", en:"Twelve-string · warm, in a room", es:"Doce cuerdas · cálida, en una sala", kind:"pluck", rec:"steel", out:1.258, rout:1.447, twelve:true, gain:0.85, rev:0.14, lp:2200, lpSpan:2.8, damp:0.035, s:WARM12,
+          rig:R("none","off",{}, {fx:{reverb:{on:true, type:"room", mix:3, decay:4, tone:5}}, eq:{on:true, db:[0,1.5,1,0,0,-0.5,-1,-1.5,-2,-1]}})},
+  /* Stevie Ray Vaughan: heavy strings and a single coil; a green overdrive with little drive and a lot of level into a loud
+     clean American amp; a spring reverb */
+  texas: {grp:"grpBlues", en:"Texas blues · heavy strings, pushed", es:"Blues de Texas · cuerdas gruesas, empujadas", kind:"pluck", rec:"green", out:0.352, rout:0.379, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
+          rig:R("clean","open410",{gain:5, bass:5.5, mid:5.5, treble:6, presence:6, master:7.5}, {fx:{od:{on:true, drive:1.5, tone:5.5, lvl:8.5}, reverb:{on:true, type:"spring", mix:2.5, decay:4}}})},
+  /* Stevie Ray Vaughan's "Cold Shot": the same strings through a spinning speaker */
+  spinblues:{grp:"grpBlues", en:"Blues · spinning speaker", es:"Blues · altavoz giratorio", kind:"pluck", rec:"green", out:0.683, rout:0.765, gain:1, rev:0.10, lp:2200, lpSpan:2.9, damp:0.035, s:BIG, pick:PU2.strat,
+          rig:R("clean","open410",{gain:4.5, bass:5.5, mid:5.5, treble:5.5, presence:5.5, master:6.5}, {fx:{od:{on:true, drive:1, tone:5, lvl:6.5}, rotary:{on:true, mode:"slow", depth:7, mix:8}, reverb:{on:true, type:"spring", mix:2, decay:4}}})},
+  /* Jimi Hendrix: a single coil into a vintage fuzz, a vibe, and a cranked British stack */
+  psych: {grp:"grpBlues", en:"Psychedelic rock · fuzz and vibe", es:"Rock psicodélico · fuzz y vibe", kind:"pluck", rec:"green", out:0.54, rrel:0.9, rout:0.566, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
+          rig:R("plexi","green412",{gain:4.5, bass:5, mid:6, treble:6.5, presence:6, master:7}, {fx:{fz:{on:true, type:"vintage", sus:5.5, tone:5.5, lvl:5}, vibe:{on:true, mode:"throb", rate:3, depth:7}}})},
+  /* Jimi Hendrix's octave fuzz: the neck pickup, the octave fuzz, the stack */
+  octfuzz:{grp:"grpBlues", en:"Psychedelic lead · octave fuzz", es:"Solo psicodélico · fuzz de octava", kind:"pluck", rec:"green", out:0.569, rrel:0.7, rout:0.54, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:NK1, pick:PU2.strat,
+          rig:R("plexi","green412",{gain:5, bass:5, mid:6, treble:6, presence:6, master:7}, {fx:{ofz:{on:true, fuzz:7, up:7, lvl:5}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
+  /* Eddie Van Halen's tapping lead: the low-voltage stack with more gain, a slow flanger, a tape echo */
+  taplead:{grp:"grpLead", en:"Tapping lead · warm and singing", es:"Solo con tapping · cálido y cantante", kind:"pluck", rec:"black", out:0.638, rrel:0.628, rout:0.683, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.paf,
+          rig:R("brown","green412",{gain:8, bass:5.5, mid:7, treble:6, presence:5.5, master:7}, {fx:{flanger:{on:true, rate:1.5, depth:4, fb:4, mix:3}, delay:{on:true, type:"tape", time:4.5, fb:3, mix:3, tone:4}, reverb:{on:true, type:"plate", mix:2, decay:4}}})},
+  /* Buckethead: a modern high-gain head pushed by a clean boost; smooth, a long sustain, a delay */
+  shred: {grp:"grpLead", en:"Shred lead · smooth, long sustain", es:"Solo shred · suave, sostenido largo", kind:"pluck", rec:"black", out:0.76, rrel:0.102, rout:0.767, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.04, s:HOT, pick:PU2.hot,
+          rig:R("high","v30_412",{gain:7, bass:5, mid:6.5, treble:5, presence:4, depth:6, master:6}, {fx:{od:{on:true, drive:0, tone:4, lvl:7}, delay:{on:true, time:5.5, fb:4, mix:3, tone:4}, reverb:{on:true, type:"hall", mix:2, decay:5}}, eq:{on:true, db:[0,0,0,0,1,1,-2,-3,-2,0]}})},
+  /* Tom Morello and Buckethead: the pitch shifter an octave up into a British head */
+  octup: {grp:"grpLead", en:"Pitch-shift lead · an octave up", es:"Solo con cambio de altura · una octava arriba", kind:"pluck", rec:"green", out:0.62, rout:0.639, gain:1, rev:0.08, lp:2400, lpSpan:2.8, damp:0.03, s:BRH, pick:PU2.paf,
+          rig:R("crunch","green412",{gain:6.5, bass:5, mid:6.5, treble:6, master:6}, {fx:{pitch:{on:true, mode:"up", amt:10, mix:10}}})},
+  /* David Gilmour: a single coil into a thick fuzz, a loud clean amp, a long echo and a hall */
+  spacefuzz:{grp:"grpLead", en:"Space rock lead · big fuzz, long echoes", es:"Solo de rock espacial · gran fuzz, ecos largos", kind:"pluck", rec:"green", out:0.799, rrel:0.247, rout:0.849, gain:1, rev:0.10, lp:2200, lpSpan:2.8, damp:0.05, s:BR1, pick:PU2.strat,
+          rig:R("clean","green412",{gain:3.5, bass:5, mid:5.5, treble:6, presence:5.5, master:6}, {fx:{fz:{on:true, sus:7, tone:5.5, lvl:5}, delay:{on:true, time:6.5, fb:5, mix:4, tone:5}, reverb:{on:true, type:"hall", mix:4, decay:6, tone:5}}})},
+  /* Carlos Santana: the neck humbucker into a cascaded American lead amp, warm and vocal */
+  singing:{grp:"grpLead", en:"Latin rock lead · warm and vocal", es:"Solo de rock latino · cálido y vocal", kind:"pluck", rec:"green", out:0.697, rrel:0.682, rout:0.669, gain:1, rev:0.12, lp:2000, lpSpan:2.8, damp:0.045, s:NKH, pick:PU.neck,
+          rig:R("cascade","open112",{gain:7, bass:4.5, mid:7, treble:5, presence:4.5, master:6}, {fx:{reverb:{on:true, type:"hall", mix:3, decay:5}}, eq:{on:true, db:[0,0,-1,0,2,3,1,-2,-3,0]}})},
+  /* Brian May: a treble booster into a chiming British combo turned up, and echoes */
+  anthem:{grp:"grpLead", en:"Anthem rock lead · treble boost and echoes", es:"Solo de rock de himno · realce de agudos y ecos", kind:"pluck", rec:"green", out:0.449, rrel:0.39, rout:0.468, gain:1, rev:0.10, lp:2300, lpSpan:2.8, damp:0.04, s:BR1, pick:PU2.strat,
+          rig:R("chime","blue212",{gain:6.5, bass:4.5, mid:6, treble:6.5, presence:6, master:7.5}, {fx:{tb:{on:true, boost:7, body:4}, delay:{on:true, time:5, fb:4, mix:3.5, tone:5}, reverb:{on:true, type:"hall", mix:2, decay:5}}})},
+  /* Dimebag Darrell's lead voice: the solid-state groove head, the middle less scooped than for riffs, the top lifted so
+     pinched harmonics squeal, no gate (the notes ring on), an echo */
+  groovelead:{grp:"grpLead", en:"Groove metal lead · sharp and singing", es:"Solo de metal groove · afilado y cantante", kind:"pluck", rec:"green", out:0.465, rrel:0.216, rout:0.545, gain:1, rev:0.08, lp:2600, lpSpan:2.7, damp:0.035, s:HOT, pick:PU2.hot,
+          rig:R("groove","v30_412",{gain:7.5, bass:6, mid:5, treble:7, presence:7, depth:6.5, master:6}, {fx:{delay:{on:true, time:4.5, fb:3, mix:3, tone:5}, reverb:{on:true, type:"hall", mix:2, decay:4}}, eq:{on:true, db:[1,2,1,0,-1,-1,1,3,2,0]}})},
+  /* Jimi Hendrix's wah: the vintage fuzz and a wah that opens as you dig in, into the cranked stack */
+  fuzzwah:{grp:"grpBlues", en:"Psychedelic wah · fuzz and wah", es:"Wah psicodélico · fuzz y wah", kind:"pluck", rec:"black", out:0.434, rout:0.447, gain:1, rev:0.10, lp:2300, lpSpan:2.9, damp:0.035, s:BR1, pick:PU2.strat,
+          rig:R("plexi","green412",{gain:4.5, bass:5, mid:6, treble:6, presence:6, master:7}, {fx:{wah:{on:true, mode:"touch", sens:6, q:6}, fz:{on:true, type:"vintage", sus:5.5, tone:5.5, lvl:5}}})}
+} : {
+  finger:{grp:"grpBass", en:"Electric bass · fingers", es:"Bajo eléctrico · con los dedos", kind:"pluck", rec:"growly", out:3.137, rout:3.447, gain:1, rev:0.05, lp:600, lpSpan:2.8, damp:0.05,
+          s:{sr:44100, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.6, pos:0.22, bright:0.16, soft:0.09, loop:0.02, pol2:0.25, atk:0, glow:0, rise:6, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("btube","b810",{gain:3, bass:6, mid:5, treble:4.5})},
+  pick:  {grp:"grpBass", en:"Electric bass · pick", es:"Bajo eléctrico · con púa", kind:"pluck", rec:"growly", out:2.589, rout:2.774, rclick:1, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.05,
+          s:{sr:44100, T0:6.5, fref:41, Texp:0.5, Tmin:2, Tmax:7.5, Thf:0.15, Thmax:0.5, pos:0.12, bright:0.38, soft:0.43, edge:0.6, edgeHz:1200, edgeTop:2500, disp:20, dispA:-0.6, loop:0.04, pol2:0.25,
+             atk:0.35, atkLp:0.43, atkHp:600, atkMs:1.6, glow:4, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("btube","b810",{gain:5, bass:5.5, mid:6, treble:6}, {fx:{comp:{on:true, sus:4, att:4, lvl:5}}})},
+  motown:{grp:"grpBass", en:"Vintage · warm and round", es:"Vintage · cálido y redondo", kind:"pluck", rec:"growly", out:3.264, rout:3.808, rlpSpan:2, rlp:200, gain:1, rev:0.05, lp:500, lpSpan:2.4, damp:0.05,
+          s:{sr:22050, T0:4, fref:41, Texp:0.5, Tmin:1.5, Tmax:5, Thf:0.08, Thmax:0.1, pos:0.2, bright:0.22, soft:0.12, noise:0.04, pol2:0.25, atk:0.04, atkLp:0.12, pick:0.22, durMax:4.5, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("bvint","b115",{gain:3, bass:6, mid:5, treble:3})},
+  slap:  {grp:"grpBass", en:"Slap · bright and punchy", es:"Slap · brillante y con pegada", kind:"pluck", rec:"growly", out:3.342, rout:3.855, rpop:1.5, rslap:1.2, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
+          s:{sr:22050, T0:6, fref:41, Texp:0.5, Tmin:1.8, Tmax:7, Thf:0.3, Thmax:0.8, pos:0.07, bright:0.85, soft:0.6, noise:0.3, pol2:0.25, atk:0.3, atkLp:0.85, pick:0.1, durMax:5, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("bclean","b410",{gain:3, bass:7, mid:2.5, treble:7.5}, {fx:{comp:{on:true, sus:6, att:2, lvl:5}}})},
+  fretless:{grp:"grpBass", en:"Fretless · smooth and singing", es:"Sin trastes · suave y cantante", kind:"pluck", rec:"ergo", out:3.889, rout:3.191, rglide:0.04, gain:1, rev:0.07, lp:700, lpSpan:2.6, damp:0.06,
+          s:{sr:22050, T0:9, fref:41, Texp:0.5, Tmin:2.2, Tmax:10, Thf:0.3, Thmax:0.5, pos:0.24, bright:0.35, soft:0.12, noise:0.02, pol2:0.35, atk:0.02, atkLp:0.1, pick:0.24, durMax:6, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("btube","b410",{gain:2.5, bass:5.5, mid:6, treble:5}, {fx:{chorus:{on:true, rate:2, depth:3, mix:3}}})},
+  dub:   {grp:"grpBass", en:"Dub · deep and dark", es:"Dub · profundo y oscuro", kind:"pluck", rec:"growly", out:2.19, rout:3.445, gain:1, rev:0.04, lp:420, lpSpan:2.2, damp:0.06,
+          s:{sr:22050, T0:6, fref:41, Texp:0.5, Tmin:1.8, Tmax:7, Thf:0.1, Thmax:0.12, pos:0.24, bright:0.22, soft:0.12, noise:0.04, pol2:0.25, atk:0.03, atkLp:0.1, pick:0.24, durMax:5, body:[["highpass",28,0.7,0]]},
+          pick:PU.bass, rig:R("bvint","b115",{gain:2, bass:7.5, mid:4, treble:2}, {eq:{on:true, db:[3,4,2,0,-2,-3,-3,-2,0,0]}})},
+  rock:  {grp:"grpHeavy", en:"Rock · gritty pick", es:"Rock · púa con aspereza", kind:"pluck", rec:"growly", out:1.749, rout:1.876, rclick:1, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.05,
+          s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.25, Thmax:0.6, pos:0.12, bright:0.62, soft:0.38, noise:0.22, pol2:0.25, atk:0.14, atkLp:0.6, pick:0.12, durMax:5.5, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("btube","b810",{gain:7.5, bass:5.5, mid:6.5, treble:6, master:7})},
+  /* AOG-AMP-V1 — Jimmy: "I want a metal style sounds (like Pantera / lamb of god)" for the bass too: the lows stay clean and
+     round under a driven middle (a blend, as metal bassists do), with the gate */
+  metal: {grp:"grpHeavy", en:"Heavy metal bass", es:"Bajo de metal pesado", kind:"pluck", rec:"growly", out:1.941, rout:1.855, rclick:1, gain:1, rev:0.04, lp:1100, lpSpan:2.8, damp:0.04,
+          s:{sr:22050, T0:7, fref:41, Texp:0.5, Tmin:2, Tmax:8, Thf:0.3, Thmax:0.7, pos:0.1, bright:0.75, soft:0.45, noise:0.25, pol2:0.25, atk:0.18, atkLp:0.65, pick:0.1, durMax:5.5, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("bdrive","b410",{gain:6.5, bass:6, mid:6, treble:6.5, blend:5}, {tight:true, fx:{gate:{on:true, thr:4, rel:2}}})},
+  fuzz:  {grp:"grpHeavy", en:"Fuzz bass", es:"Bajo con fuzz", kind:"pluck", rec:"growly", out:1.394, rout:1.398, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
+          s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("bclean","b810",{gain:3, bass:6, mid:5, treble:5}, {fx:{fz:{on:true, sus:7, tone:5, lvl:5}}})},
+  octave:{grp:"grpHeavy", en:"Octave bass · extra deep", es:"Bajo con octava · muy profundo", kind:"pluck", rec:"growly", out:3.009, rout:3.83, gain:1, rev:0.04, lp:600, lpSpan:2.8, damp:0.05,
+          s:{sr:22050, T0:8, fref:41, Texp:0.5, Tmin:2, Tmax:9, Thf:0.15, Thmax:0.2, pos:0.22, bright:0.3, soft:0.18, noise:0.08, pol2:0.25, atk:0.06, atkLp:0.15, pick:0.2, durMax:6, body:[["highpass",30,0.7,0]]},
+          pick:PU.bass, rig:R("btube","b810",{gain:3, bass:6, mid:5, treble:4.5}, {fx:{oct:{on:true, sub:7, dry:7}}})},
+  upright:{grp:"grpOther", en:"Upright bass", es:"Contrabajo", kind:"pluck", rec:"upright", out:1.058, rout:0.903, rrel:0.5, gain:3.94, rev:0.09, lp:650, lpSpan:2.6, damp:0.06,
+          s:{sr:44100, T0:3.2, fref:41, Texp:0.4, Tmin:1.4, Tmax:3.8, Thf:0.12, Thmax:0.35, pos:0.25, bright:0.19, soft:0.07, loop:0.02, pol2:0.3, atk:0, thump:0.6, thumpHz:65, thumpMs:25, glow:0, rise:3, pick:0, durMax:3.8,
+             body:[["highpass",35,0.7,0],["peaking",72,2.5,6],["peaking",145,2,3],["peaking",290,1.8,1.5],["highshelf",1200,0.7,-8]]}, rig:NO_AMP},
+  synth: {grp:"grpOther", en:"Synth bass", es:"Bajo de sintetizador", kind:"synth", rec:"synthbass", out:5.279, rout:3.028, gain:1.41, rev:0.06, damp:0.035,
+          syn:{sq:0.45, det:3, q:1.5, fa:4, fv:1500, fb:2.2, fb0:160, tc:0.12, sub:0.35, subMs:50, sus:0.62, st:0.22}, rig:R("bclean","off",{gain:2})},
+  acid:  {grp:"grpOther", en:"Synth bass · acid squelch", es:"Bajo de sintetizador · ácido", kind:"synth", rec:"acidbass", out:0.868, rout:1.002, gain:1, rev:0.05, damp:0.03,
+          syn:{sq:0, q:13, fa:5, fv:2600, fb:1.2, fb0:110, tc:0.11}, rig:R("bclean","off",{gain:2}, {fx:{ds:{on:true, dist:3, tone:6, lvl:5}}})},
+  /* AOG-AMP-TONES-V1 (2026-10-04) — the new basses, named by style and feel; what inspired each is in its comment */
+  /* John Paul Jones: fingers, round, warm and melodic; a tube amp into one big speaker, a light compressor */
+  melodic:{grp:"grpBass", en:"Rock bass · round and melodic", es:"Bajo de rock · redondo y melódico", kind:"pluck", rec:"growly", out:2.059, rout:2.133, gain:1, rev:0.05, lp:650, lpSpan:2.7, damp:0.05,
+          s:bsf({Thf:0.2, Thmax:0.8, pos:0.2, bright:0.2, soft:0.106, pick:0.18}), pick:PU.bass,
+          rig:R("btube","b115",{gain:4, bass:6, mid:7, treble:5}, {fx:{comp:{on:true, sus:3, att:5, lvl:5}}, eq:{on:true, db:[0,0,0,0,2,3,1,0,0,0]}})},
+  /* Tom Hamilton: a pick, punchy: clean lows with a little hair from the drive in the upper middle */
+  punchy:{grp:"grpBass", en:"Hard rock bass · pick, punchy", es:"Bajo de hard rock · púa, con pegada", kind:"pluck", rec:"growly", out:4.142, rout:3.663, rclick:1, gain:1, rev:0.05, lp:950, lpSpan:2.8, damp:0.045,
+          s:bsp({bright:0.42, atk:0.4}), pick:PU.bass,
+          rig:R("bdrive","b410",{gain:3, bass:8, mid:6.5, treble:6.5, blend:0})},
+  /* Cliff Williams: a pick, simple and solid eighth notes, deep and even */
+  eighths:{grp:"grpBass", en:"Driving rock bass · pick, solid eighths", es:"Bajo de rock constante · púa, corcheas sólidas", kind:"pluck", rec:"growly", out:2.922, rout:3.362, rclick:1, gain:1, rev:0.05, lp:800, lpSpan:2.7, damp:0.04,
+          s:bsp({T0:7, Tmax:8, pos:0.14, bright:0.3, soft:0.35, edge:0.5, edgeTop:2000, atk:0.28, glow:3, pick:0.17}), pick:PU.bass,
+          rig:R("btube","b810",{gain:4.5, bass:7, mid:5, treble:3.5}, {fx:{comp:{on:true, sus:6, att:4, lvl:5}}})},
+  /* Martín Méndez: fingers, warm and clear, a little grit over the clean lows */
+  progbass:{grp:"grpBass", en:"Progressive bass · warm and clear, a little grit", es:"Bajo progresivo · cálido y claro, algo áspero", kind:"pluck", rec:"growly", out:3.464, rout:2.855, gain:1, rev:0.05, lp:750, lpSpan:2.8, damp:0.05,
+          s:bsf({Thf:0.22, Thmax:0.9, pos:0.18, bright:0.24, soft:0.13, loop:0.03, atk:0.1, atkLp:0.2, atkHp:400, atkMs:2.5, rise:4, pick:0.16}), pick:PU.bass,
+          rig:R("bdrive","b410",{gain:2.5, bass:6, mid:5.5, treble:5.5, blend:2.5})},
+  /* Geezer Butler: fingers into a cranked tube amp and a vintage fuzz, dark and heavy */
+  doombass:{grp:"grpHeavy", en:"Heavy bass · dark fuzz", es:"Bajo pesado · fuzz oscuro", kind:"pluck", rec:"growly", out:1.072, rout:0.944, gain:1, rev:0.05, lp:700, lpSpan:2.8, damp:0.05,
+          s:bsf({pos:0.2, bright:0.225, soft:0.134, loop:0.03, pick:0.17}), pick:PU.bass,
+          rig:R("btube","b810",{gain:7, bass:7, mid:6, treble:3.5, master:7}, {fx:{fz:{on:true, type:"vintage", sus:6, tone:4, lvl:5}}})},
+  /* Geezer Butler's wah: the fuzz, and a wah left half open */
+  wahbass:{grp:"grpHeavy", en:"Heavy bass · fuzz and wah", es:"Bajo pesado · fuzz y wah", kind:"pluck", rec:"growly", out:1.274, rout:1.258, rrel:0.9, gain:1, rev:0.05, lp:800, lpSpan:2.8, damp:0.05,
+          s:bsf({pos:0.2, bright:0.225, soft:0.134, loop:0.03, pick:0.17}), pick:PU.bass,
+          rig:R("btube","b810",{gain:6, bass:6, mid:6, treble:5, master:6}, {fx:{fz:{on:true, type:"vintage", sus:6, tone:5, lvl:5}, wah:{on:true, mode:"fixed", pos:5.5, q:5}}})},
+  /* Les Claypool: slap and tap, bright and aggressive, the middle kept, a little drive */
+  slaptap:{grp:"grpFunk", en:"Slap and tap · bright and aggressive", es:"Slap y tapping · brillante y agresivo", kind:"pluck", rec:"growly", out:0.991, rout:1.022, rpop:1.5, rslap:1.2, gain:1, rev:0.05, lp:1500, lpSpan:2.8, damp:0.04,
+          s:bs({T0:6, Tmax:7, Tmin:1.8, Thf:0.35, Thmax:0.9, pos:0.07, bright:0.88, soft:0.62, noise:0.32, atk:0.32, atkLp:0.9, pick:0.09, durMax:5}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3.5, bass:7, mid:6.5, treble:7.5, presence:6}, {fx:{comp:{on:true, sus:5, att:2, lvl:5}, od:{on:true, drive:2, tone:7, lvl:5}}})},
+  /* Flea: slap, punchy and squeezed, a deep bottom and a bright top */
+  funkslap:{grp:"grpFunk", en:"Funk rock slap · punchy, deep and bright", es:"Slap de funk rock · con pegada, profundo y brillante", kind:"pluck", rec:"growly", out:1.745, rout:3.025, rpop:1.5, rslap:1.2, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
+          s:bs({T0:6.5, Thf:0.3, Thmax:0.8, pos:0.08, bright:0.84, soft:0.58, noise:0.28, atk:0.28, atkLp:0.85, pick:0.11, durMax:5}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3, bass:8, mid:3, treble:8, presence:6, depth:7}, {bright:true, fx:{comp:{on:true, sus:8, att:2, lvl:5}}, eq:{on:true, db:[2,3,1,-1,-3,-2,0,3,2,0]}})},
+  /* Les Claypool and Flea: the envelope filter's funky quack, with the low notes kept under it */
+  envfunk:{grp:"grpFunk", en:"Funk bass · envelope filter", es:"Bajo funk · filtro de envolvente", kind:"pluck", rec:"growly", out:3.917, rout:2.26, gain:1, rev:0.05, lp:900, lpSpan:2.8, damp:0.04,
+          s:bsf({pos:0.16, bright:0.29, soft:0.163, loop:0.03, atk:0.12, atkLp:0.3, atkHp:400, atkMs:2, glow:2, rise:3, pick:0.14}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3, bass:6, mid:5, treble:5}, {fx:{env:{on:true, mode:"deep", sens:6, q:6, mix:9}}})},
+  /* Les Claypool's flanger: slap through a jet-plane swirl */
+  flangeslap:{grp:"grpFunk", en:"Slap · flanger swirl", es:"Slap · remolino de flanger", kind:"pluck", rec:"growly", out:2.66, rout:3.557, rpop:1.5, rslap:1.2, gain:1, rev:0.05, lp:1400, lpSpan:2.8, damp:0.04,
+          s:bs({T0:6, Tmax:7, Tmin:1.8, Thf:0.35, Thmax:0.9, pos:0.07, bright:0.88, soft:0.62, noise:0.32, atk:0.32, atkLp:0.9, pick:0.09, durMax:5}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3.5, bass:6, mid:6, treble:7}, {fx:{comp:{on:true, sus:5, att:2, lvl:5}, flanger:{on:true, rate:2, depth:6, fb:5, mix:5}}})},
+  /* Jaco Pastorius: a fretless as a lead voice. Plucked and heard near the bridge, the highs ring on (the "mwah" of a string
+     on a smooth fingerboard, and clear harmonics); a clean solid-state amp, a compressor, a touch of chorus and a room */
+  fretlead:{grp:"grpBass", en:"Fretless lead · bright and singing", es:"Sin trastes solista · brillante y cantante", kind:"pluck", rec:"ergo", out:3.155, rout:2.746, rglide:0.04, gain:1, rev:0.08, lp:1300, lpSpan:2.6, damp:0.06,
+          s:bsf({T0:10, Tmax:11, Tmin:2.6, Thf:0.55, Thmax:2.4, pos:0.12, bright:0.29, soft:0.083, loop:0.02, pol2:0.38, rise:4, pick:0.1}), pick:PU.bass,
+          rig:R("bclean","b410",{gain:3, bass:5, mid:6.5, treble:6, presence:5.5}, {fx:{comp:{on:true, sus:5, att:4, lvl:5}, chorus:{on:true, rate:2, depth:3, mix:3}, reverb:{on:true, type:"room", mix:2, decay:4}}})},
+  /* James Jamerson: flatwound strings on a split-coil bass with a foam mute by the bridge, into a small tube combo: round,
+     short, thumpy notes */
+  thump:{grp:"grpBass", en:"Sixties soul bass · round, short and thumpy", es:"Bajo soul de los sesenta · redondo, corto y con golpe", kind:"pluck", rec:"growly", rstac:true, out:3.378, rout:5.318, rlpSpan:2, rlp:200, gain:1, rev:0.05, lp:450, lpSpan:2.2, damp:0.04,
+          s:bsf({T0:1.3, Tmin:0.7, Tmax:1.6, Texp:0.3, Thf:0.12, Thmax:0.15, pos:0.2, bright:0.106, soft:0.051, loop:0.01, pol2:0.2, rise:5, thump:0.25, thumpHz:80, thumpMs:25, pick:0.22, durMax:2.2}), pick:PU.bass,
+          rig:R("bvint","b115",{gain:3.5, bass:6.5, mid:5.5, treble:2.5})}
+};
+function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
+
+/* ── music: keys, chords (the piano's) ── */
+const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10], add9:[0,4,7,14]};
+const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7", add9:"add9"};
+const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7", add9:" add9"};
+/* AOG-ANYCHORD-V1 (Jimmy, 2026-10-05: "scales, modes and chords and all that"): every kind in the shared chord library
+   (aog-chords.js, 45 kinds) joins the six above, which stay exactly as they are. Steps above the root; 14 = the 9th.
+   The patterns, the pads and the ways to play (the bass lines, the strums) are written for the six, so a listing of Q
+   (Object.keys) still gives only those six; the others are there by name, for the Any chord menu */
+const AC=window.AOGChords||null;
+if(AC) AC.ids().forEach(id=>{ if(Q[id]) return; Object.defineProperty(Q, id, {value:AC.KINDS[id].iv.slice(), enumerable:false});
+  const y=AC.sym(id); SUF[id]=y; SUF_ES[id]=/^[a-z]/i.test(y)?" "+y:y; });
+const Q6=Object.keys(Q);
+const NAMES={sharp:["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"], flat:["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"]};
+const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"], flat:["Do","Re♭","Re","Mi♭","Mi","Fa","Sol♭","Sol","La♭","La","Si♭","Si"]};
+const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
+function flats(){ const major=S.minor?(S.key+3)%12:S.key; return [5,10,3,8,1].indexOf(major)>=0; }
+function pcName(pc){ const set=flats()?"flat":"sharp"; return (S.lang==="es"?SOLFA:NAMES)[set][((pc%12)+12)%12]; }
+function chordName(c){ const pc=((S.key+c.off)%12+12)%12; return rootName(pc, c.q)+(S.lang==="es"?SUF_ES:SUF)[c.q]; }
+/* a root in the key is spelled like the key; one outside it (the chord wheel lets you pick those) the usual way round the wheel */
+function rootName(pc, q){
+  const major=S.minor?(S.key+3)%12:S.key, deg=((pc-major)%12+12)%12;
+  if([0,2,4,5,7,9,11].indexOf(deg)>=0) return pcName(pc);
+  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : pc;
+  return (S.lang==="es"?SOLFA:NAMES)[(rel*7)%12<=6?"sharp":"flat"][pc];
+}
+/* six pads: the chords that belong to the key (numbers are steps of the scale) */
+const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n:4,off:5,q:"maj"},{n:5,off:7,q:"maj"},{n:6,off:9,q:"min"}];
+/* AOG-PADS-1TO6-V1 (2026-10-03) — Jimmy: "The wheel the the pad chords have the wrong numbers. It is 134567, not 123456".
+   The pads count 1 to 6 in a minor key too (they had been the chords' steps in the scale: 1 3 4 5 6 7) */
+const PADS_MINOR=[{n:1,off:0,q:"min"},{n:2,off:3,q:"maj"},{n:3,off:5,q:"min"},{n:4,off:7,q:"min"},{n:5,off:8,q:"maj"},{n:6,off:10,q:"maj"}];
+/* AOG-CHORDS-MORE-V1 (2026-10-04): "Six open chords is the right classroom default. The next row teachers will ask for is
+   small: G7, Cadd9, D7, Em7 … just enough for the songs they already use." In C that row is G7 Cadd9 D7 Em7; it moves with
+   the key (in G: D7 Gadd9 A7 Bm7). In a minor key the same idea: E7 Am7 Dm7 G7 in A minor. On the chord strip only. */
+const MORE_MAJOR=[{n:7,off:7,q:"dom7"},{n:8,off:0,q:"add9"},{n:9,off:2,q:"dom7"},{n:10,off:4,q:"m7"}];
+const MORE_MINOR=[{n:7,off:7,q:"dom7"},{n:8,off:0,q:"m7"},{n:9,off:5,q:"m7"},{n:10,off:10,q:"dom7"}];
+function allPads(){ return pads().concat(S.minor?MORE_MINOR:MORE_MAJOR); }
+function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
+const C=(off,q)=>({off:off,q:q||"maj"});
+/* the piano's eighteen patterns (AOG-PIANO-PATTERNS-V2) and, AOG-STRINGS-WAYS-V1 (Jimmy: "start a chord pattern increased!!!!"),
+   twenty-six more: forty-four in five groups. Each group's patterns sit together, in the menu's order (pop, rock, soul,
+   jazz, minor); the ids never change. Offsets count from the key's tonic; a minor pattern goes by its name, no numbers. */
+const PRESETS=[
+  {id:"pop",     g:"pop",  en:"Pop · 1 5 6 4",             es:"Pop · 1 5 6 4",              minor:false, chords:[C(0),C(7),C(9,"min"),C(5)]},
+  {id:"fifties", g:"pop",  en:"Fifties · 1 6 4 5",         es:"Años 50 · 1 6 4 5",          minor:false, chords:[C(0),C(9,"min"),C(5),C(7)]},
+  {id:"sadpop",  g:"pop",  en:"Sad pop · 6 4 1 5",         es:"Pop triste · 6 4 1 5",       minor:false, chords:[C(9,"min"),C(5),C(0),C(7)]},
+  {id:"anime",   g:"pop",  en:"Anime and J-pop · 4 5 3 6", es:"Anime y J-pop · 4 5 3 6",    minor:false, chords:[C(5),C(7),C(4,"min"),C(9,"min")]},
+  {id:"canon",   g:"pop",  en:"Canon · 8 chords",          es:"Canon · 8 acordes",          minor:false, chords:[C(0),C(7),C(9,"min"),C(4,"min"),C(5),C(0),C(5),C(7)]},
+  {id:"three",   g:"pop",  en:"Three chords · 1 4 5 1",    es:"Tres acordes · 1 4 5 1",     minor:false, chords:[C(0),C(5),C(7),C(0)]},
+  {id:"fiesta",  g:"pop",  en:"Fiesta · 1 4 5 4",          es:"Fiesta · 1 4 5 4",           minor:false, chords:[C(0),C(5),C(7),C(5)]},
+  {id:"rock",    g:"pop",  en:"Rock · 1 ♭7 4 1",           es:"Rock · 1 ♭7 4 1",            minor:false, chords:[C(0),C(10),C(5),C(0)]},
+  {id:"hymn",    g:"pop",  en:"Hymn and gospel · 1 4 1 5", es:"Himno y góspel · 1 4 1 5",  minor:false, chords:[C(0),C(5),C(0),C(7)]},
+  {id:"wheel",   g:"pop",  en:"Around the wheel · 3 6 2 5 1", es:"Por la rueda · 3 6 2 5 1", minor:false, chords:[C(4,"dom7"),C(9,"dom7"),C(2,"dom7"),C(7,"dom7"),C(0),C(0)]},
+  {id:"anthem",  g:"pop",  en:"Rock anthem · 1 4 6 5",     es:"Himno de rock · 1 4 6 5",    minor:false, chords:[C(0),C(5),C(9,"min"),C(7)]},
+  {id:"uplift",  g:"pop",  en:"Uplifting pop · 1 3 6 4",   es:"Pop alegre · 1 3 6 4",       minor:false, chords:[C(0),C(4,"min"),C(9,"min"),C(5)]},
+  {id:"folkrock",g:"pop",  en:"Folk rock · 1 5 2",         es:"Folk rock · 1 5 2",          minor:false, chords:[C(0),C(7),C(2,"min"),C(2,"min")]},
+  {id:"dreamy",  g:"pop",  en:"Dreamy · 1 3 4 4m",         es:"De ensueño · 1 3 4 4m",      minor:false, chords:[C(0),C(4),C(5),C(5,"min")]},
+  {id:"country", g:"pop",  en:"Country · 8 bars",          es:"Country · 8 compases",       minor:false, chords:[C(0),C(0),C(5),C(5),C(7),C(7),C(0),C(0)]},
+  /* AOG-PATTERNS-MORE-V1 (Jimmy, 2026-10-05: "I would love more chord patterns"): fifteen more, fifty-nine in all */
+  {id:"cinema",  g:"pop",  en:"Film score · 1 ♭6 ♭7 1",    es:"Música de cine · 1 ♭6 ♭7 1", minor:false, chords:[C(0),C(8),C(10),C(0)]},
+  {id:"popclimb",g:"pop",  en:"Pop climb · 4 1 5 6",       es:"Pop que sube · 4 1 5 6",     minor:false, chords:[C(5),C(0),C(7),C(9,"min")]},
+  {id:"campfire",g:"pop",  en:"Campfire · 1 2 4 1",        es:"Fogata · 1 2 4 1",           minor:false, chords:[C(0),C(2,"min"),C(5),C(0)]},
+  {id:"arena",   g:"rock", en:"Arena rock · 1 5 4 4",      es:"Rock de estadio · 1 5 4 4",  minor:false, chords:[C(0),C(7),C(5),C(5)]},
+  {id:"mixo",    g:"rock", en:"Two-chord rock · 1 ♭7",     es:"Rock de dos acordes · 1 ♭7", minor:false, chords:[C(0),C(10),C(0),C(10)]},
+  {id:"grunge",  g:"rock", en:"Grunge · 1 4 ♭3 ♭6",        es:"Grunge · 1 4 ♭3 ♭6",         minor:false, chords:[C(0),C(5),C(3),C(8)]},
+  {id:"fifths",  g:"rock", en:"Walk round the wheel · ♭6 ♭3 ♭7 4 1", es:"Vuelta por la rueda · ♭6 ♭3 ♭7 4 1", minor:false, chords:[C(8),C(3),C(10),C(5),C(0)]},
+  {id:"metalmarch",g:"rock", en:"Metal march",             es:"Marcha metalera",  minor:true,  chords:[C(0,"min"),C(8),C(10),C(0,"min")]},
+  {id:"darkheavy",g:"rock", en:"Dark and heavy",           es:"Oscuro y pesado",  minor:true,  chords:[C(0,"min"),C(1),C(0,"min"),C(1)]},
+  {id:"doom",    g:"rock", en:"Doom",                      es:"Doom",             minor:true,  chords:[C(0,"min"),C(6),C(5,"min"),C(0,"min")]},
+  {id:"power",   g:"rock", en:"Power chords · 1 ♭3 4 1",   es:"Acordes de poder · 1 ♭3 4 1", minor:false, chords:[C(0),C(3),C(5),C(0)]},
+  {id:"classic", g:"rock", en:"Classic rock · 1 ♭7 ♭6 ♭7", es:"Rock clásico · 1 ♭7 ♭6 ♭7", minor:false, chords:[C(0),C(10),C(8),C(10)]},
+  {id:"soul",    g:"soul", en:"Soul · 1 3 4 5",            es:"Soul · 1 3 4 5",             minor:false, chords:[C(0),C(4,"min"),C(5),C(7)]},
+  {id:"funk",    g:"soul", en:"Funk · 1 4 with sevenths",  es:"Funk · 1 4 con séptimas",    minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(0,"dom7")]},
+  {id:"groove2", g:"soul", en:"Two-chord groove · 1 4",    es:"Ritmo de dos acordes · 1 4", minor:false, chords:[C(0),C(5),C(0),C(5)]},
+  {id:"dance",   g:"soul", en:"Dance · 6 5 4 5",           es:"Baile · 6 5 4 5",            minor:false, chords:[C(9,"min"),C(7),C(5),C(7)]},
+  {id:"lofi",    g:"soul", en:"Lo-fi · 4 3 2 1",           es:"Lo-fi · 4 3 2 1",            minor:false, chords:[C(5,"maj7"),C(4,"m7"),C(2,"m7"),C(0,"maj7")]},
+  {id:"neosoul", g:"soul", en:"Neo-soul · 2 5 1 6",        es:"Neo-soul · 2 5 1 6",         minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(9,"m7")]},
+  {id:"gospel",  g:"soul", en:"Gospel · 1 4 6 5 with sevenths", es:"Góspel · 1 4 6 5 con séptimas", minor:false, chords:[C(0,"maj7"),C(5,"maj7"),C(9,"m7"),C(7,"dom7")]},
+  {id:"motown",  g:"soul", en:"Detroit soul · 1 6 2 5",    es:"Soul de Detroit · 1 6 2 5",           minor:false, chords:[C(0),C(9,"min"),C(2,"min"),C(7)]},
+  {id:"disco",   g:"soul", en:"Disco · 2 5 with sevenths", es:"Disco · 2 5 con séptimas",   minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(2,"m7"),C(7,"dom7")]},
+  {id:"blues",   g:"jazz", en:"Blues · 12 bars",           es:"Blues · 12 compases",        minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"jazz",    g:"jazz", en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(0,"maj7")]},
+  {id:"turn",    g:"jazz", en:"Jazz turnaround · 1 6 2 5", es:"Vuelta de jazz · 1 6 2 5",   minor:false, chords:[C(0,"maj7"),C(9,"m7"),C(2,"m7"),C(7,"dom7")]},
+  {id:"mblues",  g:"jazz", en:"Minor blues · 12 bars",     es:"Blues menor · 12 compases",  minor:true,  chords:[C(0,"m7"),C(0,"m7"),C(0,"m7"),C(0,"m7"),C(5,"m7"),C(5,"m7"),C(0,"m7"),C(0,"m7"),C(7,"dom7"),C(5,"m7"),C(0,"m7"),C(7,"dom7")]},
+  {id:"blues8",  g:"jazz", en:"Blues · 8 bars",            es:"Blues · 8 compases",         minor:false, chords:[C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"quick",   g:"jazz", en:"Quick-change blues · 12 bars", es:"Blues de cambio rápido · 12 compases", minor:false, chords:[C(0,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"jazzblues",g:"jazz", en:"Jazz blues · 12 bars",     es:"Blues de jazz · 12 compases", minor:false, chords:[C(0,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(9,"dom7"),C(2,"m7"),C(7,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"bossa",   g:"jazz", en:"Bossa nova · 1 2 5 1",      es:"Bossa nova · 1 2 5 1",       minor:false, chords:[C(0,"maj7"),C(2,"m7"),C(7,"dom7"),C(0,"maj7")]},
+  {id:"circle",  g:"jazz", en:"Circle · 6 2 5 1",          es:"Círculo · 6 2 5 1",          minor:false, chords:[C(9,"m7"),C(2,"m7"),C(7,"dom7"),C(0,"maj7")]},
+  {id:"backdoor",g:"jazz", en:"Backdoor · 4 ♭7 1",         es:"Puerta trasera · 4 ♭7 1",    minor:false, chords:[C(5,"m7"),C(10,"dom7"),C(0,"maj7"),C(0,"maj7")]},
+  {id:"minjazz", g:"jazz", en:"Minor jazz",                es:"Jazz menor",       minor:true,  chords:[C(5,"m7"),C(7,"dom7"),C(0,"m7"),C(0,"m7")]},
+  {id:"modal",   g:"jazz", en:"Modal jazz",                es:"Jazz modal",       minor:true,  chords:[C(0,"m7"),C(0,"m7"),C(1,"m7"),C(0,"m7")]},
+  {id:"minor",   g:"min",  en:"Minor groove",              es:"Ritmo menor",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
+  {id:"flamenco",g:"min",  en:"Flamenco",                  es:"Flamenco",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]},
+  {id:"mfolk",   g:"min",  en:"Minor folk",                es:"Folk menor",       minor:true,  chords:[C(0,"min"),C(5,"min"),C(7),C(0,"min")]},
+  {id:"epic",    g:"min",  en:"Epic",                      es:"Épico",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]},
+  {id:"mballad", g:"min",  en:"Minor ballad",              es:"Balada menor",     minor:true,  chords:[C(0,"min"),C(5,"min"),C(10),C(3)]},
+  {id:"heroic",  g:"min",  en:"Heroic",                    es:"Heroico",          minor:true,  chords:[C(0,"min"),C(3),C(10),C(5)]},
+  {id:"latin",   g:"min",  en:"Latin rock",                es:"Rock latino",      minor:true,  chords:[C(0,"m7"),C(5,"dom7"),C(0,"m7"),C(5,"dom7")]},
+  {id:"cinematic",g:"min", en:"Cinematic",                 es:"Cinematográfico",  minor:true,  chords:[C(0,"min"),C(8),C(5,"min"),C(7)]},
+  {id:"tango",   g:"min",  en:"Tango",                     es:"Tango",            minor:true,  chords:[C(0,"min"),C(5,"min"),C(7,"dom7"),C(0,"min")]},
+  {id:"spy",     g:"min",  en:"Spy theme",                 es:"Tema de espías",   minor:true,  chords:[C(0,"min"),C(8),C(0,"min"),C(8)]},
+  {id:"dorian",  g:"min",  en:"Dorian groove",             es:"Ritmo dórico",     minor:true,  chords:[C(0,"m7"),C(5),C(0,"m7"),C(5)]}
+];
+const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, rock:{en:"Rock and metal",es:"Rock y metal"}, soul:{en:"Soul, funk and dance",es:"Soul, funk y baile"},
+  jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
+const RHYTHM_WORDS = GTR ? {
+  hold:{en:"Hold · one strum a bar",es:"Mantener · un rasgueo por compás"},
+  down:{en:"Down strums · four a bar",es:"Rasgueos hacia abajo · cuatro por compás"},
+  folk:{en:"Folk · down, down-up, up-down-up",es:"Folk · abajo, abajo-arriba, arriba-abajo-arriba"},
+  pick:{en:"Fingerpicking · one string at a time",es:"Punteo · una cuerda a la vez"},
+  reggae:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"},
+  chug:{en:"Chug · short muted strums, metal",es:"Chug · rasgueos cortos y apagados, metal"},          /* AOG-GUITAR-METAL-V1 */
+  gallop:{en:"Gallop · da-ga-da, metal",es:"Galope · ta-ca-ta, metal"},
+  /* AOG-STRINGS-WAYS-V1 (2026-10-03) — Jimmy: "I want more ways to play chords on the guitar as well as bass." */
+  pop:{en:"Pop · strums with a slap on beats 2 and 4",es:"Pop · rasgueos con un golpe en los tiempos 2 y 4"},
+  waltz:{en:"Waltz · bass, strum, strum, three beats",es:"Vals · bajo, rasgueo, rasgueo, tres tiempos"},
+  travis:{en:"Travis picking · the thumb keeps time",es:"Punteo Travis · el pulgar lleva el tiempo"},
+  ballad:{en:"Ballad · rolling up and down the strings",es:"Balada · sube y baja por las cuerdas"},
+  country:{en:"Country · bass note, then strum",es:"Country · nota grave, luego rasgueo"},
+  rock:{en:"Rock · eight down strums a bar",es:"Rock · ocho rasgueos hacia abajo por compás"},
+  punk:{en:"Punk · eight hard strums on the low strings",es:"Punk · ocho rasgueos fuertes en las cuerdas graves"},
+  thrash:{en:"Thrash · fast muted strums, metal",es:"Thrash · rasgueos rápidos y apagados, metal"},
+  breakdown:{en:"Breakdown · heavy hits with gaps, metal",es:"Breakdown · golpes pesados con pausas, metal"},
+  tremolo:{en:"Tremolo · one note picked very fast, metal",es:"Trémolo · una nota punteada muy rápido, metal"},
+  funk:{en:"Funk · short, quick strums",es:"Funk · rasgueos cortos y rápidos"},
+  bossa:{en:"Bossa nova · Brazil",es:"Bossa nova · Brasil"},
+  rumba:{en:"Flamenco rumba · Spain",es:"Rumba flamenca · España"},
+  shuffle:{en:"Shuffle · a swinging blues on the low strings",es:"Shuffle · un blues con swing en las cuerdas graves"}
+} : {
+  root:{en:"Root · one long note a bar",es:"Raíz · una nota larga por compás"},
+  steady:{en:"Steady · four notes a bar",es:"Constante · cuatro notas por compás"},
+  eighths:{en:"Driving · on every beat, with soft notes between",es:"Con empuje · en cada tiempo, con notas suaves entre medias"},
+  fifth:{en:"Root and fifth · country",es:"Raíz y quinta · country"},
+  walk:{en:"Walking · jazz and blues",es:"Caminando · jazz y blues"},
+  octave:{en:"Octaves · disco and funk",es:"Octavas · disco y funk"},
+  /* AOG-STRINGS-WAYS-V1 */
+  waltz:{en:"Waltz · root and fifth, three beats",es:"Vals · raíz y quinta, tres tiempos"},
+  arpeggio:{en:"Arpeggio · up and down the chord",es:"Arpegio · sube y baja por el acorde"},
+  boogie:{en:"Boogie-woogie · walks up and back, blues",es:"Boogie-woogie · sube y vuelve, blues"},
+  approach:{en:"Lead-in · little steps into each new chord",es:"Entrada · pasitos hacia cada acorde nuevo"},
+  motown:{en:"Detroit soul · bouncy 1960s soul",es:"Soul de Detroit · soul alegre de los 60"},
+  rock:{en:"Rock · root, fifth, octave",es:"Rock · raíz, quinta, octava"},
+  gallop:{en:"Gallop · da-ga-da, metal",es:"Galope · ta-ca-ta, metal"},
+  sixteen:{en:"Metal · sixteen fast notes a bar",es:"Metal · dieciséis notas rápidas por compás"},
+  breakdown:{en:"Breakdown · heavy hits with gaps, metal",es:"Breakdown · golpes pesados con pausas, metal"},
+  funk:{en:"Funk · jumpy, with quick high notes",es:"Funk · saltarín, con notas agudas rápidas"},
+  reggae:{en:"Reggae · deep, with room to breathe",es:"Reggae · grave y con espacio"},
+  tumbao:{en:"Tumbao · salsa, a step ahead of the chord",es:"Tumbao · salsa, un paso antes del acorde"},
+  bossa:{en:"Bossa nova · Brazil",es:"Bossa nova · Brasil"}
+};
+/* the menu, in four groups as the piano's is (AOG-PIANO-WAYS-V2/V3) */
+const RHYTHM_GROUPS = GTR ? [
+  [{en:"Strumming",es:"Rasgueos"},["hold","down","folk","pop","waltz"]],
+  [{en:"Picking",es:"Punteos"},["pick","travis","ballad","country"]],
+  [{en:"Rock and metal",es:"Rock y metal"},["rock","punk","chug","gallop","thrash","breakdown","tremolo"]],
+  [{en:"Grooves from around the world",es:"Ritmos del mundo"},["reggae","funk","bossa","rumba","shuffle"]]
+] : [
+  [{en:"Steady",es:"Firmes"},["root","steady","eighths","fifth","waltz"]],
+  [{en:"Moving lines",es:"Líneas que se mueven"},["walk","arpeggio","boogie","approach","motown"]],
+  [{en:"Rock and metal",es:"Rock y metal"},["rock","gallop","sixteen","breakdown"]],
+  [{en:"Grooves from around the world",es:"Ritmos del mundo"},["octave","funk","reggae","tumbao","bossa"]]
+];
+/* a waltz has three beats in a bar; everything else, four. A waltz plays without a four-beat drum beat. */
+const RHYTHM_BEATS={waltz:3};
+function beatsPerBar(){ return RHYTHM_BEATS[S.rhythm]||4; }
+function drumsLive(){ return !!(S.withDrums && DRUM.take && beatsPerBar()===4); }
+/* the shuffle and the boogie-woogie swing by themselves (the second half of each beat comes a little late, as on the piano);
+   with your drum beat, everything swings as the beat does */
+const RHYTHM_SWING = GTR ? {shuffle:0.64} : {boogie:0.64};
+function mtof(m){ return 440*Math.pow(2,(m-69)/12); }
+function chordPcs(c){ return Q[c.q].map(i=>((S.key+c.off+i)%12+12)%12); }
+
+/* ── where the hand is: a window of frets, and the open strings when it is near the nut ── */
+const NECK={n:4, W:330, H:300, rowH:44, nut:46, strW:0, cw:50, top:8, rows:TUNING.length};
+function win(){ return [S.fret0, S.fret0+NECK.n-1]; }
+function inReach(f){ const [a,b]=win(); return f===0 ? a<=2 : (f>=a && f<=b); }
+/* guitar chord shapes, strings low to high, -1 = do not play that string. The open chords a beginner learns first;
+   every other chord is one of three movable shapes (the E, A and D chords slid up the neck, the first finger as the nut). */
+const OPEN={
+  "0maj":[-1,3,2,0,1,0], "9maj":[-1,0,2,2,2,0], "7maj":[3,2,0,0,0,3], "4maj":[0,2,2,1,0,0], "2maj":[-1,-1,0,2,3,2],
+  "9min":[-1,0,2,2,1,0], "4min":[0,2,2,0,0,0], "2min":[-1,-1,0,2,3,1],
+  "0dom7":[-1,3,2,3,1,0], "9dom7":[-1,0,2,0,2,0], "7dom7":[3,2,0,0,0,1], "4dom7":[0,2,0,1,0,0], "2dom7":[-1,-1,0,2,1,2], "11dom7":[-1,2,1,2,0,2],
+  "0maj7":[-1,3,2,0,0,0], "9maj7":[-1,0,2,1,2,0], "7maj7":[3,2,0,0,0,2], "4maj7":[0,2,1,1,0,0], "2maj7":[-1,-1,0,2,2,2], "5maj7":[-1,-1,3,2,1,0],
+  "9m7":[-1,0,2,0,1,0], "4m7":[0,2,0,0,0,0], "2m7":[-1,-1,0,2,1,1], "11m7":[-1,2,0,2,0,2],
+  "0add9":[-1,3,2,0,3,0], "7add9":[3,-1,0,2,0,3], "5add9":[-1,-1,3,2,1,3]
+  /* AOG-ANYCHORD-V1: "2add9" (x x 0 2 3 0) left: it is D A D E, a Dsus2 with no F♯. findVoicing finds a D add9 with its 3rd */
+};
+const MOVABLE=[
+  {at:4, maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], dom7:[0,2,0,1,0,0], maj7:[0,-1,1,1,0,-1], m7:[0,2,0,0,0,0], add9:[0,2,4,1,0,0]},          /* E shape: root on the 6th string */
+  {at:9, maj:[-1,0,2,2,2,0], min:[-1,0,2,2,1,0], dom7:[-1,0,2,0,2,0], maj7:[-1,0,2,1,2,0], m7:[-1,0,2,0,1,0], add9:[-1,0,2,4,2,0]},       /* A shape: root on the 5th */
+  {at:2, maj:[-1,-1,0,2,3,2], min:[-1,-1,0,2,3,1], dom7:[-1,-1,0,2,1,2], maj7:[-1,-1,0,2,2,2], m7:[-1,-1,0,2,1,1]}    /* D shape: root on the 4th (AOG-ANYCHORD-V1: its add9, x x 0 2 3 0, had no 3rd: a sus2; gone) */
+];
+function shapesFor(c){
+  const root=((S.key+c.off)%12+12)%12, out=[], o=OPEN[root+c.q];
+  if(o) out.push({f:o, open:true});
+  MOVABLE.forEach(T=>{ if(!T[c.q]) return; const base=((root-T.at)%12+12)%12;
+    [base, base+12].forEach(r=>{ if(r===0 && o) return; const f=T[c.q].map(x=>x<0?-1:x+r); if(Math.max.apply(null,f)<=MAXF) out.push({f:f, open:r===0}); }); });
+  return out;
+}
+/* the shape that fits where the hand is: every fretted note on the frets on screen, the open strings only near the nut.
+   The chord charts' shapes first (the open chords near the nut, then the movable ones near the window's low end); when
+   none of them fits, findVoicing builds one that does, so every chord can be played wherever the hand is */
+const VOICINGS=new Map();
+function fits(f, a, b){ return f.every(x=>x<0 || (x===0 ? a<=2 : (x>=a && x<=b))); }
+/* AOG-GUITAR-METAL-V1: a power chord is the root, its fifth and the root again, on the lowest strings that fit where the
+   hand is (the E string first, then A, then D); no third, so it stays clear through a high-gain amp. When none fits, the
+   ordinary shape plays. */
+function powerFor(c, a, b){
+  const root=((S.key+c.off)%12+12)%12, fifth=(root+7)%12;
+  for(let s=0; s<3; s++){
+    for(let f=0; f<=MAXF-2; f++){
+      if((TUNING[s]+f)%12!==root) continue;
+      /* the fifth and the octave above the root, on the next two strings, whatever their tuning (the B string sits a third
+         above the G, so a power chord rooted on the D string takes its octave one fret further up) */
+      const sh=TUNING.map((o,i)=>i===s?f:i===s+1?f+7-(o-TUNING[s]):i===s+2?f+12-(o-TUNING[s]):-1);
+      if(fits(sh, a, b)) return sh;
+    }
+  }
+  /* AOG-STRINGS-V2: where that shape does not fit the frets on screen, the root and fifth the hand can reach there: three
+     strings side by side (or two), the root lowest if it can be, else the fifth under it; at the least the root alone.
+     Never a third. The handoff: "a full C major never reaches the amp" */
+  const opts=TUNING.map(o=>{ const l=[]; if(a<=2 && (o%12===root || o%12===fifth)) l.push(0); for(let f=a; f<=b; f++){ const pc=(o+f)%12; if(pc===root || pc===fifth) l.push(f); } return l; });
+  let best=null, bs=1e9;
+  for(const len of [3,2,1]) for(let s=0; s+len<=TUNING.length; s++){
+    (function walk(cur){
+      if(cur.length===len){ const notes=cur.map((f,j)=>TUNING[s+j]+f), fr=cur.filter(f=>f>0), low=notes[0]%12;
+        if(notes.some(m=>m<notes[0]) || !notes.some(m=>m%12===root) || (len>1 && !notes.some(m=>m%12===fifth)) || (len===1 && low!==root)) return;
+        if(fr.length && Math.max.apply(null,fr)-Math.min.apply(null,fr)>3) return;
+        const sc=(3-len)*100+(low===root?0:50)+s*10+notes[0]/100; if(sc<bs){ bs=sc; best=TUNING.map((_,k)=>k>=s && k<s+len ? cur[k-s] : -1); } return; }
+      opts[s+cur.length].forEach(f=>walk(cur.concat([f])));
+    })([]);
+  }
+  return best;
+}
+function shapeFor(c){
+  const [a,b]=win(), pw=!!(SOUNDS[S.sound]&&SOUNDS[S.sound].power), key=[S.key,c.off,c.q,a,b,pw?"p":""].join("|");
+  if(VOICINGS.has(key)) return VOICINGS.get(key);
+  if(pw && Q[c.q].indexOf(7)>=0){ const p=powerFor(c, a, b);   /* AOG-ANYCHORD-V1: a power chord only for a chord with a plain 5th */ if(p){ VOICINGS.set(key, p); return p; } }
+  let best=null, bs=1e9;
+  shapesFor(c).forEach(sh=>{ if(!fits(sh.f, a, b)) return;
+    const fr=sh.f.filter(x=>x>0); let sc=0;
+    if(sh.f.some(x=>x===0)) sc-=4;                             /* near the nut, the open chords a beginner learns */
+    sc+=Math.abs((fr.length?Math.min.apply(null,fr):a)-a)*0.5;
+    sc+=(TUNING.length-sh.f.filter(x=>x>=0).length)*0.4;       /* fuller chords a little better */
+    if(sc<bs){ bs=sc; best=sh.f; } });
+  if(!best) best=findVoicing(c, a, b) || (c.q==="add9" ? shapeFor({off:c.off, q:"maj"}) : null)   /* AOG-CHORDS-MORE-V1: an add9 the hand cannot reach here plays as the plain chord */
+    || (Q6.indexOf(c.q)<0 ? findVoicing(c, a, b, true) : null) || TUNING.map(()=>-1);   /* AOG-ANYCHORD-V1: a big chord the hand cannot reach here plays its root, its third and what fits (the Any chord menu moves the neck to where it all fits) */
+  VOICINGS.set(key, best);
+  return best;
+}
+/* every way to play the chord with the hand where it is: each string quiet, open, or on a fret on screen, every note in
+   the chord. Kept only if a strum catches all its strings (side by side), it has the root and the third (and the seventh),
+   it fits a hand (four fingers, one of them can lie across a fret, no more than four frets apart); then the fullest wins,
+   with the root at the bottom and the fifth in it if it can be. */
+function findVoicing(c, a, b, loose){
+  const pcs=chordPcs(c), cur=[], nd=chordNeeds(c, loose);
+  const opts=TUNING.map(o=>{ const l=[-1]; if(a<=2 && pcs.indexOf(o%12)>=0) l.push(0); for(let f=a; f<=b; f++) if(pcs.indexOf((o+f)%12)>=0) l.push(f); return l; });
+  let best=null, bs=1e9;
+  /* AOG-ANYCHORD-V1: on a wide window (an iPad shows up to twelve frets) the walk drops, as it goes, every shape already
+     more than four frets wide; the shapes kept, and the one chosen, are the same as before */
+  (function walk(s, lo, hi){
+    if(s===TUNING.length){ const sc=voicingScore(cur, nd); if(sc<bs){ bs=sc; best=cur.slice(); } return; }
+    opts[s].forEach(f=>{ const l=f>0?Math.min(lo,f):lo, h=f>0?Math.max(hi,f):hi; if(h-l>3) return; cur[s]=f; walk(s+1, l, h); });
+  })(0, 99, -99);
+  return best;
+}
+/* AOG-ANYCHORD-V1: the notes a chord's shape must have, and the ones it may leave out. Always the root, the third (or the
+   sus note), the seventh and the chord's own colour (the 6th, the 9th, ♭9, ♯11, 13, ♭5, ♯5 …). The 5th may go, as jazz
+   players leave it; on a chord with an 11th or a 13th the 9th may go too, and under a 13th the 11th. For the first six
+   kinds that is what it always was: the root, the third, and the seventh or the 9th; the 5th when it fits. */
+function chordNeeds(c, loose){
+  const iv=Q[c.q], root=((S.key+c.off)%12+12)%12, top=Math.max.apply(null,iv), need=[], opt=[];
+  iv.forEach((i,j)=>{ const pc=(root+i)%12, w=(i===7 && iv.length>2) ? 1.5 : (i===14 && top>14) ? 1.2 : (i===17 && top>17) ? 1 : (loose && j>1) ? 1 : 0;   /* loose: the root and the next note only */
+    if(w) opt.push([pc, w]); else if(need.indexOf(pc)<0) need.push(pc); });
+  return {root:root, need:need, opt:opt};
+}
+function voicingScore(f, nd){
+  const on=[]; f.forEach((x,s)=>{ if(x>=0) on.push(s); });
+  if(on.length<3 || on[on.length-1]-on[0]+1!==on.length) return 1e9;
+  const notes=on.map(s=>TUNING[s]+f[s]), have=new Set(notes.map(m=>m%12));
+  if(nd.need.some(pc=>!have.has(pc))) return 1e9;
+  const fr=on.map(s=>f[s]).filter(x=>x>0);
+  if(fr.length){
+    const lo=Math.min.apply(null,fr), hi=Math.max.apply(null,fr); if(hi-lo>3) return 1e9;
+    const atLo=on.filter(s=>f[s]===lo); let fingers=fr.length;
+    if(atLo.length>1 && !on.some(s=>s>atLo[0] && s<atLo[atLo.length-1] && f[s]===0)) fingers=fr.length-atLo.length+1;
+    if(fingers>4) return 1e9;
+  }
+  let sc=-2*on.length;
+  if(Math.min.apply(null,notes)%12!==nd.root) sc+=6;
+  nd.opt.forEach(o=>{ if(!have.has(o[0])) sc+=o[1]; });
+  if(fr.length) sc+=0.3*(Math.max.apply(null,fr)-Math.min.apply(null,fr));
+  return sc;
+}
+/* bass: where a note is played — inside the window if it can be, near the hand's low end, on a thick string */
+function cellFor(m){
+  let best=null, bs=1e9; const [a,b]=win();
+  TUNING.forEach((o,s)=>{ const f=m-o; if(f<0||f>MAXF) return;
+    const sc=(inReach(f)?0:100+Math.min(Math.abs(f-a),Math.abs(f-b))*10)+s+Math.max(0,f-a)*0.5;
+    if(sc<bs){ bs=sc; best={s:s,f:f}; } });
+  return best;
+}
+/* a note the hand can reach: in this octave if it can be, else the one below or above */
+function reachable(m){ for(const x of [m, m-12, m+12]){ const cl=cellFor(x); if(cl && inReach(cl.f)) return x; } return cellFor(m) ? m : m-12; }
+/* the chord's lowest root the hand can reach */
+function bassRoot(c){
+  const pc=((S.key+c.off)%12+12)%12;
+  for(let m=TUNING[0]; m<TUNING[0]+48; m++){ if(((m%12)+12)%12!==pc) continue; const cl=cellFor(m); if(cl && inReach(cl.f)) return m; }
+  return TUNING[0]+((pc-TUNING[0]%12)+12)%12;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PLUCKED STRING — a string is a loop: a burst of noise (the pluck) runs round a delay one vibration long, and a little
+   is lost each time round, the highs faster than the lows. That is the Karplus–Strong string, with the usual refinements:
+   exact tuning (a fractional delay), how long it rings and how fast it darkens, where it is plucked, two directions of
+   swing, the pick or the finger, and the wooden body (or the pickup). An instrument's notes are made once, when it is
+   picked, every third note (the notes between play those a little faster or slower); nothing is downloaded.
+   AOG-STRINGS-V2 (2026-10-04) — the handoff: "One string, heard at a rate that can hold a pick". Every note is now made at
+   44.1 kHz (it was 32 kHz for the guitar, 22 kHz for the bass). The pick or the nail is a short burst at the pluck, a
+   click: it no longer rings on inside the string as a buzz. The first 40 ms are brighter than the rest, as a real pluck
+   is. An upright bass gets a soft thump from its wooden body.
+   ══════════════════════════════════════════════════════════════════════════ */
+function seeded(seed){ let x=seed|0||0x2f6b1a3d; return ()=>{ x^=x<<13; x^=x>>>17; x^=x<<5; return ((x>>>0)/4294967296)*2-1; }; }
+/* the loss filter is one pole, b/(1+a·z⁻¹): what a trip round the loop loses grows with the frequency, as much as a string's
+   highs need (AOG-STRINGS-V2: at 44.1 kHz the old one-zero filter could not darken the highs fast enough). Its delay at w: */
+function lossDelay(a, w){ return Math.atan2(-a*Math.sin(w), 1+a*Math.cos(w))/w; }
+function apDelay(Cc, w){ let ph=Math.atan2(-Math.sin(w), Cc+Math.cos(w))-Math.atan2(-Cc*Math.sin(w), 1+Cc*Math.cos(w));
+  while(ph>0) ph-=2*Math.PI; while(ph<=-2*Math.PI) ph+=2*Math.PI; return -ph/w; }
+/* the loop for one pitch: T0 = seconds for the note to fall 60 dB, Th = the same for its highs (at 3 kHz). ref = the rate a
+   set of numbers was tuned at: below 44.1 kHz, its highs die as fast as they did there */
+function stringLoop(sr, f0, T0, Th, ref){
+  const w0=2*Math.PI*f0/sr, P=sr/f0, a0=Math.pow(0.001, 1/(f0*T0));
+  let ah=Math.pow(0.001, 1/(f0*Math.min(Th,T0)));
+  if(ref && ref<sr){ const B=1-Math.cos(2*Math.PI*f0/ref), A=1-Math.cos(2*Math.PI*Math.min(3000, ref*0.4)/ref), r2=(ah/a0)*(ah/a0);
+    let k=(1-r2)/(2*(A-r2*B)); k=Math.max(0, Math.min(0.25, k)); ah=Math.min(0.999995, a0/Math.sqrt(1-2*k*B))*Math.sqrt(1-2*k*A); }
+  /* the pole that loses a0 a trip at the note and ah at 3 kHz, and the gain that holds the note's own decay exactly */
+  const c0=Math.cos(w0), ch=Math.cos(2*Math.PI*Math.min(3000, sr*0.4)/sr), R=Math.min(1, (ah/a0)*(ah/a0)), p=c0-R*ch, q=1-R;
+  const a=q>1e-12 ? Math.max(-0.95, (-p+Math.sqrt(Math.max(0, p*p-q*q)))/q) : 0;
+  const b=Math.min(0.999995, a0*Math.sqrt(1+a*a+2*a*c0)/(1+a))*(1+a);
+  /* the delay, and an allpass for the last fraction of a sample, so the loop is exactly one vibration long */
+  const N=Math.max(2, Math.floor(P-lossDelay(a,w0)-0.5)), D=P-lossDelay(a,w0)-N;
+  let lo=-0.95, hi=0.995; for(let i=0;i<48;i++){ const mid=(lo+hi)/2; if(apDelay(mid,w0)>D) lo=mid; else hi=mid; }
+  return {N:N, a:a, b:b, C:(lo+hi)/2};
+}
+function runLoop(L, exc, out, mix, len){
+  const N=L.N, dl=new Float32Array(N), n=Math.min(out.length, len||out.length); for(let i=0;i<N;i++) dl[i]=exc[i%exc.length];
+  let idx=0, l=0, ax=0, ay=0; const a=L.a, b=L.b, Cc=L.C;
+  for(let i=0;i<n;i++){
+    const x=dl[idx]; out[i]+=x*mix;
+    l=b*x-a*l;
+    const y=Cc*l+ax-Cc*ay; ax=l; ay=y;
+    dl[idx]=y; if(++idx===N) idx=0;
+  }
+}
+/* RBJ biquads, run in place */
+function rbj(type, f, Q2, dB, sr){
+  const w=2*Math.PI*f/sr, cw=Math.cos(w), al=Math.sin(w)/(2*Q2), A=Math.pow(10,dB/40); let b0,b1,b2,a0,a1,a2;
+  if(type==="highpass"){ b0=(1+cw)/2; b1=-(1+cw); b2=(1+cw)/2; a0=1+al; a1=-2*cw; a2=1-al; }
+  else if(type==="lowpass"){ b0=(1-cw)/2; b1=1-cw; b2=(1-cw)/2; a0=1+al; a1=-2*cw; a2=1-al; }
+  else if(type==="peaking"){ b0=1+al*A; b1=-2*cw; b2=1-al*A; a0=1+al/A; a1=-2*cw; a2=1-al/A; }
+  else { const sq=2*Math.sqrt(A)*al; b0=A*((A+1)+(A-1)*cw+sq); b1=-2*A*((A-1)+(A+1)*cw); b2=A*((A+1)+(A-1)*cw-sq); a0=(A+1)-(A-1)*cw+sq; a1=2*((A-1)-(A+1)*cw); a2=(A+1)-(A-1)*cw-sq; }
+  return {b0:b0/a0, b1:b1/a0, b2:b2/a0, a1:a1/a0, a2:a2/a0};
+}
+function biq(d, k){ const b0=k.b0, b1=k.b1, b2=k.b2, a1=k.a1, a2=k.a2; let x1=0,x2=0,y1=0,y2=0;
+  for(let i=0, n=d.length;i<n;i++){ const x=d[i], y=b0*x+b1*x1+b2*x2-a1*y1-a2*y2; x2=x1; x1=x; y2=y1; y1=y; d[i]=y; } }
+/* one note, as numbers at 44.1 kHz: m its note number, P how the string is made.
+   P.sr is the rate P's one-step smoothing numbers (soft, bright, atkLp) were tuned at; a set tuned at a lower rate keeps its
+   corners in Hz, and its noise keeps its loudness, so it sounds as it was made to, with the room above it the rate gives. */
+const NOTE_SR=44100;
+function renderNote(m, P, seed){
+  const sr=NOTE_SR, ref=P.sr||sr, up=Math.sqrt(sr/ref), f0=mtof(m), rnd=seeded(seed);
+  const step=c=>1-Math.pow(1-Math.max(0, Math.min(0.999, c)), ref/sr);
+  const T0=Math.max(P.Tmin, Math.min(P.Tmax, P.T0*Math.pow(P.fref/f0, P.Texp))), Th=Math.min(T0*P.Thf, P.Thmax);
+  const n=Math.floor(Math.max(1.4, Math.min(P.durMax, T0*0.8))*sr), out=new Float32Array(n);
+  const L1=stringLoop(sr, f0, T0, Th, ref), N=L1.N, exc=new Float32Array(N);
+  /* the pluck: the string's shape as it is let go, a bend at the plucking point, so each overtone is weaker than the one
+     below it and the ones that would need the string to move at that point are missing; rounded off by how soft the finger
+     or pick is (P.soft) */
+  const M=Math.max(1, Math.round(P.pos*N)), beta=M/N, soft=step(P.soft);
+  let sm=0; for(let i=0;i<2*N;i++){ sm+=(((i%N)<M ? 1-beta : -beta)-sm)*soft; if(i>=N) exc[i-N]=sm; }
+  /* a pick also flicks the string as it slips off: its edge (P.edge) keeps the overtones from fading above P.edgeHz, up to
+     P.edgeTop, so the pluck itself is bright; the loss filter takes those highs away again within a moment. A set without
+     P.edge gets one from its old noise, which used to be all of its brightness */
+  const brightHz=-Math.log(1-Math.min(0.999, P.bright))*ref/(2*Math.PI);
+  /* a thick wound string flicks darker than a thin one: the edge scales with the note against the instrument's middle (a
+     down strum, low strings first, then starts darker than an up strum) */
+  const edge=(P.edge!=null ? P.edge : Math.min(1, (P.noise||0)*2.5))*Math.max(0.55, Math.min(1.3, Math.sqrt(f0/((P.fref||82)*2.4)))), edgeTop=P.edge!=null ? (P.edgeTop||5000) : Math.max(1000, Math.min(6000, brightHz));
+  if(edge>0){ const k=edge*sr/(2*Math.PI*(P.edgeHz||1500)), x=Float32Array.from(exc), c=1-Math.exp(-2*Math.PI*edgeTop/sr);
+    let prev=x[N-1], e=0; for(let i=0;i<3*N;i++){ const j=i%N; e+=(k*(x[j]-prev)-e)*c; prev=x[j]; if(i>=2*N) exc[j]+=e; } }
+  /* a stiff string carries its highs a little faster than its lows, so the sharp corner of the pluck reaches the bridge as a
+     short sweep, not one hard tick (P.disp sections of allpass, each P.dispA) */
+  for(let s=0, K=P.disp!=null ? P.disp|0 : (edge>0 ? 20 : 0), ad=P.dispA==null?-0.6:P.dispA; s<K; s++){ const x=Float32Array.from(exc); let xp=0, yp=0;
+    for(let i=0;i<3*N;i++){ const xi=x[i%N], y=ad*xi+xp-ad*yp; xp=xi; yp=y; if(i>=2*N) exc[i%N]=y; } }
+  /* a little noise in the shape, so no two notes are quite alike (P.loop). It used to be all of P.noise, and it rang on
+     with the string as a buzz; the rest of it is now the pick's click, below */
+  const ln=P.loop!=null ? P.loop : (P.noise||0)*0.3;
+  if(ln>0){ const nz=new Float32Array(N), b=step(P.bright); let lp=0;
+    for(let i=0;i<N;i++){ lp+=(rnd()*up-lp)*b; nz[i]=lp; }
+    for(let i=N-1;i>=M;i--) nz[i]-=nz[i-M];
+    for(let i=0;i<N;i++) exc[i]=exc[i]*(1-ln)+nz[i]*ln*1.6; }
+  let mean=0; for(let i=0;i<N;i++) mean+=exc[i]; mean/=N; for(let i=0;i<N;i++) exc[i]-=mean;
+  runLoop(L1, exc, out, 1);
+  /* the string also swings the other way: a touch sharper, and it dies sooner (made only while it can be heard) */
+  runLoop(stringLoop(sr, f0*Math.pow(2,1.2/1200), T0*0.5, Th*0.7, ref), exc, out, P.pol2, Math.ceil(T0*0.6*sr));
+  /* the first 40 ms are brighter: the highs (P.glowHz up) lifted by P.glow dB at the pluck, back to the string's own by 40 ms
+     (a set without P.glow gets a lift from how bright its noise is: up to 6 dB) */
+  const glow=P.glow!=null ? P.glow : Math.max(0, Math.min(6, (brightHz-1000)/1000));
+  if(glow>0){ const gg=Math.pow(10, glow/20)-1, a=1-Math.exp(-2*Math.PI*(P.glowHz||2000)/sr), L=Math.min(n, Math.floor(0.04*sr)); let lp=0;
+    const on=(P.glowOn==null?3:P.glowOn)*0.001*sr;   /* it comes up over the first few ms, so the pluck's first edge is not made sharper still */
+    for(let i=0;i<L;i++){ lp+=(out[i]-lp)*a; out[i]+=(out[i]-lp)*gg*(0.5+0.5*Math.cos(Math.PI*i/L))*(on>0?1-Math.exp(-i/on):1); } }
+  /* the pick or the nail: a short burst of noise at the pluck, a click and then gone, never a hiss under the note.
+     P.atk how loud, P.atkLp how bright (its top), P.atkHp its low cut (a click, not a thud), P.atkMs how fast it dies */
+  if(P.atk>0){ const b=step(P.atkLp), hp=1-Math.exp(-2*Math.PI*(P.atkHp||300)/sr), tau=(P.atkMs||2.4)*0.001*sr, on=0.00015*sr, L=Math.min(n, Math.ceil(tau*8));
+    let lp=0, lo=0;
+    for(let i=0;i<L;i++){ lp+=(rnd()*up-lp)*b; lo+=(lp-lo)*hp; out[i]+=(lp-lo)*P.atk*4*Math.exp(-i/tau)*(1-Math.exp(-i/on)); } }
+  /* a soft thump: the wooden body's air knocked by the pluck (an upright bass), P.thump how loud, near P.thumpHz */
+  if(P.thump){ const w=2*Math.PI*(P.thumpHz||70)/sr, tau=(P.thumpMs||40)*0.001*sr, on=0.003*sr, L=Math.min(n, Math.ceil(tau*8));
+    for(let i=0;i<L;i++) out[i]+=P.thump*Math.sin(w*i)*Math.exp(-i/tau)*(1-Math.exp(-i/on)); }
+  /* an electric string is heard from one point under it, the pickup */
+  if(P.pick){ const K=Math.max(1, Math.round(P.pick*sr/f0)); for(let i=n-1;i>=K;i--) out[i]-=out[i-K]*0.85; }
+  /* the wooden body's ring, or the amp's low cut */
+  (P.body||[]).forEach(b=>biq(out, rbj(b[0], b[1], b[2], b[3], sr)));
+  /* every note brought to one loudness over its first quarter second, then faded in (P.rise ms: a finger is slower than a
+     pick) and out (the last third) */
+  let s=0; const a0=Math.floor(0.01*sr), a1=Math.min(n, a0+Math.floor(0.25*sr)); for(let i=a0;i<a1;i++) s+=out[i]*out[i];
+  const g=0.2/Math.sqrt(s/Math.max(1,a1-a0)+1e-12), fin=Math.max(1, Math.floor(sr*(P.rise||1)*0.001)), fo=Math.floor(n*0.34);
+  for(let i=0;i<fin;i++) out[i]*=0.5-0.5*Math.cos(Math.PI*i/fin);
+  for(let i=0, e=n-fo;i<e;i++) out[i]*=g;
+  /* the fade out, a half cosine turned step by step (no cosine for every sample) */
+  for(let j=0, c=1, sn=0, cd=Math.cos(Math.PI/fo), sd=Math.sin(Math.PI/fo);j<fo;j++){ out[n-1-j]*=g*(0.5-0.5*c); const c2=c*cd-sn*sd; sn=sn*cd+c*sd; c=c2; }
+  return out;
+}
+/* the notes each instrument keeps: every third note, from the lowest string to as high as the neck goes */
+const SAMPLE_NOTES=(()=>{ const a=[], top=TUNING[TUNING.length-1]+MAXF+(GTR?0:12); for(let m=TUNING[0]; m<=top+1; m+=3) a.push(m); return a; })();
+const SETS={};
+function setFor(id){ return SETS[id]||(SETS[id]={buf:{}}); }
+function nearest(m){ let best=SAMPLE_NOTES[0]; SAMPLE_NOTES.forEach(n=>{ if(Math.abs(n-m)<Math.abs(best-m)) best=n; }); return best; }
+let BUFCTX=null;
+function makeBuffer(d, sr){
+  let b=null;
+  try{ b=new AudioBuffer({length:d.length, numberOfChannels:1, sampleRate:sr}); }catch(e){}
+  if(!b){ const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext; BUFCTX=BUFCTX||new OC(1,1,44100); b=BUFCTX.createBuffer(1, d.length, sr); }
+  if(b.copyToChannel) b.copyToChannel(d, 0); else b.getChannelData(0).set(d);
+  return b;
+}
+function idSeed(id){ let h=0x51a7; for(let i=0;i<id.length;i++) h=(h*131+id.charCodeAt(i))|0; return h; }
+function noteBuf(id, n){
+  const st=setFor(id);
+  if(!st.buf[n]){ const P=SOUNDS[id].s; st.buf[n]=makeBuffer(renderNote(n, P, (n*7919)^idSeed(id)), NOTE_SR); }
+  return st.buf[n];
+}
+/* the notes are made a few at a time after the page is up, so the first strum is already ready.
+   AOG-STRINGS-REAL-V1: a recorded sound's set starts downloading at once; its made notes are made too, but only while
+   the recordings are not in yet: they play until then (and if the recordings cannot load), so a strum is never silent */
+let prepJob=0;
+function prepare(id){
+  const snd=SOUNDS[id]; clearTimeout(prepJob);
+  litNeck();      /* a new sound can play the chord in the hand another way (a metal sound: a power chord), so the neck shows it now */
+  const r=recOf(id); if(r) recLoad(r);
+  if(r && snd && snd.rclick) setTimeout(()=>pickClick(id), 30);
+  recLine();
+  if(!snd || snd.kind!=="pluck") return;
+  Object.keys(SETS).forEach(k=>{ if(k!==id) delete SETS[k]; });     /* one instrument's notes at a time, kind to a phone */
+  const todo=SAMPLE_NOTES.slice();
+  /* AOG-STRINGS-PREP-LIGHT-V1 (2026-10-11, Jimmy: "SUPER MAN SPEED!"): a few notes at a time, in short turns with room
+     between them, so the page stays quick to the touch while they are made (it took three quarters of a phone's time);
+     and when the real recordings are coming, a moment's wait first: they usually arrive before it is over, and then
+     nothing needs making. A note played before it is made is made at once, as before. */
+  const step=()=>{ if(r && soundReady(id)) return;
+    const t0=performance.now(); while(todo.length && performance.now()-t0<6) noteBuf(id, todo.shift()); if(todo.length) prepJob=setTimeout(step, 30); };
+  prepJob=setTimeout(step, r ? 1200 : 40);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE RECORDED STRINGS (AOG-STRINGS-REAL-V1, 2026-10-04) — Jimmy: "Can we get real instrument sounds for the guitar and
+   bass?" A sound that names a recorded set (rec:"green") plays a real instrument, recorded note by note: free (CC0)
+   recordings in audio/<guitar|bass>/<set>/, a set.json and mono MP3s (where each comes from: audio/<guitar|bass>/CREDITS.txt;
+   how they were made: music-handoff/tools/strings/).
+   · A set downloads only when a sound that uses it is picked, with one calm line while it gets ready; two sets stay in
+     memory, kind to a phone. Until it is in, and if it cannot load, the string made on the page plays (above).
+   · Each note plays the recording nearest it (on its own string when the set knows strings, else by pitch), sped up or
+     slowed to the note, its measured tuning (c) taken out. How hard it is played picks the layer (a soft pluck sounds
+     soft, not only quiet); the page's own loudness curve sets the level, the made string's, so the amp and pedals hear
+     what they were set up for. The takes of a note come in turn (round robin): a strum played twice is never a copy.
+   · The muted ways to play (chug, gallop, thrash, breakdown, the funk and pop slaps) play the short, muted recordings;
+     a hammer-on or a tap starts its note without the pick; letting go of a ringing note adds the sound of the hand.
+   · A bend, vibrato, a slide or the whammy glide the recording itself (its playback rate), as they glide the made string.
+   · Solo mode's band plays recorded sets too (aog-solo.js), only once Play is pressed. A set of the other instrument is
+     named with its folder ("bass/growly" on the guitar page, "guitar/green" on the bass page). While the band plays, its
+     sets stay (pin); room says how many sets a device keeps at once: 3 where it has the memory for them (4 GB or more,
+     or, where the browser does not say, a screen as big as a tablet's), else 2, and the band's bass plays the made string.
+   ══════════════════════════════════════════════════════════════════════════ */
+const REAL={base:"/audio/"+INST+"/", ver:"2", keep:2, on:true, sets:{}, order:[], pin:[],
+  room:(()=>{ try{ const dm=navigator.deviceMemory; if(typeof dm==="number") return dm>=4?3:2;
+    return Math.min(screen.width||0, screen.height||0)>=700?3:2; }catch(e){ return 2; } })()};
+/* where a set's files are: this instrument's folder, or the one its name says ("bass/growly") */
+function recPath(id){ return id.indexOf("/")>=0 ? "/audio/"+id+"/" : REAL.base+id+"/"; }
+/* how much memory a set's decoded notes take (bytes: 4 a sample) */
+function recBytes(R){ let n=0; Object.values((R&&R.buf)||{}).forEach(b=>{ n+=b.length*b.numberOfChannels*4; }); return n; }
+function recOf(id){ const s=SOUNDS[id]; return (REAL.on && s && s.rec) ? s.rec : ""; }
+function recSet(id){ return REAL.sets[id]||(REAL.sets[id]={id:id, state:"idle", meta:null, buf:{}, at:{}, lead:{}, lvl:null, job:null, rr:{}, done:0, total:0}); }
+/* is this sound ready to play its recordings (a sound made on the page always is); get it ready (for a recording made
+   offline: Send to the turntables, the chord pads) */
+function soundReady(id){ const r=recOf(id); return !r || !!(REAL.sets[r] && REAL.sets[r].state==="ready"); }
+async function loadSound(id){ const r=recOf(id); if(r){ try{ await recLoad(r); }catch(e){} } return soundReady(id); }
+/* Where each note starts in its decoded file, so a strum and the beat land on time in every browser. Every file starts
+   at its pluck. An MP3 carries a gapless header (Xing or Info, with LAME's encoder delay and padding): a decoder that reads
+   it gives frames×1152 − delay − padding samples, from the pluck; one that does not (possibly Safari) gives every frame,
+   and delay + 529 samples of lead-in come first, not silent (the pluck's own pre-echo is in it), so no level can find the
+   pluck there. The header says how long the lead-in is: the decoded length shows which kind of decoder this is. */
+function mp3Gapless(ab){
+  try{
+    const d=new Uint8Array(ab); let i=0;
+    if(d[0]===0x49 && d[1]===0x44 && d[2]===0x33) i=10+((d[6]&127)<<21|(d[7]&127)<<14|(d[8]&127)<<7|(d[9]&127));   /* an ID3 tag first */
+    for(const lim=Math.min(d.length-4, i+8192); i<lim && !(d[i]===0xFF && (d[i+1]&0xE0)===0xE0); i++);
+    const ver=(d[i+1]>>3)&3, mono=((d[i+3]>>6)&3)===3, t=i+4+(ver===3?(mono?17:32):(mono?9:17));
+    const tag=String.fromCharCode(d[t],d[t+1],d[t+2],d[t+3]); if(tag!=="Xing" && tag!=="Info") return null;
+    const fl=(d[t+4]<<24|d[t+5]<<16|d[t+6]<<8|d[t+7])>>>0; if(!(fl&1)) return null;
+    let o=t+8; const frames=(d[o]<<24|d[o+1]<<16|d[o+2]<<8|d[o+3])>>>0; o+=4;
+    if(fl&2) o+=4; if(fl&4) o+=100; if(fl&8) o+=4;
+    const rates=ver===3?[44100,48000,32000]:ver===2?[22050,24000,16000]:[11025,12000,8000], rate=rates[(d[i+2]>>2)&3]||44100;
+    return {frames:frames, spf:ver===3?1152:576, delay:(d[o+21]<<4)|(d[o+22]>>4), pad:((d[o+22]&15)<<8)|d[o+23], rate:rate};
+  }catch(e){ return null; }
+}
+/* where the file's own first sample is in the decoded buffer (0, or the lead-in a decoder kept: seconds) */
+function recFrom(b, gl){
+  const sr=b.sampleRate; let from=0;
+  if(gl && gl.frames){
+    const k=sr/gl.rate, all=gl.frames*gl.spf, lead=gl.delay+529, extra=b.length/k-(all-gl.delay-gl.pad);
+    /* how the decoder treated the header: read it (nothing extra), trimmed only the start, kept every frame, or played the
+       header frame itself as silence too; the nearest explains this buffer */
+    const ways=[[0,0],[gl.pad-529,0],[gl.delay+gl.pad,lead],[gl.delay+gl.pad+gl.spf,lead+gl.spf]];
+    let best=ways[0]; ways.forEach(w=>{ if(Math.abs(extra-w[0])<Math.abs(extra-best[0])) best=w; });
+    if(Math.abs(extra-best[0])<gl.spf/2) from=Math.min(b.length-1, Math.round(best[1]*k));
+  }
+  return from/sr;
+}
+function recLead(b, gl){
+  const sr=b.sampleRate, from=Math.round(recFrom(b, gl)*sr);
+  /* then, from there, the pluck: the first sample within 40 dB of the loudest, 0.5 ms before it (without a header that
+     matches, this alone finds it) */
+  const d=b.getChannelData(0), n=Math.min(d.length, from+Math.floor(0.25*sr)); let pk=0;
+  for(let i=from;i<d.length;i++){ const a=d[i]<0?-d[i]:d[i]; if(a>pk) pk=a; }
+  let i=from; const thr=pk*0.01; while(i<n && Math.abs(d[i])<thr) i++;
+  return (i>=n ? from : Math.max(from, i-Math.round(0.0005*sr)))/sr;
+}
+function recLoad(id){
+  const R=recSet(id);
+  REAL.order=REAL.order.filter(x=>x!==id).concat([id]);
+  if(R.job) return R.job;
+  if(R.state==="ready") return Promise.resolve(R);
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  R.state="loading"; R.done=0; R.total=0; R.dropped=false;
+  const job=(async()=>{
+    try{
+      if(!OC || !window.fetch) throw new Error("no audio");
+      const r=await fetch(recPath(id)+"set.json?v="+REAL.ver); if(!r.ok) throw new Error(r.status);
+      const meta=await r.json(), dec=new OC(1, 1, 44100), files=meta.zones.map(z=>z.f).concat(recRel(meta).concat(recSlaps(meta)).map(n=>n.f));
+      R.total=files.length; let i=0;
+      const lane=async()=>{ while(i<files.length && !R.dropped){ const f=files[i++];
+        try{ const q=await fetch(recPath(id)+f+"?v="+REAL.ver); if(!q.ok) throw new Error(q.status);
+          const ab=await q.arrayBuffer(), gl=mp3Gapless(ab), b=await decodeWith(dec, ab); R.buf[f]=b; R.at[f]=recLead(b, gl); R.lead[f]=recFrom(b, gl); }catch(e){}
+        R.done++; } };
+      await Promise.all([lane(), lane(), lane(), lane(), lane(), lane()]);
+      if(R.dropped) throw new Error("let go");
+      /* ready when every held note is in (a missing short note or noise is only skipped) */
+      if(!meta.zones.some(z=>(z.k||"sus")==="sus") || meta.zones.some(z=>(z.k||"sus")==="sus" && !R.buf[z.f])) throw new Error("missing");
+      recIndex(R, meta);
+      R.state="ready";
+    }catch(e){ R.state=R.dropped?"idle":"failed"; R.buf={}; R.at={}; R.lead={}; }
+    recForget(); recLine(); recLive();
+    return R;
+  })();
+  R.job=job; job.then(()=>{ if(R.job===job) R.job=null; });
+  recLine();
+  return job;
+}
+/* the sound playing now: its level follows what plays (the recordings, once they are in) */
+function recLive(){ try{ if(ac && LIVE_CH) LIVE_CH.trim.gain.setTargetAtTime(recTrim(S.sound), ac.currentTime, 0.03); }catch(e){} }
+/* two sets stay: the ones picked last (the sound playing now always among them), and the band's while it plays */
+function recForget(){
+  const keep=REAL.order.slice(-REAL.keep), now=recOf(S.sound);
+  Object.keys(REAL.sets).forEach(k=>{ if(keep.indexOf(k)<0 && k!==now && REAL.pin.indexOf(k)<0){ const R=REAL.sets[k]; R.dropped=true; delete REAL.sets[k]; } });
+}
+/* the set's notes by kind, and the loudness each kind sits at, measured once it is in (so any set, made anywhere,
+   plays at the page's own level) */
+function recIndex(R, meta){
+  const by={}, lays=new Set();
+  meta.zones.forEach(z=>{ if(!R.buf[z.f]) return; const k=z.k||"sus"; (by[k]=by[k]||[]).push(z); if(k==="sus") lays.add(z.v||1); });
+  const rmsOf=(z,a,b)=>{ const B=R.buf[z.f], d=B.getChannelData(0), sr=B.sampleRate, s0=Math.floor((R.at[z.f]+a)*sr), s1=Math.min(d.length, Math.floor((R.at[z.f]+b)*sr));
+    let s=0; for(let i=s0;i<s1;i++) s+=d[i]*d[i]; return Math.sqrt(s/Math.max(1,s1-s0))*(z.g||1); };
+  const med=a=>{ const b=a.filter(x=>x>1e-6).sort((x,y)=>x-y); return b.length?b[b.length>>1]:1; };
+  const L={long:{}, short:{}, hammer:{}, mute:1};
+  lays.forEach(v=>{ const zs=by.sus.filter(z=>(z.v||1)===v); L.long[v]=med(zs.map(z=>rmsOf(z,0.01,0.26))); L.short[v]=med(zs.map(z=>rmsOf(z,0,0.06))); });
+  const mz=(by.mute||[]).concat(by.stac||[]); if(mz.length) L.mute=med(mz.map(z=>rmsOf(z,0,0.06)));
+  if(by.hammer) new Set(by.hammer.map(z=>z.v||1)).forEach(v=>{ L.hammer[v]=med(by.hammer.filter(z=>(z.v||1)===v).map(z=>rmsOf(z,0.01,0.26))); });
+  R.meta=meta; R.by=by; R.layers=[...lays].sort((a,b)=>a-b); R.top=R.layers[R.layers.length-1]; R.lvl=L;
+  R.noise=recRel(meta).filter(n=>R.buf[n.f]); R.slap=recSlaps(meta).filter(n=>R.buf[n.f]);
+  if(R.slap.length) R.lvl.slap=med(R.slap.map(n=>rmsOf(n,0,0.03)));
+}
+/* the noises a set plays: the hand's sound when a ringing note is let go (k "release"), and the thumb's slap on muted
+   strings (k "slap", for the slap sounds); its others are not used */
+function recRel(meta){ return (meta.noise||[]).filter(n=>(n.k||"release")==="release"); }
+function recSlaps(meta){ return (meta.noise||[]).filter(n=>n.k==="slap"); }
+/* the layer for how hard a note is played (vel holds each layer's lower bound), then the recording: the nearest note
+   (a tie goes to the one below), on its own string when the set knows strings; its takes in turn */
+function recLayer(R, v){ const vel=R.meta.vel||[0]; let lay=1; vel.forEach((b,i)=>{ if(v>=b) lay=i+1; }); return lay; }
+function recPick(R, kind, m, v, s){
+  const all=R.by[kind]; if(!all || !all.length) return null;
+  const want=recLayer(R, v), lays=[...new Set(all.map(z=>z.v||1))];
+  const lay=lays.reduce((a,b)=>{ const da=Math.abs(a-want), dbb=Math.abs(b-want); return dbb<da || (dbb===da && b<a) ? b : a; });
+  const max=R.meta.maxShift||3;
+  let list=all.filter(z=>(z.v||1)===lay);
+  if(s!=null){ const own=list.filter(z=>z.s===s && Math.abs(z.m-m)<=max); if(own.length) list=own; }
+  let d=1e9; list.forEach(z=>{ const x=Math.abs(z.m-m); if(x<d) d=x; });
+  if(d>max) return null;
+  const near=list.filter(z=>Math.abs(z.m-m)===d), zm=Math.min.apply(null, near.map(z=>z.m)), zs=near.find(z=>z.m===zm).s;
+  const takes=near.filter(z=>z.m===zm && z.s===zs).sort((a,b)=>(a.r||1)-(b.r||1));
+  const key=kind+"|"+lay+"|"+zm+"|"+zs, k=(R.rr[key]||0)%takes.length; R.rr[key]=k+1;
+  return {z:takes[k], lay:lay};
+}
+function recRate(z, m){ return Math.pow(2, (m-z.m)/12-(z.c||0)/1200); }
+/* a picked sound on a fingered recording (rclick: the recorded bass is played with the fingers): the made string's own
+   pick, its click (the burst renderNote adds at the pluck), laid on the recorded pluck at the level and tone it has on the
+   made string (rclick × that). Made once per sound when it is picked, from one note made with and without it; two of
+   them, taken in turn, so no two picks in a row are the same */
+const CLICKS={};
+function pickClick(id){
+  if(id in CLICKS) return CLICKS[id];
+  const P=(SOUNDS[id]||{}).s; if(!P || !(P.atk>0)) return (CLICKS[id]=null);
+  const m=GTR?52:36, list=[];
+  for(let k=0;k<2;k++){ const seed=((m*7919)^idSeed(id))+k, a=renderNote(m, Object.assign({}, P, {durMax:1.4}), seed), b=renderNote(m, Object.assign({}, P, {durMax:1.4, atk:0}), seed);
+    const n=Math.min(a.length, Math.ceil(0.016*NOTE_SR)), d=new Float32Array(n), fo=Math.ceil(0.003*NOTE_SR);
+    for(let i=0;i<n;i++) d[i]=(a[i]-b[i])*(i>=n-fo ? 0.5+0.5*Math.cos(Math.PI*(i-(n-fo))/fo) : 1);
+    list.push(makeBuffer(d, NOTE_SR)); }
+  return (CLICKS[id]=list);
+}
+/* one recorded note. o (optional): {art:"mute"} a muted note (the short recordings), {soft:true} a hammer-on or a tap */
+function recVoice(c, ch, id, m, v, when, s, o, R){
+  const snd=SOUNDS[id], vv=Math.max(0.05, Math.min(1, v)), soft=!!(o && o.soft), L=R.lvl, top=R.top, lift=snd.rg||snd.gain;
+  /* a slap sound: every note slapped or popped hard (the loud layer); the two high strings (or a flick up in Solo mode)
+     pop, the low ones slap */
+  const slapS=!!(snd.rslap && R.slap && R.slap.length && !soft), pop=slapS && ((o && o.pop) || (s!=null && s>=2));
+  /* rstac: a sound whose every note is short (a muted, thumpy bass) plays the short recordings */
+  let kind=((o && o.art==="mute") || (snd.rstac && !soft)) ? (R.by.mute?"mute":R.by.stac?"stac":"sus") : (soft && R.by.hammer) ? "hammer" : "sus";
+  let pk=recPick(R, kind, m, slapS ? 1 : vv, s);
+  if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, slapS ? 1 : vv, s); }
+  if(!pk) return null;
+  const z=pk.z, buf=R.buf[z.f], base=0.2*velAmp(vv)*lift*(z.g||1);
+  /* the made string sits at 0.2 × the loudness curve over its first quarter second; a recording is brought there too
+     (a muted note: as loud at the pick as a held one) */
+  const amp = kind==="sus" ? base/L.long[pk.lay] : kind==="hammer" ? 0.7*base/(L.hammer[pk.lay]||L.long[top]) : base*(L.short[top]/L.long[top])/L.mute;
+  const rate=recRate(z, m), off=R.at[z.f]+(soft && kind==="sus" ? 0.03 : 0);
+  const src=c.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
+  const g=gainAt(c, amp), rel=gainAt(c, 1);
+  /* a hammer-on or a tap with no recording of one: the held note from just after its pick, coming in softer */
+  if(soft && kind==="sus"){ g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(amp*0.6, when+0.008); }
+  let head=src;
+  /* the sound's own tone, as on the made string: a softer pluck a little darker (jazz darkest), above the layer's own
+     (rlp, rlpSpan: a sound's tone for the recordings, where its made string's would leave a real one too bright) */
+  const lpHz=snd.rlp||snd.lp, lpSpan=snd.rlp?(snd.rlpSpan||snd.lpSpan):snd.lpSpan;
+  if(lpHz){ const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, lpHz*Math.pow(2, vv*lpSpan)); src.connect(lp); head=lp; }
+  head.connect(g);
+  let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  src.start(when, off);
+  const nodes=[src], pairs=[[src, z, 0, 1]];
+  /* the slap: the thumb's thump on muted strings (a recording: its first 30 ms at rslap × the note's level); a pop: the
+     string snapping onto the frets, the first 30 ms of the bass's own hardest short note there (its fret clank), only its
+     highs, at rpop × that note's level */
+  if(slapS && !pop){ R.rr.slap=((R.rr.slap||0)+1)%R.slap.length; const n=R.slap[R.rr.slap], nb=R.buf[n.f];
+    const ns=c.createBufferSource(); ns.buffer=nb; const ng=gainAt(c, 0.2*velAmp(vv)*lift*(n.g||1)/(L.slap||L.long[top])*snd.rslap); ns.connect(ng); ng.connect(pan||rel);
+    ns.start(when, R.at[n.f]); nodes.push(ns); }
+  const zs=pop && snd.rpop ? (recPick(R, "stac", m, 1, s)||{}).z : null;
+  if(zs){ const ps=c.createBufferSource(), hp=c.createBiquadFilter(), sa=0.2*velAmp(vv)*lift*(zs.g||1)*(L.short[top]/L.long[top])/L.mute*snd.rpop, pg=gainAt(c, sa);
+    ps.buffer=R.buf[zs.f]; ps.playbackRate.value=recRate(zs, m); hp.type="highpass"; hp.frequency.value=1000; hp.Q.value=0.7;
+    ps.connect(hp); hp.connect(pg); pg.connect(pan||rel); pg.gain.setTargetAtTime(0, when+0.015, 0.008); ps.start(when, R.at[zs.f]); ps.stop(when+0.12); nodes.push(ps); }
+  if(snd.rclick && !soft){ const cbs=pickClick(id);
+    if(cbs){ const cs=c.createBufferSource(), cl=c.createBiquadFilter(), cg=gainAt(c, velAmp(vv)*lift*snd.rclick); R.rr.click=((R.rr.click||0)+1)%cbs.length; cs.buffer=cbs[R.rr.click];
+      cl.type="lowpass"; cl.Q.value=0.5; cl.frequency.value=Math.min(16000, snd.lp*Math.pow(2, vv*snd.lpSpan));
+      cs.connect(cl); cl.connect(cg); cg.connect(pan||rel); cs.start(when); nodes.push(cs); } }
+  /* a twelve-string's second string, a hair later: an octave up on the four low courses, the same note a few cents out on
+     the two high ones (as the made one) */
+  if(snd.twelve && s!=null){ const up=s<4?12:0, p2=recPick(R, "sus", m+up, vv, null);
+    if(p2){ const det=s<4?1:Math.pow(2,4/1200), s2=c.createBufferSource(); s2.buffer=R.buf[p2.z.f]; s2.playbackRate.value=recRate(p2.z, m+up)*det;
+      const a2=0.2*velAmp(vv)*lift*(p2.z.g||1)/L.long[p2.lay]*(s<4?0.5:0.7), g2=gainAt(c, a2/Math.max(1e-9, amp));
+      s2.connect(g2); g2.connect(head===src?g:head); s2.start(when+0.009, R.at[p2.z.f]+(soft?0.03:0)); nodes.push(s2); pairs.push([s2, p2.z, up, det]); } }
+  const vc=voiceShell(c, ch.bus, nodes, rel);
+  vc.tau=snd.damp; vc.natural=when+Math.max(0.05, buf.duration-off)/rate;
+  vc.rec={set:R.id, f:z.f, k:kind, v:pk.lay, r:z.r||1, m:z.m, c:z.c||0};
+  /* a recording that ends while it still rings fades over its last moments, never stops dead (a loud amp would show it) */
+  try{ rel.gain.setTargetAtTime(0, Math.max(when+0.05, vc.natural-0.4), 0.12); }catch(e){}
+  /* a slide glides the recording; on a fretless (rglide) it sings over a little longer */
+  vc.glide=(m2, at)=>{ pairs.forEach(([sx, zz, up, det])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(recRate(zz, m2+up)*det, at, snd.rglide||0.012); }catch(e){} }); };
+  /* letting go of a ringing note (the mute, a short chord, a gap in a bass line): the sound of the hand on the string.
+     Only a held note: a muted one is already under the hand. A driven amp lifts that small sound as much as the notes, so
+     rrel keeps it under the note it stops (measured per sound through its own amp: 8 dB under it); rrel 0, none at all
+     (an amp so driven that even the faintest one comes out as loud as the note) */
+  const stop0=vc.stop, hand=lift*(snd.rrel!=null ? snd.rrel : 1);
+  vc.stop=function(t, tau, how){ const was=this.stopped; stop0.call(this, t, tau); if(!was && how && how.rel && hand>0 && (kind==="sus" || kind==="hammer")) recRelease(c, ch, R, hand, vv, when, Math.max(t, c.currentTime), s, this.natural); };
+  return vc;
+}
+function recRelease(c, ch, R, lift, vv, on, t, s, natural){
+  if(!R.noise.length || t>natural-0.05 || t-on<0.04) return;
+  R.rr.rel=((R.rr.rel||0)+1)%R.noise.length;
+  const n=R.noise[R.rr.rel], b=R.buf[n.f]; if(!b) return;
+  const amp=0.2*velAmp(vv)*lift*(n.g||1)/R.lvl.long[R.top]*(0.35+0.65*Math.exp(-(t-on)/1.5));
+  const src=c.createBufferSource(); src.buffer=b; const g=gainAt(c, amp); src.connect(g);
+  let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
+  tail.connect(ch.amp); src.start(t, R.at[n.f]);
+}
+/* the line under the sound menu: what this sound is, and while its recordings get ready, one calm line saying so */
+function recLine(){
+  const el=document.getElementById("loadLine"); if(!el) return;
+  const r=recOf(S.sound), R=r?REAL.sets[r]:null;
+  const k=!r ? "built" : (R && R.state==="ready") ? (SOUNDS[S.sound].kind==="synth" ? "recReadySynth" : "recReady") : (R && R.state==="failed") ? "recFailed" : "recLoading";
+  if(el.getAttribute("data-k")!==k || el.getAttribute("data-l")!==S.lang){ el.setAttribute("data-k", k); el.setAttribute("data-l", S.lang); el.textContent=t(k); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE ENGINE — one chain per audio context (live, or offline for a recording)
+   voices → [amp] → [room] → 1987 crunch (sample-and-hold at 26,040 Hz, twelve bits) → tone → glue → limiter → volume
+   ══════════════════════════════════════════════════════════════════════════ */
+const CRUNCH_SRC=`
+class AogCrunch extends AudioWorkletProcessor{
+  static get parameterDescriptors(){ return [{name:'era', defaultValue:0, minValue:0, maxValue:1}]; }
+  constructor(){ super(); this.ph=0; this.h0=0; this.h1=0; this.step=26040/sampleRate; }
+  process(inputs, outputs, params){
+    const inp=inputs[0], out=outputs[0]; if(!out||!out.length) return true;
+    const a=params.era, L=inp&&inp[0], R=inp&&(inp[1]||inp[0]);
+    const oL=out[0], oR=out[1]||null, n=oL.length;
+    for(let i=0;i<n;i++){
+      const e=a.length>1?a[i]:a[0], x=L?L[i]:0, y=R?R[i]:0;
+      this.ph+=this.step;
+      if(this.ph>=1){ this.ph-=1; this.h0=Math.round(x*2048)/2048; this.h1=Math.round(y*2048)/2048; }
+      oL[i]=e*this.h0+(1-e)*x;
+      if(oR) oR[i]=e*this.h1+(1-e)*y;
+    }
+    return true;
+  }
+}
+registerProcessor('aog-crunch', AogCrunch);`;
+let crunchURL=null;
+function crunchModule(){ if(!crunchURL) crunchURL=URL.createObjectURL(new Blob([CRUNCH_SRC],{type:"application/javascript"})); return crunchURL; }
+function roomIR(c){
+  const sr=c.sampleRate, len=Math.floor(sr*2.6), ir=c.createBuffer(2,len,sr);
+  for(let ch=0; ch<2; ch++){
+    const d=ir.getChannelData(ch), r=seeded(ch?0x51a7c3e1:0x2f6b1a3d), pre=Math.floor(sr*0.012); let lp=0;
+    for(let i=pre;i<len;i++){ const tt=(i-pre)/sr, k=0.25+0.7*Math.min(1,tt/1.6); lp+= (r()-lp)*(1-k*0.85); d[i]=lp*Math.exp(-6.9*tt/2.4); }
+  }
+  return ir;
+}
+function eraHz(e){ return Math.exp(Math.log(18000)*(1-e)+Math.log(8500)*e); }
+function filt(c, type, f, q){ const b=c.createBiquadFilter(); b.type=type; b.frequency.value=f; b.Q.value=q; return b; }
+/* AOG-AMP-V1: the amplifier is the rig in aog-amp.js — pedals, amp, cabinet, EQ and effects — the same live and in every
+   recording. Each sound brings its own (SOUNDS[id].rig); what you change on the page is kept for that sound (RIGS). */
+const AKEY="aog."+INST+".amp.v1";
+let RIGS={}; try{ RIGS=JSON.parse(localStorage.getItem(AKEY)||"{}")||{}; if(typeof RIGS!=="object") RIGS={}; }catch(e){ RIGS={}; }
+function rigFor(id){ const snd=SOUNDS[id]||{}, st=AOGAmp.normalize(RIGS[id]||snd.rig||{model:"none",cab:"off"}, GTR?"guitar":"bass"); if(snd.pick) st.pickup=snd.pick; return st; }
+function saveRigs(){ try{ localStorage.setItem(AKEY, JSON.stringify(RIGS)); }catch(e){} }
+function makeChain(c){
+  const ch={c:c};
+  ch.bus=c.createGain(); ch.send=c.createGain(); ch.pre=c.createGain(); ch.amp=c.createGain();
+  ch.rig=AOGAmp.create(c, {kind:GTR?"guitar":"bass", state:rigFor(S.sound)});
+  /* out evens the sounds after the rig (measured, AOG-AMP-V1), so the pickup drives the amp as it would */
+  ch.post=gainAt(c,1); ch.trim=gainAt(c,1); ch.amp.connect(ch.rig.input); ch.rig.output.connect(ch.trim); ch.trim.connect(ch.post); ch.post.connect(ch.bus); ch.post.connect(ch.send);
+  /* the room */
+  const cv=c.createConvolver(); cv.buffer=roomIR(c); ch.send.connect(cv);
+  const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
+  ch.bus.connect(ch.pre);
+  ch.lp=c.createBiquadFilter(); ch.lp.type="lowpass"; ch.lp.Q.value=0.5;
+  ch.comp=c.createDynamicsCompressor();
+  ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
+  ch.lim=c.createDynamicsCompressor();
+  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0.002; ch.lim.release.value=0.1;
+  ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
+  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
+  ch.crunch=null;
+  return ch;
+}
+async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
+  try{
+    if(!ch.c.audioWorklet) return;
+    await ch.c.audioWorklet.addModule(crunchModule());
+    const n=new AudioWorkletNode(ch.c,"aog-crunch",{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
+    ch.pre.disconnect(ch.lp); ch.pre.connect(n); n.connect(ch.lp); ch.crunch=n;
+  }catch(e){}
+}
+function setEra(ch, e, at){
+  const c=ch.c, now=at==null?c.currentTime:at;
+  ch.lp.frequency.setTargetAtTime(eraHz(e), now, 0.02);
+  if(ch.crunch){ const p=ch.crunch.parameters.get("era"); p.setTargetAtTime(e, now, 0.02); }
+}
+function volGain(v){ return Math.max(0,Math.min(1,v))*0.95; }
+function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
+/* AOG-STRINGS-REAL-V1: a recorded sound has its own level after the amp (rout, measured: its C chord as loud as the grand
+   piano's), as the made string has out; trim carries the difference while the recordings play */
+function recTrim(id){ const s=SOUNDS[id]; return (s && s.rout && recOf(id) && soundReady(id)) ? s.rout/(s.out||1) : 1; }
+function setSound(ch, id){ setSendLevel(ch, id); ch.rig.set(rigFor(id)); ch.post.gain.value=SOUNDS[id].out||1; ch.trim.gain.value=recTrim(id);
+  if(ch===LIVE_CH && window.AOGLive) AOGLive.setRig(rigFor(id)); }
+
+/* a voice is a little chain that ends in a gain we can fade out: stop(t) lets go, kill(t) silences at once */
+function voiceShell(c, out, nodes, rel, endPad){
+  return {
+    nodes:nodes, rel:rel, stopped:false,
+    stop(t, tau){ if(this.stopped) return; this.stopped=true; const T=Math.max(t, c.currentTime);
+      rel.gain.setTargetAtTime(0, T, tau); this.end=T+tau*7+(endPad||0);
+      nodes.forEach(n=>{ try{ n.stop(this.end); }catch(e){} }); },
+    kill(t){ const T=Math.max(t, c.currentTime); try{ rel.gain.cancelScheduledValues(T); rel.gain.setTargetAtTime(0, T, 0.01); }catch(e){}
+      this.stopped=true; this.end=T+0.08; nodes.forEach(n=>{ try{ n.stop(this.end); }catch(e){} }); }
+  };
+}
+/* AOG-PIANO-LATE-NOTE-V1: every gain is made already holding where its sound is, so a note the engine hears a moment late
+   just starts a moment late (Safari can skip a first "start at 0" step, and a new gain otherwise starts at 1) */
+function gainAt(c, v){ try{ return new GainNode(c, {gain:v}); }catch(e){ const g=c.createGain(); g.gain.value=v; return g; } }
+function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
+function velAmp(v){ return Math.pow(0.3+0.7*Math.max(0,Math.min(1,v)), 1.5); }
+/* each string sits a little to its own side, low strings left, as a player hears it */
+function panFor(c, s){ if(s==null) return null; try{ return new StereoPannerNode(c, {pan:(s/(TUNING.length-1)-0.5)*0.36}); }catch(e){ return null; } }
+function stringVoice(c, ch, id, m, v, when, s){
+  const snd=SOUNDS[id], n=nearest(m), buf=noteBuf(id, n);
+  if(!buf) return null;
+  const vv=Math.max(0.05, Math.min(1, v)), rate=Math.pow(2,(m-n)/12);
+  const src=c.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, snd.lp*Math.pow(2, vv*snd.lpSpan));
+  const g=gainAt(c, velAmp(vv)*snd.gain), rel=gainAt(c, 1);
+  src.connect(lp); lp.connect(g);
+  let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  src.start(when);
+  const nodes=[src], pairs=[[src, n, 1]];
+  /* AOG-AMP-V1: a twelve-string's second string, a hair later: an octave up on the four low courses, the same note (a few
+     cents out) on the two high ones */
+  if(snd.twelve && s!=null){ const m2=s<4?m+12:m, n2=nearest(m2), b2=noteBuf(id, n2);
+    if(b2){ const s2=c.createBufferSource(), det=s<4?1:Math.pow(2,4/1200); s2.buffer=b2; s2.playbackRate.value=Math.pow(2,(m2-n2)/12)*det;
+      const g2=gainAt(c, s<4?0.5:0.7); s2.connect(g2); g2.connect(lp); s2.start(when+0.009); nodes.push(s2); pairs.push([s2, n2-(m2-m), det]); } }
+  const vc=voiceShell(c, ch.bus, nodes, rel);
+  vc.tau=snd.damp; vc.natural=when+buf.duration/rate;
+  /* slide a finger along the string: the note glides to the new fret */
+  vc.glide=(m2, at)=>{ pairs.forEach(([sx, nn, det])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(Math.pow(2,(m2-nn)/12)*det, at, 0.012); }catch(e){} }); };
+  return vc;
+}
+/* the synth bass: a saw and a square a hair apart, through a filter that opens with the note and closes after it, as on
+   the analogue synths. AOG-STRINGS-V2 — the handoff: "It honks. It does not thump." It should thump, then growl, then sit:
+   a quiet sine an octave down for the first moment (the thump), the filter closing (the growl), then the level settling.
+   syn: sq the square's level · det how far apart they are (cents) · q the filter's peak (dB; kept low, so it does not
+   whistle) · it opens to fa×f+fv×velocity and settles at fb×f+fb0 in about tc s · sub the thump's level, subMs how fast it
+   goes · sus where the level settles, st how fast */
+function synthVoice(c, ch, id, m, v, when, s){
+  const snd=SOUNDS[id], f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), peak=0.2*velAmp(vv), sy=snd.syn||{};
+  const o1=osc(c,"sawtooth",f), o2=osc(c,"square",f); o2.detune.value=sy.det==null?7:sy.det;
+  const m2=gainAt(c, sy.sq==null?0.5:sy.sq); o2.connect(m2);
+  const fa=Math.min(9000, f*(sy.fa||3)+(sy.fv||1800)*vv), fb=Math.min(fa, f*(sy.fb||1.6)+(sy.fb0==null?240:sy.fb0)), q=sy.q==null?5:sy.q;
+  let lpf; try{ lpf=new BiquadFilterNode(c,{type:"lowpass", frequency:fa, Q:q}); }catch(e){ lpf=filt(c,"lowpass",fa,q); }
+  lpf.frequency.setValueAtTime(fa, when); lpf.frequency.setTargetAtTime(fb, when, sy.tc||0.08);
+  o1.connect(lpf); m2.connect(lpf);
+  const amp=gainAt(c, peak); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(peak*(sy.sus||0.72), when+0.004, sy.st||0.3);
+  lpf.connect(amp);
+  const lvl=gainAt(c, snd.gain), rel=gainAt(c,1); amp.connect(lvl);
+  if(sy.sub){ const o3=osc(c,"sine",f/2), sg=gainAt(c,0), d=(sy.subMs||50)/1000;
+    sg.gain.setValueAtTime(0, when); sg.gain.linearRampToValueAtTime(peak*sy.sub, when+0.003); sg.gain.setTargetAtTime(0, when+0.003, d);
+    o3.connect(sg); sg.connect(lvl); o3.start(when); o3.stop(when+0.003+d*9); }
+  let tail=lvl; const pan=panFor(c, s); if(pan){ lvl.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  o1.start(when); o2.start(when);
+  const vc=voiceShell(c, ch.bus, [o1,o2], rel); vc.tau=snd.damp;
+  vc.glide=(m3, at)=>{ const ff=mtof(m3); [o1,o2].forEach(o=>{ try{ o.frequency.cancelScheduledValues(at); o.frequency.setTargetAtTime(ff, at, 0.02); }catch(e){} }); };
+  return vc;
+}
+/* AOG-STRINGS-REAL-V1 (a set without "play":"straight"; the synth sounds were once on the recorded organ, cosmo): the organ's full bass voice (layer 2) for the saw and
+   its hollow one (layer 1) for the square, a hair apart, each looped while the note is held, through the synth's own
+   filter and envelope (above), from the steady part of each note (the synth's envelope makes the start); the thump is
+   the hollow voice an octave down, for a moment. The organ's bass voices are
+   dark (little above their fourth harmonic), so the filter would have little to open and close: they are driven first
+   (rdrive: how hard, into a soft clip), as a synth's oscillator is, which gives them the highs the filter growls with */
+const DRIVE=(()=>{ const n=2048, d=new Float32Array(n), k=Math.tanh(2.5); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; d[i]=Math.tanh(2.5*x)/k; } return d; })();
+function recSynthVoice(c, ch, id, m, v, when, s, R){
+  if(R.meta && R.meta.play==="straight") return recSynthStraight(c, ch, id, m, v, when, s, R);
+  const snd=SOUNDS[id], f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), peak=0.2*velAmp(vv), sy=snd.syn||{}, L=R.lvl, sq=sy.sq==null?0.5:sy.sq;
+  const fa=Math.min(9000, f*(sy.fa||3)+(sy.fv||1800)*vv), fb=Math.min(fa, f*(sy.fb||1.6)+(sy.fb0==null?240:sy.fb0)), q=sy.q==null?5:sy.q;
+  let lpf; try{ lpf=new BiquadFilterNode(c,{type:"lowpass", frequency:fa, Q:q}); }catch(e){ lpf=filt(c,"lowpass",fa,q); }
+  lpf.frequency.setValueAtTime(fa, when); lpf.frequency.setTargetAtTime(fb, when, sy.tc||0.08);
+  const nodes=[], pairs=[];
+  const play=(lay, mm, gain, det, to)=>{ const pk=recPick(R, "sus", mm, lay===1?0:1, null); if(!pk) return null; const z=pk.z, b=R.buf[z.f];
+    const src=c.createBufferSource(); src.buffer=b; src.playbackRate.value=recRate(z, mm)*Math.pow(2, det/1200);
+    if(z.lp){ src.loop=true; src.loopStart=(R.lead[z.f]||0)+z.lp[0]; src.loopEnd=(R.lead[z.f]||0)+z.lp[1]; }
+    /* from the organ's steady tone (its loop), not its own slow, dark swell: the synth's envelope makes the start */
+    const g=gainAt(c, gain*(z.g||1)/L.long[pk.lay]); src.connect(g); g.connect(to); src.start(when, z.lp ? src.loopStart : R.at[z.f]); nodes.push(src); pairs.push([src, z, det, mm-m]); return z; };
+  let into=lpf;
+  if(snd.rdrive){ const pre=gainAt(c, snd.rdrive); let ws=null; try{ ws=new WaveShaperNode(c, {curve:DRIVE, oversample:"2x"}); }catch(e){ ws=c.createWaveShaper(); ws.curve=DRIVE; }
+    pre.connect(ws); ws.connect(lpf); into=pre; }
+  const z0=play(2, m, 1, 0, into); if(!z0) return null;
+  if(sq>0) play(1, m, sq, sy.det==null?7:sy.det, into);
+  const amp=gainAt(c, peak); amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(peak*(sy.sus||0.72), when+0.004, sy.st||0.3);
+  lpf.connect(amp);
+  const lvl=gainAt(c, snd.gain), rel=gainAt(c,1); amp.connect(lvl);
+  if(sy.sub){ const sg=gainAt(c,0), d=(sy.subMs||50)/1000;
+    if(play(1, m-12, 1, 0, sg)){ sg.gain.setValueAtTime(0, when); sg.gain.linearRampToValueAtTime(peak*sy.sub, when+0.003); sg.gain.setTargetAtTime(0, when+0.003, d); sg.connect(lvl);
+      try{ nodes[nodes.length-1].stop(when+0.003+d*9); }catch(e){} } }
+  let tail=lvl; const pan=panFor(c, s); if(pan){ lvl.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  const vc=voiceShell(c, ch.bus, nodes, rel); vc.tau=snd.damp;
+  vc.rec={set:R.id, f:z0.f, k:"sus", v:2, r:1, m:z0.m, c:z0.c||0, loop:!!z0.lp};
+  vc.glide=(m3, at)=>{ pairs.forEach(([sx, zz, det, d12])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(recRate(zz, m3+d12)*Math.pow(2, det/1200), at, 0.02); }catch(e){} }); };
+  return vc;
+}
+/* AOG-BASS-SYNTH-V1 (2026-10-04) — Jimmy: "REAL EVERYTHING if possible". A set recorded from a real synthesizer
+   (set.json "play":"straight": the analog SH-2 sets) already carries the synth's own filter and envelope, so it plays as
+   recorded: the strength picks the layer (the harder, the wider the synth's filter opened), the note keeps sounding
+   through its loop while held, or dies away by itself where the recording does */
+function recSynthStraight(c, ch, id, m, v, when, s, R){
+  const snd=SOUNDS[id], vv=Math.max(0.05,Math.min(1,v)), pk=recPick(R, "sus", m, vv, null); if(!pk) return null;
+  const z=pk.z, b=R.buf[z.f], src=c.createBufferSource(); src.buffer=b; src.playbackRate.value=recRate(z, m);
+  if(z.lp){ src.loop=true; src.loopStart=(R.lead[z.f]||0)+z.lp[0]; src.loopEnd=(R.lead[z.f]||0)+z.lp[1]; }
+  const peak=0.2*velAmp(vv), amp=gainAt(c, peak*(z.g||1)/R.lvl.long[pk.lay]);
+  amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak*(z.g||1)/R.lvl.long[pk.lay], when+0.003);
+  src.connect(amp);
+  const lvl=gainAt(c, snd.gain), rel=gainAt(c,1); amp.connect(lvl);
+  let tail=lvl; const pan=panFor(c, s); if(pan){ lvl.connect(pan); tail=pan; }
+  tail.connect(rel); rel.connect(ch.amp);
+  src.start(when, R.at[z.f]);
+  const vc=voiceShell(c, ch.bus, [src], rel); vc.tau=snd.damp;
+  if(!z.lp) vc.natural=when+Math.max(0.05, b.duration-R.at[z.f])/src.playbackRate.value;
+  vc.rec={set:R.id, f:z.f, k:"sus", v:pk.lay, r:z.r||1, m:z.m, c:z.c||0, loop:!!z.lp};
+  vc.glide=(m3, at)=>{ try{ src.playbackRate.cancelScheduledValues(at); src.playbackRate.setTargetAtTime(recRate(z, m3), at, 0.02); }catch(e){} };
+  return vc;
+}
+/* every note: makeVoice(c, ch, id, m, v, when, s) → a voice (voiceShell: stop, kill, glide, tau, natural). AOG-STRINGS-REAL-V1:
+   a recorded sound plays its recordings once they are in, the made string until then; o (optional) says how the note is
+   played: {art:"mute"} muted (chug, gallop …), {soft:true} without the pick (a hammer-on, a tap) */
+function makeVoice(c, ch, id, m, v, when, s, o){
+  const snd=SOUNDS[id]; if(!snd || m<16 || m>100) return null;
+  /* any sound can name a recorded set, a synth too (a recorded synth bass): its recordings once they are in */
+  const r=recOf(id), R=r && REAL.sets[r];
+  if(R && R.state==="ready"){ const vc=snd.kind==="synth" ? recSynthVoice(c, ch, id, m, v, when, s, R) : recVoice(c, ch, id, m, v, when, s, o, R); if(vc) return vc; }
+  if(snd.kind==="synth") return synthVoice(c, ch, id, m, v, when, s);
+  return stringVoice(c, ch, id, m, v, when, s);
+}
+
+/* ── the live engine ── */
+let ac=null, LIVE_CH=null;
+function ctx(){
+  if(!ac){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    /* an iPhone on silent mutes web audio; an instrument is something you play, so it plays like music does */
+    try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+    ac=new AC({latencyHint:"interactive"});
+    LIVE_CH=makeChain(ac);
+    LIVE_CH.master.gain.value=volGain(S.vol);
+    setSound(LIVE_CH, S.sound);
+    setEra(LIVE_CH, S.era);
+    addCrunch(LIVE_CH).then(()=>setEra(LIVE_CH, S.era));
+  }
+  if(ac.state==="suspended") ac.resume();
+  return ac;
+}
+const STR_LIVE=[];           /* the note ringing on each string, played by hand: one note at a time on a string */
+const ALL=[];                /* every voice still sounding, to keep the count kind to the phone */
+function track(vc){ ALL.push(vc); if(ALL.length>40){ const old=ALL.shift(); try{ old.kill(ac.currentTime); }catch(e){} } }
+function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--){ const v=ALL[i]; if((v.end&&v.end<now)||(v.natural&&v.natural<now)) ALL.splice(i,1); } }
+function pluckCell(s, f, v, when, o){
+  const c=ctx(), at=Math.max(c.currentTime, when||0), m=TUNING[s]+f;
+  const old=STR_LIVE[s]; if(old && !old.vc.stopped) old.vc.stop(at, SOUNDS[S.sound].damp);
+  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, at, s, o); if(!vc) return;
+  STR_LIVE[s]={vc:vc, m:m, f:f, at:at}; track(vc); prune(); handLitSoon(at);
+}
+/* AOG-HAND-LIT-V1 (Jimmy, 2026-10-05: "When I am playing a chord on the guitar, I am unsure what notes are playing. Can they
+   be highlighted like the piano?"): a string you play by hand (a chord button, a strum, a fret) lights orange on the neck
+   while it rings, as the pattern's notes do and the piano's keys do; it goes dark when it is damped or has died away. A
+   timer looks again only while something rings, then stops. */
+function handNow(){
+  const out=new Set(); if(!ac) return out; const t=ac.currentTime;
+  STR_LIVE.forEach((L,s)=>{ if(!L || !L.vc || L.vc.stopped || (L.at||0)>t+0.01) return;
+    /* Solo mode's lead note rings as long as it is alive (a held note can sing on); a strummed note at most 2.5 s */
+    const on=typeof L.vc.alive==="function" ? L.vc.alive(t) : t<Math.min(L.vc.natural||Infinity, (L.at||0)+2.5);
+    if(on) out.add(s+":"+(L.f!=null?L.f:0)); });
+  return out;
+}
+let handLitT=0;
+function handLitSoon(at){
+  clearTimeout(handLitT);
+  const tick=()=>{ litNeck(); const on=handNow().size>0, ahead=ac && STR_LIVE.some(L=>L && !L.vc.stopped && L.at>ac.currentTime);
+    if(on || ahead) handLitT=setTimeout(tick, 90); };
+  handLitT=setTimeout(tick, Math.max(0, ((at||0)-(ac?ac.currentTime:0))*1000)+10);
+}
+function dampString(s, when){ const old=STR_LIVE[s]; if(old && ac && !old.vc.stopped) old.vc.stop(Math.max(ac.currentTime, when||0), 0.03, {rel:true}); STR_LIVE[s]=null; if(old) handLitSoon(when); }   /* the hand on the string (a recording: its sound, AOG-STRINGS-REAL-V1) */
+function muteAll(){ for(let s=0;s<TUNING.length;s++) dampString(s); }
+function slideTo(s, f){
+  const L=STR_LIVE[s]; if(!L || L.vc.stopped || !ac){ pluckCell(s, f, 0.62); return; }
+  L.vc.glide(TUNING[s]+f, ac.currentTime); L.m=TUNING[s]+f; L.f=f; handLitSoon();
+}
+/* the chord in your hand: the one playing, or the last one you tapped */
+function curChord(){ return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog[PLAY.cur%S.prog.length] : null; }
+function shapeChord(){ return curChord() || S.hand; }
+/* a string strummed with the chord in your hand: its fret in the shape; a string the shape skips is muted */
+function pluckShape(s, v, when){
+  const c=shapeChord(), f=c ? shapeFor(c)[s] : 0;
+  if(f<0){ dampString(s, when); return; }
+  pluckCell(s, f, v, when);
+}
+/* one chord, now: the guitar strums it low to high; the bass plays its low note */
+function playChord(c, v){
+  const now=ctx().currentTime;
+  if(GTR){ const shp=shapeFor(c); let k=0; shp.forEach((f,s)=>{ if(f<0){ dampString(s, now); return; } pluckCell(s, f, v*(1-0.03*k), now+k*0.016); k++; }); }   /* a hand: 16 ms a string (AOG-STRINGS-WAYS-V1) */
+  else { const cl=cellFor(bassRoot(c)); if(cl) pluckCell(cl.s, cl.f, v, now); }
+}
+
+/* ══ AOG-ANYCHORD-V1 (2026-10-05) — any chord ══════════════════════════════════════════════════════════════════════
+   Jimmy: "scales, modes and chords and all that". Under the pattern by the neck: a root, one of the library's 45 kinds
+   (aog-chords.js), and a button. Choosing one puts it in the hand, as a chord button does: it lights on the neck and
+   plays (the guitar strums it; the bass plays the root, then the chord's notes one after another). When the hand
+   cannot reach it on the frets on screen, the neck moves to the nearest place where it can. */
+const ANY={root:null, id:"maj"};
+function anyChord(){ const r=ANY.root==null?S.key:ANY.root; return {off:((r-S.key)%12+12)%12, q:Q[ANY.id]?ANY.id:"maj"}; }
+/* a guitar shape the hand can play: every note in the chord, the notes it needs, at most four frets apart, on screen */
+function shapeOK(f, c){
+  const pcs=chordPcs(c), on=f.filter(x=>x>=0), fr=on.filter(x=>x>0);
+  if(on.length<2 || !on.every(x=>inReach(x))) return false;
+  if(fr.length && Math.max.apply(null,fr)-Math.min.apply(null,fr)>4) return false;   /* the chord charts' widest (an E-shape add9) */
+  const have=new Set(); f.forEach((x,s)=>{ if(x>=0) have.add((TUNING[s]+x)%12); });
+  if([...have].some(pc=>pcs.indexOf(pc)<0)) return false;
+  const pw=!!(SOUNDS[S.sound]&&SOUNDS[S.sound].power) && Q[c.q].indexOf(7)>=0;   /* a metal sound plays the root and the 5th */
+  return pw ? have.has(pcs[0]) : chordNeeds(c).need.every(pc=>have.has(pc));
+}
+/* the bass: every note of the chord within reach, above the root */
+function anyHere(c){
+  if(GTR) return shapeOK(shapeFor(c), c);
+  const R=bassRoot(c), ns=anyBassNotes(c), cl=cellFor(R);
+  return !!cl && inReach(cl.f) && new Set(ns.map(m=>m%12)).size===new Set(chordPcs(c)).size && ns.every((m,i)=>!i || m>R);
+}
+/* where the hand goes for chord c: here if it can, else the nearest window of frets that works (lower first) */
+function anyPlace(c){
+  const was=S.fret0, hi=Math.max(1, MAXF-NECK.n+1), order=[was];
+  for(let d=1; d<=hi; d++){ if(was-d>=1) order.push(was-d); if(was+d<=hi) order.push(was+d); }
+  for(const f0 of order){ S.fret0=f0; if(anyHere(c)) return f0; }
+  S.fret0=was; return was;
+}
+/* the bass's arpeggio: the root, then each note of the chord upward, every one where the hand is */
+function anyBassNotes(c){
+  const R=bassRoot(c), out=[]; let prev=-1;
+  Q[c.q].slice().sort((x,y)=>x-y).forEach(i=>{
+    const m=R+i, cands=[m, m-12, m+12, m-24, m+24].filter(x=>{ const cl=cellFor(x); return cl && inReach(cl.f); });
+    /* upward from the last note; a high 9th or 13th the hand cannot reach up there comes in lower, still above the root */
+    const up=cands.filter(x=>x>prev).sort((x,y)=>x-y), over=cands.filter(x=>x>R).sort((x,y)=>x-y), pick=up.length ? up[0] : over.length ? over[0] : cands[0];
+    if(pick!=null && out.indexOf(pick)<0){ out.push(pick); prev=pick; } });
+  return out;
+}
+function playAny(c){
+  if(GTR){ playChord(c, 0.74); return; }
+  const now=ctx().currentTime;
+  anyBassNotes(c).forEach((m,k)=>{ const cl=cellFor(m); if(cl) pluckCell(cl.s, cl.f, k?0.68:0.76, now+k*0.24); });
+}
+function anyName(){ const r=ANY.root==null?S.key:ANY.root, y=AC?AC.sym(ANY.id):SUF[ANY.id]||"";
+  return KEY_NAMES[S.lang][r]+(S.lang==="es" && /^[a-z]/i.test(y) ? " " : "")+y; }
+function paintAnyLine(){
+  const el=$("anyLine"); if(!el) return;
+  const c=anyChord(), held=ANY.shown && S.hand && S.hand.q===c.q && S.hand.off===c.off;
+  /* each note spelled as the chord says it: a ♭3, ♭5, ♭7, ♭9 or ♭13 with a flat, a ♯5, ♯9 or ♯11 with a sharp, the
+     others as the root is spelled (C7: C E G B♭; Cm7♭5: C E♭ G♭ B♭; D: D F♯ A) */
+  const root=((S.key+c.off)%12+12)%12, rootFlat=[1,3,5,8,10].indexOf(root)>=0, set=S.lang==="es"?SOLFA:NAMES, seen=[];
+  const notes=Q[c.q].map(i=>{ const pc=(root+i)%12; if(seen.indexOf(pc)>=0) return null; seen.push(pc);
+    const fl=[1,3,6,10,13,20].indexOf(i)>=0 ? true : [8,15,18].indexOf(i)>=0 ? false : rootFlat;
+    return i===0 ? KEY_NAMES[S.lang][root] : set[fl?"flat":"sharp"][pc]; }).filter(Boolean);
+  const s=held ? t("anyLine",{name:anyName(), notes:notes.join(" · ")})
+    +(ANY.moved ? " "+t("anyMoved",{n:ANY.moved}) : "") : "";
+  if(el.textContent!==s) el.textContent=s;
+}
+function pickAny(play){
+  if(ANY.root==null) ANY.root=S.key;
+  const c=anyChord(), was=S.fret0, f0=anyPlace(c);
+  S.hand={off:c.off, q:c.q};
+  ANY.shown=true; ANY.moved=f0!==was ? f0 : 0;
+  if(f0!==was){ buildNeck(); save(); }
+  if(play){ playAny(c); LES.mark("anyplay"); lessonChord(c); }
+  litNeck(); paintAnyLine();
+}
+function paintAny(){
+  const r=$("anyRoot"), k=$("anyKind"); if(!r || !k) return;
+  const root=ANY.root==null?S.key:ANY.root;
+  r.innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===root?" selected":""}>${n}</option>`).join("");
+  const opt=id=>{ const y=AC?AC.sym(id):SUF[id]; return `<option value="${id}"${id===ANY.id?" selected":""}>${(y?y+" · ":"")+(AC?AC.label(id,S.lang):id)}</option>`; };
+  k.innerHTML=AC ? AC.GROUPS.map(g=>`<optgroup label="${AC.group(g[0],S.lang)}">`+g[1].map(opt).join("")+`</optgroup>`).join("") : Object.keys(SUF).map(opt).join("");
+  paintAnyLine();
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CHORDS — pads, the pattern, and the player
+   ══════════════════════════════════════════════════════════════════════════ */
+const padHeld={};
+function padDown(i, v){
+  const c=allPads()[i]; if(!c) return;   /* AOG-CHORDS-MORE-V1: 7 to 10 are the chord strip's second row */
+  S.hand={off:c.off, q:c.q};
+  playChord(c, v||0.74);
+  padHeld[i]=true;
+  const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
+  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  LES.mark("pad1"); if(i>=6) LES.mark("seven"); else { LT.pads.add(i); if(LT.pads.size>=6) LES.mark("padall"); } lessonChord(c);   /* AOG-LESSONS-V1 */
+  litNeck();
+}
+function padUp(i){
+  if(!padHeld[i]) return; delete padHeld[i];
+  const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.remove("hit");
+  paintWheelState();
+}
+/* one bar of guitar: t in beats; w = "d" a down strum (low to high), "u" an up strum (the top strings, high to low),
+   "b" the bass string, "a" the other bass string, a number = one of the top strings (1 = the highest).
+   AOG-STRINGS-WAYS-V1: "t" a light down strum on the top strings (the thumb keeps the bass), "p" the three lowest strings,
+   "i" one string counted up from the bass (0 = the bass string), "g" the shuffle's two notes (boogie, below).
+   n = how many strings ("u", "t"); sp = seconds from one string to the next; chop = let go after this many beats;
+   mute = the side of the hand rests on the strings, so the strum is short and thuds. The guitar passes n, its strings in play. */
+function strumEvents(rh, n){
+  const E=(t,w,v,o)=>Object.assign({t:t, w:w, v:v}, o||{}), each=(k,f)=>Array.from({length:k},(_,i)=>f(i));
+  const slap={chop:.1, mute:true, sp:.015};          /* the strumming hand slaps the strings: a short, dead "chk" */
+  if(rh==="down") return [0,1,2,3].map(b=>({t:b, w:"d", v:b?0.64:0.78}));
+  if(rh==="folk") return [{t:0,w:"d",v:.78},{t:1,w:"d",v:.68},{t:1.5,w:"u",v:.55},{t:2.5,w:"u",v:.55},{t:3,w:"d",v:.7},{t:3.5,w:"u",v:.55}];
+  /* AOG-STRINGS-WAYS-V1 (Jimmy): fingerpicking in order — the thumb on the shape's lowest note, then its strings 3, 2, 1 */
+  if(rh==="pick") return [{t:0,w:"b",v:.78},{t:.5,w:3,v:.6},{t:1,w:2,v:.62},{t:1.5,w:1,v:.64},{t:2,w:"b",v:.74},{t:2.5,w:3,v:.58},{t:3,w:2,v:.6},{t:3.5,w:1,v:.62}];
+  if(rh==="reggae") return [.5,1.5,2.5,3.5].map(x=>({t:x, w:"u", v:.72, chop:.3}));
+  /* AOG-GUITAR-METAL-V1: the hand rests on the strings by the bridge, so each strum is short and thuds (palm muting) */
+  if(rh==="chug") return [0,1,2,3,4,5,6,7].map(i=>({t:i/2, w:"p", v:i%4===0?.82:i%2?.66:.74, chop:i%4===3?.4:.2, mute:true}));
+  if(rh==="gallop") return [0,1,2,3].reduce((o,bt)=>o.concat([{t:bt, w:"p", v:.82, chop:.4, mute:true},{t:bt+.5, w:"p", v:.66, chop:.2, mute:true},{t:bt+.75, w:"p", v:.7, chop:.2, mute:true}]), []);
+  /* AOG-STRINGS-WAYS-V1 — strumming: down-up all bar, the slap on 2 and 4; the waltz's oom-pah-pah */
+  if(rh==="pop") return each(8,i=>i===2||i===6 ? E(i/2,"d",.76,slap) : E(i/2, i%2?"u":"d", i===0?.8:i%2?.54:.68));
+  if(rh==="waltz") return [E(0,"b",.8), E(1,"t",.6,{chop:.7}), E(2,"t",.56,{chop:.7})];
+  /* picking: the thumb on the bass strings every beat, the fingers between (and with it on 1 and 3); a roll up and down
+     every string of the chord; the bass note then a strum, as country players do */
+  if(rh==="travis") return [E(0,"b",.8),E(0,1,.64),E(.5,2,.56),E(1,"a",.7),E(1.5,1,.6),E(2,"b",.74),E(2,2,.6),E(2.5,1,.58),E(3,"a",.68),E(3.5,3,.56)];
+  if(rh==="ballad"){ const m=Math.max(1,n||6), seq=[]; for(let i=0;i<m;i++) seq.push(i); for(let i=m-2;i>=1;i--) seq.push(i);
+    return each(8,i=>E(i/2,"i",i?.6:.74,{i:seq[i%seq.length]})); }
+  if(rh==="country") return [E(0,"b",.8), E(1,"t",.62,{chop:.6}), E(2,"a",.74), E(3,"t",.6,{chop:.6})];
+  /* rock and metal: all down strokes; the low strings ringing (punk) or muted (thrash, breakdown); one note, picked fast */
+  if(rh==="rock") return each(8,i=>E(i/2,"d",i===0?.82:i%2?.6:.72));
+  if(rh==="punk") return each(8,i=>E(i/2,"p",i%2?.72:.82,{chop:.4}));
+  if(rh==="thrash") return each(16,i=>E(i/4,"p",i%4===0?.84:i%2?.62:.7,{chop:.14,mute:true}));
+  if(rh==="breakdown") return [0,.75,1.5,2,2.75,3.5].map((x,i)=>E(x,"p",i%3===0?.88:.74,{chop:x%1===.5?.3:.45,mute:true}));
+  if(rh==="tremolo") return each(32,i=>E(i/8,"b",i%8===0?.78:i%2?.58:.66));
+  /* grooves: funk's muted scratches with four that ring; bossa nova's thumb and fingers; the rumba's rolled strum and slap;
+     the shuffle (its notes are found where the hand is, boogie) */
+  if(rh==="funk") return each(16,i=>{ const hit=[0,6,10,13].indexOf(i)>=0;
+    return E(i/4, i%2?"u":"t", hit?.8:.55, hit?{n:3,chop:.2}:{n:3,chop:.07,mute:true}); });
+  if(rh==="bossa") return [E(0,"b",.78), E(0,"t",.6,{chop:.6}), E(1.5,"t",.56,{chop:.45}), E(2,"a",.72), E(2.5,"t",.58,{chop:.45})];
+  if(rh==="rumba") return [E(0,"d",.8,{sp:.03}), E(.5,"u",.55), E(.75,"t",.6,{n:4}), E(1,"d",.74,slap), E(1.5,"u",.56),
+                           E(2,"d",.78,{sp:.03}), E(2.5,"u",.55), E(2.75,"t",.6,{n:4}), E(3,"d",.74,slap), E(3.5,"u",.56)];
+  if(rh==="shuffle") return each(8,i=>E(i/2,"g",i===0?.82:i%2?.6:.74,{k:i, chop:.42}));
+  return [{t:0, w:"d", v:.76}];
+}
+/* AOG-STRINGS-WAYS-V1: the shuffle's boogie — the chord's root on a low string and, picked with it, the fifth, then the sixth,
+   and on a seventh chord the flat seventh: 5 5 6 6 7 7 6 6 (5 5 6 6 5 5 6 6 on the others). The three are one hand
+   position, a step apart: above the root on higher strings, or below it on lower ones (the fifth under the root), an
+   octave out when that is what reaches. All on frets the hand can reach where it is; without a sixth in reach, the fifth
+   stays. c = the chord (without it, the shape's bass note is the root). */
+function boogie(shp, c){
+  const on=[]; shp.forEach((f,s)=>{ if(f>=0) on.push(s); });
+  const bs=on[0], pc=c ? ((S.key+c.off)%12+12)%12 : (TUNING[bs]+shp[bs])%12, sev=!!c && (c.q==="dom7"||c.q==="m7");
+  /* the best place for note m on a string above the root's (up) or below it, near the root's fret and the fifth's string */
+  const at=(m, s0, f0, up, like)=>{ let best=null;
+    TUNING.forEach((o,s)=>{ if(up ? s<=s0 : s>=s0) return; const f=m-o; if(f<0 || f>MAXF || !inReach(f)) return;
+      const sc=Math.abs(s-s0)-1+Math.abs(f-f0)*0.2+(like!=null && s!==like?0.5:0);
+      if(!best || sc<best.sc) best={s:s, f:f, sc:sc}; });
+    return best; };
+  let best=null;
+  TUNING.forEach((o,s0)=>{ for(let f0=0; f0<=MAXF; f0++){ if((o+f0)%12!==pc || !inReach(f0)) continue;
+    const R=o+f0;
+    for(const up of [true,false]) for(const oc of [0,12]){
+      const T5=up ? R+7+oc : R-5-oc, five=at(T5, s0, f0, up); if(!five) continue;
+      const six=at(T5+2, s0, f0, up, five.s), seven=sev ? at(T5+3, s0, f0, up, five.s) : null;
+      const sc=(s0>2?2:0)+s0*0.6+(up?0:1)+(oc?1.5:0)+five.sc+(six?six.sc:6)+(sev && !seven?1:0)+(s0===bs && f0===shp[bs]?-1:0);
+      if(!best || sc<best.sc) best={sc:sc, root:{s:s0, f:f0}, five:five, six:six, seven:seven};
+    } } });
+  if(!best) return {root:{s:bs, f:shp[bs]}, moves:[]};
+  const F={s:best.five.s, f:best.five.f}, X=best.six?{s:best.six.s, f:best.six.f, role:"pass"}:F, Y=best.seven?{s:best.seven.s, f:best.seven.f}:F;
+  return {root:best.root, moves:[F,F,X,X,Y,Y,X,X]};
+}
+/* which string plays when, in one bar of a shape; each string rings until it is played again or the bar ends (or chop says).
+   A string is never started twice at the same moment. c = the chord, for the shuffle. */
+function strumPlan(shp, rh, c){
+  const on=[]; shp.forEach((f,s)=>{ if(f>=0) on.push(s); });
+  if(!on.length) return [];
+  const bpb=RHYTHM_BEATS[rh]||4, top=on.slice().reverse(), bassS=on[0], alt2=on.filter(s=>s>bassS && s>=2)[0], alt=alt2!=null ? alt2 : on[Math.min(1,on.length-1)], out=[], seen={};
+  const treble=n=>{ const u=on.filter(s=>s!==bassS); return (u.length?u:on).slice(-n); };     /* the top strings, low to high */
+  const bg=rh==="shuffle" ? boogie(shp, c) : null;
+  /* a strum is a hand, not a stack (Jimmy): the strings of a strum come 15 to 40 ms apart, down strums low to high and up
+     strums high to low; a second hand at the same moment (the thumb with the fingers) waits its turn, 15 ms on */
+  const busy={};
+  strumEvents(rh, on.length).forEach(ev=>{
+    let ss, sp=0.016;
+    if(ev.w==="d"){ ss=on; sp=rh==="hold"?0.022:0.016; }
+    else if(ev.w==="u"){ ss=top.slice(0, Math.min(ev.n||4, top.length)); sp=0.015; }
+    else if(ev.w==="t"){ ss=treble(ev.n||3); sp=0.015; }
+    else if(ev.w==="b") ss=[bassS]; else if(ev.w==="a") ss=[alt];
+    else if(ev.w==="p"){ ss=on.slice(0,3); sp=0.015; }
+    else if(ev.w==="i") ss=[on[Math.min(ev.i, on.length-1)]];
+    else if(ev.w==="g"){ ss=[bg.root].concat(bg.moves[ev.k]?[bg.moves[ev.k]]:[]); sp=0.015; }
+    else ss=[top[Math.min(ev.w-1, top.length-1)]];
+    if(ev.sp!=null) sp=ev.sp;
+    sp=Math.max(0.015, Math.min(0.04, sp));
+    const at=busy[ev.t]!=null ? busy[ev.t]+0.015 : 0; let n=0;
+    ss.forEach(h=>{ const cell=typeof h==="object", s=cell?h.s:h; if(seen[s+"@"+ev.t]) return; seen[s+"@"+ev.t]=1;
+      out.push({s:s, f:cell?h.f:null, role:cell&&h.role||"", t:ev.t, off:at+n*sp, v:ev.v*(1-0.035*n)*(ev.mute?0.7:1), chop:ev.chop||0, mute:!!ev.mute}); n++; });
+    if(n) busy[ev.t]=at+(n-1)*sp;
+  });
+  /* AOG-STRINGS-REAL-V1: free = the hand lets go of a short note before its string is played again (a recording adds
+     the sound of that) */
+  out.forEach(p=>{ let next=bpb; out.forEach(q=>{ if(q.s===p.s && q.t>p.t && q.t<next) next=q.t; }); p.end=p.chop ? Math.min(p.t+p.chop, next) : next; p.free=!!(p.chop && p.t+p.chop<next-0.05); });
+  return out;
+}
+/* AOG-STRINGS-WAYS-V1: a note is in the hand when it has a place on the frets on screen */
+function inHand(m){ const cl=cellFor(m); return !!(cl && inReach(cl.f)); }
+/* the note that steps into note T: a half step below when T is above "from", above when it is not; the other side, or a
+   whole step, when the hand cannot reach that one (by the nut, the fret under an open string is off the screen) */
+function stepInto(T, from){
+  const s=T>from?-1:1;
+  for(const d of [s, -s, 2*s, -2*s]) if(inHand(T+d)) return T+d;
+  return reachable(T+s);
+}
+/* the scale a chord sits in, as steps above its root: the key's own when the root is in the key, with the chord's own third
+   and seventh in place of the key's; a chord from outside the key gets mixolydian (dorian when it is minor) */
+function chordScale(c){
+  const root=((S.key+c.off)%12+12)%12, key=(S.minor?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]).map(x=>(S.key+x)%12), iv=Q[c.q];
+  let rel=key.indexOf(root)>=0 ? key.map(p=>((p-root)%12+12)%12) : (iv[1]===3 ? [0,2,3,5,7,9,10] : [0,2,4,5,7,9,10]);
+  rel=rel.filter(x=>!((x===3||x===4) && x!==iv[1]) && !(iv.length>3 && (x===10||x===11) && x!==iv[3]));
+  iv.forEach(x=>{ if(rel.indexOf(x)<0) rel.push(x); });
+  return rel;
+}
+/* one step along that scale from note m: up (dir 1) or down (-1) */
+function stepFrom(m, c, dir){
+  const root=((S.key+c.off)%12+12)%12, rel=chordScale(c);
+  for(let d=1; d<=3; d++){ const x=m+dir*d; if(rel.indexOf(((x-root)%12+12)%12)>=0) return x; }
+  return m+dir*2;
+}
+/* the walking line's first three beats in bar k: a chord tone, a step along the scale, a chord tone. Each bar a little
+   different (up from the root; down from the octave; down below the root; and every fourth bar beat 2 rests), always on
+   frets the hand can reach */
+function walkLine(c, k){
+  const R=bassRoot(c), third=reachable(R+((c.q==="min"||c.q==="m7")?3:4)), fifth=reachable(R+7), up=m=>stepFrom(m,c,1), dn=m=>stepFrom(m,c,-1);
+  const lines=[[R, up(R), third], [R+12, dn(R+12), fifth], [R, dn(R), R-5], [third, up(third), fifth], [R, up(R), fifth], [R, up(R), R], [R, null, R-5], [R, null, fifth]];
+  const fit=l=>l.every(m=>m==null || inHand(m));
+  /* each bar's own line first; when the hand cannot reach it, the next that it can (3 4 5, the octave, ...) */
+  for(const i of [[0,3,1,4],[1,4,0,3],[2,5,3,0],[6,7]][((k%4)+4)%4]) if(fit(lines[i])) return lines[i];
+  return lines.find(fit) || [R, null, fifth];
+}
+/* one bar of bass: the notes, as note numbers, from the chord's root the hand can reach; d = how long, in beats; k = which bar.
+   AOG-STRINGS-WAYS-V1: role "pass" = a note on the way between the chord's notes; "ant" = the next chord's root, played early
+   (it rings over the bar line). Jimmy: the lines leave the root — the first six ways too, but for Root. */
+function lineEvents(rh, c, next, k){
+  k=k||0;
+  const R=bassRoot(c), third=reachable(R+((c.q==="min"||c.q==="m7")?3:4)), fifth=reachable(R+7), low5=reachable(R-5>=TUNING[0]?R-5:R+7);
+  const oct=inHand(R+12) ? R+12 : inHand(R-12) ? R-12 : reachable(R+12), up8=reachable(R+12);   /* never an octave off the frets on screen */
+  const nr=next?bassRoot(next):R, appr=stepInto(nr, R);      /* a step into the next chord's root */
+  const E=(t,m,d,v,role)=>({t:t, m:m, d:d, v:v, role:role||""}), each=(n,f)=>Array.from({length:n},(_,i)=>f(i)), pcs=chordPcs(c), tone=m=>pcs.indexOf(((m%12)+12)%12)>=0;
+  /* Steady: the root on 1 and 3, the fifth on 2 (the third every other bar, after a fifth), the step into the next root on 4 */
+  if(rh==="steady") return [E(0,R,.92,.82), E(1,k%2?third:fifth,.92,.7), E(2,R,.92,.76), E(3,appr,.92,.68,"pass")];
+  /* Driving: the root on every beat; between them a soft, short ghost note or a rest; the step into the next root last */
+  if(rh==="eighths") return [0,1,2,3].map(b=>E(b,R,.46,b?.74:.8)).concat((k%2?[1.5]:[.5,2.5]).map(x=>E(x,R,.15,.35)), [E(3.5,appr,.46,.66,"pass")]).sort((a,b)=>a.t-b.t);
+  /* Root and fifth: when the next chord is a fourth up, the fifth is the one a step from its root, a bridge into it */
+  if(rh==="fifth"){ const br=((nr-R)%12+12)%12===5 ? [R+7,R-5,R+19,R-17].filter(inHand).sort((a,b)=>Math.abs(a-nr)-Math.abs(b-nr))[0] : null;
+    return [E(0,R,1.9,.82), E(2,br!=null?br:low5,1.9,.74)]; }
+  /* Walking: walkLine's three beats, then on 4 a step into the next bar's first note, from the side nearer beat 3 */
+  if(rh==="walk"){ const L=walkLine(c, k), T=walkLine(next||c, k+1)[0], n3=L[2];
+    const near=d=>[T-d,T+d].filter(inHand).sort((a,b)=>Math.abs(a-n3)-Math.abs(b-n3) || (T>n3?a-b:b-a))[0], a4=near(1)!=null?near(1):near(2)!=null?near(2):stepInto(T, n3);
+    return L.map((m,i)=>m==null?null:E(i, m, .95, [.82,.66,.74][i], tone(m)?"":"pass")).filter(Boolean).concat([E(3, a4, .95, .68, "pass")]); }
+  /* Octaves (disco): the root on 1 and 3, the octave on the and of 2 and of 4; beats 2 and 4 are holes */
+  if(rh==="octave") return [E(0,R,.9,.8), E(1.5,oct,.4,.68), E(2,R,.9,.78), E(3.5,oct,.4,.66)];
+  /* AOG-STRINGS-WAYS-V1 — the sixth and the seventh, for the boogie-woogie (a major seventh on a maj7 chord), in the octave
+     of the fifth when the hand reaches them there (else the line stays on the note before) */
+  const six=inHand(R+9)?R+9:fifth, sev=inHand(R+(c.q==="maj7"?11:10))?R+(c.q==="maj7"?11:10):six;
+  if(rh==="waltz") return [E(0,R,1.9,.82), E(2,low5,.9,.7)];
+  if(rh==="arpeggio") return [R,third,fifth,up8,fifth,third,R,third].map((m,i)=>E(i/2,m,.45,i===0?.8:i%2?.62:.72));
+  if(rh==="boogie") return [R,third,fifth,six,sev,six,fifth,third].map((m,i)=>E(i/2,m,.45,i%2?.64:.78,tone(m)?"":"pass"));
+  /* two small steps into the next chord's root: from below when it is higher, from above when it is lower, as the hand allows */
+  if(rh==="approach"){ const a2=appr, s=a2>nr?1:-1, a1=[a2+s, a2+2*s].find(inHand);
+    return [E(0,R,1.9,.82), E(2,fifth,.9,.72), E(3,a1!=null?a1:a2,.45,.64,"pass"), E(3.5,a2,.45,.68,"pass")]; }
+  if(rh==="motown") return [E(0,R,1.4,.82), E(1.5,R,.45,.62), E(2,fifth,.9,.74), E(3,up8,.45,.7), E(3.5,appr,.45,.66,"pass")];
+  if(rh==="rock") return [R,R,fifth,fifth,up8,up8,fifth,fifth].map((m,i)=>E(i/2,m,.45,i%2?.64:.8));
+  /* metal: with the guitar's gallop, its sixteenths (thrash) and its breakdown */
+  if(rh==="gallop") return [0,1,2,3].reduce((o,b)=>o.concat([E(b,R,.45,.84),E(b+.5,R,.2,.64),E(b+.75,R,.2,.7)]), []);
+  if(rh==="sixteen") return each(16,i=>E(i/4,R,.2,i%4===0?.84:i%2?.62:.7));
+  if(rh==="breakdown") return [0,.75,1.5,2,2.75,3.5].map((x,i)=>E(x,R,x%1===.5?.3:.45,i%3===0?.88:.74));
+  /* grooves: funk's ghost notes and high pops; reggae's deep notes and space; the tumbao plays the next chord's root on 4,
+     early, and lets it ring into the next bar; bossa nova's root and fifth with a lead-in to each */
+  if(rh==="funk") return [E(0,R,.35,.86), E(.75,R,.18,.56), E(1.5,up8,.22,.74), E(2,R,.35,.8), E(2.5,fifth,.22,.66), E(3,up8,.22,.74), E(3.75,R,.18,.58)];
+  if(rh==="reggae") return [E(0,R,.9,.8), E(1.5,R,.4,.6), E(2,low5,1.4,.84), E(3.5,third,.4,.64)];
+  if(rh==="tumbao") return [E(1.5,fifth,1.4,.76), E(3,nr,2.4,.82,"ant")];
+  if(rh==="bossa") return [E(0,R,1.4,.8), E(1.5,low5,.45,.62), E(2,low5,1.4,.74), E(3.5,R,.45,.62)];
+  return [{t:0, m:R, d:3.9, v:.8}];
+}
+const BASS_SHORT={gallop:1, sixteen:1, funk:1, eighths:1};
+/* schedule bar k of the pattern on a context and chain; returns the voices it made */
+/* AOG-FEEL-V1 (2026-10-04) — Jimmy: "A lot of the How the chords are played sounds, sound like fake instruments." Every note
+   of a pattern landed exactly on the grid at exactly the same strength, the way a machine plays. A player never is: each
+   hit a few milliseconds early or late (less on the beat), a little softer or louder, a chord's notes not quite together.
+   Seeded by the bar and the hit, so no two bars are the same and a test can still play the same bar twice. */
+function feel(k, i){ if(window.AOG_FEEL_OFF) return ()=>0; const r=seeded((k+1)*7919+(i+1)*104729); r(); return r; }   /* the pattern tests check the grid itself with AOG_FEEL_OFF */
+/* ══ AOG-HAND-STYLE-V1 (2026-10-05) — Jimmy: "does the guitar and bass allow me to pick or strum along in the fret board in its
+   various styles?" While a style plays, hold frets on the neck and the style plays your notes, in time:
+   · the guitar: your shape. A string you hold plays your highest finger on it, a string you do not hold rings open, as
+     on a real guitar (pvFret, the whole-screen neck's rule). Every strum and picking pattern plays that shape.
+   · the bass: your lowest held note is the root, your other fingers say major or minor (else the chord playing, if it
+     has that root, else major), and the line (walking, root and fifth, octaves …) is played in your octave.
+   A change of fingers is heard at once: what was planned of the bar from 25 ms on is planned again with your notes, and a
+   string whose note changed lets go, as a hand moving does. Let go of every fret and the style plays the chords again.
+   Never in Solo mode, where your fingers play a lead over the style. ══ */
+function handHeld(){
+  if(!S.playing || (window.AOGSolo && AOGSolo.isOn())) return null;
+  const on=[]; FINGERS.forEach(p=>{ if(p.zone==="fret") on.push(p); }); if(!on.length) return null;
+  const top=s=>on.filter(p=>p.s===s).reduce((a,p)=>!a || pvAt(p)>pvAt(a) ? p : a, null);
+  const notes=[], shp=TUNING.map((o,s)=>{ const t=top(s); const f=t ? Math.round(pvAt(t)) : (GTR ? 0 : -1); if(f>=0 && (GTR || t)) notes.push(o+f); return f; });
+  if(!notes.length) return null;
+  const low=Math.min.apply(null, notes), pcs=new Set(notes.map(m=>((m%12)+12)%12));
+  /* the root: the note a major or minor triad stands on (an A minor shape over the open low E is still A minor), else the lowest */
+  const lowPc=((low%12)+12)%12, roots=[lowPc].concat([...pcs].filter(x=>x!==lowPc));
+  const pc=GTR ? roots.find(r=>pcs.has((r+7)%12) && (pcs.has((r+4)%12) || pcs.has((r+3)%12))) : lowPc; const R0=pc!=null ? pc : lowPc;
+  const iv=new Set([...pcs].map(x=>((x-R0)%12+12)%12));
+  const cur=S.prog.length ? S.prog[Math.max(0, PLAY.cur)%S.prog.length] : null, curPc=cur ? ((S.key+cur.off)%12+12)%12 : -1;
+  let q = iv.has(4) ? (iv.has(10) ? "dom7" : iv.has(11) ? "maj7" : "maj") : iv.has(3) ? (iv.has(10) ? "m7" : "min")
+        : (cur && curPc===R0 && Q6.indexOf(cur.q)>=0) ? cur.q : "maj";
+  /* the bass plays its line from your lowest note: its root is that note */
+  return {shp:shp, low:low, chord:{off:((R0-S.key)%12+12)%12, q:q}};
+}
+function handSig(h){ return h ? h.shp.join(",") : ""; }
+function handChanged(){
+  if(!S.playing || !ac) return;
+  const h=handHeld(), sig=handSig(h); if(sig===(PLAY.hand||"")) return;
+  PLAY.hand=sig; if(h) LES.mark("handstyle");   /* AOG-LESSONS-V1 */
+  const now=ac.currentTime, cut=now+0.025, newShp=h ? h.shp : null;
+  /* what has not started yet is planned again; a ringing string whose note changed lets go */
+  PLAY.voices.forEach(v=>{
+    if(v.on!=null && v.on>=cut){ v.kill(now); v.gone=true; return; }
+    if(v.cell && (v.off==null || v.off>cut)){ const s=+String(v.cell).split(":")[0], f=+String(v.cell).split(":")[1];
+      const nf=newShp ? newShp[s] : null; if(!GTR || nf==null || nf!==f){ v.kill(cut); v.gone=true; } } });
+  PLAY.voices=PLAY.voices.filter(v=>!v.gone);
+  const b0=Math.max(0, Math.floor((cut-PLAY.t0)/PLAY.barSec));
+  for(let b=b0; b<PLAY.bar; b++) PLAY.voices=PLAY.voices.concat(scheduleBar(ac, LIVE_CH, b, PLAY.t0+b*PLAY.barSec, PLAY.barSec, curSwing(), cut));
+}
+function scheduleBar(c, ch, k, t0, barSec, swing, from){
+  const hh=c===ac ? handHeld() : null;   /* only the live player follows the hand; a take sent away plays the chords */
+  const chord=hh ? hh.chord : S.prog[k%S.prog.length]; if(!chord) return [];
+  const bpb=beatsPerBar(), beat=barSec/bpb, out=[], started={};
+  /* the second half of each beat leans back with the swing, as on the drum machine (its third and fourth sixteenths move
+     together); a note after the fourth sixteenth (the tremolo's) is fitted into what is left of the beat, so it stays in order */
+  const lean=x=>{ const fr=x-Math.floor(x), L=(swing-0.5)*beat; return (x>=bpb || fr<0.499) ? 0 : fr<0.749 ? L : L*(1-fr)*4; };
+  const fresh=(s, when)=>{ const id=s+"@"+Math.round(when*1000); if(started[id]) return false; started[id]=1; return true; };   /* never the same string twice at once */
+  if(GTR){
+    const shp=hh ? hh.shp : shapeFor(chord);
+    const hand={};   /* AOG-FEEL-V1: one strum moves as one hand: early or late together, a little faster or slower, harder or softer */
+    strumPlan(shp, S.rhythm, chord).forEach(p=>{
+      const hk=p.t.toFixed(3), h=hand[hk]||(hand[hk]=(r=>({dt:r()*(p.t%1===0?0.0025:0.005), sp:1+0.12*r(), v:1+0.06*r()}))(feel(k, Math.round(p.t*48))));
+      const f=p.f!=null?p.f:shp[p.s], when=Math.max(t0, t0+p.t*beat+lean(p.t)+p.off*h.sp+h.dt), endAt=Math.max(when+0.02, t0+p.end*beat+lean(p.end)+h.dt), m=TUNING[p.s]+f;
+      p={...p, v:Math.min(1, p.v*h.v*(1+0.025*feel(k, p.s*97+Math.round(p.t*48))()))};
+      if(from && when<from) return;   /* AOG-HAND-STYLE-V1: the part of the bar already played */
+      if(!fresh(p.s, when)) return;
+      const vc=makeVoice(c, ch, S.sound, m, p.v, when, p.s, p.mute?{art:"mute"}:undefined);      /* a muted strum: the muted recordings (AOG-STRINGS-REAL-V1) */
+      if(vc){ vc.stop(endAt, p.chop?0.02:SOUNDS[S.sound].damp, p.free?{rel:true}:undefined); vc.m=m; vc.cell=p.s+":"+f; vc.on=when; vc.off=endAt; vc.role=p.role; out.push(vc); }
+    });
+  } else {
+    const evs=lineEvents(S.rhythm, chord, hh ? chord : S.prog[(k+1)%S.prog.length], k);
+    if(hh){ const d=hh.low-bassRoot(chord); if(d) evs.forEach(e=>{ e.m+=d; }); }   /* AOG-HAND-STYLE-V1: in your octave */
+    /* AOG-STRINGS-REAL-V1: the quick, short notes of the metal, funk and driving lines are played short and damped (a
+       recorded set's short notes) */
+    if(BASS_SHORT[S.rhythm]) evs.forEach(e=>{ if(e.d<=0.25) e.mute=true; });
+    evs.forEach((ev,ei)=>{
+      const fr=feel(k, ei+Math.round(ev.t*48)*31), when=Math.max(t0, t0+ev.t*beat+lean(ev.t)+fr()*(ev.t%1===0?0.002:0.004)), cl=cellFor(ev.m);   /* AOG-FEEL-V1 */
+      ev={...ev, v:Math.min(1, ev.v*(1+0.06*fr()))};
+      /* a note lets go when the next one comes, even when the swing pulls the next one closer, and at the bar line (a note
+         played early for the next chord rings on over it) */
+      const nx=evs.filter(e=>e.t>ev.t).reduce((a,e)=>Math.min(a, t0+e.t*beat+lean(e.t)), ev.role==="ant"?Infinity:t0+barSec), endAt=Math.min(when+ev.d*beat, nx);
+      if(from && when<from) return;   /* AOG-HAND-STYLE-V1 */
+      if(!fresh(cl?cl.s:"", when)) return;
+      const vc=makeVoice(c, ch, S.sound, ev.m, ev.v, when, cl?cl.s:null, ev.mute?{art:"mute"}:undefined);
+      /* a note let go before the next one: a recording adds the sound of the hand (AOG-STRINGS-REAL-V1) */
+      if(vc){ vc.stop(endAt, SOUNDS[S.sound].damp, when+ev.d*beat<nx-0.03?{rel:true}:undefined); vc.m=ev.m; vc.cell=cl?cl.s+":"+cl.f:""; vc.on=when; vc.off=endAt; vc.role=ev.role||""; out.push(vc); }
+    });
+  }
+  return out;
+}
+const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], drum:null, cur:-1, sig:""};
+function curBpm(){ return drumsLive() ? DRUM.take.bpm : S.bpm; }
+function curSwing(){ return (drumsLive() && typeof DRUM.take.swing==="number") ? DRUM.take.swing : (RHYTHM_SWING[S.rhythm]||0.5); }
+function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
+async function start(){
+  if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
+  const c=ctx();
+  if(S.withDrums && DRUM.take && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
+  stop(true);
+  S.playing=true; PLAY.hand=handSig(handHeld());   /* AOG-HAND-STYLE-V1 */
+  const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.cur=-1;
+  const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
+  if(drumsLive() && DRUM.buf){
+    const d=DRUM.take, off=(typeof d.offset==="number")?d.offset:0.03;
+    const s=c.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
+    const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*PLAY.barSec;
+    s.loopStart=off; s.loopEnd=Math.min(DRUM.buf.duration, off+pass);
+    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); s.start(t1);
+    PLAY.drum=s; PLAY.t0=t1+off;
+  } else PLAY.t0=t1;
+  tick();
+  paintPlay(); lessonPlaying();   /* AOG-LESSONS-V1 */
+}
+function stop(quiet){
+  if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
+  if(ac){ const now=ac.currentTime; PLAY.voices.forEach(v=>v.kill(now)); }
+  PLAY.voices=[];
+  if(PLAY.drum){ try{ PLAY.drum.stop(); }catch(e){} PLAY.drum=null; }
+  S.playing=false; PLAY.cur=-1; PLAY.hand="";
+  litNeck(); paintNow();
+  if(!quiet) paintPlay();
+}
+function tick(){
+  if(!S.playing) return;
+  const now=ac.currentTime;
+  while(PLAY.t0+PLAY.bar*PLAY.barSec < now+0.3){
+    const v=scheduleBar(ac, LIVE_CH, PLAY.bar, PLAY.t0+PLAY.bar*PLAY.barSec, PLAY.barSec, curSwing());
+    PLAY.voices=PLAY.voices.filter(x=>!(x.end && x.end<now)).concat(v);
+    PLAY.bar++;
+  }
+  const cur=Math.floor((now-PLAY.t0)/PLAY.barSec);
+  if(cur>=0 && cur!==PLAY.cur){ PLAY.cur=cur; paintNow(); litNeck(); }
+  else if([...sounding()].sort().join(",")!==PLAY.sig) litNeck();   /* the orange notes follow each string */
+  PLAY.raf=requestAnimationFrame(tick);
+}
+
+/* ── the drum machine's beat, from the shelf the music tools share ── */
+const DRUM={take:null, buf:null};
+async function checkDrums(){
+  /* AOG-DRUM-MACHINE-V2: the newest beat from either drum machine (a loop sent from the new one, padbench, or a bounce
+     from the classic one, drumbench); a take of free playing has no steady tempo, so it is left out */
+  const beatOf=async k=>{ try{ const x=await AOGHandoff.get(k); return x && x.wav && x.bpm>0 && !x.take ? x : null; }catch(e){ return null; } };
+  { const a=await beatOf("drumbench"), b=await beatOf("padbench"); DRUM.take=(a && b) ? ((b.at||0)>(a.at||0) ? b : a) : (a||b); }
+  if(DRUM.take && !(DRUM.take.wav && DRUM.take.bpm)) DRUM.take=null;
+  DRUM.buf=null;
+  paintDrums();
+}
+
+/* ── a recording for the turntables ── */
+function wavBlob(L, R, sr){
+  const n=L.length, ab=new ArrayBuffer(44+n*4), v=new DataView(ab);
+  const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*4,true); v.setUint16(32,4,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,n*4,true);
+  let o=44; for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,L[i])), r=Math.max(-1,Math.min(1,R[i]));
+    v.setInt16(o,l<0?l*0x8000:l*0x7fff,true); v.setInt16(o+2,r<0?r*0x8000:r*0x7fff,true); o+=4; }
+  return new Blob([ab],{type:"audio/wav"});
+}
+const SHELF=GTR?"guitarbench":"bassbench";
+async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole recording to the Drum Machine */
+  const toPads=dest==="pads", line=document.getElementById("sendLine"), btn=document.getElementById(toPads?"sendPadsBtn":"sendBtn");
+  if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
+  btn.disabled=true; line.textContent=t("sending");
+  try{
+    await loadSound(S.sound);      /* AOG-STRINGS-REAL-V1: a recorded sound's notes are in before the recording is made */
+    if(S.withDrums && DRUM.take && !DRUM.buf){ ctx(); try{ DRUM.buf=await decodeWith(ac, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
+    const bpm=curBpm(), barSec=beatsPerBar()*60/bpm, L=S.prog.length;
+    const reps=Math.max(1, Math.ceil((22/barSec)/L)), bars=L*reps;
+    const sr=44100, withD=drumsLive() && DRUM.buf, off0=withD ? ((typeof DRUM.take.offset==="number")?DRUM.take.offset:0.03) : 0.05;
+    const dur=off0+bars*barSec+3;
+    const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+    const oc=new OC(2, Math.ceil(dur*sr), sr);
+    await AOGAmp.load(oc); const ch=makeChain(oc); await addCrunch(ch);
+    ch.master.gain.value=volGain(Math.max(S.vol,0.8)); setSound(ch, S.sound); setEra(ch, S.era, 0);
+    if(withD){
+      const d=DRUM.take, s=oc.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
+      const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*barSec;
+      s.loopStart=off0; s.loopEnd=Math.min(DRUM.buf.duration, off0+pass);
+      const g=oc.createGain(); g.gain.value=0.9; s.connect(g); g.connect(ch.pre); s.start(0); s.stop(off0+bars*barSec+0.05);
+    }
+    for(let k=0;k<bars;k++) scheduleBar(oc, ch, k, off0+k*barSec, barSec, curSwing());
+    const buf=await oc.startRendering();
+    const blob=wavBlob(buf.getChannelData(0), buf.getChannelData(1), sr);
+    const name=(GTR?(S.lang==="es"?"Guitarra":"Guitar"):(S.lang==="es"?"Bajo":"Bass"))+" · "+soundName(S.sound)+" · "+Math.round(bpm)+" BPM · "+bars+" "+t("bars");
+    if(toPads){
+      const r=await AOGHandoff.add(AOGHandoff.INBOX, {from:INST, n:0, name:{en:name, es:name}, sec:Math.round(buf.duration*1000)/1000, bpm:bpm, at:Date.now(), take:true, wav:blob});
+      await AOGHandoff.put("padstake", {id:r.id, from:INST, at:Date.now()});
+      line.innerHTML=t("sentPads")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
+      btn.disabled=false; return;
+    }
+    await AOGHandoff.put(SHELF, {name:name, bpm:bpm, bars:bars, at:Date.now(), wav:blob});
+    line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`; LES.mark("decks");
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The six chords of the key, each a short hit made
+   the way a pad plays it (on the bass, the chord's low note), go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
+   at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
+function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(GTR&&c.q==="min"?"m":""); }
+/* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The Drum Machine's
+   chords bank (the bass: its notes bank) takes this instrument, key and mood; it makes the chords itself. */
+async function sendPads(){
+  const line=$("padsLine"), btn=$("padsBtn");
+  btn.disabled=true;
+  try{
+    await AOGHandoff.put("padschords", {from:INST, bank:(GTR?"chords":"notes"), inst:(GTR?"g:":"a:")+((SOUNDS[S.sound]&&SOUNDS[S.sound].rec)||S.sound), key:S.key, minor:!!S.minor, at:Date.now()});
+    line.innerHTML=t("padsSent")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PAGE
+   ══════════════════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+/* ══ AOG-LESSONS-V1 (2026-10-05) — this lab's lessons: each step ticks itself as it really happens on the page (the words:
+   _work/music/lessons_guitar.py and lessons_bass.py; the card: aog-lessons.js). An id the lab's lessons do not use is
+   ignored by LES.mark, so one set of hooks serves both instruments. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={pads:new Set(), last:null, sigs:new Set()};
+/* a note a hand just played (a fret, an open string, a key): open strings, frets, octaves and fifths */
+function lessonNote(s, f){
+  f=Math.round(f); const m=TUNING[s]+f, now=performance.now();
+  if(f===0) LES.mark("open"+s); else LES.mark("fret1");
+  if(f>=5) LES.mark("fret5"); if(f===12) LES.mark("fret12");
+  if(!GTR && /^(fretless|upright|fretlead)$/.test(S.sound)) LES.mark("flnote");
+  const L=LT.last;
+  if(L && now-L.at<4000){ const d=m-L.m; if(d===12) LES.mark("octave"); if(d===7) LES.mark("fifth"); if(d===-5) LES.mark("fifthlow"); }
+  LT.last={m:m, at:now};
+}
+/* a chord a hand just played (a pad, the wheel, Any chord): its name, and a power chord on a heavy sound */
+function lessonChord(c){
+  const pc=((S.key+c.off)%12+12)%12, id={"7maj":"chG","0maj":"chC","2maj":"chD","4maj":"chE","9maj":"chA","4min":"chEm","9min":"chAm"}[pc+c.q];
+  if(id) LES.mark(id);
+  if(GTR && SOUNDS[S.sound] && SOUNDS[S.sound].power && Q[c.q] && Q[c.q].indexOf(7)>=0) LES.mark("power");
+  if(S.own && S.prog.length>=4) LES.mark("own4");
+}
+/* a strum across the strings: which way, and every string in one swipe */
+function lessonStrum(p, list, low2high){
+  if(!list.length) return;
+  LES.mark(low2high ? "strumdn" : "strumup");
+  if(!p.lset) p.lset=new Set(); list.forEach(x=>p.lset.add(x)); if(p.lset.size>=TUNING.length) LES.mark("strum6");
+}
+function recOn(){ const b=$("recBtn"); return !!(b && b.getAttribute("aria-pressed")==="true"); }
+/* the songs: the pattern, the style and the sound that make each one */
+function lessonSongs(){
+  const p=S.preset, r=S.rhythm, snd=SOUNDS[S.sound]||{}, out=[], blues=/^(blues|blues8|quick|jazzblues)$/.test(p);
+  if(GTR){
+    if(p==="pop" && r==="folk" && S.key===7) out.push("camp");
+    if(blues && r==="shuffle") out.push("blues");
+    if(p==="minor" && r==="reggae") out.push("reggae");
+    if(p==="power" && snd.power && /^(rock|punk|chug)$/.test(r)) out.push("rock");
+    if(p==="bossa" && r==="bossa" && S.sound==="nylon") out.push("bossa");
+  } else {
+    if(blues && r==="walk") out.push("walk");
+    if(p==="disco" && r==="octave") out.push("disco");
+    if(p==="minor" && r==="reggae") out.push("reggae");
+    if(p==="funk" && r==="funk") out.push("funk");
+  }
+  if(!p && S.prog.length>=4) out.push("own");
+  return out;
+}
+/* a sound picked in Instrument (or the lead sound menu) */
+function lessonSound(id){
+  const g=(SOUNDS[id]||{}).grp||"";
+  LES.mark("snd1"); if(g!=="grpAcoustic") LES.mark("selec"); if(g==="grpMetal") LES.mark("smetal"); if(id==="nylon") LES.mark("snylon");
+  if(/^(fretless|upright|fretlead)$/.test(id)) LES.mark("sfretless"); if(id==="dub") LES.mark("sdub"); if(g==="grpFunk" || id==="slap") LES.mark("sslap");
+}
+/* the parts drawn by the shared scripts (the recorder, Solo mode) are listened to from outside, before their own handlers */
+function lessonListen(){
+  document.addEventListener("click",(e)=>{
+    const el=e.target.closest ? e.target.closest("button") : null; if(!el) return;
+    if(el.id==="recBtn"){ if(recOn()) LES.mark("take2"); else { LES.mark("take1"); if(S.playing) lessonSongs().forEach(k=>LES.mark("tk_"+k)); } return; }   /* pressed = it is about to stop */
+    if(el.hasAttribute("data-aogrec-studio")){ LES.mark("studio"); if(LES.count("studio")>=2) LES.mark("studio2"); return; }
+    const mode=el.getAttribute("data-so-mode") || (el.id==="pvSolo" ? "solo" : el.id==="pvChords" ? "chords" : "");
+    if(mode==="solo") LES.mark("solo1"); else if(mode==="chords" && window.AOGSolo && AOGSolo.isOn()) LES.mark("chordsback");
+    if(el.id==="soLickBtn") LES.mark("lick");
+    if(el.id==="soBand") LES.mark("band");
+  }, true);
+  document.addEventListener("change",(e)=>{ if(e.target && e.target.id==="soScaleSel") LES.mark("scale1"); }, true);
+}
+/* the chords are playing: the style, the drum beat, a song, and a take of it if one is recording */
+function lessonPlaying(){
+  if(!S.playing) return;
+  LES.mark("play"); LES.mark("p_"+S.rhythm); if(drumsLive()) LES.mark("drumplay");
+  lessonSongs().forEach(k=>{ LES.mark("sg_"+k); if(recOn()) LES.mark("tk_"+k); });
+}
+/* the six music tools in one menu, at the right of the bar as on the others, by their short names (AOG-MUSIC-TOOLS-MENU-V1); this one is shown */
+function navHtml(){
+  const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]===INST?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
+}
+/* AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". ● Record on the
+   neck keeps what the guitar or the bass plays as a take (aog-recorder.js, the one recorder every music tool shares) */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang,
+  what:GTR?{en:"the guitar",es:"la guitarra"}:{en:"the bass",es:"el bajo"}, prefix:GTR?{en:"Guitar",es:"Guitarra"}:{en:"Bass",es:"Bajo"},
+  file:GTR?{en:"guitar-take",es:"guitarra-toma"}:{en:"bass-take",es:"bajo-toma"}, shelf:INST+"bench", bpm:()=>curBpm(),
+  ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-AMP-V1: the amp panel. aog-amp.js draws it; the page keeps what is changed, with the sound it was changed on */
+let AMPUI=null;
+function applyRig(){ if(ac && LIVE_CH) LIVE_CH.rig.set(rigFor(S.sound)); if(window.AOGLive) AOGLive.setRig(rigFor(S.sound)); }   /* the real one hears the same amp */
+/* AOG-LIVEINPUT-V1 — your real guitar or bass, through the same amp, and a free tuner (aog-liveinput.js) */
+const LIVEIN=window.AOGLive ? AOGLive.attach({mount:"liveBox", kind:GTR?"guitar":"bass", tool:INST, context:()=>ctx(), out:()=>{ ctx(); return LIVE_CH.bus; },
+  rig:()=>rigFor(S.sound), lang:()=>S.lang, bpm:()=>curBpm()}) : null;
+function paintAmp(){
+  if(!AMPUI) AMPUI=AOGAmp.ui($("ampBox"), {kind:GTR?"guitar":"bass", near:$("pedalsNear"), lang:()=>S.lang, get:()=>rigFor(S.sound),
+    set:(st)=>{ const o=AOGAmp.normalize(st, GTR?"guitar":"bass"); delete o.pickup;
+      { const was=rigFor(S.sound), on=(r,k)=>!!(r.fx && r.fx[k] && r.fx[k].on); LES.mark("amp1");   /* AOG-LESSONS-V1 */
+        if(Object.keys(Object.assign({}, was.fx||{}, o.fx||{})).some(k=>on(was,k)!==on(o,k))) LES.mark("pedal"); }
+      RIGS[S.sound]=o; clearTimeout(paintAmp.t); paintAmp.t=setTimeout(saveRigs, 300); applyRig(); },
+    reset:()=>{ delete RIGS[S.sound]; saveRigs(); applyRig(); }});
+  else AMPUI.paint();
+}
+/* AOG-STRINGS-KEYS-V2: the keys as a picture, one row a job */
+function paintKeyMap(){
+  const box=$("keyMap"); if(!box) return;
+  const caps=a=>a.map(k=>`<kbd>${k}</kbd>`).join("");
+  const rows=[[caps(PAD_KEYS.slice(0, allPads().length)), t("kmChords")]];
+  rows.push([caps(["A","S","D","F","G","H","J","K","L",";","'"]), t("kmNotes")]);
+  rows.push([caps(["W","E","T","Y","U","O","P"]), t("kmSharps")]);
+  if(GTR) rows.push([caps(["Z","X","C","V","B","N"]), t("kmStrings")]);
+  rows.push([`<kbd class="km-space">Tab</kbd>`, STRPICK.s<0 ? t("kmTab") : t("kmTabOn",{s:strName(STRPICK.s)})]);
+  rows.push([caps(["←"])+caps(["→"]), t("kmMove")]);
+  rows.push([`<kbd class="km-space">${t("kmSpaceKey")}</kbd>`, t("kmSpace")]);
+  const q=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  box.innerHTML=`<p class="km-h">${q(t("kmH"))}</p>`+rows.map(([k,w])=>`<div class="km-row"><span class="km-caps">${k}</span><span class="km-say">${q(w)}</span></div>`).join("");
+  try{ keyLetters(); }catch(e){}
+}
+function paintText(){
+  document.documentElement.setAttribute("lang", S.lang);
+  paintKeyMap();
+  document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });
+  $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
+  $("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
+  $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW"); $("majBtn2").textContent=t("major"); $("minBtn2").textContent=t("minorW");
+  $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
+  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("muteBtn").textContent=t("mute");
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint(); paintAmp(); if(LIVEIN) LIVEIN.paint();
+  $("era").setAttribute("aria-label", t("eraAria"));
+  $("nav").innerHTML=navHtml();
+  $("foot").innerHTML=`<p>${t("credit")}`+(Object.keys(SOUNDS).some(k=>SOUNDS[k].rec)?` <a href="/audio/${INST}/CREDITS.txt?v=${REAL.ver}">${t("credits")}</a>`:"")+`</p>`;   /* AOG-STRINGS-REAL-V1: where the recordings come from */
+  recLine();
+  paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
+  paintDial(); paintDrums(); paintAny(); buildNeck(); pvText(); LES.paint();
+}
+function paintSounds(){
+  const sel=$("soundSel"), groups={}, order=[];
+  Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp||""; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(id); });
+  const opt=id=>`<option value="${id}"${id===S.sound?" selected":""}>${soundName(id)}</option>`;
+  sel.innerHTML=order.map(g=>g ? `<optgroup label="${t(g)}">`+groups[g].map(opt).join("")+`</optgroup>` : groups[g].map(opt).join("")).join("");
+}
+function paintKeySel(){ $("keySel").innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===S.key?" selected":""}>${n}</option>`).join(""); const k2=$("keySel2"); if(k2){ k2.innerHTML=$("keySel").innerHTML; k2.value=String(S.key); } }
+function paintProgSel(){
+  let html=`<option value="">${t(S.prog.length&&!S.preset?"myOwn":"pickPattern")}</option>`, g=null;
+  PRESETS.forEach(p=>{ if(p.g!==g){ if(g) html+="</optgroup>"; g=p.g; html+=`<optgroup label="${PRESET_GROUPS[g][S.lang]}">`; }
+    html+=`<option value="${p.id}"${p.id===S.preset?" selected":""}>${S.lang==="es"?p.es:p.en}</option>`; });
+  $("progSel").innerHTML=html+(g?"</optgroup>":"");
+  const p2=$("progSel2"); if(p2){ p2.innerHTML=$("progSel").innerHTML; p2.value=$("progSel").value; }
+}
+/* AOG-NECK-PATTERN-V1: a chord's number up the scale from the key's home note (♭ when it sits a half step lower) */
+const DEGREE=["1","♭2","2","♭3","3","4","♭5","5","♭6","6","♭7","7"];
+function degreeOf(c){ return DEGREE[((c.off%12)+12)%12]; }
+function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }   /* AOG-STRINGS-WAYS-V1: in groups, as the piano's */
+function paintMood(){ ["","2"].forEach(x=>{ const a=$("majBtn"+x), b=$("minBtn"+x); if(a) a.setAttribute("aria-pressed", S.minor?"false":"true"); if(b) b.setAttribute("aria-pressed", S.minor?"true":"false"); }); const k2=$("keySel2"); if(k2) k2.value=String(S.key);
+  const ar=$("anyRoot"); if(ar && ANY.root==null) ar.value=String(S.key); }   /* AOG-ANYCHORD-V1: its root follows the key until one is chosen */
+/* AOG-CHORD-KEYS-10-V1 (Jimmy, 2026-10-09: "I have only use 6 keys for the chords. There are 10, 1 through 0 should be used and
+   the other keys if needed"): 1 to 0 play the ten chord buttons in order (the six of the key, then the four with sevenths);
+   − and = would play an eleventh and a twelfth. A key plays its chord by where it is on the keyboard (e.code). */
+const PAD_KEYS=["1","2","3","4","5","6","7","8","9","0","−","="], PAD_CODES=["Digit1","Digit2","Digit3","Digit4","Digit5","Digit6","Digit7","Digit8","Digit9","Digit0","Minus","Equal"];
+function padKey(e){ const i=PAD_CODES.indexOf(e.code); return i>=0 && i<allPads().length && !e.metaKey && !e.ctrlKey && !e.altKey ? i : -1; }
+function paintPads(){
+  $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
+  document.querySelectorAll(".pad").forEach(el=>{
+    const i=+el.getAttribute("data-i"); let downAt=0;
+    el.onpointerdown=(e)=>{ if(e.button>0) return; if(e.pointerType==="mouse") e.preventDefault(); downAt=performance.now();
+      try{ el.setPointerCapture(e.pointerId); }catch(err){} padDown(i, 0.74); };
+    el.onpointerup=el.onpointercancel=el.onlostpointercapture=()=>padUp(i);
+    el.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } padDown(i,0.74); setTimeout(()=>padUp(i), 300); };
+  });
+  paintWheel();   /* key, mood or words changed: the wheel is drawn again */
+  paintStrips();   /* AOG-CHORDSTRIP-V1 */
+  paintNow();
+}
+function paintProg(){
+  const box=$("prog");
+  box.innerHTML = S.prog.length ? S.prog.map((c,i)=>`<span class="slot" data-s="${i}">${chordName(c)}</span>`).join("")
+    : `<span class="line" style="margin:0">${t("progEmpty")}</span>`;
+  const b2=$("prog2"); if(b2) b2.innerHTML = S.prog.length ? S.prog.map((c,i)=>`<span class="slot" data-s="${i}"><b>${chordName(c)}</b><small>${degreeOf(c)}</small></span>`).join("")
+    : `<span class="line" style="margin:0">${t("progEmpty")}</span>`;
+  $("ownBtn").setAttribute("aria-pressed", S.own?"true":"false");
+  $("ownLine").textContent=S.own?t("ownOn"):"";
+  paintNow();
+}
+function paintNow(){
+  const k = S.playing && PLAY.cur>=0 && S.prog.length ? PLAY.cur%S.prog.length : -1;
+  document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now", +el.getAttribute("data-s")===k));
+  const cur=k>=0?S.prog[k]:null;
+  document.querySelectorAll(".pad").forEach(el=>{ const c=pads()[+el.getAttribute("data-i")]; el.classList.toggle("now", !!(cur && c && c.off===cur.off && (c.q===cur.q || (cur.q==="dom7"&&c.q==="maj") || (cur.q==="maj7"&&c.q==="maj") || (cur.q==="m7"&&c.q==="min")))); });
+  paintWheelState();
+}
+/* the chord wheel, as on the piano (AOG-PIANO-WHEEL-V1/V2): the circle of fifths, majors outside and their minors inside;
+   the six pads sit side by side; tap to hear, turn to change key; gold = your fingers, orange = the pattern's chord */
+const WHEEL={press:"", ptr:null};
+function wheelPos(pc){ return (pc*7)%12; }
+function wheelChord(p, ring){ const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12; return {off:((root-S.key)%12+12)%12, q:ring==="o"?"maj":"min"}; }
+function wheelName(p, ring){ const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12; return {root:rootName(root, ring==="o"?"maj":"min"), m:ring==="i"}; }
+function paintWheel(){
+  const svg=$("wheel"); if(!svg) return;
+  const es=S.lang==="es", home=wheelPos(S.minor?(S.key+3)%12:S.key), P=(r,a)=>{ const q=(a-90)*Math.PI/180; return [200+r*Math.cos(q), 200+r*Math.sin(q)]; };
+  const f=n=>n.toFixed(1), arc=(r1,r2,a0,a1)=>{ const A=P(r2,a0),B=P(r2,a1),Cq=P(r1,a1),D=P(r1,a0); return `M${f(A[0])} ${f(A[1])}A${r2} ${r2} 0 0 1 ${f(B[0])} ${f(B[1])}L${f(Cq[0])} ${f(Cq[1])}A${r1} ${r1} 0 0 0 ${f(D[0])} ${f(D[1])}Z`; };
+  const focusK = document.activeElement && document.activeElement.closest && document.activeElement.closest("#wheel .wd") ? document.activeElement.getAttribute("data-k") : "";
+  let out="";
+  [["o",124,198,160],["i",56,124,90]].forEach(([g,r1,r2,rl])=>{
+    for(let p=0;p<12;p++){
+      const fit=[(home+11)%12,home,(home+1)%12].indexOf(p)>=0, c=wheelChord(p,g), nm=wheelName(p,g), key=g+p;
+      const pad=fit ? pads().find(x=>x.off===c.off && x.q===c.q) : null;
+      const name=nm.root+(nm.m?(es?" m":"m"):""), short=nm.root+(nm.m?"m":"");
+      const label=t("wheelChord",{c:name})+(pad?", "+t("wheelPad",{n:pad.n}):"");
+      const [x,y]=P(rl,p*30), big=g==="o"?(short.length>2?23:27):(short.length>4?14:(short.length>3?16:18));
+      let txt=`<text x="${f(x)}" y="${f(y)}" style="font-size:${big}px">${short}</text>`;
+      if(pad){ const [nx,ny]=P(g==="o"?183:109,p*30); txt+=`<text class="pn" x="${f(nx)}" y="${f(ny)}" style="font-size:12px">${pad.n}</text>`; }
+      out+=`<g class="wd ${g}${fit?" fit":""}" data-k="${key}" tabindex="0" role="button" aria-label="${label}"><path d="${arc(r1,r2,p*30-15,p*30+15)}"/>${txt}</g>`;
+    }
+  });
+  const hr=S.minor?[56,124]:[124,198];
+  const ring=`<path class="home" d="${arc(hr[0]+3,hr[1]-3,home*30-15+1.2,home*30+15-1.2)}"/>`;
+  const hub=`<circle class="hub" cx="200" cy="200" r="52"/><text class="hub-k" x="200" y="190" style="font-size:${pcName(S.key).length>3?22:28}px">${pcName(S.key)}</text><text class="hub-m" x="200" y="218" style="font-size:14px">${t(S.minor?"wheelMinor":"wheelMajor")}</text>`;
+  svg.innerHTML=out+ring+hub;
+  svg.setAttribute("aria-label", t("wheelGroup"));
+  if(focusK){ const el=svg.querySelector(`[data-k="${focusK}"]`); if(el) el.focus({preventScroll:true}); }
+  const kn=(pc)=>KEY_NAMES[S.lang][((pc%12)+12)%12]+(S.minor?"m":"");
+  const L=$("turnL"), R=$("turnR"); if(L) L.textContent=t("wheelL",{k:kn(S.key+5)}); if(R) R.textContent=t("wheelR",{k:kn(S.key+7)});
+  paintWheelState();
+}
+function wheelKeyOf(c){ const root=((S.key+c.off)%12+12)%12; return (c.q==="min"||c.q==="m7") ? "i"+wheelPos((root+3)%12) : "o"+wheelPos(root); }
+/* three fingers on the frets that make a major or minor chord light its wedge too */
+function handChordKey(){
+  const pcs=new Set(); FINGERS.forEach(p=>{ if(p.zone==="fret") pcs.add((TUNING[p.s]+p.f)%12); });
+  if(pcs.size!==3) return "";
+  for(const r of pcs){ if(pcs.has((r+4)%12) && pcs.has((r+7)%12)) return "o"+wheelPos(r); if(pcs.has((r+3)%12) && pcs.has((r+7)%12)) return "i"+wheelPos((r+3)%12); }
+  return "";
+}
+function paintWheelState(){
+  const svg=$("wheel"); if(!svg) return;
+  const k=curChord(), now=k ? wheelKeyOf(k) : "";
+  const hit=new Set(); if(WHEEL.press) hit.add(WHEEL.press);
+  Object.keys(padHeld).forEach(i=>{ const c=pads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
+  const hand=handChordKey(); if(hand) hit.add(hand);
+  svg.querySelectorAll(".wd").forEach(g=>{ const key=g.getAttribute("data-k"), h=hit.has(key);
+    if(g.classList.contains("hit")!==h) g.classList.toggle("hit", h);
+    const n=!h && key===now; if(g.classList.contains("now")!==n) g.classList.toggle("now", n); });
+}
+function wheelRelease(){ WHEEL.press=""; paintWheelState(); }
+function wheelDown(key){
+  const g=key[0], p=+key.slice(1), c=wheelChord(p,g);
+  S.hand={off:c.off, q:c.q}; WHEEL.press=key;
+  playChord(c, 0.74);
+  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  LES.mark("wheel1"); lessonChord(c);   /* AOG-LESSONS-V1 */
+  litNeck();
+}
+function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
+function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing);
+  const b2=$("playBtn2"); if(b2){ b2.textContent=b.textContent; b2.classList.toggle("go", S.playing); } const pb=$("pvPlay"); if(pb) pb.textContent=b.textContent; }
+function paintTempo(){
+  const r=$("bpm"), locked=drumsLive();
+  r.value=String(curBpm()); r.disabled=!!locked;
+  $("bpmOut").textContent=t("bpm",{n:Math.round(curBpm())});
+}
+function eraWord(){ const e=S.era; return t(e>=0.9?"era87":e>=0.6?"eraMost87":e>0.4?"eraHalf":e>0.1?"eraMost26":"era26"); }
+function paintDial(){
+  $("era").value=String(Math.round((1-S.era)*100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext", eraWord());
+  $("vol").value=String(Math.round(S.vol*100)); $("volOut").textContent=Math.round(S.vol*100);
+}
+function paintDrums(){
+  const box=$("drumBox"); if(!box) return;
+  if(!DRUM.take){
+    box.innerHTML=`<p class="line">${t("drumNone")} <a href="music-pads.html">${t("drumGo")}</a></p>`;
+    if(S.withDrums){ S.withDrums=false; }
+  } else {
+    box.innerHTML=`<div class="row" style="margin-top:.7rem"><button type="button" class="pbtn" id="drumBtn" aria-pressed="${S.withDrums?"true":"false"}">${t("drumOn")}</button></div>
+      <p class="line">${t("drumFrom",{name:(DRUM.take.name||"").replace(/</g,"&lt;")})}${S.withDrums?" "+t(beatsPerBar()===4?"drumTempo":"drumThree"):""}</p>`;
+    $("drumBtn").onclick=()=>{ S.withDrums=!S.withDrums; save(); if(S.withDrums) LES.mark("drums"); const was=S.playing; if(was) stop(true); paintDrums(); paintTempo(); if(was) start(); };
+  }
+  paintTempo();
+}
+
+/* ══ the neck (AOG-STRINGS-V1): as many frets as fit (at least 43 px wide on a phone, 50 on bigger screens); the thick string on top ══ */
+function buildNeck(){
+  const svg=$("neck"); if(!svg) return;
+  /* AOG-NECK-FIT-V1 (Jimmy, 2026-10-09, on his iPad turned sideways: "In the horizontal mode it is a bit too wide!"): on a
+     wide screen the neck stops at twelve frets of a natural width and sits in the middle, rather than stretching every fret;
+     the whole-screen view (sideways on a phone) still fills the screen. */
+  const nb=$("neckBox"); if(nb){ nb.style.maxWidth=NECK.play ? "" : (GTR ? "840px" : "760px"); nb.style.marginLeft=nb.style.marginRight=NECK.play ? "" : "auto"; }
+  if(NECK.play){ buildPlayNeck(); return; }   /* AOG-PLAY-V1: sideways, the neck fills the screen */
+  const w=Math.max(280, Math.round($("neckBox").clientWidth||330));
+  const rows=TUNING.length, rowH=GTR?44:52, nut=46, top=8, strW=GTR?(w<360?50:w<600?58:120):0;
+  const n=Math.max(GTR?4:5, Math.min(12, Math.floor((w-nut-strW-(GTR?6:0))/(w<600?43:50))));
+  S.fret0=Math.max(1, Math.min(MAXF-n+1, S.fret0));
+  const cw=(w-nut-strW-(GTR?6:0))/n, H=top+rows*rowH+28;
+  Object.assign(NECK,{n:n, W:w, H:H, rowH:rowH, nut:nut, strW:strW, cw:cw, top:top, rows:rows});
+  const bx=nut, bw=n*cw, by=top, bh=rows*rowH, f=v=>v.toFixed(1), Y=r=>top+r*rowH+rowH/2, ox=(nut-4)/2;
+  let s=`<rect class="nk-open" x="0" y="${by}" width="${nut-4}" height="${bh}" rx="6"/><rect class="nk-wood" x="${f(bx)}" y="${by}" width="${f(bw)}" height="${bh}"/>`;
+  for(let i=0;i<n;i++){ const fr=S.fret0+i, cx=f(bx+(i+0.5)*cw);
+    if(fr===12) s+=`<circle class="nk-inlay" cx="${cx}" cy="${f(by+bh*0.27)}" r="5"/><circle class="nk-inlay" cx="${cx}" cy="${f(by+bh*0.73)}" r="5"/>`;
+    else if([3,5,7,9,15].indexOf(fr)>=0) s+=`<circle class="nk-inlay" cx="${cx}" cy="${f(by+bh/2)}" r="5"/>`; }
+  for(let i=1;i<=n;i++) s+=`<line class="nk-fret" x1="${f(bx+i*cw)}" y1="${by}" x2="${f(bx+i*cw)}" y2="${by+bh}"/>`;
+  s+= S.fret0===1 ? `<rect class="nk-nut" x="${bx-3}" y="${by-2}" width="7" height="${bh+4}" rx="2"/>` : `<line class="nk-fret" x1="${bx}" y1="${by}" x2="${bx}" y2="${by+bh}"/>`;
+  if(GTR){ const sx=bx+bw+6; s+=`<rect class="nk-strum" x="${f(sx)}" y="${by}" width="${f(w-sx-1)}" height="${bh}" rx="10"/>`; }
+  for(let r=0;r<rows;r++){ const st=r, wd=GTR?[2.8,2.3,1.9,1.4,1.1,0.9][st]:[3.6,3.1,2.6,2.1][st];
+    s+=`<line class="nk-str${GTR&&st>=3?" plain":""}${STRPICK.s===st?" pick":""}" data-s="${st}" x1="${nut-10}" y1="${f(Y(r))}" x2="${w}" y2="${f(Y(r))}" style="stroke-width:${wd}px"/>`; }
+  const R=Math.min(cw,rowH)*0.36;
+  for(let r=0;r<rows;r++){ const st=r;
+    s+=`<text class="nk-name" data-s="${st}" x="${f(ox)}" y="${f(Y(r))}" style="font-size:15px">${pcName(TUNING[st])}</text>`;
+    s+=`<text class="nk-x" data-s="${st}" x="${f(ox)}" y="${f(Y(r))}" style="font-size:22px;display:none">×</text>`;
+    [[0,ox]].concat(Array.from({length:n},(_,i)=>[S.fret0+i, bx+(i+0.5)*cw])).forEach(([fr,cx])=>{
+      const nm=pcName(TUNING[st]+fr), fs=nm.length>3?10:nm.length>2?11.5:13.5;
+      s+=`<g class="dot" data-c="${st}:${fr}"><circle cx="${f(cx)}" cy="${f(Y(r))}" r="${f(R)}"/><text x="${f(cx)}" y="${f(Y(r))}" style="font-size:${fs}px">${nm}</text></g>`; });
+  }
+  const ny=by+bh+16;
+  s+=`<text class="nk-num" x="${f(ox)}" y="${ny}" style="font-size:12px">0</text>`;
+  for(let i=0;i<n;i++) s+=`<text class="nk-num" x="${f(bx+(i+0.5)*cw)}" y="${ny}" style="font-size:12px">${S.fret0+i}</text>`;
+  if(GTR) s+=`<text class="nk-strumlab" x="${f(bx+bw+6+(w-bx-bw-6)/2)}" y="${ny}" style="font-size:12px">${t("strum")}</text>`;
+  svg.setAttribute("viewBox", `0 0 ${w} ${H}`);
+  svg.setAttribute("aria-label", t("neckGroup"));
+  svg.innerHTML=s;
+  $("fretsOut").textContent=t("fretsOut",{a:S.fret0, b:S.fret0+n-1});
+  $("downBtn").disabled=S.fret0<=1; $("upBtn").disabled=S.fret0>=MAXF-n+1;
+  litNeck();
+}
+/* pale = the chord; orange = a string the pattern is sounding right now (the piano's lit keys, AOG-PIANO-LIT-V2); gold = your finger */
+function sounding(){
+  const now=ac?ac.currentTime:0, by=new Map(), out=new Set();
+  PLAY.voices.forEach(v=>{ if(!v.cell) return; if(!by.has(v.cell)) by.set(v.cell,[]); by.get(v.cell).push(v); });
+  /* a note that plays again a moment later stays lit, so a steady strum does not blink */
+  by.forEach((list,cell)=>{ list.sort((a,b)=>a.on-b.on);
+    for(let i=0;i<list.length;i++){ const a=list[i], b=list[i+1];
+      if(now>=a.on && now<a.off){ out.add(cell); return; }
+      if(b && now>=a.off && now<b.on && b.on-a.off<0.2){ out.add(cell); return; } } });
+  return out;
+}
+const FINGERS=new Map();      /* each finger (pointer) on the neck → where it is */
+const KEYCELLS=new Map();     /* each computer key held → the place it plays */
+function litNeck(){
+  const svg=$("neck"); if(!svg) return;
+  try{ keyLetters(); }catch(e){}   /* AOG-STRINGS-KEYS-V2 */
+  /* AOG-STRINGS-V2: a pad held down shows its own shape, even while the pattern plays (a metal sound: its power chord) */
+  const held=Object.keys(padHeld).length ? S.hand : null;
+  const now=S.playing?sounding():new Set(), down=new Set(), fit=new Map(), cc=held||shapeChord();
+  handNow().forEach(c=>now.add(c));   /* AOG-HAND-LIT-V1: what your hand is sounding */
+  FINGERS.forEach(p=>{ if(p.zone==="fret") down.add(p.s+":"+p.f); });
+  KEYCELLS.forEach(cell=>down.add(cell));
+  let shp=null;
+  if(cc){
+    if(GTR){ shp=shapeFor(cc); shp.forEach((f,s)=>{ if(f>=0) fit.set(s+":"+f, "fit"); }); }
+    else { const pcs=chordPcs(cc);
+      TUNING.forEach((o,s)=>{ for(let f=0; f<=MAXF; f++){ if(!inReach(f)) continue; const pc=(o+f)%12, j=pcs.indexOf(pc); if(j>=0) fit.set(s+":"+f, j===0?"root":"fit"); } }); }
+  }
+  PLAY.sig=[...now].sort().join(",");
+  svg.querySelectorAll(".dot").forEach(g=>{ const cell=g.getAttribute("data-c"), d=down.has(cell), n=!d&&now.has(cell), fv=fit.get(cell), fi=!d&&!n&&!!fv;
+    if(g.classList.contains("down")!==d) g.classList.toggle("down", d);
+    if(g.classList.contains("now")!==n) g.classList.toggle("now", n);
+    if(g.classList.contains("fit")!==fi) g.classList.toggle("fit", fi);
+    const ro=fv==="root"; if(g.classList.contains("root")!==ro) g.classList.toggle("root", ro); });
+  /* the guitar's skipped strings get an × where the open string's name was */
+  svg.querySelectorAll(".nk-x").forEach(x=>{ const sk=!!(shp && shp[+x.getAttribute("data-s")]<0); x.style.display=sk?"":"none";
+    const nm=svg.querySelector(`.nk-name[data-s="${x.getAttribute("data-s")}"]`); if(nm) nm.style.display=sk?"none":""; });
+  const ll=$("litLine"); if(ll) ll.hidden=!(cc || S.playing);
+  paintWheelState();
+  if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
+  paintAnyLine();   /* AOG-ANYCHORD-V1: its line only while that chord is in the hand */
+  handChanged();    /* AOG-HAND-STYLE-V1: the style follows the frets you hold */
+}
+function neckHit(e){
+  if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
+  const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
+  const x=(e.clientX-r.left)*NECK.W/r.width, y=(e.clientY-r.top)*NECK.H/r.height;
+  const row=Math.max(0, Math.min(NECK.rows-1, Math.floor((y-NECK.top)/NECK.rowH))), s=row;
+  const be=NECK.nut+NECK.n*NECK.cw;
+  if(x<NECK.nut-2) return {zone:"fret", s:s, f:0};
+  if(x<be || !GTR) return {zone:"fret", s:s, f:S.fret0+Math.max(0, Math.min(NECK.n-1, Math.floor((x-NECK.nut)/NECK.cw)))};
+  return {zone:"strum", s:s};
+}
+function bindNeck(){
+  const svg=$("neck");
+  /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the neck and the pads keep the touch */
+  [svg, $("pads")].forEach(el=>el.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}));
+  svg.addEventListener("pointerdown",(e)=>{
+    if(e.button>0) return; e.preventDefault();
+    const h=neckHit(e); if(!h) return;
+    try{ svg.setPointerCapture(e.pointerId); }catch(err){}
+    FINGERS.set(e.pointerId, h);
+    if(window.AOGSolo && AOGSolo.down(e, h)){ if(h.zone==="fret"){ lessonNote(h.s, h.f); if(LES.count("solo")>=8) LES.mark("solo8"); } litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch (AOG-LESSONS-V1: a lit note) */
+    if(NECK.play && pvDown(e, h)){ if(h.zone==="fret" && (e.pointerType==="mouse" || PV.tap)) lessonNote(h.s, h.f); litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
+    if(h.zone==="strum") pluckShape(h.s, 0.72); else { pluckCell(h.s, h.f, 0.76); lessonNote(h.s, h.f); }
+    litNeck();
+  });
+  svg.addEventListener("pointermove",(e)=>{
+    const p=FINGERS.get(e.pointerId); if(!p) return;
+    const h=neckHit(e); if(!h) return;
+    if(window.AOGSolo && AOGSolo.isOn()){ const f0=p.f, pops=AOGSolo._t.SO.pops||0;   /* AOG-LESSONS-V1: a Solo bend, slide or pop */
+      if(AOGSolo.move(e, p, h)){ const fs=AOGSolo._t.FING.get(e.pointerId);
+        if(fs && fs.bend>0.4) LES.mark("bend"); if(p.zone==="fret" && p.f!==f0) LES.mark("slide"); if((AOGSolo._t.SO.pops||0)>pops) LES.mark("pop"); return; } }
+    if(window.AOGSolo && AOGSolo.move(e, p, h)) return;   /* AOG-SOLO-V1: bends, slides, the whammy */
+    if(NECK.play && pvMove(e, p, h)) return;   /* AOG-PLAY-V1: strums, slides, bends */
+    if(p.zone==="strum"){
+      if(h.zone!=="strum" || h.s===p.s) return;
+      /* every string crossed sounds, one after another, as a strum does */
+      const dir=h.s>p.s?1:-1, now=ac?ac.currentTime:0; let k=0;
+      const crossed=[]; for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006); crossed.push(s); k++; }
+      if(!p.lset) p.lset=new Set([p.s]); lessonStrum(p, crossed, dir>0);   /* AOG-LESSONS-V1 */
+      p.s=h.s;
+    } else {
+      if(h.zone!=="fret" || (h.s===p.s && h.f===p.f)) return;
+      if(h.s===p.s){ slideTo(h.s, h.f); LES.mark("slide"); } else pluckCell(h.s, h.f, 0.7);
+      lessonNote(h.s, h.f);   /* AOG-LESSONS-V1 */
+      p.s=h.s; p.f=h.f;
+    }
+    litNeck();
+  });
+  const up=(e)=>{ if(!FINGERS.has(e.pointerId)) return; if(window.AOGSolo) AOGSolo.up(e); /* AOG-SOLO-V1: pull-offs */
+    const p=FINGERS.get(e.pointerId); FINGERS.delete(e.pointerId); if(NECK.play) pvUp(e, p); /* AOG-PLAY-V1: a lifted finger */ litNeck(); };
+  svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up); svg.addEventListener("lostpointercapture",up);
+}
+function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fret0!==was){ save(); LES.mark(step>0?"higher":"lower"); } }
+
+/* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
+   single notes." The six chord pads sat a long scroll above the neck. The same six chords now sit in one row right on
+   top of it, upright and sideways: a chord with one finger, a single note with the next, nothing to switch. They are the
+   pads' own (padDown, padUp), so a pattern being built, the wheel and the lit notes all follow. */
+function paintStrips(){
+  document.querySelectorAll(".cstrip").forEach(box=>{
+    box.setAttribute("aria-label", t("chordsH"));
+    box.innerHTML=allPads().map((c,i)=>`<button type="button" class="cs${i>=6?" more":""}" data-i="${i}">${chordName(c)}${PAD_KEYS[i]?`<kbd aria-hidden="true">${PAD_KEYS[i]}</kbd>`:""}</button>`).join("");   /* AOG-CHORDS-MORE-V1; AOG-CHORD-KEYS-10-V1: its key */
+    box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
+      b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
+      b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
+      b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } };
+      b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); });
+  });
+}
+/* ══ AOG-PLAY-V1 (2026-10-04) — the neck sideways ════════════════════════════════════════════════════════════════
+   Jimmy: "When you turn the iPhone or iPad horizontally, you can play the guitar or bass like a real instrument."
+   Turned on its side, a phone or tablet shows only the neck: the nut on the left, the frets closer together towards the
+   body, as a real neck's are; the low string at the bottom (Screen faces away turns it round, AOG-PLAY-AWAY-V1).
+   One hand holds the frets (silent, as on a real guitar); the other strums or plucks on the strip at the right: a swipe
+   sounds each string it crosses, in that order and at that speed; a tap plucks one. A held finger slides along its string
+   and bends across it (a small wiggle is vibrato); lifting it mutes the string, or pulls off to a finger still on it.
+   With no finger on the frets, the strum plays the chord in your hand (a pad from the drawer, or the pattern's chord).
+   An upright or fretless sound has no frets: the note is where the finger is, dots only where a player marks positions.
+   Solo mode keeps its own hooks (aog-solo.js); the strip is its whammy bar. It is the page's own neck (#neckBox), moved
+   here, so the lit notes, Record and the computer keys work the same. A computer gets it from "Play on the whole screen". */
+/* AOG-PLAY-ZOOM-V1 (2026-10-04) — Jimmy: "It zooms in occasionally. Also, when I turn it it ZOOMS in too much." On an
+   iPhone a quick second tap on the same spot zooms, two hands playing at once read as a pinch, and Safari keeps (or adds)
+   a zoom when the phone turns. While the instrument fills the screen the page holds still at its own size: the viewport
+   is held at 1, pinches and double taps on the instrument are kept, and when it is turned back the page returns to its
+   own size (the hold lets go a moment later, so a reader can zoom the page again). */
+const ZOOM={base:null, t:0};
+function playZoomLock(on){
+  const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  if(ZOOM.base==null) ZOOM.base=m.getAttribute("content")||"width=device-width, initial-scale=1";
+  clearTimeout(ZOOM.t);
+  m.setAttribute("content", ZOOM.base+", maximum-scale=1, user-scalable=no");
+  if(!on) ZOOM.t=setTimeout(()=>m.setAttribute("content", ZOOM.base), 600);
+}
+(function(){
+  const playing=()=>document.body && document.body.classList.contains("aog-play");
+  const keep=(e)=>{ if(playing() && e.cancelable) e.preventDefault(); };
+  ["gesturestart","gesturechange","gestureend","dblclick"].forEach(ev=>document.addEventListener(ev, keep, {passive:false}));
+  /* two fingers moving on the instrument are two hands playing, not a pinch */
+  document.addEventListener("touchmove",(e)=>{ if(playing() && e.touches.length>1 && e.cancelable && !(e.target.closest && e.target.closest("select,.pv-drawer"))) e.preventDefault(); },{passive:false});
+  /* a quick second tap is a second note, not a zoom */
+  let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
+    if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
+})();
+const PV={on:false, forced:false, closed:false, left:false, away:false, tap:true, alt:0, mq:null, back:null, y:0, seen:false};
+const PVKEY="aog."+INST+".play.v1";
+try{ const r=JSON.parse(localStorage.getItem(PVKEY)||"null"); if(r){ PV.left=!!r.left; PV.away=!!r.away; PV.seen=!!r.seen; if(typeof r.tap==="boolean") PV.tap=r.tap; } }catch(e){}
+/* the one line at the top of the play view: what your hands do here */
+function pvHintPaint(){ const el=$("pvHint"); if(!el) return; const flip=!!PV.left!==!!PV.away, solo=!!(window.AOGSolo && AOGSolo.isOn());
+  el.textContent=t(fretless()?"pvFretless":solo?"pvHintSolo":PV.tap?"pvHintTap":flip?"pvHintL":"pvHint"); }
+window.pvHintPaint=pvHintPaint;
+function pvSave(){ try{ localStorage.setItem(PVKEY, JSON.stringify({left:PV.left, away:PV.away, seen:PV.seen, tap:PV.tap})); }catch(e){} }
+function fretD(k){ return 1-Math.pow(2,-k/12); }        /* where fret k sits, as a share of the string from the nut */
+function fretless(){ const d=SOUNDS[S.sound]; return !GTR && !!(d && (d.rec==="upright" || d.rec==="ergo")); }
+/* the neck's places, sideways or not (aog-solo.js draws with them too) */
+/* AOG-PLAY-AWAY-V1 — Jimmy: "If the phone's screen is facing away from me the strum is on the left side. It should be on
+   the right side … the low strings should be at the bottom of the screen if you're looking at it and on top if the screen
+   is away from you." A phone cannot tell which way its screen faces you (turning it round leaves "down" where it was),
+   so it is a switch: Screen faces away mirrors the neck sideways and turns it upside down, and the strum stays under
+   the right hand (the left with Left-handed). */
+function neckY(s){ return NECK.top+(NECK.play && !NECK.away ? NECK.rows-1-s : s)*NECK.rowH+NECK.rowH/2; }
+function neckXY(s, f){
+  let x;
+  if(f===0) x=(NECK.nut-4)/2;
+  else if(!NECK.play) x=NECK.nut+(f-S.fret0+0.5)*NECK.cw;
+  else { const i=Math.max(0, Math.min(NECK.n-1, f-S.fret0)); x=NECK.fl ? NECK.fx[i+1] : (NECK.fx[i]+NECK.fx[i+1])/2; }
+  return [NECK.play && NECK.flip ? NECK.W-x : x, neckY(s)];
+}
+function neckSpan(){ return NECK.play && NECK.flip ? [NECK.W-NECK.nut+10, 0] : [NECK.nut-10, NECK.W]; }
+function neckStrum(){ if(!NECK.play) return null; const w=NECK.W-NECK.sx; return {x0:NECK.flip?0:NECK.sx, w:w, y:NECK.top, h:NECK.rows*NECK.rowH}; }
+function buildPlayNeck(){
+  const svg=$("neck"), box=$("neckBox");
+  const W=Math.max(320, Math.round(box.clientWidth||640)), H=Math.max(180, Math.round(box.clientHeight||300));
+  const rows=TUNING.length, top=4, foot=20, rowH=(H-top-foot)/rows, fl=fretless(), flip=!!PV.left!==!!PV.away;
+  const nut=Math.round(Math.max(40, Math.min(56, W*0.055)));
+  const strW=Math.round(Math.max(96, Math.min(GTR?210:180, W*(GTR?0.18:0.16)))), sx=W-strW, xb=sx-8;   /* AOG-PLAY-CHORDS-V1: a slimmer strip (Jimmy) */
+  /* as many frets as fit with the narrowest still a finger wide (a phone about ten, an iPad twelve) */
+  const minW=W>=1000?60:46; let n=12;
+  while(n>5 && (xb-nut)*(fretD(n)-fretD(n-1))/fretD(n)<minW) n--;
+  S.fret0=Math.max(1, Math.min(MAXF-n+1, S.fret0));
+  const a=S.fret0, d0=fretD(a-1), d1=fretD(a-1+n), fx=[];
+  for(let i=0;i<=n;i++) fx.push(nut+(fretD(a-1+i)-d0)/(d1-d0)*(xb-nut));
+  Object.assign(NECK,{n:n, W:W, H:H, rowH:rowH, nut:nut, strW:strW, cw:fx[n]-fx[n-1], top:top, rows:rows, fx:fx, sx:sx, xb:xb, flip:flip, away:PV.away, fl:fl});
+  const f=v=>v.toFixed(1), X=x=>flip?W-x:x, Y=s=>neckY(s), by=top, bh=rows*rowH;
+  const rx=(x0,x1)=>{ const l=Math.min(X(x0),X(x1)); return `x="${f(l)}" width="${f(Math.abs(x1-x0))}"`; };
+  const ox=(nut-4)/2;
+  let o=`<rect class="nk-open" ${rx(0,nut-4)} y="${by}" height="${f(bh)}" rx="6"/><rect class="nk-wood" ${rx(nut,xb)} y="${by}" height="${f(bh)}"/>`;
+  /* the position dots: on a fretted neck between the frets; on a fretless one on the line where the note is */
+  for(let i=0;i<n;i++){ const fr=a+i, cx=f(X(fl?fx[i+1]:(fx[i]+fx[i+1])/2)), r=fl?4:5, cls=fl?"nk-inlay nk-fl":"nk-inlay";
+    if(fr===12) o+=`<circle class="${cls}" cx="${cx}" cy="${f(by+bh*0.27)}" r="${r}"/><circle class="${cls}" cx="${cx}" cy="${f(by+bh*0.73)}" r="${r}"/>`;
+    else if([3,5,7,9,15].indexOf(fr)>=0) o+=`<circle class="${cls}" cx="${cx}" cy="${f(by+bh/2)}" r="${r}"/>`; }
+  if(!fl) for(let i=1;i<=n;i++) o+=`<line class="nk-fret" x1="${f(X(fx[i]))}" y1="${by}" x2="${f(X(fx[i]))}" y2="${f(by+bh)}"/>`;
+  o+= a===1 ? `<rect class="nk-nut" ${rx(nut-3,nut+4)} y="${by-2}" height="${f(bh+4)}" rx="2"/>` : `<line class="nk-fret" x1="${f(X(nut))}" y1="${by}" x2="${f(X(nut))}" y2="${f(by+bh)}"/>`;
+  o+=`<rect class="nk-strum" ${rx(sx,W-1)} y="${by}" height="${f(bh)}" rx="10"/>`;
+  for(let s=0;s<rows;s++){ const wd=GTR?[2.8,2.3,1.9,1.4,1.1,0.9][s]:[3.6,3.1,2.6,2.1][s];
+    o+=`<line class="nk-str${GTR&&s>=3?" plain":""}${STRPICK.s===s?" pick":""}" data-s="${s}" x1="${f(X(nut-10))}" y1="${f(Y(s))}" x2="${f(X(W))}" y2="${f(Y(s))}" style="stroke-width:${wd}px"/>`; }
+  const R=Math.max(10, Math.min(NECK.cw, rowH)*0.36);
+  for(let s=0;s<rows;s++){
+    o+=`<text class="nk-name" data-s="${s}" x="${f(X(ox))}" y="${f(Y(s))}" style="font-size:15px">${pcName(TUNING[s])}</text>`;
+    o+=`<text class="nk-x" data-s="${s}" x="${f(X(ox))}" y="${f(Y(s))}" style="font-size:22px;display:none">×</text>`;
+    [0].concat(Array.from({length:n},(_,i)=>a+i)).forEach(fr=>{
+      const [cx,cy]=neckXY(s, fr), nm=pcName(TUNING[s]+fr), fs=nm.length>3?10:nm.length>2?11.5:13.5;
+      o+=`<g class="dot" data-c="${s}:${fr}"><circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R)}"/><text x="${f(cx)}" y="${f(cy)}" style="font-size:${fs}px">${nm}</text></g>`; });
+  }
+  const ny=f(by+bh+foot/2+2);
+  o+=`<text class="nk-num" x="${f(X(ox))}" y="${ny}" style="font-size:12px">0</text>`;
+  for(let i=0;i<n;i++) o+=`<text class="nk-num" x="${f(neckXY(0, a+i)[0])}" y="${ny}" style="font-size:12px">${a+i}</text>`;
+  o+=`<text class="nk-strumlab" x="${f(X(sx+strW/2))}" y="${ny}" style="font-size:12px">${t(GTR?"strum":"pluck")}</text>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("aria-label", t("neckGroup"));
+  svg.innerHTML=o;
+  $("fretsOut").textContent=t("fretsOut",{a:a, b:a+n-1});
+  $("downBtn").disabled=a<=1; $("upBtn").disabled=a>=MAXF-n+1;
+  $("pvFrets").textContent=t("pvFrets",{a:a, b:a+n-1});
+  $("pvDown").disabled=a<=1; $("pvUp").disabled=a>=MAXF-n+1;
+  pvHintPaint();
+  document.body.classList.toggle("pv-left", flip && PV.on);   /* the drawer opens over the frets, away from the strum */
+  litNeck();
+}
+/* a fretless note settles on the note when the finger is within an eighth of a step of it; elsewhere it follows the finger */
+function inTune(k){ const r=Math.round(k), q=k-r, z=0.12; return Math.abs(q)<z ? r : r+Math.sign(q)*(Math.abs(q)-z)/(0.5-z)*0.5; }
+function playHit(e){
+  const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
+  let x=(e.clientX-r.left)*NECK.W/r.width; const y=(e.clientY-r.top)*NECK.H/r.height;
+  if(NECK.flip) x=NECK.W-x;
+  const row=Math.max(0, Math.min(NECK.rows-1, Math.floor((y-NECK.top)/NECK.rowH))), s=NECK.away ? row : NECK.rows-1-row;
+  if(x>=NECK.sx-4) return {zone:"strum", s:s, y:y};
+  if(x<NECK.nut-2) return {zone:"fret", s:s, f:0, fc:0, y:y};
+  const a=S.fret0, n=NECK.n, fx=NECK.fx;
+  let i=0; while(i<n-1 && x>=fx[i+1]) i++;
+  if(!NECK.fl) return {zone:"fret", s:s, f:a+i, y:y};
+  const d0=fretD(a-1), d1=fretD(a-1+n), u=Math.max(0, Math.min(1, (x-NECK.nut)/(fx[n]-NECK.nut)));
+  const k=Math.max(0, inTune(-12*Math.log2(1-(d0+u*(d1-d0)))));
+  return {zone:"fret", s:s, f:Math.max(a, Math.min(a+n-1, Math.round(k))), fc:k, y:y};
+}
+/* the fingers holding a string, and the note it gives: the highest finger, else open; with no finger anywhere on the
+   frets, the guitar's chord in your hand */
+function pvHolding(){ let n=0; FINGERS.forEach(p=>{ if(p.zone==="fret") n++; }); return n>0; }   /* AOG-LESSONS-V1: a hand on the frets */
+function pvOn(s){ const out=[]; FINGERS.forEach(p=>{ if(p.zone==="fret" && p.s===s) out.push(p); }); return out; }
+function pvAt(p){ return NECK.fl && p.fc!=null ? p.fc : p.f; }
+function pvTop(s){ return pvOn(s).reduce((a,p)=>!a || pvAt(p)>pvAt(a) ? p : a, null); }
+function pvFret(s){
+  const top=pvTop(s); if(top) return pvAt(top);
+  let any=false; FINGERS.forEach(p=>{ if(p.zone==="fret") any=true; }); if(any || !GTR) return 0;
+  const c=shapeChord(); return c ? shapeFor(c)[s] : 0;
+}
+function pvRinging(s){ const L=STR_LIVE[s]; return !!(L && ac && !L.vc.stopped && !(L.vc.natural && L.vc.natural<ac.currentTime)); }
+/* the string follows its hand: a new top finger hammers on, a slide glides, a push bends (the made string and the
+   recordings glide the same way) */
+function pvRetune(s){
+  if(!pvRinging(s)) return; const L=STR_LIVE[s], fr=pvFret(s);
+  if(fr<0){ dampString(s); return; }
+  const top=pvTop(s), m=TUNING[s]+fr;
+  L.vc.glide(m+(top && top.bend || 0), ac.currentTime); L.m=m; L.f=Math.round(fr);
+}
+function pvPluck(s, v, when){
+  const fr=pvFret(s); if(fr<0){ dampString(s, when); return; }
+  const fi=Math.round(fr); pluckCell(s, fi, v, when);
+  const top=pvTop(s), more=fr-fi+(top && top.bend || 0);
+  if(Math.abs(more)>0.001){ const L=STR_LIVE[s]; if(L){ L.vc.glide(TUNING[s]+fr+(top && top.bend || 0), Math.max(ac.currentTime, when||0)); L.m=TUNING[s]+fr; } }
+}
+const pvBend=dy=>(window.AOGSolo && AOGSolo._t && AOGSolo._t.bendFrom) ? AOGSolo._t.bendFrom(dy) : Math.min(2, 2*Math.abs(dy)/(0.8*NECK.rowH));
+function pvDown(e, h){
+  const p=FINGERS.get(e.pointerId); if(!p) return false;
+  ctx();
+  if(h.zone==="strum"){
+    /* a tap plucks the string under it; the bass's two fingers take turns (a little softer, a little louder) */
+    Object.assign(p, {y:h.y, last:h.s, fresh:true, t:performance.now()});
+    PV.alt^=1; pvPluck(h.s, GTR?0.72:(PV.alt?0.78:0.7));
+    if(!PV.tap && pvHolding()) LES.mark("holdstrum");   /* AOG-LESSONS-V1 */
+    p.lset=new Set([h.s]);
+    return true;
+  }
+  Object.assign(p, {y0:h.y, bend:0, fc:h.fc});
+  /* AOG-CHORDSTRIP-V1: "Notes" (and a mouse, which is one finger): a fret plays where the finger lands */
+  if(e.pointerType==="mouse" || PV.tap){ pvPluck(h.s, 0.76); return true; }
+  pvRetune(h.s);
+  return true;
+}
+function pvMove(e, p, h){
+  if(p.zone==="strum"){
+    if(h.zone!=="strum" && h.y==null) return true;
+    const y=h.y, lo=Math.min(p.y,y), hi=Math.max(p.y,y); if(hi-lo<0.5) return true;
+    const down=y>p.y, list=[];
+    for(let s=0;s<NECK.rows;s++){ const c=neckY(s); if(c>lo && c<=hi && !(p.fresh && s===p.last)) list.push(s); }
+    p.fresh=false;
+    if(list.length){
+      list.sort((a,b)=>down ? neckY(a)-neckY(b) : neckY(b)-neckY(a));
+      lessonStrum(p, list, list.length>1 ? list[list.length-1]>list[0] : list[0]>p.last); if(!PV.tap && pvHolding()) LES.mark("holdstrum");   /* AOG-LESSONS-V1 */
+      const nowMs=performance.now(), dt=Math.max(4, nowMs-p.t), speed=(hi-lo)/dt;   /* svg px a millisecond */
+      const v=Math.max(0.46, Math.min(0.9, 0.46+speed*0.09)), sp=Math.max(0.002, Math.min(0.02, dt/1000/list.length)), now=ac?ac.currentTime:0;
+      list.forEach((s,k)=>pvPluck(s, v*(1-0.02*k), now+k*sp));
+      p.last=list[list.length-1]; p.t=nowMs;
+    }
+    p.y=y; litNeck(); return true;
+  }
+  if(h.zone!=="fret" && h.y==null) return true;
+  const s0=p.s, top=pvTop(s0)===p, ringing=top && pvRinging(s0);
+  let moved=false;
+  if(h.zone==="fret"){ const fc=NECK.fl ? h.fc : null; if(h.f!==p.f || fc!==p.fc){ moved=h.f!==p.f; p.f=h.f; p.fc=fc; } }
+  if(ringing){
+    /* across the string: a bend (the same push as Solo mode's), a small wiggle is vibrato */
+    const dy=h.y-p.y0; p.bend=Math.abs(dy)>3 ? pvBend(dy) : 0;
+    pvRetune(s0); if(p.bend>0.4) LES.mark("bend"); if(moved) LES.mark("slide");   /* AOG-LESSONS-V1 */
+  } else if(h.s!==p.s && Math.abs(h.y-p.y0)>NECK.rowH*0.6){
+    /* a quiet string: the finger simply moves to the next one */
+    p.s=h.s; p.y0=h.y; p.bend=0; moved=true;
+  }
+  if(moved) litNeck();
+  return true;
+}
+function pvUp(e, p){
+  if(!p || p.zone!=="fret" || (window.AOGSolo && AOGSolo.isOn())) return;
+  if(e.pointerType==="mouse" || PV.tap) return;                     /* a tapped note rings on, as on the page */
+  if(!pvRinging(p.s)) return;
+  if(pvOn(p.s).length) pvRetune(p.s);                               /* a finger still on the string: a pull-off */
+  else if(Math.round(STR_LIVE[p.s].m)===Math.round(TUNING[p.s]+pvAt(p))) dampString(p.s);   /* lifted: the string stops */
+}
+/* in and out */
+function pvTouch(){ return !!(window.matchMedia && matchMedia("(pointer: coarse)").matches); }
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "I don't like how it starts in instrument mode on the iPad automatically as I use it
+   in horizontal mode to begin with. Make it an option to toggle between but let us start in the normal mode"): a phone
+   turned sideways still opens the instrument view by itself; a tablet (its short side 600 or more) starts in the normal
+   page, and "Play on the whole screen" opens the view, Close goes back. */
+function pvTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+function pvWanted(){ return PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed && !pvTablet()); }
+function pvSync(){ const w=pvWanted(); if(w===PV.on){ if(w) buildNeck(); return; } if(w) pvEnter(); else pvExit(); }
+function pvEnter(){
+  const box=$("neckBox"); if(!box || PV.on) return;
+  PV.on=true; PV.y=window.scrollY||0;
+  PV.back=document.createComment("neckBox"); box.parentNode.insertBefore(PV.back, box); $("pvNeck").appendChild(box);
+  playZoomLock(true); document.body.classList.add("aog-play"); document.body.classList.toggle("pv-left", !!PV.left!==!!PV.away);
+  NECK.play=true; FINGERS.clear(); pvText(); buildNeck(); LES.mark("pvbig");
+  if(!PV.seen){ PV.seen=true; pvSave(); } $("pvTurn").hidden=true;
+}
+function pvExit(){
+  if(!PV.on) return; PV.on=false; FINGERS.clear(); pvDrawer(false);
+  document.body.classList.remove("aog-play","pv-left"); playZoomLock(false);
+  const box=$("neckBox"); if(PV.back && PV.back.parentNode){ PV.back.parentNode.replaceChild(box, PV.back); } PV.back=null;
+  NECK.play=false; buildNeck(); window.scrollTo(0, PV.y);
+}
+function pvDrawer(open){
+  const d=$("pvDrawer"); if(!d) return; d.hidden=!open; $("pvMore").setAttribute("aria-expanded", open?"true":"false");
+  if(open) pvPaintDrawer();
+}
+function pvPaintDrawer(){
+  const ss=$("soundSel"), ps=$("pvSound"); ps.innerHTML=ss.innerHTML; ps.value=S.sound;
+  const ks=$("keySel"), pk=$("pvKey"); pk.innerHTML=ks.innerHTML; pk.value=String(S.key);
+  const solo=!!(window.AOGSolo && AOGSolo.isOn());
+  $("pvChords").setAttribute("aria-pressed", solo?"false":"true"); $("pvSolo").setAttribute("aria-pressed", solo?"true":"false");
+  $("pvSolo").hidden=!window.AOGSolo;
+  $("pvLeft").setAttribute("aria-pressed", PV.left?"true":"false"); $("pvAway").setAttribute("aria-pressed", PV.away?"true":"false");
+  $("pvPlay").textContent=$("playBtn").textContent;
+}
+function pvText(){
+  if(!$("playView")) return;
+  $("playView").setAttribute("aria-label", t("pvRegion"));
+  $("pvClose").textContent=t("pvClose"); $("pvMore").textContent=t("pvMore"); $("pvMute").textContent="✋ "+t("pvMute"); $("pvMute").removeAttribute("aria-label");
+  $("pvTap").textContent=t("pvTap"); $("pvHold").textContent=t("pvHoldW"); $("pvTap").setAttribute("aria-pressed", PV.tap?"true":"false"); $("pvHold").setAttribute("aria-pressed", PV.tap?"false":"true");
+  $("pvDown").setAttribute("aria-label", t("pvLower")); $("pvUp").setAttribute("aria-label", t("pvHigher"));
+  $("pvChords").textContent=t("pvChords"); $("pvSolo").textContent=t("pvSolo"); $("pvLeft").textContent=t("pvLeft"); $("pvAway").textContent=t("pvAway");
+  $("pvSay").textContent=t("pvSay"); $("pvBig").textContent=t("pvBig");
+  pvRecPaint();
+  const tablet=pvTablet();
+  $("pvTurn").textContent=t(tablet?"pvTurnTablet":"pvTurnPhone");
+  $("pvTurn").hidden=PV.seen || PV.on || !pvTouch() || (!tablet && !(window.matchMedia && matchMedia("(orientation: portrait)").matches));
+  if(!$("pvDrawer").hidden) pvPaintDrawer();
+}
+const GUARD={down:new Set(), last:0};
+function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
+function pvRecPaint(){
+  const on=$("recBtn").getAttribute("aria-pressed")==="true";
+  $("pvRecGo").textContent=$("recBtn").textContent; $("pvRecGo").setAttribute("aria-pressed", on?"true":"false");
+  $("pvRec").hidden=!on; $("pvRec").textContent=t("pvStop")+" "+($("recTime").textContent||"");
+}
+function pvInit(){
+  if(!$("playView")) return;
+  if(window.matchMedia){
+    PV.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
+    const ch=()=>{ PV.closed=false; pvSync(); pvText(); };
+    if(PV.mq.addEventListener) PV.mq.addEventListener("change", ch); else if(PV.mq.addListener) PV.mq.addListener(ch);
+  }
+  $("pvClose").onclick=()=>{ PV.forced=false; PV.closed=true; pvSync(); };
+  $("pvBig").onclick=()=>{ PV.forced=true; PV.closed=false; pvSync(); };
+  $("pvMore").onclick=()=>pvDrawer($("pvDrawer").hidden);
+  $("pvDown").onclick=()=>moveNeck(-1); $("pvUp").onclick=()=>moveNeck(1);
+  $("pvMute").onclick=()=>{ muteAll(); LES.mark("mute"); };
+  const mode=(tap)=>{ PV.tap=tap; pvSave(); FINGERS.clear(); pvText(); if(PV.on) buildNeck(); };
+  $("pvTap").onclick=()=>mode(true); $("pvHold").onclick=()=>{ mode(false); LES.mark("pvhold"); };
+  $("pvRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
+  $("pvRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) pvDrawer(false); };   /* start, then play */
+  try{ const mo=new MutationObserver(pvRecPaint); mo.observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true});
+    mo.observe($("recTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  /* AOG-PLAY-GUARD-V1: a tap on the bar while a hand is playing (or just after) is a slip, not a press */
+  document.addEventListener("pointerdown",(e)=>{ if(e.target.closest && e.target.closest("#neck,#pvStrip")){ GUARD.down.add(e.pointerId); GUARD.last=Date.now(); } },true);
+  const lift=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
+  document.addEventListener("pointerup",lift,true); document.addEventListener("pointercancel",lift,true);
+  $("playView").querySelector(".pv-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
+  $("pvSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("pvSound").value; ss.onchange(); };
+  $("pvKey").onchange=()=>{ const ks=$("keySel"); ks.value=$("pvKey").value; ks.onchange(); pvPaintDrawer(); };
+  $("pvChords").onclick=()=>{ if(window.AOGSolo) AOGSolo.setMode("chords"); pvPaintDrawer(); buildNeck(); };
+  $("pvSolo").onclick=()=>{ if(window.AOGSolo) AOGSolo.setMode("solo"); pvPaintDrawer(); buildNeck(); };
+  $("pvPlay").onclick=()=>{ $("playBtn").click(); pvPaintDrawer(); };
+  $("pvLeft").onclick=()=>{ PV.left=!PV.left; pvSave(); pvPaintDrawer(); buildNeck(); };
+  $("pvAway").onclick=()=>{ PV.away=!PV.away; pvSave(); pvPaintDrawer(); buildNeck(); };
+  ["pvSound","pvKey"].forEach(id=>{ const el=$(id); el.addEventListener("change",()=>setTimeout(()=>el.blur(),0)); });
+  document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && PV.on){ if(!$("pvDrawer").hidden) pvDrawer(false); else if(PV.forced){ PV.forced=false; pvSync(); } } });
+  /* the bars of Safari come and go: the neck is measured again */
+  let rt=0; const again=()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(PV.on) buildNeck(); }, 120); };
+  window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
+  pvText(); pvSync();
+}
+/* AOG-STRINGS-KEYS-V3 (Jimmy, 2026-10-09: "the wiring for the keys for the notes on the guitar and bass MAKES no sense").
+   The letters play notes the same way in every room, as on the piano: A S D F G H J K L ; ' are the white keys (C D E F G A
+   B C D E F) and W E T Y U O P the black keys between them. On the guitar they start at the C below middle C, on the bass an
+   octave lower; each note plays at its place on the neck nearest the frets in view, and lights there. 1 to 0 are the ten
+   chords (AOG-CHORD-KEYS-10-V1). The guitar's six strings, picked one by one in the chord you hold, are the bottom row:
+   Z X C V B N, low to high, drawn on the strum strip beside each string. ← and → move along the neck. Solo mode keeps its
+   own keys (aog-solo.js). */
+const NOTE_KEYS={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
+const NOTE_BASE=GTR?48:36;
+/* AOG-STRING-TAB-V1 (Jimmy, 2026-10-09: "How do I go about switching strings when using the keys?" … "Tab!"): Tab picks the
+   string the letters play on, low to high; Tab after the last string goes back to the nearest one (the letters choose for
+   themselves); Shift+Tab steps back. The picked string glows gold on the neck and its name lights. On it, a note sounds at
+   its own fret, an octave up or down if it is off the neck. Tab only does this while the page has the keys (nothing else
+   is in focus), so Tab still moves through the buttons for anyone who uses it that way. */
+function strName(s){
+  const nm=pcName(TUNING[s]), es=S.lang==="es";
+  if(GTR && (s===0 || s===TUNING.length-1)) return es ? `la cuerda ${nm} ${s===0?"grave":"aguda"}` : `the ${s===0?"low":"high"} ${nm} string`;
+  return es ? `la cuerda ${nm}` : `the ${nm} string`;
+}
+function noteCell(m){
+  if(STRPICK.s<0) return cellFor(m);
+  const o=TUNING[STRPICK.s];
+  for(const x of [m, m+12, m-12, m+24, m-24]){ const f=x-o; if(f>=0 && f<=MAXF) return {s:STRPICK.s, f:f}; }
+  return null;
+}
+window.noteCell=noteCell;
+function pickString(step){
+  const n=TUNING.length; let v=STRPICK.s+step;
+  if(v>=n) v=-1; else if(v<-1) v=n-1;
+  STRPICK.s=v;
+  document.querySelectorAll(".neck .nk-str").forEach(l=>l.classList.toggle("pick", +l.getAttribute("data-s")===v));
+  document.querySelectorAll(".neck .nk-name").forEach(l=>l.classList.toggle("pick", +l.getAttribute("data-s")===v));
+  const say=$("strPickSay"); if(say) say.textContent=v<0 ? t("strAuto") : t("strOn",{s:strName(v)});
+  paintKeyMap();
+}
+const STRING_KEYS=Object.keys(NOTE_KEYS);
+const PICK_KEYS=GTR?["KeyZ","KeyX","KeyC","KeyV","KeyB","KeyN"]:[];
+function keysShown(){ try{ return document.documentElement.classList.contains("aog-keys") || matchMedia("(hover:hover) and (pointer:fine)").matches; }catch(e){ return false; } }
+/* the letters on the neck: each note's key beside the spot it plays; the guitar's pick keys on the strum strip */
+function keyLetters(){
+  const on=keysShown() && !(window.AOGSolo && AOGSolo.isOn());
+  const cells=[];   /* AOG-STRINGS-KEYS-V3: the notes follow the piano's layout (the picture of the keys shows it), so the neck stays clear */
+  const sig=[on, cells.join(","), NECK.W, NECK.n, S.fret0].join("|");
+  document.querySelectorAll("svg").forEach(svg=>{
+    if(!svg.querySelector(".dot")) return;
+    if(svg.__ksig===sig && (!on || svg.querySelector(".nk-key"))) return;
+    svg.__ksig=sig; svg.querySelectorAll(".nk-key").forEach(e=>e.remove()); if(!on) return;
+    const cap=(x, y, h, letter)=>{ const g=document.createElementNS("http://www.w3.org/2000/svg","g"); g.setAttribute("class","nk-key"); g.setAttribute("aria-hidden","true");
+      g.innerHTML=`<rect x="${(x-h*0.55).toFixed(1)}" y="${(y-h/2).toFixed(1)}" width="${(h*1.1).toFixed(1)}" height="${h.toFixed(1)}" rx="${(h*0.22).toFixed(1)}"/><text x="${x.toFixed(1)}" y="${(y+0.5).toFixed(1)}" style="font-size:${(h*0.66).toFixed(1)}px">${letter}</text>`;
+      svg.appendChild(g); };
+    cells.forEach((c,i)=>{ if(!c) return; const ci=svg.querySelector(`.dot[data-c="${c}"] circle`); if(!ci) return;
+      const x=+ci.getAttribute("cx"), y=+ci.getAttribute("cy"), r=+ci.getAttribute("r");
+      const h=Math.max(13, r*1.1); cap(x+r+h*0.6, y, h, STRING_KEYS[i].slice(3)); });   /* on its own string, just after the spot */
+    if(GTR && svg.id==="neck" && NECK.n){ const sx=NECK.nut+NECK.n*NECK.cw+6, cx=sx+(NECK.W-sx-1)/2;
+      PICK_KEYS.forEach((k,r)=>cap(cx, NECK.top+r*NECK.rowH+NECK.rowH/2, Math.min(18, NECK.rowH*0.62), k.slice(3))); }
+  });
+}
+function scaleNote(i){ const iv=S.minor?[0,2,3,5,7,8,10,12]:[0,2,4,5,7,9,11,12]; return bassRoot({off:0, q:S.minor?"min":"maj"})+iv[i]; }
+function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
+document.addEventListener("keydown",(e)=>{
+  if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
+  if(e.target && e.target.tagName==="SELECT") return;
+  if(e.code==="Tab"){ const a=document.activeElement; if(!a || a===document.body || a===document.documentElement || (a.closest && a.closest("#neckBox,#playView svg"))){
+      e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")) document.documentElement.classList.add("aog-keys"); pickString(e.shiftKey?-1:1); return; } }   /* AOG-STRING-TAB-V1 */
+  if(window.AOGSolo && AOGSolo.key(e, true)) return;   /* AOG-SOLO-V1: the Solo mode keys */
+  const si=STRING_KEYS.indexOf(e.code), pk=PICK_KEYS.indexOf(e.code);
+  if(si>=0 || pk>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); }
+    if(e.repeat||KEYCELLS.has(e.code)) return;
+    if(pk>=0){ const c=shapeChord(), f=c?shapeFor(c)[pk]:0; pluckShape(pk, 0.72); if(f>=0){ KEYCELLS.set(e.code, pk+":"+f); lessonNote(pk, f); } }
+    else { const cl=noteCell(NOTE_BASE+NOTE_KEYS[e.code]); if(cl){ pluckCell(cl.s, cl.f, 0.74); KEYCELLS.set(e.code, cl.s+":"+cl.f); lessonNote(cl.s, cl.f); } }
+    litNeck(); return; }
+  const pi=padKey(e); if(pi>=0){ e.preventDefault(); if(!document.documentElement.classList.contains("aog-keys")){ document.documentElement.classList.add("aog-keys"); paintKeyMap(); } if(!e.repeat) padDown(pi, 0.74); return; }
+  if(e.code==="ArrowLeft"||e.code==="ArrowRight"){ if(e.target && e.target.closest && e.target.closest("input,select")) return; e.preventDefault(); if(!e.repeat) moveNeck(e.code==="ArrowLeft"?-1:1); return; }
+  if(e.code==="Space"){
+    const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
+    if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
+    e.preventDefault(); if(!e.repeat){ if(S.playing){ stop(); LES.mark("stop"); } else start(); }
+  }
+});
+document.addEventListener("keyup",(e)=>{
+  if(window.AOGSolo && AOGSolo.key(e, false)) return;   /* AOG-SOLO-V1 */
+  if(KEYCELLS.has(e.code)){ KEYCELLS.delete(e.code); litNeck(); return; }
+  const pi=padKey(e); if(pi>=0) padUp(pi);
+});
+window.addEventListener("blur",()=>{ if(KEYCELLS.size){ KEYCELLS.clear(); litNeck(); } });
+
+function bind(){
+  $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save(); lessonSound(id);
+    muteAll(); if(ac) setSound(LIVE_CH, id); prepare(id); paintAmp(); if(NECK.play) buildNeck(); };   /* AOG-PLAY-V1: an upright or fretless sound has no frets */
+  $("keySel").onchange=()=>{ S.key=+$("keySel").value; S.hand=null; save(); LES.mark("key1"); if(S.key===7) LES.mark("keyG"); paintPads(); paintProg(); buildNeck(); paintMood(); };
+  $("keySel2").onchange=()=>{ const ks=$("keySel"); ks.value=$("keySel2").value; ks.onchange(); };
+  $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; S.hand=null; save(); paintMood(); paintPads(); paintProg(); buildNeck(); };
+  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; S.hand=null; save(); LES.mark("minor"); paintMood(); paintPads(); paintProg(); buildNeck(); };
+  $("majBtn2").onclick=()=>$("majBtn").onclick(); $("minBtn2").onclick=()=>$("minBtn").onclick();
+  $("progSel2").onchange=()=>{ const ps=$("progSel"); ps.value=$("progSel2").value; ps.onchange(); };
+  $("playBtn2").onclick=()=>$("playBtn").onclick();
+  $("anyRoot").onchange=()=>{ ANY.root=+$("anyRoot").value; pickAny(true); };   /* AOG-ANYCHORD-V1 */
+  $("anyKind").onchange=()=>{ if(Q[$("anyKind").value]) ANY.id=$("anyKind").value; pickAny(true); };
+  $("anyBtn").onclick=()=>pickAny(true);
+  $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
+    S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; save(); LES.mark("pat1"); LES.mark("pat_"+p.id);
+    paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); } litNeck(); };
+  $("rhythmSel").onchange=()=>{ const was=beatsPerBar(); S.rhythm=$("rhythmSel").value; save();
+    if(beatsPerBar()!==was){ paintDrums(); if(S.playing){ stop(true); start(); } } lessonPlaying(); };   /* a waltz's bar is shorter: start it on its own count (AOG-STRINGS-WAYS-V1) */
+  { const W=$("wheel");
+    W.addEventListener("pointerdown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(!g || e.button>0) return; e.preventDefault();
+      try{ W.setPointerCapture(e.pointerId); }catch(err){} WHEEL.ptr=e.pointerId; wheelDown(g.getAttribute("data-k")); });
+    const wUp=(e)=>{ if(WHEEL.ptr!==e.pointerId) return; WHEEL.ptr=null; wheelRelease(); };
+    W.addEventListener("pointerup",wUp); W.addEventListener("pointercancel",wUp); W.addEventListener("lostpointercapture",wUp);
+    W.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll from the wheel */
+    W.addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(!e.repeat) wheelDown(g.getAttribute("data-k")); } });
+    W.addEventListener("keyup",(e)=>{ if((e.key==="Enter"||e.key===" ") && WHEEL.ptr==null && WHEEL.press) wheelRelease(); }); }
+  $("turnL").onclick=()=>{ turnWheel(5); LES.mark("turn"); }; $("turnR").onclick=()=>{ turnWheel(7); LES.mark("turn"); };
+  $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own) LES.mark("own1"); if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); };
+  $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); };
+  $("playBtn").onclick=()=>{ if(S.playing){ stop(); LES.mark("stop"); } else start(); };   /* AOG-LESSONS-V1: the Stop you press */
+  $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; LES.mark("tempo"); $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
+    if(S.playing && !drumsLive()){ const next=PLAY.t0+PLAY.bar*PLAY.barSec, nb=beatsPerBar()*60/S.bpm; PLAY.t0=next-PLAY.bar*nb; PLAY.barSec=nb; } };
+  $("downBtn").onclick=()=>moveNeck(-1);
+  $("upBtn").onclick=()=>moveNeck(1);
+  $("muteBtn").onclick=()=>{ muteAll(); LES.mark("mute"); };
+  $("era").oninput=()=>{ LES.mark("era"); S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
+    if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(save,250); };
+  $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
+  $("sendBtn").onclick=()=>bounce(); $("sendPadsBtn").onclick=()=>bounce("pads");
+  $("padsBtn").onclick=sendPads;
+  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
+  $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
+    h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
+  /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening the menu */
+  ["soundSel","keySel","keySel2","progSel","progSel2","rhythmSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
+    el.addEventListener("pointerdown",()=>{ el._ptr=true; });
+    el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
+  bindNeck();
+  let rt=0, lastW=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const w=Math.round($("neckBox").clientWidth); if(w && w!==lastW){ lastW=w; buildNeck(); } },150); });
+}
+
+loadState();
+bind();
+lessonListen();   /* AOG-LESSONS-V1 */
+paintText();
+pvInit();
+document.addEventListener("visibilitychange",()=>{ if(document.hidden){ stop(); muteAll(); } });
+window.addEventListener("pagehide",()=>{ stop(true); muteAll(); });
+/* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */
+["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
+/* the strings are made once the page is up; the drum beat is looked up on the shared shelf */
+window.addEventListener("load",()=>{ prepare(S.sound); });
+checkDrums();
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="padbench") checkDrums(); }); }catch(e){}
+window.addEventListener("focus", checkDrums);

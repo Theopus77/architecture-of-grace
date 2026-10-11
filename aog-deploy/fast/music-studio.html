@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<!-- AOG-FAST-BUILD-V1 source:b5a3b8b15ad63042 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<html lang="en">
+<head>
+<script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
+try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
+</script>
+<title>The Mixing Desk — Architecture of Grace</title>
+<meta name="description" content="Put what you made on the drum machine, piano, guitar, bass and band on eight tracks. Mix them, make your song, save it or send it to the turntables. Nothing leaves this device unless you save it to your own Google Drive.">
+<link rel="canonical" href="https://architectureofgrace.com/studio">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="The Mixing Desk — Architecture of Grace">
+<meta property="og:description" content="Eight tracks and a mixer for the songs you make on the site's instruments.">
+<meta property="og:url" content="https://architectureofgrace.com/studio">
+<meta property="og:image" content="https://architectureofgrace.com/img/banners/music-mixdesk-pencil-1600.webp">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/aog-calm.css">
+<!-- AOG-STUDIO-V1 (2026-10-04) — Jimmy: "Could a state of the art Recording studio be built?"
+     Eight tracks. Each holds one recording from a shelf the music tools fill (aog-handoff.js: the drum machine, its
+     takes, the piano, the guitar, the bass, the band), placed at a bar, trimmed by a beat or a bar, played once or
+     looped. A mixer: volume, side, mute, solo, three-band EQ, Punch, and sends to one shared Room and one shared Echo;
+     the whole song gets an EQ, Glue, a limiter and a volume. Make the mix renders the song through the very same chain
+     in an OfflineAudioContext, to save as .wav or send to the turntables (shelf "studiobench").
+     Every sound comes from the site's own instruments; the one exception is your voice on track 8 (AOG-STUDIO-VOICE-V1),
+     and the microphone opens only when you press Record your voice. The arrangement is kept at aog.studio.v1;
+     a copy of each recording on a track is kept in IndexedDB ("aog-studio"), so a new bounce on an instrument never
+     changes a song already made. Phone first: one track's controls at a time; a row of channel strips on a bigger
+     screen. Nothing moves or sounds until Play is pressed. -->
+<!-- AOG-STUDIO-INBOX-V1 (2026-10-04) — Jimmy: "All the instruments should be able to record and send their tracks over to
+     the STUDIO." Every tool's takes (the piano, the drum machine, the guitar, the bass, The Band and the turntables) have
+     Send to the Studio, and wait here under "Takes sent here": many at once, newest first, each named by its tool and its
+     number, with its length (aog-handoff.js, the list "studioinbox"). The menu under "Put a recording on this track" puts
+     any of them, or the newest thing each tool sent to the turntables, on the track picked; two takes from one tool can sit
+     on two tracks. A take on a
+     track is the track's own copy, so it comes back after a reload, and stays after the take leaves the list. The list keeps
+     16; when a 17th comes the oldest goes, and a line here says which. A take can be taken out of the list (asked once
+     first). Nothing is uploaded. -->
+<style>
+:root{
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --good:#2c7a4e;
+  --steel-fg:#f4f8f9; --good-soft:#e2f1e8; --bad:#b4361f; --bad-soft:#f6e5e2;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark,[data-theme="dark"]{
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --good:#6fbf8b;
+  --steel-fg:#14181e; --good-soft:#1c3326; --bad:#ff8f7a; --bad-soft:#3a1f1b;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47; --steel:#7fb4c7; --steel-soft:#1d2f36; --good:#6fbf8b; --steel-fg:#14181e; --good-soft:#1c3326; --bad:#ff8f7a; --bad-soft:#3a1f1b; } }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip;overscroll-behavior:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:clip;overscroll-behavior:none}
+body *{overscroll-behavior:contain}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{text-wrap:pretty}
+a{color:inherit}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+.wrap{max-width:1100px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:1rem}
+.brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.tools{display:flex;gap:.5rem}
+.pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.lead{max-width:66ch;color:var(--muted)}
+.nav{display:flex;gap:4px}
+.nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem}
+/* nothing on the console is text to select: no copy bubble, no magnifier, no double-tap wait (AOG-MUSIC-TOUCH-V1) */
+body,.st-desk{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.st-desk select{-webkit-user-select:auto;user-select:auto}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+
+/* ══ the console: the instruments' dark panel, the same in light and dark ══ */
+.st-desk{position:relative;margin-top:1rem;border-radius:18px;padding:16px 12px 18px;border:1px solid #07080a;color:#ece6da;
+  background:linear-gradient(180deg,#2a2d31 0%,#17191c 16%,#101114 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 26px rgba(0,0,0,.28)}
+.st-plate{text-align:center;margin:-2px 0 10px}
+.st-plate b{display:block;letter-spacing:.3em;font-size:.78rem;color:#ddd6c9;font-weight:700}
+.st-plate small{display:block;letter-spacing:.2em;font-size:.6rem;color:#bdb5a7;margin-top:.15rem}
+.st-blk{border-top:1px solid #2f3339;padding:14px 0 6px}
+.st-blk:first-of-type{border-top:0;padding-top:4px}
+/* an ID, so the site's serif heading rule (aog-grace.css) does not turn these small labels into squashed titles */
+#desk h2.st-h{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0 0 .6rem}
+#desk h3.st-h3{font:800 .72rem/1.2 var(--sans)!important;letter-spacing:.14em!important;text-transform:uppercase;color:#e3dac9;margin:1.1rem 0 .55rem}
+.st-lab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
+.st-line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
+.st-line:empty{display:none}
+.st-line a{color:#cfe2ff}
+.st-line.note{color:#ffd9a8}
+.st-row{display:flex;flex-wrap:wrap;gap:.6rem .8rem;align-items:flex-end}
+.st-field{display:grid;min-width:0;flex:1 1 9rem}
+.st-desk select{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);color:#0A1E33;background-color:#FFFDF8;
+  border:1.5px solid #C9A24A;border-radius:12px;padding:8px 38px 8px 14px;-webkit-appearance:none;appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a5a12' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:16px}
+.st-desk select:disabled{opacity:.6}
+.st-btn{min-height:48px;border-radius:12px;border:1px solid #0a0b0d;background:linear-gradient(#3a3e44,#1c1f23);color:#f3efe6;
+  font:800 .98rem/1.15 var(--sans);letter-spacing:.01em;padding:0 1rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 3px 0 #07080a;text-decoration:none;text-align:center}
+.st-btn[aria-pressed="true"]{background:linear-gradient(#ffe8b0,#e0a640);color:#2a1a08}
+.st-btn:disabled{opacity:.55;cursor:default}
+.st-play{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08;min-width:10rem;font-size:1.1rem;min-height:56px}
+.st-play.on{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+.st-go{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08}
+.st-send{border-color:#5b8fd6;color:#cfe2ff}
+.st-clear{border-color:#c4452a;color:#ffb1a4}
+
+/* ── 1 · play ── */
+.st-top{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center}
+.st-read{display:grid;gap:.15rem;min-width:0;flex:1 1 13rem}
+.st-read>b{font:800 1.3rem/1.15 var(--sans);font-variant-numeric:tabular-nums;color:#ffe2a8}
+.st-read>span{font-size:.92rem;color:#d7cbb8}
+.st-mrow{display:flex;align-items:center;gap:.6rem;margin-top:.8rem}
+.st-mrow .st-lab{margin:0;flex:0 0 auto}
+.st-meter{display:block;flex:1 1 auto;min-width:0;width:100%;height:22px;border-radius:6px;background:#0b0c0e}
+.st-ctl{margin-top:.8rem}
+.st-field{grid-template-columns:minmax(0,1fr)}
+.st-ctl .st-f-start{flex:1 1 9rem}
+.st-ctl .st-f-loop{flex:2 1 19rem}
+.st-loop{display:flex;align-items:center;gap:.45rem;min-width:0}
+.st-loop .st-btn{flex:0 0 auto}
+.st-loop select{flex:1 1 5.5rem;min-width:5.5rem;width:auto}
+.st-loop span{color:#d7cbb8;font-weight:700}
+.st-ctl .st-count{flex:1 1 13rem}
+
+/* ── 2 · the song: one lane per track, bars left to right ── */
+.st-tl{display:grid;gap:5px}
+.st-ruler,.st-lane{display:grid;grid-template-columns:2.1rem minmax(0,1fr);gap:6px}
+.st-rt{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));height:24px;border-radius:6px;background:#15171a;overflow:hidden}
+.st-rt i{font:700 .72rem/24px var(--sans);font-style:normal;color:#d8cfbf;padding-left:3px;white-space:nowrap;border-left:1px solid #2a2d32;min-width:0}
+.st-rt i:first-child{border-left:0}
+.st-rt i.lp{background:#24364a;color:#e2efff}
+.st-rt i.st0{background:#1f3a2a;color:#c8f5d0}
+.st-rt i.now{background:#f0c26e;color:#2a1a08}
+.st-lane{min-height:44px;border:0;padding:0;margin:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer;width:100%}
+.st-ln{display:flex;align-items:center;justify-content:center;font:800 .92rem/1 var(--sans);color:#e3dac9;border-radius:8px;background:#1d2024;min-height:44px}
+.st-lt{position:relative;display:block;min-height:44px;border-radius:8px;background:#1b1d21;border:1px solid #2f3339;overflow:hidden}
+.st-lane[aria-current="true"] .st-lt{border-color:#f0c26e;box-shadow:0 0 0 1px #f0c26e}
+.st-lane[aria-current="true"] .st-ln{background:#f0c26e;color:#2a1a08}
+.st-clip{position:absolute;top:4px;bottom:4px;border-radius:6px;background:var(--c);color:#1a1408;font:800 .8rem/34px var(--sans);
+  padding:0 .4rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:8px}
+.st-clip.off{background:#3a3e44;color:#ece6da}
+/* AOG-STUDIO-WAVES-V1: the sound, drawn in each block of the song and large in the track's panel */
+.st-clip .wv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.st-clip .wv path{fill:rgba(26,20,8,.30)}
+.st-clip.off .wv path{fill:rgba(236,230,218,.22)}
+.st-clip .st-cnm{position:relative}
+.st-wave{margin-top:.9rem}
+.st-wave canvas{display:block;width:100%;height:150px;border-radius:10px;background:#0f1114;border:1px solid #2f3339;touch-action:pan-y;cursor:pointer}
+.st-wave .st-line{margin:.45rem 0 0}
+@media (max-width:699px){ .st-wave canvas{height:120px} }
+/* AOG-STUDIO-CUT-V2: the wave sits in a recessed glass window; a tap shows a Cut here button under the line, and the edge being moved shows its time */
+.st-wwin{position:relative;border-radius:12px;padding:5px;background:linear-gradient(#08090b,#16181c);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.06)}
+.st-wwin canvas{height:170px!important;border-radius:8px;border-color:#25282d}
+@media (max-width:699px){ .st-wwin canvas{height:136px!important} }
+.st-cutnow{position:absolute;bottom:12px;transform:translateX(-50%);min-height:44px;padding:0 1rem;border-radius:22px;border:1px solid #6b4a12;
+  background:#f0c26e;background-image:linear-gradient(#ffe08a,#e09a2a);color:#2a1a08;font:800 .95rem/1 var(--sans);white-space:nowrap;cursor:pointer;
+  box-shadow:0 3px 10px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+.st-cutnow[hidden],.st-edgetip[hidden]{display:none}
+.st-edgetip{position:absolute;top:10px;transform:translateX(-50%);padding:.2rem .55rem;border-radius:6px;background:#1a1408;color:#ffe2a8;border:1px solid #f0c26e;
+  font:800 .85rem/1.3 var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
+.st-empty{position:absolute;left:.6rem;top:0;bottom:0;display:flex;align-items:center;font-size:.86rem;color:#c3bbad}
+
+/* ── 3 · the track: its recording and where it plays ── */
+.st-pick{max-width:30rem}
+.st-cc{display:grid;gap:.55rem;margin-top:.8rem;padding:.75rem .8rem;border-radius:12px;background:#181a1e;border:1px solid #2f3339;border-left:6px solid var(--c)}
+.st-cc b{color:#f1ebdf}
+.st-cn{color:#d7cbb8;font-size:.92rem;overflow-wrap:anywhere}
+.st-len{font-variant-numeric:tabular-nums;color:#ffe2a8;font-weight:800}
+.st-cc .st-btn{justify-self:start}
+.st-steps{display:grid;gap:.9rem 1.2rem;margin-top:.9rem;grid-template-columns:minmax(0,1fr)}
+.st-val{display:block;font:800 1rem/1.25 var(--sans);color:#f1ebdf;margin:0 0 .4rem;font-variant-numeric:tabular-nums}
+.st-vf{display:block;margin:0 0 .4rem}
+.st-vf select{width:100%}
+.st-sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.st-sg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.st-sg .st-btn{padding:0 .25rem;font-size:.9rem;min-width:0;min-height:46px}
+/* AOG-STUDIO-EDIT-V1: pieces, speed and fades */
+.st-cc .st-row .st-btn{justify-self:auto}
+.st-pc{margin-top:.9rem}
+.st-pr{margin-top:.6rem}
+.st-spd{display:flex;align-items:center;gap:.5rem .8rem;flex-wrap:wrap}
+.st-spd input[type=range]{flex:1 1 12rem;min-width:8rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
+.st-spd b{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
+.st-clip.pk{box-shadow:inset 0 0 0 3px #fffaf0,inset 0 0 0 4px #07080a}
+.st-ed{width:100%;min-height:44px;margin:.45rem 0 0;padding:0 .3rem;font-size:.88rem}
+.st-ed[hidden]{display:none}
+.st-recs{display:grid;gap:.55rem}
+.st-rec{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.6rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#181a1e}
+.st-rtx{flex:1 1 14rem;min-width:0;display:grid;gap:.1rem}
+.st-rec b{color:#f1ebdf}
+.st-rec .st-btn{flex:1 1 11rem}
+
+/* ── AOG-STUDIO-INBOX-V1 · the menu of recordings, and the takes sent here ── */
+.st-put{display:grid;gap:.5rem;max-width:44rem}
+.st-put .st-btn{flex:0 1 auto}
+.st-info{margin:0;color:#d7cbb8;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
+.st-inb{display:grid;gap:.55rem}
+.st-inb .st-rtx{flex:1 1 10rem}
+.st-inb .st-rec .st-btn{flex:0 0 auto}
+.st-on{color:#c8f5d0;font-weight:700;font-size:.92rem}
+.st-q{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.6rem .7rem;border:1px solid #c4452a;border-radius:12px;background:#22140f}
+.st-q p{margin:0;color:#f6dcd4;font-weight:700;flex:1 1 14rem}
+.st-q .st-btn{flex:0 0 auto}
+
+/* ── 4 · the mixer: one strip per track ── */
+.st-mixer{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.st-strip{border:1px solid #2f3339;border-radius:12px;background:#181a1e;padding:.55rem .55rem .7rem;min-width:0}
+.st-strip.sel{border-color:#f0c26e;box-shadow:0 0 0 1px #f0c26e}
+.st-sh{display:flex;align-items:center;gap:.45rem;width:100%;min-height:44px;border:0;border-radius:8px;background:#1d2024;color:#f1ebdf;
+  font:800 .9rem/1.15 var(--sans);padding:0 .5rem;text-align:left;cursor:pointer;overflow:hidden;white-space:nowrap}
+.st-sh span:last-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.st-dot{flex:0 0 auto;width:.8rem;height:.8rem;border-radius:50%;background:var(--c)}
+.st-ms{display:grid;grid-template-columns:repeat(auto-fit,minmax(4.6rem,1fr));gap:6px;margin:.5rem 0 .3rem}
+.st-ms .st-btn{min-height:44px;padding:0 .3rem;font-size:.88rem}
+.st-ms .st-mute[aria-pressed="true"]{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+.st-ms .st-solo[aria-pressed="true"]{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08}
+.st-sls{display:grid;gap:.25rem .9rem;grid-template-columns:minmax(0,1fr)}
+.st-sl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 .4rem;min-width:0;margin:0}
+.st-sl .st-lab{margin:0;font-size:.68rem;letter-spacing:.1em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-sl output{font:800 .85rem/1 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums;white-space:nowrap}
+.st-sl input[type=range]{grid-column:1/-1;width:100%;height:36px;margin:0;touch-action:pan-y;accent-color:#f4efe4}
+.st-sl.eq input{accent-color:#9fd4a0}
+.st-sl.pu input{accent-color:#f4a37a}
+.st-sl.fx input{accent-color:#7fc7f5}
+.st-sl.ma input{accent-color:#f0c26e}
+.st-master{margin-top:12px}
+.st-master .st-sh{cursor:default}
+.st-master .st-sls{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* ── 5 · finish ── */
+.st-take{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.7rem;border:1px solid #2f3339;border-radius:12px;background:#181a1e;margin-top:.7rem}
+.st-take b{color:#f1ebdf}
+.st-take audio{height:40px;max-width:100%;flex:1 1 14rem;min-width:0}
+.st-new{margin-top:1.2rem}
+/* AOG-STUDIO-VOICE-V1: track 8, your voice */
+.st-voice{display:grid;gap:.6rem;max-width:44rem}
+.st-recs[hidden],#recsH[hidden]{display:none}
+.st-voice .st-row .st-btn{flex:0 1 auto}
+.st-rec-on{background:linear-gradient(#ffb1a4,#c4452a)!important;color:#2a0c08!important}
+/* AOG-STUDIO-SENDOUT-V1: the file that leaves the Studio */
+.st-out b,.st-out .st-len{flex:1 1 100%}
+.st-out .st-len{margin-top:-.4rem;overflow-wrap:anywhere}
+.st-out .st-btn{flex:0 1 auto;min-width:9rem}
+.st-out .st-info{flex:1 1 100%}
+/* ── 6 · AOG-STUDIO-CARRY-V1: a song file, and your locker in Google Drive ── */
+.st-name{max-width:30rem}
+.st-desk input[type=text],.st-desk input[type=url],.st-desk input[type=password]{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);
+  color:#0A1E33;background:#FFFDF8;border:1.5px solid #C9A24A;border-radius:12px;padding:8px 14px}
+.st-lk{display:grid;gap:.6rem;max-width:44rem}
+.st-lk .st-row .st-btn{flex:0 1 auto}
+/* AOG-STUDIO-LOCKER-LIGHTS-V1: a small light that says whether the locker is connected, as on the dashboard */
+.st-lkl{display:flex;gap:.7rem;align-items:flex-start;margin:0;padding:.7rem .85rem;border:1px solid #2f3339;border-radius:12px;background:#181a1e}
+.st-lkl i{flex:none;width:12px;height:12px;border-radius:50%;margin-top:.3rem;background:#8A93A0}
+.st-lkl.ok i{background:#3fbf6f;box-shadow:0 0 0 4px rgba(63,191,111,.22)}
+.st-lkl.warn i{background:#e0a030;box-shadow:0 0 0 4px rgba(224,160,48,.22)}
+.st-lkl.wait i{box-shadow:0 0 0 4px rgba(138,147,160,.22)}
+.st-lkl span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.st-lkl b{color:#f1ebdf;font-size:1rem}
+.st-lkl.ok b{color:#c8f5d0}
+.st-lkl.warn b{color:#ffe2a8}
+.st-lkl small{color:#d7cbb8;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
+/* the set-up steps open from a button that looks like one */
+.st-steps{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;border:1.5px solid #C9A24A;border-radius:12px;background:#1d2024;color:#ffe2a8;font:800 1rem/1.2 var(--sans);cursor:pointer;list-style:none}
+.st-steps::-webkit-details-marker{display:none}
+.st-steps::before{content:"▸";transition:none}
+details[open]>.st-steps::before{content:"▾"}
+details[open]>.st-steps{margin-bottom:.5rem}
+.st-qr{display:inline-block;justify-self:start;padding:12px;background:#fff;border-radius:12px;line-height:0}
+.st-qr[hidden]{display:none}
+.st-help{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:0;padding-left:1.3rem}
+.st-help li{margin:.2rem 0}
+.st-help a,.st-lk a{color:#cfe2ff}
+.st-ask{margin-top:.7rem;padding:.75rem;border:1px solid #c4452a;border-radius:12px;background:#22140f}
+.st-ask[hidden]{display:none}
+.st-ask p{margin:0 0 .6rem;color:#f6dcd4;font-weight:700}
+.foot{margin:2rem 0 0;color:var(--muted);font-size:.92rem}
+.foot p{margin:.35rem 0}
+
+/* a phone shows one track's controls at a time (the Track menu picks it); bigger screens show every strip */
+@media (max-width:699px){
+  .st-mixer .st-strip:not(.sel){display:none}
+  .st-strip .st-sls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .st-play{flex:1 1 100%}
+  .st-put .st-btn{flex:1 1 100%}
+}
+@media (min-width:700px){
+  .st-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .st-mixer{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .st-master .st-sls{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+@media (min-width:1024px){
+  .st-mixer{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px}
+  .st-strip{padding:.5rem .45rem .6rem}
+  .st-sh{font-size:.84rem;padding:0 .4rem}
+}
+@media (max-width:520px){ .st-desk{padding:0;border-radius:0} }
+
+/* ══ AOG-DESK-FACE-V1 (2026-10-09) — Jimmy's drawing of the Mixing Desk: "May the recording studio look something this
+   amazing?", then "still meh". One slim console: a round gold play beside where the song is, a thin bar ruler with the
+   playhead, the song's lanes named for their instrument with each recording drawn as fine lines in its colour; below, the
+   open channel (its name in gold, its wave, Mute and Solo, a fader with its decibels, Shape the sound) and the mixer's
+   eight short faders with silver caps, the chosen one gold. The lesson hangs from the console on a paper slip. A phone
+   stacks the same pieces (his phone drawing). The rest of the desk sits in its own panel below. ══ */
+.st-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0!important}
+.st-desk{background:none;border:0;box-shadow:none;padding:0;border-radius:0}
+.st-chassis{position:relative;border-radius:16px;padding:16px 18px 18px;border:1px solid #050607;color:#ece6da;
+  background:linear-gradient(180deg,#26282c 0%,#1a1c1f 12%,#141518 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 14px 30px rgba(20,16,8,.30),0 2px 4px rgba(0,0,0,.25)}
+.st-rest{margin-top:1.6rem}
+.st-cp .st-plate{display:none}
+.st-cp .st-blk{border-top:0;padding:0}
+/* the top line: the round gold play and where the song is */
+.st-desk .st-top{flex-wrap:nowrap;gap:1rem;align-items:center;margin:0 0 .7rem}
+.st-desk .st-play{flex:0 0 58px!important;width:58px;min-width:58px;height:58px;min-height:58px;padding:0;border-radius:50%;font-size:0;
+  display:inline-grid;place-items:center;border:1px solid #5e4512;
+  background:radial-gradient(circle at 38% 30%,#fbe6b0 0%,#e2b85e 38%,#b8862f 78%,#8e6420 100%);
+  box-shadow:0 3px 8px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.55),inset 0 -2px 3px rgba(80,50,10,.45)}
+.st-desk .st-play::before{content:"";width:0;height:0;margin-left:5px;border-left:18px solid #20170a;border-top:11px solid transparent;border-bottom:11px solid transparent}
+.st-desk .st-play.on{background:radial-gradient(circle at 38% 30%,#fbe6b0 0%,#e2b85e 38%,#b8862f 78%,#8e6420 100%)}
+.st-desk .st-play.on::before{width:17px;height:17px;margin:0;border:0;border-radius:2px;background:#20170a}
+.st-desk .st-play:disabled{opacity:.55}
+.st-desk .st-read{gap:.1rem}
+.st-desk .st-read>b{font:400 1.12rem/1.2 var(--serif,Georgia,serif);color:#efe7d6;letter-spacing:.02em}
+.st-desk .st-read>span{font-size:.84rem;color:#b9b0a1}
+/* the song: a thin ruler, slim lanes, each recording drawn as fine lines */
+.st-tl{position:relative;--lab:6.2rem;gap:0}
+.st-desk .st-ruler,.st-desk .st-lane{grid-template-columns:var(--lab) minmax(0,1fr);gap:0}
+.st-desk .st-rt{height:24px;background:transparent;border-radius:0;border-bottom:1px solid #3a3d42}
+.st-desk .st-rt i{border-left:1px solid #2c2f33;color:#b9b0a1;font:600 .7rem/24px var(--sans);padding-left:4px}
+.st-desk .st-rt i.lp{background:transparent;color:#f3d38e;box-shadow:inset 0 -2px 0 #d9a94c}
+.st-desk .st-rt i.st0{background:transparent;color:#efe7d6}
+.st-desk .st-rt i.now{background:transparent;color:#f3d38e}
+.st-desk .st-lane{min-height:40px;border-bottom:1px solid #24272b}
+.st-desk .st-lane:last-of-type{border-bottom:0}
+.st-desk .st-ln{justify-content:flex-start;gap:.45rem;padding:0 .6rem;min-height:40px;border-radius:0;background:#1d1f23;border-right:1px solid #2c2f33;
+  color:#e6decd;font:400 .98rem/1.1 var(--serif,Georgia,serif);min-width:0;box-shadow:inset 3px 0 0 transparent}
+.st-lnn{font:700 .66rem/1 var(--sans);color:#8f877a;flex:0 0 auto}
+.st-lnm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* AOG-DESK-SLIP-V2: room for the whole name (Turntables, Live guitar, Guitarra en vivo) */
+@media (min-width:700px){ .st-tl{--lab:8.4rem} .st-lnm{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.05} }
+.st-desk .st-lt{min-height:40px;border-radius:0;border:0;background:#111214}
+.st-desk .st-lane[aria-current="true"] .st-ln{background:#25231f;color:#f3d38e;box-shadow:inset 3px 0 0 #e0b25a}
+.st-desk .st-lane[aria-current="true"] .st-lnn{color:#d9a94c}
+.st-desk .st-lane[aria-current="true"] .st-lt{border:0;box-shadow:none;background:#16171a}
+.st-desk .st-clip{background:transparent;border-radius:0;top:3px;bottom:3px}
+.st-desk .st-clip .wv{top:0;height:100%}
+.st-desk .st-clip .wv path,.st-chw .wv path{fill:none;stroke:var(--c);stroke-width:1.15;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.st-desk .st-clip.off .wv path{stroke:#4e5258}
+.st-desk .st-clip .st-cnm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.st-desk .st-clip.pk{box-shadow:inset 0 0 0 1px #efe7d6}
+.st-desk .st-empty{left:.6rem;right:.6rem;font-size:0;background:radial-gradient(circle,#34373d 1px,transparent 1.3px) 0 50%/7px 4px repeat-x}
+.st-song .st-tl{border:1px solid #26292d;border-radius:10px;overflow:hidden;background:#111214}
+.st-ph{position:absolute;top:0;bottom:0;width:1px;background:#efe7d6;pointer-events:none;z-index:2;opacity:.9;
+  left:calc(var(--lab) + (100% - var(--lab)) * var(--ph,0))}
+.st-ph::before{content:"";position:absolute;top:0;left:-6px;border-left:6.5px solid transparent;border-right:6.5px solid transparent;border-top:9px solid #efe7d6}
+/* the open channel and the mixer */
+.st-cons{display:grid;gap:0;grid-template-columns:minmax(0,1fr);margin-top:14px;border:1px solid #26292d;border-radius:10px;background:#16171a;overflow:hidden}
+.st-ch,.st-fd{min-width:0;padding:12px 14px}
+.st-fd{border-top:1px solid #26292d}
+.st-ch{display:grid;gap:10px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name vol" "wave vol" "ms vol" "shape shape"}
+.st-chh{grid-area:name;display:grid;gap:.1rem;min-width:0}
+.st-chh .st-lab{margin:0;color:#b9b0a1;font-size:.66rem}
+.st-chn{font:400 1.55rem/1.1 var(--serif,Georgia,serif);color:#f0c26e}
+.st-chs{font-size:.82rem;color:#a9a091;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-chw{grid-area:wave;height:70px;position:relative;border-top:1px solid #e0b25a55;border-bottom:1px solid #2a2d31}
+.st-chw .wv{display:block;width:100%;height:100%}
+.st-chw0{grid-area:wave;margin:0}
+.st-chc{grid-area:ms;display:flex;gap:8px;align-self:start;align-items:flex-start}
+.st-chc .st-ms{display:flex;gap:8px;margin:0}
+.st-desk .st-chc .st-btn{min-height:40px;min-width:5.2rem;padding:0 .9rem;border-radius:8px;background:#1d1f23;border:1px solid #4a4e55;color:#ece6da;
+  font:600 .9rem/1 var(--serif,Georgia,serif);box-shadow:none}
+.st-desk .st-chc .st-mute[aria-pressed="true"]{background:#5b2a22;border-color:#e08f7a;color:#ffe4dc}
+.st-desk .st-chc .st-solo[aria-pressed="true"]{background:#4a3a16;border-color:#e0b25a;color:#ffe9b8}
+.st-vfw{grid-area:vol;display:grid;justify-items:center;align-content:start;gap:4px;min-width:5.6rem}
+.st-vfw .st-lab{margin:0;font-size:.62rem;color:#b9b0a1}
+.st-vfw output{font:600 .82rem/1 var(--sans);color:#f3d38e;font-variant-numeric:tabular-nums}
+.st-shape{grid-area:shape;margin:0}
+.st-shape .st-sls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.st-fdh{display:block;text-align:center;margin:0 0 .4rem;font:400 1rem/1.2 var(--serif,Georgia,serif);color:#e6decd;letter-spacing:.02em;text-transform:none}
+.st-fds{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:0;justify-items:center}
+.st-f1{display:grid;justify-items:center;gap:2px;min-width:0;width:100%}
+/* a fader: a dark slot with tick marks, a silver cap; the chosen track's cap is gold. The range is drawn sideways and
+   turned upright, so every browser draws it the same way. */
+.st-fw{position:relative;width:44px;height:132px;touch-action:none;
+  background:repeating-linear-gradient(to bottom,#3a3d42 0 1px,transparent 1px 13px) 6px 8px/8px calc(100% - 16px) no-repeat,
+             repeating-linear-gradient(to bottom,#3a3d42 0 1px,transparent 1px 13px) calc(100% - 6px) 8px/8px calc(100% - 16px) no-repeat}
+.st-fw input{position:absolute;left:50%;top:50%;width:132px;height:44px;margin:0;padding:0;transform:translate(-50%,-50%) rotate(-90deg);
+  -webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;touch-action:none}
+.st-fw input:focus-visible{outline:3px solid #c9a24b;outline-offset:-6px}
+.st-fw input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#07080a;box-shadow:inset 0 1px 2px #000,0 0 0 1px #30333a}
+.st-fw input::-moz-range-track{height:6px;border-radius:3px;background:#07080a;box-shadow:inset 0 1px 2px #000,0 0 0 1px #30333a}
+.st-fw input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:30px;margin-top:-12px;border-radius:3px;border:1px solid #1b1b1b;
+  background:linear-gradient(90deg,#f6f3ec 0%,#cfcac0 42%,#6f6b64 50%,#cfcac0 58%,#a9a49a 100%);box-shadow:0 2px 4px rgba(0,0,0,.7)}
+.st-fw input::-moz-range-thumb{width:16px;height:30px;border-radius:3px;border:1px solid #1b1b1b;
+  background:linear-gradient(90deg,#f6f3ec 0%,#cfcac0 42%,#6f6b64 50%,#cfcac0 58%,#a9a49a 100%);box-shadow:0 2px 4px rgba(0,0,0,.7)}
+.st-f1.sel .st-fw input::-webkit-slider-thumb,.st-vfw .st-fw input::-webkit-slider-thumb{background:linear-gradient(90deg,#fff1c6 0%,#e6bd62 42%,#7a5516 50%,#e6bd62 58%,#c2913a 100%)}
+.st-f1.sel .st-fw input::-moz-range-thumb,.st-vfw .st-fw input::-moz-range-thumb{background:linear-gradient(90deg,#fff1c6 0%,#e6bd62 42%,#7a5516 50%,#e6bd62 58%,#c2913a 100%)}
+.st-f1.off .st-fw{opacity:.5}
+.st-fn{min-width:40px;min-height:40px;border:0;border-radius:8px;background:transparent;color:#cfc6b6;font:600 .95rem/1 var(--sans);cursor:pointer}
+.st-f1.sel .st-fn{color:#f3d38e;box-shadow:inset 0 -2px 0 #e0b25a}
+.st-fn:focus-visible,.st-more>summary:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}
+/* the channel's fader carries its decibels (80 is 0 dB, as recorded) */
+.st-db{position:relative;width:5.6rem;height:132px;display:flex;justify-content:center}
+.st-db .st-fw{margin-left:1.6rem}
+.st-db ol{position:absolute;left:0;top:8px;bottom:8px;margin:0;padding:0;list-style:none;width:1.9rem}
+.st-db li{position:absolute;right:0;transform:translateY(50%);font:600 .62rem/1 var(--sans);color:#9c9486;font-variant-numeric:tabular-nums}
+/* the quiet row: where it starts, the loop and the level */
+.st-cp .st-more{margin:10px 0 0;border:0;background:transparent}
+.st-cp .st-more>summary{min-height:40px;padding:0 4px;font:600 .9rem/1.2 var(--sans);color:#cfc6b6}
+.st-more{border:1px solid #2f3339;border-radius:10px;background:#17191c}
+.st-more>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 12px;cursor:pointer;font:600 .95rem/1.2 var(--sans);color:#ece6da;list-style:none}
+.st-more>summary::-webkit-details-marker{display:none}
+.st-more>summary::before{content:"\25B8";font-size:.8em;color:#e0b25a}.st-more[open]>summary::before{content:"\25BE"}
+.st-more>.st-row,.st-more>.st-line,.st-more>.st-sls,.st-more>.st-mrow{padding:0 12px 12px}
+.st-cp .st-more>.st-row,.st-cp .st-more>.st-line,.st-cp .st-more>.st-mrow{padding:0 4px 10px}
+/* the lesson, on a paper slip that hangs from the console */
+.st-slip{position:relative;z-index:3;width:min(24rem,86%);margin:-12px auto 0 12%;padding:14px 20px 12px;background:#f7f1e3;color:#1a232c;text-align:center;
+  border:1px solid #e3d9c3;border-radius:2px;box-shadow:0 8px 16px rgba(40,30,10,.22),0 1px 2px rgba(0,0,0,.12);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.5),rgba(0,0,0,0) 40%)}
+.st-slip[hidden]{display:none}
+.st-slip p{margin:0}
+.st-slipk{font:700 .66rem/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#6b5a3a}
+.st-slipt{font:400 1.12rem/1.35 var(--serif,Georgia,serif);color:#1a232c;margin:.3rem 0 .3rem!important}
+.st-slip a{color:#1d4f8a;font-weight:700;font-size:.86rem}
+.st-slip::after{content:"\25C6";display:block;color:#b8902f;font-size:.62rem;margin-top:.3rem}
+@media (min-width:900px){
+  .st-cons{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  .st-fd{border-top:0;border-left:1px solid #26292d}
+  .st-ch{grid-template-columns:8.5rem minmax(0,1fr) auto;grid-template-areas:"name wave vol" "ms ms vol" "shape shape shape"}
+  .st-chc{justify-content:flex-start}
+}
+@media (max-width:699px){
+  .st-chassis{padding:12px 10px 14px;border-radius:14px}
+  .st-desk .st-top{gap:.8rem}
+  .st-desk .st-play{flex-basis:54px!important;width:54px;min-width:54px;height:54px;min-height:54px}
+  .st-tl{--lab:4.6rem}
+  .st-desk .st-ln{font-size:.86rem;padding:0 .45rem}
+  .st-lnn{display:none}
+  .st-ch{padding:12px 10px}
+  .st-fd{padding:10px 4px}
+  .st-fw{height:118px}.st-fw input{width:118px}.st-db{height:118px}
+  .st-slip{margin-left:auto;margin-right:auto;width:88%}
+}
+
+/* ══ AOG-DESK-ART-V1 (2026-10-09) — Jimmy: "It looks like it is in the basement. THE CEILING IS MUCH MUCH higher in the
+   quality of artistry and details." The console as a made thing: a fine grain in the chassis and a soft bevel; engraved
+   small capitals; a polished gold play in its bezel; the readout in a recessed window; a ruler with the beats ticked; the
+   bars lined faintly behind the lanes; a light in each track's colour; waves bright at their heart; Mute and Solo with
+   their own lights; fader caps with grip ridges over an engraved decibel scale; each channel named on a cream scribble
+   strip; the lesson on deckled paper held by a strip of tape. Nothing moves by itself. ══ */
+.st-chassis{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .055 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),radial-gradient(120% 80% at 50% 0%,#2a2c31 0%,#1a1b1f 55%,#121316 100%);
+  border:1px solid #040405;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 0 0 1px rgba(255,255,255,.02),inset 0 -18px 30px rgba(0,0,0,.35),
+  0 1px 0 rgba(255,255,255,.5),0 18px 40px -12px rgba(52,38,14,.45),0 4px 10px rgba(30,22,8,.22)}
+.st-cp{padding:18px 20px 16px}
+/* engraved labels */
+.st-cp .st-lab,.st-fdh,.st-chh .st-lab,.st-vfw .st-lab{font:700 .64rem/1.2 var(--sans)!important;letter-spacing:.2em!important;text-transform:uppercase;color:#c2b8a3!important;
+  text-shadow:0 -1px 0 rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.06)}
+/* the play, in its bezel */
+.st-desk .st-play{width:62px;height:62px;min-width:62px;min-height:62px;flex-basis:62px!important;border:0;
+  background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.95) 0,rgba(255,255,255,.35) 9%,rgba(255,255,255,0) 22%),
+    radial-gradient(circle at 50% 60%,#e9c271 0%,#d4a44a 46%,#a97a26 78%,#7d5717 100%);
+  box-shadow:0 0 0 3px #17181b,0 0 0 4px #4b4130,0 0 0 5px #0b0b0c,0 6px 14px rgba(0,0,0,.65),inset 0 -3px 6px rgba(90,58,10,.55),inset 0 2px 2px rgba(255,248,225,.5)}
+.st-desk .st-play.on{background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.95) 0,rgba(255,255,255,.35) 9%,rgba(255,255,255,0) 22%),
+    radial-gradient(circle at 50% 60%,#e9c271 0%,#d4a44a 46%,#a97a26 78%,#7d5717 100%)}
+.st-desk .st-play::before{filter:drop-shadow(0 1px 0 rgba(255,236,190,.55))}
+/* the readout, in a recessed window */
+.st-desk .st-read{padding:.45rem .85rem .5rem;border-radius:8px;background:linear-gradient(#0a0b0d,#121317);box-shadow:inset 0 2px 5px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.06);flex:0 1 auto}
+.st-desk .st-read>b{font:400 1.18rem/1.15 "Fraunces",var(--serif,Georgia,serif);color:#f6e7c3;letter-spacing:.03em;font-variant-numeric:lining-nums tabular-nums;text-shadow:0 0 10px rgba(240,194,110,.25)}
+.st-desk .st-read>span{font:600 .72rem/1.2 var(--sans);letter-spacing:.06em;color:#a89f8f}
+.st-desk .st-top{position:relative;padding-bottom:12px;margin-bottom:12px}
+.st-desk .st-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(208,168,82,.55) 18%,rgba(208,168,82,.55) 82%,transparent)}
+.st-desk .st-top::before{content:"\25C6";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-size:9px;line-height:12px;color:#d0a852;background:#1d1e22;padding:0 6px}
+/* the ruler: bars numbered, beats ticked */
+.st-desk .st-rt{height:26px;border-bottom:1px solid #4a4436;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/var(--n,8)/4 - 1px),rgba(207,190,150,.22) calc(100%/var(--n,8)/4 - 1px),rgba(207,190,150,.22) calc(100%/var(--n,8)/4)) 0 100%/100% 6px no-repeat}
+.st-desk .st-rt i{border-left:1px solid rgba(207,190,150,.45);font:500 .74rem/20px "Fraunces",var(--serif,Georgia,serif);color:#cfc3a8}
+.st-desk .st-rt i:first-child{border-left:1px solid rgba(207,190,150,.45)}
+.st-desk .st-rt i.lp{box-shadow:inset 0 -3px 0 #d9a94c;color:#f3d38e}
+/* the lanes: bar lines faintly behind; a light in the track's colour beside its name */
+.st-song .st-tl{border:1px solid #050506;background:#0d0e10;box-shadow:inset 0 2px 8px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.05)}
+.st-desk .st-lt{background:linear-gradient(90deg,rgba(207,190,150,.07) 1px,transparent 1px) 0 0/calc(100%/var(--n,8)) 100% repeat-x,
+  linear-gradient(transparent calc(50% - .5px),rgba(207,190,150,.08) calc(50% - .5px),rgba(207,190,150,.08) calc(50% + .5px),transparent calc(50% + .5px)),#0f1012}
+.st-desk .st-lane{border-bottom:1px solid #1f2125;min-height:42px}
+.st-desk .st-ln{min-height:42px;background:linear-gradient(90deg,#1c1d21,#202226);border-right:1px solid #050506;box-shadow:inset -1px 0 0 rgba(255,255,255,.04);
+  font:400 1rem/1.1 "Fraunces",var(--serif,Georgia,serif);color:#e9e0cc;letter-spacing:.01em}
+.st-led{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#2c2e33;box-shadow:inset 0 1px 1px rgba(0,0,0,.8),0 0 0 1px #0b0b0c}
+.st-led.on{background:radial-gradient(circle at 35% 30%,#fff 0,var(--c) 45%,var(--c) 100%);box-shadow:0 0 6px var(--c),0 0 0 1px rgba(0,0,0,.6)}
+.st-desk .st-lane[aria-current="true"] .st-ln{background:linear-gradient(90deg,#2a251b,#221f19);color:#f6d998;box-shadow:inset 3px 0 0 #e0b25a,inset -1px 0 0 rgba(255,255,255,.04)}
+.st-desk .st-lane[aria-current="true"] .st-lt{background:linear-gradient(90deg,rgba(207,190,150,.07) 1px,transparent 1px) 0 0/calc(100%/var(--n,8)) 100% repeat-x,linear-gradient(rgba(224,178,90,.05),rgba(224,178,90,.05)),#121315}
+/* the waves: fine lines, bright at their heart, softly lit */
+.st-desk .st-clip .wv,.st-chw .wv{-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.45) 8%,#000 42%,#000 58%,rgba(0,0,0,.45) 92%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.45) 8%,#000 42%,#000 58%,rgba(0,0,0,.45) 92%);
+  filter:drop-shadow(0 0 2px var(--c))}
+.st-desk .st-clip.off .wv{filter:none}
+.st-ph{width:1px;background:linear-gradient(#fff6df,rgba(255,246,223,.55));box-shadow:0 0 6px rgba(255,236,190,.45)}
+.st-ph::before{left:-6px;top:-1px;border-top-color:#f3d38e;filter:drop-shadow(0 1px 1px rgba(0,0,0,.7))}
+/* the console's lower half */
+.st-cons{border:1px solid #050506;background:linear-gradient(#17181b,#131416);box-shadow:inset 0 2px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.05)}
+.st-fd{border-left-color:#050506!important;box-shadow:inset 1px 0 0 rgba(255,255,255,.04)}
+.st-chn{font:italic 400 1.75rem/1.05 "Fraunces",var(--serif,Georgia,serif);color:#f0c26e;letter-spacing:.005em;text-shadow:0 0 14px rgba(240,194,110,.22)}
+.st-chs{font:500 .78rem/1.3 var(--sans);color:#a99f8d}
+.st-chw{height:76px;border:1px solid #050506;border-radius:6px;background:linear-gradient(transparent calc(50% - .5px),rgba(207,190,150,.12) calc(50% - .5px),rgba(207,190,150,.12) calc(50% + .5px),transparent calc(50% + .5px)),#0c0d0f;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.85);padding:4px 6px;overflow:hidden}
+.st-cph{position:absolute;top:0;bottom:0;width:1px;left:calc(6px + (100% - 12px) * var(--cph,0));background:#fff3d6;box-shadow:0 0 6px rgba(255,236,190,.5);opacity:0}
+.st-cph::before{content:"";position:absolute;top:0;left:-5px;border-left:5.5px solid transparent;border-right:5.5px solid transparent;border-top:7px solid #f3d38e}
+.ph-on .st-cph{opacity:1}
+/* Mute and Solo: hardware buttons with their own lights */
+.st-desk .st-chc .st-btn{position:relative;min-height:42px;padding:0 1rem 0 1.65rem;border-radius:6px;border:1px solid #050506;
+  background:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#ece3cf;font:500 .95rem/1 "Fraunces",var(--serif,Georgia,serif);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
+.st-desk .st-chc .st-btn::before{content:"";position:absolute;left:.65rem;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#3a3c41;box-shadow:inset 0 1px 1px rgba(0,0,0,.8)}
+.st-desk .st-chc .st-mute[aria-pressed="true"]{background:linear-gradient(#3a2622,#2a1c19);border-color:#050506;color:#ffd9cf}
+.st-desk .st-chc .st-mute[aria-pressed="true"]::before{background:radial-gradient(circle at 35% 30%,#fff 0,#ff6a4d 45%);box-shadow:0 0 7px #ff6a4d}
+.st-desk .st-chc .st-solo[aria-pressed="true"]{background:linear-gradient(#3a321f,#2a2416);border-color:#050506;color:#ffe9b8}
+.st-desk .st-chc .st-solo[aria-pressed="true"]::before{background:radial-gradient(circle at 35% 30%,#fff 0,#f0c26e 45%);box-shadow:0 0 7px #f0c26e}
+.st-desk .st-chc .st-btn:active{transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 0 #08090a}
+/* Shape the sound: the drawing says "closed" */
+.st-shape>summary{justify-content:flex-start;font:500 .98rem/1.2 "Fraunces",var(--serif,Georgia,serif)!important;color:#e9e0cc}
+.st-shape>summary em{font:italic 400 .85rem/1 "Fraunces",var(--serif,Georgia,serif);color:#a99f8d;margin-left:.4rem}
+.st-shape>summary em::after{content:attr(data-c)}
+.st-shape[open]>summary em::after{content:attr(data-o)}
+/* faders: a deep slot, an engraved scale, caps with grip ridges */
+.st-fw{background:repeating-linear-gradient(to bottom,rgba(207,190,150,.28) 0 1px,transparent 1px 13px) 5px 8px/7px calc(100% - 16px) no-repeat,
+  repeating-linear-gradient(to bottom,rgba(207,190,150,.28) 0 1px,transparent 1px 13px) calc(100% - 5px) 8px/7px calc(100% - 16px) no-repeat}
+.st-fw input::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:#020203;box-shadow:inset 0 1px 2px #000,0 0 0 1px #2a2c31,0 1px 0 rgba(255,255,255,.06)}
+.st-fw input::-moz-range-track{height:5px;border-radius:3px;background:#020203;box-shadow:inset 0 1px 2px #000,0 0 0 1px #2a2c31}
+.st-fw input::-webkit-slider-thumb{width:17px;height:32px;margin-top:-13.5px;border-radius:3px;border:1px solid #121212;
+  background:repeating-linear-gradient(90deg,transparent 0 3px,rgba(0,0,0,.28) 3px 4px,rgba(255,255,255,.35) 4px 5px),
+    linear-gradient(90deg,transparent 7px,#2b2b2b 7px,#2b2b2b 9px,transparent 9px),
+    linear-gradient(180deg,#f7f5ef 0%,#d9d4ca 45%,#a7a299 100%);
+  box-shadow:0 3px 5px rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.4) inset}
+.st-fw input::-moz-range-thumb{width:17px;height:32px;border-radius:3px;border:1px solid #121212;
+  background:repeating-linear-gradient(90deg,transparent 0 3px,rgba(0,0,0,.28) 3px 4px,rgba(255,255,255,.35) 4px 5px),linear-gradient(180deg,#f7f5ef 0%,#d9d4ca 45%,#a7a299 100%);box-shadow:0 3px 5px rgba(0,0,0,.75)}
+.st-f1.sel .st-fw input::-webkit-slider-thumb,.st-vfw .st-fw input::-webkit-slider-thumb{
+  background:repeating-linear-gradient(90deg,transparent 0 3px,rgba(70,40,0,.3) 3px 4px,rgba(255,250,225,.45) 4px 5px),
+    linear-gradient(90deg,transparent 7px,#4a3008 7px,#4a3008 9px,transparent 9px),
+    linear-gradient(180deg,#fff0c4 0%,#e5bb5f 45%,#b5852f 100%);box-shadow:0 3px 5px rgba(0,0,0,.75),0 0 10px rgba(240,194,110,.35)}
+.st-f1.sel .st-fw input::-moz-range-thumb,.st-vfw .st-fw input::-moz-range-thumb{background:linear-gradient(180deg,#fff0c4 0%,#e5bb5f 45%,#b5852f 100%)}
+.st-db li,.st-fsc li{font:500 .66rem/1 "Fraunces",var(--serif,Georgia,serif);color:#b4aa95;text-shadow:0 -1px 0 rgba(0,0,0,.8)}
+.st-fds{grid-template-columns:2rem repeat(8,minmax(0,1fr));align-items:start}
+.st-fsc{position:relative;height:132px;width:100%}
+.st-fsc ol{position:absolute;left:0;right:4px;top:8px;bottom:8px;margin:0;padding:0;list-style:none}
+.st-fsc li{position:absolute;right:0;transform:translateY(50%)}
+/* the scribble strip: each channel's name on cream tape */
+.st-fn{display:grid;justify-items:center;gap:3px;padding:2px 0 0;min-height:44px;width:100%}
+.st-fnn{font:600 .78rem/1 var(--sans);color:#a99f8d}
+.st-tape{display:block;max-width:100%;padding:3px 5px 2px;border-radius:1px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"),linear-gradient(#f4ecd9,#e9dec4);color:#2a2116;
+  font:italic 500 .74rem/1.1 "Fraunces",var(--serif,Georgia,serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 2px rgba(0,0,0,.5);transform:rotate(-.6deg);background-color:#ede4cf}
+.st-f1:nth-child(odd) .st-tape{transform:rotate(.5deg)}
+.st-f1.sel .st-fn{box-shadow:none}
+.st-f1.sel .st-fnn{color:#f3d38e;text-shadow:0 0 8px rgba(240,194,110,.6)}
+.st-f1.sel .st-tape{background-color:#f5dfa3;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"),linear-gradient(#fbe9b8,#efd38d);box-shadow:0 1px 2px rgba(0,0,0,.5),0 0 0 1px #e0b25a;background-color:#f5dfa3}
+.st-fdh{font:400 1.05rem/1.2 "Fraunces",var(--serif,Georgia,serif)!important;letter-spacing:.02em!important;text-transform:none!important;color:#e9e0cc!important}
+/* the lesson: deckled paper, held by a strip of tape */
+.st-slip{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"),linear-gradient(#fbf6ea,#f3ead6);border:0;border-radius:0;padding:20px 26px 16px;
+  -webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'><path d='M0 3 L18 1.5 L37 3.2 L61 1 L83 2.6 L109 .8 L131 2.9 L158 1.4 L181 3.1 L207 1 L232 2.7 L255 1.2 L281 3 L306 1.1 L331 2.8 L356 .9 L379 2.5 L400 1.3 L400 98.6 L377 97.2 L352 99 L329 97.4 L304 98.9 L279 97.1 L253 98.8 L229 97.3 L203 99.1 L178 97.5 L152 98.7 L127 97 L102 98.9 L77 97.6 L52 99.2 L28 97.3 L0 98.8 Z' fill='black'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'><path d='M0 3 L18 1.5 L37 3.2 L61 1 L83 2.6 L109 .8 L131 2.9 L158 1.4 L181 3.1 L207 1 L232 2.7 L255 1.2 L281 3 L306 1.1 L331 2.8 L356 .9 L379 2.5 L400 1.3 L400 98.6 L377 97.2 L352 99 L329 97.4 L304 98.9 L279 97.1 L253 98.8 L229 97.3 L203 99.1 L178 97.5 L152 98.7 L127 97 L102 98.9 L77 97.6 L52 99.2 L28 97.3 L0 98.8 Z' fill='black'/></svg>");-webkit-mask-size:100% 100%;mask-size:100% 100%;
+  filter:drop-shadow(0 10px 14px rgba(52,38,14,.28)) drop-shadow(0 1px 1px rgba(0,0,0,.18));box-shadow:none;transform:rotate(-.6deg);background-color:#f7f0e1}
+.st-slip-wrap{position:relative}
+.st-slipk{font:600 .64rem/1.3 var(--sans);letter-spacing:.2em;color:#7a6440}
+.st-slipt{font:italic 400 1.22rem/1.35 "Fraunces",var(--serif,Georgia,serif);color:#1f1a12}
+.st-slip a{font:600 .84rem/1.3 var(--sans);color:#1d4f8a}
+.st-slipbox{position:relative;z-index:3;width:min(24rem,86%);margin:-14px auto 0 12%}
+.st-slipbox .st-slip{width:auto;margin:0}
+.st-slipbox:has(.st-slip[hidden]) .st-tapeh{display:none}
+.st-tapeh{position:absolute;z-index:2;left:50%;top:-9px;width:92px;height:22px;transform:translateX(-50%) rotate(-2.5deg);
+  background:linear-gradient(rgba(232,214,168,.82),rgba(222,202,152,.82));box-shadow:0 1px 2px rgba(0,0,0,.12);
+  clip-path:polygon(0 8%,4% 0,8% 10%,12% 0,100% 0,96% 12%,100% 22%,96% 34%,100% 46%,96% 58%,100% 70%,96% 84%,100% 100%,0 100%,4% 88%,0 76%,4% 64%,0 52%,4% 40%,0 28%,4% 16%)}
+.st-slip::after{color:#b8902f}
+@media (max-width:699px){
+  .st-tl{--lab:5.4rem}
+  .st-desk .st-ln{gap:.35rem;padding:0 .4rem;font-size:.86rem;line-height:1.05}
+  .st-lnm{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+  .st-slipbox{width:88%;margin-left:auto;margin-right:auto}
+  .st-cp{padding:14px 12px 12px}
+  .st-fds{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .st-fsc{display:none}
+  .st-tape{display:none}
+  .st-desk .st-read>b{font-size:1.05rem}
+  .st-chn{font-size:1.5rem}
+}
+/* AOG-DESK-KEYS-V1: the keys line shows on a computer with a mouse, and anywhere once a key has been pressed */
+.st-cp .st-keys{display:none;margin:.7rem 4px 0;font-size:.86rem;color:#b9b0a1}
+@media (hover:hover) and (pointer:fine){ .st-cp .st-keys{display:block} }
+html.aog-keys .st-cp .st-keys{display:block}
+@media (prefers-reduced-motion:reduce){ .st-slip{transform:none} }
+/* AOG-DESK-SLIP-V2: the slip is a small note taped into the console's top corner; on a phone, at the foot of the console */
+.st-desk .st-top .st-slipbox{flex:0 1 25rem;width:auto;margin:6px 0 0 auto;align-self:center;min-width:15rem}
+.st-desk .st-slipbox .st-slip{padding:14px 18px 11px;text-align:left;transform:rotate(.7deg)}
+.st-desk .st-slipbox .st-slipt{font-size:1rem;line-height:1.3;margin:.2rem 0 .25rem!important}
+.st-desk .st-slipbox .st-slipk{font-size:.6rem}
+.st-desk .st-slipbox .st-slip a{font-size:.8rem;display:inline-flex;align-items:center;min-height:32px}
+.st-desk .st-slipbox .st-slip::after{display:none}
+.st-desk .st-slipbox .st-tapeh{left:auto;right:18px;transform:rotate(4deg);width:70px;height:18px}
+.st-cp>.st-slipbox{width:auto;margin:14px 4px 2px}
+.st-cp>.st-slipbox .st-slip{transform:rotate(-.4deg)}
+@media (prefers-reduced-motion:reduce){ .st-desk .st-slipbox .st-slip{transform:none} }
+/* ══ AOG-DESK-REST-V1 (Jimmy, 2026-10-09: "the whole studio has not reached the ceiling!!!") — the rest of the desk is made
+   like the console: every menu a dark window with gold type, every heading engraved, each card a tray set into the metal,
+   the buttons hardware with a soft press, the sections parted by a fine gold line. Nothing moves by itself. ══ */
+.st-desk select{color:#f6e3b4;background-color:#121316;border:1px solid #5b4a24;border-radius:9px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0b25a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),linear-gradient(#0b0c0e,#17181c);
+  background-repeat:no-repeat,no-repeat;background-position:right 12px center,0 0;background-size:16px,100% 100%;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.07);font-weight:600}
+.st-desk select:focus-visible{border-color:#f0c26e}
+.st-desk select option,.st-desk select optgroup{background:#17181c;color:#f1ebdf}
+#desk .st-rest h2.st-h,#desk .st-rest h3.st-h3{font:400 1.12rem/1.2 "Fraunces",var(--serif,Georgia,serif)!important;letter-spacing:.02em!important;text-transform:none!important;color:#efe5cf;
+  text-shadow:0 -1px 0 rgba(0,0,0,.85)}
+#desk .st-rest h3.st-h3{font-size:1.02rem!important;margin:1.3rem 0 .6rem}
+.st-rest .st-lab{font:700 .64rem/1.2 var(--sans);letter-spacing:.2em;color:#c2b8a3;text-shadow:0 -1px 0 rgba(0,0,0,.8)}
+.st-rest>.st-blk{border-top:0;position:relative;padding-top:24px;margin-top:10px}
+.st-rest>.st-blk:first-of-type{padding-top:4px;margin-top:0}
+.st-rest>.st-blk+.st-blk::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(208,168,82,.5) 18%,rgba(208,168,82,.5) 82%,transparent)}
+.st-rest>.st-blk+.st-blk::after{content:"\25C6";position:absolute;left:50%;top:-6px;transform:translateX(-50%);font-size:9px;line-height:12px;color:#d0a852;background:#1b1c20;padding:0 6px}
+/* trays: the open recording, each take, each mixer strip */
+.st-cc,.st-rec,.st-strip{background-color:#15161a;background-image:linear-gradient(#111215,#191a1e);border:1px solid #0a0a0c;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.06)}
+.st-cc{border-left:4px solid var(--c);border-radius:10px;padding:.85rem .95rem}
+.st-cc b{font:400 1.2rem/1.2 "Fraunces",var(--serif,Georgia,serif);color:#f6e7c3}
+.st-strip.sel{border-color:#c9a24a;box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 0 0 1px #c9a24a,0 0 14px rgba(240,194,110,.18)}
+/* hardware buttons: a raised cap that presses down */
+.st-rest .st-btn{border-radius:8px;border:1px solid #050506;font-weight:700;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
+.st-rest .st-btn:not(.st-go):not(.st-clear):not(.st-send):not(.st-rec-on):not([aria-pressed="true"]){background-color:#26282c;background-image:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#efe7d6}
+.st-rest .st-clear{background-color:#2a1715;background-image:linear-gradient(#3a2320,#261614);border-color:#050506}
+.st-rest .st-btn:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 0 #08090a}
+.st-rest .st-go,.st-rest .st-btn[aria-pressed="true"]{background-color:#e6b65a;background-image:radial-gradient(120% 140% at 35% 20%,#fbe6b0 0%,#e2b85e 45%,#b8862f 100%);color:#22170a;border-color:#5e4512}
+@media (prefers-reduced-motion:reduce){ .st-rest .st-btn:active{transform:none} }
+/* AOG-DESK-VU-V1: the meter bridge over the mixer (beside the channel strip on a wide screen) */
+.st-vub{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px 4px;min-width:0}
+.st-vu{display:block;width:100%;height:auto;aspect-ratio:2/1.08;max-height:118px;border-radius:7px;box-shadow:0 2px 0 rgba(255,255,255,.05),0 3px 8px rgba(0,0,0,.6)}
+@media (min-width:900px){
+  .st-cons{grid-template-rows:auto 1fr}
+  .st-ch{grid-column:1;grid-row:1 / 3}
+  .st-vub{grid-column:2;grid-row:1;border-left:1px solid #050506;box-shadow:inset 1px 0 0 rgba(255,255,255,.04);padding:14px 16px 0}
+  .st-fd{grid-column:2;grid-row:2}
+}
+@media (max-width:699px){ .st-vub{padding:10px 8px 2px;gap:8px} }
+/* AOG-DESK-WOOD-V1: walnut end cheeks on the console and the desk below, as on the consoles in Jimmy's drawings */
+.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:hidden}
+.st-chassis::before,.st-chassis::after{content:"";position:absolute;top:0;bottom:0;width:var(--cheek);pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 22px,#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
+    radial-gradient(circle at 50% calc(100% - 22px),#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='400'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .05  0 0 0 0 .02  0 0 0 .55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>"),
+    linear-gradient(90deg,#3a2213 0%,#5c3820 35%,#6a4226 55%,#4a2c17 80%,#2c190c 100%);
+  background-color:#4a2c17;background-size:auto,auto,40px 400px,auto}
+.st-chassis::before{left:0;border-radius:15px 0 0 15px;box-shadow:inset 1px 0 0 rgba(255,214,160,.22),inset -1px 0 0 #050506,inset -3px 0 5px rgba(0,0,0,.45)}
+.st-chassis::after{right:0;border-radius:0 15px 15px 0;box-shadow:inset -1px 0 0 rgba(255,214,160,.18),inset 1px 0 0 #050506,inset 3px 0 5px rgba(0,0,0,.45)}
+.st-cp{padding-left:calc(var(--cheek) + 20px);padding-right:calc(var(--cheek) + 20px)}
+@media (max-width:699px){
+  .st-chassis{--cheek:7px;padding-left:calc(var(--cheek) + 9px);padding-right:calc(var(--cheek) + 9px)}
+  .st-cp{padding-left:calc(var(--cheek) + 10px);padding-right:calc(var(--cheek) + 10px)}
+  .st-chassis::before,.st-chassis::after{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='400'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .05  0 0 0 0 .02  0 0 0 .55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>"),linear-gradient(90deg,#3a2213 0%,#5c3820 35%,#6a4226 55%,#4a2c17 80%,#2c190c 100%);background-size:40px 400px,auto}
+}
+/* ══ AOG-DESK-GLOW-V1 — the playhead glows while the song plays: a warm line with a soft bloom and a faint light behind it,
+   a lit diamond on the ruler. Stopped, it is the plain line. ══ */
+.st-tl.ph-live .st-ph{width:2px;margin-left:-.5px;background:linear-gradient(#fffaf0,#ffe6b0 70%,rgba(255,230,176,.6));
+  box-shadow:0 0 6px 1px rgba(255,214,140,.75),0 0 18px 4px rgba(240,180,90,.35)}
+.st-tl.ph-live .st-ph::after{content:"";position:absolute;top:0;bottom:0;right:2px;width:72px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,214,140,0),rgba(255,214,140,.10))}
+.st-tl.ph-live .st-ph::before{border-top-color:#ffe6a8;filter:drop-shadow(0 0 4px rgba(255,214,140,.95)) drop-shadow(0 1px 1px rgba(0,0,0,.7))}
+/* ══ AOG-DESK-COUNTER-V1 — the tape counter ══ */
+.st-posw{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.st-ctr{display:flex;align-items:flex-start;gap:12px;font:700 1.9rem/1 var(--sans);font-variant-numeric:tabular-nums;padding:3px 0 2px}
+.st-cg{display:inline-flex;align-items:center;gap:2px;padding:3px 4px;border-radius:4px;
+  background:linear-gradient(#bfc3c9,#8e939a 45%,#6d7178);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.6)}
+.st-cgt{background:linear-gradient(#e8c47a,#c79a45 45%,#9c742c)}
+.st-cw{display:inline-block;position:relative;width:.72em;height:1em;overflow:hidden;border-radius:2px;background-color:#0b0b0c;
+  box-shadow:inset 0 0 0 1px #000}
+.st-cw::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,0) 32%,rgba(255,255,255,.06) 50%,rgba(0,0,0,0) 68%,rgba(0,0,0,.85))}
+.st-cs{display:block;transition:transform .22s cubic-bezier(.3,.7,.4,1)}
+.st-cs.st-snap{transition:none}
+.st-cs i{display:block;height:1em;line-height:1em;text-align:center;font-style:normal;color:#f4efe4;background-color:#0b0b0c}
+.st-cgt .st-cs i{color:#fff3d4}
+.st-colon{color:#1a1a1a;font-size:.8em;line-height:1;margin:0 1px;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.st-cgw{display:inline-grid;justify-items:center;gap:3px}
+.st-cgw small{font:700 .58rem/1 var(--sans);margin-top:2px;letter-spacing:.18em;text-transform:uppercase;color:#a89f8f}
+.st-ctl{margin:3px 0 1px;font:700 .82rem/1.2 var(--sans);color:#ffe2a8}
+.st-ctl[hidden]{display:none}
+@media (max-width:699px){ .st-ctr{font-size:1.45rem;gap:7px} .st-desk .st-read>span{letter-spacing:.01em} }
+@media (prefers-reduced-motion:reduce){ .st-cs{transition:none} }
+@media (hover:none){ .st-cs{transition:none} }
+/* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
+html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
+html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
+/* AOG-DESK-SONGS-BTN-V1: Your songs, a hardware button with the locker's light */
+.st-desk .st-songs{flex:0 0 auto;display:inline-flex;align-items:center;gap:.6rem;min-height:48px;padding:.35rem .95rem .35rem .75rem;border-radius:8px;border:1px solid #050506;cursor:pointer;
+  background-color:#26282c;background-image:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#efe7d6;text-align:left;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
+.st-desk .st-songs b{display:block;font:500 1rem/1.15 "Fraunces",var(--serif,Georgia,serif);color:#f3e6c6}
+.st-desk .st-songs small{display:block;font:700 .62rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#b9ad95;margin-top:2px}
+.st-desk .st-songs .st-led.on{background:radial-gradient(circle at 35% 30%,#fff 0,#3fbf6f 45%);box-shadow:0 0 7px #3fbf6f}
+.st-desk .st-songs:active{transform:translateY(1px)}
+@media (prefers-reduced-motion:reduce){ .st-desk .st-songs:active{transform:none} }
+@media print{ .st-desk,.bench-bar,header{display:none!important} }
+</style>
+<link rel="stylesheet" href="/aog-bench.css">
+<script src="aog-handoff.js"></script>
+<script src="/aog-lessons.js"></script>
+<script src="/aog-lessons-studio.js"></script>
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="#" id="brand">The Mixing Desk</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar"><!-- the music tools, one menu (four or more places: CLAUDE.md, drop-downs) -->
+    <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
+  </div>
+  <main id="view">
+    <section class="st-desk" id="desk" aria-labelledby="mastH">
+      <div class="st-chassis st-cp"><!-- AOG-DESK-FACE-V1: the console of Jimmy's drawing -->
+      <div class="st-plate" aria-hidden="true"><b id="plateB">THE STUDIO</b><small id="plateS">EIGHT TRACKS · MIXER</small></div>
+
+      <div class="st-blk" id="transport">
+        <div class="st-top">
+          <button type="button" class="st-btn st-play" id="playBtn"></button>
+          <!-- AOG-DESK-SONGS-BTN-V1 (Jimmy, 2026-10-09: "yes so I can work between machines"): one tap to saving and opening songs -->
+          <div class="st-read"><b id="posOut" class="st-posw">&nbsp;</b><!-- AOG-DESK-COUNTER-V1: the tape counter (its words stay in #posOut for a screen reader) --><div class="st-ctr" id="ctr" aria-hidden="true"></div><div class="st-ctl" id="ctrLab" aria-hidden="true" hidden></div><span id="tempoOut"></span></div>
+          <button type="button" class="st-songs" id="songsBtn"><i class="st-led" id="songsLed" aria-hidden="true"></i><span><b data-t="songsBtn"></b><small id="songsSay"></small></span></button>
+          <!-- AOG-DESK-SLIP-V2 (Jimmy, 2026-10-09: "The lesson sheet needs to move"): the lesson is a note taped to the console,
+               in the empty corner beside play; on a phone it moves to the foot of the console (placeSlip) -->
+          <div class="st-slipbox" id="slipBox"><span class="st-tapeh" aria-hidden="true"></span><div class="st-slip" id="slip" aria-live="polite"></div></div>
+        </div>
+        <p class="st-line" id="playLine" aria-live="polite"></p>
+      </div>
+
+      <div class="st-blk st-song">
+        <h2 class="st-h st-sr" data-t="songH"></h2>
+        <div class="st-tl" id="timeline"></div>
+      </div>
+
+      <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
+           a paper slip. They drive the mixer below (the same values, the same rules); nothing new happens to the sound. -->
+      <div class="st-blk st-cons" id="console">
+        <div class="st-ch" id="chStrip"></div>
+        <!-- AOG-DESK-VU-V1: the meter bridge, two VU meters over the mixer, as on a real console -->
+        <div class="st-vub" id="vuBridge" role="img"><canvas class="st-vu" id="vuL" aria-hidden="true"></canvas><canvas class="st-vu" id="vuR" aria-hidden="true"></canvas></div>
+        <div class="st-fd" id="chFaders"></div>
+      </div>
+      <p class="st-line st-keys" data-t="deskKeys"></p><!-- AOG-DESK-KEYS-V1 -->
+      <!-- AOG-DESK-FACE-V1: the level, where it starts, the loop and the count-in, one tap away -->
+        <details class="st-more" id="playMore"><summary data-t="playMore"></summary>
+        <div class="st-mrow"><span class="st-lab" data-t="level"></span><canvas class="st-meter" id="meter" role="img"></canvas></div>
+        <div class="st-row st-ctl">
+          <label class="st-field st-f-start"><span class="st-lab" data-t="startAt"></span><select id="startSel"></select></label>
+          <div class="st-field st-f-loop"><span class="st-lab" data-t="loopBars"></span>
+            <div class="st-loop"><button type="button" class="st-btn" id="loopBtn" aria-pressed="false"></button><select id="loopFrom"></select><span data-t="to"></span><select id="loopTo"></select></div>
+          </div>
+          <button type="button" class="st-btn st-count" id="countBtn" aria-pressed="false"></button>
+        </div>
+        <p class="st-line" data-t="songLen" style="margin:.6rem 0 0"></p>
+        </details>
+      </div>
+      <div class="st-chassis st-rest">
+
+      <!-- AOG-DESK-MIXFIRST-V1 (Jimmy, 2026-10-09: "May the track and mixer positions be switched?"): the mixer first, then the track -->
+      <div class="st-blk" id="mixerBlk">
+        <h2 class="st-h" data-t="mixerH"></h2>
+        <p class="st-line" data-t="mixerLine" style="margin:0 0 .7rem"></p>
+        <div class="st-mixer" id="mixer"></div>
+        <div class="st-master" id="master"></div>
+      </div>
+
+      <div class="st-blk" id="trackBlk">
+        <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
+        <div id="clipBox"></div>
+        <h3 class="st-h3" data-t="recsH" id="recsH"></h3>
+        <div class="st-recs" id="recs"></div>
+        <div id="voiceBox"></div><!-- AOG-STUDIO-VOICE-V1: track 8 is your voice -->
+        <p class="st-line" id="recLine" aria-live="polite"></p>
+      </div>
+
+      <div class="st-blk" id="inboxBlk">
+        <h2 class="st-h" data-t="inboxH"></h2>
+        <p class="st-line note" id="goneLine" aria-live="polite" style="margin:0 0 .6rem"></p>
+        <div class="st-inb" id="inbox"></div>
+        <p class="st-line" id="inboxLine" aria-live="polite"></p>
+      </div>
+
+      <div class="st-blk">
+        <h2 class="st-h" data-t="finishH"></h2>
+        <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
+        <p class="st-line" id="mixLine" aria-live="polite"></p>
+        <div id="mixOut"></div>
+        <p class="st-line" id="outLine" aria-live="polite"></p>
+        <div id="outBox"></div>
+        <p class="st-line" id="sendLine" aria-live="polite"></p>
+        <div class="st-row st-new"><button type="button" class="st-btn st-clear" id="newBtn"></button></div>
+        <div class="st-ask" id="newAsk" hidden>
+          <p id="newAskT"></p>
+          <div class="st-row"><button type="button" class="st-btn st-clear" id="newYes"></button><button type="button" class="st-btn" id="newNo"></button></div>
+        </div>
+      </div>
+
+      <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
+        <h2 class="st-h" data-t="carryH"></h2>
+        <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
+        <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
+        <h3 class="st-h3" data-t="fileH"></h3>
+        <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
+        <input type="file" id="fileIn" hidden>
+        <p class="st-line" id="fileLine" aria-live="polite"></p>
+        <h3 class="st-h3" data-t="lockH"></h3>
+        <div id="locker"></div>
+        <p class="st-line" id="lockLine" aria-live="polite"></p>
+        <div class="st-ask" id="openAsk" hidden>
+          <p id="openAskT"></p>
+          <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
+  </main>
+  <footer class="foot" id="foot"></footer>
+</div>
+<script src="/front/82a7efb519c9.js"></script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+
+"use strict";
+const $=id=>document.getElementById(id);
+const S={lang:"en", bank:"P", beat:"b:rockbasic", bpm:112, swing:0.5, bvol:0.8};
+try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
+try{ const r=JSON.parse(localStorage.getItem("aog.kit.v1")||"null");
+  if(r && r.bank) S.bank=r.bank;
+  if(r && typeof r.beat==="string") S.beat=r.beat;
+  if(r && typeof r.bpm==="number") S.bpm=Math.max(40, Math.min(220, Math.round(r.bpm)));
+  if(r && typeof r.swing==="number") S.swing=Math.max(0.5, Math.min(0.75, r.swing));
+  if(r && typeof r.bvol==="number") S.bvol=Math.max(0.1, Math.min(1, r.bvol)); }catch(e){}
+function save(){ try{ localStorage.setItem("aog.kit.v1", JSON.stringify({bank:S.bank, beat:S.beat, bpm:S.bpm, swing:S.swing, bvol:S.bvol})); }catch(e){} }
+const STR={
+  app:{en:"The Drum Kit",es:"La batería"}, kicker:{en:"Play a real drum kit",es:"Toca una batería de verdad"},
+  lead:{en:"A real drum kit to play with your fingers. Pick a kit, then play.",es:"Una batería de verdad para tocar con los dedos. Elige una batería y toca."},
+  kitLab:{en:"Drum kit",es:"Batería"},
+  kitKeys:{en:"On a keyboard, A S D F G H J K play the drums (the letter is on each one). Shift plays harder. Space starts and stops the beat.",es:"Con un teclado, A S D F G H J K tocan la batería (la letra está en cada tambor). Mayúsculas toca más fuerte. La barra espaciadora pone y para el ritmo."},
+  loading:{en:"Getting the kit ready… {a} of {b}",es:"Preparando la batería… {a} de {b}"},
+  failed:{en:"The kit did not load. Check the internet, then pick the kit again.",es:"La batería no se cargó. Revisa internet y vuelve a elegirla."},
+  ready:{en:"Ready. Tap a drum. Near the middle plays louder, near the edge softer.",es:"Lista. Toca un tambor. Cerca del centro suena más fuerte, cerca del borde más suave."},
+  turnPhone:{en:"Turn your phone sideways for a bigger kit.",es:"Gira el teléfono de lado para una batería más grande."},
+  turnTablet:{en:"Press ⤢ Play on the whole screen for a bigger kit. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para una batería más grande. Cerrar vuelve a esta página."},
+  big:{en:"⤢ Play on the whole screen",es:"⤢ Tocar en toda la pantalla"},
+  light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
+  credit:{en:"Every drum here is a real recording.",es:"Cada tambor aquí es una grabación de verdad."}, credits:{en:"Who made them",es:"Quién las hizo"},
+  machine:{en:"The drum machine has its own kits and a beat to build.",es:"La caja de ritmos tiene sus propias baterías y un ritmo para construir."}, machineGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
+  menu:{en:"☰ Menu",es:"☰ Menú"}, close:{en:"✕ Close",es:"✕ Cerrar"}, hint:{en:"Play the kit with your fingers. Use both hands.",es:"Toca la batería con los dedos. Usa las dos manos."},
+  stop:{en:"■ Stop",es:"■ Parar"},
+  beatH:{en:"Play along with a beat",es:"Toca con un ritmo"},
+  beatIntro:{en:"Pick a beat and press Play. It plays on the kit above, so you can play along.",es:"Elige un ritmo y pulsa Tocar. Suena en la batería de arriba, para que toques con él."},
+  beatLab:{en:"Beat",es:"Ritmo"}, play:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, stopBeat:{en:"■ Stop the beat",es:"■ Parar el ritmo"},
+  playS:{en:"▶ Beat",es:"▶ Ritmo"}, stopS:{en:"■ Beat",es:"■ Ritmo"},
+  tempo:{en:"Speed",es:"Velocidad"}, bpm:{en:"{n} beats a minute",es:"{n} pulsos por minuto"}, bpmS:{en:"{n} a minute",es:"{n} por minuto"},
+  slower:{en:"Slower",es:"Más lento"}, faster:{en:"Faster",es:"Más rápido"},
+  swing:{en:"Swing",es:"Swing"}, sw0:{en:"Straight",es:"Recto"}, sw1:{en:"A little bounce",es:"Un poco de rebote"}, sw2:{en:"Swinging",es:"Con swing"}, sw3:{en:"Full swing",es:"Swing completo"},
+  vol:{en:"Beat volume",es:"Volumen del ritmo"},
+  reset:{en:"↺ The beat's own speed and swing",es:"↺ La velocidad y el swing del ritmo"},
+  gStyles:{en:"Ready to go",es:"Listos para tocar"}, gKit:{en:"More grooves",es:"Más grooves"}, gClass:{en:"For the classroom",es:"Para la clase"},
+  region:{en:"The drum kit, on the whole screen",es:"La batería, en toda la pantalla"}
+};
+function t(k, v){ let s=(STR[k]||{})[S.lang]||k; if(v) Object.keys(v).forEach(x=>{ s=s.split("{"+x+"}").join(v[x]); }); return s; }
+/* the kits: every recorded kit whose eight pads are all recordings */
+function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
+function kitName(b){ const l=AOGDrumKit.label(b); return l[S.lang==="es"?1:0]; }
+/* what each pad is, in plain words, and what it looks like */
+const PAD_WORD={KICK:["Kick","Bombo"],SNARE:["Snare","Caja"],HAT:["Hi-hat","Charles"],OPEN:["Open hat","Charles abierto"],CRASH:["Crash","Crash"],RIDE:["Ride","Ride"],
+  CHINA:["China","China"],SIZZLE:["Sizzle","Sizzle"],FLUTTR:["Flutter","Trémolo"],BELL:["Bell","Campana"],BELLS:["Bells","Campanas"],TOM:["Tom","Tom"],HITOM:["High tom","Tom agudo"],
+  MIDTOM:["Middle tom","Tom medio"],FLOOR:["Floor tom","Tom de piso"],TENOR:["Tenor drums","Tambores tenor"],CONGA:["Conga","Conga"],DJEMBE:["Djembe","Yembé"],ROLL:["Snare roll","Redoble"],
+  XSTICK:["Cross-stick","Aro cruzado"],STICKS:["Sticks","Baquetas"],RIM:["Rim","Aro"],STIR:["Brush stir","Escobilla"],PEDAL:["Hi-hat pedal","Pedal del charles"]};
+const KIND={HAT:"hat",OPEN:"hat",CRASH:"cym",RIDE:"cym",CHINA:"cym",SIZZLE:"cym",FLUTTR:"cym",BELL:"cym",BELLS:"cym",
+  XSTICK:"small",STICKS:"small",RIM:"small",STIR:"small",PEDAL:"pedal"};
+function padName(b, id){ return (AOGDrumKit.padNames(b)||{})[id]||""; }
+function padWord(b, id){ const n=padName(b, id), w=PAD_WORD[n]; return w ? w[S.lang==="es"?1:0] : (n.charAt(0)+n.slice(1).toLowerCase()); }
+function padKind(b, id){ return KIND[padName(b, id)]||"drum"; }
+const KIT_LOOK={
+  wine:{sh:["#3a0a0d","#8e1d24","#d9555c","#8e1d24","#5a1015","#2a0709"]},
+  blue:{sh:["#06173d","#14408f","#6fa3f0","#1d4fa8","#0d2a6b","#050f2a"]},
+  maple:{sh:["#4a2a10","#9a5f2c","#e6b072","#a8682f","#6b3d17","#2f1a08"]},
+  pearl:{sh:["#8f8a80","#e9e5dc","#ffffff","#ded9cf","#b5afa3","#7b766c"], ink:true},
+  green:{sh:["#06200f","#16613a","#5fc48a","#1b6e42","#0e3d23","#04150a"]},
+  burst:{sh:["#2a0e04","#8a3a0c","#f0a548","#b5561a","#5a2408","#1e0902"]},
+  black:{sh:["#050506","#1d1f23","#6a6f78","#24262b","#121315","#030304"]},
+  ekit:{sh:["#050506","#1d1f23","#5a5f68","#24262b","#121315","#030304"], mesh:true, rubber:true}
+};
+const KIT_OF={A:"ekit",B:"ekit",C:"ekit",D:"ekit",F:"ekit",L:"ekit",E:"maple",G:"burst",H:"maple",I:"wine",J:"blue",K:"pearl",M:"green",N:"maple",O:"pearl",
+  P:"maple",Q:"black",R:"pearl",S:"blue",T:"black",U:"burst",V:"pearl",W:"green",X:"burst",Y:"maple"};
+const DARK_CYM={K:1,R:1,U:1,V:1};   /* the jazz kits: dark, dry cymbals */
+function kitLook(b){ const L=KIT_LOOK[KIT_OF[b]||"wine"]; return Object.assign({dark:!!DARK_CYM[b]}, L); }
+function drawKit(o){   /* the drum machine's drawing (music-drums.html, AOG-KIT-REAL-V1), with each kit's own instruments */
+  const look=kitLook(o.bank||S.bank), mesh=!!look.mesh, rub=!!look.rubber;
+  const pre=o.pre, VW=o.VW||1000, k=VW/1000, g=1+(k-1)*0.5, X=x=>Math.round(500*k+(x-500)*k), R=r=>Math.round(r*g);
+  const nm=id=>padWord(o.bank, id);
+  const u=id=>`url(#${pre}${id})`, f1=v=>(+v).toFixed(1);
+  const lab=(x,y,id,cls)=>{ const w=nm(id), fs=(w.length>9?0.74:1)*(o.tall?34:26);   /* a long name a little smaller, so it stays on its piece */
+    const kk=KIT_KEYS[id];   /* AOG-KIT-KEYS-V1: the computer key that plays it, shown once a keyboard is in use */
+    return `<text class="${cls||"ink"}" x="${f1(x)}" y="${f1(y)}" style="font-size:${fs.toFixed(1)}px">${w}</text>`+
+      (kk ? `<text class="${cls||"ink"} kkey" x="${f1(x)}" y="${f1(y+fs*1.05)}" style="font-size:${(fs*0.7).toFixed(1)}px" aria-hidden="true">${kk}</text>` : ""); };
+  const piece=(id, body, glow)=>`<g class="drum" data-pad="${id}" role="button" tabindex="0" aria-label="${nm(id)}">${body}<g class="glow">${glow}</g></g>`;
+  /* a drum seen from above and in front: the shell's side under the head, lugs on it, the hoop, the head */
+  const drumAt=(id, cx, cy, rx, ry, d, shell, rim)=>{
+    let s=`<ellipse cx="${f1(cx)}" cy="${f1(cy+d+4)}" rx="${f1(rx+6)}" ry="${f1(ry+4)}" fill="rgba(0,0,0,.45)"/>`;
+    s+=`<path d="M${f1(cx-rx)} ${f1(cy)}L${f1(cx-rx)} ${f1(cy+d)}A${f1(rx)} ${f1(ry)} 0 0 0 ${f1(cx+rx)} ${f1(cy+d)}L${f1(cx+rx)} ${f1(cy)}Z" fill="${u(shell)}" stroke="#1a0f08" stroke-width="2"/>`;
+    s+=`<path d="M${f1(cx-rx)} ${f1(cy+d)}A${f1(rx)} ${f1(ry)} 0 0 0 ${f1(cx+rx)} ${f1(cy+d)}" fill="none" stroke="${u("chrome")}" stroke-width="5"/>`;
+    for(let i=1;i<8;i++){ const a=Math.PI*i/8, x=cx-rx*Math.cos(a), y=cy+ry*Math.sin(a)+d*0.5;
+      s+=`<rect x="${f1(x-4)}" y="${f1(y-d*0.28)}" width="8" height="${f1(d*0.56)}" rx="3" fill="${u("chrome")}" stroke="#2b2f35" stroke-width="1"/>`; }
+    const hw=rim?rim:8;
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="none" stroke="${u("chrome")}" stroke-width="${hw}"/>`;
+    for(let i=0;i<10;i++){ const a=Math.PI*2*i/10+0.3; s+=`<circle cx="${f1(cx+(rx)*Math.cos(a))}" cy="${f1(cy+(ry)*Math.sin(a))}" r="3.2" fill="#e8ecf1" stroke="#3a3f46" stroke-width="1"/>`; }
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx-hw/2-1)}" ry="${f1(ry-hw/2-1)}" fill="${u("head")}" stroke="#a89f8c" stroke-width="1"/>`;
+    s+=`<ellipse cx="${f1(cx+rx*0.05)}" cy="${f1(cy+ry*0.08)}" rx="${f1(rx*0.3)}" ry="${f1(ry*0.3)}" fill="rgba(120,100,70,.10)"/>`;   /* where the sticks land */
+    return s;
+  };
+  /* a cymbal: brass, a sheen, the lathe's rings, the bell, the felt and the nut on its stand */
+  const cym=(cx, cy, rx, ry, bell)=>{
+    let s=`<ellipse cx="${f1(cx)}" cy="${f1(cy+6)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="rgba(0,0,0,.45)"/>`;
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="${u("brass")}" stroke="#5a3f0a" stroke-width="2"/>`;
+    for(let i=1;i<=14;i++){ const q=i/15; s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx*q)}" ry="${f1(ry*q)}" fill="none" stroke="rgba(90,60,10,${i%2?.22:.12})" stroke-width="1"/>`; }
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="${u("sheen")}"/>`;
+    s+=`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(bell)}" ry="${f1(bell*ry/rx*1.15)}" fill="${u("bell")}" stroke="#6a4a0e" stroke-width="1.5"/>`;
+    s+=`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="4" fill="#2b2f35"/>`;
+    return s;
+  };
+  const stand=(x, y0, y1)=>`<line x1="${f1(x)}" y1="${f1(y0)}" x2="${f1(x)}" y2="${f1(y1)}" stroke="${u("chromeV")}" stroke-width="7" stroke-linecap="round"/>`;
+  const defs=`<defs>
+    <linearGradient id="${pre}chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfcfe"/><stop offset=".35" stop-color="#8d96a1"/><stop offset=".55" stop-color="#ffffff"/><stop offset=".8" stop-color="#6c747e"/><stop offset="1" stop-color="#d9dde3"/></linearGradient>
+    <linearGradient id="${pre}chromeV" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5d646d"/><stop offset=".45" stop-color="#f6f8fa"/><stop offset="1" stop-color="#5d646d"/></linearGradient>
+    ${mesh ? `<pattern id="${pre}head" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#2b2e33"/><path d="M0 0L6 6M6 0L0 6" stroke="#4a4f57" stroke-width=".8"/></pattern>`
+           : `<radialGradient id="${pre}head" cx="42%" cy="35%" r="75%"><stop offset="0" stop-color="#fbfaf6"/><stop offset=".6" stop-color="#ece6d8"/><stop offset="1" stop-color="#cfc6b2"/></radialGradient>`}
+    <linearGradient id="${pre}wine" x1="0" y1="0" x2="1" y2="0">${[0,.22,.3,.38,.85,1].map((o2,i)=>`<stop offset="${o2}" stop-color="${look.sh[i]}"/>`).join("")}</linearGradient>
+    <linearGradient id="${pre}steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4b5058"/><stop offset=".3" stop-color="#e9edf2"/><stop offset=".5" stop-color="#9aa3ad"/><stop offset=".75" stop-color="#f4f6f8"/><stop offset="1" stop-color="#4b5058"/></linearGradient>
+    <radialGradient id="${pre}brass" cx="45%" cy="40%" r="70%">${(rub ? ["#4a4e55","#2c2f34","#1c1e22","#121316"] : look.dark ? ["#e0c07e","#b48c46","#8f6a2a","#6a4b1a"] : ["#f6dc8c","#d5a83f","#a87a1e","#7d5812"]).map((c2,i)=>`<stop offset="${[0,.5,.85,1][i]}" stop-color="${c2}"/>`).join("")}</radialGradient>
+    <linearGradient id="${pre}sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff8e0" stop-opacity=".45"/><stop offset=".58" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="${pre}bell" cx="40%" cy="35%" r="70%">${(rub ? ["#6a6f78","#3a3e45","#1c1e22"] : look.dark ? ["#e0c487","#a8803a","#5a4114"] : ["#fff0bd","#d9ab45","#8a6416"]).map((c2,i)=>`<stop offset="${[0,.6,1][i]}" stop-color="${c2}"/>`).join("")}</radialGradient>
+    <linearGradient id="${pre}rubber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d42"/><stop offset="1" stop-color="#16181b"/></linearGradient>
+    <radialGradient id="${pre}reso" cx="50%" cy="30%" r="80%"><stop offset="0" stop-color="#2a2d33"/><stop offset="1" stop-color="#0d0e10"/></radialGradient>
+    <radialGradient id="${pre}floor" cx="50%" cy="60%" r="75%"><stop offset="0" stop-color="#3b2a1d"/><stop offset="1" stop-color="#140d08"/></radialGradient>
+  </defs>`;
+  const hot=(cx,cy,rx,ry)=>`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}"/>`;
+  /* each slot where its instrument stands: drums low and in front, cymbals high, the small things to the side */
+  const b=o.bank, kd=id=>padKind(b, id), smalls=[[110,292],[110,190]], take=()=>smalls.shift()||[110,292];
+  const cymAt=(id, x, y, rx, ry, bl)=>piece(id, cym(X(x), y, R(rx), ry, bl)+lab(X(x), y+ry*0.5, id), hot(X(x), y, R(rx), ry+4));
+  const drumPiece=(id, x, y, rx, ry, d, shell)=>piece(id, drumAt(id, X(x), y, R(rx), ry, d, shell||"wine")+lab(X(x), y, id), hot(X(x), y+d*0.3, R(rx), ry+d*0.5));
+  const small=(id, x, y)=>{ const cx=X(x), rx=R(78), ry=52;
+    if(kd(id)==="pedal") return piece(id, `<rect x="${cx-34}" y="${y-60}" width="68" height="120" rx="14" fill="${u("chromeV")}" stroke="#2b2f35" stroke-width="2"/><rect x="${cx-26}" y="${y-50}" width="52" height="100" rx="10" fill="#2a2d33"/>`+lab(cx, y+82, id, "ink-l"), `<rect x="${cx-40}" y="${y-66}" width="80" height="132" rx="16"/>`);
+    return piece(id, `<ellipse cx="${cx}" cy="${y+14}" rx="${rx+4}" ry="${ry+2}" fill="rgba(0,0,0,.45)"/><ellipse cx="${cx}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="${u("chrome")}" stroke-width="8"/><ellipse cx="${cx}" cy="${y}" rx="${rx-4}" ry="${ry-4}" fill="${u("rubber")}"/>`+lab(cx, y, id, "ink-l"), hot(cx, y, rx, ry)); };
+  /* a phone held upright: the kit is drawn taller, as if seen more from above, so every piece is a finger high (the words keep their shape) */
+  const tall=!!o.tall, VH=tall ? 896 : 560;
+  let s=`<svg class="${o.cls}${tall?" tall":""}" id="${o.id||""}" viewBox="0 0 ${VW} ${VH}" preserveAspectRatio="xMidYMid meet" role="group" aria-label="${o.label||""}">${defs}${tall?`<g transform="scale(1 1.6)">`:""}
+    <rect width="${VW}" height="560" fill="${u("floor")}"/>
+    <ellipse cx="${X(500)}" cy="330" rx="${R(470)}" ry="215" fill="rgba(120,30,25,.18)"/>`;
+  s+=stand(X(790), 120, 360)+stand(X(200), 112, 300)+stand(X(140), 460, 560);
+  /* the kick: its front head over the pedal */
+  { const cx=X(540), cy=566, rx=R(250), ry=150;
+    s+=piece("kick", `<ellipse cx="${cx}" cy="${cy-8}" rx="${rx+10}" ry="${ry+6}" fill="${u("wine")}" stroke="#1a0f08" stroke-width="2"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${u("chrome")}" stroke-width="10"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx-6}" ry="${ry-6}" fill="${u("reso")}"/>
+      <ellipse cx="${cx}" cy="${cy-58}" rx="${R(110)}" ry="38" fill="#f1ead9" stroke="#b9ad92" stroke-width="2"/>`+lab(cx, cy-58, "kick"), hot(cx, cy, rx, ry)); }
+  /* the cymbals and the hi-hats, high */
+  s+=piece("oh", cym(X(200), 116, R(160), 44, 30)+cym(X(200), 92, R(165), 46, 32)+lab(X(200), 120, "oh"), hot(X(200), 100, R(165), 50));
+  if(kd("bell")==="cym") s+=cymAt("bell", 790, 96, 195, 60, 46); else if(kd("bell")==="drum") s+=drumPiece("bell", 790, 110, 120, 70, 40); else { const p=take(); s+=small("bell", p[0], p[1]); }
+  /* the slot the drum machine calls "clap": a second tom, a hand drum, a china, or something small */
+  if(kd("clap")==="cym") s+=cymAt("clap", 470, 72, 110, 34, 22);
+  else if(kd("clap")==="drum") s+=drumPiece("clap", 430, 196, 92, 60, 40);
+  else { const p=take(); s+=small("clap", p[0], p[1]); }
+  /* "rim": the ride, the floor tom, or something small */
+  if(kd("rim")==="cym") s+=cymAt("rim", 830, 250, 140, 46, 36);
+  else if(kd("rim")==="drum") s+=drumPiece("rim", 850, 410, 125, 86, 58);
+  else { const p=take(); s+=small("rim", p[0], p[1]); }
+  /* "tom": on the kick, or the floor tom at the right */
+  if(padName(b,"tom")==="FLOOR" && kd("rim")!=="drum") s+=drumPiece("tom", 850, 410, 125, 86, 58);
+  else s+=drumPiece("tom", 600, 214, 108, 72, 44);
+  s+=drumPiece("snare", 305, 345, 122, 86, 38, "steel");
+  s+=piece("ch", cym(X(140), 466, R(122), 38, 26)+cym(X(140), 458, R(124), 38, 26)+lab(X(140), 480, "ch"), hot(X(140), 462, R(124), 42));
+  return s+(tall?"</g>":"")+`</svg>`;
+}
+/* AOG-PLAY-ZOOM-V1 (2026-10-04) — Jimmy: "It zooms in occasionally. Also, when I turn it it ZOOMS in too much." On an
+   iPhone a quick second tap on the same spot zooms, two hands playing at once read as a pinch, and Safari keeps (or adds)
+   a zoom when the phone turns. While the instrument fills the screen the page holds still at its own size: the viewport
+   is held at 1, pinches and double taps on the instrument are kept, and when it is turned back the page returns to its
+   own size (the hold lets go a moment later, so a reader can zoom the page again). */
+const ZOOM={base:null, t:0};
+function playZoomLock(on){
+  const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  if(ZOOM.base==null) ZOOM.base=m.getAttribute("content")||"width=device-width, initial-scale=1";
+  clearTimeout(ZOOM.t);
+  m.setAttribute("content", ZOOM.base+", maximum-scale=1, user-scalable=no");
+  if(!on) ZOOM.t=setTimeout(()=>m.setAttribute("content", ZOOM.base), 600);
+}
+(function(){
+  const playing=()=>document.body && document.body.classList.contains("aog-play");
+  const keep=(e)=>{ if(playing() && e.cancelable) e.preventDefault(); };
+  ["gesturestart","gesturechange","gestureend","dblclick"].forEach(ev=>document.addEventListener(ev, keep, {passive:false}));
+  /* two fingers moving on the instrument are two hands playing, not a pinch */
+  document.addEventListener("touchmove",(e)=>{ if(playing() && e.touches.length>1 && e.cancelable && !(e.target.closest && e.target.closest("select,.pv-drawer"))) e.preventDefault(); },{passive:false});
+  /* a quick second tap is a second note, not a zoom */
+  let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
+    if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
+})();
+
+/* ══ sound: the recordings, clean, through one gentle limiter (the recorder listens there) ══ */
+let ac=null, bus=null, lim=null;
+function ctx(){
+  if(!ac){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+    ac=new AC({latencyHint:"interactive"});
+    lim=ac.createDynamicsCompressor(); lim.threshold.value=-2; lim.knee.value=0; lim.ratio.value=20; lim.attack.value=0.002; lim.release.value=0.12;
+    bus=ac.createGain(); bus.gain.value=1; bus.connect(lim); lim.connect(ac.destination);
+  }
+  if(ac.state==="suspended") ac.resume();
+  return ac;
+}
+const OPEN=[];   /* the open hat's notes still ringing: a closed hat or the pedal stops them, as a real hi-hat does */
+function choke(at){   /* stops the open hats that have started by then (a beat's open hat still to come keeps ringing) */
+  for(let i=OPEN.length-1;i>=0;i--){ const o=OPEN[i]; if((o.at||0)>at+0.001) continue; OPEN.splice(i,1); try{ o.gain.gain.setTargetAtTime(0, at, 0.012); o.src.stop(at+0.1); }catch(e){} }
+}
+function light(id, ms){ document.querySelectorAll(`[data-pad="${id}"]`).forEach(el=>{ el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), ms||90); }); }
+function sound(b, id, when, accent, level){
+  const n=padName(b, id);
+  if(n==="HAT" || n==="PEDAL") choke(when);
+  const o=AOGDrumKit.playDirect(ac, bus, b, id, when, accent, level);
+  if(o){ o.at=when; if(n==="OPEN") OPEN.push(o); }
+  return o;
+}
+function hit(b, id, accent){
+  const c=ctx(); sound(b, id, c.currentTime, accent, 0.5); light(id);
+}
+/* ══ AOG-KIT-BEATS-V1 (2026-10-05) — Jimmy: "It would be nifty if the whole drum kits could play these pre loaded beats and
+   then have the tempo etc, available on screen to adjust". Every beat the drum machine knows (aog-beats.js) plays on the
+   kit that is picked here, with its speed, swing and volume on the screen. It starts only when Play is pressed and stops
+   when the page is left; each drum lights as it plays. Timing is the drum machine's: 16 steps a bar (12 for a beat in
+   3), swing waits on the second eighth note, looked ahead 0.12 s. Play along on top: a tap still sounds at full volume. ══ */
+const BT={on:false, timer:0, next:0, step:0, part:0, live:[]};
+const ACC={1:0, 2:2, 3:3};   /* the beat's 1 normal, 2 accent, 3 soft → the kit's own words for how hard */
+function beatsAll(){
+  const B=window.AOGBeats||{groups:{}, styles:[], beats:[], classroom:[]}, es=S.lang==="es", out=[];
+  const nm=x=>x[es?"es":"en"]||x.en;
+  out.push({label:t("gStyles"), items:(B.styles||[]).map(x=>({key:"s:"+x.id, name:nm(x), b:x}))});
+  Object.keys(B.groups||{}).forEach(g=>{ const items=(B.beats||[]).filter(x=>x.grp===g).map(x=>({key:"b:"+x.id, name:nm(x), b:x})); if(items.length) out.push({label:nm(B.groups[g]), items:items}); });
+  const ks=(window.AOGDrumKit && AOGDrumKit.starters)||[]; if(ks.length) out.push({label:t("gKit"), items:ks.map(x=>({key:"k:"+x.id, name:nm(x), b:x}))});
+  out.push({label:t("gClass"), items:(B.classroom||[]).map(x=>({key:"c:"+x.id, name:nm(x), b:x}))});
+  return out;
+}
+function beatAt(key){ for(const g of beatsAll()) for(const it of g.items) if(it.key===key) return it.b; return null; }
+function beatNow(){ return beatAt(S.beat) || beatAt("b:rockbasic"); }
+function beatOptions(){ return beatsAll().map(g=>`<optgroup label="${g.label}">`+g.items.map(it=>`<option value="${it.key}"${it.key===S.beat?" selected":""}>${it.name}</option>`).join("")+`</optgroup>`).join(""); }
+function beatParts(b){ return [{len:b.len||16, map:b.map||{}}].concat((b.parts||[]).map(p=>({len:p.len||16, map:p.map||{}}))); }
+function beatOwn(b){ S.bpm=Math.max(40, Math.min(220, Math.round(b.bpm||100))); S.swing=Math.max(0.5, Math.min(0.75, b.swing||0.5)); }
+function beatTick(){
+  if(!BT.on || !ac) return;
+  const b=beatNow(); if(!b){ beatStop(); return; }
+  const parts=beatParts(b);
+  while(BT.next < ac.currentTime+0.12){
+    const p=parts[BT.part%parts.length], step=BT.step, six=60/S.bpm/4;
+    const late=(step%4===2 || step%4===3), when=BT.next+(late ? (S.swing-0.5)*six*4 : 0);
+    const ids=Object.keys(p.map).sort((x,y)=>(padName(S.bank,x)==="OPEN")-(padName(S.bank,y)==="OPEN"));   /* a closed hat before an open one on the same step */
+    ids.forEach(id=>{ const v=(p.map[id]||[])[step]; if(!v) return;
+      const o=sound(S.bank, id, when, ACC[v]||0, 0.5*S.bvol); if(o) BT.live.push(o);
+      setTimeout(()=>{ if(BT.on) light(id, 80); }, Math.max(0, (when-ac.currentTime)*1000)); });
+    BT.step++; if(BT.step>=p.len){ BT.step=0; BT.part=(BT.part+1)%parts.length; }
+    BT.next+=six;
+  }
+  BT.live=BT.live.filter(o=>(o.at||0)>ac.currentTime-0.2);
+}
+function beatStart(){
+  const c=ctx(); if(BT.on) return;
+  BT.on=true; BT.step=0; BT.part=0; BT.next=c.currentTime+0.08; BT.live=[];
+  clearInterval(BT.timer); BT.timer=setInterval(beatTick, 25); beatTick(); beatPaint();
+}
+function beatStop(){
+  BT.on=false; clearInterval(BT.timer); BT.timer=0;
+  if(ac){ const now=ac.currentTime; BT.live.forEach(o=>{ if((o.at||0)>now){ try{ o.src.stop(); }catch(e){} } }); }   /* the notes not yet heard */
+  BT.live=[]; beatPaint();
+}
+function swingWord(){ const p=Math.round(S.swing*100); return p<=51 ? t("sw0") : p<=57 ? t("sw1") : p<=64 ? t("sw2") : t("sw3"); }
+function beatPaint(){
+  const b=beatNow(), on=BT.on;
+  $("beatPlay").textContent=t(on?"stopBeat":"play"); $("beatPlay").setAttribute("aria-pressed", on?"true":"false");
+  $("dkBeat").textContent=t(on?"stopS":"playS"); $("dkBeat").setAttribute("aria-pressed", on?"true":"false");
+  $("beatAbout").textContent = b && b.about ? (b.about[S.lang]||b.about.en) : "";
+  $("tempoR").value=S.bpm; $("tempoOut").textContent=t("bpm",{n:S.bpm}); $("dkTempo").textContent=t("bpmS",{n:S.bpm});
+  $("swingR").value=Math.round(S.swing*100); $("swingOut").textContent=Math.round(S.swing*100)+"% · "+swingWord();
+  $("beatVol").value=Math.round(S.bvol*100); $("volOut").textContent=Math.round(S.bvol*100)+"%";
+}
+function beatText(){
+  $("beatH").textContent=t("beatH"); $("beatIntro").textContent=t("beatIntro"); $("beatLab").textContent=t("beatLab");
+  $("tempoLab").textContent=t("tempo"); $("swingLab").textContent=t("swing"); $("volLab").textContent=t("vol"); $("beatReset").textContent=t("reset");
+  $("tempoDn").setAttribute("aria-label", t("slower")); $("tempoUp").setAttribute("aria-label", t("faster"));
+  $("dkSlow").setAttribute("aria-label", t("slower")); $("dkFast").setAttribute("aria-label", t("faster"));
+  const o=beatOptions(); $("beatSel").innerHTML=o; $("dkBeatSel").innerHTML=o; $("dkBeatSel").setAttribute("aria-label", t("beatLab"));
+  beatPaint();
+}
+function pickBeat(key){ if(!beatAt(key)) return; S.beat=key; beatOwn(beatAt(key)); save(); $("beatSel").value=key; $("dkBeatSel").value=key;
+  if(BT.on){ BT.step=0; BT.part=0; } beatPaint(); LES.mark("beat1"); lessonSong(); }
+function setTempo(n){ S.bpm=Math.max(40, Math.min(220, Math.round(n))); save(); beatPaint();
+  LES.mark("tempo1"); if(S.bpm>=140) LES.mark("tfast"); if(S.bpm<=70) LES.mark("tslow"); }
+/* how hard: the middle of a drum hard, the edge soft */
+function accentAt(g, e){
+  const sh=g.querySelector(".glow > *"); if(!sh) return 0; const r=sh.getBoundingClientRect(); if(!r.width) return 0;
+  const dx=(e.clientX-(r.left+r.width/2))/(r.width/2), dy=(e.clientY-(r.top+r.height/2))/(r.height/2), d=Math.sqrt(dx*dx+dy*dy);
+  return d<0.35 ? 2 : d>0.8 ? 3 : 0;
+}
+function ready(){ const st=AOGDrumKit.state(S.bank); return !!(st && st.state==="ready"); }
+/* ══ AOG-KIT-KEYS-V1 (Jimmy, 2026-10-09: "I want the keyboard to be able to be used for all instruments in ways that make
+   sense"). On a computer or an iPad with a keyboard, the home row plays the kit, left to right as the drums are marked:
+   A kick, S snare, D hi-hat, F open hat, G tom, H ride, J crash, K the eighth piece; 1 to 8 do the same. Shift plays
+   harder. Space starts and stops the beat to play along with. Every kit has the same eight pieces, so the keys never
+   move. The letters show on the drums once a key is pressed (or on a computer with a mouse). ══ */
+const KIT_KEYS={kick:"A", snare:"S", ch:"D", oh:"F", tom:"G", rim:"H", bell:"J", clap:"K"};
+const KEY_PIECE={}; Object.keys(KIT_KEYS).forEach((id,i)=>{ KEY_PIECE["Key"+KIT_KEYS[id]]=id; KEY_PIECE["Digit"+(i+1)]=id; });
+document.addEventListener("keydown",(e)=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const tg=e.target && e.target.tagName; if(tg==="INPUT"||tg==="SELECT"||tg==="TEXTAREA"||(e.target && e.target.isContentEditable)) return;
+  const id=KEY_PIECE[e.code];
+  if(id){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); if(e.repeat) return;
+    if(!ready()){ ctx(); return; }
+    const acc=e.shiftKey ? 2 : 0; hit(S.bank, id, acc); lessonTap(id, acc, PV.on); return; }
+  if(e.code==="Space"){ const b=e.target && e.target.closest && e.target.closest("button,a,summary,select"); if(b) return;
+    e.preventDefault(); if(!e.repeat){ const bp=$("beatPlay"); if(bp) bp.click(); } }
+});
+function bindKit(svg){
+  if(!svg) return;
+  svg.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll */
+  svg.addEventListener("pointerdown",(e)=>{
+    const g=e.target.closest && e.target.closest("[data-pad]"); if(!g || e.button>0) return;
+    e.preventDefault(); GUARD.down.add(e.pointerId); GUARD.last=Date.now();
+    if(!ready()){ ctx(); return; }
+    const id=g.getAttribute("data-pad"), acc=accentAt(g, e); hit(S.bank, id, acc); lessonTap(id, acc, svg.id==="sideKit");
+  });
+  const up=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
+  svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up);
+}
+/* ══ the kit's recordings: they come when the kit is picked ══ */
+let TICKER=0;
+function loadKit(b){
+  const line=$("kitLine");
+  const show=()=>{ const st=AOGDrumKit.state(b)||{state:"loading",got:0,total:0};
+    line.textContent = st.state==="ready" ? t("ready") : st.state==="failed" ? t("failed") : t("loading",{a:st.got||0, b:st.total||"…"});
+    document.querySelectorAll("svg.kit").forEach(s=>s.classList.toggle("waiting", st.state!=="ready")); };
+  clearInterval(TICKER); TICKER=setInterval(()=>{ show(); const st=AOGDrumKit.state(b); if(st && st.state!=="loading") clearInterval(TICKER); }, 300);
+  return AOGDrumKit.load(b, {}, {}, x=>x, null).then(()=>{ clearInterval(TICKER); show(); }).catch(()=>{ clearInterval(TICKER); show(); });
+}
+/* ══ the page ══ */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S.lang, what:{en:"the drum kit",es:"la batería"},
+  prefix:{en:"Drum kit",es:"Batería"}, file:{en:"drum-kit-take",es:"bateria-toma"}, shelf:"drumtake", tool:"drums",
+  ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
+/* ══ AOG-LESSONS-V1 (2026-10-05) — the Drum Kit's lessons: each step ticks itself as it happens (the words, and the
+   worksheets page drum-kit-lessons.html: _work/music/lessons_kit.py, built by make_lab_lessons.py). The hooks:
+     a tap on a drawn drum (bindKit → lessonTap): which piece by its recorded name (kick, snare, hi-hat, crash, ride,
+       toms, pedal, conga, clave, roll), how hard (accentAt: 2 the middle, 3 the edge), the order of the last taps (rock
+       beat by hand, fills, high-middle-floor toms, open hat then closed hat or pedal), and, while a beat plays, where in
+       the bar it landed (beatPos: on 1, on 2 and 4) — and on the whole-screen kit (sideKit);
+     pickKit → lessonKit (a kit picked, three kits, the pedal kits, Kit S); pickBeat, setTempo, Swing, Beat volume, ↺;
+     ▶/■ (the page's and the whole-screen bar's) → lessonBeat; ● Record a take (before the recorder sees the click) →
+     lessonTake; the whole screen opening (pvSync) and ✕ Close; the language switch → LES.paint().
+   The songs tick when their kit and their kind of beat are on together (lessonSong). Nothing here sounds or moves. ══ */
+const LES=window.AOGLessons && window.AOG_LESSON_DATA ? AOGLessons.attach({data:window.AOG_LESSON_DATA, mount:"lessons", lang:()=>S.lang}) : {mark(){}, marked(){ return false; }, count(){ return 0; }, counted(){ return 0; }, paint(){}};
+const LT={log:[], openAt:0, ride:0, along:0, bb:0, rec:0, song:{}};
+const TOMS={TOM:1, FLOOR:1, HITOM:1, MIDTOM:1, LOWTOM:1, TENOR:1};
+function beatKind(key){
+  const k=key||"", id=k.slice(2), b=k.charAt(0)==="b" ? ((window.AOGBeats||{}).beats||[]).find(x=>x.id===id) : null, g=b ? b.grp : "";
+  if(g==="rock" || k==="k:rock70s" || k==="k:bigroom") return "rock";
+  if(g==="funk" || k==="s:funk" || k==="k:funkghost") return "funk";
+  if(g==="jazz" || k==="k:bigband" || k==="k:bebop" || k==="k:brushballad") return "jazz";
+  if(g==="latin" || k==="s:latin" || k==="c:clave") return "latin";
+  if(k==="b:militarymarch" || k==="c:march" || k==="c:parade") return "march";
+  return "";
+}
+/* the song whose kit and kind of beat are both on now, while the beat plays */
+function songNow(){
+  if(!BT.on) return "";
+  const kind=beatKind(S.beat), K={rock:"JQST", funk:"W", jazz:"KV", latin:"H", march:"O"}[kind];
+  return K && K.indexOf(S.bank)>=0 ? kind : "";
+}
+function lessonSong(){ const s=songNow(); if(s) LES.mark({rock:"srock", funk:"sfunk", jazz:"sjazz", latin:"slatin", march:"smarch"}[s]); }
+/* where in the bar the beat is right now, in sixteenth notes (0 = the 1, 4 = the 2, 8 = the 3, 12 = the 4) */
+function beatPos(){
+  if(!BT.on || !ac) return null;
+  const b=beatNow(); if(!b) return null;
+  const parts=beatParts(b), p=parts[BT.part%parts.length], len=p.len||16, six=60/S.bpm/4;
+  let pos=BT.step-(BT.next-ac.currentTime)/six; while(pos<0) pos+=len;
+  return {pos:pos%len, len:len};
+}
+function onStep(want){ const q=beatPos(); if(!q || q.len!==16) return false;
+  return want.some(w=>{ const d=Math.abs(q.pos-w); return Math.min(d, q.len-d)<=1.1; }); }
+function lessonKit(b){
+  LES.mark("kit1");
+  if(!LES.counted("kit:"+b)){ LES.count("kit:"+b); if(LES.count("kits")>=3) LES.mark("kits3"); }
+  if("RUX".indexOf(b)>=0) LES.mark("kitped");
+  if(b==="S") LES.mark("kitS");
+  lessonSong();
+}
+function lessonBeat(on){
+  if(on){ beatStart(); LES.mark("play1"); if(S.swing>0.5) LES.mark("playsw"); LT.along=0; LT.bb=0; LT.song={};
+    if($("takeBtn").getAttribute("aria-pressed")==="true") LES.mark("stake"); lessonSong(); }
+  else { beatStop(); LES.mark("stop1"); }
+}
+function lessonTake(starting){
+  if(starting){ LES.mark("take1"); LT.rec=0; if(BT.on) LES.mark("stake"); }
+  else LES.mark("take2");
+}
+function lessonTap(id, acc, side){
+  const n=padName(S.bank, id), now=Date.now(), crash=n==="CRASH", tom=!!TOMS[n], hat=n==="HAT"||n==="CHICK";
+  LES.mark("tap1"); if(side) LES.mark("sidetap");
+  if(id==="kick") LES.mark("kick"); if(id==="snare") LES.mark("snare"); if(hat) LES.mark("hat");
+  if(acc===2) LES.mark("loud"); if(acc===3) LES.mark("soft"); if(id==="snare" && acc===3) LES.mark("ghost");
+  if(crash) LES.mark("crash"); if(n==="RIDE") LES.mark("ride"); if(tom) LES.mark("tom"); if(n==="PEDAL") LES.mark("pedal");
+  LT.ride = n==="RIDE" ? LT.ride+1 : 0; if(LT.ride>=8) LES.mark("ride8");
+  if(n==="OPEN") LES.mark("open");
+  if((hat || n==="PEDAL") && LT.openAt && now-LT.openAt<4000){ LES.mark(n==="PEDAL" ? "pchoke" : "choke"); LT.openAt=0; }
+  if(n==="OPEN") LT.openAt=now;
+  /* the last taps, for the patterns */
+  const L=LT.log; L.push({id:id, n:n, t:now}); while(L.length>24) L.shift();
+  const prev=L.length>1 ? L[L.length-2] : null;
+  if(prev && now-prev.t<90 && ((id==="kick" && (prev.n==="HAT"||prev.n==="CHICK")) || (hat && prev.id==="kick"))) LES.mark("hatkick");
+  { const ks=L.filter(x=>now-x.t<10000), kk=ks.filter(x=>x.id==="kick"||x.id==="snare");   /* kick, snare, kick, snare, hats between */
+    if(kk.length>=4){ const four=kk.slice(-4);
+      if(four.map(x=>x.id).join(",")==="kick,snare,kick,snare" && ks.filter(x=>x.t>=four[0].t && (x.n==="HAT"||x.n==="CHICK")).length>=3) LES.mark("rockhand"); } }
+  if(S.bank==="S" && L.length>=3 && L.slice(-3).map(x=>x.n).join(",")==="HITOM,MIDTOM,FLOOR") LES.mark("tom3");
+  if(L.length>=4 && L.slice(-4).every(x=>TOMS[x.n]) && now-L[L.length-4].t<3000) LES.mark("fill4");
+  if(crash && L.length>=4 && L.slice(-4,-1).every(x=>TOMS[x.n]) && now-L[L.length-2].t<1500) LES.mark("fillcrash");
+  /* with the beat */
+  if(BT.on){
+    if(++LT.along>=8) LES.mark("along8");
+    if(id==="snare" && onStep([4,12]) && ++LT.bb>=4) LES.mark("backbeat");
+    if(crash && onStep([0])) LES.mark("crash1");
+    const s=songNow(), c=k=>(LT.song[k]=(LT.song[k]||0)+1);
+    if(s==="rock"){ if(c("rock")>=16) LES.mark("srock16"); if(crash && onStep([0])) LES.mark("scrash"); }
+    if(s==="funk"){ if(c("funk")>=16) LES.mark("sfunk16"); if(id==="snare" && acc===3 && c("ghost")>=4) LES.mark("sghost"); }
+    if(s==="jazz"){ if(n==="RIDE" && c("ride")>=8) LES.mark("sride"); if(hat && onStep([4,12]) && c("chick")>=4) LES.mark("schick"); }
+    if(s==="latin"){ if((n==="CONGA"||n==="BONGO") && c("conga")>=8) LES.mark("sconga"); if(n==="CLAVE" && c("clave")>=8) LES.mark("sclave"); }
+    if(s==="march"){ if(n==="ROLL") LES.mark("sroll"); if(id==="snare" && c("snare")>=8) LES.mark("ssnare8"); }
+  }
+  if($("takeBtn").getAttribute("aria-pressed")==="true" && ++LT.rec>=16) LES.mark("staketap");
+}
+function navHtml(){
+  const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="kit"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
+}
+function kitOptions(){ return KITS().map(b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`).join(""); }
+function wide(){ const box=$("dkKitBox"); return box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8; }
+function paintKit(){
+  const tall=innerWidth<700 && innerHeight>innerWidth;
+  $("kitBox").innerHTML=drawKit({bank:S.bank, pre:"pk", cls:"kit", id:"pageKit", label:t("app"), tall:tall}); bindKit($("pageKit"));
+  if(PV.on){ $("dkKitBox").innerHTML=drawKit({bank:S.bank, pre:"sk", cls:"kit", id:"sideKit", label:t("region"), VW:Math.round(Math.max(1000, Math.min(1400, 560*wide())))}); bindKit($("sideKit")); }
+  const st=AOGDrumKit.state(S.bank); document.querySelectorAll("svg.kit").forEach(s=>s.classList.toggle("waiting", !(st && st.state==="ready")));
+}
+function paintText(){
+  document.documentElement.setAttribute("lang", S.lang);
+  $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
+  $("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
+  $("nav").innerHTML=navHtml();
+  $("kitLab").textContent=t("kitLab"); $("kitKeys").textContent=t("kitKeys"); $("kitSel").innerHTML=kitOptions(); $("dkKitSel").innerHTML=kitOptions(); $("dkKitSel").setAttribute("aria-label", t("kitLab"));
+  $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/drums/CREDITS.txt">${t("credits")}</a></p><p>${t("machine")} <a href="music-pads.html">${t("machineGo")}</a></p>`;
+  $("dkMore").textContent=t("menu"); $("dkClose").textContent=t("close"); $("dkHint").textContent=t("hint"); $("kitView").setAttribute("aria-label", t("region"));
+  const tab=pvTablet(); $("kpTurn").textContent=t(tab?"turnTablet":"turnPhone"); $("kpBig").textContent=t("big");
+  $("kpTurn").hidden=PV.on || !matchMedia("(pointer: coarse)").matches || (!tab && !matchMedia("(orientation: portrait)").matches);
+  REC.paint(); recPaint(); beatText(); paintKit();
+  const st=AOGDrumKit.state(S.bank); $("kitLine").textContent = st && st.state==="ready" ? t("ready") : st && st.state==="failed" ? t("failed") : t("loading",{a:(st&&st.got)||0, b:(st&&st.total)||"…"});
+}
+function pickKit(b){ if(KITS().indexOf(b)<0) return; S.bank=b; save(); $("kitSel").value=b; $("dkKitSel").value=b; paintKit(); loadKit(b).then(paintKit); lessonKit(b); }
+/* ══ sideways: the kit fills the screen; the bar keeps ☰ Menu and the kit (AOG-PLAY-GUARD-V1) ══ */
+const PV={on:false, closed:false, forced:false, mq:null};
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens
+   the whole-screen kit by itself; a tablet (its short side 600 or more) starts in the page and opens it with ⤢. */
+function pvTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+const GUARD={down:new Set(), last:0};
+function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
+function drawer(open){ $("dkDrawer").hidden=!open; $("dkMore").setAttribute("aria-expanded", open?"true":"false"); }
+function recPaint(){
+  const on=$("takeBtn").getAttribute("aria-pressed")==="true";
+  $("dkTake").textContent=$("takeBtn").textContent; $("dkTake").setAttribute("aria-pressed", on?"true":"false");
+  $("dkRec").hidden=!on; $("dkRec").textContent=t("stop")+" "+($("takeTime").textContent||"");
+}
+function pvSync(){
+  const want=PV.forced || !!(PV.mq && PV.mq.matches && !PV.closed && !pvTablet());
+  if(want!==PV.on){ PV.on=want; document.body.classList.toggle("aog-play", want); playZoomLock(want); if(!want){ drawer(false); $("dkKitBox").innerHTML=""; } if(want) LES.mark("big1"); }
+  paintText();
+}
+function init(){
+  $("kitSel").onchange=()=>{ pickKit($("kitSel").value); };
+  $("dkKitSel").onchange=()=>{ pickKit($("dkKitSel").value); setTimeout(()=>$("dkKitSel").blur(),0); };
+  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); LES.paint(); };
+  $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
+    h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
+  $("dkMore").onclick=()=>drawer($("dkDrawer").hidden);
+  $("dkClose").onclick=()=>{ drawer(false); PV.forced=false; PV.closed=true; LES.mark("sideclose"); pvSync(); };
+  $("beatSel").onchange=()=>pickBeat($("beatSel").value);
+  $("dkBeatSel").onchange=()=>{ pickBeat($("dkBeatSel").value); setTimeout(()=>$("dkBeatSel").blur(),0); };
+  $("beatPlay").onclick=()=>{ BT.on ? lessonBeat(false) : lessonBeat(true); };
+  $("dkBeat").onclick=()=>{ BT.on ? lessonBeat(false) : lessonBeat(true); };
+  $("tempoR").oninput=()=>setTempo(+$("tempoR").value);
+  $("tempoDn").onclick=()=>setTempo(S.bpm-1); $("tempoUp").onclick=()=>setTempo(S.bpm+1);
+  $("dkSlow").onclick=()=>setTempo(S.bpm-2); $("dkFast").onclick=()=>setTempo(S.bpm+2);
+  $("swingR").oninput=()=>{ S.swing=Math.max(0.5, Math.min(0.75, (+$("swingR").value)/100)); save(); beatPaint();
+    if(S.swing>=0.6) LES.mark("sw60"); if(S.swing<=0.5 && LES.marked("sw60")) LES.mark("sw50"); if(S.swing>0.5 && BT.on) LES.mark("playsw"); };
+  $("beatVol").oninput=()=>{ S.bvol=Math.max(0.1, Math.min(1, (+$("beatVol").value)/100)); save(); beatPaint(); LES.mark("vol1"); };
+  $("beatReset").onclick=()=>{ const b=beatNow(); if(b){ beatOwn(b); save(); beatPaint(); LES.mark("reset1"); } };
+  $("takeBtn").addEventListener("click",()=>{ lessonTake($("takeBtn").getAttribute("aria-pressed")!=="true"); }, true);   /* before the recorder: not pressed = it is about to start */
+  $("kpBig").onclick=()=>{ PV.forced=true; PV.closed=false; pvSync(); paintKit(); };
+  $("dkTake").onclick=()=>{ const was=$("takeBtn").getAttribute("aria-pressed")==="true"; $("takeBtn").click(); if(!was) drawer(false); };
+  $("dkRec").onclick=()=>$("takeBtn").click();
+  try{ const mo=new MutationObserver(recPaint); mo.observe($("takeBtn"), {childList:true, characterData:true, subtree:true, attributes:true}); mo.observe($("takeTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  document.querySelector("#kitView .dk-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button,select")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
+  document.querySelector("#kitView .dk-bar").addEventListener("pointerdown",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("select")) e.preventDefault(); },true);
+  if(window.matchMedia){ PV.mq=matchMedia("(orientation: landscape) and (pointer: coarse)"); const ch=()=>{ PV.closed=false; pvSync(); };
+    if(PV.mq.addEventListener) PV.mq.addEventListener("change", ch); else if(PV.mq.addListener) PV.mq.addListener(ch); }
+  let rt=0, lastTall=null; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const tl=innerWidth<700 && innerHeight>innerWidth; if(PV.on || tl!==lastTall){ lastTall=tl; paintKit(); } }, 150); });
+  /* wake Safari's audio on the first touch, every time it sleeps */
+  ["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(BT.on) beatStop(); if(ac) OPEN.splice(0); } });
+  window.addEventListener("pagehide",()=>{ if(BT.on) beatStop(); });
+  if(KITS().indexOf(S.bank)<0) S.bank=KITS()[0]||"P";
+  if(!beatAt(S.beat)){ S.beat="b:rockbasic"; const b=beatAt(S.beat); if(b) beatOwn(b); }
+  pvSync();
+  loadKit(S.bank).then(paintKit);
+}
+init();
