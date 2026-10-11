@@ -128,7 +128,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .face i b { position:absolute; inset:0; background:#000; opacity:0; pointer-events:none; }
 .face i span { position:relative; font:800 calc(var(--s,64px) * .34)/1 var(--sans); color:var(--lc,#14161a); pointer-events:none; }
 .stage.painting .face i { cursor:pointer; }
-.face i.flag { box-shadow:inset 0 0 0 calc(var(--s,64px) * .07) #111, inset 0 0 0 calc(var(--s,64px) * .11) #fff; }
+.face i.flag { box-shadow:inset 0 0 0 calc(var(--s,64px) * .085) #14161a; }
+/* the piece to watch: a still dark dot with a white rim in the middle of each of its stickers, clear on every color */
+.face i.flag::after { content:""; position:absolute; left:50%; top:50%; width:30%; height:30%; transform:translate(-50%,-50%); border-radius:50%;
+  background:#14161a; box-shadow:0 0 0 calc(var(--s,64px) * .04) #fff; }
 .fixbox { border:2px solid var(--steel); border-radius:12px; padding:.75rem .9rem; margin:.7rem 0; background:var(--steel-soft); }
 .fixbox h3 { margin:.1rem 0 .4rem; }
 .fixbox ul { margin:.3rem 0 .5rem; padding-left:1.2rem; }
@@ -162,6 +165,11 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .calm .aim { margin:.2rem 0 .6rem; color:var(--muted); font-size:1rem; }
 .calm .move-big { font:600 clamp(1.35rem, 1.2rem + 1vw, 1.75rem)/1.25 var(--display); margin:.2rem 0 .6rem; }
 .calm .move-big { margin-bottom:.9rem; }
+.progress { margin:.1rem 0 .6rem; font-weight:600; color:var(--ink); }
+.calm .note { background:var(--steel-soft); border-radius:10px; padding:.45rem .7rem; margin:.2rem 0 .6rem; }
+.calm .btn.goal { margin-top:.2rem; }
+.calm ol.last { margin:.2rem 0 .6rem; padding-left:1.3rem; }
+@media (max-width:600px){ .calm .btn-row .btn.big { flex:1 1 100%; } }
 .calm .move-big .once { display:block; font:700 .95rem/1.2 var(--sans); color:var(--steel); margin-bottom:.2rem; }
 .calm .move-big .tok { font:700 .95rem/1 var(--mono); color:var(--muted); background:var(--chip); border-radius:6px; padding:.2rem .4rem; vertical-align:middle; }
 .calm .chips .chip { font-size:.85rem; padding:.3rem .4rem; min-width:1.8rem; }
@@ -296,7 +304,15 @@ const T={
   ready:["I'm ready","Estoy listo"], gotIt:["You've got it. ✓","Ya lo tienes. ✓"],
   movesTried:["Sides turned so far:","Lados girados hasta ahora:"],
   nextMove:["Next move","Siguiente movimiento"], doPart:["Turn the rest of this part for me","Gira por mí el resto de esta parte"],
-  didIt:["I did it","Ya lo hice"], moveOf:["Move {i} of {n}","Movimiento {i} de {n}"], onceMore:["One more time:","Una vez más:"], turnIt:["Turn it","Girarlo"], tellMore:["Tell me more","Cuéntame más"],
+  didIt:["I did it","Ya lo hice"],
+  didNext:["Done. Next: {w}.","Hecho. Sigue: {w}."], offPath:["Your cube changed, so the guide now starts from where it is.","Tu cubo cambió, así que la guía empieza desde donde está."],
+  goalOn:["Show me the goal","Muéstrame la meta"], goalOff:["Back to my cube","Volver a mi cubo"], whyH:["Why:","Por qué:"], lastH:["Your last moves:","Tus últimos movimientos:"],
+  repaint:["My cube looks different","Mi cubo se ve distinto"],
+  pWE:["{n} of 4 {w} edges in place","{n} de 4 aristas {w} en su lugar"], pWC:["{n} of 4 {w} corners in place","{n} de 4 esquinas {w} en su lugar"],
+  pMid:["{n} of 4 middle edges in place","{n} de 4 aristas del medio en su lugar"], pYE:["{n} of 4 {y} edges facing up","{n} de 4 aristas {y} hacia arriba"],
+  pYC:["{n} of 4 {y} corners facing up","{n} de 4 esquinas {y} hacia arriba"], pDone:["{n} of 4 {y} edges in place","{n} de 4 aristas {y} en su lugar"],
+  nextPractice:["Next, try one on your own. The steps in Learn are there if you want a reminder.","Ahora prueba uno tú solo. Los pasos de Aprende están ahí si quieres recordar."],
+  ownTry:["Try one on your own","Prueba uno tú solo"], moveOf:["Move {i} of {n}","Movimiento {i} de {n}"], onceMore:["One more time:","Una vez más:"], turnIt:["Turn it","Girarlo"], tellMore:["Tell me more","Cuéntame más"],
   startH:["Let's solve your cube","Vamos a resolver tu cubo"], startLine:["One move at a time. Take your time.","Un movimiento a la vez. Tómate tu tiempo."],
   useMine:["Use my real cube","Usar mi cubo de verdad"], practiceMixed:["Practice on a mixed cube","Practicar con un cubo mezclado"],
   stepOf:["Step {i} of 7 · {name}","Paso {i} de 7 · {name}"], startOver:["Start over","Empezar de nuevo"], newMix:["Mix a new one","Mezclar otro"],
@@ -373,6 +389,30 @@ const AIM={
   aperm:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."], aperm0:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."],
   lineUp:["Line the corners up with their sides.","Alinea las esquinas con sus lados."],
   uperm:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."], uperm0:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."]
+};
+/* why the moves of each part work, in one plain sentence */
+const WHY={
+  holdWhite:["Every step starts from the same hold, so the moves always mean the same thing.","Cada paso empieza igual, así los movimientos siempre significan lo mismo."],
+  daisy:["The daisy gathers the white edges on top, where they are easy to drop into place.","La margarita junta las aristas blancas arriba, donde es fácil bajarlas a su lugar."],
+  crossDown:["Over its own color, two turns of that side carry the edge straight down to its home.","Sobre su propio color, dos giros de ese lado bajan la arista directo a su lugar."],
+  cornerAbove:["A corner goes in from right above its home, so first it waits there.","Una esquina entra desde justo encima de su lugar, así que primero espera ahí."],
+  cornerIn:["These four moves lift the corner and set it back, a little turned each time, until white faces down.","Estos cuatro movimientos levantan la esquina y la vuelven a poner, un poco girada cada vez, hasta que el blanco queda abajo."],
+  cornerOut:["A corner stuck in the wrong home has to come up to the top before it can go where it belongs.","Una esquina en el lugar equivocado tiene que subir antes de ir a donde le toca."],
+  midLine:["Lined up over its own color, the edge only has one short trip down into the middle.","Alineada sobre su color, a la arista le queda un viaje corto hacia el medio."],
+  midRight:["The moves open a gap in the middle on the right, slide the edge in and close the gap.","Los movimientos abren un hueco a la derecha del medio, meten la arista y cierran el hueco."],
+  midLeft:["The moves open a gap in the middle on the left, slide the edge in and close the gap.","Los movimientos abren un hueco a la izquierda del medio, meten la arista y cierran el hueco."],
+  midOut:["An edge stuck in the wrong middle spot comes up first, then goes in the right way.","Una arista en el lugar equivocado del medio sube primero y luego entra bien."],
+  ycross_dot:["These six moves flip top edges to yellow without touching the layers below.","Estos seis movimientos voltean aristas de arriba a amarillo sin tocar las capas de abajo."],
+  ycross_ell:["From the L, the same six moves finish more of the yellow plus sign.","Desde la L, los mismos seis movimientos completan más del signo más amarillo."],
+  ycross_line:["From the line, the same six moves finish the yellow plus sign.","Desde la línea, los mismos seis movimientos terminan el signo más amarillo."],
+  sune0:["These moves twist three top corners at once and leave the rest of the cube as it was.","Estos movimientos giran tres esquinas de arriba a la vez y dejan el resto del cubo igual."],
+  sune1:["With the fish at the front-left, the moves turn the other three corners yellow-up.","Con el pez al frente a la izquierda, los movimientos ponen las otras tres esquinas con el amarillo arriba."],
+  sune2:["The moves twist the corners so that next time there is a fish to work with.","Los movimientos giran las esquinas para que la próxima vez haya un pez."],
+  aperm:["With the headlights at the back, the moves swap the front corners into their homes.","Con los faros atrás, los movimientos cambian las esquinas del frente a su lugar."],
+  aperm0:["Doing the moves once makes a pair of headlights to work from.","Hacer los movimientos una vez forma un par de faros para trabajar."],
+  lineUp:["The top layer turns freely now, so it just needs lining up.","La capa de arriba gira libre ahora, solo hay que alinearla."],
+  uperm:["With the finished side at the back, the moves cycle the last three edges home.","Con el lado terminado atrás, los movimientos llevan las últimas tres aristas a su lugar."],
+  uperm0:["Doing the moves once finishes one side to work from.","Hacer los movimientos una vez termina un lado para trabajar."]
 };
 const NOTES={
   holdWhite:["Turn the whole cube so the white center is on the bottom.","Gira el cubo entero para que el centro blanco quede abajo."],
@@ -563,7 +603,8 @@ function render(anim){
   viewEl.style.transform=viewCSS();
   if(anim && anim.viewOnly){ const svg=$("arrow"); if(svg && svg.innerHTML) svg.innerHTML=""; return; }   /* looking around: the view turns, nothing else */
   const R=anim ? C.rot(anim.a, anim.th) : null;
-  cube.P.forEach((p,i) => {
+  const SHOW=goalView || cube;                                             /* "Show me the goal" draws the finished step */
+  SHOW.P.forEach((p,i) => {
     if(anim && !anim.set.has(i)) return;                                  /* a turn: only the pieces that move */
     let M=p.M; if(anim && anim.set.has(i)) M=C.mulM(R, M);
     const pos=C.mulV(M, p.home), m=[];
@@ -576,9 +617,9 @@ function render(anim){
       F.sh.style.opacity=painting ? "0" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
       if(anim) continue;
       const wf=C.faceOf(n.map(Math.round));
-      const pk=cube.pos(p).join(","), k2=pk+"|"+wf;
+      const pk=SHOW.pos(p).join(","), k2=pk+"|"+wf;
       const col=!painting ? disp(p.cols[f]) : (peek && doctor) ? (doctor.raw[k2]||"?") : (S.paint[k2] || (p.kind===1 ? S.scheme[wf] : "?"));
-      const flag=painting && p.kind>1 && flags.some(q => q.join(",")===pk);
+      const flag=painting ? (p.kind>1 && flags.some(q => q.join(",")===pk)) : (!goalView && i===markIdx);   /* the piece to watch */
       if(F.flag!==flag){ F.st.classList.toggle("flag", flag); F.flag=flag; }
       if(F.col!==col){ F.st.style.setProperty("--c", COL[col]); F.st.style.setProperty("--lc", INK[col]); F.col=col; }
       if(F.lab){ const txt=(S.letters && !painting) ? wf : ""; if(F.lab.textContent!==txt) F.lab.textContent=txt; }
@@ -677,7 +718,9 @@ function after(job){
   const nx=guide && guide.flat[guide.i];
   if(nx && nx.tok===tok){ guide.i++; guide.key=cube.toJSON(); }
   else if(nx && nx.tok===C.parse(tok).base+"2" && Math.abs(C.parse(tok).q)===1){ nx.tok=tok; nx.half=true; guide.key=cube.toJSON(); }   /* half of a "twice": one more the same way */
-  else guide=null;
+  else { if(guide && job.src!=="guide" && job.src!=="undo") offPath=true; guide=null; }
+  if(job.src==="guide") offPath=false;
+  goalView=null;
   if(runner){ runner.left--; if(runner.left<=0) runner=null; }
   /* AOG-CUBE-TIME-V1 (2026-10-11) — Jimmy: "look at the seconds it took" (it said 128:05). The clock now counts only
      time spent turning: a pause (a break, a chat, the page left open overnight) adds at most 30 seconds, the
@@ -686,8 +729,8 @@ function after(job){
   if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
   if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
-  $("live").textContent=t("did",{m:tok});
   save(); panel(); bar();
+  $("live").textContent = arrowTok ? t("didNext",{w:words(arrowTok)}) : t("did",{m:tok});
 }
 
 /* ── the teacher's plan for this cube ── */
@@ -706,19 +749,53 @@ function guideNow(){ const g=getGuide(), f=g.flat[g.i]; if(!f) return null; cons
 
 /* ── the words beside the cube ── */
 function chips(moves, at){ return `<div class="chips" aria-label="${esc(moves.join(" "))}">`+moves.map((m,i)=>`<span class="chip ${i<at?"done":i===at?"next":""}">${esc(m)}</span>`).join("")+`</div>`; }
+/* AOG-CUBE-GUIDE-PLUS-V1 (2026-10-11) — from a review Jimmy passed on: mark the piece the step is about (a still
+   outline, never a pulse), say why the moves work, show progress that names what it counts, show the finished step on
+   request, list the last moves in words, say when the cube left the guided path, Enter / Backspace on a keyboard, and
+   a quiet finish that hands over to solving alone. No sounds and nothing that moves on its own (CLAUDE.md). */
+let markIdx=-1, goalView=null, offPath=false;
+function pieceOf(p){
+  const v=p.vars||{}, W="W";
+  const cols = ["daisy","crossDown"].includes(p.note) ? [W,v.c]
+    : ["cornerAbove","cornerIn","cornerOut"].includes(p.note) ? [W,v.a,v.b]
+    : ["midLine","midRight","midLeft","midOut"].includes(p.note) ? [v.a,v.b] : null;
+  if(!cols || cols.some(x=>!x)) return -1;
+  const want=cols.slice().sort().join("");
+  return cube.P.findIndex(q => Object.values(q.cols).sort().join("")===want);
+}
+function stageProgress(key){
+  const has=(p,col)=>Object.values(p.cols).includes(col), up=cube.faceOfColor("Y");
+  const yUp=p => cube.stickers(p)[up]==="Y";
+  const T={cross:[p=>p.kind===2&&has(p,"W"), p=>cube.pieceOk(p), "pWE"], corners:[p=>p.kind===3&&has(p,"W"), p=>cube.pieceOk(p), "pWC"],
+    middle:[p=>p.kind===2&&!has(p,"W")&&!has(p,"Y"), p=>cube.pieceOk(p), "pMid"], ycross:[p=>p.kind===2&&has(p,"Y"), yUp, "pYE"],
+    yface:[p=>p.kind===3&&has(p,"Y"), yUp, "pYC"], done:[p=>p.kind===2&&has(p,"Y"), p=>cube.pieceOk(p), "pDone"]}[key];
+  if(!T) return "";
+  const list=cube.P.filter(T[0]), n=list.filter(T[1]).length;
+  return t(T[2],{n, w:cnd("W"), y:cnd("Y")});
+}
+function goalOf(){
+  const n=guideNow(); if(!n) return null;
+  const c=cube.clone(); n.g.flat.slice(n.g.i).filter(x => x.si===n.f.si).forEach(x => c.move(x.tok));
+  return c;
+}
 function partCard(onlyStage){
   const n=guideNow(); if(!n) return "";
   const stIdx=C.STAGES.indexOf(n.st.key);
   if(onlyStage!==undefined && n.st.key!=="hold" && stIdx!==onlyStage) return "";
   const at=n.p.moves.length-n.left, tok=n.f.tok;
-  arrowTok=tok;
-  return `<div class="calm"><p class="aim">${esc(aim(n.p))}</p>
+  arrowTok=tok; markIdx=pieceOf(n.p);
+  const last=S.hist.slice(-3).map(words);
+  return `<div class="calm">${offPath?`<p class="note">${esc(t("offPath"))}</p>`:""}<p class="aim">${esc(aim(n.p))}</p>
     <p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>
     <!-- Jimmy: "Move 8 of 8 to me still makes no sense." The card says only the goal and the move. -->
     <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
-    <details class="more"><summary>${esc(t("tellMore"))}</summary><p>${esc(note(n.p))}</p>
-    <button type="button" class="btn" data-act="gpart">${esc(t("doPart"))}</button></details></div>`;
+    <button type="button" class="btn goal" data-act="goal" aria-pressed="${!!goalView}">${esc(t(goalView?"goalOff":"goalOn"))}</button>
+    <details class="more"><summary>${esc(t("tellMore"))}</summary>
+    <p><strong>${esc(t("whyH"))}</strong> ${esc(tx(WHY[n.p.note])||"")}</p><p>${esc(note(n.p))}</p>
+    ${last.length?`<p><strong>${esc(t("lastH"))}</strong></p><ol class="last">${last.map(w=>`<li>${esc(w)}</li>`).join("")}</ol>`:""}
+    <div class="btn-row"><button type="button" class="btn" data-act="gpart">${esc(t("doPart"))}</button>
+    ${S.real?`<button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button>`:""}</div></details></div>`;
 }
 function algBox(a, k){
   const moves=C.split(a.s), at=(algAt.k===k)?algAt.i:-1;
@@ -765,13 +842,15 @@ function solveHtml(){
   const at=C.stageOf(cube);
   if(cube.solved()){
     let h=`<h2>${esc(t("startH"))}</h2><p class="muted">${esc(t("startLine"))}</p>`;
-    if(S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:S.result.moves}))}</p>`;
+    if(S.result){ h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:S.result.moves}))}</p><p>${esc(t("nextPractice"))}</p>`;
+      h+=`<div class="btn-row start"><button type="button" class="btn btn-good big" data-act="own">${esc(t("ownTry"))}</button></div>`; }
     return h+`<div class="btn-row start"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
   }
   const n=guideNow(), key=n ? n.st.key : "done", si=Math.max(0, C.STAGES.indexOf(key));
   const dots=C.STAGES.map((k,i)=>`<span class="dot ${i<at?"done":i===si?"now":""}"></span>`).join("");
   return `<p class="kicker">${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
     <div class="dots" role="img" aria-label="${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}">${dots}</div>
+    ${(()=>{ const pr=stageProgress(key==="hold"?"cross":key); return pr?`<p class="progress">${esc(pr)}</p>`:""; })()}
     ${partCard()}
     <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button></div>`;
 }
@@ -808,12 +887,12 @@ function clock(ms){
 
 let arrowTok=null;
 function panel(){
-  const el=$("panel"); arrowTok=null;
+  const el=$("panel"); arrowTok=null; markIdx=-1;
   el.innerHTML = S.view==="solve" ? solveHtml() : S.view==="mine" ? mineHtml() : learnHtml();
   el.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
   el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
   el.querySelectorAll("[data-brush]").forEach(b => b.onclick=()=>{ S.brush=b.getAttribute("data-brush"); save(); panel(); });
-  drawArrow();
+  if(!busy) render(); else drawArrow();   /* the piece to watch and the arrow follow the card */
 }
 function playAlg(k, how){
   const [li,ai]=k.split(":").map(Number), moves=C.split(L[li].algs[ai].s);
@@ -833,6 +912,9 @@ function act(a){
   else if(a==="hint"){ S.showHint=true; panel(); }
   else if(a==="gnext"){ const n=guideNow(); if(n && !busy && !queue.length) enqueue([n.f.tok],"guide"); }
   else if(a==="gpart"){ const n=guideNow(); if(n && !busy && !queue.length){ const rest=n.g.flat.slice(n.g.i, n.g.i+n.left).map(x=>x.tok); runner={left:rest.length}; enqueue(rest,"guide"); panel(); } }
+  else if(a==="goal"){ goalView = goalView ? null : goalOf(); render(); panel(); }
+  else if(a==="repaint"){ act("copyMine"); location.hash="mine"; }
+  else if(a==="own"){ S.lesson=9; S.showHint=false; save(); location.hash="learn"; act("mix"); }
   else if(a==="stop"){ stopQueue(); panel(); }
   else if(a==="undo"){ if(!busy && !queue.length && S.hist.length) enqueue([C.invert(S.hist[S.hist.length-1])],"undo"); }
   else if(a==="clearMine"){ S.paint={}; mineMsg=null; doctor=null; flags=[]; save(); render(); panel(); }
@@ -1014,6 +1096,9 @@ function onMove(e){
   const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
   if(!drag.mode){
     if(Math.hypot(dx,dy)<9) return;
+    /* a quick hand may start the next drag while the last turn is still gliding: wait for it, then follow the finger */
+    if(busy || queue.length) return;
+    if(!drag.arrow && arrowGeo){ const na=nearArrow(drag.sx0, drag.sy0); if(na && na.d<Math.max(30, size*.6)) drag.arrow=na; }
     const A=drag.arrow, along=A ? (dx*A.ux+dy*A.uy)/Math.hypot(dx,dy) : 0;
     const RW=arrowGeo && arrowGeo.round, inWheel=RW && Math.hypot(drag.sx0-RW.cx, drag.sy0-RW.cy)<RW.r*1.6;
     if(inWheel && !busy && !queue.length){
@@ -1098,6 +1183,9 @@ function paintAt(fc){
 document.addEventListener("keydown", e => {
   if(painting || e.altKey || /input|select|textarea/i.test((e.target.tagName||""))) return;
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="z"){ e.preventDefault(); act("undo"); return; }
+  if(S.view==="solve" && !/^(BUTTON|A|SUMMARY)$/i.test(e.target.tagName||"")){
+    if(e.key==="Enter"){ e.preventDefault(); act("gnext"); return; }
+    if(e.key==="Backspace"){ e.preventDefault(); act("undo"); return; } }
   if(e.ctrlKey||e.metaKey) return;
   const k=e.key.toLowerCase(), map={u:"U",d:"D",l:"L",r:"R",f:"F",b:"B",x:"x",y:"y",z:"z",m:"M",e:"E",s:"S"};
   if(!map[k] || busy || queue.length) return;
