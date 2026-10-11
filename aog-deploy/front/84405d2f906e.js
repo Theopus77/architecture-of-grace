@@ -123,6 +123,22 @@ const STR={
   trackFile:{en:"track",es:"pista"},
   outVoice:{en:"Your voice on its own",es:"Tu voz sola"}, outVoiceMaking:{en:"Making your voice's file…",es:"Haciendo el archivo de tu voz…"},
   outVoiceReady:{en:"Your voice on its own",es:"Tu voz sola"}, voiceFile:{en:"voice",es:"voz"},
+  /* AOG-DESK-LUFS-V1: the loudness meter, and how loud the file came out */
+  luH:{en:"Loudness · LUFS",es:"Volumen percibido · LUFS"},
+  luNow:{en:"Now",es:"Ahora"}, luSt:{en:"Last 3 s",es:"Últimos 3 s"}, luSong:{en:"Whole song",es:"Toda la canción"}, luPk:{en:"Song peak",es:"Pico de la canción"},
+  luWhat:{en:"LUFS is how loud music sounds to the ear. Streaming services play songs at −14. The whole song is measured when you make the mix or send it out.",
+    es:"LUFS mide qué tan fuerte suena la música al oído. Los servicios de streaming ponen las canciones a −14. Toda la canción se mide cuando haces la mezcla o la compartes."},
+  outLoud:{en:"Loudness {l} LUFS · peak {p}",es:"Volumen percibido {l} LUFS · pico {p}"},
+  outLoudPeak:{en:"That is under −14, so its loudest moment stays under −1 dB.",es:"Queda por debajo de −14, para que su momento más fuerte no pase de −1 dB."},
+  outLoudQuiet:{en:"Your song is very quiet, so it went up 12 dB, no more. To make it louder, turn your tracks up.",es:"Tu canción suena muy baja, así que subió 12 dB, no más. Para que suene más fuerte, sube tus pistas."},
+  /* AOG-DESK-BITS-V1 */
+  bitsLab:{en:"File quality",es:"Calidad del archivo"},
+  bitsOpt16:{en:"16-bit · smaller file",es:"16 bits · archivo más pequeño"}, bitsOpt24:{en:"24-bit · studio quality",es:"24 bits · calidad de estudio"},
+  bits16:{en:"16-bit",es:"16 bits"}, bits24:{en:"24-bit",es:"24 bits"},
+  /* AOG-DESK-CHOPS-OUT-V1 */
+  outChops:{en:"Your chops (.zip)",es:"Tus cortes (.zip)"}, outChopsMaking:{en:"Making your chops' files…",es:"Haciendo los archivos de tus cortes…"},
+  outChopsReady:{en:"Your chops: {n} files in one .zip",es:"Tus cortes: {n} archivos en un .zip"},
+  chopFile:{en:"chop",es:"corte"}, chopsFile:{en:"chops",es:"cortes"},
   /* AOG-STUDIO-VOICE-V1 (STUDIO-HANDOFF §10): track 8 is your voice; the microphone opens only when you press Record */
   voiceH:{en:"Your voice",es:"Tu voz"},
   voiceTrack:{en:"Voice",es:"Voz"},
@@ -357,7 +373,8 @@ function cleanSong(r){
   if(Array.isArray(r.tracks)) r.tracks.slice(0,NT).forEach((x,i)=>{ if(!x||typeof x!=="object") return; const d=s.tracks[i];
     d.clip=cleanClip(x.clip); d.vol=num(x.vol,0,100,80); d.pan=num(x.pan,-100,100,0); d.mute=!!x.mute; d.solo=!!x.solo;
     d.low=num(x.low,-12,12,0); d.mid=num(x.mid,-12,12,0); d.high=num(x.high,-12,12,0);
-    d.punch=num(x.punch,0,100,0); d.room=num(x.room,0,100,0); d.echo=num(x.echo,0,100,0); });
+    d.punch=num(x.punch,0,100,0); d.room=num(x.room,0,100,0); d.echo=num(x.echo,0,100,0);
+    const ln=cleanLines(x.lines); if(ln) d.lines=ln; if(AUTO_KEYS.indexOf(x.lane)>=0) d.lane=x.lane; });   /* AOG-DESK-AUTO-V1 */
   if(r.master && typeof r.master==="object"){ const m=r.master, d=s.master;
     d.low=num(m.low,-12,12,0); d.mid=num(m.mid,-12,12,0); d.high=num(m.high,-12,12,0); d.glue=num(m.glue,0,100,30); d.vol=num(m.vol,0,100,80); }
   s.sel=Math.round(num(r.sel,0,NT-1,0)); s.startBar=Math.round(num(r.startBar,1,MAX_BARS,1));
@@ -548,6 +565,90 @@ function roomIR(c){
   return ir;
 }
 function echoTime(){ return Math.min(1.9, 0.75*60/songBpm()); }          /* a dotted eighth, in time with the song */
+/* ══ AOG-DESK-AUTO-V1 (2026-10-11) — Jimmy's 8: "Draw changes over time (automation). Volume, pan, echo or filter changes
+   drawn on the track, for fades, swells and a filter that opens into the chorus."
+   Each track may hold a drawn line for its Volume, Side (pan), Room, Echo and a Filter (a low-pass, only on the track while
+   it has points: with none the track's sound never passes through it). A line is points [beat of the song, value in the
+   knob's own units], straight between them, held before the first and after the last. While a line has points it decides,
+   and its knob rests ("Drawn on the track"); with none the knob decides, as before. The line belongs to the track's
+   timeline, not to a recording: a piece moved, cut or put on in its place leaves it where it is.
+   The sound: schedule() lays each line on the strip's own AudioParams (setValueAtTime, then straight ramps; where the
+   knob's curve is not straight, as volume and the sends are (v/80)², the line is laid in short straight steps), so the
+   speakers (from any bar, looping, after a change while playing) and every bounce (the mix, Send it out, the stems, My
+   Track behind a recording) hear the same line. ══ */
+const AUTO_KEYS=["vol","pan","room","echo","filt"], AUTO_MAX=256;
+const FILT_LO=200, FILT_Q=2;      /* the Filter: 200 Hz at the bottom of its lane, open at the top; a gentle resonance (2 dB) */
+function filtHz(v, sr){ return Math.min(20000, 0.45*(sr||MIX_SR), FILT_LO*Math.pow(100, Math.max(0, Math.min(100, v))/100)); }
+const AUTO={
+  vol:{lo:0, hi:100, step:1, def:x=>x.vol, map:v=>volGain(v)},
+  pan:{lo:-100, hi:100, step:5, def:x=>x.pan, map:v=>v/100, lin:true},
+  room:{lo:0, hi:100, step:1, def:x=>x.room, map:v=>sendGain(v)},
+  echo:{lo:0, hi:100, step:1, def:x=>x.echo, map:v=>0.9*sendGain(v)},
+  filt:{lo:0, hi:100, step:2, def:()=>100, map:(v,sr)=>filtHz(v, sr)}
+};
+function cleanLines(o){
+  if(!o || typeof o!=="object") return null;
+  const out={}; let any=false;
+  AUTO_KEYS.forEach(k=>{ const a=o[k]; if(!Array.isArray(a)) return; const A=AUTO[k], L=[];
+    a.slice(0, AUTO_MAX).forEach(p=>{ if(!Array.isArray(p) || p.length<2) return; const b=+p[0], v=+p[1]; if(!isFinite(b) || !isFinite(v)) return;
+      L.push([Math.round(Math.max(0, Math.min(MAX_BARS*4, b))*1e6)/1e6, Math.round(Math.max(A.lo, Math.min(A.hi, v)))]); });
+    L.sort((p,q)=>p[0]-q[0]);
+    if(L.length){ out[k]=L; any=true; } });
+  return any ? out : null;
+}
+function lineOf(i, k){ const x=SONG.tracks[i], L=x && x.lines && x.lines[k]; return L && L.length ? L : null; }
+/* the line's value at a beat of the song; where two points share a beat, the later one holds from there on */
+function drawnAt(L, beat){
+  if(beat<L[0][0]) return L[0][1];
+  let k=0; while(k+1<L.length && L[k+1][0]<=beat) k++;
+  if(k>=L.length-1) return L[k][1];
+  const a=L[k], b=L[k+1]; return a[1]+(b[1]-a[1])*(beat-a[0])/(b[0]-a[0]);
+}
+/* the line between song times `from` and `to` as [time, value] corners: straight between them on the AudioParam */
+function autoCorners(L, from, to, lin){
+  const sb=songBeat(), ev=[[from, drawnAt(L, from/sb)]];
+  const add=(t,v)=>{ if(t>ev[ev.length-1][0]-1e-9) ev.push([t,v]); };
+  for(let k=0;k+1<L.length;k++){
+    const t0=L[k][0]*sb, t1=L[k+1][0]*sb, v0=L[k][1], v1=L[k+1][1];
+    if(t1<=from || t0>=to) continue;
+    if(t1-t0<1e-9){ add(t0, v0); add(t0, v1); continue; }                 /* a jump: two points on the same beat */
+    const s0=Math.max(t0, from), s1=Math.min(t1, to), at=t=>v0+(v1-v0)*(t-t0)/(t1-t0);
+    if(s0>from+1e-9) add(s0, v0);
+    const n=lin ? 1 : Math.max(1, Math.min(64, Math.ceil(Math.abs(at(s1)-at(s0))/2)));
+    for(let m=1;m<=n;m++){ const t=s0+(s1-s0)*m/n; add(t, at(t)); }
+  }
+  if(ev[ev.length-1][0]<to-1e-9) ev.push([to, drawnAt(L, to/sb)]);
+  return ev;
+}
+function autoParam(T, k){ return k==="vol" ? T.av.gain : k==="pan" ? (T.pan ? T.pan.pan : null) : k==="room" ? T.room.gain : k==="echo" ? T.echo.gain : T.filt.frequency; }
+/* lay one line on its AudioParam: song time `from` sounds at context time `at` */
+function autoLay(E, i, k, from, to, at){
+  const L=lineOf(i, k), p=L && autoParam(E.tr[i], k); if(!p || !(to>from)) return;
+  const A=AUTO[k], sr=E.c.sampleRate, ev=autoCorners(L, from, to, !!A.lin);
+  let last=-1;
+  ev.forEach(([tt, v], n)=>{ const w=at+(tt-from), y=A.map(v, sr);
+    if(n===0 || w-last<1e-9) p.setValueAtTime(y, w); else p.linearRampToValueAtTime(y, w); last=w; });
+}
+function autoSched(E, from, to, at){ for(let i=0;i<NT;i++){ if(!SONG.tracks[i].lines) continue; AUTO_KEYS.forEach(k=>autoLay(E, i, k, from, to, at)); } }
+/* what is laid ahead is taken back from `when` on, holding the value it has then (a new plan follows) */
+function autoHoldP(p, when){
+  try{ if(p.cancelAndHoldAtTime){ p.cancelAndHoldAtTime(when); return; } }catch(e){}
+  try{ const v=p.value; p.cancelScheduledValues(when); p.setValueAtTime(v, when); }catch(e){}
+}
+function autoHold(E, when, only){
+  for(let i=0;i<NT;i++){ if(only!=null && i!==only) continue;
+    AUTO_KEYS.forEach(k=>{ if(!lineOf(i,k)) return; const p=autoParam(E.tr[i], k); if(p) autoHoldP(p, when); }); }
+}
+/* the Filter is on the track only while it has points; without them the sound goes straight on, untouched */
+function autoRoute(E, i){
+  const T=E.tr[i], on=!!lineOf(i, "filt");
+  if(T.fOn===on) return;
+  try{ T.trim.disconnect(); }catch(e){}
+  if(on){ T.trim.connect(T.filt); T.filt.connect(T.av); } else { try{ T.filt.disconnect(); }catch(e){} T.trim.connect(T.av); }
+  T.fOn=on;
+}
+/* the fader: as its knob says, or as drawn (the line is on its own gain, after the Filter) */
+function faderBase(i){ return lineOf(i, "vol") ? 1 : volGain(SONG.tracks[i].vol); }
 function makeEngine(c, live){
   const E={c:c, live:!!live, tr:[]};
   const G=v=>{ const g=c.createGain(); g.gain.value=v; return g; };
@@ -571,8 +672,9 @@ function makeEngine(c, live){
   E.out.connect(c.destination);
   for(let i=0;i<NT;i++){
     const T={in:G(1), low:BQ("lowshelf",120), mid:BQ("peaking",1000,0.8), high:BQ("highshelf",7000), comp:DC(0.012,0.15), trim:G(1), fader:G(0),
-      pan:c.createStereoPanner ? c.createStereoPanner() : null, room:G(0), echo:G(0)};
-    T.in.connect(T.low); T.low.connect(T.mid); T.mid.connect(T.high); T.high.connect(T.comp); T.comp.connect(T.trim); T.trim.connect(T.fader);
+      pan:c.createStereoPanner ? c.createStereoPanner() : null, room:G(0), echo:G(0),
+      filt:BQ("lowpass",filtHz(100, c.sampleRate),FILT_Q), av:G(1), fOn:false};   /* AOG-DESK-AUTO-V1: the drawn Filter (on the track only while it has points) and the drawn volume */
+    T.in.connect(T.low); T.low.connect(T.mid); T.mid.connect(T.high); T.high.connect(T.comp); T.comp.connect(T.trim); T.trim.connect(T.av); T.av.connect(T.fader);
     if(T.pan){ T.fader.connect(T.pan); T.pan.connect(E.sum); } else T.fader.connect(E.sum);
     T.fader.connect(T.room); T.room.connect(E.revIn); T.fader.connect(T.echo); T.echo.connect(E.dlyIn);
     E.tr.push(T);
@@ -588,11 +690,15 @@ function setP(E, p, v){
 }
 function applyTrack(E, i){
   const T=E.tr[i], x=SONG.tracks[i], pu=punchSet(x);
-  setP(E, T.fader.gain, volGain(x.vol)*(audible(i)?1:0));
-  if(T.pan) setP(E, T.pan.pan, x.pan/100);
+  /* AOG-DESK-AUTO-V1: a knob whose line has points rests; schedule() lays the line instead */
+  setP(E, T.fader.gain, faderBase(i)*(audible(i)?1:0));
+  if(!lineOf(i,"vol")) setP(E, T.av.gain, 1);
+  if(T.pan && !lineOf(i,"pan")) setP(E, T.pan.pan, x.pan/100);
   setP(E, T.low.gain, x.low); setP(E, T.mid.gain, x.mid); setP(E, T.high.gain, x.high);
   setP(E, T.comp.threshold, pu.thr); setP(E, T.comp.ratio, pu.ratio); setP(E, T.trim.gain, pu.trim);
-  setP(E, T.room.gain, sendGain(x.room)); setP(E, T.echo.gain, 0.9*sendGain(x.echo));
+  if(!lineOf(i,"room")) setP(E, T.room.gain, sendGain(x.room));
+  if(!lineOf(i,"echo")) setP(E, T.echo.gain, 0.9*sendGain(x.echo));
+  autoRoute(E, i);
 }
 function applyMaster(E){
   const m=SONG.master, gl=glueSet(m);
@@ -663,6 +769,7 @@ function xfGain(W, t, out){
 }
 function schedule(E, from, to, at){
   const c=E.c, out=[];
+  autoSched(E, from, to, at);   /* AOG-DESK-AUTO-V1: the drawn lines, on the same clock as the pieces */
   SONG.tracks.forEach((x,i)=>{
     const cl=x.clip; if(!cl) return; const P=playBuf(cl); if(!P) return;
     const sp=spd(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
@@ -782,6 +889,7 @@ function live(){
       a0.fftSize=1024; a1.fftSize=1024; LIVE.out.connect(sp); sp.connect(a0,0); sp.connect(a1,1); a0.connect(z); a1.connect(z); z.connect(ac.destination);
       AN={a:[a0,a1], d:new Float32Array(1024)};
     }catch(e){ AN=null; }
+    try{ LU.tap=lufsTap(ac, LIVE.out); }catch(e){ LU.tap=null; }   /* AOG-DESK-LUFS-V1: the loudness meter listens there too */
   }
   if(ac.state!=="running"){ try{ ac.resume(); }catch(e){} }
   return ac;
@@ -810,6 +918,7 @@ function play(){
     const from=(SONG.startBar-1)*bs, end=songEnd();
     PLAY.wins=[{at:T, from:Math.min(from,end), to:end}];
   }
+  autoHold(LIVE, c.currentTime);   /* AOG-DESK-AUTO-V1: whatever was laid for the last play is taken back first */
   PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
   PLAY.on=true;
   pump();
@@ -851,6 +960,7 @@ function stop(){
   if(!PLAY.on) return;
   const now=ac.currentTime;
   silence(PLAY.srcs, now);
+  autoHold(LIVE, now);   /* AOG-DESK-AUTO-V1 */
   PLAY.clicks.forEach(o=>{ try{ o.stop(now); }catch(e){} });
   end();
 }
@@ -868,6 +978,7 @@ function reschedule(){
   const now=ac.currentTime, pos=songPos(now);
   if(pos==null) return;           /* still counting in: the new song is picked up when it starts */
   silence(PLAY.srcs, now);
+  autoHold(LIVE, now);   /* AOG-DESK-AUTO-V1: the lines are laid again from here, with the new song */
   const bs=barSec(), at=now+0.05; PLAY.beat=bs/4; PLAY.bar=bs;
   if(PLAY.loop){
     PLAY.A=(SONG.loopFrom-1)*bs; PLAY.B=SONG.loopTo*bs;
@@ -878,6 +989,15 @@ function reschedule(){
   }
   PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
   pump();
+}
+/* AOG-DESK-AUTO-V1: a line drawn while the song plays: that track's lines are laid again from a moment from now, over
+   the windows still to play (the pieces play on untouched; a line cleared went back to its knob in applyTrack) */
+function autoLive(i){
+  if(!PLAY.on || !LIVE) return;
+  const now=ac.currentTime+0.01;
+  autoHold(LIVE, now, i);
+  PLAY.wins.forEach(w=>{ const end=w.at+(w.to-w.from); if(end<=now) return;
+    const a=Math.max(w.at, now); AUTO_KEYS.forEach(k=>autoLay(LIVE, i, k, w.from+(a-w.at), w.to, a)); });
 }
 /* while it plays: where we are (once a beat), and the meter */
 function frame(){
@@ -976,8 +1096,9 @@ function vuPaint(levels, peak){
   const v = levels ? levels : (PLAY.on && peak>-90 ? [peak, peak] : null);
   vuDraw($("vuL"), v ? v[0] : null, "L"); vuDraw($("vuR"), v ? v[1] : null, "R");
 }
-function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); }
+function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); lufsReset(); }
 function meterTick(){
+  lufsTick();   /* AOG-DESK-LUFS-V1 */
   if(!AN) return;
   const now=performance.now(), dt=MET.last ? Math.min(0.1,(now-MET.last)/1000) : 0; MET.last=now;
   const lv=[0,1].map(ch=>{ const a=AN.a[ch]; a.getFloatTimeDomainData(AN.d); let pk=0; for(let i=0;i<AN.d.length;i++){ const v=AN.d[i]<0?-AN.d[i]:AN.d[i]; if(v>pk) pk=v; } return pk>0 ? 20*Math.log10(pk) : -90; });
@@ -989,7 +1110,134 @@ function meterTick(){
   MET.lvl=MET.lvl.map((o,ch)=>Math.max(lv[ch], o-24*dt));
   drawMeter(MET.lvl, PLAY.peak);
 }
-function meterStill(){ drawMeter(null, PLAY.peak); }
+function meterStill(){ drawMeter(null, PLAY.peak); lufsRest(); }
+
+/* ══ AOG-DESK-LUFS-V1 (Jimmy, 2026-10-11: "Release-ready output. Add a loudness meter and the loudness streaming
+   services use (−14 LUFS)") — loudness as ITU-R BS.1770-4 measures it (the meter of EBU R128 and of the streaming
+   services): the sound through the K-weighting (a high shelf near 1.7 kHz, then a high-pass near 38 Hz), its power
+   summed over left and right, L = −0.691 + 10·log10(power), in LUFS.
+   - While the song plays, on the desk's master (after the safety ceiling, what you hear): Now (momentary, the last
+     400 ms) and Last 3 s (short-term). The numbers change twice a second (once a second on a touch screen or with
+     "reduce motion"), never flash, and rest (—) when the song stops, like the needles. The VU needles stay as they are.
+   - After a bounce (Make the mix, Send it out): the whole song (integrated: 400 ms blocks every 100 ms, gated at
+     −70 LUFS, then 10 LU under the level of what is left) and its true peak (4× oversampled). ══ */
+const LUFS_TARGET=-14, TP_CEIL=-1, LU_NP=32768;
+/* the two K-weighting stages for any sample rate (the formulas of libebur128; at 48 kHz they are BS.1770's own numbers) */
+function kCoef(sr){
+  let K=Math.tan(Math.PI*1681.974450955533/sr), Q=0.7071752369554196, a0=1+K/Q+K*K;
+  const Vh=Math.pow(10, 3.999843853973347/20), Vb=Math.pow(Vh, 0.4996667741545416);
+  const s1={b:[(Vh+Vb*K/Q+K*K)/a0, 2*(K*K-Vh)/a0, (Vh-Vb*K/Q+K*K)/a0], a:[1, 2*(K*K-1)/a0, (1-K/Q+K*K)/a0]};
+  K=Math.tan(Math.PI*38.13547087602444/sr); Q=0.5003270373238773; a0=1+K/Q+K*K;
+  return [s1, {b:[1,-2,1], a:[1, 2*(K*K-1)/a0, (1-K/Q+K*K)/a0]}];
+}
+function luOf(z){ return z>0 ? -0.691+10*Math.log10(z) : -Infinity; }
+/* the K-weighted power of every 100 ms, left and right summed */
+function kPow(chs, sr){
+  const C=kCoef(sr), step=Math.round(sr*0.1), nb=Math.floor(chs[0].length/step), E=new Float64Array(nb);
+  const b0=C[0].b[0], b1=C[0].b[1], b2=C[0].b[2], a1=C[0].a[1], a2=C[0].a[2], c1=C[1].a[1], c2=C[1].a[2];
+  chs.forEach(x=>{
+    let x1=0, x2=0, y1=0, y2=0, z1=0, z2=0;
+    for(let j=0;j<nb;j++){
+      let s=0; const e=(j+1)*step;
+      for(let i=j*step;i<e;i++){ const x0=x[i], y0=b0*x0+b1*x1+b2*x2-a1*y1-a2*y2; x2=x1; x1=x0;
+        const z0=y0-2*y1+y2-c1*z1-c2*z2; y2=y1; y1=y0; z2=z1; z1=z0; s+=z0*z0; }
+      E[j]+=s;
+    }
+  });
+  return {E:E, step:step};
+}
+/* integrated loudness: 400 ms blocks (four 100 ms steps), the absolute gate at −70 LUFS, then the relative gate 10 LU
+   under the loudness of the blocks that passed it */
+function lufsInt(P){
+  const E=P.E, zs=[];
+  for(let j=0;j+3<E.length;j++) zs.push((E[j]+E[j+1]+E[j+2]+E[j+3])/(4*P.step));
+  const a=zs.filter(z=>luOf(z)>-70); if(!a.length) return -Infinity;
+  const rel=luOf(a.reduce((s,z)=>s+z,0)/a.length)-10, b=a.filter(z=>luOf(z)>rel);
+  return b.length ? luOf(b.reduce((s,z)=>s+z,0)/b.length) : -Infinity;
+}
+/* true peak: the samples and, between them, three more points of the sound (4× oversampled; a 49-tap windowed sinc,
+   Kaiser β 6, flat to 0.002 dB up to a quarter of the sample rate). A stretch whose samples cannot reach the loudest
+   point found so far is skipped, so this stays quick. */
+const TP_PH=(()=>{ const N=49, M=24, I0=v=>{ let s=1, q=1; for(let k=1;k<30;k++){ q*=(v/2/k)*(v/2/k); s+=q; } return s; }, h=[];
+  for(let n=0;n<N;n++){ const x=(n-M)/4, r=(n-M)/M; h.push((x===0 ? 1 : Math.sin(Math.PI*x)/(Math.PI*x))*I0(6*Math.sqrt(Math.max(0, 1-r*r)))/I0(6)); }
+  const out=[]; for(let p=1;p<4;p++){ const k=[]; for(let n=p;n<N;n+=4) k.push(h[n]); const s=k.reduce((a,b)=>a+b,0); out.push(Float64Array.from(k.map(v=>v/s))); }
+  return out; })();
+const TP_SUM=Math.max(...TP_PH.map(k=>k.reduce((a,b)=>a+Math.abs(b),0)));
+function truePeak(chs){
+  let tp=0; const B=256, P=TP_PH[0], Q=TP_PH[1], R=TP_PH[2], K=P.length;   /* twelve taps a point, written out: twice as quick */
+  const p0=P[0],p1=P[1],p2=P[2],p3=P[3],p4=P[4],p5=P[5],p6=P[6],p7=P[7],p8=P[8],p9=P[9],p10=P[10],p11=P[11];
+  const q0=Q[0],q1=Q[1],q2=Q[2],q3=Q[3],q4=Q[4],q5=Q[5],q6=Q[6],q7=Q[7],q8=Q[8],q9=Q[9],q10=Q[10],q11=Q[11];
+  const r0=R[0],r1=R[1],r2=R[2],r3=R[3],r4=R[4],r5=R[5],r6=R[6],r7=R[7],r8=R[8],r9=R[9],r10=R[10],r11=R[11];
+  chs.forEach(x=>{ for(let i=0;i<x.length;i++){ const a=x[i]<0?-x[i]:x[i]; if(a>tp) tp=a; } });
+  chs.forEach(x=>{
+    const n=x.length, nb=Math.ceil(n/B), bm=new Float32Array(nb);
+    for(let b=0;b<nb;b++){ let m=0; const e=Math.min(n,(b+1)*B); for(let i=b*B;i<e;i++){ const a=x[i]<0?-x[i]:x[i]; if(a>m) m=a; } bm[b]=m; }
+    for(let j=0;j<Math.min(n,K-1);j++) for(const h of TP_PH){ let s=0; for(let k=0;k<=j;k++) s+=h[k]*x[j-k]; if(s<0) s=-s; if(s>tp) tp=s; }
+    for(let b=0;b<nb;b++){
+      if(Math.max(bm[b], b>0 ? bm[b-1] : 0)*TP_SUM<=tp) continue;
+      const e=Math.min(n,(b+1)*B);
+      for(let j=Math.max(K-1, b*B);j<e;j++){
+        const a0=x[j],a1=x[j-1],a2=x[j-2],a3=x[j-3],a4=x[j-4],a5=x[j-5],a6=x[j-6],a7=x[j-7],a8=x[j-8],a9=x[j-9],a10=x[j-10],a11=x[j-11];
+        let s=p0*a0+p1*a1+p2*a2+p3*a3+p4*a4+p5*a5+p6*a6+p7*a7+p8*a8+p9*a9+p10*a10+p11*a11; if(s<0) s=-s; if(s>tp) tp=s;
+        s=q0*a0+q1*a1+q2*a2+q3*a3+q4*a4+q5*a5+q6*a6+q7*a7+q8*a8+q9*a9+q10*a10+q11*a11; if(s<0) s=-s; if(s>tp) tp=s;
+        s=r0*a0+r1*a1+r2*a2+r3*a3+r4*a4+r5*a5+r6*a6+r7*a7+r8*a8+r9*a9+r10*a10+r11*a11; if(s<0) s=-s; if(s>tp) tp=s;
+      }
+    }
+  });
+  return tp;
+}
+/* a whole song's loudness (LUFS) and true peak (as a gain, and in dB) */
+function loudOf(Lc, Rc, sr){
+  const lufs=lufsInt(kPow([Lc, Rc], sr||MIX_SR)), tp=truePeak([Lc, Rc]);
+  return {lufs:lufs, tp:tp, tpDb:tp>0 ? 20*Math.log10(tp) : -Infinity};
+}
+/* the live meter: the master through the same two stages (IIR filters with these very numbers), into two listeners
+   that hold the last 32768 samples. Each reading (about every 100 ms) takes the samples that came since the one
+   before, so the 3 s window has no gaps and nothing counted twice; Now is the last 400 ms read straight. */
+function lufsTap(c, node){
+  const C=kCoef(c.sampleRate), T={c:c, sr:c.sampleRate, an:[], d:new Float32Array(LU_NP), last:c.currentTime, ch:[], tot:0, played:0, mom:-Infinity, st:-Infinity};
+  let k1, k2;
+  try{ k1=c.createIIRFilter(C[0].b, C[0].a); k2=c.createIIRFilter(C[1].b, C[1].a); }
+  catch(e){ k1=c.createBiquadFilter(); k1.type="highshelf"; k1.frequency.value=1681.97; k1.gain.value=4;
+    k2=c.createBiquadFilter(); k2.type="highpass"; k2.frequency.value=38.135; k2.Q.value=20*Math.log10(0.5003); }
+  const sp=c.createChannelSplitter(2), z=c.createGain(); z.gain.value=0;
+  node.connect(k1); k1.connect(k2); k2.connect(sp);
+  for(let ch=0;ch<2;ch++){ const a=c.createAnalyser(); a.fftSize=LU_NP; sp.connect(a, ch); a.connect(z); T.an.push(a); }
+  z.connect(c.destination);
+  return T;
+}
+function lufsStart(T){ T.ch=[]; T.tot=0; T.played=0; T.mom=-Infinity; T.st=-Infinity; T.last=T.c.currentTime; }
+function lufsStep(T){
+  const now=T.c.currentTime, n=Math.min(LU_NP, Math.round((now-T.last)*T.sr)), win=Math.min(LU_NP, Math.round(0.4*T.sr));
+  T.last=now; if(n<=0) return T;
+  let e=0, m=0;
+  T.an.forEach(a=>{ a.getFloatTimeDomainData(T.d); const D=T.d, N=D.length; for(let i=N-n;i<N;i++) e+=D[i]*D[i]; for(let i=N-win;i<N;i++) m+=D[i]*D[i]; });
+  T.ch.push({e:e, n:n}); T.tot+=n; T.played+=n;
+  while(T.ch.length>1 && T.tot>3*T.sr){ const o=T.ch.shift(); T.tot-=o.n; }
+  T.mom=T.played>=win ? luOf(m/win) : -Infinity;
+  T.st=T.tot>=2.85*T.sr ? luOf(T.ch.reduce((s,o)=>s+o.e,0)/T.tot) : -Infinity;
+  return T;
+}
+const LU={tap:null, song:null, read:0, shown:0};
+function lufsReset(){ if(LU.tap) lufsStart(LU.tap); LU.read=0; LU.shown=0; lufsPaint(); }
+function lufsTick(){
+  const T=LU.tap; if(!T || !PLAY.on) return;
+  if(T.c.currentTime<PLAY.T0){ T.last=T.c.currentTime; return; }   /* the count-in is not the song */
+  const now=performance.now();
+  if(now-LU.read<95) return;
+  LU.read=now; lufsStep(T);
+  if(now-LU.shown>=(stillMeter() ? 1000 : 500)){ LU.shown=now; lufsPaint(); }
+}
+function lufsRest(){ if(LU.tap){ LU.tap.mom=-Infinity; LU.tap.st=-Infinity; } lufsPaint(); }
+function luWords(v){ return isFinite(v) && v>-70 ? (v<-0.05 ? "−" : "")+Math.abs(v).toFixed(1) : "—"; }
+function dbWords(v){ return isFinite(v) && v>-90 ? (v<-0.05 ? "−" : v>0.05 ? "+" : "")+Math.abs(v).toFixed(1)+" dB" : "—"; }
+function lufsPaint(){
+  const T=LU.tap, s=LU.song, set=(id, v)=>{ const el=$(id); if(el && el.textContent!==v) el.textContent=v; };
+  set("luNow", luWords(T && PLAY.on ? T.mom : -Infinity)); set("luSt", luWords(T && PLAY.on ? T.st : -Infinity));
+  set("luSong", luWords(s ? s.lufs : -Infinity)); set("luPk", s ? dbWords(s.tpDb) : "—");
+}
+/* the whole song, measured after a bounce, on the meter */
+function songLoud(Lc, Rc){ const r=loudOf(Lc, Rc, MIX_SR); LU.song=r; lufsPaint(); return r; }
 
 /* ══ the shelves the instruments fill ══ */
 const SHELF={};
@@ -1196,9 +1444,10 @@ async function restore(){
 
 /* ══ Make the mix: the same engine in an OfflineAudioContext, then a 16-bit .wav ══ */
 let MIX=null;
-function wavBlob(Lc, Rc, sr, g){ return new Blob([wavBuf(Lc, Rc, sr, g)],{type:"audio/wav"}); }
-function wavBuf(Lc, Rc, sr, g){
+function wavBlob(Lc, Rc, sr, g, bits){ return new Blob([wavBuf(Lc, Rc, sr, g, bits)],{type:"audio/wav"}); }
+function wavBuf(Lc, Rc, sr, g, bits){
   g=g>0 ? g : 1;
+  if(bits===16 || bits===24) return wavPcm(Lc, Rc, sr, g, bits);   /* AOG-DESK-BITS-V1: the file you chose */
   const n=Lc.length, ab=new ArrayBuffer(44+n*4), v=new DataView(ab);
   const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
   str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
@@ -1206,6 +1455,35 @@ function wavBuf(Lc, Rc, sr, g){
   let o=44;
   for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,Lc[i]*g)), r=Math.max(-1,Math.min(1,Rc[i]*g));
     v.setInt16(o, l<0?l*0x8000:l*0x7fff, true); v.setInt16(o+2, r<0?r*0x8000:r*0x7fff, true); o+=4; }
+  return ab;
+}
+/* ══ AOG-DESK-BITS-V1 (Jimmy, 2026-10-11: "Add a 24-bit choice") — the files you make (Send it out, the song, each
+   track, your voice, your chops, and Make the mix) are 16-bit (the default: a smaller file, what CDs and most
+   streaming use) or 24-bit (studio quality). The choice is kept on this device. A 16-bit file gets TPDF dither (two
+   random steps of one least step, added before rounding), so quiet endings fade smoothly instead of turning grainy;
+   a 24-bit file needs none. Plain PCM in the header (format 1): 24 bits are 3 bytes a sample, 6 a stereo frame. ══ */
+const BITS_KEY="aog.studio.bits.v1";
+let BITS=16; try{ if(localStorage.getItem(BITS_KEY)==="24") BITS=24; }catch(e){}
+function setBits(b){ BITS=b===24 ? 24 : 16; try{ localStorage.setItem(BITS_KEY, String(BITS)); }catch(e){} }
+function wavPcm(Lc, Rc, sr, g, bits){
+  const by=bits/8, ba=2*by, n=Lc.length, ab=new ArrayBuffer(44+n*ba), v=new DataView(ab), u=new Uint8Array(ab);
+  const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4,36+n*ba,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*ba,true); v.setUint16(32,ba,true); v.setUint16(34,bits,true); str(36,"data"); v.setUint32(40,n*ba,true);
+  let o=44;
+  if(bits===16){
+    /* one step is 1/32768, as every reader decodes it, so the file comes back exactly; full scale is held at the top.
+       The dither's random steps are seeded from the sound itself, so the same song always makes the very same file
+       (studio/carry: the iPhone's mix is the computer's, byte for byte) and two tracks never share one noise. */
+    const f=new DataView(new ArrayBuffer(4)), bitsOf=x=>{ f.setFloat32(0, x||0); return f.getUint32(0); };
+    let sd=(n*2654435761 ^ bitsOf(Lc[n>>1]) ^ bitsOf(Rc[n>>2])*7 ^ bitsOf(Lc[n>>3])*13)>>>0;
+    const rnd=()=>{ sd=(sd+0x6D2B79F5)>>>0; let z=sd; z=Math.imul(z^(z>>>15), z|1); z^=z+Math.imul(z^(z>>>7), z|61); return ((z^(z>>>14))>>>0)/4294967296; };
+    for(let i=0;i<n;i++) for(let c=0;c<2;c++){ const x=(c ? Rc[i] : Lc[i])*g, y=Math.round((x>1 ? 1 : x<-1 ? -1 : x)*32768+rnd()-rnd());
+      v.setInt16(o, y>32767 ? 32767 : y<-32768 ? -32768 : y, true); o+=2; }
+  } else {
+    for(let i=0;i<n;i++) for(let c=0;c<2;c++){ const x=(c ? Rc[i] : Lc[i])*g; let y=Math.round((x>1 ? 1 : x<-1 ? -1 : x)*8388608);
+      if(y>8388607) y=8388607; u[o]=y&255; u[o+1]=(y>>8)&255; u[o+2]=(y>>16)&255; o+=3; }
+  }
   return ab;
 }
 function render(oc){ return new Promise((ok,no)=>{ oc.oncomplete=e=>ok(e.renderedBuffer); const p=oc.startRendering(); if(p && p.then) p.then(ok,no); }); }
@@ -1237,7 +1515,8 @@ async function makeMix(){
   btn.disabled=true; line.textContent=t("mixing");
   try{
     const {Lc, Rc, frames}=await renderSong(null);
-    const blob=wavBlob(Lc, Rc, MIX_SR);
+    const blob=wavBlob(Lc, Rc, MIX_SR, 1, BITS);   /* AOG-DESK-BITS-V1 */
+    try{ songLoud(Lc, Rc); }catch(e){}            /* AOG-DESK-LUFS-V1: the whole song on the loudness meter */
     setMix({wav:blob, sec:frames/MIX_SR, bars:songBars(), bpm:songBpm(), body:songEndMusic(), at:Date.now()});
     try{ await sput("mix", {wav:blob, sec:MIX.sec, bars:MIX.bars, bpm:MIX.bpm, body:MIX.body, at:MIX.at}); }catch(e){}
     const out=leftOut();
@@ -1253,7 +1532,7 @@ async function renderSong(only){
   const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat=await chainLatency();
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const oc=new OC(2, frames+lat, MIX_SR), E=makeEngine(oc, false);
-  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? volGain(SONG.tracks[j].vol) : 0; });
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain */
   schedule(E, 0, end, 0);
   const buf=await render(oc);
   return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
@@ -1277,7 +1556,7 @@ async function newSong(){
   const ids=clips().map(x=>x.c.id);
   SONG=blankSong(); save();
   ids.forEach(id=>{ BUF.delete(id); sdel(id); });
-  STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
+  STRETCH.clear(); SJOB.clear(); UNDO.length=0; REDO.length=0; S.edMsg="";
   sdel("mix"); setMix(null);
   $("newAsk").hidden=true;
   $("mixLine").textContent=t("newDone"); $("sendLine").textContent=""; $("recLine").textContent="";
@@ -1348,7 +1627,7 @@ async function applySong(r){
     await sput(x.clip.id, {wav:new Blob([ab], {type:"audio/wav"})}); }
   const keep=new Set(r.song.tracks.filter(x=>x.clip).map(x=>x.clip.id));
   old.forEach(id=>{ if(!keep.has(id)) sdel(id); });
-  BUF.clear(); STRETCH.clear(); SJOB.clear(); UNDO.length=0; S.edMsg="";
+  BUF.clear(); STRETCH.clear(); SJOB.clear(); UNDO.length=0; REDO.length=0; S.edMsg="";
   sdel("mix"); setMix(null);
   SONG=r.song; save();
   $("mixLine").textContent=""; $("sendLine").textContent=""; $("recLine").textContent="";
@@ -1735,20 +2014,32 @@ function paintVoice(){
 /* ══════════════════════════════════════════════════════════════════════════
    AOG-STUDIO-SENDOUT-V1 (2026-10-09) — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a
    file". Send it out makes the song through the whole desk, as it is now, and hands over one stereo .wav:
-   - loud enough to hear and never clipped: its loudest moment is set to −1 dB (by at most 12 dB up or down);
+   - release-ready (AOG-DESK-LUFS-V1, 2026-10-11): as loud as the streaming services play songs, −14 LUFS for the whole
+     song, and its true peak never past −1 dB (−1 dBTP). If reaching −14 would pass that ceiling, it is turned up only
+     as far as the ceiling allows (nothing is squashed: no limiter is added, the sound stays as you mixed it), and it
+     says plainly how loud it came out. Never more than 12 dB up: a very quiet song is a sign to turn the tracks up, and
+     12 dB more would also bring up its hiss. Turning down has no limit (it can only make the peak safer);
    - a silent song is told plainly, and nothing is made;
    - Share… opens the device's share sheet (Messages, Mail, AirDrop, Files) where there is one; Download everywhere.
      Share is its own tap: Safari only opens the sheet straight from a tap, not seconds later;
    - Each track on its own: one .zip, a .wav for every track heard in the mix, at the very level of the file sent,
-     so they line up and add back to the song. Only once the song's file is made (the file is never held up by them).
-   The voice take and the chops from your own records join this when they exist (§10, §9). Nothing is uploaded.
+     so they line up and add back to the song. Only once the song's file is made (the file is never held up by them);
+   - your voice on its own (§10), and your chops (§9, AOG-DESK-CHOPS-OUT-V1, below);
+   - 16-bit or 24-bit, as chosen (AOG-DESK-BITS-V1). Nothing is uploaded.
    ══════════════════════════════════════════════════════════════════════════ */
-const OUT={song:null, stems:null, voice:null, busy:false};
+const OUT={song:null, stems:null, voice:null, chops:null, chopSrc:null, busy:false};
 function slugOf(x){ return String(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40); }
 function songSlug(){ return slugOf(songTitle()) || t("file"); }
 function peakOf(Lc, Rc){ let pk=0; for(let i=0;i<Lc.length;i++){ const a=Lc[i]<0?-Lc[i]:Lc[i], b=Rc[i]<0?-Rc[i]:Rc[i]; if(a>pk) pk=a; if(b>pk) pk=b; } return pk; }
-/* the gain that puts the loudest moment at −1 dB, never more than 12 dB either way */
-function outGain(pk){ if(!(pk>0)) return 1; return Math.max(dbGain(-12), Math.min(dbGain(12), dbGain(-1)/pk)); }
+/* AOG-DESK-LUFS-V1: the gain for the file. −14 LUFS, unless the true peak would pass −1 dBTP (then the ceiling, less
+   four 16-bit steps so the dither cannot tip it over), and never more than 12 dB up. why: "aim" reached −14, "peak"
+   stopped at the ceiling, "quiet" stopped at 12 dB up. A song too quiet to measure is set by its peak alone. */
+function outLevel(ld){
+  const up=dbGain(12), gP=ld.tp>0 ? (dbGain(TP_CEIL)-4/32768)/ld.tp : up;
+  const gL=isFinite(ld.lufs) ? dbGain(LUFS_TARGET-ld.lufs) : Infinity, g=Math.min(gL, gP, up);
+  const why=g===up && gL>up ? "quiet" : g===gP && gL>gP ? "peak" : "aim";
+  return {g:g, why:why, lufs:ld.lufs+20*Math.log10(g), tpDb:ld.tpDb+20*Math.log10(g)};
+}
 function shareable(f){ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } }
 function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
 function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
@@ -1762,12 +2053,14 @@ async function sendOut(){
     const {Lc, Rc}=await renderSong(null), pk=peakOf(Lc, Rc);
     if(pk<dbGain(-60)){ line.textContent=t("outSilent"); }
     else {
-      dropOut("song"); dropOut("stems"); dropOut("voice");
-      const g=outGain(pk), name=songSlug()+".wav";
-      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut()});
+      dropOut("song"); dropOut("stems"); dropOut("voice"); dropOut("chops");
+      const r=outLevel(songLoud(Lc, Rc)), g=r.g, name=songSlug()+".wav";   /* AOG-DESK-LUFS-V1 */
+      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g, BITS)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut(),
+        bits:BITS, lufs:r.lufs, tpDb:r.tpDb, why:r.why});
       line.textContent="";
     }
   }catch(e){ line.textContent=t("fail"); }
+  try{ await chopsLook(); }catch(e){ OUT.chopSrc=null; }   /* AOG-DESK-CHOPS-OUT-V1 */
   OUT.busy=false; btn.disabled=false; paintOut();
 }
 async function sendStems(){
@@ -1780,7 +2073,7 @@ async function sendStems(){
     for(let k=0;k<list.length;k++){
       line.textContent=t("outStemsMaking",{a:k+1, b:list.length});
       const i=list[k], {Lc, Rc}=await renderSong(i);
-      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g))});
+      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
     }
     dropOut("stems");
     OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
@@ -1794,8 +2087,59 @@ async function sendVoiceOut(){
   const line=$("outLine"); if(OUT.busy || !OUT.song || !voiceHeard()) return;
   OUT.busy=true; paintOut(); line.textContent=t("outVoiceMaking");
   try{ const {Lc, Rc}=await renderSong(VOICE_T); dropOut("voice");
-    OUT.voice=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, OUT.song.g)], songSlug()+"-"+t("voiceFile")+".wav", {type:"audio/wav"})}); line.textContent=""; }
+    OUT.voice=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS)], songSlug()+"-"+t("voiceFile")+".wav", {type:"audio/wav"})}); line.textContent=""; }
   catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; paintOut();
+}
+/* ══ AOG-DESK-CHOPS-OUT-V1 (STUDIO-HANDOFF §12: "The chops cut from his own records, as a small set of files, if he
+   made chops") — your chops are the ones on the Drum Machine's chops bank (bank D) when that bank is cut from one of
+   your own takes (a record you chopped on the Turntables, or a take any room sent there): the bank's record in the
+   Drum Machine's own save (aog.pads.v1, "t:" and the take's id in studioinbox), or a newer note on padstake the
+   Drum Machine has not opened yet. The records of the crate are not yours, so they are not sent out.
+   They are cut exactly as the Drum Machine cuts them (chopsOf in music-pads.html; keep the two in step): one beat
+   each from the bar picked, or 24 equal parts when the tempo is not known; a crumb under 50 ms at the very end is
+   left out. Each has the pads' own 4 ms in and 12 ms out, so nothing clicks, at the level it was recorded. They go in
+   a .zip of their own, not with the tracks: the tracks line up with the song and add up to it, the chops do not.
+   Named in plain words: <record>-chop-01.wav … in the order of the pads. ══ */
+const CHOP_NP=24;
+async function chopsLook(){
+  let P=null, n=null;
+  try{ P=JSON.parse(localStorage.getItem("aog.pads.v1")||"null"); }catch(e){ P=null; }
+  try{ n=(window.AOGHandoff && AOGHandoff.get) ? await AOGHandoff.get("padstake") : null; }catch(e){ n=null; }
+  const B=P && P.v===1 && Array.isArray(P.banks) ? P.banks.find(b=>b && b.type==="chops") : null;
+  let id=B && /^t:/.test(String(B.rec||"")) ? String(B.rec).slice(2) : "", bar=B ? Math.max(1, B.bar|0) : 1;
+  if(n && n.id && n.at>((P && P.inAt)||0) && INBOX.items.some(x=>x.id===n.id)){ id=n.id; bar=1; }
+  const x=id ? INBOX.items.find(y=>y.id===id) : null;
+  OUT.chopSrc=x ? {x:x, bar:bar} : null;
+  return OUT.chopSrc;
+}
+function chopCuts(x, bar, dur){
+  const bpm=x.bpm>0 ? x.bpm : 0, bars=bpm>0 && x.sec>0 ? Math.floor(x.sec*bpm/60/4) : 0, out=[];
+  if(bpm>0 && bars>=4){ const beat=60/bpm, st=(Math.max(1, bar)-1)*4*beat; for(let i=0;i<CHOP_NP;i++){ const a=st+i*beat; if(a<dur) out.push([a, Math.min(beat, dur-a)]); } }
+  else { const d=dur/CHOP_NP; for(let i=0;i<CHOP_NP;i++) out.push([i*d, d]); }
+  return out.filter(c=>c[1]>=0.05);
+}
+function chopName(x){
+  const nm=x.name && typeof x.name==="object" ? L(x.name) : typeof x.name==="string" ? x.name : takeLabel(x);
+  return slugOf(String(nm||"").replace(/\s*·\s*(chops|cortes)\s*$/i, "")) || t("chopsFile");
+}
+async function sendChops(){
+  const line=$("outLine"), src=OUT.chopSrc; if(OUT.busy || !OUT.song || !src) return;
+  OUT.busy=true; paintOut(); line.textContent=t("outChopsMaking");
+  try{
+    const it=await AOGHandoff.item(INBOX_KEY, src.x.id); if(!it || !it.wav) throw new Error("gone");
+    const buf=await decodeWav(it.wav, MIX_SR), sr=buf.sampleRate, L0=buf.getChannelData(0), R0=buf.numberOfChannels>1 ? buf.getChannelData(1) : L0;
+    const base=chopName(src.x), fi=Math.round(0.004*sr), fo=Math.round(0.012*sr);
+    const files=chopCuts(src.x, src.bar, buf.duration).map(([a, d], k)=>{
+      const s=Math.round(a*sr), n=Math.max(1, Math.min(L0.length-s, Math.round(d*sr))), l=L0.slice(s, s+n), r=R0.slice(s, s+n);
+      for(let i=0;i<n;i++){ const w=Math.min(1, i/fi, (n-1-i)/fo); if(w<1){ l[i]*=w; r[i]*=w; } }
+      return {name:base+"-"+t("chopFile")+"-"+String(k+1).padStart(2, "0")+".wav", data:new Uint8Array(wavBuf(l, r, sr, 1, BITS))};
+    });
+    if(!files.length) throw new Error("none");
+    dropOut("chops");
+    OUT.chops=outItem({file:new File([zipStore(files)], songSlug()+"-"+t("chopsFile")+".zip", {type:"application/zip"}), n:files.length, names:files.map(f=>f.name)});
+    line.textContent="";
+  }catch(e){ line.textContent=t("fail"); }
   OUT.busy=false; paintOut();
 }
 /* a .zip that stores each file as it is (no squeezing: a .wav hardly shrinks), so any phone or computer opens it */
@@ -1835,22 +2179,36 @@ function outRow(k, label){
 function paintOut(){
   const box=$("outBox"), o=OUT.song;
   $("outBtn").textContent=t("outBtn"); $("outBtn").disabled=OUT.busy || !hasClips() || !!S.decoding;
+  paintBits();   /* AOG-DESK-BITS-V1 */
   if(!o){ box.innerHTML=""; return; }
   const left=o.left.filter(i=>SONG.tracks[i].clip);
-  box.innerHTML=outRow("song", t("outReady")+" · "+madeWords(o.at))+
+  /* AOG-DESK-LUFS-V1: how loud the file came out, in plain words */
+  const lv=t("outLoud",{l:luWords(o.lufs), p:dbWords(o.tpDb)})+(o.why==="peak" ? ". "+t("outLoudPeak") : o.why==="quiet" ? ". "+t("outLoudQuiet") : "");
+  box.innerHTML=outRow("song", t("outReady")+" · "+t(o.bits===24 ? "bits24" : "bits16")+" · "+madeWords(o.at))+
+    `<p class="st-line" id="outLoud">${esc(lv)}</p>`+
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
     (OUT.voice ? outRow("voice", t("outVoiceReady")) : voiceHeard() ?
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="voiceOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outVoice"))}</button></div>` : "")+
+    (OUT.chops ? outRow("chops", t("outChopsReady",{n:OUT.chops.n})) : OUT.chopSrc ?   /* AOG-DESK-CHOPS-OUT-V1 */
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="chopsOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outChops"))}</button></div>` : "")+
     `<p class="st-line">${esc(t("outYours"))}</p>`;
+}
+/* AOG-DESK-BITS-V1: the choice, in the words of the page's language */
+function paintBits(){
+  const s=$("bitsSel"); if(!s) return;
+  const sig=S.lang+"|"+BITS; if(s._sig===sig) return; s._sig=sig;
+  s.innerHTML=[16,24].map(b=>`<option value="${b}"${b===BITS ? " selected" : ""}>${esc(t(b===24 ? "bitsOpt24" : "bitsOpt16"))}</option>`).join("");
 }
 function bindOut(){
   $("outBtn").onclick=sendOut;
+  const bs=$("bitsSel"); if(bs) bs.onchange=()=>{ setBits(+bs.value); paintBits(); };   /* AOG-DESK-BITS-V1 */
   $("outBox").addEventListener("click", e=>{
     const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
     if(el.id==="stemBtn") sendStems();
     else if(el.id==="voiceOutBtn") sendVoiceOut();
+    else if(el.id==="chopsOutBtn") sendChops();
     else if(el.hasAttribute("data-outshare")) shareOut(el.getAttribute("data-outshare"));
     else if(el.hasAttribute("data-outdl")){ const o=OUT[el.getAttribute("data-outdl")]; if(o) $("outLine").textContent=t("outSaved",{name:o.file.name}); }
   });
@@ -2061,7 +2419,8 @@ function hearPiece(){
   const p=pcs(c)[pSel(c)], a=Math.max(0, recSec(c,p.a)), b=Math.min(buf.duration, recSec(c,p.b)), cx=live();
   try{ if(cx.state!=="running") cx.resume(); }catch(e){}
   const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(c.keep===false) src.playbackRate.value=spd(c);
-  g.gain.value=volGain(SONG.tracks[SONG.sel].vol)*dbGain(p.g||0); src.connect(g);   /* AOG-DESK-CLIPVOL-V1 */ g.connect(cx.destination);
+  const lv=lineOf(SONG.sel, "vol");   /* AOG-DESK-AUTO-V1: a drawn volume, as it is where the piece starts */
+  g.gain.value=volGain(lv ? drawnAt(lv, p.at) : SONG.tracks[SONG.sel].vol)*dbGain(p.g||0); src.connect(g);   /* AOG-DESK-CLIPVOL-V1 */ g.connect(cx.destination);
   src.onended=()=>{ if(HEAR.src===src){ HEAR.src=null; paintHear(); } };
   src.start(cx.currentTime+0.03, a, Math.max(0.05, b-a)); HEAR.src=src; paintHear(); LES.mark("hear1");
 }
@@ -2139,6 +2498,7 @@ function paintTimeline(){
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
     } else { inner=`<span class="st-empty">${esc(t("empty"))}</span>`; label=t("laneAria",{n:i+1, name:t("emptyL")}); }
     lanes+=`<button type="button" class="st-lane" data-sel="${i}"${cur?' aria-current="true"':""} aria-label="${esc(label)}"><span class="st-ln" style="--c:${COLORS[i]}"><span class="st-led${c ? " on" : ""}" aria-hidden="true"></span><span class="st-lnn">${i+1}</span><span class="st-lnm">${esc(laneName(i))}</span></span><span class="st-lt">${inner}</span></button>`;
+    if(AUTO[x.lane]) lanes+=autoRowHtml(i);   /* AOG-DESK-AUTO-V1: its drawing lane, when one is open */
   }
   $("timeline").innerHTML=rh+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 */
   $("timeline").style.setProperty("--n", String(n));   /* AOG-DESK-ART-V1: the bar lines behind the lanes */
@@ -2146,6 +2506,7 @@ function paintTimeline(){
   RULER=[...$("timeline").querySelectorAll(".st-rt i")];
   PLAY.nowBar=-1;
   paintTools();
+  paintAuto(); if(AUI.kb){ AUI.kb=false; autoFocusPt(); }   /* AOG-DESK-AUTO-V1 */
 }
 /* ══ AOG-DESK-HANDS-V1 · hands on the desk ══ */
 /* how the desk is looked at on this device: how far it is zoomed in, and whether a dragged piece snaps to the beat */
@@ -2385,14 +2746,24 @@ function remember(i, g, tag){ const c=SONG.tracks[i].clip; if(!c) return;
   if(tag && last && last.tag===tag && last.id===c.id && last.i===i && now-last.t<1500){ last.t=now; c.auto=false; return; }
   UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c), tag:tag||"", t:now}); if(UNDO.length>60) UNDO.shift();
   c.auto=false; }   /* AOG-STUDIO-LISTEN-V1: a take you change is yours; Listen leaves it alone */
-function canUndo(){ return UNDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
-function canRedo(){ return REDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
+/* AOG-DESK-AUTO-V1: a drawn line's change is a step too (k:"lines"): the track's lines as they were, whatever is on it */
+function rememberLines(i, g, tag, was){
+  const x=SONG.tracks[i], last=UNDO[UNDO.length-1], now=Date.now();
+  REDO.length=0;
+  if(tag && last && last.k==="lines" && last.tag===tag && last.i===i && now-last.t<1500){ last.t=now; return; }
+  UNDO.push({i:i, k:"lines", g:g, j:was!=null ? was : JSON.stringify(x.lines||null), tag:tag||"", t:now}); if(UNDO.length>60) UNDO.shift();
+}
+function stepLive(u){ if(u.k==="lines") return true; const c=SONG.tracks[u.i].clip; return !!(c && c.id===u.id); }
+function canUndo(){ return UNDO.some(stepLive); }
+function canRedo(){ return REDO.some(stepLive); }
 /* one step from one list to the other: each track in the step goes back to how it was, and how it is now goes on the other list */
 function swapStep(from, to){
   while(from.length){
     const g=from[from.length-1].g; let done=-1;
     while(from.length && from[from.length-1].g===g){
       const u=from.pop(), x=SONG.tracks[u.i];
+      if(u.k==="lines"){ to.push({i:u.i, k:"lines", g:g, j:JSON.stringify(x.lines||null), tag:"", t:0});   /* AOG-DESK-AUTO-V1 */
+        const back=cleanLines(JSON.parse(u.j)); if(back) x.lines=back; else delete x.lines; AUI.j=-1; done=u.i; continue; }
       if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){
         to.push({i:u.i, id:u.id, g:g, j:JSON.stringify(x.clip), tag:"", t:0}); x.clip=back; done=u.i; } }
     }
@@ -2576,7 +2947,7 @@ function paintMixer(rebuild){
     el.querySelector("[data-ms=mute]").setAttribute("aria-pressed", x.mute?"true":"false");
     el.querySelector("[data-ms=solo]").setAttribute("aria-pressed", x.solo?"true":"false");
     el.querySelector("[data-edit]").hidden=!x.clip;
-    el.querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, x[r.getAttribute("data-k")]));
+    el.querySelectorAll("input[type=range]").forEach(r=>{ syncSlider(r, x[r.getAttribute("data-k")]); markDrawn(r, i); });   /* AOG-DESK-AUTO-V1 */
   });
   $("master").querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, SONG.master[r.getAttribute("data-k")]));
   paintConsole();   /* AOG-DESK-FACE-V1 */
@@ -2584,6 +2955,7 @@ function paintMixer(rebuild){
 function syncSlider(r, v){
   const k=r.getAttribute("data-k");
   if(+r.value!==v) r.value=String(v);
+  if(r._drawn) return;   /* AOG-DESK-AUTO-V1: drawn on the track; markDrawn says so */
   const o=$(r.id+"-o"); if(o && o.textContent!==fmtV(k,v)) o.textContent=fmtV(k,v);
   r.setAttribute("aria-valuetext", ariaV(k,v));
 }
@@ -2642,9 +3014,9 @@ function paintConsole(){
   }
   box.querySelector("[data-cms=mute]").setAttribute("aria-pressed", x.mute ? "true" : "false");
   box.querySelector("[data-cms=solo]").setAttribute("aria-pressed", x.solo ? "true" : "false");
-  box.querySelectorAll(".st-shape input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); });
+  box.querySelectorAll(".st-shape input[type=range]").forEach(r=>{ if(document.activeElement!==r) syncSlider(r, x[r.getAttribute("data-k")]); markDrawn(r, i); });
   const cv=$("cv-vol"); if(cv){ if(document.activeElement!==cv && +cv.value!==x.vol) cv.value=String(x.vol);
-    cv.setAttribute("aria-valuetext", volDb(x.vol)); const o=$("cv-vol-o"); if(o.textContent!==volDb(x.vol)) o.textContent=volDb(x.vol); }
+    if(!cv._drawn){ cv.setAttribute("aria-valuetext", volDb(x.vol)); const o=$("cv-vol-o"); if(o.textContent!==volDb(x.vol)) o.textContent=volDb(x.vol); } markDrawn(cv, i); }
   const fsig=S.lang+"|"+SONG.tracks.map((y,j)=>laneName(j)).join(",");
   if(fd._sig!==fsig){
     fd._sig=fsig;
@@ -2657,7 +3029,7 @@ function paintConsole(){
     el.classList.toggle("sel", j===SONG.sel); el.classList.toggle("off", !audible(j));
     el.querySelector("button").setAttribute("aria-pressed", j===SONG.sel ? "true" : "false");
     if(document.activeElement!==r && +r.value!==y.vol) r.value=String(y.vol);
-    r.setAttribute("aria-valuetext", volDb(y.vol));
+    if(!r._drawn) r.setAttribute("aria-valuetext", volDb(y.vol)); markDrawn(r, j);   /* AOG-DESK-AUTO-V1 */
   });
 }
 /* the fader's decibels: 80 is the take as recorded (0 dB); the gain is (v/80)² (volGain) */
@@ -2665,7 +3037,7 @@ function volDb(v){ if(!(v>0)) return "−∞ dB"; const d=Math.round(40*Math.log
 const DB_MARKS=[[100,"+4"],[80,"0"],[56.6,"−6"],[40,"−12"],[20,"−24"],[0,"−∞"]];
 /* a console control moves the mixer's own slider, so the mixer's rules do the rest */
 function consoleTo(i, k, v){
-  const r=$("t"+i+"-"+k); if(!r) return;
+  const r=$("t"+i+"-"+k); if(!r || lineOf(i, k)) return;   /* AOG-DESK-AUTO-V1: a knob drawn on the track rests */
   r.value=String(v); r.dispatchEvent(new Event("input", {bubbles:true}));
   paintConsole();
 }
@@ -2698,6 +3070,199 @@ function paintSlip(){
   el.hidden=false;
 }
 
+/* ══ AOG-DESK-AUTO-V1 · Draw changes: a lane under a track's lane, its points, the menu, and the knobs that rest while
+   their line has points. A tap on the lane adds a point; a drag along it draws (a point on each beat with Snap to the
+   beat on, every few pixels with it off), in place of the points it passes over; a point is dragged to move it (Snap
+   puts it on a beat), or picked and moved with the arrow keys. Each tap, stroke, move, removal or clearing is one Undo. ══ */
+Object.assign(STR, {
+  drawLab:{en:"Draw changes on track {n}",es:"Dibujar cambios en la pista {n}"},
+  drawOff:{en:"Off",es:"No"}, drawPan:{en:"Side (pan)",es:"Lado (paneo)"}, drawFilt:{en:"Filter",es:"Filtro"},
+  drawHint:{en:"Tap the lane to add a point. Drag a point to move it.",es:"Toca la franja para añadir un punto. Arrastra un punto para moverlo."},
+  drawRule:{en:"While the lane has points, the line sets it and the knob rests. The line stays with the track when you move a piece.",
+    es:"Mientras la franja tiene puntos, manda la línea y la perilla descansa. La línea se queda en la pista cuando mueves una parte."},
+  filtHint:{en:"Lower is darker. At the top it is open.",es:"Más abajo suena más oscuro. Arriba está abierto."},
+  ptAdd:{en:"+ Add a point",es:"+ Añadir un punto"}, ptDel:{en:"Remove this point",es:"Quitar este punto"}, lnClear:{en:"Clear this lane",es:"Borrar esta franja"},
+  drawn:{en:"Drawn on the track",es:"Dibujado en la pista"}, drawnShort:{en:"✎ Drawn",es:"✎ Dibujado"},
+  ptSaid:{en:"Point {n}: {w}, {v}.",es:"Punto {n}: {w}, {v}."}, ptAria:{en:"Point {n}: {w}, {v}",es:"Punto {n}: {w}, {v}"},
+  lnAria:{en:"{what}, drawn on track {n}",es:"{what}, dibujado en la pista {n}"},
+  ptGone:{en:"Point removed.",es:"Punto quitado."}, lnGone:{en:"Lane cleared. The knob sets it again.",es:"Franja borrada. La perilla vuelve a mandar."},
+  filtOpenW:{en:"filter open",es:"filtro abierto"}, filtAt:{en:"filter at {f}",es:"filtro en {f}"}
+});
+const AUTO_WORD={vol:"vol", pan:"drawPan", room:"room", echo:"echo", filt:"drawFilt"};
+const AUI={i:-1, k:"", j:-1, msg:"", kb:false, op:null};
+const AY0=8, AY1=92;              /* the lane's top and bottom values sit 8% in from its edges, so a point is never cut off */
+function autoW(k){ return t(AUTO_WORD[k]); }
+function hzWords(f){ return f>=1000 ? (f/1000).toFixed(f>=9950 ? 0 : 1).replace(".", S.lang==="es" ? "," : ".")+" kHz" : Math.round(f)+" Hz"; }
+function autoVal(k, v){ v=Math.round(v); if(k==="vol") return volDb(v); if(k==="pan") return ariaV("pan", v);
+  if(k==="filt") return v>=100 ? t("filtOpenW") : t("filtAt",{f:hzWords(filtHz(v))}); return t(k)+" "+v; }
+function autoY(A, v){ return AY0+(AY1-AY0)*(1-(v-A.lo)/(A.hi-A.lo)); }
+function autoV(A, y){ return Math.max(A.lo, Math.min(A.hi, Math.round(A.lo+(A.hi-A.lo)*(1-(y-AY0)/(AY1-AY0))))); }
+function autoSel(i, k){ const L=lineOf(i,k); return AUI.i===i && AUI.k===k && L && AUI.j>=0 && AUI.j<L.length ? AUI.j : -1; }
+/* what is inside a track's drawing lane: the line (or, with no points, the knob's level as a dashed line) and the points */
+function autoInner(i){
+  const x=SONG.tracks[i], k=x.lane, A=AUTO[k], L=lineOf(i,k), W=tlBars()*4, X=b=>Math.max(0, Math.min(100, b/W*100));
+  let svg;
+  if(L){ const P=[[0, autoY(A,L[0][1])]].concat(L.map(p=>[X(p[0]), autoY(A,p[1])]), [[100, autoY(A,L[L.length-1][1])]]),
+      pts=P.map(q=>(q[0]*10).toFixed(2)+","+q[1].toFixed(2)).join(" ");
+    svg=(k==="pan" ? "" : `<polygon class="af" points="0,100 ${pts} 1000,100"/>`)+`<polyline class="al" points="${pts}"/>`; }
+  else { const y=autoY(A, A.def(x)).toFixed(2); svg=`<line class="ad" x1="0" x2="1000" y1="${y}" y2="${y}"/>`; }
+  const sel=autoSel(i,k);
+  return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">${svg}</svg>`+(L||[]).map((p,j)=>
+    `<button type="button" class="st-apt${j===sel?" on":""}" data-pt="${j}" style="left:${X(p[0]).toFixed(4)}%;top:${autoY(A,p[1]).toFixed(3)}%" aria-pressed="${j===sel?"true":"false"}" aria-label="${esc(t("ptAria",{n:j+1, w:posFine(p[0]), v:autoVal(k,p[1])}))}"></button>`).join("");
+}
+function autoRowHtml(i){
+  const k=SONG.tracks[i].lane, what=autoW(k);
+  return `<div class="st-auto" data-auto="${i}" style="--c:${COLORS[i]}"><span class="st-ln st-aln"><span class="st-alk">${esc(what)}</span></span>`+
+    `<span class="st-alt" data-alt="${i}" role="group" aria-label="${esc(t("lnAria",{what:what, n:i+1}))}">${autoInner(i)}</span></div>`;
+}
+/* the row under the lanes for the track you are on: the menu, then Add, Remove and Clear while its lane is open */
+function paintAuto(){
+  const box=$("autoTools"); if(!box) return;
+  const i=SONG.sel, x=SONG.tracks[i], k=AUTO[x.lane] ? x.lane : "", L=k ? lineOf(i,k) : null, sel=k ? autoSel(i,k) : -1;
+  const sig=[S.lang, i, k, AUTO_KEYS.map(q=>lineOf(i,q) ? 1 : 0).join(""), L ? 1 : 0, sel].join("|");
+  if(box._sig!==sig){
+    box._sig=sig;
+    const fa=document.activeElement, keep=fa && box.contains(fa) ? fa.id : "";
+    const opt=(v,w)=>`<option value="${v}"${v===k?" selected":""}>${esc(w)}</option>`;
+    box.innerHTML=`<label class="st-field st-drw"><span class="st-lab">${esc(t("drawLab",{n:i+1}))}</span><select id="drawSel">`+opt("", t("drawOff"))+
+      AUTO_KEYS.map(q=>opt(q, autoW(q)+(lineOf(i,q) ? " ✎" : ""))).join("")+`</select></label>`+
+      (k ? `<button type="button" class="st-hw" id="ptAdd">${esc(t("ptAdd"))}</button><button type="button" class="st-hw" id="ptDel"${sel<0?" disabled":""}>${esc(t("ptDel"))}</button>`+
+        `<button type="button" class="st-hw" id="lnClear"${L?"":" disabled"}>${esc(t("lnClear"))}</button>` : "");
+    if(keep){ let el=$(keep); if(!el || el.disabled) el=$("ptAdd")||$("drawSel"); if(el) try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
+  }
+  const said=!k ? "" : sel>=0 ? t("ptSaid",{n:sel+1, w:posFine(L[sel][0]), v:autoVal(k, L[sel][1])}) : (AUI.msg || t("drawHint"));
+  const line=$("autoLine"), rule=$("autoRule"), r=k ? t("drawRule")+(k==="filt" ? " "+t("filtHint") : "") : "";
+  if(line.textContent!==said) line.textContent=said;
+  if(rule.textContent!==r) rule.textContent=r;
+}
+/* a knob whose line has points rests, and says so; it moves again when the lane is cleared */
+function markDrawn(r, i){
+  const k=r.getAttribute("data-k")||(r.hasAttribute("data-fv") ? "vol" : ""), on=(k==="vol"||k==="pan"||k==="room"||k==="echo") && !!lineOf(i,k), was=!!r._drawn, o=$(r.id+"-o");
+  r._drawn=on; if(r.disabled!==on) r.disabled=on;
+  /* the ✎ becomes the site's pencil drawing (aog-sketch.js), so the words are written once and then left alone */
+  if(on){ if(o && (!was || o._lang!==S.lang)){ o.textContent=t("drawnShort"); o._lang=S.lang; }
+    if(r.getAttribute("aria-valuetext")!==t("drawn")) r.setAttribute("aria-valuetext", t("drawn")); if(r.title!==t("drawn")) r.title=t("drawn"); }
+  else if(was){ r.removeAttribute("title"); if(o) o.textContent=r.id==="cv-vol" ? volDb(+r.value) : fmtV(k, +r.value); r.setAttribute("aria-valuetext", r.id==="cv-vol"||r.hasAttribute("data-fv") ? volDb(+r.value) : ariaV(k, +r.value)); }
+}
+/* a line changed: kept, heard (at once, while the song plays), and drawn */
+function lineChanged(i){
+  const x=SONG.tracks[i], c=cleanLines(x.lines); if(c) x.lines=c; else delete x.lines;
+  save(); liveApply(E=>applyTrack(E,i)); autoLive(i);
+  if(SONG.sel!==i){ SONG.sel=i; LES.mark("track2"); paintTrack(); }
+  paintTimeline(); paintMixer();
+}
+function autoInsert(L, p){ let j=0; while(j<L.length && L[j][0]<=p[0]) j++; L.splice(j, 0, p); return j; }
+function autoPos(o, cx, cy){
+  const r=o.alt.getBoundingClientRect(), W=tlBars()*4, A=AUTO[o.k];
+  let b=Math.max(0, Math.min(W, (cx-r.left)/Math.max(1, r.width)*W));
+  b=VIEW.snap ? Math.round(b) : Math.round(b*1000)/1000;
+  return {b:b, v:autoV(A, (cy-r.top)/Math.max(1, r.height)*100)};
+}
+function autoSet(i, k, L){ const x=SONG.tracks[i]; if(!x.lines) x.lines={}; if(L.length) x.lines[k]=L.slice(0, AUTO_MAX); else delete x.lines[k]; }
+/* a stroke: its points take the place of the line's points over the stretch it covers */
+function autoSample(o, cx, cy){
+  const q=autoPos(o, cx, cy);
+  if(!VIEW.snap && o.lastX!=null && Math.abs(cx-o.lastX)<6) o.samples.delete(o.lastB); else o.lastX=cx;
+  o.samples.delete(q.b); o.samples.set(q.b, q.v); o.lastB=q.b;
+  const keys=[...o.samples.keys()], lo=Math.min(...keys), hi=Math.max(...keys);
+  const L=o.orig.filter(p=>p[0]<lo-1e-9 || p[0]>hi+1e-9).map(p=>p.slice());
+  keys.sort((u,v)=>u-v).forEach(b=>autoInsert(L, [b, o.samples.get(b)]));
+  autoSet(o.i, o.k, L); o.last=q;
+}
+function autoMovePt(o, cx, cy){
+  const q=autoPos(o, cx, cy), L=o.orig.map(p=>p.slice()); L.splice(o.j, 1);
+  o.nj=autoInsert(L, [q.b, q.v]); autoSet(o.i, o.k, L); AUI.i=o.i; AUI.k=o.k; AUI.j=o.nj; o.last=q;
+}
+function autoPreview(o){
+  o.alt.innerHTML=autoInner(o.i);
+  if(o.last){ const tip=document.createElement("span"); tip.className="st-dtip"; tip.setAttribute("aria-hidden","true");
+    tip.style.left=Math.max(0, Math.min(100, o.last.b/(tlBars()*4)*100)).toFixed(3)+"%"; tip.textContent=posFine(o.last.b)+" · "+autoVal(o.k, o.last.v); o.alt.appendChild(tip); }
+}
+function autoFocusPt(){
+  const b=$("timeline").querySelector(`[data-alt="${AUI.i}"] [data-pt="${AUI.j}"]`);
+  if(b) try{ b.focus({preventScroll:true}); }catch(e){ b.focus(); }
+}
+function autoRemove(){
+  const i=AUI.i, k=AUI.k, L=lineOf(i,k), j=AUI.j; if(!L || !(j>=0 && j<L.length)) return;
+  rememberLines(i, ++UG); const M=L.map(p=>p.slice()); M.splice(j, 1); autoSet(i, k, M);
+  AUI.j=AUI.kb && M.length ? Math.min(j, M.length-1) : -1; AUI.msg=t("ptGone"); lineChanged(i);
+}
+function autoClear(){
+  const i=SONG.sel, k=SONG.tracks[i].lane; if(!lineOf(i,k)) return;
+  rememberLines(i, ++UG); autoSet(i, k, []); AUI.i=i; AUI.k=k; AUI.j=-1; AUI.msg=t("lnGone"); lineChanged(i);
+}
+/* + Add a point (the keys' way in): a bar after the point you are on, or after the last one, or where the song starts */
+function autoAdd(){
+  const i=SONG.sel, x=SONG.tracks[i], k=x.lane, A=AUTO[k]; if(!A) return;
+  const L=lineOf(i,k), s=autoSel(i,k);
+  let b=L ? (s>=0 ? L[s][0] : L[L.length-1][0])+4 : (SONG.startBar-1)*4; b=Math.max(0, Math.min(MAX_BARS*4, b));
+  const v=Math.round(L ? drawnAt(L, b) : A.def(x)), M=(L||[]).map(p=>p.slice());
+  rememberLines(i, ++UG); AUI.j=autoInsert(M, [b, v]); autoSet(i, k, M); AUI.i=i; AUI.k=k; AUI.msg=""; AUI.kb=true; lineChanged(i);
+}
+function bindAuto(){
+  const tl=$("timeline");
+  tl.addEventListener("pointerdown", e=>{
+    const alt=e.target.closest && e.target.closest(".st-alt[data-alt]"); if(!alt || (e.pointerType==="mouse" && e.button!==0)) return;
+    const i=+alt.getAttribute("data-alt"), x=SONG.tracks[i], k=x.lane; if(!AUTO[k]) return;
+    const pt=e.target.closest(".st-apt"), j=pt ? +pt.getAttribute("data-pt") : -1;
+    AUI.op={i:i, k:k, alt:alt, pid:e.pointerId, x0:e.clientX, y0:e.clientY, was:JSON.stringify(x.lines||null), orig:(lineOf(i,k)||[]).map(p=>p.slice()),
+      mode:pt ? "move" : "draw", j:j, nj:j, moved:false, samples:new Map(), lastX:null, lastB:null, last:null, touch:e.pointerType==="touch"};
+    /* a point is held at once; on a touch screen the empty lane waits to see whether the finger draws or scrolls the page */
+    if(pt || !AUI.op.touch){ e.preventDefault(); try{ alt.setPointerCapture(e.pointerId); }catch(er){} }
+  });
+  tl.addEventListener("pointermove", e=>{
+    const o=AUI.op; if(!o || e.pointerId!==o.pid) return;
+    if(!o.moved){ if(Math.abs(e.clientX-o.x0)<5 && Math.abs(e.clientY-o.y0)<5) return;
+      o.moved=true; try{ o.alt.setPointerCapture(e.pointerId); }catch(er){} if(o.mode==="draw") autoSample(o, o.x0, o.y0); }
+    e.preventDefault();
+    if(o.mode==="move") autoMovePt(o, e.clientX, e.clientY); else autoSample(o, e.clientX, e.clientY);
+    autoPreview(o);
+  });
+  const up=e=>{
+    const o=AUI.op; if(!o || e.pointerId!==o.pid) return; AUI.op=null;
+    const x=SONG.tracks[o.i];
+    if(e.type==="pointercancel"){ const back=cleanLines(JSON.parse(o.was)); if(back) x.lines=back; else delete x.lines; paintTimeline(); return; }
+    if(o.mode==="move" && !o.moved){ AUI.i=o.i; AUI.k=o.k; AUI.j=o.j; AUI.msg="";   /* a tap on a point picks it */
+      if(SONG.sel!==o.i){ SONG.sel=o.i; LES.mark("track2"); paintTrack(); paintMixer(); } paintTimeline(); return; }
+    if(o.mode==="draw" && !o.moved) autoSample(o, o.x0, o.y0);   /* a tap on the lane adds a point */
+    const c=cleanLines(x.lines); if(JSON.stringify(c)===o.was){ paintTimeline(); return; }
+    rememberLines(o.i, ++UG, "", o.was);
+    AUI.i=o.i; AUI.k=o.k; AUI.msg="";
+    if(o.mode==="move") AUI.j=o.nj;
+    else if(o.samples.size===1){ const L=lineOf(o.i,o.k)||[], b=o.last.b; AUI.j=L.findIndex(p=>Math.abs(p[0]-b)<1e-9 && p[1]===o.last.v); }
+    else AUI.j=-1;
+    lineChanged(o.i);
+  };
+  tl.addEventListener("pointerup", up); tl.addEventListener("pointercancel", up);
+  /* the keys: Enter or Space picks a point; ← → move it a beat (Shift: a bar), ↑ ↓ change it (Shift: more); Delete removes it */
+  tl.addEventListener("click", e=>{ const pt=e.target.closest && e.target.closest(".st-apt"); if(!pt || e.detail!==0) return;
+    const i=+pt.closest("[data-alt]").getAttribute("data-alt"); AUI.i=i; AUI.k=SONG.tracks[i].lane; AUI.j=+pt.getAttribute("data-pt"); AUI.msg=""; AUI.kb=true;
+    if(SONG.sel!==i){ SONG.sel=i; paintTrack(); paintMixer(); } paintTimeline(); });
+  tl.addEventListener("keydown", e=>{
+    const pt=e.target.closest && e.target.closest(".st-apt"); if(!pt || e.altKey || e.ctrlKey || e.metaKey) return;
+    const i=+pt.closest("[data-alt]").getAttribute("data-alt"), k=SONG.tracks[i].lane, A=AUTO[k], L=lineOf(i,k), j=+pt.getAttribute("data-pt"); if(!A || !L || !L[j]) return;
+    let db=0, dv=0;
+    if(e.key==="ArrowLeft" || e.key==="ArrowRight") db=(e.key==="ArrowLeft" ? -1 : 1)*(e.shiftKey ? 4 : 1);
+    else if(e.key==="ArrowUp" || e.key==="ArrowDown") dv=(e.key==="ArrowDown" ? -1 : 1)*A.step*(e.shiftKey ? 5 : 1);
+    else if(e.key==="Delete" || e.key==="Backspace"){ e.preventDefault(); e.stopPropagation(); AUI.i=i; AUI.k=k; AUI.j=j; AUI.kb=true; autoRemove(); return; }
+    else return;
+    e.preventDefault(); e.stopPropagation();
+    const M=L.map(p=>p.slice()), p=M.splice(j, 1)[0];
+    const nb=Math.round(Math.max(0, Math.min(MAX_BARS*4, p[0]+db))*1e6)/1e6, nv=Math.max(A.lo, Math.min(A.hi, p[1]+dv));
+    if(nb===p[0] && nv===p[1]) return;
+    rememberLines(i, ++UG, "ptkey"); AUI.j=autoInsert(M, [nb, nv]); autoSet(i, k, M); AUI.i=i; AUI.k=k; AUI.msg=""; AUI.kb=true; lineChanged(i);
+  });
+  const box=$("autoTools");
+  box.addEventListener("change", e=>{ if(e.target.id!=="drawSel") return; const x=SONG.tracks[SONG.sel], v=e.target.value;
+    if(AUTO[v]) x.lane=v; else delete x.lane; AUI.j=-1; AUI.msg=""; save(); paintTimeline();
+    if(e.target._ptr){ e.target._ptr=false; setTimeout(()=>{ const s=$("drawSel"); if(s) s.blur(); }, 0); } });
+  box.addEventListener("pointerdown", e=>{ if(e.target.id==="drawSel") e.target._ptr=true; });
+  box.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b || b.disabled) return;
+    if(b.id==="ptAdd") autoAdd();
+    else if(b.id==="ptDel"){ AUI.kb=false; autoRemove(); const a=$("ptAdd"); if(a) a.focus(); }
+    else if(b.id==="lnClear"){ autoClear(); const s=$("drawSel"); if(s) s.focus(); } });
+}
+
 /* ══ wiring ══ */
 function selectTrack(i){
   i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
@@ -2722,6 +3287,7 @@ function bind(){
     if(pc && c && pcs(c).length>1){ const j=+pc.getAttribute("data-pc"); if(c.psel!==j){ c.psel=j; saveSoon(); if(SONG.sel===i){ paintTimeline(); paintTrack(); } } }
     selectTrack(i); });
   bindDrag();   /* AOG-DESK-HANDS-V1 */
+  bindAuto();   /* AOG-DESK-AUTO-V1 */
   $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(!b || b.disabled) return;
     let act=b.getAttribute("data-act"); if(act==="hear"){ hearPiece(); return; }   /* AOG-STUDIO-CUT-V2 */
     if(act==="cutnow") act="cut";   /* ✂ Cut here, on the wave */
@@ -2761,6 +3327,7 @@ function bind(){
   $("mixer").addEventListener("input", e=>{
     const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
     const i=+r.closest(".st-strip").getAttribute("data-tr"), k=r.getAttribute("data-k"), v=+r.value;
+    if(lineOf(i, k)){ syncSlider(r, SONG.tracks[i][k]); markDrawn(r, i); return; }   /* AOG-DESK-AUTO-V1 */
     SONG.tracks[i][k]=v; syncSlider(r, v); liveApply(E=>applyTrack(E,i)); saveSoon();
     /* AOG-LESSONS-V1 */
     if(k==="vol"){ LES.mark("vol1"); if(v<=50) LES.mark("volLow"); lessonSong(); }
@@ -2872,3 +3439,9 @@ window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, ge
   INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, backing:backing, placeOf:placeOf, get AC(){ return ac; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO,
   redo:redo, REDO:REDO, VIEW:VIEW, zoomTo:zoomTo, makeEngine:makeEngine, posFine:posFine, piecePlays:piecePlays, playBuf:playBuf, tlBars:tlBars };   /* AOG-DESK-HANDS-V1 */
+/* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
+Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
+  wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
+/* AOG-DESK-AUTO-V1: for the tests (music-handoff/tests/studio/auto.js) */
+Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCorners:autoCorners, lineOf:lineOf, filtHz:filtHz, cleanLines:cleanLines,
+  lineChanged:lineChanged, reschedule:reschedule, live:live, get LAT(){ return LAT; } });
