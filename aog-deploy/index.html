@@ -5663,6 +5663,15 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 <!-- print-only individual report container -->
 <div id="printReport" aria-hidden="true"></div>
 
+<!-- AOG-CLASSIC-LATER-V1 (2026-10-11) — Jimmy: "make this website FLASH SPEED, LIGHTING BOLT SPEED!"
+     The classic Educator Dashboard is retired (AOG-CLASSIC-OFF-V1, 2026-09-26): every door goes to /dashboard and only
+     ?classic=1 opens it here. Its 3,000 hidden parts still made every phone build, style and search them on every
+     visit (on a phone: ready in 6.3s without them, 11.7s with them). They now wait in this template.
+     · ?classic=1: the script after the template builds the screen right here, exactly as before.
+     · Every other visit: only the screen's code runs, in the same order (the check-in reads its list of what a
+       teacher noticed, AOG_OBS), and #screen-admin is an empty stand-in with one link to /dashboard.
+     Edit the dashboard inside the template as before. Don't put a <template> inside it. -->
+<template id="aog-classic-dash">
 <section id="screen-admin" class="screen">
   <div class="container-wide">
     <h1 class="aog-srx" data-dl="dl_admin_h1">Educator Dashboard</h1>
@@ -9555,6 +9564,30 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 
   </div>
 </section>
+</template>
+<script>
+/* AOG-CLASSIC-LATER-V1 — see the note above the template. */
+(function () {
+  var t = document.getElementById("aog-classic-dash");
+  if (!t || !t.content) return;
+  var classic = false;
+  try { classic = /[?&]classic=1/.test(location.search); } catch (e) {}
+  if (classic) { t.parentNode.replaceChild(t.content, t); return; }
+  var at = t.parentNode;
+  var stand = document.createElement("section");
+  stand.id = "screen-admin"; stand.className = "screen";
+  stand.innerHTML = '<div class="container-wide"><h1 class="aog-srx" data-dl="dl_admin_h1">Educator Dashboard</h1>' +
+    '<p><a class="btn btn-primary" href="/dashboard" data-en="Open the Educator Dashboard &rarr;" data-es="Abre el Panel del Educador &rarr;">Open the Educator Dashboard &rarr;</a></p></div>';
+  at.insertBefore(stand, t);
+  [].forEach.call(t.content.querySelectorAll("script"), function (old) {
+    var s = document.createElement("script");
+    [].forEach.call(old.attributes, function (a) { s.setAttribute(a.name, a.value); });
+    s.text = old.text;
+    at.insertBefore(s, t);
+  });
+  at.removeChild(t);
+})();
+</script>
 
     <!-- ============ ABOUT (its own page) ============ -->
     <section id="screen-about" class="screen">

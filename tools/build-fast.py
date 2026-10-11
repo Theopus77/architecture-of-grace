@@ -29,6 +29,7 @@ PAGES = [("index.html", "front.html")] + [("music-%s.html" % r, "fast/music-%s.h
 
 SCRIPT = re.compile(r"<script\b([^>]*)>(.*?)</script>", re.S | re.I)
 NOT_CODE = re.compile(r'type\s*=\s*"(?!text/javascript"|module")', re.I)   # templates and data stay in the page
+TEMPLATE = re.compile(r"<template\b.*?</template>", re.S | re.I)
 
 
 def source_sum(text):
@@ -48,9 +49,14 @@ def build_one(src_name, out_name, made):
     with open(src_path, encoding="utf-8") as f:
         src = f.read()
     moved = [0]
+    # Code inside a <template> runs only when a page puts it in by hand (AOG-CLASSIC-LATER-V1 in index.html). A
+    # file put in that way loads out of turn, so that code stays in the page.
+    held = [t.span() for t in TEMPLATE.finditer(src)]
 
     def out(m):
         attrs, body = m.group(1), m.group(2)
+        if any(a <= m.start() < b for a, b in held):
+            return m.group(0)
         if re.search(r"\bsrc\s*=", attrs) or NOT_CODE.search(attrs) or len(body.encode("utf-8")) < MIN:
             return m.group(0)
         if re.search(r"\b(defer|async)\b", attrs):   # an inline block ignores these; a file would not, so it stays
