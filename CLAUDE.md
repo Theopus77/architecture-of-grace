@@ -199,6 +199,20 @@ every Learn step reach the end; the three kinds of help, practising one step, th
 color reader, symbols, Read aloud (never on its own) and the move card. Do not push while it fails; add a
 check for anything new the hands can do.
 
+## Skateboarding and the Skate Lab (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
+
+- The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
+  Adult band), built like every other course; Daily Practice is the `skate` book (`_work/ddworld/skt.py`).
+  Unlike Sports History it **teaches technique**, always safety first (helmet, pads, a safe place, a grown-up near
+  children; never stairs, rails, traffic or holding onto a vehicle). Directions say front foot and back foot.
+- The Skate Lab is `skate-lab.html` (/skate) and its engine `aog-skate.js`. After any change to either, run
+
+      node tools/check-skate.js
+
+  It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
+  tan θ = v²/(gR), L = Iω), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
+  a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

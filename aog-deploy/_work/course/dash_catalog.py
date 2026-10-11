@@ -15,7 +15,8 @@ COURSES = [  # id, English, Spanish — in menu order
  ("spt","Sports History","Historia del deporte"),("mar","The Measured Step","El paso medido"),
  ("unr","The Unseen Realm","El reino invisible"),
 
- ("sec","Secret Societies","Sociedades secretas")]
+ ("sec","Secret Societies","Sociedades secretas"),
+ ("skt","Skateboarding","Skateboarding")]
 units, names = {}, {}
 for cid, en, es in COURSES:
     rows = []
