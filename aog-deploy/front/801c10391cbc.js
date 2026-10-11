@@ -27,6 +27,12 @@ const STR={
   menu:{en:"☰ Menu",es:"☰ Menú"}, close:{en:"✕ Close",es:"✕ Cerrar"}, hint:{en:"Play the kit with your fingers. Use both hands.",es:"Toca la batería con los dedos. Usa las dos manos."},
   stop:{en:"■ Stop",es:"■ Parar"},
   beatH:{en:"Play along with a beat",es:"Toca con un ritmo"},
+  /* AOG-ROOM-PEDALS-V1 */
+  fxH:{en:"Effects",es:"Efectos"},
+  fxLine:{en:"The whole kit plays through these. Every effect starts off.",es:"Toda la batería suena con estos efectos. Todos empiezan apagados."},
+  fxKept:{en:"Your settings stay with this kit.",es:"Tus ajustes se quedan con esta batería."},
+  fxBack:{en:"Put this kit back",es:"Volver a esta batería"},
+  fxBackDone:{en:"Back to how this kit came.",es:"Volvió a como venía esta batería."},
   beatIntro:{en:"Pick a beat and press Play. It plays on the kit above, so you can play along.",es:"Elige un ritmo y pulsa Tocar. Suena en la batería de arriba, para que toques con él."},
   beatLab:{en:"Beat",es:"Ritmo"}, play:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, stopBeat:{en:"■ Stop the beat",es:"■ Parar el ritmo"},
   playS:{en:"▶ Beat",es:"▶ Ritmo"}, stopS:{en:"■ Beat",es:"■ Ritmo"},
@@ -178,14 +184,31 @@ function playZoomLock(on){
 })();
 
 /* ══ sound: the recordings, clean, through one gentle limiter (the recorder listens there) ══ */
-let ac=null, bus=null, lim=null;
+let ac=null, bus=null, lim=null, RIG=null;
+/* AOG-ROOM-PEDALS-V1 (2026-10-11) — Jimmy: "Can the pedals and effects be added to all instruments not just the guitar and
+   bass". The kit's chain, one builder: the drums → bus → the drum bus effects (aog-amp.js, kind "drums": Punch, Tape,
+   Filter, Crush, the compressor, the echo, the reverb) → limiter. The recorder listens at the limiter, so a take carries
+   the effects. With every effect off the rig is a straight wire and the kit plays clean, as before. What you change is kept
+   for that kit, on this device (FXKEY). */
+function makeChain(c){
+  const m={c:c};
+  m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-2; m.lim.knee.value=0; m.lim.ratio.value=20; m.lim.attack.value=0.002; m.lim.release.value=0.12;
+  m.bus=c.createGain(); m.bus.gain.value=1;
+  m.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxFor(S.bank)}) : null;
+  if(m.rig){ m.bus.connect(m.rig.input); m.rig.output.connect(m.lim); } else m.bus.connect(m.lim);
+  m.lim.connect(c.destination);
+  return m;
+}
+const FXKEY="aog.kit.fx.v1";
+let ROOMFX={}; try{ ROOMFX=JSON.parse(localStorage.getItem(FXKEY)||"{}")||{}; if(typeof ROOMFX!=="object" || Array.isArray(ROOMFX)) ROOMFX={}; }catch(e){ ROOMFX={}; }
+function fxFor(b){ return window.AOGAmp ? AOGAmp.normalize(ROOMFX[b]||{}, "drums") : null; }
+function saveFx(){ try{ localStorage.setItem(FXKEY, JSON.stringify(ROOMFX)); }catch(e){} }
 function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
     ac=new AC({latencyHint:"interactive"});
-    lim=ac.createDynamicsCompressor(); lim.threshold.value=-2; lim.knee.value=0; lim.ratio.value=20; lim.attack.value=0.002; lim.release.value=0.12;
-    bus=ac.createGain(); bus.gain.value=1; bus.connect(lim); lim.connect(ac.destination);
+    const m=makeChain(ac); lim=m.lim; bus=m.bus; RIG=m.rig;
   }
   if(ac.state==="suspended") ac.resume();
   return ac;
@@ -443,8 +466,24 @@ function paintText(){
   $("kpTurn").hidden=PV.on || !matchMedia("(pointer: coarse)").matches || (!tab && !matchMedia("(orientation: portrait)").matches);
   REC.paint(); recPaint(); beatText(); paintKit();
   const st=AOGDrumKit.state(S.bank); $("kitLine").textContent = st && st.state==="ready" ? t("ready") : st && st.state==="failed" ? t("failed") : t("loading",{a:(st&&st.got)||0, b:(st&&st.total)||"…"});
+  paintFx();   /* AOG-ROOM-PEDALS-V1 */
 }
-function pickKit(b){ if(KITS().indexOf(b)<0) return; S.bank=b; save(); $("kitSel").value=b; $("dkKitSel").value=b; paintKit(); loadKit(b).then(paintKit); lessonKit(b); }
+/* AOG-ROOM-PEDALS-V1: the effects panel. aog-amp.js draws it (the guitar's own panel); the strip under the kit shows the
+   effects that are on and a menu of the rest. Drawn again only when the language or the kit changes. */
+let FXUI=null, FXLANG="", FXKIT="";
+function applyFx(){ if(RIG) RIG.set(fxFor(S.bank)); }
+function paintFx(){
+  if(!window.AOGAmp || !$("ampBox")) return;
+  $("fxH").textContent=t("fxH"); $("fxLine").textContent=t("fxLine");
+  if(FXUI && FXLANG===S.lang && FXKIT===S.bank) return; FXLANG=S.lang; FXKIT=S.bank;
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S.lang, get:()=>fxFor(S.bank),
+    words:{kept:STR.fxKept, back:STR.fxBack, backDone:STR.fxBackDone},
+    set:st=>{ ROOMFX[S.bank]=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ delete ROOMFX[S.bank]; saveFx(); applyFx(); }});
+  else FXUI.paint();
+}
+window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
+function pickKit(b){ if(KITS().indexOf(b)<0) return; S.bank=b; save(); $("kitSel").value=b; $("dkKitSel").value=b; paintKit(); loadKit(b).then(paintKit); lessonKit(b); applyFx(); paintFx(); }
 /* ══ sideways: the kit fills the screen; the bar keeps ☰ Menu and the kit (AOG-PLAY-GUARD-V1) ══ */
 const PV={on:false, closed:false, forced:false, mq:null};
 /* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens

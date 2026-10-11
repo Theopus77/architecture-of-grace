@@ -14,7 +14,8 @@
    four times oversampled, so the distortion is the same on an iPad as on a computer (no WaveShaper). The cabinet is a
    speaker's own response turned into an impulse (minimum phase, made here, nothing downloaded). The rest is Web Audio.
 
-   AOGAmp.load(ctx)             → Promise; adds the worklet to that context (await it before an offline render)
+   AOGAmp.load(ctx)             → Promise; adds the worklet to that context (await it before an offline render; offline,
+                                  it also waits for the real reverbs, AOG-REAL-ROOMS-V1)
    AOGAmp.create(ctx, {kind})   → rig {input, output, set(state)}; kind "guitar" or "bass"
    AOGAmp.defaults(kind)        → a state: {model, cab, k:{gain…}, bright, tight, eq:{on, db:[10]}, fx:{…}}
    AOGAmp.ui(host, opts)        → the panel: amp head, pedalboard, EQ; opts {kind, lang(), get(), set(state), reset()}
@@ -23,7 +24,16 @@
    sounds", then "Les Claypool, Buckethead, Van Halen, Flea … Stevie Ray Vaughan, Jimi Hendrix … BLOW my mind". Four amps
    (the 100-watt British head with no master volume, the same head at low voltage, a small combo turned all the way up, a
    British high-gain head), a 4×10 cabinet, and seven pedals or voices (envelope filter, pitch shifter, treble booster,
-   octave fuzz, a vintage fuzz voice, vibe, rotating speaker) and a tape echo. A pedal can belong to one instrument (kind). */
+   octave fuzz, a vintage fuzz voice, vibe, rotating speaker) and a tape echo. A pedal can belong to one instrument (kind).
+
+   AOG-ROOM-PEDALS-V1 (2026-10-11) — Jimmy: "Can the pedals and effects be added to all instruments not just the guitar and
+   bass". Three more kinds, each a room's board (ROOMK): "keys" (the Piano: a rotating speaker, chorus, phaser, tremolo,
+   drive, echo, reverb, and five amps for the electric piano's growl), "band" (chorus, a wide lush echo, reverb, a little
+   drive for brass, phaser, tremolo) and "drums" (the Drum Machine and the Drum Kit: Punch, Tape, Filter, Crush, the
+   compressor, echo, reverb). Each starts with no amp and every pedal off; with nothing on, the rig is a straight wire.
+   They are stereo and only as long as what is on (createRoom). AOGAmp.create(ctx, {kind:"keys"|"band"|"drums", state}),
+   rig.ready() (await it before an offline render), rig.active (something is in the path); AOGAmp.ui(host, {kind, near,
+   order(), words:{kept, back, backDone}, …}); AOGAmp.pedalsOf(kind, order) the board's pedals in its menu order. */
 (function(G){
 "use strict";
 
@@ -56,7 +66,14 @@ const WORDS={
   throb:{en:"Throb",es:"Pulso"}, vibrato:{en:"Vibrato",es:"Vibrato"},
   slow:{en:"Slow",es:"Lento"}, fast:{en:"Fast",es:"Rápido"},
   clear:{en:"Clear",es:"Nítido"}, tape:{en:"Tape",es:"Cinta"},
-  thick:{en:"Thick",es:"Grueso"}, vintage:{en:"Vintage",es:"Vintage"}
+  thick:{en:"Thick",es:"Grueso"}, vintage:{en:"Vintage",es:"Vintage"},
+  /* AOG-ROOM-PEDALS-V1: the words of the boards in the piano, the band and the two drum rooms */
+  wide:{en:"Wide",es:"Amplio"}, lpf:{en:"Cut the highs",es:"Quitar agudos"}, hpf:{en:"Cut the lows",es:"Quitar graves"},
+  fxOn:{en:"Effects",es:"Efectos"}, addFx:{en:"+ Add an effect",es:"+ Añadir un efecto"},
+  noFx:{en:"No effects on. Pick one from the menu.",es:"Ningún efecto encendido. Elige uno del menú."},
+  fxHelp:{en:"Press On to use an effect. Its knobs appear when it is on.",es:"Pulsa Encendido para usar un efecto. Sus perillas aparecen cuando está encendido."},
+  keysAmpHelp:{en:"An amp gives an electric piano its growl. Gain adds grit. Bass, Middle and Treble shape the tone.",
+               es:"Un amplificador le da su rugido a un piano eléctrico. La ganancia añade aspereza. Graves, Medios y Agudos dan forma al tono."}
 };
 
 /* ── knobs ── */
@@ -319,13 +336,56 @@ const PEDALS=[
   {id:"rotary", kind:"guitar", en:"Rotating speaker", es:"Altavoz giratorio", col:["#7a5230","#ffffff"], modes:["slow","fast"],
    d:{en:"A speaker that spins: a warm swirl, slow or fast.",es:"Un altavoz que gira: un remolino cálido, lento o rápido."},
    knobs:[["depth",{en:"Depth",es:"Profundidad"},6],["mix",{en:"Mix",es:"Mezcla"},8]]},
-  {id:"delay", en:"Delay", es:"Delay", col:["#cfd5da","#111111"], types:["clear","tape"],
+  {id:"delay", en:"Delay", es:"Delay", col:["#cfd5da","#111111"], types:["clear","tape"], rtypes:["wide","clear","tape"],
    d:{en:"Echoes of what you play. Tape makes them darker and gently wavy.",es:"Ecos de lo que tocas. Cinta los hace más oscuros y un poco ondulados."},
    knobs:[["time",{en:"Time",es:"Tiempo"},4],["fb",{en:"Repeats",es:"Repeticiones"},4],["mix",{en:"Mix",es:"Mezcla"},4],["tone",{en:"Tone",es:"Tono"},5]]},
   {id:"reverb", en:"Reverb", es:"Reverb", col:["#244a66","#ffffff"], types:["spring","room","hall","plate"],
    d:{en:"The sound of a room, a hall or a spring.",es:"El sonido de una sala, un auditorio o un muelle."},
-   knobs:[["decay",{en:"Decay",es:"Duración"},5],["mix",{en:"Mix",es:"Mezcla"},4],["tone",{en:"Tone",es:"Tono"},6]]}
+   knobs:[["decay",{en:"Decay",es:"Duración"},5],["mix",{en:"Mix",es:"Mezcla"},4],["tone",{en:"Tone",es:"Tono"},6]]},
+  /* AOG-ROOM-PEDALS-V1 (2026-10-11) — Jimmy: "Can the pedals and effects be added to all instruments not just the guitar
+     and bass". The drum bus: four effects for the Drum Machine and the Drum Kit (kind "drums"). Punch, Tape and Crush run in
+     aog-amp-worklet.js ("aog-bus", stereo; Tape four times oversampled); the Filter is two Web Audio filters. */
+  {id:"punch", kind:"drums", en:"Punch", es:"Pegada", col:["#b8322a","#ffffff"],
+   d:{en:"Makes each hit snap harder. Ring makes the hits ring longer or shorter.",es:"Hace que cada golpe suene más seco y fuerte. Cola alarga o acorta el sonido de los golpes."},
+   knobs:[["snap",{en:"Snap",es:"Golpe"},7],["ring",{en:"Ring",es:"Cola"},4]]},
+  {id:"tape", kind:"drums", en:"Tape", es:"Cinta", col:["#7d5b2e","#ffffff"],
+   d:{en:"Warm and round, like a recording on tape. Drive pushes it harder.",es:"Cálido y redondo, como una grabación en cinta. Saturación lo empuja más."},
+   knobs:[["drive",{en:"Drive",es:"Saturación"},5],["tone",{en:"Tone",es:"Tono"},6]]},
+  {id:"filter", kind:"drums", en:"Filter", es:"Filtro", col:["#1d6a66","#ffffff"], modes:["lpf","hpf"],
+   d:{en:"Move Sweep by hand to open or close the sound.",es:"Mueve Barrido con la mano para abrir o cerrar el sonido."},
+   knobs:[["freq",{en:"Sweep",es:"Barrido"},7],["res",{en:"Peak",es:"Pico"},2]]},
+  {id:"crush", kind:"drums", en:"Crush", es:"Triturador", col:["#e6cf45","#111111"],
+   d:{en:"Grainy and gritty, like an old sampler.",es:"Granulado y áspero, como un sampler antiguo."},
+   knobs:[["bits",{en:"Grit",es:"Aspereza"},5],["rate",{en:"Lo-fi",es:"Baja fidelidad"},4],["mix",{en:"Mix",es:"Mezcla"},8]]}
 ];
+/* AOG-ROOM-PEDALS-V1: what a pedal says in another room, where the guitar's words would not fit */
+const ROOM_D={
+  chorus:{keys:{en:"Shimmer, as if two keyboards played together.",es:"Brillo, como si tocaran dos teclados juntos."},
+          band:{en:"Shimmer, as if more players joined in.",es:"Brillo, como si se unieran más músicos."}},
+  od:{keys:{en:"A warm push. A little grit, like a keyboard turned up loud.",es:"Un empuje cálido. Un poco de aspereza, como un teclado a todo volumen."},
+      band:{en:"A warm push. A little grit, lovely on brass.",es:"Un empuje cálido. Un poco de aspereza, muy bonito en los metales."}},
+  delay:{keys:{en:"Echoes of what you play. Wide bounces them left and right.",es:"Ecos de lo que tocas. Amplio los lleva de izquierda a derecha."},
+         band:{en:"Echoes of what you play. Wide bounces them left and right.",es:"Ecos de lo que tocas. Amplio los lleva de izquierda a derecha."},
+         drums:{en:"Echoes of every hit. Wide bounces them left and right.",es:"Ecos de cada golpe. Amplio los lleva de izquierda a derecha."}},
+  comp:{drums:{en:"Glues the hits together and evens them out.",es:"Une los golpes y los iguala."}}
+};
+/* AOG-ROOM-PEDALS-V1: each room's board. The starter pedals come first in its menu; nothing is on until you turn it on, and
+   the board starts with no amp. models: the amps a room can pick (the electric piano through a guitar amp is a classic). */
+const ROOMK={
+  keys:{models:["none","clean","blues","chime","small","crunch"], pedals:["rotary","chorus","phaser","trem","od","delay","reverb"], fx:{reverb:{type:"room"}}},
+  band:{models:["none"], pedals:["chorus","delay","reverb","od","phaser","trem"], fx:{reverb:{type:"hall"}, delay:{time:5, fb:4, mix:3}}},
+  drums:{models:["none"], pedals:["punch","tape","filter","crush","comp","delay","reverb"], fx:{reverb:{type:"room", mix:3}, delay:{mix:3}}}
+};
+function isRoom(kind){ return !!ROOMK[kind]; }
+function kindOf(k){ return k==="bass"||isRoom(k) ? k : "guitar"; }
+/* the pedals a room shows, in its order (order(): a room's own order, e.g. the Band's brass puts its drive first) */
+function pedalsOf(kind, order){
+  if(!isRoom(kind)) return PEDALS.filter(p=>!p.kind || p.kind===kind);
+  const ids=ROOMK[kind].pedals, o=(order||[]).filter(id=>ids.indexOf(id)>=0);
+  return o.concat(ids.filter(id=>o.indexOf(id)<0)).map(id=>PED[id]);
+}
+function typesOf(p, kind){ return (isRoom(kind) && p.rtypes) || p.types; }
+function descOf(p, kind, lang){ const r=ROOM_D[p.id]&&ROOM_D[p.id][kind]; return (r||p.d)[lang]||p.d.en; }
 const PED=Object.fromEntries(PEDALS.map(p=>[p.id,p]));
 const PRE=["gate","comp","wah","env","oct","pitch","tb","ofz","od","ds","fz","vibe"];   /* the pedals before the amp; the rest sit after it */
 const EQ_F=[31,63,125,250,500,1000,2000,4000,8000,16000];
@@ -334,7 +394,11 @@ function delayMs(v){ return Math.round(40*Math.pow(30, n10(v))); }        /* 40 
 
 /* ══ a state: what the knobs say ══ */
 function defaults(kind){
-  const fx={}; PEDALS.forEach(p=>{ const o={on:false}; p.knobs.forEach(k=>o[k[0]]=k[2]); if(p.modes) o.mode=p.modes[0]; if(p.types) o.type=p.types[0]; fx[p.id]=o; });
+  const fx={}; PEDALS.forEach(p=>{ const o={on:false}; p.knobs.forEach(k=>o[k[0]]=k[2]); if(p.modes) o.mode=p.modes[0]; const ty=typesOf(p, kind); if(ty) o.type=ty[0]; fx[p.id]=o; });
+  /* AOG-ROOM-PEDALS-V1: a room's board starts with no amp, every pedal off, and its own starting knobs */
+  if(isRoom(kind)){ const R=ROOMK[kind].fx||{}; Object.keys(R).forEach(id=>Object.assign(fx[id], R[id]));
+    return {model:"none", cab:"off", k:{gain:4, bass:5, mid:5, treble:5, presence:5, depth:5, master:5, blend:6}, bright:false, tight:false,
+            eq:{on:false, db:EQ_F.map(()=>0)}, fx:fx}; }
   return {model:kind==="bass"?"btube":"clean", cab:kind==="bass"?"b810":"open212",
           k:{gain:4, bass:5, mid:5, treble:5, presence:5, depth:5, master:5, blend:6}, bright:false, tight:false,
           eq:{on:false, db:EQ_F.map(()=>0)}, fx:fx};
@@ -346,6 +410,11 @@ function normalize(st, kind){
            bright:!!s.bright, tight:!!s.tight, eq:{on:!!(s.eq&&s.eq.on), db:d.eq.db.map((x,i)=>clamp(+((s.eq&&s.eq.db&&s.eq.db[i])||0),-12,12))}, fx:{}};
   PEDALS.forEach(p=>{ o.fx[p.id]=Object.assign({}, d.fx[p.id], (s.fx&&s.fx[p.id])||{}); o.fx[p.id].on=!!o.fx[p.id].on; });
   if(s.pickup) o.pickup=s.pickup;
+  /* AOG-ROOM-PEDALS-V1: a room keeps to its own amps and pedals (anything else in an old save is off) */
+  if(isRoom(kind)){ const R=ROOMK[kind]; if(R.models.indexOf(o.model)<0) o.model="none"; if(o.model==="none") o.cab="off";
+    PEDALS.forEach(p=>{ if(R.pedals.indexOf(p.id)<0) o.fx[p.id].on=false; const ty=typesOf(p, kind); if(ty && ty.indexOf(o.fx[p.id].type)<0) o.fx[p.id].type=ty[0];
+      if(p.modes && p.modes.indexOf(o.fx[p.id].mode)<0) o.fx[p.id].mode=p.modes[0]; });
+    delete o.pickup; }
   return o;
 }
 /* the numbers the worklet runs */
@@ -380,13 +449,47 @@ function coreParams(st, kind){
   P.level=(M.out||1)*dbl(M.make?lvlDb:0);
   return P;
 }
+/* AOG-ROOM-PEDALS-V1 — the rooms' numbers. The amp core (the worklet above, one for each side) runs only the amp and the
+   Overdrive there; the drum bus ("aog-bus") runs the compressor, Punch, Tape and Crush. TRIM holds the levels measured so a
+   pedal at its own knobs, or an amp at its own, is about as loud as the room without it (music-handoff/tests/play/pedals.js). */
+const TRIM={
+  /* into the amp, and back out: a keyboard reaches the amp hotter than a guitar's pickup, and each amp at its own level */
+  keysIn:0.5, keysOut:{clean:1.63, blues:0.609, chime:0.905, small:0.586, crunch:0.547}, od:{keys:0.43, band:0.39},
+  comp:-3, tape:0, punch:-2.4,
+  /* after an effect, in dB */
+  fx:{keys:{rotary:2.8, trem:2.3}, band:{rotary:2.8, trem:2.3}, drums:{}}
+};
+function roomCore(st, kind){
+  const s={model:st.model, cab:st.cab, k:st.k, bright:st.bright, tight:st.tight, eq:st.eq, fx:{}};
+  PEDALS.forEach(p=>{ s.fx[p.id]=Object.assign({}, st.fx[p.id]); if(p.id!=="od") s.fx[p.id].on=false; });
+  const P=coreParams(s, "guitar");
+  /* in a room the drive keeps more of the highs (a keyboard or a horn is not going into a speaker cabinet that cuts them) */
+  if(P.od.on){ P.od.gain=1+40*lg(n10(st.fx.od.drive)); P.od.tone=1500*Math.pow(8, n10(st.fx.od.tone)); P.od.level*=TRIM.od[kind]||1; }
+  if(P.amp.on) P.level*=(TRIM.keysOut[st.model]||1);
+  return P;
+}
+function busParams(st){
+  const fx=st.fx, c=fx.comp, sus=clamp(+c.sus,0,10), thr=-6-2.4*sus, ratio=1.5+0.45*sus;
+  const P={};
+  P.comp={on:c.on, thr:thr, ratio:ratio, att:0.001+0.03*n10(c.att)*n10(c.att), rel:0.16, knee:6,
+          makeup:(-thr-6)*(1-1/ratio)*0.5+TRIM.comp+(n10(c.lvl)-0.5)*12};
+  const pu=fx.punch; P.punch={on:pu.on, atk:(n10(pu.snap)-0.5)*1.2, sus:(n10(pu.ring)-0.5)*0.9, lvl:dbl(TRIM.punch)};
+  const tp=fx.tape; P.tape={on:tp.on, k:0.3+1.8*n10(tp.drive), bias:0.12, lp:3500*Math.pow(5, n10(tp.tone)), bump:1.5, lvl:dbl(TRIM.tape)};
+  const cr=fx.crush; P.crush={on:cr.on, bits:16-1.3*clamp(+cr.bits,0,10), rate:48000*Math.pow(2500/48000, n10(cr.rate)), mix:n10(cr.mix)};
+  return P;
+}
+function filterHz(f){ return f.mode==="hpf" ? 20*Math.pow(400, n10(f.freq)) : 60*Math.pow(20000/60, n10(f.freq)); }
 
 /* ══ the rig, in Web Audio ═════════════════════════════════════════════════ */
 const URL_DEFAULT="/aog-amp-worklet.js";
 const LOADS=new WeakMap();
 function load(ctx){
   if(LOADS.has(ctx)) return LOADS.get(ctx);
-  const p=(async()=>{ try{ if(!ctx.audioWorklet || typeof AudioWorkletNode==="undefined") return false; await ctx.audioWorklet.addModule(AOGAmp.workletURL||URL_DEFAULT); ctx.__aogAmpOk=true; return true; }catch(e){ return false; } })();
+  const w=(async()=>{ try{ if(!ctx.audioWorklet || typeof AudioWorkletNode==="undefined") return false; await ctx.audioWorklet.addModule(AOGAmp.workletURL||URL_DEFAULT); ctx.__aogAmpOk=true; return true; }catch(e){ return false; } })();
+  /* AOG-REAL-ROOMS-V1: an offline render also waits for the real reverbs, so it never starts on the made-up one */
+  const OFF=G.OfflineAudioContext||G.webkitOfflineAudioContext, off=!!(OFF && ctx instanceof OFF);
+  const r=off ? roomsLib().then(L=>L && Promise.all(REAL_ALL.map(id=>L.load(ctx, id)))).catch(()=>null) : null;
+  const p=Promise.all([w, r]).then(a=>a[0]);
   LOADS.set(ctx, p); return p;
 }
 function gainNode(c, v){ const g=c.createGain(); g.gain.value=v; return g; }
@@ -410,8 +513,194 @@ function fallbackCore(c){
     lo.gain.value=a.bax?a.bax.low:(l-0.3)*20; mid.gain.value=a.bax?a.bax.mid:(m-0.5)*18-4; hi.gain.value=a.bax?a.bax.high:(t-0.5)*20;
     g2.gain.value=(a.power?a.power.drive:1)*1.5; post.gain.value=0.5*(P.level||1); }};
 }
+/* the effects after the amp, one maker each (AOG-ROOM-PEDALS-V1: shared by the guitar's rig and the rooms'; a room makes one
+   only when it is first turned on) */
+const FXMAKE={};
+FXMAKE.chorus=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), m=c.createChannelMerger(2), dl=c.createDelay(0.05), dr=c.createDelay(0.05);
+    const lfo=c.createOscillator(), lfo2=c.createOscillator(), dg=gainNode(c,0.002), dg2=gainNode(c,0.002); lfo.type="sine";
+    try{ lfo2.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,1]), new Float32Array([0,0]))); }catch(e){ lfo2.type="triangle"; }
+    dl.delayTime.value=0.008; dr.delayTime.value=0.0095; lfo.connect(dg); dg.connect(dl.delayTime); lfo2.connect(dg2); dg2.connect(dr.delayTime);
+    i.connect(dry); dry.connect(o); i.connect(dl); i.connect(dr); dl.connect(wet); dr.connect(m,0,1); wet.connect(m,0,0); const wr=gainNode(c,0.7); dr.disconnect(); dr.connect(wr); wr.connect(m,0,1); m.connect(o);
+    lfo.start(); lfo2.start();
+    return {in:i, out:o, set(p){ const r=0.1*Math.pow(30,n10(p.rate)), d=0.0005+0.0045*n10(p.depth), w=0.9*n10(p.mix);
+      lfo.frequency.value=r; lfo2.frequency.value=r; dg.gain.value=d; dg2.gain.value=d; wet.gain.value=w; wr.gain.value=w; dry.gain.value=1-0.3*n10(p.mix); }}; };
+FXMAKE.phaser=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), lfo=c.createOscillator(), dg=gainNode(c,500), aps=[];
+    let prev=i; for(let k=0;k<6;k++){ const ap=biq(c,"allpass",700,0.55); dg.connect(ap.frequency); prev.connect(ap); prev=ap; aps.push(ap); }
+    prev.connect(wet); wet.connect(o); i.connect(dry); dry.connect(o); lfo.connect(dg); lfo.start();
+    return {in:i, out:o, set(p){ const r=0.05*Math.pow(60,n10(p.rate)), d=n10(p.depth); lfo.frequency.value=r; aps.forEach(a=>a.frequency.value=380+620*d); dg.gain.value=300+520*d;
+      const w=n10(p.mix); wet.gain.value=w; dry.gain.value=1-0.35*w; }}; };
+FXMAKE.flanger=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), dl=c.createDelay(0.03), fb=gainNode(c,0.5), lfo=c.createOscillator(), dg=gainNode(c,0.001);
+    dl.delayTime.value=0.003; lfo.connect(dg); dg.connect(dl.delayTime); i.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(o); i.connect(dry); dry.connect(o); lfo.start();
+    return {in:i, out:o, set(p){ const r=0.05*Math.pow(40,n10(p.rate)), d=0.0002+0.0026*n10(p.depth); lfo.frequency.value=r; dl.delayTime.value=0.0006+d; dg.gain.value=d*0.9;
+      fb.gain.value=0.85*n10(p.fb); const w=n10(p.mix); wet.gain.value=w*0.85; dry.gain.value=1-0.3*w; }}; };
+FXMAKE.trem=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), vca=gainNode(c,1), lfo=c.createOscillator(), sm=biq(c,"lowpass",40,0.7), dg=gainNode(c,0.3);
+    i.connect(vca); vca.connect(o); lfo.connect(sm); sm.connect(dg); dg.connect(vca.gain); lfo.start();
+    return {in:i, out:o, set(p){ const r=1+11*n10(p.rate)*n10(p.rate)+0.0, d=n10(p.depth); lfo.type=p.mode==="square"?"square":"sine"; lfo.frequency.value=r; dg.gain.value=d*0.5; vca.gain.value=1-d*0.5; }}; };
+  /* AOG-AMP-TONES-V1: the rotating speaker. The horn (the highs) and the drum (the lows) each spin past two microphones: as
+     a rotor comes towards you its sound rises a little in pitch (a moving delay), it is loudest facing you, and it swings
+     from side to side. The horn spins a little faster than the drum; Slow is about once a second, Fast about six times. */
+FXMAKE.rotary=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,0.2), wet=gainNode(c,0.8), xl=biq(c,"lowpass",800,0.6), xh=biq(c,"highpass",800,0.6);
+    const rotor=src=>{ const d=c.createDelay(0.02), am=gainNode(c,1); let pan=null; d.delayTime.value=0.003;
+      try{ pan=new StereoPannerNode(c, {pan:0}); }catch(e){ try{ pan=c.createStereoPanner(); }catch(e2){ pan=null; } }
+      src.connect(d); d.connect(am); if(pan){ am.connect(pan); pan.connect(wet); } else am.connect(wet); return {d:d, am:am, pan:pan}; };
+    const lfo=()=>{ const s=c.createOscillator(), q=c.createOscillator(); s.type="sine";
+      try{ q.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,1]), new Float32Array([0,0]))); }catch(e){ q.type="sine"; }
+      s.start(); q.start(); return {s:s, q:q}; };
+    i.connect(xl); i.connect(xh); i.connect(dry); dry.connect(o); wet.connect(o);
+    const horn=rotor(xh), drum=rotor(xl), hl=lfo(), dl2=lfo();
+    const hD=gainNode(c,0), hA=gainNode(c,0), hP=gainNode(c,0), dD=gainNode(c,0), dA=gainNode(c,0), dP=gainNode(c,0);
+    hl.s.connect(hD); hD.connect(horn.d.delayTime); hl.q.connect(hA); hA.connect(horn.am.gain);
+    dl2.s.connect(dD); dD.connect(drum.d.delayTime); dl2.q.connect(dA); dA.connect(drum.am.gain);
+    if(horn.pan){ hl.s.connect(hP); hP.connect(horn.pan.pan); } if(drum.pan){ dl2.s.connect(dP); dP.connect(drum.pan.pan); }
+    return {in:i, out:o, set(p){ const fast=p.mode==="fast", d=n10(p.depth), w=n10(p.mix);
+      hl.s.frequency.value=hl.q.frequency.value=fast?6.7:0.83; dl2.s.frequency.value=dl2.q.frequency.value=fast?5.8:0.68;
+      hD.gain.value=0.00045*d; hA.gain.value=0.3*d; horn.am.gain.value=1-0.3*d; hP.gain.value=0.6*d;
+      dD.gain.value=0.00012*d; dA.gain.value=0.18*d; drum.am.gain.value=1-0.18*d; dP.gain.value=0.25*d;
+      wet.gain.value=w*1.12; dry.gain.value=1-w; }}; };
+FXMAKE.delay=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.4), dl=c.createDelay(2.0), fb=gainNode(c,0.35), tone=biq(c,"lowpass",4000,0.6), hp=biq(c,"highpass",120,0.6);
+    const inC=gainNode(c,1);
+    i.connect(dry); dry.connect(o); i.connect(inC); inC.connect(dl); dl.connect(tone); tone.connect(hp); hp.connect(fb); fb.connect(dl); hp.connect(wet); wet.connect(o);
+    /* AOG-AMP-TONES-V1: Tape, the tape echo beside it (Jimmy Page's and Eddie Van Halen's): each repeat darker than the one
+       before, squashed a little by the tape, and wavering gently with the tape's speed (wow, and a faint flutter) */
+    const inT=gainNode(c,0), tdl=c.createDelay(2.0), sat=c.createWaveShaper(), satIn=gainNode(c,0.5), satOut=gainNode(c,2), ttone=biq(c,"lowpass",2500,0.6), ttone2=biq(c,"lowpass",6000,0.5), thp=biq(c,"highpass",150,0.6), tfb=gainNode(c,0.35), twet=gainNode(c,0);
+    sat.curve=tapeCurve(); const wow=c.createOscillator(), wowG=gainNode(c,0), flut=c.createOscillator(), flutG=gainNode(c,0);
+    wow.frequency.value=0.55; flut.frequency.value=6.3; wow.connect(wowG); wowG.connect(tdl.delayTime); flut.connect(flutG); flutG.connect(tdl.delayTime); wow.start(); flut.start();
+    i.connect(inT); inT.connect(tdl); tdl.connect(ttone); ttone.connect(ttone2); ttone2.connect(satIn); satIn.connect(sat); sat.connect(satOut); satOut.connect(thp);
+    thp.connect(tfb); tfb.connect(tdl); thp.connect(twet); twet.connect(o);
+    /* AOG-ROOM-PEDALS-V1: Wide, the rooms' lush echo: each repeat on the other side (left, right, left …), a little darker
+       each time, its time drifting very slightly so held strings and pads bloom. Made the first time it is picked. */
+    let W=null;
+    const wide=()=>{ if(W) return W;
+      const inW=gainNode(c,0); inW.channelCount=1; inW.channelCountMode="explicit"; inW.channelInterpretation="speakers";
+      const hpw=biq(c,"highpass",160,0.6), dA=c.createDelay(2.0), dB=c.createDelay(2.0), fA=biq(c,"lowpass",4200,0.6), fB=biq(c,"lowpass",4200,0.6);
+      const gAB=gainNode(c,0.5), gBA=gainNode(c,0.5), m=c.createChannelMerger(2), ww=gainNode(c,0), lfo=c.createOscillator(), lg=gainNode(c,0.0012);
+      lfo.frequency.value=0.23; lfo.connect(lg); lg.connect(dA.delayTime); lg.connect(dB.delayTime); lfo.start();
+      i.connect(inW); inW.connect(hpw); hpw.connect(dA); dA.connect(fA); fA.connect(gAB); gAB.connect(dB); dB.connect(fB); fB.connect(gBA); gBA.connect(dA);
+      fA.connect(m,0,0); fB.connect(m,0,1); m.connect(ww); ww.connect(o);
+      W={inW, dA, dB, fA, fB, gAB, gBA, ww}; return W; };
+    return {in:i, out:o, set(p){ const t=delayMs(p.time)/1000, tape=p.type==="tape", wd=p.type==="wide";
+      try{ dl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); tdl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); }catch(e){ dl.delayTime.value=t; tdl.delayTime.value=t; }
+      if(wd||W){ const w=wide(); try{ w.dA.delayTime.setTargetAtTime(t, c.currentTime, 0.03); w.dB.delayTime.setTargetAtTime(t, c.currentTime, 0.03); }catch(e){ w.dA.delayTime.value=t; w.dB.delayTime.value=t; }
+        w.inW.gain.value=wd?1:0; w.ww.gain.value=wd?0.8*n10(p.mix):0; w.gAB.gain.value=w.gBA.gain.value=0.8*n10(p.fb);
+        w.fA.frequency.value=w.fB.frequency.value=1800*Math.pow(5,n10(p.tone)); }
+      inC.gain.value=tape||wd?0:1; inT.gain.value=tape?1:0;
+      fb.gain.value=0.85*n10(p.fb); wet.gain.value=tape||wd?0:0.75*n10(p.mix); tone.frequency.value=1500*Math.pow(6,n10(p.tone));
+      tfb.gain.value=0.85*n10(p.fb); twet.gain.value=tape?0.85*n10(p.mix):0; ttone.frequency.value=900*Math.pow(5,n10(p.tone));
+      wowG.gain.value=tape?0.0007:0; flutG.gain.value=tape?0.00004:0; }}; };
+FXMAKE.reverb=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.3), cv=c.createConvolver(), tone=biq(c,"lowpass",8000,0.6); let key="";
+    i.connect(dry); dry.connect(o); i.connect(cv); cv.connect(tone); tone.connect(wet); wet.connect(o);
+    let last=null; const fx={in:i, out:o, set(p){ last=p; const k=(p.type||"spring")+":"+Math.round(+p.decay*2)/2; if(k!==key){ const b=reverbIR(c, p.type||"spring", n10(p.decay)); key=b.__aogReal ? k : k+":made"; if(cv.buffer!==b){ cv.normalize=!b.__aogReal; cv.buffer=b; } }
+      wet.gain.value=0.9*n10(p.mix); dry.gain.value=1-0.25*n10(p.mix); tone.frequency.value=2000*Math.pow(6,n10(p.tone)); }};
+    verbPer(c).wait.push(()=>{ if(last){ key=""; fx.set(last); } });   /* AOG-REAL-ROOMS-V1: the real one, when it arrives */
+    return fx; };
+const ORDER0=["chorus","phaser","flanger","trem","rotary","delay","reverb"];
+
+/* ══ a room's board (AOG-ROOM-PEDALS-V1) ═══════════════════════════════════
+   The piano, the band and the two drum rooms play in stereo, so their rig is stereo, and it is only as long as what is on:
+
+     in ─ [amp core: Overdrive · amp, one worklet a side] ─ [cabinet] ─ [drum bus: compressor · Punch · Tape · Crush]
+        ─ [Filter] ─ [EQ] ─ [chorus · phaser · trem · rotary] ─ [delay] ─ [reverb] ─ out
+
+   With every pedal off and no amp the input is wired straight to the output: the room sounds exactly as it did, and an
+   iPad does no extra work (no worklet in the path). Each part is made the first time it is turned on.
+   rig.ready() → Promise: the worklets are in (await it before an offline render; the room's own chain builder does). */
+function stereoIn(c){ const g=gainNode(c,1); g.channelCount=2; g.channelCountMode="explicit"; g.channelInterpretation="speakers"; return g; }
+/* without AudioWorklet: the drum bus's compressor as Web Audio's own, Tape as a gentle shaper, Crush as fewer steps */
+function busFallback(c){
+  const i=stereoIn(c), o=gainNode(c,1), cp=c.createDynamicsCompressor(), cpOut=gainNode(c,1), tp=c.createWaveShaper(), cr=c.createWaveShaper();
+  try{ tp.oversample="4x"; }catch(e){}
+  i.connect(cp); cp.connect(cpOut); cpOut.connect(tp); tp.connect(cr); cr.connect(o);
+  const lin=()=>{ const a=new Float32Array(3); a[0]=-1; a[1]=0; a[2]=1; return a; };
+  return {input:i, output:o, set(P){
+    if(P.comp.on){ cp.threshold.value=P.comp.thr; cp.ratio.value=P.comp.ratio; cp.attack.value=P.comp.att; cp.release.value=P.comp.rel; cp.knee.value=P.comp.knee; cpOut.gain.value=dbl(P.comp.makeup); }
+    else { cp.threshold.value=0; cp.ratio.value=1; cpOut.gain.value=1; }
+    if(P.tape.on){ const n=1025, a=new Float32Array(n), k=P.tape.k; for(let j=0;j<n;j++){ const x=(j/(n-1))*2-1; a[j]=Math.tanh(k*x)/k*P.tape.lvl; } tp.curve=a; } else tp.curve=lin();
+    if(P.crush.on){ const n=4096, a=new Float32Array(n), q=2/Math.pow(2,P.crush.bits), m=P.crush.mix; for(let j=0;j<n;j++){ const x=(j/(n-1))*2-1; a[j]=x*(1-m)+q*Math.round(x/q)*m; } cr.curve=a; } else cr.curve=lin(); }};
+}
+function createRoom(c, opt, kind){
+  const rig={kind:kind, c:c, room:true, state:normalize(opt.state, kind), worklet:false, active:false};
+  rig.input=gainNode(c,1); rig.output=gainNode(c,1);
+  const N={fx:{}};
+  /* the amp core: one worklet for each side (each the guitar's own, mono), or the fallback in stereo */
+  function coreNodes(){
+    const K=N.core; if(K.parts){ try{ K.inp.disconnect(); }catch(e){} K.parts.forEach(n=>{ try{ n.disconnect(); }catch(e){} }); }
+    if(c.__aogAmpOk){ try{
+      const sp=c.createChannelSplitter(2), mg=c.createChannelMerger(2), mk=()=>new AudioWorkletNode(c,"aog-amp",{numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[1],
+        channelCount:1, channelCountMode:"explicit", channelInterpretation:"speakers", processorOptions:{p:roomCore(rig.state, kind)}});
+      const L=mk(), R=mk(); K.inp.connect(sp); sp.connect(L,0); sp.connect(R,1); L.connect(mg,0,0); R.connect(mg,0,1); mg.connect(K.out);
+      K.parts=[sp,L,R,mg]; K.w=[L,R]; K.fb=null; K.worklet=true; return; }catch(e){} }
+    const fb=fallbackCore(c); K.inp.connect(fb.input); fb.output.connect(K.out); K.parts=[fb.output]; K.w=null; K.fb=fb; K.worklet=false;
+  }
+  function core(){ if(!N.core){ N.core={inp:stereoIn(c), out:gainNode(c,1), parts:null}; N.core.in=N.core.inp; coreNodes(); } return N.core; }
+  function busNodes(){
+    const B=N.bus; if(B.node){ try{ B.in.disconnect(); }catch(e){} try{ B.node.disconnect(); }catch(e){} }
+    if(c.__aogAmpOk){ try{ const n=new AudioWorkletNode(c,"aog-bus",{numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[2], channelCount:2, channelCountMode:"explicit",
+        channelInterpretation:"speakers", processorOptions:{p:busParams(rig.state)}});
+      B.in.connect(n); n.connect(B.out); B.node=n; B.fb=null; B.worklet=true; return; }catch(e){} }
+    const fb=busFallback(c); B.in.connect(fb.input); fb.output.connect(B.out); B.node=fb.output; B.fb=fb; B.worklet=false;
+  }
+  function bus(){ if(!N.bus){ N.bus={in:stereoIn(c), out:gainNode(c,1), node:null}; busNodes(); } return N.bus; }
+  function filt(){ if(!N.filt){ const a=biq(c,"lowpass",8000,0.541), b=biq(c,"lowpass",8000,1.307); a.connect(b); N.filt={in:a, out:b, a:a, b:b, f:0}; } return N.filt; }
+  function cab(){ if(!N.cab){ const cv=c.createConvolver(); cv.normalize=false; N.cab={in:cv, out:cv, cv:cv, id:""}; } return N.cab; }
+  function eq(){ if(!N.eq){ const e=EQ_F.map((f,i)=>biq(c, i===0?"lowshelf":i===EQ_F.length-1?"highshelf":"peaking", f, 1.4, 0)); for(let i=0;i<e.length-1;i++) e[i].connect(e[i+1]);
+    N.eq={in:e[0], out:e[e.length-1], bands:e}; } return N.eq; }
+  /* an effect, with the room's own level after it where one is measured (TRIM.fx: a tremolo or a spinning speaker takes
+     some loudness away on average; this gives it back, so turning one on does not make the room drop) */
+  function fx(id){ if(N.fx[id]) return N.fx[id];
+    const f=FXMAKE[id](c), t=(TRIM.fx[kind]||{})[id];
+    if(t){ const g=gainNode(c, dbl(t)); f.out.connect(g); N.fx[id]={in:f.in, out:g, set:f.set}; } else N.fx[id]=f;
+    return N.fx[id]; }
+  let wiring="";
+  function plan(st){
+    const fxo=st.fx, amped=st.model!=="none" && !!MODELS[st.model] && !!MODELS[st.model].make, P=[];
+    if(amped || fxo.od.on) P.push("core");
+    if(amped && st.cab!=="off" && CABS[st.cab] && CABS[st.cab].hp) P.push("cab");
+    if(fxo.comp.on || fxo.punch.on || fxo.tape.on || fxo.crush.on) P.push("bus");
+    if(fxo.filter.on) P.push("filt");
+    if(st.eq.on) P.push("eq");
+    ORDER0.forEach(id=>{ if(fxo[id].on) P.push(id); });
+    return P;
+  }
+  const part=id=>id==="core"?core():id==="cab"?cab():id==="bus"?bus():id==="filt"?filt():id==="eq"?eq():fx(id);
+  function rewire(P){
+    const key=P.join(",")+"|"+(N.core&&N.core.worklet?1:0)+(N.bus&&N.bus.worklet?1:0); if(key===wiring) return; wiring=key;
+    [rig.input].concat(Object.keys(N).filter(k=>k!=="fx").map(k=>N[k].out), Object.keys(N.fx).map(k=>N.fx[k].out)).forEach(n=>{ try{ n.disconnect(); }catch(e){} });
+    let tail=rig.input; P.forEach(id=>{ const n=part(id); tail.connect(n.in); tail=n.out; }); tail.connect(rig.output);
+    rig.active=P.length>0;
+    rig.worklet=P.indexOf("core")>=0 ? !!N.core.worklet : P.indexOf("bus")>=0 ? !!N.bus.worklet : false;
+  }
+  rig.set=function(st){
+    rig.state=normalize(st, kind);
+    const s=rig.state, P=plan(s), now=c.currentTime;
+    P.forEach(part);
+    if(P.indexOf("core")>=0){ const K=N.core, cp=roomCore(s, kind), amped=cp.amp.on;
+      /* a keyboard reaches the amp hotter than a guitar: in, and back out at the room's level */
+      K.inp.gain.value=amped?TRIM.keysIn:1; K.out.gain.value=amped?1/TRIM.keysIn:1;
+      if(K.worklet) K.w.forEach(n=>n.port.postMessage({p:cp})); else K.fb.set(cp); }
+    if(P.indexOf("cab")>=0 && N.cab.id!==s.cab){ N.cab.id=s.cab; N.cab.cv.buffer=cabIR(c, s.cab); }
+    if(P.indexOf("bus")>=0){ const B=N.bus, bp=busParams(s); if(B.worklet) B.node.port.postMessage({p:bp}); else B.fb.set(bp); }
+    if(P.indexOf("filt")>=0){ const F=N.filt, f=s.fx.filter, hz=filterHz(f), tp=f.mode==="hpf"?"highpass":"lowpass", q=1.307*Math.pow(8, n10(f.res));
+      if(F.a.type!==tp){ F.a.type=tp; F.b.type=tp; }
+      /* the sweep glides (a hand on the knob never clicks); the first time it is set at once */
+      if(!F.f){ F.a.frequency.value=hz; F.b.frequency.value=hz; } else { F.a.frequency.setTargetAtTime(hz, now, 0.03); F.b.frequency.setTargetAtTime(hz, now, 0.03); }
+      F.f=hz; F.b.Q.value=q; }
+    if(P.indexOf("eq")>=0) s.eq.db.forEach((d,i)=>{ N.eq.bands[i].gain.value=d; });
+    ORDER0.forEach(id=>{ if(s.fx[id].on) fx(id).set(s.fx[id]); });
+    rewire(P);
+  };
+  /* the worklets in: a part made before they were (a fallback) is made again with them; an idle board is not touched, so
+     the room's straight wire is never re-plugged while it plays */
+  rig.ready=function(){ return load(c).then(ok=>{ if(ok){ let swap=false;
+    if(N.core && !N.core.worklet){ coreNodes(); swap=true; } if(N.bus && !N.bus.worklet){ busNodes(); swap=true; }
+    if(swap){ wiring=""; rig.set(rig.state); } } return ok; }); };
+  rig.set(rig.state);
+  if(!c.__aogAmpOk) rig.ready();
+  return rig;
+}
+
 function create(c, opt){
-  opt=opt||{}; const kind=opt.kind==="bass"?"bass":"guitar";
+  opt=opt||{}; if(isRoom(opt.kind)) return createRoom(c, opt, opt.kind);
+  const kind=opt.kind==="bass"?"bass":"guitar";
   const rig={kind:kind, c:c, state:normalize(opt.state, kind)};
   rig.input=gainNode(c,1); rig.output=gainNode(c,1);
   rig.coreOut=gainNode(c,1);
@@ -433,67 +722,7 @@ function create(c, opt){
   const eq=EQ_F.map((f,i)=>biq(c, i===0?"lowshelf":i===EQ_F.length-1?"highshelf":"peaking", f, 1.4, 0));
   for(let i=0;i<eq.length-1;i++) eq[i].connect(eq[i+1]);
   const FX={};
-  FX.chorus=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), m=c.createChannelMerger(2), dl=c.createDelay(0.05), dr=c.createDelay(0.05);
-    const lfo=c.createOscillator(), lfo2=c.createOscillator(), dg=gainNode(c,0.002), dg2=gainNode(c,0.002); lfo.type="sine";
-    try{ lfo2.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,1]), new Float32Array([0,0]))); }catch(e){ lfo2.type="triangle"; }
-    dl.delayTime.value=0.008; dr.delayTime.value=0.0095; lfo.connect(dg); dg.connect(dl.delayTime); lfo2.connect(dg2); dg2.connect(dr.delayTime);
-    i.connect(dry); dry.connect(o); i.connect(dl); i.connect(dr); dl.connect(wet); dr.connect(m,0,1); wet.connect(m,0,0); const wr=gainNode(c,0.7); dr.disconnect(); dr.connect(wr); wr.connect(m,0,1); m.connect(o);
-    lfo.start(); lfo2.start();
-    return {in:i, out:o, set(p){ const r=0.1*Math.pow(30,n10(p.rate)), d=0.0005+0.0045*n10(p.depth), w=0.9*n10(p.mix);
-      lfo.frequency.value=r; lfo2.frequency.value=r; dg.gain.value=d; dg2.gain.value=d; wet.gain.value=w; wr.gain.value=w; dry.gain.value=1-0.3*n10(p.mix); }}; })();
-  FX.phaser=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), lfo=c.createOscillator(), dg=gainNode(c,500), aps=[];
-    let prev=i; for(let k=0;k<6;k++){ const ap=biq(c,"allpass",700,0.55); dg.connect(ap.frequency); prev.connect(ap); prev=ap; aps.push(ap); }
-    prev.connect(wet); wet.connect(o); i.connect(dry); dry.connect(o); lfo.connect(dg); lfo.start();
-    return {in:i, out:o, set(p){ const r=0.05*Math.pow(60,n10(p.rate)), d=n10(p.depth); lfo.frequency.value=r; aps.forEach(a=>a.frequency.value=380+620*d); dg.gain.value=300+520*d;
-      const w=n10(p.mix); wet.gain.value=w; dry.gain.value=1-0.35*w; }}; })();
-  FX.flanger=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), dl=c.createDelay(0.03), fb=gainNode(c,0.5), lfo=c.createOscillator(), dg=gainNode(c,0.001);
-    dl.delayTime.value=0.003; lfo.connect(dg); dg.connect(dl.delayTime); i.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(o); i.connect(dry); dry.connect(o); lfo.start();
-    return {in:i, out:o, set(p){ const r=0.05*Math.pow(40,n10(p.rate)), d=0.0002+0.0026*n10(p.depth); lfo.frequency.value=r; dl.delayTime.value=0.0006+d; dg.gain.value=d*0.9;
-      fb.gain.value=0.85*n10(p.fb); const w=n10(p.mix); wet.gain.value=w*0.85; dry.gain.value=1-0.3*w; }}; })();
-  FX.trem=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), vca=gainNode(c,1), lfo=c.createOscillator(), sm=biq(c,"lowpass",40,0.7), dg=gainNode(c,0.3);
-    i.connect(vca); vca.connect(o); lfo.connect(sm); sm.connect(dg); dg.connect(vca.gain); lfo.start();
-    return {in:i, out:o, set(p){ const r=1+11*n10(p.rate)*n10(p.rate)+0.0, d=n10(p.depth); lfo.type=p.mode==="square"?"square":"sine"; lfo.frequency.value=r; dg.gain.value=d*0.5; vca.gain.value=1-d*0.5; }}; })();
-  /* AOG-AMP-TONES-V1: the rotating speaker. The horn (the highs) and the drum (the lows) each spin past two microphones: as
-     a rotor comes towards you its sound rises a little in pitch (a moving delay), it is loudest facing you, and it swings
-     from side to side. The horn spins a little faster than the drum; Slow is about once a second, Fast about six times. */
-  FX.rotary=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,0.2), wet=gainNode(c,0.8), xl=biq(c,"lowpass",800,0.6), xh=biq(c,"highpass",800,0.6);
-    const rotor=src=>{ const d=c.createDelay(0.02), am=gainNode(c,1); let pan=null; d.delayTime.value=0.003;
-      try{ pan=new StereoPannerNode(c, {pan:0}); }catch(e){ try{ pan=c.createStereoPanner(); }catch(e2){ pan=null; } }
-      src.connect(d); d.connect(am); if(pan){ am.connect(pan); pan.connect(wet); } else am.connect(wet); return {d:d, am:am, pan:pan}; };
-    const lfo=()=>{ const s=c.createOscillator(), q=c.createOscillator(); s.type="sine";
-      try{ q.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,1]), new Float32Array([0,0]))); }catch(e){ q.type="sine"; }
-      s.start(); q.start(); return {s:s, q:q}; };
-    i.connect(xl); i.connect(xh); i.connect(dry); dry.connect(o); wet.connect(o);
-    const horn=rotor(xh), drum=rotor(xl), hl=lfo(), dl2=lfo();
-    const hD=gainNode(c,0), hA=gainNode(c,0), hP=gainNode(c,0), dD=gainNode(c,0), dA=gainNode(c,0), dP=gainNode(c,0);
-    hl.s.connect(hD); hD.connect(horn.d.delayTime); hl.q.connect(hA); hA.connect(horn.am.gain);
-    dl2.s.connect(dD); dD.connect(drum.d.delayTime); dl2.q.connect(dA); dA.connect(drum.am.gain);
-    if(horn.pan){ hl.s.connect(hP); hP.connect(horn.pan.pan); } if(drum.pan){ dl2.s.connect(dP); dP.connect(drum.pan.pan); }
-    return {in:i, out:o, set(p){ const fast=p.mode==="fast", d=n10(p.depth), w=n10(p.mix);
-      hl.s.frequency.value=hl.q.frequency.value=fast?6.7:0.83; dl2.s.frequency.value=dl2.q.frequency.value=fast?5.8:0.68;
-      hD.gain.value=0.00045*d; hA.gain.value=0.3*d; horn.am.gain.value=1-0.3*d; hP.gain.value=0.6*d;
-      dD.gain.value=0.00012*d; dA.gain.value=0.18*d; drum.am.gain.value=1-0.18*d; dP.gain.value=0.25*d;
-      wet.gain.value=w*1.12; dry.gain.value=1-w; }}; })();
-  FX.delay=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.4), dl=c.createDelay(2.0), fb=gainNode(c,0.35), tone=biq(c,"lowpass",4000,0.6), hp=biq(c,"highpass",120,0.6);
-    const inC=gainNode(c,1);
-    i.connect(dry); dry.connect(o); i.connect(inC); inC.connect(dl); dl.connect(tone); tone.connect(hp); hp.connect(fb); fb.connect(dl); hp.connect(wet); wet.connect(o);
-    /* AOG-AMP-TONES-V1: Tape, the tape echo beside it (Jimmy Page's and Eddie Van Halen's): each repeat darker than the one
-       before, squashed a little by the tape, and wavering gently with the tape's speed (wow, and a faint flutter) */
-    const inT=gainNode(c,0), tdl=c.createDelay(2.0), sat=c.createWaveShaper(), satIn=gainNode(c,0.5), satOut=gainNode(c,2), ttone=biq(c,"lowpass",2500,0.6), ttone2=biq(c,"lowpass",6000,0.5), thp=biq(c,"highpass",150,0.6), tfb=gainNode(c,0.35), twet=gainNode(c,0);
-    sat.curve=tapeCurve(); const wow=c.createOscillator(), wowG=gainNode(c,0), flut=c.createOscillator(), flutG=gainNode(c,0);
-    wow.frequency.value=0.55; flut.frequency.value=6.3; wow.connect(wowG); wowG.connect(tdl.delayTime); flut.connect(flutG); flutG.connect(tdl.delayTime); wow.start(); flut.start();
-    i.connect(inT); inT.connect(tdl); tdl.connect(ttone); ttone.connect(ttone2); ttone2.connect(satIn); satIn.connect(sat); sat.connect(satOut); satOut.connect(thp);
-    thp.connect(tfb); tfb.connect(tdl); thp.connect(twet); twet.connect(o);
-    return {in:i, out:o, set(p){ const t=delayMs(p.time)/1000, tape=p.type==="tape";
-      try{ dl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); tdl.delayTime.setTargetAtTime(t, c.currentTime, 0.03); }catch(e){ dl.delayTime.value=t; tdl.delayTime.value=t; }
-      inC.gain.value=tape?0:1; inT.gain.value=tape?1:0;
-      fb.gain.value=0.85*n10(p.fb); wet.gain.value=tape?0:0.75*n10(p.mix); tone.frequency.value=1500*Math.pow(6,n10(p.tone));
-      tfb.gain.value=0.85*n10(p.fb); twet.gain.value=tape?0.85*n10(p.mix):0; ttone.frequency.value=900*Math.pow(5,n10(p.tone));
-      wowG.gain.value=tape?0.0007:0; flutG.gain.value=tape?0.00004:0; }}; })();
-  FX.reverb=(()=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.3), cv=c.createConvolver(), tone=biq(c,"lowpass",8000,0.6); let key="";
-    i.connect(dry); dry.connect(o); i.connect(cv); cv.connect(tone); tone.connect(wet); wet.connect(o);
-    return {in:i, out:o, set(p){ const k=(p.type||"spring")+":"+Math.round(+p.decay*2)/2; if(k!==key){ key=k; cv.buffer=reverbIR(c, p.type||"spring", n10(p.decay)); }
-      wet.gain.value=0.9*n10(p.mix); dry.gain.value=1-0.25*n10(p.mix); tone.frequency.value=2000*Math.pow(6,n10(p.tone)); }}; })();
+  ORDER0.forEach(id=>{ FX[id]=FXMAKE[id](c); });
   const ORDER=["chorus","phaser","flanger","trem","rotary","delay","reverb"];
   let wiring="";
   function rewire(st){
@@ -523,9 +752,38 @@ let TAPE=null;
 function tapeCurve(){ if(TAPE) return TAPE; const n=1025; TAPE=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2; TAPE[i]=Math.tanh(1.1*x)/1.1/2; } return TAPE; }
 /* reverbs: a spring (drips, a little boing), a room, a hall, a plate; stereo noise that dies away, darker as it goes */
 const VERBS=new WeakMap();
+/* AOG-REAL-ROOMS-V1 (2026-10-11, Jimmy's 5: "Real rooms"): each type plays a recording of a real one when it has arrived
+   (aog-realrooms.js, CC0): the spring tank of a Roland RE-301, a steel wine tank played like a plate, a small room, a recording
+   studio or Liverpool Philharmonic Hall for Room, the hall or Notre Dame (New York) for a long Hall. Decay shapes it to the
+   time it asks for (shorter, or up to half as long again) and evened to the made-up one below: the same short pause before
+   the first echoes, and as loud for music (AOGRooms.fit), so Mix is as wet as before. The made-up one is normalised by the
+   convolver; the real one is set at that same level with normalize off. The made-up one plays until the recording is in,
+   and stays when it cannot load. An offline render waits for them (AOGAmp.load), so a recording always sounds the same.
+   The sounds with the most reverb were re-measured with them (strings_page.html, amp/b1). */
+const REAL_FOR={spring:[["spring",99]], plate:[["plate",99]], room:[["small",0.5],["studio",0.85],["hall",99]], hall:[["hall",2.3],["church",99]]};
+const REAL_ALL=["spring","plate","small","studio","hall","church"];
+function verbPre(type){ return type==="hall"?0.024:type==="room"?0.006:type==="plate"?0.002:0.012; }
+function verbT(type, d){ return type==="hall"?1.4+3.2*d : type==="plate"?0.9+2.2*d : type==="room"?0.35+1.1*d : 1.2+2.4*d; }
+function realFor(type, T){ const L=REAL_FOR[type]||REAL_FOR.spring; for(const [id,upTo] of L) if(T<=upTo) return id; return L[L.length-1][0]; }
+function roomsLib(){
+  if(G.AOGRooms) return Promise.resolve(G.AOGRooms);
+  if(typeof document==="undefined") return Promise.resolve(null);
+  return G.__aogRoomsLib || (G.__aogRoomsLib=new Promise(res=>{
+    try{ const s=document.createElement("script"); s.src="/aog-realrooms.js"; s.async=true; s.onload=()=>res(G.AOGRooms||null);
+      s.onerror=()=>{ G.__aogRoomsLib=null; res(null); }; (document.head||document.documentElement).appendChild(s); }catch(e){ res(null); } }));
+}
+function verbPer(c){ let per=VERBS.get(c); if(!per){ per={wait:[]}; VERBS.set(c, per); } return per; }
 function reverbIR(c, type, d){
-  let per=VERBS.get(c); if(!per){ per={}; VERBS.set(c, per); } const key=type+":"+d.toFixed(2); if(per[key]) return per[key];
-  const sr=c.sampleRate, T=type==="hall"?1.4+3.2*d : type==="plate"?0.9+2.2*d : type==="room"?0.35+1.1*d : 1.2+2.4*d;
+  const per=verbPer(c), key=type+":"+d.toFixed(2), T=verbT(type, d), id=realFor(type, T), L=G.AOGRooms;
+  if(per["r:"+key]) return per["r:"+key];
+  const made=per[key] || (per[key]=madeVerb(c, type, d));
+  if(L && L.get(c, id)){ const b=L.fit(c, id, {match:made, scale:L.normScale(made), pre:verbPre(type), rt:T, key:"amp:"+key}); if(b){ per["r:"+key]=b; return b; } }
+  if(!per["w:"+id]){ per["w:"+id]=1;
+    roomsLib().then(L=>L && L.load(c, id)).then(b=>{ if(!b){ per["w:"+id]=0; return; } per.wait.forEach(f=>{ try{ f(); }catch(e){} }); }, ()=>{ per["w:"+id]=0; }); }
+  return made;
+}
+function madeVerb(c, type, d){
+  const sr=c.sampleRate, T=verbT(type, d);
   const pre=type==="hall"?0.024:type==="room"?0.006:type==="plate"?0.002:0.012, len=Math.ceil((pre+T*1.1)*sr), ir=c.createBuffer(2, len, sr);
   for(let ch=0; ch<2; ch++){
     const a=ir.getChannelData(ch), r=seeded(type.length*7919+ch*104729+Math.round(d*100)), p0=Math.floor(pre*sr); let lp=0, lp2=0;
@@ -539,7 +797,7 @@ function reverbIR(c, type, d){
   /* even level whatever the length */
   let s=0; for(let ch=0;ch<2;ch++){ const a=ir.getChannelData(ch); for(let i=0;i<len;i++) s+=a[i]*a[i]; }
   const g=0.6/Math.sqrt(s/2+1e-9); for(let ch=0;ch<2;ch++){ const a=ir.getChannelData(ch); for(let i=0;i<len;i++) a[i]*=g; }
-  per[key]=ir; return ir;
+  return ir;
 }
 
 /* ══ the panel ═════════════════════════════════════════════════════════════
@@ -626,9 +884,12 @@ function knobHtml(scope, id, label, v, extra){
 }
 function ui(host, opt){
   if(!document.getElementById("aogamp-css")){ const st=document.createElement("style"); st.id="aogamp-css"; st.textContent=CSS; document.head.appendChild(st); }
-  const kind=opt.kind==="bass"?"bass":"guitar";
+  const kind=kindOf(opt.kind), room=isRoom(kind);
   const L=()=>(opt.lang&&opt.lang())==="es"?"es":"en";
   let note="";
+  /* AOG-ROOM-PEDALS-V1: a room's own words (opt.words: kept, back, backDone), and the drum rooms speak of effects */
+  const ow=(k, lang)=>opt.words&&opt.words[k] ? (opt.words[k][lang]||opt.words[k].en) : word(k, lang);
+  const fxw=kind==="drums" ? {help:"fxHelp", on:"fxOn", add:"addFx", none:"noFx", board:"fxOn"} : {help:"pedalHelp", on:"pedalsOn", add:"addPed", none:"noPeds", board:"pedals"};
   /* AOG-AMP-NEAR-V1 (Jimmy, 2026-10-10: "Once a pedal is chosen for guitar and bass, it should move closer to the neck so it
      is easier to adjust instead of scrolling down"): opt.near, when given, shows the pedals that are on, with their knobs,
      by the neck. The pedalboard below still turns them on and off; both show the same settings. */
@@ -636,49 +897,51 @@ function ui(host, opt){
   const qa=sel=>[host, near].filter(Boolean).reduce((a,h)=>a.concat([].slice.call(h.querySelectorAll(sel))), []);
   function paint(){
     const lang=L(), st=normalize(opt.get(), kind), M=MODELS[st.model];
-    const models=Object.keys(MODELS).filter(id=>MODELS[id].kind===kind||MODELS[id].kind==="both");
-    const cabs=Object.keys(CABS).filter(id=>CABS[id].kind===kind||CABS[id].kind==="both");
+    const models=room ? ROOMK[kind].models : Object.keys(MODELS).filter(id=>MODELS[id].kind===kind||MODELS[id].kind==="both");
+    const ck=room ? "guitar" : kind, cabs=Object.keys(CABS).filter(id=>CABS[id].kind===ck||CABS[id].kind==="both");
     const knobs=AMP_KNOBS.concat(st.model==="bdrive"?["blend"]:[]);
     const amped=st.model!=="none";
-    const pedals=PEDALS.filter(p=>!p.kind || p.kind===kind);     /* AOG-AMP-TONES-V1: a pedal can belong to one instrument */
-    const pedal=p=>{ const f=st.fx[p.id];
+    const hasAmp=models.length>1;          /* AOG-ROOM-PEDALS-V1: the band and the drum rooms have no amp to pick */
+    const pedals=pedalsOf(kind, opt.order&&opt.order());     /* AOG-AMP-TONES-V1: a pedal can belong to one instrument */
+    const pedal=p=>{ const f=st.fx[p.id], ty=typesOf(p, kind);
           const modes=p.modes?`<div class="aa-modes" role="group" aria-label="${esc(word("mode",lang))}">${p.modes.map(m=>`<button type="button" data-ped="${p.id}" data-mode="${m}" aria-pressed="${f.mode===m}">${word(m,lang)}</button>`).join("")}</div>`:"";
-          const types=p.types?`<label class="aa-sel"><span style="color:var(--pi)">${word("type",lang)}</span><select data-ped="${p.id}" data-type="1">${p.types.map(t=>`<option value="${t}"${f.type===t?" selected":""}>${word(t,lang)}</option>`).join("")}</select></label>`:"";
+          const types=ty?`<label class="aa-sel"><span style="color:var(--pi)">${word("type",lang)}</span><select data-ped="${p.id}" data-type="1">${ty.map(t=>`<option value="${t}"${f.type===t?" selected":""}>${word(t,lang)}</option>`).join("")}</select></label>`:"";
           return `<div class="aa-ped" data-p="${p.id}" style="--pc:${p.col[0]};--pi:${p.col[1]}">
             <div class="aa-pt"><b>${esc(p[lang])}</b><button type="button" class="aa-fs" data-fs="${p.id}" aria-pressed="${f.on}" aria-label="${esc(p[lang]+" · "+word(f.on?"on":"off",lang))}"><i aria-hidden="true"></i>${word(f.on?"on":"off",lang)}</button></div>
-            <p class="aa-pd">${esc(p.d[lang])}</p>
+            <p class="aa-pd">${esc(descOf(p, kind, lang))}</p>
             <div class="aa-pk"${f.on?"":" hidden"}>${modes}${types}${p.knobs.map(k=>knobHtml("ped:"+p.id, k[0], k[1][lang], f[k[0]], p.id==="delay"&&k[0]==="time"?' data-ms="1"':"")).join("")}</div>
           </div>`; };
-    const pre=pedals.filter(p=>PRE.indexOf(p.id)>=0), post=pedals.filter(p=>PRE.indexOf(p.id)<0);
+    const split=!room, pre=split?pedals.filter(p=>PRE.indexOf(p.id)>=0):[], post=split?pedals.filter(p=>PRE.indexOf(p.id)<0):pedals;
     host.innerHTML=`<div class="aogamp${vertOK()?"":" aa-flat"}" data-kind="${kind}">
-      <div class="aa-head">
+      ${hasAmp?`<div class="aa-head">
         <div class="aa-top">
           <label class="aa-sel"><span>${word("amp",lang)}</span><select data-aa="model">${models.map(id=>`<option value="${id}"${id===st.model?" selected":""}>${esc(MODELS[id][lang])}</option>`).join("")}</select></label>
-          <label class="aa-sel"><span>${word("cab",lang)}</span><select data-aa="cab">${cabs.map(id=>`<option value="${id}"${id===st.cab?" selected":""}>${esc(CABS[id][lang])}</option>`).join("")}</select></label>
+          ${!room||amped?`<label class="aa-sel"><span>${word("cab",lang)}</span><select data-aa="cab">${cabs.map(id=>`<option value="${id}"${id===st.cab?" selected":""}>${esc(CABS[id][lang])}</option>`).join("")}</select></label>`:""}
         </div>
         ${amped?`<div class="aa-plate">${knobs.map(k=>knobHtml("amp", k, word(k,lang), st.k[k])).join("")}</div>
         <div class="aa-sw"><button type="button" class="aa-btn" data-sw="bright" aria-pressed="${st.bright}">${word("bright",lang)}</button><button type="button" class="aa-btn" data-sw="tight" aria-pressed="${st.tight}">${word("tight",lang)}</button></div>
-        <p class="aa-help">${word("ampHelp",lang)} ${word("brightHelp",lang)}</p>`:""}
-      </div>
-      <div class="aa-board" role="group" aria-label="${esc(word("pedals",lang))}"><p>${word("pedalHelp",lang)}</p>
-        <h3 class="aa-rowh">${word("before",lang)}</h3><div class="aa-row">${pre.map(pedal).join("")}</div>
-        <h3 class="aa-rowh">${word("after",lang)}</h3><div class="aa-row">${post.map(pedal).join("")}</div>
+        <p class="aa-help">${word(room?"keysAmpHelp":"ampHelp",lang)} ${word("brightHelp",lang)}</p>`:""}
+      </div>`:""}
+      <div class="aa-board" role="group" aria-label="${esc(word(fxw.board,lang))}"><p>${word(fxw.help,lang)}</p>
+        ${split?`<h3 class="aa-rowh">${word("before",lang)}</h3><div class="aa-row">${pre.map(pedal).join("")}</div>
+        <h3 class="aa-rowh">${word("after",lang)}</h3>`:""}<div class="aa-row">${post.map(pedal).join("")}</div>
       </div>
       <div class="aa-eq">
         <div class="aa-eqh"><b>${word("eq",lang)} · dB</b><span><button type="button" class="aa-btn" data-eq="on" aria-pressed="${st.eq.on}">${word("eqUse",lang)}</button> <button type="button" class="aa-btn" data-eq="flat">${word("flat",lang)}</button></span></div>
         <div class="aa-bands" data-off="${st.eq.on?0:1}">${EQ_F.map((f,i)=>`<label class="aa-band"><span>${f>=1000?(f/1000)+"k":f}</span><input type="range" min="-12" max="12" step="0.5" value="${st.eq.db[i]}" data-band="${i}" aria-label="${f>=1000?(f/1000)+" kHz":f+" Hz"}" aria-valuetext="${(st.eq.db[i]>0?"+":"")+st.eq.db[i]} dB"><output>${(st.eq.db[i]>0?"+":"")+st.eq.db[i]}</output></label>`).join("")}</div>
       </div>
-      <div class="aa-foot"><button type="button" class="aa-btn" data-aa="back">${word("back",lang)}</button><p class="aa-note" aria-live="polite">${note?word(note,lang):word("kept",lang)}</p></div>
+      <div class="aa-foot"><button type="button" class="aa-btn" data-aa="back">${ow("back",lang)}</button><p class="aa-note" aria-live="polite">${note?ow(note,lang):ow("kept",lang)}</p></div>
     </div>`;
     if(near){
       /* AOG-AMP-NEAR-V2 (Jimmy, 2026-10-10: "A drop down menu bar with all the pedals and effect modules should be right
          there"): the strip is always there, with a menu of every pedal and effect that is off; picking one turns it on */
       const on=pedals.filter(p=>st.fx[p.id].on), offPre=pre.filter(p=>!st.fx[p.id].on), offPost=post.filter(p=>!st.fx[p.id].on);
-      const grp=(h,a)=>a.length?`<optgroup label="${esc(word(h,lang))}">${a.map(p=>`<option value="${p.id}">${esc(p[lang])}</option>`).join("")}</optgroup>`:"";
+      const opts=a=>a.map(p=>`<option value="${p.id}">${esc(p[lang])}</option>`).join("");
+      const grp=(h,a)=>a.length?(split?`<optgroup label="${esc(word(h,lang))}">${opts(a)}</optgroup>`:opts(a)):"";
       near.hidden=false;
-      near.innerHTML=`<div class="aogamp aa-near${vertOK()?"":" aa-flat"}" data-kind="${kind}" role="group" aria-label="${esc(word("pedalsOn",lang))}">
-        <div class="aa-nearh"><b>${word("pedalsOn",lang)}</b>${offPre.length||offPost.length?`<select data-addped="1" aria-label="${esc(word("addPed",lang))}"><option value="">${esc(word("addPed",lang))}</option>${grp("before",offPre)}${grp("after",offPost)}</select>`:""}</div>
-        ${on.length?`<div class="aa-row">${on.map(pedal).join("")}</div>`:`<p class="aa-none">${word("noPeds",lang)}</p>`}</div>`;
+      near.innerHTML=`<div class="aogamp aa-near${vertOK()?"":" aa-flat"}" data-kind="${kind}" role="group" aria-label="${esc(word(fxw.on,lang))}">
+        <div class="aa-nearh"><b>${word(fxw.on,lang)}</b>${offPre.length||offPost.length?`<select data-addped="1" aria-label="${esc(word(fxw.add,lang))}"><option value="">${esc(word(fxw.add,lang))}</option>${grp("before",offPre)}${grp("after",offPost)}</select>`:""}</div>
+        ${on.length?`<div class="aa-row">${on.map(pedal).join("")}</div>`:`<p class="aa-none">${word(fxw.none,lang)}</p>`}</div>`;
     }
     wire();
   }
@@ -714,8 +977,9 @@ function ui(host, opt){
   return {paint:paint};
 }
 
-const AOGAmp={load:load, create:create, defaults:defaults, normalize:normalize, coreParams:coreParams, ui:ui, cabIR:cabIR, reverbIR:reverbIR,
-  MODELS:MODELS, CABS:CABS, PEDALS:PEDALS, STACKS:STACKS, EQ_F:EQ_F, WORDS:WORDS, delayMs:delayMs, workletURL:null, _cabCurve:cabCurve};
+const AOGAmp={load:load, create:create, defaults:defaults, normalize:normalize, coreParams:coreParams, ui:ui, cabIR:cabIR, reverbIR:reverbIR, madeVerb:madeVerb,
+  MODELS:MODELS, CABS:CABS, PEDALS:PEDALS, STACKS:STACKS, EQ_F:EQ_F, WORDS:WORDS, delayMs:delayMs, workletURL:null, _cabCurve:cabCurve,
+  ROOMK:ROOMK, TRIM:TRIM, pedalsOf:pedalsOf, roomCore:roomCore, busParams:busParams, filterHz:filterHz, descOf:descOf};
 G.AOGAmp=AOGAmp;
 if(typeof module!=="undefined" && module.exports) module.exports=AOGAmp;
 })(typeof window!=="undefined"?window:globalThis);

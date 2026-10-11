@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:9afb038d35aa7506 · MADE BY tools/build-fast.py from music-kit.html: edit music-kit.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:59f3d0c7db11a3e3 · MADE BY tools/build-fast.py from music-kit.html: edit music-kit.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -90,6 +90,8 @@ svg.kit{display:block;width:100%;height:auto;border-radius:16px;touch-action:non
 .kp-b{min-height:44px;border-radius:12px;border:1px solid #c4452a;background:linear-gradient(#3a3e44,#1c1f23);color:#ffb1a4;font:800 .95rem/1.2 var(--sans);padding:0 1rem}
 .foot{color:var(--muted);font-size:.9rem;margin:1.5rem 0 1rem}
 .foot a{color:var(--ink)}
+/* AOG-ROOM-PEDALS-V1: inside the Studio the page is the dark control room (aog-labdoors.js), so the credits read light there, unless they sit in the cream Lessons and more card */
+html.in-studio .foot:not(.aog-learn *){color:#d9cfbd}html.in-studio .foot:not(.aog-learn *) a{color:#ffd36b}
 /* sideways (AOG-PLAY-V1, as the drum machine's): the kit fills the screen */
 html{touch-action:manipulation}
 .dk{display:none}
@@ -140,6 +142,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
+<script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
 <script src="/aog-lessons.js"></script>
@@ -177,6 +180,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
     <div class="kp-row"><label class="kp-field"><span id="kitLab"></span><select id="kitSel"></select></label><button type="button" class="kp-big" id="kpBig"></button></div>
     <p class="kp-line" id="kitLine" aria-live="polite"></p>
     <div id="kitBox"></div>
+    <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the effects that are on, with their knobs, and the menu of the rest, under the kit (aog-amp.js) -->
     <p class="kp-line kp-keys" id="kitKeys"></p><!-- AOG-KIT-KEYS-V1 -->
     <section class="kp-beat" id="beatBox" aria-labelledby="beatH">
       <h2 id="beatH"></h2>
@@ -187,6 +191,11 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
       <div class="kp-sl"><label for="swingR" id="swingLab"></label><input type="range" id="swingR" min="50" max="75" step="1"><output id="swingOut" for="swingR"></output></div>
       <div class="kp-sl"><label for="beatVol" id="volLab"></label><input type="range" id="beatVol" min="10" max="100" step="5"><output id="volOut" for="beatVol"></output></div>
       <button type="button" class="kp-reset" id="beatReset"></button>
+    </section>
+    <section class="kp-beat kp-fx" id="ampBlk" aria-labelledby="fxH"><!-- AOG-ROOM-PEDALS-V1: every effect and the EQ (aog-amp.js draws them) -->
+      <h2 id="fxH"></h2>
+      <p class="kp-about" id="fxLine"></p>
+      <div id="ampBox"></div>
     </section>
     <div class="kp-rec">
       <div class="aogrec-row"><button type="button" class="kp-b" id="takeBtn" aria-pressed="false"></button><span id="takeTime" hidden>0:00</span></div>
@@ -213,6 +222,6 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div id="dkKitBox"></div>
 </div>
-<script src="/front/20e4a1f0870f.js"></script>
+<script src="/front/801c10391cbc.js"></script>
 </body>
 </html>

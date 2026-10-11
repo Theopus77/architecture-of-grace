@@ -28,6 +28,12 @@ const STR={
   guide:{en:"New here? How to make a killer song, step by step →",es:"¿Eres nuevo? Cómo hacer una canción increíble, paso a paso →"},   /* AOG-BEATLAB-GUIDE-V1 */
   bgFirst:{en:"First beats",es:"Primeros ritmos"}, bgStyles:{en:"Famous styles",es:"Estilos famosos"},
   stepsH:{en:"Steps for pad {n}: {name}. Tap a step to add or take away a hit.",es:"Pasos del pad {n}: {name}. Toca un paso para poner o quitar un golpe."},
+  /* AOG-ROOM-PEDALS-V1 */
+  fxH:{en:"Effects",es:"Efectos"},
+  fxLine:{en:"The whole machine plays through these. Every effect starts off.",es:"Toda la caja de ritmos suena con estos efectos. Todos empiezan apagados."},
+  fxKept:{en:"Your effects stay with the Drum Machine, on this device.",es:"Tus efectos se quedan con la caja de ritmos, en este dispositivo."},
+  fxBack:{en:"Start clean again",es:"Empezar limpio otra vez"},
+  fxBackDone:{en:"Every effect is off again.",es:"Todos los efectos están apagados otra vez."},
   padSet:{en:"Pad {n}: volume, pitch, left and right",es:"Pad {n}: volumen, tono, izquierda y derecha"},
   vol:{en:"Volume",es:"Volumen"}, tune:{en:"Pitch",es:"Tono"}, pan:{en:"Left and right",es:"Izquierda y derecha"},
   center:{en:"middle",es:"centro"}, left:{en:"left {n}",es:"izq. {n}"}, right:{en:"right {n}",es:"der. {n}"}, semis:{en:"{n} steps",es:"{n} semitonos"},
@@ -195,13 +201,30 @@ function ceiling(c){
   for(let i=0;i<n;i++){ const x=(i/(n-1))*3-1.5, a=Math.abs(x); cv[i]=Math.sign(x)*(a<0.8 ? a : 0.8+0.2*Math.tanh((a-0.8)/0.2)); }
   w.curve=cv; w.oversample="2x"; return w;
 }
+/* AOG-ROOM-PEDALS-V1 (2026-10-11) — Jimmy: "Can the pedals and effects be added to all instruments not just the guitar and
+   bass". The machine's master, one builder for the live sound and for Bounce (renderLoop): every pad → bus → the drum bus
+   effects (aog-amp.js, kind "drums": Punch, Tape, Filter, Crush, the compressor, the echo, the reverb) → limiter → ceiling.
+   The recorder listens at the ceiling, so a take carries the effects. With every effect off the rig is a straight wire. */
+function master(c){
+  const m={c:c};
+  m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-3; m.lim.knee.value=2; m.lim.ratio.value=20; m.lim.attack.value=0.002; m.lim.release.value=0.12;
+  m.bus=c.createGain(); m.bus.gain.value=0.9; m.clip=ceiling(c);
+  m.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState()}) : null;
+  if(m.rig){ m.bus.connect(m.rig.input); m.rig.output.connect(m.lim); } else m.bus.connect(m.lim);
+  m.lim.connect(m.clip); m.clip.connect(c.destination);
+  return m;
+}
+const FXKEY="aog.pads.fx.v1";
+let FXST=null; try{ const r=JSON.parse(localStorage.getItem(FXKEY)||"null"); if(r && typeof r==="object" && !Array.isArray(r)) FXST=r.machine||null; }catch(e){ FXST=null; }
+function fxState(){ return window.AOGAmp ? AOGAmp.normalize(FXST||{}, "drums") : null; }
+function saveFx(){ try{ if(FXST) localStorage.setItem(FXKEY, JSON.stringify({machine:FXST})); else localStorage.removeItem(FXKEY); }catch(e){} }
+let LIVE_M=null;
 function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
     ac=new AC({latencyHint:"interactive"});
-    lim=ac.createDynamicsCompressor(); lim.threshold.value=-3; lim.knee.value=2; lim.ratio.value=20; lim.attack.value=0.002; lim.release.value=0.12;
-    bus=ac.createGain(); bus.gain.value=0.9; clip=ceiling(ac); bus.connect(lim); lim.connect(clip); clip.connect(ac.destination);
+    LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip;
   }
   if(ac.state==="suspended") ac.resume();
   return ac;
@@ -705,8 +728,7 @@ async function renderLoop(){
   const passes=Math.min(12, 1+Math.ceil(6/sec));          /* enough times round for the longest ring to settle */
   const O=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const off=new O(2, Math.ceil(passes*sec*sr)+16, sr);
-  const lim2=off.createDynamicsCompressor(); lim2.threshold.value=-3; lim2.knee.value=2; lim2.ratio.value=20; lim2.attack.value=0.002; lim2.release.value=0.12;
-  const g=off.createGain(), cl2=ceiling(off); g.gain.value=0.9; g.connect(lim2); lim2.connect(cl2); cl2.connect(off.destination);
+  const M=master(off), g=M.bus; if(M.rig){ try{ await M.rig.ready(); }catch(e){} }   /* AOG-ROOM-PEDALS-V1: the same effects as live */
   const T={c:off, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}, m=evMap(), ticks=[...m.keys()].sort((a,b)=>a-b);
   for(let pass=0;pass<passes;pass++) ticks.forEach(tk=>m.get(tk).forEach(e=>{
     if(e.b<0 || e.b>3) return;
@@ -1049,7 +1071,25 @@ function paintText(){
   $("nav").innerHTML=navHtml(); $("guideLink").textContent=t("guide");
   $("foot").innerHTML=`<p>${esc(t("credit"))} <a href="/audio/drums/CREDITS.txt">${esc(t("cDrums"))}</a> · <a href="/audio/piano/CREDITS.txt">${esc(t("cKeys"))}</a> · <a href="/audio/guitar/CREDITS.txt">${esc(t("cGuitar"))}</a> · <a href="/audio/bass/CREDITS.txt">${esc(t("cBass"))}</a> · <a href="/audio/band/CREDITS.txt">${esc(t("cBand"))}</a> · <a href="/audio/crate/CREDITS.txt">${esc(t("cWord"))}</a></p>`;
   REC.paint(); paintBounce(); LES.paint();
+  paintFx();   /* AOG-ROOM-PEDALS-V1 */
 }
+/* AOG-ROOM-PEDALS-V1: the effects panel. aog-amp.js draws it (the guitar's own panel); the strip under the pads shows the
+   effects that are on and a menu of the rest. Drawn again only when the language changes (or an effect is turned on or
+   off), so a knob in your hand is never redrawn while the beat plays. */
+let FXUI=null, FXLANG="";
+function applyFx(){ if(LIVE_M && LIVE_M.rig) LIVE_M.rig.set(fxState()); }
+function paintFx(){
+  if(!window.AOGAmp || !$("ampBox")) return;
+  $("fxH").textContent=t("fxH"); $("fxLine").textContent=t("fxLine");
+  if(FXUI && FXLANG===S0.lang) return; FXLANG=S0.lang;
+  const W=k=>STR[k];
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:fxState,
+    words:{kept:W("fxKept"), back:W("fxBack"), backDone:W("fxBackDone")},
+    set:st=>{ FXST=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ FXST=null; saveFx(); applyFx(); }});
+  else FXUI.paint();
+}
+window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* ══ AOG-PADS-BIG-V1 (2026-10-11) — Jimmy: "Can the drum pad be expanded" — bigger, and (AOG-PADS-24-V1) more. ⤢ puts the
    24 pads on the whole screen (the page's own #pads moves in, so every tap, the loop and a lesson work as before), with the
    bank, Play and Record. Close, or Esc, brings the page back where it was. ══ */
