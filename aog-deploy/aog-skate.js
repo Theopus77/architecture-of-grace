@@ -10,6 +10,7 @@
      flip      a 3D board turning about its long, short and up-down axes; arms in and out, L = Iω.
      timeline  the board and the wheel, 1959 to today.
      tricks    where each foot goes, the steps, what helps, the science.
+     build     build a board: a whole setup for a rider and a use, and checks for truck fit, wheels and wheel bite.
    Calm (CLAUDE.md): nothing moves until Go; a run plays once and stops; ◀ ▶ and the slider step through
    every moment by hand. With "reduce motion" on, Go shows the whole run at once as a still picture.
    Every run is worked out first (a list of moments), then shown, so what you see is exactly what was computed.
@@ -27,14 +28,15 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 
 /* ── saved choices (this device only) ── */
 const DEF = {
-  lang: "en", room: "ramp", speed: 1, stance: "regular",
+  lang: "en", room: "build", speed: 1, stance: "regular",
   ramp: { shape: "mini", h: 1.2, wheel: "ure", mass: 50, pump: false, guess: "" },
   ollie: { pop: 0.7, slide: "on", jump: 0.3, forces: true, ghost: false },
   grind: { surface: "metal", trick: "fifty", v: 3, len: 2.5, mass: 50 },
   balance: { mode: "stand", com: 0, lean: 10, v: 3, truck: "med" },
   flip: { mode: "board", trick: "kickflip", view: "corner", arms: "out" },
   timeline: { i: 0 },
-  tricks: { id: "stance" }
+  tricks: { id: "stance" },
+  build: { rider: "m", use: "tricks", deck: 8.125, axle: 8.125, wheel: 52, duro: 100, riser: 0, bush: "med", type: "pop" }
 };
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { S = null; }
@@ -1281,6 +1283,163 @@ function tricksWire() {
   document.querySelectorAll("#panel [data-go]").forEach(b => b.onclick = () => openRoom(b.getAttribute("data-go"), true));
 }
 
+/* ══ ROOM 8 — build a board (AOG-SKATE-BUILD-V1, 2026-10-11) ═════════════════════════════════════════════
+   Jimmy: suggestions on boards, wheels, trucks. Pick a size and what you will do most; get a whole setup with the
+   reason for each part; then change any part and the checks answer: do the trucks fit the deck (axle width within
+   about 1/4 inch of the deck), do the wheels suit the ground, will the wheels bite? Wheel bite is a simple model,
+   drawn from the front at full lean: the deck sits 53 mm above the axle (a mid truck) plus the riser; leaning by φ
+   (soft 15°, medium 11°, hard 8°) lowers the deck over a wheel by x·sin φ, where x is the wheel's distance from the
+   middle. Clearance = 53 + riser − wheel radius − x·sin φ. Sizes are typical shop ranges, never rules. */
+const RIDERS = {
+  micro: { d: [6.5, 7.0], bush: "soft", en: "Little kid, about age 5 and under", es: "Niño pequeño, unos 5 años o menos" },
+  mini: { d: [7.0, 7.3], bush: "soft", en: "Kid, about 6 to 8", es: "Niño, unos 6 a 8 años" },
+  mid: { d: [7.3, 7.6], bush: "soft", en: "Kid, about 9 to 12", es: "Niño, unos 9 a 12 años" },
+  s: { d: [7.75, 8.0], bush: "med", en: "Teen or adult, small feet (US men's 6–8)", es: "Joven o adulto, pies pequeños (EE. UU. 6–8)" },
+  m: { d: [8.0, 8.25], bush: "med", en: "Teen or adult, medium feet (US men's 8½–10½)", es: "Joven o adulto, pies medianos (EE. UU. 8½–10½)" },
+  l: { d: [8.25, 8.75], bush: "med", en: "Teen or adult, large feet (US men's 11 and up)", es: "Joven o adulto, pies grandes (EE. UU. 11 o más)" }
+};
+const USES = {
+  tricks: { w: [51, 54], a: [99, 101], riser: 0, type: "pop", add: 0, en: "Learn tricks on smooth ground", es: "Aprender trucos en suelo liso" },
+  ramps: { w: [54, 58], a: [99, 101], riser: 0, type: "pop", add: 0.25, en: "Ride ramps and bowls", es: "Montar rampas y bowls" },
+  rough: { w: [54, 56], a: [87, 92], riser: 0, type: "pop", add: 0, en: "Roll on rough sidewalks", es: "Rodar en aceras ásperas" },
+  cruise: { w: [56, 60], a: [78, 87], riser: 3.2, type: "cruiser", add: 0.25, en: "Cruise paths and get around", es: "Pasear por senderos y moverte" }
+};
+const BUSH = { soft: { phi: 15, en: "Soft", es: "Blandas" }, med: { phi: 11, en: "Medium", es: "Medias" }, hard: { phi: 8, en: "Hard", es: "Duras" } };
+const RISERS = [0, 3.2, 6.4];
+const in8 = x => Math.round(x * 8) / 8;
+function suggestBoard(rider, use) {
+  const R = RIDERS[rider], U = USES[use], small = rider === "micro";
+  const d = [in8(R.d[0] + U.add), in8(R.d[1] + U.add)], deck = in8((d[0] + d[1]) / 2);
+  const w = small ? [U.w[0] - 1, U.w[1] - 2] : U.w, wheel = Math.round((w[0] + w[1]) / 2), duro = Math.round((U.a[0] + U.a[1]) / 2);
+  const riser = wheel >= 56 ? Math.max(U.riser, 3.2) : U.riser;
+  return { deckRange: d, deck, axle: deck, wheelRange: w, wheel, duroRange: U.a, duro, riser, bush: R.bush, type: U.type };
+}
+function inch(x) {   // 8.125 → 8⅛″ (skate shops write eighths)
+  const n = Math.round(x * 8), w = Math.floor(n / 8), f = n % 8;
+  return (w ? w : "") + ["", "⅛", "¼", "⅜", "½", "⅝", "¾", "⅞"][f] + "″";
+}
+function boltFor(riser) { return riser < 1 ? [0.875, "7/8"] : riser < 5 ? [1.0, "1"] : [1.25, "1¼"]; }
+function boardCheck(o) {
+  const fitDiff = o.axle - o.deck;
+  const x = o.axle * 25.4 / 2 - 10, phi = BUSH[o.bush].phi * DEG;
+  const clear = 53 + o.riser - o.wheel / 2 - x * Math.sin(phi);
+  const where = o.use, hardOK = where === "rough" || where === "cruise" ? o.duro <= 92 : o.duro >= 95;
+  return { fitDiff, fit: Math.abs(fitDiff) <= 0.25 ? "ok" : fitDiff < 0 ? "narrow" : "wide", clear, bite: clear < 0 ? "bite" : clear < 3 ? "close" : "ok", hardOK, x, phi };
+}
+function drawBuild() {
+  const o = S.build, ch = boardCheck(o), half = W * 0.52;
+  // the front view at full lean (left)
+  const r = o.wheel / 2, H0 = 53 + o.riser, Wd = o.deck * 25.4, ax = o.axle * 25.4;
+  const sc = Math.min((half - 50) / Math.max(Wd, ax + 40), (H - 120) / 150), ox = half / 2, oy = Math.min(H - 70, H / 2 + 75 * sc);
+  const X = x => ox + x * sc, Y = y => oy - y * sc;
+  const narrow = sizedW < 600;
+  text(narrow ? L("Front, full lean", "De frente") : L("From the front, leaning all the way", "De frente, inclinada al máximo"), 16, 34, { w: 700, m: .85, c: C.soft });
+  ctx.fillStyle = C.ground; ctx.fillRect(0, Y(0), half, H);
+  const xw = ch.x;   // wheel's distance from the middle (to its inner top), as in the check
+  [-1, 1].forEach(sd => { const cx = sd * (ax / 2 - 16); ctx.fillStyle = C.wheel; ctx.strokeStyle = C["ramp-edge"]; ctx.lineWidth = 2; roundRect(X(cx - 16), Y(2 * r), 32 * sc, 2 * r * sc, 4); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = C.truck; ctx.fillRect(X(-ax / 2), Y(r + 4), ax * sc, 8 * sc);           // the axle and hanger
+  ctx.fillRect(X(-18), Y(r + 30), 36 * sc, 26 * sc);                                    // the hanger body
+  ctx.fillStyle = C.soft; ctx.fillRect(X(-11), Y(r + 53), 22 * sc, 23 * sc);              // the kingpin and bushings between hanger and baseplate
+  ctx.save(); ctx.translate(X(0), Y(r + 53)); ctx.rotate(ch.phi);                       // baseplate top: riser and deck stack above it and tilt with it
+  ctx.fillStyle = C.truck; ctx.fillRect(-30 * sc, 0, 60 * sc, 6 * sc);
+  if (o.riser) { ctx.fillStyle = C.soft; ctx.fillRect(-32 * sc, -o.riser * sc, 64 * sc, o.riser * sc); }
+  ctx.fillStyle = C.deck; ctx.fillRect(-Wd / 2 * sc, -(o.riser + 11) * sc, Wd * sc, 11 * sc);
+  ctx.fillStyle = C.grip; ctx.fillRect(-Wd / 2 * sc, -(o.riser + 12) * sc, Wd * sc, 1.6 * sc);
+  ctx.restore();
+  // the gap over the low wheel (the right side drops when the deck turns clockwise on screen)
+  const gx = X(xw), wheelTop = Y(2 * r), deckLow = Y(r + H0 - xw * Math.sin(ch.phi));
+  const col = ch.bite === "bite" ? C.force : ch.bite === "close" ? C.warn : C.good;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gx, wheelTop); ctx.lineTo(gx, deckLow); ctx.stroke(); ctx.restore();
+  text((ch.clear < 0 ? L("hits: ", "choca: ") : L("gap ", "espacio ")) + num(Math.abs(ch.clear), 0) + " mm", Math.min(gx + 10, half - 10), (wheelTop + deckLow) / 2 - 30, { m: .85, c: col, bg: C.sky, a: gx + 10 > half - 140 ? "right" : "left" });
+  text(L(BUSH[o.bush].en, BUSH[o.bush].es) + " · " + BUSH[o.bush].phi + "°", ox, Y(0) + 32, { a: "center", m: .8, c: C.soft });
+  // from above (right): the deck outline and the wheels at the ends of the axles
+  ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(half, 12); ctx.lineTo(half, H - 12); ctx.stroke();
+  text(L("From above", "Desde arriba"), half + 16, 34, { w: 700, m: .85, c: C.soft });
+  const len = (o.type === "cruiser" ? 30 : 31.5) * 25.4, s2 = Math.min((W - half - 70) / Math.max(Wd, ax + 40), (H - FS * 4.6 - 60) / len);
+  const cx2 = half + (W - half) / 2, cy2 = 30 + FS + len * s2 / 2;
+  ctx.save(); ctx.translate(cx2, cy2); ctx.scale(s2, s2);
+  const hw = Wd / 2, hl = len / 2, nose = o.type === "cruiser" ? hw * 0.9 : hw;
+  ctx.fillStyle = C.grip; ctx.beginPath(); ctx.moveTo(-hw, -hl + hw); ctx.arc(0, -hl + hw, hw, Math.PI, 0); ctx.lineTo(hw, hl - nose); ctx.arc(0, hl - nose, hw, 0, Math.PI); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = C.deck; ctx.lineWidth = 4 / s2; ctx.stroke();
+  const wb = 14.25 * 25.4 / 2;
+  [-wb, wb].forEach(y => {
+    ctx.fillStyle = C.truck; ctx.fillRect(-ax / 2, y - 5, ax, 10);
+    [-1, 1].forEach(sd => { ctx.fillStyle = C.wheel; ctx.strokeStyle = C["ramp-edge"]; ctx.lineWidth = 2 / s2; ctx.fillRect(sd * ax / 2 - (sd > 0 ? 32 : 0), y - r, 32, 2 * r); ctx.strokeRect(sd * ax / 2 - (sd > 0 ? 32 : 0), y - r, 32, 2 * r); });
+  });
+  ctx.restore();
+  const over = (ax - Wd) / 2;
+  text(L("Deck ", "Tabla ") + inch(o.deck) + " · " + L("axle ", "eje ") + inch(o.axle), cx2, H - 44, { a: "center", m: .85, c: C.ink });
+  text(ch.fit === "ok" ? L("trucks fit the deck", "los ejes encajan con la tabla") : over > 0 ? L("wheels stick out ", "las ruedas sobresalen ") + num(over, 0) + " mm" : L("trucks too narrow by ", "ejes angostos por ") + num(-over, 0) + " mm", cx2, H - 18, { a: "center", m: .85, c: ch.fit === "ok" ? C.good : C.warn });
+}
+function buildUnder() {
+  const o = S.build, ch = boardCheck(o), b = boltFor(o.riser);
+  return `<div class="reads">
+    <div class="read"><div class="k">${L("Deck", "Tabla")}</div><div class="v">${inch(o.deck)}</div><div class="u">${num(o.deck * 2.54, 1)} cm</div></div>
+    <div class="read"><div class="k">${L("Wheels", "Ruedas")}</div><div class="v">${o.wheel} mm</div><div class="u">${o.duro}A</div></div>
+    <div class="read"><div class="k">${L("Clearance", "Espacio")}</div><div class="v">${num(ch.clear, 0)} mm</div><div class="u">${L("at full lean", "inclinada al máximo")}</div></div>
+    <div class="read"><div class="k">${L("Bolts", "Tornillos")}</div><div class="v">${b[1]}″</div><div class="u">${L("8 bearings, size 608", "8 rodamientos, tamaño 608")}</div></div>
+  </div>`;
+}
+function buildPanel() {
+  const o = S.build, sg = suggestBoard(o.rider, o.use), ch = boardCheck(o), b = boltFor(sg.riser);
+  const seg = (k, v, l) => `<button type="button" data-k="${k}" data-v="${v}" aria-pressed="${String(o[k]) === String(v)}">${l}</button>`;
+  const rng = (a, u) => u === "in" ? inch(a[0]).replace("″", "") + "–" + inch(a[1]) : a[0] + "–" + a[1] + u;
+  const typeName = sg.type === "cruiser" ? L("A cruiser: big soft wheels, made for rolling and carving", "Un cruiser: ruedas grandes y blandas, para rodar y hacer curvas") : L("A standard trick board (popsicle shape, a kick at each end)", "Una tabla de trucos estándar (forma de paleta, con dos colas)");
+  const notes = [];
+  notes.push(ch.fit === "ok" ? ["good", L("The trucks fit the deck: the wheels sit right under its edges.", "Los ejes encajan con la tabla: las ruedas quedan justo bajo sus bordes.")] :
+    ch.fit === "narrow" ? ["warn", L("The trucks are narrower than the deck by more than a quarter inch. The board will feel tippy. Choose trucks with an axle closer to the deck's width.", "Los ejes son más angostos que la tabla por más de un cuarto de pulgada. La tabla se sentirá inestable. Elige ejes más cercanos al ancho de la tabla.")] :
+    ["warn", L("The trucks are wider than the deck by more than a quarter inch. The wheels stick out, where they catch on ledges and your shoes.", "Los ejes son más anchos que la tabla por más de un cuarto de pulgada. Las ruedas sobresalen y se enganchan en bordes y zapatos.")]);
+  notes.push(ch.bite === "bite" ? ["warn", L("Wheel bite: at full lean the deck reaches the wheel and stops it. Add a riser pad, choose harder bushings or smaller wheels.", "Wheel bite: inclinada al máximo, la tabla toca la rueda y la frena. Añade un riser, gomas más duras o ruedas más pequeñas.")] :
+    ch.bite === "close" ? ["warn", L("Close to wheel bite: only a few millimeters to spare at full lean. A riser pad would help.", "Casi wheel bite: quedan pocos milímetros inclinada al máximo. Un riser ayudaría.")] :
+    ["good", L("No wheel bite: there is room over the wheels even at full lean.", "Sin wheel bite: hay espacio sobre las ruedas aun inclinada al máximo.")]);
+  notes.push(ch.hardOK ? ["good", L("The wheel hardness suits where you will ride.", "La dureza de las ruedas va bien con donde patinarás.")] :
+    (o.use === "rough" || o.use === "cruise") ? ["warn", L("These wheels are hard for rough ground. Every crack will shake the board. Softer wheels (about 78A to 92A) roll over it.", "Estas ruedas son duras para suelo áspero. Cada grieta sacudirá la tabla. Las ruedas blandas (unos 78A a 92A) pasan por encima.")] :
+    ["warn", L("These wheels are soft for smooth ground and tricks. They grip well but feel slow and sticky for slides. Harder wheels (about 95A to 101A) suit it better.", "Estas ruedas son blandas para suelo liso y trucos. Agarran bien pero se sienten lentas para deslizar. Las más duras (unos 95A a 101A) van mejor.")]);
+  return `<p class="kicker">${L("Start here · Gear", "Empieza aquí · Equipo")}</p>
+  <h2>${L("Build a board", "Arma una tabla")}</h2>
+  <p class="say">${L("Tell the lab your size and what you will do most. It suggests a whole setup and says why. Then change any part and watch the checks.", "Dile al laboratorio tu tamaño y lo que más harás. Te sugiere una tabla completa y explica por qué. Luego cambia cualquier pieza y mira las comprobaciones.")}</p>
+  <div class="ctl"><label for="bdR">${L("Who will ride it?", "¿Quién la va a usar?")}</label><select class="sel" id="bdR">${Object.keys(RIDERS).map(k => `<option value="${k}" ${o.rider === k ? "selected" : ""}>${esc(L(RIDERS[k].en, RIDERS[k].es))}</option>`).join("")}</select></div>
+  <div class="ctl"><label for="bdU">${L("What will you do most?", "¿Qué harás más?")}</label><select class="sel" id="bdU">${Object.keys(USES).map(k => `<option value="${k}" ${o.use === k ? "selected" : ""}>${esc(L(USES[k].en, USES[k].es))}</option>`).join("")}</select></div>
+  <h3>${L("Suggested setup", "Tabla sugerida")}</h3>
+  <div class="fixes">
+    <div><b>${typeName}</b></div>
+    <div><b>${L("Deck", "Tabla")}: ${rng(sg.deckRange, "in")} ${L("wide", "de ancho")}</b>${L("Wide enough for your feet to sit across it over the bolts.", "Suficiente para que tus pies queden de lado sobre los tornillos.")}${o.use === "ramps" || o.use === "cruise" ? " " + L("A little wider for steady landings and rolling.", "Un poco más ancha para aterrizar y rodar con estabilidad.") : ""}</div>
+    <div><b>${L("Trucks: axle about", "Ejes: eje de unos")} ${rng(sg.deckRange, "in")}</b>${L("Match the axle width to the deck (within about ¼ inch). Each maker lists its axle widths on a size chart.", "El ancho del eje igual al de la tabla (con ¼ de pulgada de diferencia). Cada fabricante publica sus anchos.")}</div>
+    <div><b>${L("Wheels", "Ruedas")}: ${rng(sg.wheelRange, " mm")}, ${rng(sg.duroRange, "A")}</b>${o.use === "tricks" ? L("Small and hard: light to pop, fast on smooth ground.", "Pequeñas y duras: ligeras para saltar, rápidas en suelo liso.") : o.use === "ramps" ? L("A little bigger to carry speed; hard for smooth ramps.", "Un poco más grandes para mantener la rapidez; duras para rampas lisas.") : o.use === "rough" ? L("Softer, so cracks and pebbles do not stop you.", "Más blandas, para que grietas y piedritas no te frenen.") : L("Big and soft: smooth and quiet over rough paths.", "Grandes y blandas: suaves y silenciosas en senderos ásperos.")}</div>
+    <div><b>${L("Bushings", "Gomas")}: ${L(BUSH[sg.bush].en, BUSH[sg.bush].es)}</b>${sg.bush === "soft" ? L("Light riders turn easily on soft bushings.", "Los patinadores ligeros giran fácil con gomas blandas.") : L("Medium is a good start; heavier riders often choose harder ones.", "Medias es un buen comienzo; los más pesados suelen elegir más duras.")}</div>
+    <div><b>${L("Riser pad", "Riser")}: ${sg.riser ? L("⅛ inch", "⅛ de pulgada") : L("none", "ninguno")} · ${L("bolts", "tornillos")} ${b[1]}″</b>${sg.riser ? L("Lifts the deck away from bigger wheels to prevent wheel bite.", "Separa la tabla de las ruedas grandes para evitar el wheel bite.") : L("Not needed with these wheels.", "No hace falta con estas ruedas.")}</div>
+    <div><b>${L("Bearings: 8, size 608", "Rodamientos: 8, tamaño 608")}</b>${L("Two in each wheel. Almost every skateboard wheel takes this size.", "Dos en cada rueda. Casi todas las ruedas usan este tamaño.")}</div>
+  </div>
+  <div class="row" style="margin:.6rem 0"><button type="button" class="btn btn-steel" id="bdUse">${L("Show this setup", "Mostrar esta tabla")}</button></div>
+  <h3>${L("Try it yourself", "Pruébalo tú")}</h3>
+  <div class="ctl"><label for="bdD">${L("Deck width", "Ancho de la tabla")} <output>${inch(o.deck)}</output></label><input type="range" id="bdD" min="6.5" max="9.5" step="0.125" value="${o.deck}"></div>
+  <div class="ctl"><label for="bdA">${L("Truck axle width", "Ancho del eje")} <output>${inch(o.axle)}</output></label><input type="range" id="bdA" min="6.5" max="9.5" step="0.125" value="${o.axle}"></div>
+  <div class="ctl"><label for="bdW">${L("Wheel size", "Tamaño de rueda")} <output>${o.wheel} mm</output></label><input type="range" id="bdW" min="48" max="64" step="1" value="${o.wheel}"></div>
+  <div class="ctl"><label for="bdH">${L("Wheel hardness", "Dureza de rueda")} <output>${o.duro}A</output></label><input type="range" id="bdH" min="78" max="101" step="1" value="${o.duro}"></div>
+  <div class="ctl"><span class="lab">${L("Riser pad", "Riser")}</span><div class="seg">${seg("riser", 0, L("None", "Ninguno"))}${seg("riser", 3.2, "⅛″")}${seg("riser", 6.4, "¼″")}</div></div>
+  <div class="ctl"><span class="lab">${L("Bushings", "Gomas")}</span><div class="seg">${Object.keys(BUSH).map(k => seg("bush", k, L(BUSH[k].en, BUSH[k].es))).join("")}</div></div>
+  ${notes.map(n => `<div class="note ${n[0]}">${n[1]}</div>`).join("")}
+  <div class="math">${L("Clearance at full lean (simple model)", "Espacio inclinada al máximo (modelo simple)")}:
+53 mm + ${L("riser", "riser")} ${num(o.riser, 1)} − ${L("wheel radius", "radio")} ${num(o.wheel / 2, 1)} − ${num(ch.x, 0)} × sin ${BUSH[o.bush].phi}°
+= ${num(ch.clear, 1)} mm</div>
+  <p class="hint muted">${L("Sizes are typical shop ranges, not rules. Feet matter more than age. Stand on a board in flat shoes before you buy.", "Los tamaños son rangos típicos de las tiendas, no reglas. Los pies importan más que la edad. Párate en la tabla con zapatos planos antes de comprar.")}</p>
+  <details class="more"><summary>${L("Check it before every ride", "Revísala antes de cada paseo")}</summary>
+   <ol class="tsteps"><li>${L("Every bolt and nut is snug.", "Cada tornillo y tuerca está firme.")}</li><li>${L("Each wheel spins freely and does not wobble.", "Cada rueda gira libre y no se tambalea.")}</li><li>${L("The trucks turn evenly to both sides.", "Los ejes giran igual hacia los dos lados.")}</li><li>${L("Helmet on and buckled; wrist guards and pads while you learn.", "Casco puesto y abrochado; muñequeras y protecciones mientras aprendes.")}</li></ol></details>
+  <p><a href="/skt6">${L("Lesson: a board your size (grades 3–5)", "Lección: una tabla de tu tamaño (grados 3–5)")} →</a><br><a href="/skt17">${L("Lesson: trucks that fit the deck (adult)", "Lección: ejes que encajan con la tabla (adultos)")} →</a><br><a href="/skt14">${L("Unit: decks, wheels and bearings (grades 11–12)", "Unidad: tablas, ruedas y rodamientos (grados 11–12)")} →</a></p>`;
+}
+function buildWire() {
+  const o = S.build;
+  const useSuggestion = () => { const sg = suggestBoard(o.rider, o.use); Object.assign(o, { deck: sg.deck, axle: sg.axle, wheel: sg.wheel, duro: sg.duro, riser: sg.riser, bush: sg.bush, type: sg.type }); save(); panel(); paint(); };
+  $("bdR").onchange = e => { o.rider = e.target.value; useSuggestion(); };
+  $("bdU").onchange = e => { o.use = e.target.value; useSuggestion(); };
+  $("bdUse").onclick = useSuggestion;
+  document.querySelectorAll("#panel [data-k]").forEach(b => b.onclick = () => { const k = b.getAttribute("data-k"), v = b.getAttribute("data-v"); o[k] = k === "riser" ? +v : v; save(); panel(); paint(); });
+  [["bdD", "deck", v => inch(v)], ["bdA", "axle", v => inch(v)], ["bdW", "wheel", v => v + " mm"], ["bdH", "duro", v => v + "A"]].forEach(([id, k, f]) => {
+    $(id).oninput = e => { o[k] = +e.target.value; e.target.previousElementSibling.querySelector("output").textContent = f(o[k]); save(); paint(); $("under").innerHTML = buildUnder(); };
+    $(id).onchange = () => panel();
+  });
+}
+
 /* ══ the rooms, the page and the words ══════════════════════════════════════════════════════════════ */
 const ROOMS = {
   ramp: { en: "Ramp and energy", es: "Rampa y energía", player: true, run: () => rampReset(true), reset: rampReset, draw: () => drawRamp(P.frames[P.k]), under: () => rampUnder(P.frames[P.k]), panel: rampPanel, wire: rampWire,
@@ -1295,10 +1454,12 @@ const ROOMS = {
     desc: () => L("A 3D skateboard turning in the air. ", "Una patineta en 3D girando en el aire. ") },
   timeline: { en: "Boards through time", es: "Las tablas en el tiempo", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawTimeline, under: () => "", panel: timelinePanel, wire: timelineWire,
     desc: () => L("A skateboard from above and from the side, as boards looked in ", "Una patineta desde arriba y de lado, como eran en ") + ERAS[S.timeline.i].y + ". " },
+  build: { en: "Build a board", es: "Arma una tabla", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawBuild, under: buildUnder, panel: buildPanel, wire: buildWire,
+    desc: () => L("A skateboard from the front, leaning all the way over its wheels, and from above. ", "Una patineta de frente, inclinada al máximo sobre sus ruedas, y desde arriba. ") },
   tricks: { en: "Trick book", es: "Libro de trucos", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawTricks, under: () => "", panel: tricksPanel, wire: tricksWire,
     desc: () => L("A skateboard from above showing where each foot goes. ", "Una patineta desde arriba que muestra dónde va cada pie. ") }
 };
-const ORDER = ["ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks"];
+const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks"];   // AOG-SKATE-BUILD-HOME-V1: Build a board first
 function panel() { const r = ROOMS[S.room]; $("panel").innerHTML = r.panel(); r.wire(); paintPlayer(); $("under").innerHTML = r.under(); }
 function paint(fast) {
   if (fit()) colors();
@@ -1326,7 +1487,7 @@ function words() {
   $("brand").textContent = L("The Skate Lab", "El Laboratorio de Skate");
   $("mastK").textContent = L("Skateboarding · the science you can try", "Skate · la ciencia que puedes probar");
   $("mastH").textContent = L("The Skate Lab", "El Laboratorio de Skate");
-  $("mastL").textContent = L("Ramps, ollies, grinds, balance and flips, worked out with real physics.", "Rampas, ollies, grinds, equilibrio y flips, con física real.");
+  $("mastL").textContent = L("Build your board, then try ramps, ollies, grinds and flips with real physics.", "Arma tu tabla y luego prueba rampas, ollies, grinds y flips con física real.");
   $("langBtn").textContent = es() ? "EN" : "ES";
   $("themeBtn").textContent = document.documentElement.getAttribute("data-theme") === "dark" ? L("Light", "Claro") : L("Dark", "Oscuro");
   $("nav").innerHTML = `<a href="/skateboarding">${L("The course", "El curso")}</a><a href="/drops/skate">${L("Daily Practice", "Práctica diaria")}</a>`;
@@ -1344,8 +1505,10 @@ new MutationObserver(() => { colors(); paint(); }).observe(document.documentElem
 window.addEventListener("resize", () => { if (fit()) { colors(); paint(); } });
 window.addEventListener("hashchange", () => { const k = location.hash.slice(1); if (ROOMS[k] && k !== S.room) openRoom(k, false); });
 /* for the site's checks (tools/check-skate.js) */
-window.AOGSkate = { simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS };
+window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS };
 words();
+/* AOG-SKATE-BUILD-HOME-V1 (2026-10-11) — Jimmy: "Make build a board a main stay for this page." /skate always opens on
+   Build a board; an address that names a room (/skate#ollie, a lesson's link) still opens that room. */
 const start = location.hash.slice(1);
-openRoom(ROOMS[start] ? start : S.room, !!ROOMS[start]);
+openRoom(ROOMS[start] ? start : "build", !!ROOMS[start]);
 })();

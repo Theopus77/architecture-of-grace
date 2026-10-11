@@ -81,6 +81,15 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     const last = s => s.frames[s.frames.length - 1]; out.flips = [last(kf).roll, last(tre).roll, last(tre).yaw];
     out.tricks = A.TRICKS.map(t => ({ id: t.id, room: t.room, en: t.en.steps.length && t.en.fixes.length && !!t.en.sci, es: t.es.steps.length === t.en.steps.length && t.es.fixes.length === t.en.fixes.length && !!t.es.sci }));
     out.rooms = A.rooms;
+    // build a board: every suggestion fits and never bites; a riser adds its thickness; big wheels on soft bushings bite
+    const riders = ["micro", "mini", "mid", "s", "m", "l"], uses = ["tricks", "ramps", "rough", "cruise"], bad = [];
+    riders.forEach(r => uses.forEach(u => { const sg = A.suggestBoard(r, u), c = A.boardCheck(Object.assign({ use: u }, sg));
+      if (c.fit !== "ok" || c.bite === "bite" || !c.hardOK || sg.axle !== sg.deck || sg.deckRange[0] > sg.deck || sg.deckRange[1] < sg.deck) bad.push(r + "/" + u); }));
+    out.buildBad = bad;
+    const base = { deck: 8, axle: 8, wheel: 60, duro: 99, riser: 0, bush: "soft", use: "tricks" };
+    out.bite = [A.boardCheck(base).bite, A.boardCheck(Object.assign({}, base, { riser: 3.2 })).clear - A.boardCheck(base).clear,
+                A.boardCheck(Object.assign({}, base, { axle: 7.5 })).fit, A.boardCheck(Object.assign({}, base, { axle: 8.75 })).fit,
+                A.boardCheck(Object.assign({}, base, { use: "rough" })).hardOK, A.suggestBoard("mini", "tricks").deckRange, A.boltFor(3.2)[1]];
     return out;
   });
   ok(near(phys.idealV, phys.idealWant, 0.003), `frictionless ramp: ${phys.idealV.toFixed(3)} m/s at the bottom, √(2gh) = ${phys.idealWant.toFixed(3)}`);
@@ -97,6 +106,10 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(phys.manual === "manual" && phys.steady === "steady" && phys.tail === "tail", "center of mass over the back axle is a manual; behind it, the tail drops");
   ok(near(phys.spin[0], 180, 0.03) && near(phys.spin[1], 360, 0.03) && phys.L <= 2, `arms out turns ${phys.spin[0].toFixed(0)}°, arms in ${phys.spin[1].toFixed(0)}°; L = Iω stays the same`);
   ok(Math.abs(phys.flips[0] - 360) < 1e-6 && Math.abs(phys.flips[1] - 360) < 1e-6 && Math.abs(phys.flips[2] - 360) < 1e-6, "a kickflip turns 360° on the long axis; a 360 flip also 360° on the up-down axis");
+  ok(!phys.buildBad.length, "Build a board: all 24 suggested setups have trucks that fit, no wheel bite and wheels that suit the ground" + (phys.buildBad.length ? " (" + phys.buildBad.join(", ") + ")" : ""));
+  ok(phys.bite[0] === "bite" && Math.abs(phys.bite[1] - 3.2) < 1e-9 && phys.bite[2] === "narrow" && phys.bite[3] === "wide" && phys.bite[4] === false,
+     "Build a board: 60 mm wheels on soft bushings bite; a ⅛-inch riser adds 3.2 mm; narrow and wide trucks are caught; hard wheels on rough ground are flagged");
+  ok(phys.bite[5][0] === 7 && phys.bite[5][1] === 7.25 && phys.bite[6] === "1", "Build a board: a mini deck is about 7–7¼ inches; a ⅛-inch riser takes 1-inch bolts");
   const badT = phys.tricks.filter(t => !t.en || !t.es || !phys.rooms.includes(t.room));
   ok(!badT.length, `${phys.tricks.length} tricks have steps, fixes and the science in English and Spanish, and a real room${badT.length ? " (" + badT.map(t => t.id).join(", ") + ")" : ""}`);
 
@@ -112,6 +125,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(!p.errs.length, "no errors on a computer" + (p.errs.length ? ": " + p.errs[0] : ""));
   await p.context().close();
 
+  /* Build a board is the lab's home (AOG-SKATE-BUILD-HOME-V1): /skate with no room opens it, even after another room was used */
+  const home = await open({ width: 390, height: 844 }, true, "ollie");
+  await home.goto(URL, { waitUntil: "load" }); await wait(400);
+  ok(await home.evaluate(() => window.AOGSkate.state.room === "build" && window.AOGSkate.rooms[0] === "build" && /Build a board|Arma una tabla/.test(document.getElementById("panel").textContent)),
+     "/skate opens on Build a board, first in the room menu, even after another room was used");
+  await home.context().close();
   const rm = await open({ width: 820, height: 1180 }, true, "grind", { reducedMotion: "reduce" });
   await rm.click("#goBtn"); await wait(150);
   ok(await rm.evaluate(() => { const P = window.AOGSkate.P; return !P.playing && P.k === P.frames.length - 1 && P.frames.length > 1; }), "with reduce motion on, Go shows the whole run at once (iPad)");
