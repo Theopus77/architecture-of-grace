@@ -17,8 +17,11 @@
        #balance  Balance and turning: center of mass over the wheels; truck geometry; the speed that balances a lean.
        #flip     Flips and spins: a 3D board turning about its three axes; arms in, arms out.
        #timeline Boards through time: the board, the wheel and what changed, 1959 to today.
-       #tricks   Trick book: where each foot goes, the steps, what helps, and the science.
-       #build    Build a board (AOG-SKATE-BUILD-V1): a whole setup for a rider and a use, and checks for truck fit,
+       #tricks   Trick book (AOG-SKATE-TRICKS-V2): 26 tricks, each shown moving step by step (AOG-SKATE-DEMO-V1; Go plays it
+                 once, the step it shows lights up in the list), where each foot goes, what helps, the science, "Learn first"
+                 links, progress kept on the device (learning / landed it once / got it, 7 of 10) and a trick map.
+       #questions Questions (AOG-SKATE-FAQ-V1): 30 answers, searchable, by topic, in English and Spanish.
+       #build    Build a board (AOG-SKATE-BUILD-V1; "Every part" pulls the board apart with a printable parts list, AOG-SKATE-PARTS-V1): a whole setup for a rider and a use, and checks for truck fit,
                  the wheels and wheel bite, drawn from the front at full lean.
      Build a board is the home room (AOG-SKATE-BUILD-HOME-V1): /skate opens on it; #ollie and the rest still open their rooms.
      Calm: nothing moves until Go is pressed, a run plays once and stops, and every moment can be stepped
@@ -175,6 +178,33 @@ details.more summary { cursor:pointer; font-weight:700; min-height:44px; display
 .fixes { display:grid; gap:.35rem; margin:.4rem 0; }
 .fixes div { background:var(--chip); border-radius:10px; padding:.45rem .7rem; }
 .fixes b { display:block; }
+.tsteps li { padding:.3rem .5rem; border-radius:10px; border-left:4px solid transparent; }
+.tsteps li.on { background:var(--steel-soft); border-left-color:var(--steel); color:var(--ink); font-weight:600; }
+button.linkish { min-height:44px; border:1px solid var(--line); background:var(--card); color:var(--steel); border-radius:999px; padding:0 .85rem; font-weight:700; font-size:.92rem; cursor:pointer; }
+.tmap { display:grid; gap:.55rem; margin:.4rem 0; }
+.tlv b { display:block; font:700 .8rem/1.3 var(--sans); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.tlv p { margin:.25rem 0 0; display:flex; flex-wrap:wrap; gap:.3rem; }
+.tchip { display:inline-block; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:.2rem .6rem; font-weight:600; font-size:.85rem; }
+.tchip.s1 { border-color:var(--warn); background:var(--warn-soft); }
+.tchip.s2 { border-color:var(--steel); background:var(--steel-soft); }
+.tchip.s3 { border-color:transparent; background:var(--good); color:var(--good-fg, #fff); }
+
+i.pg { display:inline-block; width:.85em; height:.85em; border-radius:50%; border:2px solid currentColor; margin-right:.35em; vertical-align:-.1em; box-sizing:border-box; }
+i.pg.s1 { background:conic-gradient(currentColor 0 25%, transparent 0); }
+i.pg.s2 { background:conic-gradient(currentColor 0 50%, transparent 0); }
+i.pg.s3 { background:currentColor; }
+/* the parts list */
+.parts ol { padding-left:1.4rem; margin:.4rem 0; }
+.parts li { margin:.45rem 0; }
+.parts .pq { font:700 .9rem/1 var(--mono); color:var(--steel); }
+.parts .muted { color:var(--muted); font-size:.92rem; }
+@media print { body.print-parts * { visibility:hidden !important; } body.print-parts #partsList, body.print-parts #partsList * { visibility:visible !important; } body.print-parts #partsList { position:absolute; left:0; top:0; width:100%; color:#000; } }
+/* questions */
+.faq { display:grid; gap:.45rem; margin:.6rem 0; }
+details.qa { margin:0; border:1px solid var(--line); border-radius:12px; background:var(--card); padding:0 .85rem; }
+details.qa summary { font-weight:700; color:var(--ink); }
+details.qa[open] { padding-bottom:.7rem; }
+details.qa p { margin:.3rem 0 .5rem; color:var(--ink); }
 
 /* the timeline */
 .tl-years { display:flex; flex-wrap:wrap; gap:.3rem; margin:.3rem 0 .6rem; }

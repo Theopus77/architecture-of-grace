@@ -212,8 +212,11 @@ check for anything new the hands can do.
       node tools/check-skate.js
 
   It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
-  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
+  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites; the parts list follows the setup),
+  every trick's moving demo (its steps match the list; it plays once and lights its step), progress kept, the Questions search, every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
+- A new trick joins TRICKS in `aog-skate.js` with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
+  ollie and curb families). The skater is drawn without a face (no faces in the site's art).
 
 ## Housekeeping
 

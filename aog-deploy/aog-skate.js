@@ -36,7 +36,9 @@ const DEF = {
   flip: { mode: "board", trick: "kickflip", view: "corner", arms: "out" },
   timeline: { i: 0 },
   tricks: { id: "stance" },
-  build: { rider: "m", use: "tricks", deck: 8.125, axle: 8.125, wheel: 52, duro: 100, riser: 0, bush: "med", type: "pop" }
+  progress: {},
+  faq: { q: "", cat: "all" },
+  build: { rider: "m", use: "tricks", deck: 8.125, axle: 8.125, wheel: 52, duro: 100, riser: 0, bush: "med", type: "pop", view: "fit" }
 };
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { S = null; }
@@ -70,7 +72,7 @@ function colors() {
   const v = n => cs.getPropertyValue(n).trim();
   C = {};
   ["sky", "ground", "ramp", "ramp-edge", "ink", "deck", "grip", "wheel", "truck", "skin", "shirt", "pants", "pe", "ke", "heat", "pump", "force", "friction", "path", "grid", "soft"].forEach(k => C[k] = v("--cv-" + k));
-  C.steel = v("--steel"); C.good = v("--good"); C.warn = v("--warn"); C.card = v("--card"); C.line = v("--line");
+  C.steel = v("--steel"); C.steelFg = v("--steel-fg"); C.good = v("--good"); C.warn = v("--warn"); C.card = v("--card"); C.line = v("--line");
 }
 function font(w, mult) { ctx.font = (w || 600) + " " + Math.round(FS * (mult || 1)) + 'px "Source Sans 3", ui-sans-serif, system-ui, sans-serif'; }
 function text(s, x, y, o) {
@@ -80,7 +82,7 @@ function text(s, x, y, o) {
   ctx.fillText(s, x, y);
 }
 function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-function clear() { ctx.save(); ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0); ctx.fillStyle = C.sky; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+function clear() { ctx.save(); ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0); const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, shade(C.sky, 0.25)); g.addColorStop(1, C.sky); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore(); }
 /* an arrow in screen space; len in px */
 function arrow(x1, y1, x2, y2, col, lw) {
   const a = Math.atan2(y2 - y1, x2 - x1), hl = Math.max(10, (lw || 4) * 3.2);
@@ -91,63 +93,153 @@ function arrow(x1, y1, x2, y2, col, lw) {
 }
 
 /* ══ the board and the rider, drawn in meters with y up (the caller sets the transform) ══
+   AOG-SKATE-ART-V2 (2026-10-11) — Jimmy: "the graphics … can be elevated … elite and amazing". An illustrated skater:
+   tapered limbs that bend at real joints, shoes with soles, knee and elbow pads, a vented helmet with its chin strap,
+   a shirt with a collar and a shaded side; a board with seven maple plies on its edge, grip on top, shaped trucks
+   (baseplate, bushing, hanger, kingpin) and urethane wheels with cores and bearings. Every color comes from the page's
+   own tokens, shaded lighter or darker, so light and dark themes both work. Nothing moves on its own.
    Board frame: x along the board (nose +), origin midway between the two wheel contacts, y up. */
 const BOARD = { half: 0.40, kickStart: 0.29, kickRise: 0.035, axle: 0.18, wheelR: 0.027, deckY: 0.085, thick: 0.014 };
+function rgb(c) {
+  c = String(c || "").trim();
+  let m = /^#([0-9a-f]{3})$/i.exec(c); if (m) return m[1].split("").map(h => parseInt(h + h, 16));
+  m = /^#([0-9a-f]{6})$/i.exec(c); if (m) return [0, 2, 4].map(i => parseInt(m[1].slice(i, i + 2), 16));
+  m = /rgba?\(([^)]+)\)/.exec(c); if (m) return m[1].split(",").slice(0, 3).map(x => parseFloat(x));
+  return [128, 128, 128];
+}
+/* a token, shaded: amt > 0 toward white, < 0 toward black */
+function shade(c, amt) { const v = rgb(c); return "rgb(" + v.map(x => Math.round(amt > 0 ? x + (255 - x) * amt : x * (1 + amt))).join(",") + ")"; }
+function alpha(c, a) { const v = rgb(c); return "rgba(" + v.join(",") + "," + a + ")"; }
 function deckPath() {
   const b = BOARD, y = b.deckY;
   return [[-b.half, y + b.kickRise], [-b.kickStart, y], [b.kickStart, y], [b.half, y + b.kickRise]];
 }
+/* the deck's center line at board-x: flat between the bolts, curving up into the kicks */
+function deckMid(x) {
+  const b = BOARD, ax = Math.abs(x);
+  if (ax <= b.kickStart) return b.deckY;
+  const u = (ax - b.kickStart) / (b.half - b.kickStart);
+  return b.deckY + b.kickRise * (0.35 * u + 0.65 * u * u);
+}
+function drawWheel(x, y, r) {
+  ctx.fillStyle = C.wheel; ctx.strokeStyle = shade(C.wheel, -0.45); ctx.lineWidth = r * 0.12;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = shade(C.wheel, -0.18); ctx.beginPath(); ctx.arc(x, y, r * 0.62, 0, 7); ctx.fill();          // the core
+  ctx.fillStyle = shade(C.truck, -0.35); ctx.beginPath(); ctx.arc(x, y, r * 0.3, 0, 7); ctx.fill();           // the bearing
+  ctx.fillStyle = shade(C.truck, 0.35); ctx.beginPath(); ctx.arc(x, y, r * 0.12, 0, 7); ctx.fill();           // the axle nut
+  ctx.strokeStyle = alpha("#ffffff", 0.55); ctx.lineWidth = r * 0.1;                                          // a soft highlight
+  ctx.beginPath(); ctx.arc(x, y, r * 0.82, Math.PI * 1.1, Math.PI * 1.45); ctx.stroke();
+}
+function drawTruck(x) {
+  const b = BOARD, top = deckMid(x) - b.thick / 2, ink = shade(C.truck, -0.45);
+  ctx.lineWidth = 0.003; ctx.strokeStyle = ink;
+  ctx.fillStyle = shade(C.truck, -0.1); ctx.beginPath(); ctx.rect(x - 0.032, top - 0.009, 0.064, 0.009); ctx.fill(); ctx.stroke();   // baseplate
+  ctx.fillStyle = shade(C.soft, 0.25); ctx.beginPath(); ctx.ellipse(x + (x < 0 ? 0.008 : -0.008), top - 0.017, 0.011, 0.008, 0, 0, 7); ctx.fill(); ctx.stroke(); // bushing
+  ctx.fillStyle = C.truck; ctx.beginPath();                                                                    // hanger
+  ctx.moveTo(x - 0.024, top - 0.022); ctx.lineTo(x + 0.024, top - 0.022);
+  ctx.quadraticCurveTo(x + 0.02, b.wheelR + 0.006, x + 0.006, b.wheelR); ctx.lineTo(x - 0.006, b.wheelR);
+  ctx.quadraticCurveTo(x - 0.02, b.wheelR + 0.006, x - 0.024, top - 0.022); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = shade(C.truck, 0.3); ctx.lineWidth = 0.004; ctx.beginPath();                                // kingpin
+  ctx.moveTo(x + (x < 0 ? 0.004 : -0.004), top - 0.004); ctx.lineTo(x + (x < 0 ? 0.014 : -0.014), top - 0.03); ctx.stroke();
+}
 function drawBoardSide(lw) {
-  const b = BOARD;
+  const b = BOARD, n = 40, xs = [];
+  for (let i = 0; i <= n; i++) xs.push(-b.half + 2 * b.half * i / n);
   ctx.lineCap = "round"; ctx.lineJoin = "round";
-  // trucks
-  ctx.fillStyle = C.truck; ctx.strokeStyle = C.truck; ctx.lineWidth = 0.012;
-  [-b.axle, b.axle].forEach(x => { ctx.beginPath(); ctx.moveTo(x - 0.035, b.deckY - b.thick / 2); ctx.lineTo(x + 0.035, b.deckY - b.thick / 2); ctx.lineTo(x + 0.012, b.wheelR); ctx.lineTo(x - 0.012, b.wheelR); ctx.closePath(); ctx.fill(); });
-  // wheels
-  [-b.axle, b.axle].forEach(x => { ctx.beginPath(); ctx.arc(x, b.wheelR, b.wheelR, 0, 7); ctx.fillStyle = C.wheel; ctx.fill(); ctx.lineWidth = 0.006; ctx.strokeStyle = C["ramp-edge"]; ctx.stroke(); });
-  // deck: wood with grip on top
-  const p = deckPath();
-  ctx.strokeStyle = C.deck; ctx.lineWidth = b.thick + (lw || 0);
-  ctx.beginPath(); p.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke();
-  ctx.strokeStyle = C.grip; ctx.lineWidth = 0.005;
-  ctx.beginPath(); p.forEach((q, i) => i ? ctx.lineTo(q[0], q[1] + b.thick / 2) : ctx.moveTo(q[0], q[1] + b.thick / 2)); ctx.stroke();
+  drawTruck(-b.axle); drawTruck(b.axle);
+  drawWheel(-b.axle, b.wheelR, b.wheelR); drawWheel(b.axle, b.wheelR, b.wheelR);
+  // the deck: a filled edge seven plies thick, rounded at both tips, grip on top
+  const t = b.thick / 2 + (lw || 0) / 2;
+  ctx.beginPath();
+  xs.forEach((x, i) => { const y = deckMid(x) + t; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+  ctx.arc(b.half, deckMid(b.half), t, Math.PI / 2, -Math.PI / 2, true);
+  for (let i = n; i >= 0; i--) ctx.lineTo(xs[i], deckMid(xs[i]) - t);
+  ctx.arc(-b.half, deckMid(-b.half), t, -Math.PI / 2, Math.PI / 2, true);
+  ctx.closePath(); ctx.fillStyle = C.deck; ctx.fill();
+  ctx.strokeStyle = shade(C.deck, -0.45); ctx.lineWidth = 0.0025; ctx.stroke();
+  ctx.lineWidth = 0.0012; ctx.strokeStyle = shade(C.deck, 0.35);                                             // the plies
+  [-0.5, -0.17, 0.17, 0.5].forEach(f => { ctx.beginPath(); xs.forEach((x, i) => { const y = deckMid(x) + f * t * 1.4 * 0.5; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke(); });
+  ctx.strokeStyle = C.grip; ctx.lineWidth = 0.0045;                                                          // grip tape
+  ctx.beginPath(); xs.forEach((x, i) => { const y = deckMid(x) + t; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke();
 }
 /* the height of the deck's top at board-x (for placing feet) */
-function deckTop(x) {
-  const b = BOARD, ax = Math.abs(x);
-  return b.deckY + b.thick / 2 + (ax > b.kickStart ? (ax - b.kickStart) / (b.half - b.kickStart) * b.kickRise : 0);
+function deckTop(x) { return deckMid(x) + BOARD.thick / 2; }
+/* a limb: a tapered band from a to b, wa and wb wide, with round joints */
+function limb(a, b, wa, wb, col) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 1e-6, px = -dy / d, py = dx / d;
+  ctx.fillStyle = col; ctx.strokeStyle = shade(col, -0.4); ctx.lineWidth = 0.004;
+  ctx.beginPath();
+  ctx.moveTo(a[0] + px * wa / 2, a[1] + py * wa / 2); ctx.lineTo(b[0] + px * wb / 2, b[1] + py * wb / 2);
+  ctx.arc(b[0], b[1], wb / 2, Math.atan2(py, px), Math.atan2(-py, -px), true);
+  ctx.lineTo(a[0] - px * wa / 2, a[1] - py * wa / 2);
+  ctx.arc(a[0], a[1], wa / 2, Math.atan2(-py, -px), Math.atan2(py, px), true);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+function bend(a, b, len, side) {   // the middle joint of a two-part limb of length len each, bending toward side
+  const dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 1e-6;
+  if (d >= 2 * len) return [a[0] + dx / 2, a[1] + dy / 2];
+  const h = Math.sqrt(len * len - d * d / 4), px = -dy / d, py = dx / d;
+  return [a[0] + dx / 2 + px * h * side, a[1] + dy / 2 + py * h * side];
+}
+function shoe(f) {
+  const x = f[0], y = f[1];
+  ctx.fillStyle = shade(C.pants, -0.35); ctx.strokeStyle = shade(C.pants, -0.6); ctx.lineWidth = 0.004;
+  roundRect(x - 0.058, y + 0.002, 0.116, 0.05, 0.022); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = shade(C.wheel, 0.1); ctx.fillRect(x - 0.056, y + 0.002, 0.112, 0.012);                       // the sole
+  ctx.fillStyle = shade(C.pants, 0.25); ctx.beginPath(); ctx.ellipse(x, y + 0.036, 0.022, 0.009, 0, 0, 7); ctx.fill(); // the laces
 }
 /* a rider: feet at fB, fF; hip at hp (all [x,y] in the same frame, y up); lean (radians, + toward nose) */
 function drawBody(fB, fF, hp, o) {
   o = o || {};
-  const LEG = 0.46, lean = o.lean || 0;
+  const LEG = 0.46, lean = o.lean || 0, ink = alpha(C.ink, 0.5);
   ctx.lineCap = "round"; ctx.lineJoin = "round";
-  function leg(f, side) {
-    const dx = hp[0] - f[0], dy = hp[1] - f[1], d = Math.hypot(dx, dy) || 1e-6;
-    let k;
-    if (d >= 2 * LEG) k = [f[0] + dx / 2, f[1] + dy / 2];
-    else { const h = Math.sqrt(LEG * LEG - d * d / 4); const px = -dy / d, py = dx / d; k = [f[0] + dx / 2 + px * h * side, f[1] + dy / 2 + py * h * side]; }
-    ctx.strokeStyle = C.pants; ctx.lineWidth = 0.075;
-    ctx.beginPath(); ctx.moveTo(f[0], f[1] + 0.03); ctx.lineTo(k[0], k[1]); ctx.lineTo(hp[0], hp[1]); ctx.stroke();
-    // knee pad
-    ctx.fillStyle = C.grip; ctx.beginPath(); ctx.arc(k[0], k[1], 0.042, 0, 7); ctx.fill();
-    // shoe
-    ctx.strokeStyle = C.grip; ctx.lineWidth = 0.05; ctx.beginPath(); ctx.moveTo(f[0] - 0.05, f[1] + 0.02); ctx.lineTo(f[0] + 0.05, f[1] + 0.02); ctx.stroke();
+  const hipB = [hp[0] - 0.07, hp[1]], hipF = [hp[0] + 0.07, hp[1]];
+  function leg(f, hj, side) {
+    const ank = [f[0], f[1] + 0.05], k0 = bend(ank, hj, LEG, side), m0 = [(ank[0] + hj[0]) / 2, (ank[1] + hj[1]) / 2], k = [lerp(m0[0], k0[0], 0.5), lerp(m0[1], k0[1], 0.5)];   // the knees point toward us, so their bend shows shortened
+    limb(hj, k, 0.12, 0.09, C.pants);                                                                       // thigh
+    limb(k, ank, 0.09, 0.065, shade(C.pants, -0.08));                                                      // shin
+    const a = Math.atan2(ank[1] - k[1], ank[0] - k[0]);                                                     // knee pad along the shin
+    ctx.save(); ctx.translate(k[0] + Math.cos(a) * 0.035, k[1] + Math.sin(a) * 0.035); ctx.rotate(a);
+    ctx.fillStyle = shade(C.grip, 0.12); ctx.strokeStyle = shade(C.grip, -0.3); ctx.lineWidth = 0.004;
+    roundRect(-0.05, -0.052, 0.1, 0.104, 0.03); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = alpha("#ffffff", 0.35); ctx.lineWidth = 0.006; ctx.beginPath(); ctx.moveTo(-0.03, -0.035); ctx.lineTo(-0.03, 0.035); ctx.stroke();
+    ctx.restore();
+    shoe(f);
   }
-  // the leg toward the tail bends out toward the tail, the front leg toward the nose: knees read as bent
-  leg(fB, 1); leg(fF, -1);
-  const sh = [hp[0] + Math.sin(lean) * 0.52, hp[1] + Math.cos(lean) * 0.52];
-  ctx.strokeStyle = C.shirt; ctx.lineWidth = 0.13;
-  ctx.beginPath(); ctx.moveTo(hp[0], hp[1] + 0.04); ctx.lineTo(sh[0], sh[1]); ctx.stroke();
-  // arms out for balance
+  if (fB[0] <= fF[0]) { leg(fB, hipB, 1); leg(fF, hipF, -1); } else { leg(fB, hipF, -1); leg(fF, hipB, 1); }   // each foot to its nearer hip, so legs never cross
+  // the torso: wider at the shoulders, a shaded side and a collar, leaning with the rider
+  ctx.save(); ctx.translate(hp[0], hp[1]); ctx.rotate(-lean);
+  ctx.fillStyle = shade(C.pants, -0.15); roundRect(-0.13, -0.035, 0.26, 0.07, 0.03); ctx.fill();         // the belt line
+  ctx.beginPath(); ctx.moveTo(-0.13, 0.02); ctx.lineTo(-0.19, 0.5); ctx.quadraticCurveTo(0, 0.56, 0.19, 0.5); ctx.lineTo(0.13, 0.02); ctx.closePath();
+  ctx.fillStyle = C.shirt; ctx.fill(); ctx.strokeStyle = shade(C.shirt, -0.45); ctx.lineWidth = 0.004; ctx.stroke();
+  ctx.save(); ctx.clip(); ctx.fillStyle = alpha(shade(C.shirt, -0.5), 0.35); ctx.fillRect(0.05, 0, 0.2, 0.6); ctx.restore();
+  ctx.fillStyle = C.skin; roundRect(-0.035, 0.5, 0.07, 0.07, 0.02); ctx.fill();                          // the neck
+  ctx.strokeStyle = shade(C.shirt, 0.3); ctx.lineWidth = 0.012; ctx.beginPath(); ctx.arc(0, 0.53, 0.05, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke(); // collar
+  ctx.restore();
+  const rot = (x, y) => [hp[0] + x * Math.cos(lean) + y * Math.sin(lean), hp[1] - x * Math.sin(lean) + y * Math.cos(lean)];
+  // arms out for balance: a shoulder, an elbow with its pad, a hand
   const arm = o.arms != null ? o.arms : 1;
-  ctx.lineWidth = 0.055;
-  ctx.beginPath(); ctx.moveTo(sh[0], sh[1] - 0.03); ctx.lineTo(sh[0] - 0.22 * arm - 0.05, sh[1] - 0.12); ctx.lineTo(sh[0] - 0.42 * arm - 0.04, sh[1] - 0.24 + 0.1 * arm); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(sh[0], sh[1] - 0.03); ctx.lineTo(sh[0] + 0.22 * arm + 0.05, sh[1] - 0.1); ctx.lineTo(sh[0] + 0.42 * arm + 0.04, sh[1] - 0.2 + 0.1 * arm); ctx.stroke();
-  // head with a helmet
-  const hd = [sh[0] + Math.sin(lean) * 0.17, sh[1] + Math.cos(lean) * 0.17];
-  ctx.fillStyle = C.skin; ctx.beginPath(); ctx.arc(hd[0], hd[1], 0.1, 0, 7); ctx.fill();
-  ctx.fillStyle = C.steel; ctx.beginPath(); ctx.arc(hd[0], hd[1] + 0.012, 0.112, lean + 0.05, lean + Math.PI - 0.05); ctx.closePath(); ctx.fill();
+  [[-1, rot(-0.17, 0.47)], [1, rot(0.17, 0.47)]].forEach(([sd, sh]) => {
+    const hand = [sh[0] + sd * (0.1 + 0.34 * arm), sh[1] - 0.44 + 0.26 * arm];
+    const el = bend(sh, hand, 0.29, sd > 0 ? -1 : 1);
+    limb(sh, el, 0.075, 0.06, C.shirt);
+    limb(el, hand, 0.055, 0.045, C.skin);
+    ctx.fillStyle = shade(C.grip, 0.12); ctx.beginPath(); ctx.arc(el[0], el[1], 0.034, 0, 7); ctx.fill();
+    ctx.fillStyle = C.skin; ctx.strokeStyle = shade(C.skin, -0.4); ctx.lineWidth = 0.003; ctx.beginPath(); ctx.arc(hand[0], hand[1], 0.032, 0, 7); ctx.fill(); ctx.stroke();
+  });
+  // the head and its helmet: a dome with two vents and a brim, the chin strap down to the jaw
+  const hd = rot(0, 0.69);
+  ctx.save(); ctx.translate(hd[0], hd[1]); ctx.rotate(-lean);
+  ctx.fillStyle = C.skin; ctx.strokeStyle = shade(C.skin, -0.4); ctx.lineWidth = 0.004;
+  ctx.beginPath(); ctx.ellipse(0, -0.005, 0.085, 0.105, 0, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = shade(C.skin, -0.12); ctx.beginPath(); ctx.ellipse(-0.088, -0.01, 0.016, 0.026, 0, 0, 7); ctx.ellipse(0.088, -0.01, 0.016, 0.026, 0, 0, 7); ctx.fill(); // ears
+  ctx.strokeStyle = shade(C.steel, -0.35); ctx.lineWidth = 0.007; ctx.beginPath(); ctx.moveTo(-0.082, 0.01); ctx.lineTo(-0.062, -0.075); ctx.moveTo(0.082, 0.01); ctx.lineTo(0.062, -0.075); ctx.stroke();   // chin straps down the sides (no face is drawn)
+  ctx.beginPath(); ctx.moveTo(-0.112, 0.012); ctx.quadraticCurveTo(-0.12, 0.16, 0, 0.165); ctx.quadraticCurveTo(0.12, 0.16, 0.112, 0.012); ctx.closePath();
+  ctx.fillStyle = C.steel; ctx.fill(); ctx.strokeStyle = shade(C.steel, -0.45); ctx.lineWidth = 0.004; ctx.stroke();
+  ctx.fillStyle = shade(C.steel, -0.3); ctx.fillRect(-0.114, 0.006, 0.228, 0.014);                       // the brim
+  ctx.strokeStyle = shade(C.steel, -0.4); ctx.lineWidth = 0.009; ctx.beginPath(); ctx.moveTo(-0.03, 0.14); ctx.lineTo(-0.03, 0.09); ctx.moveTo(0.03, 0.14); ctx.lineTo(0.03, 0.09); ctx.stroke(); // vents
+  ctx.strokeStyle = alpha("#ffffff", 0.4); ctx.lineWidth = 0.008; ctx.beginPath(); ctx.arc(0, 0.04, 0.09, Math.PI * 0.62, Math.PI * 0.86); ctx.stroke();
+  ctx.restore();
   if (o.com) drawCOM(o.com[0], o.com[1], 0.05);
 }
 function drawCOM(x, y, r) {
@@ -157,15 +249,29 @@ function drawCOM(x, y, r) {
   ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, r, Math.PI, Math.PI * 1.5); ctx.closePath(); ctx.fill();
   ctx.restore();
 }
+/* a soft shadow on the ground under the board (board frame, ground at y = 0) */
+function boardShadow(h) {
+  const k = Math.max(0.25, 1 - (h || 0) * 1.6);
+  ctx.fillStyle = alpha(C.ink, 0.16 * k); ctx.beginPath(); ctx.ellipse(0, 0.002, 0.46 * (0.7 + 0.3 * k), 0.016, 0, 0, 7); ctx.fill();
+}
 /* a whole rider on a board, in board frame; crouch 0 (tall) … 1 (low) */
 function drawRider(crouch, o) {
   o = o || {};
+  boardShadow(0);
   drawBoardSide();
   const fb = -0.2, ff = 0.13;
   const fB = [fb, deckTop(fb)], fF = [ff, deckTop(ff)];
   const hip = [(fb + ff) / 2 + 0.01, deckTop(0) + 0.86 - 0.36 * crouch];
   drawBody(fB, fF, hip, { lean: o.lean || 0.06, com: o.com !== false ? [hip[0] + 0.02, hip[1] + 0.12] : null, arms: o.arms });
   return [hip[0] + 0.02, hip[1] + 0.12];
+}
+/* the ground in screen space: poured concrete with a soft gradient and expansion joints (static) */
+function drawGround(y0, x0, x1, step) {
+  const g = ctx.createLinearGradient(0, y0, 0, H);
+  g.addColorStop(0, shade(C.ground, 0.08)); g.addColorStop(1, shade(C.ground, -0.12));
+  ctx.fillStyle = g; ctx.fillRect(x0 || 0, y0, (x1 || W) - (x0 || 0), H - y0);
+  ctx.strokeStyle = alpha(C.ink, 0.18); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0 || 0, y0); ctx.lineTo(x1 || W, y0); ctx.stroke();
+  if (step) { ctx.strokeStyle = alpha(C.ink, 0.08); ctx.lineWidth = 1.5; for (let x = (x0 || 0) + step / 2; x < (x1 || W); x += step) { ctx.beginPath(); ctx.moveTo(x, y0 + 4); ctx.lineTo(x - 18, H); ctx.stroke(); } }
 }
 
 /* ══ the player: every run is a list of moments; Go plays it once; ◀ ▶ and the slider step by hand ══ */
@@ -232,7 +338,8 @@ const WHEELS = {
 const SHAPES = {
   mini: { R: 1.8, Hm: 1.2, F: 2.5, en: "Mini ramp", es: "Mini rampa" },
   vert: { R: 3.0, Hm: 3.6, F: 4.0, en: "Vert ramp", es: "Rampa vertical" },
-  hill: { slope: 5, en: "Gentle hill", es: "Colina suave" }
+  hill: { slope: 5, en: "Gentle hill", es: "Colina suave" },
+  demo: { R: 1.2, Hm: 0.9, F: 2.4, en: "Demo ramp", es: "Rampa de demostración" }   // the trick book's mini ramp
 };
 const DRAG_K = 0.27;   // ½ ρ C A for a standing rider, kg/m (example)
 function buildPath(sh, h) {
@@ -518,7 +625,7 @@ function toBoard(p, bx, by) { return [p.cx + Math.cos(p.ang) * bx - Math.sin(p.a
 function drawOllie(fr) {
   const sc = Math.min(W / 2.2, (H - 70) / 2.25), ox = W / 2, oy = H - 50;
   const X = x => ox + x * sc, Y = y => oy - y * sc;
-  ctx.fillStyle = C.ground; ctx.fillRect(0, Y(0), W, H);
+  drawGround(Y(0), 0, W, 140);
   // height marks
   const hstep = 0.1 * sc < FS * 1.15 ? 0.2 : 0.1;
   for (let h = hstep; h <= 0.61; h += hstep) { const y = Y(h); ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(-1.05), y); ctx.lineTo(X(-0.62), y); ctx.stroke(); text(num(h * 100, 0) + " cm", X(-1.05), y - 4, { m: .7, c: C.soft }); }
@@ -535,6 +642,7 @@ function drawOllie(fr) {
     for (let i = 0; i <= P.k; i += 2) { const f = fs[i]; const x = X(0.03), y = Y(f.com + BOARD.deckY); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); ctx.restore(); }
   const p = boardPose(fr);
   ctx.save(); ctx.translate(X(0), Y(0)); ctx.scale(sc, -sc);
+  ctx.save(); ctx.translate(p.cx, 0); boardShadow(p.cy); ctx.restore();
   ctx.save(); ctx.translate(p.cx, p.cy); ctx.rotate(p.ang); drawBoardSide(); ctx.restore();
   // feet: the back foot on the tail, the front foot sliding toward the nose; lifted a little in the air
   const bfx = -0.31, ffx = fr.ffoot;
@@ -650,7 +758,7 @@ function drawGrind(fr) {
   const span = o.len + 2.8, sc = Math.min((W - 60) / span, (H - 230) / 1.25), ox = 30 + 1.4 * sc, oy = H - 200;
   const X = x => ox + x * sc, Y = y => oy - y * sc;
   const rh = 0.35;   // rail or ledge height
-  ctx.fillStyle = C.ground; ctx.fillRect(0, Y(0), W, H - Y(0));
+  drawGround(Y(0), 0, W, 160);
   // the obstacle
   if (o.surface === "metal") {
     ctx.strokeStyle = C.truck; ctx.lineWidth = 0.04 * sc; ctx.lineCap = "round";
@@ -766,7 +874,7 @@ function drawBalance() {
   if (o.mode === "stand") {
     const sc = Math.min(W / 1.5, (H - 90) / 1.75), ox = W / 2, oy = H - 60;
     const X = x => ox + x * sc, Y = y => oy - y * sc;
-    ctx.fillStyle = C.ground; ctx.fillRect(0, Y(0), W, H);
+    drawGround(Y(0), 0, W, 140);
     const st = standCalc(), piv = st.tilt > 0 ? -BOARD.axle : st.tilt < 0 ? BOARD.axle : 0;
     // base of support between the axles
     ctx.save(); ctx.fillStyle = C.good; ctx.globalAlpha = .25; ctx.fillRect(X(-BOARD.axle), Y(0) - 6, 2 * BOARD.axle * sc, 12); ctx.restore();
@@ -774,10 +882,10 @@ function drawBalance() {
     ctx.save(); ctx.translate(X(piv), Y(0)); ctx.scale(sc, -sc); ctx.rotate(st.tilt); ctx.translate(-piv, 0);
     const fb = -0.2, ff = 0.13, hipx = st.x - 0.02;
     drawBoardSide();
-    drawBody([fb, deckTop(fb)], [ff, deckTop(ff)], [hipx, deckTop(0) + 0.76], { lean: 0, arms: 1 });
+    drawBody([fb, deckTop(fb)], [ff, deckTop(ff)], [hipx, deckTop(0) + 0.84], { lean: 0, arms: 1 });
     ctx.restore();
     // the line of the weight, straight down from the center of mass
-    const cx = X(piv + (st.x - piv) * Math.cos(st.tilt) - (deckTop(0) + 0.88) * Math.sin(st.tilt)), cy = Y((st.x - piv) * Math.sin(st.tilt) + (deckTop(0) + 0.88) * Math.cos(st.tilt));
+    const cx = X(piv + (st.x - piv) * Math.cos(st.tilt) - (deckTop(0) + 0.96) * Math.sin(st.tilt)), cy = Y((st.x - piv) * Math.sin(st.tilt) + (deckTop(0) + 0.96) * Math.cos(st.tilt));
     ctx.save(); ctx.strokeStyle = C.force; ctx.setLineDash([8, 6]); ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, Y(0)); ctx.stroke(); ctx.restore();
     ctx.save(); ctx.translate(cx, cy); ctx.scale(sc, -sc); drawCOM(0, 0, 0.05); ctx.restore();
     arrow(cx, cy + 22, cx, cy + 90, C.force, 4);
@@ -1219,68 +1327,375 @@ const TRICKS = [
     en: { n: "Falling safely", steps: ["Practice on grass, in a helmet, wrist guards and pads.", "When you feel yourself going, crouch low: you have less far to fall.", "Do not catch yourself with locked, straight arms.", "Roll onto your side or shoulder, or slide on your knee pads.", "Step off the board on purpose when a trick goes wrong. That is a skill too."], fixes: [["I always put my hands out", "Practice rolling on grass slowly, many times, until it feels natural."], ["I'm scared of falling", "That is a normal, useful signal. Break the trick into smaller steps."]], sci: "Rolling and sliding spread the stop over more time and more of your body, so the force on any one place is smaller." },
     es: { n: "Caer con seguridad", steps: ["Practica en el pasto, con casco, muñequeras y protecciones.", "Cuando sientas que te caes, agáchate: caes desde menos altura.", "No te sostengas con los brazos rectos y rígidos.", "Rueda sobre tu lado o tu hombro, o deslízate sobre las rodilleras.", "Bájate de la tabla a propósito cuando un truco sale mal. Eso también es una habilidad."], fixes: [["Siempre pongo las manos", "Practica rodar en el pasto despacio, muchas veces, hasta que salga natural."], ["Me da miedo caer", "Es una señal normal y útil. Divide el truco en pasos más pequeños."]], sci: "Rodar y deslizarse reparten la parada en más tiempo y más partes del cuerpo, así la fuerza en un solo lugar es menor." } }
 ];
-const LV = { 1: ["First steps", "Primeros pasos"], 2: ["Rolling", "Rodando"], 3: ["Pop and flip", "Saltar y girar"], 4: ["Grinds and ramps", "Grinds y rampas"] };
-function drawFoot(x, y, ang, col, mirror) {   // a shoe from above, in board meters (toes toward the toe side, +y)
-  ctx.save(); ctx.translate(x, y); ctx.rotate(ang * DEG * mirror);
-  ctx.fillStyle = col; ctx.globalAlpha = .85;
-  ctx.beginPath(); ctx.ellipse(0, 0.0, 0.05, 0.135, 0, 0, 7); ctx.fill();
-  ctx.globalAlpha = 1; ctx.strokeStyle = C.ink; ctx.lineWidth = 0.004; ctx.stroke();
-  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(0, 0.1, 0.012, 0, 7); ctx.fill();   // the toe end
+/* AOG-SKATE-TRICKS-V2 (2026-10-11) — Jimmy: "the tricks … everything can be elevated … elite and amazing!" Nine more
+   tricks (carve, pump, fakie, nose manual, backside 180, axle stall, noseslide, varial kickflip, 360 flip), what to learn
+   first for every trick, an animated demo of each one (below), "learning / landed it / got it" saved on this device,
+   and a map of the whole book. */
+TRICKS.push(...[{"id": "carve", "lv": 2, "room": "balance", "feet": {"f": [0.15, 0, 10], "b": [-0.17, 0, 5]}, "arrows": [{"from": [0.3, 0], "to": [0.3, 0.25], "curve": 1}], "pre": ["stance", "push", "stop"], "en": {"n": "Carving", "steps": ["Helmet on. Find a wide, smooth, flat place with no cars, like an empty court.", "Push to a slow, steady roll. Feet over the bolts, knees bent.", "Press gently with your toes. The board turns toward the toe side.", "Let the turn finish, then press gently with your heels. The board turns toward the heel side.", "Lean your whole body into each turn, ankles to shoulders, not just your hips.", "Link the turns in a smooth S shape. Make them long and slow at first."], "fixes": [["The board barely turns", "Press a little harder on the edge and lean your shoulders into the turn."], ["I wobble when I switch sides", "Pass through the middle slowly, with both feet flat, before you press the other edge."], ["I'm going too fast", "Make each turn longer and wider. Carving uphill a little slows you down too."]], "sci": "Tilting the deck squeezes the bushings, so the trucks steer the wheels. The wheels' grip pushes you toward the middle of the turn, and leaning in balances it: tan θ = v²/(gR), so a faster or tighter turn needs more lean."}, "es": {"n": "Carving (curvas largas)", "steps": ["Ponte el casco. Busca un lugar ancho, liso y plano, sin autos, como una cancha vacía.", "Empuja hasta rodar despacio y parejo. Pies sobre los tornillos, rodillas dobladas.", "Presiona suave con los dedos. La tabla gira hacia el lado de los dedos.", "Deja que termine el giro y presiona suave con los talones. La tabla gira hacia el lado de los talones.", "Inclina todo el cuerpo en cada giro, de los tobillos a los hombros, no solo la cadera.", "Une los giros en forma de S suave. Al principio, hazlos largos y lentos."], "fixes": [["La tabla casi no gira", "Presiona un poco más el borde e inclina los hombros hacia el giro."], ["Me tambaleo al cambiar de lado", "Pasa por el centro despacio, con los dos pies planos, antes de presionar el otro borde."], ["Voy muy rápido", "Haz cada giro más largo y ancho. Hacer la curva un poco cuesta arriba también te frena."]], "sci": "Al inclinar la tabla se aprietan los bujes y los ejes dirigen las ruedas. El agarre de las ruedas te empuja hacia el centro del giro, y al inclinarte lo equilibras: tan θ = v²/(gR); un giro más rápido o más cerrado pide más inclinación."}}, {"id": "pump", "lv": 3, "room": "ramp", "feet": {"f": [0.15, 0, 5], "b": [-0.2, 0, 5]}, "pre": ["kickturn", "dropin"], "en": {"n": "Pumping", "steps": ["Use a small ramp or a smooth bowl, with full pads and a helmet.", "Roll back and forth on the lower part of the ramp first, with your feet over the bolts.", "As you come up near the top of your ride, crouch: bend your knees low.", "As you pass through the curve at the bottom, push down through your feet and stand up taller.", "Crouch again as you rise up the other side. Then stand up again through the curve.", "Keep the rhythm, like pumping a swing. Each pass takes you a little higher."], "fixes": [["I slow down anyway", "Check your timing: stand up in the curve, not on the flat part or near the top."], ["I lose balance when I stand up", "Stand up smoothly, with your weight centered over both feet."]], "sci": "Standing up in the curve raises your body against the extra push the ramp gives you there, so your legs do work and add energy. Crouching near the top, where that push is small, costs little. More energy at the bottom means a higher ride: ½·m·v² = m·g·h."}, "es": {"n": "Bombear", "steps": ["Usa una rampa pequeña o un bowl liso, con protecciones y casco.", "Primero rueda de ida y vuelta en la parte baja de la rampa, con los pies sobre los tornillos.", "Al subir cerca de lo más alto de tu recorrido, agáchate: dobla bien las rodillas.", "Al pasar por la curva de abajo, empuja hacia abajo con los pies y párate más alto.", "Agáchate otra vez al subir por el otro lado. Luego párate otra vez en la curva.", "Sigue el ritmo, como al columpiarte. Cada pasada te lleva un poco más alto."], "fixes": [["Igual voy perdiendo rapidez", "Revisa el momento: párate en la curva, no en la parte plana ni cerca de arriba."], ["Pierdo el equilibrio al pararme", "Párate suave, con el peso centrado sobre los dos pies."]], "sci": "Al pararte en la curva levantas tu cuerpo contra el empuje extra que ahí te da la rampa, así tus piernas hacen trabajo y suman energía. Agacharte cerca de arriba, donde ese empuje es pequeño, cuesta poco. Más energía abajo te lleva más alto: ½·m·v² = m·g·h."}}, {"id": "fakie", "lv": 2, "room": "balance", "feet": {"f": [0.13, 0, 10], "b": [-0.17, 0, 5]}, "arrows": [{"from": [-0.1, 0], "to": [-0.38, 0]}], "pre": ["stance", "push", "stop"], "en": {"n": "Riding fakie", "steps": ["Helmet on. Find a smooth, flat place with no cars.", "Stand in your normal stance, feet over the bolts. Fakie means rolling backward: the tail goes first.", "Hold a wall or a friend's hand and give a gentle push so you roll backward slowly.", "Turn your head and look over your back shoulder, where you are going.", "Keep your knees bent and your weight centered over both feet.", "To stop, let the board slow down and step off. Then try a little faster."], "fixes": [["I feel like I'm falling backward", "Bend your knees more and keep your weight over the middle of the board, not over the tail."], ["I can't see where I'm going", "Turn your head first. Your shoulders can stay mostly where they are."]], "sci": "The wheels roll the same both ways, so the board does not care which end leads. Your stance stays the same; only your view changes, so looking where you go keeps your balance."}, "es": {"n": "Rodar en fakie", "steps": ["Ponte el casco. Busca un lugar liso y plano, sin autos.", "Párate en tu postura normal, pies sobre los tornillos. Fakie es rodar hacia atrás: la cola va primero.", "Sujétate de una pared o de la mano de alguien y empuja suave para rodar hacia atrás despacio.", "Gira la cabeza y mira por encima del hombro de atrás, adonde vas.", "Rodillas dobladas y el peso centrado sobre los dos pies.", "Para frenar, deja que la tabla vaya más lento y bájate. Luego prueba un poco más rápido."], "fixes": [["Siento que me caigo hacia atrás", "Dobla más las rodillas y deja tu peso sobre el centro de la tabla, no sobre la cola."], ["No veo adónde voy", "Gira primero la cabeza. Los hombros pueden quedarse casi donde están."]], "sci": "Las ruedas giran igual en los dos sentidos, así a la tabla no le importa qué punta va primero. Tu postura es la misma; solo cambia lo que ves, por eso mirar adonde vas te ayuda a mantener el equilibrio."}}, {"id": "nosemanual", "lv": 3, "room": "balance", "feet": {"f": [0.3, 0, 5], "b": [-0.1, 0, 5]}, "pre": ["manual"], "en": {"n": "Nose manual", "steps": ["Get a steady manual first. Helmet on, on smooth, flat ground.", "Roll slowly. Move your front foot onto the nose and your back foot to just behind the back bolts.", "Shift your weight forward until it is right over the front wheels.", "The back wheels lift. Keep the nose just off the ground.", "Use small moves of your arms and hips to stay balanced. Look ahead, not down.", "Put the back wheels down before you lose it. Try for a short distance first."], "fixes": [["The nose scrapes", "Your weight is too far forward. Move it back a little."], ["The back wheels won't lift", "Move your front foot closer to the end of the nose and lean forward a little more."]], "sci": "A nose manual is a manual on the other axle: the line of your weight falls right over the front wheels. The nose is shorter than the tail on many boards, so the balance window is smaller."}, "es": {"n": "Nose manual", "steps": ["Primero ten un manual firme. Con casco, en suelo liso y plano.", "Rueda despacio. Lleva el pie de adelante a la nariz y el de atrás justo detrás de los tornillos traseros.", "Lleva tu peso adelante hasta que quede justo sobre las ruedas de adelante.", "Suben las ruedas de atrás. La nariz queda justo sobre el suelo.", "Usa pequeños movimientos de brazos y cadera para mantenerte. Mira adelante, no abajo.", "Baja las ruedas de atrás antes de perderlo. Prueba primero una distancia corta."], "fixes": [["La nariz raspa", "Tu peso está muy adelante. Muévelo un poco atrás."], ["Las ruedas de atrás no suben", "Lleva el pie de adelante más cerca de la punta de la nariz e inclínate un poco más adelante."]], "sci": "Un nose manual es un manual sobre el otro eje: la línea de tu peso cae justo sobre las ruedas de adelante. En muchas tablas la nariz es más corta que la cola, así el espacio para el equilibrio es menor."}}, {"id": "bs180", "lv": 3, "room": "flip", "feet": {"f": [0.1, 0, 10], "b": [-0.3, 0, 5]}, "arrows": [{"from": [0.3, 0], "to": [0.3, -0.25], "curve": 1}], "pre": ["ollie", "fakie"], "en": {"n": "Backside 180", "steps": ["Get a steady ollie and a steady fakie roll first. Helmet on, on smooth, flat ground.", "Before you pop, wind your shoulders a little toward your front, the toe side.", "Pop an ollie and turn your shoulders the other way, so your back leads.", "Your hips and the board follow your shoulders, half a turn. Look over your back shoulder for the ground.", "Land rolling backward (fakie), with both feet over the bolts and your knees bent."], "fixes": [["I only turn a quarter", "Wind up more before the pop, and turn your head first."], ["I can't see where I'll land", "That is normal for backside spins. Look over your back shoulder as soon as you pop."], ["The board turns but I don't", "Turn your shoulders and hips together, and pop straight up."]], "sci": "Your feet push on the ground to start the spin, a torque, before the wheels leave it. In the air nothing can add spin, so a backside 180 turns the same amount as a frontside 180; only the direction changes."}, "es": {"n": "Backside 180", "steps": ["Primero ten un ollie firme y rueda en fakie con calma. Con casco, en suelo liso y plano.", "Antes del golpe, gira un poco los hombros hacia tu frente, el lado de los dedos.", "Haz un ollie y gira los hombros al otro lado, para que tu espalda guíe.", "La cadera y la tabla siguen a los hombros, media vuelta. Busca el suelo por encima del hombro de atrás.", "Aterriza rodando hacia atrás (fakie), con los dos pies sobre los tornillos y las rodillas dobladas."], "fixes": [["Solo giro un cuarto", "Gira más los hombros antes del golpe y gira primero la cabeza."], ["No veo dónde voy a caer", "Es normal en los giros backside. Mira por encima del hombro de atrás en cuanto saltes."], ["La tabla gira pero yo no", "Gira hombros y cadera juntos, y salta recto hacia arriba."]], "sci": "Tus pies empujan el suelo para empezar el giro, un torque, antes de que las ruedas lo dejen. En el aire nada puede sumar giro, así un backside 180 gira lo mismo que un frontside 180; solo cambia la dirección."}}, {"id": "axlestall", "lv": 4, "room": "ramp", "feet": {"f": [0.15, 0, 5], "b": [-0.2, 0, 5]}, "pre": ["dropin", "kickturn", "rockfakie"], "en": {"n": "Axle stall", "steps": ["Use a small ramp you can already drop in on and rock to fakie on, with full pads and a helmet.", "Ride up toward the coping with enough speed to just reach the top.", "Near the top, press the tail a little and turn, like a kickturn, so the board ends up along the coping.", "Set the back truck on the coping, then the front truck. Both trucks rest on the coping, the board along it.", "Pause there with your weight centered between your feet, knees bent.", "Press the tail a little, turn the nose back toward the ramp, and drop back in with your weight forward, like a drop-in."], "fixes": [["I slide off the coping", "Come up with a little less speed and set the back truck down first, firmly."], ["I hang up when I drop back in", "Lift the front wheels clear of the coping before you turn, and lean forward as you go."]], "sci": "At the top your motion energy has become stored energy, m·g·h, and you stop for a moment. Dropping back in turns it back into motion: from a height h, v = √(2gh), less a little lost to friction."}, "es": {"n": "Axle stall", "steps": ["Usa una rampa pequeña en la que ya puedas entrar y hacer rock to fakie, con protecciones y casco.", "Sube hacia el coping con la rapidez justa para llegar arriba.", "Cerca de arriba, presiona un poco la cola y gira, como un kickturn, para que la tabla quede a lo largo del coping.", "Apoya el eje de atrás en el coping y luego el de adelante. Los dos ejes descansan en el coping, la tabla a lo largo.", "Haz una pausa con el peso centrado entre los pies, rodillas dobladas.", "Presiona un poco la cola, gira la nariz hacia la rampa y vuelve a entrar con el peso adelante, como al hacer drop in."], "fixes": [["Me resbalo del coping", "Sube con un poco menos de rapidez y apoya primero el eje de atrás, firme."], ["Me atoro al volver a entrar", "Pasa las ruedas de adelante sobre el coping antes de girar e inclínate adelante al bajar."]], "sci": "Arriba, tu energía de movimiento se volvió energía guardada, m·g·h, y te detienes un momento. Al volver a entrar se vuelve movimiento otra vez: desde una altura h, v = √(2gh), menos un poco que se pierde por fricción."}}, {"id": "noseslide", "lv": 4, "room": "grind", "feet": {"f": [0.3, 0, 5], "b": [-0.12, 0, 5]}, "pre": ["ollie", "nosemanual", "boardslide"], "en": {"n": "Noseslide", "steps": ["Start on a low waxed curb, with a helmet and pads. Never a handrail or stairs.", "Roll alongside the curb, close and nearly parallel, at a steady, medium speed.", "Ollie and turn the board a quarter turn so the nose lands on top of the curb's edge.", "Keep your front foot on the nose, pressing down, and your weight over it. The tail stays in the air.", "Look at the end of the curb and keep your knees bent.", "At the end, turn the board back a quarter turn and land rolling, feet over the bolts."], "fixes": [["The tail drops and I stop", "Keep more weight on your front foot, over the nose."], ["The nose slips off the curb", "Ollie a little higher and land with the nose fully on top of the edge."], ["I stop on the curb", "Come in a little faster, or add wax."]], "sci": "Pressing the nose puts nearly all your weight on it, and the friction is f = μN. Wax lowers μ, so the same weight slides farther before friction stops you."}, "es": {"n": "Noseslide", "steps": ["Empieza en un bordillo bajo con cera, con casco y protecciones. Nunca un pasamanos ni escaleras.", "Rueda al lado del bordillo, cerca y casi paralelo, a una rapidez media y pareja.", "Haz un ollie y gira la tabla un cuarto de vuelta para que la nariz caiga sobre el borde del bordillo.", "Deja el pie de adelante en la nariz, presionando, y tu peso sobre él. La cola queda en el aire.", "Mira el final del bordillo y deja las rodillas dobladas.", "Al final, gira la tabla de vuelta un cuarto y aterriza rodando, con los pies sobre los tornillos."], "fixes": [["La cola baja y me detengo", "Deja más peso en el pie de adelante, sobre la nariz."], ["La nariz se resbala del bordillo", "Haz el ollie un poco más alto y cae con la nariz bien encima del borde."], ["Me detengo en el bordillo", "Entra un poco más rápido o pon más cera."]], "sci": "Al presionar la nariz, casi todo tu peso queda en ella, y la fricción es f = μN. La cera baja μ, así el mismo peso se desliza más lejos antes de que la fricción te detenga."}}, {"id": "varial", "lv": 5, "room": "flip", "feet": {"f": [0.05, -0.02, 30], "b": [-0.34, 0.05, 0]}, "arrows": [{"from": [-0.36, 0.05], "to": [-0.3, -0.2], "curve": 1}, {"from": [0.07, 0], "to": [0.33, 0.1]}], "pre": ["shove", "kickflip"], "en": {"n": "Varial kickflip", "steps": ["Advanced: learn this only after your pop shove-it and kickflip are both steady. Helmet on, on smooth, flat ground.", "Back foot on the tail, toes near the toe-side edge, ready to scoop. Front foot angled, just behind the front bolts.", "Pop the tail and scoop it behind you with your back foot, like a pop shove-it.", "At the same time, flick your front foot off the toe-side corner of the nose, a little forward, like a small kickflip.", "Jump up and lift your knees. The board spins half a turn flat and flips once under you.", "When you see the grip tape again, catch it with your back foot, then your front foot, and land over the bolts."], "fixes": [["It only shoves and doesn't flip", "Flick the front foot off the very corner of the nose."], ["It flips but only turns a quarter", "Scoop harder with the back foot."], ["The board flies away", "Jump straight up, and flick a little less."]], "sci": "The scoop is a torque about the up-down axis and the flick is a torque about the long axis, so the board spins both ways at once: half a turn flat and a full flip."}, "es": {"n": "Varial kickflip", "steps": ["Avanzado: apréndelo solo cuando tu pop shove-it y tu kickflip ya sean firmes. Con casco, en suelo liso y plano.", "Pie de atrás en la cola, con los dedos cerca del borde del lado de los dedos, listo para empujar. Pie de adelante en ángulo, justo detrás de los tornillos delanteros.", "Golpea la cola y empújala hacia atrás con el pie de atrás, como un pop shove-it.", "Al mismo tiempo, raspa con el pie de adelante la esquina de la nariz del lado de los dedos, un poco hacia adelante, como un kickflip pequeño.", "Salta y sube las rodillas. La tabla gira media vuelta plana y da una vuelta completa bajo ti.", "Cuando veas otra vez la lija, atrápala con el pie de atrás, luego el de adelante, y aterriza sobre los tornillos."], "fixes": [["Solo gira plana y no da la vuelta", "Raspa justo la esquina de la nariz con el pie de adelante."], ["Da la vuelta pero gira solo un cuarto", "Empuja más fuerte con el pie de atrás."], ["La tabla sale volando", "Salta recto hacia arriba y raspa un poco menos."]], "sci": "El empuje del pie de atrás es un torque sobre el eje vertical y el raspón es un torque sobre el eje largo, así la tabla gira de las dos formas a la vez: media vuelta plana y una vuelta completa."}}, {"id": "tre", "lv": 5, "room": "flip", "feet": {"f": [0.05, -0.02, 35], "b": [-0.36, 0.06, 0]}, "arrows": [{"from": [-0.38, 0.06], "to": [-0.3, -0.22], "curve": 1}, {"from": [0.07, 0], "to": [0.33, 0.1]}], "pre": ["varial", "kickflip", "shove"], "en": {"n": "360 flip (tre flip)", "steps": ["Advanced: learn this only after your varial kickflip is steady. Helmet on, on smooth, flat ground, never down stairs.", "Back foot on the tail, toes near the toe-side edge, ready to scoop. Front foot angled, just behind the front bolts.", "Pop and scoop the tail hard behind you and a little down with your back foot. The back foot does most of the work.", "Flick your front foot lightly off the toe-side corner of the nose, a little forward.", "Jump up and lift your knees high. The board spins a full turn flat and flips once under you.", "When you see the grip tape again, catch it with your back foot, then your front foot, and land over the bolts with bent knees."], "fixes": [["The board only turns half way", "Scoop harder with the back foot, with snap from the ankle."], ["It flips too much", "Flick lighter with the front foot. Let the back foot lead."], ["The board shoots out in front", "Jump straight up and scoop more behind you, less forward."]], "sci": "The scoop spins the board a full turn about the up-down axis while the flick spins it once about its long axis. Both spins start before the board leaves your feet; in the air nothing adds more."}, "es": {"n": "360 flip (tre flip)", "steps": ["Avanzado: apréndelo solo cuando tu varial kickflip ya sea firme. Con casco, en suelo liso y plano, nunca escaleras abajo.", "Pie de atrás en la cola, con los dedos cerca del borde del lado de los dedos, listo para empujar. Pie de adelante en ángulo, justo detrás de los tornillos delanteros.", "Golpea y empuja la cola fuerte hacia atrás y un poco hacia abajo con el pie de atrás. El pie de atrás hace casi todo el trabajo.", "Raspa suave con el pie de adelante la esquina de la nariz del lado de los dedos, un poco hacia adelante.", "Salta y sube bien las rodillas. La tabla gira una vuelta entera plana y da una vuelta completa bajo ti.", "Cuando veas otra vez la lija, atrápala con el pie de atrás, luego el de adelante, y aterriza sobre los tornillos con las rodillas dobladas."], "fixes": [["La tabla gira solo media vuelta", "Empuja más fuerte con el pie de atrás, con golpe del tobillo."], ["Da demasiadas vueltas", "Raspa más suave con el pie de adelante. Deja que guíe el pie de atrás."], ["La tabla se va adelante", "Salta recto hacia arriba y empuja más hacia atrás, menos hacia adelante."]], "sci": "El empuje gira la tabla una vuelta entera sobre el eje vertical mientras el raspón la hace dar una vuelta sobre su eje largo. Los dos giros empiezan antes de que la tabla deje tus pies; en el aire nada suma más."}}]);
+const PRE = { stance: [], fall: [], push: ["stance"], stop: ["push"], kickturn: ["push"], tictac: ["kickturn"], manual: ["push"],
+  dropin: ["kickturn", "stop"], ollie: ["push"], shove: ["ollie"], kickflip: ["ollie"], heelflip: ["ollie"], fs180: ["ollie"],
+  fifty: ["ollie"], fiveo: ["fifty", "manual"], boardslide: ["ollie"], rockfakie: ["dropin"] };
+TRICKS.forEach(t => { if (!t.pre) t.pre = PRE[t.id] || []; });
+TRICKS.sort((a, b) => a.lv - b.lv);
+const LV = { 1: ["First steps", "Primeros pasos"], 2: ["Rolling", "Rodando"], 3: ["Pop and flip", "Saltar y girar"], 4: ["Grinds and ramps", "Grinds y rampas"], 5: ["Advanced", "Avanzado"] };
+const STATUS = [["Not yet", "Todavía no"], ["Learning", "Aprendiendo"], ["Landed it once", "Lo logré una vez"], ["Got it (7 of 10)", "Lo domino (7 de 10)"]];
+function prog(id) { return (S.progress && S.progress[id]) || 0; }
+
+/* ══ the trick demos (AOG-SKATE-DEMO-V1) ══════════════════════════════════════════════════════════════════
+   A demo is a list of keys in time. Each key sets any of: where the board is (free: bx, by in meters; or on the mini ramp:
+   mode "path" and s, the distance along the ramp), its lift h, pitch (degrees, about the back wheels, the front wheels or
+   the middle: piv), roll and yaw (degrees: drawn as a true 3D board), dir −1 to face the other way; the feet (f, b: their
+   place along the board and how far lifted; fg, bg: a foot on the ground, in meters), crouch, lean, arms, jump, turn (the
+   body turning, degrees), ba (the body tipping about the feet, degrees) and hx (weight forward or back). Between keys
+   everything eases. s is the step shown in the list. */
+const KD = (t, s, o) => Object.assign({ t, s }, o || {});
+const DEMO_DEF = { scene: "flat", mode: "free", dir: 1, s0: 0, bx: 0, by: 0, h: 0, pitch: 0, piv: "mid", roll: 0, yaw: 0, crouch: 0.25, lean: 0.04, arms: 1, jump: 0, turn: 0, ba: 0, hx: 0, f: [0.13, 0], b: [-0.2, 0], fg: null, bg: null, path: 0 };
+const NUMS = ["bx", "by", "h", "pitch", "roll", "yaw", "crouch", "lean", "arms", "jump", "turn", "ba", "hx", "path"];
+let DPATH = null;
+function demoPath() { if (!DPATH) DPATH = prepPath(buildPath("demo", SHAPES.demo.Hm)); return DPATH; }
+/* the ollie and every trick built on it: phases → step numbers; o.roll / o.yaw / o.turn spin during the air */
+function popDemo(o) {
+  const st = o.steps, R = o.roll || 0, Y = o.yaw || 0, T = o.turn || 0, back = o.back || [-0.33, 0], front = o.front || [0.04, 0];
+  const keys = [
+    KD(0, st[0], { bx: -0.95, b: back, f: front, crouch: 0.2, arms: 0.8 }),
+    KD(1.0, st[1], { bx: -0.62, turn: o.wind || 0 }),
+    KD(1.7, st[2], { bx: -0.38, crouch: 0.85, arms: 0.6 }),
+    KD(2.05, st[3], { bx: -0.28, piv: "back", pitch: 24, h: 0.02, crouch: 0.55, jump: 0.07, arms: 1 }),
+    KD(2.2, st[4], { bx: -0.22, pitch: 10, h: 0.16, f: [front[0] + 0.22, 0.03], b: [back[0] + 0.02, 0.05], crouch: 0.6 }),
+    KD(2.38, st[5], { bx: -0.15, pitch: 2, h: 0.3, roll: R * 0.45, yaw: Y * 0.45, turn: T * 0.45, f: [0.2, R ? 0.12 : 0.04], b: [-0.2, R || Y ? 0.1 : 0.04], crouch: 0.92 }),
+    KD(2.6, st[5], { bx: -0.06, pitch: 0, h: 0.24, roll: R, yaw: Y, turn: T, f: [0.16, 0.05], b: [-0.18, 0.05], crouch: 0.9 }),
+    KD(2.82, st[6], { bx: 0.04, h: 0, crouch: 0.68, f: [0.16, 0], b: [-0.18, 0] }),
+    KD(3.4, st[6], { bx: 0.28, crouch: 0.3 }),
+    KD(4.0, st[6], { bx: 0.48 })
+  ];
+  return { scene: "flat", view: [-1.25, 1.0, -0.06, 2.25], keys };
+}
+function grindDemo(o) {   // ollie onto a low curb, ride it, come off: o.onCurb holds the board's pose on the curb
+  const st = o.steps, on = o.onCurb;
+  return { scene: "curb", view: [-1.75, 2.05, -0.06, 2.2], keys: [
+    KD(0, st[0], { bx: -1.55, crouch: 0.25 }),
+    KD(1.0, st[1], { bx: -1.15, crouch: 0.6, b: [-0.33, 0], f: [0.05, 0] }),
+    KD(1.3, st[2], { bx: -0.95, piv: "back", pitch: 20, h: 0.05, crouch: 0.5, jump: 0.05 }),
+    KD(1.55, st[2], Object.assign({ bx: -0.68, pitch: 0, h: 0.27, f: [0.15, 0.03], b: [-0.2, 0.03], crouch: 0.8 }, on.air || {})),
+    KD(1.8, st[3], Object.assign({ bx: -0.4, h: 0.13, crouch: 0.45, jump: 0 }, on)),
+    KD(2.9, st[3], Object.assign({ bx: 0.55 }, on)),
+    KD(3.4, st[4], Object.assign({ bx: 0.95 }, on)),
+    KD(3.65, st[4], { bx: 1.25, h: 0.12, pitch: 0, yaw: 0, turn: 0, hx: 0, piv: "mid" }),
+    KD(3.9, st[4], { bx: 1.5, h: 0, crouch: 0.55 }),
+    KD(4.6, st[4], { bx: 1.85, crouch: 0.3 })
+  ] };
+}
+const DEMOS = {
+  stance: { scene: "grass", view: [-0.95, 0.95, -0.06, 2.1], keys: [
+    KD(0, 0, { crouch: 0.05, arms: 0.35, lean: 0 }), KD(1.4, 1, { f: [0.1, 0], b: [-0.24, 0] }), KD(2.6, 2, { f: [0.18, 0], b: [-0.18, 0] }),
+    KD(3.8, 3, { crouch: 0.35 }), KD(5.0, 4, { arms: 1, lean: 0.02 }), KD(6.0, 4, {})] },
+  push: { scene: "flat", view: [-1.0, 2.45, -0.06, 2.2], keys: [
+    KD(0, 0, { bx: -0.45, b: null, bg: [-0.52, 0], f: [0.15, 0], crouch: 0.15, arms: 0.5 }), KD(1.1, 1, {}),
+    KD(1.7, 2, { crouch: 0.35 }), KD(2.5, 2, { bx: -0.05, bg: [-0.62, 0], crouch: 0.32 }),
+    KD(2.9, 3, { bx: 0.2, bg: [0.0, 0.13], crouch: 0.25 }), KD(3.25, 3, { bx: 0.4, b: [-0.18, 0], bg: null }),
+    KD(4.6, 4, { bx: 1.2, crouch: 0.3 }), KD(5.2, 4, { bx: 1.42 })] },
+  stop: { scene: "flat", view: [-1.0, 2.3, -0.06, 2.2], keys: [
+    KD(0, 0, { bx: -0.7, crouch: 0.25 }), KD(1.2, 1, { bx: -0.15, f: [0.15, 0] }),
+    KD(2.0, 2, { bx: 0.25, b: null, bg: [0.12, 0.07], crouch: 0.3 }), KD(2.8, 3, { bx: 0.62, bg: [0.48, 0], crouch: 0.35 }),
+    KD(3.8, 3, { bx: 0.86, bg: [0.72, 0] }), KD(4.6, 4, { bx: 0.95, bg: [0.8, 0], crouch: 0.15 }), KD(5.4, 4, {})] },
+  kickturn: { scene: "flat", view: [-1.0, 1.0, -0.06, 2.2], keys: [
+    KD(0, 0, { b: [-0.32, 0], f: [0.1, 0], crouch: 0.3 }), KD(1.2, 1, { piv: "back", pitch: 11, crouch: 0.35, hx: -0.04 }),
+    KD(2.2, 2, { pitch: 11, yaw: 45, turn: 35 }), KD(3.0, 3, { pitch: 0, yaw: 70, turn: 50, hx: 0 }),
+    KD(4.0, 4, { piv: "back", pitch: 10, yaw: 25, turn: 20 }), KD(4.8, 4, { pitch: 0, yaw: 0, turn: 0 }), KD(5.4, 4, {})] },
+  manual: { scene: "flat", view: [-1.35, 1.55, -0.06, 2.2], keys: [
+    KD(0, 0, { bx: -1.05, b: [-0.27, 0], f: [0.08, 0] }), KD(1.0, 1, { bx: -0.7, crouch: 0.3, hx: -0.03 }),
+    KD(1.8, 2, { bx: -0.35, piv: "back", pitch: 9, hx: -0.09, lean: -0.08 }), KD(3.4, 3, { bx: 0.35, pitch: 9 }),
+    KD(4.2, 4, { bx: 0.7, pitch: 0, hx: 0, lean: 0.04 }), KD(4.9, 4, { bx: 0.95 })] },
+  nosemanual: { scene: "flat", view: [-1.35, 1.55, -0.06, 2.2], keys: [
+    KD(0, 0, { bx: -1.05 }), KD(1.0, 1, { bx: -0.75, f: [0.33, 0], b: [-0.03, 0], crouch: 0.3 }),
+    KD(1.8, 2, { bx: -0.4, piv: "front", pitch: -9, hx: 0.09, lean: 0.12 }), KD(2.4, 3, { bx: -0.15, pitch: -9 }),
+    KD(3.4, 4, { bx: 0.35, pitch: -9 }), KD(4.2, 5, { bx: 0.7, pitch: 0, hx: 0, lean: 0.04 }), KD(4.9, 5, { bx: 0.95 })] },
+  tictac: (() => { const k = [KD(0, 0, { bx: -0.85, b: [-0.32, 0], f: [0.1, 0], crouch: 0.3 })];
+    for (let i = 0; i < 7; i++) k.push(KD(0.9 + i * 0.55, i < 1 ? 1 : i < 2 ? 2 : i < 6 ? 3 : 4, { bx: -0.75 + i * 0.2, piv: "back", pitch: i % 2 ? 2 : 7, yaw: i % 2 ? -22 : 22, turn: i % 2 ? -14 : 14 }));
+    k.push(KD(5.0, 4, { bx: 0.65, pitch: 0, yaw: 0, turn: 0 })); return { scene: "flat", view: [-1.2, 1.35, -0.06, 2.2], keys: k }; })(),
+  carve: { scene: "flat", view: [-1.35, 1.6, -0.06, 2.2], keys: [
+    KD(0, 0, { bx: -1.1 }), KD(0.9, 1, { bx: -0.8, crouch: 0.35 }),
+    KD(1.8, 2, { bx: -0.45, roll: 9, yaw: 14, turn: 10, hx: 0.02 }), KD(2.8, 3, { bx: -0.05, roll: -9, yaw: -14, turn: -10 }),
+    KD(3.7, 4, { bx: 0.3, roll: 10, yaw: 16, turn: 12, crouch: 0.42 }), KD(4.6, 5, { bx: 0.65, roll: -10, yaw: -16, turn: -12 }),
+    KD(5.4, 5, { bx: 0.95, roll: 0, yaw: 0, turn: 0, crouch: 0.3 })] },
+  fakie: { scene: "flat", view: [-1.4, 1.2, -0.06, 2.2], keys: [
+    KD(0, 0, { bx: 0.85 }), KD(1.0, 1, { f: [0.17, 0], b: [-0.18, 0] }), KD(2.0, 2, { bx: 0.7, crouch: 0.3 }),
+    KD(3.0, 3, { bx: 0.25, turn: -18, lean: -0.05 }), KD(4.0, 4, { bx: -0.25, crouch: 0.35 }), KD(5.0, 5, { bx: -0.55, turn: 0, crouch: 0.15 }), KD(5.6, 5, { bx: -0.6 })] },
+  ollie: popDemo({ steps: [0, 1, 2, 3, 4, 5, 6] }),
+  kickflip: popDemo({ steps: [0, 1, 2, 2, 3, 4, 5], roll: 360, front: [0.02, 0] }),
+  heelflip: popDemo({ steps: [0, 0, 1, 1, 2, 3, 4], roll: -360, front: [0.08, 0] }),
+  shove: popDemo({ steps: [0, 1, 2, 2, 2, 3, 4], yaw: 180 }),
+  varial: popDemo({ steps: [0, 1, 2, 2, 3, 4, 5], yaw: 180, roll: 360 }),
+  tre: popDemo({ steps: [0, 1, 2, 2, 3, 4, 5], yaw: 360, roll: 360 }),
+  fs180: popDemo({ steps: [0, 1, 2, 2, 3, 3, 4], yaw: 180, turn: 180, wind: -25 }),
+  bs180: popDemo({ steps: [0, 1, 2, 2, 3, 3, 4], yaw: -180, turn: -180, wind: 25 }),
+  fifty: grindDemo({ steps: [0, 1, 2, 3, 4], onCurb: { pitch: 0 } }),
+  fiveo: grindDemo({ steps: [0, 1, 1, 2, 4], onCurb: { piv: "back", pitch: 8, hx: -0.06 } }),
+  boardslide: grindDemo({ steps: [0, 1, 2, 3, 4], onCurb: { h: 0.085, yaw: 90, turn: 75, air: { yaw: 60, turn: 50 } } }),
+  noseslide: grindDemo({ steps: [0, 1, 2, 3, 5], onCurb: { h: 0.085, yaw: 90, turn: 75, hx: 0.06, air: { yaw: 60, turn: 50 } } }),
+  fall: { scene: "grass", view: [-1.1, 1.4, -0.06, 2.1], keys: [
+    KD(0, 0, { crouch: 0.15 }), KD(1.2, 1, { crouch: 0.95, arms: 0.4 }), KD(2.0, 2, { arms: 0.0, ba: -18 }),
+    KD(2.8, 3, { ba: -50, crouch: 1, f: null, b: null, fg: [0.2, 0], bg: [-0.12, 0], bx: 0.45, arms: 0.75 }), KD(3.6, 3, { ba: -58, bx: 0.7, arms: 0.85 }),
+    KD(4.6, 4, { ba: 0, crouch: 0.15, arms: 0.6, fg: [0.1, 0], bg: [-0.22, 0], bx: 0.75 }), KD(5.4, 4, {})] },
+  dropin: { scene: "ramp", view: [-1.25, 1.95, -0.06, 2.75], keys: [
+    KD(0, 0, { bx: 0.24, by: 0.885, piv: "back", pitch: 12, b: [-0.33, 0], f: null, fg: [-0.42, 0.9], crouch: 0.2, arms: 0.6 }),
+    KD(1.2, 1, {}), KD(2.4, 2, { f: [0.15, 0], fg: null, crouch: 0.3 }),
+    KD(3.3, 3, { pitch: -35, lean: 0.12, ba: -28, crouch: 0.42 }), KD(3.85, 3, { pitch: -55, ba: -42 }),
+    KD(3.95, 4, { mode: "path", s0: 0.2, bx: 0, by: 0, pitch: 0, piv: "mid", ba: 0, lean: 0.12, crouch: 0.48 }),
+    KD(5.0, 4, { s0: 1.55, crouch: 0.35, lean: 0.06 }), KD(5.7, 4, { s0: 2.35 })] },
+  rockfakie: { scene: "ramp", view: [-1.25, 2.6, -0.06, 2.75], keys: [
+    KD(0, 0, { mode: "path", dir: -1, s0: 2.7, crouch: 0.3 }), KD(1.0, 1, { s0: 1.0, crouch: 0.38 }), KD(1.5, 1, { s0: 0.24 }),
+    KD(1.75, 2, { mode: "free", dir: -1, bx: 0.03, by: 0.87, pitch: -4, ba: 0, crouch: 0.3 }), KD(2.7, 3, { piv: "back", pitch: 9 }),
+    KD(3.05, 4, { mode: "path", dir: -1, s0: 0.28, pitch: 0, piv: "mid" }), KD(4.4, 4, { s0: 2.3, crouch: 0.32 })] },
+  axlestall: { scene: "ramp", view: [-1.25, 2.6, -0.06, 2.75], keys: [
+    KD(0, 0, { mode: "path", dir: -1, s0: 2.7, crouch: 0.3 }), KD(1.0, 1, { s0: 1.0, crouch: 0.4 }), KD(1.45, 1, { s0: 0.24 }),
+    KD(1.75, 2, { mode: "free", dir: -1, bx: 0.03, by: 0.9, yaw: 45, turn: 45, piv: "back", pitch: 8 }),
+    KD(2.3, 3, { yaw: 90, turn: 90, pitch: 0, by: 0.92 }), KD(3.4, 4, {}),
+    KD(3.9, 5, { yaw: 160, turn: 150, piv: "back", pitch: -25, ba: -20 }),
+    KD(4.15, 5, { mode: "path", dir: 1, s0: 0.24, yaw: 0, turn: 0, pitch: 0, piv: "mid", ba: 0 }), KD(5.4, 5, { s0: 2.3 })] },
+  pump: (() => { const L = 5.5, k = [KD(0, 0, { mode: "path", s0: 0.45, crouch: 0.5 })];
+    const pts = [[1.0, 1, 1.35, 0.25], [1.9, 2, 2.75, 0.2], [2.8, 3, 4.6, 0.85], [3.7, 3, 3.6, 0.2], [4.6, 4, 2.0, 0.15], [5.5, 4, 0.75, 0.9], [6.4, 5, 2.0, 0.15], [7.3, 5, 3.9, 0.2], [8.2, 5, 5.05, 0.9]];
+    pts.forEach(p => k.push(KD(p[0], p[1], { s0: Math.min(p[2], L), crouch: p[3] })));
+    return { scene: "ramp", view: [-0.7, 5.5, -0.06, 2.6], keys: k }; })()
+};
+/* fill every key from the one before it, so each key is a whole pose */
+function demoKeys(D) {
+  if (D._full) return D._full;
+  let prev = Object.assign({}, DEMO_DEF);
+  D._full = D.keys.map(k => { const o = Object.assign({}, prev, k); if ("fg" in k && k.fg) o.f = null; if ("bg" in k && k.bg) o.b = null; prev = o; return o; });
+  return D._full;
+}
+function demoAt(D, t) {
+  const K = demoKeys(D); let i = 0;
+  while (i < K.length - 2 && K[i + 1].t <= t) i++;
+  const a = K[i], b = K[Math.min(i + 1, K.length - 1)], u = b.t > a.t ? ease(clamp((t - a.t) / (b.t - a.t), 0, 1)) : 0;
+  const o = Object.assign({}, a);
+  if (a.mode === b.mode && a.dir === b.dir) {
+    NUMS.forEach(n => o[n] = lerp(a[n], b[n], u)); o.s0 = lerp(a.s0, b.s0, u);
+    ["f", "b", "fg", "bg"].forEach(n => { if (a[n] && b[n]) o[n] = [lerp(a[n][0], b[n][0], u), lerp(a[n][1], b[n][1], u)]; });
+  }
+  o.step = t >= b.t ? b.s : a.s; o.t = t;
+  return o;
+}
+function simDemo(id) {
+  const D = DEMOS[id]; if (!D) return { frames: [] };
+  const K = demoKeys(D), end = K[K.length - 1].t, frames = [];
+  for (let t = 0; t <= end + 1e-9; t += 1 / 60) frames.push(demoAt(D, t));
+  return { frames };
+}
+/* the board in 3D, in the current transform (meters, y up), seen from the side and a little above */
+function drawBoard3D(roll, yaw) {
+  const view = [0, 9], r = { roll, yaw, pitch: 0, h: 0 }, m = boardMesh();
+  const P = p => { const q = project(rot(p, r), view); return q; };
+  const top = m.out.map(p => P(p)), bot = m.out.map(p => P([p[0], p[1], p[2] - 0.014]));
+  const faces = [], depth = a => a.reduce((s, q) => s + q[2], 0) / a.length;
+  faces.push({ pts: top, col: C.grip, d: depth(top) }); faces.push({ pts: bot.slice().reverse(), col: C.deck, d: depth(bot) });
+  for (let i = 0; i < top.length; i++) { const j = (i + 1) % top.length, q = [top[i], top[j], bot[j], bot[i]]; faces.push({ pts: q, col: shade(C.deck, -0.12), d: depth(q), edge: true }); }
+  [-0.18, 0.18].forEach(x => {
+    const tq = [[x - 0.03, -0.075, 0.07], [x + 0.03, -0.075, 0.07], [x + 0.03, 0.075, 0.07], [x - 0.03, 0.075, 0.07]].map(P);
+    faces.push({ pts: tq, col: C.truck, d: depth(tq) });
+    [-0.095, 0.095].forEach(y => { const c = P([x, y, 0.027]); faces.push({ wheel: c, d: c[2] - 0.002 }); });
+  });
+  faces.sort((a, b) => a.d - b.d);
+  faces.forEach(f => {
+    if (f.wheel) { drawWheel(f.wheel[0], f.wheel[1], 0.026); return; }
+    ctx.beginPath(); f.pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.closePath();
+    ctx.fillStyle = f.col; ctx.fill(); if (!f.edge) { ctx.strokeStyle = shade(C.deck, -0.45); ctx.lineWidth = 0.003; ctx.stroke(); }
+  });
+}
+function is0(a) { const m = ((a % 360) + 360) % 360; return m < 0.5 || m > 359.5; }
+function is180(a) { const m = ((a % 360) + 360) % 360; return Math.abs(m - 180) < 0.5; }
+function drawDemoScene(D, X, Y, sc) {
+  const sky = D.scene;
+  if (sky === "ramp") {
+    const p = demoPath().pts, top = SHAPES.demo.Hm;
+    ctx.fillStyle = C.ramp; ctx.beginPath(); ctx.moveTo(X(-3), Y(top)); ctx.lineTo(X(p[0].x), Y(top));
+    p.forEach(q => ctx.lineTo(X(q.x), Y(q.y))); ctx.lineTo(X(p[p.length - 1].x + 3), Y(top)); ctx.lineTo(X(p[p.length - 1].x + 3), Y(-1)); ctx.lineTo(X(-3), Y(-1)); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = C["ramp-edge"]; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X(-3), Y(top)); p.forEach(q => ctx.lineTo(X(q.x), Y(q.y))); ctx.lineTo(X(p[p.length - 1].x + 3), Y(top)); ctx.stroke();
+    ctx.strokeStyle = alpha(C.ink, 0.08); ctx.lineWidth = 1.5; for (let x = -3; x < 0; x += 0.4) { ctx.beginPath(); ctx.moveTo(X(x), Y(top) + 2); ctx.lineTo(X(x), Y(0)); ctx.stroke(); }  // the platform's framing
+    [p[0], p[p.length - 1]].forEach(q => { ctx.fillStyle = shade(C.truck, 0.1); ctx.strokeStyle = shade(C.truck, -0.4); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(X(q.x), Y(top), Math.max(4, 0.03 * sc), 0, 7); ctx.fill(); ctx.stroke(); });
+    drawGround(Y(0) + 1, 0, W, 0);
+    return;
+  }
+  drawGround(Y(0), 0, W, 150);
+  if (sky === "grass") {
+    ctx.fillStyle = alpha(C.good, 0.22); ctx.fillRect(0, Y(0), W, H - Y(0));
+    ctx.strokeStyle = alpha(C.good, 0.5); ctx.lineWidth = 2;
+    for (let x = 12; x < W; x += 23) { ctx.beginPath(); ctx.moveTo(x, Y(0) + 2); ctx.lineTo(x - 4, Y(0) - 7); ctx.moveTo(x + 6, Y(0) + 2); ctx.lineTo(x + 9, Y(0) - 5); ctx.stroke(); }
+    text(L("Grass or carpet", "Pasto o alfombra"), W - 16, Y(0) + FS * 1.3, { a: "right", m: .75, c: C.soft });
+  }
+  if (sky === "curb") {
+    const c0 = -0.5, c1 = 1.32, ht = 0.16;
+    ctx.fillStyle = shade(C.ramp, 0.1); ctx.fillRect(X(c0), Y(ht), (c1 - c0) * sc, ht * sc);
+    ctx.fillStyle = shade(C.ramp, -0.12); ctx.fillRect(X(c0), Y(ht), (c1 - c0) * sc, 0.025 * sc);
+    ctx.strokeStyle = alpha(C.ke, 0.9); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(X(c0), Y(ht)); ctx.lineTo(X(c1), Y(ht)); ctx.stroke();    // the wax
+    ctx.strokeStyle = shade(C.ramp, -0.4); ctx.lineWidth = 1.5; ctx.strokeRect(X(c0), Y(ht), (c1 - c0) * sc, ht * sc);
+    text(L("Low curb, waxed", "Bordillo bajo con cera"), X((c0 + c1) / 2), Y(0) + FS * 1.3, { a: "center", m: .75, c: C.soft });
+  }
+}
+function drawDemo(fr, D) {
+  const v = [D.view[0] - 0.45, D.view[1] + 0.45, D.view[2], D.view[3]], gap = Math.max(22, FS * 1.7), sc = Math.min((W - 40) / (v[1] - v[0]), (H - 18 - gap) / (v[3] - v[2]));
+  const ox = (W - (v[1] - v[0]) * sc) / 2 - v[0] * sc, oy = H - gap + v[2] * sc - Math.max(0, (H - 18 - gap - (v[3] - v[2]) * sc)) / 2;
+  const X = x => ox + x * sc, Y = y => oy - y * sc;
+  drawDemoScene(D, X, Y, sc);
+  if (!fr) return;
+  // the surface frame: the ground, or a point on the ramp with its slope
+  let sx = 0, sy = 0, ang = 0;
+  if (fr.mode === "path") { const q = at(demoPath(), fr.s0); sx = q.x; sy = q.y; ang = Math.atan2(q.ty, q.tx); }
+  const dir = fr.dir, pv = (fr.piv === "back" ? -BOARD.axle : fr.piv === "front" ? BOARD.axle : 0) * dir, a = fr.pitch * DEG * dir;
+  const bt = (x, y) => { const x1 = x * dir; const xr = pv + (x1 - pv) * Math.cos(a) - y * Math.sin(a), yr = (x1 - pv) * Math.sin(a) + y * Math.cos(a); return [fr.bx + xr, fr.by + fr.h + yr]; };
+  const flat2D = is0(fr.roll) && (is0(fr.yaw) || is180(fr.yaw));
+  ctx.save(); ctx.translate(X(sx), Y(sy)); ctx.scale(sc, -sc); ctx.rotate(ang);
+  if (fr.mode === "path" || Math.abs(fr.pitch) < 15 || fr.h > 0.05) { ctx.save(); ctx.translate(fr.bx, fr.by); boardShadow(fr.h); ctx.restore(); }
+  ctx.save(); ctx.translate(fr.bx, fr.by + fr.h); ctx.translate(pv, 0); ctx.rotate(a); ctx.translate(-pv, 0); ctx.scale(dir * (flat2D && is180(fr.yaw) ? -1 : 1), 1);
+  if (flat2D) drawBoardSide(); else drawBoard3D(fr.roll, fr.yaw);
+  ctx.restore();
+  // the feet: on the board (turned with it when it spins) or on the ground
+  const onBoard = (q) => {
+    if (flat2D) { const xx = q[0] * (is180(fr.yaw) ? -1 : 1); return bt(xx, deckTop(q[0]) + q[1]); }
+    const p3 = project(rot([q[0], 0, deckTop(q[0])], { roll: fr.roll, yaw: fr.yaw, pitch: 0, h: 0 }), [0, 9]);
+    return bt(p3[0], p3[1] + q[1]);
+  };
+  const fF = fr.f ? onBoard(fr.f) : fr.fg, fB = fr.b ? onBoard(fr.b) : fr.bg;
+  const mid = [(fF[0] + fB[0]) / 2 + fr.hx, (fF[1] + fB[1]) / 2];
+  let hip = [mid[0], mid[1] + 0.84 - 0.36 * fr.crouch + fr.jump];
+  const ba = fr.ba * DEG; hip = [mid[0] + (hip[0] - mid[0]) * Math.cos(ba) - (hip[1] - mid[1]) * Math.sin(ba), mid[1] + (hip[0] - mid[0]) * Math.sin(ba) + (hip[1] - mid[1]) * Math.cos(ba)];
+  const sq = Math.max(0.58, Math.abs(Math.cos(fr.turn * DEG)));
+  ctx.save(); ctx.translate(hip[0], 0); ctx.scale(sq, 1); ctx.translate(-hip[0], 0);
+  drawBody(fB, fF, hip, { lean: fr.lean - ba, arms: fr.arms });
+  ctx.restore();
   ctx.restore();
 }
-function drawTricks() {
-  const t = TRICKS.find(x => x.id === S.tricks.id) || TRICKS[0];
+/* the feet from above: the setup for the trick, in a small box (toe side down, nose toward the arrow) */
+function drawFoot(x, y, ang, col, mirror) {   // a shoe from above, in board meters (toes toward the toe side, +y)
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang * DEG * mirror);
+  ctx.fillStyle = col; ctx.globalAlpha = .9;
+  ctx.beginPath(); ctx.ellipse(0, 0.0, 0.05, 0.135, 0, 0, 7); ctx.fill();
+  ctx.globalAlpha = 1; ctx.strokeStyle = shade(col, -0.45); ctx.lineWidth = 0.005; ctx.stroke();
+  ctx.fillStyle = shade(col, -0.45); ctx.beginPath(); ctx.arc(0, 0.1, 0.012, 0, 7); ctx.fill();   // the toe end
+  ctx.restore();
+}
+function drawFeetMap(t, cx, cy, sc, small) {
   const mir = S.stance === "goofy" ? -1 : 1;
-  const sc = Math.min((W - 100) / 1.0, (H - 120) / 0.62), cx = W / 2, cy = H / 2 + 6;
-  text(L("From above", "Desde arriba"), 16, 34, { w: 700, m: .9, c: C.soft });
-  text((S.stance === "goofy" ? "Goofy" : "Regular") + " · " + L("nose →", "nariz →").replace("→", mir > 0 ? "→" : "←"), W - 16, 34, { a: "right", m: .9, c: C.soft });
   ctx.save(); ctx.translate(cx, cy); ctx.scale(sc * mir, sc);
-  // the board from above: rounded ends, grip, bolts
   const hl = 0.4, hw = 0.105;
   ctx.fillStyle = C.grip; ctx.beginPath(); ctx.moveTo(-hl + hw, -hw); ctx.lineTo(hl - hw, -hw); ctx.arc(hl - hw, 0, hw, -Math.PI / 2, Math.PI / 2); ctx.lineTo(-hl + hw, hw); ctx.arc(-hl + hw, 0, hw, Math.PI / 2, Math.PI * 1.5); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = C.deck; ctx.lineWidth = 0.01; ctx.stroke();
-  ctx.save(); ctx.globalAlpha = .4; ctx.strokeStyle = C.wheel; ctx.lineWidth = 0.004; [-0.29, 0.29].forEach(x => { ctx.beginPath(); ctx.moveTo(x, -hw); ctx.lineTo(x, hw); ctx.stroke(); }); ctx.restore();
-  ctx.fillStyle = C.truck; [-0.18, 0.18].forEach(x => [-0.025, 0.025].forEach(dy => [-0.014, 0.014].forEach(dx => { ctx.beginPath(); ctx.arc(x + dx, dy, 0.006, 0, 7); ctx.fill(); })));
+  ctx.strokeStyle = C.deck; ctx.lineWidth = 0.012; ctx.stroke();
+  ctx.save(); ctx.globalAlpha = .35; ctx.strokeStyle = C.wheel; ctx.lineWidth = 0.004; [-0.29, 0.29].forEach(x => { ctx.beginPath(); ctx.moveTo(x, -hw); ctx.lineTo(x, hw); ctx.stroke(); }); ctx.restore();
+  ctx.fillStyle = shade(C.truck, 0.2); [-0.18, 0.18].forEach(x => [-0.025, 0.025].forEach(dy => [-0.014, 0.014].forEach(dx => { ctx.beginPath(); ctx.arc(x + dx, dy, 0.006, 0, 7); ctx.fill(); })));
   const fF = t.feet.f, fB = t.feet.b;
   drawFoot(fB[0], fB[1], fB[2], C.pe, mir); drawFoot(fF[0], fF[1], fF[2], C.ke, mir);
   ctx.restore();
-  // arrows (screen space)
-  (t.arrows || []).forEach(a => {
-    const sx = x => cx + x * sc * mir, sy = y => cy + y * sc;
-    if (a.down) { ctx.save(); ctx.strokeStyle = C.force; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(sx(a.from[0]), sy(a.from[1]), 22, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.arc(sx(a.from[0]), sy(a.from[1]), 6, 0, 7); ctx.fillStyle = C.force; ctx.fill(); ctx.restore(); text(L("snap down", "golpe abajo"), sx(a.from[0]), sy(a.from[1]) + 46, { a: "center", m: .8, c: C.force, bg: C.sky }); return; }
-    arrow(sx(a.from[0]), sy(a.from[1]), sx(a.to[0]), sy(a.to[1]), C.force, 5);
+  (t.arrows || []).forEach(ar => {
+    const X = x => cx + x * sc * mir, Y = y => cy + y * sc;
+    if (ar.down) { ctx.save(); ctx.strokeStyle = C.force; ctx.lineWidth = small ? 2.5 : 4; ctx.beginPath(); ctx.arc(X(ar.from[0]), Y(ar.from[1]), small ? 11 : 22, 0, 7); ctx.stroke(); ctx.restore(); return; }
+    arrow(X(ar.from[0]), Y(ar.from[1]), X(ar.to[0]), Y(ar.to[1]), C.force, small ? 3 : 5);
   });
-  text(L("Toe side", "Lado de los dedos"), cx, cy + 0.105 * sc + 34, { a: "center", m: .85, c: C.soft });
-  text(L("Heel side", "Lado de los talones"), cx, cy - 0.105 * sc - 18, { a: "center", m: .85, c: C.soft });
-  text(L("Tail", "Cola"), cx - 0.4 * sc * mir - 20 * mir, cy + 6, { a: mir > 0 ? "right" : "left", m: .85, c: C.soft });
-  text(L("Nose", "Nariz"), cx + 0.4 * sc * mir + 20 * mir, cy + 6, { a: mir > 0 ? "left" : "right", m: .85, c: C.soft });
+  if (!small) {
+    text(L("Toe side", "Lado de los dedos"), cx, cy + 0.105 * sc + 34, { a: "center", m: .85, c: C.soft });
+    text(L("Heel side", "Lado de los talones"), cx, cy - 0.105 * sc - 18, { a: "center", m: .85, c: C.soft });
+  }
+  text(L("nose", "nariz") + (mir > 0 ? " →" : ""), cx + (0.4 * sc + 8) * mir, cy + FS * 0.3, { a: mir > 0 ? "left" : "right", m: .7, c: C.soft });
+  if (mir < 0) text("← ", cx - 0.4 * sc - 8 - ctx.measureText(L("nose", "nariz")).width, cy + FS * 0.3, { a: "right", m: .7, c: C.soft });
+}
+let TR = null;
+function curTrick() { return TRICKS.find(x => x.id === S.tricks.id) || TRICKS[0]; }
+function drawTricks(fr) {
+  const t = curTrick(), D = DEMOS[t.id];
+  if (D) drawDemo(fr, D);
+  // the setup from above, top right; the step, top left
+  const bw = Math.min(W * 0.34, 300), sc = bw / 1.0, bx = W - bw / 2 - 18, by = 18 + 0.13 * sc + FS * 0.2;
+  ctx.save(); ctx.fillStyle = alpha(C.card, 0.92); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; roundRect(W - bw - 30, 8, bw + 22, 0.26 * sc + FS * 1.6, 12); ctx.fill(); ctx.stroke(); ctx.restore();
+  text(L("Feet, from above", "Pies, desde arriba"), W - bw - 20, 8 + FS * 0.95, { m: .7, w: 700, c: C.soft });
+  drawFeetMap(t, bx, by + FS * 0.75, sc * 0.82, true);
+  const c = es() ? t.es : t.en;
+  if (fr) text(L("Step ", "Paso ") + (fr.step + 1) + L(" of ", " de ") + c.steps.length, 16, 34, { w: 700, m: 1.05, c: C.steel });
+  else text(c.n, 16, 34, { w: 700, m: 1.05, c: C.steel });
+}
+function tricksOnFrame(fr) {
+  if (!fr) return;
+  document.querySelectorAll("#panel .tsteps li").forEach((li, i) => { const on = i === fr.step; if (li.classList.contains("on") !== on) li.classList.toggle("on", on); });
+}
+function nextUp() {
+  return TRICKS.filter(t => prog(t.id) < 2 && t.pre.every(p => prog(p) >= 2)).slice(0, 3);
 }
 function tricksPanel() {
-  const t = TRICKS.find(x => x.id === S.tricks.id) || TRICKS[0], c = es() ? t.es : t.en, i = TRICKS.indexOf(t);
-  const groups = [1, 2, 3, 4].map(lv => `<optgroup label="${esc(L(LV[lv][0], LV[lv][1]))}">${TRICKS.filter(x => x.lv === lv).map(x => `<option value="${x.id}" ${x.id === t.id ? "selected" : ""}>${esc(es() ? x.es.n : x.en.n)}</option>`).join("")}</optgroup>`).join("");
-  const ROOMN = { ramp: L("Ramp and energy", "Rampa y energía"), ollie: L("The ollie", "El ollie"), grind: L("Grinds and slides", "Grinds y slides"), balance: L("Balance and turning", "Equilibrio y giros"), flip: L("Flips and spins", "Flips y giros") };
+  const t = curTrick(), c = es() ? t.es : t.en, i = TRICKS.indexOf(t), p = prog(t.id);
+  const groups = [1, 2, 3, 4, 5].map(lv => `<optgroup label="${esc(L(LV[lv][0], LV[lv][1]))}">${TRICKS.filter(x => x.lv === lv).map(x => `<option value="${x.id}" ${x.id === t.id ? "selected" : ""}>${["", "· ", "✓ ", "★ "][prog(x.id)]}${esc(es() ? x.es.n : x.en.n)}</option>`).join("")}</optgroup>`).join("");
+  const ROOMN = { ramp: L("Ramp and energy", "Rampa y energía"), ollie: L("The ollie", "El ollie"), grind: L("Grinds and slides", "Grinds y slides"), balance: L("Balance and turning", "Equilibrio y giros"), flip: L("Flips and spins", "Flips y giros"), build: L("Build a board", "Arma una tabla") };
+  const name = id => { const x = TRICKS.find(y => y.id === id); return x ? (es() ? x.es.n : x.en.n) : id; };
+  const done = TRICKS.filter(x => prog(x.id) >= 3).length, landed = TRICKS.filter(x => prog(x.id) >= 2).length;
+  const nu = nextUp();
   return `<p class="kicker">${L("Room 7 · How to", "Sala 7 · Cómo se hace")}</p>
   <h2>${L("Trick book", "Libro de trucos")}</h2>
   <div class="ctl"><label for="kT">${L("Pick a trick", "Elige un truco")}</label><select class="sel" id="kT">${groups}</select></div>
   <div class="ctl"><div class="seg"><button type="button" data-st="regular" aria-pressed="${S.stance === "regular"}">${L("Regular", "Regular")}</button><button type="button" data-st="goofy" aria-pressed="${S.stance === "goofy"}">Goofy</button></div></div>
   <h3>${esc(c.n)}</h3>
   <p><span class="tag">${esc(L(LV[t.lv][0], LV[t.lv][1]))}</span><span class="tag">${L("Helmet on", "Con casco")}</span>${t.lv >= 2 ? `<span class="tag">${L("Wrist guards and pads", "Muñequeras y protecciones")}</span>` : ""}</p>
-  <p class="legend"><span><i style="background:var(--cv-ke)"></i>${L("Front foot", "Pie de adelante")}</span><span><i style="background:var(--cv-pe)"></i>${L("Back foot", "Pie de atrás")}</span><span><i style="background:var(--cv-force)"></i>${L("What the foot does", "Lo que hace el pie")}</span></p>
+  ${t.pre.length ? `<p class="hint">${L("Learn first", "Aprende primero")}: ${t.pre.map(id => `<button type="button" class="linkish" data-go-trick="${id}"><i class="pg s${prog(id)}"></i>${esc(name(id))}</button>`).join(", ")}</p>` : ""}
+  <p class="say">${L("Press Go to watch it. ◀ ▶ step through it; each step lights up below.", "Pulsa Ir para verlo. ◀ ▶ avanza paso a paso; cada paso se ilumina abajo.")}</p>
   <ol class="tsteps">${c.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
   <h3>${L("If this happens, try this", "Si pasa esto, prueba esto")}</h3>
   <div class="fixes">${c.fixes.map(f => `<div><b>${esc(f[0])}</b>${esc(f[1])}</div>`).join("")}</div>
   <div class="note"><b>${L("The science", "La ciencia")}:</b> ${esc(c.sci)}</div>
-  <div class="row"><button type="button" class="btn" data-go="${t.room}">${L("Try it in", "Pruébalo en")}: ${ROOMN[t.room]}</button></div>
+  <div class="ctl"><span class="lab">${L("Where are you with it?", "¿Cómo vas con este?")}</span><div class="seg">${[1, 2, 3].map(k => `<button type="button" data-prog="${k}" aria-pressed="${p === k}"><i class="pg s${k}"></i>${L(STATUS[k][0], STATUS[k][1])}</button>`).join("")}</div>
+   <p class="hint">${L("Saved on this device only.", "Se guarda solo en este dispositivo.")}${p ? ` <button type="button" class="linkish" data-prog="0">${L("Clear", "Borrar")}</button>` : ""}</p></div>
+  <div class="row"><button type="button" class="btn" data-go="${t.room}">${L("Try the science in", "Prueba la ciencia en")}: ${ROOMN[t.room] || ""}</button></div>
   <div class="row" style="margin-top:.5rem"><button type="button" class="btn" id="kPrev" ${i ? "" : "disabled"}>◀ ${L("Previous", "Anterior")}</button><button type="button" class="btn" id="kNext" ${i < TRICKS.length - 1 ? "" : "disabled"}>${L("Next", "Siguiente")} ▶</button></div>
+  <details class="more"><summary>${L("Your trick map", "Tu mapa de trucos")} · ${landed}/${TRICKS.length}</summary>
+   <p class="hint"><i class="pg s1"></i>${L("learning", "aprendiendo")} · <i class="pg s2"></i>${L("landed it once", "lo logré una vez")} · <i class="pg s3"></i>${L("got it, 7 of 10 tries", "lo domino, 7 de 10 intentos")}</p>
+   ${nu.length ? `<p><b>${L("Ready to learn next", "Listo para aprender")}:</b> ${nu.map(x => `<button type="button" class="linkish" data-go-trick="${x.id}">${esc(name(x.id))}</button>`).join(", ")}</p>` : ""}
+   <div class="tmap">${[1, 2, 3, 4, 5].map(lv => `<div class="tlv"><b>${esc(L(LV[lv][0], LV[lv][1]))}</b><p>${TRICKS.filter(x => x.lv === lv).map(x => `<span class="tchip s${prog(x.id)}"><i class="pg s${prog(x.id)}"></i>${esc(name(x.id))}</span>`).join(" ")}</p></div>`).join("")}</div>
+  </details>
   <p class="hint muted">${L("Learn in a smooth, safe place away from cars. Children ride with a grown-up nearby. Never hold on to a moving car or bike.", "Aprende en un lugar liso y seguro, lejos de los autos. Los niños patinan con un adulto cerca. Nunca te agarres de un auto o una bici en movimiento.")}</p>`;
 }
 function tricksWire() {
-  $("kT").onchange = e => { S.tricks.id = e.target.value; save(); panel(); paint(); };
+  const pick = id => { S.tricks.id = id; save(); tricksReset(); };
+  $("kT").onchange = e => pick(e.target.value);
   document.querySelectorAll("#panel [data-st]").forEach(b => b.onclick = () => { S.stance = b.getAttribute("data-st"); save(); panel(); paint(); });
-  const i = TRICKS.findIndex(x => x.id === S.tricks.id);
-  $("kPrev").onclick = () => { S.tricks.id = TRICKS[Math.max(0, i - 1)].id; save(); panel(); paint(); };
-  $("kNext").onclick = () => { S.tricks.id = TRICKS[Math.min(TRICKS.length - 1, i + 1)].id; save(); panel(); paint(); };
+  const i = TRICKS.indexOf(curTrick());
+  $("kPrev").onclick = () => pick(TRICKS[Math.max(0, i - 1)].id);
+  $("kNext").onclick = () => pick(TRICKS[Math.min(TRICKS.length - 1, i + 1)].id);
   document.querySelectorAll("#panel [data-go]").forEach(b => b.onclick = () => openRoom(b.getAttribute("data-go"), true));
+  document.querySelectorAll("#panel [data-go-trick]").forEach(b => b.onclick = () => pick(b.getAttribute("data-go-trick")));
+  document.querySelectorAll("#panel [data-prog]").forEach(b => b.onclick = () => { S.progress = S.progress || {}; S.progress[S.tricks.id] = +b.getAttribute("data-prog"); save(); panel(); paint(); });
+}
+function tricksReset(quiet) { TR = simDemo(curTrick().id); setRun(TR.frames, 1 / 60); if (!quiet) panel(); paint(); }
+
+/* ══ ROOM 9 — questions (AOG-SKATE-FAQ-V1) ═════════════════════════════════════════════════════════════════
+   Thirty plain answers: getting started, gear, safety, tricks, the skatepark, grown-ups, the science. Search and a topic
+   menu; each answer can open the room or the trick it talks about. */
+const FAQ = [{"id": "regular-or-goofy", "cat": "start", "room": "tricks", "trick": "stance", "en": {"q": "Am I regular or goofy?", "a": "Regular means your left foot goes in front. Goofy means your right foot goes in front. Both are normal, and neither one is better. To find yours, stand on the board on grass or carpet so it cannot roll. Try each foot in front. The one that feels steady and easy is your front foot. Still not sure? Try both for a few days. From here on, think front foot and back foot."}, "es": {"q": "¿Soy regular o goofy?", "a": "Regular quiere decir que el pie izquierdo va adelante. Goofy quiere decir que el pie derecho va adelante. Las dos formas son normales, y ninguna es mejor. Para saber cuál es la tuya, párate en la patineta sobre pasto o alfombra, así no rueda. Prueba con cada pie adelante. El que se siente firme y cómodo es tu pie de adelante. ¿Todavía no sabes? Prueba las dos formas unos días. Desde ahora, piensa en pie de adelante y pie de atrás."}}, {"id": "where-to-learn", "cat": "start", "room": "tricks", "trick": "push", "en": {"q": "Where should I learn to ride?", "a": "Pick a place that is smooth, flat, dry and away from cars. An empty basketball court, a quiet smooth path or the flat part of a skatepark all work. First, stand on the board on grass or carpet so it cannot roll far. Feel your balance there. Then roll slowly on smooth ground. A small pebble can stop a wheel suddenly, so look ahead and sweep the spot if you can. Children should have a grown-up nearby."}, "es": {"q": "¿Dónde aprendo a patinar?", "a": "Busca un lugar liso, plano, seco y lejos de los carros. Sirve una cancha de básquetbol vacía, un camino liso y tranquilo o la parte plana de un skatepark. Primero, párate en la patineta sobre pasto o alfombra, así no rueda lejos. Siente tu equilibrio ahí. Después, rueda despacio en un piso liso. Una piedrita puede frenar una rueda de golpe, así que mira hacia adelante y barre el lugar si puedes. Los niños deben tener a un adulto cerca."}}, {"id": "how-old", "cat": "start", "en": {"q": "How old is old enough to skate?", "a": "The American Academy of Pediatrics says children under 5 should not ride skateboards. At that age, balance and the skill of falling safely are still growing. It says children 6 to 10 should skate with an adult watching. Older kids, teens and adults can start at any age. Whatever your age, a helmet that fits and a smooth place away from cars come first."}, "es": {"q": "¿Desde qué edad se puede patinar?", "a": "La Academia Americana de Pediatría dice que los niños menores de 5 años no deben andar en patineta. A esa edad, el equilibrio y la habilidad de caer con cuidado todavía están creciendo. También dice que los niños de 6 a 10 años deben patinar con un adulto mirando. Los niños mayores, los jóvenes y los adultos pueden empezar a cualquier edad. Tengas la edad que tengas, primero va un casco que te quede bien y un lugar liso lejos de los carros."}}, {"id": "learn-first", "cat": "start", "room": "tricks", "trick": "stop", "en": {"q": "What should I learn first?", "a": "Learn these in order. First, stand still on the board on grass or carpet, with your front foot over the front bolts. Next, push: put your back foot on the ground, take small steps, then put it back on the board. Then learn to stop: lift your back foot and let its sole drag gently on the ground. Then turn by leaning toward your toes or your heels. Practice falling small early too. Tricks can wait until rolling feels calm."}, "es": {"q": "¿Qué aprendo primero?", "a": "Aprende esto en orden. Primero, párate quieto en la patineta sobre pasto o alfombra, con el pie de adelante sobre los tornillos de adelante. Después, empuja: pon el pie de atrás en el piso, da pasos cortos y vuelve a subirlo a la patineta. Luego aprende a frenar: baja el pie de atrás y deja que la suela roce suavemente el piso. Luego gira inclinándote hacia los dedos o hacia los talones. Practica también caer con cuidado desde el principio. Los trucos pueden esperar hasta que rodar se sienta tranquilo."}}, {"id": "first-board", "cat": "gear", "room": "build", "en": {"q": "What kind of board should I get first?", "a": "A complete, meaning a board that comes already put together, is a fine start. Many first decks are about 7.5 to 8.25 inches (19 to 21 cm) wide. Smaller riders often like the narrower ones. Most decks are made of seven thin layers of maple. Check that the wheels spin freely and the trucks turn when you lean. Toy boards with hard plastic wheels often slip and rattle. The Build a board room shows how the parts fit together."}, "es": {"q": "¿Qué patineta compro primero?", "a": "Una completa, o sea una patineta que ya viene armada, es un buen comienzo. Muchas tablas para empezar miden entre 7.5 y 8.25 pulgadas (de 19 a 21 cm) de ancho, más o menos. A los niños más pequeños muchas veces les gustan las más angostas. Casi todas las tablas tienen siete capas delgadas de maple. Revisa que las ruedas giren libres y que los trucks giren cuando te inclinas. Las patinetas de juguete con ruedas de plástico duro suelen resbalar y hacer ruido. La sala Arma una patineta muestra cómo se juntan las partes."}}, {"id": "soft-or-hard-wheels", "cat": "gear", "room": "build", "en": {"q": "Should I get soft wheels or hard wheels?", "a": "Wheel hardness is measured on the durometer A scale. Skateboard wheels go from about 78A, which is soft, to about 101A, which is hard. Soft wheels grip well, feel smooth and roll over rough ground and small cracks. They are good for sidewalks and cruising. Hard wheels slide more easily and feel fast on smooth skatepark concrete. For a first board on mixed ground, wheels on the softer side are often easier."}, "es": {"q": "¿Compro ruedas blandas o duras?", "a": "La dureza de las ruedas se mide en la escala de durómetro A. Las ruedas de patineta van de unos 78A, que son blandas, a unos 101A, que son duras. Las ruedas blandas agarran bien, se sienten suaves y pasan por piso áspero y grietas pequeñas. Son buenas para la banqueta y para pasear. Las ruedas duras se deslizan con más facilidad y se sienten rápidas en el concreto liso del skatepark. Para una primera patineta en pisos variados, las ruedas más blandas suelen ser más fáciles."}}, {"id": "truck-tightness", "cat": "gear", "room": "build", "en": {"q": "How tight should my trucks be?", "a": "The big nut in the middle of each truck, the kingpin nut, sets how easily the board turns. Looser trucks turn with a small lean but can feel wobbly. Tighter trucks feel steady but need a bigger lean to turn. Start in the middle. Turn the nut a quarter turn at a time, then ride and feel the change. Never loosen it so far that the nut barely holds on. Set both trucks about the same."}, "es": {"q": "¿Qué tan apretados deben estar los trucks?", "a": "La tuerca grande en el centro de cada truck, la tuerca del kingpin, decide qué tan fácil gira la patineta. Los trucks flojos giran con poca inclinación, pero se pueden sentir tambaleantes. Los trucks apretados se sienten firmes, pero necesitas inclinarte más para girar. Empieza en un punto medio. Gira la tuerca un cuarto de vuelta cada vez, luego rueda y siente el cambio. Nunca la aflojes tanto que la tuerca apenas se sostenga. Deja los dos trucks más o menos iguales."}}, {"id": "shoes", "cat": "gear", "en": {"q": "What shoes should I wear?", "a": "Wear sneakers with a flat rubber sole, such as canvas or suede ones. A flat sole lets you feel the board and grips the grip tape. Skip sandals, boots with thick heels and running shoes with big curved soles. Tie your laces well and tuck in the ends so they cannot catch. Ollies and flip tricks rub the top of your shoe, so that spot may wear out faster. That is normal."}, "es": {"q": "¿Qué zapatos uso?", "a": "Usa tenis con suela de hule plana, por ejemplo de lona o de gamuza. Una suela plana te deja sentir la patineta y se agarra bien a la lija. Evita las sandalias, las botas con tacón grueso y los tenis para correr con suela muy curva. Amarra bien las agujetas y mete las puntas para que no se atoren. Los ollies y los trucos de flip rozan la parte de arriba del zapato, así que esa parte se puede gastar más rápido. Eso es normal."}}, {"id": "replace-parts", "cat": "gear", "room": "build", "en": {"q": "When should I replace grip tape or bearings?", "a": "Replace grip tape when it feels smooth and your shoes slip, or when it peels up at the edges. Scrubbing it with a stiff brush can help first. Bearings need care when the wheels stop spinning quickly, grind, squeak or feel rough. Sometimes cleaning them fixes the problem. If they stay rough or rusty, replace them. The ABEC number on bearings tells how precisely they are made, not how fast they go."}, "es": {"q": "¿Cuándo cambio la lija o los baleros?", "a": "Cambia la lija cuando se sienta lisa y tus zapatos resbalen, o cuando se despegue en las orillas. Antes, tallarla con un cepillo duro puede ayudar. Los baleros necesitan cuidado cuando las ruedas dejan de girar pronto, raspan, rechinan o se sienten ásperas. A veces limpiarlos arregla el problema. Si siguen ásperos u oxidados, cámbialos. El número ABEC de los baleros dice qué tan precisos están hechos, no qué tan rápido van."}}, {"id": "helmet-fit", "cat": "safety", "en": {"q": "How should my helmet fit?", "a": "A good helmet sits level on your head and covers your forehead. It feels snug, not tight, and it does not rock when you shake your head. Always buckle the strap. About one finger should fit between the strap and your chin. Wear it every time, even for a short ride. Many helmets are made for one big hit, so replace yours after a hard crash, even if it looks fine. Look for a label saying it meets a safety standard."}, "es": {"q": "¿Cómo me debe quedar el casco?", "a": "Un buen casco queda derecho en la cabeza y te cubre la frente. Se siente ajustado, pero no apretado, y no se mueve cuando sacudes la cabeza. Siempre abrocha la correa. Debe caber más o menos un dedo entre la correa y tu barbilla. Úsalo cada vez, aunque sea un paseo corto. Muchos cascos están hechos para un solo golpe fuerte, así que cámbialo después de una caída dura, aunque se vea bien. Busca una etiqueta que diga que cumple una norma de seguridad."}}, {"id": "wrist-guards", "cat": "safety", "trick": "fall", "en": {"q": "Do I really need wrist guards?", "a": "They help a lot, especially while you learn. Wrist injuries are among the most common skateboarding injuries, because people reach out with their hands when they fall. Wrist guards have a stiff piece that helps protect the wrist when a hand hits the ground. Knee pads and elbow pads help too. Knee pads also let you slide safely down a ramp. Pads that fit snugly and stay in place work best."}, "es": {"q": "¿De verdad necesito muñequeras?", "a": "Ayudan mucho, sobre todo mientras aprendes. Las lesiones de muñeca están entre las más comunes al andar en patineta, porque al caer la gente estira las manos. Las muñequeras tienen una pieza firme que ayuda a proteger la muñeca cuando la mano pega en el piso. Las rodilleras y las coderas también ayudan. Con las rodilleras, además, puedes deslizarte con seguridad por una rampa. Las protecciones que quedan ajustadas y no se mueven funcionan mejor."}}, {"id": "how-to-fall", "cat": "safety", "room": "tricks", "trick": "fall", "en": {"q": "How do I fall without getting hurt?", "a": "Falling is part of learning, and you can practice it. When you feel a fall coming, crouch low so you have less distance to fall. Try not to catch yourself with straight, locked arms. Instead, let your body roll onto your side or shoulder. On a ramp, drop to your knee pads and slide down. Practice these moves slowly on grass first. Falling small is a skill, just like any trick."}, "es": {"q": "¿Cómo me caigo sin lastimarme?", "a": "Caerse es parte de aprender, y lo puedes practicar. Cuando sientas que te vas a caer, agáchate para tener menos distancia hasta el piso. Trata de no detenerte con los brazos estirados y rígidos. Mejor, deja que tu cuerpo ruede hacia un lado o sobre el hombro. En una rampa, cae sobre las rodilleras y deslízate hacia abajo. Practica estos movimientos despacio, primero en el pasto. Caer con cuidado es una habilidad, igual que cualquier truco."}}, {"id": "wet-ground", "cat": "safety", "en": {"q": "Can I skate when the ground is wet?", "a": "It is best not to. Wet urethane wheels lose their grip, so the board can slip out with no warning. Water also gets inside the bearings and makes them rust, so they spin rough or stop. A wooden deck can soak up water and get weaker. Wait until the ground is fully dry. If your board gets wet, dry it with a towel and let it air-dry before you ride again."}, "es": {"q": "¿Puedo patinar si el piso está mojado?", "a": "Mejor no. Las ruedas de uretano mojadas pierden agarre, y la patineta se puede resbalar sin aviso. El agua también entra a los baleros y los oxida, así que giran ásperos o se detienen. Una tabla de madera puede absorber agua y debilitarse. Espera a que el piso esté bien seco. Si tu patineta se moja, sécala con una toalla y déjala secar al aire antes de volver a usarla."}}, {"id": "near-cars", "cat": "safety", "en": {"q": "Is it okay to skate in the street or near cars?", "a": "No. Drivers may not see a skateboarder, and a board cannot stop quickly. Never skate in traffic, down hills where cars drive, or out of a driveway into the street. Never hold onto a car, bike or any moving vehicle to get pulled along. Choose a skatepark, an empty court or a smooth path away from cars. When you need to cross a street, step off, pick up your board and walk."}, "es": {"q": "¿Está bien patinar en la calle o cerca de los carros?", "a": "No. Los conductores pueden no ver a quien va en patineta, y una patineta no frena rápido. Nunca patines entre el tráfico, en bajadas por donde pasan carros ni saliendo de una cochera hacia la calle. Nunca te agarres de un carro, una bici ni ningún vehículo para que te jale. Escoge un skatepark, una cancha vacía o un camino liso lejos de los carros. Cuando tengas que cruzar una calle, bájate, levanta tu patineta y camina."}}, {"id": "ollie-time", "cat": "tricks", "room": "ollie", "trick": "ollie", "en": {"q": "How long does it take to learn an ollie?", "a": "It takes most people many practice days, often weeks, and sometimes longer. Everyone learns at a different pace, and that is fine. The ollie has several parts: snap the tail, slide the front foot up, jump and level the board. Practice standing still on grass or carpet first. Then try it while rolling slowly. Short practice on most days often works better than one long day. Every small hop is progress."}, "es": {"q": "¿Cuánto tiempo toma aprender el ollie?", "a": "A la mayoría le toma muchos días de práctica, muchas veces semanas, y a veces más. Cada persona aprende a su ritmo, y eso está bien. El ollie tiene varias partes: pegar con la cola, subir deslizando el pie de adelante, saltar y emparejar la patineta. Practica primero quieto sobre pasto o alfombra. Después pruébalo rodando despacio. Practicar un rato corto casi todos los días suele funcionar mejor que un solo día largo. Cada saltito pequeño es un avance."}}, {"id": "board-shoots-out", "cat": "tricks", "room": "ollie", "trick": "ollie", "en": {"q": "Why does my board roll away or shoot out in front of me?", "a": "Usually your weight is too far back. When you lean back, the board rolls forward without you. Keep your shoulders over the board and your knees bent. On an ollie, the board shoots out when your back foot pushes forward instead of straight down. It also happens when you jump backward. Snap the tail down, then jump straight up. Keep your shoulders facing the same way as the board."}, "es": {"q": "¿Por qué mi patineta se me va o sale disparada hacia adelante?", "a": "Casi siempre es porque tu peso está muy atrás. Cuando te echas para atrás, la patineta sigue rodando sin ti. Mantén los hombros sobre la patineta y las rodillas dobladas. En el ollie, la patineta sale disparada cuando el pie de atrás empuja hacia adelante en vez de hacia abajo. También pasa cuando saltas hacia atrás. Pega la cola hacia abajo y luego salta derecho hacia arriba. Mantén los hombros mirando hacia el mismo lado que la patineta."}}, {"id": "kickflip-or-heelflip", "cat": "tricks", "room": "flip", "trick": "kickflip", "en": {"q": "What is the difference between a kickflip and a heelflip?", "a": "Both start like an ollie, and the board spins one full turn under your feet. In a kickflip, the front foot slides up and flicks off the heel-side edge of the nose with the side of the toes. In a heelflip, the front foot flicks off the toe-side edge of the nose with the heel. So the two tricks spin in opposite directions. Learn a steady ollie before trying either one."}, "es": {"q": "¿Cuál es la diferencia entre un kickflip y un heelflip?", "a": "Los dos empiezan como un ollie, y la patineta da una vuelta completa debajo de tus pies. En el kickflip, el pie de adelante sube y golpea la orilla del lado de los talones de la nariz con el costado de los dedos. En el heelflip, el pie de adelante golpea la orilla del lado de los dedos de la nariz con el talón. Por eso los dos trucos giran en direcciones opuestas. Aprende un ollie firme antes de probar cualquiera de los dos."}}, {"id": "stairs-and-rails", "cat": "tricks", "room": "grind", "en": {"q": "When can I try stairs or rails?", "a": "Much later. Stairs and handrails come only after a long time of steady basics: rolling, turning, stopping, falling small and clean ollies. When you are ready to slide on something, start low. A painted curb, a low ledge or a low flat bar at a skatepark comes first. Go higher only in small steps, with a helmet and pads. Skating is not a race. Low tricks done well are real skating."}, "es": {"q": "¿Cuándo puedo probar escaleras o barandales?", "a": "Mucho después. Las escaleras y los barandales vienen solo después de mucho tiempo con lo básico firme: rodar, girar, frenar, caer con cuidado y hacer ollies limpios. Cuando estés listo para deslizarte en algo, empieza bajo. Primero va una orilla pintada, un borde bajo o un tubo bajo y plano en un skatepark. Sube de altura solo poco a poco, con casco y protecciones. Patinar no es una carrera. Los trucos bajos bien hechos también son patinar de verdad."}}, {"id": "feeling-scared", "cat": "tricks", "en": {"q": "I feel scared to try a trick. What can I do?", "a": "Feeling scared is normal. It is your body asking you to slow down and plan. Break the trick into smaller steps. Practice each step standing still on grass or carpet. Try a lower or slower version first. Wear your helmet and pads so a fall stays small. A friend or a grown-up nearby can help. It is fine to stop for the day and come back. Many experienced skaters still feel fear."}, "es": {"q": "Me da miedo probar un truco. ¿Qué puedo hacer?", "a": "Sentir miedo es normal. Es tu cuerpo pidiéndote que vayas más despacio y que planees. Divide el truco en pasos más pequeños. Practica cada paso quieto sobre pasto o alfombra. Prueba primero una versión más baja o más lenta. Usa casco y protecciones para que una caída sea pequeña. Un amigo o un adulto cerca puede ayudar. Está bien parar por hoy y volver otro día. Muchos patinadores con experiencia también sienten miedo."}}, {"id": "taking-turns", "cat": "park", "en": {"q": "How do I take turns at the skatepark?", "a": "Skateparks run on taking turns. Wait until the person before you finishes their run. Before you go, look around and make sure your path is clear. Keep your runs short when it is busy. Do not sit on ramps or ledges, and do not stand where people land. When your turn ends, roll out of the way. Watching others first helps you learn how people move through the park."}, "es": {"q": "¿Cómo tomo turnos en el skatepark?", "a": "En el skatepark todo funciona por turnos. Espera a que la persona antes que tú termine su recorrido. Antes de salir, mira alrededor y revisa que tu camino esté libre. Haz recorridos cortos cuando hay mucha gente. No te sientes en las rampas ni en los bordes, y no te pares donde la gente cae de un truco. Cuando termine tu turno, sal del camino rodando. Mirar a los demás primero te ayuda a aprender cómo se mueve la gente en el parque."}}, {"id": "look-before-drop-in", "cat": "park", "room": "ramp", "trick": "dropin", "en": {"q": "What should I check before I drop in?", "a": "Look at the whole ramp and the flat bottom first. Make sure no one is rolling toward you or standing where you will land. Set your tail on the coping and wait until the path is clear. Let others see that you are next. If two people start at once, one person waits. Learn to drop in on a small ramp first, with a helmet and pads."}, "es": {"q": "¿Qué reviso antes de hacer un drop in?", "a": "Primero mira toda la rampa y la parte plana de abajo. Revisa que nadie venga rodando hacia ti ni esté parado donde vas a llegar. Pon la cola de la patineta en el coping y espera hasta que el camino esté libre. Deja que los demás vean que sigues tú. Si dos personas salen al mismo tiempo, una espera. Aprende el drop in primero en una rampa pequeña, con casco y protecciones."}}, {"id": "what-is-a-snake", "cat": "park", "en": {"q": "What is a snake at the skatepark?", "a": "A snake is someone who cuts in and takes a turn that belongs to someone else. Cutting in can cause crashes and hard feelings. If you are not sure whose turn it is, wait and let the other person go. If you cut in by mistake, say sorry and roll out of the way. Most skaters are kind to beginners who wait their turn."}, "es": {"q": "¿Qué es un snake en el skatepark?", "a": "Un snake es alguien que se mete y toma un turno que le toca a otra persona. Meterse así puede causar choques y enojos. Si no sabes a quién le toca, espera y deja que la otra persona vaya primero. Si te metiste sin querer, pide perdón y sal del camino. La mayoría de los patinadores son amables con los principiantes que esperan su turno."}}, {"id": "busy-times", "cat": "park", "en": {"q": "When is the skatepark less busy?", "a": "Many skateparks are calmer early in the morning. They are often busier after school, in the evening and on weekends. Visit at a few different times and notice what feels best for you. If it is crowded, practice basics in a quiet flat corner, or come back another time. Some parks offer lessons or beginner times. A calmer park can make learning feel easier."}, "es": {"q": "¿Cuándo hay menos gente en el skatepark?", "a": "Muchos skateparks están más tranquilos temprano en la mañana. Suelen tener más gente después de la escuela, en la tarde-noche y los fines de semana. Ve a distintas horas y fíjate cuál se siente mejor para ti. Si hay mucha gente, practica lo básico en una esquina plana y tranquila, o regresa otro día. Algunos parques tienen clases u horarios para principiantes. Un parque más tranquilo puede hacer que aprender se sienta más fácil."}}, {"id": "too-late-to-start", "cat": "adults", "en": {"q": "Am I too old to start skating?", "a": "No. Many people start skateboarding as adults. You can learn to push, turn, stop and do tricks, one step at a time. Adults often bring helpful strengths, like patience, planning and knowing when to rest. Bodies can take longer to heal as we get older, so protection matters even more. Wear a helmet, wrist guards, knee pads and elbow pads. Start on flat ground and enjoy each new step."}, "es": {"q": "¿Ya estoy muy grande para empezar a patinar?", "a": "No. Mucha gente empieza a andar en patineta de adulta. Puedes aprender a empujar, girar, frenar y hacer trucos, paso a paso. Los adultos muchas veces traen fortalezas que ayudan, como la paciencia, la planeación y saber cuándo descansar. Con los años, el cuerpo puede tardar más en sanar, así que la protección importa todavía más. Usa casco, muñequeras, rodilleras y coderas. Empieza en piso plano y disfruta cada paso nuevo."}}, {"id": "adult-pace", "cat": "adults", "room": "balance", "en": {"q": "How should I pace my practice as an adult?", "a": "Warm up first with a few minutes of walking, gentle stretches and easy rolling. Shorter sessions a few times a week often work well. Stop while you still feel fresh, because tired legs make falls more likely. Hip pads or padded shorts can soften falls on your side. Learn one skill until it feels steady before adding the next. Rest days are part of getting better."}, "es": {"q": "¿Cómo organizo mi práctica siendo adulto?", "a": "Primero calienta unos minutos: camina, estírate con suavidad y rueda tranquilo. Varias sesiones cortas a la semana suelen funcionar bien. Para cuando todavía te sientas con energía, porque las piernas cansadas hacen más probables las caídas. Las protecciones de cadera o los shorts acolchados pueden suavizar las caídas de lado. Aprende una habilidad hasta que se sienta firme antes de pasar a la siguiente. Los días de descanso también son parte de mejorar."}}, {"id": "joining-sessions", "cat": "adults", "en": {"q": "How can I join a session or find other adult skaters?", "a": "Some cities have adult skate nights, lessons or meetups at local parks. Ask at a skate shop or check the park's notice board. At a session, say hello, watch for a bit and take turns. Nobody expects a beginner to be good, and most skaters remember starting out. You can practice in a quiet corner while others ride. Cheering for other people's tries is part of skate culture."}, "es": {"q": "¿Cómo me uno a una sesión o encuentro a otros adultos que patinan?", "a": "Algunas ciudades tienen noches de patineta para adultos, clases o reuniones en los parques. Pregunta en una tienda de patinetas o revisa el tablero de avisos del parque. En una sesión, saluda, observa un rato y toma turnos. Nadie espera que un principiante lo haga bien, y la mayoría de los patinadores recuerdan cuando empezaron. Puedes practicar en una esquina tranquila mientras otros patinan. Echarle porras a los intentos de los demás es parte de la cultura de la patineta."}}, {"id": "why-bend-knees", "cat": "science", "room": "balance", "en": {"q": "Why should I bend my knees?", "a": "Bent knees lower your center of mass, so you are harder to tip over. They also work like springs. When the board hits a bump or you land, your legs bend and slow your body over a longer time. Stopping over a longer time means a smaller force on your body. Straight, stiff legs send each bump straight into your joints. That is why skaters ride with soft, bent knees."}, "es": {"q": "¿Por qué debo doblar las rodillas?", "a": "Con las rodillas dobladas, tu centro de masa queda más bajo, así que es más difícil que te caigas. Las rodillas también funcionan como resortes. Cuando la patineta pega con un bache o cuando caes, tus piernas se doblan y frenan tu cuerpo en más tiempo. Frenar en más tiempo significa una fuerza más pequeña sobre tu cuerpo. Las piernas rectas y rígidas mandan cada golpe directo a tus articulaciones. Por eso se patina con las rodillas suaves y dobladas."}}, {"id": "why-lean-forward", "cat": "science", "room": "ramp", "trick": "dropin", "en": {"q": "Why do I lean forward when I drop in?", "a": "On a ramp, the board speeds up as it rolls down the slope. If your body stays back, the board rolls out from under you and you fall backward. Leaning forward keeps your center of mass over the board as it speeds up. Then your body and the board move together. Put weight on your front foot and press the front wheels down onto the ramp. Leaning in feels scary at first, but it is what keeps you up."}, "es": {"q": "¿Por qué me inclino hacia adelante en el drop in?", "a": "En una rampa, la patineta acelera mientras baja por la pendiente. Si tu cuerpo se queda atrás, la patineta se sale de debajo de ti y te caes hacia atrás. Inclinarte hacia adelante mantiene tu centro de masa sobre la patineta mientras acelera. Así tu cuerpo y la patineta se mueven juntos. Pon peso en el pie de adelante y empuja las ruedas de adelante contra la rampa. Inclinarte da miedo al principio, pero es lo que te mantiene arriba."}}, {"id": "skate-wax", "cat": "science", "room": "grind", "trick": "boardslide", "en": {"q": "What is skate wax for, and why does it help?", "a": "Skate wax is a hard wax rubbed thinly on the edge of a curb, ledge or box so trucks and boards slide. Sliding is slowed by kinetic friction: f = μN. Wax fills tiny bumps in the surface and lowers μ, the coefficient of friction. Less friction means you keep more speed. On level ground, slide distance is v²/(2μg), so halving μ doubles the distance. Use a thin layer, ask first at a park, and never wax stairs or walkways."}, "es": {"q": "¿Para qué sirve la cera de patineta y por qué ayuda?", "a": "La cera de patineta es una cera dura que se frota en capa delgada en la orilla de un bordillo, un borde o una caja para que los trucks y la tabla se deslicen. Lo que frena el deslizamiento es la fricción cinética: f = μN. La cera rellena bultitos de la superficie y baja μ, el coeficiente de fricción. Con menos fricción conservas más velocidad. En piso plano, la distancia de deslizamiento es v²/(2μg), así que si μ baja a la mitad, la distancia se duplica. Usa una capa delgada, pregunta primero en el parque y nunca encerices escaleras ni banquetas."}}, {"id": "bigger-wheels-cracks", "cat": "science", "room": "build", "en": {"q": "Why do bigger wheels roll over cracks more easily?", "a": "A bigger wheel meets a crack or pebble at a gentler angle. The edge of the bump pushes more upward on the wheel and less straight back against it. So the wheel climbs over instead of stopping. A small wheel hits the same bump more head-on, and the board can stop suddenly while you keep going. Softer wheels help too, because they squish around small bumps. That is why cruising boards often have big, soft wheels."}, "es": {"q": "¿Por qué las ruedas grandes pasan mejor por las grietas?", "a": "Una rueda grande choca con una grieta o una piedrita en un ángulo más suave. La orilla del bache empuja la rueda más hacia arriba y menos hacia atrás. Así la rueda se sube y pasa en vez de detenerse. Una rueda chica pega con el mismo bache más de frente, y la patineta se puede frenar de golpe mientras tú sigues hacia adelante. Las ruedas blandas también ayudan, porque se aplastan un poco alrededor de los bultitos. Por eso las patinetas para pasear suelen tener ruedas grandes y blandas."}}];
+const FAQCAT = { start: ["Getting started", "Para empezar"], gear: ["Gear", "Equipo"], safety: ["Safety", "Seguridad"], tricks: ["Tricks", "Trucos"], park: ["At the skatepark", "En el skatepark"], adults: ["For grown-ups", "Para adultos"], science: ["The science", "La ciencia"] };
+function drawFaq() {
+  const sc = Math.min(W / 2.6, (H - 70) / 2.2), ox = W * 0.32, oy = H - 46;
+  drawGround(oy, 0, W, 150);
+  ctx.save(); ctx.translate(ox, oy); ctx.scale(sc, -sc); drawRider(0.25, { com: false, lean: 0.03, arms: 0.85 }); ctx.restore();
+  // a big question mark on a card, and how many answers wait below
+  const cx = W * 0.72, cy = H * 0.42, r = Math.min(W, H) * 0.2;
+  ctx.fillStyle = C.card; ctx.strokeStyle = C.line; ctx.lineWidth = 2; roundRect(cx - r, cy - r, 2 * r, 2 * r, r * 0.3); ctx.fill(); ctx.stroke();
+  text("?", cx, cy + r * 0.38, { a: "center", w: 800, m: r / FS * 1.3, c: C.steel });
+  text(FAQ.length + " " + L("answers", "respuestas"), cx, cy + r + FS * 1.4, { a: "center", w: 700, m: .95, c: C.ink });
+}
+function faqPanel() {
+  const q = (S.faq && S.faq.q) || "", cat = (S.faq && S.faq.cat) || "all", fold = x => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""), ql = fold(q.trim());   // "rampa" finds "rampa", "dropin" finds "drop in"
+  const items = FAQ.filter(f => (cat === "all" || f.cat === cat) && (!ql || fold(es() ? f.es.q + " " + f.es.a : f.en.q + " " + f.en.a).indexOf(ql) >= 0));
+  const ROOMN = { build: L("Build a board", "Arma una tabla"), ramp: L("Ramp and energy", "Rampa y energía"), ollie: L("The ollie", "El ollie"), grind: L("Grinds and slides", "Grinds y slides"), balance: L("Balance and turning", "Equilibrio y giros"), flip: L("Flips and spins", "Flips y giros"), timeline: L("Boards through time", "Las tablas en el tiempo"), tricks: L("Trick book", "Libro de trucos") };
+  const tname = id => { const x = TRICKS.find(y => y.id === id); return x ? (es() ? x.es.n : x.en.n) : id; };
+  return `<p class="kicker">${L("Room 8 · Questions", "Sala 8 · Preguntas")}</p>
+  <h2>${L("Questions skaters ask", "Preguntas de patinadores")}</h2>
+  <div class="ctl"><label for="fqQ">${L("Search", "Buscar")}</label><input class="num" id="fqQ" type="search" value="${esc(q)}" autocomplete="off" style="width:100%" placeholder="${L("helmet, wheels, ollie…", "casco, ruedas, ollie…")}"></div>
+  <div class="ctl"><label for="fqC">${L("Topic", "Tema")}</label><select class="sel" id="fqC"><option value="all">${L("Every topic", "Todos los temas")}</option>${Object.keys(FAQCAT).map(k => `<option value="${k}" ${cat === k ? "selected" : ""}>${esc(L(FAQCAT[k][0], FAQCAT[k][1]))}</option>`).join("")}</select></div>
+  <p class="hint" aria-live="polite">${items.length} ${L(items.length === 1 ? "answer" : "answers", items.length === 1 ? "respuesta" : "respuestas")}</p>
+  <div class="faq">${items.map(f => { const c = es() ? f.es : f.en; return `<details class="more qa"><summary>${esc(c.q)}</summary><p>${esc(c.a)}</p>${f.room || f.trick ? `<div class="row">${f.trick ? `<button type="button" class="btn" data-fq-trick="${f.trick}">${L("See the trick", "Ver el truco")}: ${esc(tname(f.trick))}</button>` : ""}${f.room && f.room !== "tricks" ? `<button type="button" class="btn" data-go="${f.room}">${L("Try it in", "Pruébalo en")}: ${ROOMN[f.room] || f.room}</button>` : ""}</div>` : ""}</details>`; }).join("") || `<p>${L("No answer matches yet. Try a shorter word.", "Ninguna respuesta coincide. Prueba una palabra más corta.")}</p>`}</div>`;
+}
+function faqWire() {
+  S.faq = S.faq || { q: "", cat: "all" };
+  const box = $("fqQ");
+  box.oninput = e => { S.faq.q = e.target.value; save(); const pos = e.target.selectionStart; panel(); const nb = $("fqQ"); nb.focus(); try { nb.setSelectionRange(pos, pos); } catch (x) {} };
+  $("fqC").onchange = e => { S.faq.cat = e.target.value; save(); panel(); };
+  document.querySelectorAll("#panel [data-go]").forEach(b => b.onclick = () => openRoom(b.getAttribute("data-go"), true));
+  document.querySelectorAll("#panel [data-fq-trick]").forEach(b => b.onclick = () => { S.tricks.id = b.getAttribute("data-fq-trick"); save(); openRoom("tricks", true); });
 }
 
 /* ══ ROOM 8 — build a board (AOG-SKATE-BUILD-V1, 2026-10-11) ═════════════════════════════════════════════
@@ -1326,7 +1741,99 @@ function boardCheck(o) {
   const where = o.use, hardOK = where === "rough" || where === "cruise" ? o.duro <= 92 : o.duro >= 95;
   return { fitDiff, fit: Math.abs(fitDiff) <= 0.25 ? "ok" : fitDiff < 0 ? "narrow" : "wide", clear, bite: clear < 0 ? "bite" : clear < 3 ? "close" : "ok", hardOK, x, phi };
 }
+/* ── every part, pulled apart (AOG-SKATE-PARTS-V1): the board from the side, each layer lifted off the next, numbered to
+   match the parts list under the picture ── */
+function buildParts() {
+  const o = S.build, b = boltFor(o.riser), rs = o.riser ? (o.riser < 5 ? "⅛″" : "¼″") : "";
+  const P2 = [
+    { id: "bolt", n: 8, en: "Mounting bolts and nuts", es: "Tornillos y tuercas", spec: b[1] + "″", why: L("Long enough to pass through the deck, riser and baseplate.", "Lo bastante largos para atravesar tabla, riser y base.") },
+    { id: "grip", n: 1, en: "Grip tape", es: "Lija", spec: L("one sheet, about 9 × 33 in", "una hoja, unos 9 × 33 pulg"), why: L("Rough like sandpaper, so your shoes hold on.", "Áspera como lija, para que tus zapatos se agarren.") },
+    { id: "deck", n: 1, en: "Deck", es: "Tabla", spec: inch(o.deck) + (o.type === "cruiser" ? L(", cruiser", ", cruiser") : L(", 7-ply maple", ", arce de 7 capas")), why: L("The board you stand on.", "La tabla donde te paras.") }
+  ];
+  if (o.riser) P2.push({ id: "riser", n: 2, en: "Riser pads", es: "Risers", spec: rs, why: L("Lift the deck away from the wheels.", "Separan la tabla de las ruedas.") });
+  P2.push(
+    { id: "base", n: 2, en: "Baseplates", es: "Bases", spec: L("part of each truck", "parte de cada eje"), why: L("Bolt to the deck. The kingpin stands up from it.", "Se atornillan a la tabla. De ella sale el kingpin.") },
+    { id: "bush", n: 4, en: "Bushings, on the kingpin", es: "Gomas, en el kingpin", spec: L(BUSH[o.bush].en, BUSH[o.bush].es), why: L("Rubber cushions. Softer ones let the board lean and turn more.", "Cojines de goma. Las más blandas dejan inclinar y girar más.") },
+    { id: "hanger", n: 2, en: "Hangers with axles", es: "Colgantes con eje", spec: L("axle ", "eje ") + inch(o.axle), why: L("Hold the wheels. Match the axle to the deck's width.", "Sostienen las ruedas. El eje igual al ancho de la tabla.") },
+    { id: "bear", n: 8, en: "Bearings, size 608, with 4 spacers", es: "Rodamientos 608, con 4 separadores", spec: L("2 in each wheel", "2 en cada rueda"), why: L("Let the wheels spin.", "Dejan girar las ruedas.") },
+    { id: "wheel", n: 4, en: "Wheels", es: "Ruedas", spec: o.wheel + " mm, " + o.duro + "A", why: o.duro <= 92 ? L("Soft: smooth over cracks.", "Blandas: suaves sobre grietas.") : L("Hard: fast and slidey on smooth ground.", "Duras: rápidas en suelo liso.") },
+    { id: "nut", n: 4, en: "Axle nuts, with 8 speed washers", es: "Tuercas del eje, con 8 arandelas", spec: L("come with the trucks", "vienen con los ejes"), why: L("Hold each wheel on. Snug, so the wheel still spins.", "Sujetan cada rueda. Firmes, pero que la rueda gire.") }
+  );
+  return P2;
+}
+function drawParts() {
+  const o = S.build, parts = buildParts(), num1 = id => parts.findIndex(p => p.id === id) + 1;
+  const len = (o.type === "cruiser" ? 30 : 31.5) * 25.4, wb = 14.25 * 25.4 / 2, hl = len / 2, bolt = boltFor(o.riser)[0] * 25.4;
+  const top = FS * 1.9, gapPx = Math.max(10, FS * 0.42), sc = (W - FS * 3.2) / (len + 40);
+  const hw0 = [["bolt", bolt + 8], ["riser", o.riser ? Math.max(o.riser, 5) : 0], ["base", 14], ["bush", 30], ["hanger", 34], ["bear", 22], ["wheel", o.wheel], ["nut", 13]].filter(r => r[1] > 0);
+  const hwTot = hw0.reduce((s, r) => s + r[1], 0), nRows = hw0.length + 2;
+  const k = clamp((H - top - 16 - gapPx * (nRows - 1) - 62 * sc) / (hwTot * sc), 1, 2.2), hs = sc * k;   // the small parts are drawn bigger
+  const rows = [hw0[0], ["grip", 4 / k], ["deck", 58 / k]].concat(hw0.slice(1)).map(r => [r[0], r[1] * k]);
+  const tot = rows.reduce((s, r) => s + r[1], 0) * sc;
+  const gap = clamp((H - top - 16 - tot) / (rows.length - 1), gapPx, FS * 2.4);   // spread the layers to fill the picture
+  const cx = W / 2 + FS * 0.7, X = x => cx + x * sc;
+  text(k > 1.15 ? L("Every part, pulled apart. Small parts drawn bigger.", "Cada pieza, separada. Las pequeñas, más grandes.") : L("Every part, pulled apart", "Cada pieza, separada"), 16, FS * 1.15, { w: 700, m: .85, c: C.soft });
+  let y = top; const Y = {};
+  y = top + Math.max(0, (H - top - 16 - tot - gap * (rows.length - 1)) / 2);
+  rows.forEach(r => { Y[r[0]] = [y, y + r[1] * sc]; y += r[1] * sc + gap; });
+  const ym = id => (Y[id][0] + Y[id][1]) / 2;
+  // the dashed lines the parts slide along, through each truck's middle
+  ctx.save(); ctx.setLineDash([6, 6]); ctx.strokeStyle = alpha(C.ink, 0.25); ctx.lineWidth = 1.5;
+  [-wb, wb].forEach(x => { ctx.beginPath(); ctx.moveTo(X(x), Y.bolt[0]); ctx.lineTo(X(x), Y.nut[1]); ctx.stroke(); });
+  ctx.restore();
+  const line = (pts, fill, stroke) => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); } };
+  // the deck's top line: flat between the trucks, kicking up at the nose and tail
+  const kick = 48, flat = hl - 150, prof = x => { const a = Math.abs(x); return a <= flat ? 0 : kick * Math.pow((a - flat) / 150, 1.6); };
+  const curve = (y0, th) => { const up = [], dn = []; for (let x = -hl; x <= hl + 0.1; x += 10) { up.push([X(x), y0 - prof(x) * sc]); dn.unshift([X(x), y0 - prof(x) * sc + th * sc]); } return up.concat(dn); };
+  const dY = Y.deck[1] - 11 * sc;
+  line(curve(dY, 11), C.deck, shade(C.deck, -0.4));
+  ctx.strokeStyle = alpha(shade(C.deck, 0.4), 0.6); ctx.lineWidth = 1; for (let k = 1; k < 4; k++) { const ply = curve(dY + k * 2.75 * sc, 0).slice(0, Math.floor(len / 10) + 1); ctx.beginPath(); ply.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke(); }
+  line(curve(Y.grip[1] - Math.max(2 * sc, 4), Math.max(2, 4 / sc)), C.grip, alpha(C.ink, 0.35));
+  const XT = (tx, d) => X(tx) + d * hs;
+  [-wb, wb].forEach(tx => {
+    // bolts: two of the four show from the side
+    [-27, 27].forEach(d => { const x = XT(tx, d); ctx.fillStyle = C.truck; ctx.fillRect(x - 2.5 * hs, Y.bolt[0] + 4 * hs, 5 * hs, bolt * hs); ctx.fillStyle = shade(C.truck, -0.25); ctx.fillRect(x - 6 * hs, Y.bolt[0], 12 * hs, 4.5 * hs);
+      ctx.strokeStyle = alpha(C.ink, 0.25); ctx.lineWidth = 1; for (let t = 8; t < bolt; t += 4) { ctx.beginPath(); ctx.moveTo(x - 2.5 * hs, Y.bolt[0] + (4 + t) * hs); ctx.lineTo(x + 2.5 * hs, Y.bolt[0] + (5.5 + t) * hs); ctx.stroke(); } });
+    if (Y.riser) { ctx.fillStyle = shade(C.soft, 0.2); ctx.strokeStyle = shade(C.soft, -0.3); ctx.lineWidth = 1.5; roundRect(XT(tx, -34), Y.riser[0], 68 * hs, Y.riser[1] - Y.riser[0], 2); ctx.fill(); ctx.stroke(); }
+    // baseplate with the kingpin standing up out of it, tipped toward the middle of the board
+    const s = tx < 0 ? 1 : -1, b0 = Y.base[0], b1 = Y.base[1];
+    line([[XT(tx, -36), b0], [XT(tx, 36), b0], [XT(tx, 30), b1], [XT(tx, -30), b1]], C.truck, shade(C.truck, -0.4));
+    const kp0 = [X(tx), b1], kp1 = [XT(tx, s * 14), Y.bush[1] + 4 * hs];
+    ctx.strokeStyle = shade(C.truck, -0.3); ctx.lineWidth = 4 * hs; ctx.beginPath(); ctx.moveTo(kp0[0], kp0[1]); ctx.lineTo(kp1[0], kp1[1]); ctx.stroke();
+    // two bushings on the kingpin, softer ones a lighter color
+    const bc = o.bush === "soft" ? shade(C.ke, 0.35) : o.bush === "med" ? C.ke : shade(C.ke, -0.3);
+    [0.27, 0.73].forEach(f => { const x = lerp(kp0[0], kp1[0], f), yy = lerp(Y.bush[0], Y.bush[1], f); ctx.fillStyle = bc; ctx.strokeStyle = shade(bc, -0.4); ctx.lineWidth = 1.5; roundRect(x - 12 * hs, yy - 6.5 * hs, 24 * hs, 13 * hs, 4 * hs); ctx.fill(); ctx.stroke(); });
+    // the hanger, seen from the side, with the axle end on
+    const h0 = Y.hanger[0], h1 = Y.hanger[1];
+    line([[XT(tx, -26), h0], [XT(tx, 26), h0], [XT(tx, 9), h1], [XT(tx, -9), h1]], C.truck, shade(C.truck, -0.4));
+    ctx.fillStyle = shade(C.truck, -0.45); ctx.beginPath(); ctx.arc(X(tx), h1 - 5 * hs, 4 * hs, 0, 7); ctx.fill();
+    // a bearing (the shield and the hole for the axle)
+    const br = ym("bear"); ctx.fillStyle = shade(C.truck, 0.15); ctx.strokeStyle = shade(C.truck, -0.4); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(X(tx), br, 11 * hs, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(X(tx), br, 4 * hs, 0, 7); ctx.fill();
+    ctx.strokeStyle = alpha(C.ink, 0.35); ctx.beginPath(); ctx.arc(X(tx), br, 7.5 * hs, 0, 7); ctx.stroke();
+    drawWheel(X(tx), ym("wheel"), o.wheel / 2 * hs);
+    // the axle nut
+    const ny = ym("nut"); ctx.fillStyle = shade(C.truck, -0.1); ctx.strokeStyle = shade(C.truck, -0.5); ctx.beginPath(); for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3; const px = X(tx) + Math.cos(a) * 6.5 * hs, py = ny + Math.sin(a) * 6.5 * hs; k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.closePath(); ctx.fill(); ctx.stroke();
+  });
+  // the numbers, at the left, matching the list
+  const badge = (id, yy) => { const k = num1(id); if (!k) return; const r = FS * 0.5, x = X(-hl) - FS * 0.95;
+    ctx.fillStyle = C.steel; ctx.beginPath(); ctx.arc(x, yy, r, 0, 7); ctx.fill();
+    text(String(k), x, yy + r * 0.38, { a: "center", m: .62, w: 700, c: C.steelFg || "#fff" });
+    ctx.strokeStyle = alpha(C.steel, 0.5); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x + r, yy); ctx.lineTo(X(-wb) - 40 * hs, yy); ctx.stroke(); };
+  badge("bolt", Y.bolt[0] + 6 * hs); badge("grip", Y.grip[1] - 1); badge("deck", dY + 5 * sc);
+  ["riser", "base", "bush", "hanger", "bear", "wheel", "nut"].forEach(id => { if (Y[id]) badge(id, ym(id)); });
+}
+function partsList() {
+  const parts = buildParts();
+  return `<div id="partsList" class="parts">
+    <h3>${L("Parts list", "Lista de piezas")}</h3>
+    <ol>${parts.map(p => `<li><b>${esc(L(p.en, p.es))}</b> <span class="pq">× ${p.n}</span> · ${esc(p.spec)}<br><span class="muted">${esc(p.why)}</span></li>`).join("")}</ol>
+    <p class="hint">${L("Trucks come as a pair, with the baseplates, kingpins, bushings, hangers and nuts. Wheels come as a set of 4.", "Los ejes vienen en pareja, con bases, kingpins, gomas, colgantes y tuercas. Las ruedas vienen en juegos de 4.")}</p>
+    <div class="row no-print"><button type="button" class="btn" id="bdPrint">${L("Print this list", "Imprimir esta lista")}</button></div>
+  </div>`;
+}
 function drawBuild() {
+  if (S.build.view === "parts") { drawParts(); return; }
   const o = S.build, ch = boardCheck(o), half = W * 0.52;
   // the front view at full lean (left)
   const r = o.wheel / 2, H0 = 53 + o.riser, Wd = o.deck * 25.4, ax = o.axle * 25.4;
@@ -1373,6 +1880,7 @@ function drawBuild() {
 }
 function buildUnder() {
   const o = S.build, ch = boardCheck(o), b = boltFor(o.riser);
+  if (o.view === "parts") return partsList();
   return `<div class="reads">
     <div class="read"><div class="k">${L("Deck", "Tabla")}</div><div class="v">${inch(o.deck)}</div><div class="u">${num(o.deck * 2.54, 1)} cm</div></div>
     <div class="read"><div class="k">${L("Wheels", "Ruedas")}</div><div class="v">${o.wheel} mm</div><div class="u">${o.duro}A</div></div>
@@ -1398,6 +1906,7 @@ function buildPanel() {
   return `<p class="kicker">${L("Start here · Gear", "Empieza aquí · Equipo")}</p>
   <h2>${L("Build a board", "Arma una tabla")}</h2>
   <p class="say">${L("Tell the lab your size and what you will do most. It suggests a whole setup and says why. Then change any part and watch the checks.", "Dile al laboratorio tu tamaño y lo que más harás. Te sugiere una tabla completa y explica por qué. Luego cambia cualquier pieza y mira las comprobaciones.")}</p>
+  <div class="ctl"><span class="lab">${L("Picture", "Imagen")}</span><div class="seg">${seg("view", "fit", L("Fit check", "Comprobar"))}${seg("view", "parts", L("Every part", "Cada pieza"))}</div></div>
   <div class="ctl"><label for="bdR">${L("Who will ride it?", "¿Quién la va a usar?")}</label><select class="sel" id="bdR">${Object.keys(RIDERS).map(k => `<option value="${k}" ${o.rider === k ? "selected" : ""}>${esc(L(RIDERS[k].en, RIDERS[k].es))}</option>`).join("")}</select></div>
   <div class="ctl"><label for="bdU">${L("What will you do most?", "¿Qué harás más?")}</label><select class="sel" id="bdU">${Object.keys(USES).map(k => `<option value="${k}" ${o.use === k ? "selected" : ""}>${esc(L(USES[k].en, USES[k].es))}</option>`).join("")}</select></div>
   <h3>${L("Suggested setup", "Tabla sugerida")}</h3>
@@ -1434,6 +1943,7 @@ function buildWire() {
   $("bdU").onchange = e => { o.use = e.target.value; useSuggestion(); };
   $("bdUse").onclick = useSuggestion;
   document.querySelectorAll("#panel [data-k]").forEach(b => b.onclick = () => { const k = b.getAttribute("data-k"), v = b.getAttribute("data-v"); o[k] = k === "riser" ? +v : v; save(); panel(); paint(); });
+  if (!buildWire.print) { buildWire.print = true; document.addEventListener("click", e => { if (e.target && e.target.id === "bdPrint") { document.body.classList.add("print-parts"); window.print(); } }); window.addEventListener("afterprint", () => document.body.classList.remove("print-parts")); }
   [["bdD", "deck", v => inch(v)], ["bdA", "axle", v => inch(v)], ["bdW", "wheel", v => v + " mm"], ["bdH", "duro", v => v + "A"]].forEach(([id, k, f]) => {
     $(id).oninput = e => { o[k] = +e.target.value; e.target.previousElementSibling.querySelector("output").textContent = f(o[k]); save(); paint(); $("under").innerHTML = buildUnder(); };
     $(id).onchange = () => panel();
@@ -1455,12 +1965,14 @@ const ROOMS = {
   timeline: { en: "Boards through time", es: "Las tablas en el tiempo", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawTimeline, under: () => "", panel: timelinePanel, wire: timelineWire,
     desc: () => L("A skateboard from above and from the side, as boards looked in ", "Una patineta desde arriba y de lado, como eran en ") + ERAS[S.timeline.i].y + ". " },
   build: { en: "Build a board", es: "Arma una tabla", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawBuild, under: buildUnder, panel: buildPanel, wire: buildWire,
-    desc: () => L("A skateboard from the front, leaning all the way over its wheels, and from above. ", "Una patineta de frente, inclinada al máximo sobre sus ruedas, y desde arriba. ") },
-  tricks: { en: "Trick book", es: "Libro de trucos", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawTricks, under: () => "", panel: tricksPanel, wire: tricksWire,
-    desc: () => L("A skateboard from above showing where each foot goes. ", "Una patineta desde arriba que muestra dónde va cada pie. ") }
+    desc: () => S.build.view === "parts" ? L("A skateboard from the side, every part pulled apart and numbered to match the parts list. ", "Una patineta de lado, cada pieza separada y numerada como en la lista de piezas. ") : L("A skateboard from the front, leaning all the way over its wheels, and from above. ", "Una patineta de frente, inclinada al máximo sobre sus ruedas, y desde arriba. ") },
+  tricks: { en: "Trick book", es: "Libro de trucos", player: true, run: () => tricksReset(true), reset: tricksReset, draw: () => drawTricks(P.frames[P.k]), under: () => "", panel: tricksPanel, wire: tricksWire, onFrame: tricksOnFrame,
+    desc: () => L("A skater showing the trick, step by step, with a small map of where each foot goes. ", "Un patinador muestra el truco paso a paso, con un mapa pequeño de dónde va cada pie. ") + (es() ? curTrick().es.n : curTrick().en.n) + ". " },
+  questions: { en: "Questions", es: "Preguntas", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawFaq, under: () => "", panel: faqPanel, wire: faqWire,
+    desc: () => L("A skater beside a question mark. The answers are below. ", "Un patinador junto a un signo de pregunta. Las respuestas están abajo. ") }
 };
-const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks"];   // AOG-SKATE-BUILD-HOME-V1: Build a board first
-function panel() { const r = ROOMS[S.room]; $("panel").innerHTML = r.panel(); r.wire(); paintPlayer(); $("under").innerHTML = r.under(); }
+const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks", "questions"];   // AOG-SKATE-BUILD-HOME-V1: Build a board first
+function panel() { const r = ROOMS[S.room]; $("panel").innerHTML = r.panel(); r.wire(); paintPlayer(); $("under").innerHTML = r.under(); if (r.onFrame) r.onFrame(P.frames[P.k]); }
 function paint(fast) {
   if (fit()) colors();
   clear(); ROOMS[S.room].draw();
@@ -1470,6 +1982,7 @@ function paint(fast) {
   if (!fast) { paintPlayer(); const fr = P.frames[P.k]; $("cvDesc").textContent = ROOMS[S.room].desc() + (fr && fr.v != null ? L("Speed ", "Rapidez ") + num(fr.v, 1) + " m/s." : ""); }
   // the result notes in the panel appear when a run reaches its end
   if (!fast && P.ran && P.k >= P.frames.length - 1 && ROOMS[S.room].player && !P._shown) { P._shown = true; panel(); P._shown = false; }
+  if (ROOMS[S.room].onFrame) ROOMS[S.room].onFrame(P.frames[P.k]);
 }
 function rooms() {
   $("roomRow").innerHTML = ORDER.map(k => `<button type="button" data-room="${k}" aria-pressed="${S.room === k}">${L(ROOMS[k].en, ROOMS[k].es)}</button>`).join("");
@@ -1505,7 +2018,7 @@ new MutationObserver(() => { colors(); paint(); }).observe(document.documentElem
 window.addEventListener("resize", () => { if (fit()) { colors(); paint(); } });
 window.addEventListener("hashchange", () => { const k = location.hash.slice(1); if (ROOMS[k] && k !== S.room) openRoom(k, false); });
 /* for the site's checks (tools/check-skate.js) */
-window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS };
+window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS, DEMOS, simDemo, FAQ, trick: id => { S.tricks.id = id; save(); if (S.room === "tricks") tricksReset(); else openRoom("tricks", true); } };
 words();
 /* AOG-SKATE-BUILD-HOME-V1 (2026-10-11) — Jimmy: "Make build a board a main stay for this page." /skate always opens on
    Build a board; an address that names a room (/skate#ollie, a lesson's link) still opens that room. */

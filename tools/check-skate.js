@@ -81,6 +81,10 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     const last = s => s.frames[s.frames.length - 1]; out.flips = [last(kf).roll, last(tre).roll, last(tre).yaw];
     out.tricks = A.TRICKS.map(t => ({ id: t.id, room: t.room, en: t.en.steps.length && t.en.fixes.length && !!t.en.sci, es: t.es.steps.length === t.en.steps.length && t.es.fixes.length === t.en.fixes.length && !!t.es.sci }));
     out.rooms = A.rooms;
+    // the trick demos: every trick has one; its steps stay inside the trick's list and reach the last step; both feet always land somewhere
+    out.demoBad = A.TRICKS.filter(t => { const d = A.simDemo(t.id), fr = d.frames, n = t.en.steps.length;
+      return !A.DEMOS[t.id] || fr.length < 60 || fr.some(f => f.step < 0 || f.step >= n || !(f.f || f.fg) || !(f.b || f.bg) || [f.bx, f.by, f.h, f.pitch, f.roll, f.yaw].some(v => !isFinite(v))) || fr[fr.length - 1].step !== n - 1; }).map(t => t.id);
+    out.faq = [A.FAQ.length, A.FAQ.filter(f => !f.en.q || !f.en.a || !f.es.q || !f.es.a || (f.trick && !A.TRICKS.some(t => t.id === f.trick)) || (f.room && !A.rooms.includes(f.room))).map(f => f.id)];
     // build a board: every suggestion fits and never bites; a riser adds its thickness; big wheels on soft bushings bite
     const riders = ["micro", "mini", "mid", "s", "m", "l"], uses = ["tricks", "ramps", "rough", "cruise"], bad = [];
     riders.forEach(r => uses.forEach(u => { const sg = A.suggestBoard(r, u), c = A.boardCheck(Object.assign({ use: u }, sg));
@@ -110,6 +114,8 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(phys.bite[0] === "bite" && Math.abs(phys.bite[1] - 3.2) < 1e-9 && phys.bite[2] === "narrow" && phys.bite[3] === "wide" && phys.bite[4] === false,
      "Build a board: 60 mm wheels on soft bushings bite; a ⅛-inch riser adds 3.2 mm; narrow and wide trucks are caught; hard wheels on rough ground are flagged");
   ok(phys.bite[5][0] === 7 && phys.bite[5][1] === 7.25 && phys.bite[6] === "1", "Build a board: a mini deck is about 7–7¼ inches; a ⅛-inch riser takes 1-inch bolts");
+  ok(!phys.demoBad.length, `every trick (${phys.tricks.length}) has a demo whose steps match its list and end on the last step` + (phys.demoBad.length ? " (" + phys.demoBad.join(", ") + ")" : ""));
+  ok(phys.faq[0] >= 30 && !phys.faq[1].length, `Questions: ${phys.faq[0]} answers, each in English and Spanish, each link to a real trick or room` + (phys.faq[1].length ? " (" + phys.faq[1].join(", ") + ")" : ""));
   const badT = phys.tricks.filter(t => !t.en || !t.es || !phys.rooms.includes(t.room));
   ok(!badT.length, `${phys.tricks.length} tricks have steps, fixes and the science in English and Spanish, and a real room${badT.length ? " (" + badT.map(t => t.id).join(", ") + ")" : ""}`);
 
@@ -122,6 +128,35 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   const k0 = await p.evaluate(() => window.AOGSkate.P.k); await p.click("#backBtn"); await p.click("#backBtn");
   ok(await p.evaluate(() => window.AOGSkate.P.k) === k0 - 2, "◀ steps back one moment at a time");
   ok(await p.evaluate(() => getComputedStyle(document.getElementById("stage")).touchAction).then(v => /pan-y|auto/.test(v)), "a finger on the drawing still scrolls the page");
+  /* ── the trick book: the demo plays once and lights its step; progress is kept on the device; the map shows it ── */
+  await p.evaluate(() => window.AOGSkate.trick("kickflip")); await wait(120);
+  ok(await p.evaluate(() => !window.AOGSkate.P.playing && window.AOGSkate.P.frames.length > 60), "the trick book is still until Go");
+  await p.click("#goBtn"); await wait(150); await p.evaluate(() => { const P = window.AOGSkate.P; P.t0 -= 60000; }); await wait(250);
+  ok(await p.evaluate(() => { const P = window.AOGSkate.P, on = [...document.querySelectorAll("#panel .tsteps li")].findIndex(li => li.classList.contains("on")); return !P.playing && P.k === P.frames.length - 1 && on === document.querySelectorAll("#panel .tsteps li").length - 1; }),
+     "a trick demo plays once, and the step it shows lights up in the list");
+  await p.click("#backBtn");
+  ok(await p.evaluate(() => document.querySelectorAll("#panel .tsteps li.on").length === 1), "stepping by hand keeps one step lit");
+  await p.click('#panel [data-prog="2"]'); await p.reload({ waitUntil: "load" }); await wait(400);
+  ok(await p.evaluate(() => window.AOGSkate.state.progress.kickflip === 2 && JSON.parse(localStorage.getItem("aog.skate.v1")).progress.kickflip === 2 && !!document.querySelector("#panel .tchip.s2")),
+     "\"Landed it once\" is kept on this device and shows on the trick map");
+  /* ── Questions: search and topic narrow the list; a search with no accent still finds accented words ── */
+  await p.evaluate(() => window.AOGSkate.open("questions")); await wait(100);
+  const all = await p.$$eval("#panel details.qa", d => d.length);
+  await p.fill("#fqQ", "helmet"); await wait(120);
+  const some = await p.$$eval("#panel details.qa", d => d.length);
+  ok(all >= 30 && some > 0 && some < all && await p.evaluate(() => document.activeElement && document.activeElement.id === "fqQ"), `Questions: "helmet" narrows ${all} answers to ${some}, and typing keeps its place`);
+  await p.fill("#fqQ", ""); await p.selectOption("#fqC", { index: 1 }); await wait(120);
+  const cat = await p.$$eval("#panel details.qa", d => d.length);
+  ok(cat > 0 && cat < all, `Questions: one topic shows ${cat} of ${all}`);
+  await p.selectOption("#fqC", "all");
+  /* ── Build a board: every part, pulled apart, with a numbered parts list that follows the setup ── */
+  await p.evaluate(() => window.AOGSkate.open("build")); await wait(100);
+  await p.click('#panel [data-k="view"][data-v="parts"]'); await wait(120);
+  const parts = await p.evaluate(() => ({ n: document.querySelectorAll("#partsList li").length, txt: document.getElementById("partsList").textContent, pr: !!document.getElementById("bdPrint") }));
+  await p.click('#panel [data-k="riser"][data-v="6.4"]'); await wait(120);
+  const parts2 = await p.evaluate(() => ({ n: document.querySelectorAll("#partsList li").length, txt: document.getElementById("partsList").textContent }));
+  ok(parts.pr && parts2.n === parts.n + (/Riser/.test(parts.txt) ? 0 : 1) && /1¼″/.test(parts2.txt) && /608/.test(parts2.txt), `Build a board: the parts list (${parts2.n} lines) follows the setup — a ¼-inch riser adds riser pads and 1¼-inch bolts — and prints`);
+  await p.click('#panel [data-k="view"][data-v="fit"]'); await p.click('#panel [data-k="riser"][data-v="0"]');
   ok(!p.errs.length, "no errors on a computer" + (p.errs.length ? ": " + p.errs[0] : ""));
   await p.context().close();
 
