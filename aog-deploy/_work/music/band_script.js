@@ -81,6 +81,9 @@ const STR={
   drumNone:{en:"Make a beat on the drum machine and press Send to the turntables. It shows up here too.",es:"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. También aparece aquí."},
   drumGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
   keysH:{en:"Keys",es:"Teclas"},
+  /* AOG-ROOM-PEDALS-V1 */
+  ampH:{en:"Pedals",es:"Pedales"},
+  ampLine:{en:"Every sound starts clean. Add a pedal from the menu under the keys, or here.",es:"Cada sonido empieza limpio. Añade un pedal desde el menú bajo las teclas, o aquí."},
   lower:{en:"◀ Lower",es:"◀ Más grave"}, higher:{en:"Higher ▶",es:"Más agudo ▶"},
   rangeOut:{en:"{a} to {b}",es:"{a} a {b}"},
   litLine:{en:"Pale keys fit the chord. Orange keys are playing now.",es:"Las teclas claras encajan con el acorde. Las naranjas suenan ahora."},
@@ -455,9 +458,17 @@ function eraHz(e){ return Math.exp(Math.log(18000)*(1-e)+Math.log(8500)*e); }
 function makeChain(c){
   const ch={c:c};
   ch.bus=c.createGain(); ch.send=c.createGain(); ch.pre=c.createGain();
-  const cv=c.createConvolver(); cv.buffer=roomIR(c); ch.send.connect(cv);
+  const cv=c.createConvolver(); cv.buffer=roomIR(c);
   const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
-  ch.bus.connect(ch.pre);
+  /* AOG-ROOM-PEDALS-V1: the pedals sit between the players and the room (aog-amp.js, kind "band"), here, so the live sound,
+     a take and every recording made offline carry them. With every pedal off the rig is a straight wire, and the room
+     hears the players as before (sendDry); with a pedal on the room hears the pedals (sendWet, at the sound's level).
+     The drum machine's loop joins at ch.pre, after the pedals. */
+  ch.sendDry=c.createGain(); ch.sendWet=c.createGain(); ch.sendWet.gain.value=0;
+  ch.send.connect(ch.sendDry); ch.sendDry.connect(cv);
+  ch.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"band", state:fxFor(S.sound)}) : null;
+  if(ch.rig){ ch.bus.connect(ch.rig.input); ch.rig.output.connect(ch.pre); ch.rig.output.connect(ch.sendWet); ch.sendWet.connect(cv); }
+  else ch.bus.connect(ch.pre);
   ch.lp=c.createBiquadFilter(); ch.lp.type="lowpass"; ch.lp.Q.value=0.5;
   ch.comp=c.createDynamicsCompressor();
   ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
@@ -466,9 +477,12 @@ function makeChain(c){
   ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
   ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
   ch.crunch=null;
+  setFx(ch, S.sound);
   return ch;
 }
 async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
+  /* AOG-ROOM-PEDALS-V1: and the pedals' worklets are in before a recording made offline starts */
+  if(ch.rig){ try{ await ch.rig.ready(); }catch(e){} }
   try{
     if(!ch.c.audioWorklet) return;
     await ch.c.audioWorklet.addModule(crunchModule());
@@ -482,7 +496,23 @@ function setEra(ch, e, at){
   if(ch.crunch){ const p=ch.crunch.parameters.get("era"); p.setTargetAtTime(e, now, 0.02); }
 }
 function volGain(v){ return Math.max(0,Math.min(1,v))*0.95; }
-function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
+function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; setFx(ch, id); }
+/* AOG-ROOM-PEDALS-V1 (2026-10-11) — Jimmy: "Can the pedals and effects be added to all instruments not just the guitar and
+   bass". The Band's pedalboard: the guitar's panel, with every pedal off. Its starters come first in the menu: chorus and a
+   lush, wide echo for strings, winds and pads, and a little drive first for brass (fxOrder). What you change is kept for
+   that sound, on this device (FXKEY); Put this sound back clears it. */
+const FXKEY="aog.band.fx.v1";
+let FXUI=null, FXSND="", FXLANG="";
+let ROOMFX={}; try{ ROOMFX=JSON.parse(localStorage.getItem(FXKEY)||"{}")||{}; if(typeof ROOMFX!=="object" || Array.isArray(ROOMFX)) ROOMFX={}; }catch(e){ ROOMFX={}; }
+function fxFor(id){ return window.AOGAmp ? AOGAmp.normalize(ROOMFX[id]||{}, "band") : null; }
+function fxOrder(id){ const s=SOUNDS[id]||{}; return s.stand==="brass" ? ["od","chorus","delay","reverb"] : ["chorus","delay","reverb","od"]; }
+function saveFx(){ try{ localStorage.setItem(FXKEY, JSON.stringify(ROOMFX)); }catch(e){} }
+function setFx(ch, id){
+  if(!ch.rig || !SOUNDS[id]) return;
+  ch.rig.set(fxFor(id)); const on=ch.rig.active;
+  ch.sendDry.gain.value=on?0:1; ch.sendWet.gain.value=on?SOUNDS[id].rev:0;
+  if(ch===LIVE_CH && FXUI && FXSND!==id) setTimeout(paintFx, 0);
+}
 
 /* ── the recordings: one set per player, loaded when its sound is picked; only the players of the sound you picked
    are kept, so a phone keeps its memory ── */
@@ -1078,7 +1108,22 @@ function paintText(){
   $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
+  paintFx();   /* AOG-ROOM-PEDALS-V1 */
 }
+/* AOG-ROOM-PEDALS-V1: the pedal panel. aog-amp.js draws it (the guitar's own panel); the page keeps what is changed, with the
+   sound it was changed on. The strip right under the keys shows the pedals that are on and a menu of the rest. */
+function applyFx(){ if(ac && LIVE_CH) setFx(LIVE_CH, S.sound); }
+function paintFx(){
+  if(!window.AOGAmp || !$("ampBox")) return;
+  if(FXUI && FXSND===S.sound && FXLANG===S.lang) return; FXSND=S.sound; FXLANG=S.lang;
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"band", near:$("pedalsNear"), lang:()=>S.lang, get:()=>fxFor(S.sound), order:()=>fxOrder(S.sound),
+    set:st=>{ ROOMFX[S.sound]=AOGAmp.normalize(st, "band"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ delete ROOMFX[S.sound]; saveFx(); applyFx(); }});
+  else FXUI.paint();
+}
+/* another sound has its own pedals: the panel follows the sound, however it was picked */
+document.addEventListener("change", e=>{ if(e.target && e.target.id==="soundSel") setTimeout(()=>{ if(FXSND!==S.sound) paintFx(); }, 0); });
+window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
 const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpJazz","grpBands","grpAll"];
 function paintSounds(){

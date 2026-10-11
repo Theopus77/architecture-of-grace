@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:2ac2134a84a51021 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:044cfa0b15c831ef · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -81,6 +81,8 @@ header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:cen
 main{padding:0 0 2rem}
 .foot{color:var(--muted);font-size:.9rem;margin:1.5rem 0 1rem}
 .foot a{color:var(--ink)}
+/* AOG-ROOM-PEDALS-V1: inside the Studio the page is the dark control room (aog-labdoors.js), so the credits read light there, unless they sit in the cream Lessons and more card */
+html.in-studio .foot:not(.aog-learn *){color:#d9cfbd}html.in-studio .foot:not(.aog-learn *) a{color:#ffd36b}
 
 /* the machine: one dark body in both themes, so the pads look and read the same */
 .pm{background:#181a1e;color:#e9e1d1;border-radius:18px;padding:12px;margin-top:.8rem}
@@ -190,6 +192,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
+<script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
 <script src="/aog-lessons.js"></script>
@@ -239,6 +242,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
           <p class="pm-line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI pads' or keyboard's one-line answer -->
           <div class="pm-bigrow"><button type="button" class="pm-b" id="bigBtn"></button></div><!-- AOG-PADS-BIG-V1 -->
           <div class="pads" id="pads" role="group"></div>
+          <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the effects that are on, with their knobs, and the menu of the rest, under the pads (aog-amp.js) -->
         </div>
         <div>
           <div class="pm-row">
@@ -293,6 +297,11 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
           </details>
         </div>
       </div>
+      <div class="pm-sec pm-fx" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: every effect and the EQ (aog-amp.js draws them) -->
+        <h2 class="pm-h" id="fxH"></h2>
+        <p class="pm-line" id="fxLine"></p>
+        <div id="ampBox"></div>
+      </div>
     </div>
     <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Beat Lab's lessons (aog-lessons.js) -->
     <div class="pm-rec">
@@ -316,6 +325,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/1a4bcac9d9b2.js"></script>
+<script src="/front/d0fedaee88e6.js"></script>
 </body>
 </html>
