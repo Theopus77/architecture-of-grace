@@ -2,8 +2,8 @@
    tail as if just popped, nose high, its middle resting on the top edge of a small wooden block; a helmet
    (long slot vents, no round holes, nothing reads as a face) beside the block and one spare wheel standing on
    its edge near the tail. Objects only, no logos. Sizes in metres. */
-#define CAM_POS vec3(-0.8108,0.6427,-1.3770)
-#define CAM_TGT vec3(-0.4702,0.1824,0.1992)
+#define CAM_POS vec3(-0.7569,0.6306,-1.4547)
+#define CAM_TGT vec3(-0.4043,0.1542,0.1768)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
