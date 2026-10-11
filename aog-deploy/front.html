@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:28ba9833c9d6df6a · MADE BY tools/build-fast.py from index.html: edit index.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:7301e2a837c1608b · MADE BY tools/build-fast.py from index.html: edit index.html, then run it. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
@@ -2026,7 +2026,45 @@ window.addEventListener('load',function(){
 </section>
 
 <!-- ============ EXPLORE THE FRAMEWORK (the philosophy) ============ -->
-<section id="screen-framework" class="screen">
+<!-- AOG-SCREENS-LATER-V1 (2026-10-11) — Jimmy: "make this website FLASH SPEED, LIGHTING BOLT SPEED!"
+     Eight screens behind the front page's doors (Framework, Ecosystem, Words, PECS, About, Library, Curriculum,
+     Privacy) hold about 2,600 parts. A phone built, styled and searched all of them on every visit, before anyone
+     opened one. Each one's contents now wait in <template data-aog-later> inside it. showScreen() builds a screen
+     the moment it is opened (its scripts run then), and its words are put in the page's language, inside it only
+     (aogLaterWords_). Edit a screen as before, inside its template.
+     ⚠ Only a screen that nothing reaches into before it is opened may wait like this. The Guide, Pilot, Start Here,
+     Workplace and Store are wired up as the page starts (search boxes, buttons, the Voices wall, the pilot grid), so
+     they are built with the page. Code that must work before its screen is opened lives outside it (aogPrintConvo). -->
+<script>
+/* The words in a screen just built, as the page's own passes left the rest of the page: the data-i18n labels
+   (applyLang's rules, from I18N_UI) and the data-en / data-es pairs (aog-global-dataen). Only inside the new
+   screen, so opening it never re-reads the whole page. */
+function aogLaterWords_(sec) {
+  try {
+    var l = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+    var U = (typeof I18N_UI !== "undefined") ? I18N_UI : {};
+    [["data-i18n", "textContent", null], ["data-i18n-html", "innerHTML", null], ["data-i18n-ph", null, "placeholder"]].forEach(function (k) {
+      [].forEach.call(sec.querySelectorAll("[" + k[0] + "]"), function (el) {
+        if (el.getAttribute("data-i18n-orig") === null) el.setAttribute("data-i18n-orig", k[2] ? (el.getAttribute(k[2]) || "") : el[k[1]]);
+        var t = U[el.getAttribute(k[0])], v = t && t[l] != null ? t[l] : el.getAttribute("data-i18n-orig");
+        if (k[2]) el.setAttribute(k[2], v); else el[k[1]] = v;
+      });
+    });
+    var dl = (document.documentElement.getAttribute("lang") || "en").slice(0, 2) === "es" ? "es" : "en";
+    [].forEach.call(sec.querySelectorAll("[data-en]"), function (el) { var v = el.getAttribute("data-" + dl); if (v != null) el.innerHTML = v; });
+  } catch (e) {}
+}
+window.aogBuildLater = function (id) {
+  try {
+    var sec = document.getElementById(id), t = sec && sec.firstElementChild;
+    if (!t || t.tagName !== "TEMPLATE" || !t.hasAttribute("data-aog-later")) return false;
+    sec.replaceChild(t.content, t);
+    aogLaterWords_(sec);
+    return true;
+  } catch (e) { return false; }
+};
+</script>
+<section id="screen-framework" class="screen"><template data-aog-later>
 
 
 
@@ -2141,7 +2179,79 @@ window.addEventListener('load',function(){
             <a class="orbit-door" role="link" tabindex="0" aria-label="Adults — a private self-reflection" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}else if(typeof startCheckin==='function'){startCheckin();}"><circle class="halo" cx="111.0" cy="310.0" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="111.0" cy="310.0" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="111.0" y="308.0" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Adults" data-es="Adultos">Adults</text><text x="111.0" y="322.0" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="For grown-ups" data-es="Para adultos">For grown-ups</text></a>
             <a class="orbit-door" role="link" tabindex="0" aria-label="Faith-Based &amp; Ministry — the optional Faith Companion" onclick="event.preventDefault(); if(window.aogFaithOpen){window.aogFaithOpen();}"><circle class="halo" cx="169.3" cy="169.3" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="169.3" cy="169.3" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="169.3" y="167.3" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Faith" data-es="Fe">Faith</text><text x="169.3" y="181.3" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Optional companion" data-es="Compa&ntilde;ero opcional">Optional companion</text></a>
           </svg>
-          <script src="/front/6e08437e0054.js"></script>
+          <script>
+            /* AOG-ORBIT-REAL-V1 (2026-09-25) — Jimmy: "Make this look real — the realism
+               is key." Each roundel becomes a leaded rondel: mottled glass (noise
+               multiplied into the colour), light coming through from behind, and lead
+               cames dividing it into eight segments around a small centre ring. */
+            (function(){
+              var svg = document.querySelector('#fw-orbit-home .aog-of-fig svg'); if (!svg || svg.__real) return; svg.__real = 1;
+              var NS = 'http://www.w3.org/2000/svg';
+              function el(t, a){ var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); return e; }
+              var defs = svg.querySelector('defs');
+              defs.insertAdjacentHTML('beforeend',
+                '<filter id="ofGlassF" x="-5%" y="-5%" width="110%" height="110%">'
+               +'<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="11" result="n"/>'
+               +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.35" result="shade"/>'
+               +'<feComposite in="shade" in2="SourceAlpha" operator="in" result="sh"/>'
+               +'<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge></filter>'
+               +'<filter id="ofGlassC" x="0" y="0" width="100%" height="100%">'
+               +'<feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="4" result="n"/>'
+               +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.42" result="shade"/>'
+               +'<feComposite in="shade" in2="SourceAlpha" operator="in" result="sh"/>'
+               +'<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge></filter>'
+               +'<radialGradient id="ofLight" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".45" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>');
+              /* AOG-ORBIT-FLOWER-V1 — Jimmy: "I was thinking the stem was like a flower
+                 stem." The bottom point stays open and a leaded-glass stem grows down
+                 from Grace with two leaves, so the window reads as one flower. Drawn
+                 behind the doorways, over the star's lines. */
+              var firstDoor = svg.querySelector('a.orbit-door');
+              var fl = el('g', {'class':'of-flower', 'pointer-events':'none'});
+              var stemD = 'M310 400 C 302 450, 320 500, 308 552 S 300 596, 310 618';
+              fl.appendChild(el('path', {d:stemD, fill:'none', stroke:'#1B1C1F', 'stroke-width':15, 'stroke-linecap':'round'}));
+              fl.appendChild(el('path', {d:stemD, fill:'none', stroke:'#2E7D46', 'stroke-width':9, 'stroke-linecap':'round', filter:'url(#ofGlassF)'}));
+              fl.appendChild(el('path', {d:stemD, fill:'none', stroke:'rgba(255,255,255,.28)', 'stroke-width':2.5, 'stroke-linecap':'round', transform:'translate(-2 0)'}));
+              function leaf(d, vein){
+                fl.appendChild(el('path', {d:d, fill:'#3E9A5A', stroke:'#1B1C1F', 'stroke-width':3, 'stroke-linejoin':'round', filter:'url(#ofGlassF)'}));
+                fl.appendChild(el('path', {d:d, fill:'url(#ofLight)', style:'mix-blend-mode:soft-light'}));
+                fl.appendChild(el('path', {d:vein, fill:'none', stroke:'#1B1C1F', 'stroke-width':2.2, 'stroke-linecap':'round'}));
+              }
+              leaf('M309 468 C 290 440, 250 432, 222 446 C 246 470, 284 478, 309 468 Z', 'M307 467 C 280 455, 250 448, 226 447');
+              leaf('M311 528 C 330 500, 370 492, 398 506 C 374 530, 336 538, 311 528 Z', 'M313 527 C 340 515, 370 508, 394 507');
+              svg.insertBefore(fl, firstDoor);
+              /* the bottom motto moves below the stem, and the picture grows to hold it */
+              ['arcBotEn','arcBotEs'].forEach(function(id){ var t = document.getElementById(id); if (t) t.setAttribute('transform','translate(0 58)'); });
+              var vb = svg.viewBox.baseVal; if (vb && vb.y + vb.height < 684) svg.setAttribute('viewBox', vb.x + ' ' + vb.y + ' ' + vb.width + ' ' + (684 - vb.y));
+              var doors = svg.querySelectorAll('a.orbit-door');
+              for (var i = 0; i < doors.length; i++){
+                var d = doors[i], disc = d.querySelector('circle:not(.halo)'); if (!disc) continue;
+                var cx = +disc.getAttribute('cx'), cy = +disc.getAttribute('cy'), r = +disc.getAttribute('r'), center = (i === 0);
+                var firstText = d.querySelector('text');
+                var g = el('g', {'pointer-events':'none', 'class':'of-lead'});
+                g.appendChild(el('circle', {cx:cx, cy:cy, r:r-1, fill:'url(#ofLight)', style:'mix-blend-mode:soft-light'}));
+                var inner = center ? r*0.93 : r*0.36, n = center ? 24 : 8;
+                for (var k = 0; k < n; k++){
+                  var t = k * 2 * Math.PI / n + Math.PI/n;
+                  g.appendChild(el('line', {x1:cx+inner*Math.cos(t), y1:cy+inner*Math.sin(t), x2:cx+(r-1)*Math.cos(t), y2:cy+(r-1)*Math.sin(t), stroke:'#1B1C1F', 'stroke-width': center?2.2:2.4, 'stroke-linecap':'round', 'stroke-opacity':'.9'}));
+                }
+                g.appendChild(el('circle', {cx:cx, cy:cy, r:inner, fill:'none', stroke:'#1B1C1F', 'stroke-width': center?2.4:2.2, 'stroke-opacity':'.9'}));
+                d.insertBefore(g, firstText);
+                disc.setAttribute('filter', center ? 'url(#ofGlassC)' : 'url(#ofGlassF)');
+              }
+            })();
+            window.aogDoorSchool = function(){
+              try { if (typeof openAdmin === 'function') { openAdmin(); } } catch (e) {}
+            };
+            window.aogDoorDifference = function(){
+              try {
+                if (typeof openFramework === 'function') { openFramework(); }
+                requestAnimationFrame(function(){
+                  var b = document.querySelector('.fw-tab[aria-controls="fw-panel-difference"]');
+                  if (b && typeof aogFwPanel === 'function') { aogFwPanel(b, 'difference'); }
+                });
+              } catch (e) {}
+            };
+          </script>
         </div>
       <div class="aog-of-hint" data-en="Tap the center to explore the Framework &middot; tap any point to enter that world" data-es="Toca el centro para explorar el Marco &middot; toca cualquier punto para entrar a ese mundo">Tap the center to explore the Framework &middot; tap any point to enter that world</div>
       <script id="aog-of-i18n">
@@ -2893,16 +3003,6 @@ window.addEventListener('load',function(){
           .tool-modal-close{ display:none !important; }
         }
       </style>
-      <script>
-        window.aogPrintConvo = function(){
-          try{
-            if(window.toolOpen){ window.toolOpen('convostarters'); }
-            // toolOpen() writes the modal synchronously, so print inside the user-gesture
-            // chain. A timer here is treated as "automatic printing" and blocked on iOS.
-            try{ window.print(); }catch(e){}
-          }catch(e){}
-        };
-      </script>
     </div>
     </div>
 
@@ -3070,7 +3170,18 @@ window.addEventListener('load',function(){
     </div>
 
     <div class="fw-panel" id="fw-panel-story" hidden></div>
-</section>
+</template></section>
+<!-- AOG-SCREENS-LATER-V1: kept outside the Framework screen, which waits in a template; the Family conversation starters print with it too. -->
+<script>
+        window.aogPrintConvo = function(){
+          try{
+            if(window.toolOpen){ window.toolOpen('convostarters'); }
+            // toolOpen() writes the modal synchronously, so print inside the user-gesture
+            // chain. A timer here is treated as "automatic printing" and blocked on iOS.
+            try{ window.print(); }catch(e){}
+          }catch(e){}
+        };
+      </script>
 
 <!-- ============ START HERE (in-app screen, ported from start-here.html) ============ -->
 <section id="screen-starthere" class="screen">
@@ -3196,7 +3307,7 @@ window.addEventListener('load',function(){
 </section>
 
 <!-- ============ GRACE ECOSYSTEM (in-app screen, ported from grace-ecosystem.html) ============ -->
-<section id="screen-ecosystem" class="screen">
+<section id="screen-ecosystem" class="screen"><template data-aog-later>
   <style>
     #screen-ecosystem .eco-wrap{ max-width:1000px; margin:0 auto; padding:30px 22px 60px; }
     #screen-ecosystem h1{ font-family:var(--font-serif); font-weight:600; font-size:clamp(32px,5vw,46px); color:var(--ink); margin:8px 0 6px; letter-spacing:-.5px; line-height:1.05; text-align:center; }
@@ -3592,10 +3703,10 @@ window.addEventListener('load',function(){
     </div>
     <div class="eco-note" data-i18n-html="eco.note"><b>How to use these.</b> Start with Grace at Home and the shared vocabulary in the Home–School Connection — they build the common language everything else depends on. Add the adult pathways as the language takes hold. Each page prints cleanly to Letter size for fridge, classroom, or staff room.</div>
   </div>
-</section>
+</template></section>
 
 <!-- ============ WORDS OF ENCOURAGEMENT (in-app screen) ============ -->
-<section id="screen-words" class="screen">
+<section id="screen-words" class="screen"><template data-aog-later>
   <style>
     #screen-words{
       --woe-gold: var(--gold, #B8893A); --woe-gold-deep: var(--gold-deep, #8a6418);
@@ -3786,8 +3897,120 @@ window.addEventListener('load',function(){
     </div>
   </div>
 
-  <script src="/front/513c4faedd55.js"></script>
-</section>
+  <script>
+  (function(){
+    var SEC=document.getElementById("screen-words"); if(!SEC) return;
+    function lg(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+    function lset(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+    var AUDS=["child","teen","adult"];
+    var GRIEF={
+      adult:[
+        {en:"Grief is love with nowhere to go. The ache is a measure of how much they mattered.",es:"El duelo es amor que no tiene a dónde ir. El dolor es la medida de cuánto importaron."},
+        {en:"You don't have to be strong right now. You just have to be here.",es:"No tienes que ser fuerte ahora mismo. Solo tienes que estar aquí."},
+        {en:"There is no timeline for this. Take all the time you need.",es:"No hay un calendario para esto. Tómate todo el tiempo que necesites."},
+        {en:"It's okay to laugh. It's okay to cry. Both can be true in the same hour.",es:"Está bien reír. Está bien llorar. Las dos cosas pueden ser ciertas en la misma hora."},
+        {en:"You cannot do grief wrong. However it comes, that is your way through it.",es:"No se puede vivir el duelo de forma incorrecta. Como llegue, esa es tu manera de atravesarlo."},
+        {en:"A life is not measured by its length, but by the love it carried.",es:"Una vida no se mide por su largo, sino por el amor que llevó."},
+        {en:"Some days, getting through the day is enough. Let that be enough.",es:"Algunos días, sobrellevar el día es suficiente. Deja que eso sea suficiente."},
+        {en:"Reach for one person today. You were never meant to carry this alone.",es:"Busca a una persona hoy. Nunca debiste cargar esto solo."},
+        {en:"The people we love become a part of us. They go where we go.",es:"Las personas que amamos se vuelven parte de nosotros. Van a donde vamos."},
+        {en:"Healing isn't forgetting. It's learning to carry them with you.",es:"Sanar no es olvidar. Es aprender a llevarlos contigo."}
+      ],
+      teen:[
+        {en:"You don't need the right words. You just have to feel what you feel.",es:"No necesitas las palabras correctas. Solo siente lo que sientes."},
+        {en:"Grief is weird and uneven. That doesn't mean you're doing it wrong.",es:"El duelo es raro y desparejo. Eso no significa que lo estés haciendo mal."},
+        {en:"It's okay if you're not okay. You don't have to perform being fine.",es:"Está bien no estar bien. No tienes que fingir que estás bien."},
+        {en:"Laughing doesn't betray them. Neither does living.",es:"Reír no los traiciona. Vivir tampoco."},
+        {en:"Text one person. You don't have to carry this by yourself.",es:"Escríbele a una persona. No tienes que cargar esto tú solo."},
+        {en:"However you're grieving is allowed — loud, quiet, angry, or numb.",es:"Como sea que estés en duelo está permitido — fuerte, callado, enojado o vacío."},
+        {en:"It wasn't your fault. Replaying it won't make that less true.",es:"No fue tu culpa. Repetirlo en tu mente no lo hace menos cierto."},
+        {en:"Some days you just get through. That counts.",es:"Algunos días solo sobrevives. Eso cuenta."},
+        {en:"You're allowed to still have good days. It's not forgetting.",es:"Tienes permiso de tener días buenos. No es olvidar."}
+      ],
+      child:[
+        {en:"Whatever you feel today is okay.",es:"Lo que sientas hoy está bien."},
+        {en:"It's okay to miss them. Missing means you love them.",es:"Está bien extrañarlos. Extrañar significa que los quieres."},
+        {en:"It was not your fault. Not even a little.",es:"No fue tu culpa. Ni un poquito."},
+        {en:"You can cry. You can play. Both are okay.",es:"Puedes llorar. Puedes jugar. Las dos cosas están bien."},
+        {en:"A grown-up who loves you is here to help.",es:"Un adulto que te quiere está aquí para ayudarte."},
+        {en:"Take a slow breath. You are safe right now.",es:"Respira despacio. Estás a salvo ahora."},
+        {en:"Love doesn't go away, even when someone does.",es:"El amor no se va, aunque alguien se vaya."},
+        {en:"You are not alone. People love you.",es:"No estás solo. Hay personas que te quieren."}
+      ]
+    };
+    var HEAVY=[
+      {en:"Rest is not quitting. You're allowed to set it down for tonight.",es:"Descansar no es rendirse. Puedes soltarlo por esta noche."},
+      {en:"Carrying everyone else is heavy. Who is carrying you?",es:"Cargar a todos los demás pesa. ¿Quién te carga a ti?"},
+      {en:"A hard season is not a permanent address.",es:"Una temporada difícil no es una dirección permanente."},
+      {en:"You don't have to earn rest. You just need it.",es:"No tienes que ganarte el descanso. Solo lo necesitas."},
+      {en:"Big change asks a lot of you. Go gently.",es:"Los grandes cambios piden mucho de ti. Ve con calma."},
+      {en:"You can be tired and still be doing a good job.",es:"Puedes estar cansado y aun así estar haciéndolo bien."},
+      {en:"One small next step is enough for now.",es:"Un pequeño paso siguiente es suficiente por ahora."},
+      {en:"Your worth isn't measured by how much you produce.",es:"Tu valor no se mide por cuánto produces."},
+      {en:"Breathe. This moment is survivable.",es:"Respira. Este momento se puede sobrellevar."},
+      {en:"You are allowed to ask for help before you're at the end of your rope.",es:"Tienes permiso de pedir ayuda antes de llegar al límite."}
+    ];
+    var GRACE=[
+      {en:"You are more than your hardest day.",es:"Eres más que tu peor día.",pen:"Identity",pes:"Identidad"},
+      {en:"Who you are is not decided by your mistakes.",es:"Quién eres no lo deciden tus errores.",pen:"Identity",pes:"Identidad"},
+      {en:"Talk to yourself like someone you love.",es:"Háblate como a alguien que amas.",pen:"Self-Compassion",pes:"Autocompasión"},
+      {en:"Being human is not a failure to fix.",es:"Ser humano no es una falla que arreglar.",pen:"Self-Compassion",pes:"Autocompasión"},
+      {en:"You can set down what you've been carrying against yourself.",es:"Puedes soltar lo que has cargado en contra de ti mismo.",pen:"Forgiveness",pes:"Perdón"},
+      {en:"Repair is always available. It's never too late to begin again.",es:"La reparación siempre está disponible. Nunca es tarde para empezar de nuevo.",pen:"Forgiveness",pes:"Perdón"},
+      {en:"You can meet yourself with understanding, not only judgment.",es:"Puedes encontrarte con comprensión, no solo con juicio.",pen:"Grace",pes:"Gracia"},
+      {en:"Grace you give yourself becomes grace you can give others.",es:"La gracia que te das se vuelve gracia que puedes dar a otros.",pen:"Grace",pes:"Gracia"}
+    ];
+    function curLang(){ try{ if(window.lang==='es') return 'es'; }catch(e){} return (document.documentElement.getAttribute('lang')==='es')?'es':'en'; }
+    function curAud(){ var v=lg("aog.grace.audience",""); if(AUDS.indexOf(v)>=0)return v; var t=lg("aog.tank.audience",""); if(AUDS.indexOf(t)>=0)return t; return "adult"; }
+    var FOCI=["grief","heavy","grace"];
+    function curFocus(){ var f=lg("aog.woe.focus","grief"); return FOCI.indexOf(f)>=0?f:"grief"; }
+    var focus=curFocus(), aud=curAud(), order=[], idx=0;
+    function pool(){ return focus==="heavy"?HEAVY : focus==="grace"?GRACE : GRIEF[aud]; }
+    function shuffle(n){ var a=[],i; for(i=0;i<n;i++)a.push(i); for(i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
+    function reorder(){ aud=curAud(); order=shuffle(pool().length); idx=0; }
+    function item(){ return pool()[order[idx]]; }
+    function msgText(){ return item()[curLang()]; }
+    function attrText(){
+      var l=curLang(), it=item();
+      if(focus==="grace") return l==='es'?it.pes:it.pen;
+      if(focus==="heavy") return l==='es'?"Para un día pesado":"For a heavy day";
+      return l==='es'?"Una palabra para hoy":"A word for today";
+    }
+    function speak(t){ try{ if(!window.speechSynthesis)return; window.speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(String(t).replace(/[“”]/g,"")); u.lang=curLang()==='es'?'es-ES':'en-US'; u.rate=.95; window.speechSynthesis.speak(u); }catch(e){} }
+    function maybeSpeak(t){ if(lg("aog.a11y.readaloud","0")==="1") speak(t); }
+    function paintAttr(){ var a=document.getElementById("woe-attr"); if(a) a.textContent=attrText(); }
+    function renderMsg(doSpeak){
+      var el=document.getElementById('woe-msg'); if(!el)return;
+      el.classList.add('fade');
+      setTimeout(function(){ el.textContent='“'+msgText()+'”'; paintAttr(); el.classList.remove('fade'); if(doSpeak) maybeSpeak(msgText()); },170);
+    }
+    window.aogWoeNext=function(){ idx=(idx+1)%order.length; renderMsg(true); };
+    window.aogWoeSave=function(btn){
+      var NK="aog.woe.note", ta=document.getElementById('woe-priv-note'); if(!ta)return;
+      var line='“'+msgText()+'”'; var cur=ta.value||"";
+      if(cur.indexOf(line)===-1){ ta.value = line + (cur? "\n\n"+cur : ""); lset(NK, ta.value); }
+      if(btn){ var sp=btn.querySelector('span'); if(sp){ var keep=sp.getAttribute('data-'+curLang())||sp.textContent; sp.textContent=(curLang()==='es'?"Guardada ✓":"Saved ✓"); setTimeout(function(){ sp.textContent=keep; },1600); } }
+    };
+    window.aogWoeFocus=function(f){
+      if(FOCI.indexOf(f)<0) return; focus=f; lset("aog.woe.focus",f);
+      ["grief","heavy","grace"].forEach(function(k){ var b=document.getElementById("woe-f-"+k); if(b)b.setAttribute("aria-pressed", k===f?"true":"false"); });
+      reorder(); renderMsg(true);
+    };
+    function applyStatic(){ var l=curLang(); SEC.querySelectorAll('[data-en]').forEach(function(n){ var v=n.getAttribute('data-'+l); if(v!==null) n.innerHTML=v; }); }
+    function applyPics(){ SEC.classList.toggle('woe-pics', lg("aog.a11y.pictures","0")==="1"); }
+    function render(){ if(curAud()!==aud){ reorder(); } applyStatic(); applyPics();
+      ["grief","heavy","grace"].forEach(function(k){ var b=document.getElementById("woe-f-"+k); if(b)b.setAttribute("aria-pressed", k===focus?"true":"false"); });
+      var el=document.getElementById('woe-msg'); if(el) el.textContent='“'+msgText()+'”'; paintAttr();
+    }
+    window.aogWoeRender=render;
+    var NK="aog.woe.note";
+    window.aogWoeSaveNote=function(){ try{ localStorage.setItem(NK,document.getElementById('woe-priv-note').value); var m=document.getElementById('woe-saved'); m.classList.add('show'); setTimeout(function(){m.classList.remove('show');},2200); }catch(e){} };
+    try{ new MutationObserver(function(){ render(); }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']}); }catch(e){}
+    reorder(); render();
+    try{ var sn=localStorage.getItem(NK); if(sn){ var ta=document.getElementById('woe-priv-note'); if(ta) ta.value=sn; } }catch(e){}
+  })();
+  </script>
+</template></section>
 
 <!-- ===== ECOSYSTEM PAGES (ported into the app as isolated in-frame screens) ===== -->
 <section id="screen-eco-home" class="screen"><div class="eco-screen-in"><iframe id="ecoframe-home" class="eco-frame" title="Grace at Home"></iframe></div></section>
@@ -8978,7 +9201,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 </script>
 
     <!-- ============ ABOUT (its own page) ============ -->
-    <section id="screen-about" class="screen">
+    <section id="screen-about" class="screen"><template data-aog-later>
 
 
 
@@ -9206,7 +9429,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
       </div>
 
       </div>
-    </section>
+    </template></section>
 <!-- ============ GUIDE & LIBRARY (public, no code) ============ -->
 <section id="screen-guide" class="screen">
 
@@ -10390,7 +10613,7 @@ window.aogSharePilot=function(){
 
 <!-- ============ LIBRARY (free, browse & download) — standalone screen ============ -->
 <!-- STORE/LIBRARY SPLIT (2026-06): moved out of screen-guide's "Downloads" subtab into its own screen. -->
-<section id="screen-library" class="screen">
+<section id="screen-library" class="screen"><template data-aog-later>
 
 
   <div class="container-wide" style="padding-top:18px;">
@@ -10514,7 +10737,7 @@ window.aogSharePilot=function(){
           </div>
     </div>
   </div>
-</section>
+</template></section>
 
 <!-- ============ STORE (buy) — standalone screen ============ -->
 <!-- STORE/LIBRARY SPLIT (2026-06): the buy experience, formerly inside screen-guide. aog-store enables P2 mobile density. -->
@@ -10598,7 +10821,7 @@ window.aogSharePilot=function(){
 <!-- ============ PRIVACY & YOUR DATA ============ -->
 <!-- ===== THE CURRICULUM (.30fg) — the program shown whole, for the first time. Copy comes
      from the Store cards, the Library and the lesson data; nothing new is claimed. ===== -->
-<section id="screen-curriculum" class="screen">
+<section id="screen-curriculum" class="screen"><template data-aog-later>
   <style>
     #screen-curriculum .cu-wrap{ max-width:880px; margin:0 auto; padding:18px 18px 60px; }
     #screen-curriculum .cu-lede{ font-size:17.5px; line-height:1.6; color:var(--ink-soft); max-width:64ch; }
@@ -10650,8 +10873,8 @@ window.aogSharePilot=function(){
     </div>
     <p class="cu-lede" style="margin-top:26px;font-size:15px;" data-en="Anchor charts, scenario cards, worksheets, somatic-floor companions and autism-adapted chart sets exist for every book; the open previews are in the Library, and the full sets are described there without a price while the Store is closed." data-es="Existen carteles ancla, tarjetas de escenarios, hojas de trabajo, compa&ntilde;eros som&aacute;ticos y juegos de carteles adaptados para autismo para cada libro; las vistas previas abiertas est&aacute;n en la Biblioteca, y los juegos completos se describen all&iacute; sin precio mientras la Tienda est&aacute; cerrada.">Anchor charts, scenario cards, worksheets, somatic-floor companions and autism-adapted chart sets exist for every book; the open previews are in the Library, and the full sets are described there without a price while the Store is closed.</p>
   </div>
-</section>
-<section id="screen-privacy" class="screen">
+</template></section>
+<section id="screen-privacy" class="screen"><template data-aog-later>
 
 
   
@@ -10783,7 +11006,7 @@ window.aogSharePilot=function(){
 
     <div class="pv-close" data-i18n="pv_close">A result is a flag for a conversation, not a diagnosis.</div>
   </div>
-</section>
+</template></section>
 
 <!-- ===== TEACHER TOOLS SCREEN (Thursday update) ===== -->
 <section id="screen-teacher-tools" class="screen">
@@ -11335,7 +11558,7 @@ window.aogSharePilot=function(){
 </section>
 
 <!-- ===== PECS CARDS SCREEN (Thursday update) ===== -->
-<section id="screen-pecs" class="screen pecs-screen">
+<section id="screen-pecs" class="screen pecs-screen"><template data-aog-later>
   <div class="container">
     <div style="text-align:center; margin:32px 0 16px;">
       <div class="eyebrow" data-i18n="pecs_eyebrow">COMMUNICATION SUPPORT</div>
@@ -11352,7 +11575,7 @@ window.aogSharePilot=function(){
     <div class="pecs-category-tabs" id="pecsTabs"></div>
     <div class="pecs-library" id="pecsLibrary"></div>
   </div>
-</section>
+</template></section>
 
 <!-- ===== MY TOOLS — focused, per-child regulation tools (opened from a shared link) ===== -->
 <section id="screen-aog-mytools" class="screen">
@@ -11438,7 +11661,7 @@ window.aogSharePilot=function(){
 
 
 
-<script src="/front/5b10dc3c0938.js"></script>
+<script src="/front/ae4f5dacd94c.js"></script>
 <!-- ============ D: ONBOARDING TOUR (main page) ============ -->
 <div id="tourOverlay" class="tour-overlay" hidden>
   <div id="tourSpotlight" class="tour-spotlight"></div>
