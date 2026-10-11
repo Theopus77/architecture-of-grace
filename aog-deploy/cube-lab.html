@@ -93,7 +93,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 /* ── the 3D cube ── */
 .stage { position:relative; width:100%; max-width:560px; margin:0 auto; aspect-ratio:1/1; border-radius:18px; overflow:hidden;
   background:radial-gradient(120% 95% at 50% 35%, var(--stage-a) 0%, var(--stage-b) 100%); border:1px solid var(--line);
-  perspective:1150px; /* PERSP in the script */ perspective-origin:50% 45%; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:grab; }
+  perspective:1150px; /* set from the cube's size in fit(), PERSP in the script */ perspective-origin:50% 45%; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:grab; }
 .stage.grabbing { cursor:grabbing; }
 .stage .floor { position:absolute; left:20%; right:20%; bottom:7%; height:9%; border-radius:50%;
   background:radial-gradient(closest-side, rgb(0 0 0 / .22), rgb(0 0 0 / 0)); pointer-events:none; }
@@ -115,6 +115,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .face.fU { transform:rotateX(90deg) translateZ(calc(var(--s,64px) / 2)); }
 .face.fD { transform:rotateX(-90deg) translateZ(calc(var(--s,64px) / 2)); }
 .face i { position:absolute; inset:6.5%; border-radius:13%; background:var(--c); overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.face i { pointer-events:auto; }
 .face i b { position:absolute; inset:0; background:#000; opacity:0; pointer-events:none; }
 .face i span { position:relative; font:800 calc(var(--s,64px) * .34)/1 var(--sans); color:var(--lc,#14161a); pointer-events:none; }
 .stage.painting .face i { cursor:pointer; }
@@ -261,6 +262,8 @@ const T={
   foot:["Turn it on screen, or follow along with a real cube in your hands. Your place is saved on this device.","Gíralo en la pantalla o sigue con un cubo de verdad en tus manos. Tu avance se guarda en este aparato."],
   vLearn:["Learn","Aprende"], vSolve:["Solve with me","Resuélvelo conmigo"], vMine:["My cube","Mi cubo"], micro:["Microscope","Microscopio"],
   hint:["Drag a row to turn it. Drag the space around the cube to look around.","Arrastra una fila para girarla. Arrastra el espacio alrededor del cubo para mirarlo."],
+  hintSolve:["Follow the arrow with your finger, or tap Turn it. Drag around the cube to look.","Sigue la flecha con el dedo, o toca Girarlo. Arrastra alrededor del cubo para mirar."],
+  hintSolveReal:["Follow the arrow on your cube, then tap I did it.","Sigue la flecha en tu cubo y luego toca Ya lo hice."],
   hintPaint:["Pick a color, then tap a square to paint it.","Elige un color y toca un cuadro para pintarlo."],
   faces:["Turn a side","Gira un lado"], whole:["Turn the whole cube","Gira el cubo entero"],
   undo:["Undo","Deshacer"], mix:["Mix it up","Mézclalo"], fresh:["Solved cube","Cubo resuelto"],
@@ -281,7 +284,7 @@ const T={
   ready:["I'm ready","Estoy listo"], gotIt:["You've got it. ✓","Ya lo tienes. ✓"],
   movesTried:["Sides turned so far:","Lados girados hasta ahora:"],
   nextMove:["Next move","Siguiente movimiento"], doPart:["Turn the rest of this part for me","Gira por mí el resto de esta parte"],
-  didIt:["I did it","Ya lo hice"], tellMore:["Tell me more","Cuéntame más"],
+  didIt:["I did it","Ya lo hice"], turnIt:["Turn it","Girarlo"], tellMore:["Tell me more","Cuéntame más"],
   startH:["Let's solve your cube","Vamos a resolver tu cubo"], startLine:["One move at a time. Take your time.","Un movimiento a la vez. Tómate tu tiempo."],
   useMine:["Use my real cube","Usar mi cubo de verdad"], practiceMixed:["Practice on a mixed cube","Practicar con un cubo mezclado"],
   stepOf:["Step {i} of 7 · {name}","Paso {i} de 7 · {name}"], startOver:["Start over","Empezar de nuevo"], newMix:["Mix a new one","Mezclar otro"],
@@ -460,7 +463,7 @@ const L=[
 ];
 
 /* ── saved place ── */
-const S={lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
@@ -573,16 +576,27 @@ function projector(){
   const W=stage.clientWidth, H=stage.clientHeight, ox=W*.5, oy=H*.48, px=W*.5, py=H*.45, g=size*1.015;
   return v => { const q=toView(v); const X=q[0]*g, Y=q[1]*g, Z=q[2]*g, s=PERSP/(PERSP-Z); return [px+(ox+X-px)*s, py+(oy+Y-py)*s]; };
 }
+let arrowGeo=null;   /* the arrow on screen (stage pixels) and its move, so a finger can follow it */
+/* how near a point is to the arrow, and which way the arrow runs there */
+function nearArrow(sx, sy){
+  if(!arrowGeo) return null; const P=arrowGeo.P; let best=null;
+  for(let i=0;i+1<P.length;i++){ const A=P[i], B=P[i+1], vx=B[0]-A[0], vy=B[1]-A[1], L2=vx*vx+vy*vy||1;
+    const t=Math.max(0,Math.min(1,((sx-A[0])*vx+(sy-A[1])*vy)/L2)), d=Math.hypot(A[0]+vx*t-sx, A[1]+vy*t-sy);
+    if(!best || d<best.d) best={d, ux:vx/Math.sqrt(L2), uy:vy/Math.sqrt(L2)}; }
+  let len=0; for(let i=0;i+1<P.length;i++) len+=Math.hypot(P[i+1][0]-P[i][0], P[i+1][1]-P[i][1]);
+  best.len=len; return best;
+}
+function stageXY(cx, cy){ const r=stage.getBoundingClientRect(), k=r.width/(stage.offsetWidth||r.width); return [(cx-r.left)/k-stage.clientLeft, (cy-r.top)/k-stage.clientTop]; }
 function drawArrow(){
   const svg=$("arrow"); if(!svg) return;
   const mv=arrowTok && !painting && !busy && !drag ? C.parse(arrowTok) : null;
-  if(!mv){ if(svg.innerHTML) svg.innerHTML=""; return; }
+  if(!mv){ arrowGeo=null; if(svg.innerHTML) svg.innerHTML=""; return; }
   const proj=projector(), n=mv.n, c0=mv.sel==="all"?0:mv.sel, sgn=mv.q<0?-1:1;
   const add=(a,b,k)=>[a[0]+b[0]*k, a[1]+b[1]*k, a[2]+b[2]*k];
   const facing=v => toView(v)[2];
   let pts=[];
   const nf=n.map(x => x*(c0||1));
-  if(mv.sel===1 && Math.abs(n[2])===1 && facing(n)>.3){
+  if(false){
     /* the face toward you: a round arrow on it, going the way it turns */
     const e1=Math.abs(n[1])?[1,0,0]:[0,1,0], e2=[n[1]*e1[2]-n[2]*e1[1], n[2]*e1[0]-n[0]*e1[2], n[0]*e1[1]-n[1]*e1[0]];
     for(let k=0;k<=24;k++){ const th=(sgn>0 ? 2.2-k*0.17 : -0.9+k*0.17); pts.push(add(add(n.map(x=>x*1.56), e1, .95*Math.cos(th)), e2, .95*Math.sin(th))); }
@@ -594,6 +608,7 @@ function drawArrow(){
     for(let k=0;k<=12;k++) pts.push(add(base, v, -1.15+k*(2.3/12)));
   }
   const P=pts.map(proj), d=P.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  arrowGeo={P, mv};
   const a=P[P.length-2], b=P[P.length-1], ang=Math.atan2(b[1]-a[1], b[0]-a[0]), hs=Math.max(12, size*.3);
   const tip=[b[0]+Math.cos(ang)*hs*.5, b[1]+Math.sin(ang)*hs*.5];
   const l=[b[0]+Math.cos(ang+2.5)*hs, b[1]+Math.sin(ang+2.5)*hs], r=[b[0]+Math.cos(ang-2.5)*hs, b[1]+Math.sin(ang-2.5)*hs];
@@ -608,7 +623,7 @@ function stageTools(){
   u.hidden=painting || !S.hist.length;
   f.hidden=atHome();
 }
-function fit(){ const w=stage.clientWidth||320; size=Math.max(30, Math.round(w/5.7));   /* small enough to stay whole in the box, whichever way it is turned */ stage.style.setProperty("--s", size+"px"); render(); }
+function fit(){ const w=stage.clientWidth||320; size=Math.max(30, Math.round(w/5.7)); PERSP=Math.round(size*17); stage.style.perspective=PERSP+"px";   /* small enough to stay whole in the box, whichever way it is turned */ stage.style.setProperty("--s", size+"px"); render(); }
 
 /* ── turning, one move at a time ── */
 const queue=[]; let busy=false, runner=null;
@@ -639,7 +654,10 @@ function after(job){
   const tok=job.tok;
   if(job.src==="undo") S.hist.pop(); else S.hist.push(tok);
   const b=C.parse(tok).base; if("UDLRFB".includes(b)) S.tried[b]=1;
-  if(guide && guide.flat[guide.i] && guide.flat[guide.i].tok===tok){ guide.i++; guide.key=cube.toJSON(); } else guide=null;
+  const nx=guide && guide.flat[guide.i];
+  if(nx && nx.tok===tok){ guide.i++; guide.key=cube.toJSON(); }
+  else if(nx && nx.tok===C.parse(tok).base+"2" && Math.abs(C.parse(tok).q)===1){ nx.tok=tok; guide.key=cube.toJSON(); }   /* half of a "twice": one more the same way */
+  else guide=null;
   if(runner){ runner.left--; if(runner.left<=0) runner=null; }
   if(S.mix && !"xyz".includes(b)){ if(!S.mix.t0) S.mix.t0=Date.now(); S.mix.moves++; }
   if(S.mix && cube.solved()){ S.result={ms:Date.now()-(S.mix.t0||Date.now()), moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
@@ -674,7 +692,7 @@ function partCard(onlyStage){
   return `<div class="calm"><p class="aim">${esc(aim(n.p))}</p>
     <p class="move-big"><span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>
     ${chips(n.p.moves, at)}
-    <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t("didIt"))}</button>
+    <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
     <details class="more"><summary>${esc(t("tellMore"))}</summary><p>${esc(note(n.p))}</p>
     <button type="button" class="btn" data-act="gpart">${esc(t("doPart"))}</button></details></div>`;
@@ -779,7 +797,7 @@ function act(a){
   if(a==="ready"){ S.done[i]=1; save(); panel(); bar(); }
   else if(a==="prev"){ pick(i-1); }
   else if(a==="nextLesson"){ pick(i+1); }
-  else if(a==="mix"){ stopQueue(); cube=new C.Cube().run(C.scramble()); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
+  else if(a==="mix"){ stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
   else if(a==="fresh"){ stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
   else if(a==="setup"){ setup(L[i].stage); }
   else if(a==="hint"){ S.showHint=true; panel(); }
@@ -821,7 +839,7 @@ function checkMine(){
   const r=C.fromFacelets(cols);
   if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
   else if(r.error) mineMsg={ok:false, text:t("errPiece")};
-  else { mineMsg={ok:true, text:t("allGood")}; cube=r.cube; cubeBeforePaint=null; painting=false; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; guide=null; save(); location.hash="solve"; return; }
+  else { mineMsg={ok:true, text:t("allGood")}; cube=r.cube; cubeBeforePaint=null; painting=false; S.real=true; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; guide=null; save(); location.hash="solve"; return; }
   panel();
 }
 /* a cube with every step before this one done, and this one still to do */
@@ -882,7 +900,7 @@ function paintAll(){
   $("brand").textContent=t("app"); $("mastK").textContent=t("eyebrow"); $("mastH").textContent=t("app"); $("mastL").textContent=t("tag");
   $("langBtn").textContent=es()?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?(es()?"Claro":"Light"):(es()?"Oscuro":"Dark");
-  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):t("hint");
+  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):S.view==="solve"?t(S.real?"hintSolveReal":"hintSolve"):t("hint");
   stage.setAttribute("aria-label", es()?"Un cubo de Rubik en 3D":"A 3D Rubik's Cube");
   $("pad").innerHTML=padHtml(); $("viewRow").innerHTML=viewRowHtml(); $("lookRow").innerHTML=lookRowHtml();
   $("pad").querySelectorAll("[data-mv]").forEach(b => b.onclick=()=>{ if(!busy && !queue.length) enqueue([b.getAttribute("data-mv")],"pad"); });
@@ -904,13 +922,18 @@ const AXES=[[1,0,0],[0,1,0],[0,0,1]];
 const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
 /* which sticker is under the finger: each sticker is projected the way the browser draws it (the stage's
    perspective), and the nearest one facing us wins. Browsers' own hit-testing in 3D is not reliable enough. */
-const PERSP=1150;
+/* AOG-CUBE-TOUCH-V1 (2026-10-11) — Jimmy, on an iPad: "I can't rotate like how it suggest and I keep on moving the entire
+   screen while trying to just move the cube." The browser's own touch target (the sticker under the finger) is used
+   first, and a touch on the black edge between stickers still finds the nearest one, so a drag on the cube turns a
+   row instead of swinging the whole view. The depth of the view grows with the cube, so a big iPad cube is not
+   stretched. The arrow is always drawn along a row you can drag, so following it with a finger makes that move. */
+let PERSP=1150;
 function pickSticker(cx, cy){
   const r=stage.getBoundingClientRect(), W=stage.clientWidth, H=stage.clientHeight, k=r.width/(stage.offsetWidth||r.width);
   const sx=(cx-r.left)/k-stage.clientLeft, sy=(cy-r.top)/k-stage.clientTop;
   const ox=W*.5, oy=H*.48, px=W*.5, py=H*.45, g=size*1.015, cam=[px-ox, py-oy, PERSP];
   const proj=v => { const q=toView(v); const X=q[0]*g, Y=q[1]*g, Z=q[2]*g, s=PERSP/(PERSP-Z); return [px+(ox+X-px)*s, py+(oy+Y-py)*s, Z, X, Y]; };
-  let best=null;
+  let best=null, near=null;
   cube.P.forEach((p,i) => {
     const pos=cube.pos(p);
     for(const f in p.cols){
@@ -923,14 +946,20 @@ function pickSticker(cx, cy){
       for(let j=0;j<4;j++){ const A=quad[j], B=quad[(j+1)%4], z=(B[0]-A[0])*(sy-A[1])-(B[1]-A[1])*(sx-A[0]);
         if(Math.abs(z)<1e-9) continue; const sg=z>0?1:-1; if(!sign) sign=sg; else if(sg!==sign){ inside=false; break; } }
       if(inside && (!best || cv[2]>best.z)) best={i, f, z:cv[2]};
+      const dd=Math.hypot(cv[0]-sx, cv[1]-sy); if(!near || dd<near.d) near={i, f, z:cv[2], d:dd};
     }
   });
-  return best;
+  return best || (near && near.d<size*.62 ? near : null);
 }
 stage.addEventListener("pointerdown", e => {
   if(e.button>0) return;
-  const hit=pickSticker(e.clientX, e.clientY);
-  drag={x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, v0:VIEW.slice()};
+  /* the sticker the browser itself says is under the finger, when it faces us; else the projected one */
+  const fe=e.target && e.target.closest && e.target.closest(".face");
+  let hit=null;
+  if(fe && fe.querySelector("i")){ const i=+fe.dataset.i, f=fe.dataset.f, nv=toView(C.mulV(cube.P[i].M, C.FACES[f])); if(nv[2]>.05) hit={i, f}; }
+  if(!hit) hit=pickSticker(e.clientX, e.clientY);
+  const [sx0,sy0]=stageXY(e.clientX, e.clientY), na=painting ? null : nearArrow(sx0, sy0);
+  drag={x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, v0:VIEW.slice(), arrow:(na && na.d<Math.max(30, size*.6)) ? na : null};
   try{ stage.setPointerCapture(e.pointerId); }catch(_){}
   stage.classList.add("grabbing");
 });
@@ -941,7 +970,12 @@ function onMove(e){
   const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
   if(!drag.mode){
     if(Math.hypot(dx,dy)<9) return;
-    if(drag.face && !painting && !busy && !queue.length){
+    const A=drag.arrow, along=A ? (dx*A.ux+dy*A.uy)/Math.hypot(dx,dy) : 0;
+    if(A && arrowGeo && Math.abs(along)>.55 && !busy && !queue.length){
+      /* following the arrow (or going back along it): that exact move, whatever piece the finger is on */
+      const mv=arrowGeo.mv, qs=mv.q<0?-1:1;
+      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, qs, ux:A.ux, uy:A.uy, len:Math.max(40, A.len)};
+    } else if(drag.face && !painting && !busy && !queue.length){
       const p=cube.P[drag.face.i], n=C.mulV(p.M, C.FACES[drag.face.f]), pos=cube.pos(p);
       const ps=[pos[0]+n[0]*.5, pos[1]+n[1]*.5, pos[2]+n[2]*.5];
       let best=null;
@@ -957,7 +991,9 @@ function onMove(e){
   }
   if(drag.mode==="look"){ /* roll the cube under the finger: right turns it right, down tips it toward you, on and on */
     const len=Math.hypot(dx,dy); if(len>0){ VIEW=mul3(C.rot([-dy/len, dx/len, 0], len*0.24*deg), drag.v0); } render({viewOnly:true}); }
-  else if(drag.mode==="turn"){ const T2=drag.turn; T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad; render({a:T2.a, set:T2.set, th:T2.th}); }
+  else if(drag.mode==="turn"){ const T2=drag.turn;
+    T2.th = T2.arrowMv ? -T2.qs*(Math.PI/2)*((dx*T2.ux+dy*T2.uy)/T2.len) : (dx*T2.ux+dy*T2.uy)/T2.pxPerRad;
+    render({a:T2.a, set:T2.set, th:T2.th}); }
 }
 function endDrag(e){
   if(!drag || (e && e.pointerId!==drag.id)) return;
@@ -974,8 +1010,13 @@ function endDrag(e){
     const q=((quarters%4)+4)%4;
     if(q){
       let base;
+      if(T2.arrowMv){ const qq=(((-quarters)%4)+4)%4, tok=T2.arrowMv.base+(qq===2?"2":qq===3?"'":"");
+        cube.move(tok); after({tok, src:"hand"}); render(); pump(); return; }
       if(T2.layer===0) base=["M","E","S"].find(b => Math.abs(C.dot(C.MOVES[b].n, T2.a))===1);
       else base="UDRLFB".split("").find(b => C.eqV(C.MOVES[b].n, T2.a.map(x=>x*T2.layer)));
+      /* the guide asks to turn the whole cube: a drag along its arrow turns the whole cube */
+      const want=arrowTok && C.parse(arrowTok);
+      if(want && want.sel==="all" && Math.abs(C.dot(want.n, T2.a))===1) base=want.base;
       const sigma=C.dot(C.MOVES[base].n, T2.a), qq=(((-sigma*quarters)%4)+4)%4;
       const tok=base+(qq===2?"2":qq===3?"'":"");
       cube.move(tok); after({tok, src:"hand"});
