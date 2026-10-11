@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:ed6efa5436f15dd3 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:19a5bbac31a394d4 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -787,6 +787,50 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 .st-desk .st-sl input[type=range]:disabled,.st-desk .st-fw input[type=range]:disabled{opacity:.4;cursor:not-allowed}
 .st-arule:empty,#autoLine:empty{display:none}
 .st-arule{margin-top:.3rem;font-size:.88rem}
+/* ══ AOG-DESK-MORE-V1 (2026-10-11) — Jimmy's 2, 3, 9, 11, 12: effect slots, an Echo in beats, takes, sections, quick
+   edits and versions (aog-desk-more.js). The same console: dark trays, gold type, nothing that moves by itself. ══ */
+.st-desk .st-btn[hidden],.st-desk .st-hw[hidden]{display:none!important}
+/* the sections, a thin strip under the ruler; their edges are taken by the hand */
+.st-desk .st-secr{display:grid;grid-template-columns:var(--lab) minmax(0,1fr);border-bottom:1px solid #2a2d32}
+.st-tl.zoomed>.st-secr,.st-tl.zoomed>.st-tkr{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
+.st-desk .st-secn{min-height:36px;font:700 .68rem/1.1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#d8cfbf}
+.st-sect{position:relative;display:block;min-height:36px;background:#0d0e10}
+.st-sec{position:absolute;top:3px;bottom:3px;display:flex;align-items:center;min-width:0;padding:0 14px;border-radius:5px;border:1px solid #6a5a34;
+  background:linear-gradient(#2c2618,#221d12);color:#f3e6c6;font:600 .82rem/1 var(--sans);white-space:nowrap;overflow:hidden;cursor:pointer;touch-action:pan-y}
+.st-sec.on{border-color:#f0c26e;box-shadow:0 0 0 1px #f0c26e;color:#ffe9b8}
+.st-sec b{font-weight:700;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.st-seh{position:absolute;top:0;bottom:0;width:22px;cursor:ew-resize;touch-action:none;font-style:normal}
+.st-seh::before{content:"";position:absolute;top:22%;bottom:22%;left:50%;width:3px;margin-left:-1.5px;border-radius:2px;background:#d9a94c}
+.st-seh.a{left:-8px}.st-seh.b{right:-8px}
+/* the take lanes, under a track: the bits chosen bright, the rest dim */
+.st-desk .st-tkr{display:grid;grid-template-columns:var(--lab) minmax(0,1fr);border-bottom:1px solid #1f2125}
+.st-desk .st-tkn{min-height:38px;font:700 .74rem/1.15 var(--sans);color:#e9e0cc;background:linear-gradient(90deg,#17181b,#1a1b1f);box-shadow:inset 3px 0 0 var(--c)}
+.st-tkt{position:relative;display:block;min-height:38px;background:#0b0c0e;cursor:pointer;touch-action:pan-y}
+.st-tkb{position:absolute;top:3px;bottom:3px;opacity:.38;pointer-events:none}
+.st-tkb .wv{position:absolute;inset:0;width:100%;height:100%}
+.st-tkb .wv path{fill:none;stroke:var(--c);stroke-width:1.1;vector-effect:non-scaling-stroke}
+.st-tkon{position:absolute;top:1px;bottom:1px;border-top:2px solid var(--c);border-bottom:2px solid var(--c);background:rgba(240,194,110,.10);pointer-events:none}
+.st-tksel{position:absolute;top:0;bottom:0;background:rgba(243,211,142,.22);border-left:1px solid #f3d38e;border-right:1px solid #f3d38e;pointer-events:none}
+/* more for this track */
+.st-mt{display:grid;gap:.7rem;margin-top:1rem;max-width:52rem}
+.st-mt .st-pick{max-width:24rem}
+.st-fxs{display:grid;gap:.5rem;padding:.7rem .8rem;border-radius:10px;border:1px solid #0a0a0c;background:linear-gradient(#111215,#191a1e);box-shadow:inset 0 2px 6px rgba(0,0,0,.7)}
+.st-fxh{display:flex;flex-wrap:wrap;gap:.5rem .7rem;align-items:flex-end}
+.st-fxh .st-field{flex:1 1 13rem}
+.st-fxh .st-btn{flex:0 0 auto;min-height:48px}
+.st-fxk{display:grid;gap:.25rem .9rem;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr))}
+.st-fxk .st-sl input{accent-color:#7fc7f5}
+.st-gr{margin:0;font:700 .92rem/1.3 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
+.st-sw{display:inline-block;width:1.1rem;height:1.1rem;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #0b0c0e,0 0 0 3px #4a4e55;vertical-align:middle;margin-right:.4rem}
+.st-tkl{display:grid;gap:.45rem}
+.st-tkl .st-rec .st-btn{flex:0 0 auto}
+.st-clipb{padding:.6rem .7rem;border:1px solid #5b4a24;border-radius:12px;background:#181a1e}
+.st-pit{display:flex;align-items:center;gap:.5rem .8rem;flex-wrap:wrap;margin-top:.7rem}
+.st-pit .st-lab{flex:1 1 100%;margin:0}
+.st-pit input[type=range]{flex:1 1 12rem;min-width:8rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
+.st-pit output{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
+.st-et{margin-top:.5rem;max-width:22rem}
+.st-vab{display:flex;flex-wrap:wrap;gap:.5rem .7rem;align-items:center;margin-top:.6rem}
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -850,6 +894,9 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <div class="st-tools st-autot" id="autoTools"></div>
         <p class="st-line" id="autoLine" aria-live="polite"></p>
         <p class="st-line st-arule" id="autoRule"></p>
+        <!-- AOG-DESK-SECTIONS-V1: the song's sections (Verse, Chorus …), marked on the ruler -->
+        <div class="st-tools st-autot" id="secTools"></div>
+        <p class="st-line" id="secLine" aria-live="polite"></p>
       </div>
 
       <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
@@ -898,6 +945,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
         <div id="clipBox"></div>
+        <div id="moreBox"></div><!-- AOG-DESK-MORE-V1: more for this track: effects, takes, name and colour, and the clipboard -->
         <h3 class="st-h3" data-t="recsH" id="recsH"></h3>
         <div class="st-recs" id="recs"></div>
         <div id="voiceBox"></div><!-- AOG-STUDIO-VOICE-V1: track 8 is your voice -->
@@ -927,6 +975,15 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         </div>
       </div>
 
+      <div class="st-blk" id="verBlk"><!-- AOG-DESK-VERSIONS-V1: versions of this song, on this device, and A/B -->
+        <h2 class="st-h" data-t="verH"></h2>
+        <p class="st-line" data-t="verLine" style="margin:0 0 .7rem"></p>
+        <div class="st-row"><label class="st-field st-name"><span class="st-lab" data-t="verName"></span><input type="text" id="verName" maxlength="40" autocomplete="off" enterkeyhint="done"></label><button type="button" class="st-btn st-go" id="verSave"></button></div>
+        <div id="verList"></div>
+        <div class="st-ask" id="verAsk" hidden><p id="verAskT"></p><div class="st-row"><button type="button" class="st-btn st-clear" id="verYes"></button><button type="button" class="st-btn" id="verNo"></button></div></div>
+        <p class="st-line" id="verMsg" aria-live="polite"></p>
+      </div>
+
       <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
         <h2 class="st-h" data-t="carryH"></h2>
         <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
@@ -949,6 +1006,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
-<script src="/front/77474a481377.js"></script>
+<script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
+<script src="/front/76e6535b23b9.js"></script>
 </body>
 </html>
