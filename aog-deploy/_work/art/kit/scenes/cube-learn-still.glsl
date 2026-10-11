@@ -1,8 +1,8 @@
 /* The Cube room, "Learn to solve it" (AOG-CUBE-DOOR-V1, 2026-10-10) — pencil still life: a solved Rubik's Cube, every side one tone. Sizes in metres. */
-#define CAM_POS vec3(-0.1049,0.0989,-0.1644)
-#define CAM_TGT vec3(0.0009,0.0076,0.0424)
+#define CAM_POS vec3(-0.1322,0.1010,-0.1582)
+#define CAM_TGT vec3(-0.0233,0.0070,0.0546)
 #define CAM_FOV 30.
-#define SUN_DIR vec3(-.65,.85,-.3)
+#define SUN_DIR vec3(-.25,.85,-.75)
 #define MAXT 8.
 #define EXPOSURE 1.
 #define STEPS 220
