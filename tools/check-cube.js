@@ -120,6 +120,10 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       await p.tp("touchEnd", []); await p.waitForTimeout(600);
       ok(await screenCube(p) === want, `${name}: two fingers swiped ${dx ? "left" : "up"} turn the whole cube (${mv})`);
     }
+    /* My cube: the camera button and the colors sit right under the cube (Jimmy, iPhone: "too much scrolling") */
+    await p.evaluate(() => { location.hash = "mine"; scrollTo(0, 0); }); await p.waitForTimeout(400);
+    const gap = await p.evaluate(() => { const s = document.getElementById("stage").getBoundingClientRect(), c = document.querySelector('#panel [data-act="camera"]').getBoundingClientRect(), pal = document.getElementById("paintBar").getBoundingClientRect(); return { cam: c.top - s.bottom, pal: pal.top - s.bottom }; });
+    ok(gap.pal < 40 && gap.cam < 520, `${name}: in My cube the camera button and the colors are right under the cube (${Math.round(gap.cam)}px, ${Math.round(gap.pal)}px)`);
     ok(!p.errs.length, `${name}: no page errors (hands) ${p.errs.join("; ")}`);
     await p.ctx.close();
   }
@@ -160,9 +164,13 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   const hasVoice = await p.$('#viewRow [data-look="voice"]');
   ok(await p.evaluate(() => window.__said.length) === 0, "Read aloud says nothing when the page opens");
   await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150);
-  let sawChunk = false, n = 0;
-  while (n < 400) { if (!(await p.$('#panel [data-act="gnext"]'))) break; if (/corner moves/.test(await p.textContent("#panel")) && await p.$("#panel .cdots")) sawChunk = true; await p.click('#panel [data-act="gnext"]'); n++; }
+  let sawChunk = false, sawWhole = false, sawSide = false, n = 0;
+  while (n < 400) { if (!(await p.$('#panel [data-act="gnext"]'))) break; if (/corner moves/.test(await p.textContent("#panel")) && await p.$("#panel .cdots")) sawChunk = true;
+    const kind = await p.evaluate(() => { const k = document.querySelector("#panel .kind"); return k ? [k.className, document.querySelectorAll("#arrow path.line").length, document.querySelector("#panel .move-big .tok").textContent] : null; });
+    if (kind && /whole/.test(kind[0]) && kind[1] === 3 && /^[xyz]/.test(kind[2])) sawWhole = true;
+    if (kind && /side/.test(kind[0]) && kind[1] === 1 && /^[UDLRFB]/.test(kind[2])) sawSide = true; await p.click('#panel [data-act="gnext"]'); n++; }
   ok(sawChunk, "the corner moves are named as one thing to learn, with still dots");
+  ok(sawWhole && sawSide, "a whole-cube turn says Whole cube with an arrow on every row; a side turn says One side with one arrow");
   if (hasVoice) { const said = await p.evaluate(() => window.__said); ok(said.length > 5, "Read aloud says each next move after a tap (" + said.length + ": " + said.slice(0, 2).join(" / ") + ")"); }
   const fin = await p.textContent("#panel");
   ok(/Solved!/.test(fin) && /You did it, in \d+ moves/.test(fin), `Solve with me reaches Solved (${n} taps)`);
@@ -209,9 +217,18 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   /* six sides through the camera's own steps, then Check my cube */
   const one = await sampleCube(4242, [1, .95, .85], .9, 10);
   for (const f of ["F", "R", "B", "L", "U", "D"]) await p.evaluate(rgb => AOGCubeLab.camSide(rgb), one.out[f]);
-  ok(/what the camera saw/.test(await p.textContent("#panel")) && !(await p.$(".cam")), "after six sides the colors are painted in to check, and the camera sheet is gone");
-  await p.click('#panel [data-act="checkMine"]'); await p.waitForTimeout(400);
-  s = await st(p); ok(/#solve/.test(p.url()) && s.real, "Check my cube takes a camera-read cube to Solve with me");
+  /* Jimmy: "once I took the shot, I couldn't figure out what to do next" — the sheet stays open on a check screen */
+  ok(await p.$$eval(".cam .rgrid", g => g.length) === 6 && /Every color has 9/.test(await p.textContent(".cam")) && !!(await p.$('.cam [data-cam="go"]')),
+    "after six sides, a check screen shows all six sides, says the counts are right, and has one button to go on");
+  /* one square misread: the counts say so, the big button waits, two taps fix it */
+  const k0 = "1,1,1|F", true0 = one.truth[k0], wrong = true0 === "W" ? "Y" : "W";
+  await p.click(`.cam [data-rb="${wrong}"]`); await p.click(`.cam [data-rk="${k0}"]`);
+  await p.click('.cam [data-cam="go"]'); await p.waitForTimeout(150);
+  ok(!!(await p.$(".cam")) && /Fix the colors first/.test(await p.textContent(".cam #revState")), "a misread square: the counts say what is off, and the sheet stays to fix it");
+  await p.click(`.cam [data-rb="${true0}"]`); await p.click(`.cam [data-rk="${k0}"]`);
+  ok(/Every color has 9/.test(await p.textContent(".cam")), "tap the right color, tap the square: fixed");
+  await p.click('.cam [data-cam="go"]'); await p.waitForTimeout(400);
+  s = await st(p); ok(!(await p.$(".cam")) && /#solve/.test(p.url()) && s.real, "It looks right goes straight to Solve with me with the camera-read cube");
   /* with a real cube: after each step, does yours look like the screen? */
   let seen = false; n = 0;
   while (n < 300 && !seen && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); n++; seen = !!(await p.$("#panel .checkin")); }
@@ -227,7 +244,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   await p.click('.cam [data-cam="close"]'); await p.waitForTimeout(150);
   ok(!(await p.$(".cam")) && await p.evaluate(() => !AOGCubeLab.cam), "Close puts the camera away and turns it off");
   /* painting by hand still works, and a wrong cube is caught */
-  await p.click('#panel [data-act="copyMine"]'); await p.click('#panel [data-brush="R"]');
+  await p.click('#panel [data-act="copyMine"]'); await p.click('#paintBar [data-brush="R"]');
   const sq = await p.evaluate(() => { scrollTo(0, 0); const C = AOGCube, i = new C.Cube().P.findIndex(q => C.eqV(q.home, [1, 1, 1])); const r = document.querySelector(`.face[data-i="${i}"][data-f="F"]`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
   await p.mouse.click(sq.x, sq.y); await p.waitForTimeout(150);
   ok((await st(p)).paint["1,1,1|F"] === "R", "a tap paints a square");
