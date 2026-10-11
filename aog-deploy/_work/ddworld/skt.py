@@ -75,10 +75,10 @@ BANDS['k2'] = [
  mc("Dragging a foot slows you because of…", "friction", ["wind", "music", "light"]),
  mc("It is smart to stop before you go…", "too fast", ["too slow", "to bed", "home"]),
  mc("When the board is slow, you can…", "step off", ["jump high", "close your eyes", "let go of balance"]),
- mc("A hill makes you go…", "faster", ["slower", "backward", "up"]),
+ mc("Rolling down a hill makes you go…", "faster", ["slower", "backward", "up"]),
  mc("If you feel too fast, you should…", "slow down", ["go faster", "look back", "stand straight"]),
  tf("You can step off when the board is going slow.", True),
- tf("A hill makes the board go slower.", False),
+ tf("Rolling down a hill makes the board go slower.", False),
  voc("stop", "To make the board stay still."),
  op("How do you slow down on a skateboard?", "Drags the back foot gently or steps off when slow."),
 ]),
@@ -256,7 +256,7 @@ BANDS['35'] = [
 ]
 
 BANDS['68'] = [
-("Parks Rise and Fall", "Parques que suben y caen", [
+("Parks Rise and Fall", "Auge y caída de los parques", [
  mc("Carlsbad Skatepark in California opened in…", "1976", ["1956", "1986", "2006"]),
  mc("Skateboard City, an early park that opened in 1976, was in…", "Port Orange, Florida", ["Portland, Oregon", "Chicago, Illinois", "Venice, California"]),
  mc("Many skateparks closed in the early 1980s because of…", "insurance costs", ["a lack of skaters", "snow", "new laws against wheels"]),
@@ -535,7 +535,7 @@ BANDS['adult'] = [
  mc("A sensible goal for early sessions is…", "short, frequent practice", ["one long exhausting day", "only watching videos", "trying advanced tricks first"]),
  tf("Adults can learn to skate at any age with gradual progress.", True),
  tf("Knee pads are only for children.", False),
- voc("stance", "How you stand on the board: regular (left foot forward) or goofy (right foot forward)."),
+ voc("stance", "How you stand on the board: which foot goes in front. Regular and goofy are both fine."),
  op("Plan your first three sessions on a board.", "Gear on; stand on grass; roll and push on flat ground; practice foot braking and gentle turns."),
 ]),
 ("Returning to Skating", "Volver a patinar", [
