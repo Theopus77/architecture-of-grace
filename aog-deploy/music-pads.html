@@ -186,6 +186,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-chords.js"></script><!-- AOG-PADS-ALLSCALES-V1: the chord library, for the chords a pattern brings from outside the key -->
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
+<script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
 <script src="/aog-lessons.js"></script>
@@ -1354,6 +1355,21 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang,
   prefix:{en:"Drum machine",es:"Caja de ritmos"}, file:{en:"drum-machine-take",es:"caja-de-ritmos-toma"}, shelf:"padbench", tool:"pads", bpm:()=>S.bpm,
   label:{en:"● Record a take to keep",es:"● Grabar una toma para guardar"},
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
+/* AOG-SONG-V1 (2026-10-11): the Drum Machine plays at the song's tempo and in its key (aog-song.js). Its chords bank takes the
+   song's key (major or minor); a bank in another scale keeps its scale, moved to the song's key (a minor scale to the song's
+   minor, so the A minor pentatonic of a C major song stays A). A change to the tempo or the chords bank's key here changes
+   the song. */
+/* AOG-OVERDUB-V1: recording over My Track, a loop that is playing starts again on the bar line My Track starts on */
+window.AOGRoomClock={ align(t0){ if(!SEQ.on) return; SEQ.t0=t0; SEQ.abs=0; SEQ.map=null; } };
+function isMinorScale(id){ const iv=scaleIv(id); return iv.indexOf(3)>=0 && iv.indexOf(4)<0; }   /* a minor third and no major third */
+if(window.AOGSong) AOGSong.room({
+  bpm:{get:()=>S.bpm, set:v=>retime(v), min:60, max:180},
+  key:{get:()=>{ const B=S.banks.find(b=>b.type==="chords"); return B ? {key:B.key, minor:isMinorScale(B.scale)} : null; },
+    set:k=>{ S.banks.forEach(B=>{ if(B.type!=="chords" && B.type!=="notes") return;
+        if(B.type==="chords" && ["major","minor","natmin"].indexOf(B.scale)>=0){ B.scale=k.minor ? "minor" : "major"; B.key=k.key; return; }
+        const m=isMinorScale(B.scale); B.key=m ? (k.minor ? k.key : (k.key+9)%12) : (k.minor ? (k.key+3)%12 : k.key); });
+      save(); try{ paintAll(); prep(S.bank); }catch(e){} }},
+  watch:{bpm:["tempo","tDown","tUp"], key:["fKey","fScale"]}});
 
 function init(){
   if(KITS().indexOf(S.banks[0].kitA)<0 && KITS().length){ S.banks.forEach(B=>{ if(KITS().indexOf(B.kitA)<0) B.kitA=KITS()[0]; if(KITS().indexOf(B.kitB)<0) B.kitB=KITS()[Math.min(1, KITS().length-1)]; }); }
