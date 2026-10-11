@@ -756,6 +756,10 @@ def head_of(file, h=None):
         en = h["name"][0]
         desc = "%s, K–12 — studied band by band, for a public-school classroom. Free and private." % en
         s = re.sub(r"Talmud Study, K–12 — [^\"]*Free and private\.", lambda m: E(desc), s)
+        # AOG-SKT-V1: the Talmud head also says "The Talmud" in its title, link previews and description; a new door
+        # (Skateboarding was the first to show it) must not inherit them
+        s = re.sub(r"The Talmud, K–12 — [^\"]*Free and private\.", lambda m: E(desc), s)
+        s = s.replace("The Talmud, grades K–12", en + ", grades K–12").replace("The Talmud — Architecture of Grace", en + " — Architecture of Grace")
         s = s.replace("Talmud Study", en).replace("/talmud\"", "/%s\"" % h["slug"])
         return s
     s = (DEPLOY / file).read_text(encoding="utf-8")

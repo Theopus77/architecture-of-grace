@@ -66,23 +66,25 @@ float sk_helmetD(vec3 q){
   float sh=sk_eD(c,vec3(.108,.125,.13)); sh=abs(sh)-.009; sh=max(sh,-c.y+.012*(1.+c.z/.13)); /* lower at the back */
   float rim=sdTorus(vec3(c.x,c.y-.012,c.z*.83),.105,.009);
   sh=min(sh,max(rim,-c.y));
-  for(int i=0;i<7;i++){                                          /* round vents on the crown */
+  for(int i=0;i<10;i++){                                          /* round vents on the crown */
     float az=-1.5708+(float(i)-3.)*.55; float el=(i==3)?1.2:.78;
     if(i==1||i==5) el=1.05;
+    if(i>6){ az=1.5708+(float(i)-8.)*.6; el=.85; }
     vec3 v=normalize(vec3(cos(el)*cos(az),sin(el),cos(el)*sin(az)));
     float t=dot(c,v); float l=length(c-v*t)-.011;
     sh=max(sh,-max(l,.06-t)); }
   return sh; }
-float sk_strapD(vec3 q){                                         /* two strap ends falling to the table and a buckle */
-  float s=sdCapsule(vec3(abs(q.x),q.y,q.z),vec3(.096,.035,.01),vec3(.07,.004,-.11),.0035);
-  float s2=sdCapsule(q,vec3(-.07,.004,-.11),vec3(.07,.004,-.115),.0035);
-  float b=sdRBox(q-vec3(.035,.006,-.114),vec3(.014,.005,.009),.002);
-  return min(min(s,s2),b); }
+float sk_strapD(vec3 q){                                         /* the two strap ends fall to the table at the sides; a buckle on one */
+  vec3 m=vec3(abs(q.x),q.y,q.z);
+  float s=sdCapsule(m,vec3(.106,.03,-.01),vec3(.14,.0035,-.05),.0035);
+  s=min(s,sdCapsule(m,vec3(.14,.0035,-.05),vec3(.15,.0035,-.12),.0035));
+  float b=sdRBox(q-vec3(.152,.0055,-.13),vec3(.011,.0055,.015),.002);
+  return min(s,b); }
 float sk_helmetT(vec3 q){ vec3 c=q;
   if(c.y<.024) return .32;                                       /* foam rim */
   float a=atan(c.x,-c.z); if(abs(a)<.015&&c.y>.05) return .35;  /* a moulded seam over the crown */
   return .55+.05*vn(c.xy*260.); }
-float sk_strapT(vec3 q){ if(abs(q.x-.035)<.016&&q.z<-.104) return .7; return .3; }
+float sk_strapT(vec3 q){ if(q.x>.14&&q.z<-.116&&q.y>.004) return abs(q.z+.13)<.003?.3:.72; return .3; }
 
 /* ================= knee pad (or a smaller elbow pad): curved sleeve, hard cap, two straps ================= */
 float sk_padD(vec3 q,float s){ q/=s;
@@ -98,25 +100,26 @@ float sk_padT(vec3 q,float s){ q/=s; vec2 c=vec2(q.y,q.z); float r=length(c);
   if(q.y<.006) return .4; return .74+.06*vn(q.xz*500.); }
 
 /* ================= sneaker (toe toward +x) ================= */
-float sk_sole2(vec2 u){ return smin(length(u-vec2(-.085,0.))-.04,length((u-vec2(.06,.004))*vec2(1.,1.04))-.049,.07); }
+float sk_sole2(vec2 u){ float t=clamp((u.x+.085)/.145,0.,1.); float r=mix(.04,.049,t)-.007*sin(t*3.14159)*step(u.y,0.);
+  return (length(u-vec2(mix(-.085,.06,t),.004*t))-r)*.95; }
 float sk_shoeSoleD(vec3 q){ float d2=sk_sole2(q.xz); return sk_ext(d2,abs(q.y-.0135)-.0135,.005); }
 float sk_shoeUpperD(vec3 q){
-  float u=sk_eD(q-vec3(-.03,.022,0.),vec3(.125,.078,.046));
+  float u=sk_eD(q-vec3(-.04,.02,0.),vec3(.12,.095,.047));
   float toe=sk_eD(q-vec3(.072,.022,.002),vec3(.072,.04,.046));
   float d=smin(u,toe,.03); d=max(d,.024-q.y);
   d=max(d,sk_sole2(q.xz)-.001);
-  float open=sk_eD(q-vec3(-.075,.11,0.),vec3(.058,.03,.034)); d=max(d,-open);
-  float tongue=sdRBox(q-vec3(-.008,.088,0.),vec3(.03,.006,.021),.005); tongue=max(tongue,sk_eD(q-vec3(-.02,.05,0.),vec3(.06,.05,.03)));
+  float open=sk_eD(q-vec3(-.085,.125,0.),vec3(.05,.032,.033)); d=max(d,-open);
+  vec3 tq=q-vec3(-.03,.1,0.); tq.xy=rot(-.5)*tq.xy; float tongue=sdRBox(tq,vec3(.022,.005,.02),.005);
   return min(d,tongue); }
 float sk_shoeSoleT(vec3 q){ if(q.y>.025) return .85; if(abs(q.y-.012)<.0016) return .4; if(q.y<.004) return .55; return .9; }
 float sk_shoeUpperT(vec3 q){
   if(q.y<.044&&q.x>.085) return .88;                             /* toe cap */
   if(q.y<.036&&q.x<.085) return .84;                             /* foxing band */
-  if(q.x>-.045&&q.x<.055&&abs(q.z)<.026&&q.y>.06){              /* laces crossing over the tongue */
+  if(q.x>-.04&&q.x<.06&&abs(q.z)<.026&&q.y>.055){              /* laces crossing over the tongue */
     float f=fract((q.x+.045)/.02); float l=abs(abs(q.z)-.026*abs(2.*f-1.));
     if(abs(abs(q.z)-.024)<.003&&abs(f-.5)>.4) return .2;
     if(l<.0022) return .25; return .78; }
-  if(q.x<-.08&&q.y>.07) return .4;                               /* heel collar */
+  if(q.x<-.09&&q.y>.085) return .4;                               /* heel collar */
   return .56+.05*vn(q.xy*300.); }
 
 /* ================= vintage strap-on roller skate: steel plate, toe clamps, heel cup, steel wheels ================= */
@@ -147,7 +150,7 @@ float sk_rskateStrapT(vec3 q){ if(q.y>.066&&q.z>.024) return .7; if(abs(abs(q.x+
 /* ================= a narrow clay-and-steel wheel and a plank ================= */
 float sk_clayWheelD(vec3 q){ vec3 w=q-vec3(0.,.02,0.); float d=sdCylZ(w,.018,.006)-.002; float hub=sdCylZ(w,.007,.01)-.001; return min(d,hub); }
 float sk_clayWheelT(vec3 q){ vec3 w=q-vec3(0.,.02,0.); float r=length(w.xy); if(r<.0085) return .35; if(abs(r-.014)<.0012) return .4; return .62+.12*vn(w.xy*700.); }
-float sk_plankD(vec3 q){ return sdRBox(q-vec3(0.,.011,0.),vec3(.3,.011,.048),.004)+.0012*vn(q.xz*90.); }
-float sk_plankT(vec3 q){ if(q.y>.02){ vec2 n=vec2(abs(q.x)-.24,abs(q.z)-.028); if(length(n)<.004) return .2; }
-  if(abs(q.x)>.296) return fract(length(q.yz-vec2(.0,-.08))/.006)<.3?.45:.7;
+float sk_plankD(vec3 q){ return sdRBox(q-vec3(0.,.011,0.),vec3(.22,.011,.048),.004)+.0012*vn(q.xz*90.); }
+float sk_plankT(vec3 q){ if(q.y>.02){ vec2 n=vec2(abs(q.x)-.17,abs(q.z)-.028); if(length(n)<.004) return .2; }
+  if(abs(q.x)>.216) return fract(length(q.yz-vec2(.0,-.08))/.006)<.3?.45:.7;
   return .66+.18*(grain(q,70.)-.5); }

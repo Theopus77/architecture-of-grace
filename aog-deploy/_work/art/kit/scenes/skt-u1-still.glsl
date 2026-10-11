@@ -34,11 +34,11 @@ float surfT(vec3 p){ vec3 q=surfL(p);
   return .84+.05*vn(q.xz*200.); }
 float standT(vec3 p){ vec3 q=p-SB; q.xz=rot(-.35)*q.xz; return .55+.2*(grain(q,60.)-.5); }
 /* scallop shell, hinge toward the camera */
-vec3 shellQ(vec3 p){ vec3 q=sk_place(p,vec3(-.36,0.,-.05),.7); return q; }
-float shellD(vec3 p){ vec3 q=shellQ(p); vec2 u=vec2(q.x,q.z+.03); float R=.068; float a=1.1;
+vec3 shellQ(vec3 p){ vec3 q=sk_place(p,vec3(-.34,0.,-.08),.45); q.y-=.0; q.yz=rot(-.42)*q.yz; q.y+=.008; return q; }
+float shellD(vec3 p){ vec3 q=shellQ(p); vec2 u=vec2(q.x,q.z+.03); float R=.085; float a=1.1;
   float side=abs(u.x)*cos(a)-u.y*sin(a); float r=length(u);
   float d2=max(r-R,side); float ang=atan(u.x,u.y);
-  float h=.004+.022*sqrt(max(1.-(r/R)*(r/R),0.))*smoothstep(0.,.012,r)+.0016*cos(ang*16.)*smoothstep(.01,.03,r);
+  float h=.004+.026*sqrt(max(1.-(r/R)*(r/R),0.))*smoothstep(0.,.012,r)+.0016*cos(ang*16.)*smoothstep(.01,.03,r);
   float ears=sdRBox(vec3(q.x,q.y-.004,q.z+.03),vec3(.016,.004,.006),.002);
   return min(sk_ext(d2,max(q.y-h,-q.y)*.7,.0015),ears); }
 float shellT(vec3 p){ vec3 q=shellQ(p); vec2 u=vec2(q.x,q.z+.03); float ang=atan(u.x,u.y);
