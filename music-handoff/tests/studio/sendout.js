@@ -1,6 +1,6 @@
 /* AOG-STUDIO-SENDOUT-V1 — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a file".
-   Three takes on three tracks, the third muted, the song named "Rainy day". Send it out makes rainy-day.wav: its loudest
-   moment at −1 dB, the muted track named as left out; Download saves it and says so; Share… hands that very file to the
+   Three takes on three tracks, the third muted, the song named "Rainy day". Send it out makes rainy-day.wav: −14 LUFS,
+   its true peak at or under −1 dB (studio/release.js tests the loudness itself), the muted track named as left out; Download saves it and says so; Share… hands that very file to the
    share sheet (a pretend one: the test browser has none) and says Sent; with no share sheet there is no Share button.
    A quiet song comes up by 12 dB at most; a silent song is told plainly and nothing is made. Each track on its own makes
    one .zip that any unzip opens, with a .wav per track heard, each as long as the song's file and at its level.
@@ -53,7 +53,8 @@ const fileInfo = p => p.evaluate(async () => {
   const o = __aogStudio.OUT.song; if (!o) return null;
   const buf = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await o.file.arrayBuffer());
   let pk = 0; for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > pk) pk = a; } }
-  return { name: o.file.name, db: +(20 * Math.log10(pk)).toFixed(2), frames: buf.length, g: o.g, size: o.file.size };
+  const ld = __aogStudio.loudOf(buf.getChannelData(0), buf.getChannelData(1), 44100);   /* AOG-DESK-LUFS-V1 */
+  return { name: o.file.name, db: +(20 * Math.log10(pk)).toFixed(2), lufs: +ld.lufs.toFixed(2), tp: +ld.tpDb.toFixed(2), frames: buf.length, g: o.g, size: o.file.size };
 });
 
 (async () => {
@@ -67,7 +68,7 @@ const fileInfo = p => p.evaluate(async () => {
   ok(!(await p.isDisabled("#outBtn")), "with a song on the desk, Send it out can be pressed");
   await sendOut(p);
   let f = await fileInfo(p);
-  ok(f && f.name === "rainy-day.wav" && Math.abs(f.db + 1) < 0.15, `the file: ${JSON.stringify(f)} (its loudest moment at −1 dB)`);
+  ok(f && f.name === "rainy-day.wav" && Math.abs(f.lufs + 14) <= 0.3 && f.tp <= -1, `the file: ${JSON.stringify(f)} (−14 LUFS, as the streaming services play songs, its true peak at or under −1 dB; AOG-DESK-LUFS-V1)`);
   const box = await line(p, "outBox");
   ok(box.includes("Your file is ready") && box.includes("This file stays yours. Nothing is uploaded.") && box.includes("Not in the file: track 3."), "the box: " + box);
   ok(!(await p.$("[data-outshare]")), "with no share sheet, there is no Share button");

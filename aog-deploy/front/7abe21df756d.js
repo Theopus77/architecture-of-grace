@@ -51,7 +51,7 @@ const STR={
   level:{en:"Level",es:"Nivel"}, meterAria:{en:"How loud the song is",es:"Qué tan fuerte suena la canción"},
   songH:{en:"Your song",es:"Tu canción"},
   /* AOG-DESK-FACE-V1 */
-  deskKeys:{en:"On a keyboard: 1 to 8 pick a track, M mutes it, S solos it, ↑ and ↓ move its fader, Space plays and stops.",es:"Con un teclado: del 1 al 8 eligen una pista, M la silencia, S la deja sola, ↑ y ↓ mueven su fader, la barra espaciadora toca y para."},
+  deskKeys:{en:"On a keyboard: 1 to 8 pick a track, M mutes it, S solos it, ↑ and ↓ move its fader, Space plays and stops. , and . nudge the piece, + and − zoom, Ctrl+Z undoes, Ctrl+Shift+Z redoes.",es:"Con un teclado: del 1 al 8 eligen una pista, M la silencia, S la deja sola, ↑ y ↓ mueven su fader, la barra espaciadora toca y para. , y . mueven un poco la parte, + y − acercan y alejan, Ctrl+Z deshace, Ctrl+Mayús+Z rehace."},
   playMore:{en:"Where it starts, the loop and the level",es:"Dónde empieza, el bucle y el nivel"},
   chH:{en:"Channel strip",es:"Canal"}, fdH:{en:"Mixer",es:"Mezcladora"}, volume:{en:"Volume",es:"Volumen"},
   shape:{en:"Shape the sound",es:"Dale forma al sonido"}, shapeOpen:{en:"open",es:"abierto"}, shapeClosed:{en:"closed",es:"cerrado"},
@@ -123,6 +123,22 @@ const STR={
   trackFile:{en:"track",es:"pista"},
   outVoice:{en:"Your voice on its own",es:"Tu voz sola"}, outVoiceMaking:{en:"Making your voice's file…",es:"Haciendo el archivo de tu voz…"},
   outVoiceReady:{en:"Your voice on its own",es:"Tu voz sola"}, voiceFile:{en:"voice",es:"voz"},
+  /* AOG-DESK-LUFS-V1: the loudness meter, and how loud the file came out */
+  luH:{en:"Loudness · LUFS",es:"Volumen percibido · LUFS"},
+  luNow:{en:"Now",es:"Ahora"}, luSt:{en:"Last 3 s",es:"Últimos 3 s"}, luSong:{en:"Whole song",es:"Toda la canción"}, luPk:{en:"Song peak",es:"Pico de la canción"},
+  luWhat:{en:"LUFS is how loud music sounds to the ear. Streaming services play songs at −14. The whole song is measured when you make the mix or send it out.",
+    es:"LUFS mide qué tan fuerte suena la música al oído. Los servicios de streaming ponen las canciones a −14. Toda la canción se mide cuando haces la mezcla o la compartes."},
+  outLoud:{en:"Loudness {l} LUFS · peak {p}",es:"Volumen percibido {l} LUFS · pico {p}"},
+  outLoudPeak:{en:"That is under −14, so its loudest moment stays under −1 dB.",es:"Queda por debajo de −14, para que su momento más fuerte no pase de −1 dB."},
+  outLoudQuiet:{en:"Your song is very quiet, so it went up 12 dB, no more. To make it louder, turn your tracks up.",es:"Tu canción suena muy baja, así que subió 12 dB, no más. Para que suene más fuerte, sube tus pistas."},
+  /* AOG-DESK-BITS-V1 */
+  bitsLab:{en:"File quality",es:"Calidad del archivo"},
+  bitsOpt16:{en:"16-bit · smaller file",es:"16 bits · archivo más pequeño"}, bitsOpt24:{en:"24-bit · studio quality",es:"24 bits · calidad de estudio"},
+  bits16:{en:"16-bit",es:"16 bits"}, bits24:{en:"24-bit",es:"24 bits"},
+  /* AOG-DESK-CHOPS-OUT-V1 */
+  outChops:{en:"Your chops (.zip)",es:"Tus cortes (.zip)"}, outChopsMaking:{en:"Making your chops' files…",es:"Haciendo los archivos de tus cortes…"},
+  outChopsReady:{en:"Your chops: {n} files in one .zip",es:"Tus cortes: {n} archivos en un .zip"},
+  chopFile:{en:"chop",es:"corte"}, chopsFile:{en:"chops",es:"cortes"},
   /* AOG-STUDIO-VOICE-V1 (STUDIO-HANDOFF §10): track 8 is your voice; the microphone opens only when you press Record */
   voiceH:{en:"Your voice",es:"Tu voz"},
   voiceTrack:{en:"Voice",es:"Voz"},
@@ -249,7 +265,19 @@ const STR={
   stretching:{en:"Getting the new speed ready…",es:"Preparando la nueva velocidad…"},
   fadeH:{en:"Fade in and out",es:"Entrada y salida suaves"},
   fadeIn:{en:"Fade in",es:"Entrada suave"}, fadeOut:{en:"Fade out",es:"Salida suave"}, fadeNone:{en:"None",es:"Ninguna"},
-  edit:{en:"✎ Edit",es:"✎ Editar"}, editAria:{en:"Edit track {n}",es:"Editar la pista {n}"}
+  edit:{en:"✎ Edit",es:"✎ Editar"}, editAria:{en:"Edit track {n}",es:"Editar la pista {n}"},
+  /* AOG-DESK-HANDS-V1: drag, zoom, nudge, redo, a piece's volume, crossfades */
+  redo:{en:"↷ Redo",es:"↷ Rehacer"}, redone:{en:"Done again.",es:"Hecho otra vez."},
+  undoAria:{en:"Undo the last change",es:"Deshacer el último cambio"}, redoAria:{en:"Redo the change you undid",es:"Rehacer el cambio que deshiciste"},
+  zoom:{en:"Zoom",es:"Zoom"}, zoomIn:{en:"Zoom in",es:"Acercar"}, zoomOut:{en:"Zoom out",es:"Alejar"},
+  snapOn:{en:"Snap to the beat: On",es:"Ajustar al pulso: Sí"}, snapOff:{en:"Snap to the beat: Off",es:"Ajustar al pulso: No"},
+  snapSaidOn:{en:"A piece you drag lands on a beat.",es:"Una parte que arrastras cae en un pulso."},
+  snapSaidOff:{en:"A piece you drag lands just where you let go.",es:"Una parte que arrastras queda justo donde la sueltas."},
+  movedTo:{en:"Piece {n} now starts at {w}.",es:"La parte {n} ahora empieza en {w}."},
+  msLate:{en:"{w}, {n} ms late",es:"{w}, {n} ms tarde"}, msEarly:{en:"{w}, {n} ms early",es:"{w}, {n} ms antes"},
+  nudgeE:{en:"10 ms earlier",es:"10 ms antes"}, nudgeL:{en:"10 ms later",es:"10 ms después"},
+  pvolLab:{en:"Volume of this piece",es:"Volumen de esta parte"}, pvolAria:{en:"Volume of piece {n}",es:"Volumen de la parte {n}"},
+  xfLab:{en:"Crossfade where pieces meet",es:"Fundido donde se juntan las partes"}, xfOff:{en:"Off",es:"No"}
 };
 const S={ lang:"en", decoding:0, busy:false, pick:"", picked:false, ask:"", stretching:0, edMsg:"", edAt:"cut" };
 try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
@@ -318,17 +346,24 @@ function cleanClip(c){
     voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)),   /* AOG-STUDIO-VOICE-V1 */
     layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto, lead:!!c.lead };   /* AOG-STUDIO-LISTEN-V1 · AOG-SONG-V1 (lead) */
   if(!(o.sec>0) || !(o.body>0)) return null;
+  if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
     o.tid=(typeof c.tid==="string" && /^t[a-z0-9]{4,40}$/.test(c.tid)) ? c.tid : ""; }
   return o;
 }
 const FADES=[0,1,4,8,16];        /* beats: none, 1 beat, 1 bar, 2 bars, 4 bars */
+/* AOG-DESK-XFADE-V1: how long two pieces of a track blend where they meet (off: the old 4 ms in and 8 ms out of a cut) */
+const XFADES=["off","10ms","50ms","beat","bar"];
+/* AOG-DESK-CLIPVOL-V1: a piece's own volume, in dB */
+const PVOL_LO=-24, PVOL_HI=12;
 function cleanPieces(a){
   if(!Array.isArray(a)) return null;
   const out=[];
   a.slice(0,64).forEach(p=>{ if(!p || typeof p!=="object") return;
+    /* AOG-DESK-DRAG-V1: `at` may sit between beats (snap off, a nudge); it is kept as it is, never rounded to a beat */
     const q={a:num(p.a,0,1e5,0), b:num(p.b,0,1e5,0), at:num(p.at,0,MAX_BARS*4,0), n:Math.round(num(p.n,1,16,1))};
+    const g=Math.round(num(p.g,PVOL_LO,PVOL_HI,0)*10)/10; if(g) q.g=g;
     if(q.b-q.a>=0.25) out.push(q); });
   return out.length ? out : null;
 }
@@ -604,38 +639,79 @@ function fadeAt(cl, t, cs, ce){
   if(fo>0) g=Math.min(g, (ce-t)/fo);
   return Math.max(0, Math.min(1, g));
 }
+/* AOG-DESK-XFADE-V1: a track's crossfade, in seconds of the song (0: off) */
+function xfSec(cl){ const k=cl && cl.xf; return k==="10ms" ? 0.01 : k==="50ms" ? 0.05 : k==="beat" ? songBeat() : k==="bar" ? barSec() : 0; }
+/* every time a piece plays, in song order: where it starts (p0), where its music ends (e), how loud it is (g); with a
+   crossfade on, where two of them meet (the later one starts before the earlier one has ended, or within 1 ms of its end)
+   the two blend over one window [w0, w1] around that point. The later piece takes over from where it starts. The window
+   is centred on the meeting point when the recording has sound on both sides (the piece's own sound, before and after
+   its cut, as the handles a desk uses), and slides to the side that has sound when one side has none. The two sides use
+   equal-power curves (cos and sin, so different sounds keep their loudness); where they are the same sound carrying on
+   (a cut put back together) the curves are straight, so the level stays exactly even. Both the speakers and the mix read
+   this one plan, so they blend the same. */
+function piecePlays(cl, P){
+  const sp=spd(cl), sb=beatOf(cl), full=fullBeats(cl), L=[];
+  pcs(cl).forEach(p=>{
+    const s0=cl.head+p.a*sb, len=pLen(cl,p), tl=pTail(cl,p), st=pAt(p), whole=p.b>=full-1e-6, g=dbGain(p.g||0);
+    for(let k=0;k<p.n;k++){ const p0=st+k*len; L.push({p:p, s0:s0, len:len, tl:tl, p0:p0, e:p0+len, whole:whole, g:g, inW:null, outW:null, cut:null}); }
+  });
+  const X=xfSec(cl); if(!(X>0) || L.length<2) return L;
+  const recDur=P.buf.duration/P.scale, rec=(q,t)=>q.s0+(t-q.p0)*sp;   /* where song time t is in the recording, in its seconds */
+  const S2=L.slice().sort((u,v)=>u.p0-v.p0);
+  for(let k=0;k<S2.length;k++){
+    const A=S2[k]; let B=null;
+    for(let j=k+1;j<S2.length;j++){ if(S2[j].p0>A.p0+1e-6){ B=S2[j]; break; } }
+    if(!B || B.p0>A.e+1e-3) continue;
+    const m=B.p0, preB=Math.max(0, B.s0/sp), extA=Math.max(0, (recDur-rec(A,m))/sp);
+    const Xe=Math.min(X, preB+extA, 0.5*A.len, 0.5*B.len);
+    if(Xe<0.002){ A.cut=m; continue; }                    /* no sound on either side to blend: a plain cut, as before */
+    let w0=m-Xe/2; if(m-w0>preB) w0=m-preB;
+    let w1=w0+Xe; if(w1-m>extA){ w1=m+extA; w0=w1-Xe; }
+    const W={w0:w0, w1:w1, lin:Math.abs(rec(A,m)-rec(B,m))<0.002};
+    A.outW=W; if(!B.inW) B.inW=W;
+  }
+  return L;
+}
+function xfGain(W, t, out){
+  const u=Math.max(0, Math.min(1, (t-W.w0)/(W.w1-W.w0)));
+  if(W.lin) return out ? 1-u : u;
+  return out ? Math.cos(u*Math.PI/2) : Math.sin(u*Math.PI/2);
+}
 function schedule(E, from, to, at){
   const c=E.c, out=[];
   SONG.tracks.forEach((x,i)=>{
     const cl=x.clip; if(!cl) return; const P=playBuf(cl); if(!P) return;
-    const sp=spd(cl), sb=beatOf(cl), full=fullBeats(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
+    const sp=spd(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
     const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
-    pcs(cl).forEach(p=>{
-      const s0=cl.head+p.a*sb, len=pLen(cl,p), tl=pTail(cl,p), st=pAt(p), whole=p.b>=full-1e-6;
-      for(let k=0;k<p.n;k++){
-        const p0=st+k*len, p1=p0+len+tl, a0=Math.max(p0,from), a1=Math.min(p1,to);
-        if(a1-a0<0.003) continue;
-        const off=(s0+(a0-p0)*sp)*P.scale, d=Math.min((a1-a0)*sp*P.scale, P.buf.duration-off);
-        if(!(d>0.003)) continue;
-        const dur=d/(sp*P.scale), e1=a0+dur, when=at+(a0-from);       /* dur: seconds of the song */
-        const cutIn=(a0>p0+1e-4) || p.a>1e-6, cutOut=(e1<p1-1e-4) || !whole, edge=cutOut && dur>0.02;
-        const src=c.createBufferSource(); src.buffer=P.buf; if(P.rate!==1) src.playbackRate.value=P.rate;
-        const env=c.createGain();
-        if(!cutIn && !edge && !fades) env.gain.value=1;
-        else {
-          /* the 4 ms in and 8 ms out of a cut (no clicks), times the fades, as straight lines between their corners */
-          const val=t=>{ let v=fades ? fadeAt(cl, t, cs, ce) : 1;
-            if(cutIn) v*=Math.max(0, Math.min(1, (t-a0)/0.004)); if(edge) v*=Math.max(0, Math.min(1, (e1-t)/0.008)); return v; };
-          const pts=[a0, e1]; if(cutIn) pts.push(a0+0.004); if(edge) pts.push(e1-0.008);
-          if(fi>0) pts.push(cs+fi); if(fo>0) pts.push(ce-fo, ce);
-          const list=[...new Set(pts.filter(v=>v>=a0-1e-9 && v<=e1+1e-9))].sort((u,v)=>u-v);
-          env.gain.value=val(a0); env.gain.setValueAtTime(val(a0), when);
-          list.forEach(tp=>{ if(tp>a0+1e-9) env.gain.linearRampToValueAtTime(val(tp), when+(tp-a0)); });
-        }
-        src.connect(env); env.connect(E.tr[i].in);
-        src.start(when, off, d);
-        out.push({src:src, env:env, end:when+dur});
+    piecePlays(cl, P).forEach(q=>{
+      const p=q.p, s0=q.s0, p0=q.p0, inW=q.inW, outW=q.outW;
+      /* with no crossfade this is the old plan exactly: from the piece's start to its end and its ring */
+      const st0=inW ? inW.w0 : p0, p1=outW ? outW.w1 : q.cut!=null ? q.cut : q.e+q.tl;
+      const a0=Math.max(st0,from), a1=Math.min(p1,to);
+      if(a1-a0<0.003) return;
+      const off=Math.max(0, (s0+(a0-p0)*sp)*P.scale), d=Math.min((a1-a0)*sp*P.scale, P.buf.duration-off);
+      if(!(d>0.003)) return;
+      const dur=d/(sp*P.scale), e1=a0+dur, when=at+(a0-from);       /* dur: seconds of the song */
+      const cutIn=inW ? a0>st0+1e-4 : (a0>p0+1e-4) || p.a>1e-6, cutOut=outW ? e1<p1-1e-4 : (e1<p1-1e-4) || !q.whole || q.cut!=null, edge=cutOut && dur>0.02;
+      const src=c.createBufferSource(); src.buffer=P.buf; if(P.rate!==1) src.playbackRate.value=P.rate;
+      const env=c.createGain(), g=q.g;
+      if(!cutIn && !edge && !fades && !inW && !outW) env.gain.value=g;
+      else {
+        /* the 4 ms in and 8 ms out of a cut (no clicks), times the fades and the crossfades, as straight lines between
+           their corners (a crossfade's curve in 24 short steps) */
+        const val=t=>{ let v=g*(fades ? fadeAt(cl, t, cs, ce) : 1);
+          if(inW) v*=xfGain(inW, t, false); if(outW) v*=xfGain(outW, t, true);
+          if(cutIn) v*=Math.max(0, Math.min(1, (t-a0)/0.004)); if(edge) v*=Math.max(0, Math.min(1, (e1-t)/0.008)); return v; };
+        const pts=[a0, e1]; if(cutIn) pts.push(a0+0.004); if(edge) pts.push(e1-0.008);
+        if(fi>0) pts.push(cs+fi); if(fo>0) pts.push(ce-fo, ce);
+        [inW, outW].forEach(W=>{ if(W) for(let s=0;s<=24;s++) pts.push(W.w0+(W.w1-W.w0)*s/24); });
+        const list=[...new Set(pts.filter(v=>v>=a0-1e-9 && v<=e1+1e-9))].sort((u,v)=>u-v);
+        env.gain.value=val(a0); env.gain.setValueAtTime(val(a0), when);
+        list.forEach(tp=>{ if(tp>a0+1e-9) env.gain.linearRampToValueAtTime(val(tp), when+(tp-a0)); });
       }
+      src.connect(env); env.connect(E.tr[i].in);
+      src.start(when, off, d);
+      out.push({src:src, env:env, end:when+dur});
     });
   });
   return out;
@@ -722,6 +798,7 @@ function live(){
       a0.fftSize=1024; a1.fftSize=1024; LIVE.out.connect(sp); sp.connect(a0,0); sp.connect(a1,1); a0.connect(z); a1.connect(z); z.connect(ac.destination);
       AN={a:[a0,a1], d:new Float32Array(1024)};
     }catch(e){ AN=null; }
+    try{ LU.tap=lufsTap(ac, LIVE.out); }catch(e){ LU.tap=null; }   /* AOG-DESK-LUFS-V1: the loudness meter listens there too */
   }
   if(ac.state!=="running"){ try{ ac.resume(); }catch(e){} }
   return ac;
@@ -916,8 +993,9 @@ function vuPaint(levels, peak){
   const v = levels ? levels : (PLAY.on && peak>-90 ? [peak, peak] : null);
   vuDraw($("vuL"), v ? v[0] : null, "L"); vuDraw($("vuR"), v ? v[1] : null, "R");
 }
-function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); }
+function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); lufsReset(); }
 function meterTick(){
+  lufsTick();   /* AOG-DESK-LUFS-V1 */
   if(!AN) return;
   const now=performance.now(), dt=MET.last ? Math.min(0.1,(now-MET.last)/1000) : 0; MET.last=now;
   const lv=[0,1].map(ch=>{ const a=AN.a[ch]; a.getFloatTimeDomainData(AN.d); let pk=0; for(let i=0;i<AN.d.length;i++){ const v=AN.d[i]<0?-AN.d[i]:AN.d[i]; if(v>pk) pk=v; } return pk>0 ? 20*Math.log10(pk) : -90; });
@@ -929,7 +1007,134 @@ function meterTick(){
   MET.lvl=MET.lvl.map((o,ch)=>Math.max(lv[ch], o-24*dt));
   drawMeter(MET.lvl, PLAY.peak);
 }
-function meterStill(){ drawMeter(null, PLAY.peak); }
+function meterStill(){ drawMeter(null, PLAY.peak); lufsRest(); }
+
+/* ══ AOG-DESK-LUFS-V1 (Jimmy, 2026-10-11: "Release-ready output. Add a loudness meter and the loudness streaming
+   services use (−14 LUFS)") — loudness as ITU-R BS.1770-4 measures it (the meter of EBU R128 and of the streaming
+   services): the sound through the K-weighting (a high shelf near 1.7 kHz, then a high-pass near 38 Hz), its power
+   summed over left and right, L = −0.691 + 10·log10(power), in LUFS.
+   - While the song plays, on the desk's master (after the safety ceiling, what you hear): Now (momentary, the last
+     400 ms) and Last 3 s (short-term). The numbers change twice a second (once a second on a touch screen or with
+     "reduce motion"), never flash, and rest (—) when the song stops, like the needles. The VU needles stay as they are.
+   - After a bounce (Make the mix, Send it out): the whole song (integrated: 400 ms blocks every 100 ms, gated at
+     −70 LUFS, then 10 LU under the level of what is left) and its true peak (4× oversampled). ══ */
+const LUFS_TARGET=-14, TP_CEIL=-1, LU_NP=32768;
+/* the two K-weighting stages for any sample rate (the formulas of libebur128; at 48 kHz they are BS.1770's own numbers) */
+function kCoef(sr){
+  let K=Math.tan(Math.PI*1681.974450955533/sr), Q=0.7071752369554196, a0=1+K/Q+K*K;
+  const Vh=Math.pow(10, 3.999843853973347/20), Vb=Math.pow(Vh, 0.4996667741545416);
+  const s1={b:[(Vh+Vb*K/Q+K*K)/a0, 2*(K*K-Vh)/a0, (Vh-Vb*K/Q+K*K)/a0], a:[1, 2*(K*K-1)/a0, (1-K/Q+K*K)/a0]};
+  K=Math.tan(Math.PI*38.13547087602444/sr); Q=0.5003270373238773; a0=1+K/Q+K*K;
+  return [s1, {b:[1,-2,1], a:[1, 2*(K*K-1)/a0, (1-K/Q+K*K)/a0]}];
+}
+function luOf(z){ return z>0 ? -0.691+10*Math.log10(z) : -Infinity; }
+/* the K-weighted power of every 100 ms, left and right summed */
+function kPow(chs, sr){
+  const C=kCoef(sr), step=Math.round(sr*0.1), nb=Math.floor(chs[0].length/step), E=new Float64Array(nb);
+  const b0=C[0].b[0], b1=C[0].b[1], b2=C[0].b[2], a1=C[0].a[1], a2=C[0].a[2], c1=C[1].a[1], c2=C[1].a[2];
+  chs.forEach(x=>{
+    let x1=0, x2=0, y1=0, y2=0, z1=0, z2=0;
+    for(let j=0;j<nb;j++){
+      let s=0; const e=(j+1)*step;
+      for(let i=j*step;i<e;i++){ const x0=x[i], y0=b0*x0+b1*x1+b2*x2-a1*y1-a2*y2; x2=x1; x1=x0;
+        const z0=y0-2*y1+y2-c1*z1-c2*z2; y2=y1; y1=y0; z2=z1; z1=z0; s+=z0*z0; }
+      E[j]+=s;
+    }
+  });
+  return {E:E, step:step};
+}
+/* integrated loudness: 400 ms blocks (four 100 ms steps), the absolute gate at −70 LUFS, then the relative gate 10 LU
+   under the loudness of the blocks that passed it */
+function lufsInt(P){
+  const E=P.E, zs=[];
+  for(let j=0;j+3<E.length;j++) zs.push((E[j]+E[j+1]+E[j+2]+E[j+3])/(4*P.step));
+  const a=zs.filter(z=>luOf(z)>-70); if(!a.length) return -Infinity;
+  const rel=luOf(a.reduce((s,z)=>s+z,0)/a.length)-10, b=a.filter(z=>luOf(z)>rel);
+  return b.length ? luOf(b.reduce((s,z)=>s+z,0)/b.length) : -Infinity;
+}
+/* true peak: the samples and, between them, three more points of the sound (4× oversampled; a 49-tap windowed sinc,
+   Kaiser β 6, flat to 0.002 dB up to a quarter of the sample rate). A stretch whose samples cannot reach the loudest
+   point found so far is skipped, so this stays quick. */
+const TP_PH=(()=>{ const N=49, M=24, I0=v=>{ let s=1, q=1; for(let k=1;k<30;k++){ q*=(v/2/k)*(v/2/k); s+=q; } return s; }, h=[];
+  for(let n=0;n<N;n++){ const x=(n-M)/4, r=(n-M)/M; h.push((x===0 ? 1 : Math.sin(Math.PI*x)/(Math.PI*x))*I0(6*Math.sqrt(Math.max(0, 1-r*r)))/I0(6)); }
+  const out=[]; for(let p=1;p<4;p++){ const k=[]; for(let n=p;n<N;n+=4) k.push(h[n]); const s=k.reduce((a,b)=>a+b,0); out.push(Float64Array.from(k.map(v=>v/s))); }
+  return out; })();
+const TP_SUM=Math.max(...TP_PH.map(k=>k.reduce((a,b)=>a+Math.abs(b),0)));
+function truePeak(chs){
+  let tp=0; const B=256, P=TP_PH[0], Q=TP_PH[1], R=TP_PH[2], K=P.length;   /* twelve taps a point, written out: twice as quick */
+  const p0=P[0],p1=P[1],p2=P[2],p3=P[3],p4=P[4],p5=P[5],p6=P[6],p7=P[7],p8=P[8],p9=P[9],p10=P[10],p11=P[11];
+  const q0=Q[0],q1=Q[1],q2=Q[2],q3=Q[3],q4=Q[4],q5=Q[5],q6=Q[6],q7=Q[7],q8=Q[8],q9=Q[9],q10=Q[10],q11=Q[11];
+  const r0=R[0],r1=R[1],r2=R[2],r3=R[3],r4=R[4],r5=R[5],r6=R[6],r7=R[7],r8=R[8],r9=R[9],r10=R[10],r11=R[11];
+  chs.forEach(x=>{ for(let i=0;i<x.length;i++){ const a=x[i]<0?-x[i]:x[i]; if(a>tp) tp=a; } });
+  chs.forEach(x=>{
+    const n=x.length, nb=Math.ceil(n/B), bm=new Float32Array(nb);
+    for(let b=0;b<nb;b++){ let m=0; const e=Math.min(n,(b+1)*B); for(let i=b*B;i<e;i++){ const a=x[i]<0?-x[i]:x[i]; if(a>m) m=a; } bm[b]=m; }
+    for(let j=0;j<Math.min(n,K-1);j++) for(const h of TP_PH){ let s=0; for(let k=0;k<=j;k++) s+=h[k]*x[j-k]; if(s<0) s=-s; if(s>tp) tp=s; }
+    for(let b=0;b<nb;b++){
+      if(Math.max(bm[b], b>0 ? bm[b-1] : 0)*TP_SUM<=tp) continue;
+      const e=Math.min(n,(b+1)*B);
+      for(let j=Math.max(K-1, b*B);j<e;j++){
+        const a0=x[j],a1=x[j-1],a2=x[j-2],a3=x[j-3],a4=x[j-4],a5=x[j-5],a6=x[j-6],a7=x[j-7],a8=x[j-8],a9=x[j-9],a10=x[j-10],a11=x[j-11];
+        let s=p0*a0+p1*a1+p2*a2+p3*a3+p4*a4+p5*a5+p6*a6+p7*a7+p8*a8+p9*a9+p10*a10+p11*a11; if(s<0) s=-s; if(s>tp) tp=s;
+        s=q0*a0+q1*a1+q2*a2+q3*a3+q4*a4+q5*a5+q6*a6+q7*a7+q8*a8+q9*a9+q10*a10+q11*a11; if(s<0) s=-s; if(s>tp) tp=s;
+        s=r0*a0+r1*a1+r2*a2+r3*a3+r4*a4+r5*a5+r6*a6+r7*a7+r8*a8+r9*a9+r10*a10+r11*a11; if(s<0) s=-s; if(s>tp) tp=s;
+      }
+    }
+  });
+  return tp;
+}
+/* a whole song's loudness (LUFS) and true peak (as a gain, and in dB) */
+function loudOf(Lc, Rc, sr){
+  const lufs=lufsInt(kPow([Lc, Rc], sr||MIX_SR)), tp=truePeak([Lc, Rc]);
+  return {lufs:lufs, tp:tp, tpDb:tp>0 ? 20*Math.log10(tp) : -Infinity};
+}
+/* the live meter: the master through the same two stages (IIR filters with these very numbers), into two listeners
+   that hold the last 32768 samples. Each reading (about every 100 ms) takes the samples that came since the one
+   before, so the 3 s window has no gaps and nothing counted twice; Now is the last 400 ms read straight. */
+function lufsTap(c, node){
+  const C=kCoef(c.sampleRate), T={c:c, sr:c.sampleRate, an:[], d:new Float32Array(LU_NP), last:c.currentTime, ch:[], tot:0, played:0, mom:-Infinity, st:-Infinity};
+  let k1, k2;
+  try{ k1=c.createIIRFilter(C[0].b, C[0].a); k2=c.createIIRFilter(C[1].b, C[1].a); }
+  catch(e){ k1=c.createBiquadFilter(); k1.type="highshelf"; k1.frequency.value=1681.97; k1.gain.value=4;
+    k2=c.createBiquadFilter(); k2.type="highpass"; k2.frequency.value=38.135; k2.Q.value=20*Math.log10(0.5003); }
+  const sp=c.createChannelSplitter(2), z=c.createGain(); z.gain.value=0;
+  node.connect(k1); k1.connect(k2); k2.connect(sp);
+  for(let ch=0;ch<2;ch++){ const a=c.createAnalyser(); a.fftSize=LU_NP; sp.connect(a, ch); a.connect(z); T.an.push(a); }
+  z.connect(c.destination);
+  return T;
+}
+function lufsStart(T){ T.ch=[]; T.tot=0; T.played=0; T.mom=-Infinity; T.st=-Infinity; T.last=T.c.currentTime; }
+function lufsStep(T){
+  const now=T.c.currentTime, n=Math.min(LU_NP, Math.round((now-T.last)*T.sr)), win=Math.min(LU_NP, Math.round(0.4*T.sr));
+  T.last=now; if(n<=0) return T;
+  let e=0, m=0;
+  T.an.forEach(a=>{ a.getFloatTimeDomainData(T.d); const D=T.d, N=D.length; for(let i=N-n;i<N;i++) e+=D[i]*D[i]; for(let i=N-win;i<N;i++) m+=D[i]*D[i]; });
+  T.ch.push({e:e, n:n}); T.tot+=n; T.played+=n;
+  while(T.ch.length>1 && T.tot>3*T.sr){ const o=T.ch.shift(); T.tot-=o.n; }
+  T.mom=T.played>=win ? luOf(m/win) : -Infinity;
+  T.st=T.tot>=2.85*T.sr ? luOf(T.ch.reduce((s,o)=>s+o.e,0)/T.tot) : -Infinity;
+  return T;
+}
+const LU={tap:null, song:null, read:0, shown:0};
+function lufsReset(){ if(LU.tap) lufsStart(LU.tap); LU.read=0; LU.shown=0; lufsPaint(); }
+function lufsTick(){
+  const T=LU.tap; if(!T || !PLAY.on) return;
+  if(T.c.currentTime<PLAY.T0){ T.last=T.c.currentTime; return; }   /* the count-in is not the song */
+  const now=performance.now();
+  if(now-LU.read<95) return;
+  LU.read=now; lufsStep(T);
+  if(now-LU.shown>=(stillMeter() ? 1000 : 500)){ LU.shown=now; lufsPaint(); }
+}
+function lufsRest(){ if(LU.tap){ LU.tap.mom=-Infinity; LU.tap.st=-Infinity; } lufsPaint(); }
+function luWords(v){ return isFinite(v) && v>-70 ? (v<-0.05 ? "−" : "")+Math.abs(v).toFixed(1) : "—"; }
+function dbWords(v){ return isFinite(v) && v>-90 ? (v<-0.05 ? "−" : v>0.05 ? "+" : "")+Math.abs(v).toFixed(1)+" dB" : "—"; }
+function lufsPaint(){
+  const T=LU.tap, s=LU.song, set=(id, v)=>{ const el=$(id); if(el && el.textContent!==v) el.textContent=v; };
+  set("luNow", luWords(T && PLAY.on ? T.mom : -Infinity)); set("luSt", luWords(T && PLAY.on ? T.st : -Infinity));
+  set("luSong", luWords(s ? s.lufs : -Infinity)); set("luPk", s ? dbWords(s.tpDb) : "—");
+}
+/* the whole song, measured after a bounce, on the meter */
+function songLoud(Lc, Rc){ const r=loudOf(Lc, Rc, MIX_SR); LU.song=r; lufsPaint(); return r; }
 
 /* ══ the shelves the instruments fill ══ */
 const SHELF={};
@@ -1136,9 +1341,10 @@ async function restore(){
 
 /* ══ Make the mix: the same engine in an OfflineAudioContext, then a 16-bit .wav ══ */
 let MIX=null;
-function wavBlob(Lc, Rc, sr, g){ return new Blob([wavBuf(Lc, Rc, sr, g)],{type:"audio/wav"}); }
-function wavBuf(Lc, Rc, sr, g){
+function wavBlob(Lc, Rc, sr, g, bits){ return new Blob([wavBuf(Lc, Rc, sr, g, bits)],{type:"audio/wav"}); }
+function wavBuf(Lc, Rc, sr, g, bits){
   g=g>0 ? g : 1;
+  if(bits===16 || bits===24) return wavPcm(Lc, Rc, sr, g, bits);   /* AOG-DESK-BITS-V1: the file you chose */
   const n=Lc.length, ab=new ArrayBuffer(44+n*4), v=new DataView(ab);
   const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
   str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
@@ -1146,6 +1352,35 @@ function wavBuf(Lc, Rc, sr, g){
   let o=44;
   for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,Lc[i]*g)), r=Math.max(-1,Math.min(1,Rc[i]*g));
     v.setInt16(o, l<0?l*0x8000:l*0x7fff, true); v.setInt16(o+2, r<0?r*0x8000:r*0x7fff, true); o+=4; }
+  return ab;
+}
+/* ══ AOG-DESK-BITS-V1 (Jimmy, 2026-10-11: "Add a 24-bit choice") — the files you make (Send it out, the song, each
+   track, your voice, your chops, and Make the mix) are 16-bit (the default: a smaller file, what CDs and most
+   streaming use) or 24-bit (studio quality). The choice is kept on this device. A 16-bit file gets TPDF dither (two
+   random steps of one least step, added before rounding), so quiet endings fade smoothly instead of turning grainy;
+   a 24-bit file needs none. Plain PCM in the header (format 1): 24 bits are 3 bytes a sample, 6 a stereo frame. ══ */
+const BITS_KEY="aog.studio.bits.v1";
+let BITS=16; try{ if(localStorage.getItem(BITS_KEY)==="24") BITS=24; }catch(e){}
+function setBits(b){ BITS=b===24 ? 24 : 16; try{ localStorage.setItem(BITS_KEY, String(BITS)); }catch(e){} }
+function wavPcm(Lc, Rc, sr, g, bits){
+  const by=bits/8, ba=2*by, n=Lc.length, ab=new ArrayBuffer(44+n*ba), v=new DataView(ab), u=new Uint8Array(ab);
+  const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4,36+n*ba,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*ba,true); v.setUint16(32,ba,true); v.setUint16(34,bits,true); str(36,"data"); v.setUint32(40,n*ba,true);
+  let o=44;
+  if(bits===16){
+    /* one step is 1/32768, as every reader decodes it, so the file comes back exactly; full scale is held at the top.
+       The dither's random steps are seeded from the sound itself, so the same song always makes the very same file
+       (studio/carry: the iPhone's mix is the computer's, byte for byte) and two tracks never share one noise. */
+    const f=new DataView(new ArrayBuffer(4)), bitsOf=x=>{ f.setFloat32(0, x||0); return f.getUint32(0); };
+    let sd=(n*2654435761 ^ bitsOf(Lc[n>>1]) ^ bitsOf(Rc[n>>2])*7 ^ bitsOf(Lc[n>>3])*13)>>>0;
+    const rnd=()=>{ sd=(sd+0x6D2B79F5)>>>0; let z=sd; z=Math.imul(z^(z>>>15), z|1); z^=z+Math.imul(z^(z>>>7), z|61); return ((z^(z>>>14))>>>0)/4294967296; };
+    for(let i=0;i<n;i++) for(let c=0;c<2;c++){ const x=(c ? Rc[i] : Lc[i])*g, y=Math.round((x>1 ? 1 : x<-1 ? -1 : x)*32768+rnd()-rnd());
+      v.setInt16(o, y>32767 ? 32767 : y<-32768 ? -32768 : y, true); o+=2; }
+  } else {
+    for(let i=0;i<n;i++) for(let c=0;c<2;c++){ const x=(c ? Rc[i] : Lc[i])*g; let y=Math.round((x>1 ? 1 : x<-1 ? -1 : x)*8388608);
+      if(y>8388607) y=8388607; u[o]=y&255; u[o+1]=(y>>8)&255; u[o+2]=(y>>16)&255; o+=3; }
+  }
   return ab;
 }
 function render(oc){ return new Promise((ok,no)=>{ oc.oncomplete=e=>ok(e.renderedBuffer); const p=oc.startRendering(); if(p && p.then) p.then(ok,no); }); }
@@ -1177,7 +1412,8 @@ async function makeMix(){
   btn.disabled=true; line.textContent=t("mixing");
   try{
     const {Lc, Rc, frames}=await renderSong(null);
-    const blob=wavBlob(Lc, Rc, MIX_SR);
+    const blob=wavBlob(Lc, Rc, MIX_SR, 1, BITS);   /* AOG-DESK-BITS-V1 */
+    try{ songLoud(Lc, Rc); }catch(e){}            /* AOG-DESK-LUFS-V1: the whole song on the loudness meter */
     setMix({wav:blob, sec:frames/MIX_SR, bars:songBars(), bpm:songBpm(), body:songEndMusic(), at:Date.now()});
     try{ await sput("mix", {wav:blob, sec:MIX.sec, bars:MIX.bars, bpm:MIX.bpm, body:MIX.body, at:MIX.at}); }catch(e){}
     const out=leftOut();
@@ -1675,20 +1911,32 @@ function paintVoice(){
 /* ══════════════════════════════════════════════════════════════════════════
    AOG-STUDIO-SENDOUT-V1 (2026-10-09) — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a
    file". Send it out makes the song through the whole desk, as it is now, and hands over one stereo .wav:
-   - loud enough to hear and never clipped: its loudest moment is set to −1 dB (by at most 12 dB up or down);
+   - release-ready (AOG-DESK-LUFS-V1, 2026-10-11): as loud as the streaming services play songs, −14 LUFS for the whole
+     song, and its true peak never past −1 dB (−1 dBTP). If reaching −14 would pass that ceiling, it is turned up only
+     as far as the ceiling allows (nothing is squashed: no limiter is added, the sound stays as you mixed it), and it
+     says plainly how loud it came out. Never more than 12 dB up: a very quiet song is a sign to turn the tracks up, and
+     12 dB more would also bring up its hiss. Turning down has no limit (it can only make the peak safer);
    - a silent song is told plainly, and nothing is made;
    - Share… opens the device's share sheet (Messages, Mail, AirDrop, Files) where there is one; Download everywhere.
      Share is its own tap: Safari only opens the sheet straight from a tap, not seconds later;
    - Each track on its own: one .zip, a .wav for every track heard in the mix, at the very level of the file sent,
-     so they line up and add back to the song. Only once the song's file is made (the file is never held up by them).
-   The voice take and the chops from your own records join this when they exist (§10, §9). Nothing is uploaded.
+     so they line up and add back to the song. Only once the song's file is made (the file is never held up by them);
+   - your voice on its own (§10), and your chops (§9, AOG-DESK-CHOPS-OUT-V1, below);
+   - 16-bit or 24-bit, as chosen (AOG-DESK-BITS-V1). Nothing is uploaded.
    ══════════════════════════════════════════════════════════════════════════ */
-const OUT={song:null, stems:null, voice:null, busy:false};
+const OUT={song:null, stems:null, voice:null, chops:null, chopSrc:null, busy:false};
 function slugOf(x){ return String(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40); }
 function songSlug(){ return slugOf(songTitle()) || t("file"); }
 function peakOf(Lc, Rc){ let pk=0; for(let i=0;i<Lc.length;i++){ const a=Lc[i]<0?-Lc[i]:Lc[i], b=Rc[i]<0?-Rc[i]:Rc[i]; if(a>pk) pk=a; if(b>pk) pk=b; } return pk; }
-/* the gain that puts the loudest moment at −1 dB, never more than 12 dB either way */
-function outGain(pk){ if(!(pk>0)) return 1; return Math.max(dbGain(-12), Math.min(dbGain(12), dbGain(-1)/pk)); }
+/* AOG-DESK-LUFS-V1: the gain for the file. −14 LUFS, unless the true peak would pass −1 dBTP (then the ceiling, less
+   four 16-bit steps so the dither cannot tip it over), and never more than 12 dB up. why: "aim" reached −14, "peak"
+   stopped at the ceiling, "quiet" stopped at 12 dB up. A song too quiet to measure is set by its peak alone. */
+function outLevel(ld){
+  const up=dbGain(12), gP=ld.tp>0 ? (dbGain(TP_CEIL)-4/32768)/ld.tp : up;
+  const gL=isFinite(ld.lufs) ? dbGain(LUFS_TARGET-ld.lufs) : Infinity, g=Math.min(gL, gP, up);
+  const why=g===up && gL>up ? "quiet" : g===gP && gL>gP ? "peak" : "aim";
+  return {g:g, why:why, lufs:ld.lufs+20*Math.log10(g), tpDb:ld.tpDb+20*Math.log10(g)};
+}
 function shareable(f){ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } }
 function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
 function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
@@ -1702,12 +1950,14 @@ async function sendOut(){
     const {Lc, Rc}=await renderSong(null), pk=peakOf(Lc, Rc);
     if(pk<dbGain(-60)){ line.textContent=t("outSilent"); }
     else {
-      dropOut("song"); dropOut("stems"); dropOut("voice");
-      const g=outGain(pk), name=songSlug()+".wav";
-      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut()});
+      dropOut("song"); dropOut("stems"); dropOut("voice"); dropOut("chops");
+      const r=outLevel(songLoud(Lc, Rc)), g=r.g, name=songSlug()+".wav";   /* AOG-DESK-LUFS-V1 */
+      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g, BITS)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut(),
+        bits:BITS, lufs:r.lufs, tpDb:r.tpDb, why:r.why});
       line.textContent="";
     }
   }catch(e){ line.textContent=t("fail"); }
+  try{ await chopsLook(); }catch(e){ OUT.chopSrc=null; }   /* AOG-DESK-CHOPS-OUT-V1 */
   OUT.busy=false; btn.disabled=false; paintOut();
 }
 async function sendStems(){
@@ -1720,7 +1970,7 @@ async function sendStems(){
     for(let k=0;k<list.length;k++){
       line.textContent=t("outStemsMaking",{a:k+1, b:list.length});
       const i=list[k], {Lc, Rc}=await renderSong(i);
-      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g))});
+      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
     }
     dropOut("stems");
     OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
@@ -1734,8 +1984,59 @@ async function sendVoiceOut(){
   const line=$("outLine"); if(OUT.busy || !OUT.song || !voiceHeard()) return;
   OUT.busy=true; paintOut(); line.textContent=t("outVoiceMaking");
   try{ const {Lc, Rc}=await renderSong(VOICE_T); dropOut("voice");
-    OUT.voice=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, OUT.song.g)], songSlug()+"-"+t("voiceFile")+".wav", {type:"audio/wav"})}); line.textContent=""; }
+    OUT.voice=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS)], songSlug()+"-"+t("voiceFile")+".wav", {type:"audio/wav"})}); line.textContent=""; }
   catch(e){ line.textContent=t("fail"); }
+  OUT.busy=false; paintOut();
+}
+/* ══ AOG-DESK-CHOPS-OUT-V1 (STUDIO-HANDOFF §12: "The chops cut from his own records, as a small set of files, if he
+   made chops") — your chops are the ones on the Drum Machine's chops bank (bank D) when that bank is cut from one of
+   your own takes (a record you chopped on the Turntables, or a take any room sent there): the bank's record in the
+   Drum Machine's own save (aog.pads.v1, "t:" and the take's id in studioinbox), or a newer note on padstake the
+   Drum Machine has not opened yet. The records of the crate are not yours, so they are not sent out.
+   They are cut exactly as the Drum Machine cuts them (chopsOf in music-pads.html; keep the two in step): one beat
+   each from the bar picked, or 24 equal parts when the tempo is not known; a crumb under 50 ms at the very end is
+   left out. Each has the pads' own 4 ms in and 12 ms out, so nothing clicks, at the level it was recorded. They go in
+   a .zip of their own, not with the tracks: the tracks line up with the song and add up to it, the chops do not.
+   Named in plain words: <record>-chop-01.wav … in the order of the pads. ══ */
+const CHOP_NP=24;
+async function chopsLook(){
+  let P=null, n=null;
+  try{ P=JSON.parse(localStorage.getItem("aog.pads.v1")||"null"); }catch(e){ P=null; }
+  try{ n=(window.AOGHandoff && AOGHandoff.get) ? await AOGHandoff.get("padstake") : null; }catch(e){ n=null; }
+  const B=P && P.v===1 && Array.isArray(P.banks) ? P.banks.find(b=>b && b.type==="chops") : null;
+  let id=B && /^t:/.test(String(B.rec||"")) ? String(B.rec).slice(2) : "", bar=B ? Math.max(1, B.bar|0) : 1;
+  if(n && n.id && n.at>((P && P.inAt)||0) && INBOX.items.some(x=>x.id===n.id)){ id=n.id; bar=1; }
+  const x=id ? INBOX.items.find(y=>y.id===id) : null;
+  OUT.chopSrc=x ? {x:x, bar:bar} : null;
+  return OUT.chopSrc;
+}
+function chopCuts(x, bar, dur){
+  const bpm=x.bpm>0 ? x.bpm : 0, bars=bpm>0 && x.sec>0 ? Math.floor(x.sec*bpm/60/4) : 0, out=[];
+  if(bpm>0 && bars>=4){ const beat=60/bpm, st=(Math.max(1, bar)-1)*4*beat; for(let i=0;i<CHOP_NP;i++){ const a=st+i*beat; if(a<dur) out.push([a, Math.min(beat, dur-a)]); } }
+  else { const d=dur/CHOP_NP; for(let i=0;i<CHOP_NP;i++) out.push([i*d, d]); }
+  return out.filter(c=>c[1]>=0.05);
+}
+function chopName(x){
+  const nm=x.name && typeof x.name==="object" ? L(x.name) : typeof x.name==="string" ? x.name : takeLabel(x);
+  return slugOf(String(nm||"").replace(/\s*·\s*(chops|cortes)\s*$/i, "")) || t("chopsFile");
+}
+async function sendChops(){
+  const line=$("outLine"), src=OUT.chopSrc; if(OUT.busy || !OUT.song || !src) return;
+  OUT.busy=true; paintOut(); line.textContent=t("outChopsMaking");
+  try{
+    const it=await AOGHandoff.item(INBOX_KEY, src.x.id); if(!it || !it.wav) throw new Error("gone");
+    const buf=await decodeWav(it.wav, MIX_SR), sr=buf.sampleRate, L0=buf.getChannelData(0), R0=buf.numberOfChannels>1 ? buf.getChannelData(1) : L0;
+    const base=chopName(src.x), fi=Math.round(0.004*sr), fo=Math.round(0.012*sr);
+    const files=chopCuts(src.x, src.bar, buf.duration).map(([a, d], k)=>{
+      const s=Math.round(a*sr), n=Math.max(1, Math.min(L0.length-s, Math.round(d*sr))), l=L0.slice(s, s+n), r=R0.slice(s, s+n);
+      for(let i=0;i<n;i++){ const w=Math.min(1, i/fi, (n-1-i)/fo); if(w<1){ l[i]*=w; r[i]*=w; } }
+      return {name:base+"-"+t("chopFile")+"-"+String(k+1).padStart(2, "0")+".wav", data:new Uint8Array(wavBuf(l, r, sr, 1, BITS))};
+    });
+    if(!files.length) throw new Error("none");
+    dropOut("chops");
+    OUT.chops=outItem({file:new File([zipStore(files)], songSlug()+"-"+t("chopsFile")+".zip", {type:"application/zip"}), n:files.length, names:files.map(f=>f.name)});
+    line.textContent="";
+  }catch(e){ line.textContent=t("fail"); }
   OUT.busy=false; paintOut();
 }
 /* a .zip that stores each file as it is (no squeezing: a .wav hardly shrinks), so any phone or computer opens it */
@@ -1775,22 +2076,36 @@ function outRow(k, label){
 function paintOut(){
   const box=$("outBox"), o=OUT.song;
   $("outBtn").textContent=t("outBtn"); $("outBtn").disabled=OUT.busy || !hasClips() || !!S.decoding;
+  paintBits();   /* AOG-DESK-BITS-V1 */
   if(!o){ box.innerHTML=""; return; }
   const left=o.left.filter(i=>SONG.tracks[i].clip);
-  box.innerHTML=outRow("song", t("outReady")+" · "+madeWords(o.at))+
+  /* AOG-DESK-LUFS-V1: how loud the file came out, in plain words */
+  const lv=t("outLoud",{l:luWords(o.lufs), p:dbWords(o.tpDb)})+(o.why==="peak" ? ". "+t("outLoudPeak") : o.why==="quiet" ? ". "+t("outLoudQuiet") : "");
+  box.innerHTML=outRow("song", t("outReady")+" · "+t(o.bits===24 ? "bits24" : "bits16")+" · "+madeWords(o.at))+
+    `<p class="st-line" id="outLoud">${esc(lv)}</p>`+
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
     (OUT.voice ? outRow("voice", t("outVoiceReady")) : voiceHeard() ?
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="voiceOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outVoice"))}</button></div>` : "")+
+    (OUT.chops ? outRow("chops", t("outChopsReady",{n:OUT.chops.n})) : OUT.chopSrc ?   /* AOG-DESK-CHOPS-OUT-V1 */
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="chopsOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outChops"))}</button></div>` : "")+
     `<p class="st-line">${esc(t("outYours"))}</p>`;
+}
+/* AOG-DESK-BITS-V1: the choice, in the words of the page's language */
+function paintBits(){
+  const s=$("bitsSel"); if(!s) return;
+  const sig=S.lang+"|"+BITS; if(s._sig===sig) return; s._sig=sig;
+  s.innerHTML=[16,24].map(b=>`<option value="${b}"${b===BITS ? " selected" : ""}>${esc(t(b===24 ? "bitsOpt24" : "bitsOpt16"))}</option>`).join("");
 }
 function bindOut(){
   $("outBtn").onclick=sendOut;
+  const bs=$("bitsSel"); if(bs) bs.onchange=()=>{ setBits(+bs.value); paintBits(); };   /* AOG-DESK-BITS-V1 */
   $("outBox").addEventListener("click", e=>{
     const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
     if(el.id==="stemBtn") sendStems();
     else if(el.id==="voiceOutBtn") sendVoiceOut();
+    else if(el.id==="chopsOutBtn") sendChops();
     else if(el.hasAttribute("data-outshare")) shareOut(el.getAttribute("data-outshare"));
     else if(el.hasAttribute("data-outdl")){ const o=OUT[el.getAttribute("data-outdl")]; if(o) $("outLine").textContent=t("outSaved",{name:o.file.name}); }
   });
@@ -2001,7 +2316,7 @@ function hearPiece(){
   const p=pcs(c)[pSel(c)], a=Math.max(0, recSec(c,p.a)), b=Math.min(buf.duration, recSec(c,p.b)), cx=live();
   try{ if(cx.state!=="running") cx.resume(); }catch(e){}
   const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(c.keep===false) src.playbackRate.value=spd(c);
-  g.gain.value=volGain(SONG.tracks[SONG.sel].vol); src.connect(g); g.connect(cx.destination);
+  g.gain.value=volGain(SONG.tracks[SONG.sel].vol)*dbGain(p.g||0); src.connect(g);   /* AOG-DESK-CLIPVOL-V1 */ g.connect(cx.destination);
   src.onended=()=>{ if(HEAR.src===src){ HEAR.src=null; paintHear(); } };
   src.start(cx.currentTime+0.03, a, Math.max(0.05, b-a)); HEAR.src=src; paintHear(); LES.mark("hear1");
 }
@@ -2054,7 +2369,8 @@ function bindWave(){
 
 let RULER=[];
 function paintTimeline(){
-  const n=tlBars(), step=n>32 ? 8 : 4, bs=barSec(), es=S.lang==="es";
+  /* AOG-DESK-ZOOM-V1: zoomed in, fewer bars are in view, so more of them are numbered */
+  const z=VIEW.zoom, n=tlBars(), vis=n/z, step=vis>32 ? 8 : vis>=8 ? 4 : vis>=4 ? 2 : 1, bs=barSec(), es=S.lang==="es";
   let rh=`<div class="st-ruler" aria-hidden="true"><span></span><span class="st-rt" style="--n:${n}">`;
   for(let b=1;b<=n;b++){
     const lp=SONG.loopOn && b>=SONG.loopFrom && b<=SONG.loopTo, st=!SONG.loopOn && b===SONG.startBar;
@@ -2071,7 +2387,8 @@ function paintTimeline(){
       inner=P.map((p,j)=>{
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" style="left:${l.toFixed(3)}%;width:${w.toFixed(3)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.max(16, Math.round(w*3.2)))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        /* AOG-DESK-DRAG-V1: data-pc, the piece a hand can take hold of */
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${COLORS[i]}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
@@ -2080,8 +2397,108 @@ function paintTimeline(){
   }
   $("timeline").innerHTML=rh+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 */
   $("timeline").style.setProperty("--n", String(n));   /* AOG-DESK-ART-V1: the bar lines behind the lanes */
+  $("timeline").style.setProperty("--z", String(z)); $("timeline").classList.toggle("zoomed", z>1);   /* AOG-DESK-ZOOM-V1 */
   RULER=[...$("timeline").querySelectorAll(".st-rt i")];
   PLAY.nowBar=-1;
+  paintTools();
+}
+/* ══ AOG-DESK-HANDS-V1 · hands on the desk ══ */
+/* how the desk is looked at on this device: how far it is zoomed in, and whether a dragged piece snaps to the beat */
+const VIEW_KEY="aog.studio.view.v1", ZOOMS=[1,2,4,8,16];
+const VIEW={zoom:1, snap:true};
+try{ const v=JSON.parse(localStorage.getItem(VIEW_KEY)||"null"); if(v && typeof v==="object"){ if(ZOOMS.indexOf(v.zoom)>=0) VIEW.zoom=v.zoom; VIEW.snap=v.snap!==false; } }catch(e){}
+function viewSave(){ try{ localStorage.setItem(VIEW_KEY, JSON.stringify({zoom:VIEW.zoom, snap:VIEW.snap})); }catch(e){} }
+/* a song position in words, to the millisecond when it is off the beat: "Bar 3 · beat 2, 12 ms late" */
+function posFine(beat){
+  const bi=Math.max(0, Math.round(beat)), ms=Math.round((beat-bi)*songBeat()*1000);
+  return ms===0 ? posWords(bi) : t(ms>0 ? "msLate" : "msEarly", {w:posWords(bi), n:Math.abs(ms)});
+}
+function paintTools(){
+  const box=$("tlTools"); if(!box) return;
+  const i=SONG.sel, z=VIEW.zoom, zi=ZOOMS.indexOf(z), u=canUndo(), r=canRedo();
+  const sig=[S.lang, z, VIEW.snap, u, r].join("|");
+  if(box._sig===sig) return; box._sig=sig;
+  const fa=document.activeElement, keep=fa && box.contains(fa) ? fa.id : "";
+  box.innerHTML=`<div class="st-zm"><span class="st-lab" aria-hidden="true">${esc(t("zoom"))}</span>`+
+    `<button type="button" class="st-hw st-zb" id="zoomOut" aria-label="${esc(t("zoomOut"))}"${zi<=0?" disabled":""}>−</button>`+
+    `<output id="zoomOutV" aria-live="polite">${z}×</output>`+
+    `<button type="button" class="st-hw st-zb" id="zoomIn" aria-label="${esc(t("zoomIn"))}"${zi>=ZOOMS.length-1?" disabled":""}>+</button></div>`+
+    `<button type="button" class="st-hw st-snap" id="snapBtn" aria-pressed="${VIEW.snap?"true":"false"}">${esc(t(VIEW.snap?"snapOn":"snapOff"))}</button>`+
+    `<div class="st-ur"><button type="button" class="st-hw" id="tlUndo" aria-label="${esc(t("undoAria"))}"${u?"":" disabled"}>${esc(t("undo"))}</button>`+
+    `<button type="button" class="st-hw" id="tlRedo" aria-label="${esc(t("redoAria"))}"${r?"":" disabled"}>${esc(t("redo"))}</button></div>`;
+  if(keep){ const el=$(keep); if(el && !el.disabled) try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
+}
+/* AOG-DESK-ZOOM-V1: the lanes' own width, the name column's, and the part of the lanes in view */
+function tlGeo(){
+  const tl=$("timeline"), ln=tl && tl.querySelector(".st-ln");
+  const lab=ln ? ln.getBoundingClientRect().width : 0, view=Math.max(1, tl.clientWidth-lab);
+  return {tl:tl, lab:lab, view:view, lanes:view*VIEW.zoom};
+}
+function zoomTo(z){
+  if(ZOOMS.indexOf(z)<0 || z===VIEW.zoom) return;
+  const g=tlGeo(), tl=g.tl;
+  /* what stays in the middle: the playhead while the song plays, else the piece you are working on, else the middle */
+  let f;
+  if(PLAY.on && ac){ const pos=songPos(ac.currentTime); f=pos==null ? 0 : pos/(tlBars()*barSec()); }
+  else { const c=SONG.tracks[SONG.sel].clip; f=c ? pAt(pcs(c)[pSel(c)])/(tlBars()*barSec()) : (tl.scrollLeft+g.view/2)/g.lanes; }
+  VIEW.zoom=z; viewSave(); paintTimeline();
+  const g2=tlGeo(); tl.scrollLeft=Math.max(0, f*g2.lanes-g2.view/2);
+  if(PLAY.on && ac){ const pos=songPos(ac.currentTime); if(pos!=null) playhead(pos); }
+}
+function zoomStep(d){ const k=ZOOMS.indexOf(VIEW.zoom)+d; if(k>=0 && k<ZOOMS.length) zoomTo(ZOOMS[k]); }
+/* while the song plays, the playhead is kept in sight: when it leaves the part in view, the lanes turn one page (at
+   once, no sliding) */
+function keepPlayhead(f){
+  if(VIEW.zoom<=1) return;
+  const g=tlGeo(), x=f*g.lanes, s=g.tl.scrollLeft;
+  if(x<s || x>s+g.view-6) g.tl.scrollLeft=Math.max(0, x-g.view*0.08);
+}
+function snapSay(){ $("tlLine").textContent=t(VIEW.snap ? "snapSaidOn" : "snapSaidOff"); }
+/* AOG-DESK-DRAG-V1: a piece on the song is dragged along its lane, with a finger, a pen or the mouse. With Snap to the
+   beat on it lands on the nearest beat; off, just where it is let go. One move is one Undo. */
+const DRAG={on:null};
+function dragAt(d, e){
+  let at=d.at0+(e.clientX-d.x0)*d.per;
+  at=Math.max(0, Math.min((MAX_BARS-1)*4, at));
+  return VIEW.snap ? Math.round(at) : Math.round(at*1e6)/1e6;
+}
+function bindDrag(){
+  const tl=$("timeline");
+  tl.addEventListener("pointerdown", e=>{
+    const el=e.target.closest && e.target.closest(".st-clip[data-pc]"); if(!el || (e.pointerType==="mouse" && e.button!==0)) return;
+    const lane=el.closest("[data-sel]"), lt=el.parentNode, i=+lane.getAttribute("data-sel"), j=+el.getAttribute("data-pc"), c=SONG.tracks[i].clip;
+    if(!c || !pcs(c)[j]) return;
+    const w=lt.getBoundingClientRect().width; if(!(w>0)) return;
+    DRAG.on={i:i, j:j, id:c.id, el:el, lt:lt, x0:e.clientX, y0:e.clientY, at0:pcs(c)[j].at, per:tlBars()*4/w, n:tlBars(), moved:false, pid:e.pointerId, val:pcs(c)[j].at, tip:null};
+  });
+  tl.addEventListener("pointermove", e=>{
+    const d=DRAG.on; if(!d || e.pointerId!==d.pid) return;
+    if(!d.moved){ if(Math.abs(e.clientX-d.x0)<6) return;
+      d.moved=true; try{ d.el.setPointerCapture(e.pointerId); }catch(er){} d.el.classList.add("drag");
+      d.tip=document.createElement("span"); d.tip.className="st-dtip"; d.tip.setAttribute("aria-hidden","true"); d.lt.appendChild(d.tip); }
+    e.preventDefault();
+    d.val=dragAt(d, e);
+    const l=Math.min(100, d.val/(d.n*4)*100);
+    d.el.style.left=l.toFixed(4)+"%"; d.tip.style.left=l.toFixed(4)+"%"; d.tip.textContent=posFine(d.val);
+  });
+  const up=e=>{
+    const d=DRAG.on; if(!d || e.pointerId!==d.pid) return; DRAG.on=null;
+    if(!d.moved) return;   /* a tap: the click picks the track and the piece */
+    d.el.classList.remove("drag"); if(d.tip) d.tip.remove();
+    const x=SONG.tracks[d.i], c=x.clip;
+    if(e.type==="pointercancel" || !c || c.id!==d.id || Math.abs(d.val-pcs(c)[d.j].at)<1e-9){ paintTimeline(); return; }
+    tl._noClick=Date.now();
+    remember(d.i, ++UG); const P=own(c), p=P[d.j]; p.at=d.val; c.psel=d.j; tidyPieces(c);
+    const w=t("movedTo",{n:pSel(c)+1, w:posFine(p.at)});
+    S.edMsg=w; S.edAt="cut"; $("tlLine").textContent=w;
+    if(SONG.sel!==d.i){ SONG.sel=d.i; LES.mark("track2"); }
+    songChanged(); stretchAll();
+  };
+  tl.addEventListener("pointerup", up); tl.addEventListener("pointercancel", up);
+  $("tlTools").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b || b.disabled) return;
+    if(b.id==="zoomIn") zoomStep(1); else if(b.id==="zoomOut") zoomStep(-1);
+    else if(b.id==="snapBtn"){ VIEW.snap=!VIEW.snap; viewSave(); paintTools(); snapSay(); }
+    else if(b.id==="tlUndo") undo(); else if(b.id==="tlRedo") redo(); });
 }
 function paintNowBar(bar){
   if(bar===PLAY.nowBar) return;
@@ -2118,7 +2535,7 @@ function fadeOpts(v){
 function maxN(c, p){ const len=(p.b-p.a)*ratio(c); return Math.max(1, Math.floor((MAX_BARS*4-p.at)/Math.max(0.25, len)+1e-6)); }
 function atOpts(p){
   let h=""; const onBar=Math.abs(p.at/4-Math.round(p.at/4))<1e-6;
-  if(!onBar) h+=`<option value="" selected>${esc(posWords(p.at))}</option>`;
+  if(!onBar) h+=`<option value="" selected>${esc(posFine(p.at))}</option>`;   /* AOG-DESK-NUDGE-V1: off the beat, to the ms */
   for(let b=1;b<=MAX_BARS;b++) h+=`<option value="${(b-1)*4}"${onBar && Math.round(p.at/4)===b-1?" selected":""}>${esc(t("barN",{n:b}))}</option>`;
   return h;
 }
@@ -2149,7 +2566,7 @@ function paintTrack(){
     `<div class="st-cc" style="--c:${COLORS[i]}">
       <div><b>${head}</b></div>
       <div class="st-cn">${esc(meta)}</div>
-      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button></div>
+      <div class="st-row"><button type="button" class="st-btn st-hear" data-act="hear" aria-pressed="${HEAR.src?"true":"false"}">${esc(t(HEAR.src?"hearStop":"hear"))}</button><button type="button" class="st-btn st-clear" data-act="off">${esc(t("takeOff"))}</button><button type="button" class="st-btn" data-act="undo"${canUndo()?"":" disabled"}>${esc(t("undo"))}</button><button type="button" class="st-btn" data-act="redo"${canRedo()?"":" disabled"}>${esc(t("redo"))}</button></div>
       ${lineAt("top")}
     </div>
     ${many ? `<label class="st-field st-pick st-pc"><span class="st-lab">${esc(t("pieceLab"))}</span><select id="pieceSel">${P.map((q,j)=>`<option value="${j}"${j===k?" selected":""}>${esc(pieceName(c,q,j))}</option>`).join("")}</select></label>` : ""}
@@ -2158,12 +2575,14 @@ function paintTrack(){
       <p class="st-line">${esc(t("waveHint"))}${many ? " "+esc(t("pieceTap")) : ""}</p></div>
     <div class="st-steps">
       <div class="st-stp"><span class="st-lab" id="atLab">${esc(t("startsAt"))}</span><label class="st-field st-vf"><select id="atSel" aria-labelledby="atLab">${atOpts(p)}</select></label>
-        <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<0.5?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div></div>
+        <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<1e-6?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div>
+        <div class="st-sg two st-ndg"><button type="button" class="st-btn" data-act="nudge-"${p.at<1e-6?" disabled":""}>${esc(t("nudgeE"))}</button><button type="button" class="st-btn" data-act="nudge+"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("nudgeL"))}</button></div></div>
       <div class="st-stp"><span class="st-lab" id="untilLab">${esc(t("plays"))}</span><label class="st-field st-vf"><select id="untilSel" aria-labelledby="untilLab">${untilOpts(c,p)}</select></label>
         <div class="st-sg two"><button type="button" class="st-btn" data-act="loops-" aria-label="${esc(t("plays")+": "+t("fewer"))}"${p.n<=1?" disabled":""}>${esc(t("fewer"))}</button><button type="button" class="st-btn" data-act="loops+" aria-label="${esc(t("plays")+": "+t("more"))}"${p.n>=maxN(c,p)?" disabled":""}>${esc(t("more"))}</button></div></div>
       ${trimHtml("in", t("cutStart"), Math.round(p.a), p.b-p.a>1+1e-6, bpb)}
       ${trimHtml("out", t("cutEnd"), Math.round(full-p.b), p.b-p.a>1+1e-6, bpb)}
     </div>
+    <div class="st-pvol"><label class="st-lab" for="pvR">${esc(t("pvolLab"))}</label><input type="range" id="pvR" min="${PVOL_LO}" max="${PVOL_HI}" step="1" value="${Math.round(p.g||0)}"${many ? ` aria-label="${esc(t("pvolAria",{n:k+1}))}"` : ""} aria-valuetext="${esc(pvolDb(p.g||0))}"><output id="pvOut" for="pvR">${esc(pvolDb(p.g||0))}</output></div>
     <h3 class="st-h3">${esc(t("cutH"))}</h3>
     ${cuts.length ? `<div class="st-row">
       <label class="st-field"><span class="st-lab">${esc(t("cutAt"))}</span><select id="cutSel">${cuts.map(x=>`<option value="${x.k}"${x===mid?" selected":""}>${esc(x.label)}</option>`).join("")}</select></label>
@@ -2185,6 +2604,7 @@ function paintTrack(){
     <div class="st-row">
       <label class="st-field"><span class="st-lab">${esc(t("fadeIn"))}</span><select id="fiSel">${fadeOpts(c.fadeIn||0)}</select></label>
       <label class="st-field"><span class="st-lab">${esc(t("fadeOut"))}</span><select id="foSel">${fadeOpts(c.fadeOut||0)}</select></label>
+      ${many || P.some(q=>q.n>1) ? `<label class="st-field st-xf"><span class="st-lab">${esc(t("xfLab"))}</span><select id="xfSel">${xfOpts(c.xf||"off")}</select></label>` : ""}
     </div>`;
   paintEditLine();
   const csel=$("cutSel"); if(csel) csel.addEventListener("change", drawWave);
@@ -2199,6 +2619,11 @@ function paintEditLine(){ const c=SONG.tracks[SONG.sel].clip, busy=S.stretching 
   const el=$("editLine"); if(!el) return;
   const w=busy ? t("stretching") : S.edMsg;
   if(el.textContent!==w) el.textContent=w; }
+/* AOG-DESK-CLIPVOL-V1: a piece's volume in words; AOG-DESK-XFADE-V1: the crossfade menu */
+function pvolDb(db){ const d=Math.round(db); return (d>0 ? "+"+d : d<0 ? "−"+(-d) : "0")+" dB"; }
+function xfOpts(v){
+  return XFADES.map(k=>`<option value="${k}"${k===v?" selected":""}>${esc(k==="off" ? t("xfOff") : k==="10ms" ? "10 ms" : k==="50ms" ? "50 ms" : k==="beat" ? t("beat1") : t("bar1"))}</option>`).join("");
+}
 function trimHtml(which, label, v, room, bpb){
   const btn=(act, txt, off)=>`<button type="button" class="st-btn" data-act="${which}${act}" aria-label="${esc(label+": "+txt)}"${off?" disabled":""}>${esc(txt)}</button>`;
   return `<div class="st-stp"><span class="st-lab">${esc(label)}</span><span class="st-val">${esc(beatsWords(v, bpb))}</span>
@@ -2206,28 +2631,52 @@ function trimHtml(which, label, v, room, bpb){
 }
 /* ── undo: each change to a track's pieces, speed or fades can be taken back (a change to several tracks at once is one step) ── */
 const UNDO=[]; let UG=0;
-function remember(i, g){ const c=SONG.tracks[i].clip; if(!c) return; UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c)}); if(UNDO.length>60) UNDO.shift();
+/* AOG-DESK-REDO-V1: what Undo took back, ready to be done again; a new change clears it. A run of small nudges to the
+   same piece (one after another, within a second and a half) is one step, so Undo takes the whole nudge back. */
+const REDO=[];
+function remember(i, g, tag){ const c=SONG.tracks[i].clip; if(!c) return;
+  const last=UNDO[UNDO.length-1], now=Date.now();
+  REDO.length=0;
+  if(tag && last && last.tag===tag && last.id===c.id && last.i===i && now-last.t<1500){ last.t=now; c.auto=false; return; }
+  UNDO.push({i:i, id:c.id, g:g, j:JSON.stringify(c), tag:tag||"", t:now}); if(UNDO.length>60) UNDO.shift();
   c.auto=false; }   /* AOG-STUDIO-LISTEN-V1: a take you change is yours; Listen leaves it alone */
 function canUndo(){ return UNDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
-function undo(){
-  while(UNDO.length){
-    const g=UNDO[UNDO.length-1].g; let done=-1;
-    while(UNDO.length && UNDO[UNDO.length-1].g===g){
-      const u=UNDO.pop(), x=SONG.tracks[u.i];
-      if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){ x.clip=back; done=u.i; } }
+function canRedo(){ return REDO.some(u=>{ const c=SONG.tracks[u.i].clip; return c && c.id===u.id; }); }
+/* one step from one list to the other: each track in the step goes back to how it was, and how it is now goes on the other list */
+function swapStep(from, to){
+  while(from.length){
+    const g=from[from.length-1].g; let done=-1;
+    while(from.length && from[from.length-1].g===g){
+      const u=from.pop(), x=SONG.tracks[u.i];
+      if(x.clip && x.clip.id===u.id){ const back=cleanClip(JSON.parse(u.j)); if(back){
+        to.push({i:u.i, id:u.id, g:g, j:JSON.stringify(x.clip), tag:"", t:0}); x.clip=back; done=u.i; } }
     }
-    if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; LES.mark("undo1"); songChanged(); stretchAll(); return; }
+    if(done>=0) return done;
   }
+  return -1;
+}
+function undo(){
+  const done=swapStep(UNDO, REDO);
+  if(done>=0){ SONG.sel=done; S.edMsg=t("undone"); S.edAt="top"; $("tlLine").textContent=""; LES.mark("undo1"); songChanged(); stretchAll(); return; }
+  paintTrack();
+}
+function redo(){
+  const done=swapStep(REDO, UNDO);
+  if(done>=0){ SONG.sel=done; S.edMsg=t("redone"); S.edAt="top"; $("tlLine").textContent=""; songChanged(); stretchAll(); return; }
   paintTrack();
 }
 function clipAct(act){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   if(act==="off"){ takeOff(i); return; }
   if(act==="undo"){ undo(); return; }
-  const g=++UG; remember(i, g);
-  const P=own(c), k=pSel(c), p=P[k], full=fullBeats(c), bpb=c.bpb||4;
+  if(act==="redo"){ redo(); return; }   /* AOG-DESK-REDO-V1 */
+  /* AOG-DESK-NUDGE-V1: 10 ms earlier or later (the keyboard's , and .), or a beat (Shift); a run of them is one Undo */
+  const moveBy=act==="nudge-" ? -0.01/songBeat() : act==="nudge+" ? 0.01/songBeat() : act==="beat-" ? -1 : act==="beat+" ? 1 : 0;
+  const g=++UG; remember(i, g, moveBy ? "nudge" : "");
+  const P=own(c), k=pSel(c), p=P[k], full=fullBeats(c), bpb=c.bpb||4, pg=p.g ? {g:p.g} : {};
   S.edMsg=""; S.edAt=/^(keep|match|spdall)$/.test(act) ? "spd" : "cut";
-  if(act==="start-") p.at=Math.max(0, p.at-4);
+  if(moveBy) p.at=Math.round(Math.max(0, Math.min((MAX_BARS-1)*4, p.at+moveBy))*1e6)/1e6;
+  else if(act==="start-") p.at=Math.max(0, p.at-4);
   else if(act==="start+") p.at=Math.min((MAX_BARS-1)*4, p.at+4);
   else if(act==="loops-") p.n=Math.max(1, p.n-1);
   else if(act==="loops+") p.n=Math.min(maxN(c,p), p.n+1);
@@ -2236,13 +2685,14 @@ function clipAct(act){
   else if(act==="cut"){
     const el=$("cutSel"), kk=el ? +el.value : NaN;
     if(!(kk>p.a+0.5 && kk<p.b-0.5)){ UNDO.pop(); return; }
-    const r=ratio(c), parts=[{a:p.a, b:kk, at:p.at, n:1}, {a:kk, b:p.b, at:p.at+(kk-p.a)*r, n:1}];
-    if(p.n>1) parts.push({a:p.a, b:p.b, at:p.at+(p.b-p.a)*r, n:p.n-1});     /* its other times through stay as they were */
+    /* AOG-DESK-CLIPVOL-V1: both halves keep the piece's volume */
+    const r=ratio(c), parts=[Object.assign({a:p.a, b:kk, at:p.at, n:1}, pg), Object.assign({a:kk, b:p.b, at:p.at+(kk-p.a)*r, n:1}, pg)];
+    if(p.n>1) parts.push(Object.assign({a:p.a, b:p.b, at:p.at+(p.b-p.a)*r, n:p.n-1}, pg));     /* its other times through stay as they were */
     P.splice(k, 1, ...parts); c.psel=k+1;
     S.edMsg=t("cutDone",{n:P.length});
   }
   else if(act==="copy"){
-    const q={a:p.a, b:p.b, at:Math.min((MAX_BARS-1)*4, p.at+p.n*(p.b-p.a)*ratio(c)), n:p.n};
+    const q=Object.assign({a:p.a, b:p.b, at:Math.min((MAX_BARS-1)*4, p.at+p.n*(p.b-p.a)*ratio(c)), n:p.n}, pg);
     P.push(q); c.psel=P.length-1; S.edMsg=t("copied");
   }
   else if(act==="drop"){ if(P.length<2){ UNDO.pop(); return; } P.splice(k, 1); c.psel=Math.min(k, P.length-1); S.edMsg=t("dropped"); }
@@ -2263,6 +2713,8 @@ function clipAct(act){
     if(p.b-p.a<1 && p.b<full-1e-6) p.b=Math.min(full, p.a+1);
   }
   tidyPieces(c);
+  if(moveBy) S.edMsg=t("movedTo",{n:pSel(c)+1, w:posFine(p.at)});
+  $("tlLine").textContent=moveBy ? S.edMsg : "";
   if(ACT_STEP[act]) LES.mark(ACT_STEP[act]);   /* AOG-LESSONS-V1 */
   songChanged();
   stretchAll();
@@ -2276,6 +2728,21 @@ function speedChange(el){
   const lead=i===tempoTrack() && c.bpm>0 && Math.abs(effBpm(c)-songBpm())<0.05;   /* AOG-SONG-V1: in time with the song, it carries the song */
   remember(i, ++UG); c.speed=v; if(lead) c.lead=true; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
   songChanged(); stretchAll();
+}
+/* AOG-DESK-CLIPVOL-V1: the piece's volume slider: its number follows the finger; the sound changes when it is let go
+   (in the speakers, the mix and each track's own file, since the sound is planned with it) */
+function pvolInput(el){ const w=pvolDb(+el.value), o=$("pvOut"); if(o) o.textContent=w; el.setAttribute("aria-valuetext", w); }
+function pvolChange(el){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
+  const v=Math.round(num(+el.value, PVOL_LO, PVOL_HI, 0)), p0=pcs(c)[pSel(c)];
+  if(Math.abs((p0.g||0)-v)<0.05) return;
+  remember(i, ++UG, "pvol"+pSel(c)); const p=own(c)[pSel(c)]; if(v) p.g=v; else delete p.g;
+  S.edMsg=""; S.edAt="cut"; songChanged();
+}
+/* AOG-DESK-XFADE-V1 */
+function xfChange(el){
+  const i=SONG.sel, c=SONG.tracks[i].clip; if(!c || XFADES.indexOf(el.value)<0 || (c.xf||"off")===el.value) return;
+  remember(i, ++UG); if(el.value==="off") delete c.xf; else c.xf=el.value; S.edMsg=""; songChanged();
 }
 function fadeChange(el){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
@@ -2405,7 +2872,8 @@ function laneName(i){
 function playhead(sec){
   const tl=$("timeline"); if(!tl) return;
   const n=tlBars(), bs=barSec(), f=n>0 && bs>0 ? Math.max(0, Math.min(1, sec/(n*bs))) : 0;
-  tl.style.setProperty("--ph", f.toFixed(4)); tl.classList.toggle("ph-live", PLAY.on);   /* AOG-DESK-GLOW-V1 */
+  tl.style.setProperty("--ph", f.toFixed(5)); tl.classList.toggle("ph-live", PLAY.on);   /* AOG-DESK-GLOW-V1 */
+  if(PLAY.on) keepPlayhead(f);   /* AOG-DESK-ZOOM-V1 */
   /* AOG-DESK-ART-V1: the open channel's wave has its own playhead, while the song is inside that recording */
   const ch=$("chStrip"), c=SONG.tracks[SONG.sel].clip;
   if(ch){ let g=-1; if(c){ const a=clipStart(c), e=clipEnd(c,false); if(e>a && sec>=a && sec<=e) g=(sec-a)/(e-a); }
@@ -2501,15 +2969,24 @@ function bind(){
   $("songsBtn").onclick=goSongs;   /* AOG-DESK-SONGS-BTN-V1 */
   $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
   $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
-  $("timeline").addEventListener("click", e=>{ const b=e.target.closest("[data-sel]"); if(b) selectTrack(+b.getAttribute("data-sel")); });
+  $("timeline").addEventListener("click", e=>{
+    const tl=$("timeline"); if(tl._noClick && Date.now()-tl._noClick<500) return;   /* AOG-DESK-DRAG-V1: the click a drag ends with */
+    const b=e.target.closest("[data-sel]"); if(!b) return; const i=+b.getAttribute("data-sel");
+    /* a tap on a piece picks that piece too */
+    const pc=e.target.closest(".st-clip[data-pc]"), c=SONG.tracks[i].clip;
+    if(pc && c && pcs(c).length>1){ const j=+pc.getAttribute("data-pc"); if(c.psel!==j){ c.psel=j; saveSoon(); if(SONG.sel===i){ paintTimeline(); paintTrack(); } } }
+    selectTrack(i); });
+  bindDrag();   /* AOG-DESK-HANDS-V1 */
   $("clipBox").addEventListener("click", e=>{ const b=e.target.closest("[data-act]"); if(!b || b.disabled) return;
     let act=b.getAttribute("data-act"); if(act==="hear"){ hearPiece(); return; }   /* AOG-STUDIO-CUT-V2 */
     if(act==="cutnow") act="cut";   /* ✂ Cut here, on the wave */
     if(act==="cut"){ WV.tap=""; hearStop(); }
     clipAct(act); });
-  $("clipBox").addEventListener("input", e=>{ if(e.target.id==="spdR") speedInput(e.target); });
+  $("clipBox").addEventListener("input", e=>{ if(e.target.id==="spdR") speedInput(e.target); else if(e.target.id==="pvR") pvolInput(e.target); });
   $("clipBox").addEventListener("change", e=>{ const el=e.target;
     if(el.id==="spdR") speedChange(el);
+    else if(el.id==="pvR") pvolChange(el);   /* AOG-DESK-CLIPVOL-V1 */
+    else if(el.id==="xfSel") xfChange(el);   /* AOG-DESK-XFADE-V1 */
     else if(el.id==="fiSel" || el.id==="foSel") fadeChange(el);
     else if(el.id==="atSel"){ if(el.value!=="") clipAct("at:"+el.value); }
     else if(el.id==="untilSel") clipAct("n:"+el.value);
@@ -2592,6 +3069,26 @@ function bind(){
       const v=SONG.tracks[SONG.sel].vol, nv=Math.max(0, Math.min(100, v+(e.code==="ArrowUp" ? 4 : -4)));
       if(nv!==v) consoleTo(SONG.sel, "vol", nv); return; }
   });
+  /* AOG-DESK-HANDS-V1 · the keyboard: Ctrl or ⌘ + Z undoes, Ctrl or ⌘ + Shift + Z (or Ctrl + Y) redoes; , and . (or
+     Alt + ← and →) move the piece you are working on 10 ms, with Shift a beat; + and − zoom the song in and out.
+     Typing in a box keeps its own Undo. */
+  document.addEventListener("keydown", e=>{
+    const el=e.target, tg=el && el.tagName;
+    if(tg==="INPUT" || tg==="SELECT" || tg==="TEXTAREA" || (el && el.isContentEditable)) return;
+    const mod=e.ctrlKey || e.metaKey;
+    if(mod && !e.altKey && (e.code==="KeyZ" || (e.code==="KeyY" && e.ctrlKey && !e.shiftKey))){
+      e.preventDefault(); if(e.repeat) return;
+      if(e.code==="KeyY" || e.shiftKey) redo(); else undo();
+      return; }
+    if(mod) return;
+    let mv="";
+    if(!e.altKey && (e.code==="Comma" || e.code==="Period")) mv=(e.shiftKey ? "beat" : "nudge")+(e.code==="Comma" ? "-" : "+");
+    else if(e.altKey && (e.code==="ArrowLeft" || e.code==="ArrowRight")) mv=(e.shiftKey ? "beat" : "nudge")+(e.code==="ArrowLeft" ? "-" : "+");
+    if(mv){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); if(SONG.tracks[SONG.sel].clip) clipAct(mv); return; }
+    if(e.altKey) return;
+    if(e.key==="+" || e.key==="=" || e.code==="NumpadAdd"){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); zoomStep(1); return; }
+    if(e.key==="-" || e.key==="_" || e.key==="−" || e.code==="NumpadSubtract"){ e.preventDefault(); document.documentElement.classList.add("aog-keys"); zoomStep(-1); return; }
+  });
   let rt=0; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!PLAY.on) meterStill(); drawWave(); }, 150); });
 }
 
@@ -2628,4 +3125,8 @@ if(window.AOGSong) AOGSong.on(s=>{ try{
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
   INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, backing:backing, placeOf:placeOf, get AC(){ return ac; },
-  pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };
+  pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO,
+  redo:redo, REDO:REDO, VIEW:VIEW, zoomTo:zoomTo, makeEngine:makeEngine, posFine:posFine, piecePlays:piecePlays, playBuf:playBuf, tlBars:tlBars };   /* AOG-DESK-HANDS-V1 */
+/* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
+Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
+  wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
