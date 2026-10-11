@@ -1,0 +1,1 @@
+window.AOG_RHYTHMS_DASH = false;

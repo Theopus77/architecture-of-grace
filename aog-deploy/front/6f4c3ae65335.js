@@ -1,0 +1,1 @@
+/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();

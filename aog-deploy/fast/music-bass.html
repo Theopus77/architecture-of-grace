@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<!-- AOG-FAST-BUILD-V1 source:f92d13c7c4b58be4 · MADE BY tools/build-fast.py from music-bass.html: edit music-bass.html, then run it. -->
+<html lang="en">
+<head>
+<script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}.tpads{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.5rem .6rem}.tpads .plab{margin:0;flex:0 0 auto}   /* AOG-ONE-DRUMSEND-V1 */
+</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
+try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
+</script>
+<title>The Bass — Architecture of Grace</title>
+<meta name="description" content="Electric, upright and synth bass, with an amp and pedals. Tap a chord to hear its low note, or play the frets. Works on a phone, a tablet and a computer.">
+<link rel="canonical" href="https://architectureofgrace.com/bass">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="The Bass — Architecture of Grace">
+<meta property="og:description" content="Tap a chord. Pluck. No login.">
+<meta property="og:url" content="https://architectureofgrace.com/bass">
+<!-- AOG-OG-STRINGS-V1: the link's picture is the neck itself, with one line, for a link sent in an email or a message -->
+<meta property="og:image" content="https://architectureofgrace.com/og-bass.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/aog-calm.css">
+<!-- AOG-STRINGS-V1 (2026-10-03) — Jimmy: "CAN THE same engine be applied to the GUitar and the bass guitar?" then
+     "Two new tools" and "Built on the page". The Guitar and the Bass are one page, built twice by
+     _work/music/make_strings.py from _work/music/strings_page.html: edit that page, then run the builder.
+     The piano's chord pads, eighteen patterns, chord wheel, drum beat, 1987–2026 dial and Send to the turntables,
+     with frets and strings in place of keys. Every note is a plucked string made on the page: nothing to download. -->
+<style>
+:root{
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --good:#2c7a4e;
+  --steel-fg:#f4f8f9; --good-soft:#e2f1e8; --bad:#b4361f; --bad-soft:#f6e5e2;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark,[data-theme="dark"]{
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --good:#6fbf8b;
+  --steel-fg:#14181e; --good-soft:#1c3326; --bad:#ff8f7a; --bad-soft:#3a1f1b;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47; --steel:#7fb4c7; --steel-soft:#1d2f36; --good:#6fbf8b; --steel-fg:#14181e; --good-soft:#1c3326; --bad:#ff8f7a; --bad-soft:#3a1f1b; } }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip;overscroll-behavior:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:clip;overscroll-behavior:none}
+body *{overscroll-behavior:contain}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{text-wrap:pretty}
+a{color:inherit}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+.wrap{max-width:1100px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:1rem}
+.brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.tools{display:flex;gap:.5rem}
+.pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.lead{max-width:66ch;color:var(--muted)}
+.muted{color:var(--muted)}
+.nav{display:flex;gap:4px}
+.nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem}
+/* no selecting, no copy bubble, no magnifier, no double-tap wait anywhere on the instrument (AOG-MUSIC-TOUCH-V1, AOG-PIANO-NO-LOUPE-V1) */
+body,.rig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.rig select{-webkit-user-select:auto;user-select:auto}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+
+/* ══ the instrument: the piano's dark panel ══ */
+.rig{position:relative;margin-top:1rem;border-radius:18px;padding:16px 14px 18px;border:1px solid #07080a;color:#ece6da;
+  background:linear-gradient(180deg,#2a2d31 0%,#17191c 16%,#101114 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 26px rgba(0,0,0,.28)}
+.plate{text-align:center;margin:-2px 0 12px}
+.plate b{display:block;letter-spacing:.3em;font-size:.78rem;color:#ddd6c9;font-weight:700}
+.plate small{display:block;letter-spacing:.2em;font-size:.6rem;color:#bdb5a7;margin-top:.15rem}
+.blk{border-top:1px solid #2f3339;padding:14px 0 4px}
+.blk:first-of-type{border-top:0;padding-top:4px}
+/* an ID, so the site's serif heading rule (aog-grace.css) does not turn these small labels into squashed titles */
+#rig .blk>h2{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0 0 .6rem}
+.plab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
+.line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
+.line.note{color:#ffd9a8}
+.line a{color:#cfe2ff}
+.row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
+.field{display:grid;min-width:0;flex:1 1 15rem}
+.field.small{flex:0 1 auto}
+.rig select{min-height:48px;width:100%;max-width:100%;font:600 16px/1.25 var(--sans);color:#0A1E33;background-color:#FFFDF8;
+  border:1.5px solid #C9A24A;border-radius:12px;padding:8px 38px 8px 14px;-webkit-appearance:none;appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a5a12' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:16px}
+.pbtn{min-height:48px;border-radius:12px;border:1px solid #0a0b0d;background:linear-gradient(#3a3e44,#1c1f23);color:#f3efe6;
+  font-weight:800;font-size:.98rem;letter-spacing:.01em;padding:0 1rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 3px 0 #07080a}
+.pbtn[aria-pressed="true"]{background:linear-gradient(#ffe8b0,#e0a640);color:#2a1a08}
+.pbtn.play{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08;min-width:11rem}
+.pbtn.play.go{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+.pbtn.send{border-color:#5b8fd6;color:#cfe2ff}
+.pbtn.clear{border-color:#c4452a;color:#ffb1a4}
+.pbtn:disabled{opacity:.6;cursor:default}
+.seg{display:inline-flex;gap:.4rem;flex-wrap:wrap}
+
+/* chord pads: one tap, one chord */
+.pads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.2rem 0 .2rem}
+@media (min-width:700px){ .pads{grid-template-columns:repeat(6,minmax(0,1fr))} }
+.pad{min-height:86px;border-radius:14px;border:1px solid #0a0b0d;padding:.4rem .3rem;color:#1f1a10;
+  background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 0 #07080a;
+  font:800 1.45rem/1.05 var(--display);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pad small{display:block;font:800 .72rem/1 var(--sans);letter-spacing:.12em;color:#5a4b2b;margin-bottom:.4rem}
+.pad kbd{display:none}
+.pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
+.pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
+/* the chord wheel (circle of fifths), as on the piano (AOG-PIANO-WHEEL-V1/V2) */
+.wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+#rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.wheel-side{flex:1 1 230px;min-width:0}
+.wheel .wd{cursor:pointer;outline:none}
+.wheel .wd path{stroke:#0c0d10;stroke-width:2}
+.wheel .wd text{font-family:var(--display);font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.wheel .wd.o path{fill:#2a2e35} .wheel .wd.i path{fill:#202328}
+.wheel .wd.o text{fill:#ece3d2} .wheel .wd.i text{fill:#ddd2bf}
+.wheel .wd.fit path{fill:#f8eed3} .wheel .wd.fit text{fill:#2b2116}
+.wheel .wd .pn{font-family:var(--sans);font-weight:800;fill:#4a3a18}
+.wheel .wd.now path{fill:#ef9a4a} .wheel .wd.now text{fill:#1f1206} .wheel .wd.now .pn{fill:#3a1c06}
+.wheel .wd.hit path{fill:#ffd36b} .wheel .wd.hit text{fill:#1f1206}
+.wheel .wd:focus-visible path{stroke:#ffffff;stroke-width:5}
+.wheel .home{fill:none;stroke:#e0a640;stroke-width:6;pointer-events:none}
+.wheel .hub{fill:#15171b;stroke:#e0a640;stroke-width:3}
+.wheel .hub-k{font-family:var(--display);font-weight:800;fill:#f4ecd8;text-anchor:middle;dominant-baseline:central}
+.wheel .hub-m{font-family:var(--sans);font-weight:700;fill:#d9cdb2;text-anchor:middle;dominant-baseline:central}
+.prog{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 0;min-height:44px;align-items:center}
+.slot{min-width:3.6rem;min-height:44px;border-radius:10px;border:1px solid #565c66;background:#1d2024;color:#f1ebdf;
+  display:inline-flex;align-items:center;justify-content:center;font:800 1.05rem/1 var(--display);padding:0 .65rem}
+.slot.now{background:#f0c26e;color:#2a1a08;border-color:#f0c26e}
+/* AOG-NECK-PATTERN-V1: the pattern by the neck, each chord with its number up the scale */
+.nk-pat{margin-top:.7rem} .nk-prog{margin-top:.55rem} .nk-theory{margin:.5rem 0 .8rem}
+.nk-prog .slot{flex-direction:column;gap:.15rem;padding:.3rem .7rem;min-width:3.8rem}
+.nk-prog .slot small{font:700 .8rem/1 var(--body,inherit);opacity:.85}
+.tempo{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.tempo input[type=range],.dial input[type=range]{flex:1 1 10rem;min-width:8rem;height:44px;margin:0;accent-color:#e0a640;touch-action:pan-y}
+.tempo b,.dial b{font:800 .9rem/1 var(--sans);color:#ffd9a8}
+.dial{display:flex;align-items:center;gap:.5rem .8rem;flex-wrap:wrap}
+.dial em{font-style:normal;color:#b7f7a8;font-size:.9rem;min-width:8em}
+
+/* ══ AOG-STRINGS-V1 — the neck: frets and strings, as a guitar looks to the person playing it: the thick low string on top,
+   so a finger moving down strums low to high, as a down strum does; the nut and the open strings on the left; on the
+   guitar, a strip on the right to strum across.
+   Pale = the chord (on the guitar, where fingers go; × = skip that string), orange = playing now, gold = your finger. ══ */
+.krow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .7rem;margin:0 0 .6rem}
+.krow .range{font:800 1rem/1 var(--display);color:#f1ebdf;min-width:7.5rem;text-align:center}
+.neckbox{position:relative}
+#rig svg.neck{display:block;width:100%;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.neck .nk-open{fill:#1b1c20}
+.neck .nk-wood{fill:#3a2414}
+.neck .nk-fret{stroke:#b9bec5;stroke-width:2.5}
+.neck .nk-nut{fill:#ece3cc}
+.neck .nk-inlay{fill:#d9cfb8;opacity:.5}
+.neck .nk-strum{fill:#0f1012;stroke:#8a6a2a;stroke-width:1.5}
+.neck .nk-str{stroke:#c9a56c}
+.neck .nk-str.plain{stroke:#dedede}
+.neck text{font-family:var(--sans);font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.neck .nk-name{fill:#f1e9d6}
+.neck .nk-x{fill:#ffb1a4}
+.neck .nk-num{fill:#d8cfbf;font-weight:700}
+.neck .nk-strumlab{fill:#ffd9a8;letter-spacing:.06em}
+.neck .dot{display:none}
+.neck .dot.fit,.neck .dot.now,.neck .dot.down{display:inline}
+.neck .dot circle{fill:#f8eed3;stroke:#0c0d10;stroke-width:1.5}
+.neck .dot text{fill:#2b2116}
+.neck .dot.root circle{stroke:#b4581a;stroke-width:4}
+.neck .dot.now circle{fill:#ef9a4a} .neck .dot.now text{fill:#1f1206}
+.neck .dot.down circle{fill:#ffd36b} .neck .dot.down text{fill:#1f1206}
+.keys-line{display:none}
+/* AOG-STRINGS-KEYS-V2: the keys as a picture; each letter on the neck as a small keycap */
+.keymap{margin:.6rem 0 0;padding:.6rem .75rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#17191c}
+.km-h{margin:0 0 .45rem;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf}
+.km-row{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .7rem;margin:.3rem 0}
+.km-caps{display:inline-flex;flex-wrap:wrap;gap:3px}
+.keymap kbd{display:inline-grid;place-items:center;min-width:1.7rem;height:1.7rem;padding:0 .3rem;border-radius:5px;border:1px solid #0b0b0c;
+  background:linear-gradient(#f6efe0,#e2d6bd);color:#1a1408;font:800 .82rem/1 var(--sans);box-shadow:0 2px 0 #0b0b0c}
+.keymap kbd.km-space{min-width:4.2rem}
+.km-say{color:#e3dac9;font-size:.92rem}
+.neck .nk-key rect{fill:#f6efe0;stroke:#0b0b0c;stroke-width:1}
+.neck .nk-key text{fill:#1a1408}
+html.aog-keys .keys-line{display:block}
+html.aog-keys .cs kbd,html.aog-keys .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+.touch-line{display:block}
+@media (hover:hover) and (pointer:fine){
+  .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+  .keys-line{display:block}
+  .touch-line{display:none}
+}
+.foot{margin:2rem 0 0;color:var(--muted);font-size:.92rem}
+.foot p{margin:.35rem 0}
+@media (max-width:520px){
+  .rig{padding:14px 10px 16px;border-radius:14px}
+  .pbtn.play{min-width:0;flex:1 1 100%}
+  .nk-any .pbtn{flex:1 1 100%}
+}
+/* AOG-ANYCHORD-V1: any chord, under the pattern by the neck */
+.nk-any{margin-top:.2rem} .nk-any .field.small{min-width:6.5rem} .nk-anyline{margin:.45rem 0 .8rem;font-weight:700}
+.nk-anyline:empty{display:none}
+@media print{ .rig,.bench-bar,header{display:none!important} }
+/* AOG-CHORDSTRIP-V1: the six chords in one row, right on top of the instrument */
+.cstrip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:.1rem 0 .6rem}
+.cs{min-height:48px;min-width:0;border-radius:10px;border:1px solid #0a0b0d;padding:0 .2rem;color:#1f1a10;
+  background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 0 #07080a;
+  font:800 1.05rem/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.cs.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
+.cs.more{background:linear-gradient(#efe6cf,#d9c79f);font-size:.95rem}   /* AOG-CHORDS-MORE-V1: the four more, a shade apart */
+.cstrip:not(.pv-chords) .cs.more:nth-child(7){grid-column:2}   /* upright: the four more sit centred under the six */
+/* AOG-PLAY-CHORDS-V1 — Jimmy: "Can the chords be on the neck and make the strumming bar a bit smaller." Sideways, the six
+   chords stand in a column at the nut end of the neck (the fretting hand picks the chord, the other strums), so the neck
+   has the whole height; mirrored (Left-handed, Screen faces away) they move with the nut. */
+/* AOG-CHORDS-MORE-V1: the six, then the four more beside them; AOG-PLAY-ROOM-V1 (Jimmy: "Allow some more space between the
+   open notes and the chords"): a clear gap before the open strings */
+#playView .cstrip.pv-chords{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,minmax(0,1fr));grid-auto-flow:column;gap:5px;
+  width:clamp(118px,16vw,210px);margin:0 18px 20px 0}
+body.pv-left #playView .cstrip.pv-chords{order:2;margin:0 0 20px 18px}
+#playView .cs.more{font-size:.9rem}
+#playView .cs{min-height:0;font-size:1rem}
+/* ══ AOG-PLAY-V1 — the neck sideways. A phone or tablet turned on its side (or a computer's "Play on the whole screen"):
+   the page steps aside and the neck fills the screen, clear of the notch and the home bar. Nothing moves on its own. The
+   page is not zoomed while you play (aog-calm.css zooms a wide page; a finger must land on the string it touches). ══ */
+.pv{display:none}
+html{touch-action:manipulation}   /* AOG-PLAY-ZOOM-V1: a quick second tap plays, it does not zoom (pinching the page still does) */
+.pv-big{display:none}
+@media (pointer:fine){ .pv-big{display:inline-flex} }
+@media (pointer:coarse) and (min-width:600px) and (min-height:600px){ .pv-big{display:inline-flex} }   /* AOG-PLAY-TABLET-V1: a tablet chooses the whole screen itself */
+html body.aog-play{zoom:1 !important;overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body.aog-play>*:not(#playView){display:none !important}
+body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;z-index:60;
+  background:#0d0e11;color:#f1e9d6;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  padding:env(safe-area-inset-top,0px) max(env(safe-area-inset-right,0px),8px) env(safe-area-inset-bottom,0px) max(env(safe-area-inset-left,0px),8px)}
+.pv-bar{display:flex;align-items:center;gap:6px;padding:4px 0;flex:0 0 auto;min-width:0}
+.pv-b{min-height:40px;min-width:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 var(--sans);padding:0 .7rem;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;touch-action:manipulation;flex:0 0 auto}
+.pv-b[aria-pressed="true"],.pv-b[aria-expanded="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+.pv-b:disabled{opacity:.45}
+.pv-arrow{padding:0 .5rem}
+.pv-seg{display:inline-flex;gap:3px;flex:0 0 auto}
+.pv-recnow{border-color:#c4452a;color:#ffb1a4}
+.pv-b[hidden]{display:none}
+.pv-bar .pv-hint{text-align:end}   /* nothing to press above the strum: only words */
+body.pv-left .pv-bar{flex-direction:row-reverse}   /* ☰ Menu stays at the nut's end, away from the strum */
+.pv-main{padding-top:6px}
+.pv-frets{font:700 14px/1.1 var(--sans);color:#f1e9d6;white-space:nowrap}
+.pv-hint{flex:1 1 auto;min-width:0;font:600 14px/1.2 var(--sans);color:#e3dac9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+@media (max-width:900px){ .pv-hint{visibility:hidden} }
+.pv-main{position:relative;flex:1 1 auto;min-height:0;display:flex}
+.pv-main .neckbox{flex:1 1 auto;min-width:0;min-height:0;position:relative}
+#playView svg.neck{display:block;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#playView .neck .nk-fl{fill:#d9cfb8;opacity:.75}
+.pv-drawer{position:absolute;z-index:2;top:0;bottom:0;left:0;width:min(440px,72%);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+  background:#1a1c21;color:#f1e9d6;border:1px solid #5b5446;border-radius:12px;padding:.7rem .8rem 1rem;-webkit-user-select:none;user-select:none}
+.pv-drawer[hidden]{display:none}
+body.pv-left .pv-drawer{left:auto;right:0}
+.pv-lab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#e3dac9;margin:.7rem 0 .3rem}
+.pv-field{display:block}
+.pv-field select{min-height:44px;width:100%;font:600 16px/1.25 var(--sans);color:#0A1E33;background:#FFFDF8;border:1px solid #c9bfa9;border-radius:10px;padding:0 .6rem}
+.pv-pads{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pv-pads .pv-b{min-height:48px;font-size:16px}
+.pv-pads .pv-b.hit{background:#ffd36b;color:#1f1206}
+.pv-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pv-say{font:500 14px/1.4 var(--sans);color:#e3dac9;margin:.8rem 0 0}
+/* ══ AOG-FINISH-STRINGS-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 2: each instrument its own finish). The neck as a made thing:
+   a rosewood board, rounded toward its edges, with a cream binding; nickel frets that catch the light; mother-of-pearl dots;
+   a bone nut; the wound strings coiled, the plain ones bright, all of them standing a little above the wood. ══ */
+.neck .nk-wood{fill:url(#aogRose);stroke:#d9ccb0;stroke-width:1.2}
+.neck .nk-fret{stroke:#dfe3e8;stroke-width:2.6;filter:drop-shadow(1.2px 0 0 rgba(0,0,0,.55))}
+.neck .nk-inlay{fill:url(#aogPearl);opacity:.92}
+#playView .neck .nk-fl{fill:url(#aogPearl);opacity:.9}
+.neck .nk-nut{fill:url(#aogBone)}
+.neck .nk-str{stroke:url(#aogWound);filter:drop-shadow(0 1.6px .8px rgba(0,0,0,.7))}   /* the coil is a pattern on a solid string, so the whole string takes a tap */
+.neck .nk-str.plain{stroke:#eef0f2}
+.neck .nk-str.pick{stroke:#ffd36b;stroke-dasharray:none;filter:drop-shadow(0 0 3px rgba(255,211,107,.9))}
+.neck .nk-name.pick{fill:#ffd36b}
+</style>
+<link rel="stylesheet" href="/aog-bench.css">
+<script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
+<script src="aog-handoff.js"></script>
+<script src="/aog-recorder.js"></script>
+<script src="/aog-amp.js"></script>
+<script src="/aog-liveinput.js"></script><!-- AOG-LIVEINPUT-V1: your real bass through a cable, and the tuner -->
+<script src="/aog-chords.js"></script><!-- AOG-ANYCHORD-V1: the shared chord library, read as the page's own script starts -->
+<script src="/aog-scales.js" defer></script><!-- AOG-SCALES-LIB-V1: the shared scale library -->
+<script src="/aog-solo.js" defer></script><!-- AOG-SOLO-V1: Solo mode on the neck (aog-solo.js) -->
+<script src="/aog-lessons.js"></script><!-- AOG-LESSONS-V1: the shared lesson card -->
+<script src="/aog-lessons-bass.js"></script><!-- AOG-LESSONS-V1: this lab's lessons (made from _work/music/lessons_bass.py) -->
+</head>
+<body>
+<!-- AOG-FINISH-STRINGS-V1: the neck's materials -->
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="aogRose" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1e0f07"/><stop offset=".08" stop-color="#3a1f0f"/><stop offset=".19" stop-color="#4a2a15"/><stop offset=".27" stop-color="#3b2010"/>
+    <stop offset=".38" stop-color="#55311a"/><stop offset=".47" stop-color="#4a2a15"/><stop offset=".55" stop-color="#5a341c"/><stop offset=".63" stop-color="#432512"/>
+    <stop offset=".74" stop-color="#4e2c16"/><stop offset=".86" stop-color="#36200f"/><stop offset=".94" stop-color="#2a170a"/><stop offset="1" stop-color="#1a0d06"/></linearGradient>
+  <radialGradient id="aogPearl" cx=".38" cy=".35" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#f3eee6"/><stop offset=".6" stop-color="#dfe9ea"/><stop offset=".8" stop-color="#e6dcef"/><stop offset="1" stop-color="#c9c2b4"/></radialGradient>
+  <pattern id="aogWound" patternUnits="userSpaceOnUse" width="2.2" height="2.2"><rect width="2.2" height="2.2" fill="#c9a061"/><rect width=".8" height="2.2" fill="#6e5026" opacity=".6"/></pattern>
+  <linearGradient id="aogBone" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d9cfb6"/><stop offset=".45" stop-color="#f6efdc"/><stop offset="1" stop-color="#cfc3a6"/></linearGradient>
+</defs></svg>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
+<script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="#" id="brand">The Bass</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar"><!-- the music tools, one menu (four or more places: CLAUDE.md, drop-downs) -->
+    <nav class="nav no-print" id="nav" aria-label="Music tools"></nav>
+  </div>
+  <main id="view">
+    <section class="rig" id="rig" aria-labelledby="mastH">
+      <div class="plate" aria-hidden="true"><b>FOUR-STRING BASS</b><small>FINGERS · PICK · AMP · PEDALS</small></div>
+
+      <div class="blk">
+        <div class="row">
+          <label class="field"><span class="plab" data-t="instrument"></span><select id="soundSel"></select></label>
+        </div>
+        <p class="line note" id="loadLine" aria-live="polite"></p>
+      </div>
+
+      <div class="blk">
+        <h2 data-t="chordsH"></h2>
+        <div class="row">
+          <label class="field"><span class="plab" data-t="keyLab"></span><select id="keySel"></select></label>
+          <div class="field small"><span class="plab" data-t="moodLab"></span>
+            <div class="seg" role="group"><button type="button" class="pbtn" id="majBtn"></button><button type="button" class="pbtn" id="minBtn"></button></div></div>
+        </div>
+        <p class="line" data-t="padsLine"></p>
+        <div class="pads" id="pads"></div>
+        <div class="row" style="margin-top:.8rem">
+          <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel"></select></label>
+          <label class="field"><span class="plab" data-t="rhythmLab"></span><select id="rhythmSel"></select></label>
+        </div>
+        <span class="plab" style="margin-top:.9rem" data-t="yourPattern"></span>
+        <div class="prog" id="prog"></div>
+        <p class="line" id="ownLine"></p>
+        <div class="row" style="margin-top:.6rem">
+          <button type="button" class="pbtn play" id="playBtn"></button>
+          <button type="button" class="pbtn" id="ownBtn" aria-pressed="false"></button>
+          <button type="button" class="pbtn clear" id="clearBtn"></button>
+        </div>
+        <div class="tempo" style="margin-top:.8rem">
+          <span class="plab" style="margin:0" data-t="tempoLab"></span>
+          <input type="range" id="bpm" min="50" max="180" step="1" aria-labelledby="bpmOut">
+          <b id="bpmOut"></b>
+        </div>
+        <div id="drumBox"></div>
+      </div>
+
+      <div class="blk" id="wheelBlk">
+        <h2 data-t="wheelH"></h2>
+        <div class="wheel-wrap">
+          <svg class="wheel" id="wheel" viewBox="0 0 400 400" role="group"></svg>
+          <div class="wheel-side">
+            <p class="line" style="margin-top:0" data-t="wheelLine"></p>
+            <div class="row" style="margin-top:.7rem">
+              <button type="button" class="pbtn" id="turnL"></button>
+              <button type="button" class="pbtn" id="turnR"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="blk">
+        <h2 data-t="neckH"></h2>
+        <div id="soloMode"></div><div id="soloTop" hidden></div><!-- AOG-SOLO-V1: Chords or Solo, the scale and the lead sound (aog-solo.js fills them) -->
+        <p class="line pv-turn" id="pvTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
+        <div class="row nk-key"><!-- AOG-NECK-KEY-V1 (Jimmy, 2026-10-05): the key and mood again, right by the neck, so the key can change while a lick or the chords play; they follow the ones above -->
+          <label class="field"><span class="plab" data-t="keyLab"></span><select id="keySel2"></select></label>
+          <div class="field small"><span class="plab" data-t="moodLab"></span>
+            <div class="seg" role="group"><button type="button" class="pbtn" id="majBtn2"></button><button type="button" class="pbtn" id="minBtn2"></button></div></div>
+        </div>
+        <div class="row nk-pat"><!-- AOG-NECK-PATTERN-V1 (Jimmy, 2026-10-05): the chord pattern by the neck too, with each chord's number, to see the theory -->
+          <label class="field"><span class="plab" data-t="patternLab"></span><select id="progSel2"></select></label>
+          <button type="button" class="pbtn play" id="playBtn2"></button>
+        </div>
+        <div class="prog nk-prog" id="prog2"></div>
+        <p class="line nk-theory" data-t="theoryLine"></p>
+        <div class="row nk-any" id="anyRow"><!-- AOG-ANYCHORD-V1 (Jimmy, 2026-10-05): any chord at all, from the shared library (aog-chords.js); it lights on the neck as a chord button does -->
+          <label class="field small"><span class="plab" data-t="anyRootLab"></span><select id="anyRoot"></select></label>
+          <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
+          <button type="button" class="pbtn" id="anyBtn" data-t="anyBtn"></button>
+        </div>
+        <p class="line nk-anyline" id="anyLine" aria-live="polite"></p>
+        <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the neck -->
+        <div class="krow"><!-- AOG-KROW-NEAR-V1 (Jimmy, 2026-10-05: "The lower or higher fret board needs to sit nearer the instruments"): right above the instrument -->
+          <button type="button" class="pbtn" id="downBtn"></button>
+          <span class="range" id="fretsOut" aria-live="polite"></span>
+          <button type="button" class="pbtn" id="upBtn"></button>
+          <button type="button" class="pbtn" id="muteBtn"></button>
+          <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
+          <span id="recTime" hidden>0:00</span>
+          <button type="button" class="pbtn pv-big" id="pvBig"></button><!-- AOG-PLAY-V1: the neck on the whole screen (a computer) -->
+        </div>
+        <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
+        <div id="pedalsNear" hidden></div><!-- AOG-AMP-NEAR-V1: the pedals that are on, with their knobs, by the neck (aog-amp.js) -->
+        <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
+        <p class="line" id="litLine" data-t="litLine" hidden></p>
+        <p class="line touch-line" data-t="touchLine"></p>
+        <div class="keys-line keymap" id="keyMap"></div>
+        <p class="line keys-line" id="strPickSay" aria-live="polite"></p><!-- AOG-STRING-TAB-V1 --><!-- AOG-STRINGS-KEYS-V2: a small picture of the keys -->
+        <p class="line" id="recLine" aria-live="polite"></p>
+        <div id="takes"></div>
+      </div>
+
+      <div class="blk" id="ampBlk"><!-- AOG-AMP-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
+        <h2 data-t="ampH"></h2>
+        <p class="line" style="margin-top:0" data-t="ampLine"></p>
+        <div id="ampBox"></div>
+      </div>
+
+      <div class="blk" id="liveBlk"><div id="liveBox"></div></div><!-- AOG-LIVEINPUT-V1 (STUDIO-HANDOFF §10b, §10c): the one in your hands, and a tuner -->
+
+      <div class="blk">
+        <div class="dial">
+          <span class="plab" style="margin:0" data-t="eraLab"></span>
+          <b aria-hidden="true">1987</b>
+          <input type="range" id="era" min="0" max="100" step="1">
+          <b aria-hidden="true">2026</b>
+          <em id="eraOut"></em>
+        </div>
+        <div class="dial" style="margin-top:.4rem">
+          <span class="plab" style="margin:0" data-t="volLab"></span>
+          <input type="range" id="vol" min="5" max="100" step="1">
+          <b id="volOut"></b>
+        </div>
+        <div class="row" style="margin-top:.8rem">
+          <button type="button" class="pbtn send" id="sendBtn"></button>
+          <!-- AOG-ONE-DRUMSEND-V1 (Jimmy, 2026-10-09: "What is up with the double drum machines again?"): one Drum Machine, one label, two things to send -->
+          <span class="tpads" role="group" aria-labelledby="toPadsLab"><span class="plab" id="toPadsLab"></span>
+          <button type="button" class="pbtn send" id="sendPadsBtn"></button>
+          <button type="button" class="pbtn send" id="padsBtn"></button></span>
+        </div>
+        <p class="line" id="sendLine" aria-live="polite"></p>
+        <p class="line" id="padsLine" aria-live="polite"></p>
+      </div>
+    </section>
+    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: this lab's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
+  </main>
+  <footer class="foot" id="foot"></footer>
+</div>
+<!-- AOG-PLAY-V1 (2026-10-04) — Jimmy: "When you turn the iPhone or iPad horizontally, you can play the guitar or bass like a
+     real instrument." Turned sideways, the page's own neck (#neckBox) moves in here and fills the screen; turned back, it
+     goes home. The chord pads, the sound menu and the rest stay one tap away, in the drawer and on the page. -->
+<div id="playView" class="pv" role="region">
+  <!-- AOG-PLAY-GUARD-V1 — Jimmy: "I keep on hitting or tapping the buttons on top while playing (Close, sounds, notes, hold +
+       strum) the record button multiple times." The bar keeps only ☰ Menu (at the nut's end, away from the strum) and the frets;
+       the rest is in the menu. While a recording runs, its Stop shows here. -->
+  <div class="pv-bar">
+    <button type="button" class="pv-b" id="pvMore" aria-expanded="false" aria-controls="pvDrawer"></button>
+    <button type="button" class="pv-b pv-recnow" id="pvRec" aria-pressed="true" hidden></button>
+    <button type="button" class="pv-b pv-arrow" id="pvDown">◀</button>
+    <span class="pv-frets" id="pvFrets" aria-live="polite"></span>
+    <button type="button" class="pv-b pv-arrow" id="pvUp">▶</button>
+    <span class="pv-hint" id="pvHint"></span>
+  </div>
+  <div class="pv-main" id="pvNeck">
+    <div class="cstrip pv-chords" id="pvStrip" role="group"></div><!-- AOG-PLAY-CHORDS-V1: the six chords down the nut end of the neck -->
+    <div class="pv-drawer" id="pvDrawer" hidden>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvClose"></button></div>
+      <span class="pv-lab" data-t="pvWay"></span>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvTap" aria-pressed="true"></button><button type="button" class="pv-b" id="pvHold" aria-pressed="false"></button></div>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvRecGo" aria-pressed="false"></button><button type="button" class="pv-b" id="pvMute"></button></div>
+      <label class="pv-field"><span class="pv-lab" data-t="instrument"></span><select id="pvSound"></select></label>
+      <label class="pv-field"><span class="pv-lab" data-t="keyLab"></span><select id="pvKey"></select></label>
+      <span class="pv-lab" data-t="pvHow"></span>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvChords" aria-pressed="true"></button><button type="button" class="pv-b" id="pvSolo" aria-pressed="false"></button></div>
+      <div class="pv-row"><button type="button" class="pv-b" id="pvPlay"></button><button type="button" class="pv-b" id="pvLeft" aria-pressed="false"></button><button type="button" class="pv-b" id="pvAway" aria-pressed="false"></button></div>
+      <p class="pv-say" id="pvSay"></p>
+    </div>
+  </div>
+</div>
+
+<script src="/front/dcd084170d65.js"></script>
+</body>
+</html>

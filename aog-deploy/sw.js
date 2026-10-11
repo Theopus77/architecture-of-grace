@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.11.m7460'   // JIMMY (IPAD): "I AM STILL HAVING CHALLENGES WITH MOVING THE SCREEN ... THE CEILING HAS NOT BEEN REACHED. THINK OF SPECIAL ED NEEDS WITH NEURODIVERGENT NEEDS": THE CUBE LAB'S CUBE HOLDS STILL (THE SPACE AROUND IT NEVER MOVES IT); TWO NAMED VIEWS, FRONT AND BACK, EACH ALWAYS THE SAME; THE ARROW SITS ON THE SIDE THE WORDS NAME, A STEERING WHEEL ON THE FRONT; TRACING A ROUND ARROW FOLLOWS THE LINE
+const CACHE = 'aog-cache-2026.10.11.m7461'   // JIMMY: "FLASH SPEED, LIGHTING BOLT SPEED!": THE FRONT PAGE AND THE EIGHT STUDIO ROOMS ARE MADE BY tools/build-fast.py (THE SAME PAGES, THEIR LARGER CODE IN front/, KEPT BY A PHONE BETWEEN UPDATES AND READIED OFF THE MAIN THREAD; SERVED AT THE SAME ADDRESSES), AND THE STUDIO FETCHES THE ROOMS NOT VISITED YET QUIETLY IN THE BACKGROUND (AOG-STUDIO-WARM-V1) (previous: m7460)
+// const CACHE = 'aog-cache-2026.10.11.m7460'   // JIMMY (IPAD): "I AM STILL HAVING CHALLENGES WITH MOVING THE SCREEN ... THE CEILING HAS NOT BEEN REACHED. THINK OF SPECIAL ED NEEDS WITH NEURODIVERGENT NEEDS": THE CUBE LAB'S CUBE HOLDS STILL (THE SPACE AROUND IT NEVER MOVES IT); TWO NAMED VIEWS, FRONT AND BACK, EACH ALWAYS THE SAME; THE ARROW SITS ON THE SIDE THE WORDS NAME, A STEERING WHEEL ON THE FRONT; TRACING A ROUND ARROW FOLLOWS THE LINE
 // const CACHE = 'aog-cache-2026.10.11.m7459'   // JIMMY (IPAD): "I CAN'T ROTATE LIKE HOW IT SUGGEST AND I KEEP ON MOVING THE ENTIRE SCREEN WHILE TRYING TO JUST MOVE THE CUBE": IN THE CUBE LAB A FINGER FOLLOWING THE ARROW MAKES THAT EXACT MOVE; THE ARROW LIES ALONG A ROW YOU CAN DRAG; THE BROWSER'S OWN TOUCH TARGET FINDS THE STICKER, NEAR MISSES TOO; DEPTH SCALES WITH THE CUBE; THE BUTTON SAYS TURN IT WHEN PRACTISING ON SCREEN
 // const CACHE = 'aog-cache-2026.10.11.m7458'   // JIMMY: "MAKE SURE IT IS THE FASTEST IT CAN BE! SUPER MAN SPEED!": THE STUDIO KEEPS THE LAST ROOMS OPEN OUT OF SIGHT (3, 2 ON A PHONE), SO GOING BACK TO ONE IS AT ONCE AND IT IS SILENT WHILE AWAY (AOG-STUDIO-KEEP-V1); THE PIANO PLAYS AS SOON AS ITS MIDDLE LAYER IS IN AND FETCHES THE REST GENTLY; THE GUITAR AND BASS MAKE THEIR NOTES IN SHORTER TURNS; THE TURNTABLES REST WHEN NOTHING MOVES; THE TEXT GUARD AND THE MENUS LOOK ONLY AT WHAT CHANGED; THE STUDIO BAR WRITES ONLY CHANGES (previous: m7457)
 // const CACHE = 'aog-cache-2026.10.11.m7457'   // JIMMY: "THE SCREEN MOVES TOO MUCH AND WHEN I WAS TRYING TO ROTATE IT UPSIDE DOWN LIKE BRINGING TOWARDS ME, IT GOT STUCK AND THEN I WAS LOST": THE CUBE LAB'S VIEW ROLLS UNDER THE FINGER IN ANY DIRECTION (UPSIDE DOWN TOO, NO LIMIT), SLOWER; LOOK BUTTONS UNDER THE CUBE TURN IT A QUARTER TURN AT A TIME; THE CUBE IS SMALLER SO IT STAYS WHOLE IN ITS BOX
@@ -867,6 +868,21 @@ self.addEventListener('fetch', function (e) {
      visited once kept printing with an old aog-topbar.js after a drag. Jimmy's
      Mac Safari still split "What people get wrong" onto the foot of a page after
      4313 went live, while his phone had the fix. */
+  /* AOG-FRONT-BUILD-V1 (2026-10-11): the front page's code (front/), one file per block, named after what is in it.
+     A name never changes its contents, so a saved copy is always right: it comes straight from the store, and only a
+     block never seen before is fetched (and kept). */
+  if (/\/front\/[0-9a-f]+\.js(\?|#|$)/.test(req.url)) {
+    e.respondWith(
+      caches.match(req).then(function (hit) {
+        if (hit) return hit;
+        return fetch(req).then(function (r) {
+          if (r && r.status === 200 && r.type === 'basic') { var copy = r.clone(); e.waitUntil(caches.open(KEEP).then(function (c) { return c.put(req, copy); }).catch(function () {})); }
+          return r;
+        });
+      })
+    );
+    return;
+  }
   /* AOG-SW-CODE-FAST-V1 (2026-10-10) — Jimmy: the Studio was "lagging … a horrific experience". Every room asks for
      about twenty of these files, one after another, and each one waited on the network, every time, even when nothing
      had changed. Now the first time this version of the site asks for a file it comes from the network, as before, and

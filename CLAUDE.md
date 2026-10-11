@@ -165,6 +165,18 @@ Home Screen opens that place, full screen.
 - Don't commit `book6.json` (the build source; it travels in the Adult Edition zip). The crisis box goes on every
   Adult page. The workbook sends only by the facilitator's own `?dest=` link, never a default Sheet.
 
+## The front page and the Studio rooms are built (Jimmy, 2026-10-11: "FLASH SPEED, LIGHTING BOLT SPEED!")
+
+`index.html` and the rooms (`music-*.html`) are still the files to edit, as always (a room's own generator still
+writes its page). Visitors get the made versions, the same pages with their larger blocks of code moved into
+`front/` (named after what is in it, so a phone keeps the code between updates and readies it off the main thread):
+
+    python3 tools/build-fast.py
+
+Run it after every change to `index.html` or a room. `_redirects` serves the made pages at the same addresses
+(`front.html` at `/`; `fast/music-*.html` at `/music-*.html` and the rooms' short names). The contrast and calm
+checks stop while a made page is older than its source. Never edit `front.html`, `fast/` or `front/` by hand.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

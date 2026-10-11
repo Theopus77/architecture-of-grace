@@ -1,0 +1,2442 @@
+
+"use strict";
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PIANO (AOG-PIANO-V1) — state, words, music
+   ══════════════════════════════════════════════════════════════════════════ */
+const LKEY="aog.piano.v1";
+const S={ lang:"en", sound:"grand", key:0, minor:false, preset:"", prog:[], own:false, rhythm:"hold", bpm:90,
+  oct:null, era:0, vol:0.8, withDrums:false, sus:false, playing:false };
+try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
+function loadState(){
+  try{
+    const r=JSON.parse(localStorage.getItem(LKEY)||"null");
+    if(r){
+      if(SOUNDS[r.sound]) S.sound=r.sound;
+      if(r.key>=0 && r.key<12) S.key=r.key|0;
+      S.minor=!!r.minor;
+      if(Array.isArray(r.prog)) S.prog=r.prog.filter(c=>c && typeof c.off==="number" && Q[c.q]).slice(0,12);
+      if(typeof r.preset==="string") S.preset=r.preset;
+      if(RHYTHMS.indexOf(r.rhythm)>=0) S.rhythm=r.rhythm;
+      if(r.bpm>=50 && r.bpm<=180) S.bpm=r.bpm|0;
+      if(r.oct>=1 && r.oct<=6) S.oct=r.oct|0;
+      if(typeof r.era==="number") S.era=Math.max(0,Math.min(1,r.era));
+      if(typeof r.vol==="number") S.vol=Math.max(0.05,Math.min(1,r.vol));
+      S.withDrums=!!r.withDrums;
+      return;
+    }
+    /* first visit: the same tempo as the drum machine */
+    const d=JSON.parse(localStorage.getItem("aog.drums.bench.v2")||"null");
+    if(d && d.bpm>=50 && d.bpm<=180) S.bpm=Math.round(d.bpm);
+  }catch(e){}
+}
+function save(){
+  try{ localStorage.setItem(LKEY, JSON.stringify({sound:S.sound,key:S.key,minor:S.minor,prog:S.prog,preset:S.preset,rhythm:S.rhythm,
+    bpm:S.bpm,oct:S.oct,era:S.era,vol:S.vol,withDrums:S.withDrums})); }catch(e){}
+}
+
+const STR={
+  app:{en:"The Piano",es:"El piano"},
+  kicker:{en:"A song in two taps.",es:"Dos toques y suena."},
+  lead:{en:"Pianos, organs, bells, harps, strings and synths. Tap a chord, or play the keys.",es:"Pianos, órganos, campanas, arpas, cuerdas y sintetizadores. Toca un acorde o toca las teclas."},
+  drums:{en:"The drum machine",es:"La caja de ritmos"}, decks:{en:"The turntables",es:"Los tocadiscos"},
+  instrument:{en:"Instrument",es:"Instrumento"},
+  grpPiano:{en:"Pianos",es:"Pianos"}, grpEp:{en:"Electric pianos",es:"Pianos eléctricos"}, grpOrgan:{en:"Organs and accordion",es:"Órganos y acordeón"},
+  /* AOG-PIANO-SOUNDS-V2 */
+  grpMallet:{en:"Mallets and bells",es:"Láminas y campanas"}, grpPluck:{en:"Plucked",es:"Pulsados"},
+  grpVoice:{en:"Strings and voices",es:"Cuerdas y voces"}, grpTape:{en:"Tape keyboards",es:"Teclados de cinta"}, grpSynth:{en:"Synths",es:"Sintetizadores"},
+  loading:{en:"Getting the {name} ready… {n} of {all}",es:"Preparando {name}… {n} de {all}"},
+  stand:{en:"Until then you hear the electric piano.",es:"Mientras tanto suena el piano eléctrico."},
+  standMade:{en:"Until then you hear a version made on this page.",es:"Mientras tanto suena una versión hecha en esta página."},   /* AOG-PIANO-REAL-V1 */
+  ready:{en:"Ready. Every note is a real {name}.",es:"Listo. Cada nota es {name} de verdad."},
+  readyHonky:{en:"Ready. This is the upright piano, played a little out of tune with itself.",es:"Listo. Es el piano vertical, tocado un poco desafinado consigo mismo."},
+  more:{en:"Ready to play. Adding the soft and loud notes… {n} of {all}",es:"Listo para tocar. Sumando las notas suaves y fuertes… {n} de {all}"},
+  loadFail:{en:"The recorded notes did not load. Check the internet, then pick the instrument again.",es:"No cargaron las notas grabadas. Revisa el internet y vuelve a elegir el instrumento."},
+  built:{en:"This sound is built on the page. Nothing to download.",es:"Este sonido se crea en la página. No hay nada que descargar."},
+  chordsH:{en:"Chords",es:"Acordes"},
+  keyLab:{en:"Key",es:"Tono"}, moodLab:{en:"Mood",es:"Ánimo"},
+  major:{en:"Major · bright",es:"Mayor · brillante"}, minorW:{en:"Minor · moody",es:"Menor · melancólico"},
+  padsLine:{en:"Tap a pad to hear a chord. Every pad fits this key.",es:"Toca un pad para oír un acorde. Todos los pads van con este tono."},
+  wheelH:{en:"Chord wheel",es:"Rueda de acordes"},
+  wheelLine:{en:"Tap any chord to hear it. The six light ones are your pads in this key. Turn the wheel to change key.",es:"Toca cualquier acorde para oírlo. Los seis claros son tus pads en este tono. Gira la rueda para cambiar de tono."},
+  wheelL:{en:"◀ Turn to {k}",es:"◀ Girar a {k}"}, wheelR:{en:"Turn to {k} ▶",es:"Girar a {k} ▶"},
+  wheelMajor:{en:"major",es:"mayor"}, wheelMinor:{en:"minor",es:"menor"},
+  wheelGroup:{en:"Chord wheel. Tap a chord to hear it.",es:"Rueda de acordes. Toca un acorde para oírlo."},
+  wheelChord:{en:"{c} chord",es:"Acorde {c}"}, wheelPad:{en:"pad {n}",es:"pad {n}"},
+  patternLab:{en:"Start from a chord pattern",es:"Empieza con un patrón de acordes"},
+  pickPattern:{en:"Choose a pattern…",es:"Elige un patrón…"}, myOwn:{en:"My own pattern",es:"Mi propio patrón"},
+  rhythmLab:{en:"How the chords play",es:"Cómo suenan los acordes"},
+  yourPattern:{en:"Your chord pattern · one chord for each bar",es:"Tu patrón de acordes · un acorde por compás"},
+  progEmpty:{en:"Pick a pattern above, or press Make my own.",es:"Elige un patrón arriba, o pulsa Hacer el mío."},
+  ownOn:{en:"Tap the chord pads or the wheel in the order you want. Up to 8.",es:"Toca los pads o la rueda en el orden que quieras. Hasta 8."},
+  play:{en:"▶ Play the chords",es:"▶ Tocar los acordes"}, stop:{en:"■ Stop",es:"■ Parar"},
+  own:{en:"Make my own",es:"Hacer el mío"}, clear:{en:"Clear",es:"Borrar"},
+  tempoLab:{en:"Tempo",es:"Tempo"}, bpm:{en:"{n} beats a minute",es:"{n} pulsos por minuto"},
+  drumOn:{en:"Play with my drum beat",es:"Tocar con mi ritmo de batería"},
+  drumFrom:{en:"From the drum machine: {name}",es:"De la caja de ritmos: {name}"},
+  drumTempo:{en:"The tempo comes from your drum beat.",es:"El tempo viene de tu ritmo de batería."},
+  drumThree:{en:"A waltz counts in threes, so it plays without your four-beat drum beat.",es:"Un vals cuenta de tres en tres, así que suena sin tu ritmo de batería de cuatro."},   /* AOG-PIANO-WAYS-V3 */
+  drumNone:{en:"Make a beat on the drum machine and press Send to the turntables. It shows up here too.",es:"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. También aparece aquí."},
+  drumGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
+  keysH:{en:"Keys",es:"Teclas"},
+  lower:{en:"◀ Lower",es:"◀ Más grave"}, higher:{en:"Higher ▶",es:"Más agudo ▶"},
+  rangeOut:{en:"{a} to {b}",es:"{a} a {b}"},
+  sus:{en:"Hold notes (pedal)",es:"Mantener notas (pedal)"},
+  litLine:{en:"Pale keys fit the chord. Orange keys are playing now.",es:"Las teclas claras encajan con el acorde. Las naranjas suenan ahora."},
+  touchLine:{en:"Press near the bottom of a key for a louder note. Slide a finger to play many keys.",es:"Presiona cerca de la parte de abajo de una tecla para una nota más fuerte. Desliza un dedo para tocar muchas teclas."},
+  keysLine1:{en:"On a computer, A S D F G H J K L ; ' play the white keys and W E T Y U O P the black keys. Z and X go lower and higher.",es:"En la computadora, A S D F G H J K L Ñ ' tocan las teclas blancas y W E T Y U O P las negras. Z y X bajan y suben."},
+  keysLine2:{en:"Hold Shift to keep notes ringing. 1 to 6 play the chord pads. Space starts and stops.",es:"Mantén Shift para que las notas sigan sonando. Del 1 al 6 tocan los pads. La barra espaciadora empieza y para."},
+  midi:{en:"Use a MIDI keyboard",es:"Usar un teclado MIDI"},
+  midiReady:{en:"MIDI keyboard ready: {name}.",es:"Teclado MIDI listo: {name}."},
+  midiNone:{en:"No MIDI keyboard yet. Plug one in and it shows up here.",es:"Todavía no hay un teclado MIDI. Conéctalo y aparecerá aquí."},
+  midiWait:{en:"Looking for your MIDI keyboard…",es:"Buscando tu teclado MIDI…"},
+  midiNo:{en:"This browser did not let the piano use MIDI. On a computer, try Chrome or Edge.",es:"Este navegador no dejó que el piano use MIDI. En una computadora, prueba Chrome o Edge."},
+  eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
+  era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
+  eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
+  volLab:{en:"Volume",es:"Volumen"},
+  send:{en:"Send to the turntables",es:"Enviar a los platos"},
+  sending:{en:"Making the recording…",es:"Haciendo la grabación…"},
+  sent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los platos para tocarlo."},
+  sendNeed:{en:"Pick a chord pattern first.",es:"Primero elige un patrón de acordes."},
+  sendFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
+  toPadsLab:{en:"Send to the Drum Machine:",es:"Enviar a la caja de ritmos:"}, sendPadsBtn:{en:"My take",es:"Mi toma"}, sendPadsAria:{en:"Send my take to the Drum Machine",es:"Enviar mi toma a la caja de ritmos"}, sentPads:{en:"Sent. It is on bank D of the Drum Machine, cut across the pads.",es:"Enviado. Está en el banco D de la caja de ritmos, cortado en los pads."},   /* AOG-SEND-TO-PADS-V1 */
+  padsBtn:{en:"These chords",es:"Estos acordes"}, padsAria:{en:"Put these chords on the Drum Machine pads",es:"Poner estos acordes en los pads de la caja de ritmos"},   /* AOG-CHORD-PADS-V1 */
+  padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
+  padsSent:{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
+  bars:{en:"bars",es:"compases"},
+  credit:{en:"Grand and bright piano: Salamander Grand Piano by Alexander Holm (CC BY 3.0). Upright, honky-tonk and felt piano: recorded by Simon Dalzell of Ivy Audio for Versilian Studios (CC0). Harp, marimba, soft strings, tape strings and tape flute: VS Chamber Orchestra: Community Edition by Versilian Studios (CC0). Harpsichord, church organ (recorded by Simon Dalzell of Ivy Audio), vibraphone, glockenspiel, bells, kalimba, '80s electric piano and synth clavinet: Versilian Community Sample Library by Versilian Studios (CC0). Warm electric piano: jRhodes3d by Jeff Learman (CC BY-NC 4.0, for non-commercial use). Bright electric piano: Wurlitzer EP200 samples by Greg Sullivan (sullivang.net), SFZ by kinwie / sfzinstruments, CC BY 3.0. Celesta: stamperadam, via Virtual Playing Orchestra 3 (CC0). Steel drums: jSteelDrum by Jeff Learman (public domain). Rock and jazz, gospel and '70s rock organs: a Unitra B-11 transistor organ, recorded by Karoryfer Samples as Caveman Cosmonaut (CC0). '70s string synth and warm synth: a Roland Jupiter-4; '80s synth brass and synth lead: a Roland JX-3P; both recorded by Modular Samples (public domain, the Unlicense). Cinema organ: VS Chamber Orchestra: Community Edition by Versilian Studios, recorded by Simon Dalzell of Ivy Audio (CC0). Toy piano: a 1950s Michelsonne, recorded by beskhu on Freesound (CC BY 4.0). Music box: recorded by folkman on Freesound (CC0). Accordion: Button Accordion HN, a Hohner recorded by Jeff Stauffer for FreePats (CC0). Choir: one singer from Hadzi-Fia by Karoryfer Samples (CC0).",
+          es:"Piano de cola y piano brillante: Salamander Grand Piano de Alexander Holm (CC BY 3.0). Vertical, honky-tonk y piano de fieltro: grabados por Simon Dalzell de Ivy Audio para Versilian Studios (CC0). Arpa, marimba, cuerdas suaves, cuerdas de cinta y flauta de cinta: VS Chamber Orchestra: Community Edition de Versilian Studios (CC0). Clavecín, órgano de iglesia (grabado por Simon Dalzell de Ivy Audio), vibráfono, glockenspiel, campanas, kalimba, piano eléctrico de los 80 y clavinet de sintetizador: Versilian Community Sample Library de Versilian Studios (CC0). Piano eléctrico cálido: jRhodes3d de Jeff Learman (CC BY-NC 4.0, para uso no comercial). Piano eléctrico brillante: muestras de Wurlitzer EP200 de Greg Sullivan (sullivang.net), SFZ de kinwie / sfzinstruments, CC BY 3.0. Celesta: stamperadam, en Virtual Playing Orchestra 3 (CC0). Tambores de acero: jSteelDrum de Jeff Learman (dominio público). Órganos de rock y jazz, góspel y de rock de los 70: un órgano de transistores Unitra B-11, grabado por Karoryfer Samples como Caveman Cosmonaut (CC0). Sintetizador de cuerdas de los 70 y sintetizador cálido: un Roland Jupiter-4; metales de sintetizador de los 80 y sintetizador solista: un Roland JX-3P; los dos grabados por Modular Samples (dominio público, Unlicense). Órgano de cine: VS Chamber Orchestra: Community Edition de Versilian Studios, grabado por Simon Dalzell de Ivy Audio (CC0). Piano de juguete: un Michelsonne de los años 50, grabado por beskhu en Freesound (CC BY 4.0). Caja de música: grabada por folkman en Freesound (CC0). Acordeón: Button Accordion HN, un Hohner grabado por Jeff Stauffer para FreePats (CC0). Coro: un cantante de Hadzi-Fia de Karoryfer Samples (CC0)."},
+  credits:{en:"Full credits",es:"Créditos completos"},
+  /* AOG-PIANO-VIEWS-V1 */
+  navBench:{en:"Bench",es:"Mesa"}, navMeet:{en:"Meet the sounds",es:"Conoce los sonidos"}, navWords:{en:"Name it",es:"Nómbralo"}, navPrint:{en:"Print",es:"Imprimir"},
+  guide:{en:"Picture guide",es:"Guía en imágenes"}, sheets:{en:"Worksheets",es:"Hojas de trabajo"},
+  guideSh:{en:"Guide",es:"Guía"}, drumsSh:{en:"Drums",es:"Ritmos"}, decksSh:{en:"Turntables",es:"Tocadiscos"},
+  pgSub:{en:"Almost no reading",es:"Casi sin lectura"},
+  pgFoot:{en:"To print it, <a href=\"/piano-guide\">open the picture guide on its own page</a>.",es:"Para imprimirla, <a href=\"/piano-guide\">abre la guía en imágenes en su propia página</a>."},
+  meetH:{en:"How each sound is made",es:"Cómo se hace cada sonido"},
+  meetLead:{en:"The same keys, {n} different instruments. Tap Hear it, then read how it makes its sound.",es:"Las mismas teclas, {n} instrumentos distintos. Pulsa Escúchalo y luego lee cómo hace su sonido."},
+  hear:{en:"Hear it",es:"Escúchalo"}, hearWait:{en:"Getting it ready…",es:"Preparándolo…"},
+  wordsH:{en:"Name it",es:"Nómbralo"}, wordsLead:{en:"One question at a time. Tap the answer you think is right.",es:"Una pregunta a la vez. Toca la respuesta que creas correcta."},
+  qOf:{en:"Question {n} of {all}",es:"Pregunta {n} de {all}"}, qNext:{en:"Next question →",es:"Siguiente pregunta →"},
+  qYes:{en:"Yes, that's it.",es:"Sí, esa es."}, qNo:{en:"Not that one. Try another.",es:"Esa no. Prueba otra."},
+  printH:{en:"Print a sheet",es:"Imprime una hoja"}, printLead:{en:"One sheet with your chords. One keyboard to label. Print one or both.",es:"Una hoja con tus acordes. Un teclado para ponerle nombres. Imprime una o las dos."},
+  printPat:{en:"Print my chords",es:"Imprimir mis acordes"}, printKb:{en:"Print the keyboard",es:"Imprimir el teclado"}, printBoth:{en:"Print both",es:"Imprimir las dos"},
+  pSheet1:{en:"My chord pattern",es:"Mi patrón de acordes"}, pSheet2:{en:"Label the keys",es:"Ponle nombre a las teclas"},
+  nameLine:{en:"Name",es:"Nombre"}, dateLine:{en:"Date",es:"Fecha"},
+  pNone:{en:"No pattern yet, so the boxes are blank. Write your own chords in them.",es:"Todavía no hay patrón, así que los cuadros están en blanco. Escribe tus propios acordes."},
+  pq1:{en:"The home chord of my pattern is ________.",es:"El acorde casa de mi patrón es ________."},
+  pq2:{en:"My pattern feels ________ because ________.",es:"Mi patrón se siente ________ porque ________."},
+  pk1:{en:"Write C under every C. Use the black keys to find them.",es:"Escribe Do debajo de cada Do. Usa las teclas negras para encontrarlos."},
+  pk2:{en:"Write the other white-key names: D, E, F, G, A and B.",es:"Escribe los otros nombres de las teclas blancas: Re, Mi, Fa, Sol, La y Si."},
+  pk3:{en:"Color the three keys of a C major chord.",es:"Colorea las tres teclas de un acorde de Do mayor."},
+  pk4:{en:"Circle a group of two black keys and a group of three.",es:"Encierra en un círculo un grupo de dos teclas negras y uno de tres."},
+  pKbAria:{en:"Two octaves of piano keys, with a blank box under each white key",es:"Dos octavas de teclas de piano, con un cuadro en blanco debajo de cada tecla blanca"},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  /* AOG-PIANO-SCALES-V1 */
+  scaleLab:{en:"Show a scale on the keys",es:"Mostrar una escala en las teclas"},
+  scaleOff:{en:"Off · no scale",es:"Apagada · sin escala"},
+  scaleSay:{en:"{root} {name} scale",es:"Escala {name} de {root}"},
+  lgHome:{en:"{root}, the home note",es:"{root}, la nota casa"},
+  lgBlue:{en:"the blue note",es:"la nota blue"},
+  anyRootLab:{en:"Any chord · root",es:"Cualquier acorde · raíz"},
+  anyKindLab:{en:"Kind of chord",es:"Tipo de acorde"},
+  anyPlay:{en:"▶ Play this chord",es:"▶ Tocar este acorde"},
+  anyNotes:{en:"{chord}: {notes}",es:"{chord}: {notes}"}
+};
+function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
+
+/* the instruments: two recordings, one recording played twice out of tune, five built here.
+   gain levels them: the same C-major chord comes out equally loud on all eight (measured, AOG-PIANO-V1);
+   the organs sit 2 dB lower again because a held chord sounds louder than a fading one.
+   AOG-PIANO-SOUNDS-V2 (2026-10-04) — Jimmy: "Can all instruments have MULTIPLE VERSIONS OF HOW THEY SOUND? Like a lot more
+   than they all currently have!?" He named rock bands too, from Led Zeppelin and Black Sabbath to Opeth: hence the '70s
+   rock organ and the tape keyboard of prog rock, named by their music. Twenty-six more, thirty-four in all, in eight groups
+   (the menu's groups follow this order). Each new one's gain is measured: its C chord (C4 E4 G4 and C3, as a pad plays it) is as loud as the grand
+   piano's, K-weighted, the loudest 400 ms, before the compressor, within half a decibel. tau = how fast a note stops when
+   it is let go; tone = how a recorded piano is voiced; ready and the = the words while a recording loads. */
+const SOUNDS={
+  grand:  {grp:"grpPiano", en:"Grand piano",            es:"Piano de cola",              kind:"sample", set:"grand",   gain:1.66, rev:0.16},
+  upright:{grp:"grpPiano", en:"Upright piano",          es:"Piano vertical",             kind:"sample", set:"upright", gain:1.997, rev:0.13},
+  honky:  {grp:"grpPiano", en:"Honky-tonk piano",       es:"Piano honky-tonk",           kind:"sample", set:"upright", honky:true, gain:2.17, rev:0.10},
+  bright: {grp:"grpPiano", en:"Bright piano",           es:"Piano brillante",            kind:"sample", set:"grand",   tone:"bright", gain:1.793, rev:0.14,
+           ready:{en:"Ready. This is the grand piano, with its high notes turned up.",es:"Listo. Es el piano de cola, con los agudos más fuertes."}},
+  felt:   {grp:"grpPiano", en:"Soft felt piano",        es:"Piano suave de fieltro",     kind:"sample", set:"upright", tone:"felt", gain:1.919, rev:0.2,
+           ready:{en:"Ready. This is the upright piano, with soft felt in front of its strings.",es:"Listo. Es el piano vertical, con fieltro suave delante de sus cuerdas."}},
+  /* AOG-PIANO-TOYBOX-V1 (2026-10-05): a real 1950s toy piano now (it was the celesta, struck hard) */
+  toy:    {grp:"grpPiano", en:"Toy piano",              es:"Piano de juguete",           kind:"sample", set:"toy", made:{kind:"toy", gain:1.02}, tau:0.25, gain:2.02, rev:0.12,
+           ready:{en:"Ready. Every note is a real toy piano from the 1950s.",es:"Listo. Cada nota es un piano de juguete de verdad de los años 50."}, the:{es:"el piano de juguete"}},
+  /* AOG-PIANO-REAL-V2: a real 1977 electric piano with tines (jRhodes GM, audio/piano/CREDITS.txt); made = the built warm sound */
+  epwarm: {grp:"grpEp",    en:"Electric piano · warm",  es:"Piano eléctrico · cálido",   kind:"sample", set:"rhodes3d", tone:"tine", made:{kind:"tine", gain:1.09}, tau:0.08, gain:0.819, rev:0.12,
+           ready:{en:"Ready. Every note is a real electric piano from 1977.",es:"Listo. Cada nota es un piano eléctrico de verdad de 1977."},
+           the:{en:"warm electric piano",es:"el piano eléctrico cálido"}},
+  /* AOG-PIANO-REAL-V3: a real electric piano with reeds, played at three strengths (audio/piano/CREDITS.txt) */
+  epreed: {grp:"grpEp",    en:"Electric piano · bright",es:"Piano eléctrico · brillante",kind:"sample", set:"epreed", made:{kind:"reed", gain:0.95}, tau:0.07, gain:2.111, rev:0.10,
+           ready:{en:"Ready. Every note is a real electric piano with reeds.",es:"Listo. Cada nota es un piano eléctrico de lengüetas de verdad."},
+           the:{en:"bright electric piano",es:"el piano eléctrico brillante"}},
+  /* AOG-PIANO-REAL-V1 (2026-10-04): the '80s electric piano, the church organ, the glockenspiel, the vibraphone, the bells,
+     the harpsichord, the kalimba and the tape flute are recordings now (SETS, audio/piano/CREDITS.txt). made = how each was
+     built here before; it plays until the recording arrives. Each gain is measured as the others were (the C chord within
+     half a decibel of the grand's). */
+  ep80:   {grp:"grpEp",    en:"'80s electric piano",    es:"Piano eléctrico de los 80",  kind:"sample", set:"fmpiano", made:{kind:"fm", gain:1.64}, tau:0.09, gain:2.181, rev:0.14,
+           ready:{en:"Ready. Every note is a real 1980s FM synthesizer.",es:"Listo. Cada nota es un sintetizador FM de verdad de los años 80."}},
+  /* AOG-PIANO-REAL-V3: no real clavinet could be shared, so this is a real 1980s synthesizer playing a clavinet sound; its name
+     says so (the coordinator: rename only where the recording is a different instrument) */
+  clav:   {grp:"grpEp",    en:"Synth clavinet · funk",  es:"Clavinet de sintetizador · funk", kind:"sample", set:"clav", made:{kind:"clav", gain:1.677}, tau:0.035, gain:2.042, rev:0.08,
+           ready:{en:"Ready. Every note is a real 1980s synthesizer playing a clavinet sound.",es:"Listo. Cada nota es un sintetizador de verdad de los años 80 con sonido de clavinet."},
+           the:{en:"synth clavinet",es:"el clavinet de sintetizador"}},
+  /* AOG-PIANO-REAL-V4: the organs are a real 1983 transistor organ (AOG-PIANO-SYNTH-V1: the synth lead is a real synthesizer now); the swirl, the spinning speaker and the
+     amplifier are still added here. org: the rock and jazz organ's gentle swirl (ch.org) */
+  organ:  {grp:"grpOrgan", en:"Rock and jazz organ",    es:"Órgano de rock y jazz",      kind:"sample", set:"organ", tone:"pipe", org:true, made:{kind:"organ", gain:1.47}, tau:0.03, gain:1.255, rev:0.12,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983."}},
+  church: {grp:"grpOrgan", en:"Church organ",           es:"Órgano de iglesia",          kind:"sample", set:"pipeorgan", tone:"pipe", made:{kind:"church", gain:1.52}, tau:0.12, gain:1.983, rev:0.35},
+  gospel: {grp:"grpOrgan", en:"Gospel organ",           es:"Órgano góspel",              kind:"sample", set:"gospel", tone:"pipe", bus:"rot", made:{kind:"gospel", gain:1.602}, tau:0.03, gain:1.282, rev:0.14,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, with all its tones on.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, con todos sus tonos."}},
+  /* post: its level (gain) is set after the amplifier, its own (fx "rockrec"; the built one's is "rock"); drive is how hard
+     it goes in, as hard as the built sound did, so it growls as much */
+  rockorgan:{grp:"grpOrgan", en:"'70s rock organ",      es:"Órgano de rock de los 70",   kind:"sample", set:"rockorgan", tone:"pipe", bus:"rockrec", post:true, drive:0.91, made:{kind:"rockorgan", gain:0.612}, tau:0.03, gain:0.508, rev:0.12,
+           ready:{en:"Ready. Every note is a real transistor organ from 1983, through a loud amplifier.",es:"Listo. Cada nota es un órgano de transistores de verdad de 1983, con un amplificador fuerte."}},
+  theatre:{grp:"grpOrgan", en:"Cinema organ",           es:"Órgano de cine",             kind:"sample", set:"theatre", tone:"pipe", bus:"trem", made:{kind:"theatre", gain:1.665}, tau:0.1, gain:1.798, rev:0.4,
+           ready:{en:"Ready. Every note is a real pipe organ's soft flute pipes.",es:"Listo. Cada nota son los tubos suaves de flauta de un órgano de tubos de verdad."}},
+  accordion:{grp:"grpOrgan", en:"Accordion",            es:"Acordeón",                   kind:"sample", set:"accordion", made:{kind:"accordion", gain:1.598}, tau:0.05, gain:2.545, rev:0.1,
+           ready:{en:"Ready. Every note is a real accordion.",es:"Listo. Cada nota es un acordeón de verdad."}, the:{es:"el acordeón"}},
+  celesta:{grp:"grpMallet", en:"Celesta",               es:"Celesta",                    kind:"sample", set:"celesta", made:{kind:"celesta", gain:1.036}, tau:0.12, gain:2.244, rev:0.22,
+           ready:{en:"Ready. Every note is a real celesta.",es:"Listo. Cada nota es una celesta de verdad."}, the:{es:"la celesta"}},
+  glock:  {grp:"grpMallet", en:"Glockenspiel",          es:"Glockenspiel",               kind:"sample", set:"glockenspiel", made:{kind:"glock", gain:0.98}, tau:0.6, gain:1.811, rev:0.2},
+  /* the vibraphone was recorded with its motor off: its notes go through the motor (fx "vibe"), so they pulse as before */
+  vibes:  {grp:"grpMallet", en:"Vibraphone",            es:"Vibráfono",                  kind:"sample", set:"vibraphone", bus:"vibe", made:{kind:"vibes", gain:1.232}, tau:0.2, gain:2.836, rev:0.18},
+  marimba:{grp:"grpMallet", en:"Marimba",               es:"Marimba",                    kind:"sample", set:"marimba", tau:0.2, gain:2.253, rev:0.15,
+           ready:{en:"Ready. Every note is a real marimba.",es:"Listo. Cada nota es una marimba de verdad."}, the:{es:"la marimba"}},
+  steel:  {grp:"grpMallet", en:"Steel drums",           es:"Tambores de acero",          kind:"sample", set:"steel", made:{kind:"steel", gain:0.917}, tau:0.22, gain:2.166, rev:0.15,
+           ready:{en:"Ready. Every note is a real steel drum.",es:"Listo. Cada nota es un tambor de acero de verdad."}, the:{en:"steel drums",es:"los tambores de acero"}},
+  bells:  {grp:"grpMallet", en:"Bells",                 es:"Campanas",                   kind:"sample", set:"bells", made:{kind:"bells", gain:0.879}, tau:0.6, gain:2.444, rev:0.3,
+           ready:{en:"Ready. Every note is a real tubular bell.",es:"Listo. Cada nota es una campana tubular de verdad."}, the:{es:"las campanas"}},
+  harpsi: {grp:"grpPluck",  en:"Harpsichord",           es:"Clavecín",                   kind:"sample", set:"harpsichord", made:{kind:"harpsi", gain:1.139}, tau:0.1, gain:2.328, rev:0.18},
+  harp:   {grp:"grpPluck",  en:"Harp",                  es:"Arpa",                       kind:"sample", set:"harp", tau:0.3, gain:2.589, rev:0.22,
+           ready:{en:"Ready. Every note is a real harp.",es:"Listo. Cada nota es un arpa de verdad."}},
+  kalimba:{grp:"grpPluck",  en:"Kalimba",               es:"Kalimba",                    kind:"sample", set:"kalimba", made:{kind:"kalimba", gain:1.0}, tau:0.25, gain:2.211, rev:0.15,
+           ready:{en:"Ready. Every note is a real kalimba.",es:"Listo. Cada nota es una kalimba de verdad."}, the:{es:"la kalimba"}},
+  /* AOG-PIANO-TOYBOX-V1 (2026-10-05): a real music box now (it was the celesta, played softly) */
+  musicbox:{grp:"grpPluck", en:"Music box",             es:"Caja de música",             kind:"sample", set:"musicbox", made:{kind:"musicbox", gain:1.0}, tau:0.4, gain:2.242, rev:0.25,
+           ready:{en:"Ready. Every note is a real music box.",es:"Listo. Cada nota es una caja de música de verdad."}, the:{es:"la caja de música"}},
+  strings:{grp:"grpVoice",  en:"Soft strings",          es:"Cuerdas suaves",             kind:"sample", set:"strings", tau:0.16, gain:2.536, rev:0.3,
+           ready:{en:"Ready. Every note is a real string section.",es:"Listo. Cada nota es una sección de cuerdas de verdad."}, the:{es:"las cuerdas suaves"}},
+  choir:  {grp:"grpVoice",  en:"Choir",                 es:"Coro",                       kind:"sample", set:"choir", tone:"pipe", bus:"choir", made:{kind:"choir", gain:1.354}, tau:0.15, gain:2.097, rev:0.4,
+           ready:{en:"Ready. Every note is a real singer, recorded four times and sung together.",es:"Listo. Cada nota es un cantante de verdad, grabado cuatro veces y cantando junto."}},
+  /* the 1970s tape keyboard of prog rock: each key starts a short tape (eight seconds of it), a little wobbly and hazy */
+  tapestr:{grp:"grpTape",   en:"Tape strings · prog rock", es:"Cuerdas de cinta · rock progresivo", kind:"sample", set:"strings", tone:"tape", bus:"tape", tape:8, tau:0.12, gain:2.381, rev:0.25,
+           ready:{en:"Ready. These are the soft strings, played from tape like a 1970s keyboard.",es:"Listo. Son las cuerdas suaves, tocadas desde una cinta como un teclado de los 70."}, the:{en:"tape strings",es:"las cuerdas de cinta"}},
+  /* the tape flute is a real flute with the tape strings' tape: the same haze, wobble and eight seconds */
+  tapeflute:{grp:"grpTape", en:"Tape flute · prog rock", es:"Flauta de cinta · rock progresivo", kind:"sample", set:"flute", tone:"tape", bus:"tape", tape:8, made:{kind:"tapeflute", gain:1.483}, tau:0.1, gain:2.637, rev:0.25,
+           ready:{en:"Ready. This is a real flute, played from tape like a 1970s keyboard.",es:"Listo. Es una flauta de verdad, tocada desde una cinta como un teclado de los 70."}, the:{en:"tape flute",es:"la flauta de cinta"}},
+  strsynth:{grp:"grpSynth", en:"'70s string synth",     es:"Sintetizador de cuerdas de los 70", kind:"sample", set:"strsynth", tone:"pipe", bus:"ens", made:{kind:"strsynth", gain:3.268}, tau:0.22, gain:1.665, rev:0.25,
+           ready:{en:"Ready. Every note is a real analog synthesizer from 1978, playing strings.",es:"Listo. Cada nota es un sintetizador analógico de verdad de 1978, tocando cuerdas."}},
+  pad:    {grp:"grpSynth",  en:"Warm synth",            es:"Sintetizador cálido",        kind:"sample", set:"pad", tone:"pipe", bus:"cho", made:{kind:"pad", gain:2.099}, tau:0.42, gain:1.838, rev:0.3,
+           ready:{en:"Ready. Every note is a real analog synthesizer from 1978.",es:"Listo. Cada nota es un sintetizador analógico de verdad de 1978."}},
+  brass:  {grp:"grpSynth",  en:"'80s synth brass",      es:"Metales de sintetizador de los 80", kind:"sample", set:"brass", tone:"pipe", made:{kind:"brass", gain:2.168}, tau:0.1, gain:1.604, rev:0.15,
+           ready:{en:"Ready. Every note is a real synthesizer from 1983, playing brass.",es:"Listo. Cada nota es un sintetizador de verdad de 1983, tocando metales."}},
+  lead:   {grp:"grpSynth",  en:"Synth lead",            es:"Sintetizador solista",       kind:"sample", set:"lead", tone:"pipe", made:{kind:"lead", gain:2.163}, tau:0.07, gain:1.685, rev:0.12,
+           ready:{en:"Ready. Every note is a real synthesizer from 1983.",es:"Listo. Cada nota es un sintetizador de verdad de 1983."}}
+};
+function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
+
+/* ── music: keys, chords, voicings ── */
+const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10]};
+const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7"};
+const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7"};
+const NAMES={sharp:["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"], flat:["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"]};
+const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"], flat:["Do","Re♭","Re","Mi♭","Mi","Fa","Sol♭","Sol","La♭","La","Si♭","Si"]};
+const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
+function flats(){ const major=S.minor?(S.key+3)%12:S.key; return [5,10,3,8,1].indexOf(major)>=0; }
+function pcName(pc){ const set=flats()?"flat":"sharp"; return (S.lang==="es"?SOLFA:NAMES)[set][((pc%12)+12)%12]; }
+function chordName(c){ const pc=((S.key+c.off)%12+12)%12; return rootName(pc, c.q)+(S.lang==="es"?SUF_ES:SUF)[c.q]; }
+/* AOG-PIANO-WHEEL-V1: a root in the key is spelled like the key (as before). A root outside it, which the chord wheel lets
+   you pick, is spelled the usual way round the wheel: sharps on the right, flats on the left (in C: A♭ and B♭, not G♯ and A♯). */
+function rootName(pc, q){
+  const major=S.minor?(S.key+3)%12:S.key, deg=((pc-major)%12+12)%12;
+  if([0,2,4,5,7,9,11].indexOf(deg)>=0) return pcName(pc);
+  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : pc;
+  return (S.lang==="es"?SOLFA:NAMES)[(rel*7)%12<=6?"sharp":"flat"][pc];
+}
+/* six pads: the chords that belong to the key (numbers are steps of the scale) */
+const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n:4,off:5,q:"maj"},{n:5,off:7,q:"maj"},{n:6,off:9,q:"min"}];
+/* AOG-PADS-1TO6-V1 (2026-10-03) — Jimmy: "The wheel the the pad chords have the wrong numbers. It is 134567, not 123456".
+   The pads count 1 to 6 in a minor key too (they had been the chords' steps in the scale: 1 3 4 5 6 7) */
+const PADS_MINOR=[{n:1,off:0,q:"min"},{n:2,off:3,q:"maj"},{n:3,off:5,q:"min"},{n:4,off:7,q:"min"},{n:5,off:8,q:"maj"},{n:6,off:10,q:"maj"}];
+function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
+const C=(off,q)=>({off:off,q:q||"maj"});
+/* AOG-PIANO-PATTERNS-V2 (2026-10-03) — Jimmy: "Are there more chord patterns that can be added to the list?" Nine more,
+   eighteen, in groups (g) so the menu stays easy to read. AOG-STRINGS-WAYS-V1 (2026-10-04) — Jimmy: "start a chord pattern
+   increased!!!!": forty-four in five groups, the same on the guitar, the bass and the band. The old ids never change: lessons use them. */
+const PRESETS=[
+  {id:"pop",     g:"pop",  en:"Pop · 1 5 6 4",             es:"Pop · 1 5 6 4",              minor:false, chords:[C(0),C(7),C(9,"min"),C(5)]},
+  {id:"fifties", g:"pop",  en:"Fifties · 1 6 4 5",         es:"Años 50 · 1 6 4 5",          minor:false, chords:[C(0),C(9,"min"),C(5),C(7)]},
+  {id:"sadpop",  g:"pop",  en:"Sad pop · 6 4 1 5",         es:"Pop triste · 6 4 1 5",       minor:false, chords:[C(9,"min"),C(5),C(0),C(7)]},
+  {id:"anime",   g:"pop",  en:"Anime and J-pop · 4 5 3 6", es:"Anime y J-pop · 4 5 3 6",    minor:false, chords:[C(5),C(7),C(4,"min"),C(9,"min")]},
+  {id:"canon",   g:"pop",  en:"Canon · 8 chords",          es:"Canon · 8 acordes",          minor:false, chords:[C(0),C(7),C(9,"min"),C(4,"min"),C(5),C(0),C(5),C(7)]},
+  {id:"three",   g:"pop",  en:"Three chords · 1 4 5 1",    es:"Tres acordes · 1 4 5 1",     minor:false, chords:[C(0),C(5),C(7),C(0)]},
+  {id:"fiesta",  g:"pop",  en:"Fiesta · 1 4 5 4",          es:"Fiesta · 1 4 5 4",           minor:false, chords:[C(0),C(5),C(7),C(5)]},
+  {id:"rock",    g:"pop",  en:"Rock · 1 ♭7 4 1",           es:"Rock · 1 ♭7 4 1",            minor:false, chords:[C(0),C(10),C(5),C(0)]},
+  {id:"hymn",    g:"pop",  en:"Hymn and gospel · 1 4 1 5", es:"Himno y góspel · 1 4 1 5",  minor:false, chords:[C(0),C(5),C(0),C(7)]},
+  {id:"wheel",   g:"pop",  en:"Around the wheel · 3 6 2 5 1", es:"Por la rueda · 3 6 2 5 1", minor:false, chords:[C(4,"dom7"),C(9,"dom7"),C(2,"dom7"),C(7,"dom7"),C(0),C(0)]},
+  {id:"anthem",  g:"pop",  en:"Rock anthem · 1 4 6 5",     es:"Himno de rock · 1 4 6 5",    minor:false, chords:[C(0),C(5),C(9,"min"),C(7)]},
+  {id:"uplift",  g:"pop",  en:"Uplifting pop · 1 3 6 4",   es:"Pop alegre · 1 3 6 4",       minor:false, chords:[C(0),C(4,"min"),C(9,"min"),C(5)]},
+  {id:"folkrock",g:"pop",  en:"Folk rock · 1 5 2",         es:"Folk rock · 1 5 2",          minor:false, chords:[C(0),C(7),C(2,"min"),C(2,"min")]},
+  {id:"dreamy",  g:"pop",  en:"Dreamy · 1 3 4 4m",         es:"De ensueño · 1 3 4 4m",      minor:false, chords:[C(0),C(4),C(5),C(5,"min")]},
+  {id:"country", g:"pop",  en:"Country · 8 bars",          es:"Country · 8 compases",       minor:false, chords:[C(0),C(0),C(5),C(5),C(7),C(7),C(0),C(0)]},
+  {id:"arena",   g:"rock", en:"Arena rock · 1 5 4 4",      es:"Rock de estadio · 1 5 4 4",  minor:false, chords:[C(0),C(7),C(5),C(5)]},
+  {id:"mixo",    g:"rock", en:"Two-chord rock · 1 ♭7",     es:"Rock de dos acordes · 1 ♭7", minor:false, chords:[C(0),C(10),C(0),C(10)]},
+  {id:"grunge",  g:"rock", en:"Grunge · 1 4 ♭3 ♭6",        es:"Grunge · 1 4 ♭3 ♭6",         minor:false, chords:[C(0),C(5),C(3),C(8)]},
+  {id:"fifths",  g:"rock", en:"Walk round the wheel · ♭6 ♭3 ♭7 4 1", es:"Vuelta por la rueda · ♭6 ♭3 ♭7 4 1", minor:false, chords:[C(8),C(3),C(10),C(5),C(0)]},
+  {id:"metalmarch",g:"rock", en:"Metal march",             es:"Marcha metalera",  minor:true,  chords:[C(0,"min"),C(8),C(10),C(0,"min")]},
+  {id:"darkheavy",g:"rock", en:"Dark and heavy",           es:"Oscuro y pesado",  minor:true,  chords:[C(0,"min"),C(1),C(0,"min"),C(1)]},
+  {id:"doom",    g:"rock", en:"Doom",                      es:"Doom",             minor:true,  chords:[C(0,"min"),C(6),C(5,"min"),C(0,"min")]},
+  {id:"soul",    g:"soul", en:"Soul · 1 3 4 5",            es:"Soul · 1 3 4 5",             minor:false, chords:[C(0),C(4,"min"),C(5),C(7)]},
+  {id:"funk",    g:"soul", en:"Funk · 1 4 with sevenths",  es:"Funk · 1 4 con séptimas",    minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(0,"dom7")]},
+  {id:"groove2", g:"soul", en:"Two-chord groove · 1 4",    es:"Ritmo de dos acordes · 1 4", minor:false, chords:[C(0),C(5),C(0),C(5)]},
+  {id:"dance",   g:"soul", en:"Dance · 6 5 4 5",           es:"Baile · 6 5 4 5",            minor:false, chords:[C(9,"min"),C(7),C(5),C(7)]},
+  {id:"lofi",    g:"soul", en:"Lo-fi · 4 3 2 1",           es:"Lo-fi · 4 3 2 1",            minor:false, chords:[C(5,"maj7"),C(4,"m7"),C(2,"m7"),C(0,"maj7")]},
+  {id:"neosoul", g:"soul", en:"Neo-soul · 2 5 1 6",        es:"Neo-soul · 2 5 1 6",         minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(9,"m7")]},
+  {id:"blues",   g:"jazz", en:"Blues · 12 bars",           es:"Blues · 12 compases",        minor:false, chords:[C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"jazz",    g:"jazz", en:"Jazz · 2 5 1",              es:"Jazz · 2 5 1",               minor:false, chords:[C(2,"m7"),C(7,"dom7"),C(0,"maj7"),C(0,"maj7")]},
+  {id:"turn",    g:"jazz", en:"Jazz turnaround · 1 6 2 5", es:"Vuelta de jazz · 1 6 2 5",   minor:false, chords:[C(0,"maj7"),C(9,"m7"),C(2,"m7"),C(7,"dom7")]},
+  {id:"mblues",  g:"jazz", en:"Minor blues · 12 bars",     es:"Blues menor · 12 compases",  minor:true,  chords:[C(0,"m7"),C(0,"m7"),C(0,"m7"),C(0,"m7"),C(5,"m7"),C(5,"m7"),C(0,"m7"),C(0,"m7"),C(7,"dom7"),C(5,"m7"),C(0,"m7"),C(7,"dom7")]},
+  {id:"blues8",  g:"jazz", en:"Blues · 8 bars",            es:"Blues · 8 compases",         minor:false, chords:[C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"quick",   g:"jazz", en:"Quick-change blues · 12 bars", es:"Blues de cambio rápido · 12 compases", minor:false, chords:[C(0,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(7,"dom7"),C(5,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"jazzblues",g:"jazz", en:"Jazz blues · 12 bars",     es:"Blues de jazz · 12 compases", minor:false, chords:[C(0,"dom7"),C(5,"dom7"),C(0,"dom7"),C(0,"dom7"),C(5,"dom7"),C(5,"dom7"),C(0,"dom7"),C(9,"dom7"),C(2,"m7"),C(7,"dom7"),C(0,"dom7"),C(7,"dom7")]},
+  {id:"bossa",   g:"jazz", en:"Bossa nova · 1 2 5 1",      es:"Bossa nova · 1 2 5 1",       minor:false, chords:[C(0,"maj7"),C(2,"m7"),C(7,"dom7"),C(0,"maj7")]},
+  {id:"circle",  g:"jazz", en:"Circle · 6 2 5 1",          es:"Círculo · 6 2 5 1",          minor:false, chords:[C(9,"m7"),C(2,"m7"),C(7,"dom7"),C(0,"maj7")]},
+  {id:"minor",   g:"min",  en:"Minor groove",              es:"Ritmo menor",      minor:true,  chords:[C(0,"min"),C(8),C(3),C(10)]},
+  {id:"flamenco",g:"min",  en:"Flamenco",                  es:"Flamenco",         minor:true,  chords:[C(0,"min"),C(10),C(8),C(7)]},
+  {id:"mfolk",   g:"min",  en:"Minor folk",                es:"Folk menor",       minor:true,  chords:[C(0,"min"),C(5,"min"),C(7),C(0,"min")]},
+  {id:"epic",    g:"min",  en:"Epic",                      es:"Épico",            minor:true,  chords:[C(0,"min"),C(10),C(8),C(10)]},
+  {id:"mballad", g:"min",  en:"Minor ballad",              es:"Balada menor",     minor:true,  chords:[C(0,"min"),C(5,"min"),C(10),C(3)]},
+  {id:"heroic",  g:"min",  en:"Heroic",                    es:"Heroico",          minor:true,  chords:[C(0,"min"),C(3),C(10),C(5)]},
+  {id:"latin",   g:"min",  en:"Latin rock",                es:"Rock latino",      minor:true,  chords:[C(0,"m7"),C(5,"dom7"),C(0,"m7"),C(5,"dom7")]}
+];
+const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, rock:{en:"Rock and metal",es:"Rock y metal"}, soul:{en:"Soul, funk and dance",es:"Soul, funk y baile"},
+  jazz:{en:"Blues and jazz",es:"Blues y jazz"}, min:{en:"Minor and moody",es:"Menor y melancólico"}};
+/* AOG-PIANO-WAYS-V2 (2026-10-03) — Jimmy: "there be more ways to play the chords!" Eleven now, in three groups as the patterns
+   are; the first four keep their names and places, so the lessons that use them still find them */
+const RHYTHMS=["hold","pulse","eighths","triplets","broken","ballad","sweep","oompah","waltz","charleston","boogie","disco","offbeat","tresillo","bossa","funk"];
+const RHYTHM_WORDS={hold:{en:"Hold · one long chord",es:"Mantener · un acorde largo"}, pulse:{en:"Pulse · four beats",es:"Pulso · cuatro tiempos"},
+  eighths:{en:"Eight a bar · pop and rock",es:"Ocho por compás · pop y rock"},
+  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"},
+  ballad:{en:"Ballad · rolling up and down",es:"Balada · sube y baja"},
+  sweep:{en:"Sweep · up like a harp",es:"Barrido · sube como un arpa"},
+  oompah:{en:"Oom-pah · march and polka",es:"Um-pa · marcha y polka"},
+  offbeat:{en:"Off-beat · reggae and ska",es:"Contratiempo · reggae y ska"},
+  boogie:{en:"Boogie-woogie · blues",es:"Boogie-woogie · blues"},
+  charleston:{en:"Charleston · swing and jazz",es:"Charleston · swing y jazz"},
+  tresillo:{en:"Three-three-two · Latin and reggaeton",es:"Tres-tres-dos · latino y reguetón"},
+  /* AOG-PIANO-WAYS-V3 (2026-10-03) — Jimmy: "I want more varieties on how the chords are played". Five more, sixteen in all */
+  triplets:{en:"Triplets · 1950s ballad",es:"Tresillos · balada de los 50"},
+  waltz:{en:"Waltz · oom-pah-pah, three beats",es:"Vals · um-pa-pa, tres tiempos"},
+  disco:{en:"Disco · bouncing octaves",es:"Disco · octavas que rebotan"},
+  bossa:{en:"Bossa nova · Brazil",es:"Bossa nova · Brasil"},
+  funk:{en:"Funk · short and jumpy",es:"Funk · corto y saltarín"}};
+const RHYTHM_GROUPS=[[{en:"Steady",es:"Firmes"},["hold","pulse","eighths","triplets"]],[{en:"Flowing",es:"Fluidos"},["broken","ballad","sweep"]],
+  [{en:"Dance",es:"Para bailar"},["oompah","waltz","charleston","boogie","disco"]],
+  [{en:"Grooves from around the world",es:"Ritmos del mundo"},["offbeat","tresillo","bossa","funk"]]];
+/* a waltz has three beats in a bar; everything else, four. A waltz plays without a four-beat drum beat. */
+const RHYTHM_BEATS={waltz:3};
+function beatsPerBar(){ return RHYTHM_BEATS[S.rhythm]||4; }
+function drumsLive(){ return !!(S.withDrums && DRUM.take && beatsPerBar()===4); }
+/* boogie-woogie and the Charleston swing by themselves (the second half of each beat comes a little late); with your drum
+   beat, everything swings as the beat does */
+const RHYTHM_SWING={boogie:0.64, charleston:0.62};
+/* a chord's notes in the middle of the keyboard, moved as little as possible from the last chord */
+let lastVoicing=null;
+function voicing(c, prev){
+  const root=((S.key+c.off)%12+12)%12, pcs=Q[c.q].map(i=>(root+i)%12), out=[];
+  for(let inv=0; inv<pcs.length; inv++){
+    const order=pcs.slice(inv).concat(pcs.slice(0,inv));
+    for(let lo=52; lo<=66; lo++){
+      if(lo%12!==order[0]) continue;
+      const v=[lo]; for(let j=1;j<order.length;j++){ let n=v[j-1]+1; while(n%12!==order[j]) n++; v.push(n); }
+      if(v[v.length-1]<=79) out.push(v);
+    }
+  }
+  const mid=v=>v.reduce((a,b)=>a+b,0)/v.length;
+  const cost=v=>prev ? v.reduce((s,n)=>s+Math.min.apply(null, prev.map(m=>Math.abs(n-m))),0)+0.3*Math.abs(mid(v)-63) : Math.abs(mid(v)-62);
+  out.sort((a,b)=>cost(a)-cost(b));
+  return out[0];
+}
+function bassOf(c){ return 36+(((S.key+c.off)%12)+12)%12; }
+function mtof(m){ return 440*Math.pow(2,(m-69)/12); }
+function noteLabel(m){ return pcName(m)+(Math.floor(m/12)-1); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE ENGINE — one chain per audio context (live, or offline for a recording)
+   voices → [room] → 1987 crunch (sample-and-hold at 26,040 Hz, twelve bits) → tone → glue → limiter → volume
+   ══════════════════════════════════════════════════════════════════════════ */
+const CRUNCH_SRC=`
+class AogCrunch extends AudioWorkletProcessor{
+  static get parameterDescriptors(){ return [{name:'era', defaultValue:0, minValue:0, maxValue:1}]; }
+  constructor(){ super(); this.ph=0; this.h0=0; this.h1=0; this.step=26040/sampleRate; }
+  process(inputs, outputs, params){
+    const inp=inputs[0], out=outputs[0]; if(!out||!out.length) return true;
+    const a=params.era, L=inp&&inp[0], R=inp&&(inp[1]||inp[0]);
+    const oL=out[0], oR=out[1]||null, n=oL.length;
+    for(let i=0;i<n;i++){
+      const e=a.length>1?a[i]:a[0], x=L?L[i]:0, y=R?R[i]:0;
+      this.ph+=this.step;
+      if(this.ph>=1){ this.ph-=1; this.h0=Math.round(x*2048)/2048; this.h1=Math.round(y*2048)/2048; }
+      oL[i]=e*this.h0+(1-e)*x;
+      if(oR) oR[i]=e*this.h1+(1-e)*y;
+    }
+    return true;
+  }
+}
+registerProcessor('aog-crunch', AogCrunch);`;
+let crunchURL=null;
+function crunchModule(){ if(!crunchURL) crunchURL=URL.createObjectURL(new Blob([CRUNCH_SRC],{type:"application/javascript"})); return crunchURL; }
+/* the same noise every time (a fixed seed, like the drum machine's ROM) */
+function seeded(seed){ let x=seed|0||0x2f6b1a3d; return ()=>{ x^=x<<13; x^=x>>>17; x^=x<<5; return ((x>>>0)/4294967296)*2-1; }; }
+function roomIR(c){
+  const sr=c.sampleRate, len=Math.floor(sr*2.6), ir=c.createBuffer(2,len,sr);
+  for(let ch=0; ch<2; ch++){
+    const d=ir.getChannelData(ch), r=seeded(ch?0x51a7c3e1:0x2f6b1a3d), pre=Math.floor(sr*0.012); let lp=0;
+    for(let i=pre;i<len;i++){ const tt=(i-pre)/sr, k=0.25+0.7*Math.min(1,tt/1.6); lp+= (r()-lp)*(1-k*0.85); d[i]=lp*Math.exp(-6.9*tt/2.4); }
+  }
+  return ir;
+}
+function eraHz(e){ return Math.exp(Math.log(18000)*(1-e)+Math.log(8500)*e); }
+function makeChain(c){
+  const ch={c:c};
+  ch.bus=c.createGain(); ch.org=c.createGain(); ch.send=c.createGain(); ch.pre=c.createGain();
+  /* a gentle swirl for the rock organ (a spinning-speaker feel, slow and small) */
+  const dl=c.createDelay(0.05); dl.delayTime.value=0.006;
+  const lfo=c.createOscillator(); lfo.frequency.value=0.8; const lg=c.createGain(); lg.gain.value=0.0016;
+  lfo.connect(lg); lg.connect(dl.delayTime); lfo.start();
+  const dg=c.createGain(); dg.gain.value=0.55;
+  ch.org.connect(ch.bus); ch.org.connect(dl); dl.connect(dg); dg.connect(ch.bus);
+  /* the room */
+  const cv=c.createConvolver(); cv.buffer=roomIR(c); ch.send.connect(cv);
+  const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
+  ch.bus.connect(ch.pre);
+  ch.lp=c.createBiquadFilter(); ch.lp.type="lowpass"; ch.lp.Q.value=0.5;
+  ch.comp=c.createDynamicsCompressor();
+  ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
+  ch.lim=c.createDynamicsCompressor();
+  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0.002; ch.lim.release.value=0.1;
+  ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
+  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
+  ch.crunch=null;
+  return ch;
+}
+async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
+  try{
+    if(!ch.c.audioWorklet) return;
+    await ch.c.audioWorklet.addModule(crunchModule());
+    const n=new AudioWorkletNode(ch.c,"aog-crunch",{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
+    ch.pre.disconnect(ch.lp); ch.pre.connect(n); n.connect(ch.lp); ch.crunch=n;
+  }catch(e){}
+}
+function setEra(ch, e, at){
+  const c=ch.c, now=at==null?c.currentTime:at;
+  ch.lp.frequency.setTargetAtTime(eraHz(e), now, 0.02);
+  if(ch.crunch){ const p=ch.crunch.parameters.get("era"); p.setTargetAtTime(e, now, 0.02); }
+}
+function volGain(v){ return Math.max(0,Math.min(1,v))*0.95; }
+function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
+
+/* ── the recorded pianos ── */
+const SETS={
+  grand:  {dir:"/audio/piano/grand2/",   notes:[21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108]},
+  upright:{dir:"/audio/piano/upright2/", notes:[21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,108]},
+  /* AOG-PIANO-SOUNDS-V2: one layer each, already brought to one level (even), every few semitones and in tune; the strings'
+     notes loop between 2.4 s and 5.4 s while a key is held (audio/piano/CREDITS.txt) */
+  harp:   {dir:"/audio/piano/harp2/",    layers:["m"], even:true, notes:[28,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,98,101]},
+  marimba:{dir:"/audio/piano/marimba2/", layers:["m"], even:true, notes:[41,48,55,59,65,72,79,83,89,96]},
+  strings:{dir:"/audio/piano/strings2/", layers:["m"], even:true, loop:[2.4,5.4], notes:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]},
+  /* AOG-PIANO-REAL-V1 (2026-10-04) — Jimmy: "Also are ALL instruments sounds real?" Eight more are recordings now, made the
+     same way (music-handoff/tools/piano_vcsl_sets.py; audio/piano/CREDITS.txt). The organ's and the flute's held notes loop
+     from loop[0]; each note's loop ends where its own waves line up best (ends, in seconds), and the two ends are joined
+     smoothly whatever is left of the difference (steady) */
+  harpsichord:{dir:"/audio/piano/harpsichord2/", layers:["m"], even:true, notes:[34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88]},
+  pipeorgan:{dir:"/audio/piano/pipeorgan2/", layers:["m"], even:true, loop:[1.4,3.4], steady:true, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84],
+    ends:{24:2.90771,27:3.8759,30:3.71285,33:3.24467,36:3.99105,39:2.60847,42:3.38059,45:2.64849,48:3.46039,51:3.85277,54:3.94195,57:3.47918,60:3.52596,63:3.17025,66:3.72168,69:3.69755,72:3.97136,75:2.68139,78:3.27642,81:3.38853,84:2.74297}},
+  vibraphone:{dir:"/audio/piano/vibraphone/", layers:["m"], even:true, notes:[53,57,60,64,67,71,74,77,81,84,88]},
+  glockenspiel:{dir:"/audio/piano/glockenspiel2/", layers:["m"], even:true, notes:[79,84,91,96,104,108]},
+  bells:  {dir:"/audio/piano/bells2/",   layers:["m"], even:true, notes:[60,62,64,65,67,69,71,72,74,76,77]},
+  kalimba:{dir:"/audio/piano/kalimba2/", layers:["m"], even:true, notes:[44,49,51,53,55,58,61,63,65,67,70,73,75,77,79,83,88,92,97]},
+  fmpiano:{dir:"/audio/piano/fmpiano/", layers:["m"], even:true, notes:[28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96]},
+  flute:  {dir:"/audio/piano/flute2/",   layers:["m"], even:true, loop:[1.2,3.5], steady:true, notes:[60,64,69,72,76,81,84,88,93,96],
+    ends:{60:3.75726,64:3.23216,69:3.36163,72:3.62526,76:3.44644,81:3.20225,84:3.20381,88:3.97064,93:3.229,96:3.20624}},
+  /* AOG-PIANO-REAL-V2: the warm electric piano, one layer, every fifth semitone or so; each note's long tail was made from its
+     own clean loop before it was saved, so it plays straight through like the harp */
+  /* AOG-PIANO-RHODES-V1 — Jimmy: "Swap it in". The fuller jRhodes3d: the same 1977 Rhodes at three strengths, levelled by
+     the page like the grand (music-handoff/tools/piano_rhodes_set.py; CC BY-NC 4.0, credit Jeff Learman) */
+  rhodes3d: {dir:"/audio/piano/rhodes3d/", notes:[29,35,40,45,50,55,59,62,65,71,76,81,86,91,96]},
+  /* AOG-PIANO-REAL-V3: the sets made by music-handoff/tools/piano_real_sets.py (its piano_real_sets.json gives these entries):
+     a note on every third key, C1 to C7, in up to three strengths, levels baked in (the soft and loud ones 5 dB under and 4 dB
+     over the middle one). The middle strength loads first, so the sound can play after a third of the files */
+  epreed: {dir:"/audio/piano/epreed/",  layers:["m","s","l"], even:true, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  clav:   {dir:"/audio/piano/clav/",    layers:["m","s","l"], even:true, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  celesta:{dir:"/audio/piano/celesta/", layers:["m","l"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
+  steel:  {dir:"/audio/piano/steel/",   layers:["m","s","l"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
+  /* AOG-PIANO-REAL-V4: a real 1983 transistor organ (the Unitra B-11), one strength. Each file holds a whole number of the
+     note's waves between the loop points, and is faded so the page's own blend at the seam rebuilds it */
+  organ:  {dir:"/audio/piano/organ/",   layers:["m"], even:true, loop:[0.79,4.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  gospel: {dir:"/audio/piano/gospel/",  layers:["m"], even:true, loop:[0.79,4.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  rockorgan:{dir:"/audio/piano/rockorgan/", layers:["m"], even:true, loop:[0.79,4.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* AOG-PIANO-SYNTH-V1 (2026-10-04) — Jimmy: "REAL EVERYTHING if possible". The string synth, the warm synth, the synth
+     brass and the synth lead are real analog synthesizers now (a 1978 Jupiter-4 and a 1983 JX-3P, recorded by Modular
+     Samples, public domain; music-handoff/tools/piano_synth_sets.py writes these entries). Each note repeats from loop[0]
+     to its own end (ends), where its recording matches itself best; the brass is in stereo, its own chorus */
+  lead:   {dir:"/audio/piano/synthlead/", layers:["m"], even:true, loop:[1.34,4.45846],
+    ends:{24:3.44977,27:3.37122,30:3.45882,33:3.34002,36:3.35787,39:3.39692,42:3.46973,45:3.34898,48:3.58748,51:3.81492,54:3.46975,57:3.58547,60:3.36195,63:3.35195,66:3.46973,69:3.58544,72:3.35594,75:3.36596,78:4.03542,81:4.25891,84:3.35596,87:4.45846,90:3.49166,93:3.34,96:3.41431}, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  strsynth:{dir:"/audio/piano/synthstr/", layers:["m"], even:true, loop:[1.54,4.82408],
+    ends:{24:3.92512,27:4.3941,30:3.94005,33:4.68546,36:4.66742,39:3.95703,42:4.06977,45:4.35816,48:4.3761,51:3.78345,54:3.77247,57:3.62181,60:4.67043,63:4.23342,66:3.77247,69:4.82408,72:4.3761,75:3.18243,78:3.62381,81:4.82408,84:3.78844,87:3.93211,90:3.75152,93:3.23431,96:3.28771}, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  pad:    {dir:"/audio/piano/synthpad/", layers:["m"], even:true, loop:[2.04,5.35696],
+    ends:{24:4.94499,27:4.66258,30:4.5698,33:4.8402,36:4.94501,39:5.35696,42:4.82621,45:4.36728,48:4.37923,51:5.24127,54:5.13449,57:5.25027,60:4.48601,63:4.57875,66:4.26349,69:4.70748,72:4.37923,75:5.03075,78:4.37923,81:4.16272,84:4.37923,87:4.10186,90:5.12653,93:4.28943,96:5.10306}, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* the cinema organ: a real pipe organ's quiet stopped flutes (VSCO 2 CE), four pipes to a key */
+  theatre:{dir:"/audio/piano/theatre2/", layers:["m"], even:true, loop:[1.79,5.03], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* AOG-PIANO-TOYBOX-V1: the music box: a real one, its comb's teeth one at a time (D major, D5 to E7) */
+  musicbox:{dir:"/audio/piano/musicbox2/", layers:["m"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
+  /* the accordion: a real Hohner, its two reeds a note as recorded; a held note goes round the library's own loops, then this one */
+  accordion:{dir:"/audio/piano/accordion2/", layers:["m"], even:true, loop:[1.14,3.14], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  brass:  {dir:"/audio/piano/synthbrass/", layers:["m"], even:true, loop:[1.79,5.18351],
+    ends:{24:3.80873,27:5.18351,30:4.77356,33:4.18989,36:3.8539,39:3.7971,42:3.80104,45:3.86265,48:5.10721,51:4.95723,54:4.91442,57:4.96238,60:4.90547,63:3.81494,66:4.09735,69:4.93533,72:4.8517,75:4.09932,78:4.01846,81:5.05708,84:4.78476,87:3.88481,90:3.93667,93:3.23488,96:4.32082}, notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* the choir: one real singer on "ah", four of his takes to a note, a little apart, like a small group */
+  choir:  {dir:"/audio/piano/choir/",   layers:["m"], even:true, loop:[1.54,3.94], notes:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  /* AOG-PIANO-TOYBOX-V1: the toy piano: a real 1950s one, every key from C4 to F6, each a few cents out of tune as it was */
+  toy:    {dir:"/audio/piano/toy2/", layers:["m"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]}
+};
+Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},lp:{},state:"idle",done:0,job:null,ready:false,run:null}));
+const LAYER_TARGET={s:-24, m:-19, l:-15};          /* dB, the level each layer is brought most of the way to */
+function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
+/* AOG-PIANO-STEREO-V1: a recording may keep both its microphones (left and right). Its peak is the louder side's, it
+   starts where either side does, and its level is the two sides' average, so a stereo note is levelled as its one-channel
+   file was */
+function measure(buf, layer){
+  const C=buf.numberOfChannels, ds=[], sr=buf.sampleRate; for(let c=0;c<C;c++) ds.push(buf.getChannelData(c));
+  const N=ds[0].length; let pk=0;
+  for(const d of ds) for(let i=0;i<N;i++){ const a=Math.abs(d[i]); if(a>pk) pk=a; }
+  let i=0; const thr=pk*0.03; while(i<N && !ds.some(d=>Math.abs(d[i])>=thr)) i++;
+  const start=Math.max(0, i-Math.floor(0.002*sr))/sr;
+  let s=0, n=Math.min(N-i, Math.floor(0.3*sr)); for(const d of ds) for(let j=0;j<n;j++) s+=d[i+j]*d[i+j];
+  const db=10*Math.log10(s/C/Math.max(1,n)+1e-12);
+  const g=Math.max(-6, Math.min(18, (LAYER_TARGET[layer]-db)*0.7));
+  return {start:start, gain:Math.pow(10,g/20), peak:pk};
+}
+/* AOG-PIANO-PHONE-ONE-V1: the grand and the upright are the biggest sets (their stereo notes take about 115 and 88 MB once
+   decoded). On a phone they keep one microphone, the left, as recorded: never the two added together, the hollow sound
+   the stereo rebuild took away. A tablet or a computer keeps both. */
+const ONE_SIDE_ON_PHONE={grand:1, upright:1};
+function onPhone(){ try{ return Math.min(screen.width, screen.height) < 600; }catch(e){ return false; } }
+function oneSide(b){
+  if(b.numberOfChannels<2) return b;
+  let o; try{ o=new AudioBuffer({numberOfChannels:1, length:b.length, sampleRate:b.sampleRate}); }catch(e){ return b; }
+  o.getChannelData(0).set(b.getChannelData(0)); return o;
+}
+function loadSet(name, onStep){
+  const set=SETS[name];
+  if(set.job) return set.job;
+  /* only one recorded piano is kept at a time, so a phone keeps its memory. AOG-PIANO-REAL-V1: a set let go while it is
+     still loading stops: its downloads are called off, and a note already on its way is dropped, so it never fills up
+     again behind the new one (with more recorded sounds, stepping through the menu passes several of them) */
+  Object.keys(SETS).forEach(k=>{ const o=SETS[k]; if(k!==name && o.state!=="idle"){ if(o.run) o.run.stop();
+    Object.assign(o,{buf:{},gain:{},start:{},peak:{},lp:{},state:"idle",done:0,job:null,ready:false,run:null}); } });
+  const ctl=typeof AbortController==="function" ? new AbortController() : null, run={stop(){ try{ if(ctl) ctl.abort(); }catch(e){} }};
+  set.run=run; set.state="loading"; set.done=0;
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const dec=new OC(1, 1, 32000);
+  const files=[]; (set.layers||["m","s","l"]).forEach(l=>set.notes.forEach(n=>files.push([n,l])));
+  set.total=files.length;
+  let failed=0, idx=0;
+  /* AOG-PIANO-GENTLE-V1 (2026-10-11, Jimmy: "SUPER MAN SPEED!"): the middle layer comes first, six at a time, and the piano
+     plays as soon as it is in; the soft and loud layers then come two at a time with a breath between them, so a piano
+     being played is not also busy fetching and unpacking sixty recordings at full speed */
+  async function worker(k){
+    while(idx<files.length && set.run===run){
+      if(set.ready){ if(k>=2) return; await new Promise(r=>setTimeout(r, 80)); if(idx>=files.length || set.run!==run) return; }
+      const [n,l]=files[idx++];
+      try{
+        const r=await fetch(set.dir+n+l+".mp3", ctl ? {signal:ctl.signal} : undefined); if(!r.ok) throw new Error(r.status);
+        let b=await decodeWith(dec, await r.arrayBuffer());
+        if(set.run!==run) return;
+        if(ONE_SIDE_ON_PHONE[name] && onPhone()) b=oneSide(b);
+        const m=measure(b, l);
+        if(set.loop) set.lp[n+l]=bakeLoop(b, set.loop[0], loopEnd(set, n), 0.5, set.steady);
+        set.buf[n+l]=b; set.start[n+l]=m.start; set.gain[n+l]=set.even?1:m.gain; set.peak[n+l]=m.peak;
+      }catch(e){ if(set.run!==run) return; failed++; }
+      set.done++;
+      if(!set.ready && set.notes.every(k=>set.buf[k+"m"])) set.ready=true;
+      if(onStep) onStep(set);
+    }
+  }
+  set.job=Promise.all([0,1,2,3,4,5].map(worker)).then(()=>{
+    if(set.run!==run) return set;          /* let go while it loaded: it stays put away */
+    set.state = set.ready ? "ready" : "failed";
+    if(!set.ready) set.job=null;
+    if(onStep) onStep(set);
+    return set;
+  });
+  return set.job;
+}
+/* AOG-PIANO-SOUNDS-V2: a held string note loops. The half second before the loop's end is faded into the half second before
+   its start, so the jump back lands where the sound already is: no seam, whatever the decoder did to the file's timing */
+function bakeLoop(b, a, z, x, steady){
+  const sr=b.sampleRate, N=b.length, A=Math.round(a*sr), Z=Math.min(N, Math.round(z*sr)), X=Math.min(Math.round(x*sr), A, Z-A);
+  /* AOG-PIANO-STEREO-V1: each microphone's channel is joined the same way, at the same moments */
+  for(let ch=0; ch<b.numberOfChannels; ch++){
+  const d=b.getChannelData(ch);
+  if(steady){
+    /* AOG-PIANO-REAL-V1: an organ pipe or a flute holds one steady tone, so the two half seconds are much alike (a whole
+       number of the note's waves apart). An equal-power fade would swell where they agree, a straight one dip where they
+       differ: this one is straight, lifted by just as much as they differ (r, measured here), so the loudness holds */
+    let xy=0, xx=0, yy=0; for(let i=0;i<X;i++){ const p=d[Z-X+i], q=d[A-X+i]; xy+=p*q; xx+=p*p; yy+=q*q; }
+    const r=Math.max(0, Math.min(1, xy/Math.sqrt(xx*yy+1e-20)));
+    for(let i=0;i<X;i++){ const u=(i+0.5)/X, k=1/Math.sqrt((1-u)*(1-u)+u*u+2*r*u*(1-u)), j=Z-X+i; d[j]=(d[j]*(1-u)+d[A-X+i]*u)*k; }
+  }
+  else for(let i=0;i<X;i++){ const w=(i+0.5)/X*Math.PI/2, j=Z-X+i, k=A-X+i; d[j]=d[j]*Math.cos(w)+d[k]*Math.sin(w); }
+  /* AOG-PIANO-REAL-V3: the loop turns round on whole samples (returned, for the player), and the few samples just past its end
+     become those just past its start, so a playhead that reads a little beyond the end as it turns (it reads between two
+     samples) finds the same wave there: no tick at the seam, on any turn */
+  for(let j=0;j<4 && Z+j<N;j++) d[Z+j]=d[A+j];
+  }
+  return [A/sr, Z/sr];
+}
+function loopEnd(set, n){ return (set.ends && set.ends[n]) || set.loop[1]; }
+function nearest(set, m){ let best=set.notes[0]; set.notes.forEach(n=>{ if(Math.abs(n-m)<Math.abs(best-m)) best=n; }); return best; }
+function velAmp(v){ return Math.pow(0.3+0.7*Math.max(0,Math.min(1,v)), 1.5); }
+function damper(m){ return m<40?0.34 : m<60?0.24 : m<88?0.15 : 0.9; }   /* the top notes have no dampers */
+
+/* a voice is a little chain that ends in a gain we can fade out: stop(t) lets go, kill(t) silences at once */
+function voiceShell(c, out, nodes, rel, endPad){
+  return {
+    nodes:nodes, rel:rel, stopped:false,
+    stop(t, tau){ if(this.stopped) return; this.stopped=true; const T=Math.max(t, c.currentTime);
+      rel.gain.setTargetAtTime(0, T, tau); this.end=T+tau*7+(endPad||0);
+      nodes.forEach(n=>{ try{ n.stop(this.end); }catch(e){} }); },
+    kill(t){ const T=Math.max(t, c.currentTime); try{ rel.gain.cancelScheduledValues(T); rel.gain.setTargetAtTime(0, T, 0.01); }catch(e){}
+      this.stopped=true; this.end=T+0.08; nodes.forEach(n=>{ try{ n.stop(this.end); }catch(e){} }); }
+  };
+}
+function sampleVoice(c, ch, snd, m, v, when){
+  const set=SETS[snd.set];
+  const n=nearest(set, m);
+  let layer=v<0.42?"s":v<0.78?"m":"l";
+  if(snd.tone==="felt") layer="m";                    /* AOG-PIANO-SOUNDS-V2: one even layer; the felt (the filter below) softens every hammer */
+  if(!set.buf[n+layer]) layer=["m","l","s"].find(l=>set.buf[n+l]);
+  if(!layer) return null;
+  const buf=set.buf[n+layer], rate=Math.pow(2,(m-n)/12);
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5;
+  /* the felt piano is darker, the bright piano opens sooner (and its high notes are turned up, below), a tape is hazy;
+     AOG-PIANO-REAL-V1: an organ pipe sounds the same however hard its key is pressed (pipe: open, and only a little softer) */
+  lp.frequency.value=snd.tone==="felt" ? Math.max(360*Math.pow(2, v*2.3), 1.3*mtof(m)) : snd.tone==="bright" ? Math.min(19000, 3200*Math.pow(2, v*2.6))
+    : snd.tone==="tape" ? 2600*Math.pow(2, v) : snd.tone==="pipe" ? 19000 : Math.min(19000, 1500*Math.pow(2, v*3.7));
+  const va=snd.tone==="pipe" ? 0.8+0.2*clampV(v,0,1) : velAmp(v);
+  /* AOG-PIANO-REAL-V4: a post sound's level is set after its effect; drive is how hard it goes into it */
+  const lv=snd.post ? snd.drive : snd.gain;
+  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*lv;
+  /* AOG-PIANO-SOUNDS-V2: the new recorded sounds keep a note's sharpest instant under 0.85 even at full strength (each
+     recording's peak is measured as it loads; the bright piano's lift can raise it); the three first pianos are as they were */
+  if(snd.tone || set.even){ const pk=(set.peak[n+layer]||0)*set.gain[n+layer]*va*lv*(snd.tone==="bright"?1.6:1); if(pk>0.85) g.gain.value*=0.85/pk; }
+  const rel=c.createGain(); rel.gain.value=1;
+  if(snd.tone==="bright"){ const hs=c.createBiquadFilter(); hs.type="highshelf"; hs.frequency.value=2600; hs.gain.value=7*clampV((96-m)/24,0,1); lp.connect(hs); hs.connect(g); }   /* the top notes are bright already */
+  else if(snd.tone==="tine"){
+    /* AOG-PIANO-REAL-V2: the warm electric piano was recorded at one strength; its bark is in its own attack. Played softly,
+       the filter keeps the tone round; played hard, the attack opens bright and barks (a lift near 1.5 kHz, where a tine piano
+       growls), and both settle within half a second, as the built warm sound always did. Set as values first, so a note the
+       engine hears late still starts right (AOG-PIANO-LATE-NOTE-V1) */
+    /* the filter follows the key (so every part of the keyboard is shaped alike): at middle strength it is nearly open, as
+       recorded; softly, it closes to a few partials; the bark lifts in only near full strength */
+    const vv=clampV(v,0,1), f0=mtof(m), hi=Math.min(19000, f0*Math.pow(2, 1.2+7.5*vv*vv)), lo=Math.min(hi, f0*Math.pow(2, 0.7+5*vv*vv));
+    lp.Q.value=0.6; lp.frequency.value=hi; lp.frequency.setValueAtTime(hi, when); lp.frequency.setTargetAtTime(lo, when+0.02, 0.4);
+    const bark=c.createBiquadFilter(), bg=9*clampV((vv-0.7)/0.3, 0, 1); bark.type="peaking"; bark.frequency.value=1400; bark.Q.value=0.6;
+    bark.gain.value=bg; bark.gain.setValueAtTime(bg, when); bark.gain.setTargetAtTime(bg*0.35, when+0.02, 0.3);
+    lp.connect(bark); bark.connect(g);
+  }
+  else lp.connect(g);
+  /* a tape keyboard's tape lasts eight seconds: a note held longer fades as the tape runs out */
+  if(snd.tape){ const G=g.gain.value; g.gain.setValueAtTime(G, when+snd.tape-0.8); g.gain.linearRampToValueAtTime(0, when+snd.tape); }
+  /* AOG-PIANO-REAL-V4: the rock and jazz organ keeps its swirl (org); a post sound's effect feeds the room itself */
+  g.connect(rel); rel.connect(snd.bus ? fx(ch, snd.bus) : snd.org ? ch.org : ch.bus); if(!snd.post) rel.connect(ch.send);
+  const srcs=[];
+  const mk=(cents, delay, lvl)=>{ const s=c.createBufferSource(); s.buffer=buf; s.playbackRate.value=rate*Math.pow(2,cents/1200);
+    if(set.loop){ const lp=set.lp[n+layer]; s.loop=true; s.loopStart=lp?lp[0]:set.loop[0]; s.loopEnd=lp?lp[1]:loopEnd(set, n); }     /* the strings keep bowing while a key is held (the organ keeps sounding, the flute keeps blowing) */
+    const sg=c.createGain(); sg.gain.value=lvl; s.connect(sg); sg.connect(lp); s.start(when+delay, set.start[n+layer]);
+    if(snd.tape) s.stop(when+snd.tape+0.05);
+    srcs.push(s); };
+  if(snd.honky){ mk(-11,0,0.62); mk(11,0.004,0.62); } else mk(0,0,1);
+  const vc=voiceShell(c, ch.bus, srcs, rel);
+  vc.tau=snd.tau||damper(m);
+  /* the sample (or the tape) runs out: let the voice end itself */
+  if(snd.tape) vc.natural=when+snd.tape;
+  else if(!set.loop) vc.natural=when+(buf.duration-set.start[n+layer])/rate;
+  if(snd.tone || set.even) ringOn(ch, m, vc, when);   /* AOG-PIANO-SOUNDS-V2 (the three first pianos are as they were) */
+  return vc;
+}
+function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
+/* AOG-PIANO-LATE-NOTE-V1 (2026-10-03) — Jimmy, on an iPad: "playing the ORGAN, every 4-5 notes I would hear a drum".
+   A note played by hand is timed for "now", and now and then the sound engine first hears it a moment later. Safari can
+   then skip the note's first step ("start at 0"), and a new gain starts at its default of 1: the church organ's breath
+   came out full blast, like a snare, over a thump. So every envelope's gain is made already holding where its sound is
+   a moment in, and a late note just starts a moment late. */
+function gainAt(c, v){ try{ return new GainNode(c, {gain:v}); }catch(e){ const g=c.createGain(); g.gain.value=v; return g; } }
+function fmPair(c, f, ratio, idx0, idx1, tau, when, carrierDetune){
+  const car=osc(c,"sine",f*(carrierDetune||1)), mod=osc(c,"sine",f*ratio), mg=gainAt(c, f*idx0);
+  mg.gain.setValueAtTime(f*idx0, when); mg.gain.setTargetAtTime(f*idx1, when, tau);
+  mod.connect(mg); mg.connect(car.frequency); return {car:car, mod:mod};
+}
+let shapeCache=null;
+function softClip(){ if(shapeCache) return shapeCache; const n=1024, cv=new Float32Array(n); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; cv[i]=Math.tanh(1.8*x)/Math.tanh(1.8); } shapeCache=cv; return cv; }
+function synthVoice(c, ch, snd, m, v, when){
+  const f=mtof(m), vv=Math.max(0.05,Math.min(1,v)), nodes=[];
+  /* the loudest point of each sound; the quick attacks hold it from the start, the church organ swells up from silence */
+  const peak = snd.kind==="tine"||snd.kind==="fm" ? 0.30*velAmp(vv) : snd.kind==="reed" ? 0.24*velAmp(vv)
+             : snd.kind==="organ" ? 0.16*(0.75+0.25*vv) : 0.14*(0.8+0.2*vv);
+  const amp=gainAt(c, snd.kind==="church"?0:peak), rel=c.createGain(); rel.gain.value=1;
+  let dest=amp, tau=0.08;
+  const decay=(base, lo, hi)=>Math.max(lo, Math.min(hi, base*Math.pow(261.6/f, 0.4)));
+  if(snd.kind==="tine"){                 /* warm electric piano: a bell-like tine over a round body */
+    const a=fmPair(c,f,1, 1.0+2.2*vv, 0.25, 0.35, when), b=fmPair(c,f,14, 1.3*vv, 0, 0.03, when);
+    const bg=c.createGain(); bg.gain.value=0.35; a.car.connect(amp); b.car.connect(bg); bg.connect(amp);
+    nodes.push(a.car,a.mod,b.car,b.mod);
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.9,0.6,4.5));
+    tau=0.07;
+  } else if(snd.kind==="reed"){          /* bright electric piano: a reed that barks when you dig in */
+    const a=fmPair(c,f,1, 1.8+3.2*vv, 0.7, 0.45, when);
+    const sh=c.createWaveShaper(); sh.curve=softClip(); const drive=c.createGain(); drive.gain.value=0.7+1.6*vv;
+    a.car.connect(drive); drive.connect(sh); sh.connect(amp); nodes.push(a.car,a.mod);
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.003); amp.gain.setTargetAtTime(0, when+0.003, decay(1.3,0.45,3.2));
+    tau=0.06;
+  } else if(snd.kind==="fm"){            /* the 1980s digital electric piano: a round body, a bell-like ping that fades fast, and a faint shimmer */
+    /* AOG-PIANO-EP80-V2 (2026-10-03) — Jimmy: "On the electric piano, it sounds a bit iffy". The ping's voice sat 6 cents sharp
+       at full strength for the whole note, so every note swelled and dipped by about 10 dB (the warm and bright pianos: 1 to 3).
+       Now the ping is in tune and fades within a moment; the shimmer is a much quieter voice only 1.2 cents sharp. The ping's
+       partner sits 14 times higher, or less for the top notes, so it stays under the highest pitch the sound engine can make
+       (above that, a tone folds back as a harsh one). */
+    const r=f*14<15000 ? 14 : Math.max(3, Math.floor(15000/f));
+    const a=fmPair(c,f,1, 0.5+1.3*vv, 0.18, 0.8, when);
+    const b=fmPair(c,f,r, (0.2+0.5*vv)*Math.min(1, Math.sqrt(1200/f))*r, 0, 0.06, when);
+    const sh=fmPair(c,f,1, 0.3, 0.1, 0.8, when, 1.0007);
+    const ag=gainAt(c,0.7), bg=gainAt(c,0.36), sg=gainAt(c,0.08);
+    bg.gain.setValueAtTime(0.36, when); bg.gain.setTargetAtTime(0.03, when, 0.18);
+    a.car.connect(ag); ag.connect(amp); b.car.connect(bg); bg.connect(amp); sh.car.connect(sg); sg.connect(amp);
+    nodes.push(a.car,a.mod,b.car,b.mod,sh.car,sh.mod);
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.004); amp.gain.setTargetAtTime(0, when+0.004, decay(2.4,0.7,5));
+    tau=0.09;
+  } else if(snd.kind==="organ"){         /* rock and jazz organ: three drawbars out */
+    /* a key makes one sound, the organ's (Jimmy, 2026-10-03: "a drum sound happens prior to the organ sounds … hitting the keys
+       should not make a secondary sound"): no key click, no percussion ping, and a soft 8 ms start so nothing thumps */
+    const o=osc(c,"sine",f/2); o.setPeriodicWave(organWave(c)); o.connect(amp); nodes.push(o);
+    amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak, when+0.008);
+    dest=amp; tau=0.02;
+  } else {                               /* church organ: pipes that take a moment to speak, in a big room (one sound: no breath noise) */
+    const o=osc(c,"sine",f/2); o.setPeriodicWave(churchWave(c)); o.connect(amp); nodes.push(o);
+    amp.gain.setValueAtTime(0, when); amp.gain.setTargetAtTime(peak, when, 0.035);
+    tau=0.12;
+  }
+  const lvl=c.createGain(); lvl.gain.value=snd.gain;
+  amp.connect(lvl); lvl.connect(rel);
+  rel.connect(snd.kind==="organ"?ch.org:ch.bus);
+  rel.connect(ch.send);
+  nodes.forEach(n=>n.start(when));
+  const vc=voiceShell(c, ch.bus, nodes, rel);
+  vc.tau=tau;
+  return vc;
+}
+const WAVES=new WeakMap();
+function waveFrom(c, key, levels){ let w=WAVES.get(c)||{}; if(w[key]) return w[key];
+  const real=new Float32Array(17), imag=new Float32Array(17); Object.keys(levels).forEach(h=>{ imag[+h]=levels[h]; });
+  w[key]=c.createPeriodicWave(real, imag, {disableNormalization:false}); WAVES.set(c,w); return w[key]; }
+/* harmonics counted from the 16-foot pipe (half the note): 16', 5⅓', 8', 4' … */
+const DB=n=>n?Math.pow(10,-(8-n)*3/20):0;
+function organWave(c){ return waveFrom(c,"organ",{1:DB(8),3:DB(8),2:DB(8),4:DB(6)}); }
+function churchWave(c){ return waveFrom(c,"church",{1:0.35,2:1,4:0.55,6:0.25,8:0.35,12:0.18,16:0.12}); }
+/* the stand-in while a recording loads: the warm electric piano, built here (its own settings, so it stays the same) */
+const STAND_IN={kind:"tine", gain:1.09};
+function makeVoice(c, ch, id, m, v, when){
+  const snd=SOUNDS[id];
+  if(snd.kind==="sample"){
+    if(SETS[snd.set].ready){ const vc=sampleVoice(c, ch, snd, m, v, when); if(vc) return vc; }
+    /* AOG-PIANO-REAL-V1: a sound that was built here before it was recorded (made) plays that version until its recording
+       arrives, or if it cannot; the pianos, the harp, the marimba and the strings play the electric piano, as before */
+    const sub=snd.made||STAND_IN;
+    return BUILD[sub.kind] ? buildVoice(c, ch, sub, m, v, when) : synthVoice(c, ch, sub, m, v, when);
+  }
+  if(BUILD[snd.kind]) return buildVoice(c, ch, snd, m, v, when);   /* AOG-PIANO-SOUNDS-V2 */
+  return synthVoice(c, ch, snd, m, v, when);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-PIANO-SOUNDS-V2 (2026-10-04) — the twenty new sounds that are built here (the harp, the marimba and the soft strings
+   are recordings, above; the bright and felt pianos are the grand and the upright, voiced another way).
+   · Struck and plucked sounds (toy piano, clavinet, celesta, glockenspiel, steel drums, harpsichord, kalimba, music box) are
+     worked out note by note the first time a note is needed, kept for the sound that is picked, and played back like a
+     recording, so a phone plays them as easily as the pianos. A bar, rod or tine is a few partials, each fading at its own
+     speed; the harpsichord's and the clavinet's strings are plucked strings (Karplus–Strong), tuned to the cent.
+   · Held sounds (the new organs, the accordion, the vibraphone, the bells, the choir and the synths) are oscillators, as the
+     organs always were: two or three to a note.
+   · The gospel organ's spinning speaker, the cinema organ's tremble, the vibraphone's motor and the synths' chorus are one
+     shared effect each, made the first time that sound plays; when it has rested, its wobblers stop.
+   Nothing plays by itself. A wobble that belongs to an instrument (the vibraphone's motor, an organ's tremble, a singer's
+   vibrato) is heard only while that instrument's note sounds. No note goes past the highest pitch the engine can make.
+   · AOG-PIANO-REAL-V1: the glockenspiel, the vibraphone, the bells, the harpsichord, the kalimba and the tape flute below
+     (and the warm and '80s electric pianos and the church organ in synthVoice) are recordings now; these built versions
+     stand in while a recording loads (SOUNDS[id].made; the warm one also stands in for the pianos, STAND_IN). The
+     vibraphone's motor and the tape still move the recorded notes.
+   ══════════════════════════════════════════════════════════════════════════ */
+const clampV=(x,a,b)=>Math.max(a,Math.min(b,x));
+const BSR=32000;                                   /* made notes are kept at the recordings' rate */
+const MADE={kind:"", notes:new Map()};             /* one sound's made notes at a time, so a phone keeps its memory */
+function newBuf(c, d){
+  let b=null;
+  try{ b=new AudioBuffer({length:d.length, sampleRate:BSR, numberOfChannels:1}); }catch(e){ try{ b=c?c.createBuffer(1, d.length, BSR):null; }catch(e2){ b=null; } }
+  if(b) b.getChannelData(0).set(d);
+  return b;
+}
+function madeBuf(c, kind, m){
+  if(MADE.kind!==kind){ MADE.kind=kind; MADE.notes=new Map(); }
+  let b=MADE.notes.get(m);
+  if(!b){ b=newBuf(c, MAKERS[kind](m)); if(b) MADE.notes.set(m, b); }
+  return b;
+}
+/* a struck bar, rod or tine: partials [ratio to the note, level, fade time in s, swell time in s], each a sine that fades on
+   its own (worked out by a two-step recursion, no table), and the strike [level, time, tone in Hz, sharp] as a puff of noise.
+   A partial past the highest pitch is left out. */
+function partials(m, len, parts, hit){
+  const f=mtof(m), n=Math.ceil(len*BSR), out=new Float32Array(n), top=0.44*BSR;
+  parts.forEach(([r,a,tau,sw])=>{
+    const fr=f*r; if(!(a>0) || fr>=top) return;
+    const w=2*Math.PI*fr/BSR, d=Math.exp(-1/(tau*BSR)), c2=2*d*Math.cos(w), d2=d*d, kmax=Math.min(n, Math.ceil(tau*BSR*9));
+    const qd=sw?Math.exp(-1/(sw*BSR)):0; let y0=0, y1=a*d*Math.sin(w), q=1;
+    for(let k=1;k<kmax;k++){ if(sw){ q*=qd; out[k]+=y1*(1-q); } else out[k]+=y1; const y=c2*y1-d2*y0; y0=y1; y1=y; }
+  });
+  if(hit){
+    const [a,tau,fc,sharp]=hit, r=seeded(0x5bd1e995^(m*40503)), al=1-Math.exp(-2*Math.PI*Math.min(fc,top)/BSR), ed=Math.exp(-1/(tau*BSR)), kmax=Math.min(n, Math.ceil(tau*BSR*8));
+    let lp=0, pr=0, e=1;
+    for(let k=0;k<kmax;k++){ lp+=al*(r()-lp); out[k]+=a*e*(sharp?(lp-pr)*3:lp); pr=lp; e*=ed; }
+  }
+  return out;
+}
+/* a plucked or struck string (Karplus–Strong): one wave's worth of noise runs round a loop, a little softer and darker each
+   time round. The loop's last fraction of a sample is an all-pass filter, set for this very note, so it is in tune. o = {t60:
+   seconds to fade 60 dB, S: how fast the high partials fade, fc: the pluck's brightness, pos: where it is plucked, two: a second
+   string this many cents apart, pick: where the pickup sits} */
+function pluck(m, len, o){
+  const n=Math.ceil(len*BSR), out=new Float32Array(n), f0=mtof(m);
+  const one=(f, seed, amp)=>{
+    const D=BSR/f, S=o.S, w0=2*Math.PI*f/BSR;
+    const pdLP=Math.atan2(S*Math.sin(w0), (1-S)+S*Math.cos(w0))/w0;
+    let N=Math.floor(D-pdLP-0.2); if(N<2) N=2;
+    const want=D-pdLP-N;
+    const pdAP=C=>-(Math.atan2(-Math.sin(w0), C+Math.cos(w0))-Math.atan2(-C*Math.sin(w0), 1+C*Math.cos(w0)))/w0;
+    let lo=-0.999, hi=0.999; for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(pdAP(mid)>want) lo=mid; else hi=mid; }
+    const C=(lo+hi)/2, rho=Math.pow(0.001, 1/(o.t60*f)), dl=new Float64Array(N), r=seeded(seed), al=1-Math.exp(-2*Math.PI*Math.min(o.fc,0.44*BSR)/BSR);
+    /* the pluck: the string's slope, one way on the pick's side and the other way beyond it (so where it is plucked shapes
+       the tone), a touch of noise from the quill or the tip, softened by how bright the pluck is (once round, then again) */
+    const P=Math.max(1, Math.round(o.pos*N));
+    for(let k=0;k<N;k++) dl[k]=(k<P?1:0)+0.15*r();
+    let lp=dl[N-1]; for(let pass=0;pass<2;pass++) for(let k=0;k<N;k++){ lp+=al*(dl[k]-lp); if(pass) dl[k]=lp; }
+    let mean=0, pk=0; for(let k=0;k<N;k++) mean+=dl[k]; mean/=N; for(let k=0;k<N;k++){ dl[k]-=mean; pk=Math.max(pk,Math.abs(dl[k])); }
+    for(let k=0;k<N;k++) dl[k]*=amp/(pk||1);
+    let idx=0, uP=0, vP=0, wP=0;
+    for(let k=0;k<n;k++){ const u=dl[idx], v=(1-S)*u+S*uP; uP=u; const w=C*v+vP-C*wP; vP=v; wP=w; dl[idx]=rho*w; if(++idx===N) idx=0; out[k]+=u; }
+  };
+  one(f0, 0x2f6b1a3d^(m*7919), o.two?0.5:1);
+  if(o.two) one(f0*Math.pow(2,o.two/1200), 0x51a7c3e1^(m*104729), 0.5);
+  if(o.pick){ const P=Math.max(1,Math.round(o.pick*BSR/f0)); for(let k=n-1;k>=P;k--) out[k]-=out[k-P]; }
+  let x1=0, y1=0; for(let k=0;k<n;k++){ const y=out[k]-x1+0.995*y1; x1=out[k]; y1=y; out[k]=y; }   /* no slow drift below the note */
+  return out;
+}
+/* every made note equally strong in its first moment, a little softer at the very top, and never sharper than 0.6 at its
+   peak (a plucked string's first instant can be spiky); a gentle start, and the end faded over the last part of the note,
+   so a long-held note dies away instead of stopping */
+function finishNote(d, m, tail, knee){
+  const n=d.length, w=Math.min(n, Math.floor(0.3*BSR)); let s=0, pk=0; for(let k=0;k<w;k++) s+=d[k]*d[k]; for(let k=0;k<n;k++) pk=Math.max(pk, Math.abs(d[k]));
+  const rms=Math.sqrt(s/Math.max(1,w)), g=Math.min(rms>0 ? Math.min(8, 0.2/rms) : 1, pk>0 ? 0.6/pk : 1)*(m>84 ? Math.pow(2,-(m-84)/24) : 1);
+  const fi=Math.ceil(0.0005*BSR), fo=Math.max(Math.ceil(0.05*BSR), Math.floor(n*(tail||0)));
+  for(let k=0;k<n;k++){ let x=d[k]*g; if(k<fi) x*=k/fi; const left=n-1-k; if(left<fo){ const u=left/fo; x*=u*u*(3-2*u); }
+    /* knee: a plucked string's first instant is rounded off above this level (only the spikes; the tone stays as it is) */
+    if(knee){ const a=Math.abs(x); if(a>knee) x=Math.sign(x)*(knee+0.15*Math.tanh((a-knee)/0.15)); }
+    d[k]=x; }
+  return d;
+}
+const MAKERS={
+  toy(m){ const f=mtof(m), t1=clampV(0.7*Math.pow(1046.5/f,0.4),0.25,1.5), r=Math.pow(2,(((m*37)%13)-6)/1200);   /* each rod a few cents off, as on a real toy piano */
+    return finishNote(partials(m, Math.min(3, t1*4+0.2), [[r,1,t1],[2.38*r,0.12,t1*0.3],[6.27*r,0.5,0.05],[17.5*r,0.18,0.012]], [0.16,0.006,1400,0]), m, 0.2); },
+  celesta(m){ const f=mtof(m), t1=clampV(0.95*Math.pow(1046.5/f,0.4),0.4,2.2);
+    return finishNote(partials(m, Math.min(4, t1*4+0.2), [[1,1,t1],[2.756,0.13,0.06+0.1*t1],[5.404,0.04,0.035]], [0.05,0.004,1800,0]), m, 0.2); },
+  glock(m){ const f=mtof(m), t1=clampV(1.9*Math.pow(1046.5/f,0.3),0.7,3);
+    return finishNote(partials(m, Math.min(3.6, t1*3+0.2), [[1,1,t1],[2.756,0.5,t1*0.45],[5.404,0.28,t1*0.2],[8.933,0.14,0.08],[13.34,0.07,0.03]], [0.1,0.002,6000,1]), m, 0.3); },
+  steel(m){ const f=mtof(m), t1=clampV(0.9*Math.pow(1046.5/f,0.35),0.35,1.7);
+    return finishNote(partials(m, Math.min(3, t1*4+0.2), [[1,1,t1],[2.003,0.62,t1*0.7,0.014],[3.006,0.24,t1*0.35],[4.01,0.12,t1*0.2],[5.02,0.05,t1*0.1]], [0.06,0.003,2200,0]), m, 0.2); },
+  kalimba(m){ const f=mtof(m), t1=clampV(0.8*Math.pow(1046.5/f,0.4),0.3,1.8);
+    return finishNote(partials(m, Math.min(3, t1*4+0.15), [[1,1,t1,0.0015],[2,0.06,t1*0.35],[5.95,0.3,0.05]], [0.05,0.004,2500,0]), m, 0.2); },
+  musicbox(m){ const f=mtof(m), t1=clampV(1.3*Math.pow(1046.5/f,0.5),0.35,2.6);
+    return finishNote(partials(m, Math.min(3.5, t1*3.5+0.15), [[1,1,t1],[2,0.04,t1*0.5],[6.267,0.42,0.07],[17.55,0.15,0.015]], [0.05,0.0012,7000,1]), m, 0.25); },
+  harpsi(m){ const f=mtof(m), t60=clampV(5*Math.pow(261.6/f,0.55),1.2,9);
+    return finishNote(pluck(m, Math.min(4.5, 0.55*t60+0.4), {t60:t60, S:clampV(0.12*Math.pow(523.3/f,0.5),0.03,0.12), fc:7000, pos:0.12, two:1.4}), m, 0.35, 0.35); },
+  clav(m){ const f=mtof(m), t60=clampV(2.6*Math.pow(261.6/f,0.4),0.8,4.5);
+    return finishNote(pluck(m, Math.min(3, 0.5*t60+0.3), {t60:t60, S:clampV(0.07*Math.pow(523.3/f,0.5),0.02,0.07), fc:10000, pos:0.04, pick:0.13}), m, 0.3, 0.35); }
+};
+/* the made notes, played like a recording: each sound's brightness for soft and hard playing [Hz at the softest, octaves more
+   at the hardest], and how fast it stops when let go (a glockenspiel and a music box have no dampers: they ring on) */
+const MADE_TONE={toy:[2500,2.5,0.25], celesta:[1800,2.6,0.12], glock:[3500,2.2,0.5], steel:[2200,2.4,0.22], kalimba:[1500,2.5,0.2],
+  musicbox:[3500,2,0.4], harpsi:[3000,2.2,0.09], clav:[1800,3,0.035]};
+function madeVoice(c, ch, snd, m, v, when){
+  const buf=madeBuf(c, snd.kind, m); if(!buf) return null;
+  const [lo,oct,tau]=MADE_TONE[snd.kind], s=c.createBufferSource(); s.buffer=buf;
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(0.45*c.sampleRate, lo*Math.pow(2, v*oct));
+  const g=gainAt(c, velAmp(v)); s.connect(lp); lp.connect(g);
+  return {nodes:[s], out:g, tau:tau, natural:when+buf.duration};
+}
+function waveArr(c, key, amps){ let w=WAVES.get(c)||{}; if(w[key]) return w[key];
+  const real=new Float32Array(amps.length), imag=new Float32Array(amps.length); amps.forEach((a,i)=>{ imag[i]=a||0; });
+  w[key]=c.createPeriodicWave(real, imag, {disableNormalization:false}); WAVES.set(c,w); return w[key]; }
+/* the gospel organ: every tone pulled out (16' 5⅓' 8' 4' 2⅔' 2' 1⅓' 1', counted from the 16' as the rock organ's are) */
+function gospelWave(c){ return waveFrom(c,"gospel",{1:DB(8),3:DB(6),2:DB(8),4:DB(8),6:DB(5),8:DB(6),12:DB(3),16:DB(4)}); }
+/* the cinema organ: flute pipes (tibias) at 16' 8' 4' 2⅔' 2', nearly pure */
+function tibiaWave(c){ return waveFrom(c,"tibia",{1:0.55,2:1,3:0.05,4:0.6,6:0.2,8:0.3}); }
+/* the '70s rock organ: 16' 5⅓' 8' 4' all out and a little 2⅔' (888 84), counted from the 16' */
+function rockWave(c){ return waveFrom(c,"rock",{1:DB(8),3:DB(8),2:DB(8),4:DB(8),6:DB(4)}); }
+/* its amplifier: loud enough that a chord growls, while one note stays nearly clean */
+let growlCache=null;
+function growlCurve(){ if(growlCache) return growlCache; const n=2048, cv=new Float32Array(n); for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; cv[i]=Math.tanh(4*x)/Math.tanh(4); } growlCache=cv; return cv; }
+/* a flute: nearly pure, a little of its octave and twelfth */
+function fluteWave(c){ return waveArr(c,"flute",[0,1,0.25,0.12,0.04,0.02]); }
+/* the breath in a flute: one second of soft noise per sound engine, the same every time (a fixed seed) */
+function breathBuf(c){ let w=WAVES.get(c)||{}; if(w.breath) return w.breath;
+  const sr=c.sampleRate, b=c.createBuffer(1, sr, sr), d=b.getChannelData(0), r=seeded(0x1b873593); for(let i=0;i<d.length;i++) d[i]=r();
+  w.breath=b; WAVES.set(c,w); return b; }
+/* an accordion reed: every partial, the even ones a little weaker */
+function reedWave(c){ const a=[0]; for(let n=1;n<=28;n++) a.push(Math.pow(n,-0.9)*(n%2?1:0.72)); return waveArr(c,"reed",a); }
+/* a choir on "ah": four formants of a mixed choir, sampled at this very note's partials */
+function vowelWave(c, m){
+  const f=mtof(m), N=Math.max(2, Math.min(120, Math.floor(7000/f))), a=[0], F=[[800,120,1],[1150,140,0.5],[2900,220,0.18],[3900,300,0.08]];
+  for(let n=1;n<=N;n++){ const x=n*f; let e=0.015; F.forEach(([fc,bw,g])=>{ const u=(x-fc)/(bw/2); e+=g/(1+u*u); }); a.push(Math.pow(n,-1.1)*e); }
+  return waveArr(c, "ah"+m, a);
+}
+/* the shared effects: one of each per sound engine (the live one, or a recording's), made the first time a sound needs it */
+function lfoTo(c, hz, deg, depth, param, t0, list){
+  const o=c.createOscillator(); o.frequency.value=hz;
+  if(deg){ const q=deg*Math.PI/180; o.setPeriodicWave(c.createPeriodicWave(new Float32Array([0,Math.sin(q)]), new Float32Array([0,Math.cos(q)]), {disableNormalization:true})); }
+  const g=c.createGain(); g.gain.value=depth; o.connect(g); g.connect(param); o.start(t0); list.push(o); return o;
+}
+function fx(ch, name){
+  const c=ch.c, now=c.currentTime; ch.fx=ch.fx||{};
+  /* an effect no note has gone into for twenty seconds rests: its wobblers stop (the sound still passes), so a phone does no work for nothing */
+  Object.keys(ch.fx).forEach(k=>{ const e=ch.fx[k]; if(k!==name && now-e.used>20){ e.lfos.forEach(o=>{ try{ o.stop(); }catch(err){} }); delete ch.fx[k]; } });
+  const have=ch.fx[name]; if(have){ have.used=now; return have.inp; }
+  const inp=c.createGain(), out=c.createGain(), lfos=[];
+  out.connect(ch.bus);
+  const delay=base=>{ const d=c.createDelay(0.05); d.delayTime.value=base; return d; };
+  if(name==="rot"){             /* the gospel organ's speaker, spinning fast: the sound circles round, a little louder and softer, higher and lower */
+    const d=delay(0.004), am=c.createGain(), dry=c.createGain(); am.gain.value=0.8; dry.gain.value=0.5;
+    lfoTo(c,6.3,0,0.00016,d.delayTime,now,lfos); lfoTo(c,6.3,90,0.2,am.gain,now,lfos);
+    inp.connect(d); d.connect(am); am.connect(out); inp.connect(dry); dry.connect(out);
+  } else if(name==="trem"){     /* the cinema organ's tremulant: the whole organ trembles, in pitch and in loudness */
+    const d=delay(0.004), am=c.createGain(); am.gain.value=0.85;
+    lfoTo(c,6.6,0,0.00022,d.delayTime,now,lfos); lfoTo(c,6.6,90,0.15,am.gain,now,lfos);
+    inp.connect(d); d.connect(am); am.connect(out);
+  } else if(name==="vibe"){     /* the vibraphone's motor: fans in the tubes open and close, and the sound gently pulses */
+    const am=c.createGain(); am.gain.value=0.78; lfoTo(c,5.2,0,0.22,am.gain,now,lfos);
+    inp.connect(am); am.connect(out);
+  } else if(name==="rock" || name==="rockrec"){     /* the '70s rock organ (built, or recorded: rockrec): all its notes into one loud amplifier (so a chord growls, as on the records), then the
+                                   spinning speaker, a horn for the highs and a drum for the lows, each going round at its own speed */
+    const sh=c.createWaveShaper(); sh.curve=growlCurve(); sh.oversample="4x";
+    const spk=c.createBiquadFilter(); spk.type="lowpass"; spk.frequency.value=5200; spk.Q.value=0.7;
+    inp.connect(sh); sh.connect(spk);
+    const hi=c.createBiquadFilter(); hi.type="highpass"; hi.frequency.value=800; hi.Q.value=0.6;
+    const lo=c.createBiquadFilter(); lo.type="lowpass"; lo.frequency.value=800; lo.Q.value=0.6;
+    const hd=delay(0.004), ham=c.createGain(), lam=c.createGain(); ham.gain.value=0.75; lam.gain.value=0.85;
+    lfoTo(c,6.1,0,0.00018,hd.delayTime,now,lfos); lfoTo(c,6.1,90,0.25,ham.gain,now,lfos); lfoTo(c,5.3,30,0.15,lam.gain,now,lfos);
+    spk.connect(hi); hi.connect(hd); hd.connect(ham); ham.connect(out);
+    spk.connect(lo); lo.connect(lam); lam.connect(out);
+    out.gain.value=name==="rock" ? SOUNDS.rockorgan.made.gain : SOUNDS.rockorgan.gain; out.connect(ch.send);   /* its level is set after the amplifier, so the growl stays the same; the room hears the speaker */
+  } else if(name==="tape"){     /* the tape keyboard: the tapes' narrower sound and their slow wow and quick flutter */
+    const h=c.createBiquadFilter(); h.type="highpass"; h.frequency.value=70; h.Q.value=0.6;
+    const l=c.createBiquadFilter(); l.type="lowpass"; l.frequency.value=6000; l.Q.value=0.6;
+    const d=delay(0.006); lfoTo(c,0.55,0,0.0009,d.delayTime,now,lfos); lfoTo(c,7.3,0,0.00006,d.delayTime,now,lfos);
+    inp.connect(h); h.connect(l); l.connect(d); d.connect(out);
+  } else {                      /* ens: the string synth's ensemble (three copies, each drifting in time); cho: a soft chorus; choir: many singers */
+    const P={ens:{hp:90, lp:4500, dry:0, taps:[[0.0075,0],[0.0095,120],[0.0115,240]], lvl:0.42, slow:[0.62,0.0014], fast:[5.8,0.00015]},
+             cho:{dry:0.75, taps:[[0.009,0],[0.013,180]], lvl:0.35, slow:[0.4,0.0016]},
+             choir:{dry:0.6, taps:[[0.012,0],[0.017,120],[0.022,240]], lvl:0.4, slow:[0.33,0.0022], fast:[4.7,0.00012]}}[name];
+    let src=inp;
+    if(P.hp){ const h=c.createBiquadFilter(); h.type="highpass"; h.frequency.value=P.hp; h.Q.value=0.6; src.connect(h); src=h; }
+    if(P.lp){ const l=c.createBiquadFilter(); l.type="lowpass"; l.frequency.value=P.lp; l.Q.value=0.6; src.connect(l); src=l; }
+    if(P.dry){ const g=c.createGain(); g.gain.value=P.dry; src.connect(g); g.connect(out); }
+    P.taps.forEach(([base,deg])=>{ const d=delay(base), g=c.createGain(); g.gain.value=P.lvl;
+      lfoTo(c,P.slow[0],deg,P.slow[1],d.delayTime,now,lfos); if(P.fast) lfoTo(c,P.fast[0],deg,P.fast[1],d.delayTime,now,lfos);
+      src.connect(d); d.connect(g); g.connect(out); });
+  }
+  ch.fx[name]={inp:inp, lfos:lfos, used:now};
+  return inp;
+}
+const BUILD={
+  toy:madeVoice, clav:madeVoice, celesta:madeVoice, glock:madeVoice, steel:madeVoice, harpsi:madeVoice, kalimba:madeVoice, musicbox:madeVoice,
+  vibes(c,ch,snd,m,v,when){         /* soft mallets on metal bars: the note, the bar's ring two octaves up and a faint chime; the motor does the rest */
+    const f=mtof(m), top=0.42*c.sampleRate, ta=clampV(3*Math.pow(523.3/f,0.35),1.2,5), A=0.3*velAmp(v), out=gainAt(c,1), nodes=[];
+    [[1,1,ta],[4,0.22*(0.6+0.6*v),0.42],[10,0.06*v,0.07]].forEach(([r,a,tau])=>{ if(f*r>=top) return;
+      const o=osc(c,"sine",f*r), g=gainAt(c,A*a); g.gain.setValueAtTime(0,when); g.gain.linearRampToValueAtTime(A*a,when+0.002); g.gain.setTargetAtTime(0,when+0.002,tau);
+      o.connect(g); g.connect(out); nodes.push(o); });
+    return {nodes:nodes, out:out, tau:0.15, bus:"vibe"};
+  },
+  bells(c,ch,snd,m,v,when){         /* a tube struck at the top: FM at 1 to 3.5 gives a bell's out-of-line partials; a second voice a hair sharp lets it shimmer */
+    const f=mtof(m), sr=c.sampleRate, ta=clampV(3.2*Math.pow(261.6/f,0.35),1,4.5), A=0.24*velAmp(v);
+    const I=Math.max(0, Math.min(1.6+1.6*v, (0.42*sr-f)/(3.5*f)-1));          /* never past the highest pitch the engine can make */
+    const car=osc(c,"sine",f), mod=osc(c,"sine",f*3.5), dev=gainAt(c,I*3.5*f), hum=osc(c,"sine",f*Math.pow(2,4/1200)), out=gainAt(c,1);
+    dev.gain.setValueAtTime(I*3.5*f,when); dev.gain.setTargetAtTime(0.25*I*3.5*f,when,0.9); mod.connect(dev); dev.connect(car.frequency);
+    const ga=gainAt(c,A), gh=gainAt(c,A*0.3);
+    ga.gain.setValueAtTime(0,when); ga.gain.linearRampToValueAtTime(A,when+0.002); ga.gain.setTargetAtTime(0,when+0.002,ta);
+    gh.gain.setValueAtTime(0,when); gh.gain.linearRampToValueAtTime(A*0.3,when+0.004); gh.gain.setTargetAtTime(0,when+0.004,ta*1.3);
+    car.connect(ga); ga.connect(out); hum.connect(gh); gh.connect(out);
+    return {nodes:[car,mod,hum], out:out, tau:0.4};
+  },
+  gospel(c,ch,snd,m,v,when){        /* the rock and jazz organ with every tone out, into a fast-spinning speaker. A key makes one sound: no click, no ping */
+    const f=mtof(m), peak=0.15*(0.75+0.25*v), o=osc(c,"sine",f/2), amp=gainAt(c,peak);
+    o.setPeriodicWave(gospelWave(c)); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.008);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.02, bus:"rot"};
+  },
+  rockorgan(c,ch,snd,m,v,when){     /* the low tones pulled out, into the amplifier and the spinning speaker (the "rock" effect). One sound: no click */
+    const f=mtof(m), peak=0.15*(0.8+0.2*v), o=osc(c,"sine",f/2), amp=gainAt(c,peak);
+    o.setPeriodicWave(rockWave(c)); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.008);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.02, bus:"rock", post:true};
+  },
+  tapeflute(c,ch,snd,m,v,when){     /* a flute on tape: a nearly pure tone with a little breath; the tape leans in, and after eight seconds runs out */
+    const f=mtof(m), peak=0.13*(0.6+0.4*v), o=osc(c,"sine",f), amp=gainAt(c,0);
+    o.setPeriodicWave(fluteWave(c));
+    const nz=c.createBufferSource(); nz.buffer=breathBuf(c); nz.loop=true;
+    const bp=c.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=Math.min(0.45*c.sampleRate, 2*f); bp.Q.value=1.2;
+    const ng=gainAt(c,0.45); nz.connect(bp); bp.connect(ng); ng.connect(amp); o.connect(amp);
+    amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.06); amp.gain.setValueAtTime(peak,when+7.2); amp.gain.linearRampToValueAtTime(0,when+8);
+    nz.start(when, (m*0.137)%0.9);     /* each note its own stretch of breath */
+    return {nodes:[o,nz], started:[nz], out:amp, tau:0.1, bus:"tape", natural:when+8, end:when+8.05};
+  },
+  theatre(c,ch,snd,m,v,when){       /* the cinema organ: flute pipes at five pitches, speaking softly, through the tremulant */
+    const f=mtof(m), peak=0.15*(0.8+0.2*v), o=osc(c,"sine",f/2), amp=gainAt(c,0);
+    o.setPeriodicWave(tibiaWave(c)); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.03);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.07, bus:"trem"};
+  },
+  accordion(c,ch,snd,m,v,when){     /* two reeds a few cents apart: the slow beat between them is the accordion's shimmer; the bellows swell a little */
+    const f=mtof(m), peak=0.12*(0.55+0.45*v), w=reedWave(c), o1=osc(c,"sine",f*Math.pow(2,-4.5/1200)), o2=osc(c,"sine",f*Math.pow(2,4.5/1200));
+    o1.setPeriodicWave(w); o2.setPeriodicWave(w);
+    const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.6; lp.frequency.value=Math.min(0.45*c.sampleRate, 2400+2600*v+2*f);
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak*0.85,when+0.035); amp.gain.linearRampToValueAtTime(peak,when+0.35);
+    o1.connect(lp); o2.connect(lp); lp.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.05};
+  },
+  strsynth(c,ch,snd,m,v,when){      /* the 1970s string synth: a buzzy wave and its octave, swelling in, through the ensemble */
+    const f=mtof(m), peak=0.1*(0.7+0.3*v), o1=osc(c,"sawtooth",f), o2=osc(c,"sawtooth",2*f), g2=gainAt(c,0.35), amp=gainAt(c,0);
+    amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.14);
+    o1.connect(amp); o2.connect(g2); g2.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.22, bus:"ens"};
+  },
+  pad(c,ch,snd,m,v,when){           /* two buzzy waves a hair apart, softened and slowly opening, swelling in */
+    const f=mtof(m), peak=0.1*(0.6+0.4*v), o1=osc(c,"sawtooth",f*Math.pow(2,-7/1200)), o2=osc(c,"sawtooth",f*Math.pow(2,7/1200));
+    const top=Math.min(0.45*c.sampleRate, 900+1500*v+1.5*f), lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.9;
+    lp.frequency.value=top*0.45; lp.frequency.setValueAtTime(top*0.45,when); lp.frequency.setTargetAtTime(top,when,0.35);
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.38);
+    o1.connect(lp); o2.connect(lp); lp.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.42, bus:"cho"};
+  },
+  brass(c,ch,snd,m,v,when){         /* the 1980s synth brass: two buzzy waves; the tone opens fast and bright, then settles; the pitch scoops up a little */
+    const f=mtof(m), peak=0.11*(0.55+0.45*v), o1=osc(c,"sawtooth",f), o2=osc(c,"sawtooth",f), ny=0.45*c.sampleRate;
+    [[o1,-6],[o2,6]].forEach(([o,d])=>{ o.detune.value=d-28; o.detune.setValueAtTime(d-28,when); o.detune.setTargetAtTime(d,when,0.025); });
+    const lo=Math.min(ny,1.3*f+250), hi=Math.min(ny,5*f+1800+2400*v), sus=Math.min(ny,3*f+900+1200*v), lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=1.4;
+    lp.frequency.value=lo; lp.frequency.setValueAtTime(lo,when); lp.frequency.linearRampToValueAtTime(hi,when+0.07); lp.frequency.setTargetAtTime(sus,when+0.07,0.28);
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.03);
+    o1.connect(lp); o2.connect(lp); lp.connect(amp); return {nodes:[o1,o2], out:amp, tau:0.1, bus:"cho"};
+  },
+  lead(c,ch,snd,m,v,when){          /* a buzzy wave and a hollow one, bright, with a singer's wobble that grows in while a note is held */
+    const f=mtof(m), peak=0.09*(0.6+0.4*v), o1=osc(c,"sawtooth",f), o2=osc(c,"square",f*Math.pow(2,5/1200)), g2=gainAt(c,0.55);
+    const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=2; lp.frequency.value=Math.min(0.45*c.sampleRate, Math.max(3*f, 1800+3800*v));
+    const lfo=osc(c,"sine",5.6), dep=gainAt(c,0); dep.gain.setValueAtTime(0,when+0.35); dep.gain.linearRampToValueAtTime(14,when+0.8);
+    lfo.connect(dep); dep.connect(o1.detune); dep.connect(o2.detune);
+    const amp=gainAt(c,peak); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.006);
+    o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(amp); return {nodes:[o1,o2,lfo], out:amp, tau:0.07};
+  },
+  choir(c,ch,snd,m,v,when){         /* singers on "ah": the voice's color worked out for this very note; the shared chorus makes them many
+                                       (two voices a few cents apart would beat in a steady wobble, which a real choir never does) */
+    const f=mtof(m), peak=0.15*(0.6+0.4*v), o=osc(c,"sine",f);
+    o.setPeriodicWave(vowelWave(c,m));
+    const amp=gainAt(c,0); amp.gain.setValueAtTime(0,when); amp.gain.linearRampToValueAtTime(peak,when+0.22);
+    o.connect(amp); return {nodes:[o], out:amp, tau:0.25, bus:"choir"};
+  }
+};
+/* one bar, one string, one reed for each note: a note struck again takes over from its last voice, which fades in a moment
+   (so a fast pattern on a ringing sound never piles up voices on a phone) */
+function ringOn(ch, m, vc, when){
+  const R=ch.ring||(ch.ring={}), p=R[m];
+  const cut=(v,t)=>{ if(!v.cut && (v.end==null || v.end>t+0.02)){ v.cut=true; try{ v.kill(t); }catch(e){} } };
+  /* the chord player makes a bar's notes in any order, so whichever starts first gives way to the later one */
+  if(p && p.vc!==vc && p.at>when){ cut(vc, p.at); return; }
+  if(p && p.vc!==vc && p.at<when) cut(p.vc, when);
+  R[m]={vc:vc, at:when};
+}
+function buildVoice(c, ch, snd, m, v, when){
+  const vv=clampV(v,0.05,1), b=BUILD[snd.kind](c, ch, snd, m, vv, when); if(!b) return null;
+  const lvl=gainAt(c, b.post?1:snd.gain), rel=gainAt(c, 1);   /* post: the sound's level is set after its shared effect */
+  b.out.connect(lvl); lvl.connect(rel);
+  rel.connect(b.bus ? fx(ch, b.bus) : ch.bus); if(!b.post) rel.connect(ch.send);   /* a post sound's effect feeds the room itself */
+  b.nodes.forEach(n=>{ if(!b.started || b.started.indexOf(n)<0) n.start(when); if(b.end) n.stop(b.end); });
+  const vc=voiceShell(c, ch.bus, b.nodes, rel);
+  vc.tau=b.tau; if(b.natural) vc.natural=b.natural;
+  ringOn(ch, m, vc, when);
+  return vc;
+}
+/* a made sound's notes are worked out a few at a time while the page is quiet, the middle of the keyboard first, so the first
+   touch of each key is instant */
+let warmJob=0;
+function warmMade(id){
+  clearTimeout(warmJob);
+  const snd=SOUNDS[id]; if(!snd || !MAKERS[snd.kind]) return;
+  const order=[]; for(let m=55;m<=79;m++) order.push(m); for(let m=36;m<55;m++) order.push(m); for(let m=80;m<=84;m++) order.push(m);
+  let i=0;
+  const step=()=>{ if(S.sound!==id) return; const t0=performance.now();
+    while(i<order.length && performance.now()-t0<8) madeBuf(ac, snd.kind, order[i++]);
+    if(i<order.length) warmJob=setTimeout(step, 40); };
+  warmJob=setTimeout(step, 60);
+}
+
+/* ── the live engine ── */
+let ac=null, LIVE_CH=null;
+function ctx(){
+  if(!ac){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    /* an iPhone on silent mutes web audio; a piano is something you play, so it plays like music does */
+    try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+    ac=new AC({latencyHint:"interactive"});
+    LIVE_CH=makeChain(ac);
+    LIVE_CH.master.gain.value=volGain(S.vol);
+    setSendLevel(LIVE_CH, S.sound);
+    setEra(LIVE_CH, S.era);
+    addCrunch(LIVE_CH).then(()=>setEra(LIVE_CH, S.era));
+  }
+  if(ac.state==="suspended") ac.resume();
+  return ac;
+}
+const LIVE=new Map();        /* "k60" a key, "p60" a pad, "m60" a MIDI key → its voice */
+const ALL=[];                /* every voice still sounding, to keep the count kind to the phone */
+function track(vc){ ALL.push(vc); if(ALL.length>48){ const old=ALL.shift(); try{ old.kill(ac.currentTime); }catch(e){} } }
+function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--){ const v=ALL[i]; if((v.end&&v.end<now)||(v.natural&&v.natural<now)) ALL.splice(i,1); } }
+function noteOn(tag, m, v){
+  if(m<21||m>108) return;
+  const c=ctx(), now=c.currentTime, key=tag+m;
+  const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
+  const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
+  if(!vc) return;
+  vc.down=true; vc.vel=v; LIVE.set(key, vc); track(vc); prune();
+  litKeys();
+  if(tag!=="p") onNote(m, v);   /* AOG-PIANO-LESSONS-V1 */
+}
+/* AOG-PIANO-CHORD-MOVE-V1 (2026-10-05) — Jimmy: "It would be awesome if while holding a chord down on the keyboard you could
+   move up or down the board" (he chose: the chord jumps with ◀ ▶). While a chord is held (fingers on the keys, the
+   computer's keys, or a chord pad), ◀ Lower and Higher ▶ (and Z, X) move the board an octave and the held notes with it:
+   each starts again an octave down or up, under the same finger, and still stops when that finger lifts. Notes only
+   ringing on the pedal stay where they are. */
+function shiftHeld(d){
+  if(!d || !ac) return;
+  const move=[]; LIVE.forEach((vc,key)=>{ const tg=key.charAt(0); if(vc.down && (tg==="k"||tg==="c"||tg==="p")) move.push(key); });
+  if(!move.length) return;
+  POINTERS.forEach((m,id)=>{ if(m!=null) POINTERS.set(id, m+d); });
+  HELD_KEYS.forEach((m,code)=>HELD_KEYS.set(code, m+d));
+  const pads=Object.keys(padHeld); pads.forEach(i=>{ padHeld[i]=padHeld[i].map(m=>m+d); });
+  if(pads.length && lastVoicing) lastVoicing=lastVoicing.map(m=>m+d);   /* the next chord pad stays near the moved chord */
+  const now=ac.currentTime, again=move.map(key=>{ const vc=LIVE.get(key); vc.stop(now, 0.05); LIVE.delete(key); return [key.charAt(0), +key.slice(1)+d, vc.vel||0.7]; });
+  again.forEach(a=>noteOn(a[0], a[1], a[2]));
+}
+function octMove(dir){ const o=S.oct; S.oct+=dir; buildKeys(); save(); if(S.oct!==o) shiftHeld(12*(S.oct-o)); return S.oct-o; }
+function chordHeld(){ let h=false; LIVE.forEach((vc,key)=>{ if(vc.down && "kcp".indexOf(key.charAt(0))>=0) h=true; }); return h; }
+/* a phone sends no click for a tap made while other fingers are down, so with a chord held ◀ ▶ answer the finger landing */
+function bindOctHeld(){
+  [["downBtn",-1],["upBtn",1],["bpDown",-1],["bpUp",1]].forEach(([id,dir])=>{ const b=$(id); if(!b) return;
+    b.addEventListener("pointerdown",(e)=>{ if(e.button>0 || b.disabled || !chordHeld()) return; e.preventDefault();
+      b._held=Date.now(); octMove(dir); onOct(dir); });
+    b.addEventListener("click",(e)=>{ if(Date.now()-(b._held||0)<1500){ b._held=0; e.stopImmediatePropagation(); e.preventDefault(); } },true); });
+}
+function noteOff(tag, m){
+  const key=tag+m, vc=LIVE.get(key); if(!vc) return;
+  vc.down=false;
+  if(!S.sus){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); }
+  litKeys();
+}
+function allOff(){
+  if(!ac) return;
+  LIVE.forEach(vc=>vc.stop(ac.currentTime, Math.min(vc.tau,0.15))); LIVE.clear();
+  litKeys();
+}
+function setSus(on){
+  S.sus=on;
+  const b=document.getElementById("susBtn"); if(b) b.setAttribute("aria-pressed", on?"true":"false");
+  if(!on && ac){ LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); } }); }
+  litKeys();
+  onSus(on);   /* AOG-PIANO-LESSONS-V1 */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CHORDS — pads, the pattern, and the player
+   ══════════════════════════════════════════════════════════════════════════ */
+const padHeld={};
+function padDown(i, v){
+  const c=pads()[i]; if(!c) return;
+  const vo=voicing(c, lastVoicing); lastVoicing=vo;
+  const notes=vo.concat([bassOf(c)]);
+  padUp(i);
+  padHeld[i]=notes;
+  notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.85:1)));
+  const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
+  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+  onPad(i, c);   /* AOG-PIANO-LESSONS-V1 */
+}
+function padUp(i){
+  const notes=padHeld[i]; if(!notes) return;
+  delete padHeld[i];
+  notes.forEach(m=>{ if(!Object.values(padHeld).some(n=>n.indexOf(m)>=0)) noteOff("p", m); });
+  const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.remove("hit");
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
+}
+/* one bar of each rhythm: t and d in beats; "b" bass, "c" the chord, a number = one note of the chord, low to high (past the
+   top, the same notes an octave up); bi = a note this many steps from the bass note; ns = keeps time even when it swings */
+function barEvents(rhythm, n, chord){
+  if(rhythm==="pulse") return [{t:0,w:"b",d:1.9,v:0.8},{t:2,w:"b",d:1.9,v:0.75},{t:0,w:"c",d:0.85,v:0.8},{t:1,w:"c",d:0.85,v:0.62},{t:2,w:"c",d:0.85,v:0.72},{t:3,w:"c",d:0.85,v:0.62}];
+  if(rhythm==="broken"){ const p=n>3?[0,2,1,3,0,2,1,3]:[0,2,1,2,0,2,1,2]; return [{t:0,w:"b",d:3.9,v:0.78}].concat(p.map((k,i)=>({t:i*0.5,w:k,d:0.95,v:i%2?0.58:0.68}))); }
+  if(rhythm==="offbeat") return [{t:0,w:"b",d:0.9,v:0.8},{t:2,w:"b",d:0.9,v:0.75}].concat([0.5,1.5,2.5,3.5].map(x=>({t:x,w:"c",d:0.3,v:0.72})));
+  /* AOG-PIANO-WAYS-V2 */
+  if(rhythm==="eighths") return [{t:0,w:"b",d:1.9,v:0.8},{t:2,w:"b",d:1.9,v:0.76}].concat([0,1,2,3,4,5,6,7].map(i=>({t:i*0.5,w:"c",d:0.42,v:i===0?0.8:i%2?0.54:0.7})));
+  if(rhythm==="ballad"){ const top=n>3?3:2;          /* the bass, its fifth and its octave, then the chord up and back, each note left ringing */
+    return [{t:0,w:"b",d:3.9,v:0.76},{t:0.5,bi:7,d:3.4,v:0.58},{t:1,bi:12,d:2.9,v:0.6},{t:1.5,w:0,d:1.4,v:0.64},{t:2,w:1,d:1.4,v:0.6},
+            {t:2.5,w:top,d:1.3,v:0.66},{t:3,w:1,d:0.9,v:0.58},{t:3.5,w:0,d:0.45,v:0.55}]; }
+  if(rhythm==="sweep"){                                /* from the bass up through the chord to its top an octave higher, quick as a harp */
+    const seq=[{bi:0},{bi:7},{bi:12}]; for(let k=0;k<=n;k++) seq.push({w:k});
+    return seq.map((x,i)=>Object.assign({t:i*0.125, d:3.9-i*0.125, v:0.5+0.035*i, ns:true}, x)); }
+  if(rhythm==="oompah") return [{t:0,w:"b",d:0.9,v:0.82},{t:1,w:"c",d:0.6,v:0.64},{t:2,bi:-5,d:0.9,v:0.76},{t:3,w:"c",d:0.6,v:0.62}];
+  if(rhythm==="boogie"){                               /* the left hand walks: 1 3 5 6 ♭7 6 5 3, while the right hand answers on 2 and 4 */
+    const third=(chord && Q[chord.q][1]===3) ? 3 : 4, walk=[0,third,7,9,10,9,7,third];
+    return walk.map((bi,i)=>({t:i*0.5, bi:bi, d:0.45, v:i%2?0.62:0.78})).concat([{t:1,w:"c",d:0.4,v:0.62},{t:3,w:"c",d:0.4,v:0.6}]); }
+  if(rhythm==="charleston") return [{t:0,w:"b",d:1.4,v:0.8},{t:2,bi:-5,d:1.4,v:0.74},{t:0,w:"c",d:0.9,v:0.78},{t:1.5,w:"c",d:0.45,v:0.7},{t:2,w:"c",d:0.9,v:0.74},{t:3.5,w:"c",d:0.45,v:0.68}];
+  /* AOG-PIANO-WAYS-V3 */
+  if(rhythm==="triplets") return [{t:0,w:"b",d:1.9,v:0.78},{t:2,w:"b",d:1.9,v:0.72}].concat([0,1,2,3,4,5,6,7,8,9,10,11].map(k=>({t:k/3, w:"c", d:0.3, v:k===0?0.76:k%3===0?0.66:0.5})));
+  if(rhythm==="waltz") return [{t:0,w:"b",d:0.9,v:0.82},{t:1,w:"c",d:0.6,v:0.6},{t:2,w:"c",d:0.6,v:0.56}];
+  if(rhythm==="disco") return [0,1,2,3,4,5,6,7].map(i=>({t:i*0.5, bi:i%2?12:0, d:0.4, v:i%2?0.62:0.8})).concat([0.5,1.5,2.5,3.5].map(x=>({t:x,w:"c",d:0.3,v:0.64})));
+  if(rhythm==="bossa") return [{t:0,w:"b",d:1.4,v:0.8},{t:1.5,w:"b",d:0.45,v:0.64},{t:2,bi:-5,d:1.4,v:0.74},{t:3.5,bi:-5,d:0.45,v:0.62},
+                                {t:0,w:"c",d:0.9,v:0.66},{t:1.5,w:"c",d:0.45,v:0.6},{t:2.5,w:"c",d:0.9,v:0.62}];
+  if(rhythm==="funk") return [{t:0,w:"b",d:0.4,v:0.84},{t:1.75,bi:12,d:0.2,v:0.66},{t:2,w:"b",d:0.4,v:0.8},{t:3.5,bi:7,d:0.2,v:0.66},
+                               {t:0,w:"c",d:0.22,v:0.74},{t:0.75,w:"c",d:0.2,v:0.62},{t:1.5,w:"c",d:0.22,v:0.7},{t:2.5,w:"c",d:0.2,v:0.66},{t:3.25,w:"c",d:0.2,v:0.62}];
+  if(rhythm==="tresillo") return [{t:0,w:"b",d:1.4,v:0.82},{t:1.5,w:"b",d:1.4,v:0.72},{t:3,w:"b",d:0.9,v:0.76},{t:0,w:"c",d:0.5,v:0.76},{t:1.5,w:"c",d:0.5,v:0.68},{t:3,w:"c",d:0.45,v:0.72}];
+  return [{t:0,w:"b",d:3.85,v:0.75},{t:0,w:"c",d:3.85,v:0.68}];
+}
+/* schedule bar k of the pattern on a context and chain; returns the voices it made */
+/* AOG-FEEL-V1 (2026-10-04) — Jimmy: "A lot of the How the chords are played sounds, sound like fake instruments." Every note
+   of a pattern landed exactly on the grid at exactly the same strength, the way a machine plays. A player never is: each
+   hit a few milliseconds early or late (less on the beat), a little softer or louder, a chord's notes not quite together.
+   Seeded by the bar and the hit, so no two bars are the same and a test can still play the same bar twice. */
+function feel(k, i){ if(window.AOG_FEEL_OFF) return ()=>0; const r=seeded((k+1)*7919+(i+1)*104729); r(); return r; }   /* the pattern tests check the grid itself with AOG_FEEL_OFF */
+function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
+  const chord=S.prog[k%S.prog.length]; if(!chord) return [];
+  const vo=voicing(chord, prevRef.v); prevRef.v=vo;
+  const beat=barSec/beatsPerBar(), out=[], started={};
+  barEvents(S.rhythm, vo.length, chord).forEach((ev,ei)=>{
+    const late=(!ev.ns && ev.t%1===0.5) ? (swing-0.5)*beat : 0;     /* the off-beats lean back with the drum machine's swing */
+    const fr=feel(k, ei), at=Math.max(t0, t0+ev.t*beat+late+fr()*(ev.t%1===0?0.0025:0.005)), roll=window.AOG_FEEL_OFF?0:0.004+0.004*fr();   /* AOG-FEEL-V1 */
+    const when=at, notes=ev.bi!=null?[bassOf(chord)+ev.bi]:ev.w==="b"?[bassOf(chord)]:ev.w==="c"?vo:[ev.w<vo.length?vo[ev.w]:vo[ev.w-vo.length]+12];
+    /* AOG-FEEL-V1: a chord's notes a few milliseconds apart from the bottom up, each a little different, the top one sung out */
+    const top=Math.max.apply(null, notes), byPitch=notes.slice().sort((a,b)=>a-b);
+    notes.forEach(m=>{ const id=m+"@"+Math.round((t0+ev.t*beat+late)*1000); if(started[id]) return; started[id]=1;   /* never the same note twice at once (on the grid, before the feel) */
+      const j=notes.length>1 ? byPitch.indexOf(m) : 0, w2=when+j*roll, v2=Math.min(1, ev.v*(1+0.05*fr())*(notes.length>2 && m===top ? 1.06 : 1));
+      const vc=makeVoice(c, ch, S.sound, m, v2, w2); if(vc){ vc.stop(when+ev.d*beat, vc.tau); vc.m=m; vc.on=w2; vc.off=when+ev.d*beat; out.push(vc); } });
+  });
+  return out;
+}
+const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], prev:{v:null}, drum:null, cur:-1, vo:{}};
+function curBpm(){ return drumsLive() ? DRUM.take.bpm : S.bpm; }
+function curSwing(){ return (drumsLive() && typeof DRUM.take.swing==="number") ? DRUM.take.swing : (RHYTHM_SWING[S.rhythm]||0.5); }
+async function start(){
+  if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
+  const c=ctx();
+  if(S.withDrums && DRUM.take && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
+  stop(true);
+  S.playing=true;
+  const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.prev={v:lastVoicing}; PLAY.cur=-1; PLAY.vo={};
+  const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
+  if(drumsLive() && DRUM.buf){
+    const d=DRUM.take, off=(typeof d.offset==="number")?d.offset:0.03;
+    const s=c.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
+    const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*PLAY.barSec;
+    s.loopStart=off; s.loopEnd=Math.min(DRUM.buf.duration, off+pass);
+    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); s.start(t1);
+    PLAY.drum=s; PLAY.t0=t1+off;
+  } else PLAY.t0=t1;
+  tick();
+  paintPlay();
+  onPlay();   /* AOG-PIANO-LESSONS-V1 */
+}
+function stop(quiet){
+  if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
+  if(ac){ const now=ac.currentTime; PLAY.voices.forEach(v=>v.kill(now)); }
+  PLAY.voices=[];
+  if(PLAY.drum){ try{ PLAY.drum.stop(); }catch(e){} PLAY.drum=null; }
+  S.playing=false; PLAY.cur=-1;
+  litKeys(); paintNow();
+  if(!quiet) paintPlay();
+}
+function tick(){
+  if(!S.playing) return;
+  const now=ac.currentTime;
+  while(PLAY.t0+PLAY.bar*PLAY.barSec < now+0.3){
+    const v=scheduleBar(ac, LIVE_CH, PLAY.bar, PLAY.t0+PLAY.bar*PLAY.barSec, PLAY.barSec, curSwing(), PLAY.prev);
+    PLAY.voices=PLAY.voices.filter(x=>!(x.end && x.end<now)).concat(v);
+    PLAY.vo[PLAY.bar]=PLAY.prev.v; delete PLAY.vo[PLAY.bar-8];
+    PLAY.bar++;
+  }
+  const cur=Math.floor((now-PLAY.t0)/PLAY.barSec);
+  if(cur>=0 && cur!==PLAY.cur){ PLAY.cur=cur; paintNow(); litKeys(); onBar(); }
+  else if([...sounding()].sort((a,b)=>a-b).join(",")!==PLAY.sig) litKeys();   /* the orange keys follow each note */
+  PLAY.raf=requestAnimationFrame(tick);
+}
+
+/* ── the drum machine's beat, from the shelf both music tools share ── */
+const DRUM={take:null, buf:null};
+async function checkDrums(){
+  /* AOG-DRUM-MACHINE-V2: the newest beat from either drum machine (a loop sent from the new one, padbench, or a bounce
+     from the classic one, drumbench); a take of free playing has no steady tempo, so it is left out */
+  const beatOf=async k=>{ try{ const x=await AOGHandoff.get(k); return x && x.wav && x.bpm>0 && !x.take ? x : null; }catch(e){ return null; } };
+  { const a=await beatOf("drumbench"), b=await beatOf("padbench"); DRUM.take=(a && b) ? ((b.at||0)>(a.at||0) ? b : a) : (a||b); }
+  if(DRUM.take && !(DRUM.take.wav && DRUM.take.bpm)) DRUM.take=null;
+  DRUM.buf=null;
+  paintDrums();
+  lessonsChanged();
+}
+
+/* ── a recording for the turntables ── */
+function wavBlob(L, R, sr){
+  const n=L.length, ab=new ArrayBuffer(44+n*4), v=new DataView(ab);
+  const str=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*4,true); v.setUint16(32,4,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,n*4,true);
+  let o=44; for(let i=0;i<n;i++){ const l=Math.max(-1,Math.min(1,L[i])), r=Math.max(-1,Math.min(1,R[i]));
+    v.setInt16(o,l<0?l*0x8000:l*0x7fff,true); v.setInt16(o+2,r<0?r*0x8000:r*0x7fff,true); o+=4; }
+  return new Blob([ab],{type:"audio/wav"});
+}
+/* AOG-PIANO-REC-V1 → AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the piano plays as a take (aog-recorder.js,
+   the one recorder every music tool shares: never a microphone, full strength whatever the Volume, up to five minutes, the
+   last three takes to hear, save as .wav or send to the turntables) */
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
+  prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
+  ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+
+async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole recording to the Drum Machine */
+  const toPads=dest==="pads", line=document.getElementById("sendLine"), btn=document.getElementById(toPads?"sendPadsBtn":"sendBtn");
+  if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
+  btn.disabled=true; line.textContent=t("sending");
+  try{
+    const snd=SOUNDS[S.sound];
+    if(snd.kind==="sample") await loadSet(snd.set, paintLoad);
+    if(S.withDrums && DRUM.take && !DRUM.buf){ ctx(); try{ DRUM.buf=await decodeWith(ac, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
+    const bpm=curBpm(), barSec=beatsPerBar()*60/bpm, L=S.prog.length;
+    const reps=Math.max(1, Math.ceil((22/barSec)/L)), bars=L*reps;
+    const sr=44100, withD=drumsLive() && DRUM.buf, off0=withD ? ((typeof DRUM.take.offset==="number")?DRUM.take.offset:0.03) : 0.05;
+    const dur=off0+bars*barSec+3;
+    const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+    const oc=new OC(2, Math.ceil(dur*sr), sr);
+    const ch=makeChain(oc); await addCrunch(ch);
+    ch.master.gain.value=volGain(Math.max(S.vol,0.8)); setSendLevel(ch, S.sound); setEra(ch, S.era, 0);
+    if(withD){
+      const d=DRUM.take, s=oc.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
+      const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*barSec;
+      s.loopStart=off0; s.loopEnd=Math.min(DRUM.buf.duration, off0+pass);
+      const g=oc.createGain(); g.gain.value=0.9; s.connect(g); g.connect(ch.pre); s.start(0); s.stop(off0+bars*barSec+0.05);
+    }
+    const prev={v:null};
+    for(let k=0;k<bars;k++) scheduleBar(oc, ch, k, off0+k*barSec, barSec, curSwing(), prev);
+    const buf=await oc.startRendering();
+    const blob=wavBlob(buf.getChannelData(0), buf.getChannelData(1), sr);
+    const name=(S.lang==="es"?"Piano":"Piano")+" · "+soundName(S.sound)+" · "+Math.round(bpm)+" BPM · "+bars+" "+t("bars");
+    if(toPads){
+      const r=await AOGHandoff.add(AOGHandoff.INBOX, {from:"piano", n:0, name:{en:name, es:name}, sec:Math.round(buf.duration*1000)/1000, bpm:bpm, at:Date.now(), take:true, wav:blob});
+      await AOGHandoff.put("padstake", {id:r.id, from:"piano", at:Date.now()});
+      line.innerHTML=t("sentPads")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
+      btn.disabled=false; return;
+    }
+    await AOGHandoff.put("keysbench", {name:name, bpm:bpm, bars:bars, at:Date.now(), wav:blob});
+    line.innerHTML=t("sent")+` <a href="music-decks.html">${t("decks")}</a>`;
+    onSent();   /* AOG-PIANO-LESSONS-V1 */
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
+/* AOG-CHORD-PADS-V1 (2026-10-03) — Jimmy: "can they be sent to the sampler?" The six chords of the key, each a short hit made
+   the way a pad plays it, go on the shelf the music tools share; the drum machine puts them on its pads 3 to 8. They are made
+   at the drum machine's own rate (26,040 Hz), clean: the drum machine adds its own 1987 crunch. */
+function padLabel(c, es){ const pc=((S.key+c.off)%12+12)%12; return (es?SOLFA:NAMES)[flats()?"flat":"sharp"][pc].replace("♯","#").replace("♭","b")+(c.q==="min"?"m":""); }
+/* AOG-SEND-TO-PADS-V1 (2026-10-07) — Jimmy: "I want them to be sent to the new drum machine!" The Drum Machine's
+   chords bank (the bass: its notes bank) takes this instrument, key and mood; it makes the chords itself. */
+async function sendPads(){
+  const line=$("padsLine"), btn=$("padsBtn");
+  btn.disabled=true;
+  try{
+    await AOGHandoff.put("padschords", {from:"piano", bank:"chords", inst:"k:"+S.sound, key:S.key, minor:!!S.minor, at:Date.now()});
+    line.innerHTML=t("padsSent")+` <a href="music-pads.html">${t("drumsOld")}</a>`;
+  }catch(e){ line.textContent=t("sendFail"); }
+  btn.disabled=false;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PAGE
+   ══════════════════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+function paintText(){
+  document.documentElement.setAttribute("lang", S.lang);
+  document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.getAttribute("data-t")); });
+  $("brand").textContent=t("app"); $("mastK").textContent=t("kicker"); $("mastH").textContent=t("app"); $("mastL").textContent=t("lead");
+  $("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
+  $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
+  $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear"); $("susBtn").textContent=t("sus");
+  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("midiBtn").textContent=t("midi");
+  $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria"));
+  REC.paint();
+  $("era").setAttribute("aria-label", t("eraAria"));
+  $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/piano/CREDITS.txt">${t("credits")}</a></p><p><a href="music-pads.html">${t("drums")}</a> · <a href="music-decks.html">${t("decks")}</a> · <a href="piano-lessons.html">${t("sheets")}</a></p>`;
+  $("pgLab").textContent=t("guide"); $("pgSub").textContent=t("pgSub"); $("pgFoot").innerHTML=t("pgFoot");
+  paintScaleSel(); paintAnySel();   /* AOG-PIANO-SCALES-V1 */
+  paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
+  paintDial(); paintLoad(); paintDrums(); buildKeys();
+  paintView(); bpText();
+}
+function paintSounds(){
+  const sel=$("soundSel"), groups={};
+  Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp; (groups[g]=groups[g]||[]).push(id); });
+  sel.innerHTML=Object.keys(groups).map(g=>`<optgroup label="${t(g)}">`+groups[g].map(id=>`<option value="${id}"${id===S.sound?" selected":""}>${soundName(id)}</option>`).join("")+`</optgroup>`).join("");
+}
+function paintKeySel(){ $("keySel").innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===S.key?" selected":""}>${n}</option>`).join(""); }
+function paintProgSel(){
+  let html=`<option value="">${t(S.prog.length&&!S.preset?"myOwn":"pickPattern")}</option>`, g=null;
+  PRESETS.forEach(p=>{ if(p.g!==g){ if(g) html+="</optgroup>"; g=p.g; html+=`<optgroup label="${PRESET_GROUPS[g][S.lang]}">`; }   /* AOG-PIANO-PATTERNS-V2 */
+    html+=`<option value="${p.id}"${p.id===S.preset?" selected":""}>${S.lang==="es"?p.es:p.en}</option>`; });
+  $("progSel").innerHTML=html+(g?"</optgroup>":"");
+}
+function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHM_GROUPS.map(g=>`<optgroup label="${g[0][S.lang]}">`+g[1].map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join("")+`</optgroup>`).join(""); }
+function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false"); }
+const PAD_KEYS=["1","2","3","4","5","6"];
+function paintPads(){
+  $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
+  document.querySelectorAll(".pad").forEach(el=>{
+    const i=+el.getAttribute("data-i"); let downAt=0;
+    el.onpointerdown=(e)=>{ if(e.button>0) return; if(e.pointerType==="mouse") e.preventDefault(); downAt=performance.now();
+      try{ el.setPointerCapture(e.pointerId); }catch(err){} padDown(i, 0.74); };
+    el.onpointerup=el.onpointercancel=el.onlostpointercapture=()=>padUp(i);
+    el.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } padDown(i,0.74); setTimeout(()=>padUp(i), 900); };
+  });
+  paintWheel();   /* key, mood or words changed: the wheel is drawn again */
+  paintNow();
+  paintStrips();   /* AOG-CHORDSTRIP-V1 */  paintScale();   /* AOG-PIANO-SCALES-V1: the key or the mood moved */
+}
+function paintProg(){
+  const box=$("prog");
+  box.innerHTML = S.prog.length ? S.prog.map((c,i)=>`<span class="slot" data-s="${i}">${chordName(c)}</span>`).join("")
+    : `<span class="line" style="margin:0">${t("progEmpty")}</span>`;
+  $("ownBtn").setAttribute("aria-pressed", S.own?"true":"false");
+  $("ownLine").textContent=S.own?t("ownOn"):"";
+  paintNow();
+}
+function paintNow(){
+  const k = S.playing && PLAY.cur>=0 && S.prog.length ? PLAY.cur%S.prog.length : -1;
+  document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now", +el.getAttribute("data-s")===k));
+  const cur=k>=0?S.prog[k]:null;
+  document.querySelectorAll(".pad").forEach(el=>{ const c=pads()[+el.getAttribute("data-i")]; el.classList.toggle("now", !!(cur && c && c.off===cur.off && (c.q===cur.q || (cur.q==="dom7"&&c.q==="maj") || (cur.q==="maj7"&&c.q==="maj") || (cur.q==="m7"&&c.q==="min")))); });
+  paintWheelState();   /* AOG-PIANO-WHEEL-V1 */
+}
+/* AOG-PIANO-WHEEL-V1 (2026-10-03) — Jimmy: "Can an interactive chord wheel be made here?"
+   The circle of fifths: one step clockwise adds a sharp. The majors go round the outside, each one's minor just inside it.
+   In any key the six pads sit side by side on the wheel: three neighbours on each ring. Tap a chord to hear it (with
+   Make my own on, it joins the pattern); turn the wheel to change key; the chord that is playing turns orange. */
+const WHEEL={held:null, press:"", ptr:null};
+function wheelPos(pc){ return (pc*7)%12; }                                   /* where a major root sits on the wheel */
+function wheelChord(p, ring){ const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12; return {off:((root-S.key)%12+12)%12, q:ring==="o"?"maj":"min"}; }
+function wheelName(p, ring){
+  const root=ring==="o" ? (p*7)%12 : ((p*7)+9)%12;
+  return {root:rootName(root, ring==="o"?"maj":"min"), m:ring==="i"};   /* spelled the same as the pads and the pattern */
+}
+function paintWheel(){
+  const svg=$("wheel"); if(!svg) return;
+  const es=S.lang==="es", home=wheelPos(S.minor?(S.key+3)%12:S.key), P=(r,a)=>{ const q=(a-90)*Math.PI/180; return [200+r*Math.cos(q), 200+r*Math.sin(q)]; };
+  const f=n=>n.toFixed(1), arc=(r1,r2,a0,a1)=>{ const A=P(r2,a0),B=P(r2,a1),C=P(r1,a1),D=P(r1,a0); return `M${f(A[0])} ${f(A[1])}A${r2} ${r2} 0 0 1 ${f(B[0])} ${f(B[1])}L${f(C[0])} ${f(C[1])}A${r1} ${r1} 0 0 0 ${f(D[0])} ${f(D[1])}Z`; };
+  const focusK = document.activeElement && document.activeElement.closest && document.activeElement.closest("#wheel .wd") ? document.activeElement.getAttribute("data-k") : "";
+  let out="", ring="";
+  [["o",124,198,160],["i",56,124,90]].forEach(([g,r1,r2,rl])=>{
+    for(let p=0;p<12;p++){
+      const fit=[(home+11)%12,home,(home+1)%12].indexOf(p)>=0, c=wheelChord(p,g), nm=wheelName(p,g), key=g+p;
+      const pad=fit ? pads().find(x=>x.off===c.off && x.q===c.q) : null;
+      const name=nm.root+(nm.m?(es?" m":"m"):""), short=nm.root+(nm.m?"m":"");
+      const label=t("wheelChord",{c:name})+(pad?", "+t("wheelPad",{n:pad.n}):"");
+      const [x,y]=P(rl,p*30), big=g==="o"?(short.length>2?23:27):(short.length>4?14:(short.length>3?16:18));
+      let txt=`<text x="${f(x)}" y="${f(y)}" style="font-size:${big}px">${short}</text>`;
+      if(pad){ const [nx,ny]=P(g==="o"?183:109,p*30); txt+=`<text class="pn" x="${f(nx)}" y="${f(ny)}" style="font-size:12px">${pad.n}</text>`; }
+      out+=`<g class="wd ${g}${fit?" fit":""}" data-k="${key}" tabindex="0" role="button" aria-label="${label}"><path d="${arc(r1,r2,p*30-15,p*30+15)}"/>${txt}</g>`;
+    }
+  });
+  /* the home chord gets a gold ring, drawn on top */
+  const hr=S.minor?[56,124]:[124,198];
+  ring=`<path class="home" d="${arc(hr[0]+3,hr[1]-3,home*30-15+1.2,home*30+15-1.2)}"/>`;
+  const hub=`<circle class="hub" cx="200" cy="200" r="52"/><text class="hub-k" x="200" y="190" style="font-size:${pcName(S.key).length>3?22:28}px">${pcName(S.key)}</text><text class="hub-m" x="200" y="218" style="font-size:14px">${t(S.minor?"wheelMinor":"wheelMajor")}</text>`;
+  svg.innerHTML=out+ring+hub;
+  svg.setAttribute("aria-label", t("wheelGroup"));
+  if(focusK){ const el=svg.querySelector(`[data-k="${focusK}"]`); if(el) el.focus({preventScroll:true}); }
+  /* the turn buttons say where they go */
+  const kn=(pc)=>KEY_NAMES[S.lang][((pc%12)+12)%12]+(S.minor?"m":"");   /* written the way the wheel writes it */
+  const L=$("turnL"), R=$("turnR"); if(L) L.textContent=t("wheelL",{k:kn(S.key+5)}); if(R) R.textContent=t("wheelR",{k:kn(S.key+7)});
+  paintWheelState();
+}
+/* AOG-PIANO-WHEEL-V2 (2026-10-03) — Jimmy: "Can the wheel light up when the chords are played / appropriate number on the
+   keyboard is played. There is a delay. Make it instant like everything else." The wheel now lights, at once, the chord your
+   fingers play anywhere: on the wheel, on a pad (or keys 1 to 6), or held on the keys (three notes that make a major or minor
+   chord). Gold = your fingers, as on the keys; orange = the chord the pattern is playing. Only colours change: nothing redraws. */
+function wheelKeyOf(c){ const root=((S.key+c.off)%12+12)%12; return (c.q==="min"||c.q==="m7") ? "i"+wheelPos((root+3)%12) : "o"+wheelPos(root); }
+function handChordKey(){
+  const pcs=new Set(); LIVE.forEach((vc,key)=>{ if(vc.down && key[0]!=="p") pcs.add(((+key.slice(1))%12+12)%12); });
+  if(pcs.size!==3) return "";
+  for(const r of pcs){ if(pcs.has((r+4)%12) && pcs.has((r+7)%12)) return "o"+wheelPos(r); if(pcs.has((r+3)%12) && pcs.has((r+7)%12)) return "i"+wheelPos((r+3)%12); }
+  return "";
+}
+function paintWheelState(){
+  const svg=$("wheel"); if(!svg) return;
+  const k = S.playing && PLAY.cur>=0 && S.prog.length ? S.prog[PLAY.cur%S.prog.length] : null, now = k ? wheelKeyOf(k) : "";
+  const hit=new Set(); if(WHEEL.press) hit.add(WHEEL.press);
+  Object.keys(padHeld).forEach(i=>{ const c=pads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
+  const hand=handChordKey(); if(hand) hit.add(hand);
+  svg.querySelectorAll(".wd").forEach(g=>{ const key=g.getAttribute("data-k"), h=hit.has(key);
+    if(g.classList.contains("hit")!==h) g.classList.toggle("hit", h);
+    const n=!h && key===now; if(g.classList.contains("now")!==n) g.classList.toggle("now", n); });
+}
+function wheelRelease(){ const n=WHEEL.held; WHEEL.held=null; WHEEL.press="";
+  if(n) n.forEach(m=>{ if(!Object.values(padHeld).some(x=>x.indexOf(m)>=0)) noteOff("p", m); }); paintWheelState(); }
+function wheelDown(key){
+  const g=key[0], p=+key.slice(1), c=wheelChord(p,g);
+  ctx(); if(WHEEL.held) wheelRelease();
+  const vo=voicing(c, lastVoicing); lastVoicing=vo;
+  const notes=vo.concat([bassOf(c)]); WHEEL.held=notes; WHEEL.press=key;
+  notes.forEach((m,j)=>noteOn("p", m, 0.74*(j===notes.length-1?0.85:1)));
+  paintWheelState();
+  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+}
+function turnWheel(step){ const ks=$("keySel"); ks.value=String(((S.key+step)%12+12)%12); ks.onchange(); }
+function paintPlay(){ const b=$("playBtn"); b.textContent=S.playing?t("stop"):t("play"); b.classList.toggle("go", S.playing); $("litLine").hidden=!S.playing; }
+function paintTempo(){
+  const r=$("bpm"), locked=drumsLive();
+  r.value=String(curBpm()); r.disabled=!!locked;
+  $("bpmOut").textContent=t("bpm",{n:Math.round(curBpm())});
+}
+function eraWord(){ const e=S.era; return t(e>=0.9?"era87":e>=0.6?"eraMost87":e>0.4?"eraHalf":e>0.1?"eraMost26":"era26"); }
+function paintDial(){
+  $("era").value=String(Math.round((1-S.era)*100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext", eraWord());
+  $("vol").value=String(Math.round(S.vol*100)); $("volOut").textContent=Math.round(S.vol*100);
+}
+function paintLoad(){
+  const snd=SOUNDS[S.sound], line=$("loadLine");
+  if(!line) return;
+  if(snd.kind!=="sample"){ line.textContent=t("built"); return; }
+  const set=SETS[snd.set], es=S.lang==="es", name=soundName(S.sound).toLowerCase();
+  if(set.state==="failed"){ line.textContent=t("loadFail"); return; }
+  /* AOG-PIANO-SOUNDS-V2: a sound can bring its own words (the marimba is "la marimba", the strings are a section) */
+  if(set.state==="ready" && set.done>=set.total){ line.textContent=snd.ready?snd.ready[S.lang]:snd.honky?t("readyHonky"):t("ready",{name:(es?"un ":"")+name}); return; }
+  if(set.ready){ line.textContent=t("more",{n:set.done,all:set.total}); return; }
+  const firstAll=set.notes.length, the=(snd.the&&snd.the[S.lang])||((es?"el ":"")+name);
+  line.textContent=t("loading",{name:the, n:Math.min(set.done, firstAll), all:firstAll})+" "+t(snd.made?"standMade":"stand");
+}
+function paintDrums(){
+  const box=$("drumBox"); if(!box) return;
+  if(!DRUM.take){
+    box.innerHTML=`<p class="line">${t("drumNone")} <a href="music-pads.html">${t("drumGo")}</a></p>`;
+    if(S.withDrums){ S.withDrums=false; }
+  } else {
+    box.innerHTML=`<div class="row" style="margin-top:.7rem"><button type="button" class="pbtn" id="drumBtn" aria-pressed="${S.withDrums?"true":"false"}">${t("drumOn")}</button></div>
+      <p class="line">${t("drumFrom",{name:(DRUM.take.name||"").replace(/</g,"&lt;")})}${S.withDrums?" "+t(beatsPerBar()===4?"drumTempo":"drumThree"):""}</p>`;
+    $("drumBtn").onclick=()=>{ S.withDrums=!S.withDrums; save(); const was=S.playing; if(was) stop(true); paintDrums(); paintTempo(); if(was) start(); lessonsChanged(); };
+  }
+  paintTempo();
+}
+
+/* the keyboard: as many octaves as fit, white keys at least 40 px wide */
+const WHITE=[0,2,4,5,7,9,11], BLACK_AFTER={0:1,2:3,5:6,7:8,9:10};
+const KEYMAP={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
+const CAP={0:"A",1:"W",2:"S",3:"E",4:"D",5:"F",6:"T",7:"G",8:"Y",9:"H",10:"U",11:"J",12:"K",13:"O",14:"L",15:"P",16:";",17:"'"};
+let KB={whites:8, lo:60, hi:72};
+function octaves(){ const w=$("kbd").clientWidth||330; if(BP.on) return w>=1000?3 : 2;   /* AOG-PLAY-V1: sideways, two octaves on a phone, three on an iPad */
+  return w>=880?3 : w>=600?2 : 1; }
+function buildKeys(){
+  const kb=$("kbd"), oc=octaves();
+  if(S.oct==null) S.oct = oc===1?4:3;
+  S.oct=Math.max(1, Math.min(7-oc, S.oct));
+  const lo=12*(S.oct+1), hi=lo+12*oc;
+  KB={whites:7*oc+1, lo:lo, hi:hi};
+  let html="", wi=0; const w=100/KB.whites;
+  for(let m=lo; m<=hi; m++){
+    const pc=m%12; if(WHITE.indexOf(pc)<0) continue;
+    const cap=CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"";
+    html+=`<div class="wk" data-m="${m}" aria-label="${noteLabel(m)}"><i class="sd" aria-hidden="true"></i>${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
+    if(BLACK_AFTER[pc]!=null && m+1<=hi){
+      const bm=m+1, bcap=CAP[bm-lo]!=null?`<span class="kc">${CAP[bm-lo]}</span>`:"";
+      html+=`<div class="bk" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%"><i class="sd" aria-hidden="true"></i>${bcap}</div>`;
+    }
+    wi++;
+  }
+  kb.innerHTML=html;
+  $("rangeOut").textContent=t("rangeOut",{a:noteLabel(lo), b:noteLabel(hi)});
+  $("downBtn").disabled=S.oct<=1; $("upBtn").disabled=S.oct>=7-oc;
+  if($("bpRange")){ $("bpRange").textContent=$("rangeOut").textContent; $("bpDown").disabled=S.oct<=1; $("bpUp").disabled=S.oct>=7-oc; }
+  litKeys();  paintScale();   /* AOG-PIANO-SCALES-V1 */
+}
+/* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
+   single notes." The six chord pads sat a long scroll above the keys. The same six chords now sit in one row right on
+   top of it, upright and sideways: a chord with one finger, a single note with the next, nothing to switch. They are the
+   pads' own (padDown, padUp), so a pattern being built, the wheel and the lit notes all follow. */
+function paintStrips(){
+  document.querySelectorAll(".cstrip").forEach(box=>{
+    box.setAttribute("aria-label", t("chordsH"));
+    box.innerHTML=pads().map((c,i)=>`<button type="button" class="cs" data-i="${i}">${chordName(c)}</button>`).join("");
+    box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
+      b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
+      b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
+      b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } };
+      b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); });
+  });
+}
+/* ══ AOG-PLAY-V1 (2026-10-04) — the piano sideways ════════════════════════════════════════════════════════════════
+   Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
+   phone or tablet on the bench shows only the keyboard: the page's own keys (#kbd) move into #playView and fill the
+   screen, two octaves on a phone, three on an iPad, every finger its own note. The same keys, the same touch, so Record,
+   the chords and a lesson's lit keys keep working. Turned back, the keys go home. */
+/* AOG-PLAY-ZOOM-V1 (2026-10-04) — Jimmy: "It zooms in occasionally. Also, when I turn it it ZOOMS in too much." On an
+   iPhone a quick second tap on the same spot zooms, two hands playing at once read as a pinch, and Safari keeps (or adds)
+   a zoom when the phone turns. While the instrument fills the screen the page holds still at its own size: the viewport
+   is held at 1, pinches and double taps on the instrument are kept, and when it is turned back the page returns to its
+   own size (the hold lets go a moment later, so a reader can zoom the page again). */
+const ZOOM={base:null, t:0};
+function playZoomLock(on){
+  const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  if(ZOOM.base==null) ZOOM.base=m.getAttribute("content")||"width=device-width, initial-scale=1";
+  clearTimeout(ZOOM.t);
+  m.setAttribute("content", ZOOM.base+", maximum-scale=1, user-scalable=no");
+  if(!on) ZOOM.t=setTimeout(()=>m.setAttribute("content", ZOOM.base), 600);
+}
+(function(){
+  const playing=()=>document.body && document.body.classList.contains("aog-play");
+  const keep=(e)=>{ if(playing() && e.cancelable) e.preventDefault(); };
+  ["gesturestart","gesturechange","gestureend","dblclick"].forEach(ev=>document.addEventListener(ev, keep, {passive:false}));
+  /* two fingers moving on the instrument are two hands playing, not a pinch */
+  document.addEventListener("touchmove",(e)=>{ if(playing() && e.touches.length>1 && e.cancelable && !(e.target.closest && e.target.closest("select,.pv-drawer"))) e.preventDefault(); },{passive:false});
+  /* a quick second tap is a second note, not a zoom */
+  let last=0; document.addEventListener("touchend",(e)=>{ if(!playing()) return; const now=Date.now();
+    if(now-last<350 && e.cancelable && !(e.target.closest && e.target.closest("button,select,a,input,.pv-drawer"))) e.preventDefault(); last=now; },{passive:false});
+})();
+const BP={on:false, closed:false, forced:false, mq:null, back:null, y:0, seen:false};
+try{ BP.seen=localStorage.getItem("aog.piano.play.v1")==="1"; }catch(e){}
+function bpWords(){ const es=S.lang==="es", tab=bpTablet(); return {
+  big: es?"⤢ Tocar en toda la pantalla":"⤢ Play on the whole screen",
+  close:es?"✕ Cerrar":"✕ Close", menu:es?"☰ Menú":"☰ Menu",
+  hint: es?"Toca con todos los dedos que quieras.":"Play with as many fingers as you like.",
+  turn: tab ? (es?"Pulsa ⤢ Tocar en toda la pantalla para tocar las teclas en grande. Cerrar vuelve a esta página.":"Press ⤢ Play on the whole screen to play big keys. Close brings this page back.")
+            : (es?"Gira tu teléfono de lado para tocar en toda la pantalla.":"Turn your phone sideways to play on the whole screen."),
+  lower:es?"Más grave":"Lower", higher:es?"Más agudo":"Higher", region:es?"El instrumento, en toda la pantalla":"The instrument, on the whole screen" }; }
+function bpText(){
+  if(!$("playView")) return; const W=bpWords();
+  $("playView").setAttribute("aria-label", W.region);
+  $("bpClose").textContent=W.close; $("bpHint").textContent=W.hint; $("bpMore").textContent=W.menu;
+  $("bpDown").setAttribute("aria-label", W.lower); $("bpUp").setAttribute("aria-label", W.higher);
+  $("bpSound").innerHTML=$("soundSel").innerHTML; $("bpSound").value=S.sound; $("bpSound").setAttribute("aria-label", t("instrument"));
+  bpRecPaint();
+  $("bpTurn").textContent=W.turn; $("bpBig").textContent=W.big;
+  $("bpTurn").hidden=BP.seen || BP.on || hashView()!=="home" || !matchMedia("(pointer: coarse)").matches || (!bpTablet() && !matchMedia("(orientation: portrait)").matches);
+}
+/* AOG-PLAY-TABLET-V1 (Jimmy, 2026-10-05: "let us start in the normal mode" on the iPad): a phone turned sideways still opens
+   the whole-screen keys by itself; a tablet (its short side 600 or more) starts in the page and opens them with ⤢. */
+function bpTablet(){ return Math.min(screen.width||0, screen.height||0)>=600; }
+function bpWanted(){ return hashView()==="home" && (BP.forced || !!(BP.mq && BP.mq.matches && !BP.closed && !bpTablet())); }
+function bpSync(){
+  const w=bpWanted(); if(w===BP.on) return;
+  const kb=$("kbd"); POINTERS.forEach(m=>{ if(m!=null) noteOff("k", m); }); POINTERS.clear();
+  if(w){
+    BP.on=true; BP.y=window.scrollY||0;
+    BP.back=document.createComment("kbd"); kb.parentNode.insertBefore(BP.back, kb); $("bpMain").appendChild(kb);
+    playZoomLock(true); document.body.classList.add("aog-play");
+    if(!BP.seen){ BP.seen=true; try{ localStorage.setItem("aog.piano.play.v1","1"); }catch(e){} }
+  } else {
+    BP.on=false; bpDrawer(false); document.body.classList.remove("aog-play"); playZoomLock(false);
+    if(BP.back && BP.back.parentNode) BP.back.parentNode.replaceChild(kb, BP.back); BP.back=null;
+  }
+  buildKeys(); bpText(); if(!w) window.scrollTo(0, BP.y);
+}
+const GUARD={down:new Set(), last:0};
+function playBusy(){ return GUARD.down.size>0 || Date.now()-GUARD.last<700; }
+function bpDrawer(open){ const d=$("bpDrawer"); if(!d) return; d.hidden=!open; $("bpMore").setAttribute("aria-expanded", open?"true":"false"); }
+function bpRecPaint(){
+  const on=$("recBtn").getAttribute("aria-pressed")==="true";
+  $("bpRecGo").textContent=$("recBtn").textContent; $("bpRecGo").setAttribute("aria-pressed", on?"true":"false");
+  $("bpRec").hidden=!on; $("bpRec").textContent=(S.lang==="es"?"■ Parar ":"■ Stop ")+($("recTime").textContent||"");
+}
+function bpInit(){
+  if(!$("playView") || !window.matchMedia) return;
+  BP.mq=matchMedia("(orientation: landscape) and (pointer: coarse)");
+  const ch=()=>{ BP.closed=false; bpSync(); bpText(); };
+  if(BP.mq.addEventListener) BP.mq.addEventListener("change", ch); else if(BP.mq.addListener) BP.mq.addListener(ch);
+  $("bpClose").onclick=()=>{ bpDrawer(false); BP.forced=false; BP.closed=true; bpSync(); };
+  $("bpBig").onclick=()=>{ BP.forced=true; BP.closed=false; bpSync(); };
+  $("bpDown").onclick=()=>$("downBtn").click(); $("bpUp").onclick=()=>$("upBtn").click();   /* the page's own, so a lesson hears about it */
+  $("bpRec").onclick=()=>$("recBtn").click();                       /* the bar's Stop, only while recording */
+  $("bpRecGo").onclick=()=>{ const was=$("recBtn").getAttribute("aria-pressed")==="true"; $("recBtn").click(); if(!was) bpDrawer(false); };
+  $("bpMore").onclick=()=>bpDrawer($("bpDrawer").hidden);
+  try{ const mo=new MutationObserver(bpRecPaint); mo.observe($("recBtn"), {childList:true, characterData:true, subtree:true, attributes:true});
+    mo.observe($("recTime"), {childList:true, characterData:true, subtree:true, attributes:true}); }catch(e){}
+  /* AOG-PLAY-GUARD-V1: a tap on the bar while a hand is playing (or just after) is a slip, not a press */
+  document.addEventListener("pointerdown",(e)=>{ if(e.target.closest && e.target.closest("#kbd,#pvStrip")){ GUARD.down.add(e.pointerId); GUARD.last=Date.now(); } },true);
+  const lift=(e)=>{ if(GUARD.down.delete(e.pointerId)) GUARD.last=Date.now(); };
+  document.addEventListener("pointerup",lift,true); document.addEventListener("pointercancel",lift,true);
+  $("playView").querySelector(".bp-bar").addEventListener("click",(e)=>{ if(playBusy() && e.target.closest && e.target.closest("button")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
+  $("bpSound").onchange=()=>{ const ss=$("soundSel"); ss.value=$("bpSound").value; ss.onchange(); bpText(); setTimeout(()=>$("bpSound").blur(),0); };
+  /* touch on the strings, the bars and the keys: no magnifier, no scroll */
+  $("playView").addEventListener("touchstart",(e)=>{ if(e.cancelable && !(e.target.closest && e.target.closest("button,select"))) e.preventDefault(); },{passive:false});
+  let rt=0; const again=()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(BP.on) buildKeys(); }, 120); };
+  window.addEventListener("resize", again); if(window.visualViewport) visualViewport.addEventListener("resize", again);
+  bpText(); bpSync();
+}
+/* AOG-PIANO-LIT-V2 (2026-10-03) — Jimmy: "When it is playing chords one note at a time, the keyboard is not lighting up
+   correctly … It is not showing all the notes being played." The whole chord stayed lit for the whole bar, and only in the
+   octave it was played in, so notes below or above the keys on screen never showed. Now, while the chords play:
+   pale = every key on screen that fits the chord, in every octave (any of them fits, as Lesson 16 says);
+   orange = a key while the chords are sounding it, so a broken chord walks across the keys; gold = your own fingers. */
+function sounding(){
+  const now=ac?ac.currentTime:0, by=new Map(), out=new Set();
+  PLAY.voices.forEach(v=>{ if(v.m==null) return; if(!by.has(v.m)) by.set(v.m,[]); by.get(v.m).push(v); });
+  /* a key that plays again a moment later stays lit, so a steady chord does not blink */
+  by.forEach((list,m)=>{ list.sort((a,b)=>a.on-b.on);
+    for(let i=0;i<list.length;i++){ const a=list[i], b=list[i+1];
+      if(now>=a.on && now<a.off){ out.add(m); return; }
+      if(b && now>=a.off && now<b.on && b.on-a.off<0.2){ out.add(m); return; } } });
+  return out;
+}
+function litKeys(){
+  const kb=$("kbd"); if(!kb) return;
+  const down=new Set(), now=S.playing?sounding():new Set(), fit=new Set(), cc=curChord();
+  LIVE.forEach((vc,key)=>{ const m=+key.slice(1); if(vc.down || S.sus) down.add(m); });
+  if(cc) chordPcs(cc).forEach(pc=>fit.add(pc));
+  PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
+  kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
+    el.classList.toggle("down", d); el.classList.toggle("now", n); el.classList.toggle("lit", !d&&!n&&fit.has(((m%12)+12)%12)); });
+  paintWheelState();   /* AOG-PIANO-WHEEL-V2: a chord held on the keys lights its wedge */
+}
+/* ══ AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: "more scales, modes and chords" on every instrument ══════════════════
+   Scale: 154 scales and modes from aog-scales.js (the same list as Solo mode on the guitar). Off at first, so the piano
+   looks as before. The scale follows the key and the mood; one choice is kept for major and one for minor. A key in the
+   scale gets a soft dot above its letter; the home note a ring; on a blues scale the blue note a deep blue dot.
+   Any chord: 45 kinds from aog-chords.js, from any root, played like a pad (held while pressed) and lit on the keys. */
+const SCKEY="aog.piano.scales.v1";
+const SC={maj:"off", min:"off", root:null, kind:"maj"};
+try{ const r=JSON.parse(localStorage.getItem(SCKEY)||"null");
+  if(r){ if(typeof r.maj==="string") SC.maj=r.maj; if(typeof r.min==="string") SC.min=r.min;
+    if(r.root>=0 && r.root<12) SC.root=r.root|0; if(typeof r.kind==="string") SC.kind=r.kind; } }catch(e){}
+function scSave(){ try{ localStorage.setItem(SCKEY, JSON.stringify(SC)); }catch(e){} }
+function scLib(){ return window.AOGScales||null; }
+function chLib(){ return window.AOGChords||null; }
+function scWord(k){ const L=scLib(), x=L&&L.WORDS[k]; return x ? (x[S.lang]||x.en) : k; }
+function scaleId(){ const L=scLib(), id=S.minor?SC.min:SC.maj; return (L && L.SCALES[id]) ? id : "off"; }
+function scaleTitle(){ const id=scaleId(); if(id==="off") return "";
+  return t("scaleSay",{root:pcName(S.key), name:scWord("nm_"+id)}).replace(/^./, ch=>ch.toUpperCase()); }
+function paintScaleSel(){
+  const sel=$("scaleSel"), L=scLib(); if(!sel) return;
+  sel.innerHTML=`<option value="off">${escH(t("scaleOff"))}</option>`+(L ? L.GROUPS.map(([g,ids])=>`<optgroup label="${escH(scWord("sg_"+g))}">`
+    +ids.map(id=>`<option value="${id}">${escH(scWord("sc_"+id))}</option>`).join("")+`</optgroup>`).join("") : "");
+  sel.value=scaleId();
+}
+function paintScale(){
+  const kb=$("kbd"), L=scLib(), id=scaleId(), sc=id!=="off" ? L.SCALES[id] : null;
+  const sel=$("scaleSel"); if(sel && sel.options.length && sel.value!==id) sel.value=id;
+  const ar=$("anyRoot"); if(ar && ar.options.length && ar.value!==String(anyRoot())) ar.value=String(anyRoot());   /* not picked yet: it follows the key */
+  const pcs=new Set(sc ? sc.iv.map(i=>(S.key+i)%12) : []), blue=(sc && sc.blue!=null) ? (S.key+sc.blue)%12 : -1;
+  if(kb) kb.querySelectorAll("[data-m]").forEach(el=>{ const pc=(+el.getAttribute("data-m"))%12, on=pcs.has(pc);
+    el.classList.toggle("sc-in", on); el.classList.toggle("sc-home", on && pc===S.key); el.classList.toggle("sc-blue", on && pc===blue && pc!==S.key); });
+  const say=$("scaleSay"); if(!say) return;
+  const html=sc ? `<span class="sc-lg"><b id="scaleName">${escH(scaleTitle())}</b></span><span class="sc-lg sc-home"><i class="sd" aria-hidden="true"></i>${escH(t("lgHome",{root:pcName(S.key)}))}</span>`
+    +(blue>=0 ? `<span class="sc-lg sc-blue"><i class="sd" aria-hidden="true"></i>${escH(t("lgBlue"))}</span>` : "") : "";
+  if(say.innerHTML!==html) say.innerHTML=html;
+}
+/* any chord */
+function anyRoot(){ return SC.root==null ? S.key : SC.root; }
+function anyKind(){ const L=chLib(); return (L && L.KINDS[SC.kind]) ? SC.kind : "maj"; }
+function paintAnySel(){
+  const r=$("anyRoot"), k=$("anyKind"), L=chLib(); if(!r || !k) return;
+  r.innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
+  r.value=String(anyRoot());
+  k.innerHTML=L ? L.GROUPS.map(([g,ids])=>`<optgroup label="${escH(L.group(g,S.lang))}">`+ids.map(id=>`<option value="${id}">${escH(L.label(id,S.lang))}</option>`).join("")+`</optgroup>`).join("") : "";
+  if(L) k.value=anyKind();
+  $("anyPlay").textContent=t("anyPlay");
+  $("anyLine").textContent="";
+}
+/* the notes: the root where the keys show it (between C3 and B4), the rest above it, within about an octave and a half */
+function anyNotes(){
+  const L=chLib(), k=L && L.KINDS[anyKind()]; if(!k) return [];
+  let base=KB.lo+anyRoot(); while(base<48) base+=12; while(base>71) base-=12;
+  return [...new Set(k.iv.map(i=>i>19?i-12:i))].sort((a,b)=>a-b).map(i=>base+i);
+}
+const ANY={at:0, tm:0};
+function anyDown(v){
+  const notes=anyNotes(); if(!notes.length) return;
+  clearTimeout(ANY.tm); padUp("any");
+  padHeld.any=notes; ANY.at=performance.now();
+  notes.forEach(m=>noteOn("p", m, v||0.72));
+  const L=chLib(), root=anyRoot(), id=anyKind(), sym=L.sym(id);
+  $("anyLine").textContent=t("anyNotes",{chord:KEY_NAMES[S.lang][root]+(sym?(S.lang==="es"?" ":"")+sym:""), notes:L.pcs(root,id).map(pc=>KEY_NAMES[S.lang][pc]).join(" · ")});
+}
+function anyUp(){ if(!padHeld.any) return; const held=performance.now()-ANY.at; clearTimeout(ANY.tm);
+  if(held<700) ANY.tm=setTimeout(()=>padUp("any"), 700-held); else padUp("any"); }   /* a quick tap still rings long enough to hear */
+function bindScales(){
+  $("scaleSel").onchange=()=>{ const v=$("scaleSel").value, L=scLib(); if(v!=="off" && !(L && L.SCALES[v])) return;
+    if(S.minor) SC.min=v; else SC.maj=v; scSave(); paintScale(); };
+  $("anyRoot").onchange=()=>{ const v=+$("anyRoot").value; if(v>=0 && v<12){ SC.root=v; scSave(); } };
+  $("anyKind").onchange=()=>{ const v=$("anyKind").value, L=chLib(); if(L && L.KINDS[v]){ SC.kind=v; scSave(); } };
+  const b=$("anyPlay"); let downAt=0;
+  b.onpointerdown=(e)=>{ if(e.button>0) return; if(e.pointerType==="mouse") e.preventDefault(); downAt=performance.now();
+    try{ b.setPointerCapture(e.pointerId); }catch(err){} anyDown(0.74); };
+  b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>anyUp();
+  b.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } anyDown(0.74); anyUp(); };
+  b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier on a long press */
+}
+/* the two libraries load with defer, after this script: fill the menus once they are here */
+document.addEventListener("DOMContentLoaded",()=>{ paintScaleSel(); paintAnySel(); paintScale(); });
+/* fingers: each pointer plays the key under it, and sliding moves to the next key */
+const POINTERS=new Map();
+function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.closest && el.closest("#kbd [data-m]"); return k||null; }
+function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
+function bindKeyboard(){
+  const kb=$("kbd");
+  /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
+  [kb, $("pads")].forEach(el=>el.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}));
+  kb.addEventListener("pointerdown",(e)=>{
+    if(e.button>0) return; e.preventDefault();
+    const k=keyAt(e.clientX,e.clientY); if(!k) return;
+    try{ kb.setPointerCapture(e.pointerId); }catch(err){}
+    const m=+k.getAttribute("data-m"); POINTERS.set(e.pointerId, m); noteOn("k", m, velAt(k, e.clientY));
+  });
+  kb.addEventListener("pointermove",(e)=>{
+    if(!POINTERS.has(e.pointerId)) return;
+    const k=keyAt(e.clientX,e.clientY); const m=k?+k.getAttribute("data-m"):null, was=POINTERS.get(e.pointerId);
+    if(m===was) return;
+    if(was!=null && ![...POINTERS.entries()].some(([id,x])=>id!==e.pointerId && x===was)) noteOff("k", was);
+    POINTERS.set(e.pointerId, m);
+    if(m!=null) noteOn("k", m, velAt(k, e.clientY));
+  });
+  const up=(e)=>{ if(!POINTERS.has(e.pointerId)) return; const m=POINTERS.get(e.pointerId); POINTERS.delete(e.pointerId);
+    if(m!=null && ![...POINTERS.values()].some(x=>x===m)) noteOff("k", m); };
+  kb.addEventListener("pointerup",up); kb.addEventListener("pointercancel",up); kb.addEventListener("lostpointercapture",up);
+}
+/* computer keys: by position, so other keyboard layouts work too */
+const HELD_KEYS=new Map();
+function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
+document.addEventListener("keydown",(e)=>{
+  if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
+  if(e.target && e.target.tagName==="SELECT") return;
+  if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ if(!e.repeat) setSus(true); return; }
+  if(KEYMAP[e.code]!=null){ e.preventDefault(); if(e.repeat||HELD_KEYS.has(e.code)) return;
+    const m=KB.lo+KEYMAP[e.code]; HELD_KEYS.set(e.code, m); noteOn("c", m, 0.7); return; }
+  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
+  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat){ const n=octMove(e.code==="KeyZ"?-1:1); if(n) onOct(n); } return; }
+  if(e.code==="Space"){
+    const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
+    if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
+    e.preventDefault(); if(!e.repeat){ S.playing?userStop():start(); }
+  }
+});
+document.addEventListener("keyup",(e)=>{
+  if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ setSus(false); return; }
+  if(HELD_KEYS.has(e.code)){ noteOff("c", HELD_KEYS.get(e.code)); HELD_KEYS.delete(e.code); return; }
+  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
+});
+window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>noteOff("c",m)); HELD_KEYS.clear(); if(S.sus) setSus(false); });
+/* a MIDI keyboard (Chrome and Edge), only when asked, so no surprise permission box */
+let midiAccess=null;
+function midiMsg(e){
+  const [st,a,b]=e.data, cmd=st&0xf0;
+  if(cmd===0x90 && b>0) noteOn("m", a, b/127);
+  else if(cmd===0x80 || (cmd===0x90 && b===0)) noteOff("m", a);
+  else if(cmd===0xb0 && a===64) setSus(b>=64);
+}
+async function useMidi(){
+  const line=$("midiLine");
+  /* AOG-PIANO-MIDI-V2 (Jimmy, on an iPad: "nothing changes when you tap the MIDI keyboard"). The sound starts now, inside
+     the tap: an iPad will not start it later for a key on the MIDI keyboard. The answer shows at once, under the buttons. */
+  ctx();
+  line.textContent=t("midiWait");
+  try{
+    midiAccess=midiAccess||await navigator.requestMIDIAccess();
+    /* listen to every keyboard, and say so again when one is plugged in or taken out */
+    const hook=()=>{ const ins=[...midiAccess.inputs.values()]; ins.forEach(i=>{ i.onmidimessage=midiMsg; });
+      line.textContent= ins.length ? t("midiReady",{name:ins.map(i=>i.name).join(", ")}) : t("midiNone"); };
+    hook(); midiAccess.onstatechange=hook;
+  }catch(e){ line.textContent=t("midiNo"); }
+}
+
+function bind(){
+  $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; save();
+    if(ac) setSendLevel(LIVE_CH, id);
+    const snd=SOUNDS[id]; if(snd.kind==="sample") loadSet(snd.set, paintLoad); else warmMade(id);   /* AOG-PIANO-SOUNDS-V2 */
+    paintLoad(); lessonsChanged(); if(BP.on) bpText(); };
+  $("keySel").onchange=()=>{ S.key=+$("keySel").value; lastVoicing=null; save(); paintPads(); paintProg(); buildKeys(); if(S.playing) mark("klive"); lessonsChanged(); };
+  $("majBtn").onclick=()=>{ if(!S.minor) return; S.minor=false; save(); paintMood(); paintPads(); paintProg(); lessonsChanged(); };
+  $("minBtn").onclick=()=>{ if(S.minor) return; S.minor=true; save(); paintMood(); paintPads(); paintProg(); lessonsChanged(); };
+  $("progSel").onchange=()=>{ const p=PRESETS.find(x=>x.id===$("progSel").value); if(!p) return;
+    const was=S.playing;
+    S.preset=p.id; S.prog=p.chords.map(c=>({off:c.off,q:c.q})); S.minor=p.minor; S.own=false; lastVoicing=null; save();
+    paintMood(); paintPads(); paintProg(); paintProgSel(); if(S.playing){ stop(true); start(); }
+    if(was) mark("cswap"); lessonsChanged(); };
+  $("rhythmSel").onchange=()=>{ const was=beatsPerBar(); S.rhythm=$("rhythmSel").value; save();
+    if(beatsPerBar()!==was){ paintDrums(); if(S.playing){ stop(true); start(); } }   /* a waltz's bar is shorter: start it on its own count */
+    lessonsChanged(); };
+  { const W=$("wheel");
+    W.addEventListener("pointerdown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(!g || e.button>0) return; e.preventDefault();
+      try{ W.setPointerCapture(e.pointerId); }catch(err){} WHEEL.ptr=e.pointerId; wheelDown(g.getAttribute("data-k")); });
+    const wUp=(e)=>{ if(WHEEL.ptr!==e.pointerId) return; WHEEL.ptr=null; wheelRelease(); };
+    W.addEventListener("pointerup",wUp); W.addEventListener("pointercancel",wUp); W.addEventListener("lostpointercapture",wUp);
+    W.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier, no scroll from the wheel */
+    W.addEventListener("keydown",(e)=>{ const g=e.target.closest && e.target.closest(".wd"); if(g && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(!e.repeat) wheelDown(g.getAttribute("data-k")); } });
+    W.addEventListener("keyup",(e)=>{ if((e.key==="Enter"||e.key===" ") && WHEEL.ptr==null && WHEEL.held) wheelRelease(); }); }
+  $("turnL").onclick=()=>turnWheel(5); $("turnR").onclick=()=>turnWheel(7);
+  $("ownBtn").onclick=()=>{ S.own=!S.own; if(S.own && S.preset){ S.prog=[]; S.preset=""; } save(); paintProg(); paintProgSel(); lessonsChanged(); };
+  $("clearBtn").onclick=()=>{ if(S.playing) stop(); S.prog=[]; S.preset=""; save(); paintProg(); paintProgSel(); lessonsChanged(); };
+  $("playBtn").onclick=()=>{ S.playing?userStop():start(); };
+  $("bpm").oninput=()=>{ S.bpm=+$("bpm").value; $("bpmOut").textContent=t("bpm",{n:S.bpm}); save();
+    if(S.playing && !drumsLive()){ const next=PLAY.t0+PLAY.bar*PLAY.barSec, nb=beatsPerBar()*60/S.bpm; PLAY.t0=next-PLAY.bar*nb; PLAY.barSec=nb; }
+    clearTimeout(bind.lt); bind.lt=setTimeout(lessonsChanged,250); };
+  $("downBtn").onclick=()=>{ octMove(-1); onOct(-1); }; bindOctHeld();
+  $("upBtn").onclick=()=>{ octMove(1); onOct(1); };
+  $("susBtn").onclick=()=>setSus(!S.sus);
+  if(navigator.requestMIDIAccess){ $("midiBtn").hidden=false; $("midiBtn").onclick=useMidi; }
+  $("era").oninput=()=>{ S.era=Math.max(0,Math.min(1,1-(+$("era").value)/100)); $("eraOut").textContent=eraWord(); $("era").setAttribute("aria-valuetext",eraWord());
+    if(ac) setEra(LIVE_CH, S.era); clearTimeout(bind.et); bind.et=setTimeout(()=>{ save(); lessonsChanged(); },250); };
+  $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
+  $("sendBtn").onclick=()=>bounce(); $("sendPadsBtn").onclick=()=>bounce("pads");
+  $("padsBtn").onclick=sendPads;
+  $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
+  $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
+    h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
+  /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of
+     reopening the menu; a keyboard user keeps focus on the menu as usual */
+  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
+    el.addEventListener("pointerdown",()=>{ el._ptr=true; });
+    el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
+  bindScales();   /* AOG-PIANO-SCALES-V1 */
+  bindKeyboard();
+  let rt=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const before=KB.whites; if(7*octaves()+1!==before) buildKeys(); },150); });
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-PIANO-LESSONS-V1 (2026-10-03) — the lessons, on the piano itself
+   Jimmy: "May I also have the same type of lessons and worksheets and pages within where it lives?"
+   The drum machine's lesson engine: 21 skill lessons, then 17 songs we make together. Every step
+   is read from the piano: the notes under your fingers, the pads, the pattern, the key, the sound,
+   the tempo, the pedal and the dial. Progress is kept by step id in localStorage, and each lesson has
+   a worksheet on piano-lessons.html. The words live in _work/music/piano_lessons_data.py; run
+   _work/music/make_piano_lessons.py after changing them (it rewrites the block below and the sheets).
+   ══════════════════════════════════════════════════════════════════════════ */
+/* AOG-PIANO-LESSONS-DATA:BEGIN — made by _work/music/make_piano_lessons.py from piano_lessons_data.py. Edit there, then run it. */
+const LESSONS=[{"id":"p1","en":"Turn it on and play","es":"Enciéndelo y toca","blurb_en":"Tap a key. Tap a chord pad. Pick a pattern and press Play. That is the whole piano.","blurb_es":"Toca una tecla. Toca un pad de acorde. Elige un patrón y pulsa Tocar. Ese es todo el piano.","steps":["key1","pad1","pat1","play1","stop1"]},{"id":"p2","en":"Find C: the black keys show the way","es":"Encuentra el Do: las teclas negras te guían","blurb_en":"The black keys come in groups of two and three. Every C sits just to the left of a group of two.","blurb_es":"Las teclas negras vienen en grupos de dos y de tres. Cada Do está justo a la izquierda de un grupo de dos.","steps":["fc","fc2","fb2","fb3"]},{"id":"p3","en":"Seven letters, then they repeat","es":"Siete notas, y se repiten","blurb_en":"The white keys are named A B C D E F G, and then the names start over. From C up to the next C is the C major scale.","blurb_es":"Las teclas blancas se llaman Do Re Mi Fa Sol La Si, y luego los nombres empiezan otra vez. De un Do al siguiente Do tienes la escala de Do mayor.","steps":["up8","down8","up8hi"]},{"id":"p4","en":"Octaves: same name, twice as fast","es":"Octavas: el mismo nombre, el doble de rápido","blurb_en":"Play a C, then the next C up. It sounds like the same note, only higher. The higher string shakes twice as fast. That jump is an octave.","blurb_es":"Toca un Do y luego el siguiente Do hacia arriba. Suena como la misma nota, pero más aguda. La cuerda de arriba vibra el doble de rápido. Ese salto es una octava.","steps":["opair","ohigher","olower","ofar"]},{"id":"p5","en":"Soft and loud: piano and forte","es":"Suave y fuerte: piano y forte","blurb_en":"The piano's full name is pianoforte, Italian for soft-loud. Press near the top of a key for a soft note and near the bottom for a loud one.","blurb_es":"El nombre completo del piano es pianoforte, que en italiano quiere decir suave-fuerte. Presiona cerca de la parte de arriba de una tecla para una nota suave, y cerca de la de abajo para una fuerte.","steps":["vsoft","vloud","vgrow"]},{"id":"p6","en":"Make a chord with your hand","es":"Haz un acorde con tu mano","blurb_en":"A chord is three or more notes played together. Play one key, skip one, play one, skip one, play one.","blurb_es":"Un acorde son tres o más notas tocadas juntas. Toca una tecla, salta una, toca una, salta una, toca una.","steps":["hceg","hfac","hgbd","hpad"]},{"id":"p7","en":"Major and minor: bright and moody","es":"Mayor y menor: brillante y melancólico","blurb_en":"Move the middle note of a chord down one key, and bright turns moody. C E G is C major. C E♭ G is C minor.","blurb_es":"Baja una tecla la nota del medio de un acorde, y lo brillante se vuelve melancólico. Do Mi Sol es Do mayor. Do Mi♭ Sol es Do menor.","steps":["mjr","mnr","mmood","mback"]},{"id":"p8","en":"Six chords that fit: the pads","es":"Seis acordes que encajan: los pads","blurb_en":"In every key, a handful of chords belong together. The pads show six of them, numbered by the step of the scale they start on. Pad 1 is home.","blurb_es":"En cada tono, unos cuantos acordes van juntos. Los pads muestran seis, numerados por el paso de la escala donde empiezan. El pad 1 es la casa.","steps":["p6","p51","pmin","p4key"]},{"id":"p9","en":"A chord pattern: one chord each bar","es":"Un patrón de acordes: un acorde por compás","blurb_en":"Most songs repeat a short pattern of chords. Each chord lasts one bar: count 1 2 3 4, and the next chord comes in.","blurb_es":"Casi todas las canciones repiten un patrón corto de acordes. Cada acorde dura un compás: cuenta 1 2 3 4 y entra el siguiente acorde.","steps":["cpop","cplay","cround","cswap"]},{"id":"p10","en":"Four ways to play a chord","es":"Cuatro maneras de tocar un acorde","blurb_en":"The same chords can feel calm, steady, flowing or bouncy. Change How the chords play and listen.","blurb_es":"Los mismos acordes pueden sentirse tranquilos, firmes, fluidos o saltarines. Cambia Cómo suenan los acordes y escucha.","steps":["rhold","rpulse","rbroken","roff"]},{"id":"p11","en":"Tempo: beats in a minute","es":"Tempo: pulsos en un minuto","blurb_en":"Tempo is how many beats fit in one minute. At 60, one beat lasts exactly one second, like the second hand of a clock.","blurb_es":"El tempo es cuántos pulsos caben en un minuto. A 60, cada pulso dura exactamente un segundo, como la aguja de los segundos de un reloj.","steps":["t60","t60p","t120","t120p"]},{"id":"p12","en":"Change the key","es":"Cambia el tono","blurb_en":"A key is the home note a song is built on. Change the key, and every chord moves together. It is the same song, just higher or lower.","blurb_es":"El tono es la nota casa sobre la que se construye una canción. Cambia el tono, y todos los acordes se mueven juntos. Es la misma canción, solo más aguda o más grave.","steps":["kpat","kg","k3","klive"]},{"id":"p13","en":"Make your own pattern","es":"Haz tu propio patrón","blurb_en":"Press Make my own and tap the pads in any order. You are writing the chords of a song.","blurb_es":"Pulsa Hacer el mío y toca los pads en el orden que quieras. Estás escribiendo los acordes de una canción.","steps":["own1","own4","ownhome","ownplay"]},{"id":"p14","en":"The pedal: let it ring","es":"El pedal: déjalo sonar","blurb_en":"On a real piano, the right pedal lifts felt dampers off the strings, so notes keep ringing after you let go. Here it is the Hold notes button, or Shift on a computer.","blurb_es":"En un piano real, el pedal derecho levanta los apagadores de fieltro de las cuerdas, y las notas siguen sonando cuando sueltas. Aquí es el botón Mantener notas, o Shift en la computadora.","steps":["son","sring","soff"]},{"id":"p15","en":"Eight sounds: hammers, tines, reeds and pipes","es":"Ocho sonidos: martillos, varillas, lengüetas y tubos","blurb_en":"A grand piano hits strings with felt hammers. An electric piano hits metal tines or reeds. An organ blows air through pipes or spins wheels. Same notes, different color. That color is called timbre.","blurb_es":"Un piano de cola golpea cuerdas con martillos de fieltro. Un piano eléctrico golpea varillas o lengüetas de metal. Un órgano sopla aire por tubos o hace girar ruedas. Las mismas notas, otro color. Ese color se llama timbre.","steps":["tgrand","tep","torg","tall"]},{"id":"p16","en":"Play along: follow the lit keys","es":"Toca encima: sigue las teclas iluminadas","blurb_en":"While the chords play, the keys of each chord light up. Any lit key fits. Play them in your own order and you are making up a melody.","blurb_es":"Mientras suenan los acordes, se iluminan las teclas de cada acorde. Cualquier tecla iluminada encaja. Tócalas en tu propio orden y estás inventando una melodía.","steps":["lplay","llit","llit8","lchange"]},{"id":"p17","en":"Play with the drum machine","es":"Toca con la caja de ritmos","blurb_en":"Make a beat on the drum machine and press Send to the turntables. The piano finds it too, and plays your chords in time with it.","blurb_es":"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. El piano también lo encuentra y toca tus acordes a tiempo con él.","steps":["dsend","don","dplay","dpulse"]},{"id":"p18","en":"Twelve-bar blues","es":"Blues de doce compases","blurb_en":"The blues grew in the American South around 1900, from African American work songs and spirituals. Twelve bars, three chords, and a seventh in every one.","blurb_es":"El blues nació en el sur de Estados Unidos hacia 1900, de los cantos de trabajo y los espirituales afroamericanos. Doce compases, tres acordes y una séptima en cada uno.","steps":["bpick","borg","bpulse","b12"]},{"id":"p19","en":"Seventh chords: jazz 2-5-1","es":"Acordes de séptima: el 2-5-1 del jazz","blurb_en":"Stack one more note on a chord, skipping a key again, and you get a seventh chord. Jazz is built on them, and 2-5-1 is its favorite way home.","blurb_es":"Pon una nota más encima de un acorde, saltando otra tecla, y tienes un acorde de séptima. El jazz se construye con ellos, y el 2-5-1 es su camino favorito a casa.","steps":["jpick","jep","jplay","jhand"]},{"id":"p20","en":"1987 or 2026? Sound becomes numbers","es":"¿1987 o 2026? El sonido se vuelve números","blurb_en":"A computer keeps sound as a long list of numbers. The 1987 samplers kept fewer, rougher numbers, and that is the crunch. Turn the Sound dial and hear it.","blurb_es":"Una computadora guarda el sonido como una lista larga de números. Los samplers de 1987 guardaban menos números, más ásperos, y ese es el crujido. Gira el dial de Sonido y escúchalo.","steps":["e87","ehigh","e26","emid"]},{"id":"p21","en":"Make a track, then hand it in","es":"Haz una pista y entrégala","blurb_en":"Choose a sound, a key and a pattern that feel like you. Send it to the turntables, give it a name, and hand in the worksheet.","blurb_es":"Elige un sonido, un tono y un patrón que se sientan tuyos. Mándalo a los platos, ponle nombre y entrega la hoja.","steps":["fown","fname","fsend","fsheet"]},{"id":"s22","en":"Frère Jacques · a round","es":"Frère Jacques (Martinillo) · un canon","blurb_en":"A French song from the 1700s, sung all over the world. In Spanish it is Martinillo. It is a round: groups start the same tune at different times, and it still fits together.","blurb_es":"Una canción francesa del siglo XVIII que se canta en todo el mundo. En español es Martinillo. Es un canon: los grupos empiezan la misma melodía en momentos distintos, y aun así encaja.","tog_en":"Make three groups. Group 1 starts singing. Group 2 starts when group 1 reaches line 2, then group 3. The piano keeps everyone together.","tog_es":"Hagan tres grupos. El grupo 1 empieza a cantar. El grupo 2 empieza cuando el grupo 1 llega a la línea 2, y luego el grupo 3. El piano mantiene a todos juntos.","steps":["s22_1","s22_2","s22_3","s22_4","s22_5","s22_6","s22_7","s22_8"],"song":{"n":22,"k":1,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"mel","pcs":[0,2,4,0,0,2,4,0]},{"k":"mel","pcs":[4,5,7,4,5,7]},{"k":"mel","pcs":[7,9,7,5,4,0,7,9,7,5,4,0]},{"k":"mel","pcs":[0,7,0,0,7,0]},{"k":"play"}],"key":0,"minor":false,"bpm":100,"sound":"grand","rhythm":"pulse","prog":[{"off":0,"q":"maj"}]}},{"id":"s23","en":"Ode to Joy","es":"Himno de la alegría","blurb_en":"Ludwig van Beethoven wrote this tune for his Ninth Symphony in 1824, when he could hardly hear at all. Today it is the anthem of Europe.","blurb_es":"Ludwig van Beethoven escribió esta melodía para su Novena Sinfonía en 1824, cuando ya casi no podía oír. Hoy es el himno de Europa.","tog_en":"One group plays the chords on the piano. Everyone else hums or sings the tune, one note for each beat.","tog_es":"Un grupo toca los acordes en el piano. Todos los demás tararean o cantan la melodía, una nota por cada pulso.","steps":["s23_1","s23_2","s23_3","s23_4","s23_5","s23_6","s23_7"],"song":{"n":23,"k":2,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"mel","pcs":[4,4,5,7,7,5,4,2]},{"k":"mel","pcs":[0,0,2,4,4,2,2]},{"k":"mel","pcs":[0,0,2,4,2,0,0]},{"k":"play"}],"key":0,"minor":false,"bpm":100,"sound":"grand","rhythm":"pulse","prog":[{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":0,"q":"maj"}]}},{"id":"s24","en":"When the Saints Go Marching In","es":"When the Saints Go Marching In (Cuando los santos marchan)","blurb_en":"A Black American spiritual that became the marching song of New Orleans jazz. Brass bands still play it in the city's street parades.","blurb_es":"Un espiritual afroamericano que se volvió la canción de marcha del jazz de Nueva Orleans. Las bandas de metales todavía la tocan en los desfiles de la ciudad.","tog_en":"Everyone marches in place and sings. Wave a hand each time the chord changes.","tog_es":"Todos marchan en su lugar y cantan. Saluden con la mano cada vez que cambia el acorde.","steps":["s24_1","s24_2","s24_3","s24_4","s24_5","s24_6","s24_7","s24_8"],"song":{"n":24,"k":3,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"mel","pcs":[0,4,5,7,0,4,5,7]},{"k":"mel","pcs":[0,4,5,7,4,0,4,2]},{"k":"mel","pcs":[4,4,2,0,0,4,7,7,5]},{"k":"mel","pcs":[4,5,7,4,0,2,0]},{"k":"play"}],"key":0,"minor":false,"bpm":112,"sound":"honky","rhythm":"pulse","prog":[{"off":0,"q":"maj"},{"off":0,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"}]}},{"id":"s25","en":"Canon","es":"Canon","blurb_en":"Johann Pachelbel, a church organist in Germany, wrote this canon around 1700. Its eight chords go round and round under new tunes, and pop songs still borrow them.","blurb_es":"Johann Pachelbel, organista de iglesia en Alemania, escribió este canon hacia 1700. Sus ocho acordes dan vueltas y vueltas debajo de melodías nuevas, y las canciones pop todavía los toman prestados.","tog_en":"Sit still and listen to the eight chords go round three times. Then two volunteers hum lit notes on top.","tog_es":"Siéntense quietos y escuchen los ocho acordes dar tres vueltas. Luego dos voluntarios tararean notas iluminadas encima.","steps":["s25_1","s25_2","s25_3","s25_4"],"song":{"n":25,"k":4,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":2,"minor":false,"bpm":66,"sound":"church","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":9,"q":"min"},{"off":4,"q":"min"},{"off":5,"q":"maj"},{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"}],"preset":"canon"}},{"id":"s26","en":"Blues on the organ","es":"Blues con órgano","blurb_en":"In the 1950s and 60s, jazz and soul players brought the blues to the Hammond organ, a heavy keyboard with spinning wheels inside that make its tone.","blurb_es":"En los años 50 y 60, músicos de jazz y soul llevaron el blues al órgano Hammond, un teclado pesado con ruedas que giran por dentro y hacen su sonido.","tog_en":"Everyone snaps on 2 and 4. Count the twelve bars out loud, 1 to 12, then start again.","tog_es":"Todos chasquean los dedos en 2 y 4. Cuenten los doce compases en voz alta, del 1 al 12, y vuelvan a empezar.","steps":["s26_1","s26_2","s26_3","s26_4"],"song":{"n":26,"k":5,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":5,"minor":false,"bpm":96,"sound":"organ","rhythm":"offbeat","prog":[{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":5,"q":"dom7"},{"off":5,"q":"dom7"},{"off":0,"q":"dom7"},{"off":0,"q":"dom7"},{"off":7,"q":"dom7"},{"off":5,"q":"dom7"},{"off":0,"q":"dom7"},{"off":7,"q":"dom7"}],"preset":"blues"}},{"id":"s27","en":"Doo-wop ballad","es":"Balada doo-wop","blurb_en":"In the 1950s, teenagers in US cities sang in groups on street corners, with their voices in place of instruments. Their favorite chords went 1 6 4 5.","blurb_es":"En los años 50, adolescentes de las ciudades de Estados Unidos cantaban en grupo en las esquinas, con sus voces en lugar de instrumentos. Sus acordes favoritos iban 1 6 4 5.","tog_en":"Make four groups, one for each chord. Each group sings a soft 'ooh' while its chord plays.","tog_es":"Hagan cuatro grupos, uno por acorde. Cada grupo canta un 'uh' suave mientras suena su acorde.","steps":["s27_1","s27_2","s27_3","s27_4"],"song":{"n":27,"k":6,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":3,"minor":false,"bpm":76,"sound":"upright","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":9,"q":"min"},{"off":5,"q":"maj"},{"off":7,"q":"maj"}],"preset":"fifties"}},{"id":"s28","en":"Highlife","es":"Highlife","blurb_en":"Highlife began in Ghana in the early 1900s, when dance bands mixed local rhythms with brass and guitars. Its bright, rolling chords spread across West Africa.","blurb_es":"El highlife nació en Ghana a principios del siglo XX, cuando las bandas de baile mezclaron ritmos locales con metales y guitarras. Sus acordes brillantes y ondulantes se extendieron por África occidental.","tog_en":"Everyone steps side to side, one step for each beat. A few learners clap between the steps.","tog_es":"Todos dan un paso al lado en cada pulso. Algunos aplauden entre los pasos.","steps":["s28_1","s28_2","s28_3","s28_4"],"song":{"n":28,"k":7,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":9,"minor":false,"bpm":120,"sound":"epreed","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"}]}},{"id":"s29","en":"Ska","es":"Ska","blurb_en":"Ska was born in Jamaica in the early 1960s, mixing local mento with American rhythm and blues. The piano and guitar play on the off-beats, between the counts.","blurb_es":"El ska nació en Jamaica a principios de los años 60, mezclando el mento local con el rhythm and blues de Estados Unidos. El piano y la guitarra tocan en los contratiempos, entre los conteos.","tog_en":"Everyone counts 1 2 3 4 out loud and claps only on the AND between the numbers.","tog_es":"Todos cuentan 1 2 3 4 en voz alta y aplauden solo en el Y entre los números.","steps":["s29_1","s29_2","s29_3","s29_4"],"song":{"n":29,"k":8,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":7,"minor":false,"bpm":150,"sound":"upright","rhythm":"offbeat","prog":[{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":5,"q":"maj"}]}},{"id":"s30","en":"Reggae organ","es":"Órgano de reggae","blurb_en":"Reggae grew out of ska in Jamaica in the late 1960s. It slowed down, and the organ began to bubble on the off-beats while the bass sang underneath.","blurb_es":"El reggae salió del ska en Jamaica a finales de los años 60. Se volvió más lento, y el órgano empezó a burbujear en los contratiempos mientras el bajo cantaba por debajo.","tog_en":"Sway gently and say 'chk' on each off-beat. If your class made the Reggae one drop on the drum machine, send it here and press Play with my drum beat.","tog_es":"Mézanse suave y digan 'chk' en cada contratiempo. Si su clase hizo el Reggae one drop en la caja de ritmos, mándenlo aquí y pulsen Tocar con mi ritmo de batería.","steps":["s30_1","s30_2","s30_3","s30_4"],"song":{"n":30,"k":9,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":9,"minor":true,"bpm":76,"sound":"organ","rhythm":"offbeat","prog":[{"off":0,"q":"min"},{"off":8,"q":"maj"},{"off":3,"q":"maj"},{"off":10,"q":"maj"}],"preset":"minor"}},{"id":"s31","en":"Cumbia","es":"Cumbia","blurb_en":"Cumbia began on the Caribbean coast of Colombia, from African, Indigenous and Spanish music. Today it is played from Mexico to Argentina, often on electronic keyboards.","blurb_es":"La cumbia nació en la costa caribe de Colombia, de música africana, indígena y española. Hoy se toca de México a Argentina, muchas veces con teclados electrónicos.","tog_en":"Step side to side on each beat, like a cumbia dancer. If your class made the Cumbia-style groove on the drum machine, send it here and play along.","tog_es":"Den un paso al lado en cada pulso, como en el baile de cumbia. Si su clase hizo el Ritmo estilo cumbia en la caja de ritmos, mándenlo aquí y toquen encima.","steps":["s31_1","s31_2","s31_3","s31_4"],"song":{"n":31,"k":10,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":4,"minor":true,"bpm":94,"sound":"ep80","rhythm":"offbeat","prog":[{"off":0,"q":"min"},{"off":5,"q":"min"},{"off":7,"q":"min"},{"off":0,"q":"min"}]}},{"id":"s32","en":"Flamenco · the Andalusian cadence","es":"Flamenco · la cadencia andaluza","blurb_en":"Flamenco comes from Andalusia, in southern Spain, with roots in Romani, Arab, Jewish and Spanish music. Four chords step down, and the last one sounds like a door left open.","blurb_es":"El flamenco viene de Andalucía, en el sur de España, con raíces en la música gitana, árabe, judía y española. Cuatro acordes bajan paso a paso, y el último suena como una puerta que se queda abierta.","tog_en":"Half the class claps on every beat (palmas). The other half claps softly on 2 and 4.","tog_es":"La mitad de la clase aplaude en cada pulso (palmas). La otra mitad aplaude suave en 2 y 4.","steps":["s32_1","s32_2","s32_3","s32_4"],"song":{"n":32,"k":11,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":9,"minor":true,"bpm":100,"sound":"grand","rhythm":"broken","prog":[{"off":0,"q":"min"},{"off":10,"q":"maj"},{"off":8,"q":"maj"},{"off":7,"q":"maj"}],"preset":"flamenco"}},{"id":"s33","en":"Black keys only","es":"Solo teclas negras","blurb_en":"The five black keys make a pentatonic scale, one of the oldest scales in the world. Folk music from China, Scotland, West Africa and the Andes uses it. Over these chords, every black key fits.","blurb_es":"Las cinco teclas negras forman una escala pentatónica, una de las escalas más antiguas del mundo. La música tradicional de China, Escocia, África occidental y los Andes la usa. Sobre estos acordes, cada tecla negra encaja.","tog_en":"Take turns. Each learner plays one short black-key tune over the chords. Everyone else listens, then claps.","tog_es":"Túrnense. Cada quien toca una melodía corta con teclas negras sobre los acordes. Los demás escuchan y luego aplauden.","steps":["s33_1","s33_2","s33_3","s33_4","s33_5"],"song":{"n":33,"k":12,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"},{"k":"black"}],"key":6,"minor":false,"bpm":90,"sound":"epwarm","rhythm":"broken","prog":[{"off":0,"q":"maj"},{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":0,"q":"maj"}]}},{"id":"s34","en":"City pop","es":"City pop","blurb_en":"City pop was the sound of Tokyo in the 1980s: bright, smooth and full of the new digital electric piano. Its favorite chords, 4 5 3 6, still fill anime songs.","blurb_es":"El city pop fue el sonido de Tokio en los años 80: brillante, suave y lleno del nuevo piano eléctrico digital. Sus acordes favoritos, 4 5 3 6, siguen llenando las canciones de anime.","tog_en":"Everyone nods on beat 1. Two volunteers make up a 'la la' tune on the lit keys.","tog_es":"Todos asienten en el pulso 1. Dos voluntarios inventan una melodía de 'la la' con las teclas iluminadas.","steps":["s34_1","s34_2","s34_3","s34_4"],"song":{"n":34,"k":13,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":4,"minor":false,"bpm":112,"sound":"ep80","rhythm":"pulse","prog":[{"off":5,"q":"maj"},{"off":7,"q":"maj"},{"off":4,"q":"min"},{"off":9,"q":"min"}],"preset":"anime"}},{"id":"s35","en":"Pop anthem · 1 5 6 4","es":"Himno pop · 1 5 6 4","blurb_en":"Four chords, 1 5 6 4, sit under hundreds of hit songs from many countries. Learn them once and you can play along with the radio.","blurb_es":"Cuatro acordes, 1 5 6 4, están debajo de cientos de éxitos de muchos países. Apréndelos una vez y podrás acompañar a la radio.","tog_en":"Everyone sings one long 'oh' on the same note while the chords change under it. Notice how the same note feels different on each chord.","tog_es":"Todos cantan un 'oh' largo en la misma nota mientras los acordes cambian debajo. Fíjense cómo la misma nota se siente distinta en cada acorde.","steps":["s35_1","s35_2","s35_3","s35_4"],"song":{"n":35,"k":14,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":7,"minor":false,"bpm":100,"sound":"grand","rhythm":"pulse","prog":[{"off":0,"q":"maj"},{"off":7,"q":"maj"},{"off":9,"q":"min"},{"off":5,"q":"maj"}],"preset":"pop"}},{"id":"s36","en":"Sad pop · 6 4 1 5","es":"Pop triste · 6 4 1 5","blurb_en":"These are the same four chords as the pop anthem, started on the minor one. Starting on 6 makes the whole song feel more serious.","blurb_es":"Son los mismos cuatro acordes del himno pop, empezando por el menor. Empezar en el 6 hace que toda la canción se sienta más seria.","tog_en":"Close your eyes for one time round. Then everyone writes one word for how it made them feel.","tog_es":"Cierren los ojos durante una vuelta. Luego cada quien escribe una palabra sobre cómo le hizo sentir.","steps":["s36_1","s36_2","s36_3","s36_4"],"song":{"n":36,"k":15,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"play"}],"key":0,"minor":false,"bpm":72,"sound":"upright","rhythm":"broken","prog":[{"off":9,"q":"min"},{"off":5,"q":"maj"},{"off":0,"q":"maj"},{"off":7,"q":"maj"}],"preset":"sadpop"}},{"id":"s37","en":"Lo-fi study beat","es":"Ritmo lo-fi para estudiar","blurb_en":"Lo-fi beats grew online in the 2010s: slow hip-hop drums, soft jazz chords and a dusty sound, on purpose. Turn the Sound dial toward 1987 for the dust.","blurb_es":"Los ritmos lo-fi crecieron en internet en los años 2010: batería lenta de hip-hop, acordes suaves de jazz y un sonido polvoso, a propósito. Gira el dial de Sonido hacia 1987 para el polvo.","tog_en":"If your class made the Lo-fi study beat on the drum machine, send it here and press Play with my drum beat. Then everyone reads or writes quietly for one minute while it plays.","tog_es":"Si su clase hizo el ritmo Lo-fi para estudiar en la caja de ritmos, mándenlo aquí y pulsen Tocar con mi ritmo de batería. Luego todos leen o escriben en silencio un minuto mientras suena.","steps":["s37_1","s37_2","s37_3","s37_4","s37_5"],"song":{"n":37,"k":16,"checks":[{"k":"set"},{"k":"sound"},{"k":"chords"},{"k":"era"},{"k":"play"}],"key":5,"minor":false,"bpm":76,"sound":"epwarm","rhythm":"hold","prog":[{"off":2,"q":"m7"},{"off":7,"q":"dom7"},{"off":0,"q":"maj7"},{"off":0,"q":"maj7"}],"preset":"jazz","era":true}},{"id":"s38","en":"Our class song","es":"La canción de nuestra clase","blurb_en":"Everyone adds something. Each group picks the chords for its part of the pattern, and the piano plays them all as one song.","blurb_es":"Todos aportan algo. Cada grupo elige los acordes de su parte del patrón, y el piano los toca todos como una sola canción.","tog_en":"Make four groups. Each group chooses two chords, in order. When your two bars play, your group stands up.","tog_es":"Hagan cuatro grupos. Cada grupo elige dos acordes, en orden. Cuando suenan sus dos compases, su grupo se pone de pie.","steps":["s38_1","s38_2","s38_3","s38_4","s38_5"],"song":{"n":38,"k":17,"checks":[{"k":"own8"},{"k":"own4d"},{"k":"ownend"},{"k":"play"},{"k":"send"}],"free":true}}];
+const LSTEP={"key1":{"en":"Tap any key and hear it","es":"Toca cualquier tecla y escúchala"},"pad1":{"en":"Tap any chord pad","es":"Toca cualquier pad de acorde"},"pat1":{"en":"Pick a chord pattern","es":"Elige un patrón de acordes"},"play1":{"en":"Press Play the chords","es":"Pulsa Tocar los acordes"},"stop1":{"en":"Press Stop","es":"Pulsa Parar"},"fc":{"en":"Play a C","es":"Toca un Do"},"fc2":{"en":"Play two different C's, one higher than the other","es":"Toca dos Do distintos, uno más agudo que el otro"},"fb2":{"en":"Play both keys of a group of two black keys","es":"Toca las dos teclas de un grupo de dos teclas negras"},"fb3":{"en":"Play all three keys of a group of three black keys","es":"Toca las tres teclas de un grupo de tres teclas negras"},"up8":{"en":"Play C D E F G A B C, going up","es":"Toca Do Re Mi Fa Sol La Si Do, subiendo"},"down8":{"en":"Play it back down: C B A G F E D C","es":"Tócala de bajada: Do Si La Sol Fa Mi Re Do"},"up8hi":{"en":"Play the scale going up again, one octave higher","es":"Toca la escala subiendo otra vez, una octava más arriba"},"opair":{"en":"Play a note, then the same note one octave higher","es":"Toca una nota y luego la misma nota una octava más arriba"},"ohigher":{"en":"Press Higher ▶ to move the keyboard up","es":"Pulsa Más agudo ▶ para subir el teclado"},"olower":{"en":"Press ◀ Lower to move it down","es":"Pulsa ◀ Más grave para bajarlo"},"ofar":{"en":"Play a very low note (C2 or lower) and a very high one (C6 or higher)","es":"Toca una nota muy grave (Do2 o más abajo) y una muy aguda (Do6 o más arriba)"},"vsoft":{"en":"Play a soft note: press near the top of a key","es":"Toca una nota suave: presiona cerca de la parte de arriba de una tecla"},"vloud":{"en":"Play a loud note: press near the bottom of a key","es":"Toca una nota fuerte: presiona cerca de la parte de abajo de una tecla"},"vgrow":{"en":"Play one key four times, from soft to loud","es":"Toca una tecla cuatro veces, de suave a fuerte"},"hceg":{"en":"Hold C, E and G down together","es":"Mantén Do, Mi y Sol presionadas a la vez"},"hfac":{"en":"Hold F, A and C together","es":"Mantén Fa, La y Do a la vez"},"hgbd":{"en":"Hold G, B and D together","es":"Mantén Sol, Si y Re a la vez"},"hpad":{"en":"Key C, Major: tap pad 1 and hear the same chord","es":"Tono Do, Mayor: toca el pad 1 y oye el mismo acorde"},"mjr":{"en":"Hold C, E and G: C major","es":"Mantén Do, Mi y Sol: Do mayor"},"mnr":{"en":"Hold C, E♭ and G: C minor","es":"Mantén Do, Mi♭ y Sol: Do menor"},"mmood":{"en":"Press Minor · moody, then tap pad 1","es":"Pulsa Menor · melancólico y toca el pad 1"},"mback":{"en":"Press Major · bright and tap pad 1 again","es":"Pulsa Mayor · brillante y toca otra vez el pad 1"},"p6":{"en":"Tap all six pads","es":"Toca los seis pads"},"p51":{"en":"Tap pad 5, then pad 1. Hear it come home","es":"Toca el pad 5 y luego el pad 1. Oye cómo vuelve a casa"},"pmin":{"en":"In Major, tap a minor pad: 2, 3 or 6","es":"En Mayor, toca un pad menor: 2, 3 o 6"},"p4key":{"en":"Change the Key and tap all six pads again","es":"Cambia el Tono y toca otra vez los seis pads"},"cpop":{"en":"Pick Pop · 1 5 6 4","es":"Elige Pop · 1 5 6 4"},"cplay":{"en":"Press Play the chords","es":"Pulsa Tocar los acordes"},"cround":{"en":"Let it go round twice: 8 bars","es":"Déjalo dar dos vueltas: 8 compases"},"cswap":{"en":"Pick another pattern while it plays","es":"Elige otro patrón mientras suena"},"rhold":{"en":"Play with Hold · one long chord","es":"Toca con Mantener · un acorde largo"},"rpulse":{"en":"Play with Pulse · four beats","es":"Toca con Pulso · cuatro tiempos"},"rbroken":{"en":"Play with Broken · one note at a time","es":"Toca con Arpegio · una nota a la vez"},"roff":{"en":"Play with Off-beat · reggae and ska","es":"Toca con Contratiempo · reggae y ska"},"t60":{"en":"Set the tempo to 60","es":"Pon el tempo en 60"},"t60p":{"en":"Play a pattern at 60","es":"Toca un patrón a 60"},"t120":{"en":"Set the tempo to 120: twice as fast","es":"Pon el tempo en 120: el doble de rápido"},"t120p":{"en":"Play it at 120","es":"Tócalo a 120"},"kpat":{"en":"Play a chord pattern in the key of C","es":"Toca un patrón de acordes en el tono de Do"},"kg":{"en":"Change Key to G and play it again","es":"Cambia el Tono a Sol y tócalo otra vez"},"k3":{"en":"Play it in three different keys","es":"Tócalo en tres tonos distintos"},"klive":{"en":"Change the Key while it plays","es":"Cambia el Tono mientras suena"},"own1":{"en":"Press Make my own","es":"Pulsa Hacer el mío"},"own4":{"en":"Tap four pads: a pattern of four chords","es":"Toca cuatro pads: un patrón de cuatro acordes"},"ownhome":{"en":"End your pattern on pad 1, the home chord","es":"Termina tu patrón en el pad 1, el acorde casa"},"ownplay":{"en":"Play your pattern","es":"Toca tu patrón"},"son":{"en":"Turn on Hold notes (pedal)","es":"Activa Mantener notas (pedal)"},"sring":{"en":"With the pedal on, play five keys one after another","es":"Con el pedal activo, toca cinco teclas una tras otra"},"soff":{"en":"Turn the pedal off and hear the notes stop","es":"Desactiva el pedal y oye cómo paran las notas"},"tgrand":{"en":"Play on the Grand piano","es":"Toca con el Piano de cola"},"tep":{"en":"Play on an electric piano","es":"Toca con un piano eléctrico"},"torg":{"en":"Play on an organ","es":"Toca con un órgano"},"tall":{"en":"Try eight different sounds","es":"Prueba ocho sonidos distintos"},"lplay":{"en":"Play a pattern with Hold · one long chord","es":"Toca un patrón con Mantener · un acorde largo"},"llit":{"en":"While it plays, play a lit key","es":"Mientras suena, toca una tecla iluminada"},"llit8":{"en":"Play eight lit notes in a row","es":"Toca ocho notas iluminadas seguidas"},"lchange":{"en":"Keep going when the chord changes: play lit notes on two different chords","es":"Sigue cuando cambia el acorde: toca notas iluminadas en dos acordes distintos"},"dsend":{"en":"On the drum machine, make a beat and press Send to the turntables","es":"En la caja de ritmos, haz un ritmo y pulsa Enviar a los platos"},"don":{"en":"Back here, press Play with my drum beat","es":"De vuelta aquí, pulsa Tocar con mi ritmo de batería"},"dplay":{"en":"Play your chords with the beat","es":"Toca tus acordes con el ritmo"},"dpulse":{"en":"With the drums, try Pulse or Off-beat","es":"Con la batería, prueba Pulso o Contratiempo"},"bpick":{"en":"Pick Blues · 12 bars","es":"Elige Blues · 12 compases"},"borg":{"en":"Pick the Rock and jazz organ","es":"Elige el Órgano de rock y jazz"},"bpulse":{"en":"Set How the chords play to Pulse","es":"Pon Cómo suenan los acordes en Pulso"},"b12":{"en":"Play all twelve bars","es":"Toca los doce compases"},"jpick":{"en":"Pick Jazz · 2 5 1","es":"Elige Jazz · 2 5 1"},"jep":{"en":"Pick Electric piano · warm","es":"Elige Piano eléctrico · cálido"},"jplay":{"en":"Play it with Broken · one note at a time","es":"Tócalo con Arpegio · una nota a la vez"},"jhand":{"en":"On the keys, hold D, F, A and C together: D minor 7","es":"En las teclas, mantén Re, Fa, La y Do a la vez: Re menor 7"},"e87":{"en":"Turn the Sound dial all the way to 1987 and play","es":"Gira el dial de Sonido del todo a 1987 y toca"},"ehigh":{"en":"On 1987, play the highest keys and hear the fizz","es":"En 1987, toca las teclas más agudas y oye el chisporroteo"},"e26":{"en":"Turn it to 2026 and play those high keys again","es":"Gíralo a 2026 y toca otra vez esas teclas agudas"},"emid":{"en":"Find your spot in the middle and play there","es":"Busca tu punto en el medio y toca ahí"},"fown":{"en":"Make your own pattern of four or more chords","es":"Haz tu propio patrón de cuatro acordes o más"},"fname":{"en":"Type a name for your piece","es":"Escribe un nombre para tu pieza"},"fsend":{"en":"Press Send to the turntables","es":"Pulsa Enviar a los platos"},"fsheet":{"en":"Open the worksheet for this lesson","es":"Abre la hoja de esta lección"},"s22_1":{"en":"Key C · Major · Tempo 100","es":"Tono Do · Mayor · Tempo 100"},"s22_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s22_3":{"en":"Press Clear, then Make my own and tap pad 1 once: C. The whole song fits one chord","es":"Pulsa Borrar, luego Hacer el mío y toca el pad 1 una vez: Do. Toda la canción cabe en un acorde"},"s22_4":{"en":"On the keys, play line 1: C D E C, two times","es":"En las teclas, toca la línea 1: Do Re Mi Do, dos veces"},"s22_5":{"en":"On the keys, play line 2: E F G, two times","es":"En las teclas, toca la línea 2: Mi Fa Sol, dos veces"},"s22_6":{"en":"On the keys, play line 3: G A G F E C, two times","es":"En las teclas, toca la línea 3: Sol La Sol Fa Mi Do, dos veces"},"s22_7":{"en":"On the keys, play line 4: C G C, two times (that G is the low one)","es":"En las teclas, toca la línea 4: Do Sol Do, dos veces (ese Sol es el grave)"},"s22_8":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s23_1":{"en":"Key C · Major · Tempo 100","es":"Tono Do · Mayor · Tempo 100"},"s23_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s23_3":{"en":"Press Clear, then Make my own and tap pads 1 5 1 5 1 5 1 1: C, G, C, G, C, G, C, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 5 1 5 1 5 1 1: Do, Sol, Do, Sol, Do, Sol, Do, Do"},"s23_4":{"en":"On the keys, play line 1: E E F G G F E D","es":"En las teclas, toca la línea 1: Mi Mi Fa Sol Sol Fa Mi Re"},"s23_5":{"en":"On the keys, play line 2: C C D E E D D","es":"En las teclas, toca la línea 2: Do Do Re Mi Mi Re Re"},"s23_6":{"en":"On the keys, play line 3: line 1 again, then the ending: C C D E D C C","es":"En las teclas, toca la línea 3: otra vez la línea 1, y el final: Do Do Re Mi Re Do Do"},"s23_7":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s24_1":{"en":"Key C · Major · Tempo 112","es":"Tono Do · Mayor · Tempo 112"},"s24_2":{"en":"Instrument: Honky-tonk piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano honky-tonk. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s24_3":{"en":"Press Clear, then Make my own and tap pads 1 1 1 5 1 4 5 1: C, C, C, G, C, F, G, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 1 1 5 1 4 5 1: Do, Do, Do, Sol, Do, Fa, Sol, Do"},"s24_4":{"en":"On the keys, play line 1: C E F G, two times","es":"En las teclas, toca la línea 1: Do Mi Fa Sol, dos veces"},"s24_5":{"en":"On the keys, play line 2: C E F G E C E D","es":"En las teclas, toca la línea 2: Do Mi Fa Sol Mi Do Mi Re"},"s24_6":{"en":"On the keys, play line 3: E E D C C E G G F","es":"En las teclas, toca la línea 3: Mi Mi Re Do Do Mi Sol Sol Fa"},"s24_7":{"en":"On the keys, play line 4: E F G E C D C","es":"En las teclas, toca la línea 4: Mi Fa Sol Mi Do Re Do"},"s24_8":{"en":"Press Play the chords and sing or hum the tune","es":"Pulsa Tocar los acordes y canta o tararea la melodía"},"s25_1":{"en":"Key D · Major · Tempo 66","es":"Tono Re · Mayor · Tempo 66"},"s25_2":{"en":"Instrument: Church organ. How the chords play: Broken · one note at a time","es":"Instrumento: Órgano de iglesia. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s25_3":{"en":"Pick the pattern Canon · 8 chords","es":"Elige el patrón Canon · 8 acordes"},"s25_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s26_1":{"en":"Key F · Major · Tempo 96","es":"Tono Fa · Mayor · Tempo 96"},"s26_2":{"en":"Instrument: Rock and jazz organ. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Órgano de rock y jazz. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s26_3":{"en":"Pick the pattern Blues · 12 bars","es":"Elige el patrón Blues · 12 compases"},"s26_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s27_1":{"en":"Key E♭ · Major · Tempo 76","es":"Tono Mi♭ · Mayor · Tempo 76"},"s27_2":{"en":"Instrument: Upright piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s27_3":{"en":"Pick the pattern Fifties · 1 6 4 5","es":"Elige el patrón Años 50 · 1 6 4 5"},"s27_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s28_1":{"en":"Key A · Major · Tempo 120","es":"Tono La · Mayor · Tempo 120"},"s28_2":{"en":"Instrument: Electric piano · bright. How the chords play: Broken · one note at a time","es":"Instrumento: Piano eléctrico · brillante. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s28_3":{"en":"Press Clear, then Make my own and tap pads 1 4 1 5: A, D, A, E","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 1 5: La, Re, La, Mi"},"s28_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s29_1":{"en":"Key G · Major · Tempo 150","es":"Tono Sol · Mayor · Tempo 150"},"s29_2":{"en":"Instrument: Upright piano. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s29_3":{"en":"Press Clear, then Make my own and tap pads 1 4 5 4: G, C, D, C","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 5 4: Sol, Do, Re, Do"},"s29_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s30_1":{"en":"Key A · Minor · Tempo 76","es":"Tono La · Menor · Tempo 76"},"s30_2":{"en":"Instrument: Rock and jazz organ. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Órgano de rock y jazz. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s30_3":{"en":"Pick the pattern Minor groove","es":"Elige el patrón Ritmo menor"},"s30_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s31_1":{"en":"Key E · Minor · Tempo 94","es":"Tono Mi · Menor · Tempo 94"},"s31_2":{"en":"Instrument: '80s electric piano. How the chords play: Off-beat · reggae and ska","es":"Instrumento: Piano eléctrico de los 80. Cómo suenan los acordes: Contratiempo · reggae y ska"},"s31_3":{"en":"Press Clear, then Make my own and tap pads 1 3 4 1: Em, Am, Bm, Em","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 3 4 1: Mi m, La m, Si m, Mi m"},"s31_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s32_1":{"en":"Key A · Minor · Tempo 100","es":"Tono La · Menor · Tempo 100"},"s32_2":{"en":"Instrument: Grand piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s32_3":{"en":"Pick the pattern Flamenco","es":"Elige el patrón Flamenco"},"s32_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s33_1":{"en":"Key F♯ · Major · Tempo 90","es":"Tono Fa♯ · Mayor · Tempo 90"},"s33_2":{"en":"Instrument: Electric piano · warm. How the chords play: Broken · one note at a time","es":"Instrumento: Piano eléctrico · cálido. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s33_3":{"en":"Press Clear, then Make my own and tap pads 1 4 5 1: F♯, B, C♯, F♯","es":"Pulsa Borrar, luego Hacer el mío y toca los pads 1 4 5 1: Fa♯, Si, Do♯, Fa♯"},"s33_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s33_5":{"en":"While it plays, play ten black keys in a row, in any order","es":"Mientras suena, toca diez teclas negras seguidas, en cualquier orden"},"s34_1":{"en":"Key E · Major · Tempo 112","es":"Tono Mi · Mayor · Tempo 112"},"s34_2":{"en":"Instrument: '80s electric piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano eléctrico de los 80. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s34_3":{"en":"Pick the pattern Anime and J-pop · 4 5 3 6","es":"Elige el patrón Anime y J-pop · 4 5 3 6"},"s34_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s35_1":{"en":"Key G · Major · Tempo 100","es":"Tono Sol · Mayor · Tempo 100"},"s35_2":{"en":"Instrument: Grand piano. How the chords play: Pulse · four beats","es":"Instrumento: Piano de cola. Cómo suenan los acordes: Pulso · cuatro tiempos"},"s35_3":{"en":"Pick the pattern Pop · 1 5 6 4","es":"Elige el patrón Pop · 1 5 6 4"},"s35_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s36_1":{"en":"Key C · Major · Tempo 72","es":"Tono Do · Mayor · Tempo 72"},"s36_2":{"en":"Instrument: Upright piano. How the chords play: Broken · one note at a time","es":"Instrumento: Piano vertical. Cómo suenan los acordes: Arpegio · una nota a la vez"},"s36_3":{"en":"Pick the pattern Sad pop · 6 4 1 5","es":"Elige el patrón Pop triste · 6 4 1 5"},"s36_4":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s37_1":{"en":"Key F · Major · Tempo 76","es":"Tono Fa · Mayor · Tempo 76"},"s37_2":{"en":"Instrument: Electric piano · warm. How the chords play: Hold · one long chord","es":"Instrumento: Piano eléctrico · cálido. Cómo suenan los acordes: Mantener · un acorde largo"},"s37_3":{"en":"Pick the pattern Jazz · 2 5 1","es":"Elige el patrón Jazz · 2 5 1"},"s37_4":{"en":"Turn the Sound dial toward 1987: Mostly 1987 or more","es":"Gira el dial de Sonido hacia 1987: Casi todo 1987 o más"},"s37_5":{"en":"Press Play the chords and listen","es":"Pulsa Tocar los acordes y escucha"},"s38_1":{"en":"Make my own: a pattern of eight chords","es":"Hacer el mío: un patrón de ocho acordes"},"s38_2":{"en":"Use at least four different chords","es":"Usa por lo menos cuatro acordes distintos"},"s38_3":{"en":"End the pattern on pad 1","es":"Termina el patrón en el pad 1"},"s38_4":{"en":"Press Play the chords and play the whole class song","es":"Pulsa Tocar los acordes y toca toda la canción de la clase"},"s38_5":{"en":"Press Send to the turntables","es":"Pulsa Enviar a los platos"}};
+/* AOG-PIANO-LESSONS-DATA:END */
+const SONG_COUNT=LESSONS.filter(m=>m.song).length, SKILL_COUNT=LESSONS.length-SONG_COUNT;
+const LSKEY="aog.piano.lessons.v1";
+const LS={done:{}, pick:null, title:"", x:{}};
+try{ const r=JSON.parse(localStorage.getItem(LSKEY)||"null");
+  if(r){ LS.done=r.done||{}; LS.pick=(typeof r.pick==="number")?r.pick:null; LS.title=r.title||""; LS.x=(r.x&&typeof r.x==="object")?r.x:{}; } }catch(e){}
+function saveLessons(){ try{ localStorage.setItem(LSKEY, JSON.stringify(LS)); }catch(e){} }
+function lessonNow(){ for(let i=0;i<LESSONS.length;i++) if(!LESSONS[i].steps.every(id=>LS.done[id])) return i; return LESSONS.length; }
+function lessonPicked(){ const n=lessonNow(); if(LS.pick==null||LS.pick<0||LS.pick>=LESSONS.length) return Math.min(n, LESSONS.length-1); return LS.pick; }
+let lessonDirty=false;
+function mark(id){ if(LSTEP[id] && !LS.done[id]){ LS.done[id]=true; lessonDirty=true; } }
+function lessonsChanged(){ tickLessons(); if(lessonDirty){ lessonDirty=false; saveLessons(); paintLessonBoxSoon(); } }
+
+/* what the hands are doing */
+const RN=[];                                  /* the last 40 notes played by hand: keys, letters or MIDI */
+const PADSET={k:null, s:new Set()};           /* the pads tapped in this key */
+let LAST_PAD=0;
+const LITC=new Set();                         /* the chords a lit note was played on */
+function heldPcs(){ const h=new Set(); LIVE.forEach((vc,key)=>{ if(vc.down && key[0]!=="p") h.add(((+key.slice(1))%12+12)%12); }); return h; }
+function heldIs(pcs){ const h=heldPcs(); return h.size===pcs.length && pcs.every(p=>h.has(p)); }
+function chordPcs(c){ return Q[c.q].map(i=>((S.key+c.off+i)%12+12)%12); }
+function curChord(){ return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog[PLAY.cur%S.prog.length] : null; }
+function soundUsed(){
+  const s=S.sound;
+  if(s==="grand") mark("tgrand");
+  if(SOUNDS[s] && SOUNDS[s].grp==="grpEp") mark("tep");                          /* any sound in the Electric pianos group */
+  if(["organ","church","gospel","rockorgan","theatre"].indexOf(s)>=0) mark("torg");   /* AOG-PIANO-SOUNDS-V2: any organ (not the accordion) */
+  const a=Array.isArray(LS.x.snd)?LS.x.snd:[];
+  if(a.indexOf(s)<0){ a.push(s); LS.x.snd=a; lessonDirty=true; }
+  if(a.length>=8) mark("tall");
+}
+function eraUsed(m){
+  const e=S.era;
+  if(e>=0.95) mark("e87");
+  if(m!=null && m>=84 && e>=0.9) mark("ehigh");
+  if(m!=null && m>=84 && e<=0.05 && LS.done.ehigh) mark("e26");
+  if(e>=0.3 && e<=0.7) mark("emid");
+}
+const UP8=[0,2,4,5,7,9,11,12], DOWN8=[0,1,3,5,7,8,10,12], BLACK=[1,3,6,8,10];
+function onNote(m, v){
+  const pc=((m%12)+12)%12, cc=curChord(), cp=cc?chordPcs(cc):null, lit=!!(cp && cp.indexOf(pc)>=0);
+  RN.push({m:m, pc:pc, v:v, pl:S.playing, sus:S.sus, lit:lit}); if(RN.length>40) RN.shift();
+  const L=RN.length, last=k=>RN.slice(-k);
+  mark("key1");
+  /* 2 · C, and the groups of black keys */
+  if(pc===0){ mark("fc"); if(RN.some(r=>r.pc===0 && r.m!==m)) mark("fc2"); }
+  const r12=new Set(last(12).map(r=>r.pc));
+  if(r12.has(1) && r12.has(3)) mark("fb2");
+  if(r12.has(6) && r12.has(8) && r12.has(10)) mark("fb3");
+  /* 3 · the scale, up and down */
+  if(L>=8){
+    const l8=last(8), b=l8[0].m;
+    if(b%12===0 && l8.every((r,i)=>r.m===b+UP8[i])){
+      mark("up8");
+      const lo=(typeof LS.x.up8lo==="number")?LS.x.up8lo:null;
+      if(lo!==null && b>=lo+12) mark("up8hi");
+      if(lo===null || b<lo){ LS.x.up8lo=b; lessonDirty=true; }
+    }
+    if(b%12===0 && l8.every((r,i)=>r.m===b-DOWN8[i])) mark("down8");
+  }
+  /* 4 · octaves */
+  if(L>=2 && m===RN[L-2].m+12) mark("opair");
+  const r20=last(20); if(r20.some(r=>r.m<=36) && r20.some(r=>r.m>=84)) mark("ofar");
+  /* 5 · soft and loud */
+  if(v<=0.45) mark("vsoft");
+  if(v>=0.85) mark("vloud");
+  if(L>=4){ const l4=last(4); if(l4.every(r=>r.m===l4[0].m) && l4[0].v<=0.5 && l4[3].v>=0.8 && l4[0].v<l4[1].v && l4[1].v<l4[2].v && l4[2].v<l4[3].v) mark("vgrow"); }
+  /* 6, 7 and 19 · chords held by hand */
+  if(heldIs([0,4,7])){ mark("hceg"); mark("mjr"); }
+  if(heldIs([5,9,0])) mark("hfac");
+  if(heldIs([7,11,2])) mark("hgbd");
+  if(heldIs([0,3,7])) mark("mnr");
+  if(heldIs([2,5,9,0])) mark("jhand");
+  /* 14 · the pedal */
+  if(S.sus && L>=5){ const l5=last(5); if(l5.every(r=>r.sus) && new Set(l5.map(r=>r.m)).size===5) mark("sring"); }
+  /* 16 · the lit keys */
+  if(lit){ mark("llit"); LITC.add(cp.slice().sort((a,b)=>a-b).join(".")); if(LITC.size>=2) mark("lchange"); }
+  if(L>=8 && last(8).every(r=>r.pl && r.lit)) mark("llit8");
+  soundUsed(); eraUsed(m);
+  songNote();
+  lessonsChanged();
+}
+function onPad(i, c){
+  mark("pad1");
+  if(i===0 && S.key===0 && !S.minor) mark("hpad");
+  if(i===0 && S.minor) mark("mmood");
+  if(i===0 && !S.minor && LS.done.mmood) mark("mback");
+  const kk=S.key*2+(S.minor?1:0);
+  if(PADSET.k!==kk){ PADSET.k=kk; PADSET.s=new Set(); }
+  PADSET.s.add(i);
+  if(PADSET.s.size>=6){
+    mark("p6");
+    if(typeof LS.x.p6key!=="number"){ LS.x.p6key=kk; lessonDirty=true; }
+    else if(LS.x.p6key!==kk) mark("p4key");
+  }
+  if(LAST_PAD===5 && c.n===1) mark("p51");
+  LAST_PAD=c.n;
+  if(!S.minor && c.q==="min") mark("pmin");
+  soundUsed(); eraUsed(null);
+  lessonsChanged();
+}
+function onPlay(){ mark("play1"); if(S.preset==="pop") mark("cplay"); if(!S.preset && S.prog.length>=4) mark("ownplay"); onBar(); }
+function onBar(){
+  if(!S.playing) return;
+  mark({hold:"rhold", pulse:"rpulse", broken:"rbroken", offbeat:"roff"}[S.rhythm]);
+  const drums=!!(S.withDrums && DRUM.take), bpm=curBpm();
+  if(!drums && Math.abs(bpm-60)<=1) mark("t60p");
+  if(!drums && Math.abs(bpm-120)<=1) mark("t120p");
+  if(S.prog.length){
+    if(S.key===0) mark("kpat");
+    if(S.key===7) mark("kg");
+    const ks=Array.isArray(LS.x.keys)?LS.x.keys:[];
+    if(ks.indexOf(S.key)<0){ ks.push(S.key); LS.x.keys=ks; lessonDirty=true; }
+    if(ks.length>=3) mark("k3");
+  }
+  if(S.preset==="pop" && PLAY.cur>=8) mark("cround");
+  if(S.rhythm==="hold") mark("lplay");
+  if(drums){ mark("dplay"); if(S.rhythm==="pulse"||S.rhythm==="offbeat") mark("dpulse"); }
+  if(S.preset==="blues" && PLAY.cur>=12) mark("b12");
+  if(S.preset==="jazz" && S.rhythm==="broken") mark("jplay");
+  soundUsed(); eraUsed(null);
+  songTick(true);
+  lessonsChanged();
+}
+function userStop(){ const was=S.playing; stop(); if(was){ mark("stop1"); lessonsChanged(); } }
+function onSus(on){ if(on) mark("son"); else if(LS.done.sring) mark("soff"); lessonsChanged(); }
+function onOct(dir){ mark(dir>0?"ohigher":"olower"); lessonsChanged(); }
+function onSent(){ mark("fsend"); songSent(); lessonsChanged(); }
+/* the steps that are a fact about the piano right now */
+function tickLessons(){
+  const drums=!!(S.withDrums && DRUM.take);
+  if(S.prog.length) mark("pat1");
+  if(S.preset==="pop") mark("cpop");
+  if(!drums && Math.abs(S.bpm-60)<=1) mark("t60");
+  if(!drums && Math.abs(S.bpm-120)<=1) mark("t120");
+  if(S.own) mark("own1");
+  if(!S.preset && S.prog.length>=4){ mark("own4"); mark("fown"); if(S.prog[S.prog.length-1].off===0) mark("ownhome"); }
+  if(S.preset==="blues"){ mark("bpick"); if(S.rhythm==="pulse") mark("bpulse"); }
+  if(S.sound==="organ") mark("borg");
+  if(S.preset==="jazz") mark("jpick");
+  if(S.sound==="epwarm") mark("jep");
+  if(DRUM.take) mark("dsend");
+  if(drums) mark("don");
+  if((LS.title||"").trim().length>=2) mark("fname");
+  songTick(false);
+}
+
+/* ── the songs we make: their steps tick only while that song is the lesson you picked ── */
+function songPicked(){ const m=LESSONS[lessonPicked()]; return (m && m.song)? m : null; }
+function sameProg(a,b){ return a.length===b.length && a.every((c,i)=>c.off===b[i].off && c.q===b[i].q); }
+const SONG_FACTS={set:1, sound:1, chords:1, era:1, own8:1, own4d:1, ownend:1};
+function songFact(sg, k){
+  switch(k){
+    case "set": return S.key===sg.key && S.minor===sg.minor && (Math.abs(S.bpm-sg.bpm)<=2 || !!(S.withDrums && DRUM.take));
+    case "sound": return S.sound===sg.sound && S.rhythm===sg.rhythm;
+    case "chords": return sg.preset ? S.preset===sg.preset : (!S.preset && sameProg(S.prog, sg.prog));
+    case "era": return S.era>=0.6;
+    case "own8": return !S.preset && S.prog.length===8;
+    case "own4d": return songFact(sg,"own8") && new Set(S.prog.map(c=>c.off+c.q)).size>=4;
+    case "ownend": return songFact(sg,"own8") && S.prog[7].off===0;
+  }
+  return false;
+}
+function songTick(playing){
+  const m=songPicked(); if(!m) return;
+  const sg=m.song;
+  sg.checks.forEach((c,j)=>{
+    if(SONG_FACTS[c.k]){ if(songFact(sg, c.k)) mark(m.steps[j]); }
+    else if(c.k==="play" && playing && S.playing){
+      if(sg.free ? songFact(sg,"own8") : sg.checks.every(o=>!SONG_FACTS[o.k] || songFact(sg, o.k))) mark(m.steps[j]);
+    }
+  });
+}
+function songNote(){
+  const m=songPicked(); if(!m) return;
+  m.song.checks.forEach((c,j)=>{
+    if(c.k==="mel"){ const n=c.pcs.length; if(RN.length>=n && RN.slice(-n).every((r,i)=>r.pc===c.pcs[i])) mark(m.steps[j]); }
+    if(c.k==="black" && S.playing && RN.length>=10 && RN.slice(-10).every(r=>r.pl && BLACK.indexOf(r.pc)>=0)) mark(m.steps[j]);
+  });
+}
+function songSent(){ const m=songPicked(); if(!m) return; m.song.checks.forEach((c,j)=>{ if(c.k==="send") mark(m.steps[j]); }); }
+
+/* ── the lesson card, the lesson menu and the ladder ── */
+const LSTR={
+  lessonsNav:{en:"Lessons",es:"Lecciones"}, lessonK:{en:"Lesson",es:"Lección"},
+  lessonsLead:{en:"Twenty-one short lessons take you from your first key to chords, songs and a track of your own. Then come seventeen songs we make together. Do the steps on the piano and the boxes tick themselves. Each lesson has a worksheet.",
+               es:"Veintiuna lecciones cortas te llevan de tu primera tecla a los acordes, las canciones y una pista propia. Después vienen diecisiete canciones que hacemos juntos. Haz los pasos en el piano y las casillas se marcan solas. Cada lección tiene una hoja de trabajo."},
+  allLessons:{en:"All {n} lessons · pick one",es:"Las {n} lecciones · elige una"},
+  toBench:{en:"Go to the piano",es:"Ir al piano"}, allSheets:{en:"All the worksheets",es:"Todas las hojas"},
+  lessonsDone:{en:"Every lesson and every song is done. You play keys, chords and tunes, you make your own music, and you make music together.",
+               es:"Todas las lecciones y canciones están listas. Tocas teclas, acordes y melodías, haces tu propia música y hacen música juntos."},
+  lessonDone:{en:"Lesson done.",es:"Lección hecha."},
+  songsGroup:{en:"Songs we make",es:"Canciones que hacemos"}, songWord:{en:"Song",es:"Canción"},
+  together:{en:"Together",es:"Juntos"}, settings:{en:"Set the piano",es:"Prepara el piano"},
+  freeSet:{en:"Key, mood, tempo and sound: your class chooses",es:"Tono, ánimo, tempo y sonido: los elige tu clase"},
+  pieceName:{en:"Name your piece",es:"Nombre de tu pieza"},
+  next:{en:"Next lesson",es:"Siguiente lección"},
+  worksheet:{en:"Worksheet {n}",es:"Hoja de trabajo {n}"},
+  resetLessons:{en:"Start the lessons over",es:"Empezar las lecciones de nuevo"},
+  resetAsk:{en:"Start the lessons over? Every tick will be cleared.",es:"¿Empezar las lecciones de nuevo? Se borrarán todas las marcas."}
+};
+function lt(k, vars){ let s=(LSTR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
+function escH(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function lessonName(m){ const tt=S.lang==="es"?m.es:m.en; return m.song ? (lt("songWord")+" "+m.song.k+": "+tt) : tt; }
+function songSetLine(sg){
+  if(sg.free) return lt("freeSet");
+  const es=S.lang==="es";
+  return (es?"Tono ":"Key ")+KEY_NAMES[S.lang][sg.key]+" · "+(sg.minor?(es?"Menor":"Minor"):(es?"Mayor":"Major"))+" · Tempo "+sg.bpm+" · "+soundName(sg.sound)+" · "+RHYTHM_WORDS[sg.rhythm][S.lang]+(sg.era?(es?" · Dial de Sonido hacia 1987":" · Sound dial toward 1987"):"");
+}
+function lessonCard(){
+  const p=lessonPicked(), m=LESSONS[p], es=S.lang==="es", allDone=lessonNow()>=LESSONS.length, done=m.steps.every(id=>LS.done[id]);
+  const steps=`<ol class="lsteps">${m.steps.map(id=>`<li class="lstep${LS.done[id]?" ok":""}"><span class="lck" aria-hidden="true">${LS.done[id]?"✓":""}</span><span>${escH(LSTEP[id][S.lang])}</span></li>`).join("")}</ol>`;
+  const name=(m.id==="p21")?`<label class="lesson-name"><span>${lt("pieceName")}</span><input id="pieceName" type="text" maxlength="40" value="${escH(LS.title||"")}" autocomplete="off"></label>`:"";
+  const next=p<LESSONS.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:"";
+  const sg=m.song;
+  const songTop=sg?`<p class="mk">${lt("songsGroup")} · ${lt("songWord")} ${sg.k} ${es?"de":"of"} ${SONG_COUNT}</p>`:"";
+  const songSet=sg?`<p class="lblurb"><b>${lt("settings")}:</b> ${escH(songSetLine(sg))}</p>`:"";
+  const songTog=sg?`<p class="lblurb"><b>${lt("together")}:</b> ${escH(es?m.tog_es:m.tog_en)}</p>`:"";
+  return `<p class="mk">${lt("lessonK")} ${p+1} ${es?"de":"of"} ${LESSONS.length}${done?" · ✓":""}</p>${songTop}
+    <h3>${escH(es?m.es:m.en)}</h3>
+    <p class="lblurb">${escH(es?m.blurb_es:m.blurb_en)}</p>${songSet}
+    ${steps}${songTog}${name}
+    ${done?`<p class="lok">${allDone?lt("lessonsDone"):lt("lessonDone")} ${next}</p>`:""}`;
+}
+function bindLessonBox(){
+  const nx=document.querySelector("[data-lesson-next]");
+  if(nx) nx.onclick=()=>{ LS.pick=Math.min(LESSONS.length-1, lessonPicked()+1); saveLessons(); paintLessonBox(); };
+  const nm=document.getElementById("pieceName");
+  if(nm) nm.oninput=()=>{ LS.title=nm.value; saveLessons(); lessonsChanged(); };
+  document.querySelectorAll("[data-pick]").forEach(li=>{
+    li.onclick=()=>{ LS.pick=+li.getAttribute("data-pick"); saveLessons(); paintLessonBox();
+      const d=document.querySelector("details.all-lessons"); if(d){ d.open=false; const b=document.getElementById("lessons"); if(b) b.scrollIntoView({block:"start"}); } };
+    li.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); li.click(); } };
+  });
+  const rs=document.getElementById("lessonReset");
+  if(rs) rs.onclick=()=>{ if(!window.confirm(lt("resetAsk"))) return; LS.done={}; LS.pick=0; LS.x={}; saveLessons(); paintLessonBox(); };
+}
+let lessonSoon=0;
+function paintLessonBoxSoon(){ clearTimeout(lessonSoon); lessonSoon=setTimeout(paintLessonBox, 400); }
+function paintLessonBox(){
+  const box=$("lessons"); if(!box) return;
+  if(document.activeElement && document.activeElement.id==="pieceName") return;   /* never rebuild under a typing hand */
+  const p=lessonPicked(), doneN=LESSONS.filter(m=>m.steps.every(id=>LS.done[id])).length;
+  const row=$("lessonRow");
+  const rowHtml=LESSONS.map((m,i)=>{ const d=m.steps.every(id=>LS.done[id]);
+    return `<button type="button" class="ghost sm${i===p?" on":""}" data-lesson="${i}" aria-pressed="${i===p}">${i+1}${d?" ✓":""} · ${escH(lessonName(m))}</button>`; }).join("");
+  if(row && row.__html!==rowHtml){ row.innerHTML=rowHtml; row.__html=rowHtml;
+    row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ LS.pick=+b.getAttribute("data-lesson"); saveLessons(); paintLessonBox(); }); }
+  $("lKick").textContent=lt("lessonsNav")+" · "+doneN+"/"+LESSONS.length;
+  const sh=$("lSheet"); sh.href="piano-lessons.html#l"+(p+1); sh.textContent=lt("worksheet",{n:p+1});
+  sh.onclick=()=>{ if(LESSONS[lessonPicked()].id==="p21"){ mark("fsheet"); saveLessons(); } };
+  $("lessonBody").innerHTML=lessonCard();
+  bindLessonBox();
+  const ladder=$("lessonLadder"); if(ladder){ ladder.innerHTML=ladderHtml(); bindLessonBox(); }
+}
+function ladderHtml(){
+  const now=lessonNow(), p=lessonPicked();
+  return LESSONS.map((m,i)=>{
+    const done=m.steps.every(id=>LS.done[id]), cls=done?"done":(i===now?"now":"later");
+    const head=(m.song && m.song.k===1)?`<li class="lgroup" aria-hidden="true"><span class="lt">${lt("songsGroup")}</span></li>`:"";
+    return `${head}<li class="${cls}${i===p?" picked":""}" data-pick="${i}" tabindex="0" role="button"><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${escH(lessonName(m))}</span></li>`;
+  }).join("");
+}
+
+/* ══ AOG-PIANO-VIEWS-V1 — the places to look, as on the drum machine: Bench, Lessons, Meet the sounds,
+   Name it and Print. Four or more places, so one Go to menu (aog-dropdowns.js reads the span). ══ */
+const VIEWS=["home","lessons","meet","words","print"];
+function hashView(){ const v=(location.hash||"").replace(/^#/,""); return VIEWS.indexOf(v)>0 ? v : "home"; }
+/* AOG-MUSIC-TOOLS-MENU-V1 (2026-10-03) — five music tools now (the guitar and the bass joined): the tools sit in one menu
+   at the right of the bar (CLAUDE.md: four or more choices are a drop-down), by their short names so it fits a phone;
+   this tool is the one shown */
+function toolsMenu(cur, es){
+  const T=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  return `<span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+T.map(x=>`<a href="${x[1]}"${x[0]===cur?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span>`;
+}
+function navHtml(v){
+  const items=[["home",t("navBench")],["lessons",lt("lessonsNav")],["meet",t("navMeet")],["words",t("navWords")],["print",t("navPrint")]];
+  return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,l])=>`<a href="#${id}" class="${v===id?"on":""}">${l}</a>`).join("")+`</span>`+
+    `<span class="sisters"><a class="sep" href="/piano-guide"><span class="lg">${t("guide")}</span><span class="sh">${t("guideSh")}</span></a>${toolsMenu("piano", S.lang==="es")}</span>`;
+}
+function paintView(){
+  const v=hashView(), rig=$("rig"), alt=$("alt"), box=$("lessons"), pg=$("pgPanel"), main=$("view");
+  $("nav").innerHTML=navHtml(v);
+  $("benchSwitch").hidden=!(v==="home"||v==="lessons");
+  box.hidden=!(v==="home"||v==="lessons");
+  pg.hidden=v!=="home";
+  if(v==="home"){
+    const was=rig.hidden;
+    rig.hidden=false; alt.hidden=true; alt.innerHTML="";
+    if(main.nextElementSibling!==box) main.after(box);
+    if(was) buildKeys();
+  } else {
+    rig.hidden=true; alt.hidden=false; alt.innerHTML=(v==="lessons"?lessonsView():v==="meet"?meetView():v==="words"?wordsView():printView());
+    if(v==="lessons"){ const slot=$("lessonsSlot"); if(slot) slot.appendChild(box); }
+    else if(main.nextElementSibling!==box) main.after(box);
+    bindView(v);
+  }
+  paintLessonBox();
+  if(BP.mq) bpSync();   /* AOG-PLAY-V1: sideways only on the bench */
+}
+function lessonsView(){
+  return `<div id="lessonsSlot" class="lessons-slot"></div><p class="kicker">${lt("lessonsNav")}</p>
+    <h1>${lt("lessonsNav")}</h1>
+    <p class="lead">${lt("lessonsLead")}</p>
+    <div class="lessons-wrap">
+      <details class="all-lessons"><summary>${lt("allLessons",{n:LESSONS.length})}</summary><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol></details>
+      <div class="lesson-acts"><a class="pill" href="#home">${lt("toBench")}</a><a class="pill" href="piano-lessons.html">${lt("allSheets")}</a><button type="button" class="pill" id="lessonReset">${lt("resetLessons")}</button></div>
+    </div>`;
+}
+/* Meet the sounds: how each of the eight makes its sound */
+const MEET={
+  grand:{en:"Felt hammers hit long steel strings in a big wooden case. Press harder and the hammer flies faster, so the note is louder and brighter. Every note here is a recording of a real grand piano.",
+         es:"Martillos de fieltro golpean cuerdas largas de acero dentro de una gran caja de madera. Si presionas más fuerte, el martillo va más rápido y la nota suena más fuerte y más brillante. Cada nota aquí es una grabación de un piano de cola de verdad."},
+  upright:{en:"The same hammers and strings, standing up tall so the piano fits against a wall. Schools, churches and homes are full of them. These notes are recordings too.",
+           es:"Los mismos martillos y cuerdas, pero de pie, para que el piano quepa contra una pared. Escuelas, iglesias y casas están llenas de ellos. Estas notas también son grabaciones."},
+  honky:{en:"An upright played twice, a little out of tune with itself, like an old piano in a dance hall. The wobble is the fun.",
+         es:"Un piano vertical tocado dos veces, un poco desafinado consigo mismo, como un piano viejo en un salón de baile. El temblor es lo divertido."},
+  epwarm:{en:"Hammers hit thin metal tines, like tuning forks, and a pickup turns the ring into electricity. Its soft, round sound filled soul and jazz records in the 1970s. Every note here is a recording of a real electric piano from 1977.",
+          es:"Martillos golpean varillas delgadas de metal, como diapasones, y una pastilla convierte la vibración en electricidad. Su sonido suave y redondo llenó los discos de soul y jazz de los años 70. Cada nota aquí es una grabación de un piano eléctrico de verdad de 1977."},
+  epreed:{en:"Hammers hit flat steel reeds. Play gently for a sweet sound, or hard for a rough edge. It was a favorite in 1960s pop and in school music rooms. Every note here is a recording of a real electric piano with reeds.",
+          es:"Martillos golpean lengüetas planas de acero. Toca suave para un sonido dulce, o fuerte para que suene áspero. Fue un favorito del pop de los años 60 y de los salones de música. Cada nota aquí es una grabación de un piano eléctrico de lengüetas de verdad."},
+  ep80:{en:"No hammers at all. A computer chip makes the sound with math, called FM. In 1983 this bright, glassy piano was everywhere, from pop songs to TV themes. Every note here is a recording of a real 1980s FM synthesizer.",
+        es:"Sin martillos. Un chip de computadora hace el sonido con matemáticas, llamado FM. En 1983 este piano brillante y cristalino estaba en todas partes, de canciones pop a temas de televisión. Cada nota aquí es una grabación de un sintetizador FM de verdad de los años 80."},
+  organ:{en:"On the famous rock and jazz organ, metal wheels spin past magnets and make the tone. A note never fades while you hold it. Gospel, jazz, reggae and rock all love it. Here, a real 1983 transistor organ plays that part.",
+         es:"En el famoso órgano de rock y jazz, ruedas de metal giran junto a imanes y hacen el tono. Una nota no se apaga mientras la mantienes. Al gospel, al jazz, al reggae y al rock les encanta. Aquí, un órgano de transistores de verdad de 1983 hace ese papel."},
+  church:{en:"Air blows through rows of pipes, from tiny whistles to pipes taller than a house. The big room around it keeps the sound ringing. Every note here is a recording of a real church organ.",
+          es:"El aire sopla por filas de tubos, desde silbatos diminutos hasta tubos más altos que una casa. La sala grande alrededor hace que el sonido siga resonando. Cada nota aquí es una grabación de un órgano de iglesia de verdad."},
+  /* AOG-PIANO-SOUNDS-V2 */
+  bright:{en:"The grand piano with its high notes turned up, so it rings out over a band. Pop and rock players love it.",
+          es:"El piano de cola con los agudos más fuertes, para que se oiga sobre una banda. A los músicos de pop y rock les encanta."},
+  felt:{en:"The upright piano with a strip of soft felt between the hammers and the strings. Every note comes out quiet and close.",
+        es:"El piano vertical con una tira de fieltro suave entre los martillos y las cuerdas. Cada nota sale suave y cercana."},
+  toy:{en:"In a toy piano, tiny hammers hit short metal rods instead of strings. It sounds bright, small and a little out of tune. Every note here is a recording of a real toy piano from the 1950s.",
+       es:"En un piano de juguete, martillos pequeñitos golpean varillas cortas de metal en vez de cuerdas. Suena brillante, pequeño y un poco desafinado. Cada nota aquí es una grabación de un piano de juguete de verdad de los años 50."},
+  clav:{en:"On a clavinet, a rubber tip hits a string, and a pickup turns it into electricity. Its short, snappy notes are the sound of 1970s funk. Here, a real 1980s synthesizer copies that sound.",
+        es:"En un clavinet, una punta de goma golpea una cuerda, y una pastilla la convierte en electricidad. Sus notas cortas y saltarinas son el sonido del funk de los 70. Aquí, un sintetizador de verdad de los años 80 imita ese sonido."},
+  gospel:{en:"The rock and jazz organ with all its tones turned on and its speaker spinning fast. Gospel choirs sing over it.",
+          es:"El órgano de rock y jazz con todos sus tonos encendidos y su altavoz girando rápido. Los coros góspel cantan sobre él."},
+  rockorgan:{en:"The rock and jazz organ played through a loud amplifier and a spinning speaker. Its growl and swirl filled 1970s hard rock.",
+             es:"El órgano de rock y jazz tocado con un amplificador fuerte y un altavoz que gira. Su gruñido y su remolino llenaron el hard rock de los años 70."},
+  theatre:{en:"Before movies had sound, an organ played along in the theater. Its pipes sound like flutes, with a deep, wavy tremble. Here, a real pipe organ's soft flute pipes play it.",
+           es:"Antes de que las películas tuvieran sonido, un órgano tocaba en el cine. Sus tubos suenan como flautas, con un temblor profundo. Aquí lo tocan los tubos suaves de flauta de un órgano de tubos de verdad."},
+  accordion:{en:"You squeeze the bellows to push air through metal reeds. Two reeds for each note, a little apart in tune, give it its shimmer. Every note here is a recording of a real accordion.",
+             es:"Aprietas el fuelle para empujar aire por lengüetas de metal. Dos lengüetas para cada nota, un poco desafinadas entre sí, le dan su brillo. Cada nota aquí es una grabación de un acordeón de verdad."},
+  celesta:{en:"Felt hammers hit small steel plates over wooden boxes. It sounds like sweet little bells. Listen for it in The Nutcracker. Every note here is a recording of a real celesta.",
+           es:"Martillos de fieltro golpean placas pequeñas de acero sobre cajas de madera. Suena como campanitas dulces. Escúchala en El Cascanueces. Cada nota aquí es una grabación de una celesta de verdad."},
+  glock:{en:"Hard mallets hit steel bars. The notes are high and bright, and they ring for a long time. Every note here is a recording of a real glockenspiel.",
+         es:"Mazos duros golpean barras de acero. Las notas son agudas y brillantes, y suenan por mucho tiempo. Cada nota aquí es una grabación de un glockenspiel de verdad."},
+  vibes:{en:"Soft mallets hit metal bars over tubes. A motor turns small fans in the tubes, so the sound gently pulses. A favorite in jazz. Every note here is a recording of a real vibraphone; the page adds the motor's pulse.",
+         es:"Mazos suaves golpean barras de metal sobre tubos. Un motor hace girar pequeños ventiladores en los tubos, y el sonido late suavemente. Un favorito del jazz. Cada nota aquí es una grabación de un vibráfono de verdad; la página agrega el latido del motor."},
+  marimba:{en:"Mallets hit wooden bars, and a tube under each bar makes the note warm and round. Every note here is a recording of a real marimba.",
+           es:"Mazos golpean barras de madera, y un tubo debajo de cada barra hace la nota cálida y redonda. Cada nota aquí es una grabación de una marimba de verdad."},
+  steel:{en:"Made from oil drums in Trinidad and Tobago. Each dent in the metal plays one note, bright and ringing. Every note here is a recording of a real steel drum.",
+         es:"Se hacen con barriles de petróleo en Trinidad y Tobago. Cada abolladura del metal toca una nota, brillante y resonante. Cada nota aquí es una grabación de un tambor de acero de verdad."},
+  bells:{en:"Long metal tubes hang in a row, and a hammer strikes the top. Each note rings out like a church bell. Every note here is a recording of real tubular bells.",
+         es:"Tubos largos de metal cuelgan en fila, y un martillo golpea la parte de arriba. Cada nota suena como una campana de iglesia. Cada nota aquí es una grabación de campanas tubulares de verdad."},
+  harpsi:{en:"Each key lifts a small pick that plucks a string. It was the keyboard of Bach's time, 300 years ago. Every note here is a recording of a real harpsichord.",
+          es:"Cada tecla levanta una pequeña púa que pulsa una cuerda. Era el teclado de la época de Bach, hace 300 años. Cada nota aquí es una grabación de un clavecín de verdad."},
+  harp:{en:"Fingers pluck 47 strings on a tall wooden frame. Every note here is a recording of a real harp.",
+        es:"Los dedos pulsan 47 cuerdas en un marco alto de madera. Cada nota aquí es una grabación de un arpa de verdad."},
+  kalimba:{en:"Thumbs pluck thin metal tongues on a wooden box. It comes from Africa, where a cousin is called the mbira. Every note here is a recording of a real kalimba from Tanzania.",
+           es:"Los pulgares pulsan lengüetas delgadas de metal sobre una caja de madera. Viene de África, donde una prima se llama mbira. Cada nota aquí es una grabación de una kalimba de verdad de Tanzania."},
+  musicbox:{en:"In a music box, a turning drum with tiny pins plucks the teeth of a metal comb. Each tooth plays one note. Every note here is a recording of a real music box, one tooth at a time.",
+            es:"En una caja de música, un cilindro que gira, con alfileres pequeñitos, pulsa los dientes de un peine de metal. Cada diente toca una nota. Cada nota aquí es una grabación de una caja de música de verdad, un diente a la vez."},
+  strings:{en:"Violins, violas and cellos, played softly with bows. Every note here is a recording of a real string section.",
+           es:"Violines, violas y violonchelos, tocados suavemente con arco. Cada nota aquí es una grabación de una sección de cuerdas de verdad."},
+  choir:{en:"Many voices sing “ah” together. No two singers are exactly alike, and that makes the sound big and warm. Here, one real singer, recorded four times on each note, sings with himself.",
+         es:"Muchas voces cantan “a” juntas. No hay dos voces exactamente iguales, y eso hace que el sonido sea grande y cálido. Aquí, un cantante de verdad, grabado cuatro veces en cada nota, canta consigo mismo."},
+  tapestr:{en:"Each key starts a short tape of a real string section. Hold a note for eight seconds and the tape runs out. Prog rock bands loved its hazy sound.",
+           es:"Cada tecla pone en marcha una cinta corta de una sección de cuerdas de verdad. Si mantienes una nota ocho segundos, la cinta se acaba. A las bandas de rock progresivo les encantaba su sonido brumoso."},
+  tapeflute:{en:"The same tape keyboard, with a real flute on its tapes. It sounds breathy and a little wobbly, like an old record.",
+             es:"El mismo teclado de cinta, con una flauta de verdad en sus cintas. Suena con aire y un poco tembloroso, como un disco viejo."},
+  strsynth:{en:"An electronic keyboard from the 1970s, made to sound like violins. Its swirling, glassy sound became a sound of its own. Here, a real analog synthesizer from 1978 plays it, note by note.",
+            es:"Un teclado electrónico de los años 70, hecho para sonar como violines. Su sonido brillante y ondulante se volvió un sonido propio. Aquí lo toca, nota por nota, un sintetizador analógico de verdad de 1978."},
+  pad:{en:"A synthesizer makes a buzzing wave, then softens it and lets it swell. Good for slow, dreamy chords. Here, a real analog synthesizer from 1978 plays it, note by note.",
+       es:"Un sintetizador hace una onda que zumba, la suaviza y la deja crecer. Bueno para acordes lentos y de ensueño. Aquí lo toca, nota por nota, un sintetizador analógico de verdad de 1978."},
+  brass:{en:"A 1980s synthesizer copying a horn section. Each note opens up bright and bold, like a trumpet. Here, a real synthesizer from 1983 plays it, note by note, in stereo.",
+         es:"Un sintetizador de los 80 que imita una sección de metales. Cada nota se abre brillante y fuerte, como una trompeta. Aquí lo toca, nota por nota y en estéreo, un sintetizador de verdad de 1983."},
+  lead:{en:"A synthesizer voice made to play melodies. It is bright and buzzy, and it holds steady while you hold a note. Here, a real synthesizer from 1983 plays it, note by note.",
+        es:"Una voz de sintetizador hecha para tocar melodías. Es brillante y zumbante, y se mantiene firme mientras mantienes una nota. Aquí la toca, nota por nota, un sintetizador de verdad de 1983."}
+};
+/* AOG-PIANO-SOUNDS-V2: thirty-one cards, so they sit under their groups' names (the same groups as the Instrument menu) */
+function meetView(){
+  const groups=[]; Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp; let x=groups.find(y=>y.g===g); if(!x){ x={g:g, ids:[]}; groups.push(x); } x.ids.push(id); });
+  return `<p class="kicker">${t("navMeet")}</p><h1>${t("meetH")}</h1><p class="lead">${t("meetLead",{n:Object.keys(SOUNDS).length})}</p>`+
+    groups.map(x=>`<h2 class="mgh">${t(x.g)}</h2><div class="meet">${x.ids.map(id=>`<article class="mcard${id===S.sound?" on":""}" data-id="${id}"><h3>${soundName(id)}</h3><p>${MEET[id][S.lang]}</p><button type="button" class="pill" data-hear="${id}">${t("hear")}</button></article>`).join("")}</div>`).join("");
+}
+async function hear(id, btn){
+  if(!SOUNDS[id]) return;
+  S.sound=id; save(); $("soundSel").value=id; paintLoad();
+  const c=ctx(); setSendLevel(LIVE_CH, id);
+  const snd=SOUNDS[id];
+  warmMade(id);   /* AOG-PIANO-SOUNDS-V2 */
+  if(snd.kind==="sample" && !SETS[snd.set].ready){
+    if(btn) btn.textContent=t("hearWait");
+    loadSet(snd.set, paintLoad);
+    for(let i=0;i<100 && !SETS[snd.set].ready && SETS[snd.set].state!=="failed";i++) await new Promise(r=>setTimeout(r,150));
+    if(btn) btn.textContent=t("hear");
+  }
+  const now=c.currentTime+0.05;
+  [60,64,67,72].forEach((m,i)=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.7, now+i*0.22); if(vc){ vc.stop(now+1.6, vc.tau); track(vc); } });
+  [48,60,64,67].forEach(m=>{ const vc=makeVoice(c, LIVE_CH, id, m, 0.62, now+1.0); if(vc){ vc.stop(now+2.8, vc.tau); track(vc); } });
+  document.querySelectorAll(".mcard").forEach(el=>el.classList.toggle("on", el.getAttribute("data-id")===id));
+  soundUsed(); lessonsChanged();
+}
+/* Name it: one question at a time */
+const QUIZ=[
+  {q:{en:"Which sound is made by felt hammers hitting strings?",es:"¿Qué sonido hacen unos martillos de fieltro que golpean cuerdas?"}, a:0,
+   o:[["Grand piano","Piano de cola"],["Church organ","Órgano de iglesia"],["'80s electric piano","Piano eléctrico de los 80"],["Rock and jazz organ","Órgano de rock y jazz"]]},
+  {q:{en:"A chord that sounds bright and happy is usually…",es:"Un acorde que suena brillante y alegre casi siempre es…"}, a:0,
+   o:[["Major","Mayor"],["Minor","Menor"],["Out of tune","Desafinado"],["A seventh","De séptima"]]},
+  {q:{en:"What does the pedal do?",es:"¿Qué hace el pedal?"}, a:1,
+   o:[["Makes notes louder","Hace las notas más fuertes"],["Keeps notes ringing after you let go","Hace que las notas sigan sonando cuando sueltas"],["Changes the key","Cambia el tono"],["Starts the drums","Empieza la batería"]]},
+  {q:{en:"From one C up to the next C is called…",es:"De un Do al siguiente Do se llama…"}, a:2,
+   o:[["A chord","Un acorde"],["A bar","Un compás"],["An octave","Una octava"],["A tempo","Un tempo"]]},
+  {q:{en:"Every C sits just to the left of…",es:"Cada Do está justo a la izquierda de…"}, a:0,
+   o:[["A group of two black keys","Un grupo de dos teclas negras"],["A group of three black keys","Un grupo de tres teclas negras"],["Another C","Otro Do"],["The pedal","El pedal"]]},
+  {q:{en:"Which pad is the home chord?",es:"¿Qué pad es el acorde casa?"}, a:0,
+   o:[["Pad 1","El pad 1"],["Pad 4","El pad 4"],["Pad 5","El pad 5"],["Pad 6","El pad 6"]]},
+  {q:{en:"Tempo 120 means…",es:"Tempo 120 quiere decir…"}, a:1,
+   o:[["120 notes in the song","120 notas en la canción"],["120 beats in a minute","120 pulsos en un minuto"],["120 keys on the piano","120 teclas en el piano"],["It lasts 120 seconds","Dura 120 segundos"]]},
+  {q:{en:"Which sound keeps going for as long as you hold the key?",es:"¿Qué sonido sigue mientras mantengas la tecla?"}, a:3,
+   o:[["Grand piano","Piano de cola"],["Upright piano","Piano vertical"],["Electric piano · warm","Piano eléctrico · cálido"],["Church organ","Órgano de iglesia"]]},
+  {q:{en:"The 1987 side of the Sound dial adds…",es:"El lado de 1987 del dial de Sonido agrega…"}, a:2,
+   o:[["More notes","Más notas"],["A drum beat","Un ritmo de batería"],["A rough, crunchy sound","Un sonido áspero y crujiente"],["A higher key","Un tono más agudo"]]},
+  {q:{en:"Playing the notes of a chord one at a time is called…",es:"Tocar las notas de un acorde una por una se llama…"}, a:1,
+   o:[["A scale","Una escala"],["An arpeggio","Un arpegio"],["An octave","Una octava"],["A pedal","Un pedal"]]}
+];
+const QZ={order:null, i:0};
+function shuffled(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+function wordsView(){
+  if(!QZ.order || QZ.i>=QZ.order.length){ QZ.order=shuffled(QUIZ.map((q,i)=>i)); QZ.i=0; }
+  const q=QUIZ[QZ.order[QZ.i]], es=S.lang==="es";
+  const opts=shuffled(q.o.map((o,i)=>({o:o, right:i===q.a})));
+  return `<p class="kicker">${t("navWords")}</p><h1>${t("wordsH")}</h1><p class="lead">${t("wordsLead")}</p>
+    <div class="quiz"><p class="qnum">${t("qOf",{n:QZ.i+1, all:QUIZ.length})}</p><h2>${q.q[S.lang]}</h2>
+      <div id="qopts">${opts.map(x=>`<button type="button" class="qopt" data-right="${x.right?1:0}">${x.o[es?1:0]}</button>`).join("")}</div>
+      <p class="qfb" id="qfb" aria-live="polite"></p>
+      <button type="button" class="pill" id="qnext">${t("qNext")}</button></div>`;
+}
+/* Print: my chords, and a keyboard to label */
+function kbSvg(){
+  const W=40, H=140, n=15; let s=`<svg class="pkb" viewBox="0 0 ${n*W+2} ${H+46}" role="img" aria-label="${escH(t("pKbAria"))}">`;
+  for(let i=0;i<n;i++) s+=`<rect x="${1+i*W}" y="1" width="${W}" height="${H}" fill="#fff" stroke="#333" stroke-width="1.5"/><rect x="${1+i*W+6}" y="${H+10}" width="${W-12}" height="30" rx="4" fill="#fff" stroke="#777" stroke-width="1.2"/>`;
+  for(let o=0;o<2;o++) [0,1,3,4,5].forEach(w=>{ const i=o*7+w; if(i<n-1) s+=`<rect x="${1+(i+1)*W-12}" y="1" width="24" height="${Math.round(H*0.6)}" fill="#222" stroke="#111"/>`; });
+  return s+"</svg>";
+}
+function printView(){
+  const es=S.lang==="es", cells=S.prog.length?S.prog.slice():Array(8).fill(null), rows=[];
+  for(let i=0;i<cells.length;i+=4) rows.push(cells.slice(i,i+4));
+  const chart=`<table class="pchart"><tbody>${rows.map((r,ri)=>`<tr>${r.map((c,ci)=>`<td><small>${ri*4+ci+1}</small><b>${c?escH(chordName(c)):""}</b></td>`).join("")}${"<td></td>".repeat(4-r.length)}</tr>`).join("")}</tbody></table>`;
+  const meta=(es?"Tono ":"Key ")+KEY_NAMES[S.lang][S.key]+" · "+(S.minor?(es?"Menor":"Minor"):(es?"Mayor":"Major"))+" · Tempo "+Math.round(curBpm())+" · "+soundName(S.sound)+" · "+RHYTHM_WORDS[S.rhythm][S.lang];
+  return `<p class="kicker">${t("navPrint")}</p><h1>${t("printH")}</h1><p class="lead">${t("printLead")}</p>
+    <p class="no-print printbtns"><button type="button" class="pill" data-print="pat">${t("printPat")}</button><button type="button" class="pill" data-print="kb">${t("printKb")}</button><button type="button" class="pill" data-print="both">${t("printBoth")}</button></p>
+    <article class="psheet pat">
+      <h2>${t("pSheet1")}</h2>
+      <p>${t("nameLine")} <span class="blank"></span> &nbsp; ${t("dateLine")} <span class="blank"></span></p>
+      <p class="pmeta">${S.prog.length?escH(meta):t("pNone")}</p>
+      ${chart}
+      <p class="pq">1. ${t("pq1")}</p>
+      <p class="pq">2. ${t("pq2")}</p>
+    </article>
+    <article class="psheet kb">
+      <h2>${t("pSheet2")}</h2>
+      <p>${t("nameLine")} <span class="blank"></span> &nbsp; ${t("dateLine")} <span class="blank"></span></p>
+      ${kbSvg()}
+      <p class="pq">1. ${t("pk1")}</p>
+      <p class="pq">2. ${t("pk2")}</p>
+      <p class="pq">3. ${t("pk3")}</p>
+      <p class="pq">4. ${t("pk4")}</p>
+    </article>`;
+}
+function bindView(v){
+  if(v==="meet") document.querySelectorAll("[data-hear]").forEach(b=>b.onclick=()=>hear(b.getAttribute("data-hear"), b));
+  if(v==="words"){
+    document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{
+      const right=b.getAttribute("data-right")==="1";
+      b.classList.add(right?"right":"wrong");
+      $("qfb").textContent=right?t("qYes"):t("qNo");
+      if(right) document.querySelectorAll(".qopt").forEach(x=>{ x.disabled=x!==b; });
+    });
+    $("qnext").onclick=()=>{ QZ.i++; paintView(); const q=document.querySelector(".quiz h2"); if(q){ q.setAttribute("tabindex","-1"); q.focus({preventScroll:true}); } };
+  }
+  if(v==="print") document.querySelectorAll("[data-print]").forEach(b=>b.onclick=()=>{ document.body.setAttribute("data-print", b.getAttribute("data-print")); window.print(); });
+}
+window.addEventListener("hashchange", paintView);
+/* AOG-PGPANEL-V1 — the picture guide loads only when the bar is opened, grown to its content */
+(function(){
+  const d=document.getElementById("pgPanel"), f=document.getElementById("pgFrame"); if(!d||!f) return;
+  function fit(){ try{ const b=f.contentDocument&&f.contentDocument.body; if(b){ const h=b.scrollHeight; if(h>240) f.style.height=(h+28)+"px"; } }catch(e){} }
+  d.addEventListener("toggle", ()=>{ if(d.open && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src")); });
+  f.addEventListener("load", ()=>{ fit(); setTimeout(fit,250); setTimeout(fit,1200); });
+  let tm; window.addEventListener("resize", ()=>{ clearTimeout(tm); tm=setTimeout(fit,150); });
+})();
+
+loadState();
+bind();
+paintText();
+bpInit();
+document.addEventListener("visibilitychange",()=>{ if(document.hidden){ stop(); allOff(); } });
+window.addEventListener("pagehide",()=>{ stop(true); allOff(); });
+/* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */
+["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
+/* the recordings start loading once the page is up; the drum beat is looked up on the shared shelf */
+window.addEventListener("load",()=>{ setTimeout(()=>{ const snd=SOUNDS[S.sound]; if(snd.kind==="sample") loadSet(snd.set, paintLoad); else warmMade(S.sound); }, 300); });
+checkDrums();
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="padbench") checkDrums(); }); }catch(e){}
+window.addEventListener("focus", checkDrums);

@@ -1,0 +1,13138 @@
+
+/* ============================================================
+   AoG STOREFRONT — paste this block inside your existing 
+   script tag, AFTER RESOURCE_LIBRARY. */
+const ITEMS_EN = [{
+  n: 1,
+  d: "A",
+  text: "I know what I am feeling, even when the feeling is big or confusing.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 2,
+  d: "A",
+  text: "When I am upset, I know at least one thing I can do to help my body calm down.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 3,
+  d: "A",
+  text: "Big feelings — like worry, anger, or sadness — get in the way of what I am trying to do.",
+  reverse: true,
+  intensity: false
+}, {
+  n: 4,
+  d: "A",
+  text: "I feel overwhelmed and don’t know what to do about it.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 5,
+  d: "A",
+  text: "After something hard happens, I am able to come back to feeling okay.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 6,
+  d: "A",
+  text: "I can tell when my body is starting to get upset before I lose control of how I act.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 7,
+  d: "B",
+  text: "When I make a mistake, I can learn from it without being mean to myself.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 8,
+  d: "B",
+  text: "When something goes wrong, a voice in my head tells me I am stupid, bad, or not good enough.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 9,
+  d: "B",
+  text: "I treat myself the way I would treat a good friend who was having a hard time.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 10,
+  d: "B",
+  text: "I keep replaying my mistakes in my head long after they are over.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 11,
+  d: "B",
+  text: "When something is hard, I believe I can get better at it if I keep trying.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 12,
+  d: "B",
+  text: "When I make a mistake, I can own it and move on without being too hard on myself.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 13,
+  d: "C",
+  text: "When someone around me is having a hard time, I care about how they feel.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 14,
+  d: "C",
+  text: "When I have hurt someone — even by accident — I am able to say so and try to make it right.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 15,
+  d: "C",
+  text: "When someone bothers me or hurts my feelings, I assume the worst about them right away.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 16,
+  d: "C",
+  text: "I am kind to people even when they are hard to get along with.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 17,
+  d: "C",
+  text: "I can tell the difference between someone who is just difficult and someone who is actually unsafe.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 18,
+  d: "C",
+  text: "I have at least one trusted adult in my life I could go to if something was wrong.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "When someone is unsafe, I do something to protect myself — like leaving or telling an adult.",
+  reverse: false,
+  intensity: false,
+  noScore: true
+}];
+const ITEMS_ES = [{
+  n: 1,
+  d: "A",
+  text: "Sé lo que estoy sintiendo, incluso cuando el sentimiento es grande o confuso.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 2,
+  d: "A",
+  text: "Cuando estoy molesto/a, conozco al menos una cosa que puedo hacer para que mi cuerpo se calme.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 3,
+  d: "A",
+  text: "Los sentimientos fuertes — como preocupación, enojo o tristeza — se interponen en lo que estoy tratando de hacer.",
+  reverse: true,
+  intensity: false
+}, {
+  n: 4,
+  d: "A",
+  text: "Me siento abrumado/a y no sé qué hacer al respecto.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 5,
+  d: "A",
+  text: "Después de que algo difícil sucede, puedo volver a sentirme bien.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 6,
+  d: "A",
+  text: "Puedo darme cuenta cuando mi cuerpo empieza a alterarse antes de perder el control de cómo actúo.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 7,
+  d: "B",
+  text: "Cuando cometo un error, puedo aprender de él sin ser duro/a conmigo mismo/a.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 8,
+  d: "B",
+  text: "Cuando algo sale mal, una voz en mi cabeza me dice que soy tonto/a, malo/a, o que no soy suficiente.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 9,
+  d: "B",
+  text: "Me trato a mí mismo/a como trataría a un buen amigo/a que está pasando un momento difícil.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 10,
+  d: "B",
+  text: "Sigo repitiendo mis errores en mi cabeza mucho después de que ya pasaron.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 11,
+  d: "B",
+  text: "Cuando algo es difícil, creo que puedo mejorar si sigo intentándolo.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 12,
+  d: "B",
+  text: "Cuando cometo un error, puedo reconocerlo y seguir adelante sin ser demasiado duro/a conmigo.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 13,
+  d: "C",
+  text: "Cuando alguien a mi alrededor está pasando un momento difícil, me importa cómo se siente.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 14,
+  d: "C",
+  text: "Cuando he lastimado a alguien — incluso sin querer — puedo reconocerlo e intentar reparar las cosas.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 15,
+  d: "C",
+  text: "Cuando alguien me molesta o me lastima los sentimientos, asumo lo peor de esa persona enseguida.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 16,
+  d: "C",
+  text: "Soy amable con la gente incluso cuando son difíciles de tratar.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 17,
+  d: "C",
+  text: "Puedo notar la diferencia entre alguien que es solo difícil y alguien que de verdad no es seguro.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 18,
+  d: "C",
+  text: "Tengo al menos un adulto de confianza en mi vida a quien podría acudir si algo estuviera mal.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "Cuando alguien no es seguro, hago algo para protegerme — como irme o decirle a un adulto.",
+  reverse: false,
+  intensity: false,
+  noScore: true
+}];
+const SCALE_6 = {
+  en: [{
+    v: 0,
+    label: "Never",
+    hint: "Never happens"
+  }, {
+    v: 1,
+    label: "Rarely",
+    hint: "Maybe once a month or less"
+  }, {
+    v: 2,
+    label: "Sometimes",
+    hint: "A few times a month"
+  }, {
+    v: 3,
+    label: "Often",
+    hint: "A few times a week"
+  }, {
+    v: 4,
+    label: "Very Often",
+    hint: "Most days"
+  }, {
+    v: 5,
+    label: "Constantly",
+    hint: "Multiple times a day"
+  }],
+  es: [{
+    v: 0,
+    label: "Nunca",
+    hint: "Nunca sucede"
+  }, {
+    v: 1,
+    label: "Casi nunca",
+    hint: "Quizás una vez al mes o menos"
+  }, {
+    v: 2,
+    label: "A veces",
+    hint: "Algunas veces al mes"
+  }, {
+    v: 3,
+    label: "A menudo",
+    hint: "Algunas veces a la semana"
+  }, {
+    v: 4,
+    label: "Muy a menudo",
+    hint: "Casi todos los días"
+  }, {
+    v: 5,
+    label: "Constantemente",
+    hint: "Varias veces al día"
+  }]
+};
+const SCALE_4 = {
+  en: [{
+    v: 0,
+    label: "Never",
+    hint: "Never happens"
+  }, {
+    v: 1,
+    label: "Sometimes",
+    hint: "A few times a month"
+  }, {
+    v: 2,
+    label: "Often",
+    hint: "A few times a week"
+  }, {
+    v: 3,
+    label: "Almost Always",
+    hint: "Most days or more"
+  }],
+  es: [{
+    v: 0,
+    label: "Nunca",
+    hint: "Nunca sucede"
+  }, {
+    v: 1,
+    label: "A veces",
+    hint: "Algunas veces al mes"
+  }, {
+    v: 2,
+    label: "A menudo",
+    hint: "Algunas veces a la semana"
+  }, {
+    v: 3,
+    label: "Casi siempre",
+    hint: "Casi todos los d\u00edas o m\u00e1s"
+  }]
+};
+const INTENSITY = {
+  en: [{
+    v: 0,
+    label: "Barely"
+  }, {
+    v: 1,
+    label: "Some"
+  }, {
+    v: 2,
+    label: "A lot"
+  }, {
+    v: 3,
+    label: "Takes over"
+  }],
+  es: [{
+    v: 0,
+    label: "Apenas"
+  }, {
+    v: 1,
+    label: "Algo"
+  }, {
+    v: 2,
+    label: "Mucho"
+  }, {
+    v: 3,
+    label: "Me domina"
+  }]
+};
+const REFLECTIONS = {
+  en: [{
+    domain: "A",
+    title: "About your feelings and your body",
+    prompt: "When you have a big feeling, where do you notice it — in your body, your thoughts, or the way you act? You can write about a recent time."
+  }, {
+    domain: "B",
+    title: "About how you talk to yourself",
+    prompt: "When something goes wrong, what do you say to yourself? Try to write the actual words."
+  }, {
+    domain: "C",
+    title: "About the people around you",
+    prompt: "Think about the people in your life right now. Is there a relationship that feels really good, or one that feels really hard? Write a sentence or two about that person and how it feels. You don’t have to use their name."
+  }],
+  es: [{
+    domain: "A",
+    title: "Sobre tus sentimientos y tu cuerpo",
+    prompt: "Cuando tienes un sentimiento fuerte, ¿dónde lo notas — en tu cuerpo, en tus pensamientos, o en cómo actúas? Puedes escribir sobre un momento reciente."
+  }, {
+    domain: "B",
+    title: "Sobre cómo te hablas a ti mismo/a",
+    prompt: "Cuando algo sale mal, ¿qué te dices a ti mismo/a? Intenta escribir las palabras exactas."
+  }, {
+    domain: "C",
+    title: "Sobre las personas a tu alrededor",
+    prompt: "Piensa en las personas en tu vida ahora. ¿Hay una relación que se sienta muy bien, o una que se sienta muy difícil? Escribe una o dos oraciones sobre esa persona y cómo te hace sentir. No tienes que usar su nombre."
+  }]
+};
+function scoreFrequency(_0x522eb9, _0xb219f8, _0x139863) {
+  const _0x10461f = _0x139863 === "depth" ? 5 : 3;
+  if (_0x522eb9 == null) {
+    return null;
+  }
+  if (_0xb219f8) {
+    return _0x10461f - _0x522eb9;
+  } else {
+    return _0x522eb9;
+  }
+}
+const INTENSITY_MULT = [1, 0.92, 0.78, 0.6];
+function scoreItem(_0xb98d6b, _0x86e039, _0x1b15d9, _0x162afd) {
+  const _0x204acc = _0x162afd === "depth" ? 5 : 3;
+  const _0x42af66 = scoreFrequency(_0xb98d6b, _0x1b15d9, _0x162afd);
+  if (_0x42af66 == null) {
+    return null;
+  }
+  if (_0x162afd === "depth" && _0x86e039 != null && _0x42af66 < _0x204acc) {
+    const _0x5aa4ea = _0x42af66 * INTENSITY_MULT[_0x86e039];
+    return Math.round(_0x5aa4ea * 10) / 10;
+  }
+  return _0x42af66;
+}
+function computeResult(_0x727793, _0x2d868e) {
+  const _0x47b021 = _0x2d868e === "depth" ? 5 : 3;
+  const _0xc7b1ed = _0x47b021 * 18;
+  const _0x328702 = _0x47b021 * 6;
+  let _0x749b14 = 0;
+  let _0x9dd1e9 = 0;
+  let _0x3791c9 = 0;
+  const _0x42fab1 = [];
+  ITEMS_EN.forEach((_0x4e76ae, _0x138a20) => {
+    const _0x34f81e = _0x727793.raw[_0x138a20];
+    const _0x5beb07 = _0x727793.intensities ? _0x727793.intensities[_0x138a20] : null;
+    const _0x131325 = scoreItem(_0x34f81e, _0x5beb07, _0x4e76ae.reverse, _0x2d868e);
+    _0x42fab1.push(_0x131325);
+    if (_0x131325 == null) {
+      return;
+    }
+    if (_0x4e76ae.noScore) {
+      return;
+    }
+    if (_0x4e76ae.d === "A") {
+      _0x749b14 += _0x131325;
+    } else if (_0x4e76ae.d === "B") {
+      _0x9dd1e9 += _0x131325;
+    } else {
+      _0x3791c9 += _0x131325;
+    }
+  });
+  const _0x345096 = _0x749b14 + _0x9dd1e9 + _0x3791c9;
+  return {
+    domainA: round1(_0x749b14),
+    domainB: round1(_0x9dd1e9),
+    domainC: round1(_0x3791c9),
+    composite: round1(_0x345096),
+    normA: round1(_0x749b14 / _0x328702 * 100),
+    normB: round1(_0x9dd1e9 / _0x328702 * 100),
+    normC: round1(_0x3791c9 / _0x328702 * 100),
+    normComposite: round1(_0x345096 / _0xc7b1ed * 100),
+    itemMax: _0x47b021,
+    domainMax: _0x328702,
+    totalMax: _0xc7b1ed,
+    scored: _0x42fab1,
+    trustedAdultFlag: _0x727793.raw[17] != null && _0x727793.raw[17] <= 1,
+    unsafeFlag: _0x727793.raw[18] != null && _0x727793.raw[18] <= 1
+  };
+}
+function round1(_0x1e5f7f) {
+  return Math.round(_0x1e5f7f * 10) / 10;
+}
+function tierFromNormComposite(_0x3383c3) {
+  if (_0x3383c3 < 50) {
+    return "High Risk";
+  }
+  if (_0x3383c3 < 75) {
+    return "Some Risk";
+  }
+  return "Low Risk";
+}
+function tierClass(_0x1a12ad) {
+  if (_0x1a12ad === "High Risk") {
+    return "pill-red";
+  } else if (_0x1a12ad === "Some Risk") {
+    return "pill-amber";
+  } else {
+    return "pill-green";
+  }
+}
+/* ═══ WHAT THE BAND SAYS  (2026-08-25) ═════════════════════════════════════
+   The three keys below — "High Risk" / "Some Risk" / "Low Risk" — are the
+   INTERNAL values. They are computed by tierFromNormComposite, written to the
+   Sheet's `tier` column, compared in forty-odd places and exported in the CSV.
+   They are NOT changed here and must not be: rows written since June already
+   carry them, and every comparison in the file keys off these exact strings.
+
+   What changed is the only thing a person ever reads. Every human-facing tier
+   string in the app funnels through tierLabel(), so this one map is the whole
+   surface. The wording now describes THE ADULT'S NEXT MOVE rather than
+   labeling the child — a band is an instruction to a teacher, not a verdict
+   on a thirteen-year-old:
+
+       red    → Adult follow-up        (not "high risk")
+       amber  → Worth a conversation   (not "some risk")
+       green  → Keep noticing          (not "doing well" — green is not "done")
+
+   "Keep noticing" is deliberate. "Doing well" quietly tells a teacher there is
+   nothing to do, which is how a quiet kid having a hard month goes unseen.
+   The scoring engine is untouched. See tierFromNormComposite above.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const TIER_DISPLAY = {
+  "High Risk": {
+    en: "Adult follow-up",
+    es: "Seguimiento de un adulto"
+  },
+  "Some Risk": {
+    en: "Worth a conversation",
+    es: "Vale una conversación"
+  },
+  "Low Risk": {
+    en: "Keep noticing",
+    es: "Seguir observando"
+  }
+};
+/* One place that turns a 0-100 score into the band words.
+
+   The first rename went through TIER_DISPLAY and I reported that as the whole
+   surface. It was not: rBand(), tName(), the trajectory legend, the trajectory
+   bar tooltips, the Grace Compass fallback and the IEP goal phrasing each
+   carried their own copy of the three strings, so six subsystems still said
+   "Doing well" after the pill said "Keep noticing". They all call this now.
+   If you need band words from a number, call this and do not write them out. */
+function aogBandLabel(_v) {
+  var k = _v >= 75 ? "Low Risk" : _v >= 50 ? "Some Risk" : "High Risk";
+  return (typeof tierLabel === "function") ? tierLabel(k) : k;
+}
+try { window.aogBandLabel = aogBandLabel; } catch (e) {}
+
+function tierLabel(_0x2102b0) {
+  const _0x1748c1 = TIER_DISPLAY[_0x2102b0];
+  const _0x2cc913 = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (_0x1748c1) {
+    return _0x1748c1[_0x2cc913] || _0x1748c1.en;
+  } else {
+    return _0x2102b0;
+  }
+}
+function DT(_0xa1ebc8, _0x186ca6) {
+  if (typeof dashLang !== "undefined" && dashLang === "es") {
+    return _0x186ca6;
+  } else {
+    return _0xa1ebc8;
+  }
+}
+const WIN_DISPLAY = {
+  Fall: {
+    en: "Fall",
+    es: "Otoño"
+  },
+  Winter: {
+    en: "Winter",
+    es: "Invierno"
+  },
+  Spring: {
+    en: "Spring",
+    es: "Primavera"
+  },
+  Summer: {
+    en: "Summer",
+    es: "Verano"
+  }
+};
+function winLabel(_0x5be086) {
+  const _0xa39fa5 = WIN_DISPLAY[_0x5be086];
+  const _0x4593bc = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (_0xa39fa5) {
+    return _0xa39fa5[_0x4593bc];
+  } else {
+    return _0x5be086 || "";
+  }
+}
+function modeLabel(_0x3270c4) {
+  if (_0x3270c4 === "depth") {
+    return DT("Thorough", "A fondo");
+  } else {
+    return DT("Quick", "Rápido");
+  }
+}
+function heatClass(_0x268b5a, _0x531f2f) {
+  if (_0x268b5a == null) {
+    return "heat-0";
+  }
+  const _0x15c642 = _0x268b5a / _0x531f2f;
+  if (_0x15c642 >= 0.95) {
+    return "heat-0";
+  }
+  if (_0x15c642 >= 0.75) {
+    return "heat-1";
+  }
+  if (_0x15c642 >= 0.55) {
+    return "heat-2";
+  }
+  if (_0x15c642 >= 0.35) {
+    return "heat-3";
+  }
+  if (_0x15c642 >= 0.15) {
+    return "heat-4";
+  }
+  return "heat-5";
+}
+const ITEMS_ADULT_EN = [{
+  n: 1,
+  d: "A",
+  text: "I can name what I am feeling, even when the feeling is big or hard to sort out.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 2,
+  d: "A",
+  text: "When I am upset, I know at least one thing I can do to help myself settle.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 3,
+  d: "A",
+  text: "Strong feelings — like worry, anger, or sadness — get in the way of what I am trying to do.",
+  reverse: true,
+  intensity: false
+}, {
+  n: 4,
+  d: "A",
+  text: "I feel overwhelmed and don’t know what to do about it.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 5,
+  d: "A",
+  text: "After something hard happens, I am able to find my way back to feeling okay.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 6,
+  d: "A",
+  text: "I can notice when I am starting to get worked up before it spills into how I act.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 7,
+  d: "B",
+  text: "When I make a mistake, I can learn from it without turning on myself.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 8,
+  d: "B",
+  text: "When something goes wrong, a voice in my head tells me I am a failure, bad, or not good enough.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 9,
+  d: "B",
+  text: "I treat myself the way I would treat a good friend who was having a hard time.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 10,
+  d: "B",
+  text: "I keep replaying my mistakes long after they are over.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 11,
+  d: "B",
+  text: "When something is hard, I believe I can get better at it if I keep at it.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 12,
+  d: "B",
+  text: "When I make a mistake, I can own it and move forward without being too hard on myself.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 13,
+  d: "C",
+  text: "When someone around me is struggling, I care about how they feel.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 14,
+  d: "C",
+  text: "When I have hurt someone — even by accident — I can say so and try to make it right.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 15,
+  d: "C",
+  text: "When someone upsets me or hurts me, I assume the worst about them right away.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 16,
+  d: "C",
+  text: "I can be kind to people even when they are hard to get along with.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 17,
+  d: "C",
+  text: "I can tell the difference between someone who is just difficult and someone who is actually unsafe.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 18,
+  d: "C",
+  text: "I have at least one person in my life I trust enough to turn to if something was wrong.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "When someone is unsafe, I protect myself — like leaving or telling someone.",
+  reverse: false,
+  intensity: false,
+  noScore: true
+}];
+const ITEMS_ADULT_ES = [{
+  n: 1,
+  d: "A",
+  text: "Puedo nombrar lo que estoy sintiendo, incluso cuando el sentimiento es grande o difícil de descifrar.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 2,
+  d: "A",
+  text: "Cuando estoy molesto/a, conozco al menos una cosa que puedo hacer para calmarme.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 3,
+  d: "A",
+  text: "Los sentimientos fuertes — como preocupación, enojo o tristeza — se interponen en lo que estoy tratando de hacer.",
+  reverse: true,
+  intensity: false
+}, {
+  n: 4,
+  d: "A",
+  text: "Me siento abrumado/a y no sé qué hacer al respecto.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 5,
+  d: "A",
+  text: "Después de que algo difícil sucede, soy capaz de volver a sentirme bien.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 6,
+  d: "A",
+  text: "Puedo darme cuenta cuando empiezo a alterarme antes de que afecte cómo actúo.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 7,
+  d: "B",
+  text: "Cuando cometo un error, puedo aprender de él sin ser duro/a conmigo mismo/a.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 8,
+  d: "B",
+  text: "Cuando algo sale mal, una voz en mi cabeza me dice que soy un fracaso, malo/a, o que no soy suficiente.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 9,
+  d: "B",
+  text: "Me trato a mí mismo/a como trataría a un buen amigo/a que está pasando un momento difícil.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 10,
+  d: "B",
+  text: "Sigo repitiendo mis errores en mi cabeza mucho después de que ya pasaron.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 11,
+  d: "B",
+  text: "Cuando algo es difícil, creo que puedo mejorar si sigo intentándolo.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 12,
+  d: "B",
+  text: "Cuando cometo un error, puedo reconocerlo y seguir adelante sin ser demasiado duro/a conmigo.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 13,
+  d: "C",
+  text: "Cuando alguien a mi alrededor está pasando un momento difícil, me importa cómo se siente.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 14,
+  d: "C",
+  text: "Cuando he lastimado a alguien — incluso sin querer — puedo reconocerlo e intentar reparar las cosas.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 15,
+  d: "C",
+  text: "Cuando alguien me molesta o me lastima, asumo lo peor de esa persona enseguida.",
+  reverse: true,
+  intensity: true
+}, {
+  n: 16,
+  d: "C",
+  text: "Soy amable con la gente incluso cuando son difíciles de tratar.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 17,
+  d: "C",
+  text: "Puedo notar la diferencia entre alguien que es solo difícil y alguien que de verdad no es seguro.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 18,
+  d: "C",
+  text: "Tengo al menos una persona en mi vida en quien confío lo suficiente como para acudir si algo estuviera mal.",
+  reverse: false,
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "Cuando alguien no es seguro, me protejo — como irme o decirle a alguien.",
+  reverse: false,
+  intensity: false,
+  noScore: true
+}];
+const REFLECTIONS_ADULT = {
+  en: [{
+    domain: "A",
+    title: "About your feelings and your body",
+    prompt: "Is there anything you want to add about how feelings have been showing up for you lately — in your body, in your head, in how you act?"
+  }, {
+    domain: "B",
+    title: "About how you talk to yourself",
+    prompt: "What does the voice in your head sound like when something goes wrong? What does it say?"
+  }, {
+    domain: "C",
+    title: "About the people around you",
+    prompt: "Is there someone in your life right now — a friend, family member, partner, or coworker — who feels really good, or really hard? You don’t have to name them."
+  }],
+  es: [{
+    domain: "A",
+    title: "Sobre tus sentimientos y tu cuerpo",
+    prompt: "¿Hay algo que quieras agregar sobre cómo se han manifestado tus sentimientos últimamente — en tu cuerpo, en tu mente, en cómo actúas?"
+  }, {
+    domain: "B",
+    title: "Sobre cómo te hablas a ti mismo/a",
+    prompt: "¿Cómo suena la voz en tu cabeza cuando algo sale mal? ¿Qué dice?"
+  }, {
+    domain: "C",
+    title: "Sobre las personas a tu alrededor",
+    prompt: "¿Hay alguien en tu vida en este momento — un amigo/a, familiar, pareja o compañero/a de trabajo — que se siente muy bien, o muy difícil? No tienes que nombrarlo."
+  }]
+};
+const REFLECT_OPTIONS = {
+  A: [{
+    v: "calm",
+    en: "Calm",
+    es: "Tranquilo/a"
+  }, {
+    v: "okay",
+    en: "Okay",
+    es: "Bien"
+  }, {
+    v: "tired",
+    en: "Tired",
+    es: "Cansado/a"
+  }, {
+    v: "tense",
+    en: "Tense or tight",
+    es: "Tenso/a"
+  }, {
+    v: "restless",
+    en: "Restless",
+    es: "Inquieto/a"
+  }, {
+    v: "heavy",
+    en: "Heavy or low",
+    es: "Pesado/a o bajo/a"
+  }, {
+    v: "worried",
+    en: "Worried",
+    es: "Preocupado/a"
+  }, {
+    v: "overwhelmed",
+    en: "Overwhelmed",
+    es: "Abrumado/a"
+  }],
+  B: [{
+    v: "kindself",
+    en: "Kind to myself",
+    es: "Amable conmigo"
+  }, {
+    v: "patient",
+    en: "Patient with myself",
+    es: "Paciente conmigo"
+  }, {
+    v: "cheer",
+    en: "I cheer myself on",
+    es: "Me animo"
+  }, {
+    v: "tryagain",
+    en: "I try again",
+    es: "Lo intento de nuevo"
+  }, {
+    v: "hardself",
+    en: "Hard on myself",
+    es: "Duro/a conmigo"
+  }, {
+    v: "critical",
+    en: "Critical",
+    es: "Crítico/a"
+  }, {
+    v: "frustrated",
+    en: "Frustrated",
+    es: "Frustrado/a"
+  }, {
+    v: "giveup",
+    en: "I want to give up",
+    es: "Quiero rendirme"
+  }],
+  C: [{
+    v: "supported",
+    en: "Supported",
+    es: "Apoyado/a"
+  }, {
+    v: "connected",
+    en: "Connected",
+    es: "Conectado/a"
+  }, {
+    v: "safe",
+    en: "Safe",
+    es: "Seguro/a"
+  }, {
+    v: "close",
+    en: "Close to someone",
+    es: "Cercano/a a alguien"
+  }, {
+    v: "lonely",
+    en: "Lonely",
+    es: "Solo/a"
+  }, {
+    v: "leftout",
+    en: "Left out",
+    es: "Excluido/a"
+  }, {
+    v: "tension",
+    en: "Tension with someone",
+    es: "Tensión con alguien"
+  }, {
+    v: "missing",
+    en: "Missing someone",
+    es: "Extraño a alguien"
+  }]
+};
+const CLOSING_OPTIONS = [{
+  v: "kind",
+  en: "Kind",
+  es: "Amable"
+}, {
+  v: "curious",
+  en: "Curious",
+  es: "Curioso/a"
+}, {
+  v: "strong",
+  en: "Strong",
+  es: "Fuerte"
+}, {
+  v: "funny",
+  en: "Funny",
+  es: "Divertido/a"
+}, {
+  v: "patient",
+  en: "Patient",
+  es: "Paciente"
+}, {
+  v: "caring",
+  en: "Caring",
+  es: "Cariñoso/a"
+}, {
+  v: "brave",
+  en: "Brave",
+  es: "Valiente"
+}, {
+  v: "creative",
+  en: "Creative",
+  es: "Creativo/a"
+}, {
+  v: "honest",
+  en: "Honest",
+  es: "Honesto/a"
+}, {
+  v: "hardworking",
+  en: "Hard-working",
+  es: "Trabajador/a"
+}, {
+  v: "friendly",
+  en: "Friendly",
+  es: "Amistoso/a"
+}, {
+  v: "calm",
+  en: "Calm",
+  es: "Tranquilo/a"
+}];
+const CHOICE_LOOKUP = function () {
+  const _0x800cfa = {};
+  ["A", "B", "C"].forEach(function (_0x5266b3) {
+    REFLECT_OPTIONS[_0x5266b3].forEach(function (_0x3f1572) {
+      _0x800cfa[_0x3f1572.v] = _0x3f1572;
+    });
+  });
+  CLOSING_OPTIONS.forEach(function (_0xae1a74) {
+    _0x800cfa[_0xae1a74.v] = _0xae1a74;
+  });
+  return _0x800cfa;
+}();
+function decodeChoices(_0x199d2f, _0x2303c4) {
+  if (!_0x199d2f) {
+    return "";
+  }
+  _0x2303c4 = _0x2303c4 === "es" ? "es" : "en";
+  return String(_0x199d2f).split("|").filter(Boolean).map(function (_0x21f4b0) {
+    if (CHOICE_LOOKUP[_0x21f4b0]) {
+      return CHOICE_LOOKUP[_0x21f4b0][_0x2303c4];
+    } else {
+      return _0x21f4b0;
+    }
+  }).join(", ");
+}
+function renderReflectChips(_0x12c1b9) {
+  const _0x30b1de = document.getElementById("reflectionOptions");
+  if (!_0x30b1de) {
+    return;
+  }
+  const _0x1f5df9 = REFLECT_OPTIONS[_0x12c1b9] || [];
+  const _0x2210ce = (reflections[reflectionIdx] || "").split("|").filter(Boolean);
+  _0x30b1de.innerHTML = _0x1f5df9.map(function (_0x5ef55f) {
+    const _0x46b1ae = _0x2210ce.indexOf(_0x5ef55f.v) >= 0;
+    const _0x223891 = surveyLang === "es" ? _0x5ef55f.es : _0x5ef55f.en;
+    return "<button type=\"button\" class=\"choice-chip" + (_0x46b1ae ? " on" : "") + "\" data-v=\"" + _0x5ef55f.v + "\" onclick=\"toggleReflectChip(this)\">" + escapeHtml(_0x223891) + "</button>";
+  }).join("");
+}
+function toggleReflectChip(_0x87902a) {
+  const _0x51ae25 = _0x87902a.getAttribute("data-v");
+  let _0x4ab185 = (reflections[reflectionIdx] || "").split("|").filter(Boolean);
+  const _0x2f384e = _0x4ab185.indexOf(_0x51ae25);
+  if (_0x2f384e >= 0) {
+    _0x4ab185.splice(_0x2f384e, 1);
+  } else {
+    _0x4ab185.push(_0x51ae25);
+  }
+  reflections[reflectionIdx] = _0x4ab185.join("|");
+  _0x87902a.classList.toggle("on");
+  if (typeof saveDraft === "function") {
+    saveDraft("reflection");
+  }
+}
+function renderClosing() {
+  const _0x53e148 = document.getElementById("closingOptions");
+  if (!_0x53e148) {
+    return;
+  }
+  _0x53e148.innerHTML = CLOSING_OPTIONS.map(function (_0x400b24) {
+    const _0x18fffb = closingSel.indexOf(_0x400b24.v) >= 0;
+    const _0x2f80f8 = surveyLang === "es" ? _0x400b24.es : _0x400b24.en;
+    return "<button type=\"button\" class=\"choice-chip" + (_0x18fffb ? " on" : "") + "\" data-v=\"" + _0x400b24.v + "\" onclick=\"toggleClosingChip(this)\">" + escapeHtml(_0x2f80f8) + "</button>";
+  }).join("");
+}
+function toggleClosingChip(_0x23cd34) {
+  const _0x1cc3f7 = _0x23cd34.getAttribute("data-v");
+  const _0x10295f = closingSel.indexOf(_0x1cc3f7);
+  if (_0x10295f >= 0) {
+    closingSel.splice(_0x10295f, 1);
+  } else {
+    closingSel.push(_0x1cc3f7);
+  }
+  _0x23cd34.classList.toggle("on");
+}
+let lang = "en";
+let surveyLang = "en";
+let mode = "rapid";
+let context = "school";
+let population = "k12";
+const MONTHS_ABBR_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS_ABBR_ES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+function currentDateCanonical() {
+  const _0x17a7ac = new Date();
+  return MONTHS_ABBR_EN[_0x17a7ac.getMonth()] + " " + _0x17a7ac.getDate() + ", " + _0x17a7ac.getFullYear();
+}
+function seasonFromDate(_0x5dcb1b) {
+  _0x5dcb1b = _0x5dcb1b || new Date();
+  var _0x31cbb4 = _0x5dcb1b.getMonth();
+  if (_0x31cbb4 >= 8 && _0x31cbb4 <= 10) {
+    return "Fall";
+  }
+  if (_0x31cbb4 === 11 || _0x31cbb4 <= 1) {
+    return "Winter";
+  }
+  if (_0x31cbb4 >= 2 && _0x31cbb4 <= 4) {
+    return "Spring";
+  }
+  return "Summer";
+}
+function fmtNiceDate(_0x37c2ac) {
+  if (!_0x37c2ac) {
+    return "";
+  }
+  const _0x582b0f = new Date(_0x37c2ac);
+  if (isNaN(_0x582b0f.getTime())) {
+    return "";
+  }
+  return MONTHS_ABBR_EN[_0x582b0f.getMonth()] + " " + _0x582b0f.getDate() + ", " + _0x582b0f.getFullYear();
+}
+function currentDateLabel(_0x10aad5) {
+  const _0x290769 = new Date();
+  if (_0x10aad5 === "es") {
+    return _0x290769.getDate() + " " + MONTHS_ABBR_ES[_0x290769.getMonth()] + " " + _0x290769.getFullYear();
+  }
+  return MONTHS_ABBR_EN[_0x290769.getMonth()] + " " + _0x290769.getDate() + ", " + _0x290769.getFullYear();
+}
+let dashLang = "en";
+const DASHLANG_KEY = "aogScreener.v2.dashlang";
+let current = 0;
+let responses = [];
+let intensities = [];
+let reflections = ["", "", ""];
+let reflectionIdx = 0;
+let session = {};
+let closingWord = "";
+let closingSel = [];
+const STORAGE_KEY = "aogScreener.v2.results";
+const LANG_KEY = "aogScreener.v2.lang";
+/* ACCESS_CODE removed (2026): the educator dashboard opens directly; privacy
+   is carried by the synced private link, not a code gate. */
+let SCHOOL_SYNC_URL = "";
+let SCHOOL_SYNC_KEY = "";
+/* School-owned destination (Phase 2): each school supplies its OWN Google Apps
+   Script Web App + Sheet via the dashboard's "Connect your school's Sheet" panel.
+   Read from this browser only — nothing is baked in, nothing is sent to AoG. */
+try {
+  SCHOOL_SYNC_URL = localStorage.getItem("aog.sync.url") || SCHOOL_SYNC_URL;
+  SCHOOL_SYNC_KEY = localStorage.getItem("aog.sync.key") || SCHOOL_SYNC_KEY;
+} catch (e) {}
+/* ---- SYNC FIX 2026-08-23 -------------------------------------------------
+   A student opening a classroom link on a phone has never typed the Web App
+   URL into THAT browser, so SCHOOL_SYNC_URL was empty and syncRecord() bailed
+   on its first line: the reflection saved locally and was never posted. The
+   deployed site can now carry a destination in aog-sync-config.js (loaded in
+   <head>), applied only when the classroom link's schoolId is one this
+   deployment owns. A device with its own saved connection always wins, and
+   the shareable link still carries only grade / class / window.
+   -------------------------------------------------------------------- */
+window.AOG_SYNC_SOURCE = "none";
+window.AOG_SYNC_LOG = window.AOG_SYNC_LOG || [];
+function aogSyncLog(step, detail) {
+  try {
+    window.AOG_SYNC_LOG.push({ t: new Date().toISOString().slice(11, 19), step: step, detail: detail });
+    if (window.AOG_SYNC_LOG.length > 60) window.AOG_SYNC_LOG.shift();
+    var d = detail;
+    if (d && typeof d === "object") { try { d = JSON.stringify(d); } catch (e) { d = "" + d; } }
+    console.log("[AoG sync] " + step + (d ? " -- " + d : ""));
+    if (typeof window.aogSyncDiagRender === "function") window.aogSyncDiagRender();
+  } catch (e) {}
+}
+try { window.aogSyncLog = aogSyncLog; } catch (e) {}
+function aogSyncHost_(u) {
+  try { return (String(u).match(/^https?:\/\/([^\/]+)/) || [])[1] || "(url)"; } catch (e) { return "(url)"; }
+}
+/* ═══ WHERE A ROW GOES — THE ONE DECISION POINT ════════════════════════════
+   Added 2026-08-28.
+
+   ⚠ EVERYTHING THAT NEEDS A DESTINATION CALLS aogResolveDestination_().
+   Before this, two paths answered the same question differently: the
+   reflection asked aogSyncDefaults_(), which honors the `schools` gate,
+   while the check-in layer's own destination() read
+   window.AOG_SYNC_DEFAULTS.url straight off the object and honored nothing.
+   With schools:["*"] that difference was invisible. It was never going to
+   stay invisible. If you add a third thing that syncs, call this — do not
+   read window.AOG_SYNC_DEFAULTS directly.
+
+   TWO MODES, chosen by whether the config carries a `destinations` map.
+
+   LEGACY (no `destinations`) — byte-for-byte the behavior that shipped
+     before this function existed: one url/key, gated by the `schools` list.
+     A config file nobody has touched behaves exactly as it did, wildcard and
+     all. This is what is live today.
+
+   REGISTRY (`destinations` present) — several schools, one site. A link
+     carries ?org=<id>, the id is looked up, and that entry's Sheet is the
+     destination. One id means one Sheet; whether that is a district, a
+     building or a single pilot classroom is the customer's decision and this
+     code deliberately has no opinion about it.
+
+   ⚠ THE REGISTRY FAILS CLOSED, AND THAT IS THE WHOLE SAFETY ARGUMENT.
+   No org id, an unknown org id, or an entry with no url ⇒ NO DESTINATION,
+   and the reflection stays on the device. There is deliberately NO fallback
+   to a default Sheet, and NO fallback to the free-text schoolId a teacher
+   types into the Distribute card. A routing scheme that guesses is a routing
+   scheme that one day puts one district's children in another district's
+   spreadsheet. Local-only is a recoverable mistake. That is not.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function aogOrgId_() {
+  var v = "";
+  /* The link a student opened wins. A teacher's own saved id is the fallback,
+     so their computer resolves before any link exists. */
+  try { v = String(sessionStorage.getItem("aog.launch.orgId") || "").trim(); } catch (e) {}
+  if (!v) { try { v = String(localStorage.getItem("aog.org.id") || "").trim(); } catch (e) {} }
+  return v;
+}
+try { window.aogOrgId_ = aogOrgId_; } catch (e) {}
+
+/* ═══ THE DESTINATION CAN RIDE ON THE LINK ═════════════════════════
+   Added 2026-08-29 (build .29ai).
+
+   THE PROBLEM THIS SOLVES IS NOT A TECHNICAL ONE. Before this, the only way
+   a student Chromebook could reach a school's Sheet was for that school's
+   write key to be typed into aog-sync-config.js -- a file on THIS site,
+   which only whoever publishes the site can edit. So every school had to
+   send its write key to a stranger, and that stranger had to hold every
+   school's keys. The district setup sheet said so out loud, in a box, and
+   no district should ever have been asked to do it.
+
+   Now the school's own dashboard holds the key and the link it generates
+   carries the destination with it. Nothing is sent to anybody.
+
+   ⚠ THE WRITE KEY IS IN THE LINK, AND A LINK IS NOT A SECRET. It is less
+   exposed than the file it replaces -- that file is world-readable at a
+   fixed URL -- but a classroom link must now be handed out the way a key is
+   handed out. What the key can do is bounded and stays bounded: appendRow
+   only, never read, never edit, never delete. Say that to a district rather
+   than let them find it.
+
+   ⚠ SESSION-SCOPED ON PURPOSE. It is never written to localStorage. A
+   shared Chromebook that opened one school's link in the morning must not
+   still be pointing there in the afternoon. The cost is real and is the
+   smaller one: a reflection finished offline and abandoned before the tab
+   closes stays on the device. Local-only is a recoverable mistake. Filing
+   one school's children in another school's spreadsheet is not.
+   ════════════════════════════════════════════════════════════════════════════ */
+var AOG_DEST_PARAM = "dest";
+
+/* ═══ EVERY LINK TYPE HAS ITS OWN FRONT DOOR ═══════════════════════════
+   Added 2026-08-29 (build .29ak).
+
+   Jimmy: every type of link should hold a different image, one that relates
+   to what it is asking. It could not, and the reason is not cosmetic. A link
+   scraper reads the <head> of the URL it is handed and RUNS NO JAVASCRIPT.
+   All five instruments were the same document with different query strings,
+   so iMessage fetched index.html every time and every link a teacher sent
+   showed the same card. A query string cannot change a meta tag and neither
+   can this app after load. A different picture needs a different document.
+
+   So each kind now has a 2 KB page of its own under link/, carrying its own
+   og: tags, which forwards here with the whole query string intact. The
+   builders below put that path on the link instead of this page's own.
+
+   ⚠ THE PATHS ARE SERVED BY _redirects. A rewrite maps /checkin to
+   link/checkin.html and KEEPS the short address, which is what a student
+   reads off a board. If you add a sixth instrument, it needs a path here, a
+   file in link/, a rule in _redirects and a picture — four edits, and the
+   first three fail silently by falling back to the app.
+   ⚠ OFF A WEB SERVER (file://, and the test harness) THERE ARE NO REWRITES,
+   so this falls back to the page's own path and the link still works.
+   ══════════════════════════════════════════════════════════════════════════ */
+var AOG_SHARE_PATHS = {
+  reflection: "/reflection",
+  checkin:    "/checkin",
+  exit:       "/exit",
+  support:    "/support",
+  /* ⚠ `goal` IS THE FAMILY LINK, `homeci` IS THE EVENING ONE. Two different
+     instruments, two different doors, and the names are one letter of
+     inattention apart. `goal` carries a per-goal payload about one skill;
+     `homeci` asks about the morning, the afternoon and the evening. */
+  goal:       "/goal",
+  homeci:     "/home",
+  /* ⚠ `thisisme` IS THE SEVENTH DOOR (.30el). My Voice — the student's own
+     page for their own IEP meeting. Before this entry the This Is Me builder
+     used the app's own URL, so every texted link wore the generic card. */
+  thisisme:   "/myvoice",
+  /* ⚠ `contribute` IS THE EIGHTH DOOR (.30hy). The IEP team contributor page
+     — a colleague answering about ONE student for ONE window, with nothing
+     to read back. Its four edits: this entry, link/contribute.html, a 200
+     rule in _redirects, and og-contribute.png. */
+  contribute: "/contribute"
+};
+function aogSharePath_(kind) {
+  try {
+    if (location.protocol !== "http:" && location.protocol !== "https:") return location.pathname;
+    return AOG_SHARE_PATHS[kind] || location.pathname;
+  } catch (e) { return "/"; }
+}
+function aogShareBase_(kind) {
+  try {
+    if (location.protocol !== "http:" && location.protocol !== "https:") return "";
+    return location.origin + aogSharePath_(kind);
+  } catch (e) { return ""; }
+}
+try { window.aogSharePath_ = aogSharePath_; window.aogShareBase_ = aogShareBase_;
+      window.AOG_SHARE_PATHS = AOG_SHARE_PATHS; } catch (e) {}
+function aogDestEncode_(url, key) {
+  try {
+    if (!url) return "";
+    var j = JSON.stringify({ u: String(url), k: String(key || "") });
+    return btoa(unescape(encodeURIComponent(j)))
+      .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  } catch (e) { return ""; }
+}
+function aogDestDecode_(rawv) {
+  try {
+    if (!rawv) return null;
+    var s = String(rawv).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var o = JSON.parse(decodeURIComponent(escape(atob(s))));
+    /* ⚠ VALIDATE THE SHAPE, NOT MERELY THE PARSE. This value comes off a URL
+       and decides where a child's answers are posted. Anything that is not an
+       Apps Script /exec deployment is refused outright -- a link is the one
+       input an adversary can hand a student directly. */
+    if (!o || typeof o.u !== "string") return null;
+    if (!/^https:\/\/script\.google\.com\/[^\s]*\/exec$/.test(o.u)) return null;
+    return { url: o.u, key: (typeof o.k === "string" ? o.k : "") };
+  } catch (e) { return null; }
+}
+/* The write key is its OWN saved field. The passcode a teacher already typed
+   is the READ key, and putting THAT in a link would hand every reader of the
+   link every answer in the Sheet. They are never interchangeable. */
+function aogOwnWriteKey_() {
+  try { return String(localStorage.getItem("aog.sync.writekey") || "").trim(); } catch (e) { return ""; }
+}
+function aogDestParam_() {
+  var u = "", k = aogOwnWriteKey_();
+  try { u = String(localStorage.getItem("aog.sync.url") || "").trim(); } catch (e) {}
+  if (!u || !k) return "";
+  return aogDestEncode_(u, k);
+}
+function aogLinkDestination_() {
+  var rawj = "";
+  try { rawj = sessionStorage.getItem("aog.launch.dest") || ""; } catch (e) {}
+  if (!rawj) return null;
+  var o = null; try { o = JSON.parse(rawj); } catch (e) { return null; }
+  if (!o || !o.url) return null;
+  return { url: o.url, key: o.key || "", label: "", orgId: "", via: "class link" };
+}
+try {
+  window.aogDestEncode_ = aogDestEncode_; window.aogDestDecode_ = aogDestDecode_;
+  window.aogDestParam_ = aogDestParam_; window.aogLinkDestination_ = aogLinkDestination_;
+  window.aogOwnWriteKey_ = aogOwnWriteKey_;
+} catch (e) {}
+
+function aogResolveDestination_() {
+  /* ⚠ THE LINK WINS, AND IT IS ASKED FIRST. This whole function is only ever
+     consulted when the device has no saved connection of its own (see
+     aogApplySyncDefaults), so a teacher's own computer is untouched by this
+     -- and a student device has nothing else to go on. */
+  var fromLink = aogLinkDestination_();
+  if (fromLink) return fromLink;
+
+  var d = window.AOG_SYNC_DEFAULTS;
+  if (!d) return null;
+
+  var reg = d.destinations;
+  if (reg && typeof reg === "object") {
+    var want = aogOrgId_().toLowerCase();
+    if (!want) return null;                          /* fail closed */
+    for (var k in reg) {
+      if (!Object.prototype.hasOwnProperty.call(reg, k)) continue;
+      if (String(k).trim().toLowerCase() !== want) continue;
+      var e = reg[k];
+      if (!e || !e.url) return null;                 /* fail closed */
+      return { url: e.url, key: e.key || "", label: e.label || String(k),
+               orgId: String(k), via: "registry" };
+    }
+    return null;                                     /* fail closed */
+  }
+
+  if (!d.url) return null;
+  var list = d.schools;
+  if (!list || !list.length) return null;            /* unset = built-in destination OFF */
+  if (list.indexOf("*") !== -1) {
+    return { url: d.url, key: d.key || "", label: d.label || "", orgId: "", via: "site config" };
+  }
+  var sid = "";
+  try { sid = String(sessionStorage.getItem("aog.launch.schoolId") || "").trim().toLowerCase(); } catch (e) {}
+  if (!sid) return null;
+  for (var i = 0; i < list.length; i++) {
+    if (String(list[i]).trim().toLowerCase() === sid) {
+      return { url: d.url, key: d.key || "", label: d.label || "", orgId: "", via: "site config" };
+    }
+  }
+  return null;
+}
+try { window.aogResolveDestination_ = aogResolveDestination_; } catch (e) {}
+
+/* Kept under its old name because several call sites and the diagnostics use
+   it. It is now a thin alias; the decision lives in one place above. */
+function aogSyncDefaults_() { return aogResolveDestination_(); }
+function aogApplySyncDefaults() {
+  /* ⚠ A LINK MUST BE ABLE TO OVERRIDE A VALUE THIS FUNCTION ITSELF SET.
+     This used to return early on ANY non-empty SCHOOL_SYNC_URL. But
+     parseLaunchParams runs AFTER the first call, so by the time a link's
+     destination is known the site config has usually already filled that
+     variable in -- and the early return kept it. On a site that publishes a
+     destination, which is what schools:[*] means, a visiting school's rows
+     would have been posted into THIS site's Sheet. That is the exact fault
+     the registry's fail-closed rule exists to prevent, arriving by a
+     different door. Only a connection the DEVICE saved may outrank a link. */
+  var _own = "";
+  try { _own = String(localStorage.getItem("aog.sync.url") || "").trim(); } catch (e) {}
+  if (_own && String(SCHOOL_SYNC_URL || "").trim() === _own) {
+    if (window.AOG_SYNC_SOURCE === "none") window.AOG_SYNC_SOURCE = "this device";
+    return;
+  }
+  var d = aogSyncDefaults_();
+  if (!d) {
+    /* Nothing answers any more. Clearing is the point: a stale value here is
+       a destination nobody chose. A device's own connection is never cleared. */
+    if (!_own) { SCHOOL_SYNC_URL = ""; SCHOOL_SYNC_KEY = ""; }
+    window.AOG_SYNC_SOURCE = "none";
+    return;
+  }
+  SCHOOL_SYNC_URL = d.url;
+  SCHOOL_SYNC_KEY = d.key || "";
+  /* "site config" or "registry" — the diagnostics and the Distribute note both
+     print this, and telling a teacher WHICH mode answered is the difference
+     between "it works" and "it works for the right school". */
+  window.AOG_SYNC_SOURCE = d.via || "site config";
+  window.AOG_SYNC_ORG = d.orgId || "";
+  window.AOG_SYNC_LABEL = d.label || "";
+}
+try { window.aogApplySyncDefaults = aogApplySyncDefaults; } catch (e) {}
+const VOICES_URL = "https://script.google.com/macros/s/AKfycbw0Qdwka1HXPPA_OxsQP2FXxOK8zzFwu_MBrXoahoO2YwRvwQ83RzvkJW__9KCC_DwgaA/exec";
+const $ = _0x2fab25 => document.querySelector(_0x2fab25);
+const $$ = _0x5e256b => document.querySelectorAll(_0x5e256b);
+function items() {
+  if (population === "adult") {
+    if (surveyLang === "es") {
+      return ITEMS_ADULT_ES;
+    } else {
+      return ITEMS_ADULT_EN;
+    }
+  }
+  if (surveyLang === "es") {
+    return ITEMS_ES;
+  } else {
+    return ITEMS_EN;
+  }
+}
+function scale() {
+  if (mode === "depth") {
+    return SCALE_6[surveyLang];
+  } else {
+    return SCALE_4[surveyLang];
+  }
+}
+const I18N_UI = {
+  aog_dash_nav: {
+    en: "Dashboard",
+    es: "Panel"
+  },
+  aog_inbox_nav: {
+    en: "The Inbox",
+    es: "La bandeja"
+  },
+  nav_family: {
+    en: "Family",
+    es: "Familia"
+  },
+  aog_store_nav: {
+    en: "Store",
+    es: "Tienda"
+  },
+  aog_store_t: {
+    en: "The Store",
+    es: "La tienda"
+  },
+  aog_store_s: {
+    en: "Shop the novels, curriculum, anchor charts, worksheets & card decks — for home or school.",
+    es: "Compra las novelas, el plan de estudios, los carteles, las hojas de trabajo y las barajas — para casa o la escuela."
+  },
+  vid_soon: {
+    en: "Video coming soon",
+    es: "Video próximamente"
+  },
+  vid_student_t: {
+    en: "How the Student Self-Reflection works",
+    es: "Cómo funciona la autorreflexión del estudiante"
+  },
+  vid_student_s: {
+    en: "A 2-minute walkthrough for students.",
+    es: "Un recorrido de 2 minutos para estudiantes."
+  },
+  vid_adult_t: {
+    en: "How the Adult Self-Reflection works",
+    es: "Cómo funciona la autorreflexión para adultos"
+  },
+  vid_adult_s: {
+    en: "A 2-minute walkthrough for grown-ups.",
+    es: "Un recorrido de 2 minutos para adultos."
+  },
+  ch_family_t: {
+    en: "Family Mode",
+    es: "Modo familiar"
+  },
+  ch_family_s: {
+    en: "For parents at home — add each family member once and track them across the year, with conversation starters you can print.",
+    es: "Para madres y padres en casa: añade a cada miembro de la familia una vez y haz seguimiento durante el año, con preguntas para conversar que puedes imprimir."
+  },
+  ch_tank_t: {
+    en: "How full is your tank?",
+    es: "¿Qué tan lleno está tu tanque?"
+  },
+  ch_tank_s: {
+    en: "A private 60-second read on your energy — for kids, teens, or adults. A quick mirror, not a score.",
+    es: "Una lectura privada de 60 segundos sobre tu energía — para niños, adolescentes o adultos. Un espejo rápido, no un puntaje."
+  },
+  t_btn_results: {
+    en: "See your results →",
+    es: "Ver tus resultados →"
+  },
+  mr_eyebrow: {
+    en: "Your results · your personal report",
+    es: "Tus resultados · tu informe personal"
+  },
+  mr_private: {
+    en: "This is <strong>your personal report</strong>. If you checked in on a class computer or through a link your teacher shared, your teacher can see it too — to understand and support you, never to grade you.",
+    es: "Este es <strong>tu informe personal</strong>. Si hiciste la autorreflexión en una computadora de la clase o con un enlace que compartió tu maestro, tu maestro también puede verlo — para entenderte y apoyarte, nunca para calificarte."
+  },
+  wh_eyebrow: { en: "A quick anchor", es: "Un ancla rápida" },
+  wh_h: { en: "What helps me", es: "Lo que me ayuda" },
+  wh_sub: { en: "Tap what helps you feel steady. We’ll keep it on this device and bring it back next time you check in.", es: "Toca lo que te ayuda a sentirte estable. Lo guardaremos en este dispositivo y lo traeremos la próxima vez." },
+  lp_eyebrow: { en: "What now?", es: "¿Y ahora qué?" },
+  lp_h: { en: "Your path from here", es: "Tu camino desde aquí" },
+  lp_sub: { en: "A self-reflection is a beginning, not an ending. Here’s where to go next.", es: "Una autorreflexión es un comienzo, no un final. Esto es lo que sigue." },
+  lp_s1: { en: "Check in", es: "Autorreflexión" },
+  lp_s2: { en: "See results", es: "Ver resultados" },
+  lp_s3: { en: "Explore resources", es: "Explorar recursos" },
+  lp_s4: { en: "Apply it", es: "Aplicarlo" },
+  lp_s5: { en: "Keep growing", es: "Seguir creciendo" },
+  lp_here: { en: "You’re here", es: "Estás aquí" },
+  lp_a_t: { en: "Explore your resources", es: "Explora tus recursos" },
+  lp_a_s: { en: "See the lessons, charts, and novel chapters that match what you just shared.", es: "Mira las lecciones, láminas y capítulos de las novelas que coinciden con lo que compartiste." },
+  lp_a_b: { en: "Open the Library", es: "Abrir la biblioteca" },
+  lp_b_t: { en: "Put the framework to work", es: "Pon en práctica el marco" },
+  lp_b_s: { en: "The full K–12 curriculum and the six-book novel series bring this into a classroom or home.", es: "El currículo completo K–12 y la serie de seis novelas lo llevan al aula o al hogar." },
+  lp_b_b: { en: "Browse the Library", es: "Explorar la biblioteca" },
+  lp_c_t: { en: "Keep growing", es: "Sigue creciendo" },
+  lp_c_s: { en: "Check in again over time, or use Family Mode to track it together.", es: "Vuelve a hacer la autorreflexión con el tiempo, o usa el Modo Familiar para seguirlo juntos." },
+  lp_c_b: { en: "Check in again", es: "Hacer otra autorreflexión" },
+  mr_h1: {
+    en: "How you’re doing",
+    es: "Cómo te va"
+  },
+  mr_lede: {
+    en: "Here’s everything you just shared — and where each piece lives in the books. This is a mirror, not a verdict — a way to be understood, not measured.",
+    es: "Esto es todo lo que compartiste — y dónde vive cada parte en los libros. Es un espejo, no un veredicto — una forma de ser comprendido, no medido."
+  },
+  mr_grace_close: {
+    en: "<div class='fw-note-h'>Grace, not performance</div><p>A score is a flag for a conversation, never a diagnosis \u2014 never a verdict on who you are. It\u2019s a starting point for being understood. Because growth begins with grace, not performance.</p>",
+    es: "<div class='fw-note-h'>La gracia, no el rendimiento</div><p>Una puntuaci\u00f3n es una se\u00f1al para conversar, nunca un diagn\u00f3stico \u2014 nunca un veredicto sobre qui\u00e9n eres. Es un punto de partida para ser comprendido. Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
+  },
+  dm_why: {
+    en: "<div class='dm-why-ey'>Why this exists</div><p>People are often measured before they are understood. Architecture of Grace offers another way \u2014 and everything that follows serves one belief: that growth begins with grace, not performance.</p>",
+    es: "<div class='dm-why-ey'>Por qu\u00e9 existe</div><p>A las personas a menudo se las mide antes de comprenderlas. Architecture of Grace ofrece otro camino \u2014 y todo lo que sigue sirve a una sola convicci\u00f3n: que el crecimiento comienza con la gracia, no con el rendimiento.</p>"
+  },
+  dm_flow_ey: { en: "How it works", es: "C\u00f3mo funciona" },
+  dm_flow_h: { en: "How a self-reflection becomes support", es: "C\u00f3mo una autorreflexión se convierte en apoyo" },
+  dm_flow_sub: { en: "Every piece hands off to the next — a self-reflection becomes a conversation, and a conversation becomes the right support.", es: "Cada parte da paso a la siguiente — una autorreflexión se convierte en una conversaci\u00f3n, y una conversaci\u00f3n se convierte en el apoyo adecuado." },
+  dm_plat_ey: { en: "The whole system", es: "El sistema completo" },
+  dm_plat_h: { en: "What this platform includes", es: "Qu\u00e9 incluye esta plataforma" },
+  dm_plat_sub: { en: "Every piece below is built into this one file or its library — not a roadmap, but what ships today.", es: "Cada elemento de abajo est\u00e1 integrado en este \u00fanico archivo o en su biblioteca — no es una hoja de ruta, sino lo que est\u00e1 disponible hoy." },
+  mr_done: {
+    en: "Done",
+    es: "Listo"
+  },
+  mr_done2: {
+    en: "Done",
+    es: "Listo"
+  },
+  mr_save: {
+    en: "Save / Print",
+    es: "Guardar / Imprimir"
+  },
+  mr_share_h: {
+    en: "Share with a grown-up",
+    es: "Compártelo con un adulto"
+  },
+  mr_share_sub: {
+    en: "Make a QR a parent or trusted adult can scan to take a few gentle conversation starters with them. Only the starters go in the QR — your written answers aren’t included.",
+    es: "Crea un código QR que un padre, madre o adulto de confianza pueda escanear para llevarse algunas preguntas suaves para conversar. Solo las preguntas van en el código QR — tus respuestas escritas no se incluyen."
+  },
+  mr_share_btn: {
+    en: "Show a QR code",
+    es: "Mostrar un código QR"
+  },
+  mr_email: {
+    en: "Email it to myself",
+    es: "Enviármelo por correo"
+  },
+  ri_adults: {
+    en: "Adults · Books 3–5",
+    es: "Adultos · Libros 3–5"
+  },
+  ch_ey: {
+    en: "The Self-Reflection · the full reflection",
+    es: "La autorreflexión · la reflexión completa"
+  },
+  ch_h1: {
+    en: "Who’s checking in?",
+    es: "¿Quién hace la autorreflexión?"
+  },
+  ch_lede: {
+    en: "This is a moment to be understood, not measured. The same four ideas — identity, self-compassion, forgiveness, and grace — the same care, just worded for who’s answering. Choose one to begin.",
+    es: "Este es un momento para ser comprendido, no medido. Las mismas cuatro ideas — identidad, autocompasión, perdón y gracia — el mismo cuidado, solo redactado según quién responde. Elige uno para empezar."
+  },
+  ch_back: {
+    en: "Back to start",
+    es: "Volver al inicio"
+  },
+  nav_back: {
+    en: "Back",
+    es: "Atrás"
+  },
+  viewer_newtab: { en: "Open in new tab", es: "Abrir en pestaña nueva" },
+  viewer_download: { en: "Download", es: "Descargar" },
+  nav_checkin: {
+    en: "Self-Reflection",
+    es: "Autorreflexión"
+  },
+  nav_starthere: {
+    en: "Start Here",
+    es: "Empieza aquí"
+  },
+  nav_grp_understand: { en: "Understand", es: "Conoce" },
+  nav_grp_use: { en: "Use", es: "Usa" },
+  nav_grp_resources: { en: "Resources", es: "Recursos" },
+  nav_grp_adopt: { en: "Adopt", es: "Adopta" },
+  nav_back_start: {
+    en: "Back to start",
+    es: "Volver al inicio"
+  },
+  ch_student_t: {
+    en: "Student Self-Reflection",
+    es: "Autorreflexión para estudiantes"
+  },
+  ch_student_s: {
+    en: "a private 5-minute self-reflection. Quick, or thorough.",
+    es: "una reflexión privada de 5 minutos. Rápida o a fondo."
+  },
+  ad_ey: {
+    en: "A self-reflection for grown-ups",
+    es: "Una autorreflexión para adultos"
+  },
+  ad_h1: {
+    en: "How are you doing, really?",
+    es: "¿Cómo estás, de verdad?"
+  },
+  ad_lede: {
+    en: "A few quiet minutes, just for you. This is a self-reflection, not a test — and not a diagnosis. There are no wrong answers. It’s a way to notice how you’ve been, and a flag for a conversation if something needs one.",
+    es: "Unos minutos tranquilos, solo para ti. Esto es una autorreflexión, no un examen — y no un diagnóstico. No hay respuestas incorrectas. Es una manera de notar cómo has estado, y una señal para conversar si algo lo necesita."
+  },
+  ad_support: {
+    en: "If you’re carrying something heavy right now, you don’t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.",
+    es: "Si estás cargando algo pesado en este momento, no tienes que cargarlo solo/a. En EE.\xA0UU. puedes llamar o enviar un mensaje de texto al <strong>988</strong> (la Línea de Prevención del Suicidio y Crisis; hay ayuda en español), a cualquier hora, de día o de noche. Pedir ayuda es algo valiente."
+  },
+  ad_script1: {
+    en: "<strong>Before you begin.</strong> Just pick what feels most true for you lately, and go with your first instinct.",
+    es: "<strong>Antes de empezar.</strong> Solo elige lo que te resulte más cierto últimamente, y ve con tu primer instinto."
+  },
+  ad_script2: {
+    en: "Your responses aren’t anonymous — they go to the person or team who shared this with you, so someone can follow up with care. If something here brings up a lot, please reach out to someone you trust.",
+    es: "Tus respuestas no son anónimas — llegan a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí remueve mucho, por favor acude a alguien en quien confíes."
+  },
+  ad_about: {
+    en: "About you",
+    es: "Sobre ti"
+  },
+  ad_name: {
+    en: "Your name or initials",
+    es: "Tu nombre o iniciales"
+  },
+  ad_rel: {
+    en: "How we know each other (optional)",
+    es: "Cómo nos conocemos (opcional)"
+  },
+  ad_choose: {
+    en: "Choose how you want to take it",
+    es: "Elige cómo quieres tomarlo"
+  },
+  ad_choose_sub: {
+    en: "Same 18 questions either way — a quick version, or a more thorough one with a few short written reflections.",
+    es: "Las mismas 18 preguntas en ambos casos — una versión rápida, o una más completa con algunas reflexiones escritas breves."
+  },
+  ad_m_rapid_ey: {
+    en: "A brief self-reflection",
+    es: "Una autorreflexión breve"
+  },
+  ad_m_rapid_desc: {
+    en: "A quick read on how you’ve been. 4-point scale, a single tap per question.",
+    es: "Una lectura rápida de cómo has estado. Escala de 4 puntos, un toque por pregunta."
+  },
+  ad_m_depth_ey: {
+    en: "In a little more depth",
+    es: "Con un poco más de profundidad"
+  },
+  ad_m_depth_desc: {
+    en: "A fuller version. 6-point scale, a few follow-ups, and three short written reflections — for when you want to sit with it a bit.",
+    es: "Una versión más completa. Escala de 6 puntos, algunas preguntas de seguimiento, y tres breves reflexiones escritas — para cuando quieras detenerte un poco."
+  },
+  ad_begin: {
+    en: "Begin Self-Reflection",
+    es: "Comenzar la autorreflexión"
+  },
+  ad_back: {
+    en: "Back",
+    es: "Atrás"
+  },
+  ad_door_t: {
+    en: "A self-reflection for grown-ups",
+    es: "Una autorreflexión para adultos"
+  },
+  ad_door_s: {
+    en: "For the grown-ups doing the work — a private few minutes, just for you.",
+    es: "Para los adultos que hacen este trabajo — unos minutos privados, solo para ti."
+  },
+  t_lede_adult: {
+    en: "Your answers have been saved, and they’ve gone to the person or team who shared this with you, so someone can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.",
+    es: "Tus respuestas se han guardado y han llegado a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a."
+  },
+  aog_what_ey: {
+    en: "The Foundation",
+    es: "La Base"
+  },
+  tour_fab: {
+    en: "Quick tour",
+    es: "Recorrido rápido"
+  },
+  fam_entry_t: {
+    en: "Family Mode",
+    es: "Modo familiar"
+  },
+  fam_entry_s: {
+    en: "Set up a private space for your family — track each family member across the year, with conversation starters you can print.",
+    es: "Crea un espacio privado para tu familia: sigue a cada miembro a lo largo del año, con preguntas para conversar que puedes imprimir."
+  },
+  fam_back: {
+    en: "Back to start",
+    es: "Volver al inicio"
+  },
+  famdest_eyebrow: {
+    en: "Family · A shared language for home",
+    es: "Familia · Un lenguaje compartido para el hogar"
+  },
+  famdest_h1: {
+    en: "Bring the language home.",
+    es: "Lleva el lenguaje a casa."
+  },
+  famdest_lede: {
+    en: "The same ideas your child learns at school can be part of home life: at dinner, in the car, after a hard day, or while making up after a fight. Start with one small conversation.",
+    es: "Las mismas ideas que tu hijo aprende en la escuela pueden ser parte de la vida en casa: en la cena, en el auto, después de un día difícil o al hacer las paces. Empieza con una pequeña conversación."
+  },
+  famdest_priv: {
+    en: "🔒 Private by design — your family’s reflections stay on this device unless you intentionally choose to share something.",
+    es: "🔒 Privado por diseño — las reflexiones de tu familia se quedan en este dispositivo, a menos que tú decidas compartir algo."
+  },
+  fam_eyebrow: {
+    en: "Family Mode · private to this device",
+    es: "Modo familiar · privado en este dispositivo"
+  },
+  fam_h1: {
+    en: "Your family’s home base",
+    es: "El espacio de tu familia"
+  },
+  fam_lede: {
+    en: "Add each family member once. You’ll get conversation starters for their age, a private repair journal and gentle routines. Everything stays on this device for you to look back on.",
+    es: "Agrega a cada miembro de la familia una vez. Tendrás ideas para conversar según su edad, un diario privado de reparación y rutinas suaves. Todo se queda en este dispositivo para que lo vuelvas a ver."
+  },
+  aog_what_h: {
+    en: "What Is Architecture of Grace?",
+    es: "¿Qué es Architecture of Grace?"
+  },
+  aog_what_lead: {
+    en: "In plain terms — it’s a developmental, universal K–12 curriculum with a private, bilingual self-reflection as its front door. It brings together <strong>honest self-reflection</strong>, <strong>a universal check-in</strong>, <strong>conversation starters</strong>, <strong>companion novels</strong>, and a <strong>K–adult resource library</strong> into one connected system — for students, adults, and families alike.",
+    es: "En pocas palabras: es un marco de aprendizaje socioemocional (SEL) evolutivo y universal, construido en torno a una autorreflexión privado y bilingüe. Reúne la <strong>autorreflexión honesta</strong>, la <strong>evaluación universal</strong>, las <strong>conversaciones guiadas</strong>, las <strong>novelas complementarias</strong> y una <strong>biblioteca de recursos para todas las edades</strong> en un solo sistema conectado, para estudiantes, adultos y familias por igual."
+  },
+  aog_what_p1: {
+    en: "Architecture of Grace is a human-development framework and an intuitive digital self-reflection that helps people understand themselves, strengthen relationships, and navigate life’s challenges with resilience, responsibility, and hope. It’s a self-reflection, not an exam.",
+    es: "Architecture of Grace es un marco de desarrollo humano y una autorreflexión digital intuitivo que ayuda a las personas a entenderse a sí mismas, fortalecer sus relaciones y afrontar los desafíos de la vida con resiliencia, responsabilidad y esperanza. Es una autorreflexión, no un examen."
+  },
+  aog_what_p2: {
+    en: "The self-reflection runs two ways — a quick rapid mode, or a fuller depth mode with intensity follow-ups and written reflections — and ends with a personal, per-person Home View report. Everything is bilingual, in English and Spanish, and MTSS-ready, surfacing gentle flags rather than diagnoses.",
+    es: "La autorreflexión funciona de dos maneras —un modo rápido o un modo en profundidad con preguntas de intensidad y reflexiones escritas— y termina con un informe personal e individual (Vista Personal). Todo es bilingüe, en inglés y español, y está listo para MTSS, mostrando señales suaves en lugar de diagnósticos."
+  },
+  aog_what_p3: {
+    en: "Around the self-reflection sits a wider ecosystem: conversation starters, companion novels, and a K–adult resource library that connects each result to a practical next step — bridging deep personal development and daily practice.",
+    es: "En torno a la autorreflexión hay un ecosistema más amplio: conversaciones guiadas, novelas complementarias y una biblioteca de recursos para todas las edades que conecta cada resultado con un próximo paso práctico, uniendo el desarrollo personal profundo con la práctica diaria."
+  },
+  aog_what_pillars: {
+    en: "Four ideas run through everything",
+    es: "Cuatro ideas recorren todo el marco"
+  },
+  pillar_identity: {
+    en: "Identity",
+    es: "Identidad"
+  },
+  pillar_selfcomp: {
+    en: "Self-compassion",
+    es: "Autocompasión"
+  },
+  pillar_forgive: {
+    en: "Forgiveness",
+    es: "Perdón"
+  },
+  pillar_grace: {
+    en: "Grace",
+    es: "Gracia"
+  },
+  hp_ey: { es: "La arquitectura" },
+  hp_h: { es: "Los cuatro pilares" },
+  hp_sub: { es: "Cuatro ideas recorren cada parte del marco — la autorreflexión, las lecciones, las novelas y las conversaciones." },
+  hp_lintel: { es: "Relaciones — contigo y entre nosotros" },
+  hp_d_identity: { es: "Quiénes llegamos a creer que somos." },
+  hp_d_selfcomp: { es: "Cómo aprendemos a hablarnos." },
+  hp_d_forgive: { es: "Hacer espacio para crecer más allá de los errores." },
+  hp_d_grace: { es: "Encontrarnos desde la comprensión." },
+  hp_base: { es: "Toda relación sana se apoya en ellos." },
+  hero_demo_ey: { es: "Una herramienta dentro del marco" },
+  hero_demo_frame: { es: "La autorreflexión es una herramienta de apoyo — una lectura privada que convierte los cuatro pilares en un siguiente paso claro." },
+  w_screener_ey: {
+    en: "Self-Reflection",
+    es: "Autorreflexión"
+  },
+  w_h1: {
+    en: "How are you doing, really?",
+    es: "¿Cómo estás, de verdad?"
+  },
+  w_lede: {
+    en: "Take a few quiet minutes for yourself. There are no wrong answers. If you’re doing this through school, your teacher will see your answers to understand and help you, never to grade you.",
+    es: "Tómate unos minutos tranquilos para ti. No hay respuestas incorrectas. Si lo haces por la escuela, tu maestro verá tus respuestas para entenderte y ayudarte, nunca para calificarte."
+  },
+  w_reassure: {
+    en: "4 to 10 minutes · no wrong answers · private unless your school connects it",
+    es: "De 4 a 10 minutos · sin respuestas incorrectas · privado a menos que tu escuela lo conecte"
+  },
+  w_choose: {
+    en: "Choose how you want to take it",
+    es: "Elige cómo quieres hacerla"
+  },
+  w_choose_sub: {
+    en: "The same 18 questions either way. Pick the quick version, or a longer one with short written reflections.",
+    es: "Las mismas 18 preguntas de cualquier forma. Elige la versión rápida, o una más larga con reflexiones escritas cortas."
+  },
+  g_tab_voices: {
+    en: "Voices",
+    es: "Voces"
+  },
+  wv_ey: {
+    en: "Voices",
+    es: "Voces"
+  },
+  wv_h: {
+    en: "What people are saying",
+    es: "Lo que dicen las personas"
+  },
+  wv_link: {
+    en: "Read more & share yours →",
+    es: "Leer más y compartir →"
+  },
+  voi_h: {
+    en: "Voices",
+    es: "Voces"
+  },
+  voi_intro: {
+    en: "Teachers, families, adults, students, and more — share a few words about your experience. Posts appear on the wall below for everyone to read.",
+    es: "Maestros, familias, adultos, estudiantes y más: comparte unas palabras sobre tu experiencia. Las publicaciones aparecen en el muro de abajo para que todos las lean."
+  },
+  voi_name_ph: {
+    en: "First name (optional)",
+    es: "Nombre (opcional)"
+  },
+  voi_msg_ph: {
+    en: "What did the self-reflection open up? A moment, a conversation, a change you noticed…",
+    es: "¿Qué abrió la autorreflexión? Un momento, una conversación, un cambio que notaste…"
+  },
+  voi_post: {
+    en: "Post to the wall",
+    es: "Publicar en el muro"
+  },
+  voi_fine: {
+    en: "Please don’t include emails, phone numbers, links, or last names — posts with contact details are blocked automatically to keep the wall safe.",
+    es: "Por favor no incluyas correos, teléfonos, enlaces ni apellidos — las publicaciones con datos de contacto se bloquean automáticamente para mantener el muro seguro."
+  },
+  voi_public: {
+    en: "Comments you post are shown publicly on this page.",
+    es: "Los comentarios que publiques se muestran públicamente en esta página."
+  },
+  voi_role_teacher: {
+    en: "Teacher",
+    es: "Maestro/a"
+  },
+  voi_role_parent: {
+    en: "Parent",
+    es: "Madre/Padre"
+  },
+  voi_role_student: {
+    en: "Student",
+    es: "Estudiante"
+  },
+  voi_role_counselor: {
+    en: "Counselor",
+    es: "Consejero/a"
+  },
+  voi_role_admin: {
+    en: "Administrator",
+    es: "Administrador/a"
+  },
+  voi_role_other: {
+    en: "Other",
+    es: "Otro"
+  },
+  m_rapid_ey: {
+    en: "The Self-Reflection · population view",
+    es: "Self-Reflection · vista de grupo"
+  },
+  m_rapid_t: {
+    en: "Quick",
+    es: "Rápida"
+  },
+  m_rapid_time: {
+    en: "~4 minutes",
+    es: "~4 minutos"
+  },
+  m_rapid_desc: {
+    en: "About 4 minutes. 18 questions. Tap one answer for each.",
+    es: "Unos 4 minutos. 18 preguntas. Toca una respuesta en cada una."
+  },
+  m_rapid_f1: {
+    en: "18 items, single-tap response",
+    es: "18 preguntas, respuesta con un toque"
+  },
+  m_rapid_f2: {
+    en: "Score 0–54, flags who may need support",
+    es: "Puntaje 0–54, señala quién puede necesitar apoyo"
+  },
+  m_rapid_f3: {
+    en: "Comparable across seasons of life",
+    es: "Comparable entre etapas de la vida"
+  },
+  m_depth_ey: {
+    en: "The full instrument · in depth",
+    es: "El instrumento completo · a fondo"
+  },
+  m_depth_t: {
+    en: "Thorough",
+    es: "A fondo"
+  },
+  m_depth_time: {
+    en: "~10 minutes",
+    es: "~10 minutos"
+  },
+  m_depth_desc: {
+    en: "Take your time. About 10 minutes. The same 18 questions, more answer choices, and 3 short places to write if you want.",
+    es: "Tómate tu tiempo. Unos 10 minutos. Las mismas 18 preguntas, más opciones de respuesta y 3 espacios cortos para escribir si quieres."
+  },
+  m_depth_f1: {
+    en: "Granular frequency (Never → Constantly)",
+    es: "Frecuencia detallada (Nunca → Constantemente)"
+  },
+  m_depth_f2: {
+    en: "Intensity rating on 6 highest-signal items",
+    es: "Calificación de intensidad en 6 ítems clave"
+  },
+  m_depth_f3: {
+    en: "Three optional written reflections",
+    es: "Tres reflexiones escritas opcionales"
+  },
+  m_depth_f4: {
+    en: "Score 0–90 with rich Home View report",
+    es: "Puntaje 0–90 con informe detallado"
+  },
+  sr_adults: { en: "For adults: how the two versions are scored", es: "Para adultos: cómo se puntúan las dos versiones" },
+  sr_step_start: { en: "Start when you are ready", es: "Empieza cuando estés listo" },
+  sr_start: { en: "Start", es: "Empezar" },
+  w_script1: {
+    en: "<strong>Before you begin.</strong> There are no right or wrong answers — just pick what feels most true for you lately, and go with your first instinct.",
+    es: "<strong>Antes de empezar.</strong> No hay respuestas correctas ni incorrectas: elige lo que sientas más verdadero para ti últimamente, y ve con tu primer instinto."
+  },
+  w_script2: {
+    en: "If a question brings up something you’d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.",
+    es: "Si alguna pregunta despierta algo de lo que quieras hablar, puedes acudir a un maestro, consejero, padre o tutor en cualquier momento."
+  },
+  w_madewith: {
+    en: "Some of these questions were shaped with the help of children — so the words would sound a little more like yours, and a little less like ours.",
+    es: "Algunas de estas preguntas se crearon con la ayuda de niños — para que las palabras sonaran un poco más como las tuyas, y un poco menos como las nuestras."
+  },
+  w_about: {
+    en: "About you",
+    es: "Sobre ti"
+  },
+  w_ctx_school: {
+    en: "School",
+    es: "Escuela"
+  },
+  w_ctx_home: {
+    en: "Home",
+    es: "Hogar"
+  },
+  w_name: {
+    en: "Name or nickname",
+    es: "Nombre o apodo"
+  },
+  w_name_ph: {
+    en: "Your first name works fine",
+    es: "Tu nombre de pila funciona bien"
+  },
+  w_grade: {
+    en: "Grade or age band",
+    es: "Grado o rango de edad"
+  },
+  w_select: {
+    en: "Select",
+    es: "Seleccionar"
+  },
+  w_window: {
+    en: "Window",
+    es: "Período"
+  },
+  w_fall: {
+    en: "Fall (Sep–Nov)",
+    es: "Otoño (sep–nov)"
+  },
+  w_winter: {
+    en: "Winter (Dec–Feb)",
+    es: "Invierno (dic–feb)"
+  },
+  w_spring: {
+    en: "Spring (Mar–May)",
+    es: "Primavera (mar–may)"
+  },
+  w_summer: {
+    en: "Summer (Jun–Aug)",
+    es: "Verano (jun–ago)"
+  },
+  g_back: {
+    es: "Volver al inicio"
+  },
+  story_ey: {
+    es: "La historia"
+  },
+  story_h: {
+    es: "El fundador, y el porqué detrás de este trabajo"
+  },
+  story_p1: {
+    es: "Me llamo Jimmy Ramsden. No llegué a este trabajo desde una sala de juntas, sino desde el aula, donde sigo enseñando hoy como educador especial."
+  },
+  story_bio: {
+    es: "Durante más de una década he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria — en entornos autocontenidos, de recursos y socioconductuales — y cuento con un endoso de Especialista en Conducta del Aprendizaje para estudiantes desde preescolar hasta los veintidós años. En el camino construí y dirigí un programa de recursos de Aprendizaje Socioconductual de primaria, donde acompaño a los estudiantes en las mismas destrezas sobre las que se construye este plan de estudios: nombrar lo que sienten, calmarse y volver a intentarlo. The Architecture of Grace no es una desviación de ese trabajo en el aula — son dos décadas de ese trabajo, reunidas en algo que puedo entregar a otros maestros. Ese trabajo va mucho más allá del aula general: he enseñado en escuelas terapéuticas de día y en una escuela privada de día conductual que atienden a estudiantes con necesidades severas y profundas, y he trabajado de forma individual en el hogar con las personas a las que otros encuentran más difíciles de alcanzar. Encontrar a cada persona exactamente donde está — no donde un plan de lección desearía que estuviera — es donde se forjó el corazón de este marco."
+  },
+  story_p2: {
+    es: "Mi camino comenzó en Humboldt State University con una licenciatura en ciencias políticas. Pero el verdadero punto de inflexión llegó en 2006, cuando un grave accidente automovilístico me dejó con una lesión cerebral traumática y una discapacidad neurológica. Reconstruir mi vida cambió mi forma de entender la lucha, la paciencia y la gracia, y fue lo que me orientó hacia la educación especial y una maestría en Aurora University, en Aurora, Illinois. Es la razón por la que este trabajo no es abstracto para mí."
+  },
+  story_p3: {
+    es: "The Architecture of Grace nació de la convicción de que las personas merecen más que ser medidas: merecen ser comprendidas. Construido bajo <strong>Architecture of Grace</strong>, todo aquí se apoya en cuatro pilares fundamentales:"
+  },
+  story_pillars: {
+    es: "<li style=\"font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;\"><span style=\"position:absolute; left:0; top:1px; color:var(--gold);\">&#9670;</span><strong style=\"color:var(--ink);\">Identidad</strong> &mdash; quién llega una persona a creer que es.</li><li style=\"font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;\"><span style=\"position:absolute; left:0; top:1px; color:var(--gold);\">&#9670;</span><strong style=\"color:var(--ink);\">Autocompasión</strong> &mdash; cómo aprende una persona a hablarse a sí misma.</li><li style=\"font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;\"><span style=\"position:absolute; left:0; top:1px; color:var(--gold);\">&#9670;</span><strong style=\"color:var(--ink);\">Perdón</strong> &mdash; superar los errores para dar espacio al crecimiento.</li><li style=\"font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;\"><span style=\"position:absolute; left:0; top:1px; color:var(--gold);\">&#9670;</span><strong style=\"color:var(--ink);\">Gracia</strong> &mdash; recibir a una persona con comprensión y no solo con juicio.</li>"
+  },
+  pd_identity: {
+    es: "<strong>Identidad</strong> &mdash; quién llega una persona a creer que es."
+  },
+  pd_selfcomp: {
+    es: "<strong>Autocompasión</strong> &mdash; cómo aprende una persona a hablarse a sí misma."
+  },
+  pd_forgive: {
+    es: "<strong>Perdón</strong> &mdash; superar los errores para dar espacio al crecimiento."
+  },
+  pd_grace: {
+    es: "<strong>Gracia</strong> &mdash; recibir a una persona con comprensión y no solo con juicio."
+  },
+  doc_who_ey: {
+    es: "Para quién es"
+  },
+  doc_who_h: {
+    es: "Cinco maneras de entrar, un mismo marco"
+  },
+  doc_path_work_t: {
+    es: "Lugares de trabajo y equipos"
+  },
+  wp_band_t: {
+    es: "Para lugares de trabajo y equipos"
+  },
+  wp_band_s: {
+    es: "No puedes sostener a otros con la taza vacía. Una autorreflexión privado para quienes sostienen a los demás."
+  },
+  wp_card_t: {
+    es: "Lugares de trabajo y equipos"
+  },
+  wp_card_s: {
+    es: "Para quienes sostienen a los demás — docentes, enfermeros, líderes, cuidadores. No puedes sostener a otros con la taza vacía."
+  },
+  wp_ey: {
+    es: "Para lugares de trabajo y equipos"
+  },
+  wp_h1: {
+    es: "No puedes sostener a otros con la taza vacía."
+  },
+  wp_lede: {
+    es: "Todo rol de ayuda funciona con la misma maquinaria silenciosa: un maestro que calma a un niño que se ha desbordado, una enfermera que tranquiliza a un paciente asustado, un gerente que sostiene a su equipo durante un trimestre brutal. Nada de eso funciona cuando quien sostiene está funcionando con las reservas vacías. No puedes ayudar a otra persona a recuperar el equilibrio mientras pierdes el tuyo — y esta es la parte que casi todos los programas de bienestar laboral se saltan por completo: cuidar primero a quien cuida."
+  },
+  wp_thesis: {
+    es: "La regulación se contagia. El agotamiento también. <em>Empezamos por ti.</em>"
+  },
+  wp_b1t: {
+    es: "Date cuenta primero"
+  },
+  wp_b1s: {
+    es: "Unos minutos honestos para ver cómo has estado de verdad — no cómo has rendido."
+  },
+  wp_b2t: {
+    es: "Estabílizate"
+  },
+  wp_b2s: {
+    es: "La misma habilidad que les das a los demás, vuelta hacia adentro: atrapar la ola antes de que rompa."
+  },
+  wp_b3t: {
+    es: "Luego preséntate"
+  },
+  wp_b3s: {
+    es: "Un tú más sereno es lo más poderoso que puedes ofrecer a quienes dependen de ti."
+  },
+  wp_who_ey: {
+    es: "Para quién es"
+  },
+  wp_who_h: {
+    es: "Cualquiera cuyo trabajo sea sostener a otros"
+  },
+  wp_who_p: {
+    es: "El trabajo es integral, no específico de un puesto — porque la regulación no ficha la salida. Si la gente se apoya en ti, esto es para ti."
+  },
+  wp_w1t: {
+    es: "Docentes y personal escolar"
+  },
+  wp_w1s: {
+    es: "Maestros, asistentes, consejeros — el público original de esta idea."
+  },
+  wp_w2t: {
+    es: "Enfermeros y personal de cuidado"
+  },
+  wp_w2s: {
+    es: "Clínicos, asistentes y cuidadores que absorben mucho y rara vez son cuidados."
+  },
+  wp_w3t: {
+    es: "Líderes y gerentes"
+  },
+  wp_w3s: {
+    es: "Quien marca el clima emocional de un equipo siente cada tormenta primero."
+  },
+  wp_w4t: {
+    es: "Padres y cuidadores"
+  },
+  wp_w4s: {
+    es: "El rol de ayuda más difícil y con menos recursos de todos."
+  },
+  wp_w5t: {
+    es: "Personal de emergencias"
+  },
+  wp_w5s: {
+    es: "Pensado para los momentos después del momento — cuando la adrenalina se agota."
+  },
+  wp_w6t: {
+    es: "Quienes ayudan, de cualquier tipo"
+  },
+  wp_w6s: {
+    es: "Trabajadores sociales, capellanes, entrenadores — cualquiera a quien la gente acude."
+  },
+  wp_what_ey: {
+    es: "Qué es"
+  },
+  wp_what_h: {
+    es: "El misma autorreflexión — con la voz del adulto en la sala"
+  },
+  wp_what_p: {
+    es: "Dieciocho preguntas honestas en tres áreas: estabilizarte, cómo te hablas a ti mismo y estar presente para quienes te rodean. Hazlo rápido (~4 minutos) o a fondo (~10 minutos). Se apoya en las cuatro ideas sobre las que se construye todo el marco."
+  },
+  wp_p1: {
+    es: "identidad"
+  },
+  wp_p2: {
+    es: "autocompasión"
+  },
+  wp_p3: {
+    es: "perdón"
+  },
+  wp_p4: {
+    es: "gracia"
+  },
+  wp_priv_ey: {
+    es: "La promesa que lo hace funcionar"
+  },
+  wp_priv_h: {
+    es: "Esto es un espejo, no un informe."
+  },
+  wp_priv_sub: {
+    es: "La honestidad solo funciona cuando es segura — así que la hicimos segura. No existe una versión de esto donde tu jefe, Recursos Humanos o cualquier otra persona vea lo que dijiste. Es tuyo."
+  },
+  wp_pr1: {
+    es: "Tus respuestas nunca salen de este dispositivo — nada se transmite, a ningún lugar."
+  },
+  wp_pr2: {
+    es: "Sin inicio de sesión, sin cuenta, sin correo para empezar."
+  },
+  wp_pr3: {
+    es: "Ningún jefe ni panel de Recursos Humanos ve una sola respuesta."
+  },
+  wp_pr4: {
+    es: "Hazlo tan seguido como quieras — es una autorreflexión, no un examen."
+  },
+  wp_tank_ey: {
+    es: "Una lectura de 60 segundos"
+  },
+  wp_tank_h: {
+    es: "¿Qué tan lleno está tu tanque?"
+  },
+  wp_tank_p: {
+    es: "La señal más clara del agotamiento es la energía, no la actitud. Cuatro lecturas rápidas de tu tanque — privadas, instantáneas y que no se guardan en ningún lado. Esto no es un puntaje clínico de agotamiento; es un espejo rápido. Si te resuena, la autorreflexión completo de abajo profundiza más."
+  },
+  wp_tq1: {
+    es: "Al final de la mayoría de los días, me siento agotado/a — como si quedara poco para dar."
+  },
+  wp_tq2: {
+    es: "Me despierto ya cansado/a de solo pensar en el día que viene."
+  },
+  wp_tq3: {
+    es: "Incluso cuando descanso, no me siento realmente recargado/a."
+  },
+  wp_tq4: {
+    en: "Lately I feel like I\u2019m just getting through the day without really noticing it \u2014 like my mind is somewhere else.",
+    es: "\u00daltimamente siento que solo paso el d\u00eda sin darme cuenta de verdad \u2014 como si mi mente estuviera en otra parte."
+  },
+  wp_opt0: {
+    es: "Casi nunca"
+  },
+  wp_opt1: {
+    es: "A veces"
+  },
+  wp_opt2: {
+    es: "A menudo"
+  },
+  wp_opt3: {
+    es: "Casi siempre"
+  },
+  wp_tank_btn: {
+    es: "Ver mi lectura"
+  },
+  hero_tank_sub: {
+    es: "Hazte una lectura privada de 60 segundos de tu propio tanque, aquí mismo."
+  },
+  wp_launch_h: {
+    es: "Tómate unos minutos de calma."
+  },
+  wp_launch_s: {
+    es: "Elige lo que se sienta más cierto para ti últimamente y ve con tu primer instinto. Al terminar, recibes un informe privado y algunas preguntas suaves para conversar — solo para ti."
+  },
+  wp_field_label: {
+    es: "Nombre o iniciales <span class=\"hint\">— opcional, solo para tu informe; se queda en este dispositivo</span>"
+  },
+  wp_field_ph: {
+    es: "(opcional)"
+  },
+  wp_mode_h: {
+    es: "Elige cómo quieres hacerlo"
+  },
+  wp_begin: {
+    es: "Comienza tu autorreflexión"
+  },
+  wp_org_ey: {
+    es: "Llevar esto a tu gente"
+  },
+  wp_org_h: {
+    es: "Cuida al equipo, sin vigilarlo"
+  },
+  wp_org_p: {
+    es: "Las organizaciones no compran acceso a las respuestas de nadie — esas quedan privadas, siempre. Lo que le das a tu gente es el <strong>programa y la práctica</strong>: un lenguaje compartido para estabilizarte y poder estar presente para quienes atiendes. El primer día, el liderazgo ve la participación, nunca los puntajes. Los datos de resultados — anónimos y con consentimiento — pueden venir después."
+  },
+  wp_org_btn: {
+    es: "Hablemos sobre tu equipo"
+  },
+  doc_path_work_s: {
+    es: "Para quienes sostienen a otros — docentes, enfermeros, líderes, cuidadores. Una autorreflexión privado (y una lectura de agotamiento de 60 segundos) en el dispositivo, sin enviarse a nadie."
+  },
+  doc_who_p: {
+    es: "Los mismos dieciocho ítems y el mismo cuidado, redactados según quién responde. Cada camino ya está integrado en este archivo: elige la puerta que corresponda."
+  },
+  doc_path_student_t: {
+    es: "Estudiantes"
+  },
+  doc_path_student_s: {
+    es: "Una reflexión personal, rápida o a fondo, realizada cada temporada. Los docentes ven las tendencias de la clase y pueden abrir el informe de cada estudiante."
+  },
+  doc_path_adult_t: {
+    es: "Adultos por su cuenta"
+  },
+  doc_path_adult_s: {
+    es: "La autorreflexión para adultos: unos minutos privados para ti, con un informe personal completo y preguntas para iniciar la conversación. Nada se envía a nadie más."
+  },
+  doc_path_family_t: {
+    es: "Familias · en casa"
+  },
+  doc_path_family_s: {
+    es: "El Modo familiar guarda a cada hijo en este dispositivo, con seguimiento a lo largo del año y preguntas imprimibles para conversar en la mesa."
+  },
+  doc_path_clin_t: {
+    es: "Consejeros y clínicos"
+  },
+  doc_path_clin_s: {
+    es: "Usa el modo a fondo para el instrumento más completo y el Home View por persona. La Edición clínica aparte profundiza el marco para entornos clínicos."
+  },
+  doc_flag_ey: {
+    es: "Tras una señal: el siguiente paso ya está integrado"
+  },
+  doc_flag_p1: {
+    es: "Una señal nunca es un callejón sin salida. La guía de conversación lleva de cada ítem con puntaje bajo a la lección exacta del plan de estudios que lo aborda — <em>señal &rarr; la lección indicada</em>. El número te dice por dónde empezar; el plan de estudios es la intervención."
+  },
+  doc_flag_p2: {
+    es: "Esas lecciones no son una compra aparte. Una licencia de distrito incluye todo el programa K–12 y las novelas complementarias; las familias pueden comprar piezas individuales para casa."
+  },
+  story_p4: {
+    es: "Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo."
+  },
+  story_note_label: {
+    es: "Una nota sobre la transparencia"
+  },
+  story_note: {
+    es: "Este trabajo está en sus primeras etapas. La autorreflexión es un programa piloto: un puntaje es una señal para una conversación, nunca un diagnóstico, y el plan de estudios es un marco que estoy probando activamente. Prefiero ser honesto al respecto antes que exagerar."
+  },
+  story_contact: {
+    es: "Si deseas probarlo o compartir tus ideas, por favor contáctame. <a href=\"mailto:Theopus77@yahoo.com\" style=\"color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);\">Theopus77@yahoo.com</a>"
+  },
+  g_educator: {
+    es: "Acceso del educador &middot; resultados &rarr;"
+  },
+  g_slimlabel: {
+    es: "<span class=\"guide-slim-eyebrow\">The Architecture of Grace</span> &nbsp;&middot;&nbsp; Guía y biblioteca"
+  },
+  g_eco_ey: {
+    es: "La arquitectura"
+  },
+  g_eco_title: {
+    es: "Un ecosistema vivo"
+  },
+  g_eco_lede: {
+    es: "Un plan de estudios se convierte en un <em>ecosistema</em> cuando puede enseñar, medir lo que enseñó y usar lo aprendido para enseñar mejor. Pasa el cursor sobre cualquier pieza para ver qué hace; tócala para ir allí."
+  },
+  g_eco_frame: {
+    es: "<strong>El marco honesto.</strong> La autorreflexión se construye <em>a partir de</em> un marco coherente, lo que la hace sólida internamente, pero aún no ha pasado por pruebas externas de confiabilidad y validez. Para un programa piloto, eso es apropiado y se declara abiertamente. Hasta entonces, cada puntaje es una señal, no un diagnóstico, y el plan de estudios, no el número, es la intervención."
+  },
+  g_tab_docs: {
+    es: "Documentación"
+  },
+  g_tab_resindex: {
+    es: "Índice de recursos"
+  },
+  g_tab_library: {
+    es: "Descargas"
+  },
+  g_tab_about: {
+    es: "Sobre mí · La historia"
+  },
+  brand_sub: {
+    es: ""
+  },
+  lobby_lede: {
+    es: "Un currículo socioemocional serio y universal para <b>K–12</b> — un programa completo, una serie de novelas complementarias y una autorreflexión privado que convierte la reflexión en acción. Basado en la identidad, la autocompasión, el perdón y la gracia."
+  },
+  lobby_start_here: {
+    es: "Empieza aquí"
+  },
+  lobby_checkin_t: {
+    es: "Hacer la autorreflexión"
+  },
+  lobby_checkin_s: {
+    es: "Unos minutos tranquilos para ti — estudiante o adulto."
+  },
+  aud_k12: {
+    es: "Aulas K–12"
+  },
+  aud_edu: {
+    es: "Educadores"
+  },
+  aud_par: {
+    es: "Padres y tutores"
+  },
+  aud_clin: {
+    es: "Profesionales clínicos"
+  },
+  aud_any: {
+    es: "Cualquiera que haga el trabajo"
+  },
+  hyb_foundation: {
+    es: "architectureofgrace.com"
+  },
+  hyb_b1: {
+    en: "Grace Over Performance",
+    es: "La gracia por encima del rendimiento"
+  },
+  hyb_eyebrow: { en: "Architecture of Grace", es: "Architecture of Grace" },
+  hyb_trust: {
+    en: "<b>Private</b><span class=\"sep\">&middot;</span><b>5 minutes</b><span class=\"sep\">&middot;</span>Built by a special educator",
+    es: "<b>Privado</b><span class=\"sep\">&middot;</span><b>5 minutos</b><span class=\"sep\">&middot;</span>Creado por un educador especial"
+  },
+  hyb_pillars: { en: "Identity · Self-Compassion · Forgiveness · Grace", es: "Identidad · Autocompasión · Perdón · Gracia" },
+  aogd_ey: { en: "The Difference", es: "La diferencia" },
+  aogd_h: { en: "Why Architecture of Grace stands apart", es: "Por qué Architecture of Grace se distingue" },
+  aogd_1_k: { en: "Grace vs. Performance", es: "Gracia vs. rendimiento" },
+  aogd_1_h: { en: "Understanding, not ranking", es: "Entender, no clasificar" },
+  aogd_1_p: { en: "We don’t measure students to rank them. We help them — and their teachers — understand what they’re carrying, so real growth can begin.", es: "No medimos a los estudiantes para clasificarlos. Les ayudamos (a ellos y a sus docentes) a entender lo que cargan para que el crecimiento real pueda comenzar." },
+  aogd_2_k: { en: "Closed Loop vs. Open Loop", es: "Circuito cerrado vs. abierto" },
+  aogd_2_h: { en: "One result → one precise action", es: "Un resultado → una acción precisa" },
+  aogd_2_p: { en: "A student’s result doesn’t just sit in a dashboard. It maps directly to the exact lesson, chapter, or anchor chart they need next.", es: "El resultado de un estudiante no se queda en un panel. Se vincula directamente con la lección, el capítulo o la lámina exacta que necesita a continuación." },
+  aogd_3_k: { en: "Privacy-First vs. Data Extraction", es: "Privacidad primero vs. extracción de datos" },
+  aogd_3_h: { en: "Nothing leaves the device unless you choose", es: "Nada sale del dispositivo a menos que tú lo decidas" },
+  aogd_3_p: { en: "No accounts. No tracking. No vendor-hosted dashboards. Data stays local by default with optional, school-controlled Google Sheets sync only.", es: "Sin cuentas. Sin rastreo. Sin paneles alojados por proveedores. Los datos permanecen locales de forma predeterminada, con sincronización opcional a Google Sheets controlada por la escuela." },
+  aogd_4_k: { en: "Teacher-Built vs. Vendor Platform", es: "Creado por docentes vs. plataforma comercial" },
+  aogd_4_h: { en: "Designed in the classroom, not a boardroom", es: "Diseñado en el aula, no en una sala de juntas" },
+  aogd_4_p: { en: "Created by a practicing special educator. Every feature was built to reduce teacher cognitive load — never add to it.", es: "Creado por un educador especial en ejercicio. Cada función se diseñó para reducir la carga cognitiva del docente, no para aumentarla." },
+  ri_pill_all: { en: "All constructs", es: "Todos los constructos" },
+  ri_pill_a: { en: "Emotional Regulation", es: "Regulación emocional" },
+  ri_pill_b: { en: "Self-Compassion", es: "Autocompasión" },
+  ri_pill_c: { en: "Social Competency", es: "Competencia social" },
+  hyb_b2: {
+    es: "Para estudiantes, familias y adultos"
+  },
+  hyb_b3: {
+    es: "Creado por un educador especial"
+  },
+  hyb_cta_explore: { en: "Explore the Framework", es: "Explora el marco" },
+  hyb_cta_checkin: { en: "Start the Self-Reflection", es: "Comienza la Autorreflexión" },
+  fw_ey: { en: "The Framework", es: "El marco" },
+  "sh.h1": { es: "Empieza aquí" },
+  "sh.qsh": { es: "Guías rápidas por rol" },
+  "sh.qssub": { es: "Elige el rol que te corresponde y abre su guía rápida de cinco minutos (PDF)." },
+  "sh.tag": { es: "¿Nuevo en todo esto? Esto es lo que es, en palabras sencillas, y por dónde empezar." },
+  "sh.intro": { es: "Architecture of Grace es un currículo K–12 construido sobre cuatro ideas — identidad, autocompasión, perdón y gracia — con una autorreflexión privada de cinco minutos como puerta de entrada, herramientas de calma para los momentos difíciles, páginas de práctica de matemáticas, ciencias, estudios sociales y gramática, y un lado para las familias en casa. Se ve un poco diferente según quién eres, así que elige la puerta que te corresponda." },
+  "sh.bdg4": { es: "Privado · sin inicio de sesión" },
+  "sh.bdg1": { es: "Para familias" },
+  "sh.bdg2": { es: "Vista del personal" },
+  "sh.bdg3": { es: "Liderazgo" },
+  "sh.bdg5": { es: "Con consentimiento · privado" },
+  "sh.k5": { es: "Para proveedores externos y comunitarios" },
+  "sh.h2e": { es: "Llévalo a tu práctica" },
+  "sh.b5": { es: "Consulta privada, OT/PT/fono externos y clínicas comunitarias que colaboran con una familia o escuela. Un espacio en el dispositivo que da prioridad al consentimiento: registra sesiones y tamizajes, y luego comparte solo lo que tú elijas." },
+  "sh.btn5": { es: "Abrir el espacio de especialista →" },
+  "sh.bdg7": { es: "En todos los niveles" },
+  "sh.k7": { es: "Para especialistas y personal de apoyo" },
+  "sh.h2g": { es: "Empieza donde ya trabajas" },
+  "sh.b7": { es: "Consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales, fisioterapeutas, paraprofesionales y personal de conducta. Haz la autorreflexión con los estudiantes de tu caseload, observa lo que revela en todos los niveles y guarda tus notas en tu propio dispositivo." },
+  "sh.btn7": { es: "Abrir el espacio de especialista →" },
+  "sh.bdg6": { es: "Núcleo universal · opcional" },
+  "sh.k6": { es: "Para organizaciones de fe y ministerios" },
+  "sh.h2f": { es: "Úsalo en tu comunidad" },
+  "sh.b6": { es: "Iglesias, ministerios, escuelas religiosas y grupos juveniles. La herramienta permanece totalmente universal por defecto; un Acompañante de fe opcional añade un lenguaje de valores que activas —y desactivas— en tu propio dispositivo." },
+  "sh.btn6": { es: "Abrir el Acompañante de fe →" },
+  "sh.k4": { es: "Para estudiantes y primerizos" },
+  "sh.h2d": { es: "Mira cómo estás realmente" },
+  "sh.b4": { es: "Una autorreflexión privada de cinco minutos — solo para ti. Sin calificación, sin respuestas correctas. Mira cómo estás realmente, recibe una cosa pequeña que ayuda y un espacio tranquilo cuando lo necesites." },
+  "sh.btn4": { es: "Comienza la Autorreflexión →" },
+  "sh.k1": { es: "Para madres, padres y cuidadores" },
+  "sh.h2a": { es: "Ayuda a tu hijo a sentirse comprendido" },
+  "sh.b1": { es: "Es una autorreflexión privada de 5 minutos que ayuda a tu hijo a reflexionar sobre cómo está realmente: no es un examen ni una calificación. Responde con honestidad y ofrece preguntas amables para conversar que pueden usar juntos. No se comparte nada sin ti." },
+  "sh.btn1": { es: "Ir a Familia →" },
+  "sh.k2": { es: "Para educadores" },
+  "sh.h2b": { es: "Conoce a tus estudiantes antes" },
+  "sh.b2": { es: "Una respuesta honesta de un estudiante te lleva directo a la lección, la historia o la conversación adecuada, y el panel te recuerda cuidarte a ti primero. Sin inicios de sesión, sin calificaciones, sin vigilancia. Solo una lectura más clara y amable de tu clase. Para educadores especiales: la puerta Registros del estudiante guarda metas, datos, resúmenes de reunión y la página del propio estudiante." },
+  "sh.btn2": { es: "Abre el Panel del Educador →" },
+  "sh.k3": { es: "Para administradores" },
+  "sh.h2c": { es: "Ve el panorama completo, con seguridad" },
+  "sh.b3": { es: "Obtienes tendencias anónimas a nivel de clase y de escuela para MTSS, nunca puntajes individuales. La privacidad vive en el enlace y no hay recolección de datos. Es universal, basado en el conocimiento del trauma y creado por un educador de educación especial en ejercicio." },
+  "sh.btn3": { es: "Abrir la vista del distrito →" },
+  "sh.note": { es: "<b>¿Todavía con curiosidad por el &ldquo;por qué&rdquo;?</b> La página del <a href='#' onclick=\"event.preventDefault(); openFramework();\">Marco</a> explica los cuatro pilares y el razonamiento detrás de todo esto, y el <a href='#' onclick=\"event.preventDefault(); openEcosystem();\">Ecosistema de Grace</a> reúne los recursos listos para usar en casa, la escuela y la vida adulta." },
+  "eco.h1": { es: "El Ecosistema de Grace" },
+  "eco.tag": { es: "Un mismo lenguaje para las relaciones, puesto en práctica<br>en casa, en la escuela y a lo largo de la vida adulta." },
+  "eco.intro": { es: "Architecture of Grace se basa en cuatro pilares. El Ecosistema de Grace los lleva más allá del aula: al hogar, a través del puente entre la casa y la escuela, y a las relaciones que los adultos mantienen por el resto de su vida. Cada recurso de abajo está listo para imprimir y diseñado para usarse en solo 5 a 15 minutos." },
+  "eco.pid": { es: "Identidad" },
+  "eco.psc": { es: "Autocompasión" },
+  "eco.pfg": { es: "Perdón" },
+  "eco.pgr": { es: "Gracia" },
+  "eco.sec1": { es: "Para familias y escuelas" },
+  "eco.sec2": { es: "Para adultos" },
+  "eco.k1": { es: "Parte uno · Para familias" },
+  "eco.k2": { es: "Parte dos · El puente" },
+  "eco.k3": { es: "Parte tres · Para madres y padres" },
+  "eco.k4": { es: "Parte cuatro · Para educadores" },
+  "eco.k5": { es: "Parte cinco · Para todos" },
+  "eco.t1": { es: "Gracia en casa" },
+  "eco.t2": { es: "Conexión hogar–escuela" },
+  "eco.t3": { es: "Gracia para madres y padres" },
+  "eco.t4": { es: "Gracia para educadores" },
+  "eco.t5": { es: "Gracia para la vida adulta" },
+  "eco.d1": { es: "Un ritmo familiar semanal: preguntas, actividades, autorreflexiones y retos en los cuatro pilares, además de una tarjeta “Esta semana” lista para usar." },
+  "eco.d2": { es: "Vocabulario compartido, un ciclo de reflexión, seguimientos de la evaluación, seguimiento del crecimiento y un diario de reflexión familiar." },
+  "eco.d3": { es: "Un camino de desarrollo personal para los adultos: identidad, autocompasión, perdón y gracia en el trabajo más difícil que existe." },
+  "eco.d4": { es: "Crecimiento profesional que protege a quienes hacen el trabajo: prevención del agotamiento, reparación, confianza del personal y liderazgo desde la gracia." },
+  "eco.d5": { es: "El marco más allá de la educación: equipos, liderazgo, parejas, amistades, cuidadores, comunidades y crecimiento personal." },
+  "eco.read": { es: "Leer en línea" },
+  "eco.pdf": { es: "Descargar PDF" },
+  "pd.eyebrow": { es: "Para el personal y la dirección" },
+  "pd.title": { es: "Desarrollo profesional" },
+  "pd.lede": { es: "El hilo dirigido a los adultos que ya recorre el índice de cada libro, reunido aquí en un solo lugar. Cada vía sostiene primero a las personas adultas, para que el marco se sostenga para los estudiantes que tienen a su cargo." },
+  "pd.c1_h": { es: "Bienestar del personal" },
+  "pd.c1_p": { es: "Proteja a quienes sostienen a todos los demás. Una autorreflexión privada para adultos, una lectura del agotamiento en 60 segundos y prácticas que un equipo puede realizar sin sumar otra reunión." },
+  "pd.c2_h": { es: "Reflexión con enfoque en el trauma" },
+  "pd.c2_p": { es: "Reconozca las respuestas al estrés en usted y en sus estudiantes, y responda desde la regulación en lugar de la reacción: la Ventana de Tolerancia, aplicada primero a los adultos." },
+  "pd.c3_h": { es: "Aprendizaje socioemocional para adultos" },
+  "pd.c3_p": { es: "Los mismos cuatro pilares —identidad, autocompasión, perdón y gracia— adaptados para los adultos, para que el personal practique las habilidades antes de enseñarlas." },
+  "pd.c4_h": { es: "Construir una cultura de gracia" },
+  "pd.c4_p": { es: "Lleve la gracia de un cartel a una práctica: rutinas de reparación, interpretación generosa y la distinción entre lo difícil y lo inseguro que mantienen sana la cultura del personal bajo presión." },
+  "pd.c5_h": { es: "Capacitación para la implementación" },
+  "pd.c5_p": { es: "Una introducción para todo el sistema —la autorreflexión, el panel, los modos para familias y adultos— con una sesión a mitad de año vinculada a su calendario curricular." },
+  "pd.wb_flag": { es: "Nuevo · Vista previa" },
+  "pd.wb_h": { es: "Vías de bienestar: para los adultos, según su rol" },
+  "pd.wb_lede": { es: "Las cinco vías anteriores preparan al personal para <em>impartir</em> el trabajo. Estas dos lo dirigen hacia el adulto como persona: una para el personal que lo lleva adelante y otra para quienes dirigen y dan forma a la cultura que lo rodea. Reunidas a partir de material que ya está en los Libros&nbsp;1 a 5." },
+  "pd.wb_toggle_show": { es: "Vista previa del módulo ↓" },
+  "pd.wb_built": { es: "Cerca del <b>70 % de ambos módulos</b> ya está escrito y revisado dentro de los Libros&nbsp;1 a 5. Estos lo reúnen y le dan la vuelta al <em>porqué</em>; no lo reinventan." },
+  "pd.edu_kick": { es: "Para el personal que imparte el trabajo" },
+  "pd.edu_h": { es: "El educador sostenible" },
+  "pd.edu_sub": { es: "Una sesión de bienestar del personal construida a partir del propio trabajo interior del currículo, dirigida al docente." },
+  "pd.edu_p": { es: "El Crítico Interno y el Testigo Compasivo, la Prueba del Amigo, la línea entre el agotamiento y la debilidad: los mismos conceptos que aprenden sus estudiantes, dirigidos hacia quienes les enseñan. Con enfoque en el trauma, fundamentada en la investigación y universal." },
+  "pd.edu_reframe": { es: "En cada lección, el educador <strong>sostiene</strong> el aula. Aquí, por una sesión, el educador es quien es <strong>sostenido</strong>." },
+  "pd.edu_pull": { es: "El patrón de agotamiento no es pereza ni debilidad: son compromisos nobles que, juntos, cuestan más de lo que reponen." },
+  "pd.edu_s1": { es: "<strong>La pregunta, dirigida a usted</strong><em>El último error que cometió en el trabajo: ¿el sentimiento es por lo que hizo o por quién es? La distinción entre vergüenza y culpa, aplicada primero al adulto.</em>" },
+  "pd.edu_s2": { es: "<strong>El Crítico y el Testigo: los suyos</strong><em>La Prueba del Amigo, vuelta hacia adentro. La empatía que ya ofrece a los demás, dirigida hacia usted mismo.</em>" },
+  "pd.edu_s3": { es: "<strong>El educador sostenible</strong> <span class=\"src\">&mdash; del Libro 5 &middot; El alma sostenible</span><em>Patrones de agotamiento, autocuidado portátil en cuerpo / mente / espíritu y una prueba honesta: ¿puedo sostener esto durante veinte años? El corazón del módulo.</em>" },
+  "pd.edu_s4": { es: "<strong>La reflexión como práctica personal</strong> <span class=\"src\">&mdash; de &sect;5.2 Bloque 5 &middot; &sect;5.3</span><em>La casilla de reflexión siempre fue su desgaste. Aquí es el trabajo: privada, nunca recopilada, modelada primero por el facilitador con una respuesta real.</em>" },
+  "pd.edu_s5": { es: "<strong>Su red de apoyo</strong><em>Usted enseñó a sus estudiantes que pedir apoyo es sabiduría, no debilidad. Trace la suya. Nombre algo que ha estado cargando y que no ha dicho en voz alta.</em>" },
+  "pd.edu_m1h": { es: "Quién facilita" },
+  "pd.edu_m1p1": { es: "Un facilitador externo o un rol interno que no evalúe: consejero o asesor." },
+  "pd.edu_m1p2": { es: "Nunca la persona que evalúa al grupo." },
+  "pd.edu_m2h": { es: "Si algo surge" },
+  "pd.edu_m2p1": { es: "Vía de derivación para adultos: programa de asistencia al empleado (EAP), recursos humanos, líneas de crisis: la versión adulta de la ruta del consejero estudiantil." },
+  "pd.edu_m2p2": { es: "La participación es voluntaria por diseño." },
+  "pd.lead_kick": { es: "Para directivos y administradores escolares" },
+  "pd.lead_h": { es: "El líder sostenible" },
+  "pd.lead_sub": { es: "El mismo trabajo interior, para la persona que define la cultura en la que viven todos los demás." },
+  "pd.lead_p": { es: "Un director define la cultura del personal casi sin proponérselo, evalúa a las personas del grupo y se agota sin nadie por encima que lo sostenga. Este módulo nombra ese dilema y le da al líder las acciones que de verdad construyen una cultura de gracia, también para sí mismo." },
+  "pd.lead_reframe": { es: "Se le pide construir una cultura de gracia para todos. La persona a la que más cuesta extendérsela es <strong>usted mismo</strong>, y el personal observa si lo hace." },
+  "pd.lead_pull": { es: "El bienestar del personal dirigido por quien evalúa al grupo se convierte en actuación. El trabajo de un líder no es dirigirlo, sino proteger las condiciones para que ocurra." },
+  "pd.lead_s1": { es: "<strong>La cultura que define sin proponérselo</strong> <span class=\"src\">&mdash; del Libro 4 &middot; cultura de gracia frente a cultura de rendimiento</span><em>La seguridad psicológica (Edmondson) y el argumento para el liderazgo con la investigación que lo respalda: el bienestar del personal predice los resultados de los estudiantes.</em>" },
+  "pd.lead_s2": { es: "<strong>El problema del evaluador, nombrado</strong><em>Por qué usted no puede ser quien dirija el bienestar del personal, y cuál es su rol en cambio: ceder la facilitación a un rol que no evalúe, mantenerla voluntaria y modelar su propia reflexión sin vigilar la de los demás.</em>" },
+  "pd.lead_s3": { es: "<strong>La línea entre lo difícil y lo inseguro, para adultos</strong> <span class=\"src\">&mdash; de Construir una cultura de gracia</span><em>Cuándo un miembro del personal en dificultades es una cuestión de apoyo, y cuándo se ha vuelto una cuestión de recursos humanos o de seguridad. Conocer la diferencia protege a todos.</em>" },
+  "pd.lead_s4": { es: "<strong>La reparación como rutina</strong><em>Llevar la gracia de un cartel a una práctica que su personal lo vea usar: interpretación generosa y reparación visible los días en que se equivoca.</em>" },
+  "pd.lead_s5": { es: "<strong>Quién sostiene a quien sostiene</strong><em>El patrón de agotamiento también lo alcanza a usted. Su propio apoyo de pares o de un asesor, y los aspectos no negociables que no cederá bajo presión.</em>" },
+  "pd.lead_m1h": { es: "Su rol" },
+  "pd.lead_m1p1": { es: "Proteja las condiciones para el trabajo. No lo facilite usted mismo." },
+  "pd.lead_m1p2": { es: "Modele la práctica; nunca la vigile." },
+  "pd.lead_m2h": { es: "Su propio apoyo" },
+  "pd.lead_m2p1": { es: "Un par o un asesor fuera de su línea de mando, además del programa de asistencia al empleado (EAP)." },
+  "pd.lead_m2p2": { es: "Esto tampoco es opcional para usted." },
+  "pd.res_ey": { es: "Listo para imprimir · para el personal y la dirección" },
+  "pd.res_h": { es: "Llévelo a la sala de personal" },
+  "pd.res_lede": { es: "Los complementos dirigidos a los adultos, listos para leer en pantalla o imprimir en tamaño Carta para la sala. Los mismos cuatro pilares que aprenden los estudiantes —identidad, autocompasión, perdón y gracia— dirigidos a los adultos que llevan adelante el trabajo." },
+  "pd.res_kick1": { es: "Para educadores y equipos" },
+  "pd.res_p1": { es: "Crecimiento profesional que protege a quienes hacen el trabajo: prevención del agotamiento, reparación, confianza del personal y liderazgo desde la gracia." },
+  "pd.res_kick2": { es: "Para líderes y equipos de adultos" },
+  "pd.res_p2": { es: "El marco más allá del aula: para equipos, líderes, cuidadores y comunidades, y para la persona que define la cultura en la que viven todos los demás." },
+  "pd.cta_pilot": { es: "Solicite un programa piloto o una conversación sobre licencias para el distrito →" },
+  "pd.cta_map": { es: "Vea dónde se ubica en los libros →" },
+  "eco.note": { es: "<b>Cómo usarlos.</b> Empieza con Gracia en casa y el vocabulario compartido de la Conexión hogar–escuela: construyen el lenguaje común del que depende todo lo demás. Añade los caminos para adultos a medida que el lenguaje se afianza. Cada página se imprime perfectamente en tamaño Carta para el refrigerador, el aula o la sala de personal." },
+  fw_title: { en: "Why Architecture of Grace Exists", es: "Por qu\u00e9 existe Architecture of Grace" },
+  fw_hero_sub: { en: "Built by a special educator — the thinking behind the framework, and the story of how it began.", es: "Creado por un educador especial: las ideas detrás del marco y la historia de cómo comenzó." },
+  fw_tab_why: { en: "Our Why", es: "Nuestro porqué" },
+  fw_pillars_beam: { en: "Grace over Performance", es: "La gracia por encima del rendimiento" },
+  fw_pillars_note: { en: "The four pillars every healthy relationship stands on.", es: "Los cuatro pilares sobre los que se sostiene toda relación sana." },
+  fw_p_identity: { en: "Identity", es: "Identidad" },
+  fw_p_selfcomp: { en: "Self-Compassion", es: "Autocompasión" },
+  fw_p_forgive: { en: "Forgiveness", es: "Perdón" },
+  fw_p_grace: { en: "Grace", es: "Gracia" },
+  fw_tab_difference: { en: "The Difference", es: "La diferencia" },
+  fw_tab_framework: { en: "The Framework", es: "El marco" },
+  fw_tab_ecosystem: { en: "The Ecosystem", es: "El ecosistema" },
+  fw_tab_resources: { en: "Resources", es: "Recursos" },
+  fw_tab_story: { en: "The Story", es: "La historia" },
+  fw_tab_educators: { en: "For Educators", es: "Para educadores" },
+  fw_tab_admin: { en: "For Administration", es: "Para administraci\u00f3n" },
+  fw_tab_workplace: { en: "For the Workplace", es: "Para el trabajo" },
+  fw_ed_h: { en: "For Educators", es: "Para educadores" },
+  fw_ed_p: { en: "The classroom view of the framework: the Self-Reflection, the lesson-by-lesson curriculum, anchor charts, and conversation guides \u2014 with a private Guide & Library to explore everything before you teach it.", es: "La vista del marco para el aula: la Autorreflexión, el curr\u00edculo lecci\u00f3n por lecci\u00f3n, los anchor charts y las gu\u00edas de conversaci\u00f3n \u2014 con una Gu\u00eda y Biblioteca privada para explorar todo antes de ense\u00f1arlo." },
+  fw_ed_cta: { en: "Open the Educator Guide & Library", es: "Abrir la Gu\u00eda y Biblioteca del educador" },
+  fw_ad_h: { en: "For Administration", es: "Para administraci\u00f3n" },
+  fw_ad_p: { en: "For school and district leaders: aggregated, class- and school-level trends for MTSS \u2014 never individual scores \u2014 alongside licensing, privacy, and rollout details.", es: "Para l\u00edderes de escuelas y distritos: tendencias agregadas a nivel de clase y de escuela para MTSS \u2014 nunca puntajes individuales \u2014 junto con detalles de licencias, privacidad e implementaci\u00f3n." },
+  fw_ad_cta: { en: "Open the Administration view", es: "Abrir la vista de administraci\u00f3n" },
+  fw_ad_schools: { en: "For Schools & Districts", es: "Para escuelas y distritos" },
+  fw_ad_pilot: { en: "Start a Pilot", es: "Iniciar un piloto" },
+  fw_wk_h: { en: "For the Workplace", es: "Para el trabajo" },
+  fw_wk_p: { en: "The same framework, voiced for the adults who hold everyone else \u2014 educators, nurses, leaders, caregivers. A private self-reflection and a 60-second burnout read, with team practices that need no extra meeting.", es: "El mismo marco, expresado para los adultos que sostienen a los dem\u00e1s \u2014 educadores, enfermeros, l\u00edderes, cuidadores. Una autorreflexión privado y una lectura de agotamiento de 60 segundos, con pr\u00e1cticas de equipo que no requieren otra reuni\u00f3n." },
+  fw_wk_cta: { en: "Open the Workplace view", es: "Abrir la vista del trabajo" },
+  fw_wk_cap: { en: "Team practices that need no extra meeting: a wall of handwritten thank-yous — one named note per person — protecting the people who hold everyone else.", es: "Prácticas de equipo que no requieren otra reunión: un muro de agradecimientos escritos a mano — una nota con el nombre de cada persona — que cuida a quienes sostienen a los demás." },
+  fw_cards_cap: { en: "More than a decade apart in spirit: the table of cards, and the year a scribble grew into a letter about grace.", es: "Más de una década de distancia en espíritu: la mesa de tarjetas y el año en que un garabato se convirtió en una carta sobre la gracia." },
+  fw_tab_family: { en: "For Families", es: "Para las familias" },
+  fw_fam_h: { en: "For Families", es: "Para las familias" },
+  fw_fam_p: { en: "The framework, brought home: a private space to check in with your child, gentle conversation starters, and a kinder way to answer the inner critic together — no account, nothing saved, nothing shared.", es: "El marco, en casa: un espacio privado para conectar con tu hijo/a, preguntas suaves para conversar y una forma más amable de responder juntos al crítico interior — sin cuenta, sin guardar nada y sin compartir nada." },
+  fw_fam_cta: { en: "Open Family Mode", es: "Abrir el Modo Familia" },
+  fw_fam_cta2: { en: "Print the at-home guide", es: "Imprimir la guía para casa" },
+  fw_fam_cta3: { en: "Conversation starters by age", es: "Iniciadores de conversación por edad" },
+  fw_fam_cta4: { en: "Print / save the starters (PDF)", es: "Imprimir / guardar los iniciadores (PDF)" },
+  gt_ts_t: { en: "Think It → Say It", es: "Pensarlo → Decirlo" },
+  gt_ts_d: { en: "Turn a blunt thought into kinder words", es: "Convierte un pensamiento brusco en palabras más amables" },
+  gt_cs_t: { en: "Conversation Starters", es: "Iniciadores de conversación" },
+  gt_cs_d: { en: "Age-right prompts, grouped by domain", es: "Preguntas según la edad, agrupadas por dominio" },
+  gt_scn_t: { en: "When a Student…", es: "Cuando un estudiante…" },
+  gt_scn_d: { en: "For staff: what’s happening & what to say — with the tool to reach for", es: "Para el personal: qué pasa y qué decir — con la herramienta que puedes usar" },
+  gt_fn_t: { en: "Find the Function", es: "Encuentra la función" },
+  gt_fn_d: { en: "What is the behavior getting or avoiding? Match the support", es: "¿Qué obtiene o evita la conducta? Empareja el apoyo" },
+  fw_intro: {
+    en: "<p class='fw-lead'>People are often measured long before they are understood.</p><p>As a special educator, I spent years working alongside students, families, educators, and caregivers. I saw remarkable people carrying the weight of expectations, labels, mistakes, and the constant pressure to perform. Everyone seemed to be asking how they were doing. Far fewer were asking who they were becoming.</p><p>Architecture of Grace grew from a different belief.</p><p class='fw-ask'>Growth is strongest when it begins with identity rather than achievement, self-compassion rather than shame, forgiveness rather than judgment, and grace rather than performance.</p><p>The framework was created to help people reflect honestly, strengthen relationships, and engage in meaningful conversations about growth. It is not a behavior program, a diagnosis, or a scorecard. It is a practical way to better understand ourselves and one another.</p><p>Today, Architecture of Grace serves students, families, educators, caregivers, teams, and independent adults through reflection tools, conversation guides, and resources designed to foster understanding and connection.</p><p>The Self-Reflection is one expression of this work.</p><p class='fw-mission-lead'>The mission is larger:</p><p class='fw-ask'>To create spaces where people are known before they are measured, understood before they are evaluated, and supported as they grow.</p><p class='fw-close-line'>Because lasting growth begins not with performance, but with grace.</p>",
+    es: "<p class='fw-lead'>A las personas a menudo se las mide mucho antes de comprenderlas.</p><p>Como educador especial, pasé años trabajando junto a estudiantes, familias, educadores y cuidadores. Vi a personas admirables cargando el peso de las expectativas, las etiquetas, los errores y la presión constante de rendir. Todos parecían preguntar cómo estaban. Muy pocos preguntaban en quién se estaban convirtiendo.</p><p>Architecture of Grace nació de una creencia distinta.</p><p class='fw-ask'>El crecimiento es más fuerte cuando comienza con la identidad en lugar del logro, la autocompasión en lugar de la vergüenza, el perdón en lugar del juicio y la gracia en lugar del rendimiento.</p><p>El marco fue creado para ayudar a las personas a reflexionar con honestidad, fortalecer sus relaciones y mantener conversaciones significativas sobre el crecimiento. No es un programa de conducta, un diagnóstico ni una boleta de calificaciones. Es una forma práctica de comprendernos mejor a nosotros mismos y entre nosotros.</p><p>Hoy, Architecture of Grace acompaña a estudiantes, familias, educadores, cuidadores, equipos y adultos independientes con herramientas de reflexión, guías de conversación y recursos diseñados para fomentar la comprensión y la conexión.</p><p>La Autorreflexión es una expresión de este trabajo.</p><p class='fw-mission-lead'>La misión es más amplia:</p><p class='fw-ask'>Crear espacios donde las personas sean conocidas antes de ser medidas, comprendidas antes de ser evaluadas, y acompañadas mientras crecen.</p><p class='fw-close-line'>Porque el crecimiento duradero no comienza con el rendimiento, sino con la gracia.</p>"
+  },
+  fw_founder: {
+    en: "<div class='fw-founder-h'>About the founder</div><p>James Anthony Ramsden is the founder of Architecture of Grace, LLC. Before developing this framework, James worked in specialized educational settings &mdash; including Soaring Eagle Academy and the School of Expressive Arts and Learning &mdash; designing interventions for neurodivergent students and students with complex trauma. The Architecture of Grace framework translates these clinical, somatic, and expressive-arts-based practices into a universal format aligned to both CASEL and the Illinois SEL Standards, accessible for all K&ndash;12 classrooms. A native of Naperville (District 203) and a former educator in Indian Prairie (District 204), James is based in the western Chicago suburbs.</p>",
+    es: "<div class='fw-founder-h'>Sobre el fundador</div><p>James Anthony Ramsden es el fundador de Architecture of Grace, LLC. Antes de desarrollar este marco, James trabajó en entornos educativos especializados &mdash; incluidos Soaring Eagle Academy y la School of Expressive Arts and Learning &mdash; diseñando intervenciones para estudiantes neurodivergentes y estudiantes con trauma complejo. El marco de Architecture of Grace traduce estas prácticas clínicas, somáticas y basadas en las artes expresivas a un formato universal alineado con CASEL y los Est&aacute;ndares SEL de Illinois, accesible para todas las aulas de Originario de Naperville (Distrito 203) y exeducador en Indian Prairie (Distrito 204), James reside en los suburbios del oeste de Chicago.</p>"
+  },
+  fw_cards: {
+    en: "<div class='fw-cards-eyebrow'>Where it began</div><h3 class='fw-cards-h'>Before there was a framework, there was a table full of these.</h3><p>For over a decade, my children have handed me cards &mdash; for birthdays, for Father&rsquo;s Day, at Christmas, and for no reason at all. I kept every one. Laid out together, they are more than keepsakes. They are a record of children learning, year by year, to put their inner lives into words: a scribbled heart becomes a sentence; a sentence becomes a paragraph about gratitude, and grace, and growing up.</p><p>I did not build the Architecture of Grace from a theory. I built it from this table &mdash; from the slow, ordinary miracle of watching a child be witnessed, and write their way toward themselves.</p><p class='fw-cards-note'>Shared with my children&rsquo;s blessing.</p>",
+    es: "<div class='fw-cards-eyebrow'>Dónde empezó</div><h3 class='fw-cards-h'>Antes de que existiera un marco, había una mesa llena de estas.</h3><p>Durante más de una década, mis hijos me han dado tarjetas &mdash; por cumpleaños, por el Día del Padre, en Navidad y sin motivo alguno. Guardé cada una. Juntas, son más que recuerdos. Son el registro de unos niños que aprenden, año tras año, a poner su vida interior en palabras: un corazón garabateado se vuelve una frase; una frase se vuelve un párrafo sobre la gratitud, la gracia y el crecer.</p><p>No construí Architecture of Grace a partir de una teoría. La construí a partir de esta mesa &mdash; del milagro lento y cotidiano de ver a un niño ser reconocido y abrirse camino hacia sí mismo a través de la escritura.</p><p class='fw-cards-note'>Compartido con la bendición de mis hijos.</p>"
+  },
+  fw_hero_p: { en: "What it is, and the core ideas it\u2019s built on \u2014 a foundation for growth rooted in identity, self-compassion, forgiveness, and grace.", es: "Qu\u00e9 es y las ideas centrales sobre las que se construye: una base para crecer arraigada en la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia." },
+  fw_1_num: { en: "01 \u00b7 The Problem", es: "01 \u00b7 El problema" },
+  fw_1_h: { en: "Why Architecture of Grace exists", es: "Por qu\u00e9 existe Architecture of Grace" },
+  fw_1_q: { en: "Many systems measure behavior, performance, compliance, or achievement. Few help people understand themselves and one another with compassion. Architecture of Grace was created to offer a different foundation for growth \u2014 one rooted in identity, self-compassion, forgiveness, and grace.", es: "Muchos sistemas miden el comportamiento, el rendimiento, el cumplimiento o los logros. Pocos ayudan a las personas a comprenderse a s\u00ed mismas y a los dem\u00e1s con compasi\u00f3n. Architecture of Grace naci\u00f3 para ofrecer una base distinta para el crecimiento: una arraigada en la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia." },
+  fw_2_num: { en: "02 \u00b7 The Four Pillars", es: "02 \u00b7 Los cuatro pilares" },
+  fw_2_h: { en: "The four ideas everything rests on", es: "Las cuatro ideas sobre las que se apoya todo" },
+  fw_2_sub: { en: "One throughline, worded for whoever\u2019s answering \u2014 from a kindergartener to a CEO.", es: "Un mismo hilo conductor, expresado seg\u00fan qui\u00e9n responda, desde un ni\u00f1o de k\u00ednder hasta un director ejecutivo." },
+  fw_p_id_t: { en: "Identity", es: "Identidad" },
+  fw_p_id_q: { en: "Who am I beyond what I do?", es: "\u00bfQui\u00e9n soy m\u00e1s all\u00e1 de lo que hago?" },
+  fw_p_id_d: { en: "Understanding worth, belonging, strengths, and personal story.", es: "Comprender el valor propio, la pertenencia, las fortalezas y la historia personal." },
+  fw_p_sc_t: { en: "Self-Compassion", es: "Autocompasi\u00f3n" },
+  fw_p_sc_q: { en: "How do I respond when I struggle?", es: "\u00bfC\u00f3mo respondo cuando me cuesta?" },
+  fw_p_sc_d: { en: "Learning to replace shame with honesty, resilience, and care.", es: "Aprender a reemplazar la verg\u00fcenza con honestidad, resiliencia y cuidado." },
+  fw_p_fg_t: { en: "Forgiveness", es: "Perd\u00f3n" },
+  fw_p_fg_q: { en: "How do I move forward after hurt, mistakes, or conflict?", es: "\u00bfC\u00f3mo sigo adelante tras el da\u00f1o, los errores o el conflicto?" },
+  fw_p_fg_d: { en: "Creating space for healing, accountability, and restoration.", es: "Crear espacio para la sanaci\u00f3n, la responsabilidad y la restauraci\u00f3n." },
+  fw_p_gr_t: { en: "Grace", es: "Gracia" },
+  fw_p_gr_q: { en: "How do I extend understanding to myself and others?", es: "\u00bfC\u00f3mo ofrezco comprensi\u00f3n a m\u00ed mismo y a los dem\u00e1s?" },
+  fw_p_gr_d: { en: "Choosing connection over judgment, and growth over perfection.", es: "Elegir la conexi\u00f3n por encima del juicio, y el crecimiento por encima de la perfecci\u00f3n." },
+  fw_3_num: { en: "03 \u00b7 Grace Over Performance", es: "03 \u00b7 La gracia por encima del rendimiento" },
+  fw_3_h: { en: "Two ways to hold a human being", es: "Dos formas de sostener a una persona" },
+  fw_3_sub: { en: "The same moment, read through two very different lenses.", es: "El mismo momento, le\u00eddo a trav\u00e9s de dos lentes muy distintas." },
+  fw_th_perf: { en: "Performance Culture", es: "Cultura del rendimiento" },
+  fw_th_grace: { en: "Grace Culture", es: "Cultura de la gracia" },
+  fw_perf_1: { en: "Earn worth", es: "Ganarse el valor" },
+  fw_grace_1: { en: "Recognize worth", es: "Reconocer el valor" },
+  fw_perf_2: { en: "Fear mistakes", es: "Temer los errores" },
+  fw_grace_2: { en: "Learn from mistakes", es: "Aprender de los errores" },
+  fw_perf_3: { en: "Comparison", es: "Comparaci\u00f3n" },
+  fw_grace_3: { en: "Connection", es: "Conexi\u00f3n" },
+  fw_perf_4: { en: "Judgment", es: "Juicio" },
+  fw_grace_4: { en: "Understanding", es: "Comprensi\u00f3n" },
+  fw_perf_5: { en: "Perfection", es: "Perfecci\u00f3n" },
+  fw_grace_5: { en: "Growth", es: "Crecimiento" },
+  fw_perf_6: { en: "Compliance", es: "Cumplimiento" },
+  fw_grace_6: { en: "Reflection", es: "Reflexi\u00f3n" },
+  fw_gop_foot: { en: "Architecture of Grace lives on the right-hand side.", es: "Architecture of Grace vive en la columna de la derecha." },
+  fw_4_num: { en: "04 \u00b7 How It Works", es: "04 \u00b7 C\u00f3mo funciona" },
+  fw_4_h: { en: "From a quiet moment to real growth", es: "De un momento de calma a un crecimiento real" },
+  fw_4_sub: { en: "Not a test to pass \u2014 a path to walk.", es: "No es un examen que aprobar, sino un camino que recorrer." },
+  fw_step_1: { en: "Reflection", es: "Reflexi\u00f3n" },
+  fw_step_2: { en: "Awareness", es: "Conciencia" },
+  fw_step_3: { en: "Conversation", es: "Conversaci\u00f3n" },
+  fw_step_4: { en: "Understanding", es: "Comprensi\u00f3n" },
+  fw_step_5: { en: "Growth", es: "Crecimiento" },
+  fwl_center: { en: "it begins again", es: "vuelve a empezar" },
+  fwl_proof_h: { en: "Watch the loop close — pick a path", es: "Mira cerrarse el ciclo — elige un camino" },
+  fwl_tab_s: { en: "A student", es: "Un estudiante" },
+  fwl_tab_a: { en: "An adult", es: "Un adulto" },
+  fwl_tab_c: { en: "A class", es: "Una clase" },
+  fwl_s1: { en: "A 6th-grader answers, “I keep replaying my mistakes long after they’re over.”", es: "Un estudiante de 6.º responde: “Sigo repasando mis errores mucho después de que pasaron.”" },
+  fwl_s2: { en: "It flags rumination & letting go — a gentle signal, never a label.", es: "Señala rumiación y soltar — una señal suave, nunca una etiqueta." },
+  fwl_s3: { en: "It opens a two-minute talk: “What’s one mistake you’re still carrying?”", es: "Abre una charla de dos minutos: “¿Qué error sigues cargando?”" },
+  fwl_s4: { en: "It maps to Book 3 · Unit 2 · Lesson 6 — “Rewriting the Script,” the 6–8 lesson on the story the harsh voice keeps telling.", es: "Se conecta con el Libro 3 · Unidad 2 · Lección 6 — «Rewriting the Script», la lección de 6.º-8.º sobre el guion que repite la voz dura." },
+  fwl_s5: { en: "At the next self-reflection, that same question scores higher — and the loop begins again.", es: "En el siguiente autorreflexión, esa misma pregunta sube — y el ciclo vuelve a empezar." },
+  fwl_a1: { en: "An educator answers, “By the end of most days, I feel used up.”", es: "Un educador responde: “Al final de casi todos los días, me siento agotado.”" },
+  fwl_a2: { en: "It flags low emotional regulation — a burnout signal, read privately.", es: "Señala baja regulación emocional — una señal de agotamiento, leída en privado." },
+  fwl_a3: { en: "A quiet nudge: try a calm tool, and — you can’t pour from an empty cup.", es: "Un empujón suave: prueba una herramienta de calma — no puedes dar desde una taza vacía." },
+  fwl_a4: { en: "It maps to the adult companion and the Co-Regulation reminder.", es: "Se conecta con el compañero para adultos y el recordatorio de correregulación." },
+  fwl_a5: { en: "A week later, the tank reads fuller — and the loop begins again.", es: "Una semana después, el tanque se lee más lleno — y el ciclo vuelve a empezar." },
+  fwl_c1: { en: "A class of 24 takes the self-reflection on their own devices.", es: "Una clase de 24 hace la autorreflexión en sus propios dispositivos." },
+  fwl_c2: { en: "The dashboard reads the group: average “worth a self-reflection,” lowest domain Emotional Regulation.", es: "El panel lee al grupo: promedio “vale una autorreflexión”, área más baja Regulación emocional." },
+  fwl_c3: { en: "The teacher reads the room and picks one focus for the week.", es: "El docente lee al grupo y elige un enfoque para la semana." },
+  fwl_c4: { en: "The MTSS report maps it to Tier supports and Book 4 lessons.", es: "El informe MTSS lo conecta con apoyos por nivel y lecciones del Libro 4." },
+  fwl_c5: { en: "By the next window, the class average rises a band — and the loop begins again.", es: "Para el siguiente período, el promedio de la clase sube una banda — y el ciclo vuelve a empezar." },
+  fw_flow_note: { en: "The self-reflection is not an assessment. It is a conversation starter. It helps individuals and communities identify areas of strength and areas that may need attention, then provides opportunities for reflection and growth.", es: "La autorreflexión no es una evaluaci\u00f3n. Es un punto de partida para la conversaci\u00f3n. Ayuda a las personas y a las comunidades a identificar \u00e1reas de fortaleza y \u00e1reas que pueden necesitar atenci\u00f3n, y luego ofrece oportunidades para la reflexi\u00f3n y el crecimiento." },
+  fw_5_num: { en: "05 \u00b7 Who It\u2019s For", es: "05 \u00b7 Para qui\u00e9n es" },
+  fw_5_h: { en: "Made for everyone in the room", es: "Hecho para todos los presentes" },
+  fw_5_sub: { en: "The same four ideas, met where each person actually is.", es: "Las mismas cuatro ideas, al encuentro de cada persona all\u00ed donde est\u00e1." },
+  fw_who_st_t: { en: "Students", es: "Estudiantes" },
+  fw_who_st_d: { en: "A private, age-aware way for young people to notice how they’re really doing — beneath the grades and the behavior charts. It gives them language for their inner world, and the quiet reminder that who they are matters more than how they perform.", es: "Una forma privada y adecuada a la edad para que los jóvenes noten cómo están realmente, más allá de las calificaciones y los registros de conducta. Les da lenguaje para su mundo interior y el recordatorio sereno de que quiénes son importa más que cómo rinden." },
+  fw_who_fa_t: { en: "Families", es: "Familias" },
+  fw_who_fa_d: { en: "Shared words for the conversations that matter most at home. Families use it to check in honestly, name what’s hard without blame, and grow closer through understanding rather than pressure.", es: "Palabras compartidas para las conversaciones que más importan en casa. Las familias lo usan para conectar con honestidad, nombrar lo difícil sin culpa y acercarse a través de la comprensión en lugar de la presión." },
+  fw_who_ed_t: { en: "Educators", es: "Educadores" },
+  fw_who_ed_d: { en: "For the people who carry a classroom every day. It offers a clearer sense of where a group actually is — and the reminder that your own wellbeing matters too, not just everyone else’s.", es: "Para quienes sostienen un aula cada día. Ofrece una idea más clara de dónde está realmente un grupo, y el recordatorio de que el propio bienestar también importa, no solo el de los demás." },
+  fw_who_cg_t: { en: "Caregivers", es: "Cuidadores" },
+  fw_who_cg_d: { en: "For those who hold space for others \u2014 parents, counselors, aides, and helpers. It honors the weight they carry and helps them stay grounded, resourced, and gentle with themselves.", es: "Para quienes sostienen a los dem\u00e1s: madres, padres, consejeros, asistentes y ayudantes. Honra el peso que cargan y les ayuda a mantenerse centrados, con recursos y amables consigo mismos." },
+  fw_who_tm_t: { en: "Teams", es: "Equipos" },
+  fw_who_tm_d: { en: "A way for groups and organizations to build trust and reflect together. Teams use it to move from performance toward connection, surfacing what people need before strain becomes burnout.", es: "Una forma de que los grupos y las organizaciones construyan confianza y reflexionen juntos. Los equipos lo usan para pasar del rendimiento a la conexión, revelando lo que las personas necesitan antes de que la tensión se convierta en agotamiento." },
+  fw_who_ia_t: { en: "Independent Adults", es: "Adultos independientes" },
+  fw_who_ia_d: { en: "A quiet practice for anyone choosing to grow on their own terms. A structured moment to pause, reflect, and extend a little grace inward — no classroom or program required.", es: "Una práctica tranquila para quien elige crecer a su manera. Un momento estructurado para hacer una pausa, reflexionar y ofrecerse un poco de gracia hacia adentro, sin necesidad de aula ni programa." },
+  fw_6_num: { en: "06 \u00b7 The Tool", es: "06 \u00b7 La herramienta" },
+  fw_6_p: { en: "The Self-Reflection is one practical expression of the Architecture of Grace framework.", es: "La Autorreflexi\u00f3n es una expresi\u00f3n pr\u00e1ctica del marco Architecture of Grace." },
+  fw_7_num: { en: "07 \u00b7 About the Founder", es: "07 \u00b7 Sobre el fundador" },
+  fw_7_h: { en: "The founder, and the why beneath the work", es: "El fundador, y el porqu\u00e9 detr\u00e1s del trabajo" },
+  fw_7_p: { en: "<p>My name is Jimmy Ramsden. I didn’t come to this work from a boardroom — I came to it from the classroom, where I still teach today as a special educator.</p><p>For more than a decade I’ve worked as an Illinois-certified special educator across elementary and junior-high classrooms — in self-contained, resource, and social-behavioral settings — and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran an elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn’t a departure from that classroom work — it’s two decades of it, gathered into something I can hand to other teachers. That work reaches well beyond the general classroom: I’ve taught in therapeutic day schools and a private behavioral day school serving students with severe and profound needs, and I’ve worked one-on-one in the home with the individuals others often find hardest to reach. Meeting a person exactly where they are — not where a lesson plan wishes they were — is where the heart of this framework was forged.</p><p>My journey started at Humboldt State University with a degree in political science. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace, and it’s what turned me toward special education and a master’s at Aurora University in Aurora, Illinois. It’s the reason this work isn’t abstract to me.</p><p>The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured — they deserve to be understood. Built under Architecture of Grace, everything here rests on four core pillars:</p><ul class='fw-story-pillars'><li><strong>Identity</strong> — who a person comes to believe they are.</li><li><strong>Self-Compassion</strong> — how a person learns to speak to themselves.</li><li><strong>Forgiveness</strong> — moving past mistakes to make room for growth.</li><li><strong>Grace</strong> — meeting a person with understanding rather than only judgment.</li></ul><p>As a teacher and a father, these are the values I want for my students, my own children — and for anyone willing to do this work.</p><p class='fw-story-sign'>— Jimmy Ramsden</p>", es: "<p>Me llamo Jimmy Ramsden. No llegué a este trabajo desde una sala de juntas, sino desde el aula, donde sigo enseñando hoy como educador especial.</p><p>Durante más de una década he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria —en entornos autónomos, de recursos y socioconductuales— y cuento con la certificación de Learning Behavior Specialist para estudiantes desde preescolar hasta los veintidós años. En el camino creé y dirigí un programa de recursos de Aprendizaje Socioconductual en primaria, donde acompaño a los estudiantes en las mismas destrezas sobre las que se construye este currículo: nombrar lo que sienten, serenarse e intentarlo de nuevo. The Architecture of Grace no es una desviación de ese trabajo en el aula: son dos décadas de ese trabajo, reunidas en algo que puedo entregar a otros docentes. Ese trabajo va mucho más allá del aula general: he enseñado en escuelas terapéuticas de día y en una escuela privada de día conductual que atienden a estudiantes con necesidades severas y profundas, y he trabajado de forma individual en el hogar con las personas a las que otros encuentran más difíciles de alcanzar. Encontrar a cada persona exactamente donde está — no donde un plan de lección desearía que estuviera — es donde se forjó el corazón de este marco.</p><p>Mi camino comenzó en Humboldt State University con una licenciatura en ciencias políticas. Pero el verdadero punto de inflexión llegó en 2006, cuando un grave accidente de auto me dejó con una lesión cerebral traumática y una discapacidad neurológica. Reconstruir mi vida cambió mi forma de entender la lucha, la paciencia y la gracia, y es lo que me orientó hacia la educación especial y hacia una maestría en Aurora University, en Aurora, Illinois. Es la razón por la que este trabajo no es algo abstracto para mí.</p><p>The Architecture of Grace surgió de la convicción de que las personas merecen algo más que ser medidas: merecen ser comprendidas. Creado bajo Architecture of Grace, todo aquí se apoya en cuatro pilares fundamentales:</p><ul class='fw-story-pillars'><li><strong>Identidad</strong> — quién llega una persona a creer que es.</li><li><strong>Autocompasión</strong> — cómo aprende una persona a hablarse a sí misma.</li><li><strong>Perdón</strong> — dejar atrás los errores para dar espacio al crecimiento.</li><li><strong>Gracia</strong> — encontrarse con una persona desde la comprensión y no solo desde el juicio.</li></ul><p>Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo.</p><p class='fw-story-sign'>— Jimmy Ramsden</p>" },
+  fw_browse: { en: "Browse the guide & resources \u2192", es: "Explora la gu\u00eda y los recursos \u2192" },
+  hyb_vp: {
+    en: "Created by a special educator, Architecture of Grace helps schools and their communities move from reflection to meaningful support through <span class='hyb-vp-key'>conversation, connection, and care</span>. <span class='hyb-vp-em'>Without surveillance, emotional scoring, or intrusive data collection.</span>",
+    es: "Creado por un educador especial, Architecture of Grace ayuda a las escuelas y a sus comunidades a pasar de la reflexión al apoyo significativo a través de <span class='hyb-vp-key'>la conversación, la conexión y el cuidado</span>. <span class='hyb-vp-em'>Sin vigilancia, puntajes emocionales ni recopilación de datos intrusiva.</span>"
+  },
+  hyb_enter_cta: { en: "Begin a quiet check-in", es: "Comienza una autorreflexión tranquila" },
+  hyb_enter_sub: { en: "A private, in-the-moment pause — never scored, never shared.", es: "Una pausa privada, en el momento — sin puntajes, sin compartir." },
+  hyb_enter_or: { en: "or explore the three parts below", es: "o explora las tres partes abajo" },
+  hyb_lede: {
+    en: "<p class='hl-lead'>Most SEL programs treat emotions like another subject to be tested. Architecture of Grace begins from a different premise: growth begins with grace, not performance.</p><p class='hl-close'>Living with a neurological disability in the form of traumatic brain injury has shaped a framework around identity, self-compassion, forgiveness, and grace.</p>",
+    es: "<p class='hl-lead'>La mayoría de los programas socioemocionales tratan las emociones como otra materia que evaluar. Architecture of Grace parte de una premisa distinta: el crecimiento comienza con la gracia, no con el rendimiento.</p><p class='hl-close'>Vivir con una discapacidad neurológica en forma de una lesión cerebral traumática ha moldeado un marco en torno a la identidad, la autocompasión, el perdón y la gracia.</p>"
+  },
+  hyb_byline: {
+    en: "A framework for students, families, educators, caregivers, teams, and independent adults. Built by a special educator to help people strengthen relationships through identity, self-compassion, forgiveness, and grace.",
+    es: "Un marco para estudiantes, familias, educadores, cuidadores, equipos y adultos independientes. Creado por un educador especial para ayudar a las personas a fortalecer sus relaciones a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia."
+  },
+  hyb_start_btn: {
+    es: "Comienza tu autorreflexión"
+  },
+  a11y_title: { en: "Accessibility", es: "Accesibilidad" },
+  a11y_contrast: { en: "High contrast", es: "Alto contraste" },
+  a11y_contrast_s: { en: "Stronger text & edges", es: "Texto y bordes m\u00e1s marcados" },
+  a11y_dyslexic: { en: "Dyslexia-friendly font", es: "Fuente para dislexia" },
+  a11y_dyslexic_s: { en: "Easier letter shapes & spacing", es: "Letras y espaciado m\u00e1s legibles" },
+  a11y_read: { en: "Read aloud", es: "Leer en voz alta" },
+  a11y_read_s: { en: "Tap to hear questions & answers", es: "Toca para escuchar preguntas y respuestas" },
+  a11y_pic: { en: "Picture answers", es: "Respuestas con im\u00e1genes" },
+  a11y_accent: { en: "Accent color", es: "Color de acento" },
+  a11y_accent_s: { en: "Recolor the whole app", es: "Cambia el color de toda la app" },
+  a11y_pic_s: { en: "Show a level scale on the choices", es: "Muestra una escala visual en las opciones" },
+  a11y_voice: { en: "Read-aloud voice", es: "Voz de lectura" },
+  a11y_voice_s: { en: "Pick a voice on this device", es: "Elige una voz de este dispositivo" },
+  ages_view_as: { en: "View as", es: "Ver como" },
+  tank_aud_label: { en: "Taking it as", es: "Lo hace" },
+  ages_child: { en: "Child", es: "Ni\u00f1o/a" },
+  rn_idk_btn: { en: "I don\u2019t know how I feel", es: "No s\u00e9 c\u00f3mo me siento" },
+  si_head: { en: "What To Say Instead", es: "Qu\u00e9 decir en su lugar" },
+  si_sub: { en: "Five small changes in how you speak that help a student feel understood, not managed. The goal is connection, not obedience.", es: "Cinco pequeños cambios en cómo hablas que ayudan a un estudiante a sentirse comprendido, no controlado. La meta es la conexión, no la obediencia." },
+  si_instead: { en: "Instead of", es: "En lugar de" },
+  si_try: { en: "Try", es: "Intenta" },
+  si1_when: { en: "Student is overwhelmed", es: "El estudiante est\u00e1 abrumado" },
+  si1_no: { en: "\u201cCalm down.\u201d", es: "\u201cC\u00e1lmate.\u201d" },
+  si1_yes: { en: "\u201cTell me what feels hardest right now.\u201d", es: "\u201cDime qu\u00e9 se siente m\u00e1s dif\u00edcil ahora mismo.\u201d" },
+  si2_when: { en: "Student is frustrated", es: "El estudiante est\u00e1 frustrado" },
+  si2_no: { en: "\u201cYou\u2019re fine.\u201d", es: "\u201cEst\u00e1s bien.\u201d" },
+  si2_yes: { en: "\u201cSomething feels off. Tell me about it.\u201d", es: "\u201cAlgo no anda bien. Cu\u00e9ntame.\u201d" },
+  si3_when: { en: "Student is dysregulated", es: "El estudiante est\u00e1 desregulado" },
+  si3_no: { en: "\u201cGo sit down.\u201d", es: "\u201cVe a sentarte.\u201d" },
+  si3_yes: { en: "\u201cTake a reset and come back when you\u2019re ready.\u201d", es: "\u201cT\u00f3mate un reinicio y vuelve cuando est\u00e9s listo.\u201d" },
+  si4_when: { en: "Student made a mistake", es: "El estudiante cometi\u00f3 un error" },
+  si4_no: { en: "\u201cYou know better.\u201d", es: "\u201cSabes que eso no se hace.\u201d" },
+  si4_yes: { en: "\u201cWhat happened, and what would help make it right?\u201d", es: "\u201c\u00bfQu\u00e9 pas\u00f3, y qu\u00e9 ayudar\u00eda a repararlo?\u201d" },
+  si5_when: { en: "Student shuts down", es: "El estudiante se cierra" },
+  si5_no: { en: "\u201cUse your words.\u201d", es: "\u201cUsa tus palabras.\u201d" },
+  si5_yes: { en: "\u201cWe can start small. What\u2019s one thing I should know?\u201d", es: "\u201cPodemos empezar de a poco. \u00bfQu\u00e9 es una cosa que deber\u00eda saber?\u201d" },
+  gl_head: { en: "Grace Lens", es: "La lente de la gracia" },
+  gl_sub: { en: "The deeper idea beneath each Circle Time activity \u2014 a shared language of grace, reflection, repair, and belonging.", es: "La idea m\u00e1s profunda detr\u00e1s de cada actividad del c\u00edrculo \u2014 un lenguaje com\u00fan de gracia, reflexi\u00f3n, reparaci\u00f3n y pertenencia." },
+  gl1_act: { en: "Reset Together", es: "Reinicio juntos" },
+  gl1_txt: { en: "\u201cOur goal is not perfect focus. Our goal is arriving together.\u201d", es: "\u201cNuestra meta no es la concentraci\u00f3n perfecta. Nuestra meta es llegar juntos.\u201d" },
+  gl2_act: { en: "Feelings Go-Round", es: "Ronda de sentimientos" },
+  gl2_txt: { en: "\u201cEvery feeling belongs. No feeling earns more value than another.\u201d", es: "\u201cCada sentimiento tiene un lugar. Ning\u00fan sentimiento vale m\u00e1s que otro.\u201d" },
+  gl3_act: { en: "Coach the Critic", es: "Gu\u00eda al cr\u00edtico" },
+  gl3_txt: { en: "\u201cWe speak to ourselves the way we would speak to a friend.\u201d", es: "\u201cNos hablamos como le hablar\u00edamos a un amigo.\u201d" },
+  gl4_act: { en: "Repair Circle", es: "C\u00edrculo de reparaci\u00f3n" },
+  gl4_txt: { en: "\u201cRepair is not punishment. Repair is how trust grows.\u201d", es: "\u201cReparar no es castigo. Reparar es c\u00f3mo crece la confianza.\u201d" },
+  gl5_act: { en: "Strengths Circle", es: "C\u00edrculo de fortalezas" },
+  gl5_txt: { en: "\u201cWe notice strengths so people can see themselves more clearly.\u201d", es: "\u201cNotamos las fortalezas para que las personas se vean con m\u00e1s claridad.\u201d" },
+  ages_teen: { en: "Teen", es: "Adolescente" },
+  ages_adult: { en: "Adult / Educator", es: "Adulto / Educador" },
+  hyb_start_hint: {
+    es: "Elige quién eres — estudiante, adulto, familia o equipo."
+  },
+  hyb_voices_hint: {
+    es: "Historias reales de estudiantes, familias y educadores — comparte la tuya también."
+  },
+  hero_demo_badge: {
+    en: "Interactive demo",
+    es: "Demo interactiva"
+  },
+  hero_demo_sub: {
+    en: "Try it live — switch the view or the sample class, and watch the numbers move.",
+    es: "Pruébalo en vivo — cambia la vista o la clase de muestra y mira cómo se mueven los números."
+  },
+  hero_demo_view: {
+    en: "View",
+    es: "Vista"
+  },
+  hero_demo_tryhint: {
+    en: "Tap a view above — or a sample class below — and watch it change.",
+    es: "Toca una vista arriba — o una clase de muestra abajo — y mira cómo cambia."
+  },
+  hyb_madefor: {
+    es: "Creado para"
+  },
+  hyb_onesent: {
+    en: "One quiet self-reflection that listens, points to the right next step, and grows with you — for students, families, and every adult in between.",
+    es: "Un momento tranquilo para mirar hacia adentro que escucha, señala el siguiente paso y crece contigo — para estudiantes, familias y cada adulto que los acompaña."
+  },
+  lead_ey: {
+    en: "For schools & districts",
+    es: "Para escuelas y distritos"
+  },
+  hyb_forall: {
+    en: "Made for students, families, and independent adults — and the counselors who walk beside them.",
+    es: "Hecho para estudiantes, familias y adultos independientes — y los consejeros que los acompañan."
+  },
+  lead_c1: {
+    en: "A universal reflection",
+    es: "Cribado universal"
+  },
+  lead_c2: {
+    en: "Support tiers",
+    es: "Identificación de niveles"
+  },
+  lead_c3: {
+    en: "Family engagement",
+    es: "Participación familiar"
+  },
+  lead_c4: {
+    en: "Growth monitoring",
+    es: "Seguimiento del progreso"
+  },
+  lead_c5: {
+    en: "Lesson alignment",
+    es: "Alineación con lecciones"
+  },
+  lead_link: {
+    en: "See what it does for a school →",
+    es: "Vea lo que ofrece a una escuela →"
+  },
+  hyb_emo: {
+    es: "Este es un proyecto sobre las relaciones — la que construyes contigo mismo/a, y las que compartes con los demás."
+  },
+  hyb_lead: {
+    es: "La autorreflexión (desde K hasta adultos), las preguntas para conversar, las novelas complementarias, los cuatro pilares — cada pieza lleva al mismo lugar: conocernos a nosotros mismos y acercarnos los unos a los otros."
+  },
+  hyb_pillars: {
+    es: "Basado en identidad, autocompasión, perdón y gracia — la base sobre la que se sostiene toda relación sana."
+  },
+  hyb_private: {
+    es: "100% Privado"
+  },
+  hyb_meta_free: {
+    es: "Explora sin registro, sin código"
+  },
+  hyb_meta_priv: {
+    es: "Permanece en tu dispositivo · ~4 minutos"
+  },
+  foot_mission: {
+    es: "Un marco universal para el desarrollo humano — ayudando a estudiantes y adultos a comprenderse, fortalecer sus relaciones y crecer con resiliencia y esperanza."
+  },
+  foot_woe: {
+    es: "Palabras de aliento"
+  },
+  nav_woe: {
+    es: "Palabras de aliento"
+  },
+  foot_made: {
+    es: "Hecho con cariño en Illinois."
+  },
+  ri_h: {
+    es: "Índice de constructos y recursos"
+  },
+  ri_intro: {
+    es: "Cuando una autorreflexión marca un dominio bajo o un ítem específico, busca el constructo correspondiente abajo. Cada uno nombra la lección, la lámina de anclaje y la actividad exactas en cada nivel — la lección del Plan de Estudios Escolar se abre directamente y la Edición en Casa cubre esa misma lección para las familias — y, bajo <strong>En las novelas</strong>, el libro y el capítulo donde esa misma idea aparece como relato. (Las referencias son por capítulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por página.) Tanto la autorreflexión Quick como el Thorough miden los mismos ítems, así que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y capítulos."
+  },
+  ri_master_ey: { es: "El mapa maestro del marco" },
+  ri_master_lead: { es: "Esto no es una página de búsqueda: es el mapa de cómo todo se conecta. <b>Cada ítem de evaluación está conectado con su constructo, su lección, su lámina de anclaje, su hoja de trabajo y el capítulo que lo lleva</b> — y la lección y el capítulo se abren desde la tarjeta. Empieza con un desafío, una habilidad o un resultado de la autorreflexión, y síguelo a través del marco Architecture of Grace." },
+  ri_hiw_link: { es: "Mira cómo una respuesta se convierte en crecimiento →" },
+  ri_next_t: { es: "¿Encontraste el constructo que buscabas?" },
+  ri_next_checkin: { es: "Comienza la Autorreflexión" },
+  ri_next_how: { es: "Mira cómo una respuesta se convierte en crecimiento" },
+  p2g_ey: { es: "El marco, en movimiento" },
+  p2g_h: { es: "Cómo una respuesta se convierte en crecimiento" },
+  p2g_lede: { es: "Nada aquí es una herramienta aislada. Mira cómo una sola respuesta sincera recorre el marco — de una señal silenciosa a un siguiente paso real." },
+  p2g_s1_ey: { es: "La autorreflexión" },
+  p2g_s1_v: { es: "«Sigo repasando mis errores mucho después de que pasaron.»" },
+  p2g_s2_ey: { es: "El resultado" },
+  p2g_s2_v: { es: "Rumiación y dejar ir — una señal amable" },
+  p2g_s3_ey: { es: "El índice de recursos" },
+  p2g_s3_v: { es: "Lo conecta con una lección exacta" },
+  p2g_s4_ey: { es: "Lección e historia" },
+  p2g_s4_v: { es: "Libro 3 · «Reescribir el guion»" },
+  p2g_s5_ey: { es: "Practicar y conversar" },
+  p2g_s5_v: { es: "Hoja de trabajo, tarjeta de escenario, una reflexión" },
+  p2g_s6_ey: { es: "Crecimiento" },
+  p2g_s6_v: { es: "El siguiente autorreflexión muestra que el bucle se afloja" },
+  p2g_cta: { es: "Mira cómo se conecta todo el sistema" },
+  hiw_tile_ey: { es: "Cómo funciona" },
+  hiw_tile_t: { es: "Cómo funciona Architecture of Grace" },
+  hiw_tile_s: { es: "Sigue una respuesta de la autorreflexión al crecimiento — y mira cómo se conecta cada pieza." },
+  hiw_ey: { es: "Cómo funciona" },
+  hiw_h: { es: "Cómo funciona Architecture of Grace" },
+  hiw_lede: { es: "Architecture of Grace no es un plan de estudios, una evaluación y una biblioteca uno al lado del otro: es un solo marco conectado. La forma más clara de verlo es seguir una sola respuesta sincera desde una autorreflexión silencioso hasta un crecimiento real." },
+  hiw_aud: { es: "Ya seas una <b>familia</b> en la mesa de la cocina, un <b>educador</b> en un aula, un <b>administrador</b> o un <b>líder de distrito</b>, el camino de abajo es el mismo. Solo cambia la escala." },
+  hiw_eg_l: { es: "Un ejemplo real" },
+  hiw_eg_q: { es: "«Sigo repasando mis errores mucho después de que pasaron.»" },
+  hiw_1_ey: { es: "La autorreflexión" },
+  hiw_1_t: { es: "Unos minutos sinceros" },
+  hiw_1_b: { es: "Una autorreflexión breve, privado y bilingüe — para un estudiante o un adulto. Pregunta cómo están las cosas de verdad, no cómo deberían estar. Una respuesta dice: <b>«Sigo repasando mis errores mucho después de que pasaron.»</b>" },
+  hiw_2_ey: { es: "El resultado" },
+  hiw_2_t: { es: "Una señal amable, nunca una etiqueta" },
+  hiw_2_b: { es: "Esa respuesta aparece como una señal de un constructo — <b>Rumiación y dejar ir</b> — en la Vista del Hogar privada. Es un lugar donde mirar, no un diagnóstico ni una nota que temer." },
+  hiw_3_ey: { es: "El índice de recursos" },
+  hiw_3_t: { es: "La señal apunta a una lección exacta" },
+  hiw_3_b: { es: "El Índice de Recursos conecta ese constructo con la <b>lección exacta</b> en cada nivel — tanto en el Plan de Estudios Escolar como en la Edición en Casa correspondiente. Para los grados 6.º a 8.º, es el <b>Libro 3 · Unidad 2 · Lección 6</b>." },
+  hiw_4_ey: { es: "Las historias" },
+  hiw_4_t: { es: "La misma idea, vivida como relato" },
+  hiw_4_b: { es: "La misma idea espera en la novela complementaria — el capítulo <b>«Reescribir el guion»</b> — para encontrar la habilidad dos veces: una para practicarla, otra como el camino de un personaje en el que el lector puede reconocerse." },
+  hiw_5_ey: { es: "Las lecciones" },
+  hiw_5_t: { es: "Enseñada de forma directa y amable" },
+  hiw_5_b: { es: "La lección enseña la distinción esencial — <b>culpa</b> (sobre una conducta, útil) frente a <b>vergüenza</b> (sobre la identidad, corrosiva) — y una práctica concreta para dejar ir. Una señal de alta intensidad se deriva a un consejero en el lugar." },
+  hiw_6_ey: { es: "Las hojas de trabajo" },
+  hiw_6_t: { es: "Practicar con algo de bajo riesgo" },
+  hiw_6_b: { es: "Una hoja de trabajo y una <b>tarjeta de escenario</b> permiten probar la habilidad en una situación pequeña y segura primero — antes de necesitarla de verdad." },
+  hiw_7_ey: { es: "Las conversaciones" },
+  hiw_7_t: { es: "Algo para conversar juntos" },
+  hiw_7_b: { es: "Una reflexión le da a un adulto y a un joven algo que compartir lado a lado — convirtiendo una señal privada en una conversación compartida y sin prisa." },
+  hiw_8_ey: { es: "Crecimiento" },
+  hiw_8_t: { es: "El siguiente autorreflexión cuenta la historia" },
+  hiw_8_b: { es: "Cuando la autorreflexión vuelve, muestra si el bucle empieza a aflojarse. El número nunca es lo importante — lo es el <b>crecimiento</b>. Y entonces el camino comienza de nuevo, un paso más adelante." },
+  hiw_cta_checkin: { es: "Hacer la autorreflexión" },
+  hiw_cta_index: { es: "Abrir el Índice de Recursos" },
+  ri_search_ph: {
+    es: "Buscar: crítico interno, agobio, reparación, inseguro..."
+  },
+  ri_allbands: {
+    es: "Todos los niveles"
+  },
+  ri_expand: {
+    es: "Expandir todo"
+  },
+  lib_h: {
+    es: "Biblioteca"
+  },
+  doc_h1: {
+    es: "1. Qué es esto"
+  },
+  doc_p1: {
+    es: "Un autorreflexión de autoinforme de aprendizaje socioemocional (SEL) creada directamente a partir del marco Architecture of Grace. Es breve, de aplicación universal y está diseñada para realizarse en puntos regulares a lo largo del año &mdash; cada temporada en la escuela, o en cualquier momento en casa &mdash; para seguir la línea base, el crecimiento y el riesgo con el tiempo. Los padres pueden usarla igual que una escuela &mdash; haciendo registros con cada miembro de la familia algunas veces al año, en el mismo lenguaje, para ver el crecimiento con el tiempo y avanzar, con suavidad, de la ruptura hacia la reparación. Mide tres dominios &mdash; Regulación emocional y bienestar, Autocompasión y mentalidad de crecimiento, y Competencia social y reparación &mdash; con seis ítems cada uno, dieciocho en total."
+  },
+  doc_h2: {
+    es: "2. Los dos modos"
+  },
+  doc_p2a: {
+    es: "<strong>Quick</strong> &mdash; la autorreflexión escolar estándar. Una escala de frecuencia de 4 puntos (Nunca / A veces / A menudo / Casi siempre), unos cuatro minutos. Úsalo para la aplicación en toda la escuela cuando necesitas clasificar rápidamente a muchos estudiantes y comparar entre escuelas y periodos."
+  },
+  doc_p2b: {
+    es: "<strong>Thorough</strong> &mdash; el instrumento completo. Una escala de frecuencia de 6 puntos (Nunca / Rara vez / A veces / A menudo / Muy a menudo / Constantemente), más preguntas de seguimiento de intensidad en los ítems de mayor señal, más tres breves reflexiones escritas. Unos diez minutos. Úsalo en contextos de hogar, mentor o consejero donde quieres comprender y actuar de verdad, no solo clasificar."
+  },
+  doc_h3: {
+    es: "3. Cómo se califica"
+  },
+  doc_p3a: {
+    es: "Cada ítem se califica de modo que un número más alto siempre significa una respuesta más saludable. Los ítems de puntaje inverso (los indicadores de riesgo) se invierten automáticamente antes de calificar. En el modo Thorough, las valoraciones de intensidad reducen el puntaje de un ítem cuando una dificultad se reporta como de alto impacto. Ambos modos se normalizan a un compuesto de 0&ndash;100 para que dos respuestas cualesquiera puedan compararse directamente, sin importar el modo."
+  },
+  doc_p3b: {
+    es: "<strong>Puntos de corte por nivel (compuesto normalizado, 0&ndash;100):</strong>"
+  },
+  doc_p3c: {
+    es: "<span class=\"pill pill-red\">Seguimiento de un adulto &middot; 0&ndash;49</span> &nbsp; Considera seguimiento dentro de una semana; en una escuela, una revisión de Nivel 3."
+  },
+  doc_p3d: {
+    es: "<span class=\"pill pill-amber\">Conviene una autorreflexión &middot; 50&ndash;74</span> &nbsp; Apoyo focalizado; reevaluar en el próximo periodo."
+  },
+  doc_p3e: {
+    es: "<span class=\"pill pill-green\">Seguir observando &middot; 75&ndash;100</span> &nbsp; Continúa con el apoyo universal."
+  },
+  doc_p3f: {
+    es: "El ítem del adulto de confianza (Ítem 18) también se sigue por separado. Una respuesta de Nunca o Rara vez/A veces genera una señal sin importar el puntaje compuesto, porque la conexión con un adulto de confianza es protectora por sí misma."
+  },
+  doc_h4: {
+    es: "4. Abrir el Panel del Educador"
+  },
+  doc_p4: {
+    es: "El panel de resultados se abre directamente — ya no hay código de acceso. La privacidad viaja con el enlace: los resultados se sincronizan con tu Hoja solo cuando alguien abre un enlace privado que generas en <strong>Distribuir</strong>, y ese enlace nunca lleva la dirección de la hoja ni ninguna contraseña. Si abres el panel sin nada sincronizado, solo muestra las autorreflexiones hechos en este dispositivo (o datos de ejemplo), así que con solo abrirlo nunca se exponen los resultados privados de nadie. El dispositivo mismo sigue siendo lo que hay que proteger — en una computadora compartida, usa el control <strong>Borrar</strong> en la página de Privacidad cuando termines."
+  },
+  doc_h5: {
+    es: "5. Cómo aplicarla"
+  },
+  doc_p5a: {
+    es: "<strong>En casa o 1:1:</strong> Abre este archivo en cualquier navegador. Cada persona ingresa un nombre o ID, su grado o rango de edad, y el periodo. Elige el modo Thorough. Responden en privado. Cuando todos terminen, ve a este panel, abre la Vista del hogar y selecciona a cada persona."
+  },
+  doc_p5b: {
+    es: "<strong>Con un grupo o varias personas:</strong> Cada persona usa su propia computadora (o su propio navegador). Las respuestas permanecen privadas en cada dispositivo &mdash; nada se comparte entre personas automáticamente. Si varias personas comparten una computadora, cada una ingresa su propio nombre, y el panel mantiene sus registros etiquetados y separados."
+  },
+  doc_p5c: {
+    es: "<strong>Compartir el enlace:</strong> Puedes alojar este único archivo en un host estático (como Netlify) para obtener un enlace que cualquiera pueda abrir en una computadora o iPad. Cada persona que lo abre sigue conservando sus propios datos privados en su propio dispositivo."
+  },
+  doc_h6: {
+    es: "6. Cómo leer la Vista del hogar"
+  },
+  doc_p6: {
+    es: "La Vista del hogar muestra cada ítem, la respuesta real codificada por color del verde (saludable) al naranja intenso (preocupante), la insignia de intensidad cuando se registró una, y cualquier reflexión escrita en las propias palabras de la persona. Al final hay una guía de conversación: los ítems con el puntaje más bajo, reescritos como preguntas suaves que puedes hacer, además de una indicación al libro del plan de estudios que aborda ese dominio. No las hagas todas a la vez. Abre una puerta a la vez."
+  },
+  doc_h7: {
+    es: "7. Privacidad"
+  },
+  doc_p7a: {
+    es: "De forma predeterminada, todas las respuestas se almacenan solo en este navegador, en esta computadora, y nada se envía a ningún lugar &mdash; salvo que una escuela active la sincronización con su propia hoja de Google (consulta la sección 8). Las reflexiones y lo escrito se guardan con la respuesta para que un adulto de confianza pueda leerlas &mdash; apropiado para uso en el hogar y con consejeros. Si alguna vez usas esto con estudiantes en un entorno escolar, trata las respuestas como parte del expediente del estudiante bajo FERPA y limita el acceso en consecuencia."
+  },
+  doc_p7b: {
+    es: "Si algo en una respuesta o en una conversación de seguimiento sugiere abuso, negligencia o riesgo inminente de autolesión, la autorreflexión no es la última palabra &mdash; sigue tu protocolo de reporte obligatorio."
+  },
+  doc_h_share: {
+    es: "8. Compartir resultados en toda la escuela (opcional)"
+  },
+  doc_p_share: {
+    es: "De forma predeterminada, una autorreflexión permanece en el dispositivo que lo realizó. Una escuela puede optar por reunir sus resultados en su <strong>propia</strong> hoja de Google, para que un consejero vea toda la escuela en un solo lugar. Con eso activado, una autorreflexión completado se guarda en el dispositivo <em>y</em> se envía a la propia hoja de Google de la escuela &mdash; nunca a nosotros, y nunca a través de ningún servidor que operemos. La hoja crea un panel sencillo por sí sola (totales, puntaje promedio, cuántos no nombraron a un adulto de confianza). La configuración toma unos diez minutos y se explica en la guía “Conectar una hoja escolar”; los datos viven en el Google de la escuela, bajo su control."
+  },
+  doc_h8: {
+    es: "9. Una nota final"
+  },
+  doc_p8: {
+    es: "Esta autorreflexión es una señal, no un diagnóstico. Un puntaje bajo en un periodo puede ser un puntaje alto en el siguiente &mdash; esa es toda la razón por la que se repite a lo largo del año. El plan de estudios es la intervención; la autorreflexión solo te dice por dónde empezar."
+  },
+  eco_closed1: {
+    es: "EL CICLO"
+  },
+  eco_closed2: {
+    es: "CERRADO"
+  },
+  eco_cmta: {
+    es: "enseñar · medir · actuar"
+  },
+  eco_e1: {
+    es: "enseña"
+  },
+  eco_e2: {
+    es: "señala"
+  },
+  eco_e3: {
+    es: "agrupa"
+  },
+  eco_e4: {
+    es: "reorienta"
+  },
+  dl_p1_ey: {
+    es: "Vista previa · El Crítico Interno"
+  },
+  dl_p1_t: {
+    es: "Una voz, doce años"
+  },
+  dl_p1_b: {
+    es: "La lección del crítico interno, de K&ndash;12 &mdash; desde Grumpy Gus en kínder hasta perdonar al yo más joven en la graduación. Láminas de anclaje, hojas de trabajo, tarjetas de escenarios y actividades de dibujo, directo del plan de estudios."
+  },
+  dl_open_pdf: {
+    es: "&#8599;&nbsp; Abrir &nbsp;&middot;&nbsp; PDF"
+  },
+  dl_p2_ey: {
+    es: "Vista previa · Identidad"
+  },
+  dl_p2_t: {
+    es: "¿Quién soy? &mdash; K&ndash;12"
+  },
+  dl_p2_b: {
+    es: "La lección de identidad, de K&ndash;12 &mdash; la Red de Identidad de K&ndash;2 que crece hacia la Máscara y el Espejo, el Yo Curado y el Umbral de la adultez. Una pregunta, en cada nivel."
+  },
+  dl_f_ey: {
+    es: "También abierto · El relato"
+  },
+  dl_f_t: {
+    es: "Lee el primer capítulo"
+  },
+  dl_f_b: {
+    es: "Conoce a Sammy y al Salón 12 en el capítulo inicial de <em>The Year We Met Sammy</em> — el Libro Uno de la serie de novelas complementarias. El año comienza con la misma pregunta con la que abre el plan de estudios: <em>¿quién soy?</em>"
+  },
+  dl_f_btn: {
+    es: "&#8599;&nbsp; Lee el capítulo uno &nbsp;&middot;&nbsp; PDF"
+  },
+  dl_d_ey: {
+    es: "Vista previa · Libro Seis · Para adultos"
+  },
+  dl_d_t: {
+    es: "The Dwelling"
+  },
+  dl_d_b: {
+    es: "La generación ya creció — el primer libro escrito no para el niño que aprende la arquitectura, sino para el adulto que tiene que vivir dentro de ella. Lee el Capítulo Uno, <em>The Room With No Number</em>: el sótano, la mesa larga, la salsa que no cambia y la noche en que eligen el salón que nadie les asignó."
+  },
+  dl_d_btn: {
+    es: "&#8599;&nbsp; Lee el capítulo uno &nbsp;&middot;&nbsp; PDF"
+  },
+  dl_fullprog_h: {
+    es: "Explorar todo"
+  },
+  dl_fullprog_p: {
+    es: "Las vistas previas se descargan al instante. Todo lo demás es parte del programa completo &mdash; <strong>obtén una licencia</strong> para una escuela o <strong>compra</strong> piezas individuales para el hogar. Abre una categoría para explorar."
+  },
+  dl_path_s_ey: {
+    es: "Para escuelas y distritos"
+  },
+  dl_path_s_t: {
+    es: "Licencia el programa completo"
+  },
+  dl_path_s_b: {
+    es: "Lleva todo el ecosistema K&ndash;12 a tu escuela o distrito con una licencia de sede o de distrito &mdash; normalmente facturada por orden de compra y con precio por edificio o por estudiante. Te enviaremos una cotización y te ayudaremos a configurarlo."
+  },
+  dl_path_s_btn: {
+    es: "Solicitar precios para distritos →"
+  },
+  dl_path_f_ey: {
+    es: "Para familias"
+  },
+  dl_path_f_t: {
+    es: "Compra libros y materiales para el hogar"
+  },
+  dl_path_f_b: {
+    en: "Previews are always open in the Library — read before you buy. When you're ready, take it home:",
+    es: "Las vistas previas siempre están abiertas en la Biblioteca — léelas antes de comprar. Cuando estés listo, llévalo a casa:"
+  },
+  fam_novel_n: {
+    en: "The companion novel · Book One",
+    es: "La novela complementaria · Libro Uno"
+  },
+  fam_novel_d: {
+    en: "The story the whole framework grows from. Paperback or eBook.",
+    es: "La historia de la que crece todo el marco. Tapa blanda o eBook."
+  },
+  fam_pack_n: {
+    en: "Home edition · charts & cards",
+    es: "Edición para el hogar · láminas y tarjetas"
+  },
+  fam_pack_d: {
+    en: "Print-at-home anchor charts and scenario cards for the kitchen table.",
+    es: "Láminas y tarjetas de situaciones para imprimir en casa, para la mesa de la cocina."
+  },
+  fam_bundle_n: {
+    en: "Family bundle · all five books",
+    es: "Paquete familiar · los cinco libros"
+  },
+  fam_bundle_d: {
+    en: "Every novel, chart, and card deck for home, in one pack.",
+    es: "Todas las novelas, láminas y barajas para el hogar, en un solo paquete."
+  },
+  fam_best: {
+    en: "Best value",
+    es: "Mejor precio"
+  },
+  fam_buy: {
+    en: "Buy",
+    es: "Comprar"
+  },
+  fam_ask: {
+    en: "Home-schooling, or want a set for several kids? <a href=\"#\" id=\"storeTopBtn\">Ask us &rarr;</a>",
+    es: "¿Educas en casa o quieres un set para varios niños? <a href=\"#\" id=\"storeTopBtn\">Escríbenos &rarr;</a>"
+  },
+  dl_path_f_btn: {
+    es: "Pregunta por una copia para la familia →"
+  },
+  dl_free_h: {
+    en: "Read & download",
+    es: "Para leer y descargar"
+  },
+  dl_free_sub: {
+    en: "Every chapter preview and sample lesson, in one place — no code, no purchase, no sign-up. Open or download any of them.",
+    es: "Cada vista previa de capítulo y lección de muestra, en un solo lugar — sin código, sin compra, sin registro. Abre o descarga cualquiera."
+  },
+  hyb_freelink: {
+    en: "Just want to look first? Read previews & samples →",
+    es: "¿Solo quieres mirar primero? Lee vistas previas y muestras →"
+  },
+  lib_intro: {
+    es: "Explora y descarga cada vista previa, lección de muestra y paquete de recursos — sin registro y sin código."
+  },
+  w_admin_link: {
+    en: "Educator / Parent access →",
+    es: "Acceso de educador / padre →"
+  },
+  w_begin: {
+    en: "Begin Survey",
+    es: "Comenzar encuesta"
+  },
+  w_door_guide: {
+    en: "Explore the Guide & Library",
+    es: "Explorar la guía y biblioteca"
+  },
+  w_door_guide_sub: {
+    en: "The ecosystem map, resource index, and every downloadable resource — no code needed.",
+    es: "El mapa del ecosistema, el índice de recursos y todas las descargas — sin código."
+  },
+  w_door_results: {
+    en: "Educator Access · Results",
+    es: "Acceso de educador · Resultados"
+  },
+  w_door_results_sub: {
+    en: "View self-reflection results. Code required — protects private responses.",
+    es: "Ver resultados. Requiere código — protege las respuestas privadas."
+  },
+  s_question: {
+    en: "Question",
+    es: "Pregunta"
+  },
+  s_of: {
+    en: "of",
+    es: "de"
+  },
+  s_back: {
+    en: "← Back",
+    es: "← Atrás"
+  },
+  r_ph: {
+    en: "Optional. Write as much or as little as you want.",
+    es: "Opcional. Escribe tanto o tan poco como quieras."
+  },
+  r_priv: {
+    en: "This is private to you. It is saved with your results but only shown to a trusted adult who can help. You can skip it.",
+    es: "Esto es privado para ti. Se guarda con tus resultados, pero solo lo ve un adulto de confianza que pueda ayudar. Puedes omitirlo."
+  },
+  r_skip: {
+    en: "Skip this one",
+    es: "Omitir esta"
+  },
+  t_h1: {
+    en: "Thank you.",
+    es: "Gracias."
+  },
+  t_lede: {
+    en: "Your answers have been saved. A trusted adult will review them to make sure you have the support you need.",
+    es: "Tus respuestas se han guardado. Un adulto de confianza las revisará para asegurarse de que tengas el apoyo que necesitas."
+  },
+  t_btn: {
+    en: "One more thing →",
+    es: "Una cosa más →"
+  },
+  c_eyebrow: {
+    en: "A closing reflection · in your own words",
+    es: "Una reflexión final · en tus propias palabras"
+  },
+  c_h1: {
+    en: "Name something true about yourself.",
+    es: "Nombra algo verdadero sobre ti."
+  },
+  c_lede: {
+    en: "Before you go, tap one or two positive words that describe you today.",
+    es: "Antes de irte, toca una o dos palabras positivas que te describan hoy."
+  },
+  c_label: {
+    en: "Tap the words that fit",
+    es: "Toca las palabras que te describan"
+  },
+  c_ph: {
+    en: "kind, curious, strong, funny, patient...",
+    es: "amable, curioso, fuerte, divertido, paciente..."
+  },
+  c_skip: {
+    en: "Skip",
+    es: "Omitir"
+  },
+  c_save: {
+    en: "Keep this word",
+    es: "Guardar esta palabra"
+  },
+  f_eyebrow: {
+    en: "Take it with you",
+    es: "Llévala contigo"
+  },
+  f_lede: {
+    en: "Carry that word with you today.",
+    es: "Lleva esa palabra contigo hoy."
+  },
+  f_done: {
+    en: "Done",
+    es: "Listo"
+  }
+};
+const CTX_TEXT = {
+  school: {
+    label: {
+      en: "Your name or a code",
+      es: "Tu nombre o un código"
+    },
+    ph: {
+      en: "Initials or a nickname are fine",
+      es: "Iniciales o un apodo están bien"
+    },
+    note: {
+      en: "<strong>School mode.</strong> Use initials, a seat number, or a roster ID you keep on your own paper. Please don’t enter full names — this keeps every response pseudonymous, keyed to a code you control, not a name.",
+      es: "<strong>Modo escuela.</strong> Usa iniciales, un número de asiento o un ID de lista que guardes en tu propio papel. Por favor no escribas nombres completos — así cada respuesta queda anónima."
+    }
+  },
+  home: {
+    label: {
+      en: "Name or nickname",
+      es: "Nombre o apodo"
+    },
+    ph: {
+      en: "A first name or nickname is fine",
+      es: "Un nombre o apodo está bien"
+    },
+    note: {
+      en: "<strong>Home mode.</strong> Everything stays on this device only — nothing is sent anywhere — so a first name is perfectly fine.",
+      es: "<strong>Modo hogar.</strong> Todo se queda solo en este dispositivo — no se envía nada — así que un nombre de pila está bien."
+    }
+  }
+};
+function applyContext() {
+  const _0x560d1f = lang === "es" ? "es" : "en";
+  const _0x97d22f = CTX_TEXT[context] || CTX_TEXT.school;
+  const _0x1651da = document.getElementById("lblStudentId");
+  const _0x5a047c = document.getElementById("studentId");
+  const _0x4b82cb = document.getElementById("ctxNote");
+  if (_0x1651da) {
+    _0x1651da.textContent = _0x97d22f.label[_0x560d1f];
+  }
+  if (_0x5a047c) {
+    _0x5a047c.setAttribute("placeholder", _0x97d22f.ph[_0x560d1f]);
+  }
+  if (_0x4b82cb) {
+    _0x4b82cb.innerHTML = _0x97d22f.note[_0x560d1f];
+  }
+  document.querySelectorAll("#ctxToggle .ctx-opt").forEach(_0x3e310e => {
+    _0x3e310e.classList.toggle("active", _0x3e310e.dataset.ctx === context);
+  });
+  const _0x7fbd13 = document.getElementById("grade");
+  if (_0x7fbd13) {
+    const _0x59760e = ["College", "Adult"];
+    Array.prototype.forEach.call(_0x7fbd13.options, function (_0x263a1d) {
+      if (_0x59760e.indexOf(_0x263a1d.value) !== -1) {
+        _0x263a1d.hidden = context === "school";
+        _0x263a1d.disabled = context === "school";
+      }
+    });
+    if (context === "school" && _0x59760e.indexOf(_0x7fbd13.value) !== -1) {
+      _0x7fbd13.value = "";
+    }
+  }
+  const _0x742973 = document.getElementById("window");
+  const _0x461c76 = document.getElementById("homeWindowStamp");
+  const _0x206318 = document.getElementById("lblWindow");
+  if (_0x742973 && _0x461c76) {
+    if (context === "home") {
+      _0x742973.style.display = "none";
+      _0x461c76.style.display = "";
+      _0x461c76.textContent = currentDateLabel(_0x560d1f);
+      if (_0x206318) {
+        _0x206318.textContent = _0x560d1f === "es" ? "Esta autorreflexión" : "This self-reflection";
+      }
+    } else {
+      _0x742973.style.display = "";
+      _0x461c76.style.display = "none";
+      if (_0x206318) {
+        _0x206318.textContent = _0x560d1f === "es" ? "Período" : "Window";
+      }
+    }
+  }
+}
+I18N_UI.founder_role = { en: "Curriculum Architect & Program Developer", es: "Arquitecto del currículo y desarrollador de programas" };
+I18N_UI.founder_tagline = { en: "Creator of Architecture of Grace \u2014 a trauma-informed, universal K\u201312 + Adult SEL ecosystem", es: "Creador de Architecture of Grace \u2014 un ecosistema de SEL universal y sensible al trauma para K\u201312 y adultos" };
+function applyLang() {
+  const _0x2def1f = lang === "es" ? "es" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(_0x273b18 => {
+    if (_0x273b18.getAttribute("data-i18n-orig") === null) {
+      _0x273b18.setAttribute("data-i18n-orig", _0x273b18.textContent);
+    }
+    const _0x358421 = I18N_UI[_0x273b18.getAttribute("data-i18n")];
+    _0x273b18.textContent = _0x358421 && _0x358421[_0x2def1f] != null ? _0x358421[_0x2def1f] : _0x273b18.getAttribute("data-i18n-orig");
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(_0x41907b => {
+    if (_0x41907b.getAttribute("data-i18n-orig") === null) {
+      _0x41907b.setAttribute("data-i18n-orig", _0x41907b.innerHTML);
+    }
+    const _0x36ac75 = I18N_UI[_0x41907b.getAttribute("data-i18n-html")];
+    _0x41907b.innerHTML = _0x36ac75 && _0x36ac75[_0x2def1f] != null ? _0x36ac75[_0x2def1f] : _0x41907b.getAttribute("data-i18n-orig");
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(_0x22f809 => {
+    if (_0x22f809.getAttribute("data-i18n-orig") === null) {
+      _0x22f809.setAttribute("data-i18n-orig", _0x22f809.getAttribute("placeholder") || "");
+    }
+    const _0xc388ee = I18N_UI[_0x22f809.getAttribute("data-i18n-ph")];
+    _0x22f809.setAttribute("placeholder", _0xc388ee && _0xc388ee[_0x2def1f] != null ? _0xc388ee[_0x2def1f] : _0x22f809.getAttribute("data-i18n-orig"));
+  });
+  try {
+    if (typeof renderFreeShelf === "function") {
+      renderFreeShelf();
+    }
+  } catch (_0x206b0e) {}
+  try {
+    if (typeof renderHeroDemo === "function") {
+      renderHeroDemo();
+    }
+  } catch (_e) {}
+}
+function setLang(_0x3f9e05) {
+  lang = _0x3f9e05;
+  surveyLang = _0x3f9e05;
+  try {
+    document.documentElement.setAttribute("lang", _0x3f9e05);
+  } catch (_0x4477fe) {}
+  sessionStorage.setItem(LANG_KEY, _0x3f9e05);
+  $("#langEn").classList.toggle("active", _0x3f9e05 === "en");
+  $("#langEs").classList.toggle("active", _0x3f9e05 === "es");
+  applyLang();
+  try { if (typeof setDashLang === "function") setDashLang(_0x3f9e05); } catch (_eDash) {}
+  if (typeof aogRenderTankCopy === "function") { try { aogRenderTankCopy(); } catch (_e) {} }
+  if (typeof aogRenderRightNow === "function") { try { aogRenderRightNow(); } catch (_e) {} }
+  applyContext();
+  const _0xb15a77 = document.querySelector(".screen.active");
+  if (_0xb15a77) {
+    if (_0xb15a77.id === "screen-survey") {
+      renderItem();
+    } else if (_0xb15a77.id === "screen-reflection") {
+      renderReflection();
+    } else if (_0xb15a77.id === "screen-closing") {
+      renderClosing();
+    }
+  }
+  if (typeof ecoRenderDetail === "function" && document.getElementById("ecoDetail")) {
+    const _0x440c59 = document.querySelector(".eco-node.is-active");
+    ecoRenderDetail(_0x440c59 ? _0x440c59.dataset.node : "_default");
+  }
+  if (typeof riRender === "function" && document.getElementById("riIndex")) {
+    const _0x1608e2 = document.getElementById("riSearch");
+    const _0x56835b = document.getElementById("riGrade");
+    riRender(_0x1608e2 ? _0x1608e2.value : "", _0x56835b ? _0x56835b.value : "");
+  }
+  if (typeof renderLibrary === "function" && document.getElementById("libRoot")) {
+    renderLibrary();
+  }
+  if (typeof aogEcoRelang === "function") { try { aogEcoRelang(); } catch (_e) {} }
+}
+/* .30fg — every screen names itself in the tab and hands focus to its heading, so a
+   keyboard or screen-reader user knows the page changed (axe/route audit, 2026-09-03). */
+var AOG_TITLES = {
+  "screen-starthere":["Start Here","Empieza aquí"], "screen-framework":["The Framework","El Marco"],
+  "screen-curriculum":["The Curriculum","El Currículo"], "screen-privacy":["Privacy & your data","Privacidad y tus datos"],
+  "screen-family":["Family","Familia"], "screen-admin":["Educator Dashboard","Panel del Educador"],
+  "screen-library":["Library","Biblioteca"], "screen-guide":["Guide & For Schools","Guía y escuelas"],
+  "screen-pilot":["Pilot Program","Programa piloto"], "screen-teacher-tools":["Calm & Regulation Tools","Herramientas de calma y regulación"],
+  "screen-about":["How it works","Cómo funciona"], "screen-survey":["Self-Reflection","Autorreflexión"],
+  "screen-checkin":["Self-Reflection","Autorreflexión"], "screen-adult":["Adult self-reflection","Autorreflexión para adultos"],
+  "screen-daily-checkin":["Daily check-in","Registro diario"], "screen-exit-slip":["Exit slip","Boleta de salida"],
+  "screen-workplace":["Workplace","Trabajo"], "screen-words":["Words of Encouragement","Palabras de aliento"],
+  "screen-voices":["Voices","Voces"], "screen-store":["Store","Tienda"], "screen-results":["Results","Resultados"]
+};
+function aogScreenTitle_(id) {
+  try {
+    var cur = document.title;
+    if (!/ · Architecture of Grace$/.test(cur)) window.__aogFullTitle = cur;
+    var es = (typeof lang !== "undefined" && lang === "es");
+    var t = AOG_TITLES[id];
+    if (!t) { if (window.__aogFullTitle) document.title = window.__aogFullTitle; return; }
+    document.title = (es ? t[1] : t[0]) + " · Architecture of Grace";
+  } catch (e) {}
+}
+function aogScreenFocus_(id) {
+  try {
+    if (id === "screen-welcome" || !window.__aogBooted) return;
+    var sc = document.getElementById(id); if (!sc) return;
+    var h = sc.querySelector("h1");
+    if (!h || !h.offsetParent) return;
+    if (!h.hasAttribute("tabindex")) h.setAttribute("tabindex", "-1");
+    h.focus({ preventScroll: true });
+  } catch (e) {}
+}
+try { window.addEventListener("load", function () { setTimeout(function () { window.__aogBooted = true; }, 800); }); } catch (e) {}
+function showScreen(_0x2dc9c2) {
+  try {
+    // Item 4: remember where the user was on the screen they're leaving, so a
+    // later Back/Forward can return them to that exact spot.
+    var _aogPrev = document.querySelector(".screen.active");
+    if (_aogPrev) {
+      window.__aogScrollMem = window.__aogScrollMem || {};
+      window.__aogScrollMem[_aogPrev.id] = window.scrollY || window.pageYOffset || 0;
+    }
+  } catch (_aogE0) {}
+  $$(".screen").forEach(_0x1ec822 => _0x1ec822.classList.remove("active"));
+  $("#" + _0x2dc9c2).classList.add("active");
+  try { aogScreenTitle_(_0x2dc9c2); aogScreenFocus_(_0x2dc9c2); } catch (_aogTe) {}
+  try { if (typeof window.aogWisdomOnScreen === "function") window.aogWisdomOnScreen(_0x2dc9c2); } catch (_awe) {}
+  try {
+    var _0x26edce = document.getElementById("topbarBack");
+    if (_0x26edce) {
+      /* ⚠ THERE IS NO BACK FROM A LINK. goBack() walks history.state.aogIdx
+         and, finding no earlier in-app entry, falls through to the student
+         chooser. Someone who opened a texted link in a fresh tab has exactly
+         that state - so a colleague on a staff link, or a parent on a home
+         link, was one tap from a child's self-reflection page. Reported by
+         Jimmy, 2026-08-29, and true of every instrument link, not one.
+
+         The control is hidden rather than repointed: they came from a text
+         message or Google Classroom, there is nowhere in this app they were
+         trying to get back to, and the browser's own Back still works and
+         takes them out. It reappears the moment they navigate inside the app,
+         because aogIdx starts counting. */
+      var _aogHideBack = false;
+      try { _aogHideBack = (typeof window.aogLinkArrival_ === "function") && window.aogLinkArrival_(); } catch (_aogHB) {}
+      _0x26edce.style.display = (_0x2dc9c2 === "screen-welcome" || _aogHideBack) ? "none" : "";
+    }  } catch (_0x3f12b1) {}
+  try {
+    // Item 4: on a Back/Forward navigation, restore the previous scroll position
+    // for this screen instead of resetting the viewport to the top.
+    var _aogY = (window.__aogRestoreScroll && window.__aogScrollMem &&
+                 window.__aogScrollMem[_0x2dc9c2] != null)
+                ? window.__aogScrollMem[_0x2dc9c2] : null;
+    window.__aogRestoreScroll = false;
+    if (_aogY != null) {
+      var _aogTop = _aogY;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          // "instant" forces an immediate jump; "auto" would defer to the global
+          // html{scroll-behavior:smooth}, animating a slow scroll back to the spot.
+          try { window.scrollTo({ top: _aogTop, behavior: "instant" }); }
+          catch (_e) { window.scrollTo(0, _aogTop); }
+        });
+      });
+    } else {
+      // New screen: jump straight to the top rather than smooth-scrolling up from
+      // the previous screen's offset (which looked like a snap/lag on view switch).
+      try { window.scrollTo({ top: 0, behavior: "instant" }); }
+      catch (_e2) { window.scrollTo(0, 0); }
+    }
+  } catch (_aogE1) {
+    try { window.scrollTo({ top: 0, behavior: "instant" }); }
+    catch (_e3) { window.scrollTo(0, 0); }
+  }
+  try {
+    var _0x534f7a = document.getElementById("tourFab");
+    var _0x27d166 = {
+      "screen-welcome": 1,
+      "screen-guide": 1,
+      "screen-admin": 1
+    };
+    if (_0x534f7a) {
+      _0x534f7a.classList.toggle("show", !!_0x27d166[_0x2dc9c2]);
+    }
+    if (typeof tourActive !== "undefined" && tourActive && typeof endTour === "function") {
+      endTour(true);
+    }
+  } catch (_0x1ae98b) {}
+}
+var TOURS = {
+  welcome: [{
+    sel: null,
+    title: { en: "Welcome", es: "Bienvenido" },
+    body: { en: "A 30-second tour of the front door. Everything here is open to read and browse \u2014 no sign-up, no code. Skip anytime, and replay later from the \u201cQuick tour\u201d button.", es: "Un recorrido de 30 segundos por la p\u00e1gina principal. Todo aqu\u00ed está abierto para leer y explorar \u2014 sin registro y sin c\u00f3digo. Om\u00edtelo cuando quieras y rep\u00edtelo luego con el bot\u00f3n \u201cRecorrido r\u00e1pido\u201d." }
+  }, {
+    sel: "#heroExploreBtn",
+    title: { en: "Start Here", es: "Empieza aqu\u00ed" },
+    body: { en: "New here? Open Explore \u2014 \u201cStart Here\u201d is the first row: a five-minute orientation to what Architecture of Grace is and how the pieces fit together.", es: "\u00bfPrimera vez? Abre \u201cExplorar\u201d \u2014 \u201cEmpieza aqu\u00ed\u201d es la primera fila: una orientaci\u00f3n de cinco minutos sobre qu\u00e9 es Architecture of Grace y c\u00f3mo encajan las piezas." }
+  }, {
+    sel: "#rnNavBtn",
+    title: { en: "Quiet Space", es: "Espacio Tranquilo" },
+    body: { en: "An in-the-moment reset. When someone feels overwhelmed, Quiet Space offers a quick read and calming tools to settle \u2014 private, and never scored.", es: "Un respiro en el momento. Cuando alguien se siente abrumado, el Espacio Tranquilo ofrece una lectura r\u00e1pida y herramientas para calmarse \u2014 en privado y sin puntajes." }
+  }, {
+    sel: "#heroDashBtn",
+    title: { en: "Educator Dashboard", es: "Panel del educador" },
+    body: { en: "The front door for staff. Hand out the self-reflection, read what comes back, and go straight to the lesson it points at \u2014 all on one screen. Nothing leaves the device unless a school chooses to sync it.", es: "La puerta de entrada del personal. Reparte la autorreflexi\u00f3n, lee lo que regresa y ve directo a la lecci\u00f3n que se\u00f1ala \u2014 todo en una sola pantalla. Nada sale del dispositivo a menos que la escuela decida sincronizarlo." }
+  }, {
+    sel: "#one-framework",
+    title: { en: "One framework at the center", es: "Un marco en el centro" },
+    body: { en: "Everything here speaks one shared language of grace. Want the map? The Framework page holds the full ecosystem star \u2014 teachers, specialists, outside providers, leadership, families, children, adults, and faith.", es: "Todo aqu\u00ed habla un mismo lenguaje de gracia. \u00bfQuieres el mapa? La p\u00e1gina del Marco tiene la estrella completa del ecosistema \u2014 docentes, especialistas, proveedores externos, liderazgo, familias, ni\u00f1os, adultos y fe." }
+  }, {
+    sel: "#exNavBtn",
+    title: { en: "Explore everything", es: "Explora todo" },
+    body: { en: "Open Explore for the Framework, the Library, the Store, and the school Dashboard \u2014 all open to read and browse, no sign-up, no code.", es: "Abre \u201cExplorar\u201d para el Marco, la Biblioteca, la Tienda y el Panel escolar \u2014 todo abierto para leer y explorar, sin registro y sin c\u00f3digo." }
+  }],
+  guide: [{
+    sel: null,
+    title: {
+      en: "This is the Library",
+      es: "Esta es la biblioteca"
+    },
+    body: {
+      en: "Everything the program offers lives here, open to browse — here’s a quick tour.",
+      es: "Todo lo que ofrece el programa está aquí, abierto para explorar. Aquí tienes un recorrido rápido."
+    }
+  }, {
+    sel: ".guide-subnav",
+    title: {
+      en: "Find what you need",
+      es: "Encuentra lo que necesitas"
+    },
+    body: {
+      en: "Documentation, the resource index, and voices from the field — browse it all here. (The living-ecosystem map now lives on the Framework page.)",
+      es: "Documentación, el índice de recursos y voces desde el campo — explóralo todo aquí. (El mapa del ecosistema vivo ahora está en la página del Marco.)"
+    }
+  }, {
+    sel: ".guide-subtab[data-guide=\"docs\"]",
+    title: {
+      en: "Documentation",
+      es: "Documentación"
+    },
+    body: {
+      en: "Start here for the written guide — what the program is, the four core ideas behind it, and how to put it to work.",
+      es: "Empieza aquí por la guía escrita — qué es el programa, las cuatro ideas centrales y cómo ponerlo en práctica."
+    },
+    act: function () {
+      if (typeof openGuideSub === "function") {
+        openGuideSub("docs", false);
+      }
+    }
+  }, {
+    sel: ".guide-subtab[data-guide=\"resindex\"]",
+    title: {
+      en: "The Resource Index",
+      es: "El Índice de recursos"
+    },
+    body: {
+      en: "This maps every skill to its lesson, anchor chart, and activity by grade band — and to the exact chapter in the companion novels. The clearest way to see how it all connects.",
+      es: "Mapea cada habilidad con su lección, lámina y actividad por nivel — y con el capítulo exacto en las novelas. La forma más clara de ver cómo todo se conecta."
+    },
+    act: function () {
+      if (typeof openGuideSub === "function") {
+        openGuideSub("resindex", false);
+      }
+    }
+  }, {
+    sel: ".guide-subtab[data-guide=\"voices\"]",
+    title: {
+      en: "Voices",
+      es: "Voces"
+    },
+    body: {
+      en: "Leave a few words about your experience, and read what teachers, families, adults, and students have shared. Posts appear on the wall for everyone.",
+      es: "Deja unas palabras sobre tu experiencia y lee lo que han compartido maestros, familias, adultos y estudiantes. Las publicaciones aparecen en el muro para todos."
+    },
+    act: function () {
+      if (typeof openGuideSub === "function") {
+        openGuideSub("voices", false);
+      }
+    }
+  }],
+  dash: [{
+    sel: null,
+    title: {
+      en: "Welcome to the dashboard",
+      es: "Bienvenido al panel"
+    },
+    body: {
+      en: "Aggregate results, private to this device. A 20-second tour of how to read it.",
+      es: "Resultados agregados, privados en este dispositivo. Un recorrido de 20 segundos para leerlo."
+    }
+  }, {
+    sel: ".tabs",
+    title: {
+      en: "Five views + More",
+      es: "Cinco vistas + Más"
+    },
+    body: {
+      en: "Your five core views sit across the top — everything else lives under “More”. The set adapts to the role you’re viewing as.",
+      es: "Tus cinco vistas principales están arriba — todo lo demás vive en “Más”. El conjunto se adapta al rol con el que miras."
+    }
+  }, {
+    sel: ".tab[data-tab=\"distribute\"]",
+    title: {
+      en: "Hand it out",
+      es: "Compártelo"
+    },
+    body: {
+      en: "The Distribute tab builds a classroom link or QR code to share. Every device stays private by default — syncing turns on only when you enable it here, or when a student opens a generated link.",
+      es: "La pestaña Distribuir crea un enlace o código QR para compartir. Cada dispositivo es privado por defecto: la sincronización se activa solo cuando la enciendes aquí o cuando un estudiante abre un enlace generado."
+    }
+  }, {
+    /* Added with the population layer, 2026-08-27. Same shape as the
+       Distribute step above, including that the tab it points at is only
+       visible while Set up is the open door. */
+    sel: ".tab[data-tab=\"classes\"]",
+    title: {
+      en: "Tell it about your classes",
+      es: "Cuéntale sobre tus clases"
+    },
+    body: {
+      en: "Optional, and it changes nothing until you use it. Set up a period, a course and the student codes that belong to it, and the Overview can tell a quiet Period 3 apart from a Period 3 nobody handed anything to. Codes only — no names, ever.",
+      es: "Opcional, y no cambia nada hasta que lo uses. Configura un periodo, un curso y los códigos que le pertenecen, y el Panorama podrá distinguir un Periodo 3 tranquilo de uno al que nadie le repartió nada. Solo códigos — nunca nombres."
+    }
+  }, {
+    sel: ".filter-bar",
+    title: {
+      en: "Filter the group",
+      es: "Filtra el grupo"
+    },
+    body: {
+      en: "Narrow by window, grade, or mode anywhere you see these controls.",
+      es: "Filtra por período, grado o modo donde veas estos controles."
+    }
+  }, {
+    sel: ".tab[data-tab=\"home\"]",
+    title: {
+      en: "Student view",
+      es: "Vista del estudiante"
+    },
+    body: {
+      en: "Open any student’s full self-reflection report here — their answers, their words, and conversation starters. Use it to start a conversation, never to grade one. For class-wide planning, use Class trends.",
+      es: "Abre aquí el informe completo de la autorreflexión de cualquier estudiante — sus respuestas, sus palabras y los iniciadores de conversación. Úsalo para iniciar una conversación, nunca para calificar. Para planificar a nivel de clase, usa Tendencias de la clase."
+    }
+  }, {
+    sel: "#aogDemoBtn",
+    title: {
+      en: "Try demo data",
+      es: "Prueba datos de ejemplo"
+    },
+    body: {
+      en: "Open the Demo menu to load sample self-reflections and explore everything safely — clear them anytime from the same menu.",
+      es: "Abre el menú Demo para cargar autorreflexiones de ejemplo y explorar con seguridad — bórralas cuando quieras desde el mismo menú."
+    }
+  }, {
+    sel: "#qsCard",
+    act: function () { try { if (window.aogQsShow) window.aogQsShow(); } catch (e) {} },
+    title: {
+      en: "Want the full walkthrough?",
+      es: "¿Quieres la guía completa?"
+    },
+    body: {
+      en: "This card explains the whole flow in 4 steps — hand it out, they check in privately, read the group, open the conversation. It stays tucked away until you ask for it here; use its Hide button to put it away again.",
+      es: "Esta tarjeta explica todo el flujo en 4 pasos — repártelo, ellos reflexionan en privado, lee al grupo y abre la conversación. Queda guardada hasta que la pidas aquí; usa su botón Ocultar para guardarla de nuevo."
+    }
+  }]
+};
+var TOUR_SCREEN = {
+  welcome: "screen-welcome",
+  guide: "screen-guide",
+  dash: "screen-admin"
+};
+var TOUR_SEEN = {
+  welcome: "aog.tour.seen",
+  guide: "aog.tour.guide.seen",
+  dash: "aog.tour.dash.seen"
+};
+function tourSeenGet(_0x6d86eb) {
+  try {
+    return localStorage.getItem(_0x6d86eb) === "1";
+  } catch (_0x28d430) {
+    return false;
+  }
+}
+function tourSeenSet(_0x488714) {
+  try {
+    localStorage.setItem(_0x488714, "1");
+  } catch (_0x5ee44d) {}
+}
+var _tourSteps = TOURS.welcome;
+var _tourKey = "welcome";
+var tourIdx = 0;
+var tourActive = false;
+function tourTxt(_0x3ade52) {
+  if (typeof lang !== "undefined" && lang === "es" && _0x3ade52 && _0x3ade52.es) {
+    return _0x3ade52.es;
+  } else if (_0x3ade52) {
+    return _0x3ade52.en;
+  } else {
+    return "";
+  }
+}
+function tourDetectKey() {
+  for (var _0x12fb55 in TOUR_SCREEN) {
+    var _0x403bd7 = document.getElementById(TOUR_SCREEN[_0x12fb55]);
+    if (_0x403bd7 && _0x403bd7.classList.contains("active")) {
+      return _0x12fb55;
+    }
+  }
+  return "welcome";
+}
+function startTour(_0x48addd) {
+  if (!_0x48addd) {
+    _0x48addd = tourDetectKey();
+  }
+  if (_0x48addd === "welcome") {
+    var _0x5f1920 = document.getElementById("screen-welcome");
+    if (_0x5f1920 && !_0x5f1920.classList.contains("active")) {
+      if (typeof resetToStart === "function") {
+        resetToStart();
+      }
+    }
+  }
+  _tourKey = _0x48addd;
+  _tourSteps = TOURS[_0x48addd] || TOURS.welcome;
+  tourIdx = 0;
+  tourActive = true;
+  var _0x350cbe = document.getElementById("tourOverlay");
+  if (!_0x350cbe) {
+    return;
+  }
+  _0x350cbe.hidden = false;
+  document.getElementById("tourTotal").textContent = String(_tourSteps.length);
+  var _0x32731b = document.getElementById("tourDots");
+  _0x32731b.innerHTML = "";
+  for (var _0x1c30cd = 0; _0x1c30cd < _tourSteps.length; _0x1c30cd++) {
+    var _0x35c85e = document.createElement("i");
+    _0x32731b.appendChild(_0x35c85e);
+  }
+  window.addEventListener("resize", tourReposition);
+  window.addEventListener("scroll", tourReposition, true);
+  document.addEventListener("keydown", tourKey);
+  tourGoTo(0);
+}
+function tourKey(_0x23bdca) {
+  if (!tourActive) {
+    return;
+  }
+  if (_0x23bdca.key === "Escape") {
+    endTour();
+  } else if (_0x23bdca.key === "ArrowRight" || _0x23bdca.key === "Enter") {
+    tourNext();
+  } else if (_0x23bdca.key === "ArrowLeft") {
+    tourPrev();
+  }
+}
+function tourNext() {
+  if (tourIdx >= _tourSteps.length - 1) {
+    endTour();
+  } else {
+    tourGoTo(tourIdx + 1);
+  }
+}
+function tourPrev() {
+  if (tourIdx > 0) {
+    tourGoTo(tourIdx - 1);
+  }
+}
+function tourGoTo(_0x32eaf5) {
+  tourIdx = _0x32eaf5;
+  var _0x173b49 = _tourSteps[_0x32eaf5];
+  document.getElementById("tourNum").textContent = String(_0x32eaf5 + 1);
+  document.getElementById("tourTitle").textContent = tourTxt(_0x173b49.title);
+  document.getElementById("tourBody").textContent = tourTxt(_0x173b49.body);
+  var _0x5e0250 = document.getElementById("tourDots").children;
+  for (var _0x2e441b = 0; _0x2e441b < _0x5e0250.length; _0x2e441b++) {
+    _0x5e0250[_0x2e441b].classList.toggle("on", _0x2e441b === _0x32eaf5);
+  }
+  document.getElementById("tourBack").style.visibility = _0x32eaf5 === 0 ? "hidden" : "visible";
+  var _0x236405 = document.getElementById("tourNext");
+  _0x236405.textContent = _0x32eaf5 === _tourSteps.length - 1 ? typeof lang !== "undefined" && lang === "es" ? "Entendido" : "Got it" : typeof lang !== "undefined" && lang === "es" ? "Siguiente" : "Next";
+  document.getElementById("tourSkip").textContent = typeof lang !== "undefined" && lang === "es" ? "Omitir" : "Skip";
+  if (typeof _0x173b49.act === "function") {
+    try {
+      _0x173b49.act();
+    } catch (_0x11bac9) {}
+  }
+  var _0x1ce42e = _0x173b49.sel ? document.querySelector(_0x173b49.sel) : null;
+  if (_0x1ce42e && _0x1ce42e.scrollIntoView) {
+    var _0x4ac489 = _0x1ce42e.getBoundingClientRect();
+    if (_0x4ac489.top < 90 || _0x4ac489.bottom > window.innerHeight - 60) {
+      _0x1ce42e.scrollIntoView({
+        block: "center",
+        behavior: "smooth"
+      });
+    }
+  }
+  tourReposition();
+  requestAnimationFrame(tourReposition);
+  setTimeout(tourReposition, 80);
+  setTimeout(tourReposition, 340);
+  /* .30fg — the tour is a dialog; give it focus so Escape/Enter/arrows work from the keyboard */
+  try { var _tp = document.getElementById("tourPop"); if (_tp) { _tp.setAttribute("tabindex", "-1"); _tp.focus({ preventScroll: true }); } } catch (e) {}
+}
+function tourReposition() {
+  if (!tourActive) {
+    return;
+  }
+  var _0x29083b = _tourSteps[tourIdx];
+  var _0x308c0d = document.getElementById("tourSpotlight");
+  var _0x218cf1 = document.getElementById("tourPop");
+  var _0x4de89d = _0x29083b.sel ? document.querySelector(_0x29083b.sel) : null;
+  var _0x10ea40 = window.innerWidth;
+  var _0x339789 = window.innerHeight;
+  if (_0x4de89d && _0x4de89d.getClientRects().length) {
+    var _0x1f710b = _0x4de89d.getBoundingClientRect();
+    var _0x54886b = 6;
+    _0x308c0d.style.display = "block";
+    _0x308c0d.style.top = _0x1f710b.top - _0x54886b + "px";
+    _0x308c0d.style.left = _0x1f710b.left - _0x54886b + "px";
+    _0x308c0d.style.width = _0x1f710b.width + _0x54886b * 2 + "px";
+    _0x308c0d.style.height = _0x1f710b.height + _0x54886b * 2 + "px";
+    var _0x2d7cc0 = _0x218cf1.offsetWidth || 300;
+    var _0x2e0285 = _0x218cf1.offsetHeight || 180;
+    // Prefer below -> above -> right -> left, and only center as a last resort,
+    // so the tooltip never covers the element it is pointing at.
+    var _spBelow = _0x339789 - _0x1f710b.bottom;
+    var _spAbove = _0x1f710b.top;
+    var _spRight = _0x10ea40 - _0x1f710b.right;
+    var _spLeft = _0x1f710b.left;
+    var _topPos, _leftPos;
+    if (_spBelow > _0x2e0285 + 24) {
+      _topPos = _0x1f710b.bottom + 14;
+      _leftPos = _0x1f710b.left + _0x1f710b.width / 2 - _0x2d7cc0 / 2;
+    } else if (_spAbove > _0x2e0285 + 24) {
+      _topPos = _0x1f710b.top - _0x2e0285 - 14;
+      _leftPos = _0x1f710b.left + _0x1f710b.width / 2 - _0x2d7cc0 / 2;
+    } else if (_spRight > _0x2d7cc0 + 24) {
+      _leftPos = _0x1f710b.right + 14;
+      _topPos = _0x1f710b.top + _0x1f710b.height / 2 - _0x2e0285 / 2;
+    } else if (_spLeft > _0x2d7cc0 + 24) {
+      _leftPos = _0x1f710b.left - _0x2d7cc0 - 14;
+      _topPos = _0x1f710b.top + _0x1f710b.height / 2 - _0x2e0285 / 2;
+    } else {
+      _topPos = Math.max(12, (_0x339789 - _0x2e0285) / 2);
+      _leftPos = _0x1f710b.left + _0x1f710b.width / 2 - _0x2d7cc0 / 2;
+    }
+    _leftPos = Math.max(14, Math.min(_leftPos, _0x10ea40 - _0x2d7cc0 - 14));
+    _topPos = Math.max(12, Math.min(_topPos, _0x339789 - _0x2e0285 - 12));
+    _0x218cf1.style.top = _topPos + "px";
+    _0x218cf1.style.left = _leftPos + "px";
+  } else {
+    _0x308c0d.style.display = "block";
+    _0x308c0d.style.top = "-200px";
+    _0x308c0d.style.left = "-200px";
+    _0x308c0d.style.width = "0px";
+    _0x308c0d.style.height = "0px";
+    var _0x3b0322 = _0x218cf1.offsetWidth || 300;
+    var _0x4f7574 = _0x218cf1.offsetHeight || 180;
+    _0x218cf1.style.top = Math.max(12, (_0x339789 - _0x4f7574) / 2) + "px";
+    _0x218cf1.style.left = Math.max(14, (_0x10ea40 - _0x3b0322) / 2) + "px";
+  }
+}
+function endTour(_0x21397c) {
+  tourActive = false;
+  var _0x328d30 = document.getElementById("tourOverlay");
+  if (_0x328d30) {
+    _0x328d30.hidden = true;
+  }
+  window.removeEventListener("resize", tourReposition);
+  window.removeEventListener("scroll", tourReposition, true);
+  document.removeEventListener("keydown", tourKey);
+  if (!_0x21397c) {
+    tourSeenSet(TOUR_SEEN[_tourKey] || "aog.tour.seen");
+    try {
+      window.scrollTo(0, 0);
+    } catch (_0xb934ef) {}
+  }
+}
+function maybeStartTour(_0x387e62) {
+  // Auto-start disabled: the Quick Tour only opens when the user taps the "Quick tour" button.
+  // (Delete the next line to bring back automatic first-visit tours.)
+  return;
+  _0x387e62 = _0x387e62 || "welcome";
+  if (tourSeenGet(TOUR_SEEN[_0x387e62])) {
+    return;
+  }
+  var _0x474937 = document.getElementById(TOUR_SCREEN[_0x387e62]);
+  if (_0x474937 && _0x474937.classList.contains("active")) {
+    tourSeenSet(TOUR_SEEN[_0x387e62]);
+    startTour(_0x387e62);
+  }
+}
+function renderItem() {
+  try {
+    window.scrollTo(0, 0);
+  } catch (_0x122994) {}
+  const _0x16446a = items();
+  const _0x2067f6 = _0x16446a[current];
+  const _0x2d9a15 = _0x2067f6.d === "A" ? lang === "es" ? "Regulación Emocional" : "Emotional Regulation" : _0x2067f6.d === "B" ? lang === "es" ? "Autocompasión y Mentalidad" : "Self-Compassion & Mindset" : lang === "es" ? "Competencia Social y Reparación" : "Social Competency & Repair";
+  $("#qNum").textContent = String(current + 1);
+  $("#qTotal").textContent = String(_0x16446a.length);
+  $("#domainChip").textContent = _0x2d9a15;
+  $("#itemText").textContent = _0x2067f6.text;
+  $("#progress").style.width = current / _0x16446a.length * 100 + "%";
+  renderResponseOptions();
+  renderIntensityOption();
+  updateNextButton();
+  $("#btnBack").disabled = current === 0;
+  const _0x335639 = current === _0x16446a.length - 1;
+  $("#btnNextLabel").textContent = _0x335639 ? lang === "es" ? "Continuar" : "Continue" : lang === "es" ? "Siguiente" : "Next";
+}
+function renderResponseOptions() {
+  const _0x2ead52 = scale();
+  const _0x40d70f = $("#responseArea");
+  const _0x217c58 = _0x40d70f ? _0x40d70f.querySelectorAll(".response-option") : [];
+  const _0x3d5362 = _0x217c58.length === _0x2ead52.length && Array.from(_0x217c58).every((_0x339542, _0x584df0) => {
+    const _0x193f2d = _0x339542.querySelector(".freq-label");
+    return _0x193f2d && _0x193f2d.textContent === _0x2ead52[_0x584df0].label;
+  });
+  if (_0x3d5362) {
+    _0x217c58.forEach(_0x6ee7d6 => {
+      const _0x16ffca = parseInt(_0x6ee7d6.dataset.value, 10);
+      const _0x439f31 = responses[current] === _0x16ffca;
+      _0x6ee7d6.classList.toggle("selected", _0x439f31);
+      _0x6ee7d6.setAttribute("aria-checked", _0x439f31 ? "true" : "false");
+    });
+    return;
+  }
+  const _0x529114 = "response-grid-6"; /* both modes use this grid; the ternary that used to be here had two identical branches */
+  const _0x2d23e5 = lang === "es" ? "Opciones de respuesta" : "Response options";
+  let _0xdb340 = "<div class=\"" + _0x529114 + "\" role=\"radiogroup\" aria-label=\"" + _0x2d23e5 + "\">";
+  _0x2ead52.forEach(_0x3c052c => {
+    const _0x5b7d55 = responses[current] === _0x3c052c.v;
+    _0xdb340 += "<div class=\"response-option" + (_0x5b7d55 ? " selected" : "") + "\" data-value=\"" + _0x3c052c.v + "\" role=\"radio\" tabindex=\"0\" aria-checked=\"" + (_0x5b7d55 ? "true" : "false") + "\"><div class=\"freq-label\">" + _0x3c052c.label + "</div>" + (_0x3c052c.hint ? "<div class=\"freq-hint\">" + _0x3c052c.hint + "</div>" : "") + "</div>";
+  });
+  _0xdb340 += "</div>";
+  _0x40d70f.innerHTML = _0xdb340;
+}
+function renderIntensityOption() {
+  const _0x2a100a = items();
+  const _0x600a6e = _0x2a100a[current];
+  const _0x3ad129 = $("#intensityArea");
+  if (mode !== "depth" || !_0x600a6e.intensity) {
+    _0x3ad129.innerHTML = "";
+    return;
+  }
+  const _0x43b884 = responses[current];
+  if (_0x43b884 == null) {
+    _0x3ad129.innerHTML = "";
+    return;
+  }
+  const _0x48bfbf = scoreFrequency(_0x43b884, _0x600a6e.reverse, mode);
+  if (_0x48bfbf == null || _0x48bfbf >= 4) {
+    _0x3ad129.innerHTML = "";
+    return;
+  }
+  const _0x30bc5b = INTENSITY[surveyLang];
+  const _0x4981cb = lang === "es" ? "Cuando esto sucede, ¿cuánto te afecta?" : "When this happens, how much does it affect you?";
+  let _0x338628 = "<div class=\"intensity-block\"><div class=\"intensity-prompt\" id=\"intensityPrompt\">" + _0x4981cb + "</div><div class=\"intensity-grid\" role=\"radiogroup\" aria-labelledby=\"intensityPrompt\">";
+  _0x30bc5b.forEach(_0x357dc4 => {
+    const _0x10407b = intensities[current] === _0x357dc4.v;
+    _0x338628 += "<div class=\"intensity-option" + (_0x10407b ? " selected" : "") + "\" data-intensity=\"" + _0x357dc4.v + "\" role=\"radio\" tabindex=\"0\" aria-checked=\"" + (_0x10407b ? "true" : "false") + "\">" + _0x357dc4.label + "</div>";
+  });
+  _0x338628 += "</div></div>";
+  _0x3ad129.innerHTML = _0x338628;
+}
+function updateNextButton() {
+  const _0x19706d = items();
+  const _0xfcaad8 = _0x19706d[current];
+  const _0x2a9e96 = responses[current] != null;
+  let _0x1a8976 = false;
+  if (mode === "depth" && _0xfcaad8.intensity && _0x2a9e96) {
+    const _0x28ef0b = scoreFrequency(responses[current], _0xfcaad8.reverse, mode);
+    if (_0x28ef0b != null && _0x28ef0b < 4) {
+      _0x1a8976 = intensities[current] == null;
+    }
+  }
+  $("#btnNext").disabled = !_0x2a9e96 || _0x1a8976;
+}
+function selectResponse(_0x510e21) {
+  responses[current] = _0x510e21;
+  intensities[current] = null;
+  renderResponseOptions();
+  renderIntensityOption();
+  updateNextButton();
+  saveDraft("survey");
+  /* Keep the answer cards still: do NOT scroll/re-center when the follow-up appears.
+     Only if the follow-up would be entirely off the bottom of the screen do we make a
+     single INSTANT, minimal nudge so it isn't missed — otherwise nothing moves. */
+  try {
+    var _ia = document.getElementById("intensityArea");
+    if (_ia && _ia.querySelector(".intensity-block")) {
+      var _vh = window.innerHeight || document.documentElement.clientHeight;
+      requestAnimationFrame(function () {
+        try {
+          var _r = _ia.getBoundingClientRect();
+          if (_r.top > _vh - 60) {
+            _ia.scrollIntoView({ behavior: "auto", block: "nearest" });
+          }
+        } catch (_e) {}
+      });
+    }
+  } catch (_e2) {}
+}
+function selectIntensity(_0x4c4d86) {
+  intensities[current] = _0x4c4d86;
+  renderIntensityOption();
+  updateNextButton();
+  saveDraft("survey");
+}
+var DRAFT_KEY = "aog.draft.v1";
+function saveDraft(_0x50c43e) {
+  try {
+    if (!session || !session.studentId) {
+      return;
+    }
+    var _0x14158e = {
+      v: 1,
+      stage: _0x50c43e || "survey",
+      session: session,
+      responses: responses,
+      intensities: intensities,
+      reflections: reflections,
+      current: current,
+      reflectionIdx: typeof reflectionIdx !== "undefined" ? reflectionIdx : 0,
+      mode: mode,
+      population: population,
+      context: context,
+      surveyLang: surveyLang,
+      ts: Date.now()
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(_0x14158e));
+  } catch (_0x593dc5) {}
+}
+function clearDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch (_0x5bd48c) {}
+}
+function getDraft() {
+  try {
+    var _0xb65757 = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    if (_0xb65757 && _0xb65757.session && _0xb65757.session.studentId) {
+      return _0xb65757;
+    } else {
+      return null;
+    }
+  } catch (_0x2d88ca) {
+    return null;
+  }
+}
+function resumeDraft() {
+  var _0x3f824f = getDraft();
+  if (!_0x3f824f) {
+    return;
+  }
+  session = _0x3f824f.session;
+  responses = Array.isArray(_0x3f824f.responses) ? _0x3f824f.responses : new Array(18).fill(null);
+  intensities = Array.isArray(_0x3f824f.intensities) ? _0x3f824f.intensities : new Array(18).fill(null);
+  reflections = Array.isArray(_0x3f824f.reflections) ? _0x3f824f.reflections : ["", "", ""];
+  current = _0x3f824f.current || 0;
+  reflectionIdx = _0x3f824f.reflectionIdx || 0;
+  mode = _0x3f824f.mode || "depth";
+  population = _0x3f824f.population || "k12";
+  context = _0x3f824f.context || ((function () { try { return sessionStorage.getItem("aog.launch.sync") === "on"; } catch (e) { return false; } })() ? "school" : "home");
+  surveyLang = _0x3f824f.surveyLang || (typeof lang !== "undefined" ? lang : "en");
+  hideResumeBar();
+  if (_0x3f824f.stage === "reflection") {
+    showScreen("screen-reflection");
+    renderReflection();
+  } else {
+    showScreen("screen-survey");
+    renderItem();
+  }
+}
+function discardDraft() {
+  var _0x5daec0 = typeof lang !== "undefined" && lang === "es";
+  if (confirm(_0x5daec0 ? "¿Descartar la autorreflexión sin terminar? No se puede deshacer." : "Discard the unfinished self-reflection? This can’t be undone.")) {
+    clearDraft();
+    hideResumeBar();
+  }
+}
+function showResumeBar() {
+  var _0x5cc8eb = getDraft();
+  var _0x40acf1 = document.getElementById("resumeBar");
+  if (!_0x40acf1) {
+    return;
+  }
+  if (!_0x5cc8eb) {
+    _0x40acf1.style.display = "none";
+    return;
+  }
+  var _0x3f44de = typeof lang !== "undefined" && lang === "es";
+  var _0x6806ec = _0x5cc8eb.session.studentId || "";
+  var _0x256279 = _0x5cc8eb.stage === "reflection" ? _0x3f44de ? "en las reflexiones" : "on the reflections" : (_0x3f44de ? "pregunta " : "question ") + ((_0x5cc8eb.current || 0) + 1) + "/18";
+  var _0x204bcf = document.getElementById("resumeBarText");
+  if (_0x204bcf) {
+    _0x204bcf.textContent = (_0x3f44de ? "Autorreflexión sin terminar" : "Unfinished self-reflection") + " — " + _0x6806ec + " · " + _0x256279 + ".";
+  }
+  var _0x5e9dde = document.getElementById("resumeBtn");
+  if (_0x5e9dde) {
+    _0x5e9dde.textContent = _0x3f44de ? "Continuar" : "Resume";
+  }
+  var _0x5d9094 = document.getElementById("resumeDiscard");
+  if (_0x5d9094) {
+    _0x5d9094.textContent = _0x3f44de ? "Descartar" : "Discard";
+  }
+  _0x40acf1.style.display = "";
+}
+function hideResumeBar() {
+  var _0x1ddc18 = document.getElementById("resumeBar");
+  if (_0x1ddc18) {
+    _0x1ddc18.style.display = "none";
+  }
+}
+function startReflections() {
+  reflectionIdx = 0;
+  renderReflection();
+  showScreen("screen-reflection");
+}
+function renderReflection() {
+  const _0x68a4f8 = population === "adult" ? REFLECTIONS_ADULT : REFLECTIONS;
+  const _0x4397b5 = _0x68a4f8[surveyLang][reflectionIdx];
+  const _0x4809e3 = _0x4397b5.domain === "A" ? lang === "es" ? "Regulación Emocional" : "Emotional Regulation" : _0x4397b5.domain === "B" ? lang === "es" ? "Autocompasión y Mentalidad" : "Self-Compassion & Mindset" : lang === "es" ? "Competencia Social y Reparación" : "Social Competency & Repair";
+  $("#reflectionProgress").textContent = (lang === "es" ? "Reflexión " : "Reflection ") + (reflectionIdx + 1) + (lang === "es" ? " de 3" : " of 3");
+  $("#reflectionProgressFill").style.width = reflectionIdx / 3 * 100 + "%";
+  $("#reflectionDomainChip").textContent = _0x4809e3;
+  $("#reflectionTitle").textContent = _0x4397b5.title;
+  $("#reflectionPrompt").textContent = surveyLang === "es" ? "Toca las palabras que reflejen cómo te sientes ahora. Puedes elegir varias — o saltar." : "Tap any words that fit how you feel right now. You can pick more than one — or skip.";
+  renderReflectChips(_0x4397b5.domain);
+  $("#btnReflectionLabel").textContent = reflectionIdx === 2 ? lang === "es" ? "Terminar" : "Finish" : lang === "es" ? "Siguiente" : "Next";
+  saveDraft("reflection");
+}
+function advanceReflection() {
+  reflectionIdx++;
+  if (reflectionIdx >= 3) {
+    submitFinal();
+    return;
+  }
+  renderReflection();
+}
+async function submitFinal() {
+  const _0x272b07 = {
+    timestamp: new Date().toISOString(),
+    year: window.AOGYear ? AOGYear(new Date().toISOString()) : "",
+    studentId: session.studentId,
+    context: session.context || "school",
+    grade: session.grade,
+    window: session.window,
+    districtId: session.districtId || "",
+    schoolId: session.schoolId || "",
+    classId: session.classId || "",
+    language: surveyLang,
+    mode: mode,
+    population: population,
+    relationship: session.relationship || "",
+    raw: responses.slice(),
+    intensities: intensities.slice(),
+    reflections: reflections.slice(),
+    closingWord: ""
+  };
+  const _0x26b401 = computeResult(_0x272b07, mode);
+  _0x272b07.domainA = _0x26b401.domainA;
+  _0x272b07.domainB = _0x26b401.domainB;
+  _0x272b07.domainC = _0x26b401.domainC;
+  _0x272b07.composite = _0x26b401.composite;
+  _0x272b07.normA = _0x26b401.normA;
+  _0x272b07.normB = _0x26b401.normB;
+  _0x272b07.normC = _0x26b401.normC;
+  _0x272b07.normComposite = _0x26b401.normComposite;
+  _0x272b07.tier = tierFromNormComposite(_0x26b401.normComposite);
+  _0x272b07.trustedAdultFlag = _0x26b401.trustedAdultFlag;
+  _0x272b07.unsafeFlag = _0x26b401.unsafeFlag;
+  window._pendingRecord = _0x272b07;
+  var _0x3879c2 = document.getElementById("thanksLede");
+  var _0x55cf31 = document.getElementById("thanksSupport");
+  if (population === "adult") {
+    if (_0x3879c2) {
+      _0x3879c2.setAttribute("data-i18n", "t_lede_adult");
+    }
+    if (_0x55cf31) {
+      _0x55cf31.style.display = "";
+    }
+  } else {
+    if (_0x3879c2) {
+      _0x3879c2.setAttribute("data-i18n", "t_lede");
+    }
+    if (_0x55cf31) {
+      _0x55cf31.style.display = "none";
+    }
+  }
+  /* .30ep · results are for the person who just reflected, not only
+     adults. Jimmy: "Once it is finished, the person has no way to view
+     their results." The My Results screen has carried child/teen/adult
+     reading levels since the ages toggle shipped; only these gates ever
+     kept a student from seeing the door. The audience still defaults from
+     the record (aogAudienceFromRecord), so a 4th grader reads it as a
+     child and a 7th grader as a teen. */
+  var _0x33edf1 = true;
+  var _0xdab64f = document.getElementById("btnMyResults");
+  var _0x3a2bb2 = document.getElementById("btnMyResultsFarewell");
+  var _0x344732 = document.getElementById("btnToClosing");
+  var _0x319c68 = document.getElementById("btnDone");
+  if (_0xdab64f) {
+    _0xdab64f.style.display = _0x33edf1 ? "" : "none";
+  }
+  if (_0x3a2bb2) {
+    _0x3a2bb2.style.display = _0x33edf1 ? "" : "none";
+  }
+  if (_0x344732) {
+    _0x344732.className = _0x33edf1 ? "btn btn-ghost" : "btn";
+  }
+  if (_0x319c68) {
+    _0x319c68.className = _0x33edf1 ? "btn btn-ghost" : "btn";
+  }
+  var _0xec084e = document.getElementById("btnFamilyReturn");
+  if (_0xec084e) {
+    if (window._famReturn) {
+      var _0x136b52 = typeof lang !== "undefined" && lang === "es";
+      _0xec084e.textContent = (_0x136b52 ? "Ver el progreso de " : "See ") + window._famReturn + (_0x136b52 ? "" : "’s progress") + " →";
+      _0xec084e.style.display = "";
+      if (_0x344732) {
+        _0x344732.className = "btn btn-ghost";
+      }
+    } else {
+      _0xec084e.style.display = "none";
+    }
+  }
+  if (typeof applyLang === "function") {
+    applyLang();
+  }
+  showScreen("screen-thanks");
+}
+function deviceSyncGet() {
+  try {
+    return localStorage.getItem("aog.sync.enabled") === "1";
+  } catch (_0x4aca6b) {
+    return false;
+  }
+}
+function deviceSyncSet(_0x5f319e) {
+  try {
+    if (_0x5f319e) {
+      localStorage.setItem("aog.sync.enabled", "1");
+    } else {
+      localStorage.removeItem("aog.sync.enabled");
+    }
+  } catch (_0x939ad1) {}
+}
+function syncDestinationConfigured() {
+  try { if (!SCHOOL_SYNC_URL && typeof aogApplySyncDefaults === "function") aogApplySyncDefaults(); } catch (e) {}
+  if (!SCHOOL_SYNC_URL) {
+    return false;
+  }
+  if (deviceSyncGet()) {
+    return true;
+  }
+  if (sessionStorage.getItem("aog.launch.sync") === "on") {
+    return true;
+  }
+  if (sessionStorage.getItem(LAUNCH_KEYS.districtId)) {
+    return true;
+  }
+  // A roster-link token (Option B) is itself a sync instruction: a take-home
+  // device with only "?t=<token>" should still sync its one row.
+  if (window.AOGIdentity && AOGIdentity.token && AOGIdentity.token()) {
+    return true;
+  }
+  return false;
+}
+async function finalizeAndSave(_0x5da682) {
+  const _0x561fdb = window._pendingRecord;
+  if (!_0x561fdb) {
+    return;
+  }
+  _0x561fdb.closingWord = _0x5da682 || "";
+  /* Home mode and the workplace flow both carry context "home", and both promise
+     on screen that nothing is transmitted. Honor that here rather than in the
+     copy — a configured teacher laptop must not quietly post a family or a staff
+     member's own reflection to the school Sheet. */
+  const _0x1faeda = syncDestinationConfigured() && _0x561fdb.context !== "home";
+  aogSyncLog("1. submit reached", {
+    context: _0x561fdb.context,
+    launchLinkSync: (function () { try { return sessionStorage.getItem("aog.launch.sync") || "(off)"; } catch (e) { return "?"; } })(),
+    deviceSyncToggle: (typeof deviceSyncGet === "function" && deviceSyncGet()) ? "on" : "off",
+    destination: SCHOOL_SYNC_URL ? ("set via " + (window.AOG_SYNC_SOURCE || "?")) : "MISSING",
+    willSync: _0x1faeda ? "YES" : "NO"
+  });
+  _0x561fdb.synced = _0x1faeda ? false : null;
+  let _0x333194 = true;
+  try {
+    const _0xd1ea82 = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    _0xd1ea82.push(_0x561fdb);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(_0xd1ea82));
+  } catch (_0x2ebf89) {
+    _0x333194 = false;
+  }
+  window._pendingRecord = null;
+  window._lastResult = _0x561fdb;
+  if (!_0x333194) {
+    alert(lang === "es" ? "No se pudo guardar esta autorreflexión en el dispositivo. El almacenamiento del navegador puede estar lleno o en modo privado. Los resultados se muestran ahora, pero podrían no estar aquí la próxima vez — considera exportarlos o anotarlos." : "This self-reflection couldn't be saved on this device. Your browser storage may be full or in private mode. The results are shown now, but may not be here next time — consider exporting or writing them down.");
+    renderSyncStatus();
+    return;
+  }
+  try {
+    clearDraft();
+  } catch (_0x355c1f) {}
+  try {
+    if (_0x561fdb.context === "home" && _0x561fdb.population !== "adult" && typeof familyRosterAdd === "function") {
+      familyRosterAdd(_0x561fdb.studentId, _0x561fdb.grade);
+    }
+  } catch (_0x1ff597) {}
+  if (_0x1faeda) {
+    await syncRecord(_0x561fdb);
+  }
+  renderSyncStatus();
+}
+async function syncRecord(_0x14bad9) {
+  try { if (!SCHOOL_SYNC_URL && typeof aogApplySyncDefaults === "function") aogApplySyncDefaults(); } catch (e) {}
+  aogSyncLog("2. destination", SCHOOL_SYNC_URL
+    ? (aogSyncHost_(SCHOOL_SYNC_URL) + "/...  (" + (window.AOG_SYNC_SOURCE || "?") + ")")
+    : "MISSING -- nothing to post to");
+  if (!SCHOOL_SYNC_URL) {
+    return false;
+  }
+  var payload;
+  try {
+    payload = Object.assign({
+      passcode: SCHOOL_SYNC_KEY,
+      _backendAuth: SCHOOL_SYNC_KEY
+    }, (window.AOGIdentity ? AOGIdentity.writeFields() : {}), _0x14bad9);
+  } catch (_0xbuild) {
+    aogSyncLog("3. payload", "FAILED to build -- " + _0xbuild);
+    return false;
+  }
+  aogSyncLog("3. payload", {
+    studentId: payload.studentId || "(blank)",
+    schoolId: payload.schoolId || "(blank)",
+    classId: payload.classId || "(blank)",
+    grade: payload.grade || "(blank)",
+    window: payload.window || "(blank)",
+    raw: (payload.raw || []).filter(function (v) { return v != null; }).length + "/18",
+    intensities: (payload.intensities || []).filter(function (v) { return v != null; }).length + "/18",
+    reflections: (payload.reflections || []).filter(function (v) { return v; }).length + "/3",
+    passcode: SCHOOL_SYNC_KEY ? ("attached (" + SCHOOL_SYNC_KEY.length + " chars)") : "MISSING"
+  });
+  /* THE SHEET GETS THE WORDS A PERSON SHOULD READ, NOT JUST THE KEY.
+     `tier` holds the internal keys — High Risk / Some Risk / Low Risk — which
+     are compared in ~44 places and written to rows going back to June, so they
+     cannot be renamed. But the Sheet is the one human-facing surface the 2026
+     band rename never reached: anyone opening it, including a colleague shared
+     in on it, reads "High Risk" beside a child's code. That is the exact
+     framing the rename existed to remove. `band` is appended to the RIGHT of
+     the live header by ensureResponseColumns_, so nothing already there moves.
+
+     ⚠ DELIBERATELY ENGLISH, not tierLabel(). tierLabel() follows the dashboard
+     language, which would put Spanish words in some rows and English in others
+     depending on who happened to submit them. A spreadsheet column has to mean
+     one thing. Do not "fix" this by routing it through tierLabel(). */
+  try {
+    var _bandEN = { "Low Risk": "Keep noticing", "Some Risk": "Worth a conversation", "High Risk": "Adult follow-up" };
+    payload.band = _bandEN[payload.tier] || "";
+  } catch (_0xband) {}
+
+  var _0xbody = JSON.stringify(payload);
+  /* Apps Script /exec answers a text/plain POST with a redirect that carries
+     Access-Control-Allow-Origin: *, so an ordinary cors fetch CAN read the
+     reply -- the only way to see ok:true or the actual error. If the browser
+     blocks the read we fall back to the old no-cors send, the same path the
+     "Test connection" button has always used.
+
+     CORRECTED 2026-08-25: this comment used to claim "the Apps Script
+     de-duplicates on timestamp + studentId, so a double send cannot create a
+     double row." IT DOES NOT. There is no de-duplication anywhere in
+     AoG-Sheet-Sync-Code.gs -- every write is a plain appendRow. The safety
+     actually comes from the catch below, which never re-sends after a
+     cross-origin failure, and that reasoning stands on its own. Do not restore
+     the old claim, and do not add a retry on the strength of it. */
+  try {
+    aogSyncLog("4. POST sent", "cors -- reply readable");
+    var _0xres = await fetch(SCHOOL_SYNC_URL, {
+      method: "POST",
+      mode: "cors",
+      redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: _0xbody
+    });
+    var _0xtxt = await _0xres.text();
+    var _0xout = null;
+    try { _0xout = JSON.parse(_0xtxt); } catch (_0xp) {}
+    aogSyncLog("5. reply", "HTTP " + _0xres.status + " -- " + String(_0xtxt || "(empty)").slice(0, 180));
+    if (_0xout && _0xout.ok) {
+      markSynced(_0x14bad9);
+      aogSyncLog("6. result", "SAVED to the Sheet");
+      return true;
+    }
+    aogSyncLog("6. result", "REJECTED -- " + ((_0xout && _0xout.error) || "no ok:true in the reply") + " (kept on this device to retry)");
+    return false;
+  } catch (_0xcors) {
+    /* Important: the POST itself WAS delivered. A cross-origin failure here
+       blocks READING the reply, not sending the request. Re-sending would be
+       the only way to create a duplicate row, so we never do -- the record is
+       treated as delivered and the Sheet is the confirmation. A device that is
+       genuinely offline is kept for the retry queue instead. */
+    if (navigator.onLine === false) {
+      aogSyncLog("5. reply", "none -- this device is offline");
+      aogSyncLog("6. result", "NOT SENT -- kept on this device, retries when back online");
+      console.warn("Sync request errored - kept locally for retry.", _0xcors);
+      return false;
+    }
+    aogSyncLog("5. reply", "could not be read by this browser (" + _0xcors + ")");
+    markSynced(_0x14bad9);
+    aogSyncLog("6. result", "sent -- reply not readable here, confirm the row in the Sheet");
+    return true;
+  }
+}
+function markSynced(_0x3d4de3) {
+  const _0x243a6b = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const _0xc5442d = _0x243a6b.find(_0x56b243 => _0x56b243.timestamp === _0x3d4de3.timestamp && _0x56b243.studentId === _0x3d4de3.studentId);
+  if (_0xc5442d) {
+    _0xc5442d.synced = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(_0x243a6b));
+  }
+}
+async function flushUnsynced() {
+  if (!navigator.onLine) {
+    return;
+  }
+  if (!syncDestinationConfigured()) {
+    return;
+  }
+  const _0x137bcb = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  for (const _0x49a7fe of _0x137bcb.filter(_0x4ac7ca => _0x4ac7ca && _0x4ac7ca.synced === false)) {
+    await syncRecord(_0x49a7fe);
+  }
+}
+const LAUNCH_KEYS = {
+  districtId: "aog.launch.districtId",
+  schoolId: "aog.launch.schoolId",
+  grade: "aog.launch.grade",
+  classId: "aog.launch.classId",
+  window: "aog.launch.window",
+  mode: "aog.launch.mode",
+  /* Which Sheet this link belongs to. An id issued by whoever runs the site,
+     NEVER the schoolId a teacher types — see aogResolveDestination_. */
+  org: "aog.launch.orgId"
+};
+function parseLaunchParams() {
+  let _0x3231f1;
+  try {
+    _0x3231f1 = new URLSearchParams(window.location.search);
+  } catch (_0x2827bc) {
+    return;
+  }
+  ["districtId", "schoolId", "grade", "classId", "window", "mode", "org"].forEach(_0x186142 => {
+    const _0x1404f2 = _0x3231f1.get(_0x186142);
+    if (_0x1404f2 != null && _0x1404f2 !== "") {
+      sessionStorage.setItem(LAUNCH_KEYS[_0x186142], String(_0x1404f2).slice(0, 64));
+    }
+  });
+  if ((_0x3231f1.get("sync") || "").toLowerCase() === "on") {
+    sessionStorage.setItem("aog.launch.sync", "on");
+  }
+  /* The destination this link carries, if it carries one. sessionStorage
+     only -- see THE DESTINATION CAN RIDE ON THE LINK. A malformed or
+     non-Apps-Script value is refused and LOGGED: silence here would look
+     exactly like a school that never set one up. */
+  try {
+    var _destRaw = _0x3231f1.get(AOG_DEST_PARAM);
+    if (_destRaw) {
+      var _destOk = aogDestDecode_(_destRaw);
+      if (_destOk) {
+        sessionStorage.setItem("aog.launch.dest", JSON.stringify({ url: _destOk.url, key: _destOk.key }));
+        aogSyncLog("destination from link", aogSyncHost_(_destOk.url));
+      } else {
+        aogSyncLog("link destination REFUSED", "not an Apps Script /exec deployment");
+      }
+    }
+  } catch (e) {}
+  const _0x20a696 = sessionStorage.getItem(LAUNCH_KEYS.grade);
+  const _0x312223 = sessionStorage.getItem(LAUNCH_KEYS.window);
+  if (_0x20a696 && $("#grade") && [...$("#grade").options].some(_0x3cc58f => _0x3cc58f.value === _0x20a696 || _0x3cc58f.text === _0x20a696)) {
+    $("#grade").value = [...$("#grade").options].find(_0x585398 => _0x585398.value === _0x20a696) ? _0x20a696 : ([...$("#grade").options].find(_0x3e2251 => _0x3e2251.text === _0x20a696) || {}).value || _0x20a696;
+  }
+  if (_0x312223 && $("#window") && [...$("#window").options].some(_0x264f1d => _0x264f1d.value === _0x312223)) {
+    $("#window").value = _0x312223;
+  }
+  /* The launch schoolId is now known -- resolve the built-in destination. */
+  try { aogApplySyncDefaults(); } catch (e) {}
+}
+const LINK_BASE_URL_FALLBACK = "";
+function pageBaseUrl() {
+  if (location.protocol === "http:" || location.protocol === "https:") {
+    return location.origin + location.pathname;
+  }
+  return LINK_BASE_URL_FALLBACK;
+}
+function buildClassroomLink() {
+  /* Its own door, so a texted reflection link shows the reflection's card. */
+  const _0x17af69 = (typeof aogShareBase_ === "function" && aogShareBase_("reflection")) || pageBaseUrl();
+  if (!_0x17af69) {
+    return "";
+  }
+  const _0x5e7f31 = (($("#lgDistrictId") || {}).value || "").trim();
+  const _0x49d3d8 = (($("#lgSchoolId") || {}).value || "").trim();
+  const _0x3a0f59 = (($("#lgGrade") || {}).value || "").trim();
+  const _0x1067d5 = (($("#lgClassId") || {}).value || "").trim();
+  const _0x42bb0e = (($("#lgWindow") || {}).value || "").trim();
+  const _0xlgmode = (($("#lgMode") || {}).value || "").trim();
+  const _0x3966a1 = new URLSearchParams();
+  _0x3966a1.set("sync", "on");
+  if (_0x5e7f31) {
+    _0x3966a1.set("districtId", _0x5e7f31);
+  }
+  if (_0x49d3d8) {
+    _0x3966a1.set("schoolId", _0x49d3d8);
+  }
+  if (_0x3a0f59) {
+    _0x3966a1.set("grade", _0x3a0f59);
+  }
+  if (_0x1067d5) {
+    _0x3966a1.set("classId", _0x1067d5);
+  }
+  if (_0x42bb0e) {
+    _0x3966a1.set("window", _0x42bb0e);
+  }
+  if (_0xlgmode) {
+    _0x3966a1.set("mode", _0xlgmode);
+  }
+  /* The destination id, so a student's device knows which Sheet this class
+     belongs to. It is not a secret and not a credential — it selects an entry
+     in the published config and nothing more. Absent = local-only. */
+  var _org = (typeof aogOrgId_ === "function") ? aogOrgId_() : "";
+  if (_org) { _0x3966a1.set("org", _org); }
+  /* And the destination itself, when this computer has one to hand on. */
+  var _destP = (typeof aogDestParam_ === "function") ? aogDestParam_() : "";
+  if (_destP) { _0x3966a1.set(AOG_DEST_PARAM, _destP); }
+  return _0x17af69 + "?" + _0x3966a1.toString();
+}
+let _qrLibLoading = null;
+function ensureQrLib() {
+  if (window.QRCode) {
+    return Promise.resolve(true);
+  }
+  if (_qrLibLoading) {
+    return _qrLibLoading;
+  }
+  _qrLibLoading = new Promise(_0x3d5e02 => {
+    const _0x2eb1b7 = document.createElement("script");
+    _0x2eb1b7.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+    _0x2eb1b7.onload = () => _0x3d5e02(true);
+    _0x2eb1b7.onerror = () => _0x3d5e02(false);
+    document.head.appendChild(_0x2eb1b7);
+  });
+  return _qrLibLoading;
+}
+async function renderClassroomLink() {
+  const _0x4af638 = buildClassroomLink();
+  if ($("#lgUrl")) {
+    $("#lgUrl").value = _0x4af638 || "";
+  }
+  const _0x2b09dc = $("#lgQr");
+  const _0x1a250f = $("#lgQrMsg");
+  if (!_0x2b09dc) {
+    return;
+  }
+  _0x2b09dc.innerHTML = "";
+  if (_0x1a250f) {
+    _0x1a250f.textContent = "";
+  }
+  if (!_0x4af638) {
+    if (_0x1a250f) {
+      _0x1a250f.textContent = "Host this page online first so the link can point to your copy (or set LINK_BASE_URL_FALLBACK near the top of the file).";
+    }
+    return;
+  }
+  const _0x5e30a3 = await ensureQrLib();
+  if (!_0x5e30a3 || !window.QRCode) {
+    if (_0x1a250f) {
+      _0x1a250f.textContent = "QR generator needs an internet connection. The link above still works.";
+    }
+    return;
+  }
+  try {
+    new QRCode(_0x2b09dc, {
+      text: _0x4af638,
+      width: 180,
+      height: 180,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch (_0xa8d418) {
+    if (_0x1a250f) {
+      _0x1a250f.textContent = "Couldn't render the QR code. The link above still works.";
+    }
+  }
+}
+const DASH_I18N = {
+  dl_cfg_connected: {
+    en: "Connected — this device syncs to your Sheet",
+    es: "Conectado — este dispositivo se sincroniza con tu Hoja"
+  },
+  dl_cfg_edit: {
+    en: "Edit connection",
+    es: "Editar conexión"
+  },
+  vid_soon: {
+    en: "Video coming soon",
+    es: "Video próximamente"
+  },
+  vid_dash_t: {
+    en: "How the Dashboard works",
+    es: "Cómo funciona el panel"
+  },
+  vid_dash_s: {
+    en: "A 2-minute walkthrough for educators.",
+    es: "Un recorrido de 2 minutos para educadores."
+  },
+  dl_eyebrow: {
+    en: "Dashboard · Educators",
+    es: "Panel · Educadores"
+  },
+  dl_h1: {
+    en: "Self-Reflection Results",
+    es: "Resultados del Self-Reflection"
+  },
+  dl_sub: {
+    en: "Aggregate view across all administrations",
+    es: "Vista agregada de todas las administraciones"
+  },
+  dl_guidebtn: {
+    en: "Guide & Library",
+    es: "Guía y biblioteca"
+  },
+  dl_backbtn: {
+    en: "Back",
+    es: "Atrás"
+  },
+  dl_t_overview: {
+    en: "Overview",
+    es: "Resumen"
+  },
+  dl_viewas: { en: "View as", es: "Ver como" },
+  dl_role_student: { en: "Student", es: "Estudiante" },
+  dl_role_parent: { en: "Parent", es: "Familia" },
+  dl_role_teacher: { en: "Teacher", es: "Docente" },
+  dl_role_specialist: { en: "Specialist", es: "Especialista" },
+  dl_role_leadership: { en: "Leadership", es: "Liderazgo" },
+  dl_t_more: {
+    en: "More",
+    es: "Más"
+  },
+  dl_t_distribute: {
+    en: "Distribute",
+    es: "Distribuir"
+  },
+  dl_t_classes: {
+    en: "My classes",
+    es: "Mis clases"
+  },
+  dl_t_exitslip: {
+    en: "Exit slips",
+    es: "Salidas del día"
+  },
+  dl_t_reflect: {
+    en: "Reflection",
+    es: "Autorreflexión"
+  },
+  dl_t_crosswalk: {
+    en: "Crosswalk",
+    es: "Crosswalk"
+  },
+  dl_admin_h1: {
+    en: "Educator Dashboard",
+    es: "Panel del educador"
+  },
+  dl_rf_h1: {
+    en: "Self-Reflection",
+    es: "Autorreflexión"
+  },
+  dl_rf_lead: {
+    en: "The deeper look: eighteen questions, two or three times a year. The check-in is about this morning and the exit slip about this afternoon; this one fills the dashboard’s bands and each student’s report.",
+    es: "La mirada más profunda: dieciocho preguntas, dos o tres veces al año. El registro es sobre esta mañana y la boleta sobre esta tarde; esta llena las franjas del panel y el informe de cada estudiante."
+  },
+  dl_rf_link: {
+    en: "Get the class link",
+    es: "Obtener el enlace de la clase"
+  },
+  dl_rf_reports: {
+    en: "Open student reports",
+    es: "Abrir informes de estudiantes"
+  },
+  dl_rf_trends: {
+    en: "See class trends",
+    es: "Ver tendencias del grupo"
+  },
+  dl_rf_note: {
+    en: "Results show on the Overview, in Students and in Trends. Make the link in Set up ▸ Distribute.",
+    es: "Los resultados aparecen en Resumen, en Estudiantes y en Tendencias. Crea el enlace en Configurar ▸ Distribuir."
+  },
+  dl_t_students: {
+    en: "Class trends",
+    es: "Tendencias"
+  },
+  dl_t_home: {
+    en: "Student view",
+    es: "Vista del estudiante"
+  },
+  dl_t_family: {
+    en: "Family & adults",
+    es: "Familias y adultos"
+  },
+  dl_fam_h1: {
+    en: "Family & adult reports",
+    es: "Informes de familias y adultos"
+  },
+  dl_fam_sub: {
+    en: "Self-reflections done at home — a child with their family, plus parents, caregivers, and staff reflecting for themselves. Open one to read it or export a PDF.",
+    es: "Autorreflexiones hechas en casa — un niño con su familia, además de padres, cuidadores y personal reflexionando para sí mismos. Abre una para leerla o exportar un PDF."
+  },
+  dl_t_growth: {
+    en: "Growth",
+    es: "Progreso"
+  },
+  dl_t_daily: {
+    en: "Daily Log",
+    es: "Registro diario"
+  },
+  dl_t_support: {
+    en: "Team",
+    es: "Equipo"
+  },
+  dl_t_inbox: {
+    en: "Inbox",
+    es: "Bandeja"
+  },
+  dl_t_practice: {
+    en: "Practice",
+    es: "Práctica"
+  },
+  dl_day_h1: {
+    en: "Daily log",
+    es: "Registro diario"
+  },
+  dl_day_sub: {
+    en: "Quick notes, one class period at a time, as many as you need each day. Saved privately on this device, and shown in Trends ▸ One student over time.",
+    es: "Notas rápidas, un periodo a la vez, todas las que necesites al día. Se guardan en privado en este dispositivo y se ven en Tendencias ▸ Un estudiante con el tiempo."
+  },
+  dl_t_export: {
+    en: "Export & data",
+    es: "Exportar y datos"
+  },
+  dl_t_trajectory: {
+    /* Renamed from "Trajectory" 2026-08-30 (audit P2) — the last internal
+       database name on a tab. The teacher-thought it answers is "is this
+       student's progress improving?", so the tab says that. The internal
+       key stays `trajectory` so saved state resolves, and the FORMAL name
+       survives where formality belongs: print headers ("Grace Trajectory"),
+       the in-panel "Multi-year trajectory" heading, and quoted testimonials,
+       which are never edited. */
+    en: "One student over time",
+    es: "Un estudiante con el tiempo"
+  },
+  dl_tj_h1: {
+    en: "Multi-year trajectory",
+    es: "Trayectoria plurianual"
+  },
+  dl_tj_sub: {
+    en: "One student’s — or family member’s — line across seasons and years. Schools and families read it the same way: growth over time, and a gentle path from rupture toward repair.",
+    es: "La línea de un estudiante — o de un familiar — a través de las temporadas y los años. Escuelas y familias la leen igual: crecimiento con el tiempo, y un camino suave de la ruptura hacia la reparación."
+  },
+  dl_help_btn: {
+    en: "What am I looking at?",
+    es: "¿Qué estoy viendo?"
+  },
+  dl_opt_allwin: {
+    en: "All Windows",
+    es: "Todos los períodos"
+  },
+  dl_opt_fall: {
+    en: "Fall (Sep–Nov)",
+    es: "Otoño (sep–nov)"
+  },
+  dl_opt_winter: {
+    en: "Winter (Dec–Feb)",
+    es: "Invierno (dic–feb)"
+  },
+  dl_opt_spring: {
+    en: "Spring (Mar–May)",
+    es: "Primavera (mar–may)"
+  },
+  dl_opt_summer: {
+    en: "Summer (Jun–Aug)",
+    es: "Verano (jun–ago)"
+  },
+  dl_opt_allgrades: {
+    en: "All Grades",
+    es: "Todos los grados"
+  },
+  dl_opt_allmodes: {
+    en: "All Modes",
+    es: "Todos los modos"
+  },
+  dl_opt_depthonly: {
+    en: "Thorough only",
+    es: "Solo a fondo"
+  },
+  dl_opt_rapidonly: {
+    en: "Quick only",
+    es: "Solo rápido"
+  },
+  dl_opt_everyone: {
+    en: "Everyone",
+    es: "Todos"
+  },
+  /* These three mirror TIER_DISPLAY and must stay in step with it — the
+     dictionary rewrites the <option> text at runtime, so editing the HTML
+     alone changes nothing a teacher ever sees. */
+  dl_opt_needs: {
+    en: "Adult follow-up only",
+    es: "Solo seguimiento de un adulto"
+  },
+  dl_opt_worth: {
+    en: "Worth a conversation only",
+    es: "Solo vale una conversación"
+  },
+  dl_opt_well: {
+    en: "Keep noticing only",
+    es: "Solo seguir observando"
+  },
+  dl_opt_notrust: {
+    en: "No trusted adult",
+    es: "Sin adulto de confianza"
+  },
+  dl_opt_selperson: {
+    en: "Select a person to view…",
+    es: "Selecciona una persona…"
+  },
+  dl_opt_recentwin: {
+    en: "Most recent window",
+    es: "Período más reciente"
+  },
+  dl_opt_sortgain: {
+    en: "Sort by growth (largest gain)",
+    es: "Ordenar por progreso (mayor aumento)"
+  },
+  dl_opt_sortdrop: {
+    en: "Sort by decline (largest drop)",
+    es: "Ordenar por descenso (mayor caída)"
+  },
+  dl_opt_sortcomp: {
+    en: "Sort by latest composite (lowest)",
+    es: "Ordenar por compuesto reciente (menor)"
+  },
+  dl_opt_sortid: {
+    en: "Sort by ID",
+    es: "Ordenar por ID"
+  },
+  dl_opt_any: {
+    en: "Any / student selects",
+    es: "Cualquiera / lo elige el estudiante"
+  },
+  dl_ov_h1: {
+    en: "How everyone's doing",
+    es: "Cómo está el grupo"
+  },
+  dl_ov_sub: {
+    en: "Everyone grouped by overall score (0–100).",
+    es: "Todos agrupados por puntaje general (0–100)."
+  },
+  dl_ovob_h: { en: "New to the dashboard?", es: "¿Nuevo en el panel?" },
+  dl_ovob_p: { en: "Each area is color-coded so you can see where to focus at a glance:", es: "Cada área tiene un color para que veas de un vistazo dónde concentrarte:" },
+  dl_ovob_legend: {
+    en: "<span><span class=\"qs-dot g\"></span><b>Green</b> · keep noticing</span><span><span class=\"qs-dot a\"></span><b>Amber</b> · worth a conversation</span><span><span class=\"qs-dot r\"></span><b>Red</b> · adult follow-up</span>",
+    es: "<span><span class=\"qs-dot g\"></span><b>Verde</b> · seguir observando</span><span><span class=\"qs-dot a\"></span><b>Ámbar</b> · vale una conversación</span><span><span class=\"qs-dot r\"></span><b>Rojo</b> · seguimiento de un adulto</span>"
+  },
+  dl_ovob_meaning: {
+    en: "<b>What the numbers mean:</b> each score runs 0–100 and sums up how a group answered — higher is steadier. They're aggregated, no-names signals for where to focus next, not grades or rankings.",
+    es: "<b>Qué significan los números:</b> cada puntaje va de 0 a 100 y resume cómo respondió un grupo — cuanto más alto, más estable. Son señales sin identificar sobre dónde enfocarse, no calificaciones ni clasificaciones."
+  },
+  dl_ovob_note: {
+    en: "A score is a <b>flag for a conversation</b> — never a diagnosis or a verdict on who a student is.",
+    es: "Un puntaje es una <b>señal para conversar</b> — nunca un diagnóstico ni un veredicto sobre quién es un estudiante."
+  },
+  dl_ove_h: { en: "Your dashboard is ready", es: "Tu panel está listo" },
+  dl_ove_p: { en: "Students use three things. <strong>Today</strong>: the morning check-in. <strong>This lesson</strong>: the exit slip at the end of the day. <strong>Over time</strong>: the deeper self-reflection, two or three times a year.", es: "Los estudiantes usan tres cosas. <strong>Hoy</strong>: el registro de la mañana. <strong>Esta lección</strong>: la boleta de salida al final del día. <strong>Con el tiempo</strong>: la autorreflexión más profunda, dos o tres veces al año." },
+  dl_ove_p2: { en: "As answers come in, this screen shows what students say in their own words, patterns across your group, who may need an adult, and which lesson to teach next. Always as trends, never as scores.", es: "A medida que llegan respuestas, esta pantalla muestra lo que dicen los estudiantes en sus palabras, patrones del grupo, quién puede necesitar a un adulto y qué lección enseñar después. Siempre como tendencias, nunca como puntajes." },
+  dl_ove_demo: { en: "Load demo data", es: "Cargar datos de ejemplo" },
+  dl_ove_run: { en: "Run your first self-reflection", es: "Haz tu primera autorreflexión" },
+  dl_ove_tip: { en: "Set up ▸ <strong>Distribute</strong> makes the link or QR code for each one. You don’t need all three. One is enough to start.", es: "Configuración ▸ <strong>Distribuir</strong> crea el enlace o código QR de cada uno. No necesitas los tres. Con uno basta para empezar." },
+  dl_band_green: {
+    en: "Keep noticing (75–100)",
+    es: "Seguir observando (75–100)"
+  },
+  dl_band_amber: {
+    en: "Worth a conversation (50–74)",
+    es: "Vale una conversación (50–74)"
+  },
+  dl_band_red: {
+    en: "Adult follow-up (0–49)",
+    es: "Seguimiento de un adulto (0–49)"
+  },
+  dl_dom_h1: {
+    en: "Domain averages",
+    es: "Promedios por dominio"
+  },
+  dl_dom_sub: {
+    en: "Normalized mean score per domain (0–100).",
+    es: "Puntaje medio normalizado por dominio (0–100)."
+  },
+  dl_stu_h3: {
+    en: "Class trends",
+    es: "Tendencias de la clase"
+  },
+  dl_home_h1: {
+    en: "Student reports",
+    es: "Informes del estudiante"
+  },
+  dl_home_sub: {
+    en: "Each student’s full self-reflection report: their answers, their words and conversation starters. Open one to read it or save a PDF. A report gathers that student’s reflections, check-ins, exit slips, goals and work in one place.",
+    es: "El informe completo de autorreflexión de cada estudiante: sus respuestas, sus palabras e ideas para conversar. Abre uno para leerlo o guardar un PDF. Un informe reúne las reflexiones, registros, boletas, metas y trabajos de ese estudiante en un solo lugar."
+  },
+  dl_grw_h1: {
+    en: "Growth across windows",
+    es: "Progreso entre períodos"
+  },
+  dl_grw_sub: {
+    en: "The class average composite, Fall → Winter → Spring → Summer. No individual student is shown.",
+    es: "El compuesto promedio de la clase, Otoño → Invierno → Primavera → Verano. No se muestra a ningún estudiante individual."
+  },
+  dl_grw_compare: {
+    en: "Compare one child’s home & school growth on one chart →",
+    es: "Compara el crecimiento de un niño en casa y escuela en un gráfico →"
+  },
+  dl_dist_h1: {
+    en: "Syncing & distribution",
+    es: "Sincronización y distribución"
+  },
+  dl_dist_sub: {
+    en: "By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.",
+    es: "De forma predeterminada, este dispositivo guarda cada respuesta de manera local y privada. La sincronización con tu hoja central se activa solo cuando la habilitas aquí, o cuando alguien abre un enlace generado."
+  },
+  dl_dist_togglelabel: {
+    en: "Send self-reflections taken on <em>this device</em> to the central sheet",
+    es: "Enviar los self-reflections de <em>este dispositivo</em> a la hoja central"
+  },
+  dl_dist_togglenote: {
+    en: "Affects only this device. Students who open a generated link sync regardless of this setting.",
+    es: "Afecta solo a este dispositivo. Los estudiantes que abren un enlace generado se sincronizan sin importar este ajuste."
+  },
+  dl_ri_h1: {
+    en: "See results from other devices",
+    es: "Ver resultados de otros dispositivos"
+  },
+  dl_ri_sub: {
+    en: "This dashboard normally shows only self-reflections taken on this device. Pull to add the rows synced from links and other devices, so their Home View and conversation starters appear here too. Pulled rows are shown for reading only — they are never saved onto this device.",
+    es: "Este panel normalmente muestra solo los self-reflections de este dispositivo. Trae las filas sincronizadas desde enlaces y otros dispositivos para que su Vista del hogar e iniciadores de conversación aparezcan aquí también. Las filas traídas se muestran solo para lectura — nunca se guardan en este dispositivo."
+  },
+  dl_ri_pull: {
+    en: "Refresh classroom data",
+    es: "Actualizar datos de la clase"
+  },
+  dl_ri_clear: {
+    en: "Show this device only",
+    es: "Mostrar solo este dispositivo"
+  },
+  dl_lg_h1: {
+    en: "Classroom Link Generator",
+    es: "Generador de enlaces para el aula"
+  },
+  dl_lg_sub: {
+    en: "Build one link to share or post as a QR code. Anyone who opens it syncs to your school's sheet. The link carries only the grade, class, and window — never the sheet address or passcode.",
+    es: "Crea un enlace para compartir o publicar como código QR. Quien lo abra se sincroniza con tu Hoja. El enlace lleva solo el grado, la clase y el período — nunca la dirección de la hoja ni la contraseña."
+  },
+  dl_lg_district: {
+    en: "District ID",
+    es: "ID del distrito"
+  },
+  dl_lg_district_hint: {
+    en: "(only for multi-district setups — leave blank for one shared sheet)",
+    es: "(solo para configuraciones de varios distritos — déjalo en blanco para una sola hoja compartida)"
+  },
+  dl_lg_school: {
+    en: "School ID",
+    es: "ID de la escuela"
+  },
+  dl_lg_optional: {
+    en: "(optional)",
+    es: "(opcional)"
+  },
+  dl_lg_grade: {
+    en: "Grade or age band",
+    es: "Grado o rango de edad"
+  },
+  dl_lg_class: {
+    en: "Class / Room ID",
+    es: "ID de clase / aula"
+  },
+  dl_lg_window: {
+    en: "Window",
+    es: "Período"
+  },
+  dl_lg_sharelink: {
+    en: "Shareable link",
+    es: "Enlace para compartir"
+  },
+  dl_lg_copy: {
+    en: "Copy link",
+    es: "Copiar enlace"
+  },
+  dl_lg_qr: {
+    en: "QR code",
+    es: "Código QR"
+  },
+  dl_lg_qrhelp: {
+    en: "Project the QR code on the board, or share the link in Google Classroom. Students who scan or click land on the self-reflection with grade, class, and window already set. The link deliberately carries only those three things — never the sheet address or passcode — so responses sync only from devices already connected to your Sheet (a class set, set up once). On a student's own phone, answers stay on that phone, and the closing screen tells them so and offers a show-your-teacher option.",
+    es: "Proyecta el código QR en la pizarra o comparte el enlace en Google Classroom. Los estudiantes que lo escaneen o hagan clic llegan al self-reflection con el grado, la clase y el período ya configurados. El enlace lleva a propósito solo esas tres cosas — nunca la dirección de la hoja ni la contraseña — así que las respuestas se sincronizan solo desde dispositivos ya conectados a tu Hoja (un juego de equipos del aula, configurado una vez). En el teléfono propio de un estudiante, las respuestas se quedan en ese teléfono, y la pantalla final se lo dice y le ofrece mostrárselo a su docente."
+  },
+  dl_exp_h1: {
+    en: "Class-summary exports",
+    es: "Exportaciones de resumen de clase"
+  },
+  dl_exp_sub: {
+    en: "Every export is a class summary as a CSV file. No names, individual scores or written answers. Opens in Excel or Google Sheets.",
+    es: "Cada exportación es un resumen de la clase en un archivo CSV. Sin nombres, puntajes individuales ni respuestas escritas. Se abre en Excel o Google Sheets."
+  },
+  dl_exp_label: {
+    en: "Export",
+    es: "Exportar"
+  },
+  dl_exp_full: {
+    en: "Class summary",
+    es: "Resumen de la clase"
+  },
+  dl_exp_full_sub: {
+    en: "Band shares & domain averages, by grade and window.",
+    es: "Proporciones por banda y promedios por área, según grado y período."
+  },
+  dl_exp_roster: {
+    en: "Band distribution",
+    es: "Distribución por banda"
+  },
+  dl_exp_roster_sub: {
+    en: "How many in each band, by window.",
+    es: "Cuántos en cada banda, por período."
+  },
+  dl_exp_growth: {
+    en: "Class growth",
+    es: "Progreso de la clase"
+  },
+  dl_exp_growth_sub: {
+    en: "Class average composite, Fall / Winter / Spring / Summer.",
+    es: "Compuesto promedio de la clase, Otoño / Invierno / Primavera / Verano."
+  },
+  dl_exp_datalives: {
+    en: "Where your data lives",
+    es: "Dónde viven tus datos"
+  },
+  dl_exp_reset: {
+    en: "Reset",
+    es: "Restablecer"
+  },
+  dl_exp_reset_note: {
+    en: "Use only after confirming exports are saved.",
+    es: "Úsalo solo después de confirmar que las exportaciones están guardadas."
+  },
+  dl_exp_clearbtn: {
+    en: "Clear local data",
+    es: "Borrar datos locales"
+  },
+  dl_data_h: {
+    en: "Your data on this device",
+    es: "Tus datos en este dispositivo"
+  },
+  dl_data_top: {
+    en: "Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.",
+    es: "Leído en vivo desde este navegador. Nada se envía a ningún lugar — descarga un respaldo primero y luego borra si lo necesitas."
+  },
+  dl_data_checkins: {
+    en: "Saved self-reflections",
+    es: "Autorreflexiones guardadas"
+  },
+  dl_data_family: {
+    en: "Family profiles",
+    es: "Perfiles familiares"
+  },
+  dl_data_draft: {
+    en: "Unfinished draft",
+    es: "Borrador sin terminar"
+  },
+  dl_data_backup: {
+    en: "Download a full backup (.json)",
+    es: "Descargar un respaldo completo (.json)"
+  },
+  dl_data_restore: {
+    en: "Restore from a backup (.json)",
+    es: "Restaurar desde un respaldo (.json)"
+  },
+  dl_data_csv: {
+    en: "Export as a spreadsheet (.csv)",
+    es: "Exportar como hoja de cálculo (.csv)"
+  },
+  dl_data_delete: {
+    en: "Delete everything on this device",
+    es: "Borrar todo en este dispositivo"
+  },
+  dl_data_done: {
+    en: "Done — all self-reflection data on this device has been deleted.",
+    es: "Listo — se han borrado de este dispositivo todos los datos de autorreflexiones."
+  },
+  dl_data_note: {
+    en: "A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Restore from a backup reads one back in. Deleting is permanent and cannot be undone.",
+    es: "Restaurar desde un respaldo vuelve a leer uno. Un respaldo es un archivo simple guardado en las descargas de este dispositivo — tu copia para conservar, no se nos envía. Borrar es permanente y no se puede deshacer."
+  }
+};
+function applyDashLang(_0x223f12) {
+  dashLang = _0x223f12 === "es" ? "es" : "en";
+  try {
+    sessionStorage.setItem(DASHLANG_KEY, dashLang);
+  } catch (_0xd2cd8f) {}
+  const _0x25f3d7 = document.getElementById("dashLangEn");
+  const _0x3aa994 = document.getElementById("dashLangEs");
+  if (_0x25f3d7) {
+    _0x25f3d7.classList.toggle("active", dashLang === "en");
+  }
+  if (_0x3aa994) {
+    _0x3aa994.classList.toggle("active", dashLang === "es");
+  }
+  if (typeof refreshAdmin === "function") {
+    try {
+      refreshAdmin();
+    } catch (_0x5e8704) {}
+  }
+  const _0x4fd8c8 = document.getElementById("screen-admin");
+  if (_0x4fd8c8) {
+    _0x4fd8c8.querySelectorAll("[data-dl]").forEach(_0x1be830 => {
+      const _0x459fcc = DASH_I18N[_0x1be830.getAttribute("data-dl")];
+      if (_0x459fcc) {
+        _0x1be830.textContent = _0x459fcc[dashLang];
+      }
+    });
+    _0x4fd8c8.querySelectorAll("[data-dl-html]").forEach(_0x4bfe12 => {
+      const _0x4401c4 = DASH_I18N[_0x4bfe12.getAttribute("data-dl-html")];
+      if (_0x4401c4) {
+        _0x4bfe12.innerHTML = _0x4401c4[dashLang];
+      }
+    });
+  }
+  const _0x436d6d = document.querySelector("#screen-admin .tab.active");
+  if (_0x436d6d) {
+    if (typeof setTabHint === "function") {
+      setTabHint(_0x436d6d.dataset.tab);
+    }
+    if (typeof setTabHelp === "function") {
+      setTabHelp(_0x436d6d.dataset.tab);
+    }
+  }
+  const _0x4da3cb = document.getElementById("tabHelpBtn");
+  if (_0x4da3cb && typeof tabHelpOpen !== "undefined") {
+    _0x4da3cb.textContent = tabHelpOpen ? DT("Hide", "Ocultar") : DASH_I18N.dl_help_btn ? DASH_I18N.dl_help_btn[dashLang] : "What am I looking at?";
+  }
+}
+function setDashLang(_0x20c26d) {
+  applyDashLang(_0x20c26d);
+}
+function renderSyncStatus() {
+  const _0x22bb96 = deviceSyncGet();
+  const _0xfeb035 = sessionStorage.getItem("aog.launch.sync") === "on" || !!sessionStorage.getItem(LAUNCH_KEYS.districtId);
+  const _0x2d190d = _0x22bb96 || _0xfeb035;
+  const _0xb7feb7 = navigator.onLine;
+  let _0x30c148 = 0;
+  let _0x4ebe3c = 0;
+  let _0x38d3d8 = 0;
+  try {
+    const _0x27a676 = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    _0x30c148 = _0x27a676.length;
+    for (const _0x47d362 of _0x27a676) {
+      if (!_0x47d362) {
+        continue;
+      }
+      if (_0x47d362.synced === true) {
+        _0x4ebe3c++;
+      } else if (_0x47d362.synced === false) {
+        _0x38d3d8++;
+      }
+    }
+  } catch (_0x2ce0f9) {}
+  const _0x456f56 = dashLang === "es" ? "es" : "en";
+  const _0x4e26ce = $("#hdrSyncPill");
+  const _0x533bda = $("#hdrSyncPillText");
+  if (_0x4e26ce) {
+    _0x4e26ce.className = "backend-status " + (_0x2d190d && _0x38d3d8 === 0 ? "backend-online" : "backend-offline");
+  }
+  if (_0x533bda) {
+    if (!_0x2d190d) {
+      _0x533bda.textContent = _0x456f56 === "es" ? "Privado · guardado en esta computadora" : "Private · saved on this computer";
+    } else if (_0x38d3d8 > 0) {
+      _0x533bda.textContent = _0x456f56 === "es" ? "Sincronización · " + _0x38d3d8 + " en espera" : "School sync · " + _0x38d3d8 + " waiting to send";
+    } else {
+      _0x533bda.textContent = _0x456f56 === "es" ? "Sincronización · activa" : "School sync · on";
+    }
+  }
+  const _0x2b8723 = $("#deviceSyncToggle");
+  if (_0x2b8723) {
+    _0x2b8723.checked = _0x22bb96;
+  }
+  const _0x12b5f4 = $("#syncStatusDot");
+  const _0x26ac2a = $("#syncStatusText");
+  const _0x23d2e2 = $("#syncStatusDetail");
+  if (_0x12b5f4) {
+    _0x12b5f4.style.background = !_0x2d190d ? "#9aa0a6" : _0x38d3d8 > 0 ? "#B8893A" : "#1E6B45";
+  }
+  if (_0x26ac2a) {
+    _0x26ac2a.textContent = !_0x2d190d ? _0x456f56 === "es" ? "Solo local en este dispositivo" : "Local-only on this device" : _0xb7feb7 ? _0x456f56 === "es" ? "Enviando self-reflections desde este dispositivo" : "Sending self-reflections from this device" : _0x456f56 === "es" ? "Sin conexión — reteniendo self-reflections en este dispositivo" : "Offline — holding self-reflections on this device";
+  }
+  if (_0x23d2e2) {
+    _0x23d2e2.textContent = !_0x2d190d ? _0x456f56 === "es" ? "Las respuestas permanecen en este navegador, en esta computadora. No se envía nada a ningún lugar a menos que actives la sincronización abajo o abras un enlace generado." : "Responses stay in this browser on this computer. Nothing is sent anywhere unless you enable syncing below or open a generated link." : _0x456f56 === "es" ? "Los self-reflections completados se guardan en este dispositivo y se envían a tu hoja configurada desde aquí. El navegador no puede leer una respuesta de vuelta, así que confirma que una respuesta fue enviada — no que la hoja la recibió. Trata tu hoja de Google como la fuente de verdad y guarda una exportación CSV como tu propio respaldo." : "Completed self-reflections are saved on this device and sent to your configured sheet from here. The browser can’t read a reply back, so it confirms a response was sent — not that the sheet received it. Treat your Google Sheet as the source of truth, and keep a CSV export as your own backup.";
+  }
+  const _0x34ca55 = $("#syncCounts");
+  if (_0x34ca55) {
+    if (!_0x2d190d) {
+      _0x34ca55.textContent = _0x456f56 === "es" ? _0x30c148 === 1 ? "1 respuesta guardada en este dispositivo." : _0x30c148 + " respuestas guardadas en este dispositivo." : _0x30c148 === 1 ? "1 response saved on this device." : _0x30c148 + " responses saved on this device.";
+      _0x34ca55.style.color = "var(--ink-soft)";
+    } else {
+      _0x34ca55.innerHTML = _0x456f56 === "es" ? "En este dispositivo: <strong>" + _0x30c148 + "</strong> guardadas · <strong>" + _0x4ebe3c + "</strong> enviadas · <strong>" + _0x38d3d8 + "</strong> en espera" + (_0xb7feb7 ? "" : " · <strong>sin conexión</strong>") + "." : "On this device: <strong>" + _0x30c148 + "</strong> saved · <strong>" + _0x4ebe3c + "</strong> sent · <strong>" + _0x38d3d8 + "</strong> waiting to send" + (_0xb7feb7 ? "" : " · <strong>offline</strong>") + ".";
+      _0x34ca55.style.color = _0x38d3d8 > 0 || !_0xb7feb7 ? "#9a6a1f" : "var(--ink-soft)";
+    }
+  }
+  const _0x274b34 = $("#dataLivesCopy");
+  if (_0x274b34) {
+    _0x274b34.textContent = _0x2d190d ? _0x456f56 === "es" ? "Los self-reflections completados en este dispositivo se envían a la propia hoja de Google de tu escuela — los datos permanecen en el Google de tu escuela, nunca con Architecture of Grace. El navegador puede confirmar que una respuesta fue enviada desde aquí, pero no que la hoja la recibió — así que revisa tu hoja para estar seguro y guarda una exportación CSV como tu propio registro. Siempre se conserva una copia en este navegador como respaldo." : "Completed self-reflections on this device are sent to your school’s own Google Sheet — the data stays in your school’s Google, never with Architecture of Grace. The browser can confirm a response was sent from here, but not that the sheet received it — so check your sheet to be sure, and keep a CSV export as your own record. A copy is always kept in this browser as a backup." : _0x456f56 === "es" ? "Cada respuesta se guarda de forma privada en este navegador, solo en esta computadora. No se envía nada a ningún lugar a menos que este dispositivo o enlace esté configurado para sincronizar. Usa las exportaciones de arriba para guardar tu propia copia de respaldo — ese CSV es tu registro." : "Every answer is saved privately in this browser, on this computer only. Nothing is sent anywhere unless sync is set up. Use the exports above to keep your own backup.";
+  }
+}
+function resetToStart() {
+  responses = [];
+  intensities = [];
+  reflections = ["", "", ""];
+  current = 0;
+  reflectionIdx = 0;
+  session = {};
+  closingWord = "";
+  if ($("#studentId")) {
+    $("#studentId").value = "";
+  }
+  if ($("#grade")) {
+    $("#grade").value = "";
+  }
+  if ($("#window")) {
+    $("#window").value = "";
+  }
+  closingSel = [];
+  if ($("#closingOptions")) {
+    $("#closingOptions").innerHTML = "";
+  }
+  context = "school";
+  population = "k12";
+  window._famFlow = false;
+  (function () {
+    var _0xa0a07d = document.getElementById("ctxBlock");
+    if (_0xa0a07d) {
+      _0xa0a07d.style.display = "";
+    }
+  })();
+  if ($("#adultId")) {
+    $("#adultId").value = "";
+  }
+  if ($("#adultRel")) {
+    $("#adultRel").value = "";
+  }
+  applyContext();
+  (function () {
+    var _0x3669b5 = document.querySelectorAll(".reveal");
+    if (!_0x3669b5.length) {
+      return;
+    }
+    var _0x1582bd = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    if (_0x1582bd || !("IntersectionObserver" in window)) {
+      _0x3669b5.forEach(function (_0x55640c) {
+        _0x55640c.classList.add("in");
+      });
+      return;
+    }
+    document.documentElement.classList.add("js-reveal");
+    var _0x440e2c = new IntersectionObserver(function (_0x5695cd) {
+      _0x5695cd.forEach(function (_0x6bcc1f) {
+        if (_0x6bcc1f.isIntersecting) {
+          _0x6bcc1f.target.classList.add("in");
+          _0x440e2c.unobserve(_0x6bcc1f.target);
+        }
+      });
+    }, {
+      threshold: 0,
+      rootMargin: "0px 0px -8% 0px"
+    });
+    _0x3669b5.forEach(function (_0x135c80) {
+      _0x440e2c.observe(_0x135c80);
+    });
+    setTimeout(function () {
+      _0x3669b5.forEach(function (_0x5a6df8) {
+        _0x5a6df8.classList.add("in");
+      });
+    }, 1200);
+  })();
+  (function () {
+    var _0x364d5f = document.getElementById("footYr");
+    if (_0x364d5f) {
+      _0x364d5f.textContent = new Date().getFullYear();
+    }
+    // Build stamp = the file's own last-saved date (auto-updates on every upload)
+    var _bld = document.getElementById("footBuild");
+    if (_bld) {
+      var _d = new Date(document.lastModified);
+      if (!isNaN(_d.getTime())) {
+        var _p = function (n) { return (n < 10 ? "0" : "") + n; };
+        _bld.textContent = "Build " + _d.getFullYear() + "." + _p(_d.getMonth() + 1) + "." +
+          _p(_d.getDate()) + "." + _p(_d.getHours()) + _p(_d.getMinutes());
+      }
+    }
+  })();
+  showScreen("screen-welcome");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("");
+  }
+  try {
+    showResumeBar();
+  } catch (_0x2873fa) {}
+}
+document.addEventListener("DOMContentLoaded", () => {
+  try{var _aogLangParam=new URLSearchParams(location.search).get("lang");if(_aogLangParam==="es"||_aogLangParam==="en"){sessionStorage.setItem(LANG_KEY,_aogLangParam);}}catch(_eLangP){}
+  const _0x1bba7a = sessionStorage.getItem(LANG_KEY);
+  if (_0x1bba7a) {
+    setLang(_0x1bba7a);
+  }
+  applyLang();
+  (function () {
+    var _0x5eb335 = document.getElementById("tourFab");
+    var _0x4e96c7 = document.querySelector(".screen.active");
+    var _0x256072 = {
+      "screen-welcome": 1,
+      "screen-guide": 1,
+      "screen-admin": 1
+    };
+    if (_0x5eb335 && _0x4e96c7) {
+      _0x5eb335.classList.toggle("show", !!_0x256072[_0x4e96c7.id]);
+    }
+  })();
+  try {
+    welcomeVoicesLoad();
+  } catch (_0x24cb4b) {}
+  setTimeout(maybeStartTour, 950);
+  setTimeout(showResumeBar, 300);
+  let _0x28aab9 = "en";
+  try {
+    _0x28aab9 = sessionStorage.getItem(DASHLANG_KEY) || "en";
+  } catch (_0x244b61) {}
+  applyDashLang(_0x28aab9);
+  flushUnsynced();
+  window.addEventListener("online", () => {
+    renderSyncStatus();
+    flushUnsynced().then(renderSyncStatus);
+  });
+  window.addEventListener("offline", renderSyncStatus);
+  parseLaunchParams();
+  try {
+    var _0x9108be = new URLSearchParams(window.location.search);
+    if (!location.hash && (_0x9108be.get("classId") || _0x9108be.get("grade") || _0x9108be.get("window") || _0x9108be.get("sync"))) {
+      startChoose();
+    }
+  } catch (_0x5e168e) {}
+  // Portal role-router entry: portal.html links here with ?start=checkin|dashboard.
+  try {
+    var _aogStart = new URLSearchParams(window.location.search).get("start");
+    if (_aogStart === "checkin" && typeof startChoose === "function") { startChoose(); }
+    else if (_aogStart === "dashboard" && typeof openAdmin === "function") { openAdmin(); }
+    else if (_aogStart === "starthere" && typeof openStartHere === "function") { openStartHere(); }
+  } catch (_aogStartErr) {}
+  $$("#modeGrid .mode-card").forEach(_0x162d0e => {
+    const _0x3e2fbc = () => {
+      $$("#modeGrid .mode-card").forEach(_0x6c37fa => {
+        _0x6c37fa.classList.remove("selected");
+        _0x6c37fa.setAttribute("aria-checked", "false");
+      });
+      _0x162d0e.classList.add("selected");
+      _0x162d0e.setAttribute("aria-checked", "true");
+      mode = _0x162d0e.dataset.mode;
+    };
+    _0x162d0e.addEventListener("click", _0x3e2fbc);
+    _0x162d0e.addEventListener("keydown", _0x3e3204 => {
+      if (_0x3e3204.key === "Enter" || _0x3e3204.key === " ") {
+        _0x3e3204.preventDefault();
+        _0x3e2fbc();
+        _0x162d0e.focus();
+      }
+    });
+  });
+  $$("#ctxToggle .ctx-opt").forEach(_0x5b72eb => {
+    _0x5b72eb.addEventListener("click", () => {
+      context = _0x5b72eb.dataset.ctx;
+      applyContext();
+    });
+  });
+  applyContext();
+  $("#btnStart").addEventListener("click", () => {
+    const _0x1a8594 = $("#studentId").value.trim();
+    /* A classroom link fixes the testing window (and the grade band) for the
+       whole class. Read those from the link rather than the dropdown, so the
+       row that reaches the Sheet is the window the teacher assigned even if
+       the control was somehow changed on the student's screen. */
+    const _0xlaunchG = (function () { try { return sessionStorage.getItem(LAUNCH_KEYS.grade) || ""; } catch (e) { return ""; } })();
+    const _0xlaunchW = (function () { try { return sessionStorage.getItem(LAUNCH_KEYS.window) || ""; } catch (e) { return ""; } })();
+    const _0x533899 = _0xlaunchG || $("#grade").value;
+    const _0x51115c = context === "home" ? seasonFromDate() : (_0xlaunchW || $("#window").value);
+    surveyLang = lang;
+    if (!_0x1a8594 || !_0x533899 || !_0x51115c) {
+      const _0x12768d = context === "school" ? lang === "es" ? "el código del estudiante" : "the student code" : lang === "es" ? "tu nombre/ID" : "your name/ID";
+      alert(lang === "es" ? "Por favor completa " + _0x12768d + ", grado, y período antes de empezar." : "Please fill in " + _0x12768d + ", grade, and window before starting.");
+      return;
+    }
+    if (context === "school" && /\S+\s+\S/.test(_0x1a8594) && _0x1a8594.replace(/[^A-Za-z]/g, "").length > 6) {
+      const _0x146385 = lang === "es" ? "Eso parece un nombre completo. El modo escuela debe quedar seudonimizado — usa iniciales o un número de asiento. ¿Usarlo de todos modos?" : "That looks like it might be a full name. School mode is meant to stay pseudonymous — initials or a seat number are safer. Use it anyway?";
+      if (!confirm(_0x146385)) {
+        return;
+      }
+    }
+    session = {
+      studentId: _0x1a8594,
+      grade: _0x533899,
+      window: _0x51115c,
+      context: context,
+      classId: sessionStorage.getItem(LAUNCH_KEYS.classId) || "",
+      schoolId: sessionStorage.getItem(LAUNCH_KEYS.schoolId) || "",
+      districtId: sessionStorage.getItem(LAUNCH_KEYS.districtId) || ""
+    };
+    responses = new Array(18).fill(null);
+    intensities = new Array(18).fill(null);
+    reflections = ["", "", ""];
+    current = 0;
+    showScreen("screen-survey");
+    renderItem();
+  });
+  document.body.addEventListener("click", _0x351f3e => {
+    const _0x34c353 = _0x351f3e.target.closest("#responseArea .response-option");
+    if (_0x34c353) {
+      selectResponse(parseInt(_0x34c353.dataset.value, 10));
+      return;
+    }
+    const _0x479b55 = _0x351f3e.target.closest("#intensityArea .intensity-option");
+    if (_0x479b55) {
+      selectIntensity(parseInt(_0x479b55.dataset.intensity, 10));
+      return;
+    }
+  });
+  document.body.addEventListener("keydown", _0x21fbd9 => {
+    if (_0x21fbd9.key !== "Enter" && _0x21fbd9.key !== " " && _0x21fbd9.key !== "Spacebar") {
+      return;
+    }
+    const _0x438477 = _0x21fbd9.target.closest("#responseArea .response-option");
+    if (_0x438477) {
+      _0x21fbd9.preventDefault();
+      _0x21fbd9.stopPropagation();
+      const _0x12e6c9 = parseInt(_0x438477.dataset.value, 10);
+      selectResponse(_0x12e6c9);
+      const _0x327567 = document.querySelector("#responseArea .response-option[data-value=\"" + _0x12e6c9 + "\"]");
+      if (_0x327567) {
+        _0x327567.focus();
+      }
+      return;
+    }
+    const _0x1d49b9 = _0x21fbd9.target.closest("#intensityArea .intensity-option");
+    if (_0x1d49b9) {
+      _0x21fbd9.preventDefault();
+      _0x21fbd9.stopPropagation();
+      const _0x447050 = parseInt(_0x1d49b9.dataset.intensity, 10);
+      selectIntensity(_0x447050);
+      const _0x529f12 = document.querySelector("#intensityArea .intensity-option[data-intensity=\"" + _0x447050 + "\"]");
+      if (_0x529f12) {
+        _0x529f12.focus();
+      }
+      return;
+    }
+  });
+  $("#btnNext").addEventListener("click", () => {
+    if ($("#btnNext").disabled) {
+      return;
+    }
+    const _0x4a36ab = items();
+    if (current === _0x4a36ab.length - 1) {
+      if (mode === "depth") {
+        startReflections();
+      } else {
+        submitFinal();
+      }
+      return;
+    }
+    current++;
+    renderItem();
+    saveDraft("survey");
+  });
+  $("#btnBack").addEventListener("click", () => {
+    if (current > 0) {
+      current--;
+      renderItem();
+      saveDraft("survey");
+    }
+  });
+  document.addEventListener("keydown", _0x2ecadf => {
+    if ($("#screen-survey").classList.contains("active")) {
+      const _0x5cc076 = scale();
+      const _0x414ec0 = parseInt(_0x2ecadf.key, 10);
+      if (!isNaN(_0x414ec0) && _0x414ec0 >= 1 && _0x414ec0 <= _0x5cc076.length) {
+        selectResponse(_0x414ec0 - 1);
+      } else if (_0x2ecadf.key === "Enter" && !$("#btnNext").disabled) {
+        $("#btnNext").click();
+      } else if (_0x2ecadf.key === "ArrowLeft" && !$("#btnBack").disabled) {
+        $("#btnBack").click();
+      }
+    }
+  });
+  $("#btnNextReflection").addEventListener("click", advanceReflection);
+  $("#btnSkipReflection").addEventListener("click", () => {
+    reflections[reflectionIdx] = "";
+    reflectionIdx++;
+    if (reflectionIdx >= 3) {
+      submitFinal();
+    } else {
+      renderReflection();
+    }
+  });
+  $("#btnToClosing").addEventListener("click", () => {
+    closingSel = [];
+    renderClosing();
+    showScreen("screen-closing");
+  });
+  $("#btnSkipClosing").addEventListener("click", async () => {
+    await finalizeAndSave("");
+    if (window._famFlow || window._famReturn) {
+      familyReturnFromThanks();
+    } else {
+      /* .30ep · was adult-only; a student was reset to the start with
+         nothing. Same screen, same Save/Print, audience auto-set. */
+      showMyResults();
+    }
+  });
+  $("#btnSaveClosing").addEventListener("click", async () => {
+    const _0xe8d5d2 = closingSel.join("|");
+    await finalizeAndSave(_0xe8d5d2);
+    if (_0xe8d5d2) {
+      $("#farewellWord").textContent = decodeChoices(_0xe8d5d2, surveyLang);
+      showScreen("screen-farewell");
+    } else if (window._famFlow || window._famReturn) {
+      familyReturnFromThanks();
+    } else {
+      /* .30ep · was adult-only; a student was reset to the start with
+         nothing. Same screen, same Save/Print, audience auto-set. */
+      showMyResults();
+    }
+  });
+  $("#btnDone").addEventListener("click", () => {
+    if (window._famFlow || window._famReturn) {
+      familyReturnFromThanks();
+    } else {
+      /* .30ep · was adult-only; a student was reset to the start with
+         nothing. Same screen, same Save/Print, audience auto-set. */
+      showMyResults();
+    }
+  });
+  var _0x3265e5 = $("#btnMyResults");
+  if (_0x3265e5) {
+    _0x3265e5.addEventListener("click", showMyResults);
+  }
+  var _0x35311f = $("#btnMyResultsFarewell");
+  if (_0x35311f) {
+    _0x35311f.addEventListener("click", showMyResults);
+  }
+  var _0x7a3dfe = $("#btnResultsDone");
+  if (_0x7a3dfe) {
+    _0x7a3dfe.addEventListener("click", resetToStart);
+  }
+  var _0x1b171d = $("#btnResultsDone2");
+  if (_0x1b171d) {
+    _0x1b171d.addEventListener("click", resetToStart);
+  }
+  var _0x3dc202 = $("#btnPrintMyResults");
+  if (_0x3dc202) {
+    _0x3dc202.addEventListener("click", printMyResults);
+  }
+  var _0x26b720 = $("#btnEmailMyResults");
+  if (_0x26b720) {
+    _0x26b720.addEventListener("click", emailMyResults);
+  }
+  var _0x10b8c2 = $("#btnPrintMyResultsTop");
+  if (_0x10b8c2) {
+    _0x10b8c2.addEventListener("click", printMyResults);
+  }
+  var _0x52e99e = $("#btnEmailMyResultsTop");
+  if (_0x52e99e) {
+    _0x52e99e.addEventListener("click", emailMyResults);
+  }
+  var _0x15c9cc = $("#btnShareQr");
+  if (_0x15c9cc) {
+    _0x15c9cc.addEventListener("click", showShareQr);
+  }
+  var _0x524ca0 = $("#voiPost");
+  if (_0x524ca0) {
+    _0x524ca0.addEventListener("click", voicesPost);
+  }
+  var _0x2fe1d2 = $("#voiMsg");
+  if (_0x2fe1d2) {
+    _0x2fe1d2.addEventListener("input", voicesCount);
+  }
+  $$(".tab").forEach(_0x59be02 => {
+    _0x59be02.addEventListener("click", () => {
+      $$(".tab").forEach(_0xbb040f => _0xbb040f.classList.remove("active"));
+      $$(".tab-panel").forEach(_0x3d1fc0 => _0x3d1fc0.classList.remove("active"));
+      _0x59be02.classList.add("active");
+      $("#panel-" + _0x59be02.dataset.tab).classList.add("active");
+      setTabHint(_0x59be02.dataset.tab);
+      setTabHelp(_0x59be02.dataset.tab);
+      refreshAdmin();
+    });
+  });
+  $$(".ovt-btn").forEach(_btn => {
+    _btn.addEventListener("click", () => {
+      aogViewType = _btn.dataset.view || "bar";
+      $$(".ovt-btn").forEach(_b => _b.classList.toggle("active", _b === _btn));
+      if (typeof renderOverview === "function") renderOverview();
+    });
+  });
+  $$(".domt-btn").forEach(_db => {
+    _db.addEventListener("click", () => {
+      aogDomView = _db.dataset.domview || "bars";
+      $$(".domt-btn").forEach(_b => _b.classList.toggle("active", _b === _db));
+      if (typeof renderOverview === "function") renderOverview();
+    });
+  });
+  $$(".hdt-btn").forEach(_hb => {
+    _hb.addEventListener("click", () => {
+      aogHeroView = _hb.dataset.hview || "bar";
+      $$(".hdt-btn").forEach(_x => _x.classList.toggle("active", _x === _hb));
+      if (typeof aogDemoEngaged === "function") aogDemoEngaged();
+      if (typeof renderHeroDemo === "function") renderHeroDemo();
+    });
+  });
+  try { if (typeof renderHeroDemo === "function") renderHeroDemo(); } catch (_e) {}
+  try { setTimeout(function () { var _t = document.getElementById("hdToggle"); if (_t) _t.classList.remove("hd-toggle--nudge"); }, 7000); } catch (_e) {}
+  const _0x386980 = document.querySelector(".tab.active") ? document.querySelector(".tab.active").dataset.tab : "overview";
+  setTabHint(_0x386980);
+  setTabHelp(_0x386980);
+  const _0x1206cd = $("#tabHelpBtn");
+  if (_0x1206cd) {
+    _0x1206cd.addEventListener("click", () => {
+      tabHelpOpen = !tabHelpOpen;
+      const _0x17e7c7 = $("#tabHelp");
+      if (_0x17e7c7) {
+        _0x17e7c7.hidden = !tabHelpOpen;
+      }
+      _0x1206cd.textContent = tabHelpOpen ? DT("Hide", "Ocultar") : DASH_I18N.dl_help_btn ? DASH_I18N.dl_help_btn[dashLang] : "What am I looking at?";
+    });
+  }
+  ["filterWindow", "filterGrade", "filterMode", "studentFilterWindow", "studentFilterGrade", "studentFilterTier", "homeFilterStudent", "homeFilterWindow", "growthFilterGrade", "growthSort"].forEach(_0x2c96fc => {
+    const _0x5b6ee4 = document.getElementById(_0x2c96fc);
+    if (_0x5b6ee4) {
+      _0x5b6ee4.addEventListener("change", refreshAdmin);
+    }
+  });
+  ["lgDistrictId", "lgSchoolId", "lgGrade", "lgClassId", "lgWindow", "lgMode"].forEach(_0x3da2c0 => {
+    const _0x59e534 = document.getElementById(_0x3da2c0);
+    if (_0x59e534) {
+      _0x59e534.addEventListener("input", renderClassroomLink);
+    }
+  });
+  const _0x1f72b9 = document.querySelector(".tab[data-tab=\"distribute\"]");
+  if (_0x1f72b9) {
+    _0x1f72b9.addEventListener("click", () => {
+      renderClassroomLink();
+      renderSyncStatus();
+      if (typeof aogLoadSyncConfig === "function") aogLoadSyncConfig();
+    });
+  }
+  const _0x142049 = document.querySelector(".tab[data-tab=\"export\"]");
+  if (_0x142049) {
+    _0x142049.addEventListener("click", renderSyncStatus);
+  }
+  const _0x1eedfb = document.getElementById("deviceSyncToggle");
+  if (_0x1eedfb) {
+    _0x1eedfb.addEventListener("change", () => {
+      deviceSyncSet(_0x1eedfb.checked);
+      renderSyncStatus();
+      if (_0x1eedfb.checked) {
+        flushUnsynced().then(renderSyncStatus);
+      }
+    });
+  }
+  renderSyncStatus();
+  const _0x84dae7 = document.getElementById("riPullBtn");
+  if (_0x84dae7) {
+    _0x84dae7.addEventListener("click", pullFromSheet);
+  }
+  const _0x37bc97 = document.getElementById("riClearBtn");
+  if (_0x37bc97) {
+    _0x37bc97.addEventListener("click", clearPulledRecords);
+  }
+  const _0x50b39a = document.getElementById("lgCopy");
+  if (_0x50b39a) {
+    _0x50b39a.addEventListener("click", async () => {
+      const _0x16841c = ($("#lgUrl") || {}).value || buildClassroomLink();
+      const _0x363e8c = $("#lgCopyMsg");
+      try {
+        await navigator.clipboard.writeText(_0x16841c);
+        if (_0x363e8c) {
+          _0x363e8c.textContent = "Copied to clipboard.";
+        }
+      } catch (_0x34a584) {
+        if ($("#lgUrl")) {
+          $("#lgUrl").select();
+        }
+        if (_0x363e8c) {
+          _0x363e8c.textContent = "Press Ctrl/Cmd+C to copy the selected link.";
+        }
+      }
+      if (_0x363e8c) {
+        setTimeout(() => {
+          _0x363e8c.textContent = "";
+        }, 2500);
+      }
+    });
+  }
+});
+/* AOG-CLASSIC-OFF-V1 (2026-09-26) — Jimmy: "the CLASSIC DASHBOARD COMPLETELY REMOVED and everything switched
+   over." Every door that used to open the classic screen now goes to /dashboard. ?classic=1 still opens the old
+   screen for one visit, so nothing a teacher saved is out of reach. */
+function openAdmin() {
+  try { if (!/[?&]classic=1/.test(location.search)) { location.href = "/dashboard"; return; } } catch (e) {}
+  if (typeof showScreen === "function") showScreen("screen-admin");
+  try { window.scrollTo({ top: 0, behavior: "instant" }); } catch (e) { try { window.scrollTo(0, 0); } catch (_e) {} }
+  try { if (typeof setDashLang === "function" && typeof lang !== "undefined") setDashLang(lang); } catch (_eL) {}
+  if (typeof refreshAdmin === "function") refreshAdmin();
+  if (typeof aogSetHash === "function") {
+    aogSetHash("results");
+  }
+  /* Adaptive default tab (once per page load, never overrides the user's own navigation):
+     land on Overview/insight when there's data, on Distribute/get-started when empty. */
+  try {
+    if (!window.__aogDashTabPicked) {
+      window.__aogDashTabPicked = true;
+      var _aogRecs = (typeof getAllRecords === "function") ? (getAllRecords() || []) : [];
+      if (typeof aogQsTab === "function") aogQsTab(_aogRecs.length ? "overview" : "distribute");
+    }
+  } catch (e) {}
+  setTimeout(function () {
+    try {
+      maybeStartTour("dash");
+    } catch (_e) {}
+  }, 750);
+}
+/* P1/B (2026-06-05): open the full dashboard directly. The gate exists to
+   protect real synced data, but data only syncs when someone shares a private
+   link — so an unsynced visit shows only local/demo rows, nothing private.
+   Loads the demo set only when the device has no real self-reflections, so a real
+   educator's data is never replaced. */
+function aogDemoEngaged() {
+  var t = document.getElementById("hdToggle");
+  if (t) t.classList.remove("hd-toggle--nudge");
+  var h = document.getElementById("hdTryHint");
+  if (h) h.classList.add("hd-hide");
+}
+function aogOpenDemoDashboard() {
+  try {
+    var hasReal = false;
+    try { hasReal = (JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") || []).length > 0; } catch (_e) {}
+    var demoOn = false;
+    try { demoOn = localStorage.getItem(DEMO_FLAG) === "1"; } catch (_e2) {}
+    if (!demoOn && !hasReal && typeof toggleDemoData === "function") {
+      toggleDemoData();
+    }
+  } catch (_e3) {}
+  if (typeof showScreen === "function") showScreen("screen-admin");
+  if (typeof refreshAdmin === "function") refreshAdmin();
+  if (typeof aogSetHash === "function") aogSetHash("results");
+}
+function startCheckin() {
+  window._famFlow = false;
+  var _0x32595d = document.getElementById("ctxBlock");
+  if (_0x32595d) {
+    _0x32595d.style.display = "";
+  }
+  ["modeChooseHead", "modeGrid"].forEach(function (_aogMid) {
+    var _aogMel = document.getElementById(_aogMid);
+    if (_aogMel) {
+      _aogMel.style.display = "";
+    }
+  });
+  var _0x4197c2 = document.getElementById("checkinEyebrow");
+  if (_0x4197c2) {
+    _0x4197c2.setAttribute("data-i18n", "w_screener_ey");
+    _0x4197c2.textContent = typeof lang !== "undefined" && lang === "es" ? "Autorreflexión" : "Self-Reflection";
+  }
+  population = "k12";
+  context = "school";
+  if (typeof applyContext === "function") {
+    applyContext();
+  }
+  showScreen("screen-checkin");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("student");
+  }
+}
+function openCheckinPicker() {
+  showScreen("screen-choose");
+  if (typeof aogSetHash === "function") { aogSetHash("checkin"); }
+  setTimeout(function () {
+    var el = document.getElementById("checkinPicker");
+    if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { el.scrollIntoView(); } }
+  }, 90);
+}
+try { window.openCheckinPicker = openCheckinPicker; } catch (_aogCP) {}
+function startChoose() {
+  showScreen("screen-choose");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("checkin");
+  }
+}
+function openTank() {
+  showScreen("screen-tank");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("tank");
+  }
+}
+try { window.openTank = openTank; } catch (_aogOT) {}
+/* Open the Resource Index and latch onto a specific construct (e.g. the Inner
+   Critic / Coach lessons) by driving its search box, then scrolling to the match. */
+function aogGoConstruct(_q, _grade) {
+  try { if (typeof openGuide === "function") { openGuide("resindex"); } }
+  catch (_e0) {}
+  setTimeout(function () {
+    try {
+      var s = document.getElementById("riSearch");
+      if (s) { s.value = _q; }
+      var g = document.getElementById("riGrade");
+      if (g && _grade) { for (var i = 0; i < g.options.length; i++) { if (g.options[i].value === _grade) { g.value = _grade; break; } } }
+      if (typeof riRender === "function") { riRender(_q, _grade || (g ? g.value : "")); }
+      var idx = document.getElementById("riIndex");
+      var target = (idx && idx.querySelector(".ri-domain")) || idx ||
+                   document.getElementById("guide-resindex");
+      if (target) {
+        try { target.scrollIntoView({ behavior: "smooth", block: "start" }); }
+        catch (_e1) { target.scrollIntoView(); }
+      }
+    } catch (_e2) {}
+  }, 240);
+}
+try { window.aogGoConstruct = aogGoConstruct; } catch (_aogGC) {}
+function openFramework() {
+  showScreen("screen-framework");
+  // Open a sensible default panel so the screen isn't blank on entry.
+  try {
+    if (!document.querySelector(".fw-panel:not([hidden])")) {
+      var dft = document.querySelector('.fw-tab[aria-controls="fw-panel-framework"]');
+      if (dft) { aogFwOpen(dft, "framework"); }
+    }
+  } catch (e) {}
+  if (typeof aogSetHash === "function") {
+    aogSetHash("framework");
+  }
+}
+function openStartHere() {
+  showScreen("screen-starthere");
+  if (typeof aogSetHash === "function") { aogSetHash("starthere"); }
+  try { window.scrollTo({ top: 0, behavior: "instant" }); } catch (e) { try { window.scrollTo(0, 0); } catch (_e) {} }
+}
+try { window.openStartHere = openStartHere; } catch (e) {}
+function openEcosystem() {
+  // Retired 2026-06-28: the ecosystem now lives as a tab on the Framework page.
+  showScreen("screen-framework");
+  if (typeof aogSetHash === "function") { aogSetHash("framework"); }
+  requestAnimationFrame(function () {
+    try {
+      var btn = document.querySelector('.fw-tab[aria-controls="fw-panel-ecosystem"]');
+      if (btn && typeof aogFwPanel === "function") { aogFwPanel(btn, "ecosystem"); }
+      else { window.scrollTo(0, 0); }
+    } catch (e) { try { window.scrollTo(0, 0); } catch (_e) {} }
+  });
+}
+try { window.openEcosystem = openEcosystem; } catch (e) {}
+function openWords() {
+  showScreen("screen-words");
+  if (typeof aogSetHash === "function") { aogSetHash("words"); }
+  try { if (typeof window.aogWoeRender === "function") window.aogWoeRender(); } catch (e) {}
+  try { window.scrollTo({ top: 0, behavior: "instant" }); } catch (e) { try { window.scrollTo(0, 0); } catch (_e) {} }
+}
+try { window.openWords = openWords; } catch (e) {}
+// Open the Guide & Library screen directly on the Voices tab (surfaced in the Explore menu).
+function openVoices() {
+  try {
+    if (typeof openGuide === "function") { openGuide("voices"); }
+    requestAnimationFrame(function () {
+      if (typeof activateGuideSection === "function") { activateGuideSection("voices", true); }
+      else if (typeof openGuideSub === "function") { openGuideSub("voices"); }
+    });
+  } catch (e) {}
+}
+try { window.openVoices = openVoices; } catch (e) {}
+// Open a framework panel (single-open, no collapse). Scroll-free core so it can also be
+// used to open a default panel on screen entry without jumping the page.
+function aogFwOpen(btn, name) {
+  var panel = document.getElementById("fw-panel-" + name);
+  if (!panel) return false;
+  document.querySelectorAll(".fw-panel").forEach(function (p) { if (p !== panel) p.setAttribute("hidden", ""); });
+  document.querySelectorAll(".fw-tab").forEach(function (t) {
+    if (t !== btn) { t.classList.remove("active"); t.setAttribute("aria-expanded", "false"); }
+  });
+  panel.removeAttribute("hidden");
+  if (btn) { btn.classList.add("active"); btn.setAttribute("aria-expanded", "true"); }
+  return true;
+}
+function aogFwPanel(btn, name) {
+  // Always-one-open: the tapped panel opens and stays open (clicking it again does NOT
+  // collapse it to empty), so the page never jumps to a blank state.
+  if (!aogFwOpen(btn, name) || !btn) return;
+  // Anchor the tapped tab just under the sticky header — INSTANT (no animated scrolling)
+  // and only when the tab is actually out of position, so simply switching tabs in the
+  // same row doesn't shift the page around.
+  try {
+    var topbar = document.querySelector(".topbar");
+    var off = (topbar ? topbar.offsetHeight : 70) + 12;
+    var top = btn.getBoundingClientRect().top;
+    if (top < off || top > off + 170) {
+      var y = top + window.pageYOffset - off;
+      window.scrollTo({ top: Math.max(0, y), behavior: "auto" });
+    }
+  } catch (e) {}
+}
+function startAdult() {
+  population = "adult";
+  mode = "rapid";
+  surveyLang = lang;
+  var _0x39c010 = document.getElementById("modeGridAdult");
+  if (_0x39c010) {
+    _0x39c010.querySelectorAll(".mode-card").forEach(function (_0xda8f3d) {
+      var _0x577d78 = _0xda8f3d.dataset.mode === "rapid";
+      _0xda8f3d.classList.toggle("selected", _0x577d78);
+      _0xda8f3d.setAttribute("aria-checked", _0x577d78 ? "true" : "false");
+    });
+  }
+  showScreen("screen-adult");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("adult");
+  }
+}
+window.addEventListener("load", function () {
+  document.querySelectorAll("#modeGridAdult .mode-card").forEach(function (_0x6ee10f) {
+    function _0x50f201() {
+      document.querySelectorAll("#modeGridAdult .mode-card").forEach(function (_0x680115) {
+        _0x680115.classList.remove("selected");
+        _0x680115.setAttribute("aria-checked", "false");
+      });
+      _0x6ee10f.classList.add("selected");
+      _0x6ee10f.setAttribute("aria-checked", "true");
+      mode = _0x6ee10f.dataset.mode;
+    }
+    _0x6ee10f.addEventListener("click", _0x50f201);
+    _0x6ee10f.addEventListener("keydown", function (_0x2d9cf0) {
+      if (_0x2d9cf0.key === "Enter" || _0x2d9cf0.key === " ") {
+        _0x2d9cf0.preventDefault();
+        _0x50f201();
+        _0x6ee10f.focus();
+      }
+    });
+  });
+  var _0x4262ac = document.getElementById("btnStartAdult");
+  if (_0x4262ac) {
+    _0x4262ac.addEventListener("click", function () {
+      var _0x51319f = (document.getElementById("adultId").value || "").trim();
+      if (!_0x51319f) {
+        alert(lang === "es" ? "Por favor ingresa tu nombre o iniciales antes de empezar." : "Please enter your name or initials before starting.");
+        return;
+      }
+      population = "adult";
+      surveyLang = lang;
+      var _0x4090d3 = document.getElementById("adultRel");
+      var _0x3c021f = (_0x4090d3 && _0x4090d3.value || "").trim();
+      session = {
+        studentId: _0x51319f,
+        grade: "Adult",
+        window: seasonFromDate(),
+        context: "home",
+        relationship: _0x3c021f,
+        classId: "",
+        schoolId: "",
+        districtId: ""
+      };
+      responses = new Array(18).fill(null);
+      intensities = new Array(18).fill(null);
+      reflections = ["", "", ""];
+      current = 0;
+      showScreen("screen-survey");
+      renderItem();
+    });
+  }
+});
+
+/* ===== Hero "How full is your tank?" — front-page 60-second read =====
+   Self-contained so it never collides with the workplace #wpTank instance.
+   Same scoring + copy, plus an animated fuel-gauge and a "go deeper" CTA. */
+(function () {
+  var ROOT = "heroTank";
+  var picks = {};
+
+  function setPick(q, v, el) {
+    document.querySelectorAll("#" + ROOT + " .tk-pill[data-q=\"" + q + "\"]").forEach(function (p) {
+      p.classList.remove("on");
+      p.setAttribute("aria-checked", "false");
+    });
+    el.classList.add("on");
+    el.setAttribute("aria-checked", "true");
+    picks[q] = v;
+  }
+
+  function show() {
+    var es = (typeof lang !== "undefined" && lang === "es");
+    var keys = ["1", "2", "3", "4"];
+    var total = 0, answered = 0;
+    keys.forEach(function (k) {
+      if (picks[k] != null) { total += picks[k]; answered++; }
+    });
+    var box = document.getElementById(ROOT + "Result");
+    if (!box) return;
+    box.hidden = false;
+
+    if (answered < 4) {
+      box.className = "wp-tank-result warn";
+      box.innerHTML = "<p>" + (es ? "Toca una opción en cada una de las cuatro líneas y vuelve a intentarlo." : "Tap one option for each of the four lines, then try again.") + "</p>";
+      return;
+    }
+
+    var band, accent;
+    if (total <= 3) { band = "ok"; accent = "var(--green)"; }
+    else if (total <= 7) { band = "low"; accent = "var(--amber)"; }
+    else { band = "empty"; accent = "var(--red)"; }
+    var _taud = (typeof window !== "undefined" && window.aogTankAudience) || "adult";
+    var _rmap = (typeof AOG_TANK_RESULT !== "undefined") ? (AOG_TANK_RESULT[(typeof TANK_RESULT_BAND!=="undefined"&&TANK_RESULT_BAND[_taud])||"adult"] || AOG_TANK_RESULT.adult) : null;
+    var _rb = (_rmap && _rmap[band]) ? _rmap[band][es ? "es" : "en"] : null;
+    var title = _rb ? _rb.title : "";
+    var body  = _rb ? _rb.body  : "";
+
+    /* fuel gauge: 0 depletion = full tank, 12 = empty */
+    var fullness = Math.round((12 - total) / 12 * 100);
+    var gaugeLabel = es ? "Tanque" : "Tank";
+    var dropIcon = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z\"/></svg>";
+    var gaugeHtml =
+      "<div class=\"tk-gauge\" style=\"color:" + accent + "\">" +
+        "<div class=\"tk-gauge-track\"><div class=\"tk-gauge-fill\" id=\"" + ROOT + "GaugeFill\"></div></div>" +
+        "<div class=\"tk-gauge-label\">" + dropIcon + "<span>" + gaugeLabel + "</span> <span class=\"tk-gauge-pct\">" + fullness + "%" + (es ? " lleno" : " full") + "</span></div>" +
+      "</div>";
+
+    var ctaLabel = es ? "Profundiza con la autorreflexión completo" : "Go deeper with the full self-reflection";
+    var ctaHtml = "<a href=\"#\" class=\"tk-go2\" onclick=\"event.preventDefault(); if(typeof openWorkplaceCheckin==='function'){openWorkplaceCheckin();}\">" + ctaLabel + " <span aria-hidden=\"true\">&rarr;</span></a>";
+
+    var flag = es ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.";
+
+    /* 2A: instant-results header — names the value prop ("INSTANT RESULTS")
+       and what the read does ("supports") right inside the result screen. */
+    var instantLabel = es ? "RESULTADOS AL INSTANTE" : "INSTANT RESULTS";
+    var supportsLine = es
+      ? "Tu lectura privada est\u00e1 lista \u2014 esto es lo que te apoya ahora mismo."
+      : "Your private read is ready \u2014 here\u2019s what supports you right now.";
+    var instantHtml =
+      "<div class=\"tk-instant-top\">" +
+        "<span class=\"tk-instant-badge\">" + instantLabel + "</span>" +
+        "<span class=\"tk-supports\">" + supportsLine + "</span>" +
+      "</div>";
+
+    /* Item 7: a single, zero-friction micro-intervention shown right under a
+       low/empty read — proof-of-concept of the framework, before any "go deeper". */
+    var graceHtml = "";
+    if (band === "low" || band === "empty") {
+      var gHead = es ? "Una cosa peque\u00f1a, ahora mismo" : "One small thing, right now";
+      var gLede = es
+        ? "Tu tanque est\u00e1 bajo. Antes que nada, respira despacio tres veces conmigo \u2014 ese es todo el paso."
+        : "Your tank is low. Before anything else, take three slow breaths with me \u2014 that\u2019s the whole step.";
+      var gBtn = es ? "Respira conmigo" : "Breathe with me";
+      graceHtml =
+        "<div class=\"grace-step\">" +
+          "<div class=\"grace-step-h\">" +
+            "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z\"/></svg>" +
+            "<span>" + gHead + "</span>" +
+          "</div>" +
+          "<p class=\"grace-step-p\">" + gLede + "</p>" +
+          "<button type=\"button\" class=\"grace-step-btn\" onclick=\"aogGraceBreathe(this)\">" + gBtn + "</button>" +
+          "<div class=\"grace-breath\" hidden><div class=\"grace-orb\"></div><div class=\"grace-cue\" aria-live=\"polite\"></div></div>" +
+        "</div>";
+    }
+
+    /* Graduated regulation flow — mirrors the Quiet Space pattern:
+       quick resets (set 1) -> re-check -> "more ways to settle" (set 2) reveals.
+       Only on low/empty, so a full tank stays clean. */
+    var tankToolsHtml = "";
+    if (band === "low" || band === "empty") {
+      var _tkCell = function (t) {
+        return "<button type=\"button\" onclick=\"if(window.toolOpen){window.toolOpen('" + t.key + "');}\">" +
+          "<span class=\"ic\" aria-hidden=\"true\">" + t.ic + "</span><span>" + (es ? t.es : t.en) + "</span></button>";
+      };
+      var _tk1 = [
+        { key:"breathing", ic:"🫁", en:"Breathing",  es:"Respiración" },
+        { key:"grounding", ic:"🌿", en:"5-4-3-2-1",  es:"5-4-3-2-1" },
+        { key:"movement",  ic:"🏃", en:"Move & Shake", es:"Muévete" },
+        { key:"take5",     ic:"🖐️", en:"Take 5",     es:"Toma 5" },
+        { key:"calmjar",   ic:"🫙", en:"Calm Jar",    es:"Frasco de calma" },
+        { key:"tappad",    ic:"👆", en:"Tap Pad",     es:"Toca el ritmo" }
+      ];
+      var _tk2 = [
+        { key:"rainbow",   ic:"🌈", en:"Rainbow Breath", es:"Respiración arcoíris" },
+        { key:"animalyoga",ic:"🦁", en:"Animal Yoga",    es:"Yoga animal" },
+        { key:"bilateral", ic:"🦋", en:"Butterfly Hug",  es:"Abrazo mariposa" },
+        { key:"safeplace", ic:"🌱", en:"Safe Place",     es:"Lugar seguro" },
+        { key:"feelwheel", ic:"🎡", en:"Feelings Wheel", es:"Rueda de emociones" },
+        { key:"emotion",   ic:"🟡", en:"Name It",        es:"Nómbralo" }
+      ];
+      tankToolsHtml =
+        "<div class=\"rn-sensory\">" +
+          "<div class=\"rn-sensory-h\"><span aria-hidden=\"true\">🧠</span><span>" + (es ? "Reinicios rápidos del cuerpo" : "Quick sensory + regulation resets") + "</span></div>" +
+          "<p class=\"rn-sensory-sub\">" + (es ? "Elige lo que tu cuerpo necesita ahora" : "Choose what your body needs right now") + "</p>" +
+          "<div class=\"rn-sensory-grid\">" + _tk1.map(_tkCell).join("") + "</div>" +
+        "</div>" +
+        "<div class=\"rn-followup tk-rerate\">" +
+          "<div class=\"rn-fb-q\">" + (es ? "Prueba una, luego mira cómo está tu tanque:" : "Try one, then see where your tank's at:") + "</div>" +
+          "<div class=\"rn-fb-btns\">" +
+            "<button type=\"button\" class=\"rn-tool-btn\" onclick=\"if(window.aogTankMore)aogTankMore(this,true)\">" + (es ? "Un poco más estable" : "A little steadier") + "</button>" +
+            "<button type=\"button\" class=\"rn-deeper-btn\" onclick=\"if(window.aogTankMore)aogTankMore(this,false)\">" + (es ? "Todavía no" : "Not yet") + "</button>" +
+          "</div>" +
+        "</div>" +
+        "<div class=\"rn-sensory tk-more\" hidden>" +
+          "<div class=\"rn-sensory-h\"><span aria-hidden=\"true\">✨</span><span>" + (es ? "Más maneras de calmarte" : "More ways to settle") + "</span></div>" +
+          "<p class=\"rn-sensory-sub\">" + (es ? "Cuando estés listo/a, prueba otra" : "When you're ready, try another") + "</p>" +
+          "<div class=\"rn-sensory-grid\">" + _tk2.map(_tkCell).join("") + "</div>" +
+        "</div>";
+    }
+
+    box.className = "wp-tank-result " + band;
+    box.innerHTML =
+      instantHtml +
+      "<div class=\"band\">" + title + "</div>" +
+      gaugeHtml +
+      "<p>" + body + "</p>" +
+      graceHtml +
+      tankToolsHtml +
+      (typeof aogTankTips === "function" ? aogTankTips(band, es) : "") +
+      ctaHtml +
+      "<p class=\"flag\">" + flag + "</p>";
+
+    /* animate the gauge fill in */
+    var fill = document.getElementById(ROOT + "GaugeFill");
+    if (fill) {
+      fill.style.width = "0%";
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { fill.style.width = fullness + "%"; });
+      });
+    }
+
+    try { box.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {}
+  }
+
+  /* Re-check on the tank read -> reveal "more ways to settle" (mirrors Quiet Space) */
+  window.aogTankMore = function (btn, ok) {
+    var es = (typeof lang !== "undefined" && lang === "es");
+    try {
+      var resultBox = btn && btn.closest ? btn.closest(".wp-tank-result") : null;
+      var wrap = btn && btn.closest ? btn.closest(".tk-rerate") : null;
+      if (wrap) {
+        wrap.innerHTML = "<div class=\"rn-fb-resp\">" + (ok
+          ? (es ? "Bien — esa es la habilidad funcionando. Si quieres, prueba una más:" : "Nice — that's the skill working. Want one more? Try:")
+          : (es ? "Está bien. No tienes que empezar de nuevo — suma una más:" : "That's okay. No need to start over — add one more:")) + "</div>";
+      }
+      var m = resultBox ? resultBox.querySelector(".tk-more") : document.querySelector(".tk-more");
+      if (m) { m.hidden = false; try { m.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
+    } catch (e) {}
+  };
+
+  function init() {
+    if (!document.getElementById(ROOT)) return;
+    document.querySelectorAll("#" + ROOT + " .tk-pill").forEach(function (pill) {
+      var q = pill.dataset.q;
+      var v = parseInt(pill.dataset.v, 10);
+      pill.addEventListener("click", function () { setPick(q, v, pill); });
+      pill.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); setPick(q, v, pill); }
+      });
+    });
+    var btn = document.getElementById(ROOT + "Btn");
+    if (btn) btn.addEventListener("click", show);
+  }
+
+  if (document.readyState !== "loading") { init(); }
+  else { window.addEventListener("load", init); }
+})();
+
+/* 60-second read — audience-aware wording (Child / Teen / Adult).
+   Rewords the intro + four questions on #heroTank to fit who's taking it. The
+   toggle's own button labels stay bilingual via the existing ages_* i18n keys;
+   only the audience-varied copy here is driven by aogRenderTankCopy(), which is
+   also called from setLang() so language switches keep the right wording.
+   NOTE: child/teen wording below is a first draft — refine to taste. */
+var AOG_TANK_COPY = {
+  adult: {
+    p:  { en: "Burnout\u2019s clearest signal is energy, not attitude. Four quick reads on your tank \u2014 private, instant, and saved nowhere. This isn\u2019t a clinical burnout score; it\u2019s a quick mirror. If it rings true, the full self-reflection goes deeper.", es: "La se\u00f1al m\u00e1s clara del agotamiento es la energ\u00eda, no la actitud. Cuatro lecturas r\u00e1pidas de tu tanque \u2014 privadas, instant\u00e1neas y que no se guardan en ning\u00fan lado. Esto no es un puntaje cl\u00ednico de agotamiento; es un espejo r\u00e1pido. Si te resuena, la autorreflexión completo de abajo profundiza m\u00e1s." },
+    q1: { en: "By the end of most days, I feel used up \u2014 like there\u2019s little left to give.", es: "Al final de la mayor\u00eda de los d\u00edas, me siento agotado/a \u2014 como si quedara poco para dar." },
+    q2: { en: "I wake up already tired at the thought of the day ahead.", es: "Me despierto ya cansado/a de solo pensar en el d\u00eda que viene." },
+    q3: { en: "Even when I rest, I don\u2019t really feel refilled.", es: "Incluso cuando descanso, no me siento realmente recargado/a." },
+    q4: { en: "Lately I feel like I\u2019m just getting through the day without really noticing it \u2014 like my mind is somewhere else.", es: "\u00daltimamente siento que solo paso el d\u00eda sin darme cuenta de verdad \u2014 como si mi mente estuviera en otra parte." }
+  },
+  k2: {
+    p:  { en: "How full is your tank today? Tap what feels true. There are no wrong answers — it just helps you notice how you feel.", es: "¿Qué tan lleno está tu tanque hoy? Toca lo que sientas verdadero. No hay respuestas incorrectas — solo te ayuda a notar cómo te sientes." },
+    q1: { en: "By the end of the day, I feel really tired — like my energy is all gone.", es: "Al final del día, me siento muy cansado/a — como si se me acabara toda la energía." },
+    q2: { en: "When I wake up, I already feel tired about the day.", es: "Cuando me despierto, ya me siento cansado/a por el día." },
+    q3: { en: "Even after I rest, I still feel tired.", es: "Incluso después de descansar, sigo sintiéndome cansado/a." },
+    q4: { en: "Sometimes my mind feels far away, like I’m not really here.", es: "A veces mi mente se siente lejos, como si no estuviera aquí del todo." }
+  },
+  "35": {
+    p:  { en: "How full is your tank today? Four quick taps. There are no right answers — it just helps you notice how you’ve been.", es: "¿Qué tan lleno está tu tanque hoy? Cuatro toques rápidos. No hay respuestas correctas — solo te ayuda a notar cómo has estado." },
+    q1: { en: "By the end of most days, I feel worn out — like my energy is used up.", es: "Al final de la mayoría de los días, me siento agotado/a — como si se me acabara la energía." },
+    q2: { en: "I wake up already tired about the day ahead.", es: "Me despierto ya cansado/a por el día que viene." },
+    q3: { en: "Even after I rest, I don’t really feel better.", es: "Incluso después de descansar, no me siento mejor de verdad." },
+    q4: { en: "Lately my mind feels far away, like I’m somewhere else.", es: "Últimamente mi mente se siente lejos, como si estuviera en otra parte." }
+  },
+  "68": {
+    p:  { en: "How full is your tank lately? Four quick reads — private, instant, saved nowhere. Just a way to notice how you’ve really been.", es: "¿Qué tan lleno está tu tanque últimamente? Cuatro lecturas rápidas — privadas, instantáneas y que no se guardan. Solo una forma de notar cómo has estado de verdad." },
+    q1: { en: "By the end of most days, I feel wiped out — like I’ve got nothing left.", es: "Al final de la mayoría de los días, me siento agotado/a — como si no me quedara nada." },
+    q2: { en: "I wake up already tired just thinking about the day ahead.", es: "Me despierto ya cansado/a de solo pensar en el día que viene." },
+    q3: { en: "Even when I get downtime, I don’t really feel recharged.", es: "Incluso cuando tengo tiempo libre, no me siento realmente recargado/a." },
+    q4: { en: "Lately I feel like I’m just going through the motions — my head somewhere else.", es: "Últimamente siento que solo hago las cosas en automático — con la mente en otra parte." }
+  },
+  "912": {
+    p:  { en: "How full is your tank lately? Four quick reads — private and saved nowhere. No right answers; just an honest gut-check.", es: "¿Qué tan lleno está tu tanque últimamente? Cuatro lecturas rápidas — privadas y que no se guardan. Sin respuestas correctas; solo un chequeo honesto." },
+    q1: { en: "By the end of most days, I feel drained — like there’s little left in the tank.", es: "Al final de la mayoría de los días, me siento vaciado/a — como si quedara poco en el tanque." },
+    q2: { en: "I wake up already tired at the thought of the day ahead.", es: "Me despierto ya cansado/a al pensar en el día que viene." },
+    q3: { en: "Even when I rest, I don’t really feel refilled.", es: "Incluso cuando descanso, no me siento realmente recargado/a." },
+    q4: { en: "Lately I’m just moving through the day on autopilot — checked out.", es: "Últimamente solo paso el día en piloto automático — desconectado/a." }
+  }
+};
+function aogRenderTankCopy() {
+  var root = document.getElementById("heroTank");
+  if (!root) return;
+  var aud = window.aogTankAudience || "35";
+  if (!AOG_TANK_COPY[aud]) aud = "35";
+  var L = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+  var c = AOG_TANK_COPY[aud];
+  var intro = root.querySelector(".tk-intro");
+  if (intro) intro.textContent = c.p[L];
+  var qs = root.querySelectorAll(".tk-q");
+  var keys = ["q1", "q2", "q3", "q4"];
+  for (var i = 0; i < qs.length && i < keys.length; i++) {
+    if (c[keys[i]]) qs[i].textContent = c[keys[i]][L];
+  }
+  var btns = document.querySelectorAll("#tankAgesToggle .ages-btn");
+  for (var j = 0; j < btns.length; j++) {
+    var on = btns[j].getAttribute("data-taud") === aud;
+    btns[j].classList.toggle("active", on);
+    btns[j].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  if (typeof aogStabilizeTank === "function") { try { aogStabilizeTank(); } catch (e) {} }
+}
+/* Audience-specific RESULT copy for the 60-second read. Adult = original wording;
+   child/teen are first drafts to refine. Read via window.aogTankAudience in show(). */
+var AOG_TANK_RESULT = {
+  adult: {
+    ok:    { en: { title: "Your tank looks reasonably full right now.", body: "That’s worth noticing and protecting. The full self-reflection is still a good habit — it catches the small things before they become the big ones." }, es: { title: "Tu tanque se ve razonablemente lleno por ahora.", body: "Vale la pena notarlo y protegerlo. La autorreflexión completo sigue siendo un buen hábito — detecta las cosas pequeñas antes de que se vuelvan grandes." } },
+    low:   { en: { title: "You’re running lower than you might realize.", body: "Not empty — but the gauge is dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full self-reflection can show you where to put your energy first. You can’t pour from a cup that’s draining faster than it fills." }, es: { title: "Estás más bajo/a de lo que quizá crees.", body: "No vacío — pero el indicador está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con la autorreflexión completo pueden mostrarte dónde poner tu energía primero. No puedes servir de una taza que se vacía más rápido de lo que se llena." } },
+    empty: { en: { title: "These are real signs of depletion — the kind worth listening to.", body: "This is the state the whole idea is about: you can’t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you’re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full self-reflection can help you name where to start." }, es: { title: "Estas son señales reales de agotamiento — del tipo que vale la pena escuchar.", body: "Este es el estado del que trata toda la idea: desde aquí no puedes sostener a nadie. Por favor, sé amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE. UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. La autorreflexión completo puede ayudarte a nombrar por dónde empezar." } }
+  },
+  teen: {
+    ok:    { en: { title: "Your tank’s looking pretty full right now.", body: "That’s worth noticing — and protecting. Checking in like this every so often helps you catch the small stuff before it piles up." }, es: { title: "Tu tanque se ve bastante lleno ahora mismo.", body: "Vale la pena notarlo — y protegerlo. Hacer una autorreflexión así de vez en cuando te ayuda a detectar las cosas pequeñas antes de que se acumulen." } },
+    low:   { en: { title: "You’re running lower than you might realize.", body: "Not empty — but the needle’s dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full self-reflection can help you figure out where to put your energy first. It’s hard to keep giving from a tank that’s running low." }, es: { title: "Estás más bajo/a de lo que quizá crees.", body: "No vacío — pero la aguja está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con la autorreflexión completo pueden ayudarte a ver dónde poner tu energía primero. Es difícil seguir dando desde un tanque que está bajo." } },
+    empty: { en: { title: "These are real signs you’re running on empty — and that’s worth listening to.", body: "Running this low makes everything harder, and you don’t have to handle it alone. Please be kind to yourself today, and think about talking to someone you trust — a parent, a teacher, or a counselor. If things feel like too much, in the U.S. you can call or text <strong>988</strong> any time, day or night. The full self-reflection can help you name where to start." }, es: { title: "Estas son señales reales de que estás al límite — y vale la pena escucharlas.", body: "Estar tan bajo/a hace que todo sea más difícil, y no tienes que enfrentarlo solo/a. Por favor, sé amable contigo hoy y piensa en hablar con alguien de confianza — un padre, un maestro o un consejero. Si sientes que es demasiado, en EE. UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora, de día o de noche. La autorreflexión completo puede ayudarte a nombrar por dónde empezar." } }
+  },
+  child: {
+    ok:    { en: { title: "Your tank looks pretty full today!", body: "That’s great — and worth taking care of. Checking in like this helps you notice how you feel. Keep it up!" }, es: { title: "¡Tu tanque se ve bastante lleno hoy!", body: "¡Qué bien! — y vale la pena cuidarlo. Hacer una autorreflexión así te ayuda a notar cómo te sientes. ¡Sigue así!" } },
+    low:   { en: { title: "Your tank is getting a little low.", body: "That’s okay — everybody runs low sometimes. It can help to slow down, rest, and tell a grown-up you trust how you’ve been feeling." }, es: { title: "Tu tanque se está quedando un poco bajo.", body: "Está bien — todos nos quedamos bajos a veces. Puede ayudar ir más despacio, descansar y contarle a una persona adulta de confianza cómo te has sentido." } },
+    empty: { en: { title: "Your tank feels really empty right now.", body: "Feeling this tired and worn out is hard, and you don’t have to handle it by yourself. Please tell a grown-up you trust — a parent, a teacher, or a counselor — how you’re feeling. They can help." }, es: { title: "Tu tanque se siente muy vacío ahora mismo.", body: "Sentirse tan cansado/a y agotado/a es difícil, y no tienes que enfrentarlo solo/a. Por favor, cuéntale a una persona adulta de confianza — un papá o mamá, un maestro o un consejero — cómo te sientes. Ellos pueden ayudarte." } }
+  }
+};
+var TANK_RESULT_BAND = { k2: "child", "35": "child", "68": "teen", "912": "teen", adult: "adult" };
+/* Keep the tank from jumping when the audience changes: reserve the tallest
+   wording height per row across all three audiences (re-measured on resize). */
+function _aogTankMaxHeight(el, texts) {
+  var w = el.offsetWidth; if (!w) return;
+  var probe = document.createElement(el.tagName);
+  probe.className = el.className;
+  probe.style.cssText = "position:absolute;left:-9999px;top:0;visibility:hidden;box-sizing:border-box;min-height:0;width:" + w + "px;";
+  (el.parentNode || document.body).appendChild(probe);
+  var max = 0;
+  for (var i = 0; i < texts.length; i++) { probe.textContent = texts[i]; if (probe.offsetHeight > max) max = probe.offsetHeight; }
+  if (probe.parentNode) probe.parentNode.removeChild(probe);
+  if (max > 0) el.style.minHeight = max + "px";
+}
+function aogStabilizeTank() {
+  var root = document.getElementById("heroTank");
+  if (!root || typeof AOG_TANK_COPY === "undefined") return;
+  var L = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+  var auds = ["k2", "35", "68", "912", "adult"];
+  var intro = root.querySelector(".tk-intro");
+  if (intro) _aogTankMaxHeight(intro, auds.map(function (a) { return AOG_TANK_COPY[a].p[L]; }));
+  var qs = root.querySelectorAll(".tk-q");
+  var keys = ["q1", "q2", "q3", "q4"];
+  for (var i = 0; i < qs.length && i < keys.length; i++) {
+    (function (el, k) { _aogTankMaxHeight(el, auds.map(function (a) { return AOG_TANK_COPY[a][k][L]; })); })(qs[i], keys[i]);
+  }
+}
+(function () {
+  var t;
+  window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () { if (typeof aogStabilizeTank === "function") aogStabilizeTank(); }, 150); });
+})();
+function aogSetTankAudience(a) {
+  if (!AOG_TANK_COPY[a]) a = "35";
+  window.aogTankAudience = a;
+  try { localStorage.setItem("aog.tank.audience", a); } catch (e) {}
+  aogRenderTankCopy();
+}
+(function () {
+  try { window.aogTankAudience = localStorage.getItem("aog.tank.audience") || "35"; }
+  catch (e) { window.aogTankAudience = "adult"; }
+  var _tm={child:"35",teen:"68"}; if(_tm[window.aogTankAudience]) window.aogTankAudience=_tm[window.aogTankAudience]; if (!AOG_TANK_COPY[window.aogTankAudience]) window.aogTankAudience = "35";
+  function _initTankCopy() { aogRenderTankCopy(); }
+  if (document.readyState !== "loading") { _initTankCopy(); }
+  else { window.addEventListener("load", _initTankCopy); }
+})();
+
+function openWorkplace() {
+  population = "adult";
+  mode = "rapid";
+  surveyLang = lang;
+  var _0x5a4a45 = document.getElementById("modeGridWorkplace");
+  if (_0x5a4a45) {
+    _0x5a4a45.querySelectorAll(".mode-card").forEach(function (_0x1da73b) {
+      var _0x10d576 = _0x1da73b.dataset.mode === "rapid";
+      _0x1da73b.classList.toggle("selected", _0x10d576);
+      _0x1da73b.setAttribute("aria-checked", _0x10d576 ? "true" : "false");
+    });
+  }
+  var _0x26109b = document.getElementById("btnWorkplaceInquiry");
+  if (_0x26109b) {
+    if (typeof WORKPLACE_INQUIRY_URL === "string" && WORKPLACE_INQUIRY_URL) {
+      _0x26109b.setAttribute("href", WORKPLACE_INQUIRY_URL);
+      _0x26109b.onclick = null;
+    } else {
+      _0x26109b.setAttribute("href", "#");
+      _0x26109b.onclick = function (_0x23d4d7) {
+        _0x23d4d7.preventDefault();
+      };
+    }
+  }
+  showScreen("screen-workplace");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("workplace");
+  }
+}
+function openWorkplaceCheckin() {
+  openWorkplace();
+  var _0xtgt = document.getElementById("wpLaunch");
+  if (_0xtgt) {
+    setTimeout(function () {
+      try { _0xtgt.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      catch (_0xe) { _0xtgt.scrollIntoView(); }
+    }, 60);
+  }
+}
+function aogTankTips(band, es) {
+  var head = es ? "Un par de cosas pequeñas que pueden ayudar" : "A couple of small things that can help";
+  var tips;
+  if (band === "ok") {
+    tips = es ? [
+      "Nombra una cosa que te haya estado recargando últimamente — y protégele un espacio en tu semana.",
+      "Fíjate ahora en tus primeras señales de desgaste, mientras es fácil, para notar antes la próxima bajada.",
+      "Comparte algo de esa energía — una pequeña amabilidad con alguien que ande bajo/a."
+    ] : [
+      "Name one thing that’s been refilling you lately — and protect a slot for it this week.",
+      "Notice your early warning signs now, while it’s easy, so you catch the next dip sooner.",
+      "Pass a little of that fullness on — a small kindness to someone running low."
+    ];
+  } else if (band === "low") {
+    tips = es ? [
+      "Quita una cosa pequeña de tu lista esta semana — di que no, aplázala o pide ayuda.",
+      "Protege un descanso breve y de verdad reparador cada día — no el teléfono, sino algo que te asiente.",
+      "Reconéctate con una persona que te dé calma, aunque sea un mensaje de dos minutos."
+    ] : [
+      "Take one small thing off your plate this week — say no, defer it, or ask for help.",
+      "Protect one short, genuinely restful break a day — not scrolling, something that settles you.",
+      "Reconnect with one person who steadies you, even a two-minute message."
+    ];
+  } else {
+    tips = es ? [
+      "Baja el listón por hoy — haz lo poco que de verdad tiene que pasar y deja que el resto espere.",
+      "Empieza por lo básico que es fácil saltarse cuando estás agotado/a — descanso, agua y un poco de aire libre.",
+      "Dile a una persona de confianza que estás sin reservas — no tienes que cargarlo solo/a."
+    ] : [
+      "Lower the bar for today — do the few things that truly must happen, and let the rest wait.",
+      "Start with the basics that are easy to skip when you’re drained — rest, water, a little fresh air.",
+      "Tell one person you trust that you’re running on empty — you don’t have to carry it alone."
+    ];
+  }
+  var lis = tips.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+  return "<div class=\"tk-tips\"><div class=\"tk-tips-h\">" + head + "</div><ul>" + lis + "</ul></div>";
+}
+window.addEventListener("load", function () {
+  document.querySelectorAll("#modeGridWorkplace .mode-card").forEach(function (_0x3e5387) {
+    function _0x4d5150() {
+      document.querySelectorAll("#modeGridWorkplace .mode-card").forEach(function (_0x4cb685) {
+        _0x4cb685.classList.remove("selected");
+        _0x4cb685.setAttribute("aria-checked", "false");
+      });
+      _0x3e5387.classList.add("selected");
+      _0x3e5387.setAttribute("aria-checked", "true");
+      mode = _0x3e5387.dataset.mode;
+    }
+    _0x3e5387.addEventListener("click", _0x4d5150);
+    _0x3e5387.addEventListener("keydown", function (_0x2df393) {
+      if (_0x2df393.key === "Enter" || _0x2df393.key === " ") {
+        _0x2df393.preventDefault();
+        _0x4d5150();
+        _0x3e5387.focus();
+      }
+    });
+  });
+  var _0x1670c8 = document.getElementById("btnStartWorkplace");
+  if (_0x1670c8) {
+    _0x1670c8.addEventListener("click", function () {
+      population = "adult";
+      surveyLang = lang;
+      var _0x3566ab = (document.getElementById("wpId").value || "").trim();
+      if (!_0x3566ab) {
+        _0x3566ab = lang === "es" ? "Yo" : "You";
+      }
+      session = {
+        studentId: _0x3566ab,
+        grade: "Adult",
+        window: seasonFromDate(),
+        context: "home",
+        relationship: "",
+        classId: "",
+        schoolId: "",
+        districtId: ""
+      };
+      responses = new Array(18).fill(null);
+      intensities = new Array(18).fill(null);
+      reflections = ["", "", ""];
+      current = 0;
+      showScreen("screen-survey");
+      renderItem();
+    });
+  }
+});
+function openModal(_0x30f37c) {
+  $("#" + _0x30f37c).classList.add("active");
+}
+function closeModal(_0x56a368) {
+  $("#" + _0x56a368).classList.remove("active");
+}
+function openGuide(_0x583270) {
+  showScreen("screen-guide");
+  if (!_0x583270 && typeof aogSetHash === "function") {
+    aogSetHash("guide");
+  }
+  setTimeout(function () {
+    try {
+      maybeStartTour("guide");
+    } catch (_0x55eb05) {}
+  }, 750);
+  requestAnimationFrame(function () {
+    if (typeof renderLibrary === "function") {
+      renderLibrary();
+    }
+    if (typeof riRender === "function") {
+      const _0x4c63fd = document.getElementById("riSearch");
+      const _0x4f311b = document.getElementById("riGrade");
+      riRender(_0x4c63fd ? _0x4c63fd.value : "", _0x4f311b ? _0x4f311b.value : "");
+    }
+    const _0x51f00f = document.getElementById("ecoSvg");
+    if (_0x51f00f && typeof initEcoInteractive === "function") {
+      initEcoInteractive();
+    }
+    if (_0x583270) {
+      openGuideSub(_0x583270);
+    }
+  });
+}
+/* Deep link to the "For schools & districts" pane (nav + footer "For Schools"). */
+function aogGoSchools() {
+  try { openGuide("docs"); } catch (e) {}
+  setTimeout(function () {
+    try { if (typeof window.aogGoDoc === "function") { window.aogGoDoc("dm-admin"); } } catch (e) {}
+    /* .30fg — For Schools gets its own address, written after openGuide has set its own */
+    try { if (typeof aogSetHash === "function") aogSetHash("schools"); } catch (e) {}
+  }, 120);
+}
+window.aogGoSchools = aogGoSchools;
+/* .30fg — The Curriculum, shown whole (menu row + #curriculum). */
+function aogGoCurriculum() {
+  showScreen("screen-curriculum");
+  try { window.scrollTo(0, 0); } catch (e) {}
+  if (typeof aogSetHash === "function") aogSetHash("curriculum");
+}
+try { window.aogGoCurriculum = aogGoCurriculum; } catch (e) {}
+function openAbout() {
+  showScreen("screen-about");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("about");
+  }
+  try {
+    document.querySelectorAll(".about-view").forEach(function (v) {
+      v.hidden = true;
+    });
+    var idx = document.getElementById("about-index");
+    if (idx) {
+      idx.hidden = false;
+    }
+  } catch (e) {}
+}
+/* P2 (2026-06-08): open the "How Architecture of Grace works" page directly.
+   We defer the view-reveal to the next frame so it runs AFTER the about screen's
+   MutationObserver (which otherwise snaps any active-About view back to the topic
+   index) has fired — guaranteeing the How-It-Works view is the final visible state,
+   even when the user was previously on another About detail view. */
+function aogOpenHowItWorks() {
+  showScreen("screen-about");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("how-it-works");
+  }
+  requestAnimationFrame(function () {
+    try {
+      document.querySelectorAll(".about-view").forEach(function (v) { v.hidden = true; });
+      var idx = document.getElementById("about-index");
+      if (idx) { idx.hidden = true; }
+      var v = document.getElementById("about-view-howitworks");
+      if (v) { v.hidden = false; v.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    } catch (e) {}
+  });
+}
+try { window.aogOpenHowItWorks = aogOpenHowItWorks; } catch (_aogHIW) {}
+function activateGuideSection(_0x5cdba5, _0x195f4d) {
+  document.querySelectorAll(".guide-subtab").forEach(_0x358e9f => _0x358e9f.classList.remove("active"));
+  document.querySelectorAll(".guide-section").forEach(_0x268a9e => _0x268a9e.classList.remove("active"));
+  const _0x3650eb = document.querySelector(".guide-subtab[data-guide=\"" + _0x5cdba5 + "\"]");
+  if (_0x3650eb) {
+    _0x3650eb.classList.add("active");
+  }
+  const _0x5aafa3 = document.getElementById("guide-" + _0x5cdba5);
+  if (_0x5aafa3) {
+    _0x5aafa3.classList.add("active");
+  }
+  if (_0x5cdba5 === "resindex" && typeof riRender === "function") {
+    const _0x5bafef = document.getElementById("riSearch");
+    const _0x198766 = document.getElementById("riGrade");
+    riRender(_0x5bafef ? _0x5bafef.value : "", _0x198766 ? _0x198766.value : "");
+  }
+  if (_0x5cdba5 === "ecosystem" && typeof initEcoInteractive === "function") {
+    initEcoInteractive();
+  }
+  if (_0x5cdba5 === "library" && typeof renderLibrary === "function") {
+    renderLibrary();
+  }
+  if (_0x5cdba5 === "voices" && typeof voicesLoad === "function") {
+    voicesLoad();
+  }
+  if (typeof aogSetHash === "function") {
+    aogSetHash(AOG_SUB_TO_HASH[_0x5cdba5] || _0x5cdba5);
+  }
+  if (_0x5aafa3 && _0x195f4d) {
+    requestAnimationFrame(function () {
+      var _0x2c27ef = document.querySelector(".topbar");
+      var _0x3b525a = (_0x2c27ef ? _0x2c27ef.offsetHeight : 70) + 14;
+      var _0xee9370 = _0x5aafa3.getBoundingClientRect().top + window.pageYOffset - _0x3b525a;
+      window.scrollTo({
+        top: Math.max(0, _0xee9370),
+        behavior: "smooth"
+      });
+    });
+  }
+}
+function openGuideSub(_0x25f174, _0x25431c) {
+  activateGuideSection(_0x25f174, _0x25431c !== false);
+}
+function dmScrollTo(_0x40ff00) {
+  var _0x580670 = document.getElementById(_0x40ff00);
+  if (!_0x580670) {
+    return;
+  }
+  requestAnimationFrame(function () {
+    var _0x50542a = document.querySelector(".topbar");
+    var _0x3edf25 = (_0x50542a ? _0x50542a.offsetHeight : 70) + 14;
+    var _0x468689 = _0x580670.getBoundingClientRect().top + window.pageYOffset - _0x3edf25;
+    window.scrollTo({
+      top: Math.max(0, _0x468689),
+      behavior: "smooth"
+    });
+  });
+}
+function voiceBlockReason(_0x49ed91) {
+  var _0x4c5f84 = String(_0x49ed91 || "");
+  if (/[\w.+-]+@[\w-]+\.[\w.-]+/.test(_0x4c5f84)) {
+    return "email";
+  }
+  if (/(https?:\/\/|www\.)/i.test(_0x4c5f84)) {
+    return "link";
+  }
+  if (/[\w-]+\.(com|net|org|io|co|edu|gov|us|me|app|xyz|info|biz|tv|ly)\b/i.test(_0x4c5f84)) {
+    return "link";
+  }
+  if (/(?:\d[\s().+-]?){7,}/.test(_0x4c5f84)) {
+    return "phone";
+  }
+  var _0x5c3463 = ["fuck", "shit", "bitch", "cunt", "asshole", "nigger", "nigga", "faggot", "fag", "retard", "whore", "slut", "dick", "pussy", "bastard", "kys"];
+  var _0x1e8159 = " " + _0x4c5f84.toLowerCase().replace(/[^a-z\s]/g, " ") + " ";
+  for (var _0x2c849d = 0; _0x2c849d < _0x5c3463.length; _0x2c849d++) {
+    if (_0x1e8159.indexOf(" " + _0x5c3463[_0x2c849d] + " ") >= 0) {
+      return "blocked";
+    }
+  }
+  return "";
+}
+function voicesCount() {
+  var _0x3220fb = document.getElementById("voiMsg");
+  var _0x5c0a0f = document.getElementById("voiCount");
+  if (_0x3220fb && _0x5c0a0f) {
+    _0x5c0a0f.textContent = _0x3220fb.value.length + " / 300";
+  }
+}
+function voicesRender(_0x33b762) {
+  var _0x208f6d = document.getElementById("voicesList");
+  if (!_0x208f6d) {
+    return;
+  }
+  if (!_0x33b762.length) {
+    _0x208f6d.innerHTML = "<p class=\"voi-empty\">" + DT("No voices yet — yours could be the first. Tell us how the self-reflection landed for your students, your family, or you.", "Aún no hay voces — la tuya podría ser la primera. Cuéntanos cómo te fue la autorreflexión con tus estudiantes, tu familia o contigo.") + "</p>";
+    return;
+  }
+  var _0x5e127a = {
+    Teacher: DT("Teacher", "Maestro/a"),
+    Parent: DT("Parent", "Madre/Padre"),
+    Student: DT("Student", "Estudiante"),
+    Counselor: DT("Counselor", "Consejero/a"),
+    Administrator: DT("Administrator", "Administrador/a"),
+    Other: DT("Other", "Otro")
+  };
+  var _0x309be5 = "";
+  _0x33b762.forEach(function (_0x2ccb8e) {
+    var _0xde0ded = _0x2ccb8e.name && String(_0x2ccb8e.name).trim() ? escapeHtml(String(_0x2ccb8e.name).trim()) : DT("Anonymous", "Anónimo");
+    var _0x5bc6d6 = typeof fmtNiceDate === "function" ? fmtNiceDate(_0x2ccb8e.timestamp) : "";
+    _0x309be5 += "<div class=\"voi-card\"><div class=\"voi-meta\"><span class=\"voi-who\">" + _0xde0ded + "</span><span class=\"voi-role\">" + escapeHtml(_0x5e127a[_0x2ccb8e.role] || _0x5e127a.Other) + "</span>" + (_0x5bc6d6 ? " · " + escapeHtml(_0x5bc6d6) : "") + "</div><div class=\"voi-body\">" + escapeHtml(String(_0x2ccb8e.message || "")) + "</div></div>";
+  });
+  _0x208f6d.innerHTML = _0x309be5;
+}
+// Homepage social proof: the section stays HIDDEN unless there are at least
+// WELCOME_VOICES_MIN real voices. An empty social-proof block reads as
+// "nobody uses this," so on no-URL / empty / error we keep it hidden. The full
+// Voices wall (voicesLoad) still shows the "be the first" invite separately.
+var WELCOME_VOICES_MIN = 1;
+function welcomeVoicesLoad() {
+  var _0x3b000d = document.getElementById("welcomeVoices");
+  var _0x4d1e88 = document.getElementById("welcomeVoicesStrip");
+  if (!_0x3b000d || !_0x4d1e88) {
+    return;
+  }
+  _0x3b000d.style.display = "none";   // hidden until proven otherwise
+  if (!VOICES_URL) {
+    return;
+  }
+  var _0xcc51c6 = VOICES_URL + (VOICES_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
+  fetch(_0xcc51c6, {
+    method: "GET"
+  }).then(function (_0x289584) {
+    return _0x289584.json();
+  }).then(function (_0x1364dd) {
+    var _0x5eb19a = (_0x1364dd && _0x1364dd.comments || []).slice(0, 3);
+    if (_0x5eb19a.length < WELCOME_VOICES_MIN) {
+      return;   // not enough real voices yet — leave the section hidden
+    }
+    var _0x2567d4 = {
+      Teacher: DT("Teacher", "Maestro/a"),
+      Parent: DT("Parent", "Madre/Padre"),
+      Student: DT("Student", "Estudiante"),
+      Counselor: DT("Counselor", "Consejero/a"),
+      Administrator: DT("Administrator", "Administrador/a"),
+      Other: DT("Other", "Otro")
+    };
+    var _0x2a0c4d = "";
+    _0x5eb19a.forEach(function (_0x36bec5) {
+      var _0x3f3227 = _0x36bec5.name && String(_0x36bec5.name).trim() ? escapeHtml(String(_0x36bec5.name).trim()) : DT("Anonymous", "Anónimo");
+      _0x2a0c4d += "<div class=\"wv-card\"><div class=\"wv-quote\">“" + escapeHtml(String(_0x36bec5.message || "")) + "”</div><div class=\"wv-by\">— " + _0x3f3227 + " <span class=\"wv-role\">" + escapeHtml(_0x2567d4[_0x36bec5.role] || _0x2567d4.Other) + "</span></div></div>";
+    });
+    _0x4d1e88.innerHTML = _0x2a0c4d;
+    // Only reveal voices if we're still on the welcome screen
+    var _activeScr = document.querySelector('.screen.active');
+    if (_activeScr && _activeScr.id === 'screen-welcome') {
+      _0x3b000d.style.display = "";   // real voices present — now reveal
+    }
+    // Store that voices are loaded so we can re-show if user returns to welcome
+    _0x3b000d.setAttribute('data-voices-loaded', '1');
+  }).catch(function () {
+    _0x4d1e88.innerHTML = "";       // network error — leave hidden
+  });
+}
+function voicesLoad() {
+  var _0x23a741 = document.getElementById("voicesList");
+  if (!_0x23a741) {
+    return;
+  }
+  if (!VOICES_URL) {
+    _0x23a741.innerHTML = "<p class=\"voi-empty\">" + DT("The wall isn’t set up yet.", "El muro aún no está configurado.") + "</p>";
+    return;
+  }
+  _0x23a741.innerHTML = "<p class=\"voi-empty\">" + DT("Loading…", "Cargando…") + "</p>";
+  var _0x55c300 = VOICES_URL + (VOICES_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
+  fetch(_0x55c300, {
+    method: "GET"
+  }).then(function (_0x3b348f) {
+    return _0x3b348f.json();
+  }).then(function (_0x470561) {
+    voicesRender(_0x470561 && _0x470561.comments || []);
+  }).catch(function () {
+    _0x23a741.innerHTML = "<p class=\"voi-empty\">" + DT("Couldn’t load the wall right now.", "No se pudo cargar el muro ahora.") + "</p>";
+  });
+}
+function voicesPost() {
+  var _0x4eb66a = document.getElementById("voiStatus");
+  var _0xdf1ca7 = document.getElementById("voiMsg");
+  var _0xa7fe36 = document.getElementById("voiName");
+  var _0x6247b2 = document.getElementById("voiRole");
+  var _0x29e870 = document.getElementById("voiPost");
+  function _0x4e29bb(_0x1f5f4b, _0x5b0213) {
+    if (_0x4eb66a) {
+      _0x4eb66a.textContent = _0x1f5f4b;
+      _0x4eb66a.style.color = _0x5b0213 || "var(--ink-soft)";
+    }
+  }
+  if (!VOICES_URL) {
+    _0x4e29bb(DT("The wall isn’t connected yet.", "El muro aún no está conectado."), "var(--red)");
+    return;
+  }
+  var _0x251c7a = (_0xdf1ca7 && _0xdf1ca7.value || "").replace(/\s+/g, " ").trim();
+  var _0x7c7516 = (_0xa7fe36 && _0xa7fe36.value || "").trim();
+  var _0x4da50c = _0x6247b2 && _0x6247b2.value || "Other";
+  if (!_0x251c7a) {
+    _0x4e29bb(DT("Please write something first.", "Escribe algo primero."), "var(--red)");
+    return;
+  }
+  var _0x3f68da = voiceBlockReason(_0x251c7a) || voiceBlockReason(_0x7c7516);
+  if (_0x3f68da) {
+    var _0xc0199e = {
+      email: DT("Please remove the email address.", "Quita la dirección de correo."),
+      link: DT("Links aren’t allowed on the wall.", "No se permiten enlaces en el muro."),
+      phone: DT("Please remove the phone number.", "Quita el número de teléfono."),
+      blocked: DT("Let’s keep it kind — please reword that.", "Mantengamos la amabilidad — reescribe eso.")
+    };
+    _0x4e29bb(_0xc0199e[_0x3f68da] || DT("That can’t be posted.", "Eso no se puede publicar."), "var(--red)");
+    return;
+  }
+  if (_0x29e870) {
+    _0x29e870.disabled = true;
+  }
+  _0x4e29bb(DT("Posting…", "Publicando…"));
+  var _0x394b0c = JSON.stringify({
+    action: "comment_add",
+    name: _0x7c7516,
+    role: _0x4da50c,
+    message: _0x251c7a
+  });
+  fetch(VOICES_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: _0x394b0c
+  }).then(function () {
+    if (_0xdf1ca7) {
+      _0xdf1ca7.value = "";
+    }
+    voicesCount();
+    _0x4e29bb(DT("Thanks — posted to the wall.", "Gracias — publicado en el muro."), "#1E6B45");
+    setTimeout(function () {
+      voicesLoad();
+      if (_0x29e870) {
+        _0x29e870.disabled = false;
+      }
+    }, 1000);
+  }).catch(function () {
+    _0x4e29bb(DT("Couldn’t post right now — try again.", "No se pudo publicar ahora — inténtalo de nuevo."), "var(--red)");
+    if (_0x29e870) {
+      _0x29e870.disabled = false;
+    }
+  });
+}
+const AOG_SUB_TO_HASH = {
+  docs: "documentation",
+  resindex: "resource-index",
+  library: "downloads",
+  voices: "voices"
+};
+try { window.addEventListener("hashchange", function(){ window.__aogHashAt = Date.now(); }, true); window.addEventListener("popstate", function(){ window.__aogHashAt = Date.now(); }, true); } catch (e) {}
+function aogSetHash(_0xcb963) {
+  try {
+    var _aogTarget = _0xcb963 ? "#" + _0xcb963 : location.pathname + location.search;
+    var _aogCur = (location.hash || "").replace(/^#/, "");
+    // Item 4: distinct destinations get their own history entry (pushState) so the
+    // browser Back button returns to the previous screen; same-screen updates just
+    // replace, to avoid piling up duplicate entries.
+    /* AOG-BACK-NOLOOP-V1 (2026-09-26) — Jimmy: the conversation starters "get stuck in the
+       little bedroom". Tapping a link already made one history entry; the router then pushed
+       #family and the page again, so Back bounced between copies. Right after the address
+       changes (a link or Back), the router only replaces. */
+    if (window.__aogHashAt && Date.now() - window.__aogHashAt < 600) {
+      history.replaceState({ aogIdx: (history.state && history.state.aogIdx) || window.__aogIdx || 0 }, "", _aogTarget);
+      return;
+    }
+    if ((_0xcb963 || "") !== _aogCur) {
+      // Item 1: stamp each pushed entry with an incrementing in-app index so
+      // goBack() can tell whether there is a prior in-app step to return to
+      // (vs. a deep link / first load where Back would leave the site).
+      window.__aogIdx = (window.__aogIdx || 0) + 1;
+      history.pushState({ aogIdx: window.__aogIdx }, "", _aogTarget);
+    } else {
+      var _aogKeep = (history.state && history.state.aogIdx) || window.__aogIdx || 0;
+      history.replaceState({ aogIdx: _aogKeep }, "", _aogTarget);
+    }
+  } catch (_0x2cf689) {}
+}
+/* Item 1: context-aware one-step Back. Distinct from resetToStart() (which is a
+   full, destructive "start over"). goBack() returns the user exactly one step
+   along their actual browsing path by leaning on the browser history that
+   aogSetHash() already maintains, so in-app Back and the browser Back button
+   stay consistent. It never wipes in-progress answers. If there is no in-app
+   history entry to return to (deep link or very first screen), it falls back to
+   the welcome screen without clearing anything. */
+function goBack() {
+  // If a regulation tool is open in the modal, Back should close the tool and
+  // return to the Tools page underneath — not navigate the whole app home.
+  try {
+    var _tm = document.getElementById("toolModal");
+    if (_tm && _tm.classList.contains("open")) {
+      if (typeof window.toolClose === "function") { window.toolClose(); }
+      else { _tm.classList.remove("open"); }
+      return;
+    }
+  } catch (_aogTM) {}
+  // .30gz — inside the dashboard, Back first walks the tab trail (the tabs the
+  // user actually visited) before any screen-level navigation; only with the
+  // trail empty does it fall through to the history/home behavior below.
+  try {
+    var _adm = document.getElementById("screen-admin");
+    if (_adm && _adm.classList.contains("active")) {
+      var _tt = window.__aogTabTrail;
+      if (_tt && _tt.length && typeof window.aogQsTab === "function") {
+        var _prevTab = _tt.pop();
+        window.__aogTabNav = 1;
+        try { window.aogQsTab(_prevTab); } finally { window.__aogTabNav = 0; }
+        return;
+      }
+    }
+  } catch (_aogTT) {}
+  try {
+    var _st = history.state;
+    if (_st && _st.aogIdx && _st.aogIdx > 0) {
+      window.__aogRestoreScroll = true;   // restore prior scroll on the screen we return to
+      history.back();                     // popstate -> aogRouteFromHash routes to the prior screen
+      return;
+    }
+  } catch (_aogBE) {}
+  // No usable browser history. Before falling back to home, try the in-app
+  // screen trail (build .30cg): on file:// pushState throws on the opaque
+  // origin, so aogSetHash() no-ops and aogIdx never exists — which sent every
+  // Back press on the Talk It Out board and the Anchor Charts to the welcome
+  // screen. The trail is maintained by the showScreen wrapper in the
+  // #aog-tt-start module; on https the history path above still wins.
+  try {
+    var _aogTrail = window.__aogScreenTrail;
+    if (_aogTrail && _aogTrail.length) {
+      var _aogPrevScr = _aogTrail.pop();
+      if (_aogPrevScr && document.getElementById(_aogPrevScr) && typeof showScreen === "function") {
+        window.__aogRestoreScroll = true;
+        window.__aogTrailNav = 1;
+        try { showScreen(_aogPrevScr); } finally { window.__aogTrailNav = 0; }
+        return;
+      }
+    }
+  } catch (_aogTB) {}
+  // No prior in-app entry at all: go home, but non-destructively (no resetToStart()).
+  try { window.__aogRestoreScroll = true; } catch (_e) {}
+  if (typeof showScreen === "function") showScreen("screen-welcome");
+  if (typeof aogSetHash === "function") aogSetHash("");
+}
+try { window.goBack = goBack; } catch (_aogGB) {}
+function aogRouteFromHash() {
+  const _0xaa0d73 = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
+  // Close Quiet Space when the hash leaves it (covers browser Back to an empty/other hash).
+  try {
+    var _aogStEl = document.getElementById("aog-station");
+    var _aogStHashes = ["quiet-space", "quietspace", "quiet", "station"];
+    if (_aogStEl && _aogStEl.classList.contains("open") && _aogStHashes.indexOf(_0xaa0d73) === -1 && typeof closeStationMode === "function") {
+      closeStationMode();
+    }
+  } catch (e) {}
+  if (!_0xaa0d73) {
+    return;
+  }
+  if (_0xaa0d73 === "quiet-space" || _0xaa0d73 === "quietspace" || _0xaa0d73 === "quiet" || _0xaa0d73 === "station") {
+    var _aogSt2 = document.getElementById("aog-station");
+    if (typeof showStationMode === "function" && !(_aogSt2 && _aogSt2.classList.contains("open"))) showStationMode();
+    return;
+  }
+  if (_0xaa0d73 === "tools" || _0xaa0d73 === "teacher-tools" ||
+      _0xaa0d73.indexOf("tools/") === 0 || _0xaa0d73.indexOf("tools-") === 0) {
+    /* /tools is a destination now (2026-08-30): #tools/breathe, #tools/quiet,
+       #tools/notsure … land on the pathway, not just the page. The pathway
+       names are owned by aogToolsRoute in the #aog-tt-start module; anything
+       it does not recognize still lands safely on the page itself. */
+    if (typeof showScreen === "function") showScreen("screen-teacher-tools");
+    var _aogToolsSub = _0xaa0d73.slice(5).replace(/^[-/]/, "");
+    if (_aogToolsSub && typeof window.aogToolsRoute === "function") {
+      setTimeout(function () { try { window.aogToolsRoute(_aogToolsSub); } catch (e) {} }, 120);
+    }
+    return;
+  }
+  if (_0xaa0d73 === "store") {
+    if (typeof aogGoStore === "function") aogGoStore();
+  } else if (_0xaa0d73 === "downloads" || _0xaa0d73 === "library") {
+    if (typeof aogGoLibrary === "function") aogGoLibrary();
+  } else if (_0xaa0d73 === "resource-index" || _0xaa0d73 === "resources" || _0xaa0d73 === "index") {
+    openGuide("resindex");
+  } else if (_0xaa0d73 === "documentation" || _0xaa0d73 === "docs") {
+    openGuide("docs");
+  } else if (_0xaa0d73 === "pd" || _0xaa0d73 === "guide-pd") {
+    /* AOG-PD-PAGE-V1 (2026-09-28): /professional-development links here for the full PD strand */
+    openGuide("pd"); if (typeof openGuideSub === "function") openGuideSub("pd");
+  } else if (/^eco-(bridge|parents|educators|adult|overview)$/.test(_0xaa0d73)) {
+    if (typeof window.aogOpenEco === "function") window.aogOpenEco(_0xaa0d73.slice(4));
+  } else if (_0xaa0d73 === "about") {
+    openAbout();
+  } else if (_0xaa0d73 === "how-it-works" || _0xaa0d73 === "howitworks" || _0xaa0d73 === "how-aog-works") {
+    if (typeof aogOpenHowItWorks === "function") aogOpenHowItWorks();
+  } else if (_0xaa0d73 === "guide" || _0xaa0d73 === "ecosystem" || _0xaa0d73 === "explore") {
+    openGuide();
+  } else if (_0xaa0d73 === "family" || _0xaa0d73 === "families" || _0xaa0d73.indexOf("family/") === 0) {
+    /* /family is a destination now (2026-08-30): #family/conversation,
+       #family/repair, #family/home-school ... land on the pathway, not just
+       the page. The pathway names are owned by aogFamilyRoute in the
+       #aog-fam-dest module; anything it does not recognize still lands
+       safely on the Family hub itself. */
+    if (typeof openFamily === "function") openFamily();
+    var _aogFamSub = _0xaa0d73.indexOf("family/") === 0 ? _0xaa0d73.slice(7) : "";
+    if (_aogFamSub && typeof window.aogFamilyRoute === "function") {
+      setTimeout(function () { try { window.aogFamilyRoute(_aogFamSub); } catch (e) {} }, 120);
+    }
+  } else if (_0xaa0d73 === "privacy" || _0xaa0d73 === "privacy-and-your-data") {
+    /* .30fg: Privacy never had a route, so a shared link landed on the welcome screen. */
+    if (typeof openPrivacy === "function") openPrivacy();
+  } else if (_0xaa0d73 === "pilot" || _0xaa0d73 === "pilot-program") {
+    if (typeof aogGoPilot === "function") aogGoPilot();
+  } else if (_0xaa0d73 === "schools" || _0xaa0d73 === "for-schools" || _0xaa0d73 === "districts") {
+    if (typeof aogGoSchools === "function") aogGoSchools();
+  } else if (_0xaa0d73 === "voices") {
+    if (typeof openVoices === "function") openVoices();
+  } else if (_0xaa0d73 === "workplace") {
+    if (typeof openWorkplace === "function") openWorkplace();
+  } else if (_0xaa0d73 === "curriculum" || _0xaa0d73 === "the-curriculum" || _0xaa0d73 === "books") {
+    if (typeof aogGoCurriculum === "function") aogGoCurriculum();
+  } else if (_0xaa0d73 === "framework" || _0xaa0d73 === "the-framework") {
+    openFramework();
+  } else if (_0xaa0d73 === "starthere" || _0xaa0d73 === "start-here") {
+    if (typeof openStartHere === "function") openStartHere();
+  } else if (_0xaa0d73 === "grace-ecosystem") {
+    if (typeof openEcosystem === "function") openEcosystem();
+  } else if (_0xaa0d73 === "words" || _0xaa0d73 === "encouragement" || _0xaa0d73 === "grief") {
+    if (typeof openWords === "function") openWords();
+  } else if (_0xaa0d73 === "quickstart" || _0xaa0d73 === "quick-start" || _0xaa0d73 === "teacher") {
+    if (typeof aogGoQuickStart === "function") aogGoQuickStart();
+  } else if (_0xaa0d73 === "results" || _0xaa0d73 === "dashboard" || _0xaa0d73 === "educator" || _0xaa0d73 === "admin") {
+    openAdmin();
+  } else if (_0xaa0d73 === "start" || _0xaa0d73 === "welcome") {
+    resetToStart();
+  } else if (_0xaa0d73 === "self-reflection" || _0xaa0d73 === "checkin") {
+    startChoose();
+  } else if (_0xaa0d73 === "tools" || _0xaa0d73 === "calm" || _0xaa0d73 === "regulation-tools") {
+    if (typeof showScreen === "function") showScreen("screen-teacher-tools");
+  } else if (_0xaa0d73 === "right-now" || _0xaa0d73 === "rightnow") {
+    if (typeof openRightNow === "function") openRightNow();
+  } else if (_0xaa0d73 === "tank") {
+    if (typeof openTank === "function") openTank();
+  } else if (_0xaa0d73 === "student" || _0xaa0d73 === "survey") {
+    startCheckin();
+  } else if (_0xaa0d73 === "adult" || _0xaa0d73 === "adults" || _0xaa0d73 === "grown-ups" || _0xaa0d73 === "grownups") {
+    startAdult();
+  }
+}
+window.addEventListener("hashchange", aogRouteFromHash);
+/* Item 4: a Back/Forward press flags the next screen change to restore scroll
+   instead of jumping to top. popstate fires before the hashchange that routes,
+   so the flag is set in time. The empty-hash (landing) case is handled here
+   because aogRouteFromHash intentionally ignores an empty hash. */
+window.addEventListener("popstate", function () {
+  window.__aogRestoreScroll = true;
+  try {
+    var _aogH = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
+    if (!_aogH) {
+      var _aogSurvey = document.getElementById("screen-survey");
+      var _aogInSurvey = _aogSurvey && _aogSurvey.classList.contains("active");
+      var _aogW = document.getElementById("screen-welcome");
+      if (!_aogInSurvey && _aogW && !_aogW.classList.contains("active") && typeof resetToStart === "function") {
+        resetToStart();
+      }
+    }
+  } catch (_aogE2) {}
+  // Clear the flag if no screen change consumed it (e.g. a guarded survey-cancel),
+  // so it can't trigger an unexpected restore on the next forward navigation.
+  setTimeout(function () { window.__aogRestoreScroll = false; }, 400);
+});
+window.addEventListener("load", aogRouteFromHash);
+/* submitAccessCode() removed (2026): the dashboard opens directly via openAdmin();
+   there is no longer an access code to verify. */
+function clearLocalData() {
+  if (!confirm("Permanently delete ALL self-reflection data on this device?")) {
+    return;
+  }
+  localStorage.removeItem(STORAGE_KEY);
+  try {
+    localStorage.removeItem(FAMILY_KEY);
+  } catch (_0xad8cf4) {}
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch (_0x3f6782) {}
+  try {
+    localStorage.removeItem("aog_preferred_support");
+  } catch (_0xwisdom) {}
+  refreshAdmin();
+}
+/* Demo/testing convenience: wipe ALL Architecture of Grace keys on this device
+   (records, family, drafts, saved strategies, sync connection, demo data,
+   accessibility + launch settings), then reload to a clean state. */
+function aogResetAll() {
+  var ok = confirm("Reset EVERYTHING on this device?\n\nThis wipes all Architecture of Grace data and settings here — self-reflections, family entries, saved strategies, demo data, and accessibility preferences. Intended for testing/demo. This cannot be undone.\n\nYour Sheet connection and your music locker are KEPT. To remove the Sheet connection too, use Disconnect in Set up ▸ Connect & sync.");
+  if (!ok) return;
+  /* THE SHEET CONNECTION SURVIVES THIS. A demo reset is not a disconnect.
+     Wiping aog.sync.url / aog.sync.key here is what silently cost the read
+     passcode after a reset, with no way to tell what had happened. The ONLY
+     controls that may disconnect a computer are Disconnect (Set up > Connect &
+     sync) and the red Delete-everything button -- both of which say so first. */
+  var _keepSyncUrl = null, _keepSyncKey = null, _keepSyncWrite = null;
+  try { _keepSyncUrl = localStorage.getItem("aog.sync.url"); _keepSyncKey = localStorage.getItem("aog.sync.key");
+        _keepSyncWrite = localStorage.getItem("aog.sync.writekey"); } catch (e) {}
+  try {
+    var kill = [];
+    for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && /^(aog|grace)/i.test(k) && k !== "aog.sync.url" && k !== "aog.sync.key" && k !== "aog.sync.writekey" && k !== "aog.studio.locker.v1") kill.push(k); }   /* the Studio's locker survives too */
+    kill.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+    if (_keepSyncUrl) localStorage.setItem("aog.sync.url", _keepSyncUrl);
+    if (_keepSyncKey) localStorage.setItem("aog.sync.key", _keepSyncKey);
+    if (_keepSyncWrite) localStorage.setItem("aog.sync.writekey", _keepSyncWrite);
+  } catch (e) {}
+  try { location.reload(); } catch (e) { if (typeof refreshAdmin === "function") refreshAdmin(); }
+}
+try { window.aogResetAll = aogResetAll; } catch (e) {}
+const DEMO_FLAG = "aogScreener.demoActive";
+const DEMO_STASH = "aogScreener.realStash";
+function buildDemoRecords() {
+  /* generic demo class + the novel/curriculum "cohort" (core 12 characters), spread across K-12 */
+  const names = ["Liam P.", "Harper J.", "Aiden R.", "Ava R.", "Marcus T.", "Zoe H.", "Lena K.", "Diego M.", "Priya S.", "Tyler S.", "Sam W.", "Noah B.", "Mia C.", "Grace W.", "Jordan L.", "Ella F.",
+    "Sammy", "Mia", "Amara", "Theo", "Aaliyah", "Kezia", "Maya", "Sofia", "Marcus", "Priya", "Jordan", "Darius"];
+  /* .30fg — seven is the modal grade on purpose: Today's Picture names the lesson from the
+     class's most common grade, and a K–2 lesson under a junior-high period list read as a
+     wrong map when it was only an unset demo. */
+  const grades = ["K", "1", "2", "3", "4", "7", "5", "6", "7", "7", "8", "9", "10", "7", "11", "12",
+    "K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12"];
+  const bases = [88, 70, 54, 82, 58, 46, 41, 77, 67, 38, 90, 63, 71, 92, 49, 85,
+    72, 85, 54, 66, 78, 47, 61, 80, 58, 69, 44, 74];
+  const out = [];
+  const windows = ["Fall", "Winter", "Spring"];
+  /* warm, realistic reflection pools per domain — rotated by student for variety */
+  const reflA = [
+    "Some days the big feelings show up fast and I don’t always know where to put them.",
+    "When I get frustrated it’s hard to calm back down, but I’m noticing it sooner now.",
+    "I’ve been taking a breath before I react. It doesn’t always work but sometimes it does."
+  ];
+  const reflB = [
+    "I’m working on not being so hard on myself when I get something wrong.",
+    "The voice in my head can be pretty mean. I’m trying to talk to myself like a friend would.",
+    "Messing up used to ruin my whole day. Lately I can let it go a little faster."
+  ];
+  const reflC = [
+    "Me and my friend had a rough week — I want to fix it but I’m not sure how to start.",
+    "I’d like to be better at saying sorry first instead of waiting for the other person.",
+    "There’s an adult at school I’d go to if something was really wrong, which feels good."
+  ];
+  /* older-student (grades 6–12) reflection pools — same domains, teen voice */
+  const reflTeenA = [
+    "When I’m stressed I kind of shut down, but I’m catching it earlier than I used to.",
+    "I get overwhelmed before tests. Taking a minute to breathe actually helps a little.",
+    "Some days my mood swings a lot and I can’t always explain why."
+  ];
+  const reflTeenB = [
+    "I’m really hard on myself when my grades slip. Trying to ease up on that.",
+    "The voice in my head is brutal sometimes. I’m working on talking to myself like a friend.",
+    "One bad day used to wreck my whole week. I bounce back a little faster now."
+  ];
+  const reflTeenC = [
+    "Me and a friend fell out and I keep waiting for them to text first.",
+    "I want to be the kind of person who apologizes instead of just going quiet.",
+    "There’s a teacher I trust if something serious came up, which actually helps."
+  ];
+  /* map a 0–100 domain score to six item values on the active scale, with gentle variety */
+  function itemsFor(score, maxIdx, salt) {
+    const arr = [];
+    for (let i = 0; i < 6; i++) {
+      const base = score / 100 * maxIdx;
+      const jit = (((salt + i * 13) % 5) - 2) * 0.5; // -1 .. +1, deterministic
+      arr.push(Math.max(0, Math.min(maxIdx, Math.round(base + jit))));
+    }
+    return arr;
+  }
+  function lowestDomain(a, b, c) { return a <= b && a <= c ? 0 : (b <= c ? 1 : 2); }
+
+  const DEMO_YEARS = 3;                       // current + 2 prior school years -> real multi-year lines
+  const MS_YEAR = 365 * 86400000;
+  function gradeBack(g, yrsBack) {            // walk grade back so each student climbs the K->12 arc
+    if (g === "Adult") return "Adult";
+    const n = parseInt(g, 10);
+    if (isNaN(n)) return g;
+    const v = Math.max(0, n - yrsBack);
+    return v === 0 ? "K" : String(v);
+  }
+  names.forEach((name, s) => {
+    for (let yo = DEMO_YEARS - 1; yo >= 0; yo--) {   // yo = school years ago (oldest first)
+    const yearLift = (DEMO_YEARS - 1 - yo) * 9;        // gentle growth from year to year
+    const gradeY = gradeBack(grades[s], yo);
+    windows.forEach((win, w) => {
+      const comp = Math.max(20, Math.min(100, bases[s] - (DEMO_YEARS - 1) * 9 + yearLift + w * 5 + (s % 2 ? 2 : -1)));
+      const nA = Math.max(15, Math.min(100, comp + (s % 3 - 1) * 8));
+      const nB = Math.max(15, Math.min(100, comp + ((s + 1) % 3 - 1) * 8));
+      const nC = Math.max(15, Math.min(100, comp + ((s + 2) % 3 - 1) * 8));
+      const tier = comp >= 75 ? "Low Risk" : comp >= 50 ? "Some Risk" : "High Risk";
+      const flagged = bases[s] < 45 && w === 0;
+      /* make the most recent window a Thorough (depth) self-reflection so reflections,
+         intensities, and a fuller heatmap show when a teacher opens the report */
+      const depth = (w === windows.length - 1);
+      const maxIdx = depth ? 5 : 3;
+      const raw = itemsFor(nA, maxIdx, s + w).concat(itemsFor(nB, maxIdx, s + w + 1)).concat(itemsFor(nC, maxIdx, s + w + 2));
+      let reflections = ["", "", ""];
+      const intensities = new Array(18).fill(null);
+      if (depth) {
+        var _teen = (function (g) { var n = parseInt(g, 10); return !isNaN(n) && n >= 6; })(gradeY);
+        var _rA = _teen ? reflTeenA : reflA, _rB = _teen ? reflTeenB : reflB, _rC = _teen ? reflTeenC : reflC;
+        reflections = [_rA[s % _rA.length], _rB[(s + 1) % _rB.length], _rC[(s + 2) % _rC.length]];
+        const low = lowestDomain(nA, nB, nC);          // give the toughest domain an intensity follow-up
+        intensities[low * 6] = 2; intensities[low * 6 + 2] = 1;
+      }
+      out.push({
+        timestamp: new Date(Date.now() - yo * MS_YEAR - (2 - w) * 86400000 * 40 - s * 60000).toISOString(),
+        studentId: name, context: "school", grade: gradeY, window: win,
+        districtId: "", schoolId: "", classId: "Demo", language: "en",
+        mode: depth ? "depth" : "rapid", population: "k12", relationship: "",
+        raw: raw, intensities: intensities, reflections: reflections, closingWord: depth ? "trying" : "",
+        domainA: nA, domainB: nB, domainC: nC, composite: comp,
+        normComposite: comp, normA: nA, normB: nB, normC: nC,
+        tier: tier, trustedAdultFlag: flagged, synced: null
+      });
+    });
+    }
+  });
+
+  /* a few at-home & adult self-reflections so the Family & adults tab is alive in demo */
+  function homeRec(id, grade, pop, nA, nB, nC, rA, rB, rC, daysAgo) {
+    const comp = Math.round((nA + nB + nC) / 3);
+    return {
+      timestamp: new Date(Date.now() - daysAgo * 86400000).toISOString(),
+      studentId: id, context: "home", grade: grade, window: "Spring",
+      districtId: "", schoolId: "", classId: "Demo", language: "en",
+      mode: "depth", population: pop, relationship: "",
+      raw: itemsFor(nA, 5, 3).concat(itemsFor(nB, 5, 4)).concat(itemsFor(nC, 5, 5)),
+      intensities: new Array(18).fill(null),
+      reflections: [rA, rB, rC], closingWord: "grace",
+      domainA: nA, domainB: nB, domainC: nC, composite: comp,
+      normComposite: comp, normA: nA, normB: nB, normC: nC,
+      tier: comp >= 75 ? "Low Risk" : comp >= 50 ? "Some Risk" : "High Risk",
+      trustedAdultFlag: false, synced: null
+    };
+  }
+  out.push(homeRec("Theo R. (home)", "5", "k12", 52, 61, 70,
+    "At home I get mad fast when homework is hard.",
+    "Mom reminded me everybody makes mistakes. I’m trying to believe it.",
+    "I want to play with my little brother more without it turning into a fight.", 6));
+  out.push(homeRec("Parent · Avery", "Adult", "adult", 74, 58, 80,
+    "I keep it together at work but the evenings are where I run out of patience.",
+    "I’m kinder to my kids than I am to myself. Working on closing that gap.",
+    "I’ve been reaching out to a friend again instead of going quiet.", 4));
+  out.push(homeRec("Coach Dane", "Adult", "adult", 81, 77, 72,
+    "I can usually name what I’m feeling before it gets big.",
+    "I give myself more grace on a rough day than I used to.",
+    "Repairing with a student after a tough moment matters to me.", 3));
+  /* Mr. Calloway — the teacher who runs through the novel series — reflecting for himself */
+  out.push(homeRec("Mr. Calloway", "Adult", "adult", 84, 78, 86,
+    "I can usually name what I’m carrying before it spills into the room.",
+    "On a hard teaching day, I try to give myself the grace I give my students.",
+    "Repairing with a student after a tough moment is the most important thing I do.", 2));
+
+  /* Children who check in BOTH at school and at home across all three years —
+     so the combined "Both" trajectory and the school↔home linking are alive in demo.
+     Each pair tells a different story: converging, a persistent gap, and closely aligned. */
+  function pairedChild(SCHOOL_ID, HOME_ID, curGrade, sStart, sSlope, hStart, hSlope, sRefl, hRefl, salt) {
+    function trip(c, s) {
+      return [Math.max(15, Math.min(100, c + ((s) % 3 - 1) * 7)),
+              Math.max(15, Math.min(100, c + ((s + 1) % 3 - 1) * 7)),
+              Math.max(15, Math.min(100, c + ((s + 2) % 3 - 1) * 7))];
+    }
+    for (let yo = DEMO_YEARS - 1; yo >= 0; yo--) {
+      const t = (DEMO_YEARS - 1 - yo);                 // 0 oldest .. 2 newest school year
+      const gradeY = gradeBack(curGrade, yo);
+      windows.forEach((win, w) => {
+        const prog = t * 3 + w;                         // 0..8 across the whole arc
+        const sComp = Math.max(20, Math.min(100, Math.round(sStart + prog * sSlope)));
+        const hComp = Math.max(20, Math.min(100, Math.round(hStart + prog * hSlope)));
+        const depth = (w === windows.length - 1);
+        const maxIdx = depth ? 5 : 3;
+        const ts = new Date(Date.now() - yo * MS_YEAR - (2 - w) * 86400000 * 40 - (90000 + salt * 1000)).toISOString();
+        const sa = trip(sComp, w + salt);
+        out.push({
+          timestamp: ts, studentId: SCHOOL_ID, context: "school", grade: gradeY, window: win,
+          districtId: "", schoolId: "", classId: "Demo", language: "en",
+          mode: depth ? "depth" : "rapid", population: "k12", relationship: "",
+          raw: itemsFor(sa[0], maxIdx, 7 + salt).concat(itemsFor(sa[1], maxIdx, 8 + salt)).concat(itemsFor(sa[2], maxIdx, 9 + salt)),
+          intensities: new Array(18).fill(null),
+          reflections: depth ? sRefl : ["", "", ""], closingWord: depth ? "trying" : "",
+          domainA: sa[0], domainB: sa[1], domainC: sa[2], composite: sComp,
+          normComposite: sComp, normA: sa[0], normB: sa[1], normC: sa[2],
+          tier: sComp >= 75 ? "Low Risk" : sComp >= 50 ? "Some Risk" : "High Risk",
+          trustedAdultFlag: false, synced: null
+        });
+        const ha = trip(hComp, w + 1 + salt);
+        out.push({
+          timestamp: new Date(Date.parse(ts) + 86400000 * 3).toISOString(),
+          studentId: HOME_ID, context: "home", grade: gradeY, window: win,
+          districtId: "", schoolId: "", classId: "Demo", language: "en",
+          mode: depth ? "depth" : "rapid", population: "k12", relationship: "parent",
+          raw: itemsFor(ha[0], maxIdx, 10 + salt).concat(itemsFor(ha[1], maxIdx, 11 + salt)).concat(itemsFor(ha[2], maxIdx, 12 + salt)),
+          intensities: new Array(18).fill(null),
+          reflections: depth ? hRefl : ["", "", ""], closingWord: depth ? "grace" : "",
+          domainA: ha[0], domainB: ha[1], domainC: ha[2], composite: hComp,
+          normComposite: hComp, normA: ha[0], normB: ha[1], normC: ha[2],
+          tier: hComp >= 75 ? "Low Risk" : hComp >= 50 ? "Some Risk" : "High Risk",
+          trustedAdultFlag: false, synced: null
+        });
+      });
+    }
+  }
+  /* 1) converging upward — gap 11 -> ~1 (growing consistency across environments) */
+  pairedChild("Maya R.", "Maya (home)", "3", 46, 3.4, 57, 1.9,
+    ["At school the big feelings still come, but I’m catching them sooner.",
+     "I’m trying to talk to myself the way a friend would.",
+     "I want to be the first one to say sorry when things go sideways."],
+    ["At home the big feelings still come, but we’re naming them together now.",
+     "Mom reminds me everyone makes mistakes — I’m starting to believe it.",
+     "I want to play with my brother without it turning into a fight."], 0);
+  /* 2) a persistent home–school gap that slowly narrows — a "worth a conversation" story */
+  pairedChild("Isaiah B.", "Isaiah (home)", "8", 64, 2.0, 44, 2.8,
+    ["At school I keep it together most of the time.",
+     "I’m hard on myself when I mess up, but I’m working on it.",
+     "There’s a teacher I’d talk to if something serious came up."],
+    ["At home it gets louder and I lose my temper more than I want to.",
+     "Some nights I really beat myself up. We’re working on it together.",
+     "Me and my brother are trying to fight less and talk more."], 5);
+  /* 3) doing well and closely aligned across both — a green, steady story */
+  pairedChild("Sofia G.", "Sofia (home)", "1", 78, 1.4, 80, 1.2,
+    ["I can usually say how I feel with my words now.",
+     "When I get something wrong I try again instead of giving up.",
+     "I like helping my friends feel better when they’re sad."],
+    ["At home I can tell my family how I feel.",
+     "I try again when something is hard.",
+     "I like making up fast after a squabble with my brother."], 9);
+  return out;
+}
+/* Demo daily-log data so the Trajectory Zoom views (Day / 3 Days / Week / … / Month)
+   show real trends. Keyed by the same student names as buildDemoRecords(), using the
+   v2 per-period schema {periods:[{period,regulated,usedStrategy,connected,note,timestamp}]}. */
+function buildDemoDaily() {
+  var roster = [
+    ["Liam P.", 86], ["Harper J.", 70], ["Aiden R.", 55], ["Ava R.", 82], ["Marcus T.", 58],
+    ["Zoe H.", 47], ["Lena K.", 42], ["Diego M.", 76], ["Priya S.", 66], ["Tyler S.", 40],
+    ["Sam W.", 88], ["Noah B.", 63], ["Mia C.", 71], ["Grace W.", 90], ["Jordan L.", 50], ["Ella F.", 84],
+    ["Maya R.", 60], ["Isaiah B.", 70], ["Sofia G.", 82],
+    ["Maya (home)", 62], ["Isaiah (home)", 58], ["Sofia (home)", 84],
+    /* novel/curriculum cohort — first names, bases matched to their screener composite */
+    ["Sammy", 72], ["Mia", 85], ["Amara", 54], ["Theo", 66], ["Aaliyah", 78], ["Kezia", 47],
+    ["Maya", 61], ["Sofia", 80], ["Marcus", 58], ["Priya", 69], ["Jordan", 44], ["Darius", 74]
+  ];
+  var PERIODS = ["Morning", "Midday", "Afternoon / End of Day", "Period 1", "Period 2"];
+  var NOTES = ["Strong start today.", "Needed a reset after lunch.", "Used a breathing strategy independently.", "Tough transition, recovered well.", "Asked for help — a big step.", "Calm and focused.", "Off day, but kept trying.", "Great peer moment at recess."];
+  var NDAYS = 75;
+  function h(str) { var x = 2166136261; for (var i = 0; i < str.length; i++) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0) % 100; }
+  function iso(d) { var m = d.getMonth() + 1, da = d.getDate(); return d.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (da < 10 ? "0" + da : da); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  var logs = {};
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  roster.forEach(function (r) {
+    var id = r[0], base = r[1]; logs[id] = {};
+    for (var d = NDAYS - 1; d >= 0; d--) {
+      var dt = new Date(today.getTime() - d * 86400000);
+      var dow = dt.getDay(); if (dow === 0 || dow === 6) continue;   // school days only
+      var date = iso(dt);
+      var prog = (NDAYS - 1 - d) / (NDAYS - 1);
+      var trend = (prog - 0.5) * 12;                                 // gentle rise across the window
+      var wave = Math.sin(prog * 6.2832 * 1.5 + (base % 7)) * 3;     // smooth natural undulation
+      var jitter = (h(id + date + "n") - 50) / 50 * 2.5;             // tiny ±2.5 so it isn't perfectly smooth
+      var pct = clamp(Math.round(base + trend + wave + jitter), 12, 96);
+      var nP = (h(id + date + "p") < 25) ? 2 : 3;                    // 2–3 periods/day
+      var total = nP * 3, trues = Math.round(pct / 100 * total);
+      var periods = [], pos = 0;
+      for (var k = 0; k < nP; k++) {
+        var v = [false, false, false];
+        for (var c = 0; c < 3; c++) {                                // spread the day's "trues" evenly → day ≈ pct (smooth)
+          v[c] = Math.floor((pos + 1) * trues / total) > Math.floor(pos * trues / total); pos++;
+        }
+        var pname = PERIODS[h(id + date + "pk" + k) % PERIODS.length];
+        var note = (h(id + date + k + "z") < 12) ? NOTES[h(id + date + k + "zz") % NOTES.length] : "";
+        var hr = 9 + k * 2, ts = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), hr, 15).toISOString();
+        periods.push({ period: pname, regulated: v[0], usedStrategy: v[1], connected: v[2], note: note, timestamp: ts });
+      }
+      logs[id][date] = { periods: periods };
+    }
+  });
+  return { logs: logs };
+}
+/* DEMO IEP GOALS (2026-08-27).
+   "Try demo data" seeded reflections, the school/home links and the daily log
+   but never touched aog.iep.v1 — so a principal, a special education director
+   or a district administrator who loaded demo data and opened IEP Progress,
+   the most defensible thing in the product, saw "No IEP goals yet." Nobody
+   builds three sample goals to decide whether to keep reading.
+
+   The panel shows one student at a time, so the three stories live on ONE
+   student — a director sees all three on one screen — and a fourth goal on a
+   second student so the per-student tabs are visibly doing something:
+     1 climbing above its aimline        — what On track looks like
+     2 flat                              — what Needs attention looks like
+     3 flat for a month, then turning    — what an intervention looks like
+     4 a second student, one goal        — what a caseload looks like
+   Initials only, exactly as the tool tells a teacher to enter them. */
+function buildDemoIep() {
+  function d(weeksAgo) {
+    var t = new Date();
+    t.setDate(t.getDate() - weeksAgo * 7);
+    var m = t.getMonth() + 1, day = t.getDate();
+    return t.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (day < 10 ? "0" + day : day);
+  }
+  function series(vals) {
+    return vals.map(function (v, i) { return { date: d(vals.length - i), value: v }; });
+  }
+  var goals = {}, data = {};
+
+  goals.demoIepA = {
+    student: "Marcus T.", grade: "7", area: "reading",
+    title: "Identify the main idea and two supporting details in a grade-level passage",
+    measure: "percent", unit: "", baseline: { date: d(10), value: 40 },
+    target: { date: d(-30), value: 80 }, notes: "Weekly probe, 3-paragraph passage.",
+    archived: false, lowerBetter: false, intervalLabel: "Weekly", xofy: null
+  };
+  data.demoIepA = series([44, 47, 51, 54, 58, 62, 65, 70, 73]);
+
+  goals.demoIepB = {
+    student: "Marcus T.", grade: "7", area: "social",
+    title: "Use a named coping strategy when frustrated, with no more than one adult prompt",
+    measure: "percent", unit: "", baseline: { date: d(10), value: 35 },
+    target: { date: d(-30), value: 75 }, notes: "Counted across the school day.",
+    archived: false, lowerBetter: false, intervalLabel: "Weekly", xofy: null
+  };
+  data.demoIepB = series([36, 34, 38, 35, 37, 36, 38, 35, 37]);
+
+  goals.demoIepC = {
+    student: "Marcus T.", grade: "7", area: "reading",
+    title: "Read a grade-level passage aloud at 110 words correct per minute",
+    measure: "wcpm", unit: "", baseline: { date: d(10), value: 68 },
+    target: { date: d(-30), value: 110 },
+    notes: "Flat for four weeks; repeated-reading protocol started week 5.",
+    archived: false, lowerBetter: false, intervalLabel: "Weekly", xofy: null
+  };
+  data.demoIepC = [70, 69, 72, 70, 79, 86, 92, 98, 103].map(function (v, i, arr) {
+    return { date: d(arr.length - i), value: v, total: Math.max(1, 8 - Math.round(i * 0.6)) };
+  });
+
+  goals.demoIepD = {
+    student: "Harper J.", grade: "8", area: "writing",
+    title: "Write a paragraph with a topic sentence and three supporting sentences",
+    measure: "percent", unit: "", baseline: { date: d(10), value: 30 },
+    target: { date: d(-30), value: 70 }, notes: "Scored against the paragraph rubric.",
+    archived: false, lowerBetter: false, intervalLabel: "Weekly", xofy: null
+  };
+  data.demoIepD = series([33, 36, 38, 42, 45, 47, 51, 54, 57]);
+
+  return { goals: goals, data: data };
+}
+
+function toggleDemoData() {
+  const _0x3412fa = document.getElementById("btnDemoData");
+  const _0x380509 = localStorage.getItem(DEMO_FLAG) === "1";
+  if (!_0x380509) {
+    localStorage.setItem(DEMO_STASH, localStorage.getItem(STORAGE_KEY) || "[]");
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildDemoRecords()));
+    localStorage.setItem(DEMO_FLAG, "1");
+    /* seed the school↔home link + default so the combined "Both" view opens to the paired demo child */
+    try {
+      var _lm = JSON.parse(localStorage.getItem("aog.tj.links") || "{}");
+      _lm["Maya R."] = "Maya (home)"; _lm["Isaiah B."] = "Isaiah (home)"; _lm["Sofia G."] = "Sofia (home)";
+      localStorage.setItem("aog.tj.links", JSON.stringify(_lm));
+      localStorage.setItem("aog.tj.lastschool", "Maya R.");
+      if (window.__aogtj) { window.__aogtj.schoolId = null; window.__aogtj.homeId = null; }
+    } catch (_e) {}
+    /* seed demo daily-log data so the Trajectory Zoom views have trends (stash any real data first) */
+    try {
+      localStorage.setItem("aogScreener.demoStash.daily", localStorage.getItem("aog.daily.v1") || "");
+      localStorage.setItem("aog.daily.v1", JSON.stringify(buildDemoDaily()));
+    } catch (_e2) {}
+    /* seed demo IEP goals — stash any real ones first, exactly as above. A real
+       caseload is never overwritten: what was there comes back on Clear. */
+    try {
+      localStorage.setItem("aogScreener.demoStash.iep", localStorage.getItem("aog.iep.v1") || "");
+      localStorage.setItem("aog.iep.v1", JSON.stringify(buildDemoIep()));
+    } catch (_e3) {}
+    if (_0x3412fa) {
+      _0x3412fa.textContent = "Clear demo data";
+      _0x3412fa.style.background = "transparent";
+      _0x3412fa.style.color = "var(--gold)";
+    }
+  } else {
+    const _0x1a0edd = localStorage.getItem(DEMO_STASH);
+    if (_0x1a0edd != null) {
+      localStorage.setItem(STORAGE_KEY, _0x1a0edd);
+    }
+    localStorage.removeItem(DEMO_STASH);
+    localStorage.removeItem(DEMO_FLAG);
+    /* remove only the demo-seeded link/default, leaving any real pairings intact */
+    try {
+      var _lm2 = JSON.parse(localStorage.getItem("aog.tj.links") || "{}");
+      [["Maya R.", "Maya (home)"], ["Isaiah B.", "Isaiah (home)"], ["Sofia G.", "Sofia (home)"]].forEach(function (p) { if (_lm2[p[0]] === p[1]) delete _lm2[p[0]]; });
+      localStorage.setItem("aog.tj.links", JSON.stringify(_lm2));
+      if (localStorage.getItem("aog.tj.lastschool") === "Maya R.") localStorage.removeItem("aog.tj.lastschool");
+      if (window.__aogtj) { window.__aogtj.schoolId = null; window.__aogtj.homeId = null; }
+    } catch (_e) {}
+    /* restore real daily-log data (or clear the demo daily data if there was none) */
+    try {
+      var _dsd = localStorage.getItem("aogScreener.demoStash.daily");
+      if (_dsd) { localStorage.setItem("aog.daily.v1", _dsd); } else { localStorage.removeItem("aog.daily.v1"); }
+      localStorage.removeItem("aogScreener.demoStash.daily");
+    } catch (_e2) {}
+    /* and the real IEP goals */
+    try {
+      var _dsi = localStorage.getItem("aogScreener.demoStash.iep");
+      if (_dsi) { localStorage.setItem("aog.iep.v1", _dsi); } else { localStorage.removeItem("aog.iep.v1"); }
+      localStorage.removeItem("aogScreener.demoStash.iep");
+    } catch (_e3) {}
+    if (_0x3412fa) {
+      _0x3412fa.textContent = "Try demo data";
+      _0x3412fa.style.background = "var(--gold)";
+      _0x3412fa.style.color = "var(--navy)";
+    }
+  }
+  refreshAdmin();
+}
+/* If demo mode is already active from a previous session, make sure demo daily-log data
+   exists too (older demo sessions predate it). Seed once, stashing any real data first. */
+try {
+  if (localStorage.getItem(DEMO_FLAG) === "1" && localStorage.getItem("aogScreener.demoStash.daily") === null) {
+    localStorage.setItem("aogScreener.demoStash.daily", localStorage.getItem("aog.daily.v1") || "");
+    localStorage.setItem("aog.daily.v1", JSON.stringify(buildDemoDaily()));
+  }
+} catch (_eSeed) {}
+let REMOTE_RECORDS = [];
+function getLocalRecords() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
+function recordKey(_0x26c3ba) {
+  let _0xa44a19 = _0x26c3ba && _0x26c3ba.timestamp;
+  const _0x28efdb = Date.parse(_0xa44a19);
+  const _0x52a88b = isNaN(_0x28efdb) ? String(_0xa44a19) : String(Math.floor(_0x28efdb / 1000));
+  return String(_0x26c3ba ? _0x26c3ba.studentId : "") + "|" + String(_0x26c3ba ? _0x26c3ba.window : "") + "|" + _0x52a88b;
+}
+function getAllRecords() {
+  const _0x5d2e94 = getLocalRecords();
+  if (!REMOTE_RECORDS.length) {
+    return _0x5d2e94;
+  }
+  const _0xb03ed5 = new Set(_0x5d2e94.map(recordKey));
+  const _0x3641e0 = REMOTE_RECORDS.filter(_0xf3434a => !_0xb03ed5.has(recordKey(_0xf3434a)));
+  return _0x5d2e94.concat(_0x3641e0);
+}
+try { window.getAllRecords = getAllRecords; } catch (e) {}
+function _riNum(_0x1799e0) {
+  const _0x31d1dc = parseFloat(_0x1799e0);
+  if (isNaN(_0x31d1dc)) {
+    return null;
+  } else {
+    return _0x31d1dc;
+  }
+}
+/* The sheet stores ONE COLUMN PER ITEM (raw1…raw18, intensity1…intensity18).
+   Depending on which Apps Script version is deployed, a pull hands those back
+   either already folded into arrays or still flat. Accept both — without the
+   per-item answers an imported report shows scores but no items, no focus
+   areas, no conversation starters and no matched tools. */
+function _riSeries(_row, _colPrefix, _arrayField) {
+  const direct = _riArr(_row[_arrayField]);
+  if (direct.length) { return direct; }
+  const out = [];
+  let last = 0;
+  for (let i = 1; i <= 19; i++) {
+    const col = _colPrefix + i;
+    if (!(col in _row)) { continue; }
+    const v = _row[col];
+    out[i - 1] = (v === "" || v === null || v === undefined) ? null : _riNum(v);
+    last = i;
+  }
+  out.length = last;
+  return out;
+}
+function _riArr(_0x302bcd) {
+  if (Array.isArray(_0x302bcd)) {
+    return _0x302bcd;
+  }
+  if (_0x302bcd == null || _0x302bcd === "") {
+    return [];
+  }
+  try {
+    const _0x27053d = JSON.parse(_0x302bcd);
+    if (Array.isArray(_0x27053d)) {
+      return _0x27053d;
+    } else {
+      return [];
+    }
+  } catch (_0x2803b9) {
+    return [];
+  }
+}
+function mapSheetRowToRecord(_0x1c2578) {
+  if (!_0x1c2578 || !_0x1c2578.timestamp) {
+    return null;
+  }
+  let _0x526fd0 = _0x1c2578.trustedAdultFlag;
+  if (typeof _0x526fd0 === "string") {
+    _0x526fd0 = _0x526fd0.trim().toUpperCase() === "TRUE";
+  }
+  let _0xUnsafe = _0x1c2578.unsafeFlag;
+  if (typeof _0xUnsafe === "string") {
+    _0xUnsafe = _0xUnsafe.trim().toUpperCase() === "TRUE";
+  }
+  const _0x465bb4 = _riNum(_0x1c2578.normComposite);
+  return {
+    timestamp: _0x1c2578.timestamp,
+    studentId: String(_0x1c2578.studentId == null ? "" : _0x1c2578.studentId),
+    context: "school",
+    grade: _0x1c2578.grade,
+    window: _0x1c2578.window,
+    districtId: _0x1c2578.districtId || "",
+    schoolId: _0x1c2578.schoolId || "",
+    classId: _0x1c2578.classId || "",
+    language: _0x1c2578.language || "en",
+    mode: _0x1c2578.mode === "depth" ? "depth" : "rapid",
+    raw: _riSeries(_0x1c2578, "raw", "raw"),
+    intensities: _riSeries(_0x1c2578, "intensity", "intensities"),
+    population: (_0x1c2578.population === "adult" || String(_0x1c2578.grade) === "Adult") ? "adult" : "k12",
+    reflections: [_0x1c2578.reflection1 || "", _0x1c2578.reflection2 || "", _0x1c2578.reflection3 || ""],
+    closingWord: _0x1c2578.closingWord || "",
+    domainA: _riNum(_0x1c2578.domainA),
+    domainB: _riNum(_0x1c2578.domainB),
+    domainC: _riNum(_0x1c2578.domainC),
+    composite: _riNum(_0x1c2578.composite),
+    normA: _riNum(_0x1c2578.normA),
+    normB: _riNum(_0x1c2578.normB),
+    normC: _riNum(_0x1c2578.normC),
+    normComposite: _0x465bb4,
+    tier: _0x1c2578.tier || tierFromNormComposite(_0x465bb4 == null ? 0 : _0x465bb4),
+    trustedAdultFlag: !!_0x526fd0,
+    unsafeFlag: !!_0xUnsafe,
+    synced: true,
+    _remote: true
+  };
+}
+/* Classroom data, in a teacher's words. The transport is untouched — this
+   only remembers WHEN the last pull landed and HOW MANY rows it brought, so
+   the button can answer "did that do anything?" without anyone opening a
+   console. Device-local, like everything else the dashboard remembers. */
+var AOG_SYNC_STAMP_KEY = "aog.sync.lastpull";
+function aogSyncStampSet(n) {
+  try { localStorage.setItem(AOG_SYNC_STAMP_KEY, JSON.stringify({ at: new Date().toISOString(), n: +n || 0 })); } catch (e) {}
+  try { aogSyncStampPaint(); } catch (e) {}
+}
+function aogSyncStampGet() {
+  try { var v = JSON.parse(localStorage.getItem(AOG_SYNC_STAMP_KEY) || "null"); return (v && v.at) ? v : null; } catch (e) { return null; }
+}
+function aogSyncStampText() {
+  var v = aogSyncStampGet();
+  if (!v) return DT("Not updated on this computer yet.", "Aún no se ha actualizado en esta computadora.");
+  var d = new Date(v.at), now = new Date(), t;
+  try { t = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); } catch (e) { t = ""; }
+  var sameDay = d.toDateString() === now.toDateString();
+  var yest = new Date(now.getTime() - 86400000).toDateString() === d.toDateString();
+  var when = sameDay ? DT("Today", "Hoy") : (yest ? DT("Yesterday", "Ayer") : d.toLocaleDateString());
+  return DT("Last updated ", "Última actualización: ") + when + (t ? (", " + t) : "") +
+    " \u00b7 " + v.n + " " + (v.n === 1 ? DT("response", "respuesta") : DT("responses", "respuestas"));
+}
+function aogSyncStampPaint() {
+  try {
+    var els = document.querySelectorAll(".aog-sync-stamp");
+    for (var i = 0; i < els.length; i++) els[i].textContent = aogSyncStampText();
+  } catch (e) {}
+}
+try { window.aogSyncStampPaint = aogSyncStampPaint; window.aogSyncStampText = aogSyncStampText; } catch (e) {}
+async function pullFromSheet() {
+  const _0x4f6d89 = document.getElementById("riPullStatus");
+  const _0x2c3487 = document.getElementById("riPullBtn");
+  function _0x23b169(_0x2ee6c9, _0x5f685e) {
+    if (_0x4f6d89) {
+      _0x4f6d89.textContent = _0x2ee6c9;
+      _0x4f6d89.style.color = _0x5f685e || "var(--ink-faint)";
+    }
+  }
+  if (!SCHOOL_SYNC_URL) {
+    _0x23b169(DT("This is a local-only copy — no central sheet is configured.", "Esta es una copia solo local — no hay hoja central configurada."), "var(--ink-faint)");
+    return;
+  }
+  if (_0x2c3487) {
+    _0x2c3487.disabled = true;
+  }
+  _0x23b169(DT("Pulling from the sheet…", "Trayendo de la hoja…"));
+  async function _0x8a71e5() {
+    const _0x2be162 = await fetch(SCHOOL_SYNC_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "pull",
+        passcode: SCHOOL_SYNC_KEY
+      })
+    });
+    return await _0x2be162.json();
+  }
+  /* ⚠ A GET fallback was REMOVED here on 2026-08-25. It retried the read as
+     SCHOOL_SYNC_URL + "?key=" + the ADMIN_PULL_KEY. doGet in the Apps Script is
+     deliberately status-only and ignores that parameter, so the fallback could
+     never return a single row — all it did was write the read credential into
+     Google's request logs, the browser's history and any proxy in between. A
+     credential leak with no upside. The read is POST-only now; a failed POST
+     falls to the catch below, which already says the useful thing. */
+  try {
+    let _0x5d706a = await _0x8a71e5();
+    if (_0x5d706a && _0x5d706a.error) {
+      /* Show the script's own words. "Unauthorized" here almost always means
+         the Passcode box holds the published write key rather than the
+         ADMIN_PULL_KEY that is allowed to read. */
+      _0x23b169(String(_0x5d706a.error), "var(--red)");
+      return;
+    }
+    if (_0x5d706a && !("records" in _0x5d706a)) {
+      /* The endpoint answered, but with no records field at all — the deployed
+         Apps Script predates the pull path. Writing works; reading does not. */
+      _0x23b169(DT("This Sheet's script can save reflections but cannot send them back yet. Update the Apps Script to the version with the pull step, redeploy it as a NEW version, then try again.",
+                   "El script de esta hoja puede guardar reflexiones pero todavía no puede devolverlas. Actualiza el Apps Script a la versión con el paso de lectura, vuelve a desplegarlo como NUEVA versión e inténtalo de nuevo."), "var(--red)");
+      return;
+    }
+    const _0x5d6553 = _0x5d706a && _0x5d706a.records || [];
+    REMOTE_RECORDS = _0x5d6553.map(mapSheetRowToRecord).filter(Boolean);
+    /* AOG-REFLECT-REMOTE-V1 — the new dashboard (/dashboard) builds its MTSS report from the disk; pulled reflections were memory-only */
+    try { localStorage.setItem("aog.reflect.remote", JSON.stringify(REMOTE_RECORDS)); } catch (eR) {}
+    aogSyncStampSet(REMOTE_RECORDS.length);
+    const _0x5e831b = new Set(getLocalRecords().map(recordKey));
+    const _0x134e28 = REMOTE_RECORDS.filter(_0x5f1aaf => !_0x5e831b.has(recordKey(_0x5f1aaf))).length;
+    refreshAdmin();
+    if (!REMOTE_RECORDS.length) {
+      _0x23b169(DT("The Sheet has no student reflections yet — only test rows. Complete one through a classroom link, then pull again.",
+                   "La hoja aún no tiene autorreflexiones de estudiantes — solo filas de prueba. Completa una con un enlace de clase y vuelve a traer."), "var(--ink-soft)");
+      return;
+    }
+    _0x23b169(DT("\u2713 " + REMOTE_RECORDS.length + " responses updated \u00b7 " + _0x134e28 + " came from other devices and are now included below (marked “from sheet”).", "\u2713 " + REMOTE_RECORDS.length + " de la hoja · " + _0x134e28 + " de otros dispositivos, ahora incluidos abajo (marcados “de la hoja”)."), "var(--navy)");
+  } catch (_0xd951db) {
+    console.warn("Pull failed", _0xd951db);
+    _0x23b169(DT("Couldn’t reach the sheet. Confirm the Web App is deployed to “Anyone” and try again.", "No se pudo conectar con la hoja. Confirma que la Web App esté desplegada para “Cualquiera” e inténtalo de nuevo."), "var(--red)");
+  } finally {
+    if (_0x2c3487) {
+      _0x2c3487.disabled = false;
+    }
+  }
+}
+function clearPulledRecords() {
+  REMOTE_RECORDS = [];
+  refreshAdmin();
+  const _0x445b60 = document.getElementById("riPullStatus");
+  if (_0x445b60) {
+    _0x445b60.textContent = DT("Cleared pulled rows — showing this device only.", "Filas traídas eliminadas — mostrando solo este dispositivo.");
+    _0x445b60.style.color = "var(--ink-faint)";
+  }
+}
+function pct(_0x5d8057, _0x5c3038) {
+  if (_0x5c3038 === 0) {
+    return "0%";
+  } else {
+    return Math.round(_0x5d8057 / _0x5c3038 * 100) + "%";
+  }
+}
+function escapeHtml(_0xf37ca8) {
+  return String(_0xf37ca8 == null ? "" : _0xf37ca8).replace(/[&<>"']/g, _0x596558 => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  })[_0x596558]);
+}
+function jsAttr(_0x261d76) {
+  return String(_0x261d76 == null ? "" : _0x261d76).replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+function applyFilters(_0x3bb257, _0x45db41) {
+  return _0x3bb257.filter(_0x3656ba => {
+    if (_0x45db41.window && _0x3656ba.window !== _0x45db41.window) {
+      return false;
+    }
+    if (_0x45db41.grade && String(_0x3656ba.grade) !== String(_0x45db41.grade)) {
+      return false;
+    }
+    if (_0x45db41.mode && _0x3656ba.mode !== _0x45db41.mode) {
+      return false;
+    }
+    if (_0x45db41.tier) {
+      if (_0x45db41.tier === "flagged" && !_0x3656ba.trustedAdultFlag) {
+        return false;
+      } else if (_0x45db41.tier !== "flagged" && _0x3656ba.tier !== _0x45db41.tier) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
+function populateFilters() {
+  const _0x586f01 = getAllRecords();
+  const _0x3ea983 = [...new Set(_0x586f01.map(_0x3a501f => _0x3a501f.grade))].sort((_0x119e1a, _0x374c2d) => String(_0x119e1a).localeCompare(String(_0x374c2d), undefined, {
+    numeric: true
+  }));
+  const _0xaa9b02 = [...new Set(_0x586f01.map(_0x2145c9 => _0x2145c9.studentId))].sort();
+  ["filterGrade", "studentFilterGrade", "growthFilterGrade"].forEach(_0x15c431 => {
+    const _0x24af2a = document.getElementById(_0x15c431);
+    if (!_0x24af2a) {
+      return;
+    }
+    const _0x54f4d3 = _0x24af2a.value;
+    _0x24af2a.innerHTML = "<option value=\"\" data-dl=\"dl_opt_allgrades\">" + DT("All Grades", "Todos los grados") + "</option>" + _0x3ea983.map(_0x501531 => "<option value=\"" + _0x501531 + "\">" + DT("Grade ", "Grado ") + _0x501531 + "</option>").join("");
+    _0x24af2a.value = _0x54f4d3;
+  });
+  const _0x2c7a90 = document.getElementById("homeFilterStudent");
+  if (_0x2c7a90) {
+    const _0x1aa52a = _0x2c7a90.value;
+    _0x2c7a90.innerHTML = "<option value=\"\" data-dl=\"dl_opt_selperson\">" + DT("Select a person to view…", "Selecciona una persona…") + "</option>" + _0xaa9b02.map(_0x1599e0 => "<option value=\"" + escapeHtml(_0x1599e0) + "\">" + escapeHtml(_0x1599e0) + "</option>").join("");
+    _0x2c7a90.value = _0x1aa52a;
+  }
+}
+const TAB_HINTS = {
+  support: {
+    en: "What the other adults around one student sent in, and who saw what.",
+    es: "Lo que enviaron los demás adultos alrededor de un estudiante, y quién vio qué."
+  },
+  overview: {
+    en: "The summary — how many checked in and how the group is doing.",
+    es: "El resumen — cuántos hicieron el self-reflection y cómo está el grupo."
+  },
+  distribute: {
+    en: "Hand out the self-reflection by link or QR, and connect your school’s sheet.",
+    es: "Reparte el self-reflection por enlace o QR, y conecta tu Hoja."
+  },
+  students: {
+    en: "How the whole class is doing, and where to focus next — no individual scores.",
+    es: "Cómo va toda la clase y dónde enfocarse — sin puntajes individuales."
+  },
+  home: {
+    en: "Open each student’s full self-reflection report — to read together or export, never to grade.",
+    es: "Abre el informe completo de la autorreflexión de cada estudiante — para leer juntos o exportar, nunca para calificar."
+  },
+  family: {
+    en: "Self-reflections done at home — a child with their family — plus parents, caregivers, and staff reflecting for themselves.",
+    es: "Autorreflexiones hechas en casa — un niño con su familia — además de padres, cuidadores y personal reflexionando para sí mismos."
+  },
+  growth: {
+    en: "How the class average moves across Fall, Winter, and Spring.",
+    es: "Cómo se mueve el promedio de la clase entre Otoño, Invierno y Primavera."
+  },
+  export: {
+    en: "Back up or delete your data on this device — plus class-level CSV summaries.",
+    es: "Respalda o borra tus datos en este dispositivo — además de resúmenes de clase en CSV."
+  },
+  trajectory: {
+    en: "One student’s growth line across seasons and years — school, home, or both together.",
+    es: "La línea de crecimiento de un estudiante entre temporadas y años — escuela, hogar o ambos."
+  },
+  goals: {
+    en: "Draft a relationship-centered SEL/IEP goal with objectives — a starting draft for your team to review.",
+    es: "Redacta una meta SEL/IEP centrada en la relación con objetivos — un borrador inicial para que tu equipo lo revise."
+  },
+  daily: {
+    en: "Fast per-period logging for the day — private, and it feeds One student over time.",
+    es: "Registro rápido por período del día — privado, y alimenta Un estudiante con el tiempo."
+  }
+};
+function setTabHint(_0x1b070b) {
+  if ($("#tabHint")) {
+    const _0x2b6d6c = TAB_HINTS[_0x1b070b];
+    $("#tabHint").textContent = _0x2b6d6c ? _0x2b6d6c[dashLang] || _0x2b6d6c.en : "";
+  }
+}
+const TAB_HELP = {
+  support: {
+    en: "<h5>Team &mdash; what the other adults saw</h5>Every entry here arrived through the <strong>Adult team check-in</strong> link, signed with the name of the adult who made it. Your own Daily Log entries stay on the Daily Log tab. <strong>Nothing on this screen is a score.</strong> It counts how many entries, how many adults and how many periods there are, and it names which sentences each adult ticked &mdash; because <em>which</em> ones is the whole point when the question is what shows up in one room and not in another. A blank means nobody ticked it. That is not the same as it not happening.",
+    es: "<h5>Equipo &mdash; lo que vieron los demás adultos</h5>Cada entrada aquí llegó por el enlace de <strong>Registro del equipo de adultos</strong>, firmada con el nombre del adulto que la hizo. Tus propias entradas del Registro diario siguen en su pestaña. <strong>Nada en esta pantalla es una puntuación.</strong> Cuenta cuántas entradas, cuántos adultos y cuántos periodos hay, y nombra qué frases marcó cada adulto &mdash; porque <em>cuáles</em> es lo importante cuando la pregunta es qué aparece en una sala y no en otra. Una casilla en blanco significa que nadie la marcó. No es lo mismo que no haya ocurrido."
+  },
+  overview: {
+    en: "<h5>Overview — the summary</h5>The sentence at the top reads the whole group for you. The three cards show how many <strong>checked in</strong>, the group’s <strong>average score</strong> (out of 100 — higher is steadier), and how many named <strong>no trusted adult</strong>. The colored bar groups everyone by score: green is doing well, amber is worth a self-reflection, red needs support. These describe a score, not a person — a low one is a doorway to a conversation, not a label.",
+    es: "<h5>Resumen — el panorama</h5>La frase de arriba lee al grupo entero por ti. Las tres tarjetas muestran cuántos <strong>hicieron el self-reflection</strong>, el <strong>puntaje promedio</strong> del grupo (de 100 — más alto es más estable), y cuántos no nombraron a <strong>ningún adulto de confianza</strong>. La barra de colores agrupa a todos por puntaje: verde va bien, ámbar vale una autorreflexión, rojo necesita apoyo. Describen un puntaje, no a una persona — uno bajo es una puerta a una conversación, no una etiqueta."
+  },
+  distribute: {
+    en: "<h5>Distribute — hand it out</h5>Build a <strong>link or QR code</strong> for a class so people can begin self-reflection, and (optionally) connect a school’s own <strong>Google Sheet</strong> so results pool in one place. Nothing here is sent to us.",
+    es: "<h5>Distribuir — repártelo</h5>Crea un <strong>enlace o código QR</strong> para una clase para que las personas hagan el self-reflection, y (opcionalmente) conecta la propia <strong>hoja de Google</strong> de una escuela para reunir los resultados en un solo lugar. Nada de aquí se nos envía."
+  },
+  students: {
+    en: "<h5>Class trends — the group, not the individual</h5>This view shows how the <strong>whole class</strong> is doing: the share in each band (doing well / worth a self-reflection / needs support) and the <strong>class average</strong> for each domain, with a teaching pointer when a domain runs low. Individual scores are intentionally hidden here — the focus stays on what to teach next, not on evaluating any one child.",
+    es: "<h5>Tendencias de la clase — el grupo, no el individuo</h5>Esta vista muestra cómo va <strong>toda la clase</strong>: la proporción en cada banda (va bien / vale una autorreflexión / necesita apoyo) y el <strong>promedio de la clase</strong> en cada área, con una sugerencia de enseñanza cuando un área queda baja. Los puntajes individuales se ocultan a propósito aquí — el enfoque se mantiene en qué enseñar después, no en evaluar a ningún niño."
+  },
+  home: {
+    en: "<h5>Student reports</h5>Open any student’s full self-reflection report — their answers, their words, and the conversation starters that go with them — using <strong>Open report</strong> or <strong>Export PDF</strong>. Read it to start a conversation, never to grade one. For class-wide planning, use <strong>Class trends</strong>.",
+    es: "<h5>Informes del estudiante</h5>Abre el informe completo de la autorreflexión de cualquier estudiante — sus respuestas, sus palabras y los iniciadores de conversación que los acompañan — con <strong>Abrir informe</strong> o <strong>Exportar PDF</strong>. Léelo para iniciar una conversación, nunca para calificar. Para planificar a nivel de clase, usa <strong>Tendencias de la clase</strong>."
+  },
+  family: {
+    en: "<h5>Family &amp; adult reports</h5>Everything done <strong>at home</strong>: a child checking in with their family (marked <strong>Home</strong>), and adults — parents, caregivers, and staff — reflecting for themselves. Open one to read it or export a PDF. Self-reflections done <strong>in class</strong> live under <strong>Student view</strong>.",
+    es: "<h5>Informes de familias y adultos</h5>Todo lo hecho <strong>en casa</strong>: un niño que hace su autorreflexión con su familia (marcado <strong>En casa</strong>) y adultos — padres, cuidadores y personal — reflexionando para sí mismos. Abre uno para leerlo o exportar un PDF. Las autorreflexiones hechos <strong>en clase</strong> están en <strong>Vista del estudiante</strong>."
+  },
+  growth: {
+    en: "<h5>Growth — the class over time</h5>How the <strong>class average</strong> moves across <strong>Fall, Winter, and Spring</strong>. A rising line means the group is trending steadier; a dip one season often recovers the next. No individual student is shown.",
+    es: "<h5>Progreso — la clase con el tiempo</h5>Cómo se mueve el <strong>promedio de la clase</strong> entre <strong>Otoño, Invierno y Primavera</strong>. Una línea que sube significa que el grupo tiende a estar más estable; una caída en un período suele recuperarse en el siguiente. No se muestra a ningún estudiante individual."
+  },
+  export: {
+    en: "<h5>Export &amp; data</h5><strong>Your data on this device</strong> sits at the top — see how much is saved, download a full backup, or delete everything on this device (back up first; deleting can’t be undone). Below it, download <strong>class-level summaries</strong> as spreadsheet (CSV) files — group counts, band shares, and domain averages by window. No student names, individual scores, or written responses are included.",
+    es: "<h5>Exportar y datos</h5><strong>Tus datos en este dispositivo</strong> están arriba — mira cuánto hay guardado, descarga un respaldo completo o borra todo en este dispositivo (respalda primero; borrar no se puede deshacer). Debajo, descarga <strong>resúmenes de la clase</strong> como archivos de hoja de cálculo (CSV) — conteos del grupo, proporciones por banda y promedios por área según el período. No se incluyen nombres, puntajes individuales ni respuestas escritas."
+  },
+  trajectory: {
+    en: "<h5>One student over time</h5>Pick a student to trace their <strong>composite and domain scores</strong> across every window and year — a line from rupture toward repair. Switch between <strong>school, home, or both</strong> on one chart, zoom from a single day to a full school year, and copy an <strong>IEP-ready summary</strong>. It’s a growth picture for one person, never a comparison between students.",
+    es: "<h5>Un estudiante con el tiempo</h5>Elige a un estudiante para seguir sus <strong>puntajes compuesto y por dominio</strong> a través de cada ventana y año — una línea de la ruptura hacia la reparación. Cambia entre <strong>escuela, hogar o ambos</strong> en una sola gráfica, acerca desde un solo día hasta un año escolar completo, y copia un <strong>resumen listo para el IEP</strong>. Es una imagen del crecimiento de una persona, nunca una comparación entre estudiantes."
+  },
+  goals: {
+    en: "<h5>Goal Builder — relationship-centered goals</h5>Generate an <strong>annual goal plus objectives by reporting period</strong>, measured by growth and connection rather than deficit counts. Pull from a saved check-in or set it by hand, choose the competency and reporting periods, then copy it into your IEP system. A guide for growth, not a diagnosis — always review and adapt it to your student and district.",
+    es: "<h5>Constructor de metas — metas centradas en la relación</h5>Genera una <strong>meta anual más objetivos por período de reporte</strong>, medidos por crecimiento y conexión en lugar de conteos de déficit. Parte de una autorreflexión guardada o créala a mano, elige la competencia y los períodos, y cópiala en tu sistema de IEP. Una guía para crecer, no un diagnóstico — revísala y adáptala a tu estudiante y distrito."
+  },
+  align: {
+    en: "<h5>Alignment &amp; Crosswalks</h5>Printable one-page crosswalks showing how Grace maps to the standards and frameworks your school answers to — <strong>Illinois SEL, CASEL, the Framework for Teaching (Danielson), MTSS, Restorative Practices, and IDEA / special education law</strong> — plus the curriculum Crosswalk Matrix and a ready-to-adapt parental consent packet. Open any card to share with an evaluator, coach, or adoption committee. Faith-based (Divine Blueprint) crosswalks are tucked behind an optional toggle.",
+    es: "<h5>Alineación y Crosswalks</h5>Crosswalks de una página, listos para imprimir, que muestran cómo Grace se alinea con los estándares y marcos que tu escuela debe responder — <strong>SEL de Illinois, CASEL, el Marco para la Enseñanza (Danielson), MTSS, Prácticas Restaurativas y IDEA / derecho de educación especial</strong> — además de la Matriz de Crosswalk del currículo y un paquete de consentimiento parental listo para adaptar. Abre cualquier tarjeta para compartirla. Los crosswalks de fe (Divine Blueprint) están detrás de un botón opcional."
+  },
+  daily: {
+    en: "<h5>Daily Log — quick per-period notes</h5>For general-education teachers: <strong>log one period at a time</strong>, with multiple entries per day. It’s private and saved on this device, and the data flows into the <strong>Trajectory</strong> view for review over time. A steady, low-effort way to notice patterns between the seasonal self-reflections.",
+    es: "<h5>Registro diario — notas rápidas por período</h5>Para docentes de educación general: <strong>registra un período a la vez</strong>, con varias entradas por día. Es privado y se guarda en este dispositivo, y los datos fluyen a la vista de <strong>Trayectoria</strong> para revisarlos con el tiempo. Una forma constante y de bajo esfuerzo de notar patrones entre las autorreflexiones por temporada."
+  }
+};
+let tabHelpOpen = false;
+function setTabHelp(_0x8247dc) {
+  const _0x76de9a = $("#tabHelp");
+  if (_0x76de9a) {
+    const _0x30fc68 = TAB_HELP[_0x8247dc];
+    _0x76de9a.innerHTML = _0x30fc68 ? _0x30fc68[dashLang] || _0x30fc68.en : "";
+  }
+}
+function refreshAdmin() {
+  try { aogSyncStampPaint(); } catch (e) {}
+  (function () {
+    var _0x3badd3 = document.getElementById("btnDemoData");
+    if (_0x3badd3) {
+      var _0x2a9aad = localStorage.getItem(DEMO_FLAG) === "1";
+      _0x3badd3.textContent = _0x2a9aad ? "Clear demo data" : "Try demo data";
+      _0x3badd3.style.background = _0x2a9aad ? "transparent" : "var(--gold)";
+      _0x3badd3.style.color = "var(--gold)";
+      if (!_0x2a9aad) {
+        _0x3badd3.style.color = "var(--navy)";
+      }
+    }
+  })();
+  renderSyncStatus();
+  populateFilters();
+  renderOverview();
+  renderStudents();
+  renderHome();
+  if (typeof renderFamilyAdults === "function") renderFamilyAdults();
+  renderGrowth();
+  if (typeof aogRenderTrajectory === "function") aogRenderTrajectory();
+  if (typeof aogGoalPopulate === "function") aogGoalPopulate();
+  if (typeof aogRenderDaily === "function") aogRenderDaily();
+  if (typeof aogRenderIep === "function") aogRenderIep();
+  if (typeof aogRenderCrosswalk === "function") aogRenderCrosswalk();
+}
+/* P3 (2026-06-05): overview chart view ('bar' | 'radar' | 'trend'). */
+var aogViewType = "trend";
+function aogRadarSvg(_a, _b, _c) {
+  // DIALS (2026-06): replaced the 3-axis radar with one donut gauge per domain,
+  // arc colored by band (green 75+, amber 50-74, red <50). Function name kept so
+  // both callers (hero demo + dashboard overview) and the "radar" view state work unchanged.
+  var clamp = function (v) { return Math.max(0, Math.min(100, v || 0)); };
+  var bandColor = function (v) { return v >= 75 ? "var(--green)" : v >= 50 ? "var(--amber)" : "var(--red)"; };
+  var doms = [
+    { k: "A", v: clamp(_a), name: DT("Regulation", "Regulaci\u00f3n") },
+    { k: "B", v: clamp(_b), name: DT("Compassion", "Compasi\u00f3n") },
+    { k: "C", v: clamp(_c), name: DT("Social", "Social") }
+  ];
+  var r = 33, sw = 9, cy = 50, C = 2 * Math.PI * r;
+  var g = "";
+  doms.forEach(function (d, i) {
+    var cx = 50 + i * 100;
+    var val = C * d.v / 100;
+    g += "<g>"
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="var(--rule)" stroke-width="' + sw + '"/>'
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + bandColor(d.v) + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-dasharray="' + val.toFixed(1) + " " + (C - val).toFixed(1) + '" transform="rotate(-90 ' + cx + " " + cy + ')"/>'
+      + '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="central" font-size="21" font-weight="700" fill="var(--ink)">' + Math.round(d.v) + "</text>"
+      + '<text x="' + cx + '" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink-soft)">' + d.k + " \u00b7 " + d.name + "</text>"
+      + "</g>";
+  });
+  return '<svg viewBox="0 0 300 120" width="100%" style="max-width:340px;display:block;margin:6px auto 2px;" role="img" aria-label="Domain score dials">' + g + "</svg>";
+}
+function aogTrendGrid(_records) {
+  var order = ["Fall", "Winter", "Spring", "Summer"];
+  var byWin = {};
+  _records.forEach(function (r) {
+    var w = r.window || "—";
+    byWin[w] = byWin[w] || { g: 0, a: 0, d: 0, n: 0 };
+    if (r.tier === "Low Risk") byWin[w].g++; else if (r.tier === "Some Risk") byWin[w].a++; else if (r.tier === "High Risk") byWin[w].d++;
+    byWin[w].n++;
+  });
+  var wins = order.filter(function (w) { return byWin[w]; });
+  Object.keys(byWin).forEach(function (w) { if (order.indexOf(w) < 0) wins.push(w); });
+  if (!wins.length) return '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + "</div>";
+  var rows = wins.map(function (w) {
+    var c = byWin[w], seg = "";
+    if (c.g > 0) seg += '<div class="dist-segment dist-green" style="flex:' + c.g + '" title="' + (typeof tierLabel==="function"?tierLabel("Low Risk"):DT("Keep noticing","Seguir observando")) + '">' + c.g + "</div>";
+    if (c.a > 0) seg += '<div class="dist-segment dist-amber" style="flex:' + c.a + '" title="' + (typeof tierLabel==="function"?tierLabel("Some Risk"):DT("Worth a conversation","Vale una conversación")) + '">' + c.a + "</div>";
+    if (c.d > 0) seg += '<div class="dist-segment dist-red" style="flex:' + c.d + '" title="' + (typeof tierLabel==="function"?tierLabel("High Risk"):DT("Adult follow-up","Seguimiento de un adulto")) + '">' + c.d + "</div>";
+    return '<div class="trend-row"><div class="trend-win">' + escapeHtml(winLabel(w) || w) + '</div><div class="trend-bar">' + seg + '</div><div class="trend-n">' + c.n + "</div></div>";
+  }).join("");
+  return '<div class="trend-grid">' + rows + "</div>";
+}
+var aogDomView = "bars";
+function aogColumnChart(_records) {
+  var order = ["Fall", "Winter", "Spring", "Summer"];
+  var byWin = {};
+  _records.forEach(function (r) {
+    var w = r.window || "—";
+    byWin[w] = byWin[w] || { g: 0, a: 0, d: 0, n: 0 };
+    if (r.tier === "Low Risk") byWin[w].g++; else if (r.tier === "Some Risk") byWin[w].a++; else if (r.tier === "High Risk") byWin[w].d++;
+    byWin[w].n++;
+  });
+  var wins = order.filter(function (w) { return byWin[w]; });
+  Object.keys(byWin).forEach(function (w) { if (order.indexOf(w) < 0) wins.push(w); });
+  if (!wins.length) return '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + "</div>";
+  var W = 680, H = 240, ml = 30, mr = 16, mt = 16, mb = 40;
+  var maxN = 0; wins.forEach(function (w) { if (byWin[w].n > maxN) maxN = byWin[w].n; });
+  var step = maxN <= 4 ? 1 : maxN <= 8 ? 2 : Math.ceil(maxN / 5);
+  var top = Math.ceil(maxN / step) * step; if (top < 1) top = 1;
+  function Y(v) { return mt + (H - mt - mb) * (1 - v / top); }
+  var plotW = W - ml - mr, n = wins.length, slot = plotW / n, bw = Math.min(64, slot * 0.56);
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + DT("Counts by window", "Conteos por período") + '">';
+  for (var g = 0; g <= top; g += step) { var gy = Y(g);
+    svg += '<line x1="' + ml + '" y1="' + gy + '" x2="' + (W - mr) + '" y2="' + gy + '" stroke="var(--rule)" stroke-width="1"/>';
+    svg += '<text x="' + (ml - 6) + '" y="' + (gy + 3) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="var(--ink-faint)">' + g + '</text>';
+  }
+  wins.forEach(function (w, i) {
+    var c = byWin[w], cx = ml + slot * i + slot / 2, x = cx - bw / 2, acc = 0;
+    function seg(val, color, title) {
+      if (val <= 0) return "";
+      var y0 = Y(acc), y1 = Y(acc + val); acc += val; var h = y0 - y1;
+      var s = '<rect x="' + x.toFixed(1) + '" y="' + y1.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="' + color + '"><title>' + title + ': ' + val + '</title></rect>';
+      if (h >= 15) s += '<text x="' + cx.toFixed(1) + '" y="' + ((y0 + y1) / 2 + 4).toFixed(1) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#fff">' + val + '</text>';
+      return s;
+    }
+    svg += seg(c.g, "var(--green)", (typeof tierLabel==="function"?tierLabel("Low Risk"):DT("Keep noticing","Seguir observando")));
+    svg += seg(c.a, "var(--amber)", (typeof tierLabel==="function"?tierLabel("Some Risk"):DT("Worth a conversation","Vale una conversación")));
+    svg += seg(c.d, "var(--red)", (typeof tierLabel==="function"?tierLabel("High Risk"):DT("Adult follow-up","Seguimiento de un adulto")));
+    svg += '<text x="' + cx.toFixed(1) + '" y="' + (H - mb + 17) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="var(--ink-soft)">' + escapeHtml(w) + '</text>';
+  });
+  svg += '<line x1="' + ml + '" y1="' + Y(0) + '" x2="' + (W - mr) + '" y2="' + Y(0) + '" stroke="var(--rule)" stroke-width="1.5"/>';
+  svg += "</svg>";
+  return svg;
+}
+function aogDomainColumns(_a, _b, _c) {
+  var data = [{ k: "A", v: _a }, { k: "B", v: _b }, { k: "C", v: _c }];
+  var W = 680, H = 240, ml = 30, mr = 16, mt = 16, mb = 40;
+  function Y(v) { return mt + (H - mt - mb) * (1 - v / 100); }
+  var bands = [{ lo: 75, hi: 100, c: "var(--green-bg)" }, { lo: 50, hi: 75, c: "var(--amber-bg)" }, { lo: 0, hi: 50, c: "var(--red-bg)" }];
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + DT("Domain averages as columns", "Promedios por dominio como columnas") + '">';
+  bands.forEach(function (bd) { var y0 = Y(bd.hi), y1 = Y(bd.lo); svg += '<rect x="' + ml + '" y="' + y0 + '" width="' + (W - ml - mr) + '" height="' + (y1 - y0) + '" fill="' + bd.c + '" opacity="0.55"/>'; });
+  [0, 25, 50, 75, 100].forEach(function (tk) { var gy = Y(tk); svg += '<line x1="' + ml + '" y1="' + gy + '" x2="' + (W - mr) + '" y2="' + gy + '" stroke="var(--rule)" stroke-width="1"/><text x="' + (ml - 6) + '" y="' + (gy + 3) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="var(--ink-faint)">' + tk + '</text>'; });
+  var plotW = W - ml - mr, slot = plotW / 3, bw = Math.min(96, slot * 0.46);
+  data.forEach(function (d, i) {
+    var v = Math.max(0, Math.min(100, d.v || 0));
+    var col = v >= 75 ? "var(--green)" : v >= 50 ? "var(--amber)" : "var(--red)";
+    var cx = ml + slot * i + slot / 2, x = cx - bw / 2, y = Y(v), h = Y(0) - Y(v);
+    svg += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3" fill="' + col + '"/>';
+    svg += '<text x="' + cx.toFixed(1) + '" y="' + (y - 7).toFixed(1) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="15" font-weight="800" fill="' + col + '">' + v.toFixed(0) + '</text>';
+    svg += '<text x="' + cx.toFixed(1) + '" y="' + (H - mb + 19) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="var(--ink-soft)">' + d.k + '</text>';
+  });
+  svg += "</svg>";
+  return svg;
+}
+/* P1 (2026-06-05): hero demo preview — fully isolated. Uses a fixed in-memory
+   sample set; never reads or writes localStorage or real self-reflection records, and
+   never touches the live dashboard's state. Reuses the P3 radar/trend builders. */
+var aogHeroView = "trend";
+var aogHeroScenarioIdx = 0;
+function aogHeroScenarios() {
+  // Build the trend records from per-window [name, green, amber, red] counts.
+  var build = function (wins) {
+    var recs = [];
+    wins.forEach(function (w) {
+      for (var i = 0; i < w[1]; i++) recs.push({ window: w[0], tier: "Low Risk" });
+      for (var j = 0; j < w[2]; j++) recs.push({ window: w[0], tier: "Some Risk" });
+      for (var k = 0; k < w[3]; k++) recs.push({ window: w[0], tier: "High Risk" });
+    });
+    var g = 0, a = 0, d = 0;
+    recs.forEach(function (r) { if (r.tier === "Low Risk") g++; else if (r.tier === "Some Risk") a++; else d++; });
+    return { records: recs, total: recs.length, green: g, amber: a, red: d };
+  };
+  // Three classes whose different numbers lead to a different "teach next":
+  //  - Rivera: lowest domain B (Self-Compassion)   - steady, mostly green
+  //  - Ellis:  lowest domain A (Regulation)         - more struggle, lots of amber/red
+  //  - Park:   lowest domain C (Social)             - strong class, social is the gap
+  var s1 = build([["Fall", 28, 18, 8], ["Winter", 34, 12, 4], ["Spring", 36, 5, 1]]);
+  s1.name = DT("Ms. Rivera \u00b7 Grade 4", "Sra. Rivera \u00b7 4.\u00ba grado"); s1.avg = 71; s1.noTrust = 9;  s1.A = 68; s1.B = 64; s1.C = 76; s1.band = "3\u20135";
+  var s2 = build([["Fall", 16, 20, 11], ["Winter", 20, 18, 8], ["Spring", 24, 13, 5]]);
+  s2.name = DT("Mr. Ellis \u00b7 Grade 7", "Sr. Ellis \u00b7 7.\u00ba grado");   s2.avg = 63; s2.noTrust = 15; s2.A = 56; s2.B = 70; s2.C = 67; s2.band = "6\u20138";
+  var s3 = build([["Fall", 24, 7, 2], ["Winter", 27, 5, 1], ["Spring", 29, 3, 1]]);
+  s3.name = DT("Ms. Park \u00b7 Grade 2", "Sra. Park \u00b7 2.\u00ba grado");    s3.avg = 80; s3.noTrust = 3;  s3.A = 82; s3.B = 84; s3.C = 70; s3.band = "K\u20132";
+  return [s1, s2, s3];
+}
+function aogHeroDemoData() {
+  var all = aogHeroScenarios();
+  return all[aogHeroScenarioIdx % all.length];
+}
+// TEACH-NEXT (2026-06): single source of truth for the student-facing domain -> book/lesson
+// recommendation. Reused by renderConversationGuide (the _0x1bcbee map), the hero demo, and
+// the dashboard overview so the "what to teach next" language stays consistent everywhere.
+function aogBandBook(band) {
+  if (!band) return null;
+  var key = String(band).replace(/\u2013/g, "-").replace(/\s+/g, "").toUpperCase();
+  var m = {
+    "K-2":   { n: "Book 1", t: "The Year We Met Sammy" },
+    "3-5":   { n: "Book 2", t: "The Year of the Inner Critic" },
+    "6-8":   { n: "Book 3", t: "The Year of Two Voices" },
+    "9-10":  { n: "Book 4", t: "The Year We Looked Up" },
+    "11-12": { n: "Book 5", t: "The Year We Walked Out" }
+  };
+  return m[key] || null;
+}
+function aogGradeToBand(grade) {
+  if (grade == null) return null;
+  var g = String(grade).trim().toUpperCase();
+  if (g === "K" || g === "PK" || g === "TK" || g === "KK" || g.indexOf("KIND") === 0) return "K\u20132";
+  var n = parseInt(g, 10);
+  if (isNaN(n)) return null;
+  if (n <= 2) return "K\u20132";
+  if (n <= 5) return "3\u20135";
+  if (n <= 8) return "6\u20138";
+  if (n <= 10) return "9\u201310";
+  return "11\u201312";
+}
+function aogTeachNextStudent(domainKey, band) {
+  var book = aogBandBook(band);
+  var domEN = { A: "Emotional Regulation & Well-Being", B: "Self-Compassion & Growth Mindset", C: "Social Competency & Repair" };
+  var domES = { A: "Regulaci\u00f3n emocional y bienestar", B: "Autocompasi\u00f3n y mentalidad de crecimiento", C: "Competencia social y reparaci\u00f3n" };
+  var focusEN = { A: "naming feelings, the Window of Tolerance, and a calm-down toolkit the class can reach for when emotions run big", B: "the inner-critic / kind-coach work and steady self-compassion practice", C: "perspective-taking, repairing after conflict, and telling the difference between difficult and unsafe" };
+  var focusES = { A: "nombrar las emociones, la Window of Tolerance y un kit de calma al que la clase pueda recurrir cuando las emociones sean grandes", B: "el trabajo del cr\u00edtico interior / kind-coach y una pr\u00e1ctica constante de autocompasi\u00f3n", C: "la toma de perspectiva, reparar despu\u00e9s de un conflicto y distinguir lo dif\u00edcil de lo inseguro" };
+  var en, es;
+  if (book) {
+    en = "<strong>Lowest domain: " + domEN[domainKey] + ".</strong> For this grade band, that work lives in " + book.n + " (" + book.t + ") \u2014 focus on " + focusEN[domainKey] + ".";
+    es = "<strong>Dominio m\u00e1s bajo: " + domES[domainKey] + ".</strong> Para esta banda de grado, ese trabajo est\u00e1 en el " + book.n.replace("Book", "Libro") + " (" + book.t + ") \u2014 enf\u00f3quense en " + focusES[domainKey] + ".";
+  } else {
+    en = "<strong>Lowest domain: " + domEN[domainKey] + ".</strong> Start in the volume for this class\u2019s grade band \u2014 focus on " + focusEN[domainKey] + ".";
+    es = "<strong>Dominio m\u00e1s bajo: " + domES[domainKey] + ".</strong> Comiencen con el volumen de la banda de grado de esta clase \u2014 enf\u00f3quense en " + focusES[domainKey] + ".";
+  }
+  return DT(en, es);
+}
+/* aogTeachNextStudentMap() was DELETED 2026-08-26. It was assigned once and
+   never read, and its text started every band on Book 2 -- including 6-8, for
+   whom the Kind Coach / Grumpy Gus drawing activity is a 3-5 resource. Use
+   aogTeachNextStudent(domainKey, band), which resolves the book from the band. */
+// Returns "A" | "B" | "C" for the lowest of three domain averages (ties resolve A < B < C).
+function aogLowestDomainKey(a, b, c) {
+  var doms = { A: a || 0, B: b || 0, C: c || 0 };
+  return Object.keys(doms).sort(function (x, y) { return doms[x] - doms[y]; })[0];
+}
+function renderHeroDemo() {
+  var bar = document.getElementById("hdBar");
+  var view = document.getElementById("hdView");
+  if (!bar || !view) return;
+  var kpis = document.getElementById("hdKpis");
+  var legend = document.getElementById("hdLegend");
+  var d = aogHeroDemoData();
+  var scn = document.getElementById("hdScn");
+  if (scn) {
+    var _all = aogHeroScenarios();
+    scn.innerHTML = '<span class="hd-scn-label">' + DT("Try a class", "Prueba una clase") + '</span>' + _all.map(function (sc, i) {
+      return '<button type="button" class="hd-scn-btn' + (i === aogHeroScenarioIdx ? ' active' : '') + '" onclick="aogHeroScenarioIdx=' + i + ';if(typeof aogDemoEngaged===\'function\')aogDemoEngaged();renderHeroDemo();">' + sc.name + '</button>';
+    }).join("");
+  }
+  if (kpis) {
+    kpis.innerHTML = '<div class="hd-kpi"><div class="hd-k-l">' + DT("Checked in", "Hicieron el self-reflection") + '</div><div class="hd-k-v">' + d.total + "</div></div>" + '<div class="hd-kpi"><div class="hd-k-l">' + DT("Average score", "Puntaje promedio") + '</div><div class="hd-k-v">' + d.avg + "<span>/100</span></div></div>" + '<div class="hd-kpi"><div class="hd-k-l">' + DT("No trusted adult", "Sin adulto de confianza") + '</div><div class="hd-k-v">' + d.noTrust + "</div></div>";
+  }
+  if (aogHeroView === "radar") {
+    bar.style.display = "none"; view.style.display = ""; view.innerHTML = aogRadarSvg(d.A, d.B, d.C);
+    if (legend) legend.style.display = "";
+  } else if (aogHeroView === "trend") {
+    bar.style.display = "none"; view.style.display = ""; view.innerHTML = aogTrendGrid(d.records);
+    if (legend) legend.style.display = "";
+  } else {
+    bar.innerHTML = '<div class="dist-segment dist-green" style="flex:' + d.green + '" title="' + (typeof tierLabel==="function"?tierLabel("Low Risk"):DT("Keep noticing","Seguir observando")) + '">' + d.green + "</div>" + '<div class="dist-segment dist-amber" style="flex:' + d.amber + '" title="' + (typeof tierLabel==="function"?tierLabel("Some Risk"):DT("Worth a conversation","Vale una conversación")) + '">' + d.amber + "</div>" + '<div class="dist-segment dist-red" style="flex:' + d.red + '" title="' + (typeof tierLabel==="function"?tierLabel("High Risk"):DT("Adult follow-up","Seguimiento de un adulto")) + '">' + d.red + "</div>";
+    bar.style.display = ""; view.style.display = "none"; view.innerHTML = "";
+    if (legend) legend.style.display = "";
+  }
+  // TEACH-NEXT (2026-06): surface what this sample class should be taught next (lowest domain).
+  var teach = document.getElementById("hdTeach");
+  if (teach) {
+    var lowKey = aogLowestDomainKey(d.A, d.B, d.C);
+    teach.innerHTML = '<div class="hd-teach-h">' + DT("Recommended focus", "Enfoque recomendado") + "</div>" + '<div class="hd-teach-b">' + aogTeachNextStudent(lowKey, d.band) + "</div>" + '<a class="hd-teach-link" href="#" onclick="aogOpenResindex(\'' + lowKey + '\');return false;">' + DT("View resources", "Ver recursos") + " &rarr;</a>";
+    aogStabilizeHeroTeach(teach);
+  }
+  if (typeof aogAnnotateTips === "function") { try { aogAnnotateTips(); } catch (_e) {} }
+}
+/* LAYOUT STABILITY (2026-06): each sample class has a different-length "teach next"
+   blurb, which changed the card height when switching classes. Reserve the tallest
+   variant's height so the card never shifts. Re-measured on every render, so it stays
+   correct across viewport widths and the EN/ES toggle. */
+function aogStabilizeHeroTeach(teach) {
+  teach = teach || document.getElementById("hdTeach");
+  if (!teach) return;
+  var w = teach.offsetWidth;
+  if (!w) return; // not visible yet; will stabilize on first visible render
+  var probe = document.createElement("div");
+  probe.className = teach.className;
+  probe.style.cssText = "position:absolute;left:-9999px;top:0;visibility:hidden;box-sizing:border-box;min-height:0;width:" + w + "px;";
+  (teach.parentNode || document.body).appendChild(probe);
+  var max = 0, scns = aogHeroScenarios(), i, sc, lowKey;
+  for (i = 0; i < scns.length; i++) {
+    sc = scns[i];
+    lowKey = aogLowestDomainKey(sc.A, sc.B, sc.C);
+    probe.innerHTML = '<div class="hd-teach-h">' + DT("Recommended focus", "Enfoque recomendado") + "</div>" +
+      '<div class="hd-teach-b">' + aogTeachNextStudent(lowKey, sc.band) + "</div>" +
+      '<a class="hd-teach-link" href="#">' + DT("View resources", "Ver recursos") + " &rarr;</a>";
+    if (probe.offsetHeight > max) max = probe.offsetHeight;
+  }
+  if (probe.parentNode) probe.parentNode.removeChild(probe);
+  if (max > 0) teach.style.minHeight = max + "px";
+}
+function renderOverview() {
+  const _0xea7412 = getAllRecords();
+  const _0x21f93f = applyFilters(_0xea7412, {
+    window: $("#filterWindow") ? $("#filterWindow").value : "",
+    grade: $("#filterGrade") ? $("#filterGrade").value : "",
+    mode: $("#filterMode") ? $("#filterMode").value : ""
+  });
+  const _0x5e01d8 = _0x21f93f.length;
+  try {
+    var _ovTrulyEmpty = _0xea7412.length === 0;
+    var _ovP = document.getElementById("panel-overview");
+    if (_ovP) _ovP.classList.toggle("ov-noData", _ovTrulyEmpty);
+    var _ovE = document.getElementById("ovEmpty");
+    if (_ovE) _ovE.style.display = _ovTrulyEmpty ? "" : "none";
+  } catch (_ovErr) {}
+  const _0xc71dcc = {
+    "Low Risk": 0,
+    "Some Risk": 0,
+    "High Risk": 0
+  };
+  let _0x41f97b = 0;
+  _0x21f93f.forEach(_0x4ee1cf => {
+    _0xc71dcc[_0x4ee1cf.tier]++;
+    if (_0x4ee1cf.trustedAdultFlag) {
+      _0x41f97b++;
+    }
+  });
+  const _0x2c6b81 = _0x5e01d8 ? _0x21f93f.reduce((_0x23059d, _0x59573d) => _0x23059d + (_0x59573d.normComposite || 0), 0) / _0x5e01d8 : 0;
+  const _0x379e0a = _0xc71dcc["Low Risk"];
+  const _0x1b8b05 = _0xc71dcc["Some Risk"];
+  const _0xa9c713 = _0xc71dcc["High Risk"];
+  let _0x139ba8;
+  if (_0x5e01d8 === 0) {
+    _0x139ba8 = DT("No self-reflections yet for this view.", "Aún no hay self-reflections para esta vista.");
+  } else {
+    const _0x43248f = _0x5e01d8 === 1 ? DT("person", "persona") : DT("people", "personas");
+    const _0x14013f = $("#filterWindow").value;
+    const _0x5924f8 = _0x14013f ? DT(" in ", " en ") + winLabel(_0x14013f) : "";
+    _0x139ba8 = "<strong>" + _0x5e01d8 + "</strong> " + _0x43248f + " " + DT("checked in", "hicieron el self-reflection") + _0x5924f8 + ". " + (_0x379e0a >= Math.ceil(_0x5e01d8 / 2) ? DT("Most are doing well", "La mayoría está bien") : DT("Results are mixed across the group", "Los resultados son variados en el grupo"));
+    if (_0x1b8b05 + _0xa9c713 > 0) {
+      _0x139ba8 += " — " + (_0x1b8b05 + _0xa9c713) + DT(" may benefit from a self-reflection conversation", " podrían beneficiarse de una conversación de autorreflexión");
+    }
+    _0x139ba8 += ".";
+    if (_0x41f97b > 0) {
+      _0x139ba8 += " " + _0x41f97b + " " + (_0x41f97b === 1 ? DT("person", "persona") : DT("people", "personas")) + DT(" named no trusted adult — a good place to start.", " no nombraron a ningún adulto de confianza — un buen lugar para empezar.");
+    }
+  }
+  if ($("#ovSummary")) {
+    $("#ovSummary").innerHTML = _0x139ba8;
+  }
+  var _ovAvg = _0x5e01d8 ? _0x2c6b81 : null;
+  var _ovAvgC = _ovAvg == null ? "var(--ink)" : (_ovAvg >= 75 ? "var(--green)" : _ovAvg >= 50 ? "var(--amber)" : "var(--red)");
+  var _ovAvgSub = _ovAvg == null ? DT("out of 100", "de 100") : (_ovAvg >= 75 ? DT("Keep noticing · out of 100", "Seguir observando · de 100") : _ovAvg >= 50 ? DT("Worth a conversation · out of 100", "Vale una conversación · de 100") : DT("Adult follow-up · out of 100", "Seguimiento de un adulto · de 100"));
+  var _ovTaC = _0x41f97b > 0 ? "var(--red)" : "var(--green)";
+  $("#kpiGrid").innerHTML = "<div class=\"kpi\"><div class=\"kpi-accent accent-navy\"></div><div class=\"kpi-label\">" + DT("Checked in", "Hicieron el self-reflection") + "</div><div class=\"kpi-value\">" + _0x5e01d8 + "</div><div class=\"kpi-sub\">" + ($("#filterWindow").value ? winLabel($("#filterWindow").value) : DT("All windows", "Todos los períodos")) + "</div></div><div class=\"kpi\"><div class=\"kpi-accent accent-navy\"></div><div class=\"kpi-label\">" + DT("Average score", "Puntaje promedio") + "</div><div class=\"kpi-value\" style=\"color:" + _ovAvgC + "\">" + (_0x5e01d8 ? _0x2c6b81.toFixed(0) : "—") + "</div><div class=\"kpi-sub\">" + _ovAvgSub + "</div></div><div class=\"kpi\"><div class=\"kpi-accent accent-gold\"></div><div class=\"kpi-label\">" + DT("No trusted adult", "Sin adulto de confianza") + "</div><div class=\"kpi-value\" style=\"color:" + _ovTaC + "\">" + _0x41f97b + "</div><div class=\"kpi-sub\">" + DT("named no one they trust", "no nombraron a nadie de confianza") + "</div></div>";
+  const _0x5b79f9 = $("#distBar");
+  if (_0x5e01d8 === 0) {
+    _0x5b79f9.innerHTML = "<div class=\"dist-segment\" style=\"flex:1;background:var(--rule-soft);color:var(--ink-faint);\">" + DT("No data", "Sin datos") + "</div>";
+  } else {
+    let _0x3ffa56 = "";
+    if (_0x379e0a > 0) {
+      _0x3ffa56 += "<div class=\"dist-segment dist-green\" style=\"flex:" + _0x379e0a + "\" title=\"" + (typeof tierLabel==="function"?tierLabel("Low Risk"):DT("Keep noticing","Seguir observando")) + "\">" + _0x379e0a + "</div>";
+    }
+    if (_0x1b8b05 > 0) {
+      _0x3ffa56 += "<div class=\"dist-segment dist-amber\" style=\"flex:" + _0x1b8b05 + "\" title=\"" + (typeof tierLabel==="function"?tierLabel("Some Risk"):DT("Worth a conversation","Vale una conversación")) + "\">" + _0x1b8b05 + "</div>";
+    }
+    if (_0xa9c713 > 0) {
+      _0x3ffa56 += "<div class=\"dist-segment dist-red\" style=\"flex:" + _0xa9c713 + "\" title=\"" + (typeof tierLabel==="function"?tierLabel("High Risk"):DT("Adult follow-up","Seguimiento de un adulto")) + "\">" + _0xa9c713 + "</div>";
+    }
+    _0x5b79f9.innerHTML = _0x3ffa56;
+  }
+  const _0x10c6c6 = _0x5e01d8 ? _0x21f93f.reduce((_0x2d50e5, _0x2120fb) => _0x2d50e5 + (_0x2120fb.normA || 0), 0) / _0x5e01d8 : 0;
+  const _0xa951a1 = _0x5e01d8 ? _0x21f93f.reduce((_0x5efabe, _0x3d3530) => _0x5efabe + (_0x3d3530.normB || 0), 0) / _0x5e01d8 : 0;
+  const _0x29fef6 = _0x5e01d8 ? _0x21f93f.reduce((_0x89c64f, _0x1d628f) => _0x89c64f + (_0x1d628f.normC || 0), 0) / _0x5e01d8 : 0;
+  var _domV = typeof aogDomView !== "undefined" ? aogDomView : "bars";
+  if (_0x5e01d8 && _domV === "column") {
+    $("#domainSummary").innerHTML = aogDomainColumns(_0x10c6c6, _0xa951a1, _0x29fef6);
+  } else {
+    $("#domainSummary").innerHTML = domainCard("A · " + DT("Emotional Regulation & Well-Being", "Regulación emocional y bienestar"), _0x10c6c6) + domainCard("B · " + DT("Self-Compassion & Growth Mindset", "Autocompasión y mentalidad de crecimiento"), _0xa951a1) + domainCard("C · " + DT("Social Competency & Repair", "Competencia social y reparación"), _0x29fef6);
+  }
+  // TEACH-NEXT (2026-06): class-level "what to teach next" for the real dashboard (lowest domain).
+  var _ovTeach = $("#ovTeach");
+  if (_ovTeach) {
+    if (_0x5e01d8 === 0) {
+      _ovTeach.style.display = "none";
+      _ovTeach.innerHTML = "";
+    } else {
+      /* ONE DEFINITION OF "THE CLASS" (2026-08-27).
+         Recommended focus used to run on the unfiltered record set, which
+         includes family reflections taken at home and adult staff
+         reflections, across every window. Today's Picture narrows to
+         school + student and to the most recent reflection window. The two
+         cards sit on the same screen and both name "the lowest domain", so
+         they must count the same thing or they contradict each other — and
+         they did. This block now uses the Today's Picture definition.
+         The "How everyone's doing" panel above is deliberately left alone:
+         it says everyone and it means everyone. */
+      var _ovCls = _0x21f93f.filter(function (r) {
+        return r && r.context !== "home" && r.population !== "adult" && r.normComposite != null;
+      });
+      var _ovNew = _ovCls.slice().sort(function (a, b) {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      })[0];
+      var _ovWin = _ovNew && _ovNew.window;
+      var _ovSet = _ovWin ? _ovCls.filter(function (r) { return r.window === _ovWin; }) : _ovCls;
+      var _ovMean = function (k) {
+        var v = _ovSet.map(function (r) { return r[k]; }).filter(function (x) { return x != null && !isNaN(x); });
+        return v.length ? v.reduce(function (a, b) { return a + b; }, 0) / v.length : null;
+      };
+      var _mA = _ovMean("normA"), _mB = _ovMean("normB"), _mC = _ovMean("normC");
+      if (!_ovSet.length || _mA == null || _mB == null || _mC == null) {
+        /* Nothing from the class itself to recommend from. Say nothing rather
+           than recommend a lesson off adults' and families' answers. */
+        _ovTeach.style.display = "none";
+        _ovTeach.innerHTML = "";
+      } else {
+        var _ovLow = aogLowestDomainKey(_mA, _mB, _mC);
+        var _ovRank = [_mA, _mB, _mC].slice().sort(function (a, b) { return a - b; });
+        /* Under a point apart is a tie, not a finding. Naming a winner there
+           presents an alphabetical tie-break as a recommendation. */
+        var _ovTie = (_ovRank[1] - _ovRank[0]) < 1;
+        var _ovBand = null;
+        try {
+          var _ovFg = $("#filterGrade") ? $("#filterGrade").value : "";
+          if (_ovFg) { _ovBand = aogGradeToBand(_ovFg); }
+          else {
+            var _ovB = {};
+            _ovSet.forEach(function (r) { var b = aogGradeToBand(r.grade); if (b) _ovB[b] = (_ovB[b] || 0) + 1; });
+            var _ovK = Object.keys(_ovB);
+            if (_ovK.length === 1) _ovBand = _ovK[0];
+          }
+        } catch (e) {}
+        var _ovScope = _ovSet.length + " " +
+          (_ovSet.length === 1
+            ? DT("student reflection", "autorreflexi\u00f3n de estudiante")
+            : DT("student reflections", "autorreflexiones de estudiantes")) +
+          (_ovWin ? (" \u00b7 " + (typeof winLabel === "function" ? winLabel(_ovWin) : _ovWin)) : "");
+        _ovTeach.innerHTML =
+          "<div class=\"ov-teach-h\">" + DT("Recommended focus", "Enfoque recomendado") + "</div>" +
+          (_ovTie
+            ? "<div class=\"ov-teach-b\">" + DT(
+                "The three domains are within a point of each other, so no single one stands out this window. Any of them is a reasonable place to start.",
+                "Los tres dominios est\u00e1n a menos de un punto entre s\u00ed, as\u00ed que ninguno destaca en esta ventana. Cualquiera es un buen punto de partida.") + "</div>"
+            : "<div class=\"ov-teach-b\">" + aogTeachNextStudent(_ovLow, _ovBand) + "</div>") +
+          "<div class=\"ov-teach-scope\">" + DT("From ", "De ") + _ovScope + "</div>" +
+          "<a class=\"ov-teach-link\" href=\"#\" onclick=\"aogOpenResindex('" + _ovLow + "');return false;\">" +
+          DT("View resources", "Ver recursos") + " &rarr;</a>";
+        _ovTeach.style.display = "";
+      }
+    }
+  }
+  (function () {
+    var _vt = typeof aogViewType !== "undefined" ? aogViewType : "bar";
+    var _bar = document.getElementById("distBar");
+    var _view = document.getElementById("distView");
+    var _legend = document.getElementById("distLegend");
+    var _sub = document.getElementById("ovViewSub");
+    if (!_bar || !_view) return;
+    var _empty = '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + "</div>";
+    if (_vt === "radar") {
+      _bar.style.display = "none";
+      _view.style.display = "";
+      _view.innerHTML = _0x5e01d8 ? aogRadarSvg(_0x10c6c6, _0xa951a1, _0x29fef6) : _empty;
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("Average score in each of the three domains (0–100).", "Puntaje promedio en cada uno de los tres dominios (0–100).");
+    } else if (_vt === "trend") {
+      _bar.style.display = "none";
+      _view.style.display = "";
+      _view.innerHTML = _0x5e01d8 ? aogTrendGrid(_0x21f93f) : _empty;
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("How the group’s distribution shifts across windows.", "Cómo cambia la distribución del grupo entre períodos.");
+    } else if (_vt === "column") {
+      _bar.style.display = "none";
+      _view.style.display = "";
+      _view.innerHTML = _0x5e01d8 ? aogColumnChart(_0x21f93f) : _empty;
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("Counts in each window, as stacked columns.", "Conteos en cada período, como columnas apiladas.");
+    } else {
+      _bar.style.display = "";
+      _view.style.display = "none";
+      _view.innerHTML = "";
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("Everyone grouped by overall score (0–100).", "Todos agrupados por puntaje general (0–100).");
+    }
+  })();
+  if (typeof aogAnnotateTips === "function") { try { aogAnnotateTips(); } catch (_e) {} }
+}
+function domainCard(_0x4eb3ea, _0x5c261b) {
+  var v = Math.max(0, Math.min(100, _0x5c261b || 0));
+  var c, bg, lbl;
+  if (v >= 75) { c = "var(--green)"; bg = "var(--green-bg)"; lbl = aogBandLabel(v); }
+  else if (v >= 50) { c = "var(--amber)"; bg = "var(--amber-bg)"; lbl = aogBandLabel(v); }
+  else { c = "var(--red)"; bg = "var(--red-bg)"; lbl = aogBandLabel(v); }
+  return "<div class=\"domain-card dom-pop\" style=\"border-left:5px solid " + c + "\">"
+    + "<div class=\"domain-card-head\"><div class=\"domain-card-title\">" + escapeHtml(_0x4eb3ea) + "</div>"
+    + "<div class=\"domain-card-score\" style=\"color:" + c + "\">" + v.toFixed(0) + "<span> / 100</span></div></div>"
+    + "<div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + v.toFixed(0) + "%;background:" + c + "\"></div></div>"
+    + "<span class=\"dom-band\" style=\"background:" + bg + ";color:" + c + "\">" + lbl + "</span>"
+    + "</div>";
+}
+let studentSort = {
+  key: "date",
+  dir: "desc"
+};
+function sortStudents(_0x2a2489) {
+  if (studentSort.key === _0x2a2489) {
+    studentSort.dir = studentSort.dir === "asc" ? "desc" : "asc";
+  } else {
+    studentSort = {
+      key: _0x2a2489,
+      dir: "asc"
+    };
+  }
+  renderStudents();
+}
+function studentSortCmp(_0xf2218c, _0x2374dd) {
+  const _0x1345d3 = studentSort.dir === "desc" ? -1 : 1;
+  const _0x39131e = {
+    Fall: 0,
+    Winter: 1,
+    Spring: 2,
+    Summer: 3
+  };
+  const _0x2b400e = {
+    "High Risk": 0,
+    "Some Risk": 1,
+    "Low Risk": 2
+  };
+  let _0x579d3d;
+  let _0x255553;
+  switch (studentSort.key) {
+    case "name":
+      return _0x1345d3 * String(_0xf2218c.studentId).localeCompare(String(_0x2374dd.studentId), undefined, {
+        numeric: true,
+        sensitivity: "base"
+      });
+    case "grade":
+      return _0x1345d3 * String(_0xf2218c.grade).localeCompare(String(_0x2374dd.grade), undefined, {
+        numeric: true,
+        sensitivity: "base"
+      });
+    case "mode":
+      return _0x1345d3 * String(_0xf2218c.mode || "").localeCompare(String(_0x2374dd.mode || ""));
+    case "window":
+      _0x579d3d = _0x39131e[_0xf2218c.window] ?? 9;
+      _0x255553 = _0x39131e[_0x2374dd.window] ?? 9;
+      break;
+    case "A":
+      _0x579d3d = _0xf2218c.normA;
+      _0x255553 = _0x2374dd.normA;
+      break;
+    case "B":
+      _0x579d3d = _0xf2218c.normB;
+      _0x255553 = _0x2374dd.normB;
+      break;
+    case "C":
+      _0x579d3d = _0xf2218c.normC;
+      _0x255553 = _0x2374dd.normC;
+      break;
+    case "total":
+      _0x579d3d = _0xf2218c.normComposite;
+      _0x255553 = _0x2374dd.normComposite;
+      break;
+    case "status":
+      _0x579d3d = _0x2b400e[_0xf2218c.tier] ?? 9;
+      _0x255553 = _0x2b400e[_0x2374dd.tier] ?? 9;
+      break;
+    case "trusted":
+      _0x579d3d = _0xf2218c.trustedAdultFlag ? 0 : 1;
+      _0x255553 = _0x2374dd.trustedAdultFlag ? 0 : 1;
+      break;
+    case "date":
+    default:
+      _0x579d3d = new Date(_0xf2218c.timestamp).getTime();
+      _0x255553 = new Date(_0x2374dd.timestamp).getTime();
+      break;
+  }
+  if (_0x579d3d == null && _0x255553 == null) {
+    return 0;
+  }
+  if (_0x579d3d == null) {
+    return 1;
+  }
+  if (_0x255553 == null) {
+    return -1;
+  }
+  if (_0x579d3d < _0x255553) {
+    return _0x1345d3 * -1;
+  }
+  if (_0x579d3d > _0x255553) {
+    return _0x1345d3 * 1;
+  }
+  return 0;
+}
+let _followupList = [];
+function revealFollowupList() {
+  const _0x38e3c8 = document.getElementById("followupReveal");
+  if (!_0x38e3c8) {
+    return;
+  }
+  if (!_followupList.length) {
+    _0x38e3c8.innerHTML = "<div class=\"small\" style=\"color:var(--ink-faint);\">" + DT("No one in this view named a lack of trusted adult.", "Nadie en esta vista indicó falta de un adulto de confianza.") + "</div>";
+    return;
+  }
+  const _0x3ec979 = _followupList.map(_0x44e898 => "<tr><td><strong>" + escapeHtml(String(_0x44e898.studentId || "—")) + "</strong></td><td>" + escapeHtml(String(_0x44e898.grade || "—")) + "</td><td>" + escapeHtml(winLabel(_0x44e898.window) || String(_0x44e898.window || "—")) + "</td><td>" + escapeHtml(fmtNiceDate(_0x44e898.timestamp) || "—") + "</td></tr>").join("");
+  _0x38e3c8.innerHTML = "<div class=\"small\" style=\"margin:0 0 10px; line-height:1.6;\">" + DT("These students named no one they’d turn to. Start with connection, not assessment — a small, steady relationship is the intervention.", "Estos estudiantes no nombraron a nadie a quien acudir. Empieza por la conexión, no por la evaluación — una relación pequeña y constante es la intervención.") + "</div><table style=\"width:100%;\"><thead><tr><th>" + DT("Code", "Código") + "</th><th>" + DT("Grade", "Grado") + "</th><th>" + DT("Window", "Período") + "</th><th>" + DT("Taken", "Fecha") + "</th></tr></thead><tbody>" + _0x3ec979 + "</tbody></table><div class=\"small\" style=\"margin-top:10px; color:var(--ink-faint);\">" + DT("On-screen only — this list is never exported. It clears when you change a filter or leave this tab.", "Solo en pantalla — esta lista nunca se exporta. Se borra al cambiar un filtro o salir de esta pestaña.") + "</div><div style=\"margin-top:12px;\"><button class=\"btn btn-sm\" onclick=\"hideFollowupList()\">" + DT("Hide again", "Ocultar de nuevo") + "</button></div>";
+}
+function hideFollowupList() {
+  const _0xcd9603 = document.getElementById("followupReveal");
+  if (_0xcd9603) {
+    _0xcd9603.innerHTML = "";
+  }
+}
+function renderStudents() {
+  const _0x20e5ed = getAllRecords();
+  const _0x4f4421 = applyFilters(_0x20e5ed, {
+    window: $("#studentFilterWindow") ? $("#studentFilterWindow").value : "",
+    grade: $("#studentFilterGrade") ? $("#studentFilterGrade").value : "",
+    tier: $("#studentFilterTier") ? $("#studentFilterTier").value : ""
+  });
+  const _0x34523f = _0x4f4421.length;
+  _followupList = applyFilters(_0x20e5ed, {
+    window: $("#studentFilterWindow") ? $("#studentFilterWindow").value : "",
+    grade: $("#studentFilterGrade") ? $("#studentFilterGrade").value : ""
+  }).filter(_0x594467 => _0x594467.trustedAdultFlag).sort((_0x859754, _0x321470) => new Date(_0x321470.timestamp) - new Date(_0x859754.timestamp));
+  if ($("#studentCount")) {
+    $("#studentCount").textContent = _0x34523f + " " + (_0x34523f === 1 ? DT("response", "respuesta") : DT("responses", "respuestas"));
+  }
+  const _0x3d3b2c = $("#studentTable");
+  if (!_0x3d3b2c) {
+    return;
+  }
+  if (!_0x34523f) {
+    _0x3d3b2c.innerHTML = "<div class=\"empty-state\"><div class=\"display-md serif\">" + DT("No responses yet", "Sin respuestas aún") + "</div><div class=\"small\">" + DT("Class trends appear here once self-reflections come in.", "Las tendencias de la clase aparecerán aquí cuando lleguen los self-reflections.") + "</div></div>";
+    return;
+  }
+  const _0x47d312 = {
+    "Low Risk": 0,
+    "Some Risk": 0,
+    "High Risk": 0
+  };
+  let _0x3fdc40 = 0;
+  _0x4f4421.forEach(_0x3b3b08 => {
+    _0x47d312[_0x3b3b08.tier] = (_0x47d312[_0x3b3b08.tier] || 0) + 1;
+    if (_0x3b3b08.trustedAdultFlag) {
+      _0x3fdc40++;
+    }
+  });
+  const _0x2c9652 = _0x47d312["Low Risk"];
+  const _0x1f35e4 = _0x47d312["Some Risk"];
+  const _0x5063be = _0x47d312["High Risk"];
+  const _0x40e09b = _0x1b4090 => Math.round(_0x1b4090 / _0x34523f * 100);
+  function _0x22a773(_0x318590) {
+    const _0x4f7246 = _0x4f4421.map(_0x1e6790 => _0x1e6790["norm" + _0x318590]).filter(_0x574412 => _0x574412 != null);
+    const _0xe8d45a = _0x4f7246.length ? _0x4f7246.reduce((_0x5a53b7, _0x4ebf97) => _0x5a53b7 + _0x4ebf97, 0) / _0x4f7246.length : 0;
+    const _0x58ebf0 = _0x4f7246.filter(_0x17ecbf => _0x17ecbf < 50).length;
+    return {
+      avg: _0xe8d45a,
+      lowPct: _0x4f7246.length ? Math.round(_0x58ebf0 / _0x4f7246.length * 100) : 0,
+      nv: _0x4f7246.length
+    };
+  }
+  const _0x2a6ef9 = [{
+    key: "A",
+    label: DT("Emotional Regulation & Well-Being", "Regulación emocional y bienestar"),
+    rec: DT("Revisit this week’s lessons on naming and regulating big feelings in your grade-band volume.", "Retoma las lecciones de esta semana sobre nombrar y regular las emociones fuertes en tu volumen por grado.")
+  }, {
+    key: "B",
+    label: DT("Self-Compassion & Growth Mindset", "Autocompasión y mentalidad de crecimiento"),
+    rec: DT("Revisit the inner-critic and self-talk lessons — and the self-compassion thread in the companion novel for this band.", "Retoma las lecciones sobre el crítico interno y el diálogo interno — y el hilo de autocompasión en la novela complementaria de este nivel.")
+  }, {
+    key: "C",
+    label: DT("Social Competency & Repair", "Competencia social y reparación"),
+    rec: DT("Revisit the repair, boundaries, and trusted-adult lessons in your grade-band volume.", "Retoma las lecciones sobre reparación, límites y el adulto de confianza en tu volumen por grado.")
+  }];
+  let _0xa13221 = "<strong>" + _0x34523f + "</strong> " + (_0x34523f === 1 ? DT("response", "respuesta") : DT("responses", "respuestas")) + " " + DT("in this view", "en esta vista") + ". " + (_0x2c9652 >= Math.ceil(_0x34523f / 2) ? DT("Most of the class is doing well", "La mayoría de la clase está bien") : DT("Results are mixed across the class", "Los resultados son variados en la clase"));
+  if (_0x1f35e4 + _0x5063be > 0) {
+    _0xa13221 += " — " + _0x40e09b(_0x1f35e4 + _0x5063be) + DT("% may benefit from a self-reflection conversation", "% podría beneficiarse de una conversación de autorreflexión");
+  }
+  _0xa13221 += ".";
+  if (_0x3fdc40 > 0) {
+    _0xa13221 += " " + _0x40e09b(_0x3fdc40) + DT("% named no trusted adult — a good place to start as a class.", "% no nombró a ningún adulto de confianza — un buen punto de partida para la clase.");
+  }
+  let _0x4cbb93 = "";
+  if (_0x2c9652 > 0) {
+    _0x4cbb93 += "<div class=\"dist-segment dist-green\" style=\"flex:" + _0x2c9652 + "\" title=\"" + (typeof tierLabel==="function"?tierLabel("Low Risk"):DT("Keep noticing","Seguir observando")) + "\">" + _0x40e09b(_0x2c9652) + "%</div>";
+  }
+  if (_0x1f35e4 > 0) {
+    _0x4cbb93 += "<div class=\"dist-segment dist-amber\" style=\"flex:" + _0x1f35e4 + "\" title=\"" + (typeof tierLabel==="function"?tierLabel("Some Risk"):DT("Worth a conversation","Vale una conversación")) + "\">" + _0x40e09b(_0x1f35e4) + "%</div>";
+  }
+  if (_0x5063be > 0) {
+    _0x4cbb93 += "<div class=\"dist-segment dist-red\" style=\"flex:" + _0x5063be + "\" title=\"" + (typeof tierLabel==="function"?tierLabel("High Risk"):DT("Adult follow-up","Seguimiento de un adulto")) + "\">" + _0x40e09b(_0x5063be) + "%</div>";
+  }
+  const _0x4108ec = _0x2a6ef9.map(_0x139982 => {
+    const _0x3dc6fa = _0x22a773(_0x139982.key);
+    const _0xb1ff51 = _0x3dc6fa.lowPct >= 40;
+    const _0x404571 = "<strong>" + _0x3dc6fa.lowPct + "%</strong> " + DT("of this class scored in the lower range on", "de esta clase puntuó en el rango bajo en") + " " + escapeHtml(_0x139982.label) + ".";
+    const _0x33abe3 = _0xb1ff51 ? "<div class=\"small\" style=\"margin-top:10px; padding:10px 12px; background:rgba(184,137,58,.10); border-left:3px solid var(--gold); border-radius:6px;\"><strong>" + DT("Suggested focus this week:", "Enfoque sugerido esta semana:") + "</strong> " + _0x139982.rec + "</div>" : "<div class=\"small\" style=\"margin-top:10px; color:var(--ink-faint);\">" + DT("This domain looks steady across the class.", "Esta área se ve estable en la clase.") + "</div>";
+    return "<div class=\"domain-card\" style=\"margin-bottom:14px;\"><div class=\"domain-card-head\"><div class=\"domain-card-title\">" + _0x139982.key + " · " + escapeHtml(_0x139982.label) + "</div><div class=\"domain-card-score\">" + _0x3dc6fa.avg.toFixed(0) + "<span> / 100</span></div></div><div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + _0x3dc6fa.avg.toFixed(0) + "%\"></div></div><div class=\"small\" style=\"margin-top:10px;\">" + _0x404571 + "</div>" + _0x33abe3 + "</div>";
+  }).join("");
+  _0x3d3b2c.innerHTML = "<div class=\"ov-summary\" style=\"margin:4px 0 18px; font-size:15px; line-height:1.6;\">" + _0xa13221 + "</div><div class=\"section-head\" style=\"margin-bottom:8px;\"><h3>" + DT("Class snapshot", "Panorama de la clase") + "</h3><div class=\"small\">" + DT("Share of the class in each band — no individual scores.", "Proporción de la clase en cada banda — sin puntajes individuales.") + "</div></div><div class=\"dist-bar\" style=\"margin-bottom:20px;\">" + _0x4cbb93 + "</div><div class=\"section-head\" style=\"margin-bottom:8px;\"><h3>" + DT("Where to focus", "Dónde enfocarse") + "</h3><div class=\"small\">" + DT("Class averages and the share scoring lower, by domain.", "Promedios de la clase y la proporción con puntaje más bajo, por área.") + "</div></div>" + _0x4108ec + "<div class=\"small\" style=\"margin-top:8px; color:var(--ink-faint); border-top:1px solid var(--rule); padding-top:12px;\">" + DT("Individual student scores are intentionally not shown on this dashboard. This view reports class-wide trends only — keeping the focus on teaching, not on evaluating any one child.", "Los puntajes individuales no se muestran a propósito en este panel. Esta vista reporta solo tendencias de toda la clase — manteniendo el enfoque en enseñar, no en evaluar a ningún niño.") + "</div><div class=\"table-card\" style=\"margin-top:18px; padding:18px 22px; border-left:3px solid var(--gold);\"><div style=\"display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;\"><div><div style=\"font-weight:700; color:var(--navy);\">" + DT("Counselor follow-up", "Seguimiento del consejero") + "</div><div class=\"small\" style=\"margin-top:2px;\">" + (_followupList.length ? "<strong>" + _followupList.length + "</strong> " + (_followupList.length === 1 ? DT("student in this view named no trusted adult.", "estudiante en esta vista no nombró a ningún adulto de confianza.") : DT("students in this view named no trusted adult.", "estudiantes en esta vista no nombraron a ningún adulto de confianza.")) : DT("No one in this view named a lack of trusted adult.", "Nadie en esta vista indicó falta de un adulto de confianza.")) + "</div></div>" + (_followupList.length ? "<button class=\"btn btn-sm\" onclick=\"revealFollowupList()\">" + DT("Reveal list (counselor use)", "Mostrar lista (uso del consejero)") + "</button>" : "") + "</div><div id=\"followupReveal\" style=\"margin-top:14px;\"></div></div>";
+}
+/* shared signal: a self-reflection from a grown-up (parent / adult / staff) vs a student */
+function aogIsAdultRec(r){ return !!(r && (r.population === "adult" || String(r.grade) === "Adult")); }
+/* belongs in the Family & adults tab: anything done at home with the family
+   (context "home" — including a child's home self-reflection), or any grown-up's own self-reflection */
+function aogIsHomeRec(r){ return !!(r && (aogIsAdultRec(r) || r.context === "home")); }
+
+/* one renderer powering both the Student view and the Family & adults view */
+function aogReportList(opts){
+  var host = document.getElementById(opts.hostId);
+  if (!host) { return; }
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var recs = (opts.recs || []).slice().sort(function (a, b) {
+    var sa = String(a.studentId || "").toLowerCase();
+    var sb = String(b.studentId || "").toLowerCase();
+    if (sa < sb) { return -1; }
+    if (sa > sb) { return 1; }
+    return new Date(b.timestamp) - new Date(a.timestamp);
+  });
+  if (!recs.length){
+    host.innerHTML = "<div class=\"table-card\" style=\"padding:26px 30px;\">" + opts.note +
+      "<div class=\"empty-state\"><div class=\"display-md serif\">" + opts.emptyTitle + "</div>" +
+      "<div class=\"small\" style=\"margin-bottom:14px; line-height:1.6;\">" + opts.emptyBody + "</div>" +
+      "<button class=\"btn btn-sm\" onclick=\"dashHomePull(this)\">" + (es?"Actualizar datos de la clase":"Refresh classroom data") + " &rarr;</button>" +
+      "<div class=\"small aog-pull-status\" style=\"margin-top:10px; min-height:18px;\"></div></div></div>";
+    return;
+  }
+  var search = "<div style=\"display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; justify-content:space-between; margin:0 0 16px;\">" +
+    "<div class=\"field\" style=\"margin:0; flex:1 1 240px; max-width:340px;\"><input type=\"text\" autocomplete=\"off\" oninput=\"dashFilterRows(this)\" placeholder=\"" + opts.searchPh + "\"></div>" +
+    "<div style=\"text-align:right;\"><button class=\"btn btn-secondary btn-sm\" onclick=\"dashHomePull(this)\">" + (es?"Actualizar datos de la clase":"Refresh classroom data") + "</button>" +
+    "<div class=\"small aog-pull-status\" style=\"margin-top:6px; min-height:16px;\"></div></div></div>";
+  var rows = recs.map(function (r) {
+    var key = typeof recordKey === "function" ? recordKey(r) : r.timestamp;
+    var tier = r.tier || (typeof tierFromNormComposite === "function" ? tierFromNormComposite(r.normComposite) : "");
+    var pill = typeof tierLabel === "function" ? tierLabel(tier) : "";
+    var pillC = typeof tierClass === "function" ? tierClass(tier) : "";
+    var meta = [aogIsAdultRec(r) ? (es?"Adulto":"Adult") : (es?"Gr ":"Gr ") + escapeHtml(String(r.grade || "")), (!aogIsAdultRec(r) && r.context === "home") ? (es?"En casa":"Home") : null, typeof winLabel === "function" && r.window ? winLabel(r.window) : null, typeof famDateShort === "function" ? famDateShort(r.timestamp) : ""].filter(Boolean).join(" · ");
+    var nameKey = String(r.studentId || "").toLowerCase();
+    return "<div class=\"fam-row\" data-name=\"" + escapeHtml(nameKey) + "\" data-key=\"" + escapeHtml(key) + "\"><div class=\"fr-date\" style=\"min-width:160px\"><div style=\"font-weight:700;color:var(--navy)\">" + escapeHtml(r.studentId || "—") + "</div><div class=\"small\" style=\"color:var(--ink-faint)\">" + escapeHtml(meta) + "</div>" + aogFocusChips(r, es) + "</div><div class=\"fr-score\">" + (r.normComposite != null ? Math.round(r.normComposite) : "—") + "<span class=\"small\" style=\"font-size:12px;color:var(--ink-faint)\">/100</span></div><span class=\"pill " + pillC + "\">" + pill + "</span><div class=\"fr-actions\"><button class=\"fam-mini-btn aog-openrep-btn\" onclick=\"dashOpenReport(this,'" + encodeURIComponent(key) + "')\">" + (es ? "Ver informe" : "Open report") + "</button><button class=\"fam-mini-btn aog-tools-btn\" onclick=\"dashOpenTools(this,'" + encodeURIComponent(key) + "')\">🧰 " + (es ? "Herramientas" : "Suggested tools") + "</button><button class=\"fam-mini-btn aog-convo-btn\" onclick=\"dashOpenConvo(this,'" + encodeURIComponent(key) + "')\">💬 " + (es ? "Iniciadores de conversación" : "Conversation starters") + "</button><button class=\"fam-mini-btn\" onclick=\"dashExportPdf('" + encodeURIComponent(key) + "')\">" + (es ? "Exportar PDF" : "Export PDF") + "</button></div><div class=\"fam-report-host\" style=\"flex-basis:100%\"></div></div>";
+  }).join("");
+  host.innerHTML = "<div class=\"table-card\" style=\"padding:24px 26px;\">" + opts.note + search + "<div class=\"fam-hist aog-report-rows\">" + rows + "</div></div>";
+}
+
+/* small at-a-glance chips naming the domain(s) below the "doing well" line (<75) */
+function aogFocusChips(r, es) {
+  var doms = [{ k: es ? "Regulación" : "Regulation", s: r.normA }, { k: es ? "Autocompasión" : "Self-Compassion", s: r.normB }, { k: es ? "Social" : "Social", s: r.normC }];
+  var low = doms.filter(function (d) { return d.s != null && d.s < 75; }).sort(function (a, b) { return a.s - b.s; }).slice(0, 2);
+  if (!low.length) { return ""; }
+  return "<div class=\"fr-focus\" style=\"margin-top:5px; font-size:10.5px; color:var(--ink-faint);\">" + (es ? "Apoyar: " : "Focus: ") + low.map(function (d) {
+    return "<span style=\"display:inline-block; font-weight:700; color:var(--gold-deep,#9a6f24); background:var(--amber-bg,#FBF1D6); border:1px solid var(--gold); border-radius:999px; padding:1px 8px; margin-right:4px;\">" + escapeHtml(d.k) + "</span>";
+  }).join("") + "</div>";
+}
+
+/* open ONLY the suggested-tools panel inline for a row (without the long full report) */
+function dashOpenTools(_btn, _key) {
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var hostEl = row.querySelector(".fam-report-host");
+  if (!hostEl) { return; }
+  if (hostEl.dataset.open === "tools") {
+    hostEl.innerHTML = "";
+    hostEl.dataset.open = "";
+    _btn.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools");
+    return;
+  }
+  var rec = dashFindRecordByKey(_key);
+  if (!rec) { return; }
+  hostEl.innerHTML = (typeof aogToolMatchPanel === "function") ? aogToolMatchPanel(rec, _key) : "";
+  hostEl.dataset.open = "tools";
+  _btn.textContent = "🧰 " + (es ? "Ocultar" : "Hide tools");
+  var ob = row.querySelector(".aog-openrep-btn");
+  if (ob) { ob.textContent = es ? "Ver informe" : "Open report"; }
+  try { hostEl.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+
+/* open ONLY the conversation starters inline for a row */
+function dashOpenConvo(_btn, _key) {
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var hostEl = row.querySelector(".fam-report-host");
+  if (!hostEl) { return; }
+  if (hostEl.dataset.open === "convo") {
+    hostEl.innerHTML = "";
+    hostEl.dataset.open = "";
+    _btn.textContent = "💬 " + (es ? "Iniciadores de conversación" : "Conversation starters");
+    return;
+  }
+  var rec = dashFindRecordByKey(_key);
+  if (!rec) { return; }
+  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + ((typeof renderConversationGuide === "function") ? renderConversationGuide(rec, false) : "") + "</div>";
+  hostEl.dataset.open = "convo";
+  _btn.textContent = "💬 " + (es ? "Ocultar" : "Hide");
+  var ob = row.querySelector(".aog-openrep-btn"); if (ob) { ob.textContent = es ? "Ver informe" : "Open report"; }
+  var tb = row.querySelector(".aog-tools-btn"); if (tb) { tb.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools"); }
+  try { hostEl.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+
+/* Student view — students only (adult/family self-reflections live in their own tab) */
+function renderHome() {
+  if (!document.getElementById("homeReport")) { return; }
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var all = (typeof getAllRecords === "function" ? getAllRecords() : []);
+  var recs = all.filter(function (r) { return !aogIsHomeRec(r); });
+  /* ⚠ A LIST THAT IS HIDING SOMETHING SAYS SO, AND SAYS WHERE IT WENT.
+     Jimmy finished a self-reflection with the grade set to "Adult", came to
+     this screen and could not find it: "I don't know how to find my report I
+     just finished." Nothing was broken — an adult's own reflection belongs
+     under Family & adults and that is where it was — but this card counted
+     eleven of twelve and never mentioned the twelfth.
+
+     This is a COUNT AND A DESTINATION, not a warning and not a filter. It
+     appears only when there is genuinely something elsewhere. */
+  var elsewhere = all.length - recs.length;
+  var elseNote = elsewhere
+    ? ("<div class=\"small\" style=\"margin:-6px 0 14px; line-height:1.6; color:var(--ink-faint);\">" +
+        DT(elsewhere + (elsewhere === 1 ? " self-reflection is" : " self-reflections are") +
+             " not on this list — one done at home, or an adult's own. " +
+             "Those are under <strong>Family &amp; adults</strong>.",
+           elsewhere + (elsewhere === 1 ? " autorreflexión no está" : " autorreflexiones no están") +
+             " en esta lista — hecha en casa, o de un adulto. " +
+             "Están en <strong>Familias y adultos</strong>.") + "</div>")
+    : "";
+  aogReportList({
+    hostId: "homeReport",
+    recs: recs,
+    note: "<div class=\"small\" style=\"margin:0 0 14px; line-height:1.6; color:var(--ink-soft);\">" + DT("Student self-reflections done in class. Open one to read it together or export a PDF — to start a conversation, never to grade. Self-reflections done at home appear under <strong>Family &amp; adults</strong>.", "Autorreflexiones de estudiantes hechas en clase. Abre una para leerla juntos o exportar un PDF — para iniciar una conversación, nunca para calificar. Las autorreflexiones hechas en casa aparecen en <strong>Familias y adultos</strong>.") + "</div>" + elseNote,
+    emptyTitle: DT("No student reports on this device yet", "Aún no hay informes de estudiantes en este dispositivo"),
+    emptyBody: DT("Student self-reflections saved on this computer show up here. To include students who checked in on other devices, pull from your synced sheet.", "Las autorreflexiones de estudiantes guardados en esta computadora aparecen aquí. Para incluir a quienes hicieron la autorreflexión en otros dispositivos, trae los datos de tu hoja sincronizada."),
+    searchPh: DT("Search by student name…", "Buscar por nombre del estudiante…")
+  });
+}
+
+/* Family & adults view — grown-ups’ own self-reflections (parents, caregivers, staff) */
+function renderFamilyAdults() {
+  if (!document.getElementById("familyAdultReport")) { return; }
+  var recs = (typeof getAllRecords === "function" ? getAllRecords() : []).filter(function (r) { return aogIsHomeRec(r); });
+  aogReportList({
+    hostId: "familyAdultReport",
+    recs: recs,
+    note: "<div class=\"small\" style=\"margin:0 0 14px; line-height:1.6; color:var(--ink-soft);\">" + DT("Self-reflections done at home — a child with their family (marked <strong>Home</strong>), plus parents, caregivers, and staff reflecting for themselves. Open one to read it or export a PDF.", "Autorreflexiones hechas en casa — un niño con su familia (marcado <strong>En casa</strong>), además de padres, cuidadores y personal reflexionando para sí mismos. Abre una para leerla o exportar un PDF.") + "</div>",
+    emptyTitle: DT("No home or adult reports yet", "Aún no hay informes de casa o adultos"),
+    emptyBody: DT("When a family does a self-reflection at home, or an adult completes their own, it appears here. Pull from your synced sheet to include other devices.", "Cuando una familia hace una autorreflexión en casa, o un adulto completa el suyo, aparece aquí. Trae los datos de tu hoja sincronizada para incluir otros dispositivos."),
+    searchPh: DT("Search by name…", "Buscar por nombre…")
+  });
+}
+
+/* filter rows within the same card (works for both report tabs) */
+function dashFilterRows(input) {
+  var q = (input.value || "").toLowerCase().trim();
+  var card = input.closest(".table-card");
+  if (!card) { return; }
+  card.querySelectorAll(".aog-report-rows .fam-row").forEach(function (row) {
+    var n = row.getAttribute("data-name") || "";
+    row.style.display = !q || n.indexOf(q) !== -1 ? "" : "none";
+  });
+}
+/* legacy alias */
+function dashHomeFilter(_q) {
+  var i = document.querySelector("#homeReport input[oninput]");
+  if (i) { i.value = _q; dashFilterRows(i); }
+}
+function dashFindRecordByKey(_key) {
+  var k = decodeURIComponent(_key);
+  return (typeof getAllRecords === "function" ? getAllRecords() : []).find(function (r) {
+    var rk = typeof recordKey === "function" ? recordKey(r) : r.timestamp;
+    return rk === k;
+  });
+}
+async function dashHomePull(btn) {
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  /* status lives in whichever report tab is currently open */
+  function status(){ return document.querySelector(".tab-panel.active .aog-pull-status") || document.querySelector(".aog-pull-status"); }
+  var s = status();
+  if (s) { s.textContent = es ? "Trayendo de la hoja…" : "Pulling from the sheet…"; s.style.color = "var(--ink-soft)"; }
+  try {
+    if (typeof pullFromSheet === "function") { await pullFromSheet(); }
+  } catch (e) {}
+  /* A successful pull re-renders this panel (rows replace the empty state). When nothing
+     new comes back, the panel is still here — mirror the sync status so the teacher sees
+     why, instead of the message living on the separate sync screen. */
+  var src = document.getElementById("riPullStatus");
+  var dst = status();
+  if (src && dst) {
+    dst.textContent = src.textContent;
+    dst.style.color = src.style.color || "var(--ink-soft)";
+  }
+}
+/* Bridge: when a domain is low on the periodic self-reflection, offer a gentle, contextual
+   in-the-moment entry that pre-loads the matching tool (A→breathe, B→Inner Coach, C→repair). */
+function aogRightNowBridge(rec, es) {
+  if (!rec) return "";
+  var a = rec.normA, b = rec.normB, c = rec.normC;
+  if (a == null && b == null && c == null) return "";
+  var lowKey = (typeof aogLowestDomainKey === "function") ? aogLowestDomainKey(a || 0, b || 0, c || 0) : "A";
+  var lowVal = lowKey === "A" ? a : (lowKey === "B" ? b : c);
+  if (lowVal == null || lowVal >= 75) return "";
+  var MAP = {
+    A: { tool: "breathing",   name: es ? "regulación emocional" : "emotional regulation", btn: es ? "Prueba: Respiración 4-7-8" : "Try: 4-7-8 Breathing" },
+    B: { tool: "innercoach",  name: es ? "autocompasión" : "self-compassion",             btn: es ? "Abre tu Guía Interior" : "Open your Inner Coach" },
+    C: { tool: "makeitright", name: es ? "competencia social" : "social competency",       btn: es ? "Abre Reparar" : "Open Make It Right" }
+  };
+  var m = MAP[lowKey] || MAP.A;
+  return '<div class="rn-bridge">' +
+    '<div class="rn-bridge-h">' + (es ? "¿Necesitas algo ahora mismo?" : "Need something right now?") + '</div>' +
+    '<p class="rn-bridge-p">' + (es ? ("El área más baja ahora es la " + m.name + ". Abre una herramienta para usarla en el momento.") : ("The lowest area right now is " + m.name + ". Open a tool to use on the spot.")) + '</p>' +
+    '<div class="rn-bridge-btns">' +
+      '<button type="button" class="rn-tool-btn" onclick="if(window.toolOpen){window.toolOpen(\'' + m.tool + '\');}">' + m.btn + '</button>' +
+      '<button type="button" class="rn-deeper-btn" onclick="if(window.openRightNow){openRightNow();}">' + (es ? "Abrir Ahora mismo" : "Open Right Now") + ' →</button>' +
+    '</div></div>';
+}
+function dashOpenReport(_btn, _key) {
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var hostEl = row.querySelector(".fam-report-host");
+  if (!hostEl) { return; }
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var toolsBtn = row.querySelector(".aog-tools-btn");
+  if (hostEl.dataset.open === "1") {
+    hostEl.innerHTML = "";
+    hostEl.dataset.open = "0";
+    _btn.textContent = es ? "Ver informe" : "Open report";
+    return;
+  }
+  var rec = dashFindRecordByKey(_key);
+  if (!rec) { return; }
+  var _sustain  = (typeof aogSustainPanel === "function") ? aogSustainPanel(rec) : "";
+  var _toolPanel = (typeof aogToolMatchPanel === "function") ? aogToolMatchPanel(rec, _key) : "";
+  var _bridge = (typeof aogRightNowBridge === "function") ? aogRightNowBridge(rec, es) : "";
+  var _compass = ""; try { if (typeof aogGraceCompass === "function") _compass = aogGraceCompass(rec); } catch (e) {}
+  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + _compass + buildHomeReport(rec, false, _toolPanel, "dashExportPdf('" + _key + "')") + "</div>" + _bridge + _sustain;
+  hostEl.dataset.open = "1";
+  /* Opening a report is the clearest "this student, right now" act on the
+     dashboard, so it sets the student-in-focus default the other doors read.
+     Student rows only — the family list is not a caseload. */
+  try { if (window.AOGFocus && row.closest("#homeReport") && rec.studentId) AOGFocus.set(rec.studentId, "report"); } catch (eF) {}
+  _btn.textContent = es ? "Ocultar informe" : "Hide report";
+  if (toolsBtn) { toolsBtn.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools"); }
+}
+function dashExportPdf(_key) {
+  var rec = dashFindRecordByKey(_key);
+  if (!rec) { return; }
+  var pr = document.getElementById("printReport");
+  if (!pr) { return; }
+  var es = typeof lang !== "undefined" && lang === "es";
+  var head = "<div style=\"font-family:Fraunces,serif;border-bottom:2px solid #B8893A;padding-bottom:10px;margin-bottom:16px;\"><div style=\"font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B8893A;font-weight:700;\">Architecture of Grace · " + (es ? "Informe del estudiante" : "Student report") + "</div><div style=\"font-size:24px;color:#0A1E33;font-weight:600;\">" + escapeHtml(rec.studentId) + "</div><div style=\"font-size:12px;color:#46506E;\">" + escapeHtml([typeof winLabel === "function" && rec.window ? winLabel(rec.window) : null, typeof famDateShort === "function" ? famDateShort(rec.timestamp) : ""].filter(Boolean).join(" · ")) + "</div></div>";
+  var _gc = ""; try { if (typeof aogGraceCompass === "function") _gc = aogGraceCompass(rec, { compact: true }); } catch (e) {}
+  /* Clean one-sheet session summary: header + compact scores + the Grace Compass
+     (NOT the full item-by-item home report, which ran to dozens of pages). */
+  var _scoreStrip = (typeof aogCompassScoreStrip === "function") ? aogCompassScoreStrip(rec, es) : "";
+  pr.innerHTML = "<div class=\"home-view\">" + head + _scoreStrip + _gc + "</div>";
+  var prevTitle = document.title;
+  document.title = "AoG_" + String(rec.studentId).replace(/[^A-Za-z0-9]+/g, "_") + "_" + (rec.window || "");
+  /* Synchronous: iOS Safari blocks a print() that has left the user-gesture
+     chain ("This website has been blocked from automatically printing"). */
+  aogPrintHold(function () { document.title = prevTitle; pr.innerHTML = ""; });
+  try { window.print(); } catch (e) {}
+}
+/* P4 (2026-06-05): per-domain "now what" next step on the viewer's own report. */
+function aogNowWhat(_domKey, _score, _isSelf) {
+  if (!_isSelf) return "";
+  if (_score == null || _score >= 75) return "";
+  var _map = {
+    A: {
+      kind: DT("Suggested practice", "Práctica sugerida"),
+      step: DT("Next time a feeling runs big, name it out loud and take one settling step — a slow breath, feet on the floor — before you decide anything.", "La próxima vez que una emoción sea grande, nómbrala en voz alta y da un paso para calmarte — una respiración lenta, los pies en el suelo — antes de decidir nada.")
+    },
+    B: {
+      kind: DT("Recommended reflection", "Reflexión recomendada"),
+      step: DT("Notice the voice in your head this week. When it turns harsh, ask: would I say this to someone I love? Then try the kinder version.", "Observa la voz en tu cabeza esta semana. Cuando se vuelva dura, pregúntate: ¿le diría esto a alguien que quiero? Luego prueba la versión más amable.")
+    },
+    C: {
+      kind: DT("Conversation guide", "Guía de conversación"),
+      step: DT("Pick one relationship that feels strained and try a single repair: name your part first, then ask about theirs.", "Elige una relación que se sienta tensa e intenta una sola reparación: nombra tu parte primero, luego pregunta por la suya.")
+    }
+  };
+  var _m = _map[_domKey];
+  if (!_m) return "";
+  var _link = "<a class=\"nw-link\" href=\"#\" onclick=\"aogScrollToStarters();return false;\">" + DT("See your conversation starters", "Ve tus iniciadores de conversación") + " ↑</a>";
+  var _maps = "<a class=\"nw-link\" href=\"#\" onclick=\"aogOpenResindex('" + _domKey + "');return false;\">" + DT("See the lessons that build this", "Ve las lecciones que desarrollan esto") + " →</a>";
+  return "<div class=\"now-what nw-" + _domKey + "\"><div class=\"nw-head\"><span class=\"nw-dot\"></span><span class=\"nw-kind\">" + _m.kind + "</span></div><p class=\"nw-step\">" + _m.step + "</p><div class=\"nw-links\">" + _link + _maps + "</div></div>";
+}
+function aogScrollToStarters() {
+  try {
+    var _el = document.querySelector("#myResultsReport .home-conversation");
+    if (_el && _el.scrollIntoView) {
+      _el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  } catch (_e) {}
+}
+/* CLOSED-LOOP DEEP LINK (2026-06): from a flagged domain (or specific item pair),
+   jump to the Construct-to-Resource Index, auto-open the matching construct(s),
+   highlight briefly, and scroll it into view. Completes Identify -> Flag -> Sustain. */
+function aogOpenResindex(domain, itemsLabel, bookNum) {
+  try {
+    var _s = document.getElementById("riSearch"); if (_s) _s.value = "";
+    var _g = document.getElementById("riGrade");  if (_g) _g.value  = "";
+  } catch (_e) {}
+  /* Navigate to the guide SCREEN first (openGuideSub alone only toggles a subtab,
+     which does nothing when called from the landing/dashboard screen). openGuide
+     shows screen-guide, renders the index, then activates the resindex subtab. */
+  if (typeof openGuide === "function") { openGuide("resindex"); }
+  else if (typeof openGuideSub === "function") { openGuideSub("resindex"); }
+  setTimeout(function () {
+    var cards = [];
+    if (itemsLabel) {
+      var one = document.querySelector('.ri-card[data-riitems="' + itemsLabel + '"]');
+      if (one) cards = [one];
+    }
+    if (!cards.length && domain) {
+      /* open the primary (first) construct of the flagged domain; its siblings
+         sit right below, collapsed, so the reveal stays focused not a wall. */
+      var _first = document.querySelector('.ri-card[data-ridomain="' + domain + '"]');
+      if (_first) cards = [_first];
+    }
+    if (!cards.length) return;
+    cards.forEach(function (c) { c.classList.add("open"); });
+    var first = cards[0];
+    first.classList.add("ri-hit");
+    setTimeout(function () { first.classList.remove("ri-hit"); }, 2400);
+    if (bookNum) {
+      /* A specific grade band was requested — wait for the card body to expand,
+         then slide to THAT book's row and highlight it (not the card top). */
+      setTimeout(function () {
+        var row = first.querySelector('.ri-book[data-ri-book="' + bookNum + '"]');
+        if (row) {
+          row.classList.add("ri-book-hit");
+          setTimeout(function () { row.classList.remove("ri-book-hit"); }, 2600);
+          try { row.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e3) {}
+          return;
+        }
+        try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e4) {}
+      }, 440);
+    } else {
+      try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
+    }
+  }, 300);
+}
+/* Closed-loop callout: find the lowest-scoring domain from the real scores and point
+   straight to its exact resources via the existing aogOpenResindex deep link. Accurate
+   by construction — no hardcoded constructs. Ties resolve A < B < C. */
+function aogClosedLoopCallout(rec, isOwn) {
+  try {
+    if (!rec) return "";
+    var doms = [{ k: "A", s: rec.normA }, { k: "B", s: rec.normB }, { k: "C", s: rec.normC }]
+      .filter(function (d) { return d.s != null; });
+    if (!doms.length) return "";
+    var low = doms.reduce(function (m, d) { return d.s < m.s ? d : m; }, doms[0]);
+    var es = (typeof dashLang !== "undefined" && dashLang === "es");
+    var nm = (es && typeof RI_DOMAIN_ES !== "undefined" && RI_DOMAIN_ES[low.k]) ? RI_DOMAIN_ES[low.k].name
+           : (typeof RI_DOMAIN_INFO !== "undefined" && RI_DOMAIN_INFO[low.k]) ? RI_DOMAIN_INFO[low.k].name
+           : low.k;
+    var score = Math.round(low.s);
+    var lead = isOwn ? DT("Your lowest area right now is ", "Tu área más baja ahora es ")
+                     : DT("The lowest area right now is ", "El área más baja ahora es ");
+    var tail = DT(". The Resource Index maps it straight to the exact lessons, anchor charts, and chapters that build it.",
+                  ". El Índice de Recursos lo conecta directamente con las lecciones, láminas y capítulos exactos que lo fortalecen.");
+    var cta = DT("Open the exact lessons & resources", "Abre las lecciones y recursos exactos");
+    return "<div class=\"home-cl\"><div class=\"home-cl-ey\">" + DT("Closed loop", "Circuito cerrado") + "</div>"
+      + "<p class=\"home-cl-body\">" + lead + "<strong>" + escapeHtml(nm) + "</strong> (" + score + "/100)" + tail + "</p>"
+      + "<a class=\"home-cl-link\" href=\"#\" onclick=\"aogOpenResindex('" + low.k + "');return false;\">" + cta + " &rarr;</a></div>";
+  } catch (_e) { return ""; }
+}
+/* Shared collapse primitive (unifies the report-domain + generic aog-coll collapsibles). */
+function aogToggleCollapse(head){ var box = head && head.closest ? head.closest('.aog-coll, .home-domain-section, .ri-domain') : null; if(!box) return; if(box.classList.contains('ri-domain')){ if(typeof riToggleDomain==='function') riToggleDomain(head); return; } var collapsed = box.classList.toggle('hd-collapsed'); head.setAttribute('aria-expanded', collapsed ? 'false' : 'true'); }
+function aogCollapseKey(e, head){ if(e && (e.key==='Enter' || e.key===' ' || e.key==='Spacebar')){ e.preventDefault(); aogToggleCollapse(head); } }
+try{ window.aogCollapseKey = aogCollapseKey; }catch(e){}
+try{ window.aogToggleCollapse = aogToggleCollapse; }catch(e){}
+function aogToolCardKey(e, el){ if(e && (e.key==='Enter' || e.key===' ' || e.key==='Spacebar')){ e.preventDefault(); el.click(); } }
+try{ window.aogToolCardKey = aogToolCardKey; }catch(e){}
+/* Grace Compass sections open closed (a report was unusable-long otherwise).
+   Printing always expands them — see the @media print rule for .gc-sec-body. */
+function aogGcToggle(h){
+  var box = h && h.closest ? h.closest('.gc-section') : null;
+  if(!box) return;
+  var nowCollapsed = box.classList.toggle('hd-collapsed');
+  h.setAttribute('aria-expanded', String(!nowCollapsed));
+}
+function aogGcKey(e,h){ if(e && (e.key==='Enter'||e.key===' '||e.key==='Spacebar')){ e.preventDefault(); aogGcToggle(h); } }
+try{ window.aogGcToggle=aogGcToggle; window.aogGcKey=aogGcKey; }catch(e){}
+function homeDomainToggle(head){ aogToggleCollapse(head); }
+function homeDomainKey(e, head){ aogCollapseKey(e, head); }
+function homeDomainsSetAll(collapsed, scope){ var root = scope || document; try{ root.querySelectorAll('.home-domain-section').forEach(function(s){ s.classList.toggle('hd-collapsed', collapsed); var h=s.querySelector('.home-domain-head'); if(h) h.setAttribute('aria-expanded', collapsed ? 'false':'true'); }); }catch(e){} }
+function homeDomainScope(btn){ if(btn && btn.closest){ var v=btn.closest('.home-view'); if(v) return v; var t=btn.closest('.home-domain-tools'); if(t && t.parentNode) return t.parentNode; } return document; }
+function homeDomainsExpandAll(btn){ homeDomainsSetAll(false, homeDomainScope(btn)); }
+function homeDomainsCollapseAll(btn){ homeDomainsSetAll(true, homeDomainScope(btn)); }
+try{ window.homeDomainToggle=homeDomainToggle; window.homeDomainKey=homeDomainKey; window.homeDomainsExpandAll=homeDomainsExpandAll; window.homeDomainsCollapseAll=homeDomainsCollapseAll; }catch(e){}
+function aogCollToggle(head){ aogToggleCollapse(head); }
+function aogCollKey(e, head){ aogCollapseKey(e, head); }
+function aogCollWrap(titleHtml, bodyHtml, collapsed){ return '<div class="aog-coll'+(collapsed?' hd-collapsed':'')+'"><button type="button" class="aog-coll-head" aria-expanded="'+(collapsed?'false':'true')+'" onclick="aogCollToggle(this)" onkeydown="aogCollKey(event,this)"><span class="aog-coll-title">'+titleHtml+'</span><span class="aog-coll-chev" aria-hidden="true">▾</span></button><div class="aog-coll-body">'+bodyHtml+'</div></div>'; }
+try{ window.aogCollToggle=aogCollToggle; window.aogCollKey=aogCollKey; }catch(e){}
+function buildHomeReport(_0x196b68, _0x3d8f48, _topToolsHtml, _exportOnclick) {
+  const _0x406975 = _0x196b68.mode === "depth" ? 5 : 3;
+  let _0x349b7c = "<div class=\"home-header\"><div class=\"home-header-id\"><div class=\"home-name\">" + escapeHtml(_0x196b68.studentId) + (_0x196b68._remote ? " <span style=\"font-size:12px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:2px 7px; vertical-align:middle;\">" + DT("from sheet", "de la hoja") + "</span>" : "") + "</div><div class=\"small\">" + [_0x196b68.population === "adult" ? DT("Adult self-reflection", "Autorreflexión de adultos") : DT("Grade ", "Grado ") + escapeHtml(String(_0x196b68.grade)), winLabel(_0x196b68.window) ? escapeHtml(winLabel(_0x196b68.window)) : null, fmtNiceDate(_0x196b68.timestamp) || null].filter(Boolean).join(" · ") + " · <span class=\"pill " + tierClass(_0x196b68.tier) + "\">" + tierLabel(_0x196b68.tier) + "</span> · <span class=\"small\">" + (_0x196b68.mode === "depth" ? DT("Thorough mode", "Modo a fondo") : DT("Quick mode", "Modo rápido")) + "</span></div></div><div class=\"home-header-scores\"><div class=\"home-score\"><div class=\"label\">" + DT("Composite", "Compuesto") + "</div><div class=\"val\">" + (_0x196b68.normComposite != null ? _0x196b68.normComposite.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Emotional", "Emocional") + "</div><div class=\"val\">" + (_0x196b68.normA != null ? _0x196b68.normA.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Compassion", "Compasión") + "</div><div class=\"val\">" + (_0x196b68.normB != null ? _0x196b68.normB.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Social", "Social") + "</div><div class=\"val\">" + (_0x196b68.normC != null ? _0x196b68.normC.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div></div></div>";
+  _0x349b7c += (typeof aogClosedLoopCallout === "function") ? aogClosedLoopCallout(_0x196b68, _0x3d8f48) : "";
+  /* on the person's OWN report, surface the matched calm & regulation tools right at the
+     top (just under the scores) so they're the first thing seen, not buried at the bottom */
+  if (_0x3d8f48 && typeof aogStudentToolsBlock === "function") {
+    try { _0x349b7c += aogStudentToolsBlock(_0x196b68, typeof dashLang !== "undefined" && dashLang === "es"); } catch (_aogTbTop) {}
+  } else if (_topToolsHtml) {
+    _0x349b7c += _topToolsHtml;
+  }
+  _0x349b7c += aogCollWrap(DT("Conversation starters", "Iniciadores de conversación"), renderConversationGuide(_0x196b68, _0x3d8f48), false);
+  _0x349b7c += "<div class=\"home-detail-head\">" + DT("The full picture, item by item", "El panorama completo, ítem por ítem") + "</div>";
+  _0x349b7c += "<div class=\"home-domain-tools\">" + (_exportOnclick ? "<button type=\"button\" class=\"hd-allbtn hd-exportbtn\" onclick=\"" + _exportOnclick + "\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"M7 10l5 5 5-5\"/><path d=\"M12 15V3\"/></svg>" + DT("Export PDF", "Exportar PDF") + "</button>" : "") + "<button type=\"button\" class=\"hd-allbtn\" onclick=\"homeDomainsExpandAll(this)\">" + DT("Expand all", "Abrir todo") + "</button><button type=\"button\" class=\"hd-allbtn\" onclick=\"homeDomainsCollapseAll(this)\">" + DT("Collapse all", "Cerrar todo") + "</button></div>";
+  const _0x209041 = [{
+    key: "A",
+    name: DT("Emotional Regulation & Well-Being", "Regulación emocional y bienestar"),
+    range: [0, 6],
+    score: _0x196b68.normA,
+    reflectionIdx: 0
+  }, {
+    key: "B",
+    name: DT("Self-Compassion & Growth Mindset", "Autocompasión y mentalidad de crecimiento"),
+    range: [6, 12],
+    score: _0x196b68.normB,
+    reflectionIdx: 1
+  }, {
+    key: "C",
+    name: DT("Social Competency & Repair", "Competencia social y reparación"),
+    range: [12, 18],
+    score: _0x196b68.normC,
+    reflectionIdx: 2
+  }];
+  const _0x244b2b = _0x196b68.population === "adult";
+  const _0x464337 = _0x244b2b ? dashLang === "es" ? ITEMS_ADULT_ES : ITEMS_ADULT_EN : dashLang === "es" ? ITEMS_ES : ITEMS_EN;
+  const _0x3fb5 = (SCALE_6[dashLang] || SCALE_6.en).map(_0x582edb => _0x582edb.label);
+  const _0x41c4c5 = (SCALE_4[dashLang] || SCALE_4.en).map(_0x2c1526 => _0x2c1526.label);
+  const _0x1f54d5 = (INTENSITY[dashLang] || INTENSITY.en).map(_0x3f5145 => _0x3f5145.label);
+  _0x209041.forEach(_0x14ca29 => {
+    _0x349b7c += "<div class=\"home-domain-section hd-collapsed\"><div class=\"home-domain-head\" role=\"button\" tabindex=\"0\" aria-expanded=\"false\" onclick=\"homeDomainToggle(this)\" onkeydown=\"homeDomainKey(event,this)\"><div class=\"home-domain-headL\"><div class=\"home-domain-name\">" + _0x14ca29.name + "</div><span class=\"home-domain-count\">" + (_0x14ca29.range[1] - _0x14ca29.range[0]) + " " + DT("items", "ítems") + "</span></div><div class=\"home-domain-headR\"><div class=\"home-domain-score\">" + (_0x14ca29.score != null ? _0x14ca29.score.toFixed(0) : "—") + "<span> / 100</span></div><span class=\"home-domain-chev\" aria-hidden=\"true\">▾</span></div></div><div class=\"home-domain-bar\" aria-hidden=\"true\"><i style=\"width:" + (_0x14ca29.score != null ? Math.max(0, Math.min(100, _0x14ca29.score)) : 0) + "%\"></i></div><div class=\"home-domain-body\">";
+    for (let _0x44c08a = _0x14ca29.range[0]; _0x44c08a < _0x14ca29.range[1]; _0x44c08a++) {
+      const _0x1298a8 = _0x464337[_0x44c08a];
+      const _0x430816 = _0x196b68.raw[_0x44c08a];
+      const _0xcce47b = _0x196b68.intensities ? _0x196b68.intensities[_0x44c08a] : null;
+      const _0x50577b = scoreFrequency(_0x430816, _0x1298a8.reverse, _0x196b68.mode);
+      const _0x1f6d8d = heatClass(_0x50577b, _0x406975);
+      const _0xba261d = _0x196b68.mode === "depth" ? _0x3fb5 : _0x41c4c5;
+      const _0x238bb1 = _0x430816 == null ? "—" : _0xba261d[_0x430816];
+      const _0x3db8c5 = _0x1298a8.reverse ? "<em class=\"rev-tag\">" + DT("reverse", "inverso") + "</em>" : "";
+      let _0x440433 = "";
+      if (_0xcce47b != null) {
+        _0x440433 = "<div class=\"intensity-badge\">" + DT("Impact:", "Impacto:") + " <strong>" + _0x1f54d5[_0xcce47b] + "</strong></div>";
+      }
+      const _0x1bce4f = homeItemBooks(_0x1298a8.n, _0x244b2b);
+      const _0x5a6743 = _0x1bce4f ? "<span class=\"hi-toggle\">" + DT("In the books", "En los libros") + " <span class=\"hi-chev\">▾</span></span>" : "";
+      _0x349b7c += "<div class=\"home-item" + (_0x1bce4f ? " has-books" : "") + "\"" + (_0x1bce4f ? " onclick=\"homeItemToggle(this)\"" : "") + "><div class=\"home-item-num\">" + _0x1298a8.n + ".</div><div class=\"home-item-text\">" + escapeHtml(_0x1298a8.text) + _0x3db8c5 + _0x440433 + _0x5a6743 + "</div><div class=\"heat-cell " + _0x1f6d8d + "\">" + _0x238bb1 + "</div>" + _0x1bce4f + "</div>";
+    }
+    if (_0x196b68.reflections && _0x196b68.reflections[_0x14ca29.reflectionIdx]) {
+      _0x349b7c += "<div class=\"home-reflection\"><div class=\"label\">" + (_0x3d8f48 ? DT("In your words", "En tus palabras") : DT("Their own words", "Sus propias palabras")) + "</div><div class=\"quote\">“" + escapeHtml(decodeChoices(_0x196b68.reflections[_0x14ca29.reflectionIdx], _0x3d8f48 ? surveyLang : dashLang)) + "”</div></div>";
+    }
+    _0x349b7c += aogNowWhat(_0x14ca29.key, _0x14ca29.score, _0x3d8f48);
+    _0x349b7c += "</div></div>";
+  });
+  if (_0x196b68.closingWord) {
+    _0x349b7c += "<div class=\"home-reflection\" style=\"margin: 16px 0;\"><div class=\"label\">" + (_0x3d8f48 ? DT("A word you kept", "La palabra que elegiste") : DT("Word they kept", "La palabra que eligieron")) + "</div><div class=\"quote\" style=\"font-size: 22px; color: var(--gold);\">“" + escapeHtml(decodeChoices(_0x196b68.closingWord, _0x3d8f48 ? surveyLang : dashLang)) + "”</div></div>";
+  }
+  return _0x349b7c;
+}
+function renderMyResults() {
+  window._aogAudUserChose = false;
+  const _0x525fe1 = window._lastResult || window._pendingRecord;
+  const _0x1ef59c = document.getElementById("myResultsReport");
+  if (!_0x1ef59c) {
+    return;
+  }
+  if (!_0x525fe1) {
+    _0x1ef59c.innerHTML = "";
+    var _agp = document.getElementById("aogAgesPanel");
+    if (_agp) { _agp.innerHTML = ""; _agp.style.display = "none"; }
+    var _agw = document.getElementById("agesToggleWrap");
+    if (_agw) _agw.style.display = "none";
+    return;
+  }
+  const _0x1b0e6f = typeof dashLang !== "undefined" ? dashLang : "en";
+  dashLang = typeof lang !== "undefined" ? lang : _0x1b0e6f;
+  _0x1ef59c.innerHTML = buildHomeReport(_0x525fe1, true, undefined, "var b=document.getElementById('btnPrintMyResults')||document.getElementById('btnPrintMyResultsTop'); if(b){b.click();}");
+  /* Grace Compass (own results) — student-safe for K-12, full Practitioner for adults */
+  try {
+    if (typeof renderGraceCompassReport === "function" && _0x525fe1) {
+      var _gcAdult = (_0x525fe1.population === "adult" || String(_0x525fe1.grade) === "Adult");
+      var _gcBox = document.createElement("div");
+      _gcBox.id = "grace-compass-report";
+      _gcBox.style.margin = "4px 0 28px";
+      _0x1ef59c.insertBefore(_gcBox, _0x1ef59c.firstChild);
+      var _gcOpts = _gcAdult ? {} : { self: true };
+      renderGraceCompassReport(_0x525fe1, "grace-compass-report", _gcOpts);
+      if (!_gcBox.innerHTML.trim()) { _gcBox.parentNode.removeChild(_gcBox); }
+    }
+  } catch (_gcErr) { console.warn("Grace Compass render skipped:", _gcErr); }
+  if (typeof aogRenderAgesPanel === "function") { try { aogRenderAgesPanel(); } catch (_e) {} }
+  dashLang = _0x1b0e6f;
+  var _0x1059e2 = document.getElementById("shareQrBox");
+  if (_0x1059e2) {
+    _0x1059e2.innerHTML = "";
+    _0x1059e2.style.display = "none";
+    _0x1059e2.removeAttribute("data-on");
+  }
+  var _0x149bae = document.getElementById("shareQrMsg");
+  if (_0x149bae) {
+    _0x149bae.textContent = "";
+  }
+  var _0xe30f2f = document.getElementById("btnShareQr");
+  if (_0xe30f2f) {
+    _0xe30f2f.textContent = typeof lang !== "undefined" && lang === "es" ? "Mostrar un código QR" : "Show a QR code";
+  }
+}
+function showMyResults() {
+  if (window._pendingRecord && !window._lastResult) {
+    finalizeAndSave("");
+  }
+  renderMyResults();
+  showScreen("screen-myresults");
+}
+function printMyResults() {
+  var _0x3c574d = window._lastResult || window._pendingRecord;
+  if (!_0x3c574d) {
+    return;
+  }
+  var _0x12a4bb = document.getElementById("printReport");
+  if (!_0x12a4bb) {
+    return;
+  }
+  var _0x26537d = typeof lang !== "undefined" && lang === "es";
+  var _0x4a9fb5 = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (typeof dashLang !== "undefined") {
+    dashLang = typeof lang !== "undefined" ? lang : _0x4a9fb5;
+  }
+  var _0x13388a = "<div style=\"font-family:Fraunces,serif;border-bottom:2px solid #B8893A;padding-bottom:10px;margin-bottom:16px;\"><div style=\"font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B8893A;font-weight:700;\">Architecture of Grace · " + (_0x26537d ? "Mis resultados" : "My results") + "</div><div style=\"font-size:24px;color:#0A1E33;font-weight:600;\">" + (_0x26537d ? "Cómo me va" : "How I’m doing") + "</div><div style=\"font-size:12px;color:#46506E;\">" + escapeHtml([typeof winLabel === "function" && _0x3c574d.window ? winLabel(_0x3c574d.window) : null, typeof fmtNiceDate === "function" ? fmtNiceDate(_0x3c574d.timestamp) : null].filter(Boolean).join(" · ")) + "</div></div>";
+  var _gcPrint = "";
+  try { if (typeof window.aogGraceCompass === "function") { _gcPrint = window.aogGraceCompass(_0x3c574d, (_0x3c574d.population === "adult" || String(_0x3c574d.grade) === "Adult") ? { compact: true } : { self: true, compact: true }); } } catch (_e) {}
+  var _gcStrip = (typeof aogCompassScoreStrip === "function") ? aogCompassScoreStrip(_0x3c574d, _0x26537d) : "";
+  /* Clean one-sheet summary (header + scores + Grace Compass), not the full item report. */
+  _0x12a4bb.innerHTML = "<div class=\"home-view\">" + _0x13388a + _gcStrip + _gcPrint + "</div>";
+  if (typeof dashLang !== "undefined") {
+    dashLang = _0x4a9fb5;
+  }
+  var _0x254b74 = document.title;
+  document.title = "AoG_My_Results_" + (_0x3c574d.window || "") + "_" + (typeof fmtNiceDate === "function" ? (fmtNiceDate(_0x3c574d.timestamp) || "").replace(/[^A-Za-z0-9]+/g, "_") : "");
+  _0x12a4bb.querySelectorAll(".home-item.has-books").forEach(function (_0x8d2bf) {
+    _0x8d2bf.classList.add("open");
+  });
+  /* Synchronous — see the iOS gesture-chain note in dashExportPdf. */
+  aogPrintHold(function () {
+    document.title = _0x254b74;
+    _0x12a4bb.innerHTML = "";
+  });
+  try { window.print(); } catch (e) {}
+}
+function buildMyResultsMailto(_0x79a46) {
+  if (!_0x79a46) {
+    return "";
+  }
+  var _0x521705 = typeof lang !== "undefined" && lang === "es";
+  function _0x56951e(_0x530efc) {
+    if (_0x530efc == null) {
+      return "—";
+    } else {
+      return Math.round(_0x530efc);
+    }
+  }
+  var _0xc47620 = (typeof fmtNiceDate === "function" ? fmtNiceDate(_0x79a46.timestamp) : "") || "";
+  var _0x562580 = _0x521705 ? {
+    subject: "Mis resultados — Architecture of Grace",
+    title: "Mis resultados de la autorreflexión — Architecture of Grace",
+    date: "Fecha",
+    overall: "General",
+    a: "Regulación emocional y bienestar",
+    b: "Autocompasión y mentalidad de crecimiento",
+    c: "Competencia social y reparación",
+    scale: "(de 100; más alto es más estable)",
+    note: "Esto es un punto de partida para una conversación, no un diagnóstico."
+  } : {
+    subject: "My results — Architecture of Grace",
+    title: "My Self-Reflection results — Architecture of Grace",
+    date: "Date",
+    overall: "Overall",
+    a: "Emotional Regulation & Well-Being",
+    b: "Self-Compassion & Growth Mindset",
+    c: "Social Competency & Repair",
+    scale: "(out of 100; higher is steadier)",
+    note: "This is a starting point for a conversation, not a diagnosis."
+  };
+  var _0x55c887 = [_0x562580.title, "", _0x562580.date + ": " + _0xc47620, "", _0x562580.overall + ": " + _0x56951e(_0x79a46.normComposite) + "/100", _0x562580.a + ": " + _0x56951e(_0x79a46.normA) + "/100", _0x562580.b + ": " + _0x56951e(_0x79a46.normB) + "/100", _0x562580.c + ": " + _0x56951e(_0x79a46.normC) + "/100", "", _0x562580.scale, "", _0x562580.note].join("\n");
+  return "mailto:?subject=" + encodeURIComponent(_0x562580.subject) + "&body=" + encodeURIComponent(_0x55c887);
+}
+function emailMyResults() {
+  var _0x4a2c55 = window._lastResult || window._pendingRecord;
+  if (!_0x4a2c55) {
+    return;
+  }
+  window.location.href = buildMyResultsMailto(_0x4a2c55);
+}
+function buildShareText(_0x1d00fb) {
+  if (!_0x1d00fb) {
+    return "";
+  }
+  var _0x14c31a = typeof lang !== "undefined" && lang === "es";
+  var _0x21443e = _0x1d00fb.population === "adult";
+  var _0x49bebc = _0x1d00fb.mode === "depth" ? 5 : 3;
+  function _0x3639ae(_0x352581) {
+    if (_0x352581 == null) {
+      if (_0x14c31a) {
+        return "—";
+      } else {
+        return "—";
+      }
+    }
+    if (_0x352581 >= 75) {
+      if (_0x14c31a) {
+        return "va bien";
+      } else {
+        return "doing well";
+      }
+    }
+    if (_0x352581 >= 50) {
+      if (_0x14c31a) {
+        return "vale una autorreflexión con calma";
+      } else {
+        return "worth a gentle self-reflection";
+      }
+    }
+    if (_0x14c31a) {
+      return "le vendría bien algo de apoyo";
+    } else {
+      return "could use some support";
+    }
+  }
+  var _0x3293e7 = _0x14c31a ? ["Sentimientos y mantener la calma", "Ser amable conmigo mismo/a", "Llevarse bien y reparar"] : ["Feelings & staying calm", "Being kind to myself", "Getting along & making things right"];
+  var _0x44f25b = [];
+  _0x44f25b.push("Architecture of Grace — " + (_0x14c31a ? "una autorreflexión para conversar juntos" : "a self-reflection to talk over together"));
+  _0x44f25b.push("");
+  _0x44f25b.push(_0x14c31a ? "Cómo han estado las cosas:" : "How things have been:");
+  _0x44f25b.push("• " + _0x3293e7[0] + ": " + _0x3639ae(_0x1d00fb.normA));
+  _0x44f25b.push("• " + _0x3293e7[1] + ": " + _0x3639ae(_0x1d00fb.normB));
+  _0x44f25b.push("• " + _0x3293e7[2] + ": " + _0x3639ae(_0x1d00fb.normC));
+  _0x44f25b.push("");
+  var _0xc76d95 = _0x21443e ? ITEMS_ADULT_EN : ITEMS_EN;
+  var _0x51bd1d = [];
+  _0xc76d95.forEach(function (_0x21e5b9, _0x257e5e) {
+    var _0x34ccda = scoreFrequency(_0x1d00fb.raw[_0x257e5e], _0x21e5b9.reverse, _0x1d00fb.mode);
+    if (_0x34ccda == null) {
+      return;
+    }
+    if (_0x34ccda < _0x49bebc * 0.4) {
+      _0x51bd1d.push({
+        n: _0x21e5b9.n,
+        scored: _0x34ccda
+      });
+    }
+  });
+  _0x51bd1d.sort(function (_0x386dd6, _0x39ea2b) {
+    return _0x386dd6.scored - _0x39ea2b.scored;
+  });
+  if (!_0x51bd1d.length) {
+    _0x44f25b.push(_0x14c31a ? "Todo quedó en un rango saludable — un buen momento para celebrar juntos y preguntar qué ha ido bien." : "Everything landed in a healthy range — a good moment to celebrate together, and to ask what’s been going well.");
+  } else {
+    var _0x143c28 = _0x21443e ? PROMPTS_ADULT : PROMPTS;
+    var _0x57e5c1 = _0x14c31a ? "es" : "en";
+    _0x44f25b.push(_0x14c31a ? "Un par de cosas para preguntar con suavidad — de a una:" : "A couple of gentle things to ask about — one at a time:");
+    _0x51bd1d.slice(0, 2).forEach(function (_0x8f49eb, _0x52a214) {
+      var _0x325354 = _0x143c28[_0x8f49eb.n] ? _0x143c28[_0x8f49eb.n][_0x57e5c1] || _0x143c28[_0x8f49eb.n].en : "";
+      if (_0x325354) {
+        _0x44f25b.push(_0x52a214 + 1 + ". " + _0x325354);
+      }
+    });
+  }
+  _0x44f25b.push("");
+  _0x44f25b.push(_0x14c31a ? "Un puntaje es una señal para conversar, nunca un diagnóstico." : "A score is a flag for a conversation, never a diagnosis.");
+  return _0x44f25b.join("\n");
+}
+async function showShareQr() {
+  var _0x177ad4 = document.getElementById("shareQrBox");
+  var _0x2fcec8 = document.getElementById("shareQrMsg");
+  var _0x1a9305 = document.getElementById("btnShareQr");
+  var _0x4ed5ed = window._lastResult || window._pendingRecord;
+  if (!_0x177ad4 || !_0x4ed5ed) {
+    return;
+  }
+  var _0x1d2a58 = typeof lang !== "undefined" && lang === "es";
+  if (_0x177ad4.getAttribute("data-on") === "1") {
+    _0x177ad4.innerHTML = "";
+    _0x177ad4.style.display = "none";
+    _0x177ad4.removeAttribute("data-on");
+    if (_0x2fcec8) {
+      _0x2fcec8.textContent = "";
+    }
+    if (_0x1a9305) {
+      _0x1a9305.textContent = _0x1d2a58 ? "Mostrar un código QR" : "Show a QR code";
+    }
+    return;
+  }
+  _0x177ad4.style.display = "flex";
+  if (_0x2fcec8) {
+    _0x2fcec8.textContent = _0x1d2a58 ? "Generando…" : "Generating…";
+  }
+  var _0x37d029 = await ensureQrLib();
+  if (!_0x37d029 || !window.QRCode) {
+    _0x177ad4.style.display = "none";
+    if (_0x2fcec8) {
+      _0x2fcec8.textContent = _0x1d2a58 ? "El generador de QR necesita conexión a internet por un momento. La opción Guardar / Imprimir siempre funciona sin conexión." : "The QR maker needs an internet connection for a moment. Save / Print always works offline.";
+    }
+    return;
+  }
+  try {
+    _0x177ad4.innerHTML = "";
+    new QRCode(_0x177ad4, {
+      text: buildShareText(_0x4ed5ed),
+      width: 190,
+      height: 190,
+      correctLevel: QRCode.CorrectLevel.L
+    });
+    _0x177ad4.setAttribute("data-on", "1");
+    if (_0x2fcec8) {
+      _0x2fcec8.textContent = _0x1d2a58 ? "Pídele a un adulto de confianza que apunte la cámara de su teléfono aquí." : "Ask a trusted grown-up to point their phone camera here.";
+    }
+    if (_0x1a9305) {
+      _0x1a9305.textContent = _0x1d2a58 ? "Ocultar el código QR" : "Hide the QR code";
+    }
+  } catch (_0x3d708e) {
+    _0x177ad4.style.display = "none";
+    if (_0x2fcec8) {
+      _0x2fcec8.textContent = _0x1d2a58 ? "No se pudo crear el QR. Usa Guardar / Imprimir." : "Couldn’t make the QR. Use Save / Print instead.";
+    }
+  }
+}
+var FAMILY_KEY = "aog.family.v1";
+function getFamilyRoster() {
+  try {
+    var _0x5ad9e5 = JSON.parse(localStorage.getItem(FAMILY_KEY) || "[]");
+    if (Array.isArray(_0x5ad9e5)) {
+      return _0x5ad9e5;
+    } else {
+      return [];
+    }
+  } catch (_0x5c8908) {
+    return [];
+  }
+}
+function saveFamilyRoster(_0x54f5e6) {
+  try {
+    localStorage.setItem(FAMILY_KEY, JSON.stringify(_0x54f5e6));
+  } catch (_0x4e3634) {}
+}
+function familyRosterAdd(_0x1891ad, _0x51a3c7) {
+  _0x1891ad = (_0x1891ad || "").trim();
+  if (!_0x1891ad) {
+    return;
+  }
+  var _0x2790eb = getFamilyRoster();
+  var _0x117687 = _0x2790eb.find(function (_0x1f9ae5) {
+    return _0x1f9ae5.id.toLowerCase() === _0x1891ad.toLowerCase();
+  });
+  if (_0x117687) {
+    if (_0x51a3c7) {
+      _0x117687.grade = _0x51a3c7;
+    }
+  } else {
+    _0x2790eb.push({
+      id: _0x1891ad,
+      grade: _0x51a3c7 || ""
+    });
+  }
+  saveFamilyRoster(_0x2790eb);
+}
+function familyAllChildren() {
+  var _0x3843f1 = {};
+  getFamilyRoster().forEach(function (_0x15abf1) {
+    _0x3843f1[_0x15abf1.id] = {
+      id: _0x15abf1.id,
+      grade: _0x15abf1.grade || ""
+    };
+  });
+  (typeof getLocalRecords === "function" ? getLocalRecords() : []).forEach(function (_0x538efd) {
+    if (!_0x538efd || !_0x538efd.studentId) {
+      return;
+    }
+    if (_0x538efd.population === "adult") {
+      return;
+    }
+    if (_0x538efd.context && _0x538efd.context !== "home") {
+      return;
+    }
+    if (!_0x3843f1[_0x538efd.studentId]) {
+      _0x3843f1[_0x538efd.studentId] = {
+        id: _0x538efd.studentId,
+        grade: _0x538efd.grade || ""
+      };
+    } else if (!_0x3843f1[_0x538efd.studentId].grade && _0x538efd.grade) {
+      _0x3843f1[_0x538efd.studentId].grade = _0x538efd.grade;
+    }
+  });
+  return Object.keys(_0x3843f1).map(function (_0x2ffe23) {
+    return _0x3843f1[_0x2ffe23];
+  });
+}
+function familyRecordsFor(_0x1b1baa) {
+  return (typeof getLocalRecords === "function" ? getLocalRecords() : []).filter(function (_0x3d451a) {
+    return _0x3d451a && _0x3d451a.studentId === _0x1b1baa && _0x3d451a.population !== "adult";
+  }).sort(function (_0x22ffd9, _0x233725) {
+    return new Date(_0x22ffd9.timestamp) - new Date(_0x233725.timestamp);
+  });
+}
+var _familySel = null;
+/* Fix: the "See progress" button on the thanks screen used to open Family Mode
+   without persisting the just-completed self-reflection. submitFinal() only stages the
+   record in window._pendingRecord; the actual save (and familyRosterAdd) happens
+   in finalizeAndSave(), which the family-return path skipped — so quick family
+   self-reflections (which go straight to thanks with no closing/affirmation step) were
+   never stored, and Family progress showed no results. Persist first, then open. */
+async function familyReturnFromThanks() {
+  try {
+    if (window._pendingRecord && !window._lastResult && typeof finalizeAndSave === "function") {
+      await finalizeAndSave("");
+    }
+  } catch (_aogFR) {}
+  var _c = window._famReturn;
+  window._famReturn = null;
+  openFamily(_c);
+}
+try { window.familyReturnFromThanks = familyReturnFromThanks; } catch (_aogFRX) {}
+function openFamily(_0x18aeb2) {
+  window.__aogFamilyTarget = "familyRoot";
+  var _0x57a251 = familyAllChildren();
+  _familySel = _0x18aeb2 || (_familySel && _0x57a251.some(function (_0x5cb845) {
+    return _0x5cb845.id === _familySel;
+  }) ? _familySel : _0x57a251[0] ? _0x57a251[0].id : null);
+  renderFamily();
+  showScreen("screen-family");
+  // Register a history entry so the Back button returns to the prior screen.
+  if (typeof aogSetHash === "function") { try { aogSetHash("family"); } catch (e) {} }
+}
+function familySelectChild(_0x2c06c4) {
+  _familySel = _0x2c06c4;
+  renderFamily();
+}
+function familyAddChild() {
+  var _0x159745 = typeof lang !== "undefined" && lang === "es";
+  var _0x4aa351 = prompt(_0x159745 ? "Nombre o apodo del miembro de la familia (se guarda solo en este dispositivo):" : "Family member’s first name or nickname (saved only on this device):");
+  if (!_0x4aa351 || !_0x4aa351.trim()) {
+    return;
+  }
+  var _0x44f771 = prompt(_0x159745 ? "Grado o nivel (K, 1, 2 … 12). Puedes dejarlo en blanco:" : "Grade (K, 1, 2 … 12). You can leave this blank:") || "";
+  familyRosterAdd(_0x4aa351.trim(), _0x44f771.trim());
+  _familySel = _0x4aa351.trim();
+  // .30cm: adding a member used to launch the thorough self-reflection;
+  // now it simply adds them - talk, repair and rhythms are the rhythm.
+  renderFamily();
+}
+function familyNewCheckin(_0x3f4c9b, _0x509aee) {
+  if (typeof startCheckin === "function") {
+    startCheckin();
+  }
+  window._famFlow = true;
+  context = "home";
+  mode = "depth";
+  if (typeof applyContext === "function") {
+    applyContext();
+  }
+  var _0x273e4d = document.getElementById("ctxBlock");
+  if (_0x273e4d) {
+    _0x273e4d.style.display = "none";
+  }
+  var _0x59aa1a = typeof lang !== "undefined" && lang === "es";
+  var _0x584d42 = document.getElementById("checkinEyebrow");
+  if (_0x584d42) {
+    _0x584d42.textContent = (_0x59aa1a ? "Autorreflexión familiar" : "Family Self-Reflection") + (_0x3f4c9b ? " · " + _0x3f4c9b : "");
+  }
+  document.querySelectorAll("#modeGrid .mode-card").forEach(function (_0x538699) {
+    var _0x216287 = _0x538699.getAttribute("data-mode") === "depth";
+    _0x538699.classList.toggle("selected", _0x216287);
+    _0x538699.setAttribute("aria-checked", _0x216287 ? "true" : "false");
+  });
+  ["modeChooseHead", "modeGrid"].forEach(function (_aogMid) {
+    var _aogMel = document.getElementById(_aogMid);
+    if (_aogMel) {
+      _aogMel.style.display = "none";
+    }
+  });
+  var _0x155562 = document.getElementById("studentId");
+  if (_0x155562) {
+    _0x155562.value = _0x3f4c9b || "";
+  }
+  var _0x55ea76 = document.getElementById("grade");
+  if (_0x55ea76 && _0x509aee) {
+    _0x55ea76.value = _0x509aee;
+  }
+  window._famReturn = _0x3f4c9b || null;
+}
+function famDateShort(_0x27e2dc) {
+  try {
+    var _0x579940 = new Date(_0x27e2dc);
+    return _0x579940.toLocaleDateString(typeof lang !== "undefined" && lang === "es" ? "es" : "en", {
+      month: "short",
+      year: "numeric"
+    });
+  } catch (_0x3775df) {
+    return "";
+  }
+}
+function familyChart(_0x591e1a) {
+  var _0x36799a = typeof lang !== "undefined" && lang === "es";
+  var _0x55a1eb = 680;
+  var _0x28bbda = 240;
+  var _0xf5e3dd = 38;
+  var _0x4cd133 = 18;
+  var _0x37ac39 = 16;
+  var _0x484551 = 42;
+  function _0x189276(_0x469c30, _0x146fd9) {
+    if (_0x146fd9 <= 1) {
+      return _0xf5e3dd + (_0x55a1eb - _0xf5e3dd - _0x4cd133) / 2;
+    } else {
+      return _0xf5e3dd + (_0x55a1eb - _0xf5e3dd - _0x4cd133) * (_0x469c30 / (_0x146fd9 - 1));
+    }
+  }
+  function _0xe31c57(_0x38bafb) {
+    return _0x37ac39 + (_0x28bbda - _0x37ac39 - _0x484551) * (1 - _0x38bafb / 100);
+  }
+  var _0x41f0c2 = [{
+    lo: 75,
+    hi: 100,
+    c: "var(--green-bg)"
+  }, {
+    lo: 50,
+    hi: 75,
+    c: "var(--amber-bg)"
+  }, {
+    lo: 0,
+    hi: 50,
+    c: "var(--red-bg)"
+  }];
+  var _0x25606e = "<svg viewBox=\"0 0 " + _0x55a1eb + " " + _0x28bbda + "\" role=\"img\" aria-label=\"" + (_0x36799a ? "Progreso a lo largo del año" : "Progress over the year") + "\">";
+  _0x41f0c2.forEach(function (_0x20448f) {
+    var _0x59547a = _0xe31c57(_0x20448f.hi);
+    var _0x153142 = _0xe31c57(_0x20448f.lo);
+    _0x25606e += "<rect x=\"" + _0xf5e3dd + "\" y=\"" + _0x59547a + "\" width=\"" + (_0x55a1eb - _0xf5e3dd - _0x4cd133) + "\" height=\"" + (_0x153142 - _0x59547a) + "\" fill=\"" + _0x20448f.c + "\" opacity=\"0.6\"/>";
+  });
+  [0, 25, 50, 75, 100].forEach(function (_0x39f587) {
+    var _0x391521 = _0xe31c57(_0x39f587);
+    _0x25606e += "<line x1=\"" + _0xf5e3dd + "\" y1=\"" + _0x391521 + "\" x2=\"" + (_0x55a1eb - _0x4cd133) + "\" y2=\"" + _0x391521 + "\" stroke=\"var(--rule)\" stroke-width=\"1\"/>";
+    _0x25606e += "<text x=\"" + (_0xf5e3dd - 6) + "\" y=\"" + (_0x391521 + 3) + "\" text-anchor=\"end\" font-family=\"Inter,sans-serif\" font-size=\"10\" fill=\"var(--ink-faint)\">" + _0x39f587 + "</text>";
+  });
+  var _0x33cda2 = _0x591e1a.length;
+  var _0x393a64 = _0x591e1a.map(function (_0x3d4164, _0x5dc659) {
+    return {
+      x: _0x189276(_0x5dc659, _0x33cda2),
+      y: _0xe31c57(_0x3d4164.normComposite || 0),
+      v: _0x3d4164.normComposite || 0,
+      r: _0x3d4164,
+      i: _0x5dc659
+    };
+  });
+  if (_0x33cda2 >= 2) {
+    var _0x4c232e = _0x393a64.map(function (_0x24680e, _0x29989e) {
+      return (_0x29989e ? "L" : "M") + _0x24680e.x.toFixed(1) + " " + _0x24680e.y.toFixed(1);
+    }).join(" ");
+    _0x25606e += "<path d=\"" + _0x4c232e + "\" fill=\"none\" stroke=\"var(--ink)\" stroke-width=\"2.5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>";
+  }
+  _0x393a64.forEach(function (_0x2aaf41) {
+    var _0x5e96dd = typeof tierFromNormComposite === "function" ? tierFromNormComposite(_0x2aaf41.v) : "";
+    var _0x1f8de1 = _0x5e96dd === "green" ? "var(--green)" : _0x5e96dd === "amber" ? "var(--amber)" : "var(--red)";
+    _0x25606e += "<circle cx=\"" + _0x2aaf41.x.toFixed(1) + "\" cy=\"" + _0x2aaf41.y.toFixed(1) + "\" r=\"6\" fill=\"" + _0x1f8de1 + "\" stroke=\"#fff\" stroke-width=\"2\"/>";
+    _0x25606e += "<text x=\"" + _0x2aaf41.x.toFixed(1) + "\" y=\"" + (_0x2aaf41.y - 12).toFixed(1) + "\" text-anchor=\"middle\" font-family=\"Fraunces,serif\" font-size=\"13\" font-weight=\"600\" fill=\"var(--ink)\">" + Math.round(_0x2aaf41.v) + "</text>";
+    var _0x3808e1 = (typeof winLabel === "function" && _0x2aaf41.r.window ? winLabel(_0x2aaf41.r.window) : "") || famDateShort(_0x2aaf41.r.timestamp);
+    _0x25606e += "<text x=\"" + _0x2aaf41.x.toFixed(1) + "\" y=\"" + (_0x28bbda - 22) + "\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-size=\"10.5\" fill=\"var(--ink-soft)\">" + escapeHtml(String(_0x3808e1).split(" ")[0]) + "</text>";
+    _0x25606e += "<text x=\"" + _0x2aaf41.x.toFixed(1) + "\" y=\"" + (_0x28bbda - 9) + "\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-size=\"9\" fill=\"var(--ink-faint)\">" + escapeHtml(famDateShort(_0x2aaf41.r.timestamp)) + "</text>";
+  });
+  _0x25606e += "</svg>";
+  return _0x25606e;
+}
+function renderFamily() {
+  var _0x51534e = document.getElementById(window.__aogFamilyTarget || "familyRoot");
+  if (!_0x51534e) {
+    return;
+  }
+  var _0xd0adc = typeof lang !== "undefined" && lang === "es";
+  var _0xf62665 = familyAllChildren();
+  if (!_familySel && _0xf62665[0]) {
+    _familySel = _0xf62665[0].id;
+  }
+  var _0x3dd78a = "<div class=\"fam-switch\">";
+  _0xf62665.forEach(function (_0x219b00) {
+    _0x3dd78a += "<button class=\"fam-chip" + (_0x219b00.id === _familySel ? " active" : "") + "\" onclick=\"familySelectChild('" + jsAttr(_0x219b00.id) + "')\">" + escapeHtml(_0x219b00.id) + (_0x219b00.grade ? " <span class=\"fc-grade\">" + escapeHtml(_0xd0adc ? "Gr " + _0x219b00.grade : _0x219b00.grade === "Adult" ? "Adult" : "Gr " + _0x219b00.grade) + "</span>" : "") + "</button>";
+  });
+  _0x3dd78a += "<button class=\"fam-chip add\" onclick=\"familyAddChild()\">+ " + (_0xd0adc ? "Añadir miembro" : "Add family member") + "</button>";
+  _0x3dd78a += "</div>";
+  if (!_0xf62665.length) {
+    _0x3dd78a += "<div class=\"fam-empty\"><h3>" + (_0xd0adc ? "Aún no hay miembros" : "No family members yet") + "</h3><p>" + (_0xd0adc ? "Añade a cada miembro una vez para tener iniciadores de conversación según su edad, un diario privado de reparaciones y ritmos suaves. Todo se guarda en privado en este dispositivo." : "Add each family member once for conversation starters that fit their age, a private repair journal and gentle routines. Everything is saved privately on this device.") + "</p><button class=\"btn\" onclick=\"familyAddChild()\">" + (_0xd0adc ? "Añadir tu primer miembro" : "Add your first family member") + " &rarr;</button></div>";
+    _0x51534e.innerHTML = _0x3dd78a;
+    return;
+  }
+  var _0x8374a4 = familyRecordsFor(_familySel);
+  _0x3dd78a += "<div class=\"fam-panel\">";
+  _0x3dd78a += (window.aogFamTabStrip ? aogFamTabStrip(_0xd0adc) : "");
+  /* Retired 2026-08-30 (build .30cm), by Jimmy's decision: the thorough
+     few-times-a-year self-reflection is school's rhythm, not home's, and it
+     is no longer invited from the family page. Records that already exist -
+     or arrive through a school link or Start Here - still land in the
+     roster and stay viewable in Looking back below. familyNewCheckin() is
+     kept defined for the dashboard and any older callers. */
+  _0x3dd78a += (window.aogFamilyExtrasTop ? aogFamilyExtrasTop(_familySel, _0x8374a4, _0xd0adc) : "");
+  _0x3dd78a += "<div class=\"fam-tabpanel\" data-famtab=\"progress\">";
+  _0x3dd78a += (window.aogGrowthHero ? aogGrowthHero(_0x8374a4, _0xd0adc) : "");
+  _0x3dd78a += "<div class=\"fam-card\"><div class=\"fam-card-h\"><div class=\"t\">" + (_0xd0adc ? "Mirando atrás" : "Looking back") + "</div>" + (_0x8374a4.length ? ("<button type=\"button\" class=\"fam-print-btn\" onclick=\"aogFamilyPrint('" + jsAttr(_familySel) + "')\">🖨️ " + (_0xd0adc ? "Imprimir" : "Print") + "</button>") : "") + "</div>";
+  if (_0x8374a4.length) {
+    _0x3dd78a += "<div class=\"fam-chart-wrap fam-chart\">" + familyChart(_0x8374a4) + "</div>";
+    _0x3dd78a += "<div class=\"fam-legend\"><span><i style=\"background:var(--green)\"></i>" + (_0xd0adc ? "Seguir observando (75–100)" : "Keep noticing (75–100)") + "</span><span><i style=\"background:var(--amber)\"></i>" + (_0xd0adc ? "Vale una conversación (50–74)" : "Worth a conversation (50–74)") + "</span><span><i style=\"background:var(--red)\"></i>" + (_0xd0adc ? "Seguimiento de un adulto (0–49)" : "Adult follow-up (0–49)") + "</span></div>";
+    if (_0x8374a4.length === 1) {
+      _0x3dd78a += "<p class=\"small\" style=\"margin-top:10px;color:var(--ink-soft)\">" + (_0xd0adc ? "Una autorreflexión hasta ahora — añade otro ḿs adelante en el año para ver la tendencia." : "One self-reflection so far — add another later in the year to see the trend.") + "</p>";
+    }
+  } else {
+    _0x3dd78a += "<p class=\"small\" style=\"color:var(--ink-soft)\">" + (_0xd0adc ? "Aún no hay nada que mirar atrás para " + escapeHtml(_familySel) + ". Las reflexiones que la familia haga desde un enlace de la escuela o desde Empieza aquí aparecerán aquí." : "Nothing to look back on for " + escapeHtml(_familySel) + " yet. Reflections your family takes from a school link or Start Here will appear here.") + "</p>";
+  }
+  _0x3dd78a += "</div>";
+  if (_0x8374a4.length) {
+    _0x3dd78a += "<div class=\"fam-card\"><div class=\"fam-card-h\"><div class=\"t\">" + (_0xd0adc ? "Autorreflexiones" : "Self-reflections") + "</div></div><div class=\"fam-hist\">";
+    _0x8374a4.slice().reverse().forEach(function (_0x573ad0) {
+      var _0x6a8db4 = typeof recordKey === "function" ? recordKey(_0x573ad0) : _0x573ad0.timestamp;
+      var _0x5a1ea6 = _0x573ad0.tier || (typeof tierFromNormComposite === "function" ? tierFromNormComposite(_0x573ad0.normComposite) : "");
+      var _0x2a1c91 = typeof tierLabel === "function" ? tierLabel(_0x5a1ea6) : "";
+      var _0x3fd253 = typeof tierClass === "function" ? tierClass(_0x5a1ea6) : "";
+      var _0x1fdca5 = [typeof winLabel === "function" && _0x573ad0.window ? winLabel(_0x573ad0.window) : null, famDateShort(_0x573ad0.timestamp)].filter(Boolean).join(" · ");
+      _0x3dd78a += "<div class=\"fam-row\" data-key=\"" + escapeHtml(_0x6a8db4) + "\"><div class=\"fr-date\">" + escapeHtml(_0x1fdca5) + "</div><div class=\"fr-score\">" + (_0x573ad0.normComposite != null ? Math.round(_0x573ad0.normComposite) : "—") + "<span class=\"small\" style=\"font-size:12px;color:var(--ink-faint)\">/100</span></div><span class=\"pill " + _0x3fd253 + "\">" + _0x2a1c91 + "</span><div class=\"fr-actions\"><button class=\"fam-mini-btn\" onclick=\"familyOpenReport(this,'" + encodeURIComponent(_0x6a8db4) + "')\">" + (_0xd0adc ? "Ver informe" : "Open report") + "</button><button class=\"fam-mini-btn aog-fam-tools-btn\" onclick=\"familyOpenTools(this,'" + encodeURIComponent(_0x6a8db4) + "')\">🧰 " + (_0xd0adc ? "Herramientas" : "Suggested tools") + "</button><button class=\"fam-mini-btn aog-convo-btn\" onclick=\"familyOpenConvo(this,'" + encodeURIComponent(_0x6a8db4) + "')\">💬 " + (_0xd0adc ? "Iniciadores de conversación" : "Conversation starters") + "</button><button class=\"fam-mini-btn\" onclick=\"exportChildPdf('" + encodeURIComponent(_0x6a8db4) + "')\">" + (_0xd0adc ? "Exportar PDF" : "Export PDF") + "</button></div><div class=\"fam-report-host\" style=\"flex-basis:100%\"></div></div>";
+    });
+    _0x3dd78a += "</div></div>";
+  }
+  _0x3dd78a += "</div>";
+  _0x3dd78a += "<div class=\"fam-tabpanel\" data-famtab=\"talk\" hidden>";
+  _0x3dd78a += (window.aogFamilyHubHtml ? aogFamilyHubHtml(_familySel, (_0xf62665.find(function (m) { return m.id === _familySel; }) || {}).grade, _0x8374a4, _0xd0adc) : "");
+  _0x3dd78a += (window.aogFamCsHtml ? aogFamCsHtml((_0xf62665.find(function (m) { return m.id === _familySel; }) || {}).grade, _0xd0adc) : "");
+  _0x3dd78a += gcExamplesHtml();
+  _0x3dd78a += "</div>";
+  _0x3dd78a += "<div class=\"fam-tabpanel\" data-famtab=\"repair\" hidden>";
+  _0x3dd78a += (window.aogFamRepairHtml ? aogFamRepairHtml(_familySel, _0xd0adc) : "");
+  _0x3dd78a += "</div>";
+  _0x3dd78a += "</div>";
+  _0x51534e.innerHTML = _0x3dd78a;
+  try{ if(window.aogFamTab) aogFamTab(window.__aogFamTab||"talk"); }catch(_e){}
+}
+function _famFindRecordByKey(_0x531474) {
+  var _0x17d536 = decodeURIComponent(_0x531474);
+  return (typeof getLocalRecords === "function" ? getLocalRecords() : []).find(function (_0x339c78) {
+    var _0x50f04d = typeof recordKey === "function" ? recordKey(_0x339c78) : _0x339c78.timestamp;
+    return _0x50f04d === _0x17d536;
+  });
+}
+/* Family-mode quick "Suggested tools" button — opens just the matched tappable tools
+   inline for that self-reflection (mirrors the dashboard's tools button). */
+function familyOpenTools(_btn, _key) {
+  var es = typeof lang !== "undefined" && lang === "es";
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var host = row.querySelector(".fam-report-host");
+  if (!host) { return; }
+  if (host.dataset.open === "tools") {
+    host.innerHTML = "";
+    host.dataset.open = "";
+    _btn.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools");
+    return;
+  }
+  var rec = _famFindRecordByKey(_key);
+  if (!rec) { return; }
+  var html = (typeof aogStudentToolsBlock === "function") ? aogStudentToolsBlock(rec, es) : "";
+  host.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + html + "</div>";
+  host.dataset.open = "tools";
+  _btn.textContent = "🧰 " + (es ? "Ocultar" : "Hide tools");
+  try { host.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+/* Family-mode quick "Conversation starters" button — opens just the starters inline. */
+function familyOpenConvo(_btn, _key) {
+  var es = typeof lang !== "undefined" && lang === "es";
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var host = row.querySelector(".fam-report-host");
+  if (!host) { return; }
+  if (host.dataset.open === "convo") {
+    host.innerHTML = "";
+    host.dataset.open = "";
+    _btn.textContent = "💬 " + (es ? "Iniciadores de conversación" : "Conversation starters");
+    return;
+  }
+  var rec = _famFindRecordByKey(_key);
+  if (!rec) { return; }
+  var prev = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (typeof dashLang !== "undefined") { dashLang = typeof lang !== "undefined" ? lang : prev; }
+  var html = (typeof renderConversationGuide === "function") ? renderConversationGuide(rec, true) : "";
+  if (typeof dashLang !== "undefined") { dashLang = prev; }
+  host.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + html + "</div>";
+  host.dataset.open = "convo";
+  _btn.textContent = "💬 " + (es ? "Ocultar" : "Hide");
+  try { host.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+function familyOpenReport(_0x3f621f, _0x7d6766) {
+  var _0x5757dd = _0x3f621f.closest(".fam-row");
+  if (!_0x5757dd) {
+    return;
+  }
+  var _0x454998 = _0x5757dd.querySelector(".fam-report-host");
+  if (!_0x454998) {
+    return;
+  }
+  if (_0x454998.dataset.open === "1") {
+    _0x454998.innerHTML = "";
+    _0x454998.dataset.open = "0";
+    return;
+  }
+  var _0x5aa7d8 = _famFindRecordByKey(_0x7d6766);
+  if (!_0x5aa7d8) {
+    return;
+  }
+  var _0x18a2a9 = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (typeof dashLang !== "undefined") {
+    dashLang = typeof lang !== "undefined" ? lang : _0x18a2a9;
+  }
+  _0x454998.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(_0x5aa7d8, true, undefined, "exportChildPdf('" + _0x7d6766 + "')") + "</div>";
+  if (typeof dashLang !== "undefined") {
+    dashLang = _0x18a2a9;
+  }
+  _0x454998.dataset.open = "1";
+}
+function exportChildPdf(_0x1f5ee8) {
+  var _0x341eab = _famFindRecordByKey(_0x1f5ee8);
+  if (!_0x341eab) {
+    return;
+  }
+  var _0x4d3727 = document.getElementById("printReport");
+  if (!_0x4d3727) {
+    return;
+  }
+  var _0x5e237f = typeof lang !== "undefined" && lang === "es";
+  var _0x3c26e4 = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (typeof dashLang !== "undefined") {
+    dashLang = typeof lang !== "undefined" ? lang : _0x3c26e4;
+  }
+  var _0x1cbc37 = "<div style=\"font-family:Fraunces,serif;border-bottom:2px solid #B8893A;padding-bottom:10px;margin-bottom:16px;\"><div style=\"font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B8893A;font-weight:700;\">Architecture of Grace · " + (_0x5e237f ? "Informe familiar" : "Family report") + "</div><div style=\"font-size:24px;color:#0A1E33;font-weight:600;\">" + escapeHtml(_0x341eab.studentId) + "</div><div style=\"font-size:12px;color:#46506E;\">" + escapeHtml([typeof winLabel === "function" && _0x341eab.window ? winLabel(_0x341eab.window) : null, famDateShort(_0x341eab.timestamp)].filter(Boolean).join(" · ")) + "</div></div>";
+  _0x4d3727.innerHTML = "<div class=\"home-view\">" + _0x1cbc37 + buildHomeReport(_0x341eab, false) + "</div>";
+  if (typeof dashLang !== "undefined") {
+    dashLang = _0x3c26e4;
+  }
+  var _0x435d90 = document.title;
+  document.title = "AoG_" + String(_0x341eab.studentId).replace(/[^A-Za-z0-9]+/g, "_") + "_" + (_0x341eab.window || "");
+  _0x4d3727.querySelectorAll(".home-item.has-books").forEach(function (_0xfa268e) {
+    _0xfa268e.classList.add("open");
+  });
+  /* Synchronous — see the iOS gesture-chain note in dashExportPdf. */
+  aogPrintHold(function () {
+    document.title = _0x435d90;
+    _0x4d3727.innerHTML = "";
+  });
+  try { window.print(); } catch (e) {}
+}
+function gcToggle(_0x3e42c8) {
+  var _0x4f97c8 = _0x3e42c8.closest(".gc-card");
+  if (_0x4f97c8) {
+    _0x4f97c8.classList.toggle("open");
+  }
+}
+function gcExamplesHtml() {
+  var _0x1586da = typeof lang !== "undefined" && lang === "es";
+  function _0xc1edda(_0x1d1dcd, _0x5b41a3) {
+    if (_0x1586da) {
+      return _0x5b41a3;
+    } else {
+      return _0x1d1dcd;
+    }
+  }
+  var _0x34b581 = [{
+    when: _0xc1edda("If “I talk to myself harshly when I mess up” scored low", "Si “Me hablo con dureza cuando me equivoco” obtuvo un puntaje bajo"),
+    turns: [_0xc1edda("Parent: I noticed you got really down on yourself after the test. What did the voice in your head say?", "Madre/Padre: Noté que te pusiste muy duro contigo después del examen. ¿Qué dijo la voz en tu cabeza?"), _0xc1edda("Child: That I’m just stupid.", "Niño/a: Que soy un tonto."), _0xc1edda("Parent: That sounds like the Inner Critic. If your best friend bombed that test, would you call them stupid?", "Madre/Padre: Eso suena al “Inner Critic”. Si tu mejor amigo reprobara, ¿le dirías que es tonto?"), _0xc1edda("Child: No… I’d say everyone has bad days.", "Niño/a: No… le diría que todos tienen días malos.")],
+    note: _0xc1edda("Goal: name the critic, then offer the kinder coach voice. You don’t fix it in one talk — you just open the door.", "Meta: nombrar al crítico y ofrecer la voz del entrenador amable. No se arregla en una charla — solo abres la puerta.")
+  }, {
+    when: _0xc1edda("If “Big feelings take over” scored low", "Si “Los sentimientos grandes me dominan” obtuvo un puntaje bajo"),
+    turns: [_0xc1edda("Parent: When you got that angry earlier, where did you feel it in your body?", "Madre/Padre: Cuando te enojaste tanto antes, ¿dónde lo sentiste en tu cuerpo?"), _0xc1edda("Child: My chest got tight and hot.", "Niño/a: El pecho se me puso apretado y caliente."), _0xc1edda("Parent: That’s good noticing. Next time it gets tight, what’s one thing that helps you settle?", "Madre/Padre: Qué bien que lo notaste. La próxima vez que se apriete, ¿qué te ayuda a calmarte?")],
+    note: _0xc1edda("Goal: build awareness first (where it lives in the body), then a plan — while things are calm, not mid-storm.", "Meta: primero la conciencia (dónde vive en el cuerpo), luego un plan — en calma, no en plena tormenta.")
+  }, {
+    when: _0xc1edda("If “There’s an adult I’d go to” scored low", "Si “Hay un adulto al que acudiría” obtuvo un puntaje bajo"),
+    turns: [_0xc1edda("Parent: If something was really wrong, who’s a grown-up you’d actually go to?", "Madre/Padre: Si algo anduviera muy mal, ¿a qué adulto acudirías de verdad?"), _0xc1edda("Child: I don’t know. Maybe no one.", "Niño/a: No sé. Tal vez a nadie."), _0xc1edda("Parent: Thank you for telling me that honestly. Let’s find your people together — could it be me, a teacher, an aunt?", "Madre/Padre: Gracias por decírmelo con honestidad. Busquemos juntos a tu gente — ¿podría ser yo, un maestro, una tía?")],
+    note: _0xc1edda("Goal: don’t panic at “no one.” Stay warm, and help build the list. A trusted adult is protective on its own.", "Meta: no entres en pánico ante “nadie.” Mantente cálido y ayuda a armar la lista. Un adulto de confianza protege por sí solo.")
+  }];
+  var _0x41736c = "<div class=\"gc-intro\">" + _0xc1edda("Real conversations are short, gentle, and one at a time. Here’s what “good” can look like for a few common flags — follow the child’s lead, and stop while it’s still going well.", "Las buenas conversaciones son breves, suaves y de a una. Así puede verse algo “bueno” para algunas señales comunes — sigue el ritmo del niño y detente mientras todavía va bien.") + "</div>";
+  _0x34b581.forEach(function (_0x37f5a1) {
+    _0x41736c += "<div class=\"gc-ex\"><div class=\"gc-when\">" + _0x37f5a1.when + "</div>" + _0x37f5a1.turns.map(function (_0x5e1b37) {
+      var _0x560ecb = _0x5e1b37.indexOf(":");
+      return "<div class=\"gc-turn\"><b>" + escapeHtml(_0x5e1b37.slice(0, _0x560ecb + 1)) + "</b>" + escapeHtml(_0x5e1b37.slice(_0x560ecb + 1)) + "</div>";
+    }).join("") + "<div class=\"gc-note\">" + _0x37f5a1.note + "</div></div>";
+  });
+  return "<div class=\"gc-card\"><div class=\"gc-head\" onclick=\"gcToggle(this)\"><span class=\"gt\">" + _0xc1edda("What a good conversation looks like", "Cómo se ve una buena conversación") + "</span><span class=\"gchev\">▾</span></div><div class=\"gc-body\">" + _0x41736c + "</div></div>";
+}
+/* Is the band a FACT about this result, or the display fallback below?
+   resultBand() must keep returning a number -- many call sites index arrays
+   with it -- so the honesty lives here instead, and the resource cards use it
+   rather than teaching 3-5 material to a result with no grade on it. */
+function resultBandKnown(_aogRec) {
+  if (!_aogRec) return false;
+  if (_aogRec.population === "adult") return true;
+  var _g = String(_aogRec.grade == null ? "" : _aogRec.grade).trim();
+  return ["K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "College", "Adult"].indexOf(_g) >= 0;
+}
+try { window.resultBandKnown = resultBandKnown; } catch (e) {}
+function resultBand(_0x4b4848) {
+  if (_0x4b4848.population === "adult") {
+    return 5;
+  }
+  var _0x4e440d = String(_0x4b4848.grade);
+  if (["K", "1", "2"].indexOf(_0x4e440d) >= 0) {
+    return 1;
+  }
+  if (["3", "4", "5"].indexOf(_0x4e440d) >= 0) {
+    return 2;
+  }
+  if (["6", "7", "8"].indexOf(_0x4e440d) >= 0) {
+    return 3;
+  }
+  if (["9", "10"].indexOf(_0x4e440d) >= 0) {
+    return 4;
+  }
+  if (["11", "12"].indexOf(_0x4e440d) >= 0) {
+    return 5;
+  }
+  if (_0x4e440d === "College" || _0x4e440d === "Adult") {
+    return 5;
+  }
+  return 2;
+}
+function libItemBand(_0x43a9aa) {
+  var _0x11c974 = _0x43a9aa.match(/Book\s*([1-6])/);
+  if (_0x11c974) {
+    return +_0x11c974[1];
+  }
+  if (/\bAdults?\b/i.test(_0x43a9aa)) {
+    return 6;
+  }
+  if (/K\u20132|K-2/.test(_0x43a9aa)) {
+    return 1;
+  }
+  if (/3\u20135|3-5/.test(_0x43a9aa)) {
+    return 2;
+  }
+  if (/6\u20138|6-8/.test(_0x43a9aa)) {
+    return 3;
+  }
+  if (/9\u201310|9-10/.test(_0x43a9aa)) {
+    return 4;
+  }
+  if (/11\u201312|11-12/.test(_0x43a9aa)) {
+    return 5;
+  }
+  return 0;
+}
+function libFind(_0x73e531, _0x43ab14) {
+  var _0x49f889 = RESOURCE_LIBRARY.find(function (_0x59b3a4) {
+    return _0x59b3a4.cat === _0x73e531;
+  });
+  if (!_0x49f889) {
+    return null;
+  }
+  return _0x49f889.items.find(_0x43ab14) || null;
+}
+var DOMAIN_RES_CATS = {
+  A: ["Anchor Charts", "Worksheets & Activities", "Home & Family Editions"],
+  B: ["Worksheets & Activities", "Anchor Charts", "Scenario Cards", "Home & Family Editions"],
+  C: ["Scenario Cards", "Worksheets & Activities", "Anchor Charts", "Home & Family Editions"]
+};
+function accessibilityLink() {
+  return "<div class=\"rc-access\"><span class=\"rc-access-q\">" + DT("Prefer plain-language, visual-support versions?", "¿Prefieres versiones en lenguaje sencillo con apoyos visuales?") + "</span> <a class=\"rc-access-link\" href=\"#\" onclick=\"aogGoLibrary();return false;\">" + DT("Open the autism-adapted charts", "Abre las láminas adaptadas para el autismo") + " →</a></div>";
+}
+function resourceIndexLink() {
+  return "<div class=\"rc-access\"><span class=\"rc-access-q\">" + DT("Want the full map — every lesson, chart, and chapter for this idea, in the School Curriculum and the Home Edition?", "¿Quieres el mapa completo — cada lección, lámina y capítulo de esta idea, en el currículo escolar y la edición para el hogar?") + "</span> <a class=\"rc-access-link\" href=\"#\" onclick=\"openGuide('resindex');return false;\">" + DT("Open the full Resource Index", "Abre el Índice de Recursos completo") + " →</a></div>";
+}
+function youngerRefStrip(_0x44f841) {
+  if (_0x44f841 <= 1) {
+    return "";
+  }
+  var _0x527b1d = [{
+    cat: "Anchor Charts",
+    label: DT("Charts", "Láminas")
+  }, {
+    cat: "Worksheets & Activities",
+    label: DT("Worksheets", "Hojas")
+  }, {
+    cat: "Scenario Cards",
+    label: DT("Scenario", "Escenarios")
+  }];
+  var _0x43eb7d = [];
+  for (var _0x42dcc1 = _0x44f841 - 1; _0x42dcc1 >= 1; _0x42dcc1--) {
+    var _0x2007df = _0x527b1d.map(function (_0x26023a) {
+      var _0x4b4116 = libFind(_0x26023a.cat, function (_0x535c4e) {
+        return libItemBand(_0x535c4e.title) === _0x42dcc1;
+      });
+      if (!_0x4b4116) {
+        return "";
+      }
+      return "<a class=\"yr-link yr-lib\" href=\"#\" onclick=\"aogGoLibrary();return false;\">" + _0x26023a.label + "</a>";
+    }).filter(Boolean).join("<span class=\"yr-dot\">·</span>");
+    if (_0x2007df) {
+      _0x43eb7d.push("<div class=\"yr-row\"><span class=\"yr-band\">" + RI_GRADES[_0x42dcc1].grade + "</span><span class=\"yr-links\">" + _0x2007df + "</span></div>");
+    }
+  }
+  if (!_0x43eb7d.length) {
+    return "";
+  }
+  return "<div class=\"yr-wrap\"><div class=\"yr-head\">" + DT("Simpler versions, for reference", "Versiones más simples, como referencia") + "</div><div class=\"yr-note\">" + DT("The same ideas in the younger bands’ visuals — often the cleanest way to introduce them.", "Las mismas ideas en los recursos de los niveles menores — a menudo la forma más clara de presentarlas.") + "</div>" + _0x43eb7d.join("") + "</div>";
+}
+var LOCK_SVG = "<svg viewBox=\"0 0 24 24\" width=\"11\" height=\"11\" fill=\"currentColor\" style=\"vertical-align:-1px;margin-right:5px\"><path d=\"M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm3 8H9V6a3 3 0 0 1 6 0v3z\"/></svg>";
+function resultResourceCards(_0x21278e, _0x35400d, _0x4565d8, _0xcf009e) {
+  var _0x54d40f = resultBand(_0x21278e);
+  var _0x4310ab = dashLang === "es";
+  var _0x5812ef = "";
+  if (_0x35400d && _0x35400d.length) {
+    var _0x5a6dec = {};
+    RI_CONSTRUCTS.forEach(function (_0x405611) {
+      _0x5a6dec[_0x405611.items] = _0x405611.domain;
+    });
+    var _0x434188 = [];
+    _0x35400d.forEach(function (_0x1cf819) {
+      var _0x1b5462 = ITEM_TO_CONSTRUCT[_0x1cf819.item.n];
+      var _0x751377 = _0x5a6dec[_0x1b5462];
+      (RI_NOVELS[_0x1b5462] || []).forEach(function (_0x117a26) {
+        _0x434188.push({
+          x: _0x117a26,
+          dom: _0x751377,
+          key: _0x1b5462
+        });
+      });
+    });
+    _0x434188.sort(function (_0x4863d5, _0x28982e) {
+      var _0x527993 = _0x4863d5.dom === _0x4565d8 ? 0 : 1;
+      var _0x37da9b = _0x28982e.dom === _0x4565d8 ? 0 : 1;
+      if (_0x527993 !== _0x37da9b) {
+        return _0x527993 - _0x37da9b;
+      }
+      var _0x4f0b5b = Math.abs(_0x4863d5.x.b - _0x54d40f);
+      var _0x460a8b = Math.abs(_0x28982e.x.b - _0x54d40f);
+      if (_0x4f0b5b !== _0x460a8b) {
+        return _0x4f0b5b - _0x460a8b;
+      }
+      return (_0x4863d5.x.b <= _0x54d40f ? 0 : 1) - (_0x28982e.x.b <= _0x54d40f ? 0 : 1);
+    });
+    var _0x2d31b4 = _0x434188.length ? _0x434188[0] : null;
+    if (_0x2d31b4) {
+      var _0x2b585d = _0x2d31b4.x;
+      var _0x33f8bb = novelJumpUrl(_0x2b585d.b, chNumOf(_0x2b585d.ch));
+      /* BAND HONESTY (2026-08-26). The LESSON must come from this student's own
+         band, never from whichever book happened to own the nearest chapter.
+         Passing the novel's book here is what sent a 6-8 teacher to a Book 2
+         lesson -- and, for Overwhelm, to the K-2 sampler -- with nothing on
+         screen saying the band had changed. */
+      var _aogBandOK = (typeof resultBandKnown === "function") ? resultBandKnown(_0x21278e) : true;
+      var _0x40ed0b = _aogBandOK ? curriculumJumpUrl(_0x54d40f, _0x2d31b4.key) : "";
+      var _aogOffBand = _aogBandOK && String(_0x2b585d.b) !== String(_0x54d40f);
+      if (_0x33f8bb || _0x40ed0b) {
+        var _0x40d248 = _0x4310ab ? RI_GRADES[_0x2b585d.b].label.replace("Book", "Libro") : RI_GRADES[_0x2b585d.b].label;
+        var _0x2b1df0 = "";
+        if (_0x33f8bb) {
+          _0x2b1df0 += "<a class=\"rc-hero-btn rc-hero-story\" href=\"" + _0x33f8bb + "\" target=\"_blank\" rel=\"noopener\">↗ " + DT("Read it in the story", "Léelo en la historia") + "</a>";
+        }
+        if (_0x40ed0b) {
+          _0x2b1df0 += "<a class=\"rc-hero-btn rc-hero-lesson\" href=\"" + _0x40ed0b + "\" target=\"_blank\" rel=\"noopener\">↗ " + DT("Open the lesson", "Abre la lección") + "</a>";
+        }
+        /* Say it when the chapter is out of band, rather than presenting
+           another year group's book as this student's resource. */
+        var _aogNote = "";
+        var _aogNoteCss = "margin-top:9px;padding:8px 10px;border-left:3px solid var(--gold,#D9A33B);background:rgba(217,163,59,.10);border-radius:0 6px 6px 0;font-size:12px;line-height:1.55;color:var(--ink-soft,#5b6675);";
+        if (_aogOffBand) {
+          var _aogOwn = _0x4310ab ? RI_GRADES[_0x54d40f].label.replace("Book", "Libro") : RI_GRADES[_0x54d40f].label;
+          _aogNote = "<div class=\"rc-offband\" style=\"" + _aogNoteCss + "\">" +
+            DT(_aogOwn + " (" + RI_GRADES[_0x54d40f].grade + ") has no chapter for this idea. The nearest is " + _0x40d248 + " &mdash; read it for the idea, and teach it in your own band&rsquo;s register.",
+               _aogOwn + " (" + RI_GRADES[_0x54d40f].grade + ") no tiene un capítulo para esta idea. El más cercano es " + _0x40d248 + " &mdash; léelo por la idea y enséñalo en el registro de tu nivel.") + "</div>";
+        } else if (!_aogBandOK) {
+          _aogNote = "<div class=\"rc-offband\" style=\"" + _aogNoteCss + "\">" +
+            DT("No grade was recorded on this result, so the right book cannot be chosen. Set a grade to get the matching lesson.",
+               "Este resultado no tiene grado registrado, así que no se puede elegir el libro. Añade un grado para obtener la lección correspondiente.") + "</div>";
+        }
+        _0x5812ef = "<div class=\"rc-card rc-hero\"><div class=\"rc-kind\">" + DT("Where this idea lives", "Dónde vive esta idea") + "</div><div class=\"rc-title\">“" + libEsc(_0x2b585d.t) + "”</div><div class=\"rc-sub\">" + _0x40d248 + " · " + _0x2b585d.ch + "</div><div class=\"rc-hero-actions\">" + _0x2b1df0 + "</div>" + _aogNote + "</div>";
+      }
+    }
+  }
+  var _0x367dc6 = {
+    A: _0x21278e.normA || 0,
+    B: _0x21278e.normB || 0,
+    C: _0x21278e.normC || 0
+  };
+  var _0x5ea9a8 = ["A", "B", "C"].sort(function (_0x189aa6, _0xcb9c) {
+    return _0x367dc6[_0x189aa6] - _0x367dc6[_0xcb9c];
+  });
+  var _0x272246 = [];
+  _0x5ea9a8.forEach(function (_0x14e29e) {
+    (DOMAIN_RES_CATS[_0x14e29e] || []).forEach(function (_0x280016) {
+      var _0x296412 = libFind(_0x280016, function (_0x27d6c4) {
+        return libItemBand(_0x27d6c4.title) === _0x54d40f;
+      });
+      if (_0x296412) {
+        _0x272246.push({
+          it: _0x296412,
+          cat: _0x280016
+        });
+      }
+    });
+  });
+  var _0x46eaf1 = {};
+  _0x272246 = _0x272246.filter(function (_0x5284c4) {
+    if (_0x46eaf1[_0x5284c4.it.title]) {
+      return false;
+    }
+    _0x46eaf1[_0x5284c4.it.title] = 1;
+    return true;
+  });
+  _0x272246.sort(function (_0x4feaf5, _0x46489b) {
+    var _0x368317 = _0x4feaf5.it.url && _0x4feaf5.it.url.trim() ? 0 : 1;
+    var _0xa578af = _0x46489b.it.url && _0x46489b.it.url.trim() ? 0 : 1;
+    return _0x368317 - _0xa578af;
+  });
+  _0x272246 = _0x272246.slice(0, 4);
+  var _0x30266e = _0x272246.map(function (_0x5cbd88) {
+    var _0x1b78e1 = _0x5cbd88.it;
+    var _0x97d0f3 = _0x1b78e1.url && _0x1b78e1.url.trim() ? "<a class=\"rc-go\" href=\"" + _0x1b78e1.url + "\" target=\"_blank\" rel=\"noopener\">↗ " + DT("Open", "Abrir") + "</a>" : "<a class=\"rc-go rc-locked\" href=\"#\" onclick=\"aogGoStore();return false;\">" + LOCK_SVG + DT("Available with a license", "Disponible con licencia") + "</a>";
+    var _0x1d67bb = _0x4310ab && typeof LIB_CAT_ES !== "undefined" && LIB_CAT_ES[_0x5cbd88.cat] ? LIB_CAT_ES[_0x5cbd88.cat].cat : _0x5cbd88.cat;
+    return "<div class=\"rc-card\"><div class=\"rc-kind\">" + libEsc(_0x1d67bb) + "</div><div class=\"rc-title\">" + libEsc(_0x1b78e1.title) + "</div>" + (_0x1b78e1.desc ? "<div class=\"rc-sub\">" + libEsc(_0x1b78e1.desc) + "</div>" : "") + _0x97d0f3 + "</div>";
+  }).join("");
+  if (!_0x5812ef && !_0x30266e) {
+    return "";
+  }
+  return "<div class=\"rc-wrap\"><div class=\"rc-head\">" + (_0xcf009e ? DT("Open these now", "Ábrelos ahora") : DT("Matched resources", "Recursos sugeridos")) + "</div><div class=\"rc-sub-line\">" + (_0xcf009e ? DT("Pointed to where this lives — tap to open.", "Te señalan dónde vive esto — toca para abrir.") : DT("Matched to this profile and grade band — tap to open.", "Según este perfil y nivel — toca para abrir.")) + "</div>" + _0x5812ef + (_0x30266e ? "<div class=\"rc-grid\">" + _0x30266e + "</div>" : "") + youngerRefStrip(_0x54d40f) + "</div>";
+}
+const PROMPTS = {
+  1: {
+    en: "When something is bothering you, can you usually tell what feeling it is? Is there a feeling that’s hard to name?",
+    es: "Cuando algo te molesta, ¿sueles darte cuenta de qué sentimiento es? ¿Hay algún sentimiento que te cueste nombrar?"
+  },
+  2: {
+    en: "When you’re really upset, what helps your body settle? Is there anything that helps every time?",
+    es: "Cuando estás muy alterado, ¿qué ayuda a que tu cuerpo se calme? ¿Hay algo que ayude siempre?"
+  },
+  3: {
+    en: "When you’re worried or angry, does it ever feel like it takes over and gets in the way of stuff you want to do?",
+    es: "Cuando estás preocupado o enojado, ¿alguna vez sientes que te domina y se interpone en cosas que quieres hacer?"
+  },
+  4: {
+    en: "Is there ever a feeling so big you don’t know what to do with it? What’s that like?",
+    es: "¿Alguna vez hay un sentimiento tan grande que no sabes qué hacer con él? ¿Cómo es eso?"
+  },
+  5: {
+    en: "After something hard happens, how long does it usually take you to feel like yourself again?",
+    es: "Después de que pasa algo difícil, ¿cuánto tiempo sueles tardar en volver a sentirte tú mismo?"
+  },
+  6: {
+    en: "Can you tell when you’re about to lose it before you actually lose it? What does the warning feel like?",
+    es: "¿Puedes darte cuenta de que estás por perder el control antes de perderlo? ¿Cómo se siente esa señal?"
+  },
+  7: {
+    en: "When you mess up, what do you usually say to yourself? Are you kind or harsh?",
+    es: "Cuando te equivocas, ¿qué sueles decirte a ti mismo? ¿Eres amable o duro?"
+  },
+  8: {
+    en: "Do you have a voice in your head that says mean things — like you’re stupid, or bad? What does it say? (The curriculum calls this the Inner Critic — Book 3 calls it the Internal Critic.)",
+    es: "¿Tienes una voz en la cabeza que dice cosas crueles — como que eres tonto o malo? ¿Qué dice? (El currículo lo llama el “Inner Critic” — el Libro 3 lo llama “Internal Critic”.)"
+  },
+  9: {
+    en: "If your best friend made the mistake you made, would you talk to them the way you talk to yourself? Why is it different?",
+    es: "Si tu mejor amigo cometiera el error que cometiste, ¿le hablarías como te hablas a ti mismo? ¿Por qué es diferente?"
+  },
+  10: {
+    en: "Do mistakes stay with you a long time? Do they replay in your head?",
+    es: "¿Los errores se te quedan mucho tiempo? ¿Se repiten en tu cabeza?"
+  },
+  11: {
+    en: "When something is really hard, do you believe you can get better at it? Or does it feel fixed?",
+    es: "Cuando algo es muy difícil, ¿crees que puedes mejorar en eso? ¿O se siente fijo?"
+  },
+  12: {
+    en: "When you mess up, can you say sorry, fix what you can, and then let it go? Or does it stick?",
+    es: "Cuando te equivocas, ¿puedes pedir perdón, arreglar lo que puedas y luego soltarlo? ¿O se te queda pegado?"
+  },
+  13: {
+    en: "When you and someone are in a fight, can you imagine what it looks like from their side?",
+    es: "Cuando tú y otra persona están peleando, ¿puedes imaginar cómo se ve desde su lado?"
+  },
+  14: {
+    en: "When you’ve hurt someone, even accidentally, do you find it easy or hard to say so?",
+    es: "Cuando has lastimado a alguien, aunque sea sin querer, ¿te resulta fácil o difícil reconocerlo?"
+  },
+  15: {
+    en: "When someone hurts your feelings, do you usually assume they meant to? Or could there be another explanation?",
+    es: "Cuando alguien hiere tus sentimientos, ¿sueles suponer que lo hizo a propósito? ¿O podría haber otra explicación?"
+  },
+  16: {
+    en: "How do you treat people who are different from you — or who you don’t get along with?",
+    es: "¿Cómo tratas a las personas que son diferentes a ti — o con las que no te llevas bien?"
+  },
+  17: {
+    en: "Do you know the difference between someone being difficult and someone being unsafe? Who is each in your life right now?",
+    es: "¿Sabes la diferencia entre alguien que es difícil y alguien que no es seguro? ¿Quién es cada uno en tu vida ahora mismo?"
+  },
+  18: {
+    en: "Is there an adult you would actually go to if something was wrong? Who? If not, who could it be?",
+    es: "¿Hay un adulto al que realmente acudirías si algo anduviera mal? ¿Quién? Si no, ¿quién podría serlo?"
+  }
+};
+const PROMPTS_ADULT = {
+  1: {
+    en: "When something’s bothering you, can you usually tell what the feeling is? Is there one that’s hard to name?",
+    es: "Cuando algo te molesta, ¿sueles darte cuenta de qué sentimiento es? ¿Hay alguno que te cueste nombrar?"
+  },
+  2: {
+    en: "When you’re really upset, what helps you settle? Is there anything that works reliably?",
+    es: "Cuando estás muy alterado/a, ¿qué te ayuda a calmarte? ¿Hay algo que funcione de manera confiable?"
+  },
+  3: {
+    en: "When you’re worried or angry, does it ever take over and get in the way of what you’re trying to do?",
+    es: "Cuando estás preocupado/a o enojado/a, ¿alguna vez te domina y se interpone en lo que intentas hacer?"
+  },
+  4: {
+    en: "Is there ever a feeling so big you don’t know what to do with it? What’s that like?",
+    es: "¿Alguna vez hay un sentimiento tan grande que no sabes qué hacer con él? ¿Cómo es eso?"
+  },
+  5: {
+    en: "After something hard happens, how long does it usually take you to feel like yourself again?",
+    es: "Después de que pasa algo difícil, ¿cuánto sueles tardar en volver a sentirte tú mismo/a?"
+  },
+  6: {
+    en: "Can you tell when you’re about to hit your limit before you hit it? What’s the early warning like?",
+    es: "¿Puedes notar que estás por llegar a tu límite antes de llegar? ¿Cómo se siente esa señal?"
+  },
+  7: {
+    en: "When you make a mistake, what do you tend to say to yourself — kind, or harsh?",
+    es: "Cuando cometes un error, ¿qué sueles decirte a ti mismo/a — amable o duro/a?"
+  },
+  8: {
+    en: "Is there a voice in your head that turns on you when things go wrong — telling you you’re a failure, or not enough? What does it say?",
+    es: "¿Hay una voz en tu cabeza que se vuelve en tu contra cuando algo sale mal — que te dice que eres un fracaso, o que no eres suficiente? ¿Qué dice?"
+  },
+  9: {
+    en: "If a close friend made the mistake you made, would you speak to them the way you speak to yourself? What’s different?",
+    es: "Si un amigo/a cercano cometiera el error que cometiste, ¿le hablarías como te hablas a ti mismo/a? ¿Qué es diferente?"
+  },
+  10: {
+    en: "Do mistakes tend to stay with you — replaying long after they’re over?",
+    es: "¿Los errores tienden a quedarse contigo — repitiéndose mucho después de que pasaron?"
+  },
+  11: {
+    en: "When something’s genuinely hard, do you believe you can get better at it? Or does it feel fixed?",
+    es: "Cuando algo es realmente difícil, ¿crees que puedes mejorar? ¿O se siente fijo?"
+  },
+  12: {
+    en: "When you mess up, can you own it, repair what you can, and let it go? Or does it stick?",
+    es: "Cuando te equivocas, ¿puedes reconocerlo, reparar lo que puedas y soltarlo? ¿O se te queda pegado?"
+  },
+  13: {
+    en: "When you’re in conflict with someone, can you picture how it looks from their side?",
+    es: "Cuando estás en conflicto con alguien, ¿puedes imaginar cómo se ve desde su lado?"
+  },
+  14: {
+    en: "When you’ve hurt someone, even by accident, is it easy or hard for you to say so?",
+    es: "Cuando has lastimado a alguien, aunque sea sin querer, ¿te resulta fácil o difícil reconocerlo?"
+  },
+  15: {
+    en: "When someone hurts you, do you tend to assume they meant to? Could there be another read?",
+    es: "Cuando alguien te lastima, ¿sueles suponer que lo hizo a propósito? ¿Podría haber otra lectura?"
+  },
+  16: {
+    en: "How do you treat people who are different from you, or who you find hard to be around?",
+    es: "¿Cómo tratas a las personas que son diferentes a ti, o con las que te cuesta llevarte bien?"
+  },
+  17: {
+    en: "Do you know the difference between someone who’s just difficult and someone who’s unsafe? Who’s each in your life right now?",
+    es: "¿Sabes la diferencia entre alguien que es difícil y alguien que no es seguro? ¿Quién es cada uno en tu vida ahora mismo?"
+  },
+  18: {
+    en: "Is there someone you’d actually turn to if something was wrong? Who? If not, who could it be?",
+    es: "¿Hay alguien a quien realmente acudirías si algo anduviera mal? ¿Quién? Si no, ¿quién podría serlo?"
+  }
+};
+/* =====================================================================
+   BRIDGE / HAND-OFF MOMENT — when a child finishes a self-reflection, give the
+   grown-up at home ONE gentle, low-pressure question mapped to the single
+   strongest flag (e.g. "replaying mistakes" -> a forgiveness question).
+   Caregiver-voiced, child/teen variants, bilingual. Reuses the existing
+   construct detection (scoreFrequency / ITEMS_EN) and QR lib (ensureQrLib).
+   ===================================================================== */
+const BRIDGE_WHY = {
+  A: { en: "settling big feelings", es: "calmar las emociones grandes" },
+  B: { en: "being kinder to themselves", es: "tratarse con más amabilidad" },
+  C: { en: "working things out with others", es: "resolver las cosas con los demás" }
+};
+const BRIDGE_DOMAIN = {
+  A: { child: { en: "What's something that made you feel calm today?", es: "¿Qué te hizo sentir tranquilo/a hoy?" },
+       teen:  { en: "What helped you feel steady today?", es: "¿Qué te ayudó a sentirte en equilibrio hoy?" } },
+  B: { child: { en: "What's something you did today that you're proud of?", es: "¿Qué hiciste hoy que te enorgullece?" },
+       teen:  { en: "What's something you handled today that you're proud of?", es: "¿Qué manejaste hoy de lo que te sientes orgulloso/a?" } },
+  C: { child: { en: "Who were you kind to today?", es: "¿Con quién fuiste amable hoy?" },
+       teen:  { en: "Who showed up for you today — or who did you show up for?", es: "¿Quién estuvo ahí para ti hoy — o por quién estuviste tú?" } }
+};
+const BRIDGE_Q = {
+  1:  { child: { en: "What's one feeling you had today — even a tricky one to name?", es: "¿Qué sentimiento tuviste hoy — aunque sea difícil de nombrar?" },
+        teen:  { en: "If you had to name how today actually felt, what word fits?", es: "Si tuvieras que nombrar cómo se sintió hoy, ¿qué palabra encaja?" } },
+  2:  { child: { en: "When you got upset today, what helped your body feel better?", es: "Cuando te molestaste hoy, ¿qué ayudó a que tu cuerpo se sintiera mejor?" },
+        teen:  { en: "What actually helps you settle when your day gets heavy?", es: "¿Qué te ayuda de verdad a calmarte cuando el día se pone pesado?" } },
+  3:  { child: { en: "Did a big feeling get in the way of anything today?", es: "¿Un sentimiento grande se interpuso en algo hoy?" },
+        teen:  { en: "Did anything throw you off today more than you wanted it to?", es: "¿Algo te desestabilizó hoy más de lo que querías?" } },
+  4:  { child: { en: "Was there a moment today that felt like too much?", es: "¿Hubo un momento hoy que se sintió como demasiado?" },
+        teen:  { en: "Was there a point today that felt like a lot to carry?", es: "¿Hubo un momento hoy que se sintió como mucho que cargar?" } },
+  5:  { child: { en: "After something hard today, what helped you feel okay again?", es: "Después de algo difícil hoy, ¿qué te ayudó a sentirte bien otra vez?" },
+        teen:  { en: "When something hard hit today, what helped you come back?", es: "Cuando algo difícil pasó hoy, ¿qué te ayudó a recuperarte?" } },
+  6:  { child: { en: "Can you tell when you're starting to get upset? What's the first sign?", es: "¿Te das cuenta cuando empiezas a molestarte? ¿Cuál es la primera señal?" },
+        teen:  { en: "What's the first sign for you that you're about to hit your limit?", es: "¿Cuál es la primera señal de que estás por llegar a tu límite?" } },
+  7:  { child: { en: "When you made a mistake today, how did you talk to yourself about it?", es: "Cuando cometiste un error hoy, ¿cómo te hablaste a ti mismo/a?" },
+        teen:  { en: "When something went wrong today, were you kind or hard on yourself?", es: "Cuando algo salió mal hoy, ¿fuiste amable o duro/a contigo?" } },
+  8:  { child: { en: "Did a voice in your head say anything mean today? What did it say?", es: "¿Una voz en tu cabeza dijo algo cruel hoy? ¿Qué dijo?" },
+        teen:  { en: "Was the voice in your head rough on you today? What did it say?", es: "¿La voz en tu cabeza fue dura contigo hoy? ¿Qué dijo?" } },
+  9:  { child: { en: "If your best friend had your day, what kind thing would you tell them?", es: "Si tu mejor amigo/a tuviera tu día, ¿qué cosa amable le dirías?" },
+        teen:  { en: "What would you say to a friend who had your exact day?", es: "¿Qué le dirías a un amigo/a que tuviera exactamente tu día?" } },
+  10: { child: { en: "What's one small thing you could let yourself off the hook for today?", es: "¿Qué cosa pequeña podrías perdonarte hoy?" },
+        teen:  { en: "What's something minor you want to forgive yourself for today?", es: "¿Qué cosa menor te gustaría perdonarte hoy?" } },
+  11: { child: { en: "What's something hard right now that you're slowly getting better at?", es: "¿Qué cosa difícil estás mejorando poco a poco?" },
+        teen:  { en: "What's something you're not good at yet but could be?", es: "¿En qué no eres bueno/a todavía pero podrías serlo?" } },
+  12: { child: { en: "Is there something from today you wish you could fix? What would help?", es: "¿Hay algo de hoy que te gustaría arreglar? ¿Qué ayudaría?" },
+        teen:  { en: "Anything from today you'd want to make right — and then let go?", es: "¿Algo de hoy que querrías reparar — y luego soltar?" } },
+  13: { child: { en: "If you had a disagreement today, what do you think the other person felt?", es: "Si tuviste un desacuerdo hoy, ¿qué crees que sintió la otra persona?" },
+        teen:  { en: "In a disagreement today, what might it have looked like from their side?", es: "En un desacuerdo hoy, ¿cómo se habrá visto desde su lado?" } },
+  14: { child: { en: "Was there a moment today you wish you'd said sorry? What for?", es: "¿Hubo un momento hoy en que desearías haber pedido perdón? ¿Por qué?" },
+        teen:  { en: "Anyone you might owe an “I'm sorry” to from today?", es: "¿Le debes un “perdón” a alguien por algo de hoy?" } },
+  15: { child: { en: "When someone bugged you today, could there be another reason they acted that way?", es: "Cuando alguien te molestó hoy, ¿podría haber otra razón por la que actuó así?" },
+        teen:  { en: "When someone got under your skin today, what's a kinder explanation?", es: "Cuando alguien te irritó hoy, ¿cuál sería una explicación más amable?" } },
+  16: { child: { en: "Did you meet anyone today who's different from you? What was that like?", es: "¿Conociste hoy a alguien diferente a ti? ¿Cómo fue?" },
+        teen:  { en: "How did you treat someone today you don't really click with?", es: "¿Cómo trataste hoy a alguien con quien no congenias?" } },
+  17: { child: { en: "Is there anyone who feels hard to be around right now?", es: "¿Hay alguien con quien sea difícil estar ahora mismo?" },
+        teen:  { en: "Anyone in your life who's just difficult, vs. someone who doesn't feel safe?", es: "¿Alguien en tu vida que solo es difícil, frente a alguien que no se siente seguro?" } },
+  18: { child: { en: "If something was really wrong, who's a grown-up you'd go to?", es: "Si algo anduviera muy mal, ¿a qué adulto acudirías?" },
+        teen:  { en: "If something serious came up, who would you actually go to?", es: "Si surgiera algo serio, ¿a quién acudirías de verdad?" } }
+};
+function aogTopFlaggedItem(rec) {
+  try {
+    if (!rec || !rec.raw) return null;
+    var isAdult = rec.population === "adult";
+    var maxIdx = rec.mode === "depth" ? 5 : 3;
+    var items = isAdult ? ITEMS_ADULT_EN : ITEMS_EN;
+    var flagged = [];
+    items.forEach(function (it, i) {
+      var sc = scoreFrequency(rec.raw[i], it.reverse, rec.mode);
+      if (sc == null) return;
+      if (sc < maxIdx * 0.4) flagged.push({ item: it, scored: sc, intensity: (rec.intensities ? rec.intensities[i] : null) });
+    });
+    if (!flagged.length) return null;
+    flagged.sort(function (a, b) { return (a.scored - b.scored) || ((b.intensity || 0) - (a.intensity || 0)); });
+    return flagged[0];
+  } catch (e) { return null; }
+}
+function aogBridgeCard(rec) {
+  try {
+    if (!rec || rec.population === "adult") return "";
+    var lang2 = (typeof dashLang !== "undefined" && dashLang) ? dashLang : "en";
+    var band = (typeof aogGradeToBand === "function") ? aogGradeToBand(rec.grade) : "";
+    var aud = (band === "K–2" || band === "3–5") ? "child" : "teen";
+    var top = aogTopFlaggedItem(rec);
+    var dom, qobj;
+    if (top && BRIDGE_Q[top.item.n]) { dom = top.item.d; qobj = BRIDGE_Q[top.item.n][aud] || BRIDGE_Q[top.item.n].teen; }
+    if (!qobj) {
+      var d = { A: rec.normA == null ? 100 : rec.normA, B: rec.normB == null ? 100 : rec.normB, C: rec.normC == null ? 100 : rec.normC };
+      dom = Object.keys(d).sort(function (a, c) { return d[a] - d[c]; })[0];
+      qobj = BRIDGE_DOMAIN[dom][aud] || BRIDGE_DOMAIN[dom].teen;
+    }
+    if (!qobj) return "";
+    var qx = qobj[lang2] || qobj.en;
+    var name = escapeHtml((String(rec.studentId || "").trim().split(" ")[0]) || (lang2 === "es" ? "tu hijo/a" : "your child"));
+    var why = BRIDGE_WHY[dom] ? (BRIDGE_WHY[dom][lang2] || BRIDGE_WHY[dom].en) : "";
+    var gold = "border:1.5px solid var(--gold);background:var(--gold,#B8893A);color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:800;cursor:pointer;";
+    var ghost = "border:1.5px solid var(--rule,#D9CBA8);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:700;cursor:pointer;";
+    return '<div class="aog-bridge" style="margin:0 0 16px;border:1.5px solid var(--gold);background:var(--cream,#FBF3DF);border-radius:14px;padding:16px 18px;">'
+      + '<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep,#9a6f24);margin-bottom:6px;">' + DT("For the grown-up at home", "Para el adulto en casa") + '</div>'
+      + '<div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-soft,#5A6B7B);margin-bottom:10px;">' + DT("One gentle thing to ask tonight — no pressure, no right answer.", "Una cosa suave para preguntar esta noche — sin presión, sin respuesta correcta.") + '</div>'
+      + '<p class="aog-bridge-q" style="font-family:var(--font-serif);font-size:20px;line-height:1.4;color:var(--ink);margin:0 0 10px;">' + escapeHtml(qx) + '</p>'
+      + (why ? '<div style="font-size:12.5px;color:var(--ink-soft,#5A6B7B);margin-bottom:14px;">' + DT("Because", "Porque") + ' ' + name + ' ' + DT("is working on", "está trabajando en") + ' ' + escapeHtml(why) + '.</div>' : '<div style="margin-bottom:14px;"></div>')
+      + '<div class="aog-bridge-actions" style="display:flex;gap:8px;flex-wrap:wrap;">'
+        + '<button type="button" onclick="aogBridgeCopy(this)" style="' + gold + '">' + DT("Copy", "Copiar") + '</button>'
+        + '<button type="button" onclick="aogBridgePrint(this)" style="' + ghost + '">' + DT("Print card", "Imprimir tarjeta") + '</button>'
+        + '<button type="button" onclick="aogBridgeQr(this)" style="' + ghost + '">' + DT("Take-home QR", "QR para casa") + '</button>'
+      + '</div>'
+      + '<div class="aog-bridge-qr" style="display:none;margin-top:14px;text-align:center;"></div>'
+      + '</div>';
+  } catch (e) { return ""; }
+}
+window.aogBridgeCopy = function (btn) {
+  var card = btn.closest(".aog-bridge"); if (!card) return;
+  var q = card.querySelector(".aog-bridge-q"); if (!q) return;
+  var txt = q.textContent || "";
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  function done() { var o = btn.textContent; btn.textContent = es ? "✓ Copiado" : "✓ Copied"; setTimeout(function () { btn.textContent = o; }, 1400); }
+  function fallback() { try { var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e) {} }
+  try { if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(done, fallback); return; } } catch (e) {}
+  fallback();
+};
+window.aogBridgePrint = function (btn) {
+  var card = btn.closest(".aog-bridge"); if (!card) return;
+  var q = card.querySelector(".aog-bridge-q"); var txt = (q ? q.textContent : "") || "";
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var head = es ? "Para el adulto en casa" : "For the grown-up at home";
+  var sub = es ? "Una cosa suave para preguntar — sin presión." : "One gentle thing to ask — no pressure.";
+  var w = window.open("", "_blank", "width=620,height=440"); if (!w) return;
+  var safe = txt.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  w.document.write('<!doctype html><meta charset="utf-8"><title>' + head + '</title><div style="font-family:Georgia,serif;max-width:460px;margin:54px auto;text-align:center;padding:32px;border:2px solid #B8893A;border-radius:16px;"><div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a6f24;font-family:Arial,sans-serif;margin-bottom:14px;">' + head + '</div><div style="font-size:13px;color:#666;font-family:Arial,sans-serif;margin-bottom:20px;">' + sub + '</div><div style="font-size:24px;line-height:1.45;color:#1B3A5F;">' + safe + '</div><div style="margin-top:28px;font-size:11px;color:#999;font-family:Arial,sans-serif;">Architecture of Grace</div></div>');
+  w.document.close();
+  w.focus();
+  try { w.print(); } catch (e) {}
+};
+window.aogBridgeQr = function (btn) {
+  var card = btn.closest(".aog-bridge"); if (!card) return;
+  var box = card.querySelector(".aog-bridge-qr"); var q = card.querySelector(".aog-bridge-q");
+  if (!box || !q) return;
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  if (box.style.display !== "none") { box.style.display = "none"; box.innerHTML = ""; return; }
+  var txt = q.textContent || "";
+  box.style.display = "block";
+  box.innerHTML = "<div style='font-size:12px;color:#5A6B7B'>" + (es ? "Generando…" : "Generating…") + "</div>";
+  function go(ok) {
+    if (!ok || !window.QRCode) { box.innerHTML = "<div style='font-size:12px;color:#5A6B7B'>" + (es ? "El QR necesita conexión a internet." : "QR needs an internet connection.") + "</div>"; return; }
+    box.innerHTML = "";
+    try { new QRCode(box, { text: txt, width: 148, height: 148, correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
+    var cap = document.createElement("div"); cap.style.cssText = "font-size:11px;color:#5A6B7B;margin-top:8px;"; cap.textContent = es ? "Escanéalo para llevar la pregunta a casa." : "Scan to take the question home."; box.appendChild(cap);
+  }
+  if (window.QRCode) go(true);
+  else if (typeof ensureQrLib === "function") ensureQrLib().then(go);
+  else go(false);
+};
+
+function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
+  const _0x504790 = _0x4f18c8.population === "adult";
+  const _aogBridge = _0x504790 ? "" : (typeof aogBridgeCard === "function" ? aogBridgeCard(_0x4f18c8) : "");
+  const _0x38a587 = _0x4f18c8.mode === "depth" ? 5 : 3;
+  const _0x40141e = [];
+  (_0x504790 ? ITEMS_ADULT_EN : ITEMS_EN).forEach((_0x5216ba, _0x32c4af) => {
+    const _0x2a7f5c = scoreFrequency(_0x4f18c8.raw[_0x32c4af], _0x5216ba.reverse, _0x4f18c8.mode);
+    if (_0x2a7f5c == null) {
+      return;
+    }
+    if (_0x2a7f5c < _0x38a587 * 0.4) {
+      _0x40141e.push({
+        item: _0x5216ba,
+        raw: _0x4f18c8.raw[_0x32c4af],
+        scored: _0x2a7f5c,
+        intensity: _0x4f18c8.intensities ? _0x4f18c8.intensities[_0x32c4af] : null
+      });
+    }
+  });
+  if (!_0x40141e.length) {
+    var _aogLowDom = Object.entries({
+      A: _0x4f18c8.normA || 0,
+      B: _0x4f18c8.normB || 0,
+      C: _0x4f18c8.normC || 0
+    }).sort(function (_a, _b) {
+      return _a[1] - _b[1];
+    })[0][0];
+    var _aogExtras = resultResourceCards(_0x4f18c8, [], _aogLowDom, false) + resourceIndexLink();
+    if (_0x5e1ad5) {
+      return _aogBridge + "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("You scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up in you. Keep doing what you’re doing, and take this again next window to see your growth.", "Obtuviste puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el próximo período para ver tu progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
+    }
+    return _aogBridge + "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("This person scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up. Keep doing what you’re doing. Re-screen in the next window to track growth.", "Esta persona obtuvo puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el próximo período para seguir el progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
+  }
+  const _0x16cb5c = _0x504790 ? PROMPTS_ADULT : PROMPTS;
+  const _0x237ee2 = {};
+  Object.keys(_0x16cb5c).forEach(_0x271d55 => {
+    _0x237ee2[_0x271d55] = _0x16cb5c[_0x271d55][dashLang] || _0x16cb5c[_0x271d55].en;
+  });
+  let _0x1280bd = "<div class=\"home-conversation\"><h4>" + (_0x5e1ad5 ? DT("Worth sitting with", "Para reflexionar") : DT("Conversation starters", "Iniciadores de conversación")) + "</h4><p>" + (_0x5e1ad5 ? DT("These are the questions where you scored a bit lower. They aren’t problems — they’re <em>doors</em>. Sit with one when the moment feels right; there’s no need to do them all at once.", "Estas son las preguntas donde obtuviste puntajes más bajos. No son problemas — son <em>puertas</em>. Siéntate con una cuando el momento se sienta adecuado; no hace falta hacerlas todas de una vez.") : DT("The questions below scored lower. These are not problems — they are <em>doors</em>. Open one when the moment is right, and ask gently. Don’t do all of them in one sitting.", "Las preguntas de abajo obtuvieron puntajes más bajos. No son problemas — son <em>puertas</em>. Abre una cuando el momento sea adecuado, y pregunta con suavidad. No las hagas todas de una sola vez.")) + "</p><ul>";
+  _0x40141e.sort((_0x1d246f, _0x2e01b9) => _0x1d246f.scored - _0x2e01b9.scored);
+  _0x40141e.slice(0, 5).forEach(_0xcf5856 => {
+    const _0x15bbb2 = _0x237ee2[_0xcf5856.item.n] || _0xcf5856.item.text;
+    let _0x38a92f = "";
+    if (_0xcf5856.intensity != null && _0xcf5856.intensity >= 2) {
+      _0x38a92f = " <strong style=\"color:var(--red);\">" + DT("(high impact)", "(alto impacto)") + "</strong>";
+    }
+    _0x1280bd += "<li>" + escapeHtml(_0x15bbb2) + _0x38a92f + "</li>";
+  });
+  _0x1280bd += "</ul>";
+  const _0x1bcda4 = {
+    A: _0x4f18c8.normA || 0,
+    B: _0x4f18c8.normB || 0,
+    C: _0x4f18c8.normC || 0
+  };
+  const _0x1e2f7f = Object.entries(_0x1bcda4).sort((_0x31160d, _0x54d005) => _0x31160d[1] - _0x54d005[1])[0][0];
+  const _0x29fc53 = {
+    A: DT("<strong>Lowest area: Emotional Regulation & Well-Being.</strong> In the novels, the same skills carry into adulthood — <em>The Year We Walked Out</em> (Book 5): “The Toolkit at Seventeen” (Ch 3) and “The Toolkit Has a Limit” (Ch 11), on settling, and on noticing when feeling has outrun capacity. Open the Resource Index for the full map.", "<strong>Área más baja: Regulación emocional y bienestar.</strong> En las novelas, las mismas habilidades llegan a la adultez — <em>The Year We Walked Out</em> (Libro 5): «The Toolkit at Seventeen» (Cap. 3) y «The Toolkit Has a Limit» (Cap. 11). Abre el Índice de recursos para el mapa completo."),
+    B: DT("<strong>Lowest area: Self-Compassion & Growth Mindset.</strong> This is the heart of the mature novels: the inner critic in <em>The Year of Two Voices</em> (Book 3, “The Voice in Your Head” / “The Three Tactics,” Ch 8–9), again in <em>The Year We Looked Up</em> (Book 4, Ch 3) and <em>The Year We Walked Out</em> (Book 5, Ch 4); plus “The Friend Test” (Book 3, Ch 11) and “Rewriting the Script” (Book 3, Ch 12).", "<strong>Área más baja: Autocompasión y mentalidad de crecimiento.</strong> El corazón de las novelas maduras: el crítico interno en <em>The Year of Two Voices</em> (Libro 3, «The Voice in Your Head» / «The Three Tactics», Cap. 8–9), de nuevo en <em>The Year We Looked Up</em> (Libro 4, Cap. 3) y <em>The Year We Walked Out</em> (Libro 5, Cap. 4); más «The Friend Test» (Libro 3, Cap. 11) y «Rewriting the Script» (Libro 3, Cap. 12)."),
+    C: DT("<strong>Lowest area: Social Competency & Repair.</strong> The grown-up register lives here: impact vs. intent and charitable reading (<em>Two Voices</em>, Book 3, Ch 14 & Ch 18), grace with hard people (Book 3, Ch 20), and the protective line — forgiveness is not the same as trust (Book 3, Ch 15; <em>The Year We Walked Out</em>, Book 5, Ch 18).", "<strong>Área más baja: Competencia social y reparación.</strong> El registro adulto vive aquí: impacto frente a intención e interpretación caritativa (<em>Two Voices</em>, Libro 3, Cap. 14 y Cap. 18), la gracia con personas difíciles (Libro 3, Cap. 20), y la línea protectora — perdonar no es lo mismo que confiar (Libro 3, Cap. 15; <em>The Year We Walked Out</em>, Libro 5, Cap. 18).")
+  };
+  _0x1280bd += "<p style=\"margin-top:14px;\">" + (_0x504790 ? _0x29fc53[_0x1e2f7f] : aogTeachNextStudent(_0x1e2f7f, aogGradeToBand(_0x4f18c8.grade))) + "</p>";
+  _0x1280bd += resultResourceCards(_0x4f18c8, _0x40141e, _0x1e2f7f, _0x5e1ad5);
+  if (_0x4f18c8.trustedAdultFlag) {
+    if (_0x5e1ad5 && _0x504790) {
+      _0x1280bd += "<div class=\"severity-block\">" + DT("<strong>A note on reaching out.</strong> You answered that you don’t have someone you’d readily turn to. That matters at any age. A gentle question to sit with: <em>if something was wrong, who would you actually reach out to?</em> — and then naming one real person. In the novels, asking for help is its own thread: <em>The Year We Looked Up</em> (Book 4, “The First Time I Asked,” Ch 10) and <em>The Year We Walked Out</em> (Book 5, Ch 13–15). If you’re carrying something heavy, the 988 Suicide & Crisis Lifeline (call or text) is there any time.", "<strong>Una nota sobre pedir ayuda.</strong> Respondiste que no tienes a alguien a quien acudirías con facilidad. Eso importa a cualquier edad. Una pregunta suave para reflexionar: <em>si algo anduviera mal, ¿a quién acudirías de verdad?</em> — y luego nombrar a una persona real. En las novelas, pedir ayuda es su propio hilo: <em>The Year We Looked Up</em> (Libro 4, «The First Time I Asked», Cap. 10) y <em>The Year We Walked Out</em> (Libro 5, Cap. 13–15). Si estás cargando algo pesado, la Línea 988 (llamar o enviar texto) está disponible a cualquier hora.") + "</div>";
+    } else {
+      _0x1280bd += "<div class=\"severity-block\">" + (_0x504790 ? DT("<strong>Trusted-person item flagged.</strong> This person answered that they don’t have someone they’d readily turn to. That matters at any age. The gentlest door: <em>If something was wrong, who would you actually reach out to?</em> — and then naming one real person. In the novels, asking for help is its own thread: <em>The Year We Looked Up</em> (Book 4, “The First Time I Asked,” Ch 10) and <em>The Year We Walked Out</em> (Book 5, Ch 13–15). If they’re carrying something heavy, the 988 Suicide & Crisis Lifeline (call or text) is there any time.", "<strong>Ítem de persona de confianza marcado.</strong> Esta persona respondió que no tiene a alguien a quien acudiría con facilidad. Eso importa a cualquier edad. La puerta más suave: <em>Si algo anduviera mal, ¿a quién acudirías de verdad?</em> — y luego nombrar a una persona real. En las novelas, pedir ayuda es su propio hilo: <em>The Year We Looked Up</em> (Libro 4, «The First Time I Asked», Cap. 10) y <em>The Year We Walked Out</em> (Libro 5, Cap. 13–15). Si está cargando algo pesado, la Línea 988 (llamar o enviar texto) está disponible a cualquier hora.") : DT("<strong>Trusted-adult item flagged.</strong> This person answered Never or Rarely/Sometimes to having a trusted adult. If this is a child, this is the most important conversation to have. Ask: <em>If something was wrong, who would you actually go to?</em> Then help them name one specific person and rehearse the approach.", "<strong>Ítem de adulto de confianza marcado.</strong> Esta persona respondió Nunca o Rara vez/A veces a tener un adulto de confianza. Si es un niño, esta es la conversación más importante que hay que tener. Pregunta: <em>Si algo anduviera mal, ¿a quién acudirías de verdad?</em> Luego ayúdale a nombrar a una persona específica y a ensayar cómo acercarse.")) + "</div>";
+    }
+  }
+  _0x1280bd += resourceIndexLink();
+  _0x1280bd += accessibilityLink();
+  _0x1280bd += "</div>";
+  return _aogBridge + _0x1280bd;
+}
+function renderGrowth() {
+  const _0x207d80 = getAllRecords();
+  const _0x20e070 = $("#growthFilterGrade") ? $("#growthFilterGrade").value : "";
+  const _0x362b04 = _0x207d80.filter(_0x2a749e => !_0x20e070 || String(_0x2a749e.grade) === String(_0x20e070));
+  if (!_0x362b04.length) {
+    $("#growthList").innerHTML = "<div class=\"empty-state\"><div class=\"display-md serif\">" + DT("No data yet", "Aún no hay datos") + "</div></div>";
+    return;
+  }
+  const _0x2cdf75 = ["Fall", "Winter", "Spring", "Summer"];
+  const _0x5135ce = {
+    Fall: DT("Fall", "Otoño"),
+    Winter: DT("Winter", "Invierno"),
+    Spring: DT("Spring", "Primavera"),
+    Summer: DT("Summer", "Verano")
+  };
+  const _0x2ca320 = {};
+  _0x2cdf75.forEach(_0x5f22f7 => _0x2ca320[_0x5f22f7] = {
+    byPerson: {}
+  });
+  _0x362b04.forEach(_0x5146c6 => {
+    if (!_0x2cdf75.includes(_0x5146c6.window)) {
+      return;
+    }
+    if (_0x5146c6.normComposite == null) {
+      return;
+    }
+    const _0xaa0933 = _0x2ca320[_0x5146c6.window].byPerson;
+    const _0xe7af93 = _0xaa0933[_0x5146c6.studentId];
+    if (!_0xe7af93 || new Date(_0x5146c6.timestamp) > new Date(_0xe7af93.timestamp)) {
+      _0xaa0933[_0x5146c6.studentId] = _0x5146c6;
+    }
+  });
+  const _0x1f6c53 = _0x2cdf75.map(_0x501031 => {
+    const _0x194176 = Object.values(_0x2ca320[_0x501031].byPerson).map(_0x3831df => _0x3831df.normComposite);
+    const _0x53451e = _0x194176.length ? _0x194176.reduce((_0x4dc21f, _0x32ffd8) => _0x4dc21f + _0x32ffd8, 0) / _0x194176.length : null;
+    return {
+      w: _0x501031,
+      label: _0x5135ce[_0x501031],
+      avg: _0x53451e,
+      n: _0x194176.length
+    };
+  }).filter(_0xe45d80 => _0xe45d80.n > 0);
+  if (!_0x1f6c53.length) {
+    $("#growthList").innerHTML = "<div class=\"empty-state\"><div class=\"display-md serif\">" + DT("No data yet", "Aún no hay datos") + "</div></div>";
+    return;
+  }
+  let _0x3c376c = "";
+  if (_0x1f6c53.length >= 2) {
+    const _0x2c3efe = round1(_0x1f6c53[_0x1f6c53.length - 1].avg - _0x1f6c53[0].avg);
+    const _0x1d2aed = _0x2c3efe > 1 ? DT("rising", "subiendo") : _0x2c3efe < -1 ? DT("dipping", "bajando") : DT("holding steady", "manteniéndose estable");
+    _0x3c376c = DT("The class average is ", "El promedio de la clase está ") + "<strong>" + _0x1d2aed + "</strong> " + DT("from", "de") + " " + _0x1f6c53[0].label + " (" + _0x1f6c53[0].avg.toFixed(0) + ") " + DT("to", "a") + " " + _0x1f6c53[_0x1f6c53.length - 1].label + " (" + _0x1f6c53[_0x1f6c53.length - 1].avg.toFixed(0) + ")" + (_0x2c3efe !== 0 ? " · " + (_0x2c3efe > 0 ? "+" : "") + _0x2c3efe.toFixed(0) + DT(" points", "  puntos") : "") + ".";
+  } else {
+    _0x3c376c = DT("One window of data so far — a trend will appear as more windows come in.", "Un período de datos por ahora — la tendencia aparecerá cuando lleguen más períodos.");
+  }
+  /* The sentence above is true of the AVERAGE and of nothing else. Each window
+     holds whoever reflected in it, which is rarely the same group twice, so it
+     must not be read as any one student's growth. Say so once, quietly, right
+     under the line it qualifies. */
+  if (_0x1f6c53.length >= 2) {
+    _0x3c376c += "<div class=\"small\" style=\"margin-top:6px; color:var(--ink-faint); font-weight:400;\">"
+      + DT("Each window is whoever reflected in it — rarely the same group twice. This is a picture of the class, not a growth score for any student.",
+           "Cada período incluye a quienes reflexionaron en él — rara vez el mismo grupo dos veces. Es una imagen de la clase, no una calificación de crecimiento de ningún estudiante.")
+      + "</div>";
+  }
+  const _0x4ade07 = _0x1f6c53.map(_0x21be2b => {
+    return "<div style=\"margin-bottom:16px;\"><div style=\"display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;\"><span class=\"small\" style=\"font-weight:600; color:var(--navy);\">" + _0x21be2b.label + "</span><span class=\"small\" style=\"color:var(--ink-faint);\">" + _0x21be2b.avg.toFixed(0) + " / 100 · " + _0x21be2b.n + " " + (_0x21be2b.n === 1 ? DT("response", "respuesta") : DT("responses", "respuestas")) + "</span></div><div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + _0x21be2b.avg.toFixed(0) + "%\"></div></div></div>";
+  }).join("");
+  $("#growthList").innerHTML = "<div class=\"ov-summary\" style=\"margin:2px 0 18px; font-size:15px; line-height:1.6;\">" + _0x3c376c + "</div>" + _0x4ade07 + "<div class=\"small\" style=\"margin-top:8px; color:var(--ink-faint); border-top:1px solid var(--rule); padding-top:12px;\">" + DT("This is the class average per window — individual trajectories are not shown here.", "Este es el promedio de la clase por período — las trayectorias individuales no se muestran aquí.") + "</div>";
+}
+function downloadCSV(_0x207787, _0x4f2571, _0x50015d) {
+  const _0x360639 = _0xc923e2 => {
+    let _0x5dec5c = String(_0xc923e2 == null ? "" : _0xc923e2);
+    if (/^[=+\-@\t\r]/.test(_0x5dec5c)) {
+      _0x5dec5c = "'" + _0x5dec5c;
+    }
+    if (/[",\n]/.test(_0x5dec5c)) {
+      return "\"" + _0x5dec5c.replace(/"/g, "\"\"") + "\"";
+    } else {
+      return _0x5dec5c;
+    }
+  };
+  const _0x3e8dda = [_0x4f2571.join(","), ..._0x50015d.map(_0x2e82d4 => _0x2e82d4.map(_0x360639).join(","))].join("\n");
+  const _0x943d4b = new Blob(["﻿" + _0x3e8dda], {
+    type: "text/csv;charset=utf-8;"
+  });
+  const _0x1ff899 = URL.createObjectURL(_0x943d4b);
+  const _0x805bcc = document.createElement("a");
+  _0x805bcc.href = _0x1ff899;
+  _0x805bcc.download = _0x207787;
+  document.body.appendChild(_0x805bcc);
+  _0x805bcc.click();
+  document.body.removeChild(_0x805bcc);
+  URL.revokeObjectURL(_0x1ff899);
+}
+function _aggGroups(_0x2f4928, _0x562802) {
+  const _0x39cd90 = {};
+  _0x2f4928.forEach(_0xab297e => {
+    const _0x266c23 = _0x562802(_0xab297e);
+    if (!_0x39cd90[_0x266c23]) {
+      _0x39cd90[_0x266c23] = [];
+    }
+    _0x39cd90[_0x266c23].push(_0xab297e);
+  });
+  return _0x39cd90;
+}
+function _avg(_0x4e2789) {
+  const _0xa03649 = _0x4e2789.filter(_0x3adcf9 => _0x3adcf9 != null);
+  if (_0xa03649.length) {
+    return Math.round(_0xa03649.reduce((_0xc6d57f, _0x131bd9) => _0xc6d57f + _0x131bd9, 0) / _0xa03649.length);
+  } else {
+    return "";
+  }
+}
+function _bandCounts(_0x5e37ae) {
+  let _0x509b60 = 0;
+  let _0x5e365e = 0;
+  let _0x1533cd = 0;
+  let _0x3ec503 = 0;
+  _0x5e37ae.forEach(_0x4a129e => {
+    if (_0x4a129e.tier === "Low Risk") {
+      _0x509b60++;
+    } else if (_0x4a129e.tier === "Some Risk") {
+      _0x5e365e++;
+    } else if (_0x4a129e.tier === "High Risk") {
+      _0x1533cd++;
+    }
+    if (_0x4a129e.trustedAdultFlag) {
+      _0x3ec503++;
+    }
+  });
+  return {
+    low: _0x509b60,
+    some: _0x5e365e,
+    high: _0x1533cd,
+    flags: _0x3ec503
+  };
+}
+function exportFullCSV() {
+  const _0x2d1674 = getAllRecords();
+  if (!_0x2d1674.length) {
+    return alert("No data to export.");
+  }
+  const _0x52c2e6 = _aggGroups(_0x2d1674, _0x57dda4 => String(_0x57dda4.grade) + "||" + (_0x57dda4.window || ""));
+  const _0x267c63 = ["grade", "window", "responses", "pctDoingWell", "pctWorthCheckin", "pctNeedsSupport", "avgEmotional_A", "avgCompassion_B", "avgSocial_C", "avgComposite", "namedNoTrustedAdult"];
+  const _0x153412 = Object.keys(_0x52c2e6).sort().map(_0x1cd7f8 => {
+    const _0x270d76 = _0x52c2e6[_0x1cd7f8];
+    const [_0x1ecc05, _0x367123] = _0x1cd7f8.split("||");
+    const _0x2cf313 = _0x270d76.length;
+    const _0x2f0543 = _bandCounts(_0x270d76);
+    const _0x8f0161 = _0xa3622d => _0x2cf313 ? Math.round(_0xa3622d / _0x2cf313 * 100) : 0;
+    return [_0x1ecc05, _0x367123, _0x2cf313, _0x8f0161(_0x2f0543.low), _0x8f0161(_0x2f0543.some), _0x8f0161(_0x2f0543.high), _avg(_0x270d76.map(_0x378895 => _0x378895.normA)), _avg(_0x270d76.map(_0x42747e => _0x42747e.normB)), _avg(_0x270d76.map(_0x36cdb0 => _0x36cdb0.normC)), _avg(_0x270d76.map(_0x2e06b3 => _0x2e06b3.normComposite)), _0x2f0543.flags];
+  });
+  downloadCSV("AoG_CheckIn_ClassSummary.csv", _0x267c63, _0x153412);
+}
+function exportRosterCSV() {
+  const _0x26777a = getAllRecords();
+  if (!_0x26777a.length) {
+    return alert("No data to export.");
+  }
+  const _0xf54b86 = _aggGroups(_0x26777a, _0x102ef0 => _0x102ef0.window || "");
+  const _0x392afe = ["window", "responses", "doingWell", "worthCheckin", "needsSupport", "pctDoingWell", "pctWorthCheckin", "pctNeedsSupport", "namedNoTrustedAdult"];
+  const _0x1026e2 = Object.keys(_0xf54b86).sort().map(_0x639527 => {
+    const _0x5de460 = _0xf54b86[_0x639527];
+    const _0x148562 = _0x5de460.length;
+    const _0x7fc6c0 = _bandCounts(_0x5de460);
+    const _0x102ff5 = _0x580a5f => _0x148562 ? Math.round(_0x580a5f / _0x148562 * 100) : 0;
+    return [_0x639527, _0x148562, _0x7fc6c0.low, _0x7fc6c0.some, _0x7fc6c0.high, _0x102ff5(_0x7fc6c0.low), _0x102ff5(_0x7fc6c0.some), _0x102ff5(_0x7fc6c0.high), _0x7fc6c0.flags];
+  });
+  downloadCSV("AoG_CheckIn_BandDistribution.csv", _0x392afe, _0x1026e2);
+}
+function exportGrowthCSV() {
+  const _0x2365b2 = getAllRecords();
+  if (!_0x2365b2.length) {
+    return alert("No data to export.");
+  }
+  const _0x18b7ff = ["Fall", "Winter", "Spring", "Summer"];
+  const _0x31e708 = {};
+  _0x18b7ff.forEach(_0x23ff40 => _0x31e708[_0x23ff40] = {});
+  _0x2365b2.forEach(_0x4f8c01 => {
+    if (!_0x18b7ff.includes(_0x4f8c01.window) || _0x4f8c01.normComposite == null) {
+      return;
+    }
+    const _0x59c0b1 = _0x31e708[_0x4f8c01.window][_0x4f8c01.studentId];
+    if (!_0x59c0b1 || new Date(_0x4f8c01.timestamp) > new Date(_0x59c0b1.timestamp)) {
+      _0x31e708[_0x4f8c01.window][_0x4f8c01.studentId] = _0x4f8c01;
+    }
+  });
+  const _0x116bc9 = ["window", "responses", "classAvgComposite"];
+  const _0x167852 = _0x18b7ff.map(_0x8d31d8 => {
+    const _0x178a20 = Object.values(_0x31e708[_0x8d31d8]);
+    if (!_0x178a20.length) {
+      return null;
+    }
+    return [_0x8d31d8, _0x178a20.length, _avg(_0x178a20.map(_0x36cb4f => _0x36cb4f.normComposite))];
+  }).filter(Boolean);
+  if (!_0x167852.length) {
+    return alert("No data to export.");
+  }
+  downloadCSV("AoG_CheckIn_ClassGrowth.csv", _0x116bc9, _0x167852);
+}
+const RI_GRADES = {
+  1: {
+    label: "Book 1",
+    grade: "K–2"
+  },
+  2: {
+    label: "Book 2",
+    grade: "3–5"
+  },
+  3: {
+    label: "Book 3",
+    grade: "6–8"
+  },
+  4: {
+    label: "Book 4",
+    grade: "9–10"
+  },
+  5: {
+    label: "Book 5",
+    grade: "11–12"
+  }
+};
+const RI_DOMAIN_INFO = {
+  A: {
+    name: "Emotional Regulation & Well-Being",
+    sub: "Self-Awareness · Self-Management"
+  },
+  B: {
+    name: "Self-Compassion & Growth Mindset",
+    sub: "Self-Management · Self-Awareness"
+  },
+  C: {
+    name: "Social Competency & Repair",
+    sub: "Social Awareness · Relationship Skills · Responsible Decision-Making"
+  }
+};
+const RI_CONSTRUCTS = [{
+  domain: "A",
+  items: "Items 1, 2",
+  name: "Naming feelings & the regulation toolkit",
+  flag: "Flags when: low scores on knowing what one feels, or having a way to calm down",
+  what: "Foundational regulation skills — identifying an emotion, locating it in the body, and having a reliable strategy to settle. Emotions are treated as <strong>information / messengers</strong>, not problems.",
+  resources: {
+    1: {
+      loc: "U1·L2",
+      res: "“My Feelings Are Friends” + “Emotions Are Messengers” anchor chart + Sammy puppet script"
+    },
+    2: {
+      loc: "U1·L2 + R&R Strand",
+      res: "“Emotions Are Information” + “My Regulation Toolkit” strand lesson + body-map chart"
+    },
+    3: {
+      loc: "Regulation Toolkit + Somatic Floor",
+      res: "The recurring Regulation Toolkit — the master carries Domain A across the year rather than in one lesson — plus the 6–8 Somatic Floor & Regulation companion"
+    },
+    4: {
+      loc: "U1·L2",
+      res: "“The Social Battery” for capacity/depletion awareness"
+    },
+    5: {
+      loc: "U1–U2",
+      res: "Adult-register regulation: naming emotion as data under pressure"
+    }
+  }
+}, {
+  domain: "A",
+  items: "Items 3, 4",
+  name: "Overwhelm & the Window of Tolerance",
+  flag: "Flags when: big feelings get in the way, or overwhelmed with no strategy — especially high intensity",
+  what: "When emotion exceeds capacity. The <strong>Window of Tolerance</strong> (Too Much / Just Right / Too Little) and somatic floor protocols. High intensity here is the signal to slow down and bring in support.",
+  resources: {
+    1: {
+      loc: "U1·L2 + Safety",
+      res: "“Too Much” emotion card + adult co-regulation script + safety protocols"
+    },
+    2: {
+      loc: "R&R Strand",
+      res: "“My Regulation Toolkit” + “Recovering After Mistakes” strand lessons"
+    },
+    3: {
+      loc: "Regulation Toolkit + Somatic Floor",
+      res: "District-clean somatic floor protocols for 6–8; the Right-Now tools; counselor-coordinated"
+    },
+    4: {
+      loc: "U3 · L1 ★",
+      res: "Resilience unit; counselor-coverage on flagged lessons"
+    },
+    5: {
+      loc: "U2 + Crisis",
+      res: "Adult regulation under high-stakes pressure + posted crisis resources"
+    }
+  }
+}, {
+  domain: "A",
+  items: "Items 5, 6",
+  name: "Recovery & early warning awareness",
+  flag: "Flags when: hard to come back to okay, or can't sense escalation before losing control",
+  what: "<strong>Recovery</strong> (returning to baseline) and <strong>interoceptive early-warning</strong> (noticing the body escalate before behavior does) — the skills that turn a meltdown into a pause.",
+  resources: {
+    1: {
+      loc: "U1·L3",
+      res: "“Everyone Makes Mistakes” + recovery framing; the Sammy ritual"
+    },
+    2: {
+      loc: "R&R Strand",
+      res: "“Recovering After Mistakes” strand lesson"
+    },
+    3: {
+      loc: "Regulation Toolkit + Somatic Floor",
+      res: "Early-warning body awareness in the 6–8 Somatic Floor & Regulation companion"
+    },
+    4: {
+      loc: "U2",
+      res: "Resilience unit — the muscle of return after a setback"
+    },
+    5: {
+      loc: "U2–U3",
+      res: "Adult recovery; conflict-pattern regulation"
+    }
+  }
+}, {
+  domain: "B",
+  items: "Item 8 (+7, 9)",
+  name: "The Inner Critic vs. the Inner Coach",
+  flag: "Flags when: a harsh inner voice says 'stupid, bad, not good enough' — especially high intensity",
+  what: "The cornerstone construct. The harsh voice (<strong>Inner Critic / Grumpy Gus</strong>) versus the supportive one (<strong>Inner Coach / Compassionate Witness</strong>). High intensity is a priority conversation — this is where shame lives.",
+  resources: {
+    1: {
+      loc: "U1·L4",
+      res: "“My Inside Voice — Kind or Unkind?” + Kind Coach / Grumpy Gus speech-bubble activity"
+    },
+    2: {
+      loc: "U1·L4 + U2·L4",
+      res: "“Inner Critic vs. Inner Coach” + “Talking to Yourself Kindly” (★)"
+    },
+    3: {
+      loc: "U2·L1 (PPRA)",
+      res: "“The Internal Critic” — the three tactics, and the Compassionate Witness practice it opens"
+    },
+    4: {
+      loc: "U1·L6 + U2",
+      res: "“Silencing the Noise” + Resilience unit"
+    },
+    5: {
+      loc: "U2",
+      res: "Adult Critic work in professional and relational contexts"
+    }
+  }
+}, {
+  domain: "B",
+  items: "Item 9",
+  name: "The Friend Test & self-compassion",
+  flag: "Flags when: does not treat self like a good friend who is struggling",
+  what: "The core self-compassion move: <strong>“would you talk to a friend the way you talk to yourself?”</strong> Made concrete with the Self-Compassion Letter.",
+  resources: {
+    1: {
+      loc: "U2·L4",
+      res: "“Being Kind to Myself” + Self-Compassion Letter activity (friend vs. me)"
+    },
+    2: {
+      loc: "U2·L4–L5",
+      res: "“Talking to Yourself Kindly” + “Letting Go” (★)"
+    },
+    3: {
+      loc: "U2·L5",
+      res: "“The Friend Test” anchor chart — redirect the empathy you already have"
+    },
+    4: {
+      loc: "U2",
+      res: "Resilience Through Self-Kindness — self-kindness as resilience"
+    },
+    5: {
+      loc: "U2",
+      res: "Adult self-compassion; the Friend Test in high-stakes self-judgment"
+    }
+  }
+}, {
+  domain: "B",
+  items: "Item 10",
+  name: "Rumination & letting go",
+  flag: "Flags when: replays mistakes long after they're over — especially high intensity",
+  what: "Getting stuck replaying mistakes. The curriculum distinguishes <strong>guilt</strong> (behavior, useful) from <strong>shame</strong> (identity, corrosive) and teaches explicit letting-go practices. Among the highest-risk territory.",
+  resources: {
+    1: {
+      loc: "U1·L5 + U2·L5",
+      res: "“Oops vs. I Am Bad” + “Letting Go — The Practice”"
+    },
+    2: {
+      loc: "U1·L5 + U2·L6",
+      res: "“Guilt vs. Shame” + “When Self-Forgiveness Feels Impossible” (★★)"
+    },
+    3: {
+      loc: "U2·L6 (★★)",
+      res: "“Rewriting the Script” — counselor on-site; Somatic Floor D8. The year’s second ★★ lesson, U3·L6 “The Agency of Release,” carries the same thread"
+    },
+    4: {
+      loc: "U2 · ★★",
+      res: "Highest-risk lessons on the perfectionist replay loop"
+    },
+    5: {
+      loc: "U2–U3",
+      res: "Adult rumination and release; the Agency of Release lineage"
+    }
+  }
+}, {
+  domain: "B",
+  items: "Items 11, 12",
+  name: "Growth mindset & accountability without self-punishment",
+  flag: "Flags when: doesn't believe effort helps, or can't own-repair-and-move-on",
+  what: "Believing ability can grow (<strong>growth mindset</strong>) and the <strong>Three-Part Accountability Map</strong> — own it, understand impact, repair — as distinct from self-punishment.",
+  resources: {
+    1: {
+      loc: "U1·L6 + U2·L3",
+      res: "“I Can Change and Grow” + “Saying Sorry and Meaning It”"
+    },
+    2: {
+      loc: "U2·L3",
+      res: "“Accountability Without Self-Punishment” + Three-Part Accountability Map"
+    },
+    3: {
+      loc: "U2·L4",
+      res: "“Accountability vs. Self-Punishment” — action, not suffering"
+    },
+    4: {
+      loc: "U2",
+      res: "Accountability in the resilience register; productive discomfort"
+    },
+    5: {
+      loc: "U2",
+      res: "Adult accountability and growth under real consequence"
+    }
+  }
+}, {
+  domain: "C",
+  items: "Item 13",
+  name: "Perspective-taking & the Three Sides",
+  flag: "Flags when: can't consider how the other person sees a conflict",
+  what: "Seeing a conflict from more than one side. <strong>“Three Sides of Every Story”</strong> and “why people hurt people” — the empathy that makes repair possible.",
+  resources: {
+    1: {
+      loc: "U3·L1–L2",
+      res: "“Your Hurt Is Real” + “Why Do People Hurt People?”"
+    },
+    2: {
+      loc: "U3·L1–L2",
+      res: "“Your Hurt Is Real and It Matters” + “Why People Hurt People”"
+    },
+    3: {
+      loc: "U3·L2",
+      res: "“Three Sides of Every Story” — the Compassionate Observer, in the Empathy unit"
+    },
+    4: {
+      loc: "U3·L1",
+      res: "Conflict-as-data + conflict pattern (fight/flight/freeze/fawn) worksheet"
+    },
+    5: {
+      loc: "U3",
+      res: "Adult perspective-taking; professional and relational conflict"
+    }
+  }
+}, {
+  domain: "C",
+  items: "Item 14",
+  name: "Repair that actually works",
+  flag: "Flags when: can't acknowledge hurting someone and try to make it right",
+  what: "The active skill of repair — naming harm, taking responsibility, making it right. The <strong>Repair Strand</strong> teaches repair as a learnable sequence, not a trait.",
+  resources: {
+    1: {
+      loc: "U2·L3",
+      res: "“Saying Sorry and Meaning It” — concrete repair steps"
+    },
+    2: {
+      loc: "R&R Strand",
+      res: "“Repair That Actually Works” strand lesson + accountability map"
+    },
+    3: {
+      loc: "U2·L4 (R&R Strand)",
+      res: "The Five-Step Repair Sequence in the Regulation & Repair Strand; impact vs. intent at U3·L1"
+    },
+    4: {
+      loc: "U3",
+      res: "Repair within conflict patterns; repair as relationship skill"
+    },
+    5: {
+      loc: "U3",
+      res: "Adult repair in high-consequence relationships"
+    }
+  }
+}, {
+  domain: "C",
+  items: "Item 15",
+  name: "Charitable interpretation & benefit of the doubt",
+  flag: "Flags when: assumes the worst about others right away — especially high intensity",
+  what: "The jump to assuming bad intent. The antidote is <strong>“giving the benefit of the doubt”</strong> and the <strong>Pause Practice</strong> — a deliberate beat before interpreting an action as an attack.",
+  resources: {
+    1: {
+      loc: "U4·L2–L3",
+      res: "“Giving the Benefit of the Doubt” + “The Pause Practice”"
+    },
+    2: {
+      loc: "U4·L3",
+      res: "“Giving the Benefit of the Doubt” lesson"
+    },
+    3: {
+      loc: "U4·L3 (+ U2·L2)",
+      res: "“Giving the Benefit of the Doubt” — the Pause; plus the Comparison Trap at U2·L2"
+    },
+    4: {
+      loc: "U4·L2",
+      res: "“Conflict as data” — reframing the assumption of malice"
+    },
+    5: {
+      loc: "U4",
+      res: "Adult charitable interpretation; grace vs. performance culture"
+    }
+  }
+}, {
+  domain: "C",
+  items: "Item 16",
+  name: "Grace toward difficult people",
+  flag: "Flags when: not kind to people who are different or hard to get along with",
+  what: "The signature construct: <strong>grace as a chosen kindness</strong>, even toward people who didn't earn it — distinguished from being a doormat. “Grace is a choice. A doormat has no choice. Grace is stronger.”",
+  resources: {
+    1: {
+      loc: "U4·L1, L5",
+      res: "“What Does Grace Look Like?” + “Grace With Hard People” + Grace vs. Doormat activity"
+    },
+    2: {
+      loc: "U4·L1, L5",
+      res: "“Grace with Hard People” + “What Is Grace?” anchor chart (grace has limits)"
+    },
+    3: {
+      loc: "U4·L5",
+      res: "“Grace With Hard People” — where the Difficult vs. Unsafe line is drawn"
+    },
+    4: {
+      loc: "U4·L1",
+      res: "Grace culture vs. performance culture; psychological safety research"
+    },
+    5: {
+      loc: "U4",
+      res: "Adult grace; building grace culture in institutions"
+    }
+  }
+}, {
+  domain: "C",
+  items: "Item 17",
+  name: "Difficult vs. Unsafe — the protective distinction",
+  flag: "Flags when: can't distinguish difficult from unsafe, or doesn't protect self",
+  what: "One of the most protective teachings. <strong>A hard person is annoying but you're okay after; an unsafe person makes you feel smaller and keeps doing it.</strong> Grace is never required toward someone who keeps hurting you.",
+  resources: {
+    1: {
+      loc: "U4 + Grace has limits",
+      res: "“Grace With Hard People” with “grace has limits” panel; tell-a-trusted-grown-up script"
+    },
+    2: {
+      loc: "U3·L3 + U4 R&R Strand",
+      res: "Hard vs. Unsafe Person pre-activity + “Boundaries from Strength” + “Forgiveness Is Not the Same as Trust” (★★)"
+    },
+    3: {
+      loc: "U3·L3 (★)",
+      res: "“Forgiveness vs. Reconciliation” — the most weaponized teaching, disarmed. The Difficult vs. Unsafe line itself is taught at U4·L5 + U3·L7"
+    },
+    4: {
+      loc: "U3 · Boundary of Peace",
+      res: "Boundary-setting lessons; the fawn pattern named"
+    },
+    5: {
+      loc: "U3",
+      res: "Adult boundaries; forgiveness without reconciliation"
+    }
+  }
+}, {
+  domain: "C",
+  items: "Item 18",
+  name: "Connection to a trusted adult",
+  flag: "Flags when: Never or Rarely/Sometimes on having a trusted adult — flagged independently",
+  what: "The single most protective factor in the self-reflection. A person with no trusted adult is at elevated risk regardless of other scores. The <strong>highest-priority conversation</strong> — help them name one specific adult and rehearse reaching them.",
+  resources: {
+    1: {
+      loc: "Safety + Sammy ritual",
+      res: "Year-start trusted-adult identification; classroom as named safe place; crisis numbers posted"
+    },
+    2: {
+      loc: "Safety + Counselor calendar",
+      res: "Counselor coordination; trusted-adult mapping; posted crisis resources"
+    },
+    3: {
+      loc: "Safety (988 / 741741)",
+      res: "Crisis resources posted all year; counselor same-day contact"
+    },
+    4: {
+      loc: "Safety + ★ coverage",
+      res: "Counselor coverage on flagged lessons; trusted-adult & crisis resources"
+    },
+    5: {
+      loc: "Crisis protocols",
+      res: "Adult support networks; transition-to-college/work support mapping"
+    }
+  }
+}];
+const RI_NOVELS = {
+  "Items 1, 2": [{
+    b: 1,
+    ch: "Ch 2",
+    t: "My Feelings Are Friends"
+  }, {
+    b: 2,
+    ch: "Ch 2",
+    t: "Emotions Are Information"
+  }, {
+    b: 2,
+    ch: "Ch 5",
+    t: "The Toolkit"
+  }, {
+    b: 5,
+    ch: "Ch 3",
+    t: "The Toolkit at Seventeen"
+  }],
+  "Items 3, 4": [{
+    b: 1,
+    ch: "Ch 9",
+    t: "Carrying Too Much"
+  }, {
+    b: 5,
+    ch: "Ch 11",
+    t: "The Toolkit Has a Limit"
+  }, {
+    b: 5,
+    ch: "Ch 16",
+    t: "Mid-Year — The Cohort at Its Lowest"
+  }],
+  "Items 5, 6": [{
+    b: 1,
+    ch: "Ch 3",
+    t: "Everyone Makes Mistakes"
+  }, {
+    b: 2,
+    ch: "Ch 12",
+    t: "Recovering After Mistakes"
+  }],
+  "Item 8 (+7, 9)": [{
+    b: 1,
+    ch: "Ch 4",
+    t: "My Inside Voice — Kind or Unkind?"
+  }, {
+    b: 2,
+    ch: "Ch 4",
+    t: "My Inner Critic vs. My Inner Coach"
+  }, {
+    b: 2,
+    ch: "Ch 10",
+    t: "The Weight of Self-Criticism"
+  }, {
+    b: 3,
+    ch: "Ch 8",
+    t: "The Voice in Your Head"
+  }, {
+    b: 3,
+    ch: "Ch 9",
+    t: "The Three Tactics"
+  }, {
+    b: 4,
+    ch: "Ch 3",
+    t: "The Inner Critic Goes to High School"
+  }, {
+    b: 5,
+    ch: "Ch 4",
+    t: "The Inner Critic at Seventeen"
+  }],
+  "Item 9": [{
+    b: 1,
+    ch: "Ch 11",
+    t: "Being Kind to Myself"
+  }, {
+    b: 2,
+    ch: "Ch 13",
+    t: "Talking to Yourself Kindly"
+  }, {
+    b: 3,
+    ch: "Ch 11",
+    t: "The Friend Test"
+  }],
+  "Item 10": [{
+    b: 1,
+    ch: "Ch 5",
+    t: "Oops vs. I Am Bad"
+  }, {
+    b: 1,
+    ch: "Ch 12",
+    t: "Letting Go — The Practice"
+  }, {
+    b: 2,
+    ch: "Ch 6",
+    t: "Guilt vs. Shame"
+  }, {
+    b: 2,
+    ch: "Ch 15",
+    t: "When Self-Forgiveness Feels Impossible"
+  }, {
+    b: 3,
+    ch: "Ch 12",
+    t: "Rewriting the Script"
+  }, {
+    b: 3,
+    ch: "Ch 16",
+    t: "The Letter of Release"
+  }],
+  "Items 11, 12": [{
+    b: 1,
+    ch: "Ch 6",
+    t: "I Can Change and Grow"
+  }, {
+    b: 2,
+    ch: "Ch 11",
+    t: "Accountability Without Self-Punishment"
+  }, {
+    b: 3,
+    ch: "Ch 5",
+    t: "Label & Author"
+  }, {
+    b: 5,
+    ch: "Ch 10",
+    t: "The Lie Marcus Almost Told"
+  }],
+  "Item 13": [{
+    b: 1,
+    ch: "Ch 15",
+    t: "Your Hurt Is Real"
+  }, {
+    b: 1,
+    ch: "Ch 16",
+    t: "Why Do People Hurt People?"
+  }, {
+    b: 2,
+    ch: "Ch 18",
+    t: "Why People Hurt People"
+  }, {
+    b: 3,
+    ch: "Ch 14",
+    t: "Impact vs. Intent"
+  }, {
+    b: 4,
+    ch: "Ch 17",
+    t: "The Girl Who Was Mean to Priya in Fourth Grade"
+  }],
+  "Item 14": [{
+    b: 1,
+    ch: "Ch 10",
+    t: "Saying Sorry and Meaning It"
+  }, {
+    b: 2,
+    ch: "Ch 19",
+    t: "Repair That Actually Works"
+  }, {
+    b: 5,
+    ch: "Ch 10",
+    t: "The Lie Marcus Almost Told"
+  }],
+  "Item 15": [{
+    b: 1,
+    ch: "Ch 23",
+    t: "Giving the Benefit of the Doubt"
+  }, {
+    b: 2,
+    ch: "Ch 28",
+    t: "Giving the Benefit of the Doubt"
+  }, {
+    b: 3,
+    ch: "Ch 10",
+    t: "The Comparison Trap"
+  }, {
+    b: 3,
+    ch: "Ch 18",
+    t: "Charitable Interpretation"
+  }],
+  "Item 16": [{
+    b: 1,
+    ch: "Ch 22",
+    t: "What Does Grace Look Like?"
+  }, {
+    b: 1,
+    ch: "Ch 25",
+    t: "Grace With Hard People"
+  }, {
+    b: 2,
+    ch: "Ch 30",
+    t: "Grace with Hard People"
+  }, {
+    b: 3,
+    ch: "Ch 20",
+    t: "Grace With Hard People"
+  }],
+  "Item 17": [{
+    b: 1,
+    ch: "Ch 17",
+    t: "Forgiving Is Not the Same as Trusting"
+  }, {
+    b: 2,
+    ch: "Ch 20",
+    t: "Forgiveness Is Not the Same as Trust"
+  }, {
+    b: 2,
+    ch: "Ch 27",
+    t: "Boundaries from Strength"
+  }, {
+    b: 3,
+    ch: "Ch 15",
+    t: "Forgiveness ≠ Trust"
+  }, {
+    b: 5,
+    ch: "Ch 18",
+    t: "The Decision"
+  }],
+  "Item 18": [{
+    b: 1,
+    ch: "Ch 9",
+    t: "Carrying Too Much"
+  }, {
+    b: 4,
+    ch: "Ch 10",
+    t: "The First Time I Asked"
+  }, {
+    b: 5,
+    ch: "Ch 13",
+    t: "The Conversation with My Grandmother"
+  }, {
+    b: 5,
+    ch: "Ch 14",
+    t: "Theo Asks"
+  }, {
+    b: 5,
+    ch: "Ch 15",
+    t: "The Conversation with My Mother"
+  }]
+};
+const ITEM_TO_CONSTRUCT = {
+  1: "Items 1, 2",
+  2: "Items 1, 2",
+  3: "Items 3, 4",
+  4: "Items 3, 4",
+  5: "Items 5, 6",
+  6: "Items 5, 6",
+  7: "Item 8 (+7, 9)",
+  8: "Item 8 (+7, 9)",
+  9: "Item 9",
+  10: "Item 10",
+  11: "Items 11, 12",
+  12: "Items 11, 12",
+  13: "Item 13",
+  14: "Item 14",
+  15: "Item 15",
+  16: "Item 16",
+  17: "Item 17",
+  18: "Item 18"
+};
+function homeItemBooks(_0x12062e, _0x50af5a) {
+  const _0xeeef1c = ITEM_TO_CONSTRUCT[_0x12062e];
+  if (!_0xeeef1c) {
+    return "";
+  }
+  let _0x3b79c8 = (RI_NOVELS[_0xeeef1c] || []).slice();
+  if (_0x50af5a) {
+    const _0x363592 = _0x3b79c8.filter(_0x12a58a => _0x12a58a.b >= 3);
+    _0x3b79c8 = _0x363592.length ? _0x363592 : _0x3b79c8;
+  }
+  if (!_0x3b79c8.length) {
+    return "";
+  }
+  const _0x3795a0 = dashLang === "es";
+  const _0x380adf = RI_CONSTRUCTS.find(_0x8b4314 => _0x8b4314.items === _0xeeef1c);
+  const _0x2f94d5 = _0x380adf ? _0x3795a0 && RI_ES[_0xeeef1c] ? RI_ES[_0xeeef1c].name : _0x380adf.name : "";
+  const _0x227433 = _0x3b79c8.map(_0x244b9a => {
+    const _0x392091 = _0x3795a0 ? RI_GRADES[_0x244b9a.b].label.replace("Book", "Libro") : RI_GRADES[_0x244b9a.b].label;
+    const _0x263ab2 = "<span class=\"hid-bk\">" + _0x392091 + " · " + _0x244b9a.ch + "</span> “" + _0x244b9a.t + "”";
+    const _0x39f7a2 = novelJumpUrl(_0x244b9a.b, chNumOf(_0x244b9a.ch));
+    if (_0x39f7a2) {
+      return "<a class=\"hid-novel hid-link\" href=\"" + _0x39f7a2 + "\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">" + _0x263ab2 + "<span class=\"hid-open\">↗ " + DT("Read", "Leer") + "</span></a>";
+    } else {
+      return "<span class=\"hid-novel\">" + _0x263ab2 + "</span>";
+    }
+  }).join("");
+  var _aogCurr = "";
+  if (_0x380adf && _0x380adf.resources) {
+    var _aogBooks = Object.keys(RI_GRADES).filter(function (_aogB) {
+      if (_0x50af5a) {
+        return _aogB === "3" || _aogB === "4" || _aogB === "5";
+      }
+      return true;
+    }).map(function (_aogB) {
+      var _aogR = _0x380adf.resources[_aogB];
+      if (!_aogR) {
+        return "";
+      }
+      var _aogLbl = _0x3795a0 ? RI_GRADES[_aogB].label.replace("Book", "Libro") : RI_GRADES[_aogB].label;
+      var _aogHead = "<span class=\"hid-bk\">" + _aogLbl + " · " + RI_GRADES[_aogB].grade + "</span> " + _aogR.loc + " — " + _aogR.res;
+      var _aogUrl = typeof curriculumJumpUrl === "function" ? curriculumJumpUrl(+_aogB, _0xeeef1c) : "";
+      if (_aogUrl) {
+        return "<a class=\"hid-novel hid-link\" href=\"" + _aogUrl + "\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">" + _aogHead + "<span class=\"hid-open\">↗ " + DT("Open the lesson", "Abre la lección") + "</span></a>";
+      }
+      return "<span class=\"hid-novel\">" + _aogHead + "</span>";
+    }).join("");
+    if (_aogBooks) {
+      _aogCurr = "<div class=\"hid-label\">" + DT("In the School & Home Curriculum", "En el plan de estudios (Escolar y Edición en Casa)") + "</div><div class=\"hid-novels\">" + _aogBooks + "</div>";
+    }
+  }
+  return "<div class=\"home-item-detail\" onclick=\"event.stopPropagation()\">" + (_0x2f94d5 ? "<div class=\"hid-con\">" + escapeHtml(_0x2f94d5) + "</div>" : "") + _aogCurr + "<div class=\"hid-label\">" + DT("Where this lives in the novels", "Dónde aparece en las novelas") + "</div><div class=\"hid-novels\">" + _0x227433 + "</div></div>";
+}
+function homeItemToggle(_0x435751) {
+  if (_0x435751) {
+    _0x435751.classList.toggle("open");
+  }
+}
+const RI_DOMAIN_ES = {
+  A: {
+    name: "Regulación emocional y bienestar",
+    sub: "Autoconciencia · Autogestión"
+  },
+  B: {
+    name: "Autocompasión y mentalidad de crecimiento",
+    sub: "Autogestión · Autoconciencia"
+  },
+  C: {
+    name: "Competencia social y reparación",
+    sub: "Conciencia social · Habilidades de relación · Toma de decisiones responsable"
+  }
+};
+const RI_ES = {
+  "Items 1, 2": {
+    name: "Nombrar las emociones y el kit de regulación",
+    flag: "Se marca cuando: hay puntajes bajos en saber qué se siente, o en tener una forma de calmarse",
+    what: "Habilidades fundamentales de regulación — identificar una emoción, ubicarla en el cuerpo y tener una estrategia confiable para calmarse. Las emociones se tratan como <strong>información / mensajeras</strong>, no como problemas."
+  },
+  "Items 3, 4": {
+    name: "El agobio y la Ventana de Tolerancia",
+    flag: "Se marca cuando: las emociones fuertes estorban, o hay agobio sin estrategia — especialmente de alta intensidad",
+    what: "Cuando la emoción supera la capacidad. La <strong>Ventana de Tolerancia</strong> (Demasiado / Justo / Muy poco) y los protocolos del piso somático. La alta intensidad aquí es la señal para ir más despacio y traer apoyo."
+  },
+  "Items 5, 6": {
+    name: "Recuperación y conciencia de alerta temprana",
+    flag: "Se marca cuando: cuesta volver a estar bien, o no se percibe la escalada antes de perder el control",
+    what: "<strong>Recuperación</strong> (volver a la línea base) y <strong>alerta temprana interoceptiva</strong> (notar que el cuerpo se acelera antes que la conducta) — las habilidades que convierten un colapso en una pausa."
+  },
+  "Item 8 (+7, 9)": {
+    name: "El Crítico Interno frente al Entrenador Interno",
+    flag: "Se marca cuando: una voz interna dura dice «tonto, malo, no lo suficientemente bueno» — especialmente de alta intensidad",
+    what: "El constructo central. La voz dura (<strong>Crítico Interno / Grumpy Gus</strong>) frente a la que apoya (<strong>Entrenador Interno / Testigo Compasivo</strong>). La alta intensidad es una conversación prioritaria — aquí es donde vive la vergüenza."
+  },
+  "Item 9": {
+    name: "La Prueba del Amigo y la autocompasión",
+    flag: "Se marca cuando: no se trata a sí mismo como a un buen amigo que está sufriendo",
+    what: "El movimiento central de la autocompasión: <strong>¿le hablarías a un amigo como te hablas a ti mismo?</strong> Hecho concreto con la Carta de Autocompasión."
+  },
+  "Item 10": {
+    name: "La rumiación y soltar",
+    flag: "Se marca cuando: se reviven los errores mucho después de que pasaron — especialmente de alta intensidad",
+    what: "Quedarse atascado reviviendo los errores. El plan de estudios distingue la <strong>culpa</strong> (la conducta, útil) de la <strong>vergüenza</strong> (la identidad, corrosiva) y enseña prácticas explícitas para soltar. Está entre el territorio de mayor riesgo."
+  },
+  "Items 11, 12": {
+    name: "Mentalidad de crecimiento y responsabilidad sin autocastigo",
+    flag: "Se marca cuando: no se cree que el esfuerzo ayude, o no se puede asumir-reparar-y-seguir",
+    what: "Creer que la habilidad puede crecer (<strong>mentalidad de crecimiento</strong>) y el <strong>Mapa de Responsabilidad en Tres Partes</strong> — asumirlo, entender el impacto, reparar — como algo distinto del autocastigo."
+  },
+  "Item 13": {
+    name: "Tomar perspectiva y los Tres Lados",
+    flag: "Se marca cuando: no se puede considerar cómo ve el conflicto la otra persona",
+    what: "Ver un conflicto desde más de un lado. <strong>«Los tres lados de cada historia»</strong> y «por qué la gente hiere a la gente» — la empatía que hace posible la reparación."
+  },
+  "Item 14": {
+    name: "Una reparación que de verdad funciona",
+    flag: "Se marca cuando: no se puede reconocer haber herido a alguien e intentar repararlo",
+    what: "La habilidad activa de reparar — nombrar el daño, asumir la responsabilidad, repararlo. El <strong>Hilo de Reparación</strong> enseña la reparación como una secuencia que se aprende, no como un rasgo."
+  },
+  "Item 15": {
+    name: "Interpretación caritativa y el beneficio de la duda",
+    flag: "Se marca cuando: se asume lo peor de los demás de inmediato — especialmente de alta intensidad",
+    what: "El salto a suponer mala intención. El antídoto es <strong>«dar el beneficio de la duda»</strong> y la <strong>Práctica de la Pausa</strong> — un momento deliberado antes de interpretar una acción como un ataque."
+  },
+  "Item 16": {
+    name: "Gracia hacia las personas difíciles",
+    flag: "Se marca cuando: no se es amable con las personas que son diferentes o difíciles de tratar",
+    what: "El constructo distintivo: <strong>la gracia como una bondad elegida</strong>, incluso hacia quienes no la ganaron — distinta de ser un felpudo. «La gracia es una elección. Un felpudo no tiene elección. La gracia es más fuerte.»"
+  },
+  "Item 17": {
+    name: "Difícil frente a inseguro — la distinción protectora",
+    flag: "Se marca cuando: no se distingue lo difícil de lo inseguro, o no se protege a sí mismo",
+    what: "Una de las enseñanzas más protectoras. <strong>Una persona difícil es molesta pero quedas bien después; una persona insegura te hace sentir más pequeño y lo sigue haciendo.</strong> Nunca se exige gracia hacia alguien que sigue lastimándote."
+  },
+  "Item 18": {
+    name: "La conexión con un adulto de confianza",
+    flag: "Se marca cuando: Nunca o Rara vez/A veces en tener un adulto de confianza — se marca de forma independiente",
+    what: "El factor más protector de toda la evaluación. Una persona sin un adulto de confianza está en mayor riesgo sin importar los demás puntajes. La <strong>conversación de máxima prioridad</strong> — ayúdale a nombrar a un adulto específico y a ensayar cómo contactarlo."
+  }
+};
+const LIB_CAT_ES = {
+  "The Novels": {
+    cat: "Las novelas",
+    note: "El compañero narrativo de cinco libros — las ideas, vividas como relato."
+  },
+  "The Curriculum": {
+    cat: "El plan de estudios",
+    note: "El plan de estudios universal completo de K–12 — cinco volúmenes por nivel, la columna vertebral de la vista previa recorriendo cada uno."
+  },
+  "Anchor Charts": {
+    cat: "Láminas de anclaje",
+    note: "Muestras de vista previa de las láminas de anclaje listas para el aula — un adelanto de cada juego, no el paquete completo. Los juegos completos vienen con el plan de estudios del distrito."
+  },
+  "Worksheets & Activities": {
+    cat: "Hojas de trabajo y actividades",
+    note: "Muestras de vista previa de las hojas de trabajo reproducibles, actividades de dibujo y ejemplos para exhibir — un adelanto de cada paquete, no el juego completo. Los paquetes completos vienen con el plan de estudios del distrito."
+  },
+  "Scenario Cards": {
+    cat: "Tarjetas de escenarios",
+    note: "Muestras de vista previa de los mazos de discusión y juego de roles — un adelanto de cada mazo, no el juego completo. Los mazos completos vienen con el plan de estudios del distrito."
+  },
+  "Assessment & Data": {
+    cat: "Evaluación y datos",
+    note: "Los instrumentos de evaluación y clínicos."
+  },
+  "Crosswalks & Implementation Maps": {
+    cat: "Correlaciones y mapas de implementación",
+    note: "Cómo se conectan las piezas, y cómo implementarlo."
+  },
+  "Somatic Floor Lessons": {
+    cat: "Lecciones del Piso Somático",
+    note: "Compañeras corporales, totalmente universales — donde estas ideas viven en el sistema nervioso."
+  },
+  "Autism-Adapted Charts": {
+    cat: "Láminas adaptadas para el autismo",
+    note: "Muestras de vista previa de las láminas de anclaje, adaptadas con lenguaje sencillo y apoyos visuales para estudiantes autistas — un adelanto, no el paquete completo. Dos niveles de apoyo por nivel."
+  },
+  "Home & Family Editions": {
+    cat: "Ediciones para el hogar y la familia",
+    note: "El programa, reescrito para que las familias lo usen en la mesa de la cocina."
+  }
+};
+/* Domain icons for the Construct-to-Resource Index — simple white stroke
+   glyphs inside the colored badge: A = regulation (waveform), B = self-
+   compassion (heart), C = social & repair (two people). */
+function riDomainIcon(d) {
+  var ico = {
+    A: '<path d="M3 12h3l2-6 4 12 2-6h7"/>',
+    B: '<path d="M19 13.5c1.5-1.5 3-3.1 3-5.3A3.5 3.5 0 0 0 12 5 3.5 3.5 0 0 0 2 8.2c0 2.2 1.5 3.8 3 5.3l7 6.5z"/>',
+    C: '<circle cx="9" cy="7" r="3.2"/><path d="M3.5 20v-1.5A4 4 0 0 1 7.5 14.5h3a4 4 0 0 1 4 4V20"/><path d="M16 4.2a3.2 3.2 0 0 1 0 6"/><path d="M17.5 14.7a4 4 0 0 1 3 3.8V20"/>'
+  }[d] || '';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ico + '</svg>';
+}
+/* Collapse / expand a whole domain group in the Resource Index. */
+function riToggleDomain(head) {
+  var grp = head.closest(".ri-domain");
+  if (!grp) return;
+  var cards = grp.querySelector(".ri-domain-cards");
+  // capture current height so the transition has a value to animate from/to
+  if (cards && !grp.classList.contains("ri-collapsed")) {
+    cards.style.maxHeight = cards.scrollHeight + "px";
+    void cards.offsetHeight; // reflow
+  }
+  var collapsing = !grp.classList.contains("ri-collapsed");
+  grp.classList.toggle("ri-collapsed");
+  head.setAttribute("aria-expanded", collapsing ? "false" : "true");
+  if (cards && !collapsing) {
+    cards.style.maxHeight = cards.scrollHeight + "px";
+    setTimeout(function () { if (!grp.classList.contains("ri-collapsed")) cards.style.maxHeight = "none"; }, 320);
+  }
+}
+function riDomainKey(e, head) {
+  if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); riToggleDomain(head); }
+}
+try { window.riToggleDomain = riToggleDomain; window.riDomainKey = riDomainKey; window.riDomainIcon = riDomainIcon; } catch (_riDomErr) {}
+function riRender(_0x4f8a98, _0x4f89b6) {
+  const _0x5be5c2 = document.getElementById("riIndex");
+  if (!_0x5be5c2) {
+    return;
+  }
+  const _0x3c8ae8 = (_0x4f8a98 || "").toLowerCase().trim();
+  const _0x4217bc = ["A", "B", "C"];
+  let _0x4e5390 = "";
+  let _0x21e358 = false;
+  _0x4217bc.forEach(_0x518208 => {
+    const _0x5ba2fa = RI_CONSTRUCTS.filter(_0x43740a => {
+      if (_0x43740a.domain !== _0x518208) {
+        return false;
+      }
+      if (!_0x3c8ae8) {
+        return true;
+      }
+      const _0x504c07 = (_0x43740a.name + " " + _0x43740a.items + " " + _0x43740a.what + " " + _0x43740a.flag + " " + Object.values(_0x43740a.resources).map(_0x26ce2a => _0x26ce2a.res + " " + _0x26ce2a.loc).join(" ")).toLowerCase();
+      return _0x504c07.includes(_0x3c8ae8);
+    });
+    if (!_0x5ba2fa.length) {
+      return;
+    }
+    _0x21e358 = true;
+    var _riCountLbl = _0x5ba2fa.length + " " + (lang === "es" ? (_0x5ba2fa.length === 1 ? "constructo" : "constructos") : (_0x5ba2fa.length === 1 ? "construct" : "constructs"));
+    _0x4e5390 += "<div class=\"ri-domain\" data-ridomgroup=\"" + _0x518208 + "\"><div class=\"ri-domain-head\" role=\"button\" tabindex=\"0\" aria-expanded=\"true\" onclick=\"aogToggleCollapse(this)\" onkeydown=\"aogCollapseKey(event,this)\"><div class=\"ri-badge ri-badge-" + _0x518208 + "\" aria-hidden=\"true\">" + riDomainIcon(_0x518208) + "</div><div><div class=\"ri-domain-title\">" + (lang === "es" && RI_DOMAIN_ES[_0x518208] ? RI_DOMAIN_ES[_0x518208].name : RI_DOMAIN_INFO[_0x518208].name) + "</div><div class=\"ri-domain-sub\">" + (lang === "es" && RI_DOMAIN_ES[_0x518208] ? RI_DOMAIN_ES[_0x518208].sub : RI_DOMAIN_INFO[_0x518208].sub) + "</div></div><span class=\"ri-domain-count\">" + _riCountLbl + "</span><span class=\"ri-domain-chev\" aria-hidden=\"true\">&#9662;</span></div><div class=\"ri-domain-cards\">";
+    _0x5ba2fa.forEach((_0x14d5f7, _0x80ef16) => {
+      const _0xa9f631 = "ri-" + _0x518208 + "-" + _0x80ef16;
+      let _0x27c43b = "";
+      Object.keys(RI_GRADES).forEach(_0x3024b4 => {
+        if (_0x4f89b6 === "adult" || _0x4f89b6 === "teen") {
+          if (_0x3024b4 !== "3" && _0x3024b4 !== "4" && _0x3024b4 !== "5") {
+            return;
+          }
+        } else if (_0x4f89b6 === "child") {
+          if (_0x3024b4 !== "1" && _0x3024b4 !== "2") {
+            return;
+          }
+        } else if (_0x4f89b6 && _0x3024b4 !== _0x4f89b6) {
+          return;
+        }
+        const _0x5d5b54 = _0x14d5f7.resources[_0x3024b4];
+        if (!_0x5d5b54) {
+          return;
+        }
+        var __riCurUrl = (typeof curriculumJumpUrl === "function") ? curriculumJumpUrl(_0x3024b4, _0x14d5f7.items) : "";
+        var __riBookInner = "<div class=\"ri-chip\">" + (lang === "es" ? RI_GRADES[_0x3024b4].label.replace("Book", "Libro") : RI_GRADES[_0x3024b4].label) + "<span class=\"ri-chip-grade\">" + RI_GRADES[_0x3024b4].grade + "</span></div><div class=\"ri-res\"><span class=\"loc\">" + _0x5d5b54.loc + "</span> &mdash; <span class=\"res\">" + _0x5d5b54.res + "</span></div>";
+        if (__riCurUrl) {
+          _0x27c43b += "<a class=\"ri-book ri-book-link\" data-ri-book=\"" + _0x3024b4 + "\" href=\"" + __riCurUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Abrir la lección" : "Open the lesson") + "\">" + __riBookInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>";
+        } else {
+          _0x27c43b += "<div class=\"ri-book\" data-ri-book=\"" + _0x3024b4 + "\">" + __riBookInner + "</div>";
+        }
+      });
+      if (_0x27c43b) {
+        _0x27c43b = "<div class=\"ri-novels-label\">" + (lang === "es" ? "En el plan de estudios (Escolar y Edición en Casa)" : "In the School & Home Curriculum") + "</div>" + _0x27c43b;
+      }
+      let _0x55af6d = "";
+      const _0x1b614d = (RI_NOVELS[_0x14d5f7.items] || []).filter(_0x533a3f => (_0x4f89b6 === "adult" || _0x4f89b6 === "teen") ? _0x533a3f.b >= 3 : _0x4f89b6 === "child" ? _0x533a3f.b <= 2 : !_0x4f89b6 || String(_0x533a3f.b) === String(_0x4f89b6));
+      if (_0x1b614d.length) {
+        _0x55af6d = "<div class=\"ri-novels\"><div class=\"ri-novels-label\">" + (lang === "es" ? "En las novelas" : "In the novels") + "</div><div class=\"ri-novels-list\">" + _0x1b614d.map(_0x4796dd => {
+          var __riNovUrl = (typeof novelJumpUrl === "function") ? novelJumpUrl(_0x4796dd.b, chNumOf(_0x4796dd.ch)) : "";
+          var __riNovInner = "<span class=\"ri-novel-bk\">" + (lang === "es" ? RI_GRADES[_0x4796dd.b].label.replace("Book", "Libro") : RI_GRADES[_0x4796dd.b].label) + " · " + _0x4796dd.ch + "</span> &ldquo;" + _0x4796dd.t + "&rdquo;";
+          return __riNovUrl
+            ? "<a class=\"ri-novel ri-novel-link\" href=\"" + __riNovUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Léelo en la historia" : "Read it in the story") + "\">" + __riNovInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>"
+            : "<span class=\"ri-novel\">" + __riNovInner + "</span>";
+        }).join("") + "</div></div>";
+      }
+      _0x4e5390 += "<div class=\"ri-card\" data-ricard=\"" + _0xa9f631 + "\" data-ridomain=\"" + _0x518208 + "\" data-riitems=\"" + _0x14d5f7.items + "\"><div class=\"ri-card-head\" onclick=\"riToggle('" + _0xa9f631 + "')\"><div class=\"ri-card-left\"><span class=\"ri-tag ri-tag-" + _0x518208 + "\">" + (lang === "es" ? _0x14d5f7.items.replace(/Items/g, "Ítems").replace(/Item /g, "Ítem ") : _0x14d5f7.items) + "</span><div><div class=\"ri-name\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].name : _0x14d5f7.name) + "</div><div class=\"ri-flag\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].flag : _0x14d5f7.flag) + "</div></div></div><span class=\"ri-chev\">▾</span></div><div class=\"ri-body\"><div class=\"ri-inner\"><div class=\"ri-what\"><strong>" + (lang === "es" ? "Qué es:" : "What it is:") + "</strong> " + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].what : _0x14d5f7.what) + "</div>" + _0x27c43b + _0x55af6d + "</div></div></div>";
+    });
+    _0x4e5390 += "</div></div>";
+  });
+  if (!_0x21e358) {
+    _0x4e5390 = "<div class=\"ri-empty\">" + (lang === "es" ? "No hay constructos que coincidan. Prueba otro término o quita el filtro de nivel." : "No matching constructs. Try a different term or clear the grade filter.") + "</div>";
+  }
+  var _0x135db9 = _0x4f89b6 === "adult" && _0x21e358 ? "<div class=\"ri-adult-note\">" + (lang === "es" ? "<strong>Vista para adultos.</strong> El registro maduro de la serie. Las novelas aquí — <em>Two Voices</em> (Libro 3), <em>Looked Up</em> (Libro 4) y <em>Walked Out</em> (Libro 5) — se leen como historias para adultos por sí solas." : "<strong>Adults view.</strong> The mature register of the series. The novels here — <em>Two Voices</em> (Book 3), <em>Looked Up</em> (Book 4), and <em>Walked Out</em> (Book 5) — read as grown-up stories on their own.") + "</div>" : "";
+  _0x5be5c2.innerHTML = _0x135db9 + _0x4e5390;
+  if (_0x3c8ae8) {
+    document.querySelectorAll(".ri-card").forEach(_0x6f83f5 => _0x6f83f5.classList.add("open"));
+  }
+  if (typeof riApplyDomainFilter === "function") { riApplyDomainFilter(); }
+}
+/* Domain filter pills — show/hide the rendered .ri-domain groups by active domain.
+   Re-applied at the end of every riRender so it survives search/grade re-renders. */
+window._riActiveDomain = window._riActiveDomain || "";
+function riApplyDomainFilter() {
+  var dom = window._riActiveDomain || "";
+  var idx = document.getElementById("riIndex");
+  if (!idx) { return; }
+  var groups = idx.querySelectorAll(".ri-domain");
+  var anyVisible = false;
+  groups.forEach(function (g) {
+    var show = !dom || g.getAttribute("data-ridomgroup") === dom;
+    g.style.display = show ? "" : "none";
+    if (show) { anyVisible = true; }
+  });
+  var note = document.getElementById("riPillEmpty");
+  if (groups.length && !anyVisible) {
+    if (!note) {
+      note = document.createElement("div");
+      note.id = "riPillEmpty";
+      note.className = "ri-pill-empty";
+      idx.appendChild(note);
+    }
+    note.textContent = (typeof lang !== "undefined" && lang === "es")
+      ? "No hay constructos en este dominio para el filtro actual."
+      : "No constructs in this domain for the current filter.";
+    note.style.display = "";
+  } else if (note) {
+    note.style.display = "none";
+  }
+}
+function riSetDomain(btn, dom) {
+  window._riActiveDomain = dom || "";
+  var pills = document.querySelectorAll("#riPills .ri-pill");
+  pills.forEach(function (p) { p.classList.remove("is-active"); });
+  if (btn) { btn.classList.add("is-active"); }
+  riApplyDomainFilter();
+}
+try { window.riSetDomain = riSetDomain; window.riApplyDomainFilter = riApplyDomainFilter; } catch (_riPillErr) {}
+function riToggle(_0x358db4) {
+  const _0x1dbbd2 = document.querySelector("[data-ricard=\"" + _0x358db4 + "\"]");
+  if (_0x1dbbd2) {
+    _0x1dbbd2.classList.toggle("open");
+  }
+}
+const LICENSE_INQUIRY_URL = "mailto:Theopus77@yahoo.com?subject=Architecture%20of%20Grace%20%E2%80%94%20District%20License";
+const FAMILY_STORE_URL = "mailto:Theopus77@yahoo.com?subject=Architecture%20of%20Grace%20%E2%80%94%20Family%20Purchase%20Inquiry";
+const WORKPLACE_INQUIRY_URL = "mailto:Theopus77@yahoo.com?subject=Architecture%20of%20Grace%20%E2%80%94%20Workplace%20%26%20Team%20Inquiry";
+const NOVEL_DIGITAL_URLS = {
+  1: "files/AoG-Book1-Room12-DIGITAL.pdf",
+  2: "files/AoG-Book2-Room18-DIGITAL.pdf",
+  3: "files/AoG-Book3-Room36-DIGITAL.pdf",
+  4: "files/AoG-Book4-Room104-DIGITAL.pdf",
+  5: "files/AoG-Book5-Room207-DIGITAL.pdf",
+  6: "files/AoG_Book6_The_Dwelling_DIGITAL.pdf"
+};
+const NOVEL_PAGES = {
+  1: {
+    1: 9,
+    2: 12,
+    3: 15,
+    4: 18,
+    5: 22,
+    6: 26,
+    7: 29,
+    8: 33,
+    9: 37,
+    10: 41,
+    11: 45,
+    12: 49,
+    13: 53,
+    14: 59,
+    15: 63,
+    16: 67,
+    17: 71,
+    18: 76,
+    19: 79,
+    20: 82,
+    21: 86,
+    22: 91,
+    23: 95,
+    24: 98,
+    25: 102,
+    26: 105,
+    27: 108
+  },
+  2: {
+    1: 10,
+    2: 18,
+    3: 24,
+    4: 31,
+    5: 38,
+    6: 42,
+    7: 49,
+    8: 57,
+    9: 63,
+    10: 69,
+    11: 77,
+    12: 82,
+    13: 87,
+    14: 94,
+    15: 99,
+    16: 110,
+    17: 117,
+    18: 122,
+    19: 129,
+    20: 133,
+    21: 143,
+    22: 146,
+    23: 151,
+    24: 156,
+    25: 162,
+    26: 166,
+    27: 170,
+    28: 175,
+    29: 181,
+    30: 185,
+    31: 189,
+    32: 197
+  },
+  3: {
+    1: 12,
+    2: 19,
+    3: 24,
+    4: 31,
+    5: 39,
+    6: 46,
+    7: 54,
+    8: 62,
+    9: 67,
+    10: 73,
+    11: 80,
+    12: 86,
+    13: 93,
+    14: 100,
+    15: 107,
+    16: 114,
+    17: 122,
+    18: 131,
+    19: 138,
+    20: 146,
+    21: 153,
+    22: 161
+  },
+  4: {
+    1: 11,
+    2: 17,
+    3: 25,
+    4: 31,
+    5: 39,
+    6: 44,
+    7: 51,
+    8: 58,
+    9: 66,
+    10: 75,
+    11: 82,
+    12: 91,
+    13: 98,
+    14: 108,
+    15: 117,
+    16: 124,
+    17: 132,
+    18: 141,
+    19: 148,
+    20: 158,
+    21: 165
+  },
+  5: {
+    1: 10,
+    2: 18,
+    3: 26,
+    4: 33,
+    5: 39,
+    6: 48,
+    7: 55,
+    8: 63,
+    9: 72,
+    10: 78,
+    11: 85,
+    12: 92,
+    13: 99,
+    14: 106,
+    15: 113,
+    16: 120,
+    17: 128,
+    18: 136,
+    19: 145,
+    20: 153,
+    21: 162,
+    22: 171,
+    23: 179,
+    24: 185,
+    25: 194,
+    26: 204,
+    27: 215,
+    28: 225
+  }
+};
+function novelJumpUrl(_0x34d906, _0x21f910) {
+  if (!_0x34d906 || !_0x21f910) {
+    return "";
+  }
+  return PREVIEW_DIR + "Story-B" + _0x34d906 + "-Ch" + _0x21f910 + ".pdf";
+}
+function chNumOf(_0x567e42) {
+  var _0x5dbb3a = String(_0x567e42).match(/\d+/);
+  if (_0x5dbb3a) {
+    return parseInt(_0x5dbb3a[0], 10);
+  } else {
+    return null;
+  }
+}
+const PREVIEW_DIR = "previews/";
+// Per-book "free sample lesson" fallback. When a book row has no specific
+// lesson-page preview mapped, link it here so the row still opens real material.
+// Add Books 2–5 the same way as their sample PDFs are dropped into /files.
+const BOOK_SAMPLE = {
+  1: "files/AoG-Sample-Lesson-Book-1.pdf",
+  2: "files/AoG-Sample-Lesson-Book-2.pdf",
+  3: "files/AoG-Sample-Lesson-Book-3.pdf",
+  4: "files/AoG-Sample-Lesson-Book-4.pdf",
+  5: "files/AoG-Sample-Lesson-Book-5.pdf"
+};
+/* CURRICULUM_URLS removed 2026-08-23. It named five files
+   (AoG_Book1..5_*_Curriculum_Polished.pdf) that have never existed in files/,
+   and nothing in the app ever read the constant — the Library links to the
+   Room DIGITAL editions and BOOK_SAMPLE handles the samplers. It was dead
+   code pointing at 404s, and the link checker was right to flag it. */
+/* EXPLICIT RESOURCE URLS, checked BEFORE the page-number table.
+   Some constructs have no lesson-PAGE preview in a band, and falling through to
+   the book's generic sampler quietly told a teacher "this is your lesson" when
+   it was front matter. Two cases this fixes, both 6-8:
+     - Domain A. Book 3 has NO standalone regulation lesson, and the master says
+       so itself in every unit crosswalk: "Domain A (regulation) is light here --
+       it is carried by the recurring Regulation Toolkit." The right 6-8
+       resource is the Somatic Floor & Regulation companion, which already ships.
+     - "Item 18" is a safety item, not a lesson. An empty string here means
+       DELIBERATELY NO LESSON LINK, and the row renders as plain text.
+   An entry present with value "" wins over the sampler; a missing key falls
+   through exactly as before. */
+const CURR_LESSON_URLS = {
+  "Items 1, 2": { 3: "files/AoG-Book3-Somatic-Floor-Preview.pdf" },
+  "Items 3, 4": { 3: "files/AoG-Book3-Somatic-Floor-Preview.pdf" },
+  "Items 5, 6": { 3: "files/AoG-Book3-Somatic-Floor-Preview.pdf" },
+  "Item 18":    { 3: "" }
+};
+const CURR_LESSON_PAGES = {
+  "Items 1, 2": {
+    1: 15,
+    2: 15,
+    4: 18
+  },
+  "Items 3, 4": {
+    2: 24,
+    4: 83
+  },
+  "Items 5, 6": {
+    1: 17,
+    2: 45
+  },
+  "Item 8 (+7, 9)": {
+    1: 19,
+    2: 20,
+    3: 39,
+    4: 34
+  },
+  "Item 9": {
+    1: 35,
+    2: 49,
+    3: 53
+  },
+  "Item 10": {
+    1: 38,
+    2: 52,
+    3: 56,
+    5: 57
+  },
+  "Items 11, 12": {
+    1: 23,
+    2: 64,
+    3: 49,
+    4: 54
+  },
+  "Item 13": {
+    1: 48,
+    2: 62,
+    3: 67,
+    5: 107
+  },
+  "Item 14": {
+    1: 33,
+    2: 64
+  },
+  "Item 15": {
+    1: 66,
+    2: 93,
+    3: 96,
+    4: 123
+  },
+  "Item 16": {
+    1: 70,
+    2: 98,
+    3: 102,
+    4: 119,
+    5: 136
+  },
+  "Item 17": {
+    1: 50,
+    2: 69,
+    3: 70,
+    4: 92,
+    5: 102
+  }
+};
+function curriculumJumpUrl(_0x370514, _0x5e9811) {
+  /* An explicit URL wins, including a deliberate "" meaning no lesson link. */
+  var _aogOv = CURR_LESSON_URLS[_0x5e9811];
+  if (_aogOv && Object.prototype.hasOwnProperty.call(_aogOv, _0x370514)) {
+    return _aogOv[_0x370514];
+  }
+  var _0x4590a8 = (CURR_LESSON_PAGES[_0x5e9811] || {})[_0x370514];
+  if (_0x4590a8) {
+    return PREVIEW_DIR + "Lesson-B" + _0x370514 + "-p" + _0x4590a8 + ".pdf";
+  }
+  // No specific preview for this book+topic — fall back to the book's sample lesson.
+  if (BOOK_SAMPLE[_0x370514]) {
+    return BOOK_SAMPLE[_0x370514];
+  }
+  return "";
+}
+const RESOURCE_LIBRARY = [{
+  cat: "The Novels",
+  note: "The six-book narrative companion — the ideas, lived as story. Books One through Five run K–12 and are included in the district curriculum; Book Six is the adult companion. Available for families to buy on their own.",
+  items: [{
+    title: "Book 1 — The Year We Met Sammy (K–2)",
+    desc: "Read Chapter One — the morning a class meets Sammy, and the year begins with a question: who am I?",
+    tie: true,
+    url: "files/Room-12-First-Chapter-Preview.pdf"
+  }, {
+    title: "The Year We Met Sammy — full novel (K–2)",
+    desc: "The complete Book 1 novel — part of the curriculum, or buy it on its own.",
+    access: "both",
+    url: ""
+  }, {
+    title: "Book 2 — The Year of the Inner Critic (3–5)",
+    desc: "Read Chapter One — the year a class names the harsh voice inside, and learns to answer it.",
+    tie: true,
+    url: "files/Room-18-First-Chapter-Preview.pdf"
+  }, {
+    title: "The Year of the Inner Critic — full novel (3–5)",
+    desc: "The complete Book 2 novel — part of the curriculum, or buy it on its own.",
+    access: "both",
+    url: ""
+  }, {
+    title: "Book 3 — The Year of Two Voices (6–8)",
+    desc: "Read Chapter One — Amara, a mask, a mirror, and the year she figures out who she is when no one is watching.",
+    tie: true,
+    url: "files/Room-36-First-Chapter-Preview.pdf"
+  }, {
+    title: "The Year of Two Voices — full novel (6–8)",
+    desc: "The complete Book 3 novel, open and whole — the 6–8 band reads on this site. Print copies and class sets are available on their own.",
+    url: "files/AoG-Book3-Room36-DIGITAL.pdf"
+  }, {
+    title: "Book 4 — The Year We Looked Up (9–10)",
+    desc: "Read Chapter One — the first day of high school, and the version of yourself you choose to show a room of strangers.",
+    tie: true,
+    url: "files/Room-104-First-Chapter-Preview.pdf"
+  }, {
+    title: "The Year We Looked Up — full novel (9–10)",
+    desc: "The complete Book 4 novel — part of the curriculum, or buy it on its own.",
+    access: "both",
+    url: ""
+  }, {
+    title: "Book 5 — The Year We Walked Out (11–12)",
+    desc: "Read Chapter One — the first day of the last year, and the question of what you carry out the door with you.",
+    tie: true,
+    url: "files/Room-207-First-Chapter-Preview.pdf"
+  }, {
+    title: "The Year We Walked Out — full novel (11–12)",
+    desc: "The complete Book 5 novel — part of the curriculum, or buy it on its own.",
+    access: "both",
+    url: ""
+  }, {
+    title: "Book 6 — The Dwelling (Adults)",
+    desc: "Read Chapter One — they are grown now, and every August fourteenth they come back to the room with no number, sit around the long table, and say the true thing.",
+    tie: true,
+    url: "files/AoG-Book6-The-Dwelling-First-Chapter-Preview.pdf"
+  }, {
+    title: "The Dwelling — full novel (Adults)",
+    desc: "The complete Book 6 novel — the adult companion, the years the architecture had to hold. The first book written not for the child but for the grown-up living inside it. Buy it on its own.",
+    access: "buy",
+    url: ""
+  }]
+}, {
+  cat: "The Curriculum",
+  note: "The full K–12 universal curriculum — five grade-band volumes, the spine of the preview running through every one.",
+  items: [{
+    title: "Sample Lesson · Book 1 (K–2)",
+    desc: "One complete lesson from The Foundation — read end to end.",
+    tie: true,
+    url: "files/AoG-Sample-Lesson-Book-1.pdf"
+  }, {
+    title: "Sample Lesson · Book 2 (3–5)",
+    desc: "One complete lesson from The Framework — read end to end.",
+    tie: true,
+    url: "files/AoG-Sample-Lesson-Book-2.pdf"
+  }, {
+    title: "Sample Lesson · Book 3 (6–8)",
+    desc: "One complete lesson from The Interior — read end to end.",
+    tie: true,
+    url: "files/AoG-Sample-Lesson-Book-3.pdf"
+  }, {
+    title: "Sample Lesson · Book 4 (9–10)",
+    desc: "One complete lesson from The Façade — read end to end.",
+    tie: true,
+    url: "files/AoG-Sample-Lesson-Book-4.pdf"
+  }, {
+    title: "Sample Lesson · Book 5 (11–12)",
+    desc: "One complete lesson from The Capstone — read end to end.",
+    tie: true,
+    url: "files/AoG-Sample-Lesson-Book-5.pdf"
+  }, {
+    title: "Book 1 · The Foundation (K–2)",
+    desc: "Where it begins — identity, feelings, mistakes, and the inside voice.",
+    tie: true,
+    url: ""
+  }, {
+    title: "Book 2 · The Framework (3–5)",
+    desc: "The Inner Critic and Inner Coach, named explicitly — the curriculum's signature move.",
+    tie: true,
+    url: ""
+  }, {
+    title: "Book 3 · The Interior (6–8)",
+    desc: "The Internal Critic, its three tactics, and the Compassionate Witness — the full 6–8 curriculum, open and whole at Room 36.",
+    url: "/room36"
+  }, {
+    title: "Room 36 Workbook (6–8)",
+    desc: "The companion workbook for the whole 6–8 band — every unit interactive, with the printed answer key. Open, no sign-up.",
+    url: "/wb36"
+  }, {
+    title: "Book 4 · The Façade (9–10)",
+    desc: "The curated self, self-kindness, and silencing the noise.",
+    tie: true,
+    url: ""
+  }, {
+    title: "Book 5 · The Capstone (11–12)",
+    desc: "Values, the adult repair manual, and forgiving the younger self.",
+    tie: true,
+    url: ""
+  }]
+}, {
+  cat: "Anchor Charts",
+  closed: true,
+  note: "The classroom-ready anchor chart sets — the full packs that ship with the district curriculum. License them for a school, or buy a pack on its own. (Samplers live in the showcase preview.)",
+  items: [{
+    title: "Anchor Charts · Preview",
+    desc: "Three signature charts — the Identity Web (K–2), Inner Critic vs. Inner Coach (3–5), and The Internal Critic (6–8).",
+    free: true,
+    url: "files/AoG-Anchor-Charts-Preview.pdf"
+  }, {
+    title: "Anchor Charts Sampler",
+    desc: "One chart per band — the cross-band sampler, from the Identity Web to the Threshold of adulthood.",
+    tie: true
+  }, {
+    title: "Anchor Charts · Book 1 (K–2)",
+    desc: "The full K–2 set, including the Identity Web and Kind Coach vs. Grumpy Gus.",
+    tie: true,
+    url: "files/AoG-Book1-Anchor-Charts.pdf"
+  }, {
+    title: "Anchor Charts · Book 2 (3–5)",
+    desc: "The full 3–5 set, built around the red/green Inner Critic vs. Inner Coach chart.",
+    tie: true,
+    url: "files/AoG-Book2-Anchor-Charts.pdf"
+  }, {
+    title: "Anchor Charts · Book 3 (6–8)",
+    desc: "The full 6–8 set, including The Internal Critic and its three tactics — open, part of the open 6–8 band.",
+    free: true,
+    url: "files/AoG-Book3-Anchor-Charts.pdf"
+  }, {
+    title: "Anchor Charts · Book 4 (9–10)",
+    desc: "The full 9–10 set, including the Signal vs. Noise / Internal Coach chart.",
+    tie: true
+  }, {
+    title: "Anchor Charts · Book 5 (11–12)",
+    desc: "The full 11–12 set, including Forgiving the Younger Self.",
+    tie: true,
+    url: "files/AoGBook5AnchorCharts.pdf"
+  }, {
+    title: "Anchor Chart Production Pack · Book 3 (6–8)",
+    desc: "The display-ready production edition of the Book 3 charts — the same 6–8 Interior set, built for printing large.",
+    free: true,
+    url: "files/AoG-Supplemental-Anchor-Chart-Pack.pdf"
+  }]
+}, {
+  cat: "Worksheets & Activities",
+  closed: true,
+  note: "The reproducible worksheets, drawing activities, and display examples — the full packs that ship with the district curriculum. License them for a school, or buy a pack for home. (Samplers live in the showcase preview.)",
+  items: [{
+    title: "Drawing Activities · K–2 Sampler",
+    desc: "Four drawings, four pillars: how K–2 students draw identity, self-compassion, forgiveness, and grace.",
+    tie: true,
+    url: "files/AoG-Drawing-Activities-K2-Sampler.pdf"
+  }, {
+    title: "Drawing Activities (K–2)",
+    desc: "The hands-on drawing lessons, including the Identity Web and Kind Message to Myself.",
+    tie: true,
+    url: "files/AoG-Book1-Drawing-Activities.pdf"
+  }, {
+    title: "Drawing Examples",
+    desc: "Finished display models teachers post before students begin.",
+    url: ""
+  }, {
+    title: "Worksheets Sampler",
+    desc: "One skill across twelve years: the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.",
+    tie: true,
+    url: "files/AoG-Worksheets-K12-Sampler.pdf"
+  }, {
+    title: "Worksheet Pack · Book 2 (3–5)",
+    desc: "The full 3–5 worksheet pack, including WS3 Two Voices.",
+    tie: true,
+    url: "files/AoG-Book2-Worksheet-Packet.pdf"
+  }, {
+    title: "Worksheet Pack · Book 3 (6–8)",
+    desc: "The full 6–8 worksheet pack, including the Internal Critic Profile.",
+    tie: true,
+    url: "files/AoG-Book3-Worksheet-Pack.pdf"
+  }, {
+    title: "Worksheet Pack · Book 4 (9–10)",
+    desc: "The 9–10 reproducible worksheets for the Façade and self-kindness units.",
+    url: "files/AoG-Books4-5-Worksheet-Pack.pdf"
+  }, {
+    title: "Worksheet Pack · Book 5 (11–12)",
+    desc: "The 11–12 worksheets for values, repair, and forgiveness.",
+    url: "files/AoG-Books4-5-Worksheet-Pack.pdf"
+  }]
+}, {
+  cat: "Scenario Cards",
+  closed: true,
+  note: "The discussion and role-play decks — the complete sets that ship with the district curriculum. License them for a school, or buy a deck on its own. (Samplers live in the showcase preview.)",
+  items: [{
+    title: "Scenario Cards · Preview",
+    desc: "Four sample cards, one per pillar — identity, the inner voice, self-compassion, and forgiveness.",
+    free: true,
+    url: "files/AoG-Scenario-Cards-Preview.pdf"
+  }, {
+    title: "Scenario Cards Sampler",
+    desc: "Ten cards, one per band, tracing the identity and inner-critic threads from kindergarten to graduation.",
+    tie: true,
+    url: "files/AoG-Scenario-Cards-K12-Sampler.pdf"
+  }, {
+    title: "Scenario Cards · Book 1 (K–2)",
+    desc: "The full K–2 discussion deck — identity, mistakes, and grace, worked as a class.",
+    tie: true,
+    url: "files/AoG-Book1-Scenario-Card-Deck.pdf"
+  }, {
+    title: "Scenario Cards · Book 2 (3–5)",
+    desc: "The full 3–5 deck — 28 lessons, two cards per lesson, 56 in all.",
+    tie: true,
+    url: "files/AoGBook2ScenarioCardDeck.pdf"
+  }, {
+    title: "Scenario Cards · Book 3 (6–8)",
+    desc: "The full 6–8 deck of identity, self-compassion, repair, and grace dilemmas.",
+    tie: true
+  }, {
+    title: "Scenario Cards · Book 4 (9–10)",
+    desc: "The full 9–10 deck, including Layla (B4-6A).",
+    tie: true
+  }, {
+    title: "Scenario Cards · Book 5 (11–12)",
+    desc: "The full 11–12 deck, including Priya’s Past Self (B5-9A).",
+    tie: true
+  }, {
+    title: "Scenario Cards · Complete Deck (all bands)",
+    desc: "The cross-band deck of dilemmas for discussion and role-play.",
+    url: ""
+  }]
+}, {
+  cat: "Assessment & Data",
+  note: "The reflection instruments.",
+  items: [{
+    title: "Self-Reflection (this tool)",
+    desc: "The instrument you're in now — 18 items, three domains, repeated across the year.",
+    url: ""
+  }, {
+    title: "Adult Edition",
+    desc: "The same architecture, deepened for counselors and adult groups.",
+    url: "/adult"
+  }]
+}, {
+  cat: "Crosswalks & Implementation Maps",
+  note: "How the pieces connect, and how to roll it out.",
+  items: [{
+    title: "Master Crosswalk Matrix (all books)",
+    desc: "The teacher master-map — every load-bearing novel scene crosswalked to its SEL theme, lesson alignment, anchor-chart trigger, and a concrete neuro-affirming adjustment, K–12 in one document.",
+    url: "/xw-matrix-universal",
+    access: "license"
+  }, {
+    title: "Master Crosswalk · Book 2",
+    desc: "Every 3–5 construct mapped to its lesson, chart, and activity.",
+    url: ""
+  }, {
+    title: "Master Integration Map · Book 2",
+    desc: "How the universal core and somatic track fit together at 3–5.",
+    url: ""
+  }, {
+    title: "Implementation Master · Book 2",
+    desc: "The rollout plan — pacing, safety, and counselor coordination for 3–5.",
+    url: ""
+  }, {
+    title: "Master Crosswalk · Book 3",
+    desc: "Every 6–8 construct mapped across the program.",
+    url: ""
+  }, {
+    title: "Implementation Master · Book 3",
+    desc: "The rollout plan for the 6–8 Interior year.",
+    url: ""
+  }, {
+    title: "Implementation Master · Book 4 (9–10)",
+    desc: "The rollout plan for the 9–10 Façade year.",
+    url: ""
+  }, {
+    title: "Implementation Master · Book 5 (11–12)",
+    desc: "The rollout plan for the 11–12 Capstone year.",
+    url: ""
+  }, {
+    title: "Resource Index → Novel Crosswalk",
+    desc: "Each construct tied to the exact novel chapter that carries it.",
+    url: ""
+  }]
+}, {
+  cat: "Somatic Floor Lessons",
+  note: "Body-based, fully universal companions — where these ideas live in the nervous system. Read the complete opening lesson of either companion before you buy.",
+  items: [{
+    title: "Somatic Floor · Book 2 (3–5) · Preview",
+    desc: "The cover, the contents, and the complete first lesson — Where the Inner Critic Lives in the Body — read end to end.",
+    free: true,
+    url: "files/AoG-Book2-Somatic-Floor-Preview.pdf"
+  }, {
+    title: "Somatic Floor · Book 3 (6–8) · Preview",
+    desc: "The cover, the contents, and the complete first lesson — Mask vs. Mirror — read end to end.",
+    free: true,
+    url: "files/AoG-Book3-Somatic-Floor-Preview.pdf"
+  }, {
+    title: "Book 2 · Inner Critic · Body Floor (D3)",
+    desc: "Where the Inner Critic shows up in the body — fully universal.",
+    url: ""
+  }, {
+    title: "Book 2 · Guilt & Shame · Body Floor (D5)",
+    desc: "Feeling guilt and shame in the body, and regulating them.",
+    url: ""
+  }, {
+    title: "Book 2 · The Heavy Backpack · Body Floor (D8)",
+    desc: "The weight of unforgiveness, felt physically.",
+    url: ""
+  }, {
+    title: "Book 2 · Productive Discomfort · Body Floor (D10)",
+    desc: "Reading discomfort as a signal, not an alarm.",
+    url: ""
+  }, {
+    title: "Book 3 · Mask vs. Mirror · Somatic Floor (D3)",
+    desc: "The body cost of masking, for adolescents.",
+    url: ""
+  }, {
+    title: "Book 3 · Rewriting the Script · Somatic Floor (D8)",
+    desc: "Somatic grounding for reauthoring the self-story.",
+    url: ""
+  }, {
+    title: "Book 3 · The Agency of Release · Somatic Floor (D11)",
+    desc: "Releasing what you carry — a body-based practice.",
+    url: ""
+  }]
+}, {
+  cat: "Autism-Adapted Charts",
+  closed: true,
+  note: "The anchor charts rebuilt with plain language and visual supports — two support levels per band. Read the cover, the editorial note, and the first charts of any set before you buy. License them for a school, or buy a set for home.",
+  items: [{
+    title: "Autism-Adapted Charts · Book 1 (K–2) · Lower Support · Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — including the Identity Web — open to read.",
+    free: true,
+    url: "files/AoG-Book1-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 1 (K–2) · Lower Support",
+    desc: "All fourteen K–2 anchor charts in plain language with visual supports, body-first scaffolding, and a Specialist Note per chart.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 1 (K–2) · Moderate Support · Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — with more scaffolding and simpler steps — open to read.",
+    free: true,
+    url: "files/AoG-Book1-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 1 (K–2) · Moderate Support",
+    desc: "The full K–2 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Lower Support · Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — including the Identity Web — open to read.",
+    free: true,
+    url: "files/AoG-Book2-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Lower Support",
+    desc: "The full 3–5 anchor charts in plain language with visual supports.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Moderate Support · Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — with more scaffolding and simpler steps — open to read.",
+    free: true,
+    url: "files/AoG-Book2-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Moderate Support",
+    desc: "The full 3–5 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 3 (6–8) · Lower Support · Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — including Mask vs. Mirror — open to read.",
+    free: true,
+    url: "files/AoG-Book3-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 3 (6–8) · Lower Support",
+    desc: "The full 6–8 anchor charts in plain language with visual supports.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 3 (6–8) · Moderate Support · Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — with more scaffolding and simpler steps — open to read.",
+    free: true,
+    url: "files/AoG-Book3-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 3 (6–8) · Moderate Support",
+    desc: "The full 6–8 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Lower Support · Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — including The Social Battery — open to read.",
+    free: true,
+    url: "files/AoG-Book4-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Lower Support",
+    desc: "All twenty-eight 9–10 anchor charts in plain language, with the autistic-adolescent panels and pattern-tracking guardrails.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Moderate Support · Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — with more scaffolding and simpler steps — open to read.",
+    free: true,
+    url: "files/AoG-Book4-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Moderate Support",
+    desc: "The full 9–10 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Lower Support · Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — including The Exit Interview — open to read.",
+    free: true,
+    url: "files/AoG-Book5-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Lower Support",
+    desc: "The full 11–12 anchor charts in plain language, with the values, repair, and forgiveness charts.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Moderate Support · Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — with more scaffolding and simpler steps — open to read.",
+    free: true,
+    url: "files/AoG-Book5-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Moderate Support",
+    desc: "The full 11–12 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }]
+}, {
+  cat: "Home & Family Editions",
+  note: "The program, rewritten for families to use at the kitchen table. Read the first complete lesson of any book before you buy.",
+  items: [{
+    title: "Home Edition · Book 1 (K–2) · Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-1-Preview.pdf"
+  }, {
+    title: "Home Edition · Book 1 (K–2)",
+    desc: "The previewed K–2 lessons, in a version parents can lead at home.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Home Edition · Book 2 (3–5) · Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-2-Preview.pdf"
+  }, {
+    title: "Home Edition · Book 2 (3–5)",
+    desc: "The Inner Critic work, written for families.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Home Edition · Book 3 (6–8) · Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-3-Preview.pdf"
+  }, {
+    title: "Home Edition · Book 3 (6–8)",
+    desc: "The 6–8 interior work, adapted for home.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Home Edition · Book 4 (9–10) · Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-4-Preview.pdf"
+  }, {
+    title: "Home Edition · Book 4 (9–10)",
+    desc: "The 9–10 interior work, written for families at home.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Home Edition · Book 5 (11–12) · Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-5-Preview.pdf"
+  }, {
+    title: "Home Edition · Book 5 (11–12)",
+    desc: "The 11–12 work — threshold, values, forgiveness — for families.",
+    access: "buy",
+    url: ""
+  }]
+}, {
+  cat: "Divine Blueprint · Christian Companion Track",
+  closed: true,
+  note: "An optional faith-based companion that runs alongside the secular core — for Christian schools, homeschools, and ministry settings. Kept separate by design; the secular self-reflection never points here.",
+  items: [{
+    title: "Master Crosswalk Matrix · Divine — K–12 (all books)",
+    desc: "The faith-integrated master-map — each scene anchored to Scripture and a faith-link (ESV), scaling from a K–2 whisper-line to 11–12 doctrine, with the Faith Trauma-Guardrail built in.",
+    url: "/xw-matrix-divine"
+  }, {
+    title: "Master Crosswalk · Book 3 (6–8)",
+    desc: "Each secular concept anchored in Scripture, doctrine, and Reformed pastoral practice — the 6–8 companion.",
+    url: "/xw-divine-master"
+  }, {
+    title: "Master Crosswalk · Book 2 (3–5)",
+    desc: "The 3–5 theological companion to The Year of the Inner Critic.",
+    url: ""
+  }]
+}];
+function renderFreeShelf() {
+  var _0x164954 = document.querySelectorAll(".free-shelf");
+  if (!_0x164954.length) {
+    return;
+  }
+  var _0x355cb0 = typeof lang !== "undefined" && lang === "es";
+  var _chev = "<svg class=\"fs-chev\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>";
+  function _cardHtml(_0x4b57d3) {
+    var _aogCov = aogPreviewCover(_0x4b57d3.url);
+    var _aogBody = "<div class=\"fc-t\">" + libEsc(_0x4b57d3.title) + "</div>" + (_0x4b57d3.desc ? "<div class=\"fc-d\">" + libEsc(_0x4b57d3.desc) + "</div>" : "");
+    var _aogGo = "<span class=\"fc-go\">" + (_0x355cb0 ? "↗ Abrir" : "↗ Open") + "</span>";
+    if (_aogCov) {
+      return "<a class=\"free-card has-cover\" href=\"" + libEsc(_0x4b57d3.url) + "\" target=\"_blank\" rel=\"noopener\"><div class=\"fc-cover\"><img src=\"" + _aogCov + "\" alt=\"\" loading=\"lazy\"></div><div class=\"fc-body\">" + _aogBody + "</div>" + _aogGo + "</a>";
+    }
+    return "<a class=\"free-card\" href=\"" + libEsc(_0x4b57d3.url) + "\" target=\"_blank\" rel=\"noopener\">" + _aogBody + _aogGo + "</a>";
+  }
+  var _0x346929 = "";
+  var _openIdx = 0;
+  RESOURCE_LIBRARY.forEach(function (_0xda6cbf) {
+    var _free = (_0xda6cbf.items || []).filter(function (_it) { return libItemState(_it, _0xda6cbf) === "free"; });
+    if (!_free.length) { return; }
+    var _cards = _free.map(_cardHtml).join("");
+    var _label = libEsc(_0xda6cbf.cat || (_0x355cb0 ? "Recursos" : "Resources"));
+    var _open = (_openIdx === 0) ? " open" : "";
+    _openIdx++;
+    _0x346929 += "<details class=\"fs-group\"" + _open + "><summary><span class=\"fs-sum-r\">" + _chev + "<span class=\"fs-sum-t\">" + _label + "</span></span><span class=\"fs-sum-n\">" + _free.length + "</span></summary><div class=\"fs-grid\">" + _cards + "</div></details>";
+  });
+  var _0x20e2c4 = "<div class=\"small\" style=\"color:var(--ink-soft);\">" + (_0x355cb0 ? "Próximamente" : "Coming soon") + "</div>";
+  _0x164954.forEach(function (_0x47ff77) {
+    if (_0x346929) { _0x47ff77.classList.add("is-grouped"); } else { _0x47ff77.classList.remove("is-grouped"); }
+    _0x47ff77.innerHTML = _0x346929 || _0x20e2c4;
+  });
+}
+function libEsc(_0x4597fe) {
+  return String(_0x4597fe).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function libItemState(_0x5990aa, _0xf5043c) {
+  if (_0x5990aa.soon) {
+    return "soon";
+  }
+  if (_0x5990aa.free && _0x5990aa.url && _0x5990aa.url.trim()) {
+    return "free";
+  }
+  if (_0xf5043c && _0xf5043c.closed) {
+    if (_0x5990aa.access === "buy") {
+      return "buy";
+    } else {
+      return "both";
+    }
+  }
+  if (_0x5990aa.access === "license") {
+    return "license";
+  }
+  if (_0x5990aa.url && _0x5990aa.url.trim()) {
+    return "free";
+  }
+  if (_0x5990aa.access === "both") {
+    return "both";
+  }
+  if (_0x5990aa.access === "buy") {
+    return "buy";
+  }
+  return "license";
+}
+function renderLibrary() {
+  const _0xc9c419 = document.getElementById("libRoot");
+  if (!_0xc9c419) {
+    return;
+  }
+  const _0x3e5002 = lang === "es";
+  const _0x315103 = document.getElementById("licenseTopBtn");
+  if (_0x315103) {
+    if (LICENSE_INQUIRY_URL) {
+      _0x315103.setAttribute("href", LICENSE_INQUIRY_URL);
+      _0x315103.onclick = null;
+    } else {
+      _0x315103.setAttribute("href", "#");
+      _0x315103.onclick = function (_0x509ffd) {
+        _0x509ffd.preventDefault();
+      };
+    }
+  }
+  const _0x36a7bb = document.getElementById("storeTopBtn");
+  if (_0x36a7bb) {
+    if (FAMILY_STORE_URL) {
+      _0x36a7bb.setAttribute("href", FAMILY_STORE_URL);
+      _0x36a7bb.onclick = null;
+    } else {
+      _0x36a7bb.setAttribute("href", "#");
+      _0x36a7bb.onclick = function (_0x330936) {
+        _0x330936.preventDefault();
+      };
+    }
+  }
+  let _0x538dba = "";
+  RESOURCE_LIBRARY.forEach(_0x1c45a8 => {
+    const _0x4c245f = _0x1c45a8.items.filter(_0xaaf71d => libItemState(_0xaaf71d, _0x1c45a8) === "free").length;
+    const _0x537521 = _0x1c45a8.items.length;
+    const _0x39417b = _0x3e5002 && LIB_CAT_ES[_0x1c45a8.cat] ? LIB_CAT_ES[_0x1c45a8.cat].cat : _0x1c45a8.cat;
+    const _0x5bf804 = _0x3e5002 && LIB_CAT_ES[_0x1c45a8.cat] ? LIB_CAT_ES[_0x1c45a8.cat].note : _0x1c45a8.note;
+    const _0x3d256d = _0x4c245f ? _0x4c245f + (_0x3e5002 ? " abiertos" : " open") : _0x537521 + (_0x3e5002 ? " en el programa" : " in the program");
+    _0x538dba += "<div class=\"lib-cat\"><div class=\"lib-cat-head\"><div><div class=\"lib-cat-title\">" + libEsc(_0x39417b) + (_0x1c45a8.preview ? " <span class=\"lib-preview-pill\">" + (_0x3e5002 ? "Vista previa" : "Preview") + "</span>" : "") + "</div>" + (_0x5bf804 ? "<div class=\"lib-cat-note\">" + libEsc(_0x5bf804) + "</div>" : "") + "</div><div style=\"display:flex;align-items:center;gap:12px;\"><span class=\"lib-cat-count\">" + _0x3d256d + "</span><span class=\"lib-chevron\">›</span></div></div><div class=\"lib-cat-body\">";
+    _0x1c45a8.items.forEach(_0x1fe124 => {
+      const _0x2d2b5c = libItemState(_0x1fe124, _0x1c45a8);
+      let _0x459533 = "";
+      let _0x21f479 = "";
+      if (_0x2d2b5c === "soon") {
+        _0x459533 = "<span class=\"lib-soon\">" + (_0x3e5002 ? "Próximamente" : "Coming soon") + "</span>";
+      } else if (_0x2d2b5c === "free") {
+        _0x459533 = "<a class=\"lib-dl\" href=\"" + libEsc(_0x1fe124.url) + "\" target=\"_blank\" rel=\"noopener\">" + (_0x3e5002 ? "↗ Abrir" : "↗ Open") + "</a>";
+        if (_0x1fe124.tie) {
+          _0x21f479 = " <span class=\"lib-tie\">" + (_0x3e5002 ? "En la vista previa" : "In the preview") + "</span>";
+        }
+      } else if (_0x2d2b5c === "buy") {
+        const _0x5790ec = typeof _0x1fe124.buyUrl === "string" && _0x1fe124.buyUrl ? _0x1fe124.buyUrl : FAMILY_STORE_URL;
+        _0x459533 = "<a class=\"lib-buy\" href=\"" + libEsc(_0x5790ec || "#") + "\"" + (_0x5790ec ? " target=\"_blank\" rel=\"noopener\"" : " onclick=\"return false;\"") + ">" + (_0x3e5002 ? "Comprar" : "Buy") + "</a>";
+        _0x21f479 = " <span class=\"lib-tag-fam\">" + (_0x3e5002 ? "Para familias" : "For families") + "</span>";
+      } else if (_0x2d2b5c === "both") {
+        const _0x178d0c = typeof _0x1fe124.buyUrl === "string" && _0x1fe124.buyUrl ? _0x1fe124.buyUrl : FAMILY_STORE_URL;
+        const _0xb58001 = LICENSE_INQUIRY_URL;
+        _0x459533 = "<div class=\"lib-actions\"><a class=\"lib-buy\" href=\"" + libEsc(_0x178d0c || "#") + "\"" + (_0x178d0c ? " target=\"_blank\" rel=\"noopener\"" : " onclick=\"return false;\"") + ">" + (_0x3e5002 ? "Comprar" : "Buy") + "</a><a class=\"lib-license\" href=\"" + libEsc(_0xb58001 || "#") + "\"" + (_0xb58001 ? " target=\"_blank\" rel=\"noopener\"" : " onclick=\"return false;\"") + ">" + (_0x3e5002 ? "Solicitar licencia" : "Request a license") + "</a></div>";
+      } else {
+        const _0x16d158 = LICENSE_INQUIRY_URL;
+        _0x459533 = "<a class=\"lib-license\" href=\"" + libEsc(_0x16d158 || "#") + "\"" + (_0x16d158 ? " target=\"_blank\" rel=\"noopener\"" : " onclick=\"return false;\"") + ">" + (_0x3e5002 ? "Solicitar licencia" : "Request a license") + "</a>";
+      }
+      _0x538dba += "<div class=\"lib-item\"><div class=\"lib-item-main\"><span class=\"lib-item-title\">" + libEsc(_0x1fe124.title) + "</span>" + _0x21f479 + (_0x1fe124.desc ? "<div class=\"lib-item-desc\">" + libEsc(_0x1fe124.desc) + "</div>" : "") + "</div>" + _0x459533 + "</div>";
+    });
+    _0x538dba += "</div></div>";
+  });
+  _0xc9c419.innerHTML = _0x538dba;
+  _0xc9c419.dataset.rendered = "1";
+  try {
+    renderFreeShelf();
+  } catch (_0x4dfd34) {}
+}
+const ECO_DETAIL = {
+  _default: {
+    tag: "The Insight",
+    title: "The Closed Loop",
+    role: "Teach · Measure · Act · repeat",
+    blurb: "Most programs are a pile of activities. This one closes the loop: results route back to the exact lesson that helps. The gold arc is the piece almost no SEL program has.",
+    hint: "Hover or tap any piece to explore it."
+  },
+  curriculum: {
+    tag: "Teach",
+    title: "The Curriculum",
+    role: "Books 1–5",
+    blurb: "The intervention itself — five volumes carrying the same four ideas (identity, self-compassion, forgiveness, grace) from kindergarten through graduation, with a companion novel for each band.",
+    go: "Browse it in the Store",
+    act: "library"
+  },
+  screener: {
+    tag: "Measure",
+    title: "The Self-Reflection",
+    role: "18 items · 3 domains",
+    blurb: "A brief, private self-reflection that measures what the curriculum teaches — designed to be taken at regular self-reflection points across the year to track baseline, growth, and risk.",
+    go: "Begin self-reflection",
+    act: "survey"
+  },
+  index: {
+    tag: "Interpret & Act",
+    title: "Home View & Index",
+    role: "flag → the right lesson",
+    blurb: "The bridge. It turns a flagged result into gentle, ready-to-use questions and points you to the exact lesson — by book and grade — that addresses it.",
+    go: "Open the Resource Index",
+    act: "resindex"
+  },
+  dashboard: {
+    tag: "Aggregate",
+    title: "The Dashboard",
+    role: "tiers · equity · growth",
+    blurb: "Every administration aggregates here into tier flags, equity views, and growth over time — the read-out that points instruction back where it's needed most.",
+    go: "Open the Educator Dashboard",
+    act: "admin"
+  }
+};
+const ECO_DETAIL_ES = {
+  _default: {
+    tag: "La idea",
+    title: "El ciclo cerrado",
+    role: "Enseñar · Medir · Actuar · repetir",
+    blurb: "La mayoría de los programas son un montón de actividades. Este cierra el ciclo: los resultados regresan a la lección exacta que ayuda. El arco dorado es la pieza que casi ningún programa de SEL tiene.",
+    hint: "Pasa el cursor o toca cualquier pieza para explorarla."
+  },
+  curriculum: {
+    tag: "Enseñar",
+    title: "El currículo",
+    role: "Libros 1–5",
+    blurb: "La intervención en sí — cinco volúmenes que llevan las mismas cuatro ideas (identidad, autocompasión, perdón, gracia) desde kínder hasta la graduación, con una novela complementaria para cada nivel.",
+    go: "Verlo en la Tienda"
+  },
+  screener: {
+    tag: "Medir",
+    title: "La autorreflexión",
+    role: "18 ítems · 3 dominios",
+    blurb: "Una autorreflexión breve y privado que mide lo que el plan de estudios enseña — diseñado para realizarse en puntos regulares a lo largo del año para seguir la línea base, el crecimiento y el riesgo.",
+    go: "Hacer la autorreflexión"
+  },
+  index: {
+    tag: "Interpretar y actuar",
+    title: "Vista del hogar e índice",
+    role: "señal → la lección correcta",
+    blurb: "El puente. Convierte un resultado marcado en preguntas suaves y listas para usar, y te señala la lección exacta — por libro y grado — que lo aborda.",
+    go: "Abrir el índice de recursos"
+  },
+  dashboard: {
+    tag: "Agrupar",
+    title: "El panel",
+    role: "niveles · equidad · crecimiento",
+    blurb: "Cada aplicación se agrupa aquí en señales por nivel, vistas de equidad y crecimiento con el tiempo — el reporte que dirige la enseñanza hacia donde más se necesita.",
+    go: "Abre el Panel del Educador"
+  }
+};
+function ecoNavigate(_0xe1b049) {
+  if (_0xe1b049 === "library") {
+    /* STORE/LIBRARY SPLIT (2026-06): the full curriculum catalog now lives on the Store screen. */
+    if (typeof aogGoStore === "function") aogGoStore();
+  } else if (_0xe1b049 === "resindex") {
+    openGuideSub("resindex");
+  } else if (_0xe1b049 === "survey") {
+    startChoose();
+  } else if (_0xe1b049 === "admin") {
+    openAdmin();
+  }
+}
+function ecoScrollToTabs() {
+  const _0x2278f1 = document.querySelector(".guide-subnav");
+  if (_0x2278f1 && _0x2278f1.scrollIntoView) {
+    _0x2278f1.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}
+function ecoRenderDetail(_0x12b0c3) {
+  const _0x3ec1c3 = ECO_DETAIL[_0x12b0c3] || ECO_DETAIL._default;
+  const _0xb0d144 = lang === "es" && typeof ECO_DETAIL_ES !== "undefined" ? ECO_DETAIL_ES[_0x12b0c3] || ECO_DETAIL_ES._default : null;
+  const _0x70f38a = _0xb0d144 ? Object.assign({}, _0x3ec1c3, _0xb0d144) : _0x3ec1c3;
+  const _0x4f1237 = document.getElementById("ecoDetail");
+  if (!_0x4f1237) {
+    return;
+  }
+  let _0x39e3ab = "<div class=\"ed-tag\">" + _0x70f38a.tag + "</div><div class=\"ed-title\">" + _0x70f38a.title + "</div><div class=\"ed-role\">" + _0x70f38a.role + "</div><div class=\"ed-blurb\">" + _0x70f38a.blurb + "</div>";
+  if (_0x70f38a.act) {
+    _0x39e3ab += "<button type=\"button\" class=\"ed-go\" data-act=\"" + _0x70f38a.act + "\">" + _0x70f38a.go + " →</button>";
+  } else if (_0x70f38a.hint) {
+    _0x39e3ab += "<div class=\"ed-hint\">" + _0x70f38a.hint + "</div>";
+  }
+  _0x4f1237.innerHTML = _0x39e3ab;
+  const _0x4488c1 = _0x4f1237.querySelector(".ed-go");
+  if (_0x4488c1) {
+    _0x4488c1.addEventListener("click", () => ecoNavigate(_0x4488c1.dataset.act));
+  }
+}
+function initEcoInteractive() {
+  const _0x27591a = document.getElementById("ecoSvg");
+  if (!_0x27591a || _0x27591a.dataset.wired === "1") {
+    return;
+  }
+  ecoRenderDetail("_default");
+  _0x27591a.querySelectorAll(".eco-node").forEach(_0x2ff799 => {
+    const _0xafa786 = _0x2ff799.dataset.node;
+    const _0x314d8e = () => {
+      _0x27591a.querySelectorAll(".eco-node").forEach(_0x5b344c => _0x5b344c.classList.remove("is-active"));
+      _0x2ff799.classList.add("is-active");
+      ecoRenderDetail(_0xafa786);
+    };
+    _0x2ff799.addEventListener("mouseenter", _0x314d8e);
+    _0x2ff799.addEventListener("focus", _0x314d8e);
+    _0x2ff799.addEventListener("click", () => ecoNavigate(ECO_DETAIL[_0xafa786].act));
+    _0x2ff799.addEventListener("keydown", _0x3af1e9 => {
+      if (_0x3af1e9.key === "Enter" || _0x3af1e9.key === " ") {
+        _0x3af1e9.preventDefault();
+        ecoNavigate(ECO_DETAIL[_0xafa786].act);
+      }
+    });
+  });
+  _0x27591a.dataset.wired = "1";
+}
+function initGuideExtras() {
+  document.querySelectorAll(".guide-subtab").forEach(_0x43b693 => {
+    _0x43b693.addEventListener("click", () => activateGuideSection(_0x43b693.dataset.guide, true));
+  });
+  const _0x1759f2 = document.getElementById("libRoot");
+  if (_0x1759f2) {
+    _0x1759f2.addEventListener("click", _0x5492a1 => {
+      const _0x1bc47a = _0x5492a1.target.closest(".lib-cat-head");
+      if (!_0x1bc47a) {
+        return;
+      }
+      _0x1bc47a.parentElement.classList.toggle("open");
+    });
+  }
+  const _0x5e2074 = document.getElementById("riSearch");
+  const _0x3637bd = document.getElementById("riGrade");
+  const _0x32d8da = document.getElementById("riExpand");
+  if (_0x5e2074) {
+    _0x5e2074.addEventListener("input", () => riRender(_0x5e2074.value, _0x3637bd.value));
+  }
+  if (_0x3637bd) {
+    _0x3637bd.addEventListener("change", () => riRender(_0x5e2074.value, _0x3637bd.value));
+  }
+  let _0x37e00e = false;
+  if (_0x32d8da) {
+    _0x32d8da.addEventListener("click", () => {
+      _0x37e00e = !_0x37e00e;
+      document.querySelectorAll(".ri-card").forEach(_0x582737 => _0x582737.classList.toggle("open", _0x37e00e));
+      _0x32d8da.textContent = _0x37e00e ? "Collapse all" : "Expand all";
+    });
+  }
+  riRender("", "");
+  initEcoInteractive();
+}
+(function migratePersistentStores() {
+  try {
+    [STORAGE_KEY, FAMILY_KEY, DEMO_STASH, DEMO_FLAG, DRAFT_KEY].forEach(function (_0x45c565) {
+      if (localStorage.getItem(_0x45c565) == null) {
+        var _0x2e42ed = sessionStorage.getItem(_0x45c565);
+        if (_0x2e42ed != null) {
+          try {
+            localStorage.setItem(_0x45c565, _0x2e42ed);
+          } catch (_0x161da7) {}
+        }
+      }
+    });
+  } catch (_0x503db0) {}
+})();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initGuideExtras);
+} else {
+  initGuideExtras();
+}
+
+/* ===== AoG CART MODULE (interim — no checkout backend) ===== */
+/* EDIT THIS when you have a real fulfillment address: */
+const AOG_ORDER_EMAIL = "Theopus77@yahoo.com";
+
+let aogCartItems = [];
+try { const s = localStorage.getItem("aog_cart"); if (s) aogCartItems = JSON.parse(s) || []; } catch(e) {}
+
+function aogCartPersist(){ try { localStorage.setItem("aog_cart", JSON.stringify(aogCartItems)); } catch(e){} }
+function aogCartQtyTotal(){ return aogCartItems.reduce((n,i)=>n+i.qty,0); }
+function aogCartSubtotalNum(){ return aogCartItems.reduce((s,i)=> s + (i.price!=null ? i.price*i.qty : 0), 0); }
+function aogMoney(n){ return "$" + n.toFixed(2); }
+
+function aogCartAdd(key, price){
+  const ex = aogCartItems.find(i=>i.key===key);
+  if(ex){ ex.qty++; if(ex.price==null && price!=null) ex.price=price; }
+  else aogCartItems.push({key, price: (price!=null?price:null), qty:1});
+  aogCartPersist(); aogCartRefresh();
+  try { var _cb=document.getElementById("aogCartCount"); if(_cb){ _cb.classList.remove("bump"); void _cb.offsetWidth; _cb.classList.add("bump"); } } catch(e){}
+}
+function aogCartSetQty(idx, delta){
+  const it = aogCartItems[idx]; if(!it) return;
+  it.qty += delta; if(it.qty<=0) aogCartItems.splice(idx,1);
+  aogCartPersist(); aogCartRender(); aogCartBadge();
+}
+function aogCartRemove(idx){ aogCartItems.splice(idx,1); aogCartPersist(); aogCartRender(); aogCartBadge(); }
+
+function aogCartBadge(){
+  const b = document.getElementById("aogCartCount"); if(!b) return;
+  const n = aogCartQtyTotal();
+  b.textContent = n; if(n>0) b.removeAttribute("hidden"); else b.setAttribute("hidden","");
+}
+function aogCartRefresh(){ aogCartBadge(); if(document.getElementById("aogCartDrawer")?.classList.contains("open")) aogCartRender(); }
+
+function aogCartRender(){
+  const wrap = document.getElementById("aogCartItems"); if(!wrap) return;
+  if(!aogCartItems.length){
+    wrap.innerHTML = '<div class="aogcart-empty">Your cart is empty.<br>Add books or materials from the store.</div>';
+  } else {
+    wrap.innerHTML = aogCartItems.map((it,idx)=>{
+      const priceTxt = it.price!=null ? aogMoney(it.price)+" each" : "Price on request";
+      const line = it.price!=null ? '<div class="aogcart-rline">'+aogMoney(it.price*it.qty)+'</div>'
+                                  : '<div class="aogcart-rline req">on request</div>';
+      return '<div class="aogcart-row">'
+        + '<div class="aogcart-rinfo"><div class="aogcart-rtitle">'+aogEsc(it.key)+'</div><div class="aogcart-rprice">'+priceTxt+'</div></div>'
+        + '<button class="aogcart-rrm" onclick="aogCartRemove('+idx+')" aria-label="Remove">&times;</button>'
+        + '<div class="aogcart-qty"><button onclick="aogCartSetQty('+idx+',-1)" aria-label="Decrease">&minus;</button><span>'+it.qty+'</span><button onclick="aogCartSetQty('+idx+',1)" aria-label="Increase">+</button></div>'
+        + line + '</div>';
+    }).join("");
+  }
+  const sub = document.getElementById("aogCartSubtotal"); if(sub) sub.textContent = aogMoney(aogCartSubtotalNum());
+  const req = document.getElementById("aogCartRequest"); if(req) req.disabled = aogCartItems.length===0;
+}
+function aogEsc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function aogOpenCart(){ aogCartRender(); const d=document.getElementById("aogCartDrawer"), o=document.getElementById("aogCartOverlay"); if(d)d.classList.add("open"); if(o)o.classList.add("open"); }
+function aogCloseCart(){ const d=document.getElementById("aogCartDrawer"), o=document.getElementById("aogCartOverlay"); if(d)d.classList.remove("open"); if(o)o.classList.remove("open"); }
+
+function aogOrderText(){
+  let lines = aogCartItems.map(it=>{
+    const p = it.price!=null ? "  ("+aogMoney(it.price*it.qty)+")" : "  (price on request)";
+    return "  " + it.qty + " x " + it.key + p;
+  });
+  let txt = "Hello — I'd like to order the following from The Architecture of Grace:\n\n" + lines.join("\n");
+  txt += "\n\nSubtotal (priced items): " + aogMoney(aogCartSubtotalNum());
+  if(aogCartItems.some(i=>i.price==null)) txt += "\nSome items are marked \"price on request\" — please send a quote.";
+  txt += "\n\nName:\nShipping address:\nNotes:\n";
+  return txt;
+}
+function aogRequestOrder(){
+  if(!aogCartItems.length) return;
+  const subject = "Order request — The Architecture of Grace";
+  window.location.href = "mailto:" + AOG_ORDER_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(aogOrderText());
+}
+function aogCopyOrder(){
+  const t = aogOrderText();
+  const done = ()=>{ if(typeof aogToast==="function") aogToast("Order copied to clipboard"); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done)); }
+  else fallbackCopy(t, done);
+}
+function fallbackCopy(t, done){ try{ const ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); }catch(e){} }
+
+(function aogCartInit(){
+  function build(){
+    if(document.getElementById("aogCartDrawer")) return;
+    const overlay = document.createElement("div"); overlay.className="aogcart-overlay"; overlay.id="aogCartOverlay"; overlay.addEventListener("click", aogCloseCart);
+    const drawer = document.createElement("aside"); drawer.className="aogcart-drawer"; drawer.id="aogCartDrawer";
+    drawer.setAttribute("role","dialog"); drawer.setAttribute("aria-modal","true"); drawer.setAttribute("aria-label","Cart");
+    drawer.innerHTML =
+      '<div class="aogcart-head"><h3>Your cart</h3><button class="aogcart-close" onclick="aogCloseCart()" aria-label="Close cart">&times;</button></div>'
+      + '<div class="aogcart-items" id="aogCartItems"></div>'
+      + '<div class="aogcart-foot">'
+      +   '<div class="aogcart-subtotal"><span>Subtotal</span><strong id="aogCartSubtotal">$0.00</strong></div>'
+      +   '<p class="aogcart-note">No online checkout yet — &ldquo;Request this order&rdquo; opens a pre-filled email so we can arrange payment &amp; delivery with you directly.</p>'
+      +   '<button class="aogcart-request" id="aogCartRequest" onclick="aogRequestOrder()">Request this order</button>'
+      +   '<div class="aogcart-altrow"><button onclick="aogCopyOrder()">Copy order</button><button onclick="aogCloseCart()">Continue shopping</button></div>'
+      + '</div>';
+    document.body.appendChild(overlay); document.body.appendChild(drawer);
+    // add to cart via delegation (works across re-renders of the library)
+    // Catches the buy buttons AND the clickable price labels (.st-price-buy).
+    document.addEventListener("click", function(e){
+      const btn = e.target.closest(".st-buy, .st-mbuy, .st-price-buy"); if(!btn) return;
+      const key = (btn.getAttribute("data-buy")||"Item").replace(/&mdash;/g,"\u2014").replace(/&amp;/g,"&");
+      const p = parseFloat(btn.getAttribute("data-price"));
+      aogCartAdd(key, isNaN(p)?null:p);
+      // buttons already show feedback via aogBindStore; toast here only for price-label clicks
+      if(btn.classList.contains("st-price-buy") && typeof aogToast==="function") aogToast("Added: " + key);
+    });
+    // clickable price labels are role="button" \u2014 let Enter/Space activate them
+    document.addEventListener("keydown", function(e){
+      if((e.key==="Enter"||e.key===" "||e.key==="Spacebar") && e.target.closest && e.target.closest(".st-price-buy")){
+        e.preventDefault(); e.target.closest(".st-price-buy").click();
+      }
+    });
+    document.addEventListener("keydown", e=>{ if(e.key==="Escape") aogCloseCart(); });
+    aogCartBadge();
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
+})();
+
+function aogGoStore(){
+  /* STORE/LIBRARY SPLIT (2026-06): Store is now its own screen. */
+  if(typeof showScreen==="function") showScreen("screen-store");
+  if(typeof renderLibrary==="function") renderLibrary();
+  if(typeof aogSetHash==="function") aogSetHash("store");
+  setTimeout(function(){
+    var el=document.getElementById('storeBrowseHead');
+    if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
+      var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+  }, 480);
+}
+/* Family "Buy" buttons land here until real checkout links are wired.
+   EDIT ME: replace these onclick calls (or the button hrefs) with your
+   Stripe Payment Link / Gumroad URLs when checkout is live. */
+function aogStoreScrollBrowse(){
+  var el=document.getElementById('storeBrowseHead');
+  if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
+    var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+}
+function aogStoreToTop(){
+  var el=document.getElementById('storeBrowseHead');
+  if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
+    var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+  else { window.scrollTo({top:0,behavior:'smooth'}); }
+}
+(function(){
+  function _tog(){ var b=document.getElementById('stToTop'); if(b) b.classList.toggle('show', (window.scrollY||window.pageYOffset)>520); }
+  window.addEventListener('scroll', _tog, {passive:true});
+  if(document.readyState!=="loading") _tog(); else document.addEventListener('DOMContentLoaded', _tog);
+})();
+function aogGoLibrary(){
+  /* STORE/LIBRARY SPLIT (2026-06): Library (free downloads) is now its own screen. */
+  if(typeof showScreen==="function") showScreen("screen-library");
+  if(typeof renderFreeShelf==="function") renderFreeShelf();
+  if(typeof aogSetHash==="function") aogSetHash("library");
+}
+/* ===== AoG STOREFRONT — folded into the catalog ===== */
+const AOG_COVERS = {12:"data:image/jpeg;base64,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",18:"data:image/jpeg;base64,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",36:"data:image/jpeg;base64,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",104:"data:image/jpeg;base64,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",207:"data:image/jpeg;base64,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"};
+AOG_COVERS[6] = "data:image/jpeg;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgYAAYGAAGBgABgASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
+/* Returns the matching book cover (from AOG_COVERS) for a free novel
+   chapter-preview URL, or null for any other free item (sample lessons, etc.). */
+function aogPreviewCover(url){
+  if(!url) return null;
+  var m = String(url).match(/Room-(\d+)-First-Chapter-Preview/i);
+  if(m){ return AOG_COVERS[m[1]] || null; }
+  if(/Dwelling-First-Chapter-Preview/i.test(url)){ return AOG_COVERS[6] || null; }
+  return null;
+}
+/* ============================================================
+   AoG STOREFRONT MODULE — paste inside your <script>, AFTER
+   RESOURCE_LIBRARY and the helpers libItemState/libItemBand/libEsc.
+   This REPLACES your existing renderLibrary(). It renders the
+   storefront into #libRoot from your real catalog. One source of
+   truth: edit RESOURCE_LIBRARY (items) and AOG_PRICES (prices).
+   ============================================================ */
+
+/* ---- EDITABLE PRICE LAYER (home / family prices, USD) ---- */
+const AOG_PRICES = {
+  // Each entry now carries BOTH a digital and a print price: { d:digital, p:print } (USD).
+  "The Novels":              { 1:{d:9,p:16},  2:{d:9,p:16},  3:{d:10,p:17}, 4:{d:10,p:17}, 5:{d:11,p:18}, 6:{d:12,p:19} },
+  "The Curriculum":          { 1:{d:29,p:39}, 2:{d:29,p:39}, 3:{d:32,p:42}, 4:{d:32,p:42}, 5:{d:35,p:45} },
+  "Home & Family Editions":  { 1:{d:16,p:24}, 2:{d:16,p:24}, 3:{d:18,p:26}, 4:{d:18,p:26}, 5:{d:20,p:28} },
+  "Anchor Charts":           { default:{d:6,p:9} },
+  "Worksheets & Activities": { default:{d:5,p:8} },
+  "Scenario Cards":          { default:{d:7,p:11} },
+  "Autism-Adapted Charts":   { default:{d:8,p:12} }
+  // Institutional-only categories (Assessment, Crosswalks, Somatic, Divine Blueprint)
+  // carry no consumer price and render as "District license" / "Included".
+};
+function storePrice(cat, band){
+  const m = AOG_PRICES[cat]; if(!m) return null;
+  const v = (band && m[band] != null) ? m[band] : m.default;
+  return (v == null) ? null : v;
+}
+
+/* ---- band → room / grade / color ---- */
+const AOG_ROOM  = {1:12,2:18,3:36,4:104,5:207};
+const AOG_GR    = {1:"K\u20132",2:"3\u20135",3:"6\u20138",4:"9\u201310",5:"11\u201312",6:"Adults"};
+const AOG_COLOR = {1:"#5C6B4A",2:"#2E4A63",3:"#5B4668",4:"#16263B",5:"#3A2A1E",6:"#2A2018",0:"#B0832E"};
+const AOG_VOL   = {1:"The Foundation",2:"The Framework",3:"The Interior",4:"The Fa\u00e7ade",5:"The Capstone",6:"The Dwelling"};
+
+/* ---- category → icon (inline svg path) ---- */
+const AOG_ICON = {
+  "The Curriculum":'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  "Anchor Charts":'<path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/>',
+  "Worksheets & Activities":'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/>',
+  "Scenario Cards":'<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v12"/>',
+  "Assessment & Data":'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>',
+  "Crosswalks & Implementation Maps":'<path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3z"/><path d="M9 3v15"/><path d="M15 6v15"/>',
+  "Somatic Floor Lessons":'<path d="M3 12c3 0 3-4 6-4s3 8 6 8 3-4 6-4"/>',
+  "Autism-Adapted Charts":'<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>',
+  "Home & Family Editions":'<path d="M3 9.5 12 3l9 6.5"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',
+  "Divine Blueprint \u00b7 Christian Companion Track":'<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10l3-3 3 3"/>'
+};
+const AOG_EYEBROW = {
+  "The Novels":"Six books \u00b7 one spine",
+  "The Curriculum":"K\u201312 program",
+  "Anchor Charts":"Print & post",
+  "Worksheets & Activities":"Reproducibles",
+  "Scenario Cards":"Discussion decks",
+  "Home & Family Editions":"For the kitchen table",
+  "Assessment & Data":"Measure growth",
+  "Crosswalks & Implementation Maps":"Standards alignment",
+  "Somatic Floor Lessons":"Movement & regulation",
+  "Autism-Adapted Charts":"Accessibility",
+  "Divine Blueprint \u00b7 Christian Companion Track":"Optional faith track"
+};
+
+/* localized category name if your ES map exists */
+function aogCatName(cat){
+  try{ if(typeof lang!=="undefined" && lang==="es" && typeof LIB_CAT_ES!=="undefined" && LIB_CAT_ES[cat]) return LIB_CAT_ES[cat].cat; }catch(e){}
+  return cat;
+}
+function aogStripHook(desc){
+  return String(desc||"").replace(/^Read Chapter One( free)?\s*[\u2014\-]\s*/i,"");
+}
+function aogCleanTitle(t){
+  return String(t||"").replace(/\s*[\u2014\-]\s*full novel.*$/i,"").replace(/\s*\([^)]*\)\s*$/,"").trim();
+}
+
+/* ---- NOVELS shelf → cover doors ---- */
+function aogNovelDoors(cat){
+  let html = '<div class="st-doors">';
+  for(let b=1;b<=6;b++){
+    const items = cat.items.filter(it => libItemBand(it.title)===b);
+    if(!items.length) continue;
+    const preview = items.find(it => it.url && it.url.trim());
+    const novel   = items.find(it => it.access==="both" || it.access==="buy") || items[items.length-1];
+    const title   = aogCleanTitle(novel.title);
+    const hook    = aogStripHook(preview ? preview.desc : novel.desc);
+    const price   = storePrice(cat.cat, b);
+    const room    = AOG_ROOM[b];
+    /* Book 6 (The Dwelling) is the adult companion: no grade band, and — true to the book —
+       no number on the door. It still renders as a door, with its own cover and pricing. */
+    const noRoom    = (room == null);
+    const coverSrc  = AOG_COVERS[room] || (b===6 ? (AOG_COVERS[6] || 'files/AoG_Book6_The_Dwelling_Cover.jpg') : 'files/cover-room'+room+'.jpg');
+    const coverAlt  = noRoom ? ('Cover of '+title) : ('Cover of Room '+room+', '+title);
+    const bandChip  = noRoom ? AOG_GR[b] : ('Grades '+AOG_GR[b]);
+    const roomChip  = noRoom ? DT('No number on the door','Sin n\u00famero en la puerta') : ('Room '+room);
+    const buyPrefix = noRoom ? '' : ('Room '+room+' &mdash; ');
+    html += `
+      <article class="st-door">
+        <a class="st-cover" href="${preview?libEsc(preview.url):'#'}" target="_blank" rel="noopener" aria-label="Read Chapter One of ${libEsc(title)}">
+          <img src="${coverSrc}" alt="${libEsc(coverAlt)}" loading="lazy">
+          <span class="st-seam"></span><span class="st-knob"></span>
+          <span class="st-enter">Read Chapter One&nbsp;&rarr;</span>
+        </a>
+        <div class="st-door-body">
+          <div class="st-tags"><span class="st-chip st-chip-band">${libEsc(bandChip)}</span><span class="st-chip st-chip-room">${libEsc(roomChip)}</span></div>
+          <p class="st-kicker">Book ${b} &middot; ${AOG_VOL[b]}</p>
+          <h4 class="st-title">${libEsc(title)}</h4>
+          <p class="st-hook">${libEsc(hook)}</p>
+          <div class="st-foot st-foot-2">
+            <div class="st-prices">
+              <span class="st-price st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${buyPrefix}${libEsc(title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('digital','digital')}</span></span>
+              <span class="st-price st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${buyPrefix}${libEsc(title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('print','impreso')}</span></span>
+            </div>
+            <div class="st-buys">
+              <button class="st-buy" data-buy="${buyPrefix}${libEsc(title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.d.toFixed(2):DT('on request','a pedir')} ${DT('digital','digital')}</button>
+              <button class="st-buy" data-buy="${buyPrefix}${libEsc(title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.p.toFixed(2):DT('on request','a pedir')} ${DT('print','impreso')}</button>
+            </div>
+          </div>
+          ${preview?`<a class="st-free" href="${libEsc(preview.url)}" target="_blank" rel="noopener">Read Chapter One &rarr;</a>`:''}
+        </div>
+      </article>`;
+  }
+  return html + '</div>';
+}
+
+/* ---- any other category → material cards ---- */
+function aogMaterialCards(cat){
+  const icon = AOG_ICON[cat.cat] || AOG_ICON["The Curriculum"];
+  let html = '<div class="st-grid">';
+  cat.items.forEach(it => {
+    const band  = libItemBand(it.title);
+    const col   = AOG_COLOR[band] || AOG_COLOR[0];
+    const state = libItemState(it, cat);
+    const price = storePrice(cat.cat, band);
+    const grade = band ? AOG_GR[band] : (state==="free" ? "Preview" : "K\u201312");
+    let priceHtml, actions;
+    if(state==="soon"){
+      priceHtml = '<span class="st-soon">Coming soon</span>'; actions = '';
+    }else if(state==="free"){
+      priceHtml = '<span class="st-cprice st-free-txt">Preview</span>';
+      actions = `<a class="st-freebtn" href="${libEsc(it.url)}" target="_blank" rel="noopener">Open &nearr;</a>`;
+    }else if(state==="buy" || state==="both"){
+      priceHtml = `<div class="st-cprices"><span class="st-cprice st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${libEsc(it.title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('digital','digital')}</span></span><span class="st-cprice st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${libEsc(it.title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('print','impreso')}</span></span></div>`;
+      const prev = it.url && it.url.trim() ? `<a class="st-prev" href="${libEsc(it.url)}" target="_blank" rel="noopener">Preview &rarr;</a>` : '';
+      const _titleAttr = state==="both"?' title="Also included in the district license"':'';
+      actions = `${prev}<button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}"${_titleAttr}>${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.d.toFixed(2):DT('on request','a pedir')} ${DT('digital','digital')}</button><button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}"${_titleAttr}>${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.p.toFixed(2):DT('on request','a pedir')} ${DT('print','impreso')}</button>`;
+    }else{ /* license */
+      priceHtml = '<span class="st-cprice st-tag">District license</span>';
+      actions = it.url && it.url.trim() ? `<a class="st-prev" href="${libEsc(it.url)}" target="_blank" rel="noopener">Preview &rarr;</a>` : '';
+    }
+    html += `
+        <article class="st-card">
+          <div class="st-tile" style="--c:${col}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon}</svg></div>
+          <div class="st-card-body">
+            <span class="st-grade" style="--c:${col}">${grade}</span>
+            <h4>${libEsc(it.title)}</h4>
+            <p class="st-desc">${libEsc(it.desc||'')}</p>
+            <div class="st-cfoot">${priceHtml}<span class="st-actions">${actions}</span></div>
+          </div>
+        </article>`;
+  });
+  return html + '</div>';
+}
+
+/* ---- the renderer (REPLACES your old renderLibrary) ---- */
+function renderLibrary(){
+  const root = document.getElementById("libRoot");
+  if(!root) return;
+
+  /* keep your top CTA wiring intact */
+  const lic = document.getElementById("licenseTopBtn");
+  if(lic){ if(typeof LICENSE_INQUIRY_URL!=="undefined" && LICENSE_INQUIRY_URL){ lic.setAttribute("href",LICENSE_INQUIRY_URL); lic.onclick=null; } else { lic.setAttribute("href","#"); lic.onclick=e=>e.preventDefault(); } }
+  const sto = document.getElementById("storeTopBtn");
+  if(sto){ if(typeof FAMILY_STORE_URL!=="undefined" && FAMILY_STORE_URL){ sto.setAttribute("href",FAMILY_STORE_URL); sto.onclick=null; } else { sto.setAttribute("href","#"); sto.onclick=e=>e.preventDefault(); } }
+
+  /* GROUPED catalog (2026-06): organize categories into labeled tiers so the nav reads
+     as clear "category doors" and the shelves below follow the same order. */
+  const AOG_GROUPS = [
+    { label: DT("The core program","El programa central"),             cats: ["The Curriculum","The Novels","Home & Family Editions"] },
+    { label: DT("Classroom & home materials","Materiales para el aula y el hogar"),       cats: ["Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts","Somatic Floor Lessons"] },
+    { label: DT("Implementation & data","Implementaci\u00f3n y datos"), cats: ["Assessment & Data","Crosswalks & Implementation Maps"] },
+    { label: DT("Faith track (optional)","V\u00eda de fe (opcional)"),  cats: ["Divine Blueprint \u00b7 Christian Companion Track"] }
+  ];
+  const byCat = {}; RESOURCE_LIBRARY.forEach(c=>{ byCat[c.cat]=c; });
+  const ordered = []; const grouped = [];
+  AOG_GROUPS.forEach(g=>{
+    const items = g.cats.map(n=>byCat[n]).filter(Boolean);
+    if(!items.length) return;
+    grouped.push({ label:g.label, items });
+    items.forEach(c=>ordered.push(c));
+  });
+  const leftover = RESOURCE_LIBRARY.filter(c=>ordered.indexOf(c)<0);
+  if(leftover.length){ grouped.push({ label:DT("More","M\u00e1s"), items:leftover }); leftover.forEach(c=>ordered.push(c)); }
+
+  /* jump nav: grouped, pronounced category "doors" */
+  let jump = '<nav class="st-jump">';
+  grouped.forEach(g=>{
+    jump += '<div class="st-jump-group"><div class="st-jump-label">'+libEsc(g.label)+'</div><div class="st-jump-row">';
+    g.items.forEach(c=>{ jump += `<a class="st-door-chip" href="#st-shelf-${ordered.indexOf(c)}"><span class="st-dc-name">${libEsc(aogCatName(c.cat))}</span><span class="st-dc-arrow" aria-hidden="true">\u2192</span></a>`; });
+    jump += '</div></div>';
+  });
+  jump += '</nav>';
+
+  let html = jump;
+  grouped.forEach(g=>{
+    html += `<div class="st-shelf-group"><span class="st-shelf-group-label">${libEsc(g.label)}</span></div>`;
+    g.items.forEach(c=>{
+      const i = ordered.indexOf(c);
+      const body = (c.cat==="The Novels") ? aogNovelDoors(c) : aogMaterialCards(c);
+      html += `
+    <section class="st-shelf" id="st-shelf-${i}">
+      <div class="st-head">
+        <div><div class="st-eyebrow">${libEsc(AOG_EYEBROW[c.cat]||'')}</div><h3>${libEsc(aogCatName(c.cat))}</h3></div>
+        <p>${libEsc(c.note||'')}</p>
+      </div>
+      ${body}
+    </section>`;
+    });
+  });
+
+  root.classList.add("aog-store");
+  root.innerHTML = html;
+  aogBindStore(root);
+}
+
+/* ---- cart feedback + smooth jump (idempotent) ---- */
+let aogCart = 0;
+function aogToast(msg){
+  let t = document.getElementById("aogToast");
+  if(!t){ t = document.createElement("div"); t.id="aogToast"; t.className="st-toast"; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add("st-show");
+  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("st-show"),2200);
+}
+function aogBindStore(root){
+  root.querySelectorAll(".st-buy, .st-mbuy").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      aogCart++;
+      const badge = document.getElementById("cartCount"); if(badge) badge.textContent = aogCart;
+      const label = btn.textContent; btn.classList.add("st-added"); btn.textContent="Added \u2713";
+      setTimeout(()=>{ btn.classList.remove("st-added"); btn.textContent=label; },1400);
+      aogToast("Added: " + (btn.getAttribute("data-buy")||"item").replace(/&mdash;/g,"\u2014"));
+    });
+  });
+  root.querySelectorAll(".st-jump a").forEach(a=>{
+    a.addEventListener("click",e=>{ const t=document.querySelector(a.getAttribute("href")); if(t){ e.preventDefault(); t.scrollIntoView({behavior:"smooth",block:"start"}); } });
+  });
+}
+
