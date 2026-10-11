@@ -984,7 +984,7 @@ function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; setFx(ch, id);
    lush, wide echo for strings, winds and pads, and a little drive first for brass (fxOrder). What you change is kept for
    that sound, on this device (FXKEY); Put this sound back clears it. */
 const FXKEY="aog.band.fx.v1";
-let FXUI=null, FXSND="";
+let FXUI=null, FXSND="", FXLANG="";
 let ROOMFX={}; try{ ROOMFX=JSON.parse(localStorage.getItem(FXKEY)||"{}")||{}; if(typeof ROOMFX!=="object" || Array.isArray(ROOMFX)) ROOMFX={}; }catch(e){ ROOMFX={}; }
 function fxFor(id){ return window.AOGAmp ? AOGAmp.normalize(ROOMFX[id]||{}, "band") : null; }
 function fxOrder(id){ const s=SOUNDS[id]||{}; return s.stand==="brass" ? ["od","chorus","delay","reverb"] : ["chorus","delay","reverb","od"]; }
@@ -1643,7 +1643,7 @@ function paintText(){
 function applyFx(){ if(ac && LIVE_CH) setFx(LIVE_CH, S.sound); }
 function paintFx(){
   if(!window.AOGAmp || !$("ampBox")) return;
-  FXSND=S.sound;
+  if(FXUI && FXSND===S.sound && FXLANG===S.lang) return; FXSND=S.sound; FXLANG=S.lang;
   if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"band", near:$("pedalsNear"), lang:()=>S.lang, get:()=>fxFor(S.sound), order:()=>fxOrder(S.sound),
     set:st=>{ ROOMFX[S.sound]=AOGAmp.normalize(st, "band"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
     reset:()=>{ delete ROOMFX[S.sound]; saveFx(); applyFx(); }});
