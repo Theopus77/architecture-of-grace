@@ -22,8 +22,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DEPLOY = HERE.parent.parent
 E = lambda s: html.escape(s, quote=True)
-BAND_ES = {"k-2": "Grados K–2", "3-5": "Grados 3–5", "6-8": "Grados 6–8", "9-10": "Grados 9–10", "11-12": "Grados 11–12"}
-BAND_SHORT = {"k-2": "K–2", "3-5": "3–5", "6-8": "6–8", "9-10": "9–10", "11-12": "11–12"}
+BAND_ES = {"k-2": "Grados K–2", "3-5": "Grados 3–5", "6-8": "Grados 6–8", "9-10": "Grados 9–10", "11-12": "Grados 11–12", "adult": "Adultos"}
+BAND_SHORT = {"k-2": "K–2", "3-5": "3–5", "6-8": "6–8", "9-10": "9–10", "11-12": "11–12", "adult": "Adult"}
 
 # ── link resolution against the files and _redirects ─────────────────────────
 def _rules():
@@ -76,9 +76,9 @@ def load(cid):
 #    a Practice-every-day panel, More to explore (each place once), the Resource library,
 #    and a teacher fold. ──────────────────────────────────────────────────────────────
 
-ALL_BANDS = ["k-2", "3-5", "6-8", "9-10", "11-12"]
-BAND_EN = {b: "Grades " + BAND_SHORT[b] for b in ALL_BANDS}
-GRADE_OF_BAND = {"k-2": "K", "3-5": "3", "6-8": "6", "9-10": "9-10", "11-12": "11-12"}
+ALL_BANDS = ["k-2", "3-5", "6-8", "9-10", "11-12", "adult"]   # AOG-SKT-V1: Skateboarding is the first course with an Adult band
+BAND_EN = {b: ("Adult" if b == "adult" else "Grades " + BAND_SHORT[b]) for b in ALL_BANDS}
+GRADE_OF_BAND = {"k-2": "K", "3-5": "3", "6-8": "6", "9-10": "9-10", "11-12": "11-12", "adult": "adult"}
 GRADES = [("K", "Kindergarten", "Kínder")] + [(str(g), "Grade %d" % g, "Grado %d" % g) for g in range(1, 9)] + [
     ("9-10", "Grades 9–10", "Grados 9–10"), ("11-12", "Grades 11–12", "Grados 11–12"), ("adult", "Adult", "Adulto")]
 
@@ -219,6 +219,22 @@ COURSES = [
                 "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia de las sociedades secretas."),
          sources=("Every fact is checked against records: trial papers, lodge minutes, court cases and hearings. Legends are named as legends. Crime and hate groups are taught in grades 6–12 only. Everything is original text written for this course.",
                   "Cada dato se comprueba con documentos: actas de juicios y de logias, casos judiciales y audiencias. Las leyendas se llaman leyendas. Los grupos criminales y de odio se estudian solo en los grados 6–12. Todo es texto original escrito para este curso.")),
+    # AOG-SKT-V1 (2026-10-11) — Skateboarding: history, how to (tricks and grinds, safety first) and the science, K–12 and Adult.
+    dict(cid="skt", file="skateboarding-hub.html", slug="skateboarding", name=("Skateboarding", "Skateboarding"), contents="skateboarding-course",
+         drops="skate", res="science", kicker=("A course of study · K–12 and Adult", "Un curso de estudio · K–12 y adultos"),
+         lede=("Skateboarding's history, how to do tricks and grinds, and the science of balance. Grades K–12 and adults.",
+               "La historia del skate, cómo hacer trucos y grinds, y la ciencia del equilibrio. Grados K–12 y adultos."),
+         daily=("Ten short lines a day: history, tricks and the science of skating.",
+                "Diez líneas cortas al día: historia, trucos y la ciencia del skate."),
+         sources=("History is checked against records, magazines and official results. Trick steps start with a helmet, pads and a safe place, and children ride with a grown-up nearby. Physics numbers are worked out with g = 9.8 m/s²; friction and hardness values are labeled as examples. Everything is original text written for this course.",
+                  "La historia se comprueba con documentos, revistas y resultados oficiales. Los pasos de cada truco empiezan con casco, protecciones y un lugar seguro, y los niños patinan con un adulto cerca. Los números de física se calculan con g = 9,8 m/s²; los valores de fricción y dureza se marcan como ejemplos. Todo es texto original escrito para este curso."),
+         hints={"k-2": ("A board with wheels, staying safe, balance, pushing and stopping.", "Una tabla con ruedas, la seguridad, el equilibrio, empujar y frenar."),
+                "3-5": ("The first boom and the urethane wheel, forces on a ramp, first tricks.", "El primer auge y la rueda de uretano, fuerzas en la rampa, primeros trucos."),
+                "6-8": ("Pools, parks and the ollie: its history, its physics, and how to do it.", "Piscinas, parques y el ollie: su historia, su física y cómo hacerlo."),
+                "9-10": ("The street and video era, grinds and friction, balance and spin.", "La era de la calle y los videos, grinds y fricción, equilibrio y giros."),
+                "11-12": ("Public space and the Olympics, engineering boards and ramps, how skill is built.", "El espacio público y los Juegos Olímpicos, la ingeniería de tablas y rampas, cómo se aprende."),
+                "adult": ("Culture and who skates, starting or returning safely, and a capstone.", "La cultura y quién patina, empezar o volver con seguridad, y un proyecto final.")}),
+
 ]
 
 # More to explore: every place a band links to, named once, with one plain line.
@@ -256,6 +272,13 @@ EXPLORE = {
     "/social": (C_, "Social Studies", "Estudios Sociales", "History, civics, geography and economics, every band.", "Historia, civismo, geografía y economía, cada banda."),
     "/world-cultures": (C_, "World Cultures", "Culturas del mundo", "How people live together around the world, K–12.", "Cómo vive la gente en el mundo, K–12."),
     "/us-history": (C_, "U.S. History 6–8", "Historia de EE. UU. 6–8", "The story of the United States, as a full course.", "La historia de Estados Unidos, como un curso completo."),
+    "/sports": (C_, "Sports History", "Historia del deporte", "How games got their fields, rules and leagues, K–12.", "Cómo los juegos recibieron sus campos, reglas y ligas, K–12."),
+    "/skate#tricks": (R_, "Skate Lab: the trick book", "Laboratorio de Skate: libro de trucos", "Where each foot goes, the steps and what helps.", "Dónde va cada pie, los pasos y lo que ayuda."),
+    "/skate#balance": (R_, "Skate Lab: balance and turning", "Laboratorio de Skate: equilibrio y giros", "Move your center of mass and watch the board.", "Mueve tu centro de masa y mira la tabla."),
+    "/skate#ramp": (R_, "Skate Lab: ramp and energy", "Laboratorio de Skate: rampa y energía", "Drop in and watch stored energy become speed.", "Entra a la rampa y mira cómo la energía se vuelve rapidez."),
+    "/skate#ollie": (R_, "Skate Lab: the ollie", "Laboratorio de Skate: el ollie", "The tail as a lever and the front foot's friction, step by step.", "La cola como palanca y la fricción del pie de adelante, paso a paso."),
+    "/skate#flip": (R_, "Skate Lab: flips and spins", "Laboratorio de Skate: flips y giros", "A 3D board turning about its three axes.", "Una tabla en 3D girando sobre sus tres ejes."),
+    "/skate#grind": (R_, "Skate Lab: grinds and friction", "Laboratorio de Skate: grinds y fricción", "Will you reach the end of the rail?", "¿Llegarás al final del barandal?"),
     "/s24": (("Social Studies", "Estudios Sociales"), "Economics in Social Studies", "Economía en Estudios Sociales", "The economics room in the Social Studies hub.", "La sala de economía en Estudios Sociales."),
 }
 # the rooms the old religions and economics doors listed on each band (kept, so no door is lost)
@@ -397,7 +420,7 @@ def hero(h, o, art):
         <a class="btn dr-go dr-go2" href="/{h["cid"]}{units[0]["n"]}">{sp("Start at the beginning", "Empezar desde el principio")}</a>
       </div>
       <ul class="dr-facts" aria-label="The course in numbers">
-        <li><b>{len(units)}</b>{sp("units", "unidades")}</li><li><b>{tot_ch}</b>{sp("chapters", "capítulos")}</li><li><b>{tot_l}</b>{sp("lessons", "lecciones")}</li><li><b>5</b>{sp("grade bands", "bandas de grados")}</li>
+        <li><b>{len(units)}</b>{sp("units", "unidades")}</li><li><b>{tot_ch}</b>{sp("chapters", "capítulos")}</li><li><b>{tot_l}</b>{sp("lessons", "lecciones")}</li><li><b>{len(o.BANDS)}</b>{sp("grade bands" if len(o.BANDS) == 5 else "bands", "bandas de grados" if len(o.BANDS) == 5 else "bandas")}</li>
       </ul>
     </div>
     <div class="dr-collage" aria-hidden="true">{tiles}</div>
@@ -658,7 +681,7 @@ $("#themeBtn").addEventListener("click",function(){
 });
 
 /* ── one band at a time: ?band=6-8 or #6-8 on the link wins, then this device's last choice ── */
-var BANDS=__BANDS__, GRADE={"k-2":"K","3-5":"3","6-8":"6","9-10":"9-10","11-12":"11-12"};
+var BANDS=__BANDS__, GRADE={"k-2":"K","3-5":"3","6-8":"6","9-10":"9-10","11-12":"11-12","adult":"adult"};
 function bandCanon(v){ v=String(v==null?"":v).toLowerCase(); for(var i=0;i<BANDS.length;i++){ if(BANDS[i].toLowerCase()===v) return BANDS[i]; } return null; }
 function bandFrom(){ var c;
   var m=/[?&]band=([^&#]+)/.exec(location.search||""); if(m&&(c=bandCanon(m[1]))) return c;
@@ -733,6 +756,10 @@ def head_of(file, h=None):
         en = h["name"][0]
         desc = "%s, K–12 — studied band by band, for a public-school classroom. Free and private." % en
         s = re.sub(r"Talmud Study, K–12 — [^\"]*Free and private\.", lambda m: E(desc), s)
+        # AOG-SKT-V1: the Talmud head also says "The Talmud" in its title, link previews and description; a new door
+        # (Skateboarding was the first to show it) must not inherit them
+        s = re.sub(r"The Talmud, K–12 — [^\"]*Free and private\.", lambda m: E(desc), s)
+        s = s.replace("The Talmud, grades K–12", en + ", grades K–12").replace("The Talmud — Architecture of Grace", en + " — Architecture of Grace")
         s = s.replace("Talmud Study", en).replace("/talmud\"", "/%s\"" % h["slug"])
         return s
     s = (DEPLOY / file).read_text(encoding="utf-8")
@@ -744,7 +771,7 @@ def make_door(h):
     bands = [b["id"] for b in o.BANDS]
     head = head_of(h["file"], h)
     body = "\n".join(band_section(h, o, b, art) for b in bands)
-    foot = FOOT2[h["cid"] != "eco"]
+    foot = FOOT2[h["cid"] not in ("eco", "skt")]   # AOG-SKT-V1: skateboarding teaches no beliefs
     js = JS.replace("__SLUG__", h["slug"]).replace("__BANDS__", str(bands).replace("'", '"').replace(" ", "")) \
            .replace("__NAME__", '["%s","%s"]' % (en.replace('"', ""), es.replace('"', "")))
     page = f'''{head}

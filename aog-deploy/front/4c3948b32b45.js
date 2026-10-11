@@ -573,7 +573,7 @@
        of paper at the same number, so the letter has to survive into the link
        or a blank class set of a free write prints the day's prompt instead. */
     /* AOG-DD-LINK-TEN-V1 - all ten subjects; the Foundry's grades are u1..u30. */
-    var m = /^dd-(math|ela|write|science|social-studies|spanish|facs|religion|bible|quran|talmud|hindu|buddhist|chinese|cultures|health|economics|foundry|sports|martial|unseen|secrets)-g(K|[1-8]|9-10|11-12|u\d{1,2})-([sf])(\d+)$/.exec(String(id || ""));
+    var m = /^dd-(math|ela|write|science|social-studies|spanish|facs|religion|bible|quran|talmud|hindu|buddhist|chinese|cultures|health|economics|foundry|sports|martial|unseen|secrets|skate)-g(K|[1-8]|9-10|11-12|u\d{1,2})-([sf])(\d+)$/.exec(String(id || ""));
     if (!m) return null;
     return { subj: m[1], grade: m[2], free: m[3] === "f", sheet: parseInt(m[4], 10) || 1 };
   }
