@@ -125,6 +125,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stage-hint { text-align:center; margin:.1rem 0 0; font-size:.92rem; color:var(--muted); }
 .view-row { display:flex; flex-wrap:wrap; justify-content:center; gap:.4rem; }
 .view-row .pill { min-height:44px; font-size:.9rem; }
+.look-row { display:flex; justify-content:center; margin:.1rem 0 0; }
+.looks { display:inline-flex; align-items:center; gap:.3rem; }
+.looks .lk { font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-right:.15rem; }
+.looks .lookb { min-width:48px; padding:0; font-size:1.05rem; }
 .view-row select { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .8rem; font-size:16px; font-weight:600; }
 
 /* the turn pad: six faces, each way, and turning the whole cube */
@@ -158,7 +162,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 /* Solve with me: no turn pad (the steps say every move), and on a phone the card sits right under the cube */
 .cube-bench.solving .pad { display:none; }
 @media (max-width:899px){ .cube-bench { display:flex; flex-direction:column; } .cube-side { display:contents; }
-  .stage { order:1; } .stage-hint { order:2; } .cube-bench > .panel { order:3; } .view-row { order:4; } .pad { order:5; } }
+  .stage { order:1; } .look-row { order:2; } .stage-hint { order:3; } .cube-bench > .panel { order:4; } .view-row { order:5; } .pad { order:6; } }
 .btn-row.start { flex-direction:column; align-items:stretch; max-width:22rem; }
 .btn-row.quiet { margin-top:1.2rem; }
 .btn-row.quiet .btn { font-size:.9rem; color:var(--muted); }
@@ -232,6 +236,7 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
         <div class="cube-view" id="cubeView"></div>
         <svg class="arrow" id="arrow" aria-hidden="true"></svg>
       </div>
+      <div class="look-row no-print" id="lookRow"></div>
       <p class="stage-hint" id="hint"></p>
       <div class="view-row no-print" id="viewRow"></div>
       <div class="pad no-print" id="pad"></div>
@@ -259,7 +264,11 @@ const T={
   hintPaint:["Pick a color, then tap a square to paint it.","Elige un color y toca un cuadro para pintarlo."],
   faces:["Turn a side","Gira un lado"], whole:["Turn the whole cube","Gira el cubo entero"],
   undo:["Undo","Deshacer"], mix:["Mix it up","Mézclalo"], fresh:["Solved cube","Cubo resuelto"],
-  look:["Front view","Vista de frente"], lookBack:["Turn around","Dale la vuelta"],
+  look:["Front view","Vista de frente"], lookH:["Look","Mira"],
+  look_left:["Turn the cube left, to see its right side","Gira el cubo a la izquierda, para ver su lado derecho"],
+  look_right:["Turn the cube right, to see its left side","Gira el cubo a la derecha, para ver su lado izquierdo"],
+  look_up:["Tip the cube away, to see its bottom","Inclina el cubo hacia atrás, para ver la parte de abajo"],
+  look_down:["Tip the cube toward you, to see its top","Inclina el cubo hacia ti, para ver la parte de arriba"], lookBack:["Turn around","Dale la vuelta"],
   letters:["Letters","Letras"], on:["on","sí"], off:["off","no"],
   speed:["Speed","Velocidad"], slow:["Slow","Lenta"], normal:["Normal","Normal"], instant:["No motion","Sin movimiento"],
   step:["Step","Paso"], of:["of","de"], back:["Back","Atrás"], next:["Next step","Siguiente paso"],
@@ -481,7 +490,15 @@ const INK={W:"#14161a",Y:"#14161a",G:"#0d1310",B:"#ffffff",O:"#14161a",R:"#fffff
 const HOMEFACE={}; Object.keys(C.HOME_COLOR).forEach(f => { HOMEFACE[C.HOME_COLOR[f]]=f; });
 const disp=c => (c && HOMEFACE[c] && S.scheme && S.scheme[HOMEFACE[c]]) || c;
 const stage=$("stage"), viewEl=$("cubeView");
-let ax=-26, ay=-38, size=64, painting=false, cubeBeforePaint=null;
+/* AOG-CUBE-TRACKBALL-V1 (2026-10-11) — Jimmy: "The screen moves too much and when I was trying to rotate it upside down
+   like bringing towards me, it got stuck and then I was lost." The view is now a turn matrix (VIEW), not two angles:
+   dragging the space around the cube rolls it under the finger in any direction, upside down too, and never stops
+   at a limit. The Look buttons (◀ ▲ ▼ ▶) turn it a quarter turn at a time to show the next side, then rest. */
+const deg=Math.PI/180, mul3=(A,B)=>C.mulM(A,B);
+const HOME_VIEW=mul3(C.rot([1,0,0],-26*deg), C.rot([0,1,0],-38*deg));
+const BACK_VIEW=mul3(C.rot([1,0,0],22*deg), C.rot([0,1,0],142*deg));
+let VIEW=HOME_VIEW.slice();
+let size=64, painting=false, cubeBeforePaint=null;
 const els=[];
 function build(){
   viewEl.innerHTML=""; els.length=0;
@@ -500,15 +517,32 @@ function build(){
   });
 }
 const LIGHT=(()=>{ const v=[-0.35,-0.8,0.6], n=Math.hypot(...v); return v.map(x=>x/n); })();
-function toView(v){ /* model → CSS (y down) → the view's turn */
-  const x=v[0], y=-v[1], z=v[2], ry=ay*Math.PI/180, rx=ax*Math.PI/180;
-  const x1=x*Math.cos(ry)+z*Math.sin(ry), z1=-x*Math.sin(ry)+z*Math.cos(ry);
-  return [x1, y*Math.cos(rx)-z1*Math.sin(rx), y*Math.sin(rx)+z1*Math.cos(rx)];
+function toView(v){ return C.mulV(VIEW, [v[0], -v[1], v[2]]); }   /* model → CSS (y down) → the view's turn */
+const viewCSS=() => { const V=VIEW; return `matrix3d(${V[0]},${V[3]},${V[6]},0,${V[1]},${V[4]},${V[7]},0,${V[2]},${V[5]},${V[8]},0,0,0,0,1)`; };
+const atHome=() => VIEW.every((x,i) => Math.abs(x-HOME_VIEW[i])<.02);
+/* a quarter turn of the view, eased, then it rests */
+let lookAnim=0;
+function lookTurn(axis, angle, target){
+  const from=VIEW.slice(), dur=SPEED[S.speed] ? 320 : 0, t0=performance.now();
+  cancelAnimationFrame(lookAnim);
+  const end = () => { VIEW = target ? target.slice() : mul3(C.rot(axis, angle), from); render(); };
+  if(!dur){ end(); return; }
+  const step=now => { const k=Math.min(1,(now-t0)/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    if(k>=1){ end(); return; }
+    if(target){ /* back home: turn about the one axis that carries the view there */
+      const R=mul3(target, [from[0],from[3],from[6],from[1],from[4],from[7],from[2],from[5],from[8]]);
+      const c=Math.max(-1,Math.min(1,(R[0]+R[4]+R[8]-1)/2)), th=Math.acos(c);
+      let ax3=[R[7]-R[5], R[2]-R[6], R[3]-R[1]], n=Math.hypot(...ax3);
+      if(n<1e-6){ VIEW=target.slice(); render(); return; }
+      VIEW=mul3(C.rot(ax3.map(x=>x/n), th*e), from);
+    } else VIEW=mul3(C.rot(axis, angle*e), from);
+    render({viewOnly:true}); lookAnim=requestAnimationFrame(step); };
+  lookAnim=requestAnimationFrame(step);
 }
 const SG=[1,-1,1];
 function render(anim){
   const g=size*1.015;
-  viewEl.style.transform=`rotateX(${ax}deg) rotateY(${ay}deg)`;
+  viewEl.style.transform=viewCSS();
   if(anim && anim.viewOnly){ const svg=$("arrow"); if(svg && svg.innerHTML) svg.innerHTML=""; return; }   /* looking around: the view turns, nothing else */
   const R=anim ? C.rot(anim.a, anim.th) : null;
   cube.P.forEach((p,i) => {
@@ -568,14 +602,13 @@ function drawArrow(){
   svg.setAttribute("viewBox", `0 0 ${stage.clientWidth} ${stage.clientHeight}`);
   svg.innerHTML=`<path d="${d}" class="halo"/><path d="${head}" class="halo"/><path d="${d}" class="line"/><path d="${head}" class="head"/>${two}`;
 }
-const AX0=-26, AY0=-38;
 function stageTools(){
   const u=$("stUndo"), f=$("stFront"); if(!u) return;
   u.textContent="↶ "+t("undo"); f.textContent=t("look");
   u.hidden=painting || !S.hist.length;
-  f.hidden=Math.abs(ax-AX0)<2 && Math.abs(((ay-AY0)%360+540)%360-180)<2;
+  f.hidden=atHome();
 }
-function fit(){ const w=stage.clientWidth||320; size=Math.max(30, Math.round(w/5.05)); stage.style.setProperty("--s", size+"px"); render(); }
+function fit(){ const w=stage.clientWidth||320; size=Math.max(30, Math.round(w/5.7));   /* small enough to stay whole in the box, whichever way it is turned */ stage.style.setProperty("--s", size+"px"); render(); }
 
 /* ── turning, one move at a time ── */
 const queue=[]; let busy=false, runner=null;
@@ -782,8 +815,8 @@ function checkMine(){
   const cols={}; Object.keys(raw).forEach(k => { cols[k]=toSolver[raw[k]]||"?"; });
   const d=C.diagnose(cols);
   if(d.error==="count"){ mineMsg={ok:false, text:t("errCount",{c:cnd(d.col).replace(/^./,x=>x.toUpperCase()), n:d.n})}; render(); panel(); return; }
-  if(d.error==="stickers"){ mineMsg={ok:false, text:t("errStickers")}; flags=d.spots; ax=-26; ay=-38; render(); panel(); return; }
-  if(d.fixes.length){ mineMsg=null; doctor={fixes:d.fixes, raw:Object.fromEntries(Object.entries(d.fixed).map(([k,v]) => [k,disp(v)])), i:0}; flags=d.fixes[0].spots; ax=-26; ay=-38; render(); panel();
+  if(d.error==="stickers"){ mineMsg={ok:false, text:t("errStickers")}; flags=d.spots; VIEW=HOME_VIEW.slice(); render(); panel(); return; }
+  if(d.fixes.length){ mineMsg=null; doctor={fixes:d.fixes, raw:Object.fromEntries(Object.entries(d.fixed).map(([k,v]) => [k,disp(v)])), i:0}; flags=d.fixes[0].spots; VIEW=HOME_VIEW.slice(); render(); panel();
     const box=document.querySelector("#panel .fixbox"); if(box && box.scrollIntoView) box.scrollIntoView({block:"nearest"}); return; }
   const r=C.fromFacelets(cols);
   if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
@@ -817,8 +850,14 @@ function padHtml(){
   h+=`<button type="button" class="act" data-act="undo">↶ ${esc(t("undo"))}</button><button type="button" class="act go" data-act="mix">${esc(t("mix"))}</button><button type="button" class="act" data-act="fresh">${esc(t("fresh"))}</button>`;
   return h;
 }
+const LOOKS={left:[[0,1,0],-Math.PI/2], right:[[0,1,0],Math.PI/2], up:[[1,0,0],Math.PI/2], down:[[1,0,0],-Math.PI/2]};
+function lookRowHtml(){
+  return `<span class="looks" role="group" aria-label="${esc(t("lookH"))}"><span class="lk">${esc(t("lookH"))}</span>`
+    +[["left","◀"],["up","▲"],["down","▼"],["right","▶"]].map(([k,g])=>`<button type="button" class="pill lookb" data-look="${k}" aria-label="${esc(t("look_"+k))}">${g}</button>`).join("")+`</span>`;
+}
 function viewRowHtml(){
-  let h=`<button type="button" class="pill" data-look="front">${esc(t("look"))}</button><button type="button" class="pill" data-look="back">${esc(t("lookBack"))}</button>`;
+  let h="";
+  if(painting) h+=`<button type="button" class="pill" data-look="back">${esc(t("lookBack"))}</button>`;
   if(!painting) h+=`<button type="button" class="pill" data-look="letters" aria-pressed="${S.letters}">${esc(t("letters"))}: ${esc(t(S.letters?"on":"off"))}</button>
     <label class="sr" for="speedSel">${esc(t("speed"))}</label><select id="speedSel" aria-label="${esc(t("speed"))}">${["slow","normal","instant"].map(k=>`<option value="${k}" ${S.speed===k?"selected":""}>${esc(t("speed"))}: ${esc(t(k))}</option>`).join("")}</select>`;
   return h;
@@ -845,12 +884,13 @@ function paintAll(){
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?(es()?"Claro":"Light"):(es()?"Oscuro":"Dark");
   $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):t("hint");
   stage.setAttribute("aria-label", es()?"Un cubo de Rubik en 3D":"A 3D Rubik's Cube");
-  $("pad").innerHTML=padHtml(); $("viewRow").innerHTML=viewRowHtml();
+  $("pad").innerHTML=padHtml(); $("viewRow").innerHTML=viewRowHtml(); $("lookRow").innerHTML=lookRowHtml();
   $("pad").querySelectorAll("[data-mv]").forEach(b => b.onclick=()=>{ if(!busy && !queue.length) enqueue([b.getAttribute("data-mv")],"pad"); });
   $("pad").querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
-  $("viewRow").querySelectorAll("[data-look]").forEach(b => b.onclick=()=>{
+  document.querySelectorAll("#viewRow [data-look], #lookRow [data-look]").forEach(b => b.onclick=()=>{
     const k=b.getAttribute("data-look");
-    if(k==="front"){ ax=-26; ay=-38; } else if(k==="back"){ ax=22; ay=142; } else { S.letters=!S.letters; save(); paintAll(); return; }
+    if(k==="front"){ lookTurn(null,0,HOME_VIEW); return; } else if(k==="back"){ lookTurn(null,0,BACK_VIEW); return; }
+    else if(LOOKS[k]){ lookTurn(LOOKS[k][0], LOOKS[k][1]); return; } else { S.letters=!S.letters; save(); paintAll(); return; }
     render();
   });
   const sel=$("speedSel"); if(sel) sel.onchange=()=>{ S.speed=sel.value; save(); };
@@ -890,7 +930,7 @@ function pickSticker(cx, cy){
 stage.addEventListener("pointerdown", e => {
   if(e.button>0) return;
   const hit=pickSticker(e.clientX, e.clientY);
-  drag={x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, ax0:ax, ay0:ay};
+  drag={x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, v0:VIEW.slice()};
   try{ stage.setPointerCapture(e.pointerId); }catch(_){}
   stage.classList.add("grabbing");
 });
@@ -915,7 +955,8 @@ function onMove(e){
       else drag.mode="look";
     } else drag.mode="look";
   }
-  if(drag.mode==="look"){ ay=drag.ay0+dx*0.32; ax=Math.max(-60, Math.min(60, drag.ax0-dy*0.32)); render({viewOnly:true}); }
+  if(drag.mode==="look"){ /* roll the cube under the finger: right turns it right, down tips it toward you, on and on */
+    const len=Math.hypot(dx,dy); if(len>0){ VIEW=mul3(C.rot([-dy/len, dx/len, 0], len*0.24*deg), drag.v0); } render({viewOnly:true}); }
   else if(drag.mode==="turn"){ const T2=drag.turn; T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad; render({a:T2.a, set:T2.set, th:T2.th}); }
 }
 function endDrag(e){
@@ -965,7 +1006,7 @@ document.addEventListener("keydown", e => {
 
 ["stUndo","stFront"].forEach(id => { const b=$(id); b.addEventListener("pointerdown", e => e.stopPropagation()); });
 $("stUndo").onclick=()=>act("undo");
-$("stFront").onclick=()=>{ ax=AX0; ay=AY0; render(); };
+$("stFront").onclick=()=>lookTurn(null,0,HOME_VIEW);
 window.AOGCubeLab={pick:pickSticker, get cube(){ return cube; }};   /* for the site's checks */
 $("langBtn").onclick=()=>{ S.lang=es()?"en":"es"; save(); paintAll(); };
 $("themeBtn").onclick=()=>{
