@@ -14,7 +14,8 @@
    four times oversampled, so the distortion is the same on an iPad as on a computer (no WaveShaper). The cabinet is a
    speaker's own response turned into an impulse (minimum phase, made here, nothing downloaded). The rest is Web Audio.
 
-   AOGAmp.load(ctx)             → Promise; adds the worklet to that context (await it before an offline render)
+   AOGAmp.load(ctx)             → Promise; adds the worklet to that context (await it before an offline render; offline,
+                                  it also waits for the real reverbs, AOG-REAL-ROOMS-V1)
    AOGAmp.create(ctx, {kind})   → rig {input, output, set(state)}; kind "guitar" or "bass"
    AOGAmp.defaults(kind)        → a state: {model, cab, k:{gain…}, bright, tight, eq:{on, db:[10]}, fx:{…}}
    AOGAmp.ui(host, opts)        → the panel: amp head, pedalboard, EQ; opts {kind, lang(), get(), set(state), reset()}
@@ -484,7 +485,11 @@ const URL_DEFAULT="/aog-amp-worklet.js";
 const LOADS=new WeakMap();
 function load(ctx){
   if(LOADS.has(ctx)) return LOADS.get(ctx);
-  const p=(async()=>{ try{ if(!ctx.audioWorklet || typeof AudioWorkletNode==="undefined") return false; await ctx.audioWorklet.addModule(AOGAmp.workletURL||URL_DEFAULT); ctx.__aogAmpOk=true; return true; }catch(e){ return false; } })();
+  const w=(async()=>{ try{ if(!ctx.audioWorklet || typeof AudioWorkletNode==="undefined") return false; await ctx.audioWorklet.addModule(AOGAmp.workletURL||URL_DEFAULT); ctx.__aogAmpOk=true; return true; }catch(e){ return false; } })();
+  /* AOG-REAL-ROOMS-V1: an offline render also waits for the real reverbs, so it never starts on the made-up one */
+  const OFF=G.OfflineAudioContext||G.webkitOfflineAudioContext, off=!!(OFF && ctx instanceof OFF);
+  const r=off ? roomsLib().then(L=>L && Promise.all(REAL_ALL.map(id=>L.load(ctx, id)))).catch(()=>null) : null;
+  const p=Promise.all([w, r]).then(a=>a[0]);
   LOADS.set(ctx, p); return p;
 }
 function gainNode(c, v){ const g=c.createGain(); g.gain.value=v; return g; }
@@ -584,8 +589,10 @@ FXMAKE.delay=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), w
       wowG.gain.value=tape?0.0007:0; flutG.gain.value=tape?0.00004:0; }}; };
 FXMAKE.reverb=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.3), cv=c.createConvolver(), tone=biq(c,"lowpass",8000,0.6); let key="";
     i.connect(dry); dry.connect(o); i.connect(cv); cv.connect(tone); tone.connect(wet); wet.connect(o);
-    return {in:i, out:o, set(p){ const k=(p.type||"spring")+":"+Math.round(+p.decay*2)/2; if(k!==key){ key=k; cv.buffer=reverbIR(c, p.type||"spring", n10(p.decay)); }
-      wet.gain.value=0.9*n10(p.mix); dry.gain.value=1-0.25*n10(p.mix); tone.frequency.value=2000*Math.pow(6,n10(p.tone)); }}; };
+    let last=null; const fx={in:i, out:o, set(p){ last=p; const k=(p.type||"spring")+":"+Math.round(+p.decay*2)/2; if(k!==key){ const b=reverbIR(c, p.type||"spring", n10(p.decay)); key=b.__aogReal ? k : k+":made"; if(cv.buffer!==b){ cv.normalize=!b.__aogReal; cv.buffer=b; } }
+      wet.gain.value=0.9*n10(p.mix); dry.gain.value=1-0.25*n10(p.mix); tone.frequency.value=2000*Math.pow(6,n10(p.tone)); }};
+    verbPer(c).wait.push(()=>{ if(last){ key=""; fx.set(last); } });   /* AOG-REAL-ROOMS-V1: the real one, when it arrives */
+    return fx; };
 const ORDER0=["chorus","phaser","flanger","trem","rotary","delay","reverb"];
 
 /* ══ a room's board (AOG-ROOM-PEDALS-V1) ═══════════════════════════════════
@@ -745,9 +752,38 @@ let TAPE=null;
 function tapeCurve(){ if(TAPE) return TAPE; const n=1025; TAPE=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2; TAPE[i]=Math.tanh(1.1*x)/1.1/2; } return TAPE; }
 /* reverbs: a spring (drips, a little boing), a room, a hall, a plate; stereo noise that dies away, darker as it goes */
 const VERBS=new WeakMap();
+/* AOG-REAL-ROOMS-V1 (2026-10-11, Jimmy's 5: "Real rooms"): each type plays a recording of a real one when it has arrived
+   (aog-realrooms.js, CC0): the spring tank of a Roland RE-301, a steel wine tank played like a plate, a small room, a recording
+   studio or Liverpool Philharmonic Hall for Room, the hall or Notre Dame (New York) for a long Hall. Decay shapes it to the
+   time it asks for (shorter, or up to half as long again) and evened to the made-up one below: the same short pause before
+   the first echoes, and as loud for music (AOGRooms.fit), so Mix is as wet as before. The made-up one is normalised by the
+   convolver; the real one is set at that same level with normalize off. The made-up one plays until the recording is in,
+   and stays when it cannot load. An offline render waits for them (AOGAmp.load), so a recording always sounds the same.
+   The sounds with the most reverb were re-measured with them (strings_page.html, amp/b1). */
+const REAL_FOR={spring:[["spring",99]], plate:[["plate",99]], room:[["small",0.5],["studio",0.85],["hall",99]], hall:[["hall",2.3],["church",99]]};
+const REAL_ALL=["spring","plate","small","studio","hall","church"];
+function verbPre(type){ return type==="hall"?0.024:type==="room"?0.006:type==="plate"?0.002:0.012; }
+function verbT(type, d){ return type==="hall"?1.4+3.2*d : type==="plate"?0.9+2.2*d : type==="room"?0.35+1.1*d : 1.2+2.4*d; }
+function realFor(type, T){ const L=REAL_FOR[type]||REAL_FOR.spring; for(const [id,upTo] of L) if(T<=upTo) return id; return L[L.length-1][0]; }
+function roomsLib(){
+  if(G.AOGRooms) return Promise.resolve(G.AOGRooms);
+  if(typeof document==="undefined") return Promise.resolve(null);
+  return G.__aogRoomsLib || (G.__aogRoomsLib=new Promise(res=>{
+    try{ const s=document.createElement("script"); s.src="/aog-realrooms.js"; s.async=true; s.onload=()=>res(G.AOGRooms||null);
+      s.onerror=()=>{ G.__aogRoomsLib=null; res(null); }; (document.head||document.documentElement).appendChild(s); }catch(e){ res(null); } }));
+}
+function verbPer(c){ let per=VERBS.get(c); if(!per){ per={wait:[]}; VERBS.set(c, per); } return per; }
 function reverbIR(c, type, d){
-  let per=VERBS.get(c); if(!per){ per={}; VERBS.set(c, per); } const key=type+":"+d.toFixed(2); if(per[key]) return per[key];
-  const sr=c.sampleRate, T=type==="hall"?1.4+3.2*d : type==="plate"?0.9+2.2*d : type==="room"?0.35+1.1*d : 1.2+2.4*d;
+  const per=verbPer(c), key=type+":"+d.toFixed(2), T=verbT(type, d), id=realFor(type, T), L=G.AOGRooms;
+  if(per["r:"+key]) return per["r:"+key];
+  const made=per[key] || (per[key]=madeVerb(c, type, d));
+  if(L && L.get(c, id)){ const b=L.fit(c, id, {match:made, scale:L.normScale(made), pre:verbPre(type), rt:T, key:"amp:"+key}); if(b){ per["r:"+key]=b; return b; } }
+  if(!per["w:"+id]){ per["w:"+id]=1;
+    roomsLib().then(L=>L && L.load(c, id)).then(b=>{ if(!b){ per["w:"+id]=0; return; } per.wait.forEach(f=>{ try{ f(); }catch(e){} }); }, ()=>{ per["w:"+id]=0; }); }
+  return made;
+}
+function madeVerb(c, type, d){
+  const sr=c.sampleRate, T=verbT(type, d);
   const pre=type==="hall"?0.024:type==="room"?0.006:type==="plate"?0.002:0.012, len=Math.ceil((pre+T*1.1)*sr), ir=c.createBuffer(2, len, sr);
   for(let ch=0; ch<2; ch++){
     const a=ir.getChannelData(ch), r=seeded(type.length*7919+ch*104729+Math.round(d*100)), p0=Math.floor(pre*sr); let lp=0, lp2=0;
@@ -761,7 +797,7 @@ function reverbIR(c, type, d){
   /* even level whatever the length */
   let s=0; for(let ch=0;ch<2;ch++){ const a=ir.getChannelData(ch); for(let i=0;i<len;i++) s+=a[i]*a[i]; }
   const g=0.6/Math.sqrt(s/2+1e-9); for(let ch=0;ch<2;ch++){ const a=ir.getChannelData(ch); for(let i=0;i<len;i++) a[i]*=g; }
-  per[key]=ir; return ir;
+  return ir;
 }
 
 /* ══ the panel ═════════════════════════════════════════════════════════════
@@ -941,7 +977,7 @@ function ui(host, opt){
   return {paint:paint};
 }
 
-const AOGAmp={load:load, create:create, defaults:defaults, normalize:normalize, coreParams:coreParams, ui:ui, cabIR:cabIR, reverbIR:reverbIR,
+const AOGAmp={load:load, create:create, defaults:defaults, normalize:normalize, coreParams:coreParams, ui:ui, cabIR:cabIR, reverbIR:reverbIR, madeVerb:madeVerb,
   MODELS:MODELS, CABS:CABS, PEDALS:PEDALS, STACKS:STACKS, EQ_F:EQ_F, WORDS:WORDS, delayMs:delayMs, workletURL:null, _cabCurve:cabCurve,
   ROOMK:ROOMK, TRIM:TRIM, pedalsOf:pedalsOf, roomCore:roomCore, busParams:busParams, filterHz:filterHz, descOf:descOf};
 G.AOGAmp=AOGAmp;

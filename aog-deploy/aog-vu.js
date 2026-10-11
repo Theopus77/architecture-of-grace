@@ -206,13 +206,35 @@
      feeds the same room into what it keeps), so a take carries the room to the turntables, the Drum Machine and the
      Mixing Desk. It starts Dry, so nothing changes until the knob is turned; the choice is kept on this device
      ("aog.room.v1") and every room and the Studio follow it at once. The turntables and the desk stay as they are. ══ */
-  var PRE = [{ id: "dry", en: "Dry", es: "Seco" }, { id: "small", en: "Small room", es: "Sala pequeña", sec: 0.7, wet: 0.38, pre: 0.006, dark: 0.35 },
-    { id: "studio", en: "Studio", es: "Estudio", sec: 1.4, wet: 0.55, pre: 0.014, dark: 0.5 }, { id: "hall", en: "Hall", es: "Sala grande", sec: 2.8, wet: 0.6, pre: 0.026, dark: 0.62 }];
+  /* AOG-REAL-ROOMS-V1 (2026-10-11, Jimmy's 5: "Real rooms"): each room is now a recording of a real one (aog-realrooms.js:
+     a small room, a recording studio, Liverpool Philharmonic Hall, Notre Dame in New York; CC0), loaded when the room is
+     first chosen and evened to the made-up one it replaces (the same pause before the first echoes, and as loud
+     for music, AOGRooms.fit, so the knob is no wetter than before). The
+     made-up room plays until the recording has arrived, and stays when it cannot load. Church is a fifth step. */
+  var PRE = [{ id: "dry", en: "Dry", es: "Seco" }, { id: "small", en: "Small room", es: "Sala pequeña", sec: 0.7, wet: 0.38, pre: 0.006, dark: 0.35, real: "small" },
+    { id: "studio", en: "Studio", es: "Estudio", sec: 1.4, wet: 0.55, pre: 0.014, dark: 0.5, real: "studio" }, { id: "hall", en: "Hall", es: "Sala grande", sec: 2.8, wet: 0.6, pre: 0.026, dark: 0.62, real: "hall" },
+    { id: "church", en: "Church", es: "Iglesia", sec: 3.6, wet: 0.6, pre: 0.03, dark: 0.7, real: "church" }];
   var KEY = "aog.room.v1", CH = [], IRS = typeof WeakMap === "function" ? new WeakMap() : null, KNOBS = [];
   function cur() { var v = 0; try { v = +localStorage.getItem(KEY) || 0; } catch (e) {} return Math.max(0, Math.min(PRE.length - 1, v | 0)); }
+  /* the real rooms' library (aog-realrooms.js), loaded the first time a real room is wanted */
+  function roomsLib() {
+    var W = window; if (W.AOGRooms) return Promise.resolve(W.AOGRooms);
+    return W.__aogRoomsLib || (W.__aogRoomsLib = new Promise(function (res) {
+      try { var s = document.createElement("script"); s.src = "/aog-realrooms.js"; s.async = true; s.onload = function () { res(W.AOGRooms || null); };
+        s.onerror = function () { W.__aogRoomsLib = null; res(null); }; (document.head || document.documentElement).appendChild(s); } catch (e) { res(null); } }));
+  }
   function ir(ctx, i) {
     var per = IRS && IRS.get(ctx); if (!per) { per = {}; if (IRS) IRS.set(ctx, per); }
-    if (per[i]) return per[i];
+    if (per["r" + i]) return per["r" + i];
+    var made = per[i] || (per[i] = madeIR(ctx, i)), P = PRE[i];
+    if (P.real && !per["w" + i]) { per["w" + i] = 1;
+      roomsLib().then(function (L) { return L && L.load(ctx, P.real).then(function () { return L.fit(ctx, P.real, { match: made, pre: P.pre, key: "vu" + i }); }); })
+        .then(function (b) { if (!b) { per["w" + i] = 0; return; } per["r" + i] = b; CH.forEach(function (c) { if (c.ctx === ctx && c.at === i) { c.at = -1; apply(c); } }); },
+          function () { per["w" + i] = 0; });
+    }
+    return made;
+  }
+  function madeIR(ctx, i) {
     var P = PRE[i], sr = ctx.sampleRate, n = Math.round(sr * (P.sec + P.pre)), buf = ctx.createBuffer(2, n, sr), seed = 1234567 + i;
     function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647 * 2 - 1; }
     for (var ch = 0; ch < 2; ch++) {
@@ -225,7 +247,7 @@
       for (var r = 0; r < 6; r++) { var at = p0 + Math.round(sr * (0.004 + r * 0.011 + (ch ? 0.003 : 0)) * (1 + P.sec * 0.3)); if (at < n) d[at] += (0.5 - r * 0.07) * (r % 2 ? -1 : 1); }
       var g = 1 / Math.sqrt(e2 + 1e-9); for (var q = 0; q < n; q++) d[q] *= g;
     }
-    per[i] = buf; return buf;
+    return buf;
   }
   /* one chain: what goes in, a convolver, a wet gain, where it goes; nothing runs while the room is Dry */
   function chain(ctx, from, to) {
@@ -236,7 +258,7 @@
   function apply(c) {
     var i = cur(), P = PRE[i];
     if (!P.sec) { if (c.on) { try { origDis.call(c.from, c.conv); } catch (e) {} c.on = false; } c.wet.gain.value = 0; return; }
-    if (c.at !== i) { c.conv.buffer = ir(c.ctx, i); c.at = i; }
+    if (c.at !== i) { var b = ir(c.ctx, i); if (c.conv.buffer !== b) c.conv.buffer = b; c.at = i; }
     c.wet.gain.setTargetAtTime(P.wet, c.ctx.currentTime, 0.05);
     if (!c.on) { orig.call(c.from, c.conv); c.on = true; }
   }
@@ -247,11 +269,11 @@
   }
   window.addEventListener("storage", function (e) { if (e.key === KEY) { CH.forEach(apply); KNOBS.forEach(function (k) { k.paint(); }); } });
   var ROOM = {
-    presets: PRE, get: cur, set: set, chains: CH,
+    presets: PRE, get: cur, set: set, chains: CH, lib: roomsLib,
     ir: ir,   /* AOG-NOTES-V1: a room's re-render of its notes puts the same room on them (aog-recorder.js) */
     live: function (ctx, g) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, ctx.destination); } return ctx.__aogRoomLive; },
     rec: function (ctx, tap, node) { if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
-    /* the knob: a small black knob with a gold line; a tap turns it one step (Dry → Small room → Studio → Hall → Dry);
+    /* the knob: a small black knob with a gold line; a tap turns it one step (Dry → Small room → Studio → Hall → Church → Dry);
        ← → and ↑ ↓ turn it too. Its name shows beside it. */
     knob: function (el, opts) {
       if (!el) return null; opts = opts || {};
@@ -270,7 +292,7 @@
       if (opts.before) el.insertBefore(b, opts.before); else el.appendChild(b);
       var K = { b: b, paint: function () {
         var i = cur(), e = es() ? "es" : "en", P = PRE[i];
-        b.querySelector("i").style.setProperty("--r", (-120 + i * 80) + "deg");
+        b.querySelector("i").style.setProperty("--r", (-120 + i * 240 / (PRE.length - 1)) + "deg");
         b.querySelector("small").textContent = e === "es" ? "Sala" : "Room"; b.querySelector("b").textContent = P[e];
         b.setAttribute("aria-label", (e === "es" ? "Sonido de sala: " : "Room sound: ") + P[e] + (e === "es" ? ". Toca para cambiarlo." : ". Tap to change it."));
       } };

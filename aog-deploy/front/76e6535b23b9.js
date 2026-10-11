@@ -91,7 +91,8 @@ const STR={
   mute:{en:"Mute",es:"Silenciar"}, solo:{en:"Solo",es:"Solo"},
   low:{en:"Low",es:"Graves"}, mid:{en:"Middle",es:"Medios"}, high:{en:"High",es:"Agudos"},
   punch:{en:"Punch",es:"Pegada"}, room:{en:"Room",es:"Sala"}, echo:{en:"Echo",es:"Eco"},
-  masterH:{en:"The whole song",es:"Toda la canción"}, glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
+  masterH:{en:"The whole song",es:"Toda la canción"},
+  roomPick:{en:"Room sound",es:"Sonido de sala"}, rm_made:{en:"Smooth",es:"Suave"}, rm_small:{en:"Small room",es:"Sala pequeña"}, rm_studio:{en:"Studio",es:"Estudio"}, rm_hall:{en:"Hall",es:"Sala grande"}, rm_church:{en:"Church",es:"Iglesia"}, roomFrom:{en:"Where the rooms come from",es:"De dónde vienen las salas"},   /* AOG-REAL-ROOMS-V1 */ glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
   finishH:{en:"Finish your song",es:"Termina tu canción"},
   mixBtn:{en:"Make the mix",es:"Hacer la mezcla"}, mixing:{en:"Making the mix…",es:"Haciendo la mezcla…"},
   mixNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
@@ -298,7 +299,8 @@ function num(v, lo, hi, d){ v=+v; return isFinite(v) ? Math.max(lo, Math.min(hi,
 
 /* ══ the song: what is on each track and how the mixer is set (localStorage aog.studio.v1) ══ */
 function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false, low:0, mid:0, high:0, punch:0, room:0, echo:0}; }
-function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80},
+const DESK_ROOMS=["made","small","studio","hall","church"];   /* AOG-REAL-ROOMS-V1: the Room return's choices */
+function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80, room:"hall"},
   sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false, name:""}; }
 let SONG=blankSong();
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Mixing Desk's lessons: each step ticks itself as it happens (the words:
@@ -384,9 +386,14 @@ function cleanSong(r){
     const ln=cleanLines(x.lines); if(ln) d.lines=ln; if(AUTO_KEYS.indexOf(x.lane)>=0) d.lane=x.lane;   /* AOG-DESK-AUTO-V1 */
     dmCleanTrack(x, d); });   /* AOG-DESK-MORE-V1: its name and colour, its effects, its takes */
   if(r.master && typeof r.master==="object"){ const m=r.master, d=s.master;
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
     d.low=num(m.low,-12,12,0); d.mid=num(m.mid,-12,12,0); d.high=num(m.high,-12,12,0); d.glue=num(m.glue,0,100,30); d.vol=num(m.vol,0,100,80);
     if(ECHO_T[m.et]!=null && m.et!=="d8") d.et=m.et; }   /* AOG-DESK-ECHO-SYNC-V1: only when it is not the dotted eighth */
   dmCleanSong(r, s);   /* AOG-DESK-SECTIONS-V1 */
+========
+    d.low=num(m.low,-12,12,0); d.mid=num(m.mid,-12,12,0); d.high=num(m.high,-12,12,0); d.glue=num(m.glue,0,100,30); d.vol=num(m.vol,0,100,80); }
+  s.master.room=DESK_ROOMS.includes(r.master && r.master.room) ? r.master.room : "made";   /* AOG-REAL-ROOMS-V1: a song from before keeps its room */
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
   s.sel=Math.round(num(r.sel,0,NT-1,0)); s.startBar=Math.round(num(r.startBar,1,MAX_BARS,1));
   s.loopOn=!!r.loopOn; s.loopFrom=Math.round(num(r.loopFrom,1,MAX_BARS,1)); s.loopTo=Math.round(num(r.loopTo,1,MAX_BARS,4));
   if(s.loopTo<s.loopFrom) s.loopTo=s.loopFrom;
@@ -575,6 +582,7 @@ function roomIR(c){
   }
   return ir;
 }
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
 /* AOG-DESK-ECHO-SYNC-V1 (2026-10-11, Jimmy's 3: "Delay that locks to the song. Echo set in beats from the song's tempo"):
    the Echo's time is a note value of the song's beat (SONG.master.et): a quarter (one beat), an eighth, a dotted eighth
    (the desk's first and still its usual one, so a song made before sounds the same), an eighth triplet or a sixteenth.
@@ -667,6 +675,30 @@ function autoRoute(E, i){
 }
 /* the fader: as its knob says, or as drawn (the line is on its own gain, after the Filter) */
 function faderBase(i){ return lineOf(i, "vol") ? 1 : volGain(SONG.tracks[i].vol); }
+========
+/* AOG-REAL-ROOMS-V1 (2026-10-11, Jimmy's 5: "Real rooms"): the Room return can be a real room (aog-realrooms.js, recordings of
+   real spaces, CC0), chosen under The whole song and saved with it (SONG.master.room). "made" is the room above, as every
+   song made before had it (a song without a choice keeps it); a new song starts in the Hall. A real room is evened to the
+   one above (a 16 ms pause before the first echoes, and as loud for music: AOGRooms.fit), so each track's Room is as wet as before. On the speakers the room above plays until the
+   recording has arrived; a mix waits for it, so the mix is always the same. The choices: DESK_ROOMS, by blankSong(). */
+function deskRoomsLib(){
+  const W=window; if(W.AOGRooms) return Promise.resolve(W.AOGRooms);
+  return W.__aogRoomsLib || (W.__aogRoomsLib=new Promise(res=>{
+    try{ const s=document.createElement("script"); s.src="/aog-realrooms.js"; s.async=true; s.onload=()=>res(W.AOGRooms||null);
+      s.onerror=()=>{ W.__aogRoomsLib=null; res(null); }; (document.head||document.documentElement).appendChild(s); }catch(e){ res(null); } }));
+}
+function deskRoomLoad(c, id){ return id && id!=="made" ? deskRoomsLib().then(L=>L && L.load(c, id)).catch(()=>null) : Promise.resolve(null); }
+function roomBuf(E){
+  const id=SONG.master.room||"made", L=window.AOGRooms;
+  if(id==="made") return E.madeIR;
+  const b=L && L.get(E.c, id) && L.fit(E.c, id, {match:E.madeIR, pre:0.016, key:"desk"});
+  if(b) return b;
+  if(E.live) deskRoomLoad(E.c, id).then(x=>{ if(x && LIVE===E) applyRoom(E); });
+  return E.madeIR;
+}
+function applyRoom(E){ const b=roomBuf(E); if(E.rev.buffer!==b){ try{ E.rev.buffer=b; }catch(e){} } }
+function echoTime(){ return Math.min(1.9, 0.75*60/songBpm()); }          /* a dotted eighth, in time with the song */
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
 function makeEngine(c, live){
   const E={c:c, live:!!live, tr:[]};
   const G=v=>{ const g=c.createGain(); g.gain.value=v; return g; };
@@ -674,7 +706,7 @@ function makeEngine(c, live){
   const DC=(atk,rel)=>{ const d=c.createDynamicsCompressor(); d.knee.value=0; d.attack.value=atk; d.release.value=rel; d.threshold.value=0; d.ratio.value=1; return d; };
   E.sum=G(0.7);
   /* the Room */
-  E.revIn=G(1); E.rev=c.createConvolver(); E.rev.normalize=false; E.rev.buffer=roomIR(c); E.revRet=G(1);
+  E.revIn=G(1); E.rev=c.createConvolver(); E.rev.normalize=false; E.madeIR=roomIR(c); E.revRet=G(1);
   E.revIn.connect(E.rev); E.rev.connect(E.revRet); E.revRet.connect(E.sum);
   /* the Echo: each repeat a little darker and softer */
   E.dlyIn=G(1); E.dly=c.createDelay(2); E.dly.delayTime.value=echoTime();
@@ -729,6 +761,7 @@ function applyMaster(E){
   setP(E, E.glue.threshold, gl.thr); setP(E, E.glue.ratio, gl.ratio); setP(E, E.glueTrim.gain, gl.trim);
   setP(E, E.mVol.gain, volGain(m.vol));
   setP(E, E.dly.delayTime, echoTime());
+  applyRoom(E);   /* AOG-REAL-ROOMS-V1 */
 }
 function applyAll(E){ for(let i=0;i<NT;i++) applyTrack(E,i); applyMaster(E); }
 function liveApply(fn){ if(LIVE) fn(LIVE); }
@@ -1152,7 +1185,10 @@ function vuPaint(levels, peak){
 function meterReset(){ MET.lvl=[-90,-90]; MET.drawn=-Infinity; MET.last=0; drawMeter(null, -Infinity); lufsReset(); }
 function meterTick(){
   lufsTick();   /* AOG-DESK-LUFS-V1 */
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
   dmFxTick();   /* AOG-DESK-FX-V1: how much a compressor holds back, a calm number */
+========
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
   if(!AN) return;
   const now=performance.now(), dt=MET.last ? Math.min(0.1,(now-MET.last)/1000) : 0; MET.last=now;
   const lv=[0,1].map(ch=>{ const a=AN.a[ch]; a.getFloatTimeDomainData(AN.d); let pk=0; for(let i=0;i<AN.d.length;i++){ const v=AN.d[i]<0?-AN.d[i]:AN.d[i]; if(v>pk) pk=v; } return pk>0 ? 20*Math.log10(pk) : -90; });
@@ -1164,7 +1200,11 @@ function meterTick(){
   MET.lvl=MET.lvl.map((o,ch)=>Math.max(lv[ch], o-24*dt));
   drawMeter(MET.lvl, PLAY.peak);
 }
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
 function meterStill(){ drawMeter(null, PLAY.peak); lufsRest(); dmFxTick(true); }
+========
+function meterStill(){ drawMeter(null, PLAY.peak); lufsRest(); }
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
 
 /* ══ AOG-DESK-LUFS-V1 (Jimmy, 2026-10-11: "Release-ready output. Add a loudness meter and the loudness streaming
    services use (−14 LUFS)") — loudness as ITU-R BS.1770-4 measures it (the meter of EBU R128 and of the streaming
@@ -1593,8 +1633,15 @@ async function renderSong(only){
   const end=songEnd(), frames=Math.ceil((end+MIX_TAIL)*MIX_SR), lat0=await chainLatency();
   const lat=lat0+dmLagFrames(MIX_SR);   /* AOG-DESK-FX-V1: the effect slots' compressors hold the song back a little more (0 without them) */
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
   const oc=new OC(2, frames+lat, MIX_SR); await dmFxReady(oc); const E=makeEngine(oc, false);   /* AOG-DESK-DUCK-V1: the ducking's own small processor, first */
   if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain */
+========
+  const oc=new OC(2, frames+lat, MIX_SR);
+  await deskRoomLoad(oc, SONG.master.room);   /* AOG-REAL-ROOMS-V1: the real room first, so the mix is always the same */
+  const E=makeEngine(oc, false);
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? volGain(SONG.tracks[j].vol) : 0; });
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
   schedule(E, 0, end, 0);
   const buf=await render(oc);
   return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
@@ -3045,7 +3092,13 @@ function paintMixer(rebuild){
       </div>`).join("");
     const m=SONG.master;
     $("master").innerHTML=`<div class="st-strip st-mstrip"><div class="st-sh"><span>${esc(t("masterH"))}</span></div>
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
       <div class="st-sls">${MKNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,m[k],"m")).join("")}</div>${dmEchoHtml()}</div>`;   /* AOG-DESK-ECHO-SYNC-V1: the Echo's time */
+========
+      <div class="st-sls">${MKNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,m[k],"m")).join("")}</div>
+      <label class="st-field st-roomk"><span class="st-lab">${esc(t("roomPick"))}</span><select id="roomSel">${DESK_ROOMS.map(id=>`<option value="${id}"${id===m.room?" selected":""}>${esc(t("rm_"+id))}</option>`).join("")}</select></label>
+      <p class="st-line st-roomc"><a href="/audio/rooms/CREDITS.txt">${esc(t("roomFrom"))}</a></p></div>`;
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
   }
   /* names, selection, mute and solo, and every slider's value (a reload or a new song) */
   [...box.querySelectorAll(".st-strip")].forEach(el=>{
@@ -3059,7 +3112,11 @@ function paintMixer(rebuild){
     el.querySelectorAll("input[type=range]").forEach(r=>{ syncSlider(r, x[r.getAttribute("data-k")]); markDrawn(r, i); });   /* AOG-DESK-AUTO-V1 */
   });
   $("master").querySelectorAll("input[type=range]").forEach(r=>syncSlider(r, SONG.master[r.getAttribute("data-k")]));
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
   const et=$("etSel"); if(et && et.value!==(SONG.master.et||"d8")) et.value=SONG.master.et||"d8";   /* AOG-DESK-ECHO-SYNC-V1 */
+========
+  const rs=$("roomSel"); if(rs && rs.value!==SONG.master.room) rs.value=SONG.master.room;   /* AOG-REAL-ROOMS-V1 */
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
   paintConsole();   /* AOG-DESK-FACE-V1 */
 }
 function syncSlider(r, v){
@@ -3452,6 +3509,10 @@ function bind(){
     SONG.master[k]=v; syncSlider(r, v); liveApply(applyMaster); saveSoon();
     LES.mark(k==="glue" ? "mGlue" : k==="vol" ? "mVol" : "mEq");   /* AOG-LESSONS-V1 */
   });
+  $("master").addEventListener("change", e=>{   /* AOG-REAL-ROOMS-V1: the room every track's Room goes to */
+    const r=e.target; if(!r || r.id!=="roomSel" || !DESK_ROOMS.includes(r.value)) return;
+    SONG.master.room=r.value; liveApply(applyRoom); saveSoon();
+  });
   $("mixBtn").onclick=makeMix;
   /* AOG-LESSONS-V1: Save as .wav, and the mix played in its player */
   $("mixOut").addEventListener("click", e=>{ if(e.target.closest && e.target.closest("a[download]")) LES.mark("save1"); });
@@ -3552,6 +3613,7 @@ window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, ge
   INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, backing:backing, placeOf:placeOf, get AC(){ return ac; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO,
   redo:redo, REDO:REDO, VIEW:VIEW, zoomTo:zoomTo, makeEngine:makeEngine, posFine:posFine, piecePlays:piecePlays, playBuf:playBuf, tlBars:tlBars };   /* AOG-DESK-HANDS-V1 */
+<<<<<<<< HEAD:aog-deploy/front/76e6535b23b9.js
 /* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
@@ -3561,3 +3623,9 @@ Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCor
   lineChanged:lineChanged, reschedule:reschedule, live:live, get LAT(){ return LAT; } });
 /* AOG-DESK-MORE-V1: for the tests (music-handoff/tests/studio/more.js, more2.js) */
 Object.assign(window.__aogStudio, { echoTime:echoTime, songPos:songPos, songChanged:songChanged, selectTrack:selectTrack, paintAll:paintAll, restore:restore, sget:sget, skeys:skeys, chainLatency:chainLatency, ECHO_T:ECHO_T });
+========
+Object.assign(window.__aogStudio, { DESK_ROOMS:DESK_ROOMS, roomBuf:roomBuf, applyRoom:applyRoom, deskRoomLoad:deskRoomLoad, roomIR:roomIR });   /* AOG-REAL-ROOMS-V1: for studio/rooms-real.js */
+/* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
+Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
+  wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
+>>>>>>>> origin/claude/real-rooms:aog-deploy/front/1f8c622dd1f9.js
