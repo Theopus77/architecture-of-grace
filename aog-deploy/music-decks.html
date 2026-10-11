@@ -693,6 +693,7 @@ const STR = {
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
+  pickFile:{en:"On an iPad or iPhone, pick Choose File, then your song.",es:"En un iPad o iPhone, elige Elegir archivo y luego tu canción."},
   /* AOG-DECKS-ITUNES-V1 (2026-10-06) — Jimmy: "can a section to grab music from iTunes be accessible?" A web page cannot open
      the Music app or an iTunes library (Apple keeps it to the device), so this says how to bring a song in as a file. */
   itH:{en:"Songs from iTunes",es:"Canciones de iTunes"},
@@ -1374,7 +1375,11 @@ const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], max:8 }
 /* AOG-DJ-AUDIO-ONLY-V1 (Jimmy, 2026-10-10: "The photo and video is suppose to be gone … I am uploading music"): on an
    iPhone or iPad, .m4a, .m4b, .aac and .amr count as MPEG-4 video, so Safari offered Photo Library and Take Video.
    There the song boxes ask for audio only; audio/* still takes .m4a, .mp3, .wav and the rest from Files. */
-const AUDIO_ONLY = (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) ? "audio/*" : "";
+/* AOG-DJ-AUDIO-ONLY-V2 (Jimmy, 2026-10-11, on his iPad: "The add a photo or video is still there when I am adding a song"):
+   audio/* still brought Photo Library and Take Video. Now the boxes name each kind of music file by its type, with no
+   wildcard and nothing that is also a video, and the line under them says to pick Choose File. */
+const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const AUDIO_ONLY = IOS ? "audio/mpeg,audio/mp3,audio/x-m4a,audio/m4a,audio/aac,audio/wav,audio/x-wav,audio/aiff,audio/x-aiff,audio/flac,audio/x-caf" : "";
 function crateDb(){
   return new Promise((ok, no)=>{
     if(!window.indexedDB){ no(new Error("no indexedDB")); return; }
@@ -1734,7 +1739,7 @@ function paintCrate(){
     <div class="take" style="background:none;border:0;padding:0">
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac"}"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
-    </div>
+    </div>${IOS ? `<p class="rechint" style="margin:0">${t("pickFile")}</p>` : ""}
     ${starterHtml()}
     ${wordHtml("scripture")}
     ${wordHtml("speech")}
@@ -2544,7 +2549,7 @@ function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
     <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"}"></label>
-    ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>
+    ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>${IOS ? `<p class="rechint" style="margin:.3rem 0 0">${t("pickFile")}</p>` : ""}
     <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }
 /* close a deck's song list; back to its Load a song button when asked */
