@@ -29,6 +29,7 @@ float sbt_deck(vec3 q,float L,float W,float kn,float g){ float h=sb_deckH(q.xz,L
   if(t>.0095&&o<-.003) return .2+.07*vn(q.xz*1400.);                  /* grip tape */
   if(o>-.0035) return fract(t/.0017)<.32?.38:.8;                      /* the seven plies at the edge */
   if(t>.0095) return .22;
+  vec2 bh=vec2(abs(abs(q.x)-.215)-.013,abs(q.z)-.02); if(length(bh)<.0048) return .05;      /* truck bolt holes */
   return sb_graphic(q.xz,g); }
 
 /* ---------- truck, mounted way up: axle along z through the origin, baseplate top at y=.052, kingpin toward -x ---------- */
@@ -173,12 +174,12 @@ float sb_bench(vec3 q){ float L=.28; float d=1e3;
   float ap=sdCapsule(s,vec3(0.,.1,-.05),vec3(0.,.15,-.052),.0062);
   return min(d,min(min(fr,bl),min(min(rl,ft),min(ar,ap)))); }
 float sb_stoppers(vec3 q){ float d=1e3; for(int i=0;i<3;i++){ float x=-.16+float(i)*.16; vec3 c=q-vec3(x,.11,-.054);
-    float k=sdRBox(c,vec3(.011,.006,.014),.004); float hu=sb_ell(c-vec3(0.,.004,.004),vec3(.01,.008,.012));
+    float k=sdRBox(c-vec3(0.,-.004,-.002),vec3(.013,.011,.012),.004); float hu=sb_ell(c-vec3(0.,.006,.002),vec3(.012,.013,.014));
     d=min(d,min(k,hu)); } return d; }
 float sbt_bench(vec3 q){ if(q.y>.095&&q.y<.112&&abs(q.x)<.27) return fract(q.x/.07)<.02?.4:.72+.12*(grain(vec3(q.x,0.,q.z),90.)-.5);
   if(q.y>.13&&abs(q.x)<.27&&q.z>.07) return .7+.12*(grain(vec3(q.x,0.,q.y),90.)-.5);
   return .32+.05*vn(q.xy*300.); }
-float sbt_stoppers(vec3 q){ return q.y>.118?.82:(fract(q.x*120.)<.2?.35:.55); }
+float sbt_stoppers(vec3 q){ return q.y>.124?.7:.3; }
 
 /* ---------- a rolled map tied with a band, along x ---------- */
 float sb_roll(vec3 q,float L){ float d=sdCylX(q-vec3(0.,.021,0.),.021,L)-.001; float b=sdCylX(q-vec3(L*.3,.021,0.),.0225,.005); return min(d,b); }
@@ -186,7 +187,7 @@ float sbt_roll(vec3 q,float L){ if(abs(q.x-L*.3)<.006) return .3; vec2 e=q.yz-ve
   if(abs(q.x)>L-.0005){ float r=length(e); return fract(r/.0028+atan(e.y,e.x)/6.2832)<.3?.35:.88; } return .88-.05*fbm(q.xz*60.); }
 
 /* ---------- maple veneer strips, a little fanned (seven plies), pivot near -x ---------- */
-vec3 sb_plyQ(vec3 q,float i){ vec3 c=q-vec3(-.1,.0036*i,0.); c.xz=rot((i-3.)*.075)*c.xz; return c+vec3(.1,0.,0.); }
+vec3 sb_plyQ(vec3 q,float i){ vec3 c=q-vec3(-.1,.0036*i,0.); c.xz=rot((i-3.)*.075)*c.xz; return c-vec3(.1,0.,0.); }
 float sb_plies(vec3 q){ float d=1e3; for(int i=0;i<7;i++){ vec3 c=sb_plyQ(q,float(i)); d=min(d,sdRBox(c-vec3(0.,.0018,0.),vec3(.13,.0018,.034),.0008)); } return d; }
 float sbt_plies(vec3 q){ float best=1e3, bi=0.; for(int i=0;i<7;i++){ vec3 c=sb_plyQ(q,float(i)); float d=sdRBox(c-vec3(0.,.0018,0.),vec3(.13,.0018,.034),.0008); if(d<best){ best=d; bi=float(i); } }
   vec3 c=sb_plyQ(q,bi);
@@ -219,31 +220,35 @@ float sbt_notebook(vec3 q){ if(q.y<.0026) return .4; if(length(vec2(q.x,q.y-.008
     if(u.y>-.09&&u.y<.09){ if(abs(max(abs(c.x),abs(c.y))-.005)<.0011) return .25;
       if(mod(row,3.)<1.5&&(sdSeg2(c,vec2(-.004,.0),vec2(-.001,-.004))<.0011||sdSeg2(c,vec2(-.001,-.004),vec2(.006,.006))<.0011)) return .15;
       if(u.x>-.038&&u.x<.055-.02*mod(row,2.)&&abs(c.y)<.0011) return .55; } }
-  else { vec2 v=u-vec2(.0,.02); float a=atan(v.y,v.x); if(abs(length(v)-.04)<.0013&&a>-2.4&&a<2.2) return .2;
-    if(sdSeg2(v,.04*vec2(cos(2.2),sin(2.2)),.04*vec2(cos(2.2),sin(2.2))+vec2(.012,.002))<.0013||sdSeg2(v,.04*vec2(cos(2.2),sin(2.2)),.04*vec2(cos(2.2),sin(2.2))+vec2(.004,-.011))<.0013) return .2;
-    float bx=sb_r2(v,vec2(.024,.006),.006); if(abs(bx)<.001) return .35;
+  else { vec2 v=u-vec2(.0,.0);
+    if(abs(sb_r2(v-vec2(0.,-.01),vec2(.045,.0035),.0035))<.0011) return .2;
+    if(abs(length(v-vec2(-.028,-.02))-.005)<.001||abs(length(v-vec2(.028,-.02))-.005)<.001) return .2;
+    float ar=length(v-vec2(0.,-.01))-.05; float an=atan(v.y+.01,v.x); if(v.y>-.0&&abs(ar)<.0011&&fract(an*9./3.14159)<.55) return .3;
     if(u.y<-.05&&u.y>-.09&&abs(u.x)<.055&&fract(u.y/.01)<.13) return .55; }
   return .95; }
 
 /* ---------- skate helmet resting on its rim, front -z, vents on top, strap loop in front ---------- */
+float sb_helmetV(vec3 q){ float v=1e3; for(int i=0;i<4;i++){ float x=-.042+float(i)*.028; float y=.125*sqrt(1.-x*x/.01);
+    v=min(v,sdCapsule(q,vec3(x,y,-.03),vec3(x,y,.05),.0085)); }
+  return v; }
 float sb_helmet(vec3 q){ float d=sb_ell(q,vec3(.1,.125,.115)); d=max(abs(d)-.006,-q.y);
-  float v=1e3; for(int i=0;i<3;i++){ float x=-.034+float(i)*.034; float y=.125*sqrt(1.-x*x/.01)-.004; v=min(v,sdCapsule(q,vec3(x,y,-.045),vec3(x,y,.045),.0075)); }
-  vec2 fv=vec2(abs(q.x)-.03,0.); v=min(v,length(q-vec3(sign(q.x)*.03,.1,-.075))-.009);
-  d=max(d,-v);
-  float rim=sdTorus(vec3(q.x,q.y-.004,q.z*.87),.1,.0045);
-  float st=sdTorus(vec3(q.x,q.y-.003,(q.z+.13)),.055,.0024); st=max(st,q.z+.11);
-  return min(min(d,rim),st); }
-float sbt_helmet(vec3 q){ if(q.y<.0075&&q.z<-.1) return .3; if(q.y<.009) return .28; vec3 n=q/vec3(.1,.125,.115);
-  if(length(n)<.96) return .12; return .5+.05*vn(q.xy*300.)+.25*step(.985,abs(n.x+n.y*.15)+.0); }
+  d=max(d,-sb_helmetV(q));
+  float rim=sdTorus(vec3(q.x,q.y-.005,q.z*.87),.1,.006);
+  float st=sdTorus(vec3(q.x,q.y-.0025,(q.z+.13)),.055,.0024); st=max(st,q.z+.11);
+  float bk=sdCapsule(q,vec3(-.025,.003,-.185),vec3(.025,.003,-.185),.004);
+  return min(min(d,rim),min(st,bk)); }
+float sbt_helmet(vec3 q){ if(q.z<-.112&&q.y<.008) return .3; if(q.y<.012) return .25;
+  if(sb_helmetV(q)<.0015) return .1;
+  return .55+.05*vn(q.xy*300.); }
 
 /* ---------- wrist guard lying along x: soft sleeve, splint plate, two straps ---------- */
-float sb_guard(vec3 q){ float s=sb_ell(q-vec3(0.,.021,0.),vec3(.085,.023,.04));
-  float sp=sdRBox(q-vec3(.005,.044,0.),vec3(.062,.003,.013),.0028);
+float sb_guard(vec3 q){ float s=sb_ell(q-vec3(0.,.018,0.),vec3(.085,.019,.047));
+  float sp=sdRBox(q-vec3(.005,.039,0.),vec3(.066,.0035,.016),.003);
   float th=sb_ell(q-vec3(-.06,.016,-.038),vec3(.024,.012,.014));
-  float sa=sb_ell(q-vec3(-.03,.021,0.),vec3(.012,.026,.043)); float sb=sb_ell(q-vec3(.04,.021,0.),vec3(.012,.025,.042));
+  float sa=sb_ell(q-vec3(-.03,.018,0.),vec3(.01,.022,.05)); float sb=sb_ell(q-vec3(.04,.018,0.),vec3(.01,.021,.049));
   return min(min(s,sp),min(th,min(sa,sb))); }
 float sbt_guard(vec3 q){ if(abs(q.x+.03)<.013||abs(q.x-.04)<.013) return abs(abs(q.x+.03)-.011)<.0015||abs(abs(q.x-.04)-.011)<.0015?.15:.3;
-  if(q.y>.0425&&abs(q.z)<.017) return .72; return .5+.1*step(.5,fract((q.x+q.z)*200.)); }
+  if(q.y>.0365&&abs(q.z)<.02) return .8; return .5+.1*step(.5,fract((q.x+q.z)*200.)); }
 
 /* ---------- quarter-pipe ramp model: transition faces -z, width along x ---------- */
 #define SB_RR .15
@@ -298,3 +303,14 @@ float sb_brushes(vec3 q){ float d=1e3; for(int i=0;i<3;i++){ float fi=float(i); 
 float sbt_brushes(vec3 q){ float best=1e3,bi=0.; for(int i=0;i<3;i++){ float fi=float(i); float d=sb_brush(sb_brushQ(q,fi),.16+.03*mod(fi*2.,3.)); if(d<best){best=d;bi=fi;} }
   vec3 c=sb_brushQ(q,bi); float len=.16+.03*mod(bi*2.,3.);
   if(c.y>len+.024) return fract(atan(c.z,c.x)*4.)<.4?.2:.32; if(c.y>len) return .78+.15*step(.6,fract(atan(c.z,c.x)*.6)); return bi==1.?.62:.3; }
+/* ---------- a medal lying flat with its ribbon in a loose loop (plain stripes, no flag, no rings) ---------- */
+float sb_medal(vec3 q){ float m=sdCylY(q-vec3(0.,.0045,0.),.04,.0035)-.001;
+  float rim=sdTorus(q-vec3(0.,.009,0.),.036,.0022);
+  float lp=sdCylY(q-vec3(0.,.007,.044),.008,.002)-.0015;
+  vec2 u=(q.xz-vec2(0.,.13))/vec2(.055,.085); float e=abs(length(u)-1.)*.055-.015;
+  float rb=sb_ex(e,q.y-.0025,.0012); return min(min(m,rim),min(lp,rb)); }
+float sbt_medal(vec3 q){ float r=length(q.xz);
+  if(r<.042&&q.z<.041){ if(abs(r-.03)<.0015) return .3; if(r<.012) return abs(r-.008)<.0013?.3:.6; if(q.y>.0085) return .88; return .7; }
+  if(length(q.xz-vec2(0.,.044))<.012) return .5;
+  vec2 u=(q.xz-vec2(0.,.13))/vec2(.055,.085); float e=(length(u)-1.)*.055;
+  if(abs(e)>.0115) return .3; if(abs(e)<.004) return .35; return .85; }
