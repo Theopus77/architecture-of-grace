@@ -166,6 +166,8 @@ details.pm-set[open]>summary::before{content:"▾"}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
+<script src="/aog-scales.js"></script><!-- AOG-PADS-ALLSCALES-V1: the scale library the piano, guitar, bass and band use -->
+<script src="/aog-chords.js"></script><!-- AOG-PADS-ALLSCALES-V1: the chord library, for the chords a pattern brings from outside the key -->
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="aog-drumkit.js"></script>
@@ -328,7 +330,13 @@ const STR={
   patHow:{en:"Play the gold numbers in order: pads {seq}. {each}",es:"Toca los números dorados en orden: pads {seq}. {each}"},
   patSame:{en:"The same steps, with this key's chords.",es:"Los mismos pasos, con los acordes de este tono."},
   each1:{en:"One chord each bar.",es:"Un acorde por compás."}, each2:{en:"Two chords each bar.",es:"Dos acordes por compás."},
-  patDone:{en:"The pattern is in the loop, over 4 bars. Press Play.",es:"El patrón está en el bucle, en 4 compases. Pulsa Tocar."},
+  patDone:{en:"The pattern is in the loop, over {n} bars. Press Play.",es:"El patrón está en el bucle, en {n} compases. Pulsa Tocar."},
+  eachTwoBars:{en:"Each chord lasts two bars.",es:"Cada acorde dura dos compases."}, eachBeat:{en:"Each chord lasts one beat.",es:"Cada acorde dura un pulso."},
+  eachBeats:{en:"Each chord lasts {n} beats.",es:"Cada acorde dura {n} pulsos."},
+  eachLast:{en:"Each chord lasts {n} beats, and the last one {m}.",es:"Cada acorde dura {n} pulsos, y el último {m}."},
+  patOut1:{en:"Pad {pads} holds a chord from outside the key, for this pattern.",es:"El pad {pads} tiene un acorde de fuera del tono, para este patrón."},
+  patOutN:{en:"Pads {pads} hold chords from outside the key, for this pattern.",es:"Los pads {pads} tienen acordes de fuera del tono, para este patrón."},
+  scEveryday:{en:"Everyday scales",es:"Escalas de siempre"},
   fitWait:{en:"Every note here fits the key. Play a chord in bank B, and the notes that match it get a gold bar.",es:"Cada nota aquí encaja con el tono. Toca un acorde en el banco B, y las notas que combinan llevan una barra dorada."},
   fitNow:{en:"Gold notes fit <b>{name}</b>: {notes}.",es:"Las notas doradas encajan con <b>{name}</b>: {notes}."}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
   inChords:{en:"From {from}: its chords are on bank {bank}.",es:"De {from}: sus acordes están en el banco {bank}."}, inNotes:{en:"From {from}: its notes are on bank {bank}.",es:"De {from}: sus notas están en el banco {bank}."}, inTake:{en:"Your take is on bank {bank}, cut across the pads.",es:"Tu toma está en el banco {bank}, cortada en los pads."},
@@ -562,16 +570,49 @@ function chopsOf(B, buf){
 function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
 function kitName(b){ const l=AOGDrumKit.label(b); return l[S0.lang==="es"?1:0]; }
 function drumWord(b, id){ const n=(AOGDrumKit.padNames(b)||{})[id]||"", w=PAD_WORD[n]; return w ? w[S0.lang==="es"?1:0] : (n.charAt(0)+n.slice(1).toLowerCase()); }
-function scaleNotes(B){ const sc=SCALES[B.scale]||SCALES.major, root=12*(B.oct+1)+B.key, out=[]; for(let i=0;out.length<16;i++) out.push(root+sc[i%sc.length]+12*Math.floor(i/sc.length)); return out; }
+/* ══ AOG-PADS-ALLSCALES-V1 (2026-10-11) — Jimmy: "Can the drum kit have all the scales and chord progressions like the
+   other tabs have". The Notes bank offers every scale in the library (aog-scales.js, the one the piano, guitar, bass and
+   band use) after its own seven, which keep their ids so saved beats and lessons stay as they were. The Chords bank offers
+   every seven-note scale, because its pads are the scale's chords stacked in thirds. ══ */
+const LIB=window.AOGScales || {SCALES:{}, GROUPS:[], WORDS:{}};
+function scaleIv(id){ return SCALES[id] || (LIB.SCALES[id] && LIB.SCALES[id].iv) || SCALES.major; }
+function scaleWord(id){ if(SCALES[id]) return t(id); const w=LIB.WORDS["sc_"+id]; return w ? L(w) : id; }
+/* the menu: the seven first, then the library's groups (a scale already among the seven is not listed twice) */
+function scaleOptions(cur, sevenOnly){
+  const own=Object.keys(SCALES).filter(id=>!sevenOnly || SCALES[id].length===7), same=new Set(own.map(id=>SCALES[id].join(",")));
+  let h=`<optgroup label="${esc(t("scEveryday"))}">`+own.map(id=>opt(id, esc(scaleWord(id)), cur)).join("")+"</optgroup>";
+  LIB.GROUPS.forEach(g=>{ const ids=g[1].filter(id=>{ const iv=LIB.SCALES[id] && LIB.SCALES[id].iv; return iv && !same.has(iv.join(",")) && (!sevenOnly || iv.length===7); });
+    if(ids.length) h+=`<optgroup label="${esc(L(LIB.WORDS["sg_"+g[0]]||{en:g[0],es:g[0]}))}">`+ids.map(id=>opt(id, esc(scaleWord(id)), cur)).join("")+"</optgroup>"; });
+  return h;
+}
+/* the seven notes the Chords bank stacks: the bank's own scale when it has seven notes, else major or minor as before */
+function chordScale(B){ const iv=scaleIv(B.scale); return iv.length===7 ? iv : (patMinor(B) ? SCALES.minor : SCALES.major); }
+function scaleNotes(B){ const sc=scaleIv(B.scale), root=12*(B.oct+1)+B.key, out=[]; for(let i=0;out.length<16;i++) out.push(root+sc[i%sc.length]+12*Math.floor(i/sc.length)); return out; }
 const QUAL={"4,7":"","3,7":"m","3,6":"°","4,8":"+","4,7,11":"maj7","3,7,10":"m7","4,7,10":"7","3,6,10":"m7♭5","3,6,9":"°7","3,7,11":"m(maj7)","5,7":"sus4"};
+function chordSym(ns){
+  const iv=ns.slice(1).map(n=>n-ns[0]), k=iv.join(",");
+  if(QUAL[k]!=null) return QUAL[k];
+  const C=window.AOGChords;   /* the chord library's own name for this shape */
+  if(C) for(const id of C.ids()){ const x=C.KINDS[id].iv; if(x.length===ns.length && x.slice(1).join(",")===k) return C.sym(id); }
+  const th={2:"sus2",3:"m",4:"",5:"sus4"}[iv[0]], fi={6:"♭5",7:"",8:"♯5"}[iv[1]], se=iv.length>2 ? {9:"6",10:"7",11:"maj7"}[iv[2]] : "";
+  if(th==null || fi==null || se==null) return null;
+  if(iv[0]===2 || iv[0]===5) return se+th+fi;
+  return (iv[0]===3 && se==="maj7" ? "m(maj7)" : th+se)+fi;
+}
+function chordName(ns){ const y=chordSym(ns); return y!=null ? keyName(ns[0])+y : ns.map(m=>keyName(m)).join(" "); }
 function chordList(B){
-  const minor=B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues", sc=minor?SCALES.minor:SCALES.major;
+  const sc=chordScale(B);
   const base=53+((B.key-5+12)%12), deg=i=>base+sc[i%7]+12*Math.floor(i/7), out=[];
   for(let i=0;i<7;i++) out.push([deg(i),deg(i+2),deg(i+4)]);
   out.push([deg(7),deg(9),deg(11)]);
   for(let i=0;i<7;i++) out.push([deg(i),deg(i+2),deg(i+4),deg(i+6)]);
   out.push([base, base+5, base+7]);
-  return out.map(ns=>{ const iv=ns.slice(1).map(n=>n-ns[0]).join(","); return {notes:ns, name:keyName(ns[0])+(QUAL[iv]!=null?QUAL[iv]:"")}; });
+  const list=out.map(ns=>({notes:ns, name:chordName(ns)}));
+  /* a chord pattern brings the chords it needs from outside the key onto the spare pads (AOG-PADS-ALLPATS-V1) */
+  const P=patOf(B), L2=P && patLayout(P);
+  if(L2) L2.extra.forEach(x=>{ const r=base+((x.off%12)+12)%12, iv=window.AOGChords ? AOGChords.KINDS[x.q].iv : ({maj:[0,4,7],min:[0,3,7],dim:[0,3,6],dom7:[0,4,7,10],m7:[0,3,7,10],maj7:[0,4,7,11],m7b5:[0,3,6,10]})[x.q];
+    const ns=iv.map(i=>r+i); list[x.pad]={notes:ns, name:chordName(ns), extra:true}; });
+  return list;
 }
 function padDefs(bi){
   const B=S.banks[bi], out=[];
@@ -583,7 +624,7 @@ function padDefs(bi){
 }
 /* getting a bank ready: only what its sixteen pads play is fetched */
 const READY=[{},{},{},{}];
-function sigOf(B){ return [B.type, B.type==="drums"?B.kitA+B.kitB : B.type==="chops"?B.rec+"|"+B.bar : B.inst+"|"+B.key+"|"+B.scale+"|"+B.oct].join("|"); }
+function sigOf(B){ return [B.type, B.type==="drums"?B.kitA+B.kitB : B.type==="chops"?B.rec+"|"+B.bar : B.inst+"|"+B.key+"|"+B.scale+"|"+B.oct+"|"+(B.type==="chords"?B.pat||"":"")].join("|"); }
 function prep(bi){
   const B=S.banks[bi], sig=sigOf(B), R=READY[bi];
   if(R.sig===sig && R.p) return R.p;
@@ -976,19 +1017,42 @@ const PRESET_GROUPS={pop:{en:"Pop, rock and folk",es:"Pop, rock y folk"}, rock:{
 
 const TRI={major:["maj","min","min","maj","maj","min","dim"], minor:["min","dim","maj","min","min","maj","maj"]};
 const SEV={major:["maj7","m7","m7","maj7","dom7","m7","m7b5"], minor:["m7","m7b5","maj7","m7","m7","maj7","dom7"]};
-function patPads(P){   /* the pads that play a pattern, or null when one of its chords is not on the pads */
-  const sc=P.minor?"minor":"major", deg=SCALES[sc], out=[];
-  for(const c of P.chords){ const d=deg.indexOf(((c.off%12)+12)%12); if(d<0) return null;
-    if(TRI[sc][d]===c.q) out.push(d); else if(SEV[sc][d]===c.q) out.push(8+d); else return null; }
-  return 16%out.length===0 && out.length>=2 && out.length<=8 ? out : null;
+/* AOG-PADS-ALLPATS-V1 (2026-10-11, Jimmy: "all the scales and chord progressions like the other tabs have") — every one
+   of the 44 patterns. A chord in the key plays on its own pad, as before; a chord from outside the key (rock's ♭7, the
+   blues' sevenths on 1 and 4, flamenco's major 5) is put on a spare pad for as long as the pattern is chosen: pad 16
+   (sus4), then 8 (home up high), then 7 and 15 (the diminished ones), the pads a pattern uses least. */
+const SPARE=[15,7,6,14];
+function patLayout(P){
+  const sc=P.minor?"minor":"major", deg=SCALES[sc], pads=P.chords.map(c=>{ const d=deg.indexOf(((c.off%12)+12)%12);
+    return d<0 ? -1 : TRI[sc][d]===c.q ? d : SEV[sc][d]===c.q ? 8+d : -1; });
+  const used=new Set(pads.filter(p=>p>=0)), free=SPARE.filter(p=>!used.has(p)), extra=[];
+  for(let i=0;i<pads.length;i++){ if(pads[i]>=0) continue; const c=P.chords[i];
+    let x=extra.find(e=>e.off===c.off && e.q===c.q);
+    if(!x){ if(!free.length) return null; x={pad:free.shift(), off:c.off, q:c.q}; extra.push(x); }
+    pads[i]=x.pad; }
+  return pads.length>=2 && pads.length<=16 ? {pads:pads, extra:extra} : null;
 }
-const PATS=PRESETS.filter(P=>patPads(P));
+function patPads(P){ const l=patLayout(P); return l ? l.pads : null; }
+/* how long each chord lasts in the loop, in beats: evenly over 4 bars; 3, 6 or 12 chords over 3 bars (the 12-bar blues,
+   one beat a bar); otherwise evenly with the last chord, home, holding the beats left over */
+function patBeats(n){
+  if(16%n===0) return {bars:4, beats:Array(n).fill(16/n)};
+  if(12%n===0) return {bars:3, beats:Array(n).fill(12/n)};
+  const b=Math.floor(16/n), out=Array(n).fill(b); out[n-1]+=16-b*n; return {bars:4, beats:out};
+}
+function patEach(n){
+  const pb=patBeats(n), b=pb.beats[0], last=pb.beats[n-1];
+  if(b!==last) return t("eachLast",{n:b, m:last});
+  return b===4 ? t("each1") : b===2 ? t("each2") : b===8 ? t("eachTwoBars") : b===1 ? t("eachBeat") : t("eachBeats",{n:b});
+}
+const PATS=PRESETS.filter(P=>patLayout(P));
 /* AOG-PADS-PAT-ANYSCALE-V1 (2026-10-09) — Jimmy: "I don't get the chords golden light up when I switch to minor keys in
    the chord bank." A pattern is its steps ("4 5 3 6"): it stays when the scale changes, on the same pads, which now hold
    this key's chords. (It used to be dropped the moment the scale left the pattern's own.) Picking a pattern leaves your
    key and scale as they are (it used to flip a minor bank back to major). */
 function patOf(B){ return PATS.find(x=>x.id===B.pat) || null; }
-function patMinor(B){ return B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues"; }
+function patMinor(B){ if(B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues") return true;
+  const iv=scaleIv(B.scale); return iv.indexOf(3)>=0 && iv.indexOf(4)<0; }   /* AOG-PADS-ALLSCALES-V1: a library scale with a minor third */
 function paintGuide(){
   const B=S.banks[S.bank], row=$("guideRow"), now=$("guideNow");
   if(B.type==="chords"){
@@ -1006,7 +1070,9 @@ function paintGuide(){
         if(N && (N.key!==B.key || ok.indexOf(N.scale)<0)){ N.key=B.key; if(ok.indexOf(N.scale)<0) N.scale=sc; } }
       save(); paintAll(); };
     const lb=$("fPatLoop"); if(lb) lb.onclick=()=>patToLoop(B);
-    if(cur){ const pp=patPads(cur); now.innerHTML=esc(t("patHow",{seq:pp.map(i=>i+1).join(", "), each:t(pp.length>4?"each2":"each1")})+(!!cur.minor!==patMinor(B) ? " "+t("patSame") : "")); }
+    if(cur){ const lay=patLayout(cur), pp=lay.pads;
+      now.innerHTML=esc(t("patHow",{seq:pp.map(i=>i+1).join(", "), each:patEach(pp.length)})+(!!cur.minor!==patMinor(B) ? " "+t("patSame") : "")
+        +(lay.extra.length ? " "+t(lay.extra.length>1?"patOutN":"patOut1",{pads:lay.extra.map(x=>x.pad+1).join(", ")}) : "")); }
     else now.textContent=t("patIntro");
   } else if(B.type==="notes"){
     row.innerHTML=""; row.hidden=true; paintFit();
@@ -1015,9 +1081,10 @@ function paintGuide(){
 function patToLoop(B){
   const P=patOf(B); if(!P) return; const pp=patPads(P), bi=S.banks.indexOf(B);
   snapshot();
-  S.bars=4; const slot=loopLen()/pp.length;
-  S.ev=S.ev.filter(e=>e.b!==bi).concat(pp.map((p,i)=>({b:bi, p:p, t:i*slot, v:0.8, len:slot-12})));
-  prep(bi); changed(); paintAll(); say(t("patDone"), 6000);
+  const pb=patBeats(pp.length); S.bars=pb.bars;   /* AOG-PADS-ALLPATS-V1: 4 bars, or 3 for the 12-bar blues */
+  let at=0; const ev=pp.map((p,i)=>{ const len=pb.beats[i]*PPQ, e={b:bi, p:p, t:at, v:0.8, len:len-12}; at+=len; return e; });
+  S.ev=S.ev.filter(e=>e.b!==bi).concat(ev);
+  prep(bi); changed(); paintAll(); say(t("patDone",{n:pb.bars}), 6000);
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
 function chordNow(d, when){
@@ -1064,9 +1131,9 @@ function paintSetRow(){
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
     h+=field("fKey", t("key"), KEYS_EN.map((k,i)=>opt(i, esc(keyName(i)), B.key)).join(""));
-    const scs=B.type==="chords" ? ["major","minor"] : Object.keys(SCALES);
-    const cur=B.type==="chords" ? ((B.scale==="minor"||B.scale==="pmin"||B.scale==="dorian"||B.scale==="blues")?"minor":"major") : B.scale;
-    h+=field("fScale", t("scale"), scs.map(s=>opt(s, esc(t(s)), cur)).join(""));
+    /* AOG-PADS-ALLSCALES-V1: every scale (the Chords bank: every seven-note scale) */
+    const cur=B.type==="chords" && scaleIv(B.scale).length!==7 ? (patMinor(B)?"minor":"major") : B.scale;
+    h+=field("fScale", t("scale"), scaleOptions(cur, B.type==="chords"));
     if(B.type==="notes") h+=field("fOct", t("oct"), [2,3,4].map((o,i)=>opt(o, esc(t(["low","mid","high"][i])), B.oct)).join(""));
   }
   $("setRow").innerHTML=h;
@@ -1114,7 +1181,7 @@ function paintControls(){
   $("bankLab").textContent=t("bankLab");
   $("bankSel").innerHTML=[0,1,2,3].map(i=>opt(i, esc(bankLabel(i)), S.bank)).join("");
   $("tempoLab").textContent=t("tempo"); $("tempo").value=S.bpm; $("tDown").setAttribute("aria-label", "−1"); $("tUp").setAttribute("aria-label", "+1");
-  $("barsLab").textContent=t("bars"); $("barsSel").innerHTML=[1,2,4].map(n=>opt(n, esc(n===1?t("bar1"):t("barsN",{n:n})), S.bars)).join("");
+  $("barsLab").textContent=t("bars"); $("barsSel").innerHTML=(S.bars===3?[1,2,3,4]:[1,2,4]).map(n=>opt(n, esc(n===1?t("bar1"):t("barsN",{n:n})), S.bars)).join("");
   $("qLab").textContent=t("q"); $("qSel").innerHTML=[[0,"qOff"],[48,"q8"],[24,"q16"],[16,"q16t"],[12,"q32"]].map(([v,k])=>opt(v, esc(t(k)), S.q)).join("");
   $("swLab").textContent=t("sw"); $("swSel").innerHTML=[50,54,58,62,66].map(v=>opt(v, esc(v===50?t("swOff"):t("swN",{n:v})), S.swing)).join("");
   $("rptBtn").textContent=t("rpt"); $("rateLab").textContent=t("rate");
