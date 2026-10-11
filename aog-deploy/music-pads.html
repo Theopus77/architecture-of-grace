@@ -163,6 +163,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .pm-guide{margin:.6rem 0 0;font-weight:700}
 .pm-guide a{color:var(--ink);text-underline-offset:3px}
 .pm-beat{margin-top:10px}
+.pm-transport{margin-top:14px}   /* AOG-PADS-TRANSPORT-HERE-V1 */
 .pm-beatrow{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:end}
 @media (max-width:520px){ .pm-beatrow{grid-template-columns:auto minmax(0,1fr) auto} .pm-beatrow .pm-f:nth-of-type(2){grid-column:1 / -1;grid-row:2} }
 .pm-step{min-width:52px;font-size:1.15rem}
@@ -235,12 +236,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
         </div>
         <div>
           <div class="pm-row">
-            <button type="button" class="pm-b" id="playBtn" aria-pressed="false"></button>
-            <button type="button" class="pm-b rec" id="loopRec" aria-pressed="false"></button>
-            <button type="button" class="pm-b" id="undoBtn"></button>
-            <button type="button" class="pm-b" id="clearBtn"></button>
-          </div>
-          <div class="pm-row" style="margin-top:8px">
             <label class="pm-f tempo"><span id="tempoLab"></span>
               <span class="pm-tempo"><button type="button" class="pm-b" id="tDown" aria-label="−1">−</button><input class="pm-num" id="tempo" type="number" inputmode="numeric" min="60" max="180" step="1"><button type="button" class="pm-b" id="tUp" aria-label="+1">+</button></span></label>
             <label class="pm-f"><span id="barsLab"></span><select class="pm-sel" id="barsSel"></select></label>
@@ -254,6 +249,14 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
             <label class="pm-f"><span id="rateLab"></span><select class="pm-sel" id="rateSel"></select></label>
             <button type="button" class="pm-b" id="clickBtn" aria-pressed="false"></button>
             <button type="button" class="pm-b" id="fullBtn" aria-pressed="false"></button>
+          </div>
+          <!-- AOG-PADS-TRANSPORT-HERE-V1 (Jimmy, 2026-10-11: "The stop / Recording / undo need to sit above the beat bank a"):
+               Play, Record the loop, Undo and Clear sit right above the beat and its steps, where the loop is made -->
+          <div class="pm-row pm-transport">
+            <button type="button" class="pm-b" id="playBtn" aria-pressed="false"></button>
+            <button type="button" class="pm-b rec" id="loopRec" aria-pressed="false"></button>
+            <button type="button" class="pm-b" id="undoBtn"></button>
+            <button type="button" class="pm-b" id="clearBtn"></button>
           </div>
           <div class="pm-beat"><!-- AOG-PADS-BEATPICK-V1: a style, then its beats; ◀ ▶ step through every beat -->
             <p class="pm-h" id="startLab"></p>
