@@ -199,11 +199,13 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
     "an open Studio shows new takes at once: 16 of 16, and nothing has gone yet");
   const q = await c.newPage(); await q.goto(U + "music-piano.html"); await q.waitForTimeout(900); await q.selectOption("#soundSel", "epwarm");
   await record(q, async () => { await q.evaluate(() => noteOn("k", 64, 0.7)); await q.waitForTimeout(700); await q.evaluate(() => noteOff("k", 64)); });
-  await toStudio(q, "takes", "recLine", 1);
+  /* AOG-REC-KEEP-V1: the piano keeps its earlier takes on the device, so this one may not be take 1: send the newest */
+  const nq = await q.evaluate(() => REC.takes[0].n);
+  await toStudio(q, "takes", "recLine", nq);
   await p.waitForFunction(() => /oldest/.test(document.getElementById("goneLine").textContent), null, { timeout: 5000 });
-  const g = await p.evaluate(() => ({ line: document.getElementById("goneLine").textContent, n: document.querySelector("#inbox > .st-line").textContent, first: document.querySelector("#inbox .st-rec b").textContent,
-    piano1: [...document.querySelectorAll("#inbox .st-rec b")].filter(b => b.textContent === "Piano take 1").length, tracks: __aogStudio.SONG.tracks.slice(0, 2).every(x => x.clip) }));
-  ok(/^The Mixing Desk keeps 16 takes\. To make room for a new one, the oldest went: Piano take 1 \(made at \d{1,2}:\d\d (AM|PM)\)\.$/.test(g.line.replace(/\u202f/g, " ")) && g.n === "16 of 16 takes, newest first." && g.first === "Piano take 1" && g.piano1 === 1 && g.tracks,
+  const g = await p.evaluate(nq => ({ line: document.getElementById("goneLine").textContent, n: document.querySelector("#inbox > .st-line").textContent, first: document.querySelector("#inbox .st-rec b").textContent,
+    piano1: [...document.querySelectorAll("#inbox .st-rec b")].filter(b => b.textContent === "Piano take " + nq).length, tracks: __aogStudio.SONG.tracks.slice(0, 2).every(x => x.clip) }), nq);
+  ok(/^The Mixing Desk keeps 16 takes\. To make room for a new one, the oldest went: Piano take 1 \(made at \d{1,2}:\d\d (AM|PM)\)\.$/.test(g.line.replace(/\u202f/g, " ")) && g.n === "16 of 16 takes, newest first." && g.first === "Piano take " + nq && g.piano1 === 1 && g.tracks,
     "the 17th take pushes out the oldest, and the Studio says so plainly: \"" + g.line + "\" (the newest piano take is first; the tracks are untouched)");
   await q.close();
 

@@ -23,11 +23,13 @@ async function routes(ctx) {
   await ctx.route(/\/the-studio(\?[^#]*)?$/, r => r.fulfill({ path: path.join(ROOT, "the-studio.html"), contentType: "text/html" }));
 }
 const FILE = { pads: "music-pads.html", kit: "music-kit.html", piano: "music-piano.html", guitar: "music-guitar.html", bass: "music-bass.html", band: "music-band.html", decks: "music-decks.html", studio: "music-studio.html" };
-const inner = p => p.frames().find(f => f.parentFrame() === p.mainFrame());
+/* the room in sight (#room): the Studio keeps the last rooms open, out of sight, in frames of their own (AOG-STUDIO-KEEP-V1) */
+const inner = p => p.__room || p.frames().find(f => f.parentFrame() === p.mainFrame());
 async function arrived(p, id) {
   await p.waitForFunction(f => { const d = document.getElementById("room").contentDocument;
     return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && d.location.pathname.endsWith(f); }, FILE[id], { timeout: 25000 });
   await p.waitForTimeout(1500);
+  p.__room = await (await p.$("#room")).contentFrame();
 }
 /* count what the room plays: each room's own sound functions, wrapped */
 const spy = f => f.evaluate(() => { window.__hits = []; for (const n of ["noteOn", "press", "padDown", "keyOn", "pluckCell", "pluckShape", "hit"]) {
