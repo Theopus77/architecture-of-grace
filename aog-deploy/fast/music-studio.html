@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:0dfb96cd1a8defa0 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:ddaac66c83812daf · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -269,10 +269,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-lkl.ok b{color:#c8f5d0}
 .st-lkl.warn b{color:#ffe2a8}
 .st-lkl small{color:#d7cbb8;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
-/* the set-up steps open from a button that looks like one */
-.st-steps{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;border:1.5px solid #C9A24A;border-radius:12px;background:#1d2024;color:#ffe2a8;font:800 1rem/1.2 var(--sans);cursor:pointer;list-style:none}
-.st-steps::-webkit-details-marker{display:none}
-.st-steps::before{content:"▸";transition:none}
+/* the set-up steps open from a button that looks like one */ /* AOG-DESK-HANDS-V1: only the summary; the track panel's .st-steps grid had been drawn as this button too */
+summary.st-steps{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;border:1.5px solid #C9A24A;border-radius:12px;background:#1d2024;color:#ffe2a8;font:800 1rem/1.2 var(--sans);cursor:pointer;list-style:none}
+summary.st-steps::-webkit-details-marker{display:none}
+summary.st-steps::before{content:"▸";transition:none}
 details[open]>.st-steps::before{content:"▾"}
 details[open]>.st-steps{margin-bottom:.5rem}
 .st-qr{display:inline-block;justify-self:start;padding:12px;background:#fff;border-radius:12px;line-height:0}
@@ -702,6 +702,46 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 .st-desk .st-songs .st-led.on{background:radial-gradient(circle at 35% 30%,#fff 0,#3fbf6f 45%);box-shadow:0 0 7px #3fbf6f}
 .st-desk .st-songs:active{transform:translateY(1px)}
 @media (prefers-reduced-motion:reduce){ .st-desk .st-songs:active{transform:none} }
+/* ══ AOG-DESK-HANDS-V1 (2026-10-11) — Jimmy: "Drag clips along the timeline, zoom in, nudge off the beat, add Redo, a
+   volume knob for each clip, and crossfades between pieces." ══ */
+/* AOG-DESK-ZOOM-V1: zoomed in, the lanes grow wider than the window and scroll sideways inside it (never the page);
+   the names stay put on the left */
+.st-tl{scroll-behavior:auto}
+.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
+.st-tl.zoomed>.st-ruler,.st-tl.zoomed>.st-lane{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
+.st-tl.zoomed .st-ph{left:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1) * var(--ph,0))}
+.st-tl.zoomed .st-ln,.st-tl.zoomed .st-ruler>span:first-child{position:sticky;left:0;z-index:3}
+.st-tl.zoomed .st-ruler>span:first-child{background:#141518;border-right:1px solid #050506}
+/* AOG-DESK-DRAG-V1: a piece is taken by the hand and slid along its lane */
+.st-desk .st-clip[data-pc]{cursor:grab;touch-action:pan-y}
+.st-desk .st-clip.drag{cursor:grabbing;z-index:2;box-shadow:inset 0 0 0 1px #f3d38e,0 0 0 1px rgba(243,211,142,.35);background:rgba(240,194,110,.10)}
+.st-dtip{position:absolute;top:2px;z-index:4;padding:1px 6px;border-radius:5px;background:#1a1408;color:#ffe2a8;border:1px solid #f0c26e;
+  font:800 .74rem/1.3 var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
+/* the slim row under the lanes: zoom, snap, undo, redo */
+.st-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:10px}
+.st-tools .st-zm{display:flex;align-items:center;gap:6px}
+.st-tools .st-lab{margin:0 2px 0 0}
+.st-tools output{min-width:2.2rem;text-align:center;font:700 .9rem/1 var(--sans);color:#e9e0cc;font-variant-numeric:tabular-nums}
+.st-tools .st-ur{display:flex;gap:6px;margin-left:auto}
+.st-desk .st-hw{position:relative;min-height:44px;min-width:44px;padding:0 .8rem;border-radius:6px;border:1px solid #050506;
+  background:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#ece3cf;font:500 .95rem/1 "Fraunces",var(--serif,Georgia,serif);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
+.st-desk .st-hw.st-zb{padding:0;font:700 1.25rem/1 var(--sans)}
+.st-desk .st-hw.st-snap{padding-left:1.65rem}
+.st-desk .st-hw.st-snap::before{content:"";position:absolute;left:.65rem;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#3a3c41;box-shadow:inset 0 1px 1px rgba(0,0,0,.8)}
+.st-desk .st-hw.st-snap[aria-pressed="true"]{background:linear-gradient(#3a321f,#2a2416);color:#ffe9b8}
+.st-desk .st-hw.st-snap[aria-pressed="true"]::before{background:radial-gradient(circle at 35% 30%,#fff 0,#f0c26e 45%);box-shadow:0 0 7px #f0c26e}
+.st-desk .st-hw:disabled{opacity:.5;cursor:default}
+.st-desk .st-hw:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 0 #08090a}
+@media (prefers-reduced-motion:reduce){ .st-desk .st-hw:active{transform:none} }
+.st-tools+.st-line{margin:.4rem 2px 0}
+.st-tools+.st-line:empty{display:none}
+/* AOG-DESK-CLIPVOL-V1: the piece's own volume, a slider with its number */
+.st-ndg{margin-top:6px}
+.st-pvol{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .8rem;margin-top:.9rem}
+.st-pvol .st-lab{flex:1 1 100%;margin:0}
+.st-pvol input[type=range]{flex:1 1 12rem;min-width:8rem;height:44px;margin:0;accent-color:#f0c26e;touch-action:pan-y}
+.st-pvol output{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums;min-width:4.2rem}
 @media print{ .st-desk,.bench-bar,header{display:none!important} }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -757,6 +797,8 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       <div class="st-blk st-song">
         <h2 class="st-h st-sr" data-t="songH"></h2>
         <div class="st-tl" id="timeline"></div>
+        <div class="st-tools" id="tlTools"></div><!-- AOG-DESK-HANDS-V1: zoom, snap, undo and redo, under the lanes -->
+        <p class="st-line" id="tlLine" aria-live="polite"></p>
       </div>
 
       <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
@@ -844,6 +886,6 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
-<script src="/front/5ab1660626b0.js"></script>
+<script src="/front/6f9b599be8f9.js"></script>
 </body>
 </html>
