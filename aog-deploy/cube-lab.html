@@ -269,6 +269,10 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 .paintbar .n { font-variant-numeric:tabular-nums; color:var(--muted); font-size:.85rem; }
 .paintbar .n.over { color:var(--warn); font-weight:800; }
 @media (max-width:600px){ .paintbar button { flex-direction:column; justify-content:center; gap:.15rem; padding:.3rem .2rem; } .paintbar .nm { display:none; } }
+.calm .kind { margin:.2rem 0 .35rem; font-weight:600; display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; }
+.calm .kind .tag { display:inline-block; border-radius:999px; padding:.25rem .7rem; font:800 .8rem/1.2 var(--sans); letter-spacing:.08em; text-transform:uppercase; }
+.calm .kind.whole .tag { background:var(--warn-soft); color:var(--ink); border:2px solid var(--warn); }
+.calm .kind.side .tag { background:var(--steel-soft); color:var(--ink); border:2px solid var(--steel); }
 /* the printed move card: only on paper */
 #printCard { display:none; }
 @media print { body.printing .wrap { display:none !important; } body.printing #printCard { display:block; color:#000; background:#fff; font:400 12pt/1.4 var(--sans); }
@@ -434,6 +438,8 @@ const T={
   printCard:["Print a move card","Imprimir una tarjeta de movimientos"], cardH:["The Cube Lab · move card","El laboratorio del cubo · tarjeta de movimientos"],
   cardMoves:["The moves","Los movimientos"], cardTricks:["The moves for each step","Los movimientos de cada paso"], cardHold:["Hold the cube with white on the bottom. A letter turns that side clockwise, as if you look straight at it. ' turns it the other way. 2 turns it twice.","Sostén el cubo con el blanco abajo. Una letra gira ese lado como las agujas del reloj, mirándolo de frente. ' lo gira al revés. 2 lo gira dos veces."],
   camBtn:["Use the camera","Usar la cámara"],
+  kWhole:["Whole cube","Cubo entero"], kWholeLine:["Turn the whole cube in your hands. Every square moves together.","Gira todo el cubo en tus manos. Todos los cuadros se mueven juntos."],
+  kSide:["One side","Un lado"], kSideLine:["Only the {s} moves. Hold the rest still.","Solo se mueve {s}. Sostén el resto quieto."],
   mineShort:["Show your cube to the camera, or tap in its colors.","Muestra tu cubo a la cámara o toca para poner sus colores."],
   paintHow:["How to paint it by hand","Cómo pintarlo a mano"],
   revH:["Check what the camera saw","Revisa lo que vio la cámara"],
@@ -780,16 +786,24 @@ function drawArrow(){
     const base=add(n.map(x=>x*c0), u, 1.56);
     for(let k=0;k<=12;k++) pts.push(add(base, v, -1.15+k*(2.3/12)));
   }
-  const P=pts.map(proj), d=P.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  const P=pts.map(proj);
   arrowGeo={P, mv};
   if(pts.length>20){ const c=proj(n.map(x=>x*1.56)); arrowGeo.round={cx:c[0], cy:c[1], r:Math.hypot(P[0][0]-c[0], P[0][1]-c[1])}; }
-  const a=P[P.length-2], b=P[P.length-1], ang=Math.atan2(b[1]-a[1], b[0]-a[0]), hs=Math.max(12, size*.3);
-  const tip=[b[0]+Math.cos(ang)*hs*.5, b[1]+Math.sin(ang)*hs*.5];
-  const l=[b[0]+Math.cos(ang+2.5)*hs, b[1]+Math.sin(ang+2.5)*hs], r=[b[0]+Math.cos(ang-2.5)*hs, b[1]+Math.sin(ang-2.5)*hs];
-  const head=`M${tip[0].toFixed(1)} ${tip[1].toFixed(1)} L${l[0].toFixed(1)} ${l[1].toFixed(1)} L${r[0].toFixed(1)} ${r[1].toFixed(1)} Z`;
-  const mid=P[Math.floor(P.length/2)], two=Math.abs(mv.q)===2 ? `<text x="${(mid[0]-Math.sin(ang)*22).toFixed(1)}" y="${(mid[1]+Math.cos(ang)*22+8).toFixed(1)}" text-anchor="middle" class="x2">×2</text>` : "";
+  const one=(P, withTwo) => {
+    const a=P[P.length-2], b=P[P.length-1], ang=Math.atan2(b[1]-a[1], b[0]-a[0]), hs=Math.max(12, size*.3);
+    const tip=[b[0]+Math.cos(ang)*hs*.5, b[1]+Math.sin(ang)*hs*.5];
+    const l=[b[0]+Math.cos(ang+2.5)*hs, b[1]+Math.sin(ang+2.5)*hs], r=[b[0]+Math.cos(ang-2.5)*hs, b[1]+Math.sin(ang-2.5)*hs];
+    const d=P.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    const head=`M${tip[0].toFixed(1)} ${tip[1].toFixed(1)} L${l[0].toFixed(1)} ${l[1].toFixed(1)} L${r[0].toFixed(1)} ${r[1].toFixed(1)} Z`;
+    const mid=P[Math.floor(P.length/2)], two=withTwo && Math.abs(mv.q)===2 ? `<text x="${(mid[0]-Math.sin(ang)*22).toFixed(1)}" y="${(mid[1]+Math.cos(ang)*22+8).toFixed(1)}" text-anchor="middle" class="x2">×2</text>` : "";
+    return `<path d="${d}" class="halo"/><path d="${head}" class="halo"/><path d="${d}" class="line"/><path d="${head}" class="head"/>${two}`;
+  };
+  /* AOG-CUBE-WHOLE-V1 (2026-10-11) — Jimmy's son: "confused on when to spin the entire cube or one row." A turn of the
+     whole cube gets an arrow on every row, so it never looks like a one-row turn. */
+  let more="";
+  if(mv.sel==="all") [-1,1].forEach(k => { more+=one(pts.map(q => add(q, n, k)).map(proj), false); });
   svg.setAttribute("viewBox", `0 0 ${stage.clientWidth} ${stage.clientHeight}`);
-  svg.innerHTML=`<path d="${d}" class="halo"/><path d="${head}" class="halo"/><path d="${d}" class="line"/><path d="${head}" class="head"/>${two}`;
+  svg.innerHTML=one(P, true)+more;
 }
 function stageTools(){
   const u=$("stUndo"), f=$("stFront"); if(!u) return;
@@ -908,6 +922,14 @@ function goalOf(){
 /* AOG-CUBE-CHUNKS-V1 — where the part's named moves start (the turns before them only get the cube ready), and
    how many rounds of them it takes. Simplifying can fold a ready-up turn into the first named move; then that move
    counts as the start. */
+/* whole cube or one side: said first, in its own look, so the two are never mixed up */
+const LAYER={U:["top layer","la capa de arriba"],D:["bottom layer","la capa de abajo"],R:["right side","el lado derecho"],L:["left side","el lado izquierdo"],
+  F:["front","el frente"],B:["back","el lado de atrás"],M:["middle column","la columna del medio"],E:["middle row","la fila del medio"],S:["middle slice","la rebanada del medio"]};
+function kindLine(tok){
+  const mv=C.parse(tok); if(!mv) return "";
+  if(mv.sel==="all") return `<p class="kind whole"><span class="tag">${esc(t("kWhole"))}</span> ${esc(t("kWholeLine"))}</p>`;
+  return `<p class="kind side"><span class="tag">${esc(t("kSide"))}</span> ${esc(t("kSideLine",{s:tx(LAYER[mv.base])||""}))}</p>`;
+}
 function chunkOf(p){
   const id=TRICK_OF[p.note]; if(!id) return null;
   const one=C.split(C.ALG[id]), reps=p.note==="cornerIn" ? (+(p.vars||{}).n||1) : 1, seq=[].concat(...Array(reps).fill(one)), m=p.moves;
@@ -940,7 +962,7 @@ function partCard(onlyStage){
       chunk=`<p class="chunk">${esc(t("chunkNow",{n:name}))}${ch.reps>1?" "+esc(t("chunkRounds")):""}</p><p class="cdots" aria-hidden="true">${dots.join("")}</p>`; }
   }
   const moveRow = show>=2
-    ? `<p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>`
+    ? kindLine(tok)+`<p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>`
     : `<p class="move-big quiet">${esc(t(show===1?"hintLine":"ownLine"))}</p>`;
   const main = show>=2 ? `<button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>`
     : `<button type="button" class="btn btn-steel big" data-act="reveal">${esc(t(show===1?"showMove":"giveHint"))}</button>`;

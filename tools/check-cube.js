@@ -164,9 +164,13 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   const hasVoice = await p.$('#viewRow [data-look="voice"]');
   ok(await p.evaluate(() => window.__said.length) === 0, "Read aloud says nothing when the page opens");
   await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150);
-  let sawChunk = false, n = 0;
-  while (n < 400) { if (!(await p.$('#panel [data-act="gnext"]'))) break; if (/corner moves/.test(await p.textContent("#panel")) && await p.$("#panel .cdots")) sawChunk = true; await p.click('#panel [data-act="gnext"]'); n++; }
+  let sawChunk = false, sawWhole = false, sawSide = false, n = 0;
+  while (n < 400) { if (!(await p.$('#panel [data-act="gnext"]'))) break; if (/corner moves/.test(await p.textContent("#panel")) && await p.$("#panel .cdots")) sawChunk = true;
+    const kind = await p.evaluate(() => { const k = document.querySelector("#panel .kind"); return k ? [k.className, document.querySelectorAll("#arrow path.line").length, document.querySelector("#panel .move-big .tok").textContent] : null; });
+    if (kind && /whole/.test(kind[0]) && kind[1] === 3 && /^[xyz]/.test(kind[2])) sawWhole = true;
+    if (kind && /side/.test(kind[0]) && kind[1] === 1 && /^[UDLRFB]/.test(kind[2])) sawSide = true; await p.click('#panel [data-act="gnext"]'); n++; }
   ok(sawChunk, "the corner moves are named as one thing to learn, with still dots");
+  ok(sawWhole && sawSide, "a whole-cube turn says Whole cube with an arrow on every row; a side turn says One side with one arrow");
   if (hasVoice) { const said = await p.evaluate(() => window.__said); ok(said.length > 5, "Read aloud says each next move after a tap (" + said.length + ": " + said.slice(0, 2).join(" / ") + ")"); }
   const fin = await p.textContent("#panel");
   ok(/Solved!/.test(fin) && /You did it, in \d+ moves/.test(fin), `Solve with me reaches Solved (${n} taps)`);
