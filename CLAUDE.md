@@ -186,6 +186,19 @@ keep their contents in `<template data-aog-later>` and are built when `showScree
 Edit them inside the template. Only a screen nothing reaches into before it is opened may wait like this: the
 Guide, Pilot, Start Here, Workplace and Store are wired up as the page starts, so they stay built.
 
+## The Cube Lab (Jimmy, 2026-10-11: "how to take this to the ceiling … DO them all")
+
+`cube-lab.html` (/cube) and its solver `aog-cube.js`. After any change to either, run
+
+    node tools/check-cube.js
+
+It turns the cube with a finger on an iPad and an iPhone (acting like Safari) and with a mouse, and checks:
+a finger on the cube never scrolls the page; the space around the cube never moves it; following the arrow,
+circling a middle square (the steering wheel) and two-finger swipes make the right moves; Solve with me and
+every Learn step reach the end; the three kinds of help, practising one step, the named moves, the camera's
+color reader, symbols, Read aloud (never on its own) and the move card. Do not push while it fails; add a
+check for anything new the hands can do.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
