@@ -94,8 +94,11 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stage *, .stage { touch-action:none; }
 .stage { overscroll-behavior:contain; }
 /* the whole cube fits on the screen with the card: never taller than the window allows */
-.stage { max-width:min(560px, max(280px, calc(100vh - 190px))); }
-@supports (height:100svh){ .stage { max-width:min(560px, max(280px, calc(100svh - 190px))); } }
+/* AOG-CUBE-STEADY-V1 (2026-10-11) — Jimmy: "In the chrome version, when you scroll it goes large or small and makes me
+   nauseous." The box was sized from the window's height, and Chrome's address bar changes that height while a page
+   scrolls, so the cube grew and shrank. Now its size is set once (--stage-max, from the script) and changes only when
+   the screen is turned, never while scrolling. */
+.stage { max-width:var(--stage-max, 560px); }
 #bench { scroll-margin-top:70px; }
 .stage { position:relative; width:100%; margin:0 auto; aspect-ratio:1/1; border-radius:18px; overflow:hidden;
   background:radial-gradient(120% 95% at 50% 35%, var(--stage-a) 0%, var(--stage-b) 100%); border:1px solid var(--line);
@@ -158,6 +161,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 /* the calm card: the goal, the move in words, one button */
 .calm .aim { margin:.2rem 0 .6rem; color:var(--muted); font-size:1rem; }
 .calm .move-big { font:600 clamp(1.35rem, 1.2rem + 1vw, 1.75rem)/1.25 var(--display); margin:.2rem 0 .6rem; }
+.calm .move-big { margin-bottom:.9rem; }
 .calm .move-big .once { display:block; font:700 .95rem/1.2 var(--sans); color:var(--steel); margin-bottom:.2rem; }
 .calm .move-big .tok { font:700 .95rem/1 var(--mono); color:var(--muted); background:var(--chip); border-radius:6px; padding:.2rem .4rem; vertical-align:middle; }
 .calm .chips .chip { font-size:.85rem; padding:.3rem .4rem; min-width:1.8rem; }
@@ -292,14 +296,14 @@ const T={
   ready:["I'm ready","Estoy listo"], gotIt:["You've got it. ✓","Ya lo tienes. ✓"],
   movesTried:["Sides turned so far:","Lados girados hasta ahora:"],
   nextMove:["Next move","Siguiente movimiento"], doPart:["Turn the rest of this part for me","Gira por mí el resto de esta parte"],
-  didIt:["I did it","Ya lo hice"], onceMore:["One more time:","Una vez más:"], turnIt:["Turn it","Girarlo"], tellMore:["Tell me more","Cuéntame más"],
+  didIt:["I did it","Ya lo hice"], moveOf:["Move {i} of {n}","Movimiento {i} de {n}"], onceMore:["One more time:","Una vez más:"], turnIt:["Turn it","Girarlo"], tellMore:["Tell me more","Cuéntame más"],
   startH:["Let's solve your cube","Vamos a resolver tu cubo"], startLine:["One move at a time. Take your time.","Un movimiento a la vez. Tómate tu tiempo."],
   useMine:["Use my real cube","Usar mi cubo de verdad"], practiceMixed:["Practice on a mixed cube","Practicar con un cubo mezclado"],
   stepOf:["Step {i} of 7 · {name}","Paso {i} de 7 · {name}"], startOver:["Start over","Empezar de nuevo"], newMix:["Mix a new one","Mezclar otro"],
   nextIs:["Next: {w}","Sigue: {w}"],
   toGo:["About {n} moves to go.","Faltan unos {n} movimientos."],
   solvedNow:["Solved! Every side is one color. ✓","¡Resuelto! Cada lado es de un solo color. ✓"],
-  solvedIn:["You solved it in {t}, with {m} moves.","Lo resolviste en {t}, con {m} movimientos."],
+  solvedIn:["You did it, in {m} moves and {t} of turning.","Lo lograste, en {m} movimientos y {t} de giros."],
   mixFirst:["Tap Mix it up to get a mixed cube. Then follow along, one move at a time.","Toca Mézclalo para tener un cubo mezclado. Luego sigue, un movimiento a la vez."],
   stagesH:["The steps","Los pasos"],
   mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
@@ -620,6 +624,7 @@ function drawArrow(){
   }
   const P=pts.map(proj), d=P.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
   arrowGeo={P, mv};
+  if(pts.length>20){ const c=proj(n.map(x=>x*1.56)); arrowGeo.round={cx:c[0], cy:c[1], r:Math.hypot(P[0][0]-c[0], P[0][1]-c[1])}; }
   const a=P[P.length-2], b=P[P.length-1], ang=Math.atan2(b[1]-a[1], b[0]-a[0]), hs=Math.max(12, size*.3);
   const tip=[b[0]+Math.cos(ang)*hs*.5, b[1]+Math.sin(ang)*hs*.5];
   const l=[b[0]+Math.cos(ang+2.5)*hs, b[1]+Math.sin(ang+2.5)*hs], r=[b[0]+Math.cos(ang-2.5)*hs, b[1]+Math.sin(ang-2.5)*hs];
@@ -671,8 +676,11 @@ function after(job){
   else if(nx && nx.tok===C.parse(tok).base+"2" && Math.abs(C.parse(tok).q)===1){ nx.tok=tok; nx.half=true; guide.key=cube.toJSON(); }   /* half of a "twice": one more the same way */
   else guide=null;
   if(runner){ runner.left--; if(runner.left<=0) runner=null; }
-  if(S.mix && !"xyz".includes(b)){ if(!S.mix.t0) S.mix.t0=Date.now(); S.mix.moves++; }
-  if(S.mix && cube.solved()){ S.result={ms:Date.now()-(S.mix.t0||Date.now()), moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
+  /* AOG-CUBE-TIME-V1 (2026-10-11) — Jimmy: "look at the seconds it took" (it said 128:05). The clock now counts only
+     time spent turning: a pause (a break, a chat, the page left open overnight) adds at most 30 seconds, the
+     longest a person thinks before a move. Jimmy's "about 3 minutes" solve, mixed two hours before, now reads so. */
+  if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(Math.max(0, now-S.mix.last), 30000); S.mix.last=now; S.mix.moves++; }
+  if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
   if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
   $("live").textContent=t("did",{m:tok});
@@ -703,7 +711,7 @@ function partCard(onlyStage){
   arrowTok=tok;
   return `<div class="calm"><p class="aim">${esc(aim(n.p))}</p>
     <p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>
-    ${chips(n.p.moves, at)}
+    <!-- Jimmy: "Move 8 of 8 to me still makes no sense." The card says only the goal and the move. -->
     <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
     <details class="more"><summary>${esc(t("tellMore"))}</summary><p>${esc(note(n.p))}</p>
@@ -786,7 +794,14 @@ function fixHtml(){
     <div class="btn-row"><button type="button" class="btn btn-good" data-act="fixDone">${esc(t("fixDone"))}</button>
     <button type="button" class="btn" data-act="fixPeek" aria-pressed="${peek}">${esc(t(peek?"fixPeekOff":"fixPeek"))}</button></div></div>`;
 }
-function clock(ms){ const s=Math.round(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+/* time in plain words: "under a minute", "about 12 minutes", "1 hour and 5 minutes" */
+function clock(ms){
+  const m=Math.round(ms/60000), h=Math.floor(m/60), r=m%60;
+  if(m<1) return es()?"menos de un minuto":"under a minute";
+  if(!h) return es()?`unos ${m} ${m===1?"minuto":"minutos"}`:`about ${m} ${m===1?"minute":"minutes"}`;
+  const hs=es()?`${h} ${h===1?"hora":"horas"}`:`${h} ${h===1?"hour":"hours"}`;
+  return r ? (es()?`${hs} y ${r} ${r===1?"minuto":"minutos"}`:`${hs} and ${r} ${r===1?"minute":"minutes"}`) : hs;
+}
 
 let arrowTok=null;
 function panel(){
@@ -997,7 +1012,15 @@ function onMove(e){
   if(!drag.mode){
     if(Math.hypot(dx,dy)<9) return;
     const A=drag.arrow, along=A ? (dx*A.ux+dy*A.uy)/Math.hypot(dx,dy) : 0;
-    if(A && arrowGeo && Math.abs(along)>.55 && !busy && !queue.length){
+    const RW=arrowGeo && arrowGeo.round, inWheel=RW && Math.hypot(drag.sx0-RW.cx, drag.sy0-RW.cy)<RW.r*1.6;
+    if(inWheel && !busy && !queue.length){
+      /* AOG-CUBE-WHEEL-V1 (2026-10-11) — Jimmy: "the 'steering wheel' sometimes screws up and a piece rotates
+         horizontally." With the steering wheel showing, a finger going round anywhere on that face turns the face:
+         how far the finger goes round the middle is how far the face turns, as with a real wheel. */
+      const mv=arrowGeo.mv;
+      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, wheel:true, cx:RW.cx, cy:RW.cy,
+        last:Math.atan2(drag.sy0-RW.cy, drag.sx0-RW.cx), acc:0};
+    } else if(A && arrowGeo && Math.abs(along)>.55 && !busy && !queue.length){
       /* following the arrow (or going back along it): that exact move, whatever piece the finger is on */
       const mv=arrowGeo.mv, qs=mv.q<0?-1:1;
       drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, qs, ux:A.ux, uy:A.uy, len:Math.max(40, A.len), s0:A.s, sx0:drag.sx0, sy0:drag.sy0};
@@ -1016,7 +1039,12 @@ function onMove(e){
     } else drag.mode="still";   /* AOG-CUBE-STILL-V1: the space around the cube never moves it */
   }
   if(drag.mode==="turn"){ const T2=drag.turn;
-    if(T2.arrowMv){
+    if(T2.wheel){
+      const [sx,sy]=stageXY(e.clientX, e.clientY);
+      if(Math.hypot(sx-T2.cx, sy-T2.cy)>size*.25){   /* too near the middle, the angle is not steady */
+        const a=Math.atan2(sy-T2.cy, sx-T2.cx); let d=a-T2.last; d=Math.atan2(Math.sin(d), Math.cos(d)); T2.acc+=d; T2.last=a; }
+      T2.th=Math.max(-Math.PI/2, Math.min(Math.PI/2, -T2.acc));   /* round the screen clockwise = the face, toward you, turns clockwise; at most a quarter */
+    } else if(T2.arrowMv){
       /* along the arrow itself, straight or round: the bead's place on the line, not the straight-line distance */
       const [sx,sy]=stageXY(e.clientX, e.clientY), na=nearArrow(sx, sy);
       if(na && na.d<Math.max(60, size*1.2)) T2.th=-T2.qs*(Math.PI/2)*((na.s-T2.s0)/(T2.len*.8));
@@ -1031,7 +1059,7 @@ function endDrag(e){
   if(d.mode==="look"){ render(); return; }                               /* shading and the arrow, once the hand lets go */
   if(d.mode!=="turn") return;
   /* a short, clear drag is enough: past about 12° the row finishes the quarter turn in that direction */
-  const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*Math.max(1, Math.round(Math.abs(raw))), from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
+  const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */ from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
   busy=true;
   const finish=() => {
     busy=false;
@@ -1087,8 +1115,20 @@ $("themeBtn").onclick=()=>{
 /* the cube and the card in full view (a plain jump, no glide), when the cube's bottom is off the screen */
 function showBench(){ const r=stage.getBoundingClientRect(); if(r.bottom>innerHeight-8 || r.top<60) $("bench").scrollIntoView({block:"start"}); }
 window.addEventListener("hashchange", () => { mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
-window.addEventListener("resize", fit);
-if(window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+/* the box's size: fixed when the page opens, set again only when the screen's width changes (turning it) */
+let sizedW=0;
+function setStageMax(){
+  if(Math.abs(innerWidth-sizedW)<60 && sizedW) return;
+  sizedW=innerWidth;
+  document.documentElement.style.setProperty("--stage-max", Math.round(Math.min(560, Math.max(280, innerHeight-190)))+"px");
+}
+setStageMax();
+let fitW=0;
+const refit=() => { const w=stage.clientWidth; if(w && w!==fitW){ fitW=w; fit(); } };   /* only a real change of width redraws */
+window.addEventListener("resize", () => { setStageMax(); refit(); });
+if(window.ResizeObserver) new ResizeObserver(refit).observe(stage);
+/* a trackpad pinch over the cube (Ctrl + wheel) would zoom the whole page; on the cube it does nothing */
+stage.addEventListener("wheel", e => { if(e.ctrlKey) e.preventDefault(); }, {passive:false});
 if(!location.hash && S.view && S.view!=="learn") history.replaceState(null,"","#"+S.view);
 paintAll();
 })();
