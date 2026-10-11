@@ -80,10 +80,11 @@
   function binary(v) {
     return (typeof Blob !== "undefined" && v instanceof Blob) || (typeof ArrayBuffer !== "undefined" && (v instanceof ArrayBuffer || ArrayBuffer.isView(v)));
   }
-  /* what the index keeps of a take: everything but its audio */
+  /* what the index keeps of a take: everything but its audio (and its notes, AOG-NOTES-V1: a long take's can be long; they
+     stay with the take itself, read with item()) */
   function metaOf(item) {
     var m = {}, k;
-    for (k in item) if (Object.prototype.hasOwnProperty.call(item, k) && !binary(item[k])) m[k] = item[k];
+    for (k in item) if (Object.prototype.hasOwnProperty.call(item, k) && !binary(item[k]) && k !== "notes") m[k] = item[k];
     return m;
   }
   function cleanIndex(ix) {
