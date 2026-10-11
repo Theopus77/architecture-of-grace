@@ -303,7 +303,10 @@ const T={
   nextIs:["Next: {w}","Sigue: {w}"],
   toGo:["About {n} moves to go.","Faltan unos {n} movimientos."],
   solvedNow:["Solved! Every side is one color. ✓","¡Resuelto! Cada lado es de un solo color. ✓"],
-  solvedIn:["You did it, in {m} moves and {t} of turning.","Lo lograste, en {m} movimientos y {t} de giros."],
+  /* AOG-CUBE-NOCLOCK-V1 (2026-10-11) — Jimmy: "I just kept on hitting turn it and finished in about 30 seconds, not 5
+     minutes like it claims." A page cannot tell thinking from stepping away, so any time it shows is partly a guess,
+     and a clock adds pressure. The solve is told by what is known: the moves. */
+  solvedIn:["You did it, in {m} moves.","Lo lograste, en {m} movimientos."],
   mixFirst:["Tap Mix it up to get a mixed cube. Then follow along, one move at a time.","Toca Mézclalo para tener un cubo mezclado. Luego sigue, un movimiento a la vez."],
   stagesH:["The steps","Los pasos"],
   mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
@@ -741,7 +744,7 @@ function learnHtml(){
     h+=`<div class="btn-row"><button type="button" class="btn btn-steel" data-act="mix">${esc(t("mix"))}</button>`
       +(cube.solved()?"":`<button type="button" class="btn" data-act="hint">${esc(t("help"))}</button>`)+`</div>`;
     if(S.showHint && !cube.solved()) h+=`<div class="alg">${partCard()}</div>`;
-    if(cube.solved() && S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{t:clock(S.result.ms), m:S.result.moves}))}</p>`;
+    if(cube.solved() && S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:S.result.moves}))}</p>`;
     else if(S.done[i]) h+=`<p class="state ok">${esc(t("gotIt"))}</p>`;
   } else {
     const at=C.stageOf(cube);
@@ -762,7 +765,7 @@ function solveHtml(){
   const at=C.stageOf(cube);
   if(cube.solved()){
     let h=`<h2>${esc(t("startH"))}</h2><p class="muted">${esc(t("startLine"))}</p>`;
-    if(S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{t:clock(S.result.ms), m:S.result.moves}))}</p>`;
+    if(S.result) h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:S.result.moves}))}</p>`;
     return h+`<div class="btn-row start"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
   }
   const n=guideNow(), key=n ? n.st.key : "done", si=Math.max(0, C.STAGES.indexOf(key));
