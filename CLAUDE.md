@@ -205,7 +205,9 @@ check for anything new the hands can do.
   Adult band), built like every other course; Daily Practice is the `skate` book (`_work/ddworld/skt.py`).
   Unlike Sports History it **teaches technique**, always safety first (helmet, pads, a safe place, a grown-up near
   children; never stairs, rails, traffic or holding onto a vehicle). Directions say front foot and back foot.
-- The Skate Lab is `skate-lab.html` (/skate) and its engine `aog-skate.js`. After any change to either, run
+- The Skate Lab is `skate-lab.html` (/skate) and its engine `aog-skate.js`. **Build a board is its mainstay** (Jimmy,
+  2026-10-11): /skate always opens on it, it is first in the room menu and on the front page's Skateboarding door; an
+  address naming a room (/skate#ollie) still opens that room. After any change to either, run
 
       node tools/check-skate.js
 

@@ -28,7 +28,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 
 /* ── saved choices (this device only) ── */
 const DEF = {
-  lang: "en", room: "ramp", speed: 1, stance: "regular",
+  lang: "en", room: "build", speed: 1, stance: "regular",
   ramp: { shape: "mini", h: 1.2, wheel: "ure", mass: 50, pump: false, guess: "" },
   ollie: { pop: 0.7, slide: "on", jump: 0.3, forces: true, ghost: false },
   grind: { surface: "metal", trick: "fifty", v: 3, len: 2.5, mass: 50 },
@@ -1395,7 +1395,7 @@ function buildPanel() {
   notes.push(ch.hardOK ? ["good", L("The wheel hardness suits where you will ride.", "La dureza de las ruedas va bien con donde patinarás.")] :
     (o.use === "rough" || o.use === "cruise") ? ["warn", L("These wheels are hard for rough ground. Every crack will shake the board. Softer wheels (about 78A to 92A) roll over it.", "Estas ruedas son duras para suelo áspero. Cada grieta sacudirá la tabla. Las ruedas blandas (unos 78A a 92A) pasan por encima.")] :
     ["warn", L("These wheels are soft for smooth ground and tricks. They grip well but feel slow and sticky for slides. Harder wheels (about 95A to 101A) suit it better.", "Estas ruedas son blandas para suelo liso y trucos. Agarran bien pero se sienten lentas para deslizar. Las más duras (unos 95A a 101A) van mejor.")]);
-  return `<p class="kicker">${L("Room 8 · Gear", "Sala 8 · Equipo")}</p>
+  return `<p class="kicker">${L("Start here · Gear", "Empieza aquí · Equipo")}</p>
   <h2>${L("Build a board", "Arma una tabla")}</h2>
   <p class="say">${L("Tell the lab your size and what you will do most. It suggests a whole setup and says why. Then change any part and watch the checks.", "Dile al laboratorio tu tamaño y lo que más harás. Te sugiere una tabla completa y explica por qué. Luego cambia cualquier pieza y mira las comprobaciones.")}</p>
   <div class="ctl"><label for="bdR">${L("Who will ride it?", "¿Quién la va a usar?")}</label><select class="sel" id="bdR">${Object.keys(RIDERS).map(k => `<option value="${k}" ${o.rider === k ? "selected" : ""}>${esc(L(RIDERS[k].en, RIDERS[k].es))}</option>`).join("")}</select></div>
@@ -1459,7 +1459,7 @@ const ROOMS = {
   tricks: { en: "Trick book", es: "Libro de trucos", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawTricks, under: () => "", panel: tricksPanel, wire: tricksWire,
     desc: () => L("A skateboard from above showing where each foot goes. ", "Una patineta desde arriba que muestra dónde va cada pie. ") }
 };
-const ORDER = ["ramp", "ollie", "grind", "balance", "flip", "timeline", "build", "tricks"];
+const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks"];   // AOG-SKATE-BUILD-HOME-V1: Build a board first
 function panel() { const r = ROOMS[S.room]; $("panel").innerHTML = r.panel(); r.wire(); paintPlayer(); $("under").innerHTML = r.under(); }
 function paint(fast) {
   if (fit()) colors();
@@ -1487,7 +1487,7 @@ function words() {
   $("brand").textContent = L("The Skate Lab", "El Laboratorio de Skate");
   $("mastK").textContent = L("Skateboarding · the science you can try", "Skate · la ciencia que puedes probar");
   $("mastH").textContent = L("The Skate Lab", "El Laboratorio de Skate");
-  $("mastL").textContent = L("Ramps, ollies, grinds, balance and flips, worked out with real physics.", "Rampas, ollies, grinds, equilibrio y flips, con física real.");
+  $("mastL").textContent = L("Build your board, then try ramps, ollies, grinds and flips with real physics.", "Arma tu tabla y luego prueba rampas, ollies, grinds y flips con física real.");
   $("langBtn").textContent = es() ? "EN" : "ES";
   $("themeBtn").textContent = document.documentElement.getAttribute("data-theme") === "dark" ? L("Light", "Claro") : L("Dark", "Oscuro");
   $("nav").innerHTML = `<a href="/skateboarding">${L("The course", "El curso")}</a><a href="/drops/skate">${L("Daily Practice", "Práctica diaria")}</a>`;
@@ -1507,6 +1507,8 @@ window.addEventListener("hashchange", () => { const k = location.hash.slice(1); 
 /* for the site's checks (tools/check-skate.js) */
 window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS };
 words();
+/* AOG-SKATE-BUILD-HOME-V1 (2026-10-11) — Jimmy: "Make build a board a main stay for this page." /skate always opens on
+   Build a board; an address that names a room (/skate#ollie, a lesson's link) still opens that room. */
 const start = location.hash.slice(1);
-openRoom(ROOMS[start] ? start : S.room, !!ROOMS[start]);
+openRoom(ROOMS[start] ? start : "build", !!ROOMS[start]);
 })();

@@ -273,6 +273,7 @@ EXPLORE = {
     "/world-cultures": (C_, "World Cultures", "Culturas del mundo", "How people live together around the world, K–12.", "Cómo vive la gente en el mundo, K–12."),
     "/us-history": (C_, "U.S. History 6–8", "Historia de EE. UU. 6–8", "The story of the United States, as a full course.", "La historia de Estados Unidos, como un curso completo."),
     "/sports": (C_, "Sports History", "Historia del deporte", "How games got their fields, rules and leagues, K–12.", "Cómo los juegos recibieron sus campos, reglas y ligas, K–12."),
+    "/skate#build": (R_, "Skate Lab: build a board", "Laboratorio de Skate: arma una tabla", "A whole setup for your size, with the reason for each part.", "Una tabla completa para tu tamaño, con la razón de cada pieza."),
     "/skate#tricks": (R_, "Skate Lab: the trick book", "Laboratorio de Skate: libro de trucos", "Where each foot goes, the steps and what helps.", "Dónde va cada pie, los pasos y lo que ayuda."),
     "/skate#balance": (R_, "Skate Lab: balance and turning", "Laboratorio de Skate: equilibrio y giros", "Move your center of mass and watch the board.", "Mueve tu centro de masa y mira la tabla."),
     "/skate#ramp": (R_, "Skate Lab: ramp and energy", "Laboratorio de Skate: rampa y energía", "Drop in and watch stored energy become speed.", "Entra a la rampa y mira cómo la energía se vuelve rapidez."),

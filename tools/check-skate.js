@@ -125,6 +125,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(!p.errs.length, "no errors on a computer" + (p.errs.length ? ": " + p.errs[0] : ""));
   await p.context().close();
 
+  /* Build a board is the lab's home (AOG-SKATE-BUILD-HOME-V1): /skate with no room opens it, even after another room was used */
+  const home = await open({ width: 390, height: 844 }, true, "ollie");
+  await home.goto(URL, { waitUntil: "load" }); await wait(400);
+  ok(await home.evaluate(() => window.AOGSkate.state.room === "build" && window.AOGSkate.rooms[0] === "build" && /Build a board|Arma una tabla/.test(document.getElementById("panel").textContent)),
+     "/skate opens on Build a board, first in the room menu, even after another room was used");
+  await home.context().close();
   const rm = await open({ width: 820, height: 1180 }, true, "grind", { reducedMotion: "reduce" });
   await rm.click("#goBtn"); await wait(150);
   ok(await rm.evaluate(() => { const P = window.AOGSkate.P; return !P.playing && P.k === P.frames.length - 1 && P.frames.length > 1; }), "with reduce motion on, Go shows the whole run at once (iPad)");
