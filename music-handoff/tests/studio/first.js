@@ -26,11 +26,13 @@ const FILE = { pads: "music-pads.html", kit: "music-kit.html", piano: "music-pia
 /* the thing you play in each room */
 /* AOG-STUDIO-FIRST-V2: every room opens on the thing you play; the Band's section and instrument sit above its keys (under them on a phone) */
 const HERO = { pads: "#pads", kit: "#kitBox", piano: "#kbd", guitar: "#neckBox", bass: "#neckBox", band: "#kbd", decks: "#decks", studio: "#desk" };   /* AOG-STUDIO-FIRST-V2: the thing you play */
-const inner = p => p.frames().find(f => f.parentFrame() === p.mainFrame());
+/* the room in sight (#room): the Studio keeps the last rooms open, out of sight, in frames of their own (AOG-STUDIO-KEEP-V1) */
+const inner = p => p.__room || p.frames().find(f => f.parentFrame() === p.mainFrame());
 async function arrived(p, id) {
   await p.waitForFunction(f => { const fr = document.getElementById("room"), d = fr.contentDocument;
     return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && d.location.pathname.endsWith(f); }, FILE[id], { timeout: 25000 });
   await p.waitForTimeout(1500);
+  p.__room = await (await p.$("#room")).contentFrame();
 }
 /* where the room's instrument starts, and what sits above it, inside the frame */
 const surface = (f, hero) => f.evaluate(hero => {

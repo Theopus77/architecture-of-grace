@@ -46,14 +46,22 @@
    when Record was pressed) and when it was made; the inbox keeps the newest 16. Sending the same take twice keeps it once. The
    line then says "Sent to the Studio. Open the Studio", and keeps saying it when the page repaints, until the next thing
    happens. The tool is known by its shelf (or the page's address, or o.tool), so no page has to change. Send to the turntables
-   and Send to the drum machine work exactly as before. */
+   and Send to the drum machine work exactly as before.
+
+   AOG-REC-KEEP-V1 (2026-10-11) — Jimmy: "Do the fixes first." A take used to live only in the page's memory, so it was gone
+   when the page closed, and when the Studio closed a room it had kept open out of sight to make space. Now each room's last
+   three takes are also kept in this browser's own storage (aog-handoff.js, the list "roomtakes/<shelf>"), so they come back
+   when the room opens again: after the Studio closed it, after a reload, after the iPad put the tab to sleep. Still only on
+   this device; Delete takes one out. Whether a take was added to My Track is kept with it. If the browser has no room to
+   keep it (or no storage at all), the take stays in memory as before and the room says so to the Studio (kept() is false),
+   so the Studio does not close that room. */
 (function () {
   "use strict";
   var W = {
     rec: { en: "● Record", es: "● Grabar" },
     recStop: { en: "■ Stop recording", es: "■ Parar grabación" },
     recOn: { en: "Recording {what}, never a microphone. Play anything, then press Stop recording.", es: "Grabando {what}, nunca un micrófono. Toca lo que quieras y luego pulsa Parar grabación." },
-    recKeep: { en: "Takes stay on this device until you leave the page. To keep one, save it or send it to the Studio.", es: "Las tomas se quedan en este dispositivo hasta que salgas de la página. Para guardar una, guárdala o envíala al estudio." },
+    recKeep: { en: "Your last three takes stay on this device, even when you leave. To use one, add it to My Track or save it.", es: "Tus tres últimas tomas se quedan en este dispositivo, aunque salgas. Para usar una, añádela a mi pista o guárdala." },
     recFull: { en: "Five minutes is the limit, so recording stopped.", es: "Cinco minutos es el límite, así que la grabación se detuvo." },
     recNone: { en: "Nothing was played, so there is no take.", es: "No se tocó nada, así que no hay toma." },
     take: { en: "Take", es: "Toma" },
@@ -195,7 +203,34 @@
 
   function attach(o) {
     var R = { on: false, closing: false, chunks: [], frames: 0, t0: 0, timer: 0, takes: [], n: 0, max: 300, msg: "", node: null, sink: null, sr: 44100,
-      bpm0: 0, studioLine: false };
+      bpm0: 0, studioLine: false, kept: true };
+    /* AOG-REC-KEEP-V1: this room's takes, kept on the device */
+    var KEPT = "roomtakes/" + (o.shelf || studioTool(o) || location.pathname);
+    function A() { return window.AOGHandoff && AOGHandoff.add ? AOGHandoff : null; }
+    function store(k) {
+      var H = A(); if (!H) { R.kept = false; return Promise.resolve(); }
+      return H.add(KEPT, { n: k.n, sec: k.sec, at: k.at, bpm: k.bpm, added: !!k.added, wav: k.blob }, { max: 3, key: "take|" + k.at + "|" + k.n })
+        .then(function (r) { k.hid = r.id; if (R.takes.indexOf(k) < 0) { unstore(k); return; }   /* deleted while it was being kept */
+          R.kept = R.takes.every(function (x) { return !!x.hid; }); }, function () { R.kept = false; });
+    }
+    function unstore(k) { var H = A(); if (H && k.hid) { var id = k.hid; k.hid = ""; H.remove(KEPT, id).catch(function () {}); } }
+    async function restore() {
+      var H = A(); if (!H) { R.kept = false; return; }
+      try {
+        var ix = await H.list(KEPT), got = [];
+        for (var i = 0; i < ix.items.length && got.length < 3; i++) {
+          var m = ix.items[i], it = await H.item(KEPT, m.id);
+          if (!it || !(it.wav instanceof Blob) || it.wav.size <= 44) continue;
+          if (R.takes.some(function (x) { return x.at === it.at && x.n === it.n; })) continue;
+          got.push({ n: it.n, sec: it.sec, blob: it.wav, url: URL.createObjectURL(it.wav), at: it.at, bpm: it.bpm || 0, added: !!it.added, hid: m.id });
+        }
+        if (!got.length) return;
+        R.takes = R.takes.concat(got).sort(function (a, c) { return (c.at || 0) - (a.at || 0) || c.n - a.n; });
+        while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); }
+        R.n = Math.max(R.n, Math.max.apply(null, R.takes.map(function (x) { return x.n; })));
+        R.paint();
+      } catch (e) {}
+    }
     function L() { return o.lang() === "es" ? "es" : "en"; }
     function w(k) { var src = (k === "rec" && o.label) ? o.label : W[k]; return src[L()].split("{what}").join(o.what[L()]); }
     function el(k) { return document.getElementById(o.ids[k]); }
@@ -251,9 +286,11 @@
       v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, bytes, true);
       var blob = new Blob([h].concat(parts), { type: "audio/wav" });
       R.chunks = []; R.frames = 0;
-      R.takes.unshift({ n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: R.bpm0 });
+      var take = { n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: R.bpm0, added: false, hid: "" };
+      R.takes.unshift(take);
       R.studioLine = false;
-      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); }
+      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); unstore(old); }
+      R.kept = false; store(take);   /* AOG-REC-KEEP-V1 */
       if (!R.msg) R.msg = "recKeep";
       R.paint();
     }
@@ -321,6 +358,7 @@
         await AOGHandoff.add(AOGHandoff.INBOX, { from: tool, n: k.n, name: studioName(o, tool, k.n), sec: Math.round(k.sec * 1000) / 1000,
           bpm: Math.round(bpm * 100) / 100, at: k.at || Date.now(), take: true, wav: k.blob }, { key: tool + "|" + (k.at || 0) + "|" + k.n });
         R.studioLine = true;
+        if (!k.added) { k.added = true; store(k); }   /* AOG-REC-KEEP-V1: it stays known as added, after a reload too */
         if (line) line.innerHTML = studioHtml();
       } catch (e) {
         R.studioLine = false;
@@ -360,6 +398,7 @@
       var i = R.takes.findIndex(function (x) { return x.n === n; }); if (i < 0) return;
       if (R.bin) URL.revokeObjectURL(R.bin.k.url);
       R.bin = { k: R.takes[i], i: i }; R.takes.splice(i, 1); R.studioLine = false; R.msg = "";
+      unstore(R.bin.k);   /* AOG-REC-KEEP-V1: out of the device's storage too (Bring it back puts it back) */
       R.paint();
       var line = el("line"); if (line) { line.textContent = w("deleted").split("{n}").join(n) + " ";
         var u = document.createElement("button"); u.type = "button"; u.className = "aogrec-b"; u.textContent = w("undo");
@@ -368,7 +407,8 @@
     R.undo = function () {
       if (!R.bin) return; var b = R.bin; R.bin = null;
       R.takes.splice(Math.min(b.i, R.takes.length), 0, b.k); R.takes.sort(function (a, c) { return c.n - a.n; });
-      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); }
+      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); unstore(old); }
+      if (R.takes.indexOf(b.k) >= 0) store(b.k);
       R.msg = ""; R.paint();
     };
     document.addEventListener("visibilitychange", function () { if (document.hidden && R.on) R.toggle(); });
@@ -378,10 +418,13 @@
       on: function () { return !!R.on; }, busy: function () { return !!R.closing; },
       toggle: function () { var b = el("btn"); if (b && !b.disabled) b.click(); else R.toggle(); },
       last: function () { var k = R.takes[0]; return k ? { n: k.n, sec: k.sec } : null; },
-      sent: function () { return !!R.studioLine; },
-      add: function () { var k = R.takes[0]; return k ? R.toStudio(k.n) : Promise.resolve(); }
+      sent: function () { return !!(R.takes[0] && R.takes[0].added) || !!R.studioLine; },
+      add: function () { var k = R.takes[0]; return k ? R.toStudio(k.n) : Promise.resolve(); },
+      /* AOG-REC-KEEP-V1: true when every take here is safe in the device's storage, so the Studio may close this room */
+      kept: function () { return !R.on && !R.closing && !!R.kept; }
     };
     style();
+    restore();
     return R;
   }
   window.AOGRecorder = { attach: attach, clock: clock, toPad: toPad };

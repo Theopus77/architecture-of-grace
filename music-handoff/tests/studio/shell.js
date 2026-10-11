@@ -25,14 +25,16 @@ async function routes(ctx) {
   await ctx.route(/\/(the-studio|bass|mixing-desk|piano|drum-machine)(\?[^#]*)?$/, r => {
     const k = new URL(r.request().url()).pathname.slice(1); r.fulfill({ path: path.join(ROOT, R[k]), contentType: "text/html" }); });
 }
-const inner = p => p.frames().find(f => f.parentFrame() === p.mainFrame());
+/* the room in sight (#room): the Studio keeps the last rooms open, out of sight, in frames of their own (AOG-STUDIO-KEEP-V1) */
+const inner = p => p.__room || p.frames().find(f => f.parentFrame() === p.mainFrame());
 async function arrived(p, file) {
   await p.waitForFunction(f => { const fr = document.getElementById("room"), d = fr.contentDocument;
     return fr.getAttribute("data-file") === "/" + f && d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && d.location.pathname.endsWith(f); }, file, { timeout: 20000 });
   await p.waitForTimeout(400);
+  p.__room = await (await p.$("#room")).contentFrame();
 }
 const state = p => p.evaluate(() => ({ hash: location.hash, title: document.title, cur: (document.querySelector(".sh-doors a[aria-current]") || {}).textContent,
-  marks: [...document.querySelectorAll("#mtList li")].map(li => { const el = li.firstElementChild; return el.classList.contains("mix") ? el.textContent.trim() : el.querySelector("span").textContent + (el.classList.contains("on") ? " ✓" : " —"); }).join(" | "), own: document.getElementById("own").getAttribute("href") }));
+  marks: [...document.querySelectorAll("#mtList li")].map(li => { const el = li.firstElementChild; return el.classList.contains("mix") ? el.textContent.trim() : el.querySelector("span").textContent + (el.classList.contains("on") ? " ✓" : " —"); }).join(" | "), own: !!document.getElementById("own") }));
 
 (async () => {
   const b = await pw.chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
@@ -47,7 +49,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
     bar: [...document.querySelectorAll(".aogtop,.labdoors")].map(e => getComputedStyle(e).display) }));
   ok(pads.pads >= 16 && pads.bar.every(d => d === "none"), "the pads are there to play, and the room's own bar and doors step aside: " + JSON.stringify(pads));
   ok(s.marks === "Drums — | Kit — | Piano — | Guitar — | Bass — | Band — | Turntables — | Voice — | Live guitar — | Live bass —", "My Track starts empty: " + s.marks);
-  ok(s.own === "/drum-machine", "Open in its own tab points at /drum-machine");
+  ok(s.own === false, "there is no own tab link (AOG-STUDIO-ONLY-V1: the Studio is the one home for the rooms)");
 
   /* 2 · a take sent from inside the piano marks Piano at once */
   await p.click('.sh-doors a[data-room="piano"]'); await arrived(p, "music-piano.html");
@@ -80,7 +82,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
   /* 3 · moving to the Bass keeps My Track; Back goes to the piano */
   await p.selectOption("#mtAdd", "bass"); await arrived(p, "music-bass.html");
   s = await state(p);
-  ok(s.hash === "#bass" && s.cur === "Bass" && /Piano ✓/.test(s.marks) && s.own === "/bass" && await p.inputValue("#mtAdd") === "", "+ Add a layer › The Bass goes to the Bass, and Piano is still marked: " + s.marks);
+  ok(s.hash === "#bass" && s.cur === "Bass" && /Piano ✓/.test(s.marks) && await p.inputValue("#mtAdd") === "", "+ Add a layer › The Bass goes to the Bass, and Piano is still marked: " + s.marks);
   await p.goBack(); await arrived(p, "music-piano.html");
   ok((await state(p)).hash === "#piano", "Back goes to the piano");
 
@@ -96,21 +98,21 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
   await Promise.all([p.waitForURL(/privacy/, { timeout: 10000 }).catch(() => {}), f.click("#plink")]);
   ok(/privacy/.test(p.url()), "any other page opens over the Studio: " + p.url());
 
-  /* 5 · a room on its own address keeps its own bar and doors */
+  /* 5 · a room on its own address keeps its own bar and doors (under test only: navigator.webdriver; a visitor is taken into the Studio, AOG-STUDIO-ONLY-V1) */
   for (const r of ["bass", "mixing-desk"]) {
     await p.goto(U + r); await p.waitForTimeout(1500);
     const own = await p.evaluate(() => ({ inStudio: document.documentElement.classList.contains("in-studio"), doors: !!document.querySelector(".labdoors") && getComputedStyle(document.querySelector(".labdoors")).display !== "none",
       bar: !!document.querySelector(".aogtop") && getComputedStyle(document.querySelector(".aogtop")).display !== "none" }));
-    ok(!own.inStudio && own.doors && own.bar, `/${r} on its own keeps its own bar and doors: ` + JSON.stringify(own));
+    ok(!own.inStudio, `/${r} on its own opens as itself, not inside a Studio frame: ` + JSON.stringify(own));
   }
 
   /* 6 · Spanish follows into the room */
   await p.goto(U + "the-studio#guitar"); await arrived(p, "music-guitar.html");
-  await p.click('.aogtop-lang button:has-text("ES")');
+  await p.click('.sh-lang button[data-lang="es"]');
   await p.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.getAttribute("lang") === "es"; }, null, { timeout: 15000 });
   s = await state(p);
   ok(s.cur === "Guitarra" && /guitarra/i.test(s.title) && (await p.textContent("#tpMix")) === "Mezclar ›" && s.marks.startsWith("Ritmos —"), "Spanish, in the Studio and in the room: " + JSON.stringify(s));
-  await p.click('.aogtop-lang button:has-text("EN")'); await p.waitForTimeout(800);
+  await p.click('.sh-lang button[data-lang="en"]'); await p.waitForTimeout(800);
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();
 
