@@ -1388,9 +1388,13 @@ function prepare(id){
   if(!snd || snd.kind!=="pluck") return;
   Object.keys(SETS).forEach(k=>{ if(k!==id) delete SETS[k]; });     /* one instrument's notes at a time, kind to a phone */
   const todo=SAMPLE_NOTES.slice();
+  /* AOG-STRINGS-PREP-LIGHT-V1 (2026-10-11, Jimmy: "SUPER MAN SPEED!"): a few notes at a time, in short turns with room
+     between them, so the page stays quick to the touch while they are made (it took three quarters of a phone's time);
+     and when the real recordings are coming, a moment's wait first: they usually arrive before it is over, and then
+     nothing needs making. A note played before it is made is made at once, as before. */
   const step=()=>{ if(r && soundReady(id)) return;
-    const t0=performance.now(); while(todo.length && performance.now()-t0<12) noteBuf(id, todo.shift()); if(todo.length) prepJob=setTimeout(step, 16); };
-  prepJob=setTimeout(step, 40);
+    const t0=performance.now(); while(todo.length && performance.now()-t0<6) noteBuf(id, todo.shift()); if(todo.length) prepJob=setTimeout(step, 30); };
+  prepJob=setTimeout(step, r ? 1200 : 40);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

@@ -236,6 +236,29 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     return "pads";
   }
   var steps = 0;   /* rooms walked through inside the Studio, so Back can leave it in one tap */
+  /* AOG-STUDIO-KEEP-V1 (2026-10-11) — Jimmy: "make SURE IT IS the fastest it can be! SUPER MAN SPEED!" A room used to be
+     thrown away at every door and built again from nothing on the way back (its page read, its scripts run, its sounds
+     made ready: two or three seconds on a phone). Now the last rooms you were in stay open, out of sight, so going back
+     is at once and the room is just as you left it. A room out of sight is silent (AOGVU.hush), and wakes as if you had
+     come back to it (its own "focus", so it picks up what the other rooms sent while you were away). Three stay open
+     (two on a phone, kind to its memory); the one used longest ago closes. */
+  var LIVE = {}, RECENT = [], KEEP = Math.min(screen.width || 0, screen.height || 0) < 600 ? 2 : 3;
+  function hush(f, on) {
+    try { var w = f.contentWindow; if (!w) return;
+      if (w.AOGVU && w.AOGVU.hush) w.AOGVU.hush(on);
+      else if (w.__aogStudio && w.__aogStudio.AC) {   /* the Mixing Desk has its own meters, and its own player */
+        var ac = w.__aogStudio.AC;
+        if (on && ac.state === "running") { ac.suspend(); f.__hushed = true; } else if (!on && f.__hushed) { f.__hushed = false; ac.resume(); }
+      }
+    } catch (e) {}
+  }
+  function drop(id) { var f = LIVE[id]; delete LIVE[id]; if (f && f !== fr && f.parentNode) f.parentNode.removeChild(f); }
+  /* a room kept from before, now in another language or light: it opens again, as it would have */
+  function stale(f) {
+    try { var d = f.contentDocument.documentElement, h = D.documentElement;
+      return (d.getAttribute("lang") || "en").slice(0, 2) !== (h.getAttribute("lang") || "en").slice(0, 2) || (d.getAttribute("data-theme") || "light") !== (h.getAttribute("data-theme") || "light");
+    } catch (e) { return false; }
+  }
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
@@ -244,12 +267,23 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     cur = id;
     try { localStorage.setItem(KEY, id); } catch (e) {}
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
-    /* the first room loads; after that the room is swapped in place, so the frame adds no step of its own to Back */
-    var url = "/" + r.file; fr.setAttribute("data-file", url);
-    if (AT && AT.id === id) url = AT.url; AT = null;
-    if (fr.getAttribute("src") && fr.contentWindow) { try { fr.contentWindow.location.replace(url); } catch (e) { fr.src = url; } }
-    else fr.src = url;
-    paint();
+    /* a new frame's first page adds no step of its own to Back, so Back still leaves the Studio in one tap */
+    var url = "/" + r.file;
+    if (AT && AT.id === id) { url = AT.url; drop(id); } AT = null;   /* a link to a place inside the room opens it there */
+    var keep = LIVE[id];
+    if (fr.getAttribute("src")) hush(fr, true);
+    if (keep) fr = keep;
+    else if (!fr.getAttribute("src")) { fr.setAttribute("data-file", "/" + r.file); fr.src = url; LIVE[id] = fr; }
+    else { var n = fr.cloneNode(false); n.removeAttribute("id"); n.removeAttribute("src"); n.setAttribute("data-file", "/" + r.file);
+      fr.parentNode.appendChild(n); n.src = url; fr = n; LIVE[id] = n; }
+    for (var k in LIVE) LIVE[k].style.display = LIVE[k] === fr ? "" : "none";
+    RECENT = RECENT.filter(function (x) { return x !== id; }); RECENT.push(id);
+    while (RECENT.length > KEEP) drop(RECENT.shift());
+    if (keep) {
+      if (stale(fr)) { try { fr.contentWindow.location.reload(); } catch (e) {} }
+      else { hush(fr, false); try { fr.contentWindow.dispatchEvent(new Event("focus")); } catch (e) {} }
+    }
+    size(); paint();
   }
   function paint() {
     var r = room(cur), e = es(); if (!r) return;
@@ -311,24 +345,25 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."]
   };
   function tw(k) { return TPW[k][es() ? 1 : 0]; }
+  function att(el, k, v) { if (el.getAttribute(k) !== v) el.setAttribute(k, v); }   /* AOG-STUDIO-SMOOTH-V1: only what changed */
   function paintTp() {
     var R = recOf(), on = !!(R && R.on()), rb = D.getElementById("tpRec"), ab = D.getElementById("tpAdd"), lb = D.getElementById("tpListen");
     if (on && !TP.t0) TP.t0 = Date.now(); if (!on) TP.t0 = 0;
     var rt = on ? tw("stop") + " " + clock((Date.now() - TP.t0) / 1000) : tw("rec");
     if (rb.textContent !== rt) rb.textContent = rt;
-    rb.setAttribute("aria-pressed", on ? "true" : "false");
-    rb.disabled = !R || !!(R.busy && R.busy());
+    att(rb, "aria-pressed", on ? "true" : "false");
+    var dis = !R || !!(R.busy && R.busy()); if (rb.disabled !== dis) rb.disabled = dis;
     var last = R && !on ? R.last() : null, showAdd = !!(last && !R.sent());
-    ab.hidden = !showAdd; if (ab.textContent !== tw("add")) ab.textContent = tw("add");
+    if (ab.hidden !== !showAdd) ab.hidden = !showAdd; if (ab.textContent !== tw("add")) ab.textContent = tw("add");
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
     /* AOG-STUDIO-SMOOTH-V1: this runs four times a second, so it writes only what changed (a write makes the page lay out again) */
     [["tpMix", "mix"], ["tpOut", "out"]].forEach(function (p) { var b = D.getElementById(p[0]), t = tw(p[1]); if (b.textContent !== t) b.textContent = t; });
     /* AOG-STUDIO-LISTEN-V1: at the desk, Mix › has nowhere to go; the way back to your room takes its place */
     var bk = D.getElementById("tpBack"), br = cur === "studio" && TP.back ? room(TP.back) : null;
-    D.getElementById("tpMix").hidden = cur === "studio"; bk.hidden = !br;
+    var mx = D.getElementById("tpMix"); if (mx.hidden !== (cur === "studio")) mx.hidden = cur === "studio"; if (bk.hidden !== !br) bk.hidden = !br;
     if (br) { var bn = es() ? br.short[1] : br.short[0], bt = "‹ " + bn; if (bk.textContent !== bt) bk.textContent = bt;
-      bk.setAttribute("aria-label", (es() ? "Volver a: " : "Back to the ") + bn); }
+      att(bk, "aria-label", (es() ? "Volver a: " : "Back to the ") + bn); }
     if (TP.line === "tap" && w && w.__aogStudio.AC && w.__aogStudio.AC.state === "running") TP.line = "";
     var ln = TP.line ? tw(TP.line) : ""; var el = D.getElementById("tpLine"); if (el.textContent !== ln) el.textContent = ln;
   }
@@ -411,7 +446,15 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   D.addEventListener("keyup", keyOn);
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
-    arrived: function (id) { if (room(id) && id !== cur) { TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); } size(); }
+    arrived: function (id, w) { if (w && fr.contentWindow !== w) return;   /* AOG-STUDIO-KEEP-V1: a room out of sight never takes the screen */
+      if (room(id) && id !== cur) {
+        /* the room in sight opened another room in its own frame: the frame is now kept under that room's name */
+        for (var k in LIVE) if (LIVE[k] === fr) delete LIVE[k];
+        if (LIVE[id]) drop(id);
+        LIVE[id] = fr; fr.setAttribute("data-file", "/" + room(id).file);
+        RECENT = RECENT.filter(function (x) { return x !== cur && x !== id; }); RECENT.push(id);
+        TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); }
+      size(); }
   };
   D.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
