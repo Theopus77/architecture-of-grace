@@ -181,6 +181,11 @@ The retired classic dashboard (`#screen-admin` in index.html) waits in `<templat
 (AOG-CLASSIC-LATER-V1). Only `?classic=1` builds it; every other visit runs just its code (the check-in needs
 `AOG_OBS` from it) and gets an empty stand-in. Building it on every visit doubled the front page's time on a phone.
 
+Eight screens behind the front page's doors (Framework, Ecosystem, Words, PECS, About, Library, Curriculum, Privacy)
+keep their contents in `<template data-aog-later>` and are built when `showScreen()` opens them (AOG-SCREENS-LATER-V1).
+Edit them inside the template. Only a screen nothing reaches into before it is opened may wait like this: the
+Guide, Pilot, Start Here, Workplace and Store are wired up as the page starts, so they stay built.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
