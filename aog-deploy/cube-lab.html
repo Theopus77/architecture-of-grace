@@ -222,6 +222,39 @@ a.btn { text-decoration:none; }
 .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch; }
 @media print { .no-print { display:none !important; } }
+
+/* AOG-CUBE-CEILING-V1 (2026-10-11) — the named moves, kinds of help, the real-cube check, symbols, the camera, the card */
+.calm .chunk { margin:.1rem 0 .3rem; font-weight:600; color:var(--steel); }
+.calm .cdots { display:flex; flex-wrap:wrap; gap:.3rem; margin:0 0 .7rem; }
+.calm .cdots span { width:.62rem; height:.62rem; border-radius:50%; border:2px solid var(--steel); }
+.calm .cdots span.gap { margin-left:.55rem; }
+.calm .cdots span.done { background:var(--steel); }
+.calm .cdots span.now { background:var(--steel-soft); box-shadow:0 0 0 3px var(--steel-soft); }
+.calm .move-big.quiet { font:500 1.05rem/1.4 var(--sans); color:var(--ink); }
+.note.checkin { background:var(--good-soft); border-radius:12px; padding:.6rem .8rem; margin:0 0 .8rem; }
+.note.checkin p { margin:.1rem 0 .4rem; font-weight:600; }
+/* symbols on the stickers, for telling colors apart without color */
+.stage.symbols .face i::before { content:attr(data-sym); position:relative; font:800 calc(var(--s,64px) * .4)/1 var(--sans); color:var(--lc,#14161a); pointer-events:none; }
+.stage.symbols .face i.flag::before, .stage.symbols.letters .face i.ctr::before { position:absolute; left:8%; top:6%; font-size:calc(var(--s,64px) * .22); }
+.palette .sym { font-weight:800; width:1.2rem; text-align:center; }
+/* the camera: one quiet sheet over the page */
+.cam { position:fixed; inset:0; z-index:2147483600; background:var(--bg); overflow:auto; overscroll-behavior:contain; padding:max(12px, env(safe-area-inset-top)) 16px 24px; }
+.cam .in { max-width:560px; margin:0 auto; display:flex; flex-direction:column; gap:.6rem; }
+.cam h2 { margin:.3rem 0 0; }
+.cam .box { position:relative; width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; background:#000; }
+.cam video { width:100%; height:100%; object-fit:cover; display:block; }
+.cam video.mirror { transform:scaleX(-1); }
+.cam .grid { position:absolute; inset:15%; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); border:3px solid #fff; border-radius:10px; box-shadow:0 0 0 2px #14161a, 0 0 0 999px rgb(0 0 0 / .32); pointer-events:none; }
+.cam .grid span { border:1.5px solid rgb(255 255 255 / .85); }
+.cam .sides { display:flex; gap:.35rem; }
+.cam .sides span { flex:1; height:.5rem; border-radius:999px; background:var(--line); }
+.cam .sides span.done { background:var(--steel); }
+.cam .say { font-weight:600; }
+/* the printed move card: only on paper */
+#printCard { display:none; }
+@media print { body.printing .wrap { display:none !important; } body.printing #printCard { display:block; color:#000; background:#fff; font:400 12pt/1.4 var(--sans); }
+  #printCard table { border-collapse:collapse; width:100%; margin:.4rem 0 .8rem; } #printCard td, #printCard th { border:1px solid #999; padding:.25rem .4rem; text-align:left; vertical-align:top; }
+  #printCard .m { font:700 12pt/1.2 var(--mono); white-space:nowrap; } }
 @media (max-width:420px){ .pad button { min-height:46px; } .panel { padding:.9rem .85rem 1.1rem; } }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
@@ -257,7 +290,7 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
   </div>
   <main class="cube-bench" id="bench">
     <div class="cube-side">
-      <div class="stage" id="stage" role="img" aria-label="A 3D Rubik's Cube">
+      <div class="stage" id="stage" role="img" aria-label="A 3D Rubik's Cube" aria-describedby="cubeDesc">
         <div class="floor"></div>
         <div class="stage-tools no-print"><button type="button" id="stUndo" hidden></button><span class="spacer"></span><button type="button" id="stFront" hidden></button></div>
         <div class="cube-view" id="cubeView"></div>
@@ -268,11 +301,13 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
       <div class="view-row no-print" id="viewRow"></div>
       <div class="pad no-print" id="pad"></div>
       <p class="sr" id="live" aria-live="polite"></p>
+      <p class="sr" id="cubeDesc"></p>
     </div>
     <section class="panel card" id="panel" aria-live="off"></section>
   </main>
   <footer><p id="foot"></p></footer>
 </div>
+<div id="printCard" aria-hidden="true"></div>
 <script src="/aog-cube.js"></script>
 <script>
 (function(){
@@ -362,8 +397,42 @@ const T={
   fixDone:["I did it","Ya lo hice"], fixPeek:["Show the fixed colors","Mostrar los colores arreglados"], fixPeekOff:["Show my cube as it is","Mostrar mi cubo como está"],
   allGood:["Your cube is ready. Let's solve it together.","Tu cubo está listo. Vamos a resolverlo juntos."],
   did:["Did {m}","Hecho: {m}"],
+  /* AOG-CUBE-CEILING-V1 (2026-10-11) — Jimmy: "DO them all": the next list, all of it. */
+  hint2:["Two fingers swiped left or right turn the whole cube.","Dos dedos deslizados a la izquierda o a la derecha giran el cubo entero."],
+  levelH:["Help","Ayuda"], lvEvery:["Every move","Cada movimiento"], lvHint:["A hint","Una pista"], lvOwn:["On my own","Yo solo"],
+  showMove:["Show me the move","Muéstrame el movimiento"], giveHint:["Give me a hint","Dame una pista"],
+  ownLine:["You lead. Tap Give me a hint any time.","Tú guías. Toca Dame una pista cuando quieras."],
+  hintLine:["Here is the goal. Try the moves, or tap Show me the move.","Esta es la meta. Prueba los movimientos o toca Muéstrame el movimiento."],
+  lessHelp:["Ready for less help? Choose Help: A hint for your next cube.","¿Listo para menos ayuda? Elige Ayuda: Una pista para tu próximo cubo."],
+  drillBtn:["Practice {s}","Practicar {s}"], drillK:["Practice · {s}","Práctica · {s}"],
+  drillDone:["Done! {s} is finished.","¡Listo! {s} está terminado."], again:["Again","Otra vez"], wholeAgain:["Back to a whole cube","Volver a un cubo entero"],
+  chunkReady:["Getting ready for the {n}.","Preparando los {n}."], chunkNow:["The {n}. You'll use these again and again.","Los {n}. Los usarás una y otra vez."],
+  chunkLetters:["In letters: {s}","En letras: {s}"], chunkRounds:["Do them until the corner drops in, white side down.","Hazlos hasta que la esquina baje, con el blanco abajo."],
+  checkIn:["Step done. Look at your cube: does it look like the screen? Check the front and the back.","Paso terminado. Mira tu cubo: ¿se ve como la pantalla? Revisa el frente y atrás."],
+  checkYes:["Yes, it matches","Sí, coincide"],
+  symbols:["Symbols","Símbolos"], voice:["Read aloud","Leer en voz alta"],
+  printCard:["Print a move card","Imprimir una tarjeta de movimientos"], cardH:["The Cube Lab · move card","El laboratorio del cubo · tarjeta de movimientos"],
+  cardMoves:["The moves","Los movimientos"], cardTricks:["The moves for each step","Los movimientos de cada paso"], cardHold:["Hold the cube with white on the bottom. A letter turns that side clockwise, as if you look straight at it. ' turns it the other way. 2 turns it twice.","Sostén el cubo con el blanco abajo. Una letra gira ese lado como las agujas del reloj, mirándolo de frente. ' lo gira al revés. 2 lo gira dos veces."],
+  camBtn:["Use the camera","Usar la cámara"], camH:["Show each side to the camera","Muestra cada lado a la cámara"],
+  camPrivacy:["The picture stays on this device. Nothing is saved or sent.","La imagen se queda en este aparato. No se guarda ni se envía nada."],
+  camTake:["This side","Este lado"], camRetake:["Back one side","Un lado atrás"], camClose:["Close","Cerrar"], camSwitch:["Switch camera","Cambiar cámara"],
+  camN:["Side {i} of 6","Lado {i} de 6"],
+  cam1:["Hold any side toward the camera, inside the square. This is the front. Keep the same side on top.","Pon cualquier lado frente a la cámara, dentro del cuadro. Este es el frente. Deja el mismo lado arriba."],
+  cam2:["Turn the whole cube to the left, a quarter turn. The top stays on top.","Gira todo el cubo a la izquierda, un cuarto de vuelta. Lo de arriba sigue arriba."],
+  cam3:["Turn it to the left again.","Gíralo otra vez a la izquierda."],
+  cam4:["Turn it to the left once more.","Gíralo una vez más a la izquierda."],
+  cam5:["Turn it left again, so the front faces the camera. Now tip the top toward the camera.","Gíralo a la izquierda otra vez, para que el frente mire a la cámara. Ahora inclina la parte de arriba hacia la cámara."],
+  cam6:["Now tip it all the way the other way, so the bottom faces the camera.","Ahora inclínalo del todo al otro lado, para que la parte de abajo mire a la cámara."],
+  camNo:["The camera did not open. You can paint the colors by tapping instead.","La cámara no se abrió. Puedes pintar los colores tocando los cuadros."],
+  camDone:["Here is what the camera saw. Check each side, and tap a square to fix it. Then tap Check my cube.","Esto es lo que vio la cámara. Revisa cada lado y toca un cuadro para corregirlo. Luego toca Revisa mi cubo."],
+  descH:["The cube's sides, each read from its top-left square:","Los lados del cubo, cada uno leído desde su cuadro de arriba a la izquierda:"],
   sideName:{U:["top","arriba"],D:["bottom","abajo"],F:["front","frente"],B:["back","atrás"],R:["right","derecha"],L:["left","izquierda"]}
 };
+/* the named moves (the same names as in Learn), so a learner sees them as one thing to know */
+const TRICK={sexy:["corner moves","movimientos de esquina"], midRight:["right-hand moves","movimientos a la derecha"], midLeft:["left-hand moves","movimientos a la izquierda"],
+  ycross:["yellow cross moves","movimientos de la cruz amarilla"], sune:["yellow top moves","movimientos de la cara amarilla"], aperm:["corner swap moves","movimientos para cambiar esquinas"], uperm:["edge cycle moves","movimientos para girar aristas"]};
+const TRICK_OF={cornerIn:"sexy", cornerOut:"sexy", midRight:"midRight", midLeft:"midLeft", midOut:"midRight", ycross_dot:"ycross", ycross_ell:"ycross", ycross_line:"ycross",
+  sune0:"sune", sune1:"sune", sune2:"sune", aperm:"aperm", aperm0:"aperm", uperm:"uperm", uperm0:"uperm"};
 const COLN={W:["white","blanco"],Y:["yellow","amarillo"],G:["green","verde"],B:["blue","azul"],O:["orange","naranja"],R:["red","rojo"],P:["purple","morado"],K:["pink","rosa"],"?":["not painted","sin pintar"]};
 const STAGE_NAMES={hold:["Hold it","Sostenlo"],cross:["The white cross","La cruz blanca"],corners:["The white corners","Las esquinas blancas"],middle:["The middle layer","La capa del medio"],
   ycross:["The yellow cross","La cruz amarilla"],yface:["The yellow top","La cara amarilla"],ycorners:["The yellow corners","Las esquinas amarillas"],done:["The yellow edges","Las aristas amarillas"]};
@@ -530,7 +599,7 @@ const L=[
 ];
 
 /* ── saved place ── */
-const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, level:"every", drill:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
@@ -553,6 +622,9 @@ function note(p){ const v={}; Object.keys(p.vars||{}).forEach(k => { const x=p.v
 
 /* ── drawing the cube ── */
 const COL={W:"#f4f3ee",Y:"#ffd43b",G:"#23a159",B:"#2a62c9",O:"#ff7e1f",R:"#d2303b",P:"#7d3cc0",K:"#ff7eb6","?":"#9aa1aa"};
+/* AOG-CUBE-SYMBOLS-V1 — a shape for each color (Symbols: on), so no one has to tell colors apart by color alone */
+const SYM={W:"○",Y:"△",G:"◇",B:"□",O:"✕",R:"+",P:"★",K:"♥","?":""};
+let turnFocus=null;   /* AOG-CUBE-PREVIEW-V1: the pieces of a turn under way; the rest steps back while it turns */
 const INK={W:"#14161a",Y:"#14161a",G:"#0d1310",B:"#ffffff",O:"#14161a",R:"#ffffff",P:"#ffffff",K:"#14161a","?":"#14161a"};
 /* AOG-CUBE-COLORS-V1 (2026-10-10) — Jimmy: "On this cube, I have yellow, green, purple, red, white, blue." Cubes come in
    other colors. Inside, the solver always names a side by its home (U is "Y", R is "O" …); S.scheme says what color the
@@ -579,7 +651,7 @@ function build(){
       const fe=document.createElement("div"); fe.className="face f"+f; fe.dataset.i=i; fe.dataset.f=f;
       let st=null, sh=null, lab=null;
       if(p.cols[f]){ st=document.createElement("i"); sh=document.createElement("b"); st.appendChild(sh);
-        if(p.kind===1){ lab=document.createElement("span"); st.appendChild(lab); }
+        if(p.kind===1){ lab=document.createElement("span"); st.appendChild(lab); st.classList.add("ctr"); }
         fe.appendChild(st); }
       el.appendChild(fe); faces[f]={fe, st, sh, lab};
     });
@@ -626,15 +698,15 @@ function render(anim){
     for(const f in p.cols){
       const F=E.faces[f]; const n=C.mulV(M, C.FACES[f]), nv=toView(n);
       const lit=Math.max(0, nv[0]*LIGHT[0]+nv[1]*LIGHT[1]+nv[2]*LIGHT[2]);
-      const dimmed=!painting && !anim && focusSet && !focusSet.has(i);
-      F.sh.style.opacity=painting ? "0" : dimmed ? "0.62" : (0.24*(1-lit)).toFixed(3);   /* painting: flat colours, so white never reads as grey */
+      const fs=turnFocus || focusSet, dimmed=!painting && !anim && fs && !fs.has(i);
+      F.sh.style.opacity=painting ? "0" : dimmed ? (turnFocus ? "0.42" : "0.62") : (0.24*(1-lit)).toFixed(3);   /* a turn under way: the rest of the cube steps back */   /* painting: flat colours, so white never reads as grey */
       if(anim) continue;
       const wf=C.faceOf(n.map(Math.round));
       const pk=SHOW.pos(p).join(","), k2=pk+"|"+wf;
       const col=!painting ? disp(p.cols[f]) : (peek && doctor) ? (doctor.raw[k2]||"?") : (S.paint[k2] || (p.kind===1 ? S.scheme[wf] : "?"));
       const flag=painting ? (p.kind>1 && flags.some(q => q.join(",")===pk)) : (!goalView && i===markIdx);   /* the piece to watch */
       if(F.flag!==flag){ F.st.classList.toggle("flag", flag); F.flag=flag; }
-      if(F.col!==col){ F.st.style.setProperty("--c", COL[col]); F.st.style.setProperty("--lc", INK[col]); F.col=col; }
+      if(F.col!==col){ F.st.style.setProperty("--c", COL[col]); F.st.style.setProperty("--lc", INK[col]); F.st.setAttribute("data-sym", SYM[col]||""); F.col=col; }
       if(F.lab){ const txt=(S.letters && !painting) ? wf : ""; if(F.lab.textContent!==txt) F.lab.textContent=txt; }
     }
   });
@@ -659,6 +731,7 @@ function nearArrow(sx, sy){
 function stageXY(cx, cy){ const r=stage.getBoundingClientRect(), k=r.width/(stage.offsetWidth||r.width); return [(cx-r.left)/k-stage.clientLeft, (cy-r.top)/k-stage.clientTop]; }
 function drawArrow(){
   const svg=$("arrow"); if(!svg) return;
+  if(drag && arrowGeo){ if(svg.innerHTML) svg.innerHTML=""; return; }   /* a hand is following the arrow: keep where it was, out of sight */
   const mv=arrowTok && !painting && !busy && !drag ? C.parse(arrowTok) : null;
   if(!mv){ arrowGeo=null; if(svg.innerHTML) svg.innerHTML=""; return; }
   const proj=projector(), n=mv.n, c0=mv.sel==="all"?0:mv.sel, sgn=mv.q<0?-1:1;
@@ -711,10 +784,11 @@ function pump(){
     if(!dur){ cube.move(mv); after(job); continue; }
     busy=true;
     const set=layerSet(mv), total=-mv.q*Math.PI/2, t0=performance.now();
+    if(mv.sel!=="all"){ turnFocus=set; render(); }
     const frame=now => {
       const k=Math.min(1,(now-t0)/dur), e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
       if(k<1){ render({a:mv.n, set, th:total*e}); requestAnimationFrame(frame); }
-      else { cube.move(mv); busy=false; after(job); pump(); }
+      else { cube.move(mv); busy=false; turnFocus=null; after(job); pump(); }
     };
     requestAnimationFrame(frame);
     return;
@@ -743,6 +817,8 @@ function after(job){
     S.mix.stage=Math.max(S.mix.stage||0, sn); }
   if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(Math.max(0, now-S.mix.last), 30000); S.mix.last=now; S.mix.moves++; }
   if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves, by:S.mix.by||{}, help:S.mix.help||{}}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
+  if(S.real && S.view==="solve"){ const sn=C.stageOf(cube); if(sn>(S.realStage||0) && !cube.solved()) checkIn=true; S.realStage=Math.max(S.realStage||0, sn); }
+  if(job.src!=="undo" && job.src!=="guide" && job.src!=="play") acted=true;
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
   if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
   save(); panel(); bar();
@@ -769,7 +845,7 @@ function chips(moves, at){ return `<div class="chips" aria-label="${esc(moves.jo
    outline, never a pulse), say why the moves work, show progress that names what it counts, show the finished step on
    request, list the last moves in words, say when the cube left the guided path, Enter / Backspace on a keyboard, and
    a quiet finish that hands over to solving alone. No sounds and nothing that moves on its own (CLAUDE.md). */
-let markIdx=-1, goalView=null, offPath=false, focusSet=null;
+let markIdx=-1, goalView=null, offPath=false, focusSet=null, checkIn=false, acted=false;
 /* AOG-CUBE-FOCUS-V1 (2026-10-11) — "Dim the rest" (optional, S.focus): everything but the piece to watch is darkened;
    with no single piece, the row about to turn stays bright. Still, never a pulse. */
 function focusOf(){
@@ -801,26 +877,59 @@ function goalOf(){
   const c=cube.clone(); n.g.flat.slice(n.g.i).filter(x => x.si===n.f.si).forEach(x => c.move(x.tok));
   return c;
 }
+/* AOG-CUBE-CHUNKS-V1 — where the part's named moves start (the turns before them only get the cube ready), and
+   how many rounds of them it takes. Simplifying can fold a ready-up turn into the first named move; then that move
+   counts as the start. */
+function chunkOf(p){
+  const id=TRICK_OF[p.note]; if(!id) return null;
+  const one=C.split(C.ALG[id]), reps=p.note==="cornerIn" ? (+(p.vars||{}).n||1) : 1, seq=[].concat(...Array(reps).fill(one)), m=p.moves;
+  const tail=k => m.length>=k && seq.slice(seq.length-k).every((x,i) => x===m[m.length-k+i]);
+  const start = tail(seq.length) ? m.length-seq.length : tail(seq.length-1) ? m.length-seq.length : -1;
+  return start<0 ? null : {id, start, len:one.length, reps};
+}
+/* AOG-CUBE-LEVELS-V1 — three kinds of help, chosen by the learner (S.level): every move (the move and its arrow),
+   a hint (the goal and the piece to watch; the move waits for a tap), on my own (the step only; a hint waits for a
+   tap). Taps reveal more for this part only. */
+let reveal={k:"", n:0};
+const LEVEL_N={every:2, hint:1, own:0};
 function partCard(onlyStage){
   const n=guideNow(); if(!n) return "";
   const stIdx=C.STAGES.indexOf(n.st.key);
   if(onlyStage!==undefined && n.st.key!=="hold" && stIdx!==onlyStage) return "";
   const at=n.p.moves.length-n.left, tok=n.f.tok;
-  arrowTok=tok; markIdx=pieceOf(n.p);
+  const rk=n.f.si+":"+n.f.pi+":"+n.p.note, lv=S.view==="solve" ? (LEVEL_N[S.level]??2) : 2;
+  if(reveal.k!==rk) reveal={k:rk, n:lv};
+  const show=Math.max(lv, reveal.n);
+  if(show>=2) arrowTok=tok;
+  if(show>=1) markIdx=pieceOf(n.p);
   const last=S.hist.slice(-3).map(words);
-  return `<div class="calm">${offPath?`<p class="note">${esc(t("offPath"))}</p>`:""}<p class="aim">${esc(aim(n.p))}</p>
-    <p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>
+  const ch=chunkOf(n.p);
+  let chunk="";
+  if(ch && show>=1){
+    const name=tx(TRICK[ch.id]);
+    if(at<ch.start) chunk=`<p class="chunk">${esc(t("chunkReady",{n:name}))}</p>`;
+    else { const k=at-ch.start, dots=[]; for(let i=0;i<ch.len*ch.reps;i++) dots.push(`<span class="${i<k?"done":i===k?"now":""}${i && i%ch.len===0?" gap":""}"></span>`);
+      chunk=`<p class="chunk">${esc(t("chunkNow",{n:name}))}${ch.reps>1?" "+esc(t("chunkRounds")):""}</p><p class="cdots" aria-hidden="true">${dots.join("")}</p>`; }
+  }
+  const moveRow = show>=2
+    ? `<p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>`
+    : `<p class="move-big quiet">${esc(t(show===1?"hintLine":"ownLine"))}</p>`;
+  const main = show>=2 ? `<button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>`
+    : `<button type="button" class="btn btn-steel big" data-act="reveal">${esc(t(show===1?"showMove":"giveHint"))}</button>`;
+  return `<div class="calm">${offPath?`<p class="note">${esc(t("offPath"))}</p>`:""}${show>=1?`<p class="aim">${esc(aim(n.p))}</p>`:""}
+    ${chunk}${moveRow}
     <!-- Jimmy: "Move 8 of 8 to me still makes no sense." The card says only the goal and the move. -->
-    <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>
+    <div class="btn-row">${main}
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
     <p class="keys">${esc(t("keysLine"))}</p>
-    <div class="btn-row"><button type="button" class="btn goal" data-act="goal" aria-pressed="${!!goalView}">${esc(t(goalView?"goalOff":"goalOn"))}</button>
-    <button type="button" class="btn goal" data-act="focus" aria-pressed="${!!S.focus}">${esc(t(S.focus?"focusOff":"focusOn"))}</button></div>
-    <details class="more"><summary>${esc(t("tellMore"))}</summary>
+    ${show>=1?`<div class="btn-row"><button type="button" class="btn goal" data-act="goal" aria-pressed="${!!goalView}">${esc(t(goalView?"goalOff":"goalOn"))}</button>
+    <button type="button" class="btn goal" data-act="focus" aria-pressed="${!!S.focus}">${esc(t(S.focus?"focusOff":"focusOn"))}</button></div>`:""}
+    ${show>=1?`<details class="more"><summary>${esc(t("tellMore"))}</summary>
     <p><strong>${esc(t("whyH"))}</strong> ${esc(tx(WHY[n.p.note])||"")}</p><p>${esc(note(n.p))}</p>
+    ${ch?`<p>${esc(t("chunkLetters",{s:C.ALG[ch.id]}))}</p>`:""}
     ${last.length?`<p><strong>${esc(t("lastH"))}</strong></p><ol class="last">${last.map(w=>`<li>${esc(w)}</li>`).join("")}</ol>`:""}
     <div class="btn-row"><button type="button" class="btn" data-act="gpart">${esc(t("doPart"))}</button>
-    ${S.real?`<button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button>`:""}</div></details></div>`;
+    ${S.real?`<button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button>`:""}</div></details>`:""}</div>`;
 }
 function algBox(a, k){
   const moves=C.split(a.s), at=(algAt.k===k)?algAt.i:-1;
@@ -860,7 +969,8 @@ function learnHtml(){
     else if(S.showHint) h+=`<div class="alg">${partCard(l.stage)}</div>`;
   }
   h+=`<div class="lesson-nav"><button type="button" class="btn" data-act="prev" ${i===0?"disabled":""}>← ${esc(t("back"))}</button>
-    <button type="button" class="btn ${S.done[i]?"btn-good":""}" data-act="nextLesson" ${i===L.length-1?"disabled":""}>${esc(t("next"))} →</button></div>`;
+    <button type="button" class="btn ${S.done[i]?"btn-good":""}" data-act="nextLesson" ${i===L.length-1?"disabled":""}>${esc(t("next"))} →</button></div>
+    <div class="btn-row quiet"><button type="button" class="btn" data-act="print">${esc(t("printCard"))}</button></div>`;
   return h;
 }
 function solveHtml(){
@@ -872,23 +982,35 @@ function solveHtml(){
       let tip=-1, most=0; Object.keys(help).forEach(k => { if(help[k]>most){ most=help[k]; tip=+k; } });
       h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:R.moves}))}</p>`;
       h+=`<p>${esc(tip>=0 ? t("practiceTip",{s:tx(STAGE_NAMES[C.STAGES[tip]]).toLowerCase()}) : t("nextPractice"))}</p>`;
+      if((S.level||"every")==="every") h+=`<p class="muted">${esc(t("lessHelp"))}</p>`;
+      if(tip>=0) h+=`<div class="btn-row start"><button type="button" class="btn btn-steel big" data-act="drill" data-stage="${tip}">${esc(t("drillBtn",{s:tx(STAGE_NAMES[C.STAGES[tip]]).toLowerCase()}))}</button></div>`;
       if(Object.keys(by).length) h+=`<details class="more"><summary>${esc(t("bySteps"))}</summary><ol class="last">${C.STAGES.map((k,i)=>by[i]?`<li>${esc(tx(STAGE_NAMES[k]))}: ${esc(t("nMoves",{n:by[i]}))}</li>`:"").join("")}</ol></details>`;
       h+=`<div class="btn-row start"><button type="button" class="btn btn-good big" data-act="own">${esc(t("ownTry"))}</button></div>`; }
     return h+`<div class="btn-row start"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
   }
+  /* AOG-CUBE-DRILL-V1 — practising one step: when it is done, say so, and offer it again */
+  if(S.drill!=null && at>S.drill){ const nm=tx(STAGE_NAMES[C.STAGES[S.drill]]);
+    return `<p class="kicker">${esc(t("drillK",{s:nm}))}</p><p class="state ok">${esc(t("drillDone",{s:nm}))}</p>
+      <div class="btn-row start"><button type="button" class="btn btn-good big" data-act="drill" data-stage="${S.drill}">${esc(t("again"))}</button>
+      <button type="button" class="btn big" data-act="undrill">${esc(t("wholeAgain"))}</button></div>`; }
   const n=guideNow(), key=n ? n.st.key : "done", si=Math.max(0, C.STAGES.indexOf(key));
+  /* AOG-CUBE-CHECKIN-V1 — with a real cube, after each step: does yours look like the screen? */
+  const ci=(S.real && checkIn) ? `<div class="note checkin"><p>${esc(t("checkIn"))}</p><div class="btn-row"><button type="button" class="btn btn-good" data-act="checkYes">${esc(t("checkYes"))}</button><button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button></div></div>` : "";
+  const lvSel=`<label class="startat"><span>${esc(t("levelH"))}</span><select id="levelSel">${[["every","lvEvery"],["hint","lvHint"],["own","lvOwn"]].map(([v,k])=>`<option value="${v}" ${(S.level||"every")===v?"selected":""}>${esc(t(k))}</option>`).join("")}</select></label>`;
   const dots=C.STAGES.map((k,i)=>`<span class="dot ${i<at?"done":i===si?"now":""}"></span>`).join("");
-  return `<p class="kicker">${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
+  return `${ci}<p class="kicker">${esc(S.drill!=null ? t("drillK",{s:tx(STAGE_NAMES[C.STAGES[S.drill]])}) : t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
     <div class="dots" role="img" aria-label="${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}">${dots}</div>
     ${(()=>{ const pr=stageProgress(key==="hold"?"cross":key); return pr?`<p class="progress">${esc(pr)}</p>`:""; })()}
     ${partCard()}
+    <div class="btn-row quiet">${lvSel}</div>
     <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button>
     ${S.real?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${C.STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
 }
 function mineHtml(){
   const count={}; Object.values(rawPaint()).forEach(c => { count[c]=(count[c]||0)+1; });
   let h=`<h2>${esc(t("vMine"))}</h2><p>${esc(t("mineIntro"))}</p><ol class="steps">${["mine1","mine2","mine3","mine4"].map(k=>`<li>${esc(t(k))}</li>`).join("")}</ol>
-    <div class="palette" role="group" aria-label="${esc(t("hintPaint"))}">`+"WYGBORPK".split("").map(c=>`<button type="button" data-brush="${c}" class="${S.brush===c?"on":""}" aria-pressed="${S.brush===c}"><span class="sw" style="background:${COL[c]}"></span>${esc(cn(c))}<span class="n">${count[c]||0}/9</span></button>`).join("")+`</div>
+    <div class="palette" role="group" aria-label="${esc(t("hintPaint"))}">`+"WYGBORPK".split("").map(c=>`<button type="button" data-brush="${c}" class="${S.brush===c?"on":""}" aria-pressed="${S.brush===c}"><span class="sw" style="background:${COL[c]}"></span>${S.symbols?`<span class="sym" aria-hidden="true">${SYM[c]}</span>`:""}${esc(cn(c))}<span class="n">${count[c]||0}/9</span></button>`).join("")+`</div>
+    <div class="btn-row"><button type="button" class="btn btn-steel" data-act="camera">${esc(t("camBtn"))}</button></div>
     <div class="btn-row"><button type="button" class="btn btn-steel" data-act="checkMine">${esc(t("check"))}</button><button type="button" class="btn" data-act="clearMine">${esc(t("clear"))}</button><button type="button" class="btn" data-act="copyMine">${esc(t("fromScreen"))}</button></div>`;
   if(mineMsg) h+=`<p class="state ${mineMsg.ok?"ok":"warn"}">${esc(mineMsg.text)}</p>`;
   if(doctor) h+=fixHtml();
@@ -922,10 +1044,13 @@ function panel(){
   el.innerHTML = S.view==="solve" ? solveHtml() : S.view==="mine" ? mineHtml() : learnHtml();
   el.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
   el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
-  const sa=el.querySelector("#startAt"); if(sa) sa.onchange=()=>{ if(sa.value!==""){ setup(+sa.value); S.real=false; S.mix={t0:null,moves:0}; S.result=null; save(); panel(); } };
+  const sa=el.querySelector("#startAt"); if(sa) sa.onchange=()=>{ if(sa.value!==""){ S.drill=null; setup(+sa.value); S.real=false; S.mix={t0:null,moves:0}; S.result=null; save(); panel(); } };
   el.querySelectorAll("[data-brush]").forEach(b => b.onclick=()=>{ S.brush=b.getAttribute("data-brush"); save(); panel(); });
+  const lv=el.querySelector("#levelSel"); if(lv) lv.onchange=()=>{ S.level=lv.value; reveal={k:"",n:0}; save(); panel(); };
+  el.querySelectorAll("[data-stage]").forEach(b => b.onclick=()=>{ S.drill=+b.getAttribute("data-stage"); setup(S.drill); S.drill=+b.getAttribute("data-stage"); save(); panel(); });
   focusSet=focusOf();
   if(!busy) render(); else drawArrow();   /* the piece to watch and the arrow follow the card */
+  describe(); speakMove();
 }
 function playAlg(k, how){
   const [li,ai]=k.split(":").map(Number), moves=C.split(L[li].algs[ai].s);
@@ -935,17 +1060,22 @@ function playAlg(k, how){
 }
 
 function act(a){
-  const i=S.lesson;
+  const i=S.lesson; acted=true;
   if(a==="ready"){ S.done[i]=1; save(); panel(); bar(); }
   else if(a==="prev"){ pick(i-1); }
   else if(a==="nextLesson"){ pick(i+1); }
-  else if(a==="mix"){ stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; setTimeout(showBench, 0); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
-  else if(a==="fresh"){ stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
+  else if(a==="mix"){ S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; setTimeout(showBench, 0); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
+  else if(a==="fresh"){ S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
   else if(a==="setup"){ setup(L[i].stage); }
   else if(a==="hint"){ S.showHint=true; panel(); }
   else if(a==="gnext"){ const n=guideNow(); if(n && !busy && !queue.length) enqueue([n.f.tok],"guide"); }
   else if(a==="gpart"){ const n=guideNow(); if(n && !busy && !queue.length){ const rest=n.g.flat.slice(n.g.i, n.g.i+n.left).map(x=>x.tok); runner={left:rest.length}; enqueue(rest,"guide"); panel(); } }
   else if(a==="focus"){ S.focus=!S.focus; save(); panel(); }
+  else if(a==="reveal"){ reveal.n=Math.min(2, reveal.n+1); acted=true; panel(); }
+  else if(a==="undrill"){ S.drill=null; act("mix"); }
+  else if(a==="checkYes"){ checkIn=false; panel(); }
+  else if(a==="camera"){ camOpen(); }
+  else if(a==="print"){ printCard(); }
   else if(a==="startAt"){ /* handled by the select */ }
   else if(a==="goal"){ goalView = goalView ? null : goalOf(); render(); panel(); }
   else if(a==="repaint"){ act("copyMine"); location.hash="mine"; }
@@ -986,7 +1116,7 @@ function checkMine(){
   const r=C.fromFacelets(cols);
   if(r.error==="twist") mineMsg={ok:false, text:t("errTwist")};
   else if(r.error) mineMsg={ok:false, text:t("errPiece")};
-  else { mineMsg={ok:true, text:t("allGood")}; cube=r.cube; cubeBeforePaint=null; painting=false; S.real=true; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; guide=null; save(); location.hash="solve"; return; }
+  else { mineMsg={ok:true, text:t("allGood")}; cube=r.cube; cubeBeforePaint=null; painting=false; S.real=true; S.drill=null; S.realStage=C.stageOf(r.cube); checkIn=false; S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; guide=null; save(); location.hash="solve"; return; }
   panel();
 }
 /* a cube with every step before this one done, and this one still to do */
@@ -1029,6 +1159,8 @@ function lookRowHtml(){
 }
 function viewRowHtml(){
   let h="";
+  h+=`<button type="button" class="pill" data-look="symbols" aria-pressed="${!!S.symbols}">${esc(t("symbols"))}: ${esc(t(S.symbols?"on":"off"))}</button>`;
+  if(!painting && window.speechSynthesis) h+=`<button type="button" class="pill" data-look="voice" aria-pressed="${!!S.voice}">${esc(t("voice"))}: ${esc(t(S.voice?"on":"off"))}</button>`;
   if(!painting) h+=`<button type="button" class="pill" data-look="letters" aria-pressed="${S.letters}">${esc(t("letters"))}: ${esc(t(S.letters?"on":"off"))}</button>
     <label class="sr" for="speedSel">${esc(t("speed"))}</label><select id="speedSel" aria-label="${esc(t("speed"))}">${["slow","normal","instant"].map(k=>`<option value="${k}" ${S.speed===k?"selected":""}>${esc(t("speed"))}: ${esc(t(k))}</option>`).join("")}</select>`;
   return h;
@@ -1047,13 +1179,14 @@ function paintAll(){
   if(painting){ cubeBeforePaint = cubeBeforePaint || cube; cube=new C.Cube(); }
   else if(cubeBeforePaint){ if(cube.toJSON()===new C.Cube().toJSON()) cube=cubeBeforePaint; cubeBeforePaint=null; }
   stage.classList.toggle("painting", painting);
+  stage.classList.toggle("symbols", !!S.symbols); stage.classList.toggle("letters", !!S.letters && !painting);
   $("bench").classList.toggle("solving", S.view==="solve");
   document.documentElement.lang=S.lang;
   document.title=t("app")+" — Architecture of Grace";
   $("brand").textContent=t("app"); $("mastK").textContent=t("eyebrow"); $("mastH").textContent=t("app"); $("mastL").textContent=t("tag");
   $("langBtn").textContent=es()?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?(es()?"Claro":"Light"):(es()?"Oscuro":"Dark");
-  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):S.view==="solve"?t(S.real?"hintSolveReal":"hintSolve"):t("hint");
+  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):S.view==="solve"?t(S.real?"hintSolveReal":"hintSolve"):t("hint")+(matchMedia("(pointer:coarse)").matches?" "+t("hint2"):"");
   stage.setAttribute("aria-label", es()?"Un cubo de Rubik en 3D":"A 3D Rubik's Cube");
   $("pad").innerHTML=padHtml(); $("viewRow").innerHTML=viewRowHtml(); $("lookRow").innerHTML=lookRowHtml();
   $("pad").querySelectorAll("[data-mv]").forEach(b => b.onclick=()=>{ if(!busy && !queue.length) enqueue([b.getAttribute("data-mv")],"pad"); });
@@ -1061,6 +1194,8 @@ function paintAll(){
   document.querySelectorAll("#viewRow [data-look], #lookRow [data-look]").forEach(b => b.onclick=()=>{
     const k=b.getAttribute("data-look");
     if(k==="front"){ lookTurn(null,0,HOME_VIEW); return; } else if(k==="back"){ lookTurn(null,0,BACK_VIEW); return; }
+    else if(k==="symbols"){ S.symbols=!S.symbols; save(); paintAll(); return; }
+    else if(k==="voice"){ S.voice=!S.voice; if(!S.voice && window.speechSynthesis) speechSynthesis.cancel(); spoken=""; save(); paintAll(); return; }
     else { S.letters=!S.letters; save(); paintAll(); return; }
     render();
   });
@@ -1102,7 +1237,7 @@ function pickSticker(cx, cy){
       const dd=Math.hypot(cv[0]-sx, cv[1]-sy); if(!near || dd<near.d) near={i, f, z:cv[2], d:dd};
     }
   });
-  return best || (near && near.d<size*.62 ? near : null);
+  return best || (near && near.d<Math.min(size*.62, 40) ? near : null);   /* a near miss counts, but not a touch in the space around a big cube */
 }
 /* AOG-CUBE-NOSCROLL-V1 (2026-10-11) — Jimmy (iPad): "It gets stuck here. The screen keeps moving." Safari on an iPad
    and iPhone does not keep to touch-action:none alone: a finger moving on the cube scrolled the page, and the scroll
@@ -1112,8 +1247,23 @@ const keepTap = e => e.target && e.target.closest && e.target.closest("button");
 stage.addEventListener("touchstart", e => { if(!keepTap(e)) e.preventDefault(); }, {passive:false});
 stage.addEventListener("touchmove", e => { e.preventDefault(); }, {passive:false});
 ["gesturestart","gesturechange","gestureend"].forEach(ev => stage.addEventListener(ev, e => e.preventDefault(), {passive:false}));
+/* AOG-CUBE-TWOHANDS-V1 — two fingers on the cube, swiped together, turn the whole cube that way (a swipe left is
+   "turn the whole cube to the left"). A row the first finger had started to turn goes back first. */
+const fingers=new Map();
+stage.addEventListener("pointerdown", e => { fingers.set(e.pointerId,[e.clientX,e.clientY]); }, true);
+stage.addEventListener("pointermove", e => { if(fingers.has(e.pointerId)) fingers.set(e.pointerId,[e.clientX,e.clientY]); }, true);
+["pointerup","pointercancel"].forEach(ev => stage.addEventListener(ev, e => { fingers.delete(e.pointerId); }));
+function midOf(ids){ let x=0,y=0; ids.forEach(id => { const q=fingers.get(id)||[0,0]; x+=q[0]; y+=q[1]; }); return [x/ids.length, y/ids.length]; }
 stage.addEventListener("pointerdown", e => {
   if(e.button>0) return;
+  if(drag && e.pointerId!==drag.id){
+    if(painting || drag.mode==="two" || keepTap(e)) return;
+    if(drag.mode==="turn" && !busy){ turnFocus=null; render(); }
+    const ids=[drag.id, e.pointerId], m=midOf(ids);
+    drag={mode:"two", ids, x:m[0], y:m[1], id:drag.id, turn:null};
+    try{ stage.setPointerCapture(e.pointerId); }catch(_){}
+    return;
+  }
   /* the sticker the browser itself says is under the finger, when it faces us; else the projected one */
   const fe=e.target && e.target.closest && e.target.closest(".face");
   let hit=null;
@@ -1127,6 +1277,7 @@ stage.addEventListener("pointerdown", e => {
 let moveEv=null, moveRAF=0;
 stage.addEventListener("pointermove", e => { moveEv=e; if(!moveRAF) moveRAF=requestAnimationFrame(() => { moveRAF=0; if(moveEv) onMove(moveEv); }); });
 function onMove(e){
+  if(drag && drag.mode==="two"){ moveTwo(); return; }
   if(!drag || e.pointerId!==drag.id) return;
   const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
   if(!drag.mode){
@@ -1170,6 +1321,7 @@ function onMove(e){
       else drag.mode="still";
     } else drag.mode="still";   /* AOG-CUBE-STILL-V1: the space around the cube never moves it */
   }
+  if(drag.mode==="turn" && !drag.lit){ drag.lit=true; turnFocus=drag.turn.set; render(); }
   if(drag.mode==="turn"){ const T2=drag.turn;
     if(T2.wheel){
       const [sx,sy]=stageXY(e.clientX, e.clientY);
@@ -1185,8 +1337,26 @@ function onMove(e){
     } else T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad;
     render({a:T2.a, set:T2.set, th:T2.th}); }
 }
+function moveTwo(){
+  if(busy || queue.length) return;
+  const m=midOf(drag.ids), dx=m[0]-drag.x, dy=m[1]-drag.y;
+  if(!drag.turn){
+    if(Math.hypot(dx,dy)<14) return;
+    /* which way the whole cube goes: the turn whose motion, on the side that faces you, best matches the swipe */
+    const front=C.FACE_NAMES.map(f => C.FACES[f]).sort((a,b) => toView(b)[2]-toView(a)[2])[0], ps=front.map(x=>x*1.5);
+    let best=null;
+    AXES.forEach(a => { if(C.dot(a,front)!==0) return; const v=toView(cross(a, ps)), len=Math.hypot(v[0],v[1]); if(len<1e-6) return;
+      const score=(dx*v[0]+dy*v[1])/(Math.hypot(dx,dy)*len); if(!best || Math.abs(score)>Math.abs(best.score)) best={a, v, len, score}; });
+    if(!best) return;
+    const all=new Set(cube.P.map((_,i)=>i));
+    drag.turn={a:best.a, ux:best.v[0]/best.len, uy:best.v[1]/best.len, pxPerRad:best.len*size*1.015, set:all, th:0, whole:["x","y","z"][AXES.indexOf(best.a)]};
+  }
+  const T2=drag.turn; T2.th=Math.max(-Math.PI/2, Math.min(Math.PI/2, (dx*T2.ux+dy*T2.uy)/T2.pxPerRad));
+  render({a:T2.a, set:T2.set, th:T2.th});
+}
 function endDrag(e){
-  if(!drag || (e && e.pointerId!==drag.id)) return;
+  if(drag && drag.mode==="two"){ if(e && !drag.ids.includes(e.pointerId)) return; drag.mode=drag.turn ? "turn" : "still"; if(!drag.turn){ drag=null; stage.classList.remove("grabbing"); render(); return; } }
+  if(!drag || (e && e.pointerId!==drag.id && !drag.ids)) return;
   const d=drag; drag=null; stage.classList.remove("grabbing");
   if(moveRAF){ cancelAnimationFrame(moveRAF); moveRAF=0; } moveEv=null;
   if(!d.mode && d.face && painting){ paintAt(d.face); return; }
@@ -1196,13 +1366,14 @@ function endDrag(e){
   const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */ from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
   busy=true;
   const finish=() => {
-    busy=false;
+    busy=false; turnFocus=null;
     const q=((quarters%4)+4)%4;
     if(q){
       let base;
       if(T2.arrowMv){ const qq=(((-quarters)%4)+4)%4, tok=T2.arrowMv.base+(qq===2?"2":qq===3?"'":"");
         cube.move(tok); after({tok, src:"hand"}); render(); pump(); return; }
-      if(T2.layer===0) base=["M","E","S"].find(b => Math.abs(C.dot(C.MOVES[b].n, T2.a))===1);
+      if(T2.whole) base=T2.whole;
+      else if(T2.layer===0) base=["M","E","S"].find(b => Math.abs(C.dot(C.MOVES[b].n, T2.a))===1);
       else base="UDRLFB".split("").find(b => C.eqV(C.MOVES[b].n, T2.a.map(x=>x*T2.layer)));
       /* the guide asks to turn the whole cube: a drag along its arrow turns the whole cube */
       const want=arrowTok && C.parse(arrowTok);
@@ -1227,10 +1398,11 @@ function paintAt(fc){
 
 /* keys on a computer: the letter turns that side, Shift turns it back; Ctrl+Z undoes */
 document.addEventListener("keydown", e => {
+  if(cam){ if(e.key==="Escape") camClose(); return; }
   if(painting || e.altKey || /input|select|textarea/i.test((e.target.tagName||""))) return;
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="z"){ e.preventDefault(); act("undo"); return; }
   if(S.view==="solve" && !/^(BUTTON|A|SUMMARY)$/i.test(e.target.tagName||"")){
-    if(e.key==="Enter"){ e.preventDefault(); act("gnext"); return; }
+    if(e.key==="Enter"){ e.preventDefault(); act(document.querySelector('#panel [data-act="reveal"]') ? "reveal" : "gnext"); return; }
     if(e.key==="Backspace"){ e.preventDefault(); act("undo"); return; } }
   if(e.ctrlKey||e.metaKey) return;
   const k=e.key.toLowerCase(), map={u:"U",d:"D",l:"L",r:"R",f:"F",b:"B",x:"x",y:"y",z:"z",m:"M",e:"E",s:"S"};
@@ -1241,7 +1413,139 @@ document.addEventListener("keydown", e => {
 ["stUndo","stFront"].forEach(id => { const b=$(id); b.addEventListener("pointerdown", e => e.stopPropagation()); });
 $("stUndo").onclick=()=>act("undo");
 $("stFront").onclick=()=>lookTurn(null,0,HOME_VIEW);
-window.AOGCubeLab={pick:pickSticker, get cube(){ return cube; }};   /* for the site's checks */
+/* AOG-CUBE-VOICE-V1 — Read aloud (off unless chosen): after the learner does something, the next move is said once,
+   in plain words. Never on its own when the page opens. */
+let spoken="";
+function speakMove(){
+  if(!S.voice || !acted || !window.speechSynthesis || painting || !arrowTok) return;
+  const key=arrowTok+"|"+S.hist.length+"|"+(guide?guide.i:"")+"|"+algAt.i; if(key===spoken) return; spoken=key;
+  const once=$("panel").querySelector(".move-big .once");
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance((once?once.textContent+" ":"")+words(arrowTok)); u.lang=es()?"es-ES":"en-US"; u.rate=.92; speechSynthesis.speak(u); }catch(e){}
+}
+/* AOG-CUBE-DESCRIBE-V1 — for a screen reader: every side's nine colors, top row first */
+function describe(){
+  const el=$("cubeDesc"); if(!el) return;
+  const SH=goalView || cube, raw=painting ? rawPaint() : null;
+  el.textContent=t("descH")+" "+["F","R","B","L","U","D"].map(f => tx(T.sideName[f]).replace(/^./,x=>x.toUpperCase())+": "
+    +C.facelets(f).map(([pos,dir]) => cn(painting ? raw[pos.join(",")+"|"+f] : disp(SH.colorAt(pos,dir)))).join(", ")).join(". ")+".";
+}
+/* AOG-CUBE-CARD-V1 — a move card to print and keep beside a real cube */
+function printCard(){
+  const el=$("printCard"), row=tok => `<tr><td class="m">${esc(tok)}</td><td>${esc(words(tok))}</td><td class="m">${esc(tok+"'")}</td><td>${esc(words(tok+"'"))}</td></tr>`;
+  el.innerHTML=`<h1>${esc(t("cardH"))}</h1><p>${esc(t("cardHold"))}</p><h2>${esc(t("cardMoves"))}</h2>
+    <table>${["U","D","R","L","F","B","y"].map(row).join("")}</table>
+    <h2>${esc(t("cardTricks"))}</h2><table>${L.filter(l => l.algs && l.stage!==undefined).map(l => l.algs.map(a => `<tr><td>${esc(tx(l.t))}</td><td>${esc(tx(a.n))}</td><td class="m">${esc(a.s)}</td></tr>`).join("")).join("")}</table>
+    <p>architectureofgrace.com/cube</p>`;
+  document.body.classList.add("printing");
+  const done=() => { document.body.classList.remove("printing"); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  window.print(); setTimeout(done, 1500);
+}
+/* AOG-CUBE-CAMERA-V1 — read a real cube with the camera, on this device only: six sides, each held up inside the
+   square, then the colors are painted in for the learner to check. Every square goes to the center it is closest to,
+   nine to each, so a dim room or a warm lamp still sorts them; then each center is named by its hue. */
+function toLab(rgb){
+  const f=c => { c/=255; return c<=.04045 ? c/12.92 : Math.pow((c+.055)/1.055, 2.4); };
+  const r=f(rgb[0]), g=f(rgb[1]), b=f(rgb[2]);
+  const X=(r*.4124+g*.3576+b*.1805)/.95047, Y=r*.2126+g*.7152+b*.0722, Z=(r*.0193+g*.1192+b*.9505)/1.08883;
+  const h=v => v>.008856 ? Math.cbrt(v) : 7.787*v+16/116;
+  return [116*h(Y)-16, 500*(h(X)-h(Y)), 200*(h(Y)-h(Z))];
+}
+function hsv(rgb){ const [r,g,b]=rgb.map(x=>x/255), mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn;
+  let h=0; if(d){ h = mx===r ? ((g-b)/d)%6 : mx===g ? (b-r)/d+2 : (r-g)/d+4; h*=60; if(h<0) h+=360; }
+  return [h, mx ? d/mx : 0, mx]; }
+/* typical hues of cube colors; white is the one with little color */
+const HUE={R:355, O:25, Y:55, G:140, B:215, P:275, K:330};
+function nameCenter(rgb, c){
+  const [h,s,v]=hsv(rgb);
+  if(c==="W") return s<.28 ? 0 : 2+s*4;
+  if(s<.2) return 3;
+  const dh=Math.min(Math.abs(h-HUE[c]), 360-Math.abs(h-HUE[c]));
+  return dh/40 + (c==="K" && s>.75 ? .6 : 0) + (c==="R" && s<.5 ? .4 : 0);
+}
+function readColors(samples){   /* samples: {F:[9 rgb], R:…, B:…, L:…, U:…, D:…} → {key: color letter} */
+  const faces=Object.keys(samples), all=[];
+  faces.forEach(f => samples[f].forEach((rgb,j) => all.push({f, j, lab:toLab(rgb), rgb})));
+  const centers=faces.map(f => ({f, lab:toLab(samples[f][4]), rgb:samples[f][4], n:0}));
+  /* each square to the nearest center with room left (nine each), the closest pairs first */
+  const pairs=[]; all.forEach((q,a) => centers.forEach((c,b) => pairs.push([Math.hypot(q.lab[0]-c.lab[0], q.lab[1]-c.lab[1], q.lab[2]-c.lab[2])*(q.j===4 && q.f===c.f ? 0 : 1), a, b])));
+  pairs.sort((x,y) => x[0]-y[0]);
+  const got=new Array(all.length).fill(-1);
+  for(const [,a,b] of pairs){ if(got[a]>=0 || centers[b].n>=9) continue; got[a]=b; centers[b].n++; }
+  /* name the six centers: the best match of six different colors */
+  /* white balance: the center with the least color is taken as white, so a warm lamp or blue shade does not tint the names */
+  const wc=centers.slice().sort((a,b) => hsv(a.rgb)[1]-hsv(b.rgb)[1])[0].rgb, avg=(wc[0]+wc[1]+wc[2])/3, wb=wc.map(v => avg/Math.max(1,v));
+  const bal=rgb => rgb.map((v,i) => Math.min(255, v*wb[i]));
+  const LET=["W","Y","G","B","O","R","P","K"], cost=centers.map(c => LET.map(l => nameCenter(bal(c.rgb), l)));
+  let best=null;
+  const go=(i, used, sum, pick) => { if(best && sum>=best.sum) return; if(i===centers.length){ best={sum, pick:pick.slice()}; return; }
+    for(let k=0;k<LET.length;k++){ if(used&(1<<k)) continue; pick.push(LET[k]); go(i+1, used|(1<<k), sum+cost[i][k], pick); pick.pop(); } };
+  go(0, 0, 0, []);
+  const out={}; all.forEach((q,a) => { const [pos]=C.facelets(q.f)[q.j]; out[pos.join(",")+"|"+q.f]=best.pick[got[a]]; });
+  return out;
+}
+const CAM_ORDER=["F","R","B","L","U","D"];
+let cam=null;
+function camOpen(){
+  camClose();
+  const box=document.createElement("div"); box.className="cam"; box.setAttribute("role","dialog"); box.setAttribute("aria-modal","true"); box.setAttribute("aria-label", t("camH"));
+  document.body.appendChild(box); document.body.style.overflow="hidden";
+  cam={box, i:0, samples:{}, facing:"user", stream:null};
+  camDraw(); camStart();
+}
+function camDraw(){
+  if(!cam) return;
+  const i=cam.i;
+  cam.box.innerHTML=`<div class="in"><h2>${esc(t("camH"))}</h2><p class="muted">${esc(t("camPrivacy"))}</p>
+    <div class="sides" aria-hidden="true">${CAM_ORDER.map((f,k)=>`<span class="${k<i?"done":""}"></span>`).join("")}</div>
+    <p class="kicker">${esc(t("camN",{i:i+1}))}</p><p class="say">${esc(t("cam"+(i+1)))}</p>
+    <div class="box"><video playsinline muted autoplay class="${cam.facing==="user"?"mirror":""}"></video><div class="grid" aria-hidden="true">${"<span></span>".repeat(9)}</div></div>
+    ${cam.err?`<p class="state warn">${esc(t("camNo"))}</p>`:""}
+    <div class="btn-row"><button type="button" class="btn btn-good big" data-cam="take" ${cam.err?"disabled":""}>${esc(t("camTake"))}</button>
+    <button type="button" class="btn" data-cam="back" ${i?"":"disabled"}>${esc(t("camRetake"))}</button></div>
+    <div class="btn-row quiet"><button type="button" class="btn" data-cam="switch">${esc(t("camSwitch"))}</button><button type="button" class="btn" data-cam="close">${esc(t("camClose"))}</button></div></div>`;
+  const v=cam.box.querySelector("video"); if(cam.stream){ v.srcObject=cam.stream; v.play && v.play().catch(()=>{}); }
+  cam.box.querySelectorAll("[data-cam]").forEach(b => b.onclick=() => {
+    const k=b.getAttribute("data-cam");
+    if(k==="take") camTake(); else if(k==="back"){ cam.i=Math.max(0,cam.i-1); camDraw(); }
+    else if(k==="switch"){ cam.facing=cam.facing==="user"?"environment":"user"; camStop(); camStart(); camDraw(); } else camClose();
+  });
+}
+function camStart(){
+  if(!cam) return;
+  const md=navigator.mediaDevices;
+  if(!md || !md.getUserMedia){ cam.err=true; camDraw(); return; }
+  const mine=cam;
+  md.getUserMedia({video:{facingMode:cam.facing, width:{ideal:960}, height:{ideal:960}}, audio:false}).then(st => {
+    if(cam!==mine){ st.getTracks().forEach(tr => tr.stop()); return; }
+    cam.stream=st; cam.err=false; const v=cam.box.querySelector("video"); if(v){ v.srcObject=st; v.play && v.play().catch(()=>{}); }
+    const tb=cam.box.querySelector('[data-cam="take"]'); if(tb) tb.disabled=false; const w=cam.box.querySelector(".state.warn"); if(w) w.remove();
+  }).catch(() => { if(cam===mine){ cam.err=true; camDraw(); } });
+}
+function camStop(){ if(cam && cam.stream){ cam.stream.getTracks().forEach(tr => tr.stop()); cam.stream=null; } }
+function camClose(){ if(!cam) return; camStop(); cam.box.remove(); document.body.style.overflow=""; cam=null; }
+function camTake(){
+  const v=cam && cam.box.querySelector("video"); if(!v || !v.videoWidth) return;
+  const W=v.videoWidth, H=v.videoHeight, side=Math.min(W,H), x0=(W-side)/2, y0=(H-side)/2;
+  const cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d", {willReadFrequently:true}); g.drawImage(v,0,0,W,H);
+  const cell=side*.7/3, out=[];
+  for(let r=0;r<3;r++) for(let c=0;c<3;c++){
+    /* the picture itself is never mirrored (only the front camera's view on screen is, like a mirror): the camera
+       sees the side as a person facing it would, left to right, which is how the squares are listed */
+    const cx=x0+side*.15+cell*(c+.5), cy=y0+side*.15+cell*(r+.5), half=cell*.22;
+    const d=g.getImageData(Math.round(cx-half), Math.round(cy-half), Math.max(1,Math.round(half*2)), Math.max(1,Math.round(half*2))).data;
+    let R=0,G=0,B=0,n=0; for(let k=0;k<d.length;k+=4){ R+=d[k]; G+=d[k+1]; B+=d[k+2]; n++; }
+    out.push([R/n, G/n, B/n]);
+  }
+  camSide(out);
+}
+function camSide(rgb9){
+  cam.samples[CAM_ORDER[cam.i]]=rgb9; cam.i++;
+  if(cam.i<6){ camDraw(); return; }
+  const got=readColors(cam.samples); camClose();
+  S.paint=got; doctor=null; flags=[]; peek=false; mineMsg={ok:true, text:t("camDone")}; save(); render(); panel();
+}
+window.AOGCubeLab={pick:pickSticker, get cube(){ return cube; }, readColors, camSide:rgb => { if(!cam) camOpen(); camSide(rgb); }, get cam(){ return cam; }};   /* for the site's checks */
 $("langBtn").onclick=()=>{ S.lang=es()?"en":"es"; save(); paintAll(); };
 $("themeBtn").onclick=()=>{
   const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
@@ -1251,7 +1555,7 @@ $("themeBtn").onclick=()=>{
 };
 /* the cube and the card in full view (a plain jump, no glide), when the cube's bottom is off the screen */
 function showBench(){ const r=stage.getBoundingClientRect(); if(r.bottom>innerHeight-8 || r.top<60) $("bench").scrollIntoView({block:"start"}); }
-window.addEventListener("hashchange", () => { mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
+window.addEventListener("hashchange", () => { camClose(); mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
 /* the box's size: fixed when the page opens, set again only when the screen's width changes (turning it) */
 let sizedW=0;
 function setStageMax(){
