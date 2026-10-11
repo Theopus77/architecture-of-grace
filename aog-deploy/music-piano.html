@@ -340,6 +340,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
+<script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -444,6 +445,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
         <div class="kbd" id="kbd" role="group"></div>
+        <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <!-- AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: more scales, modes and chords on every instrument. A scale shows on
              the keys; any chord of 45 kinds plays from any root. The six pads above stay as they are. -->
@@ -463,6 +465,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line keys-line" data-t="keysLine2"></p>
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
+      </div>
+
+      <div class="blk" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
+        <h2 data-t="ampH"></h2>
+        <p class="line" style="margin-top:0" data-t="ampLine"></p>
+        <div id="ampBox"></div>
       </div>
 
       <div class="blk">
@@ -604,6 +612,9 @@ const STR={
   drumNone:{en:"Make a beat on the drum machine and press Send to the turntables. It shows up here too.",es:"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. También aparece aquí."},
   drumGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
   keysH:{en:"Keys",es:"Teclas"},
+  /* AOG-ROOM-PEDALS-V1 */
+  ampH:{en:"Pedals and amp",es:"Pedales y amplificador"},
+  ampLine:{en:"Every sound starts clean. Add a pedal from the menu under the keys, or here.",es:"Cada sonido empieza limpio. Añade un pedal desde el menú bajo las teclas, o aquí."},
   lower:{en:"◀ Lower",es:"◀ Más grave"}, higher:{en:"Higher ▶",es:"Más agudo ▶"},
   rangeOut:{en:"{a} to {b}",es:"{a} a {b}"},
   sus:{en:"Hold notes (pedal)",es:"Mantener notas (pedal)"},
@@ -937,9 +948,17 @@ function makeChain(c){
   const dg=c.createGain(); dg.gain.value=0.55;
   ch.org.connect(ch.bus); ch.org.connect(dl); dl.connect(dg); dg.connect(ch.bus);
   /* the room */
-  const cv=c.createConvolver(); cv.buffer=roomIR(c); ch.send.connect(cv);
+  const cv=c.createConvolver(); cv.buffer=roomIR(c);
   const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
-  ch.bus.connect(ch.pre);
+  /* AOG-ROOM-PEDALS-V1: the pedals sit between the keys and the room (aog-amp.js, kind "keys"), here, so the live sound,
+     a take and every recording made offline carry them. With every pedal off and no amp the rig is a straight wire, and
+     the room hears the keys as before (sendDry); with a pedal on the room hears the pedals (sendWet, at the sound's level).
+     The drum machine's loop joins at ch.pre, after the pedals. */
+  ch.sendDry=c.createGain(); ch.sendWet=c.createGain(); ch.sendWet.gain.value=0;
+  ch.send.connect(ch.sendDry); ch.sendDry.connect(cv);
+  ch.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"keys", state:fxFor(S.sound)}) : null;
+  if(ch.rig){ ch.bus.connect(ch.rig.input); ch.rig.output.connect(ch.pre); ch.rig.output.connect(ch.sendWet); ch.sendWet.connect(cv); }
+  else ch.bus.connect(ch.pre);
   ch.lp=c.createBiquadFilter(); ch.lp.type="lowpass"; ch.lp.Q.value=0.5;
   ch.comp=c.createDynamicsCompressor();
   ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
@@ -948,9 +967,12 @@ function makeChain(c){
   ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
   ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
   ch.crunch=null;
+  setFx(ch, S.sound);
   return ch;
 }
 async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
+  /* AOG-ROOM-PEDALS-V1: and the pedals' worklets are in before a recording made offline starts */
+  if(ch.rig){ try{ await ch.rig.ready(); }catch(e){} }
   try{
     if(!ch.c.audioWorklet) return;
     await ch.c.audioWorklet.addModule(crunchModule());
@@ -964,7 +986,22 @@ function setEra(ch, e, at){
   if(ch.crunch){ const p=ch.crunch.parameters.get("era"); p.setTargetAtTime(e, now, 0.02); }
 }
 function volGain(v){ return Math.max(0,Math.min(1,v))*0.95; }
-function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
+function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; setFx(ch, id); }
+/* AOG-ROOM-PEDALS-V1 (2026-10-11) — Jimmy: "Can the pedals and effects be added to all instruments not just the guitar and
+   bass". The piano's pedalboard: the guitar's panel, starting with no amp and every pedal off; its starters (a rotating
+   speaker, chorus, phaser, tremolo) come first in the menu, then the drive, the echo and the reverb, and an amp for the
+   electric piano's growl. What you change is kept for that sound, on this device (FXKEY); Put this sound back clears it. */
+const FXKEY="aog.piano.fx.v1";
+let FXUI=null, FXSND="", FXLANG="";
+let ROOMFX={}; try{ ROOMFX=JSON.parse(localStorage.getItem(FXKEY)||"{}")||{}; if(typeof ROOMFX!=="object" || Array.isArray(ROOMFX)) ROOMFX={}; }catch(e){ ROOMFX={}; }
+function fxFor(id){ return window.AOGAmp ? AOGAmp.normalize(ROOMFX[id]||{}, "keys") : null; }
+function saveFx(){ try{ localStorage.setItem(FXKEY, JSON.stringify(ROOMFX)); }catch(e){} }
+function setFx(ch, id){
+  if(!ch.rig || !SOUNDS[id]) return;
+  ch.rig.set(fxFor(id)); const on=ch.rig.active;
+  ch.sendDry.gain.value=on?0:1; ch.sendWet.gain.value=on?SOUNDS[id].rev:0;
+  if(ch===LIVE_CH && FXUI && FXSND!==id) setTimeout(paintFx, 0);
+}
 
 /* ── the recorded pianos ── */
 const SETS={
@@ -1275,7 +1312,14 @@ function organWave(c){ return waveFrom(c,"organ",{1:DB(8),3:DB(8),2:DB(8),4:DB(6
 function churchWave(c){ return waveFrom(c,"church",{1:0.35,2:1,4:0.55,6:0.25,8:0.35,12:0.18,16:0.12}); }
 /* the stand-in while a recording loads: the warm electric piano, built here (its own settings, so it stays the same) */
 const STAND_IN={kind:"tine", gain:1.09};
+/* AOG-NOTES-V1 (2026-10-11) — Jimmy: "Record notes, not just sound." Every voice the live piano makes (a key, a chord pad,
+   a pattern, MIDI, the lessons) is told to the recorder, which keeps it with a take while ● Record runs (aog-recorder.js) */
 function makeVoice(c, ch, id, m, v, when){
+  const vc=makeVoice0(c, ch, id, m, v, when);
+  if(vc && c===ac && window.AOGRecorder && AOGRecorder.note) AOGRecorder.note(c, vc, {m:m, v:v, when:when, snd:id});
+  return vc;
+}
+function makeVoice0(c, ch, id, m, v, when){
   const snd=SOUNDS[id];
   if(snd.kind==="sample"){
     if(SETS[snd.set].ready){ const vc=sampleVoice(c, ch, snd, m, v, when); if(vc) return vc; }
@@ -1685,6 +1729,7 @@ function allOff(){
   litKeys();
 }
 function setSus(on){
+  if(ac && !!S.sus!==!!on && window.AOGRecorder && AOGRecorder.pedal) AOGRecorder.pedal(ac, !!on);   /* AOG-NOTES-V1 */
   S.sus=on;
   const b=document.getElementById("susBtn"); if(b) b.setAttribute("aria-pressed", on?"true":"false");
   if(!on && ac){ LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); } }); }
@@ -1846,7 +1891,31 @@ window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
   prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
+  notes:()=>({room:"piano", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the take keeps its notes, its sound and its era */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-NOTES-V1 — the notes of a take, played again through this piano's own chain, offline: the Mixing Desk's piano-roll
+   ("Play it with the changes") asks for it through the Studio (AOGStudioShell.renderNotes). The same voices and the same
+   chain as a take (the limiter's output, with the room knob's sound on it), so a render of the notes as played sounds
+   like the take. */
+window.AOGRoomRender={
+  room:"piano",
+  sounds(){ return Object.keys(SOUNDS).map(id=>({id:id, name:{en:SOUNDS[id].en, es:SOUNDS[id].es}})); },
+  async render(p){
+    p=p||{}; const K=AOGRecorder.notes, evs=K.events(p.events, 21, 108), id=SOUNDS[p.sound] ? p.sound : S.sound;
+    const sr=p.sr>=8000 && p.sr<=192000 ? p.sr : 44100, set=p.set||{}, era=typeof set.era==="number" ? Math.max(0, Math.min(1, set.era)) : S.era;
+    const ids=[...new Set([id].concat(evs.map(e=>e.snd).filter(x=>SOUNDS[x])))];
+    for(const k of ids){ const s=SOUNDS[k]; if(s.kind==="sample") await loadSet(s.set); }
+    const oc=K.context(K.sec(evs, p.sec, p.tail==null ? 1.5 : p.tail), sr);
+    if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the piano has one */
+    const ch=makeChain(oc); await addCrunch(ch);
+    setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
+    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    evs.forEach(e=>{ const vc=makeVoice(oc, ch, SOUNDS[e.snd] ? e.snd : id, e.m, e.v, e.t); K.play(vc, e); });
+    const buf=await oc.startRendering();
+    const live=SOUNDS[S.sound]; if(live && live.kind==="sample" && ids.some(k=>SOUNDS[k].kind==="sample" && SOUNDS[k].set!==live.set)) loadSet(live.set, paintLoad);   /* the piano in your hands again */
+    return K.out(buf);
+  }
+};
 
 async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole recording to the Drum Machine */
   const toPads=dest==="pads", line=document.getElementById("sendLine"), btn=document.getElementById(toPads?"sendPadsBtn":"sendBtn");
@@ -1926,7 +1995,23 @@ function paintText(){
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); buildKeys();
   paintView(); bpText();
+  paintFx();   /* AOG-ROOM-PEDALS-V1 */
 }
+/* AOG-ROOM-PEDALS-V1: the pedal panel. aog-amp.js draws it (the guitar's own panel); the page keeps what is changed, with the
+   sound it was changed on. The strip right under the keys shows the pedals that are on and a menu of the rest. */
+
+function applyFx(){ if(ac && LIVE_CH) setFx(LIVE_CH, S.sound); }
+function paintFx(){
+  if(!window.AOGAmp || !$("ampBox")) return;
+  if(FXUI && FXSND===S.sound && FXLANG===S.lang) return; FXSND=S.sound; FXLANG=S.lang;
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"keys", near:$("pedalsNear"), lang:()=>S.lang, get:()=>fxFor(S.sound),
+    set:st=>{ ROOMFX[S.sound]=AOGAmp.normalize(st, "keys"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ delete ROOMFX[S.sound]; saveFx(); applyFx(); }});
+  else FXUI.paint();
+}
+/* another sound has its own pedals: the panel follows the sound, however it was picked */
+document.addEventListener("change", e=>{ if(e.target && e.target.id==="soundSel") setTimeout(()=>{ if(FXSND!==S.sound) paintFx(); }, 0); });
+window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 function paintSounds(){
   const sel=$("soundSel"), groups={};
   Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp; (groups[g]=groups[g]||[]).push(id); });

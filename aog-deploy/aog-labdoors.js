@@ -124,8 +124,9 @@
       var choose = blk("#soundSel"), chords = blk("#pads"), wheel = D.getElementById("wheelBlk"), out = blk("#era"),
         play = blk("h2[data-t=keysH]") || blk("h2[data-t=neckH]"), amp = D.getElementById("ampBlk"), live = D.getElementById("liveBlk");
       if (choose === play || choose === chords) choose = null;   /* AOG-SOUNDPICK-V1: the instrument choice already sits by the instrument */
-      var order = id === "piano" ? [play, chords, choose, wheel, out]
-        : id === "band" ? [choose, play, chords, wheel, out]
+      /* AOG-ROOM-PEDALS-V1: the piano's and the band's pedals and amp come after the playing, as the guitar's do */
+      var order = id === "piano" ? [play, chords, choose, wheel, amp, out]
+        : id === "band" ? [choose, play, chords, wheel, amp, out]
         : (id === "guitar" || id === "bass") ? [play, chords, choose, wheel, amp, live, out] : null;   /* AOG-STUDIO-FIRST-V2: the instrument first */
       if (order && order.every(function (e) { return !e || e.parentNode === rig; })) {
         order.forEach(function (e) { if (e) rig.appendChild(e); });

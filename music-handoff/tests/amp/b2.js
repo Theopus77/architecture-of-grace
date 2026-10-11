@@ -28,7 +28,7 @@ let pass=0, fail=0; const ok=(c,m)=>{ if(c){ pass++; console.log("PASS", m); } e
       }
       const st0=rigFor(base); Object.values(st0.fx).forEach(f=>f.on=false); const plain=await render(st0);
       const out={plain};
-      for(const p of AOGAmp.PEDALS){ const st=JSON.parse(JSON.stringify(st0)); st.fx[p.id].on=true; if(p.id==="gate"){ st.fx.gate.thr=9; } out[p.id]=await render(st); }
+      for(const p of AOGAmp.PEDALS.filter(q=>q.kind!=="drums")){   /* AOG-ROOM-PEDALS-V1: the drum rooms' own effects are not on a guitar or bass rig */ const st=JSON.parse(JSON.stringify(st0)); st.fx[p.id].on=true; if(p.id==="gate"){ st.fx.gate.thr=9; } out[p.id]=await render(st); }
       out.fallback=await render(rigFor(G?"metal":"metal"), true);
       /* the gate: one long note left to ring; with the gate set high it is cut off once the string falls quiet */
       async function ring(st){ const oc=new OfflineAudioContext(1, 44100*3, 44100); await AOGAmp.load(oc); RIGS[base]=st; const ch=makeChain(oc); delete RIGS[base];
