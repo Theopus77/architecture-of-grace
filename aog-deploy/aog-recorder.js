@@ -329,7 +329,11 @@
            take on the bar before, with nothing cut off), and the bar the note belongs to (up to 60 ms early counts) */
         var Bs = Math.max(1, Math.floor((Ts - 0.003) / O.barSec) + 1), nb = Math.max(1, Math.floor((Ts + 0.06) / O.barSec) + 1);
         var cut = Math.round(sr * ((Bs - O.from) * O.barSec + O.S0 + O.lat)) - R.f0;   /* the frame bar Bs begins on */
-        place = { bar: Bs, bpm: O.bpm, note: nb };
+        var total = 0; R.chunks.forEach(function (x) { total += x.length; }); total /= 2;
+        /* played during the four clicks, before My Track began: an ordinary take, kept as it was played, with no place */
+        if (Ts >= (O.from - 1) * O.barSec - 0.003 && cut < total - 1) place = { bar: Bs, bpm: O.bpm, note: nb };
+      }
+      if (place) {
         var lead = [];
         if (cut < 0) { lead.push(new Int16Array(-cut * 2)); ci = 0; off = 0; }
         else { var at = cut * 2; ci = 0; while (ci < R.chunks.length - 1 && at >= R.chunks[ci].length) { at -= R.chunks[ci].length; ci++; } off = Math.min(at, R.chunks[ci].length); }

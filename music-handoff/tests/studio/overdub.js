@@ -86,6 +86,15 @@ async function overTake(p, bar) {
   ok(r.o && r.o.from === 5 && r.t && r.t.place && r.t.place.bar === 5 && Math.abs(r.t.firstMs - ms3) < 1.5, (r.t && Math.abs(r.t.firstMs - ms3) < 1.5 ? "" : "NOT THE SAME DELAY ") + "From bar 5: My Track starts at bar 5, and a note there lands on bar 5, as far after the line as on bar 3: " + JSON.stringify({ o: r.o && r.o.from, t: r.t && r.t.place, ms: r.t && r.t.firstMs }));
   await p.selectOption("#tpFrom", "1");
 
+  /* 3b · played during the four clicks and stopped before My Track begins: an ordinary take, as it was played */
+  await R(p, () => AOGStudioRec.toggle());
+  await p.waitForFunction(() => document.getElementById("room").contentWindow.AOGStudioRec.on(), null, { timeout: 30000 });
+  await R(p, () => noteOn("k", 67, 0.8)); await p.waitForTimeout(500); await R(p, () => noteOff("k", 67));
+  await R(p, () => AOGStudioRec.toggle());
+  await p.waitForFunction(() => { const r = document.getElementById("room").contentWindow.AOGStudioRec; return !r.on() && !r.busy(); }, null, { timeout: 8000 }); await p.waitForTimeout(400);
+  const early = await R(p, async () => { const k = REC.takes[0]; let ok = false; try { const b = await new OfflineAudioContext(2, 1, 48000).decodeAudioData(await k.blob.arrayBuffer()); ok = b.duration > 0.3; } catch (e) {} return { place: k.place, ok }; });
+  ok(!early.place && early.ok, "played during the clicks and stopped before My Track began: an ordinary take that plays: " + JSON.stringify(early));
+
   /* 4 · a beat playing on the Drum Machine starts again on the bar line */
   await p.click("#songDone");
   await door(p, "pads", "music-pads.html");

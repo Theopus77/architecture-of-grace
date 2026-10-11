@@ -155,6 +155,13 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
   .tp { flex:0 0 auto; flex-wrap:nowrap; }
   .mtrow { flex:1 1 auto; min-width:0; border-left:1px solid var(--line); padding-left:.75rem; }
 }
+/* AOG-SONG-V1: an iPad held upright has not the width for both: My Track takes its own line under the transport, so
+   nothing (the Song button, + Add a layer) runs off the right edge */
+@media (min-width:700px) and (max-width:1199px) { #mtAdd { max-width:9.6rem; } }   /* an iPad: room left for My Track's marks */
+@media (min-width:700px) and (max-width:1023px) {
+  .mt { flex-wrap:wrap; row-gap:.35rem; }
+  .mtrow { flex:1 1 100%; border-left:0 !important; box-shadow:none !important; padding-left:0; }
+}
 @media (max-width:699px) {
   .sh-top { flex-wrap:wrap; row-gap:.15rem; }
   .sh-top h1 { flex:1 1 auto; }
@@ -556,7 +563,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
      follows at once (aog-song.js); a room's own tempo or key changes it too. */
   function songWords() {
     var G = window.AOGSong, s = G && G.get(), b = D.getElementById("tpSong"), nm = G ? G.name(es() ? "es" : "en") : "";
-    var narrow = (window.innerWidth || 0) < 700, sg = G && G.get();
+    var narrow = (window.innerWidth || 0) < 1200, sg = G && G.get();   /* a phone or an iPad: the short way, so My Track keeps its room */
     var bt = narrow ? "♩" + (sg && sg.hasBpm ? " " + sg.bpm : "") : tw("song") + (nm ? " · " + nm : ""); if (b.textContent !== bt) b.textContent = bt;
     att(b, "aria-label", tw("song").replace("♩ ", "") + (nm ? ": " + nm : ""));
     [["songH", "songH"], ["songBpmL", "songBpmL"], ["songKeyL", "songKeyL"], ["songMaj", "songMaj"], ["songMin", "songMin"], ["songDone", "songDone"]].forEach(function (p) {
