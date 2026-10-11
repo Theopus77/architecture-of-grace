@@ -177,6 +177,10 @@ Run it after every change to `index.html` or a room. `_redirects` serves the mad
 (`front.html` at `/`; `fast/music-*.html` at `/music-*.html` and the rooms' short names). The contrast and calm
 checks stop while a made page is older than its source. Never edit `front.html`, `fast/` or `front/` by hand.
 
+The retired classic dashboard (`#screen-admin` in index.html) waits in `<template id="aog-classic-dash">`
+(AOG-CLASSIC-LATER-V1). Only `?classic=1` builds it; every other visit runs just its code (the check-in needs
+`AOG_OBS` from it) and gets an empty stand-in. Building it on every visit doubled the front page's time on a phone.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

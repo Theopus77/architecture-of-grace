@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:8122c7ec353fb908 · MADE BY tools/build-fast.py from index.html: edit index.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:28ba9833c9d6df6a · MADE BY tools/build-fast.py from index.html: edit index.html, then run it. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
@@ -5051,6 +5051,15 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 <!-- print-only individual report container -->
 <div id="printReport" aria-hidden="true"></div>
 
+<!-- AOG-CLASSIC-LATER-V1 (2026-10-11) — Jimmy: "make this website FLASH SPEED, LIGHTING BOLT SPEED!"
+     The classic Educator Dashboard is retired (AOG-CLASSIC-OFF-V1, 2026-09-26): every door goes to /dashboard and only
+     ?classic=1 opens it here. Its 3,000 hidden parts still made every phone build, style and search them on every
+     visit (on a phone: ready in 6.3s without them, 11.7s with them). They now wait in this template.
+     · ?classic=1: the script after the template builds the screen right here, exactly as before.
+     · Every other visit: only the screen's code runs, in the same order (the check-in reads its list of what a
+       teacher noticed, AOG_OBS), and #screen-admin is an empty stand-in with one link to /dashboard.
+     Edit the dashboard inside the template as before. Don't put a <template> inside it. -->
+<template id="aog-classic-dash">
 <section id="screen-admin" class="screen">
   <div class="container-wide">
     <h1 class="aog-srx" data-dl="dl_admin_h1">Educator Dashboard</h1>
@@ -5185,7 +5194,42 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
   :root[data-theme="dark"] .ov-onboard-legend b{ color:var(--cream,#F4ECDA); }
   .ov-onboard-note{ font-size:12.5px; font-style:italic; color:var(--ink-soft); border-top:1px solid var(--rule); padding-top:9px; margin:0; }
 </style>
-<script src="/front/773d409d2291.js"></script>
+<script>
+  window.aogClearMyData = function(){
+    var es = (typeof lang!=="undefined" && lang==="es");
+    var msg = es
+      ? "¿Borrar todos los datos guardados en este dispositivo? (registros de herramientas, modo familia y preferencias de este sitio). Esto no se puede deshacer."
+      : "Clear all saved data on this device? (tool logs, Family Mode entries, and this site’s saved settings). This can’t be undone.";
+    if (!window.confirm(msg)) return;
+    try{
+      /* The school's Sheet connection is NOT one of "this site's saved settings".
+         A teacher who taps this after a demo must not silently lose the read
+         passcode. Only Disconnect and the red Delete-everything button, which
+         both name the connection in their own confirm text, may remove it. */
+      var KEEP_SYNC = { "aog.sync.url": 1, "aog.sync.key": 1, "aog.sync.writekey": 1, "aog.studio.locker.v1": 1 };   /* the Studio's locker too: only its own Disconnect removes it */
+      var rm = [];
+      for (var i=0; i<localStorage.length; i++){ var k = localStorage.key(i); if (k && !KEEP_SYNC[k]){ var kl = k.toLowerCase(); if (kl.indexOf("aog")===0 || kl.indexOf("grace")===0) rm.push(k); } }
+      rm.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    }catch(e){}
+    window.alert(es ? "Listo. Tus datos de este dispositivo se han borrado." : "Done. Your data on this device has been cleared.");
+  };
+  /* auto-expand the "how to read this dashboard" help on a teacher's first visit only */
+  (function(){
+    try{
+      var d=document.getElementById("qsDomainHelp"); if(!d) return;
+      var KEY="aog.qs.domainhelp.seen";
+      if(!localStorage.getItem(KEY)){ d.setAttribute("open",""); localStorage.setItem(KEY,"1"); }
+    }catch(e){}
+  })();
+  /* Overview-tab onboarding card: dismissible, remembered per device */
+  window.aogDismissOvOnboard = function(){
+    try{ localStorage.setItem("aog.ov.onboard.dismissed","1"); }catch(e){}
+    var el=document.getElementById("ovOnboard"); if(el) el.style.display="none";
+  };
+  (function(){
+    try{ if(localStorage.getItem("aog.ov.onboard.dismissed")){ var el=document.getElementById("ovOnboard"); if(el) el.style.display="none"; } }catch(e){}
+  })();
+</script>
 <!-- ===== END QUICK START ============================================ -->
 <script>
 (function () {
@@ -5429,8 +5473,120 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
     <script>window.AOG_RHYTHMS_DASH = false;</script>
     <div id="dashHeroNav"></div>
     </div>
-    <script src="/front/03a02adfdc82.js"></script>
-    <script id="aog-declutter-js" src="/front/9137f0115e23.js"></script>
+    <script>
+    (function(){
+      var ROLES={student:1,parent:1,teacher:1,specialist:1,leadership:1};
+      function dEs(){ try{ if(typeof dashLang!=="undefined") return dashLang==="es"; return (typeof lang!=="undefined" && lang==="es"); }catch(e){ return false; } }
+      function L(en,es){ return dEs()?es:en; }
+      function banner(role){
+        if(role==='leadership') return L("Leadership view — building & district trends only, never individual scores.","Vista de liderazgo — tendencias de edificio y distrito, nunca puntajes individuales.")+
+          ' <a href="/aog-district-admin-view-demo" class="drole-link">'+L("Open district rollup →","Abrir vista del distrito →")+'</a>';
+        if(role==='specialist') return L("Specialist & support-staff view — for paraprofessionals and teacher aides, in-house OTs, PTs, SLPs (speech), social workers, counselors, and psychologists, and outside/community providers too. Individual progress and goals, plus the Practitioner Edition (sessions, PHQ-9/GAD-7 screeners, safety flags).","Vista de especialistas y personal de apoyo — para paraprofesionales y auxiliares docentes, terapeutas ocupacionales, fisioterapeutas, fonoaudiólogos, trabajadores sociales, consejeros y psicólogos del centro, y también proveedores externos/comunitarios. Progreso y metas individuales, más la Edición para Profesionales (sesiones, tamizajes, señales de riesgo).");
+        if(role==='parent') return L("Family view — your family’s check-ins, conversation starters, and repair moments, private to this device.","Vista de familia — los registros, iniciadores de conversación y momentos de reparación de tu familia, privados en este dispositivo.");
+        if(role==='student') return L("Student view — your own journey: how you’re doing and what helps.","Vista de estudiante — tu propio camino: cómo estás y qué te ayuda.");
+        return L("Teacher view — your class, up close: trends and one clear next step per student.","Vista del docente — tu clase de cerca: tendencias y un próximo paso claro por estudiante.")+
+          ' <a href="#" class="drole-link" onclick="event.preventDefault(); if(typeof showScreen===\'function\')showScreen(\'screen-teacher-tools\');">'+L("Calm-down station tips →","Consejos del rincón de calma →")+'</a>';
+      }
+      var HIDE={ leadership:{home:1,daily:1,goals:1,distribute:1,family:1,iep:1}, specialist:{students:1,distribute:1,align:1}, teacher:{} };
+      function paint(role){
+        var scr=document.getElementById('screen-admin'); if(scr) scr.setAttribute('data-role',role);
+        var segs=document.querySelectorAll('#dashRoles .drole');
+        for(var i=0;i<segs.length;i++){ segs[i].classList.toggle('active', segs[i].getAttribute('data-role')===role); }
+        var b=document.getElementById('dashRoleBanner'); if(b) b.innerHTML=banner(role);
+        try{ var td=document.getElementById('dashToday'); if(td && window.aogTodayCard) td.innerHTML=window.aogTodayCard(dEs()); }catch(_etd){}
+        var ex=document.getElementById('dashRoleExtra');
+        if(ex){
+          if(role==='teacher' && typeof window.aogTeacherCalmCardHtml==='function') ex.innerHTML=(typeof window.aogReflectNudgeHtml==='function'?window.aogReflectNudgeHtml(dEs()):'')+window.aogTeacherCalmCardHtml(dEs());
+          else if(role==='specialist'){ ex.innerHTML=(typeof window.aogOutsideProviderCard==='function'?window.aogOutsideProviderCard(dEs()):'')+'<div id="aogClinical"></div>'; if(typeof window.aogClinicalRender==='function') window.aogClinicalRender(); }
+          else if(role==='parent'){ window.__aogFamilyTarget='dashFamilyRoot'; ex.innerHTML='<div id="dashFamilyRoot"></div>'; if(typeof renderFamily==='function') renderFamily(); }
+          else if(role==='student'){ ex.innerHTML='<div id="dashStudentJourney"></div>'; if(typeof window.aogRenderStudentJourney==='function') window.aogRenderStudentJourney('dashStudentJourney'); }
+          else if(role==='leadership'){ var _lcx=(typeof window.aogDisclosureLeadershipCard==='function')?window.aogDisclosureLeadershipCard(dEs()):''; _lcx+=(typeof window.aogGlossaryLeadershipCard==='function')?window.aogGlossaryLeadershipCard(dEs()):''; _lcx+=(typeof window.aogReflectionLeadershipCard==='function')?window.aogReflectionLeadershipCard(dEs()):''; ex.innerHTML=_lcx; }
+          else ex.innerHTML='';
+          try{ ex.classList.remove('aog-fade'); void ex.offsetWidth; ex.classList.add('aog-fade'); }catch(e){}
+        }
+        try{ if(typeof window.aogRenderCurriculumStrip==='function') window.aogRenderCurriculumStrip(); }catch(_ecs){}
+      }
+      window.__aogDashRepaint=function(){ var r=document.getElementById('screen-admin'); paint((r&&r.getAttribute('data-role'))||'teacher'); };
+      window.aogSetDashRole=function(role){
+        if(!ROLES[role]) role='teacher';
+        try{ localStorage.setItem('aog.dash.role',role); }catch(e){}
+        paint(role);
+        /* Only jump to top when actually scrolled down — the jump read as a "shake" when near the top. */
+        try{ if(window.scrollY>120){ window.scrollTo({top:0,behavior:'instant'}); } }catch(e){}
+        var act=document.querySelector('#screen-admin .tab.active'); var name=act?act.getAttribute('data-tab'):'';
+        /* Coalesce the follow-up tab repaint into the next frame so the switch paints once, not twice. */
+        if(HIDE[role] && HIDE[role][name] && typeof aogQsTab==='function'){ requestAnimationFrame(function(){ aogQsTab('overview'); }); }
+      };
+      function init(){ var role='teacher'; try{ var r=localStorage.getItem('aog.dash.role'); if(r&&ROLES[r]) role=r; }catch(e){} paint(role); }
+      if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
+      document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('#langEn,#langEs,#dashLangEn,#dashLangEs')){ setTimeout(init,30); } });
+    })();
+    </script>
+    <script id="aog-declutter-js">
+    (function(){
+      function byId(id){ return document.getElementById(id); }
+      function closeMenus(){ ['aogDemoMenu','dashRoleCompactMenu'].forEach(function(id){ var m=byId(id); if(m) m.hidden=true; }); ['aogDemoBtn','dashRoleCompactBtn'].forEach(function(id){ var b=byId(id); if(b) b.setAttribute('aria-expanded','false'); }); }
+      window.aogToggleDemoMenu=function(e){ e.stopPropagation(); var m=byId('aogDemoMenu'),b=byId('aogDemoBtn'); var open=m&&m.hidden; closeMenus(); if(m&&open){ m.hidden=false; if(b)b.setAttribute('aria-expanded','true'); } };
+      window.aogToggleRoleMenu=function(e){ e.stopPropagation(); var m=byId('dashRoleCompactMenu'),b=byId('dashRoleCompactBtn'); var open=m&&m.hidden; closeMenus(); if(m&&open){ m.hidden=false; if(b)b.setAttribute('aria-expanded','true'); } };
+      document.addEventListener('click',closeMenus);
+      function demoDot(){ var on=false; try{ var v=localStorage.getItem('aogScreener.demoActive'); on=(v==='1'||v==='true'); }catch(e){} var d=byId('aogDemoDot'),t=byId('aogDemoBtnTx'); if(d) d.hidden=!on; var es=(document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'; if(t) t.textContent=on?(es?'Demo activo':'Demo on'):'Demo'; }
+      var expanded=false;
+      function applyCompact(){ var h=byId('dashHero'); if(!h) return; var seen=false; try{ seen=!!localStorage.getItem('aog.dash.seen'); }catch(e){} h.classList.toggle('dash-compact', seen && !expanded); h.classList.toggle('dash-seen', !!seen); var ex=byId('dashHeroExpand'); if(ex) ex.setAttribute('aria-expanded', expanded?'true':'false'); }
+      window.aogDashHeroExpand=function(){ expanded=!expanded; applyCompact(); };
+      function markSeen(){ try{ localStorage.setItem('aog.dash.seen','1'); }catch(e){} }
+      var CORE={ teacher:['overview','distribute','students','inbox','practice','iep','goals'],
+                 specialist:['overview','home','inbox','practice','iep','goals'],
+                 leadership:['overview','students','growth','trajectory','align'],
+                 parent:['overview','home','growth','family'],
+                 student:['overview','home','growth'] };
+      var HIDE2={ leadership:{home:1,daily:1,goals:1,distribute:1,family:1,iep:1}, specialist:{students:1,distribute:1,align:1}, teacher:{}, parent:{}, student:{} };
+      /* ⚠⚠ .30hk — A TAB RETIREMENT IS TWO TABLES. 'daily' left MODES.student AND
+   this role layer's CORE above, because CORE re-asserts its role tabs ~40ms
+   after every mode switch and would have put the Daily Log back on screen.
+   ORDER below only SORTS, so a retired name here is harmless — it is left in
+   place so the panel keeps its position if the tab is ever restored. */
+      var ORDER=['export','family','align','trajectory','iep','daily','goals','distribute','growth','practice','home','inbox','students','overview'];
+      function layoutTabs(role){
+        var row=document.querySelector('#screen-admin .tabs'); if(!row) return;
+        var moreWrap=row.querySelector('.tab-more-wrap'), menu=byId('tabMoreMenu'); if(!moreWrap||!menu) return;
+        var core=CORE[role]||CORE.teacher, hide=HIDE2[role]||{};
+        var all={};
+        document.querySelectorAll('#screen-admin .tabs .tab[data-tab], #tabMoreMenu .tab[data-tab]').forEach(function(b){ all[b.getAttribute('data-tab')]=b; });
+        /* ORDER is reversed so insertBefore(moreWrap) / insertBefore(menu.firstChild) yields correct final order */
+        ORDER.forEach(function(name){
+          var b=all[name]; if(!b || name==='crosswalk') return;
+          if(hide[name]){ b.style.display='none'; return; }
+          b.style.display='';
+          if(core.indexOf(name)>=0){ row.insertBefore(b, row.querySelector('.tab[data-tab]:not([style*="none"])')||moreWrap); if(b.parentNode!==row){} }
+          else{ menu.insertBefore(b, menu.firstChild); }
+        });
+        /* second pass to fix core order precisely */
+        core.slice().reverse().forEach(function(name){ var b=all[name]; if(b && !hide[name]) row.insertBefore(b, row.firstElementChild); });
+        row.appendChild(moreWrap);
+        var act=document.querySelector('#screen-admin .tabs .tab.active, #tabMoreMenu .tab.active');
+        var moreBtn=byId('tabMoreBtn');
+        if(moreBtn) moreBtn.classList.toggle('hasactive', !!(act && menu.contains(act)));
+        var tx=byId('dashRoleCompactTx');
+        if(tx){ var es=(document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es';
+          var names={student:['Student','Estudiante'],parent:['Parent','Familia'],teacher:['Teacher','Docente'],specialist:['Specialist','Especialista'],leadership:['Leadership','Direcci\u00f3n']};
+          var n=names[role]||names.teacher; tx.textContent=(es?'Viendo como: ':'Viewing as: ')+(es?n[1]:n[0]); }
+        var cm=byId('dashRoleCompactMenu'); if(cm){ cm.querySelectorAll('.drole').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-role')===role); }); }
+      }
+      function currentRole(){ var s=byId('screen-admin'); var r=s&&s.getAttribute('data-role'); if(r) return r; try{ r=localStorage.getItem('aog.dash.role'); }catch(e){} return r||'teacher'; }
+      function refit(){ layoutTabs(currentRole()); demoDot(); applyCompact(); }
+      function wrap(){ if(!window.aogSetDashRole || window.aogSetDashRole.__declutter) return;
+        var orig=window.aogSetDashRole;
+        window.aogSetDashRole=function(role){ var r=orig.apply(this,arguments); try{ layoutTabs(role); closeMenus(); }catch(e){} return r; };
+        window.aogSetDashRole.__declutter=true; }
+      function init(){ wrap(); refit(); markSeen(); }
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(init,80); });
+      else setTimeout(init,80);
+      try{ new MutationObserver(function(){ refit(); }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']}); }catch(e){}
+      document.addEventListener('click',function(e){ if(e.target.closest && e.target.closest('#screen-admin .tabs .tab, #tabMoreMenu .tab')){ setTimeout(function(){ layoutTabs(currentRole()); },40); } });
+      window.__aogDeclutterLayout=layoutTabs;
+      window.__aogDeclutterCore=CORE;
+    })();
+    </script>
     <!-- ===== CARD FOLD — AOG-CARD-FOLD-V1 (.30ew) ==========================
          Jimmy: "I would like all 'doors' or whatever they are called to be
          collapsed and you have to open them. It make the pages look over
@@ -5578,7 +5734,328 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
         }
       }
     </style>
-    <script id="aog-card-fold-js" src="/front/7b787e20f6c1.js"></script>
+    <script id="aog-card-fold-js">
+    (function(){
+      "use strict";
+      /* ⚠⚠ .30i3 — THE OPEN CARDS ARE REMEMBERED NOW. Jimmy: "Could those
+         things be remembered?" `state` was in memory only, so every reload
+         shut every card a teacher had opened — and because the Practice tab
+         was one folded lump, coming back looked like the rows had gone.
+         One localStorage key, this browser only, nothing sent anywhere.
+         ⚠ SAVED FROM scan(), NOT FROM THE FOUR TOGGLE SITES. Cards, section
+         heads, the keyboard path and the Close button all end in scan(); a
+         save() bolted onto each of them is four chances to miss one. It
+         writes only when the serialized state actually changed, so the
+         MutationObserver's constant re-scans cost nothing. */
+      var FOLD_KEY = "aog.dash.fold.v1";
+      var state = (function () {
+        try {
+          var o = JSON.parse(localStorage.getItem(FOLD_KEY) || "{}");
+          return (o && typeof o === "object" && !(o instanceof Array)) ? o : {};
+        } catch (e) { return {}; }
+      })();                        /* key -> true(open)/false(closed); absent = the default */
+      var savedAs = "";
+      function saveFold(){
+        try {
+          var j = JSON.stringify(state);
+          if (j === savedAs) return;
+          savedAs = j;
+          localStorage.setItem(FOLD_KEY, j);
+        } catch (e) {}
+      }
+      var t = 0;
+
+      /* ⚠⚠ .30i2 — CLOSED IS THE DEFAULT EVERYWHERE EXCEPT THE ONE TAB WHOSE
+         ENTIRE CONTENT IS CARDS. The Practice tab has nothing on it but these
+         three, so folding them shut makes the tab arrive empty — the
+         invisible-by-construction fault .30hi was built to end. They open on
+         arrival and each one closes on its own from there.
+         ⚠ `state` IS IN MEMORY, NOT localStorage — every reload returns to
+         these defaults. That is the existing design, not an oversight here. */
+      var OPEN_BY_DEFAULT = {
+        "panel-practice|#aogPracticePrintBar": 1,
+        "panel-practice|#aogPracticeChart": 1,
+        "panel-practice|#aogPracticeCard": 1
+      };
+      /* ⚠ `key in state` IS THE TEST, NOT truthiness — a card the teacher
+         closed by hand stores false, and false must beat the default. That is
+         why the Close handler below writes false instead of deleting. */
+      function openFor(key){ return (key in state) ? !!state[key] : !!OPEN_BY_DEFAULT[key]; }
+
+      /* Blocks that must never fold: empty/onboarding states a first-run
+         teacher needs face-up, sticky bars, filter rows, small chip strips.
+         ⚠ aogDistPanes (.30ez): the Distribute pane host LOOKED like a
+         self-headed card (headOf found the active pane's h2, nested two
+         levels down) but its first 54px is a cropped heading with no
+         legible strip — Jimmy read it as "the screen won't scroll on any
+         of the tabs." Its pill strip (aogDistStrip, above) is already the
+         set of doors; picking an instrument IS the open gesture. */
+      /* ⚠⚠ .30i2 — aogSheetCards IS THE PRACTICE TAB, NOT A CARD ON IT.
+         It is the WRAPPER around all three From-the-Sheet cards (print,
+         Growth over time, the rows table), and this layer folds a panel's
+         CHILDREN — so it folded the wrapper as one card, cropped the lot to
+         84px, and took the strip's title from the FIRST heading inside it.
+         The result on screen: a single closed card saying "Print a practice
+         record", with Growth over time and the rows table nowhere at all.
+         Jimmy sent a screenshot of exactly that and it reads as data loss.
+         ⚠ THIS IS THE SKIP LIST'S OWN EXISTING REASON, applied again:
+         "picking an instrument IS the open gesture." Choosing the Practice
+         tab is the open gesture for the three cards that ARE the Practice
+         tab — one tab, one job [[aog-inbox]] — so folding them shut makes
+         the tab arrive empty, which is the invisible-by-construction fault
+         .30hi was built to end.
+         ⚠ THE ALTERNATIVE WAS FOLDING THE THREE INDIVIDUALLY, and it is not
+         available from here: scan() reads panel.children only, so the inner
+         cards are never candidates. Un-wrapping them would break
+         aogSheetHost(), which is the documented address every one of the
+         three calls to find its home. */
+      var SKIP = { ovEmpty:1, ovOnboard:1, staffReset:1, dashRoleExtra:1,
+                   aogCurriculumStrip:1, aogIepStickyBar:1, aogDistStrip:1,
+                   aogDistPanes:1, aogSheetCards:1,
+                   /* AOG-STANDARDS-V1 — the academic standards cards + their unit table;
+                      a section, not a card, and the table opens with a heading inside it */
+                   xaAcademic:1 };
+      function skipped(el){
+        if (el.id && SKIP[el.id]) return true;
+        var c = " " + (typeof el.className === "string" ? el.className : "") + " ";
+        return /( filter-bar | staff-reset | iep-stickybar | ov-empty | ov-onboard )/.test(c);
+      }
+      function headOf(el){
+        return el.querySelector(
+          "h2,h3,h4,.pb-ey,.pc-ey,.gc-ey,.dl-h,[class$='-ey'],[class*='kicker']");
+      }
+      /* .30fh — eyebrow-headed cards (a pb-ey "FROM THE SHEET" bar with the
+         real h3 under it) put the title below the fixed 54px crop, so the
+         closed strip cut mid-letter through the name — and even a plain
+         title lost its descenders under the fade. The crop now extends to
+         the bottom of the card's own title line: rects still resolve under
+         a max-height clip, so a closed card measures fine. A hidden panel
+         measures 0 — fall back to 84px when the eyebrow+heading pattern is
+         certain, else keep the 54px floor; the next scan in a visible panel
+         corrects it (scan already reruns on every observed mutation). */
+      function cropFor(el){
+        var hd = headOf(el); if (!hd) return 0;
+        var edge = hd;
+        if (!/^H[2-4]$/.test(hd.tagName)){
+          var nx = hd.nextElementSibling;
+          if (nx && /^H[2-4]$/.test(nx.tagName)) edge = nx;
+        }
+        try{
+          var er = el.getBoundingClientRect(), hr = edge.getBoundingClientRect();
+          if (!er.height || !hr.height) return (edge === hd) ? 0 : 84;
+          var b = Math.ceil(hr.bottom - er.top) + 18;
+          return (b > 54) ? Math.min(b, 140) : 0;
+        }catch(e){ return 0; }
+      }
+      function isSectionHead(el){
+        var c = " " + (typeof el.className === "string" ? el.className : "") + " ";
+        return c.indexOf(" section-head ") > -1 || c.indexOf(" xv-head ") > -1;
+      }
+      function keyFor(panel, el, ord){
+        if (el.id) return panel.id + "|#" + el.id;
+        var h = headOf(el);
+        return panel.id + "|" + (h ? h.textContent.trim().slice(0, 40) : "") + "|" + ord;
+      }
+
+      /* AOG-FOLD-QUIET-V1 (2026-10-10) — Jimmy: "I want the whole website not to lag". Every pass used to write every
+         class, attribute and label again, even when nothing had changed. Each write counted as a change to the page,
+         which asked for another pass 90ms later (and woke aog-dash-grace.js too): the front page never rested and kept
+         a phone fully busy. Now a pass writes only what is different, so once the cards are folded the page is still. */
+      function cls(el, c, on){ if (el.classList.contains(c) !== !!on) el.classList.toggle(c, !!on); }
+      function att(el, k, v){
+        if (v === null){ if (el.hasAttribute(k)) el.removeAttribute(k); }
+        else if (el.getAttribute(k) !== v) el.setAttribute(k, v);
+      }
+      function txt(el, v){ if (el.textContent !== v) el.textContent = v; }
+      /* the words of a heading, with an emoji already drawn in pencil (aog-sketch.js) read as the emoji it stands for */
+      function words(el){
+        var s = "", w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null), n;
+        while ((n = w.nextNode())){
+          if (n.nodeType === 3) s += n.nodeValue;
+          else if (n.tagName === "IMG" && n.classList.contains("aog-sk")) s += n.alt || "";
+        }
+        return s;
+      }
+
+      function ensureCard(panel, el, ord){
+        var key = keyFor(panel, el, ord);
+        att(el, "data-aogfold", key);
+        cls(el, "aogfold-host", true);
+        var open = openFor(key);
+        cls(el, "aogfold-closed", !open);
+        var cr = open ? 0 : cropFor(el);
+        if (cr){ if (el.style.getPropertyValue("--aogfold-h") !== cr + "px") el.style.setProperty("--aogfold-h", cr + "px"); }
+        else if (el.style.getPropertyValue("--aogfold-h")) el.style.removeProperty("--aogfold-h");
+        if (open && !el.querySelector(":scope > .aogfold-x")){
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "aogfold-x";
+          b.setAttribute("aria-expanded", "true");
+          var es = false;
+          try { es = (typeof dashLang !== "undefined" && dashLang === "es"); } catch(e){}
+          b.textContent = es ? "Cerrar" : "Close";
+          el.insertBefore(b, el.firstChild);
+        }
+        /* .30fg — a closed card used to be role=button with live controls inside it (axe
+           nested-interactive) and clipped controls stayed in the tab order. Now the host
+           carries no role; an overlay button named after the heading is the one control,
+           and every other child is inert until the card opens. */
+        if (!open){
+          var oldX = el.querySelector(":scope > .aogfold-x");
+          if (oldX) oldX.parentNode.removeChild(oldX);
+          att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null);
+          var ob = el.querySelector(":scope > .aogfold-o");
+          if (!ob){
+            ob = document.createElement("button"); ob.type = "button"; ob.className = "aogfold-o";
+            el.insertBefore(ob, el.firstChild);
+          }
+          var hd = headOf(el); var es2 = false;
+          try { es2 = (typeof dashLang !== "undefined" && dashLang === "es"); } catch(e){}
+          var name = hd ? words(hd).trim().slice(0, 80) : "";
+          if (words(ob) !== name) ob.textContent = name;
+          att(ob, "aria-label", name + (es2 ? " — abrir" : " — open")); /* AOG-DASH-FACELIFT-V1: the arrow says open; the words don't need to */
+          att(ob, "aria-expanded", "false");
+          for (var ci = 0; ci < el.children.length; ci++){ var ch = el.children[ci]; if (ch !== ob && ch.tagName !== "STYLE" && ch.tagName !== "SCRIPT") att(ch, "inert", ""); }
+        } else {
+          var ob2 = el.querySelector(":scope > .aogfold-o"); if (ob2) ob2.parentNode.removeChild(ob2);
+          att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null);
+          for (var ci2 = 0; ci2 < el.children.length; ci2++) att(el.children[ci2], "inert", null);
+        }
+      }
+
+      function ensureSection(panel, sh, members, ord){
+        var key = keyFor(panel, sh, ord);
+        att(sh, "data-aogfold-sh", key);
+        cls(sh, "aogfold-sh", true);
+        var open = !!state[key];
+        att(sh, "data-aogfold-closed", open ? null : "1");
+        att(sh, "aria-expanded", open ? "true" : "false");
+        att(sh, "role", "button"); att(sh, "tabindex", "0");
+        members.forEach(function(m){ cls(m, "aogfold-hidden", !open); });
+      }
+
+      /* ⚠ RECONCILE, EVERY PASS. A block can change kind between scans —
+         aogDailyBody had no heading until its module rendered one, so an
+         early pass filed it as a section member (display:none) and a later
+         pass as a card (max-height) and it wore BOTH. Classes this pass does
+         not assert are removed before the pass asserts anything. */
+      function unCard(el, keepRole){   /* keepRole: a section head, whose role it sets again at once */
+        cls(el, "aogfold-closed", false); cls(el, "aogfold-host", false);
+        if (el.style.getPropertyValue("--aogfold-h")) el.style.removeProperty("--aogfold-h");
+        att(el, "data-aogfold", null);
+        if (!keepRole){ att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null); }
+        var x = el.querySelector(":scope > .aogfold-x");
+        if (x) x.parentNode.removeChild(x);
+        var o = el.querySelector(":scope > .aogfold-o");
+        if (o) o.parentNode.removeChild(o);
+        for (var ci = 0; ci < el.children.length; ci++) att(el.children[ci], "inert", null);
+      }
+      function unSection(el){
+        cls(el, "aogfold-sh", false);
+        att(el, "data-aogfold-sh", null);
+        att(el, "data-aogfold-closed", null);
+        att(el, "role", null); att(el, "tabindex", null); att(el, "aria-expanded", null);
+      }
+      function scan(){
+        document.querySelectorAll("#screen-admin .tab-panel").forEach(function(panel){
+          var kids = [].slice.call(panel.children).filter(function(c){
+            return c.tagName !== "STYLE" && c.tagName !== "SCRIPT";
+          });
+          var plan = [];                 /* {el, kind, ord} in DOM order */
+          var ord = 0;
+          kids.forEach(function(el){
+            ord++;
+            var kind = "plain";
+            if (skipped(el)) kind = "skip";
+            else if (isSectionHead(el)) kind = "sh";
+            else if (el.tagName === "DIV" && headOf(el)) kind = "card";
+            plan.push({ el: el, kind: kind, ord: ord });
+          });
+          /* attach members to the nearest open sh; a card or sh ends the run */
+          var cur = null;
+          plan.forEach(function(p){
+            if (p.kind === "sh"){ cur = p; p.members = []; return; }
+            if (p.kind === "card" || p.kind === "skip"){ if (p.kind === "card") cur = null; return; }
+            if (cur){ p.kind = "member"; cur.members.push(p.el); }
+          });
+          /* a heading with nothing under it is a heading, not a toggle */
+          plan.forEach(function(p){ if (p.kind === "sh" && !p.members.length) p.kind = "plain"; });
+          /* reconcile: strip everything this pass does not assert */
+          plan.forEach(function(p){
+            if (p.kind !== "card") unCard(p.el, p.kind === "sh");
+            if (p.kind !== "sh") unSection(p.el);
+            if (p.kind !== "member") cls(p.el, "aogfold-hidden", false);
+          });
+          /* assert */
+          plan.forEach(function(p){
+            if (p.kind === "card") ensureCard(panel, p.el, p.ord);
+            else if (p.kind === "sh") ensureSection(panel, p.el, p.members, p.ord);
+          });
+        });
+        saveFold();
+      }
+      function ask(){ if (t) clearTimeout(t); t = setTimeout(function(){ t = 0; try{ scan(); }catch(e){} }, 90); }
+      /* keys hold heading text (quotes, pipes) — match by attribute value, never by selector */
+      function byKey(attr, k){ var all = document.querySelectorAll("[" + attr + "]"); for (var i = 0; i < all.length; i++) if (all[i].getAttribute(attr) === k) return all[i]; return null; }
+
+      document.addEventListener("click", function(e){
+        var tgt = e.target;
+        if (!tgt || !tgt.closest) return;
+        var x = tgt.closest(".aogfold-x");
+        if (x){
+          var host = x.closest("[data-aogfold]");
+          /* ⚠ FALSE, NOT delete — deleting falls back to OPEN_BY_DEFAULT and the
+             Close button on a practice card would do nothing at all. */
+          if (host){ var hk = host.getAttribute("data-aogfold"); state[hk] = false;
+            e.preventDefault(); e.stopPropagation(); scan();
+            try { var ho = byKey("data-aogfold", hk); ho = ho && ho.querySelector(":scope > .aogfold-o"); if (ho) ho.focus(); } catch (fe) {} }
+          return;
+        }
+        var card = tgt.closest(".aogfold-closed[data-aogfold]");
+        if (card){
+          var ck = card.getAttribute("data-aogfold");
+          state[ck] = true;
+          e.preventDefault(); scan();
+          try { var cx = byKey("data-aogfold", ck); cx = cx && cx.querySelector(":scope > .aogfold-x"); if (cx) cx.focus(); } catch (fe2) {}
+          return;
+        }
+        var sh = tgt.closest(".aogfold-sh[data-aogfold-sh]");
+        if (sh){
+          /* the head can carry real controls (chart-view buttons, selects) —
+             a tap on one of those is never a fold gesture */
+          if (tgt.closest("button,select,a,input,label") &&
+              !tgt.closest(".aogfold-sh > h2, .aogfold-sh > h3")) return;
+          var k = sh.getAttribute("data-aogfold-sh");
+          if (state[k]) delete state[k]; else state[k] = true;
+          scan();
+        }
+      }, true);
+      document.addEventListener("keydown", function(e){
+        if (e.key !== "Enter" && e.key !== " ") return;
+        var t = e.target;
+        if (!t || !t.closest) return;
+        if (t.classList && t.classList.contains("aogfold-o")) return;   /* a real button: click handles it */
+        var sh = t.closest(".aogfold-sh[data-aogfold-sh]");
+        if (sh && t === sh){
+          var k = sh.getAttribute("data-aogfold-sh");
+          if (state[k]) delete state[k]; else state[k] = true;
+          e.preventDefault(); scan();
+          try { var shn = byKey("data-aogfold-sh", k); if (shn) shn.focus(); } catch (fe) {}
+        }
+      });
+
+      function boot(){
+        scan();
+        try{
+          new MutationObserver(ask).observe(
+            document.getElementById("screen-admin") || document.body,
+            { childList: true, subtree: true });
+        }catch(e){}
+      }
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(boot, 140); });
+      else setTimeout(boot, 140);
+      window.__aogCardFoldScan = scan;
+    })();
+    </script>
     <!-- ===== DASHBOARD MODES (Pass 9) ==================================
          The tab row is complete and stays complete. This row above it groups
          the tabs into the three questions a teacher actually arrives with:
@@ -5785,7 +6262,76 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
       }
       @media (prefers-reduced-motion:reduce){ #dashUtil *{ transition:none; } }
     </style>
-    <script id="aog-dash-fold-js" src="/front/45009b48c8c0.js"></script>
+    <script id="aog-dash-fold-js">
+    (function () {
+      function byId(id){ return document.getElementById(id); }
+      function build(){
+        var hero = byId('dashHero'); if(!hero) return;
+        if(byId('dashUtil')) return;                       /* idempotent */
+        var actions = hero.querySelector('.admin-actions'); if(!actions) return;
+
+        var util = document.createElement('div');
+        util.id = 'dashUtil';
+        hero.insertBefore(util, actions);
+
+        /* Row 1 is who and where: identity on the left, the utilities that
+           belong to the whole dashboard on the right. Row 2 is what a teacher
+           can pick up right now. */
+        var r1 = document.createElement('div'); r1.className = 'du-row';
+        var r2 = document.createElement('div'); r2.className = 'du-row';
+        util.appendChild(r1); util.appendChild(r2);
+
+        var eyebrow = document.querySelector('#screen-admin .admin-header .eyebrow');
+        if(eyebrow){ eyebrow.classList.add('du-eyebrow'); r1.appendChild(eyebrow); }
+
+        var roles = byId('dashRoles');   if(roles) r2.appendChild(roles);
+        var ry    = byId('aogRhythmsDash'); if(ry && !ry.hasAttribute('hidden')) r2.appendChild(ry);
+
+        var talk = byId('dashTalk');
+        if(talk){
+          /* The strip's note explained the difference between the two
+             buttons. It is worth keeping, so it moves onto the buttons
+             themselves rather than being deleted. */
+          var note = talk.querySelector('.dt-note');
+          var txt  = note ? (note.textContent || '').trim() : '';
+          var btns = talk.querySelectorAll('.dt-btn');
+          if(txt && btns.length){
+            var half = txt.split('.');
+            /* title tooltips are neither announced nor localized — team-review
+               item 14. A visually-hidden note carries the same words instead,
+               and rebuilds with this row, so it follows the language. */
+            var describe = function(btn, text, i){
+              if(!btn || !text) return;
+              var id = 'dashTalkDesc' + i;
+              var sp = document.getElementById(id);
+              if(!sp){ sp = document.createElement('span'); sp.id = id;
+                       sp.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;';
+                       btn.parentNode.appendChild(sp); }
+              sp.textContent = text.trim() + '.';
+              btn.setAttribute('aria-describedby', id);
+              btn.removeAttribute('title');
+            };
+            if(btns[0] && half[0]) describe(btns[0], half[0], 0);
+            if(btns[1] && half[1]) describe(btns[1], half[1], 1);
+          }
+          r2.appendChild(talk);
+        }
+
+        var sp = document.createElement('span');
+        sp.className = 'du-spacer'; sp.setAttribute('aria-hidden','true');
+        r1.appendChild(sp);
+        r1.appendChild(actions);
+        if(!r2.children.length) r2.style.display = 'none';
+      }
+      function go(){ try{ build(); }catch(e){} }
+      if(document.readyState !== 'loading') go();
+      else document.addEventListener('DOMContentLoaded', go);
+      /* The rhythms card and the role controls are mounted by other blocks;
+         one late pass covers any order they finish in. */
+      setTimeout(go, 400);
+      setTimeout(go, 1500);
+    })();
+    </script>
     <div id="dashModes" role="tablist" aria-label="Dashboard mode">
       <button type="button" class="dmode active" data-mode="myclass" role="tab" aria-selected="true" onclick="aogSetDashMode('myclass')">
         <span class="dmode-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 15.2c3 .2 5 1.9 5 4.8"/></svg></span>
@@ -5806,7 +6352,282 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
     </div>
     <style id="aog-srx-css">.aog-srx{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}</style>
     <div id="dashModeLive" class="aog-srx" aria-live="polite"></div>
-    <script id="aog-dash-modes-js" src="/front/00774008601b.js"></script>
+    <script id="aog-dash-modes-js">
+    (function(){
+      /* Which tabs live under which mode. Every tab in the row appears exactly
+         once; nothing is removed, only grouped. */
+      var MODES = {
+        /* §13's three questions, in the teacher's order. Overview holds one
+           tab on purpose: it is the 30-second morning screen, and a second tab
+           beside it is a second thing to decide between at 8:00 AM. */
+        myclass: ['overview'],
+        /* ONE DOOR PER STUDENT (2026-09-05, .30gt then .30gu, Jimmy's call —
+           reversing his own 2026-08-27 split and 2026-08-28 voice-door
+           ruling). IEP was pulled OUT of Students because a case manager
+           could not find it there; the cure is the LABEL, not a seventh
+           door: this door reads "Students & IEP", so it cannot be missed.
+           .30gu folds the CHECK-INS door in too ('may the check-ins get a
+           OVERHAUL and be embedded into the students page?') — the door now
+           holds everything about a student. Tab order is the day's order:
+           Student view (who), then the five voice instruments in the
+           .29an moment order (today → end of day → over time), then the
+           IEP pair (Goal Builder writes the goal, IEP Progress tracks it). */
+        /* ⚠⚠ .30hk — THE DAILY LOG TAB IS RETIRED. Jimmy: "I don't need this
+           daily log, because I would enter infor on a team check-in form."
+           Verified before agreeing: the Adult team check-in writes into
+           aog.daily.v1 in the DAILY LOG'S OWN SHAPE, and saveEntry's own
+           comment says its panel, trend, history and CSV read link-submitted
+           entries with no change — so nothing stops counting.
+           ⚠⚠ THE TAB IS RETIRED, THE STORE IS NOT. aog.daily.v1 still backs
+           the Team tab, Trends, One student over time and the CSV, and pulled
+           adult rows still merge into it. Deleting the store would take the
+           whole observation history with it.
+           ⚠ 'daily' is dropped from this table rather than deleted from the
+           markup: the panel stays in the DOM, addressable, and putting the
+           name back here is the whole of the undo. */
+        /* ⚠⚠ .30hl — INBOX LEADS THIS DOOR. Jimmy: "How about we move INBOX to
+           the tab bar with everything elese". It is the aggregate of every
+           instrument below it, so it reads first.
+           ⚠ IT IS THE ONLY TAB IN THIS PRODUCT THAT LEAVES THE PAGE — an
+           anchor to /turnins, not a panel. It has NO #panel-inbox, which is
+           why it is injected AFTER the generic .tab click handler has bound:
+           that handler does $("#panel-" + dataset.tab).classList.add(...)
+           with NO NULL GUARD, and a missing panel would throw and kill the
+           rest of its closure. Same fault c5 paid for in .30dm. Binding
+           nothing and letting the browser follow the href is the whole
+           mechanism. */
+        /* ⚠ .30hm — ORDER IS JIMMY'S, and it is the day's order read as a
+           question: WHO (Student view) → WHAT CAME BACK (Inbox) → WHAT THEY
+           PRACTICED (Practice) → then the voice instruments → then the IEP
+           pair. He flipped Student view ahead of Inbox himself: the student
+           is the anchor, the inbox is what arrived about them. */
+        student: ['home','inbox','practice','support','exitslip','reflect','homeci','iep','goals'],
+        trends:  ['students','growth','trajectory'],
+        /* My classes is the population layer's set-up bench. It sits
+           beside Distribute because building a class and handing it a link
+           are the same twenty minutes of a teacher's August. */
+        /* 'crosswalk' stays OUT on purpose - #panel-crosswalk is the INTERNAL
+           Crosswalk Viewer (its own heading says internal; 125 dark-theme
+           contrast failures inside). Team-review item 11 read as a bug, but
+           exposing an internal QA tool to every teacher is Jimmy's call, not
+           an array entry. The public crosswalks live under Alignment. 2026-08-28 */
+        setup:   ['distribute','classes','family','export','align'],
+        /* The voice door (2026-08-28 'one door for student voice') folded
+           into the student door in .30gu — its five tabs and their .29an
+           moment order live in MODES.student above. */
+      };
+      /* Internal keys are UNCHANGED so a saved aog.dash.mode still resolves. */
+      var ORDER = ['myclass','student','trends','setup'];
+      var MODE_OF = {};
+      ORDER.forEach(function(m){ MODES[m].forEach(function(t){ MODE_OF[t] = m; }); });
+
+      /* Only these two roles have enough tabs for grouping to be a kindness. */
+      var MODE_ROLES = { teacher:1, specialist:1 };
+      /* Mirrors the role hide-list one layer down, so a mode never shows a tab
+         the role is not allowed to see (Specialist has no Class trends). */
+      var HIDE = { specialist:{students:1, distribute:1, align:1}, teacher:{} };
+
+      var LAB = {
+        myclass: { en:['Overview','What is happening with my group'],   es:['Panorama','Qué está pasando con mi grupo'] },
+        student: { en:['Student Check-ins','Every student in one place — story, check-ins, goals'], es:['Registros del estudiante','Cada estudiante en un lugar — historia, registros, metas'] },
+        trends:  { en:['Trends','What is changing over time'],           es:['Tendencias','Qué está cambiando con el tiempo'] },
+        setup:   { en:['Set up','Hand it out, export, connect'],         es:['Configurar','Repartir, exportar y conectar'] }
+      };
+
+      var cur = 'myclass';
+      try{ var saved = localStorage.getItem('aog.dash.mode'); if(saved === 'exit') saved = 'voice'; /* the exit door folded into Check-ins, 2026-08-28 */ if(saved === 'iep' || saved === 'voice') saved = 'student'; /* IEP (.30gt) and Check-ins (.30gu) both folded into Students & IEP, 2026-09-05 — the exit→voice line above chains through */ if(MODES[saved]) cur = saved; }catch(e){}
+
+      var busy = false;      /* guards the observer while we are the ones moving tabs */
+      var suppress = false;  /* guards the click listener while we activate a tab ourselves */
+
+      function byId(id){ return document.getElementById(id); }
+      function rowEl(){ return document.querySelector('#screen-admin .tabs'); }
+      function currentRole(){
+        var s = byId('screen-admin'); var r = s && s.getAttribute('data-role');
+        if(r) return r;
+        try{ r = localStorage.getItem('aog.dash.role'); }catch(e){}
+        return r || 'teacher';
+      }
+      /* dashLang first — setDashLang never touches documentElement.lang
+         (the .29l lesson), so door labels hung on the attribute stayed
+         English on a Spanish dashboard. 2026-08-28. */
+      function isEs(){ try{ if (typeof dashLang !== 'undefined') return dashLang === 'es'; }catch(e){} return (document.documentElement.getAttribute('lang')||'en').slice(0,2) === 'es'; }
+      function tabMap(){
+        var m = {};
+        document.querySelectorAll('#screen-admin .tabs .tab[data-tab], #tabMoreMenu .tab[data-tab]').forEach(function(b){
+          m[b.getAttribute('data-tab')] = b;
+        });
+        return m;
+      }
+      function visibleIn(mode, all, hide){
+        return MODES[mode].filter(function(t){ return all[t] && !hide[t]; });
+      }
+      function paintLabels(){
+        var es = isEs(), bar = byId('dashModes'); if(!bar) return;
+        bar.querySelectorAll('.dmode').forEach(function(b){
+          var l = LAB[b.getAttribute('data-mode')]; if(!l) return;
+          var pair = es ? l.es : l.en;
+          var t = b.querySelector('.dmode-t'), sub = b.querySelector('.dmode-s');
+          if(t) t.textContent = pair[0];
+          if(sub) sub.textContent = pair[1];
+        });
+        bar.setAttribute('aria-label', es ? 'Modo del panel' : 'Dashboard mode');
+      }
+
+      function apply(activate){
+        var scr = byId('screen-admin'), bar = byId('dashModes'), row = rowEl();
+        if(!scr || !bar || !row) return;
+        var role = currentRole(), on = !!MODE_ROLES[role];
+        var moreWrap = row.querySelector('.tab-more-wrap');
+        scr.classList.toggle('has-modes', on);
+        if(!on){ if(moreWrap) moreWrap.style.display = ''; return; }
+
+        busy = true;
+        try{
+          if(moreWrap) moreWrap.style.display = 'none';
+          var hide = HIDE[role] || {}, all = tabMap();
+
+          /* If this role cannot see anything in the remembered mode, fall to the
+             first mode that has something. */
+          if(!MODES[cur] || !visibleIn(cur, all, hide).length){
+            cur = ORDER.filter(function(m){ return visibleIn(m, all, hide).length; })[0] || 'myclass';
+          }
+
+          /* Every grouped tab comes back into the row in mode order; only the
+             current mode's tabs are shown. The More menu is not needed here. */
+          ORDER.forEach(function(m){
+            MODES[m].forEach(function(name){
+              var b = all[name]; if(!b) return;
+              /* Family & adults and Export & data are authored inside
+                 #tabMoreMenu with role="menuitem". Once they are moved into the
+                 tab row there is no menu above them, and axe flags
+                 aria-required-parent (critical). Drop the role on the way in. */
+              if(b.getAttribute('role') === 'menuitem') b.removeAttribute('role');
+              row.appendChild(b);
+              b.style.display = (!hide[name] && m === cur) ? '' : 'none';
+            });
+          });
+          if(moreWrap) row.appendChild(moreWrap);
+
+          scr.classList.toggle('has-lone-tab', visibleIn(cur, all, hide).length <= 1);
+
+          bar.querySelectorAll('.dmode').forEach(function(b){
+            var m = b.getAttribute('data-mode');
+            var any = MODES[m] && visibleIn(m, all, hide).length;
+            b.style.display = any ? '' : 'none';
+            b.classList.toggle('active', m === cur);
+            b.setAttribute('aria-selected', m === cur ? 'true' : 'false');
+          });
+
+          if(activate){
+            var act = document.querySelector('#screen-admin .tabs .tab.active, #tabMoreMenu .tab.active');
+            var name = act ? act.getAttribute('data-tab') : '';
+            if(!name || MODE_OF[name] !== cur || hide[name]){
+              var first = visibleIn(cur, all, hide)[0];
+              if(first && all[first]){ suppress = true; try{ all[first].click(); }finally{ suppress = false; } }
+            }
+          }
+          paintLabels();
+        } finally {
+          /* setTimeout(0), NOT requestAnimationFrame (2026-08-30): rAF never
+             fires while the tab is hidden, so `busy` stuck true and the
+             watchdog observer slept for good. Our own writes' observer
+             microtasks deliver before any 0ms timer, so this releases no
+             earlier than the frame release did - just also in a hidden tab. */
+          setTimeout(function(){ busy = false; }, 0);
+        }
+      }
+
+      window.aogSetDashMode = function(mode){
+        if(!MODES[mode]) return;
+        cur = mode;
+        try{ localStorage.setItem('aog.dash.mode', mode); }catch(e){}
+        apply(true);
+        /* Mode changes were silent to a screen reader — team-review item 12. */
+        try{ var lr = document.getElementById('dashModeLive'), l = LAB[mode];
+             if(lr && l){ var pair = isEs() ? l.es : l.en; lr.textContent = pair[0] + ' — ' + pair[1]; } }catch(_lr){}
+        try{ window.scrollTo({top:0, behavior:'instant'}); }catch(e){ try{ window.scrollTo(0,0); }catch(_e){} }
+      };
+
+      /* A jump from somewhere else - the Quick Start card's "Go to Distribute",
+         a #alignment link - clicks a real tab. Follow it into its mode instead
+         of leaving the row showing a different group. */
+      document.addEventListener('click', function(e){
+        if(suppress) return;
+        /* Only a REAL click follows a tab into its mode. openAdmin() ends by
+           synthesizing a click on the Distribute tab, and this listener was
+           following it — so every first visit opened on Set up and then
+           remembered Set up as the saved mode forever. A person clicking a
+           tab is isTrusted; a script calling .click() is not. 2026-08-27 */
+        if(e.isTrusted === false) return;
+        var t = e.target.closest && e.target.closest('.tab[data-tab]');
+        if(!t) return;
+        var m = MODE_OF[t.getAttribute('data-tab')];
+        if(m && m !== cur){
+          cur = m;
+          try{ localStorage.setItem('aog.dash.mode', m); }catch(_e){}
+        }
+        setTimeout(function(){ apply(false); }, 60);
+      });
+
+      /* The declutter layer re-lays the row on role change, language change and
+         tab clicks, and we cannot see its internal calls - so watch the row and
+         re-assert afterwards. Guarded by `busy`, and layoutTabs never runs off a
+         mutation, so the two cannot ping-pong.
+         subtree:true is the whole defense (2026-08-30): layoutTabs hides and
+         shows tabs by setting style on the CHILD buttons, and once the row's
+         order is final its insertBefore calls make no childList record either -
+         so with subtree:false this observer slept through every leak. The
+         repro was apply(true)'s own synthetic first-tab click: declutter's
+         document click listener has no isTrusted guard (ours does, 2026-08-27)
+         and re-showed every role CORE tab 40ms later, accumulating up to ten
+         tabs across mode switches. The guard is NOT added over there because
+         its post-click relayout also serves the mode-less roles - it is what
+         keeps the More button's hasactive honest after aogQsTab()'s synthetic
+         clicks - so the fix is to see the damage and re-assert, as designed.
+         apply()'s own child writes cannot loop us: the observer delivers as a
+         microtask, before the 0ms timer that clears `busy`. */
+      function watch(){
+        var row = rowEl(); if(!row || !window.MutationObserver) return;
+        try{
+          new MutationObserver(function(){
+            if(busy) return;
+            apply(false);
+          }).observe(row, { childList:true, subtree:true, attributes:true, attributeFilter:['style'] });
+        }catch(e){}
+      }
+
+      function wrapRole(){
+        if(!window.aogSetDashRole || window.aogSetDashRole.__modes) return;
+        var orig = window.aogSetDashRole;
+        window.aogSetDashRole = function(role){
+          var r = orig.apply(this, arguments);
+          try{ requestAnimationFrame(function(){ apply(true); }); }catch(e){ apply(true); }
+          return r;
+        };
+        window.aogSetDashRole.__modes = true;
+      }
+
+      function init(){
+        wrapRole();
+        apply(true);
+        watch();
+        /* A hidden tab throttles the 0ms busy-release toward a full second, and
+           damage the watchdog skips during that stretch is skipped for good -
+           so re-assert once on the way back to visible. 2026-08-30 */
+        document.addEventListener('visibilitychange', function(){ if(!document.hidden) apply(false); });
+        try{
+          new MutationObserver(function(){ paintLabels(); })
+            .observe(document.documentElement, { attributes:true, attributeFilter:['lang'] });
+        }catch(e){}
+      }
+      /* 160ms: the declutter layer initializes at 80ms and we re-assert on top. */
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 160); });
+      else setTimeout(init, 160);
+
+      window.__aogDashModes = { apply:apply, modes:MODES, get:function(){ return cur; }, paint:paintLabels };
+    })();
+    </script>
     <div class="tabs">
       <button class="tab active" data-tab="overview" data-dl="dl_t_overview">Overview</button>
       <button class="tab" data-tab="students" data-dl="dl_t_students">Class trends</button>
@@ -6319,7 +7140,644 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
       <div id="aoggOut" class="aogg-out" hidden></div>
       <div id="aoggProgress" class="aogg-prog" hidden></div>
       <div class="aogg-note" data-en="A guide for growth, not a diagnosis or a behavior count. Review and adapt to your student and your district&rsquo;s requirements before entering it into your IEP system &mdash; an adopted goal still needs its baseline, criterion, measurement method, and schedule, which your team sets (the IEP Progress Monitor&rsquo;s wizard asks for each)." data-es="Una gu&iacute;a para el crecimiento, no un diagn&oacute;stico ni un conteo de conductas. Revisa y adapta a tu estudiante y a los requisitos de tu distrito antes de ingresarla en tu sistema de IEP &mdash; una meta adoptada a&uacute;n necesita su l&iacute;nea base, criterio, m&eacute;todo de medici&oacute;n y calendario, que define tu equipo (el asistente del Monitor de Progreso IEP pide cada uno).">A guide for growth, not a diagnosis or a behavior count. Review and adapt to your student and your district&rsquo;s requirements before entering it into your IEP system &mdash; an adopted goal still needs its baseline, criterion, measurement method, and schedule, which your team sets (the IEP Progress Monitor&rsquo;s wizard asks for each).</div>
-      <script src="/front/c051c7fb0ca8.js"></script>
+      <script>
+      (function () {
+        var GLANG = (document.documentElement.getAttribute("lang") === "es") ? "es" : "en";
+        var STYLE = "narrative";
+        var T = {
+          en: { area: "Goal Area: Functional (social-emotional / behavioral)", present: "Present level (related to goal)", presentTxt: function (b, d, bi) { return "Currently " + b + " on the " + d + " check-in; " + (bi === 2 ? "strength and relationship are the focus." : "growth and relationship are the focus."); },
+            goalStmt: "Goal Statement", scoring: "Scoring Method", scoringTxt: function (b, n, d, bi) { return bi === 2 ? "Sustained demonstration across check-in windows and settings, with the relational indicators below observed by a trusted adult — a record of strength and growing leadership, never a deficit count." : "Growth across check-in windows from " + b + " toward " + n + ", with the relational indicators below observed by a trusted adult — a flag for support and a record of growth, never a deficit count."; },
+            bench: "Benchmarks / Short-Term Objectives", evalProc: "Evaluation Procedure: Observation", schedule: "Schedule for Determining Progress",
+            ee: "Essential Elements (relational indicators)", supports: "Supports", header: "GRACE GOAL", student: "Student", grade: "Grade", date: "Date", current: "Current", target: "Target by year-end", targetHi: "Sustain & generalize",
+            foot: "Relationship-centered SEL goal · Architecture of Grace. A guide for growth, not a diagnosis or a behavior count.",
+            obj: function (p, who, core, rung, prog, d) { return who + " will " + core + " " + rung + ", with check-in growth " + prog + " on the " + d + " domain, as observed by a trusted adult."; },
+            progLast: function (n, bi) { return bi === 2 ? "sustained across settings" : "reaching " + n; }, progMid: function (n, bi) { return bi === 2 ? "sustaining the pattern" : "showing growth toward " + n; },
+            bands: ["Adult follow-up", "Worth a conversation", "Keep noticing"],
+            rungs: ["with adult cueing and support", "with a brief reminder", "independently in a structured setting", "independently and generalized across settings", "independently across settings, and beginning to model it for peers"],
+            periods: function (n) { return n === 4 ? ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"] : n === 3 ? ["Trimester 1", "Trimester 2", "Trimester 3"] : ["Semester 1", "Semester 2"]; } },
+          es: { area: "Área de la meta: Funcional (socioemocional / conductual)", present: "Nivel actual (relacionado con la meta)", presentTxt: function (b, d, bi) { return "Actualmente " + b + " en el registro de " + d + "; " + (bi === 2 ? "la fortaleza y la relación son el enfoque." : "el enfoque es el crecimiento y la relación."); },
+            goalStmt: "Declaración de la meta", scoring: "Método de puntuación", scoringTxt: function (b, n, d, bi) { return bi === 2 ? "Demostración sostenida a través de los períodos de registro y en distintos entornos, con los indicadores relacionales de abajo observados por un adulto de confianza — un registro de fortaleza y liderazgo creciente, nunca un conteo de déficits." : "Crecimiento a través de los períodos de registro desde " + b + " hacia " + n + ", con los indicadores relacionales de abajo observados por un adulto de confianza — una señal de apoyo y un registro de crecimiento, nunca un conteo de déficits."; },
+            bench: "Puntos de referencia / Objetivos a corto plazo", evalProc: "Procedimiento de evaluación: Observación", schedule: "Calendario para determinar el progreso",
+            ee: "Elementos esenciales (indicadores relacionales)", supports: "Apoyos", header: "META GRACE", student: "Estudiante", grade: "Grado", date: "Fecha", current: "Actual", target: "Meta para fin de año", targetHi: "Sostener y generalizar",
+            foot: "Meta SEL centrada en la relación · Architecture of Grace. Una guía para el crecimiento, no un diagnóstico ni un conteo de conductas.",
+            obj: function (p, who, core, rung, prog, d) { return who + " " + core + " " + rung + ", con crecimiento en el registro " + prog + " en el dominio de " + d + ", observado por un adulto de confianza."; },
+            progLast: function (n, bi) { return bi === 2 ? "sostenido en distintos entornos" : "alcanzando " + n; }, progMid: function (n, bi) { return bi === 2 ? "sosteniendo el patrón" : "mostrando crecimiento hacia " + n; },
+            bands: ["Seguimiento de un adulto", "Vale una conversación", "Seguir observando"],
+            rungs: ["con apoyo y señales del adulto", "con un breve recordatorio", "de forma independiente en un entorno estructurado", "de forma independiente y generalizada en distintos entornos", "de forma independiente en distintos entornos, y comenzando a modelarlo para sus compañeros"],
+            periods: function (n) { return n === 4 ? ["Período 1", "Período 2", "Período 3", "Período 4"] : n === 3 ? ["Trimestre 1", "Trimestre 2", "Trimestre 3"] : ["Semestre 1", "Semestre 2"]; } }
+        };
+        /* ============================================================
+           Competency registry — ONE self-contained config per skill.
+           To add a competency, add a single object here; every view
+           (COMPS, composer slots/PARTS, family HOME tips, SEL auto-map)
+           is derived below, so there's a single place to edit.
+             name, domain — labels (EN/ES)
+             sel          — default Illinois SEL standard code
+             core         — observable verb phrase (used in objectives)
+             ms           — relational indicators (EN/ES)
+             res          — supports / resource line
+             home         — a warm "at home" practice (Family style)
+             slots        — composer pieces:
+                            cue · recog (the internal recognition) ·
+                            move (the choice) · outcome · sustain · noun
+           ============================================================ */
+        var COMP = {
+          pause: {
+            name: { en: "The Pause", es: "La Pausa" }, domain: { en: "Emotional Regulation & Well-Being", es: "Regulación emocional y bienestar" }, sel: "1A",
+            core: { en: "pause and choose a reset before reacting when strong feelings rise", es: "se detiene y elige una estrategia de calma antes de reaccionar cuando surgen emociones fuertes" },
+            ms: { en: ["Names the feeling before acting", "Uses a chosen reset (breath, water, movement) when cued, then independently", "Re-engages with the group ready to continue"], es: ["Nombra la emoción antes de actuar", "Usa una estrategia de calma (respiración, agua, movimiento) con apoyo y luego de forma independiente", "Se reincorpora al grupo listo/a para continuar"] },
+            res: { en: "Book 1 · regulation lessons · Quiet Space reset tools", es: "Libro 1 · lecciones de regulación · herramientas del Espacio Tranquilo" },
+            resTail: { en: "regulation lessons · Quiet Space reset tools", es: "lecciones de regulación · herramientas del Espacio Tranquilo" },
+            home: { en: "naming big feelings together and practicing one calm-down — a slow breath, a glass of water, a short walk — before talking it through.", es: "nombrar juntos las emociones grandes y practicar una forma de calmarse — una respiración lenta, un vaso de agua, una caminata corta — antes de hablar." },
+            slots: {
+              cue: { en: "When strong feelings rise", es: "Cuando surgen emociones fuertes" },
+              recog: { en: "the early signal that they're becoming activated", es: "la primera señal de que se está activando" },
+              move: { en: "pause and use a reset before reacting", es: "pausar y usar una estrategia de calma antes de reaccionar" },
+              outcome: { en: "so a big moment gives way to calm and connection", es: "para que un momento intenso dé paso a la calma y la conexión" },
+              sustain: { en: "calm and connection", es: "la calma y la conexión" },
+              noun: { en: "the Pause", es: "la Pausa" } }
+          },
+          charitable: {
+            name: { en: "The Charitable Read", es: "La Lectura Caritativa" }, domain: { en: "Social Competency & Repair", es: "Competencia social y reparación" }, sel: "2A",
+            core: { en: "offer the benefit of the doubt in an unclear moment", es: "ofrece el beneficio de la duda en un momento confuso" },
+            ms: { en: ["Offers a kinder, alternative explanation when prompted", "Pauses retaliation and checks intent", "Asks a question instead of making an accusation"], es: ["Ofrece una explicación más amable cuando se le indica", "Pausa la represalia y verifica la intención", "Hace una pregunta en lugar de una acusación"] },
+            res: { en: "Book 3 · perspective-taking · the Three Sides protocol", es: "Libro 3 · toma de perspectiva · protocolo de los Tres Lados" },
+            resTail: { en: "perspective-taking · the Three Sides protocol", es: "toma de perspectiva · protocolo de los Tres Lados" },
+            home: { en: "wondering out loud together when something feels unfair: “I wonder if that was an accident?”", es: "preguntarse en voz alta juntos cuando algo parezca injusto: “¿Sería un accidente?”" },
+            slots: {
+              cue: { en: "When someone's intent is unclear", es: "Cuando la intención de alguien no está clara" },
+              recog: { en: "the moment they're about to assume the worst", es: "el momento en que está a punto de suponer lo peor" },
+              move: { en: "offer the benefit of the doubt and check intent before reacting", es: "ofrecer el beneficio de la duda y verificar la intención antes de reaccionar" },
+              outcome: { en: "so a misread gives way to understanding and the friendship is protected", es: "para que una mala interpretación dé paso a la comprensión y se proteja la amistad" },
+              sustain: { en: "trust and the benefit of the doubt", es: "la confianza y el beneficio de la duda" },
+              noun: { en: "the charitable read", es: "la lectura caritativa" } }
+          },
+          coach: {
+            name: { en: "The Coach Voice", es: "La Voz del Entrenador" }, domain: { en: "Self-Compassion & Growth Mindset", es: "Autocompasión y mentalidad de crecimiento" }, sel: "1B",
+            core: { en: "answer the inner critic with a kind coach voice after a mistake", es: "responde a la crítica interior con una voz amable de entrenador después de un error" },
+            ms: { en: ["Replaces a harsh self-statement with a kinder one when cued", "Names one thing learned from the mistake", "Re-attempts the task after a setback"], es: ["Reemplaza una autocrítica dura por una más amable cuando se le indica", "Nombra algo que aprendió del error", "Vuelve a intentar la tarea tras un tropiezo"] },
+            res: { en: "Book 2 · The Year of the Inner Critic", es: "Libro 2 · El año del crítico interior" },
+            resTail: { en: "the inner-critic / kind-coach work", es: "el trabajo del crítico interior / entrenador amable" },
+            home: { en: "modeling a kind “coach voice” out loud when a mistake happens, instead of harsh words.", es: "modelar en voz alta una “voz de entrenador” amable cuando ocurra un error, en lugar de palabras duras." },
+            slots: {
+              cue: { en: "After a mistake", es: "Después de un error" },
+              recog: { en: "the inner critic starting up", es: "que el crítico interior se activa" },
+              move: { en: "answer it with the voice of a kind coach, holding the mistake separate from their worth", es: "responder con la voz de un entrenador amable, manteniendo el error aparte de su valor" },
+              outcome: { en: "so shame gives way to learning and trying again", es: "para que la vergüenza dé paso al aprendizaje y a un nuevo intento" },
+              sustain: { en: "self-compassion and the courage to try again", es: "la autocompasión y el valor de volver a intentarlo" },
+              noun: { en: "the coach voice", es: "la voz del entrenador" } }
+          },
+          repair: {
+            name: { en: "The Repair Move", es: "El Acto de Reparación" }, domain: { en: "Social Competency & Repair", es: "Competencia social y reparación" }, sel: "2D",
+            core: { en: "move toward repair after a conflict", es: "avanza hacia la reparación después de un conflicto" },
+            ms: { en: ["Acknowledges the impact on the other person", "Offers a genuine repair in words or action", "Re-enters the relationship without avoidance"], es: ["Reconoce el impacto en la otra persona", "Ofrece una reparación genuina con palabras o acciones", "Vuelve a la relación sin evitarla"] },
+            res: { en: "Book 3 · repair lessons · restorative conversation guide", es: "Libro 3 · lecciones de reparación · guía de conversación restaurativa" },
+            resTail: { en: "repair lessons · restorative conversation guide", es: "lecciones de reparación · guía de conversación restaurativa" },
+            home: { en: "practicing a simple repair together after a hard moment: “I'm sorry — here's what I'll do.”", es: "practicar juntos una reparación sencilla después de un momento difícil: “Lo siento — esto es lo que haré.”" },
+            slots: {
+              cue: { en: "When conflict ruptures a relationship", es: "Cuando un conflicto rompe una relación" },
+              recog: { en: "that the rupture is theirs to help mend", es: "que la ruptura está en sus manos para ayudar a repararla" },
+              move: { en: "move toward repair by owning their impact and offering a next step", es: "avanzar hacia la reparación reconociendo su impacto y ofreciendo un siguiente paso" },
+              outcome: { en: "so a rupture can become reconnection", es: "para que una ruptura pueda convertirse en reconexión" },
+              sustain: { en: "trust and a culture of repair", es: "la confianza y una cultura de reparación" },
+              noun: { en: "the repair move", es: "el acto de reparación" } }
+          },
+          release: {
+            name: { en: "The Release / Boundary", es: "El Soltar / Límite" }, domain: { en: "Emotional Regulation & Well-Being", es: "Regulación emocional y bienestar" }, sel: "1A",
+            core: { en: "release what they cannot control while holding a kind, firm boundary", es: "suelta lo que no puede controlar mientras mantiene un límite amable y firme" },
+            ms: { en: ["Names what is and isn't theirs to carry", "Uses a release strategy instead of replaying", "Holds a respectful 'no' without aggression or collapse"], es: ["Nombra lo que es y lo que no es suyo para cargar", "Usa una estrategia para soltar en vez de repetir", "Mantiene un 'no' respetuoso sin agresión ni colapso"] },
+            res: { en: "Books 4–5 · boundaries & release · the Difficult-vs-Unsafe distinction", es: "Libros 4–5 · límites y soltar · la distinción Difícil-vs-Inseguro" },
+            resTail: { en: "boundaries & release · the Difficult-vs-Unsafe distinction", es: "límites y soltar · la distinción Difícil-vs-Inseguro" },
+            home: { en: "helping them name what they can let go of, and practicing a kind, firm “no” together.", es: "ayudarles a nombrar lo que pueden soltar y practicar juntos un “no” amable y firme." },
+            slots: {
+              cue: { en: "When something weighs on them", es: "Cuando algo le pesa" },
+              recog: { en: "what is and isn't theirs to carry", es: "lo que es y lo que no es suyo para cargar" },
+              move: { en: "set down what they can't control while holding a kind, firm boundary", es: "soltar lo que no puede controlar mientras mantiene un límite amable y firme" },
+              outcome: { en: "so peace and self-respect can grow together", es: "para que la paz y el respeto propio puedan crecer juntos" },
+              sustain: { en: "peace and healthy boundaries", es: "la paz y los límites saludables" },
+              noun: { en: "the release and a clear boundary", es: "el soltar y un límite claro" } }
+          }
+        };
+        /* Derived views — keep existing call sites working from the single source above. */
+        var COMPS = {}, PARTS = {}, HOME = {}, COMP_SEL = {};
+        Object.keys(COMP).forEach(function (k) { var c = COMP[k]; COMPS[k] = { name: c.name, domain: c.domain, core: c.core, ms: c.ms, res: c.res, resTail: c.resTail }; PARTS[k] = c.slots; HOME[k] = c.home; COMP_SEL[k] = c.sel; });
+
+        /* ============================================================
+           Templated goal composer.
+           Instead of hard-coding one sentence per competency, each skill
+           is broken into reusable slots (cue · internal recognition ·
+           the move/choice · outcome · what's sustained). Band-keyed
+           frames then assemble the goal dynamically — naming the internal
+           move, and shifting tone by where the student is starting:
+             need    (Adult follow-up)      → scaffolded, adult-supported
+             reflect (Worth a conversation) → growth
+             well    (Keep noticing)         → maintenance + modeling for peers
+           Frame keys mirror the check-in band names, so the composer stays
+           tied to the actual check-in data rather than an abstract scale.
+           ============================================================ */
+        var BAND_KEY = { 0: "need", 1: "reflect", 2: "well" };
+        /* A per-band window into the developmental "rungs" (see T.rungs),
+           so objectives scale from where the student actually starts. */
+        var RUNG_BAND = { 0: [0, 2], 1: [0, 3], 2: [2, 4] };
+        function rungFor(t, bi, i, n) { var w = RUNG_BAND[bi] || [0, 3]; var f = (n <= 1) ? 1 : (i / (n - 1)); return t.rungs[Math.round(w[0] + f * (w[1] - w[0]))]; }
+        /* Band-keyed sentence frames — keys mirror the three check-in bands.
+           Slots: cue · who · recog · move · outcome · sustain · noun */
+        var GFRAME = {
+          en: {
+            need: function (s) { return s.cue + ", " + s.who + " is learning to notice " + s.recog + " and, with support from a trusted adult, to " + s.move + " — " + s.outcome + "."; },
+            reflect: function (s) { return s.cue + ", " + s.who + " notices " + s.recog + " and chooses to " + s.move + " — " + s.outcome + "."; },
+            well: function (s) { return s.cue + ", " + s.who + " consistently notices " + s.recog + " and chooses to " + s.move + " on their own and across settings — and is beginning to model it for peers, sustaining " + s.sustain + "."; }
+          },
+          es: {
+            need: function (s) { return s.cue + ", " + s.who + " está aprendiendo a notar " + s.recog + " y, con el apoyo de un adulto de confianza, a " + s.move + " — " + s.outcome + "."; },
+            reflect: function (s) { return s.cue + ", " + s.who + " nota " + s.recog + " y elige " + s.move + " — " + s.outcome + "."; },
+            well: function (s) { return s.cue + ", " + s.who + " nota de manera constante " + s.recog + " y elige " + s.move + " por su cuenta y en distintos entornos — y comienza a modelarlo para sus compañeros, sosteniendo " + s.sustain + "."; }
+          }
+        };
+        function composeGoal(compKey, bi, who) {
+          var L = (GLANG === "es") ? "es" : "en"; var band = BAND_KEY[bi] || "reflect";
+          var p = PARTS[compKey];
+          if (!p) { var c = COMPS[compKey]; return c ? (who + " " + c.core[L]) : ""; }
+          var slots = { who: who, cue: p.cue[L], recog: p.recog[L], move: p.move[L], outcome: p.outcome[L], sustain: p.sustain[L], noun: p.noun[L] };
+          return GFRAME[L][band](slots);
+        }
+        function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+        function val(id) { var e = document.getElementById(id); return e ? (e.value || "") : ""; }
+
+        /* BAND-AWARE SUPPORTS (2026-08-26). `res` hard-coded a book: the Coach
+           Voice said "Book 2 · The Year of the Inner Critic", and that string
+           printed as "Supports:" on the exported goal of a 6-8 student, whose
+           book is Book 3. The builder already collects the grade -- use it.
+           `res` stays as the fallback for a goal written with no grade set. */
+        function aoggGoalBook() {
+          try {
+            var band = (typeof aogGradeToBand === "function") ? aogGradeToBand(val("aoggGrade").trim()) : null;
+            var bk = (band && typeof aogBandBook === "function") ? aogBandBook(band) : null;
+            if (!bk) return null;
+            return (GLANG === "es" ? bk.n.replace("Book", "Libro") : bk.n) + " \u00b7 " + bk.t;
+          } catch (e) { return null; }
+        }
+        function aoggSupports(c) {
+          if (!c) return "";
+          var bk = aoggGoalBook();
+          var tail = (c.resTail && c.resTail[GLANG]) ? c.resTail[GLANG] : "";
+          if (bk) return tail ? (bk + " \u00b7 " + tail) : bk;
+          return c.res[GLANG];
+        }
+
+        /* ============================================================
+           Illinois Learning Standards registry.
+           Built to be extensible: SEL is fully populated now; future
+           frameworks (ELA, Math, Science, etc.) can be added under
+           IL_FRAMEWORKS without touching the goal-generation code.
+           ============================================================ */
+        var IL_STAGE_LABEL = {
+          "1": { en: "Early Elementary", es: "Primaria temprana" },
+          "2": { en: "Late Elementary", es: "Primaria superior" },
+          "3": { en: "Middle / Jr. High", es: "Secundaria / preparatoria menor" },
+          "4": { en: "Early High School", es: "Preparatoria temprana" },
+          "5": { en: "Late High School", es: "Preparatoria superior" }
+        };
+        /* Map the app's grade bands onto Illinois' five developmental stages. */
+        function ilStage(grade) { var b = gbBand(grade); return ({ k2: "1", "35": "2", "68": "3", "910": "4", "1112": "5", adult: "5" })[b] || ""; }
+        var IL_SEL_GOALS = {
+          "1": { en: "Develop self-awareness and self-management skills to achieve school and life success.", es: "Desarrollar la autoconciencia y las habilidades de autocontrol para lograr el éxito escolar y en la vida." },
+          "2": { en: "Use social-awareness and interpersonal skills to establish and maintain positive relationships.", es: "Usar la conciencia social y las habilidades interpersonales para establecer y mantener relaciones positivas." },
+          "3": { en: "Demonstrate decision-making skills and responsible behaviors in personal, school, and community contexts.", es: "Demostrar habilidades de toma de decisiones y conductas responsables en contextos personales, escolares y comunitarios." }
+        };
+        /* Each standard: goal number, descriptor, and one representative
+           grade-banded benchmark (stages 1–5) drawn from the ISBE SEL
+           Standards (Descriptions of Stage-Appropriate Performance). */
+        var IL_SEL = {
+          "1A": { goal: "1", name: { en: "Identify and manage one's emotions and behavior.", es: "Identificar y manejar las propias emociones y la conducta." }, b: {
+            "1": { c: "1A.1b", en: "Demonstrate control of impulsive behavior.", es: "Demostrar control de la conducta impulsiva." },
+            "2": { c: "1A.2b", en: "Describe and demonstrate ways to express emotions in a socially acceptable manner.", es: "Describir y demostrar formas de expresar las emociones de manera socialmente aceptable." },
+            "3": { c: "1A.3b", en: "Apply strategies to manage stress and to motivate successful performance.", es: "Aplicar estrategias para manejar el estrés y motivar un desempeño exitoso." },
+            "4": { c: "1A.4a", en: "Analyze factors that create stress or motivate successful performance.", es: "Analizar los factores que generan estrés o motivan un desempeño exitoso." },
+            "5": { c: "1A.5a", en: "Evaluate how expressing one's emotions in different situations affects others.", es: "Evaluar cómo la expresión de las propias emociones en distintas situaciones afecta a los demás." } } },
+          "1B": { goal: "1", name: { en: "Recognize personal qualities and external supports.", es: "Reconocer las cualidades personales y los apoyos externos." }, b: {
+            "1": { c: "1B.1a", en: "Identify one's likes and dislikes, needs and wants, strengths and challenges.", es: "Identificar gustos y disgustos, necesidades y deseos, fortalezas y desafíos propios." },
+            "2": { c: "1B.2a", en: "Describe personal skills and interests that one wants to develop.", es: "Describir las habilidades e intereses personales que uno desea desarrollar." },
+            "3": { c: "1B.3a", en: "Analyze how personal qualities influence choices and successes.", es: "Analizar cómo las cualidades personales influyen en las decisiones y los logros." },
+            "4": { c: "1B.4a", en: "Set priorities in building on strengths and identifying areas for improvement.", es: "Establecer prioridades para aprovechar las fortalezas e identificar áreas de mejora." },
+            "5": { c: "1B.5a", en: "Implement a plan to build on a strength, meet a need, or address a challenge.", es: "Implementar un plan para desarrollar una fortaleza, satisfacer una necesidad o enfrentar un desafío." } } },
+          "1C": { goal: "1", name: { en: "Demonstrate skills related to achieving personal and academic goals.", es: "Demostrar habilidades para alcanzar metas personales y académicas." }, b: {
+            "1": { c: "1C.1b", en: "Identify goals for academic success and classroom behavior.", es: "Identificar metas para el éxito académico y la conducta en el aula." },
+            "2": { c: "1C.2a", en: "Describe the steps in setting and working toward goal achievement.", es: "Describir los pasos para fijar metas y trabajar hacia su logro." },
+            "3": { c: "1C.3a", en: "Set a short-term goal and make a plan for achieving it.", es: "Fijar una meta a corto plazo y elaborar un plan para alcanzarla." },
+            "4": { c: "1C.4b", en: "Apply strategies to overcome obstacles to goal achievement.", es: "Aplicar estrategias para superar obstáculos en el logro de metas." },
+            "5": { c: "1C.5b", en: "Monitor progress toward achieving a goal, and evaluate one's performance against criteria.", es: "Monitorear el progreso hacia una meta y evaluar el propio desempeño según criterios." } } },
+          "2A": { goal: "2", name: { en: "Recognize the feelings and perspectives of others.", es: "Reconocer los sentimientos y las perspectivas de los demás." }, b: {
+            "1": { c: "2A.1a", en: "Recognize that others may experience situations differently from oneself.", es: "Reconocer que los demás pueden vivir las situaciones de manera diferente a uno mismo." },
+            "2": { c: "2A.2a", en: "Identify verbal, physical, and situational cues that indicate how others may feel.", es: "Identificar señales verbales, físicas y situacionales que indican cómo pueden sentirse los demás." },
+            "3": { c: "2A.3a", en: "Predict others' feelings and perspectives in a variety of situations.", es: "Predecir los sentimientos y las perspectivas de los demás en diversas situaciones." },
+            "4": { c: "2A.4a", en: "Analyze similarities and differences between one's own and others' perspectives.", es: "Analizar las semejanzas y diferencias entre la propia perspectiva y la de los demás." },
+            "5": { c: "2A.5b", en: "Demonstrate ways to express empathy for others.", es: "Demostrar formas de expresar empatía hacia los demás." } } },
+          "2B": { goal: "2", name: { en: "Recognize individual and group similarities and differences.", es: "Reconocer las semejanzas y diferencias individuales y de grupo." }, b: {
+            "1": { c: "2B.1a", en: "Describe the ways that people are similar and different.", es: "Describir las formas en que las personas son semejantes y diferentes." },
+            "2": { c: "2B.2a", en: "Identify differences among and contributions of various social and cultural groups.", es: "Identificar las diferencias y los aportes de diversos grupos sociales y culturales." },
+            "3": { c: "2B.3b", en: "Analyze the effects of taking action to oppose bullying based on individual and group differences.", es: "Analizar los efectos de actuar para oponerse al acoso basado en diferencias individuales y de grupo." },
+            "4": { c: "2B.4b", en: "Demonstrate respect for individuals from different social and cultural groups.", es: "Demostrar respeto por personas de distintos grupos sociales y culturales." },
+            "5": { c: "2B.5a", en: "Evaluate strategies for being respectful of others and opposing stereotyping and prejudice.", es: "Evaluar estrategias para respetar a los demás y oponerse a los estereotipos y prejuicios." } } },
+          "2C": { goal: "2", name: { en: "Use communication and social skills to interact effectively with others.", es: "Usar la comunicación y las habilidades sociales para interactuar eficazmente con los demás." }, b: {
+            "1": { c: "2C.1a", en: "Identify ways to work and play well with others.", es: "Identificar formas de trabajar y jugar bien con los demás." },
+            "2": { c: "2C.2a", en: "Describe approaches for making and keeping friends.", es: "Describir maneras de hacer y conservar amistades." },
+            "3": { c: "2C.3a", en: "Analyze ways to establish positive relationships with others.", es: "Analizar formas de establecer relaciones positivas con los demás." },
+            "4": { c: "2C.4a", en: "Evaluate the effects of requesting support from and providing support to others.", es: "Evaluar los efectos de pedir apoyo a los demás y de brindarles apoyo." },
+            "5": { c: "2C.5a", en: "Evaluate the application of communication and social skills in daily interactions with peers, teachers, and families.", es: "Evaluar la aplicación de la comunicación y las habilidades sociales en las interacciones diarias con compañeros, maestros y familias." } } },
+          "2D": { goal: "2", name: { en: "Demonstrate an ability to prevent, manage, and resolve interpersonal conflicts in constructive ways.", es: "Demostrar la capacidad de prevenir, manejar y resolver conflictos interpersonales de manera constructiva." }, b: {
+            "1": { c: "2D.1b", en: "Identify approaches to resolving conflicts constructively.", es: "Identificar enfoques para resolver conflictos de manera constructiva." },
+            "2": { c: "2D.2b", en: "Apply constructive approaches in resolving conflicts.", es: "Aplicar enfoques constructivos en la resolución de conflictos." },
+            "3": { c: "2D.3a", en: "Evaluate strategies for preventing and resolving interpersonal problems.", es: "Evaluar estrategias para prevenir y resolver problemas interpersonales." },
+            "4": { c: "2D.4a", en: "Analyze how listening and talking accurately help in resolving conflicts.", es: "Analizar cómo escuchar y hablar con precisión ayuda a resolver conflictos." },
+            "5": { c: "2D.5a", en: "Evaluate the effects of using negotiation skills to reach win-win solutions.", es: "Evaluar los efectos de usar habilidades de negociación para lograr soluciones en las que todos ganan." } } },
+          "3A": { goal: "3", name: { en: "Consider ethical, safety, and societal factors in making decisions.", es: "Considerar factores éticos, de seguridad y sociales al tomar decisiones." }, b: {
+            "1": { c: "3A.1b", en: "Identify social norms and safety considerations that guide behavior.", es: "Identificar las normas sociales y las consideraciones de seguridad que guían la conducta." },
+            "2": { c: "3A.2a", en: "Demonstrate the ability to respect the rights of self and others.", es: "Demostrar la capacidad de respetar los derechos propios y de los demás." },
+            "3": { c: "3A.3a", en: "Evaluate how honesty, respect, fairness, and compassion enable one to take the needs of others into account when making decisions.", es: "Evaluar cómo la honestidad, el respeto, la justicia y la compasión permiten tener en cuenta las necesidades de los demás al tomar decisiones." },
+            "4": { c: "3A.4a", en: "Demonstrate personal responsibility in making ethical decisions.", es: "Demostrar responsabilidad personal al tomar decisiones éticas." },
+            "5": { c: "3A.5a", en: "Apply ethical reasoning to evaluate societal practices.", es: "Aplicar el razonamiento ético para evaluar las prácticas sociales." } } },
+          "3B": { goal: "3", name: { en: "Apply decision-making skills to deal responsibly with daily academic and social situations.", es: "Aplicar habilidades de toma de decisiones para actuar responsablemente en situaciones académicas y sociales cotidianas." }, b: {
+            "1": { c: "3B.1b", en: "Make positive choices when interacting with classmates.", es: "Tomar decisiones positivas al interactuar con los compañeros." },
+            "2": { c: "3B.2a", en: "Identify and apply the steps of systematic decision making.", es: "Identificar y aplicar los pasos de la toma de decisiones sistemática." },
+            "3": { c: "3B.3b", en: "Evaluate strategies for resisting pressures to engage in unsafe or unethical activities.", es: "Evaluar estrategias para resistir la presión de participar en actividades inseguras o poco éticas." },
+            "4": { c: "3B.4b", en: "Apply decision-making skills to establish responsible social and work group relationships.", es: "Aplicar habilidades de toma de decisiones para establecer relaciones sociales y de trabajo responsables." },
+            "5": { c: "3B.5b", en: "Evaluate how responsible decision making affects interpersonal and group relationships.", es: "Evaluar cómo la toma de decisiones responsable afecta las relaciones interpersonales y de grupo." } } },
+          "3C": { goal: "3", name: { en: "Contribute to the well-being of one's school and community.", es: "Contribuir al bienestar de la propia escuela y comunidad." }, b: {
+            "1": { c: "3C.1a", en: "Identify and perform roles that contribute to one's classroom.", es: "Identificar y desempeñar roles que contribuyen al propio salón de clases." },
+            "2": { c: "3C.2a", en: "Identify and perform roles that contribute to the school community.", es: "Identificar y desempeñar roles que contribuyen a la comunidad escolar." },
+            "3": { c: "3C.3a", en: "Evaluate one's participation in efforts to address an identified school need.", es: "Evaluar la propia participación en esfuerzos para atender una necesidad escolar identificada." },
+            "4": { c: "3C.4a", en: "Plan, implement, and evaluate one's participation in activities and organizations that improve school climate.", es: "Planificar, implementar y evaluar la propia participación en actividades y organizaciones que mejoran el clima escolar." },
+            "5": { c: "3C.5a", en: "Work cooperatively with others to plan, implement, and evaluate a project to meet an identified school need.", es: "Trabajar en cooperación con otros para planificar, implementar y evaluar un proyecto que atienda una necesidad escolar identificada." } } }
+        };
+        var IL_SEL_ORDER = ["1A", "1B", "1C", "2A", "2B", "2C", "2D", "3A", "3B", "3C"];
+        /* COMP_SEL (each competency's default SEL standard) is derived from the
+           competency registry above — set "sel" on a competency to change it. */
+        /* Frameworks layer — only SEL today; add ELA/Math/etc. here later. */
+        var IL_FRAMEWORKS = { sel: { label: { en: "Social/Emotional Learning (SEL)", es: "Aprendizaje socioemocional (SEL)" }, goals: IL_SEL_GOALS, standards: IL_SEL, order: IL_SEL_ORDER } };
+        /* Resolve the currently selected standard + grade-appropriate benchmark. */
+        function ilSelected() {
+          var code = val("aoggStd") || COMP_SEL[val("aoggComp")] || "1A";
+          var std = IL_SEL[code]; if (!std) { code = COMP_SEL[val("aoggComp")] || "1A"; std = IL_SEL[code]; }
+          var stage = ilStage(val("aoggGrade").trim());
+          var bench = stage && std.b[stage] ? std.b[stage] : null;
+          return { code: code, goal: std.goal, name: std.name[GLANG], goalText: IL_SEL_GOALS[std.goal][GLANG], stage: stage, benchCode: bench ? bench.c : "", benchText: bench ? bench[GLANG] : "" };
+        }
+        /* Build the alignment lines injected into each goal output. */
+        function ilAlignLines() {
+          var es = GLANG === "es"; var s = ilSelected(); var L = [];
+          L.push((es ? "Alineación con los Estándares de Aprendizaje SEL de Illinois" : "Illinois SEL Learning Standards Alignment") + ":");
+          L.push((es ? "Meta " : "Goal ") + s.goal + ": " + s.goalText);
+          L.push((es ? "Estándar " : "Standard ") + s.code + ": " + s.name);
+          if (s.benchCode) {
+            L.push((es ? "Indicador por etapa (" : "Stage benchmark (") + (IL_STAGE_LABEL[s.stage] ? IL_STAGE_LABEL[s.stage][GLANG] : "") + "): " + s.benchCode + " — " + s.benchText);
+          } else {
+            L.push(es ? "Indicador por etapa: añade un grado para el indicador específico." : "Stage benchmark: add a grade for the stage-specific benchmark.");
+          }
+          return L;
+        }
+        /* Populate / sync the framework + standard dropdowns. */
+        window.aogGoalStdSync = function (resetToComp) {
+          var fw = document.getElementById("aoggFw");
+          var sel = document.getElementById("aoggStd"); if (!sel) return;
+          var keep = (!resetToComp && sel.value) ? sel.value : (COMP_SEL[val("aoggComp")] || "1A");
+          var html = "";
+          IL_SEL_ORDER.forEach(function (code) {
+            html += '<option value="' + code + '">' + code + ' · ' + esc(IL_SEL[code].name[GLANG]) + '</option>';
+          });
+          sel.innerHTML = html; sel.value = keep;
+          if (fw && !fw.options.length) {
+            var f = ""; Object.keys(IL_FRAMEWORKS).forEach(function (k) { f += '<option value="' + k + '">' + esc(IL_FRAMEWORKS[k].label[GLANG]) + '</option>'; });
+            fw.innerHTML = f; fw.value = "sel";
+          }
+        };
+        /* Grade-band helper text for the competency dropdown — same Pause·Coach Voice·Repair
+           vocabulary as the Daily Log, worded for the entered grade band. */
+        var GB_BAND_LABEL = { k2: "K–2", "35": "3–5", "68": "6–8", "910": "9–10", "1112": "11–12", adult: "Adult" };
+        function gbBand(g) { g = (g || "").toString().trim().toLowerCase().replace(/grade|gr\.?/g, "").trim();
+          if (g.indexOf("adult") >= 0) return "adult";
+          if (g === "k" || g === "kg" || g === "kinder") return "k2";
+          var n = parseInt(g, 10); if (!isNaN(n)) { if (n <= 2) return "k2"; if (n <= 5) return "35"; if (n <= 8) return "68"; if (n <= 10) return "910"; return "1112"; }
+          return ""; }
+        var GB_HINT = {
+          pause: { k2:{en:"noticing a big feeling and using a Pause to find calm",es:"notar una emoción grande y usar una Pausa para calmarse"}, "35":{en:"using the Pause to settle before reacting",es:"usar la Pausa para calmarse antes de reaccionar"}, "68":{en:"catching a strong feeling and choosing a reset",es:"notar una emoción fuerte y elegir una estrategia de calma"}, "910":{en:"regulating with a Pause or a brief Release",es:"regularse con una Pausa o un breve Soltar"}, "1112":{en:"naming the feeling and self-regulating before responding",es:"nombrar la emoción y autorregularse antes de responder"}, adult:{en:"pausing to regulate before reacting under stress",es:"pausar para regularse antes de reaccionar bajo estrés"} },
+          charitable: { k2:{en:"thinking “maybe it was an accident” before getting upset",es:"pensar “quizás fue un accidente” antes de enojarse"}, "35":{en:"giving a friend the benefit of the doubt",es:"dar a un amigo el beneficio de la duda"}, "68":{en:"reading an unclear moment kindly instead of as an attack",es:"interpretar un momento confuso con amabilidad, no como un ataque"}, "910":{en:"checking intent before reacting to a slight",es:"verificar la intención antes de reaccionar a un desaire"}, "1112":{en:"assuming good faith and checking the story before judging",es:"asumir buena fe y verificar la historia antes de juzgar"}, adult:{en:"extending the benefit of the doubt before concluding",es:"ofrecer el beneficio de la duda antes de concluir"} },
+          coach: { k2:{en:"using a kind coach voice, not a mean one, after a mistake",es:"usar una voz de entrenador amable, no dura, tras un error"}, "35":{en:"talking to themselves like a coach, not a critic",es:"hablarse como un entrenador, no como un crítico"}, "68":{en:"answering the inner critic with a kinder coach voice",es:"responder al crítico interior con una voz de entrenador más amable"}, "910":{en:"meeting a setback with self-compassion",es:"enfrentar un revés con autocompasión"}, "1112":{en:"separating a mistake from self-worth and re-engaging",es:"separar el error del valor propio y volver a intentarlo"}, adult:{en:"responding to a misstep with self-compassion, not self-criticism",es:"responder a un error con autocompasión, no con autocrítica"} },
+          repair: { k2:{en:"saying sorry and making it right with a friend",es:"pedir perdón y reparar con un amigo"}, "35":{en:"making a Repair Move after a bump",es:"hacer un Acto de Reparación tras un roce"}, "68":{en:"owning impact and offering a repair after conflict",es:"reconocer el impacto y ofrecer una reparación tras un conflicto"}, "910":{en:"moving toward repair instead of avoidance",es:"avanzar hacia la reparación en lugar de evitar"}, "1112":{en:"naming impact and re-entering the relationship after rupture",es:"reconocer el impacto y volver a la relación tras la ruptura"}, adult:{en:"owning impact and offering a genuine repair",es:"reconocer el impacto y ofrecer una reparación genuina"} },
+          release: { k2:{en:"letting go of a little upset and moving on",es:"soltar un pequeño disgusto y seguir adelante"}, "35":{en:"letting go of what they can’t control",es:"soltar lo que no pueden controlar"}, "68":{en:"releasing a grudge or setting a small boundary",es:"soltar un rencor o poner un pequeño límite"}, "910":{en:"letting go or setting a healthy boundary",es:"soltar o poner un límite saludable"}, "1112":{en:"releasing rumination and holding a clear boundary",es:"soltar la rumiación y mantener un límite claro"}, adult:{en:"releasing what isn’t theirs to carry and setting boundaries",es:"soltar lo que no les corresponde cargar y poner límites"} }
+        };
+        window.aogGoalCompHint = function () {
+          var host = document.getElementById("aoggCompHint"); if (!host) return;
+          var comp = val("aoggComp"); var c = COMPS[comp]; if (!c) { host.innerHTML = ""; return; }
+          var es = (GLANG === "es"); var grade = val("aoggGrade").trim(); var dom = c.domain[GLANG];
+          var domTag = ' <span style="color:var(--ink-faint,#8A92A6);font-weight:600;">· ' + esc(dom) + '</span>';
+          var band = grade ? gbBand(grade) : "";
+          if (band && GB_HINT[comp] && GB_HINT[comp][band]) {
+            host.innerHTML = '<span style="display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--gold-deep,#9a6f24);background:rgba(217,163,59,.16);border-radius:999px;padding:1px 8px;margin-right:6px;vertical-align:middle;">' + esc(GB_BAND_LABEL[band] || "") + '</span>' + esc((es ? "A esta edad: " : "At this band: ") + GB_HINT[comp][band][GLANG]) + domTag;
+          } else {
+            host.innerHTML = esc((es ? "Significa: " : "Means: ") + c.core[GLANG]) + domTag + ' <span style="color:var(--ink-faint,#8A92A6);font-style:italic;">' + esc(es ? "(añade un grado para texto por edad)" : "(add a grade for age-specific wording)") + '</span>';
+          }
+        };
+        function build() { var tx = STYLE === "condensed" ? buildCondensed() : STYLE === "family" ? buildFamily() : buildNarrative(); if (!tx) return tx; var al = ""; try { al = alignSentence(); } catch (e) {} return al ? (tx + "\n\n" + al) : tx; }
+        /* HOME (the warm "at home" tip per competency) is derived from the
+           competency registry above — edit a competency's "home" to change it. */
+        /* Family style has its own gentle, collaborative voice (it does not
+           reuse the Narrative/Condensed frames), and keeps the standards
+           reference to a single soft footer rather than in the body. */
+        function buildFamily() {
+          var t = T[GLANG]; var c = COMPS[val("aoggComp")]; if (!c) return "";
+          var p = PARTS[val("aoggComp")];
+          var code = val("aoggCode").trim(), grade = val("aoggGrade").trim(); var es = GLANG === "es";
+          var who = code || (es ? "tu hijo/a" : "your child");
+          var bi = parseInt(val("aoggBand"), 10) || 0; var L_ = es ? "es" : "en";
+          var move = p ? p.move[L_] : c.core[GLANG];
+          var home = HOME[val("aoggComp")] ? HOME[val("aoggComp")][GLANG] : "";
+          var L = [];
+          L.push((es ? "UNA META QUE CRECEMOS JUNTOS — " : "A GOAL WE’RE GROWING TOGETHER — ") + c.name[GLANG]);
+          L.push((es ? "Para: " : "For: ") + who + (grade ? ("   " + t.grade + ": " + grade) : ""));
+          L.push("");
+          /* Warm, band-aware opening. */
+          var open;
+          if (es) {
+            open = bi === 0 ? ("Ahora mismo, " + who + " apenas comienza a aprender a " + move + ". Y ahí justo empezamos — este año lo practicaremos juntos, con calma, para que los momentos difíciles sean un poco más fáciles.")
+              : bi === 2 ? (who + " ya lo hace muy bien. Así que este año se trata de mantenerlo firme y, poco a poco, ayudar a sus amigos a aprender a " + move + " también — para que todo el salón se sienta un poco más amable.")
+              : ("Este año acompañamos a " + who + " mientras aprende a " + move + ", para que los momentos difíciles sean un poco más fáciles y la conexión se mantenga fuerte.");
+          } else {
+            open = bi === 0 ? ("Right now, " + who + " is just beginning to learn to " + move + ". That’s exactly where we start — this year we’ll practice it together, gently, so the hard moments get a little easier.")
+              : bi === 2 ? (who + " already does this well. So this year is about keeping it steady and, little by little, helping friends learn to " + move + " too — so the whole classroom feels a bit kinder.")
+              : ("This year we’re walking alongside " + who + " as they learn to " + move + ", so the hard moments get a little easier and the people around them stay close.");
+          }
+          L.push(open);
+          L.push("");
+          L.push(es ? "Lo que esperamos ver más seguido:" : "What we’re hoping to see more of:");
+          c.ms[GLANG].forEach(function (m) { L.push("  • " + m); });
+          L.push("");
+          L.push(es ? "Cómo sabremos que va bien:" : "How we’ll know it’s going well:");
+          L.push(es ? ("Haremos algunos registros juntos durante el año y simplemente notaremos que esto sucede más seguido. Se trata de crecimiento y conexión, a su propio ritmo.") : ("We’ll check in together a few times during the year and simply notice this happening more often. It’s about growth and connection, at " + who + "’s own pace."));
+          if (home) { L.push(""); L.push(es ? "En casa, pueden ayudar:" : "At home, you can help by:"); L.push("  " + home); }
+          L.push("");
+          L.push(es ? "Con cariño, su equipo escolar — y ustedes." : "With care, your school team — and you.");
+          /* Soft footer: standards reference, demoted and code-free. */
+          var sAl = ilSelected();
+          L.push("");
+          L.push("— " + (es ? ("Alineada con los estándares de aprendizaje SEL de Illinois (Meta " + sAl.goal + ").") : ("Aligned with the Illinois SEL learning standards (Goal " + sAl.goal + ").")));
+          return L.join("\n");
+        }
+        function buildCondensed() {
+          var t = T[GLANG]; var c = COMPS[val("aoggComp")]; if (!c) return "";
+          var bi = parseInt(val("aoggBand"), 10) || 0; var n = parseInt(val("aoggPeriods"), 10) || 4;
+          var code = val("aoggCode").trim(), grade = val("aoggGrade").trim();
+          var who = code || (GLANG === "es" ? "[Estudiante]" : "[Student]");
+          var dom = c.domain[GLANG]; var band = t.bands[bi]; var nb = t.bands[Math.min(bi + 1, 2)];
+          var targetDisp = (bi === 2) ? t.targetHi : nb;
+          var labs = t.periods(n); var letters = "ABCDEFGH"; var es = GLANG === "es";
+          var L = [];
+          L.push(t.header + " — " + c.name[GLANG] + " · " + (es ? "Funcional" : "Functional"));
+          L.push(t.student + ": " + (code || "________") + "   " + t.grade + ": " + (grade || "__") + "   " + t.current + ": " + band + " → " + targetDisp);
+          L.push("");
+          L.push((es ? "Meta anual: " : "Annual goal: ") + composeGoal(val("aoggComp"), bi, who));
+          L.push("");
+          L.push(es ? "Objetivos:" : "Objectives:");
+          labs.forEach(function (p, i) { var rung = rungFor(t, bi, i, n); L.push(letters[i] + ". " + p + ": " + who + (es ? " " : " will ") + c.core[GLANG] + " " + rung + ". (" + (es ? "Observación" : "Observation") + "; " + band + "→" + targetDisp + ")"); });
+          L.push("");
+          L.push((bi === 2 ? (es ? "Medida: demostración sostenida en los registros (" : "Measure: sustained demonstration across check-in windows (") : (es ? "Medida: crecimiento en los registros (" : "Measure: growth across check-in windows (")) + band + "→" + targetDisp + ") " + (es ? "más los indicadores relacionales, observados por un adulto de confianza — no un conteo de déficits." : "plus the relational indicators, observed by a trusted adult — not a deficit count."));
+          L.push((es ? "Indicadores: " : "Indicators: ") + c.ms[GLANG].join("; "));
+          var sAl = ilSelected();
+          L.push((es ? "Estándar SEL de Illinois: " : "Illinois SEL standard: ") + (es ? "Meta " : "Goal ") + sAl.goal + " · " + sAl.code + " — " + sAl.name + (sAl.benchCode ? (" · " + sAl.benchCode + " " + sAl.benchText) : ""));
+          L.push((es ? "Apoyos: " : "Supports: ") + aoggSupports(c));
+          return L.join("\n");
+        }
+        function buildNarrative() {
+          var t = T[GLANG]; var c = COMPS[val("aoggComp")]; if (!c) return "";
+          var bi = parseInt(val("aoggBand"), 10) || 0; var n = parseInt(val("aoggPeriods"), 10) || 4;
+          var code = val("aoggCode").trim(), grade = val("aoggGrade").trim();
+          var who = code || (GLANG === "es" ? "[Estudiante]" : "[Student]");
+          var dom = c.domain[GLANG]; var band = t.bands[bi]; var ni = Math.min(bi + 1, 2); var nb = t.bands[ni];
+          var targetDisp = (bi === 2) ? t.targetHi : nb;
+          var goal = composeGoal(val("aoggComp"), bi, who);
+          var labs = t.periods(n); var letters = "ABCDEFGH";
+          var L = [];
+          L.push(t.header + " — " + c.name[GLANG] + " (" + dom + ")");
+          L.push(t.area);
+          L.push(t.student + ": " + (code || "__________") + "   " + t.grade + ": " + (grade || "____") + "   " + t.date + ": __________   " + t.current + ": " + band + "   " + t.target + ": " + targetDisp);
+          L.push("");
+          L.push(t.present + ":"); L.push(t.presentTxt(band, dom, bi));
+          L.push("");
+          L.push(t.goalStmt + ":"); L.push(goal);
+          L.push("");
+          L.push(t.scoring + ":"); L.push(t.scoringTxt(band, nb, dom, bi));
+          L.push("");
+          ilAlignLines().forEach(function (x) { L.push(x); });
+          L.push("");
+          L.push(t.bench + ":");
+          labs.forEach(function (p, i) {
+            var rung = rungFor(t, bi, i, n);
+            var prog = (i === n - 1) ? t.progLast(nb, bi) : t.progMid(nb, bi);
+            L.push(letters[i] + ". (" + p + ") " + t.obj(p, who, c.core[GLANG], rung, prog, dom));
+            L.push("   " + t.evalProc + "   ·   " + t.schedule + ": " + p);
+          });
+          L.push("");
+          L.push(t.ee + ":");
+          c.ms[GLANG].forEach(function (m) { L.push("  • " + m); });
+          L.push("");
+          L.push(t.supports + ": " + aoggSupports(c));
+          L.push("");
+          L.push(t.foot);
+          return L.join("\n");
+        }
+        /* ---- School & district alignment (optional, generic + editable) ---- */
+        var VKEY = "aog.goals.values";
+        var VDEF = {
+          en: ["A safe, welcoming and inspiring environment", "Engaging, relevant and rigorous instruction", "Diversity, equity, inclusion and access", "Strong family and community relationships", "Innovative and empathetic staff"],
+          es: ["Un entorno seguro, acogedor e inspirador", "Instrucci\u00f3n atractiva, relevante y rigurosa", "Diversidad, equidad, inclusi\u00f3n y acceso", "Relaciones s\u00f3lidas con las familias y la comunidad", "Personal innovador y emp\u00e1tico"]
+        };
+        function vLoad() { try { var v = JSON.parse(localStorage.getItem(VKEY) || "null"); if (v && Array.isArray(v.en) && Array.isArray(v.es) && v.en.length && v.es.length) return v; } catch (e) {} return { en: VDEF.en.slice(), es: VDEF.es.slice() }; }
+        function vSave(v) { try { localStorage.setItem(VKEY, JSON.stringify(v)); } catch (e) {} }
+        var PBIS_T = { en: { none: "None", respectful: "Respectful", responsible: "Responsible", safe: "Safe" }, es: { none: "Ninguna", respectful: "Respetuoso", responsible: "Responsable", safe: "Seguro" } };
+        window.aogGoalAlignPopulate = function () {
+          var es = GLANG === "es"; var tt = PBIS_T[GLANG];
+          var ps = document.getElementById("aoggPbis");
+          if (ps) { var cur = ps.value; ps.innerHTML = '<option value="">' + tt.none + '</option><option value="respectful">' + tt.respectful + '</option><option value="responsible">' + tt.responsible + '</option><option value="safe">' + tt.safe + '</option>'; if (cur) ps.value = cur; }
+          var vs = document.getElementById("aoggValue");
+          if (vs) { var cv = vs.value; var list = vLoad()[GLANG] || []; var o = '<option value="">' + (es ? "Ninguno" : "None") + '</option>'; list.forEach(function (v, i) { o += '<option value="' + i + '">' + esc(v) + '</option>'; }); vs.innerHTML = o; if (cv !== "" && list[+cv] != null) vs.value = cv; }
+        };
+        window.aogGoalValuesEdit = function () {
+          var es = GLANG === "es"; var v = vLoad();
+          var msg = es ? "Edita la lista de valores del distrito (uno por l\u00ednea). Es una lista gen\u00e9rica y editable \u2014 usa la redacci\u00f3n de tu propio distrito." : "Edit the district values list (one per line). It is a generic, editable list \u2014 use your own district's wording.";
+          var txt = window.prompt(msg, (v[GLANG] || []).join("\n"));
+          if (txt == null) return;
+          var arr = txt.split("\n").map(function (x) { return x.trim(); }).filter(Boolean);
+          if (!arr.length) arr = VDEF[GLANG].slice();
+          v[GLANG] = arr; vSave(v);
+          window.aogGoalAlignPopulate(); if (window.aogGoalRegen) aogGoalRegen();
+        };
+        function alignSentence() {
+          var es = GLANG === "es";
+          var ps = document.getElementById("aoggPbis"); var vs = document.getElementById("aoggValue");
+          var pk = ps ? ps.value : ""; var vi = (vs && vs.value !== "") ? parseInt(vs.value, 10) : -1;
+          var pw = pk ? (PBIS_T[GLANG][pk] || "") : "";
+          var vl = vLoad(); var vw = "";
+          if (vi >= 0) { vw = (vl[GLANG] && vl[GLANG][vi] != null) ? vl[GLANG][vi] : ((vl[es ? "en" : "es"] || [])[vi] || ""); }
+          if (!pw && !vw) return "";
+          if (pw && vw) return es ? ("Esta meta apoya la expectativa escolar de ser " + pw + " y avanza el compromiso del distrito con " + vw + ".") : ("This goal supports the school-wide expectation of being " + pw + " and advances the district's commitment to " + vw + ".");
+          if (pw) return es ? ("Esta meta apoya la expectativa escolar de ser " + pw + ".") : ("This goal supports the school-wide expectation of being " + pw + ".");
+          return es ? ("Esta meta avanza el compromiso del distrito con " + vw + ".") : ("This goal advances the district's commitment to " + vw + ".");
+        }
+        window.aogGoalRegen = function () { var o = document.getElementById("aoggOut"); if (o && !o.hidden) window.aogGoalGen(); };
+        window.aogGoalLang = function (l) { GLANG = l; var b = document.querySelectorAll("#panel-goals .aogg-lang button"); Array.prototype.forEach.call(b, function (x) { x.classList.toggle("on", x.getAttribute("data-l") === l); }); if (typeof aogGoalPopulate === "function") aogGoalPopulate(); try { window.aogGoalAlignPopulate && aogGoalAlignPopulate(); } catch (e) {} try { window.aogGoalStdSync && window.aogGoalStdSync(false); } catch (e) {} try { window.aogGoalCompHint && window.aogGoalCompHint(); } catch (e) {} var o = document.getElementById("aoggOut"); if (o && !o.hidden) window.aogGoalGen(); };
+        window.aogGoalStyle = function (s) { STYLE = s; var b = document.querySelectorAll("#panel-goals .aogg-seg button"); Array.prototype.forEach.call(b, function (x) { x.classList.toggle("on", x.getAttribute("data-s") === s); }); var o = document.getElementById("aoggOut"); if (o && !o.hidden) window.aogGoalGen(); };
+        function recIdx(v) { return v >= 75 ? 2 : v >= 50 ? 1 : 0; }
+        function lowestComp(r) { var a = +r.normA || 0, b = +r.normB || 0, cc = +r.normC || 0; var m = Math.min(a, b, cc); return a === m ? "pause" : (b === m ? "coach" : "repair"); }
+        window.aogGoalPopulate = function () {
+          var sel = document.getElementById("aoggStudent"); if (!sel) return;
+          var recs = []; try { recs = (window.getAllRecords ? getAllRecords() : []) || []; } catch (e) {}
+          var by = {};
+          recs.forEach(function (r) { if (!r || r.normComposite == null) return; var id = (r.studentId == null ? "" : String(r.studentId)).trim(); if (!id) return; if (!by[id] || new Date(r.timestamp) > new Date(by[id].timestamp)) by[id] = r; });
+          var ids = Object.keys(by).sort(function (a, b) { return a.localeCompare(b); });
+          var cur = sel.value;
+          var opts = '<option value="">' + (GLANG === "es" ? "— elegir —" : "— choose —") + "</option>";
+          ids.forEach(function (id) { opts += '<option value="' + esc(id) + '">' + esc(id) + "</option>"; });
+          sel.innerHTML = opts; window.__aoggRecs = by;
+          /* Student-in-focus (audit P1): default to the student just opened
+             elsewhere — if they have a saved check-in here. Same freshness
+             rule as every door: the focus wins only over an older quiet
+             default or nothing; a REAL pick (stamped by aogGoalFromRecord)
+             holds until a newer focus exists. Quiet prefill only — fields
+             fill exactly as a manual pick would fill them, but nothing
+             generates until the teacher asks. */
+          var fcG = null; try { fcG = window.AOGFocus ? AOGFocus.get() : null; } catch (eF) {}
+          var adopt = !!(fcG && by[fcG.code] && fcG.code !== cur && fcG.at > (+(sel.dataset.aogPickedAt || 0)));
+          if (adopt) { try { window.aogGoalFromRecord(fcG.code, true); } catch (eG) { adopt = false; } }
+          if (!adopt && cur && by[cur]) sel.value = cur;
+          try { window.aogGoalCompHint && window.aogGoalCompHint(); } catch (e) {}
+        };
+        window.aogGoalFromRecord = function (id, quiet) {
+          var by = window.__aoggRecs || {}; var r = by[id]; if (!r) return;
+          function set(fid, v) { var e = document.getElementById(fid); if (e != null && v != null) e.value = v; }
+          set("aoggStudent", id);
+          set("aoggCode", r.studentId); set("aoggGrade", r.grade || "");
+          set("aoggBand", String(recIdx(+r.normComposite || 0))); set("aoggComp", lowestComp(r));
+          try { window.aogGoalCompHint && window.aogGoalCompHint(); } catch (e) {}
+          /* `quiet` prefills the fields without generating — the student-in-
+             focus default uses it, because a goal that writes itself on tab
+             open is an opinion, and pressing Generate stays the teacher's act.
+             A real pick stamps pickedAt (so no later focus can wrestle it) and
+             is itself an act of attention, so it also writes the focus. */
+          if (!quiet) {
+            try { var sEl = document.getElementById("aoggStudent"); if (sEl) sEl.dataset.aogPickedAt = String(Date.now()); } catch (eP) {}
+            try { if (window.AOGFocus) AOGFocus.set(id, "goals"); } catch (eF2) {}
+            window.aogGoalGen();
+          }
+        };
+        window.aogGoalGen = function () {
+          var text = build(); if (!text) return; window.__aoggText = text;
+          var out = document.getElementById("aoggOut");
+          out.innerHTML = '<div class="aogg-card"><div class="aogg-acts"><button class="aogg-copy" id="aoggCopy" type="button" aria-label="Copy goal and objectives to clipboard" onclick="aogGoalCopy()">' + (GLANG === "es" ? "Copiar" : "Copy") + '</button><button class="aogg-print" type="button" aria-label="Open a print-friendly goal page" onclick="aogGoalPrint()">' + (GLANG === "es" ? "Imprimir" : "Print") + '</button></div><pre class="aogg-pre">' + esc(text) + '</pre></div>';
+          out.hidden = false;
+          if (typeof window.renderProgress === "function") window.renderProgress();
+        };
+        window.aogGoalCopy = function () {
+          var tx = window.__aoggText || ""; var btn = document.getElementById("aoggCopy");
+          function done() { if (btn) { var o = btn.textContent; btn.textContent = (GLANG === "es" ? "¡Copiado!" : "Copied!"); btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); } }
+          if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tx).then(done, function () { window.prompt("Copy:", tx); }); } else { window.prompt("Copy:", tx); }
+        };
+        window.aogGoalPrint = function () {
+          var tx = window.__aoggText || ""; if (!tx) return;
+          var title = (GLANG === "es" ? "Meta y objetivos" : "Goal & objectives");
+          var doc = '<!doctype html><html><head><meta charset="utf-8"><title>' + title + '</title><style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}body{font-family:-apple-system,Segoe UI,Inter,system-ui,sans-serif;color:#0A1E33;margin:36px;max-width:720px;}.bh{display:flex;align-items:center;gap:12px;border-bottom:3px solid #D9A33B;padding-bottom:12px;margin:0 0 16px;}.mk{width:40px;height:40px;border-radius:8px;background:#D9A33B;color:#0A1E33;font-family:Georgia,serif;font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;}.wm{font-family:Georgia,serif;font-size:18px;font-weight:700;}.sb{font-size:12px;color:#46506E;}pre{white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:13px;line-height:1.6;}.ft{margin-top:18px;border-top:1px solid #E4DAC5;padding-top:8px;font-size:10.5px;color:#8A92A6;}@media print{body{margin:.5in;} .np{display:none;}}</style></head><body><div class="bh"><span class="mk">A</span><div><div class="wm">Architecture of Grace</div><div class="sb">' + title + '</div></div></div><pre>' + esc(tx) + '</pre>' + (window.__aogProgSvg ? ('<h3 style="font-family:Georgia,serif;font-size:15px;margin:20px 0 6px;color:#0A1E33;">' + (GLANG === "es" ? "Monitoreo de progreso" : "Progress monitoring") + '</h3>' + window.__aogProgSvg + '<pre>' + esc(window.__aogProgText || "") + '</pre>') : '') + '<div class="ft">' + (GLANG === "es" ? "Centrado en la relación · Una guía para el crecimiento, no un diagnóstico ni un conteo." : "Relationship-centered · A guide for growth, not a diagnosis or a count.") + '</div><p class="np"><button onclick="window.print()" style="font:inherit;font-weight:700;background:#0A1E33;color:#fff;border:0;border-radius:8px;padding:9px 18px;cursor:pointer;">' + (GLANG === "es" ? "Imprimir" : "Print") + '</button></p></body></html>';
+          var w = window.open("", "_blank"); if (!w) { alert(GLANG === "es" ? "Permite las ventanas emergentes para imprimir." : "Please allow pop-ups to print."); return; }
+          w.document.open(); w.document.write(doc); w.document.close(); w.focus(); try { w.print(); } catch (e) {}
+        };
+        var DK = { pause: "A", release: "A", coach: "B", charitable: "C", repair: "C" };
+        function tColor(v) { return v >= 75 ? "#2E6B3A" : v >= 50 ? "#8A6D1F" : "#8B2A2A"; }
+        function tName(v) { var t = T[GLANG]; return v >= 75 ? t.bands[2] : v >= 50 ? t.bands[1] : t.bands[0]; }
+        function progYear(r) {
+          var d = new Date(r.timestamp || Date.now()); if (isNaN(d.getTime())) d = new Date();
+          var y = d.getFullYear(), m = d.getMonth();
+          var sx = { Fall: 0, Winter: 1, Spring: 2, Summer: 3 }[(r.window || "").toString().trim()];
+          if (sx == null) sx = (m >= 7 ? 0 : m <= 1 ? 1 : m <= 4 ? 2 : 3);
+          var sy = (m >= 7) ? y : y - 1; var ly = (sx === 0) ? sy : sy + 1;
+          var ab = { 0: "F", 1: "W", 2: "Sp", 3: "Su" }[sx];
+          return { sort: sy * 10 + sx, label: ab + "'" + ("0" + (ly % 100)).slice(-2) };
+        }
+        function progRows(id) {
+          var recs = []; try { recs = (window.getAllRecords ? getAllRecords() : []) || []; } catch (e) {}
+          var rows = recs.filter(function (r) { return r && String(r.studentId == null ? "" : r.studentId).trim() === id && r.normComposite != null; })
+            .map(function (r) { var k = progYear(r); return { label: k.label, sort: k.sort, comp: +r.normComposite || 0, A: +r.normA || 0, B: +r.normB || 0, C: +r.normC || 0, ts: r.timestamp }; });
+          var seen = {}; rows.forEach(function (r) { var p = seen[r.sort]; if (!p || new Date(r.ts) >= new Date(p.ts)) seen[r.sort] = r; });
+          return Object.keys(seen).map(function (s) { return seen[s]; }).sort(function (a, b) { return a.sort - b.sort; });
+        }
+        function progSvg(rows, dk, targetLo, nb) {
+          var W = 560, H = 190, ml = 30, mr = 16, mt = 14, mb = 28, n = rows.length;
+          var X = function (i) { return ml + (W - ml - mr) * (n <= 1 ? 0.5 : i / (n - 1)); };
+          var Y = function (v) { return mt + (H - mt - mb) * (1 - Math.max(0, Math.min(100, v)) / 100); };
+          var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:560px;display:block;margin-top:8px;">';
+          [[75, 100, "#E8F0E7"], [50, 75, "#F5EAC8"], [0, 50, "#F3DFDC"]].forEach(function (b) { s += '<rect x="' + ml + '" y="' + Y(b[1]) + '" width="' + (W - ml - mr) + '" height="' + (Y(b[0]) - Y(b[1])) + '" fill="' + b[2] + '" opacity=".6"/>'; });
+          [0, 50, 100].forEach(function (tk) { s += '<text x="' + (ml - 5) + '" y="' + (Y(tk) + 3) + '" text-anchor="end" font-size="9" fill="#8A92A6">' + tk + '</text>'; });
+          if (targetLo > 0) { s += '<line x1="' + ml + '" y1="' + Y(targetLo) + '" x2="' + (W - mr) + '" y2="' + Y(targetLo) + '" stroke="#0A1E33" stroke-width="1.3" stroke-dasharray="5 4"/><text x="' + (ml + 4) + '" y="' + (Y(targetLo) - 5) + '" text-anchor="start" font-size="9" font-weight="700" fill="#0A1E33">' + (GLANG === "es" ? "Meta: " : "Target: ") + esc(nb) + '</text>'; }
+          var d = ""; rows.forEach(function (r, i) { d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(r[dk]).toFixed(1) + " "; });
+          s += '<path d="' + d + '" fill="none" stroke="#0A1E33" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+          rows.forEach(function (r, i) { var v = r[dk]; s += '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(v).toFixed(1) + '" r="3.5" fill="' + tColor(v) + '" stroke="#fff" stroke-width="1.5"/><text x="' + X(i).toFixed(1) + '" y="' + (H - mb + 15) + '" text-anchor="middle" font-size="9.5" font-weight="700" fill="#46506E">' + esc(r.label) + '</text>'; });
+          return s + "</svg>";
+        }
+        function progBars(rows, dk, targetLo, nb) {
+          var W = 560, H = 190, ml = 30, mr = 16, mt = 14, mb = 28, n = rows.length;
+          var plotW = W - ml - mr, slot = plotW / n, bw = Math.min(54, slot * 0.5);
+          var Y = function (v) { return mt + (H - mt - mb) * (1 - Math.max(0, Math.min(100, v)) / 100); };
+          var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:560px;display:block;margin-top:8px;">';
+          [[75, 100, "#E8F0E7"], [50, 75, "#F5EAC8"], [0, 50, "#F3DFDC"]].forEach(function (b) { s += '<rect x="' + ml + '" y="' + Y(b[1]) + '" width="' + plotW + '" height="' + (Y(b[0]) - Y(b[1])) + '" fill="' + b[2] + '" opacity=".55"/>'; });
+          [0, 50, 100].forEach(function (tk) { s += '<text x="' + (ml - 5) + '" y="' + (Y(tk) + 3) + '" text-anchor="end" font-size="9" fill="#8A92A6">' + tk + '</text>'; });
+          rows.forEach(function (r, i) { var v = r[dk]; var cx = ml + slot * i + slot / 2; var x = cx - bw / 2; var y = Y(v); var h = Y(0) - y; s += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3" fill="' + tColor(v) + '"/><text x="' + cx.toFixed(1) + '" y="' + (y - 4) + '" text-anchor="middle" font-size="10" font-weight="800" fill="#0A1E33">' + Math.round(v) + '</text><text x="' + cx.toFixed(1) + '" y="' + (H - mb + 15) + '" text-anchor="middle" font-size="9.5" font-weight="700" fill="#46506E">' + esc(r.label) + '</text>'; });
+          if (targetLo > 0) { s += '<line x1="' + ml + '" y1="' + Y(targetLo) + '" x2="' + (W - mr) + '" y2="' + Y(targetLo) + '" stroke="#0A1E33" stroke-width="1.3" stroke-dasharray="5 4"/><text x="' + (ml + 4) + '" y="' + (Y(targetLo) - 5) + '" text-anchor="start" font-size="9" font-weight="700" fill="#0A1E33">' + (GLANG === "es" ? "Meta: " : "Target: ") + esc(nb) + '</text>'; }
+          return s + "</svg>";
+        }
+        window.aogProgView = function (v) { window.__aogProgView = v; if (typeof window.renderProgress === "function") window.renderProgress(); };
+        window.renderProgress = function () {
+          var box = document.getElementById("aoggProgress"); if (!box) return;
+          var id = val("aoggStudent"); var t = T[GLANG]; var es = GLANG === "es";
+          if (!id) { box.hidden = true; box.innerHTML = ""; return; }
+          var rows = progRows(id);
+          if (!rows.length) { box.hidden = false; box.innerHTML = '<div class="aogg-prog-card"><div class="aogg-prog-hint">' + (es ? "No hay registros guardados para monitorear el progreso." : "No saved check-ins yet to monitor progress.") + "</div></div>"; return; }
+          var ck = val("aoggComp"); var dk = DK[ck] || "A"; var c = COMPS[ck];
+          var bi = parseInt(val("aoggBand"), 10) || 0; var ni = Math.min(bi + 1, 2);
+          var targetLo = ni === 2 ? 75 : ni === 1 ? 50 : 0; var nb = t.bands[ni];
+          var vals = rows.map(function (r) { return r[dk]; });
+          var last = vals[vals.length - 1], first = vals[0];
+          var sk = last >= targetLo ? "met" : (last > first ? "on" : "attn");
+          var statusTxt = es
+            ? (sk === "met" ? "En la banda meta o por encima (" + nb + ")." : sk === "on" ? "En camino — avanzando hacia " + nb + "." : "Necesita atención — aún no avanza hacia " + nb + ".")
+            : (sk === "met" ? "At or above the target band (" + nb + ")." : sk === "on" ? "On track — progressing toward " + nb + "." : "Needs attention — not yet progressing toward " + nb + ".");
+          var statusColor = sk === "met" ? "#2E6B3A" : sk === "on" ? "#8A6D1F" : "#8B2A2A";
+          var view = window.__aogProgView || "line";
+          var svg = (view === "bars") ? progBars(rows, dk, targetLo, nb) : progSvg(rows, dk, targetLo, nb); window.__aogProgSvg = svg;
+          var pv = '<span class="aogg-seg aogg-pv"><button type="button" class="' + (view === "line" ? "on" : "") + '" onclick="aogProgView(\'line\')">' + (es ? "Línea" : "Line") + '</button><button type="button" class="' + (view === "bars" ? "on" : "") + '" onclick="aogProgView(\'bars\')">' + (es ? "Barras" : "Bars") + '</button></span>';
+          var dom = c.domain[GLANG];
+          var PL = [];
+          PL.push((es ? "ACTUALIZACIONES DE PROGRESO — " : "GOAL PROGRESS UPDATES — ") + id + " · " + c.name[GLANG] + " (" + dom + ")");
+          PL.push((es ? "Meta para fin de año: " : "Target by year-end: ") + nb);
+          rows.forEach(function (r) { var v = Math.round(r[dk]); var ant = v >= targetLo ? (es ? "Cumplió la meta" : "Met Goal") : (v > first ? (es ? "Cumplirá la meta" : "Will Meet Goal") : (es ? "Quizás no cumpla" : "May Not Meet Goal")); PL.push(r.label + " — " + (es ? "Puntaje" : "Score") + ": " + v + "/100 — " + tName(v) + " — " + (es ? "Anticipa" : "Anticipate") + ": " + ant); });
+          PL.push((es ? "General: " : "Overall: ") + statusTxt);
+          window.__aogProgText = PL.join("\n");
+          box.hidden = false;
+          box.innerHTML = '<div class="aogg-prog-card"><div class="aogg-prog-head"><div class="aogg-prog-h">' + (es ? "Monitoreo de progreso" : "Progress monitoring") + " — " + esc(c.name[GLANG]) + '</div><div class="aogg-prog-acts">' + pv + '<button class="aogg-copy" id="aogProgCopy" type="button" aria-label="Copy progress updates" onclick="aogProgCopy()">' + (es ? "Copiar" : "Copy") + '</button><button class="aogg-print" type="button" aria-label="Print progress page" onclick="aogProgPrint()">' + (es ? "Imprimir" : "Print") + '</button></div></div><div class="aogg-prog-status" style="color:' + statusColor + '">' + esc(statusTxt) + "</div>" + svg + "</div>";
+        };
+        window.aogProgCopy = function () {
+          var tx = window.__aogProgText || ""; var btn = document.getElementById("aogProgCopy");
+          function done() { if (btn) { var o = btn.textContent; btn.textContent = (GLANG === "es" ? "¡Copiado!" : "Copied!"); btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); } }
+          if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tx).then(done, function () { window.prompt("Copy:", tx); }); } else { window.prompt("Copy:", tx); }
+        };
+        window.aogProgPrint = function () {
+          var tx = window.__aogProgText || ""; if (!tx) return; var svg = window.__aogProgSvg || ""; var es = GLANG === "es"; var title = es ? "Monitoreo de progreso" : "Progress monitoring";
+          var doc = '<!doctype html><html><head><meta charset="utf-8"><title>' + title + '</title><style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}body{font-family:-apple-system,Segoe UI,Inter,system-ui,sans-serif;color:#0A1E33;margin:36px;max-width:680px;}.bh{display:flex;align-items:center;gap:12px;border-bottom:3px solid #D9A33B;padding-bottom:12px;margin:0 0 16px;}.mk{width:40px;height:40px;border-radius:8px;background:#D9A33B;color:#0A1E33;font-family:Georgia,serif;font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;}.wm{font-family:Georgia,serif;font-size:18px;font-weight:700;}.sb{font-size:12px;color:#46506E;}pre{white-space:pre-wrap;font-family:inherit;font-size:13px;line-height:1.6;}.ft{margin-top:16px;border-top:1px solid #E4DAC5;padding-top:8px;font-size:10.5px;color:#8A92A6;}@media print{body{margin:.5in;}.np{display:none;}}</style></head><body><div class="bh"><span class="mk">A</span><div><div class="wm">Architecture of Grace</div><div class="sb">' + title + '</div></div></div>' + svg + '<pre>' + esc(tx) + '</pre><div class="ft">' + (es ? "Centrado en la relación · Una señal de apoyo, no un conteo de déficits." : "Relationship-centered · A flag for support, not a deficit count.") + '</div><p class="np"><button onclick="window.print()" style="font:inherit;font-weight:700;background:#0A1E33;color:#fff;border:0;border-radius:8px;padding:9px 18px;cursor:pointer;">' + (es ? "Imprimir" : "Print") + '</button></p></body></html>';
+          var w = window.open("", "_blank"); if (!w) { alert(es ? "Permite las ventanas emergentes." : "Please allow pop-ups."); return; }
+          w.document.open(); w.document.write(doc); w.document.close(); w.focus(); try { w.print(); } catch (e) {}
+        };
+        try { var lb = document.querySelectorAll("#panel-goals .aogg-lang button"); Array.prototype.forEach.call(lb, function (x) { x.classList.toggle("on", x.getAttribute("data-l") === GLANG); }); } catch (e) {}
+        try { window.aogGoalPopulate(); } catch (e) {}
+        try { window.aogGoalAlignPopulate(); } catch (e) {}
+        try { window.aogGoalStdSync && window.aogGoalStdSync(true); } catch (e) {}
+      })();
+      </script>
     </div>
 
     <!-- Filled by the population layer at the bottom of this file. Empty in
@@ -6645,7 +8103,779 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
       </div>
       <div id="aogDailyBody" class="dl-wrap"></div>
     </div>
-    <script id="aog-daily-js" src="/front/b79d9f4f85a6.js"></script>
+    <script id="aog-daily-js">
+    (function(){
+      "use strict";
+      var DKEY="aog.daily.v1";
+      function DTx(en,es){ return (typeof DT==="function")?DT(en,es):en; }
+      function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"})[c];}); }
+      function load(){ try{return JSON.parse(localStorage.getItem(DKEY)||"{}")||{};}catch(e){return {};} }
+      function save(o){ try{localStorage.setItem(DKEY,JSON.stringify(o));}catch(e){} }
+      function todayISO(){ var d=new Date(),m=d.getMonth()+1,da=d.getDate(); return d.getFullYear()+"-"+(m<10?"0"+m:m)+"-"+(da<10?"0"+da:da); }
+      function shortD(iso){ var p=String(iso||"").split("-"); return p.length===3?(parseInt(p[1],10)+"/"+parseInt(p[2],10)):iso; }
+      function color(p){ return p>=61?"var(--green,#2E6B3A)":p>=41?"var(--amber,#8A6D1F)":"var(--red,#8B2A2A)"; }
+      function smiley(p){ return p>=61?"🙂":p>=41?"😐":"☹"; }
+      var ST=(window.__aogDaily=window.__aogDaily||{s:"",date:"",period:"Morning",other:""});
+      function el(id){ return document.getElementById(id); }
+
+      /* ---- Optional PBIS lens: generic school-wide expectations shown as chips.
+             Display-only — storage schema and scoring are untouched. ---- */
+      var PBIS_KEY="aog.daily.pbis";
+      function pbisOn(){ try{ return localStorage.getItem(PBIS_KEY)!=="0"; }catch(e){ return true; } }
+      /* Optional PBIS lens: generic school-wide expectations as chips.
+         Display-only - nothing is stored, scored or filtered from a chip.
+         FOUR now, not three: plenty of buildings run "Be Ready" alongside
+         Respectful, Responsible and Safe, and Ready is exactly what the new
+         engagement domain names. The labels live on the domain table so
+         there is one place to reword them. */
+      function pbisChip(key){
+        if(!pbisOn()) return "";
+        var m=null;
+        try{ (window.AOG_OBS?AOG_OBS.domains():[]).forEach(function(d){ if(d.key===key) m=d; }); }catch(e){}
+        if(!m||!m.pbis_en) return "";
+        return ' <span class="dl-pbis-chip" style="display:inline-block;font-size:10px;font-weight:700;letter-spacing:.03em;line-height:1.5;color:var(--gold-deep,#9a6f24);border:1px solid var(--gold,#D9A33B);border-radius:999px;padding:1px 8px;vertical-align:middle;white-space:nowrap;">'+esc(DTx(m.pbis_en,m.pbis_es))+'</span>';
+      }
+      window.aogDailyPbisToggle=function(on){
+        try{ localStorage.setItem(PBIS_KEY,on?"1":"0"); }catch(e){}
+        /* ⚠ THIS TOGGLE RE-RENDERS THE WHOLE CARD, so anything ticked and
+           not carried across is silently lost. The ticks are read off their
+           data attributes rather than a hard-coded id list, so a line added
+           to AOG_OBS is carried without anyone remembering to come back. */
+        var keep={};
+        try{ Array.prototype.forEach.call(document.querySelectorAll("[data-dlobs],[data-dlflag]"),function(cb){
+          keep[(cb.getAttribute("data-dlobs")||"")+"|"+(cb.getAttribute("data-dlflag")||"")]=cb.checked; }); }catch(e){}
+        var gkeep={};
+        try{ Array.prototype.forEach.call(document.querySelectorAll("[data-dlgoal]"),function(cb){ gkeep[cb.getAttribute("data-dlgoal")]=cb.checked; }); }catch(e1){}
+        var note=el("dlPeriodNote"); var nv=note?note.value:null;
+        if(window.aogRenderDaily) aogRenderDaily();
+        try{ Array.prototype.forEach.call(document.querySelectorAll("[data-dlobs],[data-dlflag]"),function(cb){
+          var k=(cb.getAttribute("data-dlobs")||"")+"|"+(cb.getAttribute("data-dlflag")||"");
+          if(keep[k]) cb.checked=true; }); }catch(e2){}
+        try{ Array.prototype.forEach.call(document.querySelectorAll("[data-dlgoal]"),function(cb){ var k=cb.getAttribute("data-dlgoal"); if(gkeep[k]) cb.checked=true; }); }catch(e3){}
+        var n2=el("dlPeriodNote"); if(n2&&nv!=null) n2.value=nv;
+      };
+
+      /* One small stylesheet for the grouped ticks. Injected here rather
+         than added to aog-styles.css because this block already owns .dl-*,
+         and a second file to keep in step is exactly the bug this build is
+         removing. */
+      (function(){
+        if(document.getElementById("aog-dl-obs-css")) return;
+        var st=document.createElement("style"); st.id="aog-dl-obs-css";
+        st.textContent=
+          ".dl-obsgroup{margin:14px 0 4px;}"+
+          ".dl-obshead{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft,#46506E);"+
+            "padding-bottom:5px;margin-bottom:8px;border-bottom:1px solid var(--rule,rgba(10,30,51,.14));}"+
+          ".dl-flagchk{background:rgba(217,163,59,.07);border-radius:9px;}"+
+          ".dl-logwho{font-size:12.5px;font-weight:700;color:var(--ink,#22303F);margin-top:3px;}"+
+          ".dl-logrole{font-weight:500;color:var(--ink-soft,#46506E);}"+
+          ".dl-logvia{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;"+
+            "color:var(--gold-deep,#9a6f24);border:1px solid var(--gold,#D9A33B);border-radius:999px;padding:0 7px;margin-left:5px;vertical-align:middle;}";
+        (document.head||document.documentElement).appendChild(st);
+      })();
+
+      /* ---- schema-tolerant scoring: legacy checks[], the three named
+              booleans, and since .29al a fourth when the record has one ---- */
+      function periodStats(p){
+        if(p&&Object.prototype.hasOwnProperty.call(p,"checks")&&p.checks&&p.checks.length!=null){
+          var t=p.checks.length,g=0; for(var i=0;i<p.checks.length;i++){ if(p.checks[i])g++; } return {g:g,t:t};
+        }
+        var got=0; if(p&&p.regulated)got++; if(p&&p.usedStrategy)got++; if(p&&p.connected)got++;
+        /* An entry written before build .29al has no `engaged` field at all.
+           Scoring it out of four would quietly turn every honest 3-of-3 in
+           the history into 75% - the denominator has to belong to the record,
+           not to whatever build happens to be reading it. */
+        if(p&&Object.prototype.hasOwnProperty.call(p,"engaged")){ if(p.engaged)got++; return {g:got,t:4}; }
+        return {g:got,t:3};
+      }
+      function periodPct(p){ var s=periodStats(p); return s.t?Math.round(s.g/s.t*100):0; }
+      function dayPct(day){ var tot=0,got=0; ((day&&day.periods)||[]).forEach(function(p){ var s=periodStats(p); tot+=s.t; got+=s.g; }); return tot?Math.round(got/tot*100):0; }
+      function hasEntry(day){ return !!(day&&day.periods&&day.periods.length); }
+
+      /* ---- period options: canonical English value, bilingual label ----
+
+         ⚠ THE SCHEDULE IS ELEVEN PERIODS, 0 THROUGH 10, AND 0 IS ADVISORY.
+         The check-in layer was corrected to this on 2026-08-25; THIS list was
+         missed and still stopped at Period 8 with no Advisory at all, so the
+         same school day had two different shapes depending on which tool a
+         teacher opened, and a Period 9 or 10 log simply could not be recorded.
+         Corrected 2026-08-27.
+
+         Period 0 stores the string "Advisory", NOT "Period 0" — that is the
+         value the check-in layer already writes and the Sheet's period column
+         already holds, and the two tools have to mean the same thing by it.
+
+         Periods lead because this is a period-based day; the three times of
+         day stay for elementary and self-contained rooms that do not run one.
+         Adding a Period 11 later is one line here and one in PERIOD_DEFS. */
+      function periodOpts(){
+        var out = [{v:"Advisory", en:"Period 0 · Advisory", es:"Periodo 0 · Asesoría"}];
+        for (var i = 1; i <= 10; i++) {
+          out.push({v:"Period " + i, en:"Period " + i, es:"Periodo " + i});
+        }
+        out.push({v:"Morning", en:"Morning", es:"Mañana"});
+        out.push({v:"Midday", en:"Midday", es:"Mediodía"});
+        out.push({v:"Afternoon / End of Day", en:"Afternoon / End of Day", es:"Tarde / Fin del día"});
+        out.push({v:"__other__", en:"Other (write below)", es:"Otro (escribe abajo)"});
+        return out;
+      }
+      function periodLabel(v){ var o=periodOpts(); for(var i=0;i<o.length;i++){ if(o[i].v===v) return DTx(o[i].en,o[i].es); } return v; }
+      /* Daily-log checks, worded per grade band and aligned to the Goal Builder's
+         competency language (The Pause · Regulation, The Coach Voice · Self-Compassion,
+         The Repair Move · Social & Repair). Storage keys stay regulated/usedStrategy/connected
+         so older logs remain valid; only the visible wording changes by band. */
+      /* ⚠ THE FRAMEWORK TERM LIVES HERE NOW, ON THE TOOLTIP — not in the
+         sentence a teacher reads. Jimmy, 2026-08-29: a gen-ed teacher would
+         not understand the old wording, and neither did he, and he wrote it.
+         The Pause, the Coach Voice, the Repair Move and a charitable read are
+         taught constructs from the books; a colleague logging a period between
+         classes has not read the books. The alignment to the Goal Builder was
+         deliberate and is KEPT — it just stopped being the visible question. */
+      /* ============ ONE OBSERVATION TABLE, READ BY BOTH SCREENS ============
+         Build 2026.08.29al.
+
+         WHY IT MOVED. The Daily log and the adult team check-in each held
+         their own copy of the same three sentences, and t106 existed only to
+         catch them drifting apart. There is one table now, so the drift it
+         tested for cannot happen; the suite asserts the single source instead.
+
+         WHY THE QUESTIONS CHANGED. Three checks are the right three things to
+         MEASURE and the wrong three things to ASK a colleague who saw one
+         forty-minute period. Nothing in them named getting started, staying
+         with hard work, asking for help, or joining in - the things a math or
+         PE or Spanish teacher actually watches happen. The test is that six
+         teachers of six subjects can answer it cold, without being taught a
+         framework first.
+
+         ⚠ THE THREE STORAGE KEYS DO NOT MOVE. regulated / usedStrategy /
+         connected are what every chart, report, CSV and Sheet column in this
+         product counts, and every log ever saved still reads. A FOURTH domain
+         joins them - `engaged` - because persistence, asking for help and
+         joining in are none of the three, and filing them under one of the
+         three would be filing a real observation in the wrong place.
+
+         ⚠ SCORED AGAINST THE DOMAINS THE RECORD CARRIES. See periodStats().
+
+         ⚠ THE FOURTH GROUP IS NOT SCORED AND MUST NEVER BECOME SO. "Showed a
+         strength", "something looked different", "the team should know" are a
+         person passing a note, not an observation of a competency. They live
+         in their own field, `flags`, and nothing that scores looks at it -
+         the same ruling the IEP-goal ticks got: a checkbox on a period log is
+         not a team deciding something is progress-monitoring data.
+
+         ⚠ THE DOMAIN IS METADATA, NOT THE QUESTION. A group is how a teacher
+         thinks; the domain underneath is how the product files it. One group
+         can carry items from two domains and does. Keep the domain on the
+         tooltip and the small tag, never in the sentence. .29ag's ruling. */
+      window.AOG_OBS = (function(){
+        var DOMAINS = [
+          { key:"engaged",      en:"Engagement & Learning", es:"Compromiso y aprendizaje",
+            s_en:"Engagement",  s_es:"Compromiso",
+            pbis_en:"Ready",    pbis_es:"Listo/a",
+            fw_en:"Engagement — not one of the three Goal Builder competencies",
+            fw_es:"Compromiso — no es una de las tres competencias del Generador de metas" },
+          { key:"regulated",    en:"Regulation", es:"Regulación",
+            s_en:"Regulation",  s_es:"Regulación",
+            pbis_en:"Safe",     pbis_es:"Seguro/a",
+            fw_en:"Goal Builder: The Pause · Regulation",
+            fw_es:"Generador de metas: La Pausa · Regulación" },
+          { key:"usedStrategy", en:"Self-Compassion", es:"Autocompasión",
+            s_en:"Self-compassion", s_es:"Autocompasión",
+            pbis_en:"Responsible",  pbis_es:"Responsable",
+            fw_en:"Goal Builder: The Coach Voice · Self-Compassion",
+            fw_es:"Generador de metas: La Voz del Entrenador · Autocompasión" },
+          { key:"connected",    en:"Social & Repair", es:"Relación y reparación",
+            s_en:"Social & repair", s_es:"Relación y reparación",
+            pbis_en:"Respectful",   pbis_es:"Respetuoso/a",
+            fw_en:"Goal Builder: The Repair Move · Social & Repair",
+            fw_es:"Generador de metas: El Acto de Reparación · Relación y reparación" }
+        ];
+
+        /* `y_en` / `y_es` are the youngest bands (K-2 and 3-5). Where a line
+           has none, the one sentence works at every age and there is
+           deliberately no second version of it to keep in step. */
+        var GROUPS = [
+          { key:"learn", en:"Engagement & learning", es:"Compromiso y aprendizaje", dom:"engaged",
+            items:[
+              { k:"e_stayed", dom:"engaged",
+                en:"Stayed with it when the work got hard",
+                es:"Siguió intentando cuando el trabajo se puso difícil",
+                g35_en:"Stuck with it when the work got tricky",
+                g35_es:"Siguió con el trabajo cuando se puso difícil",
+                k2_en:"Kept trying when it was hard",
+                k2_es:"Siguió intentando cuando fue difícil",
+                s_en:"Stayed with it", s_es:"Persistió" },
+              { k:"e_asked", dom:"engaged",
+                en:"Asked for help, or asked a question, when they needed to",
+                es:"Pidió ayuda o hizo una pregunta cuando la necesitaba",
+                g35_en:"Asked for help instead of staying stuck",
+                g35_es:"Pidió ayuda en vez de quedarse atascado/a",
+                k2_en:"Asked a grown-up for help",
+                k2_es:"Le pidió ayuda a una persona adulta",
+                s_en:"Asked for help", s_es:"Pidió ayuda" },
+              { k:"e_own", dom:"engaged",
+                en:"Got started and kept working — on their own, or with a support",
+                es:"Empezó y siguió trabajando — solo/a o con un apoyo",
+                g35_en:"Got started without needing a reminder",
+                g35_es:"Empezó sin que se lo recordaran",
+                k2_en:"Started the work and stayed with it",
+                k2_es:"Empezó el trabajo y se quedó en él",
+                s_en:"Got started", s_es:"Empezó" },
+              { k:"e_joined", dom:"engaged",
+                en:"Joined in — answered, contributed, or shared an idea",
+                es:"Participó — respondió, aportó o compartió una idea",
+                g35_en:"Joined in — answered, shared, or volunteered",
+                g35_es:"Participó — respondió, compartió o se ofreció",
+                k2_en:"Joined in — shared or answered",
+                k2_es:"Participó — compartió o respondió",
+                s_en:"Joined in", s_es:"Participó" },
+              { k:"e_kept", dom:"usedStrategy",
+                en:"Kept going after a mistake instead of turning on themselves",
+                es:"Siguió adelante tras un error en vez de castigarse",
+                g35_en:"Kept going after a mistake",
+                g35_es:"Siguió adelante después de un error",
+                k2_en:"Was kind to themselves after a mistake",
+                k2_es:"Se trató con amabilidad después de un error",
+                s_en:"Kept going after a mistake", s_es:"Siguió tras un error" }
+            ] },
+          { key:"steady", en:"Well-being & regulation", es:"Bienestar y regulación", dom:"regulated",
+            items:[
+              { k:"r_back", dom:"regulated",
+                en:"Got back on track after getting distracted, frustrated, or upset",
+                es:"Volvió a encarrilarse tras distraerse, frustrarse o alterarse",
+                g35_en:"Got back on track after getting upset or distracted",
+                g35_es:"Volvió a encarrilarse después de alterarse o distraerse",
+                k2_en:"Calmed down and came back to the group",
+                k2_es:"Se calmó y volvió al grupo",
+                s_en:"Back on track", s_es:"Volvió al ritmo" },
+              { k:"r_change", dom:"regulated",
+                en:"Took a change, a correction, or something unexpected in stride",
+                es:"Aceptó un cambio, una corrección o algo inesperado sin perder el rumbo",
+                g35_en:"Handled a change or a correction without it wrecking the rest",
+                g35_es:"Aceptó un cambio o una corrección sin que le arruinara el resto",
+                k2_en:"Was okay when the plan changed",
+                k2_es:"Estuvo bien cuando el plan cambió",
+                s_en:"Took a change in stride", s_es:"Aceptó un cambio" },
+              { k:"r_tool", dom:"regulated",
+                en:"Used a strategy, a break, or a support to get through a rough moment",
+                es:"Usó una estrategia, un descanso o un apoyo para pasar un momento difícil",
+                g35_en:"Used a strategy or a break to get through a hard moment",
+                g35_es:"Usó una estrategia o un descanso para pasar un momento difícil",
+                k2_en:"Used a tool or a break to feel better",
+                k2_es:"Usó una herramienta o un descanso para sentirse mejor",
+                s_en:"Used a support", s_es:"Usó un apoyo" },
+              { k:"r_fair", dom:"usedStrategy",
+                en:"Was fair to themselves when something did not go well",
+                es:"Fue justo/a consigo mismo/a cuando algo no salió bien",
+                g35_en:"Did not put themselves down when something went wrong",
+                g35_es:"No se menospreció cuando algo salió mal",
+                k2_en:"Was not too hard on themselves",
+                k2_es:"No fue duro/a consigo mismo/a",
+                s_en:"Fair to themselves", s_es:"Justo/a consigo" }
+            ] },
+          { key:"with", en:"Connection & community", es:"Relación y comunidad", dom:"connected",
+            items:[
+              { k:"c_worked", dom:"connected",
+                en:"Worked well with a classmate or an adult",
+                es:"Trabajó bien con un/a compañero/a o con un adulto",
+                g35_en:"Worked well with a partner or a group",
+                g35_es:"Trabajó bien con un/a compañero/a o en grupo",
+                k2_en:"Played or worked well with someone",
+                k2_es:"Jugó o trabajó bien con alguien",
+                s_en:"Worked well with someone", s_es:"Trabajó bien" },
+              { k:"c_kind", dom:"connected",
+                en:"Was kind, patient, or considerate toward someone",
+                es:"Fue amable, paciente o considerado/a con alguien",
+                g35_en:"Was kind, patient, or included someone",
+                g35_es:"Fue amable, paciente o incluyó a alguien",
+                k2_en:"Was kind to someone",
+                k2_es:"Fue amable con alguien",
+                s_en:"Kind or considerate", s_es:"Amable" },
+              { k:"c_built", dom:"connected",
+                en:"Built on someone else’s idea, or made something right after a bump",
+                es:"Retomó la idea de otra persona, o reparó algo después de un roce",
+                g35_en:"Made something right after a bump, or listened to someone else’s idea",
+                g35_es:"Reparó algo después de un roce, o escuchó la idea de otra persona",
+                k2_en:"Made something right, or shared",
+                k2_es:"Reparó algo, o compartió",
+                s_en:"Built on / made right", s_es:"Retomó o reparó" }
+            ] },
+          /* ⚠ NOTHING IN THIS GROUP IS SCORED. `flag:true` keeps it out of
+             every domain, every percentage and every trend. It is a note to
+             the team, and it is placed beside the note box and the follow-up
+             request on purpose, because that is what it is. */
+          { key:"share", en:"Worth passing on", es:"Vale la pena compartirlo", flag:true,
+            sub_en:"None of these is scored. They are a note to the student’s team.",
+            sub_es:"Nada de esto se puntúa. Son una nota para el equipo del estudiante.",
+            items:[
+              { k:"f_strength", flag:true,
+                en:"Showed a strength, an interest, or a success worth celebrating",
+                es:"Mostró una fortaleza, un interés o un logro que vale la pena celebrar",
+                k2_en:"Showed a strength, or something they love",
+                k2_es:"Mostró una fortaleza, o algo que le encanta",
+                s_en:"A strength worth sharing", s_es:"Una fortaleza" },
+              { k:"f_different", flag:true,
+                en:"Something looked different today",
+                es:"Hoy algo se vio diferente",
+                s_en:"Different today", s_es:"Algo diferente" },
+              { k:"f_know", flag:true,
+                en:"Something happened the team should know about",
+                es:"Pasó algo que el equipo debería saber",
+                s_en:"The team should know", s_es:"El equipo debería saber" }
+            ] }
+        ];
+
+        /* ⚠ THREE BANDS, NOT A "YOUNG" VARIANT. .29al had K-2 and 3-5 share
+           one simplified wording; a first grader's teacher and a fifth
+           grader's teacher do not watch the same thing happen.
+
+           9-10 and 11-12 read the 6-8 wording ON PURPOSE. It is written for an
+           adolescent and holds up at fifteen; two more sets that nobody in
+           this district could check would be decoration, and decoration in a
+           table like this is how a screen ends up asking a question nobody
+           meant. Add them when a high school actually uses this. */
+        function pick(it, band, es){
+          if(band==="k2")  return es ? (it.k2_es||it.es)  : (it.k2_en||it.en);
+          if(band==="35")  return es ? (it.g35_es||it.es) : (it.g35_en||it.en);
+          return es?it.es:it.en;
+        }
+        function domOf(k){ for(var i=0;i<GROUPS.length;i++){ var g=GROUPS[i].items; for(var j=0;j<g.length;j++){ if(g[j].k===k) return g[j].dom||""; } } return ""; }
+        function fwOf(dom, es){ for(var i=0;i<DOMAINS.length;i++){ if(DOMAINS[i].key===dom) return es?DOMAINS[i].fw_es:DOMAINS[i].fw_en; } return ""; }
+        function labOf(dom, es){ for(var i=0;i<DOMAINS.length;i++){ if(DOMAINS[i].key===dom) return es?DOMAINS[i].es:DOMAINS[i].en; } return ""; }
+
+        return {
+          version:"v2",
+          domains:function(){ return DOMAINS.slice(); },
+          domainKeys:function(){ return DOMAINS.map(function(d){ return d.key; }); },
+          domainLabel:labOf,
+          domainOf:domOf,
+          /* Every group, resolved for one band and one language. The screens
+             render from this and nothing else. */
+          groups:function(band, es){
+            return GROUPS.map(function(g){
+              return { key:g.key, flag:!!g.flag,
+                title: es?g.es:g.en,
+                sub: (es?g.sub_es:g.sub_en)||"",
+                items: g.items.map(function(it){
+                  /* ⚠ THE TAG ONLY APPEARS WHERE IT TELLS YOU SOMETHING. A
+                     group already says it is about engagement; repeating
+                     "Engagement & Learning" under all four of its lines is
+                     noise. The tag is for the line that files somewhere the
+                     reader would not guess - "Kept going after a mistake"
+                     sits in the engagement group and counts as
+                     Self-Compassion, and that is worth saying. */
+                  return { k:it.k, dom:it.dom||"", flag:!!it.flag,
+                           q:pick(it,band,es),
+                           short:(es?it.s_es:it.s_en)||"",
+                           domLabel: (it.dom && it.dom!==g.dom)?labOf(it.dom,es):"",
+                           fw: it.dom?fwOf(it.dom,es):"" };
+                }) };
+            });
+          },
+          /* Flat lists, for a caller that does not care about grouping. */
+          items:function(band, es){
+            var out=[]; this.groups(band,es).forEach(function(g){ if(!g.flag) out=out.concat(g.items); }); return out;
+          },
+          flags:function(band, es){
+            var out=[]; this.groups(band,es).forEach(function(g){ if(g.flag) out=out.concat(g.items); }); return out;
+          },
+          shortOf:function(k, es){
+            var s="";
+            GROUPS.forEach(function(g){ g.items.forEach(function(it){ if(it.k===k) s=(es?it.s_es:it.s_en)||""; }); });
+            return s;
+          },
+          /* A list of ticked item keys becomes the four domain booleans.
+             A domain is TRUE when ANY of its items was ticked - one adult
+             seeing one thing is one observation, not a fraction of one. */
+          domainsFrom:function(keys){
+            var out={engaged:false,regulated:false,usedStrategy:false,connected:false};
+            (keys||[]).forEach(function(k){ var d=domOf(k); if(d && out.hasOwnProperty(d)) out[d]=true; });
+            return out;
+          }
+        };
+      })();
+
+      var DL_BAND_LABEL={k2:"K–2","35":"3–5","68":"6–8","910":"9–10","1112":"11–12",adult:DTx("Adult","Adulto")};
+      function dlGradeFor(id){ try{ var recs=(typeof getAllRecords==="function"?getAllRecords():[])||[]; for(var i=0;i<recs.length;i++){ if(recs[i]&&String(recs[i].studentId).trim()===id && recs[i].grade!=null) return String(recs[i].grade); } }catch(e){} return ""; }
+      function dlBand(id){ var g=(dlGradeFor(id)||"").toString().trim().toLowerCase().replace(/grade|gr\.?/g,"").trim();
+        if(g.indexOf("adult")>=0) return "adult";
+        if(g==="k"||g==="kg"||g==="kinder") return "k2";
+        var n=parseInt(g,10); if(!isNaN(n)){ if(n<=2)return "k2"; if(n<=5)return "35"; if(n<=8)return "68"; if(n<=10)return "910"; return "1112"; }
+        return "68";
+      }
+      /* ═══════════════ THIS STUDENT'S IEP GOALS, WHEN THERE ARE ANY
+         Jimmy, 2026-08-29: the daily log should be able to carry the student's
+         IEP goals too, "as well as being respectful kind and safe", as part of
+         the collaborative paperwork for the IEP team.
+
+         ⚠ A TICK HERE IS NOT A MEASUREMENT. It is written to the daily log and
+         nowhere else — never into aog.iep.v1, never onto the aimline, never
+         into the progress signal. Exactly the ruling the colleague link keeps:
+         a person decides what becomes progress-monitoring data, and a
+         checkbox on a period log is not that person deciding.
+
+         ⚠ AND IT CANNOT MOVE THE PERIOD PERCENTAGE. periodStats() counts the
+         three named keys (or a legacy `checks` array) and never looks at
+         `goals`, so every trend point ever drawn stays the number it was.
+
+         ⚠ THE CHECKBOX SHOWS A SHORT LABEL, NOT THE LEGAL GOAL STATEMENT.
+         The plain-language skill if the goal has been connected to home,
+         otherwise the area. A goal paragraph inside a checkbox is unreadable,
+         and it is the legal record besides — it is on the tooltip, on the
+         teacher's own device, for whoever needs it. */
+      function dlGoals(sid){
+        try{
+          if(!sid||!window.AOGIepRead||typeof AOGIepRead.goalsFor!=="function") return [];
+          return (AOGIepRead.goalsFor(sid)||[]).filter(function(r){ return r&&r.g&&!r.g.archived; }).slice(0,8);
+        }catch(e){ return []; }
+      }
+      /* ⚠ NEVER THE AREA. The first cut fell back to AOGIepRead.areaLabel, so
+         an unconnected goal rendered as "Behavior · IEP goal". Two things
+         wrong with that, and the second is the serious one:
+           · it names no behavior a teacher could notice in a period — it is
+             a filing category, not an observation;
+           · THE AREA IS THE DISABILITY CATEGORY, the one field every link in
+             this product is asserted not to carry. It does not belong on a
+             logging screen either, in front of whoever is covering the room.
+         Fall back instead to the plain word the home panel would already have
+         suggested for that area — the same SKILLS table, exported as
+         AOGHome.skills, so there is one source for the wording and not two. */
+      function dlGoalLabel(r){
+        try{ var c=(window.AOGHome&&AOGHome.cfg)?AOGHome.cfg(r.id):null; if(c&&c.skill) return String(c.skill); }catch(e){}
+        try{
+          var S=(window.AOGHome&&AOGHome.skills)?AOGHome.skills:null;
+          if(S){
+            var list=S[r.g.area]||S.other;
+            if(list&&list[0]&&list[0][0]){
+              var en=String(list[0][0]);
+              /* ⚠ THE DAILY LOG'S OWN LANGUAGE, not documentElement.lang. */
+              if(DTx("en","es")==="es"){
+                try{ var ES=AOGHome.skillsEs||{}; if(ES[en]&&ES[en][0]) return String(ES[en][0]); }catch(e3){}
+              }
+              return en;
+            }
+          }
+        }catch(e2){}
+        return DTx("IEP goal","Meta del IEP");
+      }
+      function dlGoalsHtml(sid){
+        var gs=dlGoals(sid);
+        if(!gs.length) return "";
+        var rows=gs.map(function(r){
+          return '<label class="dl-chk dl-goalchk" title="'+esc(String(r.g.title||""))+'">'
+            + '<input type="checkbox" data-dlgoal="'+esc(r.id)+'" data-dlgoallab="'+esc(dlGoalLabel(r))+'"> '
+            + '<span>'+esc(dlGoalLabel(r))
+            /* ⚠ --ink-soft, NOT --ink-faint. The three checks above set their
+               tag in --ink-faint and copying that made this an ELEVENTH
+               contrast violation on a panel that already had ten. 3.08:1
+               against 7.7:1 for the same job. */
+            + ' <span style="color:var(--ink-soft,#46506E);font-weight:600;font-size:.9em;">· '+esc(DTx("IEP goal","Meta del IEP"))+'</span></span></label>';
+        }).join("");
+        return '<div class="dl-goalwrap">'
+          + '<div class="dl-formlbl" style="margin-top:12px;">'+esc(DTx("This student\u2019s IEP goals (optional)","Metas del IEP de este estudiante (opcional)"))+'</div>'
+          + '<div class="dl-help" style="font-size:12px;color:var(--ink-soft,#5b6675);margin:-2px 0 8px;">'
+          +   esc(DTx("Tick one if this period was a chance to work on it. This is context for the team, not a measurement \u2014 nothing here reaches the goal\u2019s chart.",
+                      "Marca una si este periodo fue una oportunidad de trabajarla. Es contexto para el equipo, no una medici\u00f3n \u2014 nada de esto llega a la gr\u00e1fica de la meta."))+'</div>'
+          + '<div class="dl-checks">'+rows+'</div></div>';
+      }
+      /* Kept as a name because several readers already call it, and one of
+         them calls it with NO argument. It answers with the DOMAINS now, not
+         with three sentences - the sentences moved into AOG_OBS where both
+         screens read them. */
+      function checkDefs(band){
+        var es=(DTx("en","es")==="es");
+        var D=(window.AOG_OBS?AOG_OBS.domains():[]);
+        return D.map(function(d){
+          return { key:d.key, q:(es?d.es:d.en), short:(es?d.s_es:d.s_en),
+                   dom:(es?d.es:d.en), fw:(es?d.fw_es:d.fw_en) };
+        });
+      }
+      /* The grouped ticks a teacher actually reads. `data-dlobs` carries the
+         item key; `data-dlflag` carries a note-to-the-team key that nothing
+         scores. Both are read straight off the DOM at save time, so adding a
+         line to AOG_OBS needs no change here. */
+      /* ⚠ WHO SAW THIS. The adult check-in REFUSES to save without a name -
+         "a support timeline is only readable if it says who saw what" - and
+         then this list threw the name away, so a colleague's entry and the
+         teacher's own rendered identically. `respondentId`, `respondentRole`
+         and `source` were in the store the whole time and none of them reached
+         a screen. Jimmy found it, 2026-08-29.
+
+         ⚠ AN ENTRY WITH NO NAME IS THE TEACHER'S OWN and gets no line at all -
+         labeling it "you" would be a claim about who was holding the device,
+         which nothing in the record actually knows. */
+      function dlWhoLine(p){
+        var who=String((p&&p.respondentId)||"").trim();
+        if(!who) return "";
+        var role="";
+        try{ if(p.respondentRole && typeof window.aogRoleLabel==="function") role=window.aogRoleLabel(p.respondentRole); }catch(e){}
+        return '<div class="dl-logwho">'+esc(who)
+          +(role?' <span class="dl-logrole">· '+esc(role)+'</span>':'')
+          +(p.source==="link"?' <span class="dl-logvia">'+esc(DTx("via link","por enlace"))+'</span>':'')
+          +'</div>';
+      }
+      function dlObsHtml(band){
+        if(!window.AOG_OBS) return "";
+        var es=(DTx("en","es")==="es");
+        return AOG_OBS.groups(band, es).map(function(g){
+          var rows=g.items.map(function(it){
+            var attr=it.flag?'data-dlflag="'+esc(it.k)+'"':'data-dlobs="'+esc(it.k)+'"';
+            return '<label class="dl-chk'+(it.flag?' dl-flagchk':'')+'" title="'+esc(it.fw||"")+'">'
+              + '<input type="checkbox" '+attr+'> <span>'+esc(it.q)
+              + (it.domLabel?' <span style="color:var(--ink-soft,#46506E);font-weight:600;font-size:.9em;">· '+esc(it.domLabel)+'</span>':'')
+              + (it.dom?pbisChip(it.dom):'')+'</span></label>';
+          }).join("");
+          return '<div class="dl-obsgroup">'
+            + '<div class="dl-obshead">'+esc(g.title)+'</div>'
+            + (g.sub?'<div class="dl-help" style="font-size:12px;color:var(--ink-soft,#5b6675);margin:-2px 0 6px;">'+esc(g.sub)+'</div>':'')
+            + '<div class="dl-checks">'+rows+'</div></div>';
+        }).join("");
+      }
+
+      /* ---- roster from screener records; mark anyone who already has daily logs ---- */
+      function rosterStudents(){
+        var ids={};
+        try{ var recs=(typeof getAllRecords==="function"?getAllRecords():[])||[]; recs.forEach(function(r){ if(r&&r.studentId){ var id=String(r.studentId).trim(); if(id) ids[id]=1; } }); }catch(e){}
+        return Object.keys(ids);
+      }
+      function idsWithLogs(){
+        var out={}; var store=load(); var logs=store.logs||{};
+        Object.keys(logs).forEach(function(id){ if(/^(Coach|Mr\.?|Mrs\.?|Ms\.?|Dr\.?|Parent ·|Parent -)\s/i.test(id)) return; var days=logs[id]||{}; if(Object.keys(days).some(function(d){return hasEntry(days[d]);})) out[id]=1; });
+        return out;
+      }
+
+      window.aogRenderDaily=function(){
+        var host=el("aogDailyBody"); if(!host) return;
+        if(!ST.date) ST.date=todayISO();
+        if(!ST.period) ST.period="Morning";
+        var roster=rosterStudents(); var marks=idsWithLogs();
+        Object.keys(marks).forEach(function(id){ if(roster.indexOf(id)<0) roster.push(id); });
+        /* .30fg — adults who checked in (team check-in, home) are not students to log a period for */
+        roster=roster.filter(function(id){ return !/^(Coach|Mr\.?|Mrs\.?|Ms\.?|Dr\.?|Parent ·|Parent -)\s/i.test(id); });
+        roster.sort();
+        if(ST.s && roster.indexOf(ST.s)<0) ST.s="";
+        var stuOpts='<option value="">'+DTx("Select student…","Selecciona estudiante…")+'</option>'
+          + roster.map(function(id){ return '<option value="'+esc(id)+'"'+(id===ST.s?' selected':'')+'>'+(marks[id]?'• ':'')+esc(id)+'</option>'; }).join("");
+        var controls=''
+          + '<div class="dl-controls">'
+          + '<div class="dl-field"><label for="dlStudent">'+DTx("Student","Estudiante")+'</label><select id="dlStudent" onchange="dlLoadStudent()">'+stuOpts+'</select></div>'
+          + '<div class="dl-field"><label for="dlDate">'+DTx("Date","Fecha")+'</label><input type="date" id="dlDate" value="'+esc(ST.date)+'" onchange="dlLoadStudent()"></div>'
+          + '<div class="dl-field"><label>&nbsp;</label><button type="button" class="dl-setbtn" onclick="dlLoadToday()">'+DTx("Today","Hoy")+'</button></div>'
+          + '</div>';
+        if(!ST.s){
+          host.innerHTML=controls+'<div class="dl-empty">'+DTx("Pick a student to add a note. The list shows anyone with a reflection or note on this computer; there’s no class list behind it. A • marks students who already have notes.","Elige un estudiante para agregar una nota. La lista muestra a quien tenga una reflexión o nota en esta computadora; no hay lista de clase detrás. Un • marca a los estudiantes que ya tienen notas.")+'</div>';
+          return;
+        }
+        var pOpts=periodOpts().map(function(o){ return '<option value="'+esc(o.v)+'"'+(o.v===ST.period?' selected':'')+'>'+esc(DTx(o.en,o.es))+'</option>'; }).join("");
+        var dlband=dlBand(ST.s);
+        var checks=dlObsHtml(dlband);
+        var formCard=''
+          + '<div class="dl-card">'
+          +   '<div class="dl-formlbl">'+DTx("Logging which period right now?","¿Qué periodo estás registrando ahora?")+'</div>'
+          +   '<select id="dlPeriod" class="dl-periodsel" aria-label="'+esc(DTx("Logging which period right now?","¿Qué periodo estás registrando ahora?"))+'" onchange="dlPeriodChange(this.value)">'+pOpts+'</select>'
+          +   (ST.period==="__other__"?'<input id="dlPeriodOther" class="dl-otherin" placeholder="'+DTx("Name this period","Nombra este periodo")+'" value="'+esc(ST.other||"")+'" oninput="dlOtherInput(this.value)">':'')
+          +   '<div class="dl-formlbl">'+DTx("What did you notice?","¿Qué notaste?")+' <span style="display:inline-block;margin-left:6px;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--gold-deep,#9a6f24);background:rgba(217,163,59,.16);border-radius:999px;padding:2px 9px;vertical-align:middle;text-transform:none;">'+esc(DL_BAND_LABEL[dlband]||"")+'</span></div>'
+          +   '<div class="dl-help" style="font-size:12px;color:var(--ink-soft,#5b6675);margin:-2px 0 8px;">'+DTx("Tick anything that stood out this period. You do not have to answer every group, and a blank is not a judgement — it only means it did not come up. Hover a line to see where it is filed.","Marca lo que te haya llamado la atención en este periodo. No tienes que responder cada grupo, y dejarlo en blanco no es un juicio — solo significa que no surgió. Pasa el cursor sobre una línea para ver dónde se archiva.")+'</div>'
+          +   checks
+          +   '<label class="dl-pbis-tgl" style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-soft,#5b6675);margin:6px 0 2px;cursor:pointer;"><input type="checkbox"'+(pbisOn()?' checked':'')+' onchange="aogDailyPbisToggle(this.checked)"> <span>'+DTx("Show school expectations (Ready · Respectful · Responsible · Safe)","Mostrar expectativas escolares (Listo · Respetuoso · Responsable · Seguro)")+'</span></label>'
+          +   dlGoalsHtml(ST.s)
+          +   '<div class="dl-formlbl">'+DTx("Quick note for this period (optional)","Nota rápida de este periodo (opcional)")+'</div>'
+          +   '<textarea id="dlPeriodNote" class="dl-notein" rows="2" placeholder="'+DTx("Anything worth remembering…","Algo que valga la pena recordar…")+'"></textarea>'
+          +   '<div class="dl-savewrap"><button type="button" class="dl-btn" onclick="dlSavePeriod()">'+DTx("Save this period’s log","Guardar el registro de este periodo")+'</button><span id="dlStatus" class="dl-status"></span></div>'
+          + '</div>';
+        var histCard='<div class="dl-card"><div class="dl-h">'+DTx("Logged periods for this student","Periodos registrados de este estudiante")+' <span class="small" style="font-weight:400;color:var(--ink-faint);">· '+esc(shortD(ST.date))+'</span></div><div id="dlHistory" class="dl-loglist"></div></div>';
+        var store=load();
+        var actions='<div class="dl-actions"><button type="button" class="dl-btn" onclick="aogDailyExport()">'+DTx("Export CSV (opens in Sheets)","Exportar CSV (abre en Sheets)")+'</button>'
+          + '<button type="button" class="dl-btn ghost" onclick="aogDailyClearDay()">'+DTx("Clear this day","Borrar este día")+'</button></div>'
+          + '<div class="dl-note">'+DTx("Private to this device. These per-period logs feed the Daily-log zoom in Trajectory.","Privado en este dispositivo. Estos registros por periodo alimentan el acercamiento diario en Trayectoria.")+'</div>';
+        host.innerHTML=controls+formCard+histCard+aogDailyTrend(store)+aogDailyHistory(store)+actions;
+        renderHistory(ST.s,ST.date);
+      };
+
+      function utcIso(ms){ var d=new Date(ms); var m=d.getUTCMonth()+1,da=d.getUTCDate(); return d.getUTCFullYear()+"-"+(m<10?"0"+m:m)+"-"+(da<10?"0"+da:da); }
+      function weekStartISO(iso){ var t=Date.parse(iso+"T00:00:00Z"); if(isNaN(t)) return iso; var dow=(new Date(t).getUTCDay()+6)%7; return utcIso(t-dow*86400000); }
+      var EPOCH_MON=Date.parse("1970-01-05T00:00:00Z");
+      function bucketFor(iso,gran){
+        if(gran==="month"){ var p=iso.split("-"); return {k:p[0]+"-"+p[1],lab:p[1]+"/'"+p[0].slice(2)}; }
+        var dayCfg={day:1,days3:3};
+        if(dayCfg[gran]){ var span=dayCfg[gran]; if(span===1) return {k:iso,lab:shortD(iso)}; var idx=Math.floor(Date.parse(iso+"T00:00:00Z")/86400000); var start=idx-(((idx%span)+span)%span); var k=utcIso(start*86400000); return {k:k,lab:span+"d "+shortD(k)}; }
+        var wkCfg={week:1,week2:2,week3:3}; var M=wkCfg[gran]||1; var ws=weekStartISO(iso); var wi=Math.round((Date.parse(ws+"T00:00:00Z")-EPOCH_MON)/(7*86400000)); var base=wi-(((wi%M)+M)%M); var k2=utcIso(EPOCH_MON+base*7*86400000); return {k:k2,lab:(M===1?("wk "+shortD(k2)):(M+"wk "+shortD(k2)))};
+      }
+      var GRAN_MAX={day:14,days3:14,week:12,week2:12,week3:12,month:12};
+      function unitName(gran){ return ({day:DTx("day","día"),days3:DTx("3-day period","periodo de 3 días"),week:DTx("week","semana"),week2:DTx("2-week period","periodo de 2 semanas"),week3:DTx("3-week period","periodo de 3 semanas"),month:DTx("month","mes")})[gran]||DTx("week","semana"); }
+      function granList(){ return [["day",DTx("Day","Día")],["days3",DTx("3 days","3 días")],["week",DTx("Week","Semana")],["week2",DTx("2 weeks","2 semanas")],["week3",DTx("3 weeks","3 semanas")],["month",DTx("Month","Mes")]]; }
+      window.aogDailyTrendSVG=function(student,gran,store,view){
+        store=store||load(); gran=gran||"week";
+        var logs=(store.logs&&store.logs[student])||{};
+        var dates=Object.keys(logs).sort().filter(function(d){return hasEntry(logs[d]);});
+        if(!dates.length) return {has:false,svg:"",cap:""};
+        var buckets={},order=[];
+        dates.forEach(function(d){ var b=bucketFor(d,gran); if(!buckets[b.k]){buckets[b.k]={sum:0,n:0,lab:b.lab};order.push(b.k);} buckets[b.k].sum+=dayPct(logs[d]); buckets[b.k].n++; });
+        order.sort();
+        var keys=order.slice(-(GRAN_MAX[gran]||12));
+        var pts=keys.map(function(k){ return {k:k,lab:buckets[k].lab,v:Math.round(buckets[k].sum/buckets[k].n)}; });
+        var W=900,H=240,ml=34,mr=16,mt=14,mb=38,n=pts.length;
+        var X=function(i){ return ml+(W-ml-mr)*(n<=1?0.5:i/(n-1)); };
+        var Y=function(v){ return mt+(H-mt-mb)*(1-Math.max(0,Math.min(100,v))/100); };
+        var s2="";
+        [[60,100,"var(--green-bg,#E8F0E7)"],[40,60,"var(--amber-bg,#F5EAC8)"],[0,40,"var(--red-bg,#F3DFDC)"]].forEach(function(b){ s2+='<rect x="'+ml+'" y="'+Y(b[1])+'" width="'+(W-ml-mr)+'" height="'+(Y(b[0])-Y(b[1]))+'" fill="'+b[2]+'" opacity="0.6"/>'; });
+        [0,25,50,75,100].forEach(function(t){ s2+='<line x1="'+ml+'" y1="'+Y(t)+'" x2="'+(W-mr)+'" y2="'+Y(t)+'" stroke="var(--rule)" stroke-width="1"/><text x="'+(ml-5)+'" y="'+(Y(t)+3)+'" text-anchor="end" font-size="10" fill="var(--ink-faint)">'+t+'</text>'; });
+        pts.forEach(function(p,i){ s2+='<text x="'+X(i)+'" y="'+(H-mb+16)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--ink-soft)">'+esc(p.lab)+'</text>'; });
+        if(view==="bars"){
+          var bw=Math.max(6,Math.min(46,(W-ml-mr)/Math.max(1,n)*0.6));
+          pts.forEach(function(p,i){ var x=X(i),y=Y(p.v),y0=Y(0); s2+='<rect x="'+(x-bw/2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0,y0-y).toFixed(1)+'" rx="3" fill="'+color(p.v)+'" opacity="0.85"/><text x="'+x.toFixed(1)+'" y="'+(y-6)+'" text-anchor="middle" font-size="10.5" font-weight="800" fill="'+color(p.v)+'">'+p.v+'</text>'; });
+        } else {
+          if(pts.length>1){ var dp=""; pts.forEach(function(p,i){ dp+=(i?"L":"M")+X(i).toFixed(1)+" "+Y(p.v).toFixed(1)+" "; }); s2+='<path d="'+dp+'" fill="none" stroke="var(--ink,#0A1E33)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'; }
+          pts.forEach(function(p,i){ s2+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="4.5" fill="var(--paper,#fff)" stroke="'+color(p.v)+'" stroke-width="2.6"/><text x="'+X(i).toFixed(1)+'" y="'+(Y(p.v)-10)+'" text-anchor="middle" font-size="10.5" font-weight="800" fill="'+color(p.v)+'">'+p.v+'</text>'; });
+        }
+        var svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Daily-log trend" style="width:100%;min-width:480px;display:block;">'+s2+'</svg>';
+        var unit=unitName(gran), first=pts[0].v, last=pts[pts.length-1].v, delta=last-first;
+        var cap=(pts.length>1)?(DTx("Change since first","Cambio desde el primero")+' '+unit+': '+(delta>0?"+":"")+delta+' '+DTx("points","puntos")):(DTx("One","Un")+' '+unit+' '+DTx("so far — more will draw the line.","hasta ahora — con más se traza la línea."));
+        return {has:true,svg:svg,cap:cap,points:pts.length};
+      };
+      window.aogDailyGran=function(g){ ST.gran=g; aogRenderDaily(); };
+      window.aogDailyTrend=function(store){
+        var gran=ST.gran||"week";
+        var r=aogDailyTrendSVG(ST.s,gran,store);
+        if(!r.has) return "";
+        var gbtn=function(g,lab){ return '<button type="button" class="dl-setbtn'+(gran===g?" on":"")+'" style="'+(gran===g?"background:var(--navy);color:#fff;border-color:var(--navy);":"")+'" onclick="aogDailyGran(\''+g+'\')">'+lab+'</button>'; };
+        var toggle='<div class="dl-sets" style="margin:2px 0 12px;">'+granList().map(function(x){return gbtn(x[0],x[1]);}).join("")+'</div>';
+        var grainNote=(gran==="day")?DTx("Each point is one day’s total.","Cada punto es el total de un día."):(DTx("Each point rolls one ","Cada punto resume un ")+unitName(gran)+DTx(" of daily logs into an average — the daily grain becoming a growth line."," de registros diarios en un promedio — el detalle diario convertido en una línea de crecimiento."));
+        return '<div class="dl-card"><div class="dl-h">'+DTx("Growth trend","Tendencia de crecimiento")+'</div>'+toggle+'<div class="dl-note" style="margin:-4px 0 10px;">'+grainNote+'</div><div class="dl-gridwrap" style="padding:10px 8px;">'+r.svg+'</div><div class="dl-note">'+esc(r.cap)+'</div></div>';
+      };
+
+      window.aogDailyHistory=function(store){
+        var s=ST.s; var logs=(store.logs&&store.logs[s])||{};
+        var dates=Object.keys(logs).sort().filter(function(d){return hasEntry(logs[d]);});
+        if(!dates.length) return "";
+        var recent=dates.slice(-10);
+        var days=recent.map(function(d){ var p=dayPct(logs[d]); return '<div class="dl-day"><div class="d">'+esc(shortD(d))+'</div><div class="p" style="color:'+color(p)+'">'+p+'%</div></div>'; }).join("");
+        // weekly rollup: last 7 logged days, by domain
+        var last7=dates.slice(-7);
+        var defs=checkDefs(); var agg={}; defs.forEach(function(d){ agg[d.key]={t:0,g:0,short:d.short}; });
+        /* ⚠ A DOMAIN IS ONLY COUNTED AGAINST A PERIOD THAT COULD HAVE CARRIED
+           IT. Engagement did not exist before .29al; counting older periods as
+           misses would invent a slump that never happened. A row with no
+           periods behind it is not drawn at all rather than drawn at 0%. */
+        last7.forEach(function(d){ ((logs[d]&&logs[d].periods)||[]).forEach(function(p){ defs.forEach(function(def){
+          if(def.key==="engaged" && !Object.prototype.hasOwnProperty.call(p,"engaged")) return;
+          agg[def.key].t++; if(p[def.key])agg[def.key].g++; }); }); });
+        var rows=defs.filter(function(def){ return agg[def.key].t>0; }).map(function(def){ var a=agg[def.key]; var pct=a.t?Math.round(a.g/a.t*100):0; return '<div class="dl-srow"><div class="dl-sname">'+esc(a.short)+'</div><div class="dl-strack"><div class="dl-sfill" style="width:'+pct+'%;background:'+color(pct)+'"></div></div><div class="dl-pct" style="color:'+color(pct)+';min-width:42px;text-align:right;">'+pct+'%</div></div>'; }).join("");
+        return '<div class="dl-card"><div class="dl-h">'+DTx("Recent days","Días recientes")+'</div><div class="dl-hist">'+days+'</div></div>'
+          + '<div class="dl-card"><div class="dl-h">'+DTx("This week, by check (last 7 logged days)","Esta semana, por verificación (últimos 7 días)")+'</div>'+rows+'</div>';
+      };
+
+      function renderHistory(sid,dateStr){
+        var c=el("dlHistory"); if(!c) return;
+        var store=load(); var day=(store.logs&&store.logs[sid]&&store.logs[sid][dateStr])||{periods:[]};
+        var periods=day.periods||[];
+        if(!periods.length){ c.innerHTML='<div class="dl-mini" style="padding:6px 0;color:var(--ink-soft);">'+DTx("No periods logged yet for this date.","Aún no hay periodos registrados para esta fecha.")+'</div>'; return; }
+        var defs=checkDefs();
+        c.innerHTML=periods.map(function(p,i){
+          /* Name what was seen. "2 of 4" tells the next adult nothing; WHICH
+             two is the entire point. Entries written before .29al carry no
+             item list, so they still read as their domain names. */
+          var tags=[];
+          if(p.obs&&p.obs.length&&window.AOG_OBS){
+            var esl=(DTx("en","es")==="es");
+            p.obs.forEach(function(k){ var s=AOG_OBS.shortOf(k,esl); if(s) tags.push(esc(s)); });
+          } else { defs.forEach(function(d){ if(p[d.key]) tags.push(esc(d.short)); }); }
+          if(!tags.length && p.checks){ for(var k=0;k<p.checks.length;k++){ if(p.checks[k]) tags.push(DTx("Check","Marca")+" "+(k+1)); } }
+          var pct=periodPct(p);
+          var t=p.timestamp?new Date(p.timestamp):null;
+          var tl=(t&&!isNaN(t.getTime()))?(("0"+t.getHours()).slice(-2)+":"+("0"+t.getMinutes()).slice(-2)):"";
+          return '<div class="dl-logitem"><div class="dl-logmain">'
+            + '<div class="dl-logper">'+esc(periodLabel(p.period)||p.period||DTx("Period","Periodo"))+' <span class="dl-pct" style="color:'+color(pct)+';font-weight:800;">'+smiley(pct)+' '+pct+'%</span>'+(tl?' <span class="dl-mini" style="color:var(--ink-faint);font-weight:400;">· '+tl+'</span>':'')+'</div>'
+            + dlWhoLine(p)
+            + '<div class="dl-logchk">'+(tags.length?tags.join(" · "):DTx("No checks marked","Sin marcas"))+'</div>'
+            + ((p.goals&&p.goals.length)?('<div class="dl-loggoals" style="font-size:12px;color:var(--ink-soft,#5b6675);margin-top:2px;">'
+                + esc(DTx("IEP goal","Meta del IEP")+": "+p.goals.map(function(x){ return x&&x.lab?x.lab:""; }).filter(Boolean).join(" · "))+'</div>'):'')
+            + (p.note?'<div class="dl-lognote">“'+esc(p.note)+'”</div>':'')
+            + '</div><button type="button" class="dl-logdel" title="'+DTx("Remove","Quitar")+'" onclick="dlRemoveEntry('+i+')">×</button></div>';
+        }).join("");
+      }
+
+      window.dlLoadStudent=function(){ var ss=el("dlStudent"),di=el("dlDate"); if(ss) ST.s=ss.value; if(di&&di.value) ST.date=di.value; aogRenderDaily(); };
+      window.dlLoadToday=function(){ ST.date=todayISO(); var di=el("dlDate"); if(di) di.value=ST.date; aogRenderDaily(); };
+      window.dlPeriodChange=function(v){ ST.period=v||"Morning"; if(v!=="__other__") ST.other=""; aogRenderDaily(); };
+      window.dlOtherInput=function(v){ ST.other=v||""; };
+      window.dlSavePeriod=function(){
+        var ss=el("dlStudent"),di=el("dlDate"),status=el("dlStatus");
+        var sid=ss?ss.value:ST.s, dateStr=di?di.value:ST.date;
+        if(!sid||!dateStr){ if(status) status.textContent=DTx("Pick a student and date first.","Elige primero estudiante y fecha."); return; }
+        var period=(ST.period==="__other__")?(((el("dlPeriodOther")&&el("dlPeriodOther").value)||"").trim()||DTx("Other","Otro")):ST.period;
+        /* The ticked item keys ARE the record; the four domain booleans
+           are DERIVED from them, so the columns every chart already counts
+           stay exactly what they were and a reader that knows nothing about
+           items still reads this entry correctly. `obs` says WHICH sentence
+           was ticked, which is the whole point when the question is what
+           shows up in one room and not in another.
+
+           ⚠ `obsPicked`, not `picked` - the IEP-goal block below declares a
+           `picked` of its own inside a try, and var is function-scoped. */
+        var obsPicked=[];
+        try{ Array.prototype.forEach.call(document.querySelectorAll("[data-dlobs]"),function(cb){ if(cb.checked) obsPicked.push(cb.getAttribute("data-dlobs")); }); }catch(e){}
+        var obsFlags=[];
+        try{ Array.prototype.forEach.call(document.querySelectorAll("[data-dlflag]"),function(cb){ if(cb.checked) obsFlags.push(cb.getAttribute("data-dlflag")); }); }catch(e){}
+        var dom=(window.AOG_OBS?AOG_OBS.domainsFrom(obsPicked):{engaged:false,regulated:false,usedStrategy:false,connected:false});
+        var entry={ period:period,
+          engaged:!!dom.engaged,
+          regulated:!!dom.regulated,
+          usedStrategy:!!dom.usedStrategy,
+          connected:!!dom.connected,
+          obs:obsPicked,
+          /* ⚠ NOT A MEASUREMENT AND NEVER SCORED. Nothing that computes a
+             percentage, draws a trend or reaches a goal looks at `flags`. */
+          flags:obsFlags,
+          obsSchema:"v2",
+          note:(((el("dlPeriodNote")&&el("dlPeriodNote").value)||"").trim()),
+          term:(function(){ try{ return sessionStorage.getItem("aog.launch.term")||""; }catch(e){ return ""; } })(),
+          year:(window.AOGYear?AOGYear(dateStr):""),
+          timestamp:new Date().toISOString() };
+        /* ⚠ ITS OWN FIELD, READ BY NOTHING THAT SCORES. The label is stored
+           beside the id so the history still reads after a goal is archived
+           or reworded — it records what the teacher was actually shown. */
+        try{
+          var picked=[];
+          Array.prototype.forEach.call(document.querySelectorAll("[data-dlgoal]"),function(cb){
+            if(cb.checked) picked.push({ id:cb.getAttribute("data-dlgoal"), lab:cb.getAttribute("data-dlgoallab")||"" });
+          });
+          if(picked.length) entry.goals=picked;
+        }catch(e){}
+        var store=load(); if(!store.logs) store.logs={}; if(!store.logs[sid]) store.logs[sid]={}; if(!store.logs[sid][dateStr]) store.logs[sid][dateStr]={periods:[]}; if(!store.logs[sid][dateStr].periods) store.logs[sid][dateStr].periods=[];
+        store.logs[sid][dateStr].periods.push(entry); save(store);
+        ST.s=sid; ST.date=dateStr; if(ST.period==="__other__") ST.other="";
+        aogRenderDaily();
+        var s2=el("dlStatus"); if(s2){ s2.textContent=DTx("Saved ✓","Guardado ✓"); setTimeout(function(){ var s3=el("dlStatus"); if(s3) s3.textContent=""; },1600); }
+      };
+      window.dlRemoveEntry=function(i){
+        var store=load(); var day=store.logs&&store.logs[ST.s]&&store.logs[ST.s][ST.date]; if(!day||!day.periods) return;
+        day.periods.splice(i,1); if(!day.periods.length){ try{delete store.logs[ST.s][ST.date];}catch(e){} }
+        save(store); aogRenderDaily();
+      };
+      window.aogDailyClearDay=function(){
+        if(!window.confirm(DTx("Remove all logged periods for this day?","¿Quitar todos los periodos registrados de este día?"))) return;
+        var store=load(); if(store.logs&&store.logs[ST.s]){ try{delete store.logs[ST.s][ST.date];}catch(e){} save(store); }
+        aogRenderDaily();
+      };
+
+      window.aogDailyExport=function(){
+        var store=load(); var s=ST.s; var logs=(store.logs&&store.logs[s])||{};
+        var dates=Object.keys(logs).sort().filter(function(d){return hasEntry(logs[d]);});
+        var rows=[["Student","Date","Period","Time","Engaged","Regulated","Used strategy","Trusted-adult connection","What was noticed","Worth passing on","IEP goals worked on","Note","Period %"]];
+        var csvEs=(DTx("en","es")==="es");
+        function csvShorts(list){ return (list||[]).map(function(k){ return window.AOG_OBS?(AOG_OBS.shortOf(k,csvEs)||k):k; }).filter(Boolean).join(" | "); }
+        dates.forEach(function(d){ ((logs[d]&&logs[d].periods)||[]).forEach(function(p){ var t=p.timestamp?new Date(p.timestamp):null; var tl=(t&&!isNaN(t.getTime()))?(("0"+t.getHours()).slice(-2)+":"+("0"+t.getMinutes()).slice(-2)):""; rows.push([s,d,p.period||"",tl,(Object.prototype.hasOwnProperty.call(p,"engaged")?(p.engaged?"Yes":"No"):""),p.regulated?"Yes":"No",p.usedStrategy?"Yes":"No",p.connected?"Yes":"No",csvShorts(p.obs),csvShorts(p.flags),((p.goals||[]).map(function(x){ return x&&x.lab?x.lab:""; }).filter(Boolean).join(" | ")),p.note||"",periodPct(p)+"%"]); }); });
+        var csv=rows.map(function(r){ return r.map(function(c){ var v=String(c==null?"":c); return /[",\n]/.test(v)?('"'+v.replace(/"/g,'""')+'"'):v; }).join(","); }).join("\r\n");
+        try{
+          var a=document.createElement("a");
+          a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+          a.download="AoG-DailyLog-"+(s||"student").replace(/[^A-Za-z0-9_-]+/g,"_")+".csv";
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }catch(e){}
+      };
+    })();
+    </script>
 
     <div class="tab-panel" id="panel-iep">
       <div class="section-head">
@@ -6722,6 +8952,30 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 
   </div>
 </section>
+</template>
+<script>
+/* AOG-CLASSIC-LATER-V1 — see the note above the template. */
+(function () {
+  var t = document.getElementById("aog-classic-dash");
+  if (!t || !t.content) return;
+  var classic = false;
+  try { classic = /[?&]classic=1/.test(location.search); } catch (e) {}
+  if (classic) { t.parentNode.replaceChild(t.content, t); return; }
+  var at = t.parentNode;
+  var stand = document.createElement("section");
+  stand.id = "screen-admin"; stand.className = "screen";
+  stand.innerHTML = '<div class="container-wide"><h1 class="aog-srx" data-dl="dl_admin_h1">Educator Dashboard</h1>' +
+    '<p><a class="btn btn-primary" href="/dashboard" data-en="Open the Educator Dashboard &rarr;" data-es="Abre el Panel del Educador &rarr;">Open the Educator Dashboard &rarr;</a></p></div>';
+  at.insertBefore(stand, t);
+  [].forEach.call(t.content.querySelectorAll("script"), function (old) {
+    var s = document.createElement("script");
+    [].forEach.call(old.attributes, function (a) { s.setAttribute(a.name, a.value); });
+    s.text = old.text;
+    at.insertBefore(s, t);
+  });
+  at.removeChild(t);
+})();
+</script>
 
     <!-- ============ ABOUT (its own page) ============ -->
     <section id="screen-about" class="screen">
