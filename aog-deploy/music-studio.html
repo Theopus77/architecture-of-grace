@@ -1162,7 +1162,7 @@ function cleanClip(c){
     fadeIn:FADES.indexOf(+c.fadeIn)>=0 ? +c.fadeIn : 0, fadeOut:FADES.indexOf(+c.fadeOut)>=0 ? +c.fadeOut : 0,
     pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)),
     voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)),   /* AOG-STUDIO-VOICE-V1 */
-    layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto };   /* AOG-STUDIO-LISTEN-V1 */
+    layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto, lead:!!c.lead };   /* AOG-STUDIO-LISTEN-V1 · AOG-SONG-V1 (lead) */
   if(!(o.sec>0) || !(o.body>0)) return null;
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
@@ -1946,7 +1946,11 @@ function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const old=x.c
 /* after any change to what plays where */
 function songChanged(){
   save();
-  try{ const b=deskBpm(); if(b>0 && window.AOGSong) AOGSong.seed(b); }catch(e){}   /* AOG-SONG-V1: the first recording sets a new song's tempo */
+  /* AOG-SONG-V1: the first recording sets a new song's tempo, and leads it: made slower or faster here (or put back by Undo),
+     the song's tempo goes with it, as the desk always did. A tempo set anywhere else ends the lead (AOGSong.on below). */
+  try{ if(window.AOGSong){ const i=tempoTrack(), c=i>=0 ? SONG.tracks[i].clip : null, s0=AOGSong.get();
+    if(c && (!s0 || !s0.hasBpm)){ c.lead=true; AOGSong.seed(deskBpm()); save(); }
+    else if(c && c.lead && Math.abs(deskBpm()-s0.bpm)>0.005) AOGSong.set({bpm:deskBpm()}); } }catch(e){}
   liveApply(applyAll);
   reschedule();
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox();
@@ -3094,6 +3098,7 @@ function clipAct(act){
     if(!(c.bpm>0)){ UNDO.pop(); return; }
     const want=effBpm(c);
     clips().forEach(x=>{ if(x.c!==c && x.c.bpm>0){ remember(x.i, g); x.c.speed=clampSpeed(want/x.c.bpm); } });
+    try{ if(window.AOGSong) AOGSong.set({bpm:want}); }catch(e){}   /* AOG-SONG-V1: "this tempo on every track" is the song's tempo */
     S.edMsg=t("spdAllDone",{n:Math.round(want)});
   }
   else {
@@ -3114,7 +3119,8 @@ function speedInput(el){ const c=SONG.tracks[SONG.sel].clip; if(!c) return; cons
 function speedChange(el){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   const v=clampSpeed(Math.round(+el.value)/100); if(Math.abs(v-spd(c))<1e-3) return;
-  remember(i, ++UG); c.speed=v; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
+  const lead=i===tempoTrack() && c.bpm>0 && Math.abs(effBpm(c)-songBpm())<0.05;   /* AOG-SONG-V1: in time with the song, it carries the song */
+  remember(i, ++UG); c.speed=v; if(lead) c.lead=true; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
   songChanged(); stretchAll();
 }
 function fadeChange(el){
@@ -3460,7 +3466,10 @@ window.addEventListener("pagehide", ()=>{ stop(); });
 try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
 window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
 /* AOG-SONG-V1: the song's tempo changed (here, in a room, or in the Studio): the bars follow at once */
-if(window.AOGSong) AOGSong.on(()=>{ try{ reschedule(); paintTransport(); paintTimeline(); paintTrack(); }catch(e){} });
+if(window.AOGSong) AOGSong.on(s=>{ try{
+  /* a tempo set elsewhere (the Song panel, a room) is the song's now: the desk's first track no longer leads it */
+  if(s && s.hasBpm && Math.abs(s.bpm-deskBpm())>0.005){ let ch=false; clips().forEach(x=>{ if(x.c.lead){ x.c.lead=false; ch=true; } }); if(ch) save(); }
+  reschedule(); paintTransport(); paintTimeline(); paintTrack(); }catch(e){} });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,

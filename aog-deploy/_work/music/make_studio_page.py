@@ -78,7 +78,8 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 /* AOG-OVERDUB-V1: record over My Track */
 .tp-over[aria-pressed="true"] { border-color:#c9a24b; box-shadow:inset 0 0 0 1px #c9a24b; }
 .tp-from { min-height:44px; max-width:11rem; font:700 16px/1.2 var(--sans); color:#0A1E33; background:#FFFDF8; border:1.5px solid #C9A24A; border-radius:12px; padding:0 .6rem; cursor:pointer; }
-.tp-from[hidden] { display:none; }
+.song-from[hidden] { display:none; }
+.song-from { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; font-weight:700; color:var(--ink); }
 .tp-from:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
 /* AOG-SONG-V1: the song's tempo and key, one tap from every room */
 .tp-song { border-color:#c9a24b; }
@@ -434,7 +435,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     latNoMic: ["The microphone is off. Allow it for this site in your browser's settings, then try again.",
       "El micrófono está apagado. Permítelo para este sitio en los ajustes del navegador y vuelve a intentarlo."],
     /* AOG-OVERDUB-V1 */
-    over: ["♫ With My Track", "♫ Con mi pista"], overOff: ["♫ With My Track: off", "♫ Con mi pista: no"],
+    overH: ["When you record", "Al grabar"], fromL: ["My Track starts", "Mi pista empieza"],
+    over: ["♫ Play My Track while I record: On", "♫ Tocar mi pista mientras grabo: Sí"], overOff: ["♫ Play My Track while I record: Off", "♫ Tocar mi pista mientras grabo: No"],
     overAria: ["Play My Track while I record", "Tocar mi pista mientras grabo"],
     fromStart: ["From the start", "Desde el principio"], fromBar: ["From bar {n}", "Desde el compás {n}"],
     fromAria: ["Where My Track starts when you record", "Dónde empieza mi pista al grabar"],
@@ -462,7 +464,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
     /* AOG-STUDIO-SMOOTH-V1: this runs four times a second, so it writes only what changed (a write makes the page lay out again) */
-    try { songWords(); paintOver(); } catch (err) {}
+    try { songWords(); } catch (err) {}
     [["tpMix", "mix"], ["tpOut", "out"]].forEach(function (p) { var b = D.getElementById(p[0]), t = tw(p[1]); if (b.textContent !== t) b.textContent = t; });
     /* AOG-STUDIO-LISTEN-V1: at the desk, Mix › has nowhere to go; the way back to your room takes its place */
     var bk = D.getElementById("tpBack"), br = cur === "studio" && TP.back ? room(TP.back) : null;
@@ -520,14 +522,14 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var o = overGet(), b = D.getElementById("tpOver"), sel = D.getElementById("tpFrom"), lang = es() ? "es" : "en";
     var bt = o.on ? tw("over") : tw("overOff"); if (b.textContent !== bt) b.textContent = bt;
     att(b, "aria-pressed", o.on ? "true" : "false"); att(b, "aria-label", tw("overAria"));
-    var show = o.on && cur !== "studio" && cur !== "decks"; if (sel.hidden !== !show) sel.hidden = !show;
+    [["overH", "overH"], ["fromL", "fromL"]].forEach(function (p) { var el = D.getElementById(p[0]), x = tw(p[1]); if (el.textContent !== x) el.textContent = x; });
+    var lab = sel.parentNode; if (lab.hidden !== !o.on) lab.hidden = !o.on;
     if (sel.getAttribute("data-lang") !== lang) {
       var h = '<option value="1">' + tw("fromStart") + "</option>";
       for (var n = 5; n <= 125; n += 4) h += '<option value="' + n + '">' + tw("fromBar").split("{n}").join(n) + "</option>";
       sel.innerHTML = h; sel.setAttribute("data-lang", lang); att(sel, "aria-label", tw("fromAria"));
     }
     if (sel.value !== String(o.from)) sel.value = String(o.from);
-    var ob = D.getElementById("tpOver"); if (ob.hidden !== (cur === "studio" || cur === "decks")) ob.hidden = cur === "studio" || cur === "decks";
   }
   D.getElementById("tpOver").addEventListener("click", function () { overSet({ on: !overGet().on }); });
   D.getElementById("tpFrom").addEventListener("change", function () { overSet({ from: +this.value || 1 }); });
@@ -554,12 +556,14 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
      follows at once (aog-song.js); a room's own tempo or key changes it too. */
   function songWords() {
     var G = window.AOGSong, s = G && G.get(), b = D.getElementById("tpSong"), nm = G ? G.name(es() ? "es" : "en") : "";
-    var bt = tw("song") + (nm ? " · " + nm : ""); if (b.textContent !== bt) b.textContent = bt;
+    var narrow = (window.innerWidth || 0) < 700, sg = G && G.get();
+    var bt = narrow ? "♩" + (sg && sg.hasBpm ? " " + sg.bpm : "") : tw("song") + (nm ? " · " + nm : ""); if (b.textContent !== bt) b.textContent = bt;
+    att(b, "aria-label", tw("song").replace("♩ ", "") + (nm ? ": " + nm : ""));
     [["songH", "songH"], ["songBpmL", "songBpmL"], ["songKeyL", "songKeyL"], ["songMaj", "songMaj"], ["songMin", "songMin"], ["songDone", "songDone"]].forEach(function (p) {
       var el = D.getElementById(p[0]), x = tw(p[1]); if (el.textContent !== x) el.textContent = x; });
     var say = D.getElementById("songSay"), st = s && s.hasBpm ? tw("songSay") : tw("songNone"); if (say.textContent !== st) say.textContent = st;
     if (D.getElementById("songBox").hidden) return;   /* this runs four times a second: the rest only while the panel is open */
-    latWords();
+    latWords(); paintOver();
     var inp = D.getElementById("songBpm"), iv = s && s.hasBpm ? String(s.bpm) : ""; if (D.activeElement !== inp && inp.value !== iv) inp.value = iv;
     if (inp.placeholder !== "100") inp.placeholder = "100";
     var ks = D.getElementById("songKey"), names = G ? G.NOTES[es() ? "es" : "en"] : [];
@@ -622,7 +626,11 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
      plays. What stays with the Studio: typing in a box or a menu, Tab to move around, and Space or Enter on one of the
      Studio's own buttons. */
   function keyOn(e) {
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    /* AOG-DESK-HANDS-V1: at the Mixing Desk, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z, Ctrl+Y) and Alt+← → (a 10 ms nudge) go on to it too */
+    if (e.metaKey || e.ctrlKey || e.altKey) {
+      var deskKey = cur === "studio" && (((e.metaKey || e.ctrlKey) && !e.altKey && /^[zy]$/i.test(e.key)) || (e.altKey && !e.metaKey && !e.ctrlKey && /^Arrow(Left|Right)$/.test(e.key)));
+      if (!deskKey) return;
+    }
     var t = e.target, tag = t && t.tagName;
     /* AOG-STRING-TAB-V1: Tab goes on to the room only when nothing in the Studio has the keyboard (the guitar and the bass
        pick a string with it); on one of the Studio's own buttons it moves to the next, as always */
@@ -632,7 +640,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var w, d; try { w = fr.contentWindow; d = fr.contentDocument; } catch (err) { return; }
     if (!w || !d || !d.body) return;
     var KE = w.KeyboardEvent || KeyboardEvent;
-    var ev = new KE(e.type, { key: e.key, code: e.code, repeat: e.repeat, shiftKey: e.shiftKey, bubbles: true, cancelable: true });
+    var ev = new KE(e.type, { key: e.key, code: e.code, repeat: e.repeat, shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, bubbles: true, cancelable: true });
     d.body.dispatchEvent(ev);
     if (ev.defaultPrevented) e.preventDefault();
   }
@@ -751,9 +759,10 @@ def build():
             '<div class="song-row"><label for="songKey" id="songKeyL"></label><select id="songKey"></select>'
             '<button type="button" class="song-b" id="songMaj" aria-pressed="false"></button><button type="button" class="song-b" id="songMin" aria-pressed="false"></button>'
             '<button type="button" class="song-b" id="songDone"></button></div>'
+            '<div class="song-row song-lat"><h3 id="overH"></h3><button type="button" class="song-b tp-over" id="tpOver" aria-pressed="true"></button>'
+            '<label class="song-from"><span id="fromL"></span> <select class="tp-from" id="tpFrom"></select></label></div>'   # AOG-OVERDUB-V1
             '<div class="song-row song-lat"><h3 id="latH"></h3><p id="latSay"></p><button type="button" class="song-b" id="latGo"></button><p id="latLine" aria-live="polite"></p></div></div>'   # AOG-LATENCY-V1
             '<div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button>'
-            '<button type="button" class="tp-b tp-over" id="tpOver" aria-pressed="true"></button><select class="tp-from" id="tpFrom"></select>'   # AOG-OVERDUB-V1
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
             '<button type="button" class="tp-b tp-out" id="tpOut"></button>'

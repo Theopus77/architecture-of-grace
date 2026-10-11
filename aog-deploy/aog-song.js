@@ -25,12 +25,13 @@
   var KEY = "aog.song.v1", MIN = 40, MAX = 240, subs = [], room = null, applying = false, bc = null;
   var NOTES = { en: ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"], es: ["Do", "Do♯", "Re", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si"] };
   function clampB(v, lo, hi) { v = Math.round(+v); return Math.max(lo, Math.min(hi, v)); }
+  function hund(v, lo, hi) { v = Math.round(+v * 100) / 100; return Math.max(lo, Math.min(hi, v)); }   /* the song: to a hundredth (a desk speed); a room rounds it */
   function read() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (!s || typeof s !== "object") return null;
       var hasBpm = s.bpm >= MIN && s.bpm <= MAX, hasKey = s.key >= 0 && s.key <= 11;
       if (!hasBpm && !hasKey) return null;
-      return { bpm: hasBpm ? Math.round(s.bpm) : 0, key: hasKey ? (s.key | 0) : 0, minor: !!s.minor, hasBpm: hasBpm, hasKey: hasKey, at: +s.at || 0 };
+      return { bpm: hasBpm ? Math.round(s.bpm * 100) / 100 : 0, key: hasKey ? (s.key | 0) : 0, minor: !!s.minor, hasBpm: hasBpm, hasKey: hasKey, at: +s.at || 0 };
     } catch (e) { return null; }
   }
   function fire() { var s = read(); subs.forEach(function (f) { try { f(s); } catch (e) {} }); }
@@ -44,7 +45,7 @@
   }
   function set(p) {
     var s = read() || { bpm: 0, key: 0, minor: false, hasBpm: false, hasKey: false }, ch = false;
-    if (p && p.bpm != null && +p.bpm > 0) { var b = clampB(p.bpm, MIN, MAX); if (!s.hasBpm || b !== s.bpm) { s.bpm = b; s.hasBpm = true; ch = true; } }
+    if (p && p.bpm != null && +p.bpm > 0) { var b = hund(p.bpm, MIN, MAX); if (!s.hasBpm || b !== s.bpm) { s.bpm = b; s.hasBpm = true; ch = true; } }
     if (p && p.key != null && +p.key >= 0) { var k = ((p.key | 0) % 12 + 12) % 12, m = !!p.minor; if (!s.hasKey || k !== s.key || m !== s.minor) { s.key = k; s.minor = m; s.hasKey = true; ch = true; } }
     if (ch) write(s);
     return read();
@@ -90,7 +91,7 @@
   function fromRoom(what) {
     if (applying || !room) return;
     try {
-      if (what === "bpm" && room.bpm) set({ bpm: room.bpm.get() });
+      if (what === "bpm" && room.bpm) { var s0 = read(), v = +room.bpm.get(); if (!s0 || !s0.hasBpm || Math.round(s0.bpm) !== Math.round(v)) set({ bpm: v }); }   /* a room's whole number is not a change to a song at 97.3 */
       if (what === "key" && room.key) { var k = room.key.get(); if (k) set({ key: k.key, minor: k.minor }); }
     } catch (e) {}
   }
@@ -115,7 +116,7 @@
   function name(lang) {
     var s = read(); if (!s) return "";
     var es = lang === "es", parts = [];
-    if (s.hasBpm) parts.push(String(s.bpm));
+    if (s.hasBpm) parts.push(String(Math.round(s.bpm)));
     if (s.hasKey) parts.push(NOTES[es ? "es" : "en"][s.key] + " " + (es ? (s.minor ? "menor" : "mayor") : (s.minor ? "minor" : "major")));
     return parts.join(" · ");
   }

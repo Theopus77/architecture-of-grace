@@ -56,8 +56,9 @@ async function overTake(p, bar) {
   await p.goto(U + "the-studio#piano"); await arrived(p, "music-piano.html");
   await p.evaluate(() => AOGSong.set({ bpm: 120 }));
   await p.evaluate(DRUMS);
-  const bar = await p.evaluate(() => ({ over: document.getElementById("tpOver").textContent, pressed: document.getElementById("tpOver").getAttribute("aria-pressed"), from: document.getElementById("tpFrom").value, hidden: document.getElementById("tpFrom").hidden }));
-  ok(bar.over === "♫ With My Track" && bar.pressed === "true" && bar.from === "1" && !bar.hidden, "beside Record: ♫ With My Track, on, From the start: " + JSON.stringify(bar));
+  await p.click("#tpSong");
+  const bar = await p.evaluate(() => ({ over: document.getElementById("tpOver").textContent, pressed: document.getElementById("tpOver").getAttribute("aria-pressed"), from: document.getElementById("tpFrom").value, hidden: document.getElementById("tpFrom").parentNode.hidden }));
+  ok(bar.over === "♫ Play My Track while I record: On" && bar.pressed === "true" && bar.from === "1" && !bar.hidden, "in the Song panel: Play My Track while I record, on, from the start: " + JSON.stringify(bar));
 
   /* 1 · a note on bar 3 */
   let r = await overTake(p, 3);
@@ -86,6 +87,7 @@ async function overTake(p, bar) {
   await p.selectOption("#tpFrom", "1");
 
   /* 4 · a beat playing on the Drum Machine starts again on the bar line */
+  await p.click("#songDone");
   await door(p, "pads", "music-pads.html");
   await R(p, () => play()); await p.waitForTimeout(600);
   await R(p, () => AOGStudioRec.toggle());
@@ -96,8 +98,8 @@ async function overTake(p, bar) {
 
   /* 5 · ♫ With My Track off: a take as before */
   await door(p, "piano", "music-piano.html");
-  await p.click("#tpOver");
-  ok(await p.evaluate(() => document.getElementById("tpOver").getAttribute("aria-pressed") === "false" && document.getElementById("tpFrom").hidden && JSON.parse(localStorage.getItem("aog.overdub.v1")).on === false), "♫ With My Track turns off (and From hides), remembered on this device");
+  await p.click("#tpSong"); await p.click("#tpOver");
+  ok(await p.evaluate(() => document.getElementById("tpOver").getAttribute("aria-pressed") === "false" && document.getElementById("tpFrom").parentNode.hidden && JSON.parse(localStorage.getItem("aog.overdub.v1")).on === false && /: Off$/.test(document.getElementById("tpOver").textContent)), "Play My Track while I record turns off (and where it starts hides), remembered on this device");
   await R(p, () => AOGStudioRec.toggle()); await p.waitForTimeout(300);
   const over0 = await R(p, () => !!REC.over);
   await R(p, () => noteOn("k", 64, 0.8)); await p.waitForTimeout(600); await R(p, () => noteOff("k", 64));
@@ -109,8 +111,9 @@ async function overTake(p, bar) {
 
   /* 6 · Spanish */
   await p.click('.sh-lang button[data-lang="es"]'); await p.waitForTimeout(1500);
+  if (await p.evaluate(() => document.getElementById("songBox").hidden)) await p.click("#tpSong");
   const es = await p.evaluate(() => ({ over: document.getElementById("tpOver").textContent, from: document.getElementById("tpFrom").options[0].textContent, five: document.getElementById("tpFrom").options[1].textContent }));
-  ok(es.over === "♫ Con mi pista" && es.from === "Desde el principio" && es.five === "Desde el compás 5", "in Spanish: " + JSON.stringify(es));
+  ok(es.over === "♫ Tocar mi pista mientras grabo: Sí" && es.from === "Desde el principio" && es.five === "Desde el compás 5", "in Spanish: " + JSON.stringify(es));
 
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
