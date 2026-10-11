@@ -82,7 +82,7 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 .song-from { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; font-weight:700; color:var(--ink); }
 .tp-from:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
 /* AOG-SONG-V1: the song's tempo and key, one tap from every room */
-.tp-song { border-color:#c9a24b; }
+.tp-song { border-color:#c9a24b; flex:0 0 auto; }
 .song-box { display:grid; gap:.55rem; padding:.7rem .8rem; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); }
 .song-box[hidden] { display:none; }
 .song-box h2 { margin:0; font:800 1rem/1.2 var(--sans) !important; letter-spacing:0 !important; color:var(--ink); }
@@ -766,10 +766,11 @@ def build():
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
             '<button type="button" class="tp-b tp-out" id="tpOut"></button>'
-            '<button type="button" class="tp-b tp-song" id="tpSong" aria-expanded="false" aria-controls="songBox"></button>'   # AOG-SONG-V1
             '<span class="tp-vu" id="tpVu"></span>'   # AOG-ROOM-VU-V1: the room's small VU meters
             '<span class="tp-line" id="tpLine" aria-live="polite"></span></div>'
-            '<div class="mtrow"><h2 id="mtH">%s</h2><select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
+            '<div class="mtrow"><h2 id="mtH">%s</h2>'
+            '<button type="button" class="tp-b tp-song" id="tpSong" aria-expanded="false" aria-controls="songBox"></button>'   # AOG-SONG-V1: the song's tempo and key, beside My Track
+            '<select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
             "</div>"]
     rooms = [{"id": r[0], "href": r[1], "file": r[2], "name": list(r[4]), "short": list(r[5]), "from": r[6], "shelf": r[7]} for r in ROOMS]
     layers = [{"id": l[0], "name": list(l[1])} for l in LAYERS]
