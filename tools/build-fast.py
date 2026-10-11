@@ -15,8 +15,8 @@ address (index.html is served as front.html at /; a room as fast/music-*.html at
   python3 tools/build-fast.py           (from the repo root) after any change to index.html or a room
   python3 tools/build-fast.py --check   is every made page up to date? (the site's checks ask this and stop if not)
 
-Files no longer used are removed, except those of the build before (a phone that opened an old page while the site
-was updating still finds them).
+Files no longer used are removed, except those of the build before and of the version last committed (a phone that
+opened an old page while the site was updating still finds them).
 """
 import hashlib, os, re, sys
 
@@ -81,11 +81,23 @@ def build_one(src_name, out_name, made):
           len(page.encode("utf-8")) // 1024, len(src.encode("utf-8")) // 1024))
 
 
+def published(out_name):
+    """The files the last committed version of a made page uses (what the site serves until this change goes out).
+    Building twice before a commit must not remove them: a phone still on that page would miss its code."""
+    try:
+        import subprocess
+        text = subprocess.run(["git", "show", "HEAD:aog-deploy/" + out_name], cwd=ROOT, capture_output=True,
+                              text=True, encoding="utf-8").stdout
+        return set(re.findall(r'src="/front/([0-9a-f]+\.js)"', text))
+    except Exception:
+        return set()
+
+
 def build():
     os.makedirs(DIR, exist_ok=True)
     before, made = set(), set()
     for _, out_name in PAGES:
-        before |= used_by(os.path.join(ROOT, out_name))
+        before |= used_by(os.path.join(ROOT, out_name)) | published(out_name)
     for src_name, out_name in PAGES:
         build_one(src_name, out_name, made)
     gone = 0

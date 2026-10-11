@@ -2409,7 +2409,45 @@ window.addEventListener('load',function(){
 </section>
 
 <!-- ============ EXPLORE THE FRAMEWORK (the philosophy) ============ -->
-<section id="screen-framework" class="screen">
+<!-- AOG-SCREENS-LATER-V1 (2026-10-11) — Jimmy: "make this website FLASH SPEED, LIGHTING BOLT SPEED!"
+     Eight screens behind the front page's doors (Framework, Ecosystem, Words, PECS, About, Library, Curriculum,
+     Privacy) hold about 2,600 parts. A phone built, styled and searched all of them on every visit, before anyone
+     opened one. Each one's contents now wait in <template data-aog-later> inside it. showScreen() builds a screen
+     the moment it is opened (its scripts run then), and its words are put in the page's language, inside it only
+     (aogLaterWords_). Edit a screen as before, inside its template.
+     ⚠ Only a screen that nothing reaches into before it is opened may wait like this. The Guide, Pilot, Start Here,
+     Workplace and Store are wired up as the page starts (search boxes, buttons, the Voices wall, the pilot grid), so
+     they are built with the page. Code that must work before its screen is opened lives outside it (aogPrintConvo). -->
+<script>
+/* The words in a screen just built, as the page's own passes left the rest of the page: the data-i18n labels
+   (applyLang's rules, from I18N_UI) and the data-en / data-es pairs (aog-global-dataen). Only inside the new
+   screen, so opening it never re-reads the whole page. */
+function aogLaterWords_(sec) {
+  try {
+    var l = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+    var U = (typeof I18N_UI !== "undefined") ? I18N_UI : {};
+    [["data-i18n", "textContent", null], ["data-i18n-html", "innerHTML", null], ["data-i18n-ph", null, "placeholder"]].forEach(function (k) {
+      [].forEach.call(sec.querySelectorAll("[" + k[0] + "]"), function (el) {
+        if (el.getAttribute("data-i18n-orig") === null) el.setAttribute("data-i18n-orig", k[2] ? (el.getAttribute(k[2]) || "") : el[k[1]]);
+        var t = U[el.getAttribute(k[0])], v = t && t[l] != null ? t[l] : el.getAttribute("data-i18n-orig");
+        if (k[2]) el.setAttribute(k[2], v); else el[k[1]] = v;
+      });
+    });
+    var dl = (document.documentElement.getAttribute("lang") || "en").slice(0, 2) === "es" ? "es" : "en";
+    [].forEach.call(sec.querySelectorAll("[data-en]"), function (el) { var v = el.getAttribute("data-" + dl); if (v != null) el.innerHTML = v; });
+  } catch (e) {}
+}
+window.aogBuildLater = function (id) {
+  try {
+    var sec = document.getElementById(id), t = sec && sec.firstElementChild;
+    if (!t || t.tagName !== "TEMPLATE" || !t.hasAttribute("data-aog-later")) return false;
+    sec.replaceChild(t.content, t);
+    aogLaterWords_(sec);
+    return true;
+  } catch (e) { return false; }
+};
+</script>
+<section id="screen-framework" class="screen"><template data-aog-later>
 
 
 
@@ -3348,16 +3386,6 @@ window.addEventListener('load',function(){
           .tool-modal-close{ display:none !important; }
         }
       </style>
-      <script>
-        window.aogPrintConvo = function(){
-          try{
-            if(window.toolOpen){ window.toolOpen('convostarters'); }
-            // toolOpen() writes the modal synchronously, so print inside the user-gesture
-            // chain. A timer here is treated as "automatic printing" and blocked on iOS.
-            try{ window.print(); }catch(e){}
-          }catch(e){}
-        };
-      </script>
     </div>
     </div>
 
@@ -3525,7 +3553,18 @@ window.addEventListener('load',function(){
     </div>
 
     <div class="fw-panel" id="fw-panel-story" hidden></div>
-</section>
+</template></section>
+<!-- AOG-SCREENS-LATER-V1: kept outside the Framework screen, which waits in a template; the Family conversation starters print with it too. -->
+<script>
+        window.aogPrintConvo = function(){
+          try{
+            if(window.toolOpen){ window.toolOpen('convostarters'); }
+            // toolOpen() writes the modal synchronously, so print inside the user-gesture
+            // chain. A timer here is treated as "automatic printing" and blocked on iOS.
+            try{ window.print(); }catch(e){}
+          }catch(e){}
+        };
+      </script>
 
 <!-- ============ START HERE (in-app screen, ported from start-here.html) ============ -->
 <section id="screen-starthere" class="screen">
@@ -3651,7 +3690,7 @@ window.addEventListener('load',function(){
 </section>
 
 <!-- ============ GRACE ECOSYSTEM (in-app screen, ported from grace-ecosystem.html) ============ -->
-<section id="screen-ecosystem" class="screen">
+<section id="screen-ecosystem" class="screen"><template data-aog-later>
   <style>
     #screen-ecosystem .eco-wrap{ max-width:1000px; margin:0 auto; padding:30px 22px 60px; }
     #screen-ecosystem h1{ font-family:var(--font-serif); font-weight:600; font-size:clamp(32px,5vw,46px); color:var(--ink); margin:8px 0 6px; letter-spacing:-.5px; line-height:1.05; text-align:center; }
@@ -4047,10 +4086,10 @@ window.addEventListener('load',function(){
     </div>
     <div class="eco-note" data-i18n-html="eco.note"><b>How to use these.</b> Start with Grace at Home and the shared vocabulary in the Home–School Connection — they build the common language everything else depends on. Add the adult pathways as the language takes hold. Each page prints cleanly to Letter size for fridge, classroom, or staff room.</div>
   </div>
-</section>
+</template></section>
 
 <!-- ============ WORDS OF ENCOURAGEMENT (in-app screen) ============ -->
-<section id="screen-words" class="screen">
+<section id="screen-words" class="screen"><template data-aog-later>
   <style>
     #screen-words{
       --woe-gold: var(--gold, #B8893A); --woe-gold-deep: var(--gold-deep, #8a6418);
@@ -4354,7 +4393,7 @@ window.addEventListener('load',function(){
     try{ var sn=localStorage.getItem(NK); if(sn){ var ta=document.getElementById('woe-priv-note'); if(ta) ta.value=sn; } }catch(e){}
   })();
   </script>
-</section>
+</template></section>
 
 <!-- ===== ECOSYSTEM PAGES (ported into the app as isolated in-frame screens) ===== -->
 <section id="screen-eco-home" class="screen"><div class="eco-screen-in"><iframe id="ecoframe-home" class="eco-frame" title="Grace at Home"></iframe></div></section>
@@ -9590,7 +9629,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 </script>
 
     <!-- ============ ABOUT (its own page) ============ -->
-    <section id="screen-about" class="screen">
+    <section id="screen-about" class="screen"><template data-aog-later>
 
 
 
@@ -9818,7 +9857,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
       </div>
 
       </div>
-    </section>
+    </template></section>
 <!-- ============ GUIDE & LIBRARY (public, no code) ============ -->
 <section id="screen-guide" class="screen">
 
@@ -11002,7 +11041,7 @@ window.aogSharePilot=function(){
 
 <!-- ============ LIBRARY (free, browse & download) — standalone screen ============ -->
 <!-- STORE/LIBRARY SPLIT (2026-06): moved out of screen-guide's "Downloads" subtab into its own screen. -->
-<section id="screen-library" class="screen">
+<section id="screen-library" class="screen"><template data-aog-later>
 
 
   <div class="container-wide" style="padding-top:18px;">
@@ -11126,7 +11165,7 @@ window.aogSharePilot=function(){
           </div>
     </div>
   </div>
-</section>
+</template></section>
 
 <!-- ============ STORE (buy) — standalone screen ============ -->
 <!-- STORE/LIBRARY SPLIT (2026-06): the buy experience, formerly inside screen-guide. aog-store enables P2 mobile density. -->
@@ -11210,7 +11249,7 @@ window.aogSharePilot=function(){
 <!-- ============ PRIVACY & YOUR DATA ============ -->
 <!-- ===== THE CURRICULUM (.30fg) — the program shown whole, for the first time. Copy comes
      from the Store cards, the Library and the lesson data; nothing new is claimed. ===== -->
-<section id="screen-curriculum" class="screen">
+<section id="screen-curriculum" class="screen"><template data-aog-later>
   <style>
     #screen-curriculum .cu-wrap{ max-width:880px; margin:0 auto; padding:18px 18px 60px; }
     #screen-curriculum .cu-lede{ font-size:17.5px; line-height:1.6; color:var(--ink-soft); max-width:64ch; }
@@ -11262,8 +11301,8 @@ window.aogSharePilot=function(){
     </div>
     <p class="cu-lede" style="margin-top:26px;font-size:15px;" data-en="Anchor charts, scenario cards, worksheets, somatic-floor companions and autism-adapted chart sets exist for every book; the open previews are in the Library, and the full sets are described there without a price while the Store is closed." data-es="Existen carteles ancla, tarjetas de escenarios, hojas de trabajo, compa&ntilde;eros som&aacute;ticos y juegos de carteles adaptados para autismo para cada libro; las vistas previas abiertas est&aacute;n en la Biblioteca, y los juegos completos se describen all&iacute; sin precio mientras la Tienda est&aacute; cerrada.">Anchor charts, scenario cards, worksheets, somatic-floor companions and autism-adapted chart sets exist for every book; the open previews are in the Library, and the full sets are described there without a price while the Store is closed.</p>
   </div>
-</section>
-<section id="screen-privacy" class="screen">
+</template></section>
+<section id="screen-privacy" class="screen"><template data-aog-later>
 
 
   
@@ -11395,7 +11434,7 @@ window.aogSharePilot=function(){
 
     <div class="pv-close" data-i18n="pv_close">A result is a flag for a conversation, not a diagnosis.</div>
   </div>
-</section>
+</template></section>
 
 <!-- ===== TEACHER TOOLS SCREEN (Thursday update) ===== -->
 <section id="screen-teacher-tools" class="screen">
@@ -11996,7 +12035,7 @@ window.aogSharePilot=function(){
 </section>
 
 <!-- ===== PECS CARDS SCREEN (Thursday update) ===== -->
-<section id="screen-pecs" class="screen pecs-screen">
+<section id="screen-pecs" class="screen pecs-screen"><template data-aog-later>
   <div class="container">
     <div style="text-align:center; margin:32px 0 16px;">
       <div class="eyebrow" data-i18n="pecs_eyebrow">COMMUNICATION SUPPORT</div>
@@ -12013,7 +12052,7 @@ window.aogSharePilot=function(){
     <div class="pecs-category-tabs" id="pecsTabs"></div>
     <div class="pecs-library" id="pecsLibrary"></div>
   </div>
-</section>
+</template></section>
 
 <!-- ===== MY TOOLS — focused, per-child regulation tools (opened from a shared link) ===== -->
 <section id="screen-aog-mytools" class="screen">
@@ -15560,6 +15599,7 @@ function aogScreenFocus_(id) {
 }
 try { window.addEventListener("load", function () { setTimeout(function () { window.__aogBooted = true; }, 800); }); } catch (e) {}
 function showScreen(_0x2dc9c2) {
+  try { if (window.aogBuildLater) window.aogBuildLater(_0x2dc9c2); } catch (_aogBL) {}   /* AOG-SCREENS-LATER-V1 */
   try {
     // Item 4: remember where the user was on the screen they're leaving, so a
     // later Back/Forward can return them to that exact spot.
