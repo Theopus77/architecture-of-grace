@@ -350,6 +350,26 @@
     },
     setRig: function (state) { if (A && A.rig) { try { A.rig.set(state); } catch (e) {} } },
     paint: function () { if (A) paint(); },
+    /* AOG-LEARN-V1: what the real instrument plays, a note at a time, for Learn a song (aog-learn-ui.js). Only while the
+       input is on (it never opens it); fn(midi) once for each new note heard (the same note again after a quiet moment or
+       a fresh pluck counts again). Returns the way to stop listening, or null when the input is off. */
+    listen: function (fn) {
+      if (!A || !A.inGain || !A.o) return null;
+      var c = A.o.context(), an = c.createAnalyser(), bass = A.o.kind === "bass"; an.fftSize = 2048; A.inGain.connect(an);
+      var buf = new Float32Array(an.fftSize), last = -1, cand = -1, n = 0, quiet = true, prevRms = 0, lo = bass ? 38 : 70, hi = bass ? 450 : 1200;
+      var tm = setInterval(function () {
+        an.getFloatTimeDomainData(buf);
+        var r = 0; for (var i = 0; i < buf.length; i++) r += buf[i] * buf[i]; r = Math.sqrt(r / buf.length);
+        var pluck = r > prevRms * 1.8 && r > 0.02; prevRms = r;
+        var f = pitchOf(buf, c.sampleRate, lo, hi);
+        if (!(f > 0)) { n = 0; cand = -1; quiet = true; return; }
+        var m = Math.round(69 + 12 * Math.log2(f / refA()));
+        if (m === cand) n++; else { cand = m; n = 1; }
+        if (pluck && m === last) quiet = true;
+        if (n >= 2 && (m !== last || quiet)) { last = m; quiet = false; try { fn(m); } catch (e) {} }
+      }, 40);
+      return function () { clearInterval(tm); try { A.inGain.disconnect(an); } catch (e) {} };
+    },
     _pitch: pitchOf
   };
 })();

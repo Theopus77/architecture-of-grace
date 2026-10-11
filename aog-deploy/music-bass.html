@@ -174,6 +174,10 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .neck .dot.root circle{stroke:#b4581a;stroke-width:4}
 .neck .dot.now circle{fill:#ef9a4a} .neck .dot.now text{fill:#1f1206}
 .neck .dot.down circle{fill:#ffd36b} .neck .dot.down text{fill:#1f1206}
+/* AOG-LEARN-V1: the frets Learn a song asks for (the chord's shape, or the notes to play): teal; the chord's root ringed */
+.neck .dot.lrn{display:inline}
+.neck .dot.lrn:not(.down):not(.now) circle{fill:#9fe0d6} .neck .dot.lrn:not(.down):not(.now) text{fill:#0f2421}
+.neck .dot.lrn circle{stroke:#1f7f78;stroke-width:3} .neck .dot.lrn.lroot circle{stroke:#0f4f49;stroke-width:5}
 .keys-line{display:none}
 /* AOG-STRINGS-KEYS-V2: the keys as a picture; each letter on the neck as a small keycap */
 .keymap{margin:.6rem 0 0;padding:.6rem .75rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#17191c}
@@ -310,6 +314,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
 <script>
 (function(){
   function add(src){
@@ -430,6 +435,8 @@ body.pv-left .pv-drawer{left:auto;right:0}
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
       </div>
+
+      <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
 
       <div class="blk" id="ampBlk"><!-- AOG-AMP-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
@@ -2836,7 +2843,37 @@ function litNeck(){
   if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
   paintAnyLine();   /* AOG-ANYCHORD-V1: its line only while that chord is in the hand */
   handChanged();    /* AOG-HAND-STYLE-V1: the style follows the frets you hold */
+  learnLit();       /* AOG-LEARN-V1 */
 }
+/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the bass's side. aog-learn-ui.js plays the song and teaches; it asks the
+   neck to show a chord (the guitar: its shape where the hand is, shapeFor; the bass: the lowest root the hand reaches,
+   bassRoot, ringed, and the chord's other notes on the frets in view) or the notes to play (each at its place nearest the
+   hand, cellFor; when one is off the frets in view, the neck moves to it, unless a finger is on it). What the hands play
+   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real bass through
+   aog-liveinput.js. The neck's own key and tempo stay as they are unless the learner asks (Play in the song's key). ══ */
+var LEARN={chord:null, ms:null};   /* var: litNeck may run before this line does */
+function learnCells(){
+  const out=new Map(); if(!LEARN) return out;
+  const C=LEARN.chord;
+  if(C){ const c={off:((C.root-S.key)%12+12)%12, q:Q[C.id]?C.id:"maj"};
+    if(GTR) shapeFor(c).forEach((f,s)=>{ if(f>=0) out.set(s+":"+f, (TUNING[s]+f)%12===C.root?"r":"n"); });
+    else { const r=cellFor(bassRoot(c)); if(r) out.set(r.s+":"+r.f, "r");
+      TUNING.forEach((o,s)=>{ for(let f=0; f<=MAXF; f++){ if(!inReach(f)) continue; const pc=(o+f)%12; if(pc!==C.root && C.pcs.indexOf(pc)>=0) out.set(s+":"+f, "n"); } }); }
+  }
+  if(LEARN.ms) LEARN.ms.forEach(m=>{ const cl=cellFor(Math.round(m)); if(cl && !out.has(cl.s+":"+cl.f)) out.set(cl.s+":"+cl.f, "n"); });
+  return out;
+}
+function learnLit(){
+  const svg=$("neck"); if(!svg || !LEARN) return; const on=learnCells();
+  svg.querySelectorAll(".dot").forEach(g=>{ const v=on.get(g.getAttribute("data-c"));
+    if(g.classList.contains("lrn")!==!!v) g.classList.toggle("lrn", !!v); if(g.classList.contains("lroot")!==(v==="r")) g.classList.toggle("lroot", v==="r"); });
+}
+window.AOGLearnRoom={ room:INST, lang:()=>S.lang, busy:()=>!!S.playing,
+  show:(what)=>{ LEARN.chord=what&&what.chord||null; LEARN.ms=what&&what.notes&&what.notes.length?what.notes.map(Math.round):null;
+    /* a note off the frets in view: the neck goes to it (never under a finger, never sideways on the whole screen) */
+    if(LEARN.ms && !FINGERS.size && !NECK.play){ const far=LEARN.ms.map(cellFor).filter(cl=>cl && !inReach(cl.f));
+      if(far.length){ const f=far[0].f, n=NECK.n||4, to=Math.max(1, Math.min(MAXF-n+1, f-1)); if(to!==S.fret0){ S.fret0=to; buildNeck(); return; } } }
+    learnLit(); } };
 function neckHit(e){
   if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
   const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
