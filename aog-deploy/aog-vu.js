@@ -186,7 +186,18 @@
     M.stop = function () { clearInterval(M.timer); if (M.raf) cancelAnimationFrame(M.raf); M.raf = 0; var i = WAKE.indexOf(rouse); if (i >= 0) WAKE.splice(i, 1); };
     return M;
   }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake };
+  /* AOG-STUDIO-KEEP-V1 (2026-10-11): the Studio keeps the last rooms open out of sight; a room out of sight is silent. hush(true)
+     pauses every sound this page makes (its players and any recording playing), hush(false) lets the ones it paused go on. */
+  var HUSHED = [];
+  function hush(on) {
+    if (on) {
+      BUSES.forEach(function (b) { try { if (b.ctx && b.ctx.state === "running") { b.ctx.suspend(); HUSHED.push(b.ctx); } } catch (e) {} });
+      [].forEach.call(document.querySelectorAll("audio,video"), function (m) { try { if (!m.paused) m.pause(); } catch (e) {} });
+    } else {
+      HUSHED.forEach(function (c) { try { if (c.state === "suspended") c.resume(); } catch (e) {} }); HUSHED = [];
+    }
+  }
+  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and

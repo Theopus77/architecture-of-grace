@@ -46,6 +46,12 @@
   /* AOG-DROPDOWNS-QUIET-V1 (2026-10-10) — Jimmy: "I want the whole website not to lag". Words are written only when they
      change. Writing the same words again counted as a change to the page, which ran this file again, which wrote them
      again: on the front page that never stopped and kept a phone fully busy. */
+  function onlyText(m) {
+    var a = m.addedNodes, r = m.removedNodes, i;
+    for (i = 0; i < a.length; i++) if (a[i].nodeType === 1) return false;
+    for (i = 0; i < r.length; i++) if (r[i].nodeType === 1) return false;
+    return true;
+  }
   function put(el, v) { if (el && el.textContent !== v) el.textContent = v; }
   function shown(el) {
     if (el.hidden || el.closest("[hidden]:not(.tab-more-menu)")) return false;
@@ -268,6 +274,8 @@
          for one (on the front page that search ran on every change and cost a phone seconds) */
       var mine = true, added = false;
       for (var i = 0; i < list.length; i++) { var n = list[i].target; if (n.closest && n.closest(".aogdd")) continue;
+        /* words changing outside a menu row (a counter, a clock) cannot change a menu */
+        if (list[i].type === "childList" && onlyText(list[i]) && !(n.closest && n.closest(".aogdd-src,[data-aog-dropdown]"))) continue;
         mine = false; if (list[i].type === "childList" && list[i].addedNodes.length) { added = true; break; } }
       if (mine) return;
       if (added && fresh()) { if (t) { clearTimeout(t); t = 0; } pass(); } else refresh();

@@ -2295,10 +2295,18 @@ function loop(){
     }
     paintDeck(d);
     const moving = d.buf && (d.motor || Math.abs(d.rate) > 0.01 || d.held);
-    if(moving || d._drawn !== d.pos){ d._drawn = d.pos; drawWave(d); drawZoom(d); }
+    if(moving || d._drawn !== d.pos){ d._drawn = d.pos; LOOPQ.at = now; drawWave(d); drawZoom(d); }
   });
-  requestAnimationFrame(loop);
+  /* AOG-DJ-REST-V1 (2026-10-11, Jimmy: "SUPER MAN SPEED!"): with every record still, every hand off and the meters down,
+     the page looks four times a second instead of sixty (nothing on it moves); a touch, a key or a record starting brings
+     it straight back to every frame */
+  if(playing || (eqSeen && (eqDirty || eqUntil || now < liveUntil)) || decks.some(d=>d.motor || d.held || (d.level||0) > 0.002)) LOOPQ.at = now;
+  if(now - LOOPQ.at > 2000) LOOPQ.t = setTimeout(()=>{ LOOPQ.t = 0; loop(); }, 250);
+  else requestAnimationFrame(loop);
 }
+const LOOPQ = {at:performance.now(), t:0};
+function loopWake(){ LOOPQ.at = performance.now(); if(LOOPQ.t){ clearTimeout(LOOPQ.t); LOOPQ.t = 0; requestAnimationFrame(loop); } }
+["pointerdown","keydown","wheel","input","change","touchstart"].forEach(ev=>document.addEventListener(ev, loopWake, {capture:true, passive:true}));
 /* ══ AOG-DJ-DESK-V1 (2026-10-08) — two decks on the desk, the third one tap away ══════════════════════════
    The pair (A · B, A · C or B · C) puts its two decks on the desk, the first on the crossfader's left, the
    second on its right. The deck that is off the desk is only hidden: its song, cues, loop and pitch stay, and
@@ -2389,7 +2397,7 @@ function shell(){
   if(RO){ const eqc = document.getElementById("eqCurve"); if(eqc) RO.observe(eqc); }
   /* the live curve is drawn only while it is on screen: nobody is watching it otherwise */
   if(!EQIO && window.IntersectionObserver){ const eqc = document.getElementById("eqCurve");
-    if(eqc){ EQIO = new IntersectionObserver(es=>{ es.forEach(e=>{ eqSeen = e.isIntersecting; }); if(eqSeen) eqDirty = true; }); EQIO.observe(eqc); } }
+    if(eqc){ EQIO = new IntersectionObserver(es=>{ es.forEach(e=>{ eqSeen = e.isIntersecting; }); if(eqSeen){ eqDirty = true; loopWake(); } }); EQIO.observe(eqc); } }
   bind();
   paintMasters(); paintStrips(); paintSides();
   decks.forEach(d=>{ paintDeck(d); drawWave(d); drawZoom(d); });
