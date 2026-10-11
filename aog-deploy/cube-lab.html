@@ -94,8 +94,11 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stage *, .stage { touch-action:none; }
 .stage { overscroll-behavior:contain; }
 /* the whole cube fits on the screen with the card: never taller than the window allows */
-.stage { max-width:min(560px, max(280px, calc(100vh - 190px))); }
-@supports (height:100svh){ .stage { max-width:min(560px, max(280px, calc(100svh - 190px))); } }
+/* AOG-CUBE-STEADY-V1 (2026-10-11) — Jimmy: "In the chrome version, when you scroll it goes large or small and makes me
+   nauseous." The box was sized from the window's height, and Chrome's address bar changes that height while a page
+   scrolls, so the cube grew and shrank. Now its size is set once (--stage-max, from the script) and changes only when
+   the screen is turned, never while scrolling. */
+.stage { max-width:var(--stage-max, 560px); }
 #bench { scroll-margin-top:70px; }
 .stage { position:relative; width:100%; margin:0 auto; aspect-ratio:1/1; border-radius:18px; overflow:hidden;
   background:radial-gradient(120% 95% at 50% 35%, var(--stage-a) 0%, var(--stage-b) 100%); border:1px solid var(--line);
@@ -299,7 +302,7 @@ const T={
   nextIs:["Next: {w}","Sigue: {w}"],
   toGo:["About {n} moves to go.","Faltan unos {n} movimientos."],
   solvedNow:["Solved! Every side is one color. ✓","¡Resuelto! Cada lado es de un solo color. ✓"],
-  solvedIn:["You solved it in {t}, with {m} moves.","Lo resolviste en {t}, con {m} movimientos."],
+  solvedIn:["You did it, in {m} moves and {t} of turning.","Lo lograste, en {m} movimientos y {t} de giros."],
   mixFirst:["Tap Mix it up to get a mixed cube. Then follow along, one move at a time.","Toca Mézclalo para tener un cubo mezclado. Luego sigue, un movimiento a la vez."],
   stagesH:["The steps","Los pasos"],
   mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
@@ -671,8 +674,10 @@ function after(job){
   else if(nx && nx.tok===C.parse(tok).base+"2" && Math.abs(C.parse(tok).q)===1){ nx.tok=tok; nx.half=true; guide.key=cube.toJSON(); }   /* half of a "twice": one more the same way */
   else guide=null;
   if(runner){ runner.left--; if(runner.left<=0) runner=null; }
-  if(S.mix && !"xyz".includes(b)){ if(!S.mix.t0) S.mix.t0=Date.now(); S.mix.moves++; }
-  if(S.mix && cube.solved()){ S.result={ms:Date.now()-(S.mix.t0||Date.now()), moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
+  /* AOG-CUBE-TIME-V1 (2026-10-11) — Jimmy: "look at the seconds it took" (it said 128:05). The clock now counts only
+     time spent turning: a pause of more than a minute (a break, a chat, the page left open) adds nothing. */
+  if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(now-S.mix.last, 60000); S.mix.last=now; S.mix.moves++; }
+  if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && C.stageOf(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
   if(lz && lz.kind==="moves" && Object.keys(S.tried).length>=6) S.done[1]=1;
   $("live").textContent=t("did",{m:tok});
@@ -786,7 +791,14 @@ function fixHtml(){
     <div class="btn-row"><button type="button" class="btn btn-good" data-act="fixDone">${esc(t("fixDone"))}</button>
     <button type="button" class="btn" data-act="fixPeek" aria-pressed="${peek}">${esc(t(peek?"fixPeekOff":"fixPeek"))}</button></div></div>`;
 }
-function clock(ms){ const s=Math.round(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+/* time in plain words: "under a minute", "about 12 minutes", "1 hour and 5 minutes" */
+function clock(ms){
+  const m=Math.round(ms/60000), h=Math.floor(m/60), r=m%60;
+  if(m<1) return es()?"menos de un minuto":"under a minute";
+  if(!h) return es()?`unos ${m} ${m===1?"minuto":"minutos"}`:`about ${m} ${m===1?"minute":"minutes"}`;
+  const hs=es()?`${h} ${h===1?"hora":"horas"}`:`${h} ${h===1?"hour":"hours"}`;
+  return r ? (es()?`${hs} y ${r} ${r===1?"minuto":"minutos"}`:`${hs} and ${r} ${r===1?"minute":"minutes"}`) : hs;
+}
 
 let arrowTok=null;
 function panel(){
@@ -1087,8 +1099,20 @@ $("themeBtn").onclick=()=>{
 /* the cube and the card in full view (a plain jump, no glide), when the cube's bottom is off the screen */
 function showBench(){ const r=stage.getBoundingClientRect(); if(r.bottom>innerHeight-8 || r.top<60) $("bench").scrollIntoView({block:"start"}); }
 window.addEventListener("hashchange", () => { mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
-window.addEventListener("resize", fit);
-if(window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+/* the box's size: fixed when the page opens, set again only when the screen's width changes (turning it) */
+let sizedW=0;
+function setStageMax(){
+  if(Math.abs(innerWidth-sizedW)<60 && sizedW) return;
+  sizedW=innerWidth;
+  document.documentElement.style.setProperty("--stage-max", Math.round(Math.min(560, Math.max(280, innerHeight-190)))+"px");
+}
+setStageMax();
+let fitW=0;
+const refit=() => { const w=stage.clientWidth; if(w && w!==fitW){ fitW=w; fit(); } };   /* only a real change of width redraws */
+window.addEventListener("resize", () => { setStageMax(); refit(); });
+if(window.ResizeObserver) new ResizeObserver(refit).observe(stage);
+/* a trackpad pinch over the cube (Ctrl + wheel) would zoom the whole page; on the cube it does nothing */
+stage.addEventListener("wheel", e => { if(e.ctrlKey) e.preventDefault(); }, {passive:false});
 if(!location.hash && S.view && S.view!=="learn") history.replaceState(null,"","#"+S.view);
 paintAll();
 })();
