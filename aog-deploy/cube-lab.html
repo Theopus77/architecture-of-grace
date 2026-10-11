@@ -161,7 +161,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 /* the calm card: the goal, the move in words, one button */
 .calm .aim { margin:.2rem 0 .6rem; color:var(--muted); font-size:1rem; }
 .calm .move-big { font:600 clamp(1.35rem, 1.2rem + 1vw, 1.75rem)/1.25 var(--display); margin:.2rem 0 .6rem; }
-.calm .count { margin:.1rem 0 .7rem; color:var(--muted); font-weight:600; }
+.calm .move-big { margin-bottom:.9rem; }
 .calm .move-big .once { display:block; font:700 .95rem/1.2 var(--sans); color:var(--steel); margin-bottom:.2rem; }
 .calm .move-big .tok { font:700 .95rem/1 var(--mono); color:var(--muted); background:var(--chip); border-radius:6px; padding:.2rem .4rem; vertical-align:middle; }
 .calm .chips .chip { font-size:.85rem; padding:.3rem .4rem; min-width:1.8rem; }
@@ -711,7 +711,7 @@ function partCard(onlyStage){
   arrowTok=tok;
   return `<div class="calm"><p class="aim">${esc(aim(n.p))}</p>
     <p class="move-big">${n.f.half?`<span class="once">${esc(t("onceMore"))}</span> `:""}<span>${esc(words(tok))}</span> <span class="tok" aria-hidden="true">${esc(tok)}</span></p>
-    <p class="count">${esc(t("moveOf",{i:Math.min(at+1, n.p.moves.length), n:n.p.moves.length}))}</p>
+    <!-- Jimmy: "Move 8 of 8 to me still makes no sense." The card says only the goal and the move. -->
     <div class="btn-row"><button type="button" class="btn btn-good big" data-act="gnext">${esc(t(S.real?"didIt":"turnIt"))}</button>
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
     <details class="more"><summary>${esc(t("tellMore"))}</summary><p>${esc(note(n.p))}</p>
