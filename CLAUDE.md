@@ -210,7 +210,7 @@ check for anything new the hands can do.
       node tools/check-skate.js
 
   It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
-  tan θ = v²/(gR), L = Iω), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
+  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
 
 ## Housekeeping
