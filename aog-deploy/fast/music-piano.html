@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:b93d390cdded0d52 · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:bb4ff1c185b7afd2 · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -160,6 +160,9 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
 /* AOG-PIANO-LIT-V2: a key the chords are sounding right now (orange, with a darker edge at the bottom) */
 .wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
+/* AOG-LEARN-V1: the keys Learn a song asks for (the chord's shape, or the notes to play): a teal ring; the chord's root a thicker one */
+.wk.lrn:not(.down):not(.now){background:linear-gradient(#e6f7f3,#bfe6dd)} .bk.lrn:not(.down):not(.now){background:linear-gradient(#2f7f77,#1d4f4a)}
+.wk.lrn{box-shadow:inset 0 0 0 3px #1f7f78} .wk.lrn.lroot{box-shadow:inset 0 0 0 5px #1f7f78} .bk.lrn{box-shadow:inset 0 0 0 2px #9fe0d6} .bk.lrn.lroot{box-shadow:inset 0 0 0 4px #9fe0d6}
 .bk.now .kc{color:#1f1206}
 .kc{display:none}
 /* AOG-PIANO-SCALES-V1 (2026-10-05): a key in the chosen scale shows a soft dot above its letter (never on it).
@@ -351,6 +354,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="/aog-scales.js" defer></script>
 <script src="/aog-chords.js" defer></script>
 <script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
+<script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
 <script>
 (function(){
   function add(src){
@@ -468,6 +472,8 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <div id="takes"></div>
       </div>
 
+      <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
+
       <div class="blk" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
         <p class="line" style="margin-top:0" data-t="ampLine"></p>
@@ -533,6 +539,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="bp-main" id="bpMain"></div>
 </div>
 
-<script src="/front/60f8a38a09cc.js"></script>
+<script src="/front/9b4975cf22c4.js"></script>
 </body>
 </html>

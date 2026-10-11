@@ -159,6 +159,9 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
 /* AOG-PIANO-LIT-V2: a key the chords are sounding right now (orange, with a darker edge at the bottom) */
 .wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
+/* AOG-LEARN-V1: the keys Learn a song asks for (the chord's shape, or the notes to play): a teal ring; the chord's root a thicker one */
+.wk.lrn:not(.down):not(.now){background:linear-gradient(#e6f7f3,#bfe6dd)} .bk.lrn:not(.down):not(.now){background:linear-gradient(#2f7f77,#1d4f4a)}
+.wk.lrn{box-shadow:inset 0 0 0 3px #1f7f78} .wk.lrn.lroot{box-shadow:inset 0 0 0 5px #1f7f78} .bk.lrn{box-shadow:inset 0 0 0 2px #9fe0d6} .bk.lrn.lroot{box-shadow:inset 0 0 0 4px #9fe0d6}
 .bk.now .kc{color:#1f1206}
 .kc{display:none}
 /* AOG-PIANO-SCALES-V1 (2026-10-05): a key in the chosen scale shows a soft dot above its letter (never on it).
@@ -350,6 +353,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="/aog-scales.js" defer></script>
 <script src="/aog-chords.js" defer></script>
 <script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
+<script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
 <script>
 (function(){
   function add(src){
@@ -466,6 +470,8 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
       </div>
+
+      <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
 
       <div class="blk" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
@@ -2332,7 +2338,27 @@ function litKeys(){
   kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
     el.classList.toggle("down", d); el.classList.toggle("now", n); el.classList.toggle("lit", !d&&!n&&fit.has(((m%12)+12)%12)); });
   paintWheelState();   /* AOG-PIANO-WHEEL-V2: a chord held on the keys lights its wedge */
+  learnLit();          /* AOG-LEARN-V1 */
 }
+/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the piano's side. aog-learn-ui.js plays the song and teaches; it asks the
+   piano to show a chord (each of its notes once, on the keys in view, from the lowest root up) or the notes to play (on
+   their own key, or the same note in the octave in view). What the hands play reaches it through AOGRecorder.note. The
+   piano's own key and tempo stay as they are unless the learner asks (Play in the song's key). ══ */
+var LEARN={chord:null, ms:null};   /* var: litKeys may run before this line does */
+function learnKeys(){
+  const out=new Map(), lo=KB.lo, hi=KB.hi;
+  if(LEARN.chord){ const r=LEARN.chord.root; let base=lo; while(((base%12)+12)%12!==r) base++;
+    LEARN.chord.pcs.forEach(pc=>{ let m=base+((pc-r+12)%12); if(m>hi) m-=12; if(m>=lo && m<=hi) out.set(m, pc===r?"r":"n"); }); }
+  if(LEARN.ms) LEARN.ms.forEach(m=>{ let x=Math.round(m); while(x>hi) x-=12; while(x<lo) x+=12; if(x<=hi && !out.has(x)) out.set(x, "n"); });
+  return out;
+}
+function learnLit(){
+  const kb=$("kbd"); if(!kb || !LEARN) return; const on=learnKeys();
+  kb.querySelectorAll("[data-m]").forEach(el=>{ const v=on.get(+el.getAttribute("data-m"));
+    if(el.classList.contains("lrn")!==!!v) el.classList.toggle("lrn", !!v); if(el.classList.contains("lroot")!==(v==="r")) el.classList.toggle("lroot", v==="r"); });
+}
+window.AOGLearnRoom={ room:"piano", lang:()=>S.lang, busy:()=>!!S.playing,
+  show:(what)=>{ LEARN.chord=what&&what.chord||null; LEARN.ms=what&&what.notes&&what.notes.length?what.notes:null; learnLit(); } };
 /* ══ AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: "more scales, modes and chords" on every instrument ══════════════════
    Scale: 154 scales and modes from aog-scales.js (the same list as Solo mode on the guitar). Off at first, so the piano
    looks as before. The scale follows the key and the mood; one choice is kept for major and one for minor. A key in the
