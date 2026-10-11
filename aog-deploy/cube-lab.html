@@ -94,8 +94,11 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stage *, .stage { touch-action:none; }
 .stage { overscroll-behavior:contain; }
 /* the whole cube fits on the screen with the card: never taller than the window allows */
-.stage { max-width:min(560px, max(280px, calc(100vh - 190px))); }
-@supports (height:100svh){ .stage { max-width:min(560px, max(280px, calc(100svh - 190px))); } }
+/* AOG-CUBE-STEADY-V1 (2026-10-11) — Jimmy: "In the chrome version, when you scroll it goes large or small and makes me
+   nauseous." The box was sized from the window's height, and Chrome's address bar changes that height while a page
+   scrolls, so the cube grew and shrank. Now its size is set once (--stage-max, from the script) and changes only when
+   the screen is turned, never while scrolling. */
+.stage { max-width:var(--stage-max, 560px); }
 #bench { scroll-margin-top:70px; }
 .stage { position:relative; width:100%; margin:0 auto; aspect-ratio:1/1; border-radius:18px; overflow:hidden;
   background:radial-gradient(120% 95% at 50% 35%, var(--stage-a) 0%, var(--stage-b) 100%); border:1px solid var(--line);
@@ -1087,8 +1090,20 @@ $("themeBtn").onclick=()=>{
 /* the cube and the card in full view (a plain jump, no glide), when the cube's bottom is off the screen */
 function showBench(){ const r=stage.getBoundingClientRect(); if(r.bottom>innerHeight-8 || r.top<60) $("bench").scrollIntoView({block:"start"}); }
 window.addEventListener("hashchange", () => { mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
-window.addEventListener("resize", fit);
-if(window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+/* the box's size: fixed when the page opens, set again only when the screen's width changes (turning it) */
+let sizedW=0;
+function setStageMax(){
+  if(Math.abs(innerWidth-sizedW)<60 && sizedW) return;
+  sizedW=innerWidth;
+  document.documentElement.style.setProperty("--stage-max", Math.round(Math.min(560, Math.max(280, innerHeight-190)))+"px");
+}
+setStageMax();
+let fitW=0;
+const refit=() => { const w=stage.clientWidth; if(w && w!==fitW){ fitW=w; fit(); } };   /* only a real change of width redraws */
+window.addEventListener("resize", () => { setStageMax(); refit(); });
+if(window.ResizeObserver) new ResizeObserver(refit).observe(stage);
+/* a trackpad pinch over the cube (Ctrl + wheel) would zoom the whole page; on the cube it does nothing */
+stage.addEventListener("wheel", e => { if(e.ctrlKey) e.preventDefault(); }, {passive:false});
 if(!location.hash && S.view && S.view!=="learn") history.replaceState(null,"","#"+S.view);
 paintAll();
 })();
