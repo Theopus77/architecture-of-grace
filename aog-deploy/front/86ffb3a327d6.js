@@ -870,22 +870,22 @@ const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], prev:{v:null}, drum:null,
 function drumsLive(){ return !!(S.withDrums && DRUM.take && beatsPerBar()===4); }
 function curBpm(){ return drumsLive() ? DRUM.take.bpm : S.bpm; }
 function curSwing(){ return (drumsLive() && typeof DRUM.take.swing==="number") ? DRUM.take.swing : 0.5; }
-async function start(){
+async function start(at){
   if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
   const c=ctx();
   if(drumsLive() && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
   stop(true);
   S.playing=true; lessonPlay();
   const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.prev={v:lastVoicing}; PLAY.cur=-1;
-  const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
+  let t1=c.currentTime+0.12;   /* AOG-OVERDUB-V1: or on the bar line asked (at) */                       /* not "t": that name is the page's word lookup */
   if(drumsLive() && DRUM.buf){
     const d=DRUM.take, off=(typeof d.offset==="number")?d.offset:0.03;
     const s=c.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
     const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*PLAY.barSec;
     s.loopStart=off; s.loopEnd=Math.min(DRUM.buf.duration, off+pass);
-    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); s.start(t1);
+    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); if(at>0) t1=Math.max(c.currentTime+0.02, at-off); s.start(t1);
     PLAY.drum=s; PLAY.t0=t1+off;
-  } else PLAY.t0=t1;
+  } else PLAY.t0=at>0 ? Math.max(c.currentTime+0.02, at) : t1;
   tick();
   paintPlay();
 }
@@ -999,6 +999,10 @@ function navHtml(){
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the band plays as a take (aog-recorder.js, the one recorder
    every music tool shares) */
+/* AOG-OVERDUB-V1: recording over My Track, a chord pattern that is playing starts again on the bar line My Track starts on */
+window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
+/* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
+if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the band",es:"la banda"},
   prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});

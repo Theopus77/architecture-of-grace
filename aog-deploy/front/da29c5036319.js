@@ -1244,22 +1244,22 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
 const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], prev:{v:null}, drum:null, cur:-1, vo:{}};
 function curBpm(){ return drumsLive() ? DRUM.take.bpm : S.bpm; }
 function curSwing(){ return (drumsLive() && typeof DRUM.take.swing==="number") ? DRUM.take.swing : (RHYTHM_SWING[S.rhythm]||0.5); }
-async function start(){
+async function start(at){
   if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
   const c=ctx();
   if(S.withDrums && DRUM.take && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
   stop(true);
   S.playing=true;
   const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.prev={v:lastVoicing}; PLAY.cur=-1; PLAY.vo={};
-  const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
+  let t1=c.currentTime+0.12;   /* AOG-OVERDUB-V1: or on the bar line asked (at) */                       /* not "t": that name is the page's word lookup */
   if(drumsLive() && DRUM.buf){
     const d=DRUM.take, off=(typeof d.offset==="number")?d.offset:0.03;
     const s=c.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
     const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*PLAY.barSec;
     s.loopStart=off; s.loopEnd=Math.min(DRUM.buf.duration, off+pass);
-    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); s.start(t1);
+    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); if(at>0) t1=Math.max(c.currentTime+0.02, at-off); s.start(t1);
     PLAY.drum=s; PLAY.t0=t1+off;
-  } else PLAY.t0=t1;
+  } else PLAY.t0=at>0 ? Math.max(c.currentTime+0.02, at) : t1;
   tick();
   paintPlay();
   onPlay();   /* AOG-PIANO-LESSONS-V1 */
@@ -1314,6 +1314,10 @@ function wavBlob(L, R, sr){
 /* AOG-PIANO-REC-V1 → AOG-MUSIC-REC-V1 (2026-10-03): ● Record on the keys keeps what the piano plays as a take (aog-recorder.js,
    the one recorder every music tool shares: never a microphone, full strength whatever the Volume, up to five minutes, the
    last three takes to hear, save as .wav or send to the turntables) */
+/* AOG-OVERDUB-V1: recording over My Track, a chord pattern that is playing starts again on the bar line My Track starts on */
+window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
+/* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
+if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
   prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});

@@ -324,6 +324,11 @@ function loadKit(b){
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S.lang, what:{en:"the drum kit",es:"la batería"},
   prefix:{en:"Drum kit",es:"Batería"}, file:{en:"drum-kit-take",es:"bateria-toma"}, shelf:"drumtake", tool:"drums",
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
+/* AOG-OVERDUB-V1: recording over My Track, a beat that is playing starts again on the bar line My Track starts on */
+window.AOGRoomClock={ align(t0){ if(!BT.on) return; BT.step=0; BT.part=0; BT.next=t0; } };
+/* AOG-SONG-V1 (2026-10-11): the Drum Kit's beats play at the song's tempo (aog-song.js); its tempo controls change the song */
+if(window.AOGSong) AOGSong.room({ bpm:{get:()=>S.bpm, set:v=>{ S.bpm=Math.max(40, Math.min(220, Math.round(v))); save(); try{ beatPaint(); }catch(e){} }, min:40, max:220},
+  watch:{bpm:["tempoR","tempoDn","tempoUp","dkSlow","dkFast"]} });
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Drum Kit's lessons: each step ticks itself as it happens (the words, and the
    worksheets page drum-kit-lessons.html: _work/music/lessons_kit.py, built by make_lab_lessons.py). The hooks:
      a tap on a drawn drum (bindKit → lessonTap): which piece by its recorded name (kick, snare, hi-hat, crash, ride,

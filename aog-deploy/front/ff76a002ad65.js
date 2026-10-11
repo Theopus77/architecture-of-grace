@@ -316,7 +316,7 @@ function cleanClip(c){
     fadeIn:FADES.indexOf(+c.fadeIn)>=0 ? +c.fadeIn : 0, fadeOut:FADES.indexOf(+c.fadeOut)>=0 ? +c.fadeOut : 0,
     pieces:cleanPieces(c.pieces), psel:Math.round(num(c.psel,0,63,0)),
     voice:!!c.voice, vn:Math.round(num(c.vn,0,1e6,0)),   /* AOG-STUDIO-VOICE-V1 */
-    layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto };   /* AOG-STUDIO-LISTEN-V1 */
+    layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto, lead:!!c.lead };   /* AOG-STUDIO-LISTEN-V1 · AOG-SONG-V1 (lead) */
   if(!(o.sec>0) || !(o.body>0)) return null;
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
   if(o.src===INBOX_KEY){ o.from=TOOLS[c.from] ? c.from : ""; o.tn=Math.round(num(c.tn,0,1e6,0));
@@ -414,7 +414,8 @@ function peakDbOf(buf){
 function analyse(rec, info){
   const sec=info.sec, bpm=(rec.bpm>0 && rec.bpm<400) ? +rec.bpm : 0, bars=(rec.bars>0) ? +rec.bars : 0;
   let head=0, body=sec, tail=0, bpb=4;
-  if(rec.take){ head=Math.min(0.05, sec/4); body=sec-head; }
+  if(rec.take && rec.place){ head=0; body=sec; }   /* AOG-OVERDUB-V1: recorded over the song, it starts exactly on its bar line */
+  else if(rec.take){ head=Math.min(0.05, sec/4); body=sec-head; }
   else if(rec.passSec>0 && rec.loops>0){
     head=(typeof rec.offset==="number") ? Math.max(0, Math.min(rec.offset, sec/4)) : 0;
     body=Math.min(sec-head, rec.passSec*rec.loops); tail=Math.max(0, sec-head-body);
@@ -433,7 +434,11 @@ function tempoTrack(){ for(let i=0;i<NT;i++){ const c=SONG.tracks[i].clip; if(c 
 /* AOG-STUDIO-EDIT-V1 (Jimmy, 2026-10-04: "a way to edit the tracks that are in the mixer. Cut them up, slow or speed
    them up"): each recording has a speed (50 % to 150 %); the track that sets the tempo sets it at its own speed */
 function spd(c){ return c && c.speed>0 ? c.speed : 1; }
-function songBpm(){ const i=tempoTrack(); return i>=0 ? SONG.tracks[i].clip.bpm*spd(SONG.tracks[i].clip) : 120; }
+/* AOG-SONG-V1 (2026-10-11): the song has one tempo, kept for the whole Studio (aog-song.js); every room plays in it, and the
+   desk's bars are its bars. A song that has none yet takes its first recording's, as before. A track made slower or faster
+   here moves on its own; the song's tempo is changed with the Studio's Song button or any room's tempo. */
+function deskBpm(){ const i=tempoTrack(); return i>=0 ? SONG.tracks[i].clip.bpm*spd(SONG.tracks[i].clip) : 0; }
+function songBpm(){ const s=window.AOGSong && AOGSong.get(); if(s && s.hasBpm) return s.bpm; return deskBpm() || 120; }
 function barSec(){ return 240/songBpm(); }
 function songBeat(){ return 60/songBpm(); }
 /* one beat of the recording as it was played, in seconds of the recording (one with no tempo counts the song's beats) */
@@ -1003,15 +1008,16 @@ async function putOn(srcId, ti){
       info=await wavInfo(it.wav); if(!info) throw new Error("not a wav");
       blob=it.wav;
       /* AOG-PADS-BOUNCE-V1: a loop made on the Beat Lab says its exact length, so it starts on the bar and loops whole bars */
-      rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0};
-      from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"") : ""};
+      rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0, place:placeOf(it)};
+      from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"")+(placeOf(it)?":over":"") : ""};
     }
     const meta=analyse(rec, info);
     const buf=await decodeWav(blob, info.sr);
     await sput(id, {wav:blob});
     BUF.set(id, buf);
     const x=SONG.tracks[ti], old=x.clip;
-    x.clip=Object.assign({id:id}, from, {startBar:old ? old.startBar : 1, trimIn:0, trimOut:0, loops:1}, meta, {peakDb:peakDbOf(buf)});
+    const pl=rec.place;
+    x.clip=Object.assign({id:id}, from, {startBar:pl ? pl.bar : old ? old.startBar : 1, trimIn:0, trimOut:0, loops:1}, meta, {peakDb:peakDbOf(buf)});
     x.clip=cleanClip(x.clip);
     if(old) dropClip(old.id);
     $("recLine").textContent="";
@@ -1027,11 +1033,31 @@ async function putOn(srcId, ti){
 const SHELF_LAYER={padbench:"pads", drumtake:"drums", keysbench:"piano", guitarbench:"guitar", bassbench:"bass", bandbench:"band"};
 const LAYER_FROM=["pads","drums","piano","guitar","bass","band","decks"];
 function layerOfSrc(o){
-  if(o.kind==="take"){ const x=o.x; if(!x || x.chops || !(x.sec>0) || LAYER_FROM.indexOf(x.from)<0) return ""; return x.from+(x.live?":live":""); }
+  if(o.kind==="take"){ const x=o.x; if(!x || x.chops || !(x.sec>0) || LAYER_FROM.indexOf(x.from)<0) return ""; return x.from+(x.live?":live":"")+(placeOf(x)?":over":""); }
   return SHELF_LAYER[o.s.key]||"";
 }
 function layerOfClip(c){ if(!c || c.voice) return ""; if(c.layer) return c.layer; if(c.src===INBOX_KEY) return LAYER_FROM.indexOf(c.from)>=0 ? c.from : ""; return SHELF_LAYER[c.src]||""; }
 function srcOnTrack(o){ return SONG.tracks.some(x=>x.clip && (o.kind==="take" ? (x.clip.src===INBOX_KEY && x.clip.tid===o.x.id) : (x.clip.src===o.s.key && x.clip.at===(o.v.rec.at||0)))); }
+/* ══ AOG-OVERDUB-V1 (2026-10-11) — Jimmy's "1": "Record over your song. In any room, press Record and hear My Track playing
+   while you play. The new take lands on the right bar." A room asks the Studio for My Track; the Studio asks the desk here:
+   backing() puts My Track's layers on their tracks (as Listen does), bounces the song through the whole desk, offline, and
+   hands the sound back with the song's tempo. Nothing is sent anywhere; the same song asked again is not bounced again.
+   A take made over the song carries place {bar, bpm}: it starts exactly on that bar line (analyse: no lead-in), sits there
+   on its track (putOn), and is its own layer ("piano:over"), so playing the piano over the song keeps the first piano part. */
+function placeOf(x){ const p=x && x.place; return p && p.bar>=1 && p.bar<=MAX_BARS && p.bpm>0 ? {bar:Math.round(p.bar), bpm:+p.bpm} : null; }
+let BACK={sig:"", data:null, job:null};
+async function backing(){
+  try{ await listenFill(); }catch(e){}
+  if(!SONG.tracks.some((x,i)=>x.clip && audible(i))) return null;
+  const sig=JSON.stringify(SONG.tracks)+"|"+JSON.stringify(SONG.master||null)+"|"+songBpm();   /* every track, its clip and its strip */
+  if(BACK.sig===sig && BACK.data) return BACK.data;
+  if(BACK.job && BACK.job.sig===sig) return BACK.job.p;
+  const p=(async()=>{ const {Lc, Rc, frames}=await renderSong(null);
+    const d={L:Float32Array.from(Lc), R:Float32Array.from(Rc), sr:MIX_SR, bpm:songBpm(), barSec:barSec(), bars:songBars(), sec:frames/MIX_SR};
+    BACK={sig:sig, data:d, job:null}; return d; })();
+  BACK.job={sig:sig, p:p};
+  try{ return await p; }catch(e){ BACK.job=null; throw e; }
+}
 /* AOG-LISTEN-FULL-V1 (2026-10-11): My Track has more layers (ten) than the desk has tracks for them (seven, and track 8 for
    the voice). A layer with no free track used to be left out without a word; now LISTEN_LEFT names them, and the Recording
    Studio says which are not playing and how to hear one. */
@@ -1074,6 +1100,11 @@ function takeOff(ti){ const x=SONG.tracks[ti]; if(!x.clip) return; const old=x.c
 /* after any change to what plays where */
 function songChanged(){
   save();
+  /* AOG-SONG-V1: the first recording sets a new song's tempo, and leads it: made slower or faster here (or put back by Undo),
+     the song's tempo goes with it, as the desk always did. A tempo set anywhere else ends the lead (AOGSong.on below). */
+  try{ if(window.AOGSong){ const i=tempoTrack(), c=i>=0 ? SONG.tracks[i].clip : null, s0=AOGSong.get();
+    if(c && (!s0 || !s0.hasBpm)){ c.lead=true; AOGSong.seed(deskBpm()); save(); }
+    else if(c && c.lead && Math.abs(deskBpm()-s0.bpm)>0.005) AOGSong.set({bpm:deskBpm()}); } }catch(e){}
   liveApply(applyAll);
   reschedule();
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox();
@@ -1565,7 +1596,10 @@ async function voiceStart(){
     }
     VOICE.src.connect(VOICE.node); VOICE.node.connect(VOICE.sink);
     let inLat=0; try{ const st=stream.getAudioTracks()[0].getSettings(); inLat=st && st.latency>0 ? st.latency : 0; }catch(e){}
-    VOICE.lat=(c.outputLatency>0 ? c.outputLatency : 0)+(c.baseLatency>0 ? c.baseLatency : 0)+inLat;
+    /* AOG-LATENCY-V1: the round trip the Studio's Timing check measured on this device, where there is one (the song out to
+       you, your voice back in); else what the browser says */
+    let trip=0; try{ const m=JSON.parse(localStorage.getItem("aog.latency.v1")||"null"); trip=m && m.rt>0 && m.rt<1 ? +m.rt : 0; }catch(e){}
+    VOICE.lat=trip>0 ? trip : (c.outputLatency>0 ? c.outputLatency : 0)+(c.baseLatency>0 ? c.baseLatency : 0)+inLat;
     VOICE.rec=true;
     /* the song plays from the start bar, once, while you sing; your own take on track 8 stays quiet meanwhile */
     VOICE.withSong=SONG.tracks.some((x,i)=>i!==VOICE_T && x.clip && BUF.has(x.clip.id));
@@ -2218,6 +2252,7 @@ function clipAct(act){
     if(!(c.bpm>0)){ UNDO.pop(); return; }
     const want=effBpm(c);
     clips().forEach(x=>{ if(x.c!==c && x.c.bpm>0){ remember(x.i, g); x.c.speed=clampSpeed(want/x.c.bpm); } });
+    try{ if(window.AOGSong) AOGSong.set({bpm:want}); }catch(e){}   /* AOG-SONG-V1: "this tempo on every track" is the song's tempo */
     S.edMsg=t("spdAllDone",{n:Math.round(want)});
   }
   else {
@@ -2238,7 +2273,8 @@ function speedInput(el){ const c=SONG.tracks[SONG.sel].clip; if(!c) return; cons
 function speedChange(el){
   const i=SONG.sel, c=SONG.tracks[i].clip; if(!c) return;
   const v=clampSpeed(Math.round(+el.value)/100); if(Math.abs(v-spd(c))<1e-3) return;
-  remember(i, ++UG); c.speed=v; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
+  const lead=i===tempoTrack() && c.bpm>0 && Math.abs(effBpm(c)-songBpm())<0.05;   /* AOG-SONG-V1: in time with the song, it carries the song */
+  remember(i, ++UG); c.speed=v; if(lead) c.lead=true; S.edMsg=""; S.edAt="spd"; LES.mark(v<1 ? "slow1" : "fast1");
   songChanged(); stretchAll();
 }
 function fadeChange(el){
@@ -2583,8 +2619,13 @@ window.addEventListener("pagehide", ()=>{ stop(); });
 })();
 try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
 window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
+/* AOG-SONG-V1: the song's tempo changed (here, in a room, or in the Studio): the bars follow at once */
+if(window.AOGSong) AOGSong.on(s=>{ try{
+  /* a tempo set elsewhere (the Song panel, a room) is the song's now: the desk's first track no longer leads it */
+  if(s && s.hasBpm && Math.abs(s.bpm-deskBpm())>0.005){ let ch=false; clips().forEach(x=>{ if(x.c.lead){ x.c.lead=false; ch=true; } }); if(ch) save(); }
+  reschedule(); paintTransport(); paintTimeline(); paintTrack(); }catch(e){} });
 /* for the studio's own tests */
 window.__aogStudio={ get SONG(){ return SONG; }, PLAY:PLAY, BUF:BUF, MET:MET, get MIX(){ return MIX; }, get LIVE(){ return LIVE; }, get AN(){ return AN; }, songEnd:songEnd, fullBeats:fullBeats, peaksOf:peaksOf, songBars:songBars,
   barSec:barSec, analyse:analyse, punchSet:punchSet, glueSet:glueSet, refreshShelves:refreshShelves, makeMix:makeMix, play:play, stop:stop,
-  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, get AC(){ return ac; },
+  INBOX:INBOX, refreshInbox:refreshInbox, songFile:songFile, VOICE:VOICE, voiceStart:voiceStart, voiceStop:voiceStop, sendOut:sendOut, sendStems:sendStems, OUT:OUT, renderSong:renderSong, readSongFile:readSongFile, applySong:applySong, CARRY:CARRY, lockList:lockList, sources:sources, putOn:putOn, get S(){ return S; }, listenFill:listenFill, get listenLeft(){ return LISTEN_LEFT.slice(); }, backing:backing, placeOf:placeOf, get AC(){ return ac; },
   pcs:pcs, clipAct:clipAct, undo:undo, wsola:wsola, STRETCH:STRETCH, stretchAll:stretchAll, schedule:schedule, songBpm:songBpm, clipEnd:clipEnd, UNDO:UNDO };

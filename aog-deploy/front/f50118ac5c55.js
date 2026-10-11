@@ -1808,22 +1808,22 @@ const PLAY={raf:0, t0:0, bar:0, barSec:2.5, voices:[], drum:null, cur:-1, sig:""
 function curBpm(){ return drumsLive() ? DRUM.take.bpm : S.bpm; }
 function curSwing(){ return (drumsLive() && typeof DRUM.take.swing==="number") ? DRUM.take.swing : (RHYTHM_SWING[S.rhythm]||0.5); }
 function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
-async function start(){
+async function start(at){
   if(!S.prog.length){ const l=document.getElementById("ownLine"); if(l) l.textContent=t("sendNeed"); return; }
   const c=ctx();
   if(S.withDrums && DRUM.take && !DRUM.buf){ try{ DRUM.buf=await decodeWith(c, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
   stop(true);
   S.playing=true; PLAY.hand=handSig(handHeld());   /* AOG-HAND-STYLE-V1 */
   const bpm=curBpm(); PLAY.barSec=beatsPerBar()*60/bpm; PLAY.bar=0; PLAY.cur=-1;
-  const t1=c.currentTime+0.12;                       /* not "t": that name is the page's word lookup */
+  let t1=c.currentTime+0.12;   /* AOG-OVERDUB-V1: or on the bar line asked (at) */                       /* not "t": that name is the page's word lookup */
   if(drumsLive() && DRUM.buf){
     const d=DRUM.take, off=(typeof d.offset==="number")?d.offset:0.03;
     const s=c.createBufferSource(); s.buffer=DRUM.buf; s.loop=true;
     const pass=(d.passSec && d.loops) ? d.passSec*d.loops : (d.bars||8)*PLAY.barSec;
     s.loopStart=off; s.loopEnd=Math.min(DRUM.buf.duration, off+pass);
-    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); s.start(t1);
+    const g=c.createGain(); g.gain.value=0.9; s.connect(g); g.connect(LIVE_CH.pre); if(at>0) t1=Math.max(c.currentTime+0.02, at-off); s.start(t1);
     PLAY.drum=s; PLAY.t0=t1+off;
-  } else PLAY.t0=t1;
+  } else PLAY.t0=at>0 ? Math.max(c.currentTime+0.02, at) : t1;
   tick();
   paintPlay(); lessonPlaying();   /* AOG-LESSONS-V1 */
 }
@@ -2009,6 +2009,10 @@ function navHtml(){
 }
 /* AOG-MUSIC-REC-V1 (2026-10-03) — Jimmy: "There is no record button on guitar perhaps everything else too". ● Record on the
    neck keeps what the guitar or the bass plays as a take (aog-recorder.js, the one recorder every music tool shares) */
+/* AOG-OVERDUB-V1: recording over My Track, a chord pattern that is playing starts again on the bar line My Track starts on */
+window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
+/* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
+if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
 const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang,
   what:GTR?{en:"the guitar",es:"la guitarra"}:{en:"the bass",es:"el bajo"}, prefix:GTR?{en:"Guitar",es:"Guitarra"}:{en:"Bass",es:"Bajo"},
   file:GTR?{en:"guitar-take",es:"guitarra-toma"}:{en:"bass-take",es:"bajo-toma"}, shelf:INST+"bench", bpm:()=>curBpm(),

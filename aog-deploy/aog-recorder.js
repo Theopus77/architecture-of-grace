@@ -54,7 +54,18 @@
    when the room opens again: after the Studio closed it, after a reload, after the iPad put the tab to sleep. Still only on
    this device; Delete takes one out. Whether a take was added to My Track is kept with it. If the browser has no room to
    keep it (or no storage at all), the take stays in memory as before and the room says so to the Studio (kept() is false),
-   so the Studio does not close that room. */
+   so the Studio does not close that room.
+
+   AOG-OVERDUB-V1 (2026-10-11) — Jimmy's "1": "Record over your song. In any room, press Record and hear My Track playing
+   while you play. The new take lands on the right bar." Inside the Studio, with ♫ With My Track on (the Studio's bar) and
+   something on My Track, ● Record first asks the Studio for My Track (the Mixing Desk bounces it), then plays one bar of
+   four clicks and My Track from the bar picked in From, straight to the speakers: My Track is heard, never recorded, so the
+   take is only what you play. A beat or a chord pattern already playing in the room starts again on that bar line
+   (window.AOGRoomClock.align, where the room has one). The take's place is worked out from the audio clock: the frame its
+   first sample was heard at (the listening ear reports it), less the time the sound takes to reach your ears (the device's
+   output delay, or half the round trip the Timing check measured, AOG-LATENCY-V1), counted from the bar My Track started
+   on. The take is then cut to begin on the bar line of the bar its first note is in, and carries place {bar, bpm} to the
+   Mixing Desk, which puts it exactly there. The song's tempo is its tempo. */
 (function () {
   "use strict";
   var W = {
@@ -88,6 +99,10 @@
     delAria: { en: "Delete take {n}", es: "Borrar la toma {n}" },
     deleted: { en: "Take {n} is deleted.", es: "La toma {n} está borrada." },
     undo: { en: "Bring it back", es: "Recuperarla" },
+    /* AOG-OVERDUB-V1 */
+    overPrep: { en: "Getting My Track ready…", es: "Preparando mi pista…" },
+    overOn: { en: "Four clicks, then My Track plays. Play along, then press Stop recording.", es: "Cuatro clics y luego suena mi pista. Toca con ella y luego pulsa Parar grabación." },
+    overDone: { en: "Take {n} comes in at bar {b}. Add it to My Track and it goes right there.", es: "La toma {n} entra en el compás {b}. Añádela a mi pista y irá justo ahí." },
     noRoom: { en: "This device has no room left for takes. At the Mixing Desk, remove a take you do not need, then try again.", es: "Este dispositivo no tiene más espacio para tomas. En la mesa de mezclas, quita una toma que no necesites y vuelve a intentarlo." }
   };
   /* AOG-TAKE-TO-PADS-V1 — the tools whose takes can go to the drum machine, and what a take is called there */
@@ -162,11 +177,12 @@
   /* the listening ear: it collects what passes through it in pieces of 4096 frames, only while it is armed */
   var SRC = [
     "class AogRec extends AudioWorkletProcessor{",
-    "  constructor(){ super(); this.on=false; this.n=0; this.L=new Float32Array(4096); this.R=new Float32Array(4096);",
-    "    this.port.onmessage=(e)=>{ if(e.data && e.data.t==='arm'){ if(!e.data.on) this.flush(); this.on=!!e.data.on; } }; }",
+    "  constructor(){ super(); this.on=false; this.n=0; this.f0=-1; this.L=new Float32Array(4096); this.R=new Float32Array(4096);",
+    "    this.port.onmessage=(e)=>{ if(e.data && e.data.t==='arm'){ if(!e.data.on) this.flush(); else this.f0=-1; this.on=!!e.data.on; } }; }",
     "  flush(){ if(this.n){ this.port.postMessage({t:'chunk', L:this.L.slice(0,this.n), R:this.R.slice(0,this.n)}); this.n=0; } }",
     "  process(inputs){",
     "    const i=inputs[0]; if(!this.on || !i || !i.length) return true;",
+    "    if(this.f0<0){ this.f0=currentFrame; this.port.postMessage({t:'start', frame:currentFrame}); }",
     "    const a=i[0], b=i[1]||i[0];",
     "    for(let k=0;k<a.length;k++){",
     "      this.L[this.n]=a[k]; this.R[this.n]=b[k]; this.n++;",
@@ -209,7 +225,7 @@
     function A() { return window.AOGHandoff && AOGHandoff.add ? AOGHandoff : null; }
     function store(k) {
       var H = A(); if (!H) { R.kept = false; return Promise.resolve(); }
-      return H.add(KEPT, { n: k.n, sec: k.sec, at: k.at, bpm: k.bpm, added: !!k.added, wav: k.blob }, { max: 3, key: "take|" + k.at + "|" + k.n })
+      return H.add(KEPT, { n: k.n, sec: k.sec, at: k.at, bpm: k.bpm, added: !!k.added, place: k.place || null, wav: k.blob }, { max: 3, key: "take|" + k.at + "|" + k.n })
         .then(function (r) { k.hid = r.id; if (R.takes.indexOf(k) < 0) { unstore(k); return; }   /* deleted while it was being kept */
           R.kept = R.takes.every(function (x) { return !!x.hid; }); }, function () { R.kept = false; });
     }
@@ -222,7 +238,7 @@
           var m = ix.items[i], it = await H.item(KEPT, m.id);
           if (!it || !(it.wav instanceof Blob) || it.wav.size <= 44) continue;
           if (R.takes.some(function (x) { return x.at === it.at && x.n === it.n; })) continue;
-          got.push({ n: it.n, sec: it.sec, blob: it.wav, url: URL.createObjectURL(it.wav), at: it.at, bpm: it.bpm || 0, added: !!it.added, hid: m.id });
+          got.push({ n: it.n, sec: it.sec, blob: it.wav, url: URL.createObjectURL(it.wav), at: it.at, bpm: it.bpm || 0, added: !!it.added, place: it.place || null, hid: m.id });
         }
         if (!got.length) return;
         R.takes = R.takes.concat(got).sort(function (a, c) { return (c.at || 0) - (a.at || 0) || c.n - a.n; });
@@ -234,6 +250,7 @@
     function L() { return o.lang() === "es" ? "es" : "en"; }
     function w(k) { var src = (k === "rec" && o.label) ? o.label : W[k]; return src[L()].split("{what}").join(o.what[L()]); }
     function el(k) { return document.getElementById(o.ids[k]); }
+    function fillIn(x) { var f = R.fill || {}; for (var k in f) x = x.split("{" + k + "}").join(f[k]); return x; }
     /* the tools' limiters let the very start of a hit poke a little past full scale; in a take that would be cut flat, so
        anything above 90% is rounded gently toward 100% instead */
     function ceil(v) { var a = v < 0 ? -v : v; if (a <= 0.9) return v; var y = 0.9 + 0.1 * Math.tanh((a - 0.9) / 0.1); return v < 0 ? -y : y; }
@@ -254,11 +271,12 @@
         if (!url) url = URL.createObjectURL(new Blob([SRC], { type: "application/javascript" }));
         await c.audioWorklet.addModule(url);
         var n = new AudioWorkletNode(c, "aog-rec", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2] });
-        n.port.onmessage = function (e) { if (e.data && e.data.t === "chunk") keep(e.data.L, e.data.R); };
+        n.port.onmessage = function (e) { if (!e.data) return; if (e.data.t === "chunk") keep(e.data.L, e.data.R); else if (e.data.t === "start") R.f0 = e.data.frame; };
         R.node = n;
       } catch (e) {                                   /* an older browser: the same, the old way */
         var sp = c.createScriptProcessor(4096, 2, 2);
         sp.onaudioprocess = function (ev) { if (!R.on && !R.closing) return; var ib = ev.inputBuffer;
+          if (R.f0 < 0 && R.on) R.f0 = Math.round((ev.playbackTime || c.currentTime) * c.sampleRate);
           keep(Float32Array.from(ib.getChannelData(0)), Float32Array.from(ib.getChannelData(ib.numberOfChannels > 1 ? 1 : 0))); };
         R.node = sp;
       }
@@ -267,40 +285,99 @@
       o.tap().connect(R.node); R.node.connect(R.sink); R.sink.connect(c.destination);
       try { if (window.AOGRoom) AOGRoom.rec(c, o.tap(), R.node); } catch (e) {}   /* AOG-STUDIO-ROOM-SOUND-V1: a take carries the room */
     }
-    function arm(on) { R.on = on; if (R.node && R.node.port) R.node.port.postMessage({ t: "arm", on: on }); }
+    /* ── AOG-OVERDUB-V1: My Track under the take ── */
+    function shell() { try { return document.documentElement.classList.contains("in-studio") && window.parent !== window && window.parent.AOGStudioShell || null; } catch (e) { return null; } }
+    /* the time the sound takes to reach your ears: what the browser says, else half the round trip the Timing check measured */
+    function outDelay(c) {
+      var v = (+c.outputLatency || 0) + (+c.baseLatency || 0); if (v > 0 && v < 0.5 && c.outputLatency > 0) return v;
+      var m = null; try { m = JSON.parse(localStorage.getItem("aog.latency.v1") || "null"); } catch (e) {}
+      if (m && m.rt > 0 && m.rt < 1) return m.rt / 2;
+      return v > 0 && v < 0.5 ? v : 0;
+    }
+    function click(c, when, top) {
+      var os = c.createOscillator(), g = c.createGain(); os.frequency.value = top ? 1568 : 1046;
+      g.gain.setValueAtTime(0.0001, when); g.gain.exponentialRampToValueAtTime(top ? 0.5 : 0.32, when + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, when + 0.05);
+      os.connect(g); g.connect(c.destination); os.start(when); os.stop(when + 0.06);
+    }
+    function overStart(bk, from) {
+      var c = o.context(), buf = c.createBuffer(2, bk.L.length, bk.sr);
+      buf.copyToChannel(bk.L, 0); buf.copyToChannel(bk.R, 1);
+      var src = c.createBufferSource(), g = c.createGain(); src.buffer = buf; src.connect(g); g.connect(c.destination);   /* to the speakers, not into the take */
+      var beat = bk.barSec / 4, t0 = c.currentTime + 0.3, S0 = t0 + bk.barSec, from1 = Math.max(1, from | 0), offs = (from1 - 1) * bk.barSec;
+      for (var k = 0; k < 4; k++) click(c, t0 + k * beat, k === 0);
+      if (offs < buf.duration - 0.01) src.start(S0, offs);
+      R.over = { S0: S0, from: from1, barSec: bk.barSec, bpm: bk.bpm, src: src, g: g, lat: outDelay(c) };
+      try { if (window.AOGRoomClock && AOGRoomClock.align) AOGRoomClock.align(S0, bk.barSec); } catch (e) {}
+    }
+    function overStop() {
+      var O = R.over; if (!O || !O.src) return;
+      try { var c = O.g.context, now = c.currentTime; O.g.gain.setValueAtTime(O.g.gain.value, now); O.g.gain.linearRampToValueAtTime(0, now + 0.06); O.src.stop(now + 0.08); } catch (e) {}
+      O.src = null;
+    }
+    function arm(on) { if (on) R.f0 = -1; R.on = on; if (R.node && R.node.port) R.node.port.postMessage({ t: "arm", on: on }); }
     function finish() {
       var sr = R.sr, quiet = 66;                        /* about -54 dB: anything softer before the first sound is left out */
       var ci = 0, off = 0, found = false;
       for (ci = 0; ci < R.chunks.length; ci++) { var x = R.chunks[ci]; for (var i = 0; i < x.length; i++) { if (x[i] > quiet || x[i] < -quiet) { off = i; found = true; break; } } if (found) break; }
-      if (!found) { R.chunks = []; R.frames = 0; R.msg = "recNone"; R.paint(); return; }
-      var back = Math.floor(0.05 * sr) * 2;             /* keep 50 ms before the first sound */
+      if (!found) { R.chunks = []; R.frames = 0; R.msg = "recNone"; R.over = null; R.paint(); return; }
+      var place = null;
+      if (R.over && R.f0 >= 0) {
+        /* AOG-OVERDUB-V1: on the song's bars. The first note's moment in the song, then the bar line it follows */
+        var O = R.over, pre = 0; for (var q = 0; q < ci; q++) pre += R.chunks[q].length;
+        var firstF = (pre + off) / 2, Ts = (R.f0 + firstF) / sr - O.S0 - O.lat + (O.from - 1) * O.barSec;
+        /* the bar line just before the first note (3 ms to spare, so its attack is whole: a note a little early starts the
+           take on the bar before, with nothing cut off), and the bar the note belongs to (up to 60 ms early counts) */
+        var Bs = Math.max(1, Math.floor((Ts - 0.003) / O.barSec) + 1), nb = Math.max(1, Math.floor((Ts + 0.06) / O.barSec) + 1);
+        var cut = Math.round(sr * ((Bs - O.from) * O.barSec + O.S0 + O.lat)) - R.f0;   /* the frame bar Bs begins on */
+        var total = 0; R.chunks.forEach(function (x) { total += x.length; }); total /= 2;
+        /* played during the four clicks, before My Track began: an ordinary take, kept as it was played, with no place */
+        if (Ts >= (O.from - 1) * O.barSec - 0.003 && cut < total - 1) place = { bar: Bs, bpm: O.bpm, note: nb };
+      }
+      if (place) {
+        var lead = [];
+        if (cut < 0) { lead.push(new Int16Array(-cut * 2)); ci = 0; off = 0; }
+        else { var at = cut * 2; ci = 0; while (ci < R.chunks.length - 1 && at >= R.chunks[ci].length) { at -= R.chunks[ci].length; ci++; } off = Math.min(at, R.chunks[ci].length); }
+        R.overLead = lead;
+      }
+      var back = place ? 0 : Math.floor(0.05 * sr) * 2;   /* keep 50 ms before the first sound (a take over the song starts on its bar line) */
       while (back > 0 && (off > 0 || ci > 0)) {
         if (off >= back) { off -= back; back = 0; }
         else { back -= off; if (ci > 0) { ci--; off = R.chunks[ci].length; } else { off = 0; back = 0; } }
       }
       off -= off % 2;
-      var parts = [R.chunks[ci].subarray(off)]; for (var j = ci + 1; j < R.chunks.length; j++) parts.push(R.chunks[j]);
+      var parts = (place ? R.overLead : []).concat([R.chunks[ci].subarray(off)]); for (var j = ci + 1; j < R.chunks.length; j++) parts.push(R.chunks[j]);
+      R.overLead = null; R.over = null;
       var bytes = 0; parts.forEach(function (p) { bytes += p.length * 2; });
       var h = new ArrayBuffer(44), v = new DataView(h), str = function (q, s) { for (var k = 0; k < s.length; k++) v.setUint8(q + k, s.charCodeAt(k)); };
       str(0, "RIFF"); v.setUint32(4, 36 + bytes, true); str(8, "WAVE"); str(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true);
       v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, bytes, true);
       var blob = new Blob([h].concat(parts), { type: "audio/wav" });
       R.chunks = []; R.frames = 0;
-      var take = { n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: R.bpm0, added: false, hid: "" };
+      var take = { n: ++R.n, sec: bytes / 4 / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: place ? place.bpm : R.bpm0, added: false, hid: "", place: place };
+      if (place) { R.msg = "overDone"; R.fill = { n: take.n, b: place.note }; }
       R.takes.unshift(take);
       R.studioLine = false;
       while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); unstore(old); }
       R.kept = false; store(take);   /* AOG-REC-KEEP-V1 */
-      if (!R.msg) R.msg = "recKeep";
+      try { if (window.AOGSong) AOGSong.seedFromRoom(); } catch (e) {}   /* AOG-SONG-V1: a new song takes its first take's tempo and key */
+      if (!R.msg || R.msg === "overOn") R.msg = "recKeep";
       R.paint();
     }
     R.toggle = async function () {
       var btn = el("btn");
       if (!R.on) {
-        if (R.closing) return;
+        if (R.closing || R.prepping) return;
+        /* AOG-OVERDUB-V1: inside the Studio, with ♫ With My Track on, My Track first */
+        var bk = null, sh = shell();
+        if (sh && sh.over && sh.over().on && sh.backing) {
+          R.prepping = true; R.msg = "overPrep"; R.studioLine = false; R.paint();
+          try { bk = await sh.backing(); } catch (e) { bk = null; }
+          R.prepping = false;
+        }
         await build();
-        R.chunks = []; R.frames = 0; R.t0 = performance.now(); R.msg = "recOn"; R.studioLine = false;
+        R.chunks = []; R.frames = 0; R.t0 = performance.now(); R.msg = "recOn"; R.studioLine = false; R.over = null;
         try { R.bpm0 = o.bpm ? +o.bpm() || 0 : 0; } catch (e) { R.bpm0 = 0; }
+        if (bk && bk.L && bk.L.length) { try { overStart(bk, sh.over().from); R.msg = "overOn"; } catch (e) { R.over = null; } }
         arm(true);
         R.timer = setInterval(function () {
           var sec = (performance.now() - R.t0) / 1000, t = el("time"); if (t) t.textContent = clock(sec);
@@ -311,6 +388,7 @@
       }
       /* Stop: half a second more, so the last note rings out, then the take */
       clearInterval(R.timer); R.timer = 0; R.closing = true;
+      overStop();
       if (R.msg === "recOn") R.msg = "";
       if (btn) btn.disabled = true;
       setTimeout(function () { arm(false); setTimeout(function () { R.closing = false; var b = el("btn"); if (b) b.disabled = false; finish(); }, 160); }, 500);
@@ -355,8 +433,10 @@
         if (!window.AOGHandoff || !AOGHandoff.add) throw new Error("no inbox");
         var tool = studioTool(o), bpm = k.bpm > 0 ? k.bpm : 0;
         if (!(bpm > 0)) { try { bpm = o.bpm ? +o.bpm() || 0 : 0; } catch (e) { bpm = 0; } }
-        await AOGHandoff.add(AOGHandoff.INBOX, { from: tool, n: k.n, name: studioName(o, tool, k.n), sec: Math.round(k.sec * 1000) / 1000,
-          bpm: Math.round(bpm * 100) / 100, at: k.at || Date.now(), take: true, wav: k.blob }, { key: tool + "|" + (k.at || 0) + "|" + k.n });
+        var item = { from: tool, n: k.n, name: studioName(o, tool, k.n), sec: Math.round(k.sec * 1000) / 1000,
+          bpm: Math.round(bpm * 100) / 100, at: k.at || Date.now(), take: true, wav: k.blob };
+        if (k.place) item.place = k.place;   /* AOG-OVERDUB-V1: it goes on its bar */
+        await AOGHandoff.add(AOGHandoff.INBOX, item, { key: tool + "|" + (k.at || 0) + "|" + k.n });
         R.studioLine = true;
         if (!k.added) { k.added = true; store(k); }   /* AOG-REC-KEEP-V1: it stays known as added, after a reload too */
         if (line) line.innerHTML = studioHtml();
@@ -371,7 +451,7 @@
       btn.textContent = R.on ? w("recStop") : w("rec"); btn.setAttribute("aria-pressed", R.on ? "true" : "false"); btn.classList.add("aogrec-btn");
       if (!btn._aogrec) { btn._aogrec = true; btn.addEventListener("click", function () { R.toggle(); }); }
       var tm = el("time"); if (tm) { tm.hidden = !R.on; tm.classList.add("aogrec-time"); if (!R.on) tm.textContent = "0:00"; }
-      var line = el("line"); if (line) { if (R.studioLine) line.innerHTML = studioHtml(); else line.textContent = R.msg ? w(R.msg) : ""; }
+      var line = el("line"); if (line) { if (R.studioLine) line.innerHTML = studioHtml(); else line.textContent = R.msg ? fillIn(w(R.msg)) : ""; }
       var list = el("list"); if (!list) return;
       list.classList.add("aogrec-list");
       /* only when the takes or the words change: a take being listened to keeps playing while the page repaints */
@@ -415,7 +495,7 @@
     /* AOG-STUDIO-TRANSPORT-V1 (2026-10-09) — the Recording Studio's transport (/the-studio) drives this room's recorder:
        ● Record presses this room's own Record button, + Add to My Track sends the newest take the usual way */
     window.AOGStudioRec = {
-      on: function () { return !!R.on; }, busy: function () { return !!R.closing; },
+      on: function () { return !!R.on; }, busy: function () { return !!R.closing || !!R.prepping; },
       toggle: function () { var b = el("btn"); if (b && !b.disabled) b.click(); else R.toggle(); },
       last: function () { var k = R.takes[0]; return k ? { n: k.n, sec: k.sec } : null; },
       sent: function () { return !!(R.takes[0] && R.takes[0].added) || !!R.studioLine; },

@@ -111,7 +111,9 @@
     A.inGain.connect(A.rig.input);
     A.mon.gain.value = A.hear ? 1 : 0;
     try { var s0 = st.getAudioTracks()[0].getSettings(); A.dev = s0.deviceId || ""; A.inLat = s0.latency > 0 ? s0.latency : 0; } catch (e) { A.inLat = 0; }
-    A.lat = (c.baseLatency > 0 ? c.baseLatency : 0) + (c.outputLatency > 0 ? c.outputLatency : 0) + A.inLat;
+    /* AOG-LATENCY-V1: the round trip the Studio's Timing check measured on this device, where there is one; else what the browser says */
+    var trip = 0; try { var lm = JSON.parse(localStorage.getItem("aog.latency.v1") || "null"); trip = lm && lm.rt > 0 && lm.rt < 1 ? +lm.rt : 0; } catch (e) {}
+    A.lat = trip > 0 ? trip : (c.baseLatency > 0 ? c.baseLatency : 0) + (c.outputLatency > 0 ? c.outputLatency : 0) + A.inLat;
     try { var all = await md.enumerateDevices(); A.devs = all.filter(function (d) { return d.kind === "audioinput"; }); } catch (e) { A.devs = []; }
     if (A.dev) store(A.KEY_IN, A.dev);
     A.state = "ready";
