@@ -267,6 +267,7 @@
     var html = '<span class="aogdd-demo-tx">' + t + n + (es() ? " filas" : " rows") + '</span><button type="button" class="aogdd-gsb">' + (showAll ? (es() ? "Solo " : "Only ") + (who || "") : (es() ? "Mostrar a todos" : "Show everyone")) + '</button>';
     if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
   }
+  var QUIET = "#pads,#kbd,#neck,#pvStrip,#padView,[data-aog-quiet]";
   function start() {
     D.head.appendChild(css); refresh();
     new MutationObserver(function (list) {
@@ -274,6 +275,10 @@
          for one (on the front page that search ran on every change and cost a phone seconds) */
       var mine = true, added = false;
       for (var i = 0; i < list.length; i++) { var n = list[i].target; if (n.closest && n.closest(".aogdd")) continue;
+        /* AOG-DROPDOWNS-PLAY-V1 (2026-10-11, Jimmy: the instruments "should be lighting fast in their reaction time"): a
+           drawing, or what you play (the pads, the keys, the neck), never holds a menu row; their lights change on every
+           note, and each change used to send the whole page through the menus again */
+        if (n.nodeType === 1 && ((window.SVGElement && n instanceof SVGElement) || (n.closest && n.closest(QUIET)))) continue;
         /* words changing outside a menu row (a counter, a clock) cannot change a menu */
         if (list[i].type === "childList" && onlyText(list[i]) && !(n.closest && n.closest(".aogdd-src,[data-aog-dropdown]"))) continue;
         mine = false; if (list[i].type === "childList" && list[i].addedNodes.length) { added = true; break; } }

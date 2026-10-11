@@ -2778,7 +2778,7 @@ function litNeck(){
   /* the guitar's skipped strings get an × where the open string's name was */
   svg.querySelectorAll(".nk-x").forEach(x=>{ const sk=!!(shp && shp[+x.getAttribute("data-s")]<0); x.style.display=sk?"":"none";
     const nm=svg.querySelector(`.nk-name[data-s="${x.getAttribute("data-s")}"]`); if(nm) nm.style.display=sk?"none":""; });
-  const ll=$("litLine"); if(ll) ll.hidden=!(cc || S.playing);
+  const ll=$("litLine"); if(ll){ const h=!(cc || S.playing); if(ll.hidden!==h) ll.hidden=h; }   /* AOG-STRINGS-QUIET-V1: written only when it changes (each write was a change the page reacted to, on every note) */
   paintWheelState();
   if(window.AOGSolo) AOGSolo.paint();   /* AOG-SOLO-V1: the lit scale in Solo mode */
   paintAnyLine();   /* AOG-ANYCHORD-V1: its line only while that chord is in the hand */
@@ -3197,8 +3197,9 @@ function keyLetters(){
   const on=keysShown() && !(window.AOGSolo && AOGSolo.isOn());
   const cells=[];   /* AOG-STRINGS-KEYS-V3: the notes follow the piano's layout (the picture of the keys shows it), so the neck stays clear */
   const sig=[on, cells.join(","), NECK.W, NECK.n, S.fret0].join("|");
-  document.querySelectorAll("svg").forEach(svg=>{
-    if(!svg.querySelector(".dot")) return;
+  /* AOG-STRINGS-QUIET-V1: only the drawings with spots to play (the neck, the big view's strip), not every icon on the page */
+  const svgs=new Set(); document.querySelectorAll("svg .dot").forEach(d=>{ const o=d.closest("svg"); if(o) svgs.add(o); });
+  svgs.forEach(svg=>{
     if(svg.__ksig===sig && (!on || svg.querySelector(".nk-key"))) return;
     svg.__ksig=sig; svg.querySelectorAll(".nk-key").forEach(e=>e.remove()); if(!on) return;
     const cap=(x, y, h, letter)=>{ const g=document.createElementNS("http://www.w3.org/2000/svg","g"); g.setAttribute("class","nk-key"); g.setAttribute("aria-hidden","true");

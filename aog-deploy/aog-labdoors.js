@@ -293,4 +293,18 @@
     };
     if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", later); else later();
   }
+
+  /* AOG-AUDIO-WARM-V1 (2026-10-11) — Jimmy: "the studio and all its instruments should be lighting fast in their reaction
+     time!!!!" The first tap in a room used to build its whole sound engine (the context, the chain, the room's echo)
+     before the note could sound: up to 0.4 s on a phone, on the very first note. Now, once a room is open and the page
+     is quiet, its engine is built and waits, silent and paused (nothing plays and nothing is heard). The first tap only
+     wakes it, as every later tap does. A room's engine is its own ctx(), the same one its taps call. */
+  (function () {
+    var id = here(); if (!/^(pads|kit|piano|guitar|bass|band)$/.test(id)) return;
+    var done = false;
+    function go() { if (done || D.hidden) return; done = true; try { if (typeof window.ctx === "function") window.ctx(); } catch (e) {} }
+    function soon() { if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 2500 }); else setTimeout(go, 900); }
+    if (D.readyState === "complete") setTimeout(soon, 300); else window.addEventListener("load", function () { setTimeout(soon, 300); });
+    D.addEventListener("visibilitychange", function () { if (!D.hidden && !done) soon(); });
+  })();
 })();

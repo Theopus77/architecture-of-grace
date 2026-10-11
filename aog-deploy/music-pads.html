@@ -684,6 +684,9 @@ function prep(bi){
   st.p=p.then(()=>{ if(READY[bi]===st){ st.state="ready"; if(B.type==="drums") KIT_WAS[bi]=[B.kitA, B.kitB]; paintAll(); } }).catch(()=>{ if(READY[bi]===st){ st.state="failed"; st.p=null; paintAll(); } });
   return st.p;
 }
+/* AOG-DRUM-KEEP3-V1: a kit the drum library let go (it keeps the last three asked for) is fetched again by the next
+   tap that needs it, so a pad never stays silent */
+function relink(bi){ const R=READY[bi]; if(R && R.state==="ready"){ READY[bi]={}; prep(bi); } }
 function isReady(bi){ const R=READY[bi]; return R && R.sig===sigOf(S.banks[bi]) && R.state==="ready"; }
 /* AOG-PADS-QUICK-V2: a bank plays while it gets ready — notes and chords as each recording arrives, drums from the kit
    the pads had before until the new one is ready — so a change is never a silence */
@@ -718,26 +721,33 @@ function trigger(bi, pi, vel, when, T){
   when=Math.max(when||0, c.currentTime);
   const B=S.banks[bi], trim=d.kind==="drum" ? trimOf("kit", kitFor(bi, pi, d.kit)||d.kit) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
-  if(c.createStereoPanner){ const pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
+  /* AOG-PADS-VOICES-V1 (2026-10-11) — Jimmy, on his iPad: "after like 5-6 chords it froze up, same with the bank c the
+     notes". A pad in the middle needs no panner (most pads); every part of a sound is unplugged the moment it ends, so
+     the sound engine never carries old chords; and no more than MAXV notes ring at once, the oldest let go quickly. */
+  let pn=null;
+  if(P.pan && c.createStereoPanner){ pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
+  const live=T===LIVE, unplug=()=>{ try{ out.disconnect(); }catch(e){} if(pn) try{ pn.disconnect(); }catch(e){} };
   const rate=Math.pow(2, P.tune/12);
   if(d.kind==="drum"){
     const n=(AOGDrumKit.padNames(kitFor(bi, pi, d.kit)||d.kit)||{})[d.id];
     if(n==="HAT"||n==="PEDAL"){ OPEN[bi].splice(0).forEach(o=>{ try{ o.gain.gain.setTargetAtTime(0, when, 0.012); o.src.stop(when+0.1); }catch(e){} }); }
     const acc=vel>0.88 ? 2 : vel<0.62 ? 3 : 0;
-    const kit=T===LIVE ? kitFor(bi, pi, d.kit) : d.kit; if(!kit) return null;
+    const kit=T===LIVE ? kitFor(bi, pi, d.kit) : d.kit; if(!kit){ if(T===LIVE) relink(bi); unplug(); return null; }
     const o=AOGDrumKit.playDirect(c, out, kit, d.id, when, acc, clamp(0.25+0.4*vel, 0, 1));
-    if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); }
+    if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o);
+      if(live) o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} unplug(); const k=OPEN[bi].indexOf(o); if(k>=0) OPEN[bi].splice(k,1); }; }
+    else if(live) unplug();
     return {stop(){}};
   }
   if(d.kind==="chop"){
-    const ch=R.chops && R.chops[d.i]; if(!ch) return null;
+    const ch=R.chops && R.chops[d.i]; if(!ch){ unplug(); return null; }
     if(CHOP[bi]){ try{ CHOP[bi].g.gain.cancelScheduledValues(when); CHOP[bi].g.gain.setTargetAtTime(0, when, 0.006); CHOP[bi].s.stop(when+0.05); }catch(e){} }
     const s=c.createBufferSource(), g=c.createGain(), lv=0.85*(0.35+0.65*vel), dur=ch[1]/rate;
     s.buffer=R.buf; s.playbackRate.value=rate; s.connect(g); g.connect(out);
     g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv, when+0.004);
     g.gain.setValueAtTime(lv, Math.max(when+0.005, when+dur-0.012)); g.gain.linearRampToValueAtTime(0, when+dur);
     s.start(when, ch[0], ch[1]); s.stop(when+dur+0.02);
-    const v={s:s, g:g}; CHOP[bi]=v; s.onended=()=>{ if(CHOP[bi]===v) CHOP[bi]=null; };
+    const v={s:s, g:g}; CHOP[bi]=v; s.onended=()=>{ if(CHOP[bi]===v) CHOP[bi]=null; if(live){ try{ s.disconnect(); g.disconnect(); }catch(e){} unplug(); } };
     return {stop(){}};
   }
   /* a note or a chord: it rings while the pad is held */
@@ -747,11 +757,15 @@ function trigger(bi, pi, vel, when, T){
     const s=c.createBufferSource(), g=c.createGain();
     s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(z.c||0)/1200)*rate;
     g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g, when+Math.max(0.005, tb.fade));
-    s.connect(g); g.connect(out); s.start(when, tb.off); vs.push({s:s, g:g});
+    s.connect(g); g.connect(out); s.start(when, tb.off); const v={s:s, g:g}; vs.push(v);
+    if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
   });
+  if(live){ if(!vs.length) unplug(); while(RING.length>MAXV) letGo(RING.shift(), c); }
   return {stop(at){ const t0=Math.max(at||0, c.currentTime);
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }};
 }
+const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
+function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
 function flash(bi, pi, when){
   if(bi!==S.bank) return;
   const go=()=>{ const el=$("pads").querySelector(`.pad[data-p="${pi}"]`); if(!el) return; el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
