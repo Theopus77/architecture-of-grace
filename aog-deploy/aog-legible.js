@@ -138,6 +138,25 @@
       setTimeout(function () { busy = false; }, 0);
     }, full ? 80 : 250);
   }
+  /* AOG-LEGIBLE-PART-V1 (2026-10-11, Jimmy: "make SURE IT IS the fastest it can be"): a change in one part of the page is
+     looked at in that part, not by reading every word on the page again (a counter ticking while sounds load did that
+     several times a second). Many changes at once, a theme or a class on the page, and the first looks are still whole. */
+  var part = [], ptimer = 0;
+  function soonPart(target) {
+    if (part.length < 40) part.push(target); else part.whole = true;
+    clearTimeout(ptimer);
+    ptimer = setTimeout(function () {
+      var roots = part, whole = part.whole; part = []; busy = true;
+      try {
+        if (whole) { sweep.gen++; sweep(); }
+        else {
+          roots = roots.filter(function (r, i) { return r && r.isConnected && !roots.some(function (o, j) { return j !== i && o && o !== r && o.contains && o.contains(r); }) && roots.indexOf(r) === i; });
+          sweep.gen++; roots.forEach(function (r) { sweep(r.nodeType === 1 ? (r.parentElement || r) : r.parentElement); });
+        }
+      } catch (e) {}
+      setTimeout(function () { busy = false; }, 0);
+    }, 250);
+  }
   /* other layers that repaint a room (aog-chapel.js) ask for a fresh look */
   window.aogLegibleRefresh = function () { soon(true); };
   function start() {
@@ -148,7 +167,7 @@
         .observe(H, { attributes: true, attributeFilter: ["data-theme", "class"] });
       new MutationObserver(function (list) {
         if (busy) return;
-        for (var i = 0; i < list.length; i++) if (list[i].type === "childList" || list[i].attributeName !== "style") { soon(false); return; }
+        for (var i = 0; i < list.length; i++) if (list[i].type === "childList" || list[i].attributeName !== "style") soonPart(list[i].target);
       }).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden", "open"] });
     }
     D.addEventListener("pointerover", function (e) { hoverCheck(e.target); }, true);

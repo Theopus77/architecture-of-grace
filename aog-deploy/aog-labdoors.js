@@ -99,7 +99,7 @@
       for (var i = 0; i < LABS.length; i++) if (LABS[i].m.test(f)) { shell.go(LABS[i].id); return; }
       window.top.location.href = u.href;
     });
-    try { shell.arrived(here()); } catch (e) {}
+    try { shell.arrived(here(), window); } catch (e) {}   /* AOG-STUDIO-KEEP-V1: which room says it */
     /* AOG-STUDIO-FIRST-V1 (STUDIO-HANDOFF §08, Jimmy's "3"): inside the Studio a room opens on its instrument. What
        teaches about the room (the course box, the guide, the lesson menu, the bench switch) waits in one closed
        "Lessons and more" below the instrument, and the sound and kit menus sit under the thing you play. Nothing is

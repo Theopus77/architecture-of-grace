@@ -1068,8 +1068,12 @@ function loadSet(name, onStep){
   const files=[]; (set.layers||["m","s","l"]).forEach(l=>set.notes.forEach(n=>files.push([n,l])));
   set.total=files.length;
   let failed=0, idx=0;
-  async function worker(){
+  /* AOG-PIANO-GENTLE-V1 (2026-10-11, Jimmy: "SUPER MAN SPEED!"): the middle layer comes first, six at a time, and the piano
+     plays as soon as it is in; the soft and loud layers then come two at a time with a breath between them, so a piano
+     being played is not also busy fetching and unpacking sixty recordings at full speed */
+  async function worker(k){
     while(idx<files.length && set.run===run){
+      if(set.ready){ if(k>=2) return; await new Promise(r=>setTimeout(r, 80)); if(idx>=files.length || set.run!==run) return; }
       const [n,l]=files[idx++];
       try{
         const r=await fetch(set.dir+n+l+".mp3", ctl ? {signal:ctl.signal} : undefined); if(!r.ok) throw new Error(r.status);
@@ -1085,7 +1089,7 @@ function loadSet(name, onStep){
       if(onStep) onStep(set);
     }
   }
-  set.job=Promise.all([worker(),worker(),worker(),worker(),worker(),worker()]).then(()=>{
+  set.job=Promise.all([0,1,2,3,4,5].map(worker)).then(()=>{
     if(set.run!==run) return set;          /* let go while it loaded: it stays put away */
     set.state = set.ready ? "ready" : "failed";
     if(!set.ready) set.job=null;
