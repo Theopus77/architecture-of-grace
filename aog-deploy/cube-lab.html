@@ -9,7 +9,7 @@
 <title>The Cube Lab — Architecture of Grace</title>
 <!-- AOG-CUBE-LAB-V1 (2026-10-10) — Jimmy: "a step by step 3d interactive engine … instructions on how to make and
      finish a rubric cube." A real 3D Rubik's Cube on the Lab Bench, drawn with CSS 3D (no canvas, no library):
-     drag a row to turn it, drag around the cube to look around. Ten short steps teach the layer-by-layer way
+     drag a row to turn it; Front and Back show every side. Ten short steps teach the layer-by-layer way
      (daisy, white cross, white corners, middle, yellow cross, yellow top, yellow corners, yellow edges).
      "Solve with me" solves any mixed cube with the very moves the steps teach (aog-cube.js), one move at a
      time. "My cube" paints a real cube's colours in, then helps finish it. Nothing moves until it is tapped. -->
@@ -129,7 +129,8 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .look-row { display:flex; justify-content:center; margin:.1rem 0 0; }
 .looks { display:inline-flex; align-items:center; gap:.3rem; }
 .looks .lk { font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-right:.15rem; }
-.looks .lookb { min-width:48px; padding:0; font-size:1.05rem; }
+.looks .lookb { min-width:92px; font-size:1rem; }
+.looks .lookb.on { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
 .view-row select { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .8rem; font-size:16px; font-weight:600; }
 
 /* the turn pad: six faces, each way, and turning the whole cube */
@@ -261,13 +262,13 @@ const T={
   tag:["Learn to solve a Rubik's Cube, one step at a time.","Aprende a resolver un cubo de Rubik, paso a paso."],
   foot:["Turn it on screen, or follow along with a real cube in your hands. Your place is saved on this device.","Gíralo en la pantalla o sigue con un cubo de verdad en tus manos. Tu avance se guarda en este aparato."],
   vLearn:["Learn","Aprende"], vSolve:["Solve with me","Resuélvelo conmigo"], vMine:["My cube","Mi cubo"], micro:["Microscope","Microscopio"],
-  hint:["Drag a row to turn it. Drag the space around the cube to look around.","Arrastra una fila para girarla. Arrastra el espacio alrededor del cubo para mirarlo."],
-  hintSolve:["Follow the arrow with your finger, or tap Turn it. Drag around the cube to look.","Sigue la flecha con el dedo, o toca Girarlo. Arrastra alrededor del cubo para mirar."],
+  hint:["Drag a row to turn it. Tap Back to see the other three sides.","Arrastra una fila para girarla. Toca Atrás para ver los otros tres lados."],
+  hintSolve:["Follow the arrow with your finger, or tap Turn it.","Sigue la flecha con el dedo, o toca Girarlo."],
   hintSolveReal:["Follow the arrow on your cube, then tap I did it.","Sigue la flecha en tu cubo y luego toca Ya lo hice."],
   hintPaint:["Pick a color, then tap a square to paint it.","Elige un color y toca un cuadro para pintarlo."],
   faces:["Turn a side","Gira un lado"], whole:["Turn the whole cube","Gira el cubo entero"],
   undo:["Undo","Deshacer"], mix:["Mix it up","Mézclalo"], fresh:["Solved cube","Cubo resuelto"],
-  look:["Front view","Vista de frente"], lookH:["Look","Mira"],
+  look:["Front view","Vista de frente"], lookH:["View","Vista"], viewFront:["Front","Frente"], viewBack:["Back","Atrás"],
   look_left:["Turn the cube left, to see its right side","Gira el cubo a la izquierda, para ver su lado derecho"],
   look_right:["Turn the cube right, to see its left side","Gira el cubo a la derecha, para ver su lado izquierdo"],
   look_up:["Tip the cube away, to see its bottom","Inclina el cubo hacia atrás, para ver la parte de abajo"],
@@ -297,7 +298,7 @@ const T={
   mineIntro:["Have a real cube? Paint its colors here and get help to finish it. If it was taken apart and put back wrong, you'll see how to fix that too.","¿Tienes un cubo de verdad? Pinta aquí sus colores y te ayudamos a terminarlo. Si lo desarmaron y lo armaron mal, también verás cómo arreglarlo."],
   mine1:["Hold your cube with yellow on top and green facing you. Not those colors? Hold it any way, and paint the six centers (the middle square of each side) to match first.","Sostén tu cubo con el amarillo arriba y el verde hacia ti. ¿No tiene esos colores? Sostenlo como quieras y pinta primero los seis centros (el cuadro del medio de cada lado) igual que el tuyo."],
   mine2:["Pick a color. Tap the matching squares on the screen.","Elige un color. Toca los cuadros que coinciden en la pantalla."],
-  mine3:["Tap Turn around. Turn your cube the same way and paint the other three sides.","Toca Dale la vuelta. Gira tu cubo igual y pinta los otros tres lados."],
+  mine3:["Tap Back. Turn your cube the same way and paint the other three sides.","Toca Atrás. Gira tu cubo igual y pinta los otros tres lados."],
   mine4:["Tap Check my cube.","Toca Revisa mi cubo."],
   check:["Check my cube","Revisa mi cubo"], clear:["Clear","Borrar"], fromScreen:["Copy the screen cube","Copiar el cubo de la pantalla"],
   errCount:["{c}: {n} squares painted. Each color needs 9.","{c}: {n} cuadros pintados. Cada color necesita 9."],
@@ -391,7 +392,7 @@ const L=[
     ["An edge piece has 2 colors. A corner piece has 3 colors.","Una arista tiene 2 colores. Una esquina tiene 3 colores."],
     ["Solved means every side is one color.","Resuelto quiere decir que cada lado es de un solo color."],
     ["We solve in layers: the white bottom first, then the middle, then the yellow top.","Lo resolvemos por capas: primero la base blanca, luego el medio y al final la cara amarilla."],
-    ["On the screen, drag a row to turn it. Drag the space around the cube to look at every side.","En la pantalla, arrastra una fila para girarla. Arrastra el espacio alrededor del cubo para ver cada lado."]]},
+    ["On the screen, drag a row to turn it. Tap Back to see the other three sides, and Front to come back.","En la pantalla, arrastra una fila para girarla. Toca Atrás para ver los otros tres lados, y Frente para volver."]]},
  {id:"moves", t:["The moves","Los movimientos"], kind:"moves",
   goal:["Read a move and do it.","Lee un movimiento y hazlo."],
   steps:[["Each letter names a side: F front, B back, R right, L left, U up (the top), D down (the bottom).","Cada letra nombra un lado: F frente, B atrás, R derecha, L izquierda, U arriba, D abajo."],
@@ -579,10 +580,11 @@ function projector(){
 let arrowGeo=null;   /* the arrow on screen (stage pixels) and its move, so a finger can follow it */
 /* how near a point is to the arrow, and which way the arrow runs there */
 function nearArrow(sx, sy){
-  if(!arrowGeo) return null; const P=arrowGeo.P; let best=null;
-  for(let i=0;i+1<P.length;i++){ const A=P[i], B=P[i+1], vx=B[0]-A[0], vy=B[1]-A[1], L2=vx*vx+vy*vy||1;
+  if(!arrowGeo) return null; const P=arrowGeo.P; let best=null, run=0;
+  for(let i=0;i+1<P.length;i++){ const A=P[i], B=P[i+1], vx=B[0]-A[0], vy=B[1]-A[1], L2=vx*vx+vy*vy||1, L=Math.sqrt(L2);
     const t=Math.max(0,Math.min(1,((sx-A[0])*vx+(sy-A[1])*vy)/L2)), d=Math.hypot(A[0]+vx*t-sx, A[1]+vy*t-sy);
-    if(!best || d<best.d) best={d, ux:vx/Math.sqrt(L2), uy:vy/Math.sqrt(L2)}; }
+    if(!best || d<best.d) best={d, ux:vx/L, uy:vy/L, s:run+t*L};   /* s: how far along the arrow, in pixels */
+    run+=L; }
   let len=0; for(let i=0;i+1<P.length;i++) len+=Math.hypot(P[i+1][0]-P[i][0], P[i+1][1]-P[i][1]);
   best.len=len; return best;
 }
@@ -596,14 +598,16 @@ function drawArrow(){
   const facing=v => toView(v)[2];
   let pts=[];
   const nf=n.map(x => x*(c0||1));
-  if(false){
+  if(mv.sel===1 && n[2]===1 && facing(n)>.4){
     /* the face toward you: a round arrow on it, going the way it turns */
     const e1=Math.abs(n[1])?[1,0,0]:[0,1,0], e2=[n[1]*e1[2]-n[2]*e1[1], n[2]*e1[0]-n[0]*e1[2], n[0]*e1[1]-n[1]*e1[0]];
     for(let k=0;k<=24;k++){ const th=(sgn>0 ? 2.2-k*0.17 : -0.9+k*0.17); pts.push(add(add(n.map(x=>x*1.56), e1, .95*Math.cos(th)), e2, .95*Math.sin(th))); }
   } else {
     /* the row that turns, on the side that faces you most: an arrow across it */
     const sides=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].filter(u => C.dot(u,n)===0).sort((a,b)=>facing(b)-facing(a));
-    const u=sides[0], v=[n[1]*u[2]-n[2]*u[1], n[2]*u[0]-n[0]*u[2], n[0]*u[1]-n[1]*u[0]].map(x => -x*sgn);
+    /* the side the words talk about, when it shows: "top goes left" → the top; "to the left", "up" → the front */
+    const say = (mv.base==="B"||mv.base==="F"||mv.base==="S"||mv.base==="z") ? [0,1,0] : [0,0,1];
+    const u = (C.dot(say,n)===0 && facing(say)>.25) ? say : sides[0], v=[n[1]*u[2]-n[2]*u[1], n[2]*u[0]-n[0]*u[2], n[0]*u[1]-n[1]*u[0]].map(x => -x*sgn);
     const base=add(n.map(x=>x*c0), u, 1.56);
     for(let k=0;k<=12;k++) pts.push(add(base, v, -1.15+k*(2.3/12)));
   }
@@ -621,7 +625,8 @@ function stageTools(){
   const u=$("stUndo"), f=$("stFront"); if(!u) return;
   u.textContent="↶ "+t("undo"); f.textContent=t("look");
   u.hidden=painting || !S.hist.length;
-  f.hidden=atHome();
+  f.hidden=true;   /* the View row (Front · Back) is the way home now */
+  const vb=document.querySelectorAll("#lookRow [data-look]"); vb.forEach(b => { const on=b.getAttribute("data-look")==="front" ? atHome() : atBack(); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
 }
 function fit(){ const w=stage.clientWidth||320; size=Math.max(30, Math.round(w/5.7)); PERSP=Math.round(size*17); stage.style.perspective=PERSP+"px";   /* small enough to stay whole in the box, whichever way it is turned */ stage.style.setProperty("--s", size+"px"); render(); }
 
@@ -868,14 +873,20 @@ function padHtml(){
   h+=`<button type="button" class="act" data-act="undo">↶ ${esc(t("undo"))}</button><button type="button" class="act go" data-act="mix">${esc(t("mix"))}</button><button type="button" class="act" data-act="fresh">${esc(t("fresh"))}</button>`;
   return h;
 }
-const LOOKS={left:[[0,1,0],-Math.PI/2], right:[[0,1,0],Math.PI/2], up:[[1,0,0],Math.PI/2], down:[[1,0,0],-Math.PI/2]};
+/* AOG-CUBE-STILL-V1 (2026-10-11) — Jimmy (iPad): "I am still having challenges with moving the screen when I am working
+   with the cube … The ceiling has not been reached. Think of special ed needs with neurodivergent needs." A cube that
+   spins freely is easy to lose. Now it holds still: the space around it never moves it, and there are two named views,
+   each always the same: Front (top, front, right) and Back (bottom, back, left). Together they show all six sides,
+   and Front is always home. Rows still turn by a drag on the cube or along the arrow. */
+const atBack=() => VIEW.every((x,i) => Math.abs(x-BACK_VIEW[i])<.02);
 function lookRowHtml(){
+  const f=atHome(), b=atBack();
   return `<span class="looks" role="group" aria-label="${esc(t("lookH"))}"><span class="lk">${esc(t("lookH"))}</span>`
-    +[["left","◀"],["up","▲"],["down","▼"],["right","▶"]].map(([k,g])=>`<button type="button" class="pill lookb" data-look="${k}" aria-label="${esc(t("look_"+k))}">${g}</button>`).join("")+`</span>`;
+    +`<button type="button" class="pill lookb ${f?"on":""}" data-look="front" aria-pressed="${f}">${esc(t("viewFront"))}</button>`
+    +`<button type="button" class="pill lookb ${b?"on":""}" data-look="back" aria-pressed="${b}">${esc(t("viewBack"))}</button></span>`;
 }
 function viewRowHtml(){
   let h="";
-  if(painting) h+=`<button type="button" class="pill" data-look="back">${esc(t("lookBack"))}</button>`;
   if(!painting) h+=`<button type="button" class="pill" data-look="letters" aria-pressed="${S.letters}">${esc(t("letters"))}: ${esc(t(S.letters?"on":"off"))}</button>
     <label class="sr" for="speedSel">${esc(t("speed"))}</label><select id="speedSel" aria-label="${esc(t("speed"))}">${["slow","normal","instant"].map(k=>`<option value="${k}" ${S.speed===k?"selected":""}>${esc(t("speed"))}: ${esc(t(k))}</option>`).join("")}</select>`;
   return h;
@@ -908,7 +919,7 @@ function paintAll(){
   document.querySelectorAll("#viewRow [data-look], #lookRow [data-look]").forEach(b => b.onclick=()=>{
     const k=b.getAttribute("data-look");
     if(k==="front"){ lookTurn(null,0,HOME_VIEW); return; } else if(k==="back"){ lookTurn(null,0,BACK_VIEW); return; }
-    else if(LOOKS[k]){ lookTurn(LOOKS[k][0], LOOKS[k][1]); return; } else { S.letters=!S.letters; save(); paintAll(); return; }
+    else { S.letters=!S.letters; save(); paintAll(); return; }
     render();
   });
   const sel=$("speedSel"); if(sel) sel.onchange=()=>{ S.speed=sel.value; save(); };
@@ -916,7 +927,7 @@ function paintAll(){
   save();
 }
 
-/* ── hands on the cube: drag a row to turn it, drag around it to look ── */
+/* ── hands on the cube: drag a row to turn it; the space around it never moves it ── */
 let drag=null;
 const AXES=[[1,0,0],[0,1,0],[0,0,1]];
 const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
@@ -959,7 +970,7 @@ stage.addEventListener("pointerdown", e => {
   if(fe && fe.querySelector("i")){ const i=+fe.dataset.i, f=fe.dataset.f, nv=toView(C.mulV(cube.P[i].M, C.FACES[f])); if(nv[2]>.05) hit={i, f}; }
   if(!hit) hit=pickSticker(e.clientX, e.clientY);
   const [sx0,sy0]=stageXY(e.clientX, e.clientY), na=painting ? null : nearArrow(sx0, sy0);
-  drag={x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, v0:VIEW.slice(), arrow:(na && na.d<Math.max(30, size*.6)) ? na : null};
+  drag={sx0, sy0, x:e.clientX, y:e.clientY, id:e.pointerId, face:hit?{i:hit.i, f:hit.f}:null, mode:null, v0:VIEW.slice(), arrow:(na && na.d<Math.max(30, size*.6)) ? na : null};
   try{ stage.setPointerCapture(e.pointerId); }catch(_){}
   stage.classList.add("grabbing");
 });
@@ -974,7 +985,7 @@ function onMove(e){
     if(A && arrowGeo && Math.abs(along)>.55 && !busy && !queue.length){
       /* following the arrow (or going back along it): that exact move, whatever piece the finger is on */
       const mv=arrowGeo.mv, qs=mv.q<0?-1:1;
-      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, qs, ux:A.ux, uy:A.uy, len:Math.max(40, A.len)};
+      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, qs, ux:A.ux, uy:A.uy, len:Math.max(40, A.len), s0:A.s, sx0:drag.sx0, sy0:drag.sy0};
     } else if(drag.face && !painting && !busy && !queue.length){
       const p=cube.P[drag.face.i], n=C.mulV(p.M, C.FACES[drag.face.f]), pos=cube.pos(p);
       const ps=[pos[0]+n[0]*.5, pos[1]+n[1]*.5, pos[2]+n[2]*.5];
@@ -986,13 +997,15 @@ function onMove(e){
       });
       if(best){ const layer=C.dot(pos,best.a); const set=new Set(); cube.P.forEach((q,i) => { if(C.dot(cube.pos(q),best.a)===layer) set.add(i); });
         drag.mode="turn"; drag.turn={a:best.a, ux:best.v[0]/best.len, uy:best.v[1]/best.len, pxPerRad:best.len*size*1.015, layer, set, th:0}; }
-      else drag.mode="look";
-    } else drag.mode="look";
+      else drag.mode="still";
+    } else drag.mode="still";   /* AOG-CUBE-STILL-V1: the space around the cube never moves it */
   }
-  if(drag.mode==="look"){ /* roll the cube under the finger: right turns it right, down tips it toward you, on and on */
-    const len=Math.hypot(dx,dy); if(len>0){ VIEW=mul3(C.rot([-dy/len, dx/len, 0], len*0.24*deg), drag.v0); } render({viewOnly:true}); }
-  else if(drag.mode==="turn"){ const T2=drag.turn;
-    T2.th = T2.arrowMv ? -T2.qs*(Math.PI/2)*((dx*T2.ux+dy*T2.uy)/T2.len) : (dx*T2.ux+dy*T2.uy)/T2.pxPerRad;
+  if(drag.mode==="turn"){ const T2=drag.turn;
+    if(T2.arrowMv){
+      /* along the arrow itself, straight or round: the bead's place on the line, not the straight-line distance */
+      const [sx,sy]=stageXY(e.clientX, e.clientY), na=nearArrow(sx, sy);
+      if(na && na.d<Math.max(60, size*1.2)) T2.th=-T2.qs*(Math.PI/2)*((na.s-T2.s0)/(T2.len*.8));
+    } else T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad;
     render({a:T2.a, set:T2.set, th:T2.th}); }
 }
 function endDrag(e){
