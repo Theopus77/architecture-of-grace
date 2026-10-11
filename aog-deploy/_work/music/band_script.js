@@ -11,7 +11,7 @@ const RHYTHMS=["long","swell","stabs","offbeat","march","waltz","fanfare","broke
 const RHYTHM_BEATS={waltz:3};
 function beatsPerBar(){ return RHYTHM_BEATS[S.rhythm]||4; }
 const S={ lang:"en", sound:"trumpet", key:0, minor:false, preset:"", prog:[], own:false, rhythm:"long", bpm:90,
-  oct:null, era:0, vol:0.8, withDrums:false, playing:false };
+  oct:null, era:0, vol:0.8, withDrums:false, playing:false, sus:false };   /* sus: the pedal is down (never kept) */
 try{ S.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
 function loadState(){
   try{
@@ -85,7 +85,8 @@ const STR={
   rangeOut:{en:"{a} to {b}",es:"{a} a {b}"},
   litLine:{en:"Pale keys fit the chord. Orange keys are playing now.",es:"Las teclas claras encajan con el acorde. Las naranjas suenan ahora."},
   touchLine:{en:"Hold a key to hold the note. Grey keys are too high or too low for this instrument.",es:"Mantén una tecla para mantener la nota. Las teclas grises son demasiado agudas o graves para este instrumento."},
-  keysLine:{en:"On a computer, A S D F G H J K L ; ' play the white keys and W E T Y U O P the black keys. Z and X go lower and higher. 1 to 6 play the chord pads. Space starts and stops.",es:"En la computadora, A S D F G H J K L Ñ ' tocan las teclas blancas y W E T Y U O P las negras. Z y X bajan y suben. Del 1 al 6 tocan los pads. La barra espaciadora empieza y para."},
+  keysLine:{en:"On a computer, A S D F G H J K L ; ' play the white keys and W E T Y U O P the black keys. Z and X go lower and higher. 1 to 6 play the chord pads. Hold Shift to keep notes sounding. Space starts and stops.",es:"En la computadora, A S D F G H J K L Ñ ' tocan las teclas blancas y W E T Y U O P las negras. Z y X bajan y suben. Del 1 al 6 tocan los pads. Mantén Shift para que las notas sigan sonando. La barra espaciadora empieza y para."},
+  sus:{en:"Hold notes (pedal)",es:"Mantener notas (pedal)"},   /* AOG-BAND-SUSTAIN-V1: the piano's words */
   eraLab:{en:"Sound",es:"Sonido"}, eraAria:{en:"Sound era, from 1987 to 2026",es:"Época del sonido, de 1987 a 2026"},
   era87:{en:"1987 crunch",es:"Crujido de 1987"}, eraMost87:{en:"Mostly 1987",es:"Casi todo 1987"},
   eraHalf:{en:"Half and half",es:"Mitad y mitad"}, eraMost26:{en:"Mostly 2026",es:"Casi todo 2026"}, era26:{en:"Clean 2026",es:"Limpio 2026"},
@@ -486,7 +487,7 @@ function setSendLevel(ch, id){ ch.send.gain.value=SOUNDS[id].rev; }
 /* ── the recordings: one set per player, loaded when its sound is picked; only the players of the sound you picked
    are kept, so a phone keeps its memory ── */
 const SETS={};
-function setOf(key){ return SETS[key]||(SETS[key]={buf:{}, start:{}, state:"idle", done:0, total:0, job:null, ready:false}); }
+function setOf(key){ return SETS[key]||(SETS[key]={buf:{}, start:{}, loop:{}, state:"idle", done:0, total:0, job:null, ready:false}); }
 /* the orchestra loads lean (AOG-BAND-ORCH-V1): a set "lean:<player>" holds one held recording per note (the loud one,
    where there is one), only the notes the orchestra can ask that player for, and short notes only for the timpani; its
    kit, only the cymbal. So an iPad keeps up, and each player joins in as soon as its own notes are in. */
@@ -567,6 +568,48 @@ function onsetOf(buf, winds){
   return Math.max(0, i-Math.floor(0.002*buf.sampleRate))/buf.sampleRate;
 }
 const BREATH=new WeakSet();   /* the recordings whose breath is skipped; a voice starting one fades in over 8 ms */
+/* AOG-BAND-HOLD-V1 (2026-10-11) — Jimmy: "the Band's long notes would keep sounding instead of stopping when the recording
+   runs out." The held recordings are about five seconds long, so a key held longer went quiet. A player who sustains (the
+   winds, the brass, the bowed strings, the saxophones, the bagpipes and their drones) now holds the note for as long as the
+   key (or the pedal) is down: the voice loops a steady stretch of its own recording. Plucked and struck players (PLUCKED:
+   pizzicato, harp, timpani, the mallets) and the kit ring out as recorded.
+   Where it loops is found once, as the recording loads (findLoop): the held level is the middle of the note after its
+   first 0.6 s; the loop ends 0.1 s before the level last falls 3 dB under it (the recording's own fade); it starts 1 to
+   2.6 s earlier, where the level is closest to the level at the end. The end is moved by up to half a wave so the two
+   ends line up best, then the last 0.2 s before the end is blended into the 0.2 s before the start (as the piano's organ
+   and flute are: a straight blend, lifted by just as much as the two differ, so the loudness holds), and the few samples
+   past the end become those past the start. The jump back lands where the sound already is: no click (bandt/hold.js
+   renders 12 s held notes and looks at every seam). */
+function holds(inst){ return inst!=="kit" && !PLUCKED[inst]; }
+function findLoop(b, st, n){
+  const sr=b.sampleRate, d=b.getChannelData(0), N=b.length, W=Math.round(0.05*sr), i0=Math.round(st*sr);
+  const env=[]; for(let a=0;a+W<=N;a+=W){ let e=0; for(let k=a;k<a+W;k++) e+=d[k]*d[k]; env.push(Math.sqrt(e/W)); }
+  const w0=Math.ceil((i0+0.6*sr)/W), w1=Math.floor(env.length*0.85);
+  if(w1-w0<12) return null;
+  const mid=env.slice(w0, w1).sort((x,y)=>x-y)[(w1-w0)>>1]; if(!(mid>1e-4)) return null;
+  let j=env.length-1; while(j>w0 && env[j]<0.71*mid) j--;
+  let Z=j*W-Math.round(0.1*sr);
+  const X=Math.round(0.2*sr), lo=i0+Math.round(0.5*sr)+X;
+  const lev=(i)=>{ const k=Math.max(0, Math.min(env.length-1, Math.round(i/W))); return 20*Math.log10(env[k]+1e-9); };
+  const at=lev(Z-X); let A=-1, best=1e9;
+  for(let a=Z-Math.round(2.6*sr); a<=Z-Math.round(1.0*sr); a+=W){ if(a<lo) continue; const c=Math.abs(lev(a-X)-at)-0.002*(Z-a)/W; if(c<best){ best=c; A=a; } }
+  if(A<0) return null;
+  /* the end, moved by up to half a wave, where the two ends' waves line up best */
+  const P=Math.max(8, Math.round(sr/mtof(n))), L=Math.min(1024, X), h=P>>1, cz=Math.round(X/2+L/2);
+  let bz=Z, br=-2;
+  for(let z=Z-h; z<=Z+h; z++){ if(z+8>=N || z-cz<0) continue; let xy=0, xx=0, yy=0;
+    for(let i=0;i<L;i++){ const p=d[z-cz+i], q=d[A-cz+i]; xy+=p*q; xx+=p*p; yy+=q*q; }
+    const r=xy/Math.sqrt(xx*yy+1e-20); if(r>br){ br=r; bz=z; } }
+  Z=bz; if(Z+8>=N || Z-A<sr*0.9) return null;
+  for(let ch=0; ch<b.numberOfChannels; ch++){
+    const c=b.getChannelData(ch); let xy=0, xx=0, yy=0;
+    for(let i=0;i<X;i++){ const p=c[Z-X+i], q=c[A-X+i]; xy+=p*q; xx+=p*p; yy+=q*q; }
+    const r=Math.max(0, Math.min(1, xy/Math.sqrt(xx*yy+1e-20)));
+    for(let i=0;i<X;i++){ const u=(i+0.5)/X, k=1/Math.sqrt((1-u)*(1-u)+u*u+2*r*u*(1-u)), z=Z-X+i; c[z]=(c[z]*(1-u)+c[A-X+i]*u)*k; }
+    for(let i=0;i<4 && Z+i<N;i++) c[Z+i]=c[A+i];
+  }
+  return [A/sr, Z/sr];
+}
 function breathAt(set, key){ return !!set.buf[key] && BREATH.has(set.buf[key]); }
 /* one microphone of a stereo recording (leftOnly), brought to the loudness of the two together, so the note is as loud
    in a big group as on its own */
@@ -593,6 +636,7 @@ function loadInst(key, onStep, lanes){
         let b=await decodeWith(dec, await r.arrayBuffer());
         if(b.numberOfChannels>1 && leftOnly(key)) b=leftOf(dec, b);
         set.buf[f]=b; set.start[f]=onsetOf(b, instOf(key)!=="kit");
+        if(f.slice(-1)!=="t" && holds(instOf(key))){ const lp=findLoop(b, set.start[f], parseInt(f,10)); if(lp) set.loop[f]=lp; }   /* AOG-BAND-HOLD-V1 */
       }catch(e){}
       set.done++;
       if(!set.ready && main.every(x=>set.buf[x])) set.ready=true;
@@ -654,8 +698,10 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
     const gn=gainAt(c, g);
     if(gTo!=null){ gn.gain.setValueAtTime(g, when); gn.gain.linearRampToValueAtTime(gTo, when+swellDur); }
     else if(breathAt(set, key)){ gn.gain.setValueAtTime(0, when); gn.gain.linearRampToValueAtTime(g, when+0.008); }   /* AOG-BAND-BREATH-V1 */
+    const lp=art!=="stac" && set.loop && set.loop[key];   /* AOG-BAND-HOLD-V1: a held note loops its steady stretch */
+    if(lp && (set.start[key]||0)<lp[0]){ s.loop=true; s.loopStart=lp[0]; s.loopEnd=lp[1]; }
     s.connect(gn); gn.connect(out); s.start(when, set.start[key]||0); srcs.push(s);
-    return {buf:buf, key:key, rate:s.playbackRate.value};
+    return {buf:buf, key:key, rate:s.playbackRate.value, loop:s.loop ? lp : null};
   };
   let main=null;
   const st=man.stac.filter(q=>set.buf[q+"t"]);                /* the short notes this set has (a lean set may have none) */
@@ -675,7 +721,8 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
   out.connect(rel); rel.connect(ch.bus); rel.connect(ch.send);
   const vc=voiceShell(c, ch.bus, srcs, rel);
   vc.tau=art==="stac" ? 0.03 : PLUCKED[inst] ? 0.3 : BOWED[inst] ? 0.16 : 0.07;     /* a pluck let go rings on a moment, as a string does */
-  vc.natural=when+(main.buf.duration-(set.start[main.key]||0))/main.rate;
+  vc.natural=main.loop ? Infinity : when+(main.buf.duration-(set.start[main.key]||0))/main.rate;   /* a looped note lasts until it is let go */
+  vc.loop=main.loop ? {at:when, off:set.start[main.key]||0, a:main.loop[0], z:main.loop[1], rate:main.rate} : null;   /* where its seams fall (bandt/hold.js) */
   return vc;
 }
 /* the stand-in, while the recordings load: a soft reedy, brassy, bowed or plucked tone made here */
@@ -758,7 +805,18 @@ function noteOn(key, inst, m, v){
 }
 function noteOff(key){
   const vc=LIVE.get(key); if(!vc) return;
-  vc.down=false; vc.stop(ac.currentTime, vc.tau); LIVE.delete(key);
+  vc.down=false;
+  if(!S.sus){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); }
+  litKeys();
+}
+/* AOG-BAND-SUSTAIN-V1 (2026-10-11) — Jimmy: "the Band would get a sustain pedal." As on the piano: the Hold notes button,
+   Shift held on a computer, or a MIDI keyboard's pedal (CC64). Notes let go while it is down keep sounding (a held
+   player's note goes on, AOG-BAND-HOLD-V1); lifting it lets them go. */
+function setSus(on){
+  on=!!on; if(S.sus===on) return;
+  S.sus=on;
+  const b=document.getElementById("susBtn"); if(b) b.setAttribute("aria-pressed", on?"true":"false");
+  if(!on && ac){ LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); } }); }
   litKeys();
 }
 function allOff(){
@@ -1013,7 +1071,7 @@ function paintText(){
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?t("light"):t("dark");
   $("majBtn").textContent=t("major"); $("minBtn").textContent=t("minorW");
   $("ownBtn").textContent=t("own"); $("clearBtn").textContent=t("clear");
-  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher");
+  $("downBtn").textContent=t("lower"); $("upBtn").textContent=t("higher"); $("susBtn").textContent=t("sus"); if(MIDI) MIDI.paint();
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
@@ -1329,6 +1387,17 @@ function bindKeyboard(){
     if(m!=null && ![...POINTERS.values()].some(x=>x===m)) keyOff(m); };
   kb.addEventListener("pointerup",up); kb.addEventListener("pointercancel",up); kb.addEventListener("lostpointercapture",up);
 }
+/* AOG-MIDI-V1 (2026-10-11) — Jimmy: "Play it from a real keyboard everywhere." A MIDI keyboard plays the band's keys: each
+   key by whoever reaches its note (as a key on the screen does), as hard as it is struck; its pedal is the sustain pedal.
+   The shared helper (aog-midi.js) shows the button only where the browser has MIDI, and says when a keyboard comes or goes. */
+var MIDI=null;   /* var: paintText may ask for it first */
+function bindMidi(){
+  if(!window.AOGMidi) return;
+  MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx,
+    on:(m, v)=>{ noteOn("m"+m, playerFor(m), m, v); lessonKey(m, v); },
+    off:(m)=>{ noteOff("m"+m); lessonKeyUp(m); },
+    sustain:setSus});
+}
 /* computer keys: by position, so other keyboard layouts work too */
 const HELD_KEYS=new Map();
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
@@ -1505,6 +1574,7 @@ function bpInit(){
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   if(e.target && e.target.tagName==="SELECT") return;
+  if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ if(!e.repeat) setSus(true); return; }   /* AOG-BAND-SUSTAIN-V1 */
   if(KEYMAP[e.code]!=null){ e.preventDefault(); if(e.repeat||HELD_KEYS.has(e.code)) return;
     const m=KB.lo+KEYMAP[e.code]; HELD_KEYS.set(e.code, m); keyOn(m, 0.7); return; }
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
@@ -1516,10 +1586,11 @@ document.addEventListener("keydown",(e)=>{
   }
 });
 document.addEventListener("keyup",(e)=>{
+  if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ setSus(false); return; }   /* AOG-BAND-SUSTAIN-V1 */
   if(HELD_KEYS.has(e.code)){ keyOff(HELD_KEYS.get(e.code)); HELD_KEYS.delete(e.code); return; }
   const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
 });
-window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>keyOff(m)); HELD_KEYS.clear(); });
+window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>keyOff(m)); HELD_KEYS.clear(); if(S.sus) setSus(false); });
 
 function bind(){
   $("soundSel").onchange=()=>{ const id=$("soundSel").value; if(!SOUNDS[id]) return; S.sound=id; S.oct=null; save();
@@ -1554,6 +1625,8 @@ function bind(){
   $("vol").oninput=()=>{ S.vol=Math.max(0.05,(+$("vol").value)/100); $("volOut").textContent=Math.round(S.vol*100); if(ac) LIVE_CH.master.gain.setTargetAtTime(volGain(S.vol), ac.currentTime, 0.02); clearTimeout(bind.vt); bind.vt=setTimeout(save,250); };
   $("sendBtn").onclick=()=>bounce(); $("sendPadsBtn").onclick=()=>bounce("pads");
   $("padsBtn").onclick=sendPads;
+  $("susBtn").onclick=()=>setSus(!S.sus);   /* AOG-BAND-SUSTAIN-V1 */
+  bindMidi();                                /* AOG-MIDI-V1 */
   $("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S.lang); }catch(e){} paintText(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };

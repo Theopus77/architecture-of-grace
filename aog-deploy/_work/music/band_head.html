@@ -90,6 +90,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 #rig .blk>h2{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0 0 .6rem}
 .plab{display:block;font:800 .72rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#d8cfbf;margin:0 0 .3rem}
 .line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
+#midiLine:empty{display:none}   /* AOG-MIDI-V1: the MIDI answer takes room only when there is one */
+#midiBtn[hidden]{display:none!important}   /* AOG-MIDI-V1: no MIDI in this browser (an iPhone), no button: the button style must not bring it back */
 .line.note{color:#ffd9a8}
 .line a{color:#cfe2ff}
 .row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
@@ -300,6 +302,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <!-- AOG-BAND-SCALES-V1: the scale and chord libraries every instrument shares (read when the page is up) -->
 <script src="/aog-scales.js" defer></script>
 <script src="/aog-chords.js" defer></script>
+<script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -394,10 +397,13 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="rangeOut" aria-live="polite"></span>
           <button type="button" class="pbtn" id="upBtn"></button>
+          <button type="button" class="pbtn" id="susBtn" aria-pressed="false"></button><!-- AOG-BAND-SUSTAIN-V1: the pedal -->
+          <button type="button" class="pbtn" id="midiBtn" hidden></button><!-- AOG-MIDI-V1 -->
           <button type="button" class="pbtn" id="recBtn" aria-pressed="false"></button>
           <span id="recTime" hidden>0:00</span>
           <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
+        <p class="line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI keyboard's one-line answer -->
         <div class="kbd" id="kbd" role="group"></div>
         <div class="any" id="anyBox"><!-- AOG-BAND-SCALES-V1: any chord, on any root -->
           <span class="plab" data-t="anyH"></span>

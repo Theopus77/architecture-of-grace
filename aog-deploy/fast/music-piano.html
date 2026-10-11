@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:26d9267cf8e7aa9f · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:01d61a491c123ae3 · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -83,6 +83,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .line{color:#d7cbb8;font-size:.95rem;line-height:1.45;margin:.55rem 0 0}
 .line.note{color:#ffd9a8}
 #midiLine:empty{display:none}   /* the MIDI answer takes room only when there is one */
+#midiBtn[hidden]{display:none!important}   /* AOG-MIDI-V1: no MIDI in this browser (an iPhone), no button: the button style must not bring it back */
 .line a{color:#cfe2ff}
 .row{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
 .field{display:grid;min-width:0;flex:1 1 15rem}
@@ -348,6 +349,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
 <script src="/aog-scales.js" defer></script>
 <script src="/aog-chords.js" defer></script>
+<script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
 <script>
 (function(){
   function add(src){
@@ -523,6 +525,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="bp-main" id="bpMain"></div>
 </div>
 
-<script src="/front/da29c5036319.js"></script>
+<script src="/front/3dbb5c14fed6.js"></script>
 </body>
 </html>
