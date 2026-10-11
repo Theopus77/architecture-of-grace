@@ -1,11 +1,10 @@
-/* Front-page door "The Cube" (AOG-CUBE-DOOR-V1, 2026-10-10) — pencil still life: a Rubik's Cube with its top
-   layer turned part way, one top corner missing, and that corner and an edge piece lying popped out beside it
-   ("I have a Rubik's Cube that has been altered. I have no idea how to make it right"). Sizes in metres. */
-#define POPPED
-#define CAM_POS vec3(-0.1313,0.1066,-0.1990)
-#define CAM_TGT vec3(-0.0076,-0.0003,0.0433)
+/* Front-page door "The Cube" (AOG-CUBE-DOOR-V2, 2026-10-10) — Jimmy: "Can you fix the sketch? I don't like it."
+   A quiet pencil still life: one Rubik's Cube on the table, its top layer turned a little. Sizes in metres. */
+#define TOP .22
+#define CAM_POS vec3(-0.1281,0.0977,-0.1518)
+#define CAM_TGT vec3(-0.0229,0.0068,0.0542)
 #define CAM_FOV 30.
-#define SUN_DIR vec3(-.65,.85,-.3)
+#define SUN_DIR vec3(-.25,.85,-.75)
 #define MAXT 8.
 #define EXPOSURE 1.
 #define STEPS 220
