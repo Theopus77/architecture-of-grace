@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:0698a8b91df296e3 · MADE BY tools/build-fast.py from music-band.html: edit music-band.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:a301a00fa7187f7d · MADE BY tools/build-fast.py from music-band.html: edit music-band.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -296,6 +296,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
+<script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <!-- AOG-LESSONS-V1 (2026-10-05): the Band's lessons, the shared card (aog-lessons.js) and its words (aog-lessons-band.js,
      made by _work/music/make_lab_lessons.py from _work/music/lessons_band.py) -->
 <script src="/aog-lessons.js"></script>
@@ -406,6 +407,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI keyboard's one-line answer -->
         <div class="kbd" id="kbd" role="group"></div>
+        <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <div class="any" id="anyBox"><!-- AOG-BAND-SCALES-V1: any chord, on any root -->
           <span class="plab" data-t="anyH"></span>
           <div class="row">
@@ -421,6 +423,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line keys-line" data-t="keysLine"></p>
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
+      </div>
+
+      <div class="blk" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: the pedals and the EQ (aog-amp.js draws them) -->
+        <h2 data-t="ampH"></h2>
+        <p class="line" style="margin-top:0" data-t="ampLine"></p>
+        <div id="ampBox"></div>
       </div>
 
       <div class="blk">
@@ -472,6 +480,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="cstrip" id="pvStrip" role="group"></div>
   <div class="bp-main" id="bpMain"></div>
 </div>
-<script src="/front/20106cbc9dcc.js"></script>
+<script src="/front/a299359e9fb4.js"></script>
 </body>
 </html>

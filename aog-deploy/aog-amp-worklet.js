@@ -327,7 +327,59 @@ AmpCore.prototype.process=function(inp, out, n){
   this.sm.lvl=lvl; this.sm.drive=drv; this.sm.g0=g0;
 };
 
-G.AOGAmpCore=AmpCore;
+/* ── AOG-ROOM-PEDALS-V1 (2026-10-11) — the drum bus ──────────────────────────
+   Jimmy: "Can the pedals and effects be added to all instruments not just the guitar and bass". The Drum Machine and the
+   Drum Kit play through this, in stereo (both sides move together, so a hit panned to one side stays there):
+     compressor — glues the hits (the guitar's own, but listening to both sides at once);
+     Punch      — a transient shaper: two followers, one fast and one slow; while the fast one is ahead a hit is starting,
+                  and Snap turns that moment up or down; a long and a short release show where a hit is ringing, and Ring
+                  turns the tail up or down;
+     Tape       — a gentle, slightly uneven saturation (the even and odd harmonics of tape pushed hard), four times
+                  oversampled so it never aliases, the low "head bump" and the softened highs of a tape machine;
+     Crush      — fewer steps (bits) and a lower sample rate held between samples: the grit of an early sampler.
+   P = {comp:{on,thr,ratio,att,rel,knee,makeup}, punch:{on,atk,sus,lvl}, tape:{on,k,bias,lp,bump,lvl}, crush:{on,bits,rate,mix}} */
+function BusCore(fs){
+  this.fs=fs; this.P=null; this.u=new Float64Array(4);
+  this.ov=[new Over4(), new Over4()]; this.tLp=[new Biquad(), new Biquad()]; this.tBump=[new Biquad(), new Biquad()]; this.tDc=[new Pole(), new Pole()];
+  this.cEnv=0; this.pF=0; this.pS=0; this.pA=0; this.pB=0; this.pG=1; this.hold=[0,0]; this.ph=1;
+}
+BusCore.prototype.set=function(P){
+  const fs=this.fs; this.P=P; const t=P.tape||{};
+  if(t.on){ for(let c=0;c<2;c++){ this.tLp[c].set("lp", t.lp||12000, 0.707, 0, fs); this.tBump[c].set("peak", 95, 0.8, t.bump||0, fs); this.tDc[c].hp(12, fs); } }
+};
+BusCore.prototype.process=function(L, R, oL, oR, n){
+  const P=this.P; if(!P){ for(let i=0;i<n;i++){ oL[i]=L?L[i]:0; oR[i]=R?R[i]:(L?L[i]:0); } return; }
+  const fs=this.fs, comp=P.comp&&P.comp.on?P.comp:null, pu=P.punch&&P.punch.on?P.punch:null, tp=P.tape&&P.tape.on?P.tape:null, cr=P.crush&&P.crush.on?P.crush:null;
+  const cA=comp?Math.exp(-1/(Math.max(0.0005,comp.att)*fs)):0, cR=comp?Math.exp(-1/(Math.max(0.01,comp.rel)*fs)):0;
+  const fA=Math.exp(-1/(0.0003*fs)), sA=Math.exp(-1/(0.012*fs)), fR=Math.exp(-1/(0.05*fs)), lR=Math.exp(-1/(0.5*fs)), gS=Math.exp(-1/(0.0008*fs));
+  const k=tp?tp.k:1, b=tp?tp.bias:0, tb=Math.tanh(k*b), tn=tp?1/(k*(1-tb*tb)):1;
+  const q=cr?2/Math.pow(2, cr.bits):0, step=cr?Math.min(1, cr.rate/fs):1, mix=cr?cr.mix:0;
+  const u=this.u;
+  for(let i=0;i<n;i++){
+    let l=L?L[i]:0, r=R?R[i]:l;
+    if(comp){ const ax=Math.max(Math.abs(l), Math.abs(r)); this.cEnv = ax>this.cEnv ? ax+(this.cEnv-ax)*cA : ax+(this.cEnv-ax)*cR;
+      const db=20*Math.log10(this.cEnv+1e-9), over=db-comp.thr, kn=comp.knee||6;
+      const gr = over<=-kn/2 ? 0 : over>=kn/2 ? over*(1-1/comp.ratio) : (1-1/comp.ratio)*(over+kn/2)*(over+kn/2)/(2*kn);
+      const g=Math.pow(10,(comp.makeup-gr)/20); l*=g; r*=g; }
+    if(pu){ const ax=Math.max(Math.abs(l), Math.abs(r))+1e-9;
+      this.pF = ax>this.pF ? ax+(this.pF-ax)*fA : ax+(this.pF-ax)*fR;
+      this.pS = ax>this.pS ? ax+(this.pS-ax)*sA : ax+(this.pS-ax)*fR;
+      this.pA = ax>this.pA ? ax+(this.pA-ax)*fA : ax+(this.pA-ax)*fR;
+      this.pB = ax>this.pB ? ax+(this.pB-ax)*fA : ax+(this.pB-ax)*lR;
+      const dA=Math.min(24, Math.max(0, 20*Math.log10(this.pF/this.pS))), dS=Math.min(30, Math.max(0, 20*Math.log10(this.pB/this.pA)));
+      const gdb=Math.max(-24, Math.min(12, pu.atk*dA+pu.sus*dS)), tg=Math.pow(10, gdb/20)*(pu.lvl||1);
+      this.pG=tg+(this.pG-tg)*gS; l*=this.pG; r*=this.pG; }
+    if(tp){ for(let c=0;c<2;c++){ const ov=this.ov[c], x=c?r:l; ov.upsample(x, u);
+        for(let s=0;s<4;s++){ ov.push((Math.tanh(k*(u[s]+b))-tb)*tn); }
+        let y=ov.downsample(); y=this.tDc[c].run(this.tLp[c].run(this.tBump[c].run(y)))*(tp.lvl||1);
+        if(c) r=y; else l=y; } }
+    if(cr){ this.ph+=step; if(this.ph>=1){ this.ph-=Math.floor(this.ph); this.hold[0]=q*Math.round(l/q); this.hold[1]=q*Math.round(r/q); }
+      l=l*(1-mix)+this.hold[0]*mix; r=r*(1-mix)+this.hold[1]*mix; }
+    oL[i]=l; oR[i]=r;
+  }
+};
+
+G.AOGAmpCore=AmpCore; G.AOGBusCore=BusCore;
 if(typeof G.registerProcessor==="function" && typeof G.AudioWorkletProcessor==="function"){
   class AogAmp extends G.AudioWorkletProcessor{
     constructor(o){ super(); this.core=new AmpCore(G.sampleRate); const p=o&&o.processorOptions&&o.processorOptions.p; if(p) this.core.set(p);
@@ -340,6 +392,18 @@ if(typeof G.registerProcessor==="function" && typeof G.AudioWorkletProcessor==="
     }
   }
   G.registerProcessor("aog-amp", AogAmp);
+  /* AOG-ROOM-PEDALS-V1: the drum bus, two channels in, two out */
+  class AogBus extends G.AudioWorkletProcessor{
+    constructor(o){ super(); this.core=new BusCore(G.sampleRate); const p=o&&o.processorOptions&&o.processorOptions.p; if(p) this.core.set(p);
+      this.port.onmessage=e=>{ const d=e.data||{}; if(d.p) this.core.set(d.p); }; }
+    process(inputs, outputs){
+      const inp=inputs[0]||[], out=outputs[0]; if(!out||!out[0]) return true;
+      const oR=out[1]||new Float32Array(out[0].length);
+      this.core.process(inp[0]||null, inp[1]||inp[0]||null, out[0], oR, out[0].length);
+      return true;
+    }
+  }
+  G.registerProcessor("aog-bus", AogBus);
 }
-if(typeof module!=="undefined" && module.exports) module.exports={AmpCore:AmpCore, ToneStack:ToneStack, Over4:Over4, Biquad:Biquad, Shifter:Shifter};
+if(typeof module!=="undefined" && module.exports) module.exports={AmpCore:AmpCore, BusCore:BusCore, ToneStack:ToneStack, Over4:Over4, Biquad:Biquad, Shifter:Shifter};
 })(typeof globalThis!=="undefined"?globalThis:this);
