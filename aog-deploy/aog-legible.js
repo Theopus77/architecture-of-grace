@@ -167,7 +167,14 @@
         .observe(H, { attributes: true, attributeFilter: ["data-theme", "class"] });
       new MutationObserver(function (list) {
         if (busy) return;
-        for (var i = 0; i < list.length; i++) if (list[i].type === "childList" || list[i].attributeName !== "style") soonPart(list[i].target);
+        /* AOG-LEGIBLE-PLAY-V1 (2026-10-11, Jimmy: the instruments "should be lighting fast in their reaction time"): a
+           drawing is never read here (sweep skips svg), so its lights changing on every note (the guitar's neck, the
+           kit) need no look */
+        for (var i = 0; i < list.length; i++) { var tg = list[i].target;
+          if (window.SVGElement && tg instanceof SVGElement) continue;
+          /* nor what you play flashing as you play it (a pad's hit, a key going down): new words there are still looked at */
+          if (list[i].type === "attributes" && tg.closest && tg.closest("#pads,#kbd,#neck,#pvStrip,[data-aog-quiet]")) continue;
+          if (list[i].type === "childList" || list[i].attributeName !== "style") soonPart(tg); }
       }).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden", "open"] });
     }
     D.addEventListener("pointerover", function (e) { hoverCheck(e.target); }, true);

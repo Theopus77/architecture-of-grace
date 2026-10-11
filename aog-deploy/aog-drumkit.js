@@ -221,8 +221,10 @@
   var STATE = {};     /* bank → {state: "loading" | "ready" | "failed", got, total} */
   var DATA = {};      /* bank → pad → layer → [{lo: 26,040 Hz twelve-bit, hi: 44,100 Hz}] */
   var JOBS = {};
-  var ORDER = [];     /* banks asked for, the latest last: two stay ready, so a phone keeps its memory */
-  var KEEP = 2;
+  var ORDER = [];     /* banks asked for, the latest last: three stay ready, so a phone keeps its memory */
+  /* AOG-DRUM-KEEP3-V1 (2026-10-11) — the Drum Machine's bank A plays three kits at once (pads 1–8, 9–16, 17–24). With two
+     kept, the third one to get ready let the first go, and pads 1–8 fell silent. */
+  var KEEP = 3;
   var STORES = null;  /* the page's kit stores, ROMK and HIK, and its twelve-bit rounding */
 
   function decodeWith(dec, ab) {
@@ -313,7 +315,7 @@
       return ids.reduce(function (p, id) { return p.then(function () { one(id); return breathe(); }); }, Promise.resolve()).then(function () {
         DATA[b] = data;
         setState(b, { state: "ready", got: n, total: jobs.length });
-        var keep = ORDER.slice(-KEEP);                 /* the two kits asked for last stay; an older one is let go */
+        var keep = ORDER.slice(-KEEP);                 /* the three kits asked for last stay; an older one is let go */
         Object.keys(DATA).forEach(function (k) { if (k !== b && keep.indexOf(k) < 0) forget(k); });
       });
     }
