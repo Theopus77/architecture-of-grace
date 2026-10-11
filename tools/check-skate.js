@@ -84,6 +84,9 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     // the trick demos: every trick has one; its steps stay inside the trick's list and reach the last step; both feet always land somewhere
     out.demoBad = A.TRICKS.filter(t => { const d = A.simDemo(t.id), fr = d.frames, n = t.en.steps.length;
       return !A.DEMOS[t.id] || fr.length < 60 || fr.some(f => f.step < 0 || f.step >= n || !(f.f || f.fg) || !(f.b || f.bg) || [f.bx, f.by, f.h, f.pitch, f.roll, f.yaw].some(v => !isFinite(v))) || fr[fr.length - 1].step !== n - 1; }).map(t => t.id);
+    // the filmer: on flat ground the camera keeps the rider near the middle; rolling is steady (no jerks between keys)
+    const ol = A.simDemo("ollie").frames; out.camLag = Math.max.apply(null, ol.filter(f => f.t > 0.5).map(f => Math.abs(f.bx - f.cam)));
+    out.jerk = Math.max.apply(null, ol.slice(2).map((f, i) => Math.abs((f.bx - ol[i + 1].bx) - (ol[i + 1].bx - ol[i].bx)) * 3600));
     out.faq = [A.FAQ.length, A.FAQ.filter(f => !f.en.q || !f.en.a || !f.es.q || !f.es.a || (f.trick && !A.TRICKS.some(t => t.id === f.trick)) || (f.room && !A.rooms.includes(f.room))).map(f => f.id)];
     // build a board: every suggestion fits and never bites; a riser adds its thickness; big wheels on soft bushings bite
     const riders = ["micro", "mini", "mid", "s", "m", "l"], uses = ["tricks", "ramps", "rough", "cruise"], bad = [];
@@ -115,6 +118,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
      "Build a board: 60 mm wheels on soft bushings bite; a ⅛-inch riser adds 3.2 mm; narrow and wide trucks are caught; hard wheels on rough ground are flagged");
   ok(phys.bite[5][0] === 7 && phys.bite[5][1] === 7.25 && phys.bite[6] === "1", "Build a board: a mini deck is about 7–7¼ inches; a ⅛-inch riser takes 1-inch bolts");
   ok(!phys.demoBad.length, `every trick (${phys.tricks.length}) has a demo whose steps match its list and end on the last step` + (phys.demoBad.length ? " (" + phys.demoBad.join(", ") + ")" : ""));
+  ok(phys.camLag < 0.3 && phys.jerk < 1e-6, `the camera follows the rider within ${phys.camLag.toFixed(2)} m, and rolling speed never jumps`);
   ok(phys.faq[0] >= 30 && !phys.faq[1].length, `Questions: ${phys.faq[0]} answers, each in English and Spanish, each link to a real trick or room` + (phys.faq[1].length ? " (" + phys.faq[1].join(", ") + ")" : ""));
   const badT = phys.tricks.filter(t => !t.en || !t.es || !phys.rooms.includes(t.room));
   ok(!badT.length, `${phys.tricks.length} tricks have steps, fixes and the science in English and Spanish, and a real room${badT.length ? " (" + badT.map(t => t.id).join(", ") + ")" : ""}`);
@@ -139,6 +143,10 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   await p.click('#panel [data-prog="2"]'); await p.reload({ waitUntil: "load" }); await wait(400);
   ok(await p.evaluate(() => window.AOGSkate.state.progress.kickflip === 2 && JSON.parse(localStorage.getItem("aog.skate.v1")).progress.kickflip === 2 && !!document.querySelector("#panel .tchip.s2")),
      "\"Landed it once\" is kept on this device and shows on the trick map");
+  await p.evaluate(() => window.AOGSkate.trick("kickflip")); await wait(80);
+  await p.click('#panel [data-tv="seq"]'); await wait(120);
+  ok(await p.evaluate(() => window.AOGSkate.state.tricks.view === "seq" && !window.AOGSkate.P.playing), "the sequence shot draws the trick in one still picture");
+  await p.click('#panel [data-tv="move"]');
   /* ── Questions: search and topic narrow the list; a search with no accent still finds accented words ── */
   await p.evaluate(() => window.AOGSkate.open("questions")); await wait(100);
   const all = await p.$$eval("#panel details.qa", d => d.length);

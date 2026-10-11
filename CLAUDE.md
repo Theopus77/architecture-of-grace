@@ -216,7 +216,9 @@ check for anything new the hands can do.
   every trick's moving demo (its steps match the list; it plays once and lights its step), progress kept, the Questions search, every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
 - A new trick joins TRICKS in `aog-skate.js` with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
-  ollie and curb families). The skater is drawn without a face (no faces in the site's art).
+  ollie and curb families). The skater is drawn without a face (no faces in the site's art). It should look right to a
+  teenager who skates (Jimmy, 2026-10-11: "a teenager would laugh at this"): real clothes and shoes, a relaxed athletic
+  stance, the head looking where the board goes, steady rolling speed, the camera riding along.
 
 ## Housekeeping
 

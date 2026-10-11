@@ -35,7 +35,7 @@ const DEF = {
   balance: { mode: "stand", com: 0, lean: 10, v: 3, truck: "med" },
   flip: { mode: "board", trick: "kickflip", view: "corner", arms: "out" },
   timeline: { i: 0 },
-  tricks: { id: "stance" },
+  tricks: { id: "stance", view: "move" },
   progress: {},
   faq: { q: "", cat: "all" },
   build: { rider: "m", use: "tricks", deck: 8.125, axle: 8.125, wheel: 52, duro: 100, riser: 0, bush: "med", type: "pop", view: "fit" }
@@ -50,7 +50,8 @@ const L = (en, sp) => es() ? sp : en;
 const num = (x, d) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d).replace(".", es() ? "," : ".");
 
 /* ══ the canvas: a fixed drawing size, scaled to the page's width; resized only when the width changes ══ */
-const cv = $("cv"), ctx = cv.getContext("2d");
+const cv = $("cv");
+let ctx = cv.getContext("2d");   // let: the sequence shot draws each moment on a sheet of its own
 let W = 900, H = 500, SC = 1, FS = 20, sizedW = 0;
 function fit(force) {
   const cssW = cv.parentNode.clientWidth || 360;
@@ -72,7 +73,9 @@ function colors() {
   const v = n => cs.getPropertyValue(n).trim();
   C = {};
   ["sky", "ground", "ramp", "ramp-edge", "ink", "deck", "grip", "wheel", "truck", "skin", "shirt", "pants", "pe", "ke", "heat", "pump", "force", "friction", "path", "grid", "soft"].forEach(k => C[k] = v("--cv-" + k));
-  C.steel = v("--steel"); C.steelFg = v("--steel-fg"); C.good = v("--good"); C.warn = v("--warn"); C.card = v("--card"); C.line = v("--line");
+  C.steel = v("--steel"); C.steelFg = v("--steel-fg");
+  // the rider's clothes (AOG-SKATE-RIDER-V3); older pages without these tokens fall back to the shirt and pants
+  [["hood", "shirt"], ["cargo", "pants"], ["shoe", "pants"], ["sole", "wheel"], ["helmet", "ke"], ["hair", "ink"]].forEach(([k, f]) => C[k] = v("--cv-" + k) || C[f]); C.good = v("--good"); C.warn = v("--warn"); C.card = v("--card"); C.line = v("--line");
 }
 function font(w, mult) { ctx.font = (w || 600) + " " + Math.round(FS * (mult || 1)) + 'px "Source Sans 3", ui-sans-serif, system-ui, sans-serif'; }
 function text(s, x, y, o) {
@@ -125,6 +128,7 @@ function drawWheel(x, y, r) {
   ctx.fillStyle = C.wheel; ctx.strokeStyle = shade(C.wheel, -0.45); ctx.lineWidth = r * 0.12;
   ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.stroke();
   ctx.fillStyle = shade(C.wheel, -0.18); ctx.beginPath(); ctx.arc(x, y, r * 0.62, 0, 7); ctx.fill();          // the core
+  ctx.save(); ctx.strokeStyle = shade(C.wheel, -0.4); ctx.lineWidth = r * 0.14; ctx.beginPath(); ctx.arc(x, y, r * 0.46, WHEEL_A, WHEEL_A + 1.1); ctx.stroke(); ctx.restore();   // a mark on the core, turning as it rolls
   ctx.fillStyle = shade(C.truck, -0.35); ctx.beginPath(); ctx.arc(x, y, r * 0.3, 0, 7); ctx.fill();           // the bearing
   ctx.fillStyle = shade(C.truck, 0.35); ctx.beginPath(); ctx.arc(x, y, r * 0.12, 0, 7); ctx.fill();           // the axle nut
   ctx.strokeStyle = alpha("#ffffff", 0.55); ctx.lineWidth = r * 0.1;                                          // a soft highlight
@@ -181,64 +185,122 @@ function bend(a, b, len, side) {   // the middle joint of a two-part limb of len
   const h = Math.sqrt(len * len - d * d / 4), px = -dy / d, py = dx / d;
   return [a[0] + dx / 2 + px * h * side, a[1] + dy / 2 + py * h * side];
 }
-function shoe(f) {
-  const x = f[0], y = f[1];
-  ctx.fillStyle = shade(C.pants, -0.35); ctx.strokeStyle = shade(C.pants, -0.6); ctx.lineWidth = 0.004;
-  roundRect(x - 0.058, y + 0.002, 0.116, 0.05, 0.022); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = shade(C.wheel, 0.1); ctx.fillRect(x - 0.056, y + 0.002, 0.112, 0.012);                       // the sole
-  ctx.fillStyle = shade(C.pants, 0.25); ctx.beginPath(); ctx.ellipse(x, y + 0.036, 0.022, 0.009, 0, 0, 7); ctx.fill(); // the laces
+/* ── the skater (AOG-SKATE-RIDER-V3, 2026-10-11): Jimmy, "a teenager would laugh at this". A rider with style: a
+   hoodie with its hood and strings, baggy cargo pants stacked over chunky skate shoes, a helmet, the head turned to
+   look where the board is going, knees bent forward over the toes, and two arms that do different things. No face is
+   drawn. o.nose: +1 when the nose points right on screen, −1 left. o.lift raises both arms (in the air, on a pop);
+   o.str swings the hood strings; o.twist turns the shoulders. ── */
+function shoe(f, n, k) {   // a skate shoe at f, toe toward the nose (n), k = how much of its length shows (1 side on, 0.6 turned)
+  const x = f[0], y = f[1], L = 0.27 * (k || 1), h = 0.085, ink = shade(C.shoe, -0.55);
+  ctx.save(); ctx.translate(x, y); ctx.scale(n, 1);
+  const heel = -L * 0.42, toe = L * 0.58;
+  ctx.lineWidth = 0.004; ctx.strokeStyle = ink; ctx.fillStyle = C.shoe;
+  ctx.beginPath();                                                                                            // the upper: heel counter, collar, a puffy tongue, the toe box
+  ctx.moveTo(heel, 0.012); ctx.lineTo(heel - 0.004, h * 0.8); ctx.quadraticCurveTo(heel + 0.01, h + 0.006, heel + L * 0.22, h * 0.95);
+  ctx.quadraticCurveTo(heel + L * 0.36, h * 1.08, heel + L * 0.44, h * 0.92);
+  ctx.quadraticCurveTo(toe - L * 0.12, h * 0.62, toe - 0.006, h * 0.36); ctx.quadraticCurveTo(toe + 0.008, 0.02, toe - 0.01, 0.012); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.sole; ctx.strokeStyle = shade(C.sole, -0.45);                                            // the thick white cupsole
+  ctx.beginPath(); ctx.moveTo(heel - 0.006, 0); ctx.lineTo(toe + 0.004, 0); ctx.quadraticCurveTo(toe + 0.014, 0.012, toe + 0.002, 0.024); ctx.lineTo(heel - 0.006, 0.024); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = shade(C.sole, -0.3); ctx.lineWidth = 0.002; ctx.beginPath(); ctx.moveTo(heel, 0.009); ctx.lineTo(toe, 0.009); ctx.stroke();
+  ctx.strokeStyle = alpha(C.sole, 0.9); ctx.lineWidth = 0.008;                                                // a side stripe
+  ctx.beginPath(); ctx.moveTo(heel + L * 0.18, 0.035); ctx.quadraticCurveTo(heel + L * 0.45, 0.075, heel + L * 0.62, 0.045); ctx.stroke();
+  ctx.strokeStyle = shade(C.shoe, 0.35); ctx.lineWidth = 0.004;                                               // laces
+  for (let i = 0; i < 3; i++) { const lx = heel + L * (0.44 + i * 0.07); ctx.beginPath(); ctx.moveTo(lx - 0.012, h * (0.92 - i * 0.1)); ctx.lineTo(lx + 0.012, h * (0.86 - i * 0.1)); ctx.stroke(); }
+  ctx.restore();
 }
-/* a rider: feet at fB, fF; hip at hp (all [x,y] in the same frame, y up); lean (radians, + toward nose) */
 function drawBody(fB, fF, hp, o) {
   o = o || {};
-  const LEG = 0.46, lean = o.lean || 0, ink = alpha(C.ink, 0.5);
+  const n = o.nose || 1, lean = o.lean || 0, lift = o.lift || 0, str = o.str || 0, tw = Math.min(1, Math.abs(o.twist || 0));
+  const LEG = 0.47;
   ctx.lineCap = "round"; ctx.lineJoin = "round";
-  const hipB = [hp[0] - 0.07, hp[1]], hipF = [hp[0] + 0.07, hp[1]];
-  function leg(f, hj, side) {
-    const ank = [f[0], f[1] + 0.05], k0 = bend(ank, hj, LEG, side), m0 = [(ank[0] + hj[0]) / 2, (ank[1] + hj[1]) / 2], k = [lerp(m0[0], k0[0], 0.5), lerp(m0[1], k0[1], 0.5)];   // the knees point toward us, so their bend shows shortened
-    limb(hj, k, 0.12, 0.09, C.pants);                                                                       // thigh
-    limb(k, ank, 0.09, 0.065, shade(C.pants, -0.08));                                                      // shin
-    const a = Math.atan2(ank[1] - k[1], ank[0] - k[0]);                                                     // knee pad along the shin
-    ctx.save(); ctx.translate(k[0] + Math.cos(a) * 0.035, k[1] + Math.sin(a) * 0.035); ctx.rotate(a);
-    ctx.fillStyle = shade(C.grip, 0.12); ctx.strokeStyle = shade(C.grip, -0.3); ctx.lineWidth = 0.004;
-    roundRect(-0.05, -0.052, 0.1, 0.104, 0.03); ctx.fill(); ctx.stroke();
-    ctx.strokeStyle = alpha("#ffffff", 0.35); ctx.lineWidth = 0.006; ctx.beginPath(); ctx.moveTo(-0.03, -0.035); ctx.lineTo(-0.03, 0.035); ctx.stroke();
-    ctx.restore();
-    shoe(f);
+  // the two feet: the front one (toward the nose) turned a little toward it, the back one more across the board
+  const front = (fF[0] - fB[0]) * n >= 0 ? fF : fB, back = front === fF ? fB : fF;
+  const hipF = [hp[0] + n * 0.075, hp[1]], hipB = [hp[0] - n * 0.075, hp[1]];
+  function leg(f, hj, isFront) {
+    const ank = [f[0] - n * 0.01, f[1] + 0.06];
+    // knees come forward over the toes (toward us, so the bend shows short) and lean a little toward the nose
+    const m0 = [(ank[0] + hj[0]) / 2, (ank[1] + hj[1]) / 2], dist = Math.hypot(hj[0] - ank[0], hj[1] - ank[1]), d = dist < 2 * LEG ? Math.sqrt(LEG * LEG - dist * dist / 4) : 0;
+    const k = [m0[0] + n * d * 0.42, m0[1] - d * 0.12];
+    const pc = C.cargo, dk = shade(pc, -0.18);
+    limb(hj, k, 0.16, 0.135, isFront ? pc : dk);                                                                 // thigh, baggy
+    limb(k, ank, 0.135, 0.15, isFront ? shade(pc, -0.06) : shade(dk, -0.06));                                    // shin, wider at the cuff
+    ctx.strokeStyle = alpha(shade(pc, -0.5), 0.45); ctx.lineWidth = 0.004;                                      // folds at the knee and a cargo pocket
+    ctx.beginPath(); ctx.moveTo(k[0] - 0.05, k[1] + 0.02); ctx.quadraticCurveTo(k[0], k[1] - 0.015, k[0] + 0.05, k[1] + 0.025); ctx.stroke();
+    const pm = [lerp(hj[0], k[0], 0.55), lerp(hj[1], k[1], 0.55)];
+    ctx.fillStyle = alpha(shade(pc, -0.25), 0.55); roundRect(pm[0] - 0.035, pm[1] - 0.04, 0.07, 0.07, 0.01); ctx.fill();
+    // the cuff stacks over the shoe
+    ctx.fillStyle = shade(pc, -0.1); ctx.beginPath(); ctx.ellipse(ank[0], ank[1] + 0.004, 0.08, 0.026, 0, 0, 7); ctx.fill(); ctx.stroke();
+    shoe(f, n, isFront ? 0.95 : 0.7);
   }
-  if (fB[0] <= fF[0]) { leg(fB, hipB, 1); leg(fF, hipF, -1); } else { leg(fB, hipF, -1); leg(fF, hipB, 1); }   // each foot to its nearer hip, so legs never cross
-  // the torso: wider at the shoulders, a shaded side and a collar, leaning with the rider
+  leg(back, hipB, false); leg(front, hipF, true);
+  // the hoodie: boxy, a ribbed hem, a pocket, the hood bunched at the back of the neck
+  const sw = 0.215 * (1 - 0.28 * tw);
   ctx.save(); ctx.translate(hp[0], hp[1]); ctx.rotate(-lean);
-  ctx.fillStyle = shade(C.pants, -0.15); roundRect(-0.13, -0.035, 0.26, 0.07, 0.03); ctx.fill();         // the belt line
-  ctx.beginPath(); ctx.moveTo(-0.13, 0.02); ctx.lineTo(-0.19, 0.5); ctx.quadraticCurveTo(0, 0.56, 0.19, 0.5); ctx.lineTo(0.13, 0.02); ctx.closePath();
-  ctx.fillStyle = C.shirt; ctx.fill(); ctx.strokeStyle = shade(C.shirt, -0.45); ctx.lineWidth = 0.004; ctx.stroke();
-  ctx.save(); ctx.clip(); ctx.fillStyle = alpha(shade(C.shirt, -0.5), 0.35); ctx.fillRect(0.05, 0, 0.2, 0.6); ctx.restore();
-  ctx.fillStyle = C.skin; roundRect(-0.035, 0.5, 0.07, 0.07, 0.02); ctx.fill();                          // the neck
-  ctx.strokeStyle = shade(C.shirt, 0.3); ctx.lineWidth = 0.012; ctx.beginPath(); ctx.arc(0, 0.53, 0.05, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke(); // collar
+  const hc = C.hood, hd = shade(hc, -0.28);
+  if (!o.back) { ctx.fillStyle = hd; ctx.beginPath(); ctx.ellipse(-n * 0.03, 0.52, 0.13, 0.065, 0, 0, 7); ctx.fill(); }   // the hood, behind
+  ctx.beginPath(); ctx.moveTo(-0.19, -0.06); ctx.quadraticCurveTo(-0.215, 0.2, -sw, 0.46); ctx.quadraticCurveTo(-0.1, 0.53, 0, 0.52); ctx.quadraticCurveTo(0.1, 0.53, sw, 0.46); ctx.quadraticCurveTo(0.215, 0.2, 0.19, -0.06); ctx.closePath();
+  ctx.fillStyle = hc; ctx.fill(); ctx.strokeStyle = shade(hc, -0.5); ctx.lineWidth = 0.004; ctx.stroke();
+  ctx.save(); ctx.clip();
+  ctx.fillStyle = alpha(shade(hc, -0.55), 0.3); ctx.fillRect(n > 0 ? 0.07 : -0.3, -0.1, 0.23, 0.7);            // the side away from the light
+  ctx.fillStyle = alpha(shade(hc, 0.4), 0.18); ctx.fillRect(n > 0 ? -0.3 : 0.12, -0.1, 0.07, 0.7);             // a soft highlight
+  ctx.fillStyle = shade(hc, -0.2); ctx.fillRect(-0.25, -0.07, 0.5, 0.055);                                      // the ribbed hem
+  ctx.strokeStyle = alpha(shade(hc, -0.6), 0.5); ctx.lineWidth = 0.004;
+  if (!o.back) { ctx.beginPath(); ctx.moveTo(-0.11, 0.02); ctx.lineTo(-0.08, 0.17); ctx.lineTo(0.08, 0.17); ctx.lineTo(0.11, 0.02); ctx.stroke(); }   // the pocket
+  else { ctx.fillStyle = shade(hc, -0.12); ctx.beginPath(); ctx.moveTo(-0.11, 0.5); ctx.quadraticCurveTo(-0.12, 0.3, 0, 0.27); ctx.quadraticCurveTo(0.12, 0.3, 0.11, 0.5); ctx.closePath(); ctx.fill(); ctx.stroke();   // seen from behind: the hood lies on the back
+    ctx.beginPath(); ctx.moveTo(0, 0.5); ctx.lineTo(0, 0.29); ctx.stroke(); }
   ctx.restore();
-  const rot = (x, y) => [hp[0] + x * Math.cos(lean) + y * Math.sin(lean), hp[1] - x * Math.sin(lean) + y * Math.cos(lean)];
-  // arms out for balance: a shoulder, an elbow with its pad, a hand
-  const arm = o.arms != null ? o.arms : 1;
-  [[-1, rot(-0.17, 0.47)], [1, rot(0.17, 0.47)]].forEach(([sd, sh]) => {
-    const hand = [sh[0] + sd * (0.1 + 0.34 * arm), sh[1] - 0.44 + 0.26 * arm];
-    const el = bend(sh, hand, 0.29, sd > 0 ? -1 : 1);
-    limb(sh, el, 0.075, 0.06, C.shirt);
-    limb(el, hand, 0.055, 0.045, C.skin);
-    ctx.fillStyle = shade(C.grip, 0.12); ctx.beginPath(); ctx.arc(el[0], el[1], 0.034, 0, 7); ctx.fill();
-    ctx.fillStyle = C.skin; ctx.strokeStyle = shade(C.skin, -0.4); ctx.lineWidth = 0.003; ctx.beginPath(); ctx.arc(hand[0], hand[1], 0.032, 0, 7); ctx.fill(); ctx.stroke();
+  if (!o.back) { ctx.strokeStyle = shade(C.sole, -0.08); ctx.lineWidth = 0.007;                                // the strings, swinging
+  [-0.035, 0.035].forEach(x => { ctx.beginPath(); ctx.moveTo(x, 0.47); ctx.quadraticCurveTo(x + str * 0.03, 0.42, x + str * 0.07, 0.35 + Math.abs(str) * 0.02); ctx.stroke(); });
+  ctx.fillStyle = shade(C.sole, -0.08); [-0.035, 0.035].forEach(x => { ctx.beginPath(); ctx.arc(x + str * 0.07, 0.35 + Math.abs(str) * 0.02, 0.008, 0, 7); ctx.fill(); }); }
+  ctx.restore();
+  const R = (x, y) => [hp[0] + x * Math.cos(lean) + y * Math.sin(lean), hp[1] - x * Math.sin(lean) + y * Math.cos(lean)];
+  // the arms: the front arm leads, the back arm trails and sits higher; both rise with o.lift
+  const a = o.arms != null ? o.arms : 1;
+  // relaxed: the upper arm out from the side, the forearm hanging a little lower; in the air (lift) both come up
+  [[n, 0.28 + 0.5 * a, -0.42], [-n, 0.36 + 0.6 * a, -0.25]].forEach(([sd, up, elb], i) => {
+    const sh = R(sd * (sw - 0.02), 0.44), ang = Math.min(2.1, up + lift * (i ? 0.8 : 0.65));        // from straight down, outward
+    const u = [Math.sin(ang) * sd, -Math.cos(ang)], el = [sh[0] + u[0] * 0.27, sh[1] + u[1] * 0.27];
+    const a2 = ang + elb + lift * 0.5, fa = [Math.sin(a2) * sd, -Math.cos(a2)], hand = [el[0] + fa[0] * 0.25, el[1] + fa[1] * 0.25];
+    const sc2 = i ? hd : hc;
+    limb(sh, el, 0.11, 0.095, sc2);                                                                             // sleeve
+    limb(el, [lerp(el[0], hand[0], 0.8), lerp(el[1], hand[1], 0.8)], 0.095, 0.085, sc2);
+    ctx.fillStyle = shade(hc, -0.2); ctx.beginPath(); ctx.arc(lerp(el[0], hand[0], 0.8), lerp(el[1], hand[1], 0.8), 0.044, 0, 7); ctx.fill();   // cuff
+    ctx.fillStyle = C.skin; ctx.strokeStyle = shade(C.skin, -0.4); ctx.lineWidth = 0.003;                      // hand, loose
+    ctx.beginPath(); ctx.ellipse(hand[0], hand[1], 0.036, 0.042, Math.atan2(fa[1], fa[0]) + Math.PI / 2, 0, 7); ctx.fill(); ctx.stroke();
   });
-  // the head and its helmet: a dome with two vents and a brim, the chin strap down to the jaw
-  const hd = rot(0, 0.69);
-  ctx.save(); ctx.translate(hd[0], hd[1]); ctx.rotate(-lean);
+  // the head, turned toward the nose: neck, ear, a little hair, and a helmet with its brim forward (no face is drawn)
+  const hdp = R(n * 0.012, 0.66);
+  ctx.save(); ctx.translate(hdp[0], hdp[1]); ctx.rotate(-lean * 0.6); ctx.scale(n, 1);
+  ctx.fillStyle = shade(C.skin, -0.08); roundRect(-0.04, -0.13, 0.07, 0.07, 0.02); ctx.fill();                  // neck
+  if (o.back) {   // from behind: the back of the head, hair at the nape, the helmet's shell
+    ctx.fillStyle = C.skin; ctx.strokeStyle = shade(C.skin, -0.4); ctx.lineWidth = 0.004;
+    ctx.beginPath(); ctx.ellipse(0, -0.03, 0.08, 0.085, 0, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.hair; ctx.beginPath(); ctx.moveTo(-0.08, 0.0); ctx.quadraticCurveTo(-0.07, -0.1, 0, -0.105); ctx.quadraticCurveTo(0.07, -0.1, 0.08, 0.0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = shade(C.skin, -0.14); [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(sd * 0.082, -0.03, 0.013, 0.024, 0, 0, 7); ctx.fill(); });
+    const hm = C.helmet;
+    ctx.beginPath(); ctx.moveTo(-0.11, 0.0); ctx.quadraticCurveTo(-0.115, 0.158, 0, 0.16); ctx.quadraticCurveTo(0.115, 0.158, 0.11, 0.0); ctx.closePath();
+    ctx.fillStyle = hm; ctx.fill(); ctx.strokeStyle = shade(hm, -0.5); ctx.stroke();
+    ctx.save(); ctx.clip(); ctx.fillStyle = C.sole; ctx.fillRect(-0.12, 0.068, 0.24, 0.018); ctx.fillStyle = alpha(shade(hm, -0.5), 0.25); ctx.fillRect(0.02, -0.05, 0.12, 0.25); ctx.restore();
+    ctx.strokeStyle = shade(hm, -0.45); ctx.lineWidth = 0.008; ctx.beginPath(); ctx.moveTo(-0.025, 0.155); ctx.lineTo(-0.025, 0.11); ctx.moveTo(0.025, 0.155); ctx.lineTo(0.025, 0.11); ctx.stroke();   // vents
+    ctx.restore(); if (o.com) drawCOM(o.com[0], o.com[1], 0.05); return;
+  }
   ctx.fillStyle = C.skin; ctx.strokeStyle = shade(C.skin, -0.4); ctx.lineWidth = 0.004;
-  ctx.beginPath(); ctx.ellipse(0, -0.005, 0.085, 0.105, 0, 0, 7); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = shade(C.skin, -0.12); ctx.beginPath(); ctx.ellipse(-0.088, -0.01, 0.016, 0.026, 0, 0, 7); ctx.ellipse(0.088, -0.01, 0.016, 0.026, 0, 0, 7); ctx.fill(); // ears
-  ctx.strokeStyle = shade(C.steel, -0.35); ctx.lineWidth = 0.007; ctx.beginPath(); ctx.moveTo(-0.082, 0.01); ctx.lineTo(-0.062, -0.075); ctx.moveTo(0.082, 0.01); ctx.lineTo(0.062, -0.075); ctx.stroke();   // chin straps down the sides (no face is drawn)
-  ctx.beginPath(); ctx.moveTo(-0.112, 0.012); ctx.quadraticCurveTo(-0.12, 0.16, 0, 0.165); ctx.quadraticCurveTo(0.12, 0.16, 0.112, 0.012); ctx.closePath();
-  ctx.fillStyle = C.steel; ctx.fill(); ctx.strokeStyle = shade(C.steel, -0.45); ctx.lineWidth = 0.004; ctx.stroke();
-  ctx.fillStyle = shade(C.steel, -0.3); ctx.fillRect(-0.114, 0.006, 0.228, 0.014);                       // the brim
-  ctx.strokeStyle = shade(C.steel, -0.4); ctx.lineWidth = 0.009; ctx.beginPath(); ctx.moveTo(-0.03, 0.14); ctx.lineTo(-0.03, 0.09); ctx.moveTo(0.03, 0.14); ctx.lineTo(0.03, 0.09); ctx.stroke(); // vents
-  ctx.strokeStyle = alpha("#ffffff", 0.4); ctx.lineWidth = 0.008; ctx.beginPath(); ctx.arc(0, 0.04, 0.09, Math.PI * 0.62, Math.PI * 0.86); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-0.075, 0.02); ctx.quadraticCurveTo(-0.085, -0.075, -0.03, -0.1);                 // back of the head and the jaw
+  ctx.quadraticCurveTo(0.04, -0.115, 0.07, -0.07); ctx.quadraticCurveTo(0.088, -0.03, 0.086, 0.02); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = shade(C.hair, 0); ctx.beginPath(); ctx.moveTo(-0.08, 0.02); ctx.quadraticCurveTo(-0.095, -0.05, -0.06, -0.075); ctx.lineTo(-0.045, -0.02); ctx.closePath(); ctx.fill();   // hair at the nape
+  ctx.fillStyle = shade(C.skin, -0.14); ctx.beginPath(); ctx.ellipse(-0.012, -0.03, 0.017, 0.026, 0, 0, 7); ctx.fill();   // ear
+  ctx.strokeStyle = shade(C.helmet, -0.45); ctx.lineWidth = 0.006; ctx.beginPath(); ctx.moveTo(-0.012, -0.003); ctx.lineTo(0.03, -0.1); ctx.stroke();   // strap
+  const hm = C.helmet;
+  ctx.beginPath(); ctx.moveTo(-0.1, 0.0); ctx.quadraticCurveTo(-0.115, 0.15, 0.0, 0.158); ctx.quadraticCurveTo(0.105, 0.155, 0.112, 0.03); ctx.lineTo(0.118, 0.012); ctx.lineTo(-0.1, 0.0); ctx.closePath();
+  ctx.fillStyle = hm; ctx.fill(); ctx.strokeStyle = shade(hm, -0.5); ctx.lineWidth = 0.004; ctx.stroke();
+  ctx.save(); ctx.clip();
+  ctx.fillStyle = alpha(shade(hm, -0.5), 0.28); ctx.beginPath(); ctx.ellipse(0.02, -0.02, 0.15, 0.07, 0, 0, 7); ctx.fill();   // shade low on the shell
+  ctx.fillStyle = C.sole; ctx.fillRect(-0.12, 0.068, 0.25, 0.018);                                               // a stripe sticker
+  ctx.fillStyle = C.ke; roundRect(-0.07, 0.09, 0.045, 0.03, 0.008); ctx.fill();                                  // and a small sticker
+  ctx.restore();
+  ctx.fillStyle = shade(hm, -0.35); ctx.beginPath(); ctx.moveTo(0.06, 0.012); ctx.lineTo(0.135, 0.008); ctx.lineTo(0.12, 0.024); ctx.lineTo(0.06, 0.03); ctx.closePath(); ctx.fill();   // the brim edge
+  ctx.strokeStyle = alpha("#ffffff", 0.45); ctx.lineWidth = 0.009; ctx.beginPath(); ctx.arc(0.0, 0.05, 0.085, Math.PI * 0.55, Math.PI * 0.8); ctx.stroke();
   ctx.restore();
   if (o.com) drawCOM(o.com[0], o.com[1], 0.05);
 }
@@ -1357,22 +1419,23 @@ function demoPath() { if (!DPATH) DPATH = prepPath(buildPath("demo", SHAPES.demo
 function popDemo(o) {
   const st = o.steps, R = o.roll || 0, Y = o.yaw || 0, T = o.turn || 0, back = o.back || [-0.33, 0], front = o.front || [0.04, 0];
   const keys = [
-    KD(0, st[0], { bx: -0.95, b: back, f: front, crouch: 0.2, arms: 0.8 }),
-    KD(1.0, st[1], { bx: -0.62, turn: o.wind || 0 }),
-    KD(1.7, st[2], { bx: -0.38, crouch: 0.85, arms: 0.6 }),
-    KD(2.05, st[3], { bx: -0.28, piv: "back", pitch: 24, h: 0.02, crouch: 0.55, jump: 0.07, arms: 1 }),
-    KD(2.2, st[4], { bx: -0.22, pitch: 10, h: 0.16, f: [front[0] + 0.22, 0.03], b: [back[0] + 0.02, 0.05], crouch: 0.6 }),
-    KD(2.38, st[5], { bx: -0.15, pitch: 2, h: 0.3, roll: R * 0.45, yaw: Y * 0.45, turn: T * 0.45, f: [0.2, R ? 0.12 : 0.04], b: [-0.2, R || Y ? 0.1 : 0.04], crouch: 0.92 }),
-    KD(2.6, st[5], { bx: -0.06, pitch: 0, h: 0.24, roll: R, yaw: Y, turn: T, f: [0.16, 0.05], b: [-0.18, 0.05], crouch: 0.9 }),
-    KD(2.82, st[6], { bx: 0.04, h: 0, crouch: 0.68, f: [0.16, 0], b: [-0.18, 0] }),
-    KD(3.4, st[6], { bx: 0.28, crouch: 0.3 }),
-    KD(4.0, st[6], { bx: 0.48 })
+    KD(0, st[0], { bx: -3.60, b: back, f: front, crouch: 0.2, arms: 0.8 }),
+    KD(1.0, st[1], { bx: -2.00, turn: o.wind || 0 }),
+    KD(1.7, st[2], { bx: -0.88, crouch: 0.85, arms: 0.6 }),
+    KD(2.05, st[3], { bx: -0.32, piv: "back", pitch: 24, h: 0.02, crouch: 0.55, jump: 0.07, arms: 1 }),
+    KD(2.2, st[4], { bx: -0.08, pitch: 10, h: 0.16, f: [front[0] + 0.22, 0.03], b: [back[0] + 0.02, 0.05], crouch: 0.6 }),
+    KD(2.38, st[5], { bx: 0.21, pitch: 2, h: 0.3, roll: R * 0.45, yaw: Y * 0.45, turn: T * 0.45, f: [0.2, R ? 0.12 : 0.04], b: [-0.2, R || Y ? 0.1 : 0.04], crouch: 0.92 }),
+    KD(2.6, st[5], { bx: 0.56, pitch: 0, h: 0.24, roll: R, yaw: Y, turn: T, f: [0.16, 0.05], b: [-0.18, 0.05], crouch: 0.9 }),
+    KD(2.82, st[6], { bx: 0.91, h: 0, crouch: 0.68, f: [0.16, 0], b: [-0.18, 0] }),
+    KD(3.4, st[6], { bx: 1.84, crouch: 0.3 }),
+    KD(4.0, st[6], { bx: 2.80 })
   ];
-  return { scene: "flat", view: [-1.25, 1.0, -0.06, 2.25], keys };
+  keys.forEach(k => k.bx = 1.6 * k.t - 3.6);   // rolling at a steady 1.6 m/s
+  return { scene: "flat", view: [-1.25, 1.0, -0.06, 2.25], seq: [1.5, 3.05], keys };
 }
 function grindDemo(o) {   // ollie onto a low curb, ride it, come off: o.onCurb holds the board's pose on the curb
   const st = o.steps, on = o.onCurb;
-  return { scene: "curb", view: [-1.75, 2.05, -0.06, 2.2], keys: [
+  return { scene: "curb", view: [-1.75, 2.05, -0.06, 2.2], seq: [0.85, 3.95], keys: [
     KD(0, st[0], { bx: -1.55, crouch: 0.25 }),
     KD(1.0, st[1], { bx: -1.15, crouch: 0.6, b: [-0.33, 0], f: [0.05, 0] }),
     KD(1.3, st[2], { bx: -0.95, piv: "back", pitch: 20, h: 0.05, crouch: 0.5, jump: 0.05 }),
@@ -1437,7 +1500,7 @@ const DEMOS = {
     KD(0, 0, { crouch: 0.15 }), KD(1.2, 1, { crouch: 0.95, arms: 0.4 }), KD(2.0, 2, { arms: 0.0, ba: -18 }),
     KD(2.8, 3, { ba: -50, crouch: 1, f: null, b: null, fg: [0.2, 0], bg: [-0.12, 0], bx: 0.45, arms: 0.75 }), KD(3.6, 3, { ba: -58, bx: 0.7, arms: 0.85 }),
     KD(4.6, 4, { ba: 0, crouch: 0.15, arms: 0.6, fg: [0.1, 0], bg: [-0.22, 0], bx: 0.75 }), KD(5.4, 4, {})] },
-  dropin: { scene: "ramp", view: [-1.25, 1.95, -0.06, 2.75], keys: [
+  dropin: { scene: "ramp", view: [-1.25, 1.95, -0.06, 2.75], seq: [2.3, 5.3], keys: [
     KD(0, 0, { bx: 0.24, by: 0.885, piv: "back", pitch: 12, b: [-0.33, 0], f: null, fg: [-0.42, 0.9], crouch: 0.2, arms: 0.6 }),
     KD(1.2, 1, {}), KD(2.4, 2, { f: [0.15, 0], fg: null, crouch: 0.3 }),
     KD(3.3, 3, { pitch: -35, lean: 0.12, ba: -28, crouch: 0.42 }), KD(3.85, 3, { pitch: -55, ba: -42 }),
@@ -1472,16 +1535,11 @@ function demoAt(D, t) {
   const o = Object.assign({}, a);
   if (a.mode === b.mode && a.dir === b.dir) {
     NUMS.forEach(n => o[n] = lerp(a[n], b[n], u)); o.s0 = lerp(a.s0, b.s0, u);
+    const ul = b.t > a.t ? clamp((t - a.t) / (b.t - a.t), 0, 1) : 0; o.bx = lerp(a.bx, b.bx, ul);   // rolling is steady: the distance moves evenly, never in jerks
     ["f", "b", "fg", "bg"].forEach(n => { if (a[n] && b[n]) o[n] = [lerp(a[n][0], b[n][0], u), lerp(a[n][1], b[n][1], u)]; });
   }
   o.step = t >= b.t ? b.s : a.s; o.t = t;
   return o;
-}
-function simDemo(id) {
-  const D = DEMOS[id]; if (!D) return { frames: [] };
-  const K = demoKeys(D), end = K[K.length - 1].t, frames = [];
-  for (let t = 0; t <= end + 1e-9; t += 1 / 60) frames.push(demoAt(D, t));
-  return { frames };
 }
 /* the board in 3D, in the current transform (meters, y up), seen from the side and a little above */
 function drawBoard3D(roll, yaw) {
@@ -1490,6 +1548,12 @@ function drawBoard3D(roll, yaw) {
   const top = m.out.map(p => P(p)), bot = m.out.map(p => P([p[0], p[1], p[2] - 0.014]));
   const faces = [], depth = a => a.reduce((s, q) => s + q[2], 0) / a.length;
   faces.push({ pts: top, col: C.grip, d: depth(top) }); faces.push({ pts: bot.slice().reverse(), col: C.deck, d: depth(bot) });
+  // the graphic under the deck (seen when it flips): two bold bands and a dot, just below the wood
+  const gz = 0.085 - 0.0146, bd = depth(bot);
+  [[-0.2, -0.12, C.sole], [-0.06, 0.02, C.ke], [0.1, 0.13, C.sole]].forEach(([x0, x1, col]) => {
+    const q = [[x0, -0.1, gz], [x1, -0.1, gz], [x1, 0.1, gz], [x0, 0.1, gz]].map(P);
+    faces.push({ pts: q, col, d: bd + 1e-6, edge: true });
+  });
   for (let i = 0; i < top.length; i++) { const j = (i + 1) % top.length, q = [top[i], top[j], bot[j], bot[i]]; faces.push({ pts: q, col: shade(C.deck, -0.12), d: depth(q), edge: true }); }
   [-0.18, 0.18].forEach(x => {
     const tq = [[x - 0.03, -0.075, 0.07], [x + 0.03, -0.075, 0.07], [x + 0.03, 0.075, 0.07], [x - 0.03, 0.075, 0.07]].map(P);
@@ -1505,19 +1569,66 @@ function drawBoard3D(roll, yaw) {
 }
 function is0(a) { const m = ((a % 360) + 360) % 360; return m < 0.5 || m > 359.5; }
 function is180(a) { const m = ((a % 360) + 360) % 360; return Math.abs(m - 180) < 0.5; }
-function drawDemoScene(D, X, Y, sc) {
+function simDemo(id) {
+  const D = DEMOS[id]; if (!D) return { frames: [] };
+  const K = demoKeys(D), end = K[K.length - 1].t, frames = [], dt = 1 / 60;
+  for (let t = 0; t <= end + 1e-9; t += dt) frames.push(demoAt(D, t));
+  // AOG-SKATE-FILM-V1: what a filmer would catch. The camera follows the rider on flat ground; the arms rise and the
+  // hood strings swing a moment behind the body (two soft springs); the pop and the landing are marked for their dust.
+  const follow = D.scene === "flat" || D.scene === "grass";
+  let cam = frames.length ? frames[0].bx : 0, cv = 0, L = 0, Lv = 0, Sx = 0, Sv = 0, popT = -9, landT = -9, popX = 0, landX = 0, wasUp = false, wasPop = false;
+  frames.forEach((f, i) => {
+    const p = frames[Math.max(0, i - 1)];
+    const hy = f.by + f.h + f.jump - 0.36 * f.crouch, py = p.by + p.h + p.jump - 0.36 * p.crouch;
+    const vy = (hy - py) / dt, vx = (f.bx - p.bx) / dt + (f.mode === "path" ? (f.s0 - p.s0) / dt * f.dir : 0);
+    const up = f.h > 0.05;
+    const tl = clamp(Math.abs(vy) * 0.55 + (up ? 0.45 : 0), 0, 1.1);
+    Lv += ((tl - L) * 140 - Lv * 16) * dt; L += Lv * dt;
+    const ts = clamp(-vx * 0.35 - vy * 0.5, -1, 1);
+    Sv += ((ts - Sx) * 90 - Sv * 7) * dt; Sx += Sv * dt;
+    const pop = f.piv === "back" && f.pitch > 14 && f.h < 0.06 && f.mode === "free" && D.scene !== "ramp";
+    if (pop && !wasPop) { popT = f.t; popX = f.bx - BOARD.half * f.dir; }
+    if (!up && wasUp) { landT = f.t; landX = f.bx; }
+    wasPop = pop; wasUp = up;
+    if (follow) { const bv = (f.bx - p.bx) / dt; cv += ((f.bx - cam) * 14 + (bv - cv) * 8) * dt; cam += cv * dt; }   // matches the rider's speed, so the rider stays in the middle
+    Object.assign(f, { lift: L, str: Sx, cam: follow ? cam : null, popAge: f.t - popT, popX, landAge: f.t - landT, landX });
+  });
+  return { frames };
+}
+/* the wheels turn with the distance rolled: a mark on each core shows it */
+let WHEEL_A = 0;
+/* the scene: flat ground, grass, a curb or the mini ramp; on flat ground the camera moves, so the ground and a far ledge slide by */
+function drawDemoScene(D, X, Y, sc, cam) {
   const sky = D.scene;
   if (sky === "ramp") {
     const p = demoPath().pts, top = SHAPES.demo.Hm;
     ctx.fillStyle = C.ramp; ctx.beginPath(); ctx.moveTo(X(-3), Y(top)); ctx.lineTo(X(p[0].x), Y(top));
     p.forEach(q => ctx.lineTo(X(q.x), Y(q.y))); ctx.lineTo(X(p[p.length - 1].x + 3), Y(top)); ctx.lineTo(X(p[p.length - 1].x + 3), Y(-1)); ctx.lineTo(X(-3), Y(-1)); ctx.closePath(); ctx.fill();
+    // plywood sheets on the transition, framing under the deck
+    ctx.save(); ctx.clip(); ctx.strokeStyle = alpha(C.ink, 0.07); ctx.lineWidth = 1.5;
+    for (let x = -3; x < 0; x += 0.4) { ctx.beginPath(); ctx.moveTo(X(x), Y(top) + 2); ctx.lineTo(X(x), Y(0)); ctx.stroke(); }
+    ctx.restore();
     ctx.strokeStyle = C["ramp-edge"]; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X(-3), Y(top)); p.forEach(q => ctx.lineTo(X(q.x), Y(q.y))); ctx.lineTo(X(p[p.length - 1].x + 3), Y(top)); ctx.stroke();
-    ctx.strokeStyle = alpha(C.ink, 0.08); ctx.lineWidth = 1.5; for (let x = -3; x < 0; x += 0.4) { ctx.beginPath(); ctx.moveTo(X(x), Y(top) + 2); ctx.lineTo(X(x), Y(0)); ctx.stroke(); }  // the platform's framing
-    [p[0], p[p.length - 1]].forEach(q => { ctx.fillStyle = shade(C.truck, 0.1); ctx.strokeStyle = shade(C.truck, -0.4); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(X(q.x), Y(top), Math.max(4, 0.03 * sc), 0, 7); ctx.fill(); ctx.stroke(); });
+    [p[0], p[p.length - 1]].forEach(q => { const r = Math.max(4, 0.03 * sc); const g = ctx.createLinearGradient(0, Y(top) - r, 0, Y(top) + r); g.addColorStop(0, shade(C.truck, 0.5)); g.addColorStop(1, shade(C.truck, -0.3)); ctx.fillStyle = g; ctx.strokeStyle = shade(C.truck, -0.5); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(X(q.x), Y(top), r, 0, 7); ctx.fill(); ctx.stroke(); });
     drawGround(Y(0) + 1, 0, W, 0);
     return;
   }
-  drawGround(Y(0), 0, W, 150);
+  const sh = cam || 0;
+  // far away (slides slower): low ledges and lamp posts standing on the ground, faint
+  const far = x => X(x * 0.5 + sh * 0.5);
+  for (let k = Math.floor((sh - 10) / 5) - 1; k < (sh + 10) / 5 + 1; k++) {
+    const x0 = k * 5, lx = far(x0), lw = 1.4 * 0.5 * sc, lh = 0.2 * sc;
+    ctx.fillStyle = alpha(C.ink, 0.045); ctx.fillRect(lx, Y(0) - lh, lw, lh);
+    ctx.fillStyle = alpha(C.ink, 0.08); ctx.fillRect(lx, Y(0) - lh, lw, 3);
+    const px = far(x0 + 3.2); ctx.fillStyle = alpha(C.ink, 0.07); ctx.fillRect(px - 1.5, Y(0) - 1.6 * sc, 3, 1.6 * sc);
+    ctx.fillRect(px - 1.5, Y(0) - 1.6 * sc, 0.16 * sc, 3); ctx.beginPath(); ctx.ellipse(px + 0.16 * sc, Y(0) - 1.6 * sc + 4, 0.05 * sc, 0.02 * sc, 0, 0, 7); ctx.fill();
+  }
+  drawGround(Y(0), 0, W, 0);
+  // expansion joints and a few cracks in the slab, fixed to the ground so they slide by as the camera follows
+  ctx.strokeStyle = alpha(C.ink, 0.1); ctx.lineWidth = 1.5;
+  for (let k = Math.floor((sh - 6) / 1.5); k < (sh + 6) / 1.5; k++) { const x = X(k * 1.5); ctx.beginPath(); ctx.moveTo(x, Y(0) + 3); ctx.lineTo(x - 0.25 * sc, H); ctx.stroke(); }
+  ctx.strokeStyle = alpha(C.ink, 0.06); ctx.lineWidth = 1;
+  for (let k = Math.floor((sh - 6) / 2.1); k < (sh + 6) / 2.1; k++) { const x = X(k * 2.1 + 0.6); ctx.beginPath(); ctx.moveTo(x, Y(0) + 8); ctx.lineTo(x + 0.08 * sc, Y(0) + 16); ctx.lineTo(x + 0.03 * sc, Y(0) + 26); ctx.stroke(); }
   if (sky === "grass") {
     ctx.fillStyle = alpha(C.good, 0.22); ctx.fillRect(0, Y(0), W, H - Y(0));
     ctx.strokeStyle = alpha(C.good, 0.5); ctx.lineWidth = 2;
@@ -1526,25 +1637,50 @@ function drawDemoScene(D, X, Y, sc) {
   }
   if (sky === "curb") {
     const c0 = -0.5, c1 = 1.32, ht = 0.16;
-    ctx.fillStyle = shade(C.ramp, 0.1); ctx.fillRect(X(c0), Y(ht), (c1 - c0) * sc, ht * sc);
-    ctx.fillStyle = shade(C.ramp, -0.12); ctx.fillRect(X(c0), Y(ht), (c1 - c0) * sc, 0.025 * sc);
-    ctx.strokeStyle = alpha(C.ke, 0.9); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(X(c0), Y(ht)); ctx.lineTo(X(c1), Y(ht)); ctx.stroke();    // the wax
+    const g = ctx.createLinearGradient(0, Y(ht), 0, Y(0)); g.addColorStop(0, shade(C.ramp, 0.18)); g.addColorStop(1, shade(C.ramp, -0.05));
+    ctx.fillStyle = g; ctx.fillRect(X(c0), Y(ht), (c1 - c0) * sc, ht * sc);
+    ctx.fillStyle = shade(C.truck, 0.2); ctx.fillRect(X(c0), Y(ht), (c1 - c0) * sc, 0.022 * sc);              // angle iron on the edge
+    ctx.strokeStyle = alpha(C.ke, 0.9); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X(c0), Y(ht)); ctx.lineTo(X(c1), Y(ht)); ctx.stroke();    // the wax
     ctx.strokeStyle = shade(C.ramp, -0.4); ctx.lineWidth = 1.5; ctx.strokeRect(X(c0), Y(ht), (c1 - c0) * sc, ht * sc);
     text(L("Low curb, waxed", "Bordillo bajo con cera"), X((c0 + c1) / 2), Y(0) + FS * 1.3, { a: "center", m: .75, c: C.soft });
   }
 }
-function drawDemo(fr, D) {
+/* dust where the tail snaps the ground, and where the wheels land: a few soft puffs that spread and fade */
+function drawDust(x0, y0, age, sc, wide) {
+  if (age < 0 || age > 0.45) return;
+  const u = age / 0.45;
+  ctx.save(); ctx.fillStyle = alpha(C.ground === "" ? C.soft : shade(C.ground, -0.25), 0.32 * (1 - u));
+  [-1, -0.5, 0.15, 0.6, 1].forEach((d, i) => { const r = (0.025 + 0.05 * u) * sc * (i % 2 ? 0.8 : 1); ctx.beginPath(); ctx.arc(x0 + d * (0.05 + 0.18 * u) * sc * wide, y0 - (0.01 + 0.04 * u * (i % 2 ? 1.4 : 0.8)) * sc, r, 0, 7); ctx.fill(); });
+  ctx.restore();
+}
+function demoFrame(D) {   // the drawing frame for a demo: the view widened a little so arms never leave the picture
   const v = [D.view[0] - 0.45, D.view[1] + 0.45, D.view[2], D.view[3]], gap = Math.max(22, FS * 1.7), sc = Math.min((W - 40) / (v[1] - v[0]), (H - 18 - gap) / (v[3] - v[2]));
   const ox = (W - (v[1] - v[0]) * sc) / 2 - v[0] * sc, oy = H - gap + v[2] * sc - Math.max(0, (H - 18 - gap - (v[3] - v[2]) * sc)) / 2;
-  const X = x => ox + x * sc, Y = y => oy - y * sc;
-  drawDemoScene(D, X, Y, sc);
+  return { v, sc, ox, oy, mid: (D.view[0] + D.view[1]) / 2 };
+}
+function drawDemo(fr, D, opt) {
+  opt = opt || {};
+  const F = demoFrame(D), sc = F.sc, cam = opt.cam != null ? opt.cam : (fr && fr.cam != null ? fr.cam : null);
+  const shift = cam != null ? cam - F.mid : 0;
+  const X = x => F.ox + (x - shift) * sc, Y = y => F.oy - y * sc;
+  if (!opt.noScene) drawDemoScene(D, X, Y, sc, shift);
   if (!fr) return;
+  if (!opt.noFx) {
+    drawDust(X(fr.popX), Y(0), fr.popAge, sc, 0.7);
+    if (fr.popAge >= 0 && fr.popAge < 0.12) {   // the snap
+      ctx.save(); ctx.strokeStyle = alpha(C.ink, 0.5 * (1 - fr.popAge / 0.12)); ctx.lineWidth = 2;
+      [-2.4, -1.9, -1.4].forEach(a => { const x = X(fr.popX), y = Y(0.01); ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 0.05 * sc * fr.dir, y + Math.sin(a) * 0.05 * sc); ctx.lineTo(x + Math.cos(a) * 0.12 * sc * fr.dir, y + Math.sin(a) * 0.12 * sc); ctx.stroke(); });
+      ctx.restore();
+    }
+    drawDust(X(fr.landX), Y(D.scene === "curb" && fr.landX > -0.5 && fr.landX < 1.32 ? 0.16 : 0), fr.landAge, sc, 1.6);
+  }
   // the surface frame: the ground, or a point on the ramp with its slope
   let sx = 0, sy = 0, ang = 0;
   if (fr.mode === "path") { const q = at(demoPath(), fr.s0); sx = q.x; sy = q.y; ang = Math.atan2(q.ty, q.tx); }
   const dir = fr.dir, pv = (fr.piv === "back" ? -BOARD.axle : fr.piv === "front" ? BOARD.axle : 0) * dir, a = fr.pitch * DEG * dir;
   const bt = (x, y) => { const x1 = x * dir; const xr = pv + (x1 - pv) * Math.cos(a) - y * Math.sin(a), yr = (x1 - pv) * Math.sin(a) + y * Math.cos(a); return [fr.bx + xr, fr.by + fr.h + yr]; };
   const flat2D = is0(fr.roll) && (is0(fr.yaw) || is180(fr.yaw));
+  WHEEL_A = -((fr.mode === "path" ? fr.s0 * dir : fr.bx) / BOARD.wheelR);
   ctx.save(); ctx.translate(X(sx), Y(sy)); ctx.scale(sc, -sc); ctx.rotate(ang);
   if (fr.mode === "path" || Math.abs(fr.pitch) < 15 || fr.h > 0.05) { ctx.save(); ctx.translate(fr.bx, fr.by); boardShadow(fr.h); ctx.restore(); }
   ctx.save(); ctx.translate(fr.bx, fr.by + fr.h); ctx.translate(pv, 0); ctx.rotate(a); ctx.translate(-pv, 0); ctx.scale(dir * (flat2D && is180(fr.yaw) ? -1 : 1), 1);
@@ -1560,11 +1696,33 @@ function drawDemo(fr, D) {
   const mid = [(fF[0] + fB[0]) / 2 + fr.hx, (fF[1] + fB[1]) / 2];
   let hip = [mid[0], mid[1] + 0.84 - 0.36 * fr.crouch + fr.jump];
   const ba = fr.ba * DEG; hip = [mid[0] + (hip[0] - mid[0]) * Math.cos(ba) - (hip[1] - mid[1]) * Math.sin(ba), mid[1] + (hip[0] - mid[0]) * Math.sin(ba) + (hip[1] - mid[1]) * Math.cos(ba)];
-  const sq = Math.max(0.58, Math.abs(Math.cos(fr.turn * DEG)));
+  const tc = Math.cos(fr.turn * DEG), sq = Math.max(0.62, Math.abs(tc));
+  // which way the rider looks: toward the nose (riding fakie, the body still faces the same way; the head looks back)
+  const nose = dir * (Math.cos(fr.yaw * DEG) >= 0 ? 1 : -1) * (tc >= 0 ? 1 : -1);
   ctx.save(); ctx.translate(hip[0], 0); ctx.scale(sq, 1); ctx.translate(-hip[0], 0);
-  drawBody(fB, fF, hip, { lean: fr.lean - ba, arms: fr.arms });
+  drawBody(fB, fF, hip, { lean: fr.lean - ba, arms: fr.arms, nose, lift: opt.still ? 0 : fr.lift || 0, str: opt.still ? 0 : fr.str || 0, twist: Math.sin(fr.turn * DEG), back: tc < 0 });
   ctx.restore();
   ctx.restore();
+}
+/* the sequence shot: the trick in seven faded moments across one picture, the way skate magazines print it */
+function drawSequence(D, frames) {
+  if (!frames.length) return;
+  const K = demoKeys(D), t0 = D.seq ? D.seq[0] : 0, t1 = D.seq ? D.seq[1] : K[K.length - 1].t;
+  const pick = [];
+  for (let i = 0; i < 7; i++) { const t = t0 + (t1 - t0) * i / 6; pick.push(frames[clamp(Math.round(t * 60), 0, frames.length - 1)]); }
+  // on flat ground the picture widens to hold the whole trick; on a curb or a ramp the stage already does
+  const flat = D.scene === "flat" || D.scene === "grass", xs = pick.map(f => f.bx), x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+  if (flat) D = Object.assign({}, D, { view: [Math.min(D.view[0], x0 - 0.5), Math.max(D.view[1], x1 + 0.5), D.view[2], D.view[3]] });
+  const cam = flat ? (D.view[0] + D.view[1]) / 2 : null;
+  drawDemo(null, D, { cam });
+  // each moment is drawn whole on its own sheet, then laid down faded, so a rider's parts never show through each other
+  const off = drawSequence.off || (drawSequence.off = document.createElement("canvas")), main = ctx;
+  off.width = cv.width; off.height = cv.height;
+  pick.forEach((f, i) => {
+    const o2 = off.getContext("2d"); o2.setTransform(1, 0, 0, 1, 0, 0); o2.clearRect(0, 0, off.width, off.height); o2.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+    ctx = o2; drawDemo(f, D, { cam, noScene: true, noFx: true, still: true }); ctx = main;
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = i === 6 ? 1 : 0.22 + 0.1 * i; ctx.drawImage(off, 0, 0); ctx.restore();
+  });
 }
 /* the feet from above: the setup for the trick, in a small box (toe side down, nose toward the arrow) */
 function drawFoot(x, y, ang, col, mirror) {   // a shoe from above, in board meters (toes toward the toe side, +y)
@@ -1602,14 +1760,15 @@ let TR = null;
 function curTrick() { return TRICKS.find(x => x.id === S.tricks.id) || TRICKS[0]; }
 function drawTricks(fr) {
   const t = curTrick(), D = DEMOS[t.id];
-  if (D) drawDemo(fr, D);
+  if (D && S.tricks.view === "seq") drawSequence(D, P.frames); else if (D) drawDemo(fr, D);
   // the setup from above, top right; the step, top left
   const bw = Math.min(W * 0.34, 300), sc = bw / 1.0, bx = W - bw / 2 - 18, by = 18 + 0.13 * sc + FS * 0.2;
   ctx.save(); ctx.fillStyle = alpha(C.card, 0.92); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; roundRect(W - bw - 30, 8, bw + 22, 0.26 * sc + FS * 1.6, 12); ctx.fill(); ctx.stroke(); ctx.restore();
   text(L("Feet, from above", "Pies, desde arriba"), W - bw - 20, 8 + FS * 0.95, { m: .7, w: 700, c: C.soft });
   drawFeetMap(t, bx, by + FS * 0.75, sc * 0.82, true);
   const c = es() ? t.es : t.en;
-  if (fr) text(L("Step ", "Paso ") + (fr.step + 1) + L(" of ", " de ") + c.steps.length, 16, 34, { w: 700, m: 1.05, c: C.steel });
+  if (S.tricks.view === "seq") text(L("Sequence", "Secuencia"), 16, 34, { w: 700, m: 1.05, c: C.steel });
+  else if (fr) text(L("Step ", "Paso ") + (fr.step + 1) + L(" of ", " de ") + c.steps.length, 16, 34, { w: 700, m: 1.05, c: C.steel });
   else text(c.n, 16, 34, { w: 700, m: 1.05, c: C.steel });
 }
 function tricksOnFrame(fr) {
@@ -1629,6 +1788,7 @@ function tricksPanel() {
   return `<p class="kicker">${L("Room 7 · How to", "Sala 7 · Cómo se hace")}</p>
   <h2>${L("Trick book", "Libro de trucos")}</h2>
   <div class="ctl"><label for="kT">${L("Pick a trick", "Elige un truco")}</label><select class="sel" id="kT">${groups}</select></div>
+  <div class="ctl"><span class="lab">${L("Watch it", "Míralo")}</span><div class="seg"><button type="button" data-tv="move" aria-pressed="${S.tricks.view !== "seq"}">${L("Moving", "En movimiento")}</button><button type="button" data-tv="seq" aria-pressed="${S.tricks.view === "seq"}">${L("Sequence", "Secuencia")}</button></div></div>
   <div class="ctl"><div class="seg"><button type="button" data-st="regular" aria-pressed="${S.stance === "regular"}">${L("Regular", "Regular")}</button><button type="button" data-st="goofy" aria-pressed="${S.stance === "goofy"}">Goofy</button></div></div>
   <h3>${esc(c.n)}</h3>
   <p><span class="tag">${esc(L(LV[t.lv][0], LV[t.lv][1]))}</span><span class="tag">${L("Helmet on", "Con casco")}</span>${t.lv >= 2 ? `<span class="tag">${L("Wrist guards and pads", "Muñequeras y protecciones")}</span>` : ""}</p>
@@ -1652,6 +1812,7 @@ function tricksPanel() {
 function tricksWire() {
   const pick = id => { S.tricks.id = id; save(); tricksReset(); };
   $("kT").onchange = e => pick(e.target.value);
+  document.querySelectorAll("#panel [data-tv]").forEach(b => b.onclick = () => { S.tricks.view = b.getAttribute("data-tv"); save(); panel(); paint(); });
   document.querySelectorAll("#panel [data-st]").forEach(b => b.onclick = () => { S.stance = b.getAttribute("data-st"); save(); panel(); paint(); });
   const i = TRICKS.indexOf(curTrick());
   $("kPrev").onclick = () => pick(TRICKS[Math.max(0, i - 1)].id);
