@@ -27,7 +27,7 @@ const PAGES = [
   ["mar-u1.html", false], ["mar-u15.html", false], ["martial-arts-hub.html", false], ["martial-arts-course.html", false],
   ["dojo.html", true], ["dojo.html#front-kick", true], ["kitchen.html", true], ["kitchen.html#pancakes", true], ["sewing.html", true], ["sewing.html#backstitch", true]
 ];
-const HEAVY = /three\.module|\/vendor\/three|aog-[a-z-]*3d\.js|aog-figure3d|aog-3dkit|\/data\/sky\//;
+const HEAVY = /three\.module|\/vendor\/three|aog-[a-z-]*3d\.js|aog-figure3d|aog-3dkit|\/data\/sky\/|\/vendor\/onnxruntime|\/models\/stems\/|aog-stems-ai\.js/;   // AOG-STEMS-AI-V1: the separation model too
 let fails = 0, warns = 0;
 const ok = (c, m) => { console.log((c ? "✓ " : "✗ ") + m); if (!c) fails++; };
 const wait = ms => new Promise(o => setTimeout(o, ms));
