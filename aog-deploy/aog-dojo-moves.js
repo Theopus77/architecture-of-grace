@@ -114,6 +114,7 @@ const IK = {
   rise:    { to: [0.04, 1.76, 0.22], pole: [-0.6, 1.75, 0.35], twist: -60 },
   lowSet:  { to: [0.16, 1.48, 0.14], pole: [-0.2, 1.0, 0.4], twist: 0 },
   low:     { to: [-0.22, 0.82, 0.34], pole: [-0.6, 1.2, -0.1], twist: 70 },
+  lowFS:   { to: [-0.17, 0.92, 0.56], pole: [-0.6, 1.3, 0.1], twist: 70 },
   inSet:   { to: [-0.48, 1.45, 0.12], pole: [-0.45, 0.9, -0.1], twist: 0 },
   inside:  { to: [-0.03, 1.38, 0.34], pole: [-0.3, 0.95, 0.35], twist: -40 },
   outSet:  { to: [0.12, 1.17, 0.14], pole: [-0.25, 1.05, 0.45], twist: 40 },
@@ -550,7 +551,7 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   const S0 = ST.front(0);
   const ready = merge(S0, root(0, -0.15, 0.05, 0, -25, 0), arms("fistBelt", "fistBelt"));
   const set = merge(S0, root(0, -0.15, 0.05, 0, -30, 0), { j: Object.assign({}, AR.reach) }, { arm: { L: ikL(ikDrop(IK.lowSet, -0.15)) } });
-  const blk = merge(S0, root(0, -0.15, 0.05, 0, -32, 0), { j: Object.assign({}, AR.hip) }, { arm: { L: ikL(ikDrop(IK.low, -0.15)) } });
+  const blk = merge(S0, root(0, -0.15, 0.05, 0, -32, 0), { j: Object.assign({}, AR.hip) }, { arm: { L: ikL(ikDrop(IK.lowFS, -0.15)) } });
   const pun = merge(S0, root(0, -0.16, 0.07, 0, 0, 0), arms("punch", "hip"));
   move({ id: "combo-block-punch", kind: "combo", band: "6-8", art: W("karate", "karate"),
     keys: [K(0, 0, ready), K(0.6, 0, ready), K(1.3, 1, set), K(1.7, 1, blk, { ease: "snap" }), K(2.3, 1, blk), K(2.7, 2, pun, { ease: "snap" }), K(3.4, 2, pun), K(4.2, 3, ready), K(4.7, 3, ready)],
@@ -581,7 +582,7 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   move({ id: "form-1", kind: "combo", band: "9-12", art: W("an original form made for this site", "una forma original hecha para este sitio"),
     keys: [
       K(0, 0, r0), K(0.8, 0, r0),
-      K(1.5, 1, s1(J("reach", "lowStart"), -10), { arm: { L: ikL(ikDrop(IK.lowSet, -0.15)) } }), K(2.0, 1, s1(J("hip", "low"), -30), { ease: "snap", arm: { L: ikL(ikDrop(IK.low, -0.15)) } }), K(2.6, 1, s1(J("hip", "low"), -30), { arm: { L: ikL(ikDrop(IK.low, -0.15)) } }),
+      K(1.5, 1, s1(J("reach", "lowStart"), -10), { arm: { L: ikL(ikDrop(IK.lowSet, -0.15)) } }), K(2.0, 1, s1(J("hip", "low"), -30), { ease: "snap", arm: { L: ikL(ikDrop(IK.lowFS, -0.15)) } }), K(2.6, 1, s1(J("hip", "low"), -30), { arm: { L: ikL(ikDrop(IK.lowFS, -0.15)) } }),
       K(3.1, 2, s1(J("punch", "hip"), 0), { ease: "snap" }), K(3.8, 2, s1(J("punch", "hip"), 0)),
       K(4.5, 3, midStep), K(5.2, 3, s3(J("riseStart", "reach"), 10)), K(5.6, 3, s3(J("rise", "hip"), 25), { ease: "snap", arm: { R: ikDrop(IK.rise, -0.15) } }), K(6.2, 3, s3(J("rise", "hip"), 25), { arm: { R: ikDrop(IK.rise, -0.15) } }),
       K(6.7, 4, s3(Object.assign({}, AR.hip, Lside(AR.punch)), 0), { ease: "snap" }), K(7.4, 4, s3(Object.assign({}, AR.hip, Lside(AR.punch)), 0)),

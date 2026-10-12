@@ -747,12 +747,17 @@ export function makeFigure(opts) {
     leg: [AT.hipL[1] - AT.kneeL[1], AT.kneeL[1] - AT.ankleL[1]],
     arm: [AT.shoulderL[1] - AT.elbowL[1], AT.elbowL[1] - AT.wristL[1]] };
   const _inv = new THREE.Matrix4(), _T = new THREE.Vector3(), _P = new THREE.Vector3(), _M1 = new THREE.Matrix4(), _M2 = new THREE.Matrix4();
-  function solve2(upper, lower, l1, l2, target, pole, bend) {   // bend +1: a knee (bends back, points forward); −1: an elbow
+  function solve2(upper, lower, l1, l2, target, pole, bend, soft) {   // bend +1: a knee (bends back, points forward); −1: an elbow
     const parent = upper.parent; parent.updateWorldMatrix(true, false);
     _inv.copy(parent.matrixWorld).invert();
     _T.copy(target).applyMatrix4(_inv).sub(upper.position);
     _P.copy(pole).applyMatrix4(_inv).sub(upper.position);
-    const D = clamp(_T.length(), Math.abs(l1 - l2) + 1e-4, l1 + l2 - 1e-5);
+    let D = _T.length();
+    if (soft) {   // soft reach: the last few percent straighten gently, so the elbow never snaps
+      const L = l1 + l2, ds = L * soft;
+      if (D > ds) D = ds + (L - ds) * (1 - Math.exp(-(D - ds) / (L - ds)));
+    }
+    D = clamp(D, Math.abs(l1 - l2) + 1e-4, l1 + l2 - 1e-5);
     const phi = Math.PI - Math.acos(clamp((l1 * l1 + l2 * l2 - D * D) / (2 * l1 * l2), -1, 1));
     lower.rotation.set(bend * phi, 0, 0, "XYZ");
     const a = V3(0, -l1 - l2 * Math.cos(phi), -bend * l2 * Math.sin(phi)).normalize();
@@ -796,9 +801,9 @@ export function makeFigure(opts) {
       solve2(bones["hip" + S], bones["knee" + S], LEN.leg[0], LEN.leg[1], target, pole || autoPole("leg", S, target), 1);
       if (o.footFlat || o.up || o.forward) footTo(S, o);
     },
-    arm(side, target, pole) {
+    arm(side, target, pole, o) {
       const S = sideKey(side);
-      solve2(bones["shoulder" + S], bones["elbow" + S], LEN.arm[0], LEN.arm[1], target, pole || autoPole("arm", S, target), -1);
+      solve2(bones["shoulder" + S], bones["elbow" + S], LEN.arm[0], LEN.arm[1], target, pole || autoPole("arm", S, target), -1, o && o.exact ? 0 : 0.965);
     }
   };
 

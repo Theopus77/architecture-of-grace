@@ -236,7 +236,7 @@ const NELM = [0, 7.8, 7.3, 6.8, 6.3, 5.8, 5.3, 4.8, 4.3, 4.0];
 const SCOPE = { id:"r90", mm:90, fl:900, dawes:116/90, seeing:1.6, useful:180, afov:50, kind:"refractor" };
 const OPT_KEY = "scope.optics.v1";
 const OPT = { scope:"r90", seeing:"avg", bortle:4 };
-try { const o=JSON.parse(localStorage.getItem(OPT_KEY)||"null"); if(o){ if(INSTR[o.scope]) OPT.scope=o.scope; if(SEEING[o.seeing]) OPT.seeing=o.seeing; if(o.bortle>=1&&o.bortle<=9) OPT.bortle=Math.round(o.bortle); } } catch(e){}
+try { const o=JSON.parse(localStorage.getItem(OPT_KEY)||"null"); if(o){ if(INSTR[o.scope]) OPT.scope=o.scope; if(SEEING[o.seeing]) OPT.seeing=o.seeing; if(o.bortle>=1&&o.bortle<=9) OPT.bortle=Math.round(o.bortle); if(o.real===true) OPT.real=true; } } catch(e){}
 function setScope(){
   const I=INSTR[OPT.scope]||INSTR.r90;
   Object.assign(SCOPE, { id:OPT.scope, mm:I.mm, fl:I.fl, kind:I.kind, dawes:116/I.mm, seeing:SEEING[OPT.seeing]||1.6, useful:Math.min(2*I.mm, 500) });

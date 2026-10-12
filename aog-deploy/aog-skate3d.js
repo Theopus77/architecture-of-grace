@@ -520,9 +520,9 @@ export async function create(kit) {
   for (let x = -30; x <= 42; x += 2.5) lathePost(1.85, 0.03, 0.026, M.metal, dress, x, -9.4);
   [0.12, 1.82].forEach(y => { const r = mesh(new THREE.CylinderGeometry(0.022, 0.022, 72, 10), M.metal, 6, y, -9.4, dress); r.rotation.z = Math.PI / 2; });
   const link = mesh(new THREE.PlaneGeometry(72, 1.7), linkMat, 6, 0.97, -9.4, dress); link.castShadow = false;
-  // the town far away
+  // woods far off, fading into the haze (no hard-edged buildings)
   const city = new THREE.Group(); world.add(city);
-  for (let i = 0; i < 30; i++) { const h = 8 + rand() * 22, w = 5 + rand() * 9; const b = mesh(rbox(w, h, 5, 0.6), M.far, -90 + i * 6.5 + rand() * 2, h / 2, -95 - rand() * 20, city); b.castShadow = false; }
+  for (let i = 0; i < 22; i++) { const t = tree(-70 + i * 6.8 + rand() * 3, 0, 1.6 + rand() * 0.8, i % 3, city); t.position.z = -24 - rand() * 14; t.traverse(m => { m.castShadow = false; }); }
   for (let i = 0; i < 16; i++) tree(-60 + i * 8 + rand() * 3, 14 + rand() * 6, 1.2 + rand() * 0.4, i % 3, city);
 
   /* the free-skate park (AOG-SKATE-FREE-V1): the same places the ride's physics uses */
@@ -556,7 +556,11 @@ export async function create(kit) {
     [[-12, 4.6], [-4, 4.6], [6, 4.6]].forEach(([x, z]) => { [0, 1, 2].forEach(i => mesh(benchSeat, M.bench, x, 0.45, z - 0.13 + i * 0.13, g)); [x - 0.65, x + 0.65].forEach(px => pipe([[px, 0, z - 0.2], [px, 0.43, z - 0.1], [px, 0.43, z + 0.3], [px, 0, z + 0.4]], 0.018, M.pole, g, 0.08)); });
     [[-13.8, -6], [-13.8, 3], [13.8, -6], [13.8, 3], [0, 6.6]].forEach(([x, z]) => { lathePost(4.2, 0.07, 0.045, M.pole, g, x, z); const hd = mesh(new THREE.SphereGeometry(0.16, 18, 12), M.lamp, x, 4.25, z, g); hd.castShadow = false; });
     { const l = new THREE.SpotLight("#ffd98a", 0, 22, 0.9, 0.7, 1.4); l.position.set(0, 4.1, 6.6); l.target.position.set(-3, 0, -1); g.add(l); g.add(l.target); lampLights.push(l); }
-    [[-16, -9, 1.2], [-15.5, 7, 1.0], [16, -9, 1.3], [15.5, 7.5, 1.1], [-6, 9, 1.25], [7, 9.5, 1.15], [-9, -10.5, 1.3], [10, -11, 1.2]].forEach(([x, z, s], i) => tree(x, z, s, i % 3, g));
+    [[-16, -9, 1.2], [-15.5, 7, 1.0], [16, -9, 1.3], [15.5, 7.5, 1.1], [-6, 9, 1.25], [7, 9.5, 1.15], [-9, -12.5, 1.3], [10, -13, 1.2], [-2, -13.5, 1.4], [4, -12, 1.1], [-13, -13, 1.15], [14, -12.5, 1.25], [-11, 10, 1.1], [12, 10.5, 1.3], [1, 11, 1.2]].forEach(([x, z, s], i) => tree(x, z, s, i % 3, g));
+    for (let x = -17; x <= 17; x += 2.5) lathePost(1.85, 0.03, 0.026, M.metal, g, x, -10);   // the fence behind the ramp
+    [0.12, 1.82].forEach(y => { const r = mesh(new THREE.CylinderGeometry(0.022, 0.022, 34, 10), M.metal, 0, y, -10, g); r.rotation.z = Math.PI / 2; });
+    mesh(new THREE.PlaneGeometry(34, 1.7), linkMat, 0, 0.97, -10, g).castShadow = false;
+    for (let i = 0; i < 18; i++) { const bx = -14 + i * 1.65, b = mesh(crownGeo(i % 3), M.leaf, bx, 0.18, -8.6 + Math.sin(i * 2.1) * 0.25, g); b.scale.set(0.42, 0.34, 0.42); b.rotation.y = i; }   // a hedge along the back
     scene.add(g); colors(); return g;
   }
 
@@ -616,10 +620,10 @@ export async function create(kit) {
     const glass = mesh(new THREE.CapsuleGeometry(0.12, 1, 8, 24), M.glass, 0, 0.62, 0, gg); glass.castShadow = false; glass.renderOrder = 3;
     const fill = mesh(new THREE.CylinderGeometry(0.095, 0.095, 1, 24), M[k], 0, 0.12, 0, gg); fill.geometry.translate(0, 0.5, 0);
     const cap = mesh(new THREE.SphereGeometry(0.095, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), M[k], 0, 0.12, 0, gg);
-    const lab = makeLabel(() => L(en, es), { color: k, h: 0.085, cy: 0 }); lab.position.set(0, 1.5, 0); gg.add(lab);
-    return { k, gg, fill, cap, lab };
+    return { k, gg, fill, cap };
   });
   mesh(rbox(1.45, 0.08, 0.42, 0.03), M.prop, 0.51, 0.04, 0, gauges);
+  const labE = makeLabel(() => L("Energy", "Energía"), { h: 0.075, cy: 0 }); gauges.add(labE);
   const ghosts = []; const ghostGeo = deckGeo;
   for (let i = 0; i < 16; i++) { const gm = new THREE.Mesh(ghostGeo, ghostMat); gm.visible = false; gm.renderOrder = 2; fx.add(gm); ghosts.push(gm); }
   const heatBar = mesh(rbox(1, 0.006, 0.032, 0.002), M.heat, 0, 0, 0, fx); heatBar.geometry.translate(0.5, 0, 0); heatBar.castShadow = false;
@@ -751,7 +755,8 @@ export async function create(kit) {
       slideWorld(path.hill ? t.x : 0);
       // the gauges: beside the ramp, filled with each kind of energy (each one a share of the total)
       gauges.visible = true; const gh = Math.max(1.3, top * 0.55);
-      GAUGE.forEach(gg => { const v = d.energy ? d.energy[gg.k] : 0; gg.gg.visible = v >= 0; gg.gg.children.forEach(c => c.visible = true); const hgt = Math.max(0.002, clamp(v, 0, 1) * gh); gg.fill.scale.y = hgt; gg.cap.position.y = 0.12 + hgt; gg.gg.children[0].scale.set(1, (gh + 0.24) / 1.24, 1); gg.gg.children[0].position.y = 0.12 + gh / 2; gg.lab.position.y = 0.12 + gh + 0.3; });
+      GAUGE.forEach(gg => { const v = d.energy ? d.energy[gg.k] : 0; gg.gg.visible = v >= 0; gg.gg.children.forEach(c => c.visible = true); const hgt = Math.max(0.002, clamp(v, 0, 1) * gh); gg.fill.scale.y = hgt; gg.cap.position.y = 0.12 + hgt; gg.gg.children[0].scale.set(1, (gh + 0.24) / 1.24, 1); gg.gg.children[0].position.y = 0.12 + gh / 2; });
+      labE.position.set(0.51, 0.12 + gh + 0.35, 0); gauges.scale.setScalar(path.hill ? 1.2 : Math.max(1.35, top * 0.6));
       gauges.position.set(path.hill ? t.x + 2.2 : xe + 0.45, 0, path.hill ? 1.4 : 1.0); gauges.rotation.y = -0.35;
       gauges.children.forEach(c => { if (c.isMesh) c.visible = true; });
       if (d.forces) {

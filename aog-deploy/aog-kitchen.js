@@ -262,7 +262,7 @@ function openMode(m, push) {
   S.mode = m; save(); modes(); picks();
   if (m === "recipe") return openRecipe(S.recipe, push);
   if (m === "skill") return openSkill(S.skill, push);
-  if (push) history.replaceState(null, "", "#mine");
+  if (push) history.replaceState(null, "", "#plug-in");
   if (S.draft && !draftRecipe) { draftRecipe = R.read(S.draft, S.lang); draftRecipe.id = "draft"; }
   load(draftRecipe); card();
 }
@@ -281,7 +281,7 @@ function openSkill(id, push) {
 function route() {
   const h = decodeURIComponent(location.hash.slice(1));
   if (/^skill-/.test(h)) return openSkill(h.slice(6), false);
-  if (h === "mine") return openMode("mine", false);
+  if (h === "plug-in" || h === "mine") return openMode("mine", false);
   if (h && recipeById(h)) return openRecipe(h, false);
   if (S.mode === "skill") return openSkill(S.skill, false);
   if (S.mode === "mine") return openMode("mine", false);
