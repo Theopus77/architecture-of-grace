@@ -196,3 +196,21 @@ The stitches are drawn for real: a thread that follows the needle through two la
 with the finished stitches staying in the cloth; the machine's needle, presser foot and feed dogs move with the
 fabric. Safety: needles and pins into a pincushion, never in the mouth; shears closed and passed handle-first;
 fingers away from the needle and off the presser foot path; the iron upright when resting, unplugged after.
+
+---
+
+# Addendum 2 (2026-10-12): the Telescope and the Microscope Lab
+
+Jimmy: "Is there ability for a quantum leap forward in the Micro and / or telescope? If so …" (a big leap forward).
+
+| Agent | Owns |
+|---|---|
+| TELESCOPE | `aog-deploy/telescope.html` (/telescope, the live page), `aog-deploy/telescope-lessons.html` and `telescope-guide.html` (additions only), new `aog-deploy/aog-telescope-*.js`, new `aog-deploy/data/sky/**`, `tools/check-telescope.js` |
+| MICROSCOPE | `aog-deploy/science-microscope.html` (/microscope), `aog-deploy/microscope-lessons.html` and `microscope-guide.html` (additions only), new `aog-deploy/aog-micro-*.js`, `tools/check-microscope.js` |
+
+Same rules as every 3D page above: silent until used (the big new parts — a star catalog, a 3D renderer — load only
+when that view is opened; no requestAnimationFrame while idle; a live scene such as swimming pond organisms runs only
+while it is on screen and the person has pressed play, and stops by itself), calm, realism without sharp straight
+lines, iPhone first, English and Spanish, no faces, contrast and calm checks pass, the Home Screen app files
+(`microscope.webmanifest`, `app-microscope-touch.png`) stay linked. Every existing specimen, target, control and lesson
+keeps working. Data kept in the site, public domain or openly licensed with the license kept beside it.
