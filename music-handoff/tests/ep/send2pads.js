@@ -34,7 +34,7 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   await gt.locator("[data-aogrec-drum]").first().click(); await gt.waitForTimeout(1500);
   s=await st();
   ok(acts[0]==="Send to the Drum Machine" && /^t:/.test(s.D) && s.bank===3 && /take is on bank D/.test(s.line), "a guitar take goes to bank D, cut across the pads: "+JSON.stringify({acts, D:s.D, bank:s.bank, line:s.line}));
-  const chops=await pads.evaluate(async()=>{ const buf=await recBuf(S.banks[3].rec); return chopsOf(S.banks[3], buf).length; });
+  const chops=await pads.evaluate(async()=>{ const buf=await recBuf(S.banks[3].rec); return chopsOf(S.banks[3], buf).slice(0, 16).filter(Boolean).length; });
   ok(chops===16, "its sixteen chops are ready: "+chops);
   /* 3. the bass's low notes, the band's chords */
   const bs=await page("music-bass.html");
@@ -53,7 +53,7 @@ const FAKE=()=>{ const sr=44100,n=sr, h=new ArrayBuffer(44), v=new DataView(h), 
   await pi.waitForFunction(()=>/bank D|did not|No se/.test(document.getElementById("sendLine").textContent), null, {timeout:120000});
   const pline=await pi.locator("#sendLine").innerText(); await pads.waitForTimeout(1500);
   s=await st();
-  const rec=await pads.evaluate(async()=>{ const R=recInfo(S.banks[3].rec); const buf=await recBuf(S.banks[3].rec); return {R:R&&{bpm:R.bpm,bars:R.bars,kind:R.kind}, chops:chopsOf(S.banks[3], buf).length, sec:+buf.duration.toFixed(1)}; });
+  const rec=await pads.evaluate(async()=>{ const R=recInfo(S.banks[3].rec); const buf=await recBuf(S.banks[3].rec); return {R:R&&{bpm:R.bpm,bars:R.bars,kind:R.kind}, chops:chopsOf(S.banks[3], buf).slice(0, 16).filter(Boolean).length, sec:+buf.duration.toFixed(1)}; });
   ok(pb==="Send my take to the Drum Machine" && /bank D/.test(pline) && s.bank===3 && rec.R && rec.R.kind==="take" && rec.R.bpm>0 && rec.R.bars>=4 && rec.chops===16,
     `the piano's whole recording: "${pb}" → bank D, chopped on the beat: `+JSON.stringify({pline, rec}));
   /* 4. once only; Spanish; the pads play */

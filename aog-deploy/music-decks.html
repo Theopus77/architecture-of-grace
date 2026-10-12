@@ -2703,7 +2703,9 @@ async function chopsToPads(d, btn){
   const line = document.getElementById("chopLine"+d.id), say = h=>{ d.chopMsg = h; if(line) line.innerHTML = h; };
   const sr = d.buf.sampleRate, bl = beatLen(d), p = d.motor ? posAt(d, heardFrame()) : d.pos;
   let a, n, bpm = 0;
-  if(bl > 0){ const g0 = grid0(d); a = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl; if(a < 0) a += 4*bl; a = Math.round(a); n = Math.round(16*bl + 0.02*sr); bpm = 60*sr/bl; }
+  /* AOG-CHOPS-LONGER-V1 (2026-10-12): 32 beats when the record has them (16 at the least), so a pad can play on past its beat */
+  if(bl > 0){ const g0 = grid0(d); a = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl; if(a < 0) a += 4*bl; a = Math.round(a); bpm = 60*sr/bl;
+    n = Math.round(32*bl + 0.02*sr); if(a + n > d.buf.length) n = Math.max(Math.round(16*bl + 0.02*sr), d.buf.length - a); }
   else { a = Math.max(0, Math.round(p)); n = Math.round(8*sr); }
   if(a + n > d.buf.length){ if(bl > 0 || d.buf.length - a < sr){ say(esc(t("chopsEnd"))); return; } n = d.buf.length - a; }
   if(btn) btn.disabled = true;
