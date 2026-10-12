@@ -214,8 +214,27 @@ check for anything new the hands can do.
       node tools/check-skate.js
 
   It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
-  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
+  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites; the parts list follows the setup),
+  every trick's moving demo (its steps match the list; it plays once and lights its step), progress kept, the Questions search, every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
+- A new trick joins TRICKS (its words in `aog-skate-book.js`) with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
+  ollie and curb families). The skater is drawn without a face (no faces in the site's art). It should look right to a
+  teenager who skates (Jimmy, 2026-10-11: "a teenager would laugh at this"): real clothes and shoes, a relaxed athletic
+  stance, the head looking where the board goes, steady rolling speed, the camera riding along.
+- The trick book also plays every demo in 3D (Jimmy, 2026-10-12: "three.js 3d engine … we are the 1%"): `aog-skate3d.js`
+  (AOG-SKATE-3D-V1), a skatepark and a jointed skater posed from the same demo frames, loaded with import() only when
+  someone picks 3D. three.js is kept in the site (`vendor/three-0.160.0`, MIT), never fetched from elsewhere. It renders
+  only when a step plays or the camera is dragged; nothing moves on its own. A new trick needs nothing extra for 3D.
+- Silent until used (Jimmy, 2026-10-12: "this has to be silent when not being used … lighting fast"). A visit to /skate
+  downloads only the lab itself: the trick words and answers wait in `aog-skate-book.js` (AOG-SKATE-BOOK-V1) until the
+  Trick book or Questions opens; three.js waits until 3D is tapped, every visit (it never starts on its own); leaving 3D
+  lets go of the 3D drawing and the graphics chip. Nothing asks for animation frames while idle. check-skate tests all of it.
+  Add new trick words to `aog-skate-book.js`, not to `aog-skate.js`.
+- The 3D views (Jimmy, 2026-10-12: "more realism … do 1-3"): the trick book's rider is the site's figure
+  (`aog-figure3d.js`, outfit "skate", feet held to the board with `ik.leg`); the Ramp, Ollie and Grinds rooms have a
+  2D/3D switch with their gauges, arrows and stop flag in the scene; Free skate (`#free`) drives the rider with Push,
+  ←, →, Ollie, Kickflip and Grind on the lab's own physics, starts only on a press and stops by itself at rest. All
+  3D loads only on a tap and is let go when you leave it.
 
 ## The Microscope Lab, in depth (Jimmy, 2026-10-12: "a quantum leap forward in the Micro")
 

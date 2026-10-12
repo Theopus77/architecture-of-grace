@@ -21,7 +21,7 @@ const server = http.createServer((q, r) => {
 });
 // [page (with #room), is it a 3D room?]
 const PAGES = [
-  ["skate-lab.html", false], ["skate-lab.html#tricks", false], ["skate-lab.html#ramp", false], ["skate-lab.html#questions", false],
+  ["skate-lab.html", false], ["skate-lab.html#tricks", false], ["skate-lab.html#ramp", false], ["skate-lab.html#questions", false], ["skate-lab.html#free", false], ["skate-lab.html#ollie", false], ["skate-lab.html#grind", false],
   ["science-microscope.html", false], ["telescope.html", false], ["telescope.html#lab", false], ["telescope.html#lab", false],
   ["fcs-shop.html", false], ["fc2-knife-skills.html", false], ["fc4-hand-sewing.html", false], ["fcs-u10.html", false], ["facs-course.html", false],
   ["mar-u1.html", false], ["mar-u15.html", false], ["martial-arts-hub.html", false], ["martial-arts-course.html", false],
