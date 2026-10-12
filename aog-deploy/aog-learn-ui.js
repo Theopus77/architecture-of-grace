@@ -661,7 +661,7 @@
   }
   function isAudio() { return CUR && CUR.L.src !== "midi" && CUR.rec.src !== "midi" && !!CUR.rec.blob; }
   function stmFind() {
-    var rec = CUR && CUR.rec; if (!rec || !isAudio()) return;
+    var rec = CUR && CUR.rec; if (!STEMS_ON || !rec || !isAudio()) return;
     var job = STM.job, id = rec.id;
     stmMeta(id).then(function (m) {
       if (!m || STM.job !== job || !CUR || CUR.rec !== rec) return;
@@ -741,8 +741,9 @@
       return '<option value="p:' + k + '"' + (cur === "p:" + k ? " selected" : "") + ">" + esc(w("pNo" + k)) + "</option>"; }))
       .concat(cur === "p:mine" ? ['<option value="p:mine" selected>' + esc(w("pMine")) + "</option>"] : []).join("");
   }
+  var STEMS_ON = false;   /* AOG-STEMS-SHELF-V1 (2026-10-12) — Jimmy: "Take this off the website. Let us shelf it for the time being." */
   function stmHtml() {
-    if (!isAudio()) return "";
+    if (!STEMS_ON || !isAudio()) return "";
     if (STM.st === "busy") return '<div class="lg-ctl"><button type="button" class="pbtn clear" id="lgSplitStop">' + esc(w("stopWork")) + '</button></div><p class="line" id="lgSplitLine" aria-live="polite">' + esc(w("splitting", { n: STM.pct })) + "</p>";
     if (STM.st !== "on") return '<div class="lg-ctl"><button type="button" class="pbtn" id="lgSplit">' + esc(w("split")) + '</button></div><p class="line" id="lgSplitLine" aria-live="polite">' + esc(STM.msg || w("splitLine")) + "</p>";
     var A = window.AOGStems, l = levels(), lang = L();

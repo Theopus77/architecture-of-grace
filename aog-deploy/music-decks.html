@@ -361,6 +361,9 @@ footer a{color:inherit}
 .padhead{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .5rem;margin-bottom:.35rem}
 .chopline{margin:.45rem 0 0;color:#e3d8c6;font-size:.92rem;line-height:1.4}
 /* AOG-STEMS-V1: the record's parts */
+/* AOG-STEMS-SHELF-V1 (2026-10-12) — Jimmy: "Take this off the website. Let us shelf it for the time being." Split into parts is hidden: its row, its line, its Stop and its More box never show, and a record split before plays
+   whole. Set STEMS_ON = true (and put models/ and vendor/onnxruntime-web back from shelf/stems-ai/) to bring it back. */
+.deck .prow,.deck [data-pline],.deck .pcrow,.deck .pmore{display:none!important}
 .deck .prow{flex-wrap:nowrap}
 .deck .prow .pt{flex:1 1 0;min-width:0;min-height:44px;padding:2px .3rem;white-space:normal;line-height:1.1;overflow-wrap:anywhere}
 .deck .prow .pt.on{background:#9fe0d6;color:#0b2420;border-color:#9fe0d6}
@@ -2822,7 +2825,9 @@ function partsLoad(d, raw){
   d.parts.hasQuick = !!(raw.hasQuick || raw.qd); d.parts.hear = raw.cmpQuick ? "quick" : "clean";
   partsGain(d, true); paintParts(d);
 }
+const STEMS_ON = false;   /* AOG-STEMS-SHELF-V1 */
 async function partsFind(d){
+  if(!STEMS_ON) return;
   partsStop(d, true); partsCleanStop(d, true);
   const id = partsId(d); d.parts = partsNew(); d.parts.key = id; paintParts(d);
   const m = await partsMeta(id);
