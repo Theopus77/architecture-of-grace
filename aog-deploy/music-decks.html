@@ -357,6 +357,7 @@ footer a{color:inherit}
 .mst.on{background:#9fd4a0;color:#0e2412;border-color:#9fd4a0}
 .dlab{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9bfae}
 .pads{margin-top:.55rem}
+.padtools{margin-top:.4rem}
 .padhead{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .5rem;margin-bottom:.35rem}
 .chopline{margin:.45rem 0 0;color:#e3d8c6;font-size:.92rem;line-height:1.4}
 .chopline:empty{display:none}
@@ -2460,14 +2461,16 @@ function deckHTML(d){
         <div class="padgrid" role="group" aria-label="${t("pads")} · ${t("deck")} ${id}">
           ${[0,1,2,3,4,5,6,7].map(i=>`<button type="button" class="pad" data-hot="${id}" data-i="${i}" style="--pc:${PADC[i]}">${i+1}</button>`).join("")}
         </div>
+        <!-- AOG-DJ-ERASE-V1 (2026-10-12) — Jimmy: "The erase on the turn table for the chops should not be hidden if the chops are
+             not hidden." Erase sits with the pads, so it shows whenever they do (it was inside the closed More). -->
+        <div class="row tr padtools"><button type="button" class="ghost sm" data-erase="${id}" aria-pressed="false" title="${t("eraseTip")}">${t("erase")}</button></div>
         <p class="chopline" id="chopLine${id}" aria-live="polite">${d.chopMsg||""}</p>
       </div>
-      <!-- the rest of the deck, one tap away (open on the Full bench): Lands, Erase, loops, TAP, ½×, 2×, nudge -->
+      <!-- the rest of the deck, one tap away (open on the Full bench): Lands, loops, TAP, ½×, 2×, nudge -->
       <details class="dmore"${document.body.classList.contains("bench-simple")?"":" open"}>
         <summary>${t("more")}</summary>
         <div class="padhead">
           <label class="snap">${t("snap")} <select data-snap="${id}">${[1,0.5,0.25,0].map(v=>`<option value="${v}"${d.snap===v?" selected":""}>${t(v===1?"snap1":v===0.5?"snap2":v===0.25?"snap4":"snap0")}</option>`).join("")}</select></label>
-          <button type="button" class="ghost sm" data-erase="${id}" aria-pressed="false" title="${t("eraseTip")}">${t("erase")}</button>
         </div>
         <div class="row tr loops" role="group" aria-label="${t("loop")}"><span class="dlab">${t("loop")}</span>
           ${[1,2,4,8].map(n=>`<button type="button" class="ghost sm" data-loop="${id}" data-beats="${n}" aria-pressed="false" aria-label="${t("loopN").replace("%n", n)}">${n}</button>`).join("")}
@@ -2700,7 +2703,9 @@ async function chopsToPads(d, btn){
   const line = document.getElementById("chopLine"+d.id), say = h=>{ d.chopMsg = h; if(line) line.innerHTML = h; };
   const sr = d.buf.sampleRate, bl = beatLen(d), p = d.motor ? posAt(d, heardFrame()) : d.pos;
   let a, n, bpm = 0;
-  if(bl > 0){ const g0 = grid0(d); a = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl; if(a < 0) a += 4*bl; a = Math.round(a); n = Math.round(16*bl + 0.02*sr); bpm = 60*sr/bl; }
+  /* AOG-CHOPS-LONGER-V1 (2026-10-12): 32 beats when the record has them (16 at the least), so a pad can play on past its beat */
+  if(bl > 0){ const g0 = grid0(d); a = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl; if(a < 0) a += 4*bl; a = Math.round(a); bpm = 60*sr/bl;
+    n = Math.round(32*bl + 0.02*sr); if(a + n > d.buf.length) n = Math.max(Math.round(16*bl + 0.02*sr), d.buf.length - a); }
   else { a = Math.max(0, Math.round(p)); n = Math.round(8*sr); }
   if(a + n > d.buf.length){ if(bl > 0 || d.buf.length - a < sr){ say(esc(t("chopsEnd"))); return; } n = d.buf.length - a; }
   if(btn) btn.disabled = true;

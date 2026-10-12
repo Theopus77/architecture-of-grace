@@ -28,6 +28,15 @@ const ok = (c, m) => { console.log((c ? "✓ " : "✗ ") + m); if (!c) fails++; 
 const wait = ms => new Promise(o => setTimeout(o, ms));
 
 (async () => {
+  /* the short way: two-phase search, every answer checked by turning the cube to solved */
+  try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube-short.js")) + " test 8", { stdio: "pipe", timeout: 120000 }).toString().trim().split("\n").pop();
+    const m = out.match(/longest (\d+)/); ok(/^ok/.test(out) && m && +m[1] <= 22, "the short way: " + out); }
+  catch (e) { ok(false, "the short way's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
+  /* the faster way (Level 2): cross in one go, pairs, two looks for the top, two for the last layer */
+  try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube-l2.js")) + " test 120", { stdio: "pipe", timeout: 300000 }).toString().trim().split("\n");
+    const line = out.find(l => /^ok/.test(l)) || out.pop(), avg = +(line.match(/average ([\d.]+)/) || [0, 999])[1];
+    ok(/^ok/.test(line) && avg < 95, "the faster way: " + line); }
+  catch (e) { ok(false, "the faster way's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
   /* the solver */
   try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube.js")) + " test", { stdio: "pipe" }).toString().trim().split("\n").pop(); ok(/^ok/.test(out), "the solver: " + out); }
   catch (e) { ok(false, "the solver's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
@@ -123,6 +132,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     /* My cube: the camera button and the colors sit right under the cube (Jimmy, iPhone: "too much scrolling") */
     await p.evaluate(() => { location.hash = "mine"; scrollTo(0, 0); }); await p.waitForTimeout(400);
     const gap = await p.evaluate(() => { const s = document.getElementById("stage").getBoundingClientRect(), c = document.querySelector('#panel [data-act="camera"]').getBoundingClientRect(), pal = document.getElementById("paintBar").getBoundingClientRect(); return { cam: c.top - s.bottom, pal: pal.top - s.bottom }; });
+    /* painting: a drag turns the cube the way the finger goes and paints nothing; Side shows a side straight on */
+    { const fc = () => p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, i = c.P.findIndex(q => q.kind === 1 && C.eqV(c.pos(q), [0, 0, 1])); const r = document.querySelector(`.face[data-i="${i}"] i`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+      const n0 = await p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("aog.cube.v1")).paint || {}).length), a = await fc();
+      await p.tp("touchStart", [[a.x, a.y]]); for (let k = 1; k <= 10; k++) { await p.tp("touchMove", [[a.x + k * 7, a.y]]); await p.waitForTimeout(16); } await p.tp("touchEnd", []); await p.waitForTimeout(300);
+      const b1 = await fc(), n1 = await p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("aog.cube.v1")).paint || {}).length);
+      ok(b1.x - a.x > 15 && n1 === n0, `${name}: painting, a drag turns the cube the way the finger goes, and paints nothing`);
+      const faceOn = await p.evaluate(async () => { const out = []; for (const f of ["R", "B", "L", "U", "D", "F"]) { const sel = document.getElementById("sideSel"); sel.value = f; sel.dispatchEvent(new Event("change")); await new Promise(o => setTimeout(o, 450));
+        const C = AOGCube, c = AOGCubeLab.cube, M = document.getElementById("cubeView").style.transform.match(/-?[\d.e-]+/g).slice(1).map(Number);
+        const n = C.FACES[f], v = [n[0], -n[1], n[2]], z = M[2] * v[0] + M[6] * v[1] + M[10] * v[2]; out.push(z > .85); } return out.every(Boolean); });
+      ok(faceOn, `${name}: painting, Side shows each of the six sides nearly straight on`); }
     ok(gap.pal < 40 && gap.cam < 520, `${name}: in My cube the camera button and the colors are right under the cube (${Math.round(gap.cam)}px, ${Math.round(gap.pal)}px)`);
     ok(!p.errs.length, `${name}: no page errors (hands) ${p.errs.join("; ")}`);
     await p.ctx.close();
@@ -149,7 +168,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(/R U R' U'/.test(await p.evaluate(() => window.__printed || "")), "Print a move card fills the card with the moves for each step");
   /* every Learn step can be practised to its end */
   await p.selectOption("#speedSel", "instant");
-  for (let li = 2; li <= 8; li++) {
+  for (const li of [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13]) {
     await p.evaluate(i => document.querySelector(`#lessonRow [data-lesson="${i}"]`).click(), li); await p.waitForTimeout(150);
     await p.click('#panel [data-act="setup"]'); await p.click('#panel [data-act="hint"]');
     let k = 0; while (k < 300 && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); k++; }
@@ -183,6 +202,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(/Practice ·/.test(k0) && /is finished/.test(await p.textContent("#panel")) && !!(await p.$('#panel [data-act="drill"]')), `practising one step ends on that step, with Again (${k} moves)`); }
   /* the three kinds of help */
   await p.click('#panel [data-act="undrill"]'); await p.waitForTimeout(200);
+  /* the faster way in Solve with me: chosen under the card, it leads a mixed cube to Solved, in its four steps */
+  { await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150); await p.selectOption("#waySel", "faster"); await p.waitForTimeout(150);
+    const k0 = await p.textContent("#panel .kicker"); let fn = 0, kinds = new Set();
+    while (fn < 200 && await p.$('#panel [data-act="gnext"]')) { kinds.add((await p.textContent("#panel .kicker")).split("·")[1]); await p.click('#panel [data-act="gnext"]'); fn++; }
+    ok(/of 4/.test(k0) && /Solved!/.test(await p.textContent("#panel")) && fn < 110, `the faster way leads a mixed cube to Solved in ${fn} moves, through its steps (${[...kinds].map(x => (x || "").trim()).join(", ")})`);
+    await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150); await p.selectOption("#waySel", "steps"); }
   await p.selectOption("#levelSel", "own"); await p.waitForTimeout(150);
   const own = await p.evaluate(() => ({ tok: !!document.querySelector("#panel .move-big .tok"), arrow: document.getElementById("arrow").innerHTML.length, aim: !!document.querySelector("#panel .aim") }));
   ok(!own.tok && !own.arrow && !own.aim, "On my own: no move, no arrow, no goal until asked");
@@ -193,6 +218,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(await p.evaluate(() => !!document.querySelector("#panel .move-big .tok") && document.getElementById("arrow").innerHTML.length > 0), "Show me the move shows the move and its arrow");
   const hb = await hist(p); await p.click('#panel [data-act="gnext"]'); await p.waitForTimeout(150); ok(await hist(p) === hb + 1, "and Turn it turns it");
   await p.selectOption("#levelSel", "every");
+  /* Show me the short way: found off the page, then followed with Turn it to Solved, in about 20 moves */
+  await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150);
+  await p.click('#panel [data-act="short"]');
+  let shortOk = false; try { await p.waitForSelector("#panel .kicker:has-text('The short way')", { timeout: 30000 }); shortOk = true; } catch (e) {}
+  let sn = 0; if (shortOk) while (sn < 40 && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); sn++; }
+  ok(shortOk && sn > 0 && sn <= 22 && /Solved!/.test(await p.textContent("#panel")), `Show me the short way solves a mixed cube in ${sn} moves (no more than 22)`);
   ok(!p.errs.length, "no page errors (computer) " + p.errs.join("; "));
   await p.ctx.close();
 
@@ -214,6 +245,30 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   { const { out, truth } = await sampleCube(777, [1, .95, .85], .9, 10, Object.assign({}, COL, { O: "#7d3cc0" }));   /* a cube with purple where orange usually is */
     const got = await p.evaluate(o => AOGCubeLab.readColors(o), out);
     ok(Object.keys(truth).every(q => got[q] === (truth[q] === "O" ? "P" : truth[q])), "a cube with purple instead of orange is read as purple"); }
+  /* a neon cube (Jimmy's: pink where red is, lime yellow, light blue), colors measured from his own photos */
+  { const NEON = { W: "#e5eae4", Y: "#daf265", G: "#8ad86f", B: "#68b2cc", O: "#fe825d", R: "#e1576a" };
+    let ok2 = 0; for (let k = 0; k < 6; k++) { const { out, truth } = await sampleCube(3100 + k * 31, [1, .97, .92], .95, 10, NEON);
+      const got = await p.evaluate(o => AOGCubeLab.readColors(o), out); if (Object.keys(truth).every(q => got[q] === (truth[q] === "R" ? "K" : truth[q]))) ok2++; }
+    ok(ok2 === 6, `a neon cube is read with its own colors, pink as pink (${ok2}/6)`); }
+  /* the cube turned the other way, the top and bottom shown the other way round, sides held crooked: still read right */
+  { const { out, truth } = await sampleCube(5150, [1, 1, 1], 1, 6);
+    const rot = (g, k) => { let a = g.slice(); for (let r = 0; r < k; r++) { const b = []; for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) b[y * 3 + x] = a[x * 3 + (2 - y)]; a = b; } return a; };
+    const held = { F: out.F, R: rot(out.L, 1), B: rot(out.B, 2), L: out.R, U: rot(out.D, 3), D: rot(out.U, 2) };
+    const got = await p.evaluate(o => AOGCubeLab.readColors(o), held);
+    ok(Object.keys(truth).every(q => got[q] === truth[q]), "turned the other way, top and bottom swapped, sides held crooked: the camera still reads the cube right"); }
+  /* the camera finds the cube anywhere in the picture, smaller than the square, beside a face-like blob; no cube, no guess */
+  { const r = await p.evaluate(() => {
+      const draw = (withCube, x0, y0, S) => { const cv = document.createElement("canvas"); cv.width = 1280; cv.height = 960; const g = cv.getContext("2d");
+        g.fillStyle = "#c9c3b8"; g.fillRect(0, 0, 1280, 960); g.fillStyle = "#5a3d2b"; g.fillRect(0, 300, 200, 660); g.fillStyle = "#d8a48c"; g.beginPath(); g.ellipse(560, 420, 230, 300, 0, 0, 7); g.fill();
+        g.fillStyle = "#2b211c"; g.beginPath(); g.ellipse(560, 560, 200, 160, 0, 0, 7); g.fill(); g.fillStyle = "#f2f2f2"; g.fillRect(250, 760, 640, 200);
+        const cols = ["#fe825d", "#e1576a", "#daf265", "#daf265", "#e1576a", "#68b2cc", "#e5eae4", "#e1576a", "#8ad86f"];
+        if (withCube) { g.fillStyle = "#3a3a3a"; g.fillRect(x0, y0, S, S); const c = S / 3; cols.forEach((col, i) => { g.fillStyle = col; const x = x0 + (i % 3) * c + c * .05, y = y0 + Math.floor(i / 3) * c + c * .05; g.beginPath(); g.roundRect(x, y, c * .9, c * .9, c * .15); g.fill(); }); }
+        const d = g.getImageData(0, 0, 1280, 960); for (let i = 0; i < d.data.length; i += 4) { const n = (Math.random() - .5) * 18; d.data[i] += n; d.data[i + 1] += n; d.data[i + 2] += n; } return d; };
+      const want = ["#fe825d", "#e1576a", "#daf265", "#daf265", "#e1576a", "#68b2cc", "#e5eae4", "#e1576a", "#8ad86f"].map(h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)));
+      let found = 0; for (const [x, y, S] of [[330, 265, 340], [700, 120, 260], [120, 520, 300]]) { const got = AOGCubeLab.sampleFace(draw(true, x, y, S)); if (got && got.every((c, i) => Math.hypot(...c.map((v, k) => v - want[i][k])) < 30)) found++; }
+      return { found, none: AOGCubeLab.sampleFace(draw(false)) === null }; });
+    ok(r.found === 3, `the camera finds the cube wherever it is held, smaller than the square (${r.found}/3)`);
+    ok(r.none, "with no cube in the picture the camera says so, and does not guess"); }
   /* six sides through the camera's own steps, then Check my cube */
   const one = await sampleCube(4242, [1, .95, .85], .9, 10);
   for (const f of ["F", "R", "B", "L", "U", "D"]) await p.evaluate(rgb => AOGCubeLab.camSide(rgb), one.out[f]);
@@ -234,13 +289,24 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   while (n < 300 && !seen && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); n++; seen = !!(await p.$("#panel .checkin")); }
   ok(seen, "with a real cube, a finished step asks: does yours look like the screen?");
   if (seen) { await p.click('#panel [data-act="checkYes"]'); ok(!(await p.$("#panel .checkin")), "Yes, it matches puts the question away"); }
+  /* Check with the camera: a side held up is compared with the screen; a square that differs is marked */
+  { const r = await p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, H = { W: "#f4f3ee", Y: "#ffd43b", G: "#23a159", B: "#2a62c9", O: "#ff7e1f", R: "#d2303b", P: "#7d3cc0", K: "#ff7eb6" };
+      const sc = JSON.parse(localStorage.getItem("aog.cube.v1")).scheme, home = { Y: "U", W: "D", G: "F", B: "B", O: "R", R: "L" };
+      const shown = col => sc[home[col]] || col, rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) * .92);
+      const side = C.facelets("R").map(([pos, dir]) => rgb(H[shown(c.colorAt(pos, dir))]));
+      const same = AOGCubeLab.verifyRead(side.slice()); const off = side.slice(); off[0] = off[4].map(v => v); off[0] = rgb(H[shown(c.colorAt(...C.facelets("L")[4]))]);
+      const turned = [6, 3, 0, 7, 4, 1, 8, 5, 2].map(i => side[i]); const tr = AOGCubeLab.verifyRead(turned);
+      const diff = AOGCubeLab.verifyRead(off); document.querySelector(".cam [data-cam='close']").click();
+      return { same: same.f === "R" && same.diff.length === 0, turned: tr.f === "R" && tr.diff.length === 0, diff: diff.f === "R" && diff.diff.length >= 1 }; });
+    ok(r.same && r.turned, "Check with the camera: a side that matches says so, even held turned");
+    ok(r.diff, "Check with the camera: a square that differs is found and marked"); }
   /* the camera sheet itself (a fake camera here) */
   await p.evaluate(() => { location.hash = "mine"; }); await p.waitForTimeout(300);
   await p.click('#panel [data-act="camera"]'); await p.waitForTimeout(1500);
   const camOk = await p.evaluate(() => { const v = document.querySelector(".cam video"); return !!v && v.videoWidth > 0; });
   ok(camOk && /picture stays on this device/.test(await p.textContent(".cam")), "Use the camera opens a sheet with the camera, and says the picture stays on the device");
-  await p.click('.cam [data-cam="take"]'); await p.waitForTimeout(150);
-  ok(/Side 2 of 6/.test(await p.textContent(".cam")), "This side moves on to the next side");
+  await p.click('.cam [data-cam="take"]'); await p.waitForTimeout(2500);
+  ok(/can't see the cube/.test(await p.textContent(".cam")) && /Side 1 of 6/.test(await p.textContent(".cam")), "with no cube in view (a test camera), This side says it can't see the cube yet, and stays on side 1");
   await p.click('.cam [data-cam="close"]'); await p.waitForTimeout(150);
   ok(!(await p.$(".cam")) && await p.evaluate(() => !AOGCubeLab.cam), "Close puts the camera away and turns it off");
   /* painting by hand still works, and a wrong cube is caught */
