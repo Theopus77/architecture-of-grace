@@ -77,9 +77,9 @@ function stageWeights(st, W) {
 async function init(ep) {
   const t0 = Date.now();
   if (ep !== "webgpu" && ep !== "wasm") throw new Error("no such backend: " + ep);
+  if (ep === "webgpu") { if (!self.navigator || !navigator.gpu) throw new Error("no webgpu"); const ad = await navigator.gpu.requestAdapter(); if (!ad) throw new Error("no webgpu adapter"); }
   ort = await import(new URL(ep === "webgpu" ? "ort.webgpu.min.mjs" : "ort.wasm.min.mjs", ORT_DIR).href);
   ort.env.wasm.numThreads = 1; ort.env.wasm.proxy = false; ort.env.wasm.wasmPaths = ORT_DIR.href;
-  if (ep === "webgpu") { if (!self.navigator || !navigator.gpu) throw new Error("no webgpu"); const ad = await navigator.gpu.requestAdapter(); if (!ad) throw new Error("no webgpu adapter"); }
   man = await (await fetch(new URL("manifest.json", MODEL_DIR))).json();
   N = man.n_fft; HOP = man.hop; T = man.T; F = N / 2 + 1; fft = makeFFT(N);
   const W = await (await fetch(new URL("weights.bin", MODEL_DIR))).arrayBuffer();

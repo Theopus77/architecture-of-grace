@@ -721,11 +721,12 @@ function resampleTo(buf, sr, len) {
   return ctx.startRendering ? new Promise(function (ok, no) { var p = ctx.startRendering(); if (p && p.then) p.then(ok, no); else ctx.oncomplete = function (e) { ok(e.renderedBuffer); }; }) : Promise.reject(new Error("no audio"));
 }
 /* the model's Worker: one at a time, started on the first segment, let go at the end */
-function aiWorker(ep, onLoad) {
+function aiWorker(ep, onLoad, signal) {
   return new Promise(function (ok, no) {
     var w, cur = null, ready = false, done = false;
     try { w = new Worker(aiURL("aog-stems-ai.js"), { type: "module" }); } catch (e) { no(e); return; }
     var hello = setTimeout(function () { if (!ready) fail(new Error("no worker")); }, 20000);
+    if (signal) { if (signal.aborted) { setTimeout(function () { fail(abortErr()); }, 0); } else signal.addEventListener("abort", function () { if (!ready) fail(abortErr()); }); }
     function fail(e) { if (done) return; done = true; clearTimeout(hello); try { w.terminate(); } catch (x) {} if (!ready) no(e); else if (cur) { var c = cur; cur = null; c.no(e); } }
     var api = { ep: ep,
       run: function (id, L, R, tick) { return new Promise(function (ok2, no2) { if (done) { no2(new Error("ended")); return; } cur = { id: id, ok: ok2, no: no2, tick: tick }; w.postMessage({ type: "seg", id: id, L: L, R: R }, [L.buffer, R.buffer]); }); },
@@ -769,10 +770,12 @@ async function runModel(buf, say, signal) {
   var refl = function (j, len) { var p = 2 * (len - 1); if (p <= 0) return 0; j = ((j % p) + p) % p; return j < len ? j : p - j; };
   /* the song at padded place j (reflected out by `border` at each end) */
   var at = function (X, j) { var q = wide ? j - border : j; if (q < 0) q = -q; else if (q >= n) q = 2 * (n - 1) - q; if (q < 0 || q >= n) q = 0; return (X[q] - mean) * inv; };
-  var ep = G.navigator && G.navigator.gpu && !AI.noGPU ? "webgpu" : "wasm", W = null, tries = 0;
+  var ep = "wasm", W = null, tries = 0;
+  /* WebGPU only where the device really gives an adapter (a browser can have navigator.gpu and no GPU to give) */
+  if (G.navigator && G.navigator.gpu && !AI.noGPU) { try { if (await G.navigator.gpu.requestAdapter()) ep = "webgpu"; } catch (e) {} }
   var start = async function () {
     for (;;) {
-      try { W = await aiWorker(ep, function (f) { say(0.02 * f); }); AI.ep = ep; return; }
+      try { W = await aiWorker(ep, function (f) { say(0.02 * f); }, signal); AI.ep = ep; return; }
       catch (e) { if (e && e.name === "AbortError") throw e; if (ep === "webgpu") { ep = "wasm"; continue; } var er = new Error("kept quick"); er.kept = true; er.memory = !!(e && e.memory); throw er; }
     }
   };

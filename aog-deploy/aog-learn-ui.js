@@ -1541,7 +1541,7 @@
       source: function () { var s = PL.src; return s ? { loop: s.loop, a: s.loopStart, b: s.loopEnd, rate: s.playbackRate.value } : null; },
       state: function () { return api().state(); },
       /* AOG-STEMS-V1 */
-      stems: function () { return { st: STM.st, kind: STM.kind, auto: STM.auto, note: STM.note, levels: CUR ? levels() : null, preset: CUR ? preset() : "", base: PL.base ? { len: PL.base.length, sr: PL.base.sampleRate } : null, mode: PL.fxMode || "" }; },
+      stems: function () { return { st: STM.st, kind: STM.kind, auto: STM.auto, note: STM.note, levels: CUR ? levels() : null, preset: CUR ? preset() : "", base: PL.base ? { len: PL.base.length, sr: PL.base.sampleRate } : null, mode: PL.fxMode || "", clean: STM.clean, cpct: STM.cpct, model: STM.model, quality: STM.parts ? STM.parts.quality : "" }; },
       baseData: function () { return baseBuf().then(function (b) { return { len: b.length, sr: b.sampleRate, ch0: b.getChannelData(0), ch1: b.numberOfChannels > 1 ? b.getChannelData(1) : null }; }); }
     }
   };
