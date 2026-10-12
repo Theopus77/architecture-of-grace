@@ -9,7 +9,7 @@ const STR={
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
-  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
+  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
   g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
@@ -64,7 +64,7 @@ const STR={
   fitWait:{en:"Every note here fits the key. Play a chord in bank B, and the notes that match it get a gold bar.",es:"Cada nota aquí encaja con el tono. Toca un acorde en el banco B, y las notas que combinan llevan una barra dorada."},
   fitNow:{en:"Gold notes fit <b>{name}</b>: {notes}.",es:"Las notas doradas encajan con <b>{name}</b>: {notes}."}, noTakes:{en:"No takes at the Mixing Desk yet.",es:"Aún no hay tomas en la mesa de mezclas."},
   inChords:{en:"From {from}: its chords are on bank {bank}.",es:"De {from}: sus acordes están en el banco {bank}."}, inNotes:{en:"From {from}: its notes are on bank {bank}.",es:"De {from}: sus notas están en el banco {bank}."}, inTake:{en:"Your take is on bank {bank}, cut across the pads.",es:"Tu toma está en el banco {bank}, cortada en los pads."},
-  inChops:{en:"24 chops from {name} are on bank {bank}, one beat a pad.",es:"24 cortes de {name} están en el banco {bank}, un pulso por pad."},   /* AOG-CHOPS-TO-PADS-V1 */
+  inChops:{en:"24 chops from {name} are on bank {bank}, each starting a beat after the last.",es:"24 cortes de {name} están en el banco {bank}; cada uno empieza un pulso después del anterior."},   /* AOG-CHOPS-TO-PADS-V1 */
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
   cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"}, cWord:{en:"Scripture",es:"Escrituras"},
@@ -365,10 +365,18 @@ function chopsOf(B, buf){
     /* AOG-PADS-24-V1: a record cut into 16 phrases gives pads 17 to 24 the phrases two at a time (1+2, 3+4 …) */
     if(out.length===16) for(let i=0;i<8;i++){ const a=out[2*i], b=out[2*i+1]; out.push([a[0], Math.min(buf.duration-a[0], b[0]+b[1]-a[0])]); }
     return out; }
-  if(R.bpm>0 && R.bars>=4){ const beat=60/R.bpm, st=(Math.max(1, B.bar)-1)*4*beat; for(let i=0;i<NP;i++){ const a=st+i*beat; if(a<buf.duration) out.push([a, Math.min(beat, buf.duration-a)]); } }
-  else { const d=buf.duration/NP; for(let i=0;i<NP;i++) out.push([i*d, d]); }
+  /* AOG-CHOPS-LONGER-V1 (2026-10-12) — Jimmy: "Why are the chops like 1/10 of a second?" Pads 1 to 16 still start one beat
+     apart, but each plays "Each pad plays" long (1 beat, 2 beats or 1 bar; 2 beats unless chosen), to the end of the record
+     at most; pads 17 to 24 start two beats apart and play twice as long. A pad with almost nothing left is left empty
+     (it was a 0.02 s blip). */
+  const add=(a, len)=>{ const l=Math.min(len, buf.duration-a); if(l>0.06) out.push([a, l]); else out.push(null); };
+  if(R.bpm>0 && R.bars>=4){ const beat=60/R.bpm, st=(Math.max(1, B.bar)-1)*4*beat, n=chopLen(B);
+    for(let i=0;i<16;i++) add(st+i*beat, n*beat);
+    for(let i=0;i<8;i++) add(st+2*i*beat, 2*n*beat); }
+  else { const d=buf.duration/16; for(let i=0;i<16;i++) add(i*d, d); for(let i=0;i<8;i++) add(2*i*d, 2*d); }
   return out;
 }
+function chopLen(B){ return B.clen===1 || B.clen===4 ? B.clen : 2; }
 
 /* ══ the four kinds of bank ══ */
 function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
@@ -433,7 +441,7 @@ function padDefs(bi){
 }
 /* getting a bank ready: only what its sixteen pads play is fetched */
 const READY=[{},{},{},{}];
-function sigOf(B){ return [B.type, B.type==="drums"?B.kitA+B.kitB+B.kitC : B.type==="chops"?B.rec+"|"+B.bar : B.inst+"|"+B.key+"|"+B.scale+"|"+B.oct+"|"+(B.type==="chords"?B.pat||"":"")].join("|"); }
+function sigOf(B){ return [B.type, B.type==="drums"?B.kitA+B.kitB+B.kitC : B.type==="chops"?B.rec+"|"+B.bar+"|"+chopLen(B) : B.inst+"|"+B.key+"|"+B.scale+"|"+B.oct+"|"+(B.type==="chords"?B.pat||"":"")].join("|"); }
 function prep(bi){
   const B=S.banks[bi], sig=sigOf(B), R=READY[bi];
   if(R.sig===sig && R.p) return R.p;
@@ -972,6 +980,9 @@ function paintSetRow(){
     h=field("fRec", t("record"), o, true);
     const bars=R ? R.bars : 0, starts=[]; for(let b=1;b+3<=bars;b+=4) starts.push(b);
     if(!(R && R.phrases)) h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
+    /* AOG-CHOPS-SECONDS-V1 (2026-10-12) — Jimmy: "What is a beat?" Each length also says about how long it lasts on this record */
+    const secs=n=>{ if(!(R && R.bpm>0)) return ""; const v=n*60/R.bpm; return " · "+t("about").replace("{s}", (v<10 ? (Math.round(v*10)/10) : Math.round(v)).toLocaleString(S0.lang==="es"?"es":"en")); };
+    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
@@ -987,7 +998,7 @@ function paintSetRow(){
   const bk=S.bank;   /* AOG-LESSONS-V1 */
   on("fInst", v=>{ B.inst=v; LES.mark(bk===1?"cinst":"ninst"); }); on("fKey", v=>{ B.key=+v; if(bk===1) LES.mark("ckey"); });
   on("fScale", v=>{ B.scale=v; if(bk===1 && v==="minor") LES.mark("cminor"); if(bk===2) LES.mark("nscale"); lessonSongs(); }); on("fOct", v=>{ B.oct=+v; LES.mark("nrange"); });
-  on("fRec", v=>{ B.rec=v; B.bar=1; LES.mark("crec"); }); on("fBar", v=>{ B.bar=+v; LES.mark("cbar"); });
+  on("fRec", v=>{ B.rec=v; B.bar=1; LES.mark("crec"); }); on("fBar", v=>{ B.bar=+v; LES.mark("cbar"); }); on("fClen", v=>{ B.clen=+v; });
   const m=$("fMatch"); if(m) m.onclick=()=>{ const R=recInfo(B.rec); if(R && R.bpm>0) retime(R.bpm); LES.mark("cmatch"); };
 }
 function paintPads(){

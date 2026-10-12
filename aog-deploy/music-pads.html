@@ -335,7 +335,7 @@ const STR={
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
-  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
+  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
   g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
@@ -1306,7 +1306,9 @@ function paintSetRow(){
     h=field("fRec", t("record"), o, true);
     const bars=R ? R.bars : 0, starts=[]; for(let b=1;b+3<=bars;b+=4) starts.push(b);
     if(!(R && R.phrases)) h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
-    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4].map(n=>opt(n, esc(t("clen"+n)), chopLen(B))).join(""));
+    /* AOG-CHOPS-SECONDS-V1 (2026-10-12) — Jimmy: "What is a beat?" Each length also says about how long it lasts on this record */
+    const secs=n=>{ if(!(R && R.bpm>0)) return ""; const v=n*60/R.bpm; return " · "+t("about").replace("{s}", (v<10 ? (Math.round(v*10)/10) : Math.round(v)).toLocaleString(S0.lang==="es"?"es":"en")); };
+    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);

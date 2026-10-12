@@ -22,7 +22,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); 
   ok(r.ch.slice(16).every((x, i) => x && near(x[0], 2 * i * beat) && near(x[1], 4 * beat)), "pads 17–24 start two beats apart and play 4 beats: " + JSON.stringify(r.ch.slice(16, 18)));
   ok(r.ch.every(x => !x || x[1] > 0.06), "no pad is a tiny blip");
   await p.evaluate(() => paintSetRow());
-  ok(await p.evaluate(() => { const s = document.getElementById("fClen"); return s && [...s.options].map(o => o.textContent).join("|") === "1 beat|2 beats|1 bar" && s.value === "2"; }), "the chops bank has Each pad plays: 1 beat | 2 beats | 1 bar, on 2 beats");
+  ok(await p.evaluate(() => { const s = document.getElementById("fClen"); return s && [...s.options].map(o => o.textContent).join("|") === "1 beat · about 0.5 s|2 beats · about 1 s|1 bar · about 1.9 s" && s.value === "2"; }), "the chops bank has Each pad plays: 1 beat | 2 beats | 1 bar, each with about how long, on 2 beats");
   for (const [v, n] of [["1", 1], ["4", 4]]) {
     await p.selectOption("#fClen", v); await p.waitForTimeout(300); r = await look();
     ok(r.ch.slice(0, 16).every(x => x && near(x[1], Math.min(n * beat, r.sec - x[0]))), `Each pad plays ${v === "1" ? "1 beat" : "1 bar"}: ${JSON.stringify(r.ch.slice(0, 2))}`);
@@ -36,6 +36,6 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); 
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await p.evaluate(() => { S0.lang = "es"; paintSetRow(); });
   const es = await p.evaluate(() => { const s = document.getElementById("fClen"); return s ? s.closest("label").querySelector("span").textContent + ": " + [...s.options].map(o => o.textContent).join("|") : ""; });
-  ok(es === "Cada pad suena: 1 tiempo|2 tiempos|1 compás", "in Spanish: " + es);
+  ok(es === "Cada pad suena: 1 tiempo · unos 0,5 s|2 tiempos · unos 1 s|1 compás · unos 1,9 s", "in Spanish: " + es);
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });
