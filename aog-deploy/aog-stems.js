@@ -87,7 +87,7 @@ function selectK(a, n, k) {
    X: one or two Float32Arrays (the song's channels); notes: {bass:[{t,d,m,conf}], melody:[…], tune: cents}.
    run(ms) works for about that long and says whether it is done; out() gives the parts as Int16Arrays. ══ */
 var TUNE = { HR: 8, VR: 8, HL: 21, LMAX: 260, KV: 10, WU: 1, WC: 0.8, CG: 0.3, BETA: 1, KAPPA: 3, FLOOR_V: 1.0, FLOOR_B: 0.5, SIG_V: 0.02, SIG_B: 0.01, VMAX: 8000, BMAX: 2000, BLOW: 130, WMIN: 0.15, C0: 0.3, C1: 0.4,
-  PD: 0, NZ: 1, KB: 1.5, MODK: 1, VG: 0.5, VMINW: 0.5, GF0: 0.45, GF1: 0.75, VOICEW: 1, GRID: 1, CONS: 1, VIB: 0, OWN: 0, OWNV: 0.3, WN: 0, BT: 0, WNP: 1 };
+  STAT: 0, PD: 0, NZ: 1, KB: 1.5, MODK: 1, VG: 0.5, VMINW: 0.5, GF0: 0.45, GF1: 0.75, VOICEW: 1, GRID: 1, CONS: 1, VIB: 0, OWN: 0, OWNV: 0.3, WN: 0, BT: 0, WNP: 1 };
 /* the kinds of music (Jimmy plays rap and hip hop, classic rock and metal, pop, classical and experimental music):
    what each changes. Auto picks one from the song itself (kindOf, below); a learner can choose another. */
 var KINDS = ["auto", "pop", "hiphop", "rock", "classical", "experimental"];
@@ -143,7 +143,7 @@ function stemsJob(X, n, sr, notes, tune) {
   var lowW = new Float32Array(K); for (k = 0; k < K; k++) { var fq = k * df; lowW[k] = 1 / (1 + Math.pow(fq / P0.BLOW, 6)); }
   /* cymbals ringing for seconds: flat, sustained noise high up is Drums (a guitar's dense harmonics stop near 5 kHz) */
   var hiW = new Float32Array(K), kS3 = Math.round(3000 / df), kB3 = Math.round(300 / df); for (k = 0; k < K; k++) { var fh0 = k * df; hiW[k] = fh0 < 3000 ? 0 : fh0 < 5500 ? (fh0 - 3000) / 2500 : 1; }
-  var ePart = [0, 0, 0, 0], eVp = 0, eVu = 0, gSum = 0, gN = 0;
+  var ePart = [0, 0, 0, 0], eVp = 0, eVu = 0, gSum = 0, gN = 0, hfS = 0, hfW = 0, k400 = Math.round(400 / df), k4k = Math.round(4000 / df);
   var kO = Math.min(K - 2, Math.ceil(4200 / df)), Cc = new Float32Array(K), FC = [], HW = [0], prevF = 0, ownH = [];
   for (var fc0 = 100; fc0 <= 900; fc0 *= Math.pow(2, 1 / 48)) FC.push(fc0);
   var NC = FC.length; for (var hw = 1; hw <= 10; hw++) HW.push(1 / Math.sqrt(hw));
@@ -233,7 +233,7 @@ function stemsJob(X, n, sr, notes, tune) {
       else { prevF = 0; if (P0.VIB) ownH.length = 0; }
     }
     /* the masks, added to one, on the middle; the sides keep only their drums */
-    var beta = P0.BETA;
+    var beta = P0.BETA, hla = 0, hsa = 0;
     for (k = 0; k < K; k++) {
       var pm = PM[k], p = P[k] + 1e-20, h = Hm[k], v = Vm[k];
       var wp0 = beta === 1 ? v / (h + v + 1e-20) : Math.pow(v, beta) / (Math.pow(h, beta) + Math.pow(v, beta) + 1e-30);
@@ -263,12 +263,14 @@ function stemsJob(X, n, sr, notes, tune) {
       if (P0.CONS !== 1) ws *= P0.CONS;
       ePart[0] += md * md * pm + ws * ws * (p - pm); ePart[1] += mb * mb * pm; ePart[2] += mv * mv * pm; ePart[3] += p;
       var vpz = pm > 0 ? ev / pm : 0, vuz = fu + fcn; eVp += vpz * vpz * pm; eVu += vuz * vuz * pm;
+      if (P0.STAT && k >= k400 && k < k4k) { var hpp = (1 - wq) * p + 1e-18; hla += Math.log(hpp); hsa += hpp; }
       var Mr = sl.Mr[k], Mi = sl.Mi[k], Sr = sl.Sr[k], Si = sl.Si[k];
       /* drums: middle + i·sides; bass + i·voice */
       var dr = md * Mr, di = md * Mi, er2 = ws * Sr, ei = ws * Si, br = mb * Mr, bim = mb * Mi, vr = mv * Mr, vi = mv * Mi;
       re[k] = dr - ei; im[k] = di + er2; re2[k] = br - vi; im2[k] = bim + vr;
       if (k > 0 && k < N / 2) { var nk = N - k; re[nk] = dr + ei; im[nk] = er2 - di; re2[nk] = br + vi; im2[nk] = vr - bim; }
     }
+    if (P0.STAT && hsa > 0) { var nb = k4k - k400, hfl = Math.exp(hla / nb) / (hsa / nb); hfS += hfl * hsa; hfW += hsa; }   /* how flat and dense the held sound is (distortion) */
     fft(re, im, true); fft(re2, im2, true);
     for (i = 0; i < N; i++) { var q = (s + i + N * 4) % N, w = win[i] * G, dm = re[i] * w, ds = im[i] * w;
       accL[q] += dm + ds; accR[q] += dm - ds; accB[q] += re2[i] * w; accV[q] += im2[i] * w; }
@@ -289,7 +291,7 @@ function stemsJob(X, n, sr, notes, tune) {
   return { run: run, progress: function () { return jf / J; },
     out: function () { var tot = ePart[3] || 1;
       return { sr: sr, len: n, nch: nch, x: X16, d: D1 ? [D0, D1] : [D0], b: B, v: V, kind: kind,
-        stats: { drums: ePart[0] / tot, bass: ePart[1] / tot, voice: ePart[2] / tot, vp: eVp / tot, vu: eVu / tot, flat: gN ? gSum / gN : 0, grid: P0.GRID && grid.length >= 8 ? grid.length : 0 } }; } };
+        stats: { drums: ePart[0] / tot, bass: ePart[1] / tot, voice: ePart[2] / tot, vp: eVp / tot, vu: eVu / tot, flat: gN ? gSum / gN : 0, hflat: hfW ? hfS / hfW : 0, grid: P0.GRID && grid.length >= 8 ? grid.length : 0 } }; } };
 }
 
 /* ══ the kind of music, from the song itself: a quick look (a 2048-point STFT every 1024 samples, a sixteenth of the
@@ -340,12 +342,12 @@ function kindJob(X, n, sr, beats, notes) {
      whether the voice is sung (its notes) or spoken (rap) */
   var a0 = n > 40 * sr ? Math.round(n * 0.25) : 0, m0 = Math.min(n - a0, Math.round(24 * sr)), t0 = a0 / sr, nt = notes || {};
   var sh = function (l) { return (l || []).map(function (x) { return { t: x.t - t0, d: x.d, m: x.m, conf: x.conf }; }); };
-  pj = stemsJob(X.map(function (a) { return a.subarray(a0, a0 + m0); }), m0, sr, { bass: sh(nt.bass), melody: sh(nt.melody), beats: (nt.beats || []).map(function (b) { return b - t0; }), tune: nt.tune, kind: "pop" }, null);
+  pj = stemsJob(X.map(function (a) { return a.subarray(a0, a0 + m0); }), m0, sr, { bass: sh(nt.bass), melody: sh(nt.melody), beats: (nt.beats || []).map(function (b) { return b - t0; }), tune: nt.tune, kind: "pop" }, { STAT: 1 });
   }
   function decide() {
   var st = pj.out().stats;
-  f.drums = st.drums; f.sung = st.vp; f.spoken = st.vu;
-  var kind = f.flat > KT.dist ? "rock" : f.drums < KT.kit ? "classical" : f.pulse < KT.pulse ? "experimental" : f.spoken > 2 * f.sung ? "hiphop" : "pop";
+  f.drums = st.drums; f.sung = st.vp; f.spoken = st.vu; f.hflat = st.hflat;
+  var kind = f.hflat > KT.dist || (f.hflat > KT.dist2 && f.width > KT.wide) ? "rock" : f.drums < KT.kit ? "classical" : f.pulse < KT.pulse ? "experimental" : f.spoken > 2 * f.sung ? "hiphop" : "pop";
   res = { kind: kind, f: f };
   }
   /* run(ms): about that long, then whether it is done (a Worker runs it whole; the page in slices) */
@@ -353,7 +355,7 @@ function kindJob(X, n, sr, beats, notes) {
     progress: function () { return f ? 0.3 + 0.7 * (pj ? 0 : 0) : 0.3 * s / Math.max(1, n); }, result: function () { return res; } };
 }
 function kindOf(X, n, sr, beats, notes) { var j = kindJob(X, n, sr, beats, notes); j.run(1e12); return j.result(); }
-var KT = { dist: 0.1, kit: 0.06, pulse: 0.17 };
+var KT = { dist: 0.12, dist2: 0.02, wide: 0.2, kit: 0.06, pulse: 0.17 };
 
 /* ══ in the Worker: one split, then the parts back (moved, not copied) ══ */
 /* the song as AOGLearn hears it: one channel at 22050 Hz (a windowed-sinc low-pass, then every r-th sample) */

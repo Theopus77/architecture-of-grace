@@ -11,7 +11,14 @@
        a mute glides (no click); Only, holding a part, Voice only, No voice, the levels; chops from the parts you hear
        reach the Drum Machine; the split is kept (next time at once, nothing split again); Stop; Spanish; an iPhone;
        the Studio's hush; idle (no Worker, no timers of its own); no page errors.
-   C · Learn a song (port 9302) and D · the Mixing Desk (port 9302) — see below. */
+   C · Learn a song (port 9302): Split the song into parts in More ways to practise (nothing loaded before), Stop, then
+       Quiet a part of the song with the real parts (the Bass: without the bass first; the Piano: the voice and the rest
+       first), what plays is exactly the parts at their levels, Your own levels, the slower copy from the parts, kept with
+       the song, Spanish, a MIDI song has no split, the Studio's hush, in the Studio on an iPhone and an iPad.
+   D · the Mixing Desk (port 9302): a song file onto tracks 1–4 (they add back to the song), a second song with only three
+       empty tracks (the fourth part named), the same song again (kept, not split again), a track's recording split (the
+       track muted), Stop, Spanish, in the Studio on an iPhone.
+   Run one part: STEMS_ONLY=B node stems/split.js */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const fs = require("fs"), path = require("path");
 const P1 = 9300, P2 = 9301, P3 = 9302;
