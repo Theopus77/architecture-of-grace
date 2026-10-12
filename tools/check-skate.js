@@ -40,8 +40,13 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
 
   /* ── the physics, straight from the engine ── */
   const p = await open({ width: 1280, height: 900 }, false, "ramp");
-  const phys = await p.evaluate(() => {
+  /* ── silent until used (AOG-SKATE-BOOK-V1, AOG-SKATE-3D-V1): a visit loads no trick words, no 3D, and asks for no frames ── */
+  const files = await p.evaluate(() => performance.getEntriesByType("resource").map(e => e.name));
+  ok(!files.some(u => /aog-skate-book|aog-skate3d|three\.module/.test(u)) && await p.evaluate(() => window.AOGSkate.TRICKS.length === 0),
+     "a visit loads no trick words and no 3D until the Trick book, Questions or 3D is opened");
+  const phys = await p.evaluate(async () => {
     const A = window.AOGSkate, g = 9.8, out = {};
+    await A.book();
     // frictionless drop-in: speed at the bottom = √(2gh); energy kept
     const r = A.simRamp({ shape: "mini", h: 1.2, wheel: "ideal", mass: 50, pump: false });
     out.idealV = r.firstBottom; out.idealWant = Math.sqrt(2 * g * 1.2);
@@ -162,7 +167,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   await p.selectOption("#kCam", "follow");
   ok(await p.evaluate(() => window.AOGSkate.G3().cam() === "follow"), "3D: the camera menu picks the filmer again");
   await p.click('#panel [data-tv="move"]');
-  ok(await p.evaluate(() => window.AOGSkate.G3().canvas.style.display === "none"), "3D: picking Moving puts the drawings back");
+  ok(await p.evaluate(() => window.AOGSkate.G3() === null && !document.querySelector("#stage canvas.gl")), "3D: picking Moving puts the drawings back and lets go of the 3D drawing");
+  await p.click('#panel [data-tv="3d"]');
+  for (let i = 0; i < 60 && await p.evaluate(() => window.AOGSkate.G3state() !== "ready"); i++) await wait(150);
+  await p.reload({ waitUntil: "load" }); await wait(500);
+  const files2 = await p.evaluate(() => performance.getEntriesByType("resource").map(e => e.name));
+  ok(await p.evaluate(() => window.AOGSkate.state.tricks.view === "move") && !files2.some(u => /aog-skate3d|three\.module/.test(u)), "3D left on stays off on the next visit until it is tapped again");
   /* ── Questions: search and topic narrow the list; a search with no accent still finds accented words ── */
   await p.evaluate(() => window.AOGSkate.open("questions")); await wait(100);
   const all = await p.$$eval("#panel details.qa", d => d.length);
@@ -202,6 +212,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       if (lang === "es") await q.evaluate(() => document.getElementById("langBtn").click());   // the site bar presses this hidden button
       for (const room of phys.rooms) {
         await q.evaluate(r => window.AOGSkate.open(r), room); await wait(80);
+        await q.waitForFunction(() => !document.querySelector("#panel .loading"));
         const has = await q.$("#goBtn");
         if (has) { await q.click("#goBtn"); await wait(120); await q.evaluate(() => { const P = window.AOGSkate.P; P.t0 -= 60000; }); await wait(150); }
         const r = await q.evaluate(() => ({ pan: document.documentElement.scrollWidth - innerWidth, panel: document.getElementById("panel").textContent.length, lang: document.documentElement.lang }));

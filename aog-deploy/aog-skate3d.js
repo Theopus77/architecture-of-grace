@@ -405,6 +405,11 @@ export function create(kit) {
     canvas, render, resize, colors: () => { colors(); if (lastFr) render(lastFr); },
     setCam: m => { camMode = m; if (lastFr) render(lastFr); }, cam: () => camMode,
     onDown, onMove, onUp, renders: () => renders,
-    show: on => { canvas.style.display = on ? "block" : "none"; }
+    show: on => { canvas.style.display = on ? "block" : "none"; },
+    dispose: () => {   // let go of everything: the scene, its textures and the drawing context
+      scene.traverse(o => { if (o.geometry) o.geometry.dispose(); const m = o.material; (Array.isArray(m) ? m : m ? [m] : []).forEach(x => { if (x.map) x.map.dispose(); x.dispose(); }); });
+      [concreteTex, gripTex, plyTex, bottomTex, grassTex, plywoodTex].forEach(t => t.dispose());
+      renderer.dispose(); renderer.forceContextLoss(); canvas.remove();
+    }
   };
 }

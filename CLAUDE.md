@@ -215,7 +215,7 @@ check for anything new the hands can do.
   tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites; the parts list follows the setup),
   every trick's moving demo (its steps match the list; it plays once and lights its step), progress kept, the Questions search, every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
-- A new trick joins TRICKS in `aog-skate.js` with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
+- A new trick joins TRICKS (its words in `aog-skate-book.js`) with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
   ollie and curb families). The skater is drawn without a face (no faces in the site's art). It should look right to a
   teenager who skates (Jimmy, 2026-10-11: "a teenager would laugh at this"): real clothes and shoes, a relaxed athletic
   stance, the head looking where the board goes, steady rolling speed, the camera riding along.
@@ -223,6 +223,11 @@ check for anything new the hands can do.
   (AOG-SKATE-3D-V1), a skatepark and a jointed skater posed from the same demo frames, loaded with import() only when
   someone picks 3D. three.js is kept in the site (`vendor/three-0.160.0`, MIT), never fetched from elsewhere. It renders
   only when a step plays or the camera is dragged; nothing moves on its own. A new trick needs nothing extra for 3D.
+- Silent until used (Jimmy, 2026-10-12: "this has to be silent when not being used … lighting fast"). A visit to /skate
+  downloads only the lab itself: the trick words and answers wait in `aog-skate-book.js` (AOG-SKATE-BOOK-V1) until the
+  Trick book or Questions opens; three.js waits until 3D is tapped, every visit (it never starts on its own); leaving 3D
+  lets go of the 3D drawing and the graphics chip. Nothing asks for animation frames while idle. check-skate tests all of it.
+  Add new trick words to `aog-skate-book.js`, not to `aog-skate.js`.
 
 ## Housekeeping
 
