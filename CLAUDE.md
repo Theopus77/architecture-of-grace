@@ -217,6 +217,32 @@ check for anything new the hands can do.
   tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
 
+## The Microscope Lab, in depth (Jimmy, 2026-10-12: "a quantum leap forward in the Micro")
+
+`science-microscope.html` (/microscope, a Home Screen app) and its depth engine `aog-micro-3d.js` (AOG-MICRO-DEPTH-V1,
+WebGL2, no three.js). Nine slides are built in depth (`DEPTH_SPECS`: onion, cheek, elodea, pond, blood, pollen, section,
+yeast, crystal): the fine knob moves a thin sharp slice through them, with depth of field from the objective's NA. The
+optics are worked out live: finest detail λ/(NA + NA of the condenser), λ/2NA with the iris open; brightfield, phase
+contrast, darkfield, slit, polarized light (with the red plate) and fluorescence. Pond water and elodea move only after
+Play and stop by themselves after 45 seconds. The depth engine loads only when a depth slide opens and lets go of the
+graphics chip when you leave it. After any change to either file, run
+
+    node tools/check-microscope.js
+
+It checks every original slide at every objective, focusing through depth, the Abbe numbers and bar test, every light,
+Play, silence while idle, the Home Screen links, and iPhone and iPad in English and Spanish. Do not push while it fails.
+
+## Silent until used (standing order from Jimmy, 2026-10-12)
+
+"This has to be silent when not being used … lighting fast connectivity." Every page, now and later: nothing moves,
+redraws or makes a sound while nobody touches it, and a page that is not itself a 3D room loads no 3D or heavy engine
+(three.js, `aog-*3d.js`, `aog-micro-3d.js`, star catalogues) until someone taps for it. Leaving 3D frees the graphics
+chip. After any change to a page with animation, 3D or sound, run
+
+    node tools/check-silent.js <the pages you changed>     # or with no pages, every page in its list
+
+and add new pages and rooms to its PAGES list. Do not push while it fails.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
