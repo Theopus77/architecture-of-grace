@@ -42,7 +42,7 @@ export async function create(kit) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.05, 260);
+  const camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.12, 260);
   const disposables = [];   // textures and render targets made here
   const track = t => (disposables.push(t), t);
 
@@ -106,6 +106,7 @@ export async function create(kit) {
   }, [1, 1]);
   const linkTex = canvasTex(64, 64, (g, w, h) => { g.clearRect(0, 0, w, h); g.strokeStyle = "rgba(255,255,255,0.95)"; g.lineWidth = 3; g.beginPath(); g.moveTo(0, h / 2); g.lineTo(w / 2, 0); g.lineTo(w, h / 2); g.lineTo(w / 2, h); g.closePath(); g.stroke(); }, [120, 9]);
   const windowTex = canvasTex(128, 256, (g, w, h) => { g.fillStyle = "#ffffff"; g.fillRect(0, 0, w, h); for (let y = 10; y < h - 8; y += 18) for (let x = 8; x < w - 8; x += 16) { g.fillStyle = `rgba(40,55,70,${0.25 + rand() * 0.25})`; g.fillRect(x, y, 9, 11); } }, [1, 1]);
+  Object.assign(M.ramp, { polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });   // the ramp's flat bottom lies on the ground: draw it on top, far off too
   M.ground.map = concreteTex; M.ground.roughnessMap = concreteRough; M.grip.map = gripTex; M.ramp.map = plywoodTex; M.deckTop.map = plywoodTex; M.grass.map = grassTex; M.far.map = windowTex;
   const concreteSmall = track(concreteTex.clone()); concreteSmall.repeat.set(1, 1); concreteSmall.needsUpdate = true;   // for rounded props (their UVs run 0–1 per face)
   const concreteM = track(concreteTex.clone()); concreteM.repeat.set(0.6, 0.6); concreteM.needsUpdate = true;          // for extruded shapes (their UVs are meters)
@@ -728,13 +729,15 @@ export async function create(kit) {
   const camPos = V(0, 1.6, 6), camLook = V(0, 0.6, 0), camTgtPos = V(), camTgtLook = V();
   let camSnap = true, camMoving = false, viewPad = 0;
   function frameCam(fov, pos, look) { camera.fov = fov; camTgtPos.copy(pos); camTgtLook.copy(look); }
-  function fitDist(span, fov) { const hf = 2 * Math.atan(Math.tan(fov * DEG / 2) * camera.aspect); return span / 2 / Math.tan(Math.min(hf, fov * DEG) / 2); }
+  function fitDist(span, fov) { const hf = 2 * Math.atan(Math.tan(fov * DEG / 2) * camera.aspect); return span / 2 / Math.tan(hf / 2); }
   function aimTrick(target, fr) {
     const fx0 = fr && fr.cam != null ? fr.cam : target.x;
     if (camMode === "side") frameCam(22, V(fx0, 1.0, 9.5), V(fx0, 0.85, 0));
     else if (camMode === "fish") { const d = fr ? fr.dir : 1; frameCam(96, V(target.x + 0.9 * d, 0.32, 1.45), V(target.x - 0.1 * d, 0.62, 0)); }
     else frameCam(40, V(fx0 + 0.55, 1.05, 3.3), V(fx0 + 0.05, 0.78, 0));
-    if (sceneName === "trick:ramp" && camMode !== "fish") { const cx = 2.4; frameCam(camMode === "side" ? 30 : 42, V(cx + 0.3, camMode === "side" ? 1.2 : 1.7, camMode === "side" ? 9 : 6.2), V(cx, 0.75, 0)); }
+    if (sceneName === "trick:ramp" && camMode !== "fish") {   // the camera rides along: half on the ramp, half on the rider, rising with them onto the coping
+      const cx = 2.4 + (target.x - 2.4) * 0.6, ly = 0.75 + Math.max(0, target.y - 1.0) * 0.5;
+      frameCam(camMode === "side" ? 30 : 42, V(cx + 0.3, (camMode === "side" ? 1.2 : 1.7) + ly - 0.75, camMode === "side" ? 9 : 6.2), V(cx, ly, 0)); }
   }
   function orbitCam(c) { frameCam(38, V(c.x + Math.sin(orbit.th) * Math.cos(orbit.el) * orbit.dist, c.y + Math.sin(orbit.el) * orbit.dist + 0.2, c.z + Math.cos(orbit.th) * Math.cos(orbit.el) * orbit.dist), c); }
   function applyCam(snap) {
@@ -775,7 +778,7 @@ export async function create(kit) {
       gauges.visible = true; const gh = Math.max(1.3, top * 0.55);
       probeD.gauges = {}; GAUGE.forEach(gg => { const v = d.energy ? d.energy[gg.k] : 0; gg.gg.visible = v >= 0; gg.gg.children.forEach(c => c.visible = true); const hgt = Math.max(0.002, clamp(v, 0, 1) * gh); gg.fill.scale.y = hgt; gg.cap.position.y = 0.12 + hgt; probeD.gauges[gg.k] = v >= 0 ? hgt / gh : -1; gg.gg.children[0].scale.set(1, (gh + 0.24) / 1.24, 1); gg.gg.children[0].position.y = 0.12 + gh / 2; });
       labE.position.set(0.51, 0.12 + gh + 0.35, 0); gauges.scale.setScalar(path.hill ? 1.2 : Math.max(1.35, top * 0.6));
-      gauges.position.set(path.hill ? t.x + 2.2 : xe + 0.45, 0, path.hill ? 1.4 : 1.0); gauges.rotation.y = -0.35;
+      gauges.position.set(path.hill ? t.x + 2.2 : xe - 0.75, 0, path.hill ? 1.4 : 1.7); gauges.rotation.y = -0.35;
       gauges.children.forEach(c => { if (c.isMesh) c.visible = true; });
       if (d.forces) {
         const zf = 0.34, com = V(d.forces.com[0], d.forces.com[1], zf);
@@ -786,7 +789,9 @@ export async function create(kit) {
       if (d.trail && d.trail.length > 1) { trail.visible = true; trail.set(d.trail.map(p => [p[0], p[1], 0.34])); }
       if (camMode === "orbit") orbitCam(V(t.x, Math.max(0.7, t.y - 0.1), 0));
       else if (camMode === "follow" || path.hill) frameCam(40, V(t.x + 1.4, t.y + 1.3, 4.6), V(t.x + 0.4, t.y + 0.35, 0));
-      else { const span = (xe + 1.6) - xs, cx = (xs + xe + 1.6) / 2, dist = fitDist(span * 1.06, 40); frameCam(40, V(cx + span * 0.12, top * 0.55 + dist * 0.2, dist), V(cx, top * 0.42, 0)); }
+      else {   // the whole run fills the picture: both copings, the rider and the gauges in front of the far deck
+        const a = xs + 0.9, b = xe + 0.9, span = b - a, cx = (a + b) / 2, dist = fitDist(span, 40) + 0.8;
+        frameCam(40, V(cx + span * 0.1, top * 0.45 + dist * 0.16, dist), V(cx, top * 0.55, 0.4)); }
       sunAt(t.x, 0, !path.hill && camMode === "wide");
     } else if (spec.kind === "ollie") {
       setScene("room:ollie", null); slideWorld(0);

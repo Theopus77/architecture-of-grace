@@ -1873,7 +1873,7 @@ function drawOllie3D(fr) {
 }
 function drawGrind3D(fr) {
   const o = S.grind;
-  if (!fr || !GR) return draw3D({ kind: "grind", fr: null, data: {} });
+  if (!fr || !GR) return draw3D({ kind: "grind", fr: null, data: { key: o.surface + ":" + o.len, surface: o.surface, len: o.len, rh: 0.35, x: 0, bottom: 0.4 } });
   const onIt = fr.x >= -0.05 && fr.x <= o.len + 0.05, rh = 0.35, board = o.trick === "board" && onIt;
   const h = !onIt ? 0 : board ? rh - BOARD.deckY + BOARD.thick / 2 : rh - BOARD.wheelR - 0.01;
   draw3D({ kind: "grind", cam: o.cam || "wide",
