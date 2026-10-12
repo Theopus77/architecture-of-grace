@@ -45,11 +45,11 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   const b = await pw.chromium.launch({ args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
   const st = p => p.evaluate(() => JSON.parse(localStorage.getItem("aog.cube.v1")));
   const hist = async p => (await st(p)).hist.length;
-  async function open(vp, touch, hash, speed) {
+  async function open(vp, touch, hash, speed, way) {
     const ctx = await b.newContext({ viewport: vp, isMobile: !!touch, hasTouch: !!touch, permissions: ["camera"] });
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
     const p = await ctx.newPage(); p.errs = []; p.on("pageerror", e => p.errs.push(e.message));
-    if (speed) await ctx.addInitScript(sp => { try { if (!localStorage.getItem("aog.cube.v1")) localStorage.setItem("aog.cube.v1", JSON.stringify({ speed: sp })); } catch (e) {} }, speed);
+    await ctx.addInitScript(([sp, way]) => { try { if (!localStorage.getItem("aog.cube.v1")) localStorage.setItem("aog.cube.v1", JSON.stringify(Object.assign(sp ? { speed: sp } : {}, way ? { method: way, wayV: 2 } : { method: "steps", wayV: 2 }))); } catch (e) {} }, [speed || null, way || null]);
     await p.goto(URL + "#" + (hash || "learn")); await p.waitForTimeout(800);
     const cdp = await ctx.newCDPSession(p);
     p.tp = (type, pts) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : pts.map(([x, y], id) => ({ x, y, id })) });
@@ -146,6 +146,23 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(!p.errs.length, `${name}: no page errors (hands) ${p.errs.join("; ")}`);
     await p.ctx.close();
   }
+
+  /* ── the short way first (Jimmy: "Can the shortest way always be deployed first?") and, on a phone, the move and its
+     button in a bar at the bottom, the cube in view above ── */
+  { const p = await open({ width: 390, height: 844 }, true, "solve", "instant", "fresh");
+    await p.evaluate(() => { const S = JSON.parse(localStorage.getItem("aog.cube.v1")); delete S.method; delete S.wayV; localStorage.setItem("aog.cube.v1", JSON.stringify(S)); }); await p.reload(); await p.waitForTimeout(600);
+    await p.evaluate(() => { scrollTo(0, 0); document.querySelector('#panel [data-act="mix"]').click(); });
+    let found = false; try { await p.waitForSelector("#actBar:not([hidden]) [data-act='gnext']", { timeout: 30000 }); found = true; } catch (e) {}
+    const way = await p.$eval("#waySel", s => s.value).catch(() => "");
+    ok(found && way === "short", "Solve with me starts on the short way: a mixed cube gets its short way at once (" + way + ")");
+    await p.evaluate(() => scrollTo(0, 0));
+    const lay = await p.evaluate(() => { const st = document.getElementById("stage").getBoundingClientRect(), bar = document.getElementById("actBar").getBoundingClientRect(), btn = document.querySelector("#actBar [data-act='gnext']").getBoundingClientRect();
+      return { cube: st.top >= 0 && st.bottom <= bar.top + 2, btn: btn.bottom <= innerHeight && btn.top >= 0, text: document.querySelector("#actBar .ab-move").textContent }; });
+    ok(lay.cube && lay.btn && lay.text.length > 3, `iPhone: the whole cube and the I did it / Turn it button are on screen together, no scrolling ("${lay.text}")`);
+    let n = 0; while (n < 40 && await p.$("#actBar:not([hidden]) [data-act='gnext']")) { await p.tap("#actBar [data-act='gnext']"); n++; await p.waitForTimeout(30); }
+    ok(n > 0 && n <= 22 && /Solved!/.test(await p.textContent("#panel")) && await p.evaluate(() => document.getElementById("actBar").hidden), `iPhone: tapping the bar's button follows the short way to Solved (${n} moves), and the bar steps away`);
+    ok(!p.errs.length, "no page errors (short way first) " + p.errs.join("; "));
+    await p.ctx.close(); }
 
   /* ── a computer ── */
   let p = await open({ width: 1280, height: 900 }, false, "learn");

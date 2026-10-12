@@ -293,6 +293,18 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 .calm .kind .tag { display:inline-block; border-radius:999px; padding:.25rem .7rem; font:800 .8rem/1.2 var(--sans); letter-spacing:.08em; text-transform:uppercase; }
 .calm .kind.whole .tag { background:var(--warn-soft); color:var(--ink); border:2px solid var(--warn); }
 .calm .kind.side .tag { background:var(--steel-soft); color:var(--ink); border:2px solid var(--steel); }
+.actbar { display:none; }
+@media (max-width:899px){
+  .actbar:not([hidden]) { display:flex; align-items:center; gap:.5rem; position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--card); border-top:1px solid var(--line);
+    box-shadow:0 -2px 10px rgb(0 0 0 / .08); padding:.55rem max(16px, env(safe-area-inset-right)) calc(.55rem + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  .actbar .ab-move { flex:1 1 auto; margin:0; font:600 1rem/1.25 var(--sans); color:var(--ink); min-width:0; }
+  .actbar .btn.big { min-height:56px; padding:0 1.1rem; flex:0 0 auto; }
+  .actbar .btn:not(.big) { min-width:48px; min-height:56px; padding:0; font-size:1.3rem; }
+  body.has-actbar { padding-bottom:calc(88px + env(safe-area-inset-bottom)); }
+  body.has-actbar .calm .mainrow, body.has-actbar .calm .move-big { display:none; }
+  body.has-actbar .aog-mkbtn { bottom:calc(84px + env(safe-area-inset-bottom)); }
+  body.has-actbar .aog-mktip { bottom:calc(140px + env(safe-area-inset-bottom)); }
+}
 /* the printed move card: only on paper */
 #printCard { display:none; }
 @media print { body.printing .wrap { display:none !important; } body.printing #printCard { display:block; color:#000; background:#fff; font:400 12pt/1.4 var(--sans); }
@@ -349,6 +361,7 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
     </div>
     <section class="panel card" id="panel" aria-live="off"></section>
   </main>
+  <div class="actbar no-print" id="actBar" hidden></div>
   <footer><p id="foot"></p></footer>
 </div>
 <div id="printCard" aria-hidden="true"></div>
@@ -362,7 +375,8 @@ const KEY="aog.cube.v1";
 /* AOG-CUBE-L2-V1 (2026-10-12) — two ways to solve: the steps (the beginner's way, aog-cube.js) and the faster way
    (aog-cube-l2.js: cross in one go, pairs, the yellow top in two looks, the last layer in two looks) */
 const L2=window.AOGCubeL2;
-const WAYS={steps:{STAGES:C.STAGES, of:C.stageOf, plan:C.plan}, faster:{STAGES:L2.STAGES2, of:L2.stageOf2, plan:L2.plan2}};
+const WAYS={steps:{STAGES:C.STAGES, of:C.stageOf, plan:C.plan}, faster:{STAGES:L2.STAGES2, of:L2.stageOf2, plan:L2.plan2},
+  short:{STAGES:["short"], of:c => c.solved() ? 1 : 0, plan:null}};
 
 /* ── words (English · Spanish) ── */
 const T={
@@ -470,7 +484,7 @@ const T={
   vfySide:["Side: {s}","Lado: {s}"], vfyOk:["It matches the screen. ✓","Coincide con la pantalla. ✓"],
   vfyDiff:["{n} squares look different. They are marked.","{n} cuadros se ven distintos. Están marcados."], vfyDiff1:["1 square looks different. It is marked.","1 cuadro se ve distinto. Está marcado."],
   vfyScreen:["On the screen","En la pantalla"], vfyYours:["Your cube","Tu cubo"], vfyAgain:["Check another side","Comprobar otro lado"], vfyDone:["Done","Listo"],
-  wayH:["Way","Forma"], waySteps:["The steps","Los pasos"], wayFaster:["The faster way","La forma rápida"],
+  wayH:["Way","Forma"], wayShort:["The short way","El camino corto"], waySteps:["The steps","Los pasos"], wayFaster:["The faster way","La forma rápida"],
   pPairs:["{n} of 4 pairs in place","{n} de 4 parejas en su lugar"],
   shortBtn:["Show me the short way","Muéstrame el camino corto"], shortFinding:["Finding the short way…","Buscando el camino corto…"],
   shortK:["The short way","El camino corto"], shortNone:["The short way could not be found this time. The steps still work.","No se encontró el camino corto esta vez. Los pasos siguen funcionando."],
@@ -769,13 +783,14 @@ const L=[
 ];
 
 /* ── saved place ── */
-const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, method:"steps", level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, method:"short", wayV:0, level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
   else { if(localStorage.getItem("aog.lang")==="es") S.lang="es"; if(matchMedia("(prefers-reduced-motion: reduce)").matches) S.speed="instant"; }
 }catch(e){}
 if(!Array.isArray(S.hist)) S.hist=[];
+if(S.wayV!==2){ S.method="short"; S.wayV=2; }   /* the short way first, for everyone (Jimmy, 2026-10-12) */
 let cube=(S.cube && C.Cube.fromJSON(S.cube)) || new C.Cube();
 function save(){ S.cube=((painting && cubeBeforePaint) || cube).toJSON(); if(S.hist.length>400) S.hist=S.hist.slice(-400);
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
@@ -995,7 +1010,7 @@ function after(job){
     S.mix.by=S.mix.by||{}; S.mix.help=S.mix.help||{}; S.mix.by[k]=(S.mix.by[k]||0)+1; if(job.src==="guide") S.mix.help[k]=(S.mix.help[k]||0)+1;
     S.mix.stage=Math.max(S.mix.stage||0, sn); }
   if(S.mix && !"xyz".includes(b)){ const now=Date.now(); if(S.mix.last) S.mix.active=(S.mix.active||0)+Math.min(Math.max(0, now-S.mix.last), 30000); S.mix.last=now; S.mix.moves++; }
-  if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves, by:S.mix.by||{}, help:S.mix.help||{}}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
+  if(S.mix && cube.solved()){ S.result={ms:S.mix.active||0, moves:S.mix.moves, by:S.mix.by||{}, help:S.mix.help||{}, way:(guide && guide.short) ? "short" : wayName()}; S.mix=null; if(S.lesson===9 && S.view==="learn") S.done[9]=1; }
   if(S.real && S.view==="solve"){ const sn=way().of(cube); if(sn>(S.realStage||0) && !cube.solved()) checkIn=true; S.realStage=Math.max(S.realStage||0, sn); }
   if(job.src!=="undo" && job.src!=="guide" && job.src!=="play") acted=true;
   const lz=L[S.lesson]; if(lz && lz.stage!==undefined && WAYS[lz.method||"steps"].of(cube)>lz.stage && S.practice===S.lesson) S.done[S.lesson]=1;
@@ -1006,10 +1021,15 @@ function after(job){
 
 /* ── the teacher's plan for this cube ── */
 let guide=null;
-function wayName(){ if(S.view==="learn"){ const l=L[S.lesson]; return (l && l.method) || "steps"; } return S.method==="faster" ? "faster" : "steps"; }
+/* AOG-CUBE-SHORTFIRST-V1 (2026-10-12) — Jimmy: "Can the shortest way always be deployed first? I just did one in 13
+   steps!!! Wowzers." Solve with me starts on the short way; the steps and the faster way stay in the Way menu. If the
+   short way can't be found, the steps lead instead. */
+function wayName(){ if(S.view==="learn"){ const l=L[S.lesson]; return (l && l.method) || "steps"; }
+  if(S.method==="short") return shortState==="none" ? "steps" : "short"; return S.method==="faster" ? "faster" : "steps"; }
 function way(){ return WAYS[wayName()]; }
 function getGuide(){
   const key=cube.toJSON();
+  if(wayName()==="short"){ if(!(guide && guide.short && guide.key===key)) guide={r:{stages:[]}, flat:[], i:0, key, way:"short", pending:true}; return guide; }
   if(!guide || guide.key!==key || (!guide.short && guide.way!==wayName())){
     const r=way().plan(cube), flat=[];
     r.stages.forEach((st,si) => st.parts.forEach((p,pi) => p.moves.forEach((tok,mi) => flat.push({tok, si, pi, mi}))));
@@ -1122,7 +1142,7 @@ function partCard(onlyStage){
   return `<div class="calm">${offPath?`<p class="note">${esc(t("offPath"))}</p>`:""}${holdLine}${show>=1?`<p class="aim">${esc(aim(n.p))}</p>`:""}
     ${chunk}${moveRow}
     <!-- Jimmy: "Move 8 of 8 to me still makes no sense." The card says only the goal and the move. -->${afterPics}
-    <div class="btn-row">${main}
+    <div class="btn-row mainrow">${main}
     <button type="button" class="btn" data-act="undo" ${S.hist.length?"":"disabled"}>${esc(t("back"))}</button></div>
     <p class="keys">${esc(t("keysLine"))}</p>
     ${show>=1?`<div class="btn-row"><button type="button" class="btn goal" data-act="goal" aria-pressed="${!!goalView}">${esc(t(goalView?"goalOff":"goalOn"))}</button>
@@ -1182,12 +1202,12 @@ function solveHtml(){
     let h=`<h2>${esc(t("startH"))}</h2><p class="muted">${esc(t("startLine"))}</p>`;
     if(S.result){ const R=S.result, by=R.by||{}, help=R.help||{};
       /* the step where Turn it did the most: that is the one to practise from memory */
-      let tip=-1, most=0; Object.keys(help).forEach(k => { if(help[k]>most){ most=help[k]; tip=+k; } });
+      let tip=-1, most=0; if(R.way!=="short") Object.keys(help).forEach(k => { if(help[k]>most){ most=help[k]; tip=+k; } });
       h+=`<p class="state ok">${esc(t("solvedNow"))} ${esc(t("solvedIn",{m:R.moves}))}</p>`;
       h+=`<p>${esc(tip>=0 ? t("practiceTip",{s:tx(STAGE_NAMES[way().STAGES[tip]]).toLowerCase()}) : t("nextPractice"))}</p>`;
       if((S.level||"every")==="every") h+=`<p class="muted">${esc(t("lessHelp"))}</p>`;
       if(tip>=0) h+=`<div class="btn-row start"><button type="button" class="btn btn-steel big" data-act="drill" data-stage="${tip}">${esc(t("drillBtn",{s:tx(STAGE_NAMES[way().STAGES[tip]]).toLowerCase()}))}</button></div>`;
-      if(Object.keys(by).length) h+=`<details class="more"><summary>${esc(t("bySteps"))}</summary><ol class="last">${way().STAGES.map((k,i)=>by[i]?`<li>${esc(tx(STAGE_NAMES[k]))}: ${esc(t("nMoves",{n:by[i]}))}</li>`:"").join("")}</ol></details>`;
+      if(R.way!=="short" && Object.keys(by).length) h+=`<details class="more"><summary>${esc(t("bySteps"))}</summary><ol class="last">${way().STAGES.map((k,i)=>by[i]?`<li>${esc(tx(STAGE_NAMES[k]))}: ${esc(t("nMoves",{n:by[i]}))}</li>`:"").join("")}</ol></details>`;
       h+=`<div class="btn-row start"><button type="button" class="btn btn-good big" data-act="own">${esc(t("ownTry"))}</button></div>`; }
     return h+`<div class="btn-row start"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
   }
@@ -1200,6 +1220,9 @@ function solveHtml(){
   /* AOG-CUBE-CHECKIN-V1 — with a real cube, after each step: does yours look like the screen? */
   const ci=(S.real && checkIn) ? `<div class="note checkin"><p>${esc(t("checkIn"))}</p><div class="btn-row"><button type="button" class="btn btn-good" data-act="checkYes">${esc(t("checkYes"))}</button><button type="button" class="btn" data-act="camCheck">${esc(t("camCheck"))}</button><button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button></div></div>` : "";
   const lvSel=`<label class="startat"><span>${esc(t("levelH"))}</span><select id="levelSel">${[["every","lvEvery"],["hint","lvHint"],["own","lvOwn"]].map(([v,k])=>`<option value="${v}" ${(S.level||"every")===v?"selected":""}>${esc(t(k))}</option>`).join("")}</select></label>`;
+  if(wayName()==="short" && !(guide && guide.short && guide.key===cube.toJSON())){
+    if(shortState!=="finding") setTimeout(findShort, 0);
+    return `${ci}<p class="kicker">${esc(t("shortK"))}</p><p class="say">${esc(t("shortFinding"))}</p>${quietRow(lvSel)}`; }
   const dots=way().STAGES.map((k,i)=>`<span class="dot ${i<at?"done":i===si?"now":""}"></span>`).join("");
   if(key==="short") return `${ci}<p class="kicker">${esc(t("shortK"))}</p>${partCard()}${quietRow(lvSel)}`;
   return `${ci}<p class="kicker">${esc(S.drill!=null ? t("drillK",{s:tx(STAGE_NAMES[way().STAGES[S.drill]])}) : t("stepOf",{i:si+1, n:way().STAGES.length, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
@@ -1212,12 +1235,12 @@ function solveHtml(){
 function quietRow(lvSel){
   const sh = shortState==="finding" ? `<p class="muted">${esc(t("shortFinding"))}</p>`
     : shortState==="none" ? `<p class="muted">${esc(t("shortNone"))}</p>`
-    : (guide && guide.short) ? "" : `<button type="button" class="btn btn-steel" data-act="short">${esc(t("shortBtn"))}</button>`;
-  const waySel=`<label class="startat"><span>${esc(t("wayH"))}</span><select id="waySel"><option value="steps" ${S.method!=="faster"?"selected":""}>${esc(t("waySteps"))}</option><option value="faster" ${S.method==="faster"?"selected":""}>${esc(t("wayFaster"))}</option></select></label>`;
+    : (guide && guide.short) || S.method==="short" ? "" : `<button type="button" class="btn btn-steel" data-act="short">${esc(t("shortBtn"))}</button>`;
+  const waySel=`<label class="startat"><span>${esc(t("wayH"))}</span><select id="waySel">${[["short","wayShort"],["steps","waySteps"],["faster","wayFaster"]].map(([v,k]) => `<option value="${v}" ${(S.method||"short")===v?"selected":""}>${esc(t(k))}</option>`).join("")}</select></label>`;
   return `<div class="btn-row quiet">${sh}</div>
     <div class="btn-row quiet">${waySel}${lvSel}</div>
     <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button>
-    ${S.real?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${way().STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
+    ${S.real || S.method==="short"?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${way().STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
 }
 /* AOG-CUBE-SHORT-V1 — the short way, found off the page (aog-cube-short.js in a worker), then followed like the steps */
 let shortState="", shortWorker=null, shortAsk=0;
@@ -1289,13 +1312,28 @@ function panel(){
   el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
   const sa=el.querySelector("#startAt"); if(sa) sa.onchange=()=>{ if(sa.value!==""){ S.drill=null; setup(+sa.value); S.real=false; S.mix={t0:null,moves:0}; S.result=null; save(); panel(); } };
   paintBar();
-  const ws=el.querySelector("#waySel"); if(ws) ws.onchange=()=>{ S.method=ws.value; S.drill=null; guide=null; reveal={k:"",n:0}; save(); panel(); };
+  const ws=el.querySelector("#waySel"); if(ws) ws.onchange=()=>{ S.method=ws.value; S.drill=null; guide=null; shortState=""; reveal={k:"",n:0}; save(); panel(); };
   const lv=el.querySelector("#levelSel"); if(lv) lv.onchange=()=>{ S.level=lv.value; reveal={k:"",n:0}; save(); panel(); };
   el.querySelectorAll("[data-stage]").forEach(b => b.onclick=()=>{ S.drill=+b.getAttribute("data-stage"); setup(S.drill); S.drill=+b.getAttribute("data-stage"); save(); panel(); });
   focusSet=focusOf();
   if(!busy) render(); else drawArrow();   /* the piece to watch and the arrow follow the card */
-  describe(); speakMove();
+  describe(); speakMove(); actBar();
 }
+/* AOG-CUBE-ACTBAR-V1 (2026-10-12) — Jimmy (phone): "The I did it button is too far off the screen, where one has to
+   scroll to see the cube." On a phone, Solve with me keeps the move and its button in a bar at the bottom of the
+   screen, so the cube stays in view above and nothing needs scrolling. */
+function actBar(){
+  const bar=$("actBar"); if(!bar) return;
+  const main=S.view==="solve" && $("panel").querySelector('.calm [data-act="gnext"], .calm [data-act="reveal"]');
+  document.body.classList.toggle("has-actbar", !!main); bar.hidden=!main;
+  if(!main){ bar.innerHTML=""; return; }
+  const mb=$("panel").querySelector(".calm .move-big"), once=mb && mb.querySelector(".once");
+  const words = main.getAttribute("data-act")==="gnext" ? (once ? once.textContent+" " : "")+words_(arrowTok) : (mb ? mb.textContent.trim() : "");
+  bar.innerHTML=`<p class="ab-move">${esc(words)}</p><button type="button" class="btn btn-good big" data-act="${main.getAttribute("data-act")}">${esc(main.textContent)}</button>
+    <button type="button" class="btn" data-act="undo" aria-label="${esc(t("back"))}" ${S.hist.length?"":"disabled"}>↶</button>`;
+  bar.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
+}
+const words_=tok => tok ? words(tok) : "";
 function playAlg(k, how){
   const [li,ai]=k.split(":").map(Number), moves=C.split(L[li].algs[ai].s);
   if(algAt.k!==k){ algAt={k, i:0}; if(how==="one"){ panel(); return; } }   /* the first tap shows the first move and its arrow */
