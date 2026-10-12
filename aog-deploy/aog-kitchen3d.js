@@ -328,8 +328,8 @@ export async function create(opts) {
   }
   // the oven under the cooktop: the door opens on its bottom hinge; the rack slides out
   const oven = { door: new THREE.Group(), rack: new THREE.Group(), glowM: M.ovenGlow };
-  { const cav = mesh(rbox(OVEN.w, OVEN.y1 - OVEN.y0, 0.5, 0.03), M.enamel.clone(), false, true); cav.material.side = THREE.BackSide; track(cav.material); cav.position.set(OVEN.x, (OVEN.y0 + OVEN.y1) / 2, FRONT + 0.27); island.add(cav);
-    const glow = mesh(G(new THREE.PlaneGeometry(OVEN.w - 0.1, 0.4)), M.ovenGlow, false, false); glow.position.set(OVEN.x, (OVEN.y0 + OVEN.y1) / 2, FRONT + 0.5); glow.rotation.y = Math.PI; island.add(glow);
+  { const cav = mesh(rbox(OVEN.w, OVEN.y1 - OVEN.y0, 0.5, 0.03), M.enamel.clone(), false, true); cav.material.side = THREE.BackSide; track(cav.material); cav.position.set(OVEN.x, (OVEN.y0 + OVEN.y1) / 2, FRONT + 0.31);   // just behind the door, never in front of it island.add(cav);
+    const glow = mesh(G(new THREE.PlaneGeometry(OVEN.w - 0.1, 0.4)), M.ovenGlow, false, false); glow.position.set(OVEN.x, (OVEN.y0 + OVEN.y1) / 2, FRONT + 0.54); glow.rotation.y = Math.PI; island.add(glow);
     const face = mesh(rbox(OVEN.w + 0.06, 0.08, 0.03, 0.012), M.steelDk); face.position.set(OVEN.x, OVEN.y1 + 0.05, FRONT + 0.02); island.add(face);
     const panel = mesh(rbox(OVEN.w + 0.04, OVEN.y1 - OVEN.y0 + 0.02, 0.035, 0.02), M.steel); panel.position.set(0, (OVEN.y1 - OVEN.y0) / 2, -0.018); oven.door.add(panel);
     const win = mesh(rbox(OVEN.w - 0.16, (OVEN.y1 - OVEN.y0) * 0.5, 0.01, 0.02), M.ovenGlass, false, false); win.position.set(0, (OVEN.y1 - OVEN.y0) * 0.5, -0.037); oven.door.add(win);
@@ -893,10 +893,11 @@ export async function create(opts) {
     c.L.T = rotY(RIGHT, -0.6).negate().negate(); c.L.T = new THREE.Vector3(-Math.cos(0.6), 0, -Math.sin(0.6)).negate(); c.L.T = V(-Math.cos(-0.6), 0, Math.sin(-0.6)).negate();
     c.L.T = nrm(-1, 0, 0).applyAxisAngle(UP, -0.6);
     const slide = sst(0.25, 0.45, u), lift = sst(0.5, 0.62, u), turn = sst(0.55, 0.78, u), down = sst(0.78, 0.9, u);
-    const bladeP = pc.clone().add(V(-0.13 + 0.12 * slide, 0.004 + 0.06 * lift * (1 - down), -0.02));
+    // the turner comes from the cook's side of the pan, slides all the way under, lifts a little and turns over, close to the pan
+    const bladeP = pc.clone().add(V(-0.03, 0.004 + 0.06 * lift * (1 - down), -0.13 + 0.12 * slide));
     const roll = turn * Math.PI;
-    const T = nrm(1, 0.12 + 0.6 * lift * (1 - down), 0.05);
-    c.R = TIP("turner", bladeP, T, V(0, 0, 1).applyAxisAngle(T, -roll * 0.75), 0.92);
+    const T = nrm(0.3, 0.12 + 0.6 * lift * (1 - down), 1);
+    c.R = TIP("turner", bladeP, T, nrm(-1, 0, 0.3).applyAxisAngle(T, -roll * 0.75), 0.92);
     c.s.pancake = { cook: lerp(0.75, 1, u), flipK: turn, lift: lift * (1 - down) * 0.06, slide, at: bladeP, roll, bubbles: 1 - turn };
   };
   // ── sauté: oil in, food in away from you, keep it moving ──
@@ -915,19 +916,20 @@ export async function create(opts) {
     c.s.pot.water = 1; c.s.boilK = sst(0, 0.4, u);
     const pasta = stepItems(c.step).some(i => i.item === "pasta");
     c.s.pot.lid = u < 0.35 ? 1 : 0;
-    // lift the lid, tilted away from you so the steam goes the other way; set it down on the counter; lower the food in
-    const rest = restHand("R", 0, V(STAND.pot.x, 0, STAND.pot.z), c.body), lidUp = pc.clone().add(V(0.1, 0.1, 0.1)), lidDown = LIDREST.clone();
-    if (u < 0.52) { const lp = V(...K(u, [[0.35, pc.clone().add(V(0, 0.05, 0)).toArray()], [0.43, lidUp.toArray()], [0.52, lidDown.toArray()]]));
-      c.R = { G: lp.clone().add(V(0, 0.035 + 0.01 * win(u, 0.43, 0.52), 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 };
-      if (u > 0.35) { c.s.lidHeld = lp; c.s.lidTilt = sst(0.35, 0.42, u) * (1 - sst(0.45, 0.52, u)); c.s.pot.lid = 0; } }
-    else {
-      c.s.lidRest = LIDREST.toArray();
-      const handP = pasta ? P(POT.x - 0.02, TOP + POT.h + 0.2 - 0.06 * sst(0.58, 0.75, u), POT.z - 0.02) : rest.G;
-      const away = pasta ? sst(0.78, 0.9, u) : 1, back = sst(0.52, 0.6, u);
-      const G = LIDREST.clone().add(V(0, 0.045, 0)).lerp(handP, back).lerp(rest.G, away);
-      c.R = { G, T: FWD.clone().lerp(nrm(0, 0.2, 1), back).normalize(), N: DOWN.clone().lerp(LEFT, back * (1 - away)).normalize(), grip: lerp(0.55, 0.7, back) };
-      if (pasta) { c.s.pastaIn = sst(0.58, 0.75, u); c.s.pastaSoft = sst(0.7, 1, u); }
-      if (away >= 1 && back >= 1) c.R = null;
+    // the left hand lifts the lid by its knob, far edge first, so the steam goes away from you and the lid shields you;
+    // it sets the lid down on the counter on the left; then the right hand lowers the food in
+    const restL = restHand("L", 0, V(STAND.pot.x, 0, STAND.pot.z), c.body), lidUp = pc.clone().add(V(0.1, 0.1, 0.1));
+    const lp = u < 0.35 ? pc.clone().add(V(0, 0.05, 0)) : V(...K(u, [[0.35, pc.clone().add(V(0, 0.05, 0)).toArray()], [0.43, lidUp.toArray()], [0.52, LIDREST.toArray()]]));
+    const letGo = sst(0.52, 0.62, u);
+    c.L = { G: lp.clone().add(V(0, 0.035 + 0.01 * win(u, 0.43, 0.52), 0)).lerp(restL.G, letGo), T: FWD.clone(), N: DOWN.clone().lerp(restL.N, letGo).normalize(), grip: lerp(0.55, 0.15, letGo) };
+    if (letGo >= 1) c.L = null;
+    if (u > 0.35 && u < 0.52) { c.s.lidHeld = lp; c.s.lidTilt = sst(0.35, 0.42, u) * (1 - sst(0.45, 0.52, u)); c.s.pot.lid = 0; }
+    if (u >= 0.52) c.s.lidRest = LIDREST.toArray();
+    if (pasta && u > 0.5) {
+      const restR = restHand("R", 0, V(STAND.pot.x, 0, STAND.pot.z), c.body), inK = sst(0.5, 0.58, u), away = sst(0.8, 0.92, u);
+      const hp = P(POT.x - 0.02, TOP + POT.h + 0.2 - 0.06 * sst(0.58, 0.75, u), POT.z - 0.02);
+      c.R = { G: restR.G.clone().lerp(hp, inK).lerp(restR.G, away), T: restR.T.clone().lerp(nrm(0, 0.2, 1), inK * (1 - away)).normalize(), N: restR.N.clone().lerp(LEFT, inK * (1 - away)).normalize(), grip: 0.7 };
+      c.s.pastaIn = sst(0.58, 0.75, u); c.s.pastaSoft = sst(0.7, 1, u); if (away >= 1) c.R = null;
     }
   };
   ANIM.simmer = (c, u) => {
@@ -947,7 +949,7 @@ export async function create(opts) {
     const rack = K(u, [[0.26, 0], [0.31, 1], [0.4, 1], [0.45, 0], [0.72, 0], [0.77, 1], [0.81, 1], [0.85, 0]]);
     c.s.door = door; c.s.rack = rack; c.s.baked = u > 0.6 ? 1 : 0;
     c.body.crouch = K(u, [[0.08, 0], [0.16, 1.05], [0.53, 1.05], [0.58, 0], [0.62, 0], [0.66, 1.05], [0.88, 1.05], [0.93, 0]]);
-    c.body.fwd = K(u, [[0, 0], [0.04, 0.3], [0.1, 0.3], [0.15, 0], [0.27, 0], [0.3, 0.08], [0.44, 0.08], [0.47, 0], [0.71, 0], [0.74, 0.08], [0.84, 0.08], [0.87, 0], [0.88, 0], [0.92, 0.3], [0.95, 0.3], [1, 0]]);
+    c.body.fwd = K(u, [[0, 0], [0.04, 0.3], [0.1, 0.3], [0.15, 0], [0.27, 0], [0.3, 0.12], [0.44, 0.12], [0.47, 0], [0.62, 0], [0.65, 0.12], [0.84, 0.12], [0.87, 0], [0.88, 0], [0.92, 0.3], [0.95, 0.3], [1, 0]]);
     c.body.lean = 12 + c.body.crouch * 14;
     const rackP = P(OVEN.x, OVEN.rackY + 0.02, FRONT + 0.27 - OVEN.out * rack), start = P(OVEN.x - 0.04, TOP + 0.02, 0.25);
     const hold = P(OVEN.x + 0.3, 0.62, -0.24), lifted = start.clone().add(V(0.05, 0.07, -0.12));
@@ -1093,7 +1095,7 @@ export async function create(opts) {
     posture();
     // a target a little out of reach: bend forward a little more and let the hips drift toward it (as a cook does),
     // a smooth function of the target, so the picture never jumps
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 6; i++) {
       const o = overReach(c, crouch); if (o.over < 0.004) break;
       const down = clamp(-o.dir.y, 0, 1), side = o.dir.x;
       lean = Math.min(48, lean + o.over * (60 + 90 * down));
@@ -1337,8 +1339,8 @@ export async function create(opts) {
       else { top.map = T.pancakeBrown; top.bumpMap = null; }
       top.needsUpdate = true;
       pcBot.material = flipped ? M.pancakeTop : M.pancakeBrown;
-      if (pc) { const base = P(PAN.x, TOP + 0.012, PAN.z); const at2 = base.clone().lerp(pc.at.clone().add(V(0.06, 0.0, 0.02)), pc.slide * 0.25); at2.y += pc.lift + Math.sin(pc.flipK * Math.PI) * 0.05;
-        pancake.position.copy(at2); pancake.rotation.set(0, 0, pc.flipK * Math.PI); }
+      if (pc) { const base = P(PAN.x, TOP + 0.012, PAN.z); const at2 = base.clone().lerp(pc.at.clone().add(V(0.02, 0.0, 0.06)), pc.slide * 0.25); at2.y += pc.lift + Math.sin(pc.flipK * Math.PI) * 0.05;
+        pancake.position.copy(at2); pancake.rotation.set(0, 0, 0); pancake.rotateOnWorldAxis(nrm(0.3, 0, 1), -pc.flipK * Math.PI); }
       else { pancake.position.set(PAN.x, TOP + 0.012, PAN.z); pancake.rotation.set(0, 0, 0); }
       if (s.serveFrom) { pancake.position.copy(s.serveFrom).add(V(0, 0.008, 0)); pancake.rotation.set(0, 0, 0); pcTop.material.map = T.pancakeBrown; }
     } else if (kind === "eggs" || kind === "scrambled") {
@@ -1363,7 +1365,7 @@ export async function create(opts) {
     if (s.potHeld) { pot.position.copy(s.potHeld.pos); pot.rotation.set(0, 0, s.potHeld.tilt); s.potMouth = pot.localToWorld(V(-POT.r, POT.h, 0)); } else { pot.position.set(POT.x, TOP + 0.004, POT.z); pot.rotation.set(0, 0, 0); }
     potWater.visible = !!s.pot.water; potSauce.visible = !!s.pot.sauce && !s.pot.water;
     potLid.visible = true;
-    if (s.lidHeld) { potLid.position.copy(pot.worldToLocal(s.lidHeld.clone())); potLid.rotation.set(0.55 * (s.lidTilt || 0), 0, 0); }
+    if (s.lidHeld) { potLid.position.copy(pot.worldToLocal(s.lidHeld.clone())); potLid.rotation.set(-0.55 * (s.lidTilt || 0), 0, 0); }
     else if (s.lidRest && !s.pot.lid) { potLid.position.copy(pot.worldToLocal(V(...s.lidRest))); potLid.rotation.set(0, 0, 0); }
     else if (s.pot.lid && !(s.pot.pasta)) { potLid.position.set(0, POT.h + 0.004, 0); potLid.rotation.set(0, 0, 0); }
     else { potLid.position.set(0.0, 0.0, 0); potLid.visible = false; }
@@ -1448,7 +1450,7 @@ export async function create(opts) {
       // aim between the work place and the hands, so a bowl on the cook's left is not hidden behind the body
       const hs = [lastInfo.R, lastInfo.L].filter(h => h && h.G && !h.rest).map(h => h.G);
       const t = hs.length ? f.clone().lerp(hs.reduce((a, g) => a.add(g), V(0, 0, 0)).multiplyScalar(1 / hs.length), 0.6) : f.clone(); t.y = Math.max(t.y, TOP - 0.02);
-      camera.position.set(t.x + (lastInfo.camSide || -1) * 0.6, crouch ? 1.45 : 2.04, z - 0.4); camera.lookAt(t.x - 0.02, t.y - 0.02, t.z + 0.05); }
+      camera.position.set(t.x + (lastInfo.camSide || -1) * 0.46, crouch ? 1.45 : 2.3, z - 0.34); camera.lookAt(t.x - 0.02, t.y - 0.02, t.z + 0.05); }
     camera.updateProjectionMatrix();
   }
   // walk around: drag with a finger or a mouse (only in that view)
@@ -1464,11 +1466,13 @@ export async function create(opts) {
     dark = !!d;
     M.sky.map = dark ? T.night : T.sky; M.sky.emissiveMap = M.sky.map; M.sky.emissiveIntensity = dark ? 0.8 : 0.95; M.sky.needsUpdate = true;
     sun.intensity = dark ? 0.0 : 2.3; sun.color.set(dark ? 0x9fb4ff : 0xfff1dc);
-    fill.intensity = dark ? 0.18 : 0.55; fill.color.set(dark ? 0x9fb0d0 : 0xfff6ea);
-    scene.environmentIntensity = dark ? 0.35 : 1;
-    lamp.intensity = dark ? 5.5 : 0; lamp2.intensity = dark ? 4.5 : 0; M.lampShade.emissiveIntensity = dark ? 1.4 : 0;
+    fill.intensity = dark ? 0.1 : 0.55; fill.color.set(dark ? 0x9fb0d0 : 0xfff6ea);
+    // the room's soft sky light dims at night (three r160 has no scene.environmentIntensity, so each material is set)
+    scene.traverse(o => { if (!o.material) return; (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+      if (m.envMapIntensity == null) return; if (m.userData.env0 == null) m.userData.env0 = m.envMapIntensity; m.envMapIntensity = m.userData.env0 * (dark ? 0.16 : 1); }); });
+    lamp.intensity = dark ? 7 : 0; lamp2.intensity = dark ? 6 : 0; M.lampShade.emissiveIntensity = dark ? 1.4 : 0;
     lamp.castShadow = false;
-    renderer.toneMappingExposure = dark ? 1.15 : 1.0;
+    renderer.toneMappingExposure = dark ? 1.0 : 1.0;
     scene.background = new THREE.Color(dark ? 0x10151d : 0xf3ece0);
     scene.fog = new THREE.Fog(dark ? 0x10151d : 0xf3ece0, 6, 14);
   }

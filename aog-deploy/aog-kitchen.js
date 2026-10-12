@@ -229,7 +229,11 @@ function card() {
   wireCard(); lightStep(); show();
 }
 function wireCard() {
-  document.querySelectorAll("#card [data-step]").forEach(b => b.onclick = () => setStep(+b.getAttribute("data-step")));
+  document.querySelectorAll("#card [data-step]").forEach(b => b.onclick = () => {
+    setStep(+b.getAttribute("data-step"));
+    // on a phone the kitchen is above the list: bring it into view so the step can be watched
+    const st = $("stage"), r = st.getBoundingClientRect(); if (window.innerWidth < 900 && (r.bottom < 60 || r.top > innerHeight - 60)) st.scrollIntoView({ block: "start" });
+  });
   const wb = $("wholeBtn"); if (wb) wb.onclick = () => { stop(); P.u = 0; P.k = 0; go(true); };
   const sg = $("scaleSeg"); if (sg) sg.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { S.factor = +b.getAttribute("data-f"); save(); card(); });
   if (S.mode === "mine") {
@@ -291,9 +295,9 @@ function words() {
   document.documentElement.lang = S.lang;
   document.title = L("The Kitchen Lab", "El Laboratorio de Cocina") + " — Architecture of Grace";
   $("brand").textContent = L("The Kitchen Lab", "El Laboratorio de Cocina");
-  $("mastK").textContent = L("Family & Consumer Sciences · cooking in 3D", "Ciencias de la Familia y del Consumidor · cocina en 3D");
+  $("mastK").textContent = L("Family & Consumer Sciences", "Ciencias de la familia");
   $("mastH").textContent = L("The Kitchen Lab", "El Laboratorio de Cocina");
-  $("mastL").textContent = L("Watch a cook make real recipes step by step, or plug in your own.", "Mira a alguien cocinar recetas reales paso a paso, o pon la tuya.");
+  $("mastL").textContent = L("Watch real recipes, step by step.", "Mira recetas reales, paso a paso.");
   $("langBtn").textContent = es() ? "EN" : "ES";
   $("themeBtn").textContent = document.documentElement.getAttribute("data-theme") === "dark" ? L("Light", "Claro") : L("Dark", "Oscuro");
   $("nav").innerHTML = `<a href="/facs-course">${L("The course", "El curso")}</a><a href="/kitchen">${L("Kitchen & Sewing", "Cocina y costura")}</a>`;

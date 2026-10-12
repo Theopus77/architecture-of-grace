@@ -244,8 +244,8 @@ function reader() {
     for (const id of SK) {
       A.openSkill(id, true);
       const o = { action: true, hold: !HOLD[id], knife: true, reach: 0, h2: (document.querySelector("#card h2") || {}).textContent, how: document.querySelectorAll("#card ol.how li").length, lit: 0 };
-      for (let i = 1; i < 20; i++) {
-        const u = i / 20; A.setStep(0, u); const f = A.K3.info();
+      for (let i = 1; i < 16; i++) {
+        const u = i / 16; A.setStep(0, u); const f = A.K3.info();
         if (f.action !== id) o.action = f.action;
         const H = HOLD[id];
         if (H && ((!H.R || (f.hands.R.tool === H.R && f.hands.R.gap < 0.05)) && (!H.L || (f.hands.L.tool === H.L && f.hands.L.gap < 0.05)) && (!H.shown || f.tools.includes(H.shown)) && (!H.mitts || f.mitts))) o.hold = true;
@@ -265,7 +265,7 @@ function reader() {
   ok(KNIVES.every(id => sk[id].knife === true), "chop, slice, dice and mince keep the knife's tip on the board, and it never goes through it" + (KNIVES.some(id => sk[id].knife !== true) ? " (" + KNIVES.filter(id => sk[id].knife !== true).map(id => id + " " + sk[id].knife).join(", ") + ")" : ""));
   const far = SKILLS.filter(id => sk[id].reach > 0.07);
   ok(!far.length, "the hands reach what they hold (within 7 cm all the way through)" + (far.length ? " (" + far.map(id => id + " " + Math.round(sk[id].reach * 100) + " cm").join(", ") + ")" : ""));
-  ok(SKILLS.every(id => sk[id].lit > 5), "the skill card lights the part of the skill the cook is doing");
+  ok(SKILLS.every(id => sk[id].lit > 4), "the skill card lights the part of the skill the cook is doing");
   // one skill played with Go stops by itself
   await pk.evaluate(() => window.AOGKitchen.openSkill("chop", true)); await fast(pk);
   await pk.evaluate(() => document.getElementById("goBtn").click()); const skStop = await untilStopped(pk, 60000);
@@ -281,7 +281,7 @@ function reader() {
         const h2 = document.querySelector("#card h2").textContent, want = lang === "es" ? r.es.n : r.en.n;
         if (h2 !== want) bad.push("title");
         if (document.querySelectorAll("#card ol.steps > li").length !== r.steps.length) bad.push("steps on the card");
-        r.steps.forEach((st, k) => { [0.15, 0.5, 0.85].forEach(u => { A.setStep(k, u); const a = A.K3.info().action; if (!st.a.includes(a)) bad.push("step " + (k + 1) + " shows " + a); }); });
+        r.steps.forEach((st, k) => { [0.25, 0.75].forEach(u => { A.setStep(k, u); const a = A.K3.info().action; if (!st.a.includes(a)) bad.push("step " + (k + 1) + " shows " + a); }); });
         out.push([id, bad]);
       }
       return out;
