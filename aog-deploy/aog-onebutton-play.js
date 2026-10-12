@@ -275,12 +275,16 @@
     else {
       st = bl / C.grid;
       var gap = AN ? now - AN.last : 1e9;
-      if (!AN || (!AN.fixed && gap > Math.max(8 * bl, 2.5)) || (AN.fixed && !recording() && gap > 8 * bl)) { AN = { t0: now, fixed: false, last: now }; return now; }
+      if (!AN || (!AN.fixed && gap > Math.max(8 * bl, 2.5)) || (AN.fixed && !recording() && gap > 8 * bl)) { AN = { t0: now, fixed: false, last: now }; LASTAT = now; return now; }
       t0 = AN.t0;
     }
-    var k = Math.ceil((now - t0 - 0.01) / st);
-    return Math.max(now, t0 + k * st);
+    var k = Math.ceil((now - t0 - 0.01) / st), at = Math.max(now, t0 + k * st);
+    /* two quick presses: the second takes the next beat, never more than two beats ahead (nothing piles up) */
+    if (LASTAT != null && at < LASTAT + st * 0.5 && LASTAT + st - now <= 2 * st + 0.001) at = LASTAT + st;
+    LASTAT = at;
+    return at;
   }
+  var LASTAT = null;
   /* recording over My Track: the room's beat starts again on My Track's bar line (aog-recorder.js) and so do the presses */
   function wrapClock() {
     var A = window.AOGRoomClock; if (!A || !A.align || A.align._one) return;
@@ -555,7 +559,7 @@
   function setOn(on, quiet) {
     ON = !!on; C.on = ON; save();
     if (ON) { try { R.ctx(); } catch (e) {} wrapClock(); }   /* the sound starts inside this tap (an iPad starts it only so); nothing plays */
-    else { release(true); AN = null; }
+    else { release(true); AN = null; LASTAT = null; }
     paintOn(); paintBig(); gpSync();
     if (ON && !quiet) {
       var b = $("obBig");
@@ -605,7 +609,7 @@
     /* for the tests */
     _t: { cfg: function () { return JSON.parse(JSON.stringify(C)); }, set: function (o) { Object.keys(o || {}).forEach(function (k) { C[k] = o[k]; }); save(); if (BUILT) { paintMenus(); paintOn(); paintBig(); } },
       on: function (v) { if (v == null) return ON; setOn(!!v, true); return ON; }, down: down, up: up, items: items, next: function () { return label(pick(false)); },
-      reset: function () { POS = {}; AN = null; LASTOK = -1e9; }, ticks: function () { return T.ticks; }, last: function () { return T.last; }, counted: function () { return T.counted || 0; },
+      reset: function () { POS = {}; AN = null; LASTAT = null; LASTOK = -1e9; }, ticks: function () { return T.ticks; }, last: function () { return T.last; }, counted: function () { return T.counted || 0; },
       timers: function () { return { gp: !!GP.timer, click: !!CK.timer, held: Object.keys(HELD).length, live: LIVE.length }; }, song: song, hush: hush }
   };
   mount();
