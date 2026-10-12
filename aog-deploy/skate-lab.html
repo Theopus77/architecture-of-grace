@@ -17,8 +17,21 @@
        #balance  Balance and turning: center of mass over the wheels; truck geometry; the speed that balances a lean.
        #flip     Flips and spins: a 3D board turning about its three axes; arms in, arms out.
        #timeline Boards through time: the board, the wheel and what changed, 1959 to today.
-       #tricks   Trick book: where each foot goes, the steps, what helps, and the science.
-       #build    Build a board (AOG-SKATE-BUILD-V1): a whole setup for a rider and a use, and checks for truck fit,
+       #tricks   Trick book (AOG-SKATE-TRICKS-V2): 26 tricks, each shown moving step by step (AOG-SKATE-DEMO-V1; Go plays it
+                 once, the step it shows lights up in the list), where each foot goes, what helps, the science, "Learn first"
+                 links, progress kept on the device (learning / landed it once / got it, 7 of 10) and a trick map.
+                 Watch it moving (the camera follows on flat ground, AOG-SKATE-FILM-V1) or as a sequence: seven moments in
+                 one picture, the way skate magazines print a trick. The skater (AOG-SKATE-RIDER-V3) has no face.
+                 Or in 3D (AOG-SKATE-3D-V1, aog-skate3d.js, three.js in /vendor/three-0.160.0): a real-time skatepark and a
+                 jointed skater driven by the same demos; cameras: filmer, fisheye, side, walk around (drag). It draws only
+                 when a step plays or the camera is dragged.
+       #free     Free skate (AOG-SKATE-FREE-V1): ride a small park yourself with big buttons (or the keyboard): push, steer,
+                 ollie, kickflip, grind the waxed ledge or the flat rail, drop into the mini ramp, all with the lab's physics.
+                 A map from above by default; the 3D park on a tap. The loop runs only while something moves.
+       The Ramp, Ollie and Grinds rooms can also show their own run in the 3D park (AOG-SKATE-3D-ROOMS-V1), with the energy
+       bars, force arrows and marks standing in the scene; their drawings stay the light default.
+       #questions Questions (AOG-SKATE-FAQ-V1): 30 answers, searchable, by topic, in English and Spanish.
+       #build    Build a board (AOG-SKATE-BUILD-V1; "Every part" pulls the board apart with a printable parts list, AOG-SKATE-PARTS-V1): a whole setup for a rider and a use, and checks for truck fit,
                  the wheels and wheel bite, drawn from the front at full lean.
      Build a board is the home room (AOG-SKATE-BUILD-HOME-V1): /skate opens on it; #ollie and the rest still open their rooms.
      Calm: nothing moves until Go is pressed, a run plays once and stops, and every moment can be stepped
@@ -48,6 +61,7 @@
   --cv-sky:#fbf8f1; --cv-ground:#cfc6b2; --cv-ramp:#b9ab8f; --cv-ramp-edge:#6d5f45; --cv-ink:#1a232c;
   --cv-deck:#7a4a22; --cv-grip:#2a2a2a; --cv-wheel:#efe6cf; --cv-truck:#8a929b; --cv-skin:#c99a74;
   --cv-shirt:#2f5c6b; --cv-pants:#3b4250; --cv-pe:#2e6fb0; --cv-ke:#c0601a; --cv-heat:#9a3a5e; --cv-pump:#2c7a4e;
+  --cv-hood:#2c3038; --cv-cargo:#a8936c; --cv-shoe:#24272d; --cv-sole:#f2eee4; --cv-helmet:#c8452a; --cv-hair:#3a2a1e;
   --cv-force:#b0281f; --cv-friction:#6a3fb0; --cv-path:#2f5c6b; --cv-grid:rgba(26,35,44,.08); --cv-soft:#5c6670;
   --shadow:0 1px 3px rgb(26 35 44 / .08);
   --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
@@ -63,6 +77,7 @@
   --cv-sky:#1b222b; --cv-ground:#3a4350; --cv-ramp:#4d5868; --cv-ramp-edge:#9aa7b8; --cv-ink:#edeae2;
   --cv-deck:#b07a48; --cv-grip:#0e1014; --cv-wheel:#efe6cf; --cv-truck:#aab3bd; --cv-skin:#d6a988;
   --cv-shirt:#7fb4c7; --cv-pants:#8a93a3; --cv-pe:#6fa8e8; --cv-ke:#f0954a; --cv-heat:#e07aa0; --cv-pump:#6fbf8b;
+  --cv-hood:#5b6372; --cv-cargo:#c2ad84; --cv-shoe:#3a3f48; --cv-sole:#f2eee4; --cv-helmet:#e2603e; --cv-hair:#5a4232;
   --cv-force:#ff7a6e; --cv-friction:#b89af0; --cv-path:#7fb4c7; --cv-grid:rgba(237,234,226,.08); --cv-soft:#9aa3b0;
   --shadow:0 1px 3px rgb(0 0 0 / .35);
 }
@@ -76,6 +91,7 @@
     --cv-sky:#1b222b; --cv-ground:#3a4350; --cv-ramp:#4d5868; --cv-ramp-edge:#9aa7b8; --cv-ink:#edeae2;
     --cv-deck:#b07a48; --cv-grip:#0e1014; --cv-wheel:#efe6cf; --cv-truck:#aab3bd; --cv-skin:#d6a988;
     --cv-shirt:#7fb4c7; --cv-pants:#8a93a3; --cv-pe:#6fa8e8; --cv-ke:#f0954a; --cv-heat:#e07aa0; --cv-pump:#6fbf8b;
+    --cv-hood:#5b6372; --cv-cargo:#c2ad84; --cv-shoe:#3a3f48; --cv-sole:#f2eee4; --cv-helmet:#e2603e; --cv-hair:#5a4232;
     --cv-force:#ff7a6e; --cv-friction:#b89af0; --cv-path:#7fb4c7; --cv-grid:rgba(237,234,226,.08); --cv-soft:#9aa3b0;
   }
 }
@@ -119,6 +135,8 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stage { position:relative; width:100%; border-radius:18px; overflow:hidden; border:1px solid var(--line);
   background:var(--cv-sky); touch-action:pan-y; user-select:none; -webkit-user-select:none; }
 .stage canvas { display:block; width:100%; height:auto; }
+.stage canvas.gl { position:absolute; left:0; top:0; display:none; }
+.stage #cv { position:relative; z-index:1; }
 .stage .cap { position:absolute; left:10px; top:8px; right:10px; display:flex; justify-content:space-between; gap:.5rem; pointer-events:none;
   font:700 .8rem/1.2 var(--sans); color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
 
@@ -129,6 +147,14 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .player input[type=range] { flex:1; }
 .player .time { font:700 .95rem/1 var(--mono); min-width:5.2em; text-align:right; }
 input[type=range] { accent-color:var(--steel); min-height:32px; width:100%; }
+/* free skate's buttons (AOG-SKATE-FREE-V1): big, for thumbs on an iPhone; a finger on them never scrolls or selects */
+.player .pad { flex:1 1 100%; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; }
+.pad-b { min-height:58px; border-radius:16px; border:1px solid var(--line); background:var(--card); color:var(--ink); font:700 1.05rem/1.15 var(--sans);
+  padding:.3rem .4rem; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; box-shadow:var(--shadow); }
+.pad-b[data-pad="left"], .pad-b[data-pad="right"] { font-size:1.7rem; }
+.pad-b.pad-go { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.pad-b.on { background:var(--steel-soft); border-color:var(--steel); color:var(--ink); }
+@media (min-width:900px){ .pad-b { min-height:52px; } }
 
 /* the readouts under the drawing */
 .reads { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:.45rem; }
@@ -175,6 +201,33 @@ details.more summary { cursor:pointer; font-weight:700; min-height:44px; display
 .fixes { display:grid; gap:.35rem; margin:.4rem 0; }
 .fixes div { background:var(--chip); border-radius:10px; padding:.45rem .7rem; }
 .fixes b { display:block; }
+.tsteps li { padding:.3rem .5rem; border-radius:10px; border-left:4px solid transparent; }
+.tsteps li.on { background:var(--steel-soft); border-left-color:var(--steel); color:var(--ink); font-weight:600; }
+button.linkish { min-height:44px; border:1px solid var(--line); background:var(--card); color:var(--steel); border-radius:999px; padding:0 .85rem; font-weight:700; font-size:.92rem; cursor:pointer; }
+.tmap { display:grid; gap:.55rem; margin:.4rem 0; }
+.tlv b { display:block; font:700 .8rem/1.3 var(--sans); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.tlv p { margin:.25rem 0 0; display:flex; flex-wrap:wrap; gap:.3rem; }
+.tchip { display:inline-block; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:.2rem .6rem; font-weight:600; font-size:.85rem; }
+.tchip.s1 { border-color:var(--warn); background:var(--warn-soft); }
+.tchip.s2 { border-color:var(--steel); background:var(--steel-soft); }
+.tchip.s3 { border-color:transparent; background:var(--good); color:var(--good-fg, #fff); }
+
+i.pg { display:inline-block; width:.85em; height:.85em; border-radius:50%; border:2px solid currentColor; margin-right:.35em; vertical-align:-.1em; box-sizing:border-box; }
+i.pg.s1 { background:conic-gradient(currentColor 0 25%, transparent 0); }
+i.pg.s2 { background:conic-gradient(currentColor 0 50%, transparent 0); }
+i.pg.s3 { background:currentColor; }
+/* the parts list */
+.parts ol { padding-left:1.4rem; margin:.4rem 0; }
+.parts li { margin:.45rem 0; }
+.parts .pq { font:700 .9rem/1 var(--mono); color:var(--steel); }
+.parts .muted { color:var(--muted); font-size:.92rem; }
+@media print { body.print-parts * { visibility:hidden !important; } body.print-parts #partsList, body.print-parts #partsList * { visibility:visible !important; } body.print-parts #partsList { position:absolute; left:0; top:0; width:100%; color:#000; } }
+/* questions */
+.faq { display:grid; gap:.45rem; margin:.6rem 0; }
+details.qa { margin:0; border:1px solid var(--line); border-radius:12px; background:var(--card); padding:0 .85rem; }
+details.qa summary { font-weight:700; color:var(--ink); }
+details.qa[open] { padding-bottom:.7rem; }
+details.qa p { margin:.3rem 0 .5rem; color:var(--ink); }
 
 /* the timeline */
 .tl-years { display:flex; flex-wrap:wrap; gap:.3rem; margin:.3rem 0 .6rem; }

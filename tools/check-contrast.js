@@ -23,7 +23,7 @@ const args = process.argv.slice(2);
 const ROOMS = ["family/hard-day","family/what-can-i-say","family/conversation","student","checkin","framework","workplace","guide","family","eco-parents","eco-educators","ecosystem","starthere","about","library","adult","dashboard","tools"];
 /* The music tools also show other places behind #addresses (their Go to menu): Lessons, Meet, Name it, Print.
    Each is checked on its own too (AOG-PIANO-LESSONS-V1, 2026-10-03). */
-const VIEWS = ["music-drums.html#lessons","music-drums.html#meet","music-drums.html#words","music-drums.html#print",
+const VIEWS = ["telescope.html#sky","telescope.html#lab","music-drums.html#lessons","music-drums.html#meet","music-drums.html#words","music-drums.html#print",
   "music-piano.html#lessons","music-piano.html#meet","music-piano.html#words","music-piano.html#print",
   /* the Adult Edition workbook's pages behind its Session menu (AOG-ADULT-WORKBOOK-V1, 2026-10-09); ?s=7 is the
      facilitator's-word card that stands in front of Sessions 7-12 */

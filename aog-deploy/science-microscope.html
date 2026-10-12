@@ -309,6 +309,14 @@ html[data-theme="dark"]{background:#081828}
   .lab-grid { grid-template-columns:minmax(0,1.15fr) minmax(300px,380px); gap:1rem; }
   .eye-stick { position:sticky; top:.6rem; }
 }
+/* AOG-MICRO-DEPTH-V1 — the side view (where the sharp slice is) and Play, under the eyepiece */
+.depth-strip { margin:.6rem 0 0; }
+.depth-strip canvas { display:block; width:100%; height:64px; border-radius:10px; border:1px solid rgba(224,192,112,.28); background:#17130d; }
+.depth-read { color:#e7d7ae; font-size:.85rem; margin:.35rem .15rem 0; font-variant-numeric:tabular-nums; }
+.live-row { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .7rem; margin:.6rem 0 0; }
+.live-row .btn { min-width:8.5rem; }
+#abberead:empty { display:none; }
+.live-note { color:#cdbf9f; font-size:.82rem; line-height:1.35; flex:1 1 12rem; }
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <!-- AOG-HOME-APPS-V1 (Jimmy, 2026-10-10: "The Microscope and noise maker should get their own direct links and icons") -->
@@ -610,8 +618,8 @@ const SPECIMENS = [
     note100_en:"A few scales and the pigment grains in the cortex. If the medulla is in this stretch, it is a gap, not a stripe that runs forever.",
     note100_es:"Unas escamas y los granos de pigmento en la corteza. Si la médula está en este tramo, es un hueco, no una raya que siga para siempre."},
   {id:"elodea",en:"Elodea leaf",es:"Hoja de elodea",
-    note_en:"A leaf one cell thick. The green discs are chloroplasts. If they move, the cell is alive.",
-    note_es:"Una hoja de una célula de grueso. Los discos verdes son cloroplastos. Si se mueven, la célula está viva.",
+    note_en:"A leaf two cells thick. The green discs are chloroplasts. If they move, the cell is alive.",
+    note_es:"Una hoja de dos células de grueso. Los discos verdes son cloroplastos. Si se mueven, la célula está viva.",
     note4_en:"A brick wall of plant cells, greener along the middle vein. The green is not paint on the cell. It is about to resolve into discs.",
     note4_es:"Un muro de células vegetales, más verde en la vena del centro. El verde no es pintura. Está a punto de resolverse en discos.",
     note10_en:"Boxes with sharp walls. Green discs parked on the edges. The middle is clear because the vacuole is clear.",
@@ -987,7 +995,7 @@ const SLIDE_LESSONS = [
     s2:["Go to 40× and focus. Find a nucleus against a wall","Pasa a 40× y enfoca. Busca un núcleo pegado a una pared"],
     s3:["Add iodine. Keep it sharp at 40×","Pon yodo. Mantenla nítida a 40×"]},
   {spec:"elodea",c2:{"o":40,"st":"none"},c3:{"o":100,"st":"none"},
-    b:["A leaf one cell thick. At 40× the green chloroplasts drift along the wall. That motion means the cell is alive.","Una hoja de una célula de grueso. A 40× los cloroplastos verdes se desplazan por la pared. Ese movimiento significa que la célula está viva."],
+    b:["A leaf two cells thick. At 40× the green chloroplasts drift along the wall. That motion means the cell is alive.","Una hoja de dos células de grueso. A 40× los cloroplastos verdes se desplazan por la pared. Ese movimiento significa que la célula está viva."],
     s2:["Go to 40× with no stain. Focus and watch the green discs move","Pasa a 40× sin tinción. Enfoca y mira moverse los discos verdes"],
     s3:["No stain. Oil the 100× and focus on two or three chloroplasts","Sin tinción. Aceita el 100× y enfoca dos o tres cloroplastos"]},
   {spec:"leaf",c2:{"o":40},c3:{"o":100,"st":"iodine"},
@@ -1142,7 +1150,7 @@ function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math
 function idealZ(o){return o===100?46.6:o===40?45.4:o===10?44:42}
 function dof(o){return o===100?0.55:o===40?1.5:o===10?4:12}
 function stageZ(c,f){return c+f*.12}
-function focusBand(c,f,o){const e=Math.abs(stageZ(c,f)-idealZ(o)),d=dof(o);return e<d*.45?"in":e<d*1.15?"near":"out"}
+function focusBand(c,f,o){const L=S.lab; if(L&&c===L.coarse&&f===L.fine&&o===L.obj&&typeof depthWanted==="function"&&depthWanted(L)) return depthBand(L); const e=Math.abs(stageZ(c,f)-idealZ(o)),d=dof(o);return e<d*.45?"in":e<d*1.15?"near":"out"}
 function blurPx(c,f,o){return Math.min(22,(Math.abs(stageZ(c,f)-idealZ(o))/dof(o))*3.6)}
 function wouldCrack(o,nc,f){return (o>=40 && o<100 && stageZ(nc,f)>54) || (o===100 && stageZ(nc,f)>49.5)}
 function wd(c,f){return Math.max(0,Math.min(1,1-stageZ(c,f)/70))}
@@ -1306,7 +1314,7 @@ const S = {
   page:"home", lang:"en", theme:"light", teacher:"open",
   met:{}, findBest:0, jobBest:0, cracked:0, missions:{low:true},
   sel:null, walk:-1, playing:false, moreOpen:false,
-  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,stageX:50,stageY:50,rheo:72,cond:62,fieldDia:90,oil40:false,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false,quartz:true},
+  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,stageX:50,stageY:50,rheo:72,cond:62,fieldDia:90,oil40:false,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false,quartz:true,depth:true,plate:false},
   find:null, job:null
 };
 try {
@@ -1497,11 +1505,13 @@ function instrumentHTML(){
   if(step>=LX("m2")) objs.push(10,40);
   if(step>=LX("m13")) objs.push(100);
   const illumBtns=ILLUMS.filter(([id])=>id==="bright"||id==="dark")
-    .map(([id,k])=>btn(L.illum===id,"illum-"+id, t(k))).join("");
+    .map(([id,k])=>btn(L.illum===id,"illum-"+id, t(k))).join("")
+    + (depthCapable(L.spec)&&DEPTH.state!=="failed"&&L.depth!==false ? btn(L.illum==="phase","illum-phase",ds("phase"))+btn(L.illum==="fluor","illum-fluor",ds("fluor")) : "");
   return `
     <div class="row"><span class="tiny">${t("teach")}</span><span>${btn(S.teacher==="locked","teach-lock",t("teachLock"))}${btn(S.teacher!=="locked","teach-open",t("teachOpen"))}</span></div>
     <p class="note-line">${S.teacher==="locked"?t("teachLocked"):t("teachOpenNote")}</p>
     <div class="row"><span class="tiny">${t("specimen")}</span><span>${slideMenu(specs)}</span></div>
+    ${depthCapable(L.spec)&&DEPTH.state!=="failed"?`<div class="row"><span class="tiny">${ds("sample")}</span><span>${btn(L.depth!==false,"depth1",ds("inDepth"))}${btn(L.depth===false,"depth0",ds("flat"))}</span></div>`:""}
     <div class="row"><span class="tiny">${t("lamp")}</span><span>${btn(L.lightOn,"lamp1",t("on"))}${btn(!L.lightOn,"lamp0",t("off"))}</span></div>
     <div class="row"><span class="tiny">${t("clips")}</span><span>${btn(L.clipped,"clip1",t("seated"))}${btn(!L.clipped,"clip0",t("loose"))}</span></div>
     <div class="row"><span class="tiny">${t("objective")}</span><span>${objs.map(o=>btn(L.obj===o,"obj"+o,o+"×")).join("")}</span></div>
@@ -1517,9 +1527,10 @@ function instrumentHTML(){
       ${L.prism?`<div class="row" style="display:block;border-bottom:0">${knob("band", t("risley"), L.band, false, bandNm(L.band)+" nm")}</div><p class="note-line abbe">${abbeSentence()}</p>`:""}
       <div class="row"><span class="tiny">${t("beam")}</span><span>${FILTERS.map(f=>`<button class="btn filter-btn${L.filter===f.id?" btn-steel":""}" data-act="filter-${f.id}"><i class="swatch" style="background:rgb(${f.rgb.join(',')})"></i>${S.lang==="es"?{day:"Día",blue:"Azul",green:"Verde",amber:"Ámbar",violet:"Violeta"}[f.id]:{day:"Day",blue:"Blue",green:"Green",amber:"Amber",violet:"Violet"}[f.id]}</button>`).join("")}</span></div>
       ${L.illum==="polar"?`<div class="row" style="display:block;border-bottom:0">${knob("polar",t("polarizer"),L.polar,false)}</div>`:""}
+      ${L.illum==="polar"&&depthWanted(L)?`<div class="row"><span class="tiny">${ds("plate")}</span><span>${btn(L.plate,"plate1",ds("plateIn"))}${btn(!L.plate,"plate0",ds("plateOut"))}</span></div>`:""}
       <p style="margin:.45rem 0 .2rem"><button class="btn${L.illum==="dark"&&L.spec==="pond"?" btn-steel":""}" data-act="rife">${t("researchLook")}</button> <button class="btn${L.prism?" btn-steel":""}" data-act="universal">${t("seatPrism")}</button></p>
     </details>`:""}
-    <p class="note-line">${specNote(SPECIMENS.find(s=>s.id===L.spec))}${stainKills(L)?" "+t("killedNote"):""}</p>`;
+    <p class="note-line">${specNote(SPECIMENS.find(s=>s.id===L.spec))}${stainKills(L)?" "+t("killedNote"):""}${depthNote(L)}</p>`;
 }
 
 function pageLab(){
@@ -1535,8 +1546,10 @@ function pageLab(){
           <div class="eye-wrap${L.measure?" measuring":""}" id="eye"><canvas id="eyecanvas"></canvas>
           <div class="eye-hud" id="eyehud">${L.graticule?`${t("unitCal")} = ${fmtUm(unitUm(L.obj))}`:""}</div></div>
           <div class="eye-read">
-            <span id="magread">10× × ${L.obj}× = ${mag}×</span><span id="abberead">${L.prism?bandNm(L.band)+" nm · "+limitUm(L).d.toFixed(2)+" µm":""}</span><span id="focusread">${fl}</span>
+            <span id="magread">10× × ${L.obj}× = ${mag}×</span><span id="abberead">${L.prism?bandNm(L.band)+" nm · "+limitUm(L).d.toFixed(2)+" µm":""}</span><span id="focusread">${fl}</span><span id="resread">${ds("finest")} ${abbeUmL(L).toFixed(2)} µm</span>
           </div>
+          ${depthWanted(L)?`<div class="depth-strip"><canvas id="sidecanvas" role="img" aria-label="${ds("sideLabel")}"></canvas><p id="depthread" class="depth-read">${DEPTH.state==="ready"?"":ds("loading")}</p></div>`:""}
+          <div class="live-slot">${liveRowHtml()}</div>
           <p id="dragread">${L.measure?t("tapMeasure"):t("dragHint")}</p>
         </div>
         ${L.obj===100&&!L.oil&&!L.cracked?`<div class="card side oil-warn"><p>${t("oilNeed")}</p></div>`:""}
@@ -4719,15 +4732,16 @@ function realMottle(){
     d[o]=k; d[o+1]=k; d[o+2]=Math.round(k*.985+3); d[o+3]=255; }
   g.putImageData(img,0,0); return (realMottle.c=c);
 }
-function micrograph(fctx, field, w, h, L, blur){
+function micrograph(fctx, field, w, h, L, blur, deep){
   if(!micrograph.buf) micrograph.buf=mkCan(8,8);
   const B=micrograph.buf; if(B.width!==w||B.height!==h){ B.width=w; B.height=h; }
-  const b=B.getContext("2d"), dark=L.illum==="dark"||L.illum==="slit"||L.illum==="polar";
+  const b=B.getContext("2d"), dark=L.illum==="dark"||L.illum==="slit"||L.illum==="polar"||L.illum==="fluor";
   const px=w/560;                                     /* screen scale: the effects are set for a 560 px eyepiece */
   const na={4:.10,10:.25,40:.65,100:1.25}[L.obj]||.25;
   const soft=(.55/na*.35+.35)*px;                     /* aperture softness in px */
   b.setTransform(1,0,0,1,0,0); b.globalCompositeOperation="copy"; b.filter="none"; b.drawImage(field,0,0);
   fctx.save(); fctx.setTransform(1,0,0,1,0,0);
+  if(!deep){
   /* 1. optics soften the edges, and the picture reads like a photograph, not ink */
   fctx.globalCompositeOperation="copy";
   fctx.filter=`blur(${Math.min(2.2,soft).toFixed(2)}px) contrast(${dark?1.04:.93}) saturate(${dark?1:.88})`;
@@ -4740,6 +4754,7 @@ function micrograph(fctx, field, w, h, L, blur){
   fctx.globalAlpha=haze; fctx.filter=`blur(${(7*px*(L.obj>=40?1.3:1)).toFixed(1)}px)`;
   fctx.globalCompositeOperation=dark?"lighter":"source-over"; fctx.drawImage(B,0,0);
   fctx.filter="none"; fctx.globalAlpha=1;
+  }
   if(!dark){
     /* 3. uneven lamp: warm hot spot up and left of centre, falling to the rim */
     fctx.globalCompositeOperation="multiply";
@@ -5471,8 +5486,8 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="dog") drawDog(ctx, L, now, reduced);
   else if(L.spec==="bact"){
     blit(ctx, SLIDE.bact);
-    const step=dt||0.016;
-    if(live && !reduced){
+    const step=dt||0;
+    if(live && step>0){
       bacteria.forEach(b=>{
         b.a+=Math.sin(now/500+b.seed)*0.6*step;
         b.x+=Math.cos(b.a)*b.v*step;
@@ -5485,8 +5500,8 @@ function drawSpec(ctx, now, L, reduced, dt){
     const glow=L.illum==="dark"||L.illum==="slit";
     if(glow){ ctx.fillStyle="#020308"; ctx.fillRect(-800,-800,1600,1600); }
     else blit(ctx, SLIDE.pondBg);
-    if(live && !reduced){
-      const step = dt || 0.016;
+    if(live && dt>0){
+      const step = dt;
       critters.forEach(c=>{
         if(c.kind==="vort"||c.kind==="spiro"||c.kind==="brown"||c.kind==="det"){
           if(c.kind==="brown"){
@@ -5575,6 +5590,103 @@ function achromatFringe(ctx, src, w, h, cx, cy, r, strength){
   ctx.save(); ctx.globalCompositeOperation="screen";
   ctx.drawImage(b, cx-r, cy-r, r*2, r*2); ctx.restore();
 }
+/* ══ AOG-MICRO-DEPTH-V1 (2026-10-12) — Jimmy: "a quantum leap forward" in the Microscope. The page side.
+   · Slides built in depth (onion, cheek, elodea, pond, blood, pollen, leaf section, yeast, salt and sugar crystals) are drawn by
+     /aog-micro-3d.js, which loads only when one of them is opened. The fine knob then moves a thin sharp slice through
+     the sample; the side view under the eyepiece shows where that slice is.
+   · Two new kinds of light on those slides: phase contrast and fluorescence. Polarized light gets real interference
+     colours and a red plate.
+   · AOG-MICRO-STILL-V1: the eyepiece draws only when something changes (a knob, a drag, a button, the size). Living
+     slides (pond water, elodea, bacteria, the tick) move only after Play is pressed, only while the eyepiece is on
+     screen, and stop by themselves. With "reduce motion" on, Play becomes "Next moment": one still frame at a time. ══ */
+const DEPTH_SPECS=["onion","cheek","elodea","pond","blood","pollen","section","yeast","crystal"];
+/* each slide's depth in µm (top and bottom of the sample), so focus can be judged before the engine has loaded */
+const DEPTH_Z={onion:[-13.9,13.9],cheek:[-9,9],elodea:[-17,20.5],pond:[-150,150],blood:[-2.6,2.6],pollen:[-60,60],section:[-6,6],yeast:[-12.5,12.5],crystal:[0,46]};
+const LIVE_SPECS=["pond","elodea","bact","dog"];
+const LIVE={playing:false,t:0,last:0,played:0,limit:45000,visible:true,step:0,slipUntil:0};
+const DEPTH={state:"idle"};
+function reducedMotion(){ try{ return matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } }
+function depthCapable(spec){ return DEPTH_SPECS.includes(spec); }
+function depthWanted(L){ return depthCapable(L.spec) && L.depth!==false && DEPTH.state!=="failed"; }
+function depthLive(L){ return depthWanted(L) && DEPTH.state==="ready" && !!window.AOGMicro3D && AOGMicro3D.ok(); }
+function loadDepth(){
+  if(DEPTH.state!=="idle") return;
+  DEPTH.state="loading";
+  const s=document.createElement("script"); s.src="/aog-micro-3d.js"; s.async=true;
+  s.onload=()=>{ DEPTH.state=(window.AOGMicro3D&&AOGMicro3D.ok())?"ready":"failed"; if(S.page==="lab") paint(); };
+  s.onerror=()=>{ DEPTH.state="failed"; if(S.page==="lab") paint(); };
+  document.head.appendChild(s);
+}
+/* the focal plane in µm above the middle of the sample (one unit of stage height = 2.5 µm) */
+function focusUm(L){ return -(stageZ(L.coarse,L.fine)-idealZ(L.obj))*2.5; }
+function naOfL(L){ return L.obj===100?(L.oil?1.25:0.85):L.obj===40?0.65:L.obj===10?0.25:0.10; }
+function condFracL(L){ return 0.08+0.92*Math.max(0,Math.min(1,(L.dia??70)/100)); }
+/* Abbe: the finest spacing that still shows, d = λ/(NA + NA of the condenser); λ/2NA with the iris open */
+function abbeUmL(L){ const na=naOfL(L); return (limitUm(L).nm/1000)/(na+na*condFracL(L)); }
+/* depth of field: λn/NA² + n·e/(M·NA), e = 6.5 µm */
+function dofUmL(L){ const na=naOfL(L), n=(L.obj===100&&L.oil)?1.515:1, lam=limitUm(L).nm/1000; return lam*n/(na*na)+n*6.5/(L.obj*na); }
+function depthBand(L){
+  const z=DEPTH_Z[L.spec], zf=focusUm(L), d=dofUmL(L);
+  const off=zf>z[1]?zf-z[1]:zf<z[0]?z[0]-zf:0;
+  return off<=d*0.5+0.6?"in":off<=d*2+4?"near":"out";
+}
+const DS={
+  play:{en:"Play",es:"Reproducir"}, pause:{en:"Pause",es:"Pausa"}, next:{en:"Next moment",es:"Siguiente momento"},
+  playNote:{en:"Living things move only while it plays. It stops by itself after 45 seconds.",es:"Lo vivo se mueve solo mientras se reproduce. Se detiene solo a los 45 segundos."},
+  stepNote:{en:"Reduce motion is on. Each press shows the next still moment.",es:"Reducir movimiento está activado. Cada toque muestra el siguiente momento quieto."},
+  stopped:{en:"Stopped. Press Play to watch again.",es:"Detenido. Toca Reproducir para mirar otra vez."},
+  sharp:{en:"Sharp now",es:"Nítido ahora"}, slice:{en:"sharp slice",es:"capa nítida"},
+  finest:{en:"Finest detail",es:"Detalle más fino"},
+  sample:{en:"Sample",es:"Muestra"}, inDepth:{en:"In depth",es:"En profundidad"}, flat:{en:"Flat",es:"Plana"},
+  phase:{en:"Phase contrast",es:"Contraste de fase"}, fluor:{en:"Fluorescence",es:"Fluorescencia"},
+  plate:{en:"Red plate",es:"Placa roja"}, plateIn:{en:"In",es:"Puesta"}, plateOut:{en:"Out",es:"Fuera"},
+  loading:{en:"Building the sample in depth…",es:"Armando la muestra en profundidad…"},
+  flatOnly:{en:"This screen shows the flat picture.",es:"Esta pantalla muestra la imagen plana."},
+  sideLabel:{en:"Side view of the slide. The gold line is where you are focused.",es:"Vista de lado de la lámina. La línea dorada es donde enfocas."}
+};
+function ds(k){ return DS[k][S.lang==="es"?"es":"en"]; }
+/* what the new lights and depth do, in plain words (added to the note under the controls) */
+function depthNote(L){
+  const es=S.lang==="es";
+  if(!depthWanted(L)) return "";
+  let s=es?" Esta lámina está hecha en profundidad: gira el micrométrico y una capa delgada se pone nítida mientras lo de arriba y abajo se borra.":" This slide is built in depth: turn the fine knob and a thin slice comes sharp while what is above and below blurs.";
+  if(L.illum==="phase") s+=es?" Contraste de fase: un anillo en el condensador y otro en el objetivo convierten la luz desviada en sombra. Lo transparente se ve oscuro, con un halo claro alrededor. El halo es del método, no de la célula.":" Phase contrast: a ring in the condenser and one in the objective turn light that was slowed into shade. Clear parts look dark, with a bright halo round them. The halo comes from the method, not the cell.";
+  else if(L.illum==="fluor") s+=es?" Fluorescencia: entra luz ultravioleta y azul; algunas moléculas devuelven otro color. Un tinte azul se pega al ADN, así que los núcleos brillan azules. La clorofila brilla roja por sí sola. Lo que no está enfocado también brilla, como neblina.":" Fluorescence: ultraviolet and blue light go in; some molecules give back another colour. A blue dye sticks to DNA, so nuclei glow blue. Chlorophyll glows red on its own. Glow from out of focus shows too, as a haze.";
+  else if(L.illum==="polar") s+=es?" Los colores vienen del retraso entre dos rayos dentro del material: más grueso o más birrefringente, otro color. La placa roja vuelve el fondo magenta; azul y amarillo dicen hacia dónde corre el material.":" The colours come from the delay between two rays inside the material: thicker or more birefringent, a different colour. The red plate turns the background magenta; blue and yellow tell which way the material runs.";
+  else if(L.illum==="bright" && L.stain==="none") s+=es?" Lo transparente casi desaparece en foco perfecto. Cierra un poco el diafragma, o enfoca apenas arriba o abajo: los bordes aparecen. Cerrar el diafragma da contraste pero quita detalle.":" Clear parts nearly vanish in perfect focus. Close the diaphragm a little, or focus just above or below: the edges appear. Closing it gives contrast but takes away fine detail.";
+  return s;
+}
+function liveOn(L){ return LIVE_SPECS.includes(L.spec) && !stainKills(L) && L.lightOn && !L.cracked; }
+function liveRowHtml(){
+  const L=S.lab; if(!LIVE_SPECS.includes(L.spec)) return "";
+  const rm=reducedMotion(), dis=liveOn(L)?"":" disabled";
+  const b=rm?`<button type="button" class="btn" data-live="step"${dis}>${ds("next")} ▸</button>`
+    :`<button type="button" class="btn${LIVE.playing?" btn-steel":""}" data-live="toggle" aria-pressed="${LIVE.playing}"${dis}>${LIVE.playing?"❚❚ "+ds("pause"):"▶ "+ds("play")}</button>`;
+  return `<div class="live-row">${b}<span class="live-note" id="livenote">${rm?ds("stepNote"):LIVE.stoppedBy?ds("stopped"):ds("playNote")}</span></div>`;
+}
+function setPlaying(on, why){
+  LIVE.playing=!!on; LIVE.stoppedBy=on?null:(why||null);
+  if(on){ LIVE.last=performance.now(); LIVE.played=0; }
+  const box=document.querySelector(".live-slot"); if(box) box.innerHTML=liveRowHtml(), bindLive();
+  eyeAsk();
+}
+function bindLive(){
+  document.querySelectorAll("[data-live]").forEach(b=>b.onclick=()=>{
+    const k=b.getAttribute("data-live");
+    if(k==="toggle") setPlaying(!LIVE.playing, "pause");
+    if(k==="step"){ LIVE.step=0.5; eyeAsk(); }
+  });
+}
+let eyeDraw=null, eyeTries=0;
+function eyeAsk(){ if(!eyeRaf && eyeDraw && S.page==="lab") eyeRaf=requestAnimationFrame(eyeDraw); }
+/* is the eyepiece on screen right now? Measured each time: the eyepiece is rebuilt when the slide changes, so a watcher
+   set on an older one would wrongly say "hidden" and Play would never move */
+function eyeInView(){ const w=document.getElementById("eye"); if(!w) return false; const r=w.getBoundingClientRect(); return r.width>0 && r.bottom>0 && r.top<(innerHeight||document.documentElement.clientHeight); }
+function eyeBusy(now){
+  return (LIVE.playing && eyeInView() && document.visibilityState!=="hidden") || now<LIVE.slipUntil;
+}
+function slip(){ if(!S.lab.clipped && S.lab.lightOn && !S.lab.cracked) LIVE.slipUntil=performance.now()+1400; }
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden" && LIVE.playing) setPlaying(false,"away"); });
 function startEye(){
   const canvas=document.getElementById("eyecanvas"), wrap=document.getElementById("eye");
   if(!canvas||!wrap) return;
@@ -5604,7 +5716,7 @@ function startEye(){
       const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
       moved+=Math.abs(dx)+Math.abs(dy);
       drag={x:e.clientX,y:e.clientY};
-      if(!(S.lab.measure && moved<10)){ S.lab.panX+=-dx*.6*.35; S.lab.panY+=-dy*.6*.35; stageFromPan(S.lab); const dot=document.getElementById("sdot"); if(dot){ dot.style.left=Math.round(S.lab.stageX)+"%"; dot.style.top=Math.round(S.lab.stageY)+"%"; } }
+      if(!(S.lab.measure && moved<10)){ S.lab.panX+=-dx*.6*.35; S.lab.panY+=-dy*.6*.35; stageFromPan(S.lab); const dot=document.getElementById("sdot"); if(dot){ dot.style.left=Math.round(S.lab.stageX)+"%"; dot.style.top=Math.round(S.lab.stageY)+"%"; } slip(); eyeAsk(); }
     };
     const up=e=>{
       if(S.lab.measure && moved<12){
@@ -5620,7 +5732,7 @@ function startEye(){
           else S.lab.mB=spec;
           const before=stairNow();
           tickMissions();
-          if(stairNow()!==before) paint();
+          if(stairNow()!==before) paint(); else eyeAsk();
         }
       }
       drag=null;
@@ -5630,15 +5742,28 @@ function startEye(){
     wrap.addEventListener("pointerup", up);
     wrap.addEventListener("pointercancel", up);
     wrap.addEventListener("touchmove", e=>{ if(drag) e.preventDefault(); }, {passive:false});
+    /* AOG-MICRO-STILL-V1: redraw when the eyepiece changes size; pause a playing slide when it scrolls away */
+    try{ new ResizeObserver(()=>eyeAsk()).observe(wrap); }catch(e){}
+    try{ new IntersectionObserver(()=>{ LIVE.visible=eyeInView(); if(!LIVE.visible && LIVE.playing) setPlaying(false,"away"); }).observe(wrap); }catch(e){}
+    if(!window._aogEyeScroll){ window._aogEyeScroll=1; window.addEventListener("scroll", ()=>{ if(LIVE.playing && !eyeInView()) setPlaying(false,"away"); }, {passive:true}); }
   }
   let last=performance.now();
   const draw=now=>{
-    if(S.page!=="lab"){ cancelAnimationFrame(eyeRaf); return; }
+    eyeRaf=0;
+    if(S.page!=="lab"||!document.body.contains(canvas)) return;
     resize();
     const dt=Math.min(.1,(now-last)/1000); last=now;
-    const L=S.lab, ctx=canvas.getContext("2d"); if(!ctx){ eyeRaf=requestAnimationFrame(draw); return; }
+    const L=S.lab, ctx=canvas.getContext("2d");
     const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
-    if(w<8){ eyeRaf=requestAnimationFrame(draw); return; }
+    if(!ctx||w<8){ if(eyeTries++<40) eyeAsk(); return; }
+    eyeTries=0;
+    /* the living slides' own clock: it runs only while Play is on (or one step at a time) */
+    let ldt=0;
+    if(LIVE.playing && liveOn(L)){ ldt=Math.min(.1,Math.max(0,(now-LIVE.last)/1000)); LIVE.played+=ldt*1000; if(LIVE.played>=LIVE.limit) setPlaying(false,"time"); }
+    else if(LIVE.step>0){ ldt=LIVE.step; }
+    LIVE.step=0; LIVE.last=now; LIVE.t+=ldt*1000;
+    const lnow=LIVE.t;
+    window.__eyeFrames=(window.__eyeFrames||0)+1;
     ctx.clearRect(0,0,w,h);
     ctx.fillStyle=cssVar("--metal","#3d4a55"); ctx.beginPath(); ctx.arc(cx,cy,r*1.1,0,Math.PI*2); ctx.fill();
     const ring=ctx.createRadialGradient(cx,cy,r*.96,cx,cy,r*1.12);
@@ -5654,7 +5779,7 @@ function startEye(){
       const zoom=(L.obj/4)*(w/420);
       ctx.fillStyle="#8a8680"; ctx.fillRect(cx-r,cy-r,r*2,r*2);
       ctx.save(); ctx.globalAlpha=.28; ctx.translate(cx,cy); ctx.rotate(Math.PI); ctx.scale(zoom,zoom); ctx.translate(L.panX,L.panY);
-      drawSpec(ctx, now, L, reduced, dt); ctx.restore();
+      drawSpec(ctx, lnow, L, false, 0); ctx.restore();
       ctx.strokeStyle="rgba(20,20,20,.88)"; ctx.lineWidth=Math.max(1.5,w*.004);
       [[-.62,-.72,.74,.6],[.18,-.82,-.28,.74],[-.84,.12,.88,.04],[.52,-.22,-.18,.82],[.05,-.4,.7,.55]].forEach(([ax,ay,bx,by])=>{
         ctx.beginPath(); ctx.moveTo(cx+ax*r,cy+ay*r); ctx.lineTo(cx+bx*r,cy+by*r); ctx.stroke();
@@ -5662,7 +5787,7 @@ function startEye(){
       ctx.fillStyle="rgba(255,255,255,.18)";
       ctx.beginPath(); ctx.moveTo(cx-.2*r,cy-.5*r); ctx.lineTo(cx-.05*r,cy-.48*r); ctx.lineTo(cx-.12*r,cy-.2*r); ctx.closePath(); ctx.fill();
     } else {
-      if(!L.clipped){ S.lab.panX+=8*dt; S.lab.panY+=3*dt; }
+      if(!L.clipped && now<LIVE.slipUntil){ S.lab.panX+=8*dt; S.lab.panY+=3*dt; stageFromPan(S.lab); }
       const iris=.35+(L.dia/100)*.65, bright=(.35+(L.dia/100)*.7)*((L.rheo??72)/78);
       let blur=blurPx(L.coarse,L.fine,L.obj) + (L.obj===100 && !L.oil ? 7 : 0) + (L.obj===40 && L.oil40 ? 9 : 0);
       if(L.prism) blur *= 0.84 + (bandNm(L.band)-420)/230*0.26;
@@ -5673,16 +5798,30 @@ function startEye(){
       const field=startEye.field;
       if(field.width!==w){ field.width=w; field.height=h; }
       const fctx=field.getContext("2d");
-      const bg=(L.illum==="dark"||L.illum==="slit")?"#04050a":`rgba(236,228,204,${.5+bright*.38})`;
-      fctx.fillStyle=bg; fctx.fillRect(0,0,w,h);
-      fctx.save();
-      fctx.translate(w/2, h/2);
-      fctx.rotate(Math.PI); fctx.scale(zoom,zoom); fctx.translate(L.panX,L.panY);
-      drawSpec(fctx, now, L, reduced, dt);
-      fctx.restore();
-      applyOptics(fctx, w, h, L);
+      /* AOG-MICRO-DEPTH-V1: a slide built in depth is drawn by the depth engine (loaded on first use) */
+      let deep=false;
+      if(depthWanted(L)){
+        loadDepth();
+        if(depthLive(L)){
+          try{ deep=AOGMicro3D.render(fctx, w, h, L, {zoom, w, zf:focusUm(L), t:lnow/1000, illum:L.illum}); }
+          catch(e){ console.warn("MICRO depth", e&&e.message); DEPTH.state="failed"; deep=false; }
+        }
+      }
+      if(deep){
+        blur=0;
+        if(L.illum==="bright"||L.illum==="phase"||L.illum==="dark"||L.illum==="slit") applyFilterTint(fctx, w, h, L);
+      } else {
+        const bg=(L.illum==="dark"||L.illum==="slit"||L.illum==="fluor")?"#04050a":`rgba(236,228,204,${.5+bright*.38})`;
+        fctx.fillStyle=bg; fctx.fillRect(0,0,w,h);
+        fctx.save();
+        fctx.translate(w/2, h/2);
+        fctx.rotate(Math.PI); fctx.scale(zoom,zoom); fctx.translate(L.panX,L.panY);
+        drawSpec(fctx, lnow, L, false, ldt);
+        fctx.restore();
+        applyOptics(fctx, w, h, L);
+      }
       achromatFringe(fctx, field, w, h, w/2, h/2, Math.min(w,h)*.46, (L.obj===4?0.28:L.obj===10?0.5:L.obj===40?0.95:1.2)*(L.quartz!==false?0.12:1));
-      micrograph(fctx, field, w, h, L, blur);   /* AOG-SCOPE-REALISM-V1 */
+      micrograph(fctx, field, w, h, L, blur, deep);   /* AOG-SCOPE-REALISM-V1 */
       if(blur<0.7){
         ctx.drawImage(field, 0, 0);
       } else {
@@ -5702,7 +5841,8 @@ function startEye(){
       startEye.zoom=zoom;
       const ar=document.getElementById("abberead");
       if(ar) ar.textContent = L.prism ? (bandNm(L.band)+" nm · "+limitUm(L).d.toFixed(2)+" µm") : "";
-      if(L.illum!=="dark" && L.illum!=="polar" && L.illum!=="slit" && L.stain!=="methylene" && !L.prism){
+      eyeReadouts(L, deep);
+      if(L.illum!=="dark" && L.illum!=="polar" && L.illum!=="slit" && L.illum!=="fluor" && L.stain!=="methylene" && !L.prism){
         ctx.fillStyle=`rgba(255,196,110,${.05+bright*.04})`;
         ctx.fillRect(cx-r,cy-r,r*2,r*2);
       }
@@ -5715,7 +5855,7 @@ function startEye(){
       ctx.fillStyle=g; ctx.fillRect(cx-r,cy-r,r*2,r*2);
       if(L.dia>82){ ctx.fillStyle=`rgba(255,255,240,${(L.dia-82)/80})`; ctx.fillRect(cx-r,cy-r,r*2,r*2); }
       const twist=(L.eyeTwist||0)/100*Math.PI*2;
-      const dustDark=L.illum==="dark"||L.illum==="slit";
+      const dustDark=L.illum==="dark"||L.illum==="slit"||L.illum==="fluor"||L.illum==="polar";
       SLIDE.dust.forEach(d=>{
         const ang=d.a+twist, rr=r*d.t;
         const x=cx+Math.cos(ang)*rr, y=cy+Math.sin(ang)*rr;
@@ -5762,10 +5902,25 @@ function startEye(){
     ctx.strokeStyle="rgba(255,255,255,.16)"; ctx.lineWidth=Math.max(2,w*.008); ctx.stroke();
     ctx.beginPath(); ctx.arc(cx,cy,r*1.04,0,Math.PI*2);
     ctx.strokeStyle="rgba(0,0,0,.35)"; ctx.lineWidth=Math.max(2,w*.01); ctx.stroke();
-    eyeRaf=requestAnimationFrame(draw);
+    if(eyeBusy(performance.now())) eyeAsk();
   };
-  cancelAnimationFrame(eyeRaf);
-  eyeRaf=requestAnimationFrame(draw);
+  cancelAnimationFrame(eyeRaf); eyeRaf=0;
+  eyeDraw=draw;
+  eyeAsk();
+}
+/* the chips and the side view under the eyepiece */
+function eyeReadouts(L, deep){
+  const rr=document.getElementById("resread");
+  if(rr) rr.textContent=ds("finest")+" "+abbeUmL(L).toFixed(2)+" µm";
+  const sc=document.getElementById("sidecanvas"), dr=document.getElementById("depthread");
+  if(!sc||!dr) return;
+  if(!deep){ dr.textContent=DEPTH.state==="loading"?ds("loading"):DEPTH.state==="failed"?ds("flatOnly"):""; return; }
+  const W=Math.round(sc.clientWidth*(Math.min(devicePixelRatio||1,2)))||300, H=Math.round(sc.clientHeight*(Math.min(devicePixelRatio||1,2)))||80;
+  if(sc.width!==W||sc.height!==H){ sc.width=W; sc.height=H; }
+  const zf=focusUm(L), g=sc.getContext("2d");
+  AOGMicro3D.side(g, W, H, Object.assign({}, L, {lang:S.lang}), zf);
+  const d=dofUmL(L), now=AOGMicro3D.sharpNow(Object.assign({}, L, {lang:S.lang}), zf);
+  dr.textContent=ds("sharp")+": "+now+" · "+ds("slice")+" "+(d<10?d.toFixed(1):Math.round(d))+" µm";
 }
 
 function tickMissions(){
@@ -5838,7 +5993,7 @@ function walkStep(){
 
 function paint(){
   clearTimeout(walkTimer);
-  cancelAnimationFrame(eyeRaf);
+  cancelAnimationFrame(eyeRaf); eyeRaf=0;
   S.page=hashPage();
   paintChrome();
   { const g=document.getElementById("pgSub"); if(g) g.textContent=S.lang==="es"?"Cada lección en imágenes · se imprime en 33 páginas":"Every lesson in pictures · prints on 33 pages"; }   /* measured with page.pdf, letter, 2026-09-28 */
@@ -5862,8 +6017,10 @@ function paint(){
     });
     if(S.playing) walkTimer=setTimeout(walkStep, 2200);
   }
+  if(!(S.page==="lab" && depthWanted(S.lab)) && window.AOGMicro3D) AOGMicro3D.dispose();
+  if(S.page!=="lab" && LIVE.playing) setPlaying(false,"away");
   if(S.page==="lab"){
-    startEye(); tickMissions();
+    startEye(); tickMissions(); bindLive();
     view.querySelectorAll("[data-slidemenu]").forEach(m=>m.onchange=()=>{
       const b=m.parentNode.querySelector(`[data-act="spec-${m.value}"]`); if(b) b.click();
     });
@@ -5874,13 +6031,16 @@ function paint(){
       const step=benchStep();
       const locked = (a==="obj10"||a==="obj40")&&step<LX("m2")
         || a==="obj100"&&step<LX("m13")
-        || a==="illum-dark"&&step<LX("m3")
+        || (a==="illum-dark"||a==="illum-phase"||a==="illum-fluor")&&step<LX("m3")
         || (a==="illum-slit"||a==="illum-polar"||a==="prism1"||a==="rife"||a==="universal")&&step<LX("m6")
         || a.startsWith("filter-")&&step<LX("m6")
         || a.startsWith("stain-")&&a!=="stain-none"&&step<LX("m3")
         || (a==="grat1"||a==="meas1")&&step<LX("m4")
         || a.startsWith("spec-")&&a!=="spec-e"&&step<LX("m8");
       if(locked) return;
+      if(a==="depth1") L.depth=true;
+      if(a==="depth0"){ L.depth=false; if(L.illum==="phase"||L.illum==="fluor") L.illum="bright"; }
+      if(a==="plate1") L.plate=true; if(a==="plate0") L.plate=false;
       if(a==="lamp1") L.lightOn=true;
       if(a==="lamp0") L.lightOn=false;
       if(a==="clip1") L.clipped=true;
@@ -5908,6 +6068,8 @@ function paint(){
       if(a==="newslide"){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; L.panX=0; L.panY=0; L.stageX=50; L.stageY=50; L.mA=null; L.mB=null; L.oil=false; L.oil40=false; }
       if(a.startsWith("spec-")){
         L.spec=a.slice(5); L.panX=0; L.panY=0; L.mA=null; L.mB=null;
+        if((L.illum==="phase"||L.illum==="fluor")&&!depthCapable(L.spec)) L.illum="bright";
+        if(LIVE.playing) setPlaying(false,"pause");
         if(!allowedStains(L.spec).includes(L.stain)) L.stain=DEFAULT_STAIN[L.spec]||"none";
         if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; }
       }
@@ -5946,6 +6108,7 @@ function paint(){
         if(k==="rheo") L.rheo=v;
         if(k==="cond") L.cond=v;
         if(k==="fieldDia") L.fieldDia=v;
+        slip(); eyeAsk();
         const lab=inp.closest("label"); if(lab){ const b=lab.querySelector("b"); if(b) b.textContent = k==="band" ? bandNm(v)+" nm" : k==="eyeTwist" ? Math.round(v/100*360)+"°" : Math.round(v); }
         const ab=document.querySelectorAll(".abbe"); if(k==="band"||k==="polar") ab.forEach(el=>{ el.textContent=abbeSentence(); });
         tickMissions();

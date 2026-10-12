@@ -214,8 +214,69 @@ check for anything new the hands can do.
       node tools/check-skate.js
 
   It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
-  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites), every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
+  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites; the parts list follows the setup),
+  every trick's moving demo (its steps match the list; it plays once and lights its step), progress kept, the Questions search, every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
   a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
+- A new trick joins TRICKS (its words in `aog-skate-book.js`) with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
+  ollie and curb families). The skater is drawn without a face (no faces in the site's art). It should look right to a
+  teenager who skates (Jimmy, 2026-10-11: "a teenager would laugh at this"): real clothes and shoes, a relaxed athletic
+  stance, the head looking where the board goes, steady rolling speed, the camera riding along.
+- The trick book also plays every demo in 3D (Jimmy, 2026-10-12: "three.js 3d engine … we are the 1%"): `aog-skate3d.js`
+  (AOG-SKATE-3D-V1), a skatepark and a jointed skater posed from the same demo frames, loaded with import() only when
+  someone picks 3D. three.js is kept in the site (`vendor/three-0.160.0`, MIT), never fetched from elsewhere. It renders
+  only when a step plays or the camera is dragged; nothing moves on its own. A new trick needs nothing extra for 3D.
+- Silent until used (Jimmy, 2026-10-12: "this has to be silent when not being used … lighting fast"). A visit to /skate
+  downloads only the lab itself: the trick words and answers wait in `aog-skate-book.js` (AOG-SKATE-BOOK-V1) until the
+  Trick book or Questions opens; three.js waits until 3D is tapped, every visit (it never starts on its own); leaving 3D
+  lets go of the 3D drawing and the graphics chip. Nothing asks for animation frames while idle. check-skate tests all of it.
+  Add new trick words to `aog-skate-book.js`, not to `aog-skate.js`.
+- The 3D views (Jimmy, 2026-10-12: "more realism … do 1-3"): the trick book's rider is the site's figure
+  (`aog-figure3d.js`, outfit "skate", feet held to the board with `ik.leg`); the Ramp, Ollie and Grinds rooms have a
+  2D/3D switch with their gauges, arrows and stop flag in the scene; Free skate (`#free`) drives the rider with Push,
+  ←, →, Ollie, Kickflip and Grind on the lab's own physics, starts only on a press and stops by itself at rest. All
+  3D loads only on a tap and is let go when you leave it.
+
+## The Microscope Lab, in depth (Jimmy, 2026-10-12: "a quantum leap forward in the Micro")
+
+`science-microscope.html` (/microscope, a Home Screen app) and its depth engine `aog-micro-3d.js` (AOG-MICRO-DEPTH-V1,
+WebGL2, no three.js). Nine slides are built in depth (`DEPTH_SPECS`: onion, cheek, elodea, pond, blood, pollen, section,
+yeast, crystal): the fine knob moves a thin sharp slice through them, with depth of field from the objective's NA. The
+optics are worked out live: finest detail λ/(NA + NA of the condenser), λ/2NA with the iris open; brightfield, phase
+contrast, darkfield, slit, polarized light (with the red plate) and fluorescence. Pond water and elodea move only after
+Play and stop by themselves after 45 seconds. The depth engine loads only when a depth slide opens and lets go of the
+graphics chip when you leave it. After any change to either file, run
+
+    node tools/check-microscope.js
+
+It checks every original slide at every objective, focusing through depth, the Abbe numbers and bar test, every light,
+Play, silence while idle, the Home Screen links, and iPhone and iPad in English and Spanish. Do not push while it fails.
+
+## The Telescope, with the real sky (Jimmy, 2026-10-12: "a quantum leap forward … the telescope")
+
+`telescope.html` (/telescope; `science-telescope.html` is an old orphan copy). The bench and eyepiece open as before
+with nothing extra loaded. "Real sky" and the star map (`#sky`) load `aog-telescope-astro.js` (Sun, Moon, planets,
+Jupiter's moons, Saturn's rings, rise and set, after Meeus and JPL), `aog-telescope-catalog.js` and `data/sky/`
+(8,874 stars, 88 constellations, 139 deep-sky objects; built by `data/sky/source/make_sky.py` from d3-celestial,
+BSD-3-Clause, license beside it), `aog-telescope-real.js` (the eyepiece as it looks tonight) and
+`aog-telescope-map.js` (the WebGL star map; "Point the telescope" turns it once). Location only on tap; Chicago by
+default. Four telescopes (90 mm, 130 mm, 8-inch Dobsonian, 1 m), the air and sky glow change what shows. After any
+change to these files, run
+
+    node tools/check-telescope.js
+
+It checks the sky against cited textbook values, every original target and lesson button, the map loading only on
+demand and staying still, pointing, and iPhone and iPad in English and Spanish. Do not push while it fails.
+
+## Silent until used (standing order from Jimmy, 2026-10-12)
+
+"This has to be silent when not being used … lighting fast connectivity." Every page, now and later: nothing moves,
+redraws or makes a sound while nobody touches it, and a page that is not itself a 3D room loads no 3D or heavy engine
+(three.js, `aog-*3d.js`, `aog-micro-3d.js`, star catalogues) until someone taps for it. Leaving 3D frees the graphics
+chip. After any change to a page with animation, 3D or sound, run
+
+    node tools/check-silent.js <the pages you changed>     # or with no pages, every page in its list
+
+and add new pages and rooms to its PAGES list. Do not push while it fails.
 
 ## The silent treatment: light speed (standing order from Jimmy, 2026-10-12)
 
