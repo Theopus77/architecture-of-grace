@@ -232,6 +232,22 @@ graphics chip when you leave it. After any change to either file, run
 It checks every original slide at every objective, focusing through depth, the Abbe numbers and bar test, every light,
 Play, silence while idle, the Home Screen links, and iPhone and iPad in English and Spanish. Do not push while it fails.
 
+## The Telescope, with the real sky (Jimmy, 2026-10-12: "a quantum leap forward … the telescope")
+
+`telescope.html` (/telescope; `science-telescope.html` is an old orphan copy). The bench and eyepiece open as before
+with nothing extra loaded. "Real sky" and the star map (`#sky`) load `aog-telescope-astro.js` (Sun, Moon, planets,
+Jupiter's moons, Saturn's rings, rise and set, after Meeus and JPL), `aog-telescope-catalog.js` and `data/sky/`
+(8,874 stars, 88 constellations, 139 deep-sky objects; built by `data/sky/source/make_sky.py` from d3-celestial,
+BSD-3-Clause, license beside it), `aog-telescope-real.js` (the eyepiece as it looks tonight) and
+`aog-telescope-map.js` (the WebGL star map; "Point the telescope" turns it once). Location only on tap; Chicago by
+default. Four telescopes (90 mm, 130 mm, 8-inch Dobsonian, 1 m), the air and sky glow change what shows. After any
+change to these files, run
+
+    node tools/check-telescope.js
+
+It checks the sky against cited textbook values, every original target and lesson button, the map loading only on
+demand and staying still, pointing, and iPhone and iPad in English and Spanish. Do not push while it fails.
+
 ## Silent until used (standing order from Jimmy, 2026-10-12)
 
 "This has to be silent when not being used … lighting fast connectivity." Every page, now and later: nothing moves,
