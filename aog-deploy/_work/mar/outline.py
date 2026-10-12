@@ -1,5 +1,7 @@
 # The Measured Step — martial arts history, K–12 — course id mar
-# History of rooms and codes. No technique, strike, choke, throw, or how-to.
+# History of rooms and codes. The history lessons teach no technique, strike, choke, throw, or how-to.
+# Practice strand (2026-10-12, mar_practice.py): one "Practice the Moves" section per unit — safe, solo,
+# no-contact basics from the Dojo (/dojo#<id>), only the moves _work/engine3d/CONTRACT.md allows per band.
 # Bowing, meditation, ritual objects: described, never led.
 # Sister: spt. Cross-link /sports-course.
 # Live pages only besides sister: /us-history, /social, /world-cultures.
@@ -174,3 +176,11 @@ LINKS = {
  16: _dd('11-12', '11–12') + [('/sports-course', 'Sports History — the course'), ('/world-cultures', 'World Cultures — every band')],
  17: _dd('11-12', '11–12') + [('/sports-course', 'Sports History — the course'), ('/world-cultures', 'World Cultures — every band')],
 }
+
+# AOG-MAR-PRACTICE-V1 (2026-10-12): the Practice strand's doors — the Dojo, and the other side of each
+# one-sided move practiced in the unit (mar_practice.py).
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+from mar_practice import links_for as _practice_links
+for _n in LINKS:
+    LINKS[_n] = LINKS[_n] + _practice_links(_n)
