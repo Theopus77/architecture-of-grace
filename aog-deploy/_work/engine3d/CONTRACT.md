@@ -133,3 +133,64 @@ mirrors it. Lessons link to `/dojo#<id>`.
 
 End with: what you built (files), how to see it, the checks you ran and their output, screenshots you looked at
 (paths), anything you need from the Lead (redirects, cache, CLAUDE.md lines, front-page doors), and known limits.
+
+---
+
+# Addendum (2026-10-12): the Kitchen and the Sewing Room for Family & Consumer Sciences
+
+Jimmy: "Could we not take this amazement to FACS for cooking and sewing lessons? Have this person cook recipes by
+preloaded or the viewer plugs it in and demonstration on how to sew etc."
+
+## More owners
+
+| Agent | Owns |
+|---|---|
+| KITCHEN | `aog-deploy/kitchen.html`, `aog-deploy/aog-kitchen.js`, `aog-deploy/aog-kitchen3d.js`, `aog-deploy/aog-kitchen-recipes.js`, `tools/check-kitchen.js` |
+| SEWING | `aog-deploy/sewing.html`, `aog-deploy/aog-sewing.js`, `aog-deploy/aog-sewing3d.js`, `aog-deploy/aog-sewing-moves.js`, `tools/check-sewing.js` |
+| FACS | `aog-deploy/_work/fcs/**`, the built `fcs-u*.html` and the FACS course/hub pages (through the course build only), the FACS room pages `aog-deploy/fc*.html` (adding a "Watch it in 3D" block only), `tools/check-facs-3d.js` |
+
+Addresses (Lead adds `_redirects`): the Kitchen at **/kitchen** (`kitchen.html`), the Sewing Room at **/sewing**
+(`sewing.html`). `/kitchen#<recipe-id>` opens a recipe; `/kitchen#skill-<action-id>` opens one skill;
+`/sewing#<move-id>` opens a sewing move.
+
+## Figure additions (FIGURE adds them; they must not change the existing API)
+
+- Outfit `apron`: plain clothes with a kitchen apron, sleeves pushed up, hair tied back under a cap (food safety).
+- `fig.hand(side)` returns an Object3D anchored in the palm (x = across the palm toward the thumb, y = along the
+  fingers, z = out of the palm) so a page can parent a tool to it (a knife, a whisk, a needle). The fingers close
+  around it: `fig.grip(side, amount 0…1)` curls the fingers (open hand 0, holding a handle 1, pinching a needle 0.5 with
+  `fig.pinch(side, bool)`).
+- `fig.ik.arm` must reach counter-height targets in front of the body without the elbow flipping.
+
+## Kitchen actions (ids fixed; KITCHEN animates them; FACS links to them)
+
+wash-hands, tie-hair, measure-dry (scoop and level with a straight edge), measure-liquid (pour, check at eye level),
+crack-egg, whisk, stir, fold, pour, chop (claw grip, knife tip on the board), slice, dice, mince, peel, grate,
+knead, roll-dough, spread, season, flip (turner), saute, boil, simmer, bake (oven mitts, rack in and out),
+check-temp (food thermometer), plate, wipe-clean, wash-dishes.
+
+Preloaded recipes (ids fixed; real, kid- and school-kitchen-friendly, with allergens marked):
+fruit-salad, yogurt-parfait, scrambled-eggs, pancakes, veggie-stir-fry, tomato-pasta, vinaigrette (an emulsion),
+quick-bread (muffins), pizza-dough (kneading). Each step names its action ids, its tools, its ingredients and amounts.
+
+The viewer can also plug in a recipe: paste or type ingredients and steps (English or Spanish). The page reads it on
+the device (no outside service): each step's verbs map to action ids (chop, dice, stir, whisk, bake …, with Spanish
+verbs too), quantities and units are read and can be scaled (½×, 2×, 3×), unknown verbs fall back to a calm
+"work at the counter" demonstration with the step's words shown. Saved recipes stay on this device only.
+
+Safety in every kitchen demo: wash hands; tie hair back; knives with the claw grip and the tip on the board; pot
+handles turned in; oven mitts; a grown-up at the stove and oven for children; food safety temperatures (eggs and
+poultry 165 °F / 74 °C, ground meat 160 °F / 71 °C); keep raw and ready-to-eat apart; allergens named.
+
+## Sewing moves (ids fixed; SEWING animates them; FACS links to them)
+
+Hand sewing: thread-needle, tie-knot, running-stitch, backstitch, whipstitch, slip-stitch (blind hem),
+blanket-stitch, sew-button (four-hole and shank), tie-off.
+Cutting and pattern: pin-pattern, cut-fabric (shears, long smooth cuts), mark-fabric.
+Machine: machine-parts (a guided tour), wind-bobbin, thread-machine, straight-seam, backstitch-machine,
+pivot-corner, seam-allowance (5/8 in / 1.5 cm guide), press-seam (iron, open and to one side).
+
+The stitches are drawn for real: a thread that follows the needle through two layers of fabric, stitch by stitch,
+with the finished stitches staying in the cloth; the machine's needle, presser foot and feed dogs move with the
+fabric. Safety: needles and pins into a pincushion, never in the mouth; shears closed and passed handle-first;
+fingers away from the needle and off the presser foot path; the iron upright when resting, unplugged after.
