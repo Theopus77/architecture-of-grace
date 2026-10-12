@@ -1109,6 +1109,8 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S
   prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
   notes:()=>({room:"band", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the notes, who played them, the band's sound */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-HUM-V1: Hum it (aog-hum.js): a sung tune becomes notes for the instrument chosen now, in its reach */
+window.AOGHumRoom={ room:"band", lang:()=>S.lang, bpm:()=>curBpm(), sound:()=>S.sound, range:()=>{ try{ const r=soundRange(S.sound); return r[0]>0 && r[1]>r[0]+4 ? r : null; }catch(e){ return null; } } };
 /* AOG-NOTES-V1 — the notes of a take, played again through the band's own chain, offline: the Mixing Desk's piano-roll asks
    for it through the Studio (AOGStudioShell.renderNotes). A note keeps its player; with another sound picked, each note goes
    to the player of that sound who reaches it (playerFor), as a key would. The beat section's strokes stay strokes. */

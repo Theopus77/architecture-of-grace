@@ -315,6 +315,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
 <script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
+<script src="/aog-hum.js" defer></script><!-- AOG-HUM-V1: Hum it (the listening, aog-hum-engine.js, loads on the first Record) -->
 <script>
 (function(){
   function add(src){
@@ -437,6 +438,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
       </div>
 
       <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
+      <div class="blk" id="humBlk"></div><!-- AOG-HUM-V1: Hum it, closed (aog-hum.js draws it) -->
 
       <div class="blk" id="ampBlk"><!-- AOG-AMP-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
@@ -2868,6 +2870,8 @@ function learnLit(){
   svg.querySelectorAll(".dot").forEach(g=>{ const v=on.get(g.getAttribute("data-c"));
     if(g.classList.contains("lrn")!==!!v) g.classList.toggle("lrn", !!v); if(g.classList.contains("lroot")!==(v==="r")) g.classList.toggle("lroot", v==="r"); });
 }
+/* AOG-HUM-V1: Hum it (aog-hum.js): a sung tune becomes notes here; the bass takes it an octave or two down */
+window.AOGHumRoom={ room:INST, lang:()=>S.lang, bpm:()=>curBpm(), range:()=>GTR?[40,86]:[28,67], sound:()=>S.sound };
 window.AOGLearnRoom={ room:INST, lang:()=>S.lang, busy:()=>!!S.playing,
   show:(what)=>{ LEARN.chord=what&&what.chord||null; LEARN.ms=what&&what.notes&&what.notes.length?what.notes.map(Math.round):null;
     /* a note off the frets in view: the neck goes to it (never under a finger, never sideways on the whole screen) */

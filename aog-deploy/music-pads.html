@@ -202,6 +202,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script src="/aog-hum.js" defer></script><!-- AOG-HUM-V1: Beatbox it (the listening, aog-hum-engine.js, loads on the first Record) -->
 <script>
 (function(){
   function add(src){
@@ -282,6 +283,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
             <p class="pm-h" id="stepsH"></p>
             <div class="steps" id="steps" role="group"></div>
           </div>
+          <div class="pm-sec" id="humBlk"></div><!-- AOG-HUM-V1: Beatbox it, closed (aog-hum.js draws it) -->
           <details class="pm-set pm-sec" id="padSet">
             <summary id="padSetSum"></summary>
             <div class="pm-row">
@@ -1493,6 +1495,11 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang,
    the song. */
 /* AOG-OVERDUB-V1: recording over My Track, a loop that is playing starts again on the bar line My Track starts on */
 window.AOGRoomClock={ align(t0){ if(!SEQ.on) return; SEQ.t0=t0; SEQ.abs=0; SEQ.map=null; } };
+/* AOG-HUM-V1: Beatbox it (aog-hum.js): mouth sounds become bank A's kick, snare and hi-hat (pads 1-3); Undo brings the old beat back */
+window.AOGHumRoom={ room:"pads", lang:()=>S0.lang, bpm:()=>S.bpm, ctx:()=>ctx(), ready:()=>prep(0),
+  hit:(p, v, when)=>{ trigger(0, p, v, when); flash(0, p, when); },
+  write:(ev, bars)=>{ snapshot(); S.ev=S.ev.filter(e=>e.b!==0).concat(ev.map(e=>({b:0, p:e.p, t:e.t, v:e.v, len:24}))); S.bars=bars; S.beat=null; S.bank=0; S.sel=0;
+    changed(); paintAll(); prep(0); } };
 function isMinorScale(id){ const iv=scaleIv(id); return iv.indexOf(3)>=0 && iv.indexOf(4)<0; }   /* a minor third and no major third */
 if(window.AOGSong) AOGSong.room({
   bpm:{get:()=>S.bpm, set:v=>retime(v), min:60, max:180},

@@ -310,6 +310,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script src="/aog-hum.js" defer></script><!-- AOG-HUM-V1: Hum it (the listening, aog-hum-engine.js, loads on the first Record) -->
 <script>
 (function(){
   function add(src){
@@ -423,6 +424,8 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
       </div>
+
+      <div class="blk" id="humBlk"></div><!-- AOG-HUM-V1: Hum it, closed, played by the instrument chosen now (aog-hum.js draws it) -->
 
       <div class="blk" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
@@ -1591,6 +1594,8 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S
   prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
   notes:()=>({room:"band", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the notes, who played them, the band's sound */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-HUM-V1: Hum it (aog-hum.js): a sung tune becomes notes for the instrument chosen now, in its reach */
+window.AOGHumRoom={ room:"band", lang:()=>S.lang, bpm:()=>curBpm(), sound:()=>S.sound, range:()=>{ try{ const r=soundRange(S.sound); return r[0]>0 && r[1]>r[0]+4 ? r : null; }catch(e){ return null; } } };
 /* AOG-NOTES-V1 — the notes of a take, played again through the band's own chain, offline: the Mixing Desk's piano-roll asks
    for it through the Studio (AOGStudioShell.renderNotes). A note keeps its player; with another sound picked, each note goes
    to the player of that sound who reaches it (playerFor), as a key would. The beat section's strokes stay strokes. */

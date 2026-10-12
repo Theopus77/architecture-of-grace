@@ -603,6 +603,30 @@
       if (R.takes.indexOf(b.k) >= 0) store(b.k);
       R.msg = ""; R.paint();
     };
+    /* AOG-HUM-V1 (aog-hum.js): a take made from notes, not from playing (Hum it). out is the room's own render of the notes
+       (AOGRoomRender: its chain, before the Volume, as a take is heard); ev the notes in the take's own time. It is kept
+       exactly as a played take is: in the list, on the device, with its notes, ready for My Track and the Mixing Desk. */
+    R.adopt = function (out, ev, opt) {
+      if (!out || !out.L || !out.L.length || !Array.isArray(ev) || !ev.length || R.on || R.closing) return 0;
+      opt = opt || {};
+      var sr = out.sr || 44100, n = out.L.length, Rc = out.R || out.L, x = new Int16Array(n * 2);
+      for (var i = 0; i < n; i++) { var l = ceil(out.L[i]), r = ceil(Rc[i]); x[2 * i] = l < 0 ? l * 0x8000 : l * 0x7fff; x[2 * i + 1] = r < 0 ? r * 0x8000 : r * 0x7fff; }
+      var bytes = n * 4, h = new ArrayBuffer(44), v = new DataView(h), str = function (q, s) { for (var k = 0; k < s.length; k++) v.setUint8(q + k, s.charCodeAt(k)); };
+      str(0, "RIFF"); v.setUint32(4, 36 + bytes, true); str(8, "WAVE"); str(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true);
+      v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, bytes, true);
+      var blob = new Blob([h, x], { type: "audio/wav" }), info = {}; try { info = o.notes ? o.notes() || {} : {}; } catch (e) { info = {}; }
+      var space = 0; try { space = window.AOGRoom ? AOGRoom.get() : 0; } catch (e) { space = 0; }
+      var notes = { v: 1, room: String(info.room || studioTool(o) || ""), sound: String(info.sound || ""), set: info.set || {}, space: space, sr: sr, lag: 0,
+        ev: ev.map(function (e) { return { t: r4(e.t), m: r3(e.m), v: r3(Math.max(0, Math.min(1, +e.v || 0.7))), d: r4(Math.max(0.005, e.d)) }; }), ped: [], hum: 1 };
+      var take = { n: ++R.n, sec: n / sr, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: +opt.bpm > 0 ? +opt.bpm : (o.bpm ? +o.bpm() || 0 : 0), added: false, hid: "", place: null, notes: notes };
+      R.takes.unshift(take); R.studioLine = false;
+      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); unstore(old); }
+      R.kept = false; store(take);
+      try { if (window.AOGSong) AOGSong.seedFromRoom(); } catch (e) {}
+      R.msg = ""; R.paint();
+      return take.n;
+    };
+    if (CAP) CAP.adopt = R.adopt;
     document.addEventListener("visibilitychange", function () { if (document.hidden && R.on) R.toggle(); });
     /* AOG-STUDIO-TRANSPORT-V1 (2026-10-09) — the Recording Studio's transport (/the-studio) drives this room's recorder:
        ● Record presses this room's own Record button, + Add to My Track sends the newest take the usual way */
@@ -658,5 +682,7 @@
     /* AOG-NOTES-V1: a room's voice maker says what it just made (live only); its pedal too */
     note: function (c, vc, e) { if (CAP && vc) { try { CAP.note(c, vc, e); } catch (x) {} } return vc; },
     pedal: function (c, on) { if (CAP && c) { try { CAP.pedal(c, on); } catch (x) {} } },
+    /* AOG-HUM-V1: a take made from notes, in the room that keeps notes; its number, or 0 */
+    adopt: function (out, ev, opt) { return CAP && CAP.adopt ? CAP.adopt(out, ev, opt) : 0; },
     notes: NOTES_KIT };
 })();
