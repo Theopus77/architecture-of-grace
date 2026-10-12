@@ -790,8 +790,8 @@ export async function create(kit) {
       if (camMode === "orbit") orbitCam(V(t.x, Math.max(0.7, t.y - 0.1), 0));
       else if (camMode === "follow" || path.hill) frameCam(40, V(t.x + 1.4, t.y + 1.3, 4.6), V(t.x + 0.4, t.y + 0.35, 0));
       else {   // the whole run fills the picture: both copings, the rider and the gauges in front of the far deck
-        const a = xs + 0.9, b = xe + 0.9, span = b - a, cx = (a + b) / 2, dist = fitDist(span, 40) + 0.8;
-        frameCam(40, V(cx + span * 0.1, top * 0.45 + dist * 0.16, dist), V(cx, top * 0.55, 0.4)); }
+        const a = xs + 0.7, b = xe + 1.5, span = b - a, cx = (a + b) / 2, dist = fitDist(span, 40) + 0.8;
+        frameCam(40, V(cx + span * 0.08, top * 0.6 + 0.5 + dist * 0.12, dist), V(cx, top * 0.6 + 0.65, 0.4)); }
       sunAt(t.x, 0, !path.hill && camMode === "wide");
     } else if (spec.kind === "ollie") {
       setScene("room:ollie", null); slideWorld(0);
@@ -828,7 +828,7 @@ export async function create(kit) {
       const span = d.len + 2.8, cx = d.len / 2;
       if (camMode === "orbit") orbitCam(V(t.x, 0.6, 0));
       else if (camMode === "follow") frameCam(40, V(t.x + 1.0, 1.2, 3.2), V(t.x + 0.2, 0.55, 0));
-      else { const dist = fitDist(span * 0.9, 40); frameCam(40, V(cx + span * 0.06, 0.75 + dist * 0.13, dist), V(cx, 0.42, 0)); }
+      else { const dist = fitDist(span * 0.9, 40) * Math.max(1, camera.aspect * 0.85); frameCam(40, V(cx + span * 0.06, 0.75 + dist * 0.13, dist), V(cx, 0.42, 0)); }
       sunAt(cx, 0, true);
     } else if (spec.kind === "free") {
       setScene("free", null); world.position.x = 0;
