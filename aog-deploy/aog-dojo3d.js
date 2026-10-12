@@ -93,6 +93,7 @@ export async function create(opt) {
     mat2: keep(new THREE.MeshStandardMaterial({ map: matTex, normalMap: matNormal, normalScale: new THREE.Vector2(0.4, 0.4), roughness: 0.92 })),
     wall: keep(new THREE.MeshStandardMaterial({ map: plaster, roughness: 0.96 })),
     wood: keep(new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.5 })),
+    woodPlain: keep(new THREE.MeshStandardMaterial({ roughness: 0.55 })),   // turned and bent wood (no grain to stretch)
     accent: keep(new THREE.MeshStandardMaterial({ roughness: 0.7 })),
     stone: keep(new THREE.MeshStandardMaterial({ roughness: 0.55 })),
     window: keep(new THREE.MeshStandardMaterial({ roughness: 1, emissive: new THREE.Color("#fff6e4"), emissiveIntensity: 1 })),
@@ -133,7 +134,7 @@ export async function create(opt) {
   }
   [-1.6, 1.4].forEach(z => {
     const frame = new THREE.ExtrudeGeometry(roundRectShape(1.5, 2.3, 0.3), { depth: 0.05, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 4, curveSegments: 16 });
-    const f = add(frame, MAT.wood, -5.58, 1.85, z, false); f.rotation.y = Math.PI / 2;
+    const f = add(frame, MAT.woodPlain, -5.58, 1.85, z, false); f.rotation.y = Math.PI / 2;
     const pane = add(new THREE.ShapeGeometry(roundRectShape(1.36, 2.16, 0.26), 16), MAT.window, -5.5, 1.85, z, false, false); pane.rotation.y = Math.PI / 2;
   });
   // smooth shapes on the back wall: three soft discs in a calm row (wood, sage, stone) — just shapes
@@ -319,12 +320,16 @@ export async function create(opt) {
     for (let i = 0; i < path.length - 1; i++) if (t >= path[i].t) { const u = clamp((t - path[i].t) / Math.max(1e-6, path[i + 1].t - path[i].t), 0, 1), e = EASE.soft(u); x = lerp(path[i].x, path[i + 1].x, e); z = lerp(path[i].z, path[i + 1].z, e); }
     return new THREE.Vector3(x, 0.84, z);
   }
+  const FOV0 = camera.fov, FOV_GHOST = 50, GHOST_DIST = 4.9;   // the ghost row is seen a little wider, from inside the room
   function placeCamera(t) {
+    const want = ghostOn && ghosts.length ? FOV_GHOST : FOV0;
+    if (camera.fov !== want) { camera.fov = want; camera.updateProjectionMatrix(); }
     const asp = W / Math.max(1, H), fov = camera.fov * DEG;
     let target = center(t), wNeed = 1.9, hNeed = 2.0;
     if (ghostOn && ghosts.length) { target = new THREE.Vector3(0, 0.88, 0); wNeed = ghostSpan + 1.0; hNeed = 2.2; }
-    const dist = Math.max(hNeed / 2 / Math.tan(fov / 2), wNeed / 2 / (Math.tan(fov / 2) * asp)) * 1.0 + 0.2;
-    const a = (ghostOn ? -74 : az) * DEG, e = (ghostOn ? 8 : el) * DEG;
+    let dist = Math.max(hNeed / 2 / Math.tan(fov / 2), wNeed / 2 / (Math.tan(fov / 2) * asp)) * 1.0 + 0.2;
+    if (ghostOn && ghosts.length) dist = Math.min(dist, GHOST_DIST);   // never outside the walls
+    const a = (ghostOn ? -88 : az) * DEG, e = (ghostOn ? 8 : el) * DEG;
     camera.position.set(target.x + Math.sin(a) * Math.cos(e) * dist, target.y + Math.sin(e) * dist + 0.1, target.z + Math.cos(a) * Math.cos(e) * dist);
     camera.lookAt(target);
     sun.target.position.set(target.x, 0.6, target.z); sun.position.set(target.x - 6, 5.5, target.z + 2.5);
@@ -355,7 +360,9 @@ export async function create(opt) {
     while (ghosts.length < n - 1) ghosts.push(makeGhost());
     ghosts.forEach((g, i) => g.fig.root.visible = i < n - 1);
     const kicky = /kick|fall|sprawl|lunge|teep|ginga/.test(MV.kind + MV.id);
-    const sp = kicky ? 1.25 : 0.95; ghostSpan = (n - 1) * sp;
+    // as far apart as the room lets the camera see (a phone held upright sees less), a little closer for small moves
+    const asp = W / Math.max(1, H), vis = 2 * GHOST_DIST * Math.tan(FOV_GHOST * DEG / 2) * asp;
+    const sp = Math.min(kicky ? 1.15 : 0.9, Math.max(0.45, (vis - 0.9) / Math.max(1, n - 1))); ghostSpan = (n - 1) * sp;
     ts.forEach((t, i) => {
       const F = i === n - 1 ? MAIN : ghosts[i];
       const c = center(t), off = { x: -c.x, z: (i - (n - 1) / 2) * sp - c.z };   // a row along the direction the figure faces, seen from its side
@@ -373,7 +380,7 @@ export async function create(opt) {
     const c = opt.colors(), dark = opt.dark();
     if (stage.setDark) stage.setDark(dark);   // the kit's light and night look first; the room's own tuning goes on top
     const col = (x, d) => new THREE.Color(x || d);
-    MAT.floor.color.copy(col(c.floor, "#c79d6c")); MAT.wood.color.copy(col(c.wood, "#9a7350"));
+    MAT.floor.color.copy(col(c.floor, "#c79d6c")); MAT.wood.color.copy(col(c.wood, "#9a7350")); MAT.woodPlain.color.copy(col(c.wood, "#9a7350")).multiplyScalar(0.8);
     MAT.mat.color.copy(col(c.mat, "#5e7f73")); MAT.mat2.color.copy(col(c.mat2, "#a8b9a4"));
     MAT.wall.color.copy(col(c.wall, "#efe7d9")); MAT.accent.color.copy(col(c.accent, "#8aa596"));
     MAT.stone.color.copy(col(dark ? "#8c8f94" : "#b9b4aa"));

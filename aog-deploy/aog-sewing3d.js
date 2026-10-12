@@ -19,7 +19,7 @@ const smooth = (a, b, x) => { const u = clamp((x - a) / (b - a), 0, 1); return u
 export async function create(kit) {
   const E = kit.engine, LAY = E.LAYOUT, M_ = LAY.machine, NP = M_.NP, TY = LAY.TABLE_Y;
   const stage = makeStage({ host: kit.host, before: kit.host.firstChild, dark: kit.dark(), fov: 34, fogNear: 7, fogFar: 26, autoResize: false,
-    light: { bg: "#efe9de", fog: "#efe9de", sunI: 2.1, exposure: 1.02 }, darkLook: { bg: "#151b26", fog: "#151b26", sunI: 0.5, env: 0.36, exposure: 0.95 } });
+    light: { bg: "#efe9de", fog: "#efe9de", sunI: 1.9, exposure: 0.84 }, darkLook: { bg: "#151b26", fog: "#151b26", sunI: 0.5, env: 0.36, exposure: 0.95 } });
   const { scene, camera, renderer } = stage;
   const phone = stage.phone;
   stage.canvas.classList.add("gl");
@@ -56,7 +56,7 @@ export async function create(kit) {
   const weaveN = normalTex(WV, WV, weaveH, 1.6);
   const weaveMap = ctex(WV, WV, (g, w, h) => {
     const img = g.createImageData(w, h);
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = 200 + weaveH(x, y) * 55 + (rnd() - 0.5) * 10, i = (y * w + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = clamp(v, 0, 255); img.data[i + 3] = 255; }
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = 150 + weaveH(x, y) * 105 + (rnd() - 0.5) * 14, i = (y * w + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = clamp(v, 0, 255); img.data[i + 3] = 255; }
     g.putImageData(img, 0, 0);
   });
   const feltMap = ctex(128, 128, (g, w, h) => { g.fillStyle = "#e8e8e8"; g.fillRect(0, 0, w, h); for (let i = 0; i < 2600; i++) { g.strokeStyle = `rgba(${rnd() < 0.5 ? "0,0,0" : "255,255,255"},${rnd() * 0.12})`; g.beginPath(); const x = rnd() * w, y = rnd() * h, a = rnd() * 6.3; g.moveTo(x, y); g.lineTo(x + Math.cos(a) * 5, y + Math.sin(a) * 5); g.stroke(); } });
@@ -139,7 +139,7 @@ export async function create(kit) {
     mfabW: phys({ color: "#dde6ea", map: weaveMap, normalMap: weaveN, roughness: 0.92, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#f4fbff") }),
     gingham: phys({ map: gingham, normalMap: weaveN, roughness: 0.9, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#ffffff") }),
     tissue: std({ map: patternMap, roughness: 0.85, transparent: true, opacity: 0.9, side: THREE.DoubleSide }),
-    button: phys({ color: "#f4efe6", roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 }),
+    button: phys({ color: "#e0ad45", roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 }),
     buttonS: phys({ color: "#2f3a52", roughness: 0.2, metalness: 0.2, clearcoat: 1 }),
     pinHeadR: phys({ color: "#d23d3d", roughness: 0.15, clearcoat: 1 }), pinHeadY: phys({ color: "#e9b52c", roughness: 0.15, clearcoat: 1 }), pinHeadB: phys({ color: "#3a72c4", roughness: 0.15, clearcoat: 1 }),
     cushion: phys({ color: "#c8423a", roughness: 0.85, sheen: 1, sheenColor: new THREE.Color("#ffb3a8"), sheenRoughness: 0.5, map: weaveMap, normalMap: weaveN }),
@@ -430,8 +430,8 @@ export async function create(kit) {
   const wInner = new THREE.Group(); flipG.add(wInner);
   const W = LAY.hand.work; work.position.set(W[0], W[1], W[2]); work.rotation.x = LAY.hand.tilt * DEG;
   const NXw = phone ? 44 : 70, NZw = phone ? 28 : 44;
-  const layerA = Slab(NXw, NZw, [MAT.clothTop, MAT.clothTop, MAT.clothTop], 0.008);
-  const layerB = Slab(NXw, NZw, [MAT.clothBot, MAT.clothBot, MAT.clothBot], 0.008);
+  const layerA = Slab(NXw, NZw, [MAT.clothTop, MAT.clothTop, MAT.clothTop], 0.011);
+  const layerB = Slab(NXw, NZw, [MAT.clothBot, MAT.clothBot, MAT.clothBot], 0.011);
   const hemL = Slab(NXw, Math.round(NZw / 2), [MAT.hem, MAT.hem, MAT.hem], 0.008);
   wInner.add(layerA.mesh, layerB.mesh, hemL.mesh);
   let workKind = "";
@@ -555,11 +555,11 @@ export async function create(kit) {
     const S = side, wristName = "wrist" + S, anc = fig.hand(S);
     let goal = target.clone();
     for (let k = 0; k < 3; k++) {
-      fig.ik.arm(S, goal, pole); fig.update();
+      fig.ik.arm(S, goal, pole, { exact: true }); fig.update();
       const wp = fig.world(wristName), ap = anc.getWorldPosition(_w);
       goal = target.clone().sub(ap.clone().sub(wp));
     }
-    fig.ik.arm(S, goal, pole); fig.update();
+    fig.ik.arm(S, goal, pole, { exact: true }); fig.update();
   }
   function poseFigure(st) {
     if (!fig) return;
@@ -596,7 +596,7 @@ export async function create(kit) {
   let camMode = "close", orbitYaw = null, camDrag = null, lastSt = null;
   function focusPoint(st) {
     const s = st.station;
-    if (s === "hand") return toWorld("work", st.work && st.work.kind === "none" ? [0, 0.02, 0] : [0.008, 0.002, 0]);
+    if (s === "hand") return toWorld("work", E.focusOf(st.id, st.step));
     if (s === "machine") {
       if (st.id === "machine-parts" && st.m.hl) { const p = M_.parts[st.m.hl]; if (p) return V(NP[0] + p[0], NP[1] + p[1], NP[2] + p[2]); return V(M_.pedal[0], 0.05, M_.pedal[2]); }
       if (st.id === "thread-machine" || st.id === "wind-bobbin") return V(NP[0] + 0.12, NP[1] + 0.14, NP[2]);
@@ -613,17 +613,24 @@ export async function create(kit) {
       if (s === "hand") {
         const n = V(0, 1, 0).applyQuaternion(work.quaternion);   // the work's face
         const flipNow = st.work && st.work.flip > 0.5 ? 1 : 0;
-        pos = f.clone().addScaledVector(n, st.work.kind === "none" ? 0.2 : 0.15).add(V(-0.05, 0.035, 0.02));
-        if (flipNow) pos = f.clone().addScaledVector(n, 0.15).add(V(-0.05, 0.035, 0.02));
+        pos = f.clone().addScaledVector(n, st.work.kind === "none" ? 0.17 : 0.105).add(V(-0.025, 0.03, 0.012));
+        if (st.id === "whipstitch" || st.id === "blanket-stitch") {   // edge stitches: look from beyond the edge, so the wrap shows
+          const out = V(0, 0, -1).applyQuaternion(work.quaternion);
+          pos = f.clone().addScaledVector(n, 0.075).addScaledVector(out, 0.07).add(V(-0.02, 0, 0));
+        }
+        if (st.id === "sew-button" && st.step >= 5 && st.step <= 7) {   // the thread shank: a lower, side-on look under the button
+          const out = V(0, 0, 1).applyQuaternion(work.quaternion);
+          pos = f.clone().addScaledVector(n, 0.05).addScaledVector(out, 0.06).add(V(0.03, 0, 0));
+        }
       } else if (s === "machine") {
         if (st.id === "machine-parts") pos = f.clone().add(st.m.hl === "pedal" ? V(-0.25, 0.45, 0.5) : V(-0.12, 0.12, 0.34));
         else if (st.id === "thread-machine" || st.id === "wind-bobbin") pos = f.clone().add(V(-0.12, 0.14, 0.5));
-        else pos = f.clone().add(V(-0.12, 0.17, 0.2));
-      } else if (s === "cut") pos = f.clone().add(V(-0.1, 0.42, 0.32));
-      else pos = f.clone().add(V(-0.25, 0.4, 0.45));
+        else pos = f.clone().add(V(-0.05, 0.25, 0.17));
+      } else if (s === "cut") pos = f.clone().add(V(-0.02, 0.56, 0.14));
+      else pos = f.clone().add(V(0.1, 0.46, -0.34));
     } else if (mode === "shoulder") {
       const seat = s === "hand" ? LAY.hand.seat : s === "machine" ? M_.seat : s === "cut" ? CUT.stand : LAY.press.stand;
-      pos = V(seat[0] - 0.32, (s === "hand" || s === "machine") ? 1.42 : 1.75, seat[1] + 0.5);
+      pos = V(seat[0] - 0.36, (s === "hand" || s === "machine") ? 1.6 : 1.9, seat[1] + 0.34);
     } else {   // across the table, from the window side
       pos = V(f.x + 0.35, f.y + 0.45, f.z - 1.25);
       if (s === "press") pos = V(f.x - 0.2, f.y + 0.6, f.z - 1.2);
@@ -663,7 +670,7 @@ export async function create(kit) {
   const show = (m, on) => { m.visible = !!on; };
   function thread(pts, mat, parent, r) {
     if (!pts || pts.length < 2) return;
-    mesh(tubeGeo(pts, r || 0.00045, 0.0016, phone ? 5 : 7), mat, parent, true, true);
+    mesh(tubeGeo(pts, r || 0.0005, 0.0016, phone ? 5 : 7), mat, parent, true, true);
   }
   function drawHand(st) {
     const kind = st.work.kind;

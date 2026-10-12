@@ -239,7 +239,7 @@ function pageWords() {
   $("viewLab").textContent = L("View", "Vista");
   $("speedPick").innerHTML = [[1, L("Normal", "Normal")], [0.5, L("Slow", "Lento")], [0.25, L("Very slow", "Muy lento")]].map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
   $("speedPick").value = String(S.speed);
-  $("viewPick").innerHTML = [["front", L("Front", "De frente")], ["side", L("Side", "De lado")], ["behind", L("Behind you (copy it like a mirror)", "Detrás de ti (cópialo como en un espejo)")], ["orbit", L("Walk around (drag)", "Dar la vuelta (arrastra)")]]
+  $("viewPick").innerHTML = [["front", L("Front", "De frente")], ["side", L("Side", "De lado")], ["behind", L("From behind: copy it as you see it", "Desde atrás: cópialo tal como lo ves")], ["orbit", L("Walk around (drag)", "Dar la vuelta (arrastra)")]]
     .map(([v, t]) => `<option value="${v}">${esc(t)}</option>`).join("");
   $("viewPick").value = S.view;
   $("mirrorBtn").textContent = L("Mirror: practise the other side", "Espejo: practica el otro lado");

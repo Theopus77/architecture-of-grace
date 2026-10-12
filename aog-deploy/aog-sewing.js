@@ -68,7 +68,7 @@ const CLOTH = { F: 1, B: 1, I: 1, IF: 1 };
 const LEGGY = { F: 1, B: 1, I: 1, IF: 1, BT: 1 };
 /* the route as polylines (one per thread; a "cut" ends one) */
 function routeLines(nodes, st) {
-  const lines = []; let cur = [];
+  const lines = []; let cur = [], bowN = 0;
   for (let i = 0; i < nodes.length; i++) {
     const n = nodes[i];
     if (n.L === "cut") { if (cur.length) lines.push(cur); cur = []; continue; }
@@ -77,7 +77,9 @@ function routeLines(nodes, st) {
     const m = nodes[i + 1];
     if (m && m.L === n.L && LEGGY[n.L]) {                 // a leg on one side: follow the cloth's curve
       const d = Math.hypot(m.x - n.x, m.z - n.z), k = Math.floor(d / 0.0015);
-      for (let j = 1; j < k; j++) { const u = j / k; cur.push(nodePt({ L: n.L, x: lerp(n.x, m.x, u), z: lerp(n.z, m.z, u), b: n.b }, st)); }
+      // long legs on the back that lie over each other (backstitch) sit a hair apart, the way real thread rolls aside
+      const bow = n.L === "B" && d > 0.0105 ? ((bowN++ % 2) ? 1 : -1) * 0.00062 : 0;
+      for (let j = 1; j < k; j++) { const u = j / k, o = bow * Math.sin(Math.PI * u); cur.push(nodePt({ L: n.L, x: lerp(n.x, m.x, u), z: lerp(n.z, m.z, u) + o, b: n.b }, st)); }
     }
   }
   if (cur.length) lines.push(cur);
@@ -310,7 +312,7 @@ function deriveHand(H, pre) {
     // the right hand holds the needle at fraction grabF of its length
     const gi = clamp(Math.round(st.grabF * (needle.length - 1)), 0, needle.length - 1);
     st.handR = { f: "work", p: needle[gi], grip: 0.5, pinch: true, dir: nrm(sub(needle[needle.length - 1], needle[0])) };
-    if (!st.needleShow) st.handR = { f: "work", p: [0.05, 0.03, 0.04], grip: 0.2, pinch: false };
+    if (!st.needleShow) st.handR = { f: "work", p: [0.095, 0.035, 0.05], grip: 0.2, pinch: false };
     if (st.snips) st.handR = { f: "work", p: st.snips.p, grip: 0.9, pinch: false };
   };
 }
@@ -1161,7 +1163,7 @@ function panel() {
     <ol class="steps" id="steps">${c.steps.map((s, i) => `<li data-k="${i}"><button type="button" class="stepbtn" data-step="${i}">${esc(s)}</button></li>`).join("")}</ol>
     <div class="note warn" id="safety"><b>${esc(L("Safe hands", "Manos seguras"))}</b>${safe.length ? safe.map(s => `<span class="sl">${esc(s)}</span>`).join("") : `<span class="sl">${esc(L("Keep the chalk and ruler on the table when you are not using them.", "Deja la tiza y la regla en la mesa cuando no las uses."))}</span>`}</div>
     <p class="note good"><b>${esc(L("What helps", "Lo que ayuda"))}</b> ${esc(c.tip)}</p>
-    <p class="muted tools"><b>${esc(L("You need", "Necesitas"))}:</b> ${esc(tools.join(" · "))}</p>
+    <p class="muted tools-need"><b>${esc(L("You need", "Necesitas"))}:</b> ${esc(tools.join(" · "))}</p>
     ${hasBack ? `<div class="result" id="result"><h3>${esc(L("The finished stitches", "Las puntadas terminadas"))}</h3>${resultSVG(m.id)}</div>` : ""}
     <div class="track" role="group" aria-label="${esc(L("My practice", "Mi práctica"))}">
       <h3>${esc(L("My practice", "Mi práctica"))}</h3>
@@ -1213,6 +1215,9 @@ function lightStep() {
   const m = cur(), c = es() ? m.es : m.en;
   $("stepNow").textContent = L("Step ", "Paso ") + (k + 1) + L(" of ", " de ") + c.steps.length + " · " + c.steps[k];
   $("goBtn").textContent = P.playing ? L("Pause", "Pausa") : L("Go", "Empezar");
+  $("prevBtn").setAttribute("aria-label", L("Step back", "Paso anterior"));
+  $("nextBtn").setAttribute("aria-label", L("Play the next step", "Ver el siguiente paso"));
+  $("scrub").setAttribute("aria-label", L("Move through the demonstration", "Recorrer la demostración"));
   $("goBtn").setAttribute("aria-label", P.playing ? L("Pause", "Pausa") : L("Play the whole move once", "Ver todo el movimiento una vez"));
 }
 function backBtnWords() {
@@ -1282,17 +1287,32 @@ let G3 = null, G3state = "";
 function load3D() {
   if (G3state) return;
   G3state = "loading";
+  $("loadTxt").textContent = L("Getting the sewing room ready…", "Preparando el taller de costura…");
   $("loading").hidden = false;
   import("/aog-sewing3d.js").then(m => m.create({ host: $("stage"), engine: ENGINE, dark: () => document.documentElement.getAttribute("data-theme") === "dark",
       onCam: k => { S.cam = k; save(); $("camSel").value = k; } }))
     .then(g => { G3 = g; G3state = "ready"; $("loading").hidden = true; G3.setCam(S.cam || "close"); draw(); })
-    .catch(err => { G3state = "failed"; console.warn("Sewing room 3D:", err); $("loading").textContent = L("The 3D room could not start on this device. The steps still work.", "La sala en 3D no pudo iniciar en este equipo. Los pasos siguen funcionando."); });
+    .catch(err => { G3state = "failed"; console.warn("Sewing room 3D:", err); $("loadTxt").textContent = L("The 3D room could not start on this device. The steps still work.", "La sala en 3D no pudo iniciar en este equipo. Los pasos siguen funcionando."); });
 }
 function draw() {
   $("stageDesc").textContent = $("stepNow").textContent;
   if (G3) G3.render(P.st);
 }
-const ENGINE = { LAYOUT, LT, T, CL, NL, FX, FZ, EDGE, BH, PIN, BTN, PAT, PINS, ML, surf, topOf, nodePt, f2w, w2f, needleTipY, patternPath, routeLines, region };
+/* where the close camera looks in the hand work: the middle of the move's finished stitches (fixed per move, so the
+   camera stays still while a step plays); buttons: the button being sewn */
+const focusCache = {};
+function focusOf(id, step) {
+  if (id === "sew-button") return step >= 8 ? [BTN.sc[0], 0, BTN.sc[1]] : [BTN.c[0], 0, BTN.c[1]];
+  if (id === "thread-needle" || id === "tie-knot") return [0, 0.02, 0];
+  if (!focusCache[id]) {
+    const fp = finalPattern(id), ls = fp.kind === "hand" ? fp.front.concat(fp.back) : [];
+    if (!ls.length) focusCache[id] = [0.01, 0, 0];
+    else { const xs = ls.flatMap(l => [l.a[0], l.b[0]]), zs = ls.flatMap(l => [l.a[1], l.b[1]]);
+      focusCache[id] = [(Math.min(...xs) + Math.max(...xs)) / 2, 0, (Math.min(...zs) + Math.max(...zs)) / 2]; }
+  }
+  return focusCache[id];
+}
+const ENGINE = { focusOf, LAYOUT, LT, T, CL, NL, FX, FZ, EDGE, BH, PIN, BTN, PAT, PINS, ML, surf, topOf, nodePt, f2w, w2f, needleTipY, patternPath, routeLines, region };
 function wire() {
   $("goBtn").onclick = go; $("nextBtn").onclick = next; $("prevBtn").onclick = prev;
   $("scrub").oninput = () => { stop(); P.flip = null; scene(+$("scrub").value / 1000 * P.tl.dur); };

@@ -282,11 +282,12 @@ async function finish(pg) {
   ok(roll.v === 0 && roll.x > -11.5 + 3, `free skate: one push rolls ${(roll.x + 11.5).toFixed(1)} m and comes to rest by itself`);
   await d3.evaluate(() => window.AOGSkate.free.reset("flat"));
   const ol = await d3.evaluate(() => { const F = window.AOGSkate.free, pn = window.AOGSkate.popNumbers(); F.press("push", true); F.run(0.6, (q, t) => t > 0.55); let top = 0, air = 0; F.press("ollie", true);
-    F.run(3, q => { top = Math.max(top, q.y); if (q.mode === "air") air += 1 / 240; return q.mode !== "air" && air > 0.05; }); return { top, air, cap: pn.cap, flight: pn.flight }; });
+    F.run(3, q => { top = Math.max(top, q.y); if (q.mode === "air") air += 1 / 240; return q.mode !== "air" && air > 0.05; }); const out = { top, air, cap: pn.cap, flight: pn.flight }; F.run(90); return out; });   // then roll out to rest
   ok(ol.air > 0.2 && Math.abs(ol.air - ol.flight) < 0.08, `free skate: an ollie stays up ${ol.air.toFixed(2)} s, the ollie room's 2v₀/g = ${ol.flight.toFixed(2)} s`);
   // in 3D the ride draws only while it moves
   await d3.click('#panel [data-fk="view"][data-v="3d"]'); await ready3(d3);
   await d3.evaluate(() => window.AOGSkate.free.reset("flat"));
+  for (let i = 0; i < 60 && await d3.evaluate(() => window.AOGSkate.free.running()); i++) await wait(150);
   const settle = async () => { let a = -1, b = await d3.evaluate(() => window.AOGSkate.G3().renders()); for (let i = 0; i < 20 && a !== b; i++) { await wait(400); a = b; b = await d3.evaluate(() => window.AOGSkate.G3().renders()); } return b; };   // a late resize may draw once
   const fr0 = await settle(); await wait(700);
   const still3 = await d3.evaluate(r => ({ n: window.AOGSkate.G3().renders() - r, run: window.AOGSkate.free.running(), v: window.AOGSkate.free.st.v }), fr0);

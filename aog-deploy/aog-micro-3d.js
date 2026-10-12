@@ -193,8 +193,7 @@ var VS_SPRITE = [
 "  float sc = aI1.x; float z = aI0.z + uZoff*sc; float dz = uZf - z;",
 "  float geo = 0.5*abs(dz)*uTanA; float sU = sqrt(geo*geo + uSigRes*uSigRes + uHaze*uHaze);",
 "  vec2 hf = uHalf*sc*vec2(1.0, aI1.w);",
-"  vec2 grow = vec2(2.6*sU + 0.6);",
-"  vec2 local = aCorner*(hf + grow);",
+"  vec2 local = aCorner*hf;",                          /* the window below ends at the texture's edge, so no wider quad */
 "  float c = cos(aI0.w), s = sin(aI0.w);",
 "  vec2 p = aI0.xy + vec2(c*local.x - s*local.y, s*local.x + c*local.y);",
 "  vec2 scr = uView*0.5 - uS*(p + uPan);",
@@ -389,7 +388,7 @@ function poly(g, P) { g.beginPath(); for (var i = 0; i < P.length; i++) i ? g.li
 MODELS.__bars = {
   z: [-0.6, 0.6], K: function () { return 1; }, layerZ: null,
   mats: { bar: M({ ph: 0.2, pig: 1.0, bir: 0.5, fl: [1, 0, 0] }) },
-  colors: function () { return { G: [0.9, 0.9, 0.9], B: [0, 0, 0] }; },
+  colors: function () { return { G: [3, 3, 3], B: [0, 0, 0] }; },
   layer: function (g, sl, v, ink) {
     var p = v.barPeriod || 1;
     g.fillStyle = ink.rgb(this.mats.bar, 1);
@@ -597,6 +596,7 @@ function smooth(g, P) {
     var r = tileRng(i, j, 0xc4ee), out = [];
     var n = r() < 0.12 ? 0 : 2 + (r() * 4 | 0);
     var bx = i * T + 50 + r() * (T - 100), by = j * T + 50 + r() * (T - 100);
+    if (i === 0 && j === 0) { n = 4; bx = 22; by = 14; }
     for (var c = 0; c < n; c++) {
       var cx = bx + (r() - 0.5) * 120, cy = by + (r() - 0.5) * 110, R = 25 + r() * 9;
       var zc = c === 0 ? -5 + r() * 2 : -3 + r() * 7.5, th = 1.1 + r() * 0.6;
@@ -877,16 +877,18 @@ function smooth(g, P) {
       }
     }
   };
+  var MIDDLE = [["sun", 18, -12, 0, 0.5, 1], ["lily", -135, 70, 4, 2.6, 1], ["pine", 150, 105, -3, 0.3, 1], ["grass", -70, -125, 2, 0, 1], ["mallow", 175, -150, -4, 0.9, 1]];
   var KINDS = [["sun", 17, 0.45], ["lily", 13, 0.2], ["pine", 17, 0.15], ["grass", 17, 0.12], ["mallow", 53, 0.08]];
   var memo = new Map();
   function tile(i, j) {
     var key = i * 7919 + j, have = memo.get(key); if (have) return have;
     if (memo.size > 6000) memo.clear();
     var r = tileRng(i, j, 0x9011e), out = [], n = r() < 0.55 ? 0 : 1 + (r() < 0.15 ? 1 : 0);
+    if (Math.abs(i + 0.5) < 2 && Math.abs(j + 0.5) < 2) n = 0;   /* the middle is kept for the five below */
     for (var k = 0; k < n; k++) {
       var u = r(), K = KINDS[0]; for (var q = 0, acc = 0; q < KINDS.length; q++) { acc += KINDS[q][2]; if (u < acc) { K = KINDS[q]; break; } }
       var sc = 0.9 + r() * 0.2, h = K[1] * sc;
-      out.push([K[0], i * T + 30 + r() * (T - 60), j * T + 30 + r() * (T - 60), -58 + h + r() * Math.max(0, 116 - 2 * h), r() * TAU, sc]);
+      out.push([K[0], i * T + 30 + r() * (T - 60), j * T + 30 + r() * (T - 60), (r() - 0.5) * Math.max(0, 70 - 1.2 * h), r() * TAU, sc]);
     }
     memo.set(key, out); return out;
   }
@@ -895,6 +897,7 @@ function smooth(g, P) {
     colors: function (stain) { return { G: PIG.amber, B: STAINCOL[stain] || STAINCOL.none }; },
     items: function (v) {
       var B = {}; KINDS.forEach(function (K) { B[K[0]] = new Inst(); });
+      MIDDLE.forEach(function (c) { if (inView(v, c[1], c[2], 70)) B[c[0]].add(c[1], c[2], c[3], c[4], c[5], 0, 1, 1); });
       eachTile(v, T, 70, function (i, j) { tile(i, j).forEach(function (c) { if (inView(v, c[1], c[2], 70)) B[c[0]].add(c[1], c[2], c[3], c[4], c[5], 0, 1, 1); }); });
       var out = {}; Object.keys(B).forEach(function (k) { out[k] = B[k].out(); }); return out;
     },
@@ -974,8 +977,8 @@ function smooth(g, P) {
           if (oSide > 0) {
             g.strokeStyle = ink.rgb(mats.wall, oSide * 0.7 * Math.min(1, 1.6 / lw)); g.lineWidth = lw; rr(g, b, 0); g.stroke();
             if (low) {   /* far away the chloroplasts are a green lining and a speckled face */
-              g.strokeStyle = ink.rgb(mats.chl, oSide * 0.75); g.lineWidth = Math.max(3.5, 1.2 / v.k); rr(g, b, 3.2); g.stroke();
-              g.fillStyle = ink.rgb(mats.chl, oSide * 0.18); rr(g, b, 5); g.fill();
+              g.strokeStyle = ink.rgb(mats.chl, oSide * 0.32); g.lineWidth = Math.max(3.5, 1.2 / v.k); rr(g, b, 3.2); g.stroke();
+              g.fillStyle = ink.rgb(mats.chl, oSide * 0.07); rr(g, b, 5); g.fill();
             }
           }
           if (oSide > 0 && !low && h2(j, i, L.seed + 40) < 0.5) {
@@ -1110,6 +1113,10 @@ function smooth(g, P) {
     put("diat", 3 + (r() * 4 | 0), 120, 6, 0.85);
     if (r() < 0.5) put("volv", 1, 20, 120, 0.85);
     put("silt", 50, 140, 0, 0.8);
+    if (i === 0 && j === 0) {   /* the first look lands on a paramecium, a euglena and a diatom */
+      var fix = { para: [70, 25, 10], eugl: [-60, -45, 30], diat: [25, -80, -20] };
+      Object.keys(fix).forEach(function (k) { for (var q = 0; q < a.length; q++) if (a[q].type === k) { a[q].x = fix[k][0]; a[q].y = fix[k][1]; a[q].z = fix[k][2]; a[q].ph = 0; a[q].ph2 = 0; break; } });
+    }
     memo.set(key, a); return a;
   }
   /* where a swimmer is at time t: a loop round its home (Lissajous), heading along its path */

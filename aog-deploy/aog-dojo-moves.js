@@ -83,12 +83,13 @@ function Lside(part) { const out = {}; for (const n in part) out[n.slice(0, -1) 
 const AR = {
   fistBelt: { shoulderR: [-14, 0, 12], elbowR: [-62, 30, 0], wristR: [0, 0, 0] },
   hip:      { shoulderR: [32, 0, -8], elbowR: [-122, -90, 0], wristR: [0, 0, 0] },        // fist on the hip, palm up
-  punch:    { shoulderR: [-88, 0, 13], elbowR: [-4, 90, 0], wristR: [0, 0, 0] },          // straight, palm down, to the middle line
+  punch:    { shoulderR: [-80, 0, 13], elbowR: [-4, 90, 0], wristR: [0, 0, 0] },          // straight, palm down, to the middle line (solar plexus)
   punchHi:  { shoulderR: [-98, 0, 13], elbowR: [-4, 90, 0], wristR: [0, 0, 0] },
   reach:    { shoulderR: [-80, 0, 8], elbowR: [-6, 90, 0] },                               // the other hand reaches out before it pulls back
   guard:    { shoulderR: [-28, 0, 26], elbowR: [-138, 20, 0], wristR: [-10, 0, 0] },      // back hand by the chin
   guardLead:{ shoulderR: [-52, 0, 22], elbowR: [-112, 20, 0], wristR: [-10, 0, 0] },      // front hand at cheek height, a little forward
   sides:    { shoulderR: [4, 0, -4], elbowR: [-8, 0, 0] },
+  chest:    { shoulderR: [-30, 0, 16], elbowR: [-96, 20, 0], wristR: [-6, 0, 0] },        // soft hands in front of the chest
   // blocks
   riseStart:{ shoulderR: [30, 0, -8], elbowR: [-122, -90, 0] },                            // blocking arm low by the hip
   rise:     { shoulderR: [-150, 0, 22], elbowR: [-62, 70, 0], wristR: [0, 0, 0] },         // forearm above the forehead
@@ -229,24 +230,26 @@ move({ id: "guard", kind: "stance", band: "6-8", art: W("boxing, Muay Thai, kick
 
 /* ─────────── Footwork ─────────── */
 {
-  const A = merge(ST.front(0), arms("guard", "guardLead"));
-  const mid = merge(root(0, -0.15, 0.42), { L: foot(0.12, 0.42, 0), R: foot(-0.04, 0.40, -6) }, arms("guard", "guardLead"));
-  const Bk = merge(ST.frontR(0.84), arms("guardLead", "guard"));
+  /* step forward / step back as the course teaches them (K–2 onward): one foot slides a small step, the other follows
+     the same distance, so the feet stay hip-width apart and never cross or touch. Knees soft, head at one height. */
+  const chest = { j: Object.assign({}, AR.chest, Lside(AR.chest)) };
+  const D = 0.30, at0 = (zl, zr, rz, extra) => merge(root(0, -0.05, rz), { L: foot(0.13, zl, 6), R: foot(-0.13, zr, -6) }, chest, extra || {});
+  const S0 = merge(ST.ready(), chest);
   move({ id: "step-forward", kind: "footwork", band: "K-2", art: W("many arts", "muchas artes"),
-    keys: [K(0, 0, A), K(0.6, 1, merge(A, root(0, -0.15, 0.30))), K(1.3, 1, mid), K(2.1, 2, Bk), K(2.7, 3, Bk), K(3.1, 3, Bk)],
-    en: { n: "Step forward", steps: ["Start in a front stance, hands up.", "Shift your weight forward. Bring your back foot next to your front foot.", "Keep going. Step it out in front into a new front stance.", "Stop and stand strong. Your head stayed at the same height."],
-          tips: ["Glide. Do not bob up and down.", "The foot passes close to the other foot.", "Keep your hands up the whole time."] },
-    es: { n: "Paso adelante", steps: ["Empieza en postura adelantada, manos arriba.", "Pasa el peso adelante. Trae el pie de atrás junto al de adelante.", "Sigue. Sácalo al frente en una nueva postura adelantada.", "Detente firme. Tu cabeza se quedó a la misma altura."],
-          tips: ["Deslízate. No subas y bajes.", "El pie pasa cerca del otro pie.", "Mantén las manos arriba todo el tiempo."] } });
-  const A2 = merge(ST.front(0), arms("guard", "guardLead"));
-  const mid2 = merge(root(0, -0.15, -0.36), { R: foot(-0.13, -0.40, -28), L: foot(0.04, -0.38, 6) }, arms("guard", "guardLead"));
-  const B2 = merge(ST.frontR(-0.82), arms("guardLead", "guard"));
+    keys: [K(0, 0, S0), K(0.7, 0, S0), K(1.1, 1, at0(0, 0, 0.04)), K(1.8, 1, at0(D, 0, D * 0.55)), K(2.6, 2, at0(D, D, D)), K(3.1, 2, at0(D, D, D)),
+           K(3.8, 3, at0(2 * D, D, D * 1.55)), K(4.6, 3, at0(2 * D, 2 * D, 2 * D)), K(5.2, 3, at0(2 * D, 2 * D, 2 * D))],
+    en: { n: "Step forward", steps: ["Start in your ready stance. Hands in front of your chest.", "Slide one foot forward a small step. Keep your knees soft.", "Bring the other foot forward the same distance. The feet never cross or touch.", "Do it again: slide, then follow. Step, settle."],
+          tips: ["Glide. Do not bob up and down.", "Feet stay hip-width apart, like on two train tracks.", "Then switch which foot goes first."] },
+    es: { n: "Paso adelante", steps: ["Empieza en tu posición de listo. Manos frente al pecho.", "Desliza un pie un paso corto al frente. Rodillas suaves.", "Trae el otro pie al frente la misma distancia. Los pies nunca se cruzan ni se tocan.", "Otra vez: desliza y luego sigue. Paso, quieto."],
+          tips: ["Deslízate. No subas y bajes.", "Los pies quedan al ancho de la cadera, como sobre dos rieles.", "Luego cambia el pie que va primero."] } });
+  const lookBack = { j: { spine: [0, -8, 0], chest: [0, -14, 0], neck: [4, -36, 0], head: [6, -30, 0] } };
   move({ id: "step-back", kind: "footwork", band: "K-2", art: W("many arts", "muchas artes"),
-    keys: [K(0, 0, A2), K(0.6, 1, merge(A2, root(0, -0.15, -0.22))), K(1.3, 1, mid2), K(2.1, 2, B2), K(2.7, 3, B2), K(3.1, 3, B2)],
-    en: { n: "Step back", steps: ["Start in a front stance, hands up.", "Shift your weight back. Bring your front foot next to your back foot.", "Keep going. Step it out behind you into a new front stance.", "Stop and stand strong. Hands stayed up."],
-          tips: ["Look forward, not at your feet.", "Glide at one height, like a train on a track.", "Step back as far as you stepped forward."] },
-    es: { n: "Paso atrás", steps: ["Empieza en postura adelantada, manos arriba.", "Pasa el peso atrás. Trae el pie de adelante junto al de atrás.", "Sigue. Sácalo atrás en una nueva postura adelantada.", "Detente firme. Las manos siguen arriba."],
-          tips: ["Mira al frente, no a tus pies.", "Deslízate a una sola altura, como un tren en su riel.", "Da el paso atrás tan largo como el paso adelante."] } });
+    keys: [K(0, 0, S0), K(0.7, 0, S0), K(1.6, 1, at0(0, 0, 0, lookBack)), K(2.2, 1, at0(0, 0, 0, lookBack)), K(2.9, 2, at0(0, 0, 0)),
+           K(3.6, 2, at0(0, -D, -D * 0.55)), K(4.4, 3, at0(-D, -D, -D)), K(5.0, 3, at0(-D, -D, -D))],
+    en: { n: "Step back", steps: ["Start in your ready stance. Hands in front of your chest.", "Look behind you. Is the floor clear?", "Look forward again. Slide one foot back a small step.", "Bring the other foot back the same distance. Stand steady."],
+          tips: ["Always look before you step back.", "Go slowly. Knees soft.", "Then try with the other foot first."] },
+    es: { n: "Paso atrás", steps: ["Empieza en tu posición de listo. Manos frente al pecho.", "Mira detrás de ti. ¿El piso está despejado?", "Mira al frente otra vez. Desliza un pie un paso corto atrás.", "Trae el otro pie atrás la misma distancia. Quédate firme."],
+          tips: ["Mira siempre antes de dar un paso atrás.", "Ve despacio. Rodillas suaves.", "Luego prueba empezando con el otro pie."] } });
 }
 {
   const G = GUARD(), g = ST.guard();
