@@ -199,8 +199,8 @@ COURSES = [
                "Explora la historia de las artes marciales: los espacios, los códigos, las escuelas y quién pudo entrar. Grados K–12."),
          daily=("Ten short lines a day: key words, places, people and dates from martial arts history.",
                 "Diez líneas cortas al día: palabras clave, lugares, personas y fechas de la historia de las artes marciales."),
-         sources=("No strike, hold or throw is taught or shown. Bowing and meditation are described, never led. Stories about where an art began are named as stories. Everything is original text written for this course.",
-                  "No se enseña ni se muestra ningún golpe, llave ni lanzamiento. El saludo y la meditación se describen, nunca se dirigen. Las historias sobre el origen de un arte se presentan como historias. Todo es texto original escrito para este curso.")),
+         sources=("The history lessons describe the arts; they never teach a strike, hold or throw. Each unit ends with Practice the Moves: safe, solo basics, done into the air, that you watch in 3D in the Dojo. Bowing and meditation are described, never led. Stories about where an art began are named as stories. Everything is original text written for this course.",
+                  "Las lecciones de historia describen las artes; nunca enseñan un golpe, una llave ni un lanzamiento. Cada unidad termina con Practica los movimientos: lo básico, seguro y a solas, hecho al aire, que ves en 3D en el Dojo. El saludo y la meditación se describen, nunca se dirigen. Las historias sobre el origen de un arte se presentan como historias. Todo es texto original escrito para este curso.")),
     # AOG-UNR-V1 (2026-09-30) — The Unseen Realm (Michael Heiser). Run `doors unr` after unseen-realm-course.html exists.
     dict(cid="unr", file="unseen-realm-hub.html", slug="unseen-realm", name=("The Unseen Realm", "El reino invisible"), contents="unseen-realm-course",
          drops="unseen", res="religions", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),

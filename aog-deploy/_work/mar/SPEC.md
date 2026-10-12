@@ -47,6 +47,28 @@ start, and match their depth — every paragraph teaches something specific and 
 - Respect living traditions and communities. Never exotic, never "mystical"; name places and peoples precisely (Okinawa/Ryukyu, not "Japan" for early karate; Afro-Brazilian capoeira).
 - The sister course Sports History covers sport broadly; mention it only as history needs.
 
+## The Practice strand (added 2026-10-12, at the owner's request)
+Jimmy: "In the martial arts curriculum books, instructions on how to learn moves with this engine showing the
+person the moves!!!" The engine is the Dojo (/dojo, `dojo.html`), which shows each move of
+`_work/engine3d/CONTRACT.md` on a 3D figure, step by step.
+
+- **The history lessons do not change.** Everything above still governs them: history only, no technique, and
+  never a lesson about this rule. History stays the course's spine.
+- **A separate Practice strand** teaches safe, solo, no-contact basics through the Dojo. It lives only in
+  `mar_practice.py`; `assemble.py` adds it to each unit as one section, "Practice the Moves", after the last
+  section of the unit's last chapter (`"practice": true`). Never write practice content into `ch*.json`.
+- Each section: a safety lesson for the band (warm up, clear space, a grown-up near, into the air never at a
+  person, kicks at knee or belly height, falls only on a mat or soft grass with a grown-up, stop if it hurts),
+  then 2–3 move lessons. Each move lesson: what the move is for (one line, true to its art's history), 3–6
+  numbered steps in plain words, "What helps:", "Stay safe:", a `try` button "Watch it in 3D" → `/dojo#<id>`,
+  a `think` look (what to watch for on the figure) and three checks. The other side of a one-sided move is a
+  Practice-room door, `/dojo?side=left#<id>` (`links_for` in `mar_practice.py`, added to `LINKS`).
+- Only ids from the contract's moves table, and only the ids its "Bands" allow for the unit's band
+  (`ALLOWED` in `mar_practice.py`; `validate.py` and `tools/check-mar-practice.js` fail otherwise).
+- Voice: neuro-affirming (what helps, never what is wrong with a learner), short sentences. K–2 very short;
+  9–12 may explain body mechanics briefly and truly (base of support, center of mass, kinetic chain, pressure).
+  No partner work, no contact, no sparring, no weapons (fencing practice is an empty hand).
+
 ## LEVEL rules (from your unit's band)
 | level | band  | reading paragraphs | chars per paragraph | avg sentence | words per lesson | choices per question |
 |-------|-------|--------------------|---------------------|--------------|------------------|----------------------|

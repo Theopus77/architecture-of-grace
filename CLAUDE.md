@@ -293,6 +293,18 @@ LIGHT SPEED!!" Every feature, now and later:
 - Never slows the note path: tap-to-sound stays 10–25 ms on a phone.
 - Rooms and the front page are built with `python3 tools/build-fast.py`. Big new code goes in its own file, loaded when used.
 
+## The Dojo and Practice the Moves (Jimmy, 2026-10-12: "instructions on how to learn moves with this engine showing the person the moves")
+
+- The Dojo is `dojo.html` (/dojo): the site's figure (`aog-figure3d.js`, outfit "gi") shows the 36 moves in
+  `aog-dojo-moves.js` (ids fixed in `_work/engine3d/CONTRACT.md`) step by step in 3D (`aog-dojo3d.js`, `aog-3dkit.js`).
+  `/dojo#<id>` opens a move; `/dojo?side=left#<id>` and `/dojo#<id>?side=left` the other side. Words show at once, the
+  3D loads right after, and it draws only when a step plays or the view is dragged. After any change, run
+  `node tools/check-dojo.js`.
+- The Measured Step (martial-arts history) now ends every unit with Practice the Moves: safe, solo basics into the
+  air, numbered steps, What helps, Stay safe and a Watch it in 3D button. The history lessons stay history-only. The
+  practice lessons live in `_work/mar/mar_practice.py` (assemble.py adds them); after a change, rebuild the course and
+  run `node tools/check-mar-practice.js`.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
