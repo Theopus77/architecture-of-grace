@@ -1109,6 +1109,10 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S
   prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
   notes:()=>({room:"band", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the notes, who played them, the band's sound */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
+/* AOG-JAM-V1 (2026-10-12) — Jam with me (aog-jam.js): the band joins the Volume (heard, never in a take), or the limiter the
+   recorder listens to when Record the band too is on; the room's own pattern and its beat section are not the learner's */
+window.AOGJamRoom={ room:"band", lang:()=>S.lang, ctx:()=>ctx(), into:(rec)=>rec?LIVE_CH.lim:LIVE_CH.master, busy:()=>!!S.playing,
+  song:()=>({bpm:curBpm(), key:S.key, minor:!!S.minor}) };
 /* AOG-NOTES-V1 — the notes of a take, played again through the band's own chain, offline: the Mixing Desk's piano-roll asks
    for it through the Studio (AOGStudioShell.renderNotes). A note keeps its player; with another sound picked, each note goes
    to the player of that sound who reaches it (playerFor), as a key would. The beat section's strokes stay strokes. */

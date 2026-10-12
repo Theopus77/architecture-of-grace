@@ -354,6 +354,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="/aog-chords.js" defer></script>
 <script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
 <script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
+<script src="/aog-jam.js" defer></script><!-- AOG-JAM-V1: Jam with me, a band that follows you (the band itself, aog-jam-band.js, loads when the block is first opened) -->
 <script>
 (function(){
   function add(src){
@@ -469,6 +470,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line keys-line" data-t="keysLine2"></p>
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
+        <div id="jamBox"></div><!-- AOG-JAM-V1: Jam with me, closed (aog-jam.js draws it) -->
       </div>
 
       <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
@@ -2359,6 +2361,10 @@ function learnLit(){
 }
 window.AOGLearnRoom={ room:"piano", lang:()=>S.lang, busy:()=>!!S.playing,
   show:(what)=>{ LEARN.chord=what&&what.chord||null; LEARN.ms=what&&what.notes&&what.notes.length?what.notes:null; learnLit(); } };
+/* AOG-JAM-V1 (2026-10-12) — Jam with me (aog-jam.js): the band joins the Volume (heard, never in a take), or the limiter the
+   recorder listens to when Record the band too is on; the room's own pattern is not the learner's playing */
+window.AOGJamRoom={ room:"piano", lang:()=>S.lang, ctx:()=>ctx(), into:(rec)=>rec?LIVE_CH.lim:LIVE_CH.master, busy:()=>!!S.playing,
+  song:()=>({bpm:curBpm(), key:S.key, minor:!!S.minor}) };
 /* ══ AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: "more scales, modes and chords" on every instrument ══════════════════
    Scale: 154 scales and modes from aog-scales.js (the same list as Solo mode on the guitar). Off at first, so the piano
    looks as before. The scale follows the key and the mood; one choice is kept for major and one for minor. A key in the

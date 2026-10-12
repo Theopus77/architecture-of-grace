@@ -315,6 +315,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
 <script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
+<script src="/aog-jam.js" defer></script><!-- AOG-JAM-V1: Jam with me, a band that follows you (the band itself, aog-jam-band.js, loads when the block is first opened) -->
 <script>
 (function(){
   function add(src){
@@ -434,6 +435,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
         <p class="line keys-line" id="strPickSay" aria-live="polite"></p><!-- AOG-STRING-TAB-V1 --><!-- AOG-STRINGS-KEYS-V2: a small picture of the keys -->
         <p class="line" id="recLine" aria-live="polite"></p>
         <div id="takes"></div>
+        <div id="jamBox"></div><!-- AOG-JAM-V1: Jam with me, closed (aog-jam.js draws it) -->
       </div>
 
       <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
@@ -2874,6 +2876,11 @@ window.AOGLearnRoom={ room:INST, lang:()=>S.lang, busy:()=>!!S.playing,
     if(LEARN.ms && !FINGERS.size && !NECK.play){ const far=LEARN.ms.map(cellFor).filter(cl=>cl && !inReach(cl.f));
       if(far.length){ const f=far[0].f, n=NECK.n||4, to=Math.max(1, Math.min(MAXF-n+1, f-1)); if(to!==S.fret0){ S.fret0=to; buildNeck(); return; } } }
     learnLit(); } };
+/* AOG-JAM-V1 (2026-10-12) — Jam with me (aog-jam.js): the band joins the Volume (heard, never in a take), or the limiter the
+   recorder listens to when Record the band too is on; the room's own pattern is not the learner's playing. A real
+   bass reaches the band through aog-liveinput.js, while its input is on. */
+window.AOGJamRoom={ room:INST, lang:()=>S.lang, ctx:()=>ctx(), into:(rec)=>rec?LIVE_CH.lim:LIVE_CH.master, busy:()=>!!S.playing,
+  song:()=>({bpm:curBpm(), key:S.key, minor:!!S.minor}) };
 function neckHit(e){
   if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
   const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;
